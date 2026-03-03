@@ -5,6 +5,6 @@
     "module": "CommonJS",
     "moduleResolution": "node"
   },
-  "include": ["tests/**/*.ts", "playwright.config.ts"],
+  "include": ["tests/**/*.ts", "playwright.config.ts", ".features-gen/**/*.ts"],
   "exclude": ["node_modules", "dist", "test-results", "playwright-report"]
 }

@@ -1,13 +1,33 @@
 # organiclever-be-e2e
 
-End-to-end tests for the [organiclever-be](../organiclever-be) Spring Boot REST API backend.
+End-to-end tests for the [organiclever-be](../organiclever-be) Spring Boot REST API backend,
+using [playwright-bdd](https://github.com/vitalets/playwright-bdd) to drive tests from Gherkin
+feature files.
 
 Tests use Playwright's `APIRequestContext` to validate HTTP endpoints — no browser needed.
 
 ## What This Tests
 
-- `GET /api/v1/hello` — returns `{"message": "world!"}`
-- `GET /actuator/health` — returns `{"status": "UP"}`
+Feature files in `specs/organiclever-be/` are the source of truth:
+
+- `hello/hello-endpoint.feature` — `GET /api/v1/hello` returns greeting and respects CORS
+- `actuator/health-check.feature` — `GET /actuator/health` reports service status
+
+## Architecture
+
+```
+specs/organiclever-be/**/*.feature    ← source of truth (read-only)
+        │
+        ▼  (defineBddConfig reads features)
+playwright.config.ts
+        │
+        ▼  (bddgen generates)
+.features-gen/**/*.spec.ts            ← auto-generated, gitignored
+        │
+        ▼  (playwright test runs)
+tests/steps/**/*.ts                   ← step implementations
+tests/utils/response-store.ts         ← shared APIResponse state between steps
+```
 
 ## Prerequisites
 
@@ -39,7 +59,7 @@ cd apps/organiclever-be-e2e && npx playwright install --with-deps && cd ../..
 ## Running Tests
 
 ```bash
-# Run all E2E tests headlessly
+# Run all BDD E2E tests headlessly (generates specs then runs)
 nx run organiclever-be-e2e:test:e2e
 
 # Run with interactive Playwright UI
@@ -47,6 +67,9 @@ nx run organiclever-be-e2e:test:e2e:ui
 
 # View HTML report from last run
 nx run organiclever-be-e2e:test:e2e:report
+
+# Generate spec files only (without running tests)
+cd apps/organiclever-be-e2e && npx bddgen
 
 # Lint TypeScript source files (oxlint)
 nx run organiclever-be-e2e:lint
@@ -74,19 +97,39 @@ BASE_URL=http://staging.example.com nx run organiclever-be-e2e:test:e2e
 
 ```
 apps/organiclever-be-e2e/
-├── playwright.config.ts       # Playwright configuration
-├── package.json               # Playwright dependency (pinned)
-├── tsconfig.json              # TypeScript config
+├── playwright.config.ts           # Playwright + playwright-bdd configuration
+├── package.json                   # Dependencies (playwright, playwright-bdd)
+├── tsconfig.json                  # TypeScript config
+├── .gitignore                     # Ignores .features-gen/, test-results/, playwright-report/
 ├── tests/
-│   ├── e2e/
+│   ├── steps/                     # BDD step definitions
+│   │   ├── common.steps.ts        # Shared: Given API running, Then status code
 │   │   ├── hello/
-│   │   │   └── hello.spec.ts      # Tests for GET /api/v1/hello
+│   │   │   └── hello.steps.ts     # When/Then for GET /api/v1/hello
 │   │   └── actuator/
-│   │       └── health.spec.ts     # Tests for GET /actuator/health
-└── test-results/              # JUnit XML output (git-ignored)
+│   │       └── health.steps.ts    # When/Then for GET /actuator/health
+│   └── utils/
+│       └── response-store.ts      # Shared APIResponse state between steps
+└── .features-gen/                 # Auto-generated spec files (gitignored)
 ```
+
+## Step Implementation Notes
+
+### Shared response state
+
+`tests/utils/response-store.ts` holds the last `APIResponse` across When and Then steps within
+a scenario. Module-level state is safe because scenarios run sequentially within a worker, and
+`workers: 1` is set in CI. All requests are read-only GETs with no state mutation.
+
+### Health details suppression
+
+The scenario "Anonymous health check does not expose component details" validates that no
+`components` key appears in the health response. This reflects `show-details: when-authorized`
+in the base Spring config. If the backend runs with the dev profile (`show-details: always`),
+this scenario will fail — which is expected, as E2E tests validate production-like behavior.
 
 ## Related
 
 - [organiclever-be](../organiclever-be/README.md) — The backend being tested
+- [specs/organiclever-be](../../specs/organiclever-be/) — Gherkin feature files (source of truth)
 - [Playwright docs](../../docs/explanation/software-engineering/automation-testing/tools/playwright/README.md) — Playwright standards for this project

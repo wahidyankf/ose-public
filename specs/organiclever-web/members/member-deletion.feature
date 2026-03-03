@@ -1,3 +1,4 @@
+@member-deletion
 Feature: Member Deletion
 
   As an authenticated OrganicLever user

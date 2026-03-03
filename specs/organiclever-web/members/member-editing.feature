@@ -1,3 +1,4 @@
+@member-editing
 Feature: Member Editing
 
   As an authenticated OrganicLever user

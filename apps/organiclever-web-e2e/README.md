@@ -2,15 +2,21 @@
 
 End-to-end tests for the [organiclever-web](../organiclever-web) Next.js landing and promotional website.
 
-Tests use Playwright browser automation to validate UI pages across Chromium, Firefox, and WebKit.
+Tests are driven by Gherkin feature files in [`specs/organiclever-web/`](../../specs/organiclever-web/) using [playwright-bdd](https://github.com/vitalets/playwright-bdd). The `bddgen` tool generates Playwright spec files from feature files before running tests.
 
-## What This Tests
+## Architecture
 
-- `login` — sign-in form, validation, and redirect behavior (4 tests)
-- `home` — landing page content and navigation (7 tests)
-- `dashboard` — authenticated dashboard view (6 tests)
-- `members` — member listing and management (7 tests)
-- `member-detail` — individual member detail page (3 tests)
+```
+specs/organiclever-web/**/*.feature   ← source of truth (Gherkin scenarios)
+        │
+        ▼  (bddgen generates)
+.features-gen/**/*.spec.ts            ← auto-generated, gitignored
+        │
+        ▼  (playwright test runs)
+tests/steps/**/*.ts                   ← step implementations
+tests/utils/auth.ts                   ← shared login helper
+tests/utils/test-config.ts            ← shared configuration
+```
 
 ## Prerequisites
 
@@ -42,7 +48,7 @@ cd apps/organiclever-web-e2e && npx playwright install --with-deps && cd ../..
 ## Running Tests
 
 ```bash
-# Run all E2E tests headlessly
+# Run all E2E tests headlessly (generates spec files then runs)
 nx run organiclever-web-e2e:test:e2e
 
 # Run with interactive Playwright UI
@@ -66,6 +72,21 @@ Override the base URL to test against a different environment:
 BASE_URL=http://staging.example.com nx run organiclever-web-e2e:test:e2e
 ```
 
+### Manual BDD workflow
+
+```bash
+cd apps/organiclever-web-e2e
+
+# Generate spec files from feature files
+npx bddgen
+
+# Run generated tests (all browsers)
+npx playwright test
+
+# Run on Chromium only (faster)
+npx playwright test --project=chromium
+```
+
 ## Environment Variables
 
 | Variable   | Default                 | Description       |
@@ -77,25 +98,39 @@ BASE_URL=http://staging.example.com nx run organiclever-web-e2e:test:e2e
 
 ```
 apps/organiclever-web-e2e/
-├── playwright.config.ts       # Playwright configuration
-├── package.json               # Playwright dependency (pinned)
-├── tsconfig.json              # TypeScript config
+├── playwright.config.ts       # Playwright + BDD configuration
+├── package.json               # playwright-bdd + @playwright/test dependencies
+├── tsconfig.json              # TypeScript config (includes .features-gen/)
+├── .gitignore                 # Excludes .features-gen/, test-results/, playwright-report/
 ├── tests/
 │   ├── utils/
 │   │   ├── auth.ts            # loginWithUI() and logoutViaAPI() helpers
 │   │   └── test-config.ts     # Shared test configuration
-│   └── e2e/
-│       └── pages/
-│           ├── login.spec.ts          # Login page tests
-│           ├── home.spec.ts           # Home page tests
-│           ├── dashboard.spec.ts      # Dashboard page tests
-│           ├── members.spec.ts        # Members listing tests
-│           └── member-detail.spec.ts  # Member detail page tests
-└── test-results/              # JUnit XML output (git-ignored)
+│   └── steps/
+│       ├── common.steps.ts            # Shared Given/Then across features
+│       ├── landing/
+│       │   └── landing.steps.ts       # Landing page steps
+│       ├── auth/
+│       │   ├── login.steps.ts         # Login form steps
+│       │   ├── logout.steps.ts        # Logout steps
+│       │   └── route-protection.steps.ts  # Protected route steps
+│       ├── dashboard/
+│       │   └── dashboard.steps.ts     # Dashboard overview steps
+│       └── members/
+│           ├── member-list.steps.ts   # Member list and search steps
+│           ├── member-detail.steps.ts # Member detail page steps
+│           ├── member-editing.steps.ts    # Edit dialog steps (restores data)
+│           └── member-deletion.steps.ts   # Delete dialog steps (restores data)
+└── .features-gen/             # Auto-generated spec files (gitignored)
 ```
+
+## State Restoration for Destructive Tests
+
+The member editing and deletion features mutate `apps/organiclever-web/src/data/members.json`. Both step files use `Before`/`After` hooks tagged with `@member-editing` and `@member-deletion` respectively to restore the original JSON before and after each scenario. The Next.js API routes read the file on every request with no caching, so disk writes take effect immediately.
 
 ## Related
 
+- [specs/organiclever-web/](../../specs/organiclever-web/README.md) — Gherkin feature files (source of truth)
 - [organiclever-web](../organiclever-web/README.md) — The frontend being tested
 - [organiclever-be-e2e](../organiclever-be-e2e/README.md) — API-level E2E counterpart (tests the Spring Boot backend)
 - [Playwright docs](../../docs/explanation/software-engineering/automation-testing/tools/playwright/README.md) — Playwright standards for this project

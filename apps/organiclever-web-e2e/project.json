@@ -28,14 +28,14 @@
     "test:e2e": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx playwright test",
+        "command": "npx bddgen && npx playwright test",
         "cwd": "apps/organiclever-web-e2e"
       }
     },
     "test:e2e:ui": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx playwright test --ui",
+        "command": "npx bddgen && npx playwright test --ui",
         "cwd": "apps/organiclever-web-e2e"
       }
     },

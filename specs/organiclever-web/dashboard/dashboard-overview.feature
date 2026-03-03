@@ -17,6 +17,7 @@ Feature: Dashboard Overview
     When the user clicks the "Team Members" card
     Then the user should be on the members list page
 
+  @sidebar-collapse
   Scenario: Collapsing the sidebar persists across page refreshes
     Given a user is logged in and on the dashboard
     When the user clicks the sidebar collapse button

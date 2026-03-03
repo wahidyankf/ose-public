@@ -1,7 +1,14 @@
 import { defineConfig, devices } from "@playwright/test";
+import { defineBddConfig } from "playwright-bdd";
+
+const testDir = defineBddConfig({
+  featuresRoot: "../../specs/organiclever-web",
+  features: "../../specs/organiclever-web/**/*.feature",
+  steps: "./tests/steps/**/*.ts",
+});
 
 export default defineConfig({
-  testDir: "./tests/e2e",
+  testDir,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,

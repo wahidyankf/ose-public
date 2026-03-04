@@ -1,6 +1,6 @@
 import React from "react";
 import { describeFeature, loadFeature } from "@amiceli/vitest-cucumber";
-import { render, screen, cleanup, waitFor } from "@testing-library/react/pure";
+import { render, screen, cleanup } from "@testing-library/react/pure";
 import userEvent from "@testing-library/user-event";
 import { vi, expect } from "vitest";
 import { AUTHENTICATED } from "../test/helpers/auth-mock";

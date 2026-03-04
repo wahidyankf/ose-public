@@ -1,4 +1,3 @@
-import React from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { Navigation } from "./Navigation";

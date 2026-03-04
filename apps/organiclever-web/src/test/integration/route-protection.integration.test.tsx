@@ -3,7 +3,7 @@ import { describeFeature, loadFeature } from "@amiceli/vitest-cucumber";
 import { render, screen, cleanup, waitFor } from "@testing-library/react/pure";
 import userEvent from "@testing-library/user-event";
 import { vi, expect } from "vitest";
-import { BASE_AUTH } from "../test/helpers/auth-mock";
+import { BASE_AUTH } from "../helpers/auth-mock";
 
 vi.mock("next/navigation", () => ({
   useRouter: vi.fn(() => ({ push: vi.fn() })),

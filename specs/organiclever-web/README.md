@@ -12,10 +12,10 @@ interactions, authentication flows, dashboard navigation, and member management.
 
 Feature files here are the single source of truth read by **two runners**:
 
-| Tier                 | Language   | Framework                   | Step definitions                         |
-| -------------------- | ---------- | --------------------------- | ---------------------------------------- |
-| E2E (real browser)   | TypeScript | playwright-bdd 8+           | `apps/organiclever-web-e2e/tests/steps/` |
-| Integration (mocked) | TypeScript | @amiceli/vitest-cucumber 6+ | `apps/organiclever-web/src/integration/` |
+| Tier                 | Language   | Framework                   | Step definitions                              |
+| -------------------- | ---------- | --------------------------- | --------------------------------------------- |
+| E2E (real browser)   | TypeScript | playwright-bdd 8+           | `apps/organiclever-web-e2e/tests/steps/`      |
+| Integration (mocked) | TypeScript | @amiceli/vitest-cucumber 6+ | `apps/organiclever-web/src/test/integration/` |
 
 The `bddgen` CLI reads feature files and generates Playwright spec files in
 `apps/organiclever-web-e2e/.features-gen/` before each E2E test run. Integration tests load
@@ -62,7 +62,7 @@ npx bddgen && npx playwright test
    [Gherkin Standards](../../docs/explanation/software-engineering/development/behavior-driven-development-bdd/ex-soen-de-bedrdebd__gherkin-standards.md)
 5. Implement step definitions in both runners:
    - E2E steps: `apps/organiclever-web-e2e/tests/steps/`
-   - Integration steps: `apps/organiclever-web/src/integration/`
+   - Integration steps: `apps/organiclever-web/src/test/integration/`
 
 ## Related
 

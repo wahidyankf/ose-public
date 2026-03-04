@@ -3,8 +3,8 @@ import { describeFeature, loadFeature } from "@amiceli/vitest-cucumber";
 import { render, screen, cleanup, waitFor, act } from "@testing-library/react/pure";
 import { vi, expect } from "vitest";
 import { http, HttpResponse } from "msw";
-import { AUTHENTICATED } from "../test/helpers/auth-mock";
-import { server } from "../test/server";
+import { AUTHENTICATED } from "../helpers/auth-mock";
+import { server } from "../server";
 
 vi.mock("next/navigation", () => ({
   useRouter: vi.fn(() => ({ push: vi.fn() })),

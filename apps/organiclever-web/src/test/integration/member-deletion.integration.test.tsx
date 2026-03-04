@@ -4,9 +4,9 @@ import { render, screen, cleanup, waitFor, within } from "@testing-library/react
 import userEvent from "@testing-library/user-event";
 import { vi, expect } from "vitest";
 import { http, HttpResponse } from "msw";
-import { AUTHENTICATED } from "../test/helpers/auth-mock";
-import { server } from "../test/server";
-import { MOCK_MEMBERS } from "../test/helpers/mock-data";
+import { AUTHENTICATED } from "../helpers/auth-mock";
+import { server } from "../server";
+import { MOCK_MEMBERS } from "../helpers/mock-data";
 
 vi.mock("next/navigation", () => ({
   useRouter: vi.fn(() => ({ push: vi.fn() })),

@@ -19,6 +19,17 @@ func makeFile(t *testing.T, path string) {
 	_ = f.Close()
 }
 
+// writeContent creates a file with the given content.
+func writeContent(t *testing.T, path, content string) {
+	t.Helper()
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		t.Fatalf("MkdirAll: %v", err)
+	}
+	if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
+		t.Fatalf("WriteFile %s: %v", path, err)
+	}
+}
+
 func TestCheckAll_AllCovered(t *testing.T) {
 	root := t.TempDir()
 
@@ -315,5 +326,406 @@ func TestHasMatchingTestFile_DirNotExist(t *testing.T) {
 	}
 	if found {
 		t.Error("Expected found=false for nonexistent dir")
+	}
+}
+
+// --- Scenario gap tests ---
+
+func TestCheckAll_ScenarioPresent_NoGap(t *testing.T) {
+	root := t.TempDir()
+
+	writeContent(t, filepath.Join(root, "specs", "login.feature"), `
+Feature: Login
+  Scenario: Successful login
+    Given a user
+    When they log in
+    Then they see the dashboard
+`)
+	writeContent(t, filepath.Join(root, "app", "login.integration.test.tsx"), `
+describeFeature(feature, ({ Scenario }) => {
+  Scenario("Successful login", ({ Given, When, Then }) => {
+    Given("a user", () => {});
+    When("they log in", () => {});
+    Then("they see the dashboard", () => {});
+  });
+});
+`)
+
+	opts := ScanOptions{
+		RepoRoot: root,
+		SpecsDir: filepath.Join(root, "specs"),
+		AppDir:   filepath.Join(root, "app"),
+	}
+
+	result, err := CheckAll(opts)
+	if err != nil {
+		t.Fatalf("CheckAll() error = %v", err)
+	}
+
+	if len(result.ScenarioGaps) != 0 {
+		t.Errorf("ScenarioGaps = %v, want none", result.ScenarioGaps)
+	}
+}
+
+func TestCheckAll_ScenarioMissing_ScenarioGap(t *testing.T) {
+	root := t.TempDir()
+
+	writeContent(t, filepath.Join(root, "specs", "login.feature"), `
+Feature: Login
+  Scenario: Successful login
+    Given a user
+    When they log in
+    Then they see the dashboard
+
+  Scenario: Failed login
+    Given a wrong password
+    When they log in
+    Then they see an error
+`)
+	// Test file only has "Successful login"
+	writeContent(t, filepath.Join(root, "app", "login.integration.test.tsx"), `
+describeFeature(feature, ({ Scenario }) => {
+  Scenario("Successful login", ({ Given, When, Then }) => {
+    Given("a user", () => {});
+    When("they log in", () => {});
+    Then("they see the dashboard", () => {});
+  });
+});
+`)
+
+	opts := ScanOptions{
+		RepoRoot: root,
+		SpecsDir: filepath.Join(root, "specs"),
+		AppDir:   filepath.Join(root, "app"),
+	}
+
+	result, err := CheckAll(opts)
+	if err != nil {
+		t.Fatalf("CheckAll() error = %v", err)
+	}
+
+	if len(result.ScenarioGaps) != 1 {
+		t.Fatalf("ScenarioGaps = %d, want 1", len(result.ScenarioGaps))
+	}
+	if result.ScenarioGaps[0].ScenarioTitle != "Failed login" {
+		t.Errorf("ScenarioGap title = %q, want %q", result.ScenarioGaps[0].ScenarioTitle, "Failed login")
+	}
+}
+
+func TestCheckAll_TotalScenarios_Counted(t *testing.T) {
+	root := t.TempDir()
+
+	writeContent(t, filepath.Join(root, "specs", "login.feature"), `
+Feature: Login
+  Scenario: A
+    Given step a
+  Scenario: B
+    Given step b
+  Scenario: C
+    Given step c
+`)
+	writeContent(t, filepath.Join(root, "app", "login.integration.test.tsx"), `
+describeFeature(feature, ({ Scenario }) => {
+  Scenario("A", ({ Given }) => { Given("step a", () => {}); });
+  Scenario("B", ({ Given }) => { Given("step b", () => {}); });
+  Scenario("C", ({ Given }) => { Given("step c", () => {}); });
+});
+`)
+
+	opts := ScanOptions{
+		RepoRoot: root,
+		SpecsDir: filepath.Join(root, "specs"),
+		AppDir:   filepath.Join(root, "app"),
+	}
+
+	result, err := CheckAll(opts)
+	if err != nil {
+		t.Fatalf("CheckAll() error = %v", err)
+	}
+
+	if result.TotalScenarios != 3 {
+		t.Errorf("TotalScenarios = %d, want 3", result.TotalScenarios)
+	}
+}
+
+// --- Step gap tests ---
+
+func TestCheckAll_StepPresent_NoStepGap(t *testing.T) {
+	root := t.TempDir()
+
+	writeContent(t, filepath.Join(root, "specs", "login.feature"), `
+Feature: Login
+  Scenario: Login
+    Given a registered user
+    When they submit credentials
+    Then they are redirected
+`)
+	writeContent(t, filepath.Join(root, "app", "login.integration.test.tsx"), `
+describeFeature(feature, ({ Scenario }) => {
+  Scenario("Login", ({ Given, When, Then }) => {
+    Given("a registered user", () => {});
+    When("they submit credentials", () => {});
+    Then("they are redirected", () => {});
+  });
+});
+`)
+
+	opts := ScanOptions{
+		RepoRoot: root,
+		SpecsDir: filepath.Join(root, "specs"),
+		AppDir:   filepath.Join(root, "app"),
+	}
+
+	result, err := CheckAll(opts)
+	if err != nil {
+		t.Fatalf("CheckAll() error = %v", err)
+	}
+
+	if len(result.StepGaps) != 0 {
+		t.Errorf("StepGaps = %v, want none", result.StepGaps)
+	}
+}
+
+func TestCheckAll_StepMissing_StepGap(t *testing.T) {
+	root := t.TempDir()
+
+	writeContent(t, filepath.Join(root, "specs", "login.feature"), `
+Feature: Login
+  Scenario: Login
+    Given a registered user
+    When they submit credentials
+    Then they are redirected
+    And a session is active
+`)
+	// Test file missing "And a session is active"
+	writeContent(t, filepath.Join(root, "app", "login.integration.test.tsx"), `
+describeFeature(feature, ({ Scenario }) => {
+  Scenario("Login", ({ Given, When, Then }) => {
+    Given("a registered user", () => {});
+    When("they submit credentials", () => {});
+    Then("they are redirected", () => {});
+  });
+});
+`)
+
+	opts := ScanOptions{
+		RepoRoot: root,
+		SpecsDir: filepath.Join(root, "specs"),
+		AppDir:   filepath.Join(root, "app"),
+	}
+
+	result, err := CheckAll(opts)
+	if err != nil {
+		t.Fatalf("CheckAll() error = %v", err)
+	}
+
+	if len(result.StepGaps) != 1 {
+		t.Fatalf("StepGaps = %d, want 1", len(result.StepGaps))
+	}
+	if result.StepGaps[0].StepText != "a session is active" {
+		t.Errorf("StepGap text = %q, want %q", result.StepGaps[0].StepText, "a session is active")
+	}
+	if result.StepGaps[0].StepKeyword != "And" {
+		t.Errorf("StepGap keyword = %q, want %q", result.StepGaps[0].StepKeyword, "And")
+	}
+}
+
+func TestCheckAll_CoverageGap_SkipsScenarioAndStepCheck(t *testing.T) {
+	root := t.TempDir()
+
+	// Feature with scenarios but no test file
+	writeContent(t, filepath.Join(root, "specs", "missing.feature"), `
+Feature: Missing
+  Scenario: Uncovered scenario
+    Given some step
+`)
+	// App dir exists but no matching test file
+	if err := os.MkdirAll(filepath.Join(root, "app"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+
+	opts := ScanOptions{
+		RepoRoot: root,
+		SpecsDir: filepath.Join(root, "specs"),
+		AppDir:   filepath.Join(root, "app"),
+	}
+
+	result, err := CheckAll(opts)
+	if err != nil {
+		t.Fatalf("CheckAll() error = %v", err)
+	}
+
+	if len(result.Gaps) != 1 {
+		t.Errorf("Gaps = %d, want 1", len(result.Gaps))
+	}
+	// Scenario/step gaps should NOT be reported for files with coverage gaps
+	if len(result.ScenarioGaps) != 0 {
+		t.Errorf("ScenarioGaps = %d, want 0 (skipped)", len(result.ScenarioGaps))
+	}
+	if len(result.StepGaps) != 0 {
+		t.Errorf("StepGaps = %d, want 0 (skipped)", len(result.StepGaps))
+	}
+	// TotalScenarios should remain 0 for skipped files
+	if result.TotalScenarios != 0 {
+		t.Errorf("TotalScenarios = %d, want 0", result.TotalScenarios)
+	}
+}
+
+func TestCheckAll_TotalSteps_Counted(t *testing.T) {
+	root := t.TempDir()
+
+	writeContent(t, filepath.Join(root, "specs", "feature.feature"), `
+Feature: Feature
+  Scenario: A
+    Given step one
+    When step two
+    Then step three
+    And step four
+`)
+	writeContent(t, filepath.Join(root, "app", "feature.integration.test.tsx"), `
+describeFeature(feature, ({ Scenario }) => {
+  Scenario("A", ({ Given, When, Then, And }) => {
+    Given("step one", () => {});
+    When("step two", () => {});
+    Then("step three", () => {});
+    And("step four", () => {});
+  });
+});
+`)
+
+	opts := ScanOptions{
+		RepoRoot: root,
+		SpecsDir: filepath.Join(root, "specs"),
+		AppDir:   filepath.Join(root, "app"),
+	}
+
+	result, err := CheckAll(opts)
+	if err != nil {
+		t.Fatalf("CheckAll() error = %v", err)
+	}
+
+	if result.TotalSteps != 4 {
+		t.Errorf("TotalSteps = %d, want 4", result.TotalSteps)
+	}
+	if len(result.StepGaps) != 0 {
+		t.Errorf("StepGaps = %v, want none", result.StepGaps)
+	}
+}
+
+// --- extractScenarioTitles tests ---
+
+func TestExtractScenarioTitles_SingleQuotes(t *testing.T) {
+	root := t.TempDir()
+	path := filepath.Join(root, "test.tsx")
+	writeContent(t, path, `
+  Scenario('Login with email "user@example.com"', ({ Given }) => {
+    Given('a user with email "user@example.com"', () => {});
+  });
+`)
+
+	titles, err := extractScenarioTitles(path)
+	if err != nil {
+		t.Fatalf("extractScenarioTitles() error = %v", err)
+	}
+
+	if !titles[`Login with email "user@example.com"`] {
+		t.Error("expected single-quoted title to be found")
+	}
+}
+
+func TestExtractScenarioTitles_DoubleQuotes(t *testing.T) {
+	root := t.TempDir()
+	path := filepath.Join(root, "test.tsx")
+	writeContent(t, path, `
+  Scenario("Successful login", ({ Given }) => {});
+`)
+
+	titles, err := extractScenarioTitles(path)
+	if err != nil {
+		t.Fatalf("extractScenarioTitles() error = %v", err)
+	}
+
+	if !titles["Successful login"] {
+		t.Error("expected double-quoted title to be found")
+	}
+}
+
+// --- unescapeString tests ---
+
+func TestUnescapeString_EscapedApostrophe(t *testing.T) {
+	// Simulates: 'the page headline should read "Team\'s Productivity"'
+	input := `the page headline should read "Team\'s Productivity"`
+	want := `the page headline should read "Team's Productivity"`
+	got := unescapeString(input)
+	if got != want {
+		t.Errorf("unescapeString = %q, want %q", got, want)
+	}
+}
+
+func TestUnescapeString_NoEscapes(t *testing.T) {
+	input := "a plain step text"
+	got := unescapeString(input)
+	if got != input {
+		t.Errorf("unescapeString = %q, want %q", got, input)
+	}
+}
+
+func TestCheckAll_StepWithEscapedApostrophe_NoGap(t *testing.T) {
+	root := t.TempDir()
+
+	writeContent(t, filepath.Join(root, "specs", "feature.feature"), `
+Feature: Feature
+  Scenario: A
+    Given the page headline should read "Team's Productivity"
+`)
+	// Test file uses single-quoted string with escaped apostrophe
+	writeContent(t, filepath.Join(root, "app", "feature.integration.test.tsx"), `
+describeFeature(feature, ({ Scenario }) => {
+  Scenario("A", ({ Given }) => {
+    Given('the page headline should read "Team\'s Productivity"', () => {});
+  });
+});
+`)
+
+	opts := ScanOptions{
+		RepoRoot: root,
+		SpecsDir: filepath.Join(root, "specs"),
+		AppDir:   filepath.Join(root, "app"),
+	}
+
+	result, err := CheckAll(opts)
+	if err != nil {
+		t.Fatalf("CheckAll() error = %v", err)
+	}
+
+	if len(result.StepGaps) != 0 {
+		t.Errorf("StepGaps = %v, want none (escaped apostrophe should match)", result.StepGaps)
+	}
+}
+
+// --- extractAllStepTexts tests ---
+
+func TestExtractAllStepTexts_SkipsNodeModules(t *testing.T) {
+	root := t.TempDir()
+
+	// This step exists only in node_modules — should be skipped
+	writeContent(t, filepath.Join(root, "node_modules", "lib", "steps.ts"), `
+  Given("a step in node_modules", () => {});
+`)
+	// This step exists in src — should be found
+	writeContent(t, filepath.Join(root, "src", "steps.ts"), `
+  Given("a real step", () => {});
+`)
+
+	texts, err := extractAllStepTexts(root)
+	if err != nil {
+		t.Fatalf("extractAllStepTexts() error = %v", err)
+	}
+
+	if texts["a step in node_modules"] {
+		t.Error("node_modules step should be skipped")
+	}
+	if !texts["a real step"] {
+		t.Error("src step should be found")
 	}
 }

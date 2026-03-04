@@ -15,8 +15,8 @@ func TestRootCommand_Initialization(t *testing.T) {
 		t.Errorf("Expected short description 'CLI tools for repository management', got %s", rootCmd.Short)
 	}
 
-	if rootCmd.Version != "0.7.0" {
-		t.Errorf("Expected version '0.7.0', got %s", rootCmd.Version)
+	if rootCmd.Version != "0.8.0" {
+		t.Errorf("Expected version '0.8.0', got %s", rootCmd.Version)
 	}
 }
 
@@ -69,8 +69,8 @@ func TestRootCommand_Version(t *testing.T) {
 	}
 
 	output := buf.String()
-	if !strings.Contains(output, "0.7.0") {
-		t.Errorf("Version output should contain '0.7.0', got: %s", output)
+	if !strings.Contains(output, "0.8.0") {
+		t.Errorf("Version output should contain '0.8.0', got: %s", output)
 	}
 
 	if !strings.Contains(output, "rhino-cli") {

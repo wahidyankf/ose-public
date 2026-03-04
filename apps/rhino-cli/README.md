@@ -406,6 +406,11 @@ rhino-cli validate-spec-coverage specs/organiclever-web apps/organiclever-web -q
 - For each spec, checks if any file under `<app-dir>` has a base name starting with
   `{stem}.` (e.g. `user-login.feature` → matches `user-login.integration.test.tsx`)
 - Reports each uncovered spec with a hint for the expected test file stem
+- For matched specs, checks **scenario-level** coverage: every `Scenario:` title in the
+  feature file must appear as `Scenario("title", ...)` in the matching test file
+- For matched specs, checks **step-level** coverage: every step line (`Given/When/Then/And/But`)
+  must appear as a step definition anywhere in the app's `.ts`/`.tsx`/`.js`/`.jsx` files,
+  including shared step helpers and `defineSteps()` utilities
 - Both paths are resolved relative to the git repository root
 
 **Why this command exists:**
@@ -438,16 +443,27 @@ This command closes that gap for any app using explicit feature loading.
 **Example output (success):**
 
 ```
-✓ Spec coverage valid! 9 specs checked, all have matching test files.
+✓ Spec coverage valid! 9 specs, 47 scenarios, 203 steps — all covered.
 ```
 
 **Example output (failure):**
 
 ```
-✗ Spec coverage gaps found! 1 of 9 specs have no matching test file:
+✗ Spec coverage gaps found!
 
+Missing test files (1):
   - specs/organiclever-web/auth/new-feature.feature
     (expected test file with stem: new-feature)
+
+Missing scenarios (1):
+  - specs/organiclever-web/auth/user-login.feature
+    → Scenario: "Login with SSO"
+
+Missing steps (2):
+  - specs/organiclever-web/members/member-list.feature
+    → Scenario: "Export member list"
+      · Given the member list has been loaded
+      · When the user clicks "Export CSV"
 ```
 
 **Example output (JSON):**
@@ -457,9 +473,15 @@ This command closes that gap for any app using explicit feature loading.
   "status": "success",
   "timestamp": "2026-03-04T10:00:00+07:00",
   "total_specs": 9,
+  "total_scenarios": 47,
+  "total_steps": 203,
   "gap_count": 0,
+  "scenario_gap_count": 0,
+  "step_gap_count": 0,
   "duration_ms": 12,
-  "gaps": []
+  "gaps": [],
+  "scenario_gaps": [],
+  "step_gaps": []
 }
 ```
 
@@ -616,8 +638,10 @@ apps/rhino-cli/
 │   │   ├── agent_validator.go # Agent validation (11 rules)
 │   │   └── skill_validator.go # Skill validation (3 rules)
 │   ├── speccoverage/         # BDD spec coverage validation
-│   │   ├── types.go          # ScanOptions, CoverageGap, CheckResult types
-│   │   ├── checker.go        # Walk specs dir, match against app dir
+│   │   ├── types.go          # ScanOptions, CoverageGap, ScenarioGap, StepGap, CheckResult
+│   │   ├── parser.go         # Gherkin feature file parser (line-by-line, no external dep)
+│   │   ├── parser_test.go    # Unit tests for parser
+│   │   ├── checker.go        # Walk specs dir, match test files, check scenario/step gaps
 │   │   ├── checker_test.go   # Unit tests (temp dir fixtures)
 │   │   ├── reporter.go       # Output formatting (text, JSON, markdown)
 │   │   └── reporter_test.go  # Reporter unit tests
@@ -669,7 +693,7 @@ go test ./... -v
 - `internal/links`: 85%+ coverage (scanner, validator, categorizer, reporter)
 - `internal/sync`: 85%+ coverage (converter, copier, validator, reporter)
 - `internal/claude`: 92.6% coverage (validator, agent_validator, skill_validator)
-- `internal/speccoverage`: ≥80% coverage (checker with temp dir fixtures, reporter for all formats)
+- `internal/speccoverage`: ≥80% coverage (parser, checker with temp dir fixtures, reporter for all formats)
 
 ### Lint
 
@@ -808,6 +832,19 @@ rhino-cli say
 ```
 
 ## Version History
+
+### v0.8.0 (2026-03-04)
+
+- Extended `validate-spec-coverage` with scenario-level and step-level coverage checking
+- Every `Scenario:` title in a feature file must appear as `Scenario("title", ...)` in the
+  matching test file — missing scenarios are reported as `ScenarioGap`
+- Every step line must appear as a step definition anywhere in the app's TS/JS files
+  (including shared `defineSteps()` helpers) — missing steps are reported as `StepGap`
+- New Gherkin parser (`parser.go`) — line-by-line, no external dependencies
+- Updated text/JSON/markdown output with scenario and step counts
+- JSON output extended: `total_scenarios`, `total_steps`, `scenario_gap_count`, `step_gap_count`,
+  `scenario_gaps`, `step_gaps`
+- Version bump: `0.7.0` → `0.8.0`
 
 ### v0.7.0 (2026-03-04)
 

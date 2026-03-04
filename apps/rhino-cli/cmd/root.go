@@ -21,7 +21,7 @@ var rootCmd = &cobra.Command{
 	Use:               "rhino-cli",
 	Short:             "CLI tools for repository management",
 	Long:              `Command-line tools for repository management and automation.`,
-	Version:           "0.7.0",
+	Version:           "0.8.0",
 	CompletionOptions: cobra.CompletionOptions{DisableDefaultCmd: true},
 	Run: func(cmd *cobra.Command, args []string) {
 		if sayMsg != "" {

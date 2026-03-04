@@ -69,11 +69,21 @@ func runValidateSpecCoverage(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	if len(result.Gaps) > 0 {
+	hasGaps := len(result.Gaps) > 0 || len(result.ScenarioGaps) > 0 || len(result.StepGaps) > 0
+	if hasGaps {
 		if !quiet && output == "text" {
-			_, _ = fmt.Fprintf(cmd.OutOrStderr(), "\n❌ Found %d spec(s) without matching test files\n", len(result.Gaps))
+			if len(result.Gaps) > 0 {
+				_, _ = fmt.Fprintf(cmd.OutOrStderr(), "\n❌ Found %d spec(s) without matching test files\n", len(result.Gaps))
+			}
+			if len(result.ScenarioGaps) > 0 {
+				_, _ = fmt.Fprintf(cmd.OutOrStderr(), "❌ Found %d scenario(s) without matching test implementations\n", len(result.ScenarioGaps))
+			}
+			if len(result.StepGaps) > 0 {
+				_, _ = fmt.Fprintf(cmd.OutOrStderr(), "❌ Found %d step(s) without matching step definitions\n", len(result.StepGaps))
+			}
 		}
-		return fmt.Errorf("found %d spec(s) without matching test files", len(result.Gaps))
+		return fmt.Errorf("spec coverage gaps found: %d file gap(s), %d scenario gap(s), %d step gap(s)",
+			len(result.Gaps), len(result.ScenarioGaps), len(result.StepGaps))
 	}
 
 	return nil

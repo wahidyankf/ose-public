@@ -10,15 +10,16 @@ interactions, authentication flows, dashboard navigation, and member management.
 
 ## BDD Framework
 
-| Concern                   | Choice                                               |
-| ------------------------- | ---------------------------------------------------- |
-| Language                  | TypeScript                                           |
-| BDD framework             | playwright-bdd                                       |
-| Step definitions location | `apps/organiclever-web-e2e/tests/steps/`             |
-| Test runner               | Playwright (via `npx bddgen && npx playwright test`) |
+Feature files here are the single source of truth read by **two runners**:
 
-Feature files here are the source of truth. The `bddgen` CLI reads them and generates Playwright
-spec files in `apps/organiclever-web-e2e/.features-gen/` before each test run.
+| Tier                 | Language   | Framework                   | Step definitions                         |
+| -------------------- | ---------- | --------------------------- | ---------------------------------------- |
+| E2E (real browser)   | TypeScript | playwright-bdd 8+           | `apps/organiclever-web-e2e/tests/steps/` |
+| Integration (mocked) | TypeScript | @amiceli/vitest-cucumber 6+ | `apps/organiclever-web/src/integration/` |
+
+The `bddgen` CLI reads feature files and generates Playwright spec files in
+`apps/organiclever-web-e2e/.features-gen/` before each E2E test run. Integration tests load
+feature files directly via `loadFeature()` — no code generation step needed.
 
 ## Feature File Organization
 
@@ -59,7 +60,9 @@ npx bddgen && npx playwright test
 3. Create the `.feature` file: `[user-journey].feature`
 4. Write scenarios following
    [Gherkin Standards](../../docs/explanation/software-engineering/development/behavior-driven-development-bdd/ex-soen-de-bedrdebd__gherkin-standards.md)
-5. Implement step definitions in `apps/organiclever-web-e2e/tests/steps/`
+5. Implement step definitions in both runners:
+   - E2E steps: `apps/organiclever-web-e2e/tests/steps/`
+   - Integration steps: `apps/organiclever-web/src/integration/`
 
 ## Related
 

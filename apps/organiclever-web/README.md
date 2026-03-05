@@ -150,20 +150,22 @@ Use the `apps-organiclever-web-deployer` agent for guided deployment.
 `organiclever-web` uses a three-tier testing strategy. Integration and E2E share the same Gherkin
 specs from [`specs/organiclever-web/`](../../specs/organiclever-web/).
 
-| Tier        | Tool                     | Location                                      | Command                                    | Requires service? |
-| ----------- | ------------------------ | --------------------------------------------- | ------------------------------------------ | ----------------- |
-| Unit        | Vitest + RTL             | `src/components/*.unit.test.tsx`              | `nx run organiclever-web:test:unit`        | No                |
-| Integration | Vitest + vitest-cucumber | `src/test/integration/*.integration.test.tsx` | `nx run organiclever-web:test:integration` | No                |
-| E2E         | playwright-bdd           | `apps/organiclever-web-e2e/`                  | `nx run organiclever-web-e2e:test:e2e`     | Yes (port 3200)   |
+| Tier        | Tool                     | Location                                      | Command                                    | Requires service? | Cached? |
+| ----------- | ------------------------ | --------------------------------------------- | ------------------------------------------ | ----------------- | ------- |
+| Unit        | Vitest + RTL             | `src/components/*.unit.test.tsx`              | `nx run organiclever-web:test:unit`        | No                | Yes     |
+| Integration | Vitest + vitest-cucumber | `src/test/integration/*.integration.test.tsx` | `nx run organiclever-web:test:integration` | No                | Yes     |
+| E2E         | playwright-bdd           | `apps/organiclever-web-e2e/`                  | `nx run organiclever-web-e2e:test:e2e`     | Yes (port 3200)   | No      |
 
 `test:quick` runs unit + integration in parallel (no running server needed).
 
 ### Integration tests
 
 Integration tests use `@amiceli/vitest-cucumber` to read the same Gherkin `.feature` files as the
-E2E suite. All external dependencies (Next.js router, auth context, API calls) are fully mocked —
-no running server is required. RTL components import from `@testing-library/react/pure` to prevent
-auto-cleanup between Cucumber steps; `AfterEachScenario` calls `cleanup()` once per scenario.
+E2E suite. All external dependencies (Next.js router, auth context, API calls) are fully mocked via
+MSW — no running server is required. Because they are fully deterministic, integration tests are
+**cached** by Nx (`cache: true`). RTL components import from `@testing-library/react/pure` to
+prevent auto-cleanup between Cucumber steps; `AfterEachScenario` calls `cleanup()` once per
+scenario.
 
 ## E2E Tests
 

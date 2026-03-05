@@ -401,11 +401,11 @@ apps/organiclever-be/
 
 Three tiers of testing provide complete coverage:
 
-| Tier        | Tool                   | Surefire profile | Location                         | Command                                   | Requires running service? |
-| ----------- | ---------------------- | ---------------- | -------------------------------- | ----------------------------------------- | ------------------------- |
-| Unit        | JUnit 5                | (default)        | `src/test/java/.../unit/`        | `nx run organiclever-be:test:unit`        | No                        |
-| Integration | Cucumber JVM + MockMvc | `-Pintegration`  | `src/test/java/.../integration/` | `nx run organiclever-be:test:integration` | No                        |
-| E2E         | playwright-bdd         | —                | `apps/organiclever-be-e2e/`      | `nx run organiclever-be-e2e:test:e2e`     | Yes (port 8201)           |
+| Tier        | Tool                   | Surefire profile | Location                         | Command                                   | Requires running service? | Cached? |
+| ----------- | ---------------------- | ---------------- | -------------------------------- | ----------------------------------------- | ------------------------- | ------- |
+| Unit        | JUnit 5                | (default)        | `src/test/java/.../unit/`        | `nx run organiclever-be:test:unit`        | No                        | Yes     |
+| Integration | Cucumber JVM + MockMvc | `-Pintegration`  | `src/test/java/.../integration/` | `nx run organiclever-be:test:integration` | No                        | Yes     |
+| E2E         | playwright-bdd         | —                | `apps/organiclever-be-e2e/`      | `nx run organiclever-be-e2e:test:e2e`     | Yes (port 8201)           | No      |
 
 The two Maven profiles are mutually exclusive: `mvn test` includes only `**/unit/**/*Test.java`;
 `mvn test -Pintegration` includes only `**/integration/**/*Test.java`. `test:quick` runs both in
@@ -425,7 +425,9 @@ nx run organiclever-be:test:unit
 ### Integration Tests (MockMvc)
 
 Full Spring context via `@SpringBootTest(webEnvironment = MOCK)` + MockMvc. No running service
-required — Cucumber JVM reads the same Gherkin feature files as the E2E suite (`mvn test -Pintegration`):
+required — Cucumber JVM reads the same Gherkin feature files as the E2E suite (`mvn test
+-Pintegration`). Because all dependencies are in-process, integration tests are **cached** by Nx
+(`cache: true`):
 
 ```bash
 nx run organiclever-be:test:integration

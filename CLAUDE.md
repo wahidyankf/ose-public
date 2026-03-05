@@ -117,6 +117,14 @@ algorithm) via `rhino-cli check-coverage`. Coverage is measured with
 Codecov's algorithm) via `rhino-cli check-coverage` applied to the LCOV output from Vitest:
 `rhino-cli check-coverage apps/organiclever-web/coverage/lcov.info 85` — run as part of `test:quick`.
 
+**`test:integration` caching**: Integration tests for `organiclever-web` (MSW) and `organiclever-be`
+(MockMvc) use in-process mocking only — no external services required. They are fully deterministic
+and safe to cache (`cache: true` in `nx.json`).
+
+**Unit vs. integration test principle**: Unit tests cover only what integration tests cannot reach
+(isolated pure functions, hooks, algorithmic logic). Feature-level workflows already exercised by
+integration tests must not be duplicated in unit tests.
+
 ## Markdown Quality
 
 All markdown files are automatically linted and formatted:

@@ -265,9 +265,9 @@ Spring Boot, Flutter, Python apps, TypeScript apps:
 
 Spring Boot, Python apps, TypeScript apps that test against DB/APIs:
 
-| Target             | Requirement                                                                     |
-| ------------------ | ------------------------------------------------------------------------------- |
-| `test:integration` | Run tests that require external services; slower than `test:unit` is acceptable |
+| Target             | Requirement                                                                                   |
+| ------------------ | --------------------------------------------------------------------------------------------- |
+| `test:integration` | Run integration tests using in-process mocking (MockMvc / MSW); no external services required |
 
 ### CLI Applications
 
@@ -334,7 +334,7 @@ running server. Unlike `test:e2e`, no live service is required.
       "cache": true
     },
     "test:integration": {
-      "cache": false
+      "cache": true
     },
     "test:e2e": {
       "cache": false
@@ -345,22 +345,22 @@ running server. Unlike `test:e2e`, no live service is required.
 
 ### Caching Rules
 
-| Target             | Cached | Notes                                                                                   |
-| ------------------ | ------ | --------------------------------------------------------------------------------------- |
-| `build`            | Yes    | Declare `outputs` in `project.json` for cache restoration                               |
-| `typecheck`        | Yes    | Pure analysis; safe to cache against source changes                                     |
-| `lint`             | Yes    | Pure static analysis; safe to cache                                                     |
-| `test:quick`       | Yes    | Cache hit skips redundant pre-push runs                                                 |
-| `test:unit`        | Yes    | Deterministic; safe to cache against source changes                                     |
-| `test:integration` | No     | Nx cache is source-based; cannot detect external service changes (DB schema, API state) |
-| `dev`              | No     | Long-running process                                                                    |
-| `start`            | No     | Long-running process                                                                    |
-| `run`              | No     | Side-effectful execution                                                                |
-| `test:e2e`         | No     | Requires live app state; run via scheduled cron, not pre-push                           |
-| `test:e2e:ui`      | No     | Interactive process                                                                     |
-| `test:e2e:report`  | No     | Reads filesystem state at invocation time                                               |
-| `install`          | No     | Must always run to ensure dep state                                                     |
-| `clean`            | No     | Destructive operation                                                                   |
+| Target             | Cached | Notes                                                                                             |
+| ------------------ | ------ | ------------------------------------------------------------------------------------------------- |
+| `build`            | Yes    | Declare `outputs` in `project.json` for cache restoration                                         |
+| `typecheck`        | Yes    | Pure analysis; safe to cache against source changes                                               |
+| `lint`             | Yes    | Pure static analysis; safe to cache                                                               |
+| `test:quick`       | Yes    | Cache hit skips redundant pre-push runs                                                           |
+| `test:unit`        | Yes    | Deterministic; safe to cache against source changes                                               |
+| `test:integration` | Yes    | Uses in-process mocking (MockMvc / MSW); fully deterministic; no external service state to detect |
+| `dev`              | No     | Long-running process                                                                              |
+| `start`            | No     | Long-running process                                                                              |
+| `run`              | No     | Side-effectful execution                                                                          |
+| `test:e2e`         | No     | Requires live app state; run via scheduled cron, not pre-push                                     |
+| `test:e2e:ui`      | No     | Interactive process                                                                               |
+| `test:e2e:report`  | No     | Reads filesystem state at invocation time                                                         |
+| `install`          | No     | Must always run to ensure dep state                                                               |
+| `clean`            | No     | Destructive operation                                                                             |
 
 ## Build Output Conventions
 
@@ -395,7 +395,7 @@ Example override for a Hugo site:
 - **Missing `lint`**: Projects without `lint` cannot participate in workspace-wide lint runs or the pre-push hook lint gate
 - **Heavy `test:quick`**: Including slow integration tests or E2E in `test:quick` defeats its purpose — keep the total to a few minutes, not tens of minutes
 - **Mixing concerns in `test:unit`**: `test:unit` must not spin up databases, external APIs, or network services — those belong in `test:integration`
-- **Enabling cache on `test:integration`**: Setting `cache: true` for integration tests risks serving stale results when external service state changes but source files have not
+- **Disabling cache on `test:integration`**: Setting `cache: false` wastes CI time when integration tests use only in-process mocking (MockMvc / MSW) and are fully deterministic. Only disable if tests depend on live external services
 - **`build` on interpreted-language projects**: Adding a no-op `build` to Python or Ruby just to appear consistent — if there is no compile step, there is no `build` target
 - **`typecheck` on compile-enforced languages without additional analysis**: Go and plain Java enforce types through `build`; a separate `typecheck` that only re-runs the compiler is redundant. **Exception**: Java with JSpecify + NullAway warrants `typecheck` because NullAway is a distinct null-safety pass not included in `build`
 - **Undeclared outputs**: Omitting `outputs` on `build` disables caching and forces full rebuilds on every run

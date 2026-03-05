@@ -20,7 +20,7 @@ func DetectFormat(filename string) Format {
 	if err != nil {
 		return FormatGo
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 
 	scanner := bufio.NewScanner(f)
 	if scanner.Scan() {

@@ -18,7 +18,7 @@ func getModuleNameFrom(dir string) string {
 	if err != nil {
 		return ""
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
@@ -37,7 +37,7 @@ func getSourceLinesFrom(baseDir, relPath string) map[int]string {
 	if err != nil {
 		return nil
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 
 	lines := make(map[int]string)
 	scanner := bufio.NewScanner(f)
@@ -84,7 +84,7 @@ func parseCoverOut(filename string) ([]coverBlock, error) {
 	if err != nil {
 		return nil, fmt.Errorf("file not found: %s", filename)
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 
 	var blocks []coverBlock
 	scanner := bufio.NewScanner(f)

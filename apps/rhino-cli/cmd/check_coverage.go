@@ -63,7 +63,7 @@ func runCheckCoverage(cmd *cobra.Command, args []string) error {
 	switch coverage.DetectFormat(absPath) {
 	case coverage.FormatLCOV:
 		result, err = coverage.ComputeLCOVResult(absPath, threshold)
-	default:
+	case coverage.FormatGo:
 		result, err = coverage.ComputeGoResult(absPath, threshold)
 	}
 	if err != nil {

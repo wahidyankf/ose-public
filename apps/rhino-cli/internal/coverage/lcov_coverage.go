@@ -20,7 +20,7 @@ func parseLCOV(filename string) ([]lcovFile, error) {
 	if err != nil {
 		return nil, fmt.Errorf("file not found: %s", filename)
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 
 	var files []lcovFile
 	current := lcovFile{

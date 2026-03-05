@@ -1,5 +1,4 @@
-// Package links provides functionality for validating markdown links.
-package links
+package docs
 
 import "time"
 
@@ -12,8 +11,8 @@ type BrokenLink struct {
 	Category   string // Category of broken link (for reporting)
 }
 
-// ValidationResult contains the complete results of a link validation scan.
-type ValidationResult struct {
+// LinkValidationResult contains the complete results of a link validation scan.
+type LinkValidationResult struct {
 	TotalFiles       int                     // Total number of files scanned
 	TotalLinks       int                     // Total number of links checked
 	BrokenLinks      []BrokenLink            // All broken links found

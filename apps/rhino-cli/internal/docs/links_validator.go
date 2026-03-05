@@ -1,4 +1,4 @@
-package links
+package docs
 
 import (
 	"os"
@@ -84,8 +84,8 @@ func ValidateFile(filePath string, opts ScanOptions) ([]BrokenLink, error) {
 	return brokenLinks, nil
 }
 
-// ValidateAll validates all markdown files based on options.
-func ValidateAll(opts ScanOptions) (*ValidationResult, error) {
+// ValidateAllLinks validates all markdown files based on options.
+func ValidateAllLinks(opts ScanOptions) (*LinkValidationResult, error) {
 	startTime := time.Now()
 
 	files, err := GetMarkdownFiles(opts)
@@ -93,7 +93,7 @@ func ValidateAll(opts ScanOptions) (*ValidationResult, error) {
 		return nil, err
 	}
 
-	result := &ValidationResult{
+	result := &LinkValidationResult{
 		TotalFiles:       len(files),
 		TotalLinks:       0,
 		BrokenLinks:      []BrokenLink{},

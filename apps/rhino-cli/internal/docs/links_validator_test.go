@@ -1,4 +1,4 @@
-package links
+package docs
 
 import (
 	"os"
@@ -222,9 +222,9 @@ func TestValidateAll_EmptyDir(t *testing.T) {
 		StagedOnly: false,
 	}
 
-	result, err := ValidateAll(opts)
+	result, err := ValidateAllLinks(opts)
 	if err != nil {
-		t.Fatalf("ValidateAll() error: %v", err)
+		t.Fatalf("ValidateAllLinks() error: %v", err)
 	}
 	if result.TotalFiles != 0 {
 		t.Errorf("expected 0 files, got %d", result.TotalFiles)
@@ -255,9 +255,9 @@ func TestValidateAll_WithValidLinks(t *testing.T) {
 		StagedOnly: false,
 	}
 
-	result, err := ValidateAll(opts)
+	result, err := ValidateAllLinks(opts)
 	if err != nil {
-		t.Fatalf("ValidateAll() error: %v", err)
+		t.Fatalf("ValidateAllLinks() error: %v", err)
 	}
 	if len(result.BrokenLinks) > 0 {
 		t.Errorf("expected no broken links, got %v", result.BrokenLinks)
@@ -286,9 +286,9 @@ func TestValidateAll_WithBrokenLinks(t *testing.T) {
 		StagedOnly: false,
 	}
 
-	result, err := ValidateAll(opts)
+	result, err := ValidateAllLinks(opts)
 	if err != nil {
-		t.Fatalf("ValidateAll() error: %v", err)
+		t.Fatalf("ValidateAllLinks() error: %v", err)
 	}
 	if len(result.BrokenLinks) != 1 {
 		t.Errorf("expected 1 broken link, got %d", len(result.BrokenLinks))

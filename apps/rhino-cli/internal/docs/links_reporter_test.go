@@ -1,4 +1,4 @@
-package links
+package docs
 
 import (
 	"encoding/json"
@@ -7,8 +7,8 @@ import (
 	"time"
 )
 
-func TestFormatText_NoBrokenLinks(t *testing.T) {
-	result := &ValidationResult{
+func TestFormatLinkText_NoBrokenLinks(t *testing.T) {
+	result := &LinkValidationResult{
 		TotalFiles:       10,
 		TotalLinks:       100,
 		BrokenLinks:      []BrokenLink{},
@@ -16,14 +16,14 @@ func TestFormatText_NoBrokenLinks(t *testing.T) {
 		ScanDuration:     100 * time.Millisecond,
 	}
 
-	output := FormatText(result, false, false)
+	output := FormatLinkText(result, false, false)
 
 	if !strings.Contains(output, "✓ All links valid!") {
 		t.Errorf("Expected success message, got: %s", output)
 	}
 }
 
-func TestFormatText_WithBrokenLinks(t *testing.T) {
+func TestFormatLinkText_WithBrokenLinks(t *testing.T) {
 	brokenLinks := []BrokenLink{
 		{
 			LineNumber: 10,
@@ -46,7 +46,7 @@ func TestFormatText_WithBrokenLinks(t *testing.T) {
 		"Old ex-ru-* prefixes": {brokenLinks[1]},
 	}
 
-	result := &ValidationResult{
+	result := &LinkValidationResult{
 		TotalFiles:       10,
 		TotalLinks:       100,
 		BrokenLinks:      brokenLinks,
@@ -54,7 +54,7 @@ func TestFormatText_WithBrokenLinks(t *testing.T) {
 		ScanDuration:     100 * time.Millisecond,
 	}
 
-	output := FormatText(result, false, false)
+	output := FormatLinkText(result, false, false)
 
 	// Check for expected elements
 	expectedStrings := []string{
@@ -75,7 +75,7 @@ func TestFormatText_WithBrokenLinks(t *testing.T) {
 	}
 }
 
-func TestFormatJSON(t *testing.T) {
+func TestFormatLinkJSON(t *testing.T) {
 	brokenLinks := []BrokenLink{
 		{
 			LineNumber: 10,
@@ -90,7 +90,7 @@ func TestFormatJSON(t *testing.T) {
 		"General/other paths": {brokenLinks[0]},
 	}
 
-	result := &ValidationResult{
+	result := &LinkValidationResult{
 		TotalFiles:       10,
 		TotalLinks:       100,
 		BrokenLinks:      brokenLinks,
@@ -98,13 +98,13 @@ func TestFormatJSON(t *testing.T) {
 		ScanDuration:     123 * time.Millisecond,
 	}
 
-	jsonStr, err := FormatJSON(result)
+	jsonStr, err := FormatLinkJSON(result)
 	if err != nil {
-		t.Fatalf("FormatJSON() error = %v", err)
+		t.Fatalf("FormatLinkJSON() error = %v", err)
 	}
 
 	// Parse JSON to verify structure
-	var output JSONOutput
+	var output LinkJSONOutput
 	if err := json.Unmarshal([]byte(jsonStr), &output); err != nil {
 		t.Fatalf("Failed to parse JSON output: %v", err)
 	}
@@ -147,8 +147,8 @@ func TestFormatJSON(t *testing.T) {
 	}
 }
 
-func TestFormatJSON_Success(t *testing.T) {
-	result := &ValidationResult{
+func TestFormatLinkJSON_Success(t *testing.T) {
+	result := &LinkValidationResult{
 		TotalFiles:       10,
 		TotalLinks:       100,
 		BrokenLinks:      []BrokenLink{},
@@ -156,12 +156,12 @@ func TestFormatJSON_Success(t *testing.T) {
 		ScanDuration:     50 * time.Millisecond,
 	}
 
-	jsonStr, err := FormatJSON(result)
+	jsonStr, err := FormatLinkJSON(result)
 	if err != nil {
-		t.Fatalf("FormatJSON() error = %v", err)
+		t.Fatalf("FormatLinkJSON() error = %v", err)
 	}
 
-	var output JSONOutput
+	var output LinkJSONOutput
 	if err := json.Unmarshal([]byte(jsonStr), &output); err != nil {
 		t.Fatalf("Failed to parse JSON output: %v", err)
 	}
@@ -174,7 +174,7 @@ func TestFormatJSON_Success(t *testing.T) {
 	}
 }
 
-func TestFormatMarkdown(t *testing.T) {
+func TestFormatLinkMarkdown(t *testing.T) {
 	brokenLinks := []BrokenLink{
 		{
 			LineNumber: 5,
@@ -189,7 +189,7 @@ func TestFormatMarkdown(t *testing.T) {
 		"General/other paths": {brokenLinks[0]},
 	}
 
-	result := &ValidationResult{
+	result := &LinkValidationResult{
 		TotalFiles:       5,
 		TotalLinks:       20,
 		BrokenLinks:      brokenLinks,
@@ -197,7 +197,7 @@ func TestFormatMarkdown(t *testing.T) {
 		ScanDuration:     30 * time.Millisecond,
 	}
 
-	output := FormatMarkdown(result)
+	output := FormatLinkMarkdown(result)
 
 	// Markdown should be same as text format
 	expectedStrings := []string{

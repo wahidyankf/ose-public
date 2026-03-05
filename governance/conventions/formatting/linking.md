@@ -471,7 +471,7 @@ This two-tier formatting does NOT apply to:
 
 ```bash
 # Apply linking-convention rules
-validate_links
+validate_docs_links
 ```
 ````
 

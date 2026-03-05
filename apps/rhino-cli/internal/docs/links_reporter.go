@@ -1,4 +1,4 @@
-package links
+package docs
 
 import (
 	"encoding/json"
@@ -9,8 +9,8 @@ import (
 	"github.com/wahidyankf/open-sharia-enterprise/libs/golang-commons/timeutil"
 )
 
-// FormatText formats the validation result as human-readable text.
-func FormatText(result *ValidationResult, verbose, quiet bool) string {
+// FormatLinkText formats the validation result as human-readable text.
+func FormatLinkText(result *LinkValidationResult, verbose, quiet bool) string {
 	var output strings.Builder
 
 	// If no broken links and not quiet, show success message
@@ -74,8 +74,8 @@ func FormatText(result *ValidationResult, verbose, quiet bool) string {
 	return output.String()
 }
 
-// JSONOutput represents the JSON output format.
-type JSONOutput struct {
+// LinkJSONOutput represents the JSON output format.
+type LinkJSONOutput struct {
 	Status      string                      `json:"status"`
 	Timestamp   string                      `json:"timestamp"`
 	TotalFiles  int                         `json:"total_files"`
@@ -93,8 +93,8 @@ type JSONBrokenLink struct {
 	TargetPath string `json:"target_path"`
 }
 
-// FormatJSON formats the validation result as JSON.
-func FormatJSON(result *ValidationResult) (string, error) {
+// FormatLinkJSON formats the validation result as JSON.
+func FormatLinkJSON(result *LinkValidationResult) (string, error) {
 	status := "success"
 	if len(result.BrokenLinks) > 0 {
 		status = "failure"
@@ -115,7 +115,7 @@ func FormatJSON(result *ValidationResult) (string, error) {
 		categories[category] = jsonLinks
 	}
 
-	output := JSONOutput{
+	output := LinkJSONOutput{
 		Status:      status,
 		Timestamp:   timeutil.Timestamp(),
 		TotalFiles:  result.TotalFiles,
@@ -133,8 +133,8 @@ func FormatJSON(result *ValidationResult) (string, error) {
 	return string(bytes), nil
 }
 
-// FormatMarkdown formats the validation result as markdown (same as text).
-func FormatMarkdown(result *ValidationResult) string {
+// FormatLinkMarkdown formats the validation result as markdown (same as text).
+func FormatLinkMarkdown(result *LinkValidationResult) string {
 	// Markdown format is identical to text format
-	return FormatText(result, false, false)
+	return FormatLinkText(result, false, false)
 }

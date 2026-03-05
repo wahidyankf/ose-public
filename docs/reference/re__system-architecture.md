@@ -868,7 +868,7 @@ graph TB
 
 #### PR Link Validation Workflow
 
-**File**: `.github/workflows/validate-links.yml`
+**File**: `.github/workflows/validate-docs-links.yml`
 
 **Trigger**: Pull request opened, synchronized, or reopened
 
@@ -876,7 +876,7 @@ graph TB
 
 1. Checkout PR branch
 2. Setup Go 1.24.2
-3. Run link validation (`rhino-cli validate-links`)
+3. Run link validation (`rhino-cli validate-docs-links`)
 4. Fail PR if broken links detected
 
 **Purpose**: Prevent merging PRs with broken markdown links

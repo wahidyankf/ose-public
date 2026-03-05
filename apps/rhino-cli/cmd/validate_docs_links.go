@@ -4,15 +4,15 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/wahidyankf/open-sharia-enterprise/apps/rhino-cli/internal/links"
+	"github.com/wahidyankf/open-sharia-enterprise/apps/rhino-cli/internal/docs"
 )
 
 var (
-	validateLinksStagedOnly bool
+	validateDocsLinksStagedOnly bool
 )
 
-var validateLinksCmd = &cobra.Command{
-	Use:   "validate-links",
+var validateDocsLinksCmd = &cobra.Command{
+	Use:   "validate-docs-links",
 	Short: "Validate markdown links in the repository",
 	Long: `Scan markdown files for broken internal links.
 
@@ -23,29 +23,29 @@ placeholder links are automatically skipped.
 By default, scans all markdown files in core directories (docs/, governance/,
 .claude/, and root). Use --staged-only to validate only staged files.`,
 	Example: `  # Validate all markdown files
-  rhino-cli validate-links
+  rhino-cli validate-docs-links
 
   # Validate only staged files (useful in pre-commit hooks)
-  rhino-cli validate-links --staged-only
+  rhino-cli validate-docs-links --staged-only
 
   # Output as JSON
-  rhino-cli validate-links -o json
+  rhino-cli validate-docs-links -o json
 
   # Output as markdown report
-  rhino-cli validate-links -o markdown
+  rhino-cli validate-docs-links -o markdown
 
   # Verbose mode with quiet output
-  rhino-cli validate-links -v -q`,
+  rhino-cli validate-docs-links -v -q`,
 	SilenceErrors: true, // We handle error messages ourselves
-	RunE:          runValidateLinks,
+	RunE:          runValidateDocsLinks,
 }
 
 func init() {
-	rootCmd.AddCommand(validateLinksCmd)
-	validateLinksCmd.Flags().BoolVar(&validateLinksStagedOnly, "staged-only", false, "only validate staged files")
+	rootCmd.AddCommand(validateDocsLinksCmd)
+	validateDocsLinksCmd.Flags().BoolVar(&validateDocsLinksStagedOnly, "staged-only", false, "only validate staged files")
 }
 
-func runValidateLinks(cmd *cobra.Command, args []string) error {
+func runValidateDocsLinks(cmd *cobra.Command, args []string) error {
 	// Find git repository root
 	repoRoot, err := findGitRoot()
 	if err != nil {
@@ -53,24 +53,24 @@ func runValidateLinks(cmd *cobra.Command, args []string) error {
 	}
 
 	// Build scan options from flags
-	opts := links.ScanOptions{
+	opts := docs.ScanOptions{
 		RepoRoot:   repoRoot,
-		StagedOnly: validateLinksStagedOnly,
+		StagedOnly: validateDocsLinksStagedOnly,
 		SkipPaths:  []string{".opencode/skill/"}, // Exclude auto-generated skill files
 		Verbose:    verbose,
 		Quiet:      quiet,
 	}
 
 	// Validate all links
-	result, err := links.ValidateAll(opts)
+	result, err := docs.ValidateAllLinks(opts)
 	if err != nil {
 		return fmt.Errorf("validation failed: %w", err)
 	}
 
 	if err := writeFormatted(cmd, output, verbose, quiet, outputFuncs{
-		text:     func(v, q bool) string { return links.FormatText(result, v, q) },
-		json:     func() (string, error) { return links.FormatJSON(result) },
-		markdown: func() string { return links.FormatMarkdown(result) },
+		text:     func(v, q bool) string { return docs.FormatLinkText(result, v, q) },
+		json:     func() (string, error) { return docs.FormatLinkJSON(result) },
+		markdown: func() string { return docs.FormatLinkMarkdown(result) },
 	}); err != nil {
 		return err
 	}

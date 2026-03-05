@@ -56,7 +56,7 @@ else
 fi
 
 # 7. Validate markdown links in staged files
-CGO_ENABLED=0 go run -C apps/rhino-cli main.go validate-links --staged-only || exit 1
+CGO_ENABLED=0 go run -C apps/rhino-cli main.go validate-docs-links --staged-only || exit 1
 
 # 8. Validate all markdown files
 npm run lint:md || exit 1

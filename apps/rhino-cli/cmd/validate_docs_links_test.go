@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestValidateLinksCommand(t *testing.T) {
+func TestValidateDocsLinksCommand(t *testing.T) {
 	// Save original working directory
 	originalWd, err := os.Getwd()
 	if err != nil {
@@ -53,13 +53,13 @@ External link: [example](https://example.com)
 	}
 
 	// Test command execution
-	cmd := validateLinksCmd
+	cmd := validateDocsLinksCmd
 	buf := new(bytes.Buffer)
 	cmd.SetOut(buf)
 	cmd.SetErr(buf)
 
 	// Reset flags
-	validateLinksStagedOnly = false
+	validateDocsLinksStagedOnly = false
 	output = "text"
 	verbose = false
 	quiet = false
@@ -92,7 +92,7 @@ External link: [example](https://example.com)
 	}
 }
 
-func TestValidateLinksCommand_NoProblems(t *testing.T) {
+func TestValidateDocsLinksCommand_NoProblems(t *testing.T) {
 	// Save original working directory
 	originalWd, err := os.Getwd()
 	if err != nil {
@@ -136,13 +136,13 @@ External link: [example](https://example.com)
 	}
 
 	// Test command execution
-	cmd := validateLinksCmd
+	cmd := validateDocsLinksCmd
 	buf := new(bytes.Buffer)
 	cmd.SetOut(buf)
 	cmd.SetErr(buf)
 
 	// Reset flags
-	validateLinksStagedOnly = false
+	validateDocsLinksStagedOnly = false
 	output = "text"
 	verbose = false
 	quiet = false
@@ -162,7 +162,7 @@ External link: [example](https://example.com)
 	}
 }
 
-func TestValidateLinksCommand_JSONOutput(t *testing.T) {
+func TestValidateDocsLinksCommand_JSONOutput(t *testing.T) {
 	// Save original working directory
 	originalWd, err := os.Getwd()
 	if err != nil {
@@ -197,13 +197,13 @@ Link: [missing](./missing.md)
 	}
 
 	// Test JSON output
-	cmd := validateLinksCmd
+	cmd := validateDocsLinksCmd
 	buf := new(bytes.Buffer)
 	cmd.SetOut(buf)
 	cmd.SetErr(buf)
 
 	// Set flags for JSON output
-	validateLinksStagedOnly = false
+	validateDocsLinksStagedOnly = false
 	output = "json"
 	verbose = false
 	quiet = false
@@ -226,7 +226,7 @@ Link: [missing](./missing.md)
 	}
 }
 
-func TestValidateLinksCommand_MarkdownOutput(t *testing.T) {
+func TestValidateDocsLinksCommand_MarkdownOutput(t *testing.T) {
 	originalWd, _ := os.Getwd()
 	defer func() { _ = os.Chdir(originalWd) }()
 
@@ -244,12 +244,12 @@ func TestValidateLinksCommand_MarkdownOutput(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	cmd := validateLinksCmd
+	cmd := validateDocsLinksCmd
 	buf := new(bytes.Buffer)
 	cmd.SetOut(buf)
 	cmd.SetErr(buf)
 
-	validateLinksStagedOnly = false
+	validateDocsLinksStagedOnly = false
 	output = "markdown"
 	verbose = false
 	quiet = false
@@ -264,7 +264,7 @@ func TestValidateLinksCommand_MarkdownOutput(t *testing.T) {
 	}
 }
 
-func TestValidateLinksCommand_QuietBrokenLinks(t *testing.T) {
+func TestValidateDocsLinksCommand_QuietBrokenLinks(t *testing.T) {
 	originalWd, _ := os.Getwd()
 	defer func() { _ = os.Chdir(originalWd) }()
 
@@ -283,12 +283,12 @@ func TestValidateLinksCommand_QuietBrokenLinks(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	cmd := validateLinksCmd
+	cmd := validateDocsLinksCmd
 	buf := new(bytes.Buffer)
 	cmd.SetOut(buf)
 	cmd.SetErr(buf)
 
-	validateLinksStagedOnly = false
+	validateDocsLinksStagedOnly = false
 	output = "text"
 	verbose = false
 	quiet = true

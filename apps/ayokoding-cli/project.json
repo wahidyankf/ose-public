@@ -16,7 +16,7 @@
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "go test -coverprofile=cover.out ./... && (cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go check-coverage apps/ayokoding-cli/cover.out 85)",
+        "command": "go test -coverprofile=cover.out ./... && (cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go check-test-coverage apps/ayokoding-cli/cover.out 85)",
         "cwd": "apps/ayokoding-cli"
       }
     },

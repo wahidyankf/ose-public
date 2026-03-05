@@ -9,8 +9,8 @@ import (
 	"github.com/wahidyankf/open-sharia-enterprise/apps/rhino-cli/internal/coverage"
 )
 
-var checkCoverageCmd = &cobra.Command{
-	Use:   "check-coverage <coverage-file> <threshold>",
+var checkTestCoverageCmd = &cobra.Command{
+	Use:   "check-test-coverage <coverage-file> <threshold>",
 	Short: "Check test coverage against a threshold (Codecov-compatible algorithm)",
 	Long: `Compute line coverage using Codecov's algorithm and compare against a threshold.
 
@@ -27,26 +27,26 @@ Coverage algorithm:
 
 The coverage file path is relative to the git repository root.`,
 	Example: `  # Check Go coverage
-  rhino-cli check-coverage apps/rhino-cli/cover.out 85
+  rhino-cli check-test-coverage apps/rhino-cli/cover.out 85
 
   # Check LCOV coverage
-  rhino-cli check-coverage apps/organiclever-web/coverage/lcov.info 85
+  rhino-cli check-test-coverage apps/organiclever-web/coverage/lcov.info 85
 
   # Output as JSON
-  rhino-cli check-coverage apps/rhino-cli/cover.out 85 -o json
+  rhino-cli check-test-coverage apps/rhino-cli/cover.out 85 -o json
 
   # Output as markdown
-  rhino-cli check-coverage apps/rhino-cli/cover.out 85 -o markdown`,
+  rhino-cli check-test-coverage apps/rhino-cli/cover.out 85 -o markdown`,
 	Args:          cobra.ExactArgs(2),
 	SilenceErrors: true,
-	RunE:          runCheckCoverage,
+	RunE:          runCheckTestCoverage,
 }
 
 func init() {
-	rootCmd.AddCommand(checkCoverageCmd)
+	rootCmd.AddCommand(checkTestCoverageCmd)
 }
 
-func runCheckCoverage(cmd *cobra.Command, args []string) error {
+func runCheckTestCoverage(cmd *cobra.Command, args []string) error {
 	repoRoot, err := findGitRoot()
 	if err != nil {
 		return fmt.Errorf("failed to find git repository root: %w", err)

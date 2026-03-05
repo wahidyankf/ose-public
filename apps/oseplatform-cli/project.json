@@ -15,7 +15,7 @@
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "CGO_ENABLED=0 go test -coverprofile=cover.out ./... && (cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go check-coverage apps/oseplatform-cli/cover.out 85)",
+        "command": "CGO_ENABLED=0 go test -coverprofile=cover.out ./... && (cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go check-test-coverage apps/oseplatform-cli/cover.out 85)",
         "cwd": "apps/oseplatform-cli"
       }
     },

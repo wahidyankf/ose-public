@@ -109,13 +109,13 @@ npm run doctor           # Check all required tools (volta, node, npm, java, mav
 
 **Go projects**: All Go projects (`ayokoding-cli`, `oseplatform-cli`, `rhino-cli`,
 `libs/golang-commons`, `libs/hugo-commons`) enforce ≥85% **line coverage** (matching Codecov's
-algorithm) via `rhino-cli check-coverage`. Coverage is measured with
+algorithm) via `rhino-cli check-test-coverage`. Coverage is measured with
 `go test -coverprofile=cover.out ./...` and enforced by
-`rhino-cli check-coverage <project>/cover.out 85` — both run as part of `test:quick`.
+`rhino-cli check-test-coverage <project>/cover.out 85` — both run as part of `test:quick`.
 
 **TypeScript projects**: `organiclever-web` additionally enforces ≥85% **line coverage** (matching
-Codecov's algorithm) via `rhino-cli check-coverage` applied to the LCOV output from Vitest:
-`rhino-cli check-coverage apps/organiclever-web/coverage/lcov.info 85` — run as part of `test:quick`.
+Codecov's algorithm) via `rhino-cli check-test-coverage` applied to the LCOV output from Vitest:
+`rhino-cli check-test-coverage apps/organiclever-web/coverage/lcov.info 85` — run as part of `test:quick`.
 
 **`test:integration` caching**: Integration tests for `organiclever-web` (MSW) and `organiclever-be`
 (MockMvc) use in-process mocking only — no external services required. They are fully deterministic

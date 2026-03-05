@@ -12,7 +12,7 @@ A Go-based CLI tool that provides utilities for repository management and automa
 
 ```bash
 # Check test coverage against a threshold (Codecov-compatible algorithm)
-rhino-cli check-coverage apps/rhino-cli/cover.out 85
+rhino-cli check-test-coverage apps/rhino-cli/cover.out 85
 
 # Check all required development tools are installed
 rhino-cli doctor
@@ -96,26 +96,26 @@ rhino-cli --say "hello" -o json
 
 ## Commands
 
-### check-coverage
+### check-test-coverage
 
 Check test coverage against a minimum threshold using Codecov's exact line coverage algorithm.
 Supports both Go `cover.out` and LCOV formats; auto-detects from filename.
 
 ```bash
 # Check Go cover.out (path relative to git root)
-rhino-cli check-coverage apps/rhino-cli/cover.out 85
+rhino-cli check-test-coverage apps/rhino-cli/cover.out 85
 
 # Check LCOV coverage from Vitest
-rhino-cli check-coverage apps/organiclever-web/coverage/lcov.info 85
+rhino-cli check-test-coverage apps/organiclever-web/coverage/lcov.info 85
 
 # Output as JSON
-rhino-cli check-coverage apps/rhino-cli/cover.out 85 -o json
+rhino-cli check-test-coverage apps/rhino-cli/cover.out 85 -o json
 
 # Output as markdown
-rhino-cli check-coverage apps/rhino-cli/cover.out 85 -o markdown
+rhino-cli check-test-coverage apps/rhino-cli/cover.out 85 -o markdown
 
 # Quiet mode
-rhino-cli check-coverage apps/rhino-cli/cover.out 85 -q
+rhino-cli check-test-coverage apps/rhino-cli/cover.out 85 -q
 ```
 
 **What it does:**
@@ -174,7 +174,7 @@ PASS: 86.08% >= 85% threshold
 
 **Replaces:**
 
-This command replaces the Python script `scripts/check-coverage.py`, eliminating the Python
+This command replaces the Python script `scripts/check-test-coverage.py`, eliminating the Python
 dependency and consolidating all tooling in rhino-cli.
 
 ### validate-links
@@ -772,7 +772,7 @@ apps/rhino-cli/
 │   ├── doctor.go / _test.go                      # Doctor command + unit tests
 │   ├── doctor.integration_test.go               # godog BDD tests (4 scenarios)
 │   ├── check_coverage.go / _test.go              # Coverage threshold command + unit tests
-│   ├── check-coverage.integration_test.go       # godog BDD tests (6 scenarios)
+│   ├── check-test-coverage.integration_test.go       # godog BDD tests (6 scenarios)
 │   ├── validate_links.go / _test.go              # Link validation command + unit tests
 │   ├── validate-links.integration_test.go       # godog BDD tests (4 scenarios)
 │   ├── sync_agents.go / _test.go                 # Agent/skill sync command + unit tests
@@ -1053,12 +1053,12 @@ rhino-cli say
 
 ### v0.10.0 (2026-03-05)
 
-- Added `check-coverage` command for Codecov-compatible line coverage enforcement
+- Added `check-test-coverage` command for Codecov-compatible line coverage enforcement
 - Supports Go `cover.out` and LCOV formats with auto-detection from filename
 - Implements exact Codecov line coverage algorithm (covered/partial/missed classification)
 - Go-specific line filtering: excludes blank, comment-only, and brace-only lines
 - Three output formats: text, JSON, markdown
-- Replaces `scripts/check-coverage.py`, eliminating the Python dependency
+- Replaces `scripts/check-test-coverage.py`, eliminating the Python dependency
 - Integrated into `test:quick` targets for all Go projects and `organiclever-web`
 
 ### v0.9.0 (2026-03-05)

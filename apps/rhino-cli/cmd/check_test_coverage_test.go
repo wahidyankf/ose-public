@@ -41,21 +41,21 @@ func writeCoverFile(t *testing.T, dir, relPath, content string) {
 	}
 }
 
-func TestCheckCoverageCmd_NoArgs(t *testing.T) {
-	err := checkCoverageCmd.Args(checkCoverageCmd, []string{})
+func TestCheckTestCoverageCmd_NoArgs(t *testing.T) {
+	err := checkTestCoverageCmd.Args(checkTestCoverageCmd, []string{})
 	if err == nil {
 		t.Error("expected error when no args provided")
 	}
 }
 
-func TestCheckCoverageCmd_OneArg(t *testing.T) {
-	err := checkCoverageCmd.Args(checkCoverageCmd, []string{"cover.out"})
+func TestCheckTestCoverageCmd_OneArg(t *testing.T) {
+	err := checkTestCoverageCmd.Args(checkTestCoverageCmd, []string{"cover.out"})
 	if err == nil {
 		t.Error("expected error with only one arg")
 	}
 }
 
-func TestCheckCoverageCmd_InvalidThreshold(t *testing.T) {
+func TestCheckTestCoverageCmd_InvalidThreshold(t *testing.T) {
 	originalWd, _ := os.Getwd()
 	defer func() { _ = os.Chdir(originalWd) }()
 
@@ -65,7 +65,7 @@ func TestCheckCoverageCmd_InvalidThreshold(t *testing.T) {
 	}
 	writeCoverFile(t, tmpDir, "cover.out", "mode: set\n")
 
-	cmd := checkCoverageCmd
+	cmd := checkTestCoverageCmd
 	buf := new(bytes.Buffer)
 	cmd.SetOut(buf)
 	cmd.SetErr(buf)
@@ -83,7 +83,7 @@ func TestCheckCoverageCmd_InvalidThreshold(t *testing.T) {
 	}
 }
 
-func TestCheckCoverageCmd_FileNotFound(t *testing.T) {
+func TestCheckTestCoverageCmd_FileNotFound(t *testing.T) {
 	originalWd, _ := os.Getwd()
 	defer func() { _ = os.Chdir(originalWd) }()
 
@@ -92,7 +92,7 @@ func TestCheckCoverageCmd_FileNotFound(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	cmd := checkCoverageCmd
+	cmd := checkTestCoverageCmd
 	buf := new(bytes.Buffer)
 	cmd.SetOut(buf)
 	cmd.SetErr(buf)
@@ -107,7 +107,7 @@ func TestCheckCoverageCmd_FileNotFound(t *testing.T) {
 	}
 }
 
-func TestCheckCoverageCmd_GoFormat_Pass(t *testing.T) {
+func TestCheckTestCoverageCmd_GoFormat_Pass(t *testing.T) {
 	originalWd, _ := os.Getwd()
 	defer func() { _ = os.Chdir(originalWd) }()
 
@@ -121,7 +121,7 @@ func TestCheckCoverageCmd_GoFormat_Pass(t *testing.T) {
 		"example.com/pkg:5.1,7.9 1 3\n"
 	writeCoverFile(t, tmpDir, "apps/myapp/cover.out", content)
 
-	cmd := checkCoverageCmd
+	cmd := checkTestCoverageCmd
 	buf := new(bytes.Buffer)
 	cmd.SetOut(buf)
 	cmd.SetErr(buf)
@@ -140,7 +140,7 @@ func TestCheckCoverageCmd_GoFormat_Pass(t *testing.T) {
 	}
 }
 
-func TestCheckCoverageCmd_GoFormat_Fail(t *testing.T) {
+func TestCheckTestCoverageCmd_GoFormat_Fail(t *testing.T) {
 	originalWd, _ := os.Getwd()
 	defer func() { _ = os.Chdir(originalWd) }()
 
@@ -154,7 +154,7 @@ func TestCheckCoverageCmd_GoFormat_Fail(t *testing.T) {
 		"example.com/pkg:2.1,2.9 1 0\n"
 	writeCoverFile(t, tmpDir, "cover.out", content)
 
-	cmd := checkCoverageCmd
+	cmd := checkTestCoverageCmd
 	buf := new(bytes.Buffer)
 	cmd.SetOut(buf)
 	cmd.SetErr(buf)
@@ -176,7 +176,7 @@ func TestCheckCoverageCmd_GoFormat_Fail(t *testing.T) {
 	}
 }
 
-func TestCheckCoverageCmd_LCOVFormat_Pass(t *testing.T) {
+func TestCheckTestCoverageCmd_LCOVFormat_Pass(t *testing.T) {
 	originalWd, _ := os.Getwd()
 	defer func() { _ = os.Chdir(originalWd) }()
 
@@ -186,7 +186,7 @@ func TestCheckCoverageCmd_LCOVFormat_Pass(t *testing.T) {
 	}
 	writeCoverFile(t, tmpDir, "apps/web/coverage/lcov.info", lcovContent)
 
-	cmd := checkCoverageCmd
+	cmd := checkTestCoverageCmd
 	buf := new(bytes.Buffer)
 	cmd.SetOut(buf)
 	cmd.SetErr(buf)
@@ -206,7 +206,7 @@ func TestCheckCoverageCmd_LCOVFormat_Pass(t *testing.T) {
 	}
 }
 
-func TestCheckCoverageCmd_LCOVFormat_Fail(t *testing.T) {
+func TestCheckTestCoverageCmd_LCOVFormat_Fail(t *testing.T) {
 	originalWd, _ := os.Getwd()
 	defer func() { _ = os.Chdir(originalWd) }()
 
@@ -216,7 +216,7 @@ func TestCheckCoverageCmd_LCOVFormat_Fail(t *testing.T) {
 	}
 	writeCoverFile(t, tmpDir, "coverage/lcov.info", lcovContent)
 
-	cmd := checkCoverageCmd
+	cmd := checkTestCoverageCmd
 	buf := new(bytes.Buffer)
 	cmd.SetOut(buf)
 	cmd.SetErr(buf)
@@ -232,7 +232,7 @@ func TestCheckCoverageCmd_LCOVFormat_Fail(t *testing.T) {
 	}
 }
 
-func TestCheckCoverageCmd_JSONOutput(t *testing.T) {
+func TestCheckTestCoverageCmd_JSONOutput(t *testing.T) {
 	originalWd, _ := os.Getwd()
 	defer func() { _ = os.Chdir(originalWd) }()
 
@@ -244,7 +244,7 @@ func TestCheckCoverageCmd_JSONOutput(t *testing.T) {
 	content := "mode: set\nexample.com/pkg:1.1,2.9 1 3\n"
 	writeCoverFile(t, tmpDir, "cover.out", content)
 
-	cmd := checkCoverageCmd
+	cmd := checkTestCoverageCmd
 	buf := new(bytes.Buffer)
 	cmd.SetOut(buf)
 	cmd.SetErr(buf)
@@ -270,7 +270,7 @@ func TestCheckCoverageCmd_JSONOutput(t *testing.T) {
 	}
 }
 
-func TestCheckCoverageCmd_MarkdownOutput(t *testing.T) {
+func TestCheckTestCoverageCmd_MarkdownOutput(t *testing.T) {
 	originalWd, _ := os.Getwd()
 	defer func() { _ = os.Chdir(originalWd) }()
 
@@ -281,7 +281,7 @@ func TestCheckCoverageCmd_MarkdownOutput(t *testing.T) {
 	content := "mode: set\nexample.com/pkg:1.1,2.9 1 3\n"
 	writeCoverFile(t, tmpDir, "cover.out", content)
 
-	cmd := checkCoverageCmd
+	cmd := checkTestCoverageCmd
 	buf := new(bytes.Buffer)
 	cmd.SetOut(buf)
 	cmd.SetErr(buf)
@@ -299,7 +299,7 @@ func TestCheckCoverageCmd_MarkdownOutput(t *testing.T) {
 	}
 }
 
-func TestCheckCoverageCmd_QuietMode(t *testing.T) {
+func TestCheckTestCoverageCmd_QuietMode(t *testing.T) {
 	originalWd, _ := os.Getwd()
 	defer func() { _ = os.Chdir(originalWd) }()
 
@@ -313,7 +313,7 @@ func TestCheckCoverageCmd_QuietMode(t *testing.T) {
 		"example.com/pkg:2.1,2.9 1 0\n"
 	writeCoverFile(t, tmpDir, "cover.out", content)
 
-	cmd := checkCoverageCmd
+	cmd := checkTestCoverageCmd
 	buf := new(bytes.Buffer)
 	cmd.SetOut(buf)
 	cmd.SetErr(buf)

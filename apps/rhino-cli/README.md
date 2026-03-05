@@ -768,7 +768,7 @@ apps/rhino-cli/
 ├── cmd/
 │   ├── root.go                                   # Cobra root command, global flags
 │   ├── root_test.go                              # Unit tests for root command
-│   ├── helpers.go                                # Shared cmd helpers
+│   ├── helpers.go / _test.go                     # Shared cmd helpers
 │   ├── doctor.go / _test.go                      # Doctor command + unit tests
 │   ├── doctor.integration_test.go               # godog BDD tests (4 scenarios)
 │   ├── validate_test_coverage.go / _test.go       # Coverage threshold command + unit tests

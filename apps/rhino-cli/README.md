@@ -493,11 +493,15 @@ rhino-cli validate-spec-coverage specs/organiclever-web apps/organiclever-web -q
 - For each spec, checks if any file under `<app-dir>` has a base name starting with
   `{stem}.` (e.g. `user-login.feature` → matches `user-login.integration.test.tsx`)
 - Reports each uncovered spec with a hint for the expected test file stem
-- For matched specs, checks **scenario-level** coverage: every `Scenario:` title in the
-  feature file must appear as `Scenario("title", ...)` in the matching test file
+- For matched specs, checks **scenario-level** coverage:
+  - TypeScript/JavaScript files: every `Scenario:` title must appear as `Scenario("title", ...)` in
+    the matching test file
+  - Go files: every `Scenario:` title must appear as a `// Scenario: title` comment in the matching
+    `_test.go` file
 - For matched specs, checks **step-level** coverage: every step line (`Given/When/Then/And/But`)
-  must appear as a step definition anywhere in the app's `.ts`/`.tsx`/`.js`/`.jsx` files,
-  including shared step helpers and `defineSteps()` utilities
+  must appear as a step definition anywhere in the app's source files —
+  - TypeScript/JavaScript (`.ts`, `.tsx`, `.js`, `.jsx`): `Given("step text", fn)` exact-match
+  - Go (`.go`): `sc.Step(\`^regex pattern$\`, fn)` compiled as regex
 - Both paths are resolved relative to the git repository root
 
 **Why this command exists:**
@@ -762,18 +766,27 @@ rhino-cli --version
 ```
 apps/rhino-cli/
 ├── cmd/
-│   ├── root.go               # Cobra root command, global flags
-│   ├── root_test.go          # Tests for root command
-│   ├── doctor.go             # Doctor command
-│   ├── doctor_test.go        # Doctor command integration tests
-│   ├── validate_links.go          # Link validation command
-│   ├── validate_links_test.go     # Integration tests
-│   ├── sync_agents.go             # Agent/skill sync command
-│   ├── validate_sync.go           # Sync validation command
-│   ├── validate_claude.go         # Claude Code format validation command
-│   ├── validate_spec_coverage.go  # BDD spec coverage validation command
-│   ├── validate_java_annotations.go # Java null-safety annotation validation command
-│   └── check_coverage.go          # Test coverage threshold enforcement command
+│   ├── root.go                                   # Cobra root command, global flags
+│   ├── root_test.go                              # Unit tests for root command
+│   ├── helpers.go                                # Shared cmd helpers
+│   ├── doctor.go / _test.go                      # Doctor command + unit tests
+│   ├── doctor.integration_test.go               # godog BDD tests (4 scenarios)
+│   ├── check_coverage.go / _test.go              # Coverage threshold command + unit tests
+│   ├── check-coverage.integration_test.go       # godog BDD tests (6 scenarios)
+│   ├── validate_links.go / _test.go              # Link validation command + unit tests
+│   ├── validate-links.integration_test.go       # godog BDD tests (4 scenarios)
+│   ├── sync_agents.go / _test.go                 # Agent/skill sync command + unit tests
+│   ├── sync-agents.integration_test.go          # godog BDD tests (4 scenarios)
+│   ├── validate_sync.go / _test.go               # Sync validation command + unit tests
+│   ├── validate-sync.integration_test.go        # godog BDD tests (3 scenarios)
+│   ├── validate_claude.go / _test.go             # Claude Code validation command + unit tests
+│   ├── validate-claude.integration_test.go      # godog BDD tests (5 scenarios)
+│   ├── validate_spec_coverage.go / _test.go      # BDD spec coverage command + unit tests
+│   ├── validate-spec-coverage.integration_test.go # godog BDD tests (4 scenarios)
+│   ├── validate_java_annotations.go / _test.go   # Java annotation validation + unit tests
+│   ├── validate-java-annotations.integration_test.go # godog BDD tests (4 scenarios)
+│   ├── validate_docs_naming.go / _test.go        # Docs naming validation + unit tests
+│   └── validate-docs-naming.integration_test.go # godog BDD tests (5 scenarios)
 ├── internal/
 │   ├── doctor/               # Development environment checks
 │   │   ├── types.go          # ToolStatus, ToolCheck, DoctorResult, CommandRunner types
@@ -854,14 +867,17 @@ go build -o dist/rhino-cli
 ### Test
 
 ```bash
-# Run all tests
+# Run unit tests with coverage (via Nx)
+nx run rhino-cli:test:quick
+
+# Run all godog BDD integration tests (via Nx, cached)
+nx run rhino-cli:test:integration
+
+# Run a single integration suite during development
+go test -v -tags=integration -run TestIntegrationDoctor ./cmd/...
+
+# Run unit tests directly
 go test ./...
-
-# Run tests with coverage
-go test ./... -cover
-
-# Run tests with verbose output
-go test ./... -v
 ```
 
 **Test Coverage:**
@@ -914,14 +930,22 @@ nx install rhino-cli
 **Available Nx Targets:**
 
 - `build` - Build the CLI binary to `dist/`
-- `test:quick` - Run unit tests (`go test ./...`)
+- `test:quick` - Run unit tests with ≥85% coverage enforcement
+- `test:integration` - Run all 39 godog BDD scenarios (cached; only re-runs when sources or specs change)
 - `lint` - Static analysis via golangci-lint
 - `run` - Run the CLI directly (`go run main.go`)
 - `install` - Install Go dependencies (`go mod tidy`)
 
 ## Testing
 
-The project includes comprehensive unit tests:
+The project uses two complementary test tiers:
+
+- **Unit tests** (`go test ./...`, no build tag): pure function tests with temp dir fixtures.
+  Run via `nx run rhino-cli:test:quick` with ≥85% line coverage enforcement.
+- **Integration tests** (`//go:build integration`, `go test -tags=integration -run TestIntegration ./cmd/...`):
+  godog BDD tests that drive each command in-process via `cmd.RunE()` against controlled filesystem
+  fixtures. One file per command in `apps/rhino-cli/cmd/`, 39 scenarios total across 9 suites.
+  Run via `nx run rhino-cli:test:integration` (cached).
 
 ### Test Suite
 
@@ -1012,6 +1036,17 @@ rhino-cli say
 ```
 
 ## Version History
+
+### v0.11.0 (2026-03-05)
+
+- Added godog BDD integration tests for all 9 rhino-cli commands (39 scenarios)
+- Each command has a `{stem}.integration_test.go` file in `cmd/` with `//go:build integration`
+- In-process `cmd.RunE()` execution pattern — no binary build required; contributes to coverage
+- `validate-spec-coverage` extended: recognizes Go test files via `_test.go`-only matching,
+  `// Scenario:` comments for scenario titles, and `sc.Step(\`regex\`)` for step coverage
+- `test:integration` Nx target added to `project.json` with caching (inputs: cmd/\*_/_.go + specs)
+- Fixed `findMatchingTestFile` to exclude Go implementation files (e.g., `doctor.go`) so only
+  `_test.go` files are considered test file matches for a given spec stem
 
 ### v0.10.0 (2026-03-05)
 

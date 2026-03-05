@@ -263,11 +263,16 @@ Spring Boot, Flutter, Python apps, TypeScript apps:
 
 ### Projects with Integration Tests
 
-Spring Boot, Python apps, TypeScript apps that test against DB/APIs:
+Spring Boot, Python apps, TypeScript apps that test against DB/APIs, Go CLIs with BDD suites:
 
-| Target             | Requirement                                                                                   |
-| ------------------ | --------------------------------------------------------------------------------------------- |
-| `test:integration` | Run integration tests using in-process mocking (MockMvc / MSW); no external services required |
+| Target             | Requirement                                                                                                                                 |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `test:integration` | Run integration tests using in-process execution or mocking (MockMvc / MSW / godog `RunE`); no external services required; always cacheable |
+
+**Go CLIs** expose `test:integration` for godog BDD tests: each command has a
+`{stem}.integration_test.go` file with `//go:build integration` that drives the command in-process
+via `cmd.RunE()` against controlled filesystem fixtures. The `test:integration` Nx target uses
+`-tags=integration -run TestIntegration` to isolate these from unit tests.
 
 ### CLI Applications
 
@@ -345,22 +350,22 @@ running server. Unlike `test:e2e`, no live service is required.
 
 ### Caching Rules
 
-| Target             | Cached | Notes                                                                                             |
-| ------------------ | ------ | ------------------------------------------------------------------------------------------------- |
-| `build`            | Yes    | Declare `outputs` in `project.json` for cache restoration                                         |
-| `typecheck`        | Yes    | Pure analysis; safe to cache against source changes                                               |
-| `lint`             | Yes    | Pure static analysis; safe to cache                                                               |
-| `test:quick`       | Yes    | Cache hit skips redundant pre-push runs                                                           |
-| `test:unit`        | Yes    | Deterministic; safe to cache against source changes                                               |
-| `test:integration` | Yes    | Uses in-process mocking (MockMvc / MSW); fully deterministic; no external service state to detect |
-| `dev`              | No     | Long-running process                                                                              |
-| `start`            | No     | Long-running process                                                                              |
-| `run`              | No     | Side-effectful execution                                                                          |
-| `test:e2e`         | No     | Requires live app state; run via scheduled cron, not pre-push                                     |
-| `test:e2e:ui`      | No     | Interactive process                                                                               |
-| `test:e2e:report`  | No     | Reads filesystem state at invocation time                                                         |
-| `install`          | No     | Must always run to ensure dep state                                                               |
-| `clean`            | No     | Destructive operation                                                                             |
+| Target             | Cached | Notes                                                                                                                         |
+| ------------------ | ------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| `build`            | Yes    | Declare `outputs` in `project.json` for cache restoration                                                                     |
+| `typecheck`        | Yes    | Pure analysis; safe to cache against source changes                                                                           |
+| `lint`             | Yes    | Pure static analysis; safe to cache                                                                                           |
+| `test:quick`       | Yes    | Cache hit skips redundant pre-push runs                                                                                       |
+| `test:unit`        | Yes    | Deterministic; safe to cache against source changes                                                                           |
+| `test:integration` | Yes    | Uses in-process execution or mocking (MockMvc / MSW / godog `RunE`); fully deterministic; no external service state to detect |
+| `dev`              | No     | Long-running process                                                                                                          |
+| `start`            | No     | Long-running process                                                                                                          |
+| `run`              | No     | Side-effectful execution                                                                                                      |
+| `test:e2e`         | No     | Requires live app state; run via scheduled cron, not pre-push                                                                 |
+| `test:e2e:ui`      | No     | Interactive process                                                                                                           |
+| `test:e2e:report`  | No     | Reads filesystem state at invocation time                                                                                     |
+| `install`          | No     | Must always run to ensure dep state                                                                                           |
+| `clean`            | No     | Destructive operation                                                                                                         |
 
 ## Build Output Conventions
 

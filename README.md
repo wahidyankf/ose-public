@@ -2,9 +2,23 @@
 
 ✨ An enterprise solutions platform for Sharia-compliant business systems.
 
+[![Main CI](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/main-ci.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/main-ci.yml)
 [![E2E - OrganicLever](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-organiclever.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-organiclever.yml)
 [![Test and Deploy - AyoKoding Web](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/deploy-ayokoding-web.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/deploy-ayokoding-web.yml)
 [![Test and Deploy - OSE Platform Web](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/deploy-oseplatform-web.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/deploy-oseplatform-web.yml)
+
+## Test Coverage
+
+All projects enforce ≥85% test coverage as part of `test:quick`.
+
+| Project               | Coverage                                                                      |
+| --------------------- | ----------------------------------------------------------------------------- |
+| `rhino-cli`           | ![coverage](https://img.shields.io/badge/coverage-%E2%89%A585%25-brightgreen) |
+| `ayokoding-cli`       | ![coverage](https://img.shields.io/badge/coverage-%E2%89%A585%25-brightgreen) |
+| `oseplatform-cli`     | ![coverage](https://img.shields.io/badge/coverage-%E2%89%A585%25-brightgreen) |
+| `libs/golang-commons` | ![coverage](https://img.shields.io/badge/coverage-%E2%89%A585%25-brightgreen) |
+| `organiclever-be`     | ![coverage](https://img.shields.io/badge/coverage-%E2%89%A585%25-brightgreen) |
+| `organiclever-web`    | ![coverage](https://img.shields.io/badge/coverage-%E2%89%A585%25-brightgreen) |
 
 🌐 **Live Sites**:
 

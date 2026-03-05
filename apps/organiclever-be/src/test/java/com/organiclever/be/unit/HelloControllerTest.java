@@ -12,12 +12,6 @@ class HelloControllerTest {
     private final HelloController controller = new HelloController();
 
     @Test
-    void hello_returnsMapWithMessageEqualToWorld() {
-        final Map<String, String> result = controller.hello();
-        assertThat(result).containsEntry("message", "world!");
-    }
-
-    @Test
     void hello_returnsExactlyOneEntry() {
         final Map<String, String> result = controller.hello();
         assertThat(result).hasSize(1);

@@ -1,0 +1,35 @@
+coverage:
+  status:
+    project:
+      default:
+        target: 85%
+
+flags:
+  rhino-cli:
+    paths:
+      - apps/rhino-cli/
+    carryforward: true
+  ayokoding-cli:
+    paths:
+      - apps/ayokoding-cli/
+    carryforward: true
+  oseplatform-cli:
+    paths:
+      - apps/oseplatform-cli/
+    carryforward: true
+  organiclever-be:
+    paths:
+      - apps/organiclever-be/
+    carryforward: true
+  organiclever-web:
+    paths:
+      - apps/organiclever-web/
+    carryforward: true
+  golang-commons:
+    paths:
+      - libs/golang-commons/
+    carryforward: true
+  hugo-commons:
+    paths:
+      - libs/hugo-commons/
+    carryforward: true

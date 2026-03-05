@@ -27,10 +27,10 @@ rhino-cli sync-agents
 rhino-cli validate-sync
 
 # Validate markdown links in the repository
-rhino-cli validate-links
+rhino-cli validate-docs-links
 
 # Validate only staged files (useful in git hooks)
-rhino-cli validate-links --staged-only
+rhino-cli validate-docs-links --staged-only
 
 # Validate BDD spec coverage (all specs have matching test files)
 rhino-cli validate-spec-coverage specs/organiclever-web apps/organiclever-web
@@ -177,28 +177,28 @@ PASS: 86.08% >= 85% threshold
 This command replaces the Python script `scripts/validate-test-coverage.py`, eliminating the Python
 dependency and consolidating all tooling in rhino-cli.
 
-### validate-links
+### validate-docs-links
 
 Validate markdown links in the repository. Scans markdown files for broken internal links and generates a categorized report.
 
 ```bash
 # Validate all markdown files
-rhino-cli validate-links
+rhino-cli validate-docs-links
 
 # Validate only staged files (useful in pre-commit hooks)
-rhino-cli validate-links --staged-only
+rhino-cli validate-docs-links --staged-only
 
 # Output as JSON
-rhino-cli validate-links -o json
+rhino-cli validate-docs-links -o json
 
 # Output as markdown report
-rhino-cli validate-links -o markdown
+rhino-cli validate-docs-links -o markdown
 
 # Verbose mode
-rhino-cli validate-links -v
+rhino-cli validate-docs-links -v
 
 # Quiet mode (errors only)
-rhino-cli validate-links -q
+rhino-cli validate-docs-links -q
 ```
 
 **What it does:**
@@ -277,7 +277,7 @@ rhino-cli validate-links -q
 
 **Replaces:**
 
-This command replaces the Python script at `scripts/validate-links.py` with a faster, more maintainable Go implementation.
+This command replaces the Python script at `scripts/validate-docs-links.py` with a faster, more maintainable Go implementation.
 
 ### sync-agents
 
@@ -755,7 +755,7 @@ rhino-cli --help
 rhino-cli help
 
 # Command-specific help
-rhino-cli validate-links --help
+rhino-cli validate-docs-links --help
 
 # Version
 rhino-cli --version
@@ -771,10 +771,10 @@ apps/rhino-cli/
 │   ├── helpers.go                                # Shared cmd helpers
 │   ├── doctor.go / _test.go                      # Doctor command + unit tests
 │   ├── doctor.integration_test.go               # godog BDD tests (4 scenarios)
-│   ├── check_coverage.go / _test.go              # Coverage threshold command + unit tests
-│   ├── validate-test-coverage.integration_test.go       # godog BDD tests (6 scenarios)
-│   ├── validate_links.go / _test.go              # Link validation command + unit tests
-│   ├── validate-links.integration_test.go       # godog BDD tests (4 scenarios)
+│   ├── validate_test_coverage.go / _test.go       # Coverage threshold command + unit tests
+│   ├── validate-test-coverage.integration_test.go # godog BDD tests (6 scenarios)
+│   ├── validate_docs_links.go / _test.go              # Link validation command + unit tests
+│   ├── validate-docs-links.integration_test.go       # godog BDD tests (4 scenarios)
 │   ├── sync_agents.go / _test.go                 # Agent/skill sync command + unit tests
 │   ├── sync-agents.integration_test.go          # godog BDD tests (4 scenarios)
 │   ├── validate_sync.go / _test.go               # Sync validation command + unit tests
@@ -796,16 +796,30 @@ apps/rhino-cli/
 │   │   ├── reporter.go       # Output formatting (text, JSON, markdown)
 │   │   ├── reporter_test.go  # Reporter tests
 │   │   └── testdata/         # Test fixtures (package.json, pom.xml, go.mod)
-│   ├── links/                # Link validation logic
-│   │   ├── types.go          # Core type definitions
-│   │   ├── scanner.go        # Link extraction from markdown
+│   ├── docs/                 # Documentation validation logic (naming + links)
+│   │   ├── types.go          # Core type definitions (naming)
+│   │   ├── scanner.go        # File scanning for naming validation
 │   │   ├── scanner_test.go
-│   │   ├── validator.go      # Link validation logic
+│   │   ├── validator.go      # Naming validation logic
 │   │   ├── validator_test.go
-│   │   ├── categorizer.go    # Link categorization
-│   │   ├── categorizer_test.go
-│   │   ├── reporter.go       # Output formatting
-│   │   └── reporter_test.go
+│   │   ├── reporter.go       # Output formatting (naming)
+│   │   ├── reporter_test.go
+│   │   ├── prefix_rules.go   # Prefix rules for naming
+│   │   ├── prefix_rules_test.go
+│   │   ├── link_updater.go   # Link update logic
+│   │   ├── link_updater_test.go
+│   │   ├── fixer.go          # Fix orchestration
+│   │   ├── fixer_test.go
+│   │   ├── links_types.go    # Core type definitions (links)
+│   │   ├── links_scanner.go  # Link extraction from markdown
+│   │   ├── links_scanner_test.go
+│   │   ├── links_validator.go # Link validation logic
+│   │   ├── links_validator_test.go
+│   │   ├── links_categorizer.go # Link categorization
+│   │   ├── links_categorizer_test.go
+│   │   ├── links_reporter.go # Output formatting (links)
+│   │   ├── links_reporter_test.go
+│   │   └── testdata/         # Test fixtures
 │   ├── claude/               # Claude Code format validation
 │   │   ├── types.go          # Data structures (ClaudeAgentFull, ClaudeSkill, constants)
 │   │   ├── validator.go      # Main validation orchestration
@@ -882,9 +896,9 @@ go test ./...
 
 **Test Coverage:**
 
-- `cmd`: Root command tests, validate-links integration tests, doctor integration tests
+- `cmd`: Root command tests, validate-docs-links integration tests, doctor integration tests
 - `internal/doctor`: 95%+ coverage (checker, reporter — all pure functions tested with fake runner)
-- `internal/links`: 85%+ coverage (scanner, validator, categorizer, reporter)
+- `internal/docs`: 85%+ coverage (naming: scanner, validator, reporter, prefix_rules, fixer; links: links_scanner, links_validator, links_categorizer, links_reporter)
 - `internal/sync`: 85%+ coverage (converter, copier, validator, reporter)
 - `internal/claude`: 92.6% coverage (validator, agent_validator, skill_validator)
 - `internal/speccoverage`: ≥85% coverage (parser, checker with temp dir fixtures, reporter for all formats)
@@ -1126,12 +1140,12 @@ rhino-cli say
 
 ### v0.2.0 (2026-01-21)
 
-- Added `validate-links` command for markdown link validation
+- Added `validate-docs-links` command for markdown link validation
 - Ported from Python to Go for better performance and maintainability
 - Comprehensive test suite (85%+ coverage for link validation)
 - Multiple output formats (text, JSON, markdown)
 - Staged-only mode for git hooks
-- Replaces `scripts/validate-links.py`
+- Replaces `scripts/validate-docs-links.py`
 
 ### v0.1.0 (2026-01-05)
 

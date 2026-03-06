@@ -6,8 +6,6 @@ model: sonnet
 color: purple
 skills:
   - swe-programming-java
-  - swe-programming-jvm-spring
-  - swe-programming-jvm-spring-boot
   - swe-developing-applications-common
   - docs-applying-content-quality
 ---
@@ -109,8 +107,6 @@ All Java code MUST follow the platform coding standards:
 
 **Skills**:
 
-- `swe-programming-java` - Java coding standards (auto-loaded)
-- `swe-programming-jvm-spring` - Spring Framework standards (auto-loaded)
-- `swe-programming-jvm-spring-boot` - Spring Boot standards (auto-loaded)
+- `swe-programming-java` - Java, Spring Framework, and Spring Boot coding standards (auto-loaded)
 - `swe-developing-applications-common` - Common development workflow (auto-loaded)
 - `docs-applying-content-quality` - Content quality standards

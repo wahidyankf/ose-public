@@ -10,8 +10,6 @@ tools:
   write: true
 skills:
   - swe-programming-elixir
-  - swe-programming-elixir-phoenix
-  - swe-programming-elixir-phoenix-liveview
   - swe-developing-applications-common
   - docs-applying-content-quality
 ---
@@ -113,8 +111,6 @@ All Elixir code MUST follow the platform coding standards:
 
 **Skills**:
 
-- `swe-programming-elixir` - Elixir coding standards (auto-loaded)
-- `swe-programming-elixir-phoenix` - Phoenix Framework standards (auto-loaded)
-- `swe-programming-elixir-phoenix-liveview` - Phoenix LiveView standards (auto-loaded)
+- `swe-programming-elixir` - Elixir, Phoenix, and LiveView coding standards (auto-loaded)
 - `swe-developing-applications-common` - Common development workflow (auto-loaded)
 - `docs-applying-content-quality` - Content quality standards

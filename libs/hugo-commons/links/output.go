@@ -8,6 +8,9 @@ import (
 	"github.com/wahidyankf/open-sharia-enterprise/libs/golang-commons/timeutil"
 )
 
+// jsonMarshalIndent is a package-level variable for dependency injection in tests.
+var jsonMarshalIndent = json.MarshalIndent
+
 // OutputLinksText prints a human-readable link check report to stdout.
 // quiet suppresses all output; verbose appends a completion timestamp.
 func OutputLinksText(result *CheckResult, elapsed time.Duration, quiet, verbose bool) {
@@ -63,7 +66,7 @@ func OutputLinksJSON(result *CheckResult, elapsed time.Duration) error {
 		"broken_links": result.BrokenLinks,
 	}
 
-	data, err := json.MarshalIndent(jsonOutput, "", "  ")
+	data, err := jsonMarshalIndent(jsonOutput, "", "  ")
 	if err != nil {
 		return fmt.Errorf("failed to marshal JSON: %w", err)
 	}

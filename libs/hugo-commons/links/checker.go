@@ -28,9 +28,15 @@ type CheckResult struct {
 
 var linkRegex = regexp.MustCompile(`\[([^\]]*)\]\(([^)]+)\)`)
 
+// filepathAbs is a package-level variable for dependency injection in tests.
+var filepathAbs = filepath.Abs
+
+// osWalk is a package-level variable for dependency injection in tests.
+var osWalk = filepath.Walk
+
 // CheckLinks validates all internal links in contentDir (walks all .md files).
 func CheckLinks(contentDir string) (*CheckResult, error) {
-	absContentDir, err := filepath.Abs(contentDir)
+	absContentDir, err := filepathAbs(contentDir)
 	if err != nil {
 		return nil, fmt.Errorf("failed to resolve path: %w", err)
 	}
@@ -44,7 +50,7 @@ func CheckLinks(contentDir string) (*CheckResult, error) {
 		BrokenLinks: []BrokenLink{},
 	}
 
-	walkErr := filepath.Walk(absContentDir, func(path string, info os.FileInfo, err error) error {
+	walkErr := osWalk(absContentDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			result.ErrorCount++
 			result.Errors = append(result.Errors, fmt.Sprintf("walk error for %s: %v", path, err))

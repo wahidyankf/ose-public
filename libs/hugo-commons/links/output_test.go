@@ -2,6 +2,7 @@ package links
 
 import (
 	"encoding/json"
+	"errors"
 	"strings"
 	"testing"
 	"time"
@@ -191,5 +192,23 @@ func TestOutputLinksMarkdown_Fail(t *testing.T) {
 	}
 	if !strings.Contains(out, "index.md") {
 		t.Errorf("expected source file in broken links table, got %q", out)
+	}
+}
+
+func TestOutputLinksJSON_MarshalError(t *testing.T) {
+	orig := jsonMarshalIndent
+	jsonMarshalIndent = func(_ any, _, _ string) ([]byte, error) {
+		return nil, errors.New("injected marshal error")
+	}
+	defer func() { jsonMarshalIndent = orig }()
+
+	result := &CheckResult{
+		CheckedCount: 1,
+		BrokenLinks:  []BrokenLink{},
+		Errors:       []string{},
+	}
+	err := OutputLinksJSON(result, time.Second)
+	if err == nil {
+		t.Fatal("Expected error when json.MarshalIndent fails, got nil")
 	}
 }

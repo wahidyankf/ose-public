@@ -1,6 +1,7 @@
 package links
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 	"testing"
@@ -256,5 +257,59 @@ func TestCheckLinks_UnreadableFile(t *testing.T) {
 	}
 	if result.ErrorCount == 0 {
 		t.Error("Expected ErrorCount > 0 for unreadable file")
+	}
+}
+
+func TestCheckLinks_WalkCallbackError(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Create an unreadable subdirectory — Walk calls the callback with err != nil
+	// when it cannot read the directory's contents.
+	subDir := filepath.Join(tmpDir, "locked-dir")
+	if err := os.Mkdir(subDir, 0755); err != nil {
+		t.Fatalf("Failed to create subdirectory: %v", err)
+	}
+	if err := os.Chmod(subDir, 0000); err != nil {
+		t.Skip("cannot set permissions on this platform")
+	}
+	defer func() { _ = os.Chmod(subDir, 0755) }()
+
+	result, err := CheckLinks(tmpDir)
+	if err != nil {
+		t.Fatalf("CheckLinks should not fail on walk callback error, got: %v", err)
+	}
+	if result.ErrorCount == 0 {
+		t.Error("Expected ErrorCount > 0 for unreadable subdirectory")
+	}
+	if len(result.Errors) == 0 {
+		t.Error("Expected Errors to be populated for unreadable subdirectory")
+	}
+}
+
+func TestCheckLinks_FilepathAbsError(t *testing.T) {
+	orig := filepathAbs
+	filepathAbs = func(_ string) (string, error) {
+		return "", errors.New("injected abs error")
+	}
+	defer func() { filepathAbs = orig }()
+
+	_, err := CheckLinks("/any/path")
+	if err == nil {
+		t.Fatal("Expected error when filepath.Abs fails, got nil")
+	}
+}
+
+func TestCheckLinks_WalkError(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	orig := osWalk
+	osWalk = func(_ string, _ filepath.WalkFunc) error {
+		return errors.New("injected walk error")
+	}
+	defer func() { osWalk = orig }()
+
+	_, err := CheckLinks(tmpDir)
+	if err == nil {
+		t.Fatal("Expected error when Walk fails, got nil")
 	}
 }

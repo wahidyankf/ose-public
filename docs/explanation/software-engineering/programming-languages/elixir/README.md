@@ -81,7 +81,7 @@ OSE Platform Elixir applications MUST use the following framework stack:
 
 ## Software Engineering Principles
 
-Elixir development in OSE Platform enforces five foundational software engineering principles:
+Elixir development in OSE Platform enforces foundational software engineering principles:
 
 1. **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)** - MUST automate through Mix build tool, ExUnit testing framework, mix format, Credo for code quality, Dialyzer for static type analysis, and doctests for documentation validation
 

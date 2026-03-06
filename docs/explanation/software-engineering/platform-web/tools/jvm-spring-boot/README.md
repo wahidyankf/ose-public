@@ -88,7 +88,7 @@ All Spring Boot applications MUST follow the patterns and practices documented h
 
 ## Software Engineering Principles
 
-Spring Boot usage in this platform follows the five software engineering principles from [governance/principles/software-engineering/](../../../../../../governance/principles/software-engineering/README.md):
+Spring Boot usage in this platform follows the the software engineering principles from [governance/principles/software-engineering/](../../../../../../governance/principles/software-engineering/README.md):
 
 1. **[Automation Over Manual](../../../../../../governance/principles/software-engineering/automation-over-manual.md)** - Spring Boot automates through auto-configuration, starter dependencies, DevTools hot reload
 2. **[Explicit Over Implicit](../../../../../../governance/principles/software-engineering/explicit-over-implicit.md)** - Spring Boot enforces through explicit configuration properties, clear component scanning, visible bean definitions
@@ -103,7 +103,7 @@ Spring Boot usage in this platform follows the five software engineering princip
 **Jump to:**
 
 - [Overview](#overview) - Spring Boot in the platform
-- [Software Engineering Principles](#software-engineering-principles) - Five core principles
+- [Software Engineering Principles](#software-engineering-principles) - the core principles
 - [Spring Boot Version Strategy](#spring-boot-version-strategy) - Version management
 - [Documentation Structure](#documentation-structure) - Guide to documentation files
 - [Key Capabilities](#key-capabilities) - Framework features

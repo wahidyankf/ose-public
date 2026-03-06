@@ -596,7 +596,7 @@ For learning Java fundamentals and concepts referenced in these standards, see:
 
 ### Software Engineering Principles
 
-These standards enforce the five software engineering principles:
+These standards enforce the the software engineering principles:
 
 1. **[Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)**
    - `@PreAuthorize` annotations make permission requirements explicit at method level

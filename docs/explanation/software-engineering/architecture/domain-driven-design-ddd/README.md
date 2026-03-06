@@ -64,7 +64,7 @@ OSE Platform Islamic finance systems MUST use the following DDD patterns:
 
 ## Software Engineering Principles
 
-DDD in OSE Platform enforces three foundational software engineering principles:
+DDD in OSE Platform enforces foundational software engineering principles:
 
 1. **[Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)** - MUST make domain concepts explicit through Ubiquitous Language, bounded context boundaries must be explicit in code structure, business rules must be explicit in domain logic not hidden in infrastructure
 

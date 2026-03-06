@@ -80,7 +80,7 @@ All Spring Framework applications MUST follow the patterns and practices documen
 
 ## Software Engineering Principles
 
-Spring Framework usage in this platform follows the five software engineering principles from [governance/principles/software-engineering/](../../../../../../governance/principles/software-engineering/README.md):
+Spring Framework usage in this platform follows the the software engineering principles from [governance/principles/software-engineering/](../../../../../../governance/principles/software-engineering/README.md):
 
 1. **[Automation Over Manual](../../../../../../governance/principles/software-engineering/automation-over-manual.md)** - Spring automates through component scanning, auto-wiring, transaction management
 2. **[Explicit Over Implicit](../../../../../../governance/principles/software-engineering/explicit-over-implicit.md)** - Spring enforces through explicit bean definitions, clear dependency declarations, visible configuration
@@ -93,7 +93,7 @@ Spring Framework usage in this platform follows the five software engineering pr
 **Jump to:**
 
 - [Overview](#overview) - Spring Framework in the platform
-- [Software Engineering Principles](#software-engineering-principles) - Five core principles
+- [Software Engineering Principles](#software-engineering-principles) - the core principles
 - [Spring Framework Version Strategy](#spring-framework-version-strategy) - Version management
 - [Documentation Structure](#documentation-structure) - Guide to documentation files
 - [Key Capabilities](#key-capabilities) - Framework features

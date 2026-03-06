@@ -820,7 +820,7 @@ jobs:
 
 ## Software Engineering Principles
 
-These standards enforce the three software engineering principles:
+These standards enforce the the software engineering principles:
 
 1. **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)**
    - mix format auto-formats code on every compilation (no manual formatting)

@@ -58,7 +58,7 @@ All React applications MUST follow the patterns and practices documented here:
 
 ## Software Engineering Principles
 
-React usage in this platform follows the five software engineering principles from [governance/principles/software-engineering/](../../../../../../governance/principles/software-engineering/README.md):
+React usage in this platform follows the the software engineering principles from [governance/principles/software-engineering/](../../../../../../governance/principles/software-engineering/README.md):
 
 1. **[Automation Over Manual](../../../../../../governance/principles/software-engineering/automation-over-manual.md)** - React automates through Fast Refresh, ESLint plugins, automated testing, build optimization
 2. **[Explicit Over Implicit](../../../../../../governance/principles/software-engineering/explicit-over-implicit.md)** - React enforces through explicit props typing, clear component contracts, TypeScript integration
@@ -73,7 +73,7 @@ React usage in this platform follows the five software engineering principles fr
 **Jump to:**
 
 - [Overview](#overview) - React in the platform
-- [Software Engineering Principles](#software-engineering-principles) - Five core principles
+- [Software Engineering Principles](#software-engineering-principles) - the core principles
 - [React Version Strategy](#react-version-strategy) - Version management
 - [Documentation Structure](#documentation-structure) - Guide to documentation files
 - [Key Capabilities](#key-capabilities) - Framework features

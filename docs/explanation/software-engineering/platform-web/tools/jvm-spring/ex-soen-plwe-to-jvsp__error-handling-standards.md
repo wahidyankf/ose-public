@@ -663,7 +663,7 @@ For learning Spring Framework fundamentals and concepts referenced in these stan
 
 ### Software Engineering Principles
 
-These standards enforce the five software engineering principles:
+These standards enforce the the software engineering principles:
 
 1. **[Explicit Over Implicit](../../../../../../governance/principles/software-engineering/explicit-over-implicit.md)**
    - `@Transactional(rollbackFor = Exception.class)` makes rollback rules explicit

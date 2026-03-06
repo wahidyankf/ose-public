@@ -55,7 +55,7 @@ This document provides comprehensive best practices for TypeScript development i
 
 ## Alignment with Software Engineering Principles
 
-TypeScript development follows the five software engineering principles from `governance/principles/software-engineering/`:
+TypeScript development follows the the software engineering principles from `governance/principles/software-engineering/`:
 
 ### 1. Automation Over Manual
 

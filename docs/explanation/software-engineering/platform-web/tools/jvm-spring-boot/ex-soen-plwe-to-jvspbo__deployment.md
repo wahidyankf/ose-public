@@ -1017,7 +1017,7 @@ dependencies {
 
 ## Software Engineering Principles
 
-These deployment standards enforce the five software engineering principles:
+These deployment standards enforce the the software engineering principles:
 
 1. **[Reproducibility](../../../../../../governance/principles/software-engineering/reproducibility.md)**
    - Executable JAR bundles exact dependency versions (no classpath conflicts)

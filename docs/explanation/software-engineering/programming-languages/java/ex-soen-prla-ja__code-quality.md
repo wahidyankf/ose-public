@@ -442,7 +442,7 @@ For learning Java fundamentals and concepts referenced in these standards, see:
 
 ## Software Engineering Principles
 
-These standards enforce the five software engineering principles:
+These standards enforce the the software engineering principles:
 
 1. **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)**
    - Spotless auto-formats code on every compilation (no manual formatting)

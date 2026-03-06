@@ -226,7 +226,7 @@ See [Java Code Quality](./ex-soen-prla-ja__code-quality.md) for enforcement conf
 
 ## Software Engineering Principles
 
-These standards enforce the five software engineering principles:
+These standards enforce the the software engineering principles:
 
 1. **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)**
    - Spotless auto-formats code on every compile (no manual formatting needed)

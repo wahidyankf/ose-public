@@ -38,7 +38,7 @@ This document defines **authoritative test organization standards** for Playwrig
 
 ## Software Engineering Principles
 
-These standards enforce three software engineering principles from `governance/principles/software-engineering/`:
+These standards enforce the software engineering principles from `governance/principles/software-engineering/`:
 
 ### 1. Automation Over Manual
 

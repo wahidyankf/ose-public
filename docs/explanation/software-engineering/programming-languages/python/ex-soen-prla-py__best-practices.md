@@ -58,7 +58,7 @@ Python best practices establish coding standards ensuring consistency, maintaina
 
 ## Alignment with Software Engineering Principles
 
-Python development follows the five software engineering principles from `governance/principles/software-engineering/`:
+Python development follows the the software engineering principles from `governance/principles/software-engineering/`:
 
 ### 1. Automation Over Manual
 

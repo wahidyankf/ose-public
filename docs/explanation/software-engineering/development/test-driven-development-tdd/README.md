@@ -33,7 +33,7 @@ All code developed for the OSE Platform MUST follow the TDD methodology and stan
 
 **REQUIRED Test Runner:**
 
-- **Nx Monorepo**: `nx run [project-name]:test:quick` (pre-push gate), `nx run [project-name]:test:unit` (isolated unit tests), `nx affected -t test:quick` (affected projects). See [Nx Target Standards](../../../../governance/development/infra/nx-targets.md) for canonical target names.
+- **Nx Monorepo**: `nx run [project-name]:test:quick` (pre-push gate), `nx run [project-name]:test:unit` (isolated unit tests), `nx affected -t test:quick` (affected projects). See [Nx Target Standards](../../../../../governance/development/infra/nx-targets.md) for canonical target names.
 
 **PROHIBITED:**
 

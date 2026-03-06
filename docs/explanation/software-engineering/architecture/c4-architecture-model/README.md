@@ -70,7 +70,7 @@ OSE Platform C4 diagrams MUST use the following tools and conventions:
 
 ## Software Engineering Principles
 
-C4 Architecture diagrams in OSE Platform enforce three foundational software engineering principles:
+C4 Architecture diagrams in OSE Platform enforce foundational software engineering principles:
 
 1. **[Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)** - MUST make system boundaries explicit through clear diagram levels, label all relationships with protocols and data formats, show technology choices on all containers, and define explicit integration patterns between bounded contexts
 

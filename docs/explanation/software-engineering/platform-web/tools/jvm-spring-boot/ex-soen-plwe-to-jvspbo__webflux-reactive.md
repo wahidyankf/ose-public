@@ -845,7 +845,7 @@ interface ZakatCalculationRepository : JpaRepository<ZakatCalculation, String> {
 
 ## Software Engineering Principles
 
-These reactive programming standards enforce the five software engineering principles:
+These reactive programming standards enforce the the software engineering principles:
 
 1. **[Explicit Over Implicit](../../../../../../governance/principles/software-engineering/explicit-over-implicit.md)**
    - Reactive types (Mono/Flux) make asynchronicity explicit in method signatures

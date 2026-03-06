@@ -67,7 +67,7 @@ OSE Platform FSM implementations MUST use the following frameworks:
 
 ## Software Engineering Principles
 
-FSM in OSE Platform enforces three foundational software engineering principles:
+FSM in OSE Platform enforces foundational software engineering principles:
 
 1. **[Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)** - MUST make entity state explicit (not inferred from boolean flags), transition rules must be explicit in state machine configuration, guards must explicitly define allowed transitions
 

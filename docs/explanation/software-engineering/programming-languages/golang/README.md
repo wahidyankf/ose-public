@@ -100,7 +100,7 @@ OSE Platform Go applications MUST use the following stack:
 
 ## Software Engineering Principles
 
-Go development in OSE Platform enforces five foundational software engineering principles:
+Go development in OSE Platform enforces foundational software engineering principles:
 
 1. **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)** - MUST automate through code generation (`protoc`, `mockgen`, `stringer`), `go generate`, `golangci-lint`, `gofmt`, `go test`, and CI/CD integration for testing and linting
 

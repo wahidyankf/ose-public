@@ -3,6 +3,7 @@ package navigation
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -293,6 +294,68 @@ weight: 1
 	// Note: This test creates files directly in tmpDir, so basePath will be "/"
 	if !strings.Contains(contentStr, "- [Overview](/overview)") {
 		t.Error("Navigation should be generated with absolute path")
+	}
+}
+
+func TestProcessIndexFile_WriteError(t *testing.T) {
+	// processIndexFile: write back to a read-only file triggers the os.WriteFile error (line 146-148)
+	if runtime.GOOS == "windows" {
+		t.Skip("read-only files behave differently on Windows")
+	}
+	tmpDir := t.TempDir()
+	indexPath := filepath.Join(tmpDir, "_index.md")
+
+	createTestContentFile(t, tmpDir, "_index.md", `---
+title: Test Page
+weight: 100
+---
+
+Old content`)
+
+	// Make the file read-only so os.WriteFile fails
+	if err := os.Chmod(indexPath, 0444); err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = os.Chmod(indexPath, 0644) }()
+
+	err := processIndexFile(indexPath, tmpDir)
+	if err == nil {
+		t.Error("expected error when writing to read-only _index.md, got nil")
+	}
+}
+
+func TestFindIndexFiles_WalkError(t *testing.T) {
+	// findIndexFiles: Walk callback receives error for inaccessible subdirectory (line 84-86)
+	if runtime.GOOS == "windows" {
+		t.Skip("permission test not reliable on Windows")
+	}
+	tmpDir := t.TempDir()
+
+	// Create a nested index file that gets discovered
+	learnDir := filepath.Join(tmpDir, "learn")
+	if err := os.MkdirAll(learnDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(learnDir, "_index.md"), []byte("---\ntitle: Learn\nweight: 1\n---"), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	// Create a subdirectory inside learn that becomes inaccessible
+	restrictedDir := filepath.Join(learnDir, "restricted")
+	if err := os.MkdirAll(restrictedDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+
+	// Make restrictedDir completely inaccessible
+	if err := os.Chmod(restrictedDir, 0000); err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = os.Chmod(restrictedDir, 0755) }()
+
+	// findIndexFiles should fail because Walk returns an error for the inaccessible dir
+	_, err := findIndexFiles(tmpDir)
+	if err == nil {
+		t.Error("expected error when Walk encounters inaccessible directory, got nil")
 	}
 }
 

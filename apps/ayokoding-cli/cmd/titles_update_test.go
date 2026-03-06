@@ -281,3 +281,23 @@ func TestRunTitlesUpdate_JSONOutputSuccess(t *testing.T) {
 		t.Errorf("expected status 'success', got %v", parsed["status"])
 	}
 }
+
+func TestRunTitlesUpdate_MarkdownOutputSuccess(t *testing.T) {
+	// runTitlesUpdate with output="markdown" covers line 74-75 (case "markdown" branch)
+	restore := makeTitlesContentDir(t)
+	defer restore()
+
+	resetFlags()
+	titlesLang = "en"
+	output = "markdown"
+
+	read := testutil.CaptureStdout(t)
+	err := runTitlesUpdate(nil, nil)
+	out := read()
+	if err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if !strings.Contains(out, "# Title Update Report") {
+		t.Errorf("expected markdown header in output, got %q", out)
+	}
+}

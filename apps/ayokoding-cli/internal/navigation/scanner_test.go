@@ -3,6 +3,7 @@ package navigation
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 )
 
@@ -331,6 +332,121 @@ weight: 50
 	if items[2].Title != "High Weight" {
 		t.Errorf("Third item should be High Weight, got %s", items[2].Title)
 	}
+}
+
+func TestScanDirectory_ExceedsMaxLayers(t *testing.T) {
+	// Direct call with currentLayer > maxLayers covers the early-return guard (line 25-27)
+	tmpDir := t.TempDir()
+
+	items, err := ScanDirectory(tmpDir, "/test", 3, 2)
+	if err != nil {
+		t.Fatalf("expected nil error, got %v", err)
+	}
+	if items != nil {
+		t.Errorf("expected nil items when currentLayer > maxLayers, got %v", items)
+	}
+}
+
+func TestScanDirectory_NonExistentDir(t *testing.T) {
+	// ScanDirectory on a non-existent directory triggers os.ReadDir error (line 30-32)
+	_, err := ScanDirectory("/nonexistent/path/xyz", "/test", 1, 2)
+	if err == nil {
+		t.Error("expected error for non-existent directory, got nil")
+	}
+}
+
+func TestScanDirectory_DirWithBadIndexFrontmatter(t *testing.T) {
+	// Subdirectory with a malformed _index.md triggers the continue (skip) path (line 54-56)
+	tmpDir := t.TempDir()
+
+	// Create a subdirectory with a malformed _index.md
+	subDir := filepath.Join(tmpDir, "bad-index-dir")
+	if err := os.MkdirAll(subDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(subDir, "_index.md"), []byte("no frontmatter here"), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	// Create a valid .md file to ensure something is scanned
+	createTestFile(t, filepath.Join(tmpDir, "valid.md"), `---
+title: Valid
+weight: 1
+---`)
+
+	items, err := ScanDirectory(tmpDir, "/test", 1, 2)
+	if err != nil {
+		t.Fatalf("ScanDirectory failed: %v", err)
+	}
+	// The bad-index-dir should be skipped; only valid.md should appear
+	if len(items) != 1 {
+		t.Errorf("expected 1 item (bad dir skipped), got %d", len(items))
+	}
+	if items[0].Title != "Valid" {
+		t.Errorf("expected Valid, got %s", items[0].Title)
+	}
+}
+
+func TestScanDirectory_StandaloneMdWithBadFrontmatter(t *testing.T) {
+	// Standalone .md file with malformed frontmatter triggers the continue (skip) path (line 82-84)
+	tmpDir := t.TempDir()
+
+	// Create a file with bad frontmatter
+	if err := os.WriteFile(filepath.Join(tmpDir, "bad.md"), []byte("no frontmatter"), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	// Create a valid file alongside
+	createTestFile(t, filepath.Join(tmpDir, "good.md"), `---
+title: Good
+weight: 5
+---`)
+
+	items, err := ScanDirectory(tmpDir, "/test", 1, 2)
+	if err != nil {
+		t.Fatalf("ScanDirectory failed: %v", err)
+	}
+	// bad.md should be skipped; only good.md should appear
+	if len(items) != 1 {
+		t.Errorf("expected 1 item (bad.md skipped), got %d", len(items))
+	}
+	if items[0].Title != "Good" {
+		t.Errorf("expected Good, got %s", items[0].Title)
+	}
+}
+
+func TestScanDirectory_InaccessibleDir(t *testing.T) {
+	// ScanDirectory on a directory we can't read triggers os.ReadDir error via recursive call
+	// Covers line 30-32 through a real permission error
+	if runtime.GOOS == "windows" {
+		t.Skip("permission test not reliable on Windows")
+	}
+	tmpDir := t.TempDir()
+
+	// Create a locked subdirectory with _index.md so it passes the stat check
+	lockedDir := filepath.Join(tmpDir, "locked")
+	if err := os.MkdirAll(lockedDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(lockedDir, "_index.md"), []byte("---\ntitle: Locked\nweight: 1\n---"), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	// Make the locked dir unreadable
+	if err := os.Chmod(lockedDir, 0111); err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = os.Chmod(lockedDir, 0755) }()
+
+	// ScanDirectory at layer 1 will try to recurse into lockedDir at layer 2
+	// os.ReadDir(lockedDir) will fail - the error is silently swallowed (item.Children stays nil)
+	items, err := ScanDirectory(tmpDir, "/test", 1, 2)
+	if err != nil {
+		t.Fatalf("ScanDirectory should not propagate child scan errors, got %v", err)
+	}
+	// lockedDir is still returned as an item (the _index.md stat and read succeeded at layer 1),
+	// but with no children (since the recursive call failed)
+	_ = items
 }
 
 func TestScanDirectory_MissingWeight(t *testing.T) {

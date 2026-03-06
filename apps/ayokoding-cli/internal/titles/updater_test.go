@@ -3,6 +3,7 @@ package titles
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 )
 
@@ -418,6 +419,184 @@ func TestProcessLanguageDirectory_NonExistent(t *testing.T) {
 	_, err := processLanguageDirectory("/nonexistent/directory", config, false)
 	if err == nil {
 		t.Error("Expected error for non-existent directory")
+	}
+}
+
+func TestUpdateTitles_EnDirMissing(t *testing.T) {
+	// UpdateTitles with lang="en" when the content dir doesn't exist
+	// triggers the processLanguageDirectory error path (line 40-42)
+	originalDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = os.Chdir(originalDir) }()
+
+	// Use tmpDir that does NOT have apps/ayokoding-web/content/en
+	tmpDir := t.TempDir()
+	if err := os.Chdir(tmpDir); err != nil {
+		t.Fatal(err)
+	}
+
+	_, err = UpdateTitles("en", false, "", "")
+	if err == nil {
+		t.Error("expected error when en content dir does not exist")
+	}
+}
+
+func TestUpdateTitles_IDConfigError(t *testing.T) {
+	// UpdateTitles with lang="id" when configIDPath has invalid YAML
+	// triggers the LoadConfig error path for the id branch (line 49-51)
+	originalDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = os.Chdir(originalDir) }()
+
+	tmpDir := t.TempDir()
+	if err := os.Chdir(tmpDir); err != nil {
+		t.Fatal(err)
+	}
+
+	// Write a bad YAML config for the id branch
+	badConfig := filepath.Join(tmpDir, "bad-id-config.yaml")
+	if err := os.WriteFile(badConfig, []byte("this: is: invalid: yaml"), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	_, err = UpdateTitles("id", false, "", badConfig)
+	if err == nil {
+		t.Error("expected error from bad id config")
+	}
+}
+
+func TestUpdateTitles_IDDirMissing(t *testing.T) {
+	// UpdateTitles with lang="id" when the content dir doesn't exist
+	// triggers the processLanguageDirectory error path (line 54-56)
+	originalDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = os.Chdir(originalDir) }()
+
+	// Use tmpDir that does NOT have apps/ayokoding-web/content/id
+	tmpDir := t.TempDir()
+	if err := os.Chdir(tmpDir); err != nil {
+		t.Fatal(err)
+	}
+
+	_, err = UpdateTitles("id", false, "", "")
+	if err == nil {
+		t.Error("expected error when id content dir does not exist")
+	}
+}
+
+func TestUpdateTitleInFile_MissingClosingDelimiter(t *testing.T) {
+	// updateTitleInFile: file starts with --- but has no closing ---
+	// triggers the endIdx == -1 path (line 174-176)
+	tmpDir := t.TempDir()
+	tmpFile := filepath.Join(tmpDir, "test.md")
+
+	// File starts with --- and has more than 3 lines, but no closing ---
+	content := "---\ntitle: Something\nno closing delimiter here\nmore content"
+	if err := os.WriteFile(tmpFile, []byte(content), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	err := updateTitleInFile(tmpFile, "New Title")
+	if err == nil {
+		t.Error("expected error for missing closing delimiter, got nil")
+	}
+}
+
+func TestUpdateTitleInFile_ReadOnlyFile(t *testing.T) {
+	// updateTitleInFile: writing back to a read-only file triggers error (line 190-192)
+	if runtime.GOOS == "windows" {
+		t.Skip("read-only files behave differently on Windows")
+	}
+	tmpDir := t.TempDir()
+	tmpFile := filepath.Join(tmpDir, "readonly.md")
+
+	content := "---\ntitle: Old Title\nweight: 100\n---\n\nContent"
+	if err := os.WriteFile(tmpFile, []byte(content), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	// Make file read-only so WriteFile fails
+	if err := os.Chmod(tmpFile, 0444); err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = os.Chmod(tmpFile, 0644) }()
+
+	err := updateTitleInFile(tmpFile, "New Title")
+	if err == nil {
+		t.Error("expected error writing to read-only file, got nil")
+	}
+}
+
+func TestProcessFile_UpdateTitleInFileError(t *testing.T) {
+	// processFile: updateTitleInFile fails because the file is read-only
+	// covers line 140-142 (the error return from updateTitleInFile)
+	if runtime.GOOS == "windows" {
+		t.Skip("read-only files behave differently on Windows")
+	}
+	config := &Config{
+		Overrides:      map[string]string{"javascript": "JavaScript"},
+		LowercaseWords: []string{},
+	}
+
+	tmpDir := t.TempDir()
+	// Use a filename that generates a different title from the stored one
+	tmpFile := filepath.Join(tmpDir, "javascript-basics.md")
+
+	content := "---\ntitle: Javascript Basics\nweight: 100\n---\n\nContent"
+	if err := os.WriteFile(tmpFile, []byte(content), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	// Make file read-only so updateTitleInFile's WriteFile fails
+	if err := os.Chmod(tmpFile, 0444); err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = os.Chmod(tmpFile, 0644) }()
+
+	result := &LangResult{Errors: []string{}}
+	err := processFile(tmpFile, config, false, result)
+	if err == nil {
+		t.Error("expected error when updateTitleInFile fails due to read-only file")
+	}
+}
+
+func TestProcessLanguageDirectory_WalkError(t *testing.T) {
+	// processLanguageDirectory: walk callback receives error for inaccessible subdir
+	// covers lines 82-86 (the err != nil path inside the Walk callback)
+	if runtime.GOOS == "windows" {
+		t.Skip("permission test not reliable on Windows")
+	}
+	config := &Config{Overrides: map[string]string{}, LowercaseWords: []string{}}
+	tmpDir := t.TempDir()
+
+	// Create a subdirectory that becomes inaccessible
+	subDir := filepath.Join(tmpDir, "restricted")
+	if err := os.MkdirAll(subDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(subDir, "test.md"), []byte("---\ntitle: Test\n---"), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	// Remove all permissions on the subdirectory so Walk can't descend
+	if err := os.Chmod(subDir, 0000); err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = os.Chmod(subDir, 0755) }()
+
+	result, err := processLanguageDirectory(tmpDir, config, false)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	// Walk should have logged errors for the inaccessible directory
+	if result.ErrorCount == 0 {
+		t.Error("expected ErrorCount > 0 for inaccessible subdirectory")
 	}
 }
 

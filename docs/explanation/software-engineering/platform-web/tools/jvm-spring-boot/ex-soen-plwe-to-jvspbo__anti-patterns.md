@@ -12,7 +12,7 @@ tags:
 related:
   - ./ex-soen-plwe-jvspbo__idioms.md
   - ./ex-soen-plwe-jvspbo__best-practices.md
-last_updated: 2026-01-25
+updated: 2026-01-25
 ---
 
 ### Dependency Injection Anti-Patterns

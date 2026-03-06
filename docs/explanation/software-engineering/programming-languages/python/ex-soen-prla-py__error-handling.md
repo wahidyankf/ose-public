@@ -19,7 +19,7 @@ principles:
   - explicit-over-implicit
   - simplicity-over-complexity
   - documentation-first
-last_updated: 2025-01-23
+updated: 2025-01-23
 ---
 
 # Python Error Handling

@@ -21,7 +21,7 @@ related:
 principles:
   - simplicity-over-complexity
   - explicit-over-implicit
-last_updated: 2026-02-05
+updated: 2026-02-05
 ---
 
 # Elixir Concurrency Standards

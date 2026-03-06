@@ -16,7 +16,7 @@ related:
   - ./ex-soen-prla-da__server-side.md
 principles:
   - explicit-over-implicit
-last_updated: 2026-01-29
+updated: 2026-01-29
 ---
 
 # Dart Security

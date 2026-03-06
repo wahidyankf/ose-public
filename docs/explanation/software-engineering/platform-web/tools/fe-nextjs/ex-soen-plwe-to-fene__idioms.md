@@ -17,7 +17,7 @@ principles:
   - explicit-over-implicit
   - immutability
   - pure-functions
-last_updated: 2026-01-26
+updated: 2026-01-26
 ---
 
 # Next.js Idioms

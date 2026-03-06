@@ -10,7 +10,7 @@ tags:
   - jakarta-ee
 related:
   - ./README.md
-last_updated: 2026-01-25
+updated: 2026-01-25
 ---
 
 ### Major Changes

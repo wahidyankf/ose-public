@@ -16,7 +16,7 @@ related:
 principles:
   - efficiency
   - resource-management
-last_updated: 2025-01-23
+updated: 2025-01-23
 ---
 
 # Python Memory Management

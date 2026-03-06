@@ -15,7 +15,7 @@ related:
 principles:
   - immutability
   - pure-functions
-last_updated: 2026-01-25
+updated: 2026-01-25
 ---
 
 # React Functional Programming

@@ -15,7 +15,7 @@ related:
   - ./ex-soen-prla-ty__concurrency-and-parallelism.md
 principles:
   - automation-over-manual
-last_updated: 2025-01-23
+updated: 2025-01-23
 ---
 
 # TypeScript Performance

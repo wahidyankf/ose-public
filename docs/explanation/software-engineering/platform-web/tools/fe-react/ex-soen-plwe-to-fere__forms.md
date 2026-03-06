@@ -13,7 +13,7 @@ related:
   - ./ex-soen-plwe-fere__idioms.md
 principles:
   - explicit-over-implicit
-last_updated: 2026-01-25
+updated: 2026-01-25
 ---
 
 # React Forms

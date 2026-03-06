@@ -18,7 +18,7 @@ principles:
   - documentation-first
   - explicit-over-implicit
   - ubiquitous-language
-last_updated: 2025-01-23
+updated: 2025-01-23
 ---
 
 # Behaviour-Driven Development in Python

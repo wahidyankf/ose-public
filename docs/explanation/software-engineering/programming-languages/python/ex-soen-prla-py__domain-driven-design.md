@@ -20,7 +20,7 @@ principles:
   - explicit-over-implicit
   - simplicity-over-complexity
   - domain-first
-last_updated: 2025-01-23
+updated: 2025-01-23
 ---
 
 # Domain-Driven Design in Python

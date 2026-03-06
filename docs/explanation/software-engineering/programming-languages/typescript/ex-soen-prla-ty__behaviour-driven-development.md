@@ -17,7 +17,7 @@ related:
 principles:
   - explicit-over-implicit
   - automation-over-manual
-last_updated: 2025-01-23
+updated: 2025-01-23
 ---
 
 # TypeScript Behaviour-Driven Development

@@ -19,7 +19,7 @@ related:
 principles:
   - explicit-over-implicit
   - simplicity-over-complexity
-last_updated: 2026-02-05
+updated: 2026-02-05
 ---
 
 # Domain-Driven Design Standards

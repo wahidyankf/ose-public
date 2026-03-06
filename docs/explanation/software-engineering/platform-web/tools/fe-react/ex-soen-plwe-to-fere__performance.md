@@ -14,7 +14,7 @@ related:
   - ./ex-soen-plwe-fere__best-practices.md
 principles:
   - automation-over-manual
-last_updated: 2026-01-25
+updated: 2026-01-25
 ---
 
 # React Performance

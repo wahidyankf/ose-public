@@ -23,7 +23,7 @@ principles:
   - immutability
   - pure-functions
   - reproducibility
-last_updated: 2026-01-24
+updated: 2026-01-24
 ---
 
 ## Quick Reference

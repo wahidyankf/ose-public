@@ -19,7 +19,7 @@ related:
 principles:
   - explicit-over-implicit
   - pure-functions
-last_updated: 2025-01-23
+updated: 2025-01-23
 ---
 
 # TypeScript Error Handling

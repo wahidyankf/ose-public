@@ -11,7 +11,7 @@ related:
   - ./README.md
 principles:
   - documentation-first
-last_updated: 2026-01-24
+updated: 2026-01-24
 ---
 
 # TypeScript 5.8 Release

@@ -18,7 +18,7 @@ related:
 principles:
   - explicit-over-implicit
   - immutability
-last_updated: 2026-01-29
+updated: 2026-01-29
 ---
 
 # Dart Object-Oriented Programming

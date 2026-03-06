@@ -21,7 +21,7 @@ related:
   - ./ex-soen-prla-el__coding-standards.md
 principles:
   - explicit-over-implicit
-last_updated: 2026-02-05
+updated: 2026-02-05
 ---
 
 # Elixir Security Standards

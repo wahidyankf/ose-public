@@ -15,7 +15,7 @@ related:
 principles:
   - explicit-over-implicit
   - immutability
-last_updated: 2026-01-25
+updated: 2026-01-25
 ---
 
 # React State Management

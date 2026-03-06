@@ -18,7 +18,7 @@ related:
 principles:
   - automation-over-manual
   - documentation-first
-last_updated: 2025-01-23
+updated: 2025-01-23
 ---
 
 # Test-Driven Development in Python

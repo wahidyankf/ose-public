@@ -15,7 +15,7 @@ related:
   - ./ex-soen-plwe-fere__hooks.md
 principles:
   - explicit-over-implicit
-last_updated: 2026-01-25
+updated: 2026-01-25
 ---
 
 # React Data Fetching

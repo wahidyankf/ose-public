@@ -19,7 +19,7 @@ related:
 principles:
   - simplicity-over-complexity
   - explicit-over-implicit
-last_updated: 2025-01-23
+updated: 2025-01-23
 ---
 
 # Python Concurrency and Parallelism

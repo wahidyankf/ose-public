@@ -21,7 +21,7 @@ principles:
   - modularity
   - explicit-over-implicit
   - automation-over-manual
-last_updated: 2026-01-23
+updated: 2026-01-23
 ---
 
 ## Overview

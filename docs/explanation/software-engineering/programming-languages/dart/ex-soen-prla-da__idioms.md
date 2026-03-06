@@ -22,7 +22,7 @@ principles:
   - explicit-over-implicit
   - immutability
   - pure-functions
-last_updated: 2026-01-29
+updated: 2026-01-29
 ---
 
 ### Core Dart Idioms

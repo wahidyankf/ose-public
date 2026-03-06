@@ -14,7 +14,7 @@ related:
   - ./ex-soen-prla-ty__error-handling.md
 principles:
   - automation-over-manual
-last_updated: 2025-01-23
+updated: 2025-01-23
 ---
 
 # TypeScript Concurrency and Parallelism

@@ -16,7 +16,7 @@ related:
 principles:
   - automation-over-manual
   - explicit-over-implicit
-last_updated: 2026-01-25
+updated: 2026-01-25
 ---
 
 ### Core Spring Boot Patterns

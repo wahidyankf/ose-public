@@ -21,7 +21,7 @@ related:
 principles:
   - simplicity-over-complexity
   - explicit-over-implicit
-last_updated: 2026-01-24
+updated: 2026-01-24
 ---
 
 # Python Anti-Patterns

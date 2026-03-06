@@ -21,7 +21,7 @@ related:
 principles:
   - immutability
   - pure-functions
-last_updated: 2026-02-05
+updated: 2026-02-05
 ---
 
 # Elixir Functional Programming Standards

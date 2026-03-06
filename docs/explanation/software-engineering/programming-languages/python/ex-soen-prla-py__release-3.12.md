@@ -18,7 +18,7 @@ related:
   - ./ex-soen-prla-py__type-safety.md
 principles:
   - explicit-over-implicit
-last_updated: 2025-01-23
+updated: 2025-01-23
 ---
 
 # Python 3.12 Release Features

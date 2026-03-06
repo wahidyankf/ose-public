@@ -20,7 +20,7 @@ related:
 principles:
   - automation-over-manual
   - simplicity-over-complexity
-last_updated: 2026-01-23
+updated: 2026-01-23
 ---
 
 ## Overview

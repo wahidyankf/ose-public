@@ -16,7 +16,7 @@ related:
   - ./ex-soen-prla-da__collections.md
 principles:
   - automation-over-manual
-last_updated: 2026-01-29
+updated: 2026-01-29
 ---
 
 # Dart Performance

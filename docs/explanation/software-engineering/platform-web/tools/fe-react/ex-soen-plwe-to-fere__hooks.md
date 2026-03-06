@@ -16,7 +16,7 @@ related:
 principles:
   - explicit-over-implicit
   - pure-functions
-last_updated: 2026-01-25
+updated: 2026-01-25
 ---
 
 # React Hooks

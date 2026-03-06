@@ -15,7 +15,7 @@ related:
   - ./README.md
 principles:
   - explicit-over-implicit
-last_updated: 2026-01-24
+updated: 2026-01-24
 ---
 
 # TypeScript 5.0 Release

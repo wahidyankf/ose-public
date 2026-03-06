@@ -19,7 +19,7 @@ principles:
   - explicit-over-implicit
   - immutability
   - pure-functions
-last_updated: 2026-01-25
+updated: 2026-01-25
 ---
 
 ### Context Anti-Patterns

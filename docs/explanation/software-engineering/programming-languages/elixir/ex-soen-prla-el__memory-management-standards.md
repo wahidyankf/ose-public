@@ -18,7 +18,7 @@ related:
   - ./ex-soen-prla-el__coding-standards.md
 principles:
   - simplicity-over-complexity
-last_updated: 2026-02-05
+updated: 2026-02-05
 ---
 
 # Elixir Memory Management Standards

@@ -16,7 +16,7 @@ related:
 principles:
   - automation-over-manual
   - explicit-over-implicit
-last_updated: 2025-01-23
+updated: 2025-01-23
 ---
 
 # TypeScript Linting and Formatting

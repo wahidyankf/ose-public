@@ -16,7 +16,7 @@ related:
   - ./ex-soen-prla-py__memory-management.md
 principles:
   - simplicity-over-complexity
-last_updated: 2025-01-23
+updated: 2025-01-23
 ---
 
 # Python Performance

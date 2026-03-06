@@ -14,7 +14,7 @@ related:
   - ./ex-soen-prla-ty__best-practices.md
 principles:
   - automation-over-manual
-last_updated: 2025-01-23
+updated: 2025-01-23
 ---
 
 # TypeScript Memory Management

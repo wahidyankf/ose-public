@@ -14,7 +14,7 @@ related:
   - ./ex-soen-plwe-fere__component-architecture.md
 principles:
   - explicit-over-implicit
-last_updated: 2026-01-25
+updated: 2026-01-25
 ---
 
 # React Domain-Driven Design

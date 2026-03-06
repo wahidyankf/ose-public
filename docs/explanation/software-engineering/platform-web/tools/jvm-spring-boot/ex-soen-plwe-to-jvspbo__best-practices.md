@@ -18,7 +18,7 @@ principles:
   - immutability
   - pure-functions
   - reproducibility
-last_updated: 2026-01-25
+updated: 2026-01-25
 ---
 
 ### Project Organization

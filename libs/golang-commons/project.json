@@ -10,6 +10,16 @@
         "cwd": "libs/golang-commons"
       }
     },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "CGO_ENABLED=0 go test -v -tags=integration -run TestIntegration -coverprofile=cover_spec.out ./...",
+        "cwd": "libs/golang-commons"
+      },
+      "cache": true,
+      "inputs": ["{projectRoot}/**/*.go", "{workspaceRoot}/specs/golang-commons/**/*.feature"],
+      "outputs": ["{projectRoot}/cover_spec.out"]
+    },
     "lint": {
       "executor": "nx:run-commands",
       "options": {

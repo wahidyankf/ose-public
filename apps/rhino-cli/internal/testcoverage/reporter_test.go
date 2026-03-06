@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func makeResult(covered, partial, missed int, pct, threshold float64, format Format) Result {
+func makeResult(covered, partial, missed int, pct float64, format Format) Result {
 	return Result{
 		File:      "apps/foo/cover.out",
 		Format:    format,
@@ -15,13 +15,13 @@ func makeResult(covered, partial, missed int, pct, threshold float64, format For
 		Missed:    missed,
 		Total:     covered + partial + missed,
 		Pct:       pct,
-		Threshold: threshold,
-		Passed:    pct >= threshold,
+		Threshold: 85,
+		Passed:    pct >= 85,
 	}
 }
 
 func TestFormatText_Pass(t *testing.T) {
-	r := makeResult(86, 5, 9, 86.00, 85, FormatGo)
+	r := makeResult(86, 5, 9, 86.00, FormatGo)
 	out := FormatText(r, false, false)
 
 	if !strings.Contains(out, "Line coverage: 86.00%") {
@@ -39,7 +39,7 @@ func TestFormatText_Pass(t *testing.T) {
 }
 
 func TestFormatText_Fail(t *testing.T) {
-	r := makeResult(60, 0, 40, 60.00, 85, FormatGo)
+	r := makeResult(60, 0, 40, 60.00, FormatGo)
 	out := FormatText(r, false, false)
 
 	if !strings.Contains(out, "FAIL:") {
@@ -51,7 +51,7 @@ func TestFormatText_Fail(t *testing.T) {
 }
 
 func TestFormatText_VerboseQuietIgnored(t *testing.T) {
-	r := makeResult(100, 0, 0, 100.0, 85, FormatLCOV)
+	r := makeResult(100, 0, 0, 100.0, FormatLCOV)
 	// verbose and quiet params are accepted but don't change output
 	out1 := FormatText(r, true, false)
 	out2 := FormatText(r, false, true)
@@ -86,7 +86,7 @@ func TestFormatText_ExactPythonFormat(t *testing.T) {
 }
 
 func TestFormatJSON_Pass(t *testing.T) {
-	r := makeResult(90, 2, 8, 90.0, 85, FormatGo)
+	r := makeResult(90, 2, 8, 90.0, FormatGo)
 	out, err := FormatJSON(r)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -111,7 +111,7 @@ func TestFormatJSON_Pass(t *testing.T) {
 }
 
 func TestFormatJSON_Fail(t *testing.T) {
-	r := makeResult(50, 0, 50, 50.0, 85, FormatLCOV)
+	r := makeResult(50, 0, 50, 50.0, FormatLCOV)
 	out, err := FormatJSON(r)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -130,7 +130,7 @@ func TestFormatJSON_Fail(t *testing.T) {
 }
 
 func TestFormatMarkdown_Pass(t *testing.T) {
-	r := makeResult(90, 2, 8, 90.0, 85, FormatGo)
+	r := makeResult(90, 2, 8, 90.0, FormatGo)
 	out := FormatMarkdown(r)
 
 	if !strings.Contains(out, "## Coverage Report") {
@@ -145,7 +145,7 @@ func TestFormatMarkdown_Pass(t *testing.T) {
 }
 
 func TestFormatMarkdown_Fail(t *testing.T) {
-	r := makeResult(50, 0, 50, 50.0, 85, FormatGo)
+	r := makeResult(50, 0, 50, 50.0, FormatGo)
 	out := FormatMarkdown(r)
 
 	if !strings.Contains(out, "**FAIL**") {
@@ -154,7 +154,7 @@ func TestFormatMarkdown_Fail(t *testing.T) {
 }
 
 func TestFormatMarkdown_ContainsAllFields(t *testing.T) {
-	r := makeResult(100, 5, 10, 87.0, 85, FormatLCOV)
+	r := makeResult(100, 5, 10, 87.0, FormatLCOV)
 	out := FormatMarkdown(r)
 
 	for _, field := range []string{"| File |", "| Format |", "| Line Coverage |", "| Threshold |", "| Covered |", "| Partial |", "| Missed |", "| Total |"} {

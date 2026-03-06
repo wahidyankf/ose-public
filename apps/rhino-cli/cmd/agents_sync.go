@@ -86,7 +86,7 @@ func runSyncAgents(cmd *cobra.Command, args []string) error {
 	}
 
 	// Format and print output
-	formattedOutput := agents.FormatSyncResult(result, output, verbose, quiet)
+	formattedOutput := agents.FormatSyncResult(result, output, quiet)
 	_, _ = fmt.Fprint(cmd.OutOrStdout(), formattedOutput)
 
 	// Return error if there were failures

@@ -11,7 +11,7 @@ import (
 
 // setupDoctorTestRepo creates a temporary git repository with minimal config files
 // required for the doctor command and returns the tmpDir path and a cleanup func.
-func setupDoctorTestRepo(t *testing.T) (string, func()) {
+func setupDoctorTestRepo(t *testing.T) func() {
 	t.Helper()
 
 	originalWd, err := os.Getwd()
@@ -53,10 +53,9 @@ func setupDoctorTestRepo(t *testing.T) (string, func()) {
 		t.Fatalf("Failed to create go.mod: %v", err)
 	}
 
-	cleanup := func() {
+	return func() {
 		_ = os.Chdir(originalWd)
 	}
-	return tmpDir, cleanup
 }
 
 func TestDoctorCommand_Initialization(t *testing.T) {
@@ -69,7 +68,7 @@ func TestDoctorCommand_Initialization(t *testing.T) {
 }
 
 func TestDoctorCommand_TextOutput(t *testing.T) {
-	_, cleanup := setupDoctorTestRepo(t)
+	cleanup := setupDoctorTestRepo(t)
 	defer cleanup()
 
 	cmd := doctorCmd
@@ -101,7 +100,7 @@ func TestDoctorCommand_TextOutput(t *testing.T) {
 }
 
 func TestDoctorCommand_JSONOutput(t *testing.T) {
-	_, cleanup := setupDoctorTestRepo(t)
+	cleanup := setupDoctorTestRepo(t)
 	defer cleanup()
 
 	cmd := doctorCmd
@@ -137,7 +136,7 @@ func TestDoctorCommand_JSONOutput(t *testing.T) {
 }
 
 func TestDoctorCommand_MarkdownOutput(t *testing.T) {
-	_, cleanup := setupDoctorTestRepo(t)
+	cleanup := setupDoctorTestRepo(t)
 	defer cleanup()
 
 	cmd := doctorCmd

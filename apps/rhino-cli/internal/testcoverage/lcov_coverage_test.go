@@ -32,9 +32,9 @@ BRDA:30,0,1,0
 end_of_record
 `
 
-func writeTempLCOV(t *testing.T, dir, name, content string) string {
+func writeTempLCOV(t *testing.T, dir, content string) string {
 	t.Helper()
-	path := filepath.Join(dir, name)
+	path := filepath.Join(dir, "lcov.info")
 	if err := os.WriteFile(path, []byte(content), 0644); err != nil {
 		t.Fatal(err)
 	}
@@ -50,7 +50,7 @@ func TestParseLCOV_FileNotFound(t *testing.T) {
 
 func TestParseLCOV_Valid(t *testing.T) {
 	tmpDir := t.TempDir()
-	path := writeTempLCOV(t, tmpDir, "lcov.info", sampleLCOV)
+	path := writeTempLCOV(t, tmpDir, sampleLCOV)
 
 	files, err := parseLCOV(path)
 	if err != nil {
@@ -79,7 +79,7 @@ func TestParseLCOV_Valid(t *testing.T) {
 func TestParseLCOV_DuplicateDATakesMax(t *testing.T) {
 	content := "TN:\nSF:src/dup.ts\nDA:5,3\nDA:5,7\nDA:5,1\nend_of_record\n"
 	tmpDir := t.TempDir()
-	path := writeTempLCOV(t, tmpDir, "lcov.info", content)
+	path := writeTempLCOV(t, tmpDir, content)
 
 	files, err := parseLCOV(path)
 	if err != nil {
@@ -96,7 +96,7 @@ func TestParseLCOV_DuplicateDATakesMax(t *testing.T) {
 func TestParseLCOV_BRDADashCount(t *testing.T) {
 	content := "TN:\nSF:src/x.ts\nBRDA:1,0,0,-\nBRDA:1,0,1,5\nend_of_record\n"
 	tmpDir := t.TempDir()
-	path := writeTempLCOV(t, tmpDir, "lcov.info", content)
+	path := writeTempLCOV(t, tmpDir, content)
 
 	files, err := parseLCOV(path)
 	if err != nil {
@@ -123,7 +123,7 @@ func TestComputeLCOVResult_FileNotFound(t *testing.T) {
 
 func TestComputeLCOVResult_EmptyFile(t *testing.T) {
 	tmpDir := t.TempDir()
-	path := writeTempLCOV(t, tmpDir, "lcov.info", "")
+	path := writeTempLCOV(t, tmpDir, "")
 
 	result, err := ComputeLCOVResult(path, 85)
 	if err != nil {
@@ -142,7 +142,7 @@ func TestComputeLCOVResult_EmptyFile(t *testing.T) {
 
 func TestComputeLCOVResult_SampleLCOV(t *testing.T) {
 	tmpDir := t.TempDir()
-	path := writeTempLCOV(t, tmpDir, "lcov.info", sampleLCOV)
+	path := writeTempLCOV(t, tmpDir, sampleLCOV)
 
 	result, err := ComputeLCOVResult(path, 85)
 	if err != nil {
@@ -180,7 +180,7 @@ func TestComputeLCOVResult_SampleLCOV(t *testing.T) {
 
 func TestComputeLCOVResult_BRDAOnlyLines(t *testing.T) {
 	tmpDir := t.TempDir()
-	path := writeTempLCOV(t, tmpDir, "lcov.info", lcovWithBRDAOnly)
+	path := writeTempLCOV(t, tmpDir, lcovWithBRDAOnly)
 
 	result, err := ComputeLCOVResult(path, 85)
 	if err != nil {
@@ -206,7 +206,7 @@ func TestComputeLCOVResult_PassFail(t *testing.T) {
 	// Only 1 covered, 1 missed → 50% pct
 	content := "TN:\nSF:src/x.ts\nDA:1,1\nDA:2,0\nend_of_record\n"
 	tmpDir := t.TempDir()
-	path := writeTempLCOV(t, tmpDir, "lcov.info", content)
+	path := writeTempLCOV(t, tmpDir, content)
 
 	result, err := ComputeLCOVResult(path, 85)
 	if err != nil {

@@ -7,19 +7,19 @@ import (
 )
 
 // FormatSyncResult formats sync results for output
-func FormatSyncResult(result *SyncResult, format string, verbose bool, quiet bool) string {
+func FormatSyncResult(result *SyncResult, format string, quiet bool) string {
 	switch format {
 	case "json":
 		return formatSyncResultJSON(result)
 	case "markdown":
-		return formatSyncResultMarkdown(result, verbose)
+		return formatSyncResultMarkdown(result)
 	default:
-		return formatSyncResultText(result, verbose, quiet)
+		return formatSyncResultText(result, quiet)
 	}
 }
 
 // formatSyncResultText formats sync results as plain text
-func formatSyncResultText(result *SyncResult, verbose bool, quiet bool) string {
+func formatSyncResultText(result *SyncResult, quiet bool) string {
 	var sb strings.Builder
 
 	if !quiet {
@@ -72,7 +72,7 @@ func formatSyncResultJSON(result *SyncResult) string {
 }
 
 // formatSyncResultMarkdown formats sync results as markdown
-func formatSyncResultMarkdown(result *SyncResult, verbose bool) string {
+func formatSyncResultMarkdown(result *SyncResult) string {
 	var sb strings.Builder
 
 	sb.WriteString("# Sync Results\n\n")

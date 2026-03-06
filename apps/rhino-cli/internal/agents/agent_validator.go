@@ -14,7 +14,6 @@ import (
 func validateAgent(
 	agentPath string,
 	filename string,
-	repoRoot string,
 	agentNames map[string]bool,
 	skillNames map[string]bool,
 ) []ValidationCheck {
@@ -436,7 +435,7 @@ func validateAllAgents(repoRoot string, skillNames map[string]bool) []Validation
 		}
 
 		agentPath := filepath.Join(agentsDir, entry.Name())
-		checks := validateAgent(agentPath, entry.Name(), repoRoot, agentNames, skillNames)
+		checks := validateAgent(agentPath, entry.Name(), agentNames, skillNames)
 		allChecks = append(allChecks, checks...)
 	}
 

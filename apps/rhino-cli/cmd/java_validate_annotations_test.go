@@ -10,7 +10,7 @@ import (
 
 // makeJavaSourceRoot creates a temp directory with Java package fixtures.
 // Returns (sourceRoot, validPkgDir, invalidPkgDir).
-func makeJavaSourceRoot(t *testing.T) (string, string, string) {
+func makeJavaSourceRoot(t *testing.T) string {
 	t.Helper()
 	src := t.TempDir()
 
@@ -36,7 +36,7 @@ func makeJavaSourceRoot(t *testing.T) (string, string, string) {
 		t.Fatal(err)
 	}
 
-	return src, validPkg, invalidPkg
+	return src
 }
 
 func TestValidateJavaAnnotationsCmd_NoArgs(t *testing.T) {
@@ -86,7 +86,7 @@ func TestValidateJavaAnnotationsCmd_ValidSourceRoot_NoViolations(t *testing.T) {
 }
 
 func TestValidateJavaAnnotationsCmd_WithViolations(t *testing.T) {
-	src, _, _ := makeJavaSourceRoot(t)
+	src := makeJavaSourceRoot(t)
 
 	cmd := validateJavaAnnotationsCmd
 	buf := new(bytes.Buffer)
@@ -113,7 +113,7 @@ func TestValidateJavaAnnotationsCmd_WithViolations(t *testing.T) {
 }
 
 func TestValidateJavaAnnotationsCmd_JSONOutput(t *testing.T) {
-	src, _, _ := makeJavaSourceRoot(t)
+	src := makeJavaSourceRoot(t)
 
 	cmd := validateJavaAnnotationsCmd
 	buf := new(bytes.Buffer)
@@ -140,7 +140,7 @@ func TestValidateJavaAnnotationsCmd_JSONOutput(t *testing.T) {
 }
 
 func TestValidateJavaAnnotationsCmd_MarkdownOutput(t *testing.T) {
-	src, _, _ := makeJavaSourceRoot(t)
+	src := makeJavaSourceRoot(t)
 
 	cmd := validateJavaAnnotationsCmd
 	buf := new(bytes.Buffer)

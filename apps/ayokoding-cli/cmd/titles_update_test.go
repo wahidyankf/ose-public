@@ -223,13 +223,13 @@ func TestOutputTitlesMarkdown_NilResults(t *testing.T) {
 	}
 }
 
-func makeTitlesContentDir(t *testing.T) (tmpDir string, restore func()) {
+func makeTitlesContentDir(t *testing.T) func() {
 	t.Helper()
 	originalDir, err := os.Getwd()
 	if err != nil {
 		t.Fatal(err)
 	}
-	tmpDir = t.TempDir()
+	tmpDir := t.TempDir()
 	enDir := filepath.Join(tmpDir, "apps", "ayokoding-web", "content", "en")
 	if err := os.MkdirAll(enDir, 0755); err != nil {
 		t.Fatal(err)
@@ -237,11 +237,11 @@ func makeTitlesContentDir(t *testing.T) (tmpDir string, restore func()) {
 	if err := os.Chdir(tmpDir); err != nil {
 		t.Fatal(err)
 	}
-	return tmpDir, func() { _ = os.Chdir(originalDir) }
+	return func() { _ = os.Chdir(originalDir) }
 }
 
 func TestRunTitlesUpdate_DryRunMessage(t *testing.T) {
-	_, restore := makeTitlesContentDir(t)
+	restore := makeTitlesContentDir(t)
 	defer restore()
 
 	resetFlags()
@@ -260,7 +260,7 @@ func TestRunTitlesUpdate_DryRunMessage(t *testing.T) {
 }
 
 func TestRunTitlesUpdate_JSONOutputSuccess(t *testing.T) {
-	_, restore := makeTitlesContentDir(t)
+	restore := makeTitlesContentDir(t)
 	defer restore()
 
 	resetFlags()

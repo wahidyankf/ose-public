@@ -63,7 +63,6 @@ func TestValidateAgent_ValidAgent(t *testing.T) {
 	checks := validateAgent(
 		filepath.Join(agentsDir, "test-agent.md"),
 		"test-agent.md",
-		tmpDir,
 		agentNames,
 		skillNames,
 	)
@@ -103,7 +102,6 @@ description:Test`
 	checks := validateAgent(
 		filepath.Join(agentsDir, "test-agent.md"),
 		"test-agent.md",
-		tmpDir,
 		agentNames,
 		skillNames,
 	)
@@ -491,7 +489,6 @@ func TestValidateAgent_FileNotFound(t *testing.T) {
 	checks := validateAgent(
 		filepath.Join(tmpDir, "nonexistent.md"),
 		"nonexistent.md",
-		tmpDir,
 		agentNames,
 		skillNames,
 	)
@@ -516,7 +513,7 @@ func TestValidateAgent_MissingRequiredFields_EarlyReturn(t *testing.T) {
 
 	agentNames := make(map[string]bool)
 	skillNames := make(map[string]bool)
-	checks := validateAgent(agentPath, "no-name.md", tmpDir, agentNames, skillNames)
+	checks := validateAgent(agentPath, "no-name.md", agentNames, skillNames)
 
 	foundFailed := false
 	for _, c := range checks {
@@ -547,7 +544,7 @@ func TestValidateAgent_GeneratedReportsPath(t *testing.T) {
 
 	agentNames := make(map[string]bool)
 	skillNames := make(map[string]bool)
-	checks := validateAgent(agentPath, "test-agent.md", tmpDir, agentNames, skillNames)
+	checks := validateAgent(agentPath, "test-agent.md", agentNames, skillNames)
 
 	// Should include the generated-reports tools check
 	foundGenReports := false

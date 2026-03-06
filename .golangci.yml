@@ -17,6 +17,9 @@ linters:
     - nilnil # simultaneous return of nil error and invalid value
     # Exhaustiveness
     - exhaustive # exhaustive enum switch statements
+    # Unused code
+    - unparam # unused function parameters (and params always called with same value)
+    - wastedassign # assignments whose written value is never subsequently read
 
   settings:
     errcheck:

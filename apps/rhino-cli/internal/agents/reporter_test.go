@@ -50,7 +50,7 @@ func makeValidationResult(withFailures bool) *ValidationResult {
 
 func TestFormatSyncResult_Text(t *testing.T) {
 	result := makeSyncResult(false)
-	out := FormatSyncResult(result, "text", false, false)
+	out := FormatSyncResult(result, "text", false)
 	if !strings.Contains(out, "Sync Complete") {
 		t.Errorf("expected 'Sync Complete' in text output, got %q", out)
 	}
@@ -61,7 +61,7 @@ func TestFormatSyncResult_Text(t *testing.T) {
 
 func TestFormatSyncResult_JSON(t *testing.T) {
 	result := makeSyncResult(false)
-	out := FormatSyncResult(result, "json", false, false)
+	out := FormatSyncResult(result, "json", false)
 	var parsed map[string]any
 	if err := json.Unmarshal([]byte(out), &parsed); err != nil {
 		t.Fatalf("expected valid JSON, got %q: %v", out, err)
@@ -70,7 +70,7 @@ func TestFormatSyncResult_JSON(t *testing.T) {
 
 func TestFormatSyncResult_Markdown(t *testing.T) {
 	result := makeSyncResult(false)
-	out := FormatSyncResult(result, "markdown", false, false)
+	out := FormatSyncResult(result, "markdown", false)
 	if !strings.Contains(out, "# Sync Results") {
 		t.Errorf("expected '# Sync Results' header, got %q", out)
 	}
@@ -78,7 +78,7 @@ func TestFormatSyncResult_Markdown(t *testing.T) {
 
 func TestFormatSyncResult_DefaultToText(t *testing.T) {
 	result := makeSyncResult(false)
-	out := FormatSyncResult(result, "unknown", false, false)
+	out := FormatSyncResult(result, "unknown", false)
 	if !strings.Contains(out, "Agents:") {
 		t.Errorf("expected text format for unknown format, got %q", out)
 	}
@@ -88,7 +88,7 @@ func TestFormatSyncResult_DefaultToText(t *testing.T) {
 
 func TestFormatSyncResultText_Quiet(t *testing.T) {
 	result := makeSyncResult(false)
-	out := formatSyncResultText(result, false, true)
+	out := formatSyncResultText(result, true)
 	if strings.Contains(out, "Sync Complete") {
 		t.Errorf("expected no header in quiet mode, got %q", out)
 	}
@@ -99,7 +99,7 @@ func TestFormatSyncResultText_Quiet(t *testing.T) {
 
 func TestFormatSyncResultText_WithFailures(t *testing.T) {
 	result := makeSyncResult(true)
-	out := formatSyncResultText(result, false, false)
+	out := formatSyncResultText(result, false)
 	if !strings.Contains(out, "Failed Files:") {
 		t.Errorf("expected 'Failed Files:' in output, got %q", out)
 	}
@@ -113,7 +113,7 @@ func TestFormatSyncResultText_WithFailures(t *testing.T) {
 
 func TestFormatSyncResultText_Success(t *testing.T) {
 	result := makeSyncResult(false)
-	out := formatSyncResultText(result, false, false)
+	out := formatSyncResultText(result, false)
 	if !strings.Contains(out, "SUCCESS") {
 		t.Errorf("expected SUCCESS status, got %q", out)
 	}
@@ -128,7 +128,7 @@ func TestFormatSyncResultText_AgentAndSkillFailures(t *testing.T) {
 		FailedFiles:     []string{"bad-skill.md"},
 		Duration:        time.Second,
 	}
-	out := formatSyncResultText(result, false, false)
+	out := formatSyncResultText(result, false)
 	if !strings.Contains(out, "1 failed") {
 		t.Errorf("expected agent failure count, got %q", out)
 	}
@@ -152,7 +152,7 @@ func TestFormatSyncResultJSON_Valid(t *testing.T) {
 
 func TestFormatSyncResultMarkdown_Success(t *testing.T) {
 	result := makeSyncResult(false)
-	out := formatSyncResultMarkdown(result, false)
+	out := formatSyncResultMarkdown(result)
 	if !strings.Contains(out, "# Sync Results") {
 		t.Errorf("expected markdown header, got %q", out)
 	}
@@ -166,7 +166,7 @@ func TestFormatSyncResultMarkdown_Success(t *testing.T) {
 
 func TestFormatSyncResultMarkdown_WithFailures(t *testing.T) {
 	result := makeSyncResult(true)
-	out := formatSyncResultMarkdown(result, false)
+	out := formatSyncResultMarkdown(result)
 	if !strings.Contains(out, "## Failed Files") {
 		t.Errorf("expected '## Failed Files' section, got %q", out)
 	}
@@ -184,7 +184,7 @@ func TestFormatSyncResultMarkdown_AgentAndSkillFailed(t *testing.T) {
 		FailedFiles:     []string{"x.md"},
 		Duration:        time.Second,
 	}
-	out := formatSyncResultMarkdown(result, false)
+	out := formatSyncResultMarkdown(result)
 	if !strings.Contains(out, "**Agents Failed**") {
 		t.Errorf("expected agents failed line, got %q", out)
 	}

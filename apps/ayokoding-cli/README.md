@@ -386,12 +386,12 @@ Two test tiers cover different concerns:
 # Run unit tests (no build tag required)
 go test ./...
 
-# Via Nx (includes 85% line coverage check)
+# Via Nx (includes 95% line coverage check)
 nx run ayokoding-cli:test:quick
 ```
 
 Unit tests cover isolated pure functions, algorithmic logic, and edge cases not
-reachable from integration tests. Coverage threshold: ≥85% line coverage.
+reachable from integration tests. Coverage threshold: ≥95% line coverage.
 
 ### Integration Tests
 

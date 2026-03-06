@@ -901,11 +901,11 @@ go test ./...
 
 - `cmd`: Root command tests, docs validate-links integration tests, doctor integration tests
 - `internal/doctor`: 95%+ coverage (checker, reporter — all pure functions tested with fake runner)
-- `internal/docs`: 85%+ coverage (naming: scanner, validator, reporter, prefix_rules, fixer; links: links_scanner, links_validator, links_categorizer, links_reporter)
-- `internal/agents`: 85%+ coverage (converter, copier, sync_validator, reporter, claude_validator, agent_validator, skill_validator)
-- `internal/speccoverage`: ≥85% coverage (parser, checker with temp dir fixtures, reporter for all formats)
-- `internal/java`: ≥85% coverage (scanner, validator, reporter — all pure functions tested with temp dir fixtures)
-- `internal/testcoverage`: ≥85% coverage (detect, go_coverage, lcov_coverage, reporter — all pure functions with temp dir fixtures)
+- `internal/docs`: 95%+ coverage (naming: scanner, validator, reporter, prefix_rules, fixer; links: links_scanner, links_validator, links_categorizer, links_reporter)
+- `internal/agents`: 95%+ coverage (converter, copier, sync_validator, reporter, claude_validator, agent_validator, skill_validator)
+- `internal/speccoverage`: ≥95% coverage (parser, checker with temp dir fixtures, reporter for all formats)
+- `internal/java`: ≥95% coverage (scanner, validator, reporter — all pure functions tested with temp dir fixtures)
+- `internal/testcoverage`: ≥95% coverage (detect, go_coverage, lcov_coverage, reporter — all pure functions with temp dir fixtures)
 
 ### Lint
 
@@ -946,7 +946,7 @@ nx install rhino-cli
 **Available Nx Targets:**
 
 - `build` - Build the CLI binary to `dist/`
-- `test:quick` - Run unit tests with ≥85% coverage enforcement
+- `test:quick` - Run unit tests with ≥95% coverage enforcement
 - `test:integration` - Run all 39 godog BDD scenarios (cached; only re-runs when sources or specs change)
 - `lint` - Static analysis via golangci-lint
 - `run` - Run the CLI directly (`go run main.go`)
@@ -957,7 +957,7 @@ nx install rhino-cli
 The project uses two complementary test tiers:
 
 - **Unit tests** (`go test ./...`, no build tag): pure function tests with temp dir fixtures.
-  Run via `nx run rhino-cli:test:quick` with ≥85% line coverage enforcement.
+  Run via `nx run rhino-cli:test:quick` with ≥95% line coverage enforcement.
 - **Integration tests** (`//go:build integration`, `go test -tags=integration -run TestIntegration ./cmd/...`):
   godog BDD tests that drive each command in-process via `cmd.RunE()` against controlled filesystem
   fixtures. One file per command in `apps/rhino-cli/cmd/`, 39 scenarios total across 9 suites.

@@ -64,11 +64,11 @@ Two test tiers cover different concerns:
 ### Unit Tests
 
 ```sh
-# Via Nx (includes 85% line coverage check)
+# Via Nx (includes 95% line coverage check)
 nx run oseplatform-cli:test:quick
 ```
 
-Coverage threshold: ≥85% line coverage.
+Coverage threshold: ≥95% line coverage.
 
 ### Integration Tests
 

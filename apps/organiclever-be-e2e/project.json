@@ -21,7 +21,8 @@
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx oxlint@latest .",
+        "commands": ["npx oxlint@latest .", "npx bddgen"],
+        "parallel": true,
         "cwd": "apps/organiclever-be-e2e"
       }
     },

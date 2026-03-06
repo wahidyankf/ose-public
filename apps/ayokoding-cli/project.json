@@ -8,7 +8,7 @@
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "go build -o dist/ayokoding-cli",
+        "command": "CGO_ENABLED=0 go build -o dist/ayokoding-cli",
         "cwd": "apps/ayokoding-cli"
       },
       "outputs": ["{projectRoot}/dist"]
@@ -16,7 +16,7 @@
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "go test -coverprofile=cover.out ./... && (cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/ayokoding-cli/cover.out 95)",
+        "command": "CGO_ENABLED=0 go test -coverprofile=cover.out ./... && (cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/ayokoding-cli/cover.out 95)",
         "cwd": "apps/ayokoding-cli"
       }
     },
@@ -47,7 +47,7 @@
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "golangci-lint run --allow-parallel-runners ./...",
+        "command": "CGO_ENABLED=0 golangci-lint run --allow-parallel-runners ./...",
         "cwd": "apps/ayokoding-cli"
       }
     }

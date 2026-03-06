@@ -411,7 +411,7 @@ The two Maven profiles are mutually exclusive: `mvn test` includes only `**/unit
 `mvn test -Pintegration` includes only `**/integration/**/*Test.java`. `test:quick` runs both in
 parallel (MockMvc needs no real server, so there is no shared resource contention).
 
-Integration and E2E tests share the same Gherkin feature files from `specs/organiclever-be/`.
+Integration and E2E tests share the same Gherkin feature files from `specs/apps/organiclever-be/`.
 
 ### Unit Tests
 

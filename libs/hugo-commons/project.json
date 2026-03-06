@@ -24,7 +24,7 @@
         "cwd": "libs/hugo-commons"
       },
       "cache": true,
-      "inputs": ["{projectRoot}/**/*.go", "{workspaceRoot}/specs/hugo-commons/**/*.feature"],
+      "inputs": ["{projectRoot}/**/*.go", "{workspaceRoot}/specs/libs/hugo-commons/**/*.feature"],
       "outputs": ["{projectRoot}/cover_spec.out"]
     },
     "install": {

@@ -128,7 +128,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Adds ../../specs/organiclever-be to the test classpath so feature files are
+            <!-- Adds ../../specs/apps/organiclever-be to the test classpath so feature files are
                  available at classpath root (e.g., hello/hello-endpoint.feature) -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -142,7 +142,7 @@
                         <configuration>
                             <resources>
                                 <resource>
-                                    <directory>../../specs/organiclever-be</directory>
+                                    <directory>../../specs/apps/organiclever-be</directory>
                                 </resource>
                             </resources>
                         </configuration>

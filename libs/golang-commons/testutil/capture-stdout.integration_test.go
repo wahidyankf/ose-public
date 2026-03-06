@@ -17,7 +17,7 @@ import (
 
 var specsTestutilDir = func() string {
 	_, f, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(f), "../../../specs/golang-commons/testutil")
+	return filepath.Join(filepath.Dir(f), "../../../specs/libs/golang-commons/testutil")
 }()
 
 type captureStdoutSteps struct {

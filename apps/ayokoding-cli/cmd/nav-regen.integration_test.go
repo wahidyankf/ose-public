@@ -18,7 +18,7 @@ import (
 
 var specsNavRegenDir = func() string {
 	_, f, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(f), "../../../specs/ayokoding-cli/nav")
+	return filepath.Join(filepath.Dir(f), "../../../specs/apps/ayokoding-cli/nav")
 }()
 
 // Scenario: A content directory with index files regenerates successfully

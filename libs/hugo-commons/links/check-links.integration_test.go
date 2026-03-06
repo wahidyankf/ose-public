@@ -20,7 +20,7 @@ import (
 
 var specsCheckLinksDir = func() string {
 	_, f, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(f), "../../../specs/hugo-commons/links")
+	return filepath.Join(filepath.Dir(f), "../../../specs/libs/hugo-commons/links")
 }()
 
 type checkLinksSteps struct {

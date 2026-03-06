@@ -84,9 +84,9 @@ Feature: Agent Configuration Synchronisation
 Alternatively, a command with its own distinct domain gets its own feature file:
 
 ```
-specs/rhino-cli/doctor/doctor.feature                       <- single @doctor tag
-specs/rhino-cli/agents/agents-sync.feature                  <- @agents-sync + @agents-validate-sync
-specs/rhino-cli/agents/agents-validate-claude.feature       <- single @agents-validate-claude tag
+specs/apps/rhino-cli/doctor/doctor.feature                       <- single @doctor tag
+specs/apps/rhino-cli/agents/agents-sync.feature                  <- @agents-sync + @agents-validate-sync
+specs/apps/rhino-cli/agents/agents-validate-claude.feature       <- single @agents-validate-claude tag
 ```
 
 ### 3. Integration Test to Tag (mandatory)
@@ -114,7 +114,7 @@ func TestIntegrationValidateSync(t *testing.T) {
 | Command file     | `{domain}_{action}.go`                           | `agents_validate_sync.go`                             |
 | Unit test        | `{domain}_{action}_test.go`                      | `agents_validate_sync_test.go`                        |
 | Integration test | `{domain}_{action}.integration_test.go`          | `agents_validate_sync.integration_test.go`            |
-| Feature file     | `specs/{app}/{domain}/{domain}-{action}.feature` | `specs/rhino-cli/agents/agents-validate-sync.feature` |
+| Feature file     | `specs/{app}/{domain}/{domain}-{action}.feature` | `specs/apps/rhino-cli/agents/agents-validate-sync.feature` |
 
 **The universal rule**: All Go files (command, unit test, integration test) use underscores. Feature files and `@tag`s use hyphens. The `spec-coverage validate` tool normalises hyphens to underscores when matching feature stems to Go test files.
 
@@ -129,7 +129,7 @@ The `spec-coverage validate` command enforces this mapping at three levels:
 Run the check:
 
 ```bash
-rhino-cli spec-coverage validate specs/rhino-cli apps/rhino-cli
+rhino-cli spec-coverage validate specs/apps/rhino-cli apps/rhino-cli
 ```
 
 ## Adding a New Command
@@ -145,4 +145,4 @@ rhino-cli spec-coverage validate specs/rhino-cli apps/rhino-cli
 - [Acceptance Criteria Convention](./acceptance-criteria.md) - Gherkin format standards
 - [Nx Target Standards](./nx-targets.md) - `test:integration` target for godog suites
 - [specs/README.md](../../../specs/README.md) - Spec directory organization
-- [specs/rhino-cli/README.md](../../../specs/rhino-cli/README.md) - rhino-cli spec structure
+- [specs/apps/rhino-cli/README.md](../../../specs/apps/rhino-cli/README.md) - rhino-cli spec structure

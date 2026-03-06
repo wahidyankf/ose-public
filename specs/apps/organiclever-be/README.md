@@ -24,7 +24,7 @@ for required framework setup and coverage rules.
 Organize feature files by domain capability (bounded context):
 
 ```
-specs/organiclever-be/
+specs/apps/organiclever-be/
 ├── hello/
 │   └── hello-endpoint.feature
 └── [future-context]/
@@ -46,7 +46,7 @@ npx bddgen && npx playwright test
 ## Adding a Feature File
 
 1. Identify the bounded context (e.g., `hello`, `task-management`)
-2. Create the folder if it does not exist: `specs/organiclever-be/[context]/`
+2. Create the folder if it does not exist: `specs/apps/organiclever-be/[context]/`
 3. Create the `.feature` file: `[domain-capability].feature`
 4. Write scenarios following
    [Gherkin Standards](../../docs/explanation/software-engineering/development/behavior-driven-development-bdd/ex-soen-de-bedrdebd__gherkin-standards.md)

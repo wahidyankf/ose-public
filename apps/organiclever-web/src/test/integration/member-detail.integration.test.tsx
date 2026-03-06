@@ -22,7 +22,7 @@ import { useAuth } from "@/app/contexts/auth-context";
 import { useRouter } from "next/navigation";
 import MemberDetailPage from "@/app/dashboard/members/[id]/page";
 
-const feature = await loadFeature("../../specs/organiclever-web/members/member-detail.feature");
+const feature = await loadFeature("../../specs/apps/organiclever-web/members/member-detail.feature");
 
 describeFeature(feature, ({ Scenario, BeforeEachScenario, AfterEachScenario }) => {
   BeforeEachScenario(() => {

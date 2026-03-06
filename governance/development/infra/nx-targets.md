@@ -316,7 +316,7 @@ See `apps/organiclever-be-e2e/project.json` for the canonical example.
 
 **`test:integration` with Cucumber JVM**: `organiclever-be` also exposes `test:integration` which
 runs `mvn test -Pintegration`. This activates Cucumber JVM 7+ with MockMvc — the same Gherkin
-feature files from `specs/organiclever-be/` are executed via a full Spring context but without a
+feature files from `specs/apps/organiclever-be/` are executed via a full Spring context but without a
 running server. Unlike `test:e2e`, no live service is required.
 
 ### Hugo Sites

@@ -23,7 +23,7 @@ import DashboardPage from "@/app/dashboard/page";
 import MembersPage from "@/app/dashboard/members/page";
 import LoginPage from "@/app/login/page";
 
-const feature = await loadFeature("../../specs/organiclever-web/auth/route-protection.feature");
+const feature = await loadFeature("../../specs/apps/organiclever-web/auth/route-protection.feature");
 
 describeFeature(feature, ({ Scenario, BeforeEachScenario, AfterEachScenario }) => {
   BeforeEachScenario(() => {

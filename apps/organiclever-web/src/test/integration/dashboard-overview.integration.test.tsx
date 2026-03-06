@@ -21,7 +21,7 @@ import { useAuth } from "@/app/contexts/auth-context";
 import { useRouter } from "next/navigation";
 import DashboardPage from "@/app/dashboard/page";
 
-const feature = await loadFeature("../../specs/organiclever-web/dashboard/dashboard-overview.feature");
+const feature = await loadFeature("../../specs/apps/organiclever-web/dashboard/dashboard-overview.feature");
 
 describeFeature(feature, ({ Scenario, BeforeEachScenario, AfterEachScenario }) => {
   BeforeEachScenario(() => {

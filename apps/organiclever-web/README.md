@@ -148,7 +148,7 @@ Use the `apps-organiclever-web-deployer` agent for guided deployment.
 ## Testing
 
 `organiclever-web` uses a three-tier testing strategy. Integration and E2E share the same Gherkin
-specs from [`specs/organiclever-web/`](../../specs/organiclever-web/).
+specs from [`specs/apps/organiclever-web/`](../../specs/apps/organiclever-web/).
 
 | Tier        | Tool                     | Location                                      | Command                                    | Requires service? | Cached? |
 | ----------- | ------------------------ | --------------------------------------------- | ------------------------------------------ | ----------------- | ------- |

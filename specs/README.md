@@ -26,18 +26,18 @@ Acceptance specs belong at the monorepo root rather than inside app directories 
 
 ## App Specs
 
-- **[organiclever-be/](./organiclever-be/README.md)** — Backend REST API specifications (Spring Boot,
+- **[organiclever-be/](./apps/organiclever-be/README.md)** — Backend REST API specifications (Spring Boot,
   Cucumber JVM + playwright-bdd)
-- **[organiclever-web/](./organiclever-web/README.md)** — Web landing page specifications (Next.js,
+- **[organiclever-web/](./apps/organiclever-web/README.md)** — Web landing page specifications (Next.js,
   vitest-cucumber + playwright-bdd)
-- **[rhino-cli/](./rhino-cli/README.md)** — Repository management CLI specifications (Go, godog)
-- **[ayokoding-cli/](./ayokoding-cli/README.md)** — Content automation CLI specifications (Go, godog)
-- **[oseplatform-cli/](./oseplatform-cli/README.md)** — OSE Platform site CLI specifications (Go, godog)
+- **[rhino-cli/](./apps/rhino-cli/README.md)** — Repository management CLI specifications (Go, godog)
+- **[ayokoding-cli/](./apps/ayokoding-cli/README.md)** — Content automation CLI specifications (Go, godog)
+- **[oseplatform-cli/](./apps/oseplatform-cli/README.md)** — OSE Platform site CLI specifications (Go, godog)
 
 ## Library Specs
 
-- **golang-commons/** — Shared Go utility specifications (godog)
-- **hugo-commons/** — Hugo site utility specifications (godog)
+- **[golang-commons/](./libs/golang-commons/)** — Shared Go utility specifications (godog)
+- **[hugo-commons/](./libs/hugo-commons/)** — Hugo site utility specifications (godog)
 
 ## Standards
 
@@ -52,9 +52,10 @@ All feature files follow the OSE Platform BDD standards:
 - [Spec-to-Test Mapping](../governance/development/infra/bdd-spec-test-mapping.md) —
   mandatory 1:1 mapping between CLI commands and feature file `@tags`
 
-## Adding Specs for a New App
+## Adding Specs
 
-1. Create a folder matching the app name: `specs/[app-name]/`
-2. Add a `README.md` describing the app, BDD framework, and feature file organization
-3. Organize `.feature` files by bounded context or user journey (kebab-case names)
-4. Update this README with a link to the new folder
+1. Choose the appropriate subdirectory: `specs/apps/` for applications, `specs/libs/` for libraries
+2. Create a folder matching the project name: `specs/apps/[app-name]/` or `specs/libs/[lib-name]/`
+3. Add a `README.md` describing the project, BDD framework, and feature file organization
+4. Organize `.feature` files by bounded context or user journey (kebab-case names)
+5. Update this README with a link to the new folder

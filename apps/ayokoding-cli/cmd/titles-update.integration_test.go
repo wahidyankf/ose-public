@@ -18,7 +18,7 @@ import (
 
 var specsTitlesUpdateDir = func() string {
 	_, f, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(f), "../../../specs/ayokoding-cli/titles")
+	return filepath.Join(filepath.Dir(f), "../../../specs/apps/ayokoding-cli/titles")
 }()
 
 // Scenario: Updating titles in a content directory exits successfully

@@ -20,7 +20,7 @@ vi.mock("@/components/Breadcrumb", () => ({ default: () => null }));
 import { useAuth } from "@/app/contexts/auth-context";
 import Home from "@/app/page";
 
-const feature = await loadFeature("../../specs/organiclever-web/landing/landing-page.feature");
+const feature = await loadFeature("../../specs/apps/organiclever-web/landing/landing-page.feature");
 
 describeFeature(feature, ({ Scenario, BeforeEachScenario, AfterEachScenario }) => {
   BeforeEachScenario(() => {

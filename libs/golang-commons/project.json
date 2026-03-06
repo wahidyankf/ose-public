@@ -17,7 +17,7 @@
         "cwd": "libs/golang-commons"
       },
       "cache": true,
-      "inputs": ["{projectRoot}/**/*.go", "{workspaceRoot}/specs/golang-commons/**/*.feature"],
+      "inputs": ["{projectRoot}/**/*.go", "{workspaceRoot}/specs/libs/golang-commons/**/*.feature"],
       "outputs": ["{projectRoot}/cover_spec.out"]
     },
     "lint": {

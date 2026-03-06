@@ -85,8 +85,8 @@ import { defineConfig } from "@playwright/test";
 import { defineBddConfig } from "playwright-bdd";
 
 const testDir = defineBddConfig({
-  featuresRoot: "../../specs/organiclever-be",
-  features: "../../specs/organiclever-be/**/*.feature",
+  featuresRoot: "../../specs/apps/organiclever-be",
+  features: "../../specs/apps/organiclever-be/**/*.feature",
   steps: "./tests/steps/**/*.ts",
 });
 
@@ -293,7 +293,7 @@ npx bddgen && npx playwright test
 
 - **[BDD Standards](../../../development/behavior-driven-development-bdd/README.md)** — Framework
   requirements, Three Amigos process, coverage rules
-- **[specs/organiclever-be/](../../../../../../specs/organiclever-be/README.md)** — Feature files
+- **[specs/apps/organiclever-be/](../../../../../../specs/apps/organiclever-be/README.md)** — Feature files
   and their organization
 - **[Configuration Standards](ex-soen-aute-to-pl__configuration.md)** — playwright.config.ts
   patterns including the BDD configuration section

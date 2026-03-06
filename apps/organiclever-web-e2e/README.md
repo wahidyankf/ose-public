@@ -2,12 +2,12 @@
 
 End-to-end tests for the [organiclever-web](../organiclever-web) Next.js landing and promotional website.
 
-Tests are driven by Gherkin feature files in [`specs/organiclever-web/`](../../specs/organiclever-web/) using [playwright-bdd](https://github.com/vitalets/playwright-bdd). The `bddgen` tool generates Playwright spec files from feature files before running tests.
+Tests are driven by Gherkin feature files in [`specs/apps/organiclever-web/`](../../specs/apps/organiclever-web/) using [playwright-bdd](https://github.com/vitalets/playwright-bdd). The `bddgen` tool generates Playwright spec files from feature files before running tests.
 
 ## Architecture
 
 ```
-specs/organiclever-web/**/*.feature   ← source of truth (Gherkin scenarios)
+specs/apps/organiclever-web/**/*.feature   ← source of truth (Gherkin scenarios)
         │
         ▼  (bddgen generates)
 .features-gen/**/*.spec.ts            ← auto-generated, gitignored
@@ -130,7 +130,7 @@ The member editing and deletion features mutate `apps/organiclever-web/src/data/
 
 ## Related
 
-- [specs/organiclever-web/](../../specs/organiclever-web/README.md) — Gherkin feature files (source of truth)
+- [specs/apps/organiclever-web/](../../specs/apps/organiclever-web/README.md) — Gherkin feature files (source of truth)
 - [organiclever-web](../organiclever-web/README.md) — The frontend being tested
 - [organiclever-be-e2e](../organiclever-be-e2e/README.md) — API-level E2E counterpart (tests the Spring Boot backend)
 - [Playwright docs](../../docs/explanation/software-engineering/automation-testing/tools/playwright/README.md) — Playwright standards for this project

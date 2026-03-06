@@ -33,7 +33,7 @@ rhino-cli docs validate-links
 rhino-cli docs validate-links --staged-only
 
 # Validate BDD spec coverage (all specs have matching test files)
-rhino-cli spec-coverage validate specs/organiclever-web apps/organiclever-web
+rhino-cli spec-coverage validate specs/apps/organiclever-web apps/organiclever-web
 
 # Validate Java packages have @NullMarked in package-info.java
 rhino-cli java validate-annotations apps/organiclever-be/src/main/java
@@ -475,16 +475,16 @@ the spec-to-test direction for test suites that use explicit file loading (e.g. 
 
 ```bash
 # Check organiclever-web spec coverage
-rhino-cli spec-coverage validate specs/organiclever-web apps/organiclever-web
+rhino-cli spec-coverage validate specs/apps/organiclever-web apps/organiclever-web
 
 # Output as JSON
-rhino-cli spec-coverage validate specs/organiclever-web apps/organiclever-web -o json
+rhino-cli spec-coverage validate specs/apps/organiclever-web apps/organiclever-web -o json
 
 # Output as markdown
-rhino-cli spec-coverage validate specs/organiclever-web apps/organiclever-web -o markdown
+rhino-cli spec-coverage validate specs/apps/organiclever-web apps/organiclever-web -o markdown
 
 # Quiet mode
-rhino-cli spec-coverage validate specs/organiclever-web apps/organiclever-web -q
+rhino-cli spec-coverage validate specs/apps/organiclever-web apps/organiclever-web -q
 ```
 
 **What it does:**
@@ -517,7 +517,7 @@ This command closes that gap for any app using explicit feature loading.
 
 **Arguments:**
 
-- `<specs-dir>` - Path to specs folder (relative to repo root, e.g. `specs/organiclever-web`)
+- `<specs-dir>` - Path to specs folder (relative to repo root, e.g. `specs/apps/organiclever-web`)
 - `<app-dir>` - Path to app folder (relative to repo root, e.g. `apps/organiclever-web`)
 
 **Flags:**
@@ -543,15 +543,15 @@ This command closes that gap for any app using explicit feature loading.
 ✗ Spec coverage gaps found!
 
 Missing test files (1):
-  - specs/organiclever-web/auth/new-feature.feature
+  - specs/apps/organiclever-web/auth/new-feature.feature
     (expected test file with stem: new-feature)
 
 Missing scenarios (1):
-  - specs/organiclever-web/auth/user-login.feature
+  - specs/apps/organiclever-web/auth/user-login.feature
     → Scenario: "Login with SSO"
 
 Missing steps (2):
-  - specs/organiclever-web/members/member-list.feature
+  - specs/apps/organiclever-web/members/member-list.feature
     → Scenario: "Export member list"
       · Given the member list has been loaded
       · When the user clicks "Export CSV"

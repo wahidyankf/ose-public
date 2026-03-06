@@ -24,7 +24,7 @@ import { useAuth } from "@/app/contexts/auth-context";
 import { useRouter } from "next/navigation";
 import MembersPage from "@/app/dashboard/members/page";
 
-const feature = await loadFeature("../../specs/organiclever-web/members/member-editing.feature");
+const feature = await loadFeature("../../specs/apps/organiclever-web/members/member-editing.feature");
 
 async function openEditDialogFor(name: string): Promise<void> {
   const user = userEvent.setup();

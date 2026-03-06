@@ -19,7 +19,7 @@ import (
 
 var specsValidateTestCoverageDir = func() string {
 	_, f, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(f), "../../../specs/rhino-cli/test-coverage")
+	return filepath.Join(filepath.Dir(f), "../../../specs/apps/rhino-cli/test-coverage")
 }()
 
 // Scenario: A Go coverage file above the threshold reports success

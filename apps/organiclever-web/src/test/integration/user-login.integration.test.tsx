@@ -21,7 +21,7 @@ import { useAuth } from "@/app/contexts/auth-context";
 import { useRouter } from "next/navigation";
 import LoginPage from "@/app/login/page";
 
-const feature = await loadFeature("../../specs/organiclever-web/auth/user-login.feature");
+const feature = await loadFeature("../../specs/apps/organiclever-web/auth/user-login.feature");
 
 describeFeature(feature, ({ Scenario, BeforeEachScenario, AfterEachScenario }) => {
   BeforeEachScenario(() => {

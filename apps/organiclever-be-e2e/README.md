@@ -8,7 +8,7 @@ Tests use Playwright's `APIRequestContext` to validate HTTP endpoints — no bro
 
 ## What This Tests
 
-Feature files in `specs/organiclever-be/` are the source of truth:
+Feature files in `specs/apps/organiclever-be/` are the source of truth:
 
 - `hello/hello-endpoint.feature` — `GET /api/v1/hello` returns greeting and respects CORS
 - `actuator/health-check.feature` — `GET /actuator/health` reports service status
@@ -16,7 +16,7 @@ Feature files in `specs/organiclever-be/` are the source of truth:
 ## Architecture
 
 ```
-specs/organiclever-be/**/*.feature    ← source of truth (read-only)
+specs/apps/organiclever-be/**/*.feature    ← source of truth (read-only)
         │
         ▼  (defineBddConfig reads features)
 playwright.config.ts
@@ -131,5 +131,5 @@ this scenario will fail — which is expected, as E2E tests validate production-
 ## Related
 
 - [organiclever-be](../organiclever-be/README.md) — The backend being tested
-- [specs/organiclever-be](../../specs/organiclever-be/) — Gherkin feature files (source of truth)
+- [specs/organiclever-be](../../specs/apps/organiclever-be/) — Gherkin feature files (source of truth)
 - [Playwright docs](../../docs/explanation/software-engineering/automation-testing/tools/playwright/README.md) — Playwright standards for this project

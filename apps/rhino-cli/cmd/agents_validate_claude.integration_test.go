@@ -17,7 +17,7 @@ import (
 
 var specsClaudeDir = func() string {
 	_, f, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(f), "../../../specs/rhino-cli/agents")
+	return filepath.Join(filepath.Dir(f), "../../../specs/apps/rhino-cli/agents")
 }()
 
 // Scenario: A directory with all agents and skills correctly configured passes validation

@@ -41,7 +41,7 @@
         "cwd": "apps/rhino-cli"
       },
       "cache": true,
-      "inputs": ["{projectRoot}/cmd/**/*.go", "{workspaceRoot}/specs/rhino-cli/**/*.feature"],
+      "inputs": ["{projectRoot}/cmd/**/*.go", "{workspaceRoot}/specs/apps/rhino-cli/**/*.feature"],
       "outputs": ["{projectRoot}/cover_spec.out"]
     },
     "lint": {

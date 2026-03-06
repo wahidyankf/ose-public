@@ -407,17 +407,17 @@ go test -v -tags=integration -run TestIntegrationLinksCheck ./cmd/...
 ```
 
 Integration tests use [godog](https://github.com/cucumber/godog) to run Gherkin
-scenarios from `specs/ayokoding-cli/`. They are co-located in `cmd/` (same
+scenarios from `specs/apps/ayokoding-cli/`. They are co-located in `cmd/` (same
 package) to access unexported flag variables. Three suites cover all 3 commands:
 
 | Test function                 | Feature file                                       | Scenarios |
 | ----------------------------- | -------------------------------------------------- | --------- |
-| `TestIntegrationNavRegen`     | `specs/ayokoding-cli/nav/nav-regen.feature`        | 5         |
-| `TestIntegrationTitlesUpdate` | `specs/ayokoding-cli/titles/titles-update.feature` | 4         |
-| `TestIntegrationLinksCheck`   | `specs/ayokoding-cli/links/links-check.feature`    | 4         |
+| `TestIntegrationNavRegen`     | `specs/apps/ayokoding-cli/nav/nav-regen.feature`        | 5         |
+| `TestIntegrationTitlesUpdate` | `specs/apps/ayokoding-cli/titles/titles-update.feature` | 4         |
+| `TestIntegrationLinksCheck`   | `specs/apps/ayokoding-cli/links/links-check.feature`    | 4         |
 
 The `test:integration` target is cached — it only re-runs when `cmd/**/*.go` or
-`specs/ayokoding-cli/**/*.feature` files change.
+`specs/apps/ayokoding-cli/**/*.feature` files change.
 
 ## Development
 

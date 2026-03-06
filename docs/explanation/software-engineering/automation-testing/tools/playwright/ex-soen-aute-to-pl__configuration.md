@@ -123,8 +123,8 @@ import { defineConfig } from "@playwright/test";
 import { defineBddConfig } from "playwright-bdd";
 
 const testDir = defineBddConfig({
-  featuresRoot: "../../specs/organiclever-be",
-  features: "../../specs/organiclever-be/**/*.feature",
+  featuresRoot: "../../specs/apps/organiclever-be",
+  features: "../../specs/apps/organiclever-be/**/*.feature",
   steps: "./tests/steps/**/*.ts",
 });
 

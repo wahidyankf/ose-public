@@ -24,7 +24,7 @@ feature files directly via `loadFeature()` — no code generation step needed.
 ## Feature File Organization
 
 ```
-specs/organiclever-web/
+specs/apps/organiclever-web/
 ├── landing/
 │   └── landing-page.feature
 ├── auth/
@@ -56,7 +56,7 @@ npx bddgen && npx playwright test
 ## Adding a Feature File
 
 1. Identify the user journey or domain area (e.g., `auth`, `members`)
-2. Create the folder if it does not exist: `specs/organiclever-web/[area]/`
+2. Create the folder if it does not exist: `specs/apps/organiclever-web/[area]/`
 3. Create the `.feature` file: `[user-journey].feature`
 4. Write scenarios following
    [Gherkin Standards](../../docs/explanation/software-engineering/development/behavior-driven-development-bdd/ex-soen-de-bedrdebd__gherkin-standards.md)

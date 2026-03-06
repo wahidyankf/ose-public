@@ -36,11 +36,11 @@ go test -v -tags=integration -run TestIntegrationLinksCheck ./cmd/...
 ```
 
 The `test:integration` target is cached — it only re-runs when source files in
-`cmd/**/*.go` or `specs/ayokoding-cli/**/*.feature` change.
+`cmd/**/*.go` or `specs/apps/ayokoding-cli/**/*.feature` change.
 
 ## Adding New Specs
 
-1. Create `specs/ayokoding-cli/<domain>/<command>.feature`
+1. Create `specs/apps/ayokoding-cli/<domain>/<command>.feature`
 2. Create `apps/ayokoding-cli/cmd/<command>.integration_test.go` (co-located in `cmd/`, not a
    separate folder — the file must be in `package cmd` to access unexported flag variables):
    - Add `//go:build integration` and `package cmd` at the top

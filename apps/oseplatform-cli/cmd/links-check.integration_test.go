@@ -18,7 +18,7 @@ import (
 
 var specsLinksCheckOseplatformDir = func() string {
 	_, f, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(f), "../../../specs/oseplatform-cli/links")
+	return filepath.Join(filepath.Dir(f), "../../../specs/apps/oseplatform-cli/links")
 }()
 
 // Scenario: A content directory with all valid internal links passes validation

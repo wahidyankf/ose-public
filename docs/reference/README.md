@@ -7,7 +7,7 @@ tags:
   - reference
   - technical
 created: 2025-11-22
-updated: 2025-12-21
+updated: 2026-03-06
 ---
 
 # Reference
@@ -24,4 +24,4 @@ Technical reference documentation for the open-sharia-enterprise project. These 
 
 ---
 
-**Last Updated**: 2025-12-21
+**Last Updated**: 2026-03-06

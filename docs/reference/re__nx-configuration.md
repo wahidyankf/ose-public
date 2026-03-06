@@ -7,7 +7,7 @@ tags:
   - configuration
   - build-system
 created: 2025-11-29
-updated: 2025-11-30
+updated: 2026-03-06
 ---
 
 # Nx Configuration Reference
@@ -44,7 +44,7 @@ Complete reference for Nx workspace configuration files, options, and settings.
     "default": {
       "runner": "nx/tasks-runners/default",
       "options": {
-        "cacheableOperations": ["build", "typecheck", "lint", "test:quick", "test:unit"]
+        "cacheableOperations": ["build", "typecheck", "lint", "test:quick", "test:unit", "test:integration"]
       }
     }
   },
@@ -67,7 +67,7 @@ Complete reference for Nx workspace configuration files, options, and settings.
       "cache": true
     },
     "test:integration": {
-      "cache": false
+      "cache": true
     },
     "test:e2e": {
       "cache": false
@@ -177,7 +177,7 @@ Default configuration for targets across all projects.
       "cache": true
     },
     "test:integration": {
-      "cache": false
+      "cache": true
     },
     "test:e2e": {
       "cache": false

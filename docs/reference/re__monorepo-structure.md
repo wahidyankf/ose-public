@@ -8,7 +8,7 @@ tags:
   - architecture
   - structure
 created: 2025-11-29
-updated: 2025-12-05
+updated: 2026-03-06
 ---
 
 # Monorepo Structure Reference
@@ -78,6 +78,10 @@ Flat structure - all apps at the same level, no subdirectories.
 - `ayokoding-cli` - AyoKoding CLI tool (Go application)
 - `rhino-cli` - Repository management CLI, includes `java validate-annotations` (Go application)
 - `oseplatform-cli` - OSE Platform site maintenance CLI (Go application)
+- `organiclever-web` - OrganicLever landing website (Next.js application)
+- `organiclever-web-e2e` - Playwright E2E tests for organiclever-web
+- `organiclever-be` - OrganicLever REST API backend (Spring Boot application)
+- `organiclever-be-e2e` - Playwright E2E tests for organiclever-be
 
 ### App Structure (Hugo Static Site)
 
@@ -175,6 +179,7 @@ Contains reusable library packages.
 **Current Libraries**:
 
 - `golang-commons` - Shared Go utilities (links checker + output functions)
+- `hugo-commons` - Shared Hugo utilities (Godog BDD testing)
 
 **Examples** (planned):
 
@@ -215,7 +220,7 @@ libs/ts-utils/
 
 ### Current Scope
 
-Go (`golang-commons`) and future TypeScript, Java, Kotlin, Python libraries.
+Go (`golang-commons`, `hugo-commons`) and future TypeScript, Java, Kotlin, Python libraries.
 
 ## Experimental Projects vs Monorepo Projects
 
@@ -223,7 +228,7 @@ The repository contains two distinct project structures with different purposes 
 
 ### Nx Monorepo Projects (`apps/` and `libs/`)
 
-**Purpose**: Integrated TypeScript projects that benefit from shared tooling and workspace integration.
+**Purpose**: Integrated projects (TypeScript, Go, Java) that benefit from shared tooling and workspace integration.
 
 **Characteristics**:
 
@@ -246,8 +251,10 @@ The repository contains two distinct project structures with different purposes 
 **Examples**:
 
 - Next.js frontend applications
-- Express.js API services
-- Reusable TypeScript libraries
+- Spring Boot backend services
+- Go CLI tools
+- Hugo static sites
+- Reusable TypeScript and Go libraries
 
 ### Experimental Projects (`apps-labs/`)
 
@@ -273,8 +280,8 @@ The repository contains two distinct project structures with different purposes 
 
 **Current examples**:
 
-- None (directory is empty, awaiting first experimental projects)
-- Note: Production apps like `ayokoding-web` are in `apps/` (Nx integrated)
+- `hello-rust-be` - Rust backend exploration
+- `ayokoding-web__source-code` - AyoKoding web source code examples
 
 **Note on Nx integration**: Even projects with non-Node.js toolchains (like Hugo, Go, Python) can be integrated with Nx using the `nx:run-commands` executor to wrap their CLI commands. This provides benefits like task caching, unified command interface, and dependency graph visualization. See `apps/ayokoding-web/` as an example of a Hugo static site integrated with Nx monorepo.
 
@@ -288,13 +295,13 @@ The repository contains two distinct project structures with different purposes 
 | Task Caching               | Yes (Nx cache)                    | No                                   |
 | Cross-project Dependencies | Supported                         | Not supported                        |
 | Deployment                 | Varies by app                     | Independent pipelines                |
-| Language                   | TypeScript (current)              | Any language                         |
+| Language                   | TypeScript, Go, Java (current)    | Any language                         |
 
 ### Decision Guide
 
 **Use Nx monorepo (`apps/` or `libs/`)** if:
 
-- Project is TypeScript-based
+- Project is TypeScript, Go, Java, or Spring Boot-based
 - Project shares code with other monorepo projects
 - Project benefits from task caching
 - Project needs unified tooling
@@ -498,10 +505,10 @@ theme: PaperMod
 // apps/ayokoding-cli/go.mod
 module github.com/wahidyankf/open-sharia-enterprise/apps/ayokoding-cli
 
-go 1.23
+go 1.26
 ```
 
-**Future TypeScript/Next.js Apps** will use `package.json`:
+**TypeScript/Next.js Apps** use `package.json`:
 
 ```json
 {
@@ -541,12 +548,12 @@ go 1.23
 
 ### Import Patterns
 
-**Note**: Current apps (Hugo, Go) do not use TypeScript path mappings. These patterns apply to future TypeScript/Next.js apps.
+**Note**: Hugo and Go apps do not use TypeScript path mappings. These patterns apply to TypeScript/Next.js apps.
 
-**Apps importing libs** (future TypeScript apps):
+**Apps importing libs** (TypeScript apps):
 
 ```typescript
-// In apps/[future-ts-app]/app/page.tsx
+// In apps/organiclever-web/app/page.tsx
 import { formatDate } from "@open-sharia-enterprise/ts-utils";
 ```
 
@@ -607,8 +614,8 @@ Configured in `tsconfig.base.json`:
 
 - **Hugo**: `apps/[app-name]/public/` (static site files)
 - **Go**: `apps/[app-name]/dist/` (compiled binaries)
-- **Future Next.js**: `apps/[app-name]/.next/`
-- **Future Express**: `apps/[app-name]/dist/`
+- **Next.js**: `apps/[app-name]/.next/`
+- **Spring Boot**: `apps/[app-name]/target/`
 
 ### Libraries
 

@@ -13,7 +13,7 @@ Open Sharia Enterprise is a monorepo-based platform built with Nx, containing mu
 - **Monorepo Architecture**: Nx workspace with multiple independent applications
 - **Trunk-Based Development**: All development on `main` branch
 - **Automated Quality Gates**: Git hooks + GitHub Actions + Nx caching
-- **Deployment**: Vercel for static sites
+- **Deployment**: Vercel for static sites and web applications
 - **Build Optimization**: Nx affected builds ensure only changed code is rebuilt
 
 ## C4 Model Architecture
@@ -32,7 +32,7 @@ graph TB
         LEARNERS[Learners<br/>Studying programming/AI/security]
     end
 
-    OSE_PLATFORM[Open Sharia Enterprise Platform<br/>Monorepo with 4 applications<br/>Nx workspace]
+    OSE_PLATFORM[Open Sharia Enterprise Platform<br/>Monorepo with 9 applications<br/>Nx workspace]
 
     subgraph "External Systems"
         GITHUB[GitHub<br/>Source control & CI/CD]
@@ -63,11 +63,11 @@ graph TB
 - **Developers & Authors**: Interact with GitHub (source of truth) to build applications and create content
 - **Learners**: Access educational content via Vercel-hosted Hugo sites (ayokoding-web, oseplatform-web)
 - **GitHub**: Central hub for CI/CD automation and quality gates
-- **Vercel**: Automated deployment platform for static Hugo sites
+- **Vercel**: Automated deployment platform for Hugo sites and web applications
 
 ## Applications Inventory
 
-The platform consists of 4 applications across 2 technology stacks:
+The platform consists of 9 applications across 4 technology stacks:
 
 ### Frontend Applications (Hugo Static Sites)
 
@@ -101,7 +101,7 @@ The platform consists of 4 applications across 2 technology stacks:
 #### ayokoding-cli
 
 - **Purpose**: Content automation for ayokoding-web
-- **Language**: Go 1.24+
+- **Language**: Go 1.26
 - **Build Command**: `nx build ayokoding-cli`
 - **Location**: `apps/ayokoding-cli/`
 - **Features**:
@@ -113,7 +113,7 @@ The platform consists of 4 applications across 2 technology stacks:
 #### rhino-cli
 
 - **Purpose**: Repository management and automation
-- **Language**: Go 1.24+
+- **Language**: Go 1.26
 - **Build Command**: `nx build rhino-cli`
 - **Location**: `apps/rhino-cli/`
 - **Status**: Active development
@@ -129,6 +129,52 @@ The platform consists of 4 applications across 2 technology stacks:
   - Text, JSON, and markdown output formats
 - **Usage**: Runs as first step of `oseplatform-web`'s `test:quick` target
 
+### Web Applications (Next.js)
+
+#### organiclever-web
+
+- **Purpose**: Landing and promotional website for OrganicLever
+- **URL**: <https://www.organiclever.com>
+- **Technology**: Next.js 16 (App Router) + React 19 + TailwindCSS
+- **Deployment**: Vercel (via `prod-organiclever-web` branch)
+- **Build Command**: `nx build organiclever-web`
+- **Dev Command**: `nx dev organiclever-web`
+- **Location**: `apps/organiclever-web/`
+- **Features**:
+  - Radix UI / shadcn-ui component library
+  - Cookie-based authentication
+  - JSON data files for content
+  - Production Dockerfile with standalone output
+
+### Backend Services (Spring Boot)
+
+#### organiclever-be
+
+- **Purpose**: REST API backend for OrganicLever
+- **Technology**: Spring Boot + Java + Maven
+- **Build Command**: `nx build organiclever-be`
+- **Location**: `apps/organiclever-be/`
+- **Features**:
+  - JaCoCo code coverage enforcement (>=95%)
+  - Production Dockerfile with multi-stage build
+  - MockMvc integration testing
+
+### E2E Test Suites (Playwright)
+
+#### organiclever-web-e2e
+
+- **Purpose**: End-to-end tests for organiclever-web
+- **Technology**: Playwright
+- **Run Command**: `nx run organiclever-web-e2e:test:e2e`
+- **Location**: `apps/organiclever-web-e2e/`
+
+#### organiclever-be-e2e
+
+- **Purpose**: End-to-end tests for organiclever-be REST API
+- **Technology**: Playwright
+- **Run Command**: `nx run organiclever-be-e2e:test:e2e`
+- **Location**: `apps/organiclever-be-e2e/`
+
 ### C4 Level 2: Container Diagram
 
 Shows the high-level technical building blocks (containers) of the system. In C4 terminology, a "container" is a deployable/executable unit (web app, database, file system, etc.), not a Docker container.
@@ -140,6 +186,13 @@ graph TB
         AYO[ayokoding-web<br/>Hugo Static Site]
     end
 
+    subgraph "OrganicLever Platform"
+        OL_WEB[organiclever-web<br/>Next.js App]
+        OL_BE[organiclever-be<br/>Spring Boot API]
+        OL_WEB_E2E[organiclever-web-e2e<br/>Playwright E2E]
+        OL_BE_E2E[organiclever-be-e2e<br/>Playwright E2E]
+    end
+
     subgraph "CLI Tools"
         AYOCLI[ayokoding-cli<br/>Go CLI]
         RHINO[rhino-cli<br/>Go CLI]
@@ -148,27 +201,33 @@ graph TB
 
     subgraph "Shared Infrastructure"
         NX[Nx Workspace<br/>Build Orchestration]
-        LIBS[Shared Libraries<br/>libs/]
+        LIBS[Shared Libraries<br/>golang-commons, hugo-commons]
     end
 
     AYOCLI -->|Updates content| AYO
     RHINO -->|Repository automation| NX
-    JPVAL -->|Validates null-safety| NX
     OSECLI -->|Validates links| OSE
+    OL_WEB_E2E -->|Tests| OL_WEB
+    OL_BE_E2E -->|Tests| OL_BE
 
     NX -.->|Manages| OSE
     NX -.->|Manages| AYO
     NX -.->|Manages| AYOCLI
     NX -.->|Manages| RHINO
+    NX -.->|Manages| OL_WEB
+    NX -.->|Manages| OL_BE
 
     OSE -.->|May import| LIBS
     AYO -.->|May import| LIBS
 
     style OSE fill:#0077b6,stroke:#03045e,color:#ffffff
     style AYO fill:#0077b6,stroke:#03045e,color:#ffffff
+    style OL_WEB fill:#0077b6,stroke:#03045e,color:#ffffff
+    style OL_BE fill:#e76f51,stroke:#9d0208,color:#ffffff
+    style OL_WEB_E2E fill:#457b9d,stroke:#1d3557,color:#ffffff
+    style OL_BE_E2E fill:#457b9d,stroke:#1d3557,color:#ffffff
     style AYOCLI fill:#2a9d8f,stroke:#264653,color:#ffffff
     style RHINO fill:#2a9d8f,stroke:#264653,color:#ffffff
-    style JPVAL fill:#2a9d8f,stroke:#264653,color:#ffffff
     style OSECLI fill:#2a9d8f,stroke:#264653,color:#ffffff
     style NX fill:#6a4c93,stroke:#22223b,color:#ffffff
     style LIBS fill:#457b9d,stroke:#1d3557,color:#ffffff
@@ -648,42 +707,56 @@ graph TB
         MAIN[main branch<br/>Trunk-Based Dev]
         PROD_OSE[prod-oseplatform-web<br/>Deploy Only]
         PROD_AYO[prod-ayokoding-web<br/>Deploy Only]
+        PROD_OL[prod-organiclever-web<br/>Deploy Only]
     end
 
     subgraph "Build System"
         NX_BUILD[Nx Build System<br/>Affected Detection]
         HUGO_BUILD[Hugo Build<br/>v0.156.0 Extended]
+        NEXT_BUILD[Next.js Build<br/>Standalone Output]
+        SPRING_BUILD[Spring Boot Build<br/>Maven]
         GO_BUILD[Go Build<br/>CLI Tools]
     end
 
     subgraph "Deployment Targets"
         VERCEL_OSE[Vercel<br/>oseplatform.com]
         VERCEL_AYO[Vercel<br/>ayokoding.com]
+        VERCEL_OL[Vercel<br/>www.organiclever.com]
         LOCAL[Local Binary<br/>CLI Tools]
     end
 
     MAIN -->|Merge/Push| PROD_OSE
     MAIN -->|Merge/Push| PROD_AYO
+    MAIN -->|Merge/Push| PROD_OL
 
     PROD_OSE --> HUGO_BUILD
     PROD_AYO --> HUGO_BUILD
+    PROD_OL --> NEXT_BUILD
     MAIN --> GO_BUILD
+    MAIN --> SPRING_BUILD
 
     HUGO_BUILD --> VERCEL_OSE
     HUGO_BUILD --> VERCEL_AYO
+    NEXT_BUILD --> VERCEL_OL
     GO_BUILD --> LOCAL
 
     NX_BUILD -.->|Orchestrates| HUGO_BUILD
+    NX_BUILD -.->|Orchestrates| NEXT_BUILD
+    NX_BUILD -.->|Orchestrates| SPRING_BUILD
     NX_BUILD -.->|Orchestrates| GO_BUILD
 
     style MAIN fill:#0077b6,stroke:#03045e,color:#ffffff
     style PROD_OSE fill:#2a9d8f,stroke:#264653,color:#ffffff
     style PROD_AYO fill:#2a9d8f,stroke:#264653,color:#ffffff
+    style PROD_OL fill:#2a9d8f,stroke:#264653,color:#ffffff
     style NX_BUILD fill:#6a4c93,stroke:#22223b,color:#ffffff
     style HUGO_BUILD fill:#457b9d,stroke:#1d3557,color:#ffffff
+    style NEXT_BUILD fill:#457b9d,stroke:#1d3557,color:#ffffff
+    style SPRING_BUILD fill:#457b9d,stroke:#1d3557,color:#ffffff
     style GO_BUILD fill:#457b9d,stroke:#1d3557,color:#ffffff
     style VERCEL_OSE fill:#e76f51,stroke:#9d0208,color:#ffffff
     style VERCEL_AYO fill:#e76f51,stroke:#9d0208,color:#ffffff
+    style VERCEL_OL fill:#e76f51,stroke:#9d0208,color:#ffffff
     style LOCAL fill:#6a4c93,stroke:#22223b,color:#ffffff
 ```
 
@@ -713,11 +786,11 @@ graph TB
 #### Environment Branches
 
 - **Purpose**: Deployment triggers only
-- **Branches**: `prod-oseplatform-web`, `prod-ayokoding-web`
+- **Branches**: `prod-oseplatform-web`, `prod-ayokoding-web`, `prod-organiclever-web`
 - **Policy**: NEVER commit directly to these branches outside CI automation
 - **Workflow**: Automated by scheduled GitHub Actions workflows (`deploy-ayokoding-web.yml`,
-  `deploy-oseplatform-web.yml`) running at 6 AM and 6 PM WIB; or trigger manually from GitHub
-  Actions UI
+  `deploy-oseplatform-web.yml`, `deploy-organiclever-web.yml`) running at 6 AM and 6 PM WIB; or
+  trigger manually from GitHub Actions UI
 
 ## CI/CD Pipeline
 
@@ -875,7 +948,7 @@ graph TB
 **Steps:**
 
 1. Checkout PR branch
-2. Setup Go 1.24.2
+2. Setup Go 1.26.0
 3. Run link validation (`rhino-cli docs validate-links`)
 4. Fail PR if broken links detected
 
@@ -890,7 +963,7 @@ graph TB
 **Steps:**
 
 1. Detect changes in `apps/ayokoding-web/` vs `prod-ayokoding-web` branch
-2. If changes exist (or `force_deploy=true`): setup Volta, Go 1.24.2, Hugo 0.156.0 extended
+2. If changes exist (or `force_deploy=true`): setup Volta, Go 1.26.0, Hugo 0.156.0 extended
 3. Install dependencies and run `nx build ayokoding-web`
 4. Force-push `main` to `prod-ayokoding-web`; Vercel auto-builds
 
@@ -905,11 +978,50 @@ graph TB
 **Steps:**
 
 1. Detect changes in `apps/oseplatform-web/` vs `prod-oseplatform-web` branch
-2. If changes exist (or `force_deploy=true`): setup Volta, Go 1.24.2, Hugo 0.156.0 extended
+2. If changes exist (or `force_deploy=true`): setup Volta, Go 1.26.0, Hugo 0.156.0 extended
 3. Install dependencies and run `nx build oseplatform-web`
 4. Force-push `main` to `prod-oseplatform-web`; Vercel auto-builds
 
 **Purpose**: Automated scheduled deployments for oseplatform.com with change detection to avoid unnecessary builds
+
+#### Test and Deploy OrganicLever Web Workflow
+
+**File**: `.github/workflows/deploy-organiclever-web.yml`
+
+**Trigger**: Scheduled (6 AM and 6 PM WIB daily) or manual `workflow_dispatch`
+
+**Steps:**
+
+1. Detect changes in `apps/organiclever-web/` vs `prod-organiclever-web` branch
+2. If changes exist (or `force_deploy=true`): setup Volta, install dependencies
+3. Run `nx build organiclever-web`
+4. Force-push `main` to `prod-organiclever-web`; Vercel auto-builds
+
+**Purpose**: Automated scheduled deployments for www.organiclever.com with change detection to avoid unnecessary builds
+
+#### Main CI Workflow
+
+**File**: `.github/workflows/main-ci.yml`
+
+**Trigger**: Push to `main` branch
+
+**Purpose**: Runs affected tests and quality checks on every push to main
+
+#### PR Quality Gate Workflow
+
+**File**: `.github/workflows/pr-quality-gate.yml`
+
+**Trigger**: Pull request opened, synchronized, or reopened
+
+**Purpose**: Runs affected tests and quality checks for pull requests
+
+#### E2E OrganicLever Workflow
+
+**File**: `.github/workflows/e2e-organiclever.yml`
+
+**Trigger**: Push to `main` or pull request (when organiclever apps change)
+
+**Purpose**: Runs Playwright E2E tests for organiclever-web and organiclever-be
 
 ### Nx Build System
 
@@ -1079,9 +1191,27 @@ graph TB
 - **Deployment**: Vercel
 - **Applications**: oseplatform-web, ayokoding-web
 
+**Web Applications** (Next.js):
+
+- **Next.js**: 16 (App Router)
+- **React**: 19
+- **Styling**: TailwindCSS + Radix UI / shadcn-ui
+- **Deployment**: Vercel
+- **Applications**: organiclever-web
+
+### Backend
+
+**REST API** (Spring Boot):
+
+- **Framework**: Spring Boot
+- **Language**: Java
+- **Build**: Maven
+- **Testing**: JaCoCo (>=95% coverage), MockMvc integration tests
+- **Applications**: organiclever-be
+
 ### CLI Tools
 
-- **Language**: Go 1.24+
+- **Language**: Go 1.26
 - **Build**: Native Go toolchain via Nx
 - **Distribution**: Local binaries
 - **Applications**: ayokoding-cli, rhino-cli, oseplatform-cli
@@ -1093,13 +1223,13 @@ graph TB
 - **Package Manager**: npm 11.10.1
 - **Git Workflow**: Trunk-Based Development
 - **CI**: GitHub Actions
-- **CD**: Vercel (Hugo sites)
+- **CD**: Vercel (Hugo sites, Next.js apps)
 
 ### Quality Tools
 
 - **Formatting**: Prettier 3.6.2
-- **Markdown Linting**: markdownlint-cli2 0.20.0
-- **Link Validation**: Custom Python script
+- **Markdown Linting**: markdownlint-cli2 0.21.0
+- **Link Validation**: rhino-cli docs validate-links (Go)
 - **Commit Linting**: Commitlint + Conventional Commits
 - **Git Hooks**: Husky + lint-staged
 - **Testing**: Nx test orchestration

@@ -1,0 +1,11 @@
+target/
+.git
+.gitignore
+.idea
+*.iml
+*.swp
+*~
+.DS_Store
+README.md
+project.json
+checkstyle.xml

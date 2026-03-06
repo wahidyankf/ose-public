@@ -48,3 +48,10 @@ The `test:integration` target is cached — it only re-runs when source files in
    - Register step definitions with `sc.Step(\`^pattern$\`, stepFunc)`
    - Name the test function `TestIntegration<Command>(t *testing.T)`
 3. Update the `inputs` list in `test:integration` in `apps/ayokoding-cli/project.json` if needed
+
+## Convention
+
+See
+[BDD Spec-to-Test Mapping Convention](../../governance/development/infra/bdd-spec-test-mapping.md)
+for the mandatory 1:1 mapping between commands and `@tags`, file naming patterns, and coverage
+enforcement rules.

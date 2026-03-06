@@ -54,3 +54,10 @@ The `test:integration` target is cached — it only re-runs when source files in
    cd apps/rhino-cli
    go run main.go validate-spec-coverage specs/rhino-cli apps/rhino-cli
    ```
+
+## Convention
+
+See
+[BDD Spec-to-Test Mapping Convention](../../governance/development/infra/bdd-spec-test-mapping.md)
+for the mandatory 1:1 mapping between commands and `@tags`, file naming patterns, and coverage
+enforcement rules.

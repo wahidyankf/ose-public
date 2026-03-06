@@ -275,7 +275,9 @@ via `cmd.RunE()` against controlled filesystem fixtures. The `test:integration` 
 `-tags=integration -run TestIntegration` to isolate these from unit tests. Tests are co-located in
 the same `cmd/` package (not a separate folder) because they need direct access to unexported
 package-level flag variables (`output`, `quiet`, `verbose`) — the idiomatic Go pattern for this
-situation is `//go:build integration` in the same package.
+situation is `//go:build integration` in the same package. See
+[BDD Spec-to-Test Mapping Convention](./bdd-spec-test-mapping.md) for the mandatory 1:1 mapping
+between commands and feature file `@tags`.
 
 **Go libs** (`hugo-commons`, `golang-commons`) also expose `test:integration` using the same Godog
 BDD pattern. Because libs have no CLI commands, integration tests call the public package API

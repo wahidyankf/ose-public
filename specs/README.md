@@ -27,9 +27,17 @@ Acceptance specs belong at the monorepo root rather than inside app directories 
 ## App Specs
 
 - **[organiclever-be/](./organiclever-be/README.md)** — Backend REST API specifications (Spring Boot,
-  playwright-bdd)
+  Cucumber JVM + playwright-bdd)
 - **[organiclever-web/](./organiclever-web/README.md)** — Web landing page specifications (Next.js,
-  playwright-bdd)
+  vitest-cucumber + playwright-bdd)
+- **[rhino-cli/](./rhino-cli/README.md)** — Repository management CLI specifications (Go, godog)
+- **[ayokoding-cli/](./ayokoding-cli/README.md)** — Content automation CLI specifications (Go, godog)
+- **[oseplatform-cli/](./oseplatform-cli/README.md)** — OSE Platform site CLI specifications (Go, godog)
+
+## Library Specs
+
+- **golang-commons/** — Shared Go utility specifications (godog)
+- **hugo-commons/** — Hugo site utility specifications (godog)
 
 ## Standards
 
@@ -41,6 +49,8 @@ All feature files follow the OSE Platform BDD standards:
   feature file structure, naming, ubiquitous language
 - [Scenario Standards](../docs/explanation/software-engineering/development/behavior-driven-development-bdd/ex-soen-de-bedrdebd__scenario-standards.md) —
   scenario independence, naming, assertions
+- [Spec-to-Test Mapping](../governance/development/infra/bdd-spec-test-mapping.md) —
+  mandatory 1:1 mapping between CLI commands and feature file `@tags`
 
 ## Adding Specs for a New App
 

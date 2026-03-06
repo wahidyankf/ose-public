@@ -158,7 +158,7 @@ PASS: 86.08% >= 85% threshold
 
 ```json
 {
-  "status": "pass",
+  "status": "success",
   "timestamp": "2026-03-05T10:00:00+07:00",
   "file": "apps/rhino-cli/cover.out",
   "format": "go",

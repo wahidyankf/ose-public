@@ -71,9 +71,9 @@ func runValidateTestCoverage(cmd *cobra.Command, args []string) error {
 	}
 
 	if err := writeFormatted(cmd, output, verbose, quiet, outputFuncs{
-		text:     func(v, q bool) string { return testcoverage.FormatText(result, v, q) },
-		json:     func() (string, error) { return testcoverage.FormatJSON(result) },
-		markdown: func() string { return testcoverage.FormatMarkdown(result) },
+		text:     func(v, q bool) string { return testcoverage.FormatText(&result, v, q) },
+		json:     func() (string, error) { return testcoverage.FormatJSON(&result) },
+		markdown: func() string { return testcoverage.FormatMarkdown(&result) },
 	}); err != nil {
 		return err
 	}

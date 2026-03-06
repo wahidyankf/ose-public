@@ -478,18 +478,24 @@ Test agent body`
 	jsonOutput := buf.String()
 	t.Logf("JSON output:\n%s", jsonOutput)
 
-	// Verify JSON structure (uses CamelCase field names)
-	if !strings.Contains(jsonOutput, `"TotalChecks"`) {
-		t.Error("Expected JSON output to contain 'TotalChecks' field")
+	// Verify JSON structure (snake_case field names)
+	if !strings.Contains(jsonOutput, `"total_checks"`) {
+		t.Error("Expected JSON output to contain 'total_checks' field")
 	}
-	if !strings.Contains(jsonOutput, `"PassedChecks"`) {
-		t.Error("Expected JSON output to contain 'PassedChecks' field")
+	if !strings.Contains(jsonOutput, `"passed_checks"`) {
+		t.Error("Expected JSON output to contain 'passed_checks' field")
 	}
-	if !strings.Contains(jsonOutput, `"FailedChecks"`) {
-		t.Error("Expected JSON output to contain 'FailedChecks' field")
+	if !strings.Contains(jsonOutput, `"failed_checks"`) {
+		t.Error("Expected JSON output to contain 'failed_checks' field")
 	}
-	if !strings.Contains(jsonOutput, `"Checks"`) {
-		t.Error("Expected JSON output to contain 'Checks' field")
+	if !strings.Contains(jsonOutput, `"checks"`) {
+		t.Error("Expected JSON output to contain 'checks' field")
+	}
+	if !strings.Contains(jsonOutput, `"status"`) {
+		t.Error("Expected JSON output to contain 'status' field")
+	}
+	if !strings.Contains(jsonOutput, `"timestamp"`) {
+		t.Error("Expected JSON output to contain 'timestamp' field")
 	}
 }
 

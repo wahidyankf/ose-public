@@ -262,8 +262,8 @@ func TestValidateTestCoverageCmd_JSONOutput(t *testing.T) {
 	if err := json.Unmarshal(buf.Bytes(), &parsed); err != nil {
 		t.Fatalf("invalid JSON output: %v\nOutput: %s", err, buf.String())
 	}
-	if parsed["status"] != "pass" {
-		t.Errorf("expected status=pass, got %v", parsed["status"])
+	if parsed["status"] != "success" {
+		t.Errorf("expected status=success, got %v", parsed["status"])
 	}
 	if _, ok := parsed["pct"]; !ok {
 		t.Error("expected pct field in JSON output")

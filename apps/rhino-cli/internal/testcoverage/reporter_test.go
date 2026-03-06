@@ -6,8 +6,8 @@ import (
 	"testing"
 )
 
-func makeResult(covered, partial, missed int, pct float64, format Format) Result {
-	return Result{
+func makeResult(covered, partial, missed int, pct float64, format Format) *Result {
+	return &Result{
 		File:      "apps/foo/cover.out",
 		Format:    format,
 		Covered:   covered,
@@ -63,7 +63,7 @@ func TestFormatText_VerboseQuietIgnored(t *testing.T) {
 
 func TestFormatText_ExactPythonFormat(t *testing.T) {
 	// Verify exact format matching Python script output
-	r := Result{
+	r := &Result{
 		File:      "cover.out",
 		Format:    FormatGo,
 		Covered:   2411,
@@ -96,8 +96,8 @@ func TestFormatJSON_Pass(t *testing.T) {
 	if err := json.Unmarshal([]byte(out), &parsed); err != nil {
 		t.Fatalf("invalid JSON: %v\nOutput: %s", err, out)
 	}
-	if parsed["status"] != "pass" {
-		t.Errorf("expected status=pass, got %v", parsed["status"])
+	if parsed["status"] != "success" {
+		t.Errorf("expected status=success, got %v", parsed["status"])
 	}
 	if parsed["format"] != "go" {
 		t.Errorf("expected format=go, got %v", parsed["format"])
@@ -121,8 +121,8 @@ func TestFormatJSON_Fail(t *testing.T) {
 	if err := json.Unmarshal([]byte(out), &parsed); err != nil {
 		t.Fatalf("invalid JSON: %v", err)
 	}
-	if parsed["status"] != "fail" {
-		t.Errorf("expected status=fail, got %v", parsed["status"])
+	if parsed["status"] != "failure" {
+		t.Errorf("expected status=failure, got %v", parsed["status"])
 	}
 	if parsed["format"] != "lcov" {
 		t.Errorf("expected format=lcov, got %v", parsed["format"])

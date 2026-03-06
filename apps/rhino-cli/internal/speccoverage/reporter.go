@@ -155,7 +155,8 @@ func FormatJSON(result *CheckResult) (string, error) {
 	return string(bytes), nil
 }
 
-// FormatMarkdown formats the check result as markdown (same as text).
+// FormatMarkdown formats the check result as markdown.
+// Intentionally delegates to FormatText — the text format is already markdown-compatible.
 func FormatMarkdown(result *CheckResult) string {
 	return FormatText(result, false, false)
 }

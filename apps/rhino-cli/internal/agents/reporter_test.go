@@ -46,11 +46,11 @@ func makeValidationResult(withFailures bool) *ValidationResult {
 	return r
 }
 
-// FormatSyncResult dispatcher tests
+// FormatSyncText tests
 
-func TestFormatSyncResult_Text(t *testing.T) {
+func TestFormatSyncText_Default(t *testing.T) {
 	result := makeSyncResult(false)
-	out := FormatSyncResult(result, "text", false)
+	out := FormatSyncText(result, false, false)
 	if !strings.Contains(out, "Sync Complete") {
 		t.Errorf("expected 'Sync Complete' in text output, got %q", out)
 	}
@@ -59,36 +59,9 @@ func TestFormatSyncResult_Text(t *testing.T) {
 	}
 }
 
-func TestFormatSyncResult_JSON(t *testing.T) {
+func TestFormatSyncText_Quiet(t *testing.T) {
 	result := makeSyncResult(false)
-	out := FormatSyncResult(result, "json", false)
-	var parsed map[string]any
-	if err := json.Unmarshal([]byte(out), &parsed); err != nil {
-		t.Fatalf("expected valid JSON, got %q: %v", out, err)
-	}
-}
-
-func TestFormatSyncResult_Markdown(t *testing.T) {
-	result := makeSyncResult(false)
-	out := FormatSyncResult(result, "markdown", false)
-	if !strings.Contains(out, "# Sync Results") {
-		t.Errorf("expected '# Sync Results' header, got %q", out)
-	}
-}
-
-func TestFormatSyncResult_DefaultToText(t *testing.T) {
-	result := makeSyncResult(false)
-	out := FormatSyncResult(result, "unknown", false)
-	if !strings.Contains(out, "Agents:") {
-		t.Errorf("expected text format for unknown format, got %q", out)
-	}
-}
-
-// formatSyncResultText tests
-
-func TestFormatSyncResultText_Quiet(t *testing.T) {
-	result := makeSyncResult(false)
-	out := formatSyncResultText(result, true)
+	out := FormatSyncText(result, false, true)
 	if strings.Contains(out, "Sync Complete") {
 		t.Errorf("expected no header in quiet mode, got %q", out)
 	}
@@ -97,9 +70,9 @@ func TestFormatSyncResultText_Quiet(t *testing.T) {
 	}
 }
 
-func TestFormatSyncResultText_WithFailures(t *testing.T) {
+func TestFormatSyncText_WithFailures(t *testing.T) {
 	result := makeSyncResult(true)
-	out := formatSyncResultText(result, false)
+	out := FormatSyncText(result, false, false)
 	if !strings.Contains(out, "Failed Files:") {
 		t.Errorf("expected 'Failed Files:' in output, got %q", out)
 	}
@@ -111,15 +84,15 @@ func TestFormatSyncResultText_WithFailures(t *testing.T) {
 	}
 }
 
-func TestFormatSyncResultText_Success(t *testing.T) {
+func TestFormatSyncText_Success(t *testing.T) {
 	result := makeSyncResult(false)
-	out := formatSyncResultText(result, false)
+	out := FormatSyncText(result, false, false)
 	if !strings.Contains(out, "SUCCESS") {
 		t.Errorf("expected SUCCESS status, got %q", out)
 	}
 }
 
-func TestFormatSyncResultText_AgentAndSkillFailures(t *testing.T) {
+func TestFormatSyncText_AgentAndSkillFailures(t *testing.T) {
 	result := &SyncResult{
 		AgentsConverted: 2,
 		AgentsFailed:    1,
@@ -128,31 +101,76 @@ func TestFormatSyncResultText_AgentAndSkillFailures(t *testing.T) {
 		FailedFiles:     []string{"bad-skill.md"},
 		Duration:        time.Second,
 	}
-	out := formatSyncResultText(result, false)
+	out := FormatSyncText(result, false, false)
 	if !strings.Contains(out, "1 failed") {
 		t.Errorf("expected agent failure count, got %q", out)
 	}
 }
 
-// formatSyncResultJSON tests
+// FormatSyncJSON tests
 
-func TestFormatSyncResultJSON_Valid(t *testing.T) {
+func TestFormatSyncJSON_Success(t *testing.T) {
 	result := makeSyncResult(false)
-	out := formatSyncResultJSON(result)
+	out, err := FormatSyncJSON(result)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
 	var parsed map[string]any
 	if err := json.Unmarshal([]byte(out), &parsed); err != nil {
 		t.Fatalf("expected valid JSON, got %q: %v", out, err)
 	}
-	if parsed["AgentsConverted"] != float64(3) {
-		t.Errorf("expected AgentsConverted=3, got %v", parsed["AgentsConverted"])
+	if parsed["status"] != "success" {
+		t.Errorf("expected status=success, got %v", parsed["status"])
+	}
+	if _, ok := parsed["timestamp"]; !ok {
+		t.Error("expected timestamp field in JSON")
+	}
+	if parsed["agents_converted"] != float64(3) {
+		t.Errorf("expected agents_converted=3, got %v", parsed["agents_converted"])
+	}
+	if parsed["duration_ms"] != float64(1000) {
+		t.Errorf("expected duration_ms=1000, got %v", parsed["duration_ms"])
 	}
 }
 
-// formatSyncResultMarkdown tests
+func TestFormatSyncJSON_Failure(t *testing.T) {
+	result := makeSyncResult(true)
+	out, err := FormatSyncJSON(result)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	var parsed map[string]any
+	if err := json.Unmarshal([]byte(out), &parsed); err != nil {
+		t.Fatalf("expected valid JSON: %v", err)
+	}
+	if parsed["status"] != "failure" {
+		t.Errorf("expected status=failure, got %v", parsed["status"])
+	}
+	if parsed["agents_failed"] != float64(1) {
+		t.Errorf("expected agents_failed=1, got %v", parsed["agents_failed"])
+	}
+}
 
-func TestFormatSyncResultMarkdown_Success(t *testing.T) {
+func TestFormatSyncJSON_NilFailedFiles(t *testing.T) {
+	result := &SyncResult{
+		AgentsConverted: 1,
+		Duration:        time.Second,
+	}
+	out, err := FormatSyncJSON(result)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	// Verify failed_files is an empty array, not null
+	if !strings.Contains(out, `"failed_files": []`) {
+		t.Errorf("expected empty array for failed_files, got %s", out)
+	}
+}
+
+// FormatSyncMarkdown tests
+
+func TestFormatSyncMarkdown_Success(t *testing.T) {
 	result := makeSyncResult(false)
-	out := formatSyncResultMarkdown(result)
+	out := FormatSyncMarkdown(result)
 	if !strings.Contains(out, "# Sync Results") {
 		t.Errorf("expected markdown header, got %q", out)
 	}
@@ -164,9 +182,9 @@ func TestFormatSyncResultMarkdown_Success(t *testing.T) {
 	}
 }
 
-func TestFormatSyncResultMarkdown_WithFailures(t *testing.T) {
+func TestFormatSyncMarkdown_WithFailures(t *testing.T) {
 	result := makeSyncResult(true)
-	out := formatSyncResultMarkdown(result)
+	out := FormatSyncMarkdown(result)
 	if !strings.Contains(out, "## Failed Files") {
 		t.Errorf("expected '## Failed Files' section, got %q", out)
 	}
@@ -175,7 +193,7 @@ func TestFormatSyncResultMarkdown_WithFailures(t *testing.T) {
 	}
 }
 
-func TestFormatSyncResultMarkdown_AgentAndSkillFailed(t *testing.T) {
+func TestFormatSyncMarkdown_AgentAndSkillFailed(t *testing.T) {
 	result := &SyncResult{
 		AgentsConverted: 1,
 		AgentsFailed:    2,
@@ -184,7 +202,7 @@ func TestFormatSyncResultMarkdown_AgentAndSkillFailed(t *testing.T) {
 		FailedFiles:     []string{"x.md"},
 		Duration:        time.Second,
 	}
-	out := formatSyncResultMarkdown(result)
+	out := FormatSyncMarkdown(result)
 	if !strings.Contains(out, "**Agents Failed**") {
 		t.Errorf("expected agents failed line, got %q", out)
 	}
@@ -193,46 +211,19 @@ func TestFormatSyncResultMarkdown_AgentAndSkillFailed(t *testing.T) {
 	}
 }
 
-// FormatValidationResult dispatcher tests
+// FormatValidationText tests
 
-func TestFormatValidationResult_Text(t *testing.T) {
+func TestFormatValidationText_Default(t *testing.T) {
 	result := makeValidationResult(false)
-	out := FormatValidationResult(result, "text", false, false)
+	out := FormatValidationText(result, false, false)
 	if !strings.Contains(out, "Validation Complete") {
 		t.Errorf("expected 'Validation Complete', got %q", out)
 	}
 }
 
-func TestFormatValidationResult_JSON(t *testing.T) {
+func TestFormatValidationText_Quiet(t *testing.T) {
 	result := makeValidationResult(false)
-	out := FormatValidationResult(result, "json", false, false)
-	var parsed map[string]any
-	if err := json.Unmarshal([]byte(out), &parsed); err != nil {
-		t.Fatalf("expected valid JSON, got %q: %v", out, err)
-	}
-}
-
-func TestFormatValidationResult_Markdown(t *testing.T) {
-	result := makeValidationResult(false)
-	out := FormatValidationResult(result, "markdown", false, false)
-	if !strings.Contains(out, "# Validation Results") {
-		t.Errorf("expected markdown header, got %q", out)
-	}
-}
-
-func TestFormatValidationResult_DefaultToText(t *testing.T) {
-	result := makeValidationResult(false)
-	out := FormatValidationResult(result, "unknown", false, false)
-	if !strings.Contains(out, "Total Checks:") {
-		t.Errorf("expected text format for unknown format, got %q", out)
-	}
-}
-
-// formatValidationResultText tests
-
-func TestFormatValidationResultText_Quiet(t *testing.T) {
-	result := makeValidationResult(false)
-	out := formatValidationResultText(result, false, true)
+	out := FormatValidationText(result, false, true)
 	if strings.Contains(out, "Validation Complete") {
 		t.Errorf("expected no header in quiet mode, got %q", out)
 	}
@@ -241,9 +232,9 @@ func TestFormatValidationResultText_Quiet(t *testing.T) {
 	}
 }
 
-func TestFormatValidationResultText_WithFailures(t *testing.T) {
+func TestFormatValidationText_WithFailures(t *testing.T) {
 	result := makeValidationResult(true)
-	out := formatValidationResultText(result, false, false)
+	out := FormatValidationText(result, false, false)
 	if !strings.Contains(out, "Failed Checks:") {
 		t.Errorf("expected 'Failed Checks:' section, got %q", out)
 	}
@@ -252,7 +243,7 @@ func TestFormatValidationResultText_WithFailures(t *testing.T) {
 	}
 }
 
-func TestFormatValidationResultText_VerboseAllChecks(t *testing.T) {
+func TestFormatValidationText_VerboseAllChecks(t *testing.T) {
 	result := &ValidationResult{
 		TotalChecks:  2,
 		PassedChecks: 1,
@@ -263,13 +254,13 @@ func TestFormatValidationResultText_VerboseAllChecks(t *testing.T) {
 			{Name: "Check B", Status: "failed", Expected: "x", Actual: "y", Message: "mismatch"},
 		},
 	}
-	out := formatValidationResultText(result, true, false)
+	out := FormatValidationText(result, true, false)
 	if !strings.Contains(out, "All Checks:") {
 		t.Errorf("expected 'All Checks:' in verbose output, got %q", out)
 	}
 }
 
-func TestFormatValidationResultText_FailedCheckDetails(t *testing.T) {
+func TestFormatValidationText_FailedCheckDetails(t *testing.T) {
 	result := &ValidationResult{
 		TotalChecks:  1,
 		FailedChecks: 1,
@@ -278,7 +269,7 @@ func TestFormatValidationResultText_FailedCheckDetails(t *testing.T) {
 			{Name: "Check X", Status: "failed", Expected: "expected-val", Actual: "actual-val", Message: "detail message"},
 		},
 	}
-	out := formatValidationResultText(result, false, false)
+	out := FormatValidationText(result, false, false)
 	if !strings.Contains(out, "Expected: expected-val") {
 		t.Errorf("expected expected value in output, got %q", out)
 	}
@@ -290,25 +281,62 @@ func TestFormatValidationResultText_FailedCheckDetails(t *testing.T) {
 	}
 }
 
-// formatValidationResultJSON tests
+// FormatValidationJSON tests
 
-func TestFormatValidationResultJSON_Valid(t *testing.T) {
+func TestFormatValidationJSON_Success(t *testing.T) {
 	result := makeValidationResult(false)
-	out := formatValidationResultJSON(result)
+	out, err := FormatValidationJSON(result)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
 	var parsed map[string]any
 	if err := json.Unmarshal([]byte(out), &parsed); err != nil {
 		t.Fatalf("expected valid JSON, got %q: %v", out, err)
 	}
-	if parsed["TotalChecks"] != float64(3) {
-		t.Errorf("expected TotalChecks=3, got %v", parsed["TotalChecks"])
+	if parsed["status"] != "success" {
+		t.Errorf("expected status=success, got %v", parsed["status"])
+	}
+	if _, ok := parsed["timestamp"]; !ok {
+		t.Error("expected timestamp field in JSON")
+	}
+	if parsed["total_checks"] != float64(3) {
+		t.Errorf("expected total_checks=3, got %v", parsed["total_checks"])
+	}
+	if parsed["duration_ms"] != float64(1000) {
+		t.Errorf("expected duration_ms=1000, got %v", parsed["duration_ms"])
 	}
 }
 
-// formatValidationResultMarkdown tests
+func TestFormatValidationJSON_Failure(t *testing.T) {
+	result := makeValidationResult(true)
+	out, err := FormatValidationJSON(result)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	var parsed map[string]any
+	if err := json.Unmarshal([]byte(out), &parsed); err != nil {
+		t.Fatalf("expected valid JSON: %v", err)
+	}
+	if parsed["status"] != "failure" {
+		t.Errorf("expected status=failure, got %v", parsed["status"])
+	}
+	if parsed["failed_checks"] != float64(1) {
+		t.Errorf("expected failed_checks=1, got %v", parsed["failed_checks"])
+	}
+	checks, ok := parsed["checks"].([]any)
+	if !ok {
+		t.Fatal("expected checks array in JSON")
+	}
+	if len(checks) != 2 {
+		t.Errorf("expected 2 checks, got %d", len(checks))
+	}
+}
 
-func TestFormatValidationResultMarkdown_Success(t *testing.T) {
+// FormatValidationMarkdown tests
+
+func TestFormatValidationMarkdown_Success(t *testing.T) {
 	result := makeValidationResult(false)
-	out := formatValidationResultMarkdown(result, false)
+	out := FormatValidationMarkdown(result, false)
 	if !strings.Contains(out, "# Validation Results") {
 		t.Errorf("expected markdown header, got %q", out)
 	}
@@ -317,7 +345,7 @@ func TestFormatValidationResultMarkdown_Success(t *testing.T) {
 	}
 }
 
-func TestFormatValidationResultMarkdown_WithFailures(t *testing.T) {
+func TestFormatValidationMarkdown_WithFailures(t *testing.T) {
 	result := &ValidationResult{
 		TotalChecks:  2,
 		PassedChecks: 1,
@@ -328,7 +356,7 @@ func TestFormatValidationResultMarkdown_WithFailures(t *testing.T) {
 			{Name: "Check B", Status: "failed", Expected: "exp", Actual: "act", Message: "failed msg"},
 		},
 	}
-	out := formatValidationResultMarkdown(result, false)
+	out := FormatValidationMarkdown(result, false)
 	if !strings.Contains(out, "## Failed Checks") {
 		t.Errorf("expected '## Failed Checks' section, got %q", out)
 	}
@@ -337,7 +365,7 @@ func TestFormatValidationResultMarkdown_WithFailures(t *testing.T) {
 	}
 }
 
-func TestFormatValidationResultMarkdown_VerboseAllChecks(t *testing.T) {
+func TestFormatValidationMarkdown_VerboseAllChecks(t *testing.T) {
 	result := &ValidationResult{
 		TotalChecks:  1,
 		PassedChecks: 1,
@@ -346,13 +374,13 @@ func TestFormatValidationResultMarkdown_VerboseAllChecks(t *testing.T) {
 			{Name: "Check A", Status: "passed", Message: "all good"},
 		},
 	}
-	out := formatValidationResultMarkdown(result, true)
+	out := FormatValidationMarkdown(result, true)
 	if !strings.Contains(out, "## All Checks") {
 		t.Errorf("expected '## All Checks' section in verbose, got %q", out)
 	}
 }
 
-func TestFormatValidationResultMarkdown_FailedCheckDetails(t *testing.T) {
+func TestFormatValidationMarkdown_FailedCheckDetails(t *testing.T) {
 	result := &ValidationResult{
 		TotalChecks:  1,
 		FailedChecks: 1,
@@ -361,7 +389,7 @@ func TestFormatValidationResultMarkdown_FailedCheckDetails(t *testing.T) {
 			{Name: "Check X", Status: "failed", Expected: "exp-val", Actual: "act-val", Message: "msg"},
 		},
 	}
-	out := formatValidationResultMarkdown(result, false)
+	out := FormatValidationMarkdown(result, false)
 	if !strings.Contains(out, "**Expected**") {
 		t.Errorf("expected bold Expected field, got %q", out)
 	}

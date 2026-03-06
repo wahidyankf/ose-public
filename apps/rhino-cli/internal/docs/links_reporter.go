@@ -131,8 +131,8 @@ func FormatLinkJSON(result *LinkValidationResult) (string, error) {
 	return string(bytes), nil
 }
 
-// FormatLinkMarkdown formats the validation result as markdown (same as text).
+// FormatLinkMarkdown formats the validation result as markdown.
+// Intentionally delegates to FormatLinkText — the text format is already markdown-compatible.
 func FormatLinkMarkdown(result *LinkValidationResult) string {
-	// Markdown format is identical to text format
 	return FormatLinkText(result, false, false)
 }

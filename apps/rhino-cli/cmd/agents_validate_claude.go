@@ -87,8 +87,13 @@ func runValidateClaude(cmd *cobra.Command, args []string) error {
 	}
 
 	// Format and print output
-	formattedOutput := agents.FormatValidationResult(result, output, verbose, quiet)
-	_, _ = fmt.Fprint(cmd.OutOrStdout(), formattedOutput)
+	if err := writeFormatted(cmd, output, verbose, quiet, outputFuncs{
+		text:     func(v, q bool) string { return agents.FormatValidationText(result, v, q) },
+		json:     func() (string, error) { return agents.FormatValidationJSON(result) },
+		markdown: func() string { return agents.FormatValidationMarkdown(result, verbose) },
+	}); err != nil {
+		return err
+	}
 
 	// Return error if validation failed
 	if result.FailedChecks > 0 {

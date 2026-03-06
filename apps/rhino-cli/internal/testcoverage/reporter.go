@@ -13,7 +13,7 @@ import (
 //
 //	"Line coverage: 86.08% (2411 covered, 141 partial, 249 missed, 2801 total)"
 //	"PASS: 86.08% >= 85% threshold"  (or FAIL)
-func FormatText(r Result, _, _ bool) string {
+func FormatText(r *Result, _, _ bool) string {
 	var out strings.Builder
 	_, _ = fmt.Fprintf(&out, "Line coverage: %.2f%% (%d covered, %d partial, %d missed, %d total)\n",
 		r.Pct, r.Covered, r.Partial, r.Missed, r.Total)
@@ -41,15 +41,15 @@ type jsonOutput struct {
 }
 
 // FormatJSON returns a JSON coverage report.
-func FormatJSON(r Result) (string, error) {
-	status := "pass"
+func FormatJSON(r *Result) (string, error) {
+	status := "success"
 	if !r.Passed {
-		status = "fail"
+		status = "failure"
 	}
 
 	out := jsonOutput{
 		Status:    status,
-		Timestamp: timeutil.JakartaTimestamp(),
+		Timestamp: timeutil.Timestamp(),
 		File:      r.File,
 		Format:    string(r.Format),
 		Covered:   r.Covered,
@@ -65,11 +65,11 @@ func FormatJSON(r Result) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return string(b) + "\n", nil
+	return string(b), nil
 }
 
 // FormatMarkdown returns a markdown coverage report.
-func FormatMarkdown(r Result) string {
+func FormatMarkdown(r *Result) string {
 	status := "PASS"
 	if !r.Passed {
 		status = "FAIL"

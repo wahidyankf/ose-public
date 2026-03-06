@@ -493,15 +493,24 @@ func TestSyncAgentsCommand_JSONOutput(t *testing.T) {
 	jsonOutput := buf.String()
 	t.Logf("JSON output:\n%s", jsonOutput)
 
-	// Verify JSON structure (uses CamelCase field names)
-	if !strings.Contains(jsonOutput, `"AgentsConverted"`) {
-		t.Error("Expected JSON output to contain 'AgentsConverted' field")
+	// Verify JSON structure (snake_case field names)
+	if !strings.Contains(jsonOutput, `"agents_converted"`) {
+		t.Error("Expected JSON output to contain 'agents_converted' field")
 	}
-	if !strings.Contains(jsonOutput, `"SkillsCopied"`) {
-		t.Error("Expected JSON output to contain 'SkillsCopied' field")
+	if !strings.Contains(jsonOutput, `"skills_copied"`) {
+		t.Error("Expected JSON output to contain 'skills_copied' field")
 	}
-	if !strings.Contains(jsonOutput, `"FailedFiles"`) {
-		t.Error("Expected JSON output to contain 'FailedFiles' field")
+	if !strings.Contains(jsonOutput, `"failed_files"`) {
+		t.Error("Expected JSON output to contain 'failed_files' field")
+	}
+	if !strings.Contains(jsonOutput, `"status"`) {
+		t.Error("Expected JSON output to contain 'status' field")
+	}
+	if !strings.Contains(jsonOutput, `"timestamp"`) {
+		t.Error("Expected JSON output to contain 'timestamp' field")
+	}
+	if !strings.Contains(jsonOutput, `"duration_ms"`) {
+		t.Error("Expected JSON output to contain 'duration_ms' field")
 	}
 }
 

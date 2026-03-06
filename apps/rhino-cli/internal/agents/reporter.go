@@ -4,22 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+
+	"github.com/wahidyankf/open-sharia-enterprise/libs/golang-commons/timeutil"
 )
 
-// FormatSyncResult formats sync results for output
-func FormatSyncResult(result *SyncResult, format string, quiet bool) string {
-	switch format {
-	case "json":
-		return formatSyncResultJSON(result)
-	case "markdown":
-		return formatSyncResultMarkdown(result)
-	default:
-		return formatSyncResultText(result, quiet)
-	}
-}
+// ---- Sync formatting ----
 
-// formatSyncResultText formats sync results as plain text
-func formatSyncResultText(result *SyncResult, quiet bool) string {
+// FormatSyncText formats sync results as plain text.
+func FormatSyncText(result *SyncResult, verbose, quiet bool) string {
 	var sb strings.Builder
 
 	if !quiet {
@@ -27,7 +19,6 @@ func formatSyncResultText(result *SyncResult, quiet bool) string {
 		sb.WriteString(strings.Repeat("=", 50) + "\n\n")
 	}
 
-	// Summary
 	_, _ = fmt.Fprintf(&sb, "Agents: %d converted", result.AgentsConverted)
 	if result.AgentsFailed > 0 {
 		_, _ = fmt.Fprintf(&sb, ", %d failed", result.AgentsFailed)
@@ -42,7 +33,6 @@ func formatSyncResultText(result *SyncResult, quiet bool) string {
 
 	_, _ = fmt.Fprintf(&sb, "Duration: %v\n", result.Duration)
 
-	// Failed files
 	if len(result.FailedFiles) > 0 {
 		sb.WriteString("\nFailed Files:\n")
 		for _, file := range result.FailedFiles {
@@ -62,17 +52,50 @@ func formatSyncResultText(result *SyncResult, quiet bool) string {
 	return sb.String()
 }
 
-// formatSyncResultJSON formats sync results as JSON
-func formatSyncResultJSON(result *SyncResult) string {
-	data, err := json.MarshalIndent(result, "", "  ")
-	if err != nil {
-		return fmt.Sprintf(`{"error": "failed to marshal JSON: %v"}`, err)
-	}
-	return string(data)
+// syncJSONOutput represents the JSON output format for sync results.
+type syncJSONOutput struct {
+	Status          string   `json:"status"`
+	Timestamp       string   `json:"timestamp"`
+	AgentsConverted int      `json:"agents_converted"`
+	AgentsFailed    int      `json:"agents_failed"`
+	SkillsCopied    int      `json:"skills_copied"`
+	SkillsFailed    int      `json:"skills_failed"`
+	FailedFiles     []string `json:"failed_files"`
+	DurationMS      int64    `json:"duration_ms"`
 }
 
-// formatSyncResultMarkdown formats sync results as markdown
-func formatSyncResultMarkdown(result *SyncResult) string {
+// FormatSyncJSON formats sync results as JSON.
+func FormatSyncJSON(result *SyncResult) (string, error) {
+	status := "success"
+	if len(result.FailedFiles) > 0 {
+		status = "failure"
+	}
+
+	failedFiles := result.FailedFiles
+	if failedFiles == nil {
+		failedFiles = []string{}
+	}
+
+	out := syncJSONOutput{
+		Status:          status,
+		Timestamp:       timeutil.Timestamp(),
+		AgentsConverted: result.AgentsConverted,
+		AgentsFailed:    result.AgentsFailed,
+		SkillsCopied:    result.SkillsCopied,
+		SkillsFailed:    result.SkillsFailed,
+		FailedFiles:     failedFiles,
+		DurationMS:      result.Duration.Milliseconds(),
+	}
+
+	data, err := json.MarshalIndent(out, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(data), nil
+}
+
+// FormatSyncMarkdown formats sync results as markdown.
+func FormatSyncMarkdown(result *SyncResult) string {
 	var sb strings.Builder
 
 	sb.WriteString("# Sync Results\n\n")
@@ -105,20 +128,10 @@ func formatSyncResultMarkdown(result *SyncResult) string {
 	return sb.String()
 }
 
-// FormatValidationResult formats validation results for output
-func FormatValidationResult(result *ValidationResult, format string, verbose bool, quiet bool) string {
-	switch format {
-	case "json":
-		return formatValidationResultJSON(result)
-	case "markdown":
-		return formatValidationResultMarkdown(result, verbose)
-	default:
-		return formatValidationResultText(result, verbose, quiet)
-	}
-}
+// ---- Validation formatting ----
 
-// formatValidationResultText formats validation results as plain text
-func formatValidationResultText(result *ValidationResult, verbose bool, quiet bool) string {
+// FormatValidationText formats validation results as plain text.
+func FormatValidationText(result *ValidationResult, verbose, quiet bool) string {
 	var sb strings.Builder
 
 	if !quiet {
@@ -126,13 +139,11 @@ func formatValidationResultText(result *ValidationResult, verbose bool, quiet bo
 		sb.WriteString(strings.Repeat("=", 50) + "\n\n")
 	}
 
-	// Summary
 	_, _ = fmt.Fprintf(&sb, "Total Checks: %d\n", result.TotalChecks)
 	_, _ = fmt.Fprintf(&sb, "Passed: %d\n", result.PassedChecks)
 	_, _ = fmt.Fprintf(&sb, "Failed: %d\n", result.FailedChecks)
 	_, _ = fmt.Fprintf(&sb, "Duration: %v\n", result.Duration)
 
-	// Show failed checks
 	if result.FailedChecks > 0 {
 		sb.WriteString("\nFailed Checks:\n")
 		for _, check := range result.Checks {
@@ -151,7 +162,6 @@ func formatValidationResultText(result *ValidationResult, verbose bool, quiet bo
 		}
 	}
 
-	// Show all checks in verbose mode
 	if verbose {
 		sb.WriteString("\nAll Checks:\n")
 		for _, check := range result.Checks {
@@ -178,17 +188,57 @@ func formatValidationResultText(result *ValidationResult, verbose bool, quiet bo
 	return sb.String()
 }
 
-// formatValidationResultJSON formats validation results as JSON
-func formatValidationResultJSON(result *ValidationResult) string {
-	data, err := json.MarshalIndent(result, "", "  ")
-	if err != nil {
-		return fmt.Sprintf(`{"error": "failed to marshal JSON: %v"}`, err)
-	}
-	return string(data)
+// validationJSONOutput represents the JSON output format for validation results.
+type validationJSONOutput struct {
+	Status       string                `json:"status"`
+	Timestamp    string                `json:"timestamp"`
+	TotalChecks  int                   `json:"total_checks"`
+	PassedChecks int                   `json:"passed_checks"`
+	FailedChecks int                   `json:"failed_checks"`
+	DurationMS   int64                 `json:"duration_ms"`
+	Checks       []validationJSONCheck `json:"checks"`
 }
 
-// formatValidationResultMarkdown formats validation results as markdown
-func formatValidationResultMarkdown(result *ValidationResult, verbose bool) string {
+// validationJSONCheck represents a single validation check in JSON format.
+type validationJSONCheck struct {
+	Name     string `json:"name"`
+	Status   string `json:"status"`
+	Expected string `json:"expected,omitempty"`
+	Actual   string `json:"actual,omitempty"`
+	Message  string `json:"message,omitempty"`
+}
+
+// FormatValidationJSON formats validation results as JSON.
+func FormatValidationJSON(result *ValidationResult) (string, error) {
+	status := "success"
+	if result.FailedChecks > 0 {
+		status = "failure"
+	}
+
+	checks := make([]validationJSONCheck, 0, len(result.Checks))
+	for _, c := range result.Checks {
+		checks = append(checks, validationJSONCheck(c))
+	}
+
+	out := validationJSONOutput{
+		Status:       status,
+		Timestamp:    timeutil.Timestamp(),
+		TotalChecks:  result.TotalChecks,
+		PassedChecks: result.PassedChecks,
+		FailedChecks: result.FailedChecks,
+		DurationMS:   result.Duration.Milliseconds(),
+		Checks:       checks,
+	}
+
+	data, err := json.MarshalIndent(out, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(data), nil
+}
+
+// FormatValidationMarkdown formats validation results as markdown.
+func FormatValidationMarkdown(result *ValidationResult, verbose bool) string {
 	var sb strings.Builder
 
 	sb.WriteString("# Validation Results\n\n")

@@ -487,3 +487,426 @@ func TestValidateSync_EmptyRepo(t *testing.T) {
 		t.Errorf("expected 0 failed checks for empty repo, got %d", result.FailedChecks)
 	}
 }
+
+func TestValidateSkillCount_Mismatch(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Claude has 2 skills, OpenCode has 1
+	claudeSkillsDir := filepath.Join(tmpDir, ".claude", "skills")
+	opencodeSkillDir := filepath.Join(tmpDir, ".opencode", "skill")
+
+	for _, d := range []string{
+		filepath.Join(claudeSkillsDir, "skill-1"),
+		filepath.Join(claudeSkillsDir, "skill-2"),
+		filepath.Join(opencodeSkillDir, "skill-1"),
+	} {
+		if err := os.MkdirAll(d, 0755); err != nil {
+			t.Fatalf("failed to create dir: %v", err)
+		}
+	}
+
+	for _, p := range []string{
+		filepath.Join(claudeSkillsDir, "skill-1", "SKILL.md"),
+		filepath.Join(claudeSkillsDir, "skill-2", "SKILL.md"),
+		filepath.Join(opencodeSkillDir, "skill-1", "SKILL.md"),
+	} {
+		if err := os.WriteFile(p, []byte("content"), 0644); err != nil {
+			t.Fatalf("failed to create file: %v", err)
+		}
+	}
+
+	check := validateSkillCount(tmpDir)
+	if check.Status != "failed" {
+		t.Errorf("expected 'failed' for skill count mismatch, got %q", check.Status)
+	}
+}
+
+func TestValidateSkillIdentity_NonDirEntry(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Create a regular file (not dir) in .claude/skills
+	claudeSkillsDir := filepath.Join(tmpDir, ".claude", "skills")
+	if err := os.MkdirAll(claudeSkillsDir, 0755); err != nil {
+		t.Fatalf("failed to create dir: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(claudeSkillsDir, "some-file.md"), []byte("content"), 0644); err != nil {
+		t.Fatalf("failed to create file: %v", err)
+	}
+
+	// Should return no checks (regular files are skipped)
+	checks := validateSkillIdentity(tmpDir)
+	if len(checks) != 0 {
+		t.Errorf("expected 0 checks when skills dir has only files (no dirs), got %d", len(checks))
+	}
+}
+
+func TestValidateSkillIdentity_DirWithoutSkillMd(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Create a skill dir without SKILL.md
+	claudeSkillsDir := filepath.Join(tmpDir, ".claude", "skills")
+	emptySkillDir := filepath.Join(claudeSkillsDir, "empty-skill")
+	if err := os.MkdirAll(emptySkillDir, 0755); err != nil {
+		t.Fatalf("failed to create dir: %v", err)
+	}
+
+	// Should return no checks (dirs without SKILL.md are skipped)
+	checks := validateSkillIdentity(tmpDir)
+	if len(checks) != 0 {
+		t.Errorf("expected 0 checks when skill dir has no SKILL.md, got %d", len(checks))
+	}
+}
+
+func TestValidateSkillFile_ClaudeMissing(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	check := validateSkillFile("missing-skill",
+		filepath.Join(tmpDir, "nonexistent-claude.md"),
+		filepath.Join(tmpDir, "opencode.md"))
+
+	if check.Status != "failed" {
+		t.Errorf("expected 'failed' when claude skill missing, got %q", check.Status)
+	}
+	if check.Name != "Skill: missing-skill" {
+		t.Errorf("expected skill name in check, got %q", check.Name)
+	}
+}
+
+func TestValidateSkillFile_OpenCodeMissing(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	claudePath := filepath.Join(tmpDir, "claude-skill.md")
+	if err := os.WriteFile(claudePath, []byte("skill content"), 0644); err != nil {
+		t.Fatalf("failed to create claude skill: %v", err)
+	}
+
+	check := validateSkillFile("my-skill",
+		claudePath,
+		filepath.Join(tmpDir, "nonexistent-opencode.md"))
+
+	if check.Status != "failed" {
+		t.Errorf("expected 'failed' when opencode skill missing, got %q", check.Status)
+	}
+}
+
+func TestCountMarkdownFiles_NonExistentDir(t *testing.T) {
+	count := countMarkdownFiles("/nonexistent/directory/that/does/not/exist")
+	if count != 0 {
+		t.Errorf("expected 0 for non-existent dir, got %d", count)
+	}
+}
+
+func TestValidateAgentEquivalence_WithReadmeMd(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	claudeDir := filepath.Join(tmpDir, ".claude", "agents")
+	if err := os.MkdirAll(claudeDir, 0755); err != nil {
+		t.Fatalf("failed to create dir: %v", err)
+	}
+
+	// Create README.md — should be skipped
+	if err := os.WriteFile(filepath.Join(claudeDir, "README.md"), []byte("# README"), 0644); err != nil {
+		t.Fatalf("failed to create README.md: %v", err)
+	}
+	// Create a subdirectory — should be skipped
+	subDir := filepath.Join(claudeDir, "subdir")
+	if err := os.MkdirAll(subDir, 0755); err != nil {
+		t.Fatalf("failed to create subdir: %v", err)
+	}
+
+	checks := validateAgentEquivalence(tmpDir)
+	if len(checks) != 0 {
+		t.Errorf("expected 0 checks when only README.md and dirs exist, got %d: %v", len(checks), checks)
+	}
+}
+
+func TestValidateAgentFile_DescriptionMismatch(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	claudePath := filepath.Join(tmpDir, "agent.md")
+	opencodePath := filepath.Join(tmpDir, "agent-opencode.md")
+
+	claudeContent := "---\nname: agent\ndescription: Claude description\ntools:\n  - Read\nmodel: sonnet\n---\n\nBody.\n"
+	if err := os.WriteFile(claudePath, []byte(claudeContent), 0644); err != nil {
+		t.Fatalf("failed to create claude agent: %v", err)
+	}
+
+	// Write opencode file with different description
+	opencodeContent := "---\ndescription: Different description\ntools:\n  read: true\nmodel: zai/glm-4.7\nskills: []\n---\n\nBody.\n"
+	if err := os.WriteFile(opencodePath, []byte(opencodeContent), 0644); err != nil {
+		t.Fatalf("failed to create opencode agent: %v", err)
+	}
+
+	check := validateAgentFile("agent.md", claudePath, opencodePath)
+	if check.Status != "failed" {
+		t.Errorf("expected 'failed' for description mismatch, got %q: %s", check.Status, check.Message)
+	}
+}
+
+func TestValidateAgentFile_OpenCodeInvalidFrontmatter(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	claudePath := filepath.Join(tmpDir, "agent.md")
+	opencodePath := filepath.Join(tmpDir, "agent-opencode.md")
+
+	// Claude has valid frontmatter
+	claudeContent := "---\nname: agent\ndescription: Test\ntools:\n  - Read\nmodel: sonnet\n---\n\nBody.\n"
+	if err := os.WriteFile(claudePath, []byte(claudeContent), 0644); err != nil {
+		t.Fatalf("failed to create claude agent: %v", err)
+	}
+
+	// OpenCode has no frontmatter (no --- delimiter)
+	if err := os.WriteFile(opencodePath, []byte("no frontmatter here"), 0644); err != nil {
+		t.Fatalf("failed to create opencode agent: %v", err)
+	}
+
+	check := validateAgentFile("agent.md", claudePath, opencodePath)
+	if check.Status != "failed" {
+		t.Errorf("expected 'failed' for opencode invalid frontmatter, got %q: %s", check.Status, check.Message)
+	}
+}
+
+func TestValidateAgentFile_ModelMismatch(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	claudePath := filepath.Join(tmpDir, "agent.md")
+	opencodePath := filepath.Join(tmpDir, "agent-opencode.md")
+
+	// Claude uses "sonnet" → should convert to "zai/glm-4.7"
+	claudeContent := "---\nname: agent\ndescription: Same desc\ntools:\n  - Read\nmodel: sonnet\n---\n\nBody.\n"
+	if err := os.WriteFile(claudePath, []byte(claudeContent), 0644); err != nil {
+		t.Fatalf("failed to create claude agent: %v", err)
+	}
+
+	// OpenCode has wrong model (description matches but model doesn't)
+	opencodeContent := "---\ndescription: Same desc\ntools:\n  read: true\nmodel: wrong-model\nskills: []\n---\n\nBody.\n"
+	if err := os.WriteFile(opencodePath, []byte(opencodeContent), 0644); err != nil {
+		t.Fatalf("failed to create opencode agent: %v", err)
+	}
+
+	check := validateAgentFile("agent.md", claudePath, opencodePath)
+	if check.Status != "failed" {
+		t.Errorf("expected 'failed' for model mismatch, got %q: %s", check.Status, check.Message)
+	}
+	if check.Message != "Model mismatch" {
+		t.Errorf("expected 'Model mismatch' message, got %q", check.Message)
+	}
+}
+
+func TestValidateAgentFile_ToolsMismatch(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	claudePath := filepath.Join(tmpDir, "agent.md")
+	opencodePath := filepath.Join(tmpDir, "agent-opencode.md")
+
+	// Claude has Read tool
+	claudeContent := "---\nname: agent\ndescription: Same desc\ntools:\n  - Read\nmodel: sonnet\n---\n\nBody.\n"
+	if err := os.WriteFile(claudePath, []byte(claudeContent), 0644); err != nil {
+		t.Fatalf("failed to create claude agent: %v", err)
+	}
+
+	// OpenCode has matching description and model but different tools
+	opencodeContent := "---\ndescription: Same desc\ntools:\n  write: true\nmodel: zai/glm-4.7\nskills: []\n---\n\nBody.\n"
+	if err := os.WriteFile(opencodePath, []byte(opencodeContent), 0644); err != nil {
+		t.Fatalf("failed to create opencode agent: %v", err)
+	}
+
+	check := validateAgentFile("agent.md", claudePath, opencodePath)
+	if check.Status != "failed" {
+		t.Errorf("expected 'failed' for tools mismatch, got %q: %s", check.Status, check.Message)
+	}
+	if check.Message != "Tools mismatch" {
+		t.Errorf("expected 'Tools mismatch' message, got %q", check.Message)
+	}
+}
+
+func TestValidateAgentFile_BodyMismatch(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	claudePath := filepath.Join(tmpDir, "agent.md")
+	opencodePath := filepath.Join(tmpDir, "agent-opencode.md")
+
+	// Claude agent
+	claudeContent := "---\nname: agent\ndescription: Same desc\ntools:\n  - Read\nmodel: sonnet\n---\n\nOriginal body.\n"
+	if err := os.WriteFile(claudePath, []byte(claudeContent), 0644); err != nil {
+		t.Fatalf("failed to create claude agent: %v", err)
+	}
+
+	// OpenCode has matching description, model, tools but different body
+	opencodeContent := "---\ndescription: Same desc\ntools:\n  read: true\nmodel: zai/glm-4.7\nskills: []\n---\n\nDifferent body.\n"
+	if err := os.WriteFile(opencodePath, []byte(opencodeContent), 0644); err != nil {
+		t.Fatalf("failed to create opencode agent: %v", err)
+	}
+
+	check := validateAgentFile("agent.md", claudePath, opencodePath)
+	if check.Status != "failed" {
+		t.Errorf("expected 'failed' for body mismatch, got %q: %s", check.Status, check.Message)
+	}
+	if check.Message != "Body mismatch" {
+		t.Errorf("expected 'Body mismatch' message, got %q", check.Message)
+	}
+}
+
+func TestValidateAgentFile_SkillsMismatch(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	claudePath := filepath.Join(tmpDir, "agent.md")
+	opencodePath := filepath.Join(tmpDir, "agent-opencode.md")
+
+	// Claude has skills listed
+	claudeContent := "---\nname: agent\ndescription: Same desc\ntools:\n  - Read\nmodel: sonnet\nskills:\n  - my-skill\n---\n\nBody.\n"
+	if err := os.WriteFile(claudePath, []byte(claudeContent), 0644); err != nil {
+		t.Fatalf("failed to create claude agent: %v", err)
+	}
+
+	// OpenCode has matching description, model, tools but no skills
+	opencodeContent := "---\ndescription: Same desc\ntools:\n  read: true\nmodel: zai/glm-4.7\nskills: []\n---\n\nBody.\n"
+	if err := os.WriteFile(opencodePath, []byte(opencodeContent), 0644); err != nil {
+		t.Fatalf("failed to create opencode agent: %v", err)
+	}
+
+	check := validateAgentFile("agent.md", claudePath, opencodePath)
+	if check.Status != "failed" {
+		t.Errorf("expected 'failed' for skills mismatch, got %q: %s", check.Status, check.Message)
+	}
+	if check.Message != "Skills mismatch" {
+		t.Errorf("expected 'Skills mismatch' message, got %q", check.Message)
+	}
+}
+
+func TestValidateSync_WithMismatches(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Claude has 2 agents, OpenCode has 1 → count mismatch → FailedChecks gets incremented
+	claudeAgentsDir := filepath.Join(tmpDir, ".claude", "agents")
+	opencodeAgentDir := filepath.Join(tmpDir, ".opencode", "agent")
+
+	for _, d := range []string{claudeAgentsDir, opencodeAgentDir} {
+		if err := os.MkdirAll(d, 0755); err != nil {
+			t.Fatalf("failed to create dir: %v", err)
+		}
+	}
+
+	// Create 2 claude agents, 1 opencode agent
+	claudeContent := "---\nname: agent-a\ndescription: Agent A\ntools:\n  - Read\nmodel: sonnet\n---\n\nBody A.\n"
+	if err := os.WriteFile(filepath.Join(claudeAgentsDir, "agent-a.md"), []byte(claudeContent), 0644); err != nil {
+		t.Fatalf("failed to create claude agent-a: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(claudeAgentsDir, "agent-b.md"), []byte(claudeContent), 0644); err != nil {
+		t.Fatalf("failed to create claude agent-b: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(opencodeAgentDir, "agent-a.md"), []byte("---\ndescription: Agent A\ntools:\n  read: true\nmodel: zai/glm-4.7\nskills: []\n---\n\nBody A.\n"), 0644); err != nil {
+		t.Fatalf("failed to create opencode agent: %v", err)
+	}
+
+	// No skills dirs
+	for _, d := range []string{
+		filepath.Join(tmpDir, ".claude", "skills"),
+		filepath.Join(tmpDir, ".opencode", "skill"),
+	} {
+		if err := os.MkdirAll(d, 0755); err != nil {
+			t.Fatalf("failed to create skills dir: %v", err)
+		}
+	}
+
+	result, err := ValidateSync(tmpDir)
+	if err != nil {
+		t.Fatalf("ValidateSync() unexpected error: %v", err)
+	}
+	if result.FailedChecks == 0 {
+		t.Error("expected at least one failed check for agent count mismatch")
+	}
+	if result.TotalChecks == 0 {
+		t.Error("expected non-zero total checks")
+	}
+}
+
+func TestValidateSync_WithSkillMismatch(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Equal agent counts (0 each) but mismatched skills
+	for _, d := range []string{
+		filepath.Join(tmpDir, ".claude", "agents"),
+		filepath.Join(tmpDir, ".opencode", "agent"),
+	} {
+		if err := os.MkdirAll(d, 0755); err != nil {
+			t.Fatalf("failed to create agent dir: %v", err)
+		}
+	}
+
+	// Claude has 2 skills, OpenCode has 1 → skill count mismatch → FailedChecks++ for skill count
+	claudeSkillsDir := filepath.Join(tmpDir, ".claude", "skills")
+	opencodeSkillDir := filepath.Join(tmpDir, ".opencode", "skill")
+
+	for _, d := range []string{
+		filepath.Join(claudeSkillsDir, "skill-a"),
+		filepath.Join(claudeSkillsDir, "skill-b"),
+		filepath.Join(opencodeSkillDir, "skill-a"),
+	} {
+		if err := os.MkdirAll(d, 0755); err != nil {
+			t.Fatalf("failed to create dir: %v", err)
+		}
+	}
+
+	for _, p := range []string{
+		filepath.Join(claudeSkillsDir, "skill-a", "SKILL.md"),
+		filepath.Join(claudeSkillsDir, "skill-b", "SKILL.md"),
+		filepath.Join(opencodeSkillDir, "skill-a", "SKILL.md"),
+	} {
+		if err := os.WriteFile(p, []byte("# Skill"), 0644); err != nil {
+			t.Fatalf("failed to create file: %v", err)
+		}
+	}
+
+	result, err := ValidateSync(tmpDir)
+	if err != nil {
+		t.Fatalf("ValidateSync() unexpected error: %v", err)
+	}
+	// Skill count mismatch should cause FailedChecks > 0
+	if result.FailedChecks == 0 {
+		t.Error("expected at least one failed check for skill count mismatch")
+	}
+}
+
+func TestValidateSync_WithSkillContentMismatch(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Equal agent counts (0 each)
+	for _, d := range []string{
+		filepath.Join(tmpDir, ".claude", "agents"),
+		filepath.Join(tmpDir, ".opencode", "agent"),
+	} {
+		if err := os.MkdirAll(d, 0755); err != nil {
+			t.Fatalf("failed to create dir: %v", err)
+		}
+	}
+
+	// Same skill count but different content → skill identity mismatch → FailedChecks++ for identity
+	claudeSkillsDir := filepath.Join(tmpDir, ".claude", "skills")
+	opencodeSkillDir := filepath.Join(tmpDir, ".opencode", "skill")
+
+	for _, d := range []string{
+		filepath.Join(claudeSkillsDir, "skill-x"),
+		filepath.Join(opencodeSkillDir, "skill-x"),
+	} {
+		if err := os.MkdirAll(d, 0755); err != nil {
+			t.Fatalf("failed to create dir: %v", err)
+		}
+	}
+
+	if err := os.WriteFile(filepath.Join(claudeSkillsDir, "skill-x", "SKILL.md"), []byte("Claude content"), 0644); err != nil {
+		t.Fatalf("failed to create claude skill: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(opencodeSkillDir, "skill-x", "SKILL.md"), []byte("OpenCode different content"), 0644); err != nil {
+		t.Fatalf("failed to create opencode skill: %v", err)
+	}
+
+	result, err := ValidateSync(tmpDir)
+	if err != nil {
+		t.Fatalf("ValidateSync() unexpected error: %v", err)
+	}
+	// Skill identity mismatch should cause FailedChecks > 0
+	if result.FailedChecks == 0 {
+		t.Error("expected at least one failed check for skill content mismatch")
+	}
+}

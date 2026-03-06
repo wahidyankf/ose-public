@@ -73,9 +73,7 @@ func FormatText(result *ValidationResult, verbose, quiet bool) string {
 			_, _ = fmt.Fprintf(&output, "\n### %s\n\n", dir)
 
 			dirViolations := byDir[dir]
-			sort.Slice(dirViolations, func(i, j int) bool {
-				return dirViolations[i].FileName < dirViolations[j].FileName
-			})
+			sort.Slice(dirViolations, func(i, j int) bool { return dirViolations[i].FileName < dirViolations[j].FileName })
 
 			for _, v := range dirViolations {
 				_, _ = fmt.Fprintf(&output, "- `%s`: %s\n", v.FileName, v.Message)
@@ -192,9 +190,7 @@ func FormatMarkdown(result *ValidationResult) string {
 		// Sort violations by file path
 		sorted := make([]NamingViolation, len(violations))
 		copy(sorted, violations)
-		sort.Slice(sorted, func(i, j int) bool {
-			return sorted[i].FilePath < sorted[j].FilePath
-		})
+		sort.Slice(sorted, func(i, j int) bool { return sorted[i].FilePath < sorted[j].FilePath })
 
 		for _, v := range sorted {
 			actual := v.ActualPrefix
@@ -229,9 +225,7 @@ func FormatFixPlan(result *FixResult) string {
 	// Sort by path for consistent output
 	ops := make([]RenameOperation, len(result.RenameOperations))
 	copy(ops, result.RenameOperations)
-	sort.Slice(ops, func(i, j int) bool {
-		return ops[i].OldPath < ops[j].OldPath
-	})
+	sort.Slice(ops, func(i, j int) bool { return ops[i].OldPath < ops[j].OldPath })
 
 	for _, op := range ops {
 		dir := getDir(op.OldPath)

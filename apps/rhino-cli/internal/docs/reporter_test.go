@@ -242,6 +242,20 @@ func TestFormatMarkdownNoViolations(t *testing.T) {
 	}
 }
 
+func TestGetDir_NoSlash(t *testing.T) {
+	result := getDir("justfilename.md")
+	if result != "." {
+		t.Errorf("expected '.' for path with no slash, got %q", result)
+	}
+}
+
+func TestGetDir_WithSlash(t *testing.T) {
+	result := getDir("some/dir/file.md")
+	if result != "some/dir" {
+		t.Errorf("expected 'some/dir', got %q", result)
+	}
+}
+
 func TestFormatFixPlan_NoOperations(t *testing.T) {
 	result := &FixResult{
 		RenameOperations: []RenameOperation{},

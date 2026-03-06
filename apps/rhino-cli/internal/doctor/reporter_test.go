@@ -180,6 +180,25 @@ func TestFormatJSON_Mixed(t *testing.T) {
 	})
 }
 
+func TestSymbolFor_Default(t *testing.T) {
+	// Use an undefined ToolStatus value to trigger the default branch
+	sym := symbolFor(ToolStatus("unknown-status"))
+	if sym != "?" {
+		t.Errorf("expected '?' for unknown status, got %q", sym)
+	}
+}
+
+func TestDisplayVersion_EmptyInstalled(t *testing.T) {
+	check := ToolCheck{
+		Status:           StatusOK,
+		InstalledVersion: "",
+	}
+	ver := displayVersion(check)
+	if ver != "(unknown)" {
+		t.Errorf("expected '(unknown)' for empty InstalledVersion, got %q", ver)
+	}
+}
+
 func TestFormatMarkdown(t *testing.T) {
 	result := buildResult(allOKChecks)
 	out := FormatMarkdown(result)

@@ -5,6 +5,4 @@ import (
 	"github.com/wahidyankf/open-sharia-enterprise/apps/rhino-cli/cmd"
 )
 
-func main() {
-	cmd.Execute()
-}
+func main() { cmd.Execute() }

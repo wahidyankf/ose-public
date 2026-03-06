@@ -61,9 +61,7 @@ func FormatLinkText(result *LinkValidationResult, verbose, quiet bool) string {
 
 			// Sort links by line number
 			fileLinks := byFile[file]
-			sort.Slice(fileLinks, func(i, j int) bool {
-				return fileLinks[i].LineNumber < fileLinks[j].LineNumber
-			})
+			sort.Slice(fileLinks, func(i, j int) bool { return fileLinks[i].LineNumber < fileLinks[j].LineNumber })
 
 			for _, link := range fileLinks {
 				_, _ = fmt.Fprintf(&output, "- Line %d: `%s`\n", link.LineNumber, link.LinkText)

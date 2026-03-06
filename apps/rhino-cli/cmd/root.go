@@ -17,6 +17,9 @@ var (
 	sayMsg  string
 )
 
+// osExit is a package-level variable for dependency injection in tests.
+var osExit = os.Exit
+
 var rootCmd = &cobra.Command{
 	Use:               "rhino-cli",
 	Short:             "CLI tools for repository management",
@@ -40,7 +43,7 @@ var rootCmd = &cobra.Command{
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-		os.Exit(1)
+		osExit(1)
 	}
 }
 

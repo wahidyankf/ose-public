@@ -444,8 +444,7 @@ module "storage" {
 
 ```
 
-**Key Takeaway**: Module validation rules enforce constraints at `terraform plan` time using `validation` blocks with `condition` and `error_message`. Use `can()` for regex validation and `contains( # => Checks list membership
-)` for allowlist checks. Validation prevents invalid configurations from reaching `apply` phase.
+**Key Takeaway**: Module validation rules enforce constraints at `terraform plan` time using `validation` blocks with `condition` and `error_message`. Use `can()` for regex validation and `contains()` for allowlist checks (checks list membership). Validation prevents invalid configurations from reaching `apply` phase.
 
 **Why It Matters**: Input validation catches configuration errors before infrastructure changes, preventing costly mistakes— Regex validation on bucket names prevents AWS API errors that would waste 15 minutes of developer time debugging "InvalidBucketName" failures. Fail-fast validation at plan time beats discovering issues after partial apply when rollback is complex.
 
@@ -797,9 +796,7 @@ output "vpc_id" {
 
 **Key Takeaway**: Public registry modules use `NAMESPACE/NAME/PROVIDER` format and resolve to `registry.terraform.io`. Private registry modules require organization prefix (`app.terraform.io/ORG`). Always specify `version` constraint to control updates. Use semantic versioning: `~> 1.2` (allow patch), `>= 1.0, < 2.0` (allow minor).
 
-## Why It Matters
-
-Registry modules prevent reinventing common patterns—the terraform-aws-modules VPC module is used by thousands of companies, benefits from community bug fixes, and receives AWS best practice updates without requiring each company to maintain their own VPC logic. Version constraints prevent breaking changes: `~> 3.0` allows security patches (3.0.1, 3.0.2) but blocks 4.0.0 which might rename outputs or change resource behavior. Private registries enable internal standardization:
+**Why It Matters**: Registry modules prevent reinventing common patterns—the terraform-aws-modules VPC module is used by thousands of companies, benefits from community bug fixes, and receives AWS best practice updates without requiring each company to maintain their own VPC logic. Version constraints prevent breaking changes: `~> 3.0` allows security patches (3.0.1, 3.0.2) but blocks 4.0.0 which might rename outputs or change resource behavior. Private registries enable internal standardization: teams publish approved modules with enforced security defaults (encrypted S3 buckets, private subnets), preventing engineers from inadvertently creating public resources or misconfigured infrastructure.
 
 ### Example 35: Module Data-Only Pattern
 
@@ -823,7 +820,8 @@ variable "region" {
 # Data-only module performs lookups without creating resources
 data "local_file" "config" {
 # => Data source
- filename = "${path.module} # => Current module directory path/configs/${var.environment}-${var.region}.json"
+ # => path.module is the current module directory path
+ filename = "${path.module}/configs/${var.environment}-${var.region}.json"
  # => path.module refers to module directory (not root)
 }
 
@@ -842,7 +840,9 @@ local.config.availability_zones)
  subnet_cidrs = [ # => List definition
  # => Sets subnet_cidrs
  for i, az in local.config.availability_zones :
+ # => for expression iterates over AZs with index i
  cidrsubnet(local.config.vpc_cidr, 8, i)
+ # => cidrsubnet divides VPC CIDR into /24 subnets per AZ
  ]
 }
 
@@ -957,20 +957,19 @@ graph TD
 
 **Code**:
 
+After apply, `terraform.tfstate` contains a JSON structure mapping each resource to its real-world attributes (filename, content, id, content_md5). Terraform reads this state file on every `plan` to determine what changes are required. The local backend is the default—it creates this file in the working directory with no additional configuration. However, local backend provides no locking, no encryption, and no sharing between team members.
+
 ```hcl
 terraform {
 # => Terraform configuration block
  required_version = ">= 1.0" # => String value
- # => Sets minimum Terraform version
 
  # Local backend (default, no configuration needed)
  backend "local" {
  # => Backend block configures state storage location
  path = "terraform.tfstate" # => State file location (default)
  # => Relative to working directory
- # => File created on first terraform apply
  }
- # => Local backend is default (can omit this block)
  # => No locking, no encryption, single-user only
 }
 
@@ -980,36 +979,14 @@ provider "local" {}
 resource "local_file" "app_config" {
 # => Resource tracked in terraform.tfstate
  filename = "app-config.txt" # => String value
- # => Sets filename
  # => Creates file in current directory
  content = "Database URL: db.example.com" # => String value
- # => Sets content
  # => State records filename, content, id, md5
 }
-
-# State stores resource attributes
-# After apply, terraform.tfstate contains:
-# {
-# "resources": [{
-# "type": "local_file",
-# "name": "app_config",
-# "instances": [{
-# "attributes": {
-# "filename": "app-config.txt",
-# "content": "Database URL: db.example.com",
-# "id": "abc123..",
-# "content_md5": "def456.."
-# }
-# }]
-# }]
-# }
-# => JSON structure maps config to infrastructure reality
-# => Terraform reads state to determine required changes
 
 output "state_location" {
 # => Output value showing backend type
  value = "terraform.tfstate (local backend)"
- # => Displayed after terraform apply
  # => Confirms state stored locally
 }
 ```
@@ -2008,8 +1985,10 @@ resource "local_file" "build_artifact" {
  # => Provisioner executes during resource lifecycle
  command = "mkdir -p build && echo 'Build started' > build/log.txt"
  # => Create directory and initialize log
+ # => && operator: run second command only if first succeeds
  interpreter = ["/bin/bash", "-c"]
  # => interpreter specifies shell (default: sh on Linux, cmd on Windows)
+ # => ["/bin/bash", "-c"] enables bash-specific features like &&
  }
 
  provisioner "local-exec" {
@@ -2058,7 +2037,7 @@ output "provisioner_note" {
 
 **Key Takeaway**: `local-exec` provisioner runs commands locally (not on resources). Use `command` for shell commands, `working_dir` for execution directory, `environment` for env vars, `when = destroy` for cleanup. Provisioners run during resource creation (default) or destruction. Set `on_failure = continue` to allow resource success despite provisioner failure.
 
-**Why It Matters**: local-exec enables Terraform to trigger external systems that don't have providers— Provisioners are last resort (Hashicorp recommends avoiding them): they break Terraform's declarative model, can't be planned (you don't see what command will do), and create hidden dependencies. Prefer provider resources (`aws_lambda_invocation`) or separate orchestration tools ( They're acceptable for one-off migrations but anti-pattern for routine infrastructure.
+**Why It Matters**: local-exec enables Terraform to trigger external systems that lack providers—DNS verification APIs, internal ticketing systems, and legacy tooling without Terraform support. Provisioners are a last resort (HashiCorp recommends avoiding them): they break Terraform's declarative model, cannot be planned (you don't see what command will run), and create hidden dependencies. Prefer provider resources (`aws_lambda_invocation`) or separate orchestration tools (GitHub Actions, Jenkins, Argo Workflows) for routine automation. They're acceptable for one-off migrations but are an anti-pattern for routine infrastructure management.
 
 ---
 
@@ -2249,7 +2228,8 @@ resource "local_file" "instance_marker" {
  # Upload directory recursively
  provisioner "file" {
  source = "${path.module} # => Current module directory path/scripts/"
- # => Trailing slash: upload directory CONTENTS
+ # => Trailing slash: upload directory CONTENTS (not the directory itself)
+ # => Critical distinction: trailing slash vs no trailing slash changes behavior
  destination = "/opt/scripts"
  # => Uploads all files from local scripts/ to /opt/scripts/
  # => Without trailing slash: creates /opt/scripts/scripts/
@@ -2374,10 +2354,12 @@ resource "null_resource" "deploy_notification" {
 # => Resource definition
  # triggers force re-execution when values change
  triggers = { # => Map/object definition
+ # => triggers is a map; any value change causes null_resource to re-create
  config_content = local_file.config.content
  # => When config.content changes, null_resource re-creates (re-runs provisioners)
  deployment_id = uuid()
- # => uuid() changes every apply, forcing provisioner re-run
+ # => uuid() generates new UUID on each apply
+ # => Forces provisioner re-run every apply (use with caution)
  }
 
  provisioner "local-exec" {
@@ -2402,9 +2384,11 @@ resource "null_resource" "deploy_notification" {
 resource "null_resource" "database_backup" {
 # => Resource definition
  triggers = {
+ # => timestamp() evaluated at plan time, not apply time
  backup_schedule = timestamp()
- # => timestamp() evaluated at plan time
- # => Forces re-execution on every apply (use with caution)
+ # => timestamp() returns current UTC time as string
+ # => Changes on every plan, forcing re-execution on every apply
+ # => Useful for scheduled backups but causes noise in plans
  }
 
  provisioner "local-exec" {
@@ -2434,19 +2418,20 @@ resource "local_file" "app_config_file" {
 resource "null_resource" "app_deployment" {
 # => Resource definition
  depends_on = [ # => Explicit dependency list
-
-
- # => Sets depends_on
+ # => Ensures app_binary and app_config_file created before deploying
  local_file.app_binary,
+ # => Wait for binary file before running deployment
  local_file.app_config_file,
+ # => Wait for config file before running deployment
  ]
  # => Explicit dependency enforces creation order
 
  triggers = {
+ # => Hash-based triggers: re-deploy only when content actually changes
  binary_content = local_file.app_binary.content
- # => Sets binary_content
+ # => Re-deploys when binary content changes (new version)
  config_content = local_file.app_config_file.content
- # => Sets config_content
+ # => Re-deploys when config changes
  }
  # => Re-deploy when binary or config changes
 
@@ -2473,7 +2458,7 @@ output "deployment_info" {
 
 **Key Takeaway**: `null_resource` runs provisioners without managing infrastructure. Use `triggers` map to control when provisioners re-run (any value change re-creates resource). Common triggers: file content hashes, timestamps, version numbers. Combine with `depends_on` to orchestrate provisioner execution order. Useful for notifications, deployments, or actions external to Terraform's resource model.
 
-**Why It Matters**: null_resource is both powerful and dangerous— However, null_resource with `timestamp()` trigger runs on every apply, causing unnecessary API calls, alerts, and confusion ("why is deployment running when nothing changed?"). Prefer explicit triggers (content hashes, version numbers) over timestamp. Better alternative: separate orchestration tools (
+**Why It Matters**: null_resource is both powerful and dangerous—it enables Terraform to orchestrate operations that have no resource representation, like triggering deployments or sending webhooks. However, null_resource with `timestamp()` trigger runs on every apply, causing unnecessary API calls, alerts, and confusion ("why is deployment running when nothing changed?"). Prefer explicit triggers (content hashes, version numbers) over timestamp. Better alternative: separate orchestration tools (GitHub Actions, Jenkins, Tekton) for deployment pipelines—Terraform manages infrastructure, orchestrators manage deployments.
 
 ---
 
@@ -2743,10 +2728,11 @@ resource "local_file" "environment_configs" {
 # => Resource definition
  for_each = var.environments
  # => Creates multiple instances from collection
- # => each.value is the environment object
+ # => Iterates over the environments map: keys are dev/staging/prod
+ # => each.key is environment name, each.value is environment object
 
  filename = "${each.key}-config.txt"
- # => Sets filename
+ # => Sets filename: dev-config.txt, staging-config.txt, prod-config.txt
  content = <<-EOT
  # => Sets content
  Environment: ${each.key}
@@ -2763,11 +2749,11 @@ locals {
  prod_environments = {
  for k, v in var.environments :
  k => v
- # => Sets k
+ # => k is environment name, v is environment object
  if contains( # => Checks list membership
-keys( # => Extracts map keys
+keys( # => Extracts map keys as list
 v.tags), "critical")
- # => Filters to environments with "critical" tag
+ # => Filters to environments where tags map has "critical" key
  # => Result: { prod = { region = "eu-west-1".. } }
  }
 
@@ -2781,14 +2767,15 @@ v.tags), "critical")
 
  # Create flat list from map
  all_tags = flatten([
- # => Sets all_tags
+ # => flatten() converts nested list-of-lists to single list
  for env_name, env in var.environments : [
+ # => Outer for: iterate over environments
  for tag_key, tag_value in env.tags :
+ # => Inner for: iterate over each environment's tags
  "${env_name}:${tag_key}=${tag_value}"
- # => Sets "${env_name}:${tag_key}
  ]
  ])
- # => Result: ["dev:tier=development", "staging:tier=pre-production"..]
+ # => Result: ["dev:tier=development", "staging:tier=pre-production", "prod:tier=production"..]
 }
 
 resource "local_file" "prod_only" {
@@ -2832,8 +2819,9 @@ variable "region_list" {
 resource "local_file" "regional_files" {
 # => Resource definition
  for_each = toset(var.region_list)
+ # => toset() converts list to set, removing duplicates
  # => Creates multiple instances from collection
- # => each.key is "us-west-2", "us-east-1", "eu-west-1" (no duplicate)
+ # => each.key is "us-west-2", "us-east-1", "eu-west-1" (duplicate removed)
 
  filename = "region-${each.key}.txt"
  # => Sets filename
@@ -2932,6 +2920,7 @@ resource "local_file" "logging_config" {
 resource "local_file" "prod_only_resource" {
 # => Resource definition
  for_each = var.environment == "production" ? { enabled = true } : {}
+ # => for_each with single-key map creates 1 resource; empty map {} creates 0
  # => Creates multiple instances from collection
  # => for_each with empty map {} creates zero resources
 
@@ -2999,21 +2988,16 @@ resource "local_file" "ha_config" {
 # Referencing conditional resources (safe access)
 output "monitoring_file" {
 # => Output value
- value = length( # => Returns collection size
-local_file.monitoring_config) > 0 ? local_file.monitoring_config[0].filename : "Not enabled"
- # => length( # => Returns collection size
-) checks if resource was created
+ value = length(local_file.monitoring_config) > 0 ? local_file.monitoring_config[0].filename : "Not enabled"
+ # => length() returns collection size; checks if resource was created
  # => [0] accesses first element if count = 1
  # => Ternary prevents error if count = 0
 }
 
 output "prod_feature_file" {
 # => Output value
- value = length( # => Returns collection size
-keys( # => Extracts map keys
-local_file.prod_only_resource)) > 0 ? local_file.prod_only_resource["enabled"].filename : "Not created"
- # => keys( # => Extracts map keys
-) returns map keys, length checks if non-empty
+ value = length(keys(local_file.prod_only_resource)) > 0 ? local_file.prod_only_resource["enabled"].filename : "Not created"
+ # => keys() extracts map keys; length() checks if non-empty
  # => ["enabled"] accesses for_each resource by key
 }
 
@@ -3060,9 +3044,7 @@ resource "local_file" "logging_alt" {
 
 **Key Takeaway**: Use `count = condition ? 1 : 0` for boolean feature flags. Use `for_each = condition ? { key = value } : {}` for map-based conditional creation. Complex conditions belong in `locals` for readability. Reference conditional count resources with `resource[0]` after checking `length(resource) > 0`. Reference conditional for_each with `resource[key]` after checking `length(keys(resource)) > 0`.
 
-## Why It Matters
-
-Conditional resource creation enables feature flags and environment-specific infrastructure without maintaining separate configurations—`environment == "prod" ? 1 : 0` to create CloudWatch dashboards only in production. Feature flags enable gradual rollouts: enable new feature in dev (`enable_new_feature = true`), test thoroughly, then promote to production variable file. The safe access pattern (`length(resource) > 0 ? resource[0] : default`) prevents "resource doesn't exist" errors when referencing conditional resources in outputs or other resources, which would otherwise fail plan/apply when feature is disabled.
+**Why It Matters**: Conditional resource creation enables feature flags and environment-specific infrastructure without maintaining separate configurations—`environment == "prod" ? 1 : 0` to create CloudWatch dashboards only in production. Feature flags enable gradual rollouts: enable new feature in dev (`enable_new_feature = true`), test thoroughly, then promote to production variable file. The safe access pattern (`length(resource) > 0 ? resource[0] : default`) prevents "resource doesn't exist" errors when referencing conditional resources in outputs or other resources, which would otherwise fail plan/apply when feature is disabled.
 
 ---
 
@@ -3091,36 +3073,23 @@ terraform {
 }
 
 provider "local" {}
+# => Local provider manages local_file resources
 
-# Manually create file (simulating existing infrastructure):
-# $ echo "Existing content" > existing-file.txt
-
-# Write Terraform configuration matching existing resource
+# Step 1: Write Terraform config matching existing resource
 resource "local_file" "imported" {
- # => Creates local_file.imported resource
- filename = "existing-file.txt" # => String value
- content = "Existing content" # => String value
- # => Configuration MUST match existing resource attributes
+ filename = "existing-file.txt" # => Must match existing file's path exactly
+ content = "Existing content" # => Must match existing file's content exactly
  # => Mismatch causes terraform plan to show unwanted changes
 }
 
-# Import existing resource into state:
+# Step 2: Import existing resource into state
 # $ terraform import local_file.imported existing-file.txt
 # => Syntax: terraform import RESOURCE_ADDRESS RESOURCE_ID
-# => local_file.imported is Terraform resource address
-# => existing-file.txt is local_file provider's resource ID (filename)
 # => Adds resource to state without creating/modifying it
 
-# After import, verify with plan:
+# Step 3: Verify configuration matches
 # $ terraform plan
 # => No changes. Your infrastructure matches the configuration.
-# => If plan shows changes, configuration doesn't match existing resource
-
-# If attributes unknown, import first then inspect state:
-# $ terraform import local_file.unknown_file mystery.txt
-# $ terraform state show local_file.unknown_file
-# => Displays imported resource attributes from state
-# => Copy attributes to configuration
 ```
 
 **Import workflow for complex resources**:
@@ -3332,31 +3301,32 @@ moved {
 `terraform state` commands inspect and manipulate state file. Use for debugging, auditing, and understanding current infrastructure tracking.
 
 ```hcl
+# => Three resources/modules to demonstrate state commands on different address types
 terraform {
  required_version = ">= 1.0" # => Terraform 1.0+ required
 }
 
 provider "local" {} # => Local provider for examples
 
+# => Will appear in state as: local_file.app_config
 resource "local_file" "app_config" { # => Application configuration file
  filename = "app-config.txt" # => Output: app-config.txt
  content = "Application configuration" # => String value
 }
 
+# => Will appear in state as: local_file.db_config
 resource "local_file" "db_config" { # => Database configuration file
  filename = "db-config.txt" # => Output: db-config.txt
  content = "Database configuration" # => String value
 }
 
+# => Module resources appear with prefix: module.storage.local_file.bucket
 module "storage" { # => Storage module instance
  source = "./modules/storage" # => Local module path
 
  bucket_prefix = "myapp" # => Prefix for bucket naming
  environment = "production" # => Production environment
 }
-
-
-
 ```
 
 **State commands**:

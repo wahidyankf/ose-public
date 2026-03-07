@@ -11,7 +11,7 @@ layout: list
 - [Overview](/en/learn/software-engineering/platform-web/tools/elixir-phoenix/overview)
 - [Quick Start](/en/learn/software-engineering/platform-web/tools/elixir-phoenix/quick-start)
 - [By Example](/en/learn/software-engineering/platform-web/tools/elixir-phoenix/by-example)
-  - [Advanced](/en/learn/software-engineering/platform-web/tools/elixir-phoenix/by-example/advanced)
   - [Beginner](/en/learn/software-engineering/platform-web/tools/elixir-phoenix/by-example/beginner)
   - [Intermediate](/en/learn/software-engineering/platform-web/tools/elixir-phoenix/by-example/intermediate)
+  - [Advanced](/en/learn/software-engineering/platform-web/tools/elixir-phoenix/by-example/advanced)
   - [Overview](/en/learn/software-engineering/platform-web/tools/elixir-phoenix/by-example/overview)

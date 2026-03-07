@@ -1,6 +1,6 @@
 ---
 title: "Advanced"
-weight: 100000000
+weight: 10000003
 date: 2025-12-25T16:18:56+07:00
 draft: false
 description: Master advanced Elixir Phoenix patterns through 30 annotated examples covering database optimization, performance, deployment, and resilience
@@ -147,7 +147,7 @@ end                                                   # => End MyApp.Transfers m
 
 **Key Takeaway**: Ecto.Multi ensures all-or-nothing execution. Operations reference previous results with fn. Rollback happens automatically on any failure. Perfect for transfers, account creation, multi-step operations.
 
-**Why It Matters**: Ecto provides type-safe database interactions with compile-time query validation. This prevents SQL injection and catches query errors before deployment.
+**Why It Matters**: Ecto.Multi makes complex multi-step database operations atomic without manual transaction management. Naming each operation allows precise error reporting — when :debit fails, you know exactly which operation failed without inspecting raw database errors. This is essential for financial operations, user registration flows, and any workflow where partial completion leaves data in an inconsistent state.
 
 ### Example 52: Database Constraints and Error Handling
 
@@ -255,7 +255,7 @@ end                                                   # => End MyApp.Accounts mo
 
 **Key Takeaway**: unique_constraint/2 catches database uniqueness violations. assoc_constraint/2 catches foreign key errors. Changesets provide user-friendly error messages without SQL errors exposed.
 
-**Why It Matters**: Changesets centralize validation logic and provide user-friendly error messages. This pattern ensures data integrity and improves user experience with clear feedback.
+**Why It Matters**: Database constraints enforced via changesets catch integrity errors and translate them into user-friendly messages. unique_constraint/2 and assoc_constraint/2 catch database-level violations and convert them to changeset errors, so users see "Email already taken" instead of a 500 error when a unique index fails.
 
 ### Example 53: Polymorphic Associations with many_to_many :through
 
@@ -383,7 +383,7 @@ posts = from p in Post,                               # => Starts Ecto query for
 
 **Key Takeaway**: many_to_many/3 with join_through creates flexible relationships. Use put_assoc/3 to update related records. Query across relationships with join.
 
-**Why It Matters**: Query composition enables complex database operations. Understanding Ecto queries is essential for application performance.
+**Why It Matters**: Polymorphic associations (taggable_type/taggable_id) let a single tags table serve multiple parent models without duplicating tables. The pattern comes with query complexity — you must always filter by both taggable_type and taggable_id to avoid cross-model contamination. In Ecto, this requires custom join conditions since the ORM cannot infer the relationship automatically. Understanding when polymorphic associations are justified versus when separate join tables are cleaner is a key database design decision.
 
 ### Example 54: Multi-Tenancy with Ecto Query Prefix
 
@@ -446,7 +446,7 @@ User                                                  # => Starts with User sche
 
 **Key Takeaway**: Always filter by tenant_id in queries. Use scopes (functions that return queries) to prevent tenant leaks. Consider separate schemas per tenant for complete isolation.
 
-**Why It Matters**: Schemas define data structure and types for validation and persistence. This provides a single source of truth for your domain models.
+**Why It Matters**: PostgreSQL schema-based multi-tenancy isolates each tenant's data into a separate database schema, providing hard boundaries that row-level tenant_id filtering cannot guarantee. Ecto's prefix: option routes every query to the correct schema without application-layer branching. This approach simplifies backup and restore per tenant and enables compliance requirements that demand physical data isolation, though it increases migration complexity since schema changes must be applied across all tenant schemas.
 
 ### Example 55: PostgreSQL Advanced Features in Ecto
 
@@ -534,7 +534,7 @@ results = from p in Post,                             # => Full-text search quer
 
 **Key Takeaway**: Use :map for JSONB, {:array, :string} for arrays. Full-text search with tsvector. Use fragment/2 for database-specific SQL. Index JSONB and tsvector for performance.
 
-**Why It Matters**: This Phoenix pattern is fundamental for building production web applications. Understanding this concept enables you to create robust, maintainable, and scalable applications.
+**Why It Matters**: PostgreSQL's JSONB, array, and full-text search types, accessed through Ecto fragments, let you handle semi-structured data without a separate NoSQL database. tsvector full-text search is significantly faster than LIKE queries and supports ranked results. Using native PostgreSQL types avoids application-layer parsing and keeps complex queries close to the data.
 
 ## Group 10: Performance
 
@@ -563,37 +563,42 @@ graph TD
 ```elixir
 # ❌ N+1 Problem - 1 query + N queries
 posts = Post |> Repo.all()                            # => SELECT * FROM posts (1 query)
-for post <- posts do
+for post <- posts do                                  # => Loop through each post
   author = Author |> where([a], a.id == ^post.author_id) |> Repo.one()
   # => SELECT * FROM authors WHERE id = ? (N queries!)
+                                                       # => One query per post!
 end
 # Total: 1 + N queries (if 100 posts = 101 queries!)
+                                                       # => 100 posts = 101 database queries
 
 # ✅ Solution 1: Preload
 posts = Post
   |> preload(:author)                                 # => Eager load authors
   |> Repo.all()
 # => 2 queries total: SELECT posts, SELECT authors WHERE id IN (...)
+                                                       # => Batches all author lookups into one query
 
 # ✅ Solution 2: Join (for aggregations)
 posts = from p in Post,
   join: a in assoc(p, :author),                       # => SQL JOIN
-  select: {p, a}
+  select: {p, a}                                      # => Return both post and author
 # => 1 query: SELECT posts.*, authors.* FROM posts JOIN authors
 
 # ✅ Solution 3: Preload with nested associations
 posts = Post
   |> preload([comments: :author])  # => Loads comments and their authors
   |> Repo.all()
+                                                       # => 3 queries: posts, comments, comment authors
 
 # Query with EXPLAIN to see execution plan
-results = Repo.all(from p in Post, preload: :author)
-IO.inspect(Repo.explain(:all, Post))
+results = Repo.all(from p in Post, preload: :author)  # => Execute query
+IO.inspect(Repo.explain(:all, Post))                  # => Print EXPLAIN ANALYZE output
+                                                       # => Shows index usage, seq scans, row estimates
 ```
 
 **Key Takeaway**: Use preload/1 to eager-load associations. Use join for aggregations and filtering. Always check your queries with EXPLAIN. Avoid fetching in loops.
 
-**Why It Matters**: Associations model relationships between data entities. Understanding Ecto associations enables efficient data access patterns.
+**Why It Matters**: N+1 queries grow exponentially: fetching 100 posts then loading comments for each triggers 101 SELECT statements instead of 2. Repo.preload/2 collapses these into a single IN-clause query, reducing database round trips regardless of result set size. Dataloader batches nested resolver calls in GraphQL APIs. Adding telemetry to track query counts per request lets you catch N+1 regressions in CI before they reach production and degrade response times under real load.
 
 ### Example 57: Caching Strategies
 
@@ -699,7 +704,7 @@ end                                                   # => End MyApp.Blog module
 
 **Key Takeaway**: Cache expensive queries with TTL (time-to-live). Invalidate cache when data changes. Use Cachex for distributed caching. Cache at controller or service layer.
 
-**Why It Matters**: Controllers implement the request-response pattern that forms the backbone of web applications. Understanding Phoenix controllers enables proper separation of concerns and clean HTTP interface design.
+**Why It Matters**: Caching eliminates repeated computation for expensive queries, but each strategy has different tradeoffs. ETS caches live in node memory — fast but lost on restart and not shared across cluster nodes. Cachex provides distributed TTL-based caching with automatic invalidation. HTTP cache headers (ETag, Cache-Control) let browsers and CDNs cache responses, reducing server load entirely for public content. Measuring cache hit rates and tracking invalidation latency are essential to knowing whether caching actually helps or masks deeper query problems.
 
 ### Example 58: Background Jobs with Oban
 
@@ -725,11 +730,14 @@ graph TD
 
 ```elixir
 # lib/my_app/workers/email_worker.ex
-defmodule MyApp.Workers.EmailWorker do
-  use Oban.Worker, queue: :default
+defmodule MyApp.Workers.EmailWorker do             # => Background job worker module
+  use Oban.Worker, queue: :default                    # => Register as Oban worker on :default queue
+                                                       # => Oban.Worker provides perform/1 callback
 
   @impl Oban.Worker
   def perform(%Oban.Job{args: %{"user_id" => user_id}}) do
+                                                       # => args is the map from EmailWorker.new/1
+                                                       # => Pattern match extracts user_id
     user = MyApp.Accounts.get_user!(user_id)          # => Load user
     MyApp.Mailer.send_welcome_email(user)             # => Send email
     :ok                                               # => Mark job complete
@@ -737,43 +745,47 @@ defmodule MyApp.Workers.EmailWorker do
 end
 
 # In your controller/action
-defmodule MyAppWeb.UserController do
-  def create(conn, %{"user" => user_params}) do
+defmodule MyAppWeb.UserController do                  # => Web controller
+  def create(conn, %{"user" => user_params}) do        # => POST /users handler
     case MyApp.Accounts.create_user(user_params) do
-      {:ok, user} ->
+      {:ok, user} ->                                   # => User created successfully
         # Queue background job
-        %{"user_id" => user.id}
+        %{"user_id" => user.id}                        # => Job args map
         |> MyApp.Workers.EmailWorker.new()            # => Build job struct
         |> Oban.insert()                              # => Insert into oban_jobs table
+                                                       # => Job runs asynchronously in background
 
         json(conn, user)                              # => Respond immediately
+                                                       # => Don't wait for email to send
 
-      {:error, changeset} ->
-        error_response(conn, changeset)
+      {:error, changeset} ->                           # => Validation failed
+        error_response(conn, changeset)                # => Return 422 with errors
     end
   end
 end
 
 # Schedule recurring jobs
-defmodule MyApp.Application do
-  def start(_type, _args) do
+defmodule MyApp.Application do                        # => OTP Application module
+  def start(_type, _args) do                          # => Called at application startup
     children = [
       # ... other children
-      Oban,
+      Oban,                                           # => Oban GenServer in supervision tree
       # Schedule daily cleanup at 2 AM
       {Oban.Cron, crontab: [
-        {"0 2 * * *", MyApp.Workers.CleanupWorker}
+        {"0 2 * * *", MyApp.Workers.CleanupWorker}   # => Cron schedule: daily 2:00 AM UTC
+                                                       # => CleanupWorker.perform/1 called on schedule
       ]}
     ]
 
     Supervisor.start_link(children, strategy: :one_for_one, name: MyApp.Supervisor)
+                                                       # => Start supervision tree with Oban
   end
 end
 ```
 
 **Key Takeaway**: Create Worker modules implementing Oban.Worker. Queue jobs asynchronously. Implement retry logic. Use Oban for background processing and cron jobs.
 
-**Why It Matters**: Process-based architecture enables horizontal scaling and fault isolation. Understanding OTP processes is key to building highly available systems.
+**Why It Matters**: Oban persists jobs in PostgreSQL before processing, ensuring no job is lost even if the server crashes mid-flight. Failed jobs retry with configurable backoff, and dead jobs are retained for inspection. This reliability matters for critical operations like sending emails or processing payments where silent failures are unacceptable.
 
 ### Example 59: Phoenix LiveDashboard for Metrics
 
@@ -869,61 +881,70 @@ end                                                   # => End scope
 
 **Key Takeaway**: Phoenix LiveDashboard shows real-time metrics. Monitor request performance, database connections, memory usage, processes. Access at /dashboard.
 
-**Why It Matters**: Process-based architecture enables horizontal scaling and fault isolation. Understanding OTP processes is key to building highly available systems.
+**Why It Matters**: LiveDashboard provides real-time visibility into your running application without any external monitoring setup. You can see slow Ecto queries, process memory growth, and request latency in the same dashboard, enabling rapid diagnosis of production incidents. All metrics are generated from existing Telemetry instrumentation built into Phoenix and Ecto.
 
 ### Example 60: Custom Metrics with Telemetry
 
 Emit custom metrics to track business logic and application behavior.
 
 ```elixir
-defmodule MyApp.Blog do
-  def create_post(attrs) do
-    start_time = System.monotonic_time()
+defmodule MyApp.Blog do                              # => Blog context module
+  def create_post(attrs) do                            # => Creates a new blog post
+    start_time = System.monotonic_time()               # => Record start time in native units
+                                                        # => Used to measure execution duration
 
     case %Post{}
-         |> Post.changeset(attrs)
-         |> Repo.insert() do
-      {:ok, post} ->
-        duration = System.monotonic_time() - start_time
+         |> Post.changeset(attrs)                      # => Validate post attributes
+         |> Repo.insert() do                           # => Persist to database
+      {:ok, post} ->                                   # => Insert succeeded
+        duration = System.monotonic_time() - start_time  # => Calculate elapsed time
+                                                        # => In Erlang native time units
 
         :telemetry.execute(
-          [:blog, :post, :created],
-          %{duration: duration},
-          %{post_id: post.id, user_id: attrs["user_id"]}
+          [:blog, :post, :created],                    # => Event name: list of atoms
+                                                        # => Matches handler attachment name
+          %{duration: duration},                       # => Measurements map: numeric metrics
+                                                        # => duration in native time units
+          %{post_id: post.id, user_id: attrs["user_id"]}  # => Metadata map: context info
+                                                        # => Available in all attached handlers
         )
 
-        {:ok, post}
+        {:ok, post}                                    # => Return success with inserted post
 
-      {:error, changeset} ->
-        {:error, changeset}
+      {:error, changeset} ->                           # => Validation/DB error
+        {:error, changeset}                            # => Return error changeset
     end
   end
 end
 
 # Listen to events
-defmodule MyApp.TelemetryHandler do
-  def attach_handlers do
+defmodule MyApp.TelemetryHandler do                    # => Centralized telemetry handler module
+  def attach_handlers do                               # => Called once at application startup
     :telemetry.attach(
-      "blog-post-created",
-      [:blog, :post, :created],
-      &__MODULE__.handle_post_created/4,
-      nil
+      "blog-post-created",                             # => Unique handler ID (must be unique per event)
+      [:blog, :post, :created],                        # => Match exact event name from execute/3
+      &__MODULE__.handle_post_created/4,               # => Handler function reference (4 args)
+      nil                                              # => Config passed to handler (nil = none)
     )
   end
 
   def handle_post_created(_event, measurements, metadata, _config) do
-    IO.inspect({measurements, metadata})
+                                                        # => Called for every :blog, :post, :created event
+                                                        # => measurements: %{duration: ...}
+                                                        # => metadata: %{post_id: ..., user_id: ...}
+    IO.inspect({measurements, metadata})               # => Log measurements and metadata
     # Send to monitoring service, log, increment counter, etc.
   end
 end
 
 # In your application startup
-MyApp.TelemetryHandler.attach_handlers()
+MyApp.TelemetryHandler.attach_handlers()               # => Register all handlers when app starts
+                                                        # => Must be called before events fire
 ```
 
 **Key Takeaway**: Use :telemetry.execute/3 to emit metrics. Attach handlers with :telemetry.attach/4. Track custom business metrics for monitoring and alerting.
 
-**Why It Matters**: This Phoenix pattern is fundamental for building production web applications. Understanding this concept enables you to create robust, maintainable, and scalable applications.
+**Why It Matters**: Custom business metrics via :telemetry.execute/3 instrument your application domain — post creation rates, checkout durations, user signup flows — not just infrastructure. Decoupling metric emission from metric handling via event names means you can attach multiple handlers (logging, StatsD, Prometheus) without touching the business logic code.
 
 ## Group 11: Production Deployment
 
@@ -1149,10 +1170,10 @@ graph TD
 
 ```elixir
 # lib/my_app_web/controllers/health_controller.ex
-defmodule MyAppWeb.HealthController do
-  use MyAppWeb, :controller
+defmodule MyAppWeb.HealthController do        # => Controller for health check endpoints
+  use MyAppWeb, :controller                      # => Phoenix controller
 
-  def readiness(conn, _params) do
+  def readiness(conn, _params) do               # => GET /health/ready - Kubernetes readiness probe
     # Check if app is ready to serve traffic
     case check_database() do
       :ok ->
@@ -1166,23 +1187,24 @@ defmodule MyAppWeb.HealthController do
     end
   end  # => Checked every 5 seconds
 
-  def liveness(conn, _params) do
+  def liveness(conn, _params) do                # => GET /health/live - Kubernetes liveness probe
     # Check if app is alive (should restart if not)
     json(conn, %{status: "ok"})                       # => Always returns 200
   end  # => If this fails, Kubernetes restarts pod
 
-  defp check_database do
+  defp check_database do                        # => Test DB connectivity
     case Ecto.Adapters.SQL.query(MyApp.Repo, "SELECT 1", []) do
-      {:ok, _} -> :ok
-      {:error, _} -> :error
+                                                # => Minimal query: just check connection
+      {:ok, _} -> :ok                           # => Database responsive
+      {:error, _} -> :error                     # => Database unreachable
     end
   end
 end
 
 # router.ex
-scope "/health", MyAppWeb do
-  get "/ready", HealthController, :readiness
-  get "/live", HealthController, :liveness
+scope "/health", MyAppWeb do                   # => Health check routes (no authentication)
+  get "/ready", HealthController, :readiness   # => Readiness probe: check dependencies
+  get "/live", HealthController, :liveness     # => Liveness probe: basic alive check
 end
 
 # Kubernetes deployment yaml
@@ -1202,7 +1224,7 @@ end
 
 **Key Takeaway**: Readiness probe indicates if app can handle traffic. Liveness probe indicates if app needs restart. Health endpoints check critical dependencies (database, cache).
 
-**Why It Matters**: Endpoints configure the HTTP entry point for your application. Understanding endpoint configuration is essential for performance tuning and security.
+**Why It Matters**: Kubernetes uses separate liveness and readiness endpoints to distinguish between "restart me" and "stop sending traffic". A liveness check failing restarts the pod; a readiness check failing removes it from the load balancer without restarting. During database migrations or startup initialization, a pod that is alive but not ready should return 503 on the readiness endpoint while passing liveness, preventing traffic from hitting an uninitialized application and causing request failures during rolling deployments.
 
 ### Example 64: Graceful Shutdown
 
@@ -1210,29 +1232,31 @@ Handle shutdown signals gracefully, completing in-flight requests before termina
 
 ```elixir
 # lib/my_app/application.ex
-defmodule MyApp.Application do
-  use Application
+defmodule MyApp.Application do                   # => OTP Application module
+  use Application                                  # => Provides start/2 callback
 
   @impl true
-  def start(_type, _args) do
+  def start(_type, _args) do                       # => Called when VM starts application
     children = [
-      MyAppWeb.Telemetry,
-      MyApp.Repo,
-      {Phoenix.PubSub, name: MyApp.PubSub},
-      MyAppWeb.Endpoint
+      MyAppWeb.Telemetry,                          # => Metrics reporting process
+      MyApp.Repo,                                  # => Database connection pool
+      {Phoenix.PubSub, name: MyApp.PubSub},        # => Distributed PubSub for LiveView
+      MyAppWeb.Endpoint                            # => HTTP/WebSocket server
     ]
 
     opts = [strategy: :one_for_one, name: MyApp.Supervisor]
-    Supervisor.start_link(children, opts)
+                                                   # => :one_for_one: restart only failed child
+    Supervisor.start_link(children, opts)          # => Start all children under supervisor
   end
 
   @impl true
-  def config_change(changed, _new, removed) do
+  def config_change(changed, _new, removed) do     # => Hot config reload callback
     MyAppWeb.Endpoint.config_change(changed, removed)
+                                                   # => Tell endpoint about config changes
   end
 
   @impl true
-  def prep_stop(_state) do
+  def prep_stop(_state) do                         # => Called before application stops
     # Called before shutdown
     # Drain in-flight requests
     IO.puts("Shutting down gracefully...")           # => Log shutdown
@@ -1243,9 +1267,9 @@ end
 # In endpoint config
 config :my_app, MyAppWeb.Endpoint,
   # Graceful shutdown timeout (milliseconds)
-  shutdown: 25_000,
+  shutdown: 25_000,                                # => Wait up to 25s for connections to close
   # Give existing connections time to close
-  drain_on_stop: true
+  drain_on_stop: true                              # => Complete in-flight requests before exit
 ```
 
 **Key Takeaway**: prep_stop/1 gives app chance to drain requests. Set shutdown timeout. Complete in-flight work before terminating. Important for zero-downtime deployments.
@@ -1348,7 +1372,7 @@ config :my_app, MyAppWeb.Endpoint,                    # => Endpoint runtime conf
 
 **Key Takeaway**: config/ files configure at compile time. config/runtime.exs loads at runtime (for secrets). Use environment variables for production secrets. Never commit secrets to git.
 
-**Why It Matters**: This Phoenix pattern is fundamental for building production web applications. Understanding this concept enables you to create robust, maintainable, and scalable applications.
+**Why It Matters**: Separating compile-time config (config/\*.exs) from runtime config (config/runtime.exs) is critical for deployable releases. Runtime config reads environment variables when the application starts, so the same release artifact works in staging and production with different credentials. This eliminates the need to rebuild for each deployment environment.
 
 ## Group 12: Resilience & Observability
 
@@ -1441,7 +1465,7 @@ end                                                   # => End MyApp.Blog module
 
 **Key Takeaway**: Sentry captures production errors. Structured logging adds context. Use Logger.info/warn/error with metadata maps. Include request IDs for tracing.
 
-**Why It Matters**: Contexts provide bounded modules for organizing business logic. This pattern enables clean API boundaries between different parts of your application and improves maintainability.
+**Why It Matters**: Structured logging with consistent correlation IDs lets you trace a single request across multiple log lines in centralized aggregators like Elasticsearch or Datadog. Sentry integration captures exception context — request params, user identity, stack trace — that plain log lines miss. Combining structured logs with error tracking reduces mean time to resolution (MTTR) because you can jump directly from an error alert to the correlated request trace, rather than grepping through unstructured log files.
 
 ### Example 67: Rate Limiting with Token Bucket
 
@@ -1464,25 +1488,30 @@ stateDiagram-v2
 ```
 
 ```elixir
-defmodule MyApp.RateLimiter do
-  use GenServer
+defmodule MyApp.RateLimiter do               # => GenServer for token bucket rate limiting
+  use GenServer                                 # => OTP GenServer behavior
 
   def start_link(opts) do
     GenServer.start_link(__MODULE__, opts, name: __MODULE__)
+                                               # => Start GenServer named globally
   end
 
   def allow_request?(key, max_requests, time_window_ms) do
+                                               # => Public API: check if request is allowed
+                                               # => key: e.g., IP address or user ID
     GenServer.call(__MODULE__, {:check, key, max_requests, time_window_ms})
+                                               # => Synchronous call to GenServer
   end
 
   @impl true
   def init(_opts) do
-    {:ok, %{}}
+    {:ok, %{}}                                 # => Initial state: empty map of {key => {count, reset_time}}
   end
 
   @impl true
   def handle_call({:check, key, max_requests, time_window_ms}, _from, state) do
-    now = System.monotonic_time(:millisecond)
+                                               # => Check if key has remaining requests
+    now = System.monotonic_time(:millisecond)  # => Current time in milliseconds
 
     {requests, state} = case Map.get(state, key) do
       {count, reset_time} when reset_time > now ->
@@ -1506,14 +1535,15 @@ defmodule MyApp.RateLimiter do
 end
 
 # Plug for rate limiting
-defmodule MyAppWeb.Plugs.RateLimit do
-  def init(opts), do: opts
+defmodule MyAppWeb.Plugs.RateLimit do       # => Plug: applies rate limiting per IP
+  def init(opts), do: opts                     # => Compile-time options pass-through
 
-  def call(conn, opts) do
-    max_requests = opts[:max_requests] || 100
-    time_window = opts[:time_window] || 60_000
+  def call(conn, opts) do                      # => Called for every request
+    max_requests = opts[:max_requests] || 100  # => Max requests per window (default: 100)
+    time_window = opts[:time_window] || 60_000 # => Time window in ms (default: 60s)
 
     key = conn.remote_ip |> Tuple.to_list() |> Enum.join(".")
+                                               # => Build string key from IP: "127.0.0.1"
 
     case MyApp.RateLimiter.allow_request?(key, max_requests, time_window) do
       :ok -> conn
@@ -1529,7 +1559,7 @@ end
 
 **Key Takeaway**: Rate limiting prevents abuse. Token bucket algorithm is fair and flexible. Apply per IP or per user. Return 429 Too Many Requests when limited.
 
-**Why It Matters**: Event-driven patterns decouple components and enable scalable architectures. Understanding events is key to building maintainable Phoenix applications.
+**Why It Matters**: The token bucket algorithm allows controlled bursting — a user can make several rapid requests as long as they have tokens — unlike fixed-window rate limiting that resets abruptly and allows double-rate spikes at window boundaries. Storing counters in ETS avoids database round trips on every request. Rate limiting at the plug level protects downstream services from abusive clients and reduces DDoS impact, while per-user limits prevent one heavy user from degrading service for others.
 
 ### Example 68: Distributed Phoenix Clustering
 
@@ -1573,6 +1603,7 @@ config :libcluster,
   topologies: [
     example: [
       strategy: Cluster.Strategy.Kubernetes.DNS,      # => Auto-discover in K8s
+                                                       # => Queries DNS for pod IPs
       config: [
         service: "my_app-headless",                   # => Headless service name
         namespace: "default"                          # => K8s namespace
@@ -1581,27 +1612,30 @@ config :libcluster,
   ]  # => Nodes connect automatically via DNS
 
 # Or with fixed IPs
-config :libcluster,
+config :libcluster,                                   # => Static topology for non-K8s
   topologies: [
     fixed: [
-      strategy: Cluster.Strategy.Static,
+      strategy: Cluster.Strategy.Static,              # => Fixed node list
       config: [
         nodes: [:"app1@10.0.0.1", :"app2@10.0.0.2", :"app3@10.0.0.3"]
+                                                       # => Node names: name@ip format
       ]
     ]
   ]
 
 # lib/my_app/cluster.ex
-defmodule MyApp.Cluster do
+defmodule MyApp.Cluster do                            # => Cluster manager supervisor
   def start_link(opts) do
     Supervisor.start_link(
       [{:libcluster, Cluster.Strategy.Kubernetes.DNS, [topologies: topologies()]}],
+                                                       # => Start libcluster with configured topology
       opts
     )
   end
 
   defp topologies do
-    Application.get_env(:libcluster, :topologies)
+    Application.get_env(:libcluster, :topologies)     # => Read topology config
+                                                       # => Returns the topologies map from config/config.exs
   end
 end
 
@@ -1618,7 +1652,7 @@ Node.list()
 
 **Key Takeaway**: libcluster connects nodes automatically. Distribute PubSub across cluster. All nodes share state. Provides fault tolerance.
 
-**Why It Matters**: PubSub enables event-driven communication between processes. This pattern powers real-time broadcasts and decoupled system architecture.
+**Why It Matters**: libcluster automates node discovery so newly started pods join the cluster without manual configuration, enabling auto-scaling. Once nodes are connected, Phoenix.PubSub broadcasts messages across all nodes so WebSocket messages reach users connected to any pod. Erlang distribution requires correct cookie configuration and EPMD port access — misconfigured cluster security is a common production issue where nodes silently fail to communicate despite appearing healthy individually.
 
 ### Example 69: WebSocket Load Balancing with Sticky Sessions
 
@@ -1697,7 +1731,7 @@ backend phoenix_nodes                                 # => Defines HAProxy backe
 
 **Key Takeaway**: WebSockets require persistent connections to same server. Use sticky sessions (by IP or cookie). Load balancer must preserve connection. Forward X-Forwarded-For headers.
 
-**Why It Matters**: Phoenix sockets enable efficient bidirectional communication for real-time features. This is essential for chat, notifications, and collaborative editing applications.
+**Why It Matters**: WebSocket connections require sticky sessions because the stateful connection must reach the same server on reconnect. Without sticky routing, a reconnecting client may land on a different node that knows nothing about that user's channel subscriptions. Proper load balancer configuration is a prerequisite for scaling any Phoenix application with real-time features.
 
 ### Example 70: Blue-Green Deployment for Zero-Downtime Releases
 
@@ -1928,23 +1962,26 @@ Use Ecto fragments for PostgreSQL-specific features and complex SQL.
 
 ```elixir
 # Full-text search with tsvector
-defmodule MyApp.Blog do
-  import Ecto.Query
+defmodule MyApp.Blog do                               # => Blog context module
+  import Ecto.Query                                   # => Ecto query DSL
 
-  def search_posts(search_term) do
+  def search_posts(search_term) do                    # => PostgreSQL full-text search
     from p in Post,
       where: fragment(
         "to_tsvector('english', ?) @@ plainto_tsquery('english', ?)",
+                                                       # => to_tsvector: index document as word tokens
+                                                       # => @@: match operator between tsvector and tsquery
         p.title,                                      # => Search in title
         ^search_term                                  # => User's search query
       ),
       order_by: fragment(
         "ts_rank(to_tsvector('english', ?), plainto_tsquery('english', ?)) DESC",
+                                                       # => ts_rank: float 0.0-1.0 indicating match quality
         p.title,
         ^search_term                                  # => Rank by relevance
       ),
       select: %{
-        post: p,
+        post: p,                                      # => Include full post struct
         rank: fragment("ts_rank(to_tsvector('english', ?), plainto_tsquery('english', ?))",
           p.title, ^search_term)                      # => Include rank in results
       }
@@ -1953,17 +1990,21 @@ defmodule MyApp.Blog do
   end
 
   # JSONB queries
-  def posts_by_metadata(key, value) do
+  def posts_by_metadata(key, value) do                # => Query JSONB column with arrow operator
     from p in Post,
       where: fragment("? ->> ? = ?", p.metadata, ^key, ^value)
+                                                       # => ->>: extract JSONB value as text
+                                                       # => p.metadata is PostgreSQL JSONB column
       # => SELECT * FROM posts WHERE metadata->>'status' = 'draft'
     |> Repo.all()
   end
 
   # Array contains
-  def posts_with_tag(tag) do
+  def posts_with_tag(tag) do                          # => Query JSONB array for tag membership
     from p in Post,
       where: fragment("? @> ?::jsonb", p.tags, ^[tag])  # => Array contains tag
+                                                       # => @>: PostgreSQL "contains" operator
+                                                       # => ^[tag]: convert Elixir list to JSONB array
     |> Repo.all()
     # => SELECT * FROM posts WHERE tags @> '["elixir"]'::jsonb
   end
@@ -2028,7 +2069,7 @@ end                                                   # => End module
 
 **Key Takeaway**: Use fragment/1 for database-specific SQL. Supports full-text search, JSONB queries, window functions, and CTEs. Always use ^pinned parameters to prevent SQL injection.
 
-**Why It Matters**: JSON API patterns enable integration with mobile apps and external services. Phoenix makes building RESTful APIs straightforward with proper content negotiation.
+**Why It Matters**: Ecto.Query.fragment/1 injects raw SQL into otherwise composable Ecto queries, giving access to database-specific functions like PostgreSQL's to_tsvector/tsquery for full-text search, earthdistance for geospatial queries, and window functions. The tradeoff is portability: fragments couple your queries to a specific database engine. Using fragments deliberately for performance-critical paths, while keeping business logic in portable Ecto syntax, balances power with maintainability.
 
 ### Example 73: Query Profiling with Telemetry
 
@@ -2036,21 +2077,24 @@ Measure query performance to identify slow queries in production.
 
 ```elixir
 # lib/my_app/telemetry.ex
-defmodule MyApp.Telemetry do
-  require Logger
+defmodule MyApp.Telemetry do                        # => Centralized telemetry handler
+  require Logger                                       # => Import Logger macros
 
-  def attach_handlers do
+  def attach_handlers do                               # => Register all handlers at startup
     :telemetry.attach(
       "my-app-ecto-query",                            # => Handler ID
       [:my_app, :repo, :query],                       # => Event name
+                                                       # => Ecto emits this for every query
       &__MODULE__.handle_query/4,                     # => Handler function
-      nil
+      nil                                              # => No extra config
     )
   end
 
   def handle_query(_event, measurements, metadata, _config) do
+                                                       # => Called after each Ecto query
     query_time = measurements.total_time              # => Time in native units
     query_time_ms = System.convert_time_unit(query_time, :native, :millisecond)
+                                                       # => Convert to milliseconds
 
     if query_time_ms > 100 do                         # => Slow query threshold
       Logger.warning("Slow query detected",
@@ -2065,7 +2109,7 @@ defmodule MyApp.Telemetry do
     # Send to monitoring service
     if query_time_ms > 1000 do                        # => Very slow (>1s)
       MyApp.Monitoring.report_slow_query(%{
-        query: metadata.query,
+        query: metadata.query,                        # => SQL text
         time_ms: query_time_ms,
         type: metadata.type                           # => :ecto_sql_query
       })
@@ -2074,28 +2118,31 @@ defmodule MyApp.Telemetry do
 end
 
 # In application.ex
-def start(_type, _args) do
+def start(_type, _args) do                            # => Called at application startup
   MyApp.Telemetry.attach_handlers()                  # => Attach on startup
+                                                       # => Must run before first query
 
   children = [
-    MyApp.Repo,
-    MyAppWeb.Endpoint
+    MyApp.Repo,                                       # => Database connection pool
+    MyAppWeb.Endpoint                                 # => HTTP/WebSocket server
   ]
 
   Supervisor.start_link(children, strategy: :one_for_one)
+                                                       # => Restart children independently on failure
 end
 
 # Query all telemetry events
-defmodule MyApp.QueryStats do
-  use GenServer
+defmodule MyApp.QueryStats do                         # => GenServer for aggregating query metrics
+  use GenServer                                        # => OTP GenServer behavior
 
   def start_link(opts) do
     GenServer.start_link(__MODULE__, opts, name: __MODULE__)
+                                                       # => Register globally by module name
   end
 
-  def init(_opts) do
+  def init(_opts) do                                  # => Initialize GenServer state
     :telemetry.attach_many(
-      "query-stats",
+      "query-stats",                                  # => Unique handler ID
       [
         [:my_app, :repo, :query],                     # => Ecto queries
         [:phoenix, :router_dispatch, :stop],          # => HTTP requests
@@ -2105,26 +2152,28 @@ defmodule MyApp.QueryStats do
       %{stats: %{}}
     )
 
-    {:ok, %{query_count: 0, total_time: 0}}
+    {:ok, %{query_count: 0, total_time: 0}}           # => Initial state: zero stats
   end
 
   def handle_event([:my_app, :repo, :query], measurements, _metadata, state) do
+                                                       # => Called for each Ecto query
     state = %{
       query_count: state.query_count + 1,             # => Increment counter
       total_time: state.total_time + measurements.total_time
+                                                       # => Accumulate total time in native units
     }
-    {:ok, state}
+    {:ok, state}                                       # => Update GenServer state
   end
 
   def get_stats do
     GenServer.call(__MODULE__, :get_stats)            # => Retrieve stats
   end
 
-  def handle_call(:get_stats, _from, state) do
+  def handle_call(:get_stats, _from, state) do        # => Synchronous stats fetch
     avg_time = if state.query_count > 0 do
       state.total_time / state.query_count            # => Average query time
     else
-      0
+      0                                               # => No queries yet
     end
 
     {:reply, %{
@@ -2144,35 +2193,40 @@ end
 Optimize LiveView rendering with targeted updates and efficient assigns.
 
 ```elixir
-defmodule MyAppWeb.DashboardLive do
-  use Phoenix.LiveView
+defmodule MyAppWeb.DashboardLive do          # => LiveView for performance-optimized dashboard
+  use Phoenix.LiveView                          # => LiveView behavior
 
   # Temporary assigns - not tracked for diff
-  def mount(_params, _session, socket) do
-    if connected?(socket) do
+  def mount(_params, _session, socket) do       # => Called on first render (HTTP + WS)
+    if connected?(socket) do                    # => Only start timer on WebSocket connection
       :timer.send_interval(1000, self(), :tick)       # => Update every second
-    end
+    end                                         # => Erlang timer sends :tick message each second
 
     {:ok,
      socket
      |> assign(:time, DateTime.utc_now())             # => Tracked assign
-     |> assign(:posts, load_posts())
+                                                       # => LiveView diffs this on each update
+     |> assign(:posts, load_posts())            # => Initial posts list
      |> assign_new(:expensive_data, fn -> load_expensive_data() end)}
      # => Only computed on first mount, cached after
+                                                # => assign_new: only calls fn if key not present
   end
 
   # Use temporary_assigns to avoid diffing large data
-  def handle_info(:tick, socket) do
+  def handle_info(:tick, socket) do             # => Handles :tick from timer
     {:noreply,
      socket
      |> assign(:time, DateTime.utc_now())             # => Only updates time
      |> push_event("time-update", %{time: DateTime.to_string(socket.assigns.time)})}
      # => Send JS event instead of re-rendering
+                                                # => push_event bypasses LiveView diff
   end
 
   # Optimize list rendering with streams
   def handle_event("load_more", _params, socket) do
+                                                # => Handle "Load More" button click
     new_posts = load_more_posts(socket.assigns.last_id)
+                                                # => Fetch next page using cursor
 
     {:noreply, stream_insert(socket, :posts, new_posts)}  # => Append to stream
     # => Only new items rendered, existing items unchanged
@@ -2180,12 +2234,15 @@ defmodule MyAppWeb.DashboardLive do
 
   # Debounce user input
   def handle_event("search", %{"query" => query}, socket) do
+                                                # => Fires on every keystroke
     Process.send_after(self(), {:search, query}, 300)  # => Debounce 300ms
-    {:noreply, assign(socket, :search_query, query)}
+                                                # => Cancels if another search arrives in 300ms
+    {:noreply, assign(socket, :search_query, query)}   # => Store latest query for comparison
   end
 
-  def handle_info({:search, query}, socket) do
+  def handle_info({:search, query}, socket) do  # => Debounced search fires after 300ms quiet
     if socket.assigns.search_query == query do       # => Check still current
+                                                # => User may have typed more in 300ms window
       results = search_posts(query)                   # => Execute search
       {:noreply, assign(socket, :search_results, results)}
     else
@@ -2195,8 +2252,9 @@ defmodule MyAppWeb.DashboardLive do
 
   # Use update/3 for atomic updates
   def handle_event("increment_likes", %{"post_id" => id}, socket) do
+                                                # => Handle like button click
     {:noreply,
-     update(socket, :posts, fn posts ->
+     update(socket, :posts, fn posts ->         # => update/3: modify assign in place
        Enum.map(posts, fn post ->
          if post.id == id do
            %{post | likes: post.likes + 1}            # => Update only this post
@@ -2254,7 +2312,7 @@ end                                                   # => End MyAppWeb.Dashboar
 
 **Key Takeaway**: Use assign_new/3 for expensive one-time computation. Prefer streams over lists for collections. Debounce rapid events. Use push_event for client-side updates. Break templates into small function components.
 
-**Why It Matters**: Templates with HEEx enable component-based UI development with compile-time validation. This catches HTML errors during compilation rather than runtime, improving reliability.
+**Why It Matters**: LiveView performance problems compound: a single missed assign_new call on a high-traffic page can double database queries. assign_new prevents redundant data fetching on reconnect, streams replace full list re-renders with targeted DOM patches for large collections, and push_event offloads animations to client JS without server round trips. Measuring DOM diff size with telemetry before optimizing identifies which pattern actually reduces latency rather than applying all techniques speculatively.
 
 ### Example 75: Production Debugging with Observer and LiveDashboard
 
@@ -2264,28 +2322,35 @@ Debug production issues with Observer, LiveDashboard, and remote IEx.
 # Connect to remote production node
 # On local machine:
 # iex --name debug@127.0.0.1 --cookie production_cookie
+# => Start local IEx with a distributed name and production cookie
 
 # In IEx session:
 Node.connect(:"my_app@production-server.com")        # => Connect to prod node
+                                                       # => Enables remote calls and process inspection
 Node.list()                                           # => ["my_app@production-server.com"]
+                                                       # => Verify connection succeeded
 
 # Inspect running processes
 Process.list()                                        # => All Erlang processes
   |> Enum.filter(fn pid ->
     case Process.info(pid, :current_function) do
       {:current_function, {module, _fun, _arity}} ->
+                                                       # => Get module from current function info
         String.starts_with?(to_string(module), "Elixir.MyApp")
+                                                       # => Keep only your app's processes
       _ -> false
     end
   end)
   |> Enum.map(fn pid ->
     {pid, Process.info(pid, [:memory, :message_queue_len, :current_function])}
+                                                       # => Gather memory and queue info per process
   end)
   # => [{#PID<0.123.0>, [memory: 12345, message_queue_len: 0, ...]}, ...]
 
 # Find process by name
 pid = Process.whereis(MyApp.Worker)                   # => #PID<0.456.0>
 Process.info(pid)                                     # => Full process info
+                                                       # => Shows memory, links, status, etc.
 
 # Check process mailbox
 Process.info(pid, :message_queue_len)                 # => {message_queue_len, 1000}
@@ -2337,20 +2402,21 @@ defmodule MyAppWeb.Telemetry do
 end
 
 # Memory leak detection
-defmodule MyApp.MemoryMonitor do
-  use GenServer
-  require Logger
+defmodule MyApp.MemoryMonitor do             # => GenServer that monitors memory usage
+  use GenServer                                 # => OTP GenServer behavior
+  require Logger                                # => Logging macros
 
   def start_link(opts) do
     GenServer.start_link(__MODULE__, opts, name: __MODULE__)
+                                               # => Start named process for easy access
   end
 
-  def init(_opts) do
+  def init(_opts) do                           # => Initialize with baseline memory
     :timer.send_interval(60_000, :check_memory)       # => Check every minute
-    {:ok, %{baseline: get_memory()}}
-  end
+    {:ok, %{baseline: get_memory()}}           # => Record initial memory as baseline
+  end                                          # => Will compare future readings against baseline
 
-  def handle_info(:check_memory, state) do
+  def handle_info(:check_memory, state) do     # => Called every 60 seconds
     current = get_memory()
     diff = current - state.baseline
 
@@ -2383,7 +2449,7 @@ end
 
 **Key Takeaway**: Use remote IEx to connect to production. Inspect process state with :sys.get_state/1. Monitor memory leaks. Use LiveDashboard for real-time metrics. Trace function calls with :dbg.
 
-**Why It Matters**: Process-based architecture enables horizontal scaling and fault isolation. Understanding OTP processes is key to building highly available systems.
+**Why It Matters**: Remote IEx sessions let you inspect live production state without restarting or redeploying. :sys.get_state/1 reads GenServer internals non-destructively, :dbg traces function calls in real time, and LiveDashboard shows aggregate metrics. Together these tools let you diagnose production anomalies in minutes rather than hours of log analysis.
 
 ### Example 76: Security Best Practices
 
@@ -2391,70 +2457,81 @@ Implement security headers, CSRF protection, and input sanitization.
 
 ```elixir
 # Security headers in endpoint
-defmodule MyAppWeb.Endpoint do
-  use Phoenix.Endpoint, otp_app: :my_app
+defmodule MyAppWeb.Endpoint do                     # => Phoenix application endpoint
+  use Phoenix.Endpoint, otp_app: :my_app             # => Register as endpoint for :my_app
 
-  plug Plug.Static, at: "/", from: :my_app
+  plug Plug.Static, at: "/", from: :my_app           # => Serve static assets from priv/static
 
   # Security headers
-  plug :put_secure_headers
+  plug :put_secure_headers                            # => Add security headers to every response
 
-  defp put_secure_headers(conn, _opts) do
+  defp put_secure_headers(conn, _opts) do            # => Private plug: sets security headers
     conn
     |> put_resp_header("x-frame-options", "DENY")     # => Prevent clickjacking
+                                                       # => Blocks all iframe embedding
     |> put_resp_header("x-content-type-options", "nosniff")  # => Prevent MIME sniffing
+                                                       # => Forces browser to respect declared content-type
     |> put_resp_header("x-xss-protection", "1; mode=block")  # => XSS protection
+                                                       # => Blocks page if XSS detected (legacy browsers)
     |> put_resp_header("strict-transport-security",
          "max-age=31536000; includeSubDomains")       # => Force HTTPS
+                                                       # => max-age: 1 year HSTS policy
     |> put_resp_header("content-security-policy",
          "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'")
          # => CSP policy
+         # => 'self': only load resources from same origin
     |> put_resp_header("referrer-policy", "strict-origin-when-cross-origin")
+                                                       # => Only send referrer for same-origin HTTPS requests
   end
 
   plug Plug.RequestId                                 # => Add request ID header
+                                                       # => Enables tracing across distributed logs
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
+                                                       # => Emit telemetry for request timing
 
   plug Plug.Parsers,
-    parsers: [:urlencoded, :multipart, :json],
-    pass: ["*/*"],
-    json_decoder: Jason
+    parsers: [:urlencoded, :multipart, :json],        # => Parse form, upload, and JSON bodies
+    pass: ["*/*"],                                    # => Accept all content types
+    json_decoder: Jason                               # => Use Jason for JSON decoding
 
   plug Plug.MethodOverride                            # => Support _method param
+                                                       # => Allows PUT/DELETE via HTML forms
   plug Plug.Head                                      # => Handle HEAD requests
   plug Plug.Session, @session_options                 # => Encrypted sessions
+                                                       # => @session_options configured in endpoint
 
-  plug MyAppWeb.Router
+  plug MyAppWeb.Router                               # => Forward to router for dispatch
 end
 
 # CSRF protection (automatic in Phoenix)
-defmodule MyAppWeb.Router do
-  pipeline :browser do
-    plug :accepts, ["html"]
-    plug :fetch_session
-    plug :fetch_live_flash
-    plug :put_root_layout, {MyAppWeb.Layouts, :root}
+defmodule MyAppWeb.Router do                         # => Request routing module
+  pipeline :browser do                               # => Browser request pipeline
+    plug :accepts, ["html"]                          # => Accept HTML responses
+    plug :fetch_session                              # => Load session from cookie
+    plug :fetch_live_flash                           # => Load LiveView flash messages
+    plug :put_root_layout, {MyAppWeb.Layouts, :root} # => Wrap responses in root layout
     plug :protect_from_forgery                        # => CSRF token validation
-    plug :put_secure_browser_headers
+                                                       # => Checks csrf_token on POST/PUT/DELETE
+    plug :put_secure_browser_headers                 # => Default security headers
   end
 
   # API doesn't use CSRF (use JWT instead)
-  pipeline :api do
-    plug :accepts, ["json"]
-    # No CSRF protection for stateless API
+  pipeline :api do                                   # => Stateless API pipeline
+    plug :accepts, ["json"]                          # => Only accept JSON
+    # No CSRF protection for stateless API           # => JWT tokens provide authentication
   end
 end
 
 # Input sanitization for user content
-defmodule MyApp.Content do
+defmodule MyApp.Content do                           # => Content processing module
   @doc "Sanitize HTML to prevent XSS"
-  def sanitize_html(html) do
+  def sanitize_html(html) do                         # => Removes dangerous HTML from user input
     HtmlSanitizeEx.basic_html(html)                   # => Strip dangerous tags
     # => Allows: <p>, <br>, <strong>, <em>, <a>, etc.
     # => Removes: <script>, <iframe>, onclick, etc.
   end
 
-  def sanitize_user_post(params) do
+  def sanitize_user_post(params) do                  # => Clean all user-supplied post params
     params
     |> Map.update("body", "", &sanitize_html/1)       # => Clean HTML content
     |> Map.update("title", "", &String.trim/1)        # => Trim whitespace
@@ -2478,54 +2555,58 @@ def search_posts_safe(term) do
 end
 
 # Rate limiting (prevent brute force)
-defmodule MyAppWeb.Plugs.RateLimitLogin do
-  def init(opts), do: opts
+defmodule MyAppWeb.Plugs.RateLimitLogin do        # => Plug: brute-force protection
+  def init(opts), do: opts                            # => Compile-time no-op
 
-  def call(conn, _opts) do
+  def call(conn, _opts) do                            # => Called on every login request
     ip = get_ip(conn)                                 # => Client IP
-    key = "login_attempts:#{ip}"
+    key = "login_attempts:#{ip}"                      # => Cache key per IP address
 
     case MyApp.Cache.get(key) do
-      nil ->
+      nil ->                                          # => First attempt from this IP
         MyApp.Cache.set(key, 1, ttl: 300)             # => First attempt, 5min window
-        conn
+                                                       # => TTL resets 5-minute window on first attempt
+        conn                                          # => Allow request
 
-      attempts when attempts < 5 ->
+      attempts when attempts < 5 ->                  # => Under limit (< 5 attempts)
         MyApp.Cache.incr(key)                         # => Increment counter
-        conn
+        conn                                          # => Allow request
 
-      _ ->
+      _ ->                                            # => Too many attempts (>= 5)
         conn
         |> put_status(:too_many_requests)             # => 429
         |> Phoenix.Controller.json(%{error: "Too many login attempts"})
         |> halt()                                     # => Block request
+                                                       # => Prevents calling controller action
     end
   end
 
-  defp get_ip(conn) do
+  defp get_ip(conn) do                               # => Convert :inet tuple to string
     conn.remote_ip |> Tuple.to_list() |> Enum.join(".")
+                                                       # => {127, 0, 0, 1} → "127.0.0.1"
   end
 end
 
 # Secure password hashing (automatic with phx.gen.auth)
-defmodule MyApp.Accounts.User do
-  def registration_changeset(user, attrs) do
+defmodule MyApp.Accounts.User do               # => User schema module
+  def registration_changeset(user, attrs) do      # => Validates new user registration
     user
-    |> cast(attrs, [:email, :password])
-    |> validate_email()
-    |> validate_password()
+    |> cast(attrs, [:email, :password])            # => Extract email and password from params
+    |> validate_email()                            # => Check email format and uniqueness
+    |> validate_password()                         # => Check password length and complexity
     |> hash_password()                                # => Bcrypt with salt
   end
 
-  defp hash_password(changeset) do
-    password = get_change(changeset, :password)
+  defp hash_password(changeset) do                  # => Hash password before saving
+    password = get_change(changeset, :password)     # => Get password from changeset changes
 
-    if password && changeset.valid? do
+    if password && changeset.valid? do              # => Only hash if password changed AND changeset valid
       changeset
       |> put_change(:password_hash, Bcrypt.hash_pwd_salt(password))
+                                                     # => Bcrypt generates unique salt per hash
       |> delete_change(:password)                     # => Don't store plaintext
     else
-      changeset
+      changeset                                     # => Return unchanged if invalid
     end
   end
 end
@@ -2533,7 +2614,7 @@ end
 
 **Key Takeaway**: Set security headers (CSP, HSTS, X-Frame-Options). CSRF tokens automatic in Phoenix. Sanitize user HTML with HtmlSanitizeEx. Always use Ecto for queries (prevents SQL injection). Rate limit login attempts.
 
-**Why It Matters**: Ecto provides type-safe database interactions with compile-time query validation. This prevents SQL injection and catches query errors before deployment.
+**Why It Matters**: Security requires layered defenses because no single mechanism stops all attacks. CSP headers block XSS injection, CSRF tokens prevent cross-site request forgery, HTML sanitization strips malicious input from user-generated content, bcrypt makes stolen password hashes computationally expensive to crack, and rate limiting stops credential stuffing. Each layer handles a different attack vector — missing any one leaves a gap. Phoenix provides built-in support for most layers; understanding all of them prevents the common mistake of deploying with only one or two active.
 
 ### Example 77: WebSocket Connection Pooling
 
@@ -2541,42 +2622,51 @@ Optimize WebSocket connections with connection pooling and load distribution.
 
 ```elixir
 # Channel with connection limits
-defmodule MyAppWeb.UserSocket do
-  use Phoenix.Socket
+defmodule MyAppWeb.UserSocket do             # => WebSocket socket module
+  use Phoenix.Socket                            # => Phoenix.Socket behavior
 
   # Limit concurrent connections per user
   def connect(%{"token" => token}, socket, _connect_info) do
-    case verify_token(token) do
-      {:ok, user_id} ->
+                                               # => Called on new WebSocket connection
+                                               # => token: JWT from client params
+    case verify_token(token) do                # => Validate authentication token
+      {:ok, user_id} ->                        # => Token valid
         # Check connection limit
         case check_connection_limit(user_id) do
+                                               # => Enforce per-user connection limit
           :ok ->
             {:ok, assign(socket, :user_id, user_id)}  # => Allow connection
+                                               # => user_id available in all channels
 
           {:error, :limit_exceeded} ->
             :error                                    # => Reject connection
+                                               # => Client receives connection refused
         end
 
       {:error, _} ->
-        :error
+        :error                                 # => Invalid token: reject connection
     end
   end
 
-  defp check_connection_limit(user_id) do
+  defp check_connection_limit(user_id) do      # => Count active connections for user
     count = Phoenix.Tracker.list(MyApp.Presence, "user:#{user_id}")
+                                               # => List all presences for this user
       |> Enum.count()                                 # => Count current connections
 
     if count < 5 do                                   # => Max 5 connections per user
+                                               # => Multiple tabs/devices share the limit
       :ok
     else
-      {:error, :limit_exceeded}
+      {:error, :limit_exceeded}               # => User has too many connections
     end
   end
 
   def id(socket), do: "user_socket:#{socket.assigns.user_id}"
+                                               # => Returns unique ID for this socket
+                                               # => Used for disconnect_by_user_id/1
 
-  channel "room:*", MyAppWeb.RoomChannel
-  channel "user:*", MyAppWeb.UserChannel
+  channel "room:*", MyAppWeb.RoomChannel       # => All room:* channels → RoomChannel
+  channel "user:*", MyAppWeb.UserChannel       # => All user:* channels → UserChannel
 end
 
 # Connection pooling for external services
@@ -2682,7 +2772,7 @@ end
 
 **Key Takeaway**: Limit connections per user to prevent abuse. Use Hackney pool for HTTP connection pooling. Track WebSocket connections across cluster with Presence. Distribute load across multiple nodes.
 
-**Why It Matters**: Phoenix sockets enable efficient bidirectional communication for real-time features. This is essential for chat, notifications, and collaborative editing applications.
+**Why It Matters**: Limiting WebSocket connections per user prevents a single user from exhausting server resources through multiple browser tabs or API clients. Hackney connection pooling reuses HTTP connections to external services, avoiding the latency of TCP handshakes on each request. Both patterns protect server capacity as user numbers grow.
 
 ### Example 78: GraphQL API with Absinthe
 
@@ -2699,8 +2789,10 @@ end
 
 # GraphQL schema
 defmodule MyAppWeb.Schema do
-  use Absinthe.Schema
-  import_types MyAppWeb.Schema.ContentTypes
+  use Absinthe.Schema                               # => Imports Absinthe schema DSL
+                                                     # => Provides query/mutation/subscription macros
+  import_types MyAppWeb.Schema.ContentTypes         # => Imports :post, :user, :comment types
+                                                     # => Types defined in separate module for organization
 
   query do
     @desc "Get all posts"
@@ -2718,38 +2810,53 @@ defmodule MyAppWeb.Schema do
 
     @desc "Search posts"
     field :search_posts, list_of(:post) do
-      arg :query, non_null(:string)
+      arg :query, non_null(:string)                   # => Required search string
+                                                       # => Passed to full-text search resolver
       resolve &MyAppWeb.Resolvers.Content.search_posts/3
+                                                       # => Resolver implements search logic
     end
   end
 
   mutation do
     @desc "Create a post"
     field :create_post, :post do
-      arg :title, non_null(:string)
-      arg :body, non_null(:string)
-      arg :tags, list_of(:string)
+      arg :title, non_null(:string)                   # => Required title argument
+                                                       # => Non-null: mutation fails if omitted
+      arg :body, non_null(:string)                    # => Required body argument
+                                                       # => Must be non-empty string
+      arg :tags, list_of(:string)                     # => Optional list of tag strings
+                                                       # => Defaults to nil if not provided
       resolve &MyAppWeb.Resolvers.Content.create_post/3
+                                                       # => Delegates to resolver function
+                                                       # => Resolver handles authorization + persistence
     end
 
     @desc "Update a post"
     field :update_post, :post do
-      arg :id, non_null(:id)
+      arg :id, non_null(:id)                          # => Required post ID to update
       arg :title, :string                             # => Optional fields
-      arg :body, :string
+      arg :body, :string                              # => Optional: only update if provided
+                                                       # => Allows partial updates (PATCH semantics)
       resolve &MyAppWeb.Resolvers.Content.update_post/3
+                                                       # => Resolver merges only provided args
     end
   end
 
   subscription do
+                                                     # => Enables WebSocket subscriptions
+                                                     # => Clients connect via AbsintheSocket
     @desc "Subscribe to new posts"
     field :post_created, :post do
-      config fn _args, _context ->
+      config fn _args, _context ->                  # => Configures subscription topic per client
+                                                     # => _args from subscription query, _context from socket
         {:ok, topic: "posts"}                         # => PubSub topic
+                                                     # => All post_created subscribers share this topic
       end
 
-      trigger :create_post, topic: fn _post ->
+      trigger :create_post, topic: fn _post ->      # => Defines which mutation triggers this subscription
+                                                     # => _post is the created post from mutation
         ["posts"]                                     # => Trigger on mutation
+                                                     # => Broadcast to all clients on "posts" topic
       end
     end
   end
@@ -2757,7 +2864,8 @@ end
 
 # Object types
 defmodule MyAppWeb.Schema.ContentTypes do
-  use Absinthe.Schema.Notation
+  use Absinthe.Schema.Notation               # => Imports object/field/arg macros
+                                              # => Used for defining GraphQL type definitions
 
   object :post do
     field :id, :id                                    # => Post ID
@@ -2771,15 +2879,19 @@ defmodule MyAppWeb.Schema.ContentTypes do
   end
 
   object :user do
-    field :id, :id
-    field :name, :string
-    field :email, :string
+    field :id, :id                                    # => User ID field (non-null unique identifier)
+    field :name, :string                              # => User display name
+                                                       # => Clients can request this independently
+    field :email, :string                             # => User email address
+                                                       # => Only return if authorized context
   end
 
   object :comment do
-    field :id, :id
-    field :body, :string
-    field :author, :user
+    field :id, :id                                    # => Comment ID (unique identifier)
+    field :body, :string                              # => Comment text content
+                                                       # => Clients request only fields they need
+    field :author, :user                              # => Nested :user type
+                                                       # => Resolved via author resolver if requested
   end
 
   defp get_author(post, _args, _resolution) do
@@ -2795,29 +2907,43 @@ end
 # Resolvers
 defmodule MyAppWeb.Resolvers.Content do
   def list_posts(_parent, args, _resolution) do
+                                                       # => _parent is nil for root query fields
+                                                       # => args contains limit/offset from query
     posts = MyApp.Blog.list_posts(args)               # => Pass limit/offset
-    {:ok, posts}
+                                                       # => Returns paginated list of Post structs
+    {:ok, posts}                                      # => Absinthe expects {:ok, value} tuple
+                                                       # => Wraps result for GraphQL execution
   end
 
   def get_post(_parent, %{id: id}, _resolution) do
+                                                       # => Pattern matches :id from args map
+                                                       # => _resolution holds context and schema info
     case MyApp.Blog.get_post(id) do
-      nil -> {:error, "Post not found"}
-      post -> {:ok, post}
+      nil -> {:error, "Post not found"}              # => Returns GraphQL error on missing post
+                                                       # => Absinthe maps {:error, msg} to errors field
+      post -> {:ok, post}                             # => Returns post struct on success
     end
   end
 
   def create_post(_parent, args, %{context: %{current_user: user}}) do
+                                                       # => Extracts current_user from context
+                                                       # => Context is set by authentication plug
     case MyApp.Blog.create_post(Map.put(args, :author_id, user.id)) do
+                                                       # => Merges user.id into args before creating
+                                                       # => Prevents clients from setting author_id
       {:ok, post} ->
         Absinthe.Subscription.publish(
-          MyAppWeb.Endpoint,
-          post,
+          MyAppWeb.Endpoint,                          # => Publishes to the Phoenix endpoint
+                                                       # => Reaches all subscribed WebSocket clients
+          post,                                       # => Subscription payload (the new post)
           post_created: "posts"                       # => Trigger subscription
+                                                       # => Matches topic configured in schema
         )
-        {:ok, post}
+        {:ok, post}                                   # => Returns post to mutation caller
 
       {:error, changeset} ->
         {:error, changeset}                           # => Return errors
+                                                       # => Absinthe formats changeset errors automatically
     end
   end
 end
@@ -2867,7 +2993,7 @@ end                                                   # => End router
 
 **Key Takeaway**: Absinthe provides GraphQL for Phoenix. Define schema with queries, mutations, subscriptions. Clients request only needed fields. Use resolvers to load data. GraphiQL provides interactive API explorer.
 
-**Why It Matters**: Schemas define data structure and types for validation and persistence. This provides a single source of truth for your domain models.
+**Why It Matters**: GraphQL lets clients request exactly the fields they need, eliminating over-fetching (receiving unused data) and under-fetching (requiring multiple round trips). Absinthe compiles the schema at startup, catches type errors at compile time, and maps queries to resolver functions that load data from your existing Ecto contexts. Subscriptions via PubSub push data to clients over the existing WebSocket without polling. For frontends with diverse data needs — mobile, web, third-party — a single GraphQL endpoint replaces multiple REST endpoints.
 
 ### Example 79: Event Sourcing Pattern
 
@@ -2889,53 +3015,76 @@ defmodule MyApp.Events.Event do
 end
 
 # Event store
-defmodule MyApp.EventStore do
-  alias MyApp.Events.Event
-  alias MyApp.Repo
+defmodule MyApp.EventStore do                    # => Append-only event log module
+                                                  # => Single source of truth for all state changes
+  alias MyApp.Events.Event                       # => Event Ecto schema (maps to events table)
+  alias MyApp.Repo                               # => Database repository
 
   def append_event(aggregate_id, aggregate_type, event_type, payload) do
+                                                  # => Public function: append_event/4
+                                                  # => Writes an immutable event to the log
     # Get current version
     current_version = get_current_version(aggregate_id)
+                                                  # => Fetches latest version number for this aggregate
+                                                  # => Returns 0 if no events exist yet
 
-    event = %Event{
-      aggregate_id: aggregate_id,
-      aggregate_type: aggregate_type,
-      event_type: event_type,
-      payload: payload,
+    event = %Event{                               # => Builds Event struct for insertion
+      aggregate_id: aggregate_id,                 # => Which entity this event belongs to
+                                                  # => E.g., order-123
+      aggregate_type: aggregate_type,             # => Entity type for PubSub topic routing
+                                                  # => E.g., Order
+      event_type: event_type,                     # => Domain event name
+                                                  # => E.g., OrderCreated, ItemAdded
+      payload: payload,                           # => Event data as map (stored as JSONB)
+                                                  # => E.g., %{item => %{price => 10}}
       version: current_version + 1,                   # => Increment version
-      inserted_at: DateTime.utc_now()
+                                                  # => Monotonically increasing per aggregate
+      inserted_at: DateTime.utc_now()             # => Event timestamp
+                                                  # => Immutable once written
     }
 
-    case Repo.insert(event) do
+    case Repo.insert(event) do                    # => Writes event to database
+                                                  # => Fails if duplicate version (optimistic locking)
       {:ok, event} ->
         # Publish event for projections
         Phoenix.PubSub.broadcast(
-          MyApp.PubSub,
-          "events:#{aggregate_type}",
-          {:event_appended, event}
+          MyApp.PubSub,                           # => Broadcasts to all subscribers
+                                                  # => Including Projection GenServers
+          "events:#{aggregate_type}",            # => Topic scoped by aggregate type
+                                                  # => E.g., events:Order
+          {:event_appended, event}                # => Message pattern for handle_info
+                                                  # => Projection receives the full event struct
         )
-        {:ok, event}
+        {:ok, event}                              # => Returns success with persisted event
 
       {:error, changeset} ->
-        {:error, changeset}
+        {:error, changeset}                       # => Database insert failed
+                                                  # => Changeset contains validation errors
     end
   end
 
-  def get_events(aggregate_id) do
+  def get_events(aggregate_id) do                 # => Public function: get_events/1
+                                                  # => Loads full event history for an aggregate
     from e in Event,
-      where: e.aggregate_id == ^aggregate_id,
+      where: e.aggregate_id == ^aggregate_id,     # => Filter to this aggregate's events only
+                                                  # => ^aggregate_id pins variable (prevents injection)
       order_by: [asc: e.version]                      # => Chronological order
-    |> Repo.all()
+                                                  # => Must replay in version order to rebuild state
+    |> Repo.all()                                 # => Executes query, returns list of Event structs
+                                                  # => E.g., [%Event{version: 1}, %Event{version: 2}]
   end
 
-  defp get_current_version(aggregate_id) do
+  defp get_current_version(aggregate_id) do       # => Private helper: get max version
+                                                  # => Used to calculate next event version
     from e in Event,
-      where: e.aggregate_id == ^aggregate_id,
-      select: max(e.version)
-    |> Repo.one()
+      where: e.aggregate_id == ^aggregate_id,     # => Scoped to this aggregate
+      select: max(e.version)                      # => SQL: SELECT MAX(version) FROM events WHERE ...
+    |> Repo.one()                                 # => Returns single value or nil
     |> case do
       nil -> 0                                        # => No events yet
-      version -> version
+                                                  # => First event will have version: 1
+      version -> version                          # => Returns current max version
+                                                  # => Next event gets version + 1
     end
   end
 end
@@ -3008,84 +3157,124 @@ defmodule MyApp.Orders.Order do                       # => Defines Order aggrega
 end                                                   # => End MyApp.Orders.Order module
 
 # Command handler
-defmodule MyApp.Orders.Commands do
-  alias MyApp.EventStore
-  alias MyApp.Orders.Order
+defmodule MyApp.Orders.Commands do              # => Command handler module
+                                                # => Validates and dispatches commands to EventStore
+  alias MyApp.EventStore                        # => Alias for shorter references
+  alias MyApp.Orders.Order                      # => Order aggregate for state rebuilding
 
-  def create_order(order_id) do
+  def create_order(order_id) do                 # => Public function: create_order/1
+                                                # => Creates a new order aggregate
     EventStore.append_event(
-      order_id,
-      "Order",
-      "OrderCreated",
+      order_id,                                 # => Aggregate ID (e.g., order-123)
+                                                # => Uniquely identifies this order's event stream
+      "Order",                                  # => Aggregate type for event scoping
+                                                # => Used in PubSub topic events:Order
+      "OrderCreated",                           # => Event type string
+                                                # => Matches apply_event clause in Order aggregate
       %{"id" => order_id}                             # => Event payload
+                                                # => Stored as JSONB in events table
     )
   end
 
-  def add_item(order_id, item) do
+  def add_item(order_id, item) do               # => Public function: add_item/2
+                                                # => Validates order status before appending event
     # Load current state
-    events = EventStore.get_events(order_id)
+    events = EventStore.get_events(order_id)    # => Fetches all events for this order
+                                                # => Returns events ordered by version asc
     order = Order.from_events(events)                 # => Rebuild from events
+                                                # => Replays events to get current aggregate state
 
     # Validate command
-    if order.status == :draft do
+    if order.status == :draft do                # => Guard: only allow items on draft orders
+                                                # => Rejects command if order already placed
       EventStore.append_event(
-        order_id,
-        "Order",
-        "ItemAdded",
+        order_id,                               # => Same aggregate ID
+        "Order",                                # => Same aggregate type
+        "ItemAdded",                            # => Event type for item addition
         %{"item" => item}                             # => Record event
+                                                # => item is %{name => ..., price => ...}
       )
     else
       {:error, "Cannot add items to placed order"}
+                                                # => Returns error tuple
+                                                # => Caller decides how to handle rejection
     end
   end
 
-  def place_order(order_id) do
-    events = EventStore.get_events(order_id)
-    order = Order.from_events(events)
+  def place_order(order_id) do                  # => Public function: place_order/1
+                                                # => Validates total > 0 before placing
+    events = EventStore.get_events(order_id)    # => Load event history
+    order = Order.from_events(events)           # => Rebuild current state from events
+                                                # => Check if order has any items
 
-    if order.total > 0 do
+    if order.total > 0 do                       # => Guard: prevent placing empty orders
+                                                # => total is sum of all ItemAdded prices
       EventStore.append_event(
         order_id,
         "Order",
-        "OrderPlaced",
+        "OrderPlaced",                          # => Final placement event
         %{}                                           # => No additional data
+                                                # => Placement itself is the payload
       )
     else
-      {:error, "Order must have items"}
+      {:error, "Order must have items"}         # => Command rejected
+                                                # => Event is NOT written to store
     end
   end
 end
 
 # Read model projection (materialized view)
-defmodule MyApp.Orders.Projection do
-  use GenServer
+defmodule MyApp.Orders.Projection do             # => GenServer that maintains a read model
+                                                  # => Listens to PubSub events, updates query-optimized tables
+  use GenServer                                  # => OTP GenServer behavior
+                                                  # => Provides start_link, init, handle_info callbacks
 
-  def start_link(_opts) do
+  def start_link(_opts) do                       # => OTP-compatible start function
+                                                  # => Called by Supervisor to start this process
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
+                                                  # => Registers process under module name
+                                                  # => %{} is initial state (no in-memory data needed)
   end
 
-  def init(_) do
+  def init(_) do                                 # => Called once when GenServer starts
+                                                  # => Subscribe to PubSub before handling events
     Phoenix.PubSub.subscribe(MyApp.PubSub, "events:Order")
-    {:ok, %{}}
+                                                  # => Subscribes to events:Order topic
+                                                  # => Receives {:event_appended, event} messages
+    {:ok, %{}}                                    # => Returns initial GenServer state
+                                                  # => %{} since projection state lives in DB
   end
 
   def handle_info({:event_appended, event}, state) do
+                                                  # => Receives event from PubSub broadcast
+                                                  # => Pattern matches {:event_appended, event}
     # Update read model based on event
     update_read_model(event)                          # => Update database view
-    {:noreply, state}
+                                                  # => Dispatches to type-specific handler
+    {:noreply, state}                             # => GenServer continues with unchanged state
+                                                  # => Read model state lives in database, not here
   end
 
   defp update_read_model(%{event_type: "OrderPlaced", aggregate_id: order_id}) do
+                                                  # => Pattern match: only handles OrderPlaced events
+                                                  # => Other event types fall through (or are ignored)
     # Update orders table for fast queries
-    events = EventStore.get_events(order_id)
-    order = Order.from_events(events)
+    events = EventStore.get_events(order_id)      # => Fetch full event history for this order
+                                                  # => Rebuilds aggregate state from scratch
+    order = Order.from_events(events)             # => Replay events to get final order state
+                                                  # => Used to snapshot the current projection
 
     # Save snapshot for performance
     MyApp.Repo.insert_or_update(%MyApp.Orders.OrderSnapshot{
-      id: order_id,
-      items: order.items,
-      total: order.total,
-      status: order.status
+                                                  # => Upserts snapshot into orders_snapshot table
+                                                  # => insert_or_update handles both new and existing
+      id: order_id,                               # => Primary key: aggregate ID
+      items: order.items,                         # => Serialized item list for fast reads
+                                                  # => Stored as JSONB in snapshot table
+      total: order.total,                         # => Computed total from event replay
+                                                  # => Avoids re-computing on every query
+      status: order.status                        # => Current order status
+                                                  # => Snapshot: :placed (triggering event type)
     })
   end
 end
@@ -3093,7 +3282,7 @@ end
 
 **Key Takeaway**: Store all state changes as immutable events. Rebuild state by replaying events. Use projections for fast queries. Events provide complete audit trail. Supports time travel and debugging.
 
-**Why It Matters**: Event-driven patterns decouple components and enable scalable architectures. Understanding events is key to building maintainable Phoenix applications.
+**Why It Matters**: Event sourcing stores every state change as an immutable event rather than overwriting rows, providing a complete audit trail and the ability to replay history to reconstruct past states — useful for debugging, compliance, and retroactive analytics. Projections rebuild read models from events, separating query-optimized views from the event log. The tradeoff is significant complexity: eventual consistency between write and read models, and aggregate rebuilding latency for large event streams that require snapshotting.
 
 ### Example 80: Advanced Testing Strategies
 
@@ -3394,4 +3583,4 @@ end                                                   # => End MyApp.Performance
 
 **Key Takeaway**: Property-based testing validates invariants across random inputs. Contract testing ensures API stability. Integration tests verify full user flows. Performance tests catch regressions. Use async: true for parallel test execution.
 
-**Why It Matters**: This Phoenix pattern is fundamental for building production web applications. Understanding this concept enables you to create robust, maintainable, and scalable applications.
+**Why It Matters**: Property-based tests with StreamData find edge cases that example-based tests miss by generating hundreds of random inputs. Contract tests prevent API versioning regressions by verifying both producer and consumer agree on the interface. Together these testing strategies raise confidence that real-world usage patterns are handled correctly, not just the cases developers thought to test.

@@ -7,7 +7,7 @@ description: "Learn Elixir Phoenix through 80 heavily annotated code examples co
 tags: ["phoenix", "elixir", "web-framework", "tutorial", "by-example"]
 ---
 
-- [Advanced](/en/learn/software-engineering/platform-web/tools/elixir-phoenix/by-example/advanced)
 - [Beginner](/en/learn/software-engineering/platform-web/tools/elixir-phoenix/by-example/beginner)
 - [Intermediate](/en/learn/software-engineering/platform-web/tools/elixir-phoenix/by-example/intermediate)
+- [Advanced](/en/learn/software-engineering/platform-web/tools/elixir-phoenix/by-example/advanced)
 - [Overview](/en/learn/software-engineering/platform-web/tools/elixir-phoenix/by-example/overview)

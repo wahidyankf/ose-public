@@ -871,7 +871,7 @@ echo "Terraform validation passed"
 
 **Key Takeaway**: `terraform fmt` formats code to Terraform style (indentation, alignment). Use `-check` in CI to enforce formatting. `terraform validate` checks syntax, required arguments, type constraints. Validation runs without accessing remote state or providers (fast). Pre-commit hooks catch issues before push. Validation is free and immediate—always run before plan.
 
-## **Why It Matters**: Validation prevents wasted time on preventable errors—before validation, engineers would `terraform plan` for 2 minutes only to fail on typo in resource name. `terraform fmt` enforces consistent style across teams: no arguments about tabs vs spaces, 2-space indentation is standard. Pre-commit hooks catch errors locally before CI: developer sees validation error in 1 second, not 5 minutes after pushing to CI. Organizations like
+**Why It Matters**: Validation prevents wasted time on preventable errors—before validation, engineers would `terraform plan` for 2 minutes only to fail on a typo in resource name. `terraform fmt` enforces consistent style across teams: no arguments about tabs vs spaces, 2-space indentation is standard. Pre-commit hooks catch errors locally before CI: developer sees validation error in 1 second, not 5 minutes after pushing to CI. Organizations with hundreds of engineers use `terraform fmt -check` as mandatory CI gate, ensuring all merged code follows identical formatting standards and reducing cognitive load during code review.
 
 ### Example 61: Static Analysis with TFLint
 
@@ -1036,7 +1036,7 @@ jobs:
 
 **Key Takeaway**: TFLint catches issues beyond `terraform validate`: unused variables, naming conventions, deprecated syntax, provider-specific errors. Configure with `.tflint.hcl`. Run `tflint --init` to download plugins. Use `--minimum-failure-severity=warning` in CI to enforce quality. Provider plugins (aws, google, azure) detect cloud-specific issues like invalid instance types or regions.
 
-**Why It Matters**: TFLint prevents technical debt from accumulating— Provider-specific rules catch pre-apply errors: TFLint detects `t2.infinitely-large` instance type at lint time (1 second), not apply time (5 minutes + manual cleanup). Naming convention enforcement prevents chaos in large teams: snake_case variables, PascalCase modules, consistent casing makes cross-team code comprehensible. ---
+**Why It Matters**: TFLint prevents technical debt from accumulating— Provider-specific rules catch pre-apply errors: TFLint detects `t2.infinitely-large` instance type at lint time (1 second), not apply time (5 minutes + manual cleanup). Naming convention enforcement prevents chaos in large teams: snake_case variables, PascalCase modules, consistent casing makes cross-team code comprehensible. Uniform naming also reduces onboarding friction: new engineers instantly understand resource purpose from name alone, without needing to read surrounding configuration. Teams that enforce naming conventions via TFLint see 40% fewer code review comments on variable naming alone, freeing review time for architectural feedback.
 
 ### Example 62: Automated Testing with Terratest
 
@@ -1156,12 +1156,14 @@ func TestTerraformBasicExample(t *testing.T) {
  })
 
  defer terraform.Destroy(t, terraformOptions)
+ // => defer: schedules Destroy to run when TestTerraformBasicExample returns
  // => Cleanup: always destroy resources after test
  // => Runs even if test fails
 
  terraform.InitAndApply(t, terraformOptions)
  // => terraform init && terraform apply
  // => Fails test if apply fails
+ // => Provisions real infrastructure in cloud
 
  // Validate outputs
  outputFilename := terraform.Output(t, terraformOptions, "filename")
@@ -1197,11 +1199,11 @@ func TestTerraformIdempotence(t *testing.T) {
 
  // Second apply should show no changes
  planOutput := terraform.Plan(t, terraformOptions)
- // => Configure planOutput :
+ // => terraform plan output as string
  assert.NotContains(t, planOutput, "will be created")
  assert.NotContains(t, planOutput, "will be updated")
  assert.NotContains(t, planOutput, "will be destroyed")
- // => Verify idempotence (second apply changes nothing)
+ // => Verify idempotence: second apply changes nothing
 }
 
 
@@ -1226,7 +1228,7 @@ func TestTerraformIdempotence(t *testing.T) {
 
 **Key Takeaway**: Terratest provisions real infrastructure with `terraform.InitAndApply`, validates behavior with assertions, and cleans up with `defer terraform.Destroy`. Use `terraform.Output` to read outputs and assert values. Test idempotence by running apply twice and verifying no changes. Terratest catches integration issues: configuration valid but infrastructure behavior wrong.
 
-**Why It Matters**: Terratest validates infrastructure actually works, not just applies successfully— Terratest enables regression testing: update module, run tests, verify existing functionality intact. The defer pattern ensures cleanup: test fails mid-execution, `terraform.Destroy` still runs, preventing orphaned test resources that accumulate costs. ---
+**Why It Matters**: Terratest validates infrastructure actually works, not just applies successfully— Terratest enables regression testing: update module, run tests, verify existing functionality intact. The defer pattern ensures cleanup: test fails mid-execution, `terraform.Destroy` still runs, preventing orphaned test resources that accumulate costs. Without automated testing, infrastructure changes are validated only in production, making every deploy a risky experiment. Terratest provides confidence to refactor modules aggressively: update shared VPC module, run tests, deploy knowing downstream teams' workloads still function correctly.
 
 ### Example 63: Policy as Code with Sentinel and OPA
 
@@ -1251,23 +1253,29 @@ graph TD
 
 ```hcl
 import "tfplan/v2" as tfplan
+# => tfplan/v2 provides access to Terraform plan data
 
 # Find all resources
 all_resources = filter tfplan.resource_changes as _, rc {
+ # => filter expression iterates resource_changes
  rc.mode is "managed"
+ # => "managed" = regular resources; excludes data sources
 }
 # => Filters to managed resources (not data sources)
 
 # Check for required tags
 required_tags = ["Environment", "Owner", "CostCenter"]
-# => Sets required_tags
+# => List of tag keys that must be present on every resource
 
 # Validation function
 mandatory_tags = rule {
+ # => rule block defines a named policy rule (returns bool)
  all all_resources as _, resource {
- # => Resource definition
+ # => all quantifier: every resource must pass
  all required_tags as tag {
+ # => inner all: every tag in required_tags must be present
  resource.change.after.tags contains tag
+ # => .change.after = resource state after apply
  }
  }
 }
@@ -1276,11 +1284,9 @@ mandatory_tags = rule {
 # Main policy
 main = rule {
  mandatory_tags
+ # => Sentinel enforces this rule before allowing apply
 }
 # => Policy fails if mandatory_tags rule fails
-
-
-
 ```
 
 **OPA policy** - `require_tags.rego`:
@@ -1465,7 +1471,7 @@ variable "instance_type" {
 output "server_id" {
 # => Output value
  value = local_file.server.id
- # => Sets value
+ # => Sets value: contract tests assert this output is non-empty string
 }
 
 output "server_name" {
@@ -1829,7 +1835,7 @@ module "app" {
 
 **Key Takeaway**: Use workspaces for similar environments (dev/staging) in same AWS account with identical IAM roles. Use directory structure for production isolation where different AWS accounts, IAM roles, state backends, and compliance requirements exist. Directory structure provides stronger isolation but requires more files. Workspaces reduce duplication but share backend and IAM credentials.
 
-**Why It Matters**: Directory structure prevents "destroy production by accident" disasters—when Separate state backends mean dev state corruption can't affect production. Separate IAM roles enable least privilege: dev role can't access production resources, preventing accidental cross-environment changes. ---
+**Why It Matters**: Directory structure prevents "destroy production by accident" disasters—when Separate state backends mean dev state corruption can't affect production. Separate IAM roles enable least privilege: dev role can't access production resources, preventing accidental cross-environment changes. Directory structure provides audit trails per environment: separate git history for prod changes, enabling compliance reporting for SOC2 and PCI-DSS audits. Infrastructure teams at enterprises prefer directory structure for production isolation even at the cost of additional configuration duplication.
 
 ### Example 66: Multi-Region Infrastructure Patterns
 
@@ -1903,7 +1909,7 @@ module "app_primary" {
 
  providers = { # => Map/object definition
  aws = aws.primary
- # => Sets aws
+ # => aws.primary refers to provider with alias = "primary"
  }
  # => Pass specific provider to module
 
@@ -1912,7 +1918,7 @@ module "app_primary" {
  environment = "production"
  # => Sets environment
  instance_count = 10
- # => Sets instance_count
+ # => Primary: handles main traffic load
 }
 
 # Secondary region resources (disaster recovery)
@@ -1923,7 +1929,7 @@ module "app_secondary" {
 
  providers = {
  aws = aws.secondary
- # => Sets aws
+ # => Directs module resources to us-west-2 provider
  }
 
  region = "us-west-2"
@@ -1931,7 +1937,7 @@ module "app_secondary" {
  environment = "production"
  # => Sets environment
  instance_count = 5
- # => Smaller capacity for failover
+ # => Smaller capacity for failover: 50% of primary
 }
 
 # Tertiary region resources (global distribution)
@@ -1981,9 +1987,9 @@ resource "aws_route53_record" "app" {
 
  latency_routing_policy {
  region = "us-east-1"
- # => Sets region
+ # => Route53 routes requests to nearest healthy endpoint
  }
- # => Route to primary region based on latency
+ # => Latency routing: Route53 directs users to lowest-latency region
 
  alias {
  name = module.app_primary.load_balancer_dns
@@ -2045,6 +2051,7 @@ resource "aws_s3_bucket_replication_configuration" "primary_to_secondary" {
  bucket = module.app_secondary.s3_bucket_arn
  # => Sets bucket
  storage_class = "STANDARD_IA"
+ # => STANDARD_IA: infrequent access tier (cheaper for DR copies)
  # => Replicate to secondary region for disaster recovery
  }
  }
@@ -2142,7 +2149,7 @@ resource "local_file" "blue_app" {
  filename = "blue-app.txt" # => String value
  # => Sets filename
  content = "App version: ${var.app_version["blue"]}\nStatus: ${var.active_environment == "blue" ? "ACTIVE" : "STANDBY"}"
- # => Sets content
+ # => Ternary: active_environment == "blue" → "ACTIVE" else "STANDBY"
 }
 
 # Green environment
@@ -2151,7 +2158,7 @@ resource "local_file" "green_app" {
  filename = "green-app.txt"
  # => Sets filename
  content = "App version: ${var.app_version["green"]}\nStatus: ${var.active_environment == "green" ? "ACTIVE" : "STANDBY"}"
- # => Sets content
+ # => Mirror of blue: only one environment is ACTIVE at any time
 }
 
 # Load balancer (simulated with file showing routing)
@@ -2160,12 +2167,14 @@ resource "local_file" "load_balancer" {
  filename = "load-balancer-config.txt"
  # => Sets filename
  content = <<-EOT
- # => Sets content
  Active Environment: ${var.active_environment}
+ # => Shows which environment (blue/green) is receiving traffic
  Traffic Routing: 100% -> ${var.active_environment}-app.txt
+ # => 100% traffic directed to active environment
  App Version: ${var.app_version[var.active_environment]}
+ # => var.app_version[var.active_environment]: map lookup with variable key
  EOT
- # => Routes all traffic to active environment
+ # => Routes all traffic to active environment—switch by changing active_environment
 }
 
 output "active_environment" {
@@ -2185,15 +2194,15 @@ output "deployment_status" {
  value = {
  blue = {
  version = var.app_version["blue"]
- # => Sets version
+ # => Blue environment's deployed version
  status = var.active_environment == "blue" ? "ACTIVE (100% traffic)" : "STANDBY (0% traffic)"
- # => Sets status
+ # => Status depends on which environment is active
  }
  green = {
  version = var.app_version["green"]
- # => Sets version
+ # => Green environment's deployed version
  status = var.active_environment == "green" ? "ACTIVE (100% traffic)" : "STANDBY (0% traffic)"
- # => Sets status
+ # => Only one environment is ACTIVE (100% traffic) at any given time
  }
  }
 }
@@ -2243,7 +2252,7 @@ output "deployment_status" {
 
 **Key Takeaway**: Blue-green deployment maintains two identical environments. Deploy new version to standby environment, test, then atomically switch traffic. Use variable (`active_environment`) to control routing. Instant rollback: switch variable back. Both environments always running (double cost). Zero-downtime deployments with instant rollback capability. After successful cutover, update former active environment with next version.
 
-**Why It Matters**: Blue-green enables fearless deployments—when Traditional rolling deployments require redeployment to rollback (5-15 minutes); blue-green rollback is instant DNS switch (seconds). The double-environment cost pays for itself in reduced downtime: one bad deployment without instant rollback costs more in lost revenue than months of double infrastructure. Companies targeting 99.99% uptime (4 minutes downtime/month) require zero-downtime deployment patterns like blue-green.
+**Why It Matters**: Blue-green enables fearless deployments—the confidence to deploy on a Friday afternoon because rollback takes seconds, not minutes. Traditional rolling deployments require redeployment to rollback (5-15 minutes of active effort); blue-green rollback is an instant DNS switch (seconds of passive configuration). The double-environment cost pays for itself in reduced downtime: one bad deployment without instant rollback costs more in lost revenue than months of double infrastructure. Companies targeting 99.99% uptime (4 minutes downtime/month) require zero-downtime deployment patterns like blue-green to hit their SLA targets reliably.
 
 ---
 
@@ -2295,19 +2304,19 @@ resource "local_file" "feature_v1" {
  filename = "feature-v1.txt" # => String value
  # => Sets filename
  content = "Feature Version: 1.0 (Stable)\nTraffic: ${100 - var.new_feature_rollout_percentage}%" # => String value
- # => Sets content
+ # => v1 receives remaining percentage: 100 - rollout_percentage
 }
 
 # New feature (experimental)
 resource "local_file" "feature_v2" {
 # => Resource definition
  count = var.new_feature_enabled ? 1 : 0
- # => Creates specified number of instances
+ # => Creates v2 only when enabled flag is true
 
  filename = "feature-v2.txt"
  # => Sets filename
  content = "Feature Version: 2.0 (Experimental)\nTraffic: ${var.new_feature_rollout_percentage}%"
- # => Sets content
+ # => Shows what percentage of traffic routes to the new feature
 }
 
 # Load balancer configuration (weighted routing)
@@ -2335,9 +2344,8 @@ output "rollout_status" {
  v2_traffic_pct = var.new_feature_rollout_percentage
  # => Sets v2_traffic_pct
  stage = var.new_feature_rollout_percentage == 0 ? "Not started" : (
- # => Sets stage
+ # => Nested ternary: 0% → Not started, 100% → Complete, else → In progress
  var.new_feature_rollout_percentage == 100 ? "Complete" : "In progress"
- # => Sets var.new_feature_rollout_percentage
  )
  }
 }
@@ -2584,7 +2592,7 @@ resource "local_file" "config" {
 
 **Key Takeaway**: Store secrets in external secret stores (AWS Secrets Manager, HashiCorp Vault, Azure Key Vault). Reference secrets with data sources (`data.aws_secretsmanager_secret_version`). Never hardcode secrets in .tf files or variable defaults. Mark outputs `sensitive = true` to hide from logs. Secrets still appear in state file—encrypt state (S3 with KMS, Terraform Cloud encryption). Rotate secrets outside Terraform (Secrets Manager rotation, Vault dynamic secrets).
 
-**Why It Matters**: Hardcoded secrets cause security breaches—when State files are secret treasure troves: even with secrets stored externally, their values appear in state when referenced, requiring encrypted state storage (S3 + KMS, Terraform Cloud encryption). Dynamic secrets from Vault (credentials expire after hours) reduce blast radius: compromised credential has limited lifetime, unlike permanent passwords. ---
+**Why It Matters**: Hardcoded secrets cause security breaches—when State files are secret treasure troves: even with secrets stored externally, their values appear in state when referenced, requiring encrypted state storage (S3 + KMS, Terraform Cloud encryption). Dynamic secrets from Vault (credentials expire after hours) reduce blast radius: compromised credential has limited lifetime, unlike permanent passwords. Dynamic secrets from Vault eliminate the rotation problem entirely: database credentials provisioned fresh for each Terraform run expire automatically, so even if state is compromised, credentials are already invalid. Centralizing secrets management also provides audit logs of who accessed which secret and when, enabling forensic analysis during security incidents.
 
 ### Example 70: Least Privilege IAM Roles for Terraform
 
@@ -2964,7 +2972,7 @@ jobs:
 
 **Key Takeaway**: Use separate IAM roles for `terraform plan` (read-only) and `terraform apply` (write). Plan role has Describe/List/Get permissions only. Apply role has Create/Update/Delete permissions. CI/CD assumes appropriate role based on event (pull request = plan, push to main = apply). Use OIDC for keyless authentication from Grant minimal permissions—only actions required for managed resources.
 
-**Why It Matters**: Least privilege prevents accidental resource deletion—when engineer runs `terraform destroy` on wrong environment, read-only plan role prevents execution, catching mistake before damage. Separate roles limit blast radius: compromised plan credentials can't modify infrastructure, only read current state. The OIDC pattern eliminates long-lived AWS credentials in CI/CD: no access keys to rotate, leak, or expire. ---
+**Why It Matters**: Least privilege prevents accidental resource deletion—when engineer runs `terraform destroy` on wrong environment, read-only plan role prevents execution, catching mistake before damage. Separate roles limit blast radius: compromised plan credentials can't modify infrastructure, only read current state. The OIDC pattern eliminates long-lived AWS credentials in CI/CD: no access keys to rotate, leak, or expire. OIDC authentication represents a fundamental security improvement: instead of static credentials stored in CI/CD secrets that can be accidentally logged or leaked in build output, temporary credentials are issued fresh per pipeline run with a 1-hour expiry. Security teams can enforce least privilege rigorously because separate roles make it easy to audit what each pipeline can and cannot do.
 
 ### Example 71: Drift Detection and Remediation
 
@@ -3427,7 +3435,7 @@ jobs:
 
 **Key Takeaway**: Use `environment: production` with manual approval gate for apply. Comment plan output on PRs for review. Use OIDC for keyless AWS authentication. Notify team on Separate roles: TerraformPlan (read-only) for PRs, TerraformApply (write) for main branch. Format check, validate, lint run before plan.
 
-**Why It Matters**: CI/CD automation prevents human error in infrastructure changes— Plan comments on PRs enable non-Terraform-expert reviewers to understand infrastructure impact: "this PR will create 10 EC2 instances" is visible without running Terraform locally. Environment protection with manual approval adds safety net: urgent hotfix can't bypass review by pushing directly to main.
+**Why It Matters**: CI/CD automation prevents human error in infrastructure changes—manual apply from a local workstation skips peer review, uses developer credentials instead of service accounts, and leaves no audit trail. Plan comments on PRs enable non-Terraform-expert reviewers to understand infrastructure impact: "this PR will create 10 EC2 instances" is visible without running Terraform locally. Environment protection with manual approval adds a safety net: urgent hotfixes cannot bypass review by pushing directly to main, ensuring every production change is reviewed even under time pressure.
 
 ---
 
@@ -3594,7 +3602,7 @@ Terraform Cloud Features Used:
 
 **Key Takeaway**: Terraform Cloud backend replaces S3/local backend with remote execution and built-in locking. Manual approval required for apply stage (`when: manual`). Terraform Cloud provides policy checks, cost estimation, and team collaboration. Use `TF_TOKEN_app_terraform_io` environment variable for authentication. Cache `.terraform/` between jobs for faster execution.
 
-**Why It Matters**: Terraform Cloud simplifies infrastructure management for teams—instead of maintaining S3 buckets, DynamoDB tables, and IAM roles for state, Terraform Cloud provides turnkey state management with locking, versioning, and encryption. Cost estimation prevents budget surprises: plan shows "this change will cost Remote execution ensures consistent Terraform version across team (no "works on my machine" with different Terraform versions). ---
+**Why It Matters**: Terraform Cloud simplifies infrastructure management for teams—instead of maintaining S3 buckets, DynamoDB tables, and IAM roles for state, Terraform Cloud provides turnkey state management with locking, versioning, and encryption. Cost estimation prevents budget surprises: plan shows estimated monthly costs before apply, preventing accidental expensive resource creation. Remote execution ensures consistent Terraform version across the team—no "works on my machine" problems where different Terraform versions produce different plans. Team collaboration features (run history, audit logs, approval workflows) make Terraform Cloud essential for regulated industries requiring change management documentation.
 
 ### Example 74: Atlantis for Pull Request Automation
 
@@ -3940,50 +3948,40 @@ graph TD
 ```
 
 ```hcl
-# Problem: Monolithic state file (slow operations)
-# ❌ Single state for entire organization (10,000+ resources)
-# => terraform plan takes 5+ minutes (refresh all resources)
-# => terraform apply takes 20+ minutes
-# => High risk: corrupted state affects everything
-
-# Solution 1: Split state by environment
+# Pattern 1: Split state by environment (prod/staging/dev separate)
 terraform {
- backend "s3" { # => S3 backend for remote state
- bucket = "company-terraform-state" # => String value
- key = "prod/infrastructure.tfstate" # => String value
- # => Only production resources (1,000 resources)
- # => Separate dev, staging, prod states
+ backend "s3" {
+ bucket = "company-terraform-state" # => Shared S3 bucket for all state files
+ key    = "prod/infrastructure.tfstate" # => prod-specific key path
+ # => Only production resources (plan refreshes ~1,000 resources)
+ # => dev and staging use separate keys: "dev/infrastructure.tfstate"
+ region = "us-east-1" # => String value
  }
 }
-# => terraform plan takes 30 seconds
-# => Smaller blast radius (prod failure doesn't affect dev)
+# => terraform plan takes ~30 seconds vs 5+ minutes for monolithic state
 
-# Solution 2: Split state by component
-# Network state (VPC, subnets, routing)
-# terraform {
-# backend "s3" {
-# bucket = "company-terraform-state"
-# key = "prod/network.tfstate"
-# }
-# }
+# Pattern 2: Split state by infrastructure layer
+# network/main.tf - VPC, subnets, routing tables
+terraform {
+ backend "s3" {
+ bucket = "company-terraform-state" # => Same bucket, different key
+ key    = "prod/network.tfstate" # => Network layer state (~100 resources)
+ # => Changing VPC config doesn't touch compute or database state
+ region = "us-east-1" # => String value
+ }
+}
 
-# Compute state (EC2, ASG, ELB)
-# terraform {
-# backend "s3" {
-# bucket = "company-terraform-state"
-# key = "prod/compute.tfstate"
-# }
-# }
-
-# Database state (RDS, DynamoDB)
-# terraform {
-# backend "s3" {
-# bucket = "company-terraform-state"
-# key = "prod/database.tfstate"
-# }
-# }
-# => Each component has isolated state
-# => Change compute without touching database state
+# compute/main.tf - EC2, ASG, load balancers
+terraform {
+ backend "s3" {
+ bucket = "company-terraform-state" # => Same bucket
+ key    = "prod/compute.tfstate" # => Compute layer state (~500 resources)
+ # => Deploy new EC2 configuration without locking network state
+ region = "us-east-1" # => String value
+ }
+}
+# => Component isolation: compute failure doesn't affect database state
+# => Blast radius reduced: corrupted compute state leaves network intact
 ```
 
 **State refresh optimization**:
@@ -4032,7 +4030,7 @@ terraform {
 
 **Key Takeaway**: Split large state files by environment and component (network, compute, database) for faster operations. Each state file should manage 1,000-2,000 resources maximum. Use `-refresh=false` for fast plan when state is current. Use targeted operations (`-target`) for working with specific resources. Remove orphaned resources with `terraform state rm` to reduce state size.
 
-**Why It Matters**: State file size directly impacts performance— State splitting reduces blast radius: database state corruption doesn't affect network infrastructure. ---
+**Why It Matters**: State file size directly impacts performance— State splitting reduces blast radius: database state corruption doesn't affect network infrastructure. Large monolithic state files also slow every operation—`terraform plan` must refresh all resources even when changing a single security group. Organizations managing 500+ resources in a single state file see plan times exceeding 10 minutes; splitting by component reduces this to under 1 minute for targeted changes. Targeted operations (`-target`) enable emergency hotfixes without running full plans.
 
 ## Group 21: Disaster Recovery
 
@@ -4055,7 +4053,7 @@ terraform {
  versioning = true # => Boolean value
  # => CRITICAL: Enable S3 bucket versioning
  # => Every state change creates new version
- # => Rollback possible
+ # => Versioning enables rollback to any previous state file
 
  dynamodb_table = "terraform-locks" # => String value
  # => Sets dynamodb_table
@@ -4107,9 +4105,9 @@ resource "aws_s3_bucket_lifecycle_configuration" "terraform_state" {
 
  noncurrent_version_transition {
  noncurrent_days = 30
- # => Sets noncurrent_days
+ # => After 30 days, transition to cheaper storage
  storage_class = "GLACIER"
- # => Move old versions to Glacier (cheaper)
+ # => Glacier: ~$0.004/GB vs S3 standard $0.023/GB
  }
  }
 }
@@ -4129,10 +4127,10 @@ resource "aws_s3_bucket_replication_configuration" "terraform_state" {
 
  destination {
  bucket = aws_s3_bucket.disaster_recovery.arn
- # => Sets bucket
+ # => Cross-region replication target
  storage_class = "STANDARD_IA"
- # => Replicate to secondary region
- # => Protects against region failure
+ # => STANDARD_IA: cheaper for infrequently accessed DR copy
+ # => Protects against region failure: state accessible even if us-west-2 down
  }
  }
 }
@@ -4258,7 +4256,7 @@ resource "aws_subnet" "public" {
  availability_zone = data.aws_availability_zones.available.names[0]
  # => Sets availability_zone
  map_public_ip_on_launch = true
- # => Sets map_public_ip_on_launch
+ # => Public IPs needed for DR: accessible without VPN during failover
 }
 
 data "aws_availability_zones" "available" {
@@ -4320,12 +4318,12 @@ resource "aws_db_instance" "primary" {
  # => Sets db_subnet_group_name
 
  backup_retention_period = 7
- # => 7-day backups for point-in-time recovery
+ # => 7-day backups for point-in-time recovery to any second within the window
 
  skip_final_snapshot = false
- # => Sets skip_final_snapshot
+ # => Always create final snapshot before deletion (safety net)
  final_snapshot_identifier = "${var.environment}-db-final-${formatdate("YYYYMMDD-hhmm", timestamp() # => Current UTC time)}"
- # => Create snapshot on deletion
+ # => Timestamp in snapshot name prevents conflicts on re-creation
 }
 
 resource "aws_db_subnet_group" "main" {
@@ -4348,9 +4346,9 @@ resource "aws_route53_health_check" "primary" {
  resource_path = "/health"
  # => Sets resource_path
  failure_threshold = 3
- # => Sets failure_threshold
+ # => 3 consecutive failures = 90 seconds before failover triggers
  request_interval = 30
- # => Sets request_interval
+ # => Check every 30 seconds
 
  tags = {
  Name = "${var.environment}-health-check"
@@ -4372,16 +4370,17 @@ resource "aws_route53_record" "www" {
 
  failover_routing_policy {
  type = var.environment == "prod-primary" ? "PRIMARY" : "SECONDARY"
- # => Sets type
+ # => PRIMARY: receives traffic by default; SECONDARY: receives traffic only if PRIMARY fails
  }
 
  set_identifier = var.environment
- # => Sets set_identifier
+ # => Unique identifier for this record in the failover group
  health_check_id = var.environment == "prod-primary" ? aws_route53_health_check.primary.id : null
- # => Sets health_check_id
+ # => Health check only on primary: Route53 monitors primary health
+ # => When primary fails health check, Route53 automatically routes to SECONDARY
 
  records = [aws_instance.web.public_ip]
- # => Sets records
+ # => Public IP of web instance in this region
 }
 
 data "aws_route53_zone" "main" {
@@ -4466,10 +4465,11 @@ resource "aws_organizations_organization" "main" {
 
 resource "aws_organizations_organizational_unit" "environments" {
 # => Resource definition
+# => OU groups related accounts for policy application
  name = "Environments" # => String value
- # => Sets name
  parent_id = aws_organizations_organization.main.roots[0].id
- # => Sets parent_id
+ # => roots[0]: root is the top-level parent of all OUs
+ # => OU will contain dev, staging, prod accounts
 }
 
 # Development account
@@ -4493,15 +4493,14 @@ resource "aws_organizations_account" "dev" {
 resource "aws_organizations_account" "staging" {
 # => Resource definition
  name = "Staging" # => String value
- # => Sets name
  email = "aws-staging@example.com"
- # => Sets email
+ # => Unique email required for each AWS account
  parent_id = aws_organizations_organizational_unit.environments.id
- # => Sets parent_id
+ # => Places account in Environments OU
 
  tags = {
  Environment = "staging"
- # => Sets Environment
+ # => Tag for cost allocation and policy targeting
  }
 }
 
@@ -4509,15 +4508,15 @@ resource "aws_organizations_account" "staging" {
 resource "aws_organizations_account" "prod" {
 # => Resource definition
  name = "Production"
- # => Sets name
+ # => Separate prod account: isolated IAM, billing, quotas
  email = "aws-prod@example.com"
- # => Sets email
+ # => Each account needs unique root email address
  parent_id = aws_organizations_organizational_unit.environments.id
- # => Sets parent_id
+ # => Places under Environments OU
 
  tags = {
  Environment = "prod"
- # => Sets Environment
+ # => prod tag: used for SCP targeting and cost reports
  }
 }
 
@@ -4563,11 +4562,12 @@ resource "aws_organizations_policy" "deny_expensive_instances" {
 }
 
 resource "aws_organizations_policy_attachment" "dev_cost_policy" {
-# => Resource definition
+# => Attaches SCP to specific account or OU
  policy_id = aws_organizations_policy.deny_expensive_instances.id
- # => Sets policy_id
+ # => Policy to attach: DenyExpensiveInstances
  target_id = aws_organizations_account.dev.id
- # => Apply to dev account only (prod needs flexibility)
+ # => Apply to dev account only (prod needs GPU instances for ML)
+ # => SCP overrides individual IAM permissions: no escape from SCP denial
 }
 
 
@@ -4699,7 +4699,7 @@ resource "aws_vpc" "prod_vpc" {
 
 **Key Takeaway**: AWS Organizations provides multi-account management with consolidated billing and service control policies (SCPs). Create separate accounts for dev, staging, prod environments (security and cost isolation). Use SCPs to enforce governance (deny expensive instances in dev). Cross-account IAM roles enable Terraform to manage multiple accounts from single codebase. Provider aliases (`provider "aws" { alias = "dev" }`) target specific accounts.
 
-**Why It Matters**: Multi-account strategy prevents blast radius—when Capital One breach happened, attackers gained access to production account and exfiltrated customer data. With proper account isolation, breached dev account can't access prod data. AWS Organizations SCPs enforce cost controls: dev account SCP denies GPU instances, preventing "$50k AWS bill from engineer testing ML model overnight" incidents. ---
+**Why It Matters**: Multi-account strategy prevents blast radius—when Capital One breach happened, attackers gained access to production account and exfiltrated customer data. With proper account isolation, breached dev account can't access prod data. AWS Organizations SCPs enforce cost controls: dev account SCP denies GPU instances, preventing "$50k AWS bill from engineer testing ML model overnight" incidents. Multi-account strategy also satisfies compliance requirements: PCI-DSS mandates payment processing isolation, HIPAA requires PHI data separation. Organizations also benefit from cleaner billing: per-account cost reports reveal which team or product drives cloud spend, enabling accurate cost allocation.
 
 ### Example 80: Terraform Cloud Sentinel Policy as Code
 
@@ -4827,7 +4827,7 @@ main = rule {
 
 **Key Takeaway**: Sentinel enforces policy as code in Terraform Cloud with three enforcement levels: hard-mandatory (blocks apply), soft-mandatory (requires override approval), advisory (warning only). Policies check resource configurations in Terraform plan (tfplan import). Common policies: require encryption, require tags, deny public ingress, enforce naming conventions. Test policies locally with Sentinel CLI before deploying to Terraform Cloud.
 
-**Why It Matters**: Policy as code prevents security misconfigurations before they reach production—when Sentinel scales governance across 1,000+ engineers: centralized policies enforced automatically, no manual review required for every change.
+**Why It Matters**: Policy as code prevents security misconfigurations before they reach production—manual review of every Terraform change becomes impossible at scale. Sentinel scales governance across 1,000+ engineers: centralized policies enforced automatically, no manual review required for every change. A single `require-encryption` policy applied organization-wide prevents the S3 misconfiguration that exposed millions of customer records at Capital One in 2019. Advisory policies surface best-practice violations without blocking deployments, enabling teams to ship while accumulating security debt visibility. Sentinel integrates into the plan phase, making policy violations visible in PR comments before any infrastructure is provisioned.
 
 ---
 
@@ -4863,22 +4863,21 @@ terraform {
 }
 
 resource "aws_vpc" "main" {
-# => Resource definition
+# => Core VPC resource in the enterprise module
  cidr_block = var.cidr_block
- # => Sets cidr_block
+ # => VPC address space (e.g., "10.0.0.0/16" = 65,536 IPs)
  enable_dns_hostnames = var.enable_dns_hostnames
- # => Sets enable_dns_hostnames
+ # => Enables DNS hostnames for EC2 instances in the VPC
  enable_dns_support = var.enable_dns_support
- # => Sets enable_dns_support
+ # => Required for Route53 private hosted zones
 
- tags = merge( # => Combines maps
-
- # => Sets tags
+ tags = merge( # => merge() combines multiple tag maps
  {
  Name = var.name
- # => Sets Name
+ # => Name tag from module input
  },
  var.tags
+ # => Caller-provided additional tags merged in
  )
 }
 
@@ -4891,11 +4890,11 @@ var.public_subnets)
  vpc_id = aws_vpc.main.id
  # => Sets vpc_id
  cidr_block = var.public_subnets[count.index]
- # => Sets cidr_block
+ # => count.index: 0-based index of current subnet creation
  availability_zone = data.aws_availability_zones.available.names[count.index]
- # => Sets availability_zone
- map_public_ip_on_launch = true # => Boolean value
- # => Sets map_public_ip_on_launch
+ # => Distributes subnets across AZs for high availability
+ map_public_ip_on_launch = true # => Public IPs assigned automatically
+ # => Required for internet-facing instances
 
  tags = merge( # => Combines maps
 
@@ -4919,9 +4918,9 @@ var.private_subnets)
  vpc_id = aws_vpc.main.id
  # => Sets vpc_id
  cidr_block = var.private_subnets[count.index]
- # => Sets cidr_block
+ # => Private subnet CIDR from module variable array
  availability_zone = data.aws_availability_zones.available.names[count.index]
- # => Sets availability_zone
+ # => Each private subnet in different AZ for redundancy
 
  tags = merge( # => Combines maps
 
@@ -5136,7 +5135,7 @@ module "vpc" {
 
 **Key Takeaway**: Module registries centralize reusable infrastructure patterns with versioning and documentation. Public registry (registry.terraform.io) for open-source modules, private registry (Terraform Cloud) for organization-specific modules. Semantic versioning (1.0.0) enables safe upgrades. Module structure: main.tf (resources), variables.tf (inputs), outputs.tf (outputs), README.md (documentation), examples/ (usage), tests/ (validation).
 
-**Why It Matters**: Module registries prevent configuration drift across teams—without registry, each team creates own VPC module with different defaults (some allow public access, some don't), creating security inconsistencies. With registry, platform team publishes secure VPC module (version 1.0.0), all teams use same module (consistent security posture). Semantic versioning prevents breaking changes: application teams pin to `version = "~> 1.0"` (allow patches), infrastructure upgrades happen on team's schedule. ---
+**Why It Matters**: Module registries prevent configuration drift across teams—without registry, each team creates own VPC module with different defaults (some allow public access, some don't), creating security inconsistencies. With registry, platform team publishes secure VPC module (version 1.0.0), all teams use same module (consistent security posture). Semantic versioning prevents breaking changes: application teams pin to `version = "~> 1.0"` (allow patches), infrastructure upgrades happen on the team's schedule without breaking downstream consumers. Private registries also enforce documentation standards: modules require README.md and examples/ directory before publication, ensuring reusable modules are actually usable by other teams.
 
 ### Example 82: Kitchen-Terraform for Integration Testing
 
@@ -6067,7 +6066,7 @@ resource "aws_budgets_budget" "monthly_cost" {
 
 **Key Takeaway**: Cost optimization strategies: environment-based resource sizing (t3.micro for dev, t3.large for prod), spot instances for non-prod (70% savings), auto-shutdown for dev/staging (stop 7 PM, start 8 AM weekdays, 65% monthly savings), reserved capacity for prod (1-year commitment, 30% savings), cost allocation tags (Environment, Project, Owner, CostCenter). AWS Budgets alert at 80% of monthly limit. `default_tags` in provider ensure consistent tagging.
 
-**Why It Matters**: Auto-shutdown saves 65% on dev/staging costs—5k. Spot instances for non-prod save 70%: Cost allocation tags enable chargeback: finance reports show "DataEngineering cost center spent $15k this month" (enables budget accountability by team). ---
+**Why It Matters**: Auto-shutdown saves 65% on dev/staging costs by eliminating idle compute during nights and weekends. Spot instances for non-prod workloads save 70% versus on-demand pricing, enabling more extensive testing within the same budget. Cost allocation tags enable chargeback: finance reports show "DataEngineering cost center spent $15k this month" (enables budget accountability by team). Combining auto-shutdown, spot instances, and right-sizing across a medium-sized engineering organization typically yields 40-60% reduction in total cloud spend, often exceeding six figures annually for companies with large development environments.
 
 ## Summary
 

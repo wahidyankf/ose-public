@@ -53,8 +53,8 @@ provider "local" {
 resource "local_file" "hello" {
  # => resource block defines infrastructure component to manage
  # => "local_file" is resource type, "hello" is resource name
- filename = "${path.module} # => Current module directory path/hello.txt" # => path.module is current directory
- # => path.module resolves to directory containing this .tf file
+ # => path.module is the current module directory path
+ filename = "${path.module}/hello.txt" # => path.module resolves to directory containing this .tf file
  # => ${} interpolation syntax embeds expressions in strings
  content = "Hello, Terraform!" # => File content to write
  # => terraform plan shows: +local_file.hello (will be created)
@@ -1687,7 +1687,7 @@ output "computed_values" {
 
 **Key Takeaway**: Use `locals` for computed values used multiple times—reduces duplication and improves maintainability. Locals are computed once per apply. Reference with `local.name` (singular, not `locals.name`). Locals can reference other locals and variables.
 
-**Why It Matters**: Locals eliminate configuration duplication that causes "updated naming convention in 3 places, forgot the 4th" bugs. Instead of repeating "${var.project}-${var.environment}" across 50 resource names, compute it once as `local.prefix` and reference everywhere—one-line changes instead of error-prone find-replace. This DRY principle is critical for large infrastructures where ---
+**Why It Matters**: Locals eliminate configuration duplication that causes "updated naming convention in 3 places, forgot the 4th" bugs. Instead of repeating "${var.project}-${var.environment}" across 50 resource names, compute it once as `local.prefix` and reference everywhere—one-line changes instead of error-prone find-replace. This DRY principle is critical for large infrastructures where a single naming convention change must propagate across hundreds of resources. Locals also enable computed configuration like environment-specific settings, making infrastructure code read like a declarative specification rather than a repetitive list of string concatenations.
 
 ## Group 5: Data Sources
 
@@ -1815,7 +1815,7 @@ resource "aws_subnet" "new" {
 
 **Key Takeaway**: Data sources query existing resources with `data "type" "name" { }` blocks. Reference attributes with `data.type.name.attribute`. Use data sources to integrate Terraform with existing infrastructure or external systems. Data sources are read-only—they never create or modify resources.
 
-**Why It Matters**: Data sources enable gradual Terraform adoption without rip-and-replace migrations. Organizations can Terraform new infrastructure while querying existing manually-created VPCs, security groups, and databases through data sources. This "brownfield infrastructure" pattern is how Data sources also enable split responsibilities where platform teams manage networks and application teams query VPC IDs, preventing coordination bottlenecks.
+**Why It Matters**: Data sources enable gradual Terraform adoption without rip-and-replace migrations. Organizations can Terraform new infrastructure while querying existing manually-created VPCs, security groups, and databases through data sources. This "brownfield infrastructure" pattern is how enterprises migrate to infrastructure-as-code incrementally rather than requiring a full rewrite. Data sources also enable split responsibilities where platform teams manage networks and application teams query VPC IDs, preventing coordination bottlenecks.
 
 ---
 
@@ -1856,7 +1856,8 @@ provider "local" {}
 # Create external script
 resource "local_file" "script" {
 # => Resource definition
- filename = "${path.module} # => Current module directory path/query.sh"
+ # => path.module is the current module directory path
+ filename = "${path.module}/query.sh"
  # => Sets filename
  file_permission = "0755" # => String value
  # => Sets file_permission
@@ -1886,7 +1887,8 @@ resource "local_file" "script" {
 # External data source
 data "external" "example" {
 # => Data source
- program = ["bash", "${path.module} # => Current module directory path/query.sh"] # => Command to execute
+ # => path.module is the current module directory path
+ program = ["bash", "${path.module}/query.sh"] # => Command to execute
  # => Sets program
 
  query = {
@@ -1935,7 +1937,8 @@ output "external_output" {
 # Python script (query.py)
 resource "local_file" "python_script" {
 # => Resource definition
- filename = "${path.module} # => Current module directory path/query.py"
+ # => path.module is the current module directory path
+ filename = "${path.module}/query.py"
  # => Sets filename
  file_permission = "0755" # => String value
  # => Sets file_permission
@@ -1961,7 +1964,8 @@ resource "local_file" "python_script" {
 
 data "external" "python_data" {
 # => Data source
- program = ["python3", "${path.module} # => Current module directory path/query.py"]
+ # => path.module is the current module directory path
+ program = ["python3", "${path.module}/query.py"]
  # => Sets program
  query = { key_name = "production" } # => Map/object definition
  # => Sets query
@@ -2002,7 +2006,6 @@ terraform {
  # => Local backend stores state in filesystem
  path = "terraform.tfstate" # => Local state file (default)
  # => State file path relative to working directory
- # => Contains resource mappings and metadata
  }
  # => Backend determines state storage location
 }
@@ -2013,29 +2016,33 @@ provider "local" {}
 resource "local_file" "state_example" {
 # => Resource tracked in terraform.tfstate
  filename = "state_example.txt" # => String value
- # => Sets filename
  # => Terraform tracks this file in state
  content = "State management demo" # => String value
- # => Sets content
  # => After apply, state records filename, content, id
 }
+```
 
-# State commands (run via CLI)
-# $ terraform state list
+**State commands** (run via CLI):
+
+```bash
+# List all resources in state
+$ terraform state list
 # => local_file.state_example (lists all resources in state)
 # => Shows resource addresses managed by Terraform
 
-# $ terraform state show local_file.state_example
+# Show complete resource details
+$ terraform state show local_file.state_example
 # => Shows complete resource state and all attributes
 # => Displays: filename, content, id, provider
 
-# $ terraform state pull
+# Export state as JSON
+$ terraform state pull
 # => Outputs state as JSON to stdout
 # => Useful for inspection and backup
 
-# $ terraform state push terraform.tfstate.backup
-# => Uploads local state file to configured backend (dangerous!)
-# => Overwrites remote state (use with caution)
+# Upload state to backend (dangerous!)
+$ terraform state push terraform.tfstate.backup
+# => Overwrites remote state—use with caution
 ```
 
 **State file structure**:
@@ -2071,9 +2078,7 @@ resource "local_file" "state_example" {
 
 **Key Takeaway**: State file (`terraform.tfstate`) maps configuration to real infrastructure. Never edit state files manually—use `terraform state` commands. State contains sensitive data—always store securely. Local state works for solo work; use remote state for teams (covered in intermediate).
 
-## Why It Matters
-
-State files are Terraform's memory—without state, Terraform can't determine what infrastructure exists or what changes are needed. This mapping is why Terraform is idempotent (safe to run repeatedly) unlike imperative scripts that create duplicates. State contains resource IDs, IP addresses, passwords, and other secrets—lost or leaked state causes either infrastructure orphaning (can't destroy old resources) or security breaches (credentials exposed). Proper state management is critical:
+**Why It Matters**: State files are Terraform's memory—without state, Terraform can't determine what infrastructure exists or what changes are needed. This mapping is why Terraform is idempotent (safe to run repeatedly) unlike imperative scripts that create duplicates. State contains resource IDs, IP addresses, passwords, and other secrets—lost or leaked state causes either infrastructure orphaning (can't destroy old resources) or security breaches (credentials exposed). Local backend is dangerous for teams: concurrent operations corrupt state because there is no locking mechanism, and the state file is not shared between team members. Teams must use remote backends (S3+DynamoDB, Terraform Cloud, Azure Blob Storage) which provide locking, encryption, access control, and versioning for safe team collaboration on shared infrastructure.
 
 ### Example 17: State Commands
 
@@ -2083,29 +2088,30 @@ Terraform CLI provides commands to inspect and modify state. Essential for debug
 
 ```hcl
 # state_operations.tf
+# => Demonstrates terraform state commands using three local files
 terraform {
  required_version = ">= 1.0" # => Terraform 1.0+ required
 }
 
 provider "local" {} # => Local provider for file operations
 
+# => First resource: demonstrates state list output
 resource "local_file" "file1" { # => First demonstration file
  filename = "file1.txt" # => Output: file1.txt created
  content = "File 1 content" # => String value
 }
 
+# => Second resource: demonstrates state mv (rename) workflow
 resource "local_file" "file2" { # => Second demonstration file
  filename = "file2.txt" # => Output: file2.txt created
  content = "File 2 content" # => String value
 }
 
+# => Third resource: demonstrates state rm (unmanage) workflow
 resource "local_file" "file3" { # => Third demonstration file
  filename = "file3.txt" # => Output: file3.txt created
  content = "File 3 content" # => String value
 }
-
-
-
 ```
 
 **State operations**:
@@ -2195,6 +2201,7 @@ State locking prevents concurrent modifications when multiple team members run T
 terraform {
 # => Terraform configuration block
  required_version = ">= 1.0" # => String value
+ # => Ensures version 1.0+ features available
 
  # Local backend (no locking support)
  backend "local" {
@@ -2202,17 +2209,7 @@ terraform {
  path = "terraform.tfstate" # => String value
  # => No locking—unsafe for team usage
  }
-
- # S3 backend with DynamoDB locking (example for reference)
- # backend "s3" {
- # bucket = "terraform-state-bucket"
- # key = "project/terraform.tfstate"
- # region = "us-east-1"
- # dynamodb_table = "terraform-state-lock" # => Lock table
- # encrypt = true
- # # => State file encrypted at rest
- # # => DynamoDB prevents concurrent applies
- # }
+ # => Replace with remote backend for production team use
 }
 
 provider "local" {}
@@ -2223,16 +2220,20 @@ resource "local_file" "locking_demo" {
  filename = "locking.txt" # => String value
  content = "State locking demonstration" # => String value
 }
+```
 
-# Lock behavior
-# $ terraform apply
-# => Acquires lock on state before apply
-# => Other terraform commands wait for lock release
-# => Lock automatically released after apply completes or fails
+**S3 backend with locking** (recommended for teams):
 
-# Force unlock (emergency only)
-# $ terraform force-unlock <lock-id>
-# => Use only if lock is stale (crashed operation)
+```hcl
+# backend "s3" block replaces backend "local" above
+backend "s3" {
+ bucket         = "terraform-state-bucket" # => S3 bucket for state storage
+ key            = "project/terraform.tfstate" # => Path within bucket
+ region         = "us-east-1" # => AWS region
+ dynamodb_table = "terraform-state-lock" # => DynamoDB table for locking
+ # => DynamoDB prevents concurrent applies
+ encrypt        = true # => State file encrypted at rest
+}
 ```
 
 **Lock states**:
@@ -2292,6 +2293,7 @@ variable "environment" {
  validation {
  # => Validation rule enforces constraints
  condition = can(regex("^(dev|staging|prod)$", var.environment))
+ # => can() returns true if expression succeeds without error
  # => Sets condition
  error_message = "Environment must be dev, staging, or prod." # => String value
  # => Sets error_message
@@ -2312,6 +2314,7 @@ variable "instance_count" {
  validation {
  # => Validation rule enforces constraints
  condition = var.instance_count >= 1 && var.instance_count <= 10 # => Numeric value
+ # => && operator: both conditions must be true
  # => Sets condition
  error_message = "Instance count must be between 1 and 10." # => String value
  # => Sets error_message
@@ -2329,6 +2332,7 @@ variable "project_name" {
  validation {
  # => Validation rule enforces constraints
  condition = length(var.project_name) >= 3 && length(var.project_name) <= 20
+ # => length() returns number of characters in string
  # => Sets condition
  error_message = "Project name must be 3-20 characters long."
  # => Sets error_message
@@ -2347,7 +2351,8 @@ variable "vpc_cidr" {
 
  validation {
  # => Validation rule enforces constraints
- condition = can(cidrhost(var.vpc_cidr, 0)) # => Validates CIDR format
+ condition = can(cidrhost(var.vpc_cidr, 0)) # => cidrhost validates CIDR format
+ # => Returns error if CIDR notation invalid
  # => Sets condition
  error_message = "VPC CIDR must be valid IPv4 CIDR notation."
  # => Sets error_message
@@ -2369,6 +2374,7 @@ variable "server_config" {
  validation {
  # => Validation rule enforces constraints
  condition = var.server_config.cpu >= 1 && var.server_config.cpu <= 64
+ # => Validates CPU within allowed range
  # => Sets condition
  error_message = "CPU count must be 1-64."
  # => Sets error_message
@@ -2697,7 +2703,7 @@ output "api_key_length" {
 
 **Key Takeaway**: Mark sensitive variables with `sensitive = true` to prevent exposure in logs. Sensitive variables propagate to locals and outputs that reference them. Sensitive marking is for display only—values still appear in state file. Always encrypt state storage for production.
 
-**Why It Matters**: Sensitive variable marking prevents accidental credential leaks in CI/CD logs, plan output pasted in However, sensitive values still appear plaintext in state files—this is why Terraform Cloud encrypts state and The sensitive flag is a safety net, not security—it prevents casual exposure but can't protect against state file exfiltration. Real security requires encrypted state storage, access controls, and secret managers (Vault, AWS Secrets Manager) instead of hardcoded values.
+**Why It Matters**: Sensitive variable marking prevents accidental credential leaks in CI/CD logs and plan output pasted in tickets or shared in chat. However, sensitive values still appear plaintext in state files—this is why Terraform Cloud encrypts state and teams use S3 server-side encryption for self-managed backends. The sensitive flag is a safety net, not security—it prevents casual exposure but cannot protect against state file exfiltration. Real security requires encrypted state storage, access controls, and secret managers (Vault, AWS Secrets Manager) instead of hardcoded values.
 
 ---
 
@@ -2876,7 +2882,8 @@ resource "local_file" "config" {
 
 **Key Takeaway**: Separate variable declarations (`variables.tf`), shared defaults (`terraform.tfvars`), and environment overrides (`env.tfvars`). Never commit sensitive values—use gitignored `*.secrets.tfvars` or CI/CD secrets. Use `-var-file` to combine multiple variable files.
 
-**Why It Matters**: Organized variable files enable clean environment promotion in CI/CD pipelines—same code deploys to dev/staging/prod by swapping tfvars files. This pattern is standard at Gitignored secrets files prevent the security breach of committed API keys discovered by
+**Why It Matters**: Organized variable files enable clean environment promotion in CI/CD pipelines—same code deploys to dev/staging/prod by swapping tfvars files. This pattern is standard at companies managing multiple deployment targets, preventing environment-specific configuration from being hardcoded into the main configuration. Gitignored secrets files prevent the security breach of committed API keys discovered by automated scanners, which flag public repositories immediately and trigger credential rotation across all consuming services.
+
 ---
 
 ## Group 8: Data Sources Advanced
@@ -3350,7 +3357,7 @@ ls -t terraform.tfstate.* | tail -n +11 | xargs rm -f
 
 **Key Takeaway**: Terraform creates `.backup` files automatically before state changes. Always backup state before manual operations. Use S3 versioning or Git for remote state backups. Test state recovery procedures regularly. Never commit state files to public repositories—they contain sensitive data.
 
-**Why It Matters**: State file loss causes infrastructure orphaning—resources still running and accumulating costs but Terraform can't manage or destroy them. This happened to numerous teams before proper backup strategies: S3 bucket deleted, state lost, thousands of dollars in zombie resources until manual cleanup. Automatic backups and S3 versioning prevent these incidents, enabling point-in-time recovery when state corruption occurs. Testing recovery procedures is critical—
+**Why It Matters**: State file loss causes infrastructure orphaning—resources still running and accumulating costs but Terraform cannot manage or destroy them. This happened to numerous teams before proper backup strategies: S3 bucket deleted, state lost, thousands of dollars in zombie resources until manual cleanup. Automatic backups and S3 versioning prevent these incidents, enabling point-in-time recovery when state corruption occurs. Testing recovery procedures is critical—a backup that has never been restored is an untested backup. Teams should practice state recovery quarterly to verify that backup procedures actually work and that engineers know the recovery steps before a real incident occurs.
 
 ---
 
@@ -3362,23 +3369,23 @@ State refresh updates Terraform state to match real infrastructure without modif
 
 ```hcl
 # state_refresh.tf
+# => Demonstrates state refresh: syncing Terraform state with real infrastructure
 terraform {
  required_version = ">= 1.0" # => Terraform 1.0+ required
 }
 
 provider "local" {} # => Local provider for file operations
 
+# => File that will be manually modified to demonstrate drift detection
 resource "local_file" "refresh_demo" { # => Demonstration file resource
  filename = "refresh_demo.txt" # => Output: refresh_demo.txt created
  content = "Original content" # => Initial content value
 }
 
+# => Output reveals current state—changes after manual edits show as drift
 output "file_content" { # => Exposes file content for inspection
  value = local_file.refresh_demo.content # => Tracks content changes after refresh
 }
-
-
-
 ```
 
 **Refresh scenarios**:
@@ -3466,7 +3473,8 @@ output "file_content" { # => Exposes file content for inspection
 
 **Key Takeaway**: Use `terraform apply -refresh-only` to update state without modifying infrastructure. Refresh detects drift (changes made outside Terraform). Refresh happens automatically during `plan` and `apply`. Use `-refresh=false` to skip refresh for faster plans when drift detection isn't needed.
 
-**Why It Matters**: Drift detection identifies unauthorized manual changes that violate infrastructure-as-code principles and create security vulnerabilities. When junior engineer fixes production outage via AWS console instead of Terraform, refresh-only detects the change, prompting either restoration to defined configuration or explicit code update. This prevents configuration drift where actual infrastructure diverges from code, causing the "infrastructure doesn't match documentation" problem that makes incident response dangerous. Organizations like
+**Why It Matters**: Drift detection identifies unauthorized manual changes that violate infrastructure-as-code principles and create security vulnerabilities. When a junior engineer fixes a production outage via the AWS console instead of Terraform, refresh-only detects the change, prompting either restoration to the defined configuration or an explicit code update. This prevents configuration drift where actual infrastructure diverges from code, causing the "infrastructure does not match documentation" problem that makes incident response dangerous. Organizations like Netflix and Amazon enforce drift detection policies that trigger alerts when infrastructure diverges from its declared state, treating unmanaged drift as a security incident.
+
 ---
 
 ### Example 27: Targeting Specific Resources
@@ -3612,7 +3620,7 @@ resource "local_file" "file4" {
 
 **Key Takeaway**: Use `-target` to limit operations to specific resources and their dependencies. Essential for debugging but dangerous for regular use—it can create state inconsistencies. Always run full `terraform apply` after targeted operations to restore consistency.
 
-**Why It Matters**: Targeting enables surgical infrastructure fixes during production incidents without touching unrelated resources, reducing blast radius. When database performance degrades, target database configuration changes without risking network or compute modifications. However, overuse creates partial state that causes "plan shows unexpected changes" confusion. This is why Targeting also enables gradual rollouts: deploy 1 instance, verify, target next instance, preventing "deployed 100 broken instances simultaneously" failures.
+**Why It Matters**: Targeting enables surgical infrastructure fixes during production incidents without touching unrelated resources, reducing blast radius. When database performance degrades, target database configuration changes without risking network or compute modifications. However, overuse creates partial state that causes "plan shows unexpected changes" confusion. This is why targeting should be treated as an emergency tool, not a routine workflow—teams that habitually use targeting end up with state inconsistencies that surface as mysterious drift. Targeting also enables gradual rollouts: deploy 1 instance, verify, target the next instance, preventing "deployed 100 broken instances simultaneously" failures.
 
 ---
 
@@ -3798,7 +3806,7 @@ graph TD
 
 **Key Takeaway**: Import brings existing resources under Terraform management. Must write resource configuration before importing. Import adds resource to state but doesn't generate configuration automatically. Use `terraform state show` to view imported attributes and adjust configuration. Import is one-way—it doesn't modify existing resources.
 
-**Why It Matters**: Import enables gradual Terraform adoption without destroying and recreating existing infrastructure—critical for production systems that can't tolerate downtime. Organizations like Import also recovers from state loss: if state file is deleted but resources still exist, import reconstructs state and restores Terraform management. The import workflow (write config, import, verify plan) ensures configuration matches reality before any modifications, preventing the "import caused unexpected changes" surprises that plagued early import implementations.
+**Why It Matters**: Import enables gradual Terraform adoption without destroying and recreating existing infrastructure—critical for production systems that cannot tolerate downtime. Organizations like Stripe and Airbnb used import to bring thousands of manually provisioned resources under Terraform management without service interruptions. Import also recovers from state loss: if a state file is deleted but resources still exist, import reconstructs state and restores Terraform management. The import workflow (write config, import, verify plan) ensures configuration matches reality before any modifications, preventing the "import caused unexpected changes" surprises that plagued early import implementations.
 
 ---
 

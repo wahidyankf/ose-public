@@ -405,7 +405,7 @@ spec:
 
 **Key Takeaway**: Use init containers in StatefulSets for data initialization, configuration templating, or dependency waiting; init containers have access to volumeClaimTemplates volumes and Pod metadata for per-instance customization.
 
-**Why It Matters**: Init containers in StatefulSets enable per-instance configuration for distributed systems requiring unique node IDs or customized settings. name` and cluster discovery settings based on Pod ordinal—elasticsearch-0 knows it's master-eligible while elasticsearch-3 is data-only. This automation eliminates manual configuration steps required in traditional clustered database deployments, reducing setup time from hours (manual configuration per node) to minutes (automated per-Pod initialization).
+**Why It Matters**: Init containers in StatefulSets enable per-instance configuration for distributed systems requiring unique node IDs or customized settings. Elasticsearch uses this pattern to configure node IDs and cluster discovery settings based on Pod ordinal—elasticsearch-0 knows it's master-eligible while elasticsearch-3 is data-only. This automation eliminates manual configuration steps required in traditional clustered database deployments, reducing setup time from hours (manual configuration per node) to minutes (automated per-Pod initialization).
 
 ---
 
@@ -703,7 +703,7 @@ spec:
 
 **Key Takeaway**: Use DaemonSets for node-level services requiring presence on every node; DaemonSets automatically handle node additions/removals and support node selectors for subset deployment.
 
-**Why It Matters**: DaemonSets ensure critical infrastructure services run on every node without manual deployment, essential for cluster-wide monitoring, logging, and networking. Datadog monitors This automation eliminates the systemd unit files and chef recipes required in traditional infrastructure where adding a new server meant manually installing monitoring agents, logging forwarders, and network plugins—Kubernetes handles this automatically through DaemonSets.
+**Why It Matters**: DaemonSets ensure critical infrastructure services run on every node without manual deployment, essential for cluster-wide monitoring, logging, and networking. Datadog monitors thousands of Kubernetes nodes using DaemonSets to deploy its agent automatically to every node. This automation eliminates the systemd unit files and chef recipes required in traditional infrastructure where adding a new server meant manually installing monitoring agents, logging forwarders, and network plugins—Kubernetes handles this automatically through DaemonSets.
 
 ---
 
@@ -799,7 +799,7 @@ spec:
 
 **Key Takeaway**: Use nodeSelector or node affinity in DaemonSets to run specialized workloads only on appropriate nodes; label nodes based on hardware capabilities, regions, or roles for targeted DaemonSet deployment.
 
-**Why It Matters**: Node-selective DaemonSets enable hardware-specific infrastructure services without cluttering nodes lacking required resources. This selective deployment reduces monitoring overhead by 80% compared to running GPU collectors cluster-wide and enables heterogeneous cluster management where different node types run different infrastructure services based on hardware capabilities.
+**Why It Matters**: Node-selective DaemonSets enable hardware-specific infrastructure services without cluttering nodes lacking required resources. This selective deployment reduces monitoring overhead by 80% compared to running GPU collectors cluster-wide and enables heterogeneous cluster management where different node types run different infrastructure services based on hardware capabilities. Machine learning platforms at companies like NVIDIA deploy GPU-specific DaemonSets only on GPU-equipped nodes, ensuring specialized monitoring agents run where they provide value without wasting resources on CPU-only nodes.
 
 ---
 
@@ -1487,7 +1487,7 @@ spec:
 
 **Key Takeaway**: Leverage Ingress Controller annotations for advanced HTTP features; consult controller documentation for available annotations as they vary between nginx, Traefik, and other controllers.
 
-**Why It Matters**: Ingress annotations enable sophisticated traffic management without deploying dedicated API gateway infrastructure. Cloudflare uses nginx Ingress annotations for rate limiting, request transformation, and authentication—features that would otherwise require additional proxy layers ( This consolidation reduces median request latency by 15-20ms (one fewer proxy hop) while providing enterprise features like A/B testing headers, geographic routing, and DDoS protection declaratively through annotations, making Ingress Controllers powerful enough to replace separate API gateway products.
+**Why It Matters**: Ingress annotations enable sophisticated traffic management without deploying dedicated API gateway infrastructure. Cloudflare uses nginx Ingress annotations for rate limiting, request transformation, and authentication—features that would otherwise require additional proxy layers (dedicated reverse proxies or API gateways). This consolidation reduces median request latency by 15-20ms (one fewer proxy hop) while providing enterprise features like A/B testing headers, geographic routing, and DDoS protection declaratively through annotations, making Ingress Controllers powerful enough to replace separate API gateway products.
 
 ---
 
@@ -1559,7 +1559,7 @@ spec:
 
 **Key Takeaway**: Configure default backend for better user experience on unmatched requests; implement custom 404 pages or redirects instead of generic Ingress Controller errors.
 
-**Why It Matters**: Default backends provide graceful handling for misconfigured DNS, typo'd URLs, or removed services, maintaining professional user experience. This small configuration detail significantly impacts brand perception, as generic HTTP 404 errors signal technical incompetence while custom error pages demonstrate attention to user experience and reliability.
+**Why It Matters**: Default backends provide graceful handling for misconfigured DNS, typo'd URLs, or removed services, maintaining professional user experience. This small configuration detail significantly impacts brand perception, as generic HTTP 404 errors signal technical incompetence while custom error pages demonstrate attention to user experience and reliability. E-commerce platforms report that custom error pages with search functionality and navigation links retain 25% more users compared to blank 404 pages, directly impacting revenue recovery from navigation errors.
 
 ---
 
@@ -1584,10 +1584,10 @@ graph TD
 ```
 
 ```yaml
-apiVersion: v1
-kind: PersistentVolume
+apiVersion: v1 # => Core Kubernetes API
+kind: PersistentVolume # => Cluster-wide storage resource (admin creates)
 metadata:
- name: pv-example # => PV name (cluster-wide resource)
+ name: pv-example # => PV name (cluster-wide resource, not namespaced)
 spec:
  capacity:
  storage:
@@ -1600,21 +1600,25 @@ spec:
  # => Most common: ReadWriteOnce
  persistentVolumeReclaimPolicy:
  Retain # => Manual reclamation after PVC deletion
- # => PV not auto-deleted
+ # => PV not auto-deleted when PVC released
  # => Delete: auto-delete storage (cloud volumes)
  # => Recycle: deprecated (use Delete)
  storageClassName:
  manual # => Storage class name for binding
- # => PVC must match this class
+ # => PVC must match this class name
+ # => "manual" = no automatic provisioning
  hostPath: # => Host path volume (testing only)
- path: /mnt/data # => Directory on node
+ path: /mnt/data # => Directory on host node filesystem
+ # => Warning: node-specific, not portable
  type:
- DirectoryOrCreate # => Create if doesn't exist
+ DirectoryOrCreate # => Create directory if not exists
  # => Not for production (node-specific)
+ # => Use cloud volumes in production
 
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
+# => Document separator: second resource (PersistentVolumeClaim follows)
+apiVersion: v1 # => Core Kubernetes API
+kind: PersistentVolumeClaim # => Namespace-scoped storage request (user creates)
 metadata:
  name: pvc-example # => PVC name (namespace resource)
 spec:
@@ -1626,13 +1630,15 @@ spec:
  storage:
  5Gi # => Requests 5 GiB (PV has 10 GiB)
  # => PVC gets full 10 GiB (PV indivisible)
+ # => Cannot request partial PV capacity
  storageClassName:
  manual # => Binds to PV with same storage class
  # => Empty string binds to no-class PVs
 
 ---
-apiVersion: v1
-kind: Pod
+# => Document separator: third resource (Pod consuming the PVC follows)
+apiVersion: v1 # => Core Kubernetes API
+kind: Pod # => Pod consuming the PersistentVolumeClaim
 metadata:
  name: pv-pod # => Pod name
 spec:
@@ -1640,19 +1646,23 @@ spec:
  - name: app # => Container name
  image: nginx:1.24 # => Nginx web server
  volumeMounts:
- - name: storage # => References volume below
+ - name: storage # => References volume defined below
+ # => Volume name must match volumes[].name
  mountPath:
  /usr/share/nginx/html # => Mount point in container
- # => Nginx serves from this directory
+ # => Nginx serves files from this directory
+ # => Data persists across Pod restarts
  volumes:
- - name: storage # => Volume name
+ - name: storage # => Volume name (referenced by volumeMounts)
  persistentVolumeClaim:
  claimName:
  pvc-example # => References PVC above
- # => Kubernetes binds PVC to PV
+ # => Kubernetes binds PVC to matching PV
+ # => Pod scheduled on node where PV is accessible
 
 # PV/PVC lifecycle:
-# => kubectl get pv → shows PV status (Available → Bound)
+# => kubectl get pv → shows PV status (Available → Bound → Released)
+# => kubectl get pvc → shows claim status (Pending → Bound)
 ```
 
 **Key Takeaway**: Use PV/PVC for persistent storage across Pod restarts; cloud providers offer dynamic provisioning via StorageClasses, eliminating manual PV creation for production use.
@@ -1666,8 +1676,8 @@ spec:
 StorageClasses enable dynamic PersistentVolume provisioning, automatically creating storage when PVCs are created. Cloud providers offer default StorageClasses for seamless dynamic provisioning.
 
 ```yaml
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
+apiVersion: storage.k8s.io/v1 # => Storage API version
+kind: StorageClass # => StorageClass resource for dynamic provisioning
 metadata:
  name: fast-storage # => StorageClass name
 provisioner:
@@ -1704,8 +1714,9 @@ allowVolumeExpansion:
  # => Requires CSI driver support
 
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
+# => Document separator: second resource (PVC triggering dynamic provisioning)
+apiVersion: v1 # => Core Kubernetes API
+kind: PersistentVolumeClaim # => Storage request triggering dynamic provisioning
 metadata:
  name: dynamic-pvc # => PVC name
 spec:
@@ -1722,7 +1733,9 @@ spec:
  # => StorageClass creates PV with this size
 
 # Dynamic provisioning:
-# => PVC created → StorageClass provisions new PV automatically
+# => PVC created → StorageClass calls cloud API → new PV created in seconds
+kubectl get pvc dynamic-pvc           # => STATUS: Bound (after Pod created with WaitForFirstConsumer)
+kubectl get pv                        # => Shows automatically provisioned PV with matching spec
 ```
 
 **Key Takeaway**: Use StorageClasses for production storage with dynamic provisioning; configure WaitForFirstConsumer for multi-zone clusters to ensure PV and Pod are in the same availability zone.
@@ -1785,7 +1798,7 @@ spec:
 
 **Key Takeaway**: Volume expansion requires StorageClass with allowVolumeExpansion enabled; most volume types require Pod restart to complete filesystem resize; plan initial PVC sizes carefully as shrinking is not supported.
 
-**Why It Matters**: Online volume expansion eliminates database downtime for storage increases, a critical operational capability. This operational flexibility is transformational for growing databases, as storage exhaustion is a critical incident requiring immediate remediation, and traditional expansion through migration carries significant risk of data loss or extended outages.
+**Why It Matters**: Online volume expansion eliminates database downtime for storage increases, a critical operational capability. This operational flexibility is transformational for growing databases, as storage exhaustion is a critical incident requiring immediate remediation, and traditional expansion through migration carries significant risk of data loss or extended outages. Cloud-native databases at growth-stage startups can double storage capacity in under five minutes without user-visible impact, compared to multi-hour maintenance windows required by traditional block storage expansion procedures.
 
 ---
 
@@ -1794,54 +1807,60 @@ spec:
 VolumeSnapshots create point-in-time copies of PersistentVolumes for backup, clone, or restore operations. Requires CSI (Container Storage Interface) driver support from storage provider.
 
 ```yaml
-apiVersion: snapshot.storage.k8s.io/v1
-kind: VolumeSnapshotClass
+apiVersion: snapshot.storage.k8s.io/v1 # => Snapshot API (CRD-based, requires CSI driver)
+kind: VolumeSnapshotClass # => Defines snapshot class parameters (like StorageClass for PVs)
 metadata:
- name: csi-snapshot-class
+ name: csi-snapshot-class # => SnapshotClass name, referenced by VolumeSnapshot
 driver:
- ebs.csi.aws.com # => CSI driver (AWS EBS example)
- # => pd.csi.storage.gke.io (GCP)
- # => disk.csi.azure.com (Azure)
+ ebs.csi.aws.com # => CSI driver that handles snapshots (AWS EBS)
+ # => pd.csi.storage.gke.io (GCP Persistent Disk)
+ # => disk.csi.azure.com (Azure Disk)
+ # => Driver must implement snapshot interface
 deletionPolicy:
- Delete # => Delete snapshot when VolumeSnapshot deleted
- # => Retain: keep snapshot
+ Delete # => Delete underlying snapshot when VolumeSnapshot object deleted
+ # => Retain: keep snapshot in cloud storage after object deleted
 
 ---
-apiVersion: snapshot.storage.k8s.io/v1
-kind: VolumeSnapshot
+apiVersion: snapshot.storage.k8s.io/v1 # => Snapshot API version
+kind: VolumeSnapshot # => Represents a point-in-time copy of a PVC
 metadata:
- name: pvc-snapshot
+ name: pvc-snapshot # => Snapshot name (referenced by restore PVC)
 spec:
- volumeSnapshotClassName: csi-snapshot-class
+ volumeSnapshotClassName: csi-snapshot-class # => Uses SnapshotClass above
+ # => Determines CSI driver and deletion policy
  source:
  persistentVolumeClaimName:
- data-pvc
- # => Source PVC to snapshot
- # => Creates snapshot of current state
-
+ data-pvc # => Source PVC to snapshot (must be bound)
+ # => Creates snapshot of current PVC state
+ # => Application-consistent if app paused first
 
 # Snapshot lifecycle:
-# => kubectl get volumesnapshot
+# => kubectl get volumesnapshot                  # STATUS: ReadyToUse: true
+# => kubectl describe volumesnapshot pvc-snapshot # Shows snapshot size and creation time
 
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
+apiVersion: v1 # => Core Kubernetes API
+kind: PersistentVolumeClaim # => New PVC restored from snapshot
 metadata:
- name: restored-pvc
+ name: restored-pvc # => New PVC name (separate from original)
 spec:
  accessModes:
- - ReadWriteOnce
- storageClassName: fast-storage
+ - ReadWriteOnce # => Access mode (should match source PVC)
+ storageClassName: fast-storage # => StorageClass for provisioning restored volume
+ # => Must support snapshot restore operation
  resources:
  requests:
- storage: 10Gi
+ storage: 10Gi # => Size must be >= snapshot source size
+ # => Cannot restore to smaller volume
  dataSource:
- kind: VolumeSnapshot # => Restore from snapshot
- name: pvc-snapshot # => References snapshot
- apiGroup: snapshot.storage.k8s.io
+ kind: VolumeSnapshot # => Restore data source type
+ name: pvc-snapshot # => References snapshot created above
+ apiGroup: snapshot.storage.k8s.io # => API group for VolumeSnapshot resource
 
 # Restore process:
-# => PVC created from snapshot
+# => kubectl apply -f restored-pvc.yaml         # Creates PVC from snapshot
+# => kubectl get pvc restored-pvc               # STATUS: Bound (after provisioning)
+# => Mount restored-pvc in Pod to access data   # Data identical to snapshot point-in-time
 ```
 
 **Key Takeaway**: Use VolumeSnapshots for backup and disaster recovery; requires CSI driver support; create snapshots before major changes for easy rollback; consider snapshot costs and retention policies.
@@ -1971,7 +1990,7 @@ spec:
 
 **Key Takeaway**: Use local PersistentVolumes for latency-sensitive workloads like databases; understand trade-off between performance and availability; implement application-level replication for fault tolerance.
 
-**Why It Matters**: Local PVs deliver NVMe SSD performance (sub-millisecond latency, 100K+ IOPS) impossible with network-attached storage, critical for database and cache workloads. 3ms vs 3ms) compared to network EBS volumes—this performance difference makes the user experience gap between instant page loads and noticeable lag. The trade-off is node affinity (Pods can't migrate between nodes), requiring application-level replication (Cassandra, MongoDB replica sets) for high availability, but this is acceptable for databases already designed for distributed operation.
+**Why It Matters**: Local PVs deliver NVMe SSD performance (sub-millisecond latency, 100K+ IOPS) impossible with network-attached storage, critical for database and cache workloads. The difference between local NVMe (0.1ms) and network-attached storage (3ms) may seem small but represents a 30x latency reduction compared to network EBS volumes—this performance difference makes the user experience gap between instant page loads and noticeable lag. The trade-off is node affinity (Pods cannot migrate between nodes), requiring application-level replication (Cassandra, MongoDB replica sets) for high availability, but this is acceptable for databases already designed for distributed operation.
 
 ---
 
@@ -2000,61 +2019,73 @@ graph TD
 
 ```yaml
 # Guaranteed QoS (highest priority, last to be evicted)
-apiVersion: v1
-kind: Pod
+apiVersion: v1 # => Core Kubernetes API
+kind: Pod # => Pod with Guaranteed QoS class
 metadata:
- name: guaranteed-pod
+ name: guaranteed-pod # => Pod name
 spec:
  containers:
- - name: app
- image: nginx:1.24
+ - name: app # => Container name
+ image: nginx:1.24 # => Nginx web server
  resources:
  requests:
- cpu: 500m # => requests.cpu = limits.cpu
- memory: 512Mi # => requests.memory = limits.memory
+ cpu: 500m # => requests.cpu = limits.cpu (Guaranteed requirement)
+ memory: 512Mi # => requests.memory = limits.memory (Guaranteed requirement)
  limits:
- cpu: 500m # => Must be equal for Guaranteed QoS
- memory: 512Mi
+ cpu: 500m # => Must equal requests.cpu for Guaranteed QoS
+ # => If ANY container has requests != limits → Burstable
+ memory: 512Mi # => Must equal requests.memory for Guaranteed QoS
+ # => All containers must have equal requests/limits
 
 ---
 # Burstable QoS (medium priority)
-apiVersion: v1
-kind: Pod
+apiVersion: v1 # => Core Kubernetes API
+kind: Pod # => Pod with Burstable QoS class
 metadata:
- name: burstable-pod
+ name: burstable-pod # => Pod name
 spec:
  containers:
- - name: app
- image: nginx:1.24
+ - name: app # => Container name
+ image: nginx:1.24 # => Nginx web server
  resources:
  requests:
- cpu: 250m # => requests < limits
- memory: 256Mi
+ cpu: 250m # => Requests less than limits → Burstable QoS
+ # => Guaranteed minimum allocation
+ memory: 256Mi # => Minimum memory guaranteed
  limits:
- cpu: 500m # => Can burst up to limits
+ cpu: 500m # => Can burst above requests up to limits
+ # => CPU throttled if sustained above request
  memory: 512Mi # => Evicted before Guaranteed, after BestEffort
+ # => OOMKilled if memory exceeds limit
 
 ---
 # BestEffort QoS (lowest priority, first to be evicted)
-apiVersion: v1
-kind: Pod
+apiVersion: v1 # => Core Kubernetes API
+kind: Pod # => Pod with BestEffort QoS class (no resources defined)
 metadata:
- name: besteffort-pod
+ name: besteffort-pod # => Pod name
 spec:
  containers:
- - name: app
+ - name: app # => Container name
  image:
- nginx:1.24 # => No requests or limits specified
+ nginx:1.24 # => No requests or limits → BestEffort QoS
  # => Gets no resource guarantees
+ # => Uses whatever CPU/memory is available
  # => First evicted during resource pressure
+ # => Suitable only for fault-tolerant batch work
 
 # QoS behavior during resource pressure:
-# => Node runs low on memory
+# => kubectl get pod guaranteed-pod -o jsonpath='{.status.qosClass}'
+# => Output: Guaranteed
+# => kubectl get pod burstable-pod -o jsonpath='{.status.qosClass}'
+# => Output: Burstable
+# => kubectl get pod besteffort-pod -o jsonpath='{.status.qosClass}'
+# => Output: BestEffort
 ```
 
 **Key Takeaway**: Set requests equal to limits for Guaranteed QoS on critical workloads; use Burstable for applications with variable load; avoid BestEffort in production except for truly optional workloads.
 
-**Why It Matters**: QoS classes determine eviction order during resource pressure, critical for maintaining service reliability. When This prioritization prevents the "everything fails together" scenario common in traditional infrastructure where resource exhaustion crashes all services indiscriminately. Strategic QoS classification enables graceful degradation under load, preserving critical user-facing services.
+**Why It Matters**: QoS classes determine eviction order during resource pressure, critical for maintaining service reliability. When a node runs out of memory, Kubernetes evicts BestEffort Pods first (batch jobs), then Burstable Pods (background services), preserving Guaranteed Pods (user-facing APIs). This prioritization prevents the "everything fails together" scenario common in traditional infrastructure where resource exhaustion crashes all services indiscriminately. Strategic QoS classification enables graceful degradation under load, preserving critical user-facing services while sacrificing less important workloads.
 
 ---
 
@@ -2063,40 +2094,50 @@ spec:
 PriorityClasses assign priority values to Pods, enabling preemption where higher-priority Pods can evict lower-priority Pods when cluster resources are scarce.
 
 ```yaml
-apiVersion: scheduling.k8s.io/v1
-kind: PriorityClass
+apiVersion: scheduling.k8s.io/v1 # => Scheduling API group
+kind: PriorityClass # => Cluster-wide priority definition
 metadata:
-  name: high-priority # => PriorityClass name
+  name: high-priority # => PriorityClass name (referenced by Pod)
 value:
-  1000000 # => Priority value (higher = more important)
-  # => System priorities: 2000000000+ (reserved)
+  1000000 # => Priority value (higher = more important, scheduled first)
+  # => Positive 32-bit integer (max: 1,000,000,000)
+  # => System priorities: 2000000000+ (reserved for system Pods)
+  # => Critical system Pods: 2000001000 (cluster-critical)
 globalDefault:
-  false # => Not default priority
-  # => Set true for one PriorityClass
-description: "High priority for critical services"
+  false # => Not the default priority class for new Pods
+  # => Set true for one PriorityClass to be default
+  # => Only one PriorityClass can be globalDefault: true
+description: "High priority for critical services" # => Human-readable description
 
 ---
-apiVersion: scheduling.k8s.io/v1
-kind: PriorityClass
+apiVersion: scheduling.k8s.io/v1 # => Scheduling API group
+kind: PriorityClass # => Lower priority for batch/non-critical work
 metadata:
-  name: low-priority
-value: 100 # => Lower priority value
-globalDefault: false
-description: "Low priority for batch jobs"
+  name: low-priority # => PriorityClass name for batch jobs
+value: 100 # => Low priority value (yields to high-priority=1000000)
+globalDefault: false # => Not default
+description: "Low priority for batch jobs" # => Used for scheduled/deferrable work
 
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: v1 # => Core Kubernetes API
+kind: Pod # => High priority Pod (preempts lower-priority Pods if needed)
 metadata:
-  name: critical-pod
+  name: critical-pod # => Pod name
 spec:
-  priorityClassName: high-priority # => Uses high-priority PriorityClass
+  priorityClassName: high-priority # => References PriorityClass above
+  # => Scheduler uses value=1000000 for ordering
+  # => Will preempt low-priority Pods if needed
   containers:
-    - name: nginx
-  image: nginx:1.24
+    - name: nginx # => Container name
+  image: nginx:1.24 # => Nginx web server
+
 
 # Preemption behavior:
-# => Cluster has no capacity
+# => Cluster has no capacity for critical-pod
+# => Scheduler finds low-priority Pods to evict
+# => kubectl get events | grep Preempted
+# => Output: critical-pod preempted batch-job-xyz
+# => kubectl get pod critical-pod    # => STATUS: Running (after preemption)
 ```
 
 **Key Takeaway**: Use PriorityClasses to ensure critical workloads schedule before less important ones; preemption allows cluster to prioritize essential services during resource contention; avoid too many priority levels for simplicity.
@@ -2127,13 +2168,14 @@ graph TD
 ```
 
 ```yaml
-# Install metrics-server first:
+# Install metrics-server first (required for CPU/memory metrics):
 # => kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+# => kubectl get deployment metrics-server -n kube-system  # => Verify metrics-server running
 
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
+apiVersion: autoscaling/v2 # => Autoscaling API v2 (supports multiple metrics)
+kind: HorizontalPodAutoscaler # => HPA resource (automatically adjusts replicas)
 metadata:
- name: web-hpa # => HPA name
+ name: web-hpa # => HPA name (typically matches target Deployment)
 spec:
  scaleTargetRef:
  apiVersion: apps/v1 # => API version of target
@@ -2142,24 +2184,29 @@ spec:
  web-app # => Target Deployment to scale
  # => HPA modifies this Deployment's replicas
  minReplicas:
- 2 # => Minimum replicas (never scale below)
- # => Ensures minimum availability
+ 2 # => Minimum replicas (never scale below 2)
+ # => Ensures minimum availability even at low load
+ # => Set to match HA requirements (zone distribution)
  maxReplicas:
- 10 # => Maximum replicas (never scale above)
- # => Prevents runaway scaling
+ 10 # => Maximum replicas (never scale above 10)
+ # => Prevents runaway scaling and cost surprises
  metrics:
  - type: Resource # => Resource metric type (CPU, memory)
  resource:
  name: cpu # => CPU utilization metric
+ # => Requires resource.requests.cpu set on Pod
  target:
- type: Utilization # => Percentage utilization
+ type: Utilization # => Percentage of requested CPU
+ # => Formula: desired_replicas = ceil(current_replicas × current_cpu / target_cpu)
  averageUtilization:
- 70 # => Target 70% average CPU utilization
- # => Above 70% → scale up
- # => Below 70% → scale down
+ 70 # => Target 70% average CPU across all Pods
+ # => At 85% CPU: scale up (ceil(2 × 85/70) = 3)
+ # => At 40% CPU: scale down (ceil(3 × 40/70) = 2)
 
 # HPA behavior:
 # => Checks metrics every 15 seconds (default)
+# => kubectl get hpa web-hpa        # => Shows current/desired replicas and CPU%
+# => kubectl describe hpa web-hpa   # => Shows scaling events and conditions
 ```
 
 **Key Takeaway**: Use HPA for automatic scaling based on demand; set appropriate min/max replicas to prevent over-scaling costs or under-scaling unavailability; requires resource requests for CPU metrics.
@@ -2173,39 +2220,45 @@ spec:
 VerticalPodAutoscaler (VPA) automatically adjusts Pod resource requests and limits based on actual usage, optimizing resource allocation. VPA can operate in recommendation-only or auto-update mode.
 
 ```yaml
-# Install VPA:
+# Install VPA (requires additional components from kubernetes/autoscaler repo):
 # => git clone https://github.com/kubernetes/autoscaler.git
+# => cd autoscaler/vertical-pod-autoscaler && ./hack/vpa-install.sh
+# => kubectl get pods -n kube-system | grep vpa  # => vpa-admission-controller, vpa-recommender, vpa-updater
 
-apiVersion: autoscaling.k8s.io/v1
-kind: VerticalPodAutoscaler
+apiVersion: autoscaling.k8s.io/v1 # => VPA API (CRD installed by VPA operator)
+kind: VerticalPodAutoscaler # => VPA resource for automatic resource right-sizing
 metadata:
- name: web-vpa
+ name: web-vpa # => VPA name (typically matches target Deployment)
 spec:
  targetRef:
- apiVersion: apps/v1
- kind: Deployment
- name: web-app # => Target Deployment
+ apiVersion: apps/v1 # => API version of target resource
+ kind: Deployment # => Target resource type
+ name: web-app # => Target Deployment to manage resources for
  updatePolicy:
  updateMode:
- Auto # => Auto: apply recommendations (restart Pods)
- # => Recreate: same as Auto
- # => Initial: only set on Pod creation
- # => Off: recommendations only, no updates
+ Auto # => Auto: apply recommendations (evicts/restarts Pods to resize)
+ # => Recreate: same as Auto (legacy name)
+ # => Initial: apply recommendations only at Pod creation
+ # => Off: calculate recommendations, make available, do NOT apply
  resourcePolicy:
  containerPolicies:
- - containerName: "*" # => Applies to all containers
+ - containerName: "*" # => Applies policy to ALL containers in Pod
+ # => Use specific container name to target individual containers
  minAllowed:
- cpu: 100m # => Minimum CPU request
- memory: 128Mi # => Minimum memory request
+ cpu: 100m # => Minimum CPU request VPA will set (floor)
+ memory: 128Mi # => Minimum memory request VPA will set
  maxAllowed:
- cpu: 2000m # => Maximum CPU request
- memory: 2Gi # => Maximum memory request
+ cpu: 2000m # => Maximum CPU request VPA will set (ceiling)
+ # => Prevents VPA from over-provisioning
+ memory: 2Gi # => Maximum memory request VPA will set
  controlledResources:
- - cpu
- - memory
+ - cpu # => VPA manages CPU requests/limits
+ - memory # => VPA manages memory requests/limits
 
 # VPA behavior:
-# => Monitors actual resource usage
+# => Monitors actual resource usage over time (days to weeks for accuracy)
+# => kubectl get vpa web-vpa -o json | jq '.status.recommendation'
+# => Output: {containerRecommendations: [{target: {cpu: 350m, memory: 380Mi}}]}
 ```
 
 **Key Takeaway**: Use VPA to right-size resource requests automatically; prefer HPA for horizontal scaling, VPA for vertical sizing; avoid using HPA and VPA on CPU/memory simultaneously to prevent conflicts.
@@ -2219,38 +2272,49 @@ spec:
 PodDisruptionBudgets (PDB) limit voluntary disruptions (node drains, upgrades) to ensure minimum availability during maintenance. PDBs prevent kubectl drain from evicting too many Pods simultaneously.
 
 ```yaml
-apiVersion: policy/v1
-kind: PodDisruptionBudget
+apiVersion: policy/v1 # => Policy API v1 (stable since Kubernetes 1.21)
+kind: PodDisruptionBudget # => Budget for voluntary disruptions (drains, upgrades)
 metadata:
- name: web-pdb
+ name: web-pdb # => PDB name (typically named after target workload)
 spec:
  minAvailable:
- 2 # => Minimum available Pods during disruption
- # => Alternative: maxUnavailable: 1
+ 2 # => At least 2 Pods must be available during disruption
+ # => If Deployment has 4 replicas: max 2 can be evicted at once
+ # => kubectl drain blocks if eviction would violate this
+ # => Alternative: maxUnavailable: 1 (relative approach)
+ # => Can also use percentage: "50%"
  selector:
  matchLabels:
  app: web # => Applies to Pods with app=web label
-
+ # => Must match Pod labels (not Deployment selector)
+ # => PDB evaluates current live Pods
 
 # PDB behavior:
-# => Deployment has 4 replicas
+# => Deployment has 4 replicas, PDB minAvailable: 2
+# => kubectl drain node-1             # => Attempts to evict web Pods
+# => If evicting would leave < 2 Pods: drain blocked
+# => kubectl get pdb web-pdb          # => Shows ALLOWED-DISRUPTIONS column (= 4 - 2 = 2)
 
 ---
 # Alternative: maxUnavailable
-apiVersion: policy/v1
-kind: PodDisruptionBudget
+apiVersion: policy/v1 # => Policy API v1
+kind: PodDisruptionBudget # => PDB using maxUnavailable (relative to current replicas)
 metadata:
- name: api-pdb
+ name: api-pdb # => PDB name for API service
 spec:
  maxUnavailable:
- 1 # => Maximum unavailable Pods
- # => More flexible than minAvailable
+ 1 # => Maximum 1 Pod can be unavailable at a time
+ # => More flexible than minAvailable (adapts to scaling)
+ # => With 10 replicas: 9 must be available
+ # => With 3 replicas: 2 must be available
  selector:
  matchLabels:
- app: api
+ app: api # => Applies to Pods with app=api label
 
 # maxUnavailable vs minAvailable:
-# => maxUnavailable: "at most N Pods down"
+# => maxUnavailable: "at most N Pods down" (scales with replicas)
+# => minAvailable: "at least N Pods up" (fixed number, safer for small counts)
+# => kubectl get pdb                   # => Lists all PDBs with ALLOWED-DISRUPTIONS
 ```
 
 **Key Takeaway**: Use PodDisruptionBudgets to maintain availability during voluntary disruptions like node maintenance; set minAvailable or maxUnavailable based on application requirements; PDBs do not prevent involuntary disruptions like node failures.
@@ -2278,40 +2342,43 @@ graph TD
 ```
 
 ```yaml
-apiVersion: v1
-kind: Pod
+apiVersion: v1 # => Core Kubernetes API
+kind: Pod # => Pod with readiness probe configuration
 metadata:
  name: readiness-pod # => Pod name
  labels:
- app: web # => Labels for Service selector
+ app: web # => Labels for Service selector (Service routes to Ready Pods only)
 spec:
  containers:
  - name: nginx # => Container name
  image: nginx:1.24 # => Nginx web server
  ports:
  - containerPort: 80 # => HTTP port
- readinessProbe: # => Checks if Pod ready for traffic
+ readinessProbe: # => Checks if Pod ready to receive traffic
+ # => Failed probe: Pod removed from Service endpoints (no restart)
  httpGet:
  path:
- /ready # => Endpoint returning 200 when ready
- # => Application defines readiness logic
- port: 80 # => Port to probe
+ /ready # => Endpoint returning 2xx when ready to serve
+ # => Application defines readiness logic (DB connected, cache warm)
+ port: 80 # => Port to probe (must match containerPort)
  initialDelaySeconds:
- 5 # => Wait 5s after start before first probe
- # => Gives container time to start
+ 5 # => Wait 5s after container start before first probe
+ # => Prevents probing during initial startup
  periodSeconds:
- 5 # => Probe every 5 seconds
- # => More frequent than liveness
+ 5 # => Probe every 5 seconds (frequent for fast detection)
+ # => More frequent than liveness (traffic impact is immediate)
  successThreshold:
- 1 # => 1 success → mark Ready
- # => Consecutive successes required
+ 1 # => 1 consecutive success → mark Ready, add to Service
+ # => Higher values require sustained health
  failureThreshold:
- 3 # => 3 failures → mark NotReady
- # => Pod removed from Service endpoints
- # => No container restart
+ 3 # => 3 consecutive failures → mark NotReady
+ # => 3 × 5s = 15s before Pod removed from Service
+ # => No container restart (unlike liveness probe)
 
 # Readiness vs Liveness:
-# => Readiness failure → removes from Service, no restart
+# => Readiness failure → removes from Service endpoints, no restart
+# => kubectl get endpoints web-service  # => Shows only Ready Pod IPs
+# => kubectl describe pod readiness-pod  # => Shows "Readiness: True/False" status
 ```
 
 **Key Takeaway**: Use readiness probes to prevent traffic to Pods that are starting up or temporarily unavailable; failed readiness checks remove Pods from load balancing without restarting them.
@@ -2385,6 +2452,8 @@ spec:
 
 # Without startup probe:
 # => Slow app takes 3 min to start
+# => Liveness probe (failureThreshold:3 × periodSeconds:5 = 15s) kills Pod prematurely
+# => kubectl get pod startup-pod    # => Pod cycling in CrashLoopBackOff without startup probe
 ```
 
 **Key Takeaway**: Use startup probes for slow-starting applications to prevent premature liveness probe failures; configure longer failureThreshold \* periodSeconds than application startup time; liveness probes begin only after startup success.
@@ -2398,70 +2467,76 @@ spec:
 Production Pods should use all three probes: startup for initialization, liveness for deadlock recovery, and readiness for traffic control. This combination ensures robust health monitoring.
 
 ```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
+apiVersion: apps/v1 # => Apps API for Deployments
+kind: Deployment # => Deployment with all three probe types
+metadata: # => Deployment metadata
  name: production-app # => Deployment name
-spec:
+spec: # => Deployment specification
  replicas: 3 # => Three Pods for high availability
- selector:
- matchLabels:
+ selector: # => Pod selector (links Deployment to Pods)
+ matchLabels: # => Equality-based label selector
  app: production # => Must match template labels
- template:
- metadata:
- labels:
- app: production # => Pod labels
- spec:
- containers:
+ template: # => Pod template definition
+ metadata: # => Pod template metadata
+ labels: # => Pod labels
+ app: production # => Pod labels (must match selector)
+ spec: # => Pod specification
+ containers: # => Container list
  - name: app # => Container name
  image: production-app:1.0 # => Production application image
- ports:
+ ports: # => Exposed container ports
  - containerPort: 8080 # => Application port
 
- startupProbe: # => Phase 1: Initialization (0-2 min)
- httpGet:
- path: /startup # => Startup endpoint
- port: 8080
- initialDelaySeconds: 10 # => Wait 10s after start
- periodSeconds: 10 # => Check every 10s
- failureThreshold:
- 12 # => 120s max startup time
- # => 12 failures × 10s = 120s
+ startupProbe: # => Phase 1: Initialization (0-2 min, blocks liveness/readiness)
+ # => Liveness and readiness probes INACTIVE while startup probe running
+ httpGet: # => HTTP GET probe handler
+ path: /startup # => Returns 200 when DB connected, migrations done
+ port: 8080 # => Application port
+ initialDelaySeconds: 10 # => Wait 10s after container start (minimal warm-up)
+ periodSeconds: 10 # => Check every 10s during initialization
+ failureThreshold: # => Max consecutive failures before restart
+ 12 # => Allow 12 failures = 120s max startup window
+ # => After 120s: kubelet restarts container
+ # => Set higher for slow-starting apps (Java, large datasets)
 
- livenessProbe: # => Phase 2: Deadlock detection
- httpGet:
- path: /healthz # => Liveness endpoint
- port: 8080
- initialDelaySeconds: 0 # => Starts after startup succeeds
- periodSeconds: 10 # => Check every 10s
- timeoutSeconds: 5 # => 5s response timeout
- failureThreshold:
- 3 # => Restart after 30s failure
- # => 3 failures × 10s = 30s
+ livenessProbe: # => Phase 2: Ongoing deadlock/crash detection (active after startup)
+ httpGet: # => HTTP GET probe handler
+ path: /healthz # => Returns 200 if app responsive (not deadlocked)
+ port: 8080 # => Same application port
+ initialDelaySeconds: 0 # => Starts immediately after startup probe succeeds
+ periodSeconds: 10 # => Check every 10s (less frequent than readiness)
+ timeoutSeconds: 5 # => Probe fails if app doesn't respond in 5s
+ failureThreshold: # => Max consecutive failures before restart
+ 3 # => Restart after 3 consecutive failures
+ # => 3 failures × 10s = 30s before restart
+ # => Restart resolves deadlocks, memory leaks, crashed goroutines
 
- readinessProbe: # => Phase 3: Traffic control
- httpGet:
- path: /ready # => Readiness endpoint
- port: 8080
- initialDelaySeconds: 0 # => Starts immediately
- periodSeconds: 5 # => More frequent than liveness
- timeoutSeconds: 3 # => 3s response timeout
- successThreshold: 1 # => Mark Ready after 1 success
- failureThreshold:
- 2 # => Remove from Service after 10s
- # => 2 failures × 5s = 10s
+ readinessProbe: # => Phase 3: Traffic control (runs continuously, parallel to liveness)
+ httpGet: # => HTTP GET probe handler
+ path: /ready # => Returns 200 when ready (dependencies healthy)
+ port: 8080 # => Application port
+ initialDelaySeconds: 0 # => Starts immediately (Pod not in Service until first success)
+ periodSeconds: 5 # => More frequent than liveness (faster traffic removal)
+ timeoutSeconds: 3 # => Shorter timeout (faster failure detection)
+ successThreshold: 1 # => Add to Service after 1 success
+ failureThreshold: # => Max consecutive failures before removing from Service
+ 2 # => Remove from Service after 2 consecutive failures
+ # => 2 failures × 5s = 10s before traffic removed
+ # => Handles database connection pool exhaustion gracefully
 
- resources:
- requests:
- cpu: 250m # => Guaranteed CPU
- memory: 256Mi # => Guaranteed memory
- limits:
- cpu: 500m # => Maximum CPU
- memory: 512Mi # => Maximum memory (OOM kill if exceeded)
+ resources: # => CPU and memory allocation
+ requests: # => Minimum guaranteed resources
+ cpu: 250m # => Guaranteed CPU (Burstable QoS class)
+ memory: 256Mi # => Guaranteed memory (baseline allocation)
+ limits: # => Maximum resource caps
+ cpu: 500m # => Maximum CPU (throttled above this)
+ memory: 512Mi # => Maximum memory (OOM killed if exceeded)
 
 
 # Health check endpoints should return:
-# => /startup: 200 when initialization complete (DB connected, cache loaded)
+# => /startup: 200 when initialization complete (DB connected, cache loaded, migrations done)
+# => /healthz: 200 when app responsive (no deadlock, no crash)
+# => /ready: 200 when ready to handle requests (dependencies available)
 ```
 
 **Key Takeaway**: Implement all three probe types for production workloads; startup for slow initialization, liveness for crash recovery, readiness for traffic control; design separate health check endpoints with appropriate logic for each probe type.
@@ -2525,9 +2600,14 @@ spec:
 
 # Probe handler selection:
 # => HTTP: applications with HTTP endpoints (web apps, APIs)
+# => TCP: non-HTTP services where port availability = health (databases, message queues)
+# => Exec: last resort for services without HTTP/TCP health checks (legacy apps)
 
 # Performance considerations:
-# => HTTP: moderate overhead (HTTP processing, parsing)
+# => HTTP: moderate overhead (HTTP processing, parsing) - best for APIs
+# => TCP: minimal overhead (just connection attempt) - best for databases
+# => Exec: high overhead (process fork per probe) - avoid at large scale
+kubectl get pods -o wide | grep probe-handlers  # => View all probe-handler Pod statuses
 ```
 
 **Key Takeaway**: Use HTTP probes for web applications with health endpoints, TCP probes for non-HTTP network services, and exec probes only when necessary due to execution overhead; prefer HTTP/TCP for performance.

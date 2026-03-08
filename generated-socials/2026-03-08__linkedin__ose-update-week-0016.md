@@ -10,7 +10,7 @@ Week 0016, Phase 1 Week 4
 
 🚀 Phase 1 Week 4: OrganicLever Takes Shape
 
-Four weeks into Phase 1. OrganicLever is real — frontend deployed at www.organiclever.com, Spring Boot backend running in local dev, and a testing infrastructure built for scale. All product content is placeholder for now — the focus is on CI/CD infrastructure, not features.
+Four weeks into Phase 1. OrganicLever is real — frontend deployed at www.organiclever.com, Spring Boot backend running in local dev, and a testing infrastructure built for scale. All product content is a placeholder for now — the focus is on CI/CD infrastructure, not features.
 
 **What shipped:**
 
@@ -50,7 +50,7 @@ Infrastructure:
 - Backend tech stack evaluation (multiple stacks in parallel — AI makes this practical)
 - CD pipeline comes after tech stack decision settles
 
-Infrastructure first. Features second. Quality over speed.
+Infrastructure first. Features second—quality over speed.
 
 ---
 
@@ -63,7 +63,7 @@ Timeline: Quality over deadlines, Insha Allah
 Full update post with Mermaid diagrams and detailed metrics:
 https://www.oseplatform.com/updates/2026-03-08-phase-1-week-4-organiclever-takes-shape/
 
-Every commit visible on GitHub. Monthly updates every second Sunday.
+Every commit is visible on GitHub. Monthly updates every second Sunday.
 
 ---
 

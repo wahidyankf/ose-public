@@ -3,7 +3,7 @@ title: "Intermediate"
 date: 2026-01-02T05:01:35+07:00
 draft: false
 weight: 10000002
-description: "Examples 31-59: Production patterns, generics, streams, concurrency (40-75% coverage)"
+description: "Examples 34-64: Production patterns, generics, streams, concurrency (40-75% coverage)"
 tags:
   [
     "java",
@@ -18,9 +18,13 @@ tags:
   ]
 ---
 
-Master intermediate Java concepts through 20 annotated code examples. Each example builds on beginner foundations, introducing advanced OOP, generics, functional programming, and concurrency patterns.
+Master intermediate Java concepts through 31 annotated code examples. Each example builds on beginner foundations, introducing advanced OOP, generics, functional programming, and concurrency patterns.
 
-## Example 31: Abstract Classes and Template Method Pattern
+## Advanced OOP and Reflection
+
+Advanced object-oriented patterns: abstract classes, composition, nested classes, reflection API, and custom annotations.
+
+## Example 34: Abstract Classes and Template Method Pattern
 
 Abstract classes provide partial implementations with abstract methods that subclasses must implement. The template method pattern defines algorithm skeletons in abstract classes with customizable steps.
 
@@ -148,7 +152,7 @@ json.process();
 
 ---
 
-## Example 32: Composition Over Inheritance
+## Example 35: Composition Over Inheritance
 
 Composition builds objects from reusable components rather than inheriting from parent classes. It provides flexibility by assembling behaviors dynamically rather than being locked into inheritance hierarchies.
 
@@ -260,7 +264,7 @@ gasManual.drive();
 
 ---
 
-## Example 33: Nested and Inner Classes
+## Example 36: Nested and Inner Classes
 
 Java supports nested classes (static) and inner classes (non-static) that provide encapsulation and logical grouping. Inner classes access outer class instance members, while nested classes are independent.
 
@@ -398,7 +402,7 @@ r.run();
 
 ---
 
-## Example 34: Reflection API - Runtime Introspection
+## Example 37: Reflection API - Runtime Introspection
 
 Reflection allows runtime inspection and manipulation of classes, methods, and fields. It enables frameworks to work with user-defined classes without compile-time knowledge.
 
@@ -536,7 +540,7 @@ for (Method method : clazz.getDeclaredMethods()) {
 
 ---
 
-## Example 35: Annotations and Custom Metadata
+## Example 38: Annotations and Custom Metadata
 
 Annotations add metadata to code that can be processed at compile-time or runtime. Custom annotations enable declarative programming patterns used extensively in frameworks.
 
@@ -685,7 +689,11 @@ class Example {
 
 ---
 
-## Example 36: Generic Methods and Bounded Type Parameters
+## Generics and Collections
+
+Java's type-parameterization system and collections performance: generic methods, wildcards, and the performance characteristics of List, Set, Map implementations.
+
+## Example 39: Generic Methods and Bounded Type Parameters
 
 Generic methods enable type-safe method implementations that work with any type. Bounded type parameters restrict generic types to subclasses of a bound, enabling access to bound class methods.
 
@@ -808,7 +816,7 @@ String value = stringBox.get();  // => No cast needed (compiler knows returns St
 
 ---
 
-## Example 37: Wildcards and Type Variance
+## Example 40: Wildcards and Type Variance
 
 Wildcards (`?`) represent unknown types in generics. Upper-bounded wildcards (`? extends Type`) enable reading, lower-bounded wildcards (`? super Type`) enable writing, following covariance and contravariance rules.
 
@@ -935,7 +943,7 @@ copy(src, dst);                  // => T = Integer (inferred)
 
 ---
 
-## Example 38: ArrayList vs LinkedList Performance
+## Example 41: ArrayList vs LinkedList Performance
 
 ArrayList and LinkedList both implement the List interface but have different performance characteristics. ArrayList uses a resizable array (O(1) indexed access, O(n) insertions), while LinkedList uses doubly-linked nodes (O(1) insertions at ends, O(n) indexed access).
 
@@ -987,7 +995,7 @@ linkedList.remove(0);            // => O(1) removal from head, linkedList is ["A
 
 ---
 
-## Example 39: HashSet vs TreeSet for Unique Collections
+## Example 42: HashSet vs TreeSet for Unique Collections
 
 HashSet and TreeSet both enforce uniqueness but differ in ordering and performance. HashSet uses hashing (O(1) operations, no order), while TreeSet uses a red-black tree (O(log n) operations, sorted order).
 
@@ -1041,7 +1049,7 @@ System.out.println(treeSet);     // => Output: [apple, banana, cherry]
 
 ---
 
-## Example 40: HashMap vs TreeMap and Collections Utilities
+## Example 43: HashMap vs TreeMap and Collections Utilities
 
 HashMap and TreeMap both store key-value pairs but differ in ordering and performance. HashMap uses hashing (O(1) operations), TreeMap uses red-black tree (O(log n) operations, sorted by keys).
 
@@ -1103,7 +1111,7 @@ Map<String, Integer> immutableMap = Map.of("A", 1, "B", 2); // => Immutable map
 
 ---
 
-## Example 41: Concurrent Collections for Thread Safety
+## Example 44: Concurrent Collections for Thread Safety
 
 Concurrent collections provide thread-safe operations without external synchronization. They use lock-free algorithms and fine-grained locking for better concurrency than synchronized collections.
 
@@ -1215,7 +1223,11 @@ Map<String, Integer> syncMap = Collections.synchronizedMap(new HashMap<>());
 
 ---
 
-## Example 42: Stream Pipeline Optimization
+## Streams and Functional API
+
+Java's functional programming toolkit: stream optimization, collectors, method references, and function composition for declarative data processing.
+
+## Example 45: Stream Pipeline Optimization
 
 Stream operations are lazy (intermediate) or eager (terminal). Understanding laziness enables building efficient pipelines that short-circuit and minimize iterations.
 
@@ -1324,7 +1336,7 @@ numbers.stream()
 
 ---
 
-## Example 43: Collectors and Stream Reduction
+## Example 46: Collectors and Stream Reduction
 
 Collectors transform stream results into collections, maps, or aggregated values. Custom collectors enable complex reductions beyond built-in options.
 
@@ -1440,8 +1452,7 @@ int totalLength = words.stream()
                                  // => summingInt() converts to int and sums
                                  // => ToIntFunction<String>: String::length extracts length
                                  // => Maps each word to its length: apple→5, banana→6, etc.
-                                 // => Accumulates sum: 0 + 5 + 6 + 7 + 9 + 7
-                                 // => apple(5) + banana(6) + apricot(7) + blueberry(9) + avocado(7)
+                                 // => Accumulates sum: 5+6+7+9+7
                                  // => Returns primitive int (not Integer wrapper)
                                  // => totalLength is 34 (sum of all word lengths)
 
@@ -1482,7 +1493,6 @@ Map<String, Object> stats = words.stream()
                                  // => Parameter 1: count (Long from counting())
                                  // => Parameter 2: joined (String from joining())
                                  // => Map.of() creates immutable Map with 2 entries
-                                 // => Creates Map with 2 entries
     ));
                                  // => {count=5, words=apple,banana,apricot,blueberry,avocado}
                                  // => Single pass through stream produces both results
@@ -1495,7 +1505,7 @@ Map<String, Object> stats = words.stream()
 
 ---
 
-## Example 44: Method References and Function Composition
+## Example 47: Method References and Function Composition
 
 Method references provide shorthand for lambdas that delegate to existing methods. Composing functions creates reusable transformation pipelines.
 
@@ -1599,7 +1609,11 @@ List<String> processed = inputs.stream()
 
 ---
 
-## Example 45: NIO.2 File Operations and Path API
+## I/O and Concurrency
+
+File operations with NIO.2, thread management, thread pools, and asynchronous programming with CompletableFuture.
+
+## Example 48: NIO.2 File Operations and Path API
 
 NIO.2 (java.nio.file) provides modern file I/O with Path abstraction, symbolic link support, and directory traversal. It replaces legacy java.io.File with clearer semantics.
 
@@ -1738,7 +1752,7 @@ try {
 
 ---
 
-## Example 46: Thread Basics and Runnable
+## Example 49: Thread Basics and Runnable
 
 Threads enable concurrent execution. Java provides Runnable interface for defining thread tasks and Thread class for execution management.
 
@@ -1827,7 +1841,7 @@ int priority = current.getPriority();
 
 ---
 
-## Example 47: Synchronization and Thread Safety
+## Example 50: Synchronization and Thread Safety
 
 Shared mutable state requires synchronization to prevent race conditions. Java provides synchronized keyword, locks, and atomic classes for thread safety.
 
@@ -2035,11 +2049,9 @@ System.out.println("Final count: " + counter.getCount());
 
 **Key Takeaway**: Use synchronized methods or blocks to protect shared mutable state. Explicit locks (ReentrantLock) provide more control (try-lock, timed lock). Atomic classes (AtomicInteger) offer lock-free thread safety for simple operations. Without synchronization, concurrent access causes race conditions leading to incorrect results.
 
-**Why It Matters**: Synchronization prevents data corruption from concurrent access—without it, count++ (read-modify-write) allows lost updates where two threads read same value and both write incremented result (both write 1 instead of 1 and 2). The synchronized keyword uses intrinsic locks (every Java object has one), simple but coarse-grained (locks entire method/block). ReentrantLock enables fairness (FIFO waiting), try-lock (non-blocking), and lock conditions (await/signal), essential for complex synchronization. Atomic classes use CPU compare-and-swap (CAS) instructions for lock-free updates, faster than locks for simple operations but limited to single-variable updates. Modern Java emphasizes immutability and concurrent collections over manual synchronization, reserving locks for complex state machines and atomic operations for counters/flags.
+**Why It Matters**: Synchronization prevents data corruption from concurrent access—without it, count++ (read-modify-write) allows lost updates where two threads read same value and both write incremented result (both write 1 instead of 1 and 2). The synchronized keyword uses intrinsic locks (every Java object has one), simple but coarse-grained (locks entire method/block). ReentrantLock enables fairness (FIFO waiting), try-lock (non-blocking), and lock conditions (await/signal), essential for complex synchronization. Atomic classes use CPU compare-and-swap (CAS) instructions for lock-free updates, faster than locks for simple operations but limited to single-variable updates.
 
----
-
-## Example 48: ExecutorService and Thread Pools
+## Example 51: ExecutorService and Thread Pools
 
 ExecutorService manages thread pools for executing tasks without manual Thread creation. It provides lifecycle management, Future results, and efficient thread reuse.
 
@@ -2202,7 +2214,7 @@ try {
 
 ---
 
-## Example 49: CompletableFuture for Async Programming
+## Example 52: CompletableFuture for Async Programming
 
 CompletableFuture enables composable asynchronous operations with functional-style transformations. It replaces callback hell with declarative async pipelines.
 
@@ -2368,17 +2380,15 @@ try {
 
 **Key Takeaway**: CompletableFuture enables async operations with functional composition. Use thenApply() for transformations, thenCombine() to merge results, thenCompose() for sequential async operations, and exceptionally() for error handling. Avoid blocking with get()—prefer reactive chaining with thenAccept() and thenRun().
 
-**Why It Matters**: CompletableFuture brought reactive programming to standard Java, eliminating callback hell (nested callbacks for async operations). Before CompletableFuture, async code required manual thread management or libraries like Guava's ListenableFuture. The functional composition model (thenApply, thenCompose) matches modern async patterns from JavaScript Promises, Kotlin coroutines, and Scala futures. However, CompletableFuture has limitations: no cancellation propagation (cancelling parent doesn't cancel children), complex error handling (exceptions don't propagate automatically), and verbose syntax compared to async/await. Virtual threads (Java 21) enable blocking-style async code with structured concurrency, potentially replacing CompletableFuture for many use cases, though CompletableFuture remains essential for composing independent async operations.
+**Why It Matters**: CompletableFuture brought reactive programming to standard Java, eliminating callback hell (nested callbacks for async operations). Before CompletableFuture, async code required manual thread management or libraries like Guava's ListenableFuture. The functional composition model (thenApply, thenCompose) matches modern async patterns from JavaScript Promises, Kotlin coroutines, and Scala futures. However, CompletableFuture has limitations: no cancellation propagation (cancelling parent doesn't cancel children), complex error handling (exceptions don't propagate automatically), and verbose syntax compared to async/await.
 
 ---
 
 ## Modern Java Idioms (Java 17+)
 
-Modern Java idioms leverage features from Java 17+ (records, sealed classes, pattern matching, text blocks) and Java 21+ (virtual threads, enhanced pattern matching). These idioms emphasize immutability, type safety, and conciseness.
+Modern Java features (Java 14-21) reduce boilerplate, improve type safety, and bring functional programming patterns to mainstream Java code.
 
----
-
-## Example 50: Records for Immutable Data
+## Example 53: Records for Immutable Data
 
 Records provide concise syntax for immutable data carriers, automatically generating constructors, getters, equals(), hashCode(), and toString().
 
@@ -2541,7 +2551,7 @@ System.out.println(payment.equals(copy));
 
 ---
 
-## Example 51: Sealed Classes for Closed Hierarchies
+## Example 54: Sealed Classes for Closed Hierarchies
 
 Sealed classes restrict which classes can extend or implement them, enabling exhaustive pattern matching and domain modeling.
 
@@ -2763,11 +2773,9 @@ System.out.println(processTransaction(txn2));
 
 **Key Takeaway**: Use sealed classes/interfaces to model closed domain hierarchies (payment types, status enums, result types). Compiler enforces exhaustiveness in pattern matching, eliminating runtime errors from missing cases. All permitted types must be final, sealed, or non-sealed.
 
-**Why It Matters**: Sealed classes solve the "expression problem": adding new operations (methods) without modifying existing code, while controlling type extensions. Traditional interfaces allow anyone to implement (open hierarchy), making exhaustive pattern matching impossible—you always need a default case that might hide bugs. Sealed types enable algebraic data types (sum types) common in functional languages: `TransactionType = Cash | Card | Bank`. This powers type-safe state machines, command patterns, and domain models. When adding new permitted type, compiler errors at all switch expressions, forcing updates—prevents forgetting to handle new cases. Use sealed types for domain models with known, fixed variants (HTTP methods, database operations, workflow states). Use traditional interfaces when extensibility required (plugin systems, third-party implementations).
+**Why It Matters**: Sealed classes solve the "expression problem": adding new operations (methods) without modifying existing code, while controlling type extensions. Traditional interfaces allow anyone to implement (open hierarchy), making exhaustive pattern matching impossible—you always need a default case that might hide bugs. Sealed types enable algebraic data types (sum types) common in functional languages: `TransactionType = Cash | Card | Bank`. This powers type-safe state machines, command patterns, and domain models. When adding new permitted type, compiler errors at all switch expressions, forcing updates—prevents forgetting to handle new cases.
 
----
-
-## Example 52: Pattern Matching for Switch
+## Example 55: Pattern Matching for Switch
 
 Pattern matching for switch combines type checking, casting, and conditional logic in concise syntax.
 
@@ -2947,11 +2955,9 @@ System.out.println(describePoint(diagonal));
 
 **Key Takeaway**: Pattern matching for switch eliminates instanceof-cast boilerplate, supports guards (when clauses) for complex conditions, and enables record destructuring. Use null case to avoid NullPointerException, guards to combine type and logic checks, and sealed types for exhaustive matching.
 
-**Why It Matters**: Traditional instanceof chains required 3 steps per branch: type check (instanceof), cast, then use. Pattern matching reduces this to one step, eliminating 66% of boilerplate and cast errors (forgetting cast after check). Guards (when clauses) avoid nested ifs, making complex conditions readable: `case Integer i when i > 100` vs `if (obj instanceof Integer) { Integer i = (Integer) obj; if (i > 100) {...}}`. Record patterns enable destructuring (extracting fields directly): `case Point(int x, int y)` replaces manual `point.x()`, `point.y()` calls—critical for nested data structures. Sealed types + pattern matching = compiler-verified exhaustiveness: adding new permitted type forces updating all switch expressions (catches bugs at compile-time). This combination brings algebraic data types and exhaustive pattern matching from functional languages (Scala, Haskell) to Java, transforming type-based dispatching from error-prone runtime checks to compile-time guarantees.
+**Why It Matters**: Traditional instanceof chains required 3 steps per branch: type check (instanceof), cast, then use. Pattern matching reduces this to one step, eliminating 66% of boilerplate and cast errors (forgetting cast after check). Guards (when clauses) avoid nested ifs, making complex conditions readable: `case Integer i when i > 100` vs `if (obj instanceof Integer) { Integer i = (Integer) obj; if (i > 100) {...}}`. Record patterns enable destructuring (extracting fields directly): `case Point(int x, int y)` replaces manual `point.x()`, `point.y()` calls—critical for nested data structures.
 
----
-
-## Example 53: Optional for Null Safety
+## Example 56: Optional for Null Safety
 
 Optional explicitly models presence/absence of values, eliminating NullPointerException through functional composition.
 
@@ -3166,11 +3172,9 @@ List<String> emails = users.stream()
 
 **Key Takeaway**: Use Optional for return types when absence is expected and valid. Chain transformations with map()/flatMap(), provide defaults with orElse()/orElseGet(), and avoid get() (prefer ifPresent()/orElseThrow()). Never use Optional for fields or parameters (use null checks instead).
 
-**Why It Matters**: NullPointerException is Java's most common runtime error, often from forgetting null checks or null propagating through method chains. Optional makes absence explicit in type signatures: `Optional<User> findUser()` vs `User findUser()` clearly signals "might not exist." This shifts null handling from implicit (remember to check) to explicit (compiler/IDE prompts). Functional composition (map, flatMap, filter) enables null-safe chaining without nested ifs: `findUser().map(User::getEmail).map(String::toLowerCase).orElse("unknown")` replaces 10+ lines of null checks. However, Optional has overhead (wrapper object allocation) and should NOT be used everywhere: avoid Optional fields (breaks serialization), Optional parameters (caller burden), or Optional collections (use Collections.emptyList()). Optional excels for return types in queries, configuration lookups, and parsers where absence is meaningful. Java 9+ enhancements (ifPresentOrElse, or, stream) make Optional more powerful, approaching monadic error handling from functional languages.
+**Why It Matters**: NullPointerException is Java's most common runtime error, often from forgetting null checks or null propagating through method chains. Optional makes absence explicit in type signatures: `Optional<User> findUser()` vs `User findUser()` clearly signals "might not exist." This shifts null handling from implicit (remember to check) to explicit (compiler/IDE prompts). Functional composition (map, flatMap, filter) enables null-safe chaining without nested ifs: `findUser().map(User::getEmail).map(String::toLowerCase).orElse("unknown")` replaces 10+ lines of null checks. However, Optional has overhead (wrapper object allocation) and should NOT be used everywhere: avoid Optional fields (breaks serialization), Optional parameters (caller burden), or Optional collections (use Collections.emptyList()).
 
----
-
-## Example 54: Stream API Collectors
+## Example 57: Stream API Collectors
 
 Collectors transform streams into collections, maps, or aggregate values through terminal operations.
 
@@ -3428,11 +3432,9 @@ List<String> allTeams = departments.stream()
 
 **Key Takeaway**: Use Collectors for terminal stream operations: toList()/toSet() for collections, groupingBy() for multi-level grouping, partitioningBy() for boolean splits, joining() for string concatenation, and summarizingInt() for statistics. Compose collectors with downstream collectors for complex aggregations.
 
-**Why It Matters**: Stream collectors enable declarative data transformation, replacing imperative loops with functional pipelines. Before streams (pre-Java 8), grouping required manual map creation and loop-based aggregation (error-prone, verbose). Collectors provide optimized, reusable aggregation strategies: `groupingBy()` handles concurrent collection, `toMap()` detects duplicate keys, `summarizingInt()` computes multiple statistics in one pass. Downstream collectors enable compositional aggregation: group → filter → count in single pipeline. This matches SQL-like expressiveness (GROUP BY, COUNT, SUM) but with type safety and IDE support. Advanced collectors (filtering, flatMapping in Java 9+) eliminate intermediate stream operations, improving performance. Use collectors for ETL pipelines, report generation, and data analysis—prefer imperative loops only when: early termination needed (findFirst), stateful accumulation required, or parallel execution harmful (sequential guarantees).
+**Why It Matters**: Stream collectors enable declarative data transformation, replacing imperative loops with functional pipelines. Before streams (pre-Java 8), grouping required manual map creation and loop-based aggregation (error-prone, verbose). Collectors provide optimized, reusable aggregation strategies: `groupingBy()` handles concurrent collection, `toMap()` detects duplicate keys, `summarizingInt()` computes multiple statistics in one pass. Downstream collectors enable compositional aggregation: group → filter → count in single pipeline. This matches SQL-like expressiveness (GROUP BY, COUNT, SUM) but with type safety and IDE support. Advanced collectors (filtering, flatMapping in Java 9+) eliminate intermediate stream operations, improving performance.
 
----
-
-## Example 55: Text Blocks for Multi-Line Strings
+## Example 58: Text Blocks for Multi-Line Strings
 
 Text blocks (Java 17+) provide clean syntax for multi-line strings without escape sequences or concatenation.
 
@@ -3669,11 +3671,9 @@ String newWay = """
 
 **Key Takeaway**: Use text blocks for SQL queries, JSON/XML templates, HTML, scripts, and documentation. Closing `"""` position controls indentation level. Use `.formatted()` for variable substitution, `\s` to preserve trailing spaces, and `\` for line continuation.
 
-**Why It Matters**: Multi-line strings in Java were notoriously painful before text blocks (Java 15), requiring manual newline escapes (`\n`), string concatenation (`+`), and quote escaping (`\"`). This made SQL queries, JSON templates, and HTML generation error-prone and unreadable. Text blocks solve this with: (1) Automatic newline preservation (no `\n`), (2) Quote preservation (no escaping `"` inside block), (3) Smart indentation (dedents to closing `"""`), and (4) Integration with formatted() for variable substitution. This matches multi-line string syntax from Python (`"""`), JavaScript (backticks), and Kotlin (`"""`). Text blocks improve code clarity by making structured text (SQL, JSON, YAML) look like structured text—not concatenated line fragments. Use for: database queries (readable SQL), API responses (JSON/XML templates), documentation (embedded examples), and scripts (shell/Python snippets). Avoid for: single-line strings (use regular `"..."`), dynamic content (prefer template engines for complex HTML), and security-sensitive contexts (sanitize inputs before `formatted()`).
+**Why It Matters**: Multi-line strings in Java were notoriously painful before text blocks (Java 15), requiring manual newline escapes (`\n`), string concatenation (`+`), and quote escaping (`\"`). This made SQL queries, JSON templates, and HTML generation error-prone and unreadable. Text blocks solve this with: (1) Automatic newline preservation (no `\n`), (2) Quote preservation (no escaping `"` inside block), (3) Smart indentation (dedents to closing `"""`), and (4) Integration with formatted() for variable substitution. This matches multi-line string syntax from Python (`"""`), JavaScript (backticks), and Kotlin (`"""`).
 
----
-
-## Example 56: Local Variable Type Inference (var)
+## Example 59: Local Variable Type Inference (var)
 
 The `var` keyword (Java 10+) infers local variable types from initializers, reducing verbosity while maintaining type safety.
 
@@ -3815,11 +3815,9 @@ var transactionsByUser = new HashMap<String, List<Transaction>>();
 
 **Key Takeaway**: Use `var` when type is obvious from right side (constructors, method calls, literals). Avoid `var` when type is unclear (generic method names, complex return types). Never use for fields, parameters, or when initializer lacks type info (null, raw generics). `var` reduces verbosity, not type safety.
 
-**Why It Matters**: Java's verbosity (repeating types) was a long-standing criticism, especially with generics: `Map<String, List<Employee>> map = new HashMap<String, List<Employee>>()` repeats the type declaration twice. `var` reduces this without sacrificing type safety—Java remains statically typed, compiler infers exact type from initializer. This isn't dynamic typing (like JavaScript `var`): once inferred, type is fixed and compile-time checked. `var` shines with: (1) Complex generics (nested types), (2) Diamond operator (avoid repeating `<Type>`), (3) Streams (type obvious from operations), (4) Try-with-resources (resource type clear). However, overusing `var` harms readability: `var result = process()` forces reader to check `process()` signature, while `ProcessedData result = process()` is self-documenting. Use `var` as "don't repeat yourself" (DRY) for types, not "hide the type." Modern IDEs show inferred types on hover, but code reviews and diffs lack this—prioritize readability. `var` adoption guideline: if deleting left-hand type makes reader pause, keep explicit type; if right-hand side clearly shows type, use `var`.
+**Why It Matters**: Java's verbosity (repeating types) was a long-standing criticism, especially with generics: `Map<String, List<Employee>> map = new HashMap<String, List<Employee>>()` repeats the type declaration twice. `var` reduces this without sacrificing type safety—Java remains statically typed, compiler infers exact type from initializer. This isn't dynamic typing (like JavaScript `var`): once inferred, type is fixed and compile-time checked. `var` shines with: (1) Complex generics (nested types), (2) Diamond operator (avoid repeating `<Type>`), (3) Streams (type obvious from operations), (4) Try-with-resources (resource type clear).
 
----
-
-## Example 57: Try-With-Resources for Resource Management
+## Example 60: Try-With-Resources for Resource Management
 
 Try-with-resources (Java 7+) automatically closes resources implementing AutoCloseable, eliminating finally-block boilerplate and resource leaks.
 
@@ -4086,11 +4084,9 @@ try (var fis = new FileInputStream("data.txt")) {
 
 **Key Takeaway**: Always use try-with-resources for AutoCloseable resources (files, streams, connections). Resources close in reverse declaration order. Close exceptions are suppressed (not lost) if try block throws. Java 9+ allows effectively final variables in try(...).
 
-**Why It Matters**: Resource leaks (unclosed files, connections, streams) were a major source of bugs in Java before try-with-resources (Java 7). Traditional finally blocks required: (1) Null checks (resource might not initialize), (2) Nested try-catch for close() exceptions, (3) Manual exception handling that often swallowed close() errors. Try-with-resources automates this: compiler generates finally block that calls close() in reverse order, handles null automatically, and preserves exceptions (close() exceptions suppressed, not lost). This prevents: file descriptor exhaustion (OS limit on open files), connection pool leaks (database connections not returned), memory leaks (streams holding references). Try-with-resources works with any AutoCloseable: files (BufferedReader, FileWriter), streams (InputStream, OutputStream), network (Socket, ServerSocket), database (Connection, Statement, ResultSet), and custom resources. Java 9+ improvement (effectively final resources) enables passing resources as parameters without re-wrapping. Exception handling improved: try block exception is primary, close() exceptions available via getSuppressed()—critical for debugging resource cleanup failures. Modern Java code should use try-with-resources for 100% of AutoCloseable resources—manual finally blocks are code smell indicating pre-Java 7 patterns.
+**Why It Matters**: Resource leaks (unclosed files, connections, streams) were a major source of bugs in Java before try-with-resources (Java 7). Traditional finally blocks required: (1) Null checks (resource might not initialize), (2) Nested try-catch for close() exceptions, (3) Manual exception handling that often swallowed close() errors. Try-with-resources automates this: compiler generates finally block that calls close() in reverse order, handles null automatically, and preserves exceptions (close() exceptions suppressed, not lost). This prevents: file descriptor exhaustion (OS limit on open files), connection pool leaks (database connections not returned), memory leaks (streams holding references).
 
----
-
-## Example 58: Builder Pattern for Complex Objects
+## Example 61: Builder Pattern for Complex Objects
 
 Builder pattern creates complex objects step-by-step, providing readable construction with validation and optional parameters.
 
@@ -4502,11 +4498,9 @@ SimpleLoan simple = SimpleLoan.builder()
 
 **Key Takeaway**: Use builder pattern for classes with 4+ parameters, optional fields, or complex validation. Builder provides: fluent API (method chaining), named parameters (readability), immutability (fields set once), and centralized validation (in build() or constructor). For simple cases, records reduce builder boilerplate.
 
-**Why It Matters**: Java lacks named parameters and default arguments (unlike Python, Kotlin), making constructors with many parameters unreadable: `new LoanAgreement("id", "borrower", "lender", principal, rate, term, date, purpose, true, collateral)` (which parameter is which?). Telescoping constructors (multiple overloads for optional params) explode combinatorially: 3 optional params = 8 constructors. Builder pattern solves this with: (1) Named setters (`.borrower("John")` self-documents), (2) Optional params (skip `.purpose()` if not needed), (3) Immutability (final fields after build()), (4) Validation (centralized in build()). The fluent API (returning `this`) enables method chaining, reading like natural language: `builder().id("x").borrower("y").build()`. Builders shine for: configuration objects (many optional settings), test data (readable test setup), DSLs (domain-specific languages), and API responses (flexible field sets). Downsides: boilerplate (builder class doubles code size) and memory (temporary builder object). Java 14+ records reduce builder boilerplate for simple cases (no custom validation). Consider Lombok's `@Builder` annotation to auto-generate builders, or Kotlin's data classes with default params (eliminates builder need). Modern Java projects use builders for 90% of complex domain objects—telescoping constructors are anti-pattern post-Java 8.
+**Why It Matters**: Java lacks named parameters and default arguments (unlike Python, Kotlin), making constructors with many parameters unreadable: `new LoanAgreement("id", "borrower", "lender", principal, rate, term, date, purpose, true, collateral)` (which parameter is which?). Telescoping constructors (multiple overloads for optional params) explode combinatorially: 3 optional params = 8 constructors. Builder pattern solves this with: (1) Named setters (`.borrower("John")` self-documents), (2) Optional params (skip `.purpose()` if not needed), (3) Immutability (final fields after build()), (4) Validation (centralized in build()). The fluent API (returning `this`) enables method chaining, reading like natural language: `builder().id("x").borrower("y").build()`.
 
----
-
-## Example 59: Immutability Patterns with Records
+## Example 62: Immutability Patterns with Records
 
 Immutability ensures objects never change after creation, providing thread safety and predictable behavior. Records (Java 17+) enforce immutability by default.
 
@@ -4819,7 +4813,7 @@ System.out.println(result.balance());
 
 **Key Takeaway**: Use records for immutability by default. All record fields are implicitly final (no setters). For updates, create new instances with modified values (functional updates). Use defensive copying (List.copyOf(), Map.copyOf()) for mutable field types. Immutability provides thread safety, predictable behavior, and hashcode stability.
 
-**Why It Matters**: Mutable objects are a primary source of bugs in concurrent programs: race conditions (simultaneous modifications), inconsistent state (partial updates), and unpredictable behavior (methods change object state). Immutability eliminates these: immutable objects are thread-safe by default (no synchronization needed), can be safely shared across threads, and have stable hash codes (safe for HashMap/HashSet keys). Before records (pre-Java 14), creating immutable classes required: final class declaration, final fields, no setters, defensive copying in constructors/getters, manual equals/hashCode/toString—50+ lines of boilerplate. Records reduce this to one line: `record Account(BigDecimal balance, String owner) {}`. Functional updates (`withBalance()`, `deposit()`) replace setters, returning new instances instead of modifying existing ones—this matches functional programming patterns (Haskell, Clojure) and modern JavaScript (React immutability). Immutability enables: safe caching (values never change), optimistic concurrency (compare-and-swap), and event sourcing (state history preserved). Use immutability for: value objects (Money, Address), domain events (OrderPlaced, PaymentReceived), configuration (AppConfig), and API responses. Avoid for: large data structures (copying overhead), UI state (frequent updates), or performance-critical hot paths (profiling required). Modern Java embraces immutability as default—mutable classes require justification, not vice versa.
+**Why It Matters**: Mutable objects are a primary source of bugs in concurrent programs: race conditions (simultaneous modifications), inconsistent state (partial updates), and unpredictable behavior (methods change object state). Immutability eliminates these: immutable objects are thread-safe by default (no synchronization needed), can be safely shared across threads, and have stable hash codes (safe for HashMap/HashSet keys). Before records (pre-Java 14), creating immutable classes required: final class declaration, final fields, no setters, defensive copying in constructors/getters, manual equals/hashCode/toString—50+ lines of boilerplate. Records reduce this to one line: `record Account(BigDecimal balance, String owner) {}`.
 
 ---
 
@@ -4833,7 +4827,9 @@ Master compile-time type safety through modern Java features: sealed classes for
 
 ## Error Handling Patterns
 
-## Example 60: Try-With-Resources Automatic Cleanup
+Handle failures gracefully using Java's resource management, functional error types, and checked exception patterns to write robust, maintainable code.
+
+## Example 63: Try-With-Resources Automatic Cleanup
 
 Try-with-resources automatically closes resources that implement AutoCloseable interface. Resources are closed in reverse order of declaration, even if exceptions occur.
 
@@ -5128,9 +5124,9 @@ public class SuppressionExample {
 
 **Key Takeaway**: Try-with-resources automatically closes resources implementing AutoCloseable interface. Resources declared in try(...) parentheses are closed automatically when try block exits (normal completion, exception, or return). Multiple resources close in reverse order of declaration: last opened, first closed. Exception suppression: if both try block and close() throw exceptions, try exception is primary, close exception becomes suppressed exception accessible via getSuppressed().
 
-**Why It Matters**: Manual resource cleanup is error-prone: forgot to close (resource leak), close() throws exception (complicates error handling), and null check required (verbose). Try-with-resources eliminates these issues: guaranteed cleanup (even with exception or return), proper exception handling (suppressed exceptions), and no null checks (resource initialized in try statement). Real-world impact: resource leaks cause production outages (file descriptor exhaustion crashes server), memory leaks from unclosed connections (heap exhaustion), and database connection pool starvation (blocked transactions). AutoCloseable contract: close() method is idempotent (safe to call multiple times), close() releases resources (file handles, network sockets, database connections), and close() should not throw exceptions if possible (simplifies cleanup). Multiple resource order matters: writer depends on reader (close writer first to flush buffers), child resource depends on parent (close child first), and reverse order ensures proper cleanup cascade. Exception suppression preserves debugging context: primary exception is what went wrong in business logic, suppressed exceptions show cleanup failures, and both available in stack trace. Modern practice: always use try-with-resources for AutoCloseable objects, implement AutoCloseable for custom resources needing cleanup, and make close() idempotent (track state, guard against double-close).
+**Why It Matters**: Manual resource cleanup is error-prone: forgot to close (resource leak), close() throws exception (complicates error handling), and null check required (verbose). Try-with-resources eliminates these issues: guaranteed cleanup (even with exception or return), proper exception handling (suppressed exceptions), and no null checks (resource initialized in try statement). Real-world impact: resource leaks cause production outages (file descriptor exhaustion crashes server), memory leaks from unclosed connections (heap exhaustion), and database connection pool starvation (blocked transactions).
 
-## Example 61: Custom Result Type for Functional Error Handling
+## Example 64: Custom Result Type for Functional Error Handling
 
 Result<T, E> type represents computation that may succeed with value T or fail with error E. Enables functional error handling without exceptions.
 
@@ -5520,4 +5516,4 @@ public class ResultDemo {
 
 **Key Takeaway**: Result<T, E> type explicitly represents success (value of type T) or failure (error of type E) without exceptions. Sealed interface with Success and Failure records enables pattern matching for exhaustive handling. Use map() to transform success value, flatMap() to chain Result-returning operations (prevents nested Result), and orElse()/orElseThrow() to extract value with fallback. Functional error handling: errors are values (not control flow), composable (chain with flatMap), and type-safe (compiler enforces handling both cases).
 
-**Why It Matters**: Exception-based error handling has limitations: exceptions are invisible in method signatures (IOException hidden unless declared), control flow via exceptions is non-local (jumps stack frames), and exceptions encourage catch-all blocks (lost error context). Result type solves this: errors explicit in return type (Result<User, UserError> documents both success and failure), errors are values (can be passed, stored, transformed), and type system enforces handling (sealed types require pattern match covering Success/Failure). Railway-oriented programming: imagine two tracks—success track (green) and failure track (red), operations stay on success track if they succeed, and switch to failure track on first error (no error propagation code needed). flatMap enables composition: operation1().flatMap(r1 → operation2(r1)).flatMap(r2 → operation3(r2)), each operation only executes if previous succeeded, and first failure short-circuits entire chain. Comparison to exceptions: Result is explicit (see Result<T, E> in signature), exceptions are implicit (need to check throws clause or docs), Result is composable (map/flatMap), exceptions require try-catch nesting, Result is pure (no side effects), and exceptions are side effects (control flow). When to use Result: validation pipelines (accumulate errors), functional codebases (avoid exceptions), and explicit error handling (make failures visible). When to use exceptions: integration with existing exception-based APIs, truly exceptional conditions (out of memory, hardware failure), and resource management (try-with-resources for AutoCloseable). Result libraries: Vavr (io.vavr.control.Either), Result4j (functional error handling), and custom implementations (as shown). Performance: Result allocation per operation (heap overhead), but predictable cost (no stack unwinding), and suitable for most use cases (avoid in hot loops).
+**Why It Matters**: Exception-based error handling has limitations: exceptions are invisible in method signatures (IOException hidden unless declared), control flow via exceptions is non-local (jumps stack frames), and exceptions encourage catch-all blocks (lost error context). Result type solves this: errors explicit in return type (Result<User, UserError> documents both success and failure), errors are values (can be passed, stored, transformed), and type system enforces handling (sealed types require pattern match covering Success/Failure).

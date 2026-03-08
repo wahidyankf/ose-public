@@ -112,9 +112,9 @@ def mount(_params, _session, socket) do  # => Alternative mount with PubSub
 end
 ```
 
-**Key Takeaway**: Streams use phx-update="stream" for efficient list rendering. stream_insert/3 adds items. stream_delete_by_dom_id/3 removes items. Only modified items are updated on the page.
+**Key Takeaway**: Streams with `phx-update="stream"` enable targeted DOM updates—`stream_insert/3` adds items and `stream_delete_by_dom_id/3` removes them without re-rendering the full list.
 
-**Why It Matters**: Streams provide efficient handling of large collections in LiveView. This pattern prevents memory issues when displaying many items.
+**Why It Matters**: Streams solve a critical LiveView performance problem: rendering a list of 1,000 posts by re-assigning the entire list triggers a full diff of all DOM nodes on every update. Streams maintain a client-side collection keyed by DOM IDs so only inserted or deleted items are patched—reducing server-to-client payload from kilobytes to bytes per update and keeping memory usage bounded regardless of list size.
 
 ### Example 27: Async Operations with Loading States
 
@@ -205,7 +205,7 @@ def handle_async(:search, {:ok, results}, socket) do
 end
 ```
 
-**Key Takeaway**: assign_async/3 loads data when component mounts. start_async/3 performs async work on demand. Render different content based on async state (:loading, :ok, :error).
+**Key Takeaway**: `assign_async/3` loads data concurrently on mount and `start_async/3` triggers async tasks on demand, both exposing `:loading`, `:ok`, and `:error` states for conditional rendering.
 
 **Why It Matters**: Async loading with assign_async/3 prevents blocked LiveView renders during slow operations. Users see an immediate loading state instead of a frozen UI, while the data fetches in the background. This pattern is essential for dashboards and pages with multiple independent data sources that each may take variable time to load.
 
@@ -325,7 +325,7 @@ defmodule MyAppWeb.ProfileLive.Edit do   # => LiveView for profile photo uploads
 end
 ```
 
-**Key Takeaway**: allow_upload/2 restricts file types and sizes client-side. consume_uploaded_entries/3 processes files after submission. Upload to S3 or other external storage instead of local filesystem.
+**Key Takeaway**: `allow_upload/2` configures upload constraints; `consume_uploaded_entries/3` processes completed files after submission—always upload to external storage like S3, not the local filesystem.
 
 **Why It Matters**: Presigned URL uploads let clients send files directly to S3, bypassing your Phoenix server entirely. This reduces bandwidth costs and server load for large file transfers, while LiveView retains full control of the upload UX — progress feedback, validation errors, and completion events are all handled server-side without touching the file bytes.
 
@@ -424,7 +424,7 @@ def parent_render(assigns) do            # => Parent LiveView template
 end
 ```
 
-**Key Takeaway**: Live components have their own state via assign/2. Events target component using phx-target={@myself}. Each component instance maintains separate state.
+**Key Takeaway**: Stateful `LiveComponent` modules maintain their own assigns and handle events targeted via `phx-target={@myself}`, with each instance keeping separate state within the parent LiveView.
 
 **Why It Matters**: Stateful LiveComponents get their own isolated process and socket assigns, so events and state changes inside a component never bleed into the parent LiveView. The update/2 callback lets the parent pass new data without remounting the component. Use LiveComponents when a UI element handles its own user interactions — modals, inline editors, paginated lists — and use stateless function components for pure rendering that needs no internal state.
 
@@ -489,7 +489,7 @@ action = JS.push("validate")             # => Starts chain with server event
                                           # => Commands run sequentially
 ```
 
-**Key Takeaway**: JS.show/2, JS.hide/2, JS.add_class/2, JS.remove_class/2 manipulate DOM. Chain multiple commands together. Use JS.push/1 to send server event alongside DOM changes.
+**Key Takeaway**: Chain `JS` commands like `JS.show/2`, `JS.hide/2`, and `JS.add_class/2` for instant client-side DOM manipulation; combine with `JS.push/1` to also notify the server when needed.
 
 **Why It Matters**: phx-hook bridges the gap when server-rendered LiveView cannot replace client JavaScript — video players, canvas drawing, third-party widgets, and focus management all require direct DOM access. The hook lifecycle (mounted, updated, destroyed) lets you initialize and clean up external libraries safely. pushEvent and handleEvent create a bidirectional channel between your JS hook and the LiveView process without a new HTTP request, keeping real-time coordination entirely within the existing WebSocket.
 
@@ -550,7 +550,7 @@ defmodule MyAppWeb.PostLive do           # => LiveView with optimistic updates
 end
 ```
 
-**Key Takeaway**: Update assigns immediately for fast UI response. If server operation fails, restore original values. Users see instant feedback without waiting for server confirmation.
+**Key Takeaway**: Optimistic UI updates assigns immediately for instant feedback, then rolls back to the original value if the server operation fails—preventing the perceived lag of waiting for server confirmation.
 
 **Why It Matters**: Optimistic UI updates apply changes instantly before the server confirms success, making interactions feel instantaneous. A like button that responds in 50ms feels far more satisfying than one that waits 400ms for a round trip. When the server responds with an error, you simply revert the change — users rarely notice the rollback, but always notice the snappy feedback.
 
@@ -640,9 +640,9 @@ document.getElementById("send").addEventListener("click", () => {
 </script>
 ```
 
-**Key Takeaway**: Channels are named "topic:subtopic". join/3 handles subscription. broadcast/3 sends to all users. handle_in/3 processes incoming messages. Perfect for real-time collaboration.
+**Key Takeaway**: Phoenix Channels use `topic:subtopic` naming; `join/3` authorizes subscriptions, `broadcast/3` sends to all subscribers, and `handle_in/3` processes incoming client messages.
 
-**Why It Matters**: Channels provide WebSocket-based rooms for grouped real-time communication. This is the foundation for multi-user interactive features.
+**Why It Matters**: Channels provide topic-scoped WebSocket rooms that group users by their shared context—a chat room, a collaborative document, a game lobby. Each `join/3` callback lets you authorize the subscription before any message is delivered, preventing unauthorized users from eavesdropping. `broadcast/3` fans out to all subscribers in a single call, making multi-user real-time features like notifications and live cursors straightforward to implement.
 
 ### Example 33: PubSub for LiveView Updates
 
@@ -746,7 +746,7 @@ defmodule MyApp.Blog do                  # => Context module for blog domain
 end
 ```
 
-**Key Takeaway**: Endpoint.subscribe/1 listens to topic. Endpoint.broadcast/3 publishes messages. handle_info/2 receives broadcasts. Multiple LiveView instances stay synchronized.
+**Key Takeaway**: `Endpoint.subscribe/1` listens on a topic and `Endpoint.broadcast/3` publishes to all subscribers; `handle_info/2` in each LiveView receives messages and updates its own state.
 
 **Why It Matters**: Phoenix.PubSub lets any process broadcast to a named topic and have all subscribers receive the message simultaneously, enabling fan-out to every open LiveView without polling. When a user creates a post in one tab, all connected users see it instantly because each LiveView subscribes to the same topic on mount. This cross-process communication pattern scales horizontally across nodes since Phoenix.PubSub supports distributed message passing out of the box.
 
@@ -810,9 +810,9 @@ onlineUsers = Presence.list("room:123")  # => Lists all users in topic
 # }
 ```
 
-**Key Takeaway**: Presence.track/3 records user state. Presence.list/1 gets all users in topic. Automatically removes user when connection closes. Great for "who's online" features.
+**Key Takeaway**: `Presence.track/3` registers a user in a topic and `Presence.list/1` returns all tracked users; presence automatically cleans up when connections close, enabling reliable online status.
 
-**Why It Matters**: Presence tracking enables user status and activity monitoring. This is essential for showing online users, typing indicators, and collaborative features.
+**Why It Matters**: Presence tracking provides eventual-consistent, CRDT-based user state that automatically reconciles across distributed nodes. Unlike a simple counter or list in ETS, Presence uses CRDTs to merge concurrent joins and leaves without coordination, so user lists stay consistent even when nodes restart or network partitions occur. This makes it reliable for "who is online" features, typing indicators, and collaborative editing cursors at production scale.
 
 ### Example 35: Channel Authentication
 
@@ -883,9 +883,9 @@ def login(conn, %{"email" => email, "password" => password}) do
 end
 ```
 
-**Key Takeaway**: connect/2 authenticates socket connection using tokens. assign/2 stores user info. id/1 generates socket ID for tracking. Return :error to reject connection.
+**Key Takeaway**: `connect/2` authenticates the WebSocket using a token, `assign/2` stores user data on the socket, and returning `{:error, reason}` rejects unauthorized connections before the channel opens.
 
-**Why It Matters**: Channel authentication happens before a user joins a channel, not just when the socket connects. By verifying tokens in join/3, you prevent unauthorized users from receiving private broadcasts even if they have a valid socket connection. Token-based channel auth scales well horizontally since no session storage is required.
+**Why It Matters**: Channel authentication in `join/3` prevents unauthorized users from receiving private broadcasts even with a valid socket connection—socket authentication only verifies identity, not resource authorization. Token-based auth scales horizontally since no session storage is required; each node independently verifies the signed token. Rejecting unauthorized joins at the channel level keeps private data out of subscription lists rather than filtering it post-broadcast.
 
 ### Example 36: Channel Testing
 
@@ -945,7 +945,7 @@ defmodule MyAppWeb.RoomChannelTest do    # => Test module for RoomChannel
 end
 ```
 
-**Key Takeaway**: ChannelCase provides testing utilities. subscribe_and_join/3 joins a channel. push/2 sends messages. assert_broadcast/2 verifies messages sent. assert_push/2 verifies server pushes.
+**Key Takeaway**: `ChannelCase` provides `subscribe_and_join/3` to enter a channel in tests, `push/2` to send messages, and `assert_broadcast/2`/`assert_push/2` to verify real-time message delivery.
 
 **Why It Matters**: Channel testing with ChannelCase lets you exercise real-time features in isolation without a live WebSocket connection. You can assert on pushed messages, verify users are redirected on authorization failures, and test heartbeat behavior. Channels are complex enough to benefit from thorough testing since bugs manifest as silent delivery failures.
 
@@ -1040,9 +1040,9 @@ defmodule MyAppWeb.Plugs.SetCurrentUser do
 end
 ```
 
-**Key Takeaway**: put_session/3 stores data encrypted. get_session/2 retrieves data. delete_session/2 clears it. Sessions survive across requests but are specific to each browser.
+**Key Takeaway**: `put_session/3` stores encrypted data in the browser cookie, `get_session/2` retrieves it per request, and `delete_session/2` clears it—sessions are browser-specific and persist across requests.
 
-**Why It Matters**: Session management enables stateful interactions in a stateless protocol. Understanding sessions is critical for authentication and user-specific features.
+**Why It Matters**: Session management provides stateful user context across HTTP's stateless request-response cycle. Phoenix stores sessions in encrypted, signed cookies so server-side state survives restarts without a session database. Understanding session scope—per-browser, per-tab when using `configure_session/1`—prevents subtle bugs where session data leaks between concurrent requests or persists longer than expected after logout, especially in multi-tenant applications.
 
 ### Example 38: Password Hashing and Reset
 
@@ -1128,9 +1128,9 @@ def reset_password(conn, %{"token" => token, "password" => password}) do
 end
 ```
 
-**Key Takeaway**: Hash passwords with Bcrypt before storing. Use random tokens for password reset. Store token expiration time. Don't reveal if email exists in system.
+**Key Takeaway**: Hash passwords with Bcrypt before storing, use signed random tokens with expiration for password reset, and avoid revealing whether an email exists to prevent user enumeration attacks.
 
-**Why It Matters**: Bcrypt's intentional slowness (hundreds of milliseconds) makes brute-force password attacks computationally expensive even with leaked hashes. Using a virtual :password field means the plaintext password is never saved to the database. Time-limited reset tokens prevent old tokens from being exploited if emails are intercepted later.
+**Why It Matters**: Bcrypt's intentional slowness (hundreds of milliseconds per hash) makes brute-force attacks computationally expensive even after a database breach exposes the hashes. Using a virtual `:password` field means the plaintext never touches the database. Time-limited reset tokens with cryptographic signatures prevent old tokens from being exploited if password reset emails are intercepted, forwarded, or accessed from email archives later.
 
 ### Example 39: Role-Based Access Control
 
@@ -1188,7 +1188,7 @@ def delete(conn, %{"id" => id}) do       # => Delete action with auth
 end
 ```
 
-**Key Takeaway**: Store user role in database (:admin, :moderator, :user). Use plugs to enforce role requirements at route level. Check permissions in controller actions.
+**Key Takeaway**: Store roles in the database and enforce them at the router level via plugs so authorization runs before the controller action, keeping authorization logic centralized and consistent.
 
 **Why It Matters**: Authorization (what you can do) is separate from authentication (who you are). Plug-based RBAC enforces role checks before controller actions execute, so a missing authorization call never accidentally exposes admin functionality. Centralizing role logic in a single plug module means a new route automatically inherits access policies when it passes through the pipeline, making defense in depth consistent across the entire application.
 
@@ -1224,9 +1224,11 @@ defmodule MyAppWeb.AuthToken do          # => Helper module for token operations
 
   def sign(%{id: user_id, email: email}) do
                                          # => Accepts user struct with id and email
+                                         # => Pattern match extracts id and email fields
     Phoenix.Token.sign(MyAppWeb.Endpoint, @salt, %{user_id: user_id, email: email})
                                          # => Signs payload with endpoint secret
                                          # => Returns signed token string (e.g., "SFMyNTY...")
+                                         # => Endpoint's :secret_key_base is the signing key
   end  # => Token contains user_id and email as claims
 
   def verify(token) do                   # => Validates a token from client request
@@ -1285,22 +1287,28 @@ defmodule MyAppWeb.Plugs.VerifyToken do   # => Plug: validates JWT on every API 
   end
 
   defp get_auth_header(conn) do              # => Extract Authorization header value
+                                             # => Private function, only called internally
     case get_req_header(conn, "authorization") do
                                              # => Returns list (Plug handles multi-value headers)
+                                             # => get_req_header/2 returns [] if header missing
       [header] -> header                     # => Single header found, return it
+                                             # => header is "Bearer eyJhbGciOiJ..."
       _ -> nil                               # => No header or multiple headers, return nil
+                                             # => nil triggers the outer nil -> case branch
     end
   end
 end
 ```
 
-**Key Takeaway**: Phoenix.Token.sign/3 creates signed tokens. verify/2 validates tokens. Tokens are stateless (no server storage needed). Include token in "Authorization: Bearer TOKEN" header.
+**Key Takeaway**: `Phoenix.Token.sign/3` creates HMAC-signed tokens and `verify/2` validates them with optional max-age expiry—tokens are stateless so no server storage is required for API authentication.
 
 **Why It Matters**: JWT tokens encode identity claims in a signed payload that any server can verify without a database lookup, making stateless horizontal scaling straightforward. Guardian handles token signing, expiry enforcement, and claim extraction in Phoenix pipelines. Unlike session cookies, JWTs work across mobile apps and third-party services. The tradeoff is that issued tokens cannot be revoked before expiry without a blocklist — understanding this tradeoff informs whether sessions or JWTs are appropriate for a given use case.
 
 ### Example 41: OAuth2 Social Login
 
 Allow users to sign in with Google, GitHub, etc. using Ueberauth library.
+
+**Why Not Core Features?** Phoenix's built-in authentication (phx.gen.auth) supports only session-based username/password login. Implementing OAuth2 from scratch requires managing provider redirect URIs, PKCE tokens, token exchange, and user info endpoint calls for each provider—hundreds of lines of error-prone code. Ueberauth abstracts this into a unified callback-based interface with provider-specific strategies, so adding a new provider requires only a config entry and a callback handler rather than a full OAuth2 client implementation.
 
 ```mermaid
 %% OAuth2 flow
@@ -1404,7 +1412,7 @@ def find_or_create_user(auth) do        # => Handles OAuth user
 end
 ```
 
-**Key Takeaway**: Ueberauth handles OAuth flow. Redirect to "/auth/google" to start login. Callback returns user info. Store provider and UID to link OAuth account.
+**Key Takeaway**: Ueberauth handles the entire OAuth2 flow—redirect to `/auth/:provider` to initiate, receive user credentials in the callback, then link the provider UID to a local user account.
 
 **Why It Matters**: OAuth2 social login reduces signup friction by eliminating password management entirely. Users trust familiar providers, and you avoid storing credentials at all. Ueberauth normalizes provider differences behind a consistent auth struct, so adding a new provider means only adding config — not rewriting your authentication flow.
 
@@ -1478,7 +1486,7 @@ defmodule MyAppWeb.PostControllerTest do  # => Controller test module
 end
 ```
 
-**Key Takeaway**: Use get/3, post/3, put/3, delete/3 to make requests. html_response/2 checks status and returns HTML. assert redirected_to/1 verifies redirects. Use fixtures or factories for test data.
+**Key Takeaway**: `ConnCase` provides `get/3`, `post/3`, and `put/3` for HTTP requests; `html_response/2` asserts status and returns body; `assert_redirected_to/1` verifies redirect targets.
 
 **Why It Matters**: ConnCase tests the full HTTP pipeline — authentication plugs, parameter parsing, authorization checks, and response serialization — in a single test without spinning up a real server. Testing entire request flows catches regressions that unit tests miss, such as a broken pipeline plug silently skipping authentication. Verifying response shape and status codes against a real Conn struct ensures API contracts stay stable as business logic evolves.
 
@@ -1541,13 +1549,15 @@ defmodule MyAppWeb.CounterLiveTest do   # => LiveView test module
 end
 ```
 
-**Key Takeaway**: live/2 mounts LiveView component. render_click/1 triggers events. render/1 returns rendered HTML. form/3 submits form. has_element?/3 asserts DOM content exists.
+**Key Takeaway**: `live/2` mounts a LiveView in tests; `render_click/1` simulates clicks; `form/3` submits forms; and `has_element?/3` asserts DOM elements exist in the rendered output.
 
 **Why It Matters**: Phoenix.LiveViewTest mounts a LiveView in a test process, letting you simulate user interactions — clicking buttons, submitting forms, triggering keyboard events — and assert on the resulting HTML without a browser. live/2 and element/2 helpers give precise control over what gets clicked or filled in. Testing LiveView interactions this way catches rendering bugs and event handler regressions at the unit test level, before they reach end-to-end tests that are slower to run and harder to debug.
 
 ### Example 44: Test Fixtures with ExMachina
 
 Use factories to generate consistent test data without repetition.
+
+**Why Not Core Features?** ExUnit provides basic setup callbacks, but creating consistent, interrelated test records manually leads to brittle fixtures and duplicated code across test files. ExMachina provides a factory pattern where each struct definition lives in one place, supports overrides per test, handles associations automatically, and generates unique values via sequences. Without ExMachina, every test file re-implements the same test data scaffolding differently, causing inconsistency and maintenance burden as schemas evolve.
 
 ```elixir
 # test/support/factory.ex
@@ -1615,13 +1625,15 @@ defmodule MyAppWeb.PostControllerTest do
 end
 ```
 
-**Key Takeaway**: Define factories using ExMachina. insert/1 creates in database. insert/2 with attributes overrides defaults. insert_list/2 creates multiple records. Factories reduce boilerplate.
+**Key Takeaway**: ExMachina factories define reusable struct templates; `insert/1` persists to the database and `insert/2` accepts overrides—centralizing test data creation and eliminating repetitive setup code.
 
-**Why It Matters**: ExMachina factories eliminate repetitive fixture setup code and make test data relationships explicit. Each test creates exactly the data it needs with insert/1 and can override specific fields, so tests remain independent. Factories also document your data model by showing realistic, valid attribute combinations.
+**Why It Matters**: ExMachina factories eliminate repetitive fixture setup code scattered across test files and make data relationships explicit and maintainable. Each test creates precisely the records it needs via `insert/1`, overriding only the fields relevant to the test case—keeping tests independent and self-documenting. Centralizing factory definitions means schema changes require updates in one place rather than hunting through every test that constructs structs manually.
 
 ### Example 45: Mocking External Services with Mox
 
 Mock external API calls in tests using Mox library.
+
+**Why Not Core Features?** ExUnit's basic test doubles (stub modules, send/receive patterns) allow simple mocking but cannot enforce behavior contracts at compile time. Mox requires mock modules to implement a defined `@behaviour`, meaning if the real API changes its function signatures, the compiler catches the mismatch immediately. This behavioral verification catches interface drift that simple test doubles miss entirely, making Mox the idiomatic choice for mocking external services in Elixir's concurrent test environment.
 
 ```elixir
 # lib/my_app/payment_api.ex
@@ -1687,13 +1699,15 @@ defmodule MyAppWeb.OrderControllerTest do
 end
 ```
 
-**Key Takeaway**: Mox.defmock/2 creates a mock. expect/3 verifies function was called. stub/2 returns values without verification. Use verify_on_exit!/1 to assert expected calls happened.
+**Key Takeaway**: `Mox.defmock/2` creates a behavior-verified mock; `expect/3` asserts a function is called with specific args; and `verify_on_exit!/1` ensures all expectations are met by test end.
 
-**Why It Matters**: Mox mocking enforces behavior contracts between your code and external services. Unlike stub libraries that silently absorb any call, Mox's expect/3 verifies each expected call actually happened via verify_on_exit!/1. This catches refactors where you forgot to update the call sites for external integrations.
+**Why It Matters**: Mox mocking enforces behavior contracts so that if an external service changes its interface, the compiler catches mismatches between the mock and the real implementation at test time. Unlike stub libraries that silently absorb any call, `expect/3` verifies the exact function signature was called with the expected arguments. `verify_on_exit!/1` ensures no expected call was skipped—catching bugs where a code path that should trigger an external call no longer does after a refactor.
 
 ### Example 46: API Pagination with Scrivener
 
 Paginate API responses efficiently. Return page metadata along with results.
+
+**Why Not Core Features?** Phoenix and Ecto provide `limit/2` and `offset/2` query helpers, but building a full pagination system requires manually calculating offsets from page numbers, counting total records (a separate query), bounding page numbers, and serializing page metadata into API responses. Scrivener standardizes all of this with `Repo.paginate/2`, returning a `%Scrivener.Page{}` struct that includes `total_entries`, `total_pages`, `page_number`, and `page_size`—eliminating the boilerplate that would otherwise be duplicated across every paginated endpoint.
 
 ```elixir
 # mix.exs
@@ -1757,7 +1771,7 @@ end
 # GET /api/posts?page=2
 ```
 
-**Key Takeaway**: Scrivener adds paginate/2 to Repo for easy pagination. Returns page metadata (total entries, pages). Clients use page and page_size query params.
+**Key Takeaway**: Scrivener adds `Repo.paginate/2` to Ecto queries, returning a `%Scrivener.Page{}` struct with `entries`, `total_entries`, `total_pages`, and `page_number` for client-driven pagination.
 
 **Why It Matters**: Scrivener.Ecto integrates cursor-aware pagination directly into Ecto queries, adding LIMIT/OFFSET clauses and computing page metadata — total count, current page, total pages — in a single library call. Returning a consistent pagination envelope in JSON responses lets API clients navigate large datasets without knowing query internals. Understanding offset versus cursor pagination trade-offs is essential for maintaining constant query performance as tables grow into millions of rows.
 
@@ -1981,9 +1995,9 @@ scope "/api", MyAppWeb.API do           # => API routes
 end
 ```
 
-**Key Takeaway**: Store API keys in users table. Track request count and reset time. Return 429 with X-Rate-Limit-Reset header when exceeded. Use atomic updates for concurrency safety.
+**Key Takeaway**: Store per-API-key counters with reset timestamps; return HTTP 429 with `X-Rate-Limit-Reset` when the limit is exceeded, using atomic increments for concurrency safety.
 
-**Why It Matters**: API design patterns enable consistent, well-documented interfaces. Following REST conventions makes your API predictable for consumers.
+**Why It Matters**: Consistent rate limiting prevents individual API consumers from monopolizing resources and degrading service quality for all users. Tracking counters per API key rather than per IP allows legitimate high-volume clients to request higher limits while still protecting against abuse. Returning `X-Rate-Limit-Reset` in the response lets clients implement smart retry logic instead of hammering the API blindly after a 429, reducing both abuse and unnecessary traffic.
 
 ### Example 49: WebSocket Heartbeat and Reconnection
 
@@ -2113,7 +2127,7 @@ defmodule MyAppWeb.PostsLive do              # => LiveView module for posts list
 end
 ```
 
-**Key Takeaway**: Phoenix handles heartbeat automatically (30s default). Client reconnects with exponential backoff. LiveView re-renders after reconnection. Use connected?/1 to detect WebSocket vs HTTP.
+**Key Takeaway**: Phoenix handles WebSocket heartbeats automatically; clients reconnect with exponential backoff and LiveView re-renders on reconnection, so use `connected?/1` to skip expensive setup on initial HTTP render.
 
 **Why It Matters**: WebSocket connections drop silently due to mobile network switches, idle timeouts, and proxy cutoffs. Configuring heartbeat intervals keeps the connection alive through intermediary proxies that enforce inactivity limits. Client-side reconnection with exponential backoff prevents thundering herd reconnects when a server restart causes thousands of simultaneous reconnections. Understanding these parameters lets you tune connection resilience for mobile users and high-latency networks without overwhelming the server on recovery.
 
@@ -2237,6 +2251,6 @@ end
 # Usage: GET /api/posts?cursor=12345&limit=20         # => Pass cursor from previous response
 ```
 
-**Key Takeaway**: Enable Plug.Deflate for gzip compression (threshold: 1KB). Use ETags for conditional requests (304 Not Modified). Cursor-based pagination is more efficient than offset for large datasets.
+**Key Takeaway**: Enable gzip compression via `Plug.Deflate`, use ETags for 304 conditional responses, and prefer cursor-based pagination over offset for large datasets to avoid performance degradation at scale.
 
 **Why It Matters**: Gzip compression typically reduces JSON response sizes by 60-80%, directly lowering bandwidth costs and improving mobile client performance. ETags enable conditional requests where unchanged resources return 304 Not Modified with no body, saving bandwidth on repeat fetches. Cursor-based pagination maintains constant performance as tables grow, unlike OFFSET which slows with large page numbers.

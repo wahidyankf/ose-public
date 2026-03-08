@@ -38,7 +38,7 @@ This tutorial covers **95% of Kubernetes features needed for production work**, 
 - Storage orchestration (PersistentVolumes, PersistentVolumeClaims, StorageClasses)
 - Resource management (requests, limits, quotas, LimitRanges)
 - Health checks and lifecycle (liveness, readiness, startup probes)
-- Security patterns (RBAC, SecurityContext, PodSecurityPolicies)
+- Security patterns (RBAC, SecurityContext, PodSecurityAdmission)
 - Scaling and updates (HorizontalPodAutoscaler, rolling updates, rollbacks)
 - Custom resources and operators (CRDs, Operators, custom controllers)
 - Production deployment (Helm charts, GitOps with ArgoCD, observability)

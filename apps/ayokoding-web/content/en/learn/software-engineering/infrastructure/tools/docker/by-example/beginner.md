@@ -1456,23 +1456,30 @@ docker exec backend wget -qO- http://localhost:3000/api/status
 cat > nginx.conf << 'EOF'
 server {
  # => Nginx server block configuration
+ # => Handles all inbound HTTP traffic to the frontend container
  listen 80;
  # => Listens on port 80 (HTTP)
  location /api/ {
  # => Proxy all requests starting with /api/
+ # => /api/ prefix routes API requests to backend service
  proxy_pass http://backend:3000/api/;
  # => Forwards to backend container on port 3000
  # => Uses container name "backend" (Docker DNS resolves to IP)
+ # => Docker DNS translates "backend" to container IP automatically
  }
  location / {
  # => Handles all other requests (root path)
+ # => In production, this would serve static HTML/CSS/JS files
  return 200 'Frontend served by Nginx\n';
  # => Returns HTTP 200 with plain text response
  add_header Content-Type text/plain;
  # => Sets response content type header
+ # => Without Content-Type, browsers may misinterpret the response
  }
 }
 EOF
+# => nginx.conf written to current directory
+# => Will be bind-mounted into the Nginx container
 
 docker run -d --name frontend \
  --network app-network \
@@ -2466,6 +2473,8 @@ Docker Compose creates isolated networks for services. Multiple networks enable 
 # File: docker-compose.yml
 
 version: "3.8"  # => Compose file format version
+# => Four services across two isolated networks: frontend and backend
+# => Network segmentation: web cannot directly reach db
 
 services:
  # Public-facing web server (frontend network only)
@@ -2475,8 +2484,10 @@ services:
  - frontend
  # => Only connected to frontend network
  # => Cannot directly access database (network isolation)
+ # => Requests to /api/ are proxied through api service
  ports:
  - "8080:80"  # => Host port 8080 → container port 80
+# => web is the only service exposed to the host
 
  # API application (both networks — bridge between frontend and backend)
  api:
@@ -2486,8 +2497,10 @@ services:
  # => Can communicate with web (same frontend network)
  - backend
  # => Can communicate with database (same backend network)
+ # => api bridges the two networks — acts as security boundary
  environment:
  DATABASE_URL: postgresql://user:pass@db:5432/mydb  # => "db" resolves via Docker DNS
+# => "db" hostname works because both api and db are on backend network
 
  # Database (backend network only)
  db:
@@ -2496,10 +2509,12 @@ services:
  - backend
  # => Only connected to backend network
  # => Not reachable from web — only api can reach db
+ # => Backend-only placement is the security enforcement mechanism
  environment:
  POSTGRES_USER: user       # => Database username
  POSTGRES_PASSWORD: pass   # => Database password
  POSTGRES_DB: mydb         # => Initial database name
+# => Database credentials in environment (use secrets in production)
 
  # Admin tool (backend network only)
  admin:
@@ -2507,21 +2522,25 @@ services:
  networks:
  - backend
  # => Can access database directly via backend network
+ # => Admin UI is backend-only — not exposed to internet
  ports:
  - "5050:80"  # => pgAdmin UI accessible at http://localhost:5050
  environment:
  PGADMIN_DEFAULT_EMAIL: admin@example.com  # => Login email
  PGADMIN_DEFAULT_PASSWORD: admin           # => Login password
+# => pgAdmin connects to db on backend network using "db" hostname
 
 networks:
  frontend:
  driver: bridge
  # => Isolated network for web and api services
+ # => bridge driver provides automatic DNS between connected containers
  backend:
  driver: bridge
  # => Isolated network for api, db, and admin
  internal: true
  # => Blocks outbound internet — db containers can't make external requests
+ # => internal: true is critical: prevents data exfiltration from compromised db
 ```
 
 ```mermaid
@@ -2748,20 +2767,26 @@ Profiles enable selective service activation, useful for development, testing, a
 # File: docker-compose.yml
 
 version: "3.8"  # => Compose file format version
+# => Services without profiles start unconditionally
+# => Services with profiles only start when their profile is activated
 
 services:
  # Core services (no profile - always start regardless of active profiles)
  db:
+# => Database always runs — no profile means always included
  image: postgres:15-alpine  # => PostgreSQL on Alpine — always running
  environment:
  POSTGRES_PASSWORD: secret  # => Database password
+# => Core service: available in all environments
 
  app:
+# => Application service: always included, depends on db
  build: .  # => Builds from ./Dockerfile
  depends_on:
  - db   # => Starts after db (not health-checked)
  ports:
  - "3000:3000"  # => App accessible at http://localhost:3000
+# => Core service: always started with docker compose up
 
  # Development tools (only with --profile dev)
  dev-tools:
@@ -2771,6 +2796,7 @@ services:
  # => Only starts when 'dev' profile is active
  # => Skipped entirely in CI/production environments
  command: sh -c "echo 'Dev tools running' && tail -f /dev/null"
+# => Activate with: docker compose --profile dev up
 
  debugger:
  image: node:18-alpine  # => Node.js runtime for debug tools
@@ -2778,7 +2804,9 @@ services:
  - dev
  - debug
  # => Starts with either 'dev' or 'debug' profile (OR logic)
+ # => Multiple profiles: service activates if ANY listed profile is active
  command: sh -c "npm install -g node-inspect && tail -f /dev/null"
+# => Activate with --profile dev OR --profile debug
 
  # Testing services (isolated from core — test profile only)
  test-db:
@@ -2786,8 +2814,10 @@ services:
  profiles:
  - test
  # => Separate database instance for test isolation
+ # => Isolated from dev db to prevent test data contaminating dev environment
  environment:
  POSTGRES_PASSWORD: testpass  # => Different password from prod db
+# => Activate with: docker compose --profile test up
 
  test-runner:
  build:
@@ -2796,37 +2826,45 @@ services:
  profiles:
  - test
  command: npm test  # => Runs test suite and exits
+# => Exits with 0 (pass) or 1 (fail) after tests complete
  depends_on:
  - test-db  # => test-db starts before test-runner
+# => test-db must be running before test-runner connects
 
  # Monitoring stack (opt-in — heavy resource consumers)
  prometheus:
  image: prom/prometheus  # => Time-series metrics database
  profiles:
  - monitoring
+# => Only started with --profile monitoring (avoids resource waste in dev)
  ports:
  - "9090:9090"  # => Prometheus UI at http://localhost:9090
  volumes:
  - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro  # => Bind-mount config
+# => prometheus.yml defines scrape targets (which services to monitor)
 
  grafana:
  image: grafana/grafana  # => Metrics visualization dashboards
  profiles:
  - monitoring
+# => Both prometheus and grafana require 'monitoring' profile
  ports:
  - "3001:3000"  # => Grafana UI at http://localhost:3001
  depends_on:
  - prometheus  # => Prometheus must be running for Grafana data source
+# => Grafana queries Prometheus for metrics data
 
  # Documentation server (only for doc writers)
  docs:
  image: nginx:alpine
  profiles:
  - docs
+# => Only doc writers need this service — not started by default
  ports:
  - "8080:80"  # => Docs accessible at http://localhost:8080
  volumes:
  - ./docs:/usr/share/nginx/html:ro  # => Serves docs from local ./docs directory
+# => Activate with: docker compose --profile docs up
 ```
 
 ```bash
@@ -2907,112 +2945,165 @@ Override files customize compose configuration for different environments withou
 # File: docker-compose.yml (base configuration)
 
 version: "3.8"  # => Base config — shared across all environments
+# => This file defines the minimal production-ready structure
+# => Override files extend this base for each environment
 
 services:
+# => Two services: app (web server) and db (PostgreSQL)
  app:
+# => Application service — the primary deployable unit
  build: .   # => Builds from ./Dockerfile
  ports:
  - "3000:3000"  # => App port exposed to host
  environment:
+# => Default environment (overridden per environment)
  NODE_ENV: production  # => Default to production (override per environment)
+# => Override files change NODE_ENV to development/test
 
  db:
+# => PostgreSQL database service
  image: postgres:15-alpine  # => PostgreSQL 15 on Alpine
  environment:
+# => Database credentials (override in production with secrets)
  POSTGRES_PASSWORD: secret  # => Default password (override in prod)
+# => Production uses Docker secrets, not plain text passwords
 ```
 
 ```yaml
 # File: docker-compose.override.yml (automatically applied in development)
 
 version: "3.8"  # => Auto-loaded when present — no -f flag needed
+# => docker-compose.override.yml applies automatically in development
+# => No -f flag needed: Docker Compose merges it with docker-compose.yml
 
 services:
  app:
  # Override build target for development (uses dev stage with debug tools)
  build:
+# => Build configuration overrides base build: .
  context: .
+# => Same build context as base (current directory)
  target: development  # => Uses "development" stage from multi-stage Dockerfile
+# => "development" stage includes nodemon, dev dependencies, debugging tools
  # Add bind mount for live reload without rebuild
  volumes:
  - ./src:/app/src  # => Source edits immediately visible in container
+# => Changes to ./src reflect instantly (no docker build needed)
  # Override environment (replaces base values)
  environment:
+# => Overrides base environment variables (merge, not replace)
  NODE_ENV: development  # => Overrides base "production" value
  DEBUG: "app:*"  # => Enables debug logging for "app" namespace
+# => "app:*" matches all debug namespaces starting with "app"
  # Add command override
  command: npm run dev  # => Overrides base CMD (e.g., nodemon for hot reload)
+# => npm run dev starts nodemon for automatic restart on file changes
 
  # Add development-only service (not in base config)
  debug-tools:
+# => Extra service only in override (not in base docker-compose.yml)
  image: alpine  # => Lightweight debug container
  command: tail -f /dev/null  # => Keeps container alive for manual exec
+# => Use "docker exec debug-tools sh" to enter for debugging
 ```
 
 ```yaml
 # File: docker-compose.test.yml (test environment)
 
 version: "3.8"  # => Explicit test override — loaded with -f flag
+# => Must be loaded explicitly: docker compose -f docker-compose.yml -f docker-compose.test.yml
+# => NOT auto-loaded — prevents accidental test config in development
 
 services:
+# => Test environment overrides for app and db services
  app:
  build:
+# => Build target override for test stage
  target: test  # => Builds test stage with test dependencies (jest, etc.)
+# => test stage contains jest, supertest, and other test tools
  environment:
+# => Test-specific environment variables
  NODE_ENV: test  # => Enables test-specific code paths
  DATABASE_URL: postgresql://test:test@test-db:5432/testdb  # => Separate test DB
+# => Uses test-db service (not the dev db) for full isolation
  command: npm test  # => Runs test suite instead of starting server
+# => Overrides base CMD — exits when tests complete
 
  db:
+# => Override base db credentials for test isolation
  environment:
+# => Separate credentials prevent test data mixing with dev/prod
  POSTGRES_USER: test     # => Override base user for test isolation
  POSTGRES_PASSWORD: test  # => Separate credentials from dev/prod
  POSTGRES_DB: testdb      # => Test database (wiped between test runs)
+# => Separate DB name prevents accidental dev data contamination
 
  # Test-specific service (ephemeral — created and destroyed per test run)
  test-db:
+# => Additional clean database instance exclusively for tests
  image: postgres:15-alpine  # => Separate DB instance for test isolation
  environment:
+# => Dedicated test credentials completely separate from dev
  POSTGRES_USER: test
  POSTGRES_PASSWORD: test
  POSTGRES_DB: testdb  # => Tables reset between CI runs
+# => Each CI run gets clean database state — no test data leakage
 ```
 
 ```yaml
 # File: docker-compose.prod.yml (production overrides)
 
 version: "3.8"  # => Production config — loaded with -f, skips override.yml
+# => Must be loaded explicitly with -f flag
+# => Auto-override.yml is intentionally skipped in production
 
 services:
+# => Production-hardened service definitions (restart, logging, resource limits)
  app:
+# => Production app configuration with reliability settings
  restart: unless-stopped  # => Auto-restarts on failure; stops on docker stop
+# => "unless-stopped" is ideal for apps: restarts on crash but respects manual stops
  environment:
+# => Production environment enables optimizations and disables dev features
  NODE_ENV: production  # => Enables production code paths and optimizations
+# => disables hot reload, enables minification, activates prod error handling
  # Rotate logs to prevent disk full
  logging:
+# => Log rotation prevents disk exhaustion from runaway processes
  driver: "json-file"  # => Writes logs to host filesystem
  options:
+# => Log rotation bounds: 10MB × 3 = 30MB maximum log storage
  max-size: "10m"   # => Rotate log file at 10MB
  max-file: "3"     # => Keep only 3 log files (30MB max)
+# => Old log files deleted automatically when limit reached
 
  db:
+# => Database production config: always restart, persistent volume, resource limits
  restart: always  # => Always restarts — even on clean exit (critical service)
+# => "always" appropriate for databases: must be running even after docker restart
  # Named volume survives docker-compose down (unlike anonymous volumes)
  volumes:
  - db-prod-data:/var/lib/postgresql/data  # => Persistent storage across restarts
+# => Named volume persists data even after "docker compose down"
  # Resource limits prevent a runaway DB from starving other services
  deploy:
+# => Resource allocation ensures fair sharing with other containers
  resources:
  limits:
+# => Hard limits: container killed if exceeded
  cpus: "2"      # => Max 2 CPU cores
  memory: 2G    # => Hard memory cap at 2GB (OOM kill if exceeded)
  reservations:
+# => Guaranteed minimum resources: won't be evicted below these values
  cpus: "1"      # => Guaranteed 1 CPU core
  memory: 1G    # => Guaranteed 1GB — won't be evicted below this
+# => DB reserved 1 CPU + 1G, can burst to 2 CPU + 2G when host has capacity
 
 volumes:
+# => Named volume definition (production data persistence)
  db-prod-data:
  driver: local  # => Uses host filesystem (default driver)
+# => "local" stores data in /var/lib/docker/volumes/db-prod-data/
 ```
 
 ```bash

@@ -3,6 +3,7 @@ title: "Finite State Machine Fsm"
 weight: 10000002
 date: 2026-01-30T00:00:00+07:00
 draft: false
+description: "Finite State Machine (FSM) - a computational model managing application state through explicit states, transitions, and events for predictable behavior"
 ---
 
 - [By Example](/en/learn/software-engineering/architecture/finite-state-machine-fsm/by-example)

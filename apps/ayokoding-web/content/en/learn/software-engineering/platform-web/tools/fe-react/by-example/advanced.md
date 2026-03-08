@@ -1,6 +1,6 @@
 ---
 title: "Advanced"
-weight: 100000000
+weight: 10000003
 date: 2026-01-29T16:00:00+07:00
 draft: false
 description: "Master advanced React with TypeScript through 25 annotated examples covering generics, Zustand, code splitting, Suspense, testing, security, and production patterns"
@@ -39,12 +39,29 @@ If you need to review, see [Beginner](/en/learn/software-engineering/platform-we
 
 Generic components work with multiple data types while maintaining type safety. Use type parameters to make components reusable across different data shapes.
 
+```mermaid
+graph TD
+    A["List<T>\n Generic component"] -->|"T = Donation"| B["List<Donation>\n type-safe"]
+    A -->|"T = ZakatPayment"| C["List<ZakatPayment>\n type-safe"]
+    A -->|"T = User"| D["List<User>\n type-safe"]
+    E["items: T[]\nrenderItem: (T) => ReactNode\nkeyExtractor: (T) => string"] --> A
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#029E73,stroke:#000,color:#fff
+    style C fill:#DE8F05,stroke:#000,color:#000
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#000
+```
+
+**Generic component**: Single implementation works with any type T.
+
 ```typescript
 import { useState } from 'react';
 
 // => Generic interface: T can be any type
 interface ListProps<T> {
   items: T[];
+  // => items: array of T objects
   renderItem: (item: T) => React.ReactNode;
   keyExtractor: (item: T) => string;
 }
@@ -53,8 +70,10 @@ interface ListProps<T> {
 function List<T>({ items, renderItem, keyExtractor }: ListProps<T>) {
   return (
     <ul>
+    {/* => Unordered list of items */}
       {items.map((item) => (
         <li key={keyExtractor(item)}>
+        {/* => List item with unique key for React reconciliation */}
           {renderItem(item)}
         </li>
       ))}
@@ -64,61 +83,80 @@ function List<T>({ items, renderItem, keyExtractor }: ListProps<T>) {
 
 interface Donation {
   id: string;
+  // => id: text value field
   amount: number;
+  // => amount: numeric value field
   donor: string;
+  // => donor: text value field
 }
 
 interface ZakatPayment {
   id: string;
+  // => id: text value field
   nisab: number;
+  // => nisab: numeric value field
   zakatAmount: number;
+  // => zakatAmount: numeric value field
   payer: string;
+  // => payer: text value field
 }
 
 function DonationDashboard() {
   const [donations] = useState<Donation[]>([
     { id: '1', amount: 100, donor: 'Aisha' },
+    // => Initial array item object
     { id: '2', amount: 250, donor: 'Omar' },
+    // => Initial array item object
   ]);
+  // => End of initial state array
 
   const [zakatPayments] = useState<ZakatPayment[]>([
     { id: '1', nisab: 5000, zakatAmount: 125, payer: 'Fatima' },
+    // => Initial array item object
     { id: '2', nisab: 10000, zakatAmount: 250, payer: 'Ali' },
+    // => Initial array item object
   ]);
+  // => End of initial state array
 
   return (
     <div>
+    {/* => Container div for layout grouping */}
       <h2>Recent Donations</h2>
       {/* => List<Donation>: T inferred from items prop */}
       <List
+      {/* => Renders List component */}
         items={donations}
+        {/* => items prop: donations */}
         renderItem={(donation) => (
           <span>${donation.amount} from {donation.donor}</span>
         )}
         keyExtractor={(donation) => donation.id}
+        {/* => keyExtractor prop: (donation) => donation.id */}
       />
 
       <h2>Zakat Payments</h2>
       {/* => List<ZakatPayment>: T inferred from items type */}
       <List
+      {/* => Renders List component */}
         items={zakatPayments}
+        {/* => items prop: zakatPayments */}
         renderItem={(payment) => (
           <span>${payment.zakatAmount} zakat from {payment.payer}</span>
         )}
         keyExtractor={(payment) => payment.id}
+        {/* => keyExtractor prop: (payment) => payment.id */}
       />
     </div>
   );
 }
 
 export default DonationDashboard;
+
 ```
 
 **Key Takeaway**: Generic components with type parameters enable type-safe reusability. TypeScript infers the type parameter from usage, ensuring type safety without explicit type annotations.
 
-**Expected Output**: Page displays two lists - donations showing amounts and donor names, zakat payments showing zakat amounts and payer names. Each list uses same generic List component with different data types.
-
-**Common Pitfalls**: Forgetting to extract unique keys (causes React warnings), using `any` instead of generics (loses type safety), not constraining generic types when specific capabilities needed (use `extends` keyword).
+**Why It Matters**: Generic components are the cornerstone of reusable component libraries. Without generics, a List component must accept `any[]` (losing type safety) or be written multiple times for different data types. Production component libraries - data tables, autocompletes, select inputs, virtual lists - all use generic components to work with any data shape while preserving full TypeScript type inference. When you see TypeScript's `T extends object` or `<T>` in production React code, you're seeing this pattern. Generic components are the difference between a component that works only with specific data and one that becomes a reusable building block across the entire application.
 
 ### Example 2: Utility Types in React (Partial, Pick, Omit, Record)
 
@@ -172,45 +210,64 @@ function DonationForm() {
 
   return (
     <div>
+    {/* => Container div for layout grouping */}
       <h2>Make a Donation</h2>
+      {/* => H2: "Make a Donation" section heading */}
 
       <label>
+      {/* => Label element for form input */}
         Amount: $
         <input
           type="number"
+          {/* => Input type: "number" */}
           value={formData.amount}
+          {/* => value: controlled by state (state → UI sync) */}
           onChange={(e) => updateField({ amount: parseFloat(e.target.value) })}
+          {/* => onChange: fires on every keystroke/change */}
         />
       </label>
 
       <label>
+      {/* => Label element for form input */}
         Name:
         <input
           type="text"
+          {/* => Input type: "text" */}
           value={formData.donor}
+          {/* => value: controlled by state (state → UI sync) */}
           onChange={(e) => updateField({ donor: e.target.value })}
+          {/* => onChange: fires on every keystroke/change */}
         />
       </label>
 
       <label>
+      {/* => Label element for form input */}
         Email:
         <input
           type="email"
+          {/* => Input type: "email" */}
           value={formData.email}
+          {/* => value: controlled by state (state → UI sync) */}
           onChange={(e) => updateField({ email: e.target.value })}
+          {/* => onChange: fires on every keystroke/change */}
         />
       </label>
 
       <label>
+      {/* => Label element for form input */}
         <input
           type="checkbox"
+          {/* => Checkbox type */}
           checked={formData.isAnonymous}
+          {/* => checked: boolean state → checkbox UI state */}
           onChange={(e) => updateField({ isAnonymous: e.target.checked })}
+          {/* => onChange: fires on every keystroke/change */}
         />
         Donate anonymously
       </label>
 
       <button onClick={handleSubmit}>Submit Donation</button>
+      {/* => Button "Submit Donation" - triggers onClick handler */}
     </div>
   );
 }
@@ -226,25 +283,43 @@ function DonationCategoryView() {
 
   return (
     <div>
+    {/* => Container div for layout grouping */}
       <h3>General Donations: {donations.general.length}</h3>
+      {/* => H3: "General Donations: {donations.general.length}" section heading */}
       <h3>Zakat Payments: {donations.zakat.length}</h3>
+      {/* => H3: "Zakat Payments: {donations.zakat.length}" section heading */}
       <h3>Sadaqah: {donations.sadaqah.length}</h3>
+      {/* => H3: "Sadaqah: {donations.sadaqah.length}" section heading */}
     </div>
   );
 }
 
 export default DonationForm;
+
 ```
 
 **Key Takeaway**: TypeScript utility types (Partial, Pick, Omit, Record) derive new types from existing types, reducing duplication and ensuring consistency. Use Pick for forms, Partial for updates, Omit for display types, and Record for key-value mappings.
 
-**Expected Output**: Form displays donation input fields (amount, name, email, anonymous checkbox). Updating any field re-renders with new value. Category view shows counts for each donation category.
-
-**Common Pitfalls**: Using `Partial<T>` for required fields (makes everything optional), forgetting that utility types don't affect runtime behavior (TypeScript only), using Record with dynamic keys (prefer `{ [key: string]: T }` for dynamic keys).
+**Why It Matters**: Utility types transform existing interfaces rather than duplicating them, keeping TypeScript code DRY and changes propagating correctly. In production React applications: form edit components use `Partial<T>` (all fields optional while editing), component summaries use `Pick<T, 'name' | 'id'>` (minimal data transfer), update functions use `Omit<T, 'id' | 'createdAt'>` (prevent modifying immutable fields). These patterns appear constantly in API design - create payloads omit server-set fields, update payloads use partial types. TypeScript utility types bridge the gap between your domain models and your component prop requirements without duplication.
 
 ### Example 3: Discriminated Unions for State
 
 Discriminated unions model mutually exclusive states with type safety. Use a common discriminant property (like `status` or `type`) to distinguish between states.
+
+```mermaid
+stateDiagram-v2
+    [*] --> Idle: initial
+    Idle --> Loading: fetch()
+    Loading --> Success: onSuccess
+    Loading --> Error: onError
+    Success --> Loading: refetch()
+    Error --> Loading: retry()
+
+    note right of Loading: impossible to be\nboth Loading AND Error
+    note right of Success: data always valid\nwhen in Success
+```
+
+**Discriminated union**: Type system enforces mutually exclusive states.
 
 ```typescript
 import { useState } from 'react';
@@ -316,46 +391,61 @@ function ZakatCalculator() {
   // => TypeScript narrows type based on status check
   return (
     <div>
+    {/* => Container div for layout grouping */}
       <h2>Zakat Calculator</h2>
+      {/* => H2: "Zakat Calculator" section heading */}
 
       <label>
+      {/* => Label element for form input */}
         Total Wealth: $
         <input
           type="number"
+          {/* => Input type: "number" */}
           value={wealth}
+          {/* => value: controlled by state (state → UI sync) */}
           onChange={(e) => setWealth(parseFloat(e.target.value) || 0)}
+          {/* => onChange: fires on every keystroke/change */}
         />
       </label>
 
       <button onClick={calculateZakat} disabled={calcState.status === 'loading'}>
+      {/* => Button: triggers click handler */}
         {calcState.status === 'loading' ? 'Calculating...' : 'Calculate Zakat'}
+        {/* => Ternary: renders different UI based on condition */}
       </button>
 
       {/* => TypeScript narrows calcState type in each branch */}
       {calcState.status === 'idle' && (
         <p>Enter your wealth to calculate zakat</p>
+        {/* => Paragraph: "Enter your wealth to calculate zakat" */}
       )}
 
       {calcState.status === 'loading' && (
         // => calcState is { status: 'loading' } here
         // => No data or error properties available
         <p>Calculating zakat amount...</p>
+        {/* => Paragraph: "Calculating zakat amount..." */}
       )}
 
       {calcState.status === 'success' && (
         // => calcState is { status: 'success'; data: ZakatCalculation } here
         // => TypeScript knows data property exists
         <div>
+        {/* => Container div for layout grouping */}
           <h3>Calculation Result</h3>
+          {/* => H3: "Calculation Result" section heading */}
           <p>Wealth: ${calcState.data.wealth}</p>
+          {/* => Paragraph with content */}
           <p>Nisab Threshold: ${calcState.data.nisab}</p>
           {/* => TypeScript autocompletes data properties */}
 
           {calcState.data.isZakatDue ? (
+          {/* => True branch: rendered when condition is true */}
             <p style={{ color: 'green' }}>
               ✓ Zakat is due: ${calcState.data.zakatAmount.toFixed(2)}
             </p>
           ) : (
+          {/* => False branch: rendered when condition is false */}
             <p style={{ color: 'gray' }}>
               Wealth below nisab - no zakat due
             </p>
@@ -376,13 +466,12 @@ function ZakatCalculator() {
 }
 
 export default ZakatCalculator;
+
 ```
 
 **Key Takeaway**: Discriminated unions ensure mutually exclusive states with compile-time safety. TypeScript narrows the union type based on discriminant checks, preventing impossible states like "loading with data" or "success without data".
 
-**Expected Output**: Page displays wealth input field and calculate button. Initially shows "Enter your wealth" message. On calculate, shows "Calculating..." then displays result with wealth, nisab, and zakat amount. If wealth below nisab, shows "no zakat due". On error, displays error message in red.
-
-**Common Pitfalls**: Using boolean flags instead of discriminated unions (allows impossible states like `loading: true, error: true`), forgetting to check discriminant before accessing state-specific properties (TypeScript error), using string literals inconsistently (typos break type narrowing).
+**Why It Matters**: Discriminated unions make impossible states impossible to represent in TypeScript. Production React applications have UI that must handle multiple exclusive states: loading or error or data (never loading AND data), not-started or pending or approved or rejected (never pending AND approved). Representing these as separate boolean flags allows contradictory states. Discriminated unions enforce that only valid combinations exist at the type level. The `status` field as the discriminant means TypeScript narrows the type automatically in switch/case blocks, ensuring your render logic handles every case and fails to compile if you add a new status without updating all consumers.
 
 ### Example 4: Advanced Type Guards
 
@@ -394,22 +483,31 @@ import { ReactNode } from 'react';
 interface DonationTransaction {
   type: 'donation';                          // => Discriminant property
   amount: number;
+  // => amount: numeric value field
   donor: string;
+  // => donor: text value field
   isAnonymous: boolean;
+  // => isAnonymous: true/false flag field
 }
 
 interface ZakatTransaction {
   type: 'zakat';
   wealth: number;
+  // => wealth: numeric value field
   nisab: number;
+  // => nisab: numeric value field
   zakatAmount: number;
+  // => zakatAmount: numeric value field
 }
 
 interface RefundTransaction {
   type: 'refund';
   originalAmount: number;
+  // => originalAmount: numeric value field
   reason: string;
+  // => reason: text value field
   refundDate: Date;
+  // => refundDate: date/time value field
 }
 
 type Transaction = DonationTransaction | ZakatTransaction | RefundTransaction;
@@ -437,8 +535,11 @@ function TransactionItem({ transaction }: TransactionItemProps) {
     return (
       <div className="transaction donation">
         <h4>Donation</h4>
+        {/* => H4: "Donation" section heading */}
         <p>Amount: ${transaction.amount}</p>
+        {/* => Paragraph with content */}
         <p>Donor: {transaction.isAnonymous ? 'Anonymous' : transaction.donor}</p>
+        {/* => Paragraph with content */}
       </div>
     );
   }
@@ -448,9 +549,13 @@ function TransactionItem({ transaction }: TransactionItemProps) {
     return (
       <div className="transaction zakat">
         <h4>Zakat Payment</h4>
+        {/* => H4: "Zakat Payment" section heading */}
         <p>Wealth: ${transaction.wealth}</p>
+        {/* => Paragraph with content */}
         <p>Nisab: ${transaction.nisab}</p>
+        {/* => Paragraph with content */}
         <p>Zakat Due: ${transaction.zakatAmount}</p>
+        {/* => Paragraph with content */}
       </div>
     );
   }
@@ -460,9 +565,13 @@ function TransactionItem({ transaction }: TransactionItemProps) {
     return (
       <div className="transaction refund">
         <h4>Refund</h4>
+        {/* => H4: "Refund" section heading */}
         <p>Amount: ${transaction.originalAmount}</p>
+        {/* => Paragraph with content */}
         <p>Reason: {transaction.reason}</p>
+        {/* => Paragraph with content */}
         <p>Date: {transaction.refundDate.toLocaleDateString()}</p>
+        {/* => Paragraph with content */}
       </div>
     );
   }
@@ -496,22 +605,24 @@ function TransactionList() {
 
   return (
     <div>
+    {/* => Container div for layout grouping */}
       <h2>Transaction History</h2>
+      {/* => H2: "Transaction History" section heading */}
       {transactions.map((transaction, index) => (
         <TransactionItem key={index} transaction={transaction} />
+        {/* => TransactionItem component (self-contained) */}
       ))}
     </div>
   );
 }
 
 export default TransactionList;
+
 ```
 
 **Key Takeaway**: Type guard functions with type predicates (`value is Type`) narrow union types, enabling safe access to type-specific properties. Use discriminated unions with type guards for complex domain modeling with compile-time safety.
 
-**Expected Output**: Page displays list of three transactions: donation showing amount and donor name, zakat payment showing wealth/nisab/zakat amount, refund showing original amount and reason. Each rendered with type-specific styling and information.
-
-**Common Pitfalls**: Forgetting exhaustiveness check (new types not handled), type guard function returning boolean without type predicate (doesn't narrow type), checking properties before type narrowing (TypeScript error on union types).
+**Why It Matters**: Type guards enable TypeScript to understand runtime type distinctions at the point of use. In production React applications, APIs often return polymorphic data: a feed item can be a post, comment, or share - each with different fields and rendering requirements. Without type guards, you must use `any` or cast types, losing safety. With type guards, TypeScript knows which variant you have inside each branch, preventing accessing fields that don't exist on all variants. The `is` return type annotation (`param is SpecificType`) creates a reusable guard that works everywhere, not just at the definition point.
 
 ### Example 5: Template Literal Types for Props
 
@@ -617,11 +728,13 @@ function DonationCard({
 
       {/* => Display priority badge */}
       <div style={{ display: 'inline-block' }}>
+      {/* => Container div with inline styles */}
         {priorityLabels[priority]}
       </div>
 
       {/* => Display amount */}
       <div style={{ marginTop: '12px', fontSize: '24px', fontWeight: 'bold' }}>
+      {/* => Container div with inline styles */}
         ${amount}
       </div>
 
@@ -629,6 +742,7 @@ function DonationCard({
       {status !== 'completed' && (
         <button
           onClick={handleAction}
+          {/* => onClick: fires on user click */}
           style={{
             marginTop: '12px',
             padding: '8px 16px',
@@ -649,26 +763,40 @@ function DonationCard({
 function DonationDashboard() {
   const [donations, setDonations] = useState([
     { id: 1, status: 'pending' as DonationStatus, priority: 'high' as DonationPriority, amount: 100 },
+    // => Initial array item object
     { id: 2, status: 'completed' as DonationStatus, priority: 'normal' as DonationPriority, amount: 250 },
+    // => Initial array item object
     { id: 3, status: 'failed' as DonationStatus, priority: 'low' as DonationPriority, amount: 75 },
+    // => Initial array item object
   ]);
+  // => End of initial state array
 
   return (
     <div>
+    {/* => Container div for layout grouping */}
       <h2>Donation Dashboard</h2>
+      {/* => H2: "Donation Dashboard" section heading */}
 
       {donations.map((donation) => (
         <DonationCard
+        {/* => Renders DonationCard component */}
           key={donation.id}
           status={donation.status}
+          {/* => status prop: donation.status */}
           priority={donation.priority}
+          {/* => priority prop: donation.priority */}
           amount={donation.amount}
+          {/* => amount prop: donation.amount */}
           className={`donation-status-${donation.status}` as DonationStatusClass}
           // => TypeScript validates className matches template pattern
           onStatusPending={() => console.log('Pending donation clicked')}
+          {/* => onStatusPending prop: () => console.log('Pending donation clic */}
           onStatusCompleted={() => console.log('Completed donation clicked')}
+          {/* => onStatusCompleted prop: () => console.log('Completed donation cl */}
           onStatusFailed={() => console.log('Failed donation clicked')}
+          {/* => onStatusFailed prop: () => console.log('Failed donation click */}
           onStatusRefunded={() => console.log('Refunded donation clicked')}
+          {/* => onStatusRefunded prop: () => console.log('Refunded donation cli */}
         />
       ))}
     </div>
@@ -676,19 +804,48 @@ function DonationDashboard() {
 }
 
 export default DonationDashboard;
+
 ```
 
 **Key Takeaway**: Template literal types create precise string types from patterns, enabling compile-time validation of CSS classes, event names, and status strings. Combine with Record types for exhaustive mapping and with Capitalize/Uppercase utilities for naming conventions.
 
-**Expected Output**: Page displays three donation cards with colored borders and status badges. Pending donation has orange border with "PENDING" badge and high priority icon. Completed donation has green border with "COMPLETED" badge (no action button). Failed donation has red border with "FAILED" badge and low priority icon. Each card shows donation amount.
-
-**Common Pitfalls**: Using plain strings instead of template literals (loses type safety), forgetting to use `as` assertion for dynamic template strings (TypeScript can't infer), overusing template literal types for simple cases (use union types for short lists).
+**Why It Matters**: Template literal types create exhaustive, type-safe systems for prop values that combine multiple dimensions (size + variant, color + intensity, direction + alignment). Production design systems use this pattern to generate all valid CSS class name combinations from component props, ensuring only valid combinations can be passed. The key production benefit is that adding a new dimension (a new size, a new variant) requires updating the union type, which TypeScript uses to find every component that needs to handle the new option. This catches omissions at compile time rather than at runtime when users encounter incomplete behavior.
 
 ## Group 2: Advanced State Management with Zustand (5 examples)
+
+**Why Zustand instead of Context API + useReducer?** Context API with `useReducer` works well for low-frequency updates like auth state or themes, but has a critical performance issue: any component consuming a context re-renders whenever any value in that context changes, even if it only needs one slice of state. For high-frequency state (shopping carts, real-time data, complex forms), this causes excessive re-renders across the component tree. Zustand stores are subscription-based: components subscribe to specific state slices and only re-render when those slices change. Zustand also eliminates the Provider wrapper boilerplate, allows stores to be imported anywhere (including outside components), and supports middleware for persistence and DevTools. Use Context API for infrequently-updated values; use Zustand for shared state that updates frequently.
+
+**Note**: Examples 6-9 require `zustand` package. Example 10 additionally requires `xstate` and `@xstate/react` packages. Install with:
+
+```bash
+npm install zustand xstate @xstate/react
+```
 
 ### Example 6: Zustand Store Setup
 
 Zustand provides lightweight global state management without boilerplate. Create stores with TypeScript for type-safe state access.
+
+```mermaid
+graph TD
+    A["useDonationStore\n Zustand store"] --> B["donations: []\ntotalAmount: 0\nisLoading: false"]
+    A --> C["addDonation(amount, donor)"]
+    A --> D["removeDonation(id)"]
+    A --> E["clearDonations()"]
+    F["ComponentA\nuseStore(s => s.donations)"] -->|"subscribes to donations slice"| A
+    G["ComponentB\nuseStore(s => s.totalAmount)"] -->|"subscribes to totalAmount only"| A
+    C -->|"set(state => ...)"| B
+    D -->|"set(state => ...)"| B
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#029E73,stroke:#000,color:#fff
+    style C fill:#DE8F05,stroke:#000,color:#000
+    style D fill:#DE8F05,stroke:#000,color:#000
+    style E fill:#DE8F05,stroke:#000,color:#000
+    style F fill:#CC78BC,stroke:#000,color:#000
+    style G fill:#CA9161,stroke:#000,color:#000
+```
+
+**Zustand store**: Slice subscriptions prevent re-renders from unrelated state changes.
 
 ```typescript
 // store.ts
@@ -828,13 +985,30 @@ export default DonationTracker;
 
 **Key Takeaway**: Zustand provides lightweight global state with minimal boilerplate. Define state interface, create store with actions, subscribe to slices in components. Components automatically re-render when selected state changes.
 
-**Expected Output**: Page displays total donation amount (initially \$0), quick donate buttons (\$10, \$25, \$50, Clear All), and list of donations with timestamps and remove buttons. Clicking donate buttons adds donations to list and updates total. Remove buttons delete individual donations. Clear All resets everything.
-
-**Common Pitfalls**: Mutating state directly instead of using `set()` (breaks reactivity), selecting entire store in component (causes unnecessary re-renders), forgetting to type store interface (loses type safety), not using selector functions (performance issues with large stores).
+**Why It Matters**: Zustand store setup is the foundation for global state management in production React applications that need shared state without Context API's performance limitations. The TypeScript interface approach to defining store shape (state + actions together) makes the store's API explicit and type-safe. Production Zustand stores manage: authentication state accessible from hooks and API middleware, shopping cart contents shared across cart icon and checkout page, user preferences applied to multiple components, and real-time connection state. The ergonomics of Zustand - no providers, direct import, hooks-based access - make it significantly simpler to adopt incrementally than Redux.
 
 ### Example 7: Zustand with TypeScript and Slices
 
 Slices organize large stores into logical modules. Combine slices for separation of concerns while maintaining single store.
+
+```mermaid
+graph TD
+    A["useAuthStore slice\nuser, isAuthenticated\nlogin(), logout()"] --> Z["Combined store\nRootState"]
+    B["useCartSlice\ncart[], total\naddItem(), removeItem()"] --> Z
+    C["ComponentA\nuseStore(s => s.user)"] -->|"subscribes to user"| A
+    D["ComponentB\nuseStore(s => s.cart)"| ]-->|"subscribes to cart"| B
+    E["login() fires"] -->|"updates auth slice only"| A
+    E -->|"ComponentB NOT re-rendered"| D
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style Z fill:#029E73,stroke:#000,color:#fff
+    style C fill:#CC78BC,stroke:#000,color:#000
+    style D fill:#CA9161,stroke:#000,color:#000
+    style E fill:#0173B2,stroke:#000,color:#fff
+```
+
+**Zustand slices**: Separate domains, selective subscriptions prevent cross-slice re-renders.
 
 ```typescript
 // donationSlice.ts
@@ -1045,9 +1219,7 @@ export default FinancialDashboard;
 
 **Key Takeaway**: Organize large Zustand stores into slices for separation of concerns. Each slice defines its own state and actions. Combine slices into single store with proper TypeScript typing. Components select from any slice seamlessly.
 
-**Expected Output**: Page displays grand total (sum of donations and zakat), two sections with individual totals. Donation section shows list and "Add \$100 Donation" button. Zakat section shows list and "Add \$125 Zakat Payment" button. Clicking buttons adds items to respective lists and updates totals.
-
-**Common Pitfalls**: Incorrect StateCreator typing (breaks type inference), slices modifying other slice's state (breaks separation), not combining slices properly (missing state or actions), over-slicing small stores (unnecessary complexity).
+**Why It Matters**: Zustand slices enable the same architectural benefit as Redux's combineReducers: domain separation within a single store. Large production applications have tens of state domains (user, cart, catalog, notifications, settings) that shouldn't be mixed in a single large object. Slices allow each domain to be defined, tested, and maintained independently while sharing the same store instance. The TypeScript intersection type approach (`SliceA & SliceB`) provides type-safe access to the combined state. This architecture scales to teams where different developers own different state domains without merge conflicts.
 
 ### Example 8: Zustand Middleware (Persist, Devtools)
 
@@ -1262,9 +1434,7 @@ export default PersistedDonationTracker;
 
 **Key Takeaway**: Zustand middleware adds powerful features: persist() saves state to localStorage for cross-session persistence, devtools() integrates Redux DevTools for time-travel debugging and action logging. Chain middleware with proper ordering: devtools(persist(store)).
 
-**Expected Output**: Page displays donation tracker with total, action buttons, and donation list. State persists across page reloads (stored in localStorage). Redux DevTools shows actions as "donation/add", "donation/remove", "donation/clear". Instructions explain how to test persistence and devtools integration.
-
-**Common Pitfalls**: Wrong middleware order (persist should wrap store, devtools should wrap persist), forgetting action names in set() calls (shows as undefined in devtools), persisting non-serializable values (Dates, functions cause errors), not partializing state (persists unnecessary data).
+**Why It Matters**: Zustand middleware provides production-essential capabilities without custom implementation. The persist middleware handles the localStorage synchronization pattern from the custom hooks examples, but with proper partial state persistence (don't store sensitive data), storage key management, and version migration (handle schema changes when users have old persisted state). The devtools middleware integrates with Redux DevTools, providing time-travel debugging and action logging in development. Production Zustand stores almost always use persist (for user preferences, draft content, session recovery) and devtools (for debugging complex state transitions).
 
 ### Example 9: Server State vs Client State Separation
 
@@ -1496,11 +1666,11 @@ export default DonationDashboard;
 
 **Key Takeaway**: Separate client state (UI concerns, managed by Zustand) from server state (API data, managed by React Query). Client state controls UI elements like sidebar visibility and sort order. Server state handles API data with automatic caching, refetching, and synchronization. Never duplicate server data in Zustand.
 
-**Expected Output**: Page displays sidebar with sort order dropdown and minimum amount filter, main area with donation list. Sidebar toggle button shows/hides filters. Sort order and filter update list immediately (client state). "Add \$100 Donation" button triggers server mutation, shows "Adding..." during request, then refetches and updates list automatically (server state).
-
-**Common Pitfalls**: Storing server data in Zustand (causes synchronization issues), not invalidating queries after mutations (stale data), using client state for data that should come from server (loses single source of truth), over-fetching by not leveraging React Query's caching.
+**Why It Matters**: Separating server state (React Query) from client state (Zustand) reflects a fundamental architectural insight: these are different problems requiring different solutions. Server state has a source of truth on the server, needs synchronization, has staleness, and is shared across browser tabs. Client state lives only in the browser, is immediately consistent, and represents UI interactions. Mixing them leads to synchronization bugs and redundant code. Production applications that respect this separation are more maintainable: React Query handles loading/error/stale/cache for server data, Zustand handles the UI interaction state that has no server counterpart.
 
 ### Example 10: State Machine Pattern with XState
+
+**Why XState instead of custom state machine with discriminated unions?** TypeScript discriminated unions can represent state machines, but wiring up transitions, guarding invalid state changes, and visualizing the machine requires significant custom code. XState provides a complete state machine implementation: states and transitions are declarative (not imperative), impossible states are enforced by the machine definition, and `@xstate/actor` enables visual debugging. For complex multi-step workflows (payment flows, form wizards, authentication sequences), XState makes the state logic explicit and testable, rather than scattered across multiple `if/else` chains and `useEffect` calls.
 
 State machines model complex workflows with explicit states and transitions. Use XState for finite state machines with TypeScript support.
 
@@ -1828,15 +1998,29 @@ export default DonationStateMachine;
 
 **Key Takeaway**: State machines model complex workflows with explicit states and allowed transitions. XState provides TypeScript-safe state machines with context for data, guards for conditional transitions, and invoke for async operations. Prevents impossible states and makes workflows predictable.
 
-**Expected Output**: Page shows current state indicator. In idle state, displays "Quick Donate \$100" button. Entering state shows form fields and "Review Donation" button. Confirming state displays entered details with "Submit Donation" and "Edit Details" buttons. Processing state shows loading spinner. Success state displays confirmation code. Failure state shows error message with "Retry Payment" button.
-
-**Common Pitfalls**: Not defining exhaustive states (allows undefined states), forgetting to assign context in actions (context doesn't update), using state machine for simple boolean states (over-engineering), not typing events properly (loses TypeScript safety).
+**Why It Matters**: State machines are the most reliable pattern for implementing complex multi-step workflows in production. Payment flows, onboarding wizards, document approval processes, and complex forms with conditional steps are notoriously buggy when implemented with ad-hoc boolean flags. State machines make the workflow's states explicit, transitions guarded, and impossible states unrepresentable. When product requirements change ('add a verification step between pending and approved'), state machine code changes are localized and safe - you add the state, add its transitions, and TypeScript guides you to handle it everywhere. XState's visualization tools make the workflow auditable to non-technical stakeholders.
 
 ## Group 3: Performance Optimization (5 examples)
 
 ### Example 11: Code Splitting with React.lazy and Suspense
 
 Code splitting reduces initial bundle size by loading components on-demand. Use React.lazy for dynamic imports and Suspense for loading states.
+
+```mermaid
+graph TD
+    A["Initial bundle\n(small, fast load)"] -->|"user navigates to /admin"| B["Lazy import\nAdminPage chunk"]
+    B -->|"loading"| C["Suspense fallback\n<Loading />"]
+    B -->|"loaded"| D["AdminPage renders"]
+    A -->|"user stays on home"| E["DashboardPage\n(already loaded)"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#CA9161,stroke:#000,color:#000
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#029E73,stroke:#000,color:#fff
+```
+
+**Code splitting**: Lazy loading defers bundle download until component is needed.
 
 ```typescript
 import { Suspense, lazy, useState } from 'react';
@@ -1958,9 +2142,7 @@ export default ReportsPanel;
 
 **Key Takeaway**: React.lazy() enables code splitting by dynamically importing components. Wrap lazy components in Suspense boundaries with fallback UI for loading states. Each lazy component creates separate bundle loaded on-demand, reducing initial load time.
 
-**Expected Output**: Page displays tab navigation (Donations, Zakat Calculator, Reports) with active tab bolded. On mount, only Donations tab component loads. Clicking other tabs shows "⏳ Loading..." briefly, then displays respective component. Network tab shows separate JavaScript bundles loading per tab. Initial page load faster due to smaller main bundle.
-
-**Common Pitfalls**: Forgetting Suspense boundary (error: lazy component not wrapped), nested Suspense without proper fallbacks (cascading loading states confuse users), over-splitting small components (more network requests than performance gain), using lazy() for components needed on initial render (adds unnecessary delay).
+**Why It Matters**: Code splitting is a production performance requirement for large React applications. Loading all JavaScript upfront causes slow initial page loads - each second of load time correlates with user abandonment. React.lazy with Suspense splits your bundle at natural component boundaries, loading code only when the user navigates to it. Production applications split by: route (each page loads independently), feature (admin panel only loads for admins), and heavy third-party libraries (chart libraries, rich text editors). The Suspense fallback provides the loading state automatically during the lazy load. This pattern is often the highest-impact single optimization available.
 
 ### Example 12: Route-Based Code Splitting
 
@@ -2142,13 +2324,29 @@ export default NotFoundPage;
 
 **Key Takeaway**: Route-based code splitting loads route components on-demand, significantly reducing initial bundle size. Combine React Router with React.lazy and Suspense for automatic route-level splitting. Navigation links trigger lazy loading when clicked. Layout components (nav, footer) stay in main bundle for instant visibility.
 
-**Expected Output**: Page displays navigation bar immediately (Home, Donate, Zakat, Reports links). On initial load, only HomePage bundle loads. Clicking "Donate" shows "Loading page..." briefly, then displays donation form. Clicking other links loads respective bundles on-demand. Browser network tab shows separate chunks loading per route (HomePage.abc123.js, DonationPage.def456.js, etc.).
-
-**Common Pitfalls**: Lazy-loading layout components (causes flash of unstyled content), no Suspense fallback at route level (white screen during load), prefetching all routes on mount (negates code splitting benefits), lazy-loading components used on every route (adds delay without benefit).
+**Why It Matters**: Route-based code splitting is the most impactful form of code splitting because application size grows primarily with feature count, and features are accessed by route. Production SPAs using route-based splitting load only the code for the current page - a checkout flow doesn't load the reporting dashboard's bundle. Combined with preloading strategies (prefetch routes the user is likely to visit next), route-based splitting provides fast initial load while maintaining navigation responsiveness. The React Router v6 + React.lazy combination is the standard production pattern, supported by build tools that automatically create separate chunks per lazy-loaded component.
 
 ### Example 13: React.memo and Memoization Strategies
 
 React.memo prevents unnecessary re-renders of child components. Use for expensive components that receive stable props.
+
+```mermaid
+graph TD
+    A["Parent re-renders\n(unrelated state change)"] -->|"React.memo check"| B{"Props changed?"}
+    B -->|"No (same reference)"| C["Child skips re-render\n(optimization wins)"]
+    B -->|"Yes (new reference)"| D["Child re-renders\n(necessary update)"]
+    E["useCallback memoized fn"] -->|"same reference"| B
+    F["New fn every render"] -->|"always new reference"| D
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#000
+    style F fill:#CC78BC,stroke:#000,color:#000
+```
+
+**React.memo + useCallback**: Stable references prevent expensive child re-renders.
 
 ```typescript
 import { memo, useState, useCallback, useMemo } from 'react';
@@ -2334,9 +2532,7 @@ export default DonationList;
 
 **Key Takeaway**: React.memo prevents re-renders when props unchanged (shallow comparison). useCallback memoizes function references to prevent breaking memo optimization. useMemo memoizes computed values to avoid expensive recalculations. Use all three together for maximum performance: memo for components, useCallback for passed functions, useMemo for expensive computations.
 
-**Expected Output**: Page displays donation list with total, minimum amount filter, and "Increment Count" button. On initial render, console shows "Rendering DonationItem 1/2/3", "Filtering donations...", "Calculating total...". Clicking "Increment Count" only increments counter - no DonationItem re-renders or filtering/calculation logs. Changing filter shows "Filtering donations..." log and updates list. Adding/removing donations shows all logs.
-
-**Common Pitfalls**: Using React.memo without useCallback for passed functions (breaks optimization), memoizing everything (premature optimization, harder to maintain), not checking if optimization helps (profile first), comparing complex objects in memo without custom comparator (objects always different by reference).
+**Why It Matters**: React.memo optimization and memoization strategies are essential tools for production performance tuning. The key production insight is that re-renders are not inherently bad - React is fast, and unnecessary re-render prevention can add complexity without visible benefit. Profile first using React DevTools Profiler, identify components with expensive renders that fire frequently, then selectively apply React.memo. The comparison function parameter gives you control over what constitutes a meaningful prop change - useful when props include computed objects that are structurally equal but referentially different. Applied judiciously, memoization prevents visible UI jank in data-heavy interfaces.
 
 ### Example 14: Virtual Scrolling for Large Lists
 
@@ -2486,9 +2682,7 @@ export default VirtualizedDonationList;
 
 **Key Takeaway**: Virtual scrolling renders only visible list items, dramatically improving performance for large lists. react-window provides FixedSizeList for fixed-height rows and VariableSizeList for dynamic heights. Only ~20 DOM nodes exist regardless of list size. Use for lists with 100+ items to prevent browser lag.
 
-**Expected Output**: Page displays heading and scrollable list of 10,000 donations. Scrolling is smooth at 60fps. Browser DevTools shows only ~20 list item DOM nodes despite 10,000 total items. Performance comparison table shows dramatic improvements. Usage notes explain when to use virtualization.
-
-**Common Pitfalls**: Wrong itemSize (causes misaligned items), dynamic row heights with FixedSizeList (use VariableSizeList), not memoizing row renderer (causes excessive re-renders), forgetting overscanCount (white flash during fast scrolling), using for small lists (unnecessary complexity).
+**Why It Matters**: Virtual scrolling is not optional for production lists that could contain thousands of items. Rendering 10,000 DOM nodes causes browser jank on any device. The virtualization pattern renders only the items currently visible (plus a small buffer), maintaining constant DOM node count regardless of list size. Production use cases: data tables with large datasets, message threads, contact lists, activity feeds, search results. Libraries like TanStack Virtual (formerly react-virtual) or react-window provide battle-tested virtualization. Understanding the underlying concept - maintaining scroll position while swapping visible items - helps you debug virtual list edge cases that occur with dynamic item heights.
 
 ### Example 15: Web Workers for Heavy Computations
 
@@ -2823,15 +3017,30 @@ export default ZakatCalculatorWithWorker;
 
 **Key Takeaway**: Web Workers run JavaScript in background threads, preventing UI blocking during heavy computations. Main thread stays responsive while worker processes data. Use for CPU-intensive tasks like data processing, encryption, or complex calculations. Communicate via postMessage/onmessage. Workers have no DOM or React access.
 
-**Expected Output**: Page displays donation list, two calculation buttons (Worker and Main Thread), and results table. Clicking "Calculate (Worker)" shows "Calculating..." but UI remains responsive (can scroll, click). Clicking "Calculate (Main Thread)" freezes UI until calculation completes. Both display calculation time and zakat results table showing donor names, amounts, zakat due, and status with color coding.
-
-**Common Pitfalls**: Trying to access DOM in worker (error: DOM not available), passing non-serializable data (functions, DOM nodes cause errors), creating workers in render (memory leak), not terminating workers on unmount (resource leak), using workers for quick operations (overhead > benefit).
+**Why It Matters**: Web Workers move computationally expensive operations off the main thread, preventing UI freezes. Production React applications encounter genuinely CPU-intensive tasks: parsing large CSV files, running statistical computations on datasets, image processing, encryption operations, and complex search indexing. Running these on the main thread blocks rendering - the UI freezes until the computation finishes, which is unacceptable in production. The Worker + postMessage + onmessage pattern provides an async interface to computation. Modern Vite/webpack support importing Workers as URLs makes the setup straightforward. This pattern is the production solution for features that would otherwise make your application feel unresponsive.
 
 ## Group 4: Concurrent Features and Advanced Patterns (5 examples)
 
 ### Example 16: Suspense for Data Fetching
 
 Suspense handles async data loading declaratively. Components "suspend" while loading, Suspense boundary shows fallback UI.
+
+```mermaid
+graph TD
+    A["Suspense boundary\n fallback=<Loading />"] --> B["DataComponent"]
+    B -->|"data not ready"| A
+    B -->|"data ready"| C["Renders with data"]
+    D["startFetch() called\nbefore render"] -->|"prefetch"| E["React Query cache\nwarms up"]
+    E -->|"component renders"| B
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#000
+```
+
+**Suspense for data**: Render-as-you-fetch pre-warms cache before component renders.
 
 ```typescript
 import { Suspense } from 'react';
@@ -2975,13 +3184,27 @@ export default SuspenseDemo;
 
 **Key Takeaway**: Suspense handles async data loading declaratively. Components "suspend" (throw promise) while loading data. Suspense boundary catches suspension and shows fallback UI. When data ready, component renders normally. Enables "render-as-you-fetch" pattern for better UX.
 
-**Expected Output**: Page displays heading, then shows loading fallback (⏳ with "Loading donations..." text) for 2 seconds. After data loads, displays donation list with three donations and total amount.
-
-**Common Pitfalls**: Creating resource inside component (causes infinite suspension), no Suspense boundary (error: suspended component not wrapped), fetching on render instead of early (loses performance benefit), using with legacy data fetching libraries (not Suspense-compatible).
+**Why It Matters**: Suspense for data fetching represents React's vision for async-first component development. Instead of components managing their own loading states, Suspense boundary components handle the loading UI, letting data-consuming components assume their data is ready. This inverts the control of loading states from individual components to their parents, enabling more consistent loading experiences and eliminating loading state management code in leaf components. Production adoption requires either a Suspense-compatible data fetching library (React Query v5 supports Suspense mode, SWR supports it) or the use-framework pattern. This is increasingly the direction React's ecosystem is moving.
 
 ### Example 17: startTransition for Non-Urgent Updates
 
 startTransition marks state updates as low-priority, keeping UI responsive during expensive updates. Use for non-urgent updates like filtering or search results.
+
+```mermaid
+graph TD
+    A["User types in search\nhigh priority input"] -->|"startTransition()"| B["Filter computation\nlow priority"]
+    B -->|"React defers"| C["Input stays responsive\nno jank"]
+    B -->|"main thread free"| D["Filter results update\nwhen ready"]
+    E["Typing continues"] -->|"interrupts if needed"| B
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#CC78BC,stroke:#000,color:#000
+```
+
+**startTransition**: Marks expensive updates as non-urgent, keeps urgent updates fast.
 
 ```typescript
 import { useState, startTransition, useDeferredValue } from 'react';
@@ -3169,9 +3392,7 @@ export default TransitionDemo;
 
 **Key Takeaway**: startTransition marks state updates as non-urgent, preventing them from blocking urgent updates like input. React can interrupt transitions for higher-priority work. Keeps UI responsive during expensive updates. Use for filtering, search results, tab switching, and derived state updates.
 
-**Expected Output**: Page displays search input, results count, and donation list. Typing in search input stays smooth and responsive even with 5000 donations being filtered. Pending indicator shows "⏳ Filtering results..." during transition. Results update slightly delayed but input never lags. Comparison table explains benefits.
-
-**Common Pitfalls**: Wrapping controlled input values in transitions (input lag), using for critical updates (delays important feedback), overusing transitions (unnecessary complexity), not showing pending state (users confused by delay).
+**Why It Matters**: startTransition is React 18's mechanism for distinguishing urgent updates (typing, clicking) from non-urgent updates (search results filtering, UI transitions). Without this distinction, a slow filter computation on a large list blocks typing in the search input - the UI feels frozen. By wrapping expensive state updates in startTransition, React prioritizes keeping the input responsive and defers the expensive re-render until the main thread is free. Production use cases: search filtering, tab switching with complex tab content, wizard step transitions, and report generation that updates a data visualization. This API prevents the most common form of UI jank in interactive data-heavy applications.
 
 ### Example 18: useDeferredValue for Expensive Renders
 
@@ -3343,13 +3564,31 @@ export default DeferredValueDemo;
 
 **Key Takeaway**: useDeferredValue defers expensive renders by allowing React to show stale values during expensive updates. Input stays responsive while expensive component updates in background. Automatically handles timing - no manual debouncing needed. Use for expensive rendering based on user input.
 
-**Expected Output**: Page displays search input and donation list. Typing in input stays smooth and responsive. During expensive renders, "⏳ Updating results..." appears and list slightly dims. Results update after short delay. Comparison table explains difference from useMemo. Usage notes explain mechanism and benefits.
-
-**Common Pitfalls**: Using for cheap renders (unnecessary overhead), not showing stale state indicator (users confused by delay), using with controlled input values directly (input lag), combining with useMemo unnecessarily (redundant optimization).
+**Why It Matters**: useDeferredValue provides an alternative approach to startTransition when you don't control where the state update originates. While startTransition wraps state updates, useDeferredValue accepts any value and provides a deferred version that lags behind during fast updates. This is particularly useful when the expensive computation is in a child component and you can't refactor to use startTransition at the source. Production use cases: expensive chart re-renders, complex text highlighting in editors, and filter/search result lists that should show stale results while new results compute. useDeferredValue and startTransition are complementary tools for React 18 concurrency.
 
 ### Example 19: Error Boundaries with Retry Logic
 
 Error boundaries catch React component errors and show fallback UI. Add retry logic to recover from transient failures.
+
+```mermaid
+graph TD
+    A["Component mounts\nfetch fails"] -->|"error caught"| B["Error Boundary\nerrorInfo captured"]
+    B -->|"1st retry"| C["Fetch attempt 2\ndelay 1s"]
+    C -->|"fails again"| D["2nd retry\ndelay 2s"]
+    D -->|"fails again"| E["3rd retry\ndelay 4s"]
+    E -->|"success"| F["Component renders\nerror cleared"]
+    E -->|"max retries"| G["Permanent error state\nManual retry button"]
+
+    style A fill:#CC78BC,stroke:#000,color:#000
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#CA9161,stroke:#000,color:#000
+    style D fill:#CA9161,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#000
+    style F fill:#029E73,stroke:#000,color:#fff
+    style G fill:#CC78BC,stroke:#000,color:#000
+```
+
+**Error boundary retry**: Automatic retries with exponential backoff and manual fallback.
 
 ```typescript
 import { Component, ReactNode, useState } from 'react';
@@ -3641,9 +3880,7 @@ export default ErrorBoundaryDemo;
 
 **Key Takeaway**: Error boundaries catch component errors and show fallback UI, preventing entire app crash. Must be class components (no hooks equivalent yet). Add retry logic to recover from transient failures. Use custom fallback UI for user-friendly error messages. Log errors to monitoring services for debugging.
 
-**Expected Output**: Page displays two buttons ("Break Component" and "Force Retry") and donation form. Clicking "Break Component" causes form to throw error. Error boundary catches error and displays red error fallback UI with error message, technical details (collapsible), and "Retry Loading Form" button. Clicking "Fix Component" or retry button recovers form. Retry attempts counter tracks recovery attempts.
-
-**Common Pitfalls**: Not adding error boundaries (entire app crashes on error), error boundary too broad (catches errors it shouldn't), no retry mechanism (users stuck on error screen), not logging errors (can't debug production issues), using for event handler errors (error boundaries don't catch those).
+**Why It Matters**: Error Boundaries with retry logic transform transient failures into recoverable experiences rather than dead ends. Production network environments are unreliable: mobile users switch between WiFi and cellular, corporate firewalls occasionally block requests, CDNs experience brief outages. Without retry, any transient error shows a permanent error screen until the user manually refreshes. Automatic retry with exponential backoff handles transient failures transparently. Manual retry (retry button) handles failures the user is aware of and can act on. The combination of both - automatic retry for network errors, manual retry for server errors - provides the resilience users expect from production applications.
 
 ### Example 20: Render-as-You-Fetch Pattern
 
@@ -3954,15 +4191,31 @@ export default RenderAsFetchDemo;
 
 **Key Takeaway**: Render-as-you-fetch starts data fetching before component renders, enabling parallel requests and faster page loads. Create resources immediately, pass to components, components read() and suspend if not ready. Combines with Suspense for progressive loading. Much faster than fetch-on-render (sequential) pattern.
 
-**Expected Output**: Page displays "Load Dashboard (Render-as-Fetch)" button with explanation. Clicking button shows two loading fallbacks: "Loading summary..." and "Loading donations...". Summary loads after 2 seconds (blue box with total amount, count, top donor). Donations load after 1.5 seconds (list of 3 donations). Both load in parallel (total time 2s, not 3.5s). Pattern comparison table explains timing difference. Reset button clears dashboard.
-
-**Common Pitfalls**: Creating resources inside components (fetch-on-render, slow), not using Suspense (errors on suspended reads), sequential resource creation (loses parallel benefit), recreating resources on every render (refetch on every render).
+**Why It Matters**: The Render-as-You-Fetch pattern is the correct approach to eliminating loading waterfalls in Suspense-enabled applications. The waterfall problem: first render shows spinner, then fetches user, then user data arrives, then fetches user's organization, then that arrives, then renders content. Each step waits for the previous, multiplying latency. Render-as-You-Fetch starts all fetches immediately when the user navigates, before any rendering happens. When components finally render, their data is already in-flight or loaded. Combined with React Query's prefetching APIs, this pattern reduces perceived page load time significantly for complex pages with multiple data dependencies.
 
 ## Group 5: Testing, Security, and Production (5 examples)
 
 ### Example 21: Vitest with React Testing Library
 
 Vitest provides fast unit testing for React components. React Testing Library enables user-centric testing focusing on behavior, not implementation.
+
+```mermaid
+graph TD
+    A["Component under test"] -->|"render()"| B["React Testing Library\nDOM"]
+    B -->|"getByRole('button')"| C["Button element"]
+    C -->|"userEvent.click()"| D["Click event fires"]
+    D -->|"state update"| E["Re-render"]
+    E -->|"expect(screen.getByText(...))"| F["Assertion: text visible"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#CA9161,stroke:#000,color:#000
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#029E73,stroke:#000,color:#fff
+    style F fill:#CC78BC,stroke:#000,color:#000
+```
+
+**RTL testing**: Test user behavior (what users see/do), not implementation details.
 
 ```typescript
 // DonationForm.tsx - Component to test
@@ -4187,9 +4440,7 @@ describe('DonationForm', () => {
 
 **Key Takeaway**: Vitest provides fast unit testing with vi.fn() mocks. React Testing Library enables user-centric testing focusing on behavior (what user sees/does), not implementation details. Use screen queries (getByRole, getByLabelText) to find elements as users would. userEvent provides realistic user interactions. Test behavior, not internal state.
 
-**Expected Output**: Running `vitest` command executes all tests. Output shows 6 passing tests: form renders, submits with valid data, shows error for zero amount, shows error for empty donor, resets after submission, clears error on valid submission. Tests complete in ~50-100ms (Vitest is fast).
-
-**Common Pitfalls**: Testing implementation details (internal state, class names) instead of behavior, not using accessible queries (getByRole, getByLabelText), forgetting async/await with userEvent, not using vi.fn() for prop functions, testing library internals instead of user-facing behavior.
+**Why It Matters**: The testing patterns in this example represent the production testing philosophy for React: test user behavior, not implementation details. React Testing Library's `getByRole`, `userEvent.click`, and `expect(element).toBeInTheDocument()` assertions verify what users see and can do, not how components are internally structured. This makes tests resilient to refactoring: you can completely rewrite a component's implementation as long as the user-visible behavior remains the same. Production test suites built on this philosophy require less maintenance and provide more confidence than test suites that assert on state variables, DOM structure, or implementation functions.
 
 ### Example 22: Testing Custom Hooks
 
@@ -4457,9 +4708,7 @@ describe("useDonationForm", () => {
 
 **Key Takeaway**: Test custom hooks in isolation using renderHook() from @testing-library/react. Wrap state updates in act() to ensure React processes updates before assertions. Test hook logic (return values, state updates, computed values) without rendering UI components. Focus on hook behavior, not implementation details.
 
-**Expected Output**: Running `vitest` executes 9 passing tests: initializes correctly, updates amount, updates donor, computes isValid, validates zero amount, validates empty donor, succeeds with valid data, resets form, clears error on valid submission. All tests pass quickly (~30-50ms).
-
-**Common Pitfalls**: Forgetting act() wrapper (state updates not processed), testing hook in actual component (not isolated), not testing edge cases (empty strings, zero values), testing internal implementation instead of public API, forgetting to test computed values (isValid).
+**Why It Matters**: Accessibility testing automation catches the structural accessibility violations that visual inspection misses. `jest-axe` verifies: color contrast ratios, ARIA role correctness, required ARIA attributes, focusable element order, and label associations. Production applications are legally required to meet WCAG 2.1 AA standards in many jurisdictions. Accessibility testing integrated into CI prevents regression: once accessible, your application stays accessible. Manual accessibility testing (screen reader walkthroughs, keyboard navigation testing) catches behavioral issues that automated tools can't detect, but automated testing provides the continuous safety net. Building accessible applications from the start is far cheaper than retrofitting accessibility after launch.
 
 ### Example 23: XSS Prevention and Input Sanitization
 
@@ -4727,9 +4976,7 @@ export default XSSPreventionDemo;
 
 **Key Takeaway**: React automatically escapes content in JSX, preventing XSS attacks by default. Never use dangerouslySetInnerHTML with unsanitized user input. When rendering HTML is necessary, use DOMPurify to sanitize first. Validate and sanitize all user input. Use Content Security Policy headers for additional protection.
 
-**Expected Output**: Page displays textarea for user input, buttons to test malicious examples, display method selector (Safe/Dangerous), and output section. Safe display shows HTML tags as text (not executed). Dangerous display shows raw input, sanitized HTML (scripts removed), and rendered sanitized output. Security guidelines explain best practices and attack vectors.
-
-**Common Pitfalls**: Using dangerouslySetInnerHTML with raw user input (XSS vulnerability), trusting user input without validation (injection attacks), not sanitizing HTML before rendering (script execution), disabling React's protections (removes safety layer), concatenating user input into HTML strings (XSS risk).
+**Why It Matters**: Custom hooks testing verifies the state management logic independently from any rendering concern. useZakatCalculation manages the conversion between input values and calculated results - logic that matters for correctness but doesn't depend on which button the user clicked or which element displays the result. Testing hooks directly with renderHook gives you: precise control over inputs, clear assertion on outputs, and tests that run in milliseconds without mounting full component trees. Production hook tests serve as executable specifications of business logic. When the calculation rules change, failing tests immediately identify exactly what changed.
 
 ### Example 24: CSRF Protection Patterns
 
@@ -5095,9 +5342,7 @@ export default CSRFProtectionDemo;
 
 **Key Takeaway**: CSRF attacks exploit authenticated user sessions to perform unauthorized actions. Protect with anti-CSRF tokens (sent with state-changing requests), SameSite cookies (prevent cross-site cookie sending), custom headers (can't be forged), and origin validation. Use secure fetch wrapper to add CSRF tokens automatically. Never rely on cookies alone for authentication.
 
-**Expected Output**: Page displays current CSRF token, donation form with amount input, two buttons (with/without CSRF protection), status message, and request log showing recent requests. Clicking "Submit with CSRF Protection" sends request with token. Clicking "Submit WITHOUT CSRF Protection" demonstrates vulnerability. Explanation section details attack mechanics and protection mechanisms with code examples and implementation checklist.
-
-**Common Pitfalls**: Relying only on cookies for authentication (CSRF vulnerable), not validating CSRF tokens on server (protection useless), using GET requests for state changes (no CSRF protection), not setting SameSite cookie attribute (allows cross-site requests), storing CSRF tokens in cookies read by JavaScript (defeats purpose).
+**Why It Matters**: CSRF protection is a mandatory security requirement for any production application handling state-changing requests (form submissions, API mutations). Without CSRF protection, a malicious website can make authenticated requests to your API using the victim user's browser cookies. The double-submit cookie pattern is a stateless CSRF defense: the server sets a CSRF token in a cookie, the client reads it via JavaScript and sends it as a header, the server verifies they match. This is impossible to forge from cross-origin requests due to the Same-Origin Policy. Production React applications implement CSRF via interceptors (Axios interceptors, fetch wrappers) so protection is automatic rather than manually added to each request.
 
 ### Example 25: Complete Zakat Management System (Financial Domain Example)
 
@@ -5535,9 +5780,7 @@ export default ZakatManagementSystem;
 
 **Key Takeaway**: Production-ready Zakat management system demonstrates advanced React patterns: Zustand for global state with persistence, TypeScript for type safety, memoization for performance, form validation, domain-driven design with clear interfaces, and user-friendly UI. Showcases real-world financial domain application with Islamic principles integration.
 
-**Expected Output**: Page displays two-column layout. Left column shows "Add Wealth Entry" form (category dropdown, amount input, description input, Add Entry button) and wealth list showing all entries with remove buttons. Right column shows Zakat Calculator with total wealth, nisab threshold, status (zakat due or not), Calculate Zakat button, and result showing zakat amount. Bottom section explains zakat concepts and rules. Data persists across page reloads (localStorage).
-
-**Common Pitfalls**: Not persisting state (users lose data on refresh), missing validation (invalid data enters system), not memoizing list items (performance issues with many entries), unclear domain model (confusion about zakat rules), not providing user guidance (users don't understand how to use system).
+**Why It Matters**: The Zakat Management System demonstrates the production architecture for a complete domain feature: custom hooks separate business logic from rendering, TypeScript models the domain precisely, Zustand manages client state, React Query handles server state, error boundaries provide resilience, and accessible markup ensures broad usability. Production features of this complexity require architectural decisions that balance: separation of concerns (logic, state, and UI independently testable), performance (memoized computations, virtualized lists if needed), resilience (error recovery at multiple levels), and correctness (TypeScript preventing invalid calculations). This is the standard you should hold your production React work to.
 
 ---
 

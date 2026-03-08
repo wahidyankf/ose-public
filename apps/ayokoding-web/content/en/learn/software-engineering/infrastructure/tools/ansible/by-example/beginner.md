@@ -4,7 +4,6 @@ date: 2025-12-29T22:43:50+07:00
 draft: false
 weight: 10000001
 description: "Examples 1-27: Ansible fundamentals covering playbooks, inventory, core modules, variables, facts, conditionals, and loops (0-40% coverage)"
-categories: ["learn"]
 tags: ["ansible", "tutorial", "by-example", "beginner", "playbooks", "inventory", "modules", "automation"]
 ---
 
@@ -2546,10 +2545,14 @@ ntp_server: time.example.com
 ```yaml
 ---
 # Variables for webservers group
-http_port: 80
-https_port: 443
-document_root: /var/www/html
-max_connections: 100
+# => Applied to ALL hosts in 'webservers' group
+# => Scope: group-level (lower precedence than host_vars)
+http_port: 80 # => HTTP port for all webservers
+# => Override per-host: set http_port in host_vars/<host>.yml
+https_port: 443 # => HTTPS port for all webservers
+document_root: /var/www/html # => Web root directory for all webservers
+max_connections: 100 # => Default max_connections for webserver group
+# => web1.example.com overrides this to 150 in host_vars (see below)
 ```
 
 **`group_vars/databases.yml`**:
@@ -2557,9 +2560,13 @@ max_connections: 100
 ```yaml
 ---
 # Variables for databases group
-db_port: 5432
-max_connections: 200
-backup_enabled: true
+# => Applied to ALL hosts in 'databases' group
+# => These vars are NOT available to webservers group (group scope)
+db_port: 5432 # => PostgreSQL port for all database hosts
+max_connections: 200 # => Databases need more connections than webservers (200 vs 100)
+# => Note: same variable name as webservers group, different value
+# => No conflict: each host only loads vars for its own groups
+backup_enabled: true # => Enable automated backups on all database hosts
 ```
 
 **`host_vars/web1.example.com.yml`**:
@@ -2567,8 +2574,12 @@ backup_enabled: true
 ```yaml
 ---
 # Variables for specific host (highest precedence)
-max_connections: 150 # => Overrides group_vars value
-is_primary: true
+# => ONLY applied to web1.example.com (not web2, not databases)
+max_connections: 150 # => Overrides group_vars/webservers.yml value (100)
+# => Precedence: host_vars (150) > group_vars/webservers (100) > group_vars/all
+# => web1 is a high-traffic server needing more connections than default
+is_primary: true # => Custom flag: marks this as the primary webserver
+# => Used in playbook conditional: when: is_primary is defined and is_primary
 ```
 
 **Playbook**:

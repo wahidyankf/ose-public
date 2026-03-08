@@ -3,7 +3,7 @@ title: "By Example"
 date: 2025-12-30T01:11:31+07:00
 draft: false
 weight: 100003
-description: "Learn Kotlin through 80 annotated code examples - code-first tutorials for experienced developers"
+description: "Learn Kotlin through 81 annotated code examples - code-first tutorials for experienced developers"
 tags: ["kotlin", "tutorial", "by-example", "code-first"]
 ---
 

@@ -3,13 +3,13 @@ title: "Overview"
 date: 2025-12-29T23:43:13+07:00
 draft: false
 weight: 10000000
-description: "Learn Docker containerization through 79 annotated code examples covering 95% of Docker - ideal for experienced developers"
+description: "Learn Docker containerization through 84 annotated code examples covering 95% of Docker - ideal for experienced developers"
 tags: ["docker", "tutorial", "by-example", "examples", "code-first", "containers", "devops"]
 ---
 
 ## What is Docker By Example?
 
-This tutorial teaches Docker containerization through **79 heavily annotated, runnable examples** that achieve 95% coverage of Docker's features needed for production work. Each example is self-contained, copy-paste-runnable, and extensively commented to show exactly what happens at each step.
+This tutorial teaches Docker containerization through **84 heavily annotated, runnable examples** that achieve 95% coverage of Docker's features needed for production work. Each example is self-contained, copy-paste-runnable, and extensively commented to show exactly what happens at each step.
 
 ## Who is This For?
 
@@ -138,7 +138,7 @@ You can copy any example and run it immediately without referring to previous ex
 
 **Example count**: 27 examples
 
-### Advanced (Examples 55-79) - 75-95% Coverage
+### Advanced (Examples 55-84) - 75-95% Coverage
 
 **Focus**: Production deployment and optimization
 
@@ -151,7 +151,7 @@ You can copy any example and run it immediately without referring to previous ex
 - Production deployment patterns
 - Performance optimization
 
-**Example count**: 25 examples
+**Example count**: 30 examples
 
 ## Color-Blind Friendly Diagrams
 
@@ -171,7 +171,7 @@ All diagrams use a **WCAG AA compliant color palette**:
 
 - [Beginner](/en/learn/software-engineering/infrastructure/tools/docker/by-example/beginner) - Examples 1-27 (fundamentals)
 - [Intermediate](/en/learn/software-engineering/infrastructure/tools/docker/by-example/intermediate) - Examples 28-54 (production patterns)
-- [Advanced](/en/learn/software-engineering/infrastructure/tools/docker/by-example/advanced) - Examples 55-79 (expert mastery)
+- [Advanced](/en/learn/software-engineering/infrastructure/tools/docker/by-example/advanced) - Examples 55-84 (expert mastery)
 
 ## Getting Started
 
@@ -200,7 +200,7 @@ docker compose version  # => Docker Compose version v2.20.0 or higher
 
 **This tutorial**: Shows complete, runnable examples first, with heavy annotations explaining what happens at each step. Every example can be copied and executed immediately.
 
-**Coverage approach**: Achieves 95% feature coverage through systematic progression across 79 examples, ensuring you learn everything needed for production Docker work.
+**Coverage approach**: Achieves 95% feature coverage through systematic progression across 84 examples, ensuring you learn everything needed for production Docker work.
 
 ## Ready to Start?
 

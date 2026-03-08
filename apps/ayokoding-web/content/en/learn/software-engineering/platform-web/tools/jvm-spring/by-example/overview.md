@@ -88,91 +88,46 @@ Each example follows a **five-part structure**:
 
 ### 1. Concept Introduction
 
-Brief explanation of what the example demonstrates.
+A 1-3 sentence explanation of what the example demonstrates, often including an Islamic finance scenario for real-world context.
+
+### 2. Heavily Annotated Code
+
+Self-contained, runnable Java and Kotlin implementations with `// =>` annotations on every significant line.
+
+**Annotation density**: 1.0-2.25 comment lines per code line
 
 **Example**:
-
-> **Concept**: Constructor injection - Spring injects dependencies via constructor parameters, ensuring immutability and required dependencies.
-
-### 2. Islamic Finance Scenario
-
-Real-world context using Islamic finance concepts.
-
-**Example**:
-
-> **Scenario**: ZakatService requires a ZakatRepository to persist Zakat payments. Constructor injection ensures the repository is always available.
-
-### 3. Code Example (Heavily Annotated)
-
-Self-contained, runnable code with inline annotations.
-
-**Java Example**:
 
 ```java
 @Service  // => Marks as Spring-managed service component
 public class ZakatService {
 
     private final ZakatRepository repository;  // => Final field - immutable
-
     // => Constructor injection (recommended)
     // => Spring automatically injects repository parameter
     public ZakatService(ZakatRepository repository) {
-        this.repository = repository;          // => Dependency injected
-    }                                          // => Repository cannot be null
+        this.repository = repository;  // => Dependency injected
+    }
 
     @Transactional  // => Transaction boundary
     public void recordPayment(BigDecimal amount) {
         repository.save(new ZakatRecord(amount));  // => Persists within transaction
-    }                                              // => Auto-commit on success
+        // => Auto-commit on success
+    }
 }
 ```
 
-**Kotlin Example**:
+### 3. Optional Diagram
 
-```kotlin
-@Service  // => Spring-managed service
-class ZakatService(
-    private val repository: ZakatRepository  // => Constructor injection
-) {  // => Concise Kotlin syntax
-
-    @Transactional  // => Transaction boundary
-    fun recordPayment(amount: BigDecimal) {
-        repository.save(ZakatRecord(amount))  // => Persists record
-    }  // => Auto-commit/rollback
-}
-```
+Mermaid diagrams for complex concepts showing data flow, object hierarchies, or execution sequences.
 
 ### 4. Key Takeaways
 
-Bullet points highlighting critical concepts.
+Bullet points highlighting critical concepts and common pitfalls.
 
-**Example**:
+### 5. Why It Matters
 
-- Constructor injection ensures required dependencies are never null
-- `@Service` enables component scanning
-- `@Transactional` provides declarative transaction management
-- Final fields promote immutability
-
-### 5. Common Mistakes
-
-Anti-patterns and how to avoid them.
-
-**Example**:
-
-❌ **Mistake**: Using field injection
-
-```java
-@Autowired
-private ZakatRepository repository;  // => Hard to test, hides dependencies
-```
-
-✅ **Correct**: Use constructor injection
-
-```java
-public ZakatService(ZakatRepository repository) {
-    this.repository = repository;  // => Explicit, testable, immutable
-}
-```
+50-100 words explaining the business and production relevance of the concept, specifically in the context of Islamic finance systems.
 
 ## Islamic Finance Context
 

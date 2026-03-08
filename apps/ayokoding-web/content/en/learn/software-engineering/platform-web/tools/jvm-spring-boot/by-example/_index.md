@@ -8,7 +8,7 @@ type: docs
 layout: list
 ---
 
-- [Advanced](/en/learn/software-engineering/platform-web/tools/jvm-spring-boot/by-example/advanced)
+- [Overview](/en/learn/software-engineering/platform-web/tools/jvm-spring-boot/by-example/overview)
 - [Beginner](/en/learn/software-engineering/platform-web/tools/jvm-spring-boot/by-example/beginner)
 - [Intermediate](/en/learn/software-engineering/platform-web/tools/jvm-spring-boot/by-example/intermediate)
-- [Overview](/en/learn/software-engineering/platform-web/tools/jvm-spring-boot/by-example/overview)
+- [Advanced](/en/learn/software-engineering/platform-web/tools/jvm-spring-boot/by-example/advanced)

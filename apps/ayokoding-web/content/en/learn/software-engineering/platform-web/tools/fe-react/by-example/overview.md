@@ -1,13 +1,13 @@
 ---
 title: "Overview"
-weight: 100000000
+weight: 10000000
 date: 2025-01-29T00:00:00+07:00
 draft: false
-description: "Learn React + TypeScript through 75-90 heavily annotated code examples achieving 95% language coverage"
+description: "Learn React + TypeScript through 75 heavily annotated code examples achieving 95% language coverage"
 tags: ["react", "typescript", "by-example", "code-first", "examples"]
 ---
 
-**Want to learn React through code?** This by-example tutorial provides 75-90 heavily annotated examples covering 95% of React + TypeScript. Master React idioms, patterns, and best practices through working code rather than lengthy explanations.
+**Want to learn React through code?** This by-example tutorial provides 75 heavily annotated examples covering 95% of React + TypeScript. Master React idioms, patterns, and best practices through working code rather than lengthy explanations.
 
 ## What Is By-Example Learning?
 
@@ -15,9 +15,8 @@ By-example learning is a **code-first approach** where you learn concepts throug
 
 1. **What the code does** - Brief explanation of the React concept
 2. **How it works** - A focused, heavily commented code example
-3. **Why it matters** - A pattern summary highlighting the key takeaway
-4. **Expected output** - What you'll see when running the code
-5. **Common pitfalls** - Mistakes to avoid with this pattern
+3. **Key Takeaway** - A pattern summary highlighting the key takeaway
+4. **Why It Matters** - Production context, when to use, deeper significance
 
 This approach works best when you already understand programming fundamentals and basic web development concepts. You learn React's component model, hooks system, and TypeScript integration by studying real code rather than theoretical descriptions.
 
@@ -47,15 +46,15 @@ graph TD
   style E fill:#029E73,color:#fff
 ```
 
-## Coverage Philosophy: 95% Through 75-90 Examples
+## Coverage Philosophy: 95% Through 75 Examples
 
 The **95% coverage** means you'll understand React deeply enough to build production applications with confidence. It doesn't mean you'll know every edge case or advanced optimization—those come with experience.
 
-The 75-90 examples are organized progressively:
+The 75 examples are organized progressively:
 
 - **Beginner (Examples 1-25)**: Foundation concepts (JSX, components, props, state, basic hooks, event handling, conditional rendering)
 - **Intermediate (Examples 26-50)**: Production patterns (custom hooks, context, forms, data fetching, routing, error boundaries, performance basics)
-- **Advanced (Examples 51-90)**: Scale and optimization (advanced patterns, performance optimization, testing strategies, accessibility, deployment patterns)
+- **Advanced (Examples 51-75)**: Scale and optimization (advanced patterns, performance optimization, testing strategies, accessibility, deployment patterns)
 
 Together, these examples cover **95% of what you'll use** in production React applications.
 
@@ -103,9 +102,7 @@ All examples follow a consistent five-part format:
 
 **Key Takeaway**: 1-2 sentence summary.
 
-**Expected Output**: What you'll see when running this code.
-
-**Common Pitfalls**: 1-2 mistakes developers often make with this pattern.
+**Why It Matters**: 50-100 words explaining significance in production applications.
 
 ````
 
@@ -225,8 +222,7 @@ Each example has five parts:
 - **Explanation** (2-3 sentences): What React concept, why it exists, when to use it
 - **Code** (heavily commented): Working TypeScript code showing the pattern
 - **Key Takeaway** (1-2 sentences): Distilled essence of the pattern
-- **Expected Output**: What you'll see when running the code
-- **Common Pitfalls**: Mistakes to avoid
+- **Why It Matters** (50-100 words): Production context and deeper significance
 
 ### 3. Run the Code
 
@@ -248,22 +244,12 @@ Change props, add state, break things on purpose. Experimentation builds intuiti
 
 Use this guide as a reference when building features. Search for relevant examples and adapt patterns to your code.
 
-## Placeholder Notice
-
-**This section is under development.** Examples are being created to meet the annotation density standard (1-2.25 comments per code line per example) and five-part structure requirement.
-
-While we prepare this content, you can:
-
-- **Start with Initial Setup**: [Initial Setup](/en/learn/software-engineering/platform-web/tools/fe-react/initial-setup) - Set up your React + TypeScript development environment
-- **Try Quick Start**: [Quick Start](/en/learn/software-engineering/platform-web/tools/fe-react/quick-start) - Build your first React application
-- **Check back soon**: Examples will be added progressively, starting with Beginner section
-
 ## Ready to Start?
 
-Once examples are available, choose your learning path:
+Choose your learning path:
 
 - **Beginner** - Start here if new to React. Build foundation understanding through 25 core examples.
 - **Intermediate** - Jump here if you know React basics. Master production patterns through 25 examples.
-- **Advanced** - Expert mastery through 40 advanced examples covering performance, scale, and optimization.
+- **Advanced** - Expert mastery through 25 advanced examples covering performance, scale, and optimization.
 
 Or jump to specific topics by searching for relevant example keywords (hooks, context, forms, testing, performance, etc.).

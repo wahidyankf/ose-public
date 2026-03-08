@@ -290,7 +290,7 @@ pub extern "C" fn rust_greeting(name: *const i8) -> *mut i8 {
 
 **Key Takeaway**: FFI through `extern` blocks enables interoperability with C libraries by declaring external function signatures, with `unsafe` required for calls since the compiler can't verify foreign code safety.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: FFI is the bridge between Rust's safety guarantees and the vast C library ecosystem built over 50 years. Python bindings for NumPy and ML libraries are being rewritten using Rust FFI wrappers (PyO3) for memory safety without sacrificing C library performance. Systems integrating with OpenSSL, SQLite, or CUDA call battle-tested C implementations while keeping Rust's safety for surrounding code. The `unsafe` requirement makes foreign code auditable—security reviewers focus on `unsafe` blocks rather than reviewing every line, a targeted review model impossible in fully unsafe languages.
 
 ---
 
@@ -782,6 +782,18 @@ fn test_hygiene() {                  // => Function testing macro hygiene
 
 Procedural macros operate on AST (Abstract Syntax Tree) level, enabling custom derives, attribute macros, and function-like macros with full Rust code manipulation.
 
+**Setup**: Procedural macros require a dedicated crate with `proc-macro = true`. Create a separate crate with this `Cargo.toml`:
+
+```toml
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = { version = "2", features = ["full"] }
+quote = "1"
+proc-macro2 = "1"
+```
+
 ```rust
 // In a separate crate (proc-macro = true in Cargo.toml)
 // Cargo.toml requires: [lib] proc-macro = true
@@ -839,69 +851,10 @@ fn main() {
                                      // => Method exists because derive macro generated impl
 }
 
-// More complex example: derive with field access
-// #[proc_macro_derive(Builder)]
-// pub fn derive_builder(input: TokenStream) -> TokenStream {
-//     let ast = syn::parse(input).unwrap(); // => Parse struct definition
-//     let name = &ast.ident;                // => Get struct name
-//     let fields = match &ast.data {
-//         syn::Data::Struct(s) => &s.fields, // => Extract fields from struct
-//         _ => panic!("Builder only works on structs"),
-//     };
-//
-//     let builder_fields = fields.iter().map(|f| {
-//         let name = &f.ident;              // => Field name
-//         let ty = &f.ty;                   // => Field type
-//         quote! {
-//             pub fn #name(mut self, #name: #ty) -> Self {
-//                 self.#name = Some(#name);  // => Builder setter method
-//                 self
-//             }
-//         }
-//     });                                    // => Generate setter for each field
-//
-//     let gen = quote! {
-//         impl #name {
-//             #(#builder_fields)*            // => Repeat setter methods
-//         }
-//     };
-//     gen.into()
-// }                                          // => Usage: #[derive(Builder)] struct Config { ... }
-
-// Attribute macro example (different type of proc macro)
-// #[proc_macro_attribute]
-// pub fn log_calls(attr: TokenStream, item: TokenStream) -> TokenStream {
-//                                            // => attr: attributes in #[log_calls(level = "info")]
-//                                            // => item: function being annotated
-//     let input = syn::parse_macro_input!(item as syn::ItemFn);
-//                                            // => Parse as function item
-//     let name = &input.sig.ident;           // => Function name
-//     let block = &input.block;              // => Function body
-//
-//     let gen = quote! {
-//         fn #name() {
-//             println!("Calling function: {}", stringify!(#name));
-//             #block                         // => Original function body
-//         }
-//     };                                     // => Wraps function with logging
-//     gen.into()
-// }                                          // => Usage: #[log_calls] fn foo() { ... }
-
-// Function-like macro example (third type of proc macro)
-// #[proc_macro]
-// pub fn sql(input: TokenStream) -> TokenStream {
-//                                            // => input: everything inside sql!(...)
-//     let query: LitStr = syn::parse(input).unwrap();
-//                                            // => Parse as string literal
-//     let query_str = query.value();         // => Extract string content
-//
-//     // Validate SQL at compile time
-//     validate_sql(&query_str).expect("Invalid SQL");
-//
-//     quote! {
-//         execute_query(#query)              // => Generate runtime code
-//     }.into()
-// }                                          // => Usage: sql!("SELECT * FROM users")
+// Other proc macro types (sketched):
+// #[proc_macro_derive(Builder)] - generates builder pattern for any struct
+// #[proc_macro_attribute] - transforms annotated functions (e.g., add logging)
+// #[proc_macro] - function-like macros: sql!("SELECT ...") for compile-time SQL validation
 ```
 
 **Key Takeaway**: Procedural macros operate on parsed syntax trees enabling powerful code generation for custom derives, attributes, and function-like macros, with full access to Rust's AST.
@@ -913,6 +866,13 @@ fn main() {
 ## Example 65: Async/Await Basics
 
 Async/await enables writing asynchronous code that looks synchronous, using `async fn` and `.await` for non-blocking operations.
+
+**Setup**: Rust's async/await requires an external runtime executor. Examples 65-71 use `tokio`, the most widely adopted async runtime. Add to your `Cargo.toml`:
+
+```toml
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+```
 
 ```mermaid
 graph TD
@@ -1029,7 +989,7 @@ async fn handle_async_result() {
 
 **Key Takeaway**: Async/await syntax enables writing asynchronous code with synchronous structure, with `async fn` returning futures and `.await` yielding to the runtime until futures complete.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Tokio-based async Rust achieves millions of concurrent connections with memory usage that goroutines (Go) or green threads can't match, because futures compile to state machines with minimal per-task allocation. Web servers like Axum and Discord's backend use async Rust for high-concurrency APIs where thread-per-connection models would exhaust memory at scale. Unlike Node.js callbacks or Python asyncio, Rust's type system prevents forgetting to `.await` a future—a common source of bugs in JavaScript where unawaited Promises are valid but wrong.
 
 ---
 
@@ -2759,22 +2719,26 @@ trait RegularIterator {
     fn next(&mut self) -> Option<Self::Item>;
                                      // => Cannot tie returned Item to &mut self lifetime
                                      // => Item must be owned or have 'static lifetime
+                                     // => Contrast: GAT version ties Item lifetime to &'a mut self
 }
 
 // Regular Iterator can't lend (must own or clone)
 impl<T: Clone> RegularIterator for WindowsIterator<T> {
+                                     // => T: Clone required because next() must return owned Vec<T>
     type Item = Vec<T>;              // => Must return OWNED Vec (cannot borrow)
                                      // => Expensive: allocates and clones on every next()
 
     fn next(&mut self) -> Option<Self::Item> {
+                                     // => Returns Option<Vec<T>>, not a borrowed slice
         if self.pos + 2 <= self.data.len() {
+                                     // => Same bounds check as GAT version
             let window = self.data[self.pos..self.pos + 2].to_vec();
                                      // => to_vec() allocates and clones (expensive!)
                                      // => GAT version just borrows (zero-cost)
-            self.pos += 1;
-            Some(window)             // => Returns owned vector
+            self.pos += 1;           // => Advance window position
+            Some(window)             // => Returns owned vector (allocation per call)
         } else {
-            None
+            None                     // => Iterator exhausted
         }
     }
 }
@@ -2784,8 +2748,10 @@ trait StreamingIterator {
     type Item<'a, T> where Self: 'a, T: 'a;
                                      // => GAT with TWO parameters: lifetime 'a and type T
                                      // => Even more flexible than single-lifetime GATs
+                                     // => Enables heterogeneous streaming with type parameter
 
     fn next<'a, T>(&'a mut self, arg: &'a T) -> Option<Self::Item<'a, T>>;
+                                     // => Both 'a and T constrain the returned Item
 }
 
 // GATs enable async traits (before async fn in traits)
@@ -2799,6 +2765,7 @@ trait AsyncIterator {
 
     fn next<'a>(&'a mut self) -> Self::NextFuture<'a>;
                                      // => Returns future tied to borrow lifetime
+                                     // => Future borrows self; cannot call next() again until future completes
 }
 
 // Practical GAT example: Database connection
@@ -2813,31 +2780,34 @@ trait Database {
 
 struct PostgresDb {
     buffer: String,                  // => Internal buffer for query results
+                                     // => Rows borrow from this buffer (GAT lifetime constraint)
 }
 
 impl Database for PostgresDb {
     type Row<'a> = &'a str where Self: 'a;
                                      // => Row is string slice borrowing buffer
+                                     // => Lifetime 'a: rows cannot outlive the PostgresDb connection
 
     fn query<'a>(&'a mut self, sql: &str) -> Vec<Self::Row<'a>> {
+                                     // => Returns Vec of rows, each borrowing from self.buffer
         self.buffer = format!("Result: {}", sql);
-                                     // => Store result in buffer
+                                     // => Store result in buffer (overwrites previous result)
         vec![&self.buffer]           // => Return slice borrowing buffer
                                      // => Lifetime 'a ensures buffer not dropped while rows used
-    }
+    }                                // => &'a mut self borrow ends when rows are dropped
 }
 
 fn use_database() {
     let mut db = PostgresDb {
-        buffer: String::new(),
+        buffer: String::new(),       // => Empty buffer initially
     };
 
     let rows = db.query("SELECT * FROM users");
-                                     // => rows borrows from db
+                                     // => rows borrows from db (GAT lifetime ties rows to db)
     for row in rows {
         println!("Row: {}", row);    // => Output: Row: Result: SELECT * FROM users
-    }                                // => rows dropped here
-                                     // => db can be used again (borrow ended)
+    }                                // => rows dropped here (borrow of db ends)
+                                     // => db can be used again (exclusive borrow released)
 }
 ```
 
@@ -4440,13 +4410,26 @@ fn main() {
 
 **Key Takeaway**: Cargo features enable compile-time conditional compilation and optional dependencies, allowing libraries to provide flexible configurations and reduce binary size by excluding unused functionality.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Feature flags are essential for library ecosystems where users have conflicting requirements—serde's `derive` feature is opt-in so users who don't need macros avoid the compile-time cost of proc-macro parsing. Embedded and WebAssembly targets use features to strip networking or filesystem code from binaries where those APIs don't exist. The Tokio runtime exposes features like `full`, `net`, `sync` so users include only what they need, keeping AWS Lambda deployment packages small and reducing attack surface in security-sensitive deployments.
 
 ---
 
 ## Example 85: Performance Profiling and Benchmarking
 
 Profiling identifies performance bottlenecks, while benchmarking measures code performance with tools like Criterion.
+
+**Setup**: Criterion requires a dev dependency and a benchmark target. In your `Cargo.toml`:
+
+```toml
+[dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
+
+[[bench]]
+name = "benchmarks"
+harness = false
+```
+
+Create benchmark file at `benches/benchmarks.rs`. Run with `cargo bench`.
 
 ```rust
 // Main code to benchmark (in src/lib.rs)
@@ -4461,176 +4444,87 @@ pub fn fibonacci_recursive(n: u64) -> u64 {
         1 => 1,                      // => Base case: fib(1) = 1
                                      // => Second fibonacci number
         n => fibonacci_recursive(n - 1) + fibonacci_recursive(n - 2),
-                                     // => Recursive case (n >= 2)
-                                     // => Recursive: fib(n) = fib(n-1) + fib(n-2)
-                                     // => Makes 2 recursive calls per level
-                                     // => Exponential time complexity O(2^n)
-                                     // => Very slow for large n (duplicate computations)
-                                     // => No memoization (recalculates values)
-    }                                // => Match returns u64
-}                                    // => Function completes
-                                     // => Returns fibonacci number
+                                     // => Recursive case: fib(n) = fib(n-1) + fib(n-2)
+                                     // => Exponential time O(2^n) - no memoization
+    }
+}
 
 pub fn fibonacci_iterative(n: u64) -> u64 {
-                                     // => Optimized iterative version
-                                     // => Public function for benchmarking
-                                     // => Much faster than recursive
-    if n <= 1 {                      // => Handle base cases (0 and 1)
-                                     // => Early return optimization
-        return n;                    // => Early return for base cases
-                                     // => fib(0) = 0, fib(1) = 1
-                                     // => No iteration needed
-    }                                // => Continue to iterative calculation
-    let mut a = 0;                   // => Previous value (fib(n-2))
-                                     // => Mutable state for iteration
-                                     // => Initialized to fib(0)
-    let mut b = 1;                   // => Current value (fib(n-1))
-                                     // => Mutable state for iteration
-                                     // => Initialized to fib(1)
-    for _ in 1..n {                  // => Iterate n-1 times
-                                     // => Loop from 1 to n-1 (inclusive)
-                                     // => Discard loop variable (unused)
-        let temp = a + b;            // => Next fibonacci number
-                                     // => Calculate fib(n) = fib(n-1) + fib(n-2)
-                                     // => Temporary storage for sum
-        a = b;                       // => Shift: previous becomes current
-                                     // => Update for next iteration
-                                     // => Move fib(n-1) to fib(n-2)
-        b = temp;                    // => Shift: current becomes next
-                                     // => Update for next iteration
-                                     // => Move fib(n) to fib(n-1)
-    }                                // => Loop completes after n-1 iterations
-                                     // => All fibonacci numbers calculated
-    b                                // => Return final result (fib(n))
-                                     // => Linear time complexity O(n)
-                                     // => ~650x faster than recursive for n=20
-}                                    // => Function completes
-                                     // => No recursion overhead
+                                     // => Optimized iterative version; O(n) vs O(2^n) recursive
+    if n <= 1 { return n; }          // => Base cases: fib(0)=0, fib(1)=1
+
+    let mut a = 0;                   // => fib(n-2) accumulator, starts at fib(0)
+    let mut b = 1;                   // => fib(n-1) accumulator, starts at fib(1)
+    for _ in 1..n {                  // => Iterate n-1 times (discard loop variable)
+        let temp = a + b;            // => Next fibonacci: fib(n-1) + fib(n-2)
+        a = b;                       // => Shift: fib(n-2) = fib(n-1)
+        b = temp;                    // => Shift: fib(n-1) = fib(n)
+    }
+    b                                // => Return fib(n); linear time O(n), ~650x faster than recursive
+}
 
 pub fn sum_vector(data: &[i32]) -> i32 {
-                                     // => Sum all elements in slice
-                                     // => Public function for benchmarking
-    data.iter().sum()                // => Iterator-based sum
-                                     // => iter() creates iterator over &i32
-                                     // => sum() consumes iterator, returns i32
-                                     // => Zero-cost abstraction (compiles to loop)
-}                                    // => Function completes
+    data.iter().sum()                // => Iterator sum (zero-cost abstraction: compiles to loop)
+}
 
 // Criterion benchmark file (in benches/benchmark.rs)
 use criterion::{black_box, criterion_group, criterion_main, Criterion, BenchmarkId};
-                                     // => Import Criterion types
-                                     // => black_box prevents compiler optimizations
-                                     // => criterion_group/criterion_main are macros
-
-// Import functions to benchmark
+                                     // => black_box prevents compiler from optimizing benchmarked code away
 use mylib::{fibonacci_recursive, fibonacci_iterative, sum_vector};
-                                     // => Import from library crate
 
 fn fibonacci_benchmarks(c: &mut Criterion) {
-                                     // => Benchmark function (receives Criterion instance)
-                                     // => c is mutable borrow
     let mut group = c.benchmark_group("fibonacci");
-                                     // => Create benchmark group (named "fibonacci")
-                                     // => Create benchmark group
-                                     // => Groups related benchmarks together
+                                     // => Groups related benchmarks; appears as "fibonacci/recursive" etc.
 
-    // Benchmark recursive implementation
     group.bench_function("recursive", |b| {
-                                     // => Register benchmark named "recursive"
-                                     // => b is Bencher (closure parameter)
         b.iter(|| fibonacci_recursive(black_box(20)));
-                                     // => iter runs closure multiple times
-                                     // => black_box prevents optimization of constant 20
-                                     // => black_box prevents optimization
-                                     // => Criterion measures time per iteration
-                                     // => Measures actual execution
-    });                              // => Benchmark registered
+                                     // => b.iter() runs closure many times for statistical measurement
+                                     // => black_box(20) prevents compiler from optimizing the constant away
+    });
 
-    // Benchmark iterative implementation
     group.bench_function("iterative", |b| {
-                                     // => Second benchmark in group
         b.iter(|| fibonacci_iterative(black_box(20)));
-                                     // => Same input (20) for fair comparison
-                                     // => Compare against recursive
-                                     // => Should be much faster
-                                     // => Expected: ~650x faster than recursive
-    });                              // => Benchmark registered
+                                     // => Same input for fair comparison (should be ~650x faster)
+    });
 
-    group.finish();                  // => Complete benchmark group
-                                     // => Finalize measurements and reporting
-}                                    // => Function completes
+    group.finish();                  // => Finalize group measurements
+}
 
 fn sum_benchmarks(c: &mut Criterion) {
-                                     // => Benchmark function for sum operations
-    let data: Vec<i32> = (0..1000).collect();
-                                     // => Generate test data: [0,1,2,...,999]
-                                     // => Create Vec with 1000 elements
-
-    // Parameterized benchmark (different input sizes)
+    // Parameterized benchmark: test with different input sizes to observe scaling
     for size in [100, 500, 1000].iter() {
-                                     // => Test with 3 different input sizes
-                                     // => Observe scaling behavior
-        c.bench_with_input(           // => Parameterized benchmark
+        c.bench_with_input(
             BenchmarkId::new("sum_vector", size),
-                                     // => Create unique ID (includes parameter)
-                                     // => Benchmark ID with parameter
-                                     // => Names: "sum_vector/100", "sum_vector/500", etc.
-            size,                    // => Pass size as input parameter
-            |b, &size| {             // => Closure receives Bencher and size
+                                     // => Creates "sum_vector/100", "sum_vector/500", etc.
+            size,
+            |b, &size| {
                 let data: Vec<i32> = (0..size).collect();
-                                     // => Create data of specified size
-                                     // => Generate fresh data for each size
                 b.iter(|| sum_vector(black_box(&data)));
-                                     // => Benchmark sum_vector with this data
-                                     // => Measure sum operation
-                                     // => black_box prevents optimization of data
-            },                       // => Benchmark closure ends
-        );                           // => Benchmark registered
-    }                                // => Loop completes (3 benchmarks registered)
-}                                    // => Function completes
+                                     // => Measure actual sum; black_box prevents compiler optimization
+            },
+        );
+    }
+}
 
 criterion_group!(benches, fibonacci_benchmarks, sum_benchmarks);
-                                     // => Macro creates benchmark group
-                                     // => Group benchmarks together
-                                     // => Registers fibonacci_benchmarks and sum_benchmarks
-criterion_main!(benches);            // => Macro generates main function
-                                     // => Generate main function
-                                     // => Entry point for cargo bench
+                                     // => Register benchmark functions into group
+criterion_main!(benches);            // => Generate main function for cargo bench entry point
 
-// Run benchmarks with:
-// cargo bench                       => Runs all benchmarks
-                                     // => Output includes statistics:
-                                     // => - Mean execution time
-                                     // => - Standard deviation
-                                     // => - Throughput
-                                     // => - Comparison with previous runs
+// cargo bench                       => Run all benchmarks (with warmup, multiple iterations)
+// cargo flamegraph --bin myapp      => Profile and generate flamegraph.svg
+// cargo build --release && perf record ./target/release/myapp && perf report
 
-// Profiling with flamegraph:
-// cargo install flamegraph          => Install profiling tool
-// cargo flamegraph --bin myapp      => Generate flame graph
-                                     // => Creates flamegraph.svg
-                                     // => Shows where time is spent
-
-// Profiling with perf (Linux):
-// cargo build --release             => Build optimized binary
-// perf record --call-graph dwarf ./target/release/myapp
-                                     // => Record performance data
-// perf report                       => View profiling results
-
-// Example benchmark output:
-// fibonacci/recursive    time:   [26.891 ms 26.934 ms 26.981 ms]
-                                     // => Mean: 26.934 ms
-// fibonacci/iterative    time:   [41.234 ns 41.389 ns 41.562 ns]
-                                     // => Mean: 41.389 ns (650x faster!)
-// sum_vector/100         time:   [142.31 ns 142.89 ns 143.51 ns]
-// sum_vector/500         time:   [714.52 ns 716.84 ns 719.43 ns]
-// sum_vector/1000        time:   [1.4289 µs 1.4334 µs 1.4385 µs]
-                                     // => Linear scaling with input size
+// Example output:
+// fibonacci/recursive    time:   [26.934 ms]   (mean of distribution)
+// fibonacci/iterative    time:   [41.389 ns]   (650x faster!)
+// sum_vector/100         time:   [142.89 ns]   (linear scaling:
+// sum_vector/500         time:   [716.84 ns]    500 elements ≈ 5x slower than 100)
+// sum_vector/1000        time:   [1.4334 µs]
 ```
 
 **Key Takeaway**: Use Criterion for statistically rigorous benchmarks with warmup and measurement phases, and flamegraph or perf for profiling to identify performance bottlenecks, always profiling release builds (`--release`).
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Criterion's statistical analysis catches the flaky benchmarks that naive timing misses due to CPU frequency scaling, memory pressure, and process scheduling variance. Performance-critical libraries like Rayon, Tokio, and crossbeam maintain Criterion benchmark suites to catch regressions before release. The combination of Criterion benchmarks and `cargo flamegraph` is how Rust developers achieved the grep-beating performance of ripgrep—identifying the exact hot paths worth optimizing rather than guessing. Profiling release builds is essential because debug mode disables optimizations that change performance by 10-100x.
 
 ---
 

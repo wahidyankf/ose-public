@@ -95,6 +95,26 @@ test("displays validation error for invalid email", async ({ page }) => {
 
 Test forms where fields appear/disappear based on user selections. This validates conditional logic in interactive forms.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    Select["Select dropdown option"] --> JS["JavaScript event handler<br/>evaluates selection"]
+    JS --> Cond{"Option == 'Other'?"}
+    Cond -->|yes| Show["Show conditional field<br/>toBeVisible()"]
+    Cond -->|no| Hide["Hide conditional field<br/>toBeHidden()"]
+    Show --> Fill["Fill conditional field<br/>with user input"]
+    Fill --> ChangeBack["Change selection back"]
+    ChangeBack --> JS
+
+    style Select fill:#0173B2,color:#fff
+    style JS fill:#DE8F05,color:#000
+    style Cond fill:#CC78BC,color:#000
+    style Show fill:#029E73,color:#fff
+    style Hide fill:#CA9161,color:#fff
+    style Fill fill:#029E73,color:#fff
+    style ChangeBack fill:#0173B2,color:#fff
+```
+
 ```typescript
 import { test, expect } from "@playwright/test";
 
@@ -350,6 +370,25 @@ test("formats text in rich text editor", async ({ page }) => {
 
 Test drag-and-drop interactions for reordering lists. This validates mouse-based manipulation patterns.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+sequenceDiagram
+    participant Test as Test Code
+    participant PW as Playwright
+    participant DOM as Browser DOM
+
+    Test->>PW: firstTask.dragTo(secondTask)
+    PW->>DOM: mousedown on firstTask (center)
+    DOM-->>PW: dragstart event fired
+    PW->>DOM: mousemove toward secondTask
+    DOM-->>PW: dragover event on secondTask
+    PW->>DOM: mouseup on secondTask
+    DOM-->>PW: drop event fired, DOM reordered
+    PW-->>Test: dragTo() resolved
+    Test->>PW: expect(tasks.nth(0)).toHaveText('Task 2')
+    PW-->>Test: assertion passes
+```
+
 ```typescript
 import { test, expect } from "@playwright/test";
 
@@ -440,6 +479,29 @@ test("adjusts price range with sliders", async ({ page }) => {
 ### Example 40: Form Submission - Success and Error Handling
 
 Test complete form submission lifecycle including success responses and server errors. This validates end-to-end form workflows.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    Submit["button.click() — form submit"] --> API["POST /api/register"]
+    API --> Status{"HTTP Status?"}
+    Status -->|"201 Created"| Success["Show success message<br/>Navigate to /dashboard"]
+    Status -->|"409 Conflict"| Error["Show error message<br/>Stay on /register"]
+    Status -->|"500 Server Error"| ServerErr["Show generic error<br/>Stay on /register"]
+    Success --> AssertURL["expect(page).toHaveURL(/dashboard/)"]
+    Error --> AssertErr["expect(page.getByText('Username taken'))"]
+    ServerErr --> AssertErr2["expect(page.getByText('Something went wrong'))"]
+
+    style Submit fill:#0173B2,color:#fff
+    style API fill:#DE8F05,color:#000
+    style Status fill:#CC78BC,color:#000
+    style Success fill:#029E73,color:#fff
+    style Error fill:#CA9161,color:#fff
+    style ServerErr fill:#CA9161,color:#fff
+    style AssertURL fill:#029E73,color:#fff
+    style AssertErr fill:#DE8F05,color:#000
+    style AssertErr2 fill:#DE8F05,color:#000
+```
 
 ```typescript
 import { test, expect } from "@playwright/test";
@@ -677,6 +739,27 @@ test("validates search result count", async ({ page }) => {
 
 Test visual appearance by comparing screenshots. This catches unintended UI changes across releases.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    Assert["expect(page).toHaveScreenshot('baseline.png')"] --> FirstRun{"Baseline<br/>exists?"}
+    FirstRun -->|no| CreateBase["Capture current screenshot<br/>Save as baseline"]
+    FirstRun -->|yes| Capture["Capture current screenshot"]
+    CreateBase --> PassFirst["Pass (first run creates baseline)"]
+    Capture --> Diff["Pixel diff comparison<br/>(with maxDiffPixels threshold)"]
+    Diff -->|"within threshold"| Pass["Assertion Passes"]
+    Diff -->|"exceeds threshold"| Fail["Fail: attach diff image<br/>to test report"]
+
+    style Assert fill:#0173B2,color:#fff
+    style FirstRun fill:#DE8F05,color:#000
+    style CreateBase fill:#CA9161,color:#fff
+    style Capture fill:#CA9161,color:#fff
+    style PassFirst fill:#029E73,color:#fff
+    style Diff fill:#CC78BC,color:#000
+    style Pass fill:#029E73,color:#fff
+    style Fail fill:#DE8F05,color:#000
+```
+
 ```typescript
 import { test, expect } from "@playwright/test";
 
@@ -720,6 +803,27 @@ test("detects visual changes in button styling", async ({ page }) => {
 
 Test accessibility violations using axe-core integration. This validates WCAG compliance automatically.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    Page["await page.goto(url)"] --> Scan["new AxeBuilder({ page }).analyze()"]
+    Scan --> Rules["Run WCAG 2.x rules:<br/>• Missing labels<br/>• Color contrast<br/>• Invalid ARIA<br/>• Keyboard traps"]
+    Rules --> Results["violations array"]
+    Results --> Check{"violations.length?"}
+    Check -->|"== 0"| Pass["All rules pass"]
+    Check -->|"> 0"| Fail["Violations found<br/>(rule, impact, element)"]
+
+    style Page fill:#0173B2,color:#fff
+    style Scan fill:#DE8F05,color:#000
+    style Rules fill:#CC78BC,color:#000
+    style Results fill:#CA9161,color:#fff
+    style Check fill:#DE8F05,color:#000
+    style Pass fill:#029E73,color:#fff
+    style Fail fill:#DE8F05,color:#000
+```
+
+**Why this external dependency**: Playwright's built-in `accessibility()` snapshot API provides access to the accessibility tree for assertions on individual elements, but it does not detect WCAG rule violations automatically. `@axe-core/playwright` wraps the industry-standard axe-core engine, which tests pages against WCAG 2.x rules (missing labels, color contrast violations, invalid ARIA, keyboard traps, and more) in a single scan. Install with: `npm install @axe-core/playwright`.
+
 ```typescript
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
@@ -728,29 +832,32 @@ test("checks for accessibility violations", async ({ page }) => {
   // => Test accessibility with axe-core
   await page.goto("https://example.com/checkout");
   // => Navigates to checkout page
+  // => Page will be scanned for WCAG violations
 
   const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
-  // => Runs axe-core accessibility scan
-  // => Analyzes entire page against WCAG rules
+  // => Runs axe-core accessibility scan on entire page
+  // => Analyzes against WCAG 2.x rules (missing labels, contrast, ARIA)
+  // => Returns object with violations array
 
   expect(accessibilityScanResults.violations).toEqual([]);
   // => Asserts no accessibility violations found
-  // => Empty array means WCAG compliant
+  // => Empty array means all WCAG rules pass
 
   await page.getByLabel("Card Number").fill("4111111111111111");
-  // => Fills payment form field
+  // => Fills payment form field (test card number)
   await page.getByRole("button", { name: "Place Order" }).click();
-  // => Submits order, shows confirmation
+  // => Submits order, triggers confirmation modal
 
   const confirmationScan = await new AxeBuilder({ page })
     .include("#confirmation-modal")
-    // => Scans specific element only
-    // => Focuses on modal dialog
+    // => .include() scopes scan to specific element
+    // => Scans only the modal, not entire page
     .analyze();
+  // => Returns violations for modal element only
 
   expect(confirmationScan.violations).toEqual([]);
   // => Asserts modal accessible
-  // => Dialog focus management correct
+  // => Dialog focus management, ARIA roles correct
 });
 ```
 
@@ -761,6 +868,24 @@ test("checks for accessibility violations", async ({ page }) => {
 ### Example 46: Network Response Assertions - API Validation
 
 Test network responses for data integrity and error handling. This validates API contract compliance.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+sequenceDiagram
+    participant Test as Test Code
+    participant PW as Playwright
+    participant UI as Browser UI
+    participant API as Backend API
+
+    Test->>PW: Set up waitForResponse() promise
+    Test->>UI: page.getByRole('button').click()
+    UI->>API: XHR/fetch POST /api/data
+    API-->>UI: HTTP 200 { data: [...] }
+    UI-->>PW: Network response intercepted
+    PW-->>Test: response object resolved
+    Test->>Test: expect(response.status()).toBe(200)
+    Test->>Test: expect(data).toMatchObject(schema)
+```
 
 ```typescript
 import { test, expect } from "@playwright/test";
@@ -818,29 +943,37 @@ Create custom matchers for domain-specific validation. This improves test readab
 
 ```typescript
 import { test, expect } from "@playwright/test";
+// => Import test runner and expect assertion library
 
 // Extend Playwright's expect with custom matcher
+// => expect.extend adds new assertion methods globally
 expect.extend({
+  // => Object where keys become new expect().methodName() calls
   async toHaveValidPrice(locator: Locator) {
-    // => Custom matcher for price validation
+    // => Custom matcher function: async, receives Locator
     const text = await locator.textContent();
-    // => Gets element text content
+    // => Gets element text content (e.g., "$29.99")
     const priceMatch = text?.match(/\$(\d+(?:\.\d{2})?)/);
-    // => Extracts price from text
-    // => Regex matches $XX.XX format
+    // => Extracts price from text using regex
+    // => Regex matches $XX or $XX.XX format
 
     const pass = priceMatch !== null && parseFloat(priceMatch[1]) > 0;
-    // => Validates price format and positive value
-    // => Returns boolean for assertion result
+    // => pass=true when: price found AND value > 0
+    // => pass=false when: no match or zero/negative price
 
     return {
+      // => Return object: Playwright reads message and pass
       message: () =>
+        // => message(): function returning error string
         pass
           ? `Expected price to be invalid, but got ${text}`
-          : `Expected valid price (e.g., substantial amounts.99), but got ${text}`,
-      // => Error message for assertion failure
+          : // => .not.toHaveValidPrice() failure message
+            `Expected valid price (e.g., substantial amounts.99), but got ${text}`,
+      // => Regular toHaveValidPrice() failure message
+      // => message(): called when assertion fails
+      // => Different message for .not and normal usage
       pass,
-      // => Pass/fail status
+      // => Playwright uses pass to determine success/failure
     };
   },
 });
@@ -848,21 +981,21 @@ expect.extend({
 test("validates product prices with custom matcher", async ({ page }) => {
   // => Test using custom price matcher
   await page.goto("https://example.com/products");
-  // => Navigates to product listing
+  // => Navigates to product listing page
 
   const productPrice = page.locator('[data-testid="product-price"]').first();
-  // => Locates first product price
+  // => Locates first product price element by test ID
   await expect(productPrice).toHaveValidPrice();
-  // => Uses custom matcher
-  // => Validates price format and value
+  // => Calls custom matcher: validates "$XX.XX" format
+  // => Fails if price missing, zero, or malformatted
 
   const allPrices = page.locator('[data-testid="product-price"]');
-  // => Locates all product prices
+  // => Locates ALL product price elements
   for (const price of await allPrices.all()) {
-    // => Iterates over all price elements
+    // => Iterates over each price element (array of Locators)
     await expect(price).toHaveValidPrice();
-    // => Validates each price
-    // => Domain-specific assertion
+    // => Validates each price individually
+    // => Custom matcher reused across all products
   }
 });
 ```
@@ -916,49 +1049,53 @@ Use polling assertions to wait for conditions that update asynchronously. This h
 
 ```typescript
 import { test, expect } from "@playwright/test";
+// => Import test and expect from Playwright
 
 test("waits for real-time update to appear", async ({ page }) => {
-  // => Test polling assertions
+  // => Test polling assertions for async updates
   await page.goto("https://example.com/dashboard");
-  // => Navigates to live dashboard
+  // => Navigates to live dashboard with real-time features
 
   const notificationBadge = page.locator('[data-testid="notification-count"]');
-  // => Locates notification counter
+  // => Locates notification counter by test ID
   await expect(notificationBadge).toHaveText("0");
-  // => Initially no notifications
+  // => Asserts initial state: no notifications
+  // => Baseline before triggering change
 
   // Simulate triggering notification (e.g., WebSocket message)
   await page.evaluate(() => {
-    // => Executes code in browser context
+    // => Executes JavaScript in browser context
     (window as any).simulateNotification();
-    // => Triggers notification system
+    // => Calls global function to simulate notification
+    // => Triggers WebSocket/server-sent event
   });
+  // => Browser state updated asynchronously
 
   await expect(notificationBadge).toHaveText("1", { timeout: 5000 });
-  // => Waits up to 5 seconds for count update
-  // => Polls until condition met or timeout
-  // => Handles asynchronous state updates
+  // => Waits up to 5 seconds for count to update to "1"
+  // => Polls every ~100ms until condition met or timeout
+  // => Auto-retry handles asynchronous state updates
 
   await expect
     .poll(
       async () => {
-        // => Custom polling function
+        // => Custom polling function executed repeatedly
         const text = await notificationBadge.textContent();
-        // => Gets current count
+        // => Reads current badge text on each poll
         return parseInt(text || "0");
-        // => Converts to number
+        // => Returns numeric value for comparison
       },
       {
-        // => Polling configuration
         timeout: 10000,
-        // => Max wait time
+        // => Max wait time: 10 seconds
         intervals: [100, 250, 500],
-        // => Polling intervals (ms)
+        // => Polling intervals: 100ms, 250ms, 500ms (backoff)
       },
     )
+    // => .poll().toBeGreaterThan(0): assertion on polled value
     .toBeGreaterThan(0);
-  // => Asserts count eventually positive
-  // => Custom polling logic
+  // => Asserts count eventually becomes positive (> 0)
+  // => expect.poll retries until assertion passes or timeout
 });
 ```
 
@@ -1013,56 +1150,82 @@ test("verifies admin panel hidden from regular users", async ({ page }) => {
 
 Test API endpoints directly using Playwright's request context. This validates backend behavior without UI interaction.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+sequenceDiagram
+    participant Test as Test Code
+    participant Req as request fixture
+    participant API as Backend API
+
+    Test->>Req: request.get('/api/users')
+    Req->>API: HTTP GET /api/users<br/>(no browser overhead)
+    API-->>Req: HTTP 200 [{ id, name, email }]
+    Req-->>Test: APIResponse object
+    Test->>Test: expect(response.ok()).toBeTruthy()
+    Test->>Test: const data = await response.json()
+    Test->>Test: expect(data[0]).toHaveProperty('email')
+```
+
 ```typescript
 import { test, expect } from "@playwright/test";
+// => Import test and expect from Playwright
 
 test("sends GET request to fetch user data", async ({ request }) => {
-  // => Test API GET request
+  // => request: Playwright's API request fixture
+  // => No browser overhead - pure HTTP requests
   const response = await request.get("https://api.example.com/users/1");
   // => Sends GET request to user endpoint
-  // => Returns response object
+  // => Returns APIResponse object
+  // => Awaits HTTP response before continuing
 
   expect(response.ok()).toBeTruthy();
-  // => Asserts successful response (200-299)
+  // => response.ok() returns true for 200-299 status codes
+  // => Asserts successful response
   expect(response.status()).toBe(200);
-  // => Asserts specific status code
+  // => Asserts specific HTTP status code is 200
 
   const userData = await response.json();
-  // => Parses JSON response body
+  // => Parses JSON response body asynchronously
+  // => Returns parsed JavaScript object
   expect(userData).toMatchObject({
-    // => Validates response structure
+    // => Validates response contains expected shape (partial match)
     id: 1,
-    // => User ID matches requested ID
+    // => User ID 1 was requested and returned
     name: expect.any(String),
-    // => Name field exists and is string
+    // => expect.any(String): name exists and is any string
     email: expect.stringMatching(/.+@.+\..+/),
-    // => Email matches format
+    // => Email matches basic email format regex
   });
+  // => toMatchObject allows extra fields (partial match)
 });
 
 test("sends POST request to create user", async ({ request }) => {
-  // => Test API POST request
+  // => Test API POST endpoint for resource creation
   const newUser = {
-    // => Request payload
+    // => Request payload (will be serialized as JSON)
     name: "Alice Smith",
+    // => User's full name
     email: "alice@example.com",
+    // => Unique email address
     role: "user",
+    // => Role determines permissions
   };
 
   const response = await request.post("https://api.example.com/users", {
-    // => Sends POST request
     data: newUser,
-    // => Request body
+    // => data: automatically serialized to JSON
+    // => Sets Content-Type: application/json header
   });
+  // => Sends POST request with newUser as body
 
   expect(response.status()).toBe(201);
-  // => Asserts resource created status
+  // => 201 Created: HTTP standard for successful resource creation
   const createdUser = await response.json();
-  // => Gets created user from response
+  // => Parses the response body (created user object)
   expect(createdUser).toMatchObject(newUser);
-  // => Validates created user matches input
+  // => Validates server echoed back the submitted data
   expect(createdUser.id).toBeDefined();
-  // => Asserts server assigned ID
+  // => Asserts server assigned a database ID to new user
 });
 ```
 
@@ -1074,60 +1237,96 @@ test("sends POST request to create user", async ({ request }) => {
 
 Test API endpoints requiring authentication. This validates auth flows and protected endpoint access.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+sequenceDiagram
+    participant Test as Test Code
+    participant Req as request context
+    participant Auth as Auth API
+    participant Prot as Protected API
+
+    Test->>Req: POST /auth/login { email, password }
+    Req->>Auth: HTTP POST with credentials
+    Auth-->>Req: HTTP 200 { token: 'eyJ...' }
+    Req-->>Test: loginResponse with token
+
+    Test->>Req: GET /dashboard/stats<br/>Authorization: Bearer eyJ...
+    Req->>Prot: HTTP GET with Bearer token
+    Prot->>Prot: Validate JWT signature & expiry
+    Prot-->>Req: HTTP 200 { revenue: ... }
+    Req-->>Test: protectedResponse
+    Test->>Test: expect(stats).toHaveProperty('revenue')
+```
+
 ```typescript
 import { test, expect } from "@playwright/test";
+// => Import test runner and assertion library
 
 test("authenticates with bearer token", async ({ request }) => {
-  // => Test API authentication with token
+  // => Test API authentication with JWT bearer token
   const loginResponse = await request.post("https://api.example.com/auth/login", {
-    // => Login to get auth token
+    // => POST request to authentication endpoint
     data: {
+      // => Login credentials as JSON body
       email: "user@example.com",
+      // => Test account email
       password: "SecurePass123!",
+      // => Test account password
     },
   });
+  // => Returns 200 with JWT token in body
 
   const { token } = await loginResponse.json();
-  // => Extracts auth token from response
+  // => Destructures token from JSON response
+  // => token: "eyJhbGciOi..." (JWT format)
   expect(token).toBeDefined();
-  // => Validates token received
+  // => Validates token string received from auth endpoint
 
   const protectedResponse = await request.get("https://api.example.com/dashboard/stats", {
-    // => Requests protected endpoint
     headers: {
+      // => headers: object with HTTP request headers
       Authorization: `Bearer ${token}`,
-      // => Includes bearer token in header
+      // => Authorization header: "Bearer eyJhbGci..."
+      // => Standard JWT bearer token format (RFC 6750)
     },
   });
+  // => Sends GET request with token in Authorization header
 
   expect(protectedResponse.ok()).toBeTruthy();
-  // => Asserts authenticated request succeeds
+  // => Asserts 200 status: server accepted the token
   const stats = await protectedResponse.json();
-  // => Gets dashboard stats
+  // => Parses dashboard statistics response body
   expect(stats).toHaveProperty("revenue");
-  // => Validates protected data received
+  // => Asserts protected data (revenue) received
+  // => toHaveProperty: checks nested property exists
 });
 
 test("authenticates with session cookies", async ({ request, context }) => {
-  // => Test cookie-based authentication
+  // => Test cookie-based session authentication
+  // => context: browser context that stores cookies
   await request.post("https://api.example.com/auth/login", {
-    // => Login creates session cookie
+    // => POST to login endpoint
     data: {
+      // => Login credentials
       email: "user@example.com",
+      // => Test account email
       password: "SecurePass123!",
+      // => Test account password
     },
   });
-  // => Session cookie automatically stored in context
+  // => Server sets Set-Cookie: session=... header
+  // => Playwright's request context stores cookie automatically
 
   const profileResponse = await request.get("https://api.example.com/profile");
-  // => Requests profile with session cookie
-  // => Cookie automatically included
+  // => GET request: Playwright sends stored session cookie
+  // => Cookie header included automatically by request context
 
   expect(profileResponse.ok()).toBeTruthy();
-  // => Asserts cookie authentication worked
+  // => Asserts 200 status: session cookie validated by server
   const profile = await profileResponse.json();
+  // => Parses user profile from response body
   expect(profile.email).toBe("user@example.com");
-  // => Validates correct user profile returned
+  // => Validates server returned the correct user's profile
 });
 ```
 
@@ -1139,64 +1338,99 @@ test("authenticates with session cookies", async ({ request, context }) => {
 
 Mock API responses to test frontend behavior in isolation. This enables testing error conditions and edge cases.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    Route["page.route('**/api/products', handler)"] --> Navigate["page.goto('/shop')"]
+    Navigate --> BrowserReq["Browser fires fetch<br/>to /api/products"]
+    BrowserReq --> Intercept["Playwright intercepts request<br/>(real server NOT called)"]
+    Intercept --> Handler["Route handler executes:<br/>delays, modifies, or blocks"]
+    Handler --> MockResp["Returns mock response<br/>to browser"]
+    MockResp --> UI["UI renders based<br/>on mock data"]
+    UI --> Assert["Assertions on UI state<br/>(loading spinner, error msg)"]
+
+    style Route fill:#0173B2,color:#fff
+    style Navigate fill:#DE8F05,color:#000
+    style BrowserReq fill:#CA9161,color:#fff
+    style Intercept fill:#CC78BC,color:#000
+    style Handler fill:#029E73,color:#fff
+    style MockResp fill:#029E73,color:#fff
+    style UI fill:#DE8F05,color:#000
+    style Assert fill:#0173B2,color:#fff
+```
+
 ```typescript
 import { test, expect } from "@playwright/test";
+// => Import test runner and expect
 
 test("mocks API to simulate slow response", async ({ page }) => {
-  // => Test API mocking for loading states
+  // => Test loading state UI with mocked slow API
   await page.route("**/api/products", async (route) => {
-    // => Intercepts requests to products API
+    // => page.route intercepts matching network requests
+    // => "**" glob matches any domain prefix
     await new Promise((resolve) => setTimeout(resolve, 3000));
-    // => Delays response by 3 seconds
-    // => Simulates slow network
+    // => Delays response by 3 seconds (simulates slow network)
+    // => Frontend should show loading state during this time
 
     await route.fulfill({
-      // => Responds with mock data
+      // => route.fulfill: send mock HTTP response
       status: 200,
+      // => HTTP 200 OK
       contentType: "application/json",
+      // => Sets Content-Type header for JSON
       body: JSON.stringify({
+        // => JSON.stringify converts object to string
         products: [
+          // => Array of mock product objects
           { id: 1, name: "Laptop", price: 999 },
+          // => Mock product 1: Laptop at $999
           { id: 2, name: "Mouse", price: 29 },
+          // => Mock product 2: Mouse at $29
         ],
+        // => Array of product objects
       }),
+      // => body: JSON string for response
     });
+    // => Route fulfilled with mock data
   });
+  // => Route handler registered (not called yet)
 
   await page.goto("https://example.com/shop");
-  // => Navigates to shop page
-  // => Triggers mocked API request
+  // => Navigation triggers XHR to /api/products
+  // => Intercepted: response delayed 3 seconds
 
   await expect(page.getByText("Loading...")).toBeVisible();
-  // => Asserts loading indicator appears
-  // => Slow response makes indicator visible
+  // => Asserts loading indicator appears during 3s delay
+  // => Validates UI shows loading state correctly
 
   await expect(page.getByText("Laptop")).toBeVisible({ timeout: 5000 });
-  // => Asserts product appears after load
-  // => Mock response rendered
+  // => Waits up to 5s for mocked "Laptop" to appear
+  // => Mock response rendered by frontend
 });
 
 test("mocks API to simulate error response", async ({ page }) => {
-  // => Test error handling with mock
+  // => Test error handling UI with mocked API failure
+  // => Different test: same route, different mock response
   await page.route("**/api/products", async (route) => {
-    // => Intercepts products API
+    // => Intercepts products API requests
     await route.fulfill({
-      // => Returns error response
       status: 500,
+      // => HTTP 500 Internal Server Error
       contentType: "application/json",
       body: JSON.stringify({
         error: "Internal server error",
+        // => Error details in response body
       }),
     });
   });
+  // => All /api/products requests return 500
 
   await page.goto("https://example.com/shop");
-  // => Navigates to shop
-  // => API returns mocked error
+  // => Page loads, API call returns mocked 500 error
 
   await expect(page.getByText("Failed to load products. Please try again.")).toBeVisible();
-  // => Asserts error message displayed
-  // => Frontend handles API error gracefully
+  // => Asserts user-facing error message displayed
+  // => Frontend gracefully handles 500 response
 });
 ```
 
@@ -1208,73 +1442,108 @@ test("mocks API to simulate error response", async ({ page }) => {
 
 Create test fixtures for API authentication and data setup. This reduces duplication in API tests.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    Extend["base.extend({ authenticatedRequest })"] --> FixSetup["Fixture Setup:<br/>POST /auth/login → get token"]
+    FixSetup --> ConfigReq["Configure request context<br/>with extraHTTPHeaders"]
+    ConfigReq --> Use["await use(authenticatedRequest)<br/>(test body runs here)"]
+    Use --> Test1["test 1: GET /orders<br/>(token auto-included)"]
+    Use --> Test2["test 2: POST /orders<br/>(token auto-included)"]
+    Test1 --> Cleanup["Fixture Teardown:<br/>POST /auth/logout"]
+    Test2 --> Cleanup
+
+    style Extend fill:#0173B2,color:#fff
+    style FixSetup fill:#DE8F05,color:#000
+    style ConfigReq fill:#CC78BC,color:#000
+    style Use fill:#CA9161,color:#fff
+    style Test1 fill:#029E73,color:#fff
+    style Test2 fill:#029E73,color:#fff
+    style Cleanup fill:#DE8F05,color:#000
+```
+
 ```typescript
 import { test as base, expect } from "@playwright/test";
+// => Import base test for extension, expect for assertions
 
 // Extend base test with API auth fixture
+// => base.extend creates a new test function with custom fixtures
 const test = base.extend<{ authenticatedRequest: APIRequestContext }>({
-  // => Creates custom fixture
+  // => Type parameter: defines shape of custom fixtures object
   authenticatedRequest: async ({ request }, use) => {
-    // => Fixture setup
+    // => Fixture function: setup → use → teardown pattern
+    // => request: built-in Playwright API request context
     const loginResponse = await request.post("https://api.example.com/auth/login", {
-      // => Logs in to get token
+      // => POST to auth endpoint
       data: {
+        // => Login credentials for obtaining auth token
         email: "test@example.com",
+        // => Fixture test account email
         password: "TestPass123!",
+        // => Fixture test account password
       },
     });
+    // => loginResponse: HTTP 200 with token in body
 
     const { token } = await loginResponse.json();
-    // => Extracts auth token
+    // => Destructures token from login response
+    // => token: "eyJhbGci..." (JWT string)
 
     const authenticatedRequest = request;
-    // => Stores authenticated request context
+    // => Reuses existing request context reference
     await authenticatedRequest.use({
-      // => Sets default headers
+      // => .use() configures request context defaults
       extraHTTPHeaders: {
+        // => extraHTTPHeaders: added to every request automatically
         Authorization: `Bearer ${token}`,
-        // => All requests include auth token
+        // => All subsequent requests include this header
+        // => No need to add manually in each test
       },
     });
+    // => Request context now pre-configured with auth
 
     await use(authenticatedRequest);
-    // => Provides fixture to test
-    // => Test runs with authenticated request
+    // => Yields authenticated request to test body
+    // => Test runs between use() call and completion
 
     // Cleanup after test
     await request.post("https://api.example.com/auth/logout");
-    // => Logs out to clean up session
+    // => Invalidates server session after test completes
+    // => Cleanup runs even if test fails
   },
 });
 
 test("fetches user orders with auth fixture", async ({ authenticatedRequest }) => {
-  // => Test uses authenticated request fixture
+  // => Fixture injected: authenticatedRequest has token pre-configured
   const response = await authenticatedRequest.get("https://api.example.com/orders");
-  // => Request automatically includes auth token
-  // => No manual token handling needed
+  // => GET /orders with Authorization header automatically included
+  // => Token added by fixture - no manual handling needed
 
   expect(response.ok()).toBeTruthy();
-  // => Asserts request succeeds
+  // => Asserts 200 status: authenticated request succeeded
   const orders = await response.json();
+  // => Parses orders array from response
   expect(orders.length).toBeGreaterThan(0);
-  // => Validates orders returned
+  // => Validates at least one order returned
 });
 
 test("creates new order with auth fixture", async ({ authenticatedRequest }) => {
-  // => Another test using same fixture
+  // => Second test reusing same auth fixture - zero login duplication
   const newOrder = {
     productId: 123,
+    // => Product to order
     quantity: 2,
+    // => How many units
   };
 
   const response = await authenticatedRequest.post("https://api.example.com/orders", {
     data: newOrder,
+    // => Request body with order data
   });
-  // => Creates order with authenticated request
-  // => Token automatically included
+  // => POST /orders with auth token auto-included
 
   expect(response.status()).toBe(201);
-  // => Asserts order created
+  // => Asserts HTTP 201 Created: order successfully created
 });
 ```
 
@@ -1290,48 +1559,51 @@ Combine UI interactions with API assertions for comprehensive validation. This t
 import { test, expect } from "@playwright/test";
 
 test("validates UI form submission creates API resource", async ({ page, request }) => {
-  // => Hybrid UI and API test
+  // => Hybrid test: UI interaction + API validation
+  // => page: browser page, request: API client (both fixtures)
   await page.goto("https://example.com/products/new");
   // => Navigates to product creation form
 
   await page.getByLabel("Product Name").fill("Wireless Keyboard");
-  // => Fills product name field
+  // => Fills product name via UI (user perspective)
   await page.getByLabel("Price").fill("79.99");
   // => Fills price field
   await page.getByLabel("Category").selectOption("Electronics");
-  // => Selects category
+  // => Selects category from dropdown
 
   const responsePromise = page.waitForResponse(
     (response) => response.url().includes("/api/products") && response.status() === 201,
   );
-  // => Waits for product creation API call
+  // => Sets up intercept BEFORE click (avoids race condition)
+  // => Waits for specific URL + status code match
 
   await page.getByRole("button", { name: "Create Product" }).click();
-  // => Submits form via UI
-  // => Triggers API request
+  // => Triggers form submission, fires XHR to /api/products
 
   const response = await responsePromise;
+  // => Resolves when intercepted response arrives
   const createdProduct = await response.json();
-  // => Captures created product from API response
+  // => Parses product data from API response
 
   expect(createdProduct.name).toBe("Wireless Keyboard");
-  // => Validates API created correct product
+  // => Validates API stored correct product name
   expect(createdProduct.price).toBe(79.99);
-  // => Validates price stored correctly
+  // => Validates price stored as number (not string)
 
   // Verify product appears in UI
   await expect(page.getByText("Product created successfully")).toBeVisible();
-  // => Asserts UI success feedback
+  // => Asserts success notification shown to user
 
   // Verify product persisted via API GET
   const fetchResponse = await request.get(`https://api.example.com/products/${createdProduct.id}`);
-  // => Fetches product directly via API
-  // => Validates persistence
+  // => Direct API GET to verify persistence in database
+  // => Uses request fixture (no browser)
 
   const fetchedProduct = await fetchResponse.json();
+  // => Gets stored product from API
   expect(fetchedProduct).toMatchObject(createdProduct);
-  // => Confirms API GET returns created product
-  // => End-to-end validation: UI → API → Storage → API
+  // => Confirms data persisted correctly
+  // => Complete chain: UI → API create → Database → API read
 });
 ```
 
@@ -1345,91 +1617,126 @@ test("validates UI form submission creates API resource", async ({ page, request
 
 Create page objects to encapsulate page-specific locators and actions. This improves test maintainability and reduces duplication.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    Test["Test File"] --> PO["LoginPage<br/>(Page Object)"]
+    PO --> Locators["Locators (getters):<br/>usernameInput<br/>passwordInput<br/>submitButton<br/>errorMessage"]
+    PO --> Actions["Action Methods:<br/>navigate()<br/>login(user, pass)"]
+    PO --> Assertions["Assertion Helpers:<br/>expectError(msg)"]
+    Actions --> Page["Playwright Page API<br/>(fill, click, goto)"]
+    Locators --> Page
+    Assertions --> Expect["expect() assertions"]
+
+    style Test fill:#0173B2,color:#fff
+    style PO fill:#DE8F05,color:#000
+    style Locators fill:#029E73,color:#fff
+    style Actions fill:#029E73,color:#fff
+    style Assertions fill:#029E73,color:#fff
+    style Page fill:#CC78BC,color:#000
+    style Expect fill:#CA9161,color:#fff
+```
+
 ```typescript
 import { test, expect, type Page } from "@playwright/test";
+// => Import test runner, assertions, and Page type
 
 class LoginPage {
-  // => Page Object for login page
+  // => Page Object class encapsulating login page
   readonly page: Page;
-  // => Stores page instance
+  // => readonly: page reference never changes after construction
 
   constructor(page: Page) {
-    // => Constructor receives page
+    // => Constructor receives Playwright Page object
     this.page = page;
+    // => Stores reference for use in methods
   }
 
-  // Locators
+  // Locators defined as getters (evaluated lazily)
   get usernameInput() {
-    // => Getter for username field
+    // => Getter creates locator on every access (lazy)
     return this.page.getByLabel("Username");
-    // => Returns locator (not element)
+    // => Returns Locator (not DOM element yet)
   }
+  // => usernameInput getter defined
 
   get passwordInput() {
-    // => Getter for password field
+    // => Getter for password input field
     return this.page.getByLabel("Password");
+    // => Locator re-evaluated each time (handles DOM updates)
   }
+  // => passwordInput getter defined
 
   get submitButton() {
-    // => Getter for submit button
+    // => Getter for login submit button
     return this.page.getByRole("button", { name: "Log In" });
+    // => Locates by ARIA role + accessible name
   }
+  // => submitButton getter defined
 
   get errorMessage() {
-    // => Getter for error message
+    // => Getter for error alert element
     return this.page.getByRole("alert");
+    // => ARIA role "alert" used for error messages
   }
+  // => errorMessage getter defined
 
-  // Actions
+  // Action methods combining multiple locator interactions
   async navigate() {
-    // => Navigation method
+    // => Encapsulates login URL - single place to update
     await this.page.goto("https://example.com/login");
-    // => Encapsulates URL
+    // => Navigates to login page
   }
+  // => navigate() method: URL encapsulated
 
   async login(username: string, password: string) {
-    // => Login action method
+    // => High-level login action: three steps as one method
     await this.usernameInput.fill(username);
-    // => Fills username using page object locator
+    // => Fills username using page object's locator getter
     await this.passwordInput.fill(password);
-    // => Fills password
+    // => Fills password field
     await this.submitButton.click();
-    // => Submits form
+    // => Submits form, triggers navigation
   }
+  // => login() method encapsulates 3-step login process
 
   async expectError(message: string) {
-    // => Assertion helper
+    // => Assertion method: encapsulates error verification
     await expect(this.errorMessage).toContainText(message);
-    // => Encapsulates error assertion
+    // => Asserts alert element contains expected error text
   }
+  // => expectError(): assertion helper encapsulated in page object
 }
+// => LoginPage class complete: locators + actions + assertions
 
 test("logs in successfully with page object", async ({ page }) => {
-  // => Test using page object
+  // => Test uses page object API (high-level methods)
   const loginPage = new LoginPage(page);
-  // => Creates page object instance
+  // => Creates LoginPage instance, passing Playwright page
 
   await loginPage.navigate();
-  // => Navigates using page object method
+  // => Navigates to login page (URL encapsulated in page object)
   await loginPage.login("testuser", "TestPass123!");
-  // => Performs login action
+  // => Calls login method (fills fields + clicks - 3 actions in 1)
 
   await expect(page).toHaveURL(/\/dashboard/);
-  // => Asserts navigation after login
-  // => Test reads like user actions
+  // => Asserts URL changed to dashboard after successful login
+  // => Test reads as user narrative: navigate → login → verify
 });
 
 test("shows error for invalid credentials", async ({ page }) => {
-  // => Another test using same page object
+  // => Tests error path using same page object
   const loginPage = new LoginPage(page);
+  // => Same page object, different scenario
 
   await loginPage.navigate();
+  // => Goes to login page
   await loginPage.login("wronguser", "wrongpass");
-  // => Attempts invalid login
+  // => Submits invalid credentials (triggers error)
 
   await loginPage.expectError("Invalid username or password");
-  // => Uses page object assertion helper
-  // => No direct locator references in test
+  // => Verifies error message via page object helper
+  // => No raw locators in test - all encapsulated
 });
 ```
 
@@ -1441,69 +1748,124 @@ test("shows error for invalid credentials", async ({ page }) => {
 
 Create custom test fixtures for reusable setup, teardown, and test data. This eliminates duplication across tests.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    Extend["test = base.extend({ loginPage, authenticatedPage })"] --> Setup["Fixture Setup Phase"]
+    Setup --> LoginFix["loginPage fixture:<br/>creates LoginPage instance"]
+    Setup --> AuthFix["authenticatedPage fixture:<br/>navigates + logs in"]
+    LoginFix --> TestBody["Test Body Executes<br/>(await use() yields to test)"]
+    AuthFix --> TestBody
+    TestBody --> Teardown["Fixture Teardown Phase<br/>(runs after test, even on failure)"]
+    Teardown --> Cleanup["Cleanup actions:<br/>logout, clear state, delete data"]
+
+    style Extend fill:#0173B2,color:#fff
+    style Setup fill:#DE8F05,color:#000
+    style LoginFix fill:#029E73,color:#fff
+    style AuthFix fill:#029E73,color:#fff
+    style TestBody fill:#CC78BC,color:#000
+    style Teardown fill:#CA9161,color:#fff
+    style Cleanup fill:#CA9161,color:#fff
+```
+
 ```typescript
-import { test as base, expect } from "@playwright/test";
-import { LoginPage } from "./pages/LoginPage";
+import { test as base, expect, Page } from "@playwright/test";
+// => Import base test for extending, expect, and Page type
+
+// LoginPage class defined inline (self-contained example)
+class LoginPage {
+  // => Simple LoginPage page object for fixture use
+  readonly page: Page;
+  // => readonly: page reference cannot be reassigned
+
+  constructor(page: Page) {
+    // => Receives Playwright Page from fixture
+    this.page = page;
+    // => Stores page reference for method use
+  }
+
+  async goto(): Promise<void> {
+    // => Navigates to login URL
+    await this.page.goto("https://example.com/login");
+    // => Encapsulates login URL in page object
+  }
+  // => goto() method: one-line navigation action
+
+  async login(username: string, password: string): Promise<void> {
+    // => Performs complete login sequence
+    await this.page.getByLabel("Username").fill(username);
+    // => Fills username field with provided value
+    await this.page.getByLabel("Password").fill(password);
+    // => Fills password field
+    await this.page.getByRole("button", { name: "Log In" }).click();
+    // => Clicks submit button
+    await this.page.waitForURL(/\/dashboard/);
+    // => Awaits redirect to dashboard (post-login)
+  }
+  // => login() method complete: fills, clicks, waits
+}
+// => LoginPage class complete
 
 type CustomFixtures = {
-  // => Type definition for custom fixtures
+  // => TypeScript type for fixture parameter injection
   loginPage: LoginPage;
-  // => LoginPage instance fixture
+  // => LoginPage page object (injected as fixture)
   authenticatedPage: Page;
-  // => Pre-authenticated page fixture
+  // => Playwright Page already logged in
 };
+// => CustomFixtures: shape of extended test's injected params
 
 const test = base.extend<CustomFixtures>({
-  // => Extends base test with fixtures
+  // => Creates new test function with custom fixtures
   loginPage: async ({ page }, use) => {
-    // => LoginPage fixture
+    // => Setup: create LoginPage instance
     const loginPage = new LoginPage(page);
-    // => Creates page object
+    // => Constructs page object with test's page
     await use(loginPage);
-    // => Provides to test
-    // => Automatic cleanup after test
+    // => Yields loginPage to test body
+    // => Cleanup: none needed (page auto-closed)
   },
 
   authenticatedPage: async ({ page }, use) => {
-    // => Authenticated page fixture
+    // => Setup: perform login before test
     await page.goto("https://example.com/login");
-    // => Navigates to login
+    // => Navigates to login page
     await page.getByLabel("Username").fill("testuser");
-    // => Fills credentials
+    // => Fills username
     await page.getByLabel("Password").fill("TestPass123!");
+    // => Fills password
     await page.getByRole("button", { name: "Log In" }).click();
-    // => Submits login
+    // => Submits login form
 
     await page.waitForURL(/\/dashboard/);
-    // => Waits for redirect after login
-    // => Page now authenticated
+    // => Waits for redirect to dashboard
+    // => Page is now authenticated and ready
 
     await use(page);
-    // => Provides authenticated page to test
+    // => Yields authenticated page to test
 
-    // Cleanup: logout after test
+    // Cleanup: logout after test completes
     await page.goto("https://example.com/logout");
-    // => Logs out to clean state
+    // => Invalidates session (cleanup runs after test)
   },
 });
 
 test("navigates to settings from dashboard", async ({ authenticatedPage }) => {
-  // => Test receives authenticated page
-  // => No login boilerplate needed
+  // => authenticatedPage fixture: already logged in (no boilerplate)
 
   await authenticatedPage.getByRole("link", { name: "Settings" }).click();
-  // => Navigates to settings
-  // => Test focuses on actual test logic
+  // => Clicks Settings link from authenticated dashboard
+  // => Test logic is all that's here - no setup code
 
   await expect(authenticatedPage).toHaveURL(/\/settings/);
-  // => Asserts navigation successful
+  // => Asserts URL matches settings path
 });
 
 test("creates new project from dashboard", async ({ authenticatedPage }) => {
-  // => Another test using same fixture
+  // => Reuses authenticatedPage fixture (auth repeated automatically)
   await authenticatedPage.getByRole("button", { name: "New Project" }).click();
-  // => No repeated login code
-  // => Fixture handles authentication
+  // => Clicks New Project from dashboard
+  // => Zero login duplication between tests
 });
 ```
 
@@ -1515,79 +1877,112 @@ test("creates new project from dashboard", async ({ authenticatedPage }) => {
 
 Use beforeEach, afterEach, beforeAll, and afterAll hooks for test lifecycle management. This handles common setup/cleanup patterns.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    Suite["test.describe('Shopping cart tests')"] --> BeforeAll["test.beforeAll()<br/>Runs ONCE: create test product via API"]
+    BeforeAll --> BeforeEach1["test.beforeEach()<br/>Before test 1: goto homepage, clear localStorage"]
+    BeforeEach1 --> T1["test('adds product to cart')"]
+    T1 --> AfterEach1["test.afterEach()<br/>After test 1: clear localStorage"]
+    AfterEach1 --> BeforeEach2["test.beforeEach()<br/>Before test 2: goto homepage, clear localStorage"]
+    BeforeEach2 --> T2["test('removes product from cart')"]
+    T2 --> AfterEach2["test.afterEach()<br/>After test 2: clear localStorage"]
+    AfterEach2 --> AfterAll["test.afterAll()<br/>Runs ONCE: delete test product via API"]
+
+    style Suite fill:#0173B2,color:#fff
+    style BeforeAll fill:#DE8F05,color:#000
+    style BeforeEach1 fill:#CC78BC,color:#000
+    style BeforeEach2 fill:#CC78BC,color:#000
+    style T1 fill:#029E73,color:#fff
+    style T2 fill:#029E73,color:#fff
+    style AfterEach1 fill:#CA9161,color:#fff
+    style AfterEach2 fill:#CA9161,color:#fff
+    style AfterAll fill:#DE8F05,color:#000
+```
+
 ```typescript
 import { test, expect } from "@playwright/test";
+// => Import test and expect from Playwright
 
 test.describe("Shopping cart tests", () => {
-  // => Test suite for shopping cart
+  // => Groups all shopping cart tests in one suite
   let testProductId: string;
-  // => Shared variable across tests
+  // => Shared variable accessible across all hooks and tests
+  // => Initialized in beforeAll, used in test bodies
 
   test.beforeAll(async ({ request }) => {
-    // => Runs once before all tests
+    // => beforeAll: runs ONCE before any test in suite starts
+    // => request: API fixture available in beforeAll
     const response = await request.post("https://api.example.com/test/products", {
-      // => Creates test product
       data: {
+        // => Creates test product via API (test data)
         name: "Test Product",
+        // => Product name for all tests in suite
         price: 99.99,
+        // => Product price
       },
     });
+    // => POST creates product, returns 201 Created
+    // => POST /test/products returns 201 Created
 
     const product = await response.json();
+    // => Parses created product with server-assigned ID
     testProductId = product.id;
-    // => Stores product ID for use in tests
-    // => Shared test data
+    // => Stores ID in shared variable for all tests
+    // => All tests in suite can access testProductId
   });
 
   test.beforeEach(async ({ page }) => {
-    // => Runs before each test
+    // => beforeEach: runs before EVERY individual test
     await page.goto("https://example.com");
-    // => Navigates to homepage
-    // => Ensures consistent starting state
+    // => Ensures each test starts from homepage
+    // => Prevents URL state leakage between tests
 
     await page.evaluate(() => localStorage.clear());
-    // => Clears local storage
-    // => Prevents cart state leakage
+    // => Clears cart data stored in localStorage
+    // => Each test starts with empty cart
   });
+  // => beforeEach registered: runs before each test automatically
 
   test("adds product to cart", async ({ page }) => {
-    // => Test case
+    // => Test body: beforeAll and beforeEach already ran
     await page.goto(`https://example.com/products/${testProductId}`);
-    // => Uses shared test product
+    // => Navigates to test product page using shared ID
     await page.getByRole("button", { name: "Add to Cart" }).click();
-    // => Adds to cart
+    // => Adds product to cart via UI button
 
     await expect(page.getByText("1 item in cart")).toBeVisible();
-    // => Asserts cart updated
+    // => Asserts cart counter updated to 1
   });
 
   test("removes product from cart", async ({ page }) => {
-    // => Another test with same setup
+    // => beforeEach ran: fresh start from homepage, empty cart
     await page.goto(`https://example.com/products/${testProductId}`);
+    // => Navigates to same test product
     await page.getByRole("button", { name: "Add to Cart" }).click();
-    // => Adds to cart first
+    // => Adds to cart first (prerequisite for remove test)
 
     await page.getByRole("link", { name: "Cart" }).click();
-    // => Opens cart
+    // => Navigates to cart page
     await page.getByRole("button", { name: "Remove" }).click();
-    // => Removes item
+    // => Removes the added item
 
     await expect(page.getByText("Cart is empty")).toBeVisible();
-    // => Asserts cart empty
+    // => Asserts cart shows empty state after removal
   });
 
   test.afterEach(async ({ page }) => {
-    // => Runs after each test
+    // => afterEach: runs after EVERY test (even if test fails)
     await page.evaluate(() => localStorage.clear());
-    // => Clears cart state
-    // => Cleanup after test
+    // => Ensures cart state cleared after each test
+    // => Guards against incomplete test runs leaving state
   });
 
   test.afterAll(async ({ request }) => {
-    // => Runs once after all tests
+    // => afterAll: runs ONCE after all tests complete
     await request.delete(`https://api.example.com/test/products/${testProductId}`);
-    // => Deletes test product
-    // => Cleanup shared test data
+    // => Removes test product from database
+    // => Prevents test data accumulation across runs
   });
 });
 ```
@@ -1600,73 +1995,106 @@ test.describe("Shopping cart tests", () => {
 
 Use test annotations to add metadata, skip tests conditionally, or mark tests as slow. This improves test organization and execution control.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    Annotations["Test Annotations"] --> Skip["test.skip(condition)<br/>Skip conditionally based on env/flag"]
+    Annotations --> Slow["test.slow()<br/>Triple the default timeout"]
+    Annotations --> Fail["test.fail()<br/>Mark expected failure (known bug)"]
+    Annotations --> Info["test.info().annotations<br/>Add custom { type, description } metadata"]
+    Skip --> CI["Example: skip on CI<br/>skip(!process.env.CI, 'Local only')"]
+    Slow --> Timeout["Example: known slow operation<br/>timeout multiplied by 3"]
+    Info --> Report["Metadata appears in<br/>HTML test report"]
+
+    style Annotations fill:#0173B2,color:#fff
+    style Skip fill:#DE8F05,color:#000
+    style Slow fill:#CC78BC,color:#000
+    style Fail fill:#CA9161,color:#fff
+    style Info fill:#029E73,color:#fff
+    style CI fill:#DE8F05,color:#000
+    style Timeout fill:#CC78BC,color:#000
+    style Report fill:#029E73,color:#fff
+```
+
 ```typescript
 import { test, expect } from "@playwright/test";
+// => Import test and expect from Playwright
 
 test("basic login test", async ({ page }) => {
-  // => Standard test without annotations
+  // => Standard test: no special annotations
   await page.goto("https://example.com/login");
-  // => Normal test execution
+  // => Runs with default timeout (30s) and no retries
 });
 
 test("slow database migration test", async ({ page }) => {
-  // => Test with slow annotation
+  // => Test with slow annotation for extended timeout
   test.slow();
-  // => Triples timeout for this test
-  // => Useful for known slow operations
+  // => test.slow() triples the default test timeout
+  // => 30s default → 90s with test.slow()
+  // => Use for known slow operations (migrations, reports)
 
   await page.goto("https://example.com/admin/migrations");
+  // => Navigates to migration admin page
   await page.getByRole("button", { name: "Run Migration" }).click();
-  // => Long-running operation
+  // => Triggers long-running database migration
 });
 
 test("mobile-only responsive test", async ({ page, isMobile }) => {
-  // => Test with conditional skip
+  // => Test with conditional skip based on fixture value
   test.skip(!isMobile, "This test is only for mobile viewports");
-  // => Skips test if not mobile
-  // => Conditional execution based on config
+  // => isMobile: true when running with mobile project config
+  // => Skips test if !isMobile (desktop run)
+  // => Avoids false failures on desktop viewport
 
   await page.goto("https://example.com");
+  // => Only runs when isMobile is true
   await expect(page.getByRole("button", { name: "Menu" })).toBeVisible();
-  // => Mobile-specific UI element
+  // => Hamburger menu only visible on mobile
 });
 
 test("flaky API integration test", async ({ page }) => {
-  // => Test marked as flaky
+  // => Test marked with fixme (known broken)
   test.fixme(true, "Known flaky test - API rate limiting issue");
-  // => Marks test as failing but doesn't run
-  // => Documents known issues
+  // => fixme(condition, reason): marks test as expected to fail
+  // => Test is skipped with "fixme" status in report
+  // => Documents known issues without deleting tests
 
   // Test would run here if fixme removed
 });
 
 test("payment processing test", async ({ page }) => {
-  // => Test with custom annotation
+  // => Test with custom metadata annotations
   test.info().annotations.push({
     type: "issue",
+    // => Annotation type: links to issue tracker
     description: "https://github.com/org/repo/issues/123",
-    // => Links to related issue
+    // => URL to related GitHub issue
   });
+  // => First annotation added to test metadata
 
   test.info().annotations.push({
     type: "category",
+    // => Custom annotation type for filtering
     description: "payment",
-    // => Custom categorization
+    // => Category label for selective test execution
   });
+  // => Annotations visible in HTML reporter
 
   await page.goto("https://example.com/checkout");
-  // => Test executes with metadata attached
+  // => Test executes normally with metadata attached
 });
 
 test.describe("WebKit-specific tests", () => {
-  // => Test suite with conditional skip
+  // => Suite conditionally skipped for non-WebKit browsers
   test.skip(({ browserName }) => browserName !== "webkit", "WebKit only");
-  // => Skips entire suite for non-WebKit browsers
+  // => Arrow function receives fixtures: ({ browserName })
+  // => Evaluates per-test: skip when browser is not webkit
+  // => Entire suite skipped on Chromium/Firefox runs
 
   test("Safari-specific CSS rendering", async ({ page }) => {
-    // => Only runs on WebKit
+    // => Only executes when browserName === "webkit"
     await page.goto("https://example.com");
-    // => WebKit-specific test logic
+    // => Tests Safari-specific rendering behavior
   });
 });
 ```
@@ -1679,69 +2107,94 @@ test.describe("WebKit-specific tests", () => {
 
 Configure test retries and timeouts to handle flaky tests and slow operations. This balances reliability with execution speed.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+stateDiagram-v2
+    [*] --> Running: Test starts (attempt 1)
+    Running --> Passed: Test assertions all pass
+    Running --> Failed: Assertion or timeout fails
+    Failed --> Retrying: retries > 0 remaining
+    Failed --> FinalFail: No retries left
+    Retrying --> Running: New attempt (fresh browser context)
+    Passed --> [*]: Report: PASS
+    FinalFail --> [*]: Report: FAIL (after N+1 attempts)
+
+    note right of Retrying
+        Each retry gets a
+        fresh browser context.
+        Retry count shown in report.
+    end note
+```
+
 ```typescript
 import { test, expect } from "@playwright/test";
 
 test.describe("Tests with custom retry logic", () => {
-  // => Suite with retry configuration
+  // => Suite with configured retry behavior
   test.describe.configure({ retries: 2 });
-  // => Retries failed tests up to 2 times
-  // => Suite-level retry configuration
+  // => retries: 2 means: run test, if fails, retry up to 2 more times
+  // => Total attempts: 3 (1 original + 2 retries)
+  // => Scoped to this suite only
 
   test("flaky network-dependent test", async ({ page }) => {
-    // => Test that might fail due to network
+    // => Test may fail transiently due to external API availability
     await page.goto("https://example.com/api-dashboard");
-    // => Loads data from external API
-    // => May timeout or fail intermittently
+    // => Loads dashboard that polls external API
+    // => Network hiccups may cause intermittent failures
 
     await expect(page.getByText("API Status: Online")).toBeVisible({
       timeout: 10000,
+      // => Overrides default 5s assertion timeout to 10s
     });
-    // => Custom timeout for specific assertion
-    // => Allows longer wait for API response
+    // => Waits up to 10s for API status to appear
+    // => Handles slow API polling intervals
   });
 });
 
 test("critical test - no retries", async ({ page }) => {
-  // => Test with retry override
+  // => Important test: should fail fast without masking
   test.describe.configure({ retries: 0 });
-  // => No retries for this test
-  // => Fail immediately to surface critical issues
+  // => Overrides any global retry config
+  // => Fail immediately to surface critical issues fast
 
   await page.goto("https://example.com/health");
+  // => Health check endpoint
   await expect(page.getByText("System Healthy")).toBeVisible();
-  // => If this fails, something is seriously wrong
+  // => If fails: system is down, not flaky - no retry needed
 });
 
 test("slow e2e test with extended timeout", async ({ page }) => {
-  // => Test with custom timeout
+  // => Test for long-running operation needing custom timeout
   test.setTimeout(120000);
-  // => Sets 2-minute timeout for entire test
-  // => Default is 30 seconds
+  // => Sets test timeout to 120,000ms (2 minutes)
+  // => Overrides global default (30s) for this test only
 
   await page.goto("https://example.com/report/generate");
+  // => Navigates to report generation page
   await page.getByRole("button", { name: "Generate Annual Report" }).click();
-  // => Triggers long-running report generation
+  // => Triggers report generation (may take 60+ seconds)
 
   await expect(page.getByText("Report Ready")).toBeVisible({ timeout: 90000 });
-  // => Waits up to 90 seconds for report
-  // => Custom assertion timeout within extended test timeout
+  // => Assertion timeout: 90s (within 120s test timeout)
+  // => Assertion timeout must be less than test timeout
 });
 
 test("dynamic timeout based on environment", async ({ page }) => {
-  // => Test with conditional timeout
+  // => Adapts timeout to execution environment
   const timeout = process.env.CI ? 60000 : 30000;
-  // => Longer timeout in CI environment
-  // => CI servers often slower than local
+  // => CI=true: 60s (CI servers slower than developer machines)
+  // => CI undefined: 30s (faster on local hardware)
 
   test.setTimeout(timeout);
-  // => Applies environment-specific timeout
+  // => Applies computed timeout for this test
 
   await page.goto("https://example.com/dashboard");
+  // => Navigates to dashboard
   await expect(page.getByText("Dashboard Loaded")).toBeVisible({
     timeout: timeout / 2,
+    // => Assertion timeout: half of test timeout (proportional)
   });
-  // => Proportional assertion timeout
+  // => Leaves buffer: assertion timeout < test timeout
 });
 ```
 

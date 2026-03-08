@@ -2,7 +2,7 @@
 title: "Intermediate"
 date: 2025-12-24T00:00:00+07:00
 draft: false
-weight: 100000000
+weight: 100000002
 description: "Intermediate Spring Boot through 30 examples: transactions, validation, security, caching, async processing, WebSocket, API versioning, and advanced patterns"
 tags: ["spring-boot", "tutorial", "by-example", "intermediate", "spring-security", "transactions", "testing", "caching"]
 ---
@@ -186,7 +186,6 @@ public class TransferService {
     // => Persists transfer log entry (all-or-nothing with account updates)
 
     // If exception occurs here, ALL changes (both accounts + log) rollback
-    // => Invokes // If exception occurs here, ALL changes()
   }
   // => Block delimiter
 }
@@ -230,74 +229,109 @@ public class TransferController {
 ```kotlin
 // build.gradle.kts
 dependencies {
+// => Block begins
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 }
 
 // Domain model using Kotlin data classes with JPA annotations
 @Entity
+// => JPA entity mapped to database table
 @Table(name = "bank_accounts")
+// => Specifies database table name
 open class BankAccount(
+// => Class declaration
     @Id
+    // => Primary key field
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // => Auto-generated primary key strategy
     var id: Long? = null,
+    // => Mutable variable
 
     var owner: String = "",
+    // => Mutable variable
 
     var balance: BigDecimal = BigDecimal.ZERO
+    // => Mutable variable
     // BigDecimal for precise financial calculations (no floating-point errors)
 ) {
+// => Block begins
     // Must be 'open' class for JPA lazy loading proxies
     // Default values provide no-arg constructor for JPA
 }
 
 @Entity
+// => JPA entity mapped to database table
 @Table(name = "transfer_logs")
+// => Specifies database table name
 open class TransferLog(
+// => Class declaration
     @Id
+    // => Primary key field
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // => Auto-generated primary key strategy
     var id: Long? = null,
+    // => Mutable variable
 
     var fromAccount: Long? = null,
+    // => Mutable variable
     var toAccount: Long? = null,
+    // => Mutable variable
     var amount: BigDecimal = BigDecimal.ZERO,
+    // => Mutable variable
     var timestamp: LocalDateTime = LocalDateTime.now()
+    // => Mutable variable
 )
 
 // Repository interfaces - Kotlin syntax
 interface AccountRepository : JpaRepository<BankAccount, Long>
+// => Interface definition
 interface TransferLogRepository : JpaRepository<TransferLog, Long>
+// => Interface definition
 
 // Service with transactions using primary constructor injection
 @Service
+// => Business logic layer Spring component
 class TransferService(
+// => Class declaration
     private val accountRepo: AccountRepository,
+    // => Private class member
     // => Constructor injection - no @Autowired needed in Kotlin
     private val logRepo: TransferLogRepository
+    // => Private class member
     // => Both repositories injected automatically by Spring
 ) {
+// => Block begins
 
     @Transactional // Default: REQUIRED propagation, rollback on RuntimeException
+    // => Wraps method in database transaction
     fun transfer(fromId: Long, toId: Long, amount: BigDecimal) {
+    // => Function declaration
         val from = accountRepo.findById(fromId)
+        // => Immutable binding (read-only reference)
             // => Retrieves source account, throws if not found
             .orElseThrow { IllegalArgumentException("Source not found") }
         // Lambda syntax for exception supplier
 
         val to = accountRepo.findById(toId)
+        // => Immutable binding (read-only reference)
             // => Retrieves destination account for credit operation
             .orElseThrow { IllegalArgumentException("Destination not found") }
 
         if (from.balance < amount) {
+        // => Block begins
             // Kotlin operator overloading for BigDecimal comparison
             throw IllegalStateException("Insufficient funds")
+            // => Exception thrown, method execution terminates
             // => Rollback entire transaction
         }
 
         from.balance = from.balance - amount
+        // => Assignment
         // => Kotlin operator overloading: subtract() method
         // Debits source account (new balance = old balance - amount)
 
         to.balance = to.balance + amount
+        // => Assignment
         // => Kotlin operator overloading: add() method
         // Credits destination account (new balance = old balance + amount)
 
@@ -308,10 +342,15 @@ class TransferService(
 
         // Log the transfer
         val log = TransferLog(
+        // => Immutable binding (read-only reference)
             fromAccount = fromId,
+            // => Assignment
             toAccount = toId,
+            // => Assignment
             amount = amount,
+            // => Assignment
             timestamp = LocalDateTime.now()
+            // => Assignment
         )
         // => Named parameters make construction clearer
         // Records exact time of transfer for audit trail
@@ -325,21 +364,34 @@ class TransferService(
 
 // Controller using primary constructor injection
 @RestController
+// => Combines @Controller and @ResponseBody
 @RequestMapping("/api/transfers")
+// => HTTP endpoint mapping
 class TransferController(
+// => Class declaration
     private val transferService: TransferService
+    // => Private class member
 ) {
+// => Block begins
 
     @PostMapping
+    // => HTTP endpoint mapping
     fun transfer(
+    // => Function declaration
         @RequestParam fromId: Long,
+        // => Annotation applied
         @RequestParam toId: Long,
+        // => Annotation applied
         @RequestParam amount: BigDecimal
+        // => Annotation applied
     ): ResponseEntity<String> {
+    // => Block begins
         return try {
+        // => Returns value to caller
             transferService.transfer(fromId, toId, amount)
             ResponseEntity.ok("Transfer successful")
         } catch (e: Exception) {
+        // => Block begins
             ResponseEntity.badRequest().body(e.message)
             // e.message is nullable in Kotlin, handled by Jackson
         }
@@ -452,7 +504,6 @@ public class InventoryService {
 
     // Even if another transaction updates stock, this transaction still sees 100
     int currentStock = productRepo.findById(productId).get().getStock(); // => Still 100
-    // => Invokes findById() method
     // => Result stored in currentStock
 
     if (currentStock >= quantity) {
@@ -466,7 +517,6 @@ public class InventoryService {
   }
 
   // SERIALIZABLE: Strictest isolation (rarely needed)
-  // => Invokes // SERIALIZABLE: Strictest isolation()
   @Transactional(isolation = Isolation.SERIALIZABLE)
   public void criticalOperation(Long productId) {
     // => Begins block
@@ -659,34 +709,70 @@ public class StockService {
 
 ```kotlin
 @Entity
+// => JPA entity - maps to database table
+// => JPA entity mapped to database table
 @Table(name = "products")
+// => Specifies database table name
+// => Specifies database table name
 open class Product(
+// => Class declaration
+// => Class declaration
     @Id
+    // => JPA primary key field
+    // => Primary key field
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // => Auto-generate primary key value
+    // => Auto-generated primary key strategy
     var id: Long? = null,
+    // => Mutable property
+    // => Mutable variable
 
     var name: String = "",
+    // => Mutable property
+    // => Mutable variable
     var stock: Int = 0,
+    // => Mutable property
+    // => Mutable variable
 
     @Version // Optimistic locking version field
+    // => Annotation applied
+    // => Annotation applied
     var version: Long? = null
+    // => Mutable property
+    // => Mutable variable
     // => JPA automatically increments on each update
     // Null initially, set by JPA after first persist
 ) {
+// => Block begins
     // Must be 'open' for JPA proxies
 }
 
 @Service
+// => Business logic service bean
+// => Business logic layer Spring component
 class StockService(
+// => Class declaration
+// => Class declaration
     private val productRepo: ProductRepository
+    // => Immutable property
+    // => Private class member
 ) {
+// => Block begins
 
     @Transactional
+    // => Wrap in database transaction
+    // => Wraps method in database transaction
     fun decreaseStock(productId: Long, quantity: Int) {
+    // => Function definition
+    // => Function declaration
         val product = productRepo.findById(productId).orElseThrow()
+        // => Immutable property
+        // => Immutable binding (read-only reference)
         // version = 1 (current version from database)
 
         product.stock -= quantity
+        // => Assignment
+        // => Assignment
         // Kotlin operator overloading for subtraction
         productRepo.save(product)
         // SQL: UPDATE product SET stock=?, version=2 WHERE id=? AND version=1
@@ -698,16 +784,31 @@ class StockService(
 
     // Retry logic for conflicts using Kotlin repeat
     @Transactional
+    // => Wrap in database transaction
+    // => Wraps method in database transaction
     fun decreaseStockWithRetry(productId: Long, quantity: Int) {
+    // => Function definition
+    // => Function declaration
         val maxRetries = 3
+        // => Immutable property
+        // => Immutable binding (read-only reference)
         repeat(maxRetries) { attempt ->
             try {
+            // => Exception handling begins
                 val product = productRepo.findById(productId).orElseThrow()
+                // => Immutable property
+                // => Immutable binding (read-only reference)
                 product.stock -= quantity
+                // => Assignment
+                // => Assignment
                 productRepo.save(product)
                 return // Success - exit function
+                // => Returns to caller
+                // => Returns value to caller
             } catch (e: OptimisticLockException) {
+            // => Block begins
                 if (attempt == maxRetries - 1) throw e // Retries exhausted
+                // => Assignment
                 // Retry with fresh data (next iteration)
             }
         }
@@ -715,21 +816,40 @@ class StockService(
 
     // Alternative using Kotlin retry utility (more functional)
     @Transactional
+    // => Wrap in database transaction
+    // => Wraps method in database transaction
     fun decreaseStockFunctional(productId: Long, quantity: Int) {
+    // => Function definition
+    // => Function declaration
         var lastException: OptimisticLockException? = null
+        // => Mutable property
+        // => Mutable variable
 
         repeat(3) {
+        // => Block begins
             try {
+            // => Exception handling begins
                 val product = productRepo.findById(productId).orElseThrow()
+                // => Immutable property
+                // => Immutable binding (read-only reference)
                 product.stock -= quantity
+                // => Assignment
+                // => Assignment
                 productRepo.save(product)
                 return // Success
+                // => Returns to caller
+                // => Returns value to caller
             } catch (e: OptimisticLockException) {
+            // => Block begins
                 lastException = e
+                // => Assignment
+                // => Assignment
             }
         }
 
         throw lastException!! // All retries failed
+        // => Throws exception
+        // => Exception thrown, method execution terminates
     }
 }
 ```
@@ -847,15 +967,30 @@ spring.jpa.properties.hibernate.order_updates=true
 
 ```kotlin
 @Service
+// => Business logic service bean
+// => Business logic layer Spring component
 class ProductImportService(
+// => Class declaration
+// => Class declaration
     private val productRepo: ProductRepository,
+    // => Immutable property
+    // => Private class member
     private val entityManager: EntityManager
+    // => Immutable property
+    // => Private class member
     // EntityManager injection for manual flush/clear
 ) {
+// => Block begins
 
     @Transactional
+    // => Wrap in database transaction
+    // => Wraps method in database transaction
     fun importProducts(csvFile: String) {
+    // => Function definition
+    // => Function declaration
         val products = parseCsv(csvFile)
+        // => Immutable property
+        // => Immutable binding (read-only reference)
         // => Returns List<Product> from CSV parsing
 
         // Small batch: Use saveAll() - simple and effective
@@ -865,8 +1000,14 @@ class ProductImportService(
     }
 
     @Transactional
+    // => Wrap in database transaction
+    // => Wraps method in database transaction
     fun importLargeDataset(csvFile: String) {
+    // => Function definition
+    // => Function declaration
         val products = parseCsv(csvFile)
+        // => Immutable property
+        // => Immutable binding (read-only reference)
         // => Could be 100,000+ products
 
         products.chunked(50).forEach { batch ->
@@ -882,14 +1023,23 @@ class ProductImportService(
         }
 
         println("Imported ${products.size} products")
+        // => Output: see string template value above
         // String template instead of concatenation
     }
 
     @Transactional
+    // => Wrap in database transaction
+    // => Wraps method in database transaction
     fun bulkPriceUpdate(category: String, discount: Double) {
+    // => Function definition
+    // => Function declaration
         // JPQL bulk update - most efficient for mass updates
         val updated = entityManager.createQuery(
+        // => Immutable property
+        // => Immutable binding (read-only reference)
             "UPDATE Product p SET p.price = p.price * :discount WHERE p.category = :category"
+            // => Assignment
+            // => Assignment
         )
             .setParameter("discount", discount)
             .setParameter("category", category)
@@ -898,24 +1048,42 @@ class ProductImportService(
         // Updates all matching rows without loading entities into memory
 
         println("Updated $updated products")
+        // => Output: see string template value above
         // String template for logging
     }
 
     private fun parseCsv(file: String): List<Product> {
+    // => Function definition
+    // => Function declaration
         // CSV parsing implementation
         return emptyList() // Placeholder
+        // => Returns to caller
+        // => Returns value to caller
     }
 }
 
 // Alternative using Kotlin sequence for streaming large files
 @Service
+// => Business logic service bean
+// => Business logic layer Spring component
 class StreamingImportService(
+// => Class declaration
+// => Class declaration
     private val productRepo: ProductRepository,
+    // => Immutable property
+    // => Private class member
     private val entityManager: EntityManager
+    // => Immutable property
+    // => Private class member
 ) {
+// => Block begins
 
     @Transactional
+    // => Wrap in database transaction
+    // => Wraps method in database transaction
     fun importProductsStreaming(csvFile: String) {
+    // => Function definition
+    // => Function declaration
         File(csvFile).useLines { lines ->
             // useLines automatically closes file - Kotlin resource management
             lines
@@ -923,6 +1091,8 @@ class StreamingImportService(
                 .chunked(50) // Process in batches of 50
                 .forEach { batch ->
                     val products = batch.map { parseLine(it) }
+                    // => Immutable property
+                    // => Immutable binding (read-only reference)
                     productRepo.saveAll(products)
                     entityManager.flush()
                     entityManager.clear()
@@ -933,8 +1103,12 @@ class StreamingImportService(
     }
 
     private fun parseLine(line: String): Product {
+    // => Function definition
+    // => Function declaration
         // Parse single CSV line to Product
         return Product() // Placeholder
+        // => Returns to caller
+        // => Returns value to caller
     }
 }
 ```
@@ -1012,6 +1186,7 @@ public class SecuredController {
 ```kotlin
 // build.gradle.kts
 dependencies {
+// => Block begins
     implementation("org.springframework.boot:spring-boot-starter-security")
 }
 
@@ -1023,16 +1198,22 @@ dependencies {
 // 5. Session management configured
 
 @RestController
+// => Combines @Controller and @ResponseBody
 class SecuredController {
+// => Class declaration
 
     @GetMapping("/public")
+    // => HTTP endpoint mapping
     fun publicEndpoint(): String {
+    // => Function declaration
         return "Accessible without auth" // => Still requires login by default!
         // Spring Security secures ALL endpoints unless explicitly permitted
     }
 
     @GetMapping("/api/data")
+    // => HTTP endpoint mapping
     fun securedEndpoint(): String {
+    // => Function declaration
         return "Protected data" // => Requires authentication
         // Returns data only if authenticated via HTTP Basic
     }
@@ -1045,20 +1226,29 @@ class SecuredController {
 
 // Kotlin tip: Access authenticated user in controller
 @RestController
+// => Combines @Controller and @ResponseBody
 class AuthenticatedController {
+// => Class declaration
 
     @GetMapping("/me")
+    // => HTTP endpoint mapping
     fun currentUser(@AuthenticationPrincipal user: UserDetails): String {
+    // => Function declaration
         // @AuthenticationPrincipal injects authenticated user
         return "Hello, ${user.username}"
+        // => Returns value to caller
         // String template for user greeting
     }
 
     // Alternative using SecurityContextHolder (less idiomatic)
     @GetMapping("/me-manual")
+    // => HTTP endpoint mapping
     fun currentUserManual(): String {
+    // => Function declaration
         val auth = SecurityContextHolder.getContext().authentication
+        // => Immutable binding (read-only reference)
         return "Hello, ${auth.name}"
+        // => Returns value to caller
     }
 }
 ```
@@ -1075,15 +1265,25 @@ Configure users, passwords, and access rules.
 
 ```java
 @Configuration
+// => Configuration class - contains @Bean methods
+// => Spring configuration class - defines bean factory methods
 // => Annotation applied
 @EnableWebSecurity
+// => Enables Spring Security configuration
+// => Enables Spring Security web/method security
 // => Annotation applied
 public class SecurityConfig {
+// => Class declaration
+// => Class definition begins
     // => Begins block
 
   @Bean
+  // => Defines a Spring-managed bean
+  // => Declares a Spring-managed bean
   // => Annotation applied
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+  // => Method definition
+  // => Method definition
     // => Begins block
     http // => Configure HTTP security chain
       .authorizeHttpRequests(auth -> auth // => Define authorization rules
@@ -1107,8 +1307,12 @@ public class SecurityConfig {
   // => Block delimiter
 
   @Bean
+  // => Defines a Spring-managed bean
+  // => Declares a Spring-managed bean
   // => Annotation applied
   public UserDetailsService userDetailsService() {
+  // => Method definition
+  // => Method definition
     // => Begins block
     // => In-memory users (for demo—use database/LDAP in production)
     UserDetails user = User.builder() // => Create user with builder pattern
@@ -1130,7 +1334,11 @@ public class SecurityConfig {
   }
 
   @Bean
+  // => Defines a Spring-managed bean
+  // => Declares a Spring-managed bean
   public PasswordEncoder passwordEncoder() {
+  // => Method definition
+  // => Method definition
     // => Begins block
     return new BCryptPasswordEncoder(); // => BCrypt with automatic salt generation (industry standard)
     // => Assigns > BCrypt with automatic salt generation (industry standard) to //
@@ -1139,27 +1347,43 @@ public class SecurityConfig {
 
 // Controller
 @RestController
+// => REST controller - returns JSON directly
+// => REST controller - combines @Controller + @ResponseBody
 public class ApiController {
+// => Class declaration
+// => Class definition begins
     // => Begins block
   @GetMapping("/public/hello")
+  // => HTTP GET endpoint
+  // => HTTP endpoint mapping
     // => Executes method
   public String publicHello() {
+  // => Method definition
+  // => Method definition
     // => Begins block
     return "Public endpoint"; // => Accessible without login
     // => Assigns > Accessible without login to //
   }
 
   @GetMapping("/api/user-data")
+  // => HTTP GET endpoint
+  // => HTTP endpoint mapping
     // => Executes method
   public String userData() {
+  // => Method definition
+  // => Method definition
     // => Begins block
     return "User data"; // => Requires USER or ADMIN role
     // => Assigns > Requires USER or ADMIN role to //
   }
 
   @GetMapping("/admin/dashboard")
+  // => HTTP GET endpoint
+  // => HTTP endpoint mapping
     // => Executes method
   public String adminDashboard() {
+  // => Method definition
+  // => Method definition
     // => Begins block
     return "Admin dashboard"; // => Requires ADMIN role only
     // => Assigns > Requires ADMIN role only to //
@@ -1171,24 +1395,38 @@ public class ApiController {
 
 ```kotlin
 @Configuration
+// => Configuration class - contains @Bean methods
+// => Marks class as Spring configuration (bean factory)
 @EnableWebSecurity
+// => Enables Spring Security configuration
+// => Annotation applied
 open class SecurityConfig {
+// => Class declaration
+// => Class declaration
 
     @Bean
+    // => Defines a Spring-managed bean
+    // => Declares a Spring-managed bean
     open fun filterChain(http: HttpSecurity): SecurityFilterChain {
+    // => Function definition
+    // => Function declaration
         // Kotlin DSL for Spring Security configuration
         http {
+        // => Block begins
             // Lambda-based configuration (Kotlin DSL)
             authorizeHttpRequests {
+            // => Block begins
                 authorize("/public/**", permitAll) // => Public endpoints (no auth required)
                 authorize("/admin/**", hasRole("ADMIN")) // => Admin endpoints (requires ADMIN role)
                 authorize(anyRequest, authenticated) // => All other endpoints require authentication
             }
             formLogin {
+            // => Block begins
                 loginPage = "/login" // => Custom login page URL
                 permitAll()
             }
             logout {
+            // => Block begins
                 permitAll()
             }
         }
@@ -1196,7 +1434,11 @@ open class SecurityConfig {
     }
 
     @Bean
+    // => Defines a Spring-managed bean
+    // => Declares a Spring-managed bean
     open fun userDetailsService(): UserDetailsService {
+    // => Function definition
+    // => Function declaration
         // In-memory users (for demo—use database/LDAP in production)
         val user = User.builder() // => Create user with builder pattern
             .username("user") // => Username for authentication
@@ -1211,39 +1453,70 @@ open class SecurityConfig {
             .build() // => Admin has both USER and ADMIN privileges
 
         return InMemoryUserDetailsManager(user, admin)
+        // => Returns to caller
+        // => Returns value to caller
         // => Store users in memory (non-persistent)
         // Kotlin allows direct constructor call without 'new'
     }
 
     @Bean
+    // => Defines a Spring-managed bean
+    // => Declares a Spring-managed bean
     open fun passwordEncoder(): PasswordEncoder {
+    // => Function definition
+    // => Function declaration
         return BCryptPasswordEncoder()
+        // => Returns to caller
+        // => Returns value to caller
         // => BCrypt with automatic salt generation (industry standard)
     }
 }
 
 // Controller using Kotlin
 @RestController
+// => REST controller - returns JSON directly
+// => Combines @Controller and @ResponseBody
 class ApiController {
+// => Class declaration
+// => Class declaration
 
     @GetMapping("/public/hello")
+    // => HTTP GET endpoint
+    // => HTTP endpoint mapping
     fun publicHello() = "Public endpoint"
+    // => Function definition
+    // => Function declaration
     // Expression body - concise for simple returns
     // => Accessible without login
 
     @GetMapping("/api/user-data")
+    // => HTTP GET endpoint
+    // => HTTP endpoint mapping
     fun userData() = "User data"
+    // => Function definition
+    // => Function declaration
     // => Requires USER or ADMIN role
 
     @GetMapping("/admin/dashboard")
+    // => HTTP GET endpoint
+    // => HTTP endpoint mapping
     fun adminDashboard() = "Admin dashboard"
+    // => Function definition
+    // => Function declaration
     // => Requires ADMIN role only
 
     // Access authenticated user details
     @GetMapping("/api/profile")
+    // => HTTP GET endpoint
+    // => HTTP endpoint mapping
     fun userProfile(@AuthenticationPrincipal user: UserDetails): Map<String, Any> {
+    // => Function definition
+    // => Function declaration
         return mapOf(
+        // => Returns to caller
+        // => Returns value to caller
             "username" to user.username,
+            // => Statement
             "authorities" to user.authorities.map { it.authority }
         )
         // => Returns {"username":"user","authorities":["ROLE_USER"]}
@@ -1292,17 +1565,23 @@ Secure individual methods with annotations.
 
 ```java
 @Configuration
+// => Spring configuration class - defines bean factory methods
 // => Annotation applied
 @EnableMethodSecurity // Enable method security annotations
+// => Enables Spring Security web/method security
 // => Annotation applied
 public class MethodSecurityConfig {}
+// => Class definition begins
     // => Begins block
 
 @Service
+// => Business logic layer Spring component
 // => Annotation applied
 public class OrderService {
+// => Class definition begins
     // => Begins block
   @Autowired private OrderRepository orderRepo;
+  // => Spring injects dependency automatically
   // => Annotation applied
 
   @PreAuthorize("hasRole('USER')") // => Check role BEFORE method execution
@@ -1322,6 +1601,7 @@ public class OrderService {
   @PreAuthorize("#username == authentication.name") // => SpEL expression: method param matches authenticated username
   // => Annotation applied
   public Order getOrder(String username, Long orderId) {
+  // => Method definition
     // => Begins block
     return orderRepo.findByIdAndUsername(orderId, username) // => Query with composite key
       .orElseThrow(() -> new AccessDeniedException("Not authorized")); // => Explicit access denial
@@ -1332,6 +1612,7 @@ public class OrderService {
   @PreAuthorize("hasRole('ADMIN') or #order.username == authentication.name") // => Admin OR resource owner can update
   // => Annotation applied
   public Order updateOrder(Order order) {
+  // => Method definition
     // => Begins block
     return orderRepo.save(order); // => Persist updated order (authorization already checked)
     // => Assigns > Persist updated order (authorization already checked) to //
@@ -1339,6 +1620,7 @@ public class OrderService {
 
   @PostAuthorize("returnObject.username == authentication.name") // => Check AFTER execution (compare returned order's owner)
   public Order loadOrder(Long orderId) {
+  // => Method definition
     // => Begins block
     return orderRepo.findById(orderId).orElseThrow(); // => Fetch order first
     // => THEN Spring verifies returnObject.username matches authentication.name
@@ -1347,11 +1629,15 @@ public class OrderService {
 
 // Controller
 @RestController
+// => REST controller - combines @Controller + @ResponseBody
 @RequestMapping("/api/orders")
+// => Annotation applied
     // => Executes method
 public class OrderController {
+// => Class definition begins
     // => Begins block
   @Autowired private OrderService orderService;
+  // => Spring injects dependency automatically
 
   @GetMapping("/my-orders") // => Endpoint: GET /api/orders/my-orders
   public List<Order> getMyOrders(@AuthenticationPrincipal UserDetails user) { // => Inject authenticated user
@@ -1360,8 +1646,10 @@ public class OrderController {
   }
 
   @GetMapping("/all")
+  // => HTTP endpoint mapping
     // => Executes method
   public List<Order> getAllOrders() {
+  // => Method definition
     // => Begins block
     return orderService.getAllOrders(); // => Service method checks @PreAuthorize("hasRole('ADMIN')")
     // => Sets // to string literal
@@ -1373,49 +1661,69 @@ public class OrderController {
 
 ```kotlin
 @Configuration
+// => Marks class as Spring configuration (bean factory)
 @EnableMethodSecurity // Enable method security annotations in Kotlin
+// => Annotation applied
 open class MethodSecurityConfig
+// => Class declaration
 
 @Service
+// => Business logic layer Spring component
 class OrderService(
+// => Class declaration
     private val orderRepo: OrderRepository
+    // => Private class member
 ) {
+// => Block begins
 
     @PreAuthorize("hasRole('USER')") // => Check role BEFORE method execution
     fun getMyOrders(username: String): List<Order> {
+    // => Function declaration
         // username parameter from authenticated user
         return orderRepo.findByUsername(username)
+        // => Returns value to caller
         // => Query orders filtered by username
     }
 
     @PreAuthorize("hasRole('ADMIN')")
+    // => Annotation applied
     // => ADMIN role required (throws AccessDeniedException if missing)
     fun getAllOrders(): List<Order> {
+    // => Function declaration
         return orderRepo.findAll() // => Returns ALL orders (no filtering)
     }
 
     @PreAuthorize("#username == authentication.name")
+    // => Annotation applied
     // => SpEL expression: method param matches authenticated username
     // #username refers to method parameter, authentication is Spring Security context
     fun getOrder(username: String, orderId: Long): Order {
+    // => Function declaration
         return orderRepo.findByIdAndUsername(orderId, username)
+        // => Returns value to caller
             .orElseThrow { AccessDeniedException("Not authorized") }
         // => Kotlin lambda for exception supplier
     }
 
     @PreAuthorize("hasRole('ADMIN') or #order.username == authentication.name")
+    // => Annotation applied
     // => Admin OR resource owner can update
     // SpEL expression with 'or' operator and property access
     fun updateOrder(order: Order): Order {
+    // => Function declaration
         return orderRepo.save(order)
+        // => Returns value to caller
         // => Persist updated order (authorization already checked)
     }
 
     @PostAuthorize("returnObject.username == authentication.name")
+    // => Annotation applied
     // => Check AFTER execution (compare returned order's owner)
     // returnObject is SpEL variable for method return value
     fun loadOrder(orderId: Long): Order {
+    // => Function declaration
         return orderRepo.findById(orderId).orElseThrow()
+        // => Returns value to caller
         // => Fetch order first
         // => THEN Spring verifies returnObject.username matches authentication.name
     }
@@ -1423,33 +1731,50 @@ class OrderService(
 
 // Controller using Kotlin
 @RestController
+// => Combines @Controller and @ResponseBody
 @RequestMapping("/api/orders")
+// => HTTP endpoint mapping
 class OrderController(
+// => Class declaration
     private val orderService: OrderService
+    // => Private class member
 ) {
+// => Block begins
 
     @GetMapping("/my-orders")
+    // => HTTP endpoint mapping
     // => Endpoint: GET /api/orders/my-orders
     fun getMyOrders(@AuthenticationPrincipal user: UserDetails): List<Order> {
+    // => Function declaration
         // => Inject authenticated user details
         return orderService.getMyOrders(user.username)
+        // => Returns value to caller
         // => Pass authenticated username to service layer
         // Kotlin property access (no getUsername() call)
     }
 
     @GetMapping("/all")
+    // => HTTP endpoint mapping
     fun getAllOrders(): List<Order> {
+    // => Function declaration
         return orderService.getAllOrders()
+        // => Returns value to caller
         // => Service method checks @PreAuthorize("hasRole('ADMIN')")
     }
 
     // Kotlin-specific: Extension function for SpEL expressions
     @GetMapping("/{id}")
+    // => HTTP endpoint mapping
     fun getOrder(
+    // => Function declaration
         @PathVariable id: Long,
+        // => Annotation applied
         @AuthenticationPrincipal user: UserDetails
+        // => Annotation applied
     ): Order {
+    // => Block begins
         return orderService.getOrder(user.username, id)
+        // => Returns value to caller
         // Method-level security validates access
     }
 }
@@ -1463,39 +1788,62 @@ class OrderController(
 
 ### Example 28: JWT Authentication
 
-Implement stateless authentication with JSON Web Tokens.
+Implement stateless authentication with JSON Web Tokens using the JJWT library for token generation and validation in Spring Security filter chains.
+
+> **Why Not Core Features**: Spring Security 6 includes built-in JWT support via `oauth2ResourceServer().jwt()` (available since Spring Security 5.1) that validates JWTs without any external library — sufficient for consuming JWTs issued by external identity providers (Auth0, Keycloak, Okta). The JJWT library (`io.jsonwebtoken:jjwt-api`) is needed when your application must **generate and sign** JWTs itself (acting as the auth server), not just validate them. If you're building a resource server that only validates tokens from an external identity provider, prefer Spring Security's built-in OAuth2 resource server support over JJWT.
 
 ```java
 // pom.xml
 <dependency>
+// => Executes
+// => Code line
 // => Code line
   <groupId>io.jsonwebtoken</groupId>
+  // => Code line
   // => Code line
   <artifactId>jjwt-api</artifactId>
   // => Code line
+  // => Code line
   <version>0.12.3</version>
   // => Code line
+  // => Code line
 </dependency>
+// => Code line
 // => Code line
 <dependency>
 // => Code line
+// => Code line
   <groupId>io.jsonwebtoken</groupId>
+  // => Code line
   // => Code line
   <artifactId>jjwt-impl</artifactId>
   // => Code line
+  // => Code line
   <version>0.12.3</version>
   // => Code line
+  // => Code line
 </dependency>
+// => Code line
 // => Code line
 
 // JWT utility class
 @Component
+// => @Component annotation applied
+// => Spring component - detected by component scan
+// => Spring-managed component
 // => Annotation applied
 public class JwtUtil {
+// => Class definition begins
+// => Class declaration
+// => Class definition begins
     // => Begins block
   private String secret = "mySecretKey1234567890123456789012"; // 256-bit key
+  // => Assigns value
+  // => Private field
     // => Assigns value to variable
   private long expiration = 86400000; // 24 hours
+  // => Assigns value
+  // => Private field
   // => Sets expiration to 86400000
 
   public String generateToken(String username) { // => Create JWT token for authenticated user
@@ -1523,6 +1871,8 @@ public class JwtUtil {
   public boolean isTokenValid(String token, String username) { // => Comprehensive token validation
   // => Executes method call
     try {
+    // => Code line
+    // => Block begins
     // => Begins block
       String extractedUser = extractUsername(token); // => Parse token (throws if tampered/invalid)
       return extractedUser.equals(username) && !isTokenExpired(token); // => Check username match + expiration
@@ -1550,25 +1900,31 @@ public class JwtUtil {
 
 // JWT authentication filter
 @Component
+// => Spring component - detected by component scan
+// => Spring-managed component
 // => Annotation applied
 public class JwtAuthFilter extends OncePerRequestFilter {
+// => Class declaration
+// => Class definition begins
     // => Begins block
   @Autowired private JwtUtil jwtUtil; // => Inject JWT utility for token operations
   @Autowired private UserDetailsService userDetailsService; // => Inject user details service
   // => Annotation applied
 
   @Override
+  // => Overrides parent method
+  // => Overrides inherited method from parent class/interface
   // => Annotation applied
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
     // => Executes method
     throws ServletException, IOException {
+    // => Block begins
     // => Begins block
 
     String header = request.getHeader("Authorization"); // => Extract Authorization header
     if (header != null && header.startsWith("Bearer ")) { // => Check for Bearer token format
       String token = header.substring(7); // => Remove "Bearer " prefix (7 chars)
       String username = jwtUtil.extractUsername(token); // => Parse JWT to extract username
-      // => Invokes extractUsername() method
       // => Result stored in username
 
       if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) { // => Valid username + not already authenticated
@@ -1593,13 +1949,25 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
 // Security config
 @Configuration
+// => Configuration class - contains @Bean methods
+// => Spring configuration class - defines bean factory methods
 @EnableWebSecurity
+// => Enables Spring Security configuration
+// => Enables Spring Security web/method security
 public class JwtSecurityConfig {
+// => Class declaration
+// => Class definition begins
     // => Begins block
   @Autowired private JwtAuthFilter jwtAuthFilter;
+  // => Spring injects matching bean by type
+  // => Spring injects dependency automatically
 
   @Bean
+  // => Defines a Spring-managed bean
+  // => Declares a Spring-managed bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+  // => Method definition
+  // => Method definition
     // => Begins block
     http
       .csrf(csrf -> csrf.disable()) // => Disable CSRF (not needed for stateless JWT APIs)
@@ -1622,9 +1990,15 @@ public class JwtSecurityConfig {
 
 // Auth controller
 @RestController
+// => REST controller - returns JSON directly
+// => REST controller - combines @Controller + @ResponseBody
 @RequestMapping("/auth")
+// => Base URL path for all endpoints in class
+// => Annotation applied
     // => Executes method
 public class AuthController {
+// => Class declaration
+// => Class definition begins
     // => Begins block
   @Autowired private AuthenticationManager authManager; // => Spring Security authentication manager
   @Autowired private JwtUtil jwtUtil; // => Inject JWT utility
@@ -1651,6 +2025,7 @@ public class AuthController {
 ```kotlin
 // build.gradle.kts
 dependencies {
+// => Block begins
     implementation("io.jsonwebtoken:jjwt-api:0.12.3")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.3")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.3")
@@ -1658,12 +2033,24 @@ dependencies {
 
 // JWT utility class in Kotlin
 @Component
+// => Spring component - detected by component scan
+// => Spring-managed component bean
 class JwtUtil {
+// => Class declaration
+// => Class declaration
     private val secret = "mySecretKey1234567890123456789012" // 256-bit key
+    // => Immutable property
+    // => Private class member
     private val expiration = 86400000L // 24 hours (Long type)
+    // => Immutable property
+    // => Private class member
 
     fun generateToken(username: String): String {
+    // => Function definition
+    // => Function declaration
         return Jwts.builder()
+        // => Returns to caller
+        // => Returns value to caller
             .subject(username) // => Set "sub" claim (token owner)
             .issuedAt(Date()) // => Set "iat" claim (issued at timestamp)
             .expiration(Date(System.currentTimeMillis() + expiration))
@@ -1673,7 +2060,11 @@ class JwtUtil {
     }
 
     fun extractUsername(token: String): String {
+    // => Function definition
+    // => Function declaration
         return Jwts.parser()
+        // => Returns to caller
+        // => Returns value to caller
             .verifyWith(Keys.hmacShaKeyFor(secret.toByteArray()))
             .build()
             .parseSignedClaims(token)
@@ -1682,49 +2073,93 @@ class JwtUtil {
     }
 
     fun isTokenValid(token: String, username: String): Boolean {
+    // => Function definition
+    // => Function declaration
         return try {
+        // => Returns to caller
+        // => Returns value to caller
             val extractedUser = extractUsername(token)
+            // => Immutable property
+            // => Immutable binding (read-only reference)
             extractedUser == username && !isTokenExpired(token)
+            // => Assignment
         } catch (e: Exception) {
+        // => Block begins
             false // Invalid token
         }
     }
 
     private fun isTokenExpired(token: String): Boolean {
+    // => Function definition
+    // => Function declaration
         val expiration = Jwts.parser()
+        // => Immutable property
+        // => Immutable binding (read-only reference)
             .verifyWith(Keys.hmacShaKeyFor(secret.toByteArray()))
             .build()
             .parseSignedClaims(token)
             .payload
             .expiration
         return expiration.before(Date())
+        // => Returns to caller
+        // => Returns value to caller
     }
 }
 
 // JWT filter extending OncePerRequestFilter
 @Component
+// => Spring component - detected by component scan
+// => Spring-managed component bean
 class JwtAuthFilter(
+// => Class declaration
+// => Class declaration
     private val jwtUtil: JwtUtil,
+    // => Immutable property
+    // => Private class member
     private val userDetailsService: UserDetailsService
+    // => Immutable property
+    // => Private class member
 ) : OncePerRequestFilter() {
+// => Block begins
 
     override fun doFilterInternal(
+    // => Function definition
+    // => Overrides parent class/interface method
         request: HttpServletRequest,
+        // => Statement
         response: HttpServletResponse,
+        // => Statement
         filterChain: FilterChain
     ) {
+    // => Block begins
         val header = request.getHeader("Authorization")
+        // => Immutable property
+        // => Immutable binding (read-only reference)
         if (header != null && header.startsWith("Bearer ")) {
+        // => Assignment
+        // => Block begins
             val token = header.substring(7)
+            // => Immutable property
+            // => Immutable binding (read-only reference)
             val username = jwtUtil.extractUsername(token)
+            // => Immutable property
+            // => Immutable binding (read-only reference)
 
             if (username != null && SecurityContextHolder.getContext().authentication == null) {
+            // => Block begins
                 val user = userDetailsService.loadUserByUsername(username)
+                // => Immutable property
+                // => Immutable binding (read-only reference)
                 if (jwtUtil.isTokenValid(token, username)) {
+                // => Block begins
                     val auth = UsernamePasswordAuthenticationToken(
+                    // => Immutable property
+                    // => Immutable binding (read-only reference)
                         user, null, user.authorities
                     )
                     SecurityContextHolder.getContext().authentication = auth
+                    // => Assignment
+                    // => Assignment
                 }
             }
         }
@@ -1734,49 +2169,92 @@ class JwtAuthFilter(
 
 // Security config with JWT
 @Configuration
+// => Configuration class - contains @Bean methods
+// => Marks class as Spring configuration (bean factory)
 @EnableWebSecurity
+// => Enables Spring Security configuration
+// => Annotation applied
 open class JwtSecurityConfig(
+// => Class declaration
+// => Class declaration
     private val jwtAuthFilter: JwtAuthFilter
+    // => Immutable property
+    // => Private class member
 ) {
+// => Block begins
 
     @Bean
+    // => Defines a Spring-managed bean
+    // => Declares a Spring-managed bean
     open fun filterChain(http: HttpSecurity): SecurityFilterChain {
+    // => Function definition
+    // => Function declaration
         http {
+        // => Block begins
             csrf { disable() }
             authorizeHttpRequests {
+            // => Block begins
                 authorize("/auth/**", permitAll)
                 authorize(anyRequest, authenticated)
             }
             sessionManagement {
+            // => Block begins
                 sessionCreationPolicy = SessionCreationPolicy.STATELESS
+                // => Assignment
+                // => Assignment
             }
             addFilterBefore<UsernamePasswordAuthenticationFilter>(jwtAuthFilter)
         }
         return http.build()
+        // => Returns to caller
+        // => Returns value to caller
     }
 }
 
 // Login request DTO
 data class LoginRequest(
+// => Data class: auto-generates equals/hashCode/toString/copy
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
     val username: String,
+    // => Immutable property
     val password: String
+    // => Immutable property
 )
 
 // Auth controller
 @RestController
+// => REST controller - returns JSON directly
+// => Combines @Controller and @ResponseBody
 @RequestMapping("/auth")
+// => Base URL path for all endpoints in class
+// => HTTP endpoint mapping
 class AuthController(
+// => Class declaration
+// => Class declaration
     private val authManager: AuthenticationManager,
+    // => Immutable property
+    // => Private class member
     private val jwtUtil: JwtUtil
+    // => Immutable property
+    // => Private class member
 ) {
+// => Block begins
 
     @PostMapping("/login")
+    // => HTTP POST endpoint
+    // => HTTP endpoint mapping
     fun login(@RequestBody request: LoginRequest): ResponseEntity<String> {
+    // => Function definition
+    // => Function declaration
         authManager.authenticate(
             UsernamePasswordAuthenticationToken(request.username, request.password)
         )
         val token = jwtUtil.generateToken(request.username)
+        // => Immutable property
+        // => Immutable binding (read-only reference)
         return ResponseEntity.ok(token)
+        // => Returns to caller
+        // => Returns value to caller
     }
 }
 
@@ -1823,6 +2301,7 @@ Enable social login with OAuth2 providers.
 ```java
 // pom.xml
 <dependency>
+// => Executes
 // => Code execution
   <groupId>org.springframework.boot</groupId>
   // => Code execution
@@ -1905,7 +2384,6 @@ public class ProfileController {
   public String dashboard(@AuthenticationPrincipal OAuth2User principal) { // => Inject OAuth2 authenticated user
     String name = principal.getAttribute("name"); // => Extract "name" claim from provider
     String email = principal.getAttribute("email"); // => Extract "email" claim
-    // => Invokes getAttribute() method
     // => Result stored in email
     return "Welcome, " + name + " (" + email + ")";
     // => Returns value to caller
@@ -1917,7 +2395,6 @@ public class ProfileController {
   public Map<String, Object> userInfo(@AuthenticationPrincipal OAuth2User principal) {
     // => Begins block
     return principal.getAttributes(); // => Complete OAuth2 profile (name, email, picture, etc.)
-    // => Invokes > Complete OAuth2 profile () method
     // => Result stored in //
   }
 }
@@ -1937,43 +2414,64 @@ public class ProfileController {
 ```kotlin
 // application.properties
 spring.security.oauth2.client.registration.google.client-id=YOUR_CLIENT_ID
+// => Assignment
 spring.security.oauth2.client.registration.google.client-secret=YOUR_SECRET
+// => Assignment
 spring.security.oauth2.client.registration.google.scope=profile,email
+// => Assignment
 
 // Security configuration
 @Configuration
+// => Marks class as Spring configuration (bean factory)
 @EnableWebSecurity
+// => Annotation applied
 open class OAuth2SecurityConfig {
+// => Class declaration
   @Bean
+  // => Declares a Spring-managed bean
   open fun filterChain(http: HttpSecurity): SecurityFilterChain {
+  // => Function declaration
     http {
+    // => Block begins
       authorizeHttpRequests {
+      // => Block begins
         authorize("/", permitAll)
         authorize("/login/**", permitAll)  // OAuth2 login endpoints
         authorize(anyRequest, authenticated)
       }
       oauth2Login {
+      // => Block begins
         defaultSuccessUrl("/dashboard", true)  // Redirect after successful login
       }
       // => Enables OAuth2 login flow with Google
     }
     return http.build()
+    // => Returns value to caller
   }
 }
 
 // Controller handling OAuth2 user
 @RestController
+// => Combines @Controller and @ResponseBody
 class OAuth2Controller {
+// => Class declaration
   @GetMapping("/dashboard")
+  // => HTTP endpoint mapping
   fun dashboard(@AuthenticationPrincipal principal: OAuth2User): String {
+  // => Function declaration
     val name = principal.getAttribute<String>("name") ?: "User"
+    // => Immutable binding (read-only reference)
     return "Welcome, $name!"  // String template with null safety
+    // => Returns value to caller
     // => Extracts user info from OAuth2 provider
   }
 
   @GetMapping("/user-info")
+  // => HTTP endpoint mapping
   fun userInfo(@AuthenticationPrincipal principal: OAuth2User): Map<String, Any> {
+  // => Function declaration
     return principal.attributes  // Complete OAuth2 profile (name, email, picture, etc.)
+    // => Returns value to caller
   }
 }
 
@@ -2112,27 +2610,51 @@ public class OrderServiceTest {
 ```kotlin
 // Test class
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+// => Annotation applied
+// => Annotation applied
 class ProductControllerIntegrationTest {
+// => Class declaration
+// => Class declaration
   @Autowired private lateinit var restTemplate: TestRestTemplate  // HTTP client for testing
+  // => Spring injects matching bean by type
+  // => Injects Spring-managed dependency
   @Autowired private lateinit var productRepo: ProductRepository
+  // => Spring injects matching bean by type
+  // => Injects Spring-managed dependency
 
   @BeforeEach
+  // => Annotation applied
+  // => Annotation applied
   fun setup() {
+  // => Function definition
+  // => Function declaration
     productRepo.deleteAll()  // Clean database before each test
   }
 
   @Test
+  // => Annotation applied
+  // => Annotation applied
   fun testCreateAndRetrieveProduct() {
+  // => Function definition
+  // => Function declaration
     // Create product
     val product = Product("Laptop", 999.99)
+    // => Immutable property
+    // => Immutable binding (read-only reference)
     val createResponse = restTemplate.postForEntity(
+    // => Immutable property
+    // => Immutable binding (read-only reference)
       "/api/products", product, Product::class.java
     )
     assertEquals(HttpStatus.CREATED, createResponse.statusCode)
     val productId = createResponse.body!!.id  // Non-null assertion (test environment controlled)
+    // => Immutable property
+    // => Immutable binding (read-only reference)
 
     // Retrieve product
     val getResponse = restTemplate.getForEntity(
+    // => Immutable property
+    // => Immutable binding (read-only reference)
       "/api/products/$productId", Product::class.java  // String template
     )
     assertEquals(HttpStatus.OK, getResponse.statusCode)
@@ -2141,8 +2663,14 @@ class ProductControllerIntegrationTest {
   }
 
   @Test
+  // => Annotation applied
+  // => Annotation applied
   fun testDeleteProduct() {
+  // => Function definition
+  // => Function declaration
     val product = productRepo.save(Product("Mouse", 25.00))
+    // => Immutable property
+    // => Immutable binding (read-only reference)
 
     restTemplate.delete("/api/products/${product.id}")  // String template for URL
 
@@ -2153,18 +2681,32 @@ class ProductControllerIntegrationTest {
 
 // Mocking external dependencies
 @SpringBootTest
+// => Annotation applied
+// => Annotation applied
 class OrderServiceTest {
+// => Class declaration
+// => Class declaration
   @Autowired private lateinit var orderService: OrderService
+  // => Spring injects matching bean by type
+  // => Injects Spring-managed dependency
 
   @MockBean  // Replace real bean with mock
+  // => Annotation applied
+  // => Annotation applied
   private lateinit var paymentGateway: PaymentGateway
 
   @Test
+  // => Annotation applied
+  // => Annotation applied
   fun testProcessOrder() {
+  // => Function definition
+  // => Function declaration
     // Stub mock behavior
     `when`(paymentGateway.charge(any(), any())).thenReturn(true)  // Backticks escape Kotlin keyword
 
     val order = Order("user1", 100.00)
+    // => Immutable property
+    // => Immutable binding (read-only reference)
     orderService.processOrder(order)
 
     verify(paymentGateway, times(1)).charge(eq("user1"), eq(100.00))
@@ -2267,16 +2809,30 @@ public class ProductControllerUnitTest {
 
 ```kotlin
 @WebMvcTest(ProductController::class)  // Only load ProductController
+// => Annotation applied
+// => Annotation applied
 class ProductControllerUnitTest {
+// => Class declaration
+// => Class declaration
   @Autowired private lateinit var mockMvc: MockMvc  // Simulates HTTP requests
+  // => Spring injects matching bean by type
+  // => Injects Spring-managed dependency
 
   @MockBean  // Mock the service layer
+  // => Annotation applied
+  // => Annotation applied
   private lateinit var productService: ProductService
 
   @Test
+  // => Annotation applied
+  // => Annotation applied
   fun testGetProduct() {
+  // => Function definition
+  // => Function declaration
     // Arrange
     val product = Product(1L, "Laptop", 999.99)
+    // => Immutable property
+    // => Immutable binding (read-only reference)
     `when`(productService.findById(1L)).thenReturn(Optional.of(product))
 
     // Act & Assert
@@ -2288,8 +2844,14 @@ class ProductControllerUnitTest {
   }
 
   @Test
+  // => Annotation applied
+  // => Annotation applied
   fun testCreateProduct() {
+  // => Function definition
+  // => Function declaration
     val product = Product("Mouse", 25.00)
+    // => Immutable property
+    // => Immutable binding (read-only reference)
     `when`(productService.save(any(Product::class.java))).thenReturn(product)
 
     mockMvc.perform(post("/api/products")
@@ -2300,7 +2862,11 @@ class ProductControllerUnitTest {
   }
 
   @Test
+  // => Annotation applied
+  // => Annotation applied
   fun testGetProductNotFound() {
+  // => Function definition
+  // => Function declaration
     `when`(productService.findById(999L)).thenReturn(Optional.empty())
 
     mockMvc.perform(get("/api/products/999"))
@@ -2423,20 +2989,39 @@ testImplementation("org.testcontainers:postgresql:1.19.3")
 
 // Test class
 @SpringBootTest
+// => Annotation applied
+// => Annotation applied
 @Testcontainers  // Enable TestContainers support
+// => Annotation applied
+// => Annotation applied
 class ProductRepositoryTestContainersTest {
+// => Class declaration
+// => Class declaration
   companion object {
+  // => Companion object: static-like members in Kotlin
     @Container  // Start PostgreSQL container
+    // => Annotation applied
+    // => Annotation applied
     @JvmStatic
+    // => Annotation applied
+    // => Annotation applied
     val postgres = PostgreSQLContainer<Nothing>("postgres:16").apply {
+    // => Immutable property
+    // => Immutable binding (read-only reference)
       withDatabaseName("testdb")
       withUsername("test")
       withPassword("test")
     }
 
     @DynamicPropertySource  // Configure Spring to use container
+    // => Annotation applied
+    // => Annotation applied
     @JvmStatic
+    // => Annotation applied
+    // => Annotation applied
     fun properties(registry: DynamicPropertyRegistry) {
+    // => Function definition
+    // => Function declaration
       registry.add("spring.datasource.url", postgres::getJdbcUrl)
       registry.add("spring.datasource.username", postgres::getUsername)
       registry.add("spring.datasource.password", postgres::getPassword)
@@ -2445,27 +3030,45 @@ class ProductRepositoryTestContainersTest {
   }
 
   @Autowired private lateinit var productRepo: ProductRepository
+  // => Spring injects matching bean by type
+  // => Injects Spring-managed dependency
 
   @Test
+  // => Annotation applied
+  // => Annotation applied
   fun testSaveAndFind() {
+  // => Function definition
+  // => Function declaration
     val product = Product("Keyboard", 75.00)
+    // => Immutable property
+    // => Immutable binding (read-only reference)
     productRepo.save(product)
 
     val found = productRepo.findById(product.id!!)
+    // => Immutable property
+    // => Immutable binding (read-only reference)
     assertTrue(found.isPresent)
     assertEquals("Keyboard", found.get().name)
     // => Tests against real PostgreSQL database in Docker
   }
 
   @Test
+  // => Annotation applied
+  // => Annotation applied
   fun testCustomQuery() {
+  // => Function definition
+  // => Function declaration
     listOf(
       Product("Mouse", 20.00),
+      // => Statement
       Product("Keyboard", 75.00),
+      // => Statement
       Product("Monitor", 300.00)
     ).forEach { productRepo.save(it) }  // Idiomatic forEach with lambda
 
     val expensive = productRepo.findByPriceGreaterThan(50.00)
+    // => Immutable property
+    // => Immutable binding (read-only reference)
     assertEquals(2, expensive.size)
     // => Verifies custom queries against real database
   }
@@ -2617,25 +3220,43 @@ public class OrderServiceUnitTest {
 
 ```kotlin
 @ExtendWith(MockitoExtension::class)  // Enable Mockito
+// => Annotation applied
+// => Annotation applied
 class OrderServiceUnitTest {
+// => Class declaration
+// => Class declaration
   @Mock  // Create mock
+  // => Annotation applied
+  // => Annotation applied
   private lateinit var orderRepo: OrderRepository
 
   @Mock
+  // => Annotation applied
+  // => Annotation applied
   private lateinit var paymentService: PaymentService
 
   @InjectMocks  // Inject mocks into service
+  // => Annotation applied
+  // => Dependency injection
   private lateinit var orderService: OrderService
 
   @Test
+  // => Annotation applied
+  // => Annotation applied
   fun testProcessOrder() {
+  // => Function definition
+  // => Function declaration
     // Arrange
     val order = Order("user1", 100.00)
+    // => Immutable property
+    // => Immutable binding (read-only reference)
     `when`(orderRepo.save(any(Order::class.java))).thenReturn(order)
     `when`(paymentService.charge(anyString(), anyDouble())).thenReturn(true)
 
     // Act
     val result = orderService.processOrder(order)
+    // => Immutable property
+    // => Immutable binding (read-only reference)
 
     // Assert
     assertNotNull(result)
@@ -2644,11 +3265,18 @@ class OrderServiceUnitTest {
   }
 
   @Test
+  // => Annotation applied
+  // => Annotation applied
   fun testProcessOrderPaymentFailure() {
+  // => Function definition
+  // => Function declaration
     val order = Order("user1", 100.00)
+    // => Immutable property
+    // => Immutable binding (read-only reference)
     `when`(paymentService.charge(anyString(), anyDouble())).thenReturn(false)
 
     assertThrows<PaymentException> {
+    // => Block begins
       orderService.processOrder(order)
     }
 
@@ -2657,16 +3285,26 @@ class OrderServiceUnitTest {
   }
 
   @Test
+  // => Annotation applied
+  // => Annotation applied
   fun testArgumentCaptor() {
+  // => Function definition
+  // => Function declaration
     val order = Order("user1", 100.00)
+    // => Immutable property
+    // => Immutable binding (read-only reference)
     `when`(paymentService.charge(anyString(), anyDouble())).thenReturn(true)
 
     orderService.processOrder(order)
 
     val captor = argumentCaptor<Order>()  // Kotlin extension function
+    // => Immutable property
+    // => Immutable binding (read-only reference)
     verify(orderRepo).save(captor.capture())
 
     val captured = captor.firstValue
+    // => Immutable property
+    // => Immutable binding (read-only reference)
     assertEquals("PROCESSED", captured.status)
     // => Captures arguments passed to mocked methods
   }
@@ -2820,55 +3458,109 @@ implementation("org.springframework.boot:spring-boot-starter-cache")
 
 // Enable caching
 @SpringBootApplication
+// => Entry point: @Configuration + @EnableAutoConfiguration + @ComponentScan
+// => Combines @Configuration, @EnableAutoConfiguration, @ComponentScan
 @EnableCaching  // Enable cache annotations
+// => Annotation applied
+// => Annotation applied
 open class Application
+// => Class declaration
+// => Class declaration
 
 fun main(args: Array<String>) {
+// => Function definition
+// => Function declaration
   runApplication<Application>(*args)
 }
 
 // Service with caching
 @Service
+// => Business logic service bean
+// => Business logic layer Spring component
 open class ProductService(
+// => Class declaration
+// => Class declaration
   private val productRepo: ProductRepository
+  // => Immutable property
+  // => Private class member
 ) {
+// => Block begins
   @Cacheable("products")  // Cache results by method arguments
+  // => Cache method result
+  // => Caches method result; returns cached value on repeat calls
   open fun findById(id: Long): Product {
+  // => Function definition
+  // => Function declaration
     println("Fetching from database: $id")  // String template
+    // => Output: see string template value above
     return productRepo.findById(id).orElseThrow()
+    // => Returns to caller
+    // => Returns value to caller
     // First call: prints "Fetching..." and queries database
     // Subsequent calls: returns cached value, no database query
   }
 
   @Cacheable(value = ["products"], key = "#name")  // Custom cache key
+  // => Cache method result
+  // => Caches method result; returns cached value on repeat calls
   open fun findByName(name: String): List<Product> {
+  // => Function definition
+  // => Function declaration
     println("Querying database for: $name")
+    // => Output: see string template value above
     return productRepo.findByNameContaining(name)
+    // => Returns to caller
+    // => Returns value to caller
   }
 
   @CachePut(value = ["products"], key = "#result.id")  // Update cache after method
+  // => Annotation applied
+  // => Annotation applied
   open fun save(product: Product): Product {
+  // => Function definition
+  // => Function declaration
     return productRepo.save(product)
+    // => Returns to caller
+    // => Returns value to caller
     // => Saves to database AND updates cache with new value
   }
 
   @CacheEvict(value = ["products"], key = "#id")  // Remove from cache
+  // => Evict cache entry
+  // => Evicts entry from cache when method executes
   open fun deleteById(id: Long) {
+  // => Function definition
+  // => Function declaration
     productRepo.deleteById(id)
     // => Deletes from database AND evicts from cache
   }
 
   @CacheEvict(value = ["products"], allEntries = true)  // Clear entire cache
+  // => Evict cache entry
+  // => Evicts entry from cache when method executes
   open fun clearCache() {
+  // => Function definition
+  // => Function declaration
     println("Cache cleared")
+    // => Output: see string template value above
   }
 
   @Caching(evict = [
+  // => Annotation applied
+  // => Annotation applied
     CacheEvict(value = ["products"], key = "#product.id"),
+    // => Assignment
+    // => Assignment
     CacheEvict(value = ["categories"], key = "#product.categoryId")
+    // => Assignment
+    // => Assignment
   ])
   open fun update(product: Product): Product {
+  // => Function definition
+  // => Function declaration
     return productRepo.save(product)
+    // => Returns to caller
+    // => Returns value to caller
     // => Evicts multiple cache entries
   }
 }
@@ -2917,7 +3609,9 @@ flowchart TD
 
 ### Example 35: Redis Integration
 
-Use Redis as distributed cache backend.
+Use Redis as distributed cache backend for distributed caching, session storage, and pub/sub messaging across multiple application instances.
+
+> **Why Not Core Features**: Spring's `@Cacheable` with the default `ConcurrentHashMap` cache or `spring-boot-starter-cache` with Caffeine provides excellent in-memory caching for single-instance applications — no Redis required. Use Redis when you need **distributed caching** across multiple application instances (horizontal scaling), **cache persistence** across application restarts, or **shared session storage** in a clustered deployment. For single-instance applications or development environments, Caffeine (`com.github.ben-manes.caffeine:caffeine`) offers higher performance than Redis without the infrastructure overhead.
 
 ```java
 // pom.xml
@@ -2990,7 +3684,6 @@ public class RedisCacheConfig {
 // => Block delimiter
 
 // Service (same annotations as Example 34)
-// => Invokes // Service()
 @Service
 // => Annotation applied
 public class UserService {
@@ -3007,7 +3700,6 @@ public class UserService {
 // => Block delimiter
 
 // Direct Redis operations (without cache abstraction)
-// => Invokes // Direct Redis operations()
 @Service
 // => Annotation applied
 public class SessionService {
@@ -3057,11 +3749,23 @@ spring:
 
 // Redis config
 @Configuration
+// => Configuration class - contains @Bean methods
+// => Marks class as Spring configuration (bean factory)
 @EnableCaching
+// => Annotation applied
+// => Annotation applied
 open class RedisCacheConfig {
+// => Class declaration
+// => Class declaration
   @Bean
+  // => Defines a Spring-managed bean
+  // => Declares a Spring-managed bean
   open fun cacheManager(factory: RedisConnectionFactory): CacheManager {
+  // => Function definition
+  // => Function declaration
     val config = RedisCacheConfiguration.defaultCacheConfig()
+    // => Immutable property
+    // => Immutable binding (read-only reference)
       .entryTtl(Duration.ofMinutes(10))  // Cache expiration
       .serializeKeysWith(
         RedisSerializationContext.SerializationPair.fromSerializer(StringRedisSerializer())
@@ -3071,6 +3775,8 @@ open class RedisCacheConfig {
       )
 
     return RedisCacheManager.builder(factory)
+    // => Returns to caller
+    // => Returns value to caller
       .cacheDefaults(config)
       .build()
   }
@@ -3078,31 +3784,59 @@ open class RedisCacheConfig {
 
 // Service (same annotations as Example 34)
 @Service
+// => Business logic service bean
+// => Business logic layer Spring component
 open class UserService(
+// => Class declaration
+// => Class declaration
   private val userRepo: UserRepository
+  // => Immutable property
+  // => Private class member
 ) {
+// => Block begins
   @Cacheable("users")  // Now uses Redis instead of in-memory cache
+  // => Cache method result
+  // => Caches method result; returns cached value on repeat calls
   open fun findById(id: Long): User {
+  // => Function definition
+  // => Function declaration
     return userRepo.findById(id).orElseThrow()
+    // => Returns to caller
+    // => Returns value to caller
   }
 }
 
 // Direct Redis operations (without cache abstraction)
 @Service
+// => Business logic service bean
+// => Business logic layer Spring component
 class SessionService(
+// => Class declaration
+// => Class declaration
   private val redisTemplate: RedisTemplate<String, Any>
+  // => Immutable property
+  // => Private class member
 ) {
+// => Block begins
   fun saveSession(sessionId: String, session: UserSession) {
+  // => Function definition
+  // => Function declaration
     redisTemplate.opsForValue().set("session:$sessionId", session, Duration.ofMinutes(30))
     // => Key: "session:abc123", Value: serialized UserSession, TTL: 30 minutes
   }
 
   fun getSession(sessionId: String): UserSession? {
+  // => Function definition
+  // => Function declaration
     return redisTemplate.opsForValue().get("session:$sessionId") as? UserSession
+    // => Returns to caller
+    // => Returns value to caller
     // => Returns null if expired or not found
   }
 
   fun deleteSession(sessionId: String) {
+  // => Function definition
+  // => Function declaration
     redisTemplate.delete("session:$sessionId")
   }
 }
@@ -3260,80 +3994,118 @@ public class CachePitfallsService {
 
 ```kotlin
 @Service
+// => Business logic layer Spring component
 open class CacheStrategyService(
+// => Class declaration
   private val productRepo: ProductRepository,
+  // => Private class member
   private val cacheManager: CacheManager
+  // => Private class member
 ) {
+// => Block begins
   // Cache-Aside (Lazy Loading)
   @Cacheable("products")
+  // => Caches method result; returns cached value on repeat calls
   open fun findById(id: Long): Product {
+  // => Function declaration
     return productRepo.findById(id).orElseThrow()
+    // => Returns value to caller
     // => Load on demand, cache misses query database
   }
 
   // Write-Through (Eager Update)
   @CachePut(value = ["products"], key = "#result.id")
+  // => Annotation applied
   open fun save(product: Product): Product {
+  // => Function declaration
     return productRepo.save(product)
+    // => Returns value to caller
     // => Writes to database AND cache simultaneously
   }
 
   // Cache Stampede Prevention
   @Cacheable(value = ["expensive-data"], sync = true)  // Synchronize cache loading
+  // => Caches method result; returns cached value on repeat calls
   open fun loadExpensiveData(key: String): ExpensiveData {
+  // => Function declaration
     // Only one thread loads data, others wait for cached result
     return computeExpensiveData(key)
+    // => Returns value to caller
   }
 
   // Conditional Caching
   @Cacheable(value = ["products"], condition = "#id > 100")  // Only cache if id > 100
+  // => Caches method result; returns cached value on repeat calls
   open fun findByIdConditional(id: Long): Product {
+  // => Function declaration
     return productRepo.findById(id).orElseThrow()
+    // => Returns value to caller
   }
 
   @Cacheable(value = ["products"], unless = "#result.price < 10")  // Don't cache cheap products
+  // => Caches method result; returns cached value on repeat calls
   open fun findByIdUnless(id: Long): Product {
+  // => Function declaration
     return productRepo.findById(id).orElseThrow()
+    // => Returns value to caller
   }
 
   // Manual Cache Control
   fun warmUpCache() {
+  // => Function declaration
     val topProducts = productRepo.findTop100ByOrderBySalesDesc()
+    // => Immutable binding (read-only reference)
     val cache = cacheManager.getCache("products")!!
+    // => Immutable binding (read-only reference)
     topProducts.forEach { cache.put(it.id, it) }
     // => Pre-populate cache with frequently accessed data
   }
 
   // Cache Invalidation Pattern
   @Scheduled(cron = "0 0 3 * * ?")  // Every day at 3 AM
+  // => Scheduled task execution
   fun scheduledCacheEviction() {
+  // => Function declaration
     cacheManager.cacheNames.forEach { name ->
       cacheManager.getCache(name)?.clear()
     }
     println("All caches cleared")
+    // => Output: see string template value above
   }
 }
 
 // Common Pitfalls
 @Service
+// => Business logic layer Spring component
 open class CachePitfallsService(
+// => Class declaration
   private val productRepo: ProductRepository
+  // => Private class member
 ) {
+// => Block begins
   // ❌ Wrong: Self-invocation bypasses proxy
   fun getProduct(id: Long): Product {
+  // => Function declaration
     return this.findById(id)  // Cache annotation IGNORED (no proxy)
+    // => Returns value to caller
   }
 
   @Cacheable("products")
+  // => Caches method result; returns cached value on repeat calls
   open fun findById(id: Long): Product {
+  // => Function declaration
     return productRepo.findById(id).orElseThrow()
+    // => Returns value to caller
   }
 
   // ✅ Correct: Inject self-reference
   @Autowired private lateinit var self: CachePitfallsService
+  // => Injects Spring-managed dependency
 
   fun getProductCorrect(id: Long): Product {
+  // => Function declaration
     return self.findById(id)  // Cache annotation WORKS (via proxy)
+    // => Returns value to caller
   }
 }
 
@@ -3520,69 +4292,106 @@ public class AsyncController {
 ```kotlin
 // Enable async support
 @SpringBootApplication
+// => Combines @Configuration, @EnableAutoConfiguration, @ComponentScan
 @EnableAsync  // Enable @Async annotation
+// => Annotation applied
 open class Application
+// => Class declaration
 
 fun main(args: Array<String>) {
+// => Function declaration
   runApplication<Application>(*args)
 }
 
 // Async service
 @Service
+// => Business logic layer Spring component
 open class EmailService {
+// => Class declaration
   @Async  // Runs in separate thread
+  // => Executes method in separate thread pool
   open fun sendEmail(to: String, subject: String, body: String) {
+  // => Function declaration
     println("Sending email to $to - Thread: ${Thread.currentThread().name}")
+    // => Output: see string template value above
     // Simulate delay
     Thread.sleep(3000)
     println("Email sent to $to")
+    // => Output: see string template value above
   }
 
   @Async
+  // => Executes method in separate thread pool
   open fun sendEmailWithResult(to: String): CompletableFuture<String> {
+  // => Function declaration
     println("Sending email - Thread: ${Thread.currentThread().name}")
+    // => Output: see string template value above
     Thread.sleep(2000)
     return CompletableFuture.completedFuture("Email sent to $to")
+    // => Returns value to caller
     // => Returns CompletableFuture for async result handling
   }
 
   @Async
+  // => Executes method in separate thread pool
   open fun processLargeFile(filename: String): CompletableFuture<Int> {
+  // => Function declaration
     println("Processing $filename")
+    // => Output: see string template value above
     Thread.sleep(5000)
     return CompletableFuture.completedFuture(10000)  // Processed 10000 records
+    // => Returns value to caller
   }
 }
 
 // Controller
 @RestController
+// => Combines @Controller and @ResponseBody
 @RequestMapping("/api/async")
+// => HTTP endpoint mapping
 class AsyncController(
+// => Class declaration
   private val emailService: EmailService
+  // => Private class member
 ) {
+// => Block begins
   @PostMapping("/send-email")
+  // => HTTP endpoint mapping
   fun sendEmail(@RequestParam to: String): ResponseEntity<String> {
+  // => Function declaration
     emailService.sendEmail(to, "Welcome", "Hello!")
     return ResponseEntity.ok("Email queued")  // Returns immediately
+    // => Returns value to caller
     // => Controller thread doesn't wait for email to send
   }
 
   @GetMapping("/send-with-result")
+  // => HTTP endpoint mapping
   fun sendWithResult(@RequestParam to: String): CompletableFuture<String> {
+  // => Function declaration
     return emailService.sendEmailWithResult(to)
+    // => Returns value to caller
       .thenApply { result -> "Result: $result" }
     // => Non-blocking—returns CompletableFuture
   }
 
   @GetMapping("/process-multiple")
+  // => HTTP endpoint mapping
   fun processMultiple(): CompletableFuture<String> {
+  // => Function declaration
     val file1 = emailService.processLargeFile("file1.csv")
+    // => Immutable binding (read-only reference)
     val file2 = emailService.processLargeFile("file2.csv")
+    // => Immutable binding (read-only reference)
     val file3 = emailService.processLargeFile("file3.csv")
+    // => Immutable binding (read-only reference)
 
     return CompletableFuture.allOf(file1, file2, file3)
+    // => Returns value to caller
       .thenApply {
+      // => Block begins
         val total = file1.join() + file2.join() + file3.join()
+        // => Immutable binding (read-only reference)
         "Total records processed: $total"
       }
     // => Processes 3 files in parallel, waits for all to complete
@@ -3719,37 +4528,79 @@ public class NotificationService {
 
 ```kotlin
 @Configuration
+// => Configuration class - contains @Bean methods
+// => Marks class as Spring configuration (bean factory)
 @EnableAsync
+// => Annotation applied
+// => Annotation applied
 open class AsyncConfig : AsyncConfigurer {
+// => Class declaration
+// => Class declaration
   override fun getAsyncExecutor(): Executor {
+  // => Function definition
+  // => Overrides parent class/interface method
     val executor = ThreadPoolTaskExecutor()
+    // => Immutable property
+    // => Immutable binding (read-only reference)
     executor.corePoolSize = 5  // Minimum threads
+    // => Assignment
+    // => Assignment
     executor.maxPoolSize = 10  // Maximum threads
+    // => Assignment
+    // => Assignment
     executor.queueCapacity = 100  // Queue size before rejecting tasks
+    // => Assignment
+    // => Assignment
     executor.setThreadNamePrefix("async-")  // Thread naming
     executor.setRejectedExecutionHandler(ThreadPoolExecutor.CallerRunsPolicy())
     executor.initialize()
     return executor
+    // => Returns to caller
+    // => Returns value to caller
   }
 
   // Custom executor for specific tasks
   @Bean(name = ["emailExecutor"])
+  // => Defines a Spring-managed bean
+  // => Declares a Spring-managed bean
   open fun emailExecutor(): Executor {
+  // => Function definition
+  // => Function declaration
     return ThreadPoolTaskExecutor().apply {
+    // => Returns to caller
+    // => Returns value to caller
       corePoolSize = 2
+      // => Assignment
+      // => Assignment
       maxPoolSize = 5
+      // => Assignment
+      // => Assignment
       queueCapacity = 50
+      // => Assignment
+      // => Assignment
       setThreadNamePrefix("email-")
       initialize()
     }
   }
 
   @Bean(name = ["reportExecutor"])
+  // => Defines a Spring-managed bean
+  // => Declares a Spring-managed bean
   open fun reportExecutor(): Executor {
+  // => Function definition
+  // => Function declaration
     return ThreadPoolTaskExecutor().apply {
+    // => Returns to caller
+    // => Returns value to caller
       corePoolSize = 1
+      // => Assignment
+      // => Assignment
       maxPoolSize = 3
+      // => Assignment
+      // => Assignment
       queueCapacity = 20
+      // => Assignment
+      // => Assignment
       setThreadNamePrefix("report-")
       initialize()
     }
@@ -3758,18 +4609,34 @@ open class AsyncConfig : AsyncConfigurer {
 
 // Service with custom executors
 @Service
+// => Business logic service bean
+// => Business logic layer Spring component
 open class NotificationService {
+// => Class declaration
+// => Class declaration
   @Async("emailExecutor")  // Use specific executor
+  // => Execute in async thread pool
+  // => Executes method in separate thread pool
   open fun sendEmailNotification(to: String) {
+  // => Function definition
+  // => Function declaration
     println("Email thread: ${Thread.currentThread().name}")
+    // => Output: see string template value above
     // => Thread name: email-1, email-2, etc.
   }
 
   @Async("reportExecutor")
+  // => Execute in async thread pool
+  // => Executes method in separate thread pool
   open fun generateReport(id: Long): CompletableFuture<Report> {
+  // => Function definition
+  // => Function declaration
     println("Report thread: ${Thread.currentThread().name}")
+    // => Output: see string template value above
     // => Thread name: report-1, report-2, etc.
     return CompletableFuture.completedFuture(Report(id))
+    // => Returns to caller
+    // => Returns value to caller
   }
 }
 
@@ -3948,64 +4815,97 @@ public class TransactionalListener {
 ```kotlin
 // Custom event (data class instead of extending ApplicationEvent)
 data class OrderPlacedEvent(
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
   val order: Order,
   val source: Any = Object()
+  // => Immutable binding (read-only reference)
 )
 
 // Event publisher
 @Service
+// => Business logic layer Spring component
 class OrderService(
+// => Class declaration
   private val eventPublisher: ApplicationEventPublisher,
+  // => Private class member
   private val orderRepo: OrderRepository
+  // => Private class member
 ) {
+// => Block begins
   fun placeOrder(order: Order): Order {
+  // => Function declaration
     order.status = "PLACED"
+    // => Assignment
     val saved = orderRepo.save(order)
+    // => Immutable binding (read-only reference)
 
     // Publish event
     eventPublisher.publishEvent(OrderPlacedEvent(saved, this))
     // => Listeners are notified asynchronously
 
     return saved
+    // => Returns value to caller
   }
 }
 
 // Event listeners
 @Component
+// => Spring-managed component bean
 class EmailNotificationListener {
+// => Class declaration
   @EventListener  // Subscribe to event
+  // => Handles application events of specified type
   fun handleOrderPlaced(event: OrderPlacedEvent) {
+  // => Function declaration
     val order = event.order
+    // => Immutable binding (read-only reference)
     println("Sending confirmation email for order ${order.id}")
+    // => Output: see string template value above
     // => Executes synchronously by default
   }
 }
 
 @Component
+// => Spring-managed component bean
 class InventoryListener {
+// => Class declaration
   @Async  // Process asynchronously
+  // => Executes method in separate thread pool
   @EventListener
+  // => Handles application events of specified type
   fun handleOrderPlaced(event: OrderPlacedEvent) {
+  // => Function declaration
     println("Reducing inventory for order ${event.order.id}")
+    // => Output: see string template value above
     // => Runs in separate thread
   }
 }
 
 // Conditional listeners
 @Component
+// => Spring-managed component bean
 class LargeOrderListener {
+// => Class declaration
   @EventListener(condition = "#event.order.total > 1000")  // Only for large orders
+  // => Handles application events of specified type
   fun handleLargeOrder(event: OrderPlacedEvent) {
+  // => Function declaration
     println("Large order detected: ${event.order.total}")
+    // => Output: see string template value above
   }
 }
 
 // Transaction-aware events
 @Component
+// => Spring-managed component bean
 class TransactionalListener {
+// => Class declaration
   @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)  // After transaction commits
+  // => Wraps method in database transaction
   fun handleOrderPlaced(event: OrderPlacedEvent) {
+  // => Function declaration
     println("Order committed, safe to send external API call")
+    // => Output: see string template value above
     // => Only fires if transaction succeeds
   }
 }
@@ -4160,27 +5060,39 @@ public class ScheduledTasks {
 ```kotlin
 // Enable scheduling
 @SpringBootApplication
+// => Combines @Configuration, @EnableAutoConfiguration, @ComponentScan
 @EnableScheduling  // Enable @Scheduled annotation
+// => Annotation applied
 open class Application
+// => Class declaration
 
 fun main(args: Array<String>) {
+// => Function declaration
   runApplication<Application>(*args)
 }
 
 // Scheduled tasks
 @Component
+// => Spring-managed component bean
 class ScheduledTasks {
+// => Class declaration
   // Fixed rate: Executes every 5 seconds (from start of previous execution)
   @Scheduled(fixedRate = 5000)
+  // => Scheduled task execution
   fun reportCurrentTime() {
+  // => Function declaration
     println("Current time: ${LocalDateTime.now()}")
+    // => Output: see string template value above
     // If task takes 2 seconds, next execution starts at: 0s, 5s, 10s, 15s...
   }
 
   // Fixed delay: Waits 5 seconds AFTER previous execution finishes
   @Scheduled(fixedDelay = 5000)
+  // => Scheduled task execution
   fun processQueueWithDelay() {
+  // => Function declaration
     println("Processing queue at ${LocalDateTime.now()}")
+    // => Output: see string template value above
     Thread.sleep(3000)
     // Next execution starts 5 seconds after this finishes
     // Execution pattern: 0s, 8s, 16s, 24s... (3s task + 5s delay)
@@ -4188,34 +5100,49 @@ class ScheduledTasks {
 
   // Initial delay: Wait 10 seconds before first execution
   @Scheduled(initialDelay = 10000, fixedRate = 5000)
+  // => Scheduled task execution
   fun delayedStart() {
+  // => Function declaration
     println("Delayed task executed")
+    // => Output: see string template value above
     // First execution at 10s, then every 5s: 10s, 15s, 20s...
   }
 
   // Cron expression: Every day at 2:00 AM
   @Scheduled(cron = "0 0 2 * * ?")
+  // => Scheduled task execution
   fun dailyBackup() {
+  // => Function declaration
     println("Running daily backup at ${LocalDateTime.now()}")
+    // => Output: see string template value above
   }
 
   // Cron: Every weekday at 9:00 AM
   @Scheduled(cron = "0 0 9 ? * MON-FRI")
+  // => Scheduled task execution
   fun weekdayReport() {
+  // => Function declaration
     println("Weekday report generated")
+    // => Output: see string template value above
   }
 
   // Cron: Every 15 minutes
   @Scheduled(cron = "0 */15 * * * ?")
+  // => Scheduled task execution
   fun quarterHourlyCheck() {
+  // => Function declaration
     println("15-minute check at ${LocalDateTime.now()}")
+    // => Output: see string template value above
     // Runs at: 00:00, 00:15, 00:30, 00:45, 01:00, 01:15...
   }
 
   // Cron from configuration
   @Scheduled(cron = "\${app.cleanup.schedule}")  // Read from application.properties
+  // => Scheduled task execution
   fun configurableSchedule() {
+  // => Function declaration
     println("Cleanup task running")
+    // => Output: see string template value above
   }
 }
 
@@ -4242,7 +5169,9 @@ class ScheduledTasks {
 
 ---
 
-### Example 31: WebSocket - Real-Time Communication
+## Group 6: Web Patterns & Advanced Controllers
+
+### Example 41: WebSocket - Real-Time Communication
 
 WebSocket enables bidirectional, real-time communication between server and clients for chat, notifications, and live updates.
 
@@ -4250,14 +5179,19 @@ WebSocket enables bidirectional, real-time communication between server and clie
 // pom.xml: spring-boot-starter-websocket
 
 @Configuration
+// => Spring configuration class - defines bean factory methods
 // => Annotation applied
 @EnableWebSocketMessageBroker
 // => Annotation applied
+// => Annotation applied
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+// => Class definition begins
     // => Begins block
     @Override
+    // => Overrides inherited method from parent class/interface
     // => Annotation applied
     public void configureMessageBroker(MessageBrokerRegistry config) {
+    // => Method definition
     // => Begins block
         config.enableSimpleBroker("/topic", "/queue"); // => Broadcast and P2P channels
         // => Assigns > Broadcast and P2P channels to //
@@ -4267,8 +5201,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     // => Block delimiter
 
     @Override
+    // => Overrides inherited method from parent class/interface
     // => Annotation applied
     public void registerStompEndpoints(StompEndpointRegistry registry) {
+    // => Method definition
     // => Begins block
         registry.addEndpoint("/ws")
     // => Executes method
@@ -4283,13 +5219,18 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 @Controller
 // => Annotation applied
+// => Annotation applied
 public class ChatController {
+// => Class definition begins
     // => Begins block
     @MessageMapping("/chat.send") // Client sends to /app/chat.send
+    // => Annotation applied
     // => Executes method
     @SendTo("/topic/messages") // Broadcast to all subscribers of /topic/messages
+    // => Annotation applied
     // => Executes method
     public ChatMessage sendMessage(ChatMessage message) {
+    // => Method definition
     // => Begins block
         message.setTimestamp(LocalDateTime.now());
     // => Executes method
@@ -4298,10 +5239,13 @@ public class ChatController {
     }
 
     @MessageMapping("/chat.private")
+    // => Annotation applied
     // => Executes method
     @SendToUser("/queue/private") // Send to specific user's queue
+    // => Annotation applied
     // => Executes method
     public ChatMessage sendPrivateMessage(ChatMessage message, Principal principal) {
+    // => Method definition
     // => Begins block
         message.setRecipient(principal.getName());
     // => Executes method
@@ -4320,14 +5264,24 @@ record ChatMessage(String sender, String content, String recipient, LocalDateTim
 // build.gradle.kts: implementation("org.springframework.boot:spring-boot-starter-websocket")
 
 @Configuration
+// => Configuration class - contains @Bean methods
+// => Marks class as Spring configuration (bean factory)
 @EnableWebSocketMessageBroker
+// => Annotation applied
+// => Annotation applied
 open class WebSocketConfig : WebSocketMessageBrokerConfigurer {
+// => Class declaration
+// => Class declaration
   override fun configureMessageBroker(config: MessageBrokerRegistry) {
+  // => Function definition
+  // => Overrides parent class/interface method
     config.enableSimpleBroker("/topic", "/queue")  // => Broadcast and P2P channels
     config.setApplicationDestinationPrefixes("/app")
   }
 
   override fun registerStompEndpoints(registry: StompEndpointRegistry) {
+  // => Function definition
+  // => Overrides parent class/interface method
     registry.addEndpoint("/ws")
       .setAllowedOrigins("http://localhost:3000")
       .withSockJS()  // => Fallback for browsers without WebSocket
@@ -4335,27 +5289,55 @@ open class WebSocketConfig : WebSocketMessageBrokerConfigurer {
 }
 
 @Controller
+// => Annotation applied
+// => Annotation applied
 class ChatController {
+// => Class declaration
+// => Class declaration
   @MessageMapping("/chat.send")  // Client sends to /app/chat.send
+  // => Annotation applied
+  // => Annotation applied
   @SendTo("/topic/messages")  // Broadcast to all subscribers of /topic/messages
+  // => Annotation applied
+  // => Annotation applied
   fun sendMessage(message: ChatMessage): ChatMessage {
+  // => Function definition
+  // => Function declaration
     return message.copy(timestamp = LocalDateTime.now())
+    // => Returns to caller
+    // => Returns value to caller
     // => Broadcasts to all connected clients
   }
 
   @MessageMapping("/chat.private")
+  // => Annotation applied
+  // => Annotation applied
   @SendToUser("/queue/private")  // Send to specific user's queue
+  // => Annotation applied
+  // => Annotation applied
   fun sendPrivateMessage(message: ChatMessage, principal: Principal): ChatMessage {
+  // => Function definition
+  // => Function declaration
     return message.copy(recipient = principal.name)
+    // => Returns to caller
+    // => Returns value to caller
     // => Only recipient receives this
   }
 }
 
 data class ChatMessage(
+// => Data class: auto-generates equals/hashCode/toString/copy
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
   val sender: String,
+  // => Immutable property
   val content: String,
+  // => Immutable property
   val recipient: String? = null,
+  // => Immutable property
+  // => Immutable binding (read-only reference)
   val timestamp: LocalDateTime? = null
+  // => Immutable property
+  // => Immutable binding (read-only reference)
 )
 
 // Kotlin-specific: Use data class with default parameters instead of Java record
@@ -4391,7 +5373,7 @@ sequenceDiagram
 
 ---
 
-### Example 32: Server-Sent Events (SSE) - Unidirectional Streaming
+### Example 42: Server-Sent Events (SSE) - Unidirectional Streaming
 
 SSE streams server updates to clients over HTTP, simpler than WebSocket for one-way communication.
 
@@ -4450,11 +5432,17 @@ record StockPrice(String symbol, double price) {}
 
 ```kotlin
 @RestController
+// => Combines @Controller and @ResponseBody
 @RequestMapping("/api/sse")
+// => HTTP endpoint mapping
 class SseController {
+// => Class declaration
   @GetMapping(value = ["/stream"], produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
+  // => HTTP endpoint mapping
   fun streamEvents(): Flux<ServerSentEvent<String>> {
+  // => Function declaration
     return Flux.interval(Duration.ofSeconds(1))
+    // => Returns value to caller
       .map { seq ->
         ServerSentEvent.builder<String>()
           .id(seq.toString())
@@ -4466,9 +5454,13 @@ class SseController {
   }
 
   @GetMapping(value = ["/stock-prices"], produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
+  // => HTTP endpoint mapping
   fun streamStockPrices(): Flux<ServerSentEvent<StockPrice>> {
+  // => Function declaration
     return Flux.interval(Duration.ofSeconds(2))
+    // => Returns value to caller
       .map {
+      // => Block begins
         ServerSentEvent.builder<StockPrice>()
           .data(StockPrice("AAPL", 150.0 + Math.random() * 10))
           .build()
@@ -4478,6 +5470,7 @@ class SseController {
 }
 
 data class StockPrice(val symbol: String, val price: Double)
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
 
 // Kotlin-specific: Use data class instead of record, string templates in data content
 // Alternative with Kotlin Flow (more idiomatic than Reactor):
@@ -4517,7 +5510,7 @@ flowchart LR
 
 ---
 
-### Example 33: API Versioning Strategies
+### Example 43: API Versioning Strategies
 
 Manage API evolution while maintaining backward compatibility through URL, header, or parameter versioning.
 
@@ -4594,7 +5587,6 @@ public class UserHeaderVersionController {
 // => Block delimiter
 
 // Strategy 3: Content Negotiation (Accept Header)
-// => Invokes // Strategy 3: Content Negotiation()
 @RestController
 // => Annotation applied
 @RequestMapping("/api/users")
@@ -4647,69 +5639,107 @@ public class UserParamVersionController {
 ```kotlin
 // Strategy 1: URL Path Versioning
 @RestController
+// => Combines @Controller and @ResponseBody
 @RequestMapping("/api/v1/users")
+// => HTTP endpoint mapping
 class UserV1Controller {
+// => Class declaration
   @GetMapping("/{id}")
+  // => HTTP endpoint mapping
   fun getUser(@PathVariable id: Long): UserV1 {
+  // => Function declaration
     return UserV1(id, "Alice", "alice@example.com")
+    // => Returns value to caller
     // => /api/v1/users/1 returns version 1 format
   }
 }
 
 @RestController
+// => Combines @Controller and @ResponseBody
 @RequestMapping("/api/v2/users")
+// => HTTP endpoint mapping
 class UserV2Controller {
+// => Class declaration
   @GetMapping("/{id}")
+  // => HTTP endpoint mapping
   fun getUser(@PathVariable id: Long): UserV2 {
+  // => Function declaration
     return UserV2(id, "Alice", "Smith", "alice@example.com", "123-456-7890")
+    // => Returns value to caller
     // => /api/v2/users/1 returns version 2 format (added lastName, phone)
   }
 }
 
 data class UserV1(val id: Long, val name: String, val email: String)
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
 data class UserV2(val id: Long, val firstName: String, val lastName: String, val email: String, val phone: String)
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
 
 // Strategy 2: Header Versioning
 @RestController
+// => Combines @Controller and @ResponseBody
 @RequestMapping("/api/users")
+// => HTTP endpoint mapping
 class UserHeaderVersionController {
+// => Class declaration
   @GetMapping(value = ["/{id}"], headers = ["X-API-Version=1"])
+  // => HTTP endpoint mapping
   fun getUserV1(@PathVariable id: Long): UserV1 {
+  // => Function declaration
     return UserV1(id, "Alice", "alice@example.com")
+    // => Returns value to caller
     // => Header: X-API-Version: 1
   }
 
   @GetMapping(value = ["/{id}"], headers = ["X-API-Version=2"])
+  // => HTTP endpoint mapping
   fun getUserV2(@PathVariable id: Long): UserV2 {
+  // => Function declaration
     return UserV2(id, "Alice", "Smith", "alice@example.com", "123-456-7890")
+    // => Returns value to caller
     // => Header: X-API-Version: 2
   }
 }
 
 // Strategy 3: Content Negotiation (Accept Header)
 @RestController
+// => Combines @Controller and @ResponseBody
 @RequestMapping("/api/users")
+// => HTTP endpoint mapping
 class UserContentNegotiationController {
+// => Class declaration
   @GetMapping(value = ["/{id}"], produces = ["application/vnd.myapp.v1+json"])
+  // => HTTP endpoint mapping
   fun getUserV1(@PathVariable id: Long): UserV1 {
+  // => Function declaration
     return UserV1(id, "Alice", "alice@example.com")
+    // => Returns value to caller
     // => Header: Accept: application/vnd.myapp.v1+json
   }
 
   @GetMapping(value = ["/{id}"], produces = ["application/vnd.myapp.v2+json"])
+  // => HTTP endpoint mapping
   fun getUserV2(@PathVariable id: Long): UserV2 {
+  // => Function declaration
     return UserV2(id, "Alice", "Smith", "alice@example.com", "123-456-7890")
+    // => Returns value to caller
     // => Header: Accept: application/vnd.myapp.v2+json
   }
 }
 
 // Strategy 4: Request Parameter Versioning
 @RestController
+// => Combines @Controller and @ResponseBody
 @RequestMapping("/api/users")
+// => HTTP endpoint mapping
 class UserParamVersionController {
+// => Class declaration
   @GetMapping("/{id}")
+  // => HTTP endpoint mapping
   fun getUser(@PathVariable id: Long, @RequestParam(defaultValue = "1") version: Int): Any {
+  // => Function declaration
     return when (version) {
+    // => Returns value to caller
       2 -> UserV2(id, "Alice", "Smith", "alice@example.com", "123-456-7890")
       else -> UserV1(id, "Alice", "alice@example.com")
     }
@@ -4750,7 +5780,7 @@ graph TD
 
 ---
 
-### Example 34: Custom Argument Resolvers
+### Example 44: Custom Argument Resolvers
 
 Create custom argument resolvers to extract and inject domain objects from requests.
 
@@ -4878,66 +5908,123 @@ record ProfileUpdate(String email, String phone) {}
 ```kotlin
 // Custom annotation
 @Target(AnnotationTarget.VALUE_PARAMETER)
+// => Annotation applied
+// => Annotation applied
 @Retention(AnnotationRetention.RUNTIME)
+// => Annotation applied
+// => Annotation applied
 annotation class CurrentUser
+// => Class declaration
 
 // Argument resolver
 @Component
+// => Spring component - detected by component scan
+// => Spring-managed component bean
 class CurrentUserArgumentResolver : HandlerMethodArgumentResolver {
+// => Class declaration
+// => Class declaration
   override fun supportsParameter(parameter: MethodParameter): Boolean {
+  // => Function definition
+  // => Overrides parent class/interface method
     return parameter.hasParameterAnnotation(CurrentUser::class.java) &&
+    // => Returns to caller
+    // => Returns value to caller
            parameter.parameterType == User::class.java
+           // => Assignment
     // => Activates when @CurrentUser User parameter detected
   }
 
   override fun resolveArgument(
+  // => Function definition
+  // => Overrides parent class/interface method
     parameter: MethodParameter,
+    // => Statement
     mavContainer: ModelAndViewContainer?,
+    // => Statement
     webRequest: NativeWebRequest,
+    // => Statement
     binderFactory: WebDataBinderFactory?
   ): Any? {
+  // => Block begins
     val authHeader = webRequest.getHeader("Authorization")
+    // => Immutable property
+    // => Immutable binding (read-only reference)
     return authHeader?.takeIf { it.startsWith("Bearer ") }
+    // => Returns to caller
+    // => Returns value to caller
       ?.substring(7)
       ?.let { extractUserFromToken(it) }
     // => Extracts user from JWT token using safe call chains
   }
 
   private fun extractUserFromToken(token: String): User {
+  // => Function definition
+  // => Function declaration
     return User(1L, "alice", "alice@example.com")
+    // => Returns to caller
+    // => Returns value to caller
     // => Simplified token parsing
   }
 }
 
 // Register resolver
 @Configuration
+// => Configuration class - contains @Bean methods
+// => Marks class as Spring configuration (bean factory)
 class WebConfig(
+// => Class declaration
+// => Class declaration
   private val currentUserArgumentResolver: CurrentUserArgumentResolver
+  // => Immutable property
+  // => Private class member
 ) : WebMvcConfigurer {
+// => Block begins
   override fun addArgumentResolvers(resolvers: MutableList<HandlerMethodArgumentResolver>) {
+  // => Function definition
+  // => Overrides parent class/interface method
     resolvers.add(currentUserArgumentResolver)
   }
 }
 
 // Usage in controller
 @RestController
+// => REST controller - returns JSON directly
+// => Combines @Controller and @ResponseBody
 @RequestMapping("/api/profile")
+// => Base URL path for all endpoints in class
+// => HTTP endpoint mapping
 class ProfileController {
+// => Class declaration
+// => Class declaration
   @GetMapping
+  // => HTTP GET endpoint
+  // => HTTP endpoint mapping
   fun getProfile(@CurrentUser user: User): User {
+  // => Function definition
+  // => Function declaration
     // user automatically resolved from JWT token
     return user  // => No need to manually parse Authorization header
   }
 
   @PutMapping
+  // => HTTP PUT endpoint
+  // => HTTP endpoint mapping
   fun updateProfile(@CurrentUser user: User, @RequestBody update: ProfileUpdate): User {
+  // => Function definition
+  // => Function declaration
     // Both user and request body available
     return user
+    // => Returns to caller
+    // => Returns value to caller
   }
 }
 
 data class User(val id: Long, val username: String, val email: String)
+// => Data class: auto-generates equals/hashCode/toString/copy
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
 data class ProfileUpdate(val email: String, val phone: String)
+// => Data class: auto-generates equals/hashCode/toString/copy
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
 
 // Kotlin-specific: Use safe call operators (?., ?:) and scope functions for null-safe extraction
 // Alternative with extension function:
@@ -4951,7 +6038,7 @@ data class ProfileUpdate(val email: String, val phone: String)
 
 ---
 
-### Example 35: Filter vs Interceptor vs AOP
+### Example 45: Filter vs Interceptor vs AOP
 
 Understand the differences and use cases for filters, interceptors, and AOP for cross-cutting concerns.
 
@@ -5076,74 +6163,137 @@ public class LoggingAspect {
 ```kotlin
 // 1. Servlet Filter - Operates at servlet container level
 @Component
+// => Spring component - detected by component scan
+// => Spring-managed component bean
 @Order(1)
+// => Annotation applied
+// => Annotation applied
 class RequestResponseLoggingFilter : Filter {
+// => Class declaration
+// => Class declaration
   override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
+  // => Function definition
+  // => Overrides parent class/interface method
     val req = request as HttpServletRequest
+    // => Immutable property
+    // => Immutable binding (read-only reference)
     println("FILTER: Before request - ${req.requestURI}")
+    // => Output: see string template value above
     // => Executes before DispatcherServlet
 
     chain.doFilter(request, response)  // => Continue filter chain (with or without authentication)
 
     println("FILTER: After response")
+    // => Output: see string template value above
     // => Executes after response sent
   }
 }
 
 // 2. HandlerInterceptor - Operates at Spring MVC level
 @Component
+// => Spring component - detected by component scan
+// => Spring-managed component bean
 class PerformanceInterceptor : HandlerInterceptor {
+// => Class declaration
+// => Class declaration
   override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
+  // => Function definition
+  // => Overrides parent class/interface method
     request.setAttribute("startTime", System.currentTimeMillis())
     println("INTERCEPTOR: Before controller method")
+    // => Output: see string template value above
     return true
+    // => Returns to caller
+    // => Returns value to caller
     // => Executes after DispatcherServlet, before controller
   }
 
   override fun postHandle(
+  // => Function definition
+  // => Overrides parent class/interface method
     request: HttpServletRequest,
+    // => Statement
     response: HttpServletResponse,
+    // => Statement
     handler: Any,
+    // => Statement
     modelAndView: ModelAndView?
   ) {
+  // => Block begins
     println("INTERCEPTOR: After controller method, before view")
+    // => Output: see string template value above
     // => Executes after controller, only if no exception
   }
 
   override fun afterCompletion(
+  // => Function definition
+  // => Overrides parent class/interface method
     request: HttpServletRequest,
+    // => Statement
     response: HttpServletResponse,
+    // => Statement
     handler: Any,
+    // => Statement
     ex: Exception?
   ) {
+  // => Block begins
     val duration = System.currentTimeMillis() - (request.getAttribute("startTime") as Long)
+    // => Immutable property
+    // => Immutable binding (read-only reference)
     println("INTERCEPTOR: Request completed in ${duration}ms")
+    // => Output: see string template value above
     // => Always executes, even if exception occurred
   }
 }
 
 // 3. AOP Aspect - Operates at method level
 @Aspect
+// => Annotation applied
+// => Annotation applied
 @Component
+// => Spring component - detected by component scan
+// => Spring-managed component bean
 class LoggingAspect {
+// => Class declaration
+// => Class declaration
   @Before("execution(* com.example.demo.service.*.*(..))")
+  // => Annotation applied
+  // => Annotation applied
   fun logBefore(joinPoint: JoinPoint) {
+  // => Function definition
+  // => Function declaration
     println("AOP: Before method - ${joinPoint.signature.name}")
+    // => Output: see string template value above
     // => Executes before any service method
   }
 
   @AfterReturning(pointcut = "execution(* com.example.demo.service.*.*(..))", returning = "result")
+  // => Annotation applied
+  // => Annotation applied
   fun logAfterReturning(joinPoint: JoinPoint, result: Any?) {
+  // => Function definition
+  // => Function declaration
     println("AOP: Method returned - $result")
+    // => Output: see string template value above
     // => Executes after successful method execution
   }
 
   @Around("@annotation(org.springframework.transaction.annotation.Transactional)")
+  // => Annotation applied
+  // => Annotation applied
   fun logTransaction(joinPoint: ProceedingJoinPoint): Any? {
+  // => Function definition
+  // => Function declaration
     println("AOP: Transaction starting")
+    // => Output: see string template value above
     val result = joinPoint.proceed()
+    // => Immutable property
+    // => Immutable binding (read-only reference)
     println("AOP: Transaction completed")
+    // => Output: see string template value above
     return result
+    // => Returns to caller
+    // => Returns value to caller
     // => Wraps @Transactional methods
   }
 }
@@ -5185,7 +6335,7 @@ flowchart TD
 
 ---
 
-### Example 36: Custom Annotations with AOP
+### Example 46: Custom Annotations with AOP
 
 Combine custom annotations with AOP for declarative cross-cutting concerns.
 
@@ -5216,7 +6366,6 @@ public class ExecutionTimeAspect {
         // => Stores result in start
 
         Object result = joinPoint.proceed(); // => Execute method
-        // => Invokes proceed() method
         // => Result stored in result
 
         long duration = System.currentTimeMillis() - start;
@@ -5303,7 +6452,6 @@ public class UserService {
     public List<User> findAll() {
     // => Begins block
         // Only execution time logged (no audit)
-        // => Invokes // Only execution time logged()
         return userRepository.findAll();
     // => Returns value to caller
     }
@@ -5315,46 +6463,74 @@ public class UserService {
 ```kotlin
 // Custom annotation
 @Target(AnnotationTarget.FUNCTION)
+// => Annotation applied
 @Retention(AnnotationRetention.RUNTIME)
+// => Annotation applied
 annotation class LogExecutionTime
 
 @Aspect
+// => Annotation applied
 @Component
+// => Spring-managed component bean
 class ExecutionTimeAspect {
+// => Class declaration
   @Around("@annotation(LogExecutionTime)")
+  // => Annotation applied
   fun logExecutionTime(joinPoint: ProceedingJoinPoint): Any? {
+  // => Function declaration
     val start = System.currentTimeMillis()
+    // => Immutable binding (read-only reference)
 
     val result = joinPoint.proceed()  // Execute method
+    // => Immutable binding (read-only reference)
 
     val duration = System.currentTimeMillis() - start
+    // => Immutable binding (read-only reference)
     println("${joinPoint.signature} executed in ${duration}ms")
+    // => Output: see string template value above
     // => Logs: com.example.demo.service.UserService.findUser(..) executed in 45ms
 
     return result
+    // => Returns value to caller
   }
 }
 
 // Custom audit annotation
 @Target(AnnotationTarget.FUNCTION)
+// => Annotation applied
 @Retention(AnnotationRetention.RUNTIME)
+// => Annotation applied
 annotation class Audit(val action: String)
 
 @Aspect
+// => Annotation applied
 @Component
+// => Spring-managed component bean
 class AuditAspect(
+// => Class declaration
   private val auditLogRepository: AuditLogRepository
+  // => Private class member
 ) {
+// => Block begins
   @AfterReturning("@annotation(audit)")
+  // => Annotation applied
   fun logAudit(joinPoint: JoinPoint, audit: Audit) {
+  // => Function declaration
     val username = SecurityContextHolder.getContext().authentication.name
+    // => Immutable binding (read-only reference)
     val methodName = joinPoint.signature.name
+    // => Immutable binding (read-only reference)
 
     val log = AuditLog(
+    // => Immutable binding (read-only reference)
       username = username,
+      // => Assignment
       action = audit.action,
+      // => Assignment
       methodName = methodName,
+      // => Assignment
       timestamp = LocalDateTime.now()
+      // => Assignment
     )
     auditLogRepository.save(log)
     // => Automatically logs all audited operations
@@ -5363,20 +6539,31 @@ class AuditAspect(
 
 // Usage in service
 @Service
+// => Business logic layer Spring component
 open class UserService(
+// => Class declaration
   private val userRepository: UserRepository
+  // => Private class member
 ) {
+// => Block begins
   @LogExecutionTime
+  // => Annotation applied
   @Audit(action = "USER_CREATED")
+  // => Annotation applied
   open fun createUser(user: User): User {
+  // => Function declaration
     // Method automatically timed and audited
     return userRepository.save(user)
+    // => Returns value to caller
   }
 
   @LogExecutionTime
+  // => Annotation applied
   open fun findAll(): List<User> {
+  // => Function declaration
     // Only execution time logged (no audit)
     return userRepository.findAll()
+    // => Returns value to caller
   }
 }
 
@@ -5393,7 +6580,7 @@ open class UserService(
 
 ---
 
-### Example 37: Bean Post Processors
+### Example 47: Bean Post Processors
 
 Modify or enhance beans during initialization with BeanPostProcessor.
 
@@ -5521,63 +6708,116 @@ public class DataPreloadService {
 ```kotlin
 // Custom annotation for initialization
 @Target(AnnotationTarget.CLASS)
+// => Annotation applied
+// => Annotation applied
 @Retention(AnnotationRetention.RUNTIME)
+// => Annotation applied
+// => Annotation applied
 annotation class InitializeOnStartup
+// => Class declaration
 
 // Bean post processor
 @Component
+// => Spring component - detected by component scan
+// => Spring-managed component bean
 class InitializationBeanPostProcessor : BeanPostProcessor {
+// => Class declaration
+// => Class declaration
   override fun postProcessBeforeInitialization(bean: Any, beanName: String): Any {
+  // => Function definition
+  // => Overrides parent class/interface method
     // Called before @PostConstruct
     if (bean::class.java.isAnnotationPresent(InitializeOnStartup::class.java)) {
+    // => Block begins
       println("Initializing bean: $beanName")
+      // => Output: see string template value above
     }
     return bean
+    // => Returns to caller
+    // => Returns value to caller
   }
 
   override fun postProcessAfterInitialization(bean: Any, beanName: String): Any {
+  // => Function definition
+  // => Overrides parent class/interface method
     // Called after @PostConstruct
     if (bean is CacheManager) {
+    // => Block begins
       println("CacheManager bean ready: $beanName")
+      // => Output: see string template value above
       bean.warmUpCache()
       // => Automatically warm up cache after initialization
     }
     return bean
+    // => Returns to caller
+    // => Returns value to caller
   }
 }
 
 // Auto-proxy creation example
 @Component
+// => Spring component - detected by component scan
+// => Spring-managed component bean
 class PerformanceProxyBeanPostProcessor : BeanPostProcessor {
+// => Class declaration
+// => Class declaration
   override fun postProcessAfterInitialization(bean: Any, beanName: String): Any {
+  // => Function definition
+  // => Overrides parent class/interface method
     return if (bean::class.java.packageName.startsWith("com.example.demo.service")) {
+    // => Returns to caller
+    // => Returns value to caller
       // Wrap service beans in performance monitoring proxy
       createProxy(bean)
     } else {
+    // => Block begins
       bean
     }
   }
 
   private fun createProxy(target: Any): Any {
+  // => Function definition
+  // => Function declaration
     return Proxy.newProxyInstance(
+    // => Returns to caller
+    // => Returns value to caller
       target::class.java.classLoader,
+      // => Statement
       target::class.java.interfaces
     ) { _, method, args ->
       val start = System.currentTimeMillis()
+      // => Immutable property
+      // => Immutable binding (read-only reference)
       val result = method.invoke(target, *args.orEmpty())
+      // => Immutable property
+      // => Immutable binding (read-only reference)
       val duration = System.currentTimeMillis() - start
+      // => Immutable property
+      // => Immutable binding (read-only reference)
       println("${method.name} took ${duration}ms")
+      // => Output: see string template value above
       result
     }
   }
 }
 
 @InitializeOnStartup
+// => Annotation applied
+// => Annotation applied
 @Service
+// => Business logic service bean
+// => Business logic layer Spring component
 class DataPreloadService {
+// => Class declaration
+// => Class declaration
   @PostConstruct
+  // => Annotation applied
+  // => Annotation applied
   fun init() {
+  // => Function definition
+  // => Function declaration
     println("Preloading data...")
+    // => Output: see string template value above
   }
 }
 
@@ -5594,7 +6834,7 @@ class DataPreloadService {
 
 ---
 
-### Example 38: Custom Spring Boot Starter (Simplified)
+### Example 48: Custom Spring Boot Starter (Simplified)
 
 Create a lightweight auto-configuration module for reusable functionality.
 
@@ -5694,31 +6934,50 @@ public class NotificationService {
 ```kotlin
 // 1. Create auto-configuration class
 @Configuration
+// => Marks class as Spring configuration (bean factory)
 @ConditionalOnClass(EmailService::class)
+// => Bean created only if specified class is on classpath
 @EnableConfigurationProperties(EmailProperties::class)
+// => Registers @ConfigurationProperties classes as Spring beans
 open class EmailAutoConfiguration {
+// => Class declaration
   @Bean
+  // => Declares a Spring-managed bean
   @ConditionalOnMissingBean
+  // => Bean created only if no other bean of type exists
   open fun emailService(properties: EmailProperties): EmailService {
+  // => Function declaration
     return EmailService(properties)
+    // => Returns value to caller
   }
 }
 
 // 2. Configuration properties
 @ConfigurationProperties(prefix = "app.email")
+// => Marks class as Spring configuration (bean factory)
 data class EmailProperties(
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
   var host: String = "smtp.gmail.com",
+  // => Mutable variable
   var port: Int = 587,
+  // => Mutable variable
   var username: String? = null,
+  // => Mutable variable
   var password: String? = null
+  // => Mutable variable
 )
 
 // 3. Service implementation
 class EmailService(
+// => Class declaration
   private val properties: EmailProperties
+  // => Private class member
 ) {
+// => Block begins
   fun sendEmail(to: String, subject: String, body: String) {
+  // => Function declaration
     println("Sending email to $to via ${properties.host}")
+    // => Output: see string template value above
     // Actual email sending logic
   }
 }
@@ -5733,10 +6992,15 @@ class EmailService(
 // app.email.password=secret
 
 @Service
+// => Business logic layer Spring component
 class NotificationService(
+// => Class declaration
   private val emailService: EmailService  // Automatically available!
+  // => Private class member
 ) {
+// => Block begins
   fun notifyUser(email: String) {
+  // => Function declaration
     emailService.sendEmail(email, "Welcome", "Thanks for signing up!")
   }
 }
@@ -5756,7 +7020,7 @@ class NotificationService(
 
 ---
 
-### Example 39: Reactive Repositories with R2DBC
+### Example 49: Reactive Repositories with R2DBC
 
 Use R2DBC for reactive, non-blocking database access.
 
@@ -5786,7 +7050,6 @@ public interface ProductRepository extends ReactiveCrudRepository<Product, Long>
     // => Begins block
     Flux<Product> findByNameContaining(String name); // => Returns Flux (0..N items)
     Mono<Product> findByName(String name); // => Returns Mono (0..1 item)
-    // => Invokes > Returns Mono () method
     // => Result stored in //
 
     @Query("SELECT * FROM products WHERE price > :minPrice")
@@ -5883,60 +7146,91 @@ public class ProductController {
 // implementation("io.r2dbc:r2dbc-h2")
 
 @Entity
+// => JPA entity mapped to database table
 @Table(name = "products")
+// => Specifies database table name
 data class Product(
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
   @Id var id: Long? = null,
+  // => Primary key field
   var name: String = "",
+  // => Mutable variable
   var price: BigDecimal = BigDecimal.ZERO
+  // => Mutable variable
 )
 
 // Reactive repository
 interface ProductRepository : ReactiveCrudRepository<Product, Long> {
+// => Interface definition
   fun findByNameContaining(name: String): Flux<Product>  // => Returns Flux (0..N items)
   fun findByName(name: String): Mono<Product>  // => Returns Mono (0..1 item)
 
   @Query("SELECT * FROM products WHERE price > :minPrice")
+  // => Annotation applied
   fun findExpensiveProducts(minPrice: BigDecimal): Flux<Product>
+  // => Function declaration
 }
 
 @Service
+// => Business logic layer Spring component
 class ProductService(
+// => Class declaration
   private val productRepository: ProductRepository
+  // => Private class member
 ) {
+// => Block begins
   fun getAllProducts(): Flux<Product> {
+  // => Function declaration
     return productRepository.findAll()
+    // => Returns value to caller
     // => Non-blocking stream of products
   }
 
   fun createProduct(product: Product): Mono<Product> {
+  // => Function declaration
     return productRepository.save(product)
+    // => Returns value to caller
     // => Non-blocking save operation
   }
 
   fun searchProducts(keyword: String): Flux<Product> {
+  // => Function declaration
     return productRepository.findByNameContaining(keyword)
+    // => Returns value to caller
       .filter { it.price > BigDecimal.ZERO }
       .map { product ->
         product.copy(name = product.name.uppercase())
+        // => Assignment
       }
     // => Reactive pipeline: fetch → filter → transform
   }
 }
 
 @RestController
+// => Combines @Controller and @ResponseBody
 @RequestMapping("/api/products")
+// => HTTP endpoint mapping
 class ProductController(
+// => Class declaration
   private val productService: ProductService
+  // => Private class member
 ) {
+// => Block begins
   @GetMapping(produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
+  // => HTTP endpoint mapping
   fun streamProducts(): Flux<Product> {
+  // => Function declaration
     return productService.getAllProducts()
+    // => Returns value to caller
     // => Streams products as Server-Sent Events
   }
 
   @PostMapping
+  // => HTTP endpoint mapping
   fun createProduct(@RequestBody product: Product): Mono<Product> {
+  // => Function declaration
     return productService.createProduct(product)
+    // => Returns value to caller
     // => Non-blocking POST handling
   }
 }
@@ -5968,7 +7262,7 @@ class ProductController(
 
 ---
 
-### Example 40: Composite Keys and Embedded IDs
+### Example 50: Composite Keys and Embedded IDs
 
 Handle composite primary keys with `@IdClass` or `@EmbeddedId`.
 
@@ -6008,7 +7302,6 @@ public class OrderItemId implements Serializable {
     // => Declares productId field of type Long
 
     // Must have equals() and hashCode()
-    // => Invokes // Must have equals()
     @Override
     // => Annotation applied
     public boolean equals(Object o) {
@@ -6058,7 +7351,6 @@ Optional<OrderItem> item = orderItemRepository.findById(id);
 // => Stores result in item
 
 // Strategy 2: @EmbeddedId (recommended)
-// => Invokes // Strategy 2: @EmbeddedId()
 @Embeddable
 // => Annotation applied
 public class OrderItemKey implements Serializable {
@@ -6069,7 +7361,6 @@ public class OrderItemKey implements Serializable {
     // => Declares productId field of type Long
 
     // equals(), hashCode(), getters, setters
-    // => Invokes // equals()
 }
 // => Block delimiter
 
@@ -6121,62 +7412,96 @@ orderItemEmbeddedRepository.save(item);
 ```kotlin
 // Strategy 1: @IdClass
 @IdClass(OrderItemId::class)
+// => Primary key field
 @Entity
+// => JPA entity mapped to database table
 open class OrderItem(
+// => Class declaration
   @Id var orderId: Long? = null,
+  // => Primary key field
   @Id var productId: Long? = null,
+  // => Primary key field
   var quantity: Int = 0,
+  // => Mutable variable
   var price: BigDecimal = BigDecimal.ZERO
+  // => Mutable variable
 )
 
 // Composite key class
 data class OrderItemId(
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
   var orderId: Long? = null,
+  // => Mutable variable
   var productId: Long? = null
+  // => Mutable variable
 ) : Serializable {
+// => Block begins
   // equals() and hashCode() auto-generated by data class
 }
 
 // Repository with composite key
 interface OrderItemRepository : JpaRepository<OrderItem, OrderItemId> {
+// => Interface definition
   fun findByOrderId(orderId: Long): List<OrderItem>
+  // => Function declaration
 }
 
 // Usage
 val id = OrderItemId(orderId = 1L, productId = 100L)
+// => Immutable binding (read-only reference)
 val item = orderItemRepository.findById(id)
+// => Immutable binding (read-only reference)
 
 // Strategy 2: @EmbeddedId (recommended)
 @Embeddable
+// => Annotation applied
 data class OrderItemKey(
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
   var orderId: Long? = null,
+  // => Mutable variable
   var productId: Long? = null
+  // => Mutable variable
 ) : Serializable
 // equals() and hashCode() auto-generated by data class
 
 @Entity
+// => JPA entity mapped to database table
 open class OrderItemEmbedded(
+// => Class declaration
   @EmbeddedId var id: OrderItemKey? = null,
+  // => Annotation applied
   var quantity: Int = 0,
+  // => Mutable variable
   var price: BigDecimal = BigDecimal.ZERO
+  // => Mutable variable
 ) {
+// => Block begins
   // Access composite key fields
   val orderId: Long?
     get() = id?.orderId
+    // => Assignment
 }
 
 // Repository
 interface OrderItemEmbeddedRepository : JpaRepository<OrderItemEmbedded, OrderItemKey> {
+// => Interface definition
   @Query("SELECT o FROM OrderItemEmbedded o WHERE o.id.orderId = :orderId")
+  // => Annotation applied
   fun findByOrderId(orderId: Long): List<OrderItemEmbedded>
+  // => Function declaration
 }
 
 // Usage
 val key = OrderItemKey(orderId = 1L, productId = 100L)
+// => Immutable binding (read-only reference)
 val item = OrderItemEmbedded(
+// => Immutable binding (read-only reference)
   id = key,
+  // => Assignment
   quantity = 5,
+  // => Assignment
   price = BigDecimal("29.99")
+  // => Assignment
 )
 orderItemEmbeddedRepository.save(item)
 

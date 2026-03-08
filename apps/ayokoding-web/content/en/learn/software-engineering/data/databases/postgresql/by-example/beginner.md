@@ -9,6 +9,8 @@ tags: ["postgresql", "database", "tutorial", "by-example", "beginner", "fundamen
 
 Learn PostgreSQL fundamentals through 30 annotated examples. Each example is self-contained, runnable in a PostgreSQL container, and heavily commented to show what each statement does, expected outputs, and intermediate states.
 
+## Group 1: Getting Started and Basic Queries
+
 ## Example 1: Installing PostgreSQL and First Query
 
 PostgreSQL runs in a Docker container for isolated, reproducible environments across all platforms. This setup creates a fresh PostgreSQL 16 instance you can experiment with safely without affecting your system.
@@ -26,7 +28,7 @@ graph TD
     C -->|SQL statements| D
 
     style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
     style C fill:#029E73,stroke:#000,color:#fff
     style D fill:#CC78BC,stroke:#000,color:#fff
 ```
@@ -197,7 +199,7 @@ graph TD
     C --> D
 
     style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
     style C fill:#029E73,stroke:#000,color:#fff
     style D fill:#CC78BC,stroke:#000,color:#fff
 ```
@@ -354,6 +356,8 @@ DELETE FROM inventory;
 **Why It Matters**: Accidental UPDATE/DELETE without WHERE clauses causes the majority of catastrophic data loss incidents in production databases, making pre-execution SELECT testing a critical safety practice enforced by database change management tools like Liquibase. PostgreSQL's transactional UPDATE enables atomic multi-row modifications that either all succeed or all fail, preventing partial updates that leave data in inconsistent states during concurrent operations.
 
 ---
+
+## Group 2: Data Types and NULL
 
 ## Example 6: Numeric Types (INTEGER, BIGINT, DECIMAL, NUMERIC)
 
@@ -513,10 +517,10 @@ graph TD
     A --> F
 
     style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
     style C fill:#029E73,stroke:#000,color:#fff
     style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    style E fill:#CA9161,stroke:#000,color:#000
     style F fill:#0173B2,stroke:#000,color:#fff
 ```
 
@@ -762,6 +766,8 @@ FROM contacts;
 **Why It Matters**: NULL represents the absence of data differently from empty strings or zero, a distinction required by SQL standards but commonly misunderstood, causing bugs when `WHERE email = NULL` silently returns zero rows instead of erroring. COALESCE eliminates NULL values at query time rather than application code, reducing data transfer by providing defaults directly in the database and enabling consistent NULL handling across multiple application languages.
 
 ---
+
+## Group 3: Querying, Filtering, and Aggregation
 
 ## Example 11: WHERE Clauses and Comparisons
 
@@ -1016,7 +1022,7 @@ graph TD
     C --> D
 
     style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
     style C fill:#029E73,stroke:#000,color:#fff
     style D fill:#CC78BC,stroke:#000,color:#fff
 ```
@@ -1258,12 +1264,12 @@ graph TD
     F --> G
 
     style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
     style C fill:#029E73,stroke:#000,color:#fff
     style D fill:#029E73,stroke:#000,color:#fff
     style E fill:#029E73,stroke:#000,color:#fff
     style F fill:#CC78BC,stroke:#000,color:#fff
-    style G fill:#CA9161,stroke:#000,color:#fff
+    style G fill:#CA9161,stroke:#000,color:#000
 ```
 
 **Code**:
@@ -1376,6 +1382,8 @@ GROUP BY customer;
 **Why It Matters**: PostgreSQL's GROUP BY implementation outperforms MySQL by 2-3x on large datasets due to superior hash aggregation algorithms, making it the preferred choice for analytics workloads. The HAVING clause enables complex multi-stage filtering that would require nested subqueries in databases without this feature, reducing query complexity from 50+ lines to 10-15 lines.
 
 ---
+
+## Group 4: Schema Design and Constraints
 
 ## Example 16: Creating Tables with Constraints
 
@@ -1560,60 +1568,81 @@ graph TD
 
     style A fill:#0173B2,stroke:#000,color:#fff
     style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
+    style C fill:#DE8F05,stroke:#000,color:#000
 ```
 
 **Code**:
 
 ```sql
 CREATE DATABASE example_18;
+-- => Creates isolated database for foreign key examples
 \c example_18;
+-- => Switches connection to example_18
+
 -- Parent table (must be created first)
 CREATE TABLE customers (
     id SERIAL PRIMARY KEY,
+    -- => Auto-incrementing customer ID (1, 2, 3...)
     name VARCHAR(100) NOT NULL
+    -- => name: required (NOT NULL), up to 100 chars
 );
+-- => customers table created - parent in this relationship
 -- Child table with foreign key
 CREATE TABLE orders (
     id SERIAL PRIMARY KEY,
+    -- => Auto-incrementing order ID
     customer_id INTEGER NOT NULL,
+    -- => References customers.id (must match existing customer)
     order_date DATE NOT NULL,
+    -- => Order date (required, no time component)
     total DECIMAL(10, 2),
-    FOREIGN KEY (customer_id) REFERENCES customers(id) -- => References customers.id
+    -- => Order total (optional, 2 decimal places)
+    FOREIGN KEY (customer_id) REFERENCES customers(id)
+    -- => Enforces referential integrity: customer_id must exist in customers
 );
+-- => orders table created with foreign key constraint
+
 -- Insert customers first
 INSERT INTO customers (name)
 VALUES ('Alice'), ('Bob'), ('Charlie');
+-- => Inserts 3 customers (parent rows must exist before child rows)
 -- => id: 1 (Alice), 2 (Bob), 3 (Charlie)
 
 -- Valid order (customer exists)
 INSERT INTO orders (customer_id, order_date, total)
 VALUES (1, '2025-12-29', 150.00);
--- => Success (customer_id=1 exists in customers table)
+-- => customer_id=1 (Alice) exists in customers table
+-- => Success: order inserted with id=1
 
 -- Invalid order (customer doesn't exist)
 INSERT INTO orders (customer_id, order_date, total)
 VALUES (999, '2025-12-29', 200.00);
--- => ERROR: insert or update violates foreign key constraint
 -- => customer_id=999 does not exist in customers table
+-- => ERROR: insert or update violates foreign key constraint
 
 -- Cannot delete customer with existing orders
 DELETE FROM customers WHERE id = 1;
--- => ERROR: update or delete violates foreign key constraint
--- => Orders reference this customer
+-- => Alice (id=1) has orders referencing her
+-- => ERROR: update or delete violates foreign key constraint (ON DELETE RESTRICT is default)
 
 -- Foreign key with CASCADE (automatic deletion)
 CREATE TABLE order_items (
     id SERIAL PRIMARY KEY,
+    -- => Auto-incrementing item ID
     order_id INTEGER NOT NULL,
+    -- => References orders.id (parent order must exist)
     product VARCHAR(100),
+    -- => Product name (optional field)
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
-    -- => When order deleted, all its items automatically deleted
+    -- => ON DELETE CASCADE: when order deleted, all its items automatically deleted
 );
+-- => order_items table created with cascading foreign key
 INSERT INTO order_items (order_id, product)
 VALUES (1, 'Laptop'), (1, 'Mouse');
+-- => Inserts 2 items for order 1 (laptop and mouse)
 DELETE FROM orders WHERE id = 1;
--- => Deletes order AND automatically deletes both order_items
+-- => Deletes order 1 (Alice's order)
+-- => Cascade automatically deletes both order_items (Laptop and Mouse)
 ```
 
 **Key Takeaway**: Foreign keys enforce referential integrity - child table values must exist in parent table. Use ON DELETE CASCADE to automatically delete child rows when parent is deleted, or ON DELETE RESTRICT (default) to prevent parent deletion if children exist.
@@ -1829,6 +1858,8 @@ ALTER TABLE comments ALTER COLUMN text SET NOT NULL;
 
 ---
 
+## Group 5: Joins
+
 ## Example 21: Inner Joins
 
 INNER JOIN returns rows where the join condition matches in both tables. Non-matching rows are excluded. This is the most common join type for retrieving related data.
@@ -1846,7 +1877,7 @@ graph TD
     C --> D
 
     style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
     style C fill:#029E73,stroke:#000,color:#fff
     style D fill:#CC78BC,stroke:#000,color:#fff
 ```
@@ -2285,7 +2316,7 @@ graph TD
     D -->|reports to| B
 
     style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
     style C fill:#029E73,stroke:#000,color:#fff
     style D fill:#CC78BC,stroke:#000,color:#fff
 ```
@@ -2294,45 +2325,70 @@ graph TD
 
 ```sql
 CREATE DATABASE example_25;
+-- => Creates database for self-join examples
 \c example_25;
+-- => Switches to example_25 database
+
 CREATE TABLE employees (
     id SERIAL PRIMARY KEY,
+    -- => Auto-incrementing employee ID (1, 2, 3...)
     name VARCHAR(100),
-    manager_id INTEGER  -- => References id in same table (self-reference)
+    -- => Employee's full name
+    manager_id INTEGER  -- => References id in same table (self-reference, NULL for top-level)
 );
+-- => Creates employees table with self-referencing manager_id
+
 INSERT INTO employees (id, name, manager_id)
 VALUES
-    (1, 'Alice', NULL),    -- => CEO, no manager
-    (2, 'Bob', 1),         -- => Reports to Alice
-    (3, 'Charlie', 1),     -- => Reports to Alice
-    (4, 'Diana', 2),       -- => Reports to Bob
-    (5, 'Eve', 2);         -- => Reports to Bob
+    (1, 'Alice', NULL),    -- => CEO, no manager (top of hierarchy)
+    (2, 'Bob', 1),         -- => Reports to Alice (manager_id=1)
+    (3, 'Charlie', 1),     -- => Reports to Alice (manager_id=1)
+    (4, 'Diana', 2),       -- => Reports to Bob (manager_id=2)
+    (5, 'Eve', 2);         -- => Reports to Bob (manager_id=2)
+-- => 5 employees inserted: 1 CEO, 2 managers, 2 individual contributors
+
 -- Find each employee and their manager
 SELECT
     e.name AS employee,
+    -- => e alias: employee (the person we're looking up)
+    -- => AS employee: column alias for the result
     m.name AS manager
+    -- => m alias: manager (same table, different role)
+    -- => AS manager: column alias for result
 FROM employees e
+-- => e: alias for employee being looked up (left side of join)
 LEFT JOIN employees m ON e.manager_id = m.id;
--- => Alice (NULL) - no manager
--- => Bob (Alice), Charlie (Alice), Diana (Bob), Eve (Bob)
+-- => LEFT JOIN so top-level employees (NULL manager) appear with NULL manager name
+-- => Self-join: employees table joined to itself using two aliases (e and m)
+-- => Alice | NULL (no manager)
+-- => Bob | Alice, Charlie | Alice, Diana | Bob, Eve | Bob
 
 -- Count direct reports per manager
 SELECT
     m.name AS manager,
+    -- => Manager name from the "parent" alias
     COUNT(e.id) AS num_reports
+    -- => Count subordinates for each manager
 FROM employees e
+-- => e: represents subordinate employees
 INNER JOIN employees m ON e.manager_id = m.id
+-- => INNER JOIN: only employees WITH a manager (excludes top-level Alice)
 GROUP BY m.id, m.name
+-- => Groups by manager to aggregate their direct reports
 ORDER BY num_reports DESC;
--- => Alice: 2 (Bob, Charlie)
--- => Bob: 2 (Diana, Eve)
+-- => Most direct reports first
+-- => Alice: 2 (Bob, Charlie), Bob: 2 (Diana, Eve)
 
 -- Find employees with no direct reports
 SELECT e.name
+-- => Name of employees with no subordinates
 FROM employees e
+-- => e: represents potential managers
 LEFT JOIN employees reports ON reports.manager_id = e.id
+-- => LEFT JOIN: "reports" alias finds rows where this employee IS a manager
 WHERE reports.id IS NULL;
--- => Charlie, Diana, Eve (individual contributors)
+-- => NULL means no one reports to this employee (individual contributor)
+-- => Charlie, Diana, Eve (individual contributors - no one reports to them)
 ```
 
 **Key Takeaway**: Self joins compare rows within the same table using aliases to distinguish "left" and "right" versions. Common for hierarchical data (org charts, categories with parent categories) and finding relationships between rows.
@@ -2340,6 +2396,8 @@ WHERE reports.id IS NULL;
 **Why It Matters**: Self joins enable organizational hierarchy queries (employees reporting to managers who report to executives) fundamental to enterprise systems without requiring separate tables for each level, making PostgreSQL suitable for recursive structures common in business applications. The pattern of joining a table to itself with different aliases solves graph traversal problems (social networks finding friends-of-friends, recommendation engines finding similar products) without recursive CTEs for shallow hierarchies.
 
 ---
+
+## Group 6: Functions, Expressions, and Subqueries
 
 ## Example 26: String Functions (CONCAT, SUBSTRING, LENGTH, UPPER, LOWER)
 
@@ -2594,51 +2652,70 @@ CREATE DATABASE example_28;
 -- Numeric conversions
 SELECT
     123 AS integer,
+    -- => 123: integer literal (no conversion, used as baseline)
     123::DECIMAL(10, 2) AS decimal,
+    -- => ::DECIMAL(10,2): converts integer 123 to 123.00 (2 decimal places)
     123::TEXT AS text,
+    -- => ::TEXT: converts integer 123 to text string '123'
     CAST(123 AS TEXT) AS text_cast;
--- => Convert integer to decimal and text
+    -- => CAST(x AS type): SQL standard syntax, equivalent to ::TEXT
+-- => Returns: 123 | 123.00 | '123' | '123'
 
 -- String to number
 SELECT
     '456'::INTEGER AS str_to_int,
+    -- => ::INTEGER: converts text '456' to integer 456
     '123.45'::DECIMAL AS str_to_decimal,
+    -- => ::DECIMAL: converts '123.45' to decimal 123.45
     '789'::BIGINT AS str_to_bigint;
+    -- => ::BIGINT: converts '789' to 64-bit integer 789
 -- => Converts text to numeric types
 
 -- Invalid conversion raises error
 SELECT '123.45'::INTEGER;
+-- => '123.45' cannot become INTEGER (has decimal point)
 -- => ERROR: invalid input syntax for type integer: "123.45"
 SELECT 'hello'::INTEGER;
+-- => 'hello' cannot become INTEGER (not numeric)
 -- => ERROR: invalid input syntax for type integer: "hello"
 
 -- String to date
 SELECT
     '2025-12-29'::DATE AS str_to_date,
+    -- => ::DATE: parses ISO 8601 format (YYYY-MM-DD) => 2025-12-29
     '2025-12-29 14:30:00'::TIMESTAMP AS str_to_timestamp;
+    -- => ::TIMESTAMP: parses date+time string => 2025-12-29 14:30:00
 -- => Converts ISO format strings to temporal types
 
 -- Date to string
 SELECT
     CURRENT_DATE::TEXT AS date_as_text,
+    -- => CURRENT_DATE: today's date; ::TEXT converts to '2025-12-29' format
     NOW()::TEXT AS timestamp_as_text;
+    -- => NOW(): current timestamp; ::TEXT converts to '2025-12-29 14:30:00+00' format
 -- => Converts date/time to text
 
 -- Boolean conversions
 SELECT
     't'::BOOLEAN AS true_val,
+    -- => 't' (single char) => true
     'true'::BOOLEAN AS true_alt,
+    -- => 'true' (full word) => true
     'yes'::BOOLEAN AS true_yes,
+    -- => 'yes' => true (PostgreSQL-specific)
     'f'::BOOLEAN AS false_val,
+    -- => 'f' (single char) => false
     'false'::BOOLEAN AS false_alt,
+    -- => 'false' (full word) => false
     'no'::BOOLEAN AS false_no;
+    -- => 'no' => false (PostgreSQL-specific)
 -- => Multiple text representations of boolean
 
 -- Truncate vs round
 SELECT
-    123.789::INTEGER AS truncated,              -- => 124 (rounds)
-    TRUNC(123.789) AS truncated_func,          -- => 123 (truncates)
-    ROUND(123.789, 2) AS rounded_2_decimals;   -- => 123.79
+    123.789::INTEGER AS truncated,              -- => 124 (rounds to nearest integer)
+    TRUNC(123.789) AS truncated_func,          -- => 123 (truncates, drops decimal)
+    ROUND(123.789, 2) AS rounded_2_decimals;   -- => 123.79 (rounds to 2 decimal places)
 ```
 
 **Key Takeaway**: Use `::type` or CAST(value AS type) for explicit conversions. PostgreSQL doesn't implicitly convert types - be explicit. Invalid conversions raise errors - validate input before casting.

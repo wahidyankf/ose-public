@@ -17,6 +17,21 @@ This level covers Linux shell fundamentals through 30 self-contained examples. E
 
 The `echo` command outputs text to stdout, supporting variable expansion, escape sequences, and redirection. It's the most basic way to produce output and debug shell scripts.
 
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A[stdin] -->|keyboard/pipe| B[echo command]
+    B -->|stdout| C[Terminal / pipe]
+    B -->|"with >"| D[File]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+```
+
 ```bash
 # Basic echo
 echo "Hello, World!"           # => Output: Hello, World!
@@ -49,6 +64,29 @@ echo "Current directory: $(pwd)" # => $(pwd) executes first, result substituted
 ### Example 2: Variables and Assignment
 
 Shell variables store strings by default, with no type declarations. Variable names are case-sensitive and conventionally use UPPERCASE for environment variables and lowercase for local variables.
+
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A[Variable Assignment<br/>name=value] --> B{Quote Type?}
+    B -->|Double Quotes| C[Variable Expansion<br/>echo "$name"]
+    B -->|Single Quotes| D[Literal String<br/>echo '$name']
+    C --> E[Expanded Output<br/>Bob]
+    D --> F[Literal Output<br/>$name]
+    A --> G[$\(\(expr\)) Arithmetic<br/>sum=$\(\(x+y\)\)]
+    G --> H[Numeric Result<br/>30]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#029E73,stroke:#000,color:#fff
+    style F fill:#CC78BC,stroke:#000,color:#000
+    style G fill:#CA9161,stroke:#000,color:#fff
+    style H fill:#CA9161,stroke:#000,color:#fff
+```
 
 ```bash
 # Variable assignment (no spaces around =)
@@ -89,7 +127,7 @@ echo "Sum: $sum"                # => Output: Sum: 30
 
 **Key Takeaway**: Use double quotes for variable expansion and single quotes for literal strings - assign variables without spaces around `=` and use `$(command)` for command substitution or `$((expression))` for arithmetic.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: Shell variables are the foundation of all scripting. Every production script relies on variables to store configuration values, capture command outputs, and pass data between operations. Without variable assignment, scripts would be static text files. Understanding string vs arithmetic contexts prevents subtle bugs, and the $(command) pattern is essential for dynamic scripts that respond to runtime conditions like hostnames, dates, and system states.
 
 ---
 
@@ -165,7 +203,7 @@ man ls                          # => Opens manual page in pager (less)
 
 **Key Takeaway**: Most commands follow the pattern `command [options] [arguments]` - use short options (`-a`) for quick typing, long options (`--all`) for script readability, and `man command` to learn about any command's options.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: Mastering command options transforms shell users from beginners to power users. Production scripts combine multiple options to control exact output format, filter results, and control behavior. Reading man pages and using --help are habits that prevent hours of debugging. Long-form options (--all vs -a) make scripts self-documenting for team members who maintain them months later.
 
 ---
 
@@ -217,7 +255,7 @@ ls /etc                         # => Lists /etc contents, current dir unchanged
 
 **Key Takeaway**: Use `pwd` to check your location, `cd` with absolute paths (`/path/to/dir`) for certainty or relative paths (`../dir`) for convenience, and `cd -` to toggle between two directories.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: Directory navigation is the bedrock of all shell work. System administrators and DevOps engineers constantly move between configuration directories, log files, and application directories. Understanding OLDPWD and cd - for quick back-navigation prevents confusion in deep directory trees. The ls -la habit of seeing hidden files prevents missing critical configuration files like .env and .gitignore.
 
 ---
 
@@ -263,7 +301,7 @@ rm -r old_*                     # => Removes all directories starting with "old_
 
 **Key Takeaway**: Use `mkdir -p` to create nested directories safely, `rmdir` for empty directories, and `rm -r` for directories with contents - always double-check before using `rm -rf` as it's irreversible and dangerous.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: Proper directory management prevents data loss and disk exhaustion. Production scripts create working directories atomically with mkdir -p, verify creation succeeded, and clean up on exit. The -p flag makes scripts idempotent - safe to run multiple times without error. Recursive deletion with rm -rf is one of the most dangerous shell operations and should always include path validation before execution.
 
 ---
 
@@ -359,7 +397,7 @@ tail -f -n 50 app.log           # => Combines -f (follow) with -n (line count)
 
 **Key Takeaway**: Use `cat` for small files, `less` for browsing large files interactively, `head` for beginnings, `tail` for endings, and `tail -f` for real-time log monitoring.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: Log inspection is a critical skill for incident response. Operations teams use tail -f to monitor live application logs, head to inspect file headers quickly, and less to navigate large log files without loading them into memory. The -n flag to specify line counts prevents accidentally scrolling through gigabytes of logs. cat piped to grep enables instant log searching during incident investigation.
 
 ---
 
@@ -420,7 +458,7 @@ rm -f locked_file.txt           # => Removes file without asking, even if write-
 
 **Key Takeaway**: Use `cp` for copying, `mv` for moving/renaming, and `rm` for deletion - always use `-i` flag for interactive confirmation with destructive operations, and remember that `rm` is permanent (no undo).
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: File operations are at the heart of deployment scripts. Backup operations copy files before modification, mv atomically renames files for zero-downtime config updates, and rm cleans temporary build artifacts. The -i flag prevents accidental overwriting in interactive scripts. Recursive operations with -r enable entire directory tree management essential for multi-tier application deployments.
 
 ---
 
@@ -516,7 +554,7 @@ chmod a=r file.txt              # => a=all (owner, group, others)
 
 **Key Takeaway**: Use `ls -l` to view permissions, `chmod` with octal notation (644, 755, 700) for absolute permission sets, or symbolic notation (u+x, go-w) for relative changes - remember that 644 is standard for files and 755 for directories/executables.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: File permissions are the first line of defense in server security. Misconfigured permissions cause the majority of application startup failures and security vulnerabilities. The octal notation (755, 644) appears throughout deployment guides. Scripts must set correct permissions on log directories, SSL certificates, and application binaries. Understanding chmod prevents Permission denied errors that halt deployments at the worst possible moment.
 
 ---
 
@@ -623,13 +661,30 @@ sort < unsorted.txt > sorted.txt # => Multiple redirections: input AND output
 
 **Key Takeaway**: Use `>` to redirect output to files (overwrites), `>>` to append, `2>` for error messages, and `<` for input - remember that `> /dev/null` discards output, useful for silent execution.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: Output redirection enables scripts to separate concerns: stdout for successful output, stderr for error messages, files for persistent data. Production scripts redirect errors to log files for later analysis while keeping stdout clean for pipeline consumers. The >> append mode enables incremental log building. Redirecting both stdout and stderr with 2>&1 is essential for capturing complete command output in cron jobs.
 
 ---
 
 ### Example 10: Pipes (|)
 
 Pipes connect commands by sending stdout of one command to stdin of the next, enabling powerful command composition for data processing workflows.
+
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A[cmd1] -->|stdout→stdin| B[cmd2]
+    B -->|stdout→stdin| C[cmd3]
+    C -->|stdout| D[Terminal / File]
+    E[stdin] -->|input| A
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#fff
+```
 
 ```bash
 # Basic pipe
@@ -729,7 +784,7 @@ find /var/log -type f -mtime -1 -exec ls -lh {} \;
 
 **Key Takeaway**: Use `find` with conditions like `-name` (files), `-type` (file/dir/link), `-size` (file size), and `-mtime` (modification time) - combine with `-exec` to perform actions on found files, and use `-maxdepth` to limit search depth.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: The find command is indispensable for maintenance automation. Cron jobs use find -mtime +7 -delete to purge old log files before disks fill. Deployment scripts use find -name \*.conf to locate configuration templates. Security scripts use find -perm -4000 to detect setuid binaries. The -exec flag enables applying operations to thousands of files without writing explicit loops.
 
 ---
 
@@ -865,7 +920,7 @@ cat text.txt | tr ' ' '\n' | sort | uniq -c | sort -nr | head -10
 
 **Key Takeaway**: Use `cut` to extract columns from delimited data, `sort` to order lines (with `-n` for numbers, `-k` for specific fields), and `uniq` to deduplicate (always sort first) - combine them in pipelines for powerful text analysis.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: Text processing commands form the backbone of data extraction pipelines. System scripts use cut to extract columns from CSV exports, sort to order server lists and IP addresses, and uniq -c to count occurrences for reporting. Log analysis pipelines combine these commands with grep and awk to produce dashboards from raw log files without requiring a database or dedicated analytics tool.
 
 ---
 
@@ -975,7 +1030,7 @@ done
 
 **Key Takeaway**: Use `$(command)` to capture command output in variables or expressions, and `(command)` for subshells to isolate environment changes - remember that subshells don't affect parent shell variables or directory.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: Command substitution enables scripts to capture dynamic system state. Scripts use $(hostname) to build environment-specific configuration, $(date +%Y%m%d) to create timestamped backup filenames, and $(cat /etc/os-release | grep ID) to detect the operating system. The $() form is preferred over backticks because it nests cleanly and is more readable in complex scripts with multiple levels of substitution.
 
 ---
 
@@ -1071,7 +1126,7 @@ fi
 
 **Key Takeaway**: Use `export` to make variables available to child processes, modify `PATH` to add custom command directories, and set variables inline (`VAR=value command`) for one-time overrides - persist changes in `~/.bashrc` for permanent configuration.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: Environment variables are the standard mechanism for configuring deployed applications. The Twelve-Factor App methodology requires all configuration via environment variables. Scripts use export to pass database URLs, API keys, and feature flags to child processes. The PATH manipulation technique enables scripts to use local binary versions before system versions, critical for managing multiple tool versions in CI environments.
 
 ---
 
@@ -1141,7 +1196,7 @@ true || echo "This won't print"  # => echo skipped
                                 # => true returns 0, || short-circuits
 
 # Practical example: safe deployment
-git pull && npm install && npm test && npm run deploy
+git pull && make build && make test && ./deploy.sh
                                 # => Fail-fast: stops at first failure
                                 # => Each step validates before proceeding
                                 # => Prevents deploying broken code
@@ -1149,7 +1204,7 @@ git pull && npm install && npm test && npm run deploy
 
 **Key Takeaway**: Use `&&` to chain commands that depend on success (fail-fast), `||` for fallback actions on failure, and `;` for independent commands - combine them for robust scripts that handle errors gracefully.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: Conditional execution chains are the most concise way to implement fail-fast deployment pipelines. The && pattern is more readable than nested if statements and guarantees each step validates before proceeding. Production Makefiles and deployment scripts use && chains extensively. Understanding short-circuit evaluation prevents misunderstanding why commands appear to skip - the previous command likely failed silently.
 
 ---
 
@@ -1328,7 +1383,7 @@ fi
 
 **Key Takeaway**: Use `[ ]` or `test` for POSIX compatibility, `[[ ]]` for bash-specific features like regex and improved syntax - remember that `-eq` is for numbers, `=` is for strings, and always quote variables in `[ ]` to avoid errors with empty values.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: Test conditions are the decision engine of shell scripts. Every guard clause, input validation, and file check uses test operators. The [[]] form is preferred in bash for more intuitive behavior with strings and patterns. Production scripts check file readability before parsing, directory existence before creating files, and variable content before using values - preventing cryptic failures.
 
 ---
 
@@ -1525,13 +1580,31 @@ echo "Processing $filename..."  # => Runs only if file exists
 
 **Key Takeaway**: Use `if-elif-else` for multi-way decisions, test exit codes with `$?`, and validate script arguments with `$#` - remember that the condition is any command (exit 0 = true, non-zero = false).
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: If statements with proper elif and else chains make scripts handle the full range of expected conditions. Production scripts use if statements for OS detection, environment selection, and feature gating. The [[ form prevents word splitting bugs with unquoted variables. Multi-condition checks enable complex validation without deeply nested ifs that are difficult to maintain.
 
 ---
 
 ### Example 19: For Loops
 
 The `for` loop iterates over lists, ranges, files, or command output, executing a block for each item with the loop variable holding the current value.
+
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+stateDiagram-v2
+    [*] --> Initialize: for item in list
+    Initialize --> Check: expand list
+    Check --> Execute: item available
+    Check --> Done: list exhausted
+    Execute --> Check: next item
+    Done --> [*]
+
+    note right of Execute
+        Loop body runs
+        with current item
+    end note
+```
 
 ```bash
 # Loop over list
@@ -1638,13 +1711,30 @@ done
 
 **Key Takeaway**: Use `for item in list` for iterating over values, `for file in *.ext` for file globs, and `for ((i=0; i<n; i++))` for numeric ranges - remember to quote variables (`"$file"`) to handle filenames with spaces.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: For loops enable batch operations across dynamic collections. Deployment scripts iterate over server lists to apply configuration changes, backup scripts loop over database names to create per-database dumps, and monitoring scripts iterate over service names to check health. The for f in \*.log glob expansion pattern processes all matching files without hardcoding filenames, making scripts resilient to new files being added.
 
 ---
 
 ### Example 20: While and Until Loops
 
 The `while` loop repeats while a condition is true, and `until` repeats while false. Both support `break` for early exit and `continue` for skipping iterations.
+
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+stateDiagram-v2
+    [*] --> TestCondition: while starts
+    TestCondition --> Execute: condition true (exit 0)
+    TestCondition --> Done: condition false (exit non-0)
+    Execute --> TestCondition: loop back
+    Done --> [*]
+
+    note right of TestCondition
+        until loop: reversed
+        true→exit, false→execute
+    end note
+```
 
 ```bash
 # Basic while loop
@@ -2027,6 +2117,30 @@ done                            # => Loop completes when all files processed
 
 Functions encapsulate reusable code blocks, accept arguments via `$1, $2, ...`, return values via `return` (exit code) or `echo` (stdout), and use `local` for function-scoped variables.
 
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A[Function Definition<br/>greet\(\) \{ ... \}] --> B[Stored in Shell Memory]
+    C[Function Call<br/>greet arg1 arg2] --> D{Lookup Function}
+    D -->|found| E[Execute Body<br/>$1=arg1, $2=arg2]
+    D -->|not found| F[Error: command not found]
+    E --> G{Return Value}
+    G -->|return N| H[Exit Code $?]
+    G -->|echo output| I[Captured via $\(\)]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#DE8F05,stroke:#000,color:#000
+    style E fill:#029E73,stroke:#000,color:#fff
+    style F fill:#CC78BC,stroke:#000,color:#000
+    style G fill:#DE8F05,stroke:#000,color:#000
+    style H fill:#CA9161,stroke:#000,color:#fff
+    style I fill:#CA9161,stroke:#000,color:#fff
+```
+
 ```bash
 # Basic function
 greet() {                       # => Defines function named 'greet'
@@ -2332,7 +2446,7 @@ echo "Last argument: ${!#}"     # => ${!#} expands to last positional parameter
 
 **Key Takeaway**: Use `$1, $2, ...` for individual arguments, `$#` to check argument count, `$@` to iterate over all arguments, and `shift` to process arguments sequentially - always validate argument count and values before use.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: Positional parameters and $@ are what transform single-purpose scripts into flexible tools. Scripts that accept arguments are reusable across environments and contexts without code changes. The $# count enables argument validation before processing. The shift technique enables option parsing. Scripts using $@ correctly handle arguments with spaces, preventing word splitting bugs that cause intermittent failures.
 
 ---
 
@@ -2432,14 +2546,14 @@ if [ $? -ne 0 ]; then           # => $? holds git pull's exit code
     exit 1                      # => Exits script with error code
 fi
 
-npm install                     # => Installs dependencies
-if [ $? -ne 0 ]; then           # => Tests npm install exit code
-    echo "npm install failed"
+./build.sh                      # => Runs build script (builds application)
+if [ $? -ne 0 ]; then           # => $? holds ./build.sh exit code
+    echo "Build failed"
     exit 1
 fi
 
-npm test                        # => Runs test suite
-if [ $? -ne 0 ]; then           # => Tests npm test exit code
+./test.sh                       # => Runs test suite
+if [ $? -ne 0 ]; then           # => Tests ./test.sh exit code
     echo "Tests failed"
     exit 1                      # => Prevents deployment if tests fail
 fi
@@ -2450,7 +2564,7 @@ exit 0                          # => Explicit success exit code
 
 **Key Takeaway**: Check `$?` immediately after command execution to capture exit code, use `exit 0` for success and non-zero for errors in scripts, and leverage `set -e` to automatically exit on any command failure for robust scripts.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: Exit codes are the contract between processes and their callers. CI/CD systems read exit codes to determine build success or failure. Pipeline scripts chain operations based on exit codes. Scripts that exit 0 on failure silently swallow errors and allow broken deployments to proceed. The set -e pattern enforces this contract globally, making exit code checking the default rather than the exception.
 
 ---
 
@@ -2558,13 +2672,30 @@ echo 'Everything literal: $var $(cmd) \n * ? " even "quotes"'
 
 **Key Takeaway**: Use double quotes `"..."` for variable expansion while protecting from word splitting and glob expansion, single quotes `'...'` for complete literal strings, and always quote variables (`"$var"`) to handle spaces and empty values safely.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: Quoting errors are the most common source of hard-to-debug shell script failures. Unquoted variables with spaces cause word splitting that breaks file paths containing spaces. Glob expansion on unquoted patterns produces unexpected file matches. Production scripts must quote all variable expansions by default and use single quotes for values that should never expand. Understanding quoting separates reliable scripts from fragile ones.
 
 ---
 
 ### Example 26: Here Documents and Here Strings
 
 Here documents (`<<`) allow multi-line input to commands, while here strings (`<<<`) provide single-line string input. Both avoid temporary files for inline data.
+
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A[Script Source<br/>&lt;&lt; EOF ... EOF] -->|multi-line text| B[Shell Buffer]
+    B -->|stdin| C[Command<br/>cat / sql / ssh]
+    C -->|stdout| D[Output / File]
+    E[Here String<br/>&lt;&lt;&lt; word] -->|single line| C
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#fff
+```
 
 ```bash
 # Basic here document
@@ -2658,27 +2789,30 @@ grep "this" <<< "$text"         # => <<< feeds variable content as stdin to grep
                                 # => Output: Search this text (matches "this")
                                 # => Returns exit code 0 (found)
 
-# Multi-line command with here document
-mysql -u user -p password << SQL # => Connects to MySQL with credentials
-                                # => Heredoc provides SQL commands as stdin
-                                # => All commands execute in single MySQL session
-USE database;                   # => SQL command 1: switches to database
-CREATE TABLE users (            # => SQL command 2: creates table (multi-line)
-    id INT PRIMARY KEY,         # => Table column definitions
-    name VARCHAR(100)
-);
-INSERT INTO users VALUES (1, 'Alice'); # => SQL command 3: inserts data
-SQL                             # => Delimiter ends heredoc
-                                # => MySQL executes all commands sequentially
-                                # => Connection closes after heredoc exhausted
+# Multi-line command with here document (writing a config file)
+cat > database.conf << SQL      # => Heredoc writes multi-line config to file
+                                # => cat receives heredoc as stdin, > writes to file
+                                # => All lines written in a single operation
+host=localhost                  # => Config line 1: database host
+port=5432                       # => Config line 2: database port
+name=mydb                       # => Config line 3: database name
+user=appuser                    # => Config line 4: database user
+SQL                             # => Delimiter ends heredoc, file is written
+                                # => database.conf now contains all four config lines
+                                # => Practical: inline templates replace external files
+
+# Practical use case reference (requires MySQL server, not runnable here):
+# mysql -u user -p"$PASS" mydb << SQL
+# USE database; SELECT COUNT(*) FROM users; SQL
+# The heredoc pattern works identically with any command that reads stdin
 
 # SSH with here document
 ssh user@server << 'ENDSSH'     # => Executes commands on remote server
                                 # => 'ENDSSH' quoted: prevents local expansion
 cd /var/www                     # => Remote command 1
 git pull                        # => Remote command 2
-npm install                     # => Remote command 3
-pm2 restart app                 # => Remote command 4
+./deploy.sh                     # => Remote command 3 (deploy application)
+systemctl restart app           # => Remote command 4 (restart service)
 ENDSSH                          # => All commands executed remotely
 
 # Python script from shell
@@ -2808,7 +2942,7 @@ done
 
 **Key Takeaway**: Use brace expansion for generating sequences (`{1..10}`), combinations (`{A,B}{1,2}`), and systematic filenames - it expands before command execution, making it efficient for creating multiple files or directories with one command.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: Brace expansion eliminates repetitive command patterns and makes intent clear. Deployment scripts use {backup,deploy,rollback} to create consistent directory structures, {1..30} to generate test datasets, and ${HOST}{1,2,3} to construct server hostnames. Unlike loops, brace expansion happens at parse time with no subshell overhead. The cross-product pattern {a,b}{1,2} generates all combinations for testing matrix configurations.
 
 ---
 
@@ -2913,7 +3047,7 @@ done
 
 **Key Takeaway**: Use `*` for any-length wildcards, `?` for single-character matching, and `[...]` for character sets - globbing happens before command execution and matches filenames (not file contents), and remember to quote glob patterns when you want them literal.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: Glob patterns enable scripts to work with files dynamically without maintaining lists. Deployment cleanup scripts use _.log to delete old logs, backup scripts use _.conf to collect configuration files, and validation scripts use \*_/_.yaml to check all YAML files recursively. Understanding that globs expand to matching filenames - not the pattern itself - prevents bugs when no files match and the literal pattern is passed to commands.
 
 ---
 
@@ -3100,7 +3234,7 @@ fg %?sleep                      # => Brings job matching "sleep" to foreground (
 
 **Key Takeaway**: Use `&` to run commands in background for long-running tasks, `Ctrl+Z` and `bg` to move blocking commands to background, `fg` to interact with background jobs, and `jobs` to track all jobs - remember that background jobs continue after shell exits only with `nohup` or `disown`.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: Job control enables concurrent execution within scripts. Deployment scripts launch multiple health checks in parallel with & and use wait to synchronize before proceeding. Monitoring scripts run checks concurrently to reduce total execution time. The nohup command is essential for long-running processes that must survive shell disconnection. Understanding job IDs vs PIDs prevents accidentally terminating the wrong process.
 
 ---
 

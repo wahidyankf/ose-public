@@ -323,178 +323,63 @@ sequenceDiagram
 
 API contracts need machine-readable specifications. This example shows OpenAPI specification structure for code generation.
 
-```yaml
-# OpenAPI 3.0 Specification for Order API
-openapi: 3.0.0
-info:
-  title: Order API
-  version: 1.0.0
-  description: RESTful API for order management with idempotency and versioning
+```mermaid
+classDiagram
+    class Order {
+        +UUID orderId
+        +UUID customerId
+        +OrderStatus status
+        +Money totalAmount
+        +DateTime createdAt
+        +DateTime updatedAt
+        +createOrder(CreateOrderRequest) Order
+        +getOrder(UUID) Order
+    }
 
-servers:
-  - url: https://api.example.com/v1
-    description: Production environment
-  - url: https://api-staging.example.com/v1
-    description: Staging environment
+    class OrderItem {
+        +UUID productId
+        +int quantity
+        +Money unitPrice
+    }
 
-paths:
-  /orders:
-    post:
-      summary: Create new order
-      operationId: createOrder
-      tags:
-        - Orders
-      parameters:
-        - name: Idempotency-Key
-          in: header
-          required: true
-          schema:
-            type: string
-            format: uuid
-          description: UUID for idempotent request handling
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CreateOrderRequest"
-      responses:
-        "201":
-          description: Order created successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Order"
-        "400":
-          description: Invalid request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "409":
-          description: Duplicate idempotency key
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Order"
+    class Money {
+        +decimal amount
+        +string currency
+    }
 
-  /orders/{orderId}:
-    get:
-      summary: Get order by ID
-      operationId: getOrder
-      tags:
-        - Orders
-      parameters:
-        - name: orderId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        "200":
-          description: Order details
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Order"
-        "404":
-          description: Order not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+    class CreateOrderRequest {
+        +UUID customerId
+        +OrderItem[] items
+    }
 
-components:
-  schemas:
-    CreateOrderRequest:
-      type: object
-      required:
-        - customerId
-        - items
-      properties:
-        customerId:
-          type: string
-          format: uuid
-          description: Customer UUID
-        items:
-          type: array
-          minItems: 1
-          items:
-            $ref: "#/components/schemas/OrderItem"
+    class Error {
+        +string code
+        +string message
+        +object details
+    }
 
-    OrderItem:
-      type: object
-      required:
-        - productId
-        - quantity
-      properties:
-        productId:
-          type: string
-          format: uuid
-        quantity:
-          type: integer
-          minimum: 1
-          maximum: 100
-        unitPrice:
-          $ref: "#/components/schemas/Money"
+    class OrderStatus {
+        <<enumeration>>
+        DRAFT
+        PENDING
+        CONFIRMED
+        SHIPPED
+        DELIVERED
+        CANCELLED
+    }
 
-    Order:
-      type: object
-      properties:
-        orderId:
-          type: string
-          format: uuid
-        customerId:
-          type: string
-          format: uuid
-        status:
-          type: string
-          enum: [DRAFT, PENDING, CONFIRMED, SHIPPED, DELIVERED, CANCELLED]
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/OrderItem"
-        totalAmount:
-          $ref: "#/components/schemas/Money"
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
+    Order "1" --> "*" OrderItem : contains
+    Order --> Money : totalAmount
+    Order --> OrderStatus : status
+    OrderItem --> Money : unitPrice
+    CreateOrderRequest "1" --> "*" OrderItem : items
 
-    Money:
-      type: object
-      required:
-        - amount
-        - currency
-      properties:
-        amount:
-          type: number
-          format: decimal
-          description: Monetary amount with 2 decimal precision
-        currency:
-          type: string
-          pattern: "^[A-Z]{3}$"
-          description: ISO 4217 currency code (USD, EUR, GBP)
-
-    Error:
-      type: object
-      required:
-        - code
-        - message
-      properties:
-        code:
-          type: string
-          description: Machine-readable error code
-        message:
-          type: string
-          description: Human-readable error message
-        details:
-          type: object
-          additionalProperties: true
-          description: Additional context for debugging
+    style Order fill:#0173B2,stroke:#000,color:#fff
+    style OrderItem fill:#DE8F05,stroke:#000,color:#fff
+    style Money fill:#029E73,stroke:#000,color:#fff
+    style CreateOrderRequest fill:#CC78BC,stroke:#000,color:#fff
+    style Error fill:#CA9161,stroke:#000,color:#fff
+    style OrderStatus fill:#0173B2,stroke:#000,color:#fff
 ```
 
 **Key Elements**:

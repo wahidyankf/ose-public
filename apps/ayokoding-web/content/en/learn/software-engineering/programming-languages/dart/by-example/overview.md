@@ -3,20 +3,17 @@ title: "Overview"
 weight: 10000000
 date: 2025-01-29T00:00:00+07:00
 draft: false
-description: "⚠️ INCOMPLETE: Learn Dart through annotated examples (32/85 examples completed - under active development)"
-tags: ["dart", "by-example", "overview", "incomplete"]
+description: "Learn Dart through 75 heavily annotated examples covering 95% of Dart features, from basics to advanced patterns"
+tags: ["dart", "by-example", "overview"]
 ---
 
-⚠️ **STATUS: INCOMPLETE** - This tutorial is currently under development with 32 out of 75-85 target examples completed. Beginner and Advanced sections need significant expansion.
+Learn Dart through heavily annotated code examples. This section provides 75 practical examples covering 95% of Dart's features, organized by difficulty level.
 
-Learn Dart through heavily annotated code examples. When complete, this section will provide 75-85 practical examples covering 95% of Dart's features, organized by difficulty level.
+**Example Coverage**:
 
-**Current Progress**:
-
-- Beginner (3/27-30 examples) - 90% incomplete
-- Intermediate (25/20-30 examples) - Near target
-- Advanced (4/25-28 examples) - 84% incomplete
-- **Total: 32/85 examples** - 42% coverage gap
+- Beginner (Examples 1-25) - Basic syntax, types, control flow, functions, OOP basics
+- Intermediate (Examples 26-50) - Async/await, streams, advanced OOP, generics, mixins
+- Advanced (Examples 51-75) - Isolates, design patterns, testing, performance optimization
 
 ## Learning Approach
 

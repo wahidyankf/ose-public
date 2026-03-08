@@ -4,7 +4,6 @@ weight: 100003
 date: 2026-01-01T22:52:24+07:00
 draft: false
 description: "Learn Spring Data JPA through 85 annotated examples - quickest path for Java developers"
-categories: ["learn"]
 type: docs
 layout: list
 ---

@@ -4,11 +4,12 @@ date: 2025-12-29T00:00:00+07:00
 draft: false
 weight: 10000003
 description: "Examples 55-80: Advanced Ansible covering custom modules, collections, testing, performance optimization, CI/CD integration, and production patterns (75-95% coverage)"
-categories: ["learn"]
 tags: ["ansible", "automation", "by-example", "advanced", "testing", "ci-cd", "custom-modules"]
 ---
 
-## Example 55: Custom Module - Hello Module
+## Group 13: Custom Modules & Collections
+
+### Example 55: Custom Module - Hello Module
 
 Custom modules extend Ansible's functionality using Python. This simple module demonstrates the basic structure: argument spec definition, input validation, and result return with changed status.
 
@@ -86,7 +87,7 @@ if __name__ == '__main__':
 
 ---
 
-## Example 56: Custom Module with State Management
+### Example 56: Custom Module with State Management
 
 Production modules manage resources with state (present/absent). This pattern checks current state, calculates necessary changes, and reports accurate changed status for idempotency.
 
@@ -202,7 +203,7 @@ if __name__ == '__main__':
 
 ---
 
-## Example 57: Ansible Collections - Using Collections
+### Example 57: Ansible Collections - Using Collections
 
 Collections bundle modules, plugins, and roles into distributable packages. Install from Ansible Galaxy and reference modules with FQCN (Fully Qualified Collection Name).
 
@@ -291,7 +292,9 @@ collections:
 
 ---
 
-## Example 58: Testing with Molecule - Scenario
+## Group 14: Testing & Quality
+
+### Example 58: Testing with Molecule - Scenario
 
 Molecule automates role testing across multiple platforms. It creates test instances, applies roles, runs verifiers, and cleans up. Essential for role development.
 
@@ -404,7 +407,7 @@ provisioner:
 
 ---
 
-## Example 59: Ansible-Lint Configuration
+### Example 59: Ansible-Lint Configuration
 
 Ansible-lint enforces best practices and catches common errors. Configure via `.ansible-lint` for project-specific rules and skip patterns.
 
@@ -456,7 +459,9 @@ ansible-lint playbooks/*.yml --force-color --format pep8 > lint-results.txt
 
 ---
 
-## Example 60: Performance - Fact Caching
+## Group 15: Performance Optimization
+
+### Example 60: Performance - Fact Caching
 
 Fact gathering is slow on large inventories. Enable fact caching to store facts between runs. Supports memory, file, Redis, and Memcached backends.
 
@@ -530,7 +535,7 @@ fact_caching_timeout = 86400
 
 ---
 
-## Example 61: Performance - Pipelining
+### Example 61: Performance - Pipelining
 
 Pipelining reduces SSH overhead by executing modules without creating temporary files on target. Requires `requiretty` disabled in sudoers.
 
@@ -627,7 +632,9 @@ ssh_args = -o ControlMaster=auto -o ControlPersist=60s
 
 ---
 
-## Example 62: CI/CD - GitHub Actions Pipeline
+## Group 16: CI/CD Integration
+
+### Example 62: CI/CD - GitHub Actions Pipeline
 
 Automate Ansible execution in CI/CD pipelines. This
 
@@ -706,11 +713,11 @@ jobs:
 
 **Key Takeaway**: CI/CD pipelines automate validation, linting, execution, and idempotency testing. Essential for production Ansible workflows.
 
-## Why It Matters
+**Why It Matters**: CI/CD automation prevents human errors in deployment workflows. Automated syntax checks catch typos before production deployment. Idempotency testing detects playbooks that incorrectly report changes on every run (flapping playbooks).
 
-CI/CD automation prevents human errors in deployment workflows. Automated syntax checks catch typos before production deployment. Idempotency testing detects playbooks that incorrectly report changes on every run (flapping playbooks).
+## Group 17: Production Deployment Patterns
 
-## Example 63: Production Pattern - Rolling Updates
+### Example 63: Production Pattern - Rolling Updates
 
 Rolling updates deploy changes gradually to avoid downtime. Use `serial` to control batch size and `max_fail_percentage` for automatic rollback triggers.
 
@@ -827,7 +834,7 @@ graph TD
 
 ---
 
-## Example 64: Production Pattern - Canary Deployment
+### Example 64: Production Pattern - Canary Deployment
 
 Canary deployments test new versions on a subset of servers before full rollout. Combine with monitoring to validate changes before proceeding.
 
@@ -930,7 +937,7 @@ production
 
 ---
 
-## Example 65: Production Pattern - Blue-Green Deployment
+### Example 65: Production Pattern - Blue-Green Deployment
 
 Blue-green deployments maintain two identical environments. Deploy to inactive environment, verify, then switch traffic. Enables instant rollback.
 
@@ -1028,7 +1035,7 @@ graph TD
 
 **Why It Matters**: Blue-green deployments provide instant rollback capability—switch traffic back to blue environment if green fails. The pattern eliminates deployment risk for stateless applications. Entire environment validation happens before traffic switch, catching integration failures that unit tests miss. ---
 
-## Example 66: Production Pattern - Immutable Infrastructure
+### Example 66: Production Pattern - Immutable Infrastructure
 
 Immutable infrastructure replaces servers rather than modifying them. Build new AMIs/images, launch new instances, then terminate old ones.
 
@@ -1130,7 +1137,7 @@ Immutable infrastructure replaces servers rather than modifying them. Build new 
 
 **Why It Matters**: Immutable infrastructure eliminates configuration drift—every deployment creates identical servers from golden images. Manual changes to servers are impossible (read-only root filesystems). Rollback becomes "deploy previous AMI" instead of "undo configuration changes." This pattern underpins modern cloud-native architectures in production systems worldwide.
 
-## Example 67: Zero-Downtime Deployment Pattern
+### Example 67: Zero-Downtime Deployment Pattern
 
 Combine health checks, load balancer management, and serial execution for truly zero-downtime deployments. Each server is updated while others handle traffic.
 
@@ -1272,7 +1279,7 @@ Combine health checks, load balancer management, and serial execution for truly 
 
 **Why It Matters**: Zero-downtime deployments require coordination of load balancers, health checks, and gradual rollout. Connection draining (30s wait) allows active requests to complete before server shutdown. Per-host health verification prevents deploying broken builds. This pattern enables ---
 
-## Example 68: Monitoring Integration
+### Example 68: Monitoring Integration
 
 Integrate Ansible with monitoring systems to track deployment progress and trigger alerts. Send notifications to
 
@@ -1407,7 +1414,7 @@ Integrate Ansible with monitoring systems to track deployment progress and trigg
 
 ---
 
-## Example 69: Disaster Recovery Pattern
+### Example 69: Disaster Recovery Pattern
 
 Automate disaster recovery with playbooks that restore from backups, recreate infrastructure, and verify system integrity. Test DR playbooks regularly.
 
@@ -1549,7 +1556,7 @@ graph TD
 
 ---
 
-## Example 70: Configuration Drift Detection
+### Example 70: Configuration Drift Detection
 
 Detect configuration drift by comparing desired state (playbooks) against actual state (target hosts). Run in check mode and alert on differences.
 
@@ -1688,7 +1695,9 @@ graph TD
 
 ---
 
-## Example 71: Multi-Stage Deployment Pipeline
+## Group 18: Secrets & Compliance
+
+### Example 71: Multi-Stage Deployment Pipeline
 
 Orchestrate multi-stage deployments (dev → staging → production) with approval gates and environment-specific configurations.
 
@@ -1811,7 +1820,7 @@ Orchestrate multi-stage deployments (dev → staging → production) with approv
 
 ---
 
-## Example 72: Secrets Management with HashiCorp Vault
+### Example 72: Secrets Management with HashiCorp Vault
 
 Integrate Ansible with HashiCorp Vault for dynamic secrets. Fetch credentials at runtime instead of storing in Ansible Vault or vars files.
 
@@ -1919,7 +1928,7 @@ graph TD
 
 ---
 
-## Example 73: Compliance Auditing
+### Example 73: Compliance Auditing
 
 Automate compliance checks (CIS benchmarks, STIG) and generate audit reports. Compare actual configuration against security baselines.
 
@@ -2022,7 +2031,9 @@ Automate compliance checks (CIS benchmarks, STIG) and generate audit reports. Co
 
 ---
 
-## Example 74: Network Automation - VLAN Configuration
+## Group 19: Infrastructure Types
+
+### Example 74: Network Automation - VLAN Configuration
 
 Automate network device configuration using vendor-specific modules. This example configures VLANs on Cisco switches.
 
@@ -2106,7 +2117,7 @@ Automate network device configuration using vendor-specific modules. This exampl
 
 ---
 
-## Example 75: Container Orchestration - Docker Deployment
+### Example 75: Container Orchestration - Docker Deployment
 
 Manage Docker containers with Ansible. Deploy multi-container applications with proper networking and volume configuration.
 
@@ -2214,7 +2225,7 @@ Manage Docker containers with Ansible. Deploy multi-container applications with 
 
 ---
 
-## Example 76: Kubernetes Deployment
+### Example 76: Kubernetes Deployment
 
 Deploy applications to Kubernetes using Ansible. Apply manifests, wait for rollout completion, and verify pod health.
 
@@ -2313,7 +2324,9 @@ Deploy applications to Kubernetes using Ansible. Apply manifests, wait for rollo
 
 ---
 
-## Example 77: Database Migration Automation
+## Group 20: Operations & Reliability
+
+### Example 77: Database Migration Automation
 
 Automate database schema migrations as part of deployment pipelines. Run migrations, verify success, and rollback on failure.
 
@@ -2403,7 +2416,7 @@ Automate database schema migrations as part of deployment pipelines. Run migrati
 
 ---
 
-## Example 78: Self-Healing Infrastructure
+### Example 78: Self-Healing Infrastructure
 
 Implement self-healing by detecting failures and automatically remediating. Monitor service health and restart failed services.
 
@@ -2526,7 +2539,7 @@ graph TD
 
 ---
 
-## Example 79: Infrastructure Cost Optimization
+### Example 79: Infrastructure Cost Optimization
 
 Automate cost optimization by identifying and remediating wasteful resource usage (unused volumes, stopped instances, oversized VMs).
 
@@ -2620,7 +2633,7 @@ Automate cost optimization by identifying and remediating wasteful resource usag
 
 **Why It Matters**: Cost optimization automation prevents cloud waste accumulation. Orphaned EBS volumes cost \$0.10/GB/month—1000 unused 100GB volumes = \ Stopped instances still incur EBS and snapshot costs. Scheduled cleanup (weekly) continuously optimizes spend, ---
 
-## Example 80: Chaos Engineering with Ansible
+### Example 80: Chaos Engineering with Ansible
 
 Implement chaos engineering experiments to test system resilience. Inject failures and verify recovery mechanisms.
 

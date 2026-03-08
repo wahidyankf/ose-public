@@ -9,23 +9,50 @@ tags: ["bdd", "tutorial", "by-example", "beginner", "gherkin", "cucumber"]
 
 This beginner section introduces Behavior-Driven Development (BDD) fundamentals through 30 heavily annotated examples. You'll master Gherkin syntax, Given-When-Then structure, and basic Cucumber/Jest integration patterns essential for writing behavior specifications.
 
+## Gherkin Syntax Fundamentals
+
 ### Example 1: Hello World BDD - First Feature File
 
 BDD tests are written in Gherkin language using `.feature` files that describe application behavior in plain English. This example shows the simplest possible feature file structure.
 
-**Code**:
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A[Feature File .feature] --> B[Feature Keyword]
+    B --> C[Scenario Block]
+    C --> D[Given Step]
+    C --> E[When Step]
+    C --> F[Then Step]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CC78BC,stroke:#000,color:#000
+    style F fill:#CC78BC,stroke:#000,color:#000
+```
 
 ```gherkin
 # File: features/hello.feature
+# => File: Gherkin feature file with .feature extension
 # Every feature file starts with Feature keyword
-Feature: Hello World                         # => Feature: High-level description
+# => Comment: Explains the Feature keyword requirement
+Feature: Hello World
+  # => Feature: High-level description
                                               # => Groups related scenarios together
 
   # Scenario is a single test case
-  Scenario: Greet the world                   # => Scenario: Specific behavior being tested
-    Given I have a greeting function          # => Given: Setup/precondition step
-    When I call greet with "World"            # => When: Action/event being tested
-    Then the result should be "Hello, World!" # => Then: Expected outcome/assertion
+  # => Comment: Clarifies purpose of next block
+  Scenario: Greet the world
+    # => Scenario: Specific behavior being tested
+    Given I have a greeting function
+      # => Given: Setup/precondition step
+    When I call greet with "World"
+      # => When: Action/event being tested
+    Then the result should be "Hello, World!"
+      # => Then: Expected outcome/assertion
                                               # => Output: Test passes when result matches
 ```
 
@@ -47,21 +74,23 @@ graph TD
     style C fill:#029E73,stroke:#000,color:#fff
 ```
 
-**Code**:
-
 ```gherkin
 Feature: User Login
+  # => Feature: Groups related scenarios for User Login
 
   Scenario: Successful login with valid credentials
+    # => Scenario: Single test case for Successful login with valid cr
     Given a user exists with username "alice@example.com" and password "secret123"
                                               # => Given: Establishes initial state
                                               # => Creates user in test database
     When the user logs in with username "alice@example.com" and password "secret123"
                                               # => When: Performs the action being tested
                                               # => Simulates login API call
-    Then the user should be logged in         # => Then: Verifies expected outcome
+    Then the user should be logged in
+      # => Then: Verifies expected outcome
                                               # => Checks session/token exists
-    And the user should see a welcome message # => And: Additional assertion (part of Then)
+    And the user should see a welcome message
+      # => And: Additional assertion (part of Then)
                                               # => Output: "Welcome, Alice!"
 ```
 
@@ -73,29 +102,42 @@ Feature: User Login
 
 Features typically contain multiple scenarios testing different aspects of the same functionality. Each scenario is independent and self-contained.
 
-**Code**:
-
 ```gherkin
 Feature: Shopping Cart
+  # => Feature: Groups related scenarios for Shopping Cart
 
   Scenario: Add item to empty cart
-    Given the shopping cart is empty          # => Given: Initial state - no items
-    When I add "Laptop" to the cart           # => When: Add first item
-    Then the cart should contain 1 item       # => Then: Cart count verification
+    # => Scenario: Tests adding to empty cart
+    Given the shopping cart is empty
+      # => Given: Initial state - no items
+    When I add "Laptop" to the cart
+      # => When: Add first item
+    Then the cart should contain 1 item
+      # => Then: Cart count verification
                                               # => Output: Cart has 1 item
 
   Scenario: Add item to non-empty cart
-    Given the cart contains "Mouse"           # => Given: Cart has existing item
-    When I add "Keyboard" to the cart         # => When: Add second item
-    Then the cart should contain 2 items      # => Then: Cart count updated
-    And the cart should contain "Mouse"       # => And: Original item still present
-    And the cart should contain "Keyboard"    # => And: New item added
+    # => Scenario: Tests adding when cart has items
+    Given the cart contains "Mouse"
+      # => Given: Cart has existing item
+    When I add "Keyboard" to the cart
+      # => When: Add second item
+    Then the cart should contain 2 items
+      # => Then: Cart count updated
+    And the cart should contain "Mouse"
+      # => And: Original item still present
+    And the cart should contain "Keyboard"
+      # => And: New item added
                                               # => Output: Cart has ["Mouse", "Keyboard"]
 
   Scenario: Remove item from cart
-    Given the cart contains "Phone"           # => Given: Cart has one item
-    When I remove "Phone" from the cart       # => When: Remove the item
-    Then the cart should be empty             # => Then: Cart is now empty
+    # => Scenario: Tests item removal
+    Given the cart contains "Phone"
+      # => Given: Cart has one item
+    When I remove "Phone" from the cart
+      # => When: Remove the item
+    Then the cart should be empty
+      # => Then: Cart is now empty
                                               # => Output: Cart has 0 items
 ```
 
@@ -107,31 +149,58 @@ Feature: Shopping Cart
 
 Background runs before EACH scenario in a feature file, eliminating repetitive Given steps. Use it for common setup that every scenario needs.
 
-**Code**:
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+sequenceDiagram
+    participant CU as Cucumber Runner
+    participant BG as Background
+    participant SC as Scenario
+
+    CU->>BG: Run Background steps
+    Note over BG: Runs before EACH scenario
+    BG-->>CU: Setup complete
+    CU->>SC: Run Scenario steps
+    SC-->>CU: Scenario complete
+    CU->>BG: Run Background steps again
+    BG-->>CU: Setup complete
+    CU->>SC: Run next Scenario
+    SC-->>CU: Scenario complete
+```
 
 ```gherkin
 Feature: Bank Account Operations
+  # => Feature: Groups related scenarios for Bank Account Operations
 
   Background:
-    Given a user named "Alice" exists         # => Background: Runs before EVERY scenario
+    Given a user named "Alice" exists
+      # => Background: Runs before EVERY scenario
                                               # => Creates user once per scenario
-    And Alice has a checking account          # => And: Additional setup step
+    And Alice has a checking account
+      # => And: Additional setup step
                                               # => Creates account linked to Alice
-    And the account balance is substantial amounts          # => And: Sets initial balance
+    And the account balance is substantial amounts
+      # => And: Sets initial balance
                                               # => Balance: substantial amounts for each scenario
 
   Scenario: Successful withdrawal
-    When Alice withdraws substantial amounts                 # => When: Withdraw from substantial amounts balance
+    When Alice withdraws substantial amounts
+      # => When: Withdraw from substantial amounts balance
                                               # => New balance calculated
-    Then the account balance should be substantial amounts   # => Then: Verify new balance
+    Then the account balance should be substantial amounts
+      # => Then: Verify new balance
                                               # => Output: Balance is substantial amounts
 
   Scenario: Withdrawal exceeds balance
-    When Alice withdraws substantial amounts                # => When: Attempt overdraft (substantial amounts > substantial amounts)
+    When Alice withdraws substantial amounts
+      # => When: Attempt overdraft (substantial amounts > substantial amounts)
                                               # => Overdraft logic triggered
-    Then the withdrawal should be rejected    # => Then: Transaction fails
+    Then the withdrawal should be rejected
+      # => Then: Transaction fails
                                               # => Output: Error "Insufficient funds"
-    And the account balance should be substantial amounts   # => And: Balance unchanged
+    And the account balance should be substantial amounts
+      # => And: Balance unchanged
                                               # => Output: Balance still substantial amounts
 ```
 
@@ -143,23 +212,31 @@ Feature: Bank Account Operations
 
 And and But improve readability by chaining multiple steps of the same type (Given/When/Then) without repeating the keyword. They're syntactic sugar with no behavioral difference.
 
-**Code**:
-
 ```gherkin
 Feature: User Registration
+  # => Feature: Groups related scenarios for User Registration
 
   Scenario: Register with valid data
-    Given the registration page is open        # => Given: Initial page state
-    When I enter username "alice"              # => When: First form field
-    And I enter email "alice@example.com"      # => And: Second field (still part of When)
-    And I enter password "Secure123!"          # => And: Third field (still part of When)
-    And I click the "Register" button          # => And: Submit action (still part of When)
+    # => Scenario: Happy path registration test
+    Given the registration page is open
+      # => Given: Initial page state
+    When I enter username "alice"
+      # => When: First form field
+    And I enter email "alice@example.com"
+      # => And: Second field (still part of When)
+    And I enter password "Secure123!"
+      # => And: Third field (still part of When)
+    And I click the "Register" button
+      # => And: Submit action (still part of When)
                                                # => All When steps complete, form submitted
-    Then I should see "Registration successful" # => Then: Success message verification
+    Then I should see "Registration successful"
+      # => Then: Success message verification
                                                # => Output: "Registration successful"
-    And I should be redirected to "/dashboard" # => And: Navigation check (part of Then)
+    And I should be redirected to "/dashboard"
+      # => And: Navigation check (part of Then)
                                                # => Output: Current URL is /dashboard
-    But I should not see any error messages    # => But: Negative assertion (part of Then)
+    But I should not see any error messages
+      # => But: Negative assertion (part of Then)
                                                # => Output: No error elements visible
 ```
 
@@ -171,26 +248,33 @@ Feature: User Registration
 
 Data tables pass structured data to step definitions, enabling complex input without verbose step text. Tables use `|` delimiters to create rows and columns.
 
-**Code**:
-
 ```gherkin
 Feature: Bulk User Import
+  # => Feature: Groups related scenarios for Bulk User Import
 
   Scenario: Import multiple users
-    Given the following users exist:           # => Given: Step receives table data
+    Given the following users exist:
+      # => Given: Step receives table data
       | username | email              | role  |
+        # => Table: Column headers username | email | role
       | alice    | alice@example.com  | admin |
+        # => Table: Column headers alice | alice@example.com | admin
       | bob      | bob@example.com    | user  |
+        # => Table: Column headers bob | bob@example.com | user
       | charlie  | charlie@example.com| user  |
                                                # => Table: 3 data rows (header + 3 users)
                                                # => Passed to step as array of objects
                                                # => Output: 3 users created in test DB
-    When I view the user list                  # => When: Navigate to user list page
-    Then I should see 3 users                  # => Then: Count verification
+    When I view the user list
+      # => When: Navigate to user list page
+    Then I should see 3 users
+      # => Then: Count verification
                                                # => Output: User list shows 3 entries
-    And user "alice" should have role "admin"  # => And: Role verification for alice
+    And user "alice" should have role "admin"
+      # => And: Role verification for alice
                                                # => Output: alice.role === "admin"
-    And user "bob" should have role "user"     # => And: Role verification for bob
+    And user "bob" should have role "user"
+      # => And: Role verification for bob
                                                # => Output: bob.role === "user"
 ```
 
@@ -202,10 +286,32 @@ Feature: Bulk User Import
 
 Scenario Outline defines a template scenario executed once per row in the Examples table, enabling data-driven testing without duplicating scenario structure.
 
-**Code**:
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A[Scenario Outline Template] --> B[Examples Table]
+    B --> C[Row 1: alice/wrong123]
+    B --> D[Row 2: bob/incorrect456]
+    B --> E[Row 3: charlie/bad789]
+    C --> F[Test Run 1]
+    D --> G[Test Run 2]
+    E --> H[Test Run 3]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#029E73,stroke:#000,color:#fff
+    style F fill:#CC78BC,stroke:#000,color:#000
+    style G fill:#CC78BC,stroke:#000,color:#000
+    style H fill:#CC78BC,stroke:#000,color:#000
+```
 
 ```gherkin
 Feature: Login Validation
+  # => Feature: Groups related scenarios for Login Validation
 
   Scenario Outline: Login with different credentials
                                                # => Scenario Outline: Template scenario
@@ -220,8 +326,11 @@ Feature: Login Validation
 
     Examples:
       | username | password  | wrongPassword | errorMessage           |
+        # => Table: Column headers username | password | wrongPassword
       | alice    | secret123 | wrong123      | Invalid credentials    |
+        # => Table: Column headers alice | secret123 | wrong123
       | bob      | pass456   | incorrect456  | Invalid credentials    |
+        # => Table: Column headers bob | pass456 | incorrect456
       | charlie  | qwerty789 | bad789        | Invalid credentials    |
                                                # => Examples: 3 rows = 3 scenario executions
                                                # => Each row fills placeholders
@@ -236,26 +345,54 @@ Feature: Login Validation
 
 Tags categorize scenarios for selective execution, enabling filtering by feature area, priority, or environment. Tags start with `@` and can appear before Feature or Scenario.
 
-**Code**:
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A[All Scenarios] --> B{Tag Filter}
+    B -->|@smoke| C[Smoke Suite]
+    B -->|@critical and not @slow| D[Critical Fast Suite]
+    B -->|@authentication| E[Auth Suite]
+    C --> F[Quick CI Run]
+    D --> F
+    E --> G[Full Regression]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#029E73,stroke:#000,color:#fff
+    style F fill:#CC78BC,stroke:#000,color:#000
+    style G fill:#CA9161,stroke:#000,color:#fff
+```
 
 ```gherkin
 @authentication @critical
+  # => Tag: Feature-level tags applied to all scenarios
 Feature: User Login
+  # => Feature: Groups related scenarios for User Login
 
   @smoke @happy-path
+    # => Tags: Marks scenario for smoke and happy-path
   Scenario: Successful login
+    # => Scenario: Single test case for Successful login
     Given a user exists with username "alice@example.com"
                                                # => Given: User setup
     When the user logs in with valid credentials
                                                # => When: Login action
-    Then the user should be logged in          # => Then: Success verification
+    Then the user should be logged in
+      # => Then: Success verification
                                                # => Tags: @authentication, @critical, @smoke, @happy-path
 
   @negative @edge-case
+    # => Tags: Marks as negative/edge-case test
   Scenario: Login with invalid password
+    # => Scenario: Single test case for Login with invalid password
     Given a user exists with username "alice@example.com"
                                                # => Given: User setup
-    When the user logs in with wrong password  # => When: Invalid login attempt
+    When the user logs in with wrong password
+      # => When: Invalid login attempt
     Then the user should see "Invalid credentials"
                                                # => Then: Error message verification
                                                # => Tags: @authentication, @critical, @negative, @edge-case
@@ -283,8 +420,6 @@ npx cucumber-js --tags "@authentication or @smoke"
 ### Example 9: Comments in Feature Files
 
 Comments provide context, explanations, or temporary notes without affecting test execution. Comments start with `#` and extend to end of line.
-
-**Code**:
 
 ```gherkin
 # Feature: Shopping Cart
@@ -355,22 +490,39 @@ Feature: Shopping Cart
 
 **Why It Matters**: Well-commented feature files serve as living documentation that explains business rules and edge cases. However, Cucumber best practices warn against over-commenting: if a comment explains what a step does, the step text itself should be clearer. Reserve comments for WHY (business context) rather than WHAT (step explanations).
 
+## Step Definitions
+
+> **Setup Note**: Examples 10-30 use the following packages. Install them before running:
+>
+> ```bash
+> npm install --save-dev @cucumber/cucumber chai
+> ```
+
+# => Command: > npm install --save-dev @cucumber/cucum
+
+>
+
+# => Command: >```
+
+> `@cucumber/cucumber` is the BDD framework runner. `chai` is the assertion library. Both require Node.js 18+.
+
 ### Example 10: Step Definition Basics (TypeScript)
 
 Step definitions connect Gherkin steps to executable code. Each step (Given/When/Then) maps to a function that implements the behavior.
 
-**Code**:
-
 ```typescript
 // File: step-definitions/greeting.steps.ts
+// => File: step-definitions/greeting.steps.ts
 import { Given, When, Then } from "@cucumber/cucumber";
 // => Import: Cucumber decorators for steps
-import { expect } from "chai"; // => Import: Assertion library
+import { expect } from "chai";
+// => Import: Assertion library
 // => chai provides expect() for BDD assertions
 
 let greetingFunction: (name: string) => string;
 // => State: Shared across steps in scenario
-let result: string; // => State: Stores When step output
+let result: string;
+// => State: Stores When step output
 
 Given("I have a greeting function", function () {
   // => Given: Setup step implementation
@@ -378,21 +530,26 @@ Given("I have a greeting function", function () {
   // => Function: Creates greeting function
   // => Stored in scenario-scoped variable
 });
+// => End: function/callback
 
 When("I call greet with {string}", function (name: string) {
   // => When: Action step with string parameter
   // => {string}: Cucumber parameter type
   // => Captures quoted text from step
-  result = greetingFunction(name); // => Action: Call function, store result
+  result = greetingFunction(name);
+  // => Action: Call function, store result
   // => result: "Hello, World!"
 });
+// => End: function/callback
 
 Then("the result should be {string}", function (expected: string) {
   // => Then: Assertion step with parameter
-  expect(result).to.equal(expected); // => Assertion: Verify result matches expected
+  expect(result).to.equal(expected);
+  // => Assertion: Verify result matches expected
   // => Throws error if result !== expected
   // => Output: Test passes (result === "Hello, World!")
 });
+// => End: function/callback
 ```
 
 **Key Takeaway**: Step definitions use decorators (Given/When/Then) to match Gherkin text, with parameters extracted using Cucumber expressions like `{string}` for quoted text.
@@ -403,46 +560,58 @@ Then("the result should be {string}", function (expected: string) {
 
 Cucumber Expressions provide built-in parameter types like `{string}` for quoted text, `{int}` for integers, and `{float}` for decimals, automatically parsing and converting matched text.
 
-**Code**:
-
 ```typescript
-// File: step-definitions/calculator.steps.ts
+// File: step-definitions/calculator.steps.ts  // => File: step-definitions/calculator.steps.ts
 import { Given, When, Then } from "@cucumber/cucumber";
+// => Import: cucumber module
 import { expect } from "chai";
+// => Import: chai module
 
 let calculator: { add: (a: number, b: number) => number };
 // => State: Calculator instance
-let result: number; // => State: Calculation result
+// => State: modified in current scope
+let result: number;
+// => State: Calculation result
 
 Given("I have a calculator", function () {
   // => Given: Initialize calculator
   calculator = {
-    add: (a: number, b: number) => a + b, // => Function: Simple addition
+    // => Assign: calculator updated
+    add: (a: number, b: number) => a + b,
+    // => Function: Simple addition
     // => Returns: Sum of two numbers
   };
+  // => Execute: Statement runs
 });
+// => End: function/callback
 
 When("I add {int} and {int}", function (a: number, b: number) {
   // => When: {int} captures unquoted integers
   // => Automatically converts to number type
   // => Example: "I add 5 and 3" → a=5, b=3
-  result = calculator.add(a, b); // => Action: Call add function
+  result = calculator.add(a, b);
+  // => Action: Call add function
   // => result: 8 (if a=5, b=3)
 });
+// => End: function/callback
 
 Then("the result should be {int}", function (expected: number) {
   // => Then: {int} captures expected value
-  expect(result).to.equal(expected); // => Assertion: Verify result
+  expect(result).to.equal(expected);
+  // => Assertion: Verify result
   // => Output: Test passes (result === 8)
 });
+// => End: function/callback
 
-// Float example
+// => Float example
 When("I add {float} and {float}", function (a: number, b: number) {
   // => When: {float} captures decimal numbers
   // => Example: "I add 1.5 and 2.3" → a=1.5, b=2.3
-  result = calculator.add(a, b); // => Action: Add decimals
+  result = calculator.add(a, b);
+  // => Action: Add decimals
   // => result: 3.8
 });
+// => End: function/callback
 ```
 
 **Key Takeaway**: Cucumber Expressions provide type-safe parameter extraction - `{string}` for quoted text, `{int}` for integers, `{float}` for decimals - with automatic type conversion in step definitions.
@@ -453,57 +622,83 @@ When("I add {float} and {float}", function (a: number, b: number) {
 
 Steps can capture multiple parameters of different types, enabling rich parameterization without verbose step text.
 
-**Code**:
-
 ```typescript
-// File: step-definitions/user.steps.ts
+// File: step-definitions/user.steps.ts  // => File: step-definitions/user.steps.ts
 import { Given, When, Then } from "@cucumber/cucumber";
+// => Import: cucumber module
 import { expect } from "chai";
+// => Import: chai module
 
 interface User {
+  // => Type: User defines data structure
   username: string;
+  // => Property: username value
   email: string;
+  // => Property: email value
   age: number;
+  // => Property: age value
 }
+// => End: block
+// => State: modified in current scope
 
-let users: User[] = []; // => State: User database
-let createdUser: User; // => State: Last created user
+let users: User[] = [];
+// => State: User database
+let createdUser: User;
+// => State: Last created user
 
 Given(
+  // => Call: Given()
   "a user with username {string}, email {string}, and age {int}",
+  // => Execute: statement runs
+  // => State: modified in current scope
   function (username: string, email: string, age: number) {
     // => Given: Multiple parameters in one step
     // => {string}, {string}, {int}: Three parameters
     // => Example: "alice", "alice@example.com", 25
-    createdUser = { username, email, age }; // => Object: Create user object
-    users.push(createdUser); // => Storage: Add to user database
+    createdUser = { username, email, age };
+    // => Object: Create user object
+    users.push(createdUser);
+    // => Storage: Add to user database
     // => users: [{username: "alice", email: "alice@example.com", age: 25}]
+    // => State: modified in current scope
   },
+  // => End: Object property
+  // => State: modified in current scope
 );
 
 Then("the user should have username {string}", function (expected: string) {
   // => Then: Verify username
+  // => Closure: captures outer scope
   expect(createdUser.username).to.equal(expected);
   // => Assertion: Username matches
   // => Output: Test passes (username === "alice")
 });
+// => End: function/callback
+// => State: modified in current scope
 
 Then("the user database should contain {int} users", function (count: number) {
   // => Then: Verify count
-  expect(users).to.have.length(count); // => Assertion: Database size
+  // => Closure: captures outer scope
+  expect(users).to.have.length(count);
+  // => Assertion: Database size
   // => Output: users.length === 1
+  // => Test: failure throws AssertionError
 });
+// => End: function/callback
 ```
 
 **Gherkin usage**:
 
 ```gherkin
 Scenario: Create user with details
+  # => Scenario: Single test case for Create user with details
   Given a user with username "alice", email "alice@example.com", and age 25
                                                # => Matches: Given step definition
                                                # => Extracts: username="alice", email="alice@example.com", age=25
   Then the user should have username "alice"
+    # => Then: Asserts expected outcome
   And the user database should contain 1 users
+    # => And: Continues previous step type
 ```
 
 **Key Takeaway**: Combine multiple parameter types ({string}, {int}, {float}) in one step for concise, readable scenarios that capture complex data without data tables.
@@ -514,53 +709,76 @@ Scenario: Create user with details
 
 Step definitions receive data tables as DataTable objects with methods to transform rows into arrays of objects or key-value pairs.
 
-**Code**:
-
 ```typescript
 // File: step-definitions/users.steps.ts
+// => File: step-definitions/users.steps.ts
+// => State: modified in current scope
 import { Given, Then, DataTable } from "@cucumber/cucumber";
 // => Import: DataTable type for table parameters
+// => State: modified in current scope
 import { expect } from "chai";
+// => Import: chai module
 
 interface User {
+  // => Type: User defines data structure
   username: string;
+  // => Property: username value
   email: string;
+  // => Property: email value
   role: string;
+  // => Property: role value
 }
+// => End: block
+// => State: modified in current scope
 
-let users: User[] = []; // => State: User storage
+let users: User[] = [];
+// => State: User storage
 
 Given("the following users exist:", function (dataTable: DataTable) {
   // => Given: Receives DataTable object
   // => dataTable: Table rows from Gherkin
-  const rows = dataTable.hashes(); // => Method: Converts table to array of objects
+  const rows = dataTable.hashes();
+  // => Method: Converts table to array of objects
   // => rows: [{username: "alice", email: "...", role: "admin"}, ...]
   // => First row is header, remaining rows are data
 
   users = rows.map((row) => ({
     // => Transform: Map rows to User objects
-    username: row.username, // => Extract: username column
-    email: row.email, // => Extract: email column
-    role: row.role, // => Extract: role column
+    // => State: modified in current scope
+    username: row.username,
+    // => Extract: username column
+    email: row.email,
+    // => Extract: email column
+    role: row.role,
+    // => Extract: role column
   }));
   // => users: Array of User objects
   // => Output: 3 users created
 });
+// => End: function/callback
+// => State: modified in current scope
 
 Then("I should see {int} users", function (count: number) {
   // => Then: Verify count
-  expect(users).to.have.length(count); // => Assertion: Database size
+  // => Closure: captures outer scope
+  expect(users).to.have.length(count);
+  // => Assertion: Database size
   // => Output: users.length === 3
+  // => Test: failure throws AssertionError
 });
+// => End: function/callback
 
 Then("user {string} should have role {string}", function (username: string, role: string) {
   // => Then: Find and verify user role
   const user = users.find((u) => u.username === username);
   // => Find: Locate user by username
-  expect(user).to.exist; // => Assertion: User exists
-  expect(user!.role).to.equal(role); // => Assertion: Role matches
+  expect(user).to.exist;
+  // => Assertion: User exists
+  expect(user!.role).to.equal(role);
+  // => Assertion: Role matches
   // => Output: alice.role === "admin"
 });
+// => End: function/callback
 ```
 
 **Key Takeaway**: DataTable.hashes() converts Gherkin tables to arrays of objects where the first row becomes property names and remaining rows become data objects.
@@ -571,62 +789,104 @@ Then("user {string} should have role {string}", function (username: string, role
 
 Hooks run code at specific points in the test lifecycle. Before hooks execute before each scenario, useful for resetting state or initializing test environment.
 
-**Code**:
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A[Cucumber Runner] --> B[Before Hook]
+    B --> C[Scenario Steps]
+    C --> D[After Hook]
+    D --> E{More Scenarios?}
+    E -->|Yes| B
+    E -->|No| F[Test Suite Complete]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#fff
+    style F fill:#0173B2,stroke:#000,color:#fff
+```
 
 ```typescript
 // File: step-definitions/hooks.ts
+// => File: step-definitions/hooks.ts
+// => State: modified in current scope
 import { Before, After, Status } from "@cucumber/cucumber";
 // => Import: Hook decorators and Status enum
+// => State: modified in current scope
 
 let testDatabase: { users: any[]; orders: any[] };
 // => State: Test database
+// => State: modified in current scope
 
 Before(function () {
   // => Before: Runs before EACH scenario
   // => Executes: After Background, before first step
   console.log("🔄 Setting up test database...");
   // => Output: "🔄 Setting up test database..."
+  // => State: modified in current scope
 
   testDatabase = {
-    users: [], // => Initialize: Empty users array
-    orders: [], // => Initialize: Empty orders array
+    // => Execute: Statement runs
+    users: [],
+    // => Initialize: Empty users array
+    orders: [],
+    // => Initialize: Empty orders array
   };
   // => testDatabase: Fresh state for each scenario
   // => Ensures: Scenarios don't share state
 });
+// => End: function/callback
+// => State: modified in current scope
 
 Before({ tags: "@database" }, function () {
   // => Before: Conditional hook for @database tag
   // => Runs: Only for scenarios tagged with @database
   console.log("📊 Seeding database with test data...");
   // => Output: "📊 Seeding database with test data..."
+  // => State: modified in current scope
 
   testDatabase.users.push({
+    // => Execute: Statement runs
     id: 1,
+    // => Property: id value
     username: "testuser",
+    // => Execute: Statement runs
     email: "test@example.com",
+    // => Execute: statement runs
   });
   // => Seed: Add default test user
   // => Only for: @database tagged scenarios
 });
+// => End: function/callback
 ```
 
 **Gherkin usage**:
 
 ```gherkin
 Scenario: Create user
+  # => Scenario: Single test case for Create user
   # Before hook runs here → testDatabase = {users: [], orders: []}
   Given I have a user registration form
+    # => Given: Establishes precondition
   When I submit the form with valid data
+    # => When: Performs action
   Then a user should be created
+    # => Then: Asserts expected outcome
 
 @database
 Scenario: Query existing users
+  # => Scenario: Single test case for Query existing users
   # Before hook runs here → testDatabase = {users: [], orders: []}
   # Tagged Before hook runs here → adds testuser to database
   Given the database contains users
+    # => Given: Establishes precondition
   When I query all users
+    # => When: Performs action
   Then I should see "testuser"
+    # => Then: Asserts expected outcome
 ```
 
 **Key Takeaway**: Before hooks run before each scenario (not once per feature), with optional tag filtering to execute conditionally for specific scenario types.
@@ -637,11 +897,11 @@ Scenario: Query existing users
 
 After hooks execute after each scenario, useful for cleanup, logging test results, or capturing screenshots on failure.
 
-**Code**:
-
 ```typescript
 // File: step-definitions/hooks.ts
+// => File: step-definitions/hooks.ts
 import { After, Status, ITestCaseHookParameter } from "@cucumber/cucumber";
+// => Import: cucumber module
 
 After(function (this: ITestCaseHookParameter) {
   // => After: Runs after EACH scenario
@@ -654,6 +914,7 @@ After(function (this: ITestCaseHookParameter) {
   // => Output: PASSED or FAILED
   // => result.status: Execution outcome
 });
+// => End: function/callback
 
 After(function (this: ITestCaseHookParameter) {
   // => After: Cleanup hook
@@ -662,24 +923,27 @@ After(function (this: ITestCaseHookParameter) {
     console.log("❌ Test failed! Capturing diagnostic info...");
     // => Output: Failure notification
 
-    // Capture screenshot (example with Playwright)
-    // await this.page.screenshot({ path: 'failure.png' });
+    // => Capture screenshot (example with Playwright)
+    // => await this.page.screenshot({ path: 'failure.png' });
     // => Screenshot: Saved to failure.png
 
-    // Log error details
+    // => Log error details
     console.log(`Error: ${this.result.message}`);
     // => Output: Error message from assertion
   }
+  // => End: block
 });
+// => End: function/callback
 
 After({ tags: "@browser" }, function (this: ITestCaseHookParameter) {
   // => After: Conditional cleanup for @browser tag
   console.log("🔧 Closing browser session...");
   // => Output: Browser cleanup notification
-  // await this.browser.close();
+  // => await this.browser.close();
   // => Cleanup: Close browser instance
   // => Only for: @browser tagged scenarios
 });
+// => End: function/callback
 ```
 
 **Key Takeaway**: After hooks run after each scenario with access to scenario result (Status.PASSED/FAILED), enabling conditional cleanup and failure diagnostics.
@@ -690,77 +954,139 @@ After({ tags: "@browser" }, function (this: ITestCaseHookParameter) {
 
 The World object provides shared context across steps in a scenario. Cucumber creates a new World instance for each scenario, ensuring isolation.
 
-**Code**:
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A[Cucumber Creates World] --> B[Given Step: Sets World.testUser]
+    B --> C[When Step: Reads World.testUser]
+    C --> D[Then Step: Reads World.apiResponse]
+    D --> E[Scenario Ends: World Destroyed]
+    E --> F[New World for Next Scenario]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#CC78BC,stroke:#000,color:#000
+    style F fill:#0173B2,stroke:#000,color:#fff
+```
 
 ```typescript
 // File: support/world.ts
+// => File: support/world.ts
+// => State: modified in current scope
 import { World, IWorldOptions, setWorldConstructor } from "@cucumber/cucumber";
 // => Import: World base class and constructor setter
+// => State: modified in current scope
 
 export interface CustomWorld extends World {
-  // Custom properties for test context
+  // => Execute: Statement runs
+  // => Custom properties for test context
+  // => State: modified in current scope
   testUser?: {
     // => Property: User data
+    // => State: modified in current scope
     username: string;
+    // => Property: username value
     email: string;
+    // => Property: email value
     token?: string;
+    // => Execute: Statement runs
   };
-  apiResponse?: any; // => Property: HTTP response
-  calculatorResult?: number; // => Property: Calculation result
+  // => Execute: Statement runs
+  apiResponse?: any;
+  // => Property: HTTP response
+  calculatorResult?: number;
+  // => Property: Calculation result
 }
+// => End: block
+// => State: modified in current scope
 
 export class CustomWorldImpl extends World implements CustomWorld {
   // => Class: Custom World implementation
+  // => State: modified in current scope
   testUser?: { username: string; email: string; token?: string };
+  // => Execute: Statement runs
   apiResponse?: any;
+  // => Execute: Statement runs
   calculatorResult?: number;
+  // => Execute: Statement runs
 
   constructor(options: IWorldOptions) {
-    super(options); // => Super: Call base World constructor
+    // => Call: constructor()
+    // => State: modified in current scope
+    super(options);
+    // => Super: Call base World constructor
     // => Initializes: Cucumber context
+    // => State: modified in current scope
   }
+  // => End: block
+  // => State: modified in current scope
 }
+// => End: block
+// => State: modified in current scope
 
-setWorldConstructor(CustomWorldImpl); // => Registration: Set custom World class
+setWorldConstructor(CustomWorldImpl);
+// => Registration: Set custom World class
 // => Cucumber: Uses CustomWorldImpl for scenarios
+// => State: modified in current scope
 ```
 
 **Using World in steps**:
 
 ```typescript
-// File: step-definitions/auth.steps.ts
+// File: step-definitions/auth.steps.ts  // => File: step-definitions/auth.steps.ts
 import { Given, When, Then } from "@cucumber/cucumber";
+// => Import: cucumber module
 import { CustomWorld } from "../support/world";
+// => Import: world module
 import { expect } from "chai";
+// => Import: chai module
 
 Given("a user named {string}", function (this: CustomWorld, username: string) {
   // => this: CustomWorld instance for scenario
+  // => Closure: captures outer scope
   this.testUser = {
     // => Property: Store user in World
+    // => State: modified in current scope
     username,
+    // => Execute: Statement runs
     email: `${username}@example.com`,
+    // => Execute: statement runs
+    // => State: modified in current scope
   };
   // => this.testUser: {username: "alice", email: "alice@example.com"}
+  // => State: modified in current scope
 });
+// => End: function/callback
 
 When("the user logs in", async function (this: CustomWorld) {
   // => this: Same World instance as Given step
   const response = await login(this.testUser!.username, "password");
   // => HTTP: Simulated login API call
-  this.testUser!.token = response.token; // => Property: Store token in World
+  this.testUser!.token = response.token;
+  // => Property: Store token in World
   // => this.testUser.token: "jwt-token-abc123"
 });
+// => End: function/callback
 
 Then("the user should have an auth token", function (this: CustomWorld) {
   // => this: Same World instance again
-  expect(this.testUser!.token).to.exist; // => Assertion: Token exists
+  expect(this.testUser!.token).to.exist;
+  // => Assertion: Token exists
   // => Output: Test passes (token stored from When step)
 });
+// => End: function/callback
 
-// Simulated login function
+// => Simulated login function  // => Note: Simulated login function
 async function login(username: string, password: string) {
-  return { token: "jwt-token-abc123" }; // => Mock: Return fake token
+  // => Execute: Statement runs
+  return { token: "jwt-token-abc123" };
+  // => Mock: Return fake token
 }
+// => End: block
 ```
 
 **Key Takeaway**: World provides scenario-scoped context - each scenario gets a fresh World instance, enabling state sharing across steps while ensuring isolation between scenarios.
@@ -771,49 +1097,73 @@ async function login(username: string, password: string) {
 
 Custom parameter types extend Cucumber expressions beyond built-in types ({string}, {int}), enabling domain-specific parameter matching and parsing.
 
-**Code**:
-
 ```typescript
 // File: support/parameter-types.ts
+// => File: support/parameter-types.ts
+// => State: modified in current scope
 import { defineParameterType } from "@cucumber/cucumber";
 // => Import: Parameter type definition function
+// => State: modified in current scope
 
-// Define custom {user} parameter type
+// => Define custom {user} parameter type  // => Note: Define custom {user} parameter type
 defineParameterType({
-  name: "user", // => Name: Use as {user} in step text
-  regexp: /[A-Z][a-z]+/, // => Pattern: Capitalized name (Alice, Bob, Charlie)
+  // => Call: defineParameterType()
+  name: "user",
+  // => Name: Use as {user} in step text
+  regexp: /[A-Z][a-z]+/,
+  // => Pattern: Capitalized name (Alice, Bob, Charlie)
   // => Matches: "Alice" but not "alice" or "ALICE"
+  // => State: modified in current scope
   transformer: (username: string) => ({
     // => Transformer: Converts matched text to object
+    // => State: modified in current scope
     username,
+    // => Execute: statement runs
+    // => State: modified in current scope
     email: `${username.toLowerCase()}@example.com`,
     // => Object: User with generated email
+    // => State: modified in current scope
   }),
+  // => Execute: statement runs
+  // => State: modified in current scope
 });
 // => Output: {user} matches "Alice" → {username: "Alice", email: "alice@example.com"}
 
-// Define custom {color} parameter type with enum
+// => Define custom {color} parameter type with enum
+// => Note: Define custom {color} parameter type with enum
 enum Color {
+  // => Execute: Statement runs
   RED = "red",
+  // => Assign: Value stored
   BLUE = "blue",
+  // => Assign: Value stored
   GREEN = "green",
+  // => Assign: Value stored
 }
+// => End: block
 
 defineParameterType({
-  name: "color", // => Name: Use as {color} in step text
-  regexp: /red|blue|green/, // => Pattern: One of three colors
+  // => Call: defineParameterType()
+  name: "color",
+  // => Name: Use as {color} in step text
+  regexp: /red|blue|green/,
+  // => Pattern: One of three colors
   transformer: (colorName: string) => Color[colorName.toUpperCase() as keyof typeof Color],
   // => Transformer: Convert to enum value
   // => Output: "red" → Color.RED
 });
+// => End: function/callback
 ```
 
 **Using custom parameter types in steps**:
 
 ```typescript
 // File: step-definitions/custom-params.steps.ts
+// => File: step-definitions/custom-params.steps.ts
 import { Given, When, Then } from "@cucumber/cucumber";
+// => Import: cucumber module
 import { expect } from "chai";
+// => Import: chai module
 
 Given("{user} is logged in", function (user: { username: string; email: string }) {
   // => Given: {user} parameter automatically parsed
@@ -821,23 +1171,28 @@ Given("{user} is logged in", function (user: { username: string; email: string }
   console.log(`User: ${user.username}, Email: ${user.email}`);
   // => Output: "User: Alice, Email: alice@example.com"
 });
+// => End: function/callback
 
 When("I select {color} as the theme", function (color: Color) {
   // => When: {color} parameter parsed to enum
   // => Example: "I select blue as the theme" → color=Color.BLUE
-  console.log(`Selected color: ${color}`); // => Output: "Selected color: blue"
+  console.log(`Selected color: ${color}`);
+  // => Output: "Selected color: blue"
   expect(color).to.be.oneOf([Color.RED, Color.BLUE, Color.GREEN]);
   // => Assertion: Color is valid enum value
 });
+// => End: function/callback
 ```
 
 **Gherkin usage**:
 
 ```gherkin
 Scenario: User with generated email
-  Given Alice is logged in                     # => {user} matches "Alice"
+  Given Alice is logged in
+    # => {user} matches "Alice"
                                                # => Transformed to: {username: "Alice", email: "alice@example.com"}
-  When I select blue as the theme              # => {color} matches "blue"
+  When I select blue as the theme
+    # => {color} matches "blue"
                                                # => Transformed to: Color.BLUE
 ```
 
@@ -848,8 +1203,6 @@ Scenario: User with generated email
 ### Example 18: Pending Steps - Work in Progress
 
 Pending steps act as placeholders for unimplemented functionality, allowing you to write scenarios before implementation exists.
-
-**Code**:
 
 ```typescript
 // File: step-definitions/payment.steps.ts
@@ -872,6 +1225,7 @@ Given("I have a valid credit card", function () {
   // => State: Credit card stored in World.creditCard
   // => Result: Step passes (implemented)
 });
+// => End: function/callback
 
 When("I submit payment for ${int}", function (amount: number) {
   // => When: Action step - submit payment
@@ -882,6 +1236,7 @@ When("I submit payment for ${int}", function (amount: number) {
   // => Example: amount=100 → World.paymentAmount = 100
   // => Result: Step passes (implemented)
 });
+// => End: function/callback
 
 Then("the payment should be processed", function () {
   // => Then: Assertion step - NOT YET IMPLEMENTED
@@ -892,6 +1247,7 @@ Then("the payment should be processed", function () {
   // => Output: "P" (pending) in test results
   // => Effect: Test stops here, remaining steps skipped
 });
+// => End: function/callback
 
 Then("the payment confirmation should include transaction ID", function () {
   // => Then: Assertion step - NOT YET IMPLEMENTED
@@ -901,6 +1257,7 @@ Then("the payment confirmation should include transaction ID", function () {
   // => Cucumber: Marks this step as pending too
   // => Output: "-" (skipped) if previous step pending
 });
+// => End: function/callback
 ```
 
 **Alternative: Using pending() helper**:
@@ -917,6 +1274,7 @@ Then("the payment should be processed", function () {
   // => Same result: Marks step as pending
   // => Benefit: More explicit than return "pending"
 });
+// => End: function/callback
 ```
 
 **Gherkin output**:
@@ -945,25 +1303,30 @@ Scenario: Process credit card payment
 
 **Why It Matters**: Pending steps enable specification-first development where business analysts write scenarios before developers implement features. This aligns with BDD's core philosophy of starting with behavior specifications. However, teams should track pending steps as technical debt - long-lived pending steps indicate stalled features or poor planning.
 
+## Testing Patterns
+
 ### Example 19: Step Definition Patterns - Optional Text
 
 Cucumber expressions support optional text using parentheses, enabling one step definition to match multiple Gherkin variations.
 
-**Code**:
-
 ```typescript
-// File: step-definitions/items.steps.ts
+// File: step-definitions/items.steps.ts  // => File: step-definitions/items.steps.ts
 import { Given, When, Then } from "@cucumber/cucumber";
+// => Import: cucumber module
 import { expect } from "chai";
+// => Import: chai module
 
 let items: string[] = [];
+// => Declare: items typed variable
 
 Given("I have (a )cart", function () {
   // => Given: "(a )" is optional
   // => Matches: "I have cart" OR "I have a cart"
-  items = []; // => State: Initialize empty cart
+  items = [];
+  // => State: Initialize empty cart
   // => Output: items = []
 });
+// => End: function/callback
 
 When("I add (an )item {string}( to the cart)", function (item: string) {
   // => When: "(an )" and "( to the cart)" optional
@@ -972,30 +1335,42 @@ When("I add (an )item {string}( to the cart)", function (item: string) {
   // => - "I add an item 'Laptop'"
   // => - "I add item 'Laptop' to the cart"
   // => - "I add an item 'Laptop' to the cart"
-  items.push(item); // => Action: Add item to cart
+  items.push(item);
+  // => Action: Add item to cart
   // => items: ["Laptop"]
 });
+// => End: function/callback
 
 Then("the cart should contain {int} item(s)", function (count: number) {
   // => Then: "(s)" is optional
   // => Matches: "1 item" OR "2 items"
-  expect(items).to.have.length(count); // => Assertion: Verify count
+  expect(items).to.have.length(count);
+  // => Assertion: Verify count
   // => Output: items.length === 1
 });
+// => End: function/callback
 ```
 
 **Gherkin usage - all variations match**:
 
 ```gherkin
 Scenario: Cart operations with optional words
+  # => Scenario: Single test case for Cart operations with optional
   Given I have cart                            # Matches: "(a )" omitted
+    # => Given: Establishes precondition
   When I add item "Laptop"                     # Matches: "(an )" and "( to the cart)" omitted
+    # => When: Performs action
   Then the cart should contain 1 item          # Matches: "(s)" omitted
+    # => Then: Asserts expected outcome
 
 Scenario: Cart operations with full words
+  # => Scenario: Single test case for Cart operations with full word
   Given I have a cart                          # Matches: "(a )" included
+    # => Given: Establishes precondition
   When I add an item "Mouse" to the cart       # Matches: all optional parts included
+    # => When: Performs action
   Then the cart should contain 1 item          # Matches: "(s)" omitted
+    # => Then: Asserts expected outcome
 ```
 
 **Key Takeaway**: Wrap optional text in parentheses to make one step definition match multiple Gherkin phrasings, improving step reuse and natural language flexibility.
@@ -1006,23 +1381,26 @@ Scenario: Cart operations with full words
 
 Cucumber expressions support alternatives using "/" to create one step definition matching multiple distinct phrasings.
 
-**Code**:
-
 ```typescript
-// File: step-definitions/actions.steps.ts
+// File: step-definitions/actions.steps.ts  // => File: step-definitions/actions.steps.ts
 import { When, Then } from "@cucumber/cucumber";
+// => Import: cucumber module
 import { expect } from "chai";
+// => Import: chai module
 
 let actionPerformed: string;
+// => Declare: actionPerformed typed variable
 
 When("I click/press/tap the {string} button", function (buttonName: string) {
   // => When: "/" separates alternatives
   // => Matches: "I click the 'Submit' button"
   // => Matches: "I press the 'Submit' button"
   // => Matches: "I tap the 'Submit' button"
-  actionPerformed = `${buttonName} clicked`; // => State: Record action
+  actionPerformed = `${buttonName} clicked`;
+  // => State: Record action
   // => actionPerformed: "Submit clicked"
 });
+// => End: function/callback
 
 Then("I should see/receive/get a success message", function () {
   // => Then: Multiple alternatives
@@ -1032,30 +1410,42 @@ Then("I should see/receive/get a success message", function () {
   expect(actionPerformed).to.include("clicked");
   // => Assertion: Verify action occurred
 });
+// => End: function/callback
 
 When("I log in/log out", function () {
   // => When: Two-word alternatives
   // => Matches: "I log in"
   // => Matches: "I log out"
   // => Note: "in" vs "out" creates different meanings
-  actionPerformed = "auth action"; // => State: Generic action tracking
+  actionPerformed = "auth action";
+  // => State: Generic action tracking
 });
+// => End: function/callback
 ```
 
 **Gherkin usage - all variations match**:
 
 ```gherkin
 Scenario: Using different action verbs
+  # => Scenario: Single test case for Using different action verbs
   When I click the "Submit" button             # Matches: "click" alternative
+    # => When: Performs action
   Then I should see a success message          # Matches: "see" alternative
+    # => Then: Asserts expected outcome
 
 Scenario: Different verb choices
+  # => Scenario: Single test case for Different verb choices
   When I press the "Cancel" button             # Matches: "press" alternative
+    # => When: Performs action
   Then I should receive a success message      # Matches: "receive" alternative
+    # => Then: Asserts expected outcome
 
 Scenario: Touch interface
+  # => Scenario: Single test case for Touch interface
   When I tap the "Confirm" button              # Matches: "tap" alternative
+    # => When: Performs action
   Then I should get a success message          # Matches: "get" alternative
+    # => Then: Asserts expected outcome
 ```
 
 **Key Takeaway**: Use "/" to create alternatives in Cucumber expressions, enabling synonyms (click/press/tap) to match one step definition without duplication.
@@ -1066,60 +1456,93 @@ Scenario: Touch interface
 
 BDD step definitions often interact with async APIs, databases, or HTTP clients. Use async/await for clean asynchronous step implementations.
 
-**Code**:
+> **Note**: This example uses the built-in Node.js 18+ `fetch` API (no installation needed). The `Given` step below requires a local server at `http://localhost:3000` - in real tests you would start this server in a `BeforeAll` hook or use a mock server library.
 
 ```typescript
 // File: step-definitions/api.steps.ts
-import { Given, When, Then } from "@cucumber/cucumber";
+// => File: step-definitions/api.steps.ts
+import { Given, When, Then, DataTable } from "@cucumber/cucumber";
+// => Import: Cucumber step decorators and DataTable type
 import { expect } from "chai";
-import axios from "axios";
+// => Import: Assertion library
 
-let apiResponse: any;
+let apiResponse: { status: number; data: any };
+// => State: Shared API response across steps
 
 Given("the API server is running", async function () {
   // => async: Enables await for async operations
-  const response = await axios.get("http://localhost:3000/health");
-  // => await: Wait for HTTP request to complete
-  // => response: {status: 200, data: {status: "ok"}}
-  expect(response.status).to.equal(200); // => Assertion: Server is healthy
-  // => Output: Test passes if server responds
+  // => Note: Requires server at http://localhost:3000 (start in BeforeAll hook)
+  const response = await fetch("http://localhost:3000/health");
+  // => await: Wait for HTTP request to complete (Node.js 18+ built-in fetch)
+  // => response: Response object with status and body
+  expect(response.status).to.equal(200);
+  // => Assertion: Server is healthy
+  // => Output: Test passes if server responds with 200
 });
+// => End: function/callback
 
 When("I send a POST request to {string} with:", async function (endpoint: string, dataTable: DataTable) {
   // => async: HTTP request is asynchronous
-  const payload = dataTable.rowsHash(); // => Transform: Table to key-value object
+  const payload = dataTable.rowsHash();
+  // => Transform: Table rows to key-value object
   // => payload: {username: "alice", email: "alice@example.com"}
 
-  apiResponse = await axios.post(`http://localhost:3000${endpoint}`, payload);
-  // => await: Wait for POST to complete
+  const response = await fetch(`http://localhost:3000${endpoint}`, {
+    // => Declare: response variable
+    method: "POST",
+    // => Method: POST request
+    headers: { "Content-Type": "application/json" },
+    // => Headers: Tell server we're sending JSON
+    body: JSON.stringify(payload),
+    // => Body: Serialize payload to JSON string
+  });
+  // => await: Wait for POST to complete (native fetch - no npm install needed)
+  apiResponse = {
+    // => Execute: Statement runs
+    status: response.status,
+    // => status: HTTP status code (e.g., 201)
+    data: await response.json(),
+    // => data: Parsed JSON response body
+    // => await: Parse response body as JSON
+  };
   // => apiResponse: {status: 201, data: {id: 1, username: "alice"}}
 });
+// => End: function/callback
 
 Then("the response status should be {int}", async function (expectedStatus: number) {
-  // => async: Even assertions can be async
+  // => async: Consistent async pattern across steps
   expect(apiResponse.status).to.equal(expectedStatus);
-  // => Assertion: Status code matches
+  // => Assertion: Status code matches expected
   // => Output: Test passes (status === 201)
 });
+// => End: function/callback
 
 Then("the response should contain {string}", async function (expectedField: string) {
-  // => async: Consistent async pattern
+  // => async: Consistent async step signature
   expect(apiResponse.data).to.have.property(expectedField);
-  // => Assertion: Field exists in response
+  // => Assertion: Field exists in parsed response body
   // => Output: response.data has "id" property
 });
+// => End: function/callback
 ```
 
 **Gherkin usage**:
 
 ```gherkin
 Scenario: Create user via API
+  # => Scenario: Single test case for Create user via API
   Given the API server is running
+    # => Given: Establishes precondition
   When I send a POST request to "/users" with:
+    # => When: Performs action
     | username | alice            |
+      # => Table: Column headers username | alice
     | email    | alice@example.com|
+      # => Table: Column headers email | alice@example.com
   Then the response status should be 201
+    # => Then: Asserts expected outcome
   And the response should contain "id"
+    # => And: Continues previous step type
 ```
 
 **Key Takeaway**: Use async/await in step definitions for asynchronous operations - Cucumber handles promises automatically, failing the step if promise rejects.
@@ -1133,50 +1556,80 @@ Cucumber supports automatic retry of failed scenarios to handle flaky tests from
 **Configuration (cucumber.js)**:
 
 ```javascript
-// File: cucumber.js
+// File: cucumber.js  // => File: cucumber.js
 module.exports = {
+  // => Execute: Statement runs
   default: {
-    retry: 2, // => Retry: Run failed scenarios up to 2 more times
+    // => Execute: statement runs
+    // => State: modified in current scope
+    retry: 2,
+    // => Retry: Run failed scenarios up to 2 more times
     // => Total attempts: 1 initial + 2 retries = 3 max
-    retryTagFilter: "@flaky", // => Filter: Only retry scenarios tagged @flaky
+    // => State: modified in current scope
+    retryTagFilter: "@flaky",
+    // => Filter: Only retry scenarios tagged @flaky
     // => Untagged scenarios: No retry on failure
+    // => State: modified in current scope
     publishQuiet: true,
+    // => Property: publishQuiet value
   },
+  // => End: Object property
+  // => State: modified in current scope
 };
+// => Execute: Statement runs
 ```
 
 **Code (flaky test example)**:
 
 ```typescript
-// File: step-definitions/flaky.steps.ts
+// File: step-definitions/flaky.steps.ts  // => File: step-definitions/flaky.steps.ts
 import { Given, When, Then } from "@cucumber/cucumber";
+// => Import: cucumber module
 import { expect } from "chai";
+// => Import: chai module
 
 let attemptCount = 0;
+// => Declare: attemptCount variable
 
 Given("a flaky external API", function () {
   // => Given: Simulated unreliable service
+  // => Closure: captures outer scope
   console.log("Setting up flaky API mock...");
+  // => Log: Output to console
 });
+// => End: function/callback
+// => State: modified in current scope
 
 When("I call the API endpoint", async function () {
   // => When: Simulated API call with random failures
-  attemptCount++; // => Counter: Track retry attempts
-  console.log(`Attempt ${attemptCount}...`); // => Output: "Attempt 1...", "Attempt 2...", etc.
+  // => Closure: captures outer scope
+  attemptCount++;
+  // => Counter: Track retry attempts
+  console.log(`Attempt ${attemptCount}...`);
+  // => Output: "Attempt 1...", "Attempt 2...", etc.
 
-  // Simulate 60% failure rate
+  // => Simulate 60% failure rate  // => Note: Simulate 60% failure rate
   if (Math.random() < 0.6) {
-    throw new Error("API timeout"); // => Error: Random failure
+    // => Check: evaluates condition
+    // => State: modified in current scope
+    throw new Error("API timeout");
+    // => Error: Random failure
     // => Cucumber: Will retry if @flaky tagged
+    // => Instance: object allocated
   }
   // => Success: 40% chance of passing
+  // => State: modified in current scope
 });
+// => End: function/callback
+// => State: modified in current scope
 
 Then("the response should be valid", function () {
   // => Then: Simple assertion
-  expect(attemptCount).to.be.greaterThan(0); // => Assertion: At least one attempt
+  expect(attemptCount).to.be.greaterThan(0);
+  // => Assertion: At least one attempt
   // => Output: Test passes after successful retry
 });
+// => End: function/callback
 ```
 
 **Gherkin usage**:
@@ -1184,14 +1637,22 @@ Then("the response should be valid", function () {
 ```gherkin
 @flaky
 Scenario: Call unreliable API
+  # => Scenario: Single test case for Call unreliable API
   Given a flaky external API
+    # => Given: Establishes precondition
   When I call the API endpoint              # May fail, will retry up to 2 times
+    # => When: Performs action
   Then the response should be valid         # Output: PASSED (after retries)
+    # => Then: Asserts expected outcome
 
 Scenario: Call stable API
+  # => Scenario: Single test case for Call stable API
   Given a stable API
+    # => Given: Establishes precondition
   When I call the API endpoint              # No @flaky tag, no retry on failure
+    # => When: Performs action
   Then the response should be valid
+    # => Then: Asserts expected outcome
 ```
 
 **Key Takeaway**: Configure retry count and tag filters to automatically rerun flaky scenarios without manual intervention, but use retries sparingly as they mask underlying test instability.
@@ -1201,8 +1662,6 @@ Scenario: Call stable API
 ### Example 23: Conditional Steps with Step Definitions
 
 Step definitions can conditionally execute different logic based on parameters or World state, enabling flexible behavior without scenario duplication.
-
-**Code**:
 
 ```typescript
 // File: step-definitions/conditional.steps.ts
@@ -1221,6 +1680,7 @@ interface User {
   permissions: string[];
   // => Field: Array of permission strings
 }
+// => End: block
 
 let currentUser: User;
 // => Variable: Global state storing current user
@@ -1273,6 +1733,7 @@ Given("I am logged in as {string}", function (role: string) {
   // => Output: currentUser assigned with role-specific permissions
   // => State: Global currentUser now contains User object
 });
+// => End: function/callback
 
 When("I attempt to {string} a resource", function (action: string) {
   // => When: Action step checking permission
@@ -1298,6 +1759,7 @@ When("I attempt to {string} a resource", function (action: string) {
   }
   // => State: Global actionResult now contains check result
 });
+// => End: function/callback
 
 Then("the action should {string}", function (expectedResult: string) {
   // => Then: Assertion step verifying result
@@ -1310,6 +1772,7 @@ Then("the action should {string}", function (expectedResult: string) {
   // => Fail: If values differ (test throws error)
   // => Output: Test passes when actionResult === expectedResult
 });
+// => End: function/callback
 ```
 
 **Gherkin usage**:
@@ -1422,6 +1885,7 @@ Given("a user named {string} exists", function (username: string) {
   // => State: Store user in World for step sharing
   // => Example: this.users["alice"] = { id: 1234567890, username: "alice" }
 });
+// => End: function/callback
 
 When("I log in as {string}", function (username: string) {
   // => When: Action step - performs login
@@ -1438,6 +1902,7 @@ When("I log in as {string}", function (username: string) {
   // => State: Generate authentication token
   // => Example: this.authToken = "token-1234567890"
 });
+// => End: function/callback
 
 Then("I should be logged in", function () {
   // => Then: Assertion step - verifies login state
@@ -1448,6 +1913,7 @@ Then("I should be logged in", function () {
     throw new Error("No user is logged in");
     // => Error: Fail test if not authenticated
   }
+  // => End: block
   if (!this.authToken) {
     // => Check: Verify auth token exists
     throw new Error("No auth token found");
@@ -1455,6 +1921,7 @@ Then("I should be logged in", function () {
   }
   // => Success: Test passes if both checks pass
 });
+// => End: function/callback
 ```
 
 **Used in multiple features**:
@@ -1465,6 +1932,7 @@ Then("I should be logged in", function () {
 Feature: User Authentication
   # => Scenario: Login flow
   Scenario: Successful login
+    # => Scenario: Single test case for Successful login
     Given a user named "alice" exists
     # => Step: Calls Given() from auth.steps.ts
     # => Creates: User "alice" in World.users
@@ -1480,6 +1948,7 @@ Feature: User Authentication
 Feature: Shopping Cart
   # => Scenario: Cart manipulation
   Scenario: Add item to cart
+    # => Scenario: Single test case for Add item to cart
     Given a user named "alice" exists
     # => Step: REUSES same Given() from auth.steps.ts
     # => Benefit: No duplicate step definition needed
@@ -1502,29 +1971,36 @@ Feature: Shopping Cart
 
 Chai provides BDD-style assertions (expect) that integrate naturally with Cucumber scenarios, making Then steps readable and expressive.
 
-**Code**:
-
 ```typescript
-// File: step-definitions/assertions.steps.ts
+// File: step-definitions/assertions.steps.ts  // => File: step-definitions/assertions.steps.ts
 import { Then } from "@cucumber/cucumber";
+// => Import: @cucumber/cucumber loaded
 import { expect } from "chai";
 // => Import: Chai BDD assertion library
 // => expect(): BDD-style assertion syntax
 
 let actualValue: any;
+// => Declare: actualValue typed variable
 let actualArray: any[];
+// => Declare: actualArray typed variable
 let actualObject: any;
+// => Declare: actualObject typed variable
 
-// Setup (from previous steps)
+// => Setup (from previous steps)  // => Note: Setup (from previous steps)
 actualValue = 42;
+// => Assign: Value stored
 actualArray = [1, 2, 3, 4, 5];
+// => Assign: Value stored
 actualObject = { username: "alice", age: 25 };
+// => Assign: Value stored
 
 Then("the value should be {int}", function (expected: number) {
   // => Then: Equality assertion
-  expect(actualValue).to.equal(expected); // => Assertion: Strict equality (===)
+  expect(actualValue).to.equal(expected);
+  // => Assertion: Strict equality (===)
   // => Output: Test passes (42 === 42)
 });
+// => End: function/callback
 
 Then("the value should be greater than {int}", function (threshold: number) {
   // => Then: Comparison assertion
@@ -1532,6 +2008,7 @@ Then("the value should be greater than {int}", function (threshold: number) {
   // => Assertion: actualValue > threshold
   // => Output: Test passes (42 > 10)
 });
+// => End: function/callback
 
 Then("the array should contain {int}", function (expectedItem: number) {
   // => Then: Array inclusion check
@@ -1539,6 +2016,7 @@ Then("the array should contain {int}", function (expectedItem: number) {
   // => Assertion: Array contains item
   // => Output: Test passes (array includes 3)
 });
+// => End: function/callback
 
 Then("the array length should be {int}", function (expectedLength: number) {
   // => Then: Collection size check
@@ -1546,6 +2024,7 @@ Then("the array length should be {int}", function (expectedLength: number) {
   // => Assertion: Array has specific length
   // => Output: Test passes (length === 5)
 });
+// => End: function/callback
 
 Then("the object should have property {string}", function (propertyName: string) {
   // => Then: Property existence check
@@ -1553,6 +2032,7 @@ Then("the object should have property {string}", function (propertyName: string)
   // => Assertion: Object has named property
   // => Output: Test passes (has "username")
 });
+// => End: function/callback
 
 Then("the username should be {string}", function (expectedUsername: string) {
   // => Then: Nested property value check
@@ -1560,10 +2040,12 @@ Then("the username should be {string}", function (expectedUsername: string) {
   // => Assertion: Property value matches
   // => Output: Test passes (username === "alice")
 });
+// => End: function/callback
 
 Then("the object should match:", function (dataTable: DataTable) {
   // => Then: Multiple property assertions
-  const expected = dataTable.rowsHash(); // => Transform: Table to key-value object
+  const expected = dataTable.rowsHash();
+  // => Transform: Table to key-value object
   // => expected: {username: "alice", age: "25"}
 
   expect(actualObject.username).to.equal(expected.username);
@@ -1572,28 +2054,44 @@ Then("the object should match:", function (dataTable: DataTable) {
   // => Assertion: Age matches (converted to number)
   // => Output: Both assertions pass
 });
+// => End: function/callback
 ```
 
 **Gherkin usage**:
 
 ```gherkin
 Scenario: Verify calculations
+  # => Scenario: Single test case for Verify calculations
   When I calculate the result
+    # => When: Performs action
   Then the value should be 42
+    # => Then: Asserts expected outcome
   And the value should be greater than 10
+    # => And: Continues previous step type
 
 Scenario: Verify array operations
+  # => Scenario: Single test case for Verify array operations
   When I process the array
+    # => When: Performs action
   Then the array should contain 3
+    # => Then: Asserts expected outcome
   And the array length should be 5
+    # => And: Continues previous step type
 
 Scenario: Verify object properties
+  # => Scenario: Single test case for Verify object properties
   When I retrieve the user
+    # => When: Performs action
   Then the object should have property "username"
+    # => Then: Asserts expected outcome
   And the username should be "alice"
+    # => And: Continues previous step type
   And the object should match:
+    # => And: Continues previous step type
     | username | alice |
+      # => Table: Column headers username | alice
     | age      | 25    |
+      # => Table: Column headers age | 25
 ```
 
 **Key Takeaway**: Chai's expect() syntax provides readable, chainable assertions (equal, greaterThan, include, have.property, have.length) that make Then steps self-documenting.
@@ -1604,59 +2102,91 @@ Scenario: Verify object properties
 
 BDD scenarios should verify error handling behavior, not just happy paths. Use assertions to check error messages, status codes, and error states.
 
-**Code**:
-
 ```typescript
-// File: step-definitions/errors.steps.ts
+// File: step-definitions/errors.steps.ts  // => File: step-definitions/errors.steps.ts
 import { When, Then } from "@cucumber/cucumber";
+// => Import: cucumber module
 import { expect } from "chai";
+// => Import: chai module
 
 let thrownError: Error | null = null;
+// => Declare: thrownError typed variable
 let apiResponse: { status: number; error?: string } | null = null;
+// => Declare: apiResponse typed variable
+// => State: modified in current scope
 
 When("I attempt to divide by zero", function () {
   // => When: Trigger error condition
+  // => Closure: captures outer scope
   try {
-    const result = 10 / 0; // => Math: Division by zero
+    // => Try: Attempt operation
+    const result = 10 / 0;
+    // => Math: Division by zero
     if (!isFinite(result)) {
+      // => Check: evaluates condition
+      // => State: modified in current scope
       throw new Error("Division by zero is not allowed");
       // => Error: Thrown for invalid operation
+      // => Instance: object allocated
     }
+    // => End: block
+    // => State: modified in current scope
   } catch (error) {
-    thrownError = error as Error; // => Capture: Store error for Then step
+    // => Execute: statement runs
+    // => State: modified in current scope
+    thrownError = error as Error;
+    // => Capture: Store error for Then step
     // => thrownError: Error object
+    // => State: modified in current scope
   }
+  // => End: block
+  // => State: modified in current scope
 });
+// => End: function/callback
+// => State: modified in current scope
 
 Then("I should see error {string}", function (expectedMessage: string) {
   // => Then: Verify error message
-  expect(thrownError).to.exist; // => Assertion: Error was thrown
+  // => Closure: captures outer scope
+  expect(thrownError).to.exist;
+  // => Assertion: Error was thrown
   expect(thrownError!.message).to.equal(expectedMessage);
   // => Assertion: Message matches exactly
   // => Output: Test passes (message === "Division by zero is not allowed")
 });
+// => End: function/callback
 
 When("I send invalid data to the API", async function () {
   // => When: API call with bad data
   try {
-    // Simulated API call
+    // => Try: Attempt operation
+    // => Simulated API call  // => Note: Simulated API call
     apiResponse = await apiCall({ invalid: "data" });
+    // => Assign: Value stored
   } catch (error) {
+    // => Execute: Statement runs
     apiResponse = {
+      // => Execute: Statement runs
       status: 400,
+      // => Property: status value
       error: "Invalid request data",
+      // => Execute: statement runs
     };
     // => Response: Error response captured
   }
+  // => End: block
 });
+// => End: function/callback
 
 Then("the API should return status {int}", function (expectedStatus: number) {
   // => Then: Verify HTTP status
-  expect(apiResponse).to.exist; // => Assertion: Response exists
+  expect(apiResponse).to.exist;
+  // => Assertion: Response exists
   expect(apiResponse!.status).to.equal(expectedStatus);
   // => Assertion: Status matches
   // => Output: Test passes (status === 400)
 });
+// => End: function/callback
 
 Then("the error message should contain {string}", function (expectedSubstring: string) {
   // => Then: Partial message match
@@ -1664,24 +2194,35 @@ Then("the error message should contain {string}", function (expectedSubstring: s
   // => Assertion: Error contains substring
   // => Output: Test passes (error includes "Invalid")
 });
+// => End: function/callback
 
-// Simulated API call
+// => Simulated API call  // => Note: Simulated API call
 async function apiCall(data: any) {
+  // => Execute: Statement runs
   return { status: 200, data: { success: true } };
+  // => Return: Function result
 }
+// => End: block
 ```
 
 **Gherkin usage**:
 
 ```gherkin
 Scenario: Handle division by zero
+  # => Scenario: Single test case for Handle division by zero
   When I attempt to divide by zero
+    # => When: Performs action
   Then I should see error "Division by zero is not allowed"
+    # => Then: Asserts expected outcome
 
 Scenario: API rejects invalid data
+  # => Scenario: Single test case for API rejects invalid data
   When I send invalid data to the API
+    # => When: Performs action
   Then the API should return status 400
+    # => Then: Asserts expected outcome
   And the error message should contain "Invalid"
+    # => And: Continues previous step type
 ```
 
 **Key Takeaway**: Test error paths as thoroughly as happy paths - verify error messages, status codes, and error states to ensure proper error handling behavior.
@@ -1692,12 +2233,36 @@ Scenario: API rejects invalid data
 
 Background runs before each scenario but is visible in Gherkin, while Before hooks are invisible code. Choose based on stakeholder visibility needs.
 
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A[Setup Needed] --> B{Stakeholder Visible?}
+    B -->|Yes - Business Rule| C[Use Background]
+    B -->|No - Technical Only| D[Use Before Hook]
+    C --> E[Visible in Feature File]
+    D --> F[Hidden in Step Definitions]
+    E --> G[Business Stakeholders Can Read]
+    F --> H[Developer Concern Only]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#CA9161,stroke:#000,color:#fff
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#DE8F05,stroke:#000,color:#000
+    style E fill:#029E73,stroke:#000,color:#fff
+    style F fill:#DE8F05,stroke:#000,color:#000
+    style G fill:#0173B2,stroke:#000,color:#fff
+    style H fill:#CC78BC,stroke:#000,color:#000
+```
+
 **Background - Visible in Feature File**:
 
 ```gherkin
 # File: features/shopping.feature
 # => Feature: Shopping cart scenarios
 Feature: Shopping Cart
+  # => Feature: Groups related scenarios for Shopping Cart
 
   Background:
   # => Background: Setup runs before EACH scenario in this feature
@@ -1762,6 +2327,7 @@ Before(function () {
   // => Hidden from: Business stakeholders in feature files
   // => Benefit: Tests are isolated and repeatable
 });
+// => End: function/callback
 
 Before({ tags: "@browser" }, function () {
   // => Before: Conditional hook (only for @browser scenarios)
@@ -1777,6 +2343,7 @@ Before({ tags: "@browser" }, function () {
   // => Performance: Only launches when needed (tag-based)
   // => Hidden from: Business analysts reviewing features
 });
+// => End: function/callback
 ```
 
 **When to Use Background**:
@@ -1809,7 +2376,7 @@ Feature: Bank Account
 **When to Use Before Hook**:
 
 ```typescript
-// Use Before hook when setup is technical implementation
+// => Use Before hook when setup is technical implementation
 // => Rule: Before hook for infrastructure stakeholders don't need
 Before(function () {
   // => Before: Technical setup hook
@@ -1830,6 +2397,7 @@ Before(function () {
   // => Stakeholders DON'T care about these details
   // => Reason: Pure infrastructure for test execution
 });
+// => End: function/callback
 ```
 
 **Key Decision Matrix**:
@@ -1851,22 +2419,56 @@ Before(function () {
 
 BDD follows a three-step workflow: Write feature → Implement steps → Refactor. This example shows the complete cycle for a simple calculator feature.
 
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A[Write Feature File] --> B[Run Cucumber]
+    B --> C{Steps Implemented?}
+    C -->|No - Pending| D[Implement Step Definitions]
+    D --> E[Run Cucumber Again]
+    E --> F{Tests Pass?}
+    F -->|No - Red| G[Fix Implementation]
+    G --> E
+    F -->|Yes - Green| H[Refactor Code]
+    H --> I[Run Cucumber Again]
+    I --> J[Done: Living Documentation]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#CA9161,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#DE8F05,stroke:#000,color:#000
+    style F fill:#CA9161,stroke:#000,color:#fff
+    style G fill:#CC78BC,stroke:#000,color:#000
+    style H fill:#029E73,stroke:#000,color:#fff
+    style I fill:#DE8F05,stroke:#000,color:#000
+    style J fill:#0173B2,stroke:#000,color:#fff
+```
+
 **Step 1: Write Feature (Specification-First)**:
 
 ```gherkin
 # File: features/calculator.feature
 Feature: Basic Calculator
+  # => Feature: Groups related scenarios for Basic Calculator
 
   Scenario: Add two numbers
+    # => Scenario: Single test case for Add two numbers
     Given I have a calculator                # Write spec BEFORE implementation
+      # => Given: Establishes precondition
     When I add 5 and 3                       # Describe behavior in business terms
+      # => When: Performs action
     Then the result should be 8              # Expected outcome
+      # => Then: Asserts expected outcome
 ```
 
 **Step 2: Run - See Pending Steps**:
 
 ```bash
 $ npx cucumber-js
+# => Command: $ npx cucumber-js
 # Output:
 # ? Given I have a calculator
 # ? When I add 5 and 3
@@ -1878,39 +2480,62 @@ $ npx cucumber-js
 **Step 3: Implement Step Definitions**:
 
 ```typescript
-// File: step-definitions/calculator.steps.ts
+// File: step-definitions/calculator.steps.ts  // => File: step-definitions/calculator.steps.ts
 import { Given, When, Then } from "@cucumber/cucumber";
+// => Import: cucumber module
 import { expect } from "chai";
+// => Import: chai module
 
 let calculator: { add: (a: number, b: number) => number };
 // => State: Calculator instance
-let result: number; // => State: Calculation result
+// => State: modified in current scope
+let result: number;
+// => State: Calculation result
 
 Given("I have a calculator", function () {
   // => Given: Create calculator
+  // => Closure: captures outer scope
   calculator = {
-    add: (a, b) => a + b, // => Implementation: Simple addition
+    // => Assign: calculator updated
+    // => State: modified in current scope
+    add: (a, b) => a + b,
+    // => Implementation: Simple addition
     // => Initially: Return 0 to see test fail
+    // => State: modified in current scope
   };
+  // => Execute: Statement runs
 });
+// => End: function/callback
+// => State: modified in current scope
 
 When("I add {int} and {int}", function (a: number, b: number) {
   // => When: Perform calculation
-  result = calculator.add(a, b); // => Action: Call add method
+  // => Closure: captures outer scope
+  result = calculator.add(a, b);
+  // => Action: Call add method
   // => result: 8 (when a=5, b=3)
+  // => State: modified in current scope
 });
+// => End: function/callback
+// => State: modified in current scope
 
 Then("the result should be {int}", function (expected: number) {
   // => Then: Verify result
-  expect(result).to.equal(expected); // => Assertion: Check output
+  // => Closure: captures outer scope
+  expect(result).to.equal(expected);
+  // => Assertion: Check output
   // => Output: Test passes (result === 8)
+  // => Test: failure throws AssertionError
 });
+// => End: function/callback
+// => State: modified in current scope
 ```
 
 **Step 4: Run - See Test Pass**:
 
 ```bash
 $ npx cucumber-js
+# => Command: $ npx cucumber-js
 # Output:
 # ✓ Given I have a calculator
 # ✓ When I add 5 and 3
@@ -1924,21 +2549,34 @@ $ npx cucumber-js
 **Step 5: Refactor (Optional)**:
 
 ```typescript
-// Refactor for production quality
+// => Refactor for production quality  // => Note: Refactor for production quality
 class Calculator {
+  // => Class: Calculator implementation
   add(a: number, b: number): number {
+    // => Call: add()
     if (typeof a !== "number" || typeof b !== "number") {
+      // => Check: evaluates condition
+      // => State: modified in current scope
       throw new Error("Arguments must be numbers");
       // => Validation: Type checking
+      // => Instance: object allocated
     }
-    return a + b; // => Calculation: Addition
+    // => End: block
+    // => State: modified in current scope
+    return a + b;
+    // => Calculation: Addition
   }
+  // => End: block
 }
+// => End: block
 
 Given("I have a calculator", function () {
-  calculator = new Calculator(); // => Refactor: Use class instead of object literal
+  // => Call: Given()
+  calculator = new Calculator();
+  // => Refactor: Use class instead of object literal
   // => Tests: Still pass (behavior unchanged)
 });
+// => End: function/callback
 ```
 
 **BDD Workflow Summary**:
@@ -1956,6 +2594,35 @@ Given("I have a calculator", function () {
 ### Example 29: Organizing Feature Files by Domain
 
 Organize feature files by business domain (authentication, shopping, payments) rather than technical layers (frontend, backend, database) for better stakeholder navigation.
+
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A[features/] --> B[authentication/]
+    A --> C[shopping/]
+    A --> D[payments/]
+    A --> E[admin/]
+    B --> B1[login.feature]
+    B --> B2[registration.feature]
+    C --> C1[cart.feature]
+    C --> C2[checkout.feature]
+    D --> D1[credit-card.feature]
+    D --> D2[refunds.feature]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#DE8F05,stroke:#000,color:#000
+    style D fill:#DE8F05,stroke:#000,color:#000
+    style E fill:#DE8F05,stroke:#000,color:#000
+    style B1 fill:#029E73,stroke:#000,color:#fff
+    style B2 fill:#029E73,stroke:#000,color:#fff
+    style C1 fill:#029E73,stroke:#000,color:#fff
+    style C2 fill:#029E73,stroke:#000,color:#fff
+    style D1 fill:#029E73,stroke:#000,color:#fff
+    style D2 fill:#029E73,stroke:#000,color:#fff
+```
 
 **Project structure - Domain-based (Recommended)**:
 

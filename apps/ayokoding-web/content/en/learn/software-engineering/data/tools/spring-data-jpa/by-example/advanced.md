@@ -4,10 +4,11 @@ date: 2026-01-01T22:52:24+07:00
 draft: false
 weight: 10000003
 description: "Examples 61-85: Spring Data JPA expert techniques including Specifications, Criteria API, custom repositories, auditing, and performance optimization (75-95% coverage)"
-categories: ["learn"]
 tags:
   ["spring-data-jpa", "tutorial", "by-example", "advanced", "specifications", "criteria-api", "auditing", "performance"]
 ---
+
+## Group 1: Specifications
 
 ### Example 61: Basic Specification with Single Predicate
 
@@ -667,7 +668,7 @@ public class ProductController {                              // => REST API for
 Use DISTINCT queries and aggregations in specifications.
 
 ```java
-public class OrderSpecifications {
+public class OrderSpecifications {                             // => Utility class with static Specification factories
     public static Specification<Order> distinctCustomerOrders() {
         return (root, query, cb) -> {
             // => Mark query as distinct
@@ -684,7 +685,7 @@ public class OrderSpecifications {
             query.distinct(true);
             // => DISTINCT eliminates duplicate customers
 
-            Join<Order, Customer> customerJoin = root.join("customer");
+            Join<Order, Customer> customerJoin = root.join("customer"); // => INNER JOIN Customer
             // => Join to Customer
 
             return cb.equal(root.get("status"), status);
@@ -698,24 +699,24 @@ public class OrderSpecifications {
 public interface OrderRepository extends JpaRepository<Order, Long>,
                                          JpaSpecificationExecutor<Order> {
     // => COUNT query with specification
-    long count(Specification<Order> spec);
+    long count(Specification<Order> spec);                     // => Spring generates: SELECT COUNT(*) WHERE ...
     // => Returns count of matching orders
 
     // => For custom aggregations, use @Query or Criteria API
     @Query("SELECT o.status, COUNT(o) FROM Order o GROUP BY o.status")
-    List<Object[]> countByStatus();
+    List<Object[]> countByStatus();                            // => Returns raw Object[] (not typed)
     // => Returns [[status1, count1], [status2, count2], ...]
 }
 
-@Service
+@Service                                                       // => Spring service bean
 public class OrderService {
     @Autowired
-    private OrderRepository orderRepository;
+    private OrderRepository orderRepository;                   // => Injected repository with specification support
 
     public long countActiveOrders() {
         // => Count with specification
         Specification<Order> spec = (root, query, cb) ->
-            cb.equal(root.get("status"), "ACTIVE");
+            cb.equal(root.get("status"), "ACTIVE");            // => WHERE status = 'ACTIVE'
 
         return orderRepository.count(spec);
         // => SELECT COUNT(*) FROM orders WHERE status = 'ACTIVE'
@@ -723,7 +724,7 @@ public class OrderService {
 
     public List<Order> findDistinctCustomerOrders(String status) {
         Specification<Order> spec =
-            OrderSpecifications.withDistinctCustomers(status);
+            OrderSpecifications.withDistinctCustomers(status); // => Creates DISTINCT specification
 
         return orderRepository.findAll(spec);
 // => Executes SELECT * FROM table
@@ -734,22 +735,22 @@ public class OrderService {
 }
 
 // => Advanced: Custom aggregation with Criteria API
-@Repository
+@Repository                                                    // => Spring repository bean
 public class CustomOrderRepository {
-    @PersistenceContext
+    @PersistenceContext                                        // => Injects EntityManager
     private EntityManager entityManager;
 
     public List<Object[]> getOrderCountByCustomerTier() {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder(); // => Factory for type-safe criteria
         // => Get CriteriaBuilder from EntityManager
 
-        CriteriaQuery<Object[]> query = cb.createQuery(Object[].class);
+        CriteriaQuery<Object[]> query = cb.createQuery(Object[].class); // => Multi-column result query
         // => Query returns Object[] (multiple columns)
 
-        Root<Order> root = query.from(Order.class);
+        Root<Order> root = query.from(Order.class);            // => FROM orders o
         // => FROM Order
 
-        Join<Order, Customer> customerJoin = root.join("customer");
+        Join<Order, Customer> customerJoin = root.join("customer"); // => INNER JOIN Customer c
         // => JOIN Customer
 
         query.multiselect(
@@ -758,33 +759,33 @@ public class CustomOrderRepository {
         );
         // => SELECT customer.tier, COUNT(*)
 
-        query.groupBy(customerJoin.get("tier"));
+        query.groupBy(customerJoin.get("tier"));               // => Aggregates by tier
         // => GROUP BY customer.tier
 
-        return entityManager.createQuery(query).getResultList();
+        return entityManager.createQuery(query).getResultList(); // => Executes and returns [[tier, count],...]
         // => Returns [[tier1, count1], [tier2, count2], ...]
     }
 
     public List<Object[]> getOrderSumByStatus(BigDecimal minTotal) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Object[]> query = cb.createQuery(Object[].class);
-        Root<Order> root = query.from(Order.class);
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder(); // => Factory for criteria expressions
+        CriteriaQuery<Object[]> query = cb.createQuery(Object[].class); // => Multi-column result
+        Root<Order> root = query.from(Order.class);            // => FROM orders o
 
         query.multiselect(
-            root.get("status"),
-            cb.sum(root.get("totalAmount"))
+            root.get("status"),                                // => SELECT status
+            cb.sum(root.get("totalAmount"))                    // => SUM(total_amount)
         );
         // => SELECT status, SUM(total_amount)
 
-        query.groupBy(root.get("status"));
+        query.groupBy(root.get("status"));                     // => Aggregates by status
         // => GROUP BY status
 
         query.having(
-            cb.greaterThan(cb.sum(root.get("totalAmount")), minTotal)
+            cb.greaterThan(cb.sum(root.get("totalAmount")), minTotal) // => Filter groups by sum threshold
         );
         // => HAVING SUM(total_amount) > :minTotal
 
-        return entityManager.createQuery(query).getResultList();
+        return entityManager.createQuery(query).getResultList(); // => Returns filtered aggregation results
     }
 }
 
@@ -967,6 +968,8 @@ public class ProductService {
 
 **Why It Matters**: Metamodel-based Specifications using JPA Metamodel (SingularAttribute, CollectionAttribute) provide compile-time safety against entity attribute renames, catching breaking changes during compilation instead of runtime. The static metamodel classes enable IDE autocomplete and refactoring support, reducing query maintenance burden by 50% during entity schema evolution. However, metamodel generation requires annotation processing configuration and increases build complexity, making it worthwhile only for codebases with 20+ entities where entity changes happen frequently.
 
+## Group 2: Criteria API
+
 ### Example 69: Basic Criteria API Query
 
 Use Criteria API directly for full control over query construction.
@@ -1077,84 +1080,86 @@ public class ProductCriteriaRepository {
 Navigate relationships using Path and Join in Criteria API.
 
 ```java
-@Repository
+@Repository                                                    // => Spring repository bean for Criteria API queries
 public class OrderCriteriaRepository {
-    @PersistenceContext
-    private EntityManager entityManager;
+    @PersistenceContext                                        // => Injects container-managed EntityManager
+    private EntityManager entityManager;                       // => JPA EntityManager for direct Criteria API access
 
     public List<Order> findOrdersByCustomerEmail(String email) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Order> query = cb.createQuery(Order.class);
-        Root<Order> root = query.from(Order.class);
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder(); // => Factory for predicates and expressions
+        CriteriaQuery<Order> query = cb.createQuery(Order.class); // => Typed query returning Order entities
+        Root<Order> root = query.from(Order.class);            // => FROM Order o (query root)
 
         // => Join to Customer
-        Join<Order, Customer> customerJoin = root.join("customer");
+        Join<Order, Customer> customerJoin = root.join("customer"); // => INNER JOIN Customer c ON o.customer_id = c.id
         // => FROM Order o JOIN Customer c ON o.customer_id = c.id
 
         // => Use joined entity in predicate
-        Predicate emailPredicate = cb.equal(customerJoin.get("email"), email);
+        Predicate emailPredicate = cb.equal(customerJoin.get("email"), email); // => Predicate: c.email = :email
         // => WHERE c.email = :email
 
-        query.where(emailPredicate);
+        query.where(emailPredicate);                           // => Adds WHERE clause to query
+        // => Final query: SELECT o FROM Order o JOIN Customer c WHERE c.email = :email
 
-        return entityManager.createQuery(query).getResultList();
+        return entityManager.createQuery(query).getResultList(); // => Executes query, returns List<Order>
     }
 
     public List<Order> findOrdersWithProductCategory(String category) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Order> query = cb.createQuery(Order.class);
-        Root<Order> root = query.from(Order.class);
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder(); // => Factory for query construction
+        CriteriaQuery<Order> query = cb.createQuery(Order.class); // => Typed query for Order results
+        Root<Order> root = query.from(Order.class);            // => FROM Order o
 
         // => Chain joins: Order -> OrderItem -> Product
-        Join<Order, OrderItem> itemJoin = root.join("items");
-        Join<OrderItem, Product> productJoin = itemJoin.join("product");
+        Join<Order, OrderItem> itemJoin = root.join("items"); // => INNER JOIN OrderItem oi ON o.id = oi.order_id
+        Join<OrderItem, Product> productJoin = itemJoin.join("product"); // => INNER JOIN Product p ON oi.product_id = p.id
         // => FROM Order o
         //    JOIN OrderItem oi ON o.id = oi.order_id
         //    JOIN Product p ON oi.product_id = p.id
 
         Predicate categoryPredicate = cb.equal(
-            productJoin.get("category"),
-            category
+            productJoin.get("category"),                       // => Path expression: Product.category field
+            category                                           // => Parameter value to match
         );
         // => WHERE p.category = :category
 
-        query.where(categoryPredicate);
+        query.where(categoryPredicate);                        // => Applies WHERE clause
         query.distinct(true); // => Prevent duplicates from join
 
-        return entityManager.createQuery(query).getResultList();
+        return entityManager.createQuery(query).getResultList(); // => Executes and returns distinct orders
     }
 
     public List<Order> findOrdersByCustomerTierAndStatus(String tier, String status) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Order> query = cb.createQuery(Order.class);
-        Root<Order> root = query.from(Order.class);
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder(); // => Query builder factory
+        CriteriaQuery<Order> query = cb.createQuery(Order.class); // => Typed query for Order entities
+        Root<Order> root = query.from(Order.class);            // => FROM Order o
 
         // => Join for customer tier
-        Join<Order, Customer> customerJoin = root.join("customer");
+        Join<Order, Customer> customerJoin = root.join("customer"); // => INNER JOIN Customer c ON o.customer_id = c.id
 
         // => Multiple predicates: joined and root entity
-        Predicate tierPredicate = cb.equal(customerJoin.get("tier"), tier);
+        Predicate tierPredicate = cb.equal(customerJoin.get("tier"), tier); // => Predicate: c.tier = :tier
         // => WHERE customer.tier = :tier
 
-        Predicate statusPredicate = cb.equal(root.get("status"), status);
+        Predicate statusPredicate = cb.equal(root.get("status"), status); // => Predicate: o.status = :status
         // => AND order.status = :status
 
-        query.where(cb.and(tierPredicate, statusPredicate));
+        query.where(cb.and(tierPredicate, statusPredicate));   // => AND combines both predicates
+        // => WHERE customer.tier = :tier AND order.status = :status
 
-        return entityManager.createQuery(query).getResultList();
+        return entityManager.createQuery(query).getResultList(); // => Executes multi-join query
     }
 
     public List<Order> findOrdersWithLeftJoin() {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Order> query = cb.createQuery(Order.class);
-        Root<Order> root = query.from(Order.class);
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder(); // => Query builder factory
+        CriteriaQuery<Order> query = cb.createQuery(Order.class); // => Query returning Order entities
+        Root<Order> root = query.from(Order.class);            // => FROM Order o
 
         // => LEFT JOIN (includes orders without items)
-        root.join("items", JoinType.LEFT);
+        root.join("items", JoinType.LEFT);                     // => LEFT JOIN OrderItem (JoinType.INNER is default)
         // => FROM Order o LEFT JOIN OrderItem oi ON o.id = oi.order_id
         // => Returns all orders, even those with no items
 
-        return entityManager.createQuery(query).getResultList();
+        return entityManager.createQuery(query).getResultList(); // => Returns all orders (including those without items)
     }
 }
 
@@ -1170,82 +1175,82 @@ public class OrderCriteriaRepository {
 Build complex queries with subqueries using Criteria API.
 
 ```java
-@Repository
+@Repository                                                    // => Spring repository bean
 public class ProductCriteriaRepository {
-    @PersistenceContext
-    private EntityManager entityManager;
+    @PersistenceContext                                        // => Injects container-managed EntityManager
+    private EntityManager entityManager;                       // => Direct JPA access for Criteria API
 
     public List<Product> findProductsWithMinPrice() {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Product> query = cb.createQuery(Product.class);
-        Root<Product> root = query.from(Product.class);
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder(); // => Factory for type-safe query building
+        CriteriaQuery<Product> query = cb.createQuery(Product.class); // => Main query returning Product entities
+        Root<Product> root = query.from(Product.class);        // => FROM Product p (main query root)
 
         // => Create subquery for minimum price
-        Subquery<BigDecimal> subquery = query.subquery(BigDecimal.class);
+        Subquery<BigDecimal> subquery = query.subquery(BigDecimal.class); // => Scalar subquery returning BigDecimal
         // => Subquery returns BigDecimal
 
-        Root<Product> subRoot = subquery.from(Product.class);
+        Root<Product> subRoot = subquery.from(Product.class);  // => Subquery's independent FROM clause
         // => Subquery has its own Root
 
-        subquery.select(cb.min(subRoot.get("price")));
+        subquery.select(cb.min(subRoot.get("price")));         // => SELECT MIN(p2.price) FROM Product p2
         // => SELECT MIN(price) FROM Product
 
         // => Use subquery result in main query predicate
         Predicate pricePredicate = cb.equal(
-            root.get("price"),
-            subquery
+            root.get("price"),                                 // => Main query: p.price
+            subquery                                           // => Subquery result: MIN(price)
         );
         // => WHERE price = (SELECT MIN(price) FROM Product)
 
-        query.where(pricePredicate);
+        query.where(pricePredicate);                           // => Adds WHERE clause to main query
 
         return entityManager.createQuery(query).getResultList();
         // => Returns products with minimum price
     }
 
     public List<Product> findProductsAboveAveragePrice() {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Product> query = cb.createQuery(Product.class);
-        Root<Product> root = query.from(Product.class);
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder(); // => Query builder factory
+        CriteriaQuery<Product> query = cb.createQuery(Product.class); // => Main query for products
+        Root<Product> root = query.from(Product.class);        // => FROM Product p
 
         // => Subquery for average price
-        Subquery<Double> avgSubquery = query.subquery(Double.class);
-        Root<Product> avgRoot = avgSubquery.from(Product.class);
-        avgSubquery.select(cb.avg(avgRoot.get("price")));
+        Subquery<Double> avgSubquery = query.subquery(Double.class); // => Subquery returns Double (avg result type)
+        Root<Product> avgRoot = avgSubquery.from(Product.class); // => Subquery's own FROM clause
+        avgSubquery.select(cb.avg(avgRoot.get("price")));       // => SELECT AVG(p2.price) FROM Product p2
         // => SELECT AVG(price) FROM Product
 
         // => Compare with subquery result
         Predicate pricePredicate = cb.greaterThan(
-            root.get("price"),
-            avgSubquery
+            root.get("price"),                                 // => Main query: p.price (left side)
+            avgSubquery                                        // => Subquery result (right side)
         );
         // => WHERE price > (SELECT AVG(price) FROM Product)
 
-        query.where(pricePredicate);
+        query.where(pricePredicate);                           // => Applies WHERE clause to main query
 
-        return entityManager.createQuery(query).getResultList();
+        return entityManager.createQuery(query).getResultList(); // => Returns products above average price
     }
 
     public List<Order> findOrdersWithMultipleItems() {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Order> query = cb.createQuery(Order.class);
-        Root<Order> root = query.from(Order.class);
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder(); // => Query builder factory
+        CriteriaQuery<Order> query = cb.createQuery(Order.class); // => Main query returning Order entities
+        Root<Order> root = query.from(Order.class);            // => FROM Order o (main query root)
 
         // => Correlated subquery: counts items for each order
-        Subquery<Long> countSubquery = query.subquery(Long.class);
-        Root<OrderItem> itemRoot = countSubquery.from(OrderItem.class);
+        Subquery<Long> countSubquery = query.subquery(Long.class); // => Correlated subquery returning count
+        Root<OrderItem> itemRoot = countSubquery.from(OrderItem.class); // => Subquery FROM OrderItem oi
 
         // => Correlate subquery with main query
-        countSubquery.select(cb.count(itemRoot))
-            .where(cb.equal(itemRoot.get("order"), root));
+        countSubquery.select(cb.count(itemRoot))               // => SELECT COUNT(oi)
+            .where(cb.equal(itemRoot.get("order"), root));     // => WHERE oi.order = o (correlated reference)
         // => SELECT COUNT(*) FROM OrderItem oi WHERE oi.order_id = o.id
         // => Correlated: subquery references main query's root
 
         // => Use correlated subquery in predicate
-        Predicate countPredicate = cb.greaterThan(countSubquery, 1L);
+        Predicate countPredicate = cb.greaterThan(countSubquery, 1L); // => Subquery result > 1
         // => WHERE (SELECT COUNT(*) FROM OrderItem oi WHERE oi.order_id = o.id) > 1
 
-        query.where(countPredicate);
+        query.where(countPredicate);                           // => Applies correlated WHERE clause
 
         return entityManager.createQuery(query).getResultList();
         // => Returns orders with more than 1 item
@@ -1606,6 +1611,8 @@ public class ProductCriteriaRepository {
 
 **Why It Matters**: Custom repository implementations enable raw EntityManager usage for ultra-performance queries, native SQL execution, and JDBC batch operations impossible through Spring Data abstractions. The pattern preserves Spring Data convenience methods while adding specialized operations like bulk upserts and stored procedure calls, combining best of both worlds. However, custom implementations bypass Spring Data's safety features (query validation, automatic pagination), requiring rigorous integration testing and code review to prevent SQL injection and performance regressions.
 
+## Group 3: Custom Repositories
+
 ### Example 74: Custom Repository Implementation
 
 Extend Spring Data repositories with custom query methods using EntityManager.
@@ -1740,100 +1747,100 @@ Implement efficient batch processing in custom repositories.
 
 ```java
 public interface ProductRepositoryCustom {
-    void batchInsert(List<Product> products);
-    void batchUpdate(List<Product> products);
+    void batchInsert(List<Product> products);      // => Custom batch insert method
+    void batchUpdate(List<Product> products);      // => Custom batch update method
 }
 
-@Repository
+@Repository                                        // => Spring repository bean
 public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
-    @PersistenceContext
-    private EntityManager entityManager;
+    @PersistenceContext                            // => Injects EntityManager
+    private EntityManager entityManager;           // => Direct JPA access for batch operations
 
     @Override
-    @Transactional
+    @Transactional                                 // => Single transaction for all inserts
     public void batchInsert(List<Product> products) {
         // => Batch insert for better performance
-        int batchSize = 50;
+        int batchSize = 50;                        // => Optimal batch size for most databases
         // => Process in batches to avoid memory issues
 
         for (int i = 0; i < products.size(); i++) {
-            entityManager.persist(products.get(i));
+            entityManager.persist(products.get(i)); // => Schedules INSERT, adds to persistence context
             // => Add to persistence context
 
-            if (i > 0 && i % batchSize == 0) {
+            if (i > 0 && i % batchSize == 0) {    // => Every 50 entities: flush and clear
                 // => Flush every batchSize entities
                 entityManager.flush();
 // => Forces immediate synchronization of persistence context to database
 // => Executes pending INSERT/UPDATE/DELETE statements
 // => Useful for triggering constraint violations early
                 // => Execute INSERT statements
-                entityManager.clear();
+                entityManager.clear();             // => Detaches all entities from context
                 // => Clear persistence context to free memory
                 // => Prevents OutOfMemoryError for large batches
             }
         }
 
         // => Flush remaining entities
-        entityManager.flush();
+        entityManager.flush();                     // => Executes final batch of INSERTs
 // => Forces immediate synchronization of persistence context to database
 // => Executes pending INSERT/UPDATE/DELETE statements
 // => Useful for triggering constraint violations early
-        entityManager.clear();
+        entityManager.clear();                     // => Frees memory after final flush
     }
 
     @Override
-    @Transactional
+    @Transactional                                 // => Single transaction for all updates
     public void batchUpdate(List<Product> products) {
-        int batchSize = 50;
+        int batchSize = 50;                        // => Process 50 at a time
 
         for (int i = 0; i < products.size(); i++) {
-            Product product = products.get(i);
+            Product product = products.get(i);     // => Get next product to update
 
             // => Merge for updates
-            entityManager.merge(product);
+            entityManager.merge(product);          // => Merges detached entity into context (triggers UPDATE)
             // => UPDATE existing entities
 
-            if (i > 0 && i % batchSize == 0) {
+            if (i > 0 && i % batchSize == 0) {    // => Periodic flush and clear
                 entityManager.flush();
 // => Forces immediate synchronization of persistence context to database
 // => Executes pending INSERT/UPDATE/DELETE statements
 // => Useful for triggering constraint violations early
-                entityManager.clear();
+                entityManager.clear();             // => Frees merged entities from memory
             }
         }
 
-        entityManager.flush();
+        entityManager.flush();                     // => Executes remaining UPDATE statements
 // => Forces immediate synchronization of persistence context to database
 // => Executes pending INSERT/UPDATE/DELETE statements
 // => Useful for triggering constraint violations early
-        entityManager.clear();
+        entityManager.clear();                     // => Final memory cleanup
     }
 
-    @Transactional
+    @Transactional                                 // => Transaction for bulk DELETE
     public void batchDeleteByIds(List<Long> ids) {
         // => Bulk delete using JPQL
-        String jpql = "DELETE FROM Product p WHERE p.id IN :ids";
+        String jpql = "DELETE FROM Product p WHERE p.id IN :ids"; // => JPQL bulk delete (bypasses entity loading)
 
         // => Process in chunks to avoid parameter limits
-        int chunkSize = 1000;
+        int chunkSize = 1000;                      // => Most databases limit IN clause to ~1000 values
         for (int i = 0; i < ids.size(); i += chunkSize) {
             List<Long> chunk = ids.subList(
-                i,
-                Math.min(i + chunkSize, ids.size())
+                i,                                 // => Start of chunk
+                Math.min(i + chunkSize, ids.size()) // => End of chunk (clamped to list size)
             );
 
             entityManager.createQuery(jpql)
-                .setParameter("ids", chunk)
-                .executeUpdate();
+                .setParameter("ids", chunk)        // => Binds ID list to :ids parameter
+                .executeUpdate();                  // => DELETE statement (not entity operation)
             // => Single DELETE statement per chunk
         }
     }
 }
 
-@Service
+@Service                                           // => Spring service bean
 public class ProductService {
     @Autowired
-    private ProductRepository productRepository;
+    private ProductRepository productRepository;   // => Repository with batch capabilities
 
     public void importProducts(List<Product> products) {
         // => Efficient batch import
@@ -1842,7 +1849,7 @@ public class ProductService {
     }
 
     public void updatePricesInBulk(List<Product> products) {
-        productRepository.batchUpdate(products);
+        productRepository.batchUpdate(products);   // => Processes updates in batches of 50
     }
 }
 
@@ -2016,60 +2023,63 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
 Combine Spring Data with QueryDSL for type-safe query building.
 
+**Why Not Core Features**: QueryDSL is chosen when Criteria API verbosity becomes a maintenance burden in large codebases. The Criteria API (Examples 69-73) requires 15-25 lines for queries that QueryDSL expresses in 3-5 lines, with full type-safety and IDE autocomplete. For typical production use, Specifications (Examples 61-68) provide sufficient type-safety without additional dependencies. QueryDSL is justified when your team maintains 50+ dynamic queries and the readability improvement outweighs the build-time Q-type generation complexity.
+
 ```java
 // => Add QueryDSL dependency to pom.xml:
 // <dependency>
 //   <groupId>com.querydsl</groupId>
 //   <artifactId>querydsl-jpa</artifactId>
 // </dependency>
+// => APT plugin generates Q-classes from entities (e.g., QProduct, QOrder)
 
 public interface ProductRepositoryCustom {
     List<Product> findWithQueryDSL(String keyword, BigDecimal minPrice, String category);
+    // => Custom repository fragment interface (merged by Spring Data)
 }
 
-@Repository
+@Repository                                                    // => Spring repository bean
 public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
-    @PersistenceContext
-    private EntityManager entityManager;
+    @PersistenceContext                                        // => Injects container-managed EntityManager
+    private EntityManager entityManager;                       // => Used to create JPAQuery instances
 
     @Override
     public List<Product> findWithQueryDSL(String keyword, BigDecimal minPrice, String category) {
         // => QueryDSL provides generated Q-classes for type-safety
-        QProduct product = QProduct.product;
+        QProduct product = QProduct.product;                   // => Singleton Q-class for Product entity
         // => Q-class generated from Product entity
 
-        JPAQuery<Product> query = new JPAQuery<>(entityManager);
-        // => Creates transient entity (not yet persisted, id=null)
+        JPAQuery<Product> query = new JPAQuery<>(entityManager); // => QueryDSL query backed by EntityManager
         // => JPAQuery wraps EntityManager
 
-        BooleanBuilder predicate = new BooleanBuilder();
+        BooleanBuilder predicate = new BooleanBuilder();       // => Accumulates WHERE conditions dynamically
         // => Dynamic predicate builder
 
-        if (keyword != null && !keyword.isEmpty()) {
+        if (keyword != null && !keyword.isEmpty()) {           // => Only add condition if keyword provided
             predicate.and(
-                product.name.containsIgnoreCase(keyword)
-                    .or(product.description.containsIgnoreCase(keyword))
+                product.name.containsIgnoreCase(keyword)       // => LOWER(name) LIKE '%keyword%'
+                    .or(product.description.containsIgnoreCase(keyword)) // => OR LOWER(description) LIKE '%keyword%'
             );
             // => WHERE (LOWER(name) LIKE :keyword OR LOWER(description) LIKE :keyword)
             // => Type-safe: IDE autocomplete for entity fields
         }
 
-        if (minPrice != null) {
-            predicate.and(product.price.goe(minPrice));
+        if (minPrice != null) {                                // => Only add condition if minPrice provided
+            predicate.and(product.price.goe(minPrice));        // => price >= :minPrice
             // => AND price >= :minPrice
             // => goe = greater or equal (type-safe method)
         }
 
-        if (category != null && !category.isEmpty()) {
-            predicate.and(product.category.eq(category));
+        if (category != null && !category.isEmpty()) {         // => Only add condition if category provided
+            predicate.and(product.category.eq(category));      // => category = :category
             // => AND category = :category
         }
 
-        return query.select(product)
-            .from(product)
-            .where(predicate)
-            .orderBy(product.price.desc())
-            .fetch();
+        return query.select(product)                           // => SELECT p FROM products
+            .from(product)                                     // => FROM products p
+            .where(predicate)                                  // => WHERE (combined predicates)
+            .orderBy(product.price.desc())                     // => ORDER BY price DESC
+            .fetch();                                          // => Executes query, returns List<Product>
         // => Type-safe query execution
         // => Compile-time error if field names wrong
     }
@@ -2077,28 +2087,27 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
 // => Example with joins using QueryDSL
 public class OrderRepositoryCustomImpl {
-    @PersistenceContext
+    @PersistenceContext                                        // => Injects EntityManager
     private EntityManager entityManager;
 
     public List<Order> findOrdersWithQueryDSL(String customerEmail, String productCategory) {
-        QOrder order = QOrder.order;
-        QCustomer customer = QCustomer.customer;
-        QOrderItem orderItem = QOrderItem.orderItem;
-        QProduct product = QProduct.product;
+        QOrder order = QOrder.order;                           // => Q-class for Order entity
+        QCustomer customer = QCustomer.customer;               // => Q-class for Customer entity
+        QOrderItem orderItem = QOrderItem.orderItem;           // => Q-class for OrderItem entity
+        QProduct product = QProduct.product;                   // => Q-class for Product entity
 
-        JPAQuery<Order> query = new JPAQuery<>(entityManager);
-        // => Creates transient entity (not yet persisted, id=null)
+        JPAQuery<Order> query = new JPAQuery<>(entityManager); // => QueryDSL query backed by EntityManager
 
-        return query.selectDistinct(order)
-            .from(order)
-            .join(order.customer, customer)
-            .join(order.items, orderItem)
-            .join(orderItem.product, product)
+        return query.selectDistinct(order)                     // => SELECT DISTINCT o
+            .from(order)                                       // => FROM orders o
+            .join(order.customer, customer)                    // => JOIN customers c ON o.customer_id = c.id
+            .join(order.items, orderItem)                      // => JOIN order_items oi ON o.id = oi.order_id
+            .join(orderItem.product, product)                  // => JOIN products p ON oi.product_id = p.id
             .where(
-                customer.email.eq(customerEmail)
-                    .and(product.category.eq(productCategory))
+                customer.email.eq(customerEmail)               // => WHERE c.email = :customerEmail
+                    .and(product.category.eq(productCategory)) // => AND p.category = :productCategory
             )
-            .fetch();
+            .fetch();                                          // => Executes query, returns List<Order>
         // => Type-safe joins with compile-time checking
         // => No string-based field names
     }
@@ -2375,6 +2384,8 @@ public class ProductService {
 **Key Takeaway**: Split custom functionality into multiple fragment interfaces with separate implementations. Main repository extends all fragments for modular, maintainable custom queries.
 
 **Why It Matters**: @CreatedDate and @LastModifiedDate annotations with Spring Data JPA auditing eliminate 95% of manual timestamp code while ensuring timezone consistency (UTC storage) and transaction accuracy (commit time, not wall clock time). The automatic population prevents forgotten audit fields and timezone bugs that plague 40% of manual implementations. However, auditing requires @EnableJpaAuditing configuration and doesn't work with bulk operations (@Modifying queries), requiring explicit timestamp handling for batch updates affecting audit compliance.
+
+## Group 4: Auditing
 
 ### Example 79: JPA Auditing with Timestamps
 
@@ -2916,31 +2927,31 @@ Merge Spring Data JPA auditing with custom entity listeners for comprehensive tr
 
 ```java
 // Combined auditable base class
-@MappedSuperclass
+@MappedSuperclass                                              // => Shared fields/listeners inherited by subclasses
 @EntityListeners({AuditingEntityListener.class, AuditableEntityListener.class})
-// => Marks class as JPA entity (database table mapping)
+// => Two listeners: Spring Data auditing + custom change tracking
 public abstract class Auditable {
     // => Multiple listeners: Spring auditing + custom logic
 
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
+    @CreatedDate                                               // => Automatically set on @PrePersist
+    @Column(updatable = false)                                 // => Never changed after initial INSERT
+    private LocalDateTime createdAt;                           // => Creation timestamp
 
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
+    @LastModifiedDate                                          // => Automatically updated on @PreUpdate
+    private LocalDateTime updatedAt;                           // => Last modification timestamp
 
-    @CreatedBy
-    @Column(updatable = false)
-    private String createdBy;
+    @CreatedBy                                                 // => Automatically set from SecurityContext
+    @Column(updatable = false)                                 // => Immutable after creation
+    private String createdBy;                                  // => Username who created the entity
 
-    @LastModifiedBy
-    private String updatedBy;
+    @LastModifiedBy                                            // => Updated on every save from SecurityContext
+    private String updatedBy;                                  // => Username who last modified the entity
 
-    @Version
-    private Long version;
+    @Version                                                   // => Optimistic locking counter
+    private Long version;                                      // => Incremented on every UPDATE
 
     @Column(name = "change_log")
-    private String changeLog;
+    private String changeLog;                                  // => Set by custom AuditableEntityListener
     // => Track change descriptions
 
     // getters/setters
@@ -2948,46 +2959,46 @@ public abstract class Auditable {
 
 // Custom listener for change tracking
 public class AuditableEntityListener {
-    @PreUpdate
+    @PreUpdate                                                 // => Executes before UPDATE SQL
     public void logChange(Auditable auditable) {
         // => Build change log before update
-        String log = "Modified at " + LocalDateTime.now() +
-                    " by " + getCurrentUser() +
-                    " (version " + (auditable.getVersion() + 1) + ")";
+        String log = "Modified at " + LocalDateTime.now() +   // => Current timestamp
+                    " by " + getCurrentUser() +                // => Current user from SecurityContext
+                    " (version " + (auditable.getVersion() + 1) + ")"; // => Next version number
 
         auditable.setChangeLog(log);
         // => Store change description
     }
 
-    @PostPersist
+    @PostPersist                                               // => Executes after INSERT completes
     public void onCreateComplete(Auditable auditable) {
-        System.out.println("Audit: Entity created - " +
-            auditable.getClass().getSimpleName() +
-            " by " + auditable.getCreatedBy());
+        System.out.println("Audit: Entity created - " +       // => Log creation event
+            auditable.getClass().getSimpleName() +             // => Entity class name (e.g., "Product")
+            " by " + auditable.getCreatedBy());                // => Creator username
     }
 
-    @PostUpdate
+    @PostUpdate                                                // => Executes after UPDATE completes
     public void onUpdateComplete(Auditable auditable) {
-        System.out.println("Audit: Entity updated - " +
-            auditable.getClass().getSimpleName() +
-            " by " + auditable.getUpdatedBy());
+        System.out.println("Audit: Entity updated - " +       // => Log update event
+            auditable.getClass().getSimpleName() +             // => Entity class name
+            " by " + auditable.getUpdatedBy());                // => Last modifier username
     }
 
     private String getCurrentUser() {
         Authentication auth =
-            SecurityContextHolder.getContext().getAuthentication();
-        return auth != null ? auth.getName() : "system";
+            SecurityContextHolder.getContext().getAuthentication(); // => Gets Spring Security context
+        return auth != null ? auth.getName() : "system";      // => Returns username or "system" if anonymous
     }
 }
 
 @Entity
 // => Marks class as JPA entity (database table mapping)
 public class Product extends Auditable {
-    @Id @GeneratedValue
+    @Id @GeneratedValue                                        // => Auto-generated primary key
     // => Primary key field
     private Long id;
-    private String name;
-    private BigDecimal price;
+    private String name;                                       // => Product name (VARCHAR 255)
+    private BigDecimal price;                                  // => Product price (DECIMAL)
     // => Inherits auditing fields and both listeners
 }
 
@@ -3030,6 +3041,8 @@ public class ProductService {
 **Key Takeaway**: Combine `AuditingEntityListener` with custom listeners in `@EntityListeners` array for comprehensive auditing. Spring auditing handles timestamps/users, custom listeners add business logic.
 
 **Why It Matters**: @EntityGraph solves N+1 problems through declarative relationship loading specification, providing cleaner syntax than JOIN FETCH and enabling multiple entity graphs per entity. The attributePaths approach loads specific relationships on-demand without changing default fetch types, improving flexibility for different use cases (list view vs detail view). However, @EntityGraph with multiple collections causes Cartesian products and MultiBagFetchException, requiring multiple queries or graph grouping strategies, adding complexity affecting 40% of EntityGraph usage.
+
+## Group 5: Performance Optimization
 
 ### Example 83: Interface-Based Projections for Performance
 

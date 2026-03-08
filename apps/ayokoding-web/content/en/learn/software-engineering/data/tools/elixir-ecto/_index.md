@@ -12,6 +12,6 @@ layout: list
 - [Quick Start](/en/learn/software-engineering/data/tools/elixir-ecto/quick-start)
 - [By Example](/en/learn/software-engineering/data/tools/elixir-ecto/by-example)
   - [Overview](/en/learn/software-engineering/data/tools/elixir-ecto/by-example/overview)
-  - [Advanced](/en/learn/software-engineering/data/tools/elixir-ecto/by-example/advanced)
   - [Beginner](/en/learn/software-engineering/data/tools/elixir-ecto/by-example/beginner)
   - [Intermediate](/en/learn/software-engineering/data/tools/elixir-ecto/by-example/intermediate)
+  - [Advanced](/en/learn/software-engineering/data/tools/elixir-ecto/by-example/advanced)

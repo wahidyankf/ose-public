@@ -7,9 +7,9 @@ description: "Examples 57-84: Advanced Terraform patterns covering custom provid
 tags: ["terraform", "tutorial", "by-example", "advanced", "testing", "security", "cicd", "providers"]
 ---
 
-Master advanced Terraform patterns through 26 annotated code examples covering custom provider development, infrastructure testing, state migration, multi-environment architecture, secrets management, and CI/CD integration. Each example demonstrates production-grade infrastructure patterns.
+Master advanced Terraform patterns through 28 annotated code examples covering custom provider development, infrastructure testing, state migration, multi-environment architecture, secrets management, and CI/CD integration. Each example demonstrates production-grade infrastructure patterns.
 
-## Group 15: Custom Providers
+## Group 16: Custom Providers
 
 ### Example 57: Provider Development Basics
 
@@ -777,7 +777,7 @@ func testAccCheckServerDestroy(s *terraform.State) error {
 
 ---
 
-## Group 16: Infrastructure Testing
+## Group 17: Infrastructure Testing
 
 ### Example 60: Validation with terraform validate and fmt
 
@@ -808,6 +808,8 @@ resource "local_file" "invalid" {
  filename = "invalid.txt" # => String value
  # content missing (required argument)
 }
+
+
 
 
 
@@ -844,6 +846,8 @@ resource "local_file" "invalid" {
 # Validate with JSON output (for CI/CD)
 # $ terraform validate -json
 # => {"valid":false,"error_count":1,"errors":[..]}
+
+
 ```
 
 **Pre-commit hook for validation**:
@@ -853,18 +857,31 @@ resource "local_file" "invalid" {
 # .git/hooks/pre-commit
 
 terraform fmt -check -recursive
+# => Terraform configuration
 if [ $? -ne 0 ]; then
+# => Terraform configuration
  echo "Terraform files need formatting. Run: terraform fmt -recursive"
+ # => Terraform configuration
  exit 1
+ # => Terraform configuration
 fi
+# => Terraform configuration
 
 terraform validate
+# => Terraform configuration
 if [ $? -ne 0 ]; then
+# => Terraform configuration
  echo "Terraform validation failed"
+ # => Terraform configuration
  exit 1
+ # => Terraform configuration
 fi
+# => Terraform configuration
 
 echo "Terraform validation passed"
+# => Terraform configuration
+
+
 
 
 ```
@@ -1059,131 +1076,152 @@ graph TD
  style F fill:#0173B2,color:#fff
 ```
 
+**Why This External Tool**: Terraform's built-in testing (`terraform validate`, `terraform plan -detailed-exitcode`) validates syntax and previews changes but cannot verify that infrastructure actually works after deployment—it cannot confirm "EC2 instance is reachable on port 443" or "RDS accepts connections from application subnet." Terratest fills this gap by provisioning real infrastructure, running assertions against live endpoints, then destroying everything. The Go testing framework provides test parallelism, retry logic for eventual consistency, and structured assertions unavailable in shell scripts. For production modules used across dozens of teams, automated integration tests catch regressions that code review cannot detect.
+
 **Installation** - `go.mod`:
 
 ```go
 module github.com/example/terraform-tests
+// => Module declaration: Go module path (used as package import prefix)
 
 go 1.21
+// => Minimum Go version required for this module
 
 require (
+ // => require block: external dependencies with pinned versions
  github.com/gruntwork-io/terratest v0.46.0
+ // => Terratest: Go library for infrastructure testing
+ // => Provides terraform.InitAndApply, terraform.Destroy, terraform.Output
  github.com/stretchr/testify v1.8.4
+ // => Testify: assertion library (assert.Equal, assert.NoError)
+ // => Standard Go testing assertions
 )
-
-
 ```
 
 **Terraform configuration** - `examples/basic/main.tf`:
 
 ```hcl
 terraform {
-# => Terraform configuration block
- required_version = ">= 1.0" # => String value
- # => Sets required_version
+ # => terraform block configures provider requirements
+ required_version = ">= 1.0" # => Ensures compatible Terraform version
+ # => Prevents running tests with incompatible older versions
 }
 
 provider "local" {}
-# => Provider configuration
+# => Local provider: no credentials required
+# => Manages files on local filesystem - perfect for unit-style tests
 
 variable "filename" {
-# => Input variable
- type = string
- # => Sets type
- default = "test-output.txt" # => String value
- # => Sets default
+ # => Input variable: filename for created file
+ type    = string # => Type constraint: string only
+ # => Terratest will pass this via Vars map
+ default = "test-output.txt" # => Default used if no override provided
+ # => Overridden in tests via terraformOptions.Vars
 }
 
 variable "content" {
-# => Input variable
- type = string
- # => Sets type
+ # => Input variable: content for created file
+ type = string  # => Required string (no default)
+ # => Terratest passes "Hello from Terratest!" via Vars map
 }
 
 resource "local_file" "test" {
-# => Resource definition
- filename = var.filename
- # => Sets filename
- content = var.content
- # => Sets content
+ # => Creates file on local filesystem for testing
+ filename = var.filename  # => Uses filename variable
+ # => Resolves to "terratest-output.txt" in test
+ content  = var.content   # => Uses content variable
+ # => Resolves to "Hello from Terratest!" in test
 }
 
 output "filename" {
-# => Output value
+ # => Exposes filename so Terratest can read it with terraform.Output
  value = local_file.test.filename
- # => Sets value
+ # => terraform.Output(t, opts, "filename") returns this value
+ # => Used in assertions: assert.Equal(t, "terratest-output.txt", outputFilename)
 }
 
 output "content" {
-# => Output value
+ # => Exposes content for verification
  value = local_file.test.content
- # => Sets value
+ # => terraform.Output(t, opts, "content") returns this value
 }
-
-
-
 ```
 
 **Terratest test** - `test/basic_test.go`:
 
 ```go
 package test
+// => Package declaration: "test" is conventional for Terratest packages
 
 import (
- "os"
- "testing"
+ "os"       // => Standard library: os.ReadFile for file content validation
+ "testing"  // => Standard library: *testing.T test context
 
- "github.com/gruntwork-io/terratest/modules/terraform"
- "github.com/stretchr/testify/assert"
+ "github.com/gruntwork-io/terratest/modules/terraform" // => Terratest Terraform helper
+ "github.com/stretchr/testify/assert"                  // => Assertion library
 )
 
 func TestTerraformBasicExample(t *testing.T) {
+ // => Function name must start with "Test" to be picked up by `go test`
  t.Parallel()
- // => Run tests in parallel for speed
+ // => t.Parallel(): allows multiple tests to run concurrently
+ // => Critical for speed: 10 parallel tests = 1/10 total time
 
  terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
+ // => terraform.WithDefaultRetryableErrors: wraps options with standard retry logic
+ // => Retries on transient AWS API errors (throttling, eventual consistency)
  TerraformDir: "./examples/basic",
- // => Path to Terraform configuration
+ // => TerraformDir: path to Terraform configuration to test
+ // => Relative to test/ directory where go test runs
 
  Vars: map[string]interface{}{
+ // => Vars: passed as -var flags to terraform apply
  "filename": "terratest-output.txt",
+ // => Overrides variable "filename" in Terraform config
  "content": "Hello from Terratest!",
+ // => Overrides variable "content" in Terraform config
  },
- // => Input variables for terraform apply
 
  NoColor: true,
- // => Disable color output for cleaner logs
+ // => NoColor: removes ANSI escape codes from Terraform output
+ // => Makes CI/CD log output readable without color rendering
  })
 
  defer terraform.Destroy(t, terraformOptions)
- // => defer: schedules Destroy to run when TestTerraformBasicExample returns
- // => Cleanup: always destroy resources after test
- // => Runs even if test fails
+ // => defer: schedules Destroy to run when test function exits
+ // => Guarantees cleanup even if test panics or fails mid-execution
+ // => Without defer: test failure leaves orphaned resources ($$$)
 
  terraform.InitAndApply(t, terraformOptions)
- // => terraform init && terraform apply
- // => Fails test if apply fails
- // => Provisions real infrastructure in cloud
+ // => InitAndApply: runs `terraform init` then `terraform apply -auto-approve`
+ // => Blocks until apply completes or fails (fails the test on error)
+ // => After this line: real file exists on disk
 
- // Validate outputs
+ // Validate outputs match expected values
  outputFilename := terraform.Output(t, terraformOptions, "filename")
- // => Configure outputFilename :
+ // => terraform.Output: reads output value from terraform state
+ // => outputFilename = "terratest-output.txt" (from Vars above)
  outputContent := terraform.Output(t, terraformOptions, "content")
- // => Read Terraform outputs
+ // => outputContent = "Hello from Terratest!" (from Vars above)
 
  assert.Equal(t, "terratest-output.txt", outputFilename)
+ // => Fails test if outputFilename != "terratest-output.txt"
  assert.Equal(t, "Hello from Terratest!", outputContent)
- // => Assertions (test fails if not equal)
+ // => Fails test if outputContent != "Hello from Terratest!"
 
- // Validate actual infrastructure
+ // Validate actual infrastructure state (not just Terraform outputs)
  fileContent, err := os.ReadFile("./examples/basic/terratest-output.txt")
- // => Configure fileContent, err :
+ // => os.ReadFile: reads actual file from disk
+ // => This validates infrastructure EXISTS, not just that Terraform tracks it
  assert.NoError(t, err)
+ // => Fails test if file doesn't exist or can't be read
  assert.Equal(t, "Hello from Terratest!", string(fileContent))
- // => Verify file actually created with correct content
+ // => Converts []byte to string for comparison
+ // => Verifies actual file content matches expected
 }
 
 func TestTerraformIdempotence(t *testing.T) {
+ // => Idempotence test: second apply should make zero changes
  terraformOptions := &terraform.Options{
  TerraformDir: "./examples/basic",
  Vars: map[string]interface{}{
@@ -1193,20 +1231,23 @@ func TestTerraformIdempotence(t *testing.T) {
  }
 
  defer terraform.Destroy(t, terraformOptions)
+ // => Cleanup: always run terraform destroy after test
 
- // First apply
+ // First apply: create resources
  terraform.InitAndApply(t, terraformOptions)
+ // => First apply creates the file
 
- // Second apply should show no changes
+ // Second apply should show no changes (infrastructure already matches config)
  planOutput := terraform.Plan(t, terraformOptions)
- // => terraform plan output as string
+ // => terraform.Plan: runs terraform plan, returns output as string
+ // => Idempotent config: second plan shows no changes
  assert.NotContains(t, planOutput, "will be created")
+ // => Fails if second plan wants to create anything (non-idempotent)
  assert.NotContains(t, planOutput, "will be updated")
+ // => Fails if second plan wants to update anything (drift)
  assert.NotContains(t, planOutput, "will be destroyed")
- // => Verify idempotence: second apply changes nothing
+ // => Fails if second plan wants to destroy anything (unexpected behavior)
 }
-
-
 ```
 
 **Running Terratest**:
@@ -1283,39 +1324,54 @@ mandatory_tags = rule {
 
 # Main policy
 main = rule {
+# => Terraform configuration
  mandatory_tags
  # => Sentinel enforces this rule before allowing apply
 }
 # => Policy fails if mandatory_tags rule fails
+
+
 ```
 
 **OPA policy** - `require_tags.rego`:
 
 ```rego
 package terraform.policies
+# => package: OPA namespace for policy rules
 
 import input as tfplan
+# => import input: binds the JSON input document (tfplan.json) to "tfplan"
 
 # Deny resources without required tags
 deny[msg] {
+ # => deny[msg]: partial set rule - adds msg to deny set for each violation
  resource := tfplan.resource_changes[_]
+ # => resource_changes[_]: iterates over all resource changes (wildcard index)
  resource.mode == "managed"
- # => Check managed resources only
+ # => Check managed resources only (exclude data sources with mode "data")
 
  required_tags := {"Environment", "Owner", "CostCenter"}
+ # => Set literal: the three mandatory tag keys
  existing_tags := {tag | resource.change.after.tags[tag]}
- # => Set of tags on resource
+ # => Set comprehension: builds set of all tag keys on this resource
+ # => resource.change.after = planned state after apply
 
  missing_tags := required_tags - existing_tags
+ # => Set difference: tags required but not present on resource
  count(missing_tags) > 0
- # => missing_tags is non-empty set
+ # => count(): number of missing tags; > 0 means violations exist
 
  msg := sprintf(
+ # => sprintf: format string with resource address and missing tags
  "Resource %s is missing required tags: %v",
+ # => Terraform configuration
  [resource.address, missing_tags]
+ # => resource.address: e.g. "local_file.non_compliant"
  )
 }
-# => Generates deny message for each violation
+# => deny set contains violation messages; empty set = policy passes
+
+
 ```
 
 **Terraform configuration being validated**:
@@ -1351,6 +1407,8 @@ resource "local_file" "non_compliant" {
  # => Missing Environment, Owner, CostCenter tags
 }
 
+
+
 ```
 
 **Policy validation workflow**:
@@ -1379,6 +1437,8 @@ resource "local_file" "non_compliant" {
 # Fix violations
 # $ terraform apply
 # => Error: policy check failed (apply blocked)
+
+
 ```
 
 **CI/CD integration with OPA**:
@@ -1386,33 +1446,56 @@ resource "local_file" "non_compliant" {
 ```yaml
 # .github/workflows/terraform-policy.yml
 name: Terraform Policy Check
-on: [pull_request]
+# => Workflow/job name: Terraform Policy Check
+on: [pull_request]          # => Runs on every pull request (checks before merge)
 
 jobs:
+# => Workflow jobs definition
  policy:
+ # => policy configuration
  runs-on: ubuntu-latest
+ # => GitHub Actions runner type
  steps:
- - uses: actions/checkout@v3
+ # => Sequential steps for job
+ - uses: actions/checkout@v3  # => Clone repository with Terraform configs
 
  - name: Terraform Plan
+ # => Step name: Terraform Plan
  run: |
- terraform init
+ # => Shell command to execute
+ terraform init              # => Download providers and modules
  terraform plan -out=tfplan.binary
- # => Configure terraform plan -out
+ # => -out=: saves plan as binary file for JSON conversion
  terraform show -json tfplan.binary > tfplan.json
+ # => terraform show -json: converts binary plan to JSON
+ # => tfplan.json: OPA input document for policy evaluation
 
  - name: Install OPA
+ # => Step name: Install OPA
  run: |
+ # => Shell command to execute
  curl -L -o opa https://openpolicyagent.org/downloads/latest/opa_linux_amd64
+ # => Download OPA binary (open-source policy engine)
  chmod +x opa
+ # => Make OPA executable
 
  - name: Run Policy Check
+ # => Step name: Run Policy Check
  run: |
+ # => Shell command to execute
  ./opa eval -i tfplan.json -d policies/ "data.terraform.policies.deny"
+ # => -i: input file (tfplan.json)
+ # => -d: policy directory (all .rego files)
+ # => "data.terraform.policies.deny": query the deny set
  if [ $? -ne 0 ]; then
+ # => $?: exit code from opa eval (non-zero = violations found)
  echo "Policy violations detected!"
- exit 1
+ # => Terraform configuration
+ exit 1                      # => Fail CI/CD pipeline, block merge
  fi
+ # => Terraform configuration
+
+
 ```
 
 **Key Takeaway**: Policy as Code validates infrastructure against organizational rules before apply. Sentinel (Terraform Cloud) integrates natively with Terraform workflow. OPA (open source) validates JSON plan output with Rego policies. Policies enforce tagging, instance sizes, regions, security groups, compliance requirements. Failed policy blocks `terraform apply` until violations fixed.
@@ -1446,6 +1529,7 @@ graph TD
 variable "server_name" {
 # => Input variable
  type = string
+ # => Variable type constraint
  # => Sets type
  description = "Server name" # => String value
  # => Sets description
@@ -1463,6 +1547,7 @@ var.server_name) > 0
 variable "instance_type" {
 # => Input variable
  type = string
+ # => Variable type constraint
  # => Sets type
  default = "small" # => String value
  # => Sets default
@@ -1471,12 +1556,14 @@ variable "instance_type" {
 output "server_id" {
 # => Output value
  value = local_file.server.id
+ # => Output value
  # => Sets value: contract tests assert this output is non-empty string
 }
 
 output "server_name" {
 # => Output value
  value = var.server_name
+ # => Output value
  # => Sets value
 }
 
@@ -1490,15 +1577,19 @@ resource "local_file" "server" {
 
 
 
+
+
 ```
 
 **Contract test** - `test/contract_test.go`:
 
 ```go
 package test
+# => Package declaration
 // => Contract test package for web-server module
 
 import (
+# => Import statement
  "testing" // => Go testing framework
  // => Configure testing" //
  "github.com/gruntwork-io/terratest/modules/terraform" // => Terratest Terraform helpers
@@ -1509,6 +1600,7 @@ import (
 
 // Contract Test 1: Module accepts valid inputs
 func TestModuleAcceptsValidInputs(t *testing.T) {
+# => Function declaration
  // => Verify module applies successfully with valid inputs
  // => Contract: module must accept documented input combinations
  terraformOptions := &terraform.Options{
@@ -1525,6 +1617,7 @@ func TestModuleAcceptsValidInputs(t *testing.T) {
  }
 
  defer terraform.Destroy(t, terraformOptions)
+ # => Deferred cleanup (runs when function exits)
  // => Cleanup: destroy resources after test completes
  terraform.InitAndApply(t, terraformOptions)
  // => terraform init && terraform apply -auto-approve
@@ -1535,11 +1628,15 @@ func TestModuleAcceptsValidInputs(t *testing.T) {
 
 // Contract Test 2: Module rejects invalid inputs
 func TestModuleRejectsInvalidInputs(t *testing.T) {
+# => Function declaration
  // => Verify module validation catches invalid inputs
  // => Contract: module must reject invalid inputs with clear errors
  terraformOptions := &terraform.Options{
+ # => Short variable declaration: terraformOptions
  TerraformDir: "./modules/web-server",
+ # => Terraform configuration
  Vars: map[string]interface{}{
+ # => Terraform configuration
  "server_name": "", // Empty (invalid)
  // => Invalid input: empty string (validation should fail)
  },
@@ -1549,8 +1646,10 @@ func TestModuleRejectsInvalidInputs(t *testing.T) {
  // => InitAndApplyE returns error instead of failing test
  // => Allows testing expected failures
  assert.Error(t, err)
+ # => Test assertion
  // => Verify apply failed (error is not nil)
  assert.Contains(t, err.Error(), "server_name cannot be empty")
+ # => Test assertion
  // => Verify error message matches validation error
  // => Contract: module rejects invalid inputs with clear error
  // => Error message must help user fix issue
@@ -1558,17 +1657,22 @@ func TestModuleRejectsInvalidInputs(t *testing.T) {
 
 // Contract Test 3: Module produces required outputs
 func TestModuleProducesRequiredOutputs(t *testing.T) {
+# => Function declaration
  // => Verify module exposes documented outputs
  // => Contract: module must output server_id and server_name
  terraformOptions := &terraform.Options{
+ # => Short variable declaration: terraformOptions
  TerraformDir: "./modules/web-server",
+ # => Terraform configuration
  Vars: map[string]interface{}{
+ # => Terraform configuration
  "server_name": "web-02",
  // => Valid input for test
  },
  }
 
  defer terraform.Destroy(t, terraformOptions)
+ # => Deferred cleanup (runs when function exits)
  terraform.InitAndApply(t, terraformOptions)
  // => Apply module configuration
 
@@ -1580,9 +1684,11 @@ func TestModuleProducesRequiredOutputs(t *testing.T) {
  // => Read server_name output from state
 
  assert.NotEmpty(t, serverID)
+ # => Test assertion
  // => Verify server_id is not empty string
  // => Contract: server_id must have value
  assert.Equal(t, "web-02", serverName)
+ # => Test assertion
  // => Verify server_name matches input
  // => Contract: module outputs server_id and server_name
  // => Consumers can depend on these outputs existing
@@ -1590,16 +1696,22 @@ func TestModuleProducesRequiredOutputs(t *testing.T) {
 
 // Contract Test 4: Module is idempotent
 func TestModuleIdempotence(t *testing.T) {
+# => Function declaration
  // => Verify second apply produces no changes
  // => Contract: module is idempotent (apply twice = apply once)
  terraformOptions := &terraform.Options{
+ # => Short variable declaration: terraformOptions
  TerraformDir: "./modules/web-server",
+ # => Terraform configuration
  Vars: map[string]interface{}{
+ # => Terraform configuration
  "server_name": "web-03",
+ # => Terraform configuration
  },
  }
 
  defer terraform.Destroy(t, terraformOptions)
+ # => Deferred cleanup (runs when function exits)
  terraform.InitAndApply(t, terraformOptions)
  // => First apply creates infrastructure
 
@@ -1608,6 +1720,7 @@ func TestModuleIdempotence(t *testing.T) {
  // => terraform plan (should show no changes)
  // => Returns plan output as string
  assert.Contains(t, planOutput, "No changes")
+ # => Test assertion
  // => Verify plan shows "No changes. Your infrastructure matches.."
  // => Contract: module is idempotent (second apply changes nothing)
  // => Prevents resource recreation on every apply
@@ -1615,11 +1728,15 @@ func TestModuleIdempotence(t *testing.T) {
 
 // Contract Test 5: Module handles updates correctly
 func TestModuleHandlesUpdates(t *testing.T) {
+# => Function declaration
  // => Verify module handles variable updates without unnecessary recreation
  // => Contract: changing instance_type doesn't destroy/recreate server
  terraformOptions := &terraform.Options{
+ # => Short variable declaration: terraformOptions
  TerraformDir: "./modules/web-server",
+ # => Terraform configuration
  Vars: map[string]interface{}{
+ # => Terraform configuration
  "server_name": "web-04",
  // => Server name (should not change)
  "instance_type": "small",
@@ -1628,6 +1745,7 @@ func TestModuleHandlesUpdates(t *testing.T) {
  }
 
  defer terraform.Destroy(t, terraformOptions)
+ # => Deferred cleanup (runs when function exits)
  terraform.InitAndApply(t, terraformOptions)
  // => First apply with instance_type = "small"
 
@@ -1643,9 +1761,12 @@ func TestModuleHandlesUpdates(t *testing.T) {
  serverName := terraform.Output(t, terraformOptions, "server_name")
  // => Read server_name output after update
  assert.Equal(t, "web-04", serverName)
+ # => Test assertion
  // => Verify server_name unchanged
  // => Contract: module updates without replacing resources unnecessarily
  // => In-place updates preferred over destroy/create
+
+
 
 
 ```
@@ -1656,7 +1777,7 @@ func TestModuleHandlesUpdates(t *testing.T) {
 
 ---
 
-## Group 17: Production Patterns
+## Group 18: Production Patterns
 
 ### Example 65: Terraform Workspaces vs Directory Structure (Production Decision)
 
@@ -1709,6 +1830,7 @@ terraform {
  # => Sets required_version
 
  backend "s3" {
+ # => Backend type for state storage
  # Production state in separate S3 bucket
  bucket = "company-terraform-prod-state" # => String value
  # => Sets bucket
@@ -1736,10 +1858,12 @@ terraform {
 provider "aws" {
 # => Provider configuration
  region = var.aws_region
+ # => AWS/cloud region
  # => Sets region
 
  # Production uses separate AWS account
  assume_role {
+ # => Terraform configuration
  role_arn = "arn:aws:iam::111111111111:role/TerraformProd" # => String value
  # => Sets role_arn
  }
@@ -1748,6 +1872,7 @@ provider "aws" {
 }
 
 module "app" {
+# => Module call
 # => Module configuration
  source = "././modules/app" # => String value
  # => Sets source
@@ -1763,8 +1888,11 @@ module "app" {
 output "app_url" {
 # => Output value
  value = module.app.url
+ # => Output value
  # => Sets value
 }
+
+
 
 
 
@@ -1779,6 +1907,7 @@ terraform {
  # => Sets required_version
 
  backend "s3" {
+ # => Backend type for state storage
  # Dev state in separate S3 bucket
  bucket = "company-terraform-dev-state" # => String value
  # => Sets bucket
@@ -1796,16 +1925,19 @@ terraform {
 provider "aws" {
 # => Provider configuration
  region = var.aws_region
+ # => AWS/cloud region
  # => Sets region
 
  # Dev uses separate AWS account
  assume_role {
+ # => Terraform configuration
  role_arn = "arn:aws:iam::222222222222:role/TerraformDev" # => String value
  # => Sets role_arn
  }
 }
 
 module "app" {
+# => Module call
 # => Module configuration
  source = "././modules/app" # => String value
  # => Sets source
@@ -1817,6 +1949,8 @@ module "app" {
  instance_type = "t3.micro" # => String value
  # => Dev-specific configuration
 }
+
+
 
 
 
@@ -1903,6 +2037,7 @@ provider "aws" {
 
 # Primary region resources
 module "app_primary" {
+# => Module call
 # => Module configuration
  source = "./modules/app" # => String value
  # => Sets source
@@ -1914,6 +2049,7 @@ module "app_primary" {
  # => Pass specific provider to module
 
  region = "us-east-1"
+ # => AWS/cloud region
  # => Sets region
  environment = "production"
  # => Sets environment
@@ -1923,16 +2059,20 @@ module "app_primary" {
 
 # Secondary region resources (disaster recovery)
 module "app_secondary" {
+# => Module call
 # => Module configuration
  source = "./modules/app"
+ # => Provider/module source location
  # => Sets source
 
  providers = {
+ # => Terraform configuration
  aws = aws.secondary
  # => Directs module resources to us-west-2 provider
  }
 
  region = "us-west-2"
+ # => AWS/cloud region
  # => Sets region
  environment = "production"
  # => Sets environment
@@ -1942,16 +2082,20 @@ module "app_secondary" {
 
 # Tertiary region resources (global distribution)
 module "app_tertiary" {
+# => Module call
 # => Module configuration
  source = "./modules/app"
+ # => Provider/module source location
  # => Sets source
 
  providers = {
+ # => Terraform configuration
  aws = aws.tertiary
  # => Sets aws
  }
 
  region = "eu-west-1"
+ # => AWS/cloud region
  # => Sets region
  environment = "production"
  # => Sets environment
@@ -1967,6 +2111,7 @@ resource "aws_route53_zone" "main" {
  # => Sets provider
 
  name = "example.com"
+ # => Resource name
  # => Route53 zone is global (serves all regions)
 }
 
@@ -1979,20 +2124,26 @@ resource "aws_route53_record" "app" {
  zone_id = aws_route53_zone.main.zone_id
  # => Sets zone_id
  name = "app.example.com"
+ # => Resource name
  # => Sets name
  type = "A"
+ # => Variable type constraint
  # => Sets type
  set_identifier = "primary"
  # => Sets set_identifier
 
  latency_routing_policy {
+ # => Terraform configuration
  region = "us-east-1"
+ # => AWS/cloud region
  # => Route53 routes requests to nearest healthy endpoint
  }
  # => Latency routing: Route53 directs users to lowest-latency region
 
  alias {
+ # => Terraform configuration
  name = module.app_primary.load_balancer_dns
+ # => Resource name
  # => Sets name
  zone_id = module.app_primary.load_balancer_zone_id
  # => Sets zone_id
@@ -2009,19 +2160,25 @@ resource "aws_route53_record" "app_secondary" {
  zone_id = aws_route53_zone.main.zone_id
  # => Sets zone_id
  name = "app.example.com"
+ # => Resource name
  # => Sets name
  type = "A"
+ # => Variable type constraint
  # => Sets type
  set_identifier = "secondary"
  # => Sets set_identifier
 
  latency_routing_policy {
+ # => Terraform configuration
  region = "us-west-2"
+ # => AWS/cloud region
  # => Sets region
  }
 
  alias {
+ # => Terraform configuration
  name = module.app_secondary.load_balancer_dns
+ # => Resource name
  # => Sets name
  zone_id = module.app_secondary.load_balancer_zone_id
  # => Sets zone_id
@@ -2037,18 +2194,22 @@ resource "aws_s3_bucket_replication_configuration" "primary_to_secondary" {
  # => Sets provider
 
  bucket = module.app_primary.s3_bucket_id
+ # => S3 bucket name
  # => Sets bucket
  role = aws_iam_role.replication.arn
  # => Sets role
 
  rule {
+ # => Terraform configuration
  id = "replicate_all"
  # => Sets id
  status = "Enabled"
  # => Sets status
 
  destination {
+ # => Terraform configuration
  bucket = module.app_secondary.s3_bucket_arn
+ # => S3 bucket name
  # => Sets bucket
  storage_class = "STANDARD_IA"
  # => STANDARD_IA: infrequent access tier (cheaper for DR copies)
@@ -2060,6 +2221,7 @@ resource "aws_s3_bucket_replication_configuration" "primary_to_secondary" {
 output "endpoints" {
 # => Output value
  value = {
+ # => Output value
  primary = module.app_primary.endpoint
  # => Sets primary
  secondary = module.app_secondary.endpoint
@@ -2070,6 +2232,8 @@ output "endpoints" {
  # => Sets global
  }
 }
+
+
 
 
 
@@ -2115,6 +2279,7 @@ provider "local" {}
 variable "active_environment" {
 # => Input variable
  type = string
+ # => Variable type constraint
  # => Sets type
  description = "Active environment: blue or green" # => String value
  # => Sets description
@@ -2134,6 +2299,7 @@ variable "active_environment" {
 variable "app_version" {
 # => Input variable
  type = map(string)
+ # => Variable type constraint
  # => Sets type
  default = { # => Map/object definition
  blue = "v1.0" # => String value
@@ -2149,6 +2315,7 @@ resource "local_file" "blue_app" {
  filename = "blue-app.txt" # => String value
  # => Sets filename
  content = "App version: ${var.app_version["blue"]}\nStatus: ${var.active_environment == "blue" ? "ACTIVE" : "STANDBY"}"
+ # => File/resource content
  # => Ternary: active_environment == "blue" → "ACTIVE" else "STANDBY"
 }
 
@@ -2156,8 +2323,10 @@ resource "local_file" "blue_app" {
 resource "local_file" "green_app" {
 # => Resource definition
  filename = "green-app.txt"
+ # => Output file path
  # => Sets filename
  content = "App version: ${var.app_version["green"]}\nStatus: ${var.active_environment == "green" ? "ACTIVE" : "STANDBY"}"
+ # => File/resource content
  # => Mirror of blue: only one environment is ACTIVE at any time
 }
 
@@ -2165,8 +2334,10 @@ resource "local_file" "green_app" {
 resource "local_file" "load_balancer" {
 # => Resource definition
  filename = "load-balancer-config.txt"
+ # => Output file path
  # => Sets filename
  content = <<-EOT
+ # => File/resource content
  Active Environment: ${var.active_environment}
  # => Shows which environment (blue/green) is receiving traffic
  Traffic Routing: 100% -> ${var.active_environment}-app.txt
@@ -2180,25 +2351,30 @@ resource "local_file" "load_balancer" {
 output "active_environment" {
 # => Output value
  value = var.active_environment
+ # => Output value
  # => Sets value
 }
 
 output "active_version" {
 # => Output value
  value = var.app_version[var.active_environment]
+ # => Output value
  # => Sets value
 }
 
 output "deployment_status" {
 # => Output value
  value = {
+ # => Output value
  blue = {
+ # => Terraform configuration
  version = var.app_version["blue"]
  # => Blue environment's deployed version
  status = var.active_environment == "blue" ? "ACTIVE (100% traffic)" : "STANDBY (0% traffic)"
  # => Status depends on which environment is active
  }
  green = {
+ # => Terraform configuration
  version = var.app_version["green"]
  # => Green environment's deployed version
  status = var.active_environment == "green" ? "ACTIVE (100% traffic)" : "STANDBY (0% traffic)"
@@ -2206,6 +2382,8 @@ output "deployment_status" {
  }
  }
 }
+
+
 
 
 
@@ -2248,6 +2426,8 @@ output "deployment_status" {
 # -var="active_environment=green" \
 # -var='app_version={"blue":"v3.0","green":"v2.0"}'
 # => Blue becomes new standby with v3.0
+
+
 ```
 
 **Key Takeaway**: Blue-green deployment maintains two identical environments. Deploy new version to standby environment, test, then atomically switch traffic. Use variable (`active_environment`) to control routing. Instant rollback: switch variable back. Both environments always running (double cost). Zero-downtime deployments with instant rollback capability. After successful cutover, update former active environment with next version.
@@ -2273,6 +2453,7 @@ provider "local" {}
 variable "new_feature_enabled" {
 # => Input variable
  type = bool
+ # => Variable type constraint
  # => Sets type
  description = "Enable new feature" # => String value
  # => Sets description
@@ -2283,6 +2464,7 @@ variable "new_feature_enabled" {
 variable "new_feature_rollout_percentage" {
 # => Input variable
  type = number
+ # => Variable type constraint
  # => Sets type
  description = "Percentage of traffic to new feature (0-100)" # => String value
  # => Sets description
@@ -2311,11 +2493,14 @@ resource "local_file" "feature_v1" {
 resource "local_file" "feature_v2" {
 # => Resource definition
  count = var.new_feature_enabled ? 1 : 0
+ # => Number of resource instances
  # => Creates v2 only when enabled flag is true
 
  filename = "feature-v2.txt"
+ # => Output file path
  # => Sets filename
  content = "Feature Version: 2.0 (Experimental)\nTraffic: ${var.new_feature_rollout_percentage}%"
+ # => File/resource content
  # => Shows what percentage of traffic routes to the new feature
 }
 
@@ -2323,20 +2508,28 @@ resource "local_file" "feature_v2" {
 resource "local_file" "load_balancer_weights" {
 # => Resource definition
  filename = "traffic-split.txt"
+ # => Output file path
  # => Sets filename
  content = <<-EOT
+ # => File/resource content
  # => Sets content
  Traffic Split Configuration:
+ # => Terraform configuration
  - Feature V1: ${100 - var.new_feature_rollout_percentage}% (${100 - var.new_feature_rollout_percentage} out of 100 requests)
+ # => Terraform configuration
  - Feature V2: ${var.new_feature_rollout_percentage}% (${var.new_feature_rollout_percentage} out of 100 requests)
+ # => Terraform configuration
 
  Status: ${var.new_feature_enabled ? "ROLLOUT IN PROGRESS" : "STABLE (V1 ONLY)"}
+ # => Terraform configuration
  EOT
+ # => Terraform configuration
 }
 
 output "rollout_status" {
 # => Output value
  value = {
+ # => Output value
  new_feature_enabled = var.new_feature_enabled
  # => Sets new_feature_enabled
  v1_traffic_pct = 100 - var.new_feature_rollout_percentage
@@ -2346,9 +2539,12 @@ output "rollout_status" {
  stage = var.new_feature_rollout_percentage == 0 ? "Not started" : (
  # => Nested ternary: 0% → Not started, 100% → Complete, else → In progress
  var.new_feature_rollout_percentage == 100 ? "Complete" : "In progress"
+ # => Terraform configuration
  )
  }
 }
+
+
 
 
 
@@ -2395,6 +2591,8 @@ output "rollout_status" {
 # -var="new_feature_enabled=true" \
 # -var="new_feature_rollout_percentage=100"
 # => Can remove V1 resources in future apply
+
+
 ```
 
 **Key Takeaway**: Feature flags enable progressive rollouts with percentage-based traffic splitting. Deploy new feature at 0% traffic, test, incrementally increase percentage while monitoring metrics. Instant rollback by reducing percentage to 0. Use count/for_each to conditionally create new feature resources. Load balancer weighted routing distributes traffic. Remove old feature after new feature proves stable at 100%.
@@ -2403,7 +2601,7 @@ output "rollout_status" {
 
 ---
 
-## Group 18: Security Patterns
+## Group 19: Security Patterns
 
 ### Example 69: Secrets Management with External Secret Stores
 
@@ -2431,6 +2629,7 @@ graph TD
 variable "database_password" {
 # => Input variable
  default = "SuperSecret123!" # EXPOSED IN CODE
+ # => Default value if not specified
  # => Sets default
 }
 
@@ -2444,6 +2643,8 @@ resource "local_file" "config" {
  # => Secrets appear in plan output
  # => Secrets leak in logs
 }
+
+
 
 ```
 
@@ -2513,12 +2714,14 @@ resource "aws_db_instance" "main" {
 output "db_endpoint" {
 # => Output value
  value = aws_db_instance.main.endpoint
+ # => Output value
  # => Sets value
 }
 
 output "db_password_arn" {
 # => Output value
  value = data.aws_secretsmanager_secret.db_password.arn
+ # => Output value
  # => Output secret ARN (safe), not password value
 }
 
@@ -2532,11 +2735,15 @@ output "db_password_arn" {
 output "db_password_debug" {
 # => Output value
  value = data.aws_secretsmanager_secret_version.db_password.secret_string
+ # => Output value
  # => Sets value
  sensitive = true
+ # => Mark as sensitive (hide from output)
  # => sensitive = true hides value in plan/apply output
  # => Still visible in state file
 }
+
+
 
 ```
 
@@ -2574,6 +2781,7 @@ resource "local_file" "config" {
  filename = "app-config.txt" # => String value
  # => Sets filename
  content = <<-EOT
+ # => File/resource content
  # => Sets content
  DB_HOST=db.example.com
  # => Sets DB_HOST
@@ -2588,11 +2796,13 @@ resource "local_file" "config" {
 
 
 
+
+
 ```
 
 **Key Takeaway**: Store secrets in external secret stores (AWS Secrets Manager, HashiCorp Vault, Azure Key Vault). Reference secrets with data sources (`data.aws_secretsmanager_secret_version`). Never hardcode secrets in .tf files or variable defaults. Mark outputs `sensitive = true` to hide from logs. Secrets still appear in state file—encrypt state (S3 with KMS, Terraform Cloud encryption). Rotate secrets outside Terraform (Secrets Manager rotation, Vault dynamic secrets).
 
-**Why It Matters**: Hardcoded secrets cause security breaches—when State files are secret treasure troves: even with secrets stored externally, their values appear in state when referenced, requiring encrypted state storage (S3 + KMS, Terraform Cloud encryption). Dynamic secrets from Vault (credentials expire after hours) reduce blast radius: compromised credential has limited lifetime, unlike permanent passwords. Dynamic secrets from Vault eliminate the rotation problem entirely: database credentials provisioned fresh for each Terraform run expire automatically, so even if state is compromised, credentials are already invalid. Centralizing secrets management also provides audit logs of who accessed which secret and when, enabling forensic analysis during security incidents.
+**Why It Matters**: Hardcoded secrets cause security breaches—when State files are secret treasure troves: even with secrets stored externally, their values appear in state when referenced, requiring encrypted state storage (S3 + KMS, Terraform Cloud encryption). Dynamic secrets from Vault (credentials expire after hours) reduce blast radius: compromised credential has limited lifetime, unlike permanent passwords. Dynamic secrets from Vault eliminate the rotation problem entirely: database credentials provisioned fresh for each Terraform run expire automatically, so even if state is compromised, credentials are already invalid.
 
 ### Example 70: Least Privilege IAM Roles for Terraform
 
@@ -2656,7 +2866,9 @@ resource "aws_iam_role" "terraform_apply" {
  }
  }
  }]
+ # => Terraform configuration
  })
+ # => Terraform configuration
 }
 
 # Terraform apply policy (write permissions)
@@ -2740,6 +2952,7 @@ resource "aws_iam_role_policy" "terraform_apply" {
  }
  ]
  })
+ # => Terraform configuration
 }
 
 # Terraform plan role (read-only permissions)
@@ -2748,6 +2961,7 @@ resource "aws_iam_role" "terraform_plan" {
  # => IAM role for terraform plan operations
  # => Assumed by GitHub Actions from pull requests
  name = "TerraformPlan"
+ # => Resource name
  # => Role name (read-only variant)
 
  assume_role_policy = jsonencode( # => Converts value to JSON string
@@ -2758,16 +2972,20 @@ resource "aws_iam_role" "terraform_plan" {
  Version = "2012-10-17"
  # => Sets Version
  Statement = [{
+ # => Terraform configuration
  Effect = "Allow"
  # => Sets Effect
  Principal = {
+ # => Terraform configuration
  Federated = "arn:aws:iam::ACCOUNT_ID:oidc-provider/token.actions.githubusercontent.com"
  # => Same OIDC provider as apply role
  }
  Action = "sts:AssumeRoleWithWebIdentity"
  # => OIDC-based role assumption
  Condition = {
+ # => Terraform configuration
  StringEquals = {
+ # => Terraform configuration
  "token.actions.githubusercontent.com:sub" = "repo:my-org/infrastructure:pull_request"
  # => GitHub Actions from pull requests use read-only role
  # => :pull_request allows any PR in repository
@@ -2775,7 +2993,9 @@ resource "aws_iam_role" "terraform_plan" {
  }
  }
  }]
+ # => Terraform configuration
  })
+ # => Terraform configuration
 }
 
 # Terraform plan policy (read-only)
@@ -2784,6 +3004,7 @@ resource "aws_iam_role_policy" "terraform_plan" {
  # => Read-only policy for plan operations
  # => Allows terraform plan but blocks apply
  name = "TerraformPlanPolicy"
+ # => Resource name
  # => Sets name
  role = aws_iam_role.terraform_plan.id
  # => Attach to plan role
@@ -2838,7 +3059,10 @@ resource "aws_iam_role_policy" "terraform_plan" {
  # => Note: No DynamoDB permissions (plan doesn't lock state)
  ]
  })
+ # => Terraform configuration
 }
+
+
 
 ```
 
@@ -2852,6 +3076,7 @@ terraform {
  # => Minimum Terraform version
 
  backend "s3" {
+ # => Backend type for state storage
  # => S3 backend for state storage
  bucket = "terraform-state-bucket" # => String value
  # => S3 bucket name for state file
@@ -2880,6 +3105,8 @@ provider "aws" {
  # => CI/CD authenticates via OIDC, then assumes this role
  }
 }
+
+
 ```
 
 **CI/CD usage**:
@@ -2904,8 +3131,10 @@ jobs:
  plan:
  # => Plan job for pull requests
  if: github.event_name == 'pull_request'
+ # => Conditional execution expression
  # => Only run on PRs (not pushes)
  runs-on: ubuntu-latest
+ # => GitHub Actions runner type
  # => GitHub-hosted Ubuntu runner
  permissions:
  # => GitHub token permissions
@@ -2924,7 +3153,9 @@ jobs:
  - name: Configure AWS credentials
  # => Authenticate to AWS using OIDC
  uses: aws-actions/configure-aws-credentials@v2
+ # => Reusable action from marketplace
  with:
+ # => Input parameters for action
  role-to-assume: arn:aws:iam::ACCOUNT_ID:role/TerraformPlan
  # => PR uses read-only plan role
  # => TerraformPlan role has Describe/List/Get permissions only
@@ -2934,20 +3165,25 @@ jobs:
  - name: Terraform Plan
  # => Generate execution plan
  run: terraform plan
+ # => Shell command to execute
  # => Plan shows what changes would be made
  # => Read-only operation (no infrastructure changes)
 
  apply:
  # => Apply job for main branch
  if: github.event_name == 'push'
+ # => Conditional execution expression
  # => Only run on push to main (after PR merge)
  runs-on: ubuntu-latest
+ # => GitHub Actions runner type
  permissions:
+ # => permissions configuration
  id-token: write
  # => OIDC token generation
  contents: read
  # => Repository read access
  steps:
+ # => Sequential steps for job
  - uses: actions/checkout@v3
  # => Check out merged code
  - uses: hashicorp/setup-terraform@v2
@@ -2956,23 +3192,29 @@ jobs:
  - name: Configure AWS credentials
  # => Authenticate with elevated permissions
  uses: aws-actions/configure-aws-credentials@v2
+ # => Reusable action from marketplace
  with:
+ # => Input parameters for action
  role-to-assume: arn:aws:iam::ACCOUNT_ID:role/TerraformApply
  # => Main branch uses write apply role
  # => TerraformApply role has Create/Update/Delete permissions
  # => Different role than plan (least privilege)
  aws-region: us-west-2
+ # => Sets aws-region
 
  - name: Terraform Apply
  # => Apply infrastructure changes
  run: terraform apply -auto-approve
+ # => Shell command to execute
  # => -auto-approve: no interactive prompt (CI environment)
  # => Creates/updates/deletes resources
+
+
 ```
 
 **Key Takeaway**: Use separate IAM roles for `terraform plan` (read-only) and `terraform apply` (write). Plan role has Describe/List/Get permissions only. Apply role has Create/Update/Delete permissions. CI/CD assumes appropriate role based on event (pull request = plan, push to main = apply). Use OIDC for keyless authentication from Grant minimal permissions—only actions required for managed resources.
 
-**Why It Matters**: Least privilege prevents accidental resource deletion—when engineer runs `terraform destroy` on wrong environment, read-only plan role prevents execution, catching mistake before damage. Separate roles limit blast radius: compromised plan credentials can't modify infrastructure, only read current state. The OIDC pattern eliminates long-lived AWS credentials in CI/CD: no access keys to rotate, leak, or expire. OIDC authentication represents a fundamental security improvement: instead of static credentials stored in CI/CD secrets that can be accidentally logged or leaked in build output, temporary credentials are issued fresh per pipeline run with a 1-hour expiry. Security teams can enforce least privilege rigorously because separate roles make it easy to audit what each pipeline can and cannot do.
+**Why It Matters**: Least privilege prevents accidental resource deletion—when engineer runs `terraform destroy` on wrong environment, read-only plan role prevents execution, catching mistake before damage. Separate roles limit blast radius: compromised plan credentials can't modify infrastructure, only read current state. The OIDC pattern eliminates long-lived AWS credentials in CI/CD: no access keys to rotate, leak, or expire. Security teams can enforce least privilege rigorously because separate roles make it easy to audit what each pipeline can and cannot do.
 
 ### Example 71: Drift Detection and Remediation
 
@@ -3018,6 +3260,8 @@ resource "local_file" "managed" {
 # Simulated drift: manual modification of file outside Terraform
 
 
+
+
 ```
 
 **Drift detection workflow**:
@@ -3051,6 +3295,8 @@ resource "local_file" "managed" {
 # Remediate drift (restore desired state)
 # $ terraform apply
 # => Restores managed-file.txt to "Terraform-managed content version 1.0"
+
+
 ```
 
 **Automated drift detection (CI/CD)**:
@@ -3058,46 +3304,75 @@ resource "local_file" "managed" {
 ```yaml
 # .github/workflows/drift-detection.yml
 name: Drift Detection
+# => Workflow/job name: Drift Detection
 on:
+# => Trigger events for workflow
  schedule:
- - cron: "0 */6 * * *" # Every 6 hours
- workflow_dispatch: # Manual trigger
+ # => schedule configuration
+ - cron: "0 */6 * * *" # => Runs every 6 hours (00:00, 06:00, 12:00, 18:00 UTC)
+ workflow_dispatch:     # => Allows manual trigger from GitHub Actions UI
 
 jobs:
+# => Workflow jobs definition
  detect-drift:
+ # => detect-drift configuration
  runs-on: ubuntu-latest
+ # => GitHub Actions runner type
  steps:
- - uses: actions/checkout@v3
- - uses: hashicorp/setup-terraform@v2
+ # => Sequential steps for job
+ - uses: actions/checkout@v3              # => Clone repository
+ - uses: hashicorp/setup-terraform@v2     # => Install Terraform binary
 
  - name: Terraform Plan (Drift Detection)
- id: plan
- run: terraform plan -detailed-exitcode
+ # => Step name: Terraform Plan (Drift Detection)
+ id: plan                                # => id: used to reference step outputs
+ run: terraform plan -detailed-exitcode  # => exit 0=no changes, 1=error, 2=changes
  continue-on-error: true
+ # => Don't fail job on exit code 2 (drift detected is not a workflow failure)
  # => Exit code 2 indicates drift
 
  - name: Report Drift
+ # => Step name: Report Drift
  if: steps.plan.outputs.exitcode == '2'
- # => Configure if: steps.plan.outputs.exitcode
- uses: actions/github-script@v6
+ # => Conditional execution expression
+ # => Only runs when exit code 2 (drift detected) from plan step
+ uses: actions/github-script@v6          # => GitHub API via JavaScript
  with:
+ # => Input parameters for action
  script: |
+ # => Sets script
  github.rest.issues.create({
- owner: context.repo.owner,
- repo: context.repo.repo,
+ # => Terraform configuration
+ owner: context.repo.owner,         # => Repository owner from context
+ repo: context.repo.repo,           # => Repository name from context
  title: '🚨 Terraform Drift Detected',
- body: 'Configuration drift detected. Manual changes found outside Terraform.\n\n' +
- 'Run `terraform plan` to review changes.\n' +
+ # => Sets title
+ body: 'Configuration drift detected. Manual changes found outside Terraform.
+ # => Sets body
+
+' +
+# => Terraform configuration
+ 'Run `terraform plan` to review changes.
+ # => Terraform configuration
+' +
+# => Terraform configuration
  'Run `terraform apply` to remediate drift.',
- labels: ['drift', 'infrastructure']
+ # => Terraform configuration
+ labels: ['drift', 'infrastructure']  # => Labels for issue triage
  })
- # => Create GitHub issue when drift detected
+ # => Creates GitHub issue alerting team to drift
 
  - name: Auto-Remediate (Optional)
+ # => Step name: Auto-Remediate (Optional)
  if: steps.plan.outputs.exitcode == '2' && github.event_name == 'schedule'
- # => Configure if: steps.plan.outputs.exitcode
+ # => Conditional execution expression
+ # => Only auto-remediate on scheduled runs (not manual workflow_dispatch)
  run: terraform apply -auto-approve
- # => Optional: automatically fix drift (risky!)
+ # => Shell command to execute
+ # => -auto-approve: skip interactive confirmation prompt
+ # => Restores infrastructure to desired state defined in Terraform config
+
+
 ```
 
 **Drift prevention**:
@@ -3129,6 +3404,8 @@ resource "local_file" "protected" {
 # => Future drift detected and remediable
 
 
+
+
 ```
 
 **Key Takeaway**: Drift detection uses `terraform plan` to compare actual state vs desired configuration. Use `plan -detailed-exitcode` in automation: exit code 2 means drift detected. Schedule periodic drift detection in CI/CD (every 6 hours). Remediate drift with `terraform apply` to restore desired state. Prevent drift by importing manually created resources, enforcing "Terraform-only" policy, and using read-only production access.
@@ -3137,7 +3414,7 @@ resource "local_file" "protected" {
 
 ---
 
-## Group 19: CI/CD Integration
+## Group 20: CI/CD Integration
 
 ### Example 72: GitHub Actions CI/CD Pipeline
 
@@ -3173,6 +3450,7 @@ on:
  branches: [main]
  # => Only run if Terraform files changed
  paths:
+ # => paths configuration
  - "terraform/**"
  # => Terraform configuration files
  - ".github/workflows/terraform.yml"
@@ -3180,7 +3458,9 @@ on:
  push:
  # => Run on direct pushes to main (after PR merge)
  branches: [main]
+ # => Sets branches
  paths:
+ # => paths configuration
  - "terraform/**"
  # => Only Terraform changes trigger workflow
 
@@ -3194,6 +3474,7 @@ permissions:
  # => Write access to post plan output as PR comment
 
 env:
+# => Environment variables for job/step
  # => Environment variables available to all jobs
  TF_VERSION: 1.6.0
  # => Terraform version to install (hashicorp/setup-terraform)
@@ -3207,6 +3488,7 @@ jobs:
  name: Validate
  # => Display name in GitHub Actions UI
  runs-on: ubuntu-latest
+ # => GitHub Actions runner type
  # => Run on GitHub-hosted Ubuntu runner
  steps:
  # => Sequential steps within job
@@ -3216,12 +3498,14 @@ jobs:
  - uses: hashicorp/setup-terraform@v2
  # => Install Terraform CLI
  with:
+ # => Input parameters for action
  terraform_version: ${{ env.TF_VERSION }}
  # => Install version 1.6.0 from env.TF_VERSION
 
  - name: Terraform fmt
  # => Check code formatting
  run: terraform fmt -check -recursive
+ # => Shell command to execute
  # => Fail if files not formatted (-check flag)
  # => Check all .tf files recursively
  working-directory: ${{ env.WORKING_DIR }}
@@ -3230,57 +3514,74 @@ jobs:
  - name: Terraform Init
  # => Initialize without remote backend
  run: terraform init -backend=false
+ # => Shell command to execute
  # => Initialize providers without configuring state backend
  # => Fast init for validation (no cloud access needed)
  working-directory: ${{ env.WORKING_DIR }}
+ # => Sets working-directory
 
  - name: Terraform Validate
  # => Validate configuration syntax and logic
  run: terraform validate
+ # => Shell command to execute
  # => Check for syntax errors, invalid references
  # => Fails if configuration invalid
  working-directory: ${{ env.WORKING_DIR }}
+ # => Sets working-directory
 
  - name: TFLint
  # => Install TFLint for advanced linting
  uses: terraform-linters/setup-tflint@v3
+ # => Reusable action from marketplace
  with:
+ # => Input parameters for action
  tflint_version: latest
  # => Install latest TFLint version
 
  - name: Run TFLint
  # => Run TFLint checks
  run: tflint --init && tflint
+ # => Shell command to execute
  # => --init: download plugins, tflint: run linting
  # => Detects unused variables, deprecated syntax, etc.
  working-directory: ${{ env.WORKING_DIR }}
+ # => Sets working-directory
 
  plan:
  # => Second job: generate Terraform plan for PR review
  name: Plan
+ # => Workflow/job name: Plan
  runs-on: ubuntu-latest
+ # => GitHub Actions runner type
  needs: validate
+ # => Job dependency (must complete first)
  # => Run AFTER validate job succeeds (dependency)
  if: github.event_name == 'pull_request'
+ # => Conditional execution expression
  # => Only run on pull requests (not pushes to main)
  outputs:
+ # => Values exposed to other jobs
  # => Job outputs accessible by other jobs
  plan_id: ${{ steps.plan.outputs.stdout }}
  # => Plan output from terraform plan command
  steps:
+ # => Sequential steps for job
  - uses: actions/checkout@v3
  # => Check out repository code
 
  - uses: hashicorp/setup-terraform@v2
  # => Install Terraform CLI
  with:
+ # => Input parameters for action
  terraform_version: ${{ env.TF_VERSION }}
  # => Terraform configuration
 
  - name: Configure AWS Credentials
  # => Authenticate to AWS using OIDC
  uses: aws-actions/configure-aws-credentials@v2
+ # => Reusable action from marketplace
  with:
+ # => Input parameters for action
  role-to-assume: arn:aws:iam::ACCOUNT_ID:role/TerraformPlan
  # => Assume IAM role with read-only permissions
  # => Role configured for GitHub OIDC (no long-lived keys)
@@ -3290,41 +3591,52 @@ jobs:
  - name: Terraform Init
  # => Initialize with remote backend
  run: terraform init
+ # => Shell command to execute
  # => Initialize state backend and providers
  # => Requires AWS credentials for S3 backend
  working-directory: ${{ env.WORKING_DIR }}
+ # => Sets working-directory
 
  - name: Terraform Plan
  # => Generate execution plan
  id: plan
  # => Step ID for referencing outputs
  run: terraform plan -no-color
+ # => Shell command to execute
  # => -no-color: remove ANSI colors for clean PR comment
  # => Outputs plan to stdout (captured by id: plan)
  working-directory: ${{ env.WORKING_DIR }}
+ # => Sets working-directory
  continue-on-error: true
  # => Don't fail job if plan fails (handle in later step)
 
  - name: Comment PR
  # => Post plan output as PR comment
  uses: actions/github-script@v6
+ # => Reusable action from marketplace
  with:
+ # => Input parameters for action
  script: |
+ # => Sets script
  const output = `### Terraform Plan 📝
  # => Configure const output
 
  \`\`\`
+ # => Terraform configuration
  ${{ steps.plan.outputs.stdout }}
  # => Output configuration
  \`\`\`
+ # => Terraform configuration
 
  **Plan Result:** ${{ steps.plan.outcome }}
+ # => Terraform configuration
  `;
  # => Markdown template with plan output
  # => steps.plan.outputs.stdout: plan text
  # => steps.plan.outcome: success/failure
 
  github.rest.issues.createComment({
+ # => Terraform configuration
  issue_number: context.issue.number,
  # => PR number from event context
  owner: context.repo.owner,
@@ -3339,98 +3651,135 @@ jobs:
  - name: Plan Status
  # => Fail job if plan failed
  if: steps.plan.outcome == 'failure'
+ # => Conditional execution expression
  # => Only run if plan step failed
  run: exit 1
+ # => Shell command to execute
  # => Fail job (blocks PR merge if required check)
 
  apply:
  # => Third job: apply changes to infrastructure
  name: Apply
+ # => Workflow/job name: Apply
  runs-on: ubuntu-latest
+ # => GitHub Actions runner type
  needs: validate
+ # => Job dependency (must complete first)
  # => Run AFTER validate succeeds (parallel to plan)
  if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+ # => Conditional execution expression
  # => Only run on push to main branch (after PR merge)
  environment:
+ # => environment configuration
  name: production
  # => Requires manual approval in GitHub Settings
  # => Admin must approve before apply runs (safety gate)
  steps:
+ # => Sequential steps for job
  - uses: actions/checkout@v3
  # => Check out merged code from main
 
  - uses: hashicorp/setup-terraform@v2
  # => Install Terraform CLI
  with:
+ # => Input parameters for action
  terraform_version: ${{ env.TF_VERSION }}
  # => Terraform configuration
 
  - name: Configure AWS Credentials
  # => Authenticate with elevated permissions
  uses: aws-actions/configure-aws-credentials@v2
+ # => Reusable action from marketplace
  with:
+ # => Input parameters for action
  role-to-assume: arn:aws:iam::ACCOUNT_ID:role/TerraformApply
  # => Assume IAM role with write permissions
  # => Different role than plan (least privilege)
  aws-region: us-west-2
+ # => Sets aws-region
 
  - name: Terraform Init
  # => Initialize with remote backend
  run: terraform init
+ # => Shell command to execute
  # => Load state from S3
  working-directory: ${{ env.WORKING_DIR }}
+ # => Sets working-directory
 
  - name: Terraform Apply
  # => Apply infrastructure changes
  run: terraform apply -auto-approve
+ # => Shell command to execute
  # => -auto-approve: no interactive prompt (CI environment)
  # => Applies all changes from plan
  working-directory: ${{ env.WORKING_DIR }}
+ # => Sets working-directory
 
  - name: Notify Slack (Success)
- # => Send success notification to team
- if: success()
- # => Only run if apply succeeded
- uses: slackapi/slack-github-action@v1
- with:
- webhook-url: ${{ secrets.SLACK_WEBHOOK }}
- # => Slack incoming webhook URL (stored as secret)
- payload: |
- {
- "text": "✅ Terraform apply succeeded for ${{ github.repository }}",
- "blocks": [
- {
- "type": "section",
- "text": {
- "type": "mrkdwn",
- "text": "*Terraform Apply*: SUCCESS\n*Repository*: ${{ github.repository }}\n*Commit*: ${{ github.sha }}"
- }
- }
- ]
- }
- # => JSON payload with repository and commit info
+       # => Send success notification to team
+       if: success()
+       # => Conditional execution expression
+       # => Only run if apply succeeded (all previous steps passed)
+       uses: slackapi/slack-github-action@v1
+       # => Reusable action from marketplace
+       # => Official Slack GitHub Action for webhook notifications
+       with:
+       # => Input parameters for action
+       webhook-url: ${{ secrets.SLACK_WEBHOOK }}
+       # => Slack incoming webhook URL (stored as encrypted GitHub secret)
+       payload: |
+       # => Sets payload
+       {
+       "text": "✅ Terraform apply succeeded for ${{ github.repository }}",
+       # => Fallback text for notifications without Block Kit support
+       "blocks": [
+       # => Slack Block Kit: structured message format
+       {
+       "type": "section",   # => section block: displays formatted text
+       "text": {
+       # => Terraform configuration
+       "type": "mrkdwn",    # => mrkdwn: Slack markdown (bold, italics)
+       "text": "*Terraform Apply*: SUCCESS\n*Repository*: ${{ github.repository }}\n*Commit*: ${{ github.sha }}"
+       # => Bold labels, repository name, and commit SHA for traceability
+       }
+       }
+       ]
+       }
+       # => Sends success alert to Slack channel via webhook
 
- - name: Notify Slack (Failure)
- # => Send failure notification to team
- if: failure()
- # => Only run if apply failed
- uses: slackapi/slack-github-action@v1
- with:
- webhook-url: ${{ secrets.SLACK_WEBHOOK }}
- payload: |
- {
- "text": "❌ Terraform apply failed for ${{ github.repository }}",
- "blocks": [
- {
- "type": "section",
- "text": {
- "type": "mrkdwn",
- "text": "*Terraform Apply*: FAILED\n*Repository*: ${{ github.repository }}\n*Commit*: ${{ github.sha }}"
- }
- }
- ]
- }
- # => JSON payload with failure details
+       - name: Notify Slack (Failure)
+       # => Send failure notification to team
+       if: failure()
+       # => Conditional execution expression
+       # => Only run if any previous step failed
+       uses: slackapi/slack-github-action@v1
+       # => Reusable action from marketplace
+       # => Same Slack action reused for failure notification
+       with:
+       # => Input parameters for action
+       webhook-url: ${{ secrets.SLACK_WEBHOOK }}
+       # => Same webhook URL (same Slack channel as success notifications)
+       payload: |
+       # => Sets payload
+       {
+       "text": "❌ Terraform apply failed for ${{ github.repository }}",
+       # => Red X emoji signals failure in Slack channel
+       "blocks": [
+       # => Block Kit payload matches success format for consistency
+       {
+       "type": "section",    # => section block type
+       "text": {
+       # => Terraform configuration
+       "type": "mrkdwn",     # => Slack markdown formatting
+       "text": "*Terraform Apply*: FAILED\n*Repository*: ${{ github.repository }}\n*Commit*: ${{ github.sha }}"
+       # => Repository and commit info for quick incident triage
+       }
+       }
+       ]
+       }
+       # => Sends failure alert for on-call engineer response
+
+
 ```
 
 **Key Takeaway**: Use `environment: production` with manual approval gate for apply. Comment plan output on PRs for review. Use OIDC for keyless AWS authentication. Notify team on Separate roles: TerraformPlan (read-only) for PRs, TerraformApply (write) for main branch. Format check, validate, lint run before plan.
@@ -3466,6 +3815,8 @@ terraform {
  # => Terraform Cloud backend (replaces S3/local backend)
  # => Provides remote execution, state locking, team collaboration
 }
+
+
 ```
 
 \*\*gitlab-ci.yml`:
@@ -3500,6 +3851,7 @@ cache:
   key: terraform-${CI_COMMIT_REF_SLUG}
   # => Cache key includes branch name (separate cache per branch)
   paths:
+    # => paths configuration
     - ${TF_ROOT}/.terraform/
   # => Cache provider plugins to avoid re-downloading
 
@@ -3539,6 +3891,7 @@ plan:
   stage: plan
   # => Runs in plan stage (after validate)
   script:
+    # => script configuration
     - terraform init
     # => Initialize with Terraform Cloud backend
     # => Connects to remote state
@@ -3550,11 +3903,13 @@ plan:
   name: plan
   # => Artifact name in GitLab UI
   paths:
+    # => paths configuration
     - ${TF_ROOT}/tfplan
   # => Plan file to preserve
   expire_in: 1 week
   # => Keep artifact for 1 week (auto-delete after)
   rules:
+    # => rules configuration
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     # => Run on merge requests
     - if: '$CI_COMMIT_BRANCH == "main"'
@@ -3565,12 +3920,14 @@ apply:
   stage: apply
   # => Runs in apply stage (after plan)
   script:
+    # => script configuration
     - terraform init
     # => Re-initialize (cache may have expired)
     - terraform apply -auto-approve
   # => Apply changes without interactive prompt
   # => -auto-approve needed for CI environment
   rules:
+    # => rules configuration
     - if: '$CI_COMMIT_BRANCH == "main"'
   # => Only run on main branch (not MRs)
   when: manual
@@ -3578,10 +3935,12 @@ apply:
   # => Operator must click "Play" button to run
   # => Safety gate before production changes
   environment:
+  # => environment configuration
   name: production
   # => Environment for tracking deployments
   # => GitLab shows deployment history
   dependencies:
+    # => dependencies configuration
     - plan
   # => Use artifacts from plan job (tfplan file)
 ```
@@ -3689,6 +4048,7 @@ workflows:
  apply:
  # => Apply stage configuration
  steps:
+ # => Sequential steps for job
  - run: echo "Applying production infrastructure.."
  # => Custom step: run arbitrary command
  # => Logs message before apply
@@ -3697,6 +4057,8 @@ workflows:
  - run: echo "Notifying team.."
  # => Custom step after apply
  # => Could trigger notification webhook
+
+
 ```
 
 **Atlantis server configuration** - `repos.yaml`:
@@ -3730,11 +4092,15 @@ repos:
  post_workflow_hooks:
  # => Commands run after workflow completes
  - run: |
+ # => Terraform configuration
  curl -X POST https://slack-webhook.example.com \
+ # => Terraform configuration
  -d '{"text":"Terraform apply completed for $PROJECT_NAME"}'
  # => Notify after apply
  # => POST to Slack webhook with project name
  # => $PROJECT_NAME is Atlantis environment variable
+
+
 ```
 
 **Atlantis usage in GitHub**:
@@ -3779,7 +4145,7 @@ atlantis unlock
 
 ---
 
-## Group 20: Performance Optimization
+## Group 21: Performance Optimization
 
 ### Example 75: Terraform Performance Optimization with Parallelism
 
@@ -3840,8 +4206,10 @@ resource "local_file" "config" {
 resource "local_file" "bad_example" {
 # => Resource definition
  filename = "bad.txt"
+ # => Output file path
  # => Sets filename
  content = "Unnecessary dependency"
+ # => File/resource content
  # => Sets content
 
  depends_on = [ # => Explicit dependency list
@@ -3850,8 +4218,11 @@ resource "local_file" "bad_example" {
 
  # => Sets depends_on
  local_file.file1,
+ # => Terraform configuration
  local_file.file2,
+ # => Terraform configuration
  local_file.file3,
+ # => Terraform configuration
  ]
  # => Explicit dependency enforces creation order
  # => Slows down apply
@@ -3861,11 +4232,15 @@ resource "local_file" "bad_example" {
 resource "local_file" "good_example" {
 # => Resource definition
  filename = "good.txt"
+ # => Output file path
  # => Sets filename
  content = local_file.file1.content
+ # => File/resource content
  # => Implicit dependency via reference
  # => Only waits for file1 (not file2, file3)
 }
+
+
 
 
 
@@ -3893,6 +4268,8 @@ resource "local_file" "good_example" {
 # $ terraform graph | dot -Tpng > graph.png
 # => Shows resource dependencies
 # => Identify bottlenecks (long dependency chains)
+
+
 ```
 
 **Optimization strategies**:
@@ -3920,6 +4297,8 @@ resource "local_file" "good_example" {
 # $ terraform refresh -target=aws_instance.web
 # => Refresh only specific resources
 # => Faster than full state refresh
+
+
 ```
 
 **Key Takeaway**: Terraform parallelizes independent resources (default: 10 concurrent operations). Increase `-parallelism` for faster apply on large infrastructures (avoid API rate limits). Minimize `depends_on` usage—prefer implicit dependencies via attribute references. Visualize dependency graph with `terraform graph` to identify bottlenecks. Use `-target` for partial applies during development.
@@ -3950,7 +4329,9 @@ graph TD
 ```hcl
 # Pattern 1: Split state by environment (prod/staging/dev separate)
 terraform {
+# => Terraform configuration block
  backend "s3" {
+ # => Backend type for state storage
  bucket = "company-terraform-state" # => Shared S3 bucket for all state files
  key    = "prod/infrastructure.tfstate" # => prod-specific key path
  # => Only production resources (plan refreshes ~1,000 resources)
@@ -3963,7 +4344,9 @@ terraform {
 # Pattern 2: Split state by infrastructure layer
 # network/main.tf - VPC, subnets, routing tables
 terraform {
+# => Terraform configuration block
  backend "s3" {
+ # => Backend type for state storage
  bucket = "company-terraform-state" # => Same bucket, different key
  key    = "prod/network.tfstate" # => Network layer state (~100 resources)
  # => Changing VPC config doesn't touch compute or database state
@@ -3973,7 +4356,9 @@ terraform {
 
 # compute/main.tf - EC2, ASG, load balancers
 terraform {
+# => Terraform configuration block
  backend "s3" {
+ # => Backend type for state storage
  bucket = "company-terraform-state" # => Same bucket
  key    = "prod/compute.tfstate" # => Compute layer state (~500 resources)
  # => Deploy new EC2 configuration without locking network state
@@ -3982,6 +4367,8 @@ terraform {
 }
 # => Component isolation: compute failure doesn't affect database state
 # => Blast radius reduced: corrupted compute state leaves network intact
+
+
 ```
 
 **State refresh optimization**:
@@ -4007,6 +4394,8 @@ terraform {
 # $ terraform refresh
 # => Updates state file without planning changes
 # => Useful before destroy to ensure accuracy
+
+
 ```
 
 **State cleanup**:
@@ -4026,13 +4415,15 @@ terraform {
 # $ terraform state show aws_instance.web
 # => Shows resource attributes in state
 # => Verify state accuracy
+
+
 ```
 
 **Key Takeaway**: Split large state files by environment and component (network, compute, database) for faster operations. Each state file should manage 1,000-2,000 resources maximum. Use `-refresh=false` for fast plan when state is current. Use targeted operations (`-target`) for working with specific resources. Remove orphaned resources with `terraform state rm` to reduce state size.
 
 **Why It Matters**: State file size directly impacts performance— State splitting reduces blast radius: database state corruption doesn't affect network infrastructure. Large monolithic state files also slow every operation—`terraform plan` must refresh all resources even when changing a single security group. Organizations managing 500+ resources in a single state file see plan times exceeding 10 minutes; splitting by component reduces this to under 1 minute for targeted changes. Targeted operations (`-target`) enable emergency hotfixes without running full plans.
 
-## Group 21: Disaster Recovery
+## Group 22: Disaster Recovery
 
 ### Example 77: State Backup and Recovery Strategies
 
@@ -4043,6 +4434,7 @@ State file loss is catastrophic—implement automated backups and recovery proce
 terraform {
 # => Terraform configuration block
  backend "s3" {
+ # => Backend type for state storage
  bucket = "terraform-state-backup" # => String value
  # => Sets bucket
  key = "prod/terraform.tfstate" # => String value
@@ -4078,9 +4470,11 @@ resource "aws_s3_bucket" "terraform_state" {
 resource "aws_s3_bucket_versioning" "terraform_state" {
 # => Terraform configuration block
  bucket = aws_s3_bucket.terraform_state.id
+ # => S3 bucket name
  # => Sets bucket
 
  versioning_configuration {
+ # => Terraform configuration
  status = "Enabled" # => String value
  # => Track all state file versions
  }
@@ -4089,21 +4483,25 @@ resource "aws_s3_bucket_versioning" "terraform_state" {
 resource "aws_s3_bucket_lifecycle_configuration" "terraform_state" {
 # => Terraform configuration block
  bucket = aws_s3_bucket.terraform_state.id
+ # => S3 bucket name
  # => Sets bucket
 
  rule {
+ # => Terraform configuration
  id = "expire-old-versions"
  # => Sets id
  status = "Enabled"
  # => Sets status
 
  noncurrent_version_expiration {
+ # => Terraform configuration
  noncurrent_days = 90
  # => Delete versions older than 90 days
  # => Reduce storage costs
  }
 
  noncurrent_version_transition {
+ # => Terraform configuration
  noncurrent_days = 30
  # => After 30 days, transition to cheaper storage
  storage_class = "GLACIER"
@@ -4115,18 +4513,22 @@ resource "aws_s3_bucket_lifecycle_configuration" "terraform_state" {
 resource "aws_s3_bucket_replication_configuration" "terraform_state" {
 # => Terraform configuration block
  bucket = aws_s3_bucket.terraform_state.id
+ # => S3 bucket name
  # => Sets bucket
  role = aws_iam_role.replication.arn
  # => Sets role
 
  rule {
+ # => Terraform configuration
  id = "replicate-state"
  # => Sets id
  status = "Enabled"
  # => Sets status
 
  destination {
+ # => Terraform configuration
  bucket = aws_s3_bucket.disaster_recovery.arn
+ # => S3 bucket name
  # => Cross-region replication target
  storage_class = "STANDARD_IA"
  # => STANDARD_IA: cheaper for infrequently accessed DR copy
@@ -4134,6 +4536,8 @@ resource "aws_s3_bucket_replication_configuration" "terraform_state" {
  }
  }
 }
+
+
 
 
 
@@ -4172,6 +4576,8 @@ resource "aws_s3_bucket_replication_configuration" "terraform_state" {
 # s3://terraform-state-backup-replica/ \
 # s3://terraform-state-backup/
 # => Restore from disaster recovery bucket
+
+
 ```
 
 **Local backup strategy**:
@@ -4189,6 +4595,8 @@ resource "aws_s3_bucket_replication_configuration" "terraform_state" {
 # $ terraform state pull > backup-$(date +%Y%m%d).tfstate
 # => Creates local backup
 # => Restore: terraform state push backup-YYYYMMDD.tfstate
+
+
 ```
 
 **Key Takeaway**: Enable S3 versioning for automatic state backups (every change creates new version). Configure lifecycle rules to archive old versions to Glacier (90-day retention). Replicate state bucket to secondary region for disaster recovery. Create local backups before risky operations (`terraform state pull > backup.tfstate`). Test recovery procedures regularly (quarterly drills).
@@ -4214,6 +4622,7 @@ variable "region" {
  description = "AWS region (primary: us-west-2, DR: us-east-1)" # => String value
  # => Sets description
  type = string
+ # => Variable type constraint
  # => Sets type
 }
 
@@ -4222,12 +4631,14 @@ variable "environment" {
  description = "Environment (prod-primary, prod-dr)" # => String value
  # => Sets description
  type = string
+ # => Variable type constraint
  # => Sets type
 }
 
 provider "aws" {
 # => Provider configuration
  region = var.region
+ # => AWS/cloud region
  # => Sets region
 }
 
@@ -4275,6 +4686,7 @@ resource "aws_instance" "web" {
  # => Sets subnet_id
 
  tags = {
+ # => Resource tags map
  Name = "${var.environment}-web"
  # => Sets Name
  Environment = var.environment
@@ -4290,7 +4702,9 @@ data "aws_ami" "ubuntu" {
  # => Sets owners
 
  filter {
+ # => Terraform configuration
  name = "name"
+ # => Resource name
  # => Sets name
  values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
  # => Sets values
@@ -4329,6 +4743,7 @@ resource "aws_db_instance" "primary" {
 resource "aws_db_subnet_group" "main" {
 # => Resource definition
  name = "${var.environment}-db-subnet"
+ # => Resource name
  # => Sets name
  subnet_ids = [aws_subnet.public.id]
  # => Sets subnet_ids
@@ -4342,6 +4757,7 @@ resource "aws_route53_health_check" "primary" {
  port = 80
  # => Sets port
  type = "HTTP"
+ # => Variable type constraint
  # => Sets type
  resource_path = "/health"
  # => Sets resource_path
@@ -4351,6 +4767,7 @@ resource "aws_route53_health_check" "primary" {
  # => Check every 30 seconds
 
  tags = {
+ # => Resource tags map
  Name = "${var.environment}-health-check"
  # => Sets Name
  }
@@ -4362,14 +4779,18 @@ resource "aws_route53_record" "www" {
  zone_id = data.aws_route53_zone.main.zone_id
  # => Sets zone_id
  name = "www.example.com"
+ # => Resource name
  # => Sets name
  type = "A"
+ # => Variable type constraint
  # => Sets type
  ttl = 60
  # => Sets ttl
 
  failover_routing_policy {
+ # => Terraform configuration
  type = var.environment == "prod-primary" ? "PRIMARY" : "SECONDARY"
+ # => Variable type constraint
  # => PRIMARY: receives traffic by default; SECONDARY: receives traffic only if PRIMARY fails
  }
 
@@ -4386,8 +4807,11 @@ resource "aws_route53_record" "www" {
 data "aws_route53_zone" "main" {
 # => Data source
  name = "example.com"
+ # => Resource name
  # => Sets name
 }
+
+
 
 
 
@@ -4416,6 +4840,8 @@ data "aws_route53_zone" "main" {
 # => Simulates primary failure
 # => Route 53 health check fails
 # => DNS fails over to prod-dr (us-east-1)
+
+
 ```
 
 **DR automation**:
@@ -4428,6 +4854,8 @@ data "aws_route53_zone" "main" {
 # - Test application in DR
 # - Destroy DR infrastructure
 # - Restore production state
+
+
 ```
 
 **Key Takeaway**: Design infrastructure for DR from day one using workspaces (prod-primary, prod-dr) or separate state files per region. Replicate critical resources (VPC, compute, database) across regions. Use Route 53 health checks for automatic DNS failover. Test DR procedures quarterly with automated workflows. Database replication requires application-aware strategies (RDS read replicas, multi-region writes).
@@ -4436,7 +4864,7 @@ data "aws_route53_zone" "main" {
 
 ---
 
-## Group 22: Enterprise Patterns
+## Group 23: Enterprise Patterns
 
 ### Example 79: Multi-Account AWS Strategy with Terraform
 
@@ -4499,6 +4927,7 @@ resource "aws_organizations_account" "staging" {
  # => Places account in Environments OU
 
  tags = {
+ # => Resource tags map
  Environment = "staging"
  # => Tag for cost allocation and policy targeting
  }
@@ -4508,6 +4937,7 @@ resource "aws_organizations_account" "staging" {
 resource "aws_organizations_account" "prod" {
 # => Resource definition
  name = "Production"
+ # => Resource name
  # => Separate prod account: isolated IAM, billing, quotas
  email = "aws-prod@example.com"
  # => Each account needs unique root email address
@@ -4515,6 +4945,7 @@ resource "aws_organizations_account" "prod" {
  # => Places under Environments OU
 
  tags = {
+ # => Resource tags map
  Environment = "prod"
  # => prod tag: used for SCP targeting and cost reports
  }
@@ -4524,8 +4955,10 @@ resource "aws_organizations_account" "prod" {
 resource "aws_organizations_policy" "deny_expensive_instances" {
 # => Resource definition
  name = "DenyExpensiveInstances"
+ # => Resource name
  # => Sets name
  description = "Prevent launching expensive EC2 instances"
+ # => Human-readable description
  # => Sets description
 
  content = jsonencode( # => Converts value to JSON string
@@ -4542,15 +4975,20 @@ resource "aws_organizations_policy" "deny_expensive_instances" {
  Action = [
  # => Sets Action
  "ec2:RunInstances"
+ # => Terraform configuration
  ]
  Resource = "arn:aws:ec2:*:*:instance/*"
  # => Sets Resource
  Condition = {
+ # => Terraform configuration
  StringEquals = {
+ # => Terraform configuration
  "ec2:InstanceType" = [
  # => Sets "ec2:InstanceType"
  "p3.16xlarge",
+ # => Terraform configuration
  "p3dn.24xlarge",
+ # => Terraform configuration
  "p4d.24xlarge",
  # => Deny GPU instances (expensive)
  ]
@@ -4559,6 +4997,7 @@ resource "aws_organizations_policy" "deny_expensive_instances" {
  }
  ]
  })
+ # => Terraform configuration
 }
 
 resource "aws_organizations_policy_attachment" "dev_cost_policy" {
@@ -4569,6 +5008,8 @@ resource "aws_organizations_policy_attachment" "dev_cost_policy" {
  # => Apply to dev account only (prod needs GPU instances for ML)
  # => SCP overrides individual IAM permissions: no escape from SCP denial
 }
+
+
 
 
 
@@ -4593,9 +5034,11 @@ resource "aws_iam_role" "cross_account_admin" {
  Version = "2012-10-17" # => IAM policy version
  # => Sets Version
  Statement = [{
+ # => Terraform configuration
  Effect = "Allow" # => Allow assume role action
  # => Sets Effect
  Principal = {
+ # => Terraform configuration
  AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
  # => Principal: root of current account (management account)
  # => Example: arn:aws:iam::123456789012:root
@@ -4604,7 +5047,9 @@ resource "aws_iam_role" "cross_account_admin" {
  Action = "sts:AssumeRole" # => STS AssumeRole action
  # => AWS Security Token Service call to get temporary credentials
  Condition = {
+ # => Terraform configuration
  StringEquals = {
+ # => Terraform configuration
  "sts:ExternalId" = "terraform-assume-role"
  # => Require external ID for added security
  # => Prevents confused deputy problem
@@ -4612,6 +5057,7 @@ resource "aws_iam_role" "cross_account_admin" {
  }
  }
  }]
+ # => Terraform configuration
  })
  # => After creation: arn:aws:iam::MANAGEMENT_ACCOUNT:role/CrossAccountAdmin
 }
@@ -4632,6 +5078,7 @@ provider "aws" {
  assume_role {
  # => AssumeRole configuration for cross-account access
  role_arn = "arn:aws:iam::${aws_organizations_account.dev.id}:role/OrganizationAccountAccessRole"
+ # => IAM role ARN to assume
  # => Assume role in dev account
  # => OrganizationAccountAccessRole auto-created by AWS Organizations
  # => Example: arn:aws:iam::111111111111:role/OrganizationAccountAccessRole
@@ -4650,6 +5097,7 @@ provider "aws" {
  assume_role {
  # => AssumeRole configuration for prod account
  role_arn = "arn:aws:iam::${aws_organizations_account.prod.id}:role/OrganizationAccountAccessRole"
+ # => IAM role ARN to assume
  # => Assume role in prod account
  # => Example: arn:aws:iam::222222222222:role/OrganizationAccountAccessRole
  # => Separate temporary credentials for prod account
@@ -4667,6 +5115,7 @@ resource "aws_vpc" "dev_vpc" {
  # => Non-overlapping with prod (10.1.0.0/16)
 
  tags = {
+ # => Resource tags map
  Name = "dev-vpc" # => VPC name tag
  # => Visible in AWS console
  }
@@ -4686,6 +5135,7 @@ resource "aws_vpc" "prod_vpc" {
  # => Non-overlapping with dev (10.0.0.0/16)
 
  tags = {
+ # => Resource tags map
  Name = "prod-vpc" # => VPC name tag
  # => Sets Name
  }
@@ -4694,6 +5144,8 @@ resource "aws_vpc" "prod_vpc" {
 # => State tracks both VPCs in single state file
 # => Example: vpc-xyz789ghi in account 222222222222
 # => Single Terraform run manages multi-account infrastructure
+
+
 
 ```
 
@@ -4707,100 +5159,149 @@ Sentinel enforces organization-wide governance policies in Terraform Cloud: requ
 
 ```python
 # Sentinel policy (HashiCorp Configuration Language)
-# sentinel.hcl
-policy "require-encryption" {
+# sentinel.hcl - registers policies and sets enforcement levels
+policy "require-encryption" {   # => Policy definition block
  enforcement_level = "hard-mandatory"
- # => Blocks apply if policy fails (cannot override)
+ # => hard-mandatory: blocks apply if policy fails
+ # => Cannot be overridden by any user, including admins
 }
 
-policy "require-tags" {
+policy "require-tags" {         # => Second policy definition
  enforcement_level = "soft-mandatory"
- # => Warns but allows override with approval
+ # => soft-mandatory: warns but allows override with approval
+ # => Team lead or admin can override in Terraform Cloud UI
 }
 
-policy "deny-public-ingress" {
+policy "deny-public-ingress" {  # => Third policy definition
  enforcement_level = "advisory"
- # => Warning only (does not block)
+ # => advisory: warning only, does not block apply
+ # => Surfaces violations without preventing deployments
 }
+
+
 ```
 
 **Require encryption policy** - `require-encryption.sentinel`:
 
 ```python
 import "tfplan/v2" as tfplan
+# => Import Terraform plan data (v2 = Terraform 0.12+ plan format)
+# => tfplan contains resource_changes: list of planned resource operations
 
-# Get all S3 bucket resources
+# Get all S3 bucket resources from plan
 s3_buckets = filter tfplan.resource_changes as _, rc {
- rc.type is "aws_s3_bucket" and
- rc.mode is "managed" and
+ # => filter returns subset matching all conditions
+ rc.type is "aws_s3_bucket" and       # => Only S3 bucket resources
+ rc.mode is "managed" and             # => Exclude data sources (mode = "data")
  (rc.change.actions contains "create" or rc.change.actions contains "update")
+ # => Only check resources being created or updated (not deleted)
 }
+# => s3_buckets: map of resource addresses to resource change objects
 
 # Rule: All S3 buckets must have encryption enabled
 require_encryption = rule {
+ # => rule evaluates to true/false
  all s3_buckets as _, bucket {
+ # => all: returns true if condition holds for every element
  bucket.change.after.server_side_encryption_configuration is not null
+ # => .change.after: planned state after apply
+ # => server_side_encryption_configuration null = encryption not configured
+ # => Rule passes if all buckets have encryption block defined
  }
 }
 
-# Main rule
+# Main rule - Sentinel evaluates this to determine policy pass/fail
 main = rule {
+# => Variable: main
  require_encryption
+ # => Policy passes if require_encryption is true
+ # => Policy fails (blocks apply) if require_encryption is false
 }
+
+
 ```
 
 **Require tags policy** - `require-tags.sentinel`:
 
 ```python
 import "tfplan/v2" as tfplan
+# => Import plan data for policy evaluation
 
-# Required tags
+# Required tags that every taggable resource must include
 required_tags = ["Environment", "Owner", "Project"]
+# => List literal: three mandatory tag keys
+# => All three must be present on every taggable resource
 
-# Get all resources that support tags
+# Get all resources that support tags from the plan
 taggable_resources = filter tfplan.resource_changes as _, rc {
- rc.mode is "managed" and
+# => Variable: taggable_resources
+ rc.mode is "managed" and                              # => Exclude data sources
  (rc.change.actions contains "create" or rc.change.actions contains "update") and
- rc.change.after.tags is not null
+ # => Only validate resources being created/updated
+ rc.change.after.tags is not null                      # => Exclude untaggable resource types
 }
+# => taggable_resources: map of all resources with tags attribute
 
-# Rule: All resources must have required tags
+# Rule: All resources must have all required tags
 require_tags = rule {
+# => Variable: require_tags
  all taggable_resources as _, resource {
+ # => Outer all: every resource must pass
  all required_tags as _, tag {
+ # => Inner all: every required tag must be present
  resource.change.after.tags contains tag
+ # => .tags: map of tag key-value pairs
+ # => contains: checks if map contains key
+ # => Fails if any required tag key is missing
  }
  }
 }
 
 main = rule {
+# => Variable: main
  require_tags
+ # => Policy passes if every taggable resource has all three required tags
 }
+
+
 ```
 
 **Deny public ingress policy** - `deny-public-ingress.sentinel`:
 
 ```python
 import "tfplan/v2" as tfplan
+# => Import plan data to inspect security group rules being created
 
-# Get all security group rules
+# Get all security group rule resources from the plan
 security_group_rules = filter tfplan.resource_changes as _, rc {
- rc.type is "aws_security_group_rule" and
- rc.mode is "managed" and
- rc.change.actions contains "create"
+# => Variable: security_group_rules
+ rc.type is "aws_security_group_rule" and  # => Only aws_security_group_rule resources
+ rc.mode is "managed" and                  # => Exclude data sources
+ rc.change.actions contains "create"       # => Only check new rules (not updates/deletes)
 }
+# => security_group_rules: map of new security group rule resources
 
-# Rule: Deny ingress from 0.0.0.0/0
+# Rule: Deny ingress rules that allow traffic from any IP
 deny_public_ingress = rule {
+# => Variable: deny_public_ingress
  all security_group_rules as _, rule {
+ # => Check every new security group rule
  rule.change.after.type is not "ingress" or
+ # => Allow egress rules (type != "ingress" short-circuits the check)
  rule.change.after.cidr_blocks is not ["0.0.0.0/0"]
+ # => Deny ingress rules with CIDR 0.0.0.0/0 (open to all IPv4)
+ # => Rule passes if: not ingress OR not public CIDR
+ # => Rule fails if: IS ingress AND IS 0.0.0.0/0
  }
 }
 
 main = rule {
+# => Variable: main
  deny_public_ingress
+ # => Advisory: warns but does not block if any ingress rule allows 0.0.0.0/0
 }
+
+
 ```
 
 **Testing policies locally**:
@@ -4823,6 +5324,8 @@ main = rule {
 # 3. Policy pass: terraform apply allowed
 # 4. Policy fail (hard-mandatory): terraform apply blocked
 # 5. Policy fail (soft-mandatory): override with approval
+
+
 ```
 
 **Key Takeaway**: Sentinel enforces policy as code in Terraform Cloud with three enforcement levels: hard-mandatory (blocks apply), soft-mandatory (requires override approval), advisory (warning only). Policies check resource configurations in Terraform plan (tfplan import). Common policies: require encryption, require tags, deny public ingress, enforce naming conventions. Test policies locally with Sentinel CLI before deploying to Terraform Cloud.
@@ -4906,6 +5409,7 @@ var.public_subnets)
  # => Sets Type
  },
  var.tags
+ # => Terraform configuration
  )
 }
 
@@ -4932,6 +5436,7 @@ var.private_subnets)
  # => Sets Type
  },
  var.tags
+ # => Terraform configuration
  )
 }
 
@@ -4940,6 +5445,8 @@ data "aws_availability_zones" "available" {
  state = "available"
  # => Sets state
 }
+
+
 
 
 
@@ -4953,6 +5460,7 @@ variable "name" {
  description = "Name prefix for VPC resources" # => String value
  # => Sets description
  type = string
+ # => Variable type constraint
  # => Sets type
 }
 
@@ -4961,6 +5469,7 @@ variable "cidr_block" {
  description = "CIDR block for VPC" # => String value
  # => Sets description
  type = string
+ # => Variable type constraint
  # => Sets type
  default = "10.0.0.0/16" # => String value
  # => Sets default
@@ -4971,6 +5480,7 @@ variable "public_subnets" {
  description = "List of public subnet CIDR blocks" # => String value
  # => Sets description
  type = list(string)
+ # => Variable type constraint
  # => Sets type
  default = ["10.0.1.0/24", "10.0.2.0/24"] # => List definition
  # => Sets default
@@ -4981,6 +5491,7 @@ variable "private_subnets" {
  description = "List of private subnet CIDR blocks" # => String value
  # => Sets description
  type = list(string)
+ # => Variable type constraint
  # => Sets type
  default = ["10.0.101.0/24", "10.0.102.0/24"] # => List definition
  # => Sets default
@@ -4991,6 +5502,7 @@ variable "enable_dns_hostnames" {
  description = "Enable DNS hostnames in VPC" # => String value
  # => Sets description
  type = bool
+ # => Variable type constraint
  # => Sets type
  default = true # => Boolean value
  # => Sets default
@@ -4999,22 +5511,30 @@ variable "enable_dns_hostnames" {
 variable "enable_dns_support" {
 # => Input variable
  description = "Enable DNS support in VPC"
+ # => Human-readable description
  # => Sets description
  type = bool
+ # => Variable type constraint
  # => Sets type
  default = true
+ # => Default value if not specified
  # => Sets default
 }
 
 variable "tags" {
 # => Input variable
  description = "Additional tags for resources"
+ # => Human-readable description
  # => Sets description
  type = map(string)
+ # => Variable type constraint
  # => Sets type
  default = {}
+ # => Default value if not specified
  # => Sets default
 }
+
+
 
 
 
@@ -5028,6 +5548,7 @@ output "vpc_id" {
  description = "ID of the VPC" # => String value
  # => Sets description
  value = aws_vpc.main.id
+ # => Output value
  # => Sets value
 }
 
@@ -5036,6 +5557,7 @@ output "vpc_cidr_block" {
  description = "CIDR block of the VPC" # => String value
  # => Sets description
  value = aws_vpc.main.cidr_block
+ # => Output value
  # => Sets value
 }
 
@@ -5044,6 +5566,7 @@ output "public_subnet_ids" {
  description = "IDs of public subnets" # => String value
  # => Sets description
  value = aws_subnet.public[*].id
+ # => Output value
  # => Sets value
 }
 
@@ -5052,8 +5575,11 @@ output "private_subnet_ids" {
  description = "IDs of private subnets" # => String value
  # => Sets description
  value = aws_subnet.private[*].id
+ # => Output value
  # => Sets value
 }
+
+
 
 
 
@@ -5073,6 +5599,8 @@ output "private_subnet_ids" {
 # 2. Connect VCS to Terraform Cloud
 # 3. Configure module in Terraform Cloud UI
 # 4. Terraform Cloud publishes module
+
+
 ```
 
 **Using module from registry**:
@@ -5080,6 +5608,7 @@ output "private_subnet_ids" {
 ```hcl
 # Public Terraform Registry
 module "vpc" {
+# => Module call
 # => Module configuration
  source = "terraform-aws-modules/vpc/aws" # => String value
  # => Provider source location
@@ -5109,6 +5638,7 @@ module "vpc" {
 
 # Private Terraform Cloud registry
 module "vpc" {
+# => Module call
 # => Module configuration
  source = "app.terraform.io/my-org/vpc/aws" # => String value
  # => Provider source location
@@ -5123,11 +5653,14 @@ module "vpc" {
 
 # Git-based module (no registry)
 module "vpc" {
+# => Module call
 # => Module configuration
  source = "git::https://github.com/my-org/terraform-aws-vpc.git?ref=v1.0.0" # => String value
  # => Direct Git reference with version tag
  # => No registry required
 }
+
+
 
 
 
@@ -5156,6 +5689,8 @@ graph TD
  style E fill:#0173B2,color:#fff
 ```
 
+**Why This External Tool**: Terratest (Example 62) is the Go-based testing standard for Terraform, but Kitchen-Terraform provides an alternative Ruby/InSpec-based approach better suited for teams already using InSpec for compliance testing. While Terratest requires Go knowledge, Kitchen-Terraform integrates with the InSpec compliance framework, enabling the same test suite to validate both infrastructure correctness and security compliance requirements. Teams with existing InSpec profiles for regulatory compliance (SOC 2, PCI-DSS, HIPAA) can reuse those controls for Terraform infrastructure testing, avoiding duplicate effort. The trade-off: Kitchen-Terraform has broader language support (Ruby) but higher operational complexity than Terratest's single-binary Go approach.
+
 **Installation**:
 
 ```bash
@@ -5173,104 +5708,119 @@ graph TD
 # Install dependencies
 # $ bundle install
 # => Installs Kitchen-Terraform and dependencies
+
+
 ```
 
 **Kitchen configuration** - `.kitchen.yml`:
 
 ```yaml
 ---
-driver:
- name: terraform
- root_module_directory: test/fixtures/default
- # => Terraform configuration to test
+# => Terraform configuration
+driver:                                           # => Driver configures infrastructure provisioning
+ name: terraform                                 # => Use terraform driver (kitchen-terraform gem)
+ root_module_directory: test/fixtures/default    # => Path to Terraform config to test
+ # => Kitchen provisions this module, then InSpec validates it
 
 provisioner:
- name: terraform
+# => provisioner configuration
+ name: terraform                                 # => Uses terraform provisioner (kitchen-terraform)
+ # => Runs terraform apply during "kitchen converge"
 
 verifier:
- name: terraform
- systems:
+# => verifier configuration
+ name: terraform                                 # => Uses terraform verifier for InSpec integration
+ systems:                                        # => List of InSpec target systems
  - name: default
- backend: aws
- controls:
- - operating_system
- - vpc_exists
+ # => Step name: default
+ backend: aws                                  # => InSpec connects to AWS to run controls
+ controls:                                     # => InSpec controls to run for this system
+ - operating_system                            # => Checks OS configuration
+ - vpc_exists                                  # => Validates VPC was created
 
 platforms:
- - name: aws
+# => platforms configuration
+ - name: aws                                     # => Target platform: AWS (used in instance naming)
 
-suites:
- - name: default
+suites:                                           # => Test suites (each suite is a test scenario)
+ - name: default                                 # => Suite name: results in "default-aws" instance
  driver:
- variables:
- region: us-west-2
- # => Pass variables to Terraform
+ # => driver configuration
+ variables:                                   # => Terraform input variables for this suite
+ region: us-west-2                           # => Sets var.region = "us-west-2"
+ # => Passed to terraform apply as -var flags
  verifier:
+ # => verifier configuration
  systems:
+ # => systems configuration
  - name: default
- backend: aws
+ # => Step name: default
+ backend: aws                              # => Connect to AWS for InSpec validation
  controls:
- - vpc_configuration
+ # => controls configuration
+ - vpc_configuration                       # => Run vpc_configuration InSpec control
+
+
 ```
 
 **Test fixture** - `test/fixtures/default/main.tf`:
 
 ```hcl
 terraform {
-# => Terraform configuration block
- required_version = ">= 1.0" # => String value
- # => Sets required_version
+ # => Minimum Terraform version for test fixture
+ required_version = ">= 1.0" # => Ensures compatible version
+ # => Prevents test failures from version incompatibilities
 }
 
 provider "aws" {
-# => Provider configuration
- region = var.region
- # => Sets region
+ # => AWS provider: requires AWS credentials (IAM role or env vars)
+ region = var.region # => Use region from input variable
+ # => Allows testing in different regions via suite variables
 }
 
 variable "region" {
-# => Input variable
- type = string
- # => Sets type
- default = "us-west-2" # => String value
- # => Sets default
+ # => Input variable: AWS region for test infrastructure
+ type    = string        # => Must be a string value
+ default = "us-west-2"  # => Default region if not specified
+ # => Overridden by .kitchen.yml suite variables
 }
 
-# Module under test
+# Module under test - the actual module being validated
 module "vpc" {
-# => Module configuration
- source = "././." # => String value
- # => References module at repository root
+# => Module call
+ # => Module call: tests the module at repository root
+ source = "././."        # => Source: current repo root (3 levels up from test/fixtures/default)
+ # => Equivalent to "../../.." - points to module being tested
 
- name = "test-vpc" # => String value
- # => Sets name
- cidr_block = "10.0.0.0/16" # => String value
- # => Sets cidr_block
- public_subnets = ["10.0.1.0/24", "10.0.2.0/24"] # => List definition
- # => Sets public_subnets
- private_subnets = ["10.0.101.0/24", "10.0.102.0/24"] # => List definition
- # => Sets private_subnets
+ name           = "test-vpc"       # => VPC name tag
+ # => Used for resource naming and identification
+ cidr_block     = "10.0.0.0/16"   # => VPC CIDR block: 65,534 IPs
+ # => /16 provides enough space for test subnets
+ public_subnets  = ["10.0.1.0/24", "10.0.2.0/24"]   # => 2 public subnets (254 IPs each)
+ # => Public subnets have route to internet gateway
+ private_subnets = ["10.0.101.0/24", "10.0.102.0/24"] # => 2 private subnets
+ # => Private subnets route through NAT gateway
 
- tags = { # => Map/object definition
- Environment = "test"
- # => Sets Environment
- Purpose = "kitchen-terraform"
- # => Sets Purpose
+ tags = {
+ # => Resource tags map
+ Environment = "test"              # => Identifies as test infrastructure
+ Purpose     = "kitchen-terraform" # => Tags all resources for cleanup identification
  }
 }
 
 output "vpc_id" {
-# => Output value
+ # => Exposed to InSpec as input: input('vpc_id')
  value = module.vpc.vpc_id
- # => Sets value
+ # => Output value
+ # => VPC ID: vpc-xxxxxxxxxxxxxxxxx (used in InSpec controls)
 }
 
 output "public_subnet_ids" {
-# => Output value
+ # => Exposed to InSpec: input('public_subnet_ids')
  value = module.vpc.public_subnet_ids
- # => Sets value
+ # => Output value
+ # => List of public subnet IDs for InSpec verification
 }
-
 
 
 ```
@@ -5278,34 +5828,59 @@ output "public_subnet_ids" {
 **InSpec tests** - `test/integration/default/controls/vpc_configuration.rb`:
 
 ```ruby
-# InSpec control for VPC validation
+# InSpec control for VPC validation (Ruby DSL)
 vpc_id = input('vpc_id')
+# => input(): reads Terraform output values via Kitchen-Terraform verifier
+# => vpc_id = the actual AWS VPC ID created during "kitchen converge"
 public_subnet_ids = input('public_subnet_ids')
+# => public_subnet_ids = list of subnet IDs (["subnet-abc", "subnet-def"])
 
 control 'vpc_configuration' do
- impact 1.0
+ # => control block: defines an InSpec test suite
+ impact 1.0  # => Severity: 1.0 = critical, 0.5 = medium, 0.1 = low
  title 'VPC Configuration'
+ # => Human-readable name shown in test reports
  desc 'Verify VPC is configured correctly'
+ # => Description appears in compliance reports
 
  describe aws_vpc(vpc_id) do
+ # => aws_vpc: InSpec AWS resource for VPC inspection
+ # => Queries actual AWS API with the VPC ID from Terraform output
  it { should exist }
+ # => Verifies VPC was actually created (not just Terraform thinks it was)
  its('cidr_block') { should eq '10.0.0.0/16' }
+ # => its('attribute'): reads VPC attribute via AWS API
+ # => Verifies CIDR block matches expected value
  its('state') { should eq 'available' }
+ # => Verifies VPC is in 'available' state (not 'pending' or 'deleted')
  end
+ # => Terraform configuration
 
  describe aws_subnets.where(vpc_id: vpc_id) do
+ # => aws_subnets.where(): filter subnets belonging to test VPC
+ # => Queries AWS DescribeSubnets API
  its('count') { should eq 4 }
- # => 2 public + 2 private subnets
+ # => Verifies exactly 4 subnets created: 2 public + 2 private
  end
+ # => Terraform configuration
 
  public_subnet_ids.each do |subnet_id|
+ # => Iterate over each public subnet ID from Terraform output
  describe aws_subnet(subnet_id) do
+ # => aws_subnet: InSpec AWS resource for individual subnet inspection
  it { should exist }
+ # => Verifies each subnet actually exists in AWS
  its('map_public_ip_on_launch') { should eq true }
- # => Public subnets auto-assign public IPs
+ # => Verifies public subnets auto-assign public IPs on instance launch
+ # => This setting is what makes a subnet "public" in practice
  end
+ # => Terraform configuration
  end
+ # => Terraform configuration
 end
+# => Terraform configuration
+
+
 ```
 
 **Running tests**:
@@ -5344,43 +5919,68 @@ end
 # $ bundle exec kitchen test
 # => create → converge → verify → destroy
 # => Complete test lifecycle
+
+
 ```
 
 **CI/CD integration** - `.github/workflows/test.yml`:
 
 ```yaml
 name: Kitchen-Terraform Tests
+# => Workflow/job name: Kitchen-Terraform Tests
 on: [push, pull_request]
+# => Sets on
 
 jobs:
+# => Workflow jobs definition
  kitchen:
+ # => kitchen configuration
  runs-on: ubuntu-latest
+ # => GitHub Actions runner type
  steps:
+ # => Sequential steps for job
  - uses: actions/checkout@v3
+ # => Uses action: actions/checkout@v3
 
  - uses: ruby/setup-ruby@v1
+ # => Uses action: ruby/setup-ruby@v1
  with:
+ # => Input parameters for action
  ruby-version: "3.0"
+ # => Sets ruby-version
  bundler-cache: true
+ # => Sets bundler-cache
 
  - uses: hashicorp/setup-terraform@v2
+ # => Uses action: hashicorp/setup-terraform@v2
  with:
+ # => Input parameters for action
  terraform_version: 1.6.0
+ # => Sets terraform_version
 
  - name: Configure AWS Credentials
+ # => Step name: Configure AWS Credentials
  uses: aws-actions/configure-aws-credentials@v2
+ # => Reusable action from marketplace
  with:
+ # => Input parameters for action
  role-to-assume: arn:aws:iam::ACCOUNT_ID:role/GitHubActions
+ # => Sets role-to-assume
  aws-region: us-west-2
+ # => Sets aws-region
 
  - name: Run Kitchen Tests
+ # => Step name: Run Kitchen Tests
  run: bundle exec kitchen test
+ # => Shell command to execute
  # => create → converge → verify → destroy
+
+
 ```
 
 **Key Takeaway**: Kitchen-Terraform provides integration testing with real cloud resources using Test Kitchen + InSpec. Define test fixtures (test/fixtures/default/main.tf), InSpec controls (test/integration/default/controls/), and Kitchen config (.kitchen.yml). Workflow: create (init) → converge (apply) → verify (InSpec) → destroy (cleanup). Run `kitchen test` for complete lifecycle. Integrates with CI/CD for automated infrastructure testing on every commit.
 
-**Why It Matters**: Integration tests catch real-world issues unit tests miss—Terratest validates "VPC created" but Kitchen-Terraform validates "EC2 instances in VPC can reach internet through NAT gateway" with actual traffic. The destroy step prevents cost accumulation: tests create $100 of infrastructure, verify correctness, destroy resources, total cost $0.01 per test run.
+**Why It Matters**: Integration tests catch real-world issues unit tests miss—Terratest validates "VPC created" but Kitchen-Terraform validates "EC2 instances in VPC can reach internet through NAT gateway" with actual traffic. The destroy step prevents cost accumulation: tests create $100 of infrastructure, verify correctness, destroy resources, total cost $0.01 per test run. This test-and-teardown model makes comprehensive infrastructure testing economically viable at scale.
 
 ---
 
@@ -5431,6 +6031,7 @@ locals {
 
 # Shared VPC module
 module "vpc" {
+# => Module call
 # => Module configuration
  source = "././modules/vpc" # => String value
  # => Sets source
@@ -5453,6 +6054,7 @@ module "vpc" {
 
 # Compute resources
 module "compute" {
+# => Module call
 # => Module configuration
  source = "././modules/compute" # => String value
  # => Sets source
@@ -5475,8 +6077,10 @@ module "compute" {
 
 # Database
 module "database" {
+# => Module call
 # => Data source
  source = "././modules/database"
+ # => Provider/module source location
  # => Sets source
 
  environment = local.environment
@@ -5493,6 +6097,8 @@ module "database" {
  backup_retention_period = 1
  # => 1-day backups for dev (cost optimization)
 }
+
+
 
 
 
@@ -5521,6 +6127,7 @@ locals {
 
 # Same modules, different parameters
 module "vpc" {
+# => Module call
 # => Module configuration
  source = "././modules/vpc" # => String value
  # => Sets source
@@ -5542,6 +6149,7 @@ module "vpc" {
 }
 
 module "compute" {
+# => Module call
 # => Module configuration
  source = "././modules/compute" # => String value
  # => Sets source
@@ -5563,8 +6171,10 @@ module "compute" {
 }
 
 module "database" {
+# => Module call
 # => Data source
  source = "././modules/database"
+ # => Provider/module source location
  # => Sets source
 
  environment = local.environment
@@ -5583,6 +6193,8 @@ module "database" {
  multi_az = true
  # => Multi-AZ for high availability
 }
+
+
 
 
 
@@ -5628,6 +6240,8 @@ module "database" {
 # $ cd environments/prod
 # $ terraform apply
 # => Update prod last (after validation)
+
+
 ```
 
 **Key Takeaway**: Monorepo with environment directories (environments/dev, environments/staging, environments/prod) enables code reuse with environment-specific parameters. Shared modules (modules/vpc, modules/compute, modules/database) enforce consistency. Each environment has isolated backend (separate state files). Deploy changes to dev → staging → prod sequentially. Module updates affect all environments (test in dev before prod).
@@ -5668,6 +6282,7 @@ variable "environment" {
 # => Input variable
  # => Environment name (prod, dev, staging)
  type = string
+ # => Variable type constraint
  # => Must be string value
 }
 
@@ -5677,6 +6292,7 @@ variable "enable_auto_shutdown" {
  description = "Enable auto-shutdown for cost savings (non-prod only)" # => String value
  # => Human-readable description
  type = bool
+ # => Variable type constraint
  # => Boolean variable (true/false)
  default = false # => Boolean value
  # => Default: disabled (must opt-in for cost savings)
@@ -5707,6 +6323,7 @@ resource "aws_instance" "web" {
 # => Resource definition
  # => EC2 instances with environment-based sizing
  count = var.environment == "prod" ? 3 : 1
+ # => Number of resource instances
  # => Creates specified number of instances
  # => Ternary: condition ? true_value : false_value
 
@@ -5726,6 +6343,7 @@ resource "aws_instance" "web" {
  dynamic "spot_options" {
  # => Conditional nested block (only for dev)
  for_each = var.environment == "dev" ? [1] : []
+ # => Create one instance per element
  # => Creates multiple instances from collection
  content {
  # => Spot instance configuration
@@ -5739,6 +6357,7 @@ resource "aws_instance" "web" {
  }
 
  tags = {
+ # => Resource tags map
  # => Instance-specific tags
  Name = "${var.environment}-web-${count.index + 1}"
  # => Name: dev-web-1, prod-web-1, prod-web-2, prod-web-3
@@ -5762,6 +6381,7 @@ data "aws_ami" "ubuntu" {
  filter {
  # => AMI name pattern matching
  name = "name"
+ # => Resource name
  # => Filter by AMI name
  values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
  # => Ubuntu 22.04 LTS (Jammy Jellyfish) for amd64
@@ -5774,10 +6394,12 @@ resource "aws_lambda_function" "auto_shutdown" {
 # => Resource definition
  # => Lambda function for scheduled instance stop/start
  count = var.enable_auto_shutdown ? 1 : 0
+ # => Number of resource instances
  # => Creates specified number of instances
  # => 0 resources if disabled (no cost)
 
  filename = "auto-shutdown.zip"
+ # => Output file path
  # => Lambda deployment package (Python code)
  function_name = "${var.environment}-auto-shutdown"
  # => Function name: dev-auto-shutdown, staging-auto-shutdown
@@ -5792,12 +6414,14 @@ resource "aws_lambda_function" "auto_shutdown" {
  environment {
  # => Environment variables for Lambda
  variables = {
+ # => Terraform configuration
  ENVIRONMENT = var.environment
  # => Pass environment name to Lambda code
  }
  }
 
  tags = {
+ # => Resource tags map
  Purpose = "Cost Optimization"
  # => Tag for cost tracking
  }
@@ -5807,8 +6431,10 @@ resource "aws_iam_role" "lambda_auto_shutdown" {
 # => Resource definition
  # => IAM role for Lambda execution
  count = var.enable_auto_shutdown ? 1 : 0
+ # => Number of resource instances
  # => Creates specified number of instances
  name = "${var.environment}-lambda-auto-shutdown"
+ # => Resource name
  # => Role name with environment prefix
 
  assume_role_policy = jsonencode( # => Converts value to JSON string
@@ -5819,22 +6445,27 @@ resource "aws_iam_role" "lambda_auto_shutdown" {
  Version = "2012-10-17"
  # => Sets Version
  Statement = [{
+ # => Terraform configuration
  Effect = "Allow"
  # => Sets Effect
  Principal = {
+ # => Terraform configuration
  Service = "lambda.amazonaws.com"
  # => Lambda service can assume this role
  }
  Action = "sts:AssumeRole"
  # => STS action for role assumption
  }]
+ # => Terraform configuration
  })
+ # => Terraform configuration
 }
 
 resource "aws_iam_role_policy" "lambda_auto_shutdown" {
 # => Resource definition
  # => Inline policy for Lambda role
  count = var.enable_auto_shutdown ? 1 : 0
+ # => Number of resource instances
  # => Creates specified number of instances
  role = aws_iam_role.lambda_auto_shutdown[0].id
  # => Attach to Lambda role
@@ -5865,6 +6496,7 @@ resource "aws_iam_role_policy" "lambda_auto_shutdown" {
  }
  ]
  })
+ # => Terraform configuration
 }
 
 # EventBridge schedule: shutdown at 7 PM, start at 8 AM (weekdays)
@@ -5872,10 +6504,13 @@ resource "aws_cloudwatch_event_rule" "shutdown_schedule" {
 # => Resource definition
  # => EventBridge rule for nightly shutdown
  count = var.enable_auto_shutdown ? 1 : 0
+ # => Number of resource instances
  # => Creates specified number of instances
  name = "${var.environment}-shutdown-schedule"
+ # => Resource name
  # => Sets name
  description = "Stop instances at 7 PM weekdays"
+ # => Human-readable description
  # => Sets description
  schedule_expression = "cron(0 19 ? * MON-FRI *)"
  # => 7 PM UTC Monday-Friday
@@ -5887,6 +6522,7 @@ resource "aws_cloudwatch_event_target" "shutdown_lambda" {
 # => Resource definition
  # => EventBridge target for shutdown rule
  count = var.enable_auto_shutdown ? 1 : 0
+ # => Number of resource instances
  # => Creates specified number of instances
  rule = aws_cloudwatch_event_rule.shutdown_schedule[0].name
  # => Link to shutdown schedule rule
@@ -5903,16 +6539,20 @@ resource "aws_cloudwatch_event_target" "shutdown_lambda" {
  action = "stop"
  # => Lambda reads action and stops instances
  })
+ # => Terraform configuration
 }
 
 resource "aws_cloudwatch_event_rule" "startup_schedule" {
 # => Resource definition
  # => EventBridge rule for morning startup
  count = var.enable_auto_shutdown ? 1 : 0
+ # => Number of resource instances
  # => Creates specified number of instances
  name = "${var.environment}-startup-schedule"
+ # => Resource name
  # => Sets name
  description = "Start instances at 8 AM weekdays"
+ # => Human-readable description
  # => Sets description
  schedule_expression = "cron(0 8 ? * MON-FRI *)"
  # => 8 AM UTC Monday-Friday
@@ -5924,6 +6564,7 @@ resource "aws_cloudwatch_event_target" "startup_lambda" {
 # => Resource definition
  # => EventBridge target for startup rule
  count = var.enable_auto_shutdown ? 1 : 0
+ # => Number of resource instances
  # => Creates specified number of instances
  rule = aws_cloudwatch_event_rule.startup_schedule[0].name
  # => Link to startup schedule rule
@@ -5939,12 +6580,14 @@ resource "aws_cloudwatch_event_target" "startup_lambda" {
  action = "start"
  # => Lambda reads action and starts instances
  })
+ # => Terraform configuration
 }
 
 resource "aws_lambda_permission" "allow_eventbridge_shutdown" {
 # => Resource definition
  # => Grant EventBridge permission to invoke Lambda
  count = var.enable_auto_shutdown ? 1 : 0
+ # => Number of resource instances
  # => Creates specified number of instances
  statement_id = "AllowExecutionFromEventBridgeShutdown"
  # => Unique statement ID
@@ -5962,6 +6605,7 @@ resource "aws_lambda_permission" "allow_eventbridge_startup" {
 # => Resource definition
  # => Grant EventBridge permission for startup rule
  count = var.enable_auto_shutdown ? 1 : 0
+ # => Number of resource instances
  # => Creates specified number of instances
  statement_id = "AllowExecutionFromEventBridgeStartup"
  # => Sets statement_id
@@ -5980,6 +6624,7 @@ resource "aws_ec2_capacity_reservation" "prod" {
 # => Resource definition
  # => Reserved capacity for production instances
  count = var.environment == "prod" ? 1 : 0
+ # => Number of resource instances
  # => Creates specified number of instances
  instance_type = "t3.large"
  # => Match production instance type
@@ -5991,6 +6636,7 @@ resource "aws_ec2_capacity_reservation" "prod" {
  # => Reserve capacity for 3 instances
 
  tags = {
+ # => Resource tags map
  Purpose = "Production Reserved Capacity"
  # => Sets Purpose
  }
@@ -6003,9 +6649,11 @@ resource "aws_s3_bucket" "data" {
 # => Resource definition
  # => S3 bucket with cost allocation tags
  bucket = "${var.environment}-company-data"
+ # => S3 bucket name
  # => Bucket name with environment prefix
 
  tags = {
+ # => Resource tags map
  # => Cost allocation tags
  Environment = var.environment
  # => Environment tag (prod/dev/staging)
@@ -6019,6 +6667,8 @@ resource "aws_s3_bucket" "data" {
  # => Finance can report: "DataEngineering spent $X this month"
  }
 }
+
+
 
 
 
@@ -6061,6 +6711,8 @@ resource "aws_budgets_budget" "monthly_cost" {
  # => Sends email when prod cost > $8k or dev > $800
  }
 }
+
+
 
 ```
 

@@ -4,7 +4,6 @@ date: 2025-12-29T00:00:00+07:00
 draft: false
 weight: 10000000
 description: "Learn Ansible through 80 annotated code examples covering playbooks, inventory, roles, modules, templates, vault, and production automation patterns"
-categories: ["learn"]
 tags: ["ansible", "automation", "infrastructure", "tutorial", "by-example", "devops", "configuration-management"]
 ---
 

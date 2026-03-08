@@ -7,8 +7,7 @@ type: docs
 layout: list
 ---
 
-- [COMPLETION-STATUS](/en/learn/software-engineering/platform-web/tools/jvm-spring/by-example/COMPLETION-STATUS)
-- [Advanced](/en/learn/software-engineering/platform-web/tools/jvm-spring/by-example/advanced)
+- [Overview](/en/learn/software-engineering/platform-web/tools/jvm-spring/by-example/overview)
 - [Beginner](/en/learn/software-engineering/platform-web/tools/jvm-spring/by-example/beginner)
 - [Intermediate](/en/learn/software-engineering/platform-web/tools/jvm-spring/by-example/intermediate)
-- [Overview](/en/learn/software-engineering/platform-web/tools/jvm-spring/by-example/overview)
+- [Advanced](/en/learn/software-engineering/platform-web/tools/jvm-spring/by-example/advanced)

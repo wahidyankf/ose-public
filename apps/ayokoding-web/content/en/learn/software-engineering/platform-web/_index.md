@@ -16,8 +16,3 @@ layout: list
   - [Fe Nextjs](/en/learn/software-engineering/platform-web/tools/fe-nextjs)
   - [Elixir Phoenix Liveview](/en/learn/software-engineering/platform-web/tools/elixir-phoenix-liveview)
 - [Overview](/en/learn/software-engineering/platform-web/overview)
-- [Elixir Phoenix Liveview](/en/learn/software-engineering/platform-web/elixir-phoenix-liveview)
-  - [Initial Setup](/en/learn/software-engineering/platform-web/elixir-phoenix-liveview/initial-setup)
-  - [Quick Start](/en/learn/software-engineering/platform-web/elixir-phoenix-liveview/quick-start)
-  - [By Example](/en/learn/software-engineering/platform-web/elixir-phoenix-liveview/by-example)
-  - [Overview](/en/learn/software-engineering/platform-web/elixir-phoenix-liveview/overview)

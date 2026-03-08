@@ -194,15 +194,15 @@ Ready to start learning? Choose your entry point:
 - **Know the basics?** → [Intermediate Examples (31-60)](/en/learn/software-engineering/automation-tools/claude-code/by-example/intermediate)
 - **Experienced with AI tools?** → [Advanced Examples (61-85)](/en/learn/software-engineering/automation-tools/claude-code/by-example/advanced)
 
-## Expected Time Investment
+## Learning Progression
 
-**Not measured in hours** - everyone learns at different speeds. Instead, we measure in **coverage depth**:
+We measure progress by **coverage depth**, not time:
 
 - **Beginner**: 0-40% coverage through 30 examples (essential commands, basic workflows)
 - **Intermediate**: 40-75% coverage through 30 examples (production patterns, advanced features)
 - **Advanced**: 75-95% coverage through 25 examples (expert techniques, optimization)
 
-Work at your own pace. Some developers complete all 85 examples in a weekend; others spread it across weeks while building projects.
+Work at your own pace. Move through examples as you build confidence with each pattern.
 
 ## Key Principles
 

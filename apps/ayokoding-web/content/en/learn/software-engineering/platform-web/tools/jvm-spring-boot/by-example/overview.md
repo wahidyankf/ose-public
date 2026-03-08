@@ -41,8 +41,8 @@ Unlike narrative tutorials that build understanding through explanation and stor
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Beginner<br/>Examples 1-25<br/>Core Concepts & APIs"] --> B["Intermediate<br/>Examples 26-55<br/>Production Patterns"]
-    B --> C["Advanced<br/>Examples 56-85<br/>Microservices & Cloud-Native"]
+    A["Beginner<br/>Examples 1-25<br/>Core Concepts & APIs"] --> B["Intermediate<br/>Examples 21-50<br/>Production Patterns"]
+    B --> C["Advanced<br/>Examples 41-70<br/>Microservices & Cloud-Native"]
 
     style A fill:#0173B2,color:#fff
     style B fill:#DE8F05,color:#fff
@@ -253,7 +253,7 @@ Mermaid diagrams appear when **visual representation clarifies request flows, be
 Jump into the beginner examples to start learning Spring Boot through code:
 
 - [Beginner Examples (1-25)](/en/learn/software-engineering/platform-web/tools/jvm-spring-boot/by-example/beginner) - Dependency injection, REST controllers, Spring Data JPA, configuration, file handling, CORS
-- [Intermediate Examples (26-55)](/en/learn/software-engineering/platform-web/tools/jvm-spring-boot/by-example/intermediate) - Security, testing, caching, async processing, WebSocket, API versioning, advanced patterns
-- [Advanced Examples (56-85)](/en/learn/software-engineering/platform-web/tools/jvm-spring-boot/by-example/advanced) - Microservices, Kubernetes, event sourcing, CQRS, API Gateway, performance tuning, observability
+- [Intermediate Examples (21-50)](/en/learn/software-engineering/platform-web/tools/jvm-spring-boot/by-example/intermediate) - Security, testing, caching, async processing, WebSocket, API versioning, advanced patterns
+- [Advanced Examples (41-70)](/en/learn/software-engineering/platform-web/tools/jvm-spring-boot/by-example/advanced) - Microservices, Kubernetes, event sourcing, CQRS, API Gateway, performance tuning, observability
 
 Each example is self-contained and runnable as a Spring Boot application or test class. Start with Example 1, or jump to topics that interest you most.

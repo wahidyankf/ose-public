@@ -4,7 +4,6 @@ date: 2026-01-01T22:52:24+07:00
 draft: false
 weight: 10000001
 description: "Examples 1-30: Spring Data JPA fundamentals including repositories, CRUD operations, simple queries, and basic relationships (0-40% coverage)"
-categories: ["learn"]
 tags: ["spring-data-jpa", "tutorial", "by-example", "beginner", "jpa-repository", "crud", "queries", "relationships"]
 ---
 
@@ -40,7 +39,7 @@ import jakarta.persistence.*;                 // => Jakarta Persistence API (JPA
                                               // => Hibernate creates table schema from this class
 @Table(name = "users")                        // => Explicitly maps to "users" table
                                               // => Without @Table, defaults to class name "User"
-public class User {
+public class User {                           // => JPA-managed entity class
     @Id                                       // => Primary key field
     @GeneratedValue(strategy = GenerationType.IDENTITY)  // => Auto-increment strategy
                                               // => Database generates ID on INSERT
@@ -64,15 +63,15 @@ public class User {
     public Long getId() { return id; }        // => Getter for primary key
     public void setId(Long id) {              // => Setter for primary key
         this.id = id;                         // => Usually only set by JPA, not application code
-    }
+    }                                         // => id normally set only by JPA persistence provider
     public String getName() { return name; }  // => Getter for name field
     public void setName(String name) {        // => Setter for name field
         this.name = name;                     // => Updates name in managed entity
-    }
+    }                                         // => Triggers dirty checking if entity is MANAGED
     public String getEmail() { return email; }  // => Getter for email field
     public void setEmail(String email) {      // => Setter for email field
         this.email = email;                   // => Updates email in managed entity
-    }
+    }                                         // => JPA detects change; UPDATE on flush/commit
 }
 
 
@@ -1188,8 +1187,6 @@ public class UserPatternService {
 
 **Why It Matters**: Pattern matching queries reduce ad-hoc SQL by 50% in typical CRUD applications, eliminating typo-prone string concatenation and improving code searchability through method names. The StartingWith/EndingWith pattern enables prefix/suffix searches critical for autocomplete features serving millions of users, though full-text search (Elasticsearch, PostgreSQL pg_trgm) outperforms LIKE queries by 100-1000x on large datasets. Teams using pattern matching consistently report 40% fewer SQL injection vulnerabilities compared to dynamic query construction.
 
-**Why It Matters**: Automatic wildcard handling prevents common LIKE query mistakes where developers forget % symbols or place them incorrectly, causing zero-result bugs that frustrate end users. The StartingWith/EndingWith/Containing keywords generate index-friendly queries when combined with database function-based indexes, improving search performance by 100-1000x on large tables. However, Containing (%value%) cannot use indexes efficiently - use full-text search (PostgreSQL pg_trgm, Elasticsearch) for production text search on million-row tables.
-
 ### Example 13: Ordering Results
 
 `OrderBy` keyword sorts query results. Combine multiple properties with `Asc` (ascending) and `Desc` (descending) suffixes.
@@ -1933,38 +1930,48 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 ```
 
 ```java
-package com.example.demo.service;
+package com.example.demo.service;           // => Service layer package
 
-import com.example.demo.entity.Department;
-import com.example.demo.entity.Employee;
-import com.example.demo.repository.DepartmentRepository;
-import com.example.demo.repository.EmployeeRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
+import com.example.demo.entity.Department;   // => Import Department entity for setup
+import com.example.demo.entity.Employee;     // => Import Employee entity
+import com.example.demo.repository.DepartmentRepository;  // => Department persistence
+import com.example.demo.repository.EmployeeRepository;    // => Employee persistence
+import org.springframework.stereotype.Service;            // => Spring service stereotype
+import org.springframework.transaction.annotation.Transactional; // => Transaction management
+import java.util.List;                        // => Java List collection
 
-@Service
+@Service                                      // => Spring service bean (auto-detected)
 public class EmployeeQueryService {
-    private final DepartmentRepository departmentRepository;
-    private final EmployeeRepository employeeRepository;
+    private final DepartmentRepository departmentRepository;  // => Injected repository
+    private final EmployeeRepository employeeRepository;      // => Injected repository
 
     public EmployeeQueryService(DepartmentRepository departmentRepository,
                                 EmployeeRepository employeeRepository) {
-        this.departmentRepository = departmentRepository;
-        this.employeeRepository = employeeRepository;
+        this.departmentRepository = departmentRepository;  // => Constructor injection
+        this.employeeRepository = employeeRepository;      // => Both repos injected
     }
 
-    @Transactional
+    @Transactional                            // => Wraps all queries in single transaction
     public void demonstrateRelationshipQueries() {
         // Setup data
         Department engineering = new Department("Engineering");
+        // => Creates TRANSIENT department (not yet persisted, id=null)
         engineering.addEmployee(new Employee("Alice"));
+        // => Adds Alice to engineering's employee list + sets alice.department = engineering
         engineering.addEmployee(new Employee("Bob"));
+        // => Adds Bob to engineering's employee list + sets bob.department = engineering
         departmentRepository.save(engineering);
+        // => INSERT INTO departments (name) VALUES ('Engineering') → id=1
+        // => INSERT INTO employees (name, department_id) VALUES ('Alice', 1)
+        // => INSERT INTO employees (name, department_id) VALUES ('Bob', 1)
 
         Department sales = new Department("Sales");
+        // => Creates TRANSIENT Sales department
         sales.addEmployee(new Employee("Charlie"));
+        // => Adds Charlie to sales' employee list
         departmentRepository.save(sales);
+        // => INSERT INTO departments (name) VALUES ('Sales') → id=2
+        // => INSERT INTO employees (name, department_id) VALUES ('Charlie', 2)
 
         // Query by department name (auto-join)
         List<Employee> engineers = employeeRepository.findByDepartmentName("Engineering");
@@ -2520,36 +2527,36 @@ public class Employee {
 ```
 
 ```java
-package com.example.demo.service;
+package com.example.demo.service;           // => Service layer package
 
-import com.example.demo.entity.Department;
-import com.example.demo.entity.Employee;
-import com.example.demo.repository.DepartmentRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.example.demo.entity.Department;   // => Department entity
+import com.example.demo.entity.Employee;     // => Employee entity
+import com.example.demo.repository.DepartmentRepository;  // => Department persistence
+import org.springframework.stereotype.Service;            // => Spring service stereotype
+import org.springframework.transaction.annotation.Transactional; // => Transaction management
 
-@Service
+@Service                                      // => Spring service bean (auto-detected)
 public class BidirectionalSyncService {
-    private final DepartmentRepository departmentRepository;
+    private final DepartmentRepository departmentRepository;  // => Injected repository
 
     public BidirectionalSyncService(DepartmentRepository departmentRepository) {
-        this.departmentRepository = departmentRepository;
+        this.departmentRepository = departmentRepository;  // => Constructor injection
     }
 
-    @Transactional
+    @Transactional                            // => Single transaction for all operations
     public void demonstrateSynchronization() {
-        Department engineering = new Department("Engineering");
+        Department engineering = new Department("Engineering");  // => TRANSIENT, id=null
 
         // CORRECT: Use helper method
-        Employee alice = new Employee("Alice");
+        Employee alice = new Employee("Alice");          // => TRANSIENT employee
         engineering.addEmployee(alice);
         // => engineering.employees = [alice]
         // => alice.department = engineering
-        // => Both sides synchronized
+        // => Both sides synchronized (helper method sets both)
 
         // WRONG: Direct list manipulation
-        Employee bob = new Employee("Bob");
-        engineering.getEmployees().add(bob);
+        Employee bob = new Employee("Bob");              // => TRANSIENT employee
+        engineering.getEmployees().add(bob);             // => Only updates one side!
         // => engineering.employees = [alice, bob]
         // => bob.department = null (INCONSISTENT!)
 
@@ -2578,9 +2585,9 @@ public class BidirectionalSyncService {
 **Code**:
 
 ```java
-package com.example.demo.entity;
+package com.example.demo.entity;                               // => Entity class package
 
-import jakarta.persistence.*;
+import jakarta.persistence.*;                                  // => Imports all JPA annotations
 
 @Entity
 // => Marks class as JPA entity (database table mapping)
@@ -2591,58 +2598,58 @@ public class Employee {
     // => Primary key field
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     // => Auto-increment strategy (database assigns ID)
-    private Long id;
+    private Long id;                                           // => Primary key (null for new entities)
 
-    private String name;
+    private String name;                                       // => VARCHAR(255) column (nullable by default)
 
-    @ManyToOne
+    @ManyToOne                                                 // => Many employees can belong to one department
     // => Defines entity relationship for foreign key mapping
     @JoinColumn(
         name = "dept_id",              // Custom column name (default: department_id)
         nullable = false,              // NOT NULL constraint
         foreignKey = @ForeignKey(name = "fk_employee_department")  // FK constraint name
     )
-    private Department department;
+    private Department department;                             // => Reference to owning Department entity
 
-    public Employee() {}
-    public Employee(String name) {
-        this.name = name;
+    public Employee() {}                                       // => No-arg constructor required by JPA
+    public Employee(String name) {                             // => Convenience constructor
+        this.name = name;                                      // => Sets name; department set separately
     }
 
     // Getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public Department getDepartment() { return department; }
-    public void setDepartment(Department department) { this.department = department; }
+    public Long getId() { return id; }                         // => Returns primary key
+    public void setId(Long id) { this.id = id; }               // => Normally set by JPA, not application
+    public String getName() { return name; }                   // => Returns employee name
+    public void setName(String name) { this.name = name; }     // => Updates name in managed entity
+    public Department getDepartment() { return department; }   // => Returns associated Department
+    public void setDepartment(Department department) { this.department = department; } // => Sets FK relationship
 }
 
 
 ```
 
 ```java
-package com.example.demo.service;
+package com.example.demo.service;                              // => Service layer package
 
-import com.example.demo.entity.Department;
-import com.example.demo.entity.Employee;
-import com.example.demo.repository.DepartmentRepository;
-import com.example.demo.repository.EmployeeRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.example.demo.entity.Department;                     // => Department entity for relationship
+import com.example.demo.entity.Employee;                       // => Employee entity being demonstrated
+import com.example.demo.repository.DepartmentRepository;       // => Repository for Department persistence
+import com.example.demo.repository.EmployeeRepository;         // => Repository for Employee persistence
+import org.springframework.stereotype.Service;                 // => Marks as Spring service bean
+import org.springframework.transaction.annotation.Transactional; // => Declarative transaction management
 
-@Service
+@Service                                                       // => Spring component (auto-detected by scan)
 public class JoinColumnService {
-    private final DepartmentRepository departmentRepository;
-    private final EmployeeRepository employeeRepository;
+    private final DepartmentRepository departmentRepository;   // => Injected via constructor
+    private final EmployeeRepository employeeRepository;       // => Injected via constructor
 
     public JoinColumnService(DepartmentRepository departmentRepository,
                              EmployeeRepository employeeRepository) {
-        this.departmentRepository = departmentRepository;
+        this.departmentRepository = departmentRepository;      // => Constructor injection (recommended over @Autowired)
         this.employeeRepository = employeeRepository;
     }
 
-    @Transactional
+    @Transactional                                             // => All operations in single transaction
     public void demonstrateJoinColumn() {
         Department dept = departmentRepository.save(new Department("Engineering"));
 // => Persists entity to database (INSERT if id=null, UPDATE if id exists)
@@ -2650,20 +2657,20 @@ public class JoinColumnService {
 // => Returns entity with database-assigned ID
 
         // Create employee with custom FK column
-        Employee alice = new Employee("Alice");
-        alice.setDepartment(dept);
+        Employee alice = new Employee("Alice");                // => TRANSIENT entity, no DB row yet
+        alice.setDepartment(dept);                             // => Sets the FK relationship
         employeeRepository.save(alice);
         // => SQL: INSERT INTO employees (name, dept_id) VALUES ('Alice', 1)
         // => Uses custom column name "dept_id" instead of "department_id"
 
         // Try to save employee without department (nullable=false)
         try {
-            Employee orphan = new Employee("Orphan");
+            Employee orphan = new Employee("Orphan");          // => Employee without department (FK will be null)
             // orphan.department is null
             employeeRepository.save(orphan);
             // => SQL fails: NOT NULL constraint violation on dept_id
         } catch (Exception e) {
-            System.out.println("Error: Department required (NOT NULL constraint)");
+            System.out.println("Error: Department required (NOT NULL constraint)"); // => nullable=false enforced
         }
 
         // Generated schema:
@@ -2682,7 +2689,7 @@ public class JoinColumnService {
 
 **Key Takeaway**: `@JoinColumn` provides control over foreign key columns. Use `nullable=false` to enforce referential integrity at database level.
 
-**Why It Matters**: Lazy loading reduces memory consumption by 50-80% in applications with deep object graphs, loading only required data and preventing heap exhaustion. This strategy enables fetching 10,000-row datasets efficiently by loading parent entities only, deferring child collection retrieval until needed. However, accessing lazy collections outside transactions triggers LazyInitializationException - the #1 Hibernate StackOverflow issue with 100,000+ questions - requiring architectural discipline around transaction boundaries and DTO projections for APIs.
+**Why It Matters**: Explicit `@JoinColumn` configuration prevents Hibernate's default column naming from clashing with existing database schemas, critical when integrating Spring Data JPA with legacy databases where column names are predefined. The `nullable=false` constraint enforces referential integrity at the database level, catching null foreign key violations before they cause data corruption. Naming the foreign key constraint (`fk_employee_department`) enables faster constraint violation diagnostics in production and integrates with DBA naming conventions across enterprise deployments.
 
 ### Example 24: Collection Types
 
@@ -2691,10 +2698,10 @@ JPA supports `List`, `Set`, and `Map` for `@OneToMany` relationships. Each has d
 **Code**:
 
 ```java
-package com.example.demo.entity;
+package com.example.demo.entity;                               // => Entity package
 
-import jakarta.persistence.*;
-import java.util.*;
+import jakarta.persistence.*;                                  // => JPA annotations
+import java.util.*;                                            // => Collection types (List, Set, Map)
 
 @Entity
 // => Marks class as JPA entity (database table mapping)
@@ -2705,92 +2712,92 @@ public class Department {
     // => Primary key field
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     // => Auto-increment strategy (database assigns ID)
-    private Long id;
+    private Long id;                                           // => Primary key (null for new entities)
 
-    private String name;
+    private String name;                                       // => Department name (VARCHAR 255)
 
     // LIST: Allows duplicates, maintains insertion order
-    @OneToMany(mappedBy = "department")
+    @OneToMany(mappedBy = "department")                        // => Inverse side of @ManyToOne relationship
     // => Defines entity relationship for foreign key mapping
-    @OrderBy("name ASC") // SQL ORDER BY clause
-    private List<Employee> employeeList = new ArrayList<>();
+    @OrderBy("name ASC") // SQL ORDER BY clause               // => Adds ORDER BY name ASC to query
+    private List<Employee> employeeList = new ArrayList<>();   // => List maintains insertion/sort order
 
     // SET: No duplicates, no guaranteed order
-    @OneToMany(mappedBy = "department")
+    @OneToMany(mappedBy = "department")                        // => Set of unique employees
     // => Defines entity relationship for foreign key mapping
-    private Set<Employee> employeeSet = new HashSet<>();
+    private Set<Employee> employeeSet = new HashSet<>();       // => HashSet: O(1) contains(), no duplicates
 
     // MAP: Key-value pairs
-    @OneToMany(mappedBy = "department")
+    @OneToMany(mappedBy = "department")                        // => Map keyed by employee field
     // => Defines entity relationship for foreign key mapping
-    @MapKey(name = "id") // Use employee.id as map key
-    private Map<Long, Employee> employeeMap = new HashMap<>();
+    @MapKey(name = "id") // Use employee.id as map key        // => @MapKey(name="id") uses id as map key
+    private Map<Long, Employee> employeeMap = new HashMap<>(); // => O(1) lookup by employee ID
 
-    public Department() {}
-    public Department(String name) {
-        this.name = name;
+    public Department() {}                                     // => No-arg constructor required by JPA
+    public Department(String name) {                           // => Convenience constructor
+        this.name = name;                                      // => Collections already initialized above
     }
 
     // Getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public List<Employee> getEmployeeList() { return employeeList; }
-    public void setEmployeeList(List<Employee> employeeList) { this.employeeList = employeeList; }
-    public Set<Employee> getEmployeeSet() { return employeeSet; }
-    public void setEmployeeSet(Set<Employee> employeeSet) { this.employeeSet = employeeSet; }
-    public Map<Long, Employee> getEmployeeMap() { return employeeMap; }
-    public void setEmployeeMap(Map<Long, Employee> employeeMap) { this.employeeMap = employeeMap; }
+    public Long getId() { return id; }                         // => Returns primary key
+    public void setId(Long id) { this.id = id; }               // => Setter for JPA
+    public String getName() { return name; }                   // => Returns department name
+    public void setName(String name) { this.name = name; }     // => Updates name
+    public List<Employee> getEmployeeList() { return employeeList; } // => Returns ordered list
+    public void setEmployeeList(List<Employee> employeeList) { this.employeeList = employeeList; } // => Replaces list
+    public Set<Employee> getEmployeeSet() { return employeeSet; } // => Returns unique set
+    public void setEmployeeSet(Set<Employee> employeeSet) { this.employeeSet = employeeSet; } // => Replaces set
+    public Map<Long, Employee> getEmployeeMap() { return employeeMap; } // => Returns ID-keyed map
+    public void setEmployeeMap(Map<Long, Employee> employeeMap) { this.employeeMap = employeeMap; } // => Replaces map
 }
 
 
 ```
 
 ```java
-package com.example.demo.service;
+package com.example.demo.service;           // => Service layer package
 
-import com.example.demo.entity.Department;
-import com.example.demo.entity.Employee;
-import com.example.demo.repository.DepartmentRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.example.demo.entity.Department;   // => Department entity
+import com.example.demo.entity.Employee;     // => Employee entity
+import com.example.demo.repository.DepartmentRepository;  // => Department persistence
+import org.springframework.stereotype.Service;            // => Spring service stereotype
+import org.springframework.transaction.annotation.Transactional; // => Transaction management
 
-@Service
+@Service                                      // => Spring service bean (auto-detected)
 public class CollectionTypeService {
-    private final DepartmentRepository departmentRepository;
+    private final DepartmentRepository departmentRepository;  // => Injected repository
 
     public CollectionTypeService(DepartmentRepository departmentRepository) {
-        this.departmentRepository = departmentRepository;
+        this.departmentRepository = departmentRepository;  // => Constructor injection
     }
 
-    @Transactional
+    @Transactional                            // => Single transaction for all operations
     public void demonstrateCollectionTypes() {
-        Department dept = new Department("Engineering");
-        Employee alice = new Employee("Alice");
-        Employee bob = new Employee("Bob");
-        Employee charlie = new Employee("Charlie");
+        Department dept = new Department("Engineering");  // => TRANSIENT department, id=null
+        Employee alice = new Employee("Alice");            // => TRANSIENT employee, id=null
+        Employee bob = new Employee("Bob");                // => TRANSIENT employee, id=null
+        Employee charlie = new Employee("Charlie");        // => TRANSIENT employee, id=null
 
         // LIST: Ordered, allows duplicates
-        dept.getEmployeeList().add(alice);
-        dept.getEmployeeList().add(bob);
-        dept.getEmployeeList().add(charlie);
+        dept.getEmployeeList().add(alice);   // => Adds alice to List (maintains insertion order)
+        dept.getEmployeeList().add(bob);     // => Adds bob to List
+        dept.getEmployeeList().add(charlie); // => List = [alice, bob, charlie]
         departmentRepository.save(dept);
         // => SQL: SELECT * FROM employees WHERE department_id = 1 ORDER BY name ASC
-        // => Result: [Alice, Bob, Charlie] (alphabetically ordered)
+        // => Result: [Alice, Bob, Charlie] (alphabetically ordered by @OrderBy)
 
         // SET: Unique elements only
-        dept.getEmployeeSet().add(alice);
-        dept.getEmployeeSet().add(alice); // Duplicate ignored
-        dept.getEmployeeSet().add(bob);
+        dept.getEmployeeSet().add(alice);   // => Adds alice to Set (no duplicates allowed)
+        dept.getEmployeeSet().add(alice);   // Duplicate ignored  // => alice already in Set, ignored
+        dept.getEmployeeSet().add(bob);     // => Adds bob (unique element)
         // => Set size: 2 (Alice, Bob) - duplicate Alice ignored
 
         // MAP: Key-value access
-        dept.getEmployeeMap().put(alice.getId(), alice);
-        dept.getEmployeeMap().put(bob.getId(), bob);
+        dept.getEmployeeMap().put(alice.getId(), alice);  // => Map key=alice.id, value=alice
+        dept.getEmployeeMap().put(bob.getId(), bob);      // => Map: {1=alice, 2=bob}
         // => Map: {1=Alice, 2=Bob}
 
-        Employee found = dept.getEmployeeMap().get(1L);
+        Employee found = dept.getEmployeeMap().get(1L);   // => O(1) lookup by ID (no iteration)
         System.out.println("Employee ID 1: " + found.getName()); // => Alice
 
         // Performance comparison:
@@ -2805,7 +2812,7 @@ public class CollectionTypeService {
 
 **Key Takeaway**: Use `List` for ordered collections with duplicates, `Set` for unique elements, `Map` for key-based lookups. `@OrderBy` adds SQL ORDER BY for deterministic ordering.
 
-**Why It Matters**: LazyInitializationException causes 30-40% of Hibernate production crashes, triggered when accessing lazy-loaded relationships after persistence context closes, typically in web controllers or async jobs. The exception provides no recovery mechanism - data must be fetched within transaction boundaries or through explicit JOIN FETCH queries. Teams solving this correctly adopt consistent data fetching patterns (DTOs, entity graphs, or explicit fetch joins), reducing lazy loading errors by 90% and eliminating hours of debugging mysterious proxy exceptions.
+**Why It Matters**: Choosing the right collection type for `@OneToMany` relationships directly affects both correctness and query behavior. `Set` prevents duplicate children and generates more efficient SQL for membership checks, while `List` preserves insertion order with an additional ORDER BY column. `@OrderBy` provides deterministic ordering without schema changes, critical for audit logs and ranked lists. Selecting the wrong collection type can cause subtle data integrity issues or N+1 query problems, making this decision important during entity design.
 
 ## Group 4: Entity Fundamentals
 
@@ -2847,50 +2854,50 @@ public class Product {
     private Long id;
 
     @Column(
-        name = "product_name",      // Custom column name (default: name)
-        nullable = false,           // NOT NULL constraint
-        length = 100,               // VARCHAR(100) instead of VARCHAR(255)
-        unique = true               // UNIQUE constraint
+        name = "product_name",      // => Custom column name (default would be "name")
+        nullable = false,           // => NOT NULL database constraint (required field)
+        length = 100,               // => VARCHAR(100) instead of default VARCHAR(255)
+        unique = true               // => UNIQUE constraint (no duplicate product names)
     )
-    private String name;
+    private String name;            // => Maps to "product_name" VARCHAR(100) NOT NULL UNIQUE
 
     @Column(
-        precision = 10,             // Total digits
-        scale = 2                   // Decimal places
+        precision = 10,             // => Total digits (before + after decimal point)
+        scale = 2                   // => Digits after decimal (e.g., 99999999.99)
     )
-    private Double price;           // DECIMAL(10,2) in database
+    private Double price;           // => Maps to DECIMAL(10,2) in database
 
     @Column(
-        columnDefinition = "TEXT"   // Custom SQL type
+        columnDefinition = "TEXT"   // => Custom SQL type overrides default VARCHAR(255)
     )
-    private String description;
+    private String description;     // => Maps to TEXT column (unlimited character length)
 
-    @Column(updatable = false)      // Cannot be updated after insert
-    private String sku;
+    @Column(updatable = false)      // => JPA excludes this field from UPDATE statements
+    private String sku;             // => Immutable after first INSERT (set once only)
 
-    @Column(insertable = false, updatable = false)  // Read-only (computed column)
-    private Integer stock;
+    @Column(insertable = false, updatable = false)  // => Read-only computed column
+    private Integer stock;          // => JPA never writes this; DB trigger or view populates it
 
-    public Product() {}
+    public Product() {}             // => Default no-arg constructor required by JPA
     public Product(String name, Double price, String sku) {
-        this.name = name;
-        this.price = price;
-        this.sku = sku;
-    }
+        this.name = name;           // => Sets product name (unique, max 100 chars)
+        this.price = price;         // => Sets price (DECIMAL(10,2) precision)
+        this.sku = sku;             // => Sets immutable SKU (never updated after first save)
+    }                               // => id remains null (assigned by database on INSERT)
 
     // Getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public Double getPrice() { return price; }
-    public void setPrice(Double price) { this.price = price; }
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-    public String getSku() { return sku; }
-    public void setSku(String sku) { this.sku = sku; }
-    public Integer getStock() { return stock; }
-    public void setStock(Integer stock) { this.stock = stock; }
+    public Long getId() { return id; }                             // => Returns auto-generated primary key
+    public void setId(Long id) { this.id = id; }                   // => Normally set by JPA only
+    public String getName() { return name; }                       // => Returns unique product name
+    public void setName(String name) { this.name = name; }         // => Updates product name
+    public Double getPrice() { return price; }                     // => Returns price (DECIMAL precision)
+    public void setPrice(Double price) { this.price = price; }     // => Updates price field
+    public String getDescription() { return description; }         // => Returns TEXT description
+    public void setDescription(String d) { this.description = d; } // => Updates description field
+    public String getSku() { return sku; }                         // => Returns immutable SKU code
+    public void setSku(String sku) { this.sku = sku; }             // => Effective only on first save
+    public Integer getStock() { return stock; }                    // => Returns read-only stock count
+    public void setStock(Integer stock) { this.stock = stock; }    // => Set by JPA on DB read only
 }
 
 
@@ -2963,7 +2970,7 @@ public class ColumnMappingService {
 
 **Key Takeaway**: `@Column` maps entity fields to database columns with constraints. Use `nullable=false` for required fields, `unique=true` for unique values, and `updatable=false` for immutable fields.
 
-**Why It Matters**: Orphan removal prevents database pollution from deleted relationship entries, automatically issuing DELETE statements when children are removed from parent collections without explicit repository calls. This feature implements DDD aggregate root patterns cleanly, ensuring Order removal deletes all OrderItems automatically, maintaining referential integrity without cascade boilerplate. However, orphanRemoval conflicts with bi-directional management from both sides - enabling it on relationships where children exist independently causes accidental data deletion, requiring careful domain modeling of composition vs association.
+**Why It Matters**: `@Column` constraints serve as the last line of defense for data quality, enforcing rules at the database level even when application validation is bypassed (bulk imports, direct SQL, migration scripts). The `updatable=false` attribute protects immutable fields like SKUs and creation timestamps from accidental modification during entity updates. Column length constraints prevent silent truncation in databases that truncate rather than reject oversized values, protecting data integrity for SKU codes and identifiers where truncation creates duplicates.
 
 ### Example 26: Temporal Types and Dates
 
@@ -2972,12 +2979,12 @@ JPA supports Java 8 `LocalDate`, `LocalDateTime`, and legacy `Date` types. Moder
 **Code**:
 
 ```java
-package com.example.demo.entity;
+package com.example.demo.entity;                               // => Entity package
 
-import jakarta.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
+import jakarta.persistence.*;                                  // => JPA annotations
+import java.time.LocalDate;                                    // => Date without time (RECOMMENDED)
+import java.time.LocalDateTime;                                // => Date and time (RECOMMENDED)
+import java.util.Date;                                         // => Legacy date type (NOT RECOMMENDED)
 
 @Entity
 // => Marks class as JPA entity (database table mapping)
@@ -2988,50 +2995,50 @@ public class Event {
     // => Primary key field
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     // => Auto-increment strategy (database assigns ID)
-    private Long id;
+    private Long id;                                           // => Primary key (null for new entities)
 
-    private String name;
+    private String name;                                       // => Event name (VARCHAR 255)
 
     // Modern Java 8+ date types (RECOMMENDED)
-    @Column(name = "event_date")
-    private LocalDate eventDate;              // DATE column (YYYY-MM-DD)
+    @Column(name = "event_date")                               // => Custom column name
+    private LocalDate eventDate;              // DATE column (YYYY-MM-DD)  // => Immutable, timezone-safe
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;          // DATETIME column (YYYY-MM-DD HH:MM:SS)
+    @Column(name = "created_at")                               // => Maps to "created_at" column
+    private LocalDateTime createdAt;          // DATETIME column (YYYY-MM-DD HH:MM:SS)  // => Includes time component
 
     // Legacy java.util.Date (NOT RECOMMENDED - use java.time instead)
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.TIMESTAMP)                          // => Stores date AND time (java.time doesn't need this)
     @Column(name = "updated_at")
-    private Date updatedAt;                   // TIMESTAMP column
+    private Date updatedAt;                   // TIMESTAMP column          // => Mutable, avoid in new code
 
-    @Temporal(TemporalType.DATE)
-    private Date legacyDate;                  // DATE column (ignores time)
+    @Temporal(TemporalType.DATE)                               // => Truncates time component on store/load
+    private Date legacyDate;                  // DATE column (ignores time) // => Only year/month/day preserved
 
-    @Temporal(TemporalType.TIME)
-    private Date legacyTime;                  // TIME column (ignores date)
+    @Temporal(TemporalType.TIME)                               // => Truncates date component on store/load
+    private Date legacyTime;                  // TIME column (ignores date) // => Only hours/minutes/seconds preserved
 
-    public Event() {}
-    public Event(String name, LocalDate eventDate) {
-        this.name = name;
-        this.eventDate = eventDate;
-        this.createdAt = LocalDateTime.now();
-    }
+    public Event() {}                                          // => No-arg constructor required by JPA
+    public Event(String name, LocalDate eventDate) {           // => Convenience constructor
+        this.name = name;                                      // => Sets event name (VARCHAR 255)
+        this.eventDate = eventDate;                            // => Sets event date (DATE column, no time)
+        this.createdAt = LocalDateTime.now();                  // => Sets creation timestamp to current time
+    }                                                          // => id/updatedAt/legacyDate/legacyTime remain null
 
     // Getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public LocalDate getEventDate() { return eventDate; }
-    public void setEventDate(LocalDate eventDate) { this.eventDate = eventDate; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-    public Date getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(Date updatedAt) { this.updatedAt = updatedAt; }
-    public Date getLegacyDate() { return legacyDate; }
-    public void setLegacyDate(Date legacyDate) { this.legacyDate = legacyDate; }
-    public Date getLegacyTime() { return legacyTime; }
-    public void setLegacyTime(Date legacyTime) { this.legacyTime = legacyTime; }
+    public Long getId() { return id; }                         // => Returns primary key
+    public void setId(Long id) { this.id = id; }               // => Setter for JPA
+    public String getName() { return name; }                   // => Returns event name
+    public void setName(String name) { this.name = name; }     // => Updates event name
+    public LocalDate getEventDate() { return eventDate; }      // => Returns event date (no time)
+    public void setEventDate(LocalDate eventDate) { this.eventDate = eventDate; } // => Updates event date
+    public LocalDateTime getCreatedAt() { return createdAt; }  // => Returns creation timestamp
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; } // => Updates timestamp
+    public Date getUpdatedAt() { return updatedAt; }           // => Returns legacy update timestamp
+    public void setUpdatedAt(Date updatedAt) { this.updatedAt = updatedAt; } // => Updates legacy timestamp
+    public Date getLegacyDate() { return legacyDate; }         // => Returns legacy date (no time)
+    public void setLegacyDate(Date legacyDate) { this.legacyDate = legacyDate; } // => Updates legacy date
+    public Date getLegacyTime() { return legacyTime; }         // => Returns legacy time (no date)
+    public void setLegacyTime(Date legacyTime) { this.legacyTime = legacyTime; } // => Updates legacy time
 }
 
 
@@ -3095,7 +3102,7 @@ public class TemporalTypeService {
 
 **Key Takeaway**: Use `LocalDate` for dates without time, `LocalDateTime` for timestamps. Avoid legacy `java.util.Date` - `java.time` API is immutable and thread-safe.
 
-**Why It Matters**: Explicit join table entities enable relationship metadata storage (enrollment dates, order quantities), supporting 40% of many-to-many scenarios where pure @ManyToMany is insufficient for business requirements. The approach provides full control over foreign key naming and index creation, essential for database administrators enforcing naming conventions and optimizing query performance. Applications using join entities report 60% better relationship query performance through targeted indexes on metadata columns, versus default @ManyToMany join tables with auto-generated indexes that ignore query patterns.
+**Why It Matters**: Using `java.time` types (`LocalDate`, `LocalDateTime`) instead of legacy `java.util.Date` eliminates timezone-related data corruption that affects international applications when servers and databases run in different timezones. `java.time` types are immutable and thread-safe, preventing subtle concurrency bugs in shared date calculations. The `@Temporal` annotation is unnecessary with modern `java.time` types, reducing configuration overhead. Correct temporal type mapping prevents date-off-by-one errors in date range queries critical for scheduling, billing, and event management systems.
 
 ### Example 27: Enumerated Types
 
@@ -3110,15 +3117,15 @@ import jakarta.persistence.*;
 
 // Define enum outside or inside package
 enum OrderStatus {
-    PENDING,      // Ordinal: 0
-    CONFIRMED,    // Ordinal: 1
-    SHIPPED,      // Ordinal: 2
-    DELIVERED,    // Ordinal: 3
-    CANCELLED     // Ordinal: 4
-}
+    PENDING,      // => Ordinal position: 0 (stored as 0 with ORDINAL strategy)
+    CONFIRMED,    // => Ordinal position: 1
+    SHIPPED,      // => Ordinal position: 2
+    DELIVERED,    // => Ordinal position: 3
+    CANCELLED     // => Ordinal position: 4
+}                 // => With STRING strategy, stored as "PENDING", "CONFIRMED", etc.
 
 enum Priority {
-    LOW, MEDIUM, HIGH, CRITICAL
+    LOW, MEDIUM, HIGH, CRITICAL  // => Ordinal: 0,1,2,3 (dangerous if reordered)
 }
 
 @Entity
@@ -3130,35 +3137,35 @@ public class Order {
     // => Primary key field
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     // => Auto-increment strategy (database assigns ID)
-    private Long id;
+    private Long id;               // => Primary key (null for new, assigned on INSERT)
 
-    private String orderNumber;
+    private String orderNumber;    // => Order reference number (VARCHAR(255) column)
 
     // STRING: Stores "PENDING", "CONFIRMED", etc. (RECOMMENDED)
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20)
-    private OrderStatus status;
+    @Enumerated(EnumType.STRING)   // => Stores enum NAME as VARCHAR (e.g., "PENDING")
+    @Column(length = 20)           // => VARCHAR(20) sufficient for longest enum name
+    private OrderStatus status;    // => Database value: "PENDING", "SHIPPED", etc.
 
     // ORDINAL: Stores 0, 1, 2, etc. (FRAGILE - avoid)
-    @Enumerated(EnumType.ORDINAL)
-    private Priority priority;
+    @Enumerated(EnumType.ORDINAL)  // => Stores enum POSITION as INTEGER (e.g., 2 for HIGH)
+    private Priority priority;     // => Database value: 0=LOW, 1=MEDIUM, 2=HIGH, 3=CRITICAL
 
-    public Order() {}
+    public Order() {}              // => Default no-arg constructor required by JPA
     public Order(String orderNumber, OrderStatus status, Priority priority) {
-        this.orderNumber = orderNumber;
-        this.status = status;
-        this.priority = priority;
-    }
+        this.orderNumber = orderNumber;  // => Sets order reference number
+        this.status = status;            // => Sets status enum (stored as string)
+        this.priority = priority;        // => Sets priority enum (stored as ordinal)
+    }                                    // => id remains null (assigned on INSERT)
 
     // Getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getOrderNumber() { return orderNumber; }
-    public void setOrderNumber(String orderNumber) { this.orderNumber = orderNumber; }
-    public OrderStatus getStatus() { return status; }
-    public void setStatus(OrderStatus status) { this.status = status; }
-    public Priority getPriority() { return priority; }
-    public void setPriority(Priority priority) { this.priority = priority; }
+    public Long getId() { return id; }                                   // => Returns primary key
+    public void setId(Long id) { this.id = id; }                         // => Set by JPA on persist
+    public String getOrderNumber() { return orderNumber; }               // => Returns order number
+    public void setOrderNumber(String n) { this.orderNumber = n; }       // => Updates order number
+    public OrderStatus getStatus() { return status; }                    // => Returns status enum value
+    public void setStatus(OrderStatus status) { this.status = status; }  // => Updates status (stored as string)
+    public Priority getPriority() { return priority; }                   // => Returns priority enum value
+    public void setPriority(Priority p) { this.priority = p; }           // => Updates priority (stored as ordinal)
 }
 
 
@@ -3248,7 +3255,7 @@ public class EnumService {
 
 **Key Takeaway**: Always use `EnumType.STRING` for enums. `EnumType.ORDINAL` breaks when you reorder enum values, causing silent data corruption.
 
-**Why It Matters**: Declarative transactions eliminate 80-90% of boilerplate transaction code (beginTransaction, commit, rollback try-catch blocks), reducing human error in complex multi-operation logic. The @Transactional annotation provides automatic rollback on unchecked exceptions, preventing partial commits that corrupt data integrity - critical for financial systems and inventory management. Enterprise applications using declarative transactions report 70% fewer data inconsistency incidents compared to programmatic transaction management, as framework-managed transactions handle edge cases (connection failures, timeout) that developers forget.
+**Why It Matters**: `EnumType.STRING` storage protects against silent data corruption when enum values are reordered or new values are inserted in the middle of the enum - a common occurrence during feature development. `EnumType.ORDINAL` silently corrupts existing data when enum order changes, a bug that passes all tests (tests use current enum order) but breaks production data. Using STRING storage makes the database self-documenting - DBAs can read `'PENDING'` instead of decoding ordinal `0`, improving operational transparency and making database migrations safer.
 
 ### Example 28: Table and Index Configuration
 
@@ -3264,42 +3271,46 @@ import jakarta.persistence.*;
 @Entity
 // => Marks class as JPA entity (database table mapping)
 @Table(
-    name = "users",
+    name = "users",               // => Maps to "users" table in database
     indexes = {
-        @Index(name = "idx_email", columnList = "email"),           // Single column index
-        @Index(name = "idx_name_email", columnList = "name,email")  // Composite index
+        @Index(name = "idx_email", columnList = "email"),           // => Single-column index on email
+        @Index(name = "idx_name_email", columnList = "name,email")  // => Composite index on (name, email)
     },
     uniqueConstraints = {
         @UniqueConstraint(name = "uk_email", columnNames = {"email"})
+        // => Named unique constraint (alternative to @Column(unique=true))
+        // => Named constraints provide better error messages in constraint violations
     }
 )
+// => @Table indexes generated as: CREATE INDEX idx_email ON users(email)
+// => Composite index: CREATE INDEX idx_name_email ON users(name, email)
 public class User {
     @Id
     // => Primary key field
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     // => Auto-increment strategy (database assigns ID)
-    private Long id;
+    private Long id;               // => Primary key (null for new, assigned on INSERT)
 
     @Column(nullable = false)
     // => NOT NULL constraint enforced at database level
-    private String name;
+    private String name;           // => Required field, VARCHAR(255) NOT NULL
 
-    @Column(nullable = false, unique = true)  // Alternative to uniqueConstraints
-    private String email;
+    @Column(nullable = false, unique = true)  // => Alternative to uniqueConstraints in @Table
+    private String email;          // => Required AND unique field (UNIQUE constraint)
 
-    public User() {}
+    public User() {}               // => Default no-arg constructor required by JPA
     public User(String name, String email) {
-        this.name = name;
-        this.email = email;
-    }
+        this.name = name;          // => Sets required name field (NOT NULL)
+        this.email = email;        // => Sets unique email field (UNIQUE constraint)
+    }                              // => id remains null (assigned by database on INSERT)
 
     // Getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public Long getId() { return id; }                         // => Returns auto-generated primary key
+    public void setId(Long id) { this.id = id; }               // => Set by JPA on persist
+    public String getName() { return name; }                   // => Returns required name
+    public void setName(String name) { this.name = name; }     // => Updates name field
+    public String getEmail() { return email; }                 // => Returns unique email
+    public void setEmail(String email) { this.email = email; } // => Updates email (must stay unique)
 }
 
 
@@ -3362,7 +3373,7 @@ public class TableConfigService {
 
 **Key Takeaway**: Use `@Index` for frequently queried columns. Composite indexes help multi-column queries. Unique constraints enforce data integrity at database level.
 
-**Why It Matters**: Read-only transactions optimize query performance by 15-30% through dirty checking elimination (Hibernate skips entity snapshot comparisons) and database-level optimizations (PostgreSQL avoids transaction ID assignment). This configuration enables routing to read replicas in clustered deployments, distributing load across multiple database servers and preventing primary database overload. Microservices with 80% read traffic report 50% reduction in write-master CPU usage and 3x read throughput improvement after implementing read-only transaction routing correctly.
+**Why It Matters**: Database indexes defined in `@Table` are created during schema generation (`spring.jpa.hibernate.ddl-auto=create`), ensuring consistent index creation across all environments including CI pipelines and new developer setups. Without explicit index definitions, performance issues discovered in production cannot be reproduced in development because indexes were added manually to production without code changes. Composite indexes declared in `@Table` are visible to code reviewers, making performance decisions reviewable and preventing index drift between environments.
 
 ### Example 29: Transient and Computed Fields
 
@@ -3388,47 +3399,48 @@ public class Product {
 
     private String name;
 
-    @Column(precision = 10, scale = 2)
-    private Double price;
+    @Column(precision = 10, scale = 2)  // => DECIMAL(10,2): total 10 digits, 2 after decimal
+    private Double price;              // => Base price (stored as DECIMAL, e.g., 1299.99)
 
-    @Column(precision = 5, scale = 2)
-    private Double taxRate;  // Stored: 0.08 = 8% tax
+    @Column(precision = 5, scale = 2)  // => DECIMAL(5,2): e.g., 0.08 = 8% tax
+    private Double taxRate;            // => Tax rate as decimal (0.08 = 8% tax)
 
     // Transient field - NOT persisted to database
-    @Transient
-    private Double priceWithTax;  // Calculated field
+    @Transient                         // => JPA ignores this field (no column created)
+    private Double priceWithTax;       // => Derived: price * (1 + taxRate), not stored in DB
 
-    public Product() {}
+    public Product() {}                // => Default no-arg constructor required by JPA
     public Product(String name, Double price, Double taxRate) {
-        this.name = name;
-        this.price = price;
-        this.taxRate = taxRate;
-    }
+        this.name = name;              // => Sets product name
+        this.price = price;            // => Sets base price (before tax)
+        this.taxRate = taxRate;        // => Sets tax rate (e.g., 0.08 for 8%)
+    }                                  // => priceWithTax computed after @PostPersist callback
 
     // Lifecycle callback to compute transient field after load
-    @PostLoad
-    @PostPersist
-    @PostUpdate
+    @PostLoad                          // => Executes after entity loaded from database
+    @PostPersist                       // => Executes after entity first persisted (INSERT)
+    @PostUpdate                        // => Executes after entity updated (UPDATE)
     private void calculatePriceWithTax() {
         this.priceWithTax = this.price * (1 + this.taxRate);
+        // => Computes price including tax: 1000.0 * (1 + 0.08) = 1080.0
     }
 
     // Getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public Double getPrice() { return price; }
+    public Long getId() { return id; }                              // => Returns primary key
+    public void setId(Long id) { this.id = id; }                    // => Set by JPA on persist
+    public String getName() { return name; }                        // => Returns product name
+    public void setName(String name) { this.name = name; }          // => Updates name field
+    public Double getPrice() { return price; }                      // => Returns base price
     public void setPrice(Double price) {
-        this.price = price;
-        calculatePriceWithTax();  // Recalculate when price changes
+        this.price = price;                                         // => Updates base price
+        calculatePriceWithTax();                                    // => Recalculates priceWithTax
     }
-    public Double getTaxRate() { return taxRate; }
+    public Double getTaxRate() { return taxRate; }                  // => Returns tax rate decimal
     public void setTaxRate(Double taxRate) {
-        this.taxRate = taxRate;
-        calculatePriceWithTax();  // Recalculate when tax rate changes
+        this.taxRate = taxRate;                                     // => Updates tax rate
+        calculatePriceWithTax();                                    // => Recalculates priceWithTax
     }
-    public Double getPriceWithTax() { return priceWithTax; }
+    public Double getPriceWithTax() { return priceWithTax; }        // => Returns computed price+tax
 }
 
 
@@ -3500,7 +3512,7 @@ public class TransientFieldService {
 
 **Key Takeaway**: `@Transient` fields are not persisted. Use for derived values, temporary state, or calculations. Lifecycle callbacks (`@PostLoad`, `@PostPersist`) compute values after database operations.
 
-**Why It Matters**: Type-safe return types prevent ClassCastException runtime crashes when query cardinality mismatches expectations - Optional<T> for zero-or-one enforces explicit null handling at compile time. Stream<T> enables memory-efficient processing of million-row result sets without loading all entities into heap, critical for batch jobs and reporting. However, Stream requires transaction management discipline and explicit close() calls - unclosed streams leak database connections, causing production crashes with 'too many connections' errors that require database restarts.
+**Why It Matters**: `@Transient` fields enable computed properties (discount prices, full names, formatted values) without database schema changes, separating presentation-layer calculations from persistence concerns. The `@PostLoad` callback ensures computed values are always synchronized with persisted data after every database load, eliminating stale calculation bugs. Without `@Transient`, Hibernate attempts to map the field to a database column and throws `MappingException` on startup, making the annotation essential for any derived property in JPA entities.
 
 ### Example 30: Entity Lifecycle Callbacks
 
@@ -3536,10 +3548,10 @@ graph TD
 **Code**:
 
 ```java
-package com.example.demo.entity;
+package com.example.demo.entity;                               // => Entity package
 
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import jakarta.persistence.*;                                  // => All JPA annotations
+import java.time.LocalDateTime;                                // => For timestamp fields
 
 @Entity
 // => Marks class as JPA entity (database table mapping)
@@ -3550,77 +3562,77 @@ public class AuditLog {
     // => Primary key field
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     // => Auto-increment strategy (database assigns ID)
-    private Long id;
+    private Long id;                                           // => Primary key (null for new entities)
 
-    private String action;
+    private String action;                                     // => Audit action description (VARCHAR 255)
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private LocalDateTime createdAt;                           // => Set by @PrePersist (before INSERT)
+    private LocalDateTime updatedAt;                           // => Set by @PreUpdate (before UPDATE)
 
-    @Transient
-    private String lifecycleEvent;  // For demonstration only
+    @Transient                                                 // => JPA ignores this field (no DB column)
+    private String lifecycleEvent;  // For demonstration only  // => Records last lifecycle callback name
 
-    public AuditLog() {}
-    public AuditLog(String action) {
-        this.action = action;
-    }
+    public AuditLog() {}                                       // => No-arg constructor required by JPA
+    public AuditLog(String action) {                           // => Convenience constructor
+        this.action = action;                                  // => Sets action; createdAt set by @PrePersist
+    }                                                          // => id/createdAt/updatedAt remain null here
 
     // Called before INSERT
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.lifecycleEvent = "PrePersist executed";
-        System.out.println("@PrePersist: Setting createdAt timestamp");
+    @PrePersist                                                // => Executes before INSERT SQL
+    protected void onCreate() {                               // => Invoked by JPA persistence provider
+        this.createdAt = LocalDateTime.now();                  // => Sets creation timestamp before insert
+        this.lifecycleEvent = "PrePersist executed";           // => Records which callback ran
+        System.out.println("@PrePersist: Setting createdAt timestamp"); // => Output before INSERT
     }
 
     // Called after INSERT
-    @PostPersist
-    protected void afterCreate() {
-        this.lifecycleEvent = "PostPersist executed";
-        System.out.println("@PostPersist: Entity persisted with ID: " + this.id);
+    @PostPersist                                               // => Executes after INSERT SQL completes
+    protected void afterCreate() {                             // => id is now assigned by database
+        this.lifecycleEvent = "PostPersist executed";          // => id available here (assigned on INSERT)
+        System.out.println("@PostPersist: Entity persisted with ID: " + this.id); // => id available here
     }
 
     // Called before UPDATE
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-        System.out.println("@PreUpdate: Setting updatedAt timestamp");
+    @PreUpdate                                                 // => Executes before UPDATE SQL
+    protected void onUpdate() {                                // => Invoked by JPA before dirty write
+        this.updatedAt = LocalDateTime.now();                  // => Sets modification timestamp
+        System.out.println("@PreUpdate: Setting updatedAt timestamp"); // => Output before UPDATE
     }
 
     // Called after UPDATE
-    @PostUpdate
-    protected void afterUpdate() {
-        System.out.println("@PostUpdate: Entity updated");
+    @PostUpdate                                                // => Executes after UPDATE SQL completes
+    protected void afterUpdate() {                             // => Invoked by JPA after successful UPDATE
+        System.out.println("@PostUpdate: Entity updated");    // => Confirmation after successful update
     }
 
     // Called after SELECT (entity loaded from database)
-    @PostLoad
-    protected void afterLoad() {
-        System.out.println("@PostLoad: Entity loaded from database");
+    @PostLoad                                                  // => Executes after entity loaded from DB
+    protected void afterLoad() {                               // => Useful for initializing computed fields
+        System.out.println("@PostLoad: Entity loaded from database"); // => Useful for computed fields
     }
 
     // Called before DELETE
-    @PreRemove
+    @PreRemove                                                 // => Executes before DELETE SQL
     protected void onDelete() {
-        System.out.println("@PreRemove: About to delete entity ID: " + this.id);
+        System.out.println("@PreRemove: About to delete entity ID: " + this.id); // => Last chance pre-delete
     }
 
     // Called after DELETE
-    @PostRemove
+    @PostRemove                                                // => Executes after DELETE SQL completes
     protected void afterDelete() {
-        System.out.println("@PostRemove: Entity deleted");
+        System.out.println("@PostRemove: Entity deleted");    // => Useful for cleanup (cache eviction, events)
     }
 
     // Getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getAction() { return action; }
-    public void setAction(String action) { this.action = action; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
-    public String getLifecycleEvent() { return lifecycleEvent; }
+    public Long getId() { return id; }                         // => Returns primary key
+    public void setId(Long id) { this.id = id; }               // => Setter for JPA use
+    public String getAction() { return action; }               // => Returns action description
+    public void setAction(String action) { this.action = action; } // => Updates action
+    public LocalDateTime getCreatedAt() { return createdAt; }  // => Returns creation timestamp
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; } // => Setter
+    public LocalDateTime getUpdatedAt() { return updatedAt; }  // => Returns last update timestamp
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; } // => Setter
+    public String getLifecycleEvent() { return lifecycleEvent; } // => Returns last lifecycle event name
 }
 
 

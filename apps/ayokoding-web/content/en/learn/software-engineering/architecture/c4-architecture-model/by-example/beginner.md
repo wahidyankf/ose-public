@@ -39,6 +39,8 @@ graph TD
 - **Components**: Groupings of related functionality within a container
 - **Code**: Class-level detail for critical components
 
+**Design Rationale**: C4 Model uses four hierarchical levels rather than a single flat diagram because different stakeholders need different levels of detail. Executives need Context diagrams that fit on one slide, developers need Component diagrams with technical specifics, and a single diagram cannot serve both audiences effectively. The four-level hierarchy enables each audience to access the right abstraction without information overload.
+
 **Key Takeaway**: C4 Model provides four zoom levels for architecture documentation, enabling stakeholders at different technical levels to understand system design. Start with Context for high-level overview, drill down to Code for implementation details.
 
 **Why It Matters**: Architecture diagrams often fail because they mix abstraction levels, showing both high-level system relationships and low-level class details in one view. C4 Model solves this by separating concerns—executives view Context diagrams, developers view Component diagrams, and each diagram remains focused and comprehensible. Hierarchical documentation matches how people naturally learn systems, starting with broad context before drilling into implementation details.
@@ -178,7 +180,7 @@ graph TD
 
 **Key Takeaway**: Use numbered steps (1, 2, 3...) to show temporal sequence when order matters. Represent authentication systems as external dependencies to highlight trust boundaries.
 
-**Why It Matters**: Security architectures fail when authentication boundaries are unclear. Context diagrams showing authentication flow help identify services that should delegate to central authentication rather than managing credentials directly. This visibility drives centralized security patterns and reduces the risk of credential exposure through direct database access or inconsistent validation logic.
+**Why It Matters**: Security architectures fail when authentication boundaries are unclear. Context diagrams showing authentication flow help identify services that should delegate to central authentication rather than managing credentials directly. This visibility drives centralized security patterns and reduces the risk of credential exposure through direct database access or inconsistent token validation logic across services.
 
 ### Example 6: System Context with Database
 

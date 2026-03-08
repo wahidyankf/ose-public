@@ -123,7 +123,7 @@ Jump straight into **Beginner** examples. You'll see familiar .NET concepts tran
 
 Start with **Intermediate** examples to see F#-specific features like computation expressions, type providers, and railway-oriented programming.
 
-### If You Know Some F
+### If You Know Some F# (Intermediate)
 
 Start with **Advanced** based on your comfort level. Each example is self-contained, so you won't get lost.
 
@@ -198,15 +198,15 @@ Ready to start learning functional programming? Choose your entry point:
 - **Know the basics?** → [Intermediate Examples (31-60)](/en/learn/software-engineering/programming-languages/f-sharp/by-example/intermediate)
 - **Experienced with F#?** → [Advanced Examples (61-85)](/en/learn/software-engineering/programming-languages/f-sharp/by-example/advanced)
 
-## Expected Time Investment
+## Learning Progression
 
-**Not measured in hours** - everyone learns at different speeds and paradigm shifts vary. Instead, we measure in **functional coverage depth**:
+Coverage advances progressively through three stages, each building on functional fundamentals:
 
 - **Beginner**: 0-40% coverage through 30 examples (immutability, composition, pattern matching)
 - **Intermediate**: 40-75% coverage through 30 examples (computation expressions, type providers)
 - **Advanced**: 75-95% coverage through 25 examples (advanced types, performance optimization)
 
-Work at your own pace. Some developers complete all 85 examples in a weekend; others spread it across weeks while building functional projects and exploring F# Interactive.
+Work at your own pace. Each example is self-contained, so you can explore topics in any order based on your current needs.
 
 ## Key Principles
 

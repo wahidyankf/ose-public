@@ -50,12 +50,12 @@ This by-example guide provides practical coverage of DDD through annotated examp
 
 ## Structure of Each Example
 
-Every example follows a consistent format:
+Every example follows a consistent five-part format:
 
-1. **Brief Explanation**: What DDD concept the example demonstrates
-2. **Domain Context**: Business scenario being modeled
-3. **Code/Diagram**: Implementation showing the pattern
-4. **Design Decisions**: Why this approach was chosen
-5. **Key Takeaway**: The core DDD principle to retain
+1. **Brief Explanation**: What DDD concept the example demonstrates (1-3 sentences)
+2. **Optional Diagram**: Mermaid diagram when concept relationships are complex
+3. **Heavily Annotated Code**: Self-contained, runnable implementation with `// =>` annotations explaining values, states, and effects
+4. **Key Takeaway**: The core DDD principle to retain (1-2 sentences)
+5. **Why It Matters**: Real-world business impact and production system context (50-100 words)
 
-This structure provides context, implementation, and understanding all in one place.
+This structure delivers both implementation detail and business reasoning in each example.

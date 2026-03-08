@@ -240,7 +240,7 @@ You're new to Elixir, Phoenix, and web frameworks. Take a methodical, sequential
 
 ## Structure of Each Example
 
-All examples follow a consistent 4-part format:
+All examples follow a consistent 5-part format:
 
 ````
 ### Example N: Descriptive Title
@@ -274,9 +274,9 @@ All examples follow a consistent 4-part format:
 
 Choose your learning path:
 
-- **[Beginner](/en/learn/software-engineering/platform-web/tools/elixir-phoenix/by-example/beginner)** - Start here if new to Phoenix. Build foundation understanding through 20 core examples.
-- **[Intermediate](/en/learn/software-engineering/platform-web/tools/elixir-phoenix/by-example/intermediate)** - Jump here if you know Phoenix basics. Master production patterns through 20 examples.
-- **[Advanced](/en/learn/software-engineering/platform-web/tools/elixir-phoenix/by-example/advanced)** - Expert mastery through 20 advanced examples covering scale, performance, and resilience.
+- **[Beginner](/en/learn/software-engineering/platform-web/tools/elixir-phoenix/by-example/beginner)** - Start here if new to Phoenix. Build foundation understanding through 25 core examples.
+- **[Intermediate](/en/learn/software-engineering/platform-web/tools/elixir-phoenix/by-example/intermediate)** - Jump here if you know Phoenix basics. Master production patterns through 25 examples.
+- **[Advanced](/en/learn/software-engineering/platform-web/tools/elixir-phoenix/by-example/advanced)** - Expert mastery through 30 advanced examples covering scale, performance, and resilience.
 
 Or jump to specific topics by searching for relevant example keywords (routing, authentication, LiveView, testing, deployment, etc.).
 ```

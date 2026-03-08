@@ -23,9 +23,15 @@ Claude Code is an AI-powered coding assistant you run from the command line usin
 - **Command execution**: Run bash commands, git operations, build scripts
 - **Context awareness**: Understands project structure, existing patterns, coding conventions
 
+```bash
+claude --version                    # => Shows installed Claude Code version (e.g., 1.x.x)
+claude --help                       # => Lists available commands, flags, and usage
+                                    # => Shows: -p/--print, --output-format, --agents options
+```
+
 **Key Takeaway**: Claude Code is a CLI tool (`claude` command) that brings AI assistance to software development through file operations and command execution.
 
-**Why It Matters**: Traditional AI assistants require copying code between browser and editor. Claude Code works directly in your codebase - it reads files, makes changes, runs tests, and commits results. This eliminates context switching and enables true AI-assisted development workflows when handling boilerplate, refactoring, and test generation.
+**Why It Matters**: Traditional AI assistants require copying code between browser and editor. Claude Code works directly in your codebase - it reads files, makes changes, runs tests, and commits results. This eliminates context switching and enables true AI-assisted development workflows. Teams report measurable productivity gains on boilerplate generation, refactoring, and test writing. Unlike chat-based AI, Claude Code maintains full project context and executes changes atomically across multiple files.
 
 ### Example 2: Starting Interactive Session
 
@@ -59,7 +65,7 @@ claude                              # => Launches Claude Code CLI
 
 **Key Takeaway**: Run `claude` to start interactive mode. You'll get a conversational interface that maintains context across requests.
 
-**Why It Matters**: Interactive mode enables iterative development through conversation. Ask Claude to create a file, review the result, request changes, add tests - all without leaving the terminal. Context persistence means Claude remembers earlier decisions and code it generated. This reduces the cognitive load of tracking changes across multiple files.
+**Why It Matters**: Interactive mode enables iterative development through conversation. Ask Claude to create a file, review the result, request changes, add tests - all without leaving the terminal. Context persistence means Claude remembers earlier decisions and code it generated. This reduces cognitive load of tracking multi-file changes. Teams use interactive sessions for feature development, treating Claude as a pair programming partner who executes changes instantly.
 
 ### Example 3: Interactive Session with Initial Prompt
 
@@ -120,7 +126,7 @@ You: Add a createdAt timestamp field
 
 **Key Takeaway**: Claude handles file creation (Write), reading (Read), and editing (Edit) through conversational requests.
 
-**Why It Matters**: Conversational file operations eliminate context switching between editor and terminal. Describe the change, Claude makes it. This is powerful for multi-file changes - "Add User import to all files using it" touches multiple files in one request.
+**Why It Matters**: Conversational file operations eliminate context switching between editor and terminal. Describe the change, Claude makes it. This is particularly powerful for multi-file changes - "Add User import to all files using it" touches multiple files in one request. Claude tracks which files it modified, enabling you to review changes systematically. This accelerates refactoring tasks that would take hours manually.
 
 ### Example 6: Exiting and Resuming Sessions
 
@@ -159,7 +165,7 @@ claude -r "auth-refactor"           # => Resumes named session
 
 **Key Takeaway**: Exit with `exit` or Ctrl+D. Resume with `claude -c` (last conversation) or `claude -r <session>` (specific session).
 
-**Why It Matters**: Session persistence enables long-running projects across multiple work sessions. Start feature development Monday, resume same conversation Wednesday. Context preserved means no re-explanation of requirements. Named sessions (`-r`) let you manage multiple parallel workstreams.
+**Why It Matters**: Session persistence enables long-running projects across multiple work sessions. Start feature development Monday, resume same conversation Wednesday with full context intact - no re-explanation of requirements. Named sessions let you manage multiple parallel workstreams, such as a feature branch and a bugfix branch simultaneously. This mirrors how developers naturally organize work, reducing mental overhead of tracking AI conversation state.
 
 ## Non-Interactive Print Mode (Examples 7-12)
 
@@ -179,7 +185,7 @@ claude -p "explain the authentication flow"
 
 **Key Takeaway**: Use `claude -p "query"` for non-interactive execution. Claude processes query, prints response, exits immediately.
 
-**Why It Matters**: Print mode enables CLI automation - call Claude from scripts, CI/CD, git hooks. Non-interactive execution is essential for automated workflows. Output goes to stdout (capture with `>` or pipes). Exit codes indicate success/failure for script error handling. This is the foundation for all Claude Code automation patterns.
+**Why It Matters**: Print mode enables CLI automation - call Claude from scripts, CI/CD pipelines, and git hooks. Non-interactive execution is essential for automated workflows where human input is unavailable. Output goes to stdout for capture or piping. Exit codes indicate success or failure for script error handling. Print mode is the foundation for all Claude Code automation patterns, enabling AI intelligence in headless environments.
 
 ### Example 8: Piping Content to Claude
 
@@ -202,7 +208,7 @@ git diff | claude -p "summarize these changes"
 
 **Key Takeaway**: Pipe content to Claude with `cat file | claude -p "query"` or `command | claude -p "query"`.
 
-**Why It Matters**: Piping enables batch processing - analyze multiple files, process command output, transform data. This integrates Claude into Unix pipelines. Common pattern: `find . -name "*.ts" | xargs -I{} claude -p "add types to {}"` for batch operations. Use piping for automated code analysis in CI/CD.
+**Why It Matters**: Piping enables batch processing - analyze multiple files, process command output, and transform data at scale. This integrates Claude into standard Unix pipelines without special adapters. Common pattern: `find . -name "*.ts" | xargs -I{} claude -p "add types to {}"` for batch operations across a codebase. Use piping for automated code analysis in CI/CD, treating Claude as an intelligent processing stage.
 
 ### Example 9: Output Formats (text vs json)
 
@@ -224,7 +230,7 @@ claude -p "list all API endpoints"
 
 **Key Takeaway**: Use `--output-format json` for machine-parseable output. Default is human-readable text.
 
-**Why It Matters**: JSON output enables downstream processing - parse with `jq`, pass to other tools, store in databases. Critical for automation pipelines. Example: `claude -p "extract function names" --output-format json | jq '.functions[]'` for programmatic code analysis. Use JSON output for generating reports, validating codebases, extracting metadata.
+**Why It Matters**: JSON output enables downstream processing - parse with `jq`, pass to other tools, store in databases. This is critical for automation pipelines where structured data flows between stages. Example: `claude -p "extract function names" --output-format json | jq '.functions[]'` for programmatic code analysis. Use JSON output for generating reports, validating codebases, and extracting metadata in machine-readable format that integrates with any tool.
 
 ### Example 10: Continuing Conversations Non-Interactively
 
@@ -247,7 +253,7 @@ claude -c -p "implement the rate limiting suggestion"
 
 **Key Takeaway**: Use `claude -c -p` to continue last conversation in non-interactive mode. Context preserved across print mode calls.
 
-**Why It Matters**: Context continuation enables multi-step automation scripts. Build complex workflows where each step builds on previous analysis. Example script: analyze → suggest → implement → test - each step uses `claude -c -p` to maintain context. Use this for automated refactoring pipelines maintaining state across multiple operations.
+**Why It Matters**: Context continuation enables multi-step automation scripts where each stage builds on previous results. Example script: analyze → suggest → implement → test - each step uses `claude -c -p` to maintain full conversation context. This prevents redundant re-analysis across pipeline stages. Use context continuation for automated refactoring pipelines, code review workflows, and any multi-stage transformation where accumulated understanding matters.
 
 ### Example 11: JSON Output Parsing in Scripts
 
@@ -268,7 +274,7 @@ COMPLEXITY=$(claude -p "calculate cyclomatic complexity" --output-format json | 
 
 **Key Takeaway**: Pipe Claude JSON output to `jq` for field extraction. Use in scripts for automated decision making.
 
-**Why It Matters**: JSON parsing enables conditional logic in automation - "if complexity > 10, reject PR". Extract specific metrics for reporting dashboards. Common in CI/CD: `if [ $ERROR_COUNT -gt 0 ]; then exit 1; fi` to fail builds on Claude-detected issues. Build custom quality gates using Claude analysis with jq parsing.
+**Why It Matters**: JSON parsing enables conditional logic in automation - "if complexity > 10, reject PR". Extract specific metrics for reporting dashboards and alerting. Common in CI/CD: `if [ $ERROR_COUNT -gt 0 ]; then exit 1; fi` to fail builds on Claude-detected issues. Build custom quality gates that combine Claude's semantic understanding with jq's data manipulation for sophisticated automated decision-making.
 
 ### Example 12: Session Management in Automation
 
@@ -297,7 +303,7 @@ claude -r "main-session" --fork-session -p "experiment with new approach"
 
 **Key Takeaway**: Control session lifecycle with `--session-id`, `--no-session-persistence`, `--fork-session`.
 
-**Why It Matters**: Session management enables advanced automation patterns. Explicit IDs make builds reproducible. No-persistence for one-off checks doesn't pollute session history. Forking enables experimentation - try different approaches from same starting context without affecting original. Use forking for A/B testing code solutions.
+**Why It Matters**: Session management enables advanced automation patterns suited for production workflows. Explicit session IDs make CI/CD builds reproducible and debuggable. No-persistence mode prevents one-off analysis checks from polluting session history. Session forking enables A/B experimentation - try JWT vs session authentication from identical starting context. Use session management to control AI state with the same rigor applied to application state.
 
 ## npm Scripts Integration (Examples 13-18)
 
@@ -351,7 +357,7 @@ npm run docs:generate              # => Claude analyzes API files
 
 **Key Takeaway**: npm scripts + Claude enable automated documentation generation. Output to files with `>` redirection.
 
-**Why It Matters**: Manual documentation falls out of sync with code. Automated generation keeps docs current. Run `npm run docs:generate` before releases to update docs. CI/CD can validate docs match code.
+**Why It Matters**: Manual documentation consistently falls out of sync with code as the codebase evolves. Automated generation through npm scripts keeps documentation current with minimal effort. Run `npm run docs:generate` before releases to produce fresh documentation. CI/CD pipelines can validate that generated docs match actual code structure, making documentation drift detectable as a build failure rather than a production surprise.
 
 ### Example 15: npm Script with Environment Variables
 
@@ -377,7 +383,7 @@ npm run analyze:thorough           # => Uses Sonnet model (thorough, slower)
 
 **Key Takeaway**: Use environment variables to configure Claude commands. Different scripts can customize behavior.
 
-**Why It Matters**: Environment variables enable flexible automation. Same base command with different configurations (models, prompts, output paths). Example: fast analysis in development, thorough analysis in CI/CD. Balance speed vs accuracy by selecting appropriate model per use case.
+**Why It Matters**: Environment variables enable flexible automation that adapts to different contexts without code changes. Use the same base command with different model configurations - Haiku for fast development feedback, Sonnet for thorough CI/CD analysis. This pattern matches how teams configure application environments: dev, staging, and production each have appropriate performance and cost tradeoffs. Selecting the right model per context reduces AI costs while maintaining quality.
 
 ### Example 16: npm Script Error Handling
 
@@ -404,7 +410,7 @@ npm run validate                   # => Runs Claude validation
 
 **Key Takeaway**: Use exit codes for error handling. Chain commands with `&&` (success) or `||` (failure).
 
-**Why It Matters**: Error handling enables quality gates. Fail CI/CD builds on Claude-detected issues (type errors, missing tests, security problems). Automated quality enforcement - code can't merge if Claude validation fails.
+**Why It Matters**: Error handling in npm scripts enables automated quality gates that prevent problematic code from merging. Fail CI/CD builds on Claude-detected issues including type errors, missing tests, and security vulnerabilities. Automated quality enforcement means code cannot merge if validation fails, shifting the enforcement burden from human reviewers to automated systems. Exit code propagation ensures Claude failures surface correctly in CI/CD dashboards.
 
 ### Example 17: npm Script Chaining Multiple Claude Commands
 
@@ -430,7 +436,7 @@ npm run full-analysis              # => Step 1: Analyze architecture → arch.tx
 
 **Key Takeaway**: Chain commands with `&&`. Use `claude -c -p` for context continuation across commands.
 
-**Why It Matters**: Multi-step pipelines enable complex automation. Each step refines previous output. Example: analyze → identify issues → suggest fixes → implement → test. Context preservation means Claude remembers earlier analysis. Build comprehensive quality pipelines using command chaining.
+**Why It Matters**: Multi-step pipelines enable complex automation where each stage specializes in one aspect of the workflow. Analysis informs planning, planning drives implementation, implementation triggers testing. Context preservation across chained commands means Claude accumulates understanding as the pipeline progresses. Build comprehensive quality pipelines combining analysis, prioritization, implementation, and verification into a single reproducible workflow executed consistently across the team.
 
 ### Example 18: npm Script Output Capture and Processing
 
@@ -456,7 +462,7 @@ npm run extract-deps               # => Claude analyzes package.json
 
 **Key Takeaway**: Capture Claude output with `>`, process with downstream tools (`jq`, `grep`, custom scripts).
 
-**Why It Matters**: Output capture enables integration with existing toolchains. Claude becomes one stage in larger pipeline. Example: Claude analysis → jq filtering → dashboard upload. This leverages Unix philosophy - combine simple tools for complex workflows. Integrate Claude into existing CI/CD without rewriting pipelines.
+**Why It Matters**: Output capture enables seamless integration with existing toolchains - Claude becomes one intelligence stage in a larger pipeline. Example: Claude analysis → jq filtering → dashboard upload → Slack notification. This leverages Unix philosophy of composing simple tools for complex workflows. Integrate Claude Code into existing CI/CD infrastructure without rewriting pipelines, incrementally adding AI capability to proven automation.
 
 ## Git Hooks with Claude Code (Examples 19-20)
 
@@ -493,7 +499,7 @@ git commit -m "add user endpoint"
 
 **Key Takeaway**: Use Claude in pre-commit hooks to validate code before committing. Exit 1 blocks commit, exit 0 allows it.
 
-**Why It Matters**: Pre-commit validation prevents bad code from entering version control. Catch issues immediately vs during CI/CD (faster feedback). Claude validates for type errors, missing tests, security issues. This shifts quality left - problems caught at commit time, not review time.
+**Why It Matters**: Pre-commit validation prevents problematic code from entering version control where it costs more to fix. Catching issues at commit time provides immediate feedback compared to discovering problems during CI/CD runs minutes later. Claude validates for type errors, missing tests, and security vulnerabilities before the code leaves the developer's machine. This shift-left approach reduces rework and keeps the main branch consistently clean.
 
 ### Example 20: Pre-push Hook Using Claude for Code Review
 
@@ -529,7 +535,7 @@ git push                           # => Pre-push hook runs
 
 **Key Takeaway**: Use Claude in pre-push hooks to review code before sharing. Block push on critical issues.
 
-**Why It Matters**: Pre-push review provides automated code review before code reaches team. Catches quality issues, security problems, anti-patterns. This reduces human review burden - reviewers focus on architecture and logic, not style or common mistakes.
+**Why It Matters**: Pre-push review provides a final automated code review gate before code reaches teammates. Claude catches quality issues, security problems, and anti-patterns that survive unit tests. This reduces human review burden significantly - reviewers focus on architecture, business logic, and design decisions rather than style violations or common mistakes. Teams report higher code review quality when routine issues are filtered out automatically.
 
 ## Workflow Management (Examples 21-30)
 
@@ -550,7 +556,7 @@ View previous messages to recall earlier decisions or code snippets. Conversatio
 
 **Key Takeaway**: Scroll terminal to review conversation history. Helpful for recalling earlier code or decisions before making related changes.
 
-**Why It Matters**: Conversation history serves as session documentation. When debugging, review what Claude changed to identify regression points. This makes AI conversations auditable - decisions have traceable rationale.
+**Why It Matters**: Conversation history serves as live session documentation showing every decision and change made during a work session. When debugging, scroll through history to identify exactly what Claude modified and why. This makes AI-assisted development auditable - every code change has traceable rationale in the conversation log. Teams use conversation history during postmortems to reconstruct the reasoning behind production changes.
 
 ### Example 22: Asking Follow-Up Questions
 
@@ -573,7 +579,7 @@ You: What about performance differences?
 
 **Key Takeaway**: Ask follow-up questions to explore topics deeply. Each question builds on previous context without re-explaining.
 
-**Why It Matters**: Follow-up questioning enables Socratic learning - iteratively refine understanding through dialogue. This learning mode is more engaging than passive documentation reading. The interactive format mirrors pair programming knowledge transfer.
+**Why It Matters**: Follow-up questioning enables Socratic learning where understanding deepens through dialogue rather than passive reading. Each question builds on previous context, allowing increasingly specific investigation. This mirrors the learning pattern of pair programming where a senior developer explains decisions in response to junior questions. The interactive format improves retention compared to documentation reading because questions are driven by genuine curiosity about real code.
 
 ### Example 23: Canceling Operations
 
@@ -594,7 +600,7 @@ You: Sorry, I meant to say: delete only the unused components
 
 **Key Takeaway**: Press Ctrl+C to cancel operations in progress. Useful when you realize request was wrong or too broad.
 
-**Why It Matters**: Cancel capability prevents destructive operations from completing when you catch errors mid-request. This safety net encourages experimentation - you can cancel if the request goes in the wrong direction.
+**Why It Matters**: Cancel capability prevents destructive operations from completing when you spot errors mid-execution. This safety net fundamentally changes how developers work with AI - you can send broad requests and cancel if the approach diverges from intent. The ability to interrupt encourages experimentation with ambitious refactoring requests, knowing you retain control. This reduces hesitation to use AI for complex, high-risk operations.
 
 ### Example 24: Checking Project Status
 
@@ -619,7 +625,7 @@ You: List files in src/components/
 
 **Key Takeaway**: Request status checks before making changes. Claude uses Bash tool to run git status, ls, or other inspection commands.
 
-**Why It Matters**: Status checks prevent working on wrong branch or overwriting uncommitted changes. AI-driven status checks integrate context gathering into conversation flow. This is especially valuable when returning to project after break - ask AI for status summary rather than running multiple terminal commands manually.
+**Why It Matters**: Status checks prevent common mistakes like working on the wrong branch or overwriting uncommitted changes. AI-driven status checks integrate context gathering naturally into conversation flow rather than requiring separate terminal commands. This is especially valuable when returning to a project after a break - a single question retrieves full project state including branch, modified files, and pending changes, eliminating manual reconnaissance.
 
 ### Example 25: Clearing Context for Fresh Start
 
@@ -641,7 +647,7 @@ You: Create a Python script for data analysis
 
 **Key Takeaway**: Exit and restart Claude to clear conversation context. Useful for switching projects or tasks.
 
-**Why It Matters**: Fresh context prevents AI from applying patterns from previous conversation to new unrelated task. When working on multiple projects, separate sessions maintain task isolation. However, exiting loses conversation history - balance between context cleanup and history preservation based on task continuity needs.
+**Why It Matters**: Fresh context prevents AI from applying patterns from one conversation to an unrelated new task, which causes confusing recommendations. When working across multiple projects, separate sessions maintain clean task isolation. However, exiting loses conversation history permanently - weigh context cleanup against history preservation based on project continuity needs. For distinct projects, always start fresh; for continuing work on the same feature, use session resumption.
 
 ### Example 26: Basic Refactoring - Extract Variable
 
@@ -662,7 +668,7 @@ You: Extract the magic number 86400 into a named constant in src/utils/time.ts
 
 **Key Takeaway**: Claude extracts magic numbers/strings into named constants. Chooses semantic names based on value meaning and usage context.
 
-**Why It Matters**: Named constants improve code maintainability - change value once rather than hunting for magic numbers. AI extraction identifies all occurrences of literal values across files. This compounds readability improvements over time.
+**Why It Matters**: Named constants dramatically improve code maintainability - change a value in one place rather than hunting for scattered magic numbers. AI extraction identifies all occurrences of literal values across the entire codebase, including cases humans miss. Semantic naming (SECONDS_PER_DAY vs 86400) communicates intent to future readers. This readability improvement compounds over time as more constants are extracted and reused.
 
 ### Example 27: Adding Error Handling
 
@@ -704,7 +710,7 @@ You: Add error handling to the database query in src/api/users.ts
 
 **Key Takeaway**: Claude adds try-catch blocks with appropriate error responses. Considers operation type (API vs utility) for error handling strategy.
 
-**Why It Matters**: Comprehensive error handling is tedious to add manually but critical for production robustness. AI adds error handling consistently across codebase following project patterns. This improves production reliability without extensive manual time investment.
+**Why It Matters**: Comprehensive error handling is tedious to add manually but critical for production robustness and user experience. AI adds try-catch blocks consistently across the codebase, following existing project patterns for error responses and logging. Manual error handling is often inconsistent or incomplete - developers add it to new code but forget existing functions. AI-assisted addition ensures uniform coverage without extensive time investment from the team.
 
 ### Example 28: Generating README Files
 
@@ -714,22 +720,41 @@ Request README generation for projects or modules. Claude analyzes code structur
 
 ```bash
 You: Create a README.md for this project
-                                    # => Claude analyzes project:
-                                    # =>   - Reads package.json (name, description, scripts)
-                                    # =>   - Scans src/ structure
-                                    # =>   - Identifies main entry points
-                                    # => Generates README with:
-                                    # =>   # Project Name
-                                    # =>   Description from package.json
-                                    # =>   ## Installation: npm install
-                                    # =>   ## Usage: npm start
-                                    # =>   ## Project Structure: overview of src/
-                                    # =>   ## Scripts: npm test, npm build
+                                    # => Claude reads package.json, scans src/ structure
+                                    # => Identifies main entry points and scripts
+                                    # => Generates README.md with full project documentation
+```
+
+Claude generates `README.md` with structure based on actual project analysis:
+
+```markdown
+# Project Name # => From package.json "name" field
+
+Description from package.json # => From package.json "description" field
+
+## Installation
+
+npm install # => Detected from package.json scripts
+
+## Usage
+
+npm start # => Detected from package.json "start" script
+
+## Project Structure
+
+src/ # => Overview of detected source structure
+api/ # => Detected API layer
+models/ # => Detected data models
+
+## Scripts
+
+- `npm test` - Run test suite # => From package.json "test" script
+- `npm build` - Build for production # => From package.json "build" script
 ```
 
 **Key Takeaway**: Claude generates README by analyzing project structure, package.json, and code organization. Includes setup, usage, and structure sections.
 
-**Why It Matters**: README generation from actual project structure ensures documentation accuracy. Manual README writing is often outdated - AI generates current snapshot. Generated READMEs serve as a starting point for adding project-specific context.
+**Why It Matters**: README generation from actual project structure ensures documentation accuracy instead of relying on memory or outdated notes. Manual README writing is time-consuming and frequently becomes stale as the project evolves. AI generates a current snapshot reflecting the real project state. Generated READMEs serve as an accurate starting point that teams customize with project-specific context, business rationale, and decision documentation.
 
 ### Example 29: Creating .gitignore Files
 
@@ -740,27 +765,32 @@ Request .gitignore generation matching project technology stack. Claude includes
 ```bash
 You: Create a .gitignore file for this Node.js project
                                     # => Claude detects: Node.js + TypeScript
-                                    # => Generates .gitignore:
-                                    # => # Node
-                                    # => node_modules/
-                                    # => npm-debug.log*
-                                    # =>
-                                    # => # TypeScript
-                                    # => dist/
-                                    # => *.tsbuildinfo
-                                    # =>
-                                    # => # Environment
-                                    # => .env
-                                    # => .env.local
-                                    # =>
-                                    # => # IDE
-                                    # => .vscode/
-                                    # => .idea/
+                                    # => Generates comprehensive .gitignore for detected stack
+```
+
+Claude generates `.gitignore` matching the detected technology stack:
+
+```gitignore
+# Node                              # => Package installation artifacts
+node_modules/
+npm-debug.log*
+
+# TypeScript                        # => Compiled output and build cache
+dist/
+*.tsbuildinfo
+
+# Environment                       # => Secret credentials - never commit these
+.env
+.env.local
+
+# IDE                               # => Editor-specific settings (optional per team)
+.vscode/
+.idea/
 ```
 
 **Key Takeaway**: Claude generates .gitignore with patterns for detected tech stack. Includes node_modules, build outputs, environment files, and IDE folders.
 
-**Why It Matters**: Comprehensive .gitignore files prevent committing sensitive data (env files, credentials) and bloating repos with build artifacts. AI-generated ignores include common patterns developers often forget. This prevents security incidents and repo bloat from accidental commits of node_modules or .env files.
+**Why It Matters**: Comprehensive .gitignore files prevent committing sensitive data and bloating repositories with build artifacts. AI-generated ignores include patterns developers frequently overlook, such as OS-specific files, editor configurations, and framework-specific temporary files. Missing .gitignore entries cause security incidents when credentials get committed and expensive repo repairs when node_modules gets tracked. Prevention is far simpler than remediation after sensitive data enters version control history.
 
 ### Example 30: Exiting Claude Sessions
 
@@ -782,7 +812,7 @@ $ claude                            # => Restart Claude for new session
 
 **Key Takeaway**: Use `exit` command or Ctrl+D to leave Claude session. Returns to regular terminal, conversation context cleared.
 
-**Why It Matters**: Explicit exit allows controlled session boundaries. Work with AI for focused tasks, then return to terminal for git operations, deployment, or other manual work. Clean separation between AI-assisted and manual workflows prevents over-reliance on AI for simple tasks. Balance AI assistance with maintaining core terminal proficiency.
+**Why It Matters**: Explicit exit enables controlled session boundaries, creating clear transitions between AI-assisted and manual workflows. Work with Claude for complex tasks, then return to the terminal for git operations, deployment, or work that benefits from manual control. Clean separation prevents over-reliance on AI for simple tasks where direct commands are faster. Maintaining core terminal proficiency ensures you remain effective when AI assistance is unavailable.
 
 ## Next Steps
 
@@ -791,4 +821,4 @@ This beginner tutorial covered Examples 1-30 (0-40% of Claude Code capabilities)
 **Continue learning**:
 
 - [Intermediate](/en/learn/software-engineering/automation-tools/claude-code/by-example/intermediate) - Examples 31-60 covering agent configuration, advanced refactoring, and testing workflows
-- [Advanced](/en/learn/software-engineering/automation-tools/claude-code/by-example/advanced) - Examples 61-90 covering custom agents, skill development, and enterprise integration patterns
+- [Advanced](/en/learn/software-engineering/automation-tools/claude-code/by-example/advanced) - Examples 61-85 covering custom agents, production orchestration, and enterprise integration patterns

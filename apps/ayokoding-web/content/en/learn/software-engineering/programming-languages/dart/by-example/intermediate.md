@@ -7,9 +7,11 @@ description: "Examples 26-50: async/await, streams, advanced OOP, mixins, generi
 tags: ["dart", "intermediate", "async", "streams", "generics", "mixins", "records", "by-example"]
 ---
 
-Master intermediate Dart patterns through 16 heavily annotated examples using Islamic finance contexts. Each example maintains 1-2.25 annotation density and demonstrates production patterns for Flutter and server applications.
+Master intermediate Dart patterns through 25 heavily annotated examples using Islamic finance contexts. Each example maintains 1-2.25 annotation density and demonstrates production patterns for Flutter and server applications.
 
-## Example 26: Future Basics - async/await
+## Examples 26-35: Asynchronous Programming
+
+### Example 26: Future Basics - async/await
 
 Asynchronous operations with Future for delayed computations. Futures represent values that will be available later, enabling non-blocking I/O and concurrent operations.
 
@@ -139,7 +141,7 @@ void main() async {                     // => main can be async in Dart (unlike 
 
 ---
 
-## Example 27: Future.wait - Parallel Execution
+### Example 27: Future.wait - Parallel Execution
 
 Execute multiple asynchronous operations in parallel and wait for all to complete. Critical for optimizing latency when operations don't depend on each other.
 
@@ -292,7 +294,7 @@ void main() async {                     // => Execute statement
 
 ---
 
-## Example 28: Async Error Handling
+### Example 28: Async Error Handling
 
 Proper error handling patterns in async code with try-catch and Future.catchError. Critical for production reliability—unhandled async errors crash applications silently.
 
@@ -302,6 +304,23 @@ Proper error handling patterns in async code with try-catch and Future.catchErro
 - **catchError on Future**: Functional-style error handling (for then() chains)
 - **on Type catch**: Catch specific exception types for granular handling
 - **finally**: Cleanup code (runs whether success or failure)
+
+```mermaid
+flowchart TD
+    Await[await asyncOp] --> Throws{Throws?}
+    Throws -->|no| Success[Return Value]
+    Throws -->|yes| Catch{catch block?}
+    Catch -->|ArgumentError| ArgErr[Handle ArgumentError<br/>Return default]
+    Catch -->|other Error| OtherErr[Handle Error<br/>Rethrow or log]
+    ArgErr --> Finally[finally block<br/>Cleanup runs always]
+    OtherErr --> Finally
+    Success --> Finally
+    Finally --> Done[Execution continues]
+
+    style ArgErr fill:#029E73,color:#fff
+    style OtherErr fill:#DE8F05,color:#fff
+    style Finally fill:#0173B2,color:#fff
+```
 
 ```dart
 import 'dart:async';                    // => Import for Future
@@ -412,7 +431,7 @@ void main() async {                     // => Execute statement
 
 ---
 
-## Example 29: Future Timeouts
+### Example 29: Future Timeouts
 
 Using Future.timeout() to prevent indefinite waits on async operations. Critical for production resilience when external dependencies fail or slow down.
 
@@ -516,13 +535,13 @@ void main() async {                     // => Main function with async support
 
 **Key Takeaway**: Use `Future.timeout()` to prevent indefinite waits. Provide `onTimeout` callback for graceful degradation, or omit for exception-based handling. Different operations need different timeout durations.
 
-**Why It Matters**: Production systems fail catastrophically without timeouts—a single slow external dependency (database, API, file system) can cascade into system-wide failure as requests pile up waiting indefinitely, exhausting resources. Timeouts are circuit breakers that contain failure, preventing one slow operation from bringing down the entire system.
+**Why It Matters**: Production systems fail catastrophically without timeouts—a single slow external dependency (database, API, file system) can cascade into system-wide failure as requests pile up waiting indefinitely, exhausting all available resources. Timeouts are circuit breakers that contain failure, preventing one slow operation from bringing down the entire system. In fintech applications, payment API timeouts with graceful fallbacks prevent transaction failures from blocking entire checkout flows.
 
 **Common Pitfalls**: Setting same timeout for all operations (different operations need different limits). Forgetting `onTimeout` causes TimeoutException in production. Timeout too short causes false positives (request succeeds but timeout triggered). Timeout too long defeats the purpose (system hangs before timeout).
 
 ---
 
-## Example 30: Completer - Manual Future Control
+### Example 30: Completer - Manual Future Control
 
 Creating and completing Futures manually with Completer class. Enables bridging callback-based APIs to Future-based code, critical for Flutter plugins and native platform integration.
 
@@ -683,7 +702,7 @@ void main() async {                     // => Execute statement
 
 ---
 
-## Example 31: Stream Basics
+### Example 31: Stream Basics
 
 Asynchronous sequence of events with Stream and listen(). Streams emit multiple values over time, unlike Futures which emit a single value.
 
@@ -797,7 +816,7 @@ void main() async {                     // => Execute statement
 
 ---
 
-## Example 32: Stream Transformations
+### Example 32: Stream Transformations
 
 Transforming streams with map(), where(), and take() methods. Stream transformations enable functional-style data pipelines for real-time processing.
 
@@ -809,6 +828,18 @@ Transforming streams with map(), where(), and take() methods. Stream transformat
 - **skip**: Skip first N values
 - **expand**: Emit multiple values for each input value
 - **fold**: Reduce stream to single value (awaits completion)
+
+```mermaid
+flowchart LR
+    Source[Source Stream<br/>raw donations] -->|where amount > 0| Filter[Filtered Stream<br/>valid donations]
+    Filter -->|map to zakat| Transform[Transformed Stream<br/>zakat amounts]
+    Transform -->|listen| Output[Subscriber<br/>process results]
+
+    style Source fill:#0173B2,color:#fff
+    style Filter fill:#029E73,color:#fff
+    style Transform fill:#DE8F05,color:#fff
+    style Output fill:#CC78BC,color:#fff
+```
 
 ```dart
 import 'dart:async';                    // => Executes
@@ -939,7 +970,7 @@ void main() async {                     // => Execute statement
 
 ---
 
-## Example 33: StreamController - Manual Stream Creation
+### Example 33: StreamController - Manual Stream Creation
 
 Creating custom streams with StreamController for event publishing. Enables manual control over stream emission, critical for building reactive systems and event buses.
 
@@ -1111,7 +1142,7 @@ void main() async {                     // => Main function with async support
 
 ---
 
-## Example 34: Async Generators (async\*)
+### Example 34: Async Generators (async\*)
 
 Generating asynchronous sequences with async\* generators and yield. Enables clean, readable asynchronous iteration without manual StreamController boilerplate.
 
@@ -1282,7 +1313,7 @@ void main() async {                     // => Main function with async support
 
 ---
 
-## Example 35: Stream Subscription Management
+### Example 35: Stream Subscription Management
 
 Managing stream subscriptions with pause(), resume(), and cancel(). Critical for resource management and backpressure control in high-volume streams.
 
@@ -1554,7 +1585,9 @@ You've completed 10 heavily annotated examples covering **20% more of Dart** (40
 
 ---
 
-## Example 36: Inheritance and Method Overriding
+## Examples 36-45: Object-Oriented Programming and Generics
+
+### Example 36: Inheritance and Method Overriding
 
 Extending classes with inheritance to reuse code and specialize behavior. Inheritance creates "is-a" relationships between classes.
 
@@ -1715,7 +1748,7 @@ classDiagram
 
 ---
 
-## Example 37: Abstract Classes and Methods
+### Example 37: Abstract Classes and Methods
 
 Defining contracts with abstract classes that must be implemented by subclasses. Abstract classes cannot be instantiated directly—they define blueprints for concrete implementations.
 
@@ -1867,7 +1900,7 @@ void main() async {                     // => Main function with async support
 
 ---
 
-## Example 38: Implementing Multiple Interfaces
+### Example 38: Implementing Multiple Interfaces
 
 Implementing multiple interfaces through abstract classes for flexible class design. Dart uses abstract classes as interfaces—a class can implement multiple abstract classes to satisfy multiple contracts.
 
@@ -2117,7 +2150,7 @@ classDiagram
 
 ---
 
-## Example 39: Mixins for Composition
+### Example 39: Mixins for Composition
 
 Sharing functionality across classes with mixins for composition over inheritance. Mixins add capabilities without inheritance hierarchy, enabling code reuse across unrelated classes.
 
@@ -2390,7 +2423,7 @@ class Example with A, B {}              // => B's greet() wins (later in chain)
 
 ---
 
-## Example 40: Extension Methods
+### Example 40: Extension Methods
 
 Adding methods to existing classes without inheritance using extensions. Extensions enable adding functionality to classes you don't control (built-in types, third-party libraries).
 
@@ -2580,7 +2613,7 @@ You've completed 15 heavily annotated examples covering **35% more of Dart** (40
 
 ---
 
-## Example 41: Generic Classes with Type Constraints
+### Example 41: Generic Classes with Type Constraints
 
 Creating type-safe generic classes with bounded type parameters. Generics enable code reuse while maintaining type safety.
 
@@ -2591,6 +2624,27 @@ Creating type-safe generic classes with bounded type parameters. Generics enable
 - **Multiple bounds**: Use intersection types
 - **Type inference**: Dart infers type from usage
 - **Generic methods**: Methods can have own type parameters
+
+```mermaid
+classDiagram
+    class Box~T~ {
+        T content
+        Box(T content)
+        T getContent()
+    }
+    class FinancialRecord~T extends Comparable~ {
+        T value
+        String currency
+        bool isGreaterThan(T other)
+    }
+    class Repository~T~ {
+        List~T~ items
+        void add(T item)
+        T? find(bool Function(T) test)
+    }
+    note for Box~T~ "Works with any type T"
+    note for FinancialRecord~T extends Comparable~ "Bounded: T must be Comparable"
+```
 
 ```dart
 // Generic class without constraints
@@ -2761,7 +2815,7 @@ void main() {                           // => Main function entry point
 
 ---
 
-## Example 42: Generic Functions and Methods
+### Example 42: Generic Functions and Methods
 
 Generic type parameters on individual functions and methods for flexible, type-safe operations without creating generic classes.
 
@@ -2862,13 +2916,13 @@ void main() {                           // => Execute statement
 
 **Key Takeaway**: Use generic type parameters `<T>` on functions and methods for type-safe operations without creating generic classes. Dart infers types from arguments. Use constraints (`extends`) to enable specific operations. Multiple type parameters enable complex transformations.
 
-**Why It Matters**: Generic functions eliminate code duplication while maintaining compile-time type safety. Without generics, you'd need separate `getFirstString()`, `getFirstInt()`, `getFirstDouble()` functions, violating DRY principle. In Flutter, generic functions power widget builders (`ListView.builder<T>`), data transformations (`map<T, R>`), and state management. Type inference reduces boilerplate while catching type errors at compile time.
+**Why It Matters**: Generic functions eliminate code duplication while maintaining compile-time type safety. Without generics, you'd need separate `getFirstString()`, `getFirstInt()`, `getFirstDouble()` functions—a clear DRY violation that multiplies with every new type. In Flutter, generic functions power widget builders (`ListView.builder<T>`), data transformations (`map<T, R>`), and state management. Type inference reduces boilerplate while catching type mismatches at compile time rather than causing runtime ClassCastException errors in production.
 
 **Common Pitfalls**: Forgetting constraints on type parameters prevents using type-specific methods (`T.toDouble()` fails without `extends num`). Explicit type arguments sometimes needed when inference fails. Generic functions can't access type-specific members without constraints.
 
 ---
 
-## Example 43: Callable Classes with call() Method
+### Example 43: Callable Classes with call() Method
 
 Making class instances callable like functions using the `call()` method. Enables function-like syntax while maintaining state and additional methods.
 
@@ -3004,7 +3058,7 @@ void main() {                           // => Execute statement
 
 ---
 
-## Example 44: Typedef for Function Types
+### Example 44: Typedef for Function Types
 
 Creating type aliases for function signatures using typedef for clearer code and better type safety when working with higher-order functions.
 
@@ -3158,7 +3212,7 @@ void main() async {                     // => Execute statement
 
 ---
 
-## Example 45: Cascade Notation (.., ?..)
+### Example 45: Cascade Notation (.., ?..)
 
 Using cascade notation to perform multiple operations on the same object without repeating the object reference. Enables fluent, builder-style code.
 
@@ -3167,6 +3221,18 @@ Using cascade notation to perform multiple operations on the same object without
 - **`..`**: Standard cascade (throws if null)
 - **`?..`**: Null-safe cascade (no-op if null)
 - **Return value**: Returns target object, not last operation result
+
+```mermaid
+flowchart LR
+    Create["Donation()"] -->|..setDonor| A[donor = 'Ahmad']
+    A -->|..setAmount| B[amount = 500.0]
+    B -->|..setCategory| C[category = 'Zakat']
+    C -->|..setTimestamp| D[timestamp = now]
+    D --> Return[Returns same<br/>Donation object]
+
+    style Create fill:#0173B2,color:#fff
+    style Return fill:#029E73,color:#fff
+```
 
 ```dart
 class Donation {                        // => Execute statement
@@ -3315,7 +3381,9 @@ void main() {                           // => Main function entry point
 
 ---
 
-## Example 46: Metadata and Annotations
+## Examples 46-50: Advanced Language Features
+
+### Example 46: Metadata and Annotations
 
 Using metadata annotations (@) to add declarative information to code elements. Enables code generation, documentation, framework integration, and runtime reflection.
 
@@ -3480,7 +3548,7 @@ void main() {                           // => Main function entry point
 
 ---
 
-## Example 47: Assert Statements for Development-Time Checks
+### Example 47: Assert Statements for Development-Time Checks
 
 Using assert statements to validate assumptions during development, automatically disabled in production builds for zero runtime cost.
 
@@ -3490,6 +3558,18 @@ Using assert statements to validate assumptions during development, automaticall
 - **Zero production cost**: No performance impact in production
 - **Fail fast**: Catch bugs early during development
 - **Documentation**: Express invariants and preconditions
+
+```mermaid
+flowchart TD
+    Code[Code execution] --> Assert{assert condition?}
+    Assert -->|true - dev mode| Continue[Continue normally]
+    Assert -->|false - dev mode| Fail[AssertionError thrown<br/>Optional message shown]
+    Assert -->|any - prod mode| Skip[Assert skipped<br/>No performance cost]
+
+    style Continue fill:#029E73,color:#fff
+    style Fail fill:#DE8F05,color:#fff
+    style Skip fill:#CA9161,color:#fff
+```
 
 ```dart
 class Donation {                        // => Execute statement
@@ -3667,7 +3747,7 @@ void main() {                           // => Main function entry point
 
 ---
 
-## Example 48: Factory Constructors and Named Constructors
+### Example 48: Factory Constructors and Named Constructors
 
 Using factory constructors to control instance creation and named constructors for clarity. Factory constructors enable singletons, caching, and polymorphic instance creation.
 
@@ -3869,13 +3949,13 @@ void main() {                           // => Main function entry point
 
 **Key Takeaway**: Use named constructors for descriptive alternatives. Use factory constructors for caching, validation, polymorphic creation, and singletons. Factory constructors can return cached instances or subclass instances.
 
-**Why It Matters**: Named constructors make code self-documenting (`Donation.zakat()` vs `Donation('donor', 100, 'Zakat')`). Factory constructors enable patterns impossible with standard constructors: singletons (DonationService), object pools (cached instances), polymorphic factories (PaymentMethod.create), and validation before creation. In Flutter, factory constructors implement widget builders and state management patterns.
+**Why It Matters**: Named constructors make code self-documenting and intention-revealing (`Donation.zakat()` vs `Donation('donor', 100, 'Zakat')`). Factory constructors enable patterns impossible with standard constructors: singletons (DonationService), object pools (cached instances), polymorphic factories (PaymentMethod.create), and validation-before-creation with meaningful error messages. In Flutter, factory constructors implement widget builders, JSON deserialization (`User.fromJson()`), and state management patterns used by nearly every production Flutter app.
 
 **Common Pitfalls**: Factory constructors can't initialize final fields directly (must delegate to standard constructor). Forgetting to cache in factory defeats caching purpose. Private named constructors (`._internal()`) required for singleton pattern. Factory constructors can't be const.
 
 ---
 
-## Example 49: Operator Overloading
+### Example 49: Operator Overloading
 
 Implementing custom behavior for operators (+, -, \*, ==, [], etc.) to make domain objects work naturally with standard operators.
 
@@ -4096,7 +4176,7 @@ void main() {                           // => Execute statement
 
 ---
 
-## Example 50: Record Types (Dart 3.0+)
+### Example 50: Record Types (Dart 3.0+)
 
 Using record types for lightweight, immutable, typed tuples without creating custom classes. Records enable multiple return values, pattern matching, and structured data.
 

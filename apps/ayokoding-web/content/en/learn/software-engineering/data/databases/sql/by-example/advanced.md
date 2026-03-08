@@ -145,13 +145,35 @@ ORDER BY salary;                                        -- => Sort low to high
 
 **Key Takeaway**: Use NTILE(n) to divide data into n equal groups. NTILE(4) creates quartiles, NTILE(100) approximates percentiles. Calculate exact percentiles using ROW_NUMBER and position formulas. Essential for statistical analysis and outlier detection.
 
-**Why It Matters**: Salary benchmarking, performance ratings, and fraud detection all need percentile analysis. "Top 10% of performers" or "below 25th percentile response time" are common business metrics. NTILE eliminates spreadsheet exports and manual calculations, keeping analytics in the database.
+**Why It Matters**: Salary benchmarking, performance ratings, and fraud detection all require percentile analysis that goes beyond simple averages. "Top 10% of performers" and "below 25th percentile response time" are common SLA and HR metrics. NTILE and manual percentile calculations eliminate spreadsheet exports and manual number crunching, keeping analytics reproducible and automatable. Compensation teams use quartile analysis to identify pay equity gaps, and operations teams use percentile response times (p95, p99) to measure service reliability more accurately than averages.
 
 ---
 
 ## Example 62: Cohort Analysis
 
 Cohort analysis groups users by shared characteristics (signup date) and tracks behavior over time. Essential for retention and engagement metrics.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["Users Table<br/>signup_date"]
+    B["Cohort Assignment<br/>Group by week"]
+    C["Purchases Table<br/>purchase_date"]
+    D["Weeks Since Signup<br/>JULIANDAY diff"]
+    E["Retention Table<br/>Week 0, 1, 2, 3"]
+
+    A --> B
+    A --> D
+    C --> D
+    B --> E
+    D --> E
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#fff
+```
 
 **Code**:
 
@@ -198,12 +220,13 @@ SELECT
     50 + (value * 10)                                   -- => Amount from $60-$350
 FROM (
     WITH RECURSIVE nums AS (                            -- => Generate 30 purchases
-        SELECT 1 AS value
+        SELECT 1 AS value                               -- => Start at 1
         UNION ALL
-        SELECT value + 1 FROM nums WHERE value < 30
+        SELECT value + 1 FROM nums WHERE value < 30     -- => Increment to 30
     )
-    SELECT value FROM nums
+    SELECT value FROM nums                              -- => Return sequence 1-30
 );
+-- => 30 purchase records inserted (one per user for first 30 users)
 
 -- Example A: Cohort retention table by signup week
 WITH cohorts AS (                                       -- => CTE assigns each user to cohort
@@ -219,11 +242,13 @@ purchase_weeks AS (                                     -- => CTE calculates wee
     SELECT
         user_id,                                        -- => User who made purchase
         DATE(purchase_date, 'weekday 0', '-6 days') AS purchase_week,
-                                                         -- => Round purchase to week start
+                                                         -- => Round purchase to week start (Sunday)
         CAST((JULIANDAY(purchase_date) - JULIANDAY((SELECT signup_date FROM users WHERE id = user_id))) / 7 AS INTEGER) AS weeks_since_signup
                                                          -- => Calculate whole weeks between signup and purchase
-                                                         -- => 0 = same week, 1 = next week, etc.
-    FROM purchases
+                                                         -- => JULIANDAY converts to decimal days; divide by 7 for weeks
+                                                         -- => CAST to INTEGER truncates partial weeks
+                                                         -- => 0 = same week as signup, 1 = one week later
+    FROM purchases                                      -- => Source table for purchase activity
 )
 SELECT
     c.cohort_week,                                      -- => Week cohort signed up
@@ -252,9 +277,10 @@ WITH cohorts AS (                                       -- => Assign users to co
 ),
 purchase_weeks AS (                                     -- => Calculate weeks since signup
     SELECT
-        user_id,
+        user_id,                                        -- => User identifier
         CAST((JULIANDAY(purchase_date) - JULIANDAY((SELECT signup_date FROM users WHERE id = user_id))) / 7 AS INTEGER) AS weeks_since_signup
-    FROM purchases
+                                                         -- => Whole weeks from signup to purchase
+    FROM purchases                                      -- => Purchase activity source
 ),
 cohort_stats AS (                                       -- => Aggregate cohort metrics
     SELECT
@@ -263,8 +289,8 @@ cohort_stats AS (                                       -- => Aggregate cohort m
         COUNT(DISTINCT CASE WHEN pw.weeks_since_signup = 1 THEN c.user_id END) AS week_1_active
                                                          -- => Week 1 active count (numerator)
     FROM cohorts c
-    LEFT JOIN purchase_weeks pw ON c.user_id = pw.user_id
-    GROUP BY c.cohort_week
+    LEFT JOIN purchase_weeks pw ON c.user_id = pw.user_id  -- => LEFT JOIN keeps all users (even no purchases)
+    GROUP BY c.cohort_week                              -- => Aggregate by signup week
 )
 SELECT
     cohort_week,                                        -- => Cohort identifier
@@ -281,13 +307,34 @@ ORDER BY cohort_week;                                   -- => Chronological orde
 
 **Key Takeaway**: Cohort analysis groups users by signup period and tracks behavior over time. Use date functions to calculate cohort periods and time since signup. Pivot with CASE to show retention by week/month. Essential for SaaS metrics and user engagement analysis.
 
-**Why It Matters**: "Did last month's signup cohort retain better than the previous month?" drives product decisions worth millions. Cohort retention tables are the foundation of investor presentations and product roadmaps. Understanding whether changes improve retention requires cohort comparison.
+**Why It Matters**: "Did last month's signup cohort retain better than the previous month?" drives product decisions worth millions in engineering investment. Cohort retention tables are the foundation of investor presentations, product roadmaps, and growth reviews at companies like Duolingo, Headspace, and every SaaS business. Understanding whether a product change improved or hurt retention requires comparing cohorts before and after the change, making cohort analysis the essential measurement tool for product-led growth strategies.
 
 ---
 
 ## Example 63: Funnel Analysis
 
 Funnel analysis tracks conversion through multi-step processes. Calculate drop-off rates at each stage to identify bottlenecks.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A["Visit<br/>100 users"]
+    B["Signup<br/>80 users<br/>80% conversion"]
+    C["Purchase<br/>50 users<br/>62.5% conversion"]
+    D["Drop-off: 20<br/>Never signed up"]
+    E["Drop-off: 30<br/>Signed up, no purchase"]
+
+    A --> B
+    A --> D
+    B --> C
+    B --> E
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#fff
+```
 
 **Code**:
 
@@ -314,12 +361,13 @@ SELECT
     datetime('2025-01-01', '+' || value || ' minutes')  -- => Events spaced 1 minute apart
 FROM (
     WITH RECURSIVE nums AS (                            -- => Generate 300 events
-        SELECT 1 AS value
+        SELECT 1 AS value                               -- => Start at 1
         UNION ALL
-        SELECT value + 1 FROM nums WHERE value < 300
+        SELECT value + 1 FROM nums WHERE value < 300    -- => Increment to 300
     )
-    SELECT value FROM nums
+    SELECT value FROM nums                              -- => Return sequence 1-300
 );
+-- => 300 events inserted: 100 users * 3 events each (visit, signup, purchase)
 
 -- Example A: Basic funnel counts
 SELECT
@@ -344,12 +392,12 @@ WITH funnel_stages AS (                                 -- => CTE calculates sta
         event_type AS stage,                            -- => Stage name
         COUNT(DISTINCT user_id) AS users,               -- => Users at this stage
         CASE event_type                                 -- => Stage ordering
-            WHEN 'visit' THEN 1
-            WHEN 'signup' THEN 2
-            WHEN 'purchase' THEN 3
-        END AS stage_order
-    FROM user_events
-    GROUP BY event_type
+            WHEN 'visit' THEN 1                         -- => Visit = stage 1 (top of funnel)
+            WHEN 'signup' THEN 2                        -- => Signup = stage 2
+            WHEN 'purchase' THEN 3                      -- => Purchase = stage 3 (bottom of funnel)
+        END AS stage_order                              -- => Numeric position in funnel
+    FROM user_events                                    -- => Source table
+    GROUP BY event_type                                 -- => One row per funnel stage
 ),
 total_visits AS (                                       -- => CTE extracts total visits (funnel top)
     SELECT users AS visit_count                         -- => Total users who started funnel
@@ -427,13 +475,41 @@ ORDER BY max_stage;                                     -- => Order by funnel pr
 
 **Key Takeaway**: Funnel analysis requires tracking user progression through stages. Use CASE with aggregates to count users at each stage. Calculate conversion rates (stage/total and stage/previous). Identify drop-off points to optimize conversion. Essential for e-commerce, SaaS onboarding, and user flows.
 
-**Why It Matters**: A 1% improvement in checkout conversion can mean millions in revenue. Funnel analysis identifies exactly where users drop off—signup form? payment page? confirmation?—enabling targeted optimization. Every growth team relies on funnel metrics for prioritization.
+**Why It Matters**: A 1% improvement in checkout conversion can mean millions in additional annual revenue for e-commerce businesses. Funnel analysis identifies exactly where users drop off—is the signup form too long? Is the payment page slow? Does the confirmation email arrive?—enabling targeted optimization based on data instead of guesses. Every growth, product, and marketing team relies on funnel metrics for prioritizing engineering work. SQL-based funnel analysis runs on raw event data without requiring third-party analytics tools like Mixpanel or Amplitude.
 
 ---
 
 ## Example 64: Sessionization
 
 Sessionization groups events into sessions using time-based windows. Essential for analytics when explicit session IDs aren't available.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["Event Stream<br/>timestamps"]
+    B["LAG Window<br/>Previous event time"]
+    C["Gap Calculation<br/>minutes between events"]
+    D{"Gap > 30 min?"}
+    E["New Session<br/>session_id + 1"]
+    F["Same Session<br/>session_id continues"]
+    G["Session Metrics<br/>duration, page count"]
+
+    A --> B
+    B --> C
+    C --> D
+    D -->|Yes| E
+    D -->|No| F
+    E --> G
+    F --> G
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#fff
+    style F fill:#CA9161,stroke:#000,color:#fff
+    style G fill:#0173B2,stroke:#000,color:#fff
+```
 
 **Code**:
 
@@ -458,12 +534,13 @@ SELECT
                                                          -- => Creates some gaps > 30min (new session)
 FROM (
     WITH RECURSIVE nums AS (                            -- => Generate 60 events
-        SELECT 1 AS value
+        SELECT 1 AS value                               -- => Start at 1
         UNION ALL
-        SELECT value + 1 FROM nums WHERE value < 60
+        SELECT value + 1 FROM nums WHERE value < 60     -- => Increment to 60
     )
-    SELECT value FROM nums
+    SELECT value FROM nums                              -- => Return sequence 1-60
 );
+-- => 60 page views inserted (15 per user across 4 users)
 
 -- Example A: Sessionize views (30-minute timeout)
 WITH view_gaps AS (                                     -- => CTE identifies session boundaries
@@ -514,24 +591,26 @@ WITH view_gaps AS (                                     -- => Identify session b
         view_timestamp,
         CASE
             WHEN (JULIANDAY(view_timestamp) - JULIANDAY(LAG(view_timestamp) OVER (PARTITION BY user_id ORDER BY view_timestamp))) * 24 * 60 > 30
+                                                         -- => Gap > 30 minutes: new session
                 OR LAG(view_timestamp) OVER (PARTITION BY user_id ORDER BY view_timestamp) IS NULL
+                                                         -- => OR first view: no previous timestamp
             THEN 1                                       -- => New session marker
             ELSE 0                                       -- => Continuing session
-        END AS new_session
-    FROM page_views
+        END AS new_session                               -- => Binary: 1=new session, 0=continue
+    FROM page_views                                     -- => Source: all page view events
 ),
 sessions AS (                                           -- => Assign session IDs
     SELECT
-        user_id,
-        view_timestamp,
+        user_id,                                        -- => User identifier
+        view_timestamp,                                 -- => View timestamp for ordering
         SUM(new_session) OVER (PARTITION BY user_id ORDER BY view_timestamp) AS session_id
                                                          -- => Session identifier per user
-    FROM view_gaps
+    FROM view_gaps                                      -- => Source: session boundary flags
 ),
 session_metrics AS (                                    -- => Calculate per-session metrics
     SELECT
-        user_id,
-        session_id,
+        user_id,                                        -- => User identifier
+        session_id,                                     -- => Session number for this user
         COUNT(*) AS views_per_session,                  -- => Page views in this session
         ROUND((JULIANDAY(MAX(view_timestamp)) - JULIANDAY(MIN(view_timestamp))) * 24 * 60, 2) AS duration_minutes
                                                          -- => Session duration in minutes
@@ -552,13 +631,34 @@ FROM session_metrics;                                   -- => Aggregate across a
 
 **Key Takeaway**: Sessionization uses LAG to calculate time gaps between events. New session starts when gap exceeds threshold (e.g., 30 minutes). Use running SUM of session starts to assign session IDs. Calculate session metrics (duration, page views) with GROUP BY. Essential for web analytics.
 
-**Why It Matters**: "Average session duration" and "pages per session" are core web metrics, but raw event logs don't have session IDs. Sessionization creates these groupings from timestamps. Without it, you can't answer "how long do users spend before converting?" or "what's the typical browse pattern?"
+**Why It Matters**: "Average session duration" and "pages per session" are core web analytics metrics, but raw event logs don't contain session IDs—only individual event timestamps. Sessionization creates these groupings from timestamp gaps, enabling calculation of engagement metrics from raw data. Without it, you cannot answer "how long do users spend before converting?", "what's the typical browse depth?", or "do mobile users have shorter sessions than desktop?" Google Analytics performs sessionization automatically; this pattern lets you do the same analysis on your own event data with full control.
 
 ---
 
 ## Example 65: Survival Analysis (Customer Lifetime)
 
 Survival analysis tracks how long entities (customers, products) remain active. Calculate survival curves and churn rates over time.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["Customer signup_date"]
+    B["COALESCE<br/>churn_date or now()"]
+    C["lifetime_days<br/>end - start"]
+    D["30-day Buckets<br/>NTILE grouping"]
+    E["Survival Curve<br/>% surviving at each point"]
+
+    A --> C
+    B --> C
+    C --> D
+    D --> E
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#fff
+```
 
 **Code**:
 
@@ -585,12 +685,13 @@ SELECT
     END
 FROM (
     WITH RECURSIVE nums AS (                            -- => Generate customer IDs
-        SELECT 1 AS value
+        SELECT 1 AS value                               -- => Start at 1
         UNION ALL
-        SELECT value + 1 FROM nums WHERE value < 100
+        SELECT value + 1 FROM nums WHERE value < 100    -- => Increment to 100
     )
-    SELECT value FROM nums
+    SELECT value FROM nums                              -- => Return sequence 1-100
 );
+-- => 100 customers inserted: 67 active, 33 churned (every 3rd customer)
 
 -- Example A: Calculate customer lifetime in days
 WITH customer_lifetime AS (                             -- => CTE computes lifetime metrics
@@ -631,12 +732,14 @@ lifetime_buckets AS (                                   -- => Group customers in
     SELECT
         (lifetime_days / 30) * 30 AS days_bucket,       -- => Round down to 30-day intervals (0, 30, 60, 90...)
                                                          -- => Example: 45 days → 30-day bucket, 92 days → 90-day bucket
-        COUNT(*) AS customers_at_risk                   -- => Customers in this bucket
-    FROM customer_lifetime
+                                                         -- => Integer arithmetic truncates to nearest 30-day multiple
+        COUNT(*) AS customers_at_risk                   -- => Customers whose lifetime falls in this bucket
+    FROM customer_lifetime                              -- => Source: computed lifetimes
     GROUP BY days_bucket                                -- => Aggregate by time bucket
 ),
+-- => Each bucket represents customers surviving AT LEAST that many days
 total_customers AS (                                    -- => Get total customer count for percentages
-    SELECT COUNT(*) AS total FROM customers
+    SELECT COUNT(*) AS total FROM customers              -- => Denominator for survival percentage calculation
 )
 SELECT
     lb.days_bucket,                                     -- => Time interval (days)
@@ -684,13 +787,31 @@ ORDER BY cohort_month;                                  -- => Chronological orde
 
 **Key Takeaway**: Survival analysis calculates lifetime from start date to end date (or current date for active). Use COALESCE to treat active customers as surviving until now. Bucket lifetimes and calculate survival percentages. Essential for churn prediction, product lifecycle analysis, and retention metrics.
 
-**Why It Matters**: Customer lifetime value (CLV) predictions drive acquisition spending and pricing. "What percentage of customers survive past 90 days?" directly impacts revenue forecasting. Survival curves reveal whether churn is front-loaded (onboarding problem) or gradual (value problem).
+**Why It Matters**: Customer lifetime value (CLV) predictions drive acquisition spending and pricing decisions—if customers survive an average 24 months at $50/month, you can spend up to $1200 to acquire each one profitably. "What percentage of customers survive past 90 days?" directly impacts annual revenue forecasting and cohort-based valuations for investors. Survival curves reveal whether churn is front-loaded (onboarding problem requiring UX improvements) or gradual (value problem requiring feature development), enabling targeted retention interventions.
 
 ---
 
 ## Example 66: One-to-Many Relationship Modeling
 
 One-to-many relationships link one parent record to multiple child records. Use foreign keys to maintain referential integrity.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A["authors<br/>id, name, email<br/>(Parent - ONE)"]
+    B["books<br/>id, title, author_id<br/>(Child 1)"]
+    C["books<br/>id, title, author_id<br/>(Child 2)"]
+    D["books<br/>id, title, author_id<br/>(Child 3)"]
+
+    A -->|author_id FK| B
+    A -->|author_id FK| C
+    A -->|author_id FK| D
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#DE8F05,stroke:#000,color:#000
+    style D fill:#DE8F05,stroke:#000,color:#000
+```
 
 **Code**:
 
@@ -772,7 +893,7 @@ SELECT * FROM books;                                    -- => Query remaining bo
 
 **Key Takeaway**: One-to-many uses foreign keys in child table pointing to parent's primary key. Use ON DELETE CASCADE to automatically delete children when parent is deleted. LEFT JOIN shows parents without children. Essential pattern for orders/items, posts/comments, categories/products.
 
-**Why It Matters**: Nearly every application has one-to-many relationships. Understanding CASCADE behavior prevents orphaned records. Knowing when to use LEFT JOIN vs INNER JOIN determines whether you see parents without children. This is foundational for any database-backed application.
+**Why It Matters**: Nearly every application has one-to-many relationships—one user has many orders, one blog post has many comments, one team has many members. Understanding CASCADE DELETE behavior prevents orphaned records (orders pointing to deleted customers) that cause application errors. Knowing when to use LEFT JOIN (include all parents, even without children) vs INNER JOIN (only matched pairs) determines whether reporting shows authors with zero posts. This bidirectional relationship pattern is foundational for any database-backed application from e-commerce to social platforms.
 
 ---
 
@@ -911,13 +1032,34 @@ WHERE e.course_id IN (SELECT course_id FROM alice_courses)
 
 **Key Takeaway**: Many-to-many requires junction table with foreign keys to both entities. Add UNIQUE constraint on (entity1_id, entity2_id) to prevent duplicates. Use two JOINs to traverse relationship. Junction table can store additional attributes (enrollment_date, role, status). Essential for tags, permissions, product categories.
 
-**Why It Matters**: Tags, categories, permissions, and product attributes all require many-to-many relationships. The junction table pattern appears in every non-trivial application. Storing additional attributes on the junction (like enrollment_date or permission_level) enables rich relationship metadata.
+**Why It Matters**: Tags, categories, permissions, and product attributes all require many-to-many relationships that single foreign keys cannot express. The junction table pattern appears in virtually every non-trivial application: students enrolling in courses, users following other users, products belonging to multiple categories, employees assigned to multiple projects. Storing additional attributes on the junction table (enrollment_date, permission_level, assignment_role) enables rich relationship metadata beyond just "these two things are linked," making it far more powerful than a simple mapping table.
 
 ---
 
 ## Example 68: Self-Referencing Foreign Keys
 
 Self-referencing tables model hierarchical relationships (employees/managers, categories/subcategories, comments/replies).
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A["CEO (id=1)<br/>manager_id=NULL"]
+    B["VP Engineering (id=2)<br/>manager_id=1"]
+    C["VP Sales (id=3)<br/>manager_id=1"]
+    D["Sr Engineer (id=4)<br/>manager_id=2"]
+    E["Engineer (id=5)<br/>manager_id=4"]
+
+    A --> B
+    A --> C
+    B --> D
+    D --> E
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#DE8F05,stroke:#000,color:#000
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#CC78BC,stroke:#000,color:#000
+```
 
 **Code**:
 
@@ -1015,7 +1157,7 @@ FROM descendants;                                       -- => Subtract 1 to excl
 
 **Key Takeaway**: Self-referencing foreign keys use parent_id pointing to same table's id. Use recursive CTEs to traverse hierarchies (find ancestors, descendants, paths). Essential for org charts, category trees, comment threads, file systems.
 
-**Why It Matters**: Category trees, org charts, folder structures, and threaded comments all need self-referencing relationships. Building breadcrumb navigation, calculating total team size, or finding all descendants requires recursive traversal. This pattern is ubiquitous in content management and organizational systems.
+**Why It Matters**: Category trees, org charts, folder structures, and threaded comments all require self-referencing relationships where entities point to other entities of the same type. Building breadcrumb navigation (Home > Electronics > Laptops) requires traversing from leaf to root. Calculating total team headcount under a VP requires summing all descendants. Finding all employees in a department requires recursive traversal. This pattern is ubiquitous in content management systems, HR platforms, file systems, and any domain with nested hierarchical data structures.
 
 ---
 
@@ -1137,7 +1279,7 @@ GROUP BY commentable_type;                              -- => Aggregate by type
 
 **Key Takeaway**: Polymorphic associations use type and id columns to reference multiple parent tables. Cannot enforce with foreign keys - relies on application logic. Use UNION to join with different parent types. Common in ORMs (Rails, Laravel) for likes, comments, attachments that apply to multiple models.
 
-**Why It Matters**: "Users can comment on posts, photos, and videos" is a common requirement. Without polymorphic associations, you'd need separate comment tables per entity. Understanding the trade-off (flexibility vs. referential integrity) helps you choose the right approach for your application's needs.
+**Why It Matters**: "Users can comment on posts, photos, and videos" is a common requirement that polymorphic associations handle elegantly without separate comment_on_posts, comment_on_photos, and comment_on_videos tables. Rails and Django use polymorphic associations extensively for likes, tags, and attachments across entity types. Understanding the trade-off is critical: polymorphic associations provide flexibility and reduce table count, but sacrifice database-level referential integrity since the database cannot enforce foreign keys across different target tables. Choose based on whether data integrity guarantees or schema simplicity is more important.
 
 ---
 
@@ -1248,7 +1390,7 @@ SELECT * FROM customers_current;                        -- => Query like a regul
 
 **Key Takeaway**: Type 2 SCD maintains history by creating new rows for changes. Use effective_date and end_date to track validity periods. is_current flag enables fast current-state queries. Point-in-time queries use date range conditions. Essential for data warehouses, audit trails, and historical reporting.
 
-**Why It Matters**: "What was the customer's address when they placed this order?" is a common audit question. Without SCD Type 2, you lose historical context. Regulatory compliance, legal disputes, and analytics all require point-in-time data reconstruction. This pattern is foundational for data warehousing.
+**Why It Matters**: "What was the customer's address when they placed this order?" is a critical audit question that SCD Type 2 answers definitively. Without it, you lose historical context when addresses, prices, or names change. Regulatory compliance (financial audits), legal disputes (which terms did the user agree to?), and analytics (was this purchase made while the customer was a premium member?) all require point-in-time data reconstruction. SCD Type 2 is foundational to every data warehouse, enabling accurate historical reporting that point-in-time updates would otherwise destroy.
 
 ---
 
@@ -1285,19 +1427,20 @@ SELECT
                                                          -- => Dates spread across 365 days
     50 + (value % 500),                                 -- => Totals from $50-$550
     CASE value % 4                                      -- => Status distribution: 25% each
-        WHEN 0 THEN 'completed'
-        WHEN 1 THEN 'pending'
-        WHEN 2 THEN 'cancelled'
-        ELSE 'shipped'
-    END
+        WHEN 0 THEN 'completed'                         -- => 2500 completed orders
+        WHEN 1 THEN 'pending'                           -- => 2500 pending orders
+        WHEN 2 THEN 'cancelled'                         -- => 2500 cancelled orders
+        ELSE 'shipped'                                  -- => 2500 shipped orders
+    END                                                 -- => Balanced status distribution
 FROM (
     WITH RECURSIVE nums AS (                            -- => Generate 10,000 rows
-        SELECT 1 AS value
+        SELECT 1 AS value                               -- => Start at 1
         UNION ALL
-        SELECT value + 1 FROM nums WHERE value < 10000
+        SELECT value + 1 FROM nums WHERE value < 10000  -- => Increment to 10,000
     )
-    SELECT value FROM nums
+    SELECT value FROM nums                              -- => Return sequence 1-10000
 );
+-- => 10,000 orders inserted for realistic performance testing
 
 -- Generate 1,000 customers
 INSERT INTO customers (id, name, email, country)
@@ -1333,8 +1476,8 @@ CREATE INDEX idx_orders_status ON orders(status);       -- => Build B-tree index
                                                          -- => Enables fast lookup by status value
 
 -- Example B: Same query WITH index (efficient)
-EXPLAIN QUERY PLAN
-SELECT * FROM orders WHERE status = 'completed';
+EXPLAIN QUERY PLAN                                      -- => Analyze execution plan again
+SELECT * FROM orders WHERE status = 'completed';        -- => Same query, now has index
 -- => Output: "SEARCH TABLE orders USING INDEX idx_orders_status (status=?)"
 -- => Database uses index to jump directly to matching rows
 -- => Dramatic performance improvement (milliseconds vs seconds)
@@ -1355,11 +1498,11 @@ CREATE INDEX idx_orders_customer_id ON orders(customer_id);
                                                          -- => Index on join column
 
 -- Example D: Same JOIN query with indexes (fast)
-EXPLAIN QUERY PLAN
-SELECT c.name, o.total
+EXPLAIN QUERY PLAN                                      -- => Re-analyze the same JOIN query
+SELECT c.name, o.total                                  -- => Customer name and order total
 FROM customers c
-INNER JOIN orders o ON c.id = o.customer_id
-WHERE c.country = 'USA';
+INNER JOIN orders o ON c.id = o.customer_id             -- => Join on indexed column
+WHERE c.country = 'USA';                                -- => Filter on indexed column
 -- => Output: "SEARCH TABLE customers USING INDEX idx_customers_country"
 -- =>         "SEARCH TABLE orders USING INDEX idx_orders_customer_id"
 -- => Both tables use indexes for efficient access
@@ -1387,7 +1530,7 @@ WHERE o.total > 300;                                    -- => Same filter condit
 
 **Key Takeaway**: EXPLAIN QUERY PLAN shows execution strategy - look for SCAN (bad) vs SEARCH (good). Create indexes on columns in WHERE, JOIN, ORDER BY. Compare query plans for different approaches (subquery vs JOIN). Index creation dramatically improves performance for large datasets.
 
-**Why It Matters**: A 10-second query blocking your API is a production incident. EXPLAIN reveals whether the database is doing a full table scan (millions of rows) or an efficient index lookup (milliseconds). This tool is your first step when investigating slow query complaints.
+**Why It Matters**: A 10-second query blocking your API endpoint is a production incident affecting every concurrent user. EXPLAIN QUERY PLAN reveals whether the database scans millions of rows or performs efficient index lookups in milliseconds—the same SQL statement can have orders-of-magnitude performance differences. This tool is the essential first step when investigating slow query complaints from users or alerting systems. Backend engineers, database administrators, and data engineers all use EXPLAIN routinely to verify that new queries and schema changes perform as expected before reaching production traffic.
 
 ---
 
@@ -1506,7 +1649,7 @@ DROP INDEX idx_products_category;                       -- => Remove single-colu
 
 **Key Takeaway**: Single-column indexes for simple filters, composite indexes for multi-column WHERE (order matters: most selective first). Covering indexes include SELECT columns to avoid table access. Partial indexes reduce size for filtered queries. Expression indexes enable indexing computed values. Balance read speed vs write overhead.
 
-**Why It Matters**: Index strategy determines whether your database scales. Wrong indexes mean slow reads; too many indexes mean slow writes. Understanding composite index column order, covering indexes for read-heavy queries, and partial indexes for filtered data enables informed trade-off decisions.
+**Why It Matters**: Index strategy determines whether your database scales to millions of rows or collapses under production load. Wrong or missing indexes mean slow reads and user-facing timeouts; too many indexes slow writes because every INSERT/UPDATE maintains all indexes. Understanding composite index column order (most selective column first), covering indexes for eliminating table lookups on read-heavy queries, and partial indexes for commonly filtered subsets enables informed architectural decisions. This knowledge is the difference between a database that handles 10x traffic growth and one that requires emergency scaling.
 
 ---
 
@@ -1633,7 +1776,7 @@ FROM events;                                            -- => Single table scan
 
 **Key Takeaway**: Avoid functions in WHERE (use ranges instead). Use IN instead of OR for multiple values. Replace NOT IN with LEFT JOIN for NULL safety and performance. Trailing wildcards (LIKE 'abc%') use indexes, leading wildcards ('%abc') don't. Window functions outperform correlated subqueries.
 
-**Why It Matters**: These rewriting patterns turn slow queries into fast ones without schema changes. Knowing that `WHERE DATE(created_at) = '2025-01-15'` prevents index usage (use range instead) or that `NOT IN` with NULLs returns empty results prevents production bugs and performance problems.
+**Why It Matters**: Query rewriting patterns turn slow queries into fast ones without schema changes or infrastructure scaling. Knowing that `WHERE DATE(created_at) = '2025-01-15'` prevents index usage (the function wrapping the column breaks index matching; use a range instead) prevents a common performance mistake. Understanding that `NOT IN` with NULLs returns empty results silently has caused incorrect empty reports in many production systems. These rewriting skills let you optimize existing queries immediately when performance problems arise, before considering more invasive schema changes.
 
 ---
 
@@ -1666,9 +1809,9 @@ BEGIN TRANSACTION;                                      -- => Start transaction
 INSERT INTO metrics (metric_name, value, recorded_at)
 SELECT
     CASE value % 3                                      -- => Rotate through metric types
-        WHEN 0 THEN 'cpu'
-        WHEN 1 THEN 'memory'
-        ELSE 'disk'
+        WHEN 0 THEN 'cpu'                               -- => Every 3rd row is cpu metric
+        WHEN 1 THEN 'memory'                            -- => Every 3rd+1 row is memory metric
+        ELSE 'disk'                                     -- => Every 3rd+2 row is disk metric
     END,
     RANDOM() % 100,                                     -- => Random value 0-99
     datetime('2025-01-01', '+' || value || ' seconds')  -- => Sequential timestamps
@@ -1701,12 +1844,12 @@ SELECT
     value,                                              -- => Sequential values
     datetime('now')                                     -- => Current timestamp
 FROM (
-    WITH RECURSIVE nums AS (
-        SELECT 1 AS value
+    WITH RECURSIVE nums AS (                            -- => Generate 50,000 row sequence
+        SELECT 1 AS value                               -- => Start at 1
         UNION ALL
-        SELECT value + 1 FROM nums WHERE value < 50000  -- => 50,000 rows
+        SELECT value + 1 FROM nums WHERE value < 50000  -- => Increment to 50,000 rows
     )
-    SELECT value FROM nums
+    SELECT value FROM nums                              -- => Return sequence 1-50000
 );
 
 COMMIT;                                                 -- => Commit bulk load
@@ -1732,17 +1875,18 @@ COMMIT;                                                 -- => Single commit for 
 -- => Consistent: all changes succeed or all fail
 
 -- Batch deletes (delete in chunks for large tables)
-BEGIN TRANSACTION;
+BEGIN TRANSACTION;                                      -- => Start batch delete transaction
 
-DELETE FROM metrics
-WHERE id IN (
-    SELECT id FROM metrics
-    WHERE metric_name = 'disk'
-    LIMIT 1000
-);
+DELETE FROM metrics                                     -- => Delete from metrics table
+WHERE id IN (                                           -- => Select rows to delete
+    SELECT id FROM metrics                              -- => Find matching IDs
+    WHERE metric_name = 'disk'                          -- => Only disk metrics
+    LIMIT 1000                                          -- => Cap at 1000 rows per batch
+);                                                      -- => Delete 1000 rows per transaction
 
-COMMIT;
+COMMIT;                                                 -- => Commit this batch
 -- => Deletes 1000 rows at a time (repeat as needed)
+-- => Chunked approach avoids locking table for too long
 
 -- Use VACUUM after large deletes to reclaim space
 VACUUM;
@@ -1751,7 +1895,7 @@ VACUUM;
 
 **Key Takeaway**: Wrap bulk operations in transactions for massive speedup. Multi-row INSERT faster than individual statements. Pragmas (synchronous, journal_mode) tune performance but risk data integrity - use carefully. Batch large updates/deletes. VACUUM after large deletes to reclaim space.
 
-**Why It Matters**: Data migrations, ETL pipelines, and bulk imports can take hours without batching. A single transaction for large numbers of rows is dramatically faster than individual commits. This knowledge significantly reduces bulk operation time.
+**Why It Matters**: Data migrations, ETL pipelines, and bulk imports can take hours without proper transaction batching—10,000 individual auto-commit inserts flush to disk 10,000 times, while a single transaction flushes once. Production data engineering teams routinely reduce bulk operation time from hours to minutes or seconds using transaction batching. This knowledge is essential for ETL pipelines loading millions of records nightly, database migrations during maintenance windows, and any application performing bulk data loading where operation duration directly impacts user-facing downtime.
 
 ---
 
@@ -1823,11 +1967,11 @@ FROM (
 -- => 10000 orders inserted (avg 10 orders per customer)
 
 -- Normalized query (requires JOIN to get customer data)
-EXPLAIN QUERY PLAN
-SELECT o.id, o.order_date, o.total, c.name, c.country
+EXPLAIN QUERY PLAN                                      -- => Show execution strategy
+SELECT o.id, o.order_date, o.total, c.name, c.country  -- => All fields needed (requires JOIN)
 FROM orders_normalized o
-INNER JOIN customers_normalized c ON o.customer_id = c.id
-WHERE o.order_date >= '2024-06-01';
+INNER JOIN customers_normalized c ON o.customer_id = c.id  -- => JOIN to get customer data
+WHERE o.order_date >= '2024-06-01';                     -- => Filter: orders since June 2024
 -- => Query plan shows: SCAN orders + SEARCH customers (index lookup)
 -- => JOIN operation requires matching customer_id for each order
 -- => Performance degrades with large datasets (millions of rows)
@@ -1861,10 +2005,10 @@ INNER JOIN customers_normalized c ON o.customer_id = c.id;
 -- => Each customer's data repeated ~10 times (once per order)
 
 -- Denormalized query (no JOIN needed - all data in one table)
-EXPLAIN QUERY PLAN
-SELECT id, order_date, total, customer_name, customer_country
-FROM orders_denormalized
-WHERE order_date >= '2024-06-01';
+EXPLAIN QUERY PLAN                                      -- => Compare execution strategy
+SELECT id, order_date, total, customer_name, customer_country  -- => All fields in single table
+FROM orders_denormalized                                -- => Single table, no JOIN needed
+WHERE order_date >= '2024-06-01';                       -- => Same filter, no JOIN overhead
 -- => Query plan shows: SCAN orders_denormalized (single table)
 -- => No JOIN operation - significantly faster
 -- => Ideal for read-heavy workloads (dashboards, reports)
@@ -1874,14 +2018,14 @@ WHERE order_date >= '2024-06-01';
 BEGIN TRANSACTION;                   -- => Start atomic update
 
 UPDATE customers_normalized          -- => Update source table
-SET name = 'Updated Customer'
-WHERE id = 1;
+SET name = 'Updated Customer'        -- => New name for customer 1
+WHERE id = 1;                        -- => Target specific customer
 -- => Customer name updated in customers table
 
 -- Must also update denormalized table to maintain consistency
 UPDATE orders_denormalized           -- => Update all customer occurrences
-SET customer_name = 'Updated Customer'
-WHERE customer_id = 1;
+SET customer_name = 'Updated Customer'  -- => Must match update to customers_normalized
+WHERE customer_id = 1;               -- => All orders for this customer
 -- => All orders for customer 1 updated (avg 10 rows)
 -- => Single customer update affects multiple order rows
 
@@ -1938,7 +2082,7 @@ GROUP BY c.id, c.name;
 
 **Key Takeaway**: Denormalization duplicates data to eliminate joins. Use for read-heavy workloads. Trade-offs: faster reads, complex updates, data redundancy. Materialized views/summary tables pre-aggregate for instant queries. Refresh periodically or use triggers. Balance normalization (data integrity) vs denormalization (performance).
 
-**Why It Matters**: Dashboard queries joining 5 tables across millions of rows can't meet sub-second SLAs. Denormalized summary tables provide instant responses. Understanding when to denormalize (read-heavy, stale-data-tolerant) vs. normalize (write-heavy, consistency-critical) is a key architectural decision.
+**Why It Matters**: Dashboard queries joining 5 tables across millions of rows cannot meet sub-second SLAs without denormalization. Analytics dashboards at companies like Shopify and Stripe use denormalized summary tables to provide instant responses to frequently accessed metrics. Understanding when to denormalize—read-heavy workloads where slightly stale data is acceptable—versus when to normalize—write-heavy workloads requiring strict consistency—is a key architectural decision. Getting this wrong in either direction creates either unusable performance or unsustainable data consistency maintenance burden.
 
 ---
 
@@ -2055,7 +2199,7 @@ WHERE deleted_at IS NOT NULL         -- => Only soft-deleted users
 
 **Key Takeaway**: Soft deletes use deleted_at timestamp instead of DELETE. NULL = active, timestamp = deleted. Create views filtering deleted_at IS NULL for active records. Enables undelete, preserves referential integrity, supports audit trails. Permanent delete after retention period.
 
-**Why It Matters**: "Oops, I deleted the wrong user" is recoverable with soft deletes. Hard deletes break foreign key references and lose audit history. Production systems need undelete capability, and compliance often requires data retention. Soft deletes solve all these while keeping application code simple.
+**Why It Matters**: "Oops, I deleted the wrong user account" is recoverable with soft deletes by setting deleted_at = NULL—with hard deletes, that data is gone permanently. Hard deletes also break foreign key references (orders pointing to deleted users cause errors) and destroy audit history. GDPR and HIPAA require data retention policies that soft deletes support naturally. Production SaaS applications use soft deletes for recycle bins, account recovery flows, and audit compliance. The is_deleted/deleted_at pattern keeps application code simple while maintaining full deletion reversibility.
 
 ---
 
@@ -2063,16 +2207,36 @@ WHERE deleted_at IS NOT NULL         -- => Only soft-deleted users
 
 Audit logs track who changed what and when. Essential for compliance, debugging, and security.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["Application<br/>INSERT/UPDATE/DELETE"]
+    B["products table<br/>Current state only"]
+    C["Trigger or App Code<br/>Capture change"]
+    D["products_audit<br/>action, old_values,<br/>new_values, changed_by"]
+
+    A --> B
+    B --> C
+    A --> C
+    C --> D
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+```
+
 **Code**:
 
 ```sql
 -- Main table (business data)
 CREATE TABLE products (
     id INTEGER PRIMARY KEY,           -- => Unique product identifier
-    name TEXT NOT NULL,               -- => Product name
-    price REAL NOT NULL,              -- => Current price
+    name TEXT NOT NULL,               -- => Product name (required)
+    price REAL NOT NULL,              -- => Current price (required)
     updated_at TEXT                   -- => Last update timestamp
 );
+-- => Note: only stores CURRENT state; history lives in products_audit
 -- => products table created (contains current state only)
 
 -- Audit log table (historical changes)
@@ -2126,8 +2290,9 @@ VALUES (
 -- => Both old and new values preserved for comparison
 
 -- Delete product
-DELETE FROM products WHERE id = 1;
+DELETE FROM products WHERE id = 1;   -- => Remove product from main table
 -- => Product physically deleted from products table
+-- => But full history preserved in products_audit
 
 -- Log the delete (manual approach)
 INSERT INTO products_audit (product_id, action, old_values, new_values, changed_by, changed_at)
@@ -2224,7 +2389,7 @@ END;
 
 **Key Takeaway**: Audit logs use separate table tracking action type, old/new values (JSON), user, and timestamp. Implement via application code or triggers. Query audit history for compliance, debugging, rollback. Store changed values as JSON for flexibility. Essential for financial systems, healthcare, and regulated industries.
 
-**Why It Matters**: "Who changed this price and when?" is a question regulators, auditors, and angry managers ask. Audit logs answer it definitively. SOX compliance, HIPAA, GDPR—all require audit trails. Beyond compliance, audit logs enable debugging production issues by reconstructing past states.
+**Why It Matters**: "Who changed this price and when?" is a question regulators, auditors, compliance officers, and security teams ask after incidents. Audit logs answer it definitively with timestamped, attributed records of every change. SOX compliance for financial systems, HIPAA for healthcare records, and GDPR for personal data—all regulatory frameworks require audit trails that prove who accessed or modified sensitive data. Beyond compliance, audit logs enable debugging production data corruption by reconstructing the sequence of changes that led to an invalid state, reducing incident investigation time from days to minutes.
 
 ---
 
@@ -2348,7 +2513,7 @@ WHERE id = 1 AND updated_at = '2025-12-29 02:07:25';  -- => Match old timestamp
 
 **Key Takeaway**: Optimistic locking uses version numbers or timestamps to detect concurrent modifications. UPDATE with version check in WHERE clause. If 0 rows affected, version conflict occurred - re-read and retry. No locks needed, scales well. Essential for web applications with concurrent users.
 
-**Why It Matters**: Two users editing the same document simultaneously—whose changes win? Without optimistic locking, last-write-wins causes silent data loss. Optimistic locking detects conflicts, letting applications handle them gracefully. This pattern is essential for any multi-user system with concurrent edits.
+**Why It Matters**: Two users editing the same document, inventory item, or configuration record simultaneously creates a concurrency problem: whose changes win? Without optimistic locking, the last write silently overwrites earlier changes, causing data loss that users discover confusingly. Optimistic locking detects conflicts at update time, returning row count 0 when another user has modified the record since it was read. Applications then show users a conflict message and let them merge or retry. This pattern is essential for collaborative editing tools, inventory management systems, and any multi-user application with concurrent writes.
 
 ---
 
@@ -2458,7 +2623,7 @@ WHERE order_number = 'ORD-001'       -- => Same order
 
 **Key Takeaway**: Idempotent operations use unique constraints on external IDs (transaction_id, order_number). INSERT OR IGNORE prevents duplicates without errors. ON CONFLICT DO UPDATE for upserts. Status transitions check current state in WHERE. Enables safe retries in distributed systems.
 
-**Why It Matters**: Network failures cause retries. Payment submitted twice shouldn't charge twice. Idempotency keys ensure "at-least-once" delivery doesn't become "multiple times" execution. This pattern is mandatory for payment processing, message queues, and any retry-prone operation.
+**Why It Matters**: Network failures cause retries—a mobile app might submit a payment request 3 times before receiving a response. Without idempotency, each retry creates a separate charge, resulting in duplicate billing that damages customer trust and requires manual refund processing. Idempotency keys ensure "at-least-once" message delivery doesn't become "multiple times" execution. Stripe, PayPal, and every serious payment processor mandate idempotency keys for transaction APIs. This pattern is also mandatory for event-driven systems, webhook receivers, and any distributed operation where the sender cannot guarantee exactly-once delivery.
 
 ---
 
@@ -2555,13 +2720,13 @@ WHERE api_key = 'key-67890';
 -- Remove timestamps older than 1 hour (cleanup stale data)
 WITH filtered_timestamps AS (
     SELECT
-        api_key,
-        JSON_GROUP_ARRAY(value) AS recent_timestamps  -- => Rebuild array
+        api_key,                                        -- => API key identifier
+        JSON_GROUP_ARRAY(value) AS recent_timestamps  -- => Rebuild array from filtered rows
     FROM rate_limit_sliding,
-         JSON_EACH(request_timestamps)  -- => Expand JSON array to rows
+         JSON_EACH(request_timestamps)  -- => Expand JSON array to individual rows
     WHERE api_key = 'key-67890'       -- => For specific API key
-      AND datetime(value) >= datetime('now', '-1 hour')  -- => Keep recent only
-    GROUP BY api_key
+      AND datetime(value) >= datetime('now', '-1 hour')  -- => Keep only timestamps in last hour
+    GROUP BY api_key                                    -- => Reaggregate filtered timestamps
 )
 UPDATE rate_limit_sliding
 SET request_timestamps = (SELECT recent_timestamps FROM filtered_timestamps)
@@ -2571,14 +2736,14 @@ WHERE api_key = 'key-67890';
 
 -- Check limit (count timestamps in array)
 SELECT
-    api_key,
-    JSON_ARRAY_LENGTH(request_timestamps) AS request_count,  -- => Array length
+    api_key,                                            -- => API key identifier
+    JSON_ARRAY_LENGTH(request_timestamps) AS request_count,  -- => Count timestamps in JSON array
     CASE
-        WHEN JSON_ARRAY_LENGTH(request_timestamps) >= 100 THEN 'EXCEEDED'
+        WHEN JSON_ARRAY_LENGTH(request_timestamps) >= 100 THEN 'EXCEEDED'  -- => At or over limit
         ELSE 'OK'                     -- => Under limit
-    END AS status
+    END AS status                                       -- => Allow or deny decision
 FROM rate_limit_sliding
-WHERE api_key = 'key-67890';
+WHERE api_key = 'key-67890';                            -- => Filter to specific API key
 -- => Returns: request_count=1, status='OK'
 -- => Application uses this to enforce rate limit
 
@@ -2591,7 +2756,7 @@ WHERE request_time < datetime('now', '-24 hours');  -- => Delete older than 24 h
 
 **Key Takeaway**: Rate limiting counts events within time windows. Simple approach: count rows with `request_time >= datetime('now', '-1 hour')`. Sliding window: Store timestamps in JSON array, filter old ones. Check count before allowing action. Periodically cleanup old records. Essential for API rate limiting, login attempts, spam prevention.
 
-**Why It Matters**: Without rate limiting, a single bad actor can overwhelm your API or brute-force passwords. Database-backed rate limiting persists across server restarts and works in distributed deployments. This is a fundamental security and stability pattern for any public-facing service.
+**Why It Matters**: Without rate limiting, a single bad actor can exhaust your API capacity with automated requests, brute-force user passwords, or scrape your entire product catalog in minutes. Database-backed rate limiting persists across server restarts and works consistently in distributed deployments where Redis might not be available. Every public-facing API—from GitHub to Twitter—enforces rate limits to ensure fair usage and system stability. This pattern is a fundamental security and availability requirement for any service exposed to the internet, protecting both your infrastructure and your users.
 
 ---
 
@@ -2664,22 +2829,26 @@ WHERE flag_name = 'premium_tier';    -- => Check premium feature
 
 -- Enable feature for all users (100% rollout)
 UPDATE feature_flags
-SET is_enabled = 1, rollout_percentage = 100, updated_at = datetime('now')
-WHERE flag_name = 'beta_features';
+SET is_enabled = 1,                  -- => Set global enabled flag
+    rollout_percentage = 100,        -- => 100% = all users see this feature
+    updated_at = datetime('now')     -- => Record when toggle happened
+WHERE flag_name = 'beta_features';   -- => Target specific feature
 -- => Beta features now enabled for everyone
 -- => No code deployment needed
 
 -- Emergency disable (kill switch)
 UPDATE feature_flags
-SET is_enabled = 0, updated_at = datetime('now')
-WHERE flag_name = 'new_dashboard';
+SET is_enabled = 0,                  -- => Globally disabled (overrides rollout_percentage)
+    updated_at = datetime('now')     -- => Track when disabled for incident timeline
+WHERE flag_name = 'new_dashboard';   -- => Target specific feature
 -- => New dashboard disabled immediately
 -- => Useful for buggy features in production
 
 -- Gradual rollout (increase percentage)
 UPDATE feature_flags
-SET rollout_percentage = 25, updated_at = datetime('now')
-WHERE flag_name = 'beta_features';
+SET rollout_percentage = 25,         -- => Increase from 10% to 25% of users
+    updated_at = datetime('now')     -- => Record rollout progression timestamp
+WHERE flag_name = 'beta_features';   -- => Target feature for gradual rollout
 -- => Now enabled for 25% of users (was 10%)
 -- => Gradual expansion reduces risk
 
@@ -2696,12 +2865,13 @@ CREATE TABLE ab_test_assignments (
 -- Assign user to variant (50/50 split)
 INSERT OR IGNORE INTO ab_test_assignments (user_id, test_name, variant, assigned_at)
 SELECT
-    'user-42',                       -- => User being assigned
-    'dashboard_redesign',            -- => Test name
-    CASE WHEN ABS((CAST(SUBSTR(HEX(RANDOMBLOB(16)), 1, 8) AS INTEGER)) % 2) = 0 THEN 'A' ELSE 'B' END,  -- => Random A/B
+    'user-42',                       -- => User being assigned to the test
+    'dashboard_redesign',            -- => Test name (uniquely identifies the experiment)
+    CASE WHEN ABS((CAST(SUBSTR(HEX(RANDOMBLOB(16)), 1, 8) AS INTEGER)) % 2) = 0 THEN 'A' ELSE 'B' END,
+                                      -- => Random assignment: 50% get A, 50% get B
     datetime('now');                 -- => Assignment timestamp
 -- => User assigned to variant A or B
--- => INSERT OR IGNORE: keeps first assignment (stable)
+-- => INSERT OR IGNORE: keeps first assignment (stable, consistent experience)
 
 -- Get user's variant (application query)
 SELECT variant                       -- => Get assigned variant
@@ -2713,13 +2883,37 @@ WHERE user_id = 'user-42' AND test_name = 'dashboard_redesign';
 
 **Key Takeaway**: Feature flags use is_enabled boolean and rollout_percentage for gradual rollout. Store target_users as JSON for specific user targeting. Hash user IDs for consistent percentage assignment. Enable instant feature toggling without deployment. Essential for continuous delivery and risk mitigation.
 
-**Why It Matters**: "Ship fast, fix fast" requires the ability to instantly disable broken features. Gradual rollouts (1% → 10% → 50% → 100%) catch problems before they affect all users. Database-backed feature flags work across all servers without code deployment, enabling true continuous delivery.
+**Why It Matters**: "Ship fast, fix fast" requires the ability to instantly disable broken features in production without code deployment or rollback procedures. Gradual rollouts (1% → 10% → 50% → 100%) catch performance regressions and bugs before they affect all users, with the ability to halt rollout immediately. Database-backed feature flags propagate to all servers within seconds without deployment, enabling true continuous delivery. Companies like Facebook, Netflix, and Google use feature flags for every major feature launch, treating deployment and release as separate concerns controlled by business stakeholders, not just engineers.
 
 ---
 
 ## Example 82: Time-Series Data Partitioning
 
 Partition time-series data by time period for efficient queries and data retention management.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A["events_all VIEW<br/>Unified access"]
+    B["events_2025_01<br/>Jan partition"]
+    C["events_2025_02<br/>Feb partition"]
+    D["events_2025_03<br/>Mar partition"]
+    E["Query: Jan only<br/>Scan 1 partition"]
+    F["DROP TABLE<br/>Instant retention"]
+
+    A -->|UNION ALL| B
+    A -->|UNION ALL| C
+    A -->|UNION ALL| D
+    B --> E
+    B --> F
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#fff
+    style F fill:#CA9161,stroke:#000,color:#fff
+```
 
 **Code**:
 
@@ -2737,94 +2931,122 @@ CREATE TABLE events_2025_01 (
 -- => CHECK constraint enforces partition boundary
 
 CREATE TABLE events_2025_02 (
-    id INTEGER PRIMARY KEY,
-    event_type TEXT,
-    user_id INTEGER,
-    data TEXT,
-    created_at TEXT CHECK (created_at >= '2025-02-01' AND created_at < '2025-03-01')
+    id INTEGER PRIMARY KEY,           -- => Auto-increment event ID
+    event_type TEXT,                  -- => Event category
+    user_id INTEGER,                  -- => User who triggered event
+    data TEXT,                        -- => Event payload (JSON)
+    created_at TEXT CHECK (created_at >= '2025-02-01' AND created_at < '2025-03-01')  -- => Partition boundary
 );
+-- => events_2025_02 table created (Feb 2025 partition)
+-- => Same structure as Jan partition, boundary shifted one month forward
 
 CREATE INDEX idx_events_2025_01_type_time ON events_2025_01(event_type, created_at);
+-- => Composite index on (event_type, created_at) for efficient filtered queries
+-- => Enables fast lookup: "show all login events in first half of January"
 CREATE INDEX idx_events_2025_02_type_time ON events_2025_02(event_type, created_at);
+-- => Same index structure for February partition
 
 -- Insert into correct partition
 INSERT INTO events_2025_01 (event_type, user_id, data, created_at)
 VALUES ('login', 100, '{"ip": "192.168.1.1"}', '2025-01-15 10:00:00');
+-- => Inserted into January partition (date 2025-01-15 satisfies CHECK constraint)
+-- => Application must route inserts to the correct partition table
 
 INSERT INTO events_2025_02 (event_type, user_id, data, created_at)
 VALUES ('purchase', 200, '{"amount": 99.99}', '2025-02-20 14:30:00');
+-- => Inserted into February partition (date 2025-02-20 satisfies Feb CHECK constraint)
 
 -- Query specific partition (fast)
-SELECT * FROM events_2025_01
-WHERE event_type = 'login'
-  AND created_at >= '2025-01-01'
-  AND created_at < '2025-01-15';
+SELECT * FROM events_2025_01             -- => Only scans Jan partition (not Feb or others)
+WHERE event_type = 'login'               -- => Filter on indexed column
+  AND created_at >= '2025-01-01'         -- => Start of query range
+  AND created_at < '2025-01-15';         -- => End of query range (exclusive)
 -- => Queries single partition only
+-- => Composite index (event_type, created_at) makes this highly efficient
 
 -- Query across partitions with UNION
-SELECT * FROM events_2025_01
-WHERE event_type = 'login'
-UNION ALL
-SELECT * FROM events_2025_02
-WHERE event_type = 'login';
+SELECT * FROM events_2025_01             -- => Query Jan partition
+WHERE event_type = 'login'               -- => Filter for login events
+UNION ALL                                -- => Combine results (no deduplication)
+SELECT * FROM events_2025_02             -- => Query Feb partition
+WHERE event_type = 'login';              -- => Same filter applied to each partition
 -- => Combines results from multiple partitions
+-- => Each partition is queried independently, then results merged
 
 -- Create view for unified access
-CREATE VIEW events_all AS
-SELECT * FROM events_2025_01
-UNION ALL
-SELECT * FROM events_2025_02;
+CREATE VIEW events_all AS               -- => Virtual table combining all partitions
+SELECT * FROM events_2025_01             -- => Include Jan partition rows
+UNION ALL                                -- => Append Feb partition rows
+SELECT * FROM events_2025_02;            -- => View now covers both partitions
+-- => events_all view created: abstracts partition structure from queries
 
-SELECT * FROM events_all
+SELECT * FROM events_all                 -- => Query through unified view
 WHERE created_at >= '2025-01-15' AND created_at < '2025-02-15';
 -- => Queries both partitions automatically
+-- => View routes to underlying partition tables transparently
 
 -- Retention policy: Drop old partitions
-DROP TABLE IF EXISTS events_2024_12;  -- Remove December 2024 data
+DROP TABLE IF EXISTS events_2024_12;  -- => Remove December 2024 partition entirely
+-- => IF EXISTS prevents error if partition doesn't exist
+-- => Instant operation: drops entire partition vs DELETE scanning billions of rows
 
 -- Create new partition for next month
 CREATE TABLE events_2025_03 (
-    id INTEGER PRIMARY KEY,
-    event_type TEXT,
-    user_id INTEGER,
-    data TEXT,
-    created_at TEXT CHECK (created_at >= '2025-03-01' AND created_at < '2025-04-01')
+    id INTEGER PRIMARY KEY,           -- => Auto-increment event ID
+    event_type TEXT,                  -- => Event category
+    user_id INTEGER,                  -- => User who triggered event
+    data TEXT,                        -- => Event payload (JSON)
+    created_at TEXT CHECK (created_at >= '2025-03-01' AND created_at < '2025-04-01')  -- => March boundary
 );
+-- => March 2025 partition created, ready to receive new events
 
 CREATE INDEX idx_events_2025_03_type_time ON events_2025_03(event_type, created_at);
+-- => Index on new partition follows same pattern as other partitions
 
 -- Archive old partitions (export to CSV or backup database)
+-- => Best practice: export to S3/cold storage before dropping
 -- Then drop table to free space
+-- => Frees disk space immediately without affecting active partitions
 
 -- Alternative: Single table with partition key for application-level routing
 CREATE TABLE events_partitioned (
-    id INTEGER PRIMARY KEY,
-    partition_key TEXT NOT NULL,  -- 'YYYY-MM' format
-    event_type TEXT,
-    user_id INTEGER,
-    data TEXT,
-    created_at TEXT
+    id INTEGER PRIMARY KEY,           -- => Auto-increment event ID
+    partition_key TEXT NOT NULL,      -- => 'YYYY-MM' format (e.g., '2025-01')
+                                       -- => Application sets this column on each insert
+    event_type TEXT,                  -- => Event category
+    user_id INTEGER,                  -- => User who triggered event
+    data TEXT,                        -- => Event payload (JSON)
+    created_at TEXT                   -- => Full timestamp for ordering
 );
+-- => Single table alternative: all data in one table, logically partitioned
 
 CREATE INDEX idx_events_partitioned ON events_partitioned(partition_key, event_type, created_at);
+-- => Leading column is partition_key: queries filtering by month hit only relevant rows
+-- => Trailing columns (event_type, created_at) enable efficient secondary filters
 
 -- Insert with partition key
 INSERT INTO events_partitioned (partition_key, event_type, user_id, data, created_at)
 VALUES (STRFTIME('%Y-%m', '2025-01-15'), 'login', 100, '{}', '2025-01-15 10:00:00');
+-- => STRFTIME('%Y-%m', ...) extracts '2025-01' from the timestamp
+-- => partition_key set automatically, routes queries to correct month
 
 -- Query with partition key filter
 SELECT * FROM events_partitioned
-WHERE partition_key = '2025-01'
-  AND event_type = 'login';
+WHERE partition_key = '2025-01'          -- => Restrict to January data only
+  AND event_type = 'login';              -- => Further filter by event type
 -- => Index on partition_key makes this efficient
+-- => Only rows matching partition_key='2025-01' are scanned
 
 -- Delete old partitions
 DELETE FROM events_partitioned WHERE partition_key < '2024-12';
+-- => Removes all events before December 2024
+-- => Unlike DROP TABLE, this works within single-table approach
+-- => Less efficient than DROP TABLE for separate-table partitioning
 ```
 
 **Key Takeaway**: Partition time-series data by time period (daily/monthly) using separate tables or partition keys. Queries targeting specific periods scan less data. Drop old partitions for data retention. Use UNION views for unified access. Partition pruning improves performance for time-range queries.
 
-**Why It Matters**: A table with 10 years of logs becomes slow to query and impossible to manage. Partitioning enables "query last week" to scan only 7 partitions instead of billions of rows. Data retention becomes "DROP old partition" instead of "DELETE billions of rows." This is essential for any time-series data.
+**Why It Matters**: A single unpartitioned table with 10 years of event logs becomes progressively slower to query and nearly impossible to manage as it reaches billions of rows. Partitioning enables "query last week's data" to scan only 7 daily partitions instead of scanning years of history. Data retention enforcement becomes an instant DROP TABLE operation instead of a multi-hour DELETE that locks the table. Time-series databases like InfluxDB and TimescaleDB are built entirely around this principle. Any application collecting logs, metrics, events, or sensor data should consider partitioning from the beginning.
 
 ---
 
@@ -3005,7 +3227,7 @@ WHERE connection_id IN (
 
 **Key Takeaway**: Connection pooling tracks connection states (idle/active) and reuse. Acquire from idle pool, mark active, release when done. Monitor utilization, detect leaks (active too long). Dynamic sizing adds/removes connections based on demand. Prevents expensive connection creation overhead.
 
-**Why It Matters**: Opening a database connection takes 50-100ms. In a web application handling 1000 requests/second, creating new connections per request is impossible. Connection pooling reuses connections, making high-throughput applications feasible. Understanding pool dynamics helps diagnose "connection exhausted" errors.
+**Why It Matters**: Opening a new database connection involves TCP handshaking, authentication, and session setup—typically 50-100ms of overhead per request. A web application handling 1000 requests per second cannot create a new connection for each request. Connection pooling reuses established connections, keeping overhead near zero for most requests. PgBouncer, HikariCP, and SQLAlchemy's pool are battle-tested implementations for production systems. Understanding pool size, connection timeout, and queue behavior helps diagnose "connection pool exhausted" errors that appear under high load and cascade into complete application failures.
 
 ---
 
@@ -3205,7 +3427,7 @@ GROUP BY t.id, t.name;                -- => Group by tenant
 
 **Key Takeaway**: Multi-tenancy uses tenant_id on all tables to isolate data. ALWAYS filter by tenant_id in WHERE clauses. Create indexes with tenant_id as first column. Use UNIQUE constraints scoped to tenant. Application sets tenant context from authentication and includes in all queries. Essential for SaaS applications.
 
-**Why It Matters**: SaaS applications serve multiple customers from one database. A missing tenant_id filter exposes customer A's data to customer B—a catastrophic security breach. Multi-tenancy patterns ensure data isolation while sharing infrastructure. This is the foundation of cost-effective SaaS architecture.
+**Why It Matters**: SaaS applications serve multiple customers from shared infrastructure, and a missing tenant_id filter in a single query exposes customer A's confidential data to customer B—a catastrophic security breach that destroys customer trust and triggers regulatory consequences. Multi-tenancy patterns with mandatory tenant_id filters ensure data isolation while sharing database infrastructure, reducing operational costs significantly. Database-per-tenant isolation provides stronger guarantees but multiplies infrastructure costs. Row-level security enforced in every query is the standard approach for cost-effective SaaS architecture serving hundreds or thousands of customers.
 
 ---
 
@@ -3441,7 +3663,7 @@ WHERE index_count = 0;                -- => Tables without indexes
 
 **Key Takeaway**: Monitor query performance (log execution times, identify slow queries), connection usage (active/idle counts), and database size. Collect metrics periodically, analyze trends, set alerts for thresholds. Use EXPLAIN for slow queries, VACUUM for space reclamation, ANALYZE for statistics. Essential for production database health.
 
-**Why It Matters**: Production databases degrade silently—slow queries accumulate, disk fills up, connections exhaust. Without monitoring, you discover problems when users complain. Proactive monitoring catches "query latency increasing 10% daily" before it becomes "site is down." This is essential operations knowledge for any production system.
+**Why It Matters**: Production databases degrade silently—slow queries accumulate gradually, disk fills up incrementally, and connections exhaust during traffic spikes, all before users start complaining loudly. Without proactive monitoring, you discover these problems when the site goes down, not while you still have time to intervene. Monitoring query latency trends catches "latency increasing 10% daily" while the database is still functional, enabling planned maintenance instead of emergency firefighting. This operations knowledge is essential for every backend engineer responsible for production database systems, regardless of scale.
 
 ---
 

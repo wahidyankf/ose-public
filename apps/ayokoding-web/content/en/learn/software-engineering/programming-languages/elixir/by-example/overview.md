@@ -3,11 +3,11 @@ title: "Overview"
 date: 2025-12-23T00:00:00+07:00
 draft: false
 weight: 10000000
-description: "Learn Elixir through 75-90 annotated code examples covering essential concepts of the language - ideal for experienced developers switching from other languages"
+description: "Learn Elixir through 85 annotated code examples covering essential concepts of the language - ideal for experienced developers switching from other languages"
 tags: ["elixir", "tutorial", "by-example", "examples", "code-first"]
 ---
 
-**Want to quickly pick up Elixir through working examples?** This by-example guide teaches essential concepts of Elixir through 75-90 annotated code examples organized by complexity level.
+**Want to quickly pick up Elixir through working examples?** This by-example guide teaches essential concepts of Elixir through 85 annotated code examples organized by complexity level.
 
 ## What Is By-Example Learning?
 
@@ -28,7 +28,7 @@ Unlike narrative tutorials that build understanding through explanation and stor
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     A["Beginner<br/>Examples 1-30<br/>Basics"] --> B["Intermediate<br/>Examples 31-60<br/>Practical Patterns"]
-    B --> C["Advanced<br/>Examples 61-90<br/>Complex Features"]
+    B --> C["Advanced<br/>Examples 61-85<br/>Complex Features"]
 
     style A fill:#0173B2,color:#fff
     style B fill:#DE8F05,color:#fff
@@ -78,14 +78,14 @@ The comprehensive coverage goal maintains humility—no tutorial can cover every
 
 Understanding where by-example fits in the tutorial ecosystem helps you choose the right learning path:
 
-| Tutorial Type    | Coverage                             | Approach                       | Target Audience         | When to Use                                          |
-| ---------------- | ------------------------------------ | ------------------------------ | ----------------------- | ---------------------------------------------------- |
-| **By Example**   | Comprehensive through 75-90 examples | Code-first, annotated examples | Experienced developers  | Quick language pickup, reference, language switching |
-| **Quick Start**  | 5-30% touchpoints                    | Hands-on project               | Newcomers to Elixir     | First taste, decide if worth learning                |
-| **Beginner**     | 0-60% comprehensive                  | Narrative, explanatory         | Complete beginners      | Deep understanding, first programming language       |
-| **Intermediate** | 60-85%                               | Practical applications         | Past basics             | Production patterns, frameworks                      |
-| **Advanced**     | advanced topics                      | Complex systems                | Experienced Elixir devs | BEAM internals, distributed systems                  |
-| **Cookbook**     | Problem-specific                     | Recipe-based                   | All levels              | Solve specific problems                              |
+| Tutorial Type    | Coverage                          | Approach                       | Target Audience         | When to Use                                          |
+| ---------------- | --------------------------------- | ------------------------------ | ----------------------- | ---------------------------------------------------- |
+| **By Example**   | Comprehensive through 85 examples | Code-first, annotated examples | Experienced developers  | Quick language pickup, reference, language switching |
+| **Quick Start**  | 5-30% touchpoints                 | Hands-on project               | Newcomers to Elixir     | First taste, decide if worth learning                |
+| **Beginner**     | 0-60% comprehensive               | Narrative, explanatory         | Complete beginners      | Deep understanding, first programming language       |
+| **Intermediate** | 60-85%                            | Practical applications         | Past basics             | Production patterns, frameworks                      |
+| **Advanced**     | advanced topics                   | Complex systems                | Experienced Elixir devs | BEAM internals, distributed systems                  |
+| **Cookbook**     | Problem-specific                  | Recipe-based                   | All levels              | Solve specific problems                              |
 
 **By Example vs. Quick Start**: By Example provides comprehensive coverage through examples vs. Quick Start's 5-30% through a single project. By Example is code-first reference; Quick Start is hands-on introduction.
 
@@ -191,7 +191,7 @@ This tutorial prioritizes working code over theoretical discussion:
 - **No lengthy prose**: Concepts are demonstrated, not explained at length
 - **Runnable examples**: Every example runs in IEx or as scripts
 - **Learn by doing**: Understanding comes from running and modifying code
-- **Pattern recognition**: See the same patterns in different contexts across 90 examples
+- **Pattern recognition**: See the same patterns in different contexts across 85 examples
 
 If you prefer narrative explanations. By-example learning works best when you learn through experimentation.
 
@@ -201,6 +201,6 @@ Jump into the beginner examples to start learning Elixir through code:
 
 - [Beginner Examples (1-30)](/en/learn/software-engineering/programming-languages/elixir/by-example/beginner) - Basic syntax, pattern matching, data structures, functions
 - [Intermediate Examples (31-60)](/en/learn/software-engineering/programming-languages/elixir/by-example/intermediate) - Advanced patterns, processes, testing, error handling
-- [Advanced Examples (61-90)](/en/learn/software-engineering/programming-languages/elixir/by-example/advanced) - GenServer, Supervisor, metaprogramming, OTP
+- [Advanced Examples (61-85)](/en/learn/software-engineering/programming-languages/elixir/by-example/advanced) - GenServer, Supervisor, metaprogramming, OTP
 
 Each example is self-contained and runnable. Start with Example 1, or jump to topics that interest you most.

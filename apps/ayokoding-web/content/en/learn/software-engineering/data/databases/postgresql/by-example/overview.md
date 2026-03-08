@@ -37,7 +37,7 @@ graph TD
     B -->|Advanced patterns| C
 
     style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
     style C fill:#029E73,stroke:#000,color:#fff
 ```
 
@@ -95,6 +95,7 @@ Every example follows a consistent five-part format:
 2. **Mermaid Diagram** (optional): Visual clarification when concept relationships benefit from visualization
 3. **Heavily Annotated Code**: Every significant statement includes a comment explaining what it does and what it produces (using `-- =>` notation)
 4. **Key Takeaway** (1-2 sentences): The core insight you should retain from this example
+5. **Why It Matters** (50-100 words): Real-world significance and practical applications in production systems
 
 This structure minimizes context switching - explanation, visual aid, runnable code, and distilled essence all in one place.
 

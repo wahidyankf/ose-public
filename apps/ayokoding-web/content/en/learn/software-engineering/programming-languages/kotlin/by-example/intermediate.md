@@ -269,6 +269,7 @@ graph TD
 import kotlinx.coroutines.*
 // => Import coroutine scope builders (coroutineScope, runBlocking, withTimeout)
 // => withTimeout: enforces time limits on coroutine execution
+// => Requires 'org.jetbrains.kotlinx:kotlinx-coroutines-core' dependency
 
 suspend fun processData(): String = coroutineScope {
     // => Waits for children: BLOCKS (suspends) until ALL child coroutines complete
@@ -397,7 +398,7 @@ fun main() = runBlocking {
 
 **Key Takeaway**: Use `coroutineScope` for structured concurrency that automatically cancels children when parent is cancelled; use `withTimeout` to enforce time limits.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Structured concurrency with `CoroutineScope` is the foundation of leak-free async Kotlin code. Without scope constraints, coroutines can outlive their logical parent, causing memory leaks and unexpected behavior after screens are dismissed or requests are cancelled. In Android, `viewModelScope` automatically cancels all coroutines when the ViewModel is cleared, preventing database queries from updating destroyed views. In server-side Kotlin with Ktor, `coroutineScope {}` ensures all child operations complete or cancel together, preventing half-completed request handling that leaves inconsistent state.
 
 ---
 
@@ -416,6 +417,7 @@ Dispatchers control which thread pool executes coroutines.
 
 ```kotlin
 import kotlinx.coroutines.*
+// => Requires 'org.jetbrains.kotlinx:kotlinx-coroutines-core' dependency
 
 fun main() = runBlocking {           // => Blocks main thread until complete
     // Default dispatcher (CPU-intensive work)
@@ -864,6 +866,7 @@ graph TD
 ```kotlin
 import kotlinx.coroutines.*
 // => kotlinx.coroutines provides coroutine builders and structured concurrency primitives
+// => Requires 'org.jetbrains.kotlinx:kotlinx-coroutines-core' dependency
 import kotlinx.coroutines.flow.*
 // => kotlinx.coroutines.flow provides Flow API and flow operators
 // => Operators: transform, buffer, conflate, map, filter, collect, etc.
@@ -1369,7 +1372,8 @@ Advanced collection operations enable complex data transformations and grouping.
 
 ```kotlin
 data class Person(val name: String, val age: Int, val city: String)
-// => Auto-generated: equals(), hashCode(), toString(), copy()
+// => Data class: auto-generated equals(), hashCode(), toString(), copy()
+// => Three properties: name (String), age (Int), city (String)
 
 fun main() {
     val people = listOf(
@@ -1379,65 +1383,63 @@ fun main() {
         Person("Diana", 25, "LA"),
         Person("Eve", 35, "NYC")
     )
-    // => 5 people: ages 25/30/35, cities NYC/LA
+    // => 5 Person objects in immutable list
+    // => Varied ages (25, 30, 35) and cities (NYC, LA) for grouping demos
 
-    // groupBy: group elements by key
+    // groupBy: creates Map<K, List<T>> where K is the grouping key
     val byAge = people.groupBy { it.age }
-    // => Groups by age: {25=[Bob, Diana], 30=[Alice, Charlie], 35=[Eve]}
+    // => Groups by age field: { 30=[Alice, Charlie], 25=[Bob, Diana], 35=[Eve] }
+    // => Keys are unique ages, values are lists of persons with that age
 
     println("Grouped by age:")
     // => Output: Grouped by age:
-
     byAge.forEach { (age, persons) ->
-        // => Destructures Map.Entry<Int, List<Person>>
+        // => Destructures Map.Entry<Int, List<Person>> into (age, persons)
         println("  Age $age: ${persons.map { it.name }}")
-        // => Output: Age 25: [Bob, Diana]
-        // =>         Age 30: [Alice, Charlie]
+        // => Output: Age 30: [Alice, Charlie]
+        // =>         Age 25: [Bob, Diana]
         // =>         Age 35: [Eve]
     }
 
     val byCity = people.groupBy { it.city }
-    // => Groups by city: {NYC=[Alice, Charlie, Eve], LA=[Bob, Diana]}
-
+    // => Groups by city field: { NYC=[Alice, Charlie, Eve], LA=[Bob, Diana] }
     println("Grouped by city:")
     byCity.forEach { (city, persons) ->
+        // => Iterates over city → persons entries
         println("  $city: ${persons.map { it.name }}")
         // => Output: NYC: [Alice, Charlie, Eve]
         // =>         LA: [Bob, Diana]
     }
 
-    // partition: split into two lists based on predicate
-    val (under30, over30) = people.partition { it.age < 30 }
-    // => Splits at age<30: ([Bob, Diana], [Alice, Charlie, Eve])
-    // => Destructuring extracts both lists
+    // partition: splits List<T> into Pair<List<T>, List<T>> by predicate
+    val (under30, thirtyPlus) = people.partition { it.age < 30 }
+    // => Pair.first = persons with age < 30 (true predicate)
+    // => Pair.second = persons with age >= 30 (false predicate)
+    // => Destructuring: under30=[Bob, Diana], thirtyPlus=[Alice, Charlie, Eve]
 
     println("\nUnder 30: ${under30.map { it.name }}")
     // => Output: Under 30: [Bob, Diana]
-
-    println("30 and over: ${over30.map { it.name }}")
+    println("30 and over: ${thirtyPlus.map { it.name }}")
     // => Output: 30 and over: [Alice, Charlie, Eve]
 
-    // associate: create map from collection
+    // associate: creates Map<K, V> from collection elements
     val nameToAge = people.associate { it.name to it.age }
-    // => Creates key-value pairs: {Alice=30, Bob=25, Charlie=30, Diana=25, Eve=35}
+    // => Creates Map<String, Int>: { "Alice"->30, "Bob"->25, "Charlie"->30, ... }
+    // => 'to' infix creates Pair<String, Int> for each person
+    println("\nName → Age mapping:")
+    nameToAge.forEach { (name, age) ->
+        // => Iterates over Map<String, Int> entries
+        println("  $name: $age")
+        // => Output: Alice: 30, Bob: 25, Charlie: 30, Diana: 25, Eve: 35
+    }
 
-    println("\nName to age: $nameToAge")
-    // => Output: Name to age: {Alice=30, Bob=25, Charlie=30, Diana=25, Eve=35}
-
-    // associateBy: use key selector
-    val peopleByName = people.associateBy { it.name }
-    // => Name as key, Person as value: {Alice=Person(...), Bob=Person(...), ...}
-
-    println("Person by name: ${peopleByName["Alice"]}")
-    // => Output: Person by name: Person(name=Alice, age=30, city=NYC)
-
-    // associateWith: use value generator
-    val numbers = listOf(1, 2, 3, 4)
-    val squares = numbers.associateWith { it * it }
-    // => Number as key, square as value: {1=1, 2=4, 3=9, 4=16}
-
-    println("Squares: $squares")
-    // => Output: Squares: {1=1, 2=4, 3=9, 4=16}
+    // associateBy: creates Map<K, T> using element as value
+    val nameToCity = people.associateBy({ it.name }, { it.city })
+    // => Creates Map<String, String>: { "Alice"->"NYC", "Bob"->"LA", ... }
+    // => First lambda: key selector (name), second lambda: value transform (city)
+    println("\nCity lookup: ${nameToCity["Alice"]}")
+    // => Output: City lookup: NYC
+    // => O(1) lookup by name after building the map
 }
 ```
 
@@ -1645,7 +1647,7 @@ fun main() {
 
 **Key Takeaway**: Sequences optimize multi-step transformations by evaluating lazily element-by-element; use `asSequence()` for large collections or infinite streams.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Sequences are the Kotlin solution to the intermediate collection allocation problem. When chaining `filter`, `map`, and `take` on a large list, `List` operations allocate a new list at each step while `Sequence` processes elements lazily, one at a time. For a 10-operation pipeline on a million-element list, sequences reduce intermediate allocations from 9 million to zero. This matters in data processing pipelines, log analysis, file parsing, and anywhere transformation chains operate on large datasets. The tradeoff: sequences have overhead for small collections, so use `asSequence()` only when benchmarking confirms benefit.
 
 ---
 
@@ -2055,7 +2057,7 @@ fun main() {
 
 **Key Takeaway**: Extension functions add methods to existing types without inheritance; they're resolved statically and ideal for utility functions on library classes.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Extension functions are Kotlin's mechanism for the open-closed principle: extend behavior without modifying the original class. Adding `fun String.toSlug()` or `fun LocalDate.toDisplayString()` to third-party or standard library types keeps domain logic colocated with where it's used, not scattered in utility classes. In Android development, extension functions on `Context`, `View`, and `Fragment` eliminate repetitive boilerplate. The critical production caveat: extension functions dispatch statically, not polymorphically—they don't participate in virtual dispatch, making them unsuitable for patterns requiring runtime polymorphism.
 
 ---
 
@@ -2661,7 +2663,7 @@ fun main() {
 
 **Key Takeaway**: Lambda with receiver (`Type.() -> Unit`) enables type-safe DSLs by providing implicit context where `this` refers to the receiver type; compiler enforces scope-appropriate methods, and IDE autocomplete shows only valid options, making DSL construction safe and discoverable.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: DSLs with lambda receivers transform configuration code from error-prone method chains into declarative, type-safe syntax. Gradle Kotlin DSL, HTML builders, and Ktor routing all use this pattern. The receiver object inside the lambda block becomes `this`, enabling concise configuration without repetitive qualifiers. Compared to builder patterns in Java, Kotlin DSLs are statically typed (autocomplete works), eliminate intermediate builder objects, and allow arbitrary Kotlin code (conditionals, loops) within the configuration block. This makes complex configuration readable as a document rather than a program.
 
 ---
 
@@ -2844,7 +2846,7 @@ fun main() {
 
 **Key Takeaway**: Sealed classes restrict inheritance to a compile-time-known set of subtypes, enabling exhaustive `when` expressions that must handle all cases without `else` branches; compiler enforces completeness, and adding new subtypes causes compile errors in all pattern matches, guaranteeing no missing case bugs.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Sealed classes with `when` exhaustiveness checking is Kotlin's primary tool for modeling finite state machines and algebraic data types. Unlike enums, sealed classes allow each variant to carry different data—`Error(code: Int, message: String)` vs `Success(data: T)`—making them ideal for API response modeling, UI state, and domain event types. The compile-time guarantee that all cases are handled prevents the silent failure mode of Java's non-exhaustive switch statements. This pattern underpins Kotlin Result types, Kotlin coroutine Channel results, and the functional programming patterns in Arrow library.
 
 ---
 
@@ -2974,7 +2976,7 @@ fun main() {
 
 **Key Takeaway**: Data classes auto-generate `copy()` for immutable updates with named parameters, `componentN()` for destructuring declarations, and value-based `equals()`/`hashCode()`/`toString()` for structural equality; `copy()` enables functional programming patterns by creating modified copies instead of mutation, and destructuring reduces verbosity when unpacking multiple properties.
 
-**Why It Matters**: Immutable updates in Java require manual builder patterns (20+ lines per class) or AutoValue annotation processing boilerplate, while Kotlin's copy() enables functional update patterns with named parameters (user.copy(email = newEmail)) in a single line, keeping code concise and preventing accidental mutations that cause bugs in concurrent code. Destructuring declarations reduce ceremony when unpacking data (val (id, name, email) = user in 1 line vs Java's 3 lines val id = user.getId(); val name = user.getName(); val email = user.getEmail()), critical in functional transformations and pattern matching where extracting multiple fields from objects is ubiquitous, improving readability by 40-60% in data processing pipelines handling thousands of records per second where verbose property access becomes unreadable noise.
+**Why It Matters**: Immutable updates in Java require manual builder patterns (20+ lines per class) or annotation processing boilerplate, while Kotlin's `copy()` enables functional update patterns in a single line: `user.copy(email = newEmail)`. This prevents accidental mutations that cause bugs in concurrent code. Destructuring declarations reduce ceremony when unpacking data—`val (id, name, email) = user` versus three separate getter calls—critical in functional transformations and data processing pipelines where extracting multiple fields from objects is ubiquitous. The combination of `copy()` and destructuring is central to event sourcing and immutable state patterns in Kotlin.
 
 ---
 
@@ -3098,7 +3100,7 @@ fun main() {
 
 **Key Takeaway**: Destructuring in lambdas enables concise parameter extraction from data classes, pairs, triples, and map entries using `componentN()` functions; use underscore `_` to skip unwanted components.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Destructuring in lambdas eliminates boilerplate variable names for compound operations. Processing map entries as `{ (key, value) -> ... }` instead of `{ entry -> entry.key ... entry.value }` reduces noise in data transformation code. When analyzing collections of data classes, destructuring makes the intent clear: `users.map { (name, age, email) -> ... }` reads like pattern matching. This is particularly valuable in functional pipelines processing records, pairs, or small tuples where the structure is well-known and the field names add cognitive overhead rather than clarity.
 
 ---
 
@@ -3260,7 +3262,7 @@ fun main() {
 
 **Key Takeaway**: Value classes provide compile-time type safety without runtime overhead through inlining to underlying types; they prevent primitive obsession, enforce validation at construction, and enable zero-cost wrappers with methods.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Inline (value) classes eliminate the performance cost of type-safe wrappers by erasing to the wrapped type at runtime. A `UserId(val value: Long)` defined as `@JvmInline value class UserId` compiles to a plain `Long` in bytecode while providing compile-time distinction between user IDs, order IDs, and product IDs. This prevents passing an orderId where a userId is expected—a class of bug that causes real data corruption in production systems. Without value classes, developers either use raw primitives (losing type safety) or accept boxing overhead from regular wrapper classes.
 
 ---
 
@@ -3420,7 +3422,7 @@ fun main() {
 
 **Key Takeaway**: Contracts enable custom functions to influence compiler's smart cast and nullability analysis through `returns(true) implies`, `returns() implies`, and `callsInPlace` guarantees; essential for validation functions and control flow utilities that need smart casting.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Contracts inform the Kotlin compiler about postconditions and control flow implications that the compiler cannot infer from code alone. The `callsInPlace` contract allows smart casts to persist through lambda boundaries—without it, a variable initialized inside a lambda remains unknown to the compiler outside. The `returns() implies` contract enables the compiler to trust that after calling `checkNotNull(value)`, the value is non-null in subsequent code. In production, contracts appear in assertion libraries, validation frameworks, and null-safety utilities where the semantic guarantees need to be communicated to the compiler for correct smart-cast behavior.
 
 ---
 
@@ -3603,7 +3605,7 @@ fun main() {
 
 **Key Takeaway**: Type aliases improve code readability for complex or frequently used types without creating new types or runtime overhead; they are purely compile-time substitutions that document intent without enforcing type safety.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Type aliases reduce cognitive overhead when working with complex generic types that appear repeatedly. `typealias UserMap = Map<String, List<User>>` turns unreadable function signatures into self-documenting code. In event-driven systems, `typealias EventHandler<T> = suspend (T) -> Unit` makes callback signatures consistent and refactorable. Unlike inline classes, type aliases are purely compile-time, with no runtime cost and no additional type safety—both names are fully interchangeable. Use type aliases for readability and discoverability, use inline classes when you need the compiler to enforce the distinction.
 
 ---
 
@@ -3750,7 +3752,7 @@ fun main() {
 
 **Key Takeaway**: `Nothing` is Kotlin's bottom type (subtype of all types) that represents computation never returning normally; it enables smart casts in null checks and exhaustive when expressions without dummy values.
 
-**Why It Matters**: Nothing type solves the "impossible state" problem that plagues type systems without bottom types, where error branches in when expressions require dummy return values (return 0 for errors in Int-returning functions) that pollute code with meaningless sentinels. Kotlin's Nothing enables fail() functions that satisfy any return type through subtyping (Nothing <: T for all T), allowing when expressions on sealed classes to handle errors with exceptions rather than impossible defaults, improving both safety and clarity. The compiler's knowledge that Nothing-returning functions never complete enables smart casts after null checks (val x: Int = nullable ?: fail("null") makes x non-nullable), eliminating redundant !! assertions that bypass type safety, critical in validation-heavy code where assertion functions enforce preconditions without fighting the type system.
+**Why It Matters**: The `Nothing` type solves the "impossible state" problem where error branches in `when` expressions require dummy return values that pollute code with meaningless sentinels. Kotlin's `Nothing` enables `fail()` functions that satisfy any return type through subtyping (`Nothing` is a subtype of all types), allowing `when` expressions on sealed classes to handle errors by throwing rather than returning impossible defaults. The compiler's knowledge that `Nothing`-returning functions never complete enables smart casts after null checks: `val x: Int = nullable ?: fail("null")` makes `x` non-nullable, eliminating `!!` assertions that bypass type safety.
 
 ---
 
@@ -3909,7 +3911,7 @@ fun main() {
 
 **Key Takeaway**: Companion object extensions add static-like factory methods to existing classes without source modification, enabling library extension while preserving clean namespace (Class.method() syntax) and IDE discoverability.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Companion object extensions allow adding factory methods and utility functions to a class from a different file, enabling clean separation between core class definition and library-specific creation patterns. This is particularly useful in multi-module Android projects where the `domain` module defines `User` without database knowledge, while the `data` module adds `User.Companion.fromCursor(cursor)` as an extension on the companion object. This pattern avoids polluting the domain model with persistence concerns while keeping the factory syntax `User.fromCursor()` instead of the less idiomatic `UserMapper.fromCursor()`.
 
 ---
 
@@ -4117,7 +4119,7 @@ fun main() {
 
 **Key Takeaway**: Class delegation with `by` eliminates boilerplate forwarding methods; ideal for decorator pattern and cross-cutting concerns like caching or logging.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: The `by` keyword for class delegation eliminates forwarding boilerplate when composing behavior from interfaces. Implementing a caching decorator over a repository interface requires forwarding all 10+ methods to the delegate, then overriding only the cacheable ones—`by` generates all the forwarding methods automatically, making the intent (this class adds caching behavior) visible without mechanical noise. This is the Kotlin implementation of the Decorator pattern, appearing in Android architecture components, Compose state holders, and any system where cross-cutting concerns like logging, metrics, or caching need to be added to existing interfaces.
 
 ---
 

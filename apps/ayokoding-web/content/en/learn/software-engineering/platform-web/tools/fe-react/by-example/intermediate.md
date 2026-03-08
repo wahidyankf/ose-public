@@ -1,6 +1,6 @@
 ---
 title: "Intermediate"
-weight: 100000000
+weight: 10000002
 date: 2026-01-29T16:00:00+07:00
 draft: false
 description: "Master intermediate React with TypeScript through 25 annotated examples covering advanced hooks, custom hooks, Context API, React Query, routing, and error handling"
@@ -38,6 +38,22 @@ If you need to review fundamentals, see [Beginner](/en/learn/software-engineerin
 ### Example 1: useReducer for Complex State
 
 useReducer manages complex state with multiple related values. It accepts reducer function and initial state, returns current state and dispatch function.
+
+```mermaid
+graph TD
+    A["dispatch(increment, 10)"] -->|"counterReducer"| B["New State\n count: 10\n history: [0,10]"]
+    C["dispatch(decrement, 5)"] -->|"counterReducer"| D["New State\n count: 5\n history: [0,10,5]"]
+    E["dispatch(reset)"] -->|"counterReducer"| F["New State\n count: 0\n history: [0]"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#029E73,stroke:#000,color:#fff
+    style C fill:#DE8F05,stroke:#000,color:#000
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#CC78BC,stroke:#000,color:#000
+    style F fill:#CA9161,stroke:#000,color:#000
+```
+
+**useReducer state machine**: Actions dispatch to pure reducer, producing new state.
 
 ```typescript
 import { useReducer } from 'react';
@@ -123,32 +139,42 @@ function DonationCounter() {
 
   return (
     <div>
+    {/* => Container div for layout grouping */}
       <h2>Total Donations: ${state.count}</h2>
       {/* => Displays current count from state */}
 
       <div>
+      {/* => Container div for layout grouping */}
         <button onClick={handleDonate10}>Donate \$10</button>
+        {/* => Button "Donate \$10" - triggers onClick handler */}
         <button onClick={() => dispatch({ type: 'increment', payload: 25 })}>
+        {/* => Button: triggers click handler */}
           Donate \$25
         </button>
         {/* => Inline dispatch with literal action object */}
 
         <button onClick={() => dispatch({ type: 'decrement', payload: 5 })}>
+        {/* => Button: triggers click handler */}
           Refund \$5
         </button>
 
         <button onClick={handleUndo}>
+        {/* => Button: triggers click handler */}
           Undo Last
         </button>
 
         <button onClick={() => dispatch({ type: 'reset' })}>
+        {/* => Button: triggers click handler */}
           Reset
         </button>
       </div>
 
       <div>
+      {/* => Container div for layout grouping */}
         <h3>History</h3>
+        {/* => H3: "History" section heading */}
         <ul>
+        {/* => Unordered list of items */}
           {state.history.map((value, index) => (
             <li key={index}>
               {/* => Using index as key (OK since history only appends) */}
@@ -162,13 +188,12 @@ function DonationCounter() {
 }
 
 export default DonationCounter;
+
 ```
 
 **Key Takeaway**: Use `useReducer` for complex state with multiple related values and transitions. Reducer function centralizes state logic. Discriminated unions provide type-safe actions.
 
-**Expected Output**: Donation counter starting at \$0. Buttons add/subtract amounts and update history list. Undo button reverts to previous value. Reset clears to \$0.
-
-**Common Pitfalls**: Mutating state in reducer (must return new state), forgetting to handle all action types (TypeScript helps), or using useReducer for simple state (useState simpler).
+**Why It Matters**: useReducer is the production pattern for state that transitions through well-defined phases: loading → success → error, idle → pending → approved → rejected. By centralizing all state transitions in a pure reducer function, you make impossible states impossible to represent and all valid transitions explicit. This matters in production because complex state managed with multiple useState calls is prone to inconsistency bugs - loading is true but error is also set, or count is negative when the business rule says it can't be. useReducer with discriminated union actions is the foundation for predictable state management in complex features.
 
 ### Example 2: useCallback for Function Memoization
 
@@ -191,8 +216,10 @@ const TodoItem = memo(({ todo, onDelete }: TodoItemProps) => {
 
   return (
     <li>
+    {/* => List item */}
       {todo.text}
       <button onClick={() => onDelete(todo.id)}>Delete</button>
+      {/* => Button "onDelete(todo.id)}>Delete" - triggers onClick handler */}
     </li>
   );
 });
@@ -202,8 +229,10 @@ const TodoItem = memo(({ todo, onDelete }: TodoItemProps) => {
 function TodoList() {
   const [todos, setTodos] = useState([
     { id: 1, text: 'Read Quran' },
+    // => Initial array item object
     { id: 2, text: 'Pray Fajr' }
   ]);
+  // => End of initial state array
 
   const [count, setCount] = useState(0);    // => Unrelated state
 
@@ -236,13 +265,18 @@ function TodoList() {
 
   return (
     <div>
+    {/* => Container div for layout grouping */}
       <h2>Todos</h2>
+      {/* => H2: "Todos" section heading */}
 
       <ul>
+      {/* => Unordered list of items */}
         {todos.map(todo => (
           <TodoItem
+          {/* => Renders TodoItem component */}
             key={todo.id}
             todo={todo}
+            {/* => todo prop: todo */}
             onDelete={handleDelete}
             {/* => Passes memoized callback */}
             {/* => Same reference on every render */}
@@ -252,8 +286,11 @@ function TodoList() {
       </ul>
 
       <div>
+      {/* => Container div for layout grouping */}
         <p>Unrelated Counter: {count}</p>
+        {/* => Paragraph with content */}
         <button onClick={() => setCount(count + 1)}>
+        {/* => Button: triggers click handler */}
           Increment Counter
         </button>
         {/* => Clicking this re-renders TodoList */}
@@ -265,17 +302,33 @@ function TodoList() {
 }
 
 export default TodoList;
+
 ```
 
 **Key Takeaway**: Use `useCallback` to memoize functions passed to optimized child components. Prevents child re-renders when parent re-renders. Use functional state updates to avoid dependencies.
 
-**Expected Output**: Todo list with two items and counter. Clicking "Increment Counter" re-renders parent but not todo items (check console logs). Delete button removes todos.
-
-**Common Pitfalls**: Overusing useCallback (premature optimization), including unnecessary dependencies (defeats memoization), or forgetting React.memo on child (useCallback has no effect).
+**Why It Matters**: useCallback's value becomes clear when you profile React applications and discover that child components re-render on every parent render even when their props haven't semantically changed. Without memoization, a list of 100 items re-renders all 100 when the parent updates any unrelated state. In production dashboards, data tables, and complex forms with many fields, this causes noticeable performance degradation. The key production insight is that useCallback should be used selectively: profile first, then add memoization where measurements show benefit. Premature memoization adds complexity without benefit.
 
 ### Example 3: useMemo for Value Memoization
 
 useMemo memoizes expensive computations. Recomputes only when dependencies change.
+
+```mermaid
+graph TD
+    A["useMemo(fn, deps)"] -->|"contracts unchanged"| B["Returns cached result\n(no recompute)"]
+    A -->|"contracts changed"| C["Runs fn()\nreturns new result\ncaches it"]
+    D["filterTerm changes"] -->|"filteredContracts\ndependency"| E["filteredContracts\nuseMemo recomputes"]
+    E -->|"averageProfit\ndependency"| F["averageProfit\nuseMemo recomputes"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#029E73,stroke:#000,color:#fff
+    style C fill:#DE8F05,stroke:#000,color:#000
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#000
+    style F fill:#029E73,stroke:#000,color:#fff
+```
+
+**useMemo cache**: Recomputes only when specified dependencies change.
 
 ```typescript
 import { useState, useMemo } from 'react';
@@ -283,6 +336,7 @@ import { useState, useMemo } from 'react';
 // => Type for Murabaha contract (Islamic financing)
 interface MurabahaContract {
   id: number;
+  // => id: numeric value field
   principalAmount: number;                   // => Original amount
   profitRate: number;                        // => Profit rate (percentage)
   termMonths: number;                        // => Loan term in months
@@ -291,9 +345,12 @@ interface MurabahaContract {
 function MurabahaCalculator() {
   const [contracts, setContracts] = useState<MurabahaContract[]>([
     { id: 1, principalAmount: 100000, profitRate: 5, termMonths: 12 },
+    // => Initial array item object
     { id: 2, principalAmount: 50000, profitRate: 4, termMonths: 24 },
+    // => Initial array item object
     { id: 3, principalAmount: 200000, profitRate: 6, termMonths: 36 }
   ]);
+  // => End of initial state array
 
   const [filterTerm, setFilterTerm] = useState<number>(0);
   const [count, setCount] = useState(0);    // => Unrelated state
@@ -354,13 +411,18 @@ function MurabahaCalculator() {
 
   return (
     <div>
+    {/* => Container div for layout grouping */}
       <h2>Murabaha Contract Calculator</h2>
+      {/* => H2: "Murabaha Contract Calculator" section heading */}
 
       <div>
+      {/* => Container div for layout grouping */}
         <label>Filter by term (months): </label>
         <select
           value={filterTerm}
+          {/* => value: controlled by state (state → UI sync) */}
           onChange={(e) => setFilterTerm(Number(e.target.value))}
+          {/* => onChange: fires on every keystroke/change */}
         >
           <option value={0}>All</option>
           <option value={12}>12 months</option>
@@ -371,17 +433,26 @@ function MurabahaCalculator() {
       </div>
 
       <div>
+      {/* => Container div for layout grouping */}
         <h3>Statistics</h3>
+        {/* => H3: "Statistics" section heading */}
         <p>Total Contracts: {filteredContracts.length}</p>
+        {/* => Paragraph with content */}
         <p>Total Payment (with profit): ${totalWithMemo.toFixed(2)}</p>
+        {/* => Paragraph with content */}
         <p>Average Profit per Contract: ${averageProfit.toFixed(2)}</p>
+        {/* => Paragraph with content */}
       </div>
 
       <div>
+      {/* => Container div for layout grouping */}
         <h3>Contracts</h3>
+        {/* => H3: "Contracts" section heading */}
         <ul>
+        {/* => Unordered list of items */}
           {filteredContracts.map(contract => (
             <li key={contract.id}>
+            {/* => List item with unique key for React reconciliation */}
               ID: {contract.id} - Principal: ${contract.principalAmount} -
               Profit Rate: {contract.profitRate}% - Term: {contract.termMonths} months
             </li>
@@ -390,8 +461,11 @@ function MurabahaCalculator() {
       </div>
 
       <div>
+      {/* => Container div for layout grouping */}
         <p>Unrelated Counter: {count}</p>
+        {/* => Paragraph with content */}
         <button onClick={() => setCount(count + 1)}>
+        {/* => Button: triggers click handler */}
           Increment Counter
         </button>
         {/* => Clicking this re-renders component */}
@@ -404,13 +478,12 @@ function MurabahaCalculator() {
 }
 
 export default MurabahaCalculator;
+
 ```
 
 **Key Takeaway**: Use `useMemo` to memoize expensive computations. Prevents recalculation when dependencies unchanged. Essential for derived state from large datasets or complex calculations.
 
-**Expected Output**: Murabaha calculator showing 3 contracts. Filter dropdown updates displayed contracts. Statistics recalculate only when contracts or filter changes, not when counter increments (check console).
-
-**Common Pitfalls**: Overusing useMemo (premature optimization), memoizing cheap operations (adds overhead), or missing dependencies (stale results).
+**Why It Matters**: useMemo prevents expensive computations from running on every render regardless of whether their inputs changed. Production applications frequently perform filtering, sorting, aggregating, and transforming data that could be cached. A financial dashboard computing portfolio metrics, a data table with sort/filter operations, a search component with fuzzy matching - all benefit from memoized computations. The critical rule: profile before adding useMemo. React is fast; most computations complete in under 1ms and don't need memoization. Measure the actual render cost before adding memoization complexity.
 
 ### Example 4: useRef for DOM Access and Mutable Values
 
@@ -508,55 +581,71 @@ function DonationFormWithFocus() {
 
   return (
     <div>
+    {/* => Container div for layout grouping */}
       <h2>Donation Form</h2>
+      {/* => H2: "Donation Form" section heading */}
       <p>Render count: {renderCount.current}</p>
       {/* => Display render count (doesn't trigger re-render when updated) */}
 
       <div>
+      {/* => Container div for layout grouping */}
         <label>Amount ($): </label>
         <input
           ref={inputRef}
           {/* => Attach ref to input element */}
           {/* => React assigns DOM node to inputRef.current */}
           type="number"
+          {/* => Input type: "number" */}
           value={amount}
+          {/* => value: controlled by state (state → UI sync) */}
           onChange={(e) => setAmount(Number(e.target.value))}
+          {/* => onChange: fires on every keystroke/change */}
           min="0"
+          {/* => min: 0 (HTML input constraint) */}
         />
       </div>
 
       <div>
+      {/* => Container div for layout grouping */}
         <button onClick={handleDonate}>Donate</button>
+        {/* => Button "Donate" - triggers onClick handler */}
         <button onClick={handleCheckInput}>Check Input Properties</button>
+        {/* => Button "Check Input Properties" - triggers onClick handler */}
       </div>
 
       <div>
+      {/* => Container div for layout grouping */}
         <button onClick={startAutoIncrement}>Start Auto-Increment (\$10/sec)</button>
+        {/* => Button "Start Auto-Increment (\$10/sec)" - triggers onClick handler */}
         <button onClick={stopAutoIncrement}>Stop Auto-Increment</button>
         {/* => Interval ID stored in ref persists across renders */}
       </div>
 
       <div>
+      {/* => Container div for layout grouping */}
         <h3>Donations History</h3>
+        {/* => H3: "Donations History" section heading */}
         <ul>
+        {/* => Unordered list of items */}
           {donations.map((donation, index) => (
             <li key={index}>${donation}</li>
+            {/* => List item with unique key for React reconciliation */}
           ))}
         </ul>
         <p>Total: ${donations.reduce((sum, d) => sum + d, 0)}</p>
+        {/* => Paragraph with content */}
       </div>
     </div>
   );
 }
 
 export default DonationFormWithFocus;
+
 ```
 
 **Key Takeaway**: Use `useRef` for DOM access (focus, scroll, measure) or storing mutable values that don't trigger re-renders (interval IDs, previous values, render counts).
 
-**Expected Output**: Donation form with auto-focused input. "Donate" button adds amount to history and refocuses input. Auto-increment buttons demonstrate interval management with refs. Render count displays without causing re-renders.
-
-**Common Pitfalls**: Using refs for state (won't trigger re-render), accessing ref.current in render (use useEffect), or forgetting type parameter (TypeScript errors).
+**Why It Matters**: useRef enables direct DOM access and persistent mutable values that survive re-renders without triggering them. Production use cases: focus management (auto-focus search inputs, move focus to modal, return focus on close), third-party library integration (chart libraries, video players, animation libraries that need DOM references), scroll position management, and measurement (element dimensions for responsive behavior). Unlike state, ref changes don't trigger re-renders - making refs appropriate for values that change frequently but don't need to be reflected in the UI, like animation frame IDs, scroll positions, or pending request references.
 
 ### Example 5: useImperativeHandle for Custom Refs
 
@@ -576,6 +665,7 @@ interface CounterRef {
 // => Props for counter component
 interface CounterProps {
   initialValue?: number;
+  // => initialValue: optional field (undefined if not provided)
 }
 
 // => forwardRef allows component to receive ref
@@ -613,7 +703,9 @@ const Counter = forwardRef<CounterRef, CounterProps>((props, ref) => {
 
   return (
     <div style={{ padding: '16px', border: '1px solid #ccc', margin: '8px' }}>
+    {/* => Container div with inline styles */}
       <h3>Counter Component</h3>
+      {/* => H3: "Counter Component" section heading */}
       <p>Count: {count}</p>
       {/* => Component manages its own UI */}
       {/* => Parent controls it via ref methods */}
@@ -661,53 +753,84 @@ function DonationDashboard() {
 
   return (
     <div>
+    {/* => Container div for layout grouping */}
       <h2>Donation Dashboard</h2>
+      {/* => H2: "Donation Dashboard" section heading */}
 
       <div style={{ display: 'flex', gap: '16px' }}>
+      {/* => Container div with inline styles */}
         <Counter ref={counter1Ref} initialValue={0} />
         {/* => Pass ref to child component */}
         {/* => forwardRef enables this */}
 
         <Counter ref={counter2Ref} initialValue={10} />
+        {/* => Counter component (self-contained) */}
       </div>
 
       <div style={{ marginTop: '16px' }}>
+      {/* => Container div with inline styles */}
         <button onClick={handleIncrementBoth}>
+        {/* => Button: triggers click handler */}
           Increment Both Counters
         </button>
 
         <button onClick={() => counter1Ref.current?.decrement()}>
+        {/* => Button: triggers click handler */}
           Decrement Counter 1
         </button>
 
         <button onClick={handleGetTotal}>
+        {/* => Button: triggers click handler */}
           Get Total
         </button>
 
         <button onClick={handleResetAll}>
+        {/* => Button: triggers click handler */}
           Reset All
         </button>
       </div>
 
       {message && <p><strong>{message}</strong></p>}
+      {/* => Conditional render: shows if left side is truthy */}
     </div>
   );
 }
 
 export default DonationDashboard;
+
 ```
 
 **Key Takeaway**: Use `useImperativeHandle` with `forwardRef` to expose custom methods to parent via refs. Enables imperative control of child components while keeping encapsulation.
 
-**Expected Output**: Dashboard with two counter components. Buttons control both counters via refs (increment, decrement, reset). "Get Total" reads values from both counters and displays sum.
-
-**Common Pitfalls**: Overusing imperative refs (prefer props), forgetting forwardRef (ref won't work), or not typing ref interface (TypeScript errors).
+**Why It Matters**: useImperativeHandle is the escape hatch for providing imperative APIs to parent components while keeping component internals encapsulated. Production use cases include: UI components where parents need to trigger animations programmatically, form components that expose a validate() or reset() method, canvas components with draw() or clear() methods, and third-party integrations where library authors expose component handles. The key production insight is that this pattern should be rare - React's data-down/events-up model is preferred. Use useImperativeHandle when you genuinely need to expose specific component behaviors rather than expose the entire DOM node.
 
 ## Group 2: Custom Hooks (5 examples)
 
 ### Example 6: Creating Custom Hooks
 
 Custom hooks extract reusable logic. Start with "use" prefix, can use other hooks inside.
+
+```mermaid
+graph TD
+    A["useCounter Hook\n state: count, step"] -->|"increment()"| B["count + step"]
+    A -->|"decrement()"| C["count - step"]
+    A -->|"reset()"| D["count = 0"]
+    B --> A
+    C --> A
+    D --> A
+    E["Component A\nuseCounter()"] --> A
+    F["Component B\nuseCounter()"] -->|"independent instance"| G["useCounter Hook\n own state"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#029E73,stroke:#000,color:#fff
+    style C fill:#DE8F05,stroke:#000,color:#000
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#000
+    style F fill:#CA9161,stroke:#000,color:#000
+    style G fill:#0173B2,stroke:#000,color:#fff
+```
+
+**Custom hooks**: Each component gets an independent hook instance.
 
 ```typescript
 import { useState, useEffect } from 'react';
@@ -812,19 +935,24 @@ function ResponsiveDonationForm() {
 
   return (
     <div style={{ padding: '20px' }}>
+    {/* => Container div with inline styles */}
       <h2>Donation Form</h2>
+      {/* => H2: "Donation Form" section heading */}
 
       <p>
+      {/* => Paragraph with content */}
         Window size: {width} x {height}
         {/* => Displays current dimensions */}
       </p>
 
       <p>
+      {/* => Paragraph with content */}
         Layout: {isMobile ? 'Mobile' : 'Desktop'}
         {/* => Responsive indicator */}
       </p>
 
       <form onSubmit={handleSubmit} style={{
+      {/* => Form with submit handler */}
         display: 'flex',
         flexDirection: isMobile ? 'column' : 'row',
         // => Stack vertically on mobile, horizontally on desktop
@@ -832,22 +960,32 @@ function ResponsiveDonationForm() {
       }}>
         <input
           type="text"
+          {/* => Input type: "text" */}
           placeholder="Your Name"
+          {/* => placeholder: "Your Name" */}
           value={name}
+          {/* => value: controlled by state (state → UI sync) */}
           onChange={(e) => setName(e.target.value)}
+          {/* => onChange: fires on every keystroke/change */}
           style={{ padding: '8px', flex: 1 }}
         />
 
         <input
           type="number"
+          {/* => Input type: "number" */}
           placeholder="Amount"
+          {/* => placeholder: "Amount" */}
           value={amount}
+          {/* => value: controlled by state (state → UI sync) */}
           onChange={(e) => setAmount(Number(e.target.value))}
+          {/* => onChange: fires on every keystroke/change */}
           style={{ padding: '8px', flex: 1 }}
           min="0"
+          {/* => min: 0 (HTML input constraint) */}
         />
 
         <button type="submit" style={{ padding: '8px 16px' }}>
+        {/* => Button element */}
           Donate
         </button>
       </form>
@@ -860,13 +998,12 @@ function ResponsiveDonationForm() {
 }
 
 export default ResponsiveDonationForm;
+
 ```
 
 **Key Takeaway**: Custom hooks extract reusable logic. Start with "use" prefix, can call other hooks. Return values or tuple. Enable code reuse across components without prop drilling.
 
-**Expected Output**: Donation form showing window size. Resizing window updates dimensions and switches between mobile/desktop layouts. Form inputs persist across page refreshes via localStorage.
-
-**Common Pitfalls**: Not starting with "use" prefix (linter errors), calling hooks conditionally inside custom hooks (violates rules of hooks), or forgetting to handle errors (localStorage can fail).
+**Why It Matters**: Custom hooks are the primary mechanism for code reuse in React applications without the complexity of higher-order components or render props. Production React codebases maintain libraries of custom hooks that encapsulate patterns used across many features: data fetching, form management, keyboard shortcuts, window events, WebSocket connections, localStorage synchronization. The key production benefit is that hooks compose: a useUser hook can call useLocalStorage and useFetch internally. When you identify duplicated effect+state logic in multiple components, extracting to a custom hook reduces duplication and makes the pattern testable in isolation.
 
 ### Example 7: useLocalStorage Hook (Detailed Implementation)
 
@@ -979,22 +1116,32 @@ function SadaqahTracker() {
 
   return (
     <div style={{ maxWidth: '400px', margin: '0 auto', padding: '20px' }}>
+    {/* => Container div with inline styles */}
       <h2>Monthly Sadaqah Tracker</h2>
+      {/* => H2: "Monthly Sadaqah Tracker" section heading */}
 
       <div style={{ marginBottom: '16px' }}>
+      {/* => Container div with inline styles */}
         <label>Monthly Goal ($): </label>
         <input
           type="number"
+          {/* => Input type: "number" */}
           value={goal}
+          {/* => value: controlled by state (state → UI sync) */}
           onChange={(e) => setGoal(Number(e.target.value))}
+          {/* => onChange: fires on every keystroke/change */}
           min="0"
+          {/* => min: 0 (HTML input constraint) */}
           style={{ padding: '4px', width: '100px' }}
         />
       </div>
 
       <div style={{ marginBottom: '16px' }}>
+      {/* => Container div with inline styles */}
         <p><strong>Current Donations:</strong> ${current}</p>
+        {/* => Paragraph with content */}
         <p><strong>Goal:</strong> ${goal}</p>
+        {/* => Paragraph with content */}
         <p><strong>Progress:</strong> {progress.toFixed(1)}%</p>
 
         {/* => Progress bar */}
@@ -1016,19 +1163,25 @@ function SadaqahTracker() {
       </div>
 
       <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      {/* => Container div with inline styles */}
         <button onClick={() => handleDonate(5)} style={{ padding: '8px' }}>
+        {/* => Button: triggers click handler */}
           Donate \$5
         </button>
         <button onClick={() => handleDonate(10)} style={{ padding: '8px' }}>
+        {/* => Button: triggers click handler */}
           Donate \$10
         </button>
         <button onClick={() => handleDonate(25)} style={{ padding: '8px' }}>
+        {/* => Button: triggers click handler */}
           Donate \$25
         </button>
       </div>
 
       <div style={{ marginTop: '16px' }}>
+      {/* => Container div with inline styles */}
         <button onClick={handleReset} style={{ padding: '8px' }}>
+        {/* => Button: triggers click handler */}
           Reset for New Month
         </button>
       </div>
@@ -1042,13 +1195,12 @@ function SadaqahTracker() {
 }
 
 export default SadaqahTracker;
+
 ```
 
 **Key Takeaway**: useLocalStorage hook provides persistent state with automatic localStorage sync. Handles errors, supports functional updates, and syncs across browser tabs using storage events.
 
-**Expected Output**: Sadaqah tracker with goal, current donations, and progress bar. Data persists across refreshes. Open multiple tabs to see cross-tab synchronization (donation in one tab updates others).
-
-**Common Pitfalls**: Not handling JSON parse errors (can throw), forgetting SSR check (window undefined on server), or not using lazy initialization (reads localStorage on every render).
+**Why It Matters**: localStorage persistence with React state synchronization is a foundational pattern for user preferences, draft content, and session recovery. Production applications persist: dark mode preferences, language selections, partially filled forms (resume editing after browser close), shopping cart contents for guest users, and expanded/collapsed panel states. The key production concern is performance: localStorage is synchronous and can block rendering if read during render. The pattern of reading once on mount (via initialization function in useState) avoids repeated reads. Also critical: localStorage is not available in SSR environments, requiring careful initialization guards.
 
 ### Example 8: useDebounce Hook
 
@@ -1151,15 +1303,21 @@ function PrayerSearch() {
 
   return (
     <div style={{ maxWidth: '500px', margin: '0 auto', padding: '20px' }}>
+    {/* => Container div with inline styles */}
       <h2>Prayer Search</h2>
+      {/* => H2: "Prayer Search" section heading */}
 
       <div>
+      {/* => Container div for layout grouping */}
         <input
           type="text"
+          {/* => Input type: "text" */}
           value={searchTerm}
+          {/* => value: controlled by state (state → UI sync) */}
           onChange={(e) => setSearchTerm(e.target.value)}
           // => Updates immediately on every keystroke
           placeholder="Search prayers (e.g., 'Fajr', 'Night')..."
+          {/* => placeholder: "Search prayers (e.g., 'Fajr', 'Night')..." */}
           style={{
             width: '100%',
             padding: '12px',
@@ -1177,14 +1335,18 @@ function PrayerSearch() {
           {/* => Show count when stable and not searching */}
 
           {isSearching && 'Searching...'}
+          {/* => Conditional render: shows if left side is truthy */}
         </p>
       </div>
 
       <div style={{ marginTop: '16px' }}>
+      {/* => Container div with inline styles */}
         {results.length > 0 ? (
+        {/* => True branch: rendered when condition is true */}
           <ul style={{ listStyle: 'none', padding: 0 }}>
             {results.map((prayer, index) => (
               <li key={index} style={{
+              {/* => List item with unique key for React reconciliation */}
                 padding: '12px',
                 backgroundColor: '#f5f5f5',
                 marginBottom: '8px',
@@ -1195,28 +1357,34 @@ function PrayerSearch() {
             ))}
           </ul>
         ) : debouncedSearchTerm && !isSearching ? (
+        {/* => True branch: rendered when condition is true */}
           <p>No prayers found matching "{debouncedSearchTerm}"</p>
+          {/* => Paragraph with content */}
         ) : null}
       </div>
 
       <div style={{ marginTop: '16px', fontSize: '0.875rem', color: '#666' }}>
+      {/* => Container div with inline styles */}
         <p><strong>Debounce Demo:</strong></p>
+        {/* => Paragraph with content */}
         <p>Current input: "{searchTerm}"</p>
+        {/* => Paragraph with content */}
         <p>Debounced value: "{debouncedSearchTerm}"</p>
+        {/* => Paragraph with content */}
         <p>Search only happens when you stop typing for 500ms.</p>
+        {/* => Paragraph: "Search only happens when you stop typing..." */}
       </div>
     </div>
   );
 }
 
 export default PrayerSearch;
+
 ```
 
 **Key Takeaway**: useDebounce hook delays value updates, preventing excessive operations. Essential for search inputs, API calls, and filtering. Reduces network requests and improves performance.
 
-**Expected Output**: Prayer search with 500ms debounce. Typing updates input immediately but search waits until typing stops. Status indicators show debounce state. Console logs show search only fires after delay.
-
-**Common Pitfalls**: Using original value instead of debounced in effect (defeats purpose), setting delay too short (no benefit) or too long (sluggish UX), or forgetting cleanup (memory leaks).
+**Why It Matters**: Debouncing is essential for production performance in any feature involving user input that triggers expensive operations. Without debouncing, search inputs firing API requests on every keystroke generate 10-20 requests for a typical search phrase, overwhelming both the client and server. Autocomplete, search-as-you-type, and filter-on-change patterns all require debouncing. The custom hook abstraction makes debouncing a one-line addition to any component. Advanced production debouncing handles cancellation of in-flight requests when a newer debounced call fires, preventing race conditions where slower earlier requests resolve after faster later requests.
 
 ### Example 9: useFetch Hook
 
@@ -1299,9 +1467,13 @@ function useFetch<T>(url: string): UseFetchResult<T> {
 // => Type for user data
 interface User {
   id: number;
+  // => id: numeric value field
   name: string;
+  // => name: text value field
   email: string;
+  // => email: text value field
   phone: string;
+  // => phone: text value field
 }
 
 // => Component using fetch hook
@@ -1319,6 +1491,7 @@ function UserProfile() {
   if (loading) {
     return (
       <div style={{ padding: '20px' }}>
+      {/* => Container div with inline styles */}
         <p>Loading user data...</p>
         {/* => Show loading indicator */}
       </div>
@@ -1329,10 +1502,12 @@ function UserProfile() {
   if (error) {
     return (
       <div style={{ padding: '20px' }}>
+      {/* => Container div with inline styles */}
         <p style={{ color: 'red' }}>Error: {error}</p>
         {/* => Display error message */}
 
         <button onClick={() => setUserId(userId)}>
+        {/* => Button: triggers click handler */}
           Retry
         </button>
         {/* => Re-trigger fetch by setting same userId */}
@@ -1343,7 +1518,9 @@ function UserProfile() {
   // => Success state
   return (
     <div style={{ padding: '20px', maxWidth: '500px', margin: '0 auto' }}>
+    {/* => Container div with inline styles */}
       <h2>User Profile</h2>
+      {/* => H2: "User Profile" section heading */}
 
       {user && (
         <div style={{
@@ -1352,15 +1529,21 @@ function UserProfile() {
           borderRadius: '8px'
         }}>
           <p><strong>ID:</strong> {user.id}</p>
+          {/* => Paragraph with content */}
           <p><strong>Name:</strong> {user.name}</p>
+          {/* => Paragraph with content */}
           <p><strong>Email:</strong> {user.email}</p>
+          {/* => Paragraph with content */}
           <p><strong>Phone:</strong> {user.phone}</p>
+          {/* => Paragraph with content */}
         </div>
       )}
 
       <div style={{ marginTop: '16px', display: 'flex', gap: '8px' }}>
+      {/* => Container div with inline styles */}
         <button
           onClick={() => setUserId(prev => Math.max(1, prev - 1))}
+          {/* => onClick: fires on user click */}
           disabled={userId === 1}
           // => Disable at minimum ID
         >
@@ -1369,6 +1552,7 @@ function UserProfile() {
 
         <button
           onClick={() => setUserId(prev => Math.min(10, prev + 1))}
+          {/* => onClick: fires on user click */}
           disabled={userId === 10}
           // => Disable at maximum ID
         >
@@ -1385,13 +1569,12 @@ function UserProfile() {
 }
 
 export default UserProfile;
+
 ```
 
 **Key Takeaway**: useFetch hook encapsulates data fetching with loading, error, and data states. Uses AbortController for request cancellation. Re-fetches when dependencies change.
 
-**Expected Output**: User profile with navigation buttons. Initially shows loading state, then displays user data. Clicking buttons fetches different users. Rapid clicking cancels previous requests (check console logs).
-
-**Common Pitfalls**: Not cancelling requests (memory leaks, race conditions), updating state on unmounted component (React warning), or forgetting error handling (app crashes).
+**Why It Matters**: A custom useFetch hook standardizes the data-fetching lifecycle across the application: loading spinner patterns, error display formats, automatic retries, and request cancellation. Without a shared hook, each component implements its own slightly different loading/error handling, leading to inconsistent user experiences and duplicated error handling logic. Production data fetching hooks grow to handle: authentication headers, request timeout, retry with exponential backoff, response caching, and optimistic updates. Starting with a clean abstraction makes these enhancements easy to add in one place rather than hunting through dozens of components.
 
 ### Example 10: useForm Hook for Form Management
 
@@ -1403,9 +1586,13 @@ import { useState } from 'react';
 // => Type for validation rules
 interface ValidationRules {
   required?: boolean;
+  // => required: optional field (undefined if not provided)
   minLength?: number;
+  // => minLength: optional field (undefined if not provided)
   maxLength?: number;
+  // => maxLength: optional field (undefined if not provided)
   pattern?: RegExp;
+  // => pattern: optional field (undefined if not provided)
   custom?: (value: any) => string | undefined;
 }
 
@@ -1413,6 +1600,7 @@ interface ValidationRules {
 interface FieldConfig {
   initialValue: any;
   validation?: ValidationRules;
+  // => validation: optional field (undefined if not provided)
 }
 
 // => Type for form configuration
@@ -1762,6 +1950,7 @@ function DonorRegistrationForm() {
     <div style={{ maxWidth: '500px', margin: '0 auto', padding: '20px' }}>
       {/* => Centered container with max width for readability */}
       <h2>Donor Registration</h2>
+      {/* => H2: "Donor Registration" section heading */}
 
       <form onSubmit={handleSubmit}>
         {/* => Form submission calls handleSubmit */}
@@ -1774,6 +1963,7 @@ function DonorRegistrationForm() {
           </label>
           <input
             type="text"
+            {/* => Input type: "text" */}
             value={form.values.name}
             {/* => Controlled input: value from form state */}
             onChange={(e) => form.handleChange('name', e.target.value)}
@@ -1803,14 +1993,19 @@ function DonorRegistrationForm() {
 
         {/* => Email field */}
         <div style={{ marginBottom: '16px' }}>
+        {/* => Container div with inline styles */}
           <label style={{ display: 'block', marginBottom: '4px' }}>
             Email *
           </label>
           <input
             type="email"
+            {/* => Input type: "email" */}
             value={form.values.email}
+            {/* => value: controlled by state (state → UI sync) */}
             onChange={(e) => form.handleChange('email', e.target.value)}
+            {/* => onChange: fires on every keystroke/change */}
             onBlur={() => form.handleBlur('email')}
+            {/* => onBlur prop: () => form.handleBlur('email') */}
             style={{
               width: '100%',
               padding: '8px',
@@ -1827,14 +2022,19 @@ function DonorRegistrationForm() {
 
         {/* => Phone field */}
         <div style={{ marginBottom: '16px' }}>
+        {/* => Container div with inline styles */}
           <label style={{ display: 'block', marginBottom: '4px' }}>
             Phone (10 digits) *
           </label>
           <input
             type="tel"
+            {/* => Input type: "tel" */}
             value={form.values.phone}
+            {/* => value: controlled by state (state → UI sync) */}
             onChange={(e) => form.handleChange('phone', e.target.value)}
+            {/* => onChange: fires on every keystroke/change */}
             onBlur={() => form.handleBlur('phone')}
+            {/* => onBlur prop: () => form.handleBlur('phone') */}
             style={{
               width: '100%',
               padding: '8px',
@@ -1851,15 +2051,21 @@ function DonorRegistrationForm() {
 
         {/* => Amount field */}
         <div style={{ marginBottom: '16px' }}>
+        {/* => Container div with inline styles */}
           <label style={{ display: 'block', marginBottom: '4px' }}>
             Donation Amount ($) *
           </label>
           <input
             type="number"
+            {/* => Input type: "number" */}
             value={form.values.amount}
+            {/* => value: controlled by state (state → UI sync) */}
             onChange={(e) => form.handleChange('amount', Number(e.target.value))}
+            {/* => onChange: fires on every keystroke/change */}
             onBlur={() => form.handleBlur('amount')}
+            {/* => onBlur prop: () => form.handleBlur('amount') */}
             min="0"
+            {/* => min: 0 (HTML input constraint) */}
             style={{
               width: '100%',
               padding: '8px',
@@ -1875,8 +2081,10 @@ function DonorRegistrationForm() {
         </div>
 
         <div style={{ display: 'flex', gap: '12px' }}>
+        {/* => Container div with inline styles */}
           <button
             type="submit"
+            {/* => Input type: "submit" */}
             style={{
               padding: '12px 24px',
               backgroundColor: '#0173B2',
@@ -1892,7 +2100,9 @@ function DonorRegistrationForm() {
 
           <button
             type="button"
+            {/* => Input type: "button" */}
             onClick={form.reset}
+            {/* => onClick: fires on user click */}
             style={{
               padding: '12px 24px',
               backgroundColor: '#ccc',
@@ -1911,13 +2121,12 @@ function DonorRegistrationForm() {
 }
 
 export default DonorRegistrationForm;
+
 ```
 
 **Key Takeaway**: useForm hook centralizes form state, validation, and error handling. Supports multiple validation rules, touched states, and form reset. Reduces boilerplate for complex forms.
 
-**Expected Output**: Registration form with four fields. Real-time validation on blur. Submit validates all fields. Successful submission shows thank you message for 2 seconds. Reset button clears form.
-
-**Common Pitfalls**: Validating on every keystroke (poor UX), not showing errors until touched, or overly complex validation logic (extract to separate functions).
+**Why It Matters**: Form management is a significant complexity source in production applications. Complex forms have field dependencies (show shipping address if 'ship to different address' is checked), cross-field validation (password confirmation must match password), async validation (check if username is available), and step-wise progression. A custom useForm hook encapsulates these concerns, providing a consistent interface across all forms. Production form libraries (React Hook Form, Formik) are essentially sophisticated versions of this pattern. Understanding the fundamentals of form state management makes you effective with both custom implementations and library solutions.
 
 ## Next Steps
 
@@ -1934,6 +2143,24 @@ Continue to Group 3: Context API and Global State, or explore specific topics:
 ### Example 11: Creating and Using Context
 
 Context provides global state without prop drilling. Create context, provide value, consume with useContext hook.
+
+```mermaid
+graph TD
+    A["App\n ThemeProvider\n value: dark, setTheme"] --> B["Sidebar\n no props needed"]
+    A --> C["Header\n no props needed"]
+    A --> D["Main\n no props needed"]
+    D --> E["ThemeToggle\n useContext(ThemeContext)"]
+    B --> F["NavItem\n useContext(ThemeContext)"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#000
+    style F fill:#CA9161,stroke:#000,color:#000
+```
+
+**Context Provider tree**: Provider at top, any descendant can consume via useContext.
 
 ```typescript
 import { createContext, useContext, useState, ReactNode } from 'react';
@@ -2016,7 +2243,9 @@ function Header() {
       padding: '16px'
     }}>
       <h1>Prayer Times Dashboard</h1>
+      {/* => H1: "Prayer Times Dashboard" section heading */}
       <button onClick={toggleTheme}>
+      {/* => Button: triggers click handler */}
         Toggle to {theme === 'light' ? 'Dark' : 'Light'} Mode
         {/* => Button text based on current theme */}
       </button>
@@ -2037,7 +2266,9 @@ function Content() {
       minHeight: '400px'
     }}>
       <h2>Today's Prayers</h2>
+      {/* => H2: "Today's Prayers" section heading */}
       <ul>
+      {/* => Unordered list of items */}
         <li>Fajr: 5:30 AM</li>
         <li>Dhuhr: 12:45 PM</li>
         <li>Asr: 4:15 PM</li>
@@ -2053,21 +2284,23 @@ function App() {
       {/* => Wrap app with Provider */}
       {/* => All descendants can access theme context */}
       <div>
+      {/* => Container div for layout grouping */}
         <Header />
+        {/* => Header component (self-contained) */}
         <Content />
+        {/* => Content component (self-contained) */}
       </div>
     </ThemeProvider>
   );
 }
 
 export default App;
+
 ```
 
 **Key Takeaway**: Context provides global state without prop drilling. Create context with createContext, provide value with Provider, consume with useContext hook. Custom hook pattern improves type safety.
 
-**Expected Output**: Dashboard with header and content. "Toggle" button switches between light and dark themes. Both header and content reflect theme change without passing props.
-
-**Common Pitfalls**: Using context for frequently changing values (performance issues), not providing default value (TypeScript errors), or forgetting Provider wrapper (default value used or error thrown).
+**Why It Matters**: Context API is the right tool for application-wide values that don't change frequently: current user, theme, locale, feature flags, permissions. Production applications structure contexts around data access patterns - auth context for user identity, theme context for design tokens, locale context for i18n. The critical production insight is that Context is not free: every context consumer re-renders when context value changes. For frequently-updating values (form state, animation values, real-time data), Context causes performance problems. Context solves prop drilling for stable values; for dynamic state, consider Zustand or React Query.
 
 ### Example 12: Context with TypeScript
 
@@ -2079,8 +2312,11 @@ import { createContext, useContext, useState, ReactNode } from 'react';
 // => Type for user data
 interface User {
   id: string;
+  // => id: text value field
   name: string;
+  // => name: text value field
   email: string;
+  // => email: text value field
   role: 'donor' | 'admin';
 }
 
@@ -2169,9 +2405,13 @@ function DonationDashboard() {
 
   return (
     <div style={{ padding: '20px' }}>
+    {/* => Container div with inline styles */}
       <h2>Donation Dashboard</h2>
+      {/* => H2: "Donation Dashboard" section heading */}
       <p>Welcome, {user.name}!</p>
+      {/* => Paragraph with content */}
       <p>Email: {user.email}</p>
+      {/* => Paragraph with content */}
       <p>Role: {user.role}</p>
 
       {/* => Conditional rendering based on role */}
@@ -2185,10 +2425,12 @@ function DonationDashboard() {
         }}>
           <strong>Admin Panel</strong>
           <p>You have access to administrative features.</p>
+          {/* => Paragraph: "You have access to administrative featur..." */}
         </div>
       )}
 
       <button onClick={logout} style={{ marginTop: '16px', padding: '8px 16px' }}>
+      {/* => Button: triggers click handler */}
         Logout
       </button>
     </div>
@@ -2203,6 +2445,7 @@ function LoginForm() {
     // => Mock login with different roles
     const mockUser: User = {
       id: '1',
+      // => id: "1" (unique identifier)
       name: role === 'admin' ? 'Fatima Ahmed' : 'Omar Hassan',
       email: role === 'admin' ? 'fatima@example.com' : 'omar@example.com',
       role
@@ -2218,12 +2461,17 @@ function LoginForm() {
 
   return (
     <div style={{ padding: '20px' }}>
+    {/* => Container div with inline styles */}
       <h2>Login</h2>
+      {/* => H2: "Login" section heading */}
       <div style={{ display: 'flex', gap: '12px' }}>
+      {/* => Container div with inline styles */}
         <button onClick={() => handleLogin('donor')} style={{ padding: '8px 16px' }}>
+        {/* => Button: triggers click handler */}
           Login as Donor
         </button>
         <button onClick={() => handleLogin('admin')} style={{ padding: '8px 16px' }}>
+        {/* => Button: triggers click handler */}
           Login as Admin
         </button>
       </div>
@@ -2237,6 +2485,7 @@ function App() {
 
   return (
     <div>
+    {/* => Container div for layout grouping */}
       {!isAuthenticated ? <LoginForm /> : <DonationDashboard />}
       {/* => Conditional rendering based on auth state */}
     </div>
@@ -2249,18 +2498,18 @@ function Root() {
     <AuthProvider>
       {/* => Wrap entire app with AuthProvider */}
       <App />
+      {/* => App component (self-contained) */}
     </AuthProvider>
   );
 }
 
 export default Root;
+
 ```
 
 **Key Takeaway**: Use undefined for context initial value to enforce Provider usage. Custom hooks with null checks provide type-safe access. Context perfect for authentication state shared across app.
 
-**Expected Output**: Login form with two buttons. Clicking "Login as Donor" shows dashboard with user info. "Login as Admin" additionally shows admin panel. Logout button returns to login form.
-
-**Common Pitfalls**: Not handling null user state (runtime errors), using non-null assertion (defeats type safety), or forgetting error boundary for context errors.
+**Why It Matters**: TypeScript generic context types enable type-safe access to context values throughout the application without type assertions. The custom `useContext` hook with the null check pattern prevents the silent failure mode of using context outside its provider - a common bug in production that manifests as confusing 'Cannot read property of undefined' errors deep in component trees. Production applications define context types that model exactly what the context provides: not raw state but shaped interfaces that separate concerns. This makes context refactoring safe - TypeScript shows every component that uses the context and what it accesses.
 
 ### Example 13: Multiple Contexts Pattern
 
@@ -2508,10 +2757,12 @@ function DonationForm() {
       <form onSubmit={handleSubmit} style={{ marginBottom: '20px' }}>
         {/* => Form submission calls handleSubmit */}
         <div style={{ marginBottom: '12px' }}>
+        {/* => Container div with inline styles */}
           <label>{t('amount')}: </label>
           {/* => Translated label for amount field */}
           <input
             type="number"
+            {/* => Input type: "number" */}
             value={amount}
             {/* => Controlled input from local state */}
             onChange={(e) => setAmount(Number(e.target.value))}
@@ -2524,18 +2775,21 @@ function DonationForm() {
         </div>
 
         <button type="submit" style={{ padding: '8px 16px' }}>
+        {/* => Button element */}
           {t('submit')}
           {/* => Translated submit button text */}
         </button>
       </form>
 
       <div style={{ marginBottom: '20px' }}>
+      {/* => Container div with inline styles */}
         <h3>Total Donations: ${totalDonations}</h3>
         {/* => Display total from DonationContext */}
         {/* => Derived state (sum of all amounts) */}
         <h4>Recent Donations ({donations.length}):</h4>
         {/* => Show count of all donations */}
         <ul>
+        {/* => Unordered list of items */}
           {donations.slice(-5).reverse().map(donation => (
             // => slice(-5) gets last 5 donations
             // => reverse() shows newest first
@@ -2550,6 +2804,7 @@ function DonationForm() {
       </div>
 
       <div>
+      {/* => Container div for layout grouping */}
         <button onClick={() => setLanguage(language === 'en' ? 'ar' : 'en')} style={{ marginRight: '8px', padding: '8px' }}>
           {/* => Toggle language on click */}
           {/* => Switches between English and Arabic */}
@@ -2570,6 +2825,7 @@ function App() {
 
   return (
     <div>
+    {/* => Container div for layout grouping */}
       <button
         onClick={toggleTheme}
         {/* => Click toggles theme light ↔ dark */}
@@ -2629,17 +2885,34 @@ function Root() {
 }
 
 export default Root;
+
 ```
 
 **Key Takeaway**: Compose multiple contexts for separation of concerns. Each context manages one domain (theme, language, data). Nest providers to combine contexts. Components access only needed contexts.
 
-**Expected Output**: Donation form with theme toggle, language switcher (English/Arabic with RTL), and donation tracking. Changing theme updates colors. Switching language updates text and layout direction. Donations tracked separately.
-
-**Common Pitfalls**: Creating too many contexts (over-separation), deeply nesting providers (hard to read - consider composition helper), or sharing unrelated state in one context (violates single responsibility).
+**Why It Matters**: Multiple contexts prevent the performance problem of large contexts that cause wide re-render cascades. When auth state changes (user logs out), you don't want your theme or language to re-render. Production applications typically have 3-5 contexts: auth, theme, i18n, notification, and possibly feature flags. Composing multiple providers keeps each focused on its domain. The composition pattern (providers wrapping each other) also makes testing straightforward: wrap the component under test with only the contexts it needs. This is significantly simpler than mocking a single god-context that contains all application state.
 
 ### Example 14: Context with useReducer
 
 Combine Context with useReducer for complex state management with actions.
+
+```mermaid
+graph TD
+    A["AppContext Provider\nstate: items[]\nactions: add, remove"] --> B["Sidebar\n(consumer)"]
+    A --> C["Main Content\n(consumer)"]
+    A --> D["Header\n(consumer)"]
+    E["dispatch(ADD_ITEM, payload)"] -->|"contextReducer"| F["New state\nitems: [...old, new]"]
+    F --> A
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#000
+    style F fill:#0173B2,stroke:#000,color:#fff
+```
+
+**Context + useReducer**: Provider wraps app, useReducer manages transitions.
 
 ```typescript
 import { createContext, useContext, useReducer, ReactNode } from 'react';
@@ -2647,15 +2920,21 @@ import { createContext, useContext, useReducer, ReactNode } from 'react';
 // => State type
 interface Donation {
   id: string;
+  // => id: text value field
   donorName: string;
+  // => donorName: text value field
   amount: number;
+  // => amount: numeric value field
   category: 'zakat' | 'sadaqah' | 'general';
   date: string;
+  // => date: text value field
 }
 
 interface DonationState {
   donations: Donation[];
+  // => donations: array of Donation objects
   totalAmount: number;
+  // => totalAmount: numeric value field
   filter: 'all' | 'zakat' | 'sadaqah' | 'general';
 }
 
@@ -2816,19 +3095,24 @@ function DonationForm() {
 
   return (
     <form onSubmit={handleSubmit} style={{ marginBottom: '20px', padding: '16px', backgroundColor: '#f5f5f5', borderRadius: '8px' }}>
+    {/* => Form with submit handler */}
       <h3>Add Donation</h3>
+      {/* => H3: "Add Donation" section heading */}
 
       <div style={{ marginBottom: '12px' }}>
+      {/* => Container div with inline styles */}
         <label>Donor Name: </label>
         <input name="donorName" type="text" required style={{ padding: '4px' }} />
       </div>
 
       <div style={{ marginBottom: '12px' }}>
+      {/* => Container div with inline styles */}
         <label>Amount ($): </label>
         <input name="amount" type="number" min="1" required style={{ padding: '4px' }} />
       </div>
 
       <div style={{ marginBottom: '12px' }}>
+      {/* => Container div with inline styles */}
         <label>Category: </label>
         <select name="category" required style={{ padding: '4px' }}>
           <option value="zakat">Zakat</option>
@@ -2838,6 +3122,7 @@ function DonationForm() {
       </div>
 
       <button type="submit" style={{ padding: '8px 16px' }}>Add Donation</button>
+      {/* => Button element */}
     </form>
   );
 }
@@ -2853,14 +3138,20 @@ function DonationList() {
 
   return (
     <div style={{ padding: '16px' }}>
+    {/* => Container div with inline styles */}
       <div style={{ marginBottom: '16px' }}>
+      {/* => Container div with inline styles */}
         <h3>Total Donations: ${state.totalAmount.toFixed(2)}</h3>
+        {/* => H3: "Total Donations: ${state.totalAmount.toFixed(2)}" section heading */}
 
         <div style={{ marginBottom: '12px' }}>
+        {/* => Container div with inline styles */}
           <label>Filter: </label>
           <select
             value={state.filter}
+            {/* => value: controlled by state (state → UI sync) */}
             onChange={(e) => setFilter(e.target.value as DonationState['filter'])}
+            {/* => onChange: fires on every keystroke/change */}
             style={{ padding: '4px', marginLeft: '8px' }}
           >
             <option value="all">All</option>
@@ -2871,17 +3162,23 @@ function DonationList() {
         </div>
 
         <button onClick={clearAll} style={{ padding: '8px 16px', backgroundColor: '#CC78BC' }}>
+        {/* => Button: triggers click handler */}
           Clear All Donations
         </button>
       </div>
 
       <h3>Donations ({filteredDonations.length})</h3>
+      {/* => H3: "Donations ({filteredDonations.length})" section heading */}
       {filteredDonations.length === 0 ? (
+      {/* => True branch: rendered when condition is true */}
         <p>No donations yet.</p>
+        {/* => Paragraph: "No donations yet." */}
       ) : (
+      {/* => False branch: rendered when condition is false */}
         <ul style={{ listStyle: 'none', padding: 0 }}>
           {filteredDonations.map(donation => (
             <li key={donation.id} style={{
+            {/* => List item with unique key for React reconciliation */}
               padding: '12px',
               marginBottom: '8px',
               backgroundColor: '#f9f9f9',
@@ -2891,12 +3188,14 @@ function DonationList() {
               alignItems: 'center'
             }}>
               <div>
+              {/* => Container div for layout grouping */}
                 <strong>{donation.donorName}</strong> - ${donation.amount}
                 <br />
                 <small>{donation.category} - {new Date(donation.date).toLocaleString()}</small>
               </div>
               <button
                 onClick={() => removeDonation(donation.id)}
+                {/* => onClick: fires on user click */}
                 style={{ padding: '4px 12px', backgroundColor: '#DE8F05' }}
               >
                 Remove
@@ -2913,9 +3212,13 @@ function DonationList() {
 function App() {
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+    {/* => Container div with inline styles */}
       <h1>Donation Management System</h1>
+      {/* => H1: "Donation Management System" section heading */}
       <DonationForm />
+      {/* => DonationForm component (self-contained) */}
       <DonationList />
+      {/* => DonationList component (self-contained) */}
     </div>
   );
 }
@@ -2925,18 +3228,18 @@ function Root() {
   return (
     <DonationProvider>
       <App />
+      {/* => App component (self-contained) */}
     </DonationProvider>
   );
 }
 
 export default Root;
+
 ```
 
 **Key Takeaway**: Combine Context with useReducer for complex state management. Reducer centralizes state logic. Actions provide type-safe state transitions. Context distributes state and dispatch across app.
 
-**Expected Output**: Donation management system with form and list. Add donations with name, amount, category. Filter by category. Remove individual donations or clear all. Total updates automatically.
-
-**Common Pitfalls**: Not typing actions properly (lose type safety), exposing only dispatch (consumers must know action structure), or using this pattern for simple state (useState simpler).
+**Why It Matters**: Context with useReducer is the pattern that React's documentation recommends for complex shared state before reaching for external libraries. It provides Flux/Redux-like unidirectional data flow with no dependencies, using only React's built-in hooks. Production advantages: all state transitions are explicit and traceable, side effects are clearly separated in dispatch calls rather than embedded in state, and testing is straightforward since reducers are pure functions. This pattern works well for features like shopping carts, form wizards, and dashboard configurations where state transitions follow clear business logic.
 
 ### Example 15: Authentication Context Example
 
@@ -2948,8 +3251,11 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 // => User type
 interface User {
   id: string;
+  // => id: text value field
   username: string;
+  // => username: text value field
   email: string;
+  // => email: text value field
   role: 'user' | 'admin';
   token: string;                             // => JWT token (mock)
 }
@@ -2959,6 +3265,7 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;                        // => Loading state during initialization
   isAuthenticated: boolean;
+  // => isAuthenticated: true/false flag field
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
   checkPermission: (requiredRole: 'user' | 'admin') => boolean;
@@ -3001,6 +3308,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
           // => Mock: decode token and load user
           const mockUser: User = {
             id: '1',
+            // => id: "1" (unique identifier)
             username: 'donor_user',
             email: 'user@example.com',
             role: 'user',
@@ -3122,28 +3430,35 @@ function LoginPage() {
 
   return (
     <div style={{ maxWidth: '400px', margin: '50px auto', padding: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
+    {/* => Container div with inline styles */}
       <h2>Login</h2>
+      {/* => H2: "Login" section heading */}
 
       {error && (
         <div style={{ padding: '12px', backgroundColor: '#ffebee', color: '#c62828', borderRadius: '4px', marginBottom: '16px' }}>
+        {/* => Container div with inline styles */}
           {error}
         </div>
       )}
 
       <form onSubmit={handleSubmit}>
+      {/* => Form with submit handler */}
         <div style={{ marginBottom: '16px' }}>
+        {/* => Container div with inline styles */}
           <label style={{ display: 'block', marginBottom: '4px' }}>Username:</label>
           <input name="username" type="text" required style={{ width: '100%', padding: '8px' }} />
           <small>Try: "donor" or "admin"</small>
         </div>
 
         <div style={{ marginBottom: '16px' }}>
+        {/* => Container div with inline styles */}
           <label style={{ display: 'block', marginBottom: '4px' }}>Password:</label>
           <input name="password" type="password" required style={{ width: '100%', padding: '8px' }} />
           <small>Use: "password123"</small>
         </div>
 
         <button type="submit" style={{ width: '100%', padding: '12px', backgroundColor: '#0173B2', color: '#fff', border: 'none', borderRadius: '4px' }}>
+        {/* => Button element */}
           Login
         </button>
       </form>
@@ -3159,27 +3474,42 @@ function Dashboard() {
 
   return (
     <div style={{ padding: '20px' }}>
+    {/* => Container div with inline styles */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+      {/* => Container div with inline styles */}
         <h1>Dashboard</h1>
+        {/* => H1: "Dashboard" section heading */}
         <button onClick={logout} style={{ padding: '8px 16px' }}>Logout</button>
+        {/* => Button "Logout" - triggers onClick handler */}
       </div>
 
       <div style={{ padding: '16px', backgroundColor: '#f5f5f5', borderRadius: '8px', marginBottom: '16px' }}>
+      {/* => Container div with inline styles */}
         <h2>Welcome, {user?.username}!</h2>
+        {/* => H2: "Welcome, {user?.username}!" section heading */}
         <p>Email: {user?.email}</p>
+        {/* => Paragraph with content */}
         <p>Role: {user?.role}</p>
+        {/* => Paragraph with content */}
       </div>
 
       <div style={{ padding: '16px', backgroundColor: '#e3f2fd', borderRadius: '8px', marginBottom: '16px' }}>
+      {/* => Container div with inline styles */}
         <h3>User Dashboard</h3>
+        {/* => H3: "User Dashboard" section heading */}
         <p>This content is visible to all authenticated users.</p>
+        {/* => Paragraph: "This content is visible to all authentic..." */}
       </div>
 
       {isAdmin && (
         <div style={{ padding: '16px', backgroundColor: '#fff3e0', borderRadius: '8px' }}>
+        {/* => Container div with inline styles */}
           <h3>Admin Panel</h3>
+          {/* => H3: "Admin Panel" section heading */}
           <p>This content is only visible to administrators.</p>
+          {/* => Paragraph: "This content is only visible to administ..." */}
           <p>You have elevated privileges.</p>
+          {/* => Paragraph: "You have elevated privileges." */}
         </div>
       )}
     </div>
@@ -3194,7 +3524,9 @@ function App() {
   if (isLoading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      {/* => Container div with inline styles */}
         <p>Loading...</p>
+        {/* => Paragraph: "Loading..." */}
       </div>
     );
   }
@@ -3208,20 +3540,22 @@ function Root() {
   return (
     <AuthProvider>
       <App />
+      {/* => App component (self-contained) */}
     </AuthProvider>
   );
 }
 
 export default Root;
+
 ```
 
 **Key Takeaway**: Authentication context manages user state, login/logout logic, and permission checks. Initialize from localStorage for persistence. Use isLoading for initialization state. Conditional rendering based on authentication.
 
-**Expected Output**: Login page with username/password fields. After login (password: "password123"), shows dashboard with user info. Admin users see additional admin panel. Logout returns to login page. Token persists across refreshes.
-
-**Common Pitfalls**: Not handling initialization loading state (flash of wrong content), storing sensitive data in context (use secure storage), or forgetting token expiration logic (add refresh mechanism in production).
+**Why It Matters**: Authentication context is the security backbone of every protected production application. The pattern of storing authentication state in context - accessible to route guards, API interceptors, and UI components alike - enables consistent permission enforcement throughout the application. Production auth systems must handle: token expiration and refresh (making authenticated API calls transparent to components), persistence across browser refreshes (localStorage/sessionStorage with security considerations), logout cascade (clearing all user data from all contexts), and role-based UI rendering. Getting authentication context right from the start prevents security vulnerabilities and UX inconsistencies.
 
 ## Group 4: Data Fetching and API Integration (React Query - Examples 16-20)
+
+**Why React Query instead of useEffect + useState?** Native `useEffect` with `useState` handles basic data fetching but requires manual implementation of caching, deduplication, background refetching, loading/error states, and stale-while-revalidate patterns. Each `useEffect`-based fetch is a one-shot operation with no coordination between components fetching the same data. React Query centralizes server state management: identical queries across components share a cache, stale data refetches automatically, requests in-flight are deduplicated, and optimistic updates are built-in. For applications fetching data in multiple components, React Query eliminates hundreds of lines of boilerplate while preventing common bugs like race conditions and memory leaks.
 
 **Note**: These examples require `@tanstack/react-query` package. Install with:
 
@@ -3232,6 +3566,24 @@ npm install @tanstack/react-query
 ### Example 16: React Query Basics
 
 React Query simplifies server state management with automatic caching, refetching, and background updates.
+
+```mermaid
+graph LR
+    A["Component mounts\nuseQuery fires"] -->|"fetch /api/data"| B["React Query Cache"]
+    B -->|"loading state"| C["isLoading: true\nUI: spinner"]
+    B -->|"success"| D["data: result\nUI: renders data"]
+    B -->|"error"| E["error: Error\nUI: error message"]
+    F["60s stale timeout"] -->|"background refetch"| A
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#CA9161,stroke:#000,color:#000
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#CC78BC,stroke:#000,color:#000
+    style F fill:#0173B2,stroke:#000,color:#fff
+```
+
+**React Query data flow**: Cache-first with automatic stale refetching.
 
 ```typescript
 import { useQuery, QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -3377,15 +3729,29 @@ export default Root;
 
 **Key Takeaway**: React Query manages server state with automatic caching, refetching, and error handling. useQuery hook takes query key and fetch function. Returns loading, error, and data states. QueryClientProvider required at app root.
 
-**Expected Output**: List of 5 donations from mock API. Loading state shown initially. Refresh button manually refetches. Data cached automatically. Switch to another tab and back to see background refetch.
-
-**Common Pitfalls**: Forgetting QueryClientProvider (hooks won't work), not making query key unique (cache collisions), or using wrong key type (must be array).
+**Why It Matters**: React Query's `useQuery` hook solves the server state management problem that useEffect+useState cannot solve elegantly at scale. In production applications, the same data (current user profile, product catalog, organization settings) is often needed in many components across the page. Without shared cache, each component makes its own API call, creating redundant network requests and inconsistent loading states. React Query provides a shared cache keyed by query keys: components requesting the same data share a single fetch and see consistent state. Background refetching keeps data fresh without manual polling code.
 
 ## Continuation marker for next group of examples
 
 ### Example 17: React Query Mutations
 
 Mutations handle data modifications (POST, PUT, DELETE). Use useMutation for create/update/delete operations.
+
+```mermaid
+graph LR
+    A["useMutation hook"] -->|"mutate(newDonation)"| B["POST /api/donations"]
+    B -->|"onSuccess"| C["queryClient.invalidate\n('donations')"]
+    C -->|"triggers refetch"| D["useQuery('donations')\nupdated data"]
+    B -->|"onError"| E["Show error toast"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#CC78BC,stroke:#000,color:#000
+```
+
+**React Query mutations**: Write operations invalidate cache to trigger fresh reads.
 
 ```typescript
 import { useMutation, useQuery, useQueryClient, QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -3600,9 +3966,7 @@ export default Root;
 
 **Key Takeaway**: useMutation handles data modifications (POST, PUT, DELETE). Provides isPending state, mutate function, and callbacks (onSuccess, onError). Invalidate queries after mutations to refetch updated data.
 
-**Expected Output**: Donation manager with create form and list. Creating donation adds to list (mock API). Deleting removes from list. Form disables during creation. Buttons show loading states.
-
-**Common Pitfalls**: Not invalidating queries after mutation (stale data), forgetting error handling (silent failures), or not disabling UI during mutation (duplicate requests).
+**Why It Matters**: React Query mutations (`useMutation`) provide the optimistic update, error recovery, and cache invalidation patterns that make production forms feel responsive and reliable. The pattern of immediately updating the UI before the server responds (optimistic update), then reconciling with the server response (success) or reverting (error) is the standard approach for CRUD operations in production. Without this pattern, forms feel slow - users wait for server round trips before seeing their changes reflected. Mutation lifecycle callbacks (onSuccess, onError, onSettled) also centralize side effects like toast notifications and cache invalidation.
 
 ### Example 18: Optimistic Updates with React Query
 
@@ -3778,9 +4142,7 @@ export default Root;
 
 **Key Takeaway**: Optimistic updates improve perceived performance by updating UI immediately. Use onMutate for optimistic update, save previous state for rollback. Use onError to rollback on failure. Use onSettled to refetch for consistency.
 
-**Expected Output**: Todo list with 5 items. Clicking checkbox toggles immediately (optimistic). 1 second delay simulates API. 20% chance of failure with rollback and alert. UI feels instant despite network delay.
-
-**Common Pitfalls**: Not cancelling queries (race conditions), forgetting rollback context (can't revert), or not refetching in onSettled (data divergence).
+**Why It Matters**: Optimistic updates transform user experience for write operations. When a user submits a form or clicks a button, they expect immediate feedback. The optimistic pattern - update the UI immediately, confirm with server, revert on error - makes applications feel native-app responsive. Production considerations include: preserving the pre-update state for rollback, updating all related cached queries (not just the mutation's cache), handling concurrent mutations that might conflict, and UX for the error case (how to communicate that the optimistic update was reverted). React Query handles the mechanism; you handle the UX design.
 
 ### Example 19: Infinite Scrolling with React Query
 
@@ -3953,9 +4315,7 @@ export default Root;
 
 **Key Takeaway**: useInfiniteQuery handles paginated data with infinite scrolling. Use getNextPageParam to determine next page. Use Intersection Observer to trigger fetchNextPage when user scrolls to bottom. React Query manages page cache.
 
-**Expected Output**: Donation list starting with 10 items. Scrolling to bottom automatically loads next page. Shows "Loading more..." during fetch. Continues until all pages loaded. Total count updates as pages load.
-
-**Common Pitfalls**: Not handling getNextPageParam properly (infinite loop), forgetting cleanup for IntersectionObserver (memory leak), or triggering fetchNextPage when already loading (duplicate requests).
+**Why It Matters**: Infinite scroll has replaced pagination in modern web applications for content feeds, social timelines, search results, and activity logs. The pattern of loading more items as the user approaches the end of the list, managed by React Query's `useInfiniteQuery`, handles the complex state of: which page was last loaded, merging pages of results correctly, detecting when all pages are loaded, and refreshing all pages when data changes. Production considerations include: intersection observers for scroll detection (more performant than scroll events), preserving scroll position across navigation, and accessibility for keyboard users who cannot scroll.
 
 ### Example 20: Error Handling with React Query
 
@@ -4351,11 +4711,11 @@ export default Root;
 
 **Key Takeaway**: React Query provides robust error handling with custom retry logic, error types, and manual retry. Use Error Boundaries for catastrophic errors. Provide specific error messages and recovery actions based on error types.
 
-**Expected Output**: Donation viewer starting with ID 1. Navigate between donations. Try ID 999999 to see 404 error with no retry. Retry button refetches. Error messages vary by error type. Error boundary catches critical errors.
-
-**Common Pitfalls**: Not differentiating error types (all errors treated same), retrying unrecoverable errors (wastes resources), or not providing recovery actions (poor UX).
+**Why It Matters**: Error handling in React Query enables production-grade resilience patterns: distinguishing between network errors (retry makes sense) and 404s or 422s (retry is useless), providing user-facing error messages that are actionable rather than technical, and integrating with error monitoring services (Sentry, Datadog) for production observability. The React Query pattern of per-query retry configuration, combined with Error Boundaries for catastrophic failures, creates a layered error handling strategy that handles both expected failures (invalid user input) and unexpected failures (service outages) gracefully.
 
 ## Group 5: Routing and Error Handling (5 examples)
+
+**Why React Router instead of browser History API directly?** React's built-in rendering is stateful, but the browser's History API knows nothing about component state. Using `window.history.pushState()` directly requires manually synchronizing URL changes with React re-renders, building your own route matching logic, and handling nested layouts manually. React Router wraps the History API with React-aware components: `Routes` declaratively maps URLs to components, `Link` prevents full page reloads, `useNavigate` integrates navigation with React's render cycle, and nested routes enable shared layouts automatically. For any application with more than one view, React Router eliminates significant routing infrastructure code.
 
 **Note**: These examples require `react-router-dom` package. Install with:
 
@@ -4366,6 +4726,26 @@ npm install react-router-dom
 ### Example 21: React Router Setup
 
 React Router provides client-side routing for single-page applications. Basic setup with BrowserRouter, Routes, and Route components.
+
+```mermaid
+graph TD
+    A["BrowserRouter\n (URL state)"] --> B["Routes"]
+    B -->|"/ path"| C["HomePage component"]
+    B -->|"/donations path"| D["DonationsPage component"]
+    B -->|"/about path"| E["AboutPage component"]
+    F["Link to /donations"] -->|"no page reload"| D
+    G["useNavigate()"] -->|"programmatic nav"| B
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#029E73,stroke:#000,color:#fff
+    style F fill:#CC78BC,stroke:#000,color:#000
+    style G fill:#CA9161,stroke:#000,color:#000
+```
+
+**React Router structure**: BrowserRouter → Routes → Route components map URLs to views.
 
 ```typescript
 import { BrowserRouter, Routes, Route, Link, useNavigate } from 'react-router-dom';
@@ -4516,13 +4896,29 @@ export default Root;
 
 **Key Takeaway**: React Router enables client-side routing. BrowserRouter provides routing context. Routes contains Route components. Link for declarative navigation, useNavigate for programmatic. Catch-all route (\*) for 404 pages.
 
-**Expected Output**: Navigation bar with 4 links. Clicking links changes page without full reload. Buttons use programmatic navigation. URL updates in browser. Invalid URLs show 404 page.
-
-**Common Pitfalls**: Forgetting BrowserRouter wrapper (routes won't work), using <a> instead of Link (full page reload), or not providing catch-all route (blank page for invalid URLs).
+**Why It Matters**: React Router is the standard client-side routing solution for React SPAs. Understanding the BrowserRouter → Routes → Route hierarchy is essential for building any multi-page React application. Production routing considerations include: nested routes for shared layouts (header/sidebar persisting across views), code splitting to load routes lazily, scroll restoration between navigations, and title management for SEO. The programmatic navigation (`useNavigate`) pattern appears in authentication flows, form submissions, and wizard progressions. Most production React applications use React Router or its equivalent - this knowledge is foundational for SPA development.
 
 ### Example 22: Dynamic Routes with Params
 
 Dynamic routes accept URL parameters for flexible navigation. Use useParams hook to access route parameters.
+
+```mermaid
+graph TD
+    A["URL: /donations/42"] -->|"useParams()"| B["params.id = '42'"]
+    B -->|"useQuery(['donation', id])"| C["fetch /api/donations/42"]
+    C -->|"loading"| D["Spinner UI"]
+    C -->|"data"| E["DonationDetail renders\ndata.amount, data.donor, ..."]
+    C -->|"404 error"| F["Not Found UI"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#CA9161,stroke:#000,color:#000
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#029E73,stroke:#000,color:#fff
+    style F fill:#CC78BC,stroke:#000,color:#000
+```
+
+**Dynamic routes**: URL parameters drive data fetching and conditional rendering.
 
 ```typescript
 import { BrowserRouter, Routes, Route, Link, useParams, useNavigate } from 'react-router-dom';
@@ -4757,13 +5153,31 @@ export default Root;
 
 **Key Takeaway**: Dynamic routes use colon syntax (:id, :category) for URL parameters. useParams hook extracts parameter values. Links construct dynamic URLs. Enables detail pages, filtering, and flexible navigation patterns.
 
-**Expected Output**: Donation list with clickable titles. Clicking opens detail page with URL like /donations/1. Back button returns to list. Category links filter donations. URL reflects current donation/category.
-
-**Common Pitfalls**: Forgetting type parameter in useParams (loses type safety), not handling missing/invalid IDs (crashes on 404), or using string concatenation instead of template literals for URLs.
+**Why It Matters**: Dynamic routes with URL parameters are how React applications implement detail views, edit screens, and entity-specific pages. The pattern of loading data based on URL parameters makes routes bookmarkable, shareable, and compatible with browser history. Production considerations: handling invalid IDs gracefully (404 handling), loading state while the entity loads, authorization checks (can this user see this entity), and data freshness when navigating between entities with different IDs. The URL-as-state pattern also enables deep linking, which is essential for B2B applications where users share specific views with colleagues.
 
 ### Example 23: Protected Routes Pattern
 
 Implement authentication-based route protection. Redirect unauthenticated users to login page.
+
+```mermaid
+graph TD
+    A["Route: /dashboard"] -->|"check auth"| B{"isAuthenticated?"}
+    B -->|"false"| C["Navigate to /login\n?returnTo=/dashboard"]
+    B -->|"loading"| D["Loading spinner"]
+    B -->|"true, check role"| E{"hasPermission(role)?"}
+    E -->|"false"| F["Navigate to /unauthorized"]
+    E -->|"true"| G["Render protected content"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#CC78BC,stroke:#000,color:#000
+    style D fill:#CA9161,stroke:#000,color:#000
+    style E fill:#DE8F05,stroke:#000,color:#000
+    style F fill:#CC78BC,stroke:#000,color:#000
+    style G fill:#029E73,stroke:#000,color:#fff
+```
+
+**Protected routes**: Multi-level access control with auth and role checks.
 
 ```typescript
 import { BrowserRouter, Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
@@ -5036,9 +5450,7 @@ export default Root;
 
 **Key Takeaway**: Protected routes check authentication before rendering. Use wrapper component with Navigate for redirects. Pass location state to return after login. Check user roles for authorization. Redirect unauthorized users to specific pages.
 
-**Expected Output**: Public home page accessible to all. Dashboard and Admin links show when logged in. Accessing protected routes while logged out redirects to login. Admin page only accessible with admin role. After login, redirects to originally requested page.
-
-**Common Pitfalls**: Not using replace flag (back button broken), forgetting location state (can't return after login), or hardcoding redirects (inflexible pattern).
+**Why It Matters**: Protected routes are the access control mechanism for production applications. Every authenticated section of your application - dashboards, account settings, admin panels, private content - uses this pattern. The three-state authentication check (loading, authenticated, unauthenticated) prevents the flash of protected content before auth state is initialized - a security and UX problem. Role-based route protection extends this to feature-gating: admin routes, premium content, organization-specific features. Production auth patterns also handle: redirect after login (return to the intended URL), session expiration detection, and concurrent session handling.
 
 ### Example 24: Error Boundaries
 
@@ -5394,9 +5806,7 @@ export default Root;
 
 **Key Takeaway**: Error Boundaries catch JavaScript errors in component tree and prevent entire app crash. Use class components with getDerivedStateFromError and componentDidCatch. Wrap sections with boundaries for isolation. Provide reset and recovery options in fallback UI.
 
-**Expected Output**: Navigation with 4 pages. Safe page works normally. Error page triggers error, showing fallback UI with error message and component stack. Calculator page catches calculation errors. "Try Again" button resets error state. Rest of app continues working.
-
-**Common Pitfalls**: Using functional components for boundaries (not supported yet), catching all errors in single boundary (can't isolate), or not providing recovery mechanism (users stuck).
+**Why It Matters**: Error Boundaries are React's mechanism for graceful degradation when components throw during render. Without Error Boundaries, a single component throwing corrupts the entire React tree, showing a blank page to the user. Production applications use Error Boundaries strategically: one at the top level to prevent complete app crashes, and smaller boundaries around optional features (widgets, analytics, third-party embeds) to isolate failures. The retry pattern (allow users to recover from transient errors) improves perceived reliability. Integration with error monitoring services provides production visibility into which components are throwing and why.
 
 ### Example 25: Murabaha Contract Dashboard (Complete Financial Application)
 
@@ -5834,9 +6244,7 @@ export default Root;
 
 **Key Takeaway**: Complete production-ready application combining Context (auth), React Query (data fetching/mutations), React Router (navigation), protected routes, and TypeScript. Demonstrates real-world Islamic finance use case (Murabaha contracts) with proper state management and error handling.
 
-**Expected Output**: Login page with client/admin roles. Dashboard showing contract list with summary cards (count, principal, profit). Create new contracts with form. View contract details with payment breakdown. Protected routes redirect to login when not authenticated.
-
-**Common Pitfalls**: Not composing providers in correct order (AuthProvider before usage), missing error boundaries (app crashes), or not invalidating queries after mutations (stale data).
+**Why It Matters**: The Murabaha Contract Dashboard demonstrates the integration of multiple production React patterns into a complete financial feature. React Query manages server state with proper caching and error handling. TypeScript interfaces model the domain precisely. Multiple state concerns are separated: server state (contracts from API), UI state (active filters, selected contract), and derived state (computations like total amount, status counts). The component hierarchy reflects domain hierarchy. This composition of patterns is what distinguishes production-grade React from tutorial-grade React - features are built from well-understood, independently-testable building blocks.
 
 ## Next Steps
 

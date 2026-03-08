@@ -33,7 +33,7 @@ graph TD
 
 **Code**:
 
-````sql
+```sql
 -- Create sales table
 CREATE TABLE sales (               -- => Table definition
     id INTEGER,                     -- => Unique sale identifier
@@ -95,10 +95,11 @@ SELECT
 FROM high_value_sales hvs           -- => Query CTE with alias
 GROUP BY hvs.product;               -- => Group by product
 -- => Returns: Laptop (count=2, total=2200), Keyboard (count=1, total=100)
+```
 
 **Key Takeaway**: CTEs use WITH to define temporary named result sets. They improve query readability by breaking complex logic into named steps. CTEs exist only for the query duration and can be referenced multiple times.
 
-**Why It Matters**: CTEs transform unreadable nested subqueries into maintainable code. Production analytics pipelines use CTEs extensively for multi-step transformations—calculating KPIs, preparing dashboards, and building data marts. Teams adopting CTEs reduce debugging time because each named step can be tested independently.
+**Why It Matters**: CTEs transform unreadable nested subqueries into maintainable, self-documenting code. Production analytics pipelines use CTEs extensively for multi-step transformations—calculating KPIs, preparing dashboards, and building data marts. Data teams at companies like Airbnb and Stripe maintain hundreds of CTE-based transformation queries. Teams adopting CTEs reduce debugging time significantly because each named step can be tested independently by temporarily adding SELECT \* FROM cte_name before the main query.
 
 ---
 
@@ -136,7 +137,7 @@ graph TD
     style F fill:#CA9161,stroke:#000,color:#fff
     style G fill:#CA9161,stroke:#000,color:#fff
     style H fill:#0173B2,stroke:#000,color:#fff
-````
+```
 
 **Code**:
 
@@ -233,13 +234,31 @@ SELECT * FROM numbers;              -- => Select all generated numbers
 
 **Key Takeaway**: Recursive CTEs use RECURSIVE keyword and UNION ALL to traverse hierarchical structures. Base case starts recursion, recursive case joins to previous iteration. Powerful for org charts, file trees, and graph traversal.
 
-**Why It Matters**: Hierarchical data appears everywhere—org charts, folder structures, category trees, bill-of-materials, network routing. Without recursive CTEs, these queries require multiple round-trips or application code. A single recursive CTE replaces hundreds of lines of application logic for tree traversal, ancestor lookups, and path calculations.
+**Why It Matters**: Hierarchical data appears everywhere—org charts, folder structures, category trees, bill-of-materials, network routing, and permission inheritance chains. Without recursive CTEs, these queries require multiple round-trips or complex application code that re-queries the database for each level. A single recursive CTE replaces hundreds of lines of application logic for tree traversal, ancestor lookups, and path calculations. LinkedIn uses recursive queries for "connections of connections" relationship traversal that powers network features.
 
 ---
 
 ## Example 33: CTEs for Complex Aggregations
 
 CTEs simplify multi-step aggregations by breaking logic into readable stages. Each CTE builds on previous results.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A["CTE 1: Base Data<br/>Raw aggregations"]
+    B["CTE 2: Calculations<br/>Derived metrics"]
+    C["CTE 3: Rankings<br/>RANK() over results"]
+    D["Final SELECT<br/>Filter top results"]
+
+    A --> B
+    B --> C
+    C --> D
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+```
 
 **Code**:
 
@@ -299,7 +318,7 @@ WHERE ct.total_spent > av.avg_total;  -- => Filter for above-average
 
 **Key Takeaway**: Chain CTEs to break complex aggregations into logical steps. Each CTE represents one transformation stage. This improves readability and debugging compared to nested subqueries.
 
-**Why It Matters**: Business questions rarely involve single aggregations—they require comparing to averages, filtering by thresholds, and ranking against peers. Chained CTEs make these multi-step analyses readable and modifiable. Data analysts use this pattern daily for cohort analysis, funnel metrics, and comparative reporting.
+**Why It Matters**: Business questions rarely involve single aggregations—they require comparing to averages, filtering by thresholds, and ranking against peers. Chained CTEs make these multi-step analyses readable and modifiable: change one step without rewriting everything. Data analysts at analytics-driven companies use chained CTE patterns daily for cohort analysis, funnel metrics, and comparative reporting. Without CTEs, these same queries become deeply nested subqueries that are impossible to debug or maintain over time.
 
 ---
 
@@ -409,7 +428,7 @@ WHERE rank <= 2;                    -- => Filter for top 2 per category
 
 **Key Takeaway**: ROW_NUMBER assigns unique sequential numbers to rows. PARTITION BY creates separate numbering for each group. Use with CTE to filter top N per category - a pattern impossible with GROUP BY alone.
 
-**Why It Matters**: "Top N per group" queries are ubiquitous—show each customer's 3 most recent orders, display top products per category, find best-performing sales reps per region. ROW_NUMBER with PARTITION BY solves these elegantly in one query, replacing complex application logic or multiple queries.
+**Why It Matters**: "Top N per group" queries are ubiquitous—show each customer's 3 most recent orders, display top products per category, find best-performing sales reps per region. ROW_NUMBER with PARTITION BY solves these elegantly in a single query, replacing complex application logic or multiple queries joined together. E-commerce platforms use this pattern for "top 5 items per category" product listings. News sites use it for "latest 3 articles per author." Understanding ROW_NUMBER is essential for any reporting or analytics role.
 
 ---
 
@@ -504,7 +523,7 @@ FROM exam_scores;                   -- => Source table
 
 **Key Takeaway**: RANK assigns same rank to ties and skips subsequent numbers. DENSE_RANK assigns same rank to ties but continues sequentially. ROW_NUMBER always unique. Choose based on business rules: sports use RANK, leaderboards often use DENSE_RANK.
 
-**Why It Matters**: Leaderboards, competition results, and performance rankings drive user engagement and business decisions. Choosing the wrong ranking function creates unfair results or confusing displays. Understanding the tie-handling differences prevents embarrassing "rank 1, 1, 3" displays when "rank 1, 1, 2" was expected.
+**Why It Matters**: Leaderboards, competition results, and performance rankings drive user engagement and business decisions. Choosing the wrong ranking function creates unfair results or confusing displays—sports competitions typically use DENSE_RANK to avoid gaps, while standardized tests use RANK where tied scores share rank and the next rank skips. Understanding tie-handling differences prevents embarrassing "rank 1, 1, 3" displays when "rank 1, 1, 2" was intended. Gaming platforms, financial leaderboards, and HR performance systems all require careful rank function selection.
 
 ---
 
@@ -601,7 +620,7 @@ FROM stock_prices;                  -- => Source table
 
 **Key Takeaway**: LAG(column, offset, default) accesses previous row value, LEAD accesses next row. Default offset is 1. Use for time-series analysis, calculating changes, or comparing consecutive events.
 
-**Why It Matters**: Day-over-day metrics, month-over-month growth, and sequential event analysis require comparing adjacent rows. LAG/LEAD eliminate self-joins and application-level calculations. Financial dashboards, operational monitoring, and A/B test analysis depend on these functions for computing deltas and trends.
+**Why It Matters**: Day-over-day metrics, month-over-month growth, and sequential event analysis require comparing adjacent rows—a common pattern in virtually every analytics system. LAG/LEAD eliminate self-joins and application-level calculations that require fetching sorted rows and computing differences in code. Financial dashboards compare yesterday's revenue to today's to detect drops. Operational monitoring uses LAG to compute error rate changes between time periods. A/B test analysis tracks metric deltas between control and treatment groups over time.
 
 ---
 
@@ -701,7 +720,7 @@ FROM monthly_revenue;               -- => Source table
 
 **Key Takeaway**: Window aggregates preserve individual rows while computing across groups. Use ROWS BETWEEN for moving windows. Empty OVER() computes across all rows. Running totals and moving averages are common patterns.
 
-**Why It Matters**: Running totals power progress bars, cumulative metrics, and year-to-date calculations. Moving averages smooth noisy data for trend analysis. Finance dashboards, inventory systems, and sales reports all need these patterns. Window aggregates compute them efficiently without expensive self-joins or application-level loops.
+**Why It Matters**: Running totals power progress bars, cumulative metrics, and year-to-date calculations across finance, operations, and product analytics. Moving averages smooth noisy day-to-day data to reveal underlying trends—stock charts, website traffic graphs, and sales forecasts all use 7-day or 30-day moving averages. Finance dashboards, inventory systems, and sales reports all need these patterns. Window aggregates compute them efficiently in a single database pass without expensive self-joins or application-level loops that fetch and process all rows.
 
 ---
 
@@ -825,7 +844,7 @@ FROM sales_by_region;               -- => Source table
 
 **Key Takeaway**: PARTITION BY creates independent groups for window functions. Running totals, rankings, and averages reset for each partition. Combine with ORDER BY for per-group sequential operations.
 
-**Why It Matters**: Real-world analytics almost always require segmentation—metrics per region, per product, per customer cohort. PARTITION BY enables "for each group, calculate X" patterns in a single pass. Without it, you'd need multiple queries or complex self-joins to achieve the same result, with worse performance and maintainability.
+**Why It Matters**: Real-world analytics almost always require segmentation—metrics per region, per product, per customer cohort—alongside other dimensions. PARTITION BY enables "for each group, calculate X" patterns in a single database pass without multiple queries or subqueries. Retail analytics partition sales by store, product category, and time period simultaneously. HR systems calculate salary percentiles within each department. Without PARTITION BY, equivalent logic requires multiple queries or complex self-joins with significantly worse performance and reduced readability.
 
 ---
 
@@ -938,7 +957,7 @@ FROM user_data;                     -- => Source table
 
 **Key Takeaway**: Use SUBSTR for extraction, REPLACE for text substitution, TRIM for whitespace removal, UPPER/LOWER for case conversion. Combine multiple functions for data normalization and cleaning.
 
-**Why It Matters**: Real-world data arrives dirty—extra whitespace, inconsistent casing, embedded format characters. String functions clean data at the database level before it reaches applications. Email normalization, phone number standardization, and text extraction for search are production necessities that these functions handle efficiently.
+**Why It Matters**: Real-world data arrives dirty—extra whitespace, inconsistent casing, embedded format characters, mixed phone number formats. String functions clean data at the database level before it reaches applications, avoiding inconsistencies from multiple cleaning implementations. Email normalization (lowercase, trim) ensures user@EXAMPLE.COM and user@example.com match the same account. Phone number standardization enables deduplication of contacts. Text extraction for search requires consistent preprocessing. Production data pipelines rely on these functions to maintain data quality.
 
 ---
 
@@ -1054,7 +1073,7 @@ WHERE JULIANDAY(event_date) - JULIANDAY('now') BETWEEN 0 AND 60;
 
 **Key Takeaway**: Use date() for date arithmetic (+/- days/months/years), STRFTIME for formatting and component extraction, JULIANDAY for date differences. Store dates as TEXT in ISO8601 format (YYYY-MM-DD) for consistency.
 
-**Why It Matters**: Date calculations are everywhere—subscription expiration, event scheduling, report periods, age calculations. Doing date math in application code leads to timezone bugs and inconsistent results across services. SQL date functions ensure consistent, efficient date handling regardless of which application queries the data.
+**Why It Matters**: Date calculations are everywhere—subscription expiration, event scheduling, report periods, age calculations, invoice due dates, warranty tracking. Doing date math in application code leads to timezone bugs and inconsistent results when multiple services query the same database. SQL date functions ensure consistent, efficient date handling regardless of which application queries the data. SaaS platforms calculate billing periods entirely in SQL, avoiding off-by-one-day bugs that generate customer complaints and refund requests.
 
 ---
 
@@ -1150,7 +1169,7 @@ FROM products;                      -- => Source table
 
 **Key Takeaway**: COALESCE provides default values for NULL columns. NULLIF converts specific values to NULL (useful for avoiding division by zero or treating zero as missing). Combine both for sophisticated NULL handling logic.
 
-**Why It Matters**: NULL handling bugs cause application crashes, incorrect calculations, and confusing displays. COALESCE prevents "undefined" from showing in UIs. NULLIF prevents division-by-zero errors in percentage calculations. Production systems use these functions defensively throughout their query layer to ensure robust data handling.
+**Why It Matters**: NULL handling bugs cause application crashes, incorrect calculations, and confusing displays of "undefined" or "NaN" in user interfaces. COALESCE prevents these by substituting meaningful defaults—showing "Not Set" instead of NULL in customer profiles. NULLIF prevents division-by-zero crashes in percentage calculations when denominators might be zero. Production systems use both functions defensively throughout their query layer. Analytics reports that show NULL instead of 0 for months with no sales mislead decision-makers relying on accurate data.
 
 ---
 
@@ -1286,13 +1305,36 @@ INNER JOIN customers_2025 c2        -- => Join with 2025 table
 
 **Key Takeaway**: UNION removes duplicates (slower), UNION ALL keeps duplicates (faster). Both require same number of columns with compatible types. Use UNION for set operations, UNION ALL for combining datasets.
 
-**Why It Matters**: Merging data from partitioned tables, combining results from different time periods, or building compound reports require UNION operations. The performance difference between UNION and UNION ALL can be significant—use UNION ALL when you know there are no duplicates or duplicates are acceptable.
+**Why It Matters**: Merging data from partitioned tables, combining results from different time periods, or building compound reports require UNION operations. Analytics systems that partition historical data into yearly tables (orders_2023, orders_2024) use UNION ALL to query across years. The performance difference between UNION (sorts and deduplicates) and UNION ALL (no deduplication) can be significant for large datasets—use UNION ALL when duplicates are impossible or acceptable, and UNION only when deduplication is required for correct results.
 
 ---
 
 ## Example 43: INTERSECT and EXCEPT
 
 INTERSECT returns rows present in both queries. EXCEPT returns rows in first query but not in second. Both remove duplicates automatically.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["Query A results"]
+    B["Query B results"]
+    C["INTERSECT<br/>Rows in both A and B"]
+    D["EXCEPT A minus B<br/>In A but not B"]
+    E["UNION ALL<br/>All rows combined"]
+
+    A --> C
+    B --> C
+    A --> D
+    B --> D
+    A --> E
+    B --> E
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#fff
+```
 
 **Code**:
 
@@ -1412,7 +1454,7 @@ FROM (                              -- => Subquery for common products
 
 **Key Takeaway**: INTERSECT finds common rows between queries. EXCEPT finds rows in first query not in second. Order matters for EXCEPT (A EXCEPT B ≠ B EXCEPT A). All set operations remove duplicates.
 
-**Why It Matters**: Finding common customers between datasets, identifying products missing from inventory, or detecting configuration drift between environments—these business problems map directly to INTERSECT and EXCEPT. They express set logic declaratively, making intent clear and code maintainable.
+**Why It Matters**: Finding common customers between datasets, identifying products missing from inventory, or detecting configuration drift between environments—these business problems map directly to INTERSECT and EXCEPT. Security audits use EXCEPT to find users with access in one system but not another. Data quality checks use EXCEPT to find records present in a staging table but missing from production after migration. These operators express set logic declaratively, making intent immediately clear and code maintainable compared to equivalent JOIN or NOT EXISTS alternatives.
 
 ---
 
@@ -1526,7 +1568,7 @@ WHERE EXISTS (                      -- => EXISTS returns TRUE if subquery has ro
 
 **Key Takeaway**: Correlated subqueries reference outer query columns and execute once per outer row. Use for row-specific comparisons against group aggregates. EXISTS often more efficient than IN for correlated lookups.
 
-**Why It Matters**: Finding employees paid above department average, orders exceeding customer's typical spend, or products priced above category median—all require comparing each row against a group aggregate. Correlated subqueries solve these "compare to my group" problems elegantly without application-level loops.
+**Why It Matters**: Finding employees paid above department average, orders exceeding a customer's typical spend, or products priced above category median—all require comparing each row against a group aggregate. Correlated subqueries solve these "compare to my group" problems elegantly without application-level loops that fetch all rows and filter in memory. HR analytics use correlated subqueries to surface employees whose compensation deviates significantly from their peer group. Fraud detection systems use them to flag transactions that are statistical outliers for a specific account.
 
 ---
 
@@ -1646,7 +1688,7 @@ FROM customers c;                   -- => Outer query
 
 **Key Takeaway**: Scalar subqueries return single values and can appear anywhere a single value is expected. Use in SELECT to add computed columns. Must return exactly one row, one column - use LIMIT 1 or aggregates to ensure this.
 
-**Why It Matters**: Adding computed fields like "customer's total orders" or "employee's department headcount" to query results without complex joins simplifies reporting. Scalar subqueries enable denormalized views for dashboards and exports while keeping the underlying schema normalized.
+**Why It Matters**: Adding computed fields like "customer's total orders" or "employee's department headcount" to query results without complex joins greatly simplifies reporting SQL. Scalar subqueries enable denormalized views for dashboards and data exports while keeping the underlying schema normalized and consistent. Product listing APIs use scalar subqueries to add "total reviews" and "average rating" to each product in a single query. The trade-off is performance: scalar subqueries run once per result row, so they work best for small result sets or tables with indexes on the subquery's filter columns.
 
 ---
 
@@ -1768,7 +1810,7 @@ WHERE 3 NOT IN (                    -- => Check if 3 NOT in...
 
 **Key Takeaway**: IN checks membership in subquery results. NOT IN excludes matching values. Beware: NOT IN with NULL values returns no results - use NOT EXISTS for NULL-safe exclusion. DISTINCT in subquery improves performance.
 
-**Why It Matters**: Filtering by membership in another table is fundamental—find orders for active customers, products in stock, users with permissions. The NOT IN NULL gotcha causes silent bugs in production; understanding this prevents hours of debugging incorrect empty results.
+**Why It Matters**: Filtering by membership in another table is fundamental to almost every application—find orders for active customers only, products currently in stock, users with specific permissions. IN (subquery) and EXISTS power access control checks, inventory filtering, and data quality validation. The NOT IN NULL gotcha is particularly dangerous: it returns zero rows silently when the subquery contains any NULL values, without errors or warnings. This bug has caused empty reports and incorrect data exports that went unnoticed for days in production systems. Always use NOT EXISTS instead of NOT IN when NULLs are possible.
 
 ---
 
@@ -1888,7 +1930,7 @@ WHERE JSON_EXTRACT(metadata, '$.city') IS NOT NULL;  -- => Path existence
 
 **Key Takeaway**: Use JSON_EXTRACT to query JSON fields, JSON_OBJECT/JSON_ARRAY to create JSON. Store JSON as TEXT. Use `$.path` syntax for navigation. JSON functions enable schema-flexible data storage.
 
-**Why It Matters**: Modern applications store flexible metadata, user preferences, and audit logs as JSON. Querying JSON directly in SQL eliminates deserializing data in application code. This enables efficient filtering, aggregation, and reporting on semi-structured data without ETL pipelines.
+**Why It Matters**: Modern applications store flexible metadata, user preferences, configuration, and event payloads as JSON—avoiding schema changes for every new attribute. Querying JSON directly in SQL eliminates fetching all rows, deserializing in application code, and filtering in memory. This enables efficient filtering, aggregation, and reporting on semi-structured data without building ETL pipelines. E-commerce platforms store product attributes as JSON (size, color, material vary by product type), querying them with JSON_EXTRACT for filtering and search without separate attribute tables.
 
 ---
 
@@ -2012,7 +2054,7 @@ FROM projects;                      -- => Source table
 
 **Key Takeaway**: Use JSON_EACH to unnest arrays into rows for querying. JSON_ARRAY_LENGTH counts elements. JSON arrays are immutable - modifications create new arrays. Combine JSON_EACH with standard SQL for powerful array queries.
 
-**Why It Matters**: Tags, categories, permissions, and feature flags often stored as JSON arrays. JSON_EACH transforms array storage into queryable rows—find all projects with "urgent" tag, count users per role, aggregate metrics across multi-value attributes. This bridges document and relational models.
+**Why It Matters**: Tags, categories, permissions, and feature flags are commonly stored as JSON arrays when the number of values is variable and unknown at schema design time. JSON_EACH transforms array storage into queryable rows—find all projects with the "urgent" tag, count users per permission role, aggregate metrics across multi-value attributes. This bridges document and relational models, enabling SQL queries on data that would otherwise require separate junction tables. Task management apps use JSON arrays for flexible tagging without pre-defining all possible tags.
 
 ---
 
@@ -2133,7 +2175,7 @@ WHERE articles_fts MATCH 'SQL';     -- => Search term
 
 **Key Takeaway**: FTS5 virtual tables enable fast full-text search. Use MATCH operator with search syntax (phrases, boolean operators, prefix search). Ranking and highlighting improve search UX. Ideal for document search, article catalogs, product descriptions.
 
-**Why It Matters**: Users expect instant search across articles, products, and documents. LIKE queries are too slow for large datasets and miss relevance ranking. FTS5 provides Google-like search capabilities—phrase matching, boolean logic, result highlighting—without external search engines like Elasticsearch.
+**Why It Matters**: Users expect instant search across articles, products, and documents—LIKE queries are too slow on large text datasets and cannot rank results by relevance. FTS5 provides Google-like search capabilities including phrase matching, boolean logic (AND, OR, NOT), and result highlighting, all within SQLite without external search engines like Elasticsearch or Solr. Documentation platforms, wiki systems, and local applications use FTS5 for fast full-text search over thousands of documents. The built-in nature of FTS5 eliminates the operational complexity of running a separate search service.
 
 ---
 
@@ -2251,7 +2293,7 @@ WHERE documents_fts MATCH 'RUNNING';  -- => Uppercase search term
 
 **Key Takeaway**: FTS5 supports stemming (porter tokenizer), proximity search (NEAR), and column weighting. Configure tokenizers for language-specific behavior. Combine boolean operators for complex queries. FTS5 is production-ready for search features.
 
-**Why It Matters**: Stemming means "running" matches "run"—critical for natural language search. Proximity search finds related terms near each other. Column weighting prioritizes title matches over body matches. These features transform basic substring search into intelligent information retrieval.
+**Why It Matters**: Stemming means "running" and "runs" match "run"—critical for natural language search where users type natural words, not database-stored forms. Proximity search finds documents where related terms appear near each other, improving relevance for multi-word concepts. Column weighting prioritizes title matches over body text matches, since "SQL" in a title indicates more relevance than "SQL" mentioned once in a long article. These features transform basic substring search into intelligent information retrieval comparable to dedicated search engines for many use cases.
 
 ---
 
@@ -2386,7 +2428,7 @@ WHERE c.country = 'USA';            -- => Filter for USA
 
 **Key Takeaway**: EXPLAIN QUERY PLAN reveals query execution strategy. Look for SCAN (slow, checks every row) vs SEARCH (fast, uses index). Create indexes on columns used in WHERE, JOIN, and ORDER BY to convert scans to searches.
 
-**Why It Matters**: Query performance problems are invisible until you look at execution plans. A query taking 10 seconds might take 10ms with the right index. EXPLAIN QUERY PLAN is the diagnostic tool that reveals whether indexes are being used—essential knowledge for database performance tuning.
+**Why It Matters**: Query performance problems are invisible until you examine execution plans—a 10-second query looks identical in application code to a 10ms query, but one is causing production incidents. EXPLAIN QUERY PLAN is the first diagnostic tool for slow query investigations, revealing whether indexes are being used or full table scans are occurring. Database administrators and backend engineers use it routinely when optimizing reporting queries, API endpoints, and background jobs. Understanding "SCAN" vs "SEARCH" output helps prioritize which queries need indexes before they become user-facing problems.
 
 ---
 
@@ -2489,7 +2531,7 @@ ORDER BY price;                     -- => Sort in index
 
 **Key Takeaway**: Covering indexes include all columns used in query (WHERE, SELECT, ORDER BY). They eliminate table access, reducing I/O. Trade-off: larger index size. Use for frequently-run queries on specific column sets.
 
-**Why It Matters**: Covering indexes can provide significant speedup for read-heavy queries by eliminating table lookups entirely. Dashboard queries, API endpoints, and reports that run frequently benefit substantially. The larger index size is a worthwhile trade-off for critical query paths.
+**Why It Matters**: Covering indexes can provide substantial speedup for read-heavy queries by eliminating table row lookups entirely—the database reads everything it needs directly from the index structure. Dashboard queries, high-traffic API endpoints, and reports that run thousands of times per day benefit substantially from covering indexes. The larger index size is a worthwhile trade-off for critical query paths where latency is measured. Understanding when a query is "covered" by an index is a key skill for database performance engineers optimizing for SLA compliance.
 
 ---
 
@@ -2585,7 +2627,7 @@ WHERE customer_id IS NOT NULL;      -- => Exclude NULL values
 
 **Key Takeaway**: Partial indexes use WHERE clause to index subset of rows. They reduce index size and improve write performance. Use for queries that consistently filter on same condition (active records, recent data, specific categories).
 
-**Why It Matters**: When most queries filter for specific values like "status = 'active'" and only a small percentage of rows match, a full index wastes space on rows rarely queried. Partial indexes are smaller, faster to maintain, and fit better in memory—providing better performance for less resource cost.
+**Why It Matters**: When most queries filter for specific values like "status = 'active'" and only a small fraction of rows match that condition, a full index wastes space on rows that are almost never queried. Partial indexes are smaller, faster to maintain (fewer rows to update on INSERT/DELETE), and fit better in database buffer cache—providing better query performance for less storage and memory cost. SaaS applications that query only non-deleted records use partial indexes on WHERE deleted_at IS NULL, covering 90%+ of queries with a fraction of the index size.
 
 ---
 
@@ -2726,7 +2768,7 @@ WHERE e.user_id IS NULL;            -- => Keep only non-matches
 
 **Key Takeaway**: Avoid functions in WHERE (prevents index usage). Select only needed columns. Use range conditions instead of functions. Create composite indexes for WHERE + ORDER BY. Use LIMIT for early termination. Replace NOT IN with LEFT JOIN for better performance.
 
-**Why It Matters**: These patterns are the difference between a query that times out and one that returns instantly. Each anti-pattern (function in WHERE, SELECT \*, NOT IN with NULLs) appears innocent but causes full table scans. Knowing these transforms debugging slow queries from guesswork to methodical optimization.
+**Why It Matters**: These anti-patterns are the difference between a query that times out in production and one returning instantly. Functions in WHERE clauses (LOWER(email) = ?) prevent index usage even when the column is indexed, causing full table scans on millions of rows. Each anti-pattern appears innocent in development but becomes a production incident when tables grow. Knowing these patterns transforms slow query debugging from guesswork into methodical investigation, reducing mean time to resolution for database performance incidents significantly.
 
 ---
 
@@ -2834,7 +2876,7 @@ PRAGMA synchronous = FULL;          -- => Restore full durability
 
 **Key Takeaway**: Wrap bulk operations in transactions for dramatic performance improvement. Single transaction commits once instead of per-statement. Use multi-row INSERT for batches. Consider PRAGMA settings for production optimization but test carefully.
 
-**Why It Matters**: Bulk imports, data migrations, and batch processing can take hours without transactions. Wrapping 10,000 inserts in one transaction can reduce time from minutes to milliseconds. This knowledge is essential for ETL pipelines, data loading, and any operation touching many rows.
+**Why It Matters**: Bulk imports, data migrations, and batch processing can take hours without transaction batching. Individual auto-commit mode flushes to disk after every statement—10,000 individual inserts each flush to disk, while one transaction with 10,000 inserts flushes once. Production ETL pipelines batch inserts to reduce transaction overhead by orders of magnitude. This knowledge is essential for data engineers building ingestion pipelines, database administrators running migrations, and any backend system performing bulk data loading operations.
 
 ---
 
@@ -2953,13 +2995,31 @@ GROUP BY question;                  -- => One row per question
 
 **Key Takeaway**: Use CASE with aggregate functions to pivot rows to columns. Each CASE WHEN becomes a column. GROUP BY determines rows. Common for reports, crosstabs, and matrix displays.
 
-**Why It Matters**: Business users expect spreadsheet-style reports with quarters as columns. Pivot queries transform normalized data into presentation format without ETL tools or application code. Financial reports, sales matrices, and comparison tables all use this pattern.
+**Why It Matters**: Business users expect spreadsheet-style reports with time periods or categories as columns—not rows. Pivot queries transform normalized row-based data into columnar presentation format directly in SQL, without ETL tools or application code that processes query results. Financial reports show Q1, Q2, Q3, Q4 as side-by-side columns. Sales matrices compare performance across regions and product lines simultaneously. Understanding CASE-based pivoting enables building executive dashboards that display data in the format stakeholders expect.
 
 ---
 
 ## Example 57: Running Totals and Moving Averages
 
 Window functions with frame specifications compute running totals and moving averages - essential for time-series analysis and trending.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["Daily values<br/>10, 15, 8, 20, 5"]
+    B["Running Total<br/>SUM OVER ORDER BY date<br/>10, 25, 33, 53, 58"]
+    C["7-Day Moving Avg<br/>ROWS BETWEEN 6 PRECEDING<br/>AND CURRENT ROW"]
+    D["Trend Visualization<br/>Smoothed data"]
+
+    A --> B
+    A --> C
+    C --> D
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+```
 
 **Code**:
 
@@ -3078,7 +3138,7 @@ ORDER BY sale_date;                 -- => Chronological order
 
 **Key Takeaway**: Use window functions with ROWS BETWEEN for running calculations. `ROWS BETWEEN n PRECEDING AND CURRENT ROW` creates moving windows. Common patterns: running totals (cumulative SUM), moving averages (AVG with window), day-over-day changes (LAG).
 
-**Why It Matters**: Time-series dashboards need running totals for progress tracking and moving averages for trend smoothing. Stock charts, fitness apps, and operational metrics all display these calculations. Window functions compute them efficiently in SQL without post-processing in application code.
+**Why It Matters**: Time-series dashboards need running totals for progress tracking against goals and moving averages for trend smoothing that filters daily noise. Stock price charts always display moving averages (50-day, 200-day) to reveal trends. Fitness apps show cumulative distance and calorie running totals. Operational monitoring uses rolling averages for error rates and response times. Window functions compute these efficiently in a single SQL pass without post-processing in application code, enabling real-time dashboards that update with each new data point.
 
 ---
 
@@ -3169,7 +3229,7 @@ VALUES (1, 'ignored', 'ignored', 0, datetime('now'));  -- => Try to insert
 
 **Key Takeaway**: Use INSERT OR REPLACE for complete row replacement. Use INSERT ... ON CONFLICT for granular control over updates. ON CONFLICT DO UPDATE SET allows partial updates. Combine with bulk inserts for efficient data merging.
 
-**Why It Matters**: Sync operations, configuration updates, and cache refreshes need "insert if new, update if exists" logic. Without upsert, you'd need SELECT-then-INSERT-or-UPDATE with race condition risks. Upsert is atomic and efficient—essential for data synchronization patterns.
+**Why It Matters**: Sync operations, configuration updates, and cache refreshes need "insert if new, update if exists" logic that runs safely under concurrent access. Without upsert, you'd need SELECT-then-INSERT-or-UPDATE with race condition risks where two processes simultaneously see "not exists" and both insert, causing duplicate key errors. Upsert is atomic at the database level—essential for idempotent data synchronization. Webhook receivers, API sync jobs, and configuration management systems use ON CONFLICT clauses to handle concurrent updates from multiple servers safely.
 
 ---
 
@@ -3310,7 +3370,7 @@ FROM dates;                         -- => From generated dates
 
 **Key Takeaway**: Recursive CTEs generate sequences (numbers, dates, times). Use for filling data gaps, creating calendars, test data generation, or reports requiring complete time ranges. Combine with LEFT JOIN to show periods with zero activity.
 
-**Why It Matters**: Reports must show all dates even when no activity occurred—a chart with missing days is misleading. Generated date series with LEFT JOIN fill these gaps with zeros. This pattern is essential for accurate time-series visualization and trend analysis.
+**Why It Matters**: Reports must show all dates even when no activity occurred—a chart with gaps for days with zero sales is confusing and potentially misleading to business users. Generated date series with LEFT JOIN fill these gaps with zeros or NULL-coalesced defaults, creating complete, continuous time series. Analytics dashboards, financial reports, and operational monitoring charts all require gap-filling for accurate visualization. Without this pattern, trend lines appear to jump discontinuously, making it impossible to distinguish "no data" from "no activity".
 
 ---
 
@@ -3438,4 +3498,4 @@ ORDER BY rs.region, rs.country, rs.city;  -- => Hierarchical order
 
 **Key Takeaway**: Use UNION ALL with multiple GROUP BY levels for hierarchical aggregation (simulates GROUPING SETS). Window functions provide running subtotals within groups. Combine CTEs for percentage calculations at multiple levels. Essential for financial reports and multi-level analytics.
 
-**Why It Matters**: Financial reports need subtotals at every level—city, country, region, grand total. Without hierarchical aggregation, you'd run multiple queries or compute subtotals in application code. This pattern produces complete drill-down reports in a single query, essential for executive dashboards and financial statements.
+**Why It Matters**: Financial reports need subtotals at every level—city, country, region, grand total—for drill-down analysis and reconciliation. Without ROLLUP/CUBE, you'd run separate queries for each subtotal level or compute them in application code. ROLLUP produces complete hierarchical subtotals in a single query, essential for executive dashboards, income statements, and sales reports where every subtotal line must reconcile with detailed rows. Accounting software and business intelligence platforms use these hierarchical aggregations to generate statutory financial reports.

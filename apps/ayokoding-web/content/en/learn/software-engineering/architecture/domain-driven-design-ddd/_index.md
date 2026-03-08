@@ -3,6 +3,7 @@ title: "Domain Driven Design Ddd"
 weight: 10000001
 date: 2026-01-30T00:00:00+07:00
 draft: false
+description: "Learn Domain-Driven Design through tactical and strategic patterns, from entities and aggregates to bounded contexts and microservices"
 ---
 
 - [By Example](/en/learn/software-engineering/architecture/domain-driven-design-ddd/by-example)

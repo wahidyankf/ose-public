@@ -3,11 +3,11 @@ title: "Overview"
 date: 2026-01-01T21:53:25+07:00
 draft: false
 weight: 10000000
-description: "Learn Java through 84 annotated code examples covering 95% of the language - ideal for experienced developers switching to Java"
+description: "Learn Java through 90 annotated code examples covering 95% of the language - ideal for experienced developers switching to Java"
 tags: ["java", "tutorial", "by-example", "examples", "code-first", "jvm", "oop"]
 ---
 
-**Want to quickly master Java through working examples?** This by-example guide teaches 95% of Java through 84 annotated code examples organized by complexity level.
+**Want to quickly master Java through working examples?** This by-example guide teaches 95% of Java through 90 annotated code examples organized by complexity level.
 
 ## What Is By-Example Learning?
 
@@ -27,8 +27,8 @@ Unlike narrative tutorials that build understanding through explanation and stor
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Beginner<br/>Examples 1-30<br/>OOP Basics"] --> B["Intermediate<br/>Examples 31-59<br/>Practical Patterns"]
-    B --> C["Advanced<br/>Examples 60-82<br/>Complex Features"]
+    A["Beginner<br/>Examples 1-33<br/>OOP Basics"] --> B["Intermediate<br/>Examples 34-64<br/>Practical Patterns"]
+    B --> C["Advanced<br/>Examples 65-90<br/>Complex Features"]
 
     style A fill:#0173B2,color:#fff
     style B fill:#DE8F05,color:#fff
@@ -79,7 +79,7 @@ Understanding where by-example fits in the tutorial ecosystem helps you choose t
 
 | Tutorial Type    | Coverage                | Approach                       | Target Audience        | When to Use                                          |
 | ---------------- | ----------------------- | ------------------------------ | ---------------------- | ---------------------------------------------------- |
-| **By Example**   | 95% through 82 examples | Code-first, annotated examples | Experienced developers | Quick language pickup, reference, language switching |
+| **By Example**   | 95% through 90 examples | Code-first, annotated examples | Experienced developers | Quick language pickup, reference, language switching |
 | **Quick Start**  | 5-30% touchpoints       | Hands-on project               | Newcomers to Java      | First taste, decide if worth learning                |
 | **Beginner**     | 0-60% comprehensive     | Narrative, explanatory         | Complete beginners     | Deep understanding, first programming language       |
 | **Intermediate** | 60-85%                  | Practical applications         | Past basics            | Production patterns, frameworks                      |
@@ -150,7 +150,7 @@ You're used to dynamic typing and flexible syntax. Java will feel more structure
 - **Explicit OOP**: Everything lives in classes, no standalone functions
 - **Checked exceptions**: Must handle or declare exceptions explicitly
 
-Focus on Examples 1-10 (types and classes) and Examples 15-20 (exception handling) to build static typing intuition.
+Focus on Examples 1-10 (types and classes) and Examples 19-20 (exception handling) to build static typing intuition.
 
 ### For C/C++ Developers
 
@@ -160,7 +160,7 @@ You understand static typing and compilation. Java simplifies memory management:
 - **No header files**: Single compilation unit per class
 - **Platform independence**: Write once, run anywhere via JVM
 
-Focus on Examples 60-82 (JVM internals) and Examples 45-55 (concurrency) to leverage your systems knowledge.
+Focus on Examples 70-90 (JVM internals) and Examples 46-55 (concurrency) to leverage your systems knowledge.
 
 ### For Kotlin/Scala Developers
 
@@ -170,7 +170,7 @@ You know JVM semantics already. Java shows the foundation:
 - **No null safety**: Must check nulls manually (or use Optional)
 - **Traditional OOP**: No data classes, extension functions, or coroutines
 
-Focus on Examples 60-82 (advanced features and JVM internals) to see modern Java capabilities.
+Focus on Examples 65-90 (advanced features and JVM internals) to see modern Java capabilities.
 
 ## Code-First Philosophy
 
@@ -179,7 +179,7 @@ This tutorial prioritizes working code over theoretical discussion:
 - **No lengthy prose**: Concepts are demonstrated, not explained at length
 - **Runnable examples**: Every example compiles and runs in JShell or as standalone classes
 - **Learn by doing**: Understanding comes from running and modifying code
-- **Pattern recognition**: See the same patterns in different contexts across 82 examples
+- **Pattern recognition**: See the same patterns in different contexts across 90 examples
 
 If you prefer narrative explanations. By-example learning works best when you learn through experimentation.
 
@@ -187,8 +187,8 @@ If you prefer narrative explanations. By-example learning works best when you le
 
 Jump into the beginner examples to start learning Java through code:
 
-- [Beginner Examples (1-30)](/en/learn/software-engineering/programming-languages/java/by-example/beginner) - Basic syntax, OOP fundamentals, collections, control flow
-- [Intermediate Examples (31-59)](/en/learn/software-engineering/programming-languages/java/by-example/intermediate) - Advanced OOP, generics, functional programming, concurrency
-- [Advanced Examples (60-82)](/en/learn/software-engineering/programming-languages/java/by-example/advanced) - JVM internals, design patterns, modern Java features
+- [Beginner Examples (1-33)](/en/learn/software-engineering/programming-languages/java/by-example/beginner) - Basic syntax, OOP fundamentals, collections, control flow
+- [Intermediate Examples (34-64)](/en/learn/software-engineering/programming-languages/java/by-example/intermediate) - Advanced OOP, generics, functional programming, concurrency
+- [Advanced Examples (65-90)](/en/learn/software-engineering/programming-languages/java/by-example/advanced) - JVM internals, design patterns, modern Java features
 
 Each example is self-contained and runnable. Start with Example 1, or jump to topics that interest you most.

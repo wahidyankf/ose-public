@@ -2068,13 +2068,11 @@ graph TD
 ```bash
 # Watch all custom resources of type Database
 kubectl get databases -w                                  # => Streams Database resource changes
-# => NAME           ENGINE    VERSION   REPLICAS   READY   PHASE
-# => production-db  postgres  15        3          3       Running
+                                                          # => Shows NAME, ENGINE, VERSION, REPLICAS, READY, PHASE columns
 
 # View operator logs (reconciliation loop output)
 kubectl logs -n operators deploy/database-operator -f    # => Follow operator log stream
-# => Reconciling Database: default/production-db
-# => Desired replicas: 3, Actual replicas: 2 → scaling up
+                                                          # => Logs show reconciliation events and state diffs
 
 # Trigger reconciliation by changing spec (operator acts automatically)
 kubectl patch database production-db --type=merge -p '{"spec":{"replicas":5}}'
@@ -2083,8 +2081,7 @@ kubectl patch database production-db --type=merge -p '{"spec":{"replicas":5}}'
 
 # Check StatefulSet created by operator
 kubectl get statefulset -l managed-by=database-operator  # => Lists operator-managed StatefulSets
-# => NAME           READY   AGE
-# => production-db  5/5     2m
+                                                          # => Shows production-db with READY and AGE columns
 
 # View operator-managed status (updated by operator)
 kubectl get database production-db -o jsonpath='{.status}' # => Shows operator-populated status
@@ -2092,13 +2089,11 @@ kubectl get database production-db -o jsonpath='{.status}' # => Shows operator-p
 
 # Scaffold new operator with Operator SDK
 operator-sdk init --domain example.com --repo github.com/example/database-operator
-# => Creates operator project structure with Go modules
-# => Generates main.go, go.mod, Makefile, and config/ directory
+# => Creates operator project structure: main.go, go.mod, Makefile, config/
 
 # Generate CRD scaffold
 operator-sdk create api --group databases --version v1 --kind Database --resource --controller
-# => Generates api/v1/database_types.go (CRD struct)
-# => Generates controllers/database_controller.go (reconciler)
+# => Generates api/v1/database_types.go and controllers/database_controller.go
 
 # Build and push operator image
 make docker-build docker-push IMG=myregistry/database-operator:v1.0.0

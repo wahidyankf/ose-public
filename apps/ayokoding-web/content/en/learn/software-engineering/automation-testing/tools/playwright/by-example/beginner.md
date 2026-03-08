@@ -11,7 +11,7 @@ Learn Playwright fundamentals through 30 annotated code examples. Each example i
 
 ## Core Fundamentals (Examples 1-10)
 
-## Example 1: Hello World - Your First Playwright Test
+### Example 1: Hello World - Your First Playwright Test
 
 Playwright tests are asynchronous functions that receive a `page` object representing a browser tab. The test runner manages browser lifecycle, test isolation, and cleanup automatically.
 
@@ -68,9 +68,26 @@ test("hello world", async ({ page }) => {
 
 ---
 
-## Example 2: Browser Launch Configuration
+### Example 2: Browser Launch Configuration
 
 Playwright supports multiple browsers (Chromium, Firefox, WebKit) and launch options. Configuration happens in `playwright.config.ts`, but you can also control behavior per test file.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    Browser["Browser Instance<br/>(chromium/firefox/webkit)"] --> Context1["BrowserContext 1<br/>(isolated cookies/storage)"]
+    Browser --> Context2["BrowserContext 2<br/>(isolated cookies/storage)"]
+    Context1 --> Page1["Page (Tab)"]
+    Context1 --> Page2["Page (Tab)"]
+    Context2 --> Page3["Page (Tab)"]
+
+    style Browser fill:#0173B2,color:#fff
+    style Context1 fill:#DE8F05,color:#000
+    style Context2 fill:#DE8F05,color:#000
+    style Page1 fill:#029E73,color:#fff
+    style Page2 fill:#029E73,color:#fff
+    style Page3 fill:#029E73,color:#fff
+```
 
 **Code**:
 
@@ -116,9 +133,28 @@ test("browser configuration", async () => {
 
 ---
 
-## Example 3: Basic Navigation and Waiting
+### Example 3: Basic Navigation and Waiting
 
 Playwright automatically waits for navigation to complete. Understanding navigation events and wait strategies prevents race conditions.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    Nav["page.goto(url)"] --> Decision{"waitUntil<br/>strategy?"}
+    Decision -->|"load (default)"| Load["Wait for<br/>DOMContentLoaded"]
+    Decision -->|"networkidle"| Idle["Wait for ≤2 active<br/>requests for 500ms"]
+    Decision -->|"commit"| Commit["Wait for<br/>HTTP response headers"]
+    Load --> Ready["Page Ready<br/>for Interactions"]
+    Idle --> Ready
+    Commit --> Ready
+
+    style Nav fill:#0173B2,color:#fff
+    style Decision fill:#DE8F05,color:#000
+    style Load fill:#029E73,color:#fff
+    style Idle fill:#029E73,color:#fff
+    style Commit fill:#CA9161,color:#fff
+    style Ready fill:#CC78BC,color:#000
+```
 
 **Code**:
 
@@ -165,9 +201,24 @@ test("navigation with waiting", async ({ page }) => {
 
 ---
 
-## Example 4: Basic Locators - getByRole
+### Example 4: Basic Locators - getByRole
 
 `getByRole` is Playwright's recommended locator strategy—it finds elements by ARIA role and accessible name, ensuring tests verify what users actually experience.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    Code["page.getByRole(<br/>'button', { name: 'Submit' })"] --> Query["DOM Query<br/>(on action/assertion)"]
+    Query --> ARIA["Scan ARIA roles<br/>in DOM tree"]
+    ARIA --> Match["Match accessible<br/>name / aria-label"]
+    Match --> Locator["Locator Object<br/>(lazy, re-queryable)"]
+
+    style Code fill:#0173B2,color:#fff
+    style Query fill:#DE8F05,color:#000
+    style ARIA fill:#029E73,color:#fff
+    style Match fill:#CC78BC,color:#000
+    style Locator fill:#CA9161,color:#fff
+```
 
 **Code**:
 
@@ -213,9 +264,35 @@ test("locating by role", async ({ page }) => {
 
 ---
 
-## Example 5: Clicking Elements and Action Auto-Wait
+### Example 5: Clicking Elements and Action Auto-Wait
 
 Playwright waits for actionability before performing actions—elements must be visible, enabled, stable, and ready to receive events.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    Click["locator.click()"] --> Attached["1. Attached to DOM?"]
+    Attached -->|no| Retry["Retry every 100ms<br/>(up to timeout)"]
+    Retry --> Attached
+    Attached -->|yes| Visible["2. Visible?"]
+    Visible -->|no| Retry
+    Visible -->|yes| Stable["3. Stable (no animation)?"]
+    Stable -->|no| Retry
+    Stable -->|yes| Enabled["4. Enabled?"]
+    Enabled -->|no| Retry
+    Enabled -->|yes| Pointer["5. Receives pointer events?"]
+    Pointer -->|no| Retry
+    Pointer -->|yes| Perform["Perform Click"]
+
+    style Click fill:#0173B2,color:#fff
+    style Retry fill:#DE8F05,color:#000
+    style Perform fill:#029E73,color:#fff
+    style Attached fill:#CA9161,color:#fff
+    style Visible fill:#CA9161,color:#fff
+    style Stable fill:#CA9161,color:#fff
+    style Enabled fill:#CA9161,color:#fff
+    style Pointer fill:#CA9161,color:#fff
+```
 
 **Code**:
 
@@ -264,7 +341,7 @@ test("clicking with auto-wait", async ({ page }) => {
 
 ---
 
-## Example 6: Text Input and Keyboard Actions
+### Example 6: Text Input and Keyboard Actions
 
 Playwright simulates realistic keyboard input with auto-clearing, typing delays, and special key sequences.
 
@@ -320,9 +397,30 @@ test("text input", async ({ page }) => {
 
 ---
 
-## Example 7: Basic Assertions with expect
+### Example 7: Basic Assertions with expect
 
 Playwright's `expect` provides auto-retrying assertions that wait for conditions to be met, preventing flaky tests from timing issues.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    Assert["expect(locator).toBeVisible()"] --> Check["Evaluate condition<br/>immediately"]
+    Check -->|"passes"| Pass["Assertion Passes"]
+    Check -->|"fails"| Wait["Wait 100ms"]
+    Wait --> Retry["Re-evaluate condition"]
+    Retry -->|"passes"| Pass
+    Retry -->|"still fails"| Timeout{"Timeout<br/>reached?"}
+    Timeout -->|"no"| Wait
+    Timeout -->|"yes"| Fail["TimeoutError:<br/>assertion failed"]
+
+    style Assert fill:#0173B2,color:#fff
+    style Check fill:#DE8F05,color:#000
+    style Pass fill:#029E73,color:#fff
+    style Wait fill:#CA9161,color:#fff
+    style Retry fill:#CA9161,color:#fff
+    style Timeout fill:#CC78BC,color:#000
+    style Fail fill:#DE8F05,color:#000
+```
 
 **Code**:
 
@@ -378,9 +476,31 @@ test("basic assertions", async ({ page }) => {
 
 ---
 
-## Example 8: Screenshots and Visual Verification
+### Example 8: Screenshots and Visual Verification
 
 Playwright captures screenshots for debugging and visual regression testing. Screenshots can be full page, element-specific, or triggered on failure.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+sequenceDiagram
+    participant Test as Test Code
+    participant PW as Playwright
+    participant Browser as Browser
+    participant Disk as File System
+
+    Test->>PW: page.screenshot({ path: 'shot.png' })
+    PW->>Browser: Capture viewport pixels
+    Browser-->>PW: Image buffer (PNG)
+    PW->>Disk: Write shot.png
+    PW-->>Test: Buffer returned
+
+    Test->>PW: expect(el).toHaveScreenshot('baseline.png')
+    PW->>Browser: Capture element pixels
+    Browser-->>PW: Current image buffer
+    PW->>Disk: Load baseline.png (or create on first run)
+    PW->>PW: Pixel diff comparison
+    PW-->>Test: Pass or fail with diff image
+```
 
 **Code**:
 
@@ -389,6 +509,7 @@ import { test, expect } from "@playwright/test";
 
 test("screenshots", async ({ page }) => {
   await page.goto("https://playwright.dev");
+  // => Navigates to Playwright documentation site
 
   await page.screenshot({ path: "homepage.png" });
   // => Captures viewport screenshot
@@ -398,11 +519,14 @@ test("screenshots", async ({ page }) => {
   await page.screenshot({
     path: "full-page.png",
     fullPage: true,
+    // => fullPage: true scrolls and stitches entire page
     // => Captures entire page (scrolls and stitches)
     // => Includes content below viewport
   });
+  // => full-page.png saved with complete page content
 
   const logo = page.locator(".navbar__logo");
+  // => Creates locator for logo element by CSS class
   await logo.screenshot({ path: "logo.png" });
   // => Captures screenshot of single element
   // => Crops to element bounding box
@@ -411,12 +535,15 @@ test("screenshots", async ({ page }) => {
   await page.screenshot({
     path: "masked.png",
     mask: [page.locator(".navbar")],
+    // => mask: array of locators to hide in screenshot
     // => Masks navbar in screenshot (hides dynamic content)
     // => Useful for excluding timestamps, ads, personalized content
     // => Masked areas filled with pink color
   });
+  // => masked.png saved with navbar hidden
 
   const heading = page.getByRole("heading", { level: 1 });
+  // => Locates H1 heading element by ARIA role
   await expect(heading).toHaveScreenshot("heading.png");
   // => Visual regression assertion
   // => Compares current screenshot to baseline
@@ -431,9 +558,27 @@ test("screenshots", async ({ page }) => {
 
 ---
 
-## Example 9: Test Structure with describe Blocks
+### Example 9: Test Structure with describe Blocks
 
 Organizing tests into logical groups with `test.describe` enables shared setup, better reporting, and focused test execution.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    Suite["test.describe('Suite')"] --> BeforeEach["test.beforeEach()<br/>(runs before each test)"]
+    BeforeEach --> T1["test('case 1')"]
+    BeforeEach --> T2["test('case 2')"]
+    T1 --> AfterEach["test.afterEach()<br/>(runs after each test)"]
+    T2 --> AfterEach
+    AfterEach --> Report["Test Report<br/>(grouped by suite)"]
+
+    style Suite fill:#0173B2,color:#fff
+    style BeforeEach fill:#DE8F05,color:#000
+    style T1 fill:#029E73,color:#fff
+    style T2 fill:#029E73,color:#fff
+    style AfterEach fill:#CC78BC,color:#000
+    style Report fill:#CA9161,color:#fff
+```
 
 **Code**:
 
@@ -443,45 +588,62 @@ import { test, expect } from "@playwright/test";
 test.describe("Navigation tests", () => {
   // => Groups related tests under "Navigation tests"
   // => Improves test organization and reporting
+  // => All tests in this block share lifecycle hooks
 
   test.beforeEach(async ({ page }) => {
-    // => Runs before each test in this describe block
+    // => Runs before EACH test in this describe block
     // => Sets up common preconditions
+    // => Each test gets fresh browser context + this setup
     await page.goto("https://playwright.dev");
     // => All tests start from homepage
+    // => Navigation complete before test body runs
   });
 
   test("homepage loads", async ({ page }) => {
     // => Test inherits beforeEach setup
     // => page already at https://playwright.dev
     await expect(page).toHaveTitle(/Playwright/);
+    // => Verifies page title matches (auto-retry up to 5s)
   });
 
   test("can navigate to docs", async ({ page }) => {
     // => Starts fresh: new browser context, beforeEach runs again
+    // => page starts at https://playwright.dev (from beforeEach)
     const docsLink = page.getByRole("link", { name: "Docs" });
+    // => Locates Docs link by accessible name
     await docsLink.click();
+    // => Clicks link and waits for navigation
     await expect(page).toHaveURL(/.*docs/);
+    // => Asserts URL contains "docs"
   });
 
   test.afterEach(async ({ page }) => {
-    // => Runs after each test (even if test fails)
+    // => Runs after EACH test (even if test fails)
     // => Useful for cleanup, logging, custom reporting
+    // => page still available after test completes
     console.log("Test completed, URL:", page.url());
+    // => Output: Test completed, URL: https://playwright.dev/docs/...
   });
 });
 
 test.describe("Search functionality", () => {
   // => Second describe block (independent from Navigation tests)
+  // => No shared beforeEach with Navigation tests
 
   test("search box accepts input", async ({ page }) => {
     // => New context, doesn't inherit Navigation tests beforeEach
     await page.goto("https://playwright.dev");
+    // => Must navigate manually (no shared beforeEach here)
     const searchButton = page.getByRole("button", { name: /search/i });
+    // => Locates search button by role + name regex
     await searchButton.click();
+    // => Opens search dialog/input
     const searchInput = page.getByPlaceholder(/search/i);
+    // => Locates input by placeholder text regex
     await searchInput.fill("assertions");
+    // => Types "assertions" into search field
     await expect(searchInput).toHaveValue("assertions");
+    // => Asserts input contains typed value
   });
 });
 ```
@@ -492,9 +654,28 @@ test.describe("Search functionality", () => {
 
 ---
 
-## Example 10: Multiple Browser Testing
+### Example 10: Multiple Browser Testing
 
 Playwright tests run in Chromium by default, but you can test across Chrome, Firefox, and WebKit (Safari) with configuration or per-test browser selection.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    Config["playwright.config.ts<br/>projects: [chromium, firefox, webkit]"] --> Runner["Test Runner"]
+    Runner --> W1["Worker 1<br/>Chromium"]
+    Runner --> W2["Worker 2<br/>Firefox"]
+    Runner --> W3["Worker 3<br/>WebKit"]
+    W1 --> Results["Aggregated<br/>Test Results"]
+    W2 --> Results
+    W3 --> Results
+
+    style Config fill:#0173B2,color:#fff
+    style Runner fill:#DE8F05,color:#000
+    style W1 fill:#029E73,color:#fff
+    style W2 fill:#029E73,color:#fff
+    style W3 fill:#029E73,color:#fff
+    style Results fill:#CC78BC,color:#000
+```
 
 **Code**:
 
@@ -504,38 +685,51 @@ import { test, expect, chromium, firefox, webkit } from "@playwright/test";
 test("cross-browser test with config", async ({ page, browserName }) => {
   // => Uses browser from playwright.config.ts projects setting
   // => browserName: fixture injected with current browser name
+  // => Value is "chromium", "firefox", or "webkit"
   await page.goto("https://playwright.dev");
+  // => Navigates using the configured browser
   console.log("Testing in browser:", browserName);
   // => Output: Testing in browser: chromium (or firefox, webkit)
 
   await expect(page).toHaveTitle(/Playwright/);
   // => Same assertion works across all browsers
+  // => Playwright normalizes title access across browsers
 });
 
 test("manual browser selection", async () => {
   // => Tests specific browser behavior without fixtures
+  // => No page fixture - manual browser control
   const browsers = [
     { name: "chromium", launcher: chromium },
+    // => Chromium: Chrome/Edge engine
     { name: "firefox", launcher: firefox },
+    // => Firefox: Mozilla engine
     { name: "webkit", launcher: webkit },
+    // => WebKit: Safari engine
   ];
 
   for (const { name, launcher } of browsers) {
-    // => Iterates through all three browsers
+    // => Iterates through all three browsers sequentially
     const browser = await launcher.launch();
-    // => Launches browser instance
+    // => Launches specific browser instance
+    // => Returns Browser object
     const context = await browser.newContext();
+    // => Creates isolated browser context (fresh cookies/storage)
     const page = await context.newPage();
+    // => Opens new tab in context
 
     await page.goto("https://example.com");
+    // => Navigates in the specific browser
     const title = await page.title();
+    // => Gets page title from current browser
     console.log(`${name} title:`, title);
     // => Output: chromium title: Example Domain
     // => Output: firefox title: Example Domain
     // => Output: webkit title: Example Domain
 
     await browser.close();
-    // => Closes browser after test
+    // => Closes browser and all contexts/pages
+    // => Must close manually when using launcher directly
   }
 });
 ```
@@ -548,7 +742,7 @@ test("manual browser selection", async () => {
 
 ## Selectors and Locators (Examples 11-20)
 
-## Example 11: CSS Selectors (Not Recommended)
+### Example 11: CSS Selectors (Not Recommended)
 
 CSS selectors work in Playwright but are fragile—they break when HTML structure changes. Use role-based locators when possible.
 
@@ -600,7 +794,7 @@ test("css selectors", async ({ page }) => {
 
 ---
 
-## Example 12: XPath Selectors (Use Sparingly)
+### Example 12: XPath Selectors (Use Sparingly)
 
 XPath selectors are powerful for complex DOM traversal but are slow and harder to read than Playwright's built-in locators.
 
@@ -647,7 +841,7 @@ test("xpath selectors", async ({ page }) => {
 
 ---
 
-## Example 13: getByLabel for Form Fields
+### Example 13: getByLabel for Form Fields
 
 `getByLabel` locates form inputs by their associated label text, creating resilient selectors tied to user-visible labels.
 
@@ -698,7 +892,7 @@ test("getByLabel locator", async ({ page }) => {
 
 ---
 
-## Example 14: getByPlaceholder for Input Hints
+### Example 14: getByPlaceholder for Input Hints
 
 `getByPlaceholder` locates inputs by their placeholder attribute—useful when labels aren't present but placeholder text is user-visible.
 
@@ -738,7 +932,7 @@ test("getByPlaceholder locator", async ({ page }) => {
 
 ---
 
-## Example 15: getByTestId for Stable Selectors
+### Example 15: getByTestId for Stable Selectors
 
 `getByTestId` locates elements by `data-testid` attribute—a stable selector explicitly added for testing that doesn't break during refactoring.
 
@@ -784,9 +978,28 @@ test("getByTestId locator", async ({ page }) => {
 
 ---
 
-## Example 16: Chaining Locators for Scoped Searches
+### Example 16: Chaining Locators for Scoped Searches
 
 Chaining locators narrows search scope to specific page regions, preventing false matches and improving selector precision.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    Page["page"] --> Nav["page.locator('nav.navbar')"]
+    Nav --> ScopedLink["nav.getByRole('link')"]
+    Nav --> ScopedBtn["nav.getByRole('button')"]
+    Page --> Sidebar["page.locator('.sidebar')"]
+    Sidebar --> Section["sidebar.locator('section').first()"]
+    Section --> Heading["section.getByRole('heading')"]
+
+    style Page fill:#0173B2,color:#fff
+    style Nav fill:#DE8F05,color:#000
+    style Sidebar fill:#DE8F05,color:#000
+    style ScopedLink fill:#029E73,color:#fff
+    style ScopedBtn fill:#029E73,color:#fff
+    style Section fill:#CA9161,color:#fff
+    style Heading fill:#CC78BC,color:#000
+```
 
 **Code**:
 
@@ -797,7 +1010,7 @@ test("chaining locators", async ({ page }) => {
   await page.goto("https://playwright.dev");
 
   const navbar = page.locator("nav.navbar");
-  // => Locates navbar container
+  // => Locates navbar container using CSS tag+class selector
   // => Returns Locator for navigation element
   // => Acts as search context for chained locators
 
@@ -806,29 +1019,40 @@ test("chaining locators", async ({ page }) => {
   // => Scoped search prevents matching footer links
   // => Returns Locator for all nav links
   const count = await navLinks.count();
+  // => Gets count of nav links found
   console.log("Nav links:", count);
+  // => Output: Nav links: 5 (example value)
 
   const docsLink = navbar.getByRole("link", { name: "Docs" });
   // => Finds "Docs" link within navbar specifically
   // => Won't match "Docs" link in footer (if exists)
   await docsLink.click();
+  // => Clicks the scoped Docs link, navigates away
 
   const sidebar = page.locator(".sidebar");
+  // => Locates sidebar container element
   const firstSection = sidebar.locator("section").first();
   // => Chains CSS locators
-  // => Finds first <section> within sidebar
+  // => Finds first <section> within sidebar only
   const sectionHeading = firstSection.getByRole("heading");
   // => Further narrows to heading within first section
+  // => Three levels of chaining: sidebar > first section > heading
   await expect(sectionHeading).toBeVisible();
+  // => Asserts section heading is visible
 
   const form = page.getByRole("form");
+  // => Locates form element by ARIA role
   const emailInput = form.getByLabel("Email");
+  // => Finds Email input scoped to the form
   const submitButton = form.getByRole("button", { name: "Submit" });
+  // => Finds Submit button scoped to the form
   // => Chains semantic locators
   // => Ensures we interact with form's email and button
   // => Prevents matching email/button outside form
   await emailInput.fill("test@example.com");
+  // => Types email into the scoped input
   await submitButton.click();
+  // => Clicks Submit button within the form
 });
 ```
 
@@ -838,7 +1062,7 @@ test("chaining locators", async ({ page }) => {
 
 ---
 
-## Example 17: Filtering Locators with has and hasText
+### Example 17: Filtering Locators with has and hasText
 
 Filter locators to find elements containing specific child elements or text, enabling complex selector logic without XPath.
 
@@ -852,34 +1076,42 @@ test("filtering locators", async ({ page }) => {
 
   const articleWithHeading = page.locator("article").filter({
     has: page.getByRole("heading", { name: /Playwright/ }),
+    // => has: element must contain this child element
   });
   // => Finds <article> elements containing heading with "Playwright"
   // => has: filters by presence of child element
-  // => Returns Locator for matching articles
+  // => Returns Locator for matching articles only
   await expect(articleWithHeading).toBeVisible();
+  // => Asserts at least one matching article is visible
 
   const sectionWithText = page.locator("section").filter({
     hasText: "Get started",
+    // => hasText: element must contain this text anywhere
   });
   // => Finds <section> elements containing "Get started" text
   // => hasText: filters by text content (anywhere in element tree)
   // => Returns Locator for sections with text
   await expect(sectionWithText).toBeVisible();
+  // => Asserts filtered section is visible
 
   const buttonWithIcon = page.getByRole("button").filter({ has: page.locator("svg") });
   // => Finds buttons containing SVG icon
-  // => Useful for icon-only buttons
+  // => Useful for icon-only buttons (no text label)
   // => Returns Locator for buttons with icons
   await expect(buttonWithIcon.first()).toBeVisible();
+  // => Asserts first button with icon is visible
 
   const linkNotDisabled = page.getByRole("link").filter({
     hasNot: page.locator('[aria-disabled="true"]'),
+    // => hasNot: element must NOT contain this child
   });
   // => Finds links NOT containing aria-disabled="true"
   // => hasNot: negative filter (exclude matches)
   // => Returns enabled links only
   const enabledCount = await linkNotDisabled.count();
+  // => Counts enabled links found
   console.log("Enabled links:", enabledCount);
+  // => Output: Enabled links: 15 (example value)
 
   const rowWithEmail = page.locator("tr").filter({ hasText: "user@example.com" });
   // => Finds table rows containing specific email
@@ -887,7 +1119,7 @@ test("filtering locators", async ({ page }) => {
   // => Returns Locator for matching rows
   await rowWithEmail.getByRole("button", { name: "Delete" }).click();
   // => Clicks Delete button in row with email
-  // => Combines filtering and chaining
+  // => Combines filtering and chaining for precise targeting
 });
 ```
 
@@ -897,7 +1129,7 @@ test("filtering locators", async ({ page }) => {
 
 ---
 
-## Example 18: nth, first, last for Multiple Elements
+### Example 18: nth, first, last for Multiple Elements
 
 When locators match multiple elements, use `nth`, `first`, `last` to select specific instances by position.
 
@@ -912,50 +1144,62 @@ test("selecting from multiple elements", async ({ page }) => {
   const links = page.getByRole("link");
   // => Matches all links on page
   // => Returns Locator for multiple elements
+  // => No DOM query yet (lazy evaluation)
 
   const firstLink = links.first();
   // => Gets first matched link
   // => Equivalent to nth(0)
   // => Returns Locator for single element
   await expect(firstLink).toBeVisible();
+  // => NOW evaluates: queries DOM for first link
 
   const lastLink = links.last();
   // => Gets last matched link
-  // => Returns Locator for single element
+  // => Returns Locator for single element (re-queries on use)
   const lastLinkText = await lastLink.textContent();
+  // => Gets text content of last link
   console.log("Last link text:", lastLinkText);
+  // => Output: Last link text: "Footer copyright link" (example)
 
   const thirdLink = links.nth(2);
   // => Gets third link (0-based indexing)
   // => nth(0) is first, nth(1) is second, nth(2) is third
   // => Returns Locator for single element
   await thirdLink.click();
+  // => Clicks the third link in document order
 
   const allLinks = await links.all();
   // => Converts Locator to array of Locators
-  // => Returns Promise<Locator[]>
+  // => Returns Promise<Locator[]> (resolves now)
   // => Each array element is a Locator for one link
+  // => Snapshot of current matches - won't update if DOM changes
   console.log("Total links:", allLinks.length);
+  // => Output: Total links: 42 (example value)
 
   for (const link of allLinks) {
     // => Iterates through all matched links
     const text = await link.textContent();
-    // => Gets text of each link
+    // => Gets text content of current link
     console.log("Link text:", text);
-    // => Could perform actions on each link
+    // => Output: Link text: "Home", "Docs", "API", etc.
   }
 
   const paragraphs = page.locator("p");
+  // => Locates all paragraph elements
   const count = await paragraphs.count();
   // => Gets number of matched paragraphs
-  // => Returns number
+  // => Returns number (evaluates immediately)
   console.log("Paragraph count:", count);
+  // => Output: Paragraph count: 10 (example value)
 
   for (let i = 0; i < count; i++) {
-    // => Iterates by index
+    // => Iterates by index from 0 to count-1
     const paragraph = paragraphs.nth(i);
+    // => Gets paragraph at index i (0-based)
     const text = await paragraph.textContent();
+    // => Gets text of this specific paragraph
     console.log(`Paragraph ${i}:`, text);
+    // => Output: Paragraph 0: "First paragraph text..."
   }
 });
 ```
@@ -966,7 +1210,7 @@ test("selecting from multiple elements", async ({ page }) => {
 
 ---
 
-## Example 19: Locator Evaluation and Element Handles
+### Example 19: Locator Evaluation and Element Handles
 
 Locators are lazy (don't query DOM until needed). Understanding evaluation timing prevents confusion about when elements are found.
 
@@ -1031,7 +1275,7 @@ test("locator evaluation timing", async ({ page }) => {
 
 ---
 
-## Example 20: getByText for Exact and Partial Matches
+### Example 20: getByText for Exact and Partial Matches
 
 `getByText` locates elements by visible text content—powerful for finding dynamic content or testing rendered data.
 
@@ -1089,9 +1333,25 @@ test("getByText locator", async ({ page }) => {
 
 ## Basic Interactions (Examples 21-30)
 
-## Example 21: Checkboxes and Radio Buttons
+### Example 21: Checkboxes and Radio Buttons
 
 Playwright provides specialized methods for checkbox and radio button interactions that handle checked state automatically.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+stateDiagram-v2
+    [*] --> Unchecked: initial state
+    Unchecked --> Checked: check() / setChecked(true)
+    Checked --> Unchecked: uncheck() / setChecked(false)
+    Checked --> Checked: check() (idempotent)
+    Unchecked --> Unchecked: uncheck() (idempotent)
+
+    note right of Checked
+        Radio buttons: checking one
+        automatically unchecks siblings
+        in the same group
+    end note
+```
 
 **Code**:
 
@@ -1155,9 +1415,33 @@ test("checkboxes and radios", async ({ page }) => {
 
 ---
 
-## Example 22: Select Dropdowns
+### Example 22: Select Dropdowns
 
 Playwright handles `<select>` dropdowns with methods that accept values, labels, or indexes—matching how users interact with dropdowns.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    Call["selectOption(input)"] --> Type{"Input type?"}
+    Type -->|"string value"| ByVal["Match by<br/>option value attr"]
+    Type -->|"{ label: '...' }"| ByLabel["Match by<br/>visible text"]
+    Type -->|"{ index: N }"| ByIdx["Match by<br/>position (0-based)"]
+    Type -->|"array"| Multi["Multi-select:<br/>select all listed options"]
+    ByVal --> DOM["Update DOM<br/>selected state"]
+    ByLabel --> DOM
+    ByIdx --> DOM
+    Multi --> DOM
+    DOM --> Events["Fire change / input events"]
+
+    style Call fill:#0173B2,color:#fff
+    style Type fill:#DE8F05,color:#000
+    style ByVal fill:#029E73,color:#fff
+    style ByLabel fill:#029E73,color:#fff
+    style ByIdx fill:#029E73,color:#fff
+    style Multi fill:#CC78BC,color:#000
+    style DOM fill:#CA9161,color:#fff
+    style Events fill:#CA9161,color:#fff
+```
 
 **Code**:
 
@@ -1219,7 +1503,7 @@ test("select dropdowns", async ({ page }) => {
 
 ---
 
-## Example 23: File Uploads
+### Example 23: File Uploads
 
 File uploads require setting file inputs with file paths. Playwright handles single and multiple file uploads without opening file dialogs.
 
@@ -1232,25 +1516,27 @@ test("file uploads", async ({ page }) => {
   await page.goto("https://example.com/upload");
 
   const fileInput = page.locator('input[type="file"]');
-  // => Locates file input element
+  // => Locates file input element by type attribute
   // => Returns Locator for input
 
   await fileInput.setInputFiles("./fixtures/document.pdf");
-  // => Sets file to upload
+  // => Sets file to upload (bypasses OS file dialog)
   // => Path relative to test file or project root
   // => No file dialog appears (automated)
   // => Returns when file set
 
   const fileName = await fileInput.evaluate((input: HTMLInputElement) => input.files?.[0]?.name);
+  // => Reads filename from browser's FileList API
   console.log("File selected:", fileName);
   // => Output: File selected: document.pdf
 
   await fileInput.setInputFiles(["./fixtures/image1.jpg", "./fixtures/image2.jpg"]);
-  // => Sets multiple files (array)
+  // => Sets multiple files (array of paths)
   // => Works on <input type="file" multiple>
   // => Replaces previous selection
 
   const fileCount = await fileInput.evaluate((input: HTMLInputElement) => input.files?.length);
+  // => Counts files in FileList
   console.log("Files selected:", fileCount);
   // => Output: Files selected: 2
 
@@ -1260,14 +1546,18 @@ test("file uploads", async ({ page }) => {
   // => Returns input to empty state
 
   const buffer = Buffer.from("File content here");
+  // => Creates Buffer from string content
   await fileInput.setInputFiles({
     name: "generated.txt",
+    // => Virtual filename for the upload
     mimeType: "text/plain",
+    // => MIME type identifies file format
     buffer: buffer,
+    // => File contents as Buffer
   });
   // => Uploads file from memory buffer
   // => No need for physical file on disk
-  // => Useful for dynamic test data
+  // => Useful for dynamic test data (generated content)
 });
 ```
 
@@ -1277,7 +1567,7 @@ test("file uploads", async ({ page }) => {
 
 ---
 
-## Example 24: Hover Interactions
+### Example 24: Hover Interactions
 
 Hovering simulates mouse-over effects, essential for testing tooltips, dropdown menus, and hover-triggered actions.
 
@@ -1338,7 +1628,7 @@ test("hover interactions", async ({ page }) => {
 
 ---
 
-## Example 25: Double Click and Right Click
+### Example 25: Double Click and Right Click
 
 Playwright supports double-click and right-click (context menu) interactions for advanced UI testing.
 
@@ -1398,9 +1688,32 @@ test("double and right click", async ({ page }) => {
 
 ---
 
-## Example 26: Keyboard Input and Shortcuts
+### Example 26: Keyboard Input and Shortcuts
 
 Playwright simulates keyboard input with single keys, key combinations, and modifier keys—essential for testing keyboard accessibility and shortcuts.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    Input["Keyboard Input Method"] --> PressKey["locator.press('Key')"]
+    Input --> TypeStr["locator.type('text', { delay })"]
+    Input --> FillStr["locator.fill('text')"]
+    Input --> PageKey["page.keyboard.press('Key')"]
+    PressKey --> Events["Fires: keydown + keypress<br/>+ keyup events"]
+    TypeStr --> Events
+    FillStr --> SetVal["Directly sets value<br/>(no key events)"]
+    PageKey --> Events
+    Events --> Handler["Browser event handler<br/>(shortcuts, validation)"]
+
+    style Input fill:#0173B2,color:#fff
+    style PressKey fill:#DE8F05,color:#000
+    style TypeStr fill:#DE8F05,color:#000
+    style FillStr fill:#CC78BC,color:#000
+    style PageKey fill:#DE8F05,color:#000
+    style Events fill:#029E73,color:#fff
+    style SetVal fill:#CA9161,color:#fff
+    style Handler fill:#029E73,color:#fff
+```
 
 **Code**:
 
@@ -1468,7 +1781,7 @@ test("keyboard interactions", async ({ page }) => {
 
 ---
 
-## Example 27: Focus and Blur Events
+### Example 27: Focus and Blur Events
 
 Focus management is critical for form validation, keyboard navigation, and accessibility. Playwright provides methods to control and verify focus state.
 
@@ -1531,9 +1844,36 @@ test("focus and blur", async ({ page }) => {
 
 ---
 
-## Example 28: Waiting for Specific Conditions
+### Example 28: Waiting for Specific Conditions
 
 While Playwright auto-waits for most actions, explicit waits are sometimes needed for complex conditions or custom timing requirements.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    Need["Need to wait for..."] --> ElementQ{"Element<br/>state?"}
+    Need --> NetworkQ{"Network<br/>response?"}
+    Need --> URLQ{"URL<br/>change?"}
+    Need --> CustomQ{"Custom<br/>condition?"}
+    ElementQ -->|"in DOM"| WaitSel["waitForSelector()<br/>state: attached"]
+    ElementQ -->|"visible"| WaitVis["waitForSelector()<br/>state: visible"]
+    ElementQ -->|"gone"| WaitHid["locator.waitFor()<br/>state: hidden"]
+    NetworkQ --> WaitResp["waitForResponse()<br/>with URL filter"]
+    URLQ --> WaitURL["waitForURL(pattern)"]
+    CustomQ --> WaitFn["waitForFunction()<br/>with JS condition"]
+
+    style Need fill:#0173B2,color:#fff
+    style ElementQ fill:#DE8F05,color:#000
+    style NetworkQ fill:#DE8F05,color:#000
+    style URLQ fill:#DE8F05,color:#000
+    style CustomQ fill:#DE8F05,color:#000
+    style WaitSel fill:#029E73,color:#fff
+    style WaitVis fill:#029E73,color:#fff
+    style WaitHid fill:#029E73,color:#fff
+    style WaitResp fill:#CA9161,color:#fff
+    style WaitURL fill:#CA9161,color:#fff
+    style WaitFn fill:#CC78BC,color:#000
+```
 
 **Code**:
 
@@ -1594,9 +1934,24 @@ test("explicit waiting", async ({ page }) => {
 
 ---
 
-## Example 29: Auto-Waiting Behavior Deep Dive
+### Example 29: Auto-Waiting Behavior Deep Dive
 
 Understanding auto-waiting prevents confusion about when and how long Playwright waits—it's not magic, it's built-in retry logic with configurable timeouts.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    Actions["Actions<br/>(click, fill, etc.)"] -->|"auto-wait for<br/>actionability"| ActionWait["Retries every 100ms<br/>up to action timeout (30s default)"]
+    Assertions["Assertions<br/>(expect().toBeVisible())"] -->|"auto-retry<br/>condition check"| AssertWait["Retries every 100ms<br/>up to assertion timeout (5s default)"]
+    StateChecks["State Checks<br/>(isVisible(), isEnabled())"] -->|"NO auto-wait"| Immediate["Returns current<br/>state immediately"]
+
+    style Actions fill:#0173B2,color:#fff
+    style Assertions fill:#DE8F05,color:#000
+    style StateChecks fill:#CC78BC,color:#000
+    style ActionWait fill:#029E73,color:#fff
+    style AssertWait fill:#029E73,color:#fff
+    style Immediate fill:#CA9161,color:#fff
+```
 
 **Code**:
 
@@ -1664,7 +2019,7 @@ test("auto-wait behavior", async ({ page }) => {
 
 ---
 
-## Example 30: Common Auto-Wait Pitfalls and Solutions
+### Example 30: Common Auto-Wait Pitfalls and Solutions
 
 Auto-waiting is powerful but has edge cases. Understanding common pitfalls prevents flaky tests and confusion.
 

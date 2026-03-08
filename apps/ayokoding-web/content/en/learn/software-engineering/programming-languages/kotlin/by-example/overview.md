@@ -3,20 +3,17 @@ title: "Overview"
 date: 2025-12-30T01:11:31+07:00
 draft: false
 weight: 10000000
-description: "🔴 CRITICAL: Kotlin by-example is completely empty (0/85 examples) - under active development"
-tags: ["kotlin", "tutorial", "by-example", "examples", "code-first", "jvm", "android", "incomplete", "empty"]
+description: "Learn Kotlin by-example: 81 annotated code examples covering Kotlin fundamentals, production patterns, and advanced features for experienced developers"
+tags: ["kotlin", "tutorial", "by-example", "examples", "code-first", "jvm", "android"]
 ---
 
-🔴 **CRITICAL STATUS: COMPLETELY EMPTY** - This tutorial is currently under development with 0 out of 75-85 target examples. All three levels (beginner, intermediate, advanced) need to be created from scratch.
+This by-example guide teaches Kotlin through 81 annotated, runnable code examples organized by complexity level. Covering fundamentals through advanced production patterns, each example is self-contained and immediately executable in IntelliJ IDEA or via the Kotlin command line.
 
-**When complete**, this by-example guide will teach essential Kotlin concepts through 75-85 annotated code examples organized by complexity level.
+**81 examples across three levels**:
 
-**Current Progress**:
-
-- Beginner (0/27-30 examples) - Not started
-- Intermediate (0/20-30 examples) - Not started
-- Advanced (0/25-28 examples) - Not started
-- **Total: 0/85 examples** - 100% gap (highest priority)
+- Beginner (Examples 1-27): 27 examples covering fundamental language features
+- Intermediate (Examples 28-54): 27 examples covering production patterns
+- Advanced (Examples 55-81): 27 examples covering advanced language features
 
 ## What Is By-Example Learning?
 
@@ -37,7 +34,7 @@ Unlike narrative tutorials that build understanding through explanation and stor
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     A["Beginner<br/>Examples 1-27<br/>Kotlin Fundamentals"] --> B["Intermediate<br/>Examples 28-54<br/>Production Patterns"]
-    B --> C["Advanced<br/>Examples 55-80<br/>Expert Mastery"]
+    B --> C["Advanced<br/>Examples 55-81<br/>Expert Mastery"]
 
     style A fill:#0173B2,color:#fff
     style B fill:#DE8F05,color:#fff
@@ -88,7 +85,7 @@ Understanding where by-example fits in the tutorial ecosystem helps you choose t
 
 | Tutorial Type    | Coverage                          | Approach                       | Target Audience         | When to Use                                          |
 | ---------------- | --------------------------------- | ------------------------------ | ----------------------- | ---------------------------------------------------- |
-| **By Example**   | Comprehensive through 80 examples | Code-first, annotated examples | Experienced developers  | Quick language pickup, reference, language switching |
+| **By Example**   | Comprehensive through 81 examples | Code-first, annotated examples | Experienced developers  | Quick language pickup, reference, language switching |
 | **Quick Start**  | 5-30% touchpoints                 | Hands-on project               | Newcomers to Kotlin     | First taste, decide if worth learning                |
 | **Beginner**     | 0-60% comprehensive               | Narrative, explanatory         | Complete beginners      | Deep understanding, first programming language       |
 | **Intermediate** | 60-85%                            | Practical applications         | Past basics             | Production patterns, frameworks                      |
@@ -159,7 +156,7 @@ You're the primary audience - Kotlin is designed as a better Java. The transitio
 - **Data classes**: One line replaces boilerplate getters, setters, equals, hashCode
 - **Extension functions**: Add methods to existing classes without inheritance
 
-Focus on Examples 1-15 (Kotlin basics) and Examples 20-27 (null safety) to see immediate productivity gains.
+Focus on Examples 1-15 (Kotlin basics) and Examples 10 (null safety) to see immediate productivity gains.
 
 ### For Swift/iOS Developers
 
@@ -169,7 +166,7 @@ You know a modern language with optionals and type inference. Kotlin feels very 
 - **JVM instead of iOS**: Same concepts, different runtime and ecosystem
 - **Coroutines vs async/await**: Structured concurrency with similar patterns
 
-Focus on Examples 45-55 (coroutines) and Examples 35-42 (scope functions) to leverage your Swift knowledge.
+Focus on Examples 28-35 (coroutines) and Examples 22-27 (scope functions and functional patterns) to leverage your Swift knowledge.
 
 ### For Python/JavaScript Developers
 
@@ -189,7 +186,7 @@ You know JVM functional programming. Kotlin is simpler and more pragmatic:
 - **Better Java interop**: Kotlin is designed for seamless Java integration
 - **Coroutines vs Futures**: Different concurrency model, simpler mental model
 
-Focus on Examples 55-70 (advanced features) and Examples 70-80 (DSLs) to see Kotlin's design choices.
+Focus on Examples 55-81 (advanced features) and Examples 44 (DSLs in intermediate) to see Kotlin's design choices.
 
 ## Code-First Philosophy
 
@@ -198,7 +195,7 @@ This tutorial prioritizes working code over theoretical discussion:
 - **No lengthy prose**: Concepts are demonstrated, not explained at length
 - **Runnable examples**: Every example compiles and runs with kotlinc or in IntelliJ IDEA
 - **Learn by doing**: Understanding comes from running and modifying code
-- **Pattern recognition**: See the same patterns in different contexts across 80 examples
+- **Pattern recognition**: See the same patterns in different contexts across 81 examples
 
 If you prefer narrative explanations. By-example learning works best when you learn through experimentation.
 
@@ -226,11 +223,11 @@ val value = result ?: 0          // => value is 0 (Elvis operator provides defau
 
 ## Example Distribution
 
-**80 examples across three levels**:
+**81 examples across three levels**:
 
 - **Beginner** (1-27): 27 examples covering fundamental language features
 - **Intermediate** (28-54): 27 examples covering production patterns
-- **Advanced** (55-80): 26 examples covering advanced language features
+- **Advanced** (55-81): 27 examples covering advanced language features
 
 Each level builds on previous knowledge while remaining self-contained and runnable.
 
@@ -282,6 +279,6 @@ Jump into the beginner examples to start learning Kotlin through code:
 
 - [Beginner Examples (1-27)](/en/learn/software-engineering/programming-languages/kotlin/by-example/beginner) - Basic syntax, null safety, functions, OOP fundamentals
 - [Intermediate Examples (28-54)](/en/learn/software-engineering/programming-languages/kotlin/by-example/intermediate) - Generics, scope functions, delegation, coroutines basics
-- [Advanced Examples (55-80)](/en/learn/software-engineering/programming-languages/kotlin/by-example/advanced) - Advanced coroutines, DSLs, multiplatform, performance
+- [Advanced Examples (55-81)](/en/learn/software-engineering/programming-languages/kotlin/by-example/advanced) - Advanced coroutines, DSLs, multiplatform, performance
 
 Each example is self-contained and runnable. Start with Example 1, or jump to topics that interest you most.

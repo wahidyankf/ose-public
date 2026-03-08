@@ -1,7 +1,7 @@
 ---
 title: "Overview"
 weight: 100000000
-date: 2025-01-29T10:00:00+07:00
+date: 2026-01-29T10:00:00+07:00
 draft: false
 description: "Learn Next.js + TypeScript through 75-90 heavily annotated code examples achieving 95% framework coverage"
 tags: ["nextjs", "react", "typescript", "by-example", "code-first", "examples"]
@@ -15,11 +15,11 @@ tags: ["nextjs", "react", "typescript", "by-example", "code-first", "examples"]
 
 By-example learning is a **code-first approach** where you learn concepts through annotated, working examples rather than narrative explanations. Each example shows:
 
-1. **What the code does** - Brief explanation of the Next.js concept
-2. **How it works** - A focused, heavily commented code example
-3. **Why it matters** - A pattern summary highlighting the key takeaway
-4. **Expected output** - What you'll see when running the code
-5. **Common pitfalls** - Mistakes to avoid with this pattern
+1. **Brief explanation** - What the Next.js concept is and when to use it
+2. **Mermaid diagram** (when appropriate) - Visual representation of complex flows
+3. **Heavily annotated code** - Working TypeScript code with 1-2.25 comment lines per code line
+4. **Key Takeaway** - 1-2 sentence distillation of the pattern
+5. **Why It Matters** - 50-100 words connecting the pattern to production relevance
 
 This approach works best when you already understand React fundamentals and basic web development concepts. You learn Next.js's App Router, Server Components, Server Actions, and TypeScript integration by studying real code rather than theoretical descriptions.
 
@@ -115,19 +115,25 @@ All examples follow a consistent five-part format:
 ````markdown
 ### Example N: Descriptive Title
 
-2-3 sentence explanation of the concept.
+2-3 sentence explanation of the Next.js concept.
+
+```mermaid
+graph LR
+  A[Component] --> B[Output]
+```
+
+(Optional: included when concept relationships benefit from visual representation)
 
 ```typescript
 // Heavily annotated code example
 // showing the Next.js pattern in action
+// => annotations show values, outputs, state changes
 ```
-````
 
 **Key Takeaway**: 1-2 sentence summary.
 
-**Expected Output**: What you'll see when running this code.
-
-**Common Pitfalls**: 1-2 mistakes developers often make with this pattern.
+**Why It Matters**: 50-100 words connecting the pattern to production applications.
+````
 
 ````markdown
 **Code annotations**:
@@ -256,10 +262,10 @@ These tutorials provide hands-on foundation before diving into by-example learni
 Each example has five parts:
 
 - **Explanation** (2-3 sentences): What Next.js concept, why it exists, when to use it
-- **Code** (heavily commented): Working TypeScript code showing the pattern
+- **Diagram** (optional): Mermaid diagram for complex flows and relationships
+- **Code** (heavily commented): Working TypeScript code with 1-2.25 annotations per code line
 - **Key Takeaway** (1-2 sentences): Distilled essence of the pattern
-- **Expected Output**: What you'll see when running the code
-- **Common Pitfalls**: Mistakes to avoid
+- **Why It Matters** (50-100 words): Production relevance and when to apply the pattern
 
 ### 3. Run the Code
 
@@ -282,23 +288,12 @@ Change props, add Server Actions, break things on purpose. Experimentation build
 
 Use this guide as a reference when building features. Search for relevant examples and adapt patterns to your code.
 
-## Placeholder Notice
-
-**This section is under development.** Examples are being created to meet the annotation density standard (1-2.25 comments per code line per example) and five-part structure requirement.
-
-While we prepare this content, you can:
-
-- **Master React first**: [React by Example](/en/learn/software-engineering/platform-web/tools/fe-react/by-example) - Essential prerequisite
-- **Start with Initial Setup**: [Initial Setup](/en/learn/software-engineering/platform-web/tools/fe-nextjs/initial-setup) - Set up your Next.js development environment
-- **Try Quick Start**: [Quick Start](/en/learn/software-engineering/platform-web/tools/fe-nextjs/quick-start) - Build your first Next.js application
-- **Check back soon**: Examples will be added progressively, starting with Beginner section
-
 ## Ready to Start?
 
-Once examples are available, choose your learning path:
+Choose your learning path:
 
-- **Beginner** - Start here if new to Next.js. Build foundation understanding through 25 core examples covering Server Components, Client Components, and Server Actions.
-- **Intermediate** - Master production patterns through 25 examples covering authentication, database integration, forms, and optimization.
-- **Advanced** - Expert mastery through 40 advanced examples covering caching strategies, streaming, advanced routing, and performance optimization.
+- [Beginner](/en/learn/software-engineering/platform-web/tools/fe-nextjs/by-example/beginner) - Start here if new to Next.js. Build foundation understanding through core examples covering Server Components, Client Components, Server Actions, routing, and data fetching.
+- [Intermediate](/en/learn/software-engineering/platform-web/tools/fe-nextjs/by-example/intermediate) - Master production patterns through examples covering authentication, database integration, forms, error handling, and optimization.
+- [Advanced](/en/learn/software-engineering/platform-web/tools/fe-nextjs/by-example/advanced) - Expert mastery through examples covering caching strategies, streaming, advanced routing, performance optimization, and deployment patterns.
 
 Or jump to specific topics by searching for relevant example keywords (server components, server actions, authentication, database, forms, caching, streaming, etc.).

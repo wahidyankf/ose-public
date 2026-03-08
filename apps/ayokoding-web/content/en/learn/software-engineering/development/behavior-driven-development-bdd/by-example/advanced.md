@@ -9,6 +9,8 @@ tags: ["bdd", "tutorial", "by-example", "advanced", "microservices", "enterprise
 
 This advanced section covers enterprise-scale BDD through 27 examples demonstrating microservices testing, distributed system patterns, chaos engineering, organizational scaling, and production case studies. You'll master advanced BDD techniques for complex architectures and large team environments.
 
+## Distributed Systems
+
 ### Example 59: BDD in Microservices - Service-to-Service Communication
 
 Testing interactions between microservices requires coordinating multiple services, managing service discovery, and verifying distributed behavior.
@@ -65,6 +67,7 @@ Feature: Order Fulfillment Across Microservices
 
 ```typescript
 // File: steps/microservices_steps.ts
+// => File: steps/microservices_steps.ts
 import { Given, When, Then } from "@cucumber/cucumber";
 // => Imports: Cucumber decorators for step definitions
 import { InventoryClient } from "../clients/InventoryClient";
@@ -97,6 +100,7 @@ Given("the inventory service has {int} units of {string} available", async (quan
   // => HTTP PUT: /api/inventory/{product}/stock with quantity
   // => Effect: inventory_db updated with stock level
 });
+// => End: function/callback
 
 Given("the payment service is configured with test merchant {string}", async (merchantId: string) => {
   // => Step: Configures payment service for test
@@ -106,9 +110,12 @@ Given("the payment service is configured with test merchant {string}", async (me
   // => HTTP POST: /api/config/merchant with merchantId
   // => Effect: payment_config.merchant_id set for test isolation
 });
+// => End: function/callback
 
 When(
+  // => Call: When()
   "customer {string} places order for {int} units of {string}",
+  // => Execute: statement runs
   async (email: string, quantity: number, product: string) => {
     // => Step: Triggers order creation (main action)
     orderClient = new OrderClient("http://localhost:8080");
@@ -125,6 +132,7 @@ When(
     // => Response: { order_id, status, customer_email, items, ... }
     // => State: currentOrder populated for later assertions
   },
+  // => End: Object property
 );
 
 When("customer provides payment details with card {string}", async (cardNumber: string) => {
@@ -141,6 +149,7 @@ When("customer provides payment details with card {string}", async (cardNumber: 
   // => Effect: Order service calls Payment service internally
   // => Payment service processes transaction with merchant
 });
+// => End: function/callback
 
 Then("the order status should be {string}", async (expectedStatus: string) => {
   // => Step: Verifies order state in Order service
@@ -150,6 +159,7 @@ Then("the order status should be {string}", async (expectedStatus: string) => {
   expect(order.status).to.equal(expectedStatus);
   // => Assertion: order.status == "CONFIRMED"
 });
+// => End: function/callback
 
 Then("the inventory should decrease to {int} units for {string}", async (expectedStock: number, product: string) => {
   // => Step: Verifies inventory update in Inventory service
@@ -159,6 +169,7 @@ Then("the inventory should decrease to {int} units for {string}", async (expecte
   expect(stock.available).to.equal(expectedStock);
   // => Assertion: stock.available == 3 (5 initial - 2 ordered)
 });
+// => End: function/callback
 
 Then("payment of ${int} should be processed via {string}", async (amount: number, merchantId: string) => {
   // => Step: Verifies payment transaction in Payment service
@@ -172,6 +183,7 @@ Then("payment of ${int} should be processed via {string}", async (amount: number
   expect(lastTx.merchant_id).to.equal(merchantId);
   // => Assertion: merchant ID matches configured merchant
 });
+// => End: function/callback
 
 Then("notification email should be sent to {string}", async (email: string) => {
   // => Step: Verifies email sent via Notification service
@@ -185,6 +197,7 @@ Then("notification email should be sent to {string}", async (email: string) => {
   expect(orderEmail).to.not.be.undefined;
   // => Assertion: confirmation email exists
 });
+// => End: function/callback
 ```
 
 **Key Takeaway**: Microservices BDD requires coordinating multiple service clients, managing distributed state, and verifying cross-service interactions through HTTP APIs.
@@ -246,6 +259,7 @@ Feature: Event-Driven Order Processing
 
 ```typescript
 // File: steps/event_driven_steps.ts
+// => File: steps/event_driven_steps.ts
 import { Given, When, Then } from "@cucumber/cucumber";
 // => Imports: Cucumber decorators
 import { Kafka, Producer, Consumer } from "kafkajs";
@@ -277,12 +291,14 @@ Given("the message broker is running and connected", async () => {
     brokers: ["localhost:9092"],
     // => Config: Kafka broker addresses (localhost for test)
   });
+  // => End: function/callback
   producer = kafka.producer();
   // => Create: Kafka producer instance
   await producer.connect();
   // => Connect: establish connection to broker
   // => Effect: producer ready to publish events
 });
+// => End: function/callback
 
 Given("email service subscribes to {string} events", async (topic: string) => {
   // => Step: Simulate email service subscribing to topic
@@ -307,9 +323,11 @@ Given("email service subscribes to {string} events", async (topic: string) => {
       console.log("Email service received:", event);
       // => Log: for debugging async event flow
     },
+    // => End: Object property
   });
   // => Effect: emailConsumer actively listening for events
 });
+// => End: function/callback
 
 Given("analytics service subscribes to {string} events", async (topic: string) => {
   // => Step: Simulate analytics service subscribing to topic
@@ -332,9 +350,11 @@ Given("analytics service subscribes to {string} events", async (topic: string) =
       console.log("Analytics service received:", event);
       // => Log: for debugging
     },
+    // => End: Object property
   });
   // => Effect: analyticsConsumer actively listening
 });
+// => End: function/callback
 
 When("order service publishes {string} event with order ID {string}", async (eventType: string, orderId: string) => {
   // => Step: Publish event to Kafka (simulating order service)
@@ -343,6 +363,7 @@ When("order service publishes {string} event with order ID {string}", async (eve
     topic: "order.created",
     // => Target: topic name (matches consumer subscriptions)
     messages: [
+      // => Execute: statement runs
       {
         // => Payload: array of messages (single message here)
         value: JSON.stringify({
@@ -356,12 +377,16 @@ When("order service publishes {string} event with order ID {string}", async (eve
           timestamp: new Date().toISOString(),
           // => Field: event timestamp for ordering
         }),
+        // => Step: Executes
       },
+      // => End: Object property
     ],
+    // => Execute: statement runs
   });
   // => Effect: message published to broker
   // => Broker: distributes to all subscribed consumers
 });
+// => End: function/callback
 
 Then("email service should receive the event within {int} seconds", async (timeoutSeconds: number) => {
   // => Step: Verify event received by email consumer (async assertion)
@@ -375,14 +400,17 @@ Then("email service should receive the event within {int} seconds", async (timeo
       throw new Error(`Email service did not receive event within ${timeoutSeconds}s`);
       // => Fail: timeout exceeded without receiving event
     }
+    // => End: block
     await setTimeout(100);
     // => Wait: 100ms between polls (avoid tight loop)
   }
+  // => End: block
 
   expect(emailEvents[0].order_id).to.equal("ORD-123");
   // => Assertion: event contains expected order ID
   // => Verify: event deserialized correctly
 });
+// => End: function/callback
 
 Then("analytics service should receive the event within {int} seconds", async (timeoutSeconds: number) => {
   // => Step: Verify event received by analytics consumer
@@ -396,14 +424,17 @@ Then("analytics service should receive the event within {int} seconds", async (t
       throw new Error(`Analytics service did not receive event within ${timeoutSeconds}s`);
       // => Fail: timeout
     }
+    // => End: block
     await setTimeout(100);
     // => Wait: 100ms poll interval
   }
+  // => End: block
 
   expect(analyticsEvents[0].order_id).to.equal("ORD-123");
   // => Assertion: event received with correct order ID
   // => Verify: both consumers received same event (fan-out)
 });
+// => End: function/callback
 
 Then("email service should send confirmation to customer", async () => {
   // => Step: Verify email service side effect (event-triggered action)
@@ -415,10 +446,11 @@ Then("email service should send confirmation to customer", async () => {
   // => Assertion: at least one event received
   // => Prerequisite: event must be received to trigger action
 
-  // In real test: verify email sent via email service API or test mailbox
+  // => In real test: verify email sent via email service API or test mailbox
   // => Comment: production would check actual email delivery
   // => Pattern: verify side effect of event consumption
 });
+// => End: function/callback
 ```
 
 **Key Takeaway**: Event-driven BDD requires asynchronous verification patterns, polling with timeouts, and testing fan-out scenarios where multiple consumers process the same event.
@@ -520,6 +552,7 @@ Feature: SAGA Pattern - Rollback on Payment Failure
 
 ```typescript
 // File: steps/saga_steps.ts
+// => File: steps/saga_steps.ts
 import { Given, When, Then, But } from "@cucumber/cucumber";
 // => Imports: Cucumber decorators (including But for negative assertions)
 import { SagaOrchestrator } from "../saga/SagaOrchestrator";
@@ -554,6 +587,7 @@ Given("inventory has {int} units of {string}", async (quantity: number, product:
   // => HTTP PUT: /api/inventory/{product}/stock
   // => State: inventory_db.products[product].available = quantity
 });
+// => End: function/callback
 
 Given("payment gateway is available", async () => {
   // => Step: Configure payment service for success
@@ -563,6 +597,7 @@ Given("payment gateway is available", async () => {
   // => HTTP POST: /api/config/availability (test endpoint)
   // => State: payment gateway mock will accept transactions
 });
+// => End: function/callback
 
 Given("payment gateway will reject transactions", async () => {
   // => Step: Configure payment service for failure (test double)
@@ -573,6 +608,7 @@ Given("payment gateway will reject transactions", async () => {
   // => State: payment gateway mock will reject all transactions
   // => Purpose: force SAGA compensation path for testing
 });
+// => End: function/callback
 
 Given("shipping service is operational", async () => {
   // => Step: Configure shipping service
@@ -582,6 +618,7 @@ Given("shipping service is operational", async () => {
   // => HTTP POST: /api/config/operational
   // => State: shipping service ready to create labels
 });
+// => End: function/callback
 
 When("customer creates order for {int} unit of {string}", async (quantity: number, product: string) => {
   // => Step: Trigger SAGA orchestration
@@ -594,6 +631,7 @@ When("customer creates order for {int} unit of {string}", async (quantity: numbe
     shippingService,
     // => Dependency: shipping service client
   });
+  // => End: function/callback
 
   saga.on("step-executed", (stepName: string) => {
     // => Event listener: track SAGA step execution
@@ -601,6 +639,7 @@ When("customer creates order for {int} unit of {string}", async (quantity: numbe
     // => Record: add step name to sagaSteps array
     // => Purpose: verify step execution order in assertions
   });
+  // => End: function/callback
 
   currentOrderId = await saga.startOrder({
     // => Action: initiate SAGA transaction
@@ -612,6 +651,7 @@ When("customer creates order for {int} unit of {string}", async (quantity: numbe
   // => Return: order ID for tracking
   // => Effect: SAGA begins executing steps asynchronously
 });
+// => End: function/callback
 
 Then("the SAGA should execute step {string}", async (stepName: string) => {
   // => Step: Verify specific SAGA step executed
@@ -623,6 +663,7 @@ Then("the SAGA should execute step {string}", async (stepName: string) => {
   // => Assertion: step name in executed steps array
   // => Verify: SAGA orchestrator called this step
 });
+// => End: function/callback
 
 But("the SAGA step {string} should fail", async (stepName: string) => {
   // => Step: Verify SAGA step failed (negative assertion)
@@ -634,6 +675,7 @@ But("the SAGA step {string} should fail", async (stepName: string) => {
   // => Assertion: step status is FAILED
   // => Verify: payment rejection triggered failure state
 });
+// => End: function/callback
 
 Then("the SAGA should execute compensation {string}", async (compensationName: string) => {
   // => Step: Verify compensation logic executed
@@ -645,6 +687,7 @@ Then("the SAGA should execute compensation {string}", async (compensationName: s
   // => Assertion: compensation name in executed compensations
   // => Verify: SAGA rollback logic triggered
 });
+// => End: function/callback
 
 Then("inventory should return to {int} units", async (expectedStock: number) => {
   // => Step: Verify compensation restored inventory
@@ -656,6 +699,7 @@ Then("inventory should return to {int} units", async (expectedStock: number) => 
   // => Assertion: available stock matches original (pre-reservation)
   // => Verify: RELEASE_INVENTORY compensation executed successfully
 });
+// => End: function/callback
 
 Then("the order status should be {string}", async (expectedStatus: string) => {
   // => Step: Verify final SAGA state
@@ -667,12 +711,14 @@ Then("the order status should be {string}", async (expectedStatus: string) => {
   // => Assertion: order status matches expected final state
   // => Verify: SAGA reached correct terminal state
 });
+// => End: function/callback
 ```
 
 **SAGA Orchestrator Implementation Pattern**:
 
 ```typescript
 // File: saga/SagaOrchestrator.ts
+// => File: saga/SagaOrchestrator.ts
 import EventEmitter from "events";
 // => Import: event emitter for SAGA step notifications
 
@@ -700,6 +746,7 @@ export class SagaOrchestrator extends EventEmitter {
     super();
     // => Call: EventEmitter constructor
   }
+  // => End: block
 
   async startOrder(orderData: any): Promise<string> {
     // => Method: initiates SAGA transaction
@@ -707,6 +754,7 @@ export class SagaOrchestrator extends EventEmitter {
     // => Generate: unique order ID
 
     try {
+      // => Try: attempt operation
       for (const step of this.steps) {
         // => Loop: execute steps sequentially
         await this.executeStep(step.name, orderData);
@@ -716,6 +764,7 @@ export class SagaOrchestrator extends EventEmitter {
         this.emit("step-executed", step.name);
         // => Event: notify listeners (for test verification)
       }
+      // => End: block
       return orderId;
       // => Success: all steps completed
     } catch (error) {
@@ -725,7 +774,9 @@ export class SagaOrchestrator extends EventEmitter {
       throw error;
       // => Re-throw: propagate failure to caller
     }
+    // => End: block
   }
+  // => End: block
 
   private async rollback(): Promise<void> {
     // => Method: execute compensation logic
@@ -743,9 +794,13 @@ export class SagaOrchestrator extends EventEmitter {
         this.compensations.push(step.compensate);
         // => Record: track executed compensation
       }
+      // => End: block
     }
+    // => End: block
   }
+  // => End: block
 }
+// => End: block
 ```
 
 **Key Takeaway**: SAGA pattern BDD requires testing both success paths (all steps complete) and failure paths (compensations execute in reverse order), verifying distributed transaction coordination.
@@ -788,6 +843,7 @@ Feature: Distributed Tracing Across Microservices
 
 ```typescript
 // File: steps/tracing_steps.ts
+// => File: steps/tracing_steps.ts
 import { Given, When, Then } from "@cucumber/cucumber";
 // => Imports: Cucumber decorators
 import { trace, context, SpanStatusCode } from "@opentelemetry/api";
@@ -829,6 +885,7 @@ Given("tracing is enabled with service name {string}", async (serviceName: strin
   // => Get: tracer instance for service
   // => serviceName: identifies service in traces
 });
+// => End: function/callback
 
 When("client sends request with trace ID {string}", async (traceId: string) => {
   // => Step: Initiate request with specific trace ID
@@ -847,6 +904,7 @@ When("client sends request with trace ID {string}", async (traceId: string) => {
       "trace.id": traceId,
       // => Attribute: correlation ID
     },
+    // => End: Object property
   });
   // => Effect: span created and recorded
 
@@ -854,10 +912,12 @@ When("client sends request with trace ID {string}", async (traceId: string) => {
     // => Context: set active span for propagation
     // => Scope: child spans will reference this as parent
   });
+  // => End: function/callback
 
   span.end();
   // => End: finish span (triggers export)
 });
+// => End: function/callback
 
 When("order service calls inventory service", async () => {
   // => Step: Simulate downstream service call with trace propagation
@@ -878,12 +938,14 @@ When("order service calls inventory service", async () => {
       "service.name": "inventory-service",
       // => Attribute: downstream service identifier
     },
+    // => End: Object property
   });
   // => Effect: child span inherits trace ID from parent
 
   childSpan.end();
   // => End: finish child span
 });
+// => End: function/callback
 
 When("inventory service calls warehouse service", async () => {
   // => Step: Simulate further downstream call (multi-hop)
@@ -904,12 +966,14 @@ When("inventory service calls warehouse service", async () => {
       "service.name": "warehouse-service",
       // => Attribute: service identifier
     },
+    // => End: Object property
   });
   // => Effect: trace ID propagates through three services
 
   grandchildSpan.end();
   // => End: finish grandchild span
 });
+// => End: function/callback
 
 Then("all services should log the same trace ID {string}", async (expectedTraceId: string) => {
   // => Step: Verify trace ID consistency across spans
@@ -928,7 +992,9 @@ Then("all services should log the same trace ID {string}", async (expectedTraceI
     // => Assertion: trace ID matches expected value
     // => Verify: all spans share same correlation ID
   });
+  // => End: function/callback
 });
+// => End: function/callback
 
 Then("trace spans should form parent-child relationships", async () => {
   // => Step: Verify span hierarchy
@@ -951,15 +1017,31 @@ Then("trace spans should form parent-child relationships", async () => {
   // => Verify: grandchild relationship established
   // => Structure: order → inventory → warehouse
 });
+// => End: function/callback
 ```
 
 **Key Takeaway**: Distributed tracing BDD verifies correlation ID propagation across service boundaries and validates span parent-child relationships for request flow visualization.
 
 **Why It Matters**: Observability is critical for debugging distributed systems. BDD scenarios ensure tracing infrastructure correctly tracks requests across microservices for production troubleshooting.
 
+## Resilience and Deployment
+
 ### Example 63: Chaos Engineering with BDD - Testing Resilience
 
 Chaos engineering intentionally introduces failures to verify system resilience. BDD scenarios test graceful degradation, circuit breakers, and retry logic.
+
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+stateDiagram-v2
+    [*] --> Closed
+    Closed --> Open : Failure threshold reached (3 failures)
+    Open --> HalfOpen : Timeout elapsed
+    HalfOpen --> Closed : Test request succeeds
+    HalfOpen --> Open : Test request fails
+    Open --> Open : Requests fast-fail (no network call)
+```
 
 ```gherkin
 # File: features/chaos_circuit_breaker.feature
@@ -997,6 +1079,7 @@ Feature: Circuit Breaker Pattern Under Chaos
 
 ```typescript
 // File: steps/chaos_steps.ts
+// => File: steps/chaos_steps.ts
 import { Given, When, Then } from "@cucumber/cucumber";
 // => Imports: Cucumber decorators
 import { CircuitBreaker } from "opossum";
@@ -1021,10 +1104,12 @@ Given("payment service is healthy", async () => {
   // => Mock: simulate healthy service
   // => Production: would start actual service process
 });
+// => End: function/callback
 
 Given("circuit breaker is configured with {int} failure threshold", async (threshold: number) => {
   // => Step: Initialize circuit breaker with config
   circuitBreaker = new CircuitBreaker(
+    // => Assign: circuitBreaker updated
     async () => {
       // => Create: circuit breaker wrapping payment call
       serviceCalls++;
@@ -1035,10 +1120,12 @@ Given("circuit breaker is configured with {int} failure threshold", async (thres
         throw new Error("Payment service unavailable");
         // => Throw: simulate service failure
       }
+      // => End: block
 
       return { success: true };
       // => Return: successful payment response
     },
+    // => End: Object property
     {
       // => Config: circuit breaker options
       errorThresholdPercentage: 100,
@@ -1048,9 +1135,11 @@ Given("circuit breaker is configured with {int} failure threshold", async (thres
       volumeThreshold: threshold,
       // => Config: minimum failures before opening (3 in scenario)
     },
+    // => End: Object property
   );
   // => Effect: circuit breaker monitors payment service calls
 });
+// => End: function/callback
 
 When("chaos monkey kills payment service", async () => {
   // => Step: Introduce service failure (chaos engineering)
@@ -1059,6 +1148,7 @@ When("chaos monkey kills payment service", async () => {
   // => Effect: subsequent calls will fail
   // => Chaos: simulates production outage
 });
+// => End: function/callback
 
 When("order service attempts {int} payments", async (attempts: number) => {
   // => Step: Make multiple payment attempts
@@ -1070,6 +1160,7 @@ When("order service attempts {int} payments", async (attempts: number) => {
   for (let i = 0; i < attempts; i++) {
     // => Loop: make N payment attempts
     try {
+      // => Try: attempt operation
       const result = await circuitBreaker.fire();
       // => Call: invoke payment through circuit breaker
       // => fire(): executes wrapped function
@@ -1078,16 +1169,21 @@ When("order service attempts {int} payments", async (attempts: number) => {
     } catch (error) {
       // => Catch: payment failure (service down or circuit open)
       attemptResults.push({
+        // => Call: attemptResults.push()
         success: false,
+        // => Execute: statement runs
         error: error.message,
         // => Record: error message
         fastFail: circuitBreaker.opened,
         // => Record: whether circuit was open (fast-fail)
       });
+      // => End: function/callback
     }
+    // => End: block
   }
   // => Effect: attemptResults contains all outcomes
 });
+// => End: function/callback
 
 Then("first {int} payment attempts should fail", async (count: number) => {
   // => Step: Verify failures reached service (closed circuit)
@@ -1102,11 +1198,13 @@ Then("first {int} payment attempts should fail", async (count: number) => {
     // => Assertion: not a fast-fail (circuit still closed)
     // => Verify: actual service call occurred
   });
+  // => End: function/callback
 
   expect(serviceCalls).to.equal(count);
   // => Assertion: service called exactly N times
   // => Verify: circuit allowed calls through before opening
 });
+// => End: function/callback
 
 Then("circuit breaker should open after {int}rd failure", async (count: number) => {
   // => Step: Verify circuit breaker opened
@@ -1114,6 +1212,7 @@ Then("circuit breaker should open after {int}rd failure", async (count: number) 
   // => Assertion: circuit breaker state is OPEN
   // => Verify: threshold reached, circuit protecting service
 });
+// => End: function/callback
 
 Then("remaining {int} attempts should fail immediately without calling service", async (count: number) => {
   // => Step: Verify fast-fail (circuit open)
@@ -1128,11 +1227,13 @@ Then("remaining {int} attempts should fail immediately without calling service",
     // => Assertion: was fast-fail (circuit open)
     // => Verify: no service call made
   });
+  // => End: function/callback
 
   expect(serviceCalls).to.equal(3);
   // => Assertion: service called only 3 times (not 5)
   // => Verify: circuit breaker prevented 2 calls
 });
+// => End: function/callback
 
 Then("order service should return error {string}", async (expectedMessage: string) => {
   // => Step: Verify graceful degradation message
@@ -1143,6 +1244,7 @@ Then("order service should return error {string}", async (expectedMessage: strin
   // => Assertion: error message indicates service unavailable
   // => Verify: clear user-facing error (not stack trace)
 });
+// => End: function/callback
 ```
 
 **Key Takeaway**: Chaos engineering BDD intentionally breaks services to verify resilience patterns like circuit breakers protect systems from cascading failures.
@@ -1153,11 +1255,36 @@ Then("order service should return error {string}", async (expectedMessage: strin
 
 BDD anti-patterns produce brittle, hard-to-maintain scenarios. This example demonstrates common problems and refactoring solutions.
 
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A[Anti-Pattern] --> B{Type}
+    B -->|Imperative Steps| C[Refactor: Declarative Steps]
+    B -->|UI Details in Gherkin| D[Refactor: Business Language]
+    B -->|Multiple Actions per Scenario| E[Refactor: Single Behavior]
+    B -->|Technical Setup Exposed| F[Refactor: Background or Hooks]
+    C --> G[Maintainable Scenarios]
+    D --> G
+    E --> G
+    F --> G
+
+    style A fill:#CC78BC,stroke:#000,color:#000
+    style B fill:#CA9161,stroke:#000,color:#fff
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#029E73,stroke:#000,color:#fff
+    style F fill:#029E73,stroke:#000,color:#fff
+    style G fill:#0173B2,stroke:#000,color:#fff
+```
+
 **Anti-Pattern 1: Imperative Steps (Too Detailed)**:
 
 ```gherkin
 # BAD: Imperative - too many UI implementation details
 Scenario: User login (Anti-pattern)
+  # => Scenario: Single test case for User login (Anti-pattern)
   Given I navigate to "https://example.com"
   # => Anti-pattern: hardcoded URL (brittle)
   When I click on element with ID "login-button"
@@ -1177,6 +1304,7 @@ Scenario: User login (Anti-pattern)
 ```gherkin
 # GOOD: Declarative - business language, abstracts UI details
 Scenario: User login (Refactored)
+  # => Scenario: Single test case for User login (Refactored)
   Given user "alice@example.com" exists with password "password123"
   # => Declarative: business concept (user exists)
   # => Abstraction: setup handled in step definition
@@ -1194,6 +1322,7 @@ Scenario: User login (Refactored)
 
 ```typescript
 // File: steps/refactored_login_steps.ts
+// => File: steps/refactored_login_steps.ts
 import { Given, When, Then } from "@cucumber/cucumber";
 // => Imports: Cucumber decorators
 import { UserRepository } from "../repositories/UserRepository";
@@ -1221,6 +1350,7 @@ Given("user {string} exists with password {string}", async (email: string, passw
   // => Abstraction: database interaction hidden
   // => Benefit: scenario doesn't care about DB schema
 });
+// => End: function/callback
 
 When("user logs in with email {string} and password {string}", async (email: string, password: string) => {
   // => Step: perform login (business action)
@@ -1234,6 +1364,7 @@ When("user logs in with email {string} and password {string}", async (email: str
   // => Abstraction: field locators, clicks hidden in page object
   // => Benefit: UI changes don't break Gherkin
 });
+// => End: function/callback
 
 Then("user should be authenticated", async () => {
   // => Step: verify authentication state (business outcome)
@@ -1243,6 +1374,7 @@ Then("user should be authenticated", async () => {
   expect(isAuthenticated).to.be.true;
   // => Assertion: user authenticated
 });
+// => End: function/callback
 
 Then("user should see dashboard", async () => {
   // => Step: verify dashboard access (business outcome)
@@ -1254,6 +1386,7 @@ Then("user should see dashboard", async () => {
   expect(isOnDashboard).to.be.true;
   // => Assertion: dashboard visible
 });
+// => End: function/callback
 ```
 
 **Anti-Pattern 2: Scenarios Testing Multiple Features**:
@@ -1261,6 +1394,7 @@ Then("user should see dashboard", async () => {
 ```gherkin
 # BAD: Multiple features in one scenario
 Scenario: Complete user journey (Anti-pattern)
+  # => Scenario: Single test case for Complete user journey (Anti-pa
   Given user creates account
   # => Anti-pattern: setup for next actions (not standalone test)
   When user logs in
@@ -1280,6 +1414,7 @@ Scenario: Complete user journey (Anti-pattern)
 ```gherkin
 # GOOD: Single responsibility per scenario
 Scenario: User account creation
+  # => Scenario: Single test case for User account creation
   Given no user exists with email "user@example.com"
   # => Single feature: account creation
   When user registers with email "user@example.com"
@@ -1290,6 +1425,7 @@ Scenario: User account creation
   # => Assertion: registration side effect
 
 Scenario: User login with valid credentials
+  # => Scenario: Single test case for User login with valid credenti
   Given user "user@example.com" exists
   # => Single feature: login (separate from registration)
   When user logs in with email "user@example.com"
@@ -1298,6 +1434,7 @@ Scenario: User login with valid credentials
   # => Assertion: login outcome
 
 Scenario: User profile update
+  # => Scenario: Single test case for User profile update
   Given user "user@example.com" is logged in
   # => Single feature: profile management
   # => Setup: login as precondition (not testing login here)
@@ -1347,6 +1484,7 @@ Feature: Automated Trading Strategy
 
 ```typescript
 // File: cucumber.js
+// => File: cucumber.js
 export default {
   // => Config: Cucumber configuration
   requireModule: ["ts-node/register"],
@@ -1360,12 +1498,15 @@ export default {
     dialect: "en-trading",
     // => Dialect: custom Gherkin keywords
   },
+  // => End: Object property
   formatOptions: {
     // => Format options: customize output
     snippetInterface: "async-await",
     // => Snippet: async/await syntax
   },
+  // => End: Object property
 };
+// => Execute: Statement runs
 ```
 
 **Custom Keywords Configuration**:
@@ -1374,17 +1515,29 @@ export default {
 {
   "en-trading": {
     "name": "Trading English",
+    // => Setting: name configuration
     "native": "Trading English",
+    // => Setting: native configuration
     "feature": "Feature|Trading Feature",
+    // => Setting: feature configuration
     "background": "Background|Market Setup",
+    // => Setting: background configuration
     "scenario": "Scenario|Trading Rule",
+    // => Setting: scenario configuration
     "scenarioOutline": "Scenario Outline|Trading Strategy",
+    // => Setting: scenarioOutline configuration
     "examples": "Examples|Market Scenarios",
+    // => Setting: examples configuration
     "given": "*|Market Condition|Price Condition",
+    // => Setting: given configuration
     "when": "*|Execute Strategy|Place Order|Trigger Alert",
+    // => Setting: when configuration
     "then": "*|Verify Position|Verify Compliance|Verify Risk",
+    // => Setting: then configuration
     "and": "*|And|Also",
+    // => Setting: and configuration
     "but": "*|But|However"
+    // => Setting: but configuration
   }
 }
 ```
@@ -1393,6 +1546,7 @@ export default {
 
 ```typescript
 // File: steps/trading_steps.ts
+// => File: steps/trading_steps.ts
 import { setWorldConstructor, setDefaultTimeout } from "@cucumber/cucumber";
 // => Imports: Cucumber world setup
 import { TradingWorld } from "../support/TradingWorld";
@@ -1403,20 +1557,23 @@ setWorldConstructor(TradingWorld);
 setDefaultTimeout(10000);
 // => Config: timeout for trading operations
 
-// Custom keyword: "Market Condition"
+// => Custom keyword: "Market Condition"
 TradingWorld.prototype.MarketCondition = function (
   // => Method: custom keyword implementation
   // => Replaces: Given() decorator
   pattern: RegExp,
+  // => Property: pattern value
   callback: (this: TradingWorld, ...args: any[]) => Promise<void>,
+  // => Assign: callback: (this: TradingWorld, ...args: any[]) updated
 ) {
   // => Pattern: regex for step matching
   // => Callback: step implementation
   this.Given(pattern, callback);
   // => Delegate: map custom keyword to standard Given
 };
+// => Execute: Statement runs
 
-// Use custom keyword in step definition
+// => Use custom keyword in step definition
 Given(/Stock "([^"]*)" price is \$(\d+)/, async function (this: TradingWorld, ticker: string, price: number) {
   // => Step: market condition (price level)
   this.marketData.setPrice(ticker, price);
@@ -1425,10 +1582,13 @@ Given(/Stock "([^"]*)" price is \$(\d+)/, async function (this: TradingWorld, ti
   this.log(`Market: ${ticker} @ $${price}`);
   // => Log: domain-specific logging
 });
+// => End: function/callback
 
-// Custom keyword: "Execute Strategy"
+// => Custom keyword: "Execute Strategy"  // => Note: Custom keyword: "Execute Strategy"
 When(
+  // => Call: When()
   /Buy (\d+) shares when price drops below \$(\d+)/,
+  // => Execute: statement runs
   async function (this: TradingWorld, shares: number, triggerPrice: number) {
     // => Step: trading strategy execution
     this.strategy = new BuyStrategy({
@@ -1446,11 +1606,14 @@ When(
     // => Execute: strategy logic via trading engine
     // => Effect: orders placed, positions updated
   },
+  // => End: Object property
 );
 
-// Custom keyword: "Verify Position"
+// => Custom keyword: "Verify Position"  // => Note: Custom keyword: "Verify Position"
 Then(
+  // => Call: Then()
   /Portfolio should contain (\d+) shares of "([^"]*)"/,
+  // => Execute: statement runs
   async function (this: TradingWorld, expectedShares: number, ticker: string) {
     // => Step: position verification
     const position = this.portfolio.getPosition(ticker);
@@ -1462,9 +1625,10 @@ Then(
     this.log(`Position: ${ticker} = ${position.shares} shares`);
     // => Log: domain-specific position logging
   },
+  // => End: Object property
 );
 
-// Custom keyword: "Verify Compliance"
+// => Custom keyword: "Verify Compliance"
 Then(/Trade should comply with SEC regulations/, async function (this: TradingWorld) {
   // => Step: regulatory compliance verification
   const trades = this.tradingEngine.getExecutedTrades();
@@ -1478,16 +1642,19 @@ Then(/Trade should comply with SEC regulations/, async function (this: TradingWo
     expect(isCompliant).to.be.true;
     // => Assertion: trade complies with regulations
   });
+  // => End: function/callback
 
   this.log("Compliance: All trades passed SEC verification");
   // => Log: compliance status
 });
+// => End: function/callback
 ```
 
 **Custom World with Trading Context**:
 
 ```typescript
 // File: support/TradingWorld.ts
+// => File: support/TradingWorld.ts
 import { World, IWorldOptions } from "@cucumber/cucumber";
 // => Imports: Cucumber world interface
 import { MarketData } from "../domain/MarketData";
@@ -1520,6 +1687,7 @@ export class TradingWorld extends World {
     maxDailyLoss: 5000,
     // => Limit: maximum daily loss (dollars)
   };
+  // => Execute: Statement runs
 
   constructor(options: IWorldOptions) {
     // => Constructor: initialize trading context
@@ -1535,6 +1703,7 @@ export class TradingWorld extends World {
     this.complianceChecker = new ComplianceChecker();
     // => Initialize: compliance checker
   }
+  // => End: block
 
   public log(message: string): void {
     // => Method: domain-specific logging
@@ -1542,7 +1711,9 @@ export class TradingWorld extends World {
     // => Attach: add to Cucumber report
     // => Format: prefixed with [Trading] for clarity
   }
+  // => End: block
 }
+// => End: block
 ```
 
 **Key Takeaway**: Custom Gherkin dialects enable domain-specific BDD languages, making scenarios more natural for specialized industries like finance, healthcare, or manufacturing.
@@ -1555,12 +1726,13 @@ Metaprogramming dynamically generates step definitions from data structures, red
 
 ```typescript
 // File: steps/meta_crud_steps.ts
+// => File: steps/meta_crud_steps.ts
 import { Given, When, Then } from "@cucumber/cucumber";
 // => Imports: Cucumber decorators
 import { Repository } from "../repositories/Repository";
 // => Import: generic repository interface
 
-// Metaprogramming: Generate CRUD steps for multiple entities
+// => Metaprogramming: Generate CRUD steps for multiple entities
 const entities = ["User", "Product", "Order", "Invoice"];
 // => Config: list of domain entities
 
@@ -1571,7 +1743,7 @@ entities.forEach((entityName) => {
   // => Create: repository instance for entity
   // => Generic: Repository handles any entity type
 
-  // Dynamic Given: entity exists
+  // => Dynamic Given: entity exists
   Given(new RegExp(`${entityName} "([^"]*)" exists with (.*)$`), async function (id: string, attributes: string) {
     // => Step: dynamically created for each entity
     // => Pattern: "User "alice" exists with email alice@example.com"
@@ -1588,8 +1760,9 @@ entities.forEach((entityName) => {
     this.attach(`Created ${entityName}: ${id}`);
     // => Log: entity creation
   });
+  // => End: function/callback
 
-  // Dynamic When: entity updated
+  // => Dynamic When: entity updated
   When(new RegExp(`${entityName} "([^"]*)" is updated with (.*)$`), async function (id: string, attributes: string) {
     // => Step: dynamically created for each entity
     // => Pattern: "User "alice" is updated with age 31"
@@ -1604,10 +1777,13 @@ entities.forEach((entityName) => {
     this.attach(`Updated ${entityName}: ${id}`);
     // => Log: update operation
   });
+  // => End: function/callback
 
-  // Dynamic Then: entity verification
+  // => Dynamic Then: entity verification  // => Note: Dynamic Then: entity verification
   Then(
+    // => Call: Then()
     new RegExp(`${entityName} "([^"]*)" should have (.*)$`),
+    // => Execute: statement runs
     async function (id: string, expectedAttributes: string) {
       // => Step: dynamically created for each entity
       // => Pattern: "User "alice" should have age 31"
@@ -1623,13 +1799,15 @@ entities.forEach((entityName) => {
         expect(entity[key]).to.equal(expected[key]);
         // => Assertion: attribute matches expected value
       });
+      // => End: function/callback
 
       this.attach(`Verified ${entityName}: ${id}`);
       // => Log: verification
     },
+    // => End: Object property
   );
 
-  // Dynamic Then: entity deletion verification
+  // => Dynamic Then: entity deletion verification
   Then(new RegExp(`${entityName} "([^"]*)" should not exist$`), async function (id: string) {
     // => Step: dynamically created for each entity
     // => Pattern: "User "alice" should not exist"
@@ -1643,9 +1821,11 @@ entities.forEach((entityName) => {
     this.attach(`Verified ${entityName} deleted: ${id}`);
     // => Log: deletion verification
   });
+  // => End: function/callback
 });
+// => End: function/callback
 
-// Helper: Parse attribute string to object
+// => Helper: Parse attribute string to object
 function parseAttributes(attrString: string): Record<string, any> {
   // => Function: convert "key1 value1, key2 value2" to object
   const attrs: Record<string, any> = {};
@@ -1658,7 +1838,7 @@ function parseAttributes(attrString: string): Record<string, any> {
     const value = valueParts.join(" ");
     // => Join: handle multi-word values
 
-    // Type coercion
+    // => Type coercion
     if (!isNaN(Number(value))) {
       // => Check: numeric value
       attrs[key] = Number(value);
@@ -1671,11 +1851,14 @@ function parseAttributes(attrString: string): Record<string, any> {
       attrs[key] = value;
       // => Keep: string value
     }
+    // => End: block
   });
+  // => End: function/callback
 
   return attrs;
   // => Return: { key1: value1, key2: value2 }
 }
+// => End: block
 ```
 
 **Gherkin Usage - Generated Steps**:
@@ -1726,10 +1909,11 @@ Feature: CRUD Operations with Dynamic Steps
 
 ```typescript
 // File: steps/meta_table_driven.ts
+// => File: steps/meta_table_driven.ts
 import { Given } from "@cucumber/cucumber";
 // => Import: Cucumber decorator
 
-// Metaprogramming: Generate steps from configuration table
+// => Metaprogramming: Generate steps from configuration table
 const stepConfigurations = [
   // => Config: table of step definitions
   {
@@ -1740,7 +1924,9 @@ const stepConfigurations = [
       world.currentUser = { authenticated: true };
       // => Effect: set authentication state
     },
+    // => End: Object property
   },
+  // => End: Object property
   {
     pattern: /user has role "([^"]*)"/,
     // => Pattern: parameterized step
@@ -1749,23 +1935,29 @@ const stepConfigurations = [
       world.currentUser.role = role;
       // => Effect: set user role
     },
+    // => End: Object property
   },
+  // => End: Object property
   {
     pattern: /user has permission "([^"]*)"/,
     // => Pattern: parameterized step
     action: async (world, permission) => {
       // => Action: with captured parameter
       if (!world.currentUser.permissions) {
+        // => Check: evaluates condition
         world.currentUser.permissions = [];
         // => Initialize: permissions array
       }
+      // => End: block
       world.currentUser.permissions.push(permission);
       // => Effect: add permission
     },
+    // => End: Object property
   },
+  // => End: Object property
 ];
 
-// Generate step definitions from configuration
+// => Generate step definitions from configuration
 stepConfigurations.forEach((config) => {
   // => Loop: create steps from config
   Given(config.pattern, async function (...args) {
@@ -1775,7 +1967,9 @@ stepConfigurations.forEach((config) => {
     // => Execute: configured action
     // => Pass: world (this) and captured parameters
   });
+  // => End: function/callback
 });
+// => End: function/callback
 ```
 
 **Key Takeaway**: Metaprogramming generates step definitions dynamically from data structures, reducing boilerplate for repetitive CRUD operations or configuration-driven steps.
@@ -1786,82 +1980,143 @@ stepConfigurations.forEach((config) => {
 
 Living documentation automatically generates specification documents from BDD scenarios, keeping requirements synchronized with implementation.
 
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A[Feature Files in Git] --> B[CI Pipeline]
+    B --> C[Run BDD Tests]
+    C --> D[Generate Spec JSON]
+    D --> E[Spec Generator Script]
+    E --> F[Structured Spec Docs]
+    F --> G[Publish to Wiki/Portal]
+    G --> H[Stakeholders Access Specs]
+    H --> I[Feedback Loop]
+    I --> A
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#CC78BC,stroke:#000,color:#000
+    style F fill:#CC78BC,stroke:#000,color:#000
+    style G fill:#CA9161,stroke:#000,color:#fff
+    style H fill:#0173B2,stroke:#000,color:#fff
+    style I fill:#DE8F05,stroke:#000,color:#000
+```
+
 ```typescript
 // File: scripts/generate_living_docs.ts
+// => File: scripts/generate_living_docs.ts
+// => State: modified in current scope
 import { loadFeatures } from "@cucumber/cucumber";
 // => Import: load Gherkin feature files
+// => State: modified in current scope
 import * as fs from "fs";
 // => Import: file system operations
+// => State: modified in current scope
 import * as path from "path";
 // => Import: path manipulation
+// => State: modified in current scope
 
 interface FeatureDoc {
   // => Interface: documentation structure
+  // => State: modified in current scope
   name: string;
   // => Field: feature name
+  // => State: modified in current scope
   description: string;
   // => Field: feature description
+  // => State: modified in current scope
   scenarios: ScenarioDoc[];
   // => Field: array of scenarios
+  // => State: modified in current scope
   tags: string[];
   // => Field: feature tags
+  // => State: modified in current scope
 }
+// => End: block
+// => State: modified in current scope
 
 interface ScenarioDoc {
   // => Interface: scenario structure
+  // => State: modified in current scope
   name: string;
   // => Field: scenario name
+  // => State: modified in current scope
   steps: string[];
   // => Field: array of step descriptions
+  // => State: modified in current scope
   tags: string[];
   // => Field: scenario tags
+  // => State: modified in current scope
 }
+// => End: block
+// => State: modified in current scope
 
 async function generateLivingDocumentation(): Promise<void> {
   // => Function: generate documentation from features
+  // => Closure: captures outer scope
   const featuresDir = path.join(__dirname, "../features");
   // => Path: features directory
+  // => State: modified in current scope
 
   const featureFiles = fs.readdirSync(featuresDir).filter((f) => f.endsWith(".feature"));
   // => Filter: only .feature files
+  // => State: modified in current scope
 
   const documentation: FeatureDoc[] = [];
   // => Initialize: documentation array
+  // => State: modified in current scope
 
   for (const featureFile of featureFiles) {
     // => Loop: process each feature file
+    // => State: modified in current scope
     const featurePath = path.join(featuresDir, featureFile);
     // => Path: full feature file path
+    // => State: modified in current scope
     const content = fs.readFileSync(featurePath, "utf8");
     // => Read: feature file content
+    // => State: modified in current scope
 
     const doc = parseFeature(content);
     // => Parse: extract documentation structure
+    // => State: modified in current scope
     documentation.push(doc);
     // => Store: feature documentation
+    // => State: modified in current scope
   }
+  // => End: block
+  // => State: modified in current scope
 
-  // Generate Markdown documentation
+  // => Generate Markdown documentation
   const markdown = generateMarkdown(documentation);
   // => Generate: Markdown format
+  // => State: modified in current scope
   fs.writeFileSync("docs/specifications.md", markdown);
   // => Write: documentation file
+  // => State: modified in current scope
 
-  // Generate HTML documentation
+  // => Generate HTML documentation
   const html = generateHTML(documentation);
   // => Generate: HTML format (styled, searchable)
+  // => State: modified in current scope
   fs.writeFileSync("docs/specifications.html", html);
   // => Write: HTML documentation
+  // => State: modified in current scope
 
-  // Generate JSON API documentation
+  // => Generate JSON API documentation
   const json = JSON.stringify(documentation, null, 2);
   // => Generate: JSON format (machine-readable)
+  // => State: modified in current scope
   fs.writeFileSync("docs/specifications.json", json);
   // => Write: JSON documentation
 
   console.log(`Generated living documentation for ${documentation.length} features`);
   // => Log: completion message
 }
+// => End: block
 
 function parseFeature(content: string): FeatureDoc {
   // => Function: parse Gherkin to documentation structure
@@ -1871,10 +2126,15 @@ function parseFeature(content: string): FeatureDoc {
   const feature: FeatureDoc = {
     // => Initialize: feature documentation
     name: "",
+    // => Execute: Statement runs
     description: "",
+    // => Execute: Statement runs
     scenarios: [],
+    // => Execute: Statement runs
     tags: [],
+    // => Execute: Statement runs
   };
+  // => Execute: Statement runs
 
   let currentSection: "feature" | "scenario" | null = null;
   // => State: track current parsing section
@@ -1891,12 +2151,14 @@ function parseFeature(content: string): FeatureDoc {
       const tags = trimmed.split(" ").map((t) => t.replace("@", ""));
       // => Parse: extract tag names
       if (currentSection === "scenario" && currentScenario) {
+        // => Check: evaluates condition
         currentScenario.tags.push(...tags);
         // => Add: scenario tags
       } else {
         feature.tags.push(...tags);
         // => Add: feature tags
       }
+      // => End: block
     } else if (trimmed.startsWith("Feature:")) {
       // => Check: feature declaration
       feature.name = trimmed.replace("Feature:", "").trim();
@@ -1906,38 +2168,50 @@ function parseFeature(content: string): FeatureDoc {
     } else if (trimmed.startsWith("Scenario:")) {
       // => Check: scenario declaration
       if (currentScenario) {
+        // => Check: evaluates condition
         feature.scenarios.push(currentScenario);
         // => Store: previous scenario
       }
+      // => End: block
       currentScenario = {
         // => Initialize: new scenario
         name: trimmed.replace("Scenario:", "").trim(),
+        // => Property: name value
         steps: [],
+        // => Execute: Statement runs
         tags: [],
+        // => Execute: Statement runs
       };
       currentSection = "scenario";
       // => State: in scenario section
     } else if (trimmed.match(/^(Given|When|Then|And|But)/)) {
       // => Check: step line
       if (currentScenario) {
+        // => Check: evaluates condition
         currentScenario.steps.push(trimmed);
         // => Add: step to scenario
       }
+      // => End: block
     } else if (trimmed && currentSection === "feature" && !feature.description) {
       // => Check: feature description (first non-empty line after Feature:)
       feature.description = trimmed;
       // => Set: feature description
     }
+    // => End: block
   }
+  // => End: block
 
   if (currentScenario) {
+    // => Check: evaluates condition
     feature.scenarios.push(currentScenario);
     // => Store: last scenario
   }
+  // => End: block
 
   return feature;
   // => Return: parsed feature documentation
 }
+// => End: block
 
 function generateMarkdown(features: FeatureDoc[]): string {
   // => Function: convert documentation to Markdown
@@ -1952,14 +2226,18 @@ function generateMarkdown(features: FeatureDoc[]): string {
     // => Add: feature header
 
     if (feature.description) {
+      // => Check: evaluates condition
       md += `${feature.description}\n\n`;
       // => Add: feature description
     }
+    // => End: block
 
     if (feature.tags.length > 0) {
+      // => Check: evaluates condition
       md += `**Tags**: ${feature.tags.join(", ")}\n\n`;
       // => Add: feature tags
     }
+    // => End: block
 
     feature.scenarios.forEach((scenario) => {
       // => Loop: process each scenario
@@ -1967,43 +2245,65 @@ function generateMarkdown(features: FeatureDoc[]): string {
       // => Add: scenario header
 
       if (scenario.tags.length > 0) {
+        // => Check: evaluates condition
         md += `**Tags**: ${scenario.tags.join(", ")}\n\n`;
         // => Add: scenario tags
       }
+      // => End: block
 
       scenario.steps.forEach((step) => {
         // => Loop: process each step
         md += `- ${step}\n`;
         // => Add: step as list item
       });
+      // => End: function/callback
 
       md += "\n";
       // => Add: spacing
     });
+    // => End: function/callback
   });
+  // => End: function/callback
 
   return md;
   // => Return: Markdown documentation
 }
+// => End: block
 
 function generateHTML(features: FeatureDoc[]): string {
   // => Function: convert documentation to HTML
   let html = `<!DOCTYPE html>
+  // => Declare: html variable
 <html>
+// => Execute: Statement runs
 <head>
+// => Execute: Statement runs
   <title>System Specifications</title>
+  // => Execute: Statement runs
   <style>
+  // => Execute: Statement runs
     body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; }
+    // => Execute: Statement runs
     h1 { color: #0173B2; }
+    // => Execute: Statement runs
     h2 { color: #029E73; border-bottom: 2px solid #029E73; }
+    // => Execute: Statement runs
     h3 { color: #DE8F05; }
+    // => Execute: Statement runs
     .tag { background: #CC78BC; color: white; padding: 2px 8px; border-radius: 3px; margin: 0 4px; }
+    // => Execute: Statement runs
     .step { margin-left: 20px; }
+    // => Execute: Statement runs
   </style>
+  // => Execute: Statement runs
 </head>
+// => Execute: Statement runs
 <body>
+// => Execute: Statement runs
   <h1>System Specifications</h1>
+  // => Execute: Statement runs
   <p><em>Generated: ${new Date().toISOString()}</em></p>
+  // => Execute: statement runs
 `;
   // => Initialize: HTML document with accessible colors
 
@@ -2013,18 +2313,26 @@ function generateHTML(features: FeatureDoc[]): string {
     // => Add: feature header
 
     if (feature.description) {
+      // => Check: evaluates condition
       html += `  <p>${feature.description}</p>\n`;
       // => Add: feature description
     }
+    // => End: block
 
     if (feature.tags.length > 0) {
+      // => Check: Conditional branch
       html += `  <p>`;
+      // => Assign: Value stored
       feature.tags.forEach((tag) => {
+        // => Loop: iterates collection
         html += `<span class="tag">${tag}</span>`;
         // => Add: tag badge
       });
+      // => End: function/callback
       html += `</p>\n`;
+      // => Assign: Value stored
     }
+    // => End: block
 
     feature.scenarios.forEach((scenario) => {
       // => Loop: process each scenario
@@ -2032,21 +2340,34 @@ function generateHTML(features: FeatureDoc[]): string {
       // => Add: scenario header
 
       if (scenario.tags.length > 0) {
+        // => Check: Conditional branch
         html += `    <p>`;
+        // => Assign: Value stored
         scenario.tags.forEach((tag) => {
+          // => Execute: Statement runs
           html += `<span class="tag">${tag}</span>`;
+          // => Assign: Value stored
         });
+        // => End: function/callback
         html += `</p>\n`;
+        // => Assign: Value stored
       }
+      // => End: block
 
       html += `    <ul>\n`;
+      // => Assign: Value stored
       scenario.steps.forEach((step) => {
+        // => Loop: iterates collection
         html += `      <li class="step">${step}</li>\n`;
         // => Add: step list item
       });
+      // => End: function/callback
       html += `    </ul>\n`;
+      // => Assign: Value stored
     });
+    // => End: function/callback
   });
+  // => End: function/callback
 
   html += `</body>\n</html>`;
   // => Close: HTML document
@@ -2054,8 +2375,9 @@ function generateHTML(features: FeatureDoc[]): string {
   return html;
   // => Return: HTML documentation
 }
+// => End: block
 
-// Execute documentation generation
+// => Execute documentation generation
 generateLivingDocumentation().catch(console.error);
 // => Run: documentation generation
 // => Error handling: log errors
@@ -2069,49 +2391,65 @@ name: Generate Living Documentation
 # => Workflow: automated documentation generation
 
 on:
+# => Config: on:
   push:
+  # => Config: push:
     branches: [main]
     # => Trigger: on push to main branch
   pull_request:
     # => Trigger: on pull request
 
 jobs:
+# => Config: jobs:
   generate-docs:
+  # => Config: generate-docs:
     runs-on: ubuntu-latest
     # => Environment: Linux runner
 
     steps:
+    # => Config: steps:
       - uses: actions/checkout@v3
         # => Step: checkout code
 
       - uses: actions/setup-node@v3
+      # => Item: uses: actions/setup-node@v3
         with:
+        # => Config: with:
           node-version: "18"
         # => Step: setup Node.js
 
       - name: Install dependencies
+      # => Item: name: Install dependencies
         run: npm install
         # => Step: install packages
 
       - name: Generate living documentation
+      # => Item: name: Generate living document
         run: npm run generate:docs
         # => Step: run documentation generator
         # => Command: ts-node scripts/generate_living_docs.ts
 
       - name: Deploy to GitHub Pages
+      # => Item: name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         # => Step: deploy documentation
         with:
+        # => Config: with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          # => Config: github_token: ${{ secrets.GITHUB_TOKEN
           publish_dir: ./docs
         # => Config: deploy docs/ folder to gh-pages branch
 
       - name: Upload documentation artifacts
+      # => Item: name: Upload documentation art
         uses: actions/upload-artifact@v3
         # => Step: store documentation
         with:
+        # => Config: with:
           name: specifications
+          # => Config: name: specifications
           path: |
+          # => Config: path: |
             docs/specifications.md
             docs/specifications.html
             docs/specifications.json
@@ -2185,6 +2523,7 @@ Feature: Legacy System Migration - Payment Processing
 
 ```typescript
 // File: steps/legacy_migration_steps.ts
+// => File: steps/legacy_migration_steps.ts
 import { Given, When, Then } from "@cucumber/cucumber";
 // => Imports: Cucumber decorators
 import { LegacyPaymentService } from "../services/LegacyPaymentService";
@@ -2219,6 +2558,7 @@ Given("legacy payment service is active", async () => {
   // => Initialize: legacy SOAP client
   // => URL: legacy system endpoint
 });
+// => End: function/callback
 
 Given("modern payment service is active", async () => {
   // => Step: configure modern system mode
@@ -2232,6 +2572,7 @@ Given("modern payment service is active", async () => {
   // => Initialize: modern REST client
   // => URL: modern system endpoint
 });
+// => End: function/callback
 
 Given("both legacy and modern payment services are active", async () => {
   // => Step: configure shadow mode (parallel execution)
@@ -2246,6 +2587,7 @@ Given("both legacy and modern payment services are active", async () => {
   modernService = new ModernPaymentService("http://modern.internal.com/api");
   // => Initialize: modern client (primary)
 });
+// => End: function/callback
 
 When("customer submits payment of ${int} with card {string}", async (amount: number, cardNumber: string) => {
   // => Step: execute payment (routes based on feature flags)
@@ -2269,7 +2611,9 @@ When("customer submits payment of ${int} with card {string}", async (amount: num
     legacyResult = await legacyService.processPayment({ amount, cardNumber });
     // => Call: legacy system only
   }
+  // => End: block
 });
+// => End: function/callback
 
 Then("payment should be processed successfully", async () => {
   // => Step: verify payment success (implementation-agnostic)
@@ -2279,6 +2623,7 @@ Then("payment should be processed successfully", async () => {
     expect(legacyResult.status).to.equal("SUCCESS");
     // => Assertion: legacy payment succeeded
   }
+  // => End: block
 
   if (modernResult) {
     // => Check: modern executed
@@ -2287,6 +2632,7 @@ Then("payment should be processed successfully", async () => {
   }
   // => Behavior: same success assertion for both systems
 });
+// => End: function/callback
 
 Then("transaction should be logged in legacy database", async () => {
   // => Step: verify legacy-specific behavior
@@ -2298,6 +2644,7 @@ Then("transaction should be logged in legacy database", async () => {
   // => Assertion: transaction logged in legacy DB
   // => Implementation detail: legacy DB schema
 });
+// => End: function/callback
 
 Then("transaction should be logged in modern database", async () => {
   // => Step: verify modern-specific behavior
@@ -2309,6 +2656,7 @@ Then("transaction should be logged in modern database", async () => {
   // => Assertion: transaction logged in modern DB
   // => Implementation detail: modern DB schema
 });
+// => End: function/callback
 
 Then("payment gateway should receive request in XML format", async () => {
   // => Step: verify legacy integration format
@@ -2324,6 +2672,7 @@ Then("payment gateway should receive request in XML format", async () => {
   // => Assertion: XML structure
   // => Legacy detail: SOAP envelope
 });
+// => End: function/callback
 
 Then("payment gateway should receive request in JSON format", async () => {
   // => Step: verify modern integration format
@@ -2339,6 +2688,7 @@ Then("payment gateway should receive request in JSON format", async () => {
   // => Assertion: JSON structure
   // => Modern detail: REST API
 });
+// => End: function/callback
 
 Then("both systems should process payment successfully", async () => {
   // => Step: verify both executions succeeded (shadow mode)
@@ -2348,18 +2698,20 @@ Then("both systems should process payment successfully", async () => {
   // => Assertion: modern succeeded
   // => Shadow mode: primary (modern) response returned to user
 });
+// => End: function/callback
 
 Then("both systems should return identical transaction IDs", async () => {
   // => Step: verify behavioral parity (same business outcome)
-  // In practice: transaction IDs would differ (different systems)
+  // => In practice: transaction IDs would differ (different systems)
   // => Comment: ID format might differ
-  // Check: both are valid, non-empty UUIDs
+  // => Check: both are valid, non-empty UUIDs
   expect(legacyResult.transactionId).to.match(/^[A-Z0-9-]+$/);
   // => Assertion: legacy transaction ID format
   expect(modernResult.transactionId).to.match(/^[a-f0-9-]+$/);
   // => Assertion: modern transaction ID format (lowercase UUID)
   // => Parity: both generated valid transaction IDs
 });
+// => End: function/callback
 
 Then("modern system should match legacy system behavior", async () => {
   // => Step: comprehensive behavioral comparison
@@ -2371,6 +2723,7 @@ Then("modern system should match legacy system behavior", async () => {
   // => Assertion: same final status
   // => Behavioral parity: modern matches legacy business logic
 });
+// => End: function/callback
 ```
 
 **Key Takeaway**: Legacy migration BDD uses feature flags and parallel execution to test behavioral parity between old and new systems, enabling confident incremental migration.
@@ -2464,6 +2817,7 @@ Feature: A/B Testing - Checkout Flow Variants
 
 ```typescript
 // File: steps/ab_testing_steps.ts
+// => File: steps/ab_testing_steps.ts
 import { Given, When, Then } from "@cucumber/cucumber";
 // => Imports: Cucumber decorators
 import { ABTestService } from "../services/ABTestService";
@@ -2499,6 +2853,7 @@ Given("user {string} is assigned to control group", async (email: string) => {
   await analytics.setUserProperty(email, "ab_variant", currentVariant);
   // => Track: user variant assignment in analytics
 });
+// => End: function/callback
 
 Given("user {string} is assigned to treatment group", async (email: string) => {
   // => Step: assign user to treatment variant
@@ -2512,6 +2867,7 @@ Given("user {string} is assigned to treatment group", async (email: string) => {
   await analytics.setUserProperty(email, "ab_variant", currentVariant);
   // => Track: variant assignment
 });
+// => End: function/callback
 
 Given("cart contains {int} items totaling ${int}", async (itemCount: number, total: number) => {
   // => Step: setup cart state (precondition)
@@ -2520,11 +2876,15 @@ Given("cart contains {int} items totaling ${int}", async (itemCount: number, tot
   await checkoutService.setCartItems([
     // => Setup: cart items
     { id: "item1", price: 50 },
+    // => Execute: Statement runs
     { id: "item2", price: 50 },
+    // => Execute: Statement runs
     { id: "item3", price: 50 },
+    // => Execute: statement runs
   ]);
   // => State: cart with specified items and total
 });
+// => End: function/callback
 
 When("user initiates checkout", async () => {
   // => Step: start checkout flow
@@ -2542,7 +2902,9 @@ When("user initiates checkout", async () => {
     timestamp: checkoutStartTime,
     // => Dimension: event timestamp
   });
+  // => End: function/callback
 });
+// => End: function/callback
 
 Then("user should see single-page checkout form", async () => {
   // => Step: verify control variant UI
@@ -2554,6 +2916,7 @@ Then("user should see single-page checkout form", async () => {
   expect(checkoutUI.steps).to.equal(1);
   // => Assertion: one step (all fields together)
 });
+// => End: function/callback
 
 Then("user should see multi-step checkout wizard", async () => {
   // => Step: verify treatment variant UI
@@ -2567,9 +2930,12 @@ Then("user should see multi-step checkout wizard", async () => {
   expect(checkoutUI.currentStep).to.equal(1);
   // => Assertion: starts on step 1 (shipping)
 });
+// => End: function/callback
 
 Then(
+  // => Call: Then()
   "analytics should track event {string} with variant {string}",
+  // => Execute: statement runs
   async (eventName: string, expectedVariant: string) => {
     // => Step: verify event tracking
     const events = await analytics.getEvents(eventName);
@@ -2582,6 +2948,7 @@ Then(
     // => Assertion: event tagged with correct variant
     // => Purpose: segment metrics by variant for comparison
   },
+  // => End: Object property
 );
 
 Then("analytics should measure checkout_duration", async () => {
@@ -2597,6 +2964,7 @@ Then("analytics should measure checkout_duration", async () => {
     variant: currentVariant,
     // => Dimension: tag with variant for comparison
   });
+  // => End: function/callback
 
   const metrics = await analytics.getMetrics("checkout_duration");
   // => Query: get tracked duration metrics
@@ -2604,6 +2972,7 @@ Then("analytics should measure checkout_duration", async () => {
   expect(metrics).to.have.lengthOf.greaterThan(0);
   // => Assertion: metric captured
 });
+// => End: function/callback
 
 Given("A/B test {string} is active", async (experimentName: string) => {
   // => Step: verify experiment running
@@ -2616,6 +2985,7 @@ Given("A/B test {string} is active", async (experimentName: string) => {
   expect(isActive).to.be.true;
   // => Assertion: experiment enabled
 });
+// => End: function/callback
 
 When("{int} users complete checkout", async (userCount: number) => {
   // => Step: simulate multiple users (statistical sample)
@@ -2637,7 +3007,7 @@ When("{int} users complete checkout", async (userCount: number) => {
     await analytics.trackEvent("checkout_started", { variant });
     // => Track: start event
 
-    // Simulate checkout completion (80% conversion for control, 85% for treatment)
+    // => Simulate checkout completion (80% conversion for control, 85% for treatment)
     const completionRate = variant === "control" ? 0.8 : 0.85;
     // => Simulate: different conversion rates (treatment performs better)
 
@@ -2648,8 +3018,11 @@ When("{int} users complete checkout", async (userCount: number) => {
       await analytics.trackEvent("checkout_completed", { variant });
       // => Track: completion event
     }
+    // => End: block
   }
+  // => End: block
 });
+// => End: function/callback
 
 Then("analytics should have data for both variants", async () => {
   // => Step: verify both variants tracked
@@ -2663,6 +3036,7 @@ Then("analytics should have data for both variants", async () => {
   expect(treatmentEvents.length).to.be.greaterThan(0);
   // => Assertion: treatment data exists
 });
+// => End: function/callback
 
 Then("conversion rates should be calculated for each variant", async () => {
   // => Step: verify conversion rate calculation
@@ -2687,6 +3061,7 @@ Then("conversion rates should be calculated for each variant", async () => {
   expect(treatmentConversionRate).to.be.closeTo(0.85, 0.1);
   // => Assertion: treatment ~85% conversion (simulated improvement)
 });
+// => End: function/callback
 
 Then("statistical significance should be calculated", async () => {
   // => Step: verify statistical analysis
@@ -2704,7 +3079,9 @@ Then("statistical significance should be calculated", async () => {
     console.log("Treatment variant shows statistically significant improvement");
     // => Log: experiment result (treatment wins)
   }
+  // => End: block
 });
+// => End: function/callback
 ```
 
 **Key Takeaway**: A/B testing BDD verifies feature variants behave correctly, collect proper analytics, and enable data-driven decisions through statistical significance testing.
@@ -2806,6 +3183,7 @@ Feature: Feature Flag Progressive Rollout
 
 ```typescript
 // File: steps/feature_flag_steps.ts
+// => File: steps/feature_flag_steps.ts
 import { Given, When, Then } from "@cucumber/cucumber";
 // => Imports: Cucumber decorators
 import { FeatureFlagService } from "../services/FeatureFlagService";
@@ -2836,6 +3214,7 @@ Given("feature flag {string} is enabled for {int}% of users", async (flagName: s
   // => Effect: percentage of user IDs will see new feature
   // => Method: consistent hashing (same user always gets same variant)
 });
+// => End: function/callback
 
 When("{int} users perform searches", async (userCount: number) => {
   // => Step: simulate multiple users (test rollout distribution)
@@ -2845,7 +3224,9 @@ When("{int} users perform searches", async (userCount: number) => {
   newAlgorithmCount = 0;
   // => Reset: counters
   oldAlgorithmCount = 0;
+  // => Assign: Value stored
   searchResults = [];
+  // => Assign: Value stored
 
   for (let i = 0; i < userCount; i++) {
     // => Loop: simulate N users
@@ -2872,13 +3253,16 @@ When("{int} users perform searches", async (userCount: number) => {
       oldAlgorithmCount++;
       // => Increment: old algorithm counter
     }
+    // => End: block
 
     const result = await searchService.search("test query", algorithm);
     // => Execute: search with selected algorithm
     searchResults.push({ userId, algorithm, result });
     // => Store: search result for verification
   }
+  // => End: block
 });
+// => End: function/callback
 
 Then("approximately {int} users should use new search algorithm", async (expectedCount: number) => {
   // => Step: verify rollout distribution
@@ -2890,6 +3274,7 @@ Then("approximately {int} users should use new search algorithm", async (expecte
   // => Assertion: new algorithm count within tolerance
   // => Example: 10 ±2 (8-12 acceptable for 1% of 1000)
 });
+// => End: function/callback
 
 Then("approximately {int} users should use old search algorithm", async (expectedCount: number) => {
   // => Step: verify old algorithm distribution
@@ -2899,6 +3284,7 @@ Then("approximately {int} users should use old search algorithm", async (expecte
   expect(oldAlgorithmCount).to.be.closeTo(expectedCount, tolerance);
   // => Assertion: old algorithm count within tolerance
 });
+// => End: function/callback
 
 Then("all searches should return results successfully", async () => {
   // => Step: verify both algorithms work (quality gate)
@@ -2909,7 +3295,9 @@ Then("all searches should return results successfully", async () => {
     expect(result.result.items).to.be.an("array");
     // => Assertion: results returned
   });
+  // => End: function/callback
 });
+// => End: function/callback
 
 Then("error rate should be below {float}% for both algorithms", async (maxErrorRate: number) => {
   // => Step: verify error rate threshold (quality gate)
@@ -2930,6 +3318,7 @@ Then("error rate should be below {float}% for both algorithms", async (maxErrorR
   // => Assertion: old algorithm error rate acceptable
   // => Gate: both must pass before increasing rollout
 });
+// => End: function/callback
 
 Given("feature flag {string} targets beta users only", async (flagName: string) => {
   // => Step: configure targeted rollout (user segment)
@@ -2939,6 +3328,7 @@ Given("feature flag {string} targets beta users only", async (flagName: string) 
   await featureFlags.setTargeting(flagName, {
     // => Config: targeting rules
     rules: [
+      // => Execute: Statement runs
       {
         attribute: "beta_user",
         // => Rule: target users with beta_user attribute
@@ -2947,10 +3337,13 @@ Given("feature flag {string} targets beta users only", async (flagName: string) 
         value: true,
         // => Value: beta_user must be true
       },
+      // => End: Object property
     ],
+    // => Execute: statement runs
   });
   // => Effect: flag enabled only for users matching rule
 });
+// => End: function/callback
 
 Given("user {string} is marked as beta user", async (email: string) => {
   // => Step: set user attribute for targeting
@@ -2958,6 +3351,7 @@ Given("user {string} is marked as beta user", async (email: string) => {
   // => Set: user property beta_user=true
   // => Effect: user matches targeting rule
 });
+// => End: function/callback
 
 Given("user {string} is not a beta user", async (email: string) => {
   // => Step: ensure user doesn't match targeting rule
@@ -2965,6 +3359,7 @@ Given("user {string} is not a beta user", async (email: string) => {
   // => Set: user property beta_user=false
   // => Effect: user doesn't match targeting rule
 });
+// => End: function/callback
 
 When("{string} accesses dashboard", async (email: string) => {
   // => Step: check feature flag for specific user
@@ -2975,6 +3370,7 @@ When("{string} accesses dashboard", async (email: string) => {
   // => Store: which dashboard variant to show
   // => Decision: based on flag evaluation
 });
+// => End: function/callback
 
 Then("user should see premium dashboard", async function () {
   // => Step: verify premium feature enabled
@@ -2982,6 +3378,7 @@ Then("user should see premium dashboard", async function () {
   // => Assertion: premium dashboard shown
   // => Targeting: user matched beta_user rule
 });
+// => End: function/callback
 
 Then("user should see standard dashboard", async function () {
   // => Step: verify premium feature disabled
@@ -2989,6 +3386,7 @@ Then("user should see standard dashboard", async function () {
   // => Assertion: standard dashboard shown
   // => Targeting: user didn't match rule
 });
+// => End: function/callback
 
 When("operations team disables feature flag {string}", async (flagName: string) => {
   // => Step: emergency kill switch (disable feature instantly)
@@ -2997,6 +3395,7 @@ When("operations team disables feature flag {string}", async (flagName: string) 
   // => Effect: instant rollback without deployment
   // => Speed: flag toggle takes effect in seconds (vs deploy minutes)
 });
+// => End: function/callback
 
 Then("all users should use old payment processor", async () => {
   // => Step: verify all users rolled back
@@ -3012,6 +3411,7 @@ Then("all users should use old payment processor", async () => {
   }
   // => Verify: 100% rollback to old processor
 });
+// => End: function/callback
 ```
 
 **Key Takeaway**: Feature flag BDD verifies progressive rollouts work correctly at each percentage, targeted rollouts reach correct user segments, and kill switches enable instant rollback.
@@ -3021,6 +3421,31 @@ Then("all users should use old payment processor", async () => {
 ### Example 71: Blue-Green Deployment Testing with BDD
 
 Blue-green deployment runs two identical production environments. BDD scenarios verify both environments work identically before traffic switching.
+
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A[Load Balancer] -->|100% traffic| B[Blue: Production v1]
+    A -.->|0% traffic| C[Green: New v2]
+    D[BDD Tests] --> C
+    D --> E{Green Passes?}
+    E -->|Yes| F[Switch Traffic]
+    E -->|No| G[Keep Blue Active]
+    F --> H[Green: 100% traffic]
+    F --> I[Blue: Standby or Decommission]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#0173B2,stroke:#000,color:#fff
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#DE8F05,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#fff
+    style F fill:#029E73,stroke:#000,color:#fff
+    style G fill:#CC78BC,stroke:#000,color:#000
+    style H fill:#029E73,stroke:#000,color:#fff
+    style I fill:#CA9161,stroke:#000,color:#fff
+```
 
 ```gherkin
 # File: features/blue_green_deployment.feature
@@ -3112,9 +3537,38 @@ Feature: Canary Release Progressive Traffic Shift
 
 **Why It Matters**: Big-bang releases are risky. Canary releases with automated monitoring detect issues early (5% traffic) before impacting all users, reducing blast radius of bad releases.
 
+## Observability and Multi-Tenancy
+
 ### Example 73: BDD for Observability - Metrics, Logs, Traces
 
 Observability BDD verifies monitoring infrastructure correctly captures metrics, logs, and distributed traces for production debugging.
+
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A[BDD Scenario Triggers Action] --> B[Service Under Test]
+    B --> C[Emit Metric: request_count++]
+    B --> D[Write Log: INFO request processed]
+    B --> E[Create Trace Span]
+    C --> F[Prometheus Metrics Store]
+    D --> G[Log Aggregator]
+    E --> H[Distributed Trace Store]
+    F --> I[BDD Assertion: metric value correct]
+    G --> I
+    H --> I
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#029E73,stroke:#000,color:#fff
+    style F fill:#CC78BC,stroke:#000,color:#000
+    style G fill:#CC78BC,stroke:#000,color:#000
+    style H fill:#CC78BC,stroke:#000,color:#000
+    style I fill:#0173B2,stroke:#000,color:#fff
+```
 
 ```gherkin
 # File: features/observability.feature
@@ -3209,6 +3663,8 @@ Feature: Multi-Tenant Data Isolation
 
 **Why It Matters**: Multi-tenant data breaches are catastrophic. BDD scenarios ensure tenant boundaries are enforced, protecting customer data and maintaining regulatory compliance.
 
+## Compliance
+
 ### Example 75: Data Privacy Testing - GDPR/CCPA Compliance
 
 Data privacy regulations (GDPR, CCPA) require specific data handling. BDD scenarios verify right to access, deletion, and portability.
@@ -3273,6 +3729,7 @@ Feature: GDPR Data Privacy Compliance
 
 ```typescript
 // File: steps/privacy_steps.ts
+// => File: steps/privacy_steps.ts
 import { When, Then } from "@cucumber/cucumber";
 // => Imports: Cucumber decorators
 import { PrivacyService } from "../services/PrivacyService";
@@ -3295,10 +3752,11 @@ When("user requests data export via privacy portal", async function () {
   this.exportRequestId = exportRequest.id;
   // => Store: request ID for verification
 });
+// => End: function/callback
 
 Then("system should generate complete data export within {int} days", async function (days: number) {
   // => Step: verify export generation
-  // In test: simulate immediate generation
+  // => In test: simulate immediate generation
   const exportData = await privacyService.generateExport(this.exportRequestId);
   // => Action: generate export (immediate for testing)
   // => Production: async job, user gets email link
@@ -3311,6 +3769,7 @@ Then("system should generate complete data export within {int} days", async func
   // => Assertion: payment data included
   // => Completeness: all personal data included
 });
+// => End: function/callback
 
 When("user requests account deletion via privacy portal", async function () {
   // => Step: initiate GDPR deletion (right to be forgotten)
@@ -3324,10 +3783,11 @@ When("user requests account deletion via privacy portal", async function () {
   this.deletionRequestId = deletionRequest.id;
   // => Store: request ID
 });
+// => End: function/callback
 
 Then("all personal data should be deleted within {int} days", async function (days: number) {
   // => Step: verify data deletion
-  // In test: simulate immediate deletion
+  // => In test: simulate immediate deletion
   await privacyService.executeDeletion(this.deletionRequestId);
   // => Action: execute deletion (immediate for testing)
   // => Production: async job with manual review
@@ -3338,6 +3798,7 @@ Then("all personal data should be deleted within {int} days", async function (da
   expect(userExists).to.be.false;
   // => Assertion: user record deleted
 });
+// => End: function/callback
 ```
 
 **Key Takeaway**: Data privacy BDD verifies GDPR/CCPA compliance through scenarios for data access, deletion, and opt-out rights with regulatory timeline verification.
@@ -3435,6 +3896,8 @@ Feature: PCI-DSS Payment Card Security
 
 **Why It Matters**: Payment breaches destroy trust and incur fines. BDD scenarios ensure PCI-DSS requirements are met, protecting cardholder data and maintaining payment processor partnerships.
 
+## Enterprise Scaling
+
 ### Example 78: Enterprise Test Architecture - Shared Step Libraries
 
 Large organizations need shared BDD step libraries across teams to ensure consistency and reduce duplication.
@@ -3447,7 +3910,7 @@ import { Given, When, Then } from "@cucumber/cucumber";
 import { AuthService } from "@company/auth-sdk";
 // => Import: company-wide authentication SDK
 
-// Shared authentication steps
+// => Shared authentication steps
 Given("user {string} is authenticated", async function (email: string) {
   // => Shared step: standard authentication
   // => Used by: all teams (order team, inventory team, etc.)
@@ -3457,6 +3920,7 @@ Given("user {string} is authenticated", async function (email: string) {
   // => Action: authenticate user
   // => Benefit: consistent auth across all team scenarios
 });
+// => End: function/callback
 
 Given("user {string} has role {string}", async function (email: string, role: string) {
   // => Shared step: role-based access control
@@ -3464,8 +3928,9 @@ Given("user {string} has role {string}", async function (email: string, role: st
   // => Action: assign role for authorization testing
   // => Benefit: standard RBAC testing pattern
 });
+// => End: function/callback
 
-// Export for reuse
+// => Export for reuse
 export { AuthService };
 // => Export: allow teams to extend if needed
 ```
@@ -3478,6 +3943,7 @@ Feature: Order Creation (Order Team)
   # => Feature: order team feature using shared steps
 
   Scenario: Authenticated user creates order
+    # => Scenario: Single test case for Authenticated user creates ord
     Given user "alice@example.com" is authenticated
     # => Shared step: from shared-steps/authentication.ts
     And user "alice@example.com" has role "customer"
@@ -3493,11 +3959,17 @@ Feature: Order Creation (Order Team)
 ```
 shared-steps/
 ├── authentication.ts        # Login, logout, roles
+# => Structure: Report section hierarchy
 ├── authorization.ts         # Permissions, access control
+# => Structure: Report section hierarchy
 ├── database.ts             # DB setup, teardown, queries
+# => Structure: Report section hierarchy
 ├── api_common.ts           # Common API assertions
+# => Structure: Report section hierarchy
 ├── error_handling.ts       # Standard error scenarios
+# => Structure: Report section hierarchy
 └── pagination.ts           # Standard pagination patterns
+# => Structure: Report section hierarchy
 ```
 
 **Key Takeaway**: Enterprise BDD uses shared step libraries to standardize common patterns (authentication, authorization, pagination) across teams, reducing duplication and ensuring consistency.
@@ -3507,6 +3979,36 @@ shared-steps/
 ### Example 79: BDD Governance and Standardization
 
 Enterprise BDD requires governance to maintain quality and consistency across teams. BDD scenarios verify governance policies.
+
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A[BDD Governance Standards] --> B[Naming Conventions]
+    A --> C[Scenario Quality Rules]
+    A --> D[Tag Taxonomy]
+    A --> E[Review Process]
+    B --> F[Automated Lint Check]
+    C --> F
+    D --> F
+    E --> G[Manual Review Gate]
+    F --> H{Standards Met?}
+    G --> H
+    H -->|Yes| I[Merge Approved]
+    H -->|No| J[PR Blocked with Feedback]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#DE8F05,stroke:#000,color:#000
+    style D fill:#DE8F05,stroke:#000,color:#000
+    style E fill:#DE8F05,stroke:#000,color:#000
+    style F fill:#029E73,stroke:#000,color:#fff
+    style G fill:#CC78BC,stroke:#000,color:#000
+    style H fill:#CA9161,stroke:#000,color:#fff
+    style I fill:#029E73,stroke:#000,color:#fff
+    style J fill:#CC78BC,stroke:#000,color:#000
+```
 
 ```gherkin
 # File: governance/features/scenario_quality.feature
@@ -3547,40 +4049,76 @@ Feature: BDD Scenario Quality Governance
 
 ```typescript
 // File: governance/scenario_linter.ts
+// => File: governance/scenario_linter.ts
+// => State: modified in current scope
 import * as fs from "fs";
 // => Import: file system
+// => State: modified in current scope
 import * as glob from "glob";
 // => Import: file globbing
+// => State: modified in current scope
 
 interface GovernanceRule {
+  // => Type: GovernanceRule defines data structure
   name: string;
+  // => Property: name value
   check: (scenario: any) => boolean;
+  // => Assign: Value stored
   message: string;
+  // => Property: message value
 }
+// => End: block
+// => State: modified in current scope
 
 const governanceRules: GovernanceRule[] = [
   // => Config: governance policy rules
+  // => State: modified in current scope
   {
+    // => Step: Executes
     name: "declarative-steps",
+    // => Execute: statement runs
+    // => State: modified in current scope
     check: (scenario) => {
       // => Rule: verify declarative language
+      // => State: modified in current scope
       const imperativeKeywords = ["click", "enter", "type", "select", "navigate"];
       // => Forbidden: UI implementation keywords
-      return !scenario.steps.some((step) =>
-        imperativeKeywords.some((keyword) => step.text.toLowerCase().includes(keyword)),
+      // => State: modified in current scope
+      return !scenario.steps.some(
+        (step) =>
+          // => Return: Function result
+          imperativeKeywords.some((keyword) => step.text.toLowerCase().includes(keyword)),
+        // => Call: imperativeKeywords.some()
+        // => State: modified in current scope
       );
     },
+    // => End: Object property
+    // => State: modified in current scope
     message: "Scenario contains imperative UI details. Use declarative business language.",
+    // => Execute: Statement runs
+    // => State: modified in current scope
   },
+  // => End: Object property
+  // => State: modified in current scope
   {
+    // => Step: Executes
     name: "required-tags",
+    // => Execute: statement runs
+    // => State: modified in current scope
     check: (scenario) => {
       // => Rule: verify required tags present
+      // => State: modified in current scope
       const requiredTags = ["@team", "@priority"];
+      // => Declare: requiredTags variable
       return requiredTags.every((tag) => scenario.tags.some((t) => t.startsWith(tag)));
+      // => Return: Function result
+      // => Caller: receives this value
     },
+    // => End: Object property
     message: "Scenario missing required tags (@team, @priority)",
+    // => Execute: Statement runs
   },
+  // => End: Object property
 ];
 
 function lintScenarios(): void {
@@ -3589,6 +4127,7 @@ function lintScenarios(): void {
   // => Find: all feature files
 
   let violations = 0;
+  // => Declare: violations variable
 
   featureFiles.forEach((file) => {
     // => Loop: check each feature file
@@ -3604,18 +4143,26 @@ function lintScenarios(): void {
         if (!rule.check(scenario)) {
           // => Check: rule violation
           console.error(`${file}:${scenario.line} - ${rule.name}: ${rule.message}`);
+          // => Log: Output to console
           violations++;
+          // => Execute: Statement runs
         }
+        // => End: block
       });
+      // => End: function/callback
     });
+    // => End: function/callback
   });
+  // => End: function/callback
 
   if (violations > 0) {
     // => Check: any violations found
     process.exit(1);
     // => Fail: exit with error code (fails CI build)
   }
+  // => End: block
 }
+// => End: block
 
 lintScenarios();
 // => Execute: governance enforcement
@@ -3629,11 +4176,45 @@ lintScenarios();
 
 Large organizations use federated BDD ownership where teams own their scenarios while following shared standards.
 
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A[Central BDD Platform Team] --> B[Shared Step Library]
+    A --> C[Common Standards and Tooling]
+    B --> D[Team Authentication]
+    B --> E[Team Payments]
+    B --> F[Team Checkout]
+    C --> D
+    C --> E
+    C --> F
+    D --> G[Auth Feature Files]
+    E --> H[Payment Feature Files]
+    F --> I[Checkout Feature Files]
+    G --> J[Unified CI Pipeline]
+    H --> J
+    I --> J
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#DE8F05,stroke:#000,color:#000
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#029E73,stroke:#000,color:#fff
+    style F fill:#029E73,stroke:#000,color:#fff
+    style G fill:#CC78BC,stroke:#000,color:#000
+    style H fill:#CC78BC,stroke:#000,color:#000
+    style I fill:#CC78BC,stroke:#000,color:#000
+    style J fill:#0173B2,stroke:#000,color:#fff
+```
+
 ```yaml
 # File: .bdd/team-ownership.yml
 # => Config: team ownership mapping
 teams:
+  # => Config: teams:
   order-team:
+    # => Config: order-team:
     features: features/orders/**
     # => Ownership: order team owns order features
     maintainers: [alice@company.com, bob@company.com]
@@ -3642,16 +4223,22 @@ teams:
     # => Communication: team Slack channel
 
   payment-team:
+    # => Config: payment-team:
     features: features/payments/**
     # => Ownership: payment team owns payment features
     maintainers: [carol@company.com, dave@company.com]
+    # => Config: maintainers: [carol@company.com, dave@
     slack: #payment-team
+    # => Config: slack: #payment-team
 
   inventory-team:
+    # => Config: inventory-team:
     features: features/inventory/**
     # => Ownership: inventory team owns inventory features
     maintainers: [eve@company.com, frank@company.com]
+    # => Config: maintainers: [eve@company.com, frank@c
     slack: #inventory-team
+    # => Config: slack: #inventory-team
 ```
 
 **Cross-Team Scenario Review**:
@@ -3727,151 +4314,289 @@ Scenario: Customer completes checkout with valid payment card
 **BDD Coaching Workshop Format**:
 
 ```typescript
-// File: training/bdd_workshop.ts
+// File: training/bdd_workshop.ts  // => File: training/bdd_workshop.ts
 interface WorkshopExercise {
+  // => Type: WorkshopExercise defines data structure
   title: string;
-  badExample: string; // => Anti-pattern to critique
-  coachingNotes: string[]; // => Teaching points
-  refactoringChallenge: string; // => Exercise for participants
+  // => Property: title value
+  badExample: string;
+  // => Anti-pattern to critique
+  coachingNotes: string[];
+  // => Teaching points
+  refactoringChallenge: string;
+  // => Exercise for participants
 }
+// => End: block
+// => State: modified in current scope
 
 const workshopExercises: WorkshopExercise[] = [
+  // => Declare: workshopExercises typed variable
   {
+    // => Step: Executes
     title: "Exercise 1: Declarative vs Imperative Steps",
+    // => Execute: Statement runs
     badExample: `
+    // => Execute: Statement runs
 Scenario: User login
+// => Property: Scenario value
   Given I navigate to "https://example.com"
+  // => Execute: Statement runs
   When I click on element with id "login-btn"
+  // => Execute: Statement runs
   And I type "user@example.com" into "#email"
+  // => Execute: Statement runs
   And I type "password123" into "#password"
+  // => Execute: Statement runs
   And I click submit
+  // => Execute: Statement runs
   Then I should see "Welcome"
+  // => Execute: Statement runs
     `,
+    // => Execute: Statement runs
     coachingNotes: [
+      // => Execute: statement runs
+      // => State: modified in current scope
       "Problem: UI implementation details (CSS selectors, clicks)",
       // => Teaching point: why imperative is bad
+      // => State: modified in current scope
       "Solution: Use business language hiding UI details",
       // => Teaching point: what to do instead
+      // => State: modified in current scope
       "Page Object pattern separates UI from business logic",
       // => Teaching point: implementation pattern
+      // => State: modified in current scope
     ],
+    // => Execute: statement runs
+    // => State: modified in current scope
     refactoringChallenge: 'Rewrite using declarative steps like "When user logs in with email and password"',
     // => Exercise: participant practice
+    // => State: modified in current scope
   },
+  // => End: Object property
+  // => State: modified in current scope
   {
+    // => Step: Executes
     title: "Exercise 2: Specific vs Vague Scenarios",
+    // => Execute: Statement runs
     badExample: `
+    // => Execute: Statement runs
 Scenario: Order works
+// => Property: Scenario value
   Given user has items
+  // => Execute: Statement runs
   When user checks out
+  // => Execute: Statement runs
   Then it works
+  // => Execute: Statement runs
     `,
+    // => Execute: Statement runs
     coachingNotes: [
+      // => Execute: Statement runs
       "Problem: Vague language lacks testable specifics",
+      // => Execute: Statement runs
       "Solution: Use concrete values (3 items, substantial amounts total)",
+      // => Execute: Statement runs
+      // => State: modified in current scope
       "Benefit: Scenarios become living documentation",
+      // => Execute: Statement runs
     ],
+    // => Execute: statement runs
+    // => State: modified in current scope
     refactoringChallenge: "Add specific quantities, prices, and verifiable outcomes",
+    // => Execute: Statement runs
+    // => State: modified in current scope
   },
+  // => End: Object property
+  // => State: modified in current scope
 ];
 
 function runWorkshop(): void {
   // => Function: interactive coaching session
+  // => Closure: captures outer scope
   workshopExercises.forEach((exercise, index) => {
+    // => Call: workshopExercises.forEach()
     console.log(`\n=== ${exercise.title} ===\n`);
+    // => Log: Output to console
     console.log("BAD EXAMPLE (critique this):");
+    // => Log: output to console
+    // => State: modified in current scope
     console.log(exercise.badExample);
     // => Show: anti-pattern for group discussion
+    // => State: modified in current scope
 
     console.log("\nCOACHING NOTES:");
+    // => Log: output to console
+    // => State: modified in current scope
     exercise.coachingNotes.forEach((note) => console.log(`  - ${note}`));
     // => Share: teaching points
+    // => State: modified in current scope
 
     console.log(`\nCHALLENGE: ${exercise.refactoringChallenge}`);
     // => Assign: hands-on exercise
+    // => State: modified in current scope
 
     console.log("\n[PAUSE FOR GROUP EXERCISE - 10 MINUTES]");
     // => Timing: allow practice time
+    // => State: modified in current scope
   });
+  // => End: function/callback
+  // => State: modified in current scope
 }
+// => End: block
+// => State: modified in current scope
 ```
 
 **BDD Maturity Assessment**:
 
 ```typescript
-// File: training/maturity_assessment.ts
+// File: training/maturity_assessment.ts  // => File: training/maturity_assessment.ts
 interface MaturityLevel {
+  // => Type: MaturityLevel defines data structure
   level: number;
+  // => Property: level value
   name: string;
+  // => Property: name value
   characteristics: string[];
+  // => Property: characteristics value
   nextSteps: string[];
+  // => Property: nextSteps value
 }
+// => End: block
+// => State: modified in current scope
 
 const bddMaturityLevels: MaturityLevel[] = [
+  // => Declare: bddMaturityLevels typed variable
   {
+    // => Step: Executes
     level: 1,
+    // => Property: level value
     name: "Initial - Test Automation Focus",
+    // => Execute: Statement runs
     characteristics: [
+      // => Execute: statement runs
+      // => State: modified in current scope
       "Scenarios written by QA only",
       // => Indicator: siloed BDD (not collaborative)
+      // => State: modified in current scope
       "Imperative UI-focused steps",
       // => Indicator: technical, not business language
+      // => State: modified in current scope
       "Scenarios written after implementation",
       // => Indicator: missing specification collaboration
+      // => State: modified in current scope
     ],
+    // => Execute: statement runs
+    // => State: modified in current scope
     nextSteps: [
+      // => Execute: statement runs
+      // => State: modified in current scope
       "Introduce Three Amigos meetings (dev, QA, product)",
       // => Improvement: collaborative specification
+      // => State: modified in current scope
       "Train team on declarative vs imperative steps",
       // => Improvement: better scenario quality
+      // => State: modified in current scope
       "Write scenarios before implementation (specification by example)",
       // => Improvement: BDD as design tool
+      // => State: modified in current scope
     ],
+    // => Execute: statement runs
+    // => State: modified in current scope
   },
+  // => End: Object property
+  // => State: modified in current scope
   {
+    // => Step: Executes
     level: 2,
+    // => Property: level value
     name: "Collaborative - Specification Focus",
+    // => Execute: Statement runs
     characteristics: [
+      // => Execute: Statement runs
       "Three Amigos meetings held regularly",
+      // => Execute: Statement runs
       "Scenarios written before implementation",
+      // => Execute: Statement runs
       "Declarative business-focused language",
+      // => Execute: Statement runs
     ],
+    // => Execute: statement runs
+    // => State: modified in current scope
     nextSteps: [
+      // => Execute: Statement runs
       "Build shared step libraries across teams",
+      // => Execute: Statement runs
       "Implement living documentation generation",
+      // => Execute: Statement runs
       "Establish BDD governance and quality standards",
+      // => Execute: Statement runs
     ],
+    // => Execute: statement runs
+    // => State: modified in current scope
   },
+  // => End: Object property
+  // => State: modified in current scope
   {
+    // => Step: Executes
     level: 3,
+    // => Property: level value
     name: "Mature - Organization-Wide Practice",
+    // => Execute: Statement runs
     characteristics: [
+      // => Execute: Statement runs
       "BDD part of definition of done",
+      // => Execute: Statement runs
       "Living documentation used by stakeholders",
+      // => Execute: Statement runs
       "Shared step libraries maintained",
+      // => Execute: Statement runs
       "Governance enforced via automated linting",
+      // => Execute: Statement runs
     ],
+    // => Execute: statement runs
+    // => State: modified in current scope
     nextSteps: [
+      // => Execute: Statement runs
       "Measure BDD ROI (defect reduction, documentation value)",
+      // => Execute: Statement runs
       "Scale BDD to all teams (federated ownership)",
+      // => Execute: Statement runs
       "Integrate BDD with product discovery processes",
+      // => Execute: Statement runs
     ],
+    // => Execute: statement runs
+    // => State: modified in current scope
   },
+  // => End: Object property
+  // => State: modified in current scope
 ];
 
 function assessTeamMaturity(team: string): void {
   // => Function: evaluate team BDD maturity
+  // => Closure: captures outer scope
   console.log(`BDD Maturity Assessment for ${team}\n`);
+  // => Log: Output to console
 
   bddMaturityLevels.forEach((level) => {
+    // => Call: bddMaturityLevels.forEach()
     console.log(`Level ${level.level}: ${level.name}`);
+    // => Log: Output to console
     console.log("Characteristics:");
+    // => Log: Output to console
     level.characteristics.forEach((c) => console.log(`  - ${c}`));
+    // => Log: Output to console
     console.log("Next Steps:");
+    // => Log: Output to console
     level.nextSteps.forEach((s) => console.log(`  - ${s}`));
+    // => Log: Output to console
     console.log();
+    // => Log: Output to console
   });
+  // => End: function/callback
+  // => State: modified in current scope
 }
+// => End: block
+// => State: modified in current scope
 ```
 
 **Key Takeaway**: BDD coaching uses workshops with anti-pattern examples, refactoring exercises, and maturity assessments to guide teams from test automation to collaborative specification.
@@ -3882,141 +4607,281 @@ function assessTeamMaturity(team: string): void {
 
 Organizations need metrics to justify BDD investment. This example demonstrates measuring BDD return on investment.
 
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A[BDD Investment] --> B[Costs]
+    A --> C[Benefits]
+    B --> B1[Training Hours]
+    B --> B2[Tooling Costs]
+    B --> B3[Maintenance Overhead]
+    C --> C1[Defects Prevented]
+    C --> C2[Reduced Rework Cost]
+    C --> C3[Faster Onboarding]
+    C --> C4[Living Documentation Value]
+    C1 --> D[ROI Calculation]
+    C2 --> D
+    C3 --> D
+    C4 --> D
+    B1 --> D
+    B2 --> D
+    B3 --> D
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#CC78BC,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#DE8F05,stroke:#000,color:#000
+```
+
 ```typescript
 // File: metrics/bdd_roi.ts
+// => File: metrics/bdd_roi.ts
+// => State: modified in current scope
 interface BDDMetrics {
   // => Interface: BDD ROI measurement
+  // => State: modified in current scope
   defectMetrics: {
+    // => Execute: statement runs
+    // => State: modified in current scope
     productionDefects: number;
     // => Metric: defects found in production (cost: high)
+    // => State: modified in current scope
     preProductionDefects: number;
     // => Metric: defects found before production (cost: low)
+    // => State: modified in current scope
     defectEscapeRate: number;
     // => Metric: % defects reaching production
+    // => State: modified in current scope
   };
+  // => Execute: Statement runs
   documentationMetrics: {
+    // => Execute: statement runs
+    // => State: modified in current scope
     livingDocScenarios: number;
     // => Metric: executable scenarios (living documentation)
+    // => State: modified in current scope
     stakeholderUsage: number;
     // => Metric: non-technical stakeholders reading scenarios
+    // => State: modified in current scope
     documentationCoverage: number;
     // => Metric: % features with BDD scenarios
+    // => State: modified in current scope
   };
+  // => Execute: Statement runs
   collaborationMetrics: {
+    // => Execute: statement runs
+    // => State: modified in current scope
     threeAmigosFrequency: number;
     // => Metric: Three Amigos meetings per sprint
+    // => State: modified in current scope
     crossFunctionalParticipation: number;
     // => Metric: % scenarios with dev + QA + product input
+    // => State: modified in current scope
     clarificationTime: number;
     // => Metric: time spent clarifying requirements
+    // => State: modified in current scope
   };
+  // => Execute: Statement runs
   velocityMetrics: {
+    // => Execute: statement runs
+    // => State: modified in current scope
     averageFeatureCycleTime: number;
     // => Metric: time from spec to production
+    // => State: modified in current scope
     reworkRate: number;
     // => Metric: % work redone due to misunderstood requirements
+    // => State: modified in current scope
   };
+  // => Execute: Statement runs
 }
+// => End: block
+// => State: modified in current scope
 
 function calculateBDDROI(before: BDDMetrics, after: BDDMetrics): number {
   // => Function: calculate ROI of BDD adoption
+  // => Closure: captures outer scope
 
-  // Cost savings from defect reduction
-  const productionDefectCost = 10000; // => Cost: substantial amountsk per production defect
-  const preProductionDefectCost = 1000; // => Cost: substantial amountsk per pre-prod defect
+  // => Cost savings from defect reduction  // => Note: Cost savings from defect reduction
+  const productionDefectCost = 10000;
+  // => Cost: substantial amountsk per production defect
+  const preProductionDefectCost = 1000;
+  // => Cost: substantial amountsk per pre-prod defect
 
   const beforeDefectCost =
+    // => Declare: beforeDefectCost variable
     before.defectMetrics.productionDefects * productionDefectCost +
+    // => Execute: statement runs
+    // => State: modified in current scope
     before.defectMetrics.preProductionDefects * preProductionDefectCost;
   // => Calculate: total defect cost before BDD
+  // => State: modified in current scope
 
   const afterDefectCost =
+    // => Declare: afterDefectCost variable
     after.defectMetrics.productionDefects * productionDefectCost +
+    // => Execute: statement runs
+    // => State: modified in current scope
     after.defectMetrics.preProductionDefects * preProductionDefectCost;
   // => Calculate: total defect cost after BDD
+  // => State: modified in current scope
 
   const defectSavings = beforeDefectCost - afterDefectCost;
   // => Calculate: cost reduction from fewer production defects
+  // => State: modified in current scope
 
-  // Cost savings from reduced rework
-  const reworkCost = 5000; // => Cost: substantial amountsk per rework incident
+  // => Cost savings from reduced rework  // => Note: Cost savings from reduced rework
+  const reworkCost = 5000;
+  // => Cost: substantial amountsk per rework incident
   const reworkSavings = (before.velocityMetrics.reworkRate - after.velocityMetrics.reworkRate) * reworkCost;
   // => Calculate: savings from less rework
+  // => State: modified in current scope
 
-  // Cost savings from reduced clarification time
-  const developerHourlyRate = 100; // => Cost: substantial amounts/hour developer time
+  // => Cost savings from reduced clarification time
+  // => Note: Cost savings from reduced clarification time
+  const developerHourlyRate = 100;
+  // => Cost: substantial amounts/hour developer time
   const clarificationSavings =
+    // => Declare: clarificationSavings variable
     (before.collaborationMetrics.clarificationTime - after.collaborationMetrics.clarificationTime) *
+    // => Execute: statement runs
+    // => State: modified in current scope
     developerHourlyRate;
   // => Calculate: time saved on requirement clarification
+  // => State: modified in current scope
 
-  // Total savings
+  // => Total savings
   const totalSavings = defectSavings + reworkSavings + clarificationSavings;
   // => Calculate: total cost savings
+  // => State: modified in current scope
 
-  // Investment cost (tooling, training, coaching)
-  const bddInvestment = 50000; // => Investment: substantial amountsk (tools, training, coaching)
+  // => Investment cost (tooling, training, coaching)
+  // => Note: Investment cost (tooling, training, coaching)
+  const bddInvestment = 50000;
+  // => Investment: substantial amountsk (tools, training, coaching)
 
-  // ROI calculation
+  // => ROI calculation
   const roi = ((totalSavings - bddInvestment) / bddInvestment) * 100;
   // => Calculate: (Savings - Investment) / Investment * 100
   // => Example: (substantial amountsk - substantial amountsk) / substantial amountsk = 200% ROI
 
   console.log("BDD ROI Analysis:");
+  // => Log: Output to console
   console.log(`Defect cost savings: $${defectSavings}`);
+  // => Log: Output to console
   console.log(`Rework savings: $${reworkSavings}`);
+  // => Log: Output to console
   console.log(`Clarification time savings: $${clarificationSavings}`);
+  // => Log: Output to console
+  // => State: modified in current scope
   console.log(`Total savings: $${totalSavings}`);
+  // => Log: Output to console
   console.log(`BDD investment: $${bddInvestment}`);
+  // => Log: Output to console
   console.log(`ROI: ${roi.toFixed(1)}%`);
+  // => Log: Output to console
 
   return roi;
+  // => Return: Function result
 }
+// => End: block
+// => State: modified in current scope
 
-// Example usage
+// => Example usage  // => Note: Example usage
 const metricsBeforeBDD: BDDMetrics = {
+  // => Declare: metricsBeforeBDD typed variable
   defectMetrics: {
-    productionDefects: 12, // => Before: 12 production bugs
-    preProductionDefects: 20, // => Before: 20 pre-prod bugs
-    defectEscapeRate: 0.375, // => Before: 37.5% escape rate
+    // => Execute: Statement runs
+    productionDefects: 12,
+    // => Before: 12 production bugs
+    preProductionDefects: 20,
+    // => Before: 20 pre-prod bugs
+    defectEscapeRate: 0.375,
+    // => Before: 37.5% escape rate
   },
+  // => End: Object property
+  // => State: modified in current scope
   documentationMetrics: {
-    livingDocScenarios: 0, // => Before: no living docs
-    stakeholderUsage: 0, // => Before: no stakeholder engagement
-    documentationCoverage: 0, // => Before: 0% coverage
+    // => Execute: Statement runs
+    livingDocScenarios: 0,
+    // => Before: no living docs
+    stakeholderUsage: 0,
+    // => Before: no stakeholder engagement
+    documentationCoverage: 0,
+    // => Before: 0% coverage
   },
+  // => End: Object property
+  // => State: modified in current scope
   collaborationMetrics: {
-    threeAmigosFrequency: 0, // => Before: no Three Amigos
-    crossFunctionalParticipation: 0, // => Before: siloed work
-    clarificationTime: 40, // => Before: 40 hours/sprint clarifying
+    // => Execute: Statement runs
+    threeAmigosFrequency: 0,
+    // => Before: no Three Amigos
+    crossFunctionalParticipation: 0,
+    // => Before: siloed work
+    clarificationTime: 40,
+    // => Before: 40 hours/sprint clarifying
   },
+  // => End: Object property
+  // => State: modified in current scope
   velocityMetrics: {
-    averageFeatureCycleTime: 15, // => Before: 15 days feature cycle
-    reworkRate: 8, // => Before: 8 rework incidents/sprint
+    // => Execute: Statement runs
+    averageFeatureCycleTime: 15,
+    // => Before: 15 days feature cycle
+    reworkRate: 8,
+    // => Before: 8 rework incidents/sprint
   },
+  // => End: Object property
+  // => State: modified in current scope
 };
+// => Execute: Statement runs
 
 const metricsAfterBDD: BDDMetrics = {
+  // => Declare: metricsAfterBDD typed variable
   defectMetrics: {
-    productionDefects: 3, // => After: 3 production bugs (75% reduction)
-    preProductionDefects: 15, // => After: 15 pre-prod bugs (caught earlier)
-    defectEscapeRate: 0.167, // => After: 16.7% escape rate (improved)
+    // => Execute: Statement runs
+    productionDefects: 3,
+    // => After: 3 production bugs (75% reduction)
+    preProductionDefects: 15,
+    // => After: 15 pre-prod bugs (caught earlier)
+    defectEscapeRate: 0.167,
+    // => After: 16.7% escape rate (improved)
   },
+  // => End: Object property
+  // => State: modified in current scope
   documentationMetrics: {
-    livingDocScenarios: 150, // => After: 150 executable scenarios
-    stakeholderUsage: 25, // => After: 25 stakeholders read scenarios
-    documentationCoverage: 0.8, // => After: 80% feature coverage
+    // => Execute: Statement runs
+    livingDocScenarios: 150,
+    // => After: 150 executable scenarios
+    stakeholderUsage: 25,
+    // => After: 25 stakeholders read scenarios
+    documentationCoverage: 0.8,
+    // => After: 80% feature coverage
   },
+  // => End: Object property
+  // => State: modified in current scope
   collaborationMetrics: {
-    threeAmigosFrequency: 10, // => After: 10 Three Amigos sessions/sprint
-    crossFunctionalParticipation: 0.85, // => After: 85% scenarios collaborative
-    clarificationTime: 10, // => After: 10 hours/sprint (75% reduction)
+    // => Execute: Statement runs
+    threeAmigosFrequency: 10,
+    // => After: 10 Three Amigos sessions/sprint
+    crossFunctionalParticipation: 0.85,
+    // => After: 85% scenarios collaborative
+    clarificationTime: 10,
+    // => After: 10 hours/sprint (75% reduction)
   },
+  // => End: Object property
+  // => State: modified in current scope
   velocityMetrics: {
-    averageFeatureCycleTime: 10, // => After: 10 days (33% faster)
-    reworkRate: 2, // => After: 2 rework incidents (75% reduction)
+    // => Execute: Statement runs
+    averageFeatureCycleTime: 10,
+    // => After: 10 days (33% faster)
+    reworkRate: 2,
+    // => After: 2 rework incidents (75% reduction)
   },
+  // => End: Object property
+  // => State: modified in current scope
 };
+// => Execute: Statement runs
 
 const roi = calculateBDDROI(metricsBeforeBDD, metricsAfterBDD);
 // => Execute: ROI calculation
@@ -4026,6 +4891,8 @@ const roi = calculateBDDROI(metricsBeforeBDD, metricsAfterBDD);
 **Key Takeaway**: BDD ROI measurement tracks defect reduction, rework elimination, and collaboration improvements, demonstrating business value through quantified cost savings.
 
 **Why It Matters**: BDD requires investment (tools, training, time). ROI metrics justify the investment by showing tangible benefits: fewer production defects, faster delivery, and better collaboration.
+
+## Advanced Topics
 
 ### Example 83: BDD in Continuous Discovery - Product Experimentation
 
@@ -4062,55 +4929,90 @@ Feature: Product Hypothesis Testing via BDD
 
 ```typescript
 // File: steps/hypothesis_testing_steps.ts
+// => File: steps/hypothesis_testing_steps.ts
+// => State: modified in current scope
 import { Given, When, Then } from "@cucumber/cucumber";
 // => Imports: Cucumber decorators
+// => State: modified in current scope
 import { ExperimentService } from "../services/ExperimentService";
 // => Import: experimentation platform
+// => State: modified in current scope
 import { expect } from "chai";
 // => Import: assertion library
+// => State: modified in current scope
 
 interface ProductHypothesis {
+  // => Type: ProductHypothesis defines data structure
   name: string;
-  metric: string; // => Metric: what to measure
-  successCriteria: number; // => Threshold: minimum improvement
-  confidenceLevel: number; // => Statistical: required confidence (95%)
+  // => Property: name value
+  metric: string;
+  // => Metric: what to measure
+  successCriteria: number;
+  // => Threshold: minimum improvement
+  confidenceLevel: number;
+  // => Statistical: required confidence (95%)
 }
+// => End: block
+// => State: modified in current scope
 
 let experiment: ExperimentService;
+// => Declare: experiment typed variable
 let hypothesis: ProductHypothesis;
+// => Declare: hypothesis typed variable
 let experimentResults: any;
+// => Declare: experimentResults typed variable
 
 Given("experiment {string} is active for {int}% of users", async (experimentName: string, percentage: number) => {
   // => Step: configure product experiment
+  // => State: modified in current scope
   experiment = new ExperimentService();
   // => Initialize: experiment platform
+  // => Instance: object allocated
 
   hypothesis = {
     // => Define: hypothesis under test
+    // => State: modified in current scope
     name: experimentName,
+    // => Property: name value
     metric: "average_cart_value",
-    successCriteria: 0.2, // => Target: 20% improvement
-    confidenceLevel: 0.95, // => Confidence: 95% (p < 0.05)
+    // => Execute: Statement runs
+    successCriteria: 0.2,
+    // => Target: 20% improvement
+    confidenceLevel: 0.95,
+    // => Confidence: 95% (p < 0.05)
   };
+  // => Execute: Statement runs
 
   await experiment.create(experimentName, {
     // => Create: experiment configuration
+    // => Async: resolves when operation completes
     variants: ["control", "treatment"],
+    // => Execute: statement runs
+    // => State: modified in current scope
     trafficAllocation: { control: 50, treatment: 50 },
     // => Allocation: 50/50 split
+    // => State: modified in current scope
     successMetric: hypothesis.metric,
+    // => Property: successMetric value
   });
+  // => End: function/callback
+  // => State: modified in current scope
 });
+// => End: function/callback
+// => State: modified in current scope
 
 When("{int} users in each group add products to cart", async (userCount: number) => {
   // => Step: run experiment simulation
+  // => State: modified in current scope
   await experiment.run(userCount);
   // => Execute: simulate user behavior
+  // => Async: resolves when operation completes
 
   experimentResults = await experiment.getResults();
   // => Query: retrieve experiment metrics
   // => Response: { control: {...}, treatment: {...}, significance }
 });
+// => End: function/callback
 
 Then("treatment group average cart value should be at least {int}% higher", async (minImprovement: number) => {
   // => Step: verify hypothesis success criteria
@@ -4125,6 +5027,7 @@ Then("treatment group average cart value should be at least {int}% higher", asyn
   expect(improvement).to.be.at.least(minImprovement / 100);
   // => Assertion: improvement meets hypothesis (>= 20%)
 });
+// => End: function/callback
 
 Then("statistical significance should be p < {float}", async (pValueThreshold: number) => {
   // => Step: verify statistical significance
@@ -4135,11 +5038,14 @@ Then("statistical significance should be p < {float}", async (pValueThreshold: n
   // => Assertion: p < 0.05 (95% confidence)
   // => Meaning: result likely not due to random chance
 });
+// => End: function/callback
 
 Then("if hypothesis validated, promote feature to {int}% users", async (percentage: number) => {
   // => Step: decision criteria (ship or kill feature)
   const hypothesisValidated =
+    // => Declare: hypothesisValidated variable
     experimentResults.improvement >= hypothesis.successCriteria &&
+    // => Assign: experimentResults.improvement > updated
     experimentResults.significance.pValue < 1 - hypothesis.confidenceLevel;
   // => Check: both success criteria and significance met
 
@@ -4148,13 +5054,17 @@ Then("if hypothesis validated, promote feature to {int}% users", async (percenta
     await experiment.promoteToProduction(hypothesis.name, percentage);
     // => Action: ship feature to all users
     console.log(`✅ Hypothesis validated - shipping feature to ${percentage}% users`);
+    // => Log: output to console
   } else {
     // => Decision: hypothesis disproven
     await experiment.killFeature(hypothesis.name);
     // => Action: disable feature (failed experiment)
     console.log(`❌ Hypothesis invalidated - killing feature`);
+    // => Log: Output to console
   }
+  // => End: block
 });
+// => End: function/callback
 ```
 
 **Key Takeaway**: BDD integrates with continuous discovery by testing product hypotheses through experiments, measuring success criteria, and automating ship/kill decisions.
@@ -4195,6 +5105,7 @@ Feature: Fraud Detection ML Model Validation
     # => Scenario: verify model doesn't discriminate
     # => Regulation: AI fairness requirements
     Given fraud detection model is deployed
+      # => Given: Establishes precondition
     And test dataset is segmented by demographic attributes
     # => And: dataset includes age, gender, location demographics
     When model predicts fraud for each demographic group
@@ -4228,49 +5139,71 @@ Feature: Fraud Detection ML Model Validation
 
 ```typescript
 // File: steps/ml_model_steps.ts
+// => File: steps/ml_model_steps.ts
+// => State: modified in current scope
 import { Given, When, Then } from "@cucumber/cucumber";
 // => Imports: Cucumber decorators
+// => State: modified in current scope
 import { MLModelService } from "../services/MLModelService";
 // => Import: ML model inference service
+// => State: modified in current scope
 import { expect } from "chai";
 // => Import: assertion library
+// => State: modified in current scope
 
 let mlModel: MLModelService;
+// => Declare: mlModel typed variable
 let predictions: any[];
+// => Declare: predictions typed variable
 let metrics: any;
+// => Declare: metrics typed variable
 
 Given("fraud detection model version {string} is deployed", async (version: string) => {
   // => Step: load specific model version
+  // => State: modified in current scope
   mlModel = new MLModelService();
   // => Initialize: ML service
+  // => Instance: object allocated
   await mlModel.loadModel("fraud-detection", version);
   // => Load: model from registry (MLflow, SageMaker, etc.)
   // => Version: v2.1.0 (specific model artifact)
 });
+// => End: function/callback
+// => State: modified in current scope
 
 Given("test dataset contains {int} labeled transactions", async function (transactionCount: number) {
   // => Step: load test dataset
+  // => Closure: captures outer scope
   this.testDataset = await mlModel.loadTestDataset("fraud-test-dataset", transactionCount);
   // => Load: labeled test data
   // => Structure: [{ features: {...}, label: 0|1 }]
 });
+// => End: function/callback
+// => State: modified in current scope
 
 When("model predicts fraud for test dataset", async function () {
   // => Step: run model inference
+  // => Closure: captures outer scope
   predictions = await mlModel.predict(this.testDataset);
   // => Predict: run model on test data
   // => Output: [{ prediction: 0|1, confidence: 0-1 }]
 
   metrics = calculateMetrics(this.testDataset, predictions);
   // => Calculate: accuracy, precision, recall, F1
+  // => State: modified in current scope
 });
+// => End: function/callback
+// => State: modified in current scope
 
 Then("model accuracy should be at least {int}%", async (minAccuracy: number) => {
   // => Step: verify accuracy threshold
+  // => State: modified in current scope
   expect(metrics.accuracy).to.be.at.least(minAccuracy / 100);
   // => Assertion: accuracy >= 95%
   // => Formula: (TP + TN) / (TP + TN + FP + FN)
 });
+// => End: function/callback
+// => State: modified in current scope
 
 Then("precision should be at least {int}%", async (minPrecision: number) => {
   // => Step: verify precision (false positive rate)
@@ -4279,6 +5212,7 @@ Then("precision should be at least {int}%", async (minPrecision: number) => {
   // => Formula: TP / (TP + FP)
   // => Meaning: when model flags fraud, it's right 90% of time
 });
+// => End: function/callback
 
 Then("recall should be at least {int}%", async (minRecall: number) => {
   // => Step: verify recall (false negative rate)
@@ -4287,24 +5221,34 @@ Then("recall should be at least {int}%", async (minRecall: number) => {
   // => Formula: TP / (TP + FN)
   // => Meaning: model catches 85% of actual fraud
 });
+// => End: function/callback
 
 Then("false positive rates should be within {int}% across all groups", async (tolerance: number) => {
   // => Step: verify fairness constraint
   const demographicGroups = ["age_18_30", "age_31_50", "age_51_plus"];
+  // => Declare: demographicGroups variable
   const fprByGroup: Record<string, number> = {};
+  // => Declare: fprByGroup typed variable
 
   for (const group of demographicGroups) {
     // => Loop: calculate FPR for each demographic
     const groupData = this.testDataset.filter((d) => d.demographic === group);
+    // => Declare: groupData variable
     const groupPredictions = predictions.filter((_, i) => this.testDataset[i].demographic === group);
+    // => Declare: groupPredictions variable
     const groupMetrics = calculateMetrics(groupData, groupPredictions);
+    // => Var: groupMetrics = calculateMetrics(groupData, gr
     fprByGroup[group] = groupMetrics.falsePositiveRate;
     // => Store: FPR for group
   }
+  // => End: block
 
   const fprValues = Object.values(fprByGroup);
+  // => Declare: fprValues variable
   const maxFPR = Math.max(...fprValues);
+  // => Declare: maxFPR variable
   const minFPR = Math.min(...fprValues);
+  // => Var: minFPR = Math.min(...fprValues);
   const fprRange = maxFPR - minFPR;
   // => Calculate: range of FPRs across groups
 
@@ -4312,32 +5256,52 @@ Then("false positive rates should be within {int}% across all groups", async (to
   // => Assertion: FPR range < 5% (demographic parity)
   // => Fairness: all groups treated similarly
 });
+// => End: function/callback
 
 function calculateMetrics(dataset: any[], predictions: any[]): any {
   // => Function: calculate ML metrics
   let tp = 0,
+    // => Declare: tp variable
     tn = 0,
+    // => Assign: Value stored
     fp = 0,
+    // => Assign: Value stored
     fn = 0;
+  // => Assign: Value stored
 
   dataset.forEach((sample, i) => {
+    // => Call: dataset.forEach()
     const actual = sample.label;
+    // => Declare: actual variable
     const predicted = predictions[i].prediction;
+    // => Declare: predicted variable
 
     if (actual === 1 && predicted === 1) tp++;
+    // => Check: Conditional branch
     if (actual === 0 && predicted === 0) tn++;
+    // => Check: Conditional branch
     if (actual === 0 && predicted === 1) fp++;
+    // => Check: Conditional branch
     if (actual === 1 && predicted === 0) fn++;
+    // => Check: Conditional branch
   });
+  // => End: function/callback
 
   const accuracy = (tp + tn) / (tp + tn + fp + fn);
+  // => Declare: accuracy variable
   const precision = tp / (tp + fp);
+  // => Declare: precision variable
   const recall = tp / (tp + fn);
+  // => Declare: recall variable
   const f1 = (2 * (precision * recall)) / (precision + recall);
+  // => Declare: f1 variable
   const falsePositiveRate = fp / (fp + tn);
+  // => Declare: falsePositiveRate variable
 
   return { accuracy, precision, recall, f1, falsePositiveRate };
+  // => Return: Function result
 }
+// => End: block
 ```
 
 **Key Takeaway**: ML model BDD verifies accuracy thresholds, fairness constraints, and monitoring triggers, ensuring models meet quality and ethical standards before production deployment.
@@ -4362,117 +5326,219 @@ Real-world case study demonstrating enterprise BDD transformation at scale.
 ```yaml
 # Phase 1: Pilot (3 months)
 pilot:
+  # => Config: pilot:
   teams: 3 (checkout, payment, inventory)
   # => Scope: limited pilot with critical teams
   approach:
+    # => Config: approach:
     - Hired BDD coach (external consultant)
+    # => Item: Hired BDD coach (external cons
     - Weekly workshops on scenario writing
+    # => Item: Weekly workshops on scenario w
     - Built shared step library for common patterns
+    # => Item: Built shared step library for
   results:
+    # => Config: results:
     production_defects: reduced 40% (12 → 7 bugs/month)
+    # => Config: production_defects: reduced 40% (12 → 7 bugs/
     release_cycle: reduced to 2 weeks
+    # => Config: release_cycle: reduced to 2 weeks
     team_satisfaction: increased (survey score 6.5 → 8.2/10)
+    # => Config: team_satisfaction: increased (survey score 6
   challenges:
+    # => Config: challenges:
     - Initial learning curve (1-2 sprints)
+    # => Item: Initial learning curve (1-2 sp
     - Resistance to "yet another process"
+    # => Item: Resistance to "yet another pro
     - Tooling setup (Cucumber, reporting)
+    # => Item: Tooling setup (Cucumber, repor
 
 # Phase 2: Expansion (6 months)
 expansion:
+  # => Config: expansion:
   teams: 15 (all core platform teams)
   # => Scope: expanded to majority of teams
   approach:
+    # => Config: approach:
     - Internal BDD champions program (train-the-trainer)
+    # => Item: Internal BDD champions program
     - Governance framework (scenario quality linting)
+    # => Item: Governance framework (scenario
     - Living documentation portal (Cucumber reports published)
+    # => Item: Living documentation portal (C
     - CI/CD integration (BDD scenarios in pipeline)
+    # => Item: CI/CD integration (BDD scenari
   results:
+    # => Config: results:
     production_defects: reduced 70% (12 → 3.6 bugs/month)
+    # => Config: production_defects: reduced 70% (12 → 3.6 bug
     release_cycle: reduced to 1 week
+    # => Config: release_cycle: reduced to 1 week
     documentation_coverage: 75% of features
+    # => Config: documentation_coverage: 75% of features
     stakeholder_engagement: product managers read scenarios
+    # => Config: stakeholder_engagement: product managers read sce
   challenges:
+    # => Config: challenges:
     - Scaling shared step libraries (conflicts)
+    # => Item: Scaling shared step libraries
     - Cross-team scenario dependencies
+    # => Item: Cross-team scenario dependenci
     - CI/CD pipeline runtime (parallel execution needed)
+    # => Item: CI/CD pipeline runtime (parall
 
 # Phase 3: Maturity (12 months)
 maturity:
+  # => Config: maturity:
   teams: 50+ (entire engineering organization)
   # => Scope: organization-wide adoption
   approach:
+    # => Config: approach:
     - Federated ownership (teams own their scenarios)
+    # => Item: Federated ownership (teams own
     - Automated governance enforcement (linting in CI)
+    # => Item: Automated governance enforceme
     - BDD metrics dashboard (ROI tracking)
+    # => Item: BDD metrics dashboard (ROI tra
     - Integration with product discovery (hypothesis testing)
+    # => Item: Integration with product disco
   results:
+    # => Config: results:
     production_defects: reduced 80% (12 → 2.4 bugs/month)
+    # => Config: production_defects: reduced 80% (12 → 2.4 bug
     release_cycle: continuous deployment (20+ deploys/day)
+    # => Config: release_cycle: continuous deployment (20
     documentation_coverage: 90% of features
+    # => Config: documentation_coverage: 90% of features
     roi: 250% (measured cost savings vs investment)
+    # => Config: roi: 250% (measured cost savin
     team_satisfaction: 9.1/10
+    # => Config: team_satisfaction: 9.1/10
   sustainability:
+    # => Config: sustainability:
     - BDD part of onboarding for all engineers
+    # => Item: BDD part of onboarding for all
     - Quarterly BDD retrospectives
+    # => Item: Quarterly BDD retrospectives
     - Continuous improvement of shared libraries
+    # => Item: Continuous improvement of shar
 ```
 
 **Key Metrics - Before vs After**:
 
 ```typescript
-// File: case-study/metrics.ts
+// File: case-study/metrics.ts  // => File: case-study/metrics.ts
 const metricsComparison = {
+  // => Declare: metricsComparison variable
   before_bdd: {
+    // => Execute: Statement runs
     production_defects_per_month: 12,
+    // => Property: production_defects_per_month value
     release_cycle_days: 21,
-    requirements_rework_rate: 0.35, // => 35% of work redone
-    test_automation_coverage: 0.45, // => 45% coverage
-    stakeholder_collaboration: "low", // => Siloed work
-    documentation_accuracy: "outdated", // => Docs lag behind code
+    // => Property: release_cycle_days value
+    requirements_rework_rate: 0.35,
+    // => 35% of work redone
+    test_automation_coverage: 0.45,
+    // => 45% coverage
+    stakeholder_collaboration: "low",
+    // => Siloed work
+    documentation_accuracy: "outdated",
+    // => Docs lag behind code
   },
+  // => End: Object property
+  // => State: modified in current scope
   after_bdd_maturity: {
-    production_defects_per_month: 2.4, // => 80% reduction
-    release_cycle_days: 0.05, // => Continuous (20/day)
-    requirements_rework_rate: 0.08, // => 8% rework (77% reduction)
-    test_automation_coverage: 0.9, // => 90% coverage
-    stakeholder_collaboration: "high", // => Three Amigos standard
-    documentation_accuracy: "living", // => Scenarios = docs
+    // => Execute: Statement runs
+    production_defects_per_month: 2.4,
+    // => 80% reduction
+    release_cycle_days: 0.05,
+    // => Continuous (20/day)
+    requirements_rework_rate: 0.08,
+    // => 8% rework (77% reduction)
+    test_automation_coverage: 0.9,
+    // => 90% coverage
+    stakeholder_collaboration: "high",
+    // => Three Amigos standard
+    documentation_accuracy: "living",
+    // => Scenarios = docs
   },
+  // => End: Object property
+  // => State: modified in current scope
   calculated_roi: {
+    // => Execute: Statement runs
     cost_before: {
-      production_defects: 12 * 10000, // => substantial amountsk/month
-      rework: 0.35 * 50 * 100 * 160, // => substantial amountsk/month (rework)
-      total_cost_per_month: 400000, // => substantial amountsk/month
+      // => Execute: Statement runs
+      production_defects: 12 * 10000,
+      // => substantial amountsk/month
+      rework: 0.35 * 50 * 100 * 160,
+      // => substantial amountsk/month (rework)
+      total_cost_per_month: 400000,
+      // => substantial amountsk/month
     },
+    // => End: Object property
+    // => State: modified in current scope
     cost_after: {
-      production_defects: 2.4 * 10000, // => substantial amountsk/month (80% reduction)
-      rework: 0.08 * 50 * 100 * 160, // => substantial amountsk/month (77% reduction)
-      total_cost_per_month: 88000, // => substantial amountsk/month
+      // => Execute: Statement runs
+      production_defects: 2.4 * 10000,
+      // => substantial amountsk/month (80% reduction)
+      rework: 0.08 * 50 * 100 * 160,
+      // => substantial amountsk/month (77% reduction)
+      total_cost_per_month: 88000,
+      // => substantial amountsk/month
     },
-    monthly_savings: 312000, // => substantial amountsk/month saved
-    annual_savings: 3744000, // => substantial amounts.7M/year saved
+    // => End: Object property
+    // => State: modified in current scope
+    monthly_savings: 312000,
+    // => substantial amountsk/month saved
+    annual_savings: 3744000,
+    // => substantial amounts.7M/year saved
     bdd_investment: {
-      tooling: 50000, // => substantial amountsk/year (Cucumber Pro, etc.)
-      training: 100000, // => substantial amountsk (coaching, workshops)
-      ongoing_maintenance: 50000, // => substantial amountsk/year (governance)
-      total_annual_investment: 200000, // => substantial amountsk/year
+      // => Execute: Statement runs
+      tooling: 50000,
+      // => substantial amountsk/year (Cucumber Pro, etc.)
+      training: 100000,
+      // => substantial amountsk (coaching, workshops)
+      ongoing_maintenance: 50000,
+      // => substantial amountsk/year (governance)
+      total_annual_investment: 200000,
+      // => substantial amountsk/year
     },
-    net_annual_benefit: 3544000, // => substantial amounts.5M/year net
-    roi_percentage: 1772, // => 1772% ROI
+    // => End: Object property
+    // => State: modified in current scope
+    net_annual_benefit: 3544000,
+    // => substantial amounts.5M/year net
+    roi_percentage: 1772,
+    // => 1772% ROI
   },
+  // => End: Object property
+  // => State: modified in current scope
 };
+// => Execute: Statement runs
 
 console.log("E-Commerce Platform BDD Transformation");
+// => Log: Output to console
 console.log("Annual Savings: substantial amounts.7M");
+// => Log: Output to console
 console.log("Annual Investment: substantial amountsk");
+// => Log: Output to console
 console.log("Net Benefit: substantial amounts.5M");
+// => Log: Output to console
 console.log("ROI: 1772%");
+// => Log: Output to console
 console.log("\nKey Success Factors:");
+// => Log: Output to console
 console.log("- Executive sponsorship (CEO mandated BDD)");
+// => Log: Output to console
 console.log("- Dedicated BDD coach (external → internal champions)");
+// => Log: Output to console
 console.log("- Gradual rollout (pilot → expansion → maturity)");
+// => Log: Output to console
 console.log("- Governance automation (linting, not bureaucracy)");
+// => Log: Output to console
 console.log("- Integration with product discovery (hypothesis testing)");
+// => Log: Output to console
+// => State: modified in current scope
 ```
 
 **Lessons Learned**:

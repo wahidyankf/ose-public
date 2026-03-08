@@ -50,7 +50,7 @@ print("Name:", name, "Age:", age) # => Mixes string literals and variables
 
 **Key Takeaway**: Use `print()` for debugging and simple output - it accepts multiple arguments with customizable separators and handles automatic type-to-string conversion.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: The print function and output formatting are the starting point for every Python program - from simple scripts to debugging complex systems. Understanding `print()` with separators, end parameters, and f-strings establishes the output patterns used throughout Python development. In production code, controlled output enables structured logging, progress reporting, and user-facing feedback that makes applications understandable and debuggable.
 
 ---
 
@@ -114,7 +114,7 @@ print(x, y, z)                    # => All variables output same value
 
 **Key Takeaway**: Python's dynamic typing provides flexibility but requires discipline - use descriptive variable names and consider type hints for production code to improve readability and catch errors early.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Python's dynamic typing reduces boilerplate code compared to statically typed languages, enabling faster prototyping and more expressive code. Variables holding any type enables polymorphic patterns where the same variable name can hold a string, number, or object depending on context. Understanding type coercion and the `type()` function is essential for debugging type errors in real applications, especially when processing data from external sources like APIs or files.
 
 ---
 
@@ -172,7 +172,7 @@ print(abs(z))                     # => abs() computes magnitude
 
 **Key Takeaway**: Python integers have unlimited precision (no overflow), division `/` always returns float, and floor division `//` returns integer quotient - use `/` for mathematical calculations and `//` when you need integer results.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Python's numeric types form the foundation of all mathematical and scientific computing. Understanding when Python returns int versus float, how integer division works, and the precision differences between int, float, and complex types prevents subtle bugs in financial calculations, measurement systems, and data analysis. The math module and operator precedence rules appear constantly in algorithm implementations.
 
 ---
 
@@ -278,7 +278,7 @@ print(poem)                       # => Prints each line separately
 
 **Key Takeaway**: Strings are immutable - all string methods return new strings rather than modifying originals. Use f-strings for readable formatting and `split()`/`join()` for transforming between strings and lists.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Strings are the primary data type for handling user input, file content, API responses, and output formatting. Mastering string methods like `split()`, `join()`, `strip()`, and `replace()` eliminates the need for complex manual parsing. In production Python code, string manipulation is required for data cleaning, log parsing, template rendering, and building readable reports.
 
 ---
 
@@ -403,7 +403,7 @@ print(bool("text"))               # => Converts "text" to bool
 
 **Key Takeaway**: Python uses short-circuit evaluation for `and`/`or` operators (stops evaluating once result is determined), and many values are falsy (0, empty strings/lists/dicts, None) - use explicit comparisons when checking for specific values.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Boolean logic governs all conditional execution in Python programs. Understanding how comparison operators return booleans, how `and`/`or`/`not` compose conditions, and how Python's truthiness rules work for empty collections and zero values prevents logic errors in control flow. Short-circuit evaluation (`and`/`or`) is also used idiomatically for default values and guard clauses throughout Python codebases.
 
 ---
 
@@ -639,7 +639,7 @@ user_input = ""                   # => user_input is "" (initialization)
 
 **Key Takeaway**: Use `while` for indefinite iteration when you don't know the loop count in advance - prefer `for` loops for iterating over sequences. The `while-else` clause is rarely needed but useful when you need to distinguish between normal completion and early exit.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: While loops implement control flow that continues until a condition changes - essential for event loops, retry logic, polling patterns, and interactive programs. Understanding the interplay between `break` (early exit), `continue` (skip iteration), and `else` (loop exhaustion) enables building robust polling and retry mechanisms. Correctly designing while loop termination conditions prevents the most common class of infinite loop bugs in production systems.
 
 ---
 
@@ -828,7 +828,7 @@ print(has_three, has_ten)         # => Output: True False
 
 **Key Takeaway**: Lists support negative indexing (counting from end) and powerful slicing with `[start:stop:step]` syntax - slices create new lists without modifying originals, making them safe for data inspection.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Lists are Python's most versatile and widely used data structure, appearing in virtually every Python codebase. Understanding creation, indexing, and slicing enables efficient manipulation of ordered data without manual loops. List slicing in particular is a uniquely Pythonic pattern used for copying data, extracting sublists, and reversing sequences with minimal code, appearing frequently in data processing and algorithm implementations.
 
 ---
 
@@ -899,7 +899,7 @@ print(sorted_copy)                # => Output: [1, 3, 4]
 
 **Key Takeaway**: List methods like `append()`, `remove()`, `sort()` modify in-place and return `None` - use `sorted()` and slicing when you need new lists without modifying originals, and always use `copy()` or `list()` to create independent copies.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: List modification methods are the building blocks for data accumulation and transformation in Python programs. Knowing when to use `append()` vs `extend()` vs `insert()`, and understanding the performance implications of `pop(0)` vs `pop(-1)`, enables writing efficient data processing code. The `sort()` and `sorted()` distinction (in-place vs return-value) prevents a common class of bugs where developers expect sorted data but accidentally discard the result.
 
 ---
 
@@ -1006,7 +1006,7 @@ print(p[0], p[1])                 # => Still supports index access
 
 **Key Takeaway**: Use tuples for fixed collections where immutability is desired (function return values, dictionary keys) - they're more memory-efficient than lists and signal intent that data shouldn't change. Named tuples provide readability benefits for complex tuple structures.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Tuples provide immutable sequences with lower memory overhead than lists, making them ideal for fixed collections and dictionary keys. Tuple unpacking enables elegant multiple return values and variable swaps without temporary variables, reducing code verbosity. Immutability guarantees make tuples thread-safe and hashable, essential for concurrent programming and using collections as dictionary keys.
 
 ---
 
@@ -1118,7 +1118,7 @@ print(grades)                     # => Output: {..., 'history': 80}
 
 **Key Takeaway**: Dictionaries provide O(1) average lookup, insertion, and deletion by key - use `get()` instead of `[]` when keys might be missing to avoid `KeyError`, and iterate with `items()` when you need both keys and values.
 
-**Why It Matters**: List comprehensions compile to optimized bytecode that runs faster than equivalent for loops with append(), making them the preferred choice for transforming sequences. The readability of comprehensions improves code maintainability by expressing intent (filter-map operations) more clearly than imperative loops. However, complex nested comprehensions should be avoided in favor of explicit loops for maintainability.
+**Why It Matters**: Dictionaries are the foundational data structure for fast key-based lookup in Python, enabling O(1) average-case access versus O(n) linear search in lists. Understanding dict methods like `get()`, `setdefault()`, and `items()` is essential for writing defensive code that handles missing keys gracefully. In production systems, dicts power configuration management, caching, and data aggregation - mastering dictionary patterns directly improves code performance and robustness in data-heavy applications.
 
 ---
 
@@ -1239,7 +1239,7 @@ print(is_subset, is_superset)     # => Output: True True
 
 **Key Takeaway**: Sets automatically eliminate duplicates and provide O(1) membership testing - use them for uniqueness constraints and mathematical set operations, but remember they're unordered (no indexing) and elements must be immutable.
 
-**Why It Matters**: Tuples provide immutable sequences with lower memory overhead than lists, making them ideal for fixed collections and dictionary keys. Tuple unpacking enables elegant multiple return values and variable swaps without temporary variables, reducing code verbosity. Immutability guarantees make tuples thread-safe and hashable, essential for concurrent programming and using collections as dictionary keys.
+**Why It Matters**: Sets provide O(1) membership testing and automatic deduplication, making them indispensable for performance-critical code that checks membership or ensures uniqueness. Set operations (union, intersection, difference) express mathematical relationships directly in code, replacing verbose loops with single readable expressions. In production code, sets excel at finding duplicates in datasets, computing feature overlaps in machine learning pipelines, and implementing efficient permission/role systems.
 
 ---
 
@@ -1251,33 +1251,34 @@ Functions encapsulate reusable code blocks with parameters, return values, and d
 # Basic function definition
 def greet(name):
     """Return a greeting message."""# => Docstring (optional but recommended)
-    return f"Hello, {name}!"
+    return f"Hello, {name}!"       # => Returns formatted greeting string
 
 # Function call
 message = greet("Alice")          # => message is "Hello, Alice!"
 print(message)                    # => Output: Hello, Alice!
 
 # Function with multiple parameters
-def add(a, b):
+def add(a, b):                    # => Function takes two parameters
     """Add two numbers and return result."""
-    return a + b
+    return a + b                    # => Returns arithmetic sum of a and b
 
 result = add(5, 3)                # => result is 8
 print(result)                     # => Output: 8
 
 # Default arguments
-def power(base, exponent=2):
+def power(base, exponent=2):     # => exponent=2 is default argument
     """Raise base to exponent (default: 2)."""
-    return base ** exponent
+    return base ** exponent         # => ** is exponentiation operator
 
 square = power(5)                 # => square is 25 (5^2, default exponent)
 cube = power(5, 3)                # => cube is 125 (5^3, explicit exponent)
 print(square, cube)               # => Output: 25 125
 
 # Keyword arguments
-def describe_pet(animal, name):
+def describe_pet(animal, name):  # => Both params required (no defaults)
     """Print pet description."""
     return f"I have a {animal} named {name}"
+                                  # => Returns formatted description string
 
 # Positional arguments
 desc1 = describe_pet("dog", "Buddy")# => desc1 is "I have a dog named Buddy"
@@ -1289,9 +1290,10 @@ print(desc1)                      # => Output: I have a dog named Buddy
 print(desc2)                      # => Output: I have a cat named Whiskers
 
 # Multiple return values (returns tuple)
-def min_max(numbers):
+def min_max(numbers):           # => Takes any iterable
     """Return minimum and maximum of a list."""
     return min(numbers), max(numbers)
+                                  # => Returns tuple (min_val, max_val)
 
 minimum, maximum = min_max([1, 5, 3, 9, 2])
                                   # => minimum is 1, maximum is 9
@@ -1299,9 +1301,9 @@ print(f"Min: {minimum}, Max: {maximum}")
                                   # => Output: Min: 1, Max: 9
 
 # No return value (implicitly returns None)
-def print_greeting(name):
+def print_greeting(name):       # => Function with side effect, no return
     """Print greeting (no return)."""
-    print(f"Hello, {name}!")
+    print(f"Hello, {name}!")        # => Side effect: prints to stdout
 
 result = print_greeting("Bob")    # => Prints "Hello, Bob!", result is None
 print(result)                     # => Output: None
@@ -1311,28 +1313,34 @@ def sum_all(*args):
     """Sum any number of arguments."""
     total = 0                     # => total is 0
     for num in args:              # => args is tuple of all arguments
-        total += num
-    return total
+        total += num              # => Accumulate each argument into total
+    return total                  # => Returns sum of all arguments
 
 print(sum_all(1, 2, 3))           # => Output: 6
 print(sum_all(1, 2, 3, 4, 5))     # => Output: 15
 
 # **kwargs for variable keyword arguments
-def print_info(**kwargs):
+def print_info(**kwargs):       # => **kwargs captures all keyword args as dict
     """Print all keyword arguments."""
     for key, value in kwargs.items():
-        print(f"{key}: {value}")
+                                  # => kwargs.items() iterates key-value pairs
+        print(f"{key}: {value}")  # => Prints each keyword argument
 
 print_info(name="Alice", age=30, city="NYC")
                                   # => Output: name: Alice, age: 30, city: NYC
 
 # Combining all parameter types
 def complex_func(pos1, pos2, *args, kwarg1="default", **kwargs):
+    # => pos1, pos2: required positional args
+    # => *args: extra positional args as tuple
+    # => kwarg1: keyword-only arg with default
+    # => **kwargs: extra keyword args as dict
     """Demonstrate all parameter types."""
     print(f"Positional: {pos1}, {pos2}")
-    print(f"*args: {args}")
-    print(f"kwarg1: {kwarg1}")
-    print(f"**kwargs: {kwargs}")
+                                  # => Output: Positional: 1, 2
+    print(f"*args: {args}")       # => Output: *args: (3, 4)
+    print(f"kwarg1: {kwarg1}")    # => Output: kwarg1: custom
+    print(f"**kwargs: {kwargs}")  # => Output: **kwargs: {'extra': 'value'}
 
 complex_func(1, 2, 3, 4, kwarg1="custom", extra="value")
 # => Output: Positional: 1, 2
@@ -1343,7 +1351,7 @@ complex_func(1, 2, 3, 4, kwarg1="custom", extra="value")
 
 **Key Takeaway**: Functions support default arguments, keyword arguments, and variable arguments (`*args`/`**kwargs`) - use keyword arguments for clarity in calls with many parameters, and remember that default argument values are evaluated once at function definition (use `None` as default for mutable defaults).
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Functions are the fundamental unit of code reuse in Python - every significant Python program is built from functions composing together. Mastering default arguments, keyword arguments, and `*args`/`**kwargs` enables designing flexible APIs that accept optional parameters without breaking existing callers. In production code, well-designed function signatures directly impact maintainability: keyword arguments self-document the call, default arguments provide sensible behavior, and variable arguments enable extensible interfaces.
 
 ---
 
@@ -1506,7 +1514,7 @@ print(is_debug())                 # => Calls function, reads global
 
 **Key Takeaway**: Use `global` to modify global variables from functions and `nonlocal` for enclosing function scopes - but prefer passing values as parameters and returning results over modifying outer scopes, as it makes functions more testable and reduces coupling.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: LEGB scope resolution is one of the most common sources of subtle bugs in Python - accidentally reading a global instead of a local, or failing to mark a variable as `global` before assignment, causes unexpected behavior that is difficult to debug. Understanding scope explicitly enables writing modular code where functions are truly independent, and enclosing scope enables closures - the foundation of decorator patterns and factory functions used throughout Python frameworks.
 
 ---
 
@@ -1601,7 +1609,7 @@ print(squares_comp)               # => Output: [1, 4, 9, 16, 25]
 
 **Key Takeaway**: Use lambdas for simple, one-line operations passed to higher-order functions like `sorted()`, `map()`, `filter()` - but prefer list comprehensions over `map()`/`filter()` for Pythonic code, and use regular functions with docstrings for anything more complex than a single expression.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Lambda functions enable functional programming patterns where functions are treated as values - passed as arguments to `sorted()`, `map()`, `filter()`, and custom higher-order functions. While multi-line logic should use `def`, lambdas excel as concise transformation or predicate expressions in data processing pipelines. Understanding when to use lambda versus `def` is an important style judgment that affects code readability across Python data science and web development codebases.
 
 ---
 
@@ -1732,7 +1740,7 @@ print(complex)                    # => Output: [10, 8, 6, 4, 2, 2, 4, 6, 8]
 
 **Key Takeaway**: List comprehensions are more Pythonic and often faster than equivalent loops for simple transformations and filtering - but use regular loops when logic becomes complex enough to hurt readability (if you need comments to explain a comprehension, it's too complex).
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: List comprehensions are the most distinctively Pythonic construct - experienced Python developers expect them and find verbose `for` + `append` loops a code smell. They compile to optimized bytecode faster than equivalent loops, making them both more readable and more performant. Mastering list comprehensions with conditions, nested loops, and expressions reduces typical data transformation code by 50-70% while making the transformation intent immediately clear.
 
 ---
 
@@ -1858,7 +1866,7 @@ print(passing)                    # => Output: {'Alice': 95, 'Charlie': 88}
 
 **Key Takeaway**: Dictionary and set comprehensions follow the same pattern as list comprehensions with curly braces - use them for concise transformations of iterables into dicts/sets, and leverage `zip()` for creating dictionaries from parallel sequences.
 
-**Why It Matters**: Arbitrary arguments (\*args, \*\*kwargs) enable flexible APIs and decorator patterns essential for framework development. Keyword-only arguments (PEP 3102) prevent positional argument errors in functions with many parameters, improving code robustness. Understanding argument patterns is critical for designing maintainable APIs and preventing breaking changes as software evolves.
+**Why It Matters**: Dictionary and set comprehensions bring the same conciseness and readability benefits of list comprehensions to mapping and uniqueness use cases. They enable single-expression data transformations that would otherwise require multiple lines of imperative code, reducing cognitive overhead for the reader. In data-processing pipelines, dict comprehensions are essential for reshaping data structures, inverting mappings, and aggregating grouped values with minimal code.
 
 ---
 
@@ -2158,7 +2166,7 @@ except ValueError:
 
 **Key Takeaway**: Always catch specific exceptions rather than bare `except` to avoid masking unexpected errors - use `else` for code that should only run on success, and `finally` for cleanup that must always happen regardless of exceptions (like closing files or releasing locks).
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Exception handling is what separates production-ready code from prototype code. Python's `try`/`except`/`else`/`finally` structure enables graceful degradation when external resources fail, user input is invalid, or unexpected conditions arise. The `else` clause (runs when no exception occurs) and `finally` clause (always runs) enable patterns that would require complex flag variables in other approaches. Proper exception handling with specific exception types prevents silent failures and enables meaningful error messages for users and logs.
 
 ---
 
@@ -2434,7 +2442,7 @@ result = safe_read("nonexistent.txt")
 
 **Key Takeaway**: Always use context managers (`with` statement) for file operations - they automatically handle closing files even if exceptions occur. Use `"r"`/`"w"`/`"a"` modes appropriately (write truncates, append preserves), and iterate over file objects directly for memory-efficient line-by-line reading.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: File I/O is fundamental to any Python application that persists data, processes logs, reads configuration, or generates reports. The `with` statement context manager guarantees file handles are properly closed even when exceptions occur, preventing resource leaks in long-running processes. Understanding text vs binary mode, proper encoding handling, and the difference between `read()` vs `readline()` vs iteration patterns prevents data corruption and encoding errors that frequently appear in production file processing.
 
 ---
 
@@ -2651,7 +2659,7 @@ print(account._balance)           # => Direct access possible
 
 **Key Takeaway**: Use `__init__` for initialization, `self` to reference instance attributes/methods, and class attributes for shared data - follow conventions like single underscore prefix for "private" attributes (not enforced, just convention) and implement `__str__`/`__repr__` for readable object representations.
 
-**Why It Matters**: Map applies functions to sequences without explicit loops, expressing transformations more declaratively and enabling potential parallel execution optimizations. Filter creates subsequences based on predicates with clearer intent than manual conditional appending. However, list comprehensions are often preferred in modern Python for their readability and equivalent performance.
+**Why It Matters**: Classes are the foundation of object-oriented design in Python, enabling you to encapsulate state and behavior into reusable units. Understanding `__init__`, instance attributes, and class attributes is prerequisite knowledge for working with any Python framework, library, or large codebase. In production code, well-designed classes reduce duplication, improve testability through dependency injection, and enable polymorphism - the backbone of extensible software architecture.
 
 ---
 
@@ -2752,18 +2760,25 @@ print(dog.fetch())                # => Calls Dog-specific method
 # Another derived class
 class Cat(Animal):
     """Cat class inheriting from Animal."""
+    # => Another Animal subclass (parallel to Dog)
 
     def __init__(self, name, color):
+        # => Cat constructor - takes name and color
         super().__init__(name, "Cat")
-        self.color = color
+                                  # => Calls Animal.__init__ with species="Cat"
+        self.color = color        # => Cat-specific attribute (not in Animal)
 
     def speak(self):
         """Cat-specific sound."""
+        # => Overrides Animal.speak() for cats
         return f"{self.name} says Meow!"
+                                  # => Cat-specific implementation
 
     def scratch(self):
         """Cat-specific behavior."""
+        # => New method unique to Cat (not in Animal)
         return f"{self.name} scratches the furniture"
+                                  # => Returns description of cat behavior
 
 cat = Cat("Whiskers", "Orange")   # => cat is Cat object
 
@@ -2791,19 +2806,27 @@ animal_concert(animals)
 # Multiple inheritance
 class Flyer:
     """Mixin for flying behavior."""
+    # => Mixin: adds flying capability (no state)
 
     def fly(self):
+        # => Flying method provided by Flyer mixin
         return f"{self.name} is flying"
+                                  # => Uses self.name from Animal.__init__
 
 class Bird(Animal, Flyer):
     """Bird class with multiple inheritance."""
+    # => Bird(Animal, Flyer): inherits from both classes
 
     def __init__(self, name, can_fly=True):
+        # => can_fly=True is default (most birds can fly)
         super().__init__(name, "Bird")
-        self.can_fly = can_fly
+                                  # => Calls Animal.__init__ (first in MRO)
+        self.can_fly = can_fly    # => Bird-specific attribute
 
     def speak(self):
+        # => Overrides Animal.speak() for birds
         return f"{self.name} says Tweet!"
+                                  # => Bird-specific implementation
 
 bird = Bird("Tweety")             # => bird inherits from Animal and Flyer
 
@@ -2826,25 +2849,29 @@ print(Bird.__mro__)               # => Output: (Bird, Animal, Flyer, object)
 # Calling parent method explicitly
 class Employee:
     """Base employee class."""
+    # => Base class for employees
 
     def __init__(self, name, salary):
-        self.name = name
-        self.salary = salary
+        self.name = name          # => Employee name attribute
+        self.salary = salary      # => Monthly salary attribute
 
     def annual_salary(self):
-        return self.salary * 12
+        # => Calculates annual salary (12 months)
+        return self.salary * 12   # => Returns yearly total
 
 class Manager(Employee):
     """Manager with bonus."""
+    # => Manager extends Employee with bonus
 
     def __init__(self, name, salary, bonus):
         super().__init__(name, salary)
-        self.bonus = bonus
+                                  # => Initialize Employee base attributes
+        self.bonus = bonus        # => Manager-specific annual bonus
 
     def annual_salary(self):
         # Call parent method and add bonus
         base = super().annual_salary()# => Get base annual salary
-        return base + self.bonus
+        return base + self.bonus  # => Add bonus to base salary
 
 manager = Manager("Alice", 5000, 10000)
                                   # => manager has salary=5000, bonus=10000
@@ -2854,7 +2881,7 @@ print(manager.annual_salary())    # => Output: 70000 (5000×12 + 10000)
 
 **Key Takeaway**: Use `super()` to call parent class methods, especially `__init__` for proper initialization - inheritance enables code reuse and polymorphism (same interface, different behavior), but prefer composition over deep inheritance hierarchies to avoid complexity.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Inheritance enables code reuse and polymorphism - the ability to use subclasses wherever parent classes are expected. Understanding `super()` for proper initialization chaining, method overriding, and `isinstance()`/`issubclass()` for type checking enables building extensible class hierarchies. In production code, inheritance powers plugin systems, template method patterns, and framework extension points - but understanding the tradeoffs versus composition is equally important for avoiding overly rigid class hierarchies.
 
 ---
 
@@ -3190,7 +3217,7 @@ print(times_three(5))             # => Output: 15
 
 **Key Takeaway**: Properties provide clean getter/setter interfaces without explicit method calls - use magic methods to make custom classes integrate seamlessly with Python operators and built-in functions, enabling natural, Pythonic APIs for your objects.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Properties and magic methods are what make Python's object-oriented model powerful and extensible. Properties enable validation and computation on attribute access without changing the public interface, enabling gradual refactoring from simple attributes to computed values. Magic methods (`__len__`, `__repr__`, `__eq__`, `__add__`) integrate custom objects with Python's built-in syntax and protocols, making user-defined types behave like built-in types - the foundation of numeric libraries, ORMs, and domain models.
 
 ---
 
@@ -3244,6 +3271,7 @@ print(sqrt(25))                   # => Output: 5.0
 
 # Import with alias
 from math import factorial as fact
+                                  # => Import single function with alias
 
 print(fact(5))                    # => Output: 120 (5!)
 
@@ -3252,40 +3280,44 @@ print(fact(5))                    # => Output: 120 (5!)
 
 # Importing from packages
 from collections import Counter, defaultdict
+                                  # => Import two classes from collections module
 
 # Counter - count occurrences
 words = ["apple", "banana", "apple", "cherry", "banana", "apple"]
+                                  # => words is list with 3 "apple", 2 "banana", 1 "cherry"
 counts = Counter(words)           # => counts is Counter({'apple': 3, 'banana': 2, 'cherry': 1})
 print(counts)                     # => Output: Counter({'apple': 3, 'banana': 2, 'cherry': 1})
 print(counts["apple"])            # => Output: 3
 
 # defaultdict - dictionary with default values
 scores = defaultdict(int)         # => Default value is 0 (int())
-scores["Alice"] = 95
-scores["Bob"] = 87
+scores["Alice"] = 95          # => Set value for "Alice" key
+scores["Bob"] = 87              # => Set value for "Bob" key
 print(scores["Alice"])            # => Output: 95
 print(scores["Charlie"])          # => Output: 0 (default for missing key)
 
 # Nested imports
 from collections.abc import Iterable
+                                  # => Import from nested subpackage (collections.abc)
 
 print(isinstance([1, 2, 3], Iterable))
                                   # => Output: True (lists are iterable)
 
 # Module search path
-import sys
+import sys                        # => sys module provides access to interpreter variables
 
 print(sys.path)                   # => Output: List of directories Python searches
                                   # => Includes: current directory, PYTHONPATH, standard library
 
 # Checking module attributes
-import datetime
+import datetime                   # => Import datetime module (has many classes)
 
 print(dir(datetime))              # => Output: List of all module attributes
                                   # => Includes: date, datetime, time, timedelta, etc.
 
 # Using datetime example
 from datetime import datetime, timedelta
+                                  # => Import specific classes (avoids datetime.datetime prefix)
 
 now = datetime.now()              # => now is current datetime
 print(now)                        # => Output: 2025-12-29 17:31:19.123456 (example)
@@ -3360,7 +3392,7 @@ print(numbers)                    # => Output: [3, 1, 5, 2, 4] (example, randomi
 
 **Key Takeaway**: Import only what you need (`from module import specific_item`) to keep namespace clean and code readable - use `if __name__ == "__main__":` to distinguish between running a file directly and importing it, and organize related code into packages with `__init__.py` files.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Python's module and package system is how large codebases are organized and how the vast ecosystem of third-party libraries is consumed. Understanding import mechanics - namespace pollution from `import *`, aliasing with `as`, relative vs absolute imports - prevents naming conflicts and mysterious import errors. The `if __name__ == "__main__":` pattern is ubiquitous in Python scripts and enables the same file to serve as both a runnable script and an importable module.
 
 ---
 
@@ -3586,7 +3618,7 @@ print(f"{value:+08.2f}")          # => Format breakdown:
 
 **Key Takeaway**: Use f-strings for all new code - they're fastest, most readable, and support inline expressions and formatting. For simple formatting, f-strings with format specifiers (`:width.precisiontype`) handle most needs without external libraries.
 
-**Why It Matters**: Classes encapsulate state and behavior, enabling object-oriented design patterns essential for large-scale software architecture. The **init** method provides initialization logic with validation, preventing invalid object states. Understanding Python's class mechanics is foundational for leveraging frameworks like Django, Flask, and data science libraries.
+**Why It Matters**: String formatting is a daily Python skill appearing in logging, user interfaces, data reporting, and API responses. F-strings are the modern standard - they're faster than `format()` or `%` formatting, support inline expressions, and eliminate the placeholder alignment mismatch bugs common with older approaches. Mastering format specifiers for alignment, padding, and numeric precision enables producing professional output without importing formatting libraries.
 
 ---
 
@@ -3666,43 +3698,49 @@ for num in countdown:
 # Custom iterable - range-like class
 class MyRange:
     """Iterable that generates range of numbers."""
+    # => Iterable: returns NEW iterator each time (reusable!)
 
     def __init__(self, start, end):
-        self.start = start
-        self.end = end
+        self.start = start        # => Start of range (inclusive)
+        self.end = end            # => End of range (exclusive)
 
     def __iter__(self):
         """Return a new iterator each time."""
+        # => Creates fresh iterator on each iteration
         return MyRangeIterator(self.start, self.end)
+                                  # => Returns new iterator object (not self)
 
 class MyRangeIterator:
     """Iterator for MyRange."""
+    # => Separate iterator class (different from Countdown which is its own iterator)
 
     def __init__(self, start, end):
-        self.current = start
-        self.end = end
+        self.current = start      # => Track current position
+        self.end = end            # => Store end boundary
 
     def __iter__(self):
-        return self
+        # => Iterator is also iterable (protocol requirement)
+        return self               # => Return self (iterator is its own iterator)
 
     def __next__(self):
+        # => Called by next() and for loops
         if self.current >= self.end:
-            raise StopIteration
-        value = self.current
-        self.current += 1
-        return value
+            raise StopIteration   # => Signal iteration complete
+        value = self.current      # => Save current value
+        self.current += 1         # => Advance to next position
+        return value              # => Return current value
 
 my_range = MyRange(1, 5)          # => my_range is iterable (1 to 4)
 
 # Can iterate multiple times (new iterator each time)
-for num in my_range:
+for num in my_range:           # => Calls my_range.__iter__() for new iterator
     print(num)                    # => Output: 1, 2, 3, 4
 
-for num in my_range:
+for num in my_range:              # => Calls __iter__() AGAIN (fresh iterator)
     print(num)                    # => Output: 1, 2, 3, 4 (works again!)
 
 # Iterator functions from itertools
-import itertools
+import itertools                  # => Standard library for advanced iteration tools
 
 # count() - infinite counter
 counter = itertools.count(10, 2)  # => Start at 10, step by 2
@@ -3731,10 +3769,11 @@ print(list(combined))             # => Output: [1, 2, 3, 4, 5, 6]
 
 # zip() - iterate over multiple sequences in parallel
 names = ["Alice", "Bob", "Charlie"]
-ages = [25, 30, 35]
-cities = ["NYC", "LA", "Chicago"]
+ages = [25, 30, 35]              # => Parallel list with same length
+cities = ["NYC", "LA", "Chicago"]# => Third parallel list
 
 for name, age, city in zip(names, ages, cities):
+    # => zip() pairs elements from all 3 lists by index
     print(f"{name}, {age}, {city}")
 # => Output: Alice, 25, NYC
 #    Bob, 30, LA
@@ -3742,18 +3781,23 @@ for name, age, city in zip(names, ages, cities):
 
 # zip stops at shortest iterable
 short = zip([1, 2], ["a", "b", "c"])
+                                  # => Zips list of 2 with list of 3
 print(list(short))                # => Output: [(1, 'a'), (2, 'b')] (stops at 2)
 
 # itertools.zip_longest() - zip to longest iterable
 from itertools import zip_longest
+                                  # => zip_longest from itertools (not built-in)
 
 long = zip_longest([1, 2], ["a", "b", "c"], fillvalue=0)
+                                  # => Fills missing values with fillvalue=0
 print(list(long))                 # => Output: [(1, 'a'), (2, 'b'), (0, 'c')]
 
 # enumerate() - get index and value
 fruits = ["apple", "banana", "cherry"]
+                                  # => Sample list for enumerate examples
 
 for index, fruit in enumerate(fruits):
+    # => enumerate() adds automatic index to each element
     print(f"{index}: {fruit}")
 # => Output: 0: apple
 #    1: banana
@@ -3761,6 +3805,7 @@ for index, fruit in enumerate(fruits):
 
 # Start enumeration at custom index
 for index, fruit in enumerate(fruits, start=1):
+    # => start=1 begins counting at 1 instead of 0
     print(f"{index}: {fruit}")
 # => Output: 1: apple
 #    2: banana
@@ -3768,10 +3813,11 @@ for index, fruit in enumerate(fruits, start=1):
 
 # reversed() - reverse iteration
 for num in reversed([1, 2, 3, 4, 5]):
+    # => reversed() returns iterator in reverse order (no copy!)
     print(num)                    # => Output: 5, 4, 3, 2, 1
 
 # Memory efficiency demonstration
-import sys
+import sys                        # => sys module for memory size checking
 
 # List stores all items in memory
 list_range = list(range(1000000)) # => Creates list with 1M items
@@ -3786,7 +3832,7 @@ print(f"Iterator size: {sys.getsizeof(iter_range)} bytes")
 
 **Key Takeaway**: Iterators enable memory-efficient processing of large sequences by generating values on-demand rather than storing everything in memory - implement `__iter__` and `__next__` for custom iterators, and leverage `itertools` for common iteration patterns without reinventing the wheel.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: The iterator protocol is the foundation of Python's lazy evaluation model - generators, comprehensions, and all built-in iteration use it. Understanding how `iter()` and `next()` work enables building memory-efficient data pipelines that process gigabytes of data without loading it all into memory. The distinction between iterables (can create multiple iterators) and iterators (stateful, exhausted after use) explains surprising behaviors when iterating over the same object multiple times in production code.
 
 ---
 
@@ -4132,7 +4178,7 @@ print(result)                     # => Output: None
 
 **Key Takeaway**: Prefer EAFP (try/except) over LBYL (if checks) for Pythonic code - use custom exceptions to provide clear error semantics, implement exception chaining with `raise ... from e` to preserve root causes, and leverage context managers for automatic resource cleanup even when exceptions occur.
 
-**Why It Matters**: Class and static methods provide alternative ways to organize related functionality without requiring instance state. Classmethods enable alternative constructors and factory patterns common in framework design. Understanding method types is essential for designing clean APIs and avoiding inappropriate instance state access in utility functions.
+**Why It Matters**: EAFP (Easier to Ask Forgiveness than Permission) and custom exception hierarchies are the patterns that distinguish robust production Python from fragile scripts. Custom exceptions with meaningful names make error propagation traceable across large codebases, while exception chaining (`raise X from Y`) preserves context for debugging. Understanding when to catch exceptions versus let them propagate is critical for building services that fail gracefully without silently swallowing errors.
 
 ---
 

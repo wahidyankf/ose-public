@@ -2,7 +2,7 @@
 title: "Advanced"
 date: 2025-12-24T00:00:00+07:00
 draft: false
-weight: 100000000
+weight: 100000003
 description: "Advanced Spring Boot through 30 examples: microservices, observability, resilience, Kubernetes, event sourcing, CQRS, API Gateway, and production patterns"
 tags:
   ["spring-boot", "tutorial", "by-example", "advanced", "microservices", "observability", "resilience", "production"]
@@ -10,14 +10,23 @@ tags:
 
 Master advanced Spring Boot patterns through 30 examples covering microservices, observability, resilience, Kubernetes integration, event sourcing, CQRS, API Gateway patterns, and production deployment.
 
+## Group 1: Microservices Communication
+
 ### Example 41: RestTemplate - Synchronous HTTP Client
 
-RestTemplate provides synchronous REST client capabilities with automatic JSON/XML conversion and error handling.
+RestTemplate provides synchronous REST client capabilities with automatic JSON/XML conversion and error handling. Use RestTemplate when calling external REST APIs from within a Spring Boot application and you need blocking request-response behavior. Note: RestTemplate is in maintenance mode — for new projects, prefer WebClient (Example 42) which supports both sync and async patterns.
 
 ```java
 @Configuration
+// => Executes
+// => @Configuration annotation applied
+// => Configuration class - contains @Bean methods
+// => Spring configuration class - defines bean factory methods
 // => Annotation applied
 public class RestTemplateConfig {
+// => Class definition begins
+// => Class declaration
+// => Class definition begins
     // => Begins block
     @Bean // => Configure RestTemplate bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) { // => Inject autoconfigured builder
@@ -27,6 +36,8 @@ public class RestTemplateConfig {
             .defaultHeader("User-Agent", "SpringBootApp/1.0") // => Add User-Agent header to all requests
             // => Executes method call
             .errorHandler(new DefaultResponseErrorHandler() {
+            // => Code line
+            // => Block begins
     // => Executes method
                 @Override // => Override default error handling
                 public void handleError(ClientHttpResponse response) throws IOException { // => Custom HTTP error handler
@@ -42,6 +53,8 @@ public class RestTemplateConfig {
             })
             // => Code line
             .build();
+            // => Executes
+            // => Statement
     // => Executes method
     }
     // => Block delimiter
@@ -49,12 +62,23 @@ public class RestTemplateConfig {
 // => Block delimiter
 
 @Service
+// => @Service annotation applied
+// => Business logic service bean
+// => Business logic layer Spring component
 @RequiredArgsConstructor
+// => @RequiredArgsConstructor annotation applied
+// => Annotation applied
+// => Annotation applied
 public class UserApiClient {
+// => Class definition begins
+// => Class declaration
+// => Class definition begins
     // => Begins block
     private final RestTemplate restTemplate;
+    // => Statement
     // => Declares restTemplate field of type final
     private static final String BASE_URL = "https://jsonplaceholder.typicode.com";
+    // => Private field
     // => Assigns value to variable
 
     public User getUser(Long id) { // => Fetch user by ID
@@ -80,7 +104,6 @@ public class UserApiClient {
     public List<User> getAllUsers() { // => Fetch all users
         User[] users = restTemplate.getForObject(BASE_URL + "/users", User[].class); // => GET request, deserialize JSON array to User[]
         return users != null ? Arrays.asList(users) : Collections.emptyList(); // => Convert array to list, handle null response
-        // => Invokes asList() method
         // => Result stored in !
     }
 }
@@ -93,7 +116,13 @@ record User(Long id, String name, String email, String phone) {}
 
 ```kotlin
 @Configuration
+// => @Configuration annotation applied
+// => Configuration class - contains @Bean methods
+// => Marks class as Spring configuration (bean factory)
 class RestTemplateConfig {
+// => Class definition begins
+// => Class declaration
+// => Class declaration
   @Bean  // => Configure RestTemplate bean
   fun restTemplate(builder: RestTemplateBuilder): RestTemplate {  // => Inject autoconfigured builder
     return builder  // => Customize RestTemplate
@@ -101,6 +130,8 @@ class RestTemplateConfig {
       .setReadTimeout(Duration.ofSeconds(10))  // => Max time to read response after connection
       .defaultHeader("User-Agent", "SpringBootApp/1.0")  // => Add User-Agent header to all requests
       .errorHandler(object : DefaultResponseErrorHandler() {
+      // => Code line
+      // => Block begins
         override fun handleError(response: ClientHttpResponse) {  // => Custom HTTP error handler
           // => Custom error handling (replace default behavior)
           if (response.statusCode.is5xxServerError) {  // => Check if status code is 500-599
@@ -114,20 +145,38 @@ class RestTemplateConfig {
 }
 
 @Service
+// => @Service annotation applied
+// => Business logic service bean
+// => Business logic layer Spring component
 class UserApiClient(
+// => Code line
+// => Class declaration
+// => Class declaration
   private val restTemplate: RestTemplate
+  // => Code line
+  // => Immutable property
+  // => Private class member
 ) {
+// => Block begins
   companion object {
+  // => Code line
+  // => Companion object: static-like members in Kotlin
     private const val BASE_URL = "https://jsonplaceholder.typicode.com"
+    // => Private field
+    // => Assignment
   }
 
   fun getUser(id: Long): User? {  // => Fetch user by ID
     return restTemplate.getForObject("$BASE_URL/users/{id}", User::class.java, id)
+    // => Returns to caller
+    // => Returns value to caller
     // => GET request, deserialize JSON to User, blocks until response
   }
 
   fun createUser(user: User): User? {  // => Create new user
     return restTemplate.postForObject("$BASE_URL/users", user, User::class.java)
+    // => Returns to caller
+    // => Returns value to caller
     // => POST request with JSON body, return created user with ID
   }
 
@@ -143,17 +192,28 @@ class UserApiClient(
 
   fun getAllUsers(): List<User> {  // => Fetch all users
     val users = restTemplate.getForObject("$BASE_URL/users", Array<User>::class.java)
+    // => Immutable property
+    // => Immutable binding (read-only reference)
     // => GET request, deserialize JSON array to User[]
     return users?.toList() ?: emptyList()
+    // => Returns to caller
+    // => Returns value to caller
     // => Convert array to list, handle null response with safe call
   }
 }
 
 data class User(
+// => Data class: auto-generates equals/hashCode/toString/copy
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
   val id: Long? = null,
+  // => Immutable property
+  // => Immutable binding (read-only reference)
   val name: String,
+  // => Immutable property
   val email: String,
+  // => Immutable property
   val phone: String
+  // => Immutable property
 )
 
 // Kotlin-specific: Use companion object for constants, string templates for URLs, safe calls (?.)
@@ -173,8 +233,16 @@ WebClient provides reactive, non-blocking HTTP communication with backpressure s
 
 ```java
 @Configuration
+// => Annotation: @Configuration
+// => @Configuration annotation applied
+// => Configuration class - contains @Bean methods
+// => Spring configuration class - defines bean factory methods
 // => Annotation applied
 public class WebClientConfig {
+// => Class/component definition
+// => Class definition begins
+// => Class declaration
+// => Class definition begins
     // => Begins block
     @Bean // => Configure WebClient bean
     public WebClient webClient(WebClient.Builder builder) { // => Inject autoconfigured builder
@@ -184,6 +252,9 @@ public class WebClientConfig {
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE) // => Default Content-Type: application/json
             // => Executes method call
             .build();
+            // => Executes statement
+            // => Executes
+            // => Statement
     // => Executes method
     }
     // => Block delimiter
@@ -191,12 +262,24 @@ public class WebClientConfig {
 // => Block delimiter
 
 @Service
+// => Annotation: @Service
+// => @Service annotation applied
+// => Business logic service bean
+// => Business logic layer Spring component
 // => Annotation applied
 @RequiredArgsConstructor
+// => @RequiredArgsConstructor annotation applied
+// => Annotation applied
+// => Annotation applied
 // => Annotation applied
 public class ReactiveUserClient {
+// => Class definition begins
+// => Class declaration
+// => Class definition begins
     // => Begins block
     private final WebClient webClient;
+    // => Executes
+    // => Statement
     // => Declares webClient field of type final
 
     public Mono<User> getUser(Long id) { // => Fetch user by ID (reactive)
@@ -218,6 +301,7 @@ public class ReactiveUserClient {
                 return Flux.empty(); // => Empty stream (no users)
                 // => Assigns > Empty stream (no users) to //
             });
+            // => Statement
             // => Executes statement
     }
 
@@ -236,7 +320,17 @@ public class ReactiveUserClient {
 
 ```kotlin
 @Configuration
+// => Executes
+// => Annotation: @Configuration
+// => @Configuration annotation applied
+// => Configuration class - contains @Bean methods
+// => Marks class as Spring configuration (bean factory)
 class WebClientConfig {
+// => Executes
+// => Class/component definition
+// => Class definition begins
+// => Class declaration
+// => Class declaration
   @Bean  // => Configure WebClient bean
   fun webClient(builder: WebClient.Builder): WebClient {  // => Inject autoconfigured builder
     return builder  // => Customize WebClient
@@ -244,13 +338,33 @@ class WebClientConfig {
       .defaultHeader(HttpHeaders.USER_AGENT, "SpringBoot-WebClient/1.0")  // => Add User-Agent header
       .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)  // => Default Content-Type: application/json
       .build()
+      // => Executes
+      // => Executes statement
   }
 }
 
 @Service
+// => Executes
+// => Annotation: @Service
+// => @Service annotation applied
+// => Business logic service bean
+// => Business logic layer Spring component
 class ReactiveUserClient(
+// => Executes
+// => Class/component definition
+// => Code line
+// => Class declaration
+// => Class declaration
   private val webClient: WebClient
+  // => Executes
+  // => Executes statement
+  // => Code line
+  // => Immutable property
+  // => Private class member
 ) {
+// => Executes
+// => Executes statement
+// => Block begins
   fun getUser(id: Long): Mono<User> {  // => Fetch user by ID (reactive)
     return webClient.get()  // => Create GET request
       .uri("/users/{id}", id)  // => Build URI with path variable
@@ -324,10 +438,12 @@ Feign provides declarative REST client interfaces with automatic request/respons
 // pom.xml: spring-cloud-starter-openfeign
 
 @SpringBootApplication
+// => Entry point: combines @Configuration, @EnableAutoConfiguration, @ComponentScan
 @EnableFeignClients // => Enable component scanning for Feign clients
 public class Application { // => Main application class
 // => Defines Application class
     public static void main(String[] args) {
+    // => Method definition
     // => Begins block
         SpringApplication.run(Application.class, args);
     // => Executes method
@@ -357,8 +473,11 @@ public interface UserFeignClient { // => Interface methods map to HTTP endpoints
 // => Block delimiter
 
 @Service
+// => Business logic layer Spring component
 @RequiredArgsConstructor
+// => Annotation applied
 public class UserService {
+// => Class definition begins
     // => Begins block
     private final UserFeignClient userClient;
     // => Declares userClient field of type final
@@ -384,39 +503,51 @@ public class UserService {
 // build.gradle.kts: implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
 @SpringBootApplication
+// => Combines @Configuration, @EnableAutoConfiguration, @ComponentScan
 @EnableFeignClients  // => Enable component scanning for Feign clients
 open class Application  // => Main application class
 
 fun main(args: Array<String>) {
+// => Function declaration
   runApplication<Application>(*args)
 }
 
 @FeignClient(name = "user-service", url = "https://jsonplaceholder.typicode.com")
+// => Annotation applied
 // => Declarative HTTP client (name for load balancing, url for direct connection)
 interface UserFeignClient {  // => Interface methods map to HTTP endpoints
   @GetMapping("/users/{id}")  // => GET /users/{id} endpoint
   fun getUser(@PathVariable id: Long): User
+  // => Function declaration
   // => Path variable injected into URL, returns deserialized User
 
   @GetMapping("/users")  // => GET /users endpoint
   fun getAllUsers(): List<User>
+  // => Function declaration
   // => Returns list of users (JSON array deserialized)
 
   @PostMapping("/users")  // => POST /users endpoint
   fun createUser(@RequestBody user: User): User
+  // => Function declaration
   // => Request body serialized to JSON, response deserialized to User
 
   @DeleteMapping("/users/{id}")  // => DELETE /users/{id} endpoint
   fun deleteUser(@PathVariable id: Long)
+  // => Function declaration
   // => No response body expected
 }
 
 @Service
+// => Business logic layer Spring component
 class UserService(
+// => Class declaration
   private val userClient: UserFeignClient
+  // => Private class member
 ) {
+// => Block begins
   fun fetchUser(id: Long): User {  // => Fetch user via Feign client
     return userClient.getUser(id)
+    // => Returns value to caller
     // => Feign generates HTTP call implementation (blocks until response)
   }
 }
@@ -451,6 +582,7 @@ Service discovery allows microservices to find and communicate with each other w
 // pom.xml: spring-cloud-starter-netflix-eureka-client
 
 @SpringBootApplication
+// => Executes
 @EnableDiscoveryClient // => Enable Eureka client registration
 public class Application { // => Main application class
 // => Defines Application class
@@ -486,7 +618,6 @@ public class OrderController {
     @GetMapping("/services") // => Endpoint: GET /api/services
     public List<String> getServices() { // => Query Eureka registry
         return discoveryClient.getServices();  // => Returns service names (e.g., ["order-service", "user-service", "payment-service"])
-        // => Invokes > Returns service names () method
         // => Result stored in //
     }
 
@@ -596,6 +727,8 @@ flowchart TD
 
 **Why It Matters**: Service discovery eliminates hardcoded service URLs, enabling dynamic scaling where new instances register automatically and failed instances deregister, allowing load balancers to route traffic only to healthy instances. Production Kubernetes deployments use service discovery (Kubernetes Service + CoreDNS) for container orchestration where pods scale dynamically during traffic spikes, with DNS updates propagating quickly compared to manual load balancer configuration changes.
 
+## Group 2: Observability
+
 ### Example 45: Spring Boot Actuator - Health & Metrics
 
 Actuator provides production-ready endpoints for monitoring, health checks, and application metrics.
@@ -674,7 +807,9 @@ public class MetricsController {
 // build.gradle.kts: implementation("org.springframework.boot:spring-boot-starter-actuator")
 
 @Component
+// => Spring-managed component bean
 class CustomHealthIndicator : HealthIndicator {
+// => Class declaration
   override fun health(): Health {  // => Custom health check logic
     val databaseUp = checkDatabaseConnection()  // => Check database connectivity
     return if (databaseUp) {  // => Database healthy
@@ -683,6 +818,7 @@ class CustomHealthIndicator : HealthIndicator {
         .withDetail("version", "15.0")  // => Database version detail
         .build()  // => Build Health object
     } else {
+    // => Block begins
       Health.down()  // => Health status: DOWN
         .withDetail("error", "Database connection failed")  // => Error detail for debugging
         .build()  // => Build Health object (triggers pod restart in Kubernetes)
@@ -695,11 +831,17 @@ class CustomHealthIndicator : HealthIndicator {
 }
 
 @RestController
+// => Combines @Controller and @ResponseBody
 @RequestMapping("/api")
+// => HTTP endpoint mapping
 class MetricsController {
+// => Class declaration
   @GetMapping("/process")
+  // => HTTP endpoint mapping
   fun processRequest(): String {
+  // => Function declaration
     return "Processed"
+    // => Returns value to caller
   }
 }
 
@@ -777,15 +919,24 @@ Micrometer provides vendor-neutral metrics instrumentation for monitoring applic
 
 ```java
 @Service
+// => Business logic service bean
+// => Business logic layer Spring component
 public class OrderMetricsService {
+// => Class declaration
+// => Class definition begins
     // => Begins block
     private final Counter orderCounter;
+    // => Statement
     // => Declares orderCounter field of type final
     private final Gauge activeOrders;
+    // => Statement
     // => Declares activeOrders field of type final
     private final Timer orderProcessingTimer;
+    // => Statement
     // => Declares orderProcessingTimer field of type final
     private final AtomicInteger activeOrderCount = new AtomicInteger(0);
+    // => Private field
+    // => Creates new instance
     // => Creates new instance
 
     public OrderMetricsService(MeterRegistry registry) { // => Inject Micrometer registry
@@ -816,6 +967,7 @@ public class OrderMetricsService {
             processOrder(order); // => Business logic
             // => Assigns > Business logic to //
         });
+        // => Statement
         // => Executes statement
 
         activeOrderCount.decrementAndGet(); // => Decrement active orders after processing complete
@@ -823,6 +975,7 @@ public class OrderMetricsService {
     }
 
     private void processOrder(Order order) {
+    // => Block begins
     // => Begins block
         // Processing logic
     }
@@ -839,6 +992,8 @@ public class OrderMetricsService {
 
 ```kotlin
 @Service
+// => Business logic service bean
+// => Business logic layer Spring component
 class OrderMetricsService(registry: MeterRegistry) {  // => Inject Micrometer registry
   private val orderCounter: Counter = Counter.builder("orders.created")  // => Create counter metric
     .description("Total orders created")  // => Metric description for monitoring dashboards
@@ -846,13 +1001,19 @@ class OrderMetricsService(registry: MeterRegistry) {  // => Inject Micrometer re
     .register(registry)  // => Register metric with Micrometer
 
   private val activeOrderCount = AtomicInteger(0)
+  // => Immutable property
+  // => Private class member
 
   private val activeOrders: Gauge = Gauge.builder("orders.active", activeOrderCount) { it.get().toDouble() }
+  // => Immutable property
+  // => Private class member
     // => Create gauge metric (current value)
     .description("Active orders count")  // => Metric description
     .register(registry)  // => Register gauge (tracks activeOrderCount value)
 
   private val orderProcessingTimer: Timer = Timer.builder("orders.processing.time")
+  // => Immutable property
+  // => Private class member
     // => Create timer metric (measures duration)
     .description("Order processing duration")  // => Metric description
     .register(registry)  // => Register timer (tracks min/max/mean/percentiles)
@@ -870,6 +1031,8 @@ class OrderMetricsService(registry: MeterRegistry) {  // => Inject Micrometer re
   }
 
   private fun processOrder(order: Order) {
+  // => Function definition
+  // => Function declaration
     // Processing logic
   }
 }
@@ -1005,33 +1168,48 @@ public class OrderTracingController {
 // implementation("io.zipkin.reporter2:zipkin-reporter-brave")
 
 @Configuration
+// => Marks class as Spring configuration (bean factory)
 class TracingConfig {
+// => Class declaration
   @Bean
+  // => Declares a Spring-managed bean
   fun defaultSampler(): Sampler {
+  // => Function declaration
     return Sampler.ALWAYS_SAMPLE  // => Sample all requests (production: use probability)
   }
 }
 
 @RestController
+// => Combines @Controller and @ResponseBody
 @RequestMapping("/api")
+// => HTTP endpoint mapping
 class OrderTracingController(
+// => Class declaration
   private val tracer: Tracer,
+  // => Private class member
   private val restTemplate: RestTemplate
+  // => Private class member
 ) {
+// => Block begins
   @GetMapping("/order/{id}")
+  // => HTTP endpoint mapping
   fun getOrder(@PathVariable id: Long): Order {
+  // => Function declaration
     val span = tracer.nextSpan().name("get-order").start()
+    // => Immutable binding (read-only reference)
     return tracer.withSpan(span).use {  // => Auto-closes span with use block
       span.tag("order.id", id.toString())
 
       // => Trace ID automatically propagated to downstream services
       val user = restTemplate.getForObject(
+      // => Immutable binding (read-only reference)
         "http://user-service/api/users/{id}", User::class.java, id
       )
 
       span.event("user-fetched")
       Order(id, user)  // => Compose order response with user data
     }.also {
+    // => Block begins
       span.end()
     }
   }
@@ -1177,39 +1355,53 @@ public class OrderLoggingController {
 // build.gradle.kts: implementation("net.logstash.logback:logstash-logback-encoder")
 
 @Component
+// => Spring-managed component bean
 class LoggingFilter : Filter {
+// => Class declaration
   override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
+  // => Overrides parent class/interface method
     val httpRequest = request as HttpServletRequest
+    // => Immutable binding (read-only reference)
 
     MDC.put("requestId", UUID.randomUUID().toString())
     MDC.put("path", httpRequest.requestURI)
     MDC.put("method", httpRequest.method)
 
     try {
+    // => Exception handling begins
       chain.doFilter(request, response)
     } finally {
+    // => Block begins
       MDC.clear()  // => Cleanup MDC
     }
   }
 }
 
 @RestController
+// => Combines @Controller and @ResponseBody
 class OrderLoggingController {
+// => Class declaration
   private val log = LoggerFactory.getLogger(javaClass)
+  // => Private class member
 
   @PostMapping("/orders")
+  // => HTTP endpoint mapping
   fun createOrder(@RequestBody order: Order): Order {
+  // => Function declaration
     log.info("Creating order",
       kv("orderId", order.id),
       kv("userId", order.user?.id))  // => Structured key-value pairs
 
     return try {
+    // => Returns value to caller
       // Process order
       log.info("Order created successfully")
       order
     } catch (e: Exception) {
+    // => Block begins
       log.error("Order creation failed", e)
       throw e
+      // => Exception thrown, method execution terminates
     }
   }
 }
@@ -1237,9 +1429,11 @@ class OrderLoggingController {
 
 **Why It Matters**: Structured logging with JSON format and MDC (Mapped Diagnostic Context) enables centralized log aggregation (ELK stack, Datadog) where engineers query logs by trace ID to reconstruct request flows across microservices. Production systems use MDC to propagate correlation IDs, user IDs, and tenant IDs through all log statements, enabling queries like "show all logs for user 12345 in the last hour" that would be impossible with unstructured text logs, significantly reducing incident investigation time.
 
+## Group 3: Resilience Patterns
+
 ### Example 49: Circuit Breaker - Resilience4j
 
-Circuit breaker prevents cascading failures by stopping calls to failing services and providing fallback responses.
+Circuit breaker prevents cascading failures by stopping calls to failing services and providing fallback responses. When a downstream service fails repeatedly (meeting the failure threshold), the circuit opens and requests fail immediately without waiting for timeouts — protecting your service's thread pool from exhaustion. Use the circuit breaker pattern for all synchronous calls to external services or microservices in production deployments.
 
 ```java
 // pom.xml: spring-cloud-starter-circuitbreaker-resilience4j
@@ -1291,7 +1485,6 @@ public class UserServiceClient {
 //         permittedNumberOfCallsInHalfOpenState: 3
 
 // Circuit Breaker States: CLOSED (normal) -> OPEN (failing) -> HALF_OPEN (testing) -> CLOSED
-// => Invokes // Circuit Breaker States: CLOSED()
 ```
 
 **Code (Kotlin)**:
@@ -1407,7 +1600,6 @@ public class PaymentServiceClient {
 //           - java.lang.IllegalArgumentException
 
 // Retry sequence: 1s -> 2s -> 4s (exponential backoff)
-// => Invokes // Retry sequence: 1s -> 2s -> 4s()
 
 record PaymentRequest(Long orderId, BigDecimal amount) {}
     // => Executes method
@@ -1634,8 +1826,11 @@ record Report(Long userId, String title, LocalDateTime generatedAt) {}
 
 ```kotlin
 @Service
+// => Business logic layer Spring component
 class ReportService {
+// => Class declaration
   @Bulkhead(name = "report-generation", type = Bulkhead.Type.THREADPOOL, fallbackMethod = "reportFallback")
+  // => Annotation applied
   // => Isolate with dedicated thread pool, fallback when bulkhead full
   fun generateReport(userId: Long): CompletableFuture<Report> {  // => Async method (returns CompletableFuture)
     // => Executes in isolated 5-thread pool (from config)
@@ -1646,7 +1841,9 @@ class ReportService {
   }
 
   @Suppress("UNUSED_PARAMETER")
+  // => Annotation applied
   private fun reportFallback(userId: Long, e: Exception): CompletableFuture<Report> {
+  // => Function declaration
     // => Fallback when bulkhead exhausted
     return CompletableFuture.completedFuture(  // => Return immediately completed future
       Report(userId, "Cached Report", LocalDateTime.now().minusDays(1))  // => Return cached/stale report
@@ -1657,6 +1854,7 @@ class ReportService {
 // application.yml - Same as Java
 
 data class Report(val userId: Long, val title: String, val generatedAt: LocalDateTime)
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
 
 // Kotlin-specific: Use trailing lambda for supplyAsync
 // Alternative with Coroutines (more idiomatic):
@@ -1671,6 +1869,8 @@ data class Report(val userId: Long, val title: String, val generatedAt: LocalDat
 **Key Takeaway**: Bulkhead pattern isolates thread pools—use `@Bulkhead` with thread pool type to prevent resource exhaustion from one failing service, ensuring failures don't cascade across the application.
 
 **Why It Matters**: Bulkhead pattern isolates thread pools—report generation (slow, CPU-intensive) uses a dedicated 5-thread pool, while real-time API requests use a separate 50-thread pool, preventing slow operations from starving fast operations. Production systems configure bulkheads around external dependencies (payment gateways, shipping APIs) so that when one dependency becomes slow, it only affects requests using that dependency instead of exhausting the global thread pool that handles all operations.
+
+## Group 4: Advanced Configuration
 
 ### Example 53: Custom Starter - Creating Reusable Auto-Configuration
 
@@ -1762,26 +1962,41 @@ public class CustomAutoConfiguration {
 // Module: my-custom-starter
 // CustomProperties.kt
 @ConfigurationProperties(prefix = "custom.feature")
+// => Marks class as Spring configuration (bean factory)
 @Validated
+// => Triggers Bean Validation on annotated parameter
 data class CustomProperties(
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
   @field:NotBlank var apiKey: String = "",
+  // => Annotation applied
   var enabled: Boolean = true,
+  // => Mutable variable
   var timeout: Duration = Duration.ofSeconds(30)
+  // => Mutable variable
 )
 
 // CustomService.kt
 class CustomService(private val properties: CustomProperties) {
+// => Class declaration
   fun performAction(): String = "Action performed with API key: ${properties.apiKey}"
+  // => Function declaration
 }
 
 // CustomAutoConfiguration.kt
 @Configuration
+// => Marks class as Spring configuration (bean factory)
 @EnableConfigurationProperties(CustomProperties::class)
+// => Registers @ConfigurationProperties classes as Spring beans
 @ConditionalOnProperty(prefix = "custom.feature", name = ["enabled"], havingValue = "true")
+// => Bean created only if property matches specified value
 open class CustomAutoConfiguration {
+// => Class declaration
   @Bean
+  // => Declares a Spring-managed bean
   @ConditionalOnMissingBean
+  // => Bean created only if no other bean of type exists
   open fun customService(properties: CustomProperties) = CustomService(properties)
+  // => Function declaration
 }
 
 // META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
@@ -1835,8 +2050,18 @@ Conditional beans allow selective bean creation based on classpath, properties, 
 
 ```java
 @Configuration
+// => Executes
+// => Annotation: @Configuration
+// => @Configuration annotation applied
+// => Configuration class - contains @Bean methods
+// => Spring configuration class - defines bean factory methods
 // => Annotation applied
 public class ConditionalBeansConfig {
+// => Executes
+// => Class/component definition
+// => Class definition begins
+// => Class declaration
+// => Class definition begins
     // => Begins block
     @Bean // => Define CacheService bean
     @ConditionalOnClass(name = "com.redis.RedisClient") // => Only create if Redis client JAR present
@@ -1880,10 +2105,23 @@ public class ConditionalBeansConfig {
 }
 
 interface CacheService {
+// => Executes
+// => Executes statement
+// => Interface definition
+// => Interface definition
+// => Interface definition
     // => Begins block
     void put(String key, Object value);
+    // => Executes
+    // => Method/function definition
+    // => Executes
+    // => Statement
     // => Executes method
     Object get(String key);
+    // => Executes
+    // => Executes statement
+    // => Executes
+    // => Statement
     // => Executes method
 }
 ```
@@ -1892,32 +2130,58 @@ interface CacheService {
 
 ```kotlin
 @Configuration
+// => Configuration class - contains @Bean methods
+// => Marks class as Spring configuration (bean factory)
 open class ConditionalBeansConfig {
+// => Class declaration
+// => Class declaration
   @Bean
+  // => Defines a Spring-managed bean
+  // => Declares a Spring-managed bean
   @ConditionalOnClass(name = ["com.redis.RedisClient"])  // => Only create if Redis client JAR present
   open fun redisCacheService(): CacheService = RedisCacheService()  // => Created only when Redis available
 
   @Bean
+  // => Defines a Spring-managed bean
+  // => Declares a Spring-managed bean
   @ConditionalOnMissingClass("com.redis.RedisClient")  // => Only create if Redis client NOT on classpath
   open fun memoryCacheService(): CacheService = MemoryCacheService()  // => In-memory fallback
 
   @Bean
+  // => Defines a Spring-managed bean
+  // => Declares a Spring-managed bean
   @ConditionalOnProperty(name = ["feature.advanced"], havingValue = "true")
+  // => Annotation applied
+  // => Bean created only if property matches specified value
   open fun advancedFeature() = AdvancedFeature()  // => Created based on application.yml
 
   @Bean
+  // => Defines a Spring-managed bean
+  // => Declares a Spring-managed bean
   @ConditionalOnMissingBean(DataSource::class)  // => Only create if no other DataSource exists
   open fun defaultDataSource(): DataSource = EmbeddedDatabaseBuilder()
+  // => Function definition
+  // => Function declaration
     .setType(EmbeddedDatabaseType.H2).build()  // => Auto-configured embedded H2
 
   @Bean
+  // => Defines a Spring-managed bean
+  // => Declares a Spring-managed bean
   @ConditionalOnBean(EntityManagerFactory::class)  // => Only create if EntityManagerFactory exists
   open fun transactionManager(emf: EntityManagerFactory) = JpaTransactionManager(emf)
+  // => Function definition
+  // => Function declaration
 }
 
 interface CacheService {
+// => Interface definition
+// => Interface definition
   fun put(key: String, value: Any)
+  // => Function definition
+  // => Function declaration
   fun get(key: String): Any?
+  // => Function definition
+  // => Function declaration
 }
 
 // Kotlin-specific: Use expression bodies for simple bean definitions, Any? for nullable returns
@@ -1958,6 +2222,7 @@ public class MailProperties { // => Type-safe configuration class
     // => Stores in templates
 
     public static class Smtp {
+    // => Class definition begins
     // => Begins block
         private boolean auth = true;
         // => Assigns true to auth
@@ -1965,10 +2230,12 @@ public class MailProperties { // => Type-safe configuration class
         // => Assigns true to starttls
 
         @NotBlank
+        // => Annotation applied
         private String username;
         // => Declares username field of type String
 
         @NotBlank
+        // => Annotation applied
         private String password;
         // => Declares password field of type String
 
@@ -1979,9 +2246,12 @@ public class MailProperties { // => Type-safe configuration class
 }
 
 @Configuration
+// => Spring configuration class - defines bean factory methods
 @EnableConfigurationProperties(MailProperties.class)
+// => Annotation applied
     // => Executes method
 public class MailConfig {
+// => Class definition begins
     // => Begins block
     @Bean // => Configure mail sender bean
     public JavaMailSender mailSender(MailProperties props) { // => Inject validated properties
@@ -2015,36 +2285,88 @@ public class MailConfig {
 
 ```kotlin
 @ConfigurationProperties(prefix = "app.mail")
+// => Annotation applied
+// => Marks class as Spring configuration (bean factory)
 @Validated
+// => Annotation applied
+// => Triggers Bean Validation on annotated parameter
 data class MailProperties(
+// => Data class: auto-generates equals/hashCode/toString/copy
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
   @field:NotBlank var host: String = "",
+  // => Annotation applied
+  // => Annotation applied
   @field:Min(1) @field:Max(65535) var port: Int = 587,
+  // => Annotation applied
+  // => Annotation applied
   @field:Email var from: String = "",
+  // => Annotation applied
+  // => Annotation applied
   var smtp: SmtpProperties = SmtpProperties(),
+  // => Mutable property
+  // => Mutable variable
   var templates: TemplatesProperties = TemplatesProperties()
+  // => Mutable property
+  // => Mutable variable
 ) {
+// => Block begins
   data class SmtpProperties(
+  // => Data class: auto-generates equals/hashCode/toString/copy
+  // => Data class: auto-generates equals/hashCode/toString/copy/componentN
     var auth: Boolean = true,
+    // => Mutable property
+    // => Mutable variable
     var starttls: Boolean = true,
+    // => Mutable property
+    // => Mutable variable
     var username: String = "",
+    // => Mutable property
+    // => Mutable variable
     var password: String = ""
+    // => Mutable property
+    // => Mutable variable
   )
   data class TemplatesProperties(
+  // => Data class: auto-generates equals/hashCode/toString/copy
+  // => Data class: auto-generates equals/hashCode/toString/copy/componentN
     var welcome: String = "welcome.html",
+    // => Mutable property
+    // => Mutable variable
     var reset: String = "password-reset.html"
+    // => Mutable property
+    // => Mutable variable
   )
 }
 
 @Configuration
+// => Configuration class - contains @Bean methods
+// => Marks class as Spring configuration (bean factory)
 @EnableConfigurationProperties(MailProperties::class)
+// => Annotation applied
+// => Registers @ConfigurationProperties classes as Spring beans
 open class MailConfig {
+// => Class declaration
+// => Class declaration
   @Bean
+  // => Defines a Spring-managed bean
+  // => Declares a Spring-managed bean
   open fun javaMailSender(props: MailProperties): JavaMailSender =
+  // => Function definition
+  // => Function declaration
     JavaMailSenderImpl().apply {
+    // => Block begins
       host = props.host; port = props.port
+      // => Assignment
+      // => Assignment
       username = props.smtp.username; password = props.smtp.password
+      // => Assignment
+      // => Assignment
       javaMailProperties["mail.smtp.auth"] = props.smtp.auth.toString()
+      // => Assignment
+      // => Assignment
       javaMailProperties["mail.smtp.starttls.enable"] = props.smtp.starttls.toString()
+      // => Assignment
+      // => Assignment
     }
 }
 
@@ -2065,8 +2387,16 @@ Custom actuator endpoints expose application-specific operational data through t
 public class ApplicationInfoEndpoint { // => Custom operational endpoint
 // => Defines ApplicationInfoEndpoint class
     private final ApplicationContext context;
+    // => Executes
+    // => Executes statement
+    // => Executes
+    // => Statement
     // => Declares context field of type final
     private final Environment environment;
+    // => Executes
+    // => Executes statement
+    // => Executes
+    // => Statement
     // => Declares environment field of type final
 
     public ApplicationInfoEndpoint(ApplicationContext context, Environment environment) { // => Constructor injection
@@ -2100,6 +2430,9 @@ public class ApplicationInfoEndpoint { // => Custom operational endpoint
 }
 
 record ApplicationInfo(String name, String[] profiles, int beanCount, String javaVersion) {}
+// => Executes
+// => Method/function definition
+// => Code line
     // => Executes method
 
 // application.yml
@@ -2118,31 +2451,54 @@ record ApplicationInfo(String name, String[] profiles, int beanCount, String jav
 
 ```kotlin
 @Endpoint(id = "application-info")
+// => Annotation applied
+// => Declares custom actuator endpoint
 @Component
+// => Spring component - detected by component scan
+// => Spring-managed component bean
 class ApplicationInfoEndpoint(
+// => Class declaration
+// => Class declaration
   private val context: ApplicationContext,
+  // => Immutable property
+  // => Private class member
   private val environment: Environment
+  // => Immutable property
+  // => Private class member
 ) {
+// => Block begins
   @ReadOperation  // => Maps to GET /actuator/application-info
   fun info() = ApplicationInfo(
+  // => Function definition
+  // => Function declaration
     context.applicationName,
+    // => Statement
     environment.activeProfiles,
+    // => Statement
     context.beanDefinitionCount,
+    // => Statement
     System.getProperty("java.version")
   )
 
   @WriteOperation  // => Maps to POST /actuator/application-info/{key}
   fun updateSetting(@Selector key: String, value: String) {
+  // => Function definition
+  // => Function declaration
     System.setProperty("app.$key", value)
   }
 
   @DeleteOperation  // => Maps to DELETE /actuator/application-info/{cacheName}
   fun clearCache(@Selector cacheName: String) {
+  // => Function definition
+  // => Function declaration
     println("Clearing cache: $cacheName")
+    // => Output: see string template value above
   }
 }
 
 data class ApplicationInfo(val name: String, val profiles: Array<String>, val beanCount: Int, val javaVersion: String)
+// => Data class: auto-generates equals/hashCode/toString/copy
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
 
 // Kotlin-specific: Use expression body for info(), string templates in operations
 ```
@@ -2150,6 +2506,8 @@ data class ApplicationInfo(val name: String, val profiles: Array<String>, val be
 **Key Takeaway**: Custom actuator endpoints expose application-specific metrics—use `@Endpoint`, `@ReadOperation`, `@WriteOperation`, and `@DeleteOperation` to create management endpoints beyond Spring Boot's default actuators.
 
 **Why It Matters**: Custom actuator endpoints expose application-specific operational data (current promotion, feature flag states, cache statistics) through standardized HTTP endpoints that integrate with existing monitoring infrastructure. Production operations teams use custom endpoints to expose business metrics (active websocket connections, queue depths, circuit breaker states) without maintaining separate admin APIs, enabling operators to query application state during incidents through the same actuator framework that exposes standard health/metrics endpoints.
+
+## Group 5: Deployment and Cloud-Native
 
 ### Example 57: Docker Containerization - Layered JARs
 
@@ -2297,6 +2655,7 @@ public class DatabaseHealthIndicator implements HealthIndicator {  // => Custom 
         this.dataSource = dataSource;  // => Store reference to connection pool
         // => Initializes dataSource with dataSource  //
     }
+    // => Executes statement
 
     @Override  // => Implement HealthIndicator contract
     public Health health() {  // => Called by Spring Boot Actuator to check health
@@ -2309,14 +2668,18 @@ public class DatabaseHealthIndicator implements HealthIndicator {  // => Custom 
                     .build();  // => Build immutable Health object
                     // => Assigns > Build immutable Health object to //
             }
+            // => Executes statement
         } catch (Exception e) {  // => Catch SQLException or connection pool errors
             return Health.down(e).build();  // => Return DOWN status with exception details
                                              // => Kubernetes will restart pod if liveness probe fails
         }
+        // => Executes statement
         return Health.down().build();  // => Return DOWN if connection invalid but no exception
         // => Assigns > Return DOWN if connection invalid but no exception to //
     }
+    // => Executes statement
 }
+// => Executes statement
 
 @Component  // => Spring-managed component
 public class ExternalApiHealthIndicator implements HealthIndicator {  // => Custom health check for external API dependency
@@ -2327,10 +2690,16 @@ public class ExternalApiHealthIndicator implements HealthIndicator {  // => Cust
         this.webClient = webClient;  // => Store reference to WebClient bean
         // => Initializes webClient with webClient  //
     }
+    // => Executes statement
 
     @Override  // => Implement HealthIndicator contract
     public Health health() {  // => Called by Spring Boot Actuator to check external API health
         try {
+        // => Executes statement
+        // => Executes
+        // => Executes statement
+        // => Code line
+        // => Block begins
     // => Begins block
             webClient.get()  // => HTTP GET request
                 .uri("https://api.external.com/health")  // => External API health endpoint
@@ -2343,8 +2712,11 @@ public class ExternalApiHealthIndicator implements HealthIndicator {  // => Cust
             return Health.down(e).build();  // => Return DOWN status if external API unavailable
                                              // => Kubernetes will remove pod from load balancer if readiness probe fails
         }
+        // => Executes statement
     }
+    // => Executes statement
 }
+// => Executes statement
 
 // application.yml
 // management:
@@ -2373,23 +2745,42 @@ public class ExternalApiHealthIndicator implements HealthIndicator {  // => Cust
 
 ```kotlin
 @Component
+// => Spring component - detected by component scan
+// => Spring-managed component bean
 class DatabaseHealthIndicator(private val dataSource: DataSource) : HealthIndicator {
+// => Class declaration
+// => Class declaration
   override fun health(): Health = try {
+  // => Function definition
+  // => Overrides parent class/interface method
     dataSource.connection.use { conn ->
       if (conn.isValid(1)) Health.up().withDetail("database", "PostgreSQL").build()
       else Health.down().build()
     }
   } catch (e: Exception) {
+  // => Block begins
     Health.down(e).build()
   }
 }
 
 @Component
+// => Spring component - detected by component scan
+// => Spring-managed component bean
 class ReadinessIndicator : HealthIndicator {
+// => Class declaration
+// => Class declaration
   private var isReady = false
+  // => Mutable property
+  // => Private class member
   @EventListener(ApplicationReadyEvent::class)
+  // => Handles application event
+  // => Handles application events of specified type
   fun onReady() { isReady = true }
+  // => Function definition
+  // => Function declaration
   override fun health() = if (isReady) Health.up().build() else Health.outOfService().build()
+  // => Function definition
+  // => Overrides parent class/interface method
 }
 
 // Kotlin-specific: Use 'use' extension for auto-closeable resources, expression body for health()
@@ -2406,6 +2797,9 @@ Graceful shutdown ensures in-flight requests complete before application termina
 ```java
 @Configuration  // => Spring configuration class
 public class GracefulShutdownConfig {
+// => Class definition begins
+// => Class declaration
+// => Class definition begins
     // => Begins block
     @Bean  // => Define bean for Tomcat web server factory customization
     public TomcatServletWebServerFactory tomcatFactory() {  // => Customize embedded Tomcat server
@@ -2414,6 +2808,7 @@ public class GracefulShutdownConfig {
             connector.setProperty("connectionTimeout", "20000");  // => Set connection timeout to 20 seconds
                                                                    // => Timeout applies to idle connections (no data transfer)
         });
+        // => Statement
         return factory;  // => Return customized factory
     }
 
@@ -2428,12 +2823,17 @@ public class GracefulShutdownConfig {
 @RestController  // => REST controller with @ResponseBody on all methods
 @Slf4j  // => Lombok annotation generates static logger field
 public class LongRunningController {
+// => Class definition begins
+// => Class declaration
+// => Class definition begins
     // => Begins block
     @PostMapping("/process")  // => Handle POST requests to /process
     public ResponseEntity<String> processLongRunning() {  // => Simulate long-running operation
         log.info("Started long-running request");  // => Log request start
 
         try {
+        // => Code line
+        // => Block begins
     // => Begins block
             Thread.sleep(5000);  // => Simulate 5-second operation (database query, external API call)
                                   // => During graceful shutdown, this request completes before termination
@@ -2472,17 +2872,33 @@ public class LongRunningController {
 // application.yml - Same as Java
 
 @Component
+// => Spring component - detected by component scan
+// => Spring-managed component bean
 class GracefulShutdownListener : ApplicationListener<ContextClosedEvent> {
+// => Class declaration
+// => Class declaration
   private val log = LoggerFactory.getLogger(javaClass)
+  // => Immutable property
+  // => Private class member
   override fun onApplicationEvent(event: ContextClosedEvent) {
+  // => Function definition
+  // => Overrides parent class/interface method
     log.info("Graceful shutdown initiated, waiting for requests to complete...")
   }
 }
 
 @Configuration
+// => Configuration class - contains @Bean methods
+// => Marks class as Spring configuration (bean factory)
 open class GracefulShutdownConfig {
+// => Class declaration
+// => Class declaration
   @Bean
+  // => Defines a Spring-managed bean
+  // => Declares a Spring-managed bean
   open fun gracefulShutdown() = TomcatConnectorCustomizer { connector -> connector.pause() }
+  // => Function definition
+  // => Function declaration
 }
 
 // Kotlin-specific: Use expression body for listener, lambda for customizer
@@ -2578,22 +2994,44 @@ public class ConfigClientController {
 ```kotlin
 // Config Server Application
 @SpringBootApplication
+// => Entry point: @Configuration + @EnableAutoConfiguration + @ComponentScan
+// => Combines @Configuration, @EnableAutoConfiguration, @ComponentScan
 @EnableConfigServer
+// => Annotation applied
+// => Annotation applied
 open class ConfigServerApplication
+// => Class declaration
+// => Class declaration
 
 fun main(args: Array<String>) {
+// => Function definition
+// => Function declaration
   runApplication<ConfigServerApplication>(*args)
 }
 
 // Client Application
 @RestController
+// => REST controller - returns JSON directly
+// => Combines @Controller and @ResponseBody
 @RefreshScope
+// => Annotation applied
+// => Annotation applied
 class ConfigController(@Value("\${app.message}") private var message: String) {
+// => Class declaration
+// => Class declaration
   @GetMapping("/message")
+  // => HTTP GET endpoint
+  // => HTTP endpoint mapping
   fun getMessage() = mapOf("message" to message)
+  // => Function definition
+  // => Function declaration
 
   @GetMapping("/feature")
+  // => HTTP GET endpoint
+  // => HTTP endpoint mapping
   fun featureToggle(@Value("\${app.feature.enabled}") featureEnabled: Boolean) =
+  // => Function definition
+  // => Function declaration
     mapOf("feature" to "demo", "enabled" to featureEnabled)
 }
 
@@ -2613,10 +3051,17 @@ Integrate Spring Boot with Kubernetes ConfigMaps for configuration and Secrets f
 ```java
 // pom.xml: spring-cloud-starter-kubernetes-fabric8-config  # => Add dependency for Kubernetes integration
                                                              # => Enables automatic ConfigMap/Secret reading
+                                                             // => Executes statement
 
 @RestController  // => REST controller with @ResponseBody on all methods
 @RequestMapping("/api/k8s")  // => Base path for all endpoints in this controller
 public class K8sConfigController {
+// => Executes statement
+// => Executes
+// => Class/component definition
+// => Class definition begins
+// => Class declaration
+// => Class definition begins
     // => Begins block
     @Value("${app.environment}")  // => Inject property from Kubernetes ConfigMap
                                    // => ConfigMap key: app.environment
@@ -2635,12 +3080,19 @@ public class K8sConfigController {
         return Map.of(  // => Immutable map with configuration details
             "environment", environment,  // => Show environment name (safe to expose)
             "dbPasswordLength", String.valueOf(dbPassword.length()), // Don't expose actual password! (Security best practice)
+            // => Executes statement
+            // => Executes
+            // => Executes statement
+            // => Executes
     // => Executes method
                                                                       // => Shows password exists without revealing value
             "newUI", String.valueOf(newUI)  // => Show feature flag state
         );
+        // => Executes statement
     }
+    // => Executes statement
 }
+// => Executes statement
 ```
 
 ```yaml
@@ -2756,21 +3208,47 @@ graph TD
 // Kubernetes YAML - Same for all languages
 
 @Configuration
+// => Configuration class - contains @Bean methods
+// => Marks class as Spring configuration (bean factory)
 @ConfigurationProperties(prefix = "database")
+// => Annotation applied
+// => Marks class as Spring configuration (bean factory)
 data class DatabaseConfig(
+// => Data class: auto-generates equals/hashCode/toString/copy
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
   var host: String = "",
+  // => Mutable property
+  // => Mutable variable
   var port: Int = 5432,
+  // => Mutable property
+  // => Mutable variable
   var name: String = ""
+  // => Mutable property
+  // => Mutable variable
 )
 
 @RestController
+// => REST controller - returns JSON directly
+// => Combines @Controller and @ResponseBody
 class ConfigMapController(
+// => Class declaration
+// => Class declaration
   private val config: DatabaseConfig,
+  // => Immutable property
+  // => Private class member
   @Value("\${api.key}") private val apiKey: String
+  // => Inject property value
+  // => Injects property from environment or properties file
 ) {
+// => Block begins
   @GetMapping("/config")
+  // => HTTP GET endpoint
+  // => HTTP endpoint mapping
   fun getConfig() = mapOf(
+  // => Function definition
+  // => Function declaration
     "database" to config,
+    // => Statement
     "hasApiKey" to apiKey.isNotEmpty()
   )
 }
@@ -2791,11 +3269,16 @@ Create an API gateway for routing, load balancing, and cross-cutting concerns.
 ```java
 // pom.xml: spring-cloud-starter-gateway  # => Add dependency for Spring Cloud Gateway
                                            # => Reactive API gateway built on Spring WebFlux
+                                           // => Executes
                                            // => Code line
 
 @Configuration  // => Spring configuration class
 // => Annotation applied
 public class GatewayConfig {
+// => Executes
+// => Class definition begins
+// => Class declaration
+// => Class definition begins
     // => Begins block
     @Bean  // => Define route configuration bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {  // => Inject DSL builder for routes
@@ -2822,9 +3305,11 @@ public class GatewayConfig {
             )
             // => Configure route for order service endpoints
             .route("order-service", r -> r
+            // => Code line
                 .path("/api/orders/**") // => Match path pattern (/** matches all sub-paths)
                 // => Executes method call
                 .filters(f -> f
+                // => Code line
                     .stripPrefix(1) // => Remove /api prefix before forwarding
                     .rewritePath("/orders/(?<segment>.*)", "/${segment}") // => Rewrite /orders/123 to /123
                     .retry(c -> c.setRetries(3)) // => Retry failed requests 3 times
@@ -2835,6 +3320,7 @@ public class GatewayConfig {
             )
             // => Configure rate-limited route
             .route("limited-route", r -> r
+            // => Code line
                 .path("/api/public/**") // => Public API endpoints
                 .filters(f -> f.requestRateLimiter(c -> c // => Apply rate limiting filter
                     .setRateLimiter(redisRateLimiter()) // => Use Redis-based rate limiter
@@ -2845,11 +3331,19 @@ public class GatewayConfig {
                 // => Executes method call
             )
             .build();
+            // => Executes
+            // => Statement
     // => Executes method
     }
 
     @Bean
+    // => @Bean annotation applied
+    // => Defines a Spring-managed bean
+    // => Declares a Spring-managed bean
     public RedisRateLimiter redisRateLimiter() {
+    // => Method definition begins
+    // => Method definition
+    // => Method definition
     // => Begins block
         return new RedisRateLimiter(10, 20); // => 10 req/sec steady state, 20 req/sec burst capacity
         // => Assigns > 10 req/sec steady state, 20 req/sec burst capacity to //
@@ -2858,12 +3352,17 @@ public class GatewayConfig {
 
 // Global filters
 @Component
+// => @Component annotation applied
+// => Spring component - detected by component scan
+// => Spring-managed component
 public class AuthenticationGlobalFilter implements GlobalFilter, Ordered {
+// => Class definition begins
+// => Class declaration
+// => Class definition begins
     // => Begins block
     @Override // => Implement GlobalFilter interface
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) { // => Filter all requests
         String authHeader = exchange.getRequest().getHeaders().getFirst("Authorization"); // => Extract Authorization header
-        // => Invokes getRequest() method
         // => Result stored in authHeader
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) { // => Missing or malformed auth header
@@ -2892,24 +3391,36 @@ public class AuthenticationGlobalFilter implements GlobalFilter, Ordered {
 
     private boolean isValidToken(String token) { // => JWT validation logic
         return token != null && !token.isEmpty(); // => Placeholder (production: verify signature + claims)
-        // => Invokes isEmpty() method
         // => Result stored in !
     }
 }
 
 // Fallback controller
 @RestController
+// => REST controller - returns JSON directly
+// => REST controller - combines @Controller + @ResponseBody
 @RequestMapping("/fallback")
+// => Base URL path for all endpoints in class
+// => Annotation applied
     // => Executes method
 public class FallbackController {
+// => Class declaration
+// => Class definition begins
     // => Begins block
     @GetMapping("/users")
+    // => HTTP GET endpoint
+    // => HTTP endpoint mapping
     // => Executes method
     public ResponseEntity<Map<String, String>> userFallback() {
+    // => Method definition
+    // => Method definition
     // => Begins block
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+        // => Returns to caller
+        // => Returns value to caller
     // => Returns value to caller
             .body(Map.of("error", "User service temporarily unavailable"));
+            // => Statement
     // => Executes method
     }
 }
@@ -2967,9 +3478,17 @@ flowchart TD
 
 ```kotlin
 @Configuration
+// => Configuration class - contains @Bean methods
+// => Marks class as Spring configuration (bean factory)
 open class GatewayConfig {
+// => Class declaration
+// => Class declaration
   @Bean
+  // => Defines a Spring-managed bean
+  // => Declares a Spring-managed bean
   open fun customRouteLocator(builder: RouteLocatorBuilder): RouteLocator =
+  // => Function definition
+  // => Function declaration
     builder.routes()
       .route("user-service") { r -> r.path("/users/**").uri("lb://user-service") }
       .route("order-service") { r -> r.path("/orders/**")
@@ -2979,10 +3498,20 @@ open class GatewayConfig {
 }
 
 @Component
+// => Spring component - detected by component scan
+// => Spring-managed component bean
 class AuthGatewayFilter : GlobalFilter {
+// => Class declaration
+// => Class declaration
   override fun filter(exchange: ServerWebExchange, chain: GatewayFilterChain): Mono<Void> {
+  // => Function definition
+  // => Overrides parent class/interface method
     val token = exchange.request.headers.getFirst("Authorization")
+    // => Immutable property
+    // => Immutable binding (read-only reference)
     return if (token != null) chain.filter(exchange)
+    // => Returns to caller
+    // => Returns value to caller
     else Mono.error(UnauthorizedException())
   }
 }
@@ -2996,32 +3525,50 @@ class AuthGatewayFilter : GlobalFilter {
 
 ---
 
+## Group 6: Event-Driven and Specialized
+
 ### Example 63: Event Sourcing Pattern
 
-Implement event sourcing to persist all state changes as events for audit trails and replays.
+Implement event sourcing to persist all state changes as immutable events rather than current state, enabling full audit trails and temporal queries. The event store becomes the single source of truth, and current state is derived by replaying events. Use event sourcing when auditability is critical (financial systems, compliance requirements) or when you need to rebuild state at any point in time.
 
 ```java
 // Event store
 @Entity
+// => @Entity annotation applied
+// => JPA entity - maps to database table
+// => Annotation applied
 // => Annotation applied
 public class DomainEvent {
+// => Class definition begins
+// => Class declaration
+// => Class definition begins
     // => Begins block
     @Id
+    // => @Id annotation applied
+    // => JPA primary key field
+    // => Annotation applied
     // => Annotation applied
     @GeneratedValue
+    // => Auto-generate primary key value
+    // => Annotation applied
     // => Annotation applied
     private Long id;
+    // => Statement
     // => Declares id field of type Long
 
     private String aggregateId;
+    // => Statement
     // => Declares aggregateId field of type String
     private String eventType;
+    // => Statement
     // => Declares eventType field of type String
     private String payload; // JSON
     // => Declares JSON field of type String
     private LocalDateTime occurredAt;
+    // => Statement
     // => Declares occurredAt field of type LocalDateTime
     private int version;
+    // => Statement
     // => Declares version field of type int
 
     // getters/setters
@@ -3029,26 +3576,39 @@ public class DomainEvent {
 // => Block delimiter
 
 @Repository
+// => Data access bean with exception translation
+// => Data access layer component
 // => Annotation applied
 public interface EventStore extends JpaRepository<DomainEvent, Long> {
+// => Interface definition
     // => Begins block
     List<DomainEvent> findByAggregateIdOrderByVersionAsc(String aggregateId);
+    // => Statement
     // => Executes method
 }
 // => Block delimiter
 
 // Domain aggregate
 public class Order {
+// => Class declaration
+// => Class definition begins
     // => Begins block
     private String id;
+    // => Statement
     // => Declares id field of type String
     private String customerId;
+    // => Statement
     // => Declares customerId field of type String
     private List<OrderItem> items = new ArrayList<>();
+    // => Private field
+    // => Creates new instance
     // => Creates new instance
     private OrderStatus status;
+    // => Statement
     // => Declares status field of type OrderStatus
     private List<DomainEvent> uncommittedEvents = new ArrayList<>();
+    // => Private field
+    // => Creates new instance
     // => Creates new instance
 
     public void placeOrder(String customerId, List<OrderItem> items) { // => Place new order command
@@ -3117,18 +3677,29 @@ public class Order {
     }
 
     public List<DomainEvent> getUncommittedEvents() {
+    // => Method definition
+    // => Method definition
     // => Begins block
         return uncommittedEvents;
+        // => Returns to caller
+        // => Returns value to caller
     // => Returns result
     }
 }
 
 // Service
 @Service
+// => Business logic service bean
+// => Business logic layer Spring component
 public class OrderService {
+// => Class declaration
+// => Class definition begins
     // => Begins block
     @Autowired
+    // => Spring injects matching bean by type
+    // => Spring injects dependency automatically
     private EventStore eventStore;
+    // => Statement
     // => Declares eventStore field of type EventStore
 
     public void placeOrder(String customerId, List<OrderItem> items) { // => Command handler
@@ -3171,53 +3742,108 @@ enum OrderStatus { PLACED, SHIPPED, CANCELLED }
 
 ```kotlin
 sealed class OrderEvent {
+// => Class declaration
+// => Block begins
   abstract val orderId: String
   abstract val timestamp: LocalDateTime
 }
 
 data class OrderCreatedEvent(
+// => Data class: auto-generates equals/hashCode/toString/copy
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
   override val orderId: String,
+  // => Statement
+  // => Overrides parent class/interface method
   override val timestamp: LocalDateTime,
+  // => Statement
+  // => Overrides parent class/interface method
   val userId: String,
+  // => Immutable property
   val items: List<OrderItem>
+  // => Immutable property
 ) : OrderEvent()
 
 data class OrderCancelledEvent(
+// => Data class: auto-generates equals/hashCode/toString/copy
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
   override val orderId: String,
+  // => Statement
+  // => Overrides parent class/interface method
   override val timestamp: LocalDateTime
+  // => Overrides parent class/interface method
 ) : OrderEvent()
 
 @Entity
+// => JPA entity - maps to database table
+// => JPA entity mapped to database table
 open class EventStore(
+// => Class declaration
+// => Class declaration
   @Id @GeneratedValue var id: Long? = null,
+  // => JPA primary key field
+  // => Primary key field
   var aggregateId: String = "",
+  // => Mutable property
+  // => Mutable variable
   var eventType: String = "",
+  // => Mutable property
+  // => Mutable variable
   var eventData: String = "",
+  // => Mutable property
+  // => Mutable variable
   var timestamp: LocalDateTime = LocalDateTime.now()
+  // => Mutable property
+  // => Mutable variable
 )
 
 @Service
+// => Business logic service bean
+// => Business logic layer Spring component
 class OrderEventService(
+// => Class declaration
+// => Class declaration
   private val eventStoreRepo: EventStoreRepository,
+  // => Immutable property
+  // => Private class member
   private val objectMapper: ObjectMapper
+  // => Immutable property
+  // => Private class member
 ) {
+// => Block begins
   fun saveEvent(event: OrderEvent) {
+  // => Function definition
+  // => Function declaration
     val eventStore = EventStore(
+    // => Immutable property
+    // => Immutable binding (read-only reference)
       aggregateId = event.orderId,
+      // => Assignment
+      // => Assignment
       eventType = event::class.simpleName ?: "",
+      // => Assignment
+      // => Assignment
       eventData = objectMapper.writeValueAsString(event),
+      // => Assignment
+      // => Assignment
       timestamp = event.timestamp
+      // => Assignment
+      // => Assignment
     )
     eventStoreRepo.save(eventStore)
   }
 
   fun getEvents(orderId: String): List<OrderEvent> =
+  // => Function definition
+  // => Function declaration
     eventStoreRepo.findByAggregateIdOrderByTimestamp(orderId)
       .map { objectMapper.readValue(it.eventData, OrderEvent::class.java) }
 }
 
 data class OrderItem(val productId: String, val quantity: Int, val price: BigDecimal)
+// => Data class: auto-generates equals/hashCode/toString/copy
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
 enum class OrderStatus { PLACED, SHIPPED, CANCELLED }
+// => Class declaration
 
 // Kotlin-specific: Use sealed class for event hierarchy, expression body for getEvents
 ```
@@ -3230,139 +3856,256 @@ enum class OrderStatus { PLACED, SHIPPED, CANCELLED }
 
 ### Example 64: CQRS Pattern - Command Query Responsibility Segregation
 
-Separate read and write models for scalability and different optimization strategies.
+Separate read and write models (Command Query Responsibility Segregation) to optimize each side independently — write models enforce invariants and consistency, read models are denormalized for query performance. CQRS enables independent scaling of read and write sides and supports multiple read model projections for different use cases. Use CQRS in high-scale systems where read and write workloads have significantly different performance requirements.
 
 ```java
 // Command model (write side)
 @Entity  // => JPA entity for write operations
+// => JPA entity for write operations
 @Table(name = "orders_write")  // => Dedicated table for write model (separate from read model)
+// => Dedicated table for write model (separate from read model)
 public class OrderWriteModel {  // => Optimized for INSERTS/UPDATES (normalized schema)
+// => Optimized for INSERTS/UPDATES (normalized schema)
     @Id  // => Primary key
+    // => Primary key
     private String id;  // => Order ID (UUID)
+    // => Order ID (UUID)
     private String customerId;  // => Customer reference (minimal data)
+    // => Customer reference (minimal data)
     private BigDecimal totalAmount;  // => Order total
+    // => Order total
     private OrderStatus status;  // => Order state (PLACED, SHIPPED, CANCELLED)
+    // => Order state (PLACED, SHIPPED, CANCELLED)
     private LocalDateTime createdAt;  // => Creation timestamp
+    // => Creation timestamp
     // Optimized for writes: minimal fields, normalized schema
     // => No joins, fast writes, referential integrity
 }
+// => Executes
+// => Executes statement
 
 @Repository  // => Spring Data JPA repository for command operations
+// => Spring Data JPA repository for command operations
 public interface OrderCommandRepository extends JpaRepository<OrderWriteModel, String> {
+// => Executes
+// => Executes statement
+// => Executes
+// => Executes statement
+// => Interface definition
+// => Interface definition
     // => Begins block
     // => Inherits save(), saveAll(), delete() methods for write operations
     // => No complex queries - write model focused on data integrity
 }
+// => Executes
+// => Executes statement
 
 // Query model (read side)
 @Entity  // => JPA entity for read operations
+// => JPA entity for read operations
 @Table(name = "orders_read")  // => Separate table from write model (can be different database)
+// => Separate table from write model (can be different database)
 public class OrderReadModel {  // => Optimized for SELECT queries (denormalized, no joins)
+// => Optimized for SELECT queries (denormalized, no joins)
     @Id  // => Primary key (matches write model ID for correlation)
+    // => Primary key (matches write model ID for correlation)
     private String id;  // => Order ID
+    // => Order ID
     private String customerName;  // => Denormalized customer data (from separate Customer table)
+    // => Denormalized customer data (from separate Customer table)
     private String customerEmail;  // => Denormalized email (avoids JOIN with Customer table)
+    // => Denormalized email (avoids JOIN with Customer table)
     private BigDecimal totalAmount;  // => Order total
+    // => Order total
     private int itemCount;  // => Denormalized item count (computed aggregate)
+    // => Denormalized item count (computed aggregate)
     private OrderStatus status;  // => Order state
+    // => Order state
     private LocalDateTime createdAt;  // => Creation timestamp
+    // => Creation timestamp
     // Denormalized, optimized for reads: duplicates data to avoid JOINs
     // => Fast queries, no foreign keys, eventual consistency with write model
 }
+// => Executes
+// => Executes statement
 
 @Repository  // => Spring Data JPA repository for query operations
+// => Spring Data JPA repository for query operations
 public interface OrderQueryRepository extends JpaRepository<OrderReadModel, String> {
+// => Executes
+// => Executes statement
+// => Executes
+// => Executes statement
+// => Interface definition
+// => Interface definition
     // => Begins block
     List<OrderReadModel> findByCustomerNameContaining(String name);  // => Search by customer name (no JOIN needed)
+    // => Search by customer name (no JOIN needed)
                                                                       // => Fast query using denormalized data
     List<OrderReadModel> findByStatusAndCreatedAtAfter(OrderStatus status, LocalDateTime after);  // => Recent orders by status
+    // => Recent orders by status
                                                                                                     // => Single table query (no JOINs)
 }
+// => Executes
+// => Executes statement
 
 // Command service (write operations)
 @Service  // => Service for write operations (commands)
+// => Service for write operations (commands)
 public class OrderCommandService {  // => Handles state-changing commands
+// => Handles state-changing commands
     @Autowired  // => Inject write repository
+    // => Inject write repository
     private OrderCommandRepository commandRepo;  // => Repository for write model persistence
+    // => Repository for write model persistence
 
     @Autowired  // => Inject event publisher
+    // => Inject event publisher
     private ApplicationEventPublisher eventPublisher;  // => Publishes domain events to synchronize read model
+    // => Publishes domain events to synchronize read model
 
     @Transactional  // => Ensure atomicity (save order + publish event in single transaction)
+    // => Ensure atomicity (save order + publish event in single trans
                      // => Rollback if event publishing fails
     public String createOrder(CreateOrderCommand command) {  // => Create new order command handler
+    // => Create new order command handler
         OrderWriteModel order = new OrderWriteModel();  // => Create new write model entity
+        // => Create new write model entity
         order.setId(UUID.randomUUID().toString());  // => Generate unique order ID
+        // => Generate unique order ID
         order.setCustomerId(command.customerId());  // => Set customer reference
+        // => Set customer reference
         order.setTotalAmount(command.totalAmount());  // => Set total amount
+        // => Set total amount
         order.setStatus(OrderStatus.PLACED);  // => Initial order status
+        // => Initial order status
         order.setCreatedAt(LocalDateTime.now());  // => Set creation timestamp
+        // => Set creation timestamp
 
         commandRepo.save(order);  // => Persist to write database (normalized schema)
+        // => Persist to write database (normalized schema)
                                    // => Write model updated immediately
 
         // Publish event for read model update
         eventPublisher.publishEvent(new OrderCreatedEvent(  // => Publish domain event
+        // => Publish domain event
             order.getId(),  // => Order ID for event correlation
+            // => Order ID for event correlation
             order.getCustomerId(),  // => Customer ID for denormalization
+            // => Customer ID for denormalization
             order.getTotalAmount()  // => Total amount for read model
+            // => Total amount for read model
         ));  // => Event triggers async read model update (eventual consistency)
+        // => Event triggers async read model update (eventual consistency
 
         return order.getId();  // => Return order ID to caller
+        // => Return order ID to caller
     }
+    // => Executes
+    // => Executes statement
 }
+// => Executes
+// => Executes statement
 
 // Query service (read operations)
 @Service  // => Service for read operations (queries)
+// => Service for read operations (queries)
 public class OrderQueryService {  // => Handles queries against read model
+// => Handles queries against read model
     @Autowired  // => Inject read repository
+    // => Inject read repository
     private OrderQueryRepository queryRepo;  // => Repository for denormalized read model
+    // => Repository for denormalized read model
 
     public List<OrderReadModel> searchOrders(String customerName) {  // => Search by customer name
+    // => Search by customer name
         return queryRepo.findByCustomerNameContaining(customerName);  // => Query denormalized data (no JOIN)
+        // => Query denormalized data (no JOIN)
                                                                        // => Fast query with indexed customer name
     }
+    // => Executes
+    // => Executes statement
 
     public List<OrderReadModel> getRecentOrders(OrderStatus status, int days) {  // => Get recent orders by status
+    // => Get recent orders by status
         LocalDateTime since = LocalDateTime.now().minusDays(days);  // => Calculate cutoff date
+        // => Calculate cutoff date
         return queryRepo.findByStatusAndCreatedAtAfter(status, since);  // => Single table query (denormalized)
+        // => Single table query (denormalized)
                                                                          // => Indexed by status + createdAt
     }
+    // => Executes
+    // => Executes statement
 }
+// => Executes
+// => Executes statement
 
 // Event handler to synchronize read model
 @Component  // => Spring-managed component
+// => Spring-managed component
 public class OrderReadModelUpdater {  // => Synchronizes read model with write model via events
+// => Synchronizes read model with write model via events
     @Autowired  // => Inject read repository
+    // => Inject read repository
     private OrderQueryRepository queryRepo;  // => Repository for read model updates
+    // => Repository for read model updates
 
     @Autowired  // => Inject customer repository
+    // => Inject customer repository
     private CustomerRepository customerRepo;  // => Repository to fetch customer details for denormalization
+    // => Repository to fetch customer details for denormalization
 
     @EventListener  // => Listen for domain events
+    // => Listen for domain events
     @Async  // => Process event asynchronously (eventual consistency)
+    // => Process event asynchronously (eventual consistency)
              // => Write model commits immediately, read model updates later
     public void handleOrderCreated(OrderCreatedEvent event) {  // => Handle OrderCreatedEvent
+    // => Handle OrderCreatedEvent
         Customer customer = customerRepo.findById(event.customerId()).orElseThrow();  // => Fetch customer details for denormalization
+        // => Fetch customer details for denormalization
 
         OrderReadModel readModel = new OrderReadModel();  // => Create denormalized read model
+        // => Create denormalized read model
         readModel.setId(event.orderId());  // => Set order ID (matches write model)
+        // => Set order ID (matches write model)
         readModel.setCustomerName(customer.getName());  // => Denormalize customer name (avoid JOIN)
+        // => Denormalize customer name (avoid JOIN)
         readModel.setCustomerEmail(customer.getEmail());  // => Denormalize email (avoid JOIN)
+        // => Denormalize email (avoid JOIN)
         readModel.setTotalAmount(event.totalAmount());  // => Copy total amount from event
+        // => Copy total amount from event
         readModel.setItemCount(event.itemCount());  // => Copy item count (computed aggregate)
+        // => Copy item count (computed aggregate)
         readModel.setStatus(OrderStatus.PLACED);  // => Initial status
+        // => Initial status
         readModel.setCreatedAt(LocalDateTime.now());  // => Set creation timestamp
+        // => Set creation timestamp
 
         queryRepo.save(readModel);  // => Persist denormalized read model
+        // => Persist denormalized read model
         // Read model updated asynchronously (eventual consistency)
         // => Small delay between write and read model consistency
     }
+    // => Executes
+    // => Executes statement
 }
+// => Executes
+// => Executes statement
 
 record CreateOrderCommand(String customerId, BigDecimal totalAmount) {}
+// => Executes
+// => Executes statement
+// => Executes
+// => Method/function definition
+// => Code line
     // => Executes method
 record OrderCreatedEvent(String orderId, String customerId, BigDecimal totalAmount) {}
+// => Executes
+// => Executes statement
+// => Executes
+// => Method/function definition
+// => Code line
     // => Executes method
 ```
 
@@ -3371,38 +4114,77 @@ record OrderCreatedEvent(String orderId, String customerId, BigDecimal totalAmou
 ```kotlin
 // Command side
 data class CreateOrderCommand(val userId: String, val items: List<OrderItem>)
+// => Data class: auto-generates equals/hashCode/toString/copy
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
 
 @Service
+// => Business logic service bean
+// => Business logic layer Spring component
 class OrderCommandService(
+// => Class declaration
+// => Class declaration
   private val orderRepo: OrderRepository,
+  // => Immutable property
+  // => Private class member
   private val eventPublisher: ApplicationEventPublisher
+  // => Immutable property
+  // => Private class member
 ) {
+// => Block begins
   @Transactional
+  // => Wrap in database transaction
+  // => Wraps method in database transaction
   fun createOrder(command: CreateOrderCommand): Order {
+  // => Function definition
+  // => Function declaration
     val order = Order(userId = command.userId, items = command.items)
+    // => Immutable property
+    // => Immutable binding (read-only reference)
     orderRepo.save(order)
     eventPublisher.publishEvent(OrderCreatedEvent(order.id!!, LocalDateTime.now()))
     return order
+    // => Returns to caller
+    // => Returns value to caller
   }
 }
 
 // Query side
 data class OrderSummary(val orderId: String, val userId: String, val totalAmount: BigDecimal, val itemCount: Int)
+// => Data class: auto-generates equals/hashCode/toString/copy
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
 
 @Service
+// => Business logic service bean
+// => Business logic layer Spring component
 class OrderQueryService(private val orderSummaryRepo: OrderSummaryRepository) {
+// => Class declaration
+// => Class declaration
   fun getOrderSummary(orderId: String): OrderSummary? =
+  // => Function definition
+  // => Function declaration
     orderSummaryRepo.findById(orderId).orElse(null)
 
   fun getUserOrders(userId: String): List<OrderSummary> =
+  // => Function definition
+  // => Function declaration
     orderSummaryRepo.findByUserId(userId)
 }
 
 @Component
+// => Spring component - detected by component scan
+// => Spring-managed component bean
 class OrderEventHandler(private val orderSummaryRepo: OrderSummaryRepository) {
+// => Class declaration
+// => Class declaration
   @EventListener
+  // => Handles application event
+  // => Handles application events of specified type
   fun handleOrderCreated(event: OrderCreatedEvent) {
+  // => Function definition
+  // => Function declaration
     val summary = OrderSummary(event.orderId, event.userId, event.totalAmount, event.items.size)
+    // => Immutable property
+    // => Immutable binding (read-only reference)
     orderSummaryRepo.save(summary)
   }
 }
@@ -3455,6 +4237,10 @@ public class MultiTenantDataSourceConfig { // => Configures tenant-aware data so
 }
 
 public class TenantAwareDataSource extends AbstractRoutingDataSource {
+// => Class/component definition
+// => Class definition begins
+// => Class declaration
+// => Class definition begins
     // => AbstractRoutingDataSource: Spring's dynamic data source routing mechanism
     // => Routes each database connection to different target based on lookup key
     @Override // => Override to provide tenant-specific routing key
@@ -3469,6 +4255,10 @@ public class TenantAwareDataSource extends AbstractRoutingDataSource {
 @Component // => Spring-managed bean for tenant context management
 public class TenantContext { // => Thread-safe tenant ID storage using ThreadLocal
     private static final ThreadLocal<String> CURRENT_TENANT = new ThreadLocal<>();
+    // => Assigns value
+    // => Assigns value
+    // => Private field
+    // => Creates new instance
     // => ThreadLocal: Each HTTP request thread has isolated tenant ID
     // => Prevents tenant data leaking between concurrent requests
     // => Example: Request A (tenant1) and Request B (tenant2) execute simultaneously without interference
@@ -3492,10 +4282,18 @@ public class TenantContext { // => Thread-safe tenant ID storage using ThreadLoc
 // Tenant interceptor (extracts tenant ID from HTTP header)
 @Component // => Spring-managed interceptor bean
 public class TenantInterceptor implements HandlerInterceptor {
+// => Class/component definition
+// => Class definition begins
+// => Class declaration
+// => Class definition begins
     // => HandlerInterceptor: intercepts HTTP requests before/after controller execution
     // => Executes for every incoming HTTP request
     @Override // => Executes BEFORE controller method
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    // => Method/function definition
+    // => Method definition begins
+    // => Method definition
+    // => Method definition
         // => Extracts tenant ID from request and sets in ThreadLocal
         String tenantId = request.getHeader("X-Tenant-ID"); // => Read custom header: X-Tenant-ID
         // => Client must send header: X-Tenant-ID: tenant1
@@ -3514,7 +4312,13 @@ public class TenantInterceptor implements HandlerInterceptor {
 
     @Override // => Executes AFTER controller completes (even if exception thrown)
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
+    // => Method/function definition
+    // => Code line
+    // => Method definition
                                Object handler, Exception ex) {
+                               // => Executes statement
+                               // => Code line
+                               // => Block begins
         // => Cleanup: remove tenant ID from ThreadLocal
         TenantContext.clear(); // => Prevents memory leak in thread pool
         // => Critical: thread pools reuse threads, must clear tenant ID after each request
@@ -3525,9 +4329,17 @@ public class TenantInterceptor implements HandlerInterceptor {
 // Strategy 2: Discriminator Column (Shared Schema - all tenants in same table)
 @Entity // => JPA entity for products table (shared across all tenants)
 @FilterDef(name = "tenantFilter", parameters = @ParamDef(name = "tenantId", type = String.class))
+// => Annotation: @FilterDef
+// => @FilterDef annotation applied
+// => Annotation applied
+// => Annotation applied
 // => Defines Hibernate filter with parameter (applied at query time, not compile time)
 // => Filter name: "tenantFilter", parameter: tenantId (String type)
 @Filter(name = "tenantFilter", condition = "tenant_id = :tenantId")
+// => Annotation: @Filter
+// => @Filter annotation applied
+// => Annotation applied
+// => Annotation applied
 // => Applies filter condition to all queries: WHERE tenant_id = :tenantId
 // => Automatically added to SELECT/UPDATE/DELETE queries for this entity
 // => Prevents tenant1 from accessing tenant2 data (application-level row security)
@@ -3537,6 +4349,7 @@ public class Product { // => Product entity with tenant discriminator column
     private Long id; // => Product ID (unique across all tenants)
 
     private String tenantId; // Discriminator column (identifies which tenant owns this row)
+    // => Executes
     // => Example values: "tenant1", "tenant2", "tenant3"
     // => Must be set explicitly when creating product
     // => Index this column for query performance!
@@ -3548,6 +4361,8 @@ public class Product { // => Product entity with tenant discriminator column
 
 @Repository // => Spring Data JPA repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
+// => Interface definition
+// => Interface definition
     // => Automatically filtered by tenant when tenantFilter enabled
     // => findAll() executes: SELECT * FROM product WHERE tenant_id = 'tenant1'
     // => No manual filtering needed - Hibernate filter handles it transparently
@@ -3631,17 +4446,21 @@ class TenantContext {  // => Thread-safe tenant ID storage using Kotlin companio
 @Order(1)  // => Execute first in filter chain (before security filters)
 class TenantFilter : Filter {  // => Servlet Filter interface for tenant ID extraction
   override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
+  // => Overrides parent class/interface method
     // => Executes for every HTTP request (before controller)
     val tenantId = (request as HttpServletRequest).getHeader("X-Tenant-ID") ?: "default"
+    // => Immutable binding (read-only reference)
     // => Smart cast: ServletRequest → HttpServletRequest
     // => Elvis operator: use "default" if X-Tenant-ID header missing
     // => Example: Header "X-Tenant-ID: tenant1" → tenantId = "tenant1"
     TenantContext.setTenantId(tenantId)  // => Store tenant ID in ThreadLocal
     try {
+    // => Exception handling begins
       chain.doFilter(request, response)  // => Continue filter chain and invoke controller
       // => All database queries use this tenant ID during controller execution
     }
     finally {
+    // => Executes always, regardless of exception
       TenantContext.clear()  // => Cleanup: remove tenant ID from ThreadLocal
       // => Critical: prevents memory leak in thread pools (thread reuse)
       // => Finally block: executes even if exception thrown during request processing
@@ -3650,6 +4469,7 @@ class TenantFilter : Filter {  // => Servlet Filter interface for tenant ID extr
 }
 
 abstract class MultiTenantHikariDataSource : HikariDataSource() {
+// => Class declaration
   // => Extends HikariCP connection pool for schema-per-tenant routing
   // => Abstract: must be extended with tenant-specific schema mapping configuration
   override fun getConnection(): Connection {  // => Intercept connection acquisition
@@ -3688,20 +4508,36 @@ public class NativeApplication { // => Main application class (works identically
         SpringApplication.run(NativeApplication.class, args); // => Bootstraps Spring Boot application
         // => In native mode: instant startup (~50ms), in JVM mode: slower startup (~2000ms)
     }
+    // => Executes statement
 
     @Bean // => Registers CommandLineRunner bean that executes after application startup
     public CommandLineRunner runner() { // => Demonstrates startup time measurement
         return args -> { // => Lambda executed once after context initialization
         // => Returns args -> { // => Lambda executed once after context initialization
             System.out.println("Native application started in: " +
+            // => Executes statement
+            // => Executes
+            // => Executes statement
+            // => Code line
             // => Console output
                 ManagementFactory.getRuntimeMXBean().getUptime() + "ms");
+                // => Executes statement
+                // => Executes
+                // => Executes statement
+                // => Executes
+                // => Statement
     // => Executes method
             // => JVM: ~2000ms startup, Native: ~50ms startup (40x faster)
             // => Prints actual measured startup time to console
         };
+        // => Executes statement
+        // => Executes
+        // => Executes statement
+        // => Statement
     }
+    // => Executes statement
 }
+// => Executes statement
 
 @RestController // => Enables REST endpoints with automatic JSON serialization
 @RequestMapping("/api/native") // => Base path for all endpoints in this controller
@@ -3715,9 +4551,12 @@ public class NativeController { // => Exposes runtime information endpoint
             "startupTime", ManagementFactory.getRuntimeMXBean().getUptime() // => Milliseconds since application start
             // => Native: ~50ms, JVM: ~2000ms
         );
+        // => Executes statement
         // => Response example: {"runtime": "Substrate VM", "memoryUsed": 15728640, "startupTime": 52}
     }
+    // => Executes statement
 }
+// => Executes statement
 ```
 
 ```xml
@@ -3803,6 +4642,8 @@ spring:
 ```kotlin
 // build.gradle.kts
 plugins {
+// => Code line
+// => Block begins
   id("org.springframework.boot") version "3.2.0"  // => Spring Boot Gradle plugin
   id("org.graalvm.buildtools.native") version "0.9.28"  // => GraalVM native image plugin for Gradle
   // => Provides nativeCompile task for building native executables
@@ -3940,6 +4781,8 @@ public class BookController { // => Contains query and mutation resolvers for Gr
 
     @MutationMapping // => Maps to "createBook" mutation in GraphQL schema
     public Book createBook(@Argument String title, @Argument int pages, @Argument Long authorId) {
+    // => Method definition
+    // => Method definition
         // => @Argument binds GraphQL arguments (title, pages, authorId) to parameters
         Author author = authorRepository.findById(authorId).orElseThrow(); // => Fetch author by ID, throw exception if not found
         // => Ensures author exists before creating book (referential integrity)
@@ -3969,20 +4812,29 @@ public class BookController { // => Contains query and mutation resolvers for Gr
 public class DataLoaderConfig { // => Configures batch loading to prevent N+1 query problem
     @Bean // => Registers BatchLoaderRegistry bean
     public BatchLoaderRegistry batchLoaderRegistry(AuthorRepository authorRepository) {
+    // => Method definition
+    // => Method definition
         // => Inject AuthorRepository for batch fetching authors
         return registry -> registry.forTypePair(Long.class, Author.class)
+        // => Returns to caller
+        // => Returns value to caller
             // => Register batch loader for (Long authorId → Author) mapping
             .registerBatchLoader((authorIds, env) -> {
+            // => Block begins
                 // => Batch loader receives list of author IDs collected during GraphQL query execution
                 // => Instead of N queries (one per book), executes 1 query with WHERE id IN (1, 2, 3...)
                 List<Author> authors = authorRepository.findAllById(authorIds);
+                // => Assignment
                 // => Fetches all authors in single query: SELECT * FROM authors WHERE id IN (?)
                 // => Example: authorIds = [1, 2, 3] → fetches 3 authors in 1 query
                 return Mono.just(authors); // Batch load authors (reactive wrapper for GraphQL execution)
+                // => Returns to caller
+                // => Returns value to caller
                 // => Returns reactive publisher containing list of authors
                 // => GraphQL framework maps authors back to their corresponding books automatically
                 // => Performance: 100 books → 2 queries (1 for books, 1 for authors) instead of 101 queries
             });
+            // => Statement
     }
 }
 ```
@@ -4074,12 +4926,14 @@ graph TD
 // Data classes for GraphQL types
 // Kotlin data classes provide concise value objects with automatic equals/hashCode/toString
 data class Book(
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
     val id: String,
     val title: String,
     val authorId: String
 )
 
 data class Author(
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
     val id: String,
     val name: String
 )
@@ -4087,64 +4941,94 @@ data class Author(
 // GraphQL Controller with Query and Mutation Resolvers
 // @QueryMapping maps to GraphQL queries, @MutationMapping maps to mutations
 @Controller
+// => Annotation applied
 class BookController(
+// => Class declaration
     private val bookRepository: BookRepository,  // Primary constructor injection - no @Autowired needed
+    // => Private class member
     private val authorRepository: AuthorRepository
+    // => Private class member
 ) {
+// => Block begins
     // Query resolver - returns single book by ID
     // @Argument annotation maps GraphQL argument to method parameter
     // Expression body for concise single-expression functions
     @QueryMapping
+    // => Annotation applied
     fun bookById(@Argument id: String): Book? = bookRepository.findById(id)
+    // => Function declaration
 
     // Query resolver - returns all books
     // Expression body returns repository result directly
     @QueryMapping
+    // => Annotation applied
     fun allBooks(): List<Book> = bookRepository.findAll()
+    // => Function declaration
 
     // Mutation resolver - creates new book
     // Accepts GraphQL arguments for book creation
     @MutationMapping
+    // => Annotation applied
     fun createBook(@Argument title: String, @Argument authorId: String): Book {
+    // => Function declaration
         val book = Book(
+        // => Immutable binding (read-only reference)
             id = UUID.randomUUID().toString(),  // Generate unique ID
+            // => Assignment
             title = title,
+            // => Assignment
             authorId = authorId
+            // => Assignment
         )
         return bookRepository.save(book)  // Save and return created book
+        // => Returns value to caller
     }
 
     // Field resolver - fetches author for a book (nested query)
     // @SchemaMapping links this resolver to Book.author field
     // Prevents N+1 queries when combined with DataLoader
     @SchemaMapping
+    // => Annotation applied
     fun author(book: Book): Author? = authorRepository.findById(book.authorId)
+    // => Function declaration
 }
 
 // Author Controller for author-related queries
 @Controller
+// => Annotation applied
 class AuthorController(
+// => Class declaration
     private val authorRepository: AuthorRepository,
+    // => Private class member
     private val bookRepository: BookRepository
+    // => Private class member
 ) {
+// => Block begins
     // Field resolver - fetches books for an author (one-to-many relationship)
     // @SchemaMapping(typeName = "Author") maps to Author.books field in schema
     // Returns list of books authored by this author
     @SchemaMapping(typeName = "Author")
+    // => Annotation applied
     fun books(author: Author): List<Book> = bookRepository.findByAuthorId(author.id)
+    // => Function declaration
 }
 
 // DataLoader Configuration for batch loading (prevents N+1 queries)
 // DataLoader batches multiple requests into single database query
 @Configuration
+// => Marks class as Spring configuration (bean factory)
 open class DataLoaderConfiguration {
+// => Class declaration
     // Bean for batching author loads
     // MappedBatchLoader receives multiple keys and returns map of key->value
     @Bean
+    // => Declares a Spring-managed bean
     open fun authorDataLoader(authorRepository: AuthorRepository): MappedBatchLoader<String, Author> {
+    // => Function declaration
         // Lambda receives list of author IDs and returns map of ID->Author
         // Single query fetches all authors instead of N individual queries
         return MappedBatchLoader { authorIds, _ ->
+        // => Returns value to caller
             // Mono wraps asynchronous result for reactive GraphQL execution
             Mono.just(
                 authorRepository.findAllById(authorIds)  // Batch fetch all authors
@@ -4155,57 +5039,81 @@ open class DataLoaderConfiguration {
 
     // DataLoader registration - makes loader available to resolvers
     @Bean
+    // => Declares a Spring-managed bean
     open fun dataLoaderRegistry(authorDataLoader: MappedBatchLoader<String, Author>): DataLoaderRegistry {
+    // => Function declaration
         val registry = DataLoaderRegistry()
+        // => Immutable binding (read-only reference)
         // Register author loader with name for resolver access
         registry.register("author", DataLoader.newMappedDataLoader(authorDataLoader))
         return registry
+        // => Returns value to caller
     }
 }
 
 // Using DataLoader in resolver (alternative to direct repository call)
 @Controller
+// => Annotation applied
 class OptimizedBookController(
+// => Class declaration
     private val bookRepository: BookRepository
+    // => Private class member
 ) {
+// => Block begins
     // Field resolver using DataLoader for batch loading authors
     // DataLoader automatically batches concurrent author requests
     @SchemaMapping
+    // => Annotation applied
     fun author(book: Book, dataLoader: DataLoader<String, Author>): CompletableFuture<Author?> {
+    // => Function declaration
         // Load author through DataLoader instead of direct repository call
         // Multiple concurrent calls batched into single query
         return dataLoader.load(book.authorId)
+        // => Returns value to caller
     }
 }
 
 // Repositories (same as Java, Kotlin interface syntax)
 interface BookRepository : JpaRepository<Book, String> {
+// => Interface definition
     // Query method derived from method name
     fun findByAuthorId(authorId: String): List<Book>
+    // => Function declaration
 }
 
 interface AuthorRepository : JpaRepository<Author, String>
+// => Interface definition
 
 // Alternative: Using Kotlin Coroutines for async GraphQL resolvers
 // Requires spring-boot-starter-graphql with coroutines support
 @Controller
+// => Annotation applied
 class CoroutineBookController(
+// => Class declaration
     private val bookRepository: BookRepository,
+    // => Private class member
     private val authorRepository: AuthorRepository
+    // => Private class member
 ) {
+// => Block begins
     // Suspend function for async query execution
     // GraphQL framework automatically wraps in coroutine context
     @QueryMapping
+    // => Annotation applied
     suspend fun bookById(@Argument id: String): Book? {
+    // => Function declaration
         // Simulated async database call
         return withContext(Dispatchers.IO) {
+        // => Returns value to caller
             bookRepository.findById(id)
         }
     }
 
     // Suspend function for async field resolution
     @SchemaMapping
+    // => Annotation applied
     suspend fun author(book: Book): Author? = withContext(Dispatchers.IO) {
+    // => Function declaration
         authorRepository.findById(book.authorId)
     }
 }
@@ -4219,7 +5127,7 @@ class CoroutineBookController(
 
 ### Example 68: Saga Pattern - Distributed Transactions
 
-Implement Saga pattern for managing distributed transactions across microservices.
+Implement the Saga pattern for managing distributed transactions across microservices without two-phase commit, using a sequence of local transactions coordinated via events or orchestration. When any step fails, compensating transactions are triggered to undo previous steps and maintain data consistency across services. Use the Saga pattern whenever a business operation spans multiple microservices that each manage their own data stores.
 
 ```java
 // Order Saga Orchestrator (Orchestration-based Saga pattern)
@@ -4238,32 +5146,39 @@ public class OrderSaga { // => Central coordinator that manages distributed tran
         // => Used to track saga execution and correlate compensation operations
 
         try {
+        // => Block begins
             // Step 1: Reserve inventory (local transaction in inventory-service)
             ReservationResponse reservation = reserveInventory(request.productId(), request.quantity());
+            // => Assignment
             // => Calls inventory-service: POST /api/reservations
             // => Reserves products, returns reservationId if successful
             // => If fails: throws SagaException, triggers compensation
 
             // Step 2: Process payment (local transaction in payment-service)
             PaymentResponse payment = processPayment(request.customerId(), request.totalAmount());
+            // => Assignment
             // => Calls payment-service: POST /api/payments
             // => Charges customer credit card, returns transactionId if successful
             // => If fails: compensate() cancels inventory reservation from Step 1
 
             // Step 3: Create order (local transaction in order-service)
             createOrder(orderId, request, reservation.reservationId(), payment.transactionId());
+            // => Statement
             // => Persists order to database with references to reservation and payment
             // => If fails: compensate() refunds payment and cancels inventory
 
             // Step 4: Send notification (non-critical step, can fail without rollback)
             sendNotification(request.customerId(), "Order " + orderId + " placed successfully");
+            // => Statement
             // => Sends email/SMS to customer about successful order
             // => If fails: saga still considered successful (notification retry handled separately)
 
             kafkaTemplate.send("order-events", "OrderCompleted", orderId);
+            // => Statement
             // => Publish success event to Kafka topic for analytics/auditing
             // => Event: {"topic": "order-events", "key": "OrderCompleted", "value": orderId}
         } catch (Exception e) {
+        // => Block begins
             // Compensating transactions (rollback) - undo completed steps in reverse order
             compensate(orderId, e); // => Executes compensation logic (cancel inventory, refund payment)
             // => Saga fails: ALL completed steps reversed, system returns to consistent state
@@ -4272,8 +5187,10 @@ public class OrderSaga { // => Central coordinator that manages distributed tran
     }
 
     private ReservationResponse reserveInventory(String productId, int quantity) {
+    // => Block begins
         // => Step 1 helper: Reserve inventory in inventory microservice
         ResponseEntity<ReservationResponse> response = restTemplate.postForEntity(
+        // => Assignment
             // => Synchronous HTTP POST call to inventory-service
             "http://inventory-service/api/reservations", // => Service discovery resolves this URL
             // => Example: http://inventory-service-pod-1:8080/api/reservations
@@ -4294,8 +5211,10 @@ public class OrderSaga { // => Central coordinator that manages distributed tran
     }
 
     private PaymentResponse processPayment(String customerId, BigDecimal amount) {
+    // => Block begins
         // => Step 2 helper: Process payment in payment microservice
         ResponseEntity<PaymentResponse> response = restTemplate.postForEntity(
+        // => Assignment
             // => Synchronous HTTP POST call to payment-service
             "http://payment-service/api/payments", // => Service discovery resolves this URL
             // => Blocks until payment processed (can take 1-5 seconds for external payment gateway)
@@ -4315,10 +5234,12 @@ public class OrderSaga { // => Central coordinator that manages distributed tran
     }
 
     private void compensate(String orderId, Exception cause) {
+    // => Block begins
         // => Compensating transactions: undo completed saga steps in reverse order
         // => Called when any saga step fails - ensures data consistency across services
         // Cancel inventory reservation (compensate Step 1)
         restTemplate.delete("http://inventory-service/api/reservations/" + orderId);
+        // => Statement
         // => DELETE request to inventory-service
         // => Releases reserved products back to available inventory
         // => Example: DELETE /api/reservations/a1b2c3d4 → inventory.reserved_quantity -= 2
@@ -4334,6 +5255,7 @@ public class OrderSaga { // => Central coordinator that manages distributed tran
 
         // Publish failure event (notify other services of saga failure)
         kafkaTemplate.send("order-events", "OrderFailed", orderId);
+        // => Statement
         // => Event: {topic: "order-events", key: "OrderFailed", value: "a1b2c3d4"}
         // => Other services listening to this topic can take action (analytics, alerting, etc.)
         // => Saga pattern: eventual consistency through events
@@ -4351,12 +5273,14 @@ public class InventoryService { // => Listens to order events and manages invent
     public void handleOrderCreated(String orderId) { // => Event handler for new orders
         // => Receives order ID from Kafka message
         try {
+        // => Block begins
             reserveInventory(orderId); // => Local transaction: update inventory_reserved table
             // => Decrements available inventory for products in order
             kafkaTemplate.send("inventory-reserved", orderId); // => Publish success event
             // => Next service (PaymentService) listens to this event and proceeds
             // => Saga progresses through event chain: order-created → inventory-reserved → payment-completed
         } catch (Exception e) {
+        // => Block begins
             kafkaTemplate.send("inventory-reservation-failed", orderId); // => Publish failure event
             // => Triggers compensation in other services (cancel order, don't charge payment)
             // => Saga fails gracefully through event propagation
@@ -4380,12 +5304,14 @@ public class PaymentService { // => Listens to inventory events and processes pa
     public void handleInventoryReserved(String orderId) { // => Event handler for reserved inventory
         // => Proceeds to payment only if inventory successfully reserved
         try {
+        // => Block begins
             processPayment(orderId); // => Local transaction: charge customer, store payment record
             // => Calls external payment gateway (Stripe, PayPal)
             kafkaTemplate.send("payment-completed", orderId); // => Publish success event
             // => Final step: OrderService listens to this and marks order as confirmed
             // => Saga completes successfully through event chain
         } catch (Exception e) {
+        // => Block begins
             kafkaTemplate.send("payment-failed", orderId); // => Publish payment failure event
             // => OrderService listens and marks order as failed
             kafkaTemplate.send("order-cancelled", orderId); // Trigger compensation
@@ -4409,22 +5335,40 @@ record RefundRequest(String orderId) {}
 // Orchestration-based Saga - central coordinator manages transaction flow
 // Saga orchestrator sends commands to services and handles compensation on failure
 @Service
+// => Business logic service bean
+// => Business logic layer Spring component
 class OrderSaga(
+// => Class declaration
+// => Class declaration
     private val restTemplate: RestTemplate,  // Primary constructor injection
+    // => Immutable property
+    // => Private class member
     private val kafkaTemplate: KafkaTemplate<String, String>
+    // => Immutable property
+    // => Private class member
 ) {
+// => Block begins
     // Process order through saga steps with compensating transactions on failure
     fun processOrder(request: OrderRequest) {
+    // => Function definition
+    // => Function declaration
         val orderId = UUID.randomUUID().toString()  // Generate unique order ID
+        // => Immutable property
+        // => Immutable binding (read-only reference)
 
         try {
+        // => Exception handling begins
             // Step 1: Reserve inventory
             // Call inventory service to reserve products
             val reservation = reserveInventory(request.productId, request.quantity)
+            // => Immutable property
+            // => Immutable binding (read-only reference)
 
             // Step 2: Process payment
             // Call payment service to charge customer
             val payment = processPayment(request.customerId, request.totalAmount)
+            // => Immutable property
+            // => Immutable binding (read-only reference)
 
             // Step 3: Create order
             // Store order with reservation and payment references
@@ -4437,6 +5381,7 @@ class OrderSaga(
             // Publish success event to event bus
             kafkaTemplate.send("order-events", "OrderCompleted", orderId)
         } catch (e: Exception) {
+        // => Block begins
             // Compensating transactions (rollback) - undo all completed steps
             compensate(orderId, e)
         }
@@ -4444,41 +5389,65 @@ class OrderSaga(
 
     // Reserve inventory in inventory service
     private fun reserveInventory(productId: String, quantity: Int): ReservationResponse {
+    // => Function definition
+    // => Function declaration
         // POST request to inventory service
         val response = restTemplate.postForEntity(
+        // => Immutable property
+        // => Immutable binding (read-only reference)
             "http://inventory-service/api/reservations",
+            // => Statement
             ReservationRequest(productId, quantity),
+            // => Statement
             ReservationResponse::class.java
         )
 
         // Validate response status
         if (!response.statusCode.is2xxSuccessful) {
+        // => Block begins
             throw SagaException("Inventory reservation failed")
+            // => Throws exception
+            // => Exception thrown, method execution terminates
         }
 
         // Elvis operator provides safe unwrapping with exception on null
         return response.body ?: throw SagaException("Empty response from inventory service")
+        // => Returns to caller
+        // => Returns value to caller
     }
 
     // Process payment in payment service
     private fun processPayment(customerId: String, amount: BigDecimal): PaymentResponse {
+    // => Function definition
+    // => Function declaration
         // POST request to payment service
         val response = restTemplate.postForEntity(
+        // => Immutable property
+        // => Immutable binding (read-only reference)
             "http://payment-service/api/payments",
+            // => Statement
             PaymentRequest(customerId, amount),
+            // => Statement
             PaymentResponse::class.java
         )
 
         // Validate response status
         if (!response.statusCode.is2xxSuccessful) {
+        // => Block begins
             throw SagaException("Payment processing failed")
+            // => Throws exception
+            // => Exception thrown, method execution terminates
         }
 
         return response.body ?: throw SagaException("Empty response from payment service")
+        // => Returns to caller
+        // => Returns value to caller
     }
 
     // Compensating transactions - rollback completed steps when saga fails
     private fun compensate(orderId: String, cause: Exception) {
+    // => Function definition
+    // => Function declaration
         // Cancel inventory reservation (DELETE request)
         // Compensates step 1 - releases reserved inventory
         restTemplate.delete("http://inventory-service/api/reservations/$orderId")
@@ -4487,7 +5456,9 @@ class OrderSaga(
         // Compensates step 2 - returns money to customer
         restTemplate.postForEntity(
             "http://payment-service/api/refunds",
+            // => Statement
             RefundRequest(orderId),
+            // => Statement
             Void::class.java
         )
 
@@ -4498,31 +5469,51 @@ class OrderSaga(
 
     // Helper methods (implementation omitted for brevity)
     private fun createOrder(
+    // => Function definition
+    // => Function declaration
         orderId: String,
+        // => Statement
         request: OrderRequest,
+        // => Statement
         reservationId: String,
+        // => Statement
         transactionId: String
     ) { /* ... */ }
 
     private fun sendNotification(customerId: String, message: String) { /* ... */ }
+    // => Function definition
+    // => Function declaration
 }
 
 // Choreography-based Saga - decentralized event-driven coordination
 // Services listen to events and trigger next steps autonomously
 @Service
+// => Business logic service bean
+// => Business logic layer Spring component
 class InventoryService(
+// => Class declaration
+// => Class declaration
     private val kafkaTemplate: KafkaTemplate<String, String>
+    // => Immutable property
+    // => Private class member
 ) {
+// => Block begins
     // Listen for order created events
     // Each service reacts to events and publishes new events
     @KafkaListener(topics = ["order-created"])
+    // => Annotation applied
+    // => Annotation applied
     fun handleOrderCreated(orderId: String) {
+    // => Function definition
+    // => Function declaration
         try {
+        // => Exception handling begins
             // Reserve inventory for order
             reserveInventory(orderId)
             // Publish success event - triggers payment service
             kafkaTemplate.send("inventory-reserved", orderId)
         } catch (e: Exception) {
+        // => Block begins
             // Publish failure event - triggers compensation
             kafkaTemplate.send("inventory-reservation-failed", orderId)
         }
@@ -4531,30 +5522,51 @@ class InventoryService(
     // Listen for order cancelled events (compensation)
     // Choreography allows any service to trigger compensation
     @KafkaListener(topics = ["order-cancelled"])
+    // => Annotation applied
+    // => Annotation applied
     fun handleOrderCancelled(orderId: String) {
+    // => Function definition
+    // => Function declaration
         // Release reserved inventory (compensating transaction)
         releaseInventory(orderId)
     }
 
     // Helper methods
     private fun reserveInventory(orderId: String) { /* ... */ }
+    // => Function definition
+    // => Function declaration
     private fun releaseInventory(orderId: String) { /* ... */ }
+    // => Function definition
+    // => Function declaration
 }
 
 @Service
+// => Business logic service bean
+// => Business logic layer Spring component
 class PaymentService(
+// => Class declaration
+// => Class declaration
     private val kafkaTemplate: KafkaTemplate<String, String>
+    // => Immutable property
+    // => Private class member
 ) {
+// => Block begins
     // Listen for inventory reserved events
     // Payment service only acts after inventory is successfully reserved
     @KafkaListener(topics = ["inventory-reserved"])
+    // => Annotation applied
+    // => Annotation applied
     fun handleInventoryReserved(orderId: String) {
+    // => Function definition
+    // => Function declaration
         try {
+        // => Exception handling begins
             // Process payment for order
             processPayment(orderId)
             // Publish success event - order complete
             kafkaTemplate.send("payment-completed", orderId)
         } catch (e: Exception) {
+        // => Block begins
             // Publish failure events
             kafkaTemplate.send("payment-failed", orderId)
             // Trigger compensation in inventory service
@@ -4563,41 +5575,77 @@ class PaymentService(
     }
 
     private fun processPayment(orderId: String) { /* ... */ }
+    // => Function definition
+    // => Function declaration
 }
 
 // Data classes for saga requests/responses
 // Kotlin data classes provide concise value objects
 data class OrderRequest(
+// => Data class: auto-generates equals/hashCode/toString/copy
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
     val customerId: String,
+    // => Immutable property
     val productId: String,
+    // => Immutable property
     val quantity: Int,
+    // => Immutable property
     val totalAmount: BigDecimal
+    // => Immutable property
 )
 
 data class ReservationRequest(val productId: String, val quantity: Int)
+// => Data class: auto-generates equals/hashCode/toString/copy
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
 data class ReservationResponse(val reservationId: String, val success: Boolean)
+// => Data class: auto-generates equals/hashCode/toString/copy
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
 data class PaymentRequest(val customerId: String, val amount: BigDecimal)
+// => Data class: auto-generates equals/hashCode/toString/copy
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
 data class PaymentResponse(val transactionId: String, val success: Boolean)
+// => Data class: auto-generates equals/hashCode/toString/copy
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
 data class RefundRequest(val orderId: String)
+// => Data class: auto-generates equals/hashCode/toString/copy
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
 
 // Custom exception for saga failures
 class SagaException(message: String) : RuntimeException(message)
+// => Class declaration
+// => Class declaration
 
 // Alternative: Using Kotlin Coroutines for async saga execution
 // Suspend functions enable sequential-looking async code
 @Service
+// => Business logic service bean
+// => Business logic layer Spring component
 class CoroutineOrderSaga(
+// => Class declaration
+// => Class declaration
     private val webClient: WebClient,  // Reactive client for async HTTP
+    // => Immutable property
+    // => Private class member
     private val kafkaTemplate: KafkaTemplate<String, String>
+    // => Immutable property
+    // => Private class member
 ) {
+// => Block begins
     // Suspend function for non-blocking saga execution
     suspend fun processOrder(request: OrderRequest) {
+    // => Function definition
+    // => Function declaration
         val orderId = UUID.randomUUID().toString()
+        // => Immutable property
+        // => Immutable binding (read-only reference)
 
         try {
+        // => Exception handling begins
             // Async inventory reservation with coroutine
             // awaitBody() suspends until response arrives
             val reservation = webClient.post()
+            // => Immutable property
+            // => Immutable binding (read-only reference)
                 .uri("http://inventory-service/api/reservations")
                 .bodyValue(ReservationRequest(request.productId, request.quantity))
                 .retrieve()
@@ -4605,6 +5653,8 @@ class CoroutineOrderSaga(
 
             // Async payment processing
             val payment = webClient.post()
+            // => Immutable property
+            // => Immutable binding (read-only reference)
                 .uri("http://payment-service/api/payments")
                 .bodyValue(PaymentRequest(request.customerId, request.totalAmount))
                 .retrieve()
@@ -4614,21 +5664,26 @@ class CoroutineOrderSaga(
             createOrder(orderId, request, reservation.reservationId, payment.transactionId)
             kafkaTemplate.send("order-events", "OrderCompleted", orderId)
         } catch (e: Exception) {
+        // => Block begins
             compensate(orderId, e)
         }
     }
 
     private suspend fun compensate(orderId: String, cause: Exception) {
+    // => Block begins
         // Async compensation with coroutines
         // launch enables fire-and-forget async operations
         coroutineScope {
+        // => Block begins
             launch {
+            // => Block begins
                 webClient.delete()
                     .uri("http://inventory-service/api/reservations/$orderId")
                     .retrieve()
                     .awaitBodilessEntity()
             }
             launch {
+            // => Block begins
                 webClient.post()
                     .uri("http://payment-service/api/refunds")
                     .bodyValue(RefundRequest(orderId))
@@ -4640,9 +5695,14 @@ class CoroutineOrderSaga(
     }
 
     private fun createOrder(
+    // => Function definition
+    // => Function declaration
         orderId: String,
+        // => Statement
         request: OrderRequest,
+        // => Statement
         reservationId: String,
+        // => Statement
         transactionId: String
     ) { /* ... */ }
 }
@@ -4887,26 +5947,41 @@ management: # Spring Boot Actuator configuration
 
 // Spring Boot optimizations with Kotlin configuration
 @Configuration
+// => Marks class as Spring configuration (bean factory)
 open class PerformanceConfig {
+// => Class declaration
     // Connection pool tuning for HikariCP (high-performance JDBC pool)
     // Pool size affects database connection utilization vs. request throughput
     @Bean
+    // => Declares a Spring-managed bean
     open fun hikariConfig() = HikariConfig().apply {  // apply for builder-style configuration
+    // => Function declaration
         maximumPoolSize = 20      // Max DB connections (tune based on core count * 2 for I/O-bound)
+        // => Assignment
         minimumIdle = 5           // Minimum idle connections (prevents connection creation overhead)
+        // => Assignment
         connectionTimeout = 30000 // 30 seconds - max wait time for connection from pool
+        // => Assignment
         idleTimeout = 600000      // 10 minutes - idle connections closed after timeout
+        // => Assignment
         maxLifetime = 1800000     // 30 minutes - max connection lifetime before refresh
+        // => Assignment
     }
 
     // Async executor tuning for @Async tasks
     // Thread pool size affects concurrent task handling vs. context switching overhead
     @Bean
+    // => Declares a Spring-managed bean
     open fun taskExecutor() = ThreadPoolTaskExecutor().apply {
+    // => Function declaration
         corePoolSize = 10         // Core threads always kept alive
+        // => Assignment
         maxPoolSize = 50          // Max threads during traffic spikes
+        // => Assignment
         queueCapacity = 100       // Tasks queued when all threads busy
+        // => Assignment
         threadNamePrefix = "async-"  // Prefix for thread names (helps debugging)
+        // => Assignment
         setRejectedExecutionHandler(ThreadPoolExecutor.CallerRunsPolicy())  // Caller runs task when pool full
         initialize()              // Initialize thread pool
     }
@@ -4914,40 +5989,56 @@ open class PerformanceConfig {
     // HTTP client tuning for RestTemplate
     // Timeout configuration prevents hanging requests from blocking threads
     @Bean
+    // => Declares a Spring-managed bean
     open fun restTemplate(): RestTemplate {
+    // => Function declaration
         // HttpComponents factory for configurable timeouts
         val factory = HttpComponentsClientHttpRequestFactory().apply {
+        // => Immutable binding (read-only reference)
             setConnectTimeout(5000)  // 5 seconds - max time to establish connection
             setReadTimeout(10000)    // 10 seconds - max time to read response
         }
         return RestTemplate(factory)
+        // => Returns value to caller
     }
 }
 
 // Caching strategy - reduces database load for frequently accessed data
 // Spring Cache abstraction works with Redis, Caffeine, EhCache, etc.
 @Service
+// => Business logic layer Spring component
 class ProductService(
+// => Class declaration
     private val productRepository: ProductRepository  // Primary constructor injection
+    // => Private class member
 ) {
+// => Block begins
     // @Cacheable stores result in cache on first call
     // Subsequent calls with same ID return cached value without DB query
     @Cacheable(value = ["products"], key = "#id")  // Array syntax for Kotlin
+    // => Caches method result; returns cached value on repeat calls
     fun getProduct(id: Long): Product {
+    // => Function declaration
         // Expensive operation cached (database query avoided after first call)
         return productRepository.findById(id).orElseThrow()
+        // => Returns value to caller
     }
 
     // @CachePut updates cache entry after saving
     // Ensures cache stays synchronized with database
     @CachePut(value = ["products"], key = "#product.id")
+    // => Annotation applied
     fun updateProduct(product: Product): Product {
+    // => Function declaration
         return productRepository.save(product)
+        // => Returns value to caller
     }
 
     // @CacheEvict removes entry from cache when entity deleted
     @CacheEvict(value = ["products"], key = "#id")
+    // => Evicts entry from cache when method executes
     fun deleteProduct(id: Long) {
+    // => Function declaration
         productRepository.deleteById(id)
     }
 }
@@ -4955,10 +6046,14 @@ class ProductService(
 // Lazy initialization - defer bean creation until first use
 // Speeds up startup but slows down first request
 @SpringBootApplication
+// => Combines @Configuration, @EnableAutoConfiguration, @ComponentScan
 @EnableCaching  // Enable Spring Cache abstraction
+// => Annotation applied
 open class Application
+// => Class declaration
 
 fun main(args: Array<String>) {
+// => Function declaration
     // System property for lazy initialization
     System.setProperty("spring.main.lazy-initialization", "true")
     // => Faster startup (beans created on demand), but slower first request
@@ -4967,12 +6062,17 @@ fun main(args: Array<String>) {
 
 // Actuator metrics - custom business metrics for monitoring
 @Component
+// => Spring-managed component bean
 class PerformanceMetrics(
+// => Class declaration
     private val registry: MeterRegistry  // Micrometer registry for metrics
+    // => Private class member
 ) {
+// => Block begins
     // Record order processing duration as timer metric
     // Micrometer automatically calculates percentiles (p50, p95, p99)
     fun recordOrderProcessing(durationMs: Long) {
+    // => Function declaration
         registry.timer("order.processing.time")
             .record(durationMs, TimeUnit.MILLISECONDS)
     }
@@ -4980,25 +6080,36 @@ class PerformanceMetrics(
     // Increment error counter
     // Monitors error rate for alerting
     fun incrementErrorCount() {
+    // => Function declaration
         registry.counter("orders.errors").increment()
     }
 }
 
 // Alternative: Using expression bodies for concise configuration
 @Configuration
+// => Marks class as Spring configuration (bean factory)
 open class ConcisePerformanceConfig {
+// => Class declaration
     // Expression body for HikariConfig - returns configured instance
     @Bean
+    // => Declares a Spring-managed bean
     open fun hikariConfig() = HikariConfig().apply {
+    // => Function declaration
         maximumPoolSize = 20
+        // => Assignment
         minimumIdle = 5
+        // => Assignment
     }
 
     // Expression body for TaskExecutor
     @Bean
+    // => Declares a Spring-managed bean
     open fun taskExecutor() = ThreadPoolTaskExecutor().apply {
+    // => Function declaration
         corePoolSize = 10
+        // => Assignment
         maxPoolSize = 50
+        // => Assignment
         initialize()
     }
 }
@@ -5326,22 +6437,37 @@ graph TD
 // zipkin-reporter-brave
 
 @SpringBootApplication
+// => Entry point: @Configuration + @EnableAutoConfiguration + @ComponentScan
+// => Combines @Configuration, @EnableAutoConfiguration, @ComponentScan
 open class ObservableApplication
+// => Class declaration
+// => Class declaration
 
 fun main(args: Array<String>) {
+// => Function definition
+// => Function declaration
     runApplication<ObservableApplication>(*args)  // Spread operator for varargs
 }
 
 // Custom metrics with Micrometer
 // Metrics track application performance and business KPIs
 @RestController
+// => REST controller - returns JSON directly
+// => Combines @Controller and @ResponseBody
 @RequestMapping("/api/orders")
+// => Base URL path for all endpoints in class
+// => HTTP endpoint mapping
 class OrderController(
+// => Class declaration
+// => Class declaration
     registry: MeterRegistry  // Micrometer registry injected via primary constructor
 ) {
+// => Block begins
     // Counter tracks total orders created
     // Counters only increment (monotonically increasing)
     private val orderCounter: Counter = Counter.builder("orders.created")
+    // => Immutable property
+    // => Private class member
         .description("Total orders created")  // Metric description for documentation
         .tags("service", "order-service")     // Tags for filtering/grouping metrics
         .register(registry)
@@ -5349,16 +6475,26 @@ class OrderController(
     // Timer tracks order processing duration
     // Timers record duration and count, calculate percentiles
     private val orderTimer: Timer = Timer.builder("orders.processing.time")
+    // => Immutable property
+    // => Private class member
         .description("Order processing duration")
         .publishPercentiles(0.5, 0.95, 0.99)  // Publish p50, p95, p99 percentiles
         .register(registry)
 
     @PostMapping
+    // => HTTP POST endpoint
+    // => HTTP endpoint mapping
     fun createOrder(@RequestBody request: OrderRequest): ResponseEntity<Order> {
+    // => Function definition
+    // => Function declaration
         // record() measures execution time of lambda
         // Automatically tracks duration and increments count
         return orderTimer.record {
+        // => Returns to caller
+        // => Returns value to caller
             val order = processOrder(request)
+            // => Immutable property
+            // => Immutable binding (read-only reference)
             orderCounter.increment()  // Increment counter after successful processing
             ResponseEntity.ok(order)
         }
@@ -5366,58 +6502,102 @@ class OrderController(
     }
 
     private fun processOrder(request: OrderRequest): Order {
+    // => Function definition
+    // => Function declaration
         // Process order logic
         return Order(UUID.randomUUID().toString(), request.customerId)
+        // => Returns to caller
+        // => Returns value to caller
     }
 }
 
 // Distributed tracing with Micrometer Tracing
 // Traces track requests across microservices with trace ID propagation
 @Service
+// => Business logic service bean
+// => Business logic layer Spring component
 class OrderService(
+// => Class declaration
+// => Class declaration
     private val restTemplate: RestTemplate  // Auto-instrumented for tracing
+    // => Immutable property
+    // => Private class member
 ) {
+// => Block begins
     // @NewSpan creates custom span for detailed tracing
     // Span tracks specific operation within a trace
     @NewSpan("process-order")
+    // => Annotation applied
+    // => Annotation applied
     fun processOrder(request: OrderRequest): Order {
+    // => Function definition
+    // => Function declaration
         // Trace ID automatically propagated to downstream services via HTTP headers
         // Each service adds spans to the same trace for end-to-end visibility
         val payment = restTemplate.postForObject(
+        // => Immutable property
+        // => Immutable binding (read-only reference)
             "http://payment-service/api/payments",
+            // => Statement
             request,
+            // => Statement
             PaymentResponse::class.java
         )
 
         val inventory = restTemplate.postForObject(
+        // => Immutable property
+        // => Immutable binding (read-only reference)
             "http://inventory-service/api/reserve",
+            // => Statement
             request,
+            // => Statement
             InventoryResponse::class.java
         )
 
         return Order(UUID.randomUUID().toString(), request.customerId)
+        // => Returns to caller
+        // => Returns value to caller
     }
 }
 
 // Structured logging with MDC (Mapped Diagnostic Context)
 // MDC adds contextual information (trace ID, span ID) to all log statements
 @Component
+// => Spring component - detected by component scan
+// => Spring-managed component bean
 class RequestLoggingFilter(
+// => Class declaration
+// => Class declaration
     private val tracer: Tracer  // Brave tracer for accessing current span
+    // => Immutable property
+    // => Private class member
 ) : OncePerRequestFilter() {
+// => Block begins
     companion object {
+    // => Companion object: static-like members in Kotlin
         // Companion object for logger (similar to static logger in Java)
         private val log = LoggerFactory.getLogger(RequestLoggingFilter::class.java)
+        // => Immutable property
+        // => Private class member
     }
 
     override fun doFilterInternal(
+    // => Function definition
+    // => Overrides parent class/interface method
         request: HttpServletRequest,
+        // => Statement
         response: HttpServletResponse,
+        // => Statement
         filterChain: FilterChain
     ) {
+    // => Block begins
         // Extract trace and span IDs from current span
         val traceId = tracer.currentSpan()?.context()?.traceId() ?: "unknown"
+        // => Immutable property
+        // => Immutable binding (read-only reference)
         val spanId = tracer.currentSpan()?.context()?.spanId() ?: "unknown"
+        // => Immutable property
+        // => Immutable binding (read-only reference)
 
         // Put context into MDC - available to all log statements in this thread
         MDC.put("traceId", traceId)
@@ -5425,15 +6605,20 @@ class RequestLoggingFilter(
         MDC.put("path", request.requestURI)
 
         try {
+        // => Exception handling begins
             // Continue filter chain
             filterChain.doFilter(request, response)
         } finally {
+        // => Block begins
             // Log request completion with MDC context
             // MDC fields automatically included in log output
             log.info(
                 "Request completed: {} {} - Status: {}",
+                // => Statement
                 request.method,
+                // => Statement
                 request.requestURI,
+                // => Statement
                 response.status
             )
             // => {"traceId":"abc123","spanId":"def456","path":"/api/orders","level":"INFO",...}
@@ -5447,11 +6632,17 @@ class RequestLoggingFilter(
 // Alternative: Extension function for MDC context management
 // Kotlin extension functions enable cleaner MDC usage
 fun <T> withMDC(vararg pairs: Pair<String, String>, block: () -> T): T {
+// => Function definition
+// => Function declaration
     // Put all key-value pairs into MDC
     pairs.forEach { (key, value) -> MDC.put(key, value) }
     try {
+    // => Exception handling begins
         return block()  // Execute block with MDC context
+        // => Returns to caller
+        // => Returns value to caller
     } finally {
+    // => Block begins
         // Remove all keys from MDC
         pairs.forEach { (key, _) -> MDC.remove(key) }
     }
@@ -5459,14 +6650,24 @@ fun <T> withMDC(vararg pairs: Pair<String, String>, block: () -> T): T {
 
 // Usage of MDC extension function
 @Service
+// => Business logic service bean
+// => Business logic layer Spring component
 class ServiceWithMDC {
+// => Class declaration
+// => Class declaration
     companion object {
+    // => Companion object: static-like members in Kotlin
         private val log = LoggerFactory.getLogger(ServiceWithMDC::class.java)
+        // => Immutable property
+        // => Private class member
     }
 
     fun processWithContext(userId: String) {
+    // => Function definition
+    // => Function declaration
         // Extension function automatically cleans up MDC
         withMDC("userId" to userId, "operation" to "process") {
+        // => Block begins
             log.info("Processing for user")  // userId and operation in MDC
             // ... business logic
         }
@@ -5476,9 +6677,17 @@ class ServiceWithMDC {
 
 // Data classes for observability
 data class OrderRequest(val customerId: String, val productId: String, val amount: BigDecimal)
+// => Data class: auto-generates equals/hashCode/toString/copy
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
 data class Order(val id: String, val customerId: String)
+// => Data class: auto-generates equals/hashCode/toString/copy
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
 data class PaymentResponse(val transactionId: String, val success: Boolean)
+// => Data class: auto-generates equals/hashCode/toString/copy
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
 data class InventoryResponse(val reservationId: String, val available: Boolean)
+// => Data class: auto-generates equals/hashCode/toString/copy
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
 ```
 
 ```yaml

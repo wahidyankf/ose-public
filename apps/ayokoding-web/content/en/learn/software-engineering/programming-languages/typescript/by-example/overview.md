@@ -3,7 +3,7 @@ title: "Overview"
 date: 2026-02-07T00:00:00+07:00
 draft: false
 weight: 10000000
-description: "Learn TypeScript through 85 heavily annotated code examples covering 95% of the language - ideal for experienced developers wanting rapid pickup"
+description: "Learn TypeScript through 79 heavily annotated code examples covering 95% of the language - ideal for experienced developers wanting rapid pickup"
 tags: ["typescript", "tutorial", "by-example", "examples", "code-first"]
 ---
 
@@ -22,7 +22,7 @@ tags: ["typescript", "tutorial", "by-example", "examples", "code-first"]
 
 **Code-First Approach**: Show the code first, run it second, understand through direct interaction.
 
-**85 Heavily Annotated Examples**: Each example uses `// =>` notation to document values, states, outputs, and side effects at every significant line.
+**79 Heavily Annotated Examples**: Each example uses `// =>` notation to document values, states, outputs, and side effects at every significant line.
 
 **Five-Part Structure** (per example):
 
@@ -37,8 +37,8 @@ tags: ["typescript", "tutorial", "by-example", "examples", "code-first"]
 **95% Coverage**: This tutorial covers 95% of TypeScript features needed for production work through three difficulty levels:
 
 - **Beginner (Examples 1-30)**: 0-40% coverage - Types, functions, interfaces, classes
-- **Intermediate (Examples 31-60)**: 40-75% coverage - Generics, utility types, decorators, async
-- **Advanced (Examples 61-85)**: 75-95% coverage - Advanced types, compiler API, optimization
+- **Intermediate (Examples 31-51)**: 40-75% coverage - Generics, utility types, decorators, async
+- **Advanced (Examples 52-79)**: 75-95% coverage - Advanced types, compiler API, optimization
 
 ## What By-Example Is NOT
 
@@ -54,7 +54,7 @@ tags: ["typescript", "tutorial", "by-example", "examples", "code-first"]
 
 | Path           | Approach                                     | Target Audience         | Coverage                |
 | -------------- | -------------------------------------------- | ----------------------- | ----------------------- |
-| **By-Example** | Code-first, heavily annotated examples       | Experienced developers  | 95% through 85 examples |
+| **By-Example** | Code-first, heavily annotated examples       | Experienced developers  | 95% through 79 examples |
 | **By-Concept** | Narrative-driven, comprehensive explanations | Beginners to TypeScript | 95% through deep dives  |
 
 **Choose By-Example if**:
@@ -97,4 +97,4 @@ tags: ["typescript", "tutorial", "by-example", "examples", "code-first"]
 
 ## Next Steps
 
-Start with [Beginner Examples](/en/learn/software-engineering/programming-languages/typescript/by-example/beginner) to learn TypeScript fundamentals through 30 annotated examples covering types, functions, interfaces, classes, and more.
+Start with [Beginner Examples](/en/learn/software-engineering/programming-languages/typescript/by-example/beginner) to learn TypeScript fundamentals through 30 annotated examples. Progress through [Intermediate](/en/learn/software-engineering/programming-languages/typescript/by-example/intermediate) (Examples 31-51) and [Advanced](/en/learn/software-engineering/programming-languages/typescript/by-example/advanced) (Examples 52-79) to complete 95% TypeScript coverage.

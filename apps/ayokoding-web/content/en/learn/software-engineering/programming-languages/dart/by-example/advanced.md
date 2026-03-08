@@ -9,7 +9,7 @@ tags: ["dart", "advanced", "isolates", "testing", "performance", "clean-architec
 
 Master advanced Dart patterns through 25 heavily annotated examples using Islamic finance contexts. Each example maintains 1-2.25 annotation density and demonstrates sophisticated patterns for production-grade applications.
 
-## Examples 51-60: Advanced Async and Isolates
+## Examples 51-55: Isolates and Advanced Async
 
 ### Example 51: Isolates Basics
 
@@ -76,21 +76,16 @@ void main() async {                     // => Main function with async support
   // Spawn isolate
   await Isolate.spawn(heavyCalculation, sendPort);  // => Executes
                                         // => Spawn worker isolate with function and sendPort
-                                        // => Start new isolate in parallel
                                         // => Runs heavyCalculation in separate memory space
-                                        // => Main thread continues immediately (non-blocking)
 
   print('Isolate spawned, main thread free');  // => Executes
-                                        // => Outputs immediately after spawn
                                         // => Output immediately (non-blocking)
                                         // => Main isolate continues processing events
 
   // Wait for result
   double result = await receivePort.first as double;  // => Executes
                                         // => Wait for first message from worker isolate
-                                        // => Listen for first message on receive port
-                                        // => Waits until isolate sends result
-                                        // => Blocks until worker completes
+                                        // => Blocks until worker completes and sends result
   print('Result: $result');             // => Output result
                                         // => Displays calculated total
 
@@ -110,11 +105,28 @@ Result: 124999998750000000.0
 Main thread continues
 ```
 
+**Why It Matters**: CPU-intensive operations (image processing, cryptographic calculations, large data transformations) block Dart's single-threaded event loop, causing frozen Flutter UIs and stalled server request handling. Isolates enable true parallel execution on multi-core hardware, critical for production applications processing large datasets. In Islamic finance systems, complex portfolio risk calculations, bulk Zakat assessments, and cryptographic transaction signing can run in isolates without blocking the user interface.
+
 **Common Pitfalls**: Can't share objects between isolates. Only send/receive primitive types or special types. Heavy isolate spawn cost - reuse for multiple tasks.
 
 ### Example 52: Isolate Communication
 
 Bidirectional communication between isolates with multiple messages.
+
+```mermaid
+sequenceDiagram
+    participant Main as Main Isolate
+    participant Worker as Worker Isolate
+
+    Main->>Worker: Spawn with mainSendPort
+    Worker->>Main: Send workerSendPort
+    Main->>Worker: {wealth: 10000000}
+    Worker->>Main: {wealth: 10000000, zakat: 250000}
+    Main->>Worker: {wealth: 50000000}
+    Worker->>Main: {wealth: 50000000, zakat: 1250000}
+    Main->>Worker: 'done'
+    Worker->>Worker: Close port, exit
+```
 
 ```dart
 import 'dart:isolate';                  // => Operation
@@ -197,6 +209,8 @@ Wealth: Rp200000000.0, Zakat: Rp5000000.0
 All calculations complete
 ```
 
+**Why It Matters**: Bidirectional isolate communication enables persistent worker pool architectures where a single worker isolate handles many tasks efficiently, amortizing the isolate spawn cost. This pattern powers background data synchronization, continuous encryption services, and real-time analytics in production applications. In high-throughput fintech systems, worker isolates processing thousands of transaction validations per second while the main isolate keeps the UI responsive.
+
 **Common Pitfalls**: SendPort not serializable - exchange via initial message. Isolates don't auto-terminate - send exit signal. Message order not guaranteed.
 
 ### Example 53: Compute Function
@@ -257,6 +271,8 @@ Calculating total Zakat...
 Total Zakat: Rp17500000.0
 Total Zakat (run): Rp17500000.0
 ```
+
+**Why It Matters**: The `compute()` function and `Isolate.run()` eliminate boilerplate for one-shot CPU-intensive tasks, making isolate usage accessible without managing ports and lifecycle manually. Flutter applications use `compute()` for image decoding, JSON parsing of large responses, and cryptographic operations that would otherwise freeze animations. The simplified API reduces bugs from incorrect port management while maintaining the performance benefits of true parallelism.
 
 **Common Pitfalls**: `compute()` for single tasks only (not continuous processing). Function must be top-level or static. `Isolate.run()` allows closures but requires Dart 2.19+.
 
@@ -354,11 +370,27 @@ Tick: 9
 Stream timed out
 ```
 
+**Why It Matters**: Periodic streams are fundamental to real-time applications requiring scheduled actions—heartbeat monitoring, automatic data refresh, countdown timers, and scheduled reminders. In Islamic finance applications, periodic streams power Zakat payment reminders, profit distribution notifications, and compliance deadline alerts. Understanding infinite stream management prevents memory leaks and resource exhaustion in production systems that run continuously.
+
 **Common Pitfalls**: Periodic streams are infinite - always limit. Transform function receives increasing count. Don't forget `await for` or stream won't execute.
 
 ### Example 55: Future.any and Future.race
 
 Racing multiple Futures to get first completion.
+
+```mermaid
+flowchart LR
+    Start[Future.any starts] --> S1[Server 1<br/>800ms delay]
+    Start --> S2[Server 2<br/>500ms delay]
+    Start --> S3[Server 3<br/>1200ms delay]
+    S2 -->|fastest| Win[Winner returned<br/>Others cancelled]
+    S1 --> Ignore[Ignored]
+    S3 --> Ignore
+
+    style S2 fill:#029E73,color:#fff
+    style Win fill:#0173B2,color:#fff
+    style Ignore fill:#CA9161,color:#fff
+```
 
 ```dart
 import 'dart:async';                    // => Executes
@@ -434,9 +466,11 @@ Timeout: TimeoutException: Too slow
 Amount (with fallback): Rp600000.0
 ```
 
+**Why It Matters**: Racing multiple data sources enables resilient architectures that degrade gracefully when primary sources fail. In production systems, `Future.any` implements fallback patterns—checking local cache first, then primary API, then backup API—returning the fastest successful response. For real-time financial data, racing multiple exchange feeds ensures price discovery even when individual feeds experience outages, critical for time-sensitive trading and Zakat calculation scenarios.
+
 **Common Pitfalls**: Other Futures continue executing after first completes. `Future.any` propagates first completion (success or error). For timeout, use `Future.timeout()` instead.
 
-## Examples 56-65: Design Patterns and Architecture
+## Examples 56-60: Design Patterns and Testing
 
 ### Example 56: Singleton Pattern
 
@@ -528,11 +562,46 @@ Count from service1: 2
 Count from service2: 2
 ```
 
+**Why It Matters**: The Singleton pattern ensures system-wide consistency for shared resources like database connection pools, configuration stores, and audit loggers in production applications. In Islamic finance systems, a singleton Zakat calculation service ensures all components use the same rate tables and calculation logic, preventing inconsistencies in compliance reporting. Understanding when Singleton is appropriate (vs. dependency injection) is essential for designing testable, maintainable production codebases.
+
 **Common Pitfalls**: Singletons complicate testing (global state). Consider dependency injection instead. Thread-safe by default in Dart (single-threaded).
 
 ### Example 57: Factory Pattern
 
 Creating objects without specifying exact class with factory methods.
+
+```mermaid
+classDiagram
+    class Payment {
+        <<abstract>>
+        void process()
+        double fee
+    }
+    class CashPayment {
+        double amount
+        void process()
+        double fee
+    }
+    class QRISPayment {
+        double amount
+        String merchantId
+        void process()
+        double fee
+    }
+    class BankTransferPayment {
+        double amount
+        String bankCode
+        void process()
+        double fee
+    }
+    class PaymentFactory {
+        +Payment create(String type, double amount)
+    }
+    Payment <|-- CashPayment
+    Payment <|-- QRISPayment
+    Payment <|-- BankTransferPayment
+    PaymentFactory ..> Payment : creates
+```
 
 ```dart
 // Abstract payment interface
@@ -639,6 +708,8 @@ Fee: Rp2500.0
 Processing card payment: Rp1000000.0
 Total: Rp1010000.0
 ```
+
+**Why It Matters**: The Factory pattern decouples object creation from usage, enabling pluggable architectures where payment processors, storage backends, or notification channels can be swapped without modifying business logic. In production fintech systems, factory methods create payment objects (cash, card, bank transfer, QRIS) from configuration, enabling new payment methods without changing transaction processing logic. This pattern is fundamental to building extensible, open/closed principle-compliant systems.
 
 **Common Pitfalls**: Factory can become complex switch statement. Consider using Map<String, Function> for extensibility. Abstract classes can't be instantiated.
 
@@ -789,13 +860,15 @@ Recording: Fatimah - Rp1000000.0
   [STATS] Total donations: Rp1500000.0
 ```
 
-**Common Pitfalls**: Use broadcast stream for multiple listeners. Remember to close StreamController. Synchronous listeners may block.
+**Why It Matters**: The Observer pattern via Streams enables reactive architectures where multiple components respond to events without direct coupling between them. In Flutter, this powers state management solutions (BLoC, Provider) where UI components subscribe to business logic streams. In production fintech applications, donation events trigger simultaneous email confirmations, audit logging, and statistics updates—the observer pattern ensures all handlers execute reliably without tight coupling between the notification system and its subscribers.
 
-## Examples 59-70: Testing and Quality
+**Common Pitfalls**: Use broadcast stream for multiple listeners. Remember to close StreamController. Synchronous listeners may block.
 
 ### Example 59: Unit Testing Basics
 
 Writing unit tests with package:test framework.
+
+**Why Not Core Features**: Dart has no built-in test runner or assertion library in its standard library. `package:test` is the official testing package maintained by the Dart team and is universally adopted across all Dart and Flutter projects. It provides the standard `test()`, `group()`, `setUp()`, and `expect()` APIs used by every Dart project in production. Using `package:test` is the idiomatic Dart approach, not a workaround.
 
 ```dart
 // File: zakat_calculator.dart
@@ -869,11 +942,15 @@ void main() {                           // => Execute statement
 00:00 +5: All tests passed!
 ```
 
+**Why It Matters**: Unit testing is the foundation of production reliability in financial applications where calculation errors have direct monetary consequences. `package:test` is Dart's official testing library—the standard approach for all Dart projects including Flutter. Note: Dart has no built-in test runner; `package:test` is the universally adopted solution. Well-tested Zakat calculation logic, payment processing rules, and eligibility criteria prevent financial errors that could affect thousands of users in production.
+
 **Common Pitfalls**: Don't share state between tests. Use `setUp()` for fresh instances. Test exceptions with closures. Mock external dependencies.
 
 ### Example 60: Integration Testing
 
 Testing multiple components together with async operations.
+
+**Why Not Core Features**: Like unit testing, Dart provides no built-in integration testing framework. `package:test` is the official, team-maintained solution that supports async tests, test groups, setup/teardown hooks, and test matchers needed for integration testing. All production Dart projects and Flutter applications use `package:test` for both unit and integration tests. It is the standard, not an optional dependency.
 
 ```dart
 import 'package:test/test.dart';        // => Operation
@@ -989,6 +1066,8 @@ void main() {                           // => Execute statement
 00:00 +4: All tests passed!
 ```
 
+**Why It Matters**: Integration tests verify that components work correctly together, catching bugs that unit tests miss—incorrect repository queries, serialization mismatches, and business logic coordination failures. Note: `package:test` is Dart's standard testing library with no built-in alternative. In production financial systems, integration tests verify that donation records are persisted correctly and Zakat calculations include all required components before deploying to users who depend on accurate financial calculations.
+
 **Common Pitfalls**: Integration tests slower than unit tests. Don't test implementation details. Use real dependencies where practical, mocks for expensive operations.
 
 ## Examples 61-70: Performance and Production Patterns
@@ -996,6 +1075,19 @@ void main() {                           // => Execute statement
 ### Example 61: Lazy Initialization
 
 Deferring expensive initialization until first use.
+
+```mermaid
+flowchart TD
+    First[First Access] --> Check{_cache != null?}
+    Check -->|no - first call| Init[Initialize resource<br/>expensive operation]
+    Init --> Store[Store in _cache]
+    Store --> Return[Return resource]
+    Check -->|yes - subsequent calls| Direct[Return cached value<br/>no initialization]
+
+    style Init fill:#DE8F05,color:#fff
+    style Direct fill:#029E73,color:#fff
+    style Return fill:#0173B2,color:#fff
+```
 
 ```dart
 class ExpensiveResource {               // => Resource to lazy-load
@@ -1072,6 +1164,8 @@ Before initialization
   Using resource
 ```
 
+**Why It Matters**: Lazy initialization optimizes application startup performance by deferring expensive operations (database connections, configuration loading, service initialization) until first use. In Flutter applications, lazy loading improves time-to-interactive metrics—users see the UI faster when heavy services initialize on demand. In production fintech systems, lazily initialized audit loggers and analytics services avoid startup overhead while ensuring they're ready when first needed.
+
 **Common Pitfalls**: `late` without initialization throws at runtime. Lazy initialization not thread-safe (not issue in single-threaded Dart). Consider caching strategy for memory constraints.
 
 ---
@@ -1079,6 +1173,19 @@ Before initialization
 ### Example 62: Memoization and Caching
 
 Caching expensive function results to avoid redundant computation. Critical for performance optimization in production applications.
+
+```mermaid
+flowchart TD
+    Call[Function called<br/>with key] --> Cache{Key in cache?}
+    Cache -->|yes - cache hit| Return[Return cached result<br/>instant response]
+    Cache -->|no - cache miss| Compute[Execute expensive<br/>computation]
+    Compute --> Store[Store result<br/>in cache Map]
+    Store --> Return2[Return computed result]
+
+    style Return fill:#029E73,color:#fff
+    style Compute fill:#DE8F05,color:#fff
+    style Store fill:#CA9161,color:#fff
+```
 
 ```dart
 class ZakatCalculator {                 // => Execute statement
@@ -1174,7 +1281,7 @@ void main() {                           // => Execute statement
 
 **Key Takeaway**: Use memoization to cache expensive function results. Check cache before computing. Use `Map` for key-value caching. Implement cache eviction for memory management. Memoization trades memory for speed.
 
-**Why It Matters**: Memoization prevents redundant expensive calculations, critical for responsive UIs and efficient APIs. In Flutter, memoization caches widget builds, layout calculations, and image processing results. For server applications, caching API responses and database query results reduces latency and server load. Proper cache eviction (LRU, TTL) prevents memory exhaustion.
+**Why It Matters**: Memoization prevents redundant expensive calculations, critical for responsive UIs and efficient APIs. In Flutter, memoization caches widget builds, layout calculations, and image processing results, reducing frame build times. For server applications, caching API responses and database query results dramatically reduces latency and server load under high concurrency. Proper cache eviction strategies (LRU, TTL) prevent memory exhaustion while keeping frequently accessed data readily available.
 
 **Common Pitfalls**: Unbounded cache grows indefinitely (implement size limit or TTL). Cache invalidation complexity (when to clear stale data). Thread-safe caching requires locks in multi-threaded contexts (not needed in Dart isolates). Reference equality vs value equality for cache keys.
 
@@ -1347,7 +1454,7 @@ void main() {                           // => Execute statement
 
 **Key Takeaway**: Use object pooling to reuse expensive objects and reduce garbage collection. Implement TTL caching for automatic expiration. Track object lifecycle (acquire/release). Pool size limits prevent memory exhaustion.
 
-**Why It Matters**: Object pooling reduces allocation overhead and garbage collection pauses, critical for real-time applications and high-throughput systems. In Flutter, pooling reusable widgets, animation controllers, and image buffers improves frame rates. For servers, pooling database connections and HTTP clients reduces latency. TTL caching prevents stale data without manual invalidation.
+**Why It Matters**: Object pooling reduces allocation overhead and garbage collection pauses, critical for real-time applications and high-throughput systems. In Flutter, pooling reusable widgets, animation controllers, and image buffers dramatically improves frame rates under load. For servers processing thousands of concurrent requests, pooling database connections and HTTP clients reduces connection establishment latency by orders of magnitude. TTL caching prevents stale data accumulation without requiring explicit manual invalidation logic.
 
 **Common Pitfalls**: Forgetting to reset objects before reuse corrupts state. Pool exhaustion without proper error handling. Memory leaks from objects never released. TTL too short causes cache thrashing, too long wastes memory.
 
@@ -1471,7 +1578,7 @@ void main() {                           // => Execute statement
 
 **Key Takeaway**: Use `StringBuffer` for repeated concatenation in loops. Prefer string interpolation for readability. Use `join()` for lists. Const strings for compile-time constants. Avoid `+=` in loops (quadratic time).
 
-**Why It Matters**: String operations are ubiquitous in applications—logging, formatting, API responses, UI rendering. Inefficient string handling causes performance bottlenecks. In Flutter, excessive string concatenation in build methods triggers frame drops. For servers, inefficient JSON serialization and log formatting waste CPU cycles. StringBuffer provides O(n) performance vs O(n²) for repeated concatenation.
+**Why It Matters**: String operations are ubiquitous in applications—logging, formatting, API responses, UI rendering—and inefficient string handling causes significant performance bottlenecks. In Flutter, excessive string concatenation in build methods triggers frame drops, degrading the 60fps target. For high-throughput servers, inefficient JSON serialization and log formatting waste substantial CPU cycles under load. StringBuffer provides O(n) performance versus the O(n²) complexity of repeated `+=` concatenation, a difference that becomes critical at scale.
 
 **Common Pitfalls**: Using `+=` in loops (quadratic complexity). Forgetting to convert StringBuffer to String. Unnecessary `toString()` calls. Not using const for static strings.
 
@@ -1618,7 +1725,7 @@ void main() {                           // => Execute statement
 
 **Key Takeaway**: Choose collection type based on access pattern. Use Set for uniqueness and O(1) contains. Use Map for key-value lookups. Preallocate List capacity. Use lazy operations, materialize once.
 
-**Why It Matters**: Wrong collection choice causes performance degradation. List.contains in loops is O(n²), Set.contains is O(1). Repeated List resizing wastes CPU cycles. Eager evaluation creates unnecessary intermediate collections. In Flutter, efficient collections prevent UI lag during scrolling and data updates. For servers, collection choice impacts request latency.
+**Why It Matters**: Wrong collection choice causes severe performance degradation at scale. Using `List.contains` in loops is O(n²) whereas `Set.contains` is O(1)—a 10,000x difference with 10k elements. Repeated `List` resizing wastes CPU cycles on memory allocation. Eager evaluation creates unnecessary intermediate collections. In Flutter, efficient collection operations prevent UI lag during list scrolling and real-time data updates. For servers handling concurrent requests, collection choice directly impacts p99 request latency.
 
 **Common Pitfalls**: Using List when Set appropriate (uniqueness checks). Not preallocating List capacity for known size. Multiple `toList()` calls creating intermediate collections. Forgetting Set/Map have no guaranteed order.
 
@@ -1790,7 +1897,7 @@ void main() {                           // => Execute statement
 
 **Key Takeaway**: Use benchmarks to measure performance scientifically. Include warmup phase for JIT optimization. Measure min, max, avg, median, P95. Profile to identify hotspots. Track memory usage.
 
-**Why It Matters**: Performance optimization without measurement is guesswork. Benchmarking validates optimizations (StringBuffer 100x faster than +=). Profiling identifies unexpected bottlenecks (database queries dominating CPU time). Percentiles reveal tail latency that averages hide. In Flutter, profiling identifies jank sources (slow builds, expensive layouts). For servers, profiling optimizes request handling.
+**Why It Matters**: Performance optimization without measurement is guesswork that often targets the wrong code. Benchmarking validates that optimizations actually work (StringBuffer can be 100x faster than `+=`). Profiling identifies unexpected bottlenecks—often database queries or serialization dominate CPU time, not the code you suspected. Percentile metrics (P95, P99) reveal tail latency that averages hide, critical for SLA compliance. In Flutter, profiling identifies jank sources. For production servers, systematic profiling directs optimization effort where it matters most.
 
 **Common Pitfalls**: Skipping warmup phase (JIT not optimized). Too few iterations (noisy results). Measuring only average (misses outliers). Optimizing without profiling (wrong target). Benchmarking debug mode (unrealistic performance).
 
@@ -2654,9 +2761,40 @@ void main() async {                     // => Execute statement
 
 ---
 
+## Examples 71-75: Architecture Patterns
+
 ### Example 71: Repository Pattern
 
 Implementing repository pattern for data access abstraction, separating business logic from data layer.
+
+```mermaid
+classDiagram
+    class DonationRepository {
+        <<interface>>
+        +save(Donation) Future~void~
+        +findById(String) Future~Donation~
+        +findAll() Future~List~
+    }
+    class InMemoryDonationRepository {
+        Map~String,Donation~ _store
+        +save(Donation) Future~void~
+        +findById(String) Future~Donation~
+        +findAll() Future~List~
+    }
+    class PostgresDonationRepository {
+        Connection _db
+        +save(Donation) Future~void~
+        +findById(String) Future~Donation~
+        +findAll() Future~List~
+    }
+    class DonationService {
+        DonationRepository _repo
+        +processDonation(Donation)
+    }
+    DonationRepository <|-- InMemoryDonationRepository
+    DonationRepository <|-- PostgresDonationRepository
+    DonationService --> DonationRepository : uses
+```
 
 ```dart
 // Domain model
@@ -3495,6 +3633,29 @@ void main() async {                     // => Execute statement
 
 Applying clean architecture for maintainable, testable, framework-independent business logic.
 
+```mermaid
+flowchart TD
+    subgraph Domain["Domain Layer (Pure Dart)"]
+        Entity[Donation Entity]
+        UseCase[SaveDonationUseCase]
+        Repo[DonationRepository<br/>interface]
+    end
+    subgraph Data["Data Layer"]
+        RepoImpl[InMemoryDonationRepository<br/>implements interface]
+    end
+    subgraph Presentation["Presentation Layer"]
+        Controller[DonationController<br/>orchestrates use cases]
+    end
+
+    Controller --> UseCase
+    UseCase --> Repo
+    RepoImpl -.->|implements| Repo
+
+    style Domain fill:#0173B2,color:#fff
+    style Data fill:#DE8F05,color:#fff
+    style Presentation fill:#029E73,color:#fff
+```
+
 ```dart
 // === DOMAIN LAYER (innermost) ===
 // => Layer: Core business logic, no external dependencies
@@ -4024,6 +4185,32 @@ void main() async {                     // => Execute statement
 ### Example 75: Advanced Testing Strategies
 
 Implementing comprehensive testing strategies including unit, widget, integration, and property-based tests.
+
+```mermaid
+flowchart LR
+    subgraph Unit["Unit Tests"]
+        UT1[Zero wealth → 0.0]
+        UT2[Below nisab → 0.0]
+        UT3[Above nisab → 2.5%]
+        UT4[Negative → throws]
+    end
+    subgraph Boundary["Boundary Tests"]
+        BT1[Exactly at nisab]
+        BT2[Nisab + 0.01]
+    end
+    subgraph Property["Property Tests"]
+        PT1[Zakat ≤ wealth always]
+        PT2[Monotonic: more wealth = more zakat]
+    end
+    ZakatCalc[ZakatCalculator]
+    Unit --> ZakatCalc
+    Boundary --> ZakatCalc
+    Property --> ZakatCalc
+
+    style Unit fill:#0173B2,color:#fff
+    style Boundary fill:#DE8F05,color:#fff
+    style Property fill:#029E73,color:#fff
+```
 
 ```dart
 // === Code under test ===

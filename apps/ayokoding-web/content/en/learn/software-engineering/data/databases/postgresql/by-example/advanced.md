@@ -9,6 +9,8 @@ tags: ["postgresql", "database", "tutorial", "by-example", "advanced", "optimiza
 
 Achieve PostgreSQL expertise through 25 annotated examples. Each example tackles advanced indexing, query optimization, full-text search, partitioning, and database administration patterns.
 
+## Group 1: Advanced Index Types
+
 ## Example 61: GIN Indexes for Full-Text Search
 
 GIN (Generalized Inverted Index) indexes excel at indexing arrays, JSONB, and full-text search. Essential for fast text searches and JSONB queries.
@@ -28,10 +30,10 @@ graph TD
     D --> E
 
     style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
     style C fill:#029E73,stroke:#000,color:#fff
     style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    style E fill:#CA9161,stroke:#000,color:#000
 ```
 
 **Code**:
@@ -200,7 +202,7 @@ graph TD
     C --> D
 
     style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
     style C fill:#029E73,stroke:#000,color:#fff
     style D fill:#CC78BC,stroke:#000,color:#fff
 ```
@@ -262,11 +264,14 @@ WHERE coordinates <-> POINT(40.7589, -73.9851) < 5;
 
 CREATE TABLE events (
     id SERIAL PRIMARY KEY,
+    -- => id: event identifier (auto-incrementing)
     name VARCHAR(100),
+    -- => name: event name (Conference, Workshop, Dinner)
     time_range TSRANGE
     -- => TSRANGE stores timestamp ranges
     -- => Represents periods: [start, end)
 );
+-- => Creates events table with TSRANGE column for scheduling queries
 
 INSERT INTO events (name, time_range)
 VALUES
@@ -313,10 +318,13 @@ WHERE time_range -|- TSRANGE('2025-06-01 17:00', '2025-06-01 19:00');
 
 CREATE TABLE ip_ranges (
     id SERIAL PRIMARY KEY,
+    -- => id: range identifier (auto-incrementing)
     network VARCHAR(50),
+    -- => network: descriptive name (Office Network, Guest Network)
     ip_range INET
     -- => INET stores IPv4/IPv6 addresses with optional netmask
 );
+-- => Creates ip_ranges table for network containment queries
 
 INSERT INTO ip_ranges (network, ip_range)
 VALUES
@@ -352,7 +360,7 @@ WHERE ip_range && '192.168.0.0/16'::INET;
 
 ## Example 63: Expression Indexes
 
-Expression indexes index computed values (functions, operators) instead of raw columns - speeds up queries filtering on expressions.
+Expression indexes index computed values (functions, operators) instead of raw columns - speeds up queries filtering on expressions. They allow exact query plan matches for case-insensitive lookups (LOWER(email)), partial extractions (EXTRACT(year FROM date)), and other transformations. Queries must use the identical expression to benefit from the index.
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
@@ -369,7 +377,7 @@ graph TD
     C --> E
 
     style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
     style C fill:#029E73,stroke:#000,color:#fff
     style D fill:#CC78BC,stroke:#000,color:#fff
     style E fill:#029E73,stroke:#000,color:#fff
@@ -505,7 +513,7 @@ ORDER BY month;
 
 ## Example 64: Covering Indexes (INCLUDE clause)
 
-Covering indexes store additional columns in index leaf nodes - enables index-only scans without accessing heap, dramatically reducing I/O.
+Covering indexes store additional columns in index leaf nodes - enables index-only scans without accessing heap, dramatically reducing I/O. The INCLUDE clause adds non-key columns to the leaf pages of the index without making them part of the searchable key. This avoids the costly "heap fetch" for every matching row when SELECT columns are fully covered by the index.
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
@@ -526,11 +534,11 @@ graph TD
     E --> G
 
     style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
     style C fill:#029E73,stroke:#000,color:#fff
     style D fill:#CC78BC,stroke:#000,color:#fff
     style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#DE8F05,stroke:#000,color:#fff
+    style F fill:#DE8F05,stroke:#000,color:#000
     style G fill:#029E73,stroke:#000,color:#fff
 ```
 
@@ -655,11 +663,17 @@ VACUUM ANALYZE employees;
 
 CREATE TABLE orders (
     id SERIAL PRIMARY KEY,
+    -- => id: order identifier (auto-incrementing)
     customer_id INTEGER,
+    -- => customer_id: links to customer (1-10,000 range for test data)
     order_date DATE,
+    -- => order_date: when order was placed
     total DECIMAL(10, 2),
+    -- => total: order amount (2 decimal precision)
     status VARCHAR(20)
+    -- => status: pending, shipped, or delivered
 );
+-- => Creates orders table for covering index demonstration (500k rows)
 
 INSERT INTO orders (customer_id, order_date, total, status)
 SELECT
@@ -670,9 +684,13 @@ SELECT
     (random() * 1000)::DECIMAL(10, 2),
     -- => Random total amount
     CASE (random() * 3)::INTEGER
+        -- => (random() * 3)::INTEGER: 0, 1, or 2 with equal probability
         WHEN 0 THEN 'pending'
+        -- => ~33% of orders pending
         WHEN 1 THEN 'shipped'
+        -- => ~33% of orders shipped
         ELSE 'delivered'
+        -- => ~34% of orders delivered
     END
     -- => Random order status
 FROM generate_series(1, 500000);
@@ -708,7 +726,7 @@ LIMIT 10;
 
 ## Example 65: Index-Only Scans
 
-Index-only scans retrieve all required data from index without accessing table heap - requires visibility map updates via VACUUM. Fastest scan type in PostgreSQL.
+Index-only scans retrieve all required data from index without accessing table heap - requires visibility map updates via VACUUM. This is the fastest scan type in PostgreSQL because it avoids heap page reads entirely when all queried columns are stored in the index. The visibility map must confirm that all tuples on a heap page are visible before PostgreSQL can skip fetching those pages.
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
@@ -725,7 +743,7 @@ graph TD
     C -->|No| E
 
     style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
     style C fill:#029E73,stroke:#000,color:#fff
     style D fill:#029E73,stroke:#000,color:#fff
     style E fill:#CC78BC,stroke:#000,color:#fff
@@ -970,9 +988,11 @@ LIMIT 100;
 
 ---
 
+## Group 2: Query Optimization and Maintenance
+
 ## Example 66: Analyzing Query Plans with EXPLAIN ANALYZE
 
-EXPLAIN ANALYZE shows actual query execution plans with timing - essential for identifying slow queries, missing indexes, and optimization opportunities.
+EXPLAIN ANALYZE shows actual query execution plans with timing - essential for identifying slow queries, missing indexes, and optimization opportunities. EXPLAIN alone estimates costs without executing; EXPLAIN ANALYZE executes the query and reports actual row counts and execution times at each node. Understanding plan nodes (Seq Scan, Index Scan, Hash Join, Nested Loop) reveals exactly where query time is spent.
 
 ```sql
 CREATE DATABASE example_66;
@@ -1152,7 +1172,7 @@ SELECT * FROM orders WHERE customer_id = 5000;
 
 ## Example 67: Join Order Optimization
 
-PostgreSQL query planner automatically chooses optimal join order based on table statistics - understanding join strategies helps design efficient schemas and queries.
+PostgreSQL query planner automatically chooses optimal join order based on table statistics - understanding join strategies helps design efficient schemas and queries. The planner evaluates multiple join algorithms (Nested Loop, Hash Join, Merge Join) and selects the lowest-cost combination based on estimated row counts and index availability. Collecting accurate statistics with ANALYZE is essential for the planner to make good decisions.
 
 ```sql
 CREATE DATABASE example_67;
@@ -1423,7 +1443,7 @@ WHERE c.email LIKE '%@email.com'
 
 ## Example 68: Subquery vs JOIN Performance
 
-Subqueries can be rewritten as JOINs for better performance - understanding execution differences helps choose optimal query structure.
+Subqueries can be rewritten as JOINs for better performance - understanding execution differences helps choose optimal query structure. Correlated subqueries execute once per outer row (O(n) overhead), while JOINs and EXISTS subqueries use hash or merge strategies. The query planner often rewrites IN subqueries automatically, but EXISTS and explicit JOINs give more predictable performance for large datasets.
 
 **Comparison: Subquery vs JOIN approaches**
 
@@ -1675,11 +1695,13 @@ WHERE o.id IS NULL;
 
 **Key Takeaway**: Avoid NOT IN due to NULL handling issues. Use NOT EXISTS or LEFT JOIN with IS NULL for anti-joins. Both produce optimal Hash Anti Join plans and handle NULLs correctly.
 
+**Why It Matters**: Choosing between subqueries and JOINs directly impacts query execution time in production systems handling millions of rows. NOT IN with NULL values silently returns empty result sets, causing data integrity bugs that are extremely difficult to diagnose under load. Production PostgreSQL codebases that switch from correlated subqueries to JOIN-based anti-joins routinely see 40-70% query time reductions, making this pattern knowledge essential for any team running PostgreSQL at scale with frequent customer data lookups.
+
 ---
 
 ## Example 69: Query Hints and Statistics
 
-PostgreSQL uses table statistics to estimate query costs - outdated statistics cause poor query plans. ANALYZE updates statistics; pg_stats reveals distribution data.
+PostgreSQL uses table statistics to estimate query costs - outdated statistics cause poor query plans. ANALYZE updates statistics; pg_stats reveals distribution data. The planner stores histograms of column value distributions, correlation coefficients, and most-common-values lists to estimate selectivity. When autovacuum is delayed or statistics targets are too low, the planner may underestimate cardinality and choose slow sequential scans over available indexes.
 
 ```sql
 CREATE DATABASE example_69;
@@ -1959,7 +1981,32 @@ WHERE tablename = 'products' AND attname = 'id';
 
 ## Example 70: Vacuum and Analyze
 
-VACUUM reclaims dead tuple space and updates visibility map - essential for index-only scans and preventing table bloat. ANALYZE updates statistics for query planner.
+VACUUM reclaims dead tuple space and updates visibility map - essential for index-only scans and preventing table bloat. ANALYZE updates statistics for query planner. PostgreSQL uses MVCC (Multi-Version Concurrency Control), which leaves dead tuples in place after UPDATE and DELETE operations; VACUUM marks those pages as reusable. VACUUM FULL compacts the table to disk, reclaiming OS-level space, but requires an exclusive lock.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A["INSERT/UPDATE/DELETE<br/>(Creates dead tuples)"]
+    B["Dead Tuples<br/>(Invisible rows, wasted space)"]
+    C["VACUUM<br/>(Reclaim space)"]
+    D["VACUUM ANALYZE<br/>(Reclaim + update stats)"]
+    E["Visibility Map Updated<br/>(Enables index-only scans)"]
+    F["Planner Stats Updated<br/>(Optimal query plans)"]
+
+    A --> B
+    B --> C
+    B --> D
+    C --> E
+    D --> E
+    D --> F
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CA9161,stroke:#000,color:#000
+    style E fill:#CC78BC,stroke:#000,color:#000
+    style F fill:#029E73,stroke:#000,color:#fff
+```
 
 ```sql
 CREATE DATABASE example_70;
@@ -2226,9 +2273,11 @@ WHERE relname = 'events';
 
 ---
 
+## Group 3: Full-Text Search and Table Partitioning
+
 ## Example 71: Full-Text Search with tsvector
 
-Full-text search with tsvector/tsquery enables linguistic search (stemming, stop words, ranking) - superior to LIKE for natural language queries.
+Full-text search with tsvector/tsquery enables linguistic search (stemming, stop words, ranking) - superior to LIKE for natural language queries. LIKE requires sequential scans and matches exact substrings without language awareness, while tsvector tokenizes text into lexemes (normalized word forms) and tsquery matches those lexemes efficiently via a GIN index. The ts_rank function scores matches by term frequency, enabling relevance-ordered results.
 
 ```sql
 CREATE DATABASE example_71;
@@ -2238,17 +2287,25 @@ CREATE DATABASE example_71;
 
 CREATE TABLE documents (
     id SERIAL PRIMARY KEY,
+    -- => id: document identifier (auto-incrementing)
     title VARCHAR(200),
+    -- => title: document title (up to 200 chars)
     body TEXT,
+    -- => body: document content (unlimited length)
     author VARCHAR(100)
+    -- => author: document author name
 );
+-- => Creates documents table for full-text search demonstration
 
 INSERT INTO documents (title, body, author)
 VALUES
     ('PostgreSQL Basics', 'Learning PostgreSQL database management fundamentals including queries and indexing', 'Alice'),
+    -- => Document 1: PostgreSQL fundamentals article by Alice
     ('Advanced SQL', 'Mastering complex SQL queries with joins subqueries and window functions', 'Bob'),
+    -- => Document 2: Advanced SQL topics article by Bob
     ('Database Design', 'Principles of database schema design normalization and optimization', 'Carol');
-    -- => 3 documents inserted
+    -- => Document 3: Schema design article by Carol
+-- => 3 documents inserted
 
 SELECT title
 FROM documents
@@ -2314,20 +2371,23 @@ CREATE INDEX idx_documents_fts ON documents USING GIN(body_tsv);
 
 EXPLAIN ANALYZE
 SELECT title
+-- => Returns title of matching documents
 FROM documents
 WHERE body_tsv @@ to_tsquery('english', 'database');
--- => Index Scan using idx_documents_fts
--- => Fast lookup via GIN index
+-- => @@ matches tsvector against tsquery for 'database' token
+-- => Index Scan using idx_documents_fts (GIN index used)
+-- => Fast lookup via GIN index (no sequential scan)
 
 SELECT
     title,
     ts_rank(body_tsv, to_tsquery('english', 'database')) AS rank
     -- => Computes relevance score (0.0 to 1.0)
-    -- => Higher rank = more occurrences
+    -- => Higher rank = more occurrences of 'database' token
 FROM documents
 WHERE body_tsv @@ to_tsquery('english', 'database')
+-- => Filters to documents matching 'database' query
 ORDER BY rank DESC;
--- => Sorts by relevance
+-- => Sorts by relevance (most relevant first)
 -- => Returns documents ranked by 'database' frequency
 
 SELECT
@@ -2355,21 +2415,25 @@ WHERE body_tsv @@ to_tsquery('english', 'database');
 -- => Highlights matched terms with <b> tags
 
 CREATE FUNCTION document_trigger_func() RETURNS trigger AS $$
+-- => Defines trigger function that returns trigger type
 BEGIN
     NEW.body_tsv := to_tsvector('english', NEW.title || ' ' || NEW.body);
     -- => Automatically updates body_tsv on INSERT/UPDATE
-    -- => NEW refers to new row version
+    -- => NEW refers to new row version being inserted/updated
     RETURN NEW;
+    -- => Returns modified row with updated body_tsv
 END;
 $$ LANGUAGE plpgsql;
 -- => Trigger function for automatic tsvector updates
 
 CREATE TRIGGER document_trigger
 BEFORE INSERT OR UPDATE ON documents
+-- => Fires before INSERT or UPDATE on documents table
 FOR EACH ROW
+-- => Runs once per affected row (not per statement)
 EXECUTE FUNCTION document_trigger_func();
--- => Trigger fires before INSERT/UPDATE
--- => Keeps body_tsv synchronized with title/body
+-- => Calls document_trigger_func() before each row is stored
+-- => Keeps body_tsv synchronized with title/body automatically
 
 INSERT INTO documents (title, body, author)
 VALUES ('PostgreSQL Performance', 'Optimizing PostgreSQL for high throughput and low latency', 'Dave');
@@ -2404,7 +2468,31 @@ WHERE id = 1;
 
 ## Example 72: Table Partitioning (Range Partitioning)
 
-Range partitioning divides large tables into smaller partitions based on value ranges - improves query performance and enables partition pruning.
+Range partitioning divides large tables into smaller partitions based on value ranges - improves query performance and enables partition pruning. The query planner automatically excludes partitions outside the WHERE clause range (partition pruning), scanning only the relevant subset of data. This reduces I/O dramatically for time-series tables where queries typically target recent date ranges.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A["orders (PARTITION BY RANGE(order_date))"]
+    B["orders_2023<br/>Jan 1 - Dec 31 2023"]
+    C["orders_2024<br/>Jan 1 - Dec 31 2024"]
+    D["orders_2025<br/>Jan 1 - Dec 31 2025"]
+    E["Query: WHERE order_date = '2024-06-01'"]
+    F["Partition Pruning<br/>(scans only orders_2024)"]
+
+    A --> B
+    A --> C
+    A --> D
+    E --> F
+    F --> C
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#000
+    style F fill:#029E73,stroke:#000,color:#fff
+```
 
 ```sql
 CREATE DATABASE example_72;
@@ -2585,7 +2673,7 @@ SELECT COUNT(*) FROM events;
 
 ## Example 73: Table Partitioning (List Partitioning)
 
-List partitioning divides tables by discrete values (categories, regions, statuses) - ideal for multi-tenant systems and categorical data.
+List partitioning divides tables by discrete values (categories, regions, statuses) - ideal for multi-tenant systems and categorical data. Each partition holds rows matching a specific list of values, allowing the planner to skip entire partitions when filtering by those values. Combined with tablespaces, list partitioning enables placing tenant-specific partitions on different storage tiers.
 
 ```sql
 CREATE DATABASE example_73;
@@ -2788,9 +2876,11 @@ VALUES (1002, 'Germany', 50.00);
 
 ---
 
+## Group 4: Data Federation, Replication, and Security
+
 ## Example 74: Foreign Data Wrappers (FDW)
 
-Foreign Data Wrappers enable querying external data sources (other PostgreSQL databases, CSV files, REST APIs) as if they were local tables.
+Foreign Data Wrappers enable querying external data sources (other PostgreSQL databases, CSV files, REST APIs) as if they were local tables. The postgres_fdw extension pushes WHERE filters and LIMIT clauses to the remote server (predicate pushdown), minimizing data transfer over the network. Foreign tables appear in the local catalog and participate in JOINs with local tables, enabling data federation without ETL pipelines.
 
 ```sql
 CREATE DATABASE example_74_local;
@@ -2987,11 +3077,37 @@ GROUP BY log_level;
 
 **Why It Matters**: FDW enables data federation without ETL - analytics systems query production databases directly for real-time reporting without copying data. Microservices architecture uses FDW to query other services' databases for cross-service JOINs without breaking service boundaries completely. Legacy system migration uses FDW as transitional architecture - new system queries old database via FDW while gradually migrating data, avoiding "big bang" migration risks.
 
+**Why Not Core Features**: postgres_fdw is a PostgreSQL extension (not a core built-in) that ships with every standard PostgreSQL installation and requires only `CREATE EXTENSION postgres_fdw` to activate. It is included in this tutorial because data federation is a common production pattern and postgres_fdw is the official, supported mechanism for cross-database queries in PostgreSQL. Alternatives like application-level data merging are more complex and less efficient than letting the database engine handle predicate pushdown and query planning.
+
 ---
 
 ## Example 75: Logical Replication Basics
 
-Logical replication enables selective data replication (specific tables, columns, or rows) from publisher to subscriber - essential for multi-region deployments and read replicas.
+Logical replication enables selective data replication (specific tables, columns, or rows) from publisher to subscriber - essential for multi-region deployments and read replicas. Unlike physical streaming replication which copies the entire data directory byte-by-byte, logical replication decodes WAL changes into row-level operations (INSERT, UPDATE, DELETE) that can be filtered and transformed. This enables zero-downtime major version upgrades by replicating from old to new version.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["Publisher Database<br/>(example_75_publisher)"]
+    B["Publication<br/>(my_publication)"]
+    C["WAL Stream<br/>(logical decoding)"]
+    D["Subscriber Database<br/>(example_75_subscriber)"]
+    E["Subscription<br/>(my_subscription)"]
+    F["Replicated Tables<br/>(products, categories)"]
+
+    A --> B
+    B --> C
+    C --> E
+    D --> E
+    E --> F
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#CA9161,stroke:#000,color:#000
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#CC78BC,stroke:#000,color:#000
+    style F fill:#029E73,stroke:#000,color:#fff
+```
 
 ```sql
 CREATE DATABASE example_75_publisher;
@@ -3159,7 +3275,7 @@ DROP PUBLICATION product_publication;
 
 ## Example 76: User Roles and Permissions
 
-PostgreSQL role-based access control (RBAC) manages user permissions - essential for multi-user environments and security compliance.
+PostgreSQL role-based access control (RBAC) manages user permissions - essential for multi-user environments and security compliance. Roles unify users and groups into a single concept - a role WITH LOGIN becomes a user, while a role without login acts as a group. Permissions are granted at multiple levels: database, schema, table, column, and row, following the principle of least privilege.
 
 ```sql
 CREATE DATABASE example_76;
@@ -3374,7 +3490,7 @@ WHERE table_name = 'employees';
 
 ## Example 77: Row-Level Security (RLS)
 
-Row-Level Security restricts which rows users can see/modify based on policies - enables multi-tenancy and fine-grained access control within single table.
+Row-Level Security restricts which rows users can see/modify based on policies - enables multi-tenancy and fine-grained access control within single table. RLS policies are invisible to application code and enforced transparently by the query engine, preventing data leaks even if application queries are misconfigured. Superusers and table owners bypass RLS by default; FORCE ROW LEVEL SECURITY overrides this for explicit security auditing.
 
 ```sql
 CREATE DATABASE example_77;
@@ -3603,56 +3719,112 @@ ALTER TABLE documents ENABLE ROW LEVEL SECURITY;
 
 ---
 
+## Group 5: Backup, Restore, and Monitoring
+
 ## Example 78: Backup with pg_dump
 
-pg_dump creates logical backups (SQL scripts) of databases - essential for disaster recovery, migration, and point-in-time snapshots.
+pg_dump creates logical backups (SQL scripts) of databases - essential for disaster recovery, migration, and point-in-time snapshots. It captures schema definitions, data, and constraints into a portable format that can be restored on any compatible PostgreSQL instance. Run backup commands from the system shell (bash), not from the psql console.
+
+**Database setup** (run in psql to create the database to back up):
 
 ```sql
--- Executed in bash, not SQL console
+CREATE DATABASE example_78;
+-- => Creates example database to back up
+\c example_78;
+-- => Switches to example_78
 
+CREATE TABLE employees (
+    id SERIAL PRIMARY KEY,
+    -- => Auto-incrementing employee ID
+    name VARCHAR(100),
+    -- => Employee full name
+    department VARCHAR(100),
+    -- => Department name
+    salary DECIMAL(10, 2)
+    -- => Monthly salary
+);
+-- => Creates employees table
+
+CREATE TABLE departments (
+    id SERIAL PRIMARY KEY,
+    -- => Auto-incrementing department ID
+    name VARCHAR(100)
+    -- => Department name
+);
+-- => Creates departments table
+
+INSERT INTO employees (name, department, salary)
+VALUES
+    ('Alice', 'Engineering', 95000),
+    -- => First employee row
+    ('Bob', 'Marketing', 75000),
+    -- => Second employee row
+    ('Carol', 'Engineering', 105000);
+    -- => Third employee row
+-- => 3 employee rows inserted
+
+INSERT INTO departments (name)
+VALUES ('Engineering'), ('Marketing'), ('Finance');
+-- => 3 department rows inserted
+```
+
+**Backup commands** (run in bash shell):
+
+```bash
 # Backup entire database
 pg_dump -h localhost -U postgres -d example_78 -F p -f /tmp/example_78.sql
 # => Plain text format (-F p), outputs SQL script with CREATE/INSERT statements
+# => Output file contains human-readable SQL, editable and version-controllable
 
 # Backup in custom format (compressed, restorable with pg_restore)
 pg_dump -h localhost -U postgres -d example_78 -F c -f /tmp/example_78.dump
 # => Custom format (-F c): binary, compressed, supports parallel restore
+# => Smaller file size than plain text; cannot be read directly
 
 # Backup specific table
 pg_dump -h localhost -U postgres -d example_78 -t employees -f /tmp/employees.sql
 # => -t flag backs up only employees table (schema + data)
+# => Useful for table-level migration or partial restoration
 
 # Backup multiple tables
 pg_dump -h localhost -U postgres -d example_78 -t employees -t departments -f /tmp/hr_tables.sql
 # => Multiple -t flags for multiple tables
+# => Backs up only listed tables; foreign keys between them preserved
 
 # Backup schema only (no data)
 pg_dump -h localhost -U postgres -d example_78 --schema-only -f /tmp/schema.sql
 # => Excludes INSERT statements, useful for DDL versioning
+# => Captures CREATE TABLE, INDEX, CONSTRAINT, VIEW, FUNCTION definitions
 
 # Backup data only (no schema)
 pg_dump -h localhost -U postgres -d example_78 --data-only -f /tmp/data.sql
 # => Only INSERT/COPY statements, useful for data migration
+# => Requires target schema to exist before restore
 
 # Backup with specific schema
 pg_dump -h localhost -U postgres -d example_78 -n public -f /tmp/public_schema.sql
 # => -n flag backs up only public schema
+# => Excludes schemas like pg_catalog, information_schema
 
 # Exclude specific tables
 pg_dump -h localhost -U postgres -d example_78 -T temp_table -f /tmp/main_backup.sql
 # => -T flag excludes tables (useful for large temporary tables)
+# => Saves time and space when temporary tables contain ephemeral data
 
 # Backup all databases
 pg_dumpall -h localhost -U postgres -f /tmp/all_databases.sql
 # => Backs up ALL databases plus global objects (roles, tablespaces)
+# => Single file for complete cluster backup including user accounts
 
 # Backup with compression (gzip)
 pg_dump -h localhost -U postgres -d example_78 -F p | gzip > /tmp/example_78.sql.gz
 # => Pipes plain text to gzip, reduces file size significantly
+# => Typical compression ratio: 70-90% for SQL dumps
 
 # Backup with parallel jobs (custom format only)
 pg_dump -h localhost -U postgres -d example_78 -F d -j 4 -f /tmp/example_78_dir
 # => -F d (directory format) with -j 4 (4 parallel jobs), faster for large databases
+# => Outputs one file per table, enables parallel restore with pg_restore -j
 ```
 
 **Key Takeaway**: Use pg_dump for logical backups. Plain text format (-F p) for version control, custom format (-F c) for compression and parallel restore. Backup schema-only for DDL, data-only for migration. Use pg_dumpall for all databases including roles.
@@ -3663,11 +3835,20 @@ pg_dump -h localhost -U postgres -d example_78 -F d -j 4 -f /tmp/example_78_dir
 
 ## Example 79: Restore with pg_restore
 
-pg_restore reconstructs databases from pg_dump backups - essential for disaster recovery and database cloning.
+pg_restore reconstructs databases from pg_dump backups - essential for disaster recovery and database cloning. It works with custom, directory, and tar format dumps produced by pg_dump; plain text SQL dumps require psql instead. Run restore commands from the system shell (bash), not from the psql console.
+
+**Prerequisite setup** (assumes backup dump from Example 78 exists at /tmp/example_78.dump):
 
 ```sql
--- Executed in bash, not SQL console
+CREATE DATABASE example_79;
+-- => Creates empty target database for restore
+-- => Must exist before pg_restore can populate it
+-- => In production, you may use pg_restore -C flag to auto-create
+```
 
+**Restore commands** (run in bash shell):
+
+```bash
 # Restore from custom format dump
 pg_restore -h localhost -U postgres -d example_79 -v /tmp/example_78.dump
 # => Restores tables, indexes, constraints, data with verbose output
@@ -3726,6 +3907,33 @@ psql -h localhost -U postgres -d example_79 -f /tmp/example_78.sql
 ## Example 80: Monitoring with pg_stat Views
 
 pg_stat views provide real-time database performance metrics - essential for identifying slow queries, index usage, and resource bottlenecks.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A["PostgreSQL Activity"]
+    B["pg_stat_activity<br/>(Live queries, locks)"]
+    C["pg_stat_user_tables<br/>(Table access patterns)"]
+    D["pg_stat_user_indexes<br/>(Index usage)"]
+    E["pg_stat_statements<br/>(Query performance)"]
+    F["Performance Insights<br/>(Tuning decisions)"]
+
+    A --> B
+    A --> C
+    A --> D
+    A --> E
+    B --> F
+    C --> F
+    D --> F
+    E --> F
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#000
+    style F fill:#029E73,stroke:#000,color:#fff
+```
 
 ```sql
 CREATE DATABASE example_80;
@@ -3988,9 +4196,11 @@ SELECT pg_stat_reset();
 
 ---
 
+## Group 6: Advanced Features and Performance Tuning
+
 ## Example 81: Advisory Locks
 
-Advisory locks enable application-level coordination without table locks - essential for preventing duplicate job processing and coordinating distributed workers.
+Advisory locks enable application-level coordination without table locks - essential for preventing duplicate job processing and coordinating distributed workers. Unlike table and row locks, advisory locks carry no semantic meaning to PostgreSQL itself; their meaning is entirely defined by the application. pg_try_advisory_lock acquires the lock without waiting, making it suitable for non-blocking leader election in distributed job queues.
 
 ```sql
 CREATE DATABASE example_81;
@@ -4137,44 +4347,59 @@ SELECT pg_advisory_unlock(10, 20);
 -- => Releases two-argument lock
 
 CREATE FUNCTION process_job(p_worker_id INTEGER) RETURNS VOID AS $$
+-- => Function: takes worker ID, processes one job atomically
 DECLARE
     v_job_id INTEGER;
+    -- => v_job_id: stores ID of job to process
     v_lock_id BIGINT;
+    -- => v_lock_id: advisory lock ID (same as job ID)
 BEGIN
     -- Get next pending job
     SELECT id INTO v_job_id
+    -- => INTO: stores scalar result into variable
     FROM jobs
     WHERE status = 'pending'
     ORDER BY id
     LIMIT 1
     FOR UPDATE SKIP LOCKED;
-    -- => SKIP LOCKED prevents waiting
+    -- => SKIP LOCKED prevents waiting for already-locked rows
+    -- => Returns NULL if no jobs available (another worker got last one)
 
     IF v_job_id IS NULL THEN
-        RETURN;  -- No jobs available
+        RETURN;  -- No jobs available (all claimed by other workers)
     END IF;
+    -- => If no job found, exit function gracefully
 
     -- Acquire advisory lock on job
     v_lock_id := v_job_id;
+    -- => Use job ID as advisory lock ID (unique per job)
     IF NOT pg_try_advisory_lock(v_lock_id) THEN
-        RETURN;  -- Job locked by another worker
+        RETURN;  -- Job locked by another worker (race condition protection)
     END IF;
+    -- => Double-check lock acquired; exit if another worker got it
 
     -- Process job
     UPDATE jobs
     SET status = 'processing', worker_id = p_worker_id
+    -- => Mark job as in-progress with this worker's ID
     WHERE id = v_job_id;
+    -- => Only updates this specific job
 
     -- Simulate work
     PERFORM pg_sleep(2);
+    -- => PERFORM: executes function but discards result
+    -- => pg_sleep(2): simulates 2 seconds of actual work
 
     -- Complete job
     UPDATE jobs
     SET status = 'completed'
+    -- => Mark job as done
     WHERE id = v_job_id;
+    -- => Only updates the job this function processed
 
     -- Release lock
     PERFORM pg_advisory_unlock(v_lock_id);
+    -- => Releases advisory lock (makes job ID available for reuse)
 END;
 $$ LANGUAGE plpgsql;
 -- => Function demonstrates advisory lock usage
@@ -4208,7 +4433,7 @@ WHERE locktype = 'advisory'
 
 ## Example 82: Listen/Notify for Event Notifications
 
-LISTEN/NOTIFY enables real-time event notifications between database sessions - essential for cache invalidation and inter-process communication.
+LISTEN/NOTIFY enables real-time event notifications between database sessions - essential for cache invalidation and inter-process communication. NOTIFY delivers an asynchronous message (with optional payload string up to 8000 bytes) to all sessions subscribed to that channel, committed atomically within the same transaction. Notifications are delivered over the existing database connection with no additional network round-trip, making this a lightweight pub/sub mechanism without requiring Redis or a message broker.
 
 ```sql
 CREATE DATABASE example_82;
@@ -4395,7 +4620,31 @@ VALUES (1002, 175.00, 'pending');
 
 ## Example 83: Write-Ahead Logging (WAL)
 
-Write-Ahead Logging ensures durability and enables point-in-time recovery - critical for disaster recovery and replication.
+Write-Ahead Logging ensures durability and enables point-in-time recovery - critical for disaster recovery and replication. WAL records every change to data files before the change is applied to disk; on crash, PostgreSQL replays WAL from the last checkpoint to restore consistency. Streaming replication works by shipping WAL records to standby servers in real-time, maintaining hot standbys with sub-second replication lag.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["Transaction<br/>(INSERT/UPDATE/DELETE)"]
+    B["WAL Buffer<br/>(In-memory log)"]
+    C["WAL Files<br/>(pg_wal/ on disk)"]
+    D["Data Files<br/>(Heap/Indexes)"]
+    E["Standby Server<br/>(Streaming replication)"]
+    F["Point-in-Time Recovery<br/>(pg_restore + WAL replay)"]
+
+    A --> B
+    B --> C
+    C --> D
+    C --> E
+    C --> F
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#CA9161,stroke:#000,color:#000
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#CC78BC,stroke:#000,color:#000
+    style F fill:#029E73,stroke:#000,color:#fff
+```
 
 ```sql
 CREATE DATABASE example_83;
@@ -4533,7 +4782,7 @@ SELECT
 
 ## Example 84: Connection Pooling with pgBouncer
 
-PgBouncer provides connection pooling - reduces connection overhead and enables thousands of concurrent clients without overwhelming PostgreSQL.
+PgBouncer provides connection pooling - reduces connection overhead and enables thousands of concurrent clients without overwhelming PostgreSQL. It sits between application servers and PostgreSQL, maintaining a small pool of long-lived backend connections that are reused across many short-lived client requests. Transaction pooling mode reuses connections after each COMMIT or ROLLBACK, achieving the highest multiplexing ratio at the cost of session-level features like prepared statements.
 
 ```sql
 -- PgBouncer configuration (external to PostgreSQL)
@@ -4640,11 +4889,13 @@ SHUTDOWN;
 
 **Why It Matters**: Web applications create thousands of short-lived connections - without pooling, PostgreSQL spends more time creating connections than executing queries. E-commerce sites handling 10,000 req/sec would need 10,000 PostgreSQL connections (impossible) - PgBouncer serves 10,000 clients with 25 backend connections. Connection limit protection prevents "too many connections" errors during traffic spikes. Stateless microservices benefit from transaction pooling - each HTTP request maps to single transaction, connection returned immediately after response.
 
+**Why Not Core Features**: pgBouncer is an external connection pooler (not part of PostgreSQL itself) but is the de facto standard solution for PostgreSQL connection management, deployed in virtually every production PostgreSQL environment at scale. It is included in this tutorial because connection pooling solves a fundamental PostgreSQL limitation (high per-connection overhead) that affects every web application. PostgreSQL built-in connection pooling does not exist; pgBouncer fills this gap and is maintained alongside PostgreSQL releases.
+
 ---
 
 ## Example 85: Performance Tuning Parameters
 
-PostgreSQL performance tuning involves adjusting memory, parallelism, and planner settings - critical for optimal query performance under production loads.
+PostgreSQL performance tuning involves adjusting memory, parallelism, and planner settings - critical for optimal query performance under production loads. The three most impactful parameters are shared_buffers (controls PostgreSQL buffer cache size), work_mem (per-operation sort/hash memory), and effective_cache_size (tells the planner how much OS cache to assume). Changes to most parameters take effect on reload (pg_reload_conf()), while others like shared_buffers require a full PostgreSQL restart.
 
 ```sql
 CREATE DATABASE example_85;

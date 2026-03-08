@@ -67,7 +67,7 @@ SELECT datetime('now') AS current_time;
 
 **Key Takeaway**: SQLite runs in Docker containers with no server configuration needed. The `SELECT` statement executes queries and returns results - even simple expressions work without FROM clauses.
 
-**Why It Matters**: Reproducible development environments prevent "works on my machine" issues across teams. Docker-based database setups enable consistent testing, onboarding, and CI/CD pipelines. Production applications typically use managed database services, but local containerized databases are essential for development and testing without affecting production data.
+**Why It Matters**: Reproducible development environments prevent "works on my machine" issues across teams. Docker-based database setups enable consistent testing, onboarding, and CI/CD pipelines. Production applications typically use managed database services like AWS RDS or Google Cloud SQL, but local containerized databases are essential for development and testing without affecting production data. Teams using Docker for local databases onboard new developers in minutes instead of hours, eliminating environment-specific bugs from day one.
 
 ---
 
@@ -110,7 +110,7 @@ SELECT COUNT(*) FROM users;
 
 **Key Takeaway**: Use `CREATE TABLE` to define structure before storing data. Each column needs a name and type (INTEGER, TEXT, REAL, BLOB). Tables start empty - use INSERT to add rows.
 
-**Why It Matters**: Schema design decisions impact application performance and maintainability for years. Choosing appropriate data types affects storage efficiency, query speed, and data integrity. Production databases evolve through migrations that carefully add, modify, or remove columns while preserving existing data—schema changes in production require planning and testing.
+**Why It Matters**: Schema design decisions impact application performance and maintainability for years. Choosing appropriate data types affects storage efficiency, query speed, and data integrity. TEXT for what should be INTEGER wastes storage and breaks sorting. Production databases evolve through migrations that carefully add, modify, or remove columns while preserving existing data—schema changes in production require planning, testing, and rollback strategies to avoid downtime.
 
 ---
 
@@ -161,7 +161,7 @@ SELECT name, price, price * 1.10 AS price_with_tax FROM products;
 
 **Key Takeaway**: SELECT retrieves data from tables - use `*` for all columns or name specific columns. You can include expressions and calculations in SELECT to derive new values without modifying stored data.
 
-**Why It Matters**: Selecting only needed columns reduces network bandwidth and memory usage—critical for high-traffic applications. Production systems avoid `SELECT *` because it fetches unnecessary data and breaks when schema changes add columns. Computed columns enable business logic in queries without duplicating data storage, keeping derived values always up-to-date.
+**Why It Matters**: Selecting only needed columns reduces network bandwidth and memory usage—critical for high-traffic applications. A query fetching 50 columns when you need 3 wastes 94% of its bandwidth. Production systems avoid `SELECT *` because it fetches unnecessary data and breaks when schema changes add columns unexpectedly. Computed columns enable business logic in queries without duplicating data storage, keeping derived values always consistent with source data.
 
 ---
 
@@ -234,7 +234,7 @@ SELECT * FROM inventory;
 
 **Key Takeaway**: INSERT adds rows to tables - specify columns and values explicitly for clarity. Multi-row inserts are more efficient than multiple single-row inserts. Columns not specified get NULL unless a default value is defined.
 
-**Why It Matters**: Bulk inserts dramatically improve performance for data imports—inserting 10,000 rows individually takes minutes, while a single multi-row INSERT completes in seconds. Production ETL pipelines batch inserts to reduce network round-trips and transaction overhead. Explicit column lists protect against schema changes breaking INSERT statements.
+**Why It Matters**: Bulk inserts dramatically improve performance for data imports—inserting 10,000 rows individually takes minutes, while a single multi-row INSERT completes in seconds. Production ETL pipelines batch inserts to reduce network round-trips and transaction overhead. Applications importing CSV files, syncing data from APIs, or performing bulk migrations rely on batched inserts. Explicit column lists protect against schema changes breaking INSERT statements when new columns are added to the table later.
 
 ---
 
@@ -320,7 +320,7 @@ DELETE FROM stock;
 
 **Key Takeaway**: Always use WHERE clauses with UPDATE and DELETE to target specific rows - omitting WHERE modifies or removes ALL rows. Test your WHERE clause with SELECT before running UPDATE or DELETE.
 
-**Why It Matters**: Accidental mass updates and deletes are among the most devastating database mistakes—one missing WHERE clause can destroy production data in seconds. Production environments use transaction wrappers, require review for destructive queries, and maintain backups. The "SELECT first" practice catches errors before they become disasters.
+**Why It Matters**: Accidental mass updates and deletes are among the most devastating database mistakes—one missing WHERE clause can destroy production data in seconds. "UPDATE users SET is_admin = true" without a WHERE clause grants admin to all users. Production environments use transaction wrappers, require peer review for destructive queries, and maintain point-in-time backups. The "SELECT first, then UPDATE/DELETE" practice catches errors before they become irreversible disasters requiring restore from backup.
 
 ---
 
@@ -401,7 +401,7 @@ WHERE id = 1;                                       -- => Filters to first row
 
 **Key Takeaway**: Use INTEGER for whole numbers and REAL for decimals. SQLite's dynamic typing is flexible but can cause unexpected behavior - use explicit CAST when precision matters, especially for financial calculations.
 
-**Why It Matters**: Floating-point errors accumulate in financial calculations—0.1 + 0.2 doesn't equal 0.3 in binary floating-point. Production financial systems use integer cents or dedicated decimal types to avoid rounding errors that cause accounting discrepancies. Type mismatches between application code and database can cause silent data corruption.
+**Why It Matters**: Floating-point errors accumulate in financial calculations—0.1 + 0.2 doesn't equal 0.3 in binary floating-point. Stripe, PayPal, and every serious payment processor store amounts in integer cents to avoid rounding errors that cause accounting discrepancies. Production financial systems use integer cents or dedicated decimal types. Type mismatches between application code and database can cause silent data corruption that surfaces only during audits, potentially after millions of transactions.
 
 ---
 
@@ -466,7 +466,7 @@ WHERE id = 2;                        -- => Filters to row with short_text='SQL'
 
 **Key Takeaway**: TEXT is the primary string type in SQLite and handles any length. Use `||` for concatenation, UPPER/LOWER for case conversion, LIKE for pattern matching, and SUBSTR for extraction.
 
-**Why It Matters**: String operations power search features, data cleaning, and report formatting. Production systems use LIKE patterns for user search functionality, string functions for data normalization, and proper text handling prevents injection attacks. Understanding string collation affects sorting and comparison behavior across different languages.
+**Why It Matters**: String operations power search features, data cleaning, and report formatting. Production systems use LIKE patterns for user search functionality, string functions for normalizing imported data (trimming whitespace, standardizing case), and proper text handling prevents SQL injection attacks. E-commerce platforms use UPPER/LOWER for case-insensitive product searches. Understanding string collation affects sorting behavior across languages—critical for international applications serving multiple regions.
 
 ---
 
@@ -562,7 +562,7 @@ FROM employees;
 
 **Key Takeaway**: Use `IS NULL` and `IS NOT NULL` to test for missing values - never use `= NULL`. COALESCE provides defaults for NULL values. NULL in arithmetic or comparisons produces NULL.
 
-**Why It Matters**: NULL bugs are among the most common database errors—using `= NULL` instead of `IS NULL` returns zero rows and silently fails. Production applications must handle NULL in aggregations (COUNT ignores NULL), joins (NULL never matches), and display logic. COALESCE provides sensible defaults that prevent NULL propagation through calculations.
+**Why It Matters**: NULL bugs are among the most common database errors—using `= NULL` instead of `IS NULL` returns zero rows and silently fails without any error message. Production applications must handle NULL in aggregations (COUNT ignores NULL, SUM returns NULL if any input is NULL), joins (NULL never matches any value), and display logic. COALESCE provides sensible defaults that prevent NULL propagation through complex calculations, stopping one missing value from corrupting an entire report.
 
 ---
 
@@ -657,7 +657,7 @@ FROM events;
 
 **Key Takeaway**: Store dates as TEXT in ISO8601 format (YYYY-MM-DD) for readability and portability. Use date(), time(), and datetime() functions for manipulation. STRFTIME() formats dates, JULIANDAY() enables date arithmetic.
 
-**Why It Matters**: Date handling is notoriously error-prone—timezone bugs cause scheduling failures, date format inconsistencies break data imports, and incorrect date arithmetic leads to billing errors. Production systems standardize on UTC storage with timezone conversion at display time. ISO8601 format ensures consistent sorting and cross-system compatibility.
+**Why It Matters**: Date handling is notoriously error-prone—timezone bugs have caused flight overbookings, incorrect billing cycles, and scheduling failures. Production systems standardize on UTC storage with timezone conversion at display time, preventing the "it works here but not in Japan" class of bugs. ISO8601 format (YYYY-MM-DD) ensures consistent sorting and cross-system compatibility when integrating with external APIs. Date arithmetic errors in subscription billing can result in charging customers for extra days or missing renewal dates.
 
 ---
 
@@ -738,7 +738,7 @@ FROM settings;
 
 **Key Takeaway**: Use INTEGER with 0/1 values to represent boolean data. Logical operators (AND, OR, NOT) and comparisons produce 0 (false) or 1 (true). This convention is portable to other SQL databases.
 
-**Why It Matters**: Boolean flags control feature toggles, user permissions, and state management. Production systems use boolean columns for is_active, is_deleted, and is_verified fields that enable soft deletes and staged rollouts. Understanding truthiness prevents bugs where 0 might be treated as false in application code but stored differently in the database.
+**Why It Matters**: Boolean flags control feature toggles, user permissions, and state management across virtually every application. Production systems use boolean columns for is_active, is_deleted, and is_verified fields that enable soft deletes and staged rollouts without losing historical data. Understanding SQLite's integer booleans (1/0) prevents bugs where application code expecting true/false receives integers. This pattern powers access control systems where a single is_admin flag determines privilege levels.
 
 ---
 
@@ -817,7 +817,7 @@ SELECT * FROM orders WHERE customer IN ('Alice', 'Bob');
 
 **Key Takeaway**: WHERE filters rows using conditions - comparison operators (=, !=, <, >, <=, >=), BETWEEN for ranges, IN for lists. Combine conditions with AND (both must be true) or OR (either can be true).
 
-**Why It Matters**: WHERE clauses determine query performance—filtering early reduces data processing. Production queries must use indexed columns in WHERE for acceptable response times. IN clauses enable parameterized queries that prevent SQL injection while filtering by lists of IDs from application code.
+**Why It Matters**: WHERE clauses determine query performance—filtering early reduces data processing from millions to thousands of rows. Production queries must use indexed columns in WHERE for acceptable response times; unindexed WHERE clauses on large tables cause full table scans measured in seconds. IN clauses enable parameterized queries that prevent SQL injection while filtering by dynamic lists of IDs from application code. Between ranges on indexed columns provide O(log n) performance for date-range queries in analytics pipelines.
 
 ---
 
@@ -885,7 +885,7 @@ SELECT * FROM students ORDER BY score;
 
 **Key Takeaway**: Use ORDER BY to sort results by one or more columns. ASC (default) sorts low to high, DESC sorts high to low. Multi-column sorting creates hierarchical order (primary sort, then secondary).
 
-**Why It Matters**: Consistent ordering is essential for pagination and user experience—without ORDER BY, results may vary between queries due to internal database behavior. Production systems add secondary sort columns (like ID) to handle ties and ensure stable pagination. ORDER BY on non-indexed columns can cause full table scans.
+**Why It Matters**: Consistent ordering is essential for pagination and user experience—without ORDER BY, results vary between queries due to query planner changes, index structure, or concurrent modifications. Production APIs returning paginated results must specify deterministic sort orders; missing ORDER BY causes items to appear on multiple pages or get skipped entirely. Secondary sort columns (like ID) handle ties in the primary sort, ensuring stable pagination. ORDER BY on non-indexed columns causes full table scans that degrade with scale.
 
 ---
 
@@ -954,7 +954,7 @@ SELECT * FROM products OFFSET 5;
 
 **Key Takeaway**: LIMIT restricts result count, OFFSET skips rows. Use together for pagination: `LIMIT page_size OFFSET (page_number - 1) * page_size`. Always ORDER BY for consistent pagination.
 
-**Why It Matters**: Unbounded queries can overwhelm applications with millions of rows—LIMIT protects against memory exhaustion and response timeouts. However, OFFSET-based pagination degrades at high page numbers (must scan skipped rows). Production systems use cursor-based pagination with keyset conditions for consistent performance at scale.
+**Why It Matters**: Unbounded queries can overwhelm applications with millions of rows—LIMIT protects against memory exhaustion and API response timeouts. A "fetch all users" query on a table with 50 million users crashes applications. However, OFFSET-based pagination degrades at high page numbers because the database must scan and discard skipped rows. Production systems like Twitter and Instagram use cursor-based pagination with WHERE id > last_seen_id for O(log n) performance at any page depth.
 
 ---
 
@@ -1017,7 +1017,7 @@ SELECT COUNT(DISTINCT customer) AS unique_customers FROM purchases;
 
 **Key Takeaway**: DISTINCT removes duplicate rows from results. With multiple columns, it considers the complete row for uniqueness. Use COUNT(DISTINCT column) to count unique values.
 
-**Why It Matters**: DISTINCT is essential for analytics (unique visitors, distinct products purchased) but can be expensive on large tables without supporting indexes. Production dashboards use DISTINCT for deduplication while being aware of performance implications. COUNT(DISTINCT) enables metrics like "unique active users" that drive business decisions.
+**Why It Matters**: DISTINCT is essential for analytics—unique visitors, distinct products purchased, unique countries reached—but can be expensive on large tables without supporting indexes because it requires sorting or hashing all results. Production dashboards use DISTINCT for deduplication while monitoring query performance. COUNT(DISTINCT user_id) enables metrics like "daily active users" and "monthly unique buyers" that drive business decisions worth millions. Understanding when DISTINCT causes full scans helps avoid accidental performance regressions.
 
 ---
 
@@ -1051,73 +1051,50 @@ VALUES
 
 -- LIKE: Case-insensitive, % matches any characters
 SELECT * FROM files WHERE filename LIKE '%report%';
-                                      -- => LIKE is case-insensitive in SQLite
-                                      -- => % matches zero or more characters
-                                      -- => %report% matches 'report' anywhere in filename
--- => Returns rows 1, 3 (both 'report' and 'Report' match)
--- => 'report_2025.pdf' matches (%report% finds 'report')
--- => 'Report_Final.PDF' matches (%report% finds 'Report', case-insensitive)
+                                      -- => LIKE is case-insensitive: matches 'report' and 'Report'
+                                      -- => % (percent) matches zero or more characters
+-- => Returns rows 1, 3 (both lowercase and uppercase 'report' match)
 -- => Rows 2, 4, 5 excluded (no 'report' substring)
 
 -- LIKE: _ matches single character
 SELECT * FROM files WHERE filename LIKE 'image___%.jpg';
-                                      -- => _ (underscore) matches exactly ONE character
-                                      -- => 'image___' matches 'image' + 3 characters
-                                      -- => % matches remaining characters before '.jpg'
-                                      -- => Pattern: image + 3 chars + anything + .jpg
--- => Returns row 2 ('image_001.jpg' - 3 characters '001' after 'image')
--- => 'image_' = 'image_' (match)
--- => '001' matches ___ (3 underscores = 3 characters)
--- => '.jpg' matches %.jpg (% = empty, then .jpg literal)
--- => Other rows don't start with 'image'
+                                      -- => _ matches exactly ONE character (3 underscores = 3 chars)
+                                      -- => Pattern: 'image' + 3 chars + any chars + '.jpg'
+-- => Returns row 2 ('image_001.jpg': '001' = 3 underscores match)
+-- => Other rows excluded (don't start with 'image' or wrong extension)
 
 -- LIKE: Match file extensions
 SELECT * FROM files WHERE filename LIKE '%.pdf';
-                                      -- => % matches filename before extension
-                                      -- => .pdf matches literal '.pdf'
-                                      -- => Case-insensitive: matches .pdf and .PDF
--- => Returns rows 1, 3 (case-insensitive: both .pdf and .PDF)
--- => Row 1: 'report_2025.pdf' ends with '.pdf'
--- => Row 3: 'Report_Final.PDF' ends with '.PDF' (case-insensitive match)
--- => Rows 2, 4, 5 excluded (wrong extensions)
+                                      -- => % matches anything before extension
+                                      -- => Case-insensitive: matches both .pdf and .PDF
+-- => Returns rows 1, 3 (both lowercase .pdf and uppercase .PDF match)
+-- => Rows 2, 4, 5 excluded (different extensions)
 
 -- GLOB: Case-sensitive, * matches any characters
 SELECT * FROM files WHERE filename GLOB '*report*';
-                                      -- => GLOB is case-SENSITIVE
-                                      -- => * matches zero or more characters (like % in LIKE)
-                                      -- => *report* matches 'report' anywhere (exact case)
--- => Returns row 1 only ('report' matches, 'Report' doesn't)
--- => Row 1: 'report_2025.pdf' contains lowercase 'report' (match)
--- => Row 3: 'Report_Final.PDF' contains uppercase 'Report' (NO match, case-sensitive)
--- => Key difference from LIKE: GLOB distinguishes case
+                                      -- => GLOB is case-SENSITIVE (unlike LIKE)
+                                      -- => * matches zero or more characters (same as % in LIKE)
+-- => Returns row 1 only (lowercase 'report' matches; uppercase 'Report' does not)
+-- => Key difference from LIKE: GLOB distinguishes uppercase from lowercase
 
 -- GLOB: ? matches single character
 SELECT * FROM files WHERE filename GLOB 'photo_*.JPG';
-                                      -- => ? matches exactly ONE character (like _ in LIKE)
-                                      -- => * matches any characters
-                                      -- => Pattern: 'photo_' + any chars + '.JPG'
-                                      -- => Case-sensitive: .JPG must be uppercase
+                                      -- => * matches any characters, .JPG is case-sensitive literal
+                                      -- => Pattern: 'photo_' + any chars + '.JPG' (uppercase only)
 -- => Returns row 5 ('photo_vacation.JPG')
--- => 'photo_' matches literal
--- => 'vacation' matches * (any characters)
--- => '.JPG' matches literal (case-sensitive)
--- => Would NOT match 'photo_vacation.jpg' (lowercase extension)
+-- => Would NOT match 'photo_vacation.jpg' (GLOB is case-sensitive)
 
 -- NOT LIKE for exclusion
 SELECT * FROM files WHERE filename NOT LIKE '%.pdf';
-                                      -- => NOT inverts the match
-                                      -- => Excludes filenames ending with .pdf
+                                      -- => NOT inverts the match: returns files NOT ending in .pdf
                                       -- => Case-insensitive: excludes both .pdf and .PDF
--- => Returns rows 2, 4, 5 (excludes PDF files)
--- => Row 1: 'report_2025.pdf' EXCLUDED (matches %.pdf)
--- => Row 3: 'Report_Final.PDF' EXCLUDED (matches %.pdf, case-insensitive)
--- => Rows 2, 4, 5 included (extensions: .jpg, .csv, .JPG don't match .pdf)
--- => Note: .PDF excluded due to case-insensitive LIKE
+-- => Returns rows 2, 4, 5 (jpg, csv, JPG files)
+-- => Rows 1 and 3 excluded (both .pdf and .PDF match the case-insensitive pattern)
 ```
 
 **Key Takeaway**: Use LIKE for case-insensitive pattern matching (`%` = any characters, `_` = one character). Use GLOB for case-sensitive matching (`*` = any characters, `?` = one character). LIKE is more common across SQL databases.
 
-**Why It Matters**: Pattern matching powers search features throughout applications. However, leading wildcard patterns (`LIKE '%search%'`) can't use indexes and cause full table scans. Production search typically uses full-text search indexes for performance. LIKE patterns must escape special characters to prevent unexpected matches and potential security issues.
+**Why It Matters**: Pattern matching powers search features throughout applications, from e-commerce product search to log analysis tools. However, leading wildcard patterns (`LIKE '%search%'`) bypass indexes and cause full table scans that become unacceptably slow at scale—Netflix and Amazon cannot scan millions of product records per search query. Production search typically uses full-text search indexes (FTS5 in SQLite) for indexed pattern matching. LIKE patterns must escape special characters to prevent unexpected matches and potential security issues.
 
 ---
 
@@ -1212,7 +1189,7 @@ SELECT SUM(quantity * price) AS total_revenue FROM sales;
 
 **Key Takeaway**: Aggregate functions reduce multiple rows to single values. COUNT(\*) counts rows, SUM/AVG work on numeric columns, MIN/MAX find extremes. Combine multiple aggregates in one SELECT for comprehensive statistics.
 
-**Why It Matters**: Aggregates power dashboards, reports, and analytics that drive business decisions. Database-level aggregation is vastly faster than fetching rows and computing in application code. Production systems use aggregate queries for real-time metrics (total sales, active users) and batch reports (monthly summaries, trend analysis).
+**Why It Matters**: Aggregates power dashboards, reports, and analytics that drive business decisions across every industry. Database-level aggregation is vastly faster than fetching rows and computing in application code—summing 10 million sales records in SQL takes milliseconds, while fetching and summing in Python takes seconds. Production systems use aggregate queries for real-time metrics (total sales today, active users this hour) and batch reports (monthly summaries, year-over-year comparisons) that inform product and business strategy.
 
 ---
 
@@ -1302,7 +1279,7 @@ GROUP BY account;
 
 **Key Takeaway**: GROUP BY partitions rows into categories and applies aggregates to each group. Combine with COUNT/SUM/AVG for per-category statistics. WHERE filters before grouping, HAVING filters after grouping.
 
-**Why It Matters**: GROUP BY enables segmented analysis—sales by region, users by signup month, errors by type. This categorization is fundamental to business intelligence. Production reports rely on GROUP BY for breakdowns that reveal trends invisible in aggregate totals, like identifying which product categories are growing fastest.
+**Why It Matters**: GROUP BY enables segmented analysis—sales by region, users by signup month, errors by type—that reveals actionable insights hidden in aggregate totals. This categorization is fundamental to business intelligence platforms like Tableau, Looker, and Metabase. Production analytics systems generate thousands of GROUP BY queries daily, segmenting user behavior, revenue streams, and operational metrics. Without segmentation, "total revenue declined 10%" is alarming; with GROUP BY, you discover the decline is isolated to one product category.
 
 ---
 
@@ -1386,7 +1363,7 @@ HAVING total_revenue > 1500;   -- => Alias 'total_revenue' usable in HAVING (SQL
 
 **Key Takeaway**: Use WHERE to filter rows before grouping, HAVING to filter groups after aggregation. HAVING conditions typically use aggregate functions (COUNT, SUM, AVG). WHERE executes first, then GROUP BY, then HAVING.
 
-**Why It Matters**: HAVING enables threshold-based reporting—finding high-value customers (SUM > 10000), active users (COUNT > 5 logins), or anomalies (AVG deviating from normal). Production monitoring uses HAVING to surface outliers that need attention, like servers with unusually high error rates or customers with abnormal activity patterns.
+**Why It Matters**: HAVING enables threshold-based reporting—finding high-value customers (SUM > 10000), active users (COUNT > 5 logins), or anomalies (AVG deviating from baseline). Production monitoring systems use HAVING to surface outliers requiring attention: servers with error rates above 5%, customers with unusually high transaction volumes (fraud detection), or API endpoints with average response times above SLA thresholds. HAVING lets the database do threshold filtering, avoiding expensive application-side filtering on large result sets.
 
 ---
 
@@ -1504,7 +1481,7 @@ GROUP BY c.id, c.name;
 
 **Key Takeaway**: INNER JOIN combines tables where join conditions match. Only rows with matches in BOTH tables appear. Use table aliases (AS) for cleaner syntax. Rows without matches are excluded.
 
-**Why It Matters**: JOINs are the foundation of relational database queries—combining normalized data from multiple tables. Production applications use JOINs to assemble complete records (users with orders, posts with authors). Understanding JOIN performance is critical—missing indexes on join columns cause exponential slowdowns as tables grow.
+**Why It Matters**: JOINs are the foundation of relational database queries—combining normalized data stored across multiple tables. Production applications use JOINs to assemble complete records: users with their orders, posts with their authors, products with their categories. Understanding JOIN performance is critical—missing indexes on join columns cause nested loop scans that grow quadratically with table size. A JOIN on two tables with 100k rows each without indexes can take 10+ seconds; the same query with indexes runs in milliseconds.
 
 ---
 
@@ -1623,7 +1600,7 @@ WHERE d.name IN ('Engineering', 'Sales');  -- => Filter on LEFT table columns
 
 **Key Takeaway**: LEFT JOIN returns all rows from left table regardless of matches. Right table columns become NULL when no match exists. Use to find missing relationships (WHERE right.id IS NULL).
 
-**Why It Matters**: LEFT JOIN handles optional relationships essential for real-world data—users who haven't ordered yet, products without reviews, employees without managers. Finding missing data (WHERE joined.id IS NULL) powers data quality reports that identify incomplete records requiring attention.
+**Why It Matters**: LEFT JOIN handles optional relationships essential for real-world data—users who haven't ordered yet, products without reviews, employees without managers at the top of hierarchies. The "find NULLs after LEFT JOIN" pattern powers data quality reports that identify incomplete records: customers without billing addresses, orders without shipment tracking, or users who never completed onboarding. Production analytics require including all users in cohort reports regardless of purchase history, making LEFT JOIN fundamental to accurate metrics.
 
 ---
 
@@ -1709,7 +1686,7 @@ INNER JOIN employees m ON e1.manager_id = m.id;  -- => Resolve manager name
 
 **Key Takeaway**: Self-joins treat one table as two separate tables with aliases. Essential for hierarchical data (manager-employee), comparing rows, or finding pairs/groups within same table.
 
-**Why It Matters**: Organizational hierarchies, category trees, and threaded comments require self-referential relationships. Production org charts, permission inheritance, and nested structures all use self-joins. Understanding recursive patterns (WITH RECURSIVE) extends this to unlimited depth hierarchies.
+**Why It Matters**: Organizational hierarchies, category trees, and threaded comments require self-referential relationships that model real-world nesting. Production HR systems store entire org charts in single self-referencing tables. E-commerce platforms use hierarchical categories (Electronics > Computers > Laptops) with self-joins. Reddit-style threaded comments store parent_id references enabling nested discussions. Understanding recursive patterns (WITH RECURSIVE) extends this to unlimited depth hierarchies, enabling queries like "find all employees under this VP" regardless of org depth.
 
 ---
 
@@ -1797,7 +1774,7 @@ WHERE p.country = 'USA';           -- => Filter using publisher's country field
 
 **Key Takeaway**: Chain multiple JOINs to combine data from 3+ tables. Each JOIN references the previous result. Order matters - start with the main table, then add related tables.
 
-**Why It Matters**: Real applications require combining many tables—an order detail view joins orders, customers, products, shipping addresses, and payment methods. Production queries must balance completeness with performance, using appropriate join types and ensuring indexes exist on all join columns.
+**Why It Matters**: Real applications require combining many tables—an order detail view joins orders, customers, products, shipping addresses, and payment methods in a single query. E-commerce platforms routinely join 5-8 tables to render a single product page. Production queries must balance completeness with performance, using appropriate join types and ensuring indexes exist on all join columns. Multi-table queries without proper indexes can take seconds on production datasets, causing API timeouts and poor user experience.
 
 ---
 
@@ -1860,7 +1837,7 @@ SELECT * FROM users WHERE id = 2;
 
 **Key Takeaway**: Use INTEGER PRIMARY KEY for auto-incrementing unique IDs. Primary keys ensure uniqueness and enable fast lookups. UNIQUE constraints enforce uniqueness on non-key columns like email.
 
-**Why It Matters**: Primary keys are the foundation of data integrity—every row must be uniquely identifiable. Production systems use auto-increment IDs for simplicity or UUIDs for distributed systems. UNIQUE constraints on business keys (email, username) prevent duplicate accounts that cause user confusion and data integrity issues.
+**Why It Matters**: Primary keys are the foundation of data integrity—every row must be uniquely identifiable for updates, deletes, and foreign key references. Production systems use auto-increment IDs for simplicity in single-database setups or UUIDs for distributed systems where multiple servers generate IDs independently. UNIQUE constraints on business keys (email, username) prevent duplicate accounts that cause user confusion and data integrity issues. Without UNIQUE on email, two users with the same email can register, breaking password reset flows.
 
 ---
 
@@ -1932,7 +1909,7 @@ DELETE FROM categories WHERE id = 1;          -- => Then safely remove parent ro
 
 **Key Takeaway**: Foreign keys enforce referential integrity by linking tables. They prevent orphaned records and deletion of referenced rows. Enable with `PRAGMA foreign_keys = ON` in SQLite before creating tables.
 
-**Why It Matters**: Foreign keys prevent data corruption that application bugs would otherwise cause—orders referencing deleted customers, comments on non-existent posts. Production databases rely on foreign keys to maintain consistency even when application code has bugs. The database becomes the last line of defense for data integrity.
+**Why It Matters**: Foreign keys prevent data corruption that application bugs would otherwise cause—orders referencing deleted customers, comments on non-existent posts, inventory tied to discontinued products. Production databases rely on foreign keys to maintain referential integrity even when application code has race conditions, bugs, or concurrent modifications. The database becomes the last line of defense: even if application validation fails, the database rejects orphaned records. CASCADE rules automate cleanup, preventing the manual SQL required to delete related records.
 
 ---
 
@@ -1944,13 +1921,15 @@ Constraints enforce data integrity rules. NOT NULL prevents NULL values, CHECK v
 
 ```sql
 CREATE TABLE products (
-    id INTEGER PRIMARY KEY,
-    name TEXT NOT NULL,                -- => Cannot be NULL
-    price REAL NOT NULL CHECK (price > 0),  -- => Must be positive
+    id INTEGER PRIMARY KEY,            -- => Auto-increment unique product ID
+    name TEXT NOT NULL,                -- => Cannot be NULL (required field)
+    price REAL NOT NULL CHECK (price > 0),  -- => Must be positive (no free or negative prices)
     stock INTEGER DEFAULT 0,           -- => Defaults to 0 if not specified
     category TEXT CHECK (category IN ('Electronics', 'Furniture', 'Clothing')),
-    created_at TEXT DEFAULT (datetime('now'))  -- => Defaults to current time
+                                        -- => Only allows 3 valid category values
+    created_at TEXT DEFAULT (datetime('now'))  -- => Defaults to current timestamp
 );
+-- => products table created with 5 constraints enforcing data integrity
 
 -- Insert valid row with defaults
 INSERT INTO products (name, price, category)
@@ -1980,15 +1959,17 @@ VALUES ('Mouse', 29.99, 50, 'Electronics');
 
 -- Multiple constraints on same column
 CREATE TABLE accounts (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY,            -- => Unique account identifier
     balance REAL NOT NULL DEFAULT 0 CHECK (balance >= 0)
+                                        -- => Cannot be NULL, defaults to 0, cannot be negative
 );
 -- => balance must be non-NULL, defaults to 0, and cannot be negative
+-- => Stacking constraints: NOT NULL + DEFAULT + CHECK all on one column
 ```
 
 **Key Takeaway**: Constraints enforce data quality at database level. NOT NULL prevents missing data, CHECK validates conditions, DEFAULT provides fallback values. Constraints prevent invalid data from entering the database.
 
-**Why It Matters**: Database constraints catch data issues that slip past application validation—concurrent requests, direct database access, data migrations. Production systems use constraints as the authoritative source of business rules. CHECK constraints prevent impossible states (negative prices, future birth dates) that would corrupt reports and calculations.
+**Why It Matters**: Database constraints catch data issues that slip past application validation—concurrent requests, direct database access, data migrations, and bulk imports bypass application code entirely. Production systems treat constraints as the authoritative source of business rules, not just application-layer validation. CHECK constraints prevent impossible states like negative prices, future birth dates, or invalid status codes from corrupting downstream reports. Teams that omit database constraints spend weeks debugging "how did this invalid data get in?" incidents.
 
 ---
 
@@ -2075,7 +2056,7 @@ DROP INDEX idx_customers_email;
 
 **Key Takeaway**: Create indexes on columns used in WHERE, JOIN, and ORDER BY to speed up queries. Indexes trade write speed for read speed. Use EXPLAIN QUERY PLAN to verify index usage.
 
-**Why It Matters**: Indexes are the primary tool for database performance tuning. Production queries that scan millions of rows without indexes cause timeouts and server overload. However, over-indexing slows writes and wastes storage. EXPLAIN QUERY PLAN reveals whether queries use indexes, guiding optimization efforts.
+**Why It Matters**: Indexes are the primary tool for database performance tuning—the difference between a 5ms query and a 5-second query. Production queries scanning millions of rows without indexes cause API timeouts and server overload during peak traffic. However, over-indexing slows writes and wastes storage: each INSERT/UPDATE must maintain all indexes. Write-heavy tables (logs, events) should have fewer indexes than read-heavy tables (product catalog). EXPLAIN QUERY PLAN reveals whether queries use indexes, guiding optimization efforts before issues reach production.
 
 ---
 
@@ -2152,7 +2133,7 @@ UPDATE accounts SET balance = balance - 1000 WHERE owner = 'Alice';
 
 **Key Takeaway**: Use transactions to ensure related changes succeed or fail together. BEGIN starts transaction, COMMIT saves changes, ROLLBACK cancels. Constraint violations automatically rollback transactions.
 
-**Why It Matters**: Transactions prevent partial updates that corrupt data—transferring money must debit one account AND credit another, never just one. Production systems wrap related operations in transactions to maintain consistency. Without transactions, system crashes mid-operation leave data in invalid states that require manual cleanup.
+**Why It Matters**: Transactions prevent partial updates that corrupt data—transferring money must debit one account AND credit another, never just one. Stripe, PayPal, and every financial system rely on ACID transactions. Production systems wrap related operations in transactions to maintain consistency across concurrent requests. Without transactions, system crashes mid-operation leave data in invalid states requiring manual cleanup. Savepoints enable partial rollbacks in complex workflows where some steps should succeed even if later steps fail.
 
 ---
 
@@ -2236,7 +2217,7 @@ DROP VIEW high_earners;
 
 **Key Takeaway**: Views simplify repetitive queries by saving them as virtual tables. They automatically reflect underlying data changes. Use views for abstraction, security (hide columns), and query reuse.
 
-**Why It Matters**: Views encapsulate complex query logic that would otherwise be duplicated across application code. Production systems use views to provide stable interfaces while underlying tables evolve, hide sensitive columns from certain users, and pre-join common table combinations for simpler application queries.
+**Why It Matters**: Views encapsulate complex query logic that would otherwise be duplicated across dozens of application queries. Production systems use views to provide stable interfaces while underlying tables evolve through migrations—changing a table structure only requires updating the view definition, not every query. Views hide sensitive columns (salary, SSN) from certain user roles by exposing only approved fields. Pre-joining common table combinations through views reduces query complexity and ensures consistent business logic across all reports.
 
 ---
 
@@ -2319,7 +2300,7 @@ WHERE EXISTS (
 
 **Key Takeaway**: Subqueries enable filtering based on computed values or related data. Use scalar subqueries (return single value) with comparison operators, or list subqueries with IN/EXISTS.
 
-**Why It Matters**: Subqueries solve complex filtering problems—finding above-average performers, records matching criteria from another table, or existence checks. Production analytics use subqueries for cohort analysis and complex business rules. EXISTS subqueries are often more efficient than IN for large datasets.
+**Why It Matters**: Subqueries solve complex filtering problems that simple WHERE clauses cannot express—finding above-average performers, records matching criteria from another table, or existence checks across related data. Production analytics use correlated subqueries for cohort analysis, finding customers whose behavior in one period predicts outcomes in another. EXISTS subqueries are often more efficient than IN for large datasets because they stop searching after the first match. CTEs (WITH clauses) replace deeply nested subqueries with readable named steps.
 
 ---
 
@@ -2432,4 +2413,4 @@ FROM products;
 
 **Key Takeaway**: CASE expressions add conditional logic to SELECT statements. Use WHEN-THEN for conditions, ELSE for defaults. Powerful for categorization, pivoting, and conditional aggregation.
 
-**Why It Matters**: CASE expressions enable business logic in SQL without application code round-trips. Production reports use CASE for status labels, price tier categorization, and conditional calculations. CASE in aggregations creates pivot-table-style reports (sales by quarter in columns) directly from SQL queries.
+**Why It Matters**: CASE expressions enable business logic in SQL without application code round-trips that fetch data and transform it in memory. Production reports use CASE for status labels, price tier categorization, and conditional calculations across millions of rows. Pivoting data with CASE in aggregations creates quarterly sales comparisons (Q1, Q2, Q3, Q4 as columns) directly from SQL, replacing complex application-side pivoting code. This pattern is fundamental to analytics dashboards that summarize time-series data into columnar comparisons.

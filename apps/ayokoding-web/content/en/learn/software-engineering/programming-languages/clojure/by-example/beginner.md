@@ -873,7 +873,7 @@ Namespaces organize code into logical modules. `ns` declares a namespace, `requi
 
 **Key Takeaway**: Use `:as` to create short aliases for required namespaces (idiomatic). Avoid `:refer :all` in production code as it obscures function origins. Qualified keywords (`::key`) prevent collisions in large codebases.
 
-**Why It Matters**: Explicit namespace management prevents the "import hell" plaguing Python projects where wildcard imports create hidden dependencies. Aliasing (`str/upper-case`) provides IDE autocomplete and jump-to-definition without classpath pollution—large codebases remain navigable through consistent aliasing. Qualified keywords (`::user/id`) enable collision-free data schemas across microservices, powering service-to-service data contracts without protobuf overhead.
+**Why It Matters**: Explicit namespace management prevents the "import hell" plaguing Python projects where wildcard imports create hidden dependencies. Aliasing (`str/upper-case`) provides IDE autocomplete and jump-to-definition without classpath pollution—large codebases remain navigable through consistent aliasing. Qualified keywords (`::user/id`) enable collision-free data schemas across microservices, powering service-to-service data contracts without naming collision or serialization overhead.
 
 ---
 

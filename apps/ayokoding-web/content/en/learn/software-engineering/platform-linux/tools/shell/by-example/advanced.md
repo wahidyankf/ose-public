@@ -66,13 +66,37 @@ nohup ./long-running-script.sh &
 
 **Key Takeaway**: Use `&` for background execution, `jobs` to list, `fg/bg` to control, `wait` to synchronize, and `nohup` for logout-immune processes. Job control is essential for parallel processing and long-running tasks.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: Job control enables parallel execution strategies essential for production efficiency. Deployment scripts launch health checks, log tailing, and monitoring concurrently rather than sequentially. The wait command provides synchronization points where all parallel operations must complete before proceeding. nohup and disown enable launching long-running processes that outlive the calling script, essential for background services and maintenance tasks initiated via SSH.
 
 ---
 
 ### Example 57: Signal Handling and Traps
 
 Trap handlers execute code when signals are received, enabling cleanup on exit, interrupt handling, and graceful shutdown.
+
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A[Script Running] --> B{Signal Received?}
+    B -->|SIGINT Ctrl+C| C[trap INT handler]
+    B -->|SIGTERM| D[trap TERM handler]
+    B -->|EXIT| E[trap EXIT handler<br/>always runs]
+    C --> F[cleanup function<br/>remove temp files]
+    D --> F
+    F --> G[exit with code]
+    E --> G
+    B -->|no signal| A
+
+    style A fill:#029E73,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#CC78BC,stroke:#000,color:#000
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#0173B2,stroke:#000,color:#fff
+    style F fill:#CA9161,stroke:#000,color:#fff
+    style G fill:#DE8F05,stroke:#000,color:#000
+```
 
 ```bash
 #!/bin/bash
@@ -136,13 +160,38 @@ function_with_trap() {
 
 **Key Takeaway**: Traps ensure cleanup code runs on exit, interrupt, or termination. Use `trap 'code' SIGNAL` to register handlers, `trap '' SIGNAL` to ignore signals, and `trap - SIGNAL` to reset. Essential for production scripts that manage resources.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: Signal traps are what separate production scripts from fragile prototypes. Without signal handling, scripts leave temporary files, hold database connections open, and leave systems in inconsistent states when interrupted. The EXIT trap is the most critical - it runs regardless of how the script exits. Scripts managing infrastructure resources must implement proper cleanup to prevent resource leaks that accumulate over many deployments.
 
 ---
 
 ### Example 58: Advanced Parameter Expansion
 
 Bash parameter expansion provides powerful string manipulation, default values, substring extraction, and pattern matching without external commands.
+
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A[\${var...}] --> B{Expansion Type}
+    B -->|:-default| C[Use default<br/>if unset or empty]
+    B -->|:=default| D[Assign default<br/>if unset or empty]
+    B -->|:offset:len| E[Substring<br/>extraction]
+    B -->|#pattern| F[Strip prefix<br/>shortest match]
+    B -->|##pattern| G[Strip prefix<br/>longest match]
+    B -->|%pattern| H[Strip suffix<br/>shortest match]
+    B -->|/old/new| I[Replace<br/>first match]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#CC78BC,stroke:#000,color:#000
+    style F fill:#CA9161,stroke:#000,color:#fff
+    style G fill:#CA9161,stroke:#000,color:#fff
+    style H fill:#CC78BC,stroke:#000,color:#000
+    style I fill:#0173B2,stroke:#000,color:#fff
+```
 
 ```bash
 # Default values
@@ -261,7 +310,7 @@ echo ${!var}                    # => Indirect variable reference
 
 **Key Takeaway**: Parameter expansion eliminates external commands like `sed`, `cut`, `basename`, `dirname` for string operations. Use `${var:-default}` for defaults, `${var#pattern}` for prefix removal, `${var%pattern}` for suffix removal, and `${var//pattern/replacement}` for substitution. Faster and more portable than external tools.
 
-**Why It Matters**: Parameter expansion enables sophisticated string manipulation without external tools. Production scripts use expansion for parsing paths, extracting components, and providing defaults.
+**Why It Matters**: Parameter expansion enables sophisticated string manipulation without external tools. Production scripts use expansion for parsing paths, extracting components, and providing defaults. The ${var##\*/} pattern extracts filenames from paths without spawning basename. The ${var:?message} pattern enforces required variables with meaningful error messages. String case conversion ${var^^} and ${var,,} enables normalization without tr or awk. Mastering parameter expansion makes scripts faster and more portable.
 
 ---
 
@@ -323,7 +372,7 @@ command | tee >(grep ERROR > errors.log) >(grep WARN > warnings.log)
 
 **Key Takeaway**: Process substitution `<(command)` and `>(command)` treat command output/input as files. Named pipes (FIFOs) enable inter-process communication. Both eliminate temporary file creation and simplify complex pipelines.
 
-**Why It Matters**: Process substitution enables comparing command outputs and feeding to commands expecting files. Scripts use this for diffing configurations and processing multiple data streams.
+**Why It Matters**: Process substitution enables comparing command outputs and feeding to commands expecting files. Scripts use this for diffing configurations and processing multiple data streams. The diff <(ssh server1 cat /etc/config) <(ssh server2 cat /etc/config) pattern compares remote files without downloading them. The while read < <(command) pattern solves the subshell scope problem in piped while loops. Named pipes via mkfifo enable bidirectional communication between co-processes for complex IPC patterns.
 
 ---
 
@@ -452,7 +501,7 @@ wait                            # => Wait for final batch to complete
 
 **Key Takeaway**: Use C-style `for ((i=0; i<n; i++))` for numeric iteration, `while IFS= read -r` for line-by-line processing, `until` for loops that run while condition is false, and background jobs with `wait` for parallel processing. Always use `-r` with `read` to preserve backslashes.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: Advanced iteration patterns enable sophisticated data processing directly in bash. The C-style for loop enables index-based access for parallel array operations. The while read -r line pattern is the correct way to process file lines with special characters. mapfile loads entire file content into arrays for random access. These patterns replace inefficient loops that spawn external processes for each iteration, improving performance significantly.
 
 ---
 
@@ -691,7 +740,7 @@ retry 3 curl -f https://api.example.com/health
 
 **Key Takeaway**: Use `set -euo pipefail` for fail-fast behavior, trap ERR to log failures, validate preconditions with `command -v` and parameter expansion, implement retry logic for network operations, and use `DRY_RUN` for safe testing. Production scripts must fail loudly, never silently.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: Error handling sophistication directly correlates with system reliability. The set -euo pipefail combination catches three distinct failure modes: command errors (-e), undefined variables (-u), and pipeline failures (-o pipefail). Without all three, scripts silently swallow errors and proceed with corrupted state. Production incidents often trace back to scripts missing one of these flags. Comprehensive error logging with LINENO and BASH_SOURCE enables rapid diagnosis.
 
 ---
 
@@ -702,51 +751,60 @@ Shell script performance matters for large-scale automation. Avoid external comm
 ```bash
 # Benchmark time measurement
 time_cmd() {
-    local start=$(date +%s%N)   # => Nanosecond timestamp
+    local start=$(date +%s%N)   # => Nanosecond timestamp (%s%N = sec + nanosec)
+                                 # => start is something like 1735567200123456789
     "$@"                        # => Execute command passed as arguments
-    local end=$(date +%s%N)     # => End timestamp
-    local duration=$(( (end - start) / 1000000 ))  # => Convert to milliseconds
-    echo "Duration: ${duration}ms" >&2
-                                # => Output to stderr
+                                 # => $@: all arguments expanded as separate words
+    local end=$(date +%s%N)     # => End timestamp after command completes
+    local duration=$(( (end - start) / 1000000 ))  # => Convert ns to ms (/ 1,000,000)
+    echo "Duration: ${duration}ms" >&2  # => Output to stderr
+                                 # => >&2: keeps stdout clean for piped consumers
 }
 
 time_cmd grep pattern large-file.txt
                                 # => Benchmark grep execution time
+                                # => Output: Duration: 45ms (sent to stderr)
 
 # BAD: External command in loop (SLOW)
-count=0
-for i in {1..1000}; do
+count=0                          # => Initialize counter to 0
+for i in {1..1000}; do           # => Loop 1000 times
     count=$(expr $count + 1)    # => Spawns expr process 1000 times!
-done                            # => ~5 seconds
+                                 # => Each $(expr ...) forks a new process
+done                            # => ~5 seconds total execution time
 
 # GOOD: Arithmetic expansion (FAST)
-count=0
-for i in {1..1000}; do
+count=0                          # => Initialize counter to 0
+for i in {1..1000}; do           # => Same loop, 1000 iterations
     ((count++))                 # => Built-in arithmetic, no fork
+                                 # => Equivalent to: count=$((count+1))
 done                            # => ~0.01 seconds (500x faster!)
 
 # BAD: Subshell for string manipulation (SLOW)
-for file in *.txt; do
+for file in *.txt; do            # => Iterate over all .txt files
     basename=$(basename "$file" .txt)  # => Fork basename command
                                 # => External process per iteration
+                                # => 1000 files = 1000 process forks
 done
 
 # GOOD: Parameter expansion (FAST)
-for file in *.txt; do
+for file in *.txt; do            # => Same iteration
     basename=${file%.txt}       # => Built-in parameter expansion
-    basename=${basename##*/}    # => Remove path component
-                                # => No external commands
+                                 # => ${var%pattern}: remove suffix match
+    basename=${basename##*/}    # => Remove path component (longest match)
+                                # => No external commands - pure shell
 done
 
 # BAD: Reading file line-by-line with cat (SLOW)
-cat file.txt | while read line; do
+cat file.txt | while read line; do  # => Pipe creates cat + subshell processes
     echo "$line"                # => Useless use of cat (UUOC)
+                                 # => Also: loop body in subshell (variables lost)
 done                            # => Creates unnecessary pipeline
 
 # GOOD: Direct redirection (FAST)
-while read line; do
-    echo "$line"
-done < file.txt                 # => No external command
+while read line; do              # => No external command needed
+    echo "$line"                 # => Loop body in main shell (variables persist)
+done < file.txt                 # => < redirects file as stdin directly to while
+                                 # => Avoids subshell and extra process
 
 # BAD: Multiple greps in sequence (SLOW)
 cat file.txt | grep foo | grep bar | grep baz
@@ -759,13 +817,13 @@ grep 'foo.*bar.*baz' file.txt   # => Single process
 # Parallel processing for CPU-bound tasks
 process_file() {
     # ... expensive operation ...
-    sleep 1                     # => Simulate work
-}
+    sleep 1                     # => Simulate work (1 second per file)
+}                                # => Function defined for examples below
 
 # Serial (SLOW for many files)
-for file in *.txt; do
-    process_file "$file"        # => One at a time
-done                            # => 100 files = 100 seconds
+for file in *.txt; do            # => Process each file sequentially
+    process_file "$file"        # => One at a time: must finish before next starts
+done                            # => 100 files = 100 seconds minimum
 
 # Parallel with GNU parallel (FAST)
 parallel process_file ::: *.txt # => All cores utilized
@@ -777,14 +835,16 @@ printf '%s\n' *.txt | xargs -P 8 -I {} sh -c 'process_file "{}"'
                                 # => More portable than GNU parallel
 
 # Manual parallel with background jobs
-max_jobs=8
-for file in *.txt; do
+max_jobs=8                       # => Maximum concurrent background processes
+for file in *.txt; do            # => Process each file
     while [ $(jobs -r | wc -l) -ge $max_jobs ]; do
-        sleep 0.1               # => Wait for slot
+                                 # => jobs -r: list running background jobs
+                                 # => wc -l: count running jobs
+        sleep 0.1               # => Wait briefly for a job slot to open
     done
-    process_file "$file" &      # => Background job
+    process_file "$file" &      # => Launch as background job (& = detach)
 done
-wait                            # => Wait for all to complete
+wait                            # => Wait for all background jobs to complete
 
 # Avoid unnecessary forks
 # BAD
@@ -795,39 +855,43 @@ result=$var                     # => Direct assignment
 
 # Cache repeated command output
 # BAD
-for i in {1..100}; do
-    if [ "$(whoami)" = "root" ]; then  # => Forks whoami 100 times
-        echo "Running as root"
+for i in {1..100}; do            # => Loop 100 times
+    if [ "$(whoami)" = "root" ]; then  # => Forks whoami 100 times!
+                                 # => Each iteration spawns a new process
+        echo "Running as root"   # => Message printed if root
     fi
 done
 
 # GOOD
-current_user=$(whoami)          # => Cache result
-for i in {1..100}; do
-    if [ "$current_user" = "root" ]; then
-        echo "Running as root"
+current_user=$(whoami)          # => Cache result: run whoami ONCE
+for i in {1..100}; do            # => Same loop, 100 iterations
+    if [ "$current_user" = "root" ]; then  # => Variable comparison, no fork
+        echo "Running as root"   # => Same output, no subprocess overhead
     fi
 done
 
 # Use read -a for splitting (no awk/cut)
-IFS=: read -ra fields <<< "a:b:c"
-echo "${fields[1]}"             # => b
-                                # => No external command needed
+IFS=: read -ra fields <<< "a:b:c"  # => IFS=: set field separator to colon
+                                    # => read -ra: read into array (-a)
+                                    # => <<< here string feeds "a:b:c" to read
+echo "${fields[1]}"             # => b (fields[0]="a", fields[1]="b", fields[2]="c")
+                                # => No external command needed - pure bash
 
 # Bulk operations instead of loops
 # BAD
-for file in *.txt; do
-    dos2unix "$file"            # => One process per file
+for file in *.txt; do            # => Loop over each file separately
+    dos2unix "$file"            # => One process per file (inefficient)
 done
 
 # GOOD
-dos2unix *.txt                  # => Single process handles all
-                                # => Many commands accept multiple files
+dos2unix *.txt                  # => Glob expands to all .txt files as args
+                                # => Single process handles all files
+                                # => Many commands accept multiple files natively
 ```
 
 **Key Takeaway**: Avoid external commands in loops, use built-in arithmetic `(())`, parameter expansion `${}`, and `read` for string operations. Parallelize CPU-bound tasks with `xargs -P`, `GNU parallel`, or background jobs. Cache repeated command output. Prefer bulk operations over loops. Profile with `time` to find bottlenecks.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: Performance optimization in shell scripts becomes critical when processing large datasets or running scripts frequently. Profiling reveals the actual bottleneck rather than guessing - often it is external process spawning, not logic. Replacing cat file | grep pattern with grep pattern file eliminates one subshell per invocation. Scripts running hourly that process gigabytes of logs can have their runtime reduced from minutes to seconds with targeted optimization.
 
 ---
 
@@ -840,8 +904,8 @@ Production scripts must sanitize inputs, avoid injection vulnerabilities, protec
 # Secure script template
 
 # Explicit PATH to prevent $PATH poisoning
-export PATH=/usr/local/bin:/usr/bin:/bin
-                                # => Hardcoded PATH prevents malicious commands
+export PATH=/usr/local/bin:/usr/bin:/bin  # => Hardcoded PATH prevents malicious commands
+                                 # => Attacker cannot inject ~/bin/ls to hijack commands
 
 # Secure temp directory
 TMPDIR=$(mktemp -d)             # => Create secure temp directory
@@ -850,7 +914,7 @@ chmod 700 "$TMPDIR"             # => Owner-only permissions
 
 # Validate input (prevent injection)
 validate_filename() {
-    local filename=$1
+    local filename=$1            # => First argument: filename to validate
 
     # Check for path traversal
     if [[ "$filename" =~ \.\. ]]; then
@@ -883,24 +947,26 @@ cat "$user_input"               # => Safe: treats as literal filename
                                 # => No command injection possible
 
 # BAD: eval with user input (NEVER DO THIS)
-user_cmd="ls"
-eval $user_cmd                  # => If user_cmd="rm -rf /", you're in trouble
+user_cmd="ls"               # => Seemingly safe value - but never trust external input
+eval $user_cmd                  # => eval executes $user_cmd as code
+                                 # => If user_cmd="rm -rf /", catastrophic damage
 
 # GOOD: Use arrays for commands
-commands=("ls" "-la" "/home")
-"${commands[@]}"                # => Safe: no word splitting or injection
+commands=("ls" "-la" "/home")   # => Array stores command and args separately
+"${commands[@]}"                # => Execute: each array element as separate word
+                                 # => No word splitting or shell injection possible
 
 # Protect secrets (don't hardcode)
 # BAD
 API_KEY="secret123"             # => Visible in ps, process list, logs
 
 # GOOD: Read from file with restricted permissions
-[ -f ~/.secrets/api_key ] || {
-    echo "Error: API key file not found" >&2
-    exit 1
+[ -f ~/.secrets/api_key ] || {  # => Test if API key file exists
+    echo "Error: API key file not found" >&2  # => Error to stderr
+    exit 1                       # => Cannot proceed without credentials
 }
-API_KEY=$(cat ~/.secrets/api_key)
-                                # => File should be chmod 600
+API_KEY=$(cat ~/.secrets/api_key)  # => Read secret from restricted file
+                                # => File should be chmod 600 (owner read only)
 
 # BETTER: Use environment variables
 : "${API_KEY:?Error: API_KEY environment variable not set}"
@@ -908,15 +974,17 @@ API_KEY=$(cat ~/.secrets/api_key)
 
 # Secure file creation (prevent race conditions)
 # BAD: Check-then-create (TOCTOU vulnerability)
-if [ ! -f /tmp/myfile ]; then
-    echo "data" > /tmp/myfile   # => Attacker can create symlink between check and write
+if [ ! -f /tmp/myfile ]; then  # => Time-of-check: test file does not exist
+    echo "data" > /tmp/myfile   # => Time-of-use: attacker can create symlink between
+                                 # => these two operations (TOCTOU race condition)
 fi
 
 # GOOD: Atomic create with exclusive open
-{
-    set -C                      # => noclobber: don't overwrite existing files
-    echo "data" > /tmp/myfile   # => Fails if file exists
-} 2>/dev/null
+{                                # => Subshell group: set -C affects only this block
+    set -C                      # => noclobber: fails if file already exists
+                                 # => Atomic create: combines check and creation
+    echo "data" > /tmp/myfile   # => Fails with error if /tmp/myfile already exists
+} 2>/dev/null                    # => Suppress the "file exists" error message
 
 # BETTER: Use mktemp
 temp_file=$(mktemp)             # => Creates unique file atomically
@@ -939,34 +1007,44 @@ log_message "$(sanitize_log "$user_input")"  # => GOOD: Sanitized
 
 # Check for world-readable files
 if [ $(($(stat -c '%a' file.txt) & 004)) -ne 0 ]; then
-    echo "Warning: File is world-readable" >&2
+                                 # => stat -c '%a': octal permissions (e.g., 644)
+                                 # => 004: world-read bit in octal
+                                 # => & 004: bitwise AND tests if world-read is set
+    echo "Warning: File is world-readable" >&2  # => Alert: other users can read file
 fi
 
 # Validate checksums before execution
-expected_hash="abc123..."
-actual_hash=$(sha256sum script.sh | cut -d' ' -f1)
-if [ "$expected_hash" != "$actual_hash" ]; then
-    echo "Error: Checksum mismatch" >&2
-    exit 1
+expected_hash="abc123..."    # => Known-good hash from trusted distribution source
+actual_hash=$(sha256sum script.sh | cut -d' ' -f1)  # => Compute actual hash
+                                 # => sha256sum outputs: HASH  FILENAME
+                                 # => cut -d' ' -f1: extract just the hash
+if [ "$expected_hash" != "$actual_hash" ]; then  # => Compare known-good vs computed
+    echo "Error: Checksum mismatch" >&2  # => Script tampered or corrupted
+    exit 1                       # => Refuse to execute potentially modified script
 fi
 
 # Drop privileges if running as root
-if [ "$(id -u)" = "0" ]; then
+if [ "$(id -u)" = "0" ]; then  # => id -u: returns 0 for root
     # Drop to specific user
-    exec su -c "$0 $*" - nobody  # => Re-execute as 'nobody' user
+    exec su -c "$0 $*" - nobody  # => Re-execute script as 'nobody' user
+                                 # => exec: replace process (no return to root)
+                                 # => $0 $*: pass script path and all arguments
 fi
 
 # Audit logging
 log_audit() {
     echo "$(date +'%Y-%m-%d %H:%M:%S') [$(whoami)] $*" >> /var/log/secure-script.log
-}
+                                 # => Timestamp + username + message appended to log
+                                 # => >> append mode: preserves audit history
+}                                # => Creates tamper-evident audit trail
 
-log_audit "Script started with args: $*"
+log_audit "Script started with args: $*"  # => Log invocation for audit trail
+                                 # => $*: all script arguments logged for accountability
 ```
 
 **Key Takeaway**: Always quote variables, validate inputs with whitelists, never use `eval` with user input, read secrets from files with restricted permissions, use `mktemp` for temp files, set secure umask, avoid TOCTOU vulnerabilities, and sanitize logs. Security requires defense in depth.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: Secure scripting practices prevent a category of vulnerabilities that have compromised production systems. The set -euo pipefail pattern prevents partial execution. Validating inputs prevents injection attacks in scripts that construct commands from external data. Running scripts with minimal permissions (not as root) limits blast radius. The readonly keyword prevents accidental variable modification. Production scripts touching sensitive resources must treat security as a first-class requirement.
 
 ---
 
@@ -1092,13 +1170,43 @@ awk 'NR==FNR {a[$1]=$2; next} $1 in a {print $0, a[$1]}' file1.txt file2.txt
 
 **Key Takeaway**: AWK excels at column-based processing with built-in variables (NR, NF, $1-$n), supports conditionals and arrays, and provides string functions. Use for log analysis, CSV processing, reporting, and data aggregation. More powerful than `cut`, `grep`, `sed` for structured data. Multi-line awk scripts can replace complex pipelines.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: awk's full programming model handles data transformations that require state, calculations, and multiple passes. Production scripts use awk to generate reports with totals from log files, convert between data formats, and perform statistical analysis on metrics. The BEGIN/END blocks enable initialization and finalization without external tools. awk's built-in numeric conversion enables calculations that would require bc or python in other contexts.
 
 ---
 
 ### Example 65: Production Deployment Script Pattern
 
 Real-world deployment scripts combine all advanced techniques: error handling, logging, validation, rollback, and idempotency.
+
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A[Start Deployment] --> B[Validate Config<br/>& Prerequisites]
+    B --> C{Validation OK?}
+    C -->|no| D[Exit Error<br/>log failure]
+    C -->|yes| E[Backup Current<br/>State]
+    E --> F[Deploy New<br/>Version]
+    F --> G[Health Check]
+    G --> H{Health OK?}
+    H -->|no| I[Rollback<br/>to backup]
+    H -->|yes| J[Update Symlink<br/>cleanup old]
+    I --> D
+    J --> K[Deployment Complete<br/>log success]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#DE8F05,stroke:#000,color:#000
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#fff
+    style F fill:#029E73,stroke:#000,color:#fff
+    style G fill:#DE8F05,stroke:#000,color:#000
+    style H fill:#DE8F05,stroke:#000,color:#000
+    style I fill:#CC78BC,stroke:#000,color:#000
+    style J fill:#029E73,stroke:#000,color:#fff
+    style K fill:#0173B2,stroke:#000,color:#fff
+```
 
 ```bash
 #!/bin/bash
@@ -1133,23 +1241,25 @@ NC='\033[0m'                    # => Reset to default
 # Logging functions
 # ====================
 log() {
-    local level=$1              # => Severity level
-    shift                       # => Remove first arg
-    local message="$*"          # => Concatenate remaining args
+    local level=$1              # => Severity level (INFO, WARN, ERROR, SUCCESS)
+    shift                       # => Remove first arg (level) from $@
+    local message="$*"          # => Concatenate remaining args as message
     local timestamp=$(date +'%Y-%m-%d %H:%M:%S')
-                                # => ISO-style timestamp
+                                # => ISO-style timestamp: 2025-12-30 14:30:22
 
     echo -e "${timestamp} [${level}] ${message}" | tee -a "$LOG_FILE"
                                 # => tee: output to both stdout and file
                                 # => -a: append mode (preserve history)
+                                # => -e: enable escape sequence interpretation
 }
 
-log_info() { log "INFO" "$@"; }
+log_info() { log "INFO" "$@"; }   # => Wrapper for INFO level messages
 log_warn() { echo -e "${YELLOW}$(log "WARN" "$@")${NC}"; }
-                                # => Colored warnings
+                                # => Colored warnings (yellow via ANSI codes)
 log_error() { echo -e "${RED}$(log "ERROR" "$@")${NC}" >&2; }
-                                # => Errors to stderr
+                                # => Errors to stderr (red colored)
 log_success() { echo -e "${GREEN}$(log "SUCCESS" "$@")${NC}"; }
+                                # => Success messages in green
 
 # ====================
 # Error handling
@@ -1158,66 +1268,67 @@ cleanup() {
     local exit_code=$?          # => Capture script exit code
                                 # => $? must be first command in function
 
-    if [ $exit_code -ne 0 ]; then
-        log_error "Deployment failed with exit code $exit_code"
+    if [ $exit_code -ne 0 ]; then  # => If script exited with error
+        log_error "Deployment failed with exit code $exit_code"  # => Log failure
         log_warn "Run '$0 rollback' to restore previous version"
                                 # => User guidance for recovery
     fi
 
     [ -d "${TMPDIR:-}" ] && rm -rf "${TMPDIR:-}"
-                                # => Conditional cleanup
-                                # => ${TMPDIR:-} prevents unbound var error
+                                # => Conditional: only rm if TMPDIR is set and is a dir
+                                # => ${TMPDIR:-}: safe expansion (empty if unset)
+                                # => Removes temporary download directory
 }
 
 trap cleanup EXIT               # => Guaranteed cleanup
                                 # => Fires on normal exit, errors, signals
 trap 'log_error "Interrupted"; exit 130' INT TERM
-                                # => Graceful interrupt handling
-                                # => Exit 130 = 128 + SIGINT(2)
+                                # => Graceful interrupt handling (Ctrl+C or kill)
+                                # => Exit 130 = 128 + SIGINT(2) (standard convention)
+                                # => Logs interrupt before exiting
 
 # ====================
 # Validation functions
 # ====================
 require_root() {
-    if [ "$(id -u)" -ne 0 ]; then
-                                # => id -u: current user ID
-                                # => 0 = root
-        log_error "This script must be run as root"
-        exit 1
+    if [ "$(id -u)" -ne 0 ]; then  # => id -u: returns numeric user ID
+                                # => 0 = root, non-zero = regular user
+        log_error "This script must be run as root"  # => Log permission error
+        exit 1                   # => Exit with failure
     fi
-}
+}                                # => Function returns only if running as root
 
 validate_version() {
-    local version=$1
+    local version=$1             # => Version argument to validate
 
-    if [ -z "$version" ]; then
-        log_error "Version not specified"
-        echo "Usage: $0 <version>" >&2
-        exit 1
+    if [ -z "$version" ]; then   # => -z: test if string is empty
+        log_error "Version not specified"  # => Missing required argument
+        echo "Usage: $0 <version>" >&2  # => Usage hint to stderr
+        exit 1                   # => Exit with error
     fi
 
     if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-                                # => Semantic versioning regex
-                                # => Must match x.y.z pattern
+                                # => Regex: ^[0-9]+\.[0-9]+\.[0-9]+$ = semantic versioning
+                                # => Must match x.y.z pattern (e.g., 1.2.3)
         log_error "Invalid version format: $version (expected: x.y.z)"
-        exit 1
+        exit 1                   # => Reject non-semver versions
     fi
-}
+}                                # => Returns only if version is valid semver
 
 check_dependencies() {
-    local deps=(curl tar systemctl)
-                                # => Required external commands
+    local deps=(curl tar systemctl)  # => Array of required external commands
+                                # => Each must be on PATH for deployment to work
 
-    for cmd in "${deps[@]}"; do
+    for cmd in "${deps[@]}"; do  # => Iterate over each required command
         if ! command -v "$cmd" >/dev/null 2>&1; then
                                 # => command -v: portable command existence check
-                                # => Suppresses all output
-            log_error "Required command not found: $cmd"
-            exit 1
+                                # => >/dev/null 2>&1: suppress path output and errors
+            log_error "Required command not found: $cmd"  # => Log missing dependency
+            exit 1               # => Fail early rather than fail mid-deployment
         fi
     done
 
-    log_info "All dependencies satisfied"
+    log_info "All dependencies satisfied"  # => All required commands found
 }
 
 # ====================
@@ -1225,30 +1336,30 @@ check_dependencies() {
 # ====================
 create_backup() {
     local backup_file="${BACKUP_DIR}/${APP_NAME}-$(date +%Y%m%d-%H%M%S).tar.gz"
-                                # => Timestamped filename
+                                # => Timestamped filename prevents overwrites
                                 # => Example: myapp-20250201-143025.tar.gz
 
-    log_info "Creating backup: $backup_file"
+    log_info "Creating backup: $backup_file"  # => Log backup path before starting
 
-    mkdir -p "$BACKUP_DIR"      # => Create parent dirs if needed
-                                # => -p: no error if exists
+    mkdir -p "$BACKUP_DIR"      # => Create backup directory if it does not exist
+                                # => -p: no error if already exists (idempotent)
 
-    if [ -d "$DEPLOY_DIR" ]; then
+    if [ -d "$DEPLOY_DIR" ]; then  # => Only backup if deployment directory exists
         tar -czf "$backup_file" -C "$(dirname "$DEPLOY_DIR")" "$(basename "$DEPLOY_DIR")" 2>/dev/null || {
-                                # => -c: create, -z: gzip, -f: file
-                                # => -C: change to parent dir before archiving
-                                # => Preserves relative paths
-            log_error "Backup failed"
-            return 1
+                                # => -c: create archive, -z: gzip compress, -f: output file
+                                # => -C: change to parent directory before archiving
+                                # => Preserves relative paths in archive
+            log_error "Backup failed"   # => Log archive creation failure
+            return 1             # => Abort deployment: cannot proceed without backup
         }
 
-        log_success "Backup created: $backup_file"
+        log_success "Backup created: $backup_file"  # => Backup confirmed created
     else
-        log_warn "No existing installation to backup"
-                                # => Fresh installation
+        log_warn "No existing installation to backup"  # => First-time deployment
+                                # => Fresh installation: no existing data to backup
     fi
 
-    cleanup_old_backups         # => Enforce retention policy
+    cleanup_old_backups         # => Enforce retention policy after new backup
 }
 
 cleanup_old_backups() {
@@ -1280,93 +1391,92 @@ cleanup_old_backups() {
 # Deployment functions
 # ====================
 download_release() {
-    local version=$1
+    local version=$1             # => Version string to download (e.g., 1.2.3)
     local download_url="https://releases.example.com/${APP_NAME}/${version}/${APP_NAME}-${version}.tar.gz"
-                                # => URL construction from version
+                                # => URL constructed from app name and version
     local checksum_url="${download_url}.sha256"
-                                # => Integrity verification file
+                                # => Matching checksum file for integrity verification
 
-    TMPDIR=$(mktemp -d)         # => Secure temp directory
-                                # => Returns /tmp/tmp.XXXXXX
-    local archive="${TMPDIR}/${APP_NAME}.tar.gz"
-    local checksum_file="${TMPDIR}/checksum.sha256"
+    TMPDIR=$(mktemp -d)         # => Create secure temp directory
+                                # => Returns path like /tmp/tmp.XXXXXX
+    local archive="${TMPDIR}/${APP_NAME}.tar.gz"   # => Local path for downloaded archive
+    local checksum_file="${TMPDIR}/checksum.sha256"  # => Local path for checksum file
 
-    log_info "Downloading $APP_NAME version $version"
+    log_info "Downloading $APP_NAME version $version"  # => Log download start
 
     # Download with retry
-    local max_attempts=3        # => Network reliability tolerance
-    local attempt=1
+    local max_attempts=3        # => Network reliability tolerance: 3 tries
+    local attempt=1              # => Current attempt counter
 
-    while [ $attempt -le $max_attempts ]; do
+    while [ $attempt -le $max_attempts ]; do  # => Loop until success or max attempts
         if curl -fsSL -o "$archive" "$download_url"; then
-                                # => -f: fail on HTTP errors
-                                # => -s: silent, -S: show errors
-                                # => -L: follow redirects
-                                # => -o: output file
-            break               # => Download successful
+                                # => -f: fail on HTTP error status codes
+                                # => -s: silent mode, -S: show errors despite -s
+                                # => -L: follow redirects, -o: write to file
+            break               # => Download successful: exit retry loop
         fi
 
-        log_warn "Download attempt $attempt failed, retrying..."
-        ((attempt++))
-        sleep 2                 # => Exponential backoff would be better
+        log_warn "Download attempt $attempt failed, retrying..."  # => Log retry
+        ((attempt++))            # => Increment attempt counter
+        sleep 2                 # => Wait 2 seconds before retry
     done
 
-    if [ $attempt -gt $max_attempts ]; then
-        log_error "Download failed after $max_attempts attempts"
-        return 1                # => Abort deployment
+    if [ $attempt -gt $max_attempts ]; then  # => All retry attempts exhausted
+        log_error "Download failed after $max_attempts attempts"  # => Log failure
+        return 1                # => Abort deployment: cannot install without artifact
     fi
 
     # Verify checksum
-    log_info "Verifying checksum"
-    curl -fsSL -o "$checksum_file" "$checksum_url"
-                                # => Download expected hash
+    log_info "Verifying checksum"  # => Log integrity check start
+    curl -fsSL -o "$checksum_file" "$checksum_url"  # => Download expected hash file
 
-    cd "$TMPDIR"                # => Change to temp dir for verification
-    if ! sha256sum -c "$checksum_file"; then
-        # => Verify archive integrity
-        log_error "Checksum verification failed"
-        return 1                # => Corrupted download
+    cd "$TMPDIR"                # => Change to temp dir (sha256sum uses relative paths)
+    if ! sha256sum -c "$checksum_file"; then  # => Verify archive matches expected hash
+        log_error "Checksum verification failed"  # => Archive corrupt or tampered
+        return 1                # => Refuse to deploy unverified artifact
     fi
 
-    log_success "Download and verification complete"
+    log_success "Download and verification complete"  # => Artifact ready for deployment
 }
 
 deploy_application() {
-    log_info "Deploying application"
+    log_info "Deploying application"  # => Log deployment start
 
     # Stop service
-    log_info "Stopping $APP_NAME service"
+    log_info "Stopping $APP_NAME service"  # => Log service stop
     systemctl stop "${APP_NAME}.service" 2>/dev/null || true
-    # => Stop service gracefully, ignore if not running
+                                 # => Stop gracefully (SIGTERM then SIGKILL)
+                                 # => 2>/dev/null || true: ignore if service not running
 
     # Extract to deploy directory
-    mkdir -p "$DEPLOY_DIR"      # => Ensure deploy dir exists
+    mkdir -p "$DEPLOY_DIR"      # => Create deployment directory if needed (-p: no error)
     tar -xzf "${TMPDIR}/${APP_NAME}.tar.gz" -C "$DEPLOY_DIR" --strip-components=1
-    # => Extract archive, strip top-level directory
+                                 # => Extract archive to deploy dir
+                                 # => --strip-components=1: remove top-level archive dir
 
     # Set permissions
-    chown -R appuser:appgroup "$DEPLOY_DIR"
-    # => Change ownership to app user
-    chmod 755 "$DEPLOY_DIR"
-    # => rwxr-xr-x permissions
+    chown -R appuser:appgroup "$DEPLOY_DIR"  # => Set ownership to application user
+                                 # => -R: recursive (all files and directories)
+    chmod 755 "$DEPLOY_DIR"      # => rwxr-xr-x: owner rwx, group rx, others rx
 
     # Run database migrations
-    if [ -x "${DEPLOY_DIR}/migrate.sh" ]; then  # => If migration script exists
-        log_info "Running database migrations"
+    if [ -x "${DEPLOY_DIR}/migrate.sh" ]; then  # => -x: check file is executable
+        log_info "Running database migrations"  # => Log migration start
         su -c "${DEPLOY_DIR}/migrate.sh" - appuser || {
-            # => Run migrations as app user
-            log_error "Migration failed"
-            return 1            # => Fail deployment if migrations fail
+                                 # => su: switch to appuser before running migrations
+                                 # => - : clean environment (like fresh login)
+            log_error "Migration failed"   # => Log migration failure
+            return 1            # => Fail deployment: cannot run with failed migrations
         }
     fi
 
     # Start service
-    log_info "Starting $APP_NAME service"
-    systemctl start "${APP_NAME}.service"
-    # => Start systemd service
+    log_info "Starting $APP_NAME service"  # => Log service start
+    systemctl start "${APP_NAME}.service"  # => Start systemd service
+                                 # => systemd manages process lifecycle
 
     # Wait for service to be healthy
-    wait_for_healthy            # => Verify service started successfully
+    wait_for_healthy            # => Block until health check passes
 }
 
 wait_for_healthy() {
@@ -1448,40 +1558,39 @@ main() {
 
     case "$action" in
         deploy)
-            shift               # => Remove action arg
-            VERSION="${1:-}"    # => Get version arg
+            shift               # => Remove action arg from $@ (leaves version)
+            VERSION="${1:-}"    # => Get version arg (may be empty, validated below)
 
-            require_root        # => Verify running as root
-            validate_version "$VERSION"  # => Verify version format
-            check_dependencies  # => Check required commands
+            require_root        # => Verify running as root (deployment needs it)
+            validate_version "$VERSION"  # => Verify version format (semver x.y.z)
+            check_dependencies  # => Check required commands are installed
 
-            log_info "Starting deployment of $APP_NAME version $VERSION"
+            log_info "Starting deployment of $APP_NAME version $VERSION"  # => Log start
 
-            create_backup || exit 1  # => Backup current version
-            download_release "$VERSION" || exit 1  # => Download new version
-            deploy_application || {
-                # => Deploy new version
-                log_error "Deployment failed, initiating rollback"
-                rollback        # => Auto-rollback on failure
-                exit 1
+            create_backup || exit 1  # => Backup current version (fail fast if backup fails)
+            download_release "$VERSION" || exit 1  # => Download and verify artifact
+            deploy_application || {  # => Deploy new version
+                log_error "Deployment failed, initiating rollback"  # => Log failure
+                rollback        # => Automatically restore previous version
+                exit 1          # => Exit with failure after rollback
             }
-            smoke_test || {     # => Run smoke tests
-                log_error "Smoke tests failed, initiating rollback"
-                rollback        # => Auto-rollback if tests fail
-                exit 1
+            smoke_test || {     # => Run smoke tests against deployed application
+                log_error "Smoke tests failed, initiating rollback"  # => Log test failure
+                rollback        # => Auto-rollback: tests confirm deployment is broken
+                exit 1          # => Exit with failure after rollback
             }
 
-            log_success "Deployment of $APP_NAME $VERSION complete"
+            log_success "Deployment of $APP_NAME $VERSION complete"  # => Log success
             ;;
 
         rollback)
-            require_root        # => Verify root access
-            rollback            # => Manual rollback
+            require_root        # => Rollback also requires root privileges
+            rollback            # => Execute manual rollback procedure
             ;;
 
         *)
-            echo "Usage: $0 {deploy <version>|rollback}" >&2
-            exit 1              # => Invalid action
+            echo "Usage: $0 {deploy <version>|rollback}" >&2  # => Usage to stderr
+            exit 1              # => Invalid action: non-zero exit
             ;;
     esac
 }
@@ -1491,7 +1600,7 @@ main "$@"                       # => Pass all script args to main
 
 **Key Takeaway**: Production scripts require comprehensive error handling (`set -euo pipefail`, traps), validation (dependencies, version format, checksums), logging (timestamped, colored), backup/rollback capability, health checks, and idempotency. This template provides a foundation for reliable automated deployments. Always test in staging before production.
 
-**Why It Matters**: This shell scripting concept is fundamental for production automation and system administration. Understanding this pattern enables you to write more robust and maintainable scripts for deployment, monitoring, and infrastructure management tasks.
+**Why It Matters**: Production deployment patterns encode hard-won operational experience. The set -euo pipefail header, input validation, dry-run mode, and rollback capability distinguish production scripts from development hacks. Deployment scripts without proper error handling have caused major outages when partial failures left systems in inconsistent states. The patterns in this example represent the minimum viable production deployment script structure.
 
 ---
 
@@ -1518,9 +1627,11 @@ Docker commands in shell scripts enable container management, image building, an
 
 ```bash
 # Check if Docker is running
-if ! docker info &>/dev/null; then
-    echo "Docker is not running"
-    exit 1
+if ! docker info &>/dev/null; then  # => docker info: queries Docker daemon status
+                                    # => &>/dev/null: suppress all output
+                                    # => Exits 1 if daemon not running
+    echo "Docker is not running"    # => User-friendly error message
+    exit 1                          # => Exit code 1 = failure
 fi
 
 # Build image with tag
@@ -1583,28 +1694,33 @@ docker rmi myapp:latest          # => Remove image
 
 # Practical: deployment script
 #!/bin/bash
-set -euo pipefail
+set -euo pipefail                # => Strict error handling for deployment safety
 
-IMAGE="registry.example.com/myapp"
-TAG="${1:-latest}"
+IMAGE="registry.example.com/myapp"  # => Registry URL and image name
+TAG="${1:-latest}"               # => Version tag from CLI arg, default "latest"
 
 echo "Pulling image..."
-docker pull "$IMAGE:$TAG"
+docker pull "$IMAGE:$TAG"        # => Pull image from registry before stopping old
+                                 # => Ensures image is available before service interruption
 
 echo "Stopping old container..."
-docker stop myapp 2>/dev/null || true
-docker rm myapp 2>/dev/null || true
+docker stop myapp 2>/dev/null || true  # => Graceful stop (SIGTERM then SIGKILL)
+                                       # => || true: continue even if not running
+docker rm myapp 2>/dev/null || true    # => Remove stopped container
+                                       # => Frees container name for new instance
 
 echo "Starting new container..."
 docker run -d --name myapp \
-    --restart unless-stopped \
-    -p 8080:80 \
-    "$IMAGE:$TAG"
+    --restart unless-stopped \  # => Auto-restart on crash or reboot
+    -p 8080:80 \                # => Map host port 8080 to container port 80
+    "$IMAGE:$TAG"                # => Use pulled image with specified tag
+                                 # => -d: detached (background execution)
 
 echo "Waiting for health check..."
-wait_for_container myapp
+wait_for_container myapp         # => Block until container reports healthy
+                                 # => Validates new deployment before signaling success
 
-echo "Deployment complete"
+echo "Deployment complete"       # => Only reached after health check passes
 ```
 
 **Key Takeaway**: Use `docker run -d` for background containers, `docker exec` for running commands inside, and always implement health checks before considering deployment complete.
@@ -1642,61 +1758,69 @@ kubectl delete -f deployment.yaml
 kubectl delete pod myapp-xxx     # => Delete specific pod
 
 # Rollout management
-kubectl rollout status deployment/myapp
-kubectl rollout history deployment/myapp
-kubectl rollout undo deployment/myapp
-                                 # => Rollback to previous
+kubectl rollout status deployment/myapp  # => Wait for rollout to complete
+                                         # => Exits 0 when all pods updated
+kubectl rollout history deployment/myapp # => Show revision history
+kubectl rollout undo deployment/myapp    # => Rollback to previous version
+                                         # => Or: --to-revision=N for specific revision
 
 # Scaling
-kubectl scale deployment myapp --replicas=3
+kubectl scale deployment myapp --replicas=3  # => Scale to 3 pod replicas
+                                              # => Kubernetes distributes across nodes
 
 # Logs
 kubectl logs myapp-xxx           # => Pod logs
-kubectl logs -f myapp-xxx        # => Follow logs
-kubectl logs -l app=myapp        # => By label selector
+kubectl logs -f myapp-xxx        # => Follow logs (stream in real time)
+kubectl logs -l app=myapp        # => By label selector (all matching pods)
 
 # Execute in pod
-kubectl exec -it myapp-xxx -- /bin/sh
+kubectl exec -it myapp-xxx -- /bin/sh  # => Interactive shell in container
+                                        # => -- separates kubectl args from command
 
 # Port forwarding
-kubectl port-forward svc/myapp 8080:80 &
+kubectl port-forward svc/myapp 8080:80 &  # => Forward host:8080 to service:80
+                                           # => & runs in background
 
 # Practical: wait for deployment
 wait_for_deployment() {
-    local deployment="$1"
-    local namespace="${2:-default}"
-    local timeout="${3:-300}"
+    local deployment="$1"        # => Deployment name argument
+    local namespace="${2:-default}"  # => Namespace, default "default"
+    local timeout="${3:-300}"    # => Timeout seconds, default 300
 
     echo "Waiting for deployment $deployment..."
     kubectl rollout status deployment/"$deployment" \
         -n "$namespace" \
-        --timeout="${timeout}s"
+        --timeout="${timeout}s"  # => Wait up to timeout for rollout to complete
+                                 # => Exit 0 if successful, 1 if timeout/failure
 }
 
 # Practical: deploy with verification
 #!/bin/bash
-set -euo pipefail
+set -euo pipefail                # => Strict error handling for deployment safety
 
-NAMESPACE="production"
-DEPLOYMENT="myapp"
-IMAGE="registry.example.com/myapp:$1"
+NAMESPACE="production"           # => Target Kubernetes namespace
+DEPLOYMENT="myapp"               # => Deployment resource name
+IMAGE="registry.example.com/myapp:$1"  # => Full image reference with version tag
 
 # Update image
 kubectl set image deployment/"$DEPLOYMENT" \
-    myapp="$IMAGE" \
-    -n "$NAMESPACE"
+    myapp="$IMAGE" \            # => container_name=image:tag
+    -n "$NAMESPACE"              # => Triggers rolling update of the deployment
 
 # Wait for rollout
 if ! wait_for_deployment "$DEPLOYMENT" "$NAMESPACE"; then
     echo "Rollout failed, rolling back..."
     kubectl rollout undo deployment/"$DEPLOYMENT" -n "$NAMESPACE"
-    exit 1
+                                 # => Revert to previous revision on failure
+    exit 1                       # => Exit with error after rollback
 fi
 
 # Verify pods are running
 kubectl get pods -n "$NAMESPACE" -l app="$DEPLOYMENT"
+                                 # => Show updated pod status
+                                 # => Confirm expected replica count running
 
-echo "Deployment successful"
+echo "Deployment successful"     # => Only reached if rollout and verification passed
 ```
 
 **Key Takeaway**: Use `kubectl apply -f` for declarative deployments, `kubectl rollout status` to wait for completion, and always implement rollback logic for failed deployments.
@@ -1717,88 +1841,104 @@ aws configure                    # => Set access key, secret, region
 aws sts get-caller-identity      # => Shows account and user
 
 # S3 operations
-aws s3 ls                        # => List buckets
-aws s3 ls s3://bucket/prefix/    # => List objects
+aws s3 ls                        # => List all S3 buckets in account
+aws s3 ls s3://bucket/prefix/    # => List objects with prefix filter
+                                 # => Output: SIZE DATE NAME for each object
 
-aws s3 cp file.txt s3://bucket/  # => Upload file
-aws s3 cp s3://bucket/file.txt . # => Download file
+aws s3 cp file.txt s3://bucket/  # => Upload local file to S3 bucket
+aws s3 cp s3://bucket/file.txt . # => Download S3 object to current directory
 
-aws s3 sync ./dist s3://bucket/  # => Sync directory
-aws s3 sync s3://bucket/ ./data  # => Download sync
+aws s3 sync ./dist s3://bucket/  # => Upload directory, delete removed files
+                                 # => --delete flag removes objects not in source
+aws s3 sync s3://bucket/ ./data  # => Download bucket contents to local directory
 
 # EC2 operations
-aws ec2 describe-instances       # => List instances
+aws ec2 describe-instances       # => List all EC2 instances with full details
+                                 # => Output: JSON by default, use --output table
 
 # Start/stop instances
-aws ec2 start-instances --instance-ids i-xxx
-aws ec2 stop-instances --instance-ids i-xxx
+aws ec2 start-instances --instance-ids i-xxx  # => Start stopped instance
+                                               # => Takes 30-60 seconds to be running
+aws ec2 stop-instances --instance-ids i-xxx   # => Stop running instance
+                                               # => Data on instance store is lost
 
 # Get instance IPs
 aws ec2 describe-instances \
     --query 'Reservations[*].Instances[*].[InstanceId,PublicIpAddress]' \
-    --output table
+                                 # => JMESPath query extracts only ID and IP
+    --output table               # => Tabular format for readability
 
 # Lambda
 aws lambda invoke --function-name myFunc output.json
-                                 # => Invoke function
+                                 # => Invoke function synchronously
+                                 # => Response body written to output.json
 
 # Secrets Manager
 aws secretsmanager get-secret-value \
-    --secret-id myapp/prod \
-    --query SecretString --output text | jq .
+    --secret-id myapp/prod \    # => Secret name or ARN
+    --query SecretString --output text | jq .  # => Extract and parse JSON secret
 
 # Practical: deploy to S3 with CloudFront invalidation
 #!/bin/bash
-set -euo pipefail
+set -euo pipefail                # => Strict error handling for deployment safety
 
-BUCKET="my-website-bucket"
-DISTRIBUTION_ID="EXXXXX"
+BUCKET="my-website-bucket"       # => S3 bucket name for static site
+DISTRIBUTION_ID="EXXXXX"         # => CloudFront distribution ID
 
 echo "Building..."
-npm run build
+./build.sh                       # => Run build script to generate static files
+                                 # => (npm run build or equivalent for your project)
 
 echo "Uploading to S3..."
 aws s3 sync ./dist s3://"$BUCKET" --delete
+                                 # => Sync built files to S3, remove deleted files
+                                 # => --delete: removes objects absent from source
 
 echo "Invalidating CloudFront cache..."
 aws cloudfront create-invalidation \
     --distribution-id "$DISTRIBUTION_ID" \
-    --paths "/*"
+    --paths "/*"                 # => Invalidate entire distribution cache
+                                 # => Forces CDN to fetch fresh content from S3
 
-echo "Deployment complete"
+echo "Deployment complete"       # => Only reached if all steps succeeded
 
 # Practical: EC2 instance management
 #!/bin/bash
-ACTION="${1:-status}"
-TAG_NAME="Environment"
-TAG_VALUE="development"
+ACTION="${1:-status}"            # => Action from CLI: start, stop, or status (default)
+TAG_NAME="Environment"           # => Tag key to filter instances by
+TAG_VALUE="development"          # => Tag value to match (e.g., dev environment instances)
 
 # Get instance IDs by tag
 get_instances() {
     aws ec2 describe-instances \
         --filters "Name=tag:$TAG_NAME,Values=$TAG_VALUE" \
+                                 # => Filter instances by tag key=value
         --query 'Reservations[*].Instances[*].InstanceId' \
-        --output text
+                                 # => JMESPath: extract only instance IDs
+        --output text            # => Space-separated plain text (for use in other commands)
 }
 
 case "$ACTION" in
     start)
-        instances=$(get_instances)
+        instances=$(get_instances)   # => Capture space-separated instance IDs
         aws ec2 start-instances --instance-ids $instances
-        echo "Starting: $instances"
+                                     # => Start all matched instances (unquoted: word splitting expected)
+        echo "Starting: $instances"  # => Log which instances are being started
         ;;
     stop)
-        instances=$(get_instances)
+        instances=$(get_instances)   # => Capture instance IDs to stop
         aws ec2 stop-instances --instance-ids $instances
-        echo "Stopping: $instances"
+                                     # => Stop all matched instances gracefully
+        echo "Stopping: $instances"  # => Log which instances are being stopped
         ;;
     status)
         aws ec2 describe-instances \
             --filters "Name=tag:$TAG_NAME,Values=$TAG_VALUE" \
             --query 'Reservations[*].Instances[*].[InstanceId,State.Name]' \
-            --output table
+                                 # => Extract instance ID and state for each instance
+            --output table       # => Display as aligned table: ID | state
         ;;
-esac
+esac                             # => Invalid action falls through silently (add * case for robustness)
 ```
 
 **Key Takeaway**: Use `--query` with JMESPath for filtering output, `--output table/json/text` for format, and always validate credentials with `sts get-caller-identity` before operations.
@@ -1942,7 +2082,7 @@ echo "Pre-commit checks passed"
 
 **Key Takeaway**: Always validate git state before operations, use `git diff-index --quiet HEAD` to check for changes, and `git branch --show-current` for the current branch - script defensive checks prevent operations on wrong state.
 
-**Why It Matters**: Git automation enables consistent release processes, branch management, and CI/CD integration that reduce human error and enforce team workflows.
+**Why It Matters**: Git automation enables consistent release processes, branch management, and CI/CD integration that reduce human error and enforce team workflows. Release scripts that create tags, generate changelogs, and push to remote eliminate the inconsistencies of manual releases. Pre-commit and pre-push hook scripts enforce code quality before changes reach the repository. Branch management scripts that create feature branches with consistent naming conventions enforce team standards without requiring manual discipline.
 
 ---
 
@@ -1953,52 +2093,68 @@ Database CLI tools enable backups, migrations, health checks, and data operation
 ```bash
 # MySQL operations
 mysql -h localhost -u root -p"$MYSQL_PASSWORD" -e "SHOW DATABASES"
-                                 # => Run SQL command
+                                 # => -h: host, -u: user, -p: password (no space)
+                                 # => -e: execute SQL command non-interactively
+                                 # => Output: list of all databases
 
 # Query to variable
 result=$(mysql -N -s -u root -p"$MYSQL_PASSWORD" \
     -e "SELECT COUNT(*) FROM users" mydb)
-echo "User count: $result"       # => -N: no header, -s: silent
+                                 # => -N: skip column headers in output
+echo "User count: $result"       # => -s: silent mode (suppress extra output)
+                                 # => result contains just the count number
 
 # Execute SQL file
 mysql -u root -p"$MYSQL_PASSWORD" mydb < schema.sql
+                                 # => < redirects file content as SQL commands
+                                 # => Runs all statements in schema.sql against mydb
 
 # Backup MySQL
 mysqldump -u root -p"$MYSQL_PASSWORD" \
-    --single-transaction \
-    --quick \
-    mydb > backup.sql
+    --single-transaction \      # => Consistent snapshot without locking tables
+    --quick \                   # => Fetch rows one at a time (less memory)
+    mydb > backup.sql            # => Redirect SQL dump to file
 
 # PostgreSQL operations
 psql -h localhost -U postgres -d mydb -c "SELECT version()"
+                                 # => -U: username, -d: database, -c: command
+                                 # => Output: PostgreSQL version string
 
 # Query to variable
 result=$(psql -U postgres -d mydb -t -c "SELECT COUNT(*) FROM users")
-echo "User count: $result"       # => -t: tuples only
+                                 # => -t: tuples only (no headers, no footers)
+echo "User count: $result"       # => result contains just the count number
 
 # Execute SQL file
 psql -U postgres -d mydb -f schema.sql
+                                 # => -f: execute commands from file
+                                 # => Runs all SQL statements in schema.sql
 
 # Backup PostgreSQL
 pg_dump -U postgres mydb > backup.sql
+                                 # => Plain SQL format (human-readable)
+                                 # => Portable across PostgreSQL versions
 pg_dump -Fc -U postgres mydb > backup.dump
-                                 # => -Fc: custom format (faster restore)
+                                 # => -Fc: custom format (compressed binary)
+                                 # => Faster restore with pg_restore -j (parallel)
 
 # Practical: database health check
 #!/bin/bash
-set -euo pipefail
+set -euo pipefail                # => Strict error handling
 
-DB_HOST="${DB_HOST:-localhost}"
-DB_USER="${DB_USER:-postgres}"
-DB_NAME="${DB_NAME:-mydb}"
+DB_HOST="${DB_HOST:-localhost}"  # => Host from env, default localhost
+DB_USER="${DB_USER:-postgres}"   # => User from env, default postgres
+DB_NAME="${DB_NAME:-mydb}"       # => Database from env, default mydb
 
 check_connection() {
     if psql -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" -c "SELECT 1" > /dev/null 2>&1; then
+                                 # => SELECT 1: minimal query to verify connectivity
+                                 # => > /dev/null 2>&1: suppress all output
         echo "Database connection: OK"
-        return 0
+        return 0                 # => Success exit code
     else
         echo "Database connection: FAILED"
-        return 1
+        return 1                 # => Failure exit code
     fi
 }
 
@@ -2006,43 +2162,50 @@ check_table_counts() {
     echo "Table row counts:"
     psql -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" -t -c "
         SELECT schemaname || '.' || tablename AS table_name,
-               n_live_tup AS row_count
+               n_live_tup AS row_count      -- pg_stat_user_tables: live row estimates
         FROM pg_stat_user_tables
-        ORDER BY n_live_tup DESC
-        LIMIT 10;
-    "
+        ORDER BY n_live_tup DESC            -- Largest tables first
+        LIMIT 10;                           -- Top 10 tables only
+    "                            # => Output: table_name | row_count for each table
 }
 
-check_connection
-check_table_counts
+check_connection                 # => Test connectivity first
+check_table_counts               # => Then inspect data distribution
 
 # Practical: automated backup with rotation
 #!/bin/bash
-set -euo pipefail
+set -euo pipefail                # => Strict error handling for backup safety
 
-BACKUP_DIR="/backup/mysql"
-RETENTION_DAYS=7
-DB_NAME="production"
-TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+BACKUP_DIR="/backup/mysql"       # => Backup storage directory
+RETENTION_DAYS=7                 # => Keep backups for 7 days
+DB_NAME="production"             # => Target database name
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)  # => Format: 20251230_143022 (sortable)
 BACKUP_FILE="$BACKUP_DIR/${DB_NAME}_$TIMESTAMP.sql.gz"
+                                 # => Full path: /backup/mysql/production_20251230_143022.sql.gz
 
 # Create backup
 echo "Creating backup..."
 mysqldump --single-transaction --quick "$DB_NAME" | gzip > "$BACKUP_FILE"
+                                 # => Pipe dump through gzip for compression
+                                 # => Typical compression: 80-90% size reduction
 
 # Verify backup
 if [ -s "$BACKUP_FILE" ] && gzip -t "$BACKUP_FILE"; then
+                                 # => -s: test file is non-empty
+                                 # => gzip -t: test compressed file integrity
     echo "Backup created: $BACKUP_FILE"
-    echo "Size: $(du -h "$BACKUP_FILE" | cut -f1)"
+    echo "Size: $(du -h "$BACKUP_FILE" | cut -f1)"  # => Human-readable file size
 else
-    echo "Backup verification failed"
-    rm -f "$BACKUP_FILE"
-    exit 1
+    echo "Backup verification failed"  # => Empty or corrupt backup
+    rm -f "$BACKUP_FILE"         # => Remove invalid backup file
+    exit 1                       # => Signal failure to caller
 fi
 
 # Cleanup old backups
 find "$BACKUP_DIR" -name "*.sql.gz" -mtime +$RETENTION_DAYS -delete
-echo "Old backups cleaned up"
+                                 # => -mtime +7: files older than 7 days
+                                 # => -delete: remove matched files
+echo "Old backups cleaned up"    # => Retention policy enforced
 ```
 
 **Key Takeaway**: Use `--single-transaction` for consistent MySQL backups, `-t` for PostgreSQL tuples-only output, and always verify backup integrity before considering the backup successful.
@@ -3481,37 +3644,38 @@ TEST_DIR=$(mktemp -d)           # => Create temp directory for testing
 
 trap 'rm -rf "$TEST_DIR"' EXIT  # => Clean up temp dir on exit
 
-echo "Verifying backup: $BACKUP_FILE"
+echo "Verifying backup: $BACKUP_FILE"  # => Log which backup file is being verified
 
 # Check file integrity
 if ! gzip -t "$BACKUP_FILE" 2>/dev/null; then
-    # => gzip -t: test compressed file integrity
-    echo "ERROR: Backup file is corrupted"
-    exit 1                      # => Corrupted archive
+                                 # => gzip -t: test compressed file integrity
+                                 # => 2>/dev/null: suppress error messages
+    echo "ERROR: Backup file is corrupted"  # => User-friendly error message
+    exit 1                       # => Exit with failure: corrupted backup unusable
 fi
 
 # Test extraction
-echo "Testing extraction..."
+echo "Testing extraction..."    # => Log extraction test start
 if tar -xzf "$BACKUP_FILE" -C "$TEST_DIR"; then
-    # => Extract to test directory (non-destructive test)
-    echo "Extraction successful"
-    ls -la "$TEST_DIR"          # => Show extracted contents
+                                 # => -x: extract, -z: gunzip, -f: file
+                                 # => -C: change to TEST_DIR before extracting
+    echo "Extraction successful" # => Archive is readable and valid
+    ls -la "$TEST_DIR"           # => Show extracted contents for verification
 else
-    echo "ERROR: Extraction failed"
-    exit 1                      # => Archive cannot be extracted
+    echo "ERROR: Extraction failed"  # => Archive cannot be decompressed
+    exit 1                       # => Cannot restore from unextractable archive
 fi
 
 # Verify contents
 if [ -f "$TEST_DIR/data/critical.db" ]; then
-    # => Check critical files exist
-    echo "Critical data file present"
+                                 # => -f: check file exists and is regular file
+    echo "Critical data file present"  # => Key data file confirmed in backup
 else
-    echo "WARNING: Critical data file missing"
-    # => Backup incomplete
-fi
+    echo "WARNING: Critical data file missing"  # => Backup may be incomplete
+fi                               # => Warning only: might be expected for fresh installs
 
-echo "Backup verification complete"
-# => Backup is valid and usable
+echo "Backup verification complete"  # => All verification checks passed
+                                 # => Backup is valid and usable for restore
 
 # Database restore
 #!/bin/bash
@@ -3520,83 +3684,89 @@ set -euo pipefail               # => Fail fast on errors
 BACKUP_FILE="$1"                # => Database backup file
 DATABASE="${2:-production}"     # => Target database (default: production)
 
-echo "Restoring $DATABASE from $BACKUP_FILE"
+echo "Restoring $DATABASE from $BACKUP_FILE"  # => Log restore target and source
 
 # Confirm restore
 read -p "This will overwrite $DATABASE. Continue? (yes/no) " confirm
-# => -p: prompt for user confirmation
-if [ "$confirm" != "yes" ]; then
-    echo "Aborted"
-    exit 1                      # => User cancelled
+                                 # => -p: display prompt before reading input
+                                 # => Requires explicit "yes" to prevent accidental restore
+if [ "$confirm" != "yes" ]; then  # => Strict match: anything except "yes" aborts
+    echo "Aborted"               # => User chose not to proceed
+    exit 1                       # => Exit with failure (did not restore)
 fi
 
 # Stop application
-echo "Stopping application..."
-systemctl stop myapp            # => Prevent app from accessing DB during restore
+echo "Stopping application..."  # => Log service stop
+systemctl stop myapp             # => Prevent app from accessing DB during restore
+                                 # => Avoids data corruption from concurrent writes
 
 # Restore database
-echo "Restoring database..."
+echo "Restoring database..."    # => Log restore start
 gunzip -c "$BACKUP_FILE" | mysql "$DATABASE"
-# => gunzip -c: decompress to stdout
-# => Pipe into mysql for restoration
+                                 # => gunzip -c: decompress to stdout (keep file)
+                                 # => Pipe SQL commands directly to mysql for restoration
 
 # Verify restoration
-echo "Verifying restoration..."
+echo "Verifying restoration..."  # => Log verification start
 count=$(mysql -N -e "SELECT COUNT(*) FROM users" "$DATABASE")
-# => -N: no table headers, -e: execute SQL
-# => Sanity check: count records
-echo "User count: $count"       # => Output: User count: 12345
+                                 # => -N: no table headers in output
+                                 # => -e: execute SQL non-interactively
+                                 # => Sanity check: count records to verify data
+echo "User count: $count"        # => Output: User count: 12345
 
 # Restart application
-echo "Starting application..."
-systemctl start myapp           # => Bring app back online
+echo "Starting application..."   # => Log service start
+systemctl start myapp            # => Bring app back online after restore
+                                 # => App now uses restored database
 
-echo "Restore complete"
+echo "Restore complete"          # => All steps completed successfully
 
 # Practical: failover script
 #!/bin/bash
 set -euo pipefail               # => Fail fast on errors
 
-PRIMARY="db-primary.example.com"
-SECONDARY="db-secondary.example.com"
-APP_CONFIG="/etc/myapp/database.conf"
+PRIMARY="db-primary.example.com"  # => Primary database hostname
+SECONDARY="db-secondary.example.com"  # => Failover database hostname
+APP_CONFIG="/etc/myapp/database.conf"  # => Application config file with DB connection
 
 check_health() {
-    local host="$1"             # => Database host to check
-    mysqladmin -h "$host" ping 2>/dev/null
-    # => mysqladmin ping: returns 0 if DB accessible
-}
+    local host="$1"              # => Database host argument
+    mysqladmin -h "$host" ping 2>/dev/null  # => mysqladmin ping: returns 0 if DB accessible
+                                 # => 2>/dev/null: suppress connection error output
+}                                # => Returns 0 (success) if DB responds
 
 failover_to_secondary() {
-    echo "Initiating failover to secondary..."
+    echo "Initiating failover to secondary..."  # => Log failover start
 
     # Update application config
     sed -i "s/host=.*/host=$SECONDARY/" "$APP_CONFIG"
-    # => -i: edit in place
-    # => Replace host= line with secondary
+                                 # => s/pattern/replacement/: substitute regex
+                                 # => host=.*: matches current host line (any value)
+                                 # => Replaces with secondary host address
 
     # Reload application
-    systemctl reload myapp      # => Reload config without downtime
+    systemctl reload myapp       # => Reload config without restarting
+                                 # => Minimizes downtime during failover
 
     # Notify team
     send_alert "Database failover completed to $SECONDARY"
-    # => Alert team of failover event
+                                 # => Alert team about failover event
+                                 # => Enables manual investigation of primary failure
 
-    echo "Failover complete"
+    echo "Failover complete"     # => Failover procedure finished
 }
 
 # Monitor primary
-if ! check_health "$PRIMARY"; then
-    # => If primary database unreachable
-    echo "Primary database unhealthy"
+if ! check_health "$PRIMARY"; then  # => If primary database unreachable
+                                 # => ! inverts exit code: true when ping fails
+    echo "Primary database unhealthy"  # => Log primary failure detection
 
-    if check_health "$SECONDARY"; then
-        # => If secondary is healthy
-        failover_to_secondary   # => Switch to secondary
+    if check_health "$SECONDARY"; then  # => Check if secondary available
+        failover_to_secondary    # => Secondary healthy: switch traffic to it
     else
-        echo "CRITICAL: Both databases unhealthy!"
-        send_alert "CRITICAL: All databases down"
-        exit 1                  # => Total failure, cannot failover
+        echo "CRITICAL: Both databases unhealthy!"  # => Total failure scenario
+        send_alert "CRITICAL: All databases down"   # => Urgent alert to on-call
+        exit 1                   # => Exit failure: no database available
     fi
 fi
 
@@ -3604,49 +3774,54 @@ fi
 #!/bin/bash
 set -euo pipefail               # => Fail fast on errors
 
-BACKUP_DATE="${1:-$(date +%Y%m%d)}"
-# => Backup date from arg or today (YYYYMMDD)
-BACKUP_DIR="/backup/$BACKUP_DATE"
-# => Backup directory for specific date
+BACKUP_DATE="${1:-$(date +%Y%m%d)}"   # => Date from arg, default today (YYYYMMDD)
+                                 # => date +%Y%m%d: format 20251230
+BACKUP_DIR="/backup/$BACKUP_DATE"  # => Backup directory for specific date
+                                 # => Path example: /backup/20251230
 
-echo "=== Full System Restore ==="
-echo "Backup date: $BACKUP_DATE"
+echo "=== Full System Restore ==="  # => Visual separator in output
+echo "Backup date: $BACKUP_DATE"   # => Log which backup date is being restored
 
 # Verify backup exists
-if [ ! -d "$BACKUP_DIR" ]; then
-    echo "ERROR: Backup not found: $BACKUP_DIR"
-    exit 1                      # => Backup directory missing
+if [ ! -d "$BACKUP_DIR" ]; then  # => -d: test path exists and is directory
+    echo "ERROR: Backup not found: $BACKUP_DIR"  # => User-friendly error
+    exit 1                       # => Cannot proceed without backup directory
 fi
 
 # Stop services
-echo "Stopping services..."
-systemctl stop nginx myapp      # => Stop all services
+echo "Stopping services..."      # => Log service shutdown
+systemctl stop nginx myapp       # => Stop all services before restore
+                                 # => Prevents data corruption during file restoration
 
 # Restore database
-echo "Restoring database..."
+echo "Restoring database..."     # => Log database restore
 gunzip -c "$BACKUP_DIR/database.sql.gz" | mysql production
-# => Restore database from compressed SQL dump
+                                 # => gunzip -c: decompress to stdout (keep file)
+                                 # => Pipe SQL to mysql for restoration
 
 # Restore files
-echo "Restoring files..."
+echo "Restoring files..."        # => Log file restore
 tar -xzf "$BACKUP_DIR/files.tar.gz" -C /
-# => Extract application files to root
+                                 # => -C /: extract relative to filesystem root
+                                 # => Restores application files to original paths
 
 # Restore configuration
-echo "Restoring configuration..."
+echo "Restoring configuration..."  # => Log config restore
 tar -xzf "$BACKUP_DIR/config.tar.gz" -C /etc
-# => Extract config files to /etc
+                                 # => Restore /etc configuration files
+                                 # => Overwrites current config with backup version
 
 # Start services
-echo "Starting services..."
-systemctl start myapp nginx     # => Bring services back online
+echo "Starting services..."      # => Log service startup
+systemctl start myapp nginx      # => Bring services back online
+                                 # => Order matters: start app before proxy
 
 # Verify
-echo "Running health checks..."
-./scripts/health-check.sh       # => Verify system healthy
+echo "Running health checks..."  # => Log verification start
+./scripts/health-check.sh        # => Execute health checks against restored system
+                                 # => Should exit 0 if all services healthy
 
-echo "Restore complete"
-# => Full system restored from backup
+echo "Restore complete"          # => Full system restored from backup
 ```
 
 **Key Takeaway**: Always verify backup integrity before relying on it, implement automated failover with health checks, and test restore procedures regularly - untested backups are not backups.
@@ -3688,185 +3863,199 @@ graph TD
 set -euo pipefail               # => Fail fast on errors
 
 # Configuration
-VERSION="${1:?Usage: $0 <version>}"
-# => ${1:?message}: require first arg or exit with error
-ENVIRONMENT="production"        # => Target environment
+VERSION="${1:?Usage: $0 <version>}"   # => ${1:?message}: require first arg or exit with error
+                                       # => Version format example: 1.2.3
+ENVIRONMENT="production"        # => Target environment (for logging and smoke tests)
 CANARY_PERCENT=10               # => Deploy to 10% of traffic first
-CANARY_DURATION=300             # => Monitor canary for 5 minutes
-ROLLBACK_ON_ERROR=true          # => Auto-rollback on failure
+CANARY_DURATION=300             # => Monitor canary for 5 minutes (300 seconds)
+ROLLBACK_ON_ERROR=true          # => Auto-rollback on failure flag
 
 # Logging
 log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"; }
-# => Timestamped log messages
-error() { log "ERROR: $*" >&2; }
-# => Errors to stderr
+                                 # => Timestamp format: 2025-12-30 14:30:22
+                                 # => $*: all arguments concatenated
+error() { log "ERROR: $*" >&2; }  # => Errors to stderr (separate from stdout)
+                                   # => Enables log piping without mixing errors
 
 # Cleanup and rollback
 cleanup() {
-    local exit_code=$?          # => Capture exit status
+    local exit_code=$?           # => Capture exit status (must be first command)
     if [ $exit_code -ne 0 ] && [ "$ROLLBACK_ON_ERROR" = true ]; then
-        # => If deployment failed and auto-rollback enabled
+                                 # => Triggers on any non-zero exit AND rollback enabled
         log "Deployment failed, initiating rollback..."
-        rollback                # => Restore previous version
+        rollback                 # => Call rollback function to restore previous version
     fi
-}
-trap cleanup EXIT               # => Run cleanup on script exit
+}                                # => Cleanup function registered as EXIT trap below
+trap cleanup EXIT                # => Run cleanup on script exit (success or failure)
+                                 # => Ensures rollback runs even on unexpected exits
 
 # Pre-flight checks
 preflight_checks() {
-    log "Running pre-flight checks..."
+    log "Running pre-flight checks..."  # => Log check start
 
     # Check cluster access
     kubectl cluster-info > /dev/null || { error "Cannot access cluster"; return 1; }
-    # => Verify kubectl can communicate with Kubernetes cluster
+                                 # => Verify kubectl can communicate with Kubernetes cluster
+                                 # => > /dev/null: suppress output, check exit code only
+                                 # => || { ... }: run on failure (short-circuit on error)
 
     # Check image exists
     docker manifest inspect "registry.example.com/myapp:$VERSION" > /dev/null || \
         { error "Image not found"; return 1; }
-    # => Verify Docker image exists in registry
+                                 # => Verify Docker image exists in registry before deploying
+                                 # => Prevents deployment failure after service already stopped
 
     # Check current deployment health
     kubectl rollout status deployment/myapp --timeout=30s || \
         { error "Current deployment unhealthy"; return 1; }
-    # => Ensure current deployment stable before updating
+                                 # => Ensure current deployment stable before updating
+                                 # => Prevents deploying on top of already-broken state
 
-    log "Pre-flight checks passed"
+    log "Pre-flight checks passed"  # => All prerequisites verified
 }
 
 # Deploy canary
 deploy_canary() {
-    log "Deploying canary ($CANARY_PERCENT%)..."
+    log "Deploying canary ($CANARY_PERCENT%)..."  # => Log canary deployment start
 
     # Create canary deployment
     kubectl set image deployment/myapp-canary myapp="registry.example.com/myapp:$VERSION"
-    # => Update canary deployment with new version
+                                 # => Update canary deployment image to new version
+                                 # => myapp-canary: separate deployment for canary traffic
     kubectl scale deployment/myapp-canary --replicas=1
-    # => Start 1 canary pod (10% of traffic)
+                                 # => Start 1 canary pod (10% of traffic via load balancer)
+                                 # => 1 canary + 9 main = 10% canary traffic ratio
 
     # Wait for canary to be ready
     kubectl rollout status deployment/myapp-canary --timeout=120s
-    # => Wait up to 2 minutes for canary pod to be healthy
+                                 # => Block until canary pod reports ready
+                                 # => Timeout 120s: fail fast if pod won't start
 
-    log "Canary deployed"
+    log "Canary deployed"        # => Log successful canary deployment
 }
 
 # Monitor canary
 monitor_canary() {
-    log "Monitoring canary for ${CANARY_DURATION}s..."
+    log "Monitoring canary for ${CANARY_DURATION}s..."  # => Log monitoring start with duration
 
     local end_time=$(($(date +%s) + CANARY_DURATION))
-    # => Calculate end time (now + 300 seconds)
+                                 # => date +%s: current Unix timestamp (seconds)
+                                 # => end_time: timestamp when monitoring period expires
 
-    while [ $(date +%s) -lt $end_time ]; do
-        # => Loop until monitoring period ends
+    while [ $(date +%s) -lt $end_time ]; do  # => Loop until monitoring period ends
+                                 # => date +%s re-evaluated each iteration
 
         # Check error rate
         error_rate=$(curl -s "http://metrics.example.com/api/v1/query?query=error_rate{version=\"$VERSION\"}" | \
             jq -r '.data.result[0].value[1] // 0')
-        # => Query Prometheus for canary error rate
+                                 # => Query Prometheus for canary error rate
+                                 # => jq // 0: default to 0 if metric not found yet
 
         if (( $(echo "$error_rate > 0.01" | bc -l) )); then
-            # => If error rate > 1%
-            error "Canary error rate too high: $error_rate"
-            return 1            # => Fail deployment
+                                 # => bc -l: floating-point comparison (bash $(()) is integer only)
+                                 # => 0.01 = 1% error rate threshold
+            error "Canary error rate too high: $error_rate"  # => Log threshold violation
+            return 1             # => Trigger auto-rollback via cleanup trap
         fi
 
         # Check latency
         latency=$(curl -s "http://metrics.example.com/api/v1/query?query=p99_latency{version=\"$VERSION\"}" | \
             jq -r '.data.result[0].value[1] // 0')
-        # => Query Prometheus for 99th percentile latency
+                                 # => Query Prometheus for 99th percentile latency (milliseconds)
 
         if (( $(echo "$latency > 500" | bc -l) )); then
-            # => If p99 latency > 500ms
-            error "Canary latency too high: ${latency}ms"
-            return 1            # => Fail deployment
+                                 # => 500ms p99 latency SLO threshold
+            error "Canary latency too high: ${latency}ms"  # => Log SLO violation
+            return 1             # => Trigger auto-rollback via cleanup trap
         fi
 
-        log "Canary healthy (error_rate=$error_rate, latency=${latency}ms)"
-        sleep 30                # => Check metrics every 30 seconds
-    done
+        log "Canary healthy (error_rate=$error_rate, latency=${latency}ms)"  # => Log metrics
+        sleep 30                 # => Check metrics every 30 seconds
+    done                         # => Continue loop until monitoring period expires
 
-    log "Canary monitoring passed"
-    # => Canary stable for 5 minutes, safe to proceed
+    log "Canary monitoring passed"  # => Canary stable for full monitoring duration
+                                 # => Safe to proceed with full rollout
 }
 
 # Full rollout
 full_rollout() {
-    log "Starting full rollout..."
+    log "Starting full rollout..."  # => Log full rollout start
 
     # Update main deployment
     kubectl set image deployment/myapp myapp="registry.example.com/myapp:$VERSION"
-    # => Update all pods with new version
+                                 # => Update main deployment (all pods) to new version
+                                 # => Triggers rolling update: pods replaced gradually
 
     # Wait for rollout
     kubectl rollout status deployment/myapp --timeout=600s
-    # => Wait up to 10 minutes for full rollout
+                                 # => Wait up to 10 minutes for all pods to be updated
+                                 # => Exits 0 when all pods running new version
 
     # Scale down canary
     kubectl scale deployment/myapp-canary --replicas=0
-    # => Remove canary deployment (no longer needed)
+                                 # => Remove canary deployment (100% traffic to main)
+                                 # => Canary purpose served: validated new version
 
-    log "Full rollout complete"
+    log "Full rollout complete"  # => All pods running new version
 }
 
 # Rollback
 rollback() {
-    log "Rolling back..."
+    log "Rolling back..."        # => Log rollback initiation
 
     kubectl rollout undo deployment/myapp
-    # => Revert to previous deployment revision
+                                 # => Revert to previous deployment revision
+                                 # => Kubernetes maintains revision history for undo
     kubectl scale deployment/myapp-canary --replicas=0
-    # => Remove canary deployment
+                                 # => Remove canary deployment during rollback
     kubectl rollout status deployment/myapp --timeout=120s
-    # => Wait for rollback to complete
+                                 # => Wait for rollback to complete (2 minute timeout)
 
-    log "Rollback complete"
-    # => Previous version restored
+    log "Rollback complete"      # => Previous version restored and running
 }
 
 # Post-deployment verification
 verify_deployment() {
-    log "Verifying deployment..."
+    log "Verifying deployment..."  # => Log verification start
 
     # Run smoke tests
     ./scripts/smoke-tests.sh "$ENVIRONMENT"
-    # => Execute automated tests against production
+                                 # => Execute automated smoke tests against production
+                                 # => Script exits non-zero if any test fails
 
     # Check all pods running
     ready=$(kubectl get deployment myapp -o jsonpath='{.status.readyReplicas}')
-    # => Count of ready pods
+                                 # => jsonpath: extract readyReplicas field from JSON
     desired=$(kubectl get deployment myapp -o jsonpath='{.spec.replicas}')
-    # => Expected pod count
+                                 # => spec.replicas: configured desired replica count
 
-    if [ "$ready" != "$desired" ]; then
-        # => If not all pods ready
-        error "Not all pods ready: $ready/$desired"
-        return 1                # => Deployment incomplete
+    if [ "$ready" != "$desired" ]; then  # => Compare ready vs desired pod count
+        error "Not all pods ready: $ready/$desired"  # => Log discrepancy
+        return 1                 # => Deployment incomplete, trigger rollback
     fi
 
-    log "Verification passed"
-    # => All pods healthy and tests passed
+    log "Verification passed"    # => All pods healthy and smoke tests passed
 }
 
 # Main deployment flow
 main() {
-    log "=== Starting deployment of version $VERSION ==="
+    log "=== Starting deployment of version $VERSION ==="  # => Log deployment start
 
-    preflight_checks            # => Verify prerequisites
-    deploy_canary               # => Deploy to 10% traffic
-    monitor_canary              # => Watch metrics for 5 minutes
-    full_rollout                # => Deploy to 100% traffic
-    verify_deployment           # => Run final verification
+    preflight_checks             # => Check prerequisites (cluster, image, health)
+    deploy_canary                # => Deploy to 10% traffic
+    monitor_canary               # => Watch metrics for 5 minutes
+    full_rollout                 # => Deploy to 100% traffic
+    verify_deployment            # => Run final verification
 
-    log "=== Deployment of $VERSION completed successfully ==="
+    log "=== Deployment of $VERSION completed successfully ==="  # => Log success
 
     # Notify team
     curl -X POST -d "{\"text\": \"Deployed $VERSION to $ENVIRONMENT\"}" \
-        "$SLACK_WEBHOOK_URL"
-    # => Send success notification to Slack
+        "$SLACK_WEBHOOK_URL"     # => POST to Slack webhook with deployment message
+                                 # => Notifies on-call team of successful deployment
 }
 
-main                            # => Execute deployment
+main                             # => Execute deployment (pass all args to main)
 ```
 
 **Key Takeaway**: Combine pre-flight checks, canary deployments, metrics monitoring, automated rollback, and post-deployment verification for reliable production deployments that minimize risk.

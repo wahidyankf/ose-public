@@ -84,7 +84,7 @@ output "file_path" {
 
 **Key Takeaway**: Terraform workflow is init → plan → apply → destroy. The `terraform plan` command is critical for previewing changes before applying them. Always review the plan output before running apply in production.
 
-**Why It Matters**: Terraform's plan/apply workflow prevents the production disasters common with manual console changes (ClickOps). This safety mechanism, combined with version-controlled HCL, makes infrastructure changes as safe and reviewable as application code, preventing the "works on my machine" problems that plague manual provisioning.
+**Why It Matters**: Terraform's plan/apply workflow prevents the production disasters common with manual console changes (ClickOps). This safety mechanism, combined with version-controlled HCL, makes infrastructure changes as safe and reviewable as application code, preventing the "works on my machine" problems that plague manual provisioning. Teams using this workflow reduce unplanned outages by treating every infrastructure change as a code review.
 
 ---
 
@@ -125,6 +125,8 @@ resource "local_file" "demo" {
 
 
 
+
+
 ```
 
 **CLI Commands**:
@@ -157,6 +159,8 @@ resource "local_file" "demo" {
 # Generate dependency graph
 # $ terraform graph | dot -Tpng > graph.png
 # => Creates visual dependency graph (requires graphviz)
+
+
 ```
 
 **Key Takeaway**: Use `terraform fmt` before commits to maintain consistent formatting. Use `terraform validate` to catch syntax errors early. Use `terraform show` and `state list` to inspect infrastructure state without modifying resources.
@@ -301,7 +305,9 @@ locals {
  template = <<-EOT
  # => Sets template
  Name: ${local.object_value.name}
+ # => Terraform configuration
  Port: ${local.object_value.port}
+ # => Terraform configuration
  EOT
  # => Multi-line string with interpolation
 
@@ -333,21 +339,31 @@ locals {
 resource "local_file" "types_demo" {
 # => Resource definition
  filename = "types.txt"
+ # => Output file path
  # => Sets filename
  content = <<-EOT
+ # => File/resource content
  # => Sets content
  String: ${local.string_value}
+ # => Terraform configuration
  Number: ${local.number_value}
+ # => Terraform configuration
  Boolean: ${local.bool_value}
+ # => Terraform configuration
  List: ${join(", ", local.list_value)}
+ # => Terraform configuration
  Conditional: ${local.conditional}
+ # => Terraform configuration
  Arithmetic: ${local.arithmetic}
+ # => Terraform configuration
  EOT
+ # => Terraform configuration
 }
 
 output "demonstrations" {
 # => Output value
  value = {
+ # => Output value
  interpolated = local.interpolated
  # => Sets interpolated
  uppercase = local.uppercase
@@ -363,11 +379,13 @@ output "demonstrations" {
 
 
 
+
+
 ```
 
 **Key Takeaway**: Use `locals` block for computed values shared across configuration. Use `${}` for string interpolation. HCL supports rich expressions including conditionals, arithmetic, and built-in functions. Reference built-in functions at terraform.io/language/functions.
 
-**Why It Matters**: HCL's data types and expressions eliminate the need for external scripting languages (Python, Bash) to generate configuration. This keeps infrastructure logic in one place where Terraform's plan command can validate it, instead of scattered across shell scripts that might fail mid-deployment without safety checks.
+**Why It Matters**: HCL's data types and expressions eliminate the need for external scripting languages (Python, Bash) to generate configuration. This keeps infrastructure logic in one place where Terraform's plan command can validate it, instead of scattered across shell scripts that might fail mid-deployment without safety checks. Centralized configuration also simplifies auditing and compliance reviews.
 
 ---
 
@@ -387,15 +405,20 @@ Proper documentation through comments and descriptions makes Terraform configura
 // => Slash-style comment (alternative syntax)
 
 /*
+# => Terraform configuration
  Multi-line comment
+ # => Terraform configuration
  using C-style syntax
+ # => Terraform configuration
  spans multiple lines
+ # => Terraform configuration
 */
 # => Multi-line comment block for documentation sections
 
 terraform {
 # => Terraform configuration block
  required_version = ">= 1.0" # Inline comment
+ # => Minimum Terraform version
  # => Sets required_version
  # => Inline comment appears after code on same line
 }
@@ -423,14 +446,19 @@ resource "local_file" "documented" {
 variable "environment" {
 # => Input variable for environment name
  description = <<-EOT
+ # => Human-readable description
  # => Sets description using heredoc syntax
  Environment name for resource tagging.
+ # => Terraform configuration
  Valid values: development, staging, production
+ # => Terraform configuration
  EOT
  # => Multi-line description appears in terraform plan output
  type = string
+ # => Variable type constraint
  # => Type constraint ensures string value
  default = "development"
+ # => Default value if not specified
  # => Sets default value if variable not provided
  # => Makes variable optional (no default = required)
 
@@ -450,10 +478,13 @@ variable "environment" {
 output "file_info" {
 # => Output value exposes file information
  description = "Information about the created file"
+ # => Human-readable description
  # => Sets description (appears in terraform output command)
  value = {
+ # => Output value
  # => Map value with multiple attributes
  filename = local_file.documented.filename
+ # => Output file path
  # => References filename attribute from resource
  # => Value: "documented.txt"
  permissions = local_file.documented.file_permission
@@ -462,6 +493,8 @@ output "file_info" {
  }
  # => Output available after terraform apply completes
 }
+
+
 
 
 
@@ -667,7 +700,7 @@ output "function_results" {
 
 **Key Takeaway**: Terraform functions enable complex transformations without external scripting. Use `..` operator for variadic expansion (spreading list elements as separate arguments). Functions are pure—same input always produces same output. Reference complete function catalog at terraform.io/language/functions.
 
-**Why It Matters**: Built-in functions replace brittle shell scripts and external data sources that complicate infrastructure deployment. Pure functions mean Terraform plans are reproducible—same configuration always produces same plan, unlike shell scripts with hidden dependencies on system state, ensuring infrastructure changes are predictable across team members' machines and CI/CD systems.
+**Why It Matters**: Built-in functions replace brittle shell scripts and external data sources that complicate infrastructure deployment. Pure functions mean Terraform plans are reproducible—same configuration always produces same plan, unlike shell scripts with hidden dependencies on system state, ensuring infrastructure changes are predictable across team members' machines and CI/CD systems. This reproducibility is essential for reliable automated deployments.
 
 ---
 
@@ -677,114 +710,106 @@ output "function_results" {
 
 Providers are plugins that manage resources for specific platforms (AWS, Azure, GCP, Kubernetes, etc.). Each provider requires configuration with credentials, regions, and version constraints.
 
+**Note**: Cloud providers (AWS, Azure) require credentials to run. This example uses only the `local` provider so it runs without any cloud account. Cloud provider configuration patterns are shown as comments for reference.
+
 **Code**:
 
 ```hcl
 # providers.tf
 terraform {
-# => Terraform configuration block
-# => Configures Terraform behavior and provider requirements
- required_version = ">= 1.0" # => String value
- # => Sets required_version constraint to 1.0 or higher
+ # => terraform block configures Terraform behavior and provider requirements
+ required_version = ">= 1.0" # => Minimum Terraform version constraint
+ # => Prevents running with incompatible older versions
 
  required_providers {
- # => required_providers block declares provider dependencies
- # => Lists all providers used in configuration
- # AWS provider
- aws = { # => Map/object definition
- source = "hashicorp/aws" # => Provider source (namespace/name)
- # => Format: hostname/namespace/type (default registry: registry.terraform.io)
- # => Sets source location for provider download
- version = "~> 5.0" # => Pessimistic constraint (~> allows rightmost increment)
- # => ~> 5.0 allows 5.x but not 6.0 (prevents breaking changes)
- # => Sets version constraint for provider
+ # => required_providers block declares all provider dependencies
+ # => Format: { source = "namespace/name", version = "constraint" }
+
+ # Local provider - runs without cloud credentials
+ local = {                    # => Map/object definition
+ source = "hashicorp/local" # => Provider source (registry.terraform.io/hashicorp/local)
+ # => Format: hostname/namespace/type (default hostname: registry.terraform.io)
+ version = "~> 2.0"        # => Pessimistic constraint (~> allows rightmost increment)
+ # => ~> 2.0 allows 2.x but not 3.0 (prevents breaking changes)
  }
 
- # Azure provider
- azurerm = { # => Map/object definition
- source = "hashicorp/azurerm" # => String value
- # => Provider source location
- version = ">= 3.0, < 4.0" # => Range constraint
- # => Sets version
- }
+ # Example: AWS provider (requires AWS credentials - shown for reference)
+ # aws = {
+ # source  = "hashicorp/aws"  # => registry.terraform.io/hashicorp/aws
+ # version = "~> 5.0"         # => ~> 5.0 allows 5.x but not 6.0
+ # }
 
- # Local provider (for examples)
- local = { # => Map/object definition
- source = "hashicorp/local" # => String value
- # => Provider source location
- version = "~> 2.0" # => String value
- # => Sets version
- }
+ # Example: Azure provider (requires Azure credentials - shown for reference)
+ # azurerm = {
+ # source  = "hashicorp/azurerm" # => registry.terraform.io/hashicorp/azurerm
+ # version = ">= 3.0, < 4.0"    # => Range constraint: 3.x series only
+ # }
  }
 }
 
-# AWS provider configuration
-provider "aws" {
-# => Provider configuration
- region = "us-east-1" # => AWS region
- # => Credentials read from environment variables:
- # => AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
- # => Or from ~/.aws/credentials file
+# Local provider configuration (no credentials needed)
+provider "local" {} # => No config arguments needed for local provider
+# => Local provider manages files on the local filesystem
+# => No authentication required - ideal for learning and testing
 
- default_tags {
- tags = { # => Map/object definition
- Environment = "development"
- # => Sets Environment
- ManagedBy = "Terraform"
- # => Sets ManagedBy
- }
- }
- # => Default tags applied to all AWS resources
-}
-
-# Multiple provider configurations (aliases)
-provider "aws" {
-# => Provider configuration
- alias = "west" # => Provider alias for multi-region
- # => Sets alias
- region = "us-west-2"
- # => Sets region
-}
-
-# Azure provider configuration
-provider "azurerm" {
-# => Provider configuration
- features {} # => Required features block
- # => Credentials from Azure CLI (az login) or environment variables
-}
-
-# Local provider (no configuration needed)
-provider "local" {}
-# => Local provider for file-based examples
-
-# Resource using default AWS provider
-resource "local_file" "provider_demo" {
-# => Provider configuration
- filename = "providers.txt"
- # => Sets filename
- content = <<-EOT
- # => Sets content
- Providers configured:
- - AWS (default): us-east-1
- - AWS (west): us-west-2
- - Azure: features enabled
- - Local: file operations
- EOT
-}
-
-# Resource using aliased provider
-# resource "aws_s3_bucket" "west_bucket" {
-# provider = aws.west # => Use aliased provider explicitly
-# bucket = "example-west-bucket"
+# Example: AWS provider configuration (shown for reference, requires credentials)
+# provider "aws" {
+#  region = "us-east-1"          # => AWS region for resources
+#  # => Credentials from: AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY env vars
+#  # => Or from: ~/.aws/credentials file (aws configure)
+#  default_tags {
+#    tags = {
+#      Environment = "development" # => Applied to all AWS resources
+#      ManagedBy   = "Terraform"
+#    }
+#  }
 # }
 
+# Example: Provider alias for multi-region (shown for reference)
+# provider "aws" {
+#  alias  = "west"     # => Provider alias enables multiple instances
+#  region = "us-west-2" # => Different region than default provider
+# }
+
+# Runnable resource using local provider (no cloud credentials required)
+resource "local_file" "provider_demo" {
+ # => local_file resource creates a file on the local filesystem
+ filename = "${path.module}/providers.txt" # => Output file path
+ # => path.module resolves to directory containing this .tf file
+ content = <<-EOT
+ # => File/resource content
+ # => Heredoc string (<<-EOT strips leading whitespace)
+ Provider configuration patterns:
+ # => Terraform configuration
+ - local: runs without credentials (used in this example)
+ # => Terraform configuration
+ - aws:   requires AWS_ACCESS_KEY_ID + AWS_SECRET_ACCESS_KEY
+ # => Terraform configuration
+ - azurerm: requires az login or ARM_* environment variables
+ # => Terraform configuration
+ Version constraint patterns:
+ # => Terraform configuration
+ - "~> 5.0" means >= 5.0, < 6.0 (patch + minor updates)
+ # => Terraform configuration
+ - ">= 3.0, < 4.0" means 3.x series only
+ # => Terraform configuration
+ EOT
+ # => terraform apply creates providers.txt in current directory
+}
+
+output "demo_file" {
+ # => output block: exposes values after terraform apply
+ value = local_file.provider_demo.filename # => Reference: resource_type.name.attribute
+ # => Outputs the created file path after apply
+ # => Output: demo_file = "./providers.txt"
+}
 
 
 ```
 
 **Key Takeaway**: Declare providers in `required_providers` block with source and version. Configure providers with credentials and region. Use provider aliases for multi-region deployments. Version constraints prevent breaking changes: `~> 5.0` means `>= 5.0, < 6.0`.
 
-**Why It Matters**: Terraform's provider ecosystem with 3,000+ providers enables multi-cloud infrastructure without vendor lock-in. Version constraints prevent the "upgrade broke production" incidents common with unversioned scripts, ensuring provider updates are deliberate and tested, not accidental surprises during routine deployments.
+**Why It Matters**: Terraform's provider ecosystem with 3,000+ providers enables multi-cloud infrastructure without vendor lock-in. Version constraints prevent the "upgrade broke production" incidents common with unversioned scripts, ensuring provider updates are deliberate and tested, not accidental surprises during routine deployments. This consistency makes onboarding new engineers predictable—they use the same provider versions as the rest of the team.
 
 ---
 
@@ -862,6 +887,7 @@ resource "local_file" "counted" {
  filename = "file_${count.index}.txt" # => count.index: 0, 1, 2
  # => Sets filename
  content = "File number ${count.index}"
+ # => File/resource content
  # => Creates: file_0.txt, file_1.txt, file_2.txt
 }
 
@@ -869,16 +895,20 @@ resource "local_file" "counted" {
 resource "local_file" "first" {
 # => Resource definition
  filename = "first.txt"
+ # => Output file path
  # => Sets filename
  content = "Created first"
+ # => File/resource content
  # => Sets content
 }
 
 resource "local_file" "second" {
 # => Resource definition
  filename = "second.txt"
+ # => Output file path
  # => Sets filename
  content = "Created after first"
+ # => File/resource content
  # => Sets content
  depends_on = [ # => Explicit dependency list
 
@@ -890,6 +920,7 @@ resource "local_file" "second" {
 output "resource_info" {
 # => Resource definition
  value = {
+ # => Output value
  simple_id = local_file.simple.id
  # => Sets simple_id
  simple_filename = local_file.simple.filename
@@ -899,6 +930,8 @@ output "resource_info" {
  }
  # => Shows resource attributes after apply
 }
+
+
 
 
 
@@ -982,11 +1015,15 @@ resource "local_file" "depends_explicit" {
 resource "local_file" "final" {
 # => Resource definition
  filename = "final.txt"
+ # => Output file path
  # => Sets filename
  content = <<-EOT
+ # => File/resource content
  # => Sets content
  Implicit: ${local_file.depends_implicit.filename}
+ # => Terraform configuration
  Explicit: ${local_file.depends_explicit.filename}
+ # => Terraform configuration
  EOT
  # => Implicit dependencies on both depends_implicit and depends_explicit
  # => Terraform creates in correct order: base -> implicit/explicit -> final
@@ -994,6 +1031,8 @@ resource "local_file" "final" {
 
 # View dependency graph
 # $ terraform graph | dot -Tpng > dependencies.png
+
+
 
 ```
 
@@ -1185,6 +1224,7 @@ variable "environment" {
  # => Description appears in terraform console and docs
  # => Helps users understand variable purpose
  type = string
+ # => Variable type constraint
  # => Type constraint ensures string value
  # => Type checking happens during terraform plan
  default = "development" # => Used if not provided
@@ -1198,6 +1238,7 @@ variable "project_name" {
  description = "Project name for resource naming" # => String value
  # => Sets description
  type = string
+ # => Variable type constraint
  # => Type constraint ensures string value
  # => Must be provided via CLI, file, or environment variable
  # => terraform apply fails if not provided
@@ -1209,6 +1250,7 @@ variable "instance_count" {
  description = "Number of instances to create" # => String value
  # => Sets description
  type = number
+ # => Variable type constraint
  # => Type constraint ensures numeric value
  default = 1 # => Numeric value
  # => Default prevents need for explicit value in most cases
@@ -1218,10 +1260,13 @@ variable "instance_count" {
 variable "enable_monitoring" {
 # => Input variable
  description = "Enable monitoring features"
+ # => Human-readable description
  # => Sets description
  type = bool
+ # => Variable type constraint
  # => Type constraint ensures boolean value
  default = false
+ # => Default value if not specified
  # => Monitoring disabled by default (opt-in pattern)
 }
 
@@ -1229,11 +1274,14 @@ variable "enable_monitoring" {
 variable "allowed_cidrs" {
 # => Input variable
  description = "List of allowed CIDR blocks"
+ # => Human-readable description
  # => Sets description
  type = list(string)
+ # => Variable type constraint
  # => Type constraint ensures list of strings
  # => Rejected: non-string list elements, single string values
  default = ["10.0.0.0/8"]
+ # => Default value if not specified
  # => Single private network CIDR in default configuration
 }
 
@@ -1241,10 +1289,13 @@ variable "allowed_cidrs" {
 variable "tags" {
 # => Input variable
  description = "Resource tags"
+ # => Human-readable description
  # => Sets description
  type = map(string)
+ # => Variable type constraint
  # => Type constraint ensures string-keyed map
  default = {
+ # => Default value if not specified
  ManagedBy = "Terraform"
  # => All infrastructure tagged with IaC tool for auditing
  }
@@ -1254,8 +1305,10 @@ variable "tags" {
 variable "server_config" {
 # => Input variable
  description = "Server configuration"
+ # => Human-readable description
  # => Sets description
  type = object({
+ # => Variable type constraint
  instance_type = string
  # => Server size (t3.micro, t3.small, etc.)
  disk_size = number
@@ -1265,6 +1318,7 @@ variable "server_config" {
  })
  # => object type enforces exact schema - all fields required
  default = {
+ # => Default value if not specified
  instance_type = "t3.micro"
  # => Free tier eligible instance type
  disk_size = 20
@@ -1278,10 +1332,13 @@ variable "server_config" {
 variable "region" {
 # => Input variable
  description = "AWS region"
+ # => Human-readable description
  # => Sets description
  type = string
+ # => Variable type constraint
  # => Type constraint ensures string value
  default = "us-east-1"
+ # => Default value if not specified
  # => Sets default
 
  validation {
@@ -1299,12 +1356,15 @@ variable "region" {
 variable "api_key" {
 # => Input variable
  description = "API key for external service"
+ # => Human-readable description
  # => Sets description
  type = string
+ # => Variable type constraint
  # => Type constraint ensures string value
  sensitive = true # => Value hidden in plan/apply output
  # => Shows (sensitive value) instead of actual string
  default = ""
+ # => Default value if not specified
  # => Empty default (should be overridden in production)
 }
 
@@ -1312,15 +1372,22 @@ variable "api_key" {
 resource "local_file" "config" {
 # => Resource definition
  filename = "${var.environment}-config.txt"
+ # => Output file path
  # => var.environment references variable value
  # => Produces: "development-config.txt" with default
  content = <<-EOT
+ # => File/resource content
  # => Sets content
  Project: ${var.project_name}
+ # => Terraform configuration
  Environment: ${var.environment}
+ # => Terraform configuration
  Instances: ${var.instance_count}
+ # => Terraform configuration
  Monitoring: ${var.enable_monitoring}
+ # => Terraform configuration
  Region: ${var.region}
+ # => Terraform configuration
  Tags: ${jsonencode(var.tags)}
  # => jsonencode converts map to JSON string
  Server: ${var.server_config.instance_type}
@@ -1328,6 +1395,8 @@ resource "local_file" "config" {
  EOT
  # => Heredoc syntax for multi-line strings
 }
+
+
 
 
 
@@ -1350,6 +1419,8 @@ resource "local_file" "config" {
 # Provide via auto-loaded file
 # terraform.tfvars (automatically loaded)
 # *.auto.tfvars (automatically loaded)
+
+
 ```
 
 **Key Takeaway**: Declare variables in `variables.tf` with type, description, and optional default. Use `var.name` to reference variables. Variable files (`*.tfvars`) separate configuration from code. Mark sensitive variables with `sensitive = true` to prevent exposure in logs.
@@ -1378,6 +1449,7 @@ provider "local" {}
 variable "prefix" {
 # => Input variable
  type = string
+ # => Variable type constraint
  # => Type constraint ensures string value
  default = "demo" # => String value
  # => Sets default
@@ -1409,8 +1481,10 @@ output "file_info" {
  id = local_file.output_demo.id
  # => Sets id
  filename = local_file.output_demo.filename
+ # => Output file path
  # => Sets filename
  content = local_file.output_demo.content
+ # => File/resource content
  # => Sets content
  permissions = local_file.output_demo.file_permission
  # => Sets permissions
@@ -1423,8 +1497,10 @@ output "file_info" {
 output "sensitive_data" {
 # => Output value
  description = "Sensitive information"
+ # => Human-readable description
  # => Sets description
  value = "secret-api-key-12345"
+ # => Output value
  # => Sets value
  sensitive = true # => Marked as sensitive
  # => terraform output sensitive_data (shows <sensitive>)
@@ -1435,8 +1511,10 @@ output "sensitive_data" {
 output "file_path" {
 # => Output value
  description = "Absolute file path"
+ # => Human-readable description
  # => Sets description
  value = abspath(local_file.output_demo.filename)
+ # => Output value
  # => Processes value through function
 }
 
@@ -1444,8 +1522,10 @@ output "file_path" {
 output "status_message" {
 # => Output value
  description = "Status based on configuration"
+ # => Human-readable description
  # => Sets description
  value = var.prefix == "prod" ? "Production mode" : "Development mode"
+ # => Output value
  # => Sets value
 }
 
@@ -1455,15 +1535,19 @@ locals {
  file_list = [
  # => Sets file_list
  local_file.output_demo.filename,
+ # => Terraform configuration
  "${var.prefix}-backup.txt"
+ # => Terraform configuration
  ]
 }
 
 output "all_files" {
 # => Output value
  description = "List of all managed files"
+ # => Human-readable description
  # => Sets description
  value = local.file_list
+ # => Output value
  # => Sets value
 }
 
@@ -1471,16 +1555,21 @@ output "all_files" {
 output "module_export" {
 # => Output value
  description = "Values for parent module or root configuration"
+ # => Human-readable description
  # => Sets description
  value = {
+ # => Output value
  resource_id = local_file.output_demo.id
  # => Sets resource_id
  filename = local_file.output_demo.filename
+ # => Output file path
  # => Sets filename
  }
  # => When this config is used as a module, parent can reference:
  # => module.child_module.module_export.resource_id
 }
+
+
 
 
 
@@ -1507,6 +1596,8 @@ output "module_export" {
 
 # Use outputs in scripts
 # $ FILE_ID=$(terraform output -raw file_id)
+
+
 ```
 
 **Key Takeaway**: Outputs expose computed values after apply. Use `sensitive = true` for secrets. Outputs from child modules are accessed via `module.name.output_name`. Use `-json` flag for machine-readable output in automation scripts.
@@ -1557,6 +1648,7 @@ provider "local" {}
 variable "environment" {
 # => Input variable
  type = string
+ # => Variable type constraint
  # => Type constraint ensures string value
  default = "development" # => String value
  # => Sets default
@@ -1565,6 +1657,7 @@ variable "environment" {
 variable "project" {
 # => Input variable
  type = string
+ # => Variable type constraint
  # => Type constraint ensures string value
  default = "myapp" # => String value
  # => Sets default
@@ -1625,6 +1718,7 @@ locals {
 
  # Map transformation
  region_map = {
+ # => Terraform configuration
  us-east-1 = "virginia"
  # => Sets us-east-1
  us-west-2 = "oregon"
@@ -1646,20 +1740,29 @@ resource "local_file" "config_file" {
  # => Creates multiple instances from collection
 
  filename = "${each.value}.txt"
+ # => Output file path
  # => Sets filename
  content = <<-EOT
+ # => File/resource content
  # => Sets content
  Resource: ${each.value}
+ # => Terraform configuration
  Environment: ${var.environment}
+ # => Terraform configuration
  Production: ${local.is_production}
+ # => Terraform configuration
  Backup: ${local.backup_enabled}
+ # => Terraform configuration
  Config: ${jsonencode(local.config)}
+ # => Terraform configuration
  EOT
+ # => Terraform configuration
 }
 
 resource "local_file" "tags_file" {
 # => Resource definition
  filename = "${local.prefix}-tags.txt"
+ # => Output file path
  # => Sets filename
  content = jsonencode( # => Converts value to JSON string
 
@@ -1670,6 +1773,7 @@ resource "local_file" "tags_file" {
 output "computed_values" {
 # => Output value
  value = {
+ # => Output value
  prefix = local.prefix
  # => Sets prefix
  is_production = local.is_production
@@ -1680,6 +1784,8 @@ output "computed_values" {
  # => Sets config
  }
 }
+
+
 
 
 
@@ -1858,10 +1964,12 @@ resource "local_file" "script" {
 # => Resource definition
  # => path.module is the current module directory path
  filename = "${path.module}/query.sh"
+ # => Output file path
  # => Sets filename
  file_permission = "0755" # => String value
  # => Sets file_permission
  content = <<-EOT
+ # => File/resource content
  #!/bin/bash
  # External data script must output JSON to stdout
 
@@ -1877,11 +1985,17 @@ resource "local_file" "script" {
 
  # Output JSON
  jq -n \
+ # => Terraform configuration
  --arg timestamp "$TIMESTAMP" \
+ # => Terraform configuration
  --arg hostname "$HOSTNAME" \
+ # => Terraform configuration
  --arg input "$INPUT_VAR" \
+ # => Terraform configuration
  '{"timestamp": $timestamp, "hostname": $hostname, "input": $input}'
+ # => Terraform configuration
  EOT
+ # => Terraform configuration
 }
 
 # External data source
@@ -1892,6 +2006,7 @@ data "external" "example" {
  # => Sets program
 
  query = {
+ # => Terraform configuration
  input_var = "test-value" # => Passed to script as JSON on stdin
  # => Sets input_var
  }
@@ -1908,8 +2023,10 @@ data "external" "example" {
 resource "local_file" "result" {
 # => Resource definition
  filename = "external_result.txt"
+ # => Output file path
  # => Sets filename
  content = <<-EOT
+ # => File/resource content
  # => Sets content
  Timestamp: ${data.external.example.result.timestamp}
  # => Data source
@@ -1929,6 +2046,8 @@ output "external_output" {
 
 
 
+
+
 ```
 
 **Python example**:
@@ -1939,13 +2058,17 @@ resource "local_file" "python_script" {
 # => Resource definition
  # => path.module is the current module directory path
  filename = "${path.module}/query.py"
+ # => Output file path
  # => Sets filename
  file_permission = "0755" # => String value
  # => Sets file_permission
  content = <<-EOT
+ # => File/resource content
  #!/usr/bin/env python3
  import json
+ # => Terraform configuration
  import sys
+ # => Terraform configuration
 
  # Read input from stdin
  input_data = json.load(sys.stdin)
@@ -1954,12 +2077,16 @@ resource "local_file" "python_script" {
  # Process data
  result = { # => Map/object definition
  "api_key": input_data.get("key_name", "default"),
+ # => Terraform configuration
  "computed": "value-from-api-call"
+ # => Terraform configuration
  }
 
  # Output JSON to stdout
  json.dump(result, sys.stdout)
+ # => Terraform configuration
  EOT
+ # => Terraform configuration
 }
 
 data "external" "python_data" {
@@ -1974,6 +2101,8 @@ data "external" "python_data" {
  local_file.python_script]
  # => Explicit dependency enforces creation order
 }
+
+
 
 
 
@@ -2003,6 +2132,7 @@ terraform {
 
  # Backend configuration (where state is stored)
  backend "local" {
+ # => Backend type for state storage
  # => Local backend stores state in filesystem
  path = "terraform.tfstate" # => Local state file (default)
  # => State file path relative to working directory
@@ -2020,6 +2150,8 @@ resource "local_file" "state_example" {
  content = "State management demo" # => String value
  # => After apply, state records filename, content, id
 }
+
+
 ```
 
 **State commands** (run via CLI):
@@ -2043,6 +2175,8 @@ $ terraform state pull
 # Upload state to backend (dangerous!)
 $ terraform state push terraform.tfstate.backup
 # => Overwrites remote state—use with caution
+
+
 ```
 
 **State file structure**:
@@ -2050,35 +2184,52 @@ $ terraform state push terraform.tfstate.backup
 ```json
 {
   "version": 4,
+  # => Terraform configuration
   "terraform_version": "1.9.0",
+  # => Terraform configuration
   "serial": 1,
+  # => Terraform configuration
   "lineage": "unique-uuid",
+  # => Terraform configuration
   "outputs": {},
   // => Output configuration
   "resources": [
+  # => Terraform configuration
     {
       "mode": "managed",
+      # => Terraform configuration
       "type": "local_file",
+      # => Terraform configuration
       "name": "state_example",
+      # => Terraform configuration
       "provider": "provider[\"registry.terraform.io/hashicorp/local\"]",
+      # => Terraform configuration
       "instances": [
+      # => Terraform configuration
         {
           "schema_version": 0,
+          # => Terraform configuration
           "attributes": {
+          # => Terraform configuration
             "filename": "state_example.txt",
+            # => Terraform configuration
             "content": "State management demo",
+            # => Terraform configuration
             "id": "hash-of-content"
+            # => Terraform configuration
           }
         }
       ]
     }
   ]
 }
+
+
 ```
 
 **Key Takeaway**: State file (`terraform.tfstate`) maps configuration to real infrastructure. Never edit state files manually—use `terraform state` commands. State contains sensitive data—always store securely. Local state works for solo work; use remote state for teams (covered in intermediate).
 
-**Why It Matters**: State files are Terraform's memory—without state, Terraform can't determine what infrastructure exists or what changes are needed. This mapping is why Terraform is idempotent (safe to run repeatedly) unlike imperative scripts that create duplicates. State contains resource IDs, IP addresses, passwords, and other secrets—lost or leaked state causes either infrastructure orphaning (can't destroy old resources) or security breaches (credentials exposed). Local backend is dangerous for teams: concurrent operations corrupt state because there is no locking mechanism, and the state file is not shared between team members. Teams must use remote backends (S3+DynamoDB, Terraform Cloud, Azure Blob Storage) which provide locking, encryption, access control, and versioning for safe team collaboration on shared infrastructure.
+**Why It Matters**: State files are Terraform's memory—without state, Terraform can't determine what infrastructure exists or what changes are needed. This mapping is why Terraform is idempotent (safe to run repeatedly) unlike imperative scripts that create duplicates. State contains resource IDs, IP addresses, passwords, and other secrets—lost or leaked state causes either infrastructure orphaning (can't destroy old resources) or security breaches (credentials exposed). Local backend is dangerous for teams: concurrent operations corrupt state because there is no locking mechanism, and the state file is not shared between team members.
 
 ### Example 17: State Commands
 
@@ -2090,6 +2241,7 @@ Terraform CLI provides commands to inspect and modify state. Essential for debug
 # state_operations.tf
 # => Demonstrates terraform state commands using three local files
 terraform {
+# => Terraform configuration block
  required_version = ">= 1.0" # => Terraform 1.0+ required
 }
 
@@ -2112,6 +2264,8 @@ resource "local_file" "file3" { # => Third demonstration file
  filename = "file3.txt" # => Output: file3.txt created
  content = "File 3 content" # => String value
 }
+
+
 ```
 
 **State operations**:
@@ -2156,6 +2310,8 @@ resource "local_file" "file3" { # => Third demonstration file
 # $ terraform force-unlock <lock-id>
 # => Removes state lock forcefully
 # => Use with caution—only if lock is stale
+
+
 ```
 
 **Refactoring example**:
@@ -2182,6 +2338,8 @@ resource "local_file" "new_name" {
 # Update state to match
 # $ terraform state mv local_file.old_name local_file.new_name
 
+
+
 ```
 
 **Key Takeaway**: Use `terraform state list` to view resources, `state show` for details, `state mv` for renaming, `state rm` for removing from management. Always backup state before manual operations (`cp terraform.tfstate terraform.tfstate.backup`). State commands enable refactoring without destroying infrastructure.
@@ -2205,6 +2363,7 @@ terraform {
 
  # Local backend (no locking support)
  backend "local" {
+ # => Backend type for state storage
  # => Backend configuration for state storage
  path = "terraform.tfstate" # => String value
  # => No locking—unsafe for team usage
@@ -2220,6 +2379,8 @@ resource "local_file" "locking_demo" {
  filename = "locking.txt" # => String value
  content = "State locking demonstration" # => String value
 }
+
+
 ```
 
 **S3 backend with locking** (recommended for teams):
@@ -2227,6 +2388,7 @@ resource "local_file" "locking_demo" {
 ```hcl
 # backend "s3" block replaces backend "local" above
 backend "s3" {
+# => Backend type for state storage
  bucket         = "terraform-state-bucket" # => S3 bucket for state storage
  key            = "project/terraform.tfstate" # => Path within bucket
  region         = "us-east-1" # => AWS region
@@ -2234,6 +2396,8 @@ backend "s3" {
  # => DynamoDB prevents concurrent applies
  encrypt        = true # => State file encrypted at rest
 }
+
+
 ```
 
 **Lock states**:
@@ -2288,6 +2452,7 @@ variable "environment" {
  description = "Environment name" # => String value
  # => Sets description
  type = string
+ # => Variable type constraint
  # => Type constraint ensures string value
 
  validation {
@@ -2307,6 +2472,7 @@ variable "instance_count" {
  description = "Number of instances (1-10)" # => String value
  # => Sets description
  type = number
+ # => Variable type constraint
  # => Type constraint ensures numeric value
  default = 1 # => Numeric value
  # => Sets default
@@ -2325,8 +2491,10 @@ variable "instance_count" {
 variable "project_name" {
 # => Input variable
  description = "Project name (3-20 characters)"
+ # => Human-readable description
  # => Sets description
  type = string
+ # => Variable type constraint
  # => Type constraint ensures string value
 
  validation {
@@ -2343,10 +2511,13 @@ variable "project_name" {
 variable "vpc_cidr" {
 # => Input variable
  description = "VPC CIDR block"
+ # => Human-readable description
  # => Sets description
  type = string
+ # => Variable type constraint
  # => Type constraint ensures string value
  default = "10.0.0.0/16"
+ # => Default value if not specified
  # => Sets default
 
  validation {
@@ -2363,13 +2534,16 @@ variable "vpc_cidr" {
 variable "server_config" {
 # => Input variable
  description = "Server configuration"
+ # => Human-readable description
  # => Sets description
  type = object({
+ # => Variable type constraint
  cpu = number
  # => Sets cpu
  memory = number
  # => Sets memory
  })
+ # => Terraform configuration
 
  validation {
  # => Validation rule enforces constraints
@@ -2394,8 +2568,10 @@ variable "server_config" {
 variable "availability_zones" {
 # => Input variable
  description = "List of availability zones"
+ # => Human-readable description
  # => Sets description
  type = list(string)
+ # => Variable type constraint
  # => Type constraint ensures list of strings
 
  validation {
@@ -2418,15 +2594,24 @@ variable "availability_zones" {
 resource "local_file" "validated_config" {
 # => Resource definition
  filename = "validated.txt"
+ # => Output file path
  # => Sets filename
  content = <<-EOT
+ # => File/resource content
  # => Sets content
  Environment: ${var.environment}
+ # => Terraform configuration
  Instances: ${var.instance_count}
+ # => Terraform configuration
  Project: ${var.project_name}
+ # => Terraform configuration
  VPC CIDR: ${var.vpc_cidr}
+ # => Terraform configuration
  EOT
+ # => Terraform configuration
 }
+
+
 
 
 
@@ -2438,6 +2623,8 @@ resource "local_file" "validated_config" {
 # $ terraform plan -var="environment=production"
 # => Error: Invalid value for variable
 # => Environment must be dev, staging, or prod.
+
+
 ```
 
 **Key Takeaway**: Use validation blocks to enforce constraints on variable values. Validation runs during `terraform plan`, catching errors before infrastructure changes. Use `can()` function for format validation (regex, CIDR). Multiple validation blocks allowed per variable.
@@ -2468,6 +2655,7 @@ variable "app_name" {
  description = "Application name" # => String value
  # => Sets description
  type = string
+ # => Variable type constraint
  # => Type constraint ensures string value
  default = "default-app" # => Precedence: 1 (lowest)
  # => Sets default
@@ -2478,6 +2666,7 @@ variable "environment" {
  description = "Environment" # => String value
  # => Sets description
  type = string
+ # => Variable type constraint
  # => Type constraint ensures string value
  default = "development" # => String value
  # => Sets default
@@ -2488,11 +2677,17 @@ resource "local_file" "precedence_demo" {
  filename = "precedence.txt" # => String value
  # => Sets filename
  content = <<-EOT
+ # => File/resource content
  # => Sets content
  App: ${var.app_name}
+ # => Terraform configuration
  Environment: ${var.environment}
+ # => Terraform configuration
  EOT
+ # => Terraform configuration
 }
+
+
 
 
 
@@ -2506,6 +2701,8 @@ resource "local_file" "precedence_demo" {
 variable "app_name" {
 # => Input variable
 default = "default-app" # => Precedence: 1
+
+
 ```
 
 # => Default value makes variable optional
@@ -2519,6 +2716,8 @@ default = "default-app" # => Precedence: 1
 ```bash
 # $ export TF_VAR_app_name="env-app" # => Precedence: 2
 # $ terraform apply
+
+
 ```
 
 3. **`terraform.tfvars` file**
@@ -2526,27 +2725,35 @@ default = "default-app" # => Precedence: 1
  ```hcl
  # terraform.tfvars (automatically loaded)
  app_name = "tfvars-app" # => Precedence: 3
- ```
+
+
+```
 
 4. **`*.auto.tfvars` files (alphabetically)**
 
  ```hcl
  # dev.auto.tfvars (automatically loaded)
  app_name = "auto-tfvars-app" # => Precedence: 4
- ```
+
+
+```
 
 5. **`-var-file` CLI option**
 
  ```bash
  # $ terraform apply -var-file="custom.tfvars"
  # custom.tfvars: app_name = "var-file-app" # => Precedence: 5
- ```
+
+
+```
 
 6. **`-var` CLI option (highest)**
 
  ```bash
  # $ terraform apply -var="app_name=cli-app" # => Precedence: 6 (highest)
- ```
+
+
+```
 
 **Complete example**:
 
@@ -2556,6 +2763,8 @@ default = "default-app" # => Precedence: 1
 # CLI provides: -var="app_name=cli-app"
 # $ terraform apply -var="app_name=cli-app"
 # => Result: "cli-app" (CLI has highest precedence)
+
+
 ```
 
 **Key Takeaway**: CLI `-var` has highest precedence, followed by `-var-file`, `*.auto.tfvars`, `terraform.tfvars`, `TF_VAR_*` environment variables, and variable defaults. Use `terraform.tfvars` for environment defaults, CLI `-var` for overrides. Never commit sensitive values to tfvars files.
@@ -2587,6 +2796,7 @@ variable "api_key" {
  description = "API key for external service" # => String value
  # => Sets description
  type = string
+ # => Variable type constraint
  # => Type constraint ensures string value
  sensitive = true # => Marks variable as sensitive
  # => Value hidden in plan/apply output as <sensitive>
@@ -2597,6 +2807,7 @@ variable "database_password" {
  description = "Database password" # => String value
  # => Sets description
  type = string
+ # => Variable type constraint
  # => Type constraint ensures string value
  sensitive = true # => Boolean value
  # => Sets sensitive
@@ -2614,9 +2825,12 @@ resource "local_file" "config" {
  filename = "config.txt" # => String value
  # => Sets filename
  content = <<-EOT
+ # => File/resource content
  # => Sets content
  API Key: ${var.api_key}
+ # => Terraform configuration
  Connection: ${local.connection_string}
+ # => Terraform configuration
  EOT
  # => File content contains secrets (handle carefully)
 }
@@ -2625,8 +2839,10 @@ resource "local_file" "config" {
 output "api_key_output" {
 # => Output value
  description = "API key (sensitive)"
+ # => Human-readable description
  # => Sets description
  value = var.api_key
+ # => Output value
  # => Sets value
  sensitive = true # => Output marked sensitive
  # => terraform output shows: <sensitive>
@@ -2636,10 +2852,13 @@ output "api_key_output" {
 output "connection_string" {
 # => Output value
  description = "Database connection string"
+ # => Human-readable description
  # => Sets description
  value = local.connection_string
+ # => Output value
  # => Sets value
  sensitive = true
+ # => Mark as sensitive (hide from output)
  # => Sets sensitive
 }
 
@@ -2647,10 +2866,14 @@ output "connection_string" {
 output "api_key_length" {
 # => Output value
  description = "Length of API key (non-sensitive)"
+ # => Human-readable description
  # => Sets description
  value = length(var.api_key)
+ # => Output value
  # => Shows: 32 (length is not sensitive, actual value is)
 }
+
+
 
 
 
@@ -2679,6 +2902,8 @@ output "api_key_length" {
 # Force show sensitive value
 # $ terraform output -raw api_key_output
 # => secret123 (actual value shown)
+
+
 ```
 
 **State file behavior**:
@@ -2686,17 +2911,23 @@ output "api_key_length" {
 ```json
 {
  "resources": [
+ # => Terraform configuration
  {
  "instances": [
+ # => Terraform configuration
  {
  "attributes": {
+ # => Terraform configuration
  "content": "API Key: secret123\n.."
+ # => Terraform configuration
  }
  }
  ]
  }
  ]
 }
+
+
 ```
 
 **⚠️ Sensitive values appear in plaintext in state file!** Always encrypt state (S3 encryption, Terraform Cloud encryption).
@@ -2737,6 +2968,7 @@ variable "project_name" {
  description = "Project name" # => String value
  # => Sets description
  type = string
+ # => Variable type constraint
  # => Type constraint ensures string value
 }
 
@@ -2745,6 +2977,7 @@ variable "environment" {
  description = "Environment name" # => String value
  # => Sets description
  type = string
+ # => Variable type constraint
  # => Type constraint ensures string value
 }
 
@@ -2753,6 +2986,7 @@ variable "instance_count" {
  description = "Number of instances" # => String value
  # => Sets description
  type = number
+ # => Variable type constraint
  # => Type constraint ensures numeric value
 }
 
@@ -2761,6 +2995,7 @@ variable "enable_monitoring" {
  description = "Enable monitoring" # => String value
  # => Sets description
  type = bool
+ # => Variable type constraint
  # => Type constraint ensures boolean value
 }
 
@@ -2769,10 +3004,13 @@ variable "api_key" {
  description = "API key" # => String value
  # => Sets description
  type = string
+ # => Variable type constraint
  # => Type constraint ensures string value
  sensitive = true # => Boolean value
  # => Sets sensitive
 }
+
+
 
 
 
@@ -2789,6 +3027,8 @@ enable_monitoring = true
 # => Sets enable_monitoring
 
 
+
+
 ```
 
 **`environments/dev.tfvars`** (development):
@@ -2798,6 +3038,8 @@ environment = "development"
 # => Sets environment
 instance_count = 1
 # => Sets instance_count
+
+
 
 
 ```
@@ -2811,6 +3053,8 @@ instance_count = 3
 # => Sets instance_count
 
 
+
+
 ```
 
 **`secrets/dev.secrets.tfvars`** (sensitive, gitignored):
@@ -2818,6 +3062,8 @@ instance_count = 3
 ```hcl
 api_key = "dev-api-key-12345"
 # => Sets api_key
+
+
 
 
 ```
@@ -2848,6 +3094,8 @@ secrets/
 # $ terraform apply \
 # -var-file="environments/${ENV}.tfvars" \
 # -var="api_key=${API_KEY_FROM_CI}"
+
+
 ```
 
 **Main configuration** (`main.tf`):
@@ -2867,13 +3115,21 @@ resource "local_file" "config" {
  filename = "${var.environment}-config.txt" # => String interpolation
  # => Sets filename
  content = <<-EOT
+ # => File/resource content
  # => Sets content
  Project: ${var.project_name}
+ # => Terraform configuration
  Environment: ${var.environment}
+ # => Terraform configuration
  Instances: ${var.instance_count}
+ # => Terraform configuration
  Monitoring: ${var.enable_monitoring}
+ # => Terraform configuration
  EOT
+ # => Terraform configuration
 }
+
+
 
 
 
@@ -2954,28 +3210,34 @@ data "local_file" "read_explicit" {
 resource "local_file" "file1" {
 # => Resource definition
  filename = "file1.txt"
+ # => Output file path
  # => Sets filename
  content = "File 1"
+ # => File/resource content
  # => Sets content
 }
 
 resource "local_file" "file2" {
 # => Resource definition
  filename = "file2.txt"
+ # => Output file path
  # => Sets filename
  content = "File 2"
+ # => File/resource content
  # => Sets content
 }
 
 data "local_file" "read_file1" {
 # => Data source
  filename = local_file.file1.filename
+ # => Output file path
  # => Sets filename
 }
 
 data "local_file" "read_file2" {
 # => Data source
  filename = local_file.file2.filename
+ # => Output file path
  # => Sets filename
 }
 
@@ -2983,8 +3245,10 @@ data "local_file" "read_file2" {
 resource "local_file" "combined" {
 # => Resource definition
  filename = "combined.txt"
+ # => Output file path
  # => Sets filename
  content = "${data.local_file.read_file1.content} + ${data.local_file.read_file2.content}"
+ # => File/resource content
  # => Implicit dependencies: file1 -> read_file1 -\
  # => file2 -> read_file2 --> combined
 }
@@ -2992,6 +3256,7 @@ resource "local_file" "combined" {
 output "dependency_chain" {
 # => Output value
  value = {
+ # => Output value
  base_content = data.local_file.read_base.content
  # => Sets base_content
  derived_content = local_file.derived.content
@@ -3000,6 +3265,8 @@ output "dependency_chain" {
  # => Sets combined
  }
 }
+
+
 
 
 
@@ -3049,6 +3316,7 @@ terraform {
  # => Sets required_version
 
  backend "local" {
+ # => Backend type for state storage
  # => Backend configuration for state storage
  path = "network.tfstate" # => Separate state file
  # => Sets path
@@ -3087,6 +3355,8 @@ output "vpc_id" {
 
 
 
+
+
 ```
 
 **Configuration 2 (application)** - `app/main.tf`:
@@ -3098,6 +3368,7 @@ terraform {
  # => Sets required_version
 
  backend "local" {
+ # => Backend type for state storage
  # => Backend configuration for state storage
  path = "app.tfstate" # => Different state file
  # => Sets path
@@ -3126,6 +3397,7 @@ resource "local_file" "app_config" {
  filename = "app.txt" # => String value
  # => Sets filename
  content = <<-EOT
+ # => File/resource content
  # => Sets content
  VPC ID: ${data.terraform_remote_state.network.outputs.vpc_id}
  # => Terraform configuration block
@@ -3151,6 +3423,8 @@ output "app_network_info" {
 
 
 
+
+
 ```
 
 **S3 backend example** (production pattern):
@@ -3160,6 +3434,7 @@ output "app_network_info" {
 terraform {
 # => Terraform configuration block
  backend "s3" {
+ # => Backend type for state storage
  bucket = "terraform-state-bucket" # => String value
  # => Sets bucket
  key = "network/terraform.tfstate" # => String value
@@ -3187,6 +3462,8 @@ data "terraform_remote_state" "network" {
 
 
 
+
+
 ```
 
 **Usage workflow**:
@@ -3202,6 +3479,8 @@ data "terraform_remote_state" "network" {
 # $ terraform init
 # $ terraform apply
 # => Reads network outputs from remote state
+
+
 ```
 
 **Key Takeaway**: Use `terraform_remote_state` data source to share outputs between configurations. This enables infrastructure composition—network team manages VPC, application team reads VPC outputs. Only outputs are accessible (not full state). Always define outputs explicitly for values other configurations need.
@@ -3226,6 +3505,7 @@ terraform {
  # => Sets required_version
 
  backend "local" {
+ # => Backend type for state storage
  # => Backend configuration for state storage
  path = "terraform.tfstate" # => String value
  # => Sets path
@@ -3242,6 +3522,8 @@ resource "local_file" "backup_demo" {
  content = "State backup demonstration" # => String value
  # => Sets content
 }
+
+
 
 
 
@@ -3268,6 +3550,8 @@ resource "local_file" "backup_demo" {
 # Manual backup before risky operations
 # $ cp terraform.tfstate terraform.tfstate.$(date +%Y%m%d-%H%M%S)
 # => terraform.tfstate.20240115-143022 (timestamped backup)
+
+
 ```
 
 **State recovery scenarios**:
@@ -3280,6 +3564,8 @@ resource "local_file" "backup_demo" {
 # $ mv terraform.tfstate.backup terraform.tfstate
 # $ terraform plan
 # => Uses restored state
+
+
 ```
 
 **Scenario 2: Restore from manual backup**
@@ -3288,6 +3574,8 @@ resource "local_file" "backup_demo" {
 # $ cp terraform.tfstate.20240115-143022 terraform.tfstate
 # $ terraform plan
 # => Restored to specific point in time
+
+
 ```
 
 **Scenario 3: State lost but infrastructure exists**
@@ -3296,6 +3584,8 @@ resource "local_file" "backup_demo" {
 # State file deleted but resources exist
 # $ terraform import local_file.backup_demo backup_demo.txt
 # => Re-imports existing resource into state
+
+
 ```
 
 **Remote state backup** (S3 example):
@@ -3304,6 +3594,7 @@ resource "local_file" "backup_demo" {
 terraform {
 # => Terraform configuration block
  backend "s3" {
+ # => Backend type for state storage
  bucket = "terraform-state-bucket" # => String value
  # => Sets bucket
  key = "project/terraform.tfstate" # => String value
@@ -3323,10 +3614,13 @@ resource "aws_s3_bucket_versioning" "state_bucket" {
  # => Sets bucket
 
  versioning_configuration {
+ # => Terraform configuration
  status = "Enabled" # => S3 keeps all state versions
  # => Sets status
  }
 }
+
+
 
 
 
@@ -3347,11 +3641,17 @@ TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 # => Sets TIMESTAMP
 
 mkdir -p "$BACKUP_DIR"
+# => Terraform configuration
 cp "$STATE_FILE" "$BACKUP_DIR/terraform.tfstate.$TIMESTAMP"
+# => Terraform configuration
 
 # Keep only last 10 backups
 cd "$BACKUP_DIR"
+# => Terraform configuration
 ls -t terraform.tfstate.* | tail -n +11 | xargs rm -f
+# => Terraform configuration
+
+
 
 ```
 
@@ -3369,23 +3669,25 @@ State refresh updates Terraform state to match real infrastructure without modif
 
 ```hcl
 # state_refresh.tf
-# => Demonstrates state refresh: syncing Terraform state with real infrastructure
 terraform {
+ # => terraform block configures provider requirements
  required_version = ">= 1.0" # => Terraform 1.0+ required
 }
 
 provider "local" {} # => Local provider for file operations
 
-# => File that will be manually modified to demonstrate drift detection
-resource "local_file" "refresh_demo" { # => Demonstration file resource
- filename = "refresh_demo.txt" # => Output: refresh_demo.txt created
- content = "Original content" # => Initial content value
+resource "local_file" "refresh_demo" {
+ # => File resource to demonstrate drift detection
+ filename = "refresh_demo.txt" # => File Terraform creates and tracks
+ content  = "Original content" # => Initial content (drift detected if changed externally)
 }
 
-# => Output reveals current state—changes after manual edits show as drift
-output "file_content" { # => Exposes file content for inspection
- value = local_file.refresh_demo.content # => Tracks content changes after refresh
+output "file_content" {
+ # => Exposes content so refresh changes are visible
+ value = local_file.refresh_demo.content # => Shows current state value after refresh
 }
+
+
 ```
 
 **Refresh scenarios**:
@@ -3413,6 +3715,8 @@ output "file_content" { # => Exposes file content for inspection
 # Next apply will restore to configuration
 # $ terraform apply
 # => Changes: content from "Modified content" to "Original content"
+
+
 ```
 
 **Scenario 2: Resource deleted outside Terraform**
@@ -3429,6 +3733,8 @@ output "file_content" { # => Exposes file content for inspection
 # Plan shows resource will be created
 # $ terraform plan
 # => Plan: 1 to add, 0 to change, 0 to destroy
+
+
 ```
 
 **Refresh modes**:
@@ -3452,6 +3758,8 @@ output "file_content" { # => Exposes file content for inspection
 # $ terraform plan -refresh=false
 # => Uses existing state without refreshing
 # => Faster but may miss drift
+
+
 ```
 
 **Drift detection workflow**:
@@ -3469,6 +3777,8 @@ output "file_content" { # => Exposes file content for inspection
 
 # 3. Accept drift and update state
 # $ terraform apply -refresh-only -auto-approve
+
+
 ```
 
 **Key Takeaway**: Use `terraform apply -refresh-only` to update state without modifying infrastructure. Refresh detects drift (changes made outside Terraform). Refresh happens automatically during `plan` and `apply`. Use `-refresh=false` to skip refresh for faster plans when drift detection isn't needed.
@@ -3532,6 +3842,8 @@ resource "local_file" "file4" {
 
 
 
+
+
 ```
 
 **Targeting operations**:
@@ -3547,6 +3859,8 @@ resource "local_file" "file4" {
 # $ terraform apply -target=local_file.file1
 # => Creates/updates only file1
 # => Other resources unchanged
+
+
 ```
 
 **Target multiple resources**:
@@ -3558,6 +3872,8 @@ resource "local_file" "file4" {
 
 # Apply multiple targets
 # $ terraform apply -target=local_file.file1 -target=local_file.file2
+
+
 ```
 
 **Target with dependencies**:
@@ -3567,6 +3883,8 @@ resource "local_file" "file4" {
 # $ terraform apply -target=local_file.file4
 # => Terraform includes dependencies automatically
 # => Applies: file3 (dependency) and file4 (target)
+
+
 ```
 
 **Target modules** (covered in intermediate):
@@ -3577,6 +3895,8 @@ resource "local_file" "file4" {
 
 # Target resource in module
 # $ terraform apply -target=module.network.aws_vpc.main
+
+
 ```
 
 **Destroy specific resources**:
@@ -3585,6 +3905,8 @@ resource "local_file" "file4" {
 # Destroy only file2
 # $ terraform destroy -target=local_file.file2
 # => Removes only file2, leaves file1, file3, file4
+
+
 ```
 
 **Use cases for targeting**:
@@ -3593,14 +3915,18 @@ resource "local_file" "file4" {
 
  ```bash
  # $ terraform apply -target=aws_instance.problematic
- ```
+
+
+```
 
 2. **Gradual rollout**:
 
  ```bash
  # $ terraform apply -target=aws_instance.web[0]
  # $ terraform apply -target=aws_instance.web[1]
- ```
+
+
+```
 
 3. **Work around temporary issues**:
 
@@ -3608,7 +3934,9 @@ resource "local_file" "file4" {
  # $ terraform apply -target=module.database
  # Wait for database ready, then:
  # $ terraform apply # Apply rest of configuration
- ```
+
+
+```
 
 **⚠️ Warning**: Targeting creates partial state updates and can lead to inconsistencies. Use sparingly, primarily for debugging. Always follow targeted apply with full apply to ensure consistency.
 
@@ -3616,6 +3944,8 @@ resource "local_file" "file4" {
 # After targeted operations, always run full apply
 # $ terraform apply -target=resource.name # Targeted operation
 # $ terraform apply # Full apply to fix consistency
+
+
 ```
 
 **Key Takeaway**: Use `-target` to limit operations to specific resources and their dependencies. Essential for debugging but dangerous for regular use—it can create state inconsistencies. Always run full `terraform apply` after targeted operations to restore consistency.
@@ -3659,6 +3989,8 @@ resource "local_file" "imported2" {
  # => Sets content
 }
 
+
+
 ```
 
 **Import workflow**:
@@ -3668,6 +4000,8 @@ resource "local_file" "imported2" {
 ```bash
 # $ echo "This file already exists" > existing.txt
 # $ echo "Another existing file" > existing2.txt
+
+
 ```
 
 **Step 2: Write resource block** (configuration must match existing resource):
@@ -3683,6 +4017,8 @@ resource "local_file" "imported" {
 
 
 
+
+
 ```
 
 **Step 3: Import resource**:
@@ -3692,6 +4028,8 @@ resource "local_file" "imported" {
 # $ terraform import local_file.imported existing.txt
 # => Reads existing.txt and adds to state
 # => Output: local_file.imported: Import successful!
+
+
 ```
 
 **Step 4: Verify import**:
@@ -3708,6 +4046,8 @@ resource "local_file" "imported" {
 # $ terraform plan
 # => Should show: No changes. Infrastructure is up-to-date.
 # => If changes shown, configuration doesn't match existing resource
+
+
 ```
 
 **Import multiple resources**:
@@ -3716,6 +4056,8 @@ resource "local_file" "imported" {
 # Import each resource individually
 # $ terraform import local_file.imported existing.txt
 # $ terraform import local_file.imported2 existing2.txt
+
+
 ```
 
 **Complex import example (AWS)**:
@@ -3732,6 +4074,8 @@ resource "aws_instance" "imported_server" {
 # Import command
 # $ terraform import aws_instance.imported_server i-1234567890abcdef0
 # => Imports existing EC2 instance by instance ID
+
+
 ```
 
 **Import challenges and solutions**:
@@ -3743,6 +4087,8 @@ resource "aws_instance" "imported_server" {
 # $ terraform import aws_instance.web i-12345
 # $ terraform state show aws_instance.web
 # => Copy attribute values to configuration
+
+
 ```
 
 **Challenge 2: Complex resources**
@@ -3751,6 +4097,8 @@ resource "aws_instance" "imported_server" {
 # Use terraform state show output to guide configuration
 # $ terraform state show resource.name > resource.json
 # => Review all attributes and add to configuration
+
+
 ```
 
 **Challenge 3: Import blocks (Terraform 1.5+)**
@@ -3758,6 +4106,7 @@ resource "aws_instance" "imported_server" {
 ```hcl
 # Import block (declarative import)
 import {
+# => Terraform configuration
  to = local_file.imported
  # => Sets to
  id = "existing.txt" # => String value
@@ -3779,6 +4128,8 @@ resource "local_file" "imported" {
 # Apply to execute import
 # $ terraform apply
 # => Imports resource into state
+
+
 
 ```
 

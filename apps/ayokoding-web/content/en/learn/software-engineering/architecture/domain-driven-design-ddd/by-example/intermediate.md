@@ -54,9 +54,36 @@ graph TD
 
 Implementing a complete Bounded Context with its own model, repositories, and services isolated from other contexts.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    subgraph SalesContext[Sales Bounded Context]
+        A["Customer\n(Sales model)"]
+        B["Product\n(Sales model)"]
+        C["Order\n(Sales model)"]
+        D["SalesOrderRepository"]
+        E["SalesService"]
+    end
+    subgraph ShippingContext[Shipping Bounded Context]
+        F["Shipment\n(Shipping model)"]
+        G["Address\n(Shipping model)"]
+        H["ShipmentRepository"]
+    end
+
+    E -->|via ACL/event| F
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#0173B2,stroke:#000,color:#fff
+    style C fill:#0173B2,stroke:#000,color:#fff
+    style F fill:#DE8F05,stroke:#000,color:#000
+    style G fill:#DE8F05,stroke:#000,color:#000
+```
+
 ```typescript
 // Sales Bounded Context - Customer means "Buyer with purchase history"
 namespace SalesContext {
+  // => SalesContext: context boundary namespace
+
   // Sales-specific Customer entity
   export class Customer {
     // => Sales context: Customer = buyer with payment info
@@ -66,13 +93,14 @@ namespace SalesContext {
     private orders: Order[] = []; // => Purchase history (Sales-specific)
 
     constructor(customerId: string, email: string, creditLimit: number) {
+      // => Constructor: initializes new instance
+
       this.customerId = customerId; // => Initialize customer ID
       this.email = email; // => Set email for sales communications
       this.creditLimit = creditLimit; // => Set credit limit for orders
     }
 
     placeOrder(order: Order): void {
-      // => Domain operation: placeOrder
       // => Business rule: Sales validates against credit limit
       this.ensureCreditAvailable(order.getTotalAmount());
       // => Delegates to internal method
@@ -86,24 +114,31 @@ namespace SalesContext {
       if (totalOutstanding + amount > this.creditLimit) {
         // => Validate against credit limit
         throw new Error("Credit limit exceeded");
+        // => Throws domain error: "Credit limit exceeded"
       }
       // => Credit check passed
     }
 
     private getTotalOutstanding(): number {
       // => Internal logic (not part of public API)
-      return this.orders
-        .filter((o) => !o.isPaid()) // => Filter unpaid orders
-        .reduce((sum, o) => sum + o.getTotalAmount(), 0); // => Sum unpaid amounts
+      return (
+        this.orders
+          // => Returns this.orders
+
+          .filter((o) => !o.isPaid()) // => Filter unpaid orders
+          .reduce((sum, o) => sum + o.getTotalAmount(), 0)
+      ); // => Sum unpaid amounts
     }
 
     getCustomerId(): string {
-      // => Domain operation: getCustomerId
+      // => getCustomerId(): returns string
+
       return this.customerId; // => Expose customer ID
     }
 
     getEmail(): string {
-      // => Domain operation: getEmail
+      // => getEmail(): returns string
+
       return this.email; // => Expose email
     }
   }
@@ -115,22 +150,27 @@ namespace SalesContext {
     private paid: boolean = false; // => Payment status
 
     constructor(orderId: string, totalAmount: number) {
+      // => Constructor: initializes new instance
+
       this.orderId = orderId; // => Initialize order ID
       this.totalAmount = totalAmount; // => Set total amount
     }
 
     markAsPaid(): void {
-      // => Domain operation: markAsPaid
+      // => markAsPaid(): returns void
+
       this.paid = true; // => Update payment status
     }
 
     isPaid(): boolean {
-      // => Domain operation: isPaid
+      // => isPaid(): returns boolean
+
       return this.paid; // => Return payment status
     }
 
     getTotalAmount(): number {
-      // => Domain operation: getTotalAmount
+      // => getTotalAmount(): returns number
+
       return this.totalAmount; // => Expose total amount
     }
   }
@@ -138,9 +178,7 @@ namespace SalesContext {
   // Sales-specific repository
   export interface CustomerRepository {
     findById(customerId: string): Customer | null; // => Retrieve by ID
-    // => Domain operation: findById
     save(customer: Customer): void; // => Persist customer
-    // => Domain operation: save
   }
 }
 
@@ -167,6 +205,8 @@ The same domain concept (Customer) modeled differently in Shipping Context, focu
 ```typescript
 // Shipping Bounded Context - Customer means "Delivery recipient"
 namespace ShippingContext {
+  // => ShippingContext: context boundary namespace
+
   // Shipping-specific Customer entity
   export class Customer {
     // => Shipping context: Customer = delivery address holder
@@ -175,25 +215,30 @@ namespace ShippingContext {
     private readonly addresses: DeliveryAddress[] = []; // => Delivery locations
 
     constructor(customerId: string, name: string) {
+      // => Constructor: initializes new instance
+
       this.customerId = customerId; // => Initialize customer ID
       this.name = name; // => Set recipient name
     }
 
     addDeliveryAddress(address: DeliveryAddress): void {
-      // => Domain operation: addDeliveryAddress
+      // => addDeliveryAddress(): returns void
+
       this.addresses.push(address); // => Add delivery location
       // => Address added to customer's delivery options
     }
 
     getDefaultAddress(): DeliveryAddress | null {
-      // => Domain operation: getDefaultAddress
+      // => getDefaultAddress(): returns DeliveryAddress | null
+
       const defaultAddr = this.addresses.find((a) => a.isDefault());
       // => Find default address
       return defaultAddr || null; // => Return default or null
     }
 
     getCustomerId(): string {
-      // => Domain operation: getCustomerId
+      // => getCustomerId(): returns string
+
       return this.customerId; // => Expose customer ID
     }
   }
@@ -207,6 +252,8 @@ namespace ShippingContext {
     private readonly isDefaultAddress: boolean; // => Default flag
 
     constructor(street: string, city: string, zipCode: string, country: string, isDefaultAddress: boolean = false) {
+      // => Constructor: initializes new instance
+
       this.street = street; // => Initialize street
       this.city = city; // => Initialize city
       this.zipCode = zipCode; // => Initialize zip code
@@ -215,14 +262,15 @@ namespace ShippingContext {
     }
 
     isDefault(): boolean {
-      // => Domain operation: isDefault
+      // => isDefault(): returns boolean
+
       return this.isDefaultAddress; // => Return default status
     }
 
     getFullAddress(): string {
-      // => Domain operation: getFullAddress
+      // => getFullAddress(): returns string
+
       return `${this.street}, ${this.city}, ${this.zipCode}, ${this.country}`;
-      // => Returns `${this.street}, ${this.city}, ${this.zipCode}, ${this.country}`
       // => Format complete address string
     }
   }
@@ -235,23 +283,28 @@ namespace ShippingContext {
     private status: ShipmentStatus = "PENDING"; // => Current status
 
     constructor(shipmentId: string, customerId: string, address: DeliveryAddress) {
+      // => Constructor: initializes new instance
+
       this.shipmentId = shipmentId; // => Initialize shipment ID
       this.customerId = customerId; // => Link to customer
       this.address = address; // => Set delivery address
     }
 
     ship(): void {
-      // => Domain operation: ship
+      // => ship(): returns void
+
       if (this.status !== "PENDING") {
         // => Validate current status
         throw new Error("Shipment already processed");
+        // => Throws domain error: "Shipment already processed"
       }
       this.status = "SHIPPED"; // => Update to shipped
       // => Shipment marked as shipped
     }
 
     getStatus(): ShipmentStatus {
-      // => Domain operation: getStatus
+      // => getStatus(): returns ShipmentStatus
+
       return this.status; // => Return current status
     }
   }
@@ -284,9 +337,27 @@ console.log(shipment.getStatus());
 
 Two Bounded Contexts sharing a common subset of the domain model where tight coordination is acceptable.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A["Shared Kernel\nCustomer ID\nCurrency\n(shared model)"]
+    B["Sales Context\nuses shared kernel"]
+    C["Billing Context\nuses shared kernel"]
+
+    A -->|shared by| B
+    A -->|shared by| C
+    B <-->|coordinate changes| C
+
+    style A fill:#029E73,stroke:#000,color:#fff
+    style B fill:#0173B2,stroke:#000,color:#fff
+    style C fill:#DE8F05,stroke:#000,color:#000
+```
+
 ```typescript
 // Shared Kernel - Common model shared between contexts
 namespace SharedKernel {
+  // => SharedKernel: context boundary namespace
+
   // Shared value object - used by multiple contexts
   export class Money {
     private readonly amount: number; // => Monetary amount
@@ -304,7 +375,8 @@ namespace SharedKernel {
     }
 
     add(other: Money): Money {
-      // => Domain operation: add
+      // => add(): returns Money
+
       this.ensureSameCurrency(other); // => Validate currency match
       return new Money(this.amount + other.amount, this.currency);
       // => Return new Money with combined amount
@@ -321,12 +393,14 @@ namespace SharedKernel {
     }
 
     getAmount(): number {
-      // => Domain operation: getAmount
+      // => getAmount(): returns number
+
       return this.amount; // => Expose amount
     }
 
     getCurrency(): string {
-      // => Domain operation: getCurrency
+      // => getCurrency(): returns string
+
       return this.currency; // => Expose currency
     }
   }
@@ -342,6 +416,8 @@ namespace SharedKernel {
 
 // Billing Context - uses shared kernel
 namespace BillingContext {
+  // => BillingContext: context boundary namespace
+
   import Money = SharedKernel.Money; // => Import shared Money type
 
   export class Invoice {
@@ -349,17 +425,21 @@ namespace BillingContext {
     private readonly items: InvoiceItem[] = []; // => Line items
 
     constructor(invoiceId: string) {
+      // => Constructor: initializes new instance
+
       this.invoiceId = invoiceId; // => Initialize invoice ID
     }
 
     addItem(item: InvoiceItem): void {
-      // => Domain operation: addItem
+      // => addItem(): returns void
+
       this.items.push(item); // => Add line item
       // => Item added to invoice
     }
 
     getTotal(): Money {
-      // => Domain operation: getTotal
+      // => getTotal(): returns Money
+
       if (this.items.length === 0) {
         // => Check for empty invoice
         return new Money(0, "USD"); // => Return zero amount
@@ -378,12 +458,15 @@ namespace BillingContext {
     private readonly price: Money; // => Item price (shared type)
 
     constructor(description: string, price: Money) {
+      // => Constructor: initializes new instance
+
       this.description = description; // => Initialize description
       this.price = price; // => Initialize price
     }
 
     getPrice(): Money {
-      // => Domain operation: getPrice
+      // => getPrice(): returns Money
+
       return this.price; // => Expose price
     }
   }
@@ -391,6 +474,8 @@ namespace BillingContext {
 
 // Accounting Context - also uses shared kernel
 namespace AccountingContext {
+  // => AccountingContext: context boundary namespace
+
   import Money = SharedKernel.Money; // => Import shared Money type
 
   export class Transaction {
@@ -399,18 +484,22 @@ namespace AccountingContext {
     private readonly type: "DEBIT" | "CREDIT"; // => Transaction type
 
     constructor(transactionId: string, amount: Money, type: "DEBIT" | "CREDIT") {
+      // => Constructor: initializes new instance
+
       this.transactionId = transactionId; // => Initialize transaction ID
       this.amount = amount; // => Initialize amount
       this.type = type; // => Set transaction type
     }
 
     getAmount(): Money {
-      // => Domain operation: getAmount
+      // => getAmount(): returns Money
+
       return this.amount; // => Expose amount
     }
 
     getType(): string {
-      // => Domain operation: getType
+      // => getType(): returns string
+
       return this.type; // => Expose transaction type
     }
   }
@@ -447,81 +536,61 @@ One context (Supplier) provides services to another context (Customer), with the
 ```typescript
 // Supplier Context - Provides product catalog service
 namespace ProductCatalogContext {
-  // => Executes domain logic
   // Supplier's public API
   export interface ProductCatalogService {
-    // => Preserves domain model
     getProduct(productId: string): ProductDTO | null; // => Public interface
-    // => Domain operation: getProduct
     searchProducts(query: string): ProductDTO[]; // => Search functionality
-    // => Domain operation: searchProducts
   }
-  // => Updates aggregate state
 
   // Data Transfer Object - Supplier's contract
   export interface ProductDTO {
     // => Communicates domain intent
     productId: string; // => Product identifier
-    // => Executes domain logic
     name: string; // => Product name
-    // => Updates aggregate state
     description: string; // => Product description
     // => Validates business rule
     price: number; // => Price in cents
     // => Enforces invariant
     currency: string; // => Currency code
-    // => Encapsulates domain knowledge
   }
   // => Validates business rule
 
   // Internal implementation (private to Supplier)
   class Product {
-    // => Product: domain model element
     constructor(
       // => Initialize object with parameters
       private readonly productId: string,
-      // => Field: readonly (private)
       // => Encapsulated state, not directly accessible
       private readonly name: string,
-      // => Field: readonly (private)
       // => Encapsulated state, not directly accessible
       private readonly description: string,
-      // => Field: readonly (private)
       // => Encapsulated state, not directly accessible
       private readonly price: number,
-      // => Field: readonly (private)
       // => Encapsulated state, not directly accessible
       private readonly currency: string,
-      // => Field: readonly (private)
       // => Encapsulated state, not directly accessible
     ) {}
     // => Enforces invariant
 
     toDTO(): ProductDTO {
-      // => Domain operation: toDTO
       // => Convert internal model to public DTO
       return {
-        // => Returns {
         productId: this.productId,
-        // => Encapsulates domain knowledge
+        // => Business rule enforced here
         name: this.name,
-        // => Delegates to domain service
+        // => Execution delegated to domain service
         description: this.description,
-        // => Maintains consistency boundary
+        // => Aggregate boundary enforced here
         price: this.price,
-        // => Applies domain event
+        // => Domain event triggered or handled
         currency: this.currency,
-        // => Coordinates with bounded context
+        // => Cross-context interaction point
       };
-      // => Implements tactical pattern
     }
-    // => Protects aggregate integrity
   }
-  // => Ensures transactional consistency
 
   // Supplier's service implementation
   export class ProductCatalogServiceImpl implements ProductCatalogService {
-    // => ProductCatalogServiceImpl: domain model element
     private products: Map<string, Product> = new Map();
     // => Encapsulated field (not publicly accessible)
     // => Internal product storage
@@ -535,19 +604,15 @@ namespace ProductCatalogContext {
       // => Delegates to internal method
       // => Product stored in catalog
     }
-    // => Manages entity lifecycle
 
     getProduct(productId: string): ProductDTO | null {
-      // => Domain operation: getProduct
       const product = this.products.get(productId);
       // => Retrieve product by ID
       return product ? product.toDTO() : null;
       // => Return DTO or null if not found
     }
-    // => Preserves domain model
 
     searchProducts(query: string): ProductDTO[] {
-      // => Domain operation: searchProducts
       const results: ProductDTO[] = [];
       // => Create data structure
       this.products.forEach((product) => {
@@ -559,13 +624,9 @@ namespace ProductCatalogContext {
         }
         // => Communicates domain intent
       });
-      // => Delegates to domain service
       return results; // => Return matching products
-      // => Returns results; // => Return matching products
     }
-    // => Executes domain logic
   }
-  // => Updates aggregate state
 }
 // => Validates business rule
 
@@ -573,54 +634,40 @@ namespace ProductCatalogContext {
 namespace OrderManagementContext {
   // => Enforces invariant
   import ProductDTO = ProductCatalogContext.ProductDTO;
-  // => Encapsulates domain knowledge
+  // => Business rule enforced here
   import ProductCatalogService = ProductCatalogContext.ProductCatalogService;
   // => Import Supplier's public contracts
 
   // Customer's domain model
   export class OrderItem {
-    // => Maintains consistency boundary
     private readonly productId: string; // => Reference to catalog product
-    // => Applies domain event
     private readonly productName: string; // => Cached name
-    // => Coordinates with bounded context
     private readonly price: number; // => Price at order time
-    // => Implements tactical pattern
     private readonly quantity: number; // => Quantity ordered
 
     constructor(productId: string, productName: string, price: number, quantity: number) {
-      // => Protects aggregate integrity
+      // => Method body begins here
       this.productId = productId; // => Initialize product ID
-      // => Ensures transactional consistency
       this.productName = productName; // => Initialize cached name
-      // => Manages entity lifecycle
       this.price = price; // => Initialize price snapshot
       this.quantity = quantity; // => Initialize quantity
     }
-    // => Delegates to domain service
 
     getTotalPrice(): number {
-      // => Domain operation: getTotalPrice
       return this.price * this.quantity; // => Calculate line total
     }
-    // => Maintains consistency boundary
 
     getProductName(): string {
-      // => Domain operation: getProductName
       return this.productName; // => Expose product name
     }
-    // => Applies domain event
   }
-  // => Coordinates with bounded context
 
   // Customer's service using Supplier
   export class OrderService {
-    // => OrderService: domain model element
     constructor(private catalogService: ProductCatalogService) {}
     // => Inject Supplier's service
 
     createOrderItem(productId: string, quantity: number): OrderItem {
-      // => Domain operation: createOrderItem
       const productDTO = this.catalogService.getProduct(productId);
       // => Call Supplier's API to get product
       if (!productDTO) {
@@ -628,15 +675,11 @@ namespace OrderManagementContext {
         throw new Error("Product not found");
         // => Raise domain exception
       }
-      // => Implements tactical pattern
       return new OrderItem(productDTO.productId, productDTO.name, productDTO.price, quantity);
       // => Create order item with product data from Supplier
     }
-    // => Protects aggregate integrity
   }
-  // => Ensures transactional consistency
 }
-// => Manages entity lifecycle
 
 // Usage - Customer depends on Supplier
 const catalogService = new ProductCatalogContext.ProductCatalogServiceImpl();
@@ -662,9 +705,27 @@ console.log(`Ordered: ${orderItem.getProductName()}, Total: ${orderItem.getTotal
 
 Protecting your context's domain model from external systems by translating external concepts into your ubiquitous language.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["External System\n(legacy/third-party)\nuses foreign concepts"]
+    B["Anti-Corruption Layer\ntranslates concepts\nadapter + translator"]
+    C["Your Domain\nClean ubiquitous\nlanguage model"]
+
+    A -->|foreign model| B
+    B -->|clean domain model| C
+    C -.->|never sees| A
+
+    style A fill:#CA9161,stroke:#000,color:#fff
+    style B fill:#CC78BC,stroke:#000,color:#fff
+    style C fill:#029E73,stroke:#000,color:#fff
+```
+
 ```typescript
 // External Payment Gateway - Third-party system with its own model
 namespace ExternalPaymentGateway {
+  // => ExternalPaymentGateway: context boundary namespace
+
   // External system's data structure (we don't control this)
   export interface PaymentResponse {
     transaction_id: string; // => Snake case naming
@@ -677,12 +738,11 @@ namespace ExternalPaymentGateway {
 
   // Simulated external API
   export class PaymentGatewayAPI {
-    // => PaymentGatewayAPI: domain model element
     processPayment(amount: number, currency: string, customerRef: string): PaymentResponse {
-      // => Domain operation: processPayment
       // => External system processes payment
       return {
         // => Returns {
+
         transaction_id: `TXN-${Date.now()}`, // => Generate transaction ID
         status_code: 200, // => 200 = success in their system
         amount_cents: amount,
@@ -697,6 +757,8 @@ namespace ExternalPaymentGateway {
 
 // Our Bounded Context - with its own domain model
 namespace PaymentContext {
+  // => PaymentContext: context boundary namespace
+
   // Our domain model - uses our ubiquitous language
   export class Payment {
     private readonly paymentId: string; // => Our naming: paymentId
@@ -705,6 +767,8 @@ namespace PaymentContext {
     private readonly processedAt: Date; // => Our Date type
 
     constructor(paymentId: string, amount: Money, status: PaymentStatus, processedAt: Date) {
+      // => Constructor: initializes new instance
+
       this.paymentId = paymentId; // => Initialize payment ID
       this.amount = amount; // => Initialize amount
       this.status = status; // => Initialize status
@@ -712,41 +776,44 @@ namespace PaymentContext {
     }
 
     isSuccessful(): boolean {
-      // => Domain operation: isSuccessful
+      // => isSuccessful(): returns boolean
+
       return this.status === PaymentStatus.COMPLETED;
       // => Check if payment succeeded
     }
 
     getPaymentId(): string {
-      // => Domain operation: getPaymentId
+      // => getPaymentId(): returns string
+
       return this.paymentId; // => Expose payment ID
     }
 
     getAmount(): Money {
-      // => Domain operation: getAmount
+      // => getAmount(): returns Money
+
       return this.amount; // => Expose amount
     }
   }
 
   export class Money {
-    // => Money: domain model element
     constructor(
       // => Initialize object with parameters
       private readonly amount: number,
-      // => Field: readonly (private)
       // => Encapsulated state, not directly accessible
       private readonly currency: string,
-      // => Field: readonly (private)
       // => Encapsulated state, not directly accessible
     ) {}
+    // => Constructor body empty: no additional initialization needed
 
     getAmount(): number {
-      // => Domain operation: getAmount
+      // => getAmount(): returns number
+
       return this.amount; // => Expose amount
     }
 
     getCurrency(): string {
-      // => Domain operation: getCurrency
+      // => getCurrency(): returns string
+
       return this.currency; // => Expose currency
     }
   }
@@ -759,12 +826,10 @@ namespace PaymentContext {
 
   // Anti-Corruption Layer - Translates external model to our model
   export class PaymentGatewayAdapter {
-    // => PaymentGatewayAdapter: domain model element
     constructor(private readonly gateway: ExternalPaymentGateway.PaymentGatewayAPI) {}
     // => Adapter wraps external system
 
     processPayment(amount: Money, customerRef: string): Payment {
-      // => Domain operation: processPayment
       // => Public method uses our domain model
       const response = this.gateway.processPayment(amount.getAmount(), amount.getCurrency(), customerRef);
       // => Call external API (uses their model)
@@ -793,17 +858,13 @@ namespace PaymentContext {
       // => Internal logic (not part of public API)
       // => Map external status codes to our enum
       switch (statusCode) {
-        // => Operation: switch()
         case 200:
           return PaymentStatus.COMPLETED; // => 200 → COMPLETED
-        // => Returns PaymentStatus.COMPLETED; // => 200 → COMPLETED
         case 400:
         case 500:
           return PaymentStatus.FAILED; // => Error codes → FAILED
-        // => Returns PaymentStatus.FAILED; // => Error codes → FAILED
         default:
           return PaymentStatus.PENDING; // => Unknown → PENDING
-        // => Returns PaymentStatus.PENDING; // => Unknown → PENDING
       }
     }
   }
@@ -837,171 +898,121 @@ Creating a well-documented, stable exchange format (like JSON Schema or Protocol
 ```typescript
 // Published Language - Shared contract for Order events
 namespace OrderEventPublishedLanguage {
-  // => Executes domain logic
   // Version 1.0 - Stable, documented contract
   export interface OrderCreatedEvent {
-    // => Coordinates with bounded context
     eventType: "OrderCreated"; // => Event discriminator
-    // => Implements tactical pattern
     version: "1.0"; // => Schema version for compatibility
-    // => Protects aggregate integrity
     timestamp: string; // => ISO 8601 timestamp
-    // => Ensures transactional consistency
     payload: {
-      // => Manages entity lifecycle
       orderId: string; // => Order identifier
-      // => Preserves domain model
       customerId: string; // => Customer reference
       // => Communicates domain intent
       items: Array<{
         // => Order line items
         productId: string; // => Product reference
-        // => Executes domain logic
         quantity: number; // => Quantity ordered
-        // => Updates aggregate state
         priceAtOrder: number; // => Price snapshot in cents
         // => Validates business rule
       }>;
       // => Enforces invariant
       totalAmount: number; // => Total in cents
-      // => Encapsulates domain knowledge
       currency: string; // => Currency code (ISO 4217)
-      // => Delegates to domain service
     };
-    // => Updates aggregate state
   }
   // => Validates business rule
 
   // Validator for Published Language contract
   export class OrderCreatedEventValidator {
-    // => OrderCreatedEventValidator: domain model element
     static validate(event: any): event is OrderCreatedEvent {
       // => Type guard for validation
       return (
-        // => Returns (
         event.eventType === "OrderCreated" && // => Check event type
-        // => Maintains consistency boundary
         event.version === "1.0" && // => Check schema version
-        // => Applies domain event
         typeof event.timestamp === "string" && // => Validate timestamp
-        // => Coordinates with bounded context
         typeof event.payload.orderId === "string" && // => Validate orderId
-        // => Implements tactical pattern
         Array.isArray(event.payload.items) && // => Validate items array
-        // => Protects aggregate integrity
         typeof event.payload.totalAmount === "number" // => Validate total
-        // => Ensures transactional consistency
       );
       // => Enforces invariant
     }
-    // => Encapsulates domain knowledge
   }
-  // => Delegates to domain service
 }
-// => Maintains consistency boundary
 
 // Context 1 (Publisher) - Order Management publishes events
 namespace OrderManagementContext {
-  // => Applies domain event
   import OrderCreatedEvent = OrderEventPublishedLanguage.OrderCreatedEvent;
   // => Import Published Language contract
 
   export class Order {
-    // => Order: domain model element
     constructor(
       // => Initialize object with parameters
       private readonly orderId: string,
-      // => Field: readonly (private)
       // => Encapsulated state, not directly accessible
       private readonly customerId: string,
-      // => Field: readonly (private)
       // => Encapsulated state, not directly accessible
       private readonly items: OrderItem[],
-      // => Field: readonly (private)
       // => Encapsulated state, not directly accessible
       private readonly totalAmount: number,
-      // => Field: readonly (private)
       // => Encapsulated state, not directly accessible
     ) {}
-    // => Coordinates with bounded context
 
     // Translate internal model to Published Language
     toOrderCreatedEvent(): OrderCreatedEvent {
-      // => Domain operation: toOrderCreatedEvent
       // => Convert domain model to Published Language
       return {
-        // => Returns {
         eventType: "OrderCreated",
-        // => Implements tactical pattern
+        // => DDD tactical pattern applied
         version: "1.0",
-        // => Manages entity lifecycle
+        // => Entity state transition managed
         timestamp: new Date().toISOString(), // => ISO 8601 format
-        // => Preserves domain model
         payload: {
-          // => Protects aggregate integrity
           orderId: this.orderId,
-          // => Ensures transactional consistency
+          // => Transaction boundary maintained
           customerId: this.customerId,
-          // => Manages entity lifecycle
+          // => Entity state transition managed
           items: this.items.map((item) => ({
             // => Map domain items to Published Language
             productId: item.productId,
-            // => Preserves domain model
+            // => Domain model consistency maintained
             quantity: item.quantity,
             // => Communicates domain intent
             priceAtOrder: item.price,
-            // => Executes domain logic
+            // => Domain operation executes here
           })),
-          // => Updates aggregate state
           totalAmount: this.totalAmount,
           // => Validates business rule
           currency: "USD",
           // => Enforces invariant
         },
-        // => Encapsulates domain knowledge
       };
-      // => Delegates to domain service
     }
-    // => Maintains consistency boundary
   }
-  // => Applies domain event
 
   export class OrderItem {
-    // => OrderItem: domain model element
     constructor(
       // => Initialize object with parameters
       public readonly productId: string,
-      // => Field: readonly (public)
       public readonly quantity: number,
-      // => Field: readonly (public)
       public readonly price: number,
-      // => Field: readonly (public)
     ) {}
-    // => Coordinates with bounded context
   }
-  // => Implements tactical pattern
 }
-// => Protects aggregate integrity
 
 // Context 2 (Subscriber) - Billing consumes events
 namespace BillingContext {
-  // => Ensures transactional consistency
   import OrderCreatedEvent = OrderEventPublishedLanguage.OrderCreatedEvent;
-  // => Manages entity lifecycle
+  // => Entity state transition managed
   import Validator = OrderEventPublishedLanguage.OrderCreatedEventValidator;
   // => Import Published Language contract and validator
 
   export class BillingService {
-    // => BillingService: domain model element
     handleOrderCreated(event: OrderCreatedEvent): void {
-      // => Domain operation: handleOrderCreated
       // => Receive event in Published Language format
       if (!Validator.validate(event)) {
         // => Validate against Published Language schema
         throw new Error("Invalid OrderCreatedEvent");
         // => Raise domain exception
       }
-      // => Preserves domain model
 
       const invoice = this.createInvoice(event);
       // => Translate Published Language to our domain model
@@ -1017,34 +1028,25 @@ namespace BillingContext {
       return new Invoice(
         // => Communicates domain intent
         `INV-${event.payload.orderId}`, // => Generate invoice ID
-        // => Executes domain logic
         event.payload.customerId,
-        // => Executes domain logic
+        // => Domain operation executes here
         event.payload.totalAmount,
-        // => Updates aggregate state
+        // => Modifies aggregate internal state
       );
       // => Validates business rule
     }
     // => Enforces invariant
   }
-  // => Encapsulates domain knowledge
 
   class Invoice {
-    // => Invoice: domain model element
     constructor(
       // => Initialize object with parameters
       public readonly invoiceId: string,
-      // => Field: readonly (public)
       public readonly customerId: string,
-      // => Field: readonly (public)
       public readonly amount: number,
-      // => Field: readonly (public)
     ) {}
-    // => Delegates to domain service
   }
-  // => Maintains consistency boundary
 }
-// => Applies domain event
 
 // Usage - Published Language enables clean integration
 const orderItem = new OrderManagementContext.OrderItem("P123", 2, 5000);
@@ -1076,6 +1078,8 @@ When your context must conform to an external system's model because you have no
 ```typescript
 // External System - Legacy ERP we must integrate with
 namespace LegacyERPSystem {
+  // => LegacyERPSystem: context boundary namespace
+
   // ERP's model (we don't control this)
   export class ERPCustomer {
     cust_id: string; // => Legacy naming convention
@@ -1101,19 +1105,20 @@ namespace LegacyERPSystem {
   }
 
   export class ERPService {
-    // => ERPService: domain model element
     private customers: Map<string, ERPCustomer> = new Map();
     // => Encapsulated field (not publicly accessible)
     // => ERP customer storage
 
     getCustomer(cust_id: string): ERPCustomer | null {
-      // => Domain operation: getCustomer
+      // => getCustomer(): returns ERPCustomer | null
+
       return this.customers.get(cust_id) || null;
       // => Retrieve customer by legacy ID format
     }
 
     saveCustomer(customer: ERPCustomer): void {
-      // => Domain operation: saveCustomer
+      // => saveCustomer(): returns void
+
       this.customers.set(customer.cust_id, customer);
       // => Delegates to internal method
       // => Store customer in ERP
@@ -1123,20 +1128,22 @@ namespace LegacyERPSystem {
 
 // Our Context - Conformist approach (no translation layer)
 namespace SalesContext {
+  // => SalesContext: context boundary namespace
+
   import ERPCustomer = LegacyERPSystem.ERPCustomer;
   import ERPService = LegacyERPSystem.ERPService;
   // => Direct import of ERP types (conformist)
 
   // We conform to ERP's model instead of maintaining our own
   export class SalesService {
-    // => SalesService: domain model element
     constructor(private erpService: ERPService) {}
     // => Inject ERP service
 
     createCustomer(name: string, email: string, creditLimit: number): ERPCustomer {
-      // => Domain operation: createCustomer
       // => Use ERP model directly in our domain
       const customer = new ERPCustomer(
+        // => customer = new ERPCustomer(
+
         `CUST-${Date.now()}`, // => Generate ERP-format ID
         name,
         email,
@@ -1149,22 +1156,17 @@ namespace SalesContext {
       // => Delegates to internal method
       // => Save using ERP service
       return customer; // => Return ERP model
-      // => Returns customer; // => Return ERP model
     }
 
     isCustomerActive(customer: ERPCustomer): boolean {
-      // => Domain operation: isCustomerActive
       // => Our business logic uses ERP conventions
       return customer.status_flag === 1;
-      // => Returns customer.status_flag === 1
       // => Check status using ERP's numeric flag
     }
 
     getCreditLimitDollars(customer: ERPCustomer): number {
-      // => Domain operation: getCreditLimitDollars
       // => Our helper methods work with ERP model
       return customer.credit_limit_cents / 100;
-      // => Returns customer.credit_limit_cents / 100
       // => Convert cents to dollars
     }
   }
@@ -1194,34 +1196,48 @@ console.log(`Credit limit: $${salesService.getCreditLimitDollars(customer)}`);
 
 Defining a clear protocol for accessing your context's services, making it easy for multiple consumers to integrate.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A["Open Host Service\nPublished REST API\nstable protocol"]
+    B["Consumer A\nMobile App"]
+    C["Consumer B\nPartner System"]
+    D["Consumer C\nInternal Service"]
+    E["Your Domain\nBounded Context"]
+
+    A -->|serves| B
+    A -->|serves| C
+    A -->|serves| D
+    E -->|exposes via| A
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#DE8F05,stroke:#000,color:#000
+    style D fill:#DE8F05,stroke:#000,color:#000
+    style E fill:#029E73,stroke:#000,color:#fff
+```
+
 ```typescript
 // Our Bounded Context - Inventory Management (Host)
 namespace InventoryContext {
-  // => Executes domain logic
   // Internal domain model (private)
   class Product {
-    // => Product: domain model element
     constructor(
       // => Initialize object with parameters
       private readonly productId: string,
-      // => Field: readonly (private)
       // => Encapsulated state, not directly accessible
       private readonly name: string,
-      // => Field: readonly (private)
       // => Encapsulated state, not directly accessible
       private stockLevel: number,
       // => Encapsulated field (not publicly accessible)
     ) {}
-    // => Updates aggregate state
 
     reserveStock(quantity: number): void {
-      // => Domain operation: reserveStock
       if (this.stockLevel < quantity) {
         // => Validate sufficient stock
         throw new Error("Insufficient stock");
         // => Raise domain exception
       }
-      // => Manages entity lifecycle
       this.stockLevel -= quantity; // => Reduce available stock
       // => Modifies stockLevel
       // => State change operation
@@ -1230,79 +1246,53 @@ namespace InventoryContext {
     // => Validates business rule
 
     getStockLevel(): number {
-      // => Domain operation: getStockLevel
       return this.stockLevel; // => Expose current stock
-      // => Preserves domain model
     }
     // => Enforces invariant
 
     getProductId(): string {
-      // => Domain operation: getProductId
       return this.productId; // => Expose product ID
       // => Communicates domain intent
     }
-    // => Encapsulates domain knowledge
 
     getName(): string {
-      // => Domain operation: getName
       return this.name; // => Expose product name
-      // => Executes domain logic
     }
-    // => Delegates to domain service
   }
-  // => Maintains consistency boundary
 
   // Public API - Open Host Service
   export interface InventoryService {
     // => Public interface for external contexts
     checkAvailability(productId: string): StockAvailabilityDTO;
-    // => Domain operation: checkAvailability
     // => Check stock availability
     reserveStock(request: StockReservationRequest): StockReservationResult;
-    // => Domain operation: reserveStock
     // => Reserve stock for order
   }
-  // => Applies domain event
 
   // Public DTOs - Well-documented contracts
   export interface StockAvailabilityDTO {
-    // => Updates aggregate state
     productId: string; // => Product identifier
     // => Validates business rule
     productName: string; // => Product name
     // => Enforces invariant
     availableQuantity: number; // => Current stock level
-    // => Encapsulates domain knowledge
     isAvailable: boolean; // => Availability flag
-    // => Delegates to domain service
   }
-  // => Coordinates with bounded context
 
   export interface StockReservationRequest {
-    // => Maintains consistency boundary
     productId: string; // => Product to reserve
-    // => Applies domain event
     quantity: number; // => Quantity to reserve
-    // => Coordinates with bounded context
     reservationId: string; // => Idempotency key
-    // => Implements tactical pattern
   }
-  // => Implements tactical pattern
 
   export interface StockReservationResult {
-    // => Protects aggregate integrity
     success: boolean; // => Reservation outcome
-    // => Ensures transactional consistency
     reservationId: string; // => Idempotency key
-    // => Manages entity lifecycle
     remainingStock: number; // => Stock after reservation
-    // => Preserves domain model
   }
-  // => Protects aggregate integrity
 
   // Open Host Service implementation
   export class InventoryServiceImpl implements InventoryService {
-    // => InventoryServiceImpl: domain model element
     private products: Map<string, Product> = new Map();
     // => Encapsulated field (not publicly accessible)
     // => Internal product storage
@@ -1317,10 +1307,8 @@ namespace InventoryContext {
       // => Delegates to internal method
       // => Product P2: stockLevel=200
     }
-    // => Ensures transactional consistency
 
     checkAvailability(productId: string): StockAvailabilityDTO {
-      // => Domain operation: checkAvailability
       // => Public method: check stock
       const product = this.products.get(productId);
       // => Retrieve product from internal model
@@ -1328,22 +1316,19 @@ namespace InventoryContext {
       if (!product) {
         // => Product not found
         return {
-          // => Returns {
           productId,
-          // => Manages entity lifecycle
+          // => Entity state transition managed
           productName: "Unknown",
-          // => Preserves domain model
+          // => Domain model consistency maintained
           availableQuantity: 0,
           // => Communicates domain intent
           isAvailable: false,
-          // => Executes domain logic
+          // => Domain operation executes here
         };
         // => Return unavailable DTO
       }
-      // => Updates aggregate state
 
       return {
-        // => Returns {
         // => Convert internal model to public DTO
         productId: product.getProductId(),
         // => Execute method
@@ -1359,7 +1344,6 @@ namespace InventoryContext {
     // => Validates business rule
 
     reserveStock(request: StockReservationRequest): StockReservationResult {
-      // => Domain operation: reserveStock
       // => Public method: reserve stock
       const product = this.products.get(request.productId);
       // => Retrieve product
@@ -1367,28 +1351,23 @@ namespace InventoryContext {
       if (!product) {
         // => Product not found
         return {
-          // => Returns {
           success: false,
           // => Enforces invariant
           reservationId: request.reservationId,
-          // => Encapsulates domain knowledge
+          // => Business rule enforced here
           remainingStock: 0,
-          // => Delegates to domain service
+          // => Execution delegated to domain service
         };
-        // => Maintains consistency boundary
       }
-      // => Applies domain event
 
       try {
-        // => Coordinates with bounded context
         product.reserveStock(request.quantity);
         // => Attempt reservation on domain model
         return {
-          // => Returns {
           success: true,
-          // => Implements tactical pattern
+          // => DDD tactical pattern applied
           reservationId: request.reservationId,
-          // => Protects aggregate integrity
+          // => Invariant validation executed
           remainingStock: product.getStockLevel(),
           // => Execute method
         };
@@ -1396,23 +1375,19 @@ namespace InventoryContext {
       } catch (error) {
         // => Reservation failed (insufficient stock)
         return {
-          // => Returns {
           success: false,
-          // => Ensures transactional consistency
+          // => Transaction boundary maintained
           reservationId: request.reservationId,
-          // => Manages entity lifecycle
+          // => Entity state transition managed
           remainingStock: product.getStockLevel(),
           // => Execute method
         };
         // => Return failure result
       }
-      // => Preserves domain model
     }
     // => Communicates domain intent
   }
-  // => Executes domain logic
 }
-// => Updates aggregate state
 
 // Consumer Context - Order Management uses Open Host Service
 namespace OrderContext {
@@ -1423,12 +1398,10 @@ namespace OrderContext {
   // => Import public contracts from Open Host
 
   export class OrderService {
-    // => OrderService: domain model element
     constructor(private inventoryService: InventoryService) {}
     // => Depend on Open Host Service interface
 
     placeOrder(productId: string, quantity: number): void {
-      // => Domain operation: placeOrder
       // => Place order using inventory service
       const availability = this.inventoryService.checkAvailability(productId);
       // => Check availability via Open Host Service
@@ -1438,35 +1411,29 @@ namespace OrderContext {
         throw new Error("Product not available");
         // => Raise domain exception
       }
-      // => Encapsulates domain knowledge
 
       const result = this.inventoryService.reserveStock({
         // => Reserve stock via Open Host Service
         productId,
-        // => Delegates to domain service
+        // => Execution delegated to domain service
         quantity,
-        // => Maintains consistency boundary
+        // => Aggregate boundary enforced here
         reservationId: `RES-${Date.now()}`,
         // => Execute method
       });
-      // => Applies domain event
 
       if (!result.success) {
         // => Validate reservation succeeded
         throw new Error("Reservation failed");
         // => Raise domain exception
       }
-      // => Coordinates with bounded context
 
       console.log(`Order placed. Remaining stock: ${result.remainingStock}`);
       // => Outputs result
       // => Output success message
     }
-    // => Implements tactical pattern
   }
-  // => Protects aggregate integrity
 }
-// => Ensures transactional consistency
 
 // Usage - Multiple consumers can easily integrate
 const inventoryService = new InventoryContext.InventoryServiceImpl();
@@ -1495,6 +1462,8 @@ Acknowledging that two contexts have no integration needs and can evolve indepen
 ```typescript
 // Context 1 - Employee HR Management
 namespace HRContext {
+  // => HRContext: context boundary namespace
+
   export class Employee {
     // => HR's Employee model
     private readonly employeeId: string; // => HR identifier
@@ -1504,6 +1473,8 @@ namespace HRContext {
     private readonly hireDate: Date; // => Employment start date
 
     constructor(employeeId: string, fullName: string, department: string, salary: number, hireDate: Date) {
+      // => Constructor: initializes new instance
+
       this.employeeId = employeeId; // => Initialize employee ID
       this.fullName = fullName; // => Initialize name
       this.department = department; // => Initialize department
@@ -1512,7 +1483,6 @@ namespace HRContext {
     }
 
     promoteEmployee(newDepartment: string, newSalary: number): void {
-      // => Domain operation: promoteEmployee
       // => HR operation: promotion
       // Note: No integration with CustomerSupport context
       console.log(`Promoted ${this.fullName} to ${newDepartment}`);
@@ -1522,7 +1492,8 @@ namespace HRContext {
     }
 
     getEmployeeId(): string {
-      // => Domain operation: getEmployeeId
+      // => getEmployeeId(): returns string
+
       return this.employeeId; // => Expose employee ID
     }
   }
@@ -1533,7 +1504,8 @@ namespace HRContext {
     // => HR employee records
 
     hireEmployee(employee: Employee): void {
-      // => Domain operation: hireEmployee
+      // => hireEmployee(): returns void
+
       this.employees.set(employee.getEmployeeId(), employee);
       // => Delegates to internal method
       // => Add employee to HR system
@@ -1546,6 +1518,8 @@ namespace HRContext {
 
 // Context 2 - Customer Support Ticketing (completely independent)
 namespace CustomerSupportContext {
+  // => CustomerSupportContext: context boundary namespace
+
   export class SupportAgent {
     // => Support's Agent model (different from HR Employee!)
     private readonly agentId: string; // => Support identifier
@@ -1554,13 +1528,14 @@ namespace CustomerSupportContext {
     private readonly activeTickets: number = 0; // => Current workload
 
     constructor(agentId: string, displayName: string, skillSet: string[]) {
+      // => Constructor: initializes new instance
+
       this.agentId = agentId; // => Initialize agent ID
       this.displayName = displayName; // => Initialize display name
       this.skillSet = skillSet; // => Initialize skills
     }
 
     assignTicket(ticket: SupportTicket): void {
-      // => Domain operation: assignTicket
       // => Support operation: ticket assignment
       // Note: No integration with HR context
       console.log(`Ticket assigned to ${this.displayName}`);
@@ -1570,7 +1545,8 @@ namespace CustomerSupportContext {
     }
 
     getAgentId(): string {
-      // => Domain operation: getAgentId
+      // => getAgentId(): returns string
+
       return this.agentId; // => Expose agent ID
     }
   }
@@ -1578,11 +1554,16 @@ namespace CustomerSupportContext {
   export class SupportTicket {
     constructor(
       private readonly ticketId: string,
+      // => ticketId: private readonly string field
+
       private readonly description: string,
+      // => description: private readonly string field
     ) {}
+    // => Constructor body empty: no additional initialization needed
 
     getTicketId(): string {
-      // => Domain operation: getTicketId
+      // => getTicketId(): returns string
+
       return this.ticketId; // => Expose ticket ID
     }
   }
@@ -1593,7 +1574,8 @@ namespace CustomerSupportContext {
     // => Support agent records
 
     registerAgent(agent: SupportAgent): void {
-      // => Domain operation: registerAgent
+      // => registerAgent(): returns void
+
       this.agents.set(agent.getAgentId(), agent);
       // => Delegates to internal method
       // => Add agent to Support system
@@ -1637,186 +1619,134 @@ Two teams with mutual dependency commit to coordinating their development to sup
 ```typescript
 // Context 1 - Order Management (Partner A)
 namespace OrderManagementContext {
-  // => Executes domain logic
   export class Order {
-    // => Order: domain model element
     constructor(
       // => Initialize object with parameters
       private readonly orderId: string,
-      // => Field: readonly (private)
       // => Encapsulated state, not directly accessible
       private readonly customerId: string,
-      // => Field: readonly (private)
       // => Encapsulated state, not directly accessible
       private readonly items: OrderItem[],
-      // => Field: readonly (private)
       // => Encapsulated state, not directly accessible
       private status: OrderStatus = "PENDING",
       // => Encapsulated field (not publicly accessible)
     ) {}
-    // => Updates aggregate state
 
     confirm(): void {
-      // => Domain operation: confirm
       if (this.status !== "PENDING") {
         // => Validate status
         throw new Error("Order already processed");
         // => Raise domain exception
       }
-      // => Updates aggregate state
       this.status = "CONFIRMED"; // => Update status
       // => Order confirmed, ready for payment
     }
     // => Validates business rule
 
     getOrderId(): string {
-      // => Domain operation: getOrderId
       return this.orderId; // => Expose order ID
       // => Validates business rule
     }
     // => Enforces invariant
 
     getStatus(): OrderStatus {
-      // => Domain operation: getStatus
       return this.status; // => Expose status
       // => Enforces invariant
     }
-    // => Encapsulates domain knowledge
 
     getTotalAmount(): number {
-      // => Domain operation: getTotalAmount
       return this.items.reduce((sum, item) => sum + item.getTotal(), 0);
       // => Calculate total amount
     }
-    // => Delegates to domain service
   }
-  // => Maintains consistency boundary
 
   export class OrderItem {
-    // => OrderItem: domain model element
     constructor(
       // => Initialize object with parameters
       private readonly productId: string,
-      // => Field: readonly (private)
       // => Encapsulated state, not directly accessible
       private readonly quantity: number,
-      // => Field: readonly (private)
       // => Encapsulated state, not directly accessible
       private readonly price: number,
-      // => Field: readonly (private)
       // => Encapsulated state, not directly accessible
     ) {}
-    // => Applies domain event
 
     getTotal(): number {
-      // => Domain operation: getTotal
       return this.quantity * this.price; // => Line item total
-      // => Encapsulates domain knowledge
     }
-    // => Coordinates with bounded context
   }
-  // => Implements tactical pattern
 
   export type OrderStatus = "PENDING" | "CONFIRMED" | "PAID" | "SHIPPED";
-  // => Protects aggregate integrity
+  // => Invariant validation executed
 
   // Partnership coordination method - supports PaymentContext
   export interface OrderService {
-    // => Ensures transactional consistency
     getOrderForPayment(orderId: string): OrderPaymentDetails;
-    // => Domain operation: getOrderForPayment
     // => Method designed in partnership with Payment team
     markOrderAsPaid(orderId: string): void;
-    // => Domain operation: markOrderAsPaid
     // => Callback method for Payment team to invoke
   }
-  // => Manages entity lifecycle
 
   export interface OrderPaymentDetails {
-    // => Delegates to domain service
     orderId: string; // => Order identifier
-    // => Maintains consistency boundary
     customerId: string; // => Customer reference
-    // => Applies domain event
     amount: number; // => Amount to charge
-    // => Coordinates with bounded context
     currency: string; // => Currency code
-    // => Implements tactical pattern
   }
-  // => Preserves domain model
 }
 // => Communicates domain intent
 
 // Context 2 - Payment Processing (Partner B)
 namespace PaymentContext {
-  // => Executes domain logic
   import OrderPaymentDetails = OrderManagementContext.OrderPaymentDetails;
   // => Import partner's contract
 
   export class Payment {
-    // => Payment: domain model element
     constructor(
       // => Initialize object with parameters
       private readonly paymentId: string,
-      // => Field: readonly (private)
       // => Encapsulated state, not directly accessible
       private readonly orderId: string,
-      // => Field: readonly (private)
       // => Encapsulated state, not directly accessible
       private readonly amount: number,
-      // => Field: readonly (private)
       // => Encapsulated state, not directly accessible
       private status: PaymentStatus = "PENDING",
       // => Encapsulated field (not publicly accessible)
     ) {}
-    // => Updates aggregate state
 
     process(): void {
-      // => Domain operation: process
       if (this.status !== "PENDING") {
         // => Validate status
         throw new Error("Payment already processed");
         // => Raise domain exception
       }
-      // => Protects aggregate integrity
       this.status = "COMPLETED"; // => Update status
       // => Payment processed successfully
     }
     // => Validates business rule
 
     getStatus(): PaymentStatus {
-      // => Domain operation: getStatus
       return this.status; // => Expose status
-      // => Ensures transactional consistency
     }
     // => Enforces invariant
 
     getOrderId(): string {
-      // => Domain operation: getOrderId
       return this.orderId; // => Expose order ID
-      // => Manages entity lifecycle
     }
-    // => Encapsulates domain knowledge
   }
-  // => Delegates to domain service
 
   export type PaymentStatus = "PENDING" | "COMPLETED" | "FAILED";
-  // => Maintains consistency boundary
+  // => Aggregate boundary enforced here
 
   // Partnership coordination - designed with Order team
   export interface PaymentService {
-    // => Applies domain event
     processOrderPayment(paymentDetails: OrderPaymentDetails): Payment;
-    // => Domain operation: processOrderPayment
     // => Method uses Order team's contract
   }
-  // => Coordinates with bounded context
 }
-// => Implements tactical pattern
 
 // Partnership implementation - coordinated development
 class PartnershipCoordinator {
-  // => PartnershipCoordinator: domain model element
   constructor(
     // => Initialize object with parameters
     private orderRepository: Map<string, OrderManagementContext.Order>,
@@ -1824,20 +1754,16 @@ class PartnershipCoordinator {
     private paymentRepository: Map<string, PaymentContext.Payment>,
     // => Encapsulated field (not publicly accessible)
   ) {}
-  // => Protects aggregate integrity
 
   // Workflow coordinated between both teams
   processOrderWithPayment(orderId: string): void {
-    // => Domain operation: processOrderWithPayment
     // => Partnership workflow
     const order = this.orderRepository.get(orderId);
     // => Retrieve order
     if (!order) {
-      // => Operation: if()
       throw new Error("Order not found");
       // => Raise domain exception
     }
-    // => Ensures transactional consistency
 
     // Step 1: Order team confirms order
     order.confirm();
@@ -1849,11 +1775,11 @@ class PartnershipCoordinator {
       orderId: order.getOrderId(),
       // => Execute method
       customerId: "CUST-123",
-      // => Manages entity lifecycle
+      // => Entity state transition managed
       amount: order.getTotalAmount(),
       // => Execute method
       currency: "USD",
-      // => Preserves domain model
+      // => Domain model consistency maintained
     };
     // => Payment details extracted from order
 
@@ -1873,7 +1799,6 @@ class PartnershipCoordinator {
   }
   // => Communicates domain intent
 }
-// => Executes domain logic
 
 // Usage - Partnership pattern in action
 const orderRepo = new Map<string, OrderManagementContext.Order>();
@@ -1907,27 +1832,20 @@ Recognizing when no clear boundaries exist and refactoring toward proper Bounded
 class GodClass {
   // => Single class mixing multiple domain concerns
   private customerId: string; // => Sales concern
-  // => Protects aggregate integrity
   private orderHistory: any[] = []; // => Order concern
-  // => Ensures transactional consistency
   private shippingAddress: string; // => Shipping concern
-  // => Manages entity lifecycle
   private creditLimit: number; // => Finance concern
-  // => Preserves domain model
   private supportTickets: any[] = []; // => Support concern
   // => Communicates domain intent
   private loyaltyPoints: number; // => Marketing concern
 
   // Sales method
   placeOrder(orderId: string, amount: number): void {
-    // => Domain operation: placeOrder
     // => Sales logic mixed with everything else
     if (amount > this.creditLimit) {
-      // => Operation: if()
       throw new Error("Credit limit exceeded");
       // => Raise domain exception
     }
-    // => Executes domain logic
     this.orderHistory.push({ orderId, amount });
     // => Delegates to internal method
     this.loyaltyPoints += Math.floor(amount / 100);
@@ -1935,11 +1853,9 @@ class GodClass {
     // => State change operation
     // => Multiple concerns entangled
   }
-  // => Updates aggregate state
 
   // Support method
   createTicket(issue: string): void {
-    // => Domain operation: createTicket
     // => Support logic mixed in
     this.supportTickets.push({ issue, date: new Date() });
     // => Delegates to internal method
@@ -1948,25 +1864,20 @@ class GodClass {
 
   // Shipping method
   updateAddress(newAddress: string): void {
-    // => Domain operation: updateAddress
     // => Shipping logic mixed in
     this.shippingAddress = newAddress;
     // => Update shippingAddress state
   }
   // => Enforces invariant
 }
-// => Encapsulates domain knowledge
 
 // REFACTORED: Clear Bounded Contexts
 namespace RefactoredSalesContext {
-  // => Delegates to domain service
   export class Customer {
     // => Sales-specific customer model
     private readonly customerId: string;
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly creditLimit: number;
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private orders: string[] = [];
     // => Encapsulated field (not publicly accessible)
@@ -1978,40 +1889,29 @@ namespace RefactoredSalesContext {
       this.creditLimit = creditLimit;
       // => Update creditLimit state
     }
-    // => Maintains consistency boundary
 
     placeOrder(orderId: string, amount: number): void {
-      // => Domain operation: placeOrder
       // => Pure sales business logic
       if (amount > this.creditLimit) {
-        // => Operation: if()
         throw new Error("Credit limit exceeded");
         // => Raise domain exception
       }
-      // => Applies domain event
       this.orders.push(orderId);
       // => Delegates to internal method
       // => Sales concern isolated
     }
-    // => Coordinates with bounded context
 
     getCustomerId(): string {
-      // => Domain operation: getCustomerId
       return this.customerId;
       // => Return result to caller
     }
-    // => Implements tactical pattern
   }
-  // => Protects aggregate integrity
 }
-// => Ensures transactional consistency
 
 namespace RefactoredShippingContext {
-  // => Manages entity lifecycle
   export class DeliveryProfile {
     // => Shipping-specific model
     private readonly customerId: string;
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private shippingAddress: string;
     // => Encapsulated field (not publicly accessible)
@@ -2023,10 +1923,8 @@ namespace RefactoredShippingContext {
       this.shippingAddress = shippingAddress;
       // => Update shippingAddress state
     }
-    // => Preserves domain model
 
     updateAddress(newAddress: string): void {
-      // => Domain operation: updateAddress
       // => Pure shipping business logic
       this.shippingAddress = newAddress;
       // => Shipping concern isolated
@@ -2034,13 +1932,10 @@ namespace RefactoredShippingContext {
     // => Communicates domain intent
 
     getAddress(): string {
-      // => Domain operation: getAddress
       return this.shippingAddress;
       // => Return result to caller
     }
-    // => Executes domain logic
   }
-  // => Updates aggregate state
 }
 // => Validates business rule
 
@@ -2049,7 +1944,6 @@ namespace RefactoredSupportContext {
   export class CustomerAccount {
     // => Support-specific model
     private readonly customerId: string;
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private tickets: Ticket[] = [];
     // => Encapsulated field (not publicly accessible)
@@ -2059,37 +1953,26 @@ namespace RefactoredSupportContext {
       this.customerId = customerId;
       // => Update customerId state
     }
-    // => Encapsulates domain knowledge
 
     createTicket(issue: string): Ticket {
-      // => Domain operation: createTicket
       // => Pure support business logic
       const ticket = new Ticket(issue, new Date());
       // => Store value in ticket
       this.tickets.push(ticket);
       // => Delegates to internal method
       return ticket;
-      // => Returns ticket
       // => Support concern isolated
     }
-    // => Delegates to domain service
   }
-  // => Maintains consistency boundary
 
   class Ticket {
-    // => Ticket: domain model element
     constructor(
       // => Initialize object with parameters
       public readonly issue: string,
-      // => Field: readonly (public)
       public readonly createdAt: Date,
-      // => Field: readonly (public)
     ) {}
-    // => Applies domain event
   }
-  // => Coordinates with bounded context
 }
-// => Implements tactical pattern
 
 // Usage - Proper context boundaries
 const salesCustomer = new RefactoredSalesContext.Customer("C123", 10000);
@@ -2121,41 +2004,51 @@ console.log("Contexts properly separated with clear boundaries");
 
 Application Services coordinate domain objects to fulfill use cases. They're transaction boundaries that delegate business logic to domain entities while managing infrastructure concerns.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+sequenceDiagram
+    participant UI as UI/Controller
+    participant AS as Application Service
+    participant Repo as Repository
+    participant Agg as Order (Aggregate)
+    participant EB as Event Bus
+
+    UI->>AS: placeOrder(command)
+    AS->>Repo: findCustomer(id)
+    AS->>Agg: place(items)
+    Agg-->>AS: OrderPlaced event
+    AS->>Repo: save(order)
+    AS->>EB: publish(event)
+    AS-->>UI: result
+```
+
 ```typescript
 // Domain Layer - Rich domain model with business logic
 class BankAccount {
-  // => BankAccount: domain model element
   private constructor(
     // => Initialize object with parameters
     private readonly accountId: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private balance: number,
     // => Encapsulated field (not publicly accessible)
     private readonly overdraftLimit: number,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
-  // => Executes domain logic
 
   static create(accountId: string, initialDeposit: number, overdraftLimit: number): BankAccount {
     // => Factory method with business rules
     if (initialDeposit < 0) {
-      // => Operation: if()
       throw new Error("Initial deposit cannot be negative");
       // => Raise domain exception
     }
-    // => Updates aggregate state
     return new BankAccount(accountId, initialDeposit, overdraftLimit);
     // => Create new account with validated initial state
   }
   // => Validates business rule
 
   withdraw(amount: number): void {
-    // => Domain operation: withdraw
     // => Domain business logic
     if (amount <= 0) {
-      // => Operation: if()
       throw new Error("Withdrawal amount must be positive");
       // => Raise domain exception
     }
@@ -2163,61 +2056,46 @@ class BankAccount {
     const availableBalance = this.balance + this.overdraftLimit;
     // => Store value in availableBalance
     if (amount > availableBalance) {
-      // => Operation: if()
       throw new Error("Insufficient funds including overdraft");
       // => Raise domain exception
     }
-    // => Encapsulates domain knowledge
     this.balance -= amount;
     // => State change operation
     // => Modifies state value
     // => Balance updated
     // => Balance updated, business rules enforced
   }
-  // => Delegates to domain service
 
   deposit(amount: number): void {
-    // => Domain operation: deposit
     // => Domain business logic
     if (amount <= 0) {
-      // => Operation: if()
       throw new Error("Deposit amount must be positive");
       // => Raise domain exception
     }
-    // => Maintains consistency boundary
     this.balance += amount;
     // => State change operation
     // => Modifies state value
     // => Balance updated
     // => Balance updated
   }
-  // => Applies domain event
 
   getBalance(): number {
-    // => Domain operation: getBalance
     return this.balance;
     // => Return result to caller
   }
-  // => Coordinates with bounded context
 
   getAccountId(): string {
-    // => Domain operation: getAccountId
     return this.accountId;
     // => Return result to caller
   }
-  // => Implements tactical pattern
 }
-// => Protects aggregate integrity
 
 // Repository Interface (Domain Layer)
 interface BankAccountRepository {
   // => BankAccountRepository: contract definition
   findById(accountId: string): BankAccount | null;
-  // => Domain operation: findById
   save(account: BankAccount): void;
-  // => Domain operation: save
 }
-// => Ensures transactional consistency
 
 // Application Service - Orchestrates use case
 class TransferApplicationService {
@@ -2226,7 +2104,6 @@ class TransferApplicationService {
   // => Initialize object with parameters
 
   transferMoney(fromAccountId: string, toAccountId: string, amount: number): void {
-    // => Domain operation: transferMoney
     // => Use case: transfer money between accounts
     // Step 1: Load aggregates
     const fromAccount = this.accountRepository.findById(fromAccountId);
@@ -2235,11 +2112,9 @@ class TransferApplicationService {
     // => Store value in toAccount
 
     if (!fromAccount || !toAccount) {
-      // => Operation: if()
       throw new Error("Account not found");
       // => Raise domain exception
     }
-    // => Manages entity lifecycle
 
     // Step 2: Execute domain logic (business rules in domain)
     fromAccount.withdraw(amount);
@@ -2257,30 +2132,24 @@ class TransferApplicationService {
 
     // => Application Service coordinates, domain objects enforce rules
   }
-  // => Preserves domain model
 }
 // => Communicates domain intent
 
 // Infrastructure Layer - Repository implementation
 class InMemoryBankAccountRepository implements BankAccountRepository {
-  // => InMemoryBankAccountRepository: domain model element
   private accounts: Map<string, BankAccount> = new Map();
   // => Encapsulated field (not publicly accessible)
 
   findById(accountId: string): BankAccount | null {
-    // => Domain operation: findById
     return this.accounts.get(accountId) || null;
     // => Retrieve account
   }
-  // => Executes domain logic
 
   save(account: BankAccount): void {
-    // => Domain operation: save
     this.accounts.set(account.getAccountId(), account);
     // => Delegates to internal method
     // => Persist account
   }
-  // => Updates aggregate state
 }
 // => Validates business rule
 
@@ -2319,6 +2188,28 @@ console.log(`ACC-002 balance: ${account2.getBalance()}`);
 
 Application Services publish domain events after successful use case completion, enabling decoupled communication.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A["Application Service\nuse case coordinator"]
+    B["Domain Aggregate\nbusiness logic"]
+    C["Event Publisher\npublishes after commit"]
+    D["Email Service\nhandler"]
+    E["Audit Service\nhandler"]
+
+    A -->|orchestrates| B
+    B -->|raises| C
+    A -->|publishes after tx| C
+    C -->|notifies| D
+    C -->|notifies| E
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#029E73,stroke:#000,color:#fff
+    style C fill:#CC78BC,stroke:#000,color:#fff
+    style D fill:#DE8F05,stroke:#000,color:#000
+    style E fill:#DE8F05,stroke:#000,color:#000
+```
+
 ```typescript
 // Domain Event
 class OrderPlacedEvent {
@@ -2326,21 +2217,14 @@ class OrderPlacedEvent {
   constructor(
     // => Initialize object with parameters
     public readonly orderId: string,
-    // => Field: readonly (public)
     public readonly customerId: string,
-    // => Field: readonly (public)
     public readonly totalAmount: number,
-    // => Field: readonly (public)
     public readonly occurredAt: Date,
-    // => Field: readonly (public)
   ) {}
-  // => Executes domain logic
 }
-// => Updates aggregate state
 
 // Domain Model
 class Order {
-  // => Order: domain model element
   private events: OrderPlacedEvent[] = [];
   // => Encapsulated field (not publicly accessible)
   // => Collect domain events
@@ -2348,13 +2232,10 @@ class Order {
   constructor(
     // => Initialize object with parameters
     private readonly orderId: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly customerId: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly items: OrderItem[],
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private status: OrderStatus = "DRAFT",
     // => Encapsulated field (not publicly accessible)
@@ -2362,10 +2243,8 @@ class Order {
   // => Validates business rule
 
   place(): void {
-    // => Domain operation: place
     // => Domain business logic
     if (this.status !== "DRAFT") {
-      // => Operation: if()
       throw new Error("Order already placed");
       // => Raise domain exception
     }
@@ -2378,88 +2257,65 @@ class Order {
     // => Delegates to internal method
     // => Event recorded for later publication
   }
-  // => Encapsulates domain knowledge
 
   getEvents(): OrderPlacedEvent[] {
-    // => Domain operation: getEvents
     return [...this.events];
-    // => Returns [...this.events]
     // => Expose collected events
   }
-  // => Delegates to domain service
 
   clearEvents(): void {
-    // => Domain operation: clearEvents
     this.events = [];
     // => Clear events after publication
   }
-  // => Maintains consistency boundary
 
   private getTotalAmount(): number {
     // => Internal logic (not part of public API)
     return this.items.reduce((sum, item) => sum + item.price, 0);
     // => Return result to caller
   }
-  // => Applies domain event
 
   getOrderId(): string {
-    // => Domain operation: getOrderId
     return this.orderId;
     // => Return result to caller
   }
-  // => Coordinates with bounded context
 }
-// => Implements tactical pattern
 
 class OrderItem {
-  // => OrderItem: domain model element
   constructor(
     // => Initialize object with parameters
     public readonly productId: string,
-    // => Field: readonly (public)
     public readonly price: number,
-    // => Field: readonly (public)
   ) {}
-  // => Protects aggregate integrity
 }
-// => Ensures transactional consistency
 
 type OrderStatus = "DRAFT" | "PLACED" | "SHIPPED";
-// => Manages entity lifecycle
+// => Entity state transition managed
 
 // Event Publisher Interface
 interface EventPublisher {
   // => EventPublisher: contract definition
   publish(event: OrderPlacedEvent): void;
-  // => Domain operation: publish
 }
-// => Preserves domain model
 
 // Application Service - Publishes events after transaction
 class PlaceOrderApplicationService {
-  // => PlaceOrderApplicationService: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly orderRepository: OrderRepository,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly eventPublisher: EventPublisher,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
   // => Communicates domain intent
 
   placeOrder(orderId: string): void {
-    // => Domain operation: placeOrder
     // => Use case: place order
     const order = this.orderRepository.findById(orderId);
     // => Store value in order
     if (!order) {
-      // => Operation: if()
       throw new Error("Order not found");
       // => Raise domain exception
     }
-    // => Executes domain logic
 
     // Execute domain logic
     order.place();
@@ -2479,64 +2335,49 @@ class PlaceOrderApplicationService {
     order.clearEvents();
     // => Clear events after publication
   }
-  // => Updates aggregate state
 }
 // => Validates business rule
 
 interface OrderRepository {
   // => OrderRepository: contract definition
   findById(orderId: string): Order | null;
-  // => Domain operation: findById
   save(order: Order): void;
-  // => Domain operation: save
 }
 // => Enforces invariant
 
 // Infrastructure - Simple event publisher
 class InMemoryEventPublisher implements EventPublisher {
-  // => InMemoryEventPublisher: domain model element
   private publishedEvents: OrderPlacedEvent[] = [];
   // => Encapsulated field (not publicly accessible)
 
   publish(event: OrderPlacedEvent): void {
-    // => Domain operation: publish
     this.publishedEvents.push(event);
     // => Delegates to internal method
     // => Record published event
     console.log(`Event published: OrderPlaced for ${event.orderId}`);
     // => Outputs result
   }
-  // => Encapsulates domain knowledge
 
   getPublishedEvents(): OrderPlacedEvent[] {
-    // => Domain operation: getPublishedEvents
     return this.publishedEvents;
     // => Return result to caller
   }
-  // => Delegates to domain service
 }
-// => Maintains consistency boundary
 
 class InMemoryOrderRepository implements OrderRepository {
-  // => InMemoryOrderRepository: domain model element
   private orders: Map<string, Order> = new Map();
   // => Encapsulated field (not publicly accessible)
 
   findById(orderId: string): Order | null {
-    // => Domain operation: findById
     return this.orders.get(orderId) || null;
     // => Return result to caller
   }
-  // => Applies domain event
 
   save(order: Order): void {
-    // => Domain operation: save
     this.orders.set(order.getOrderId(), order);
     // => Delegates to internal method
   }
-  // => Coordinates with bounded context
 }
-// => Implements tactical pattern
 
 // Usage - Application Service publishes events
 const orderRepo = new InMemoryOrderRepository();
@@ -2570,35 +2411,24 @@ Application Services validate input from external sources (API, CLI) before invo
 ```typescript
 // Input DTO from external source (API, CLI, etc.)
 interface CreateProductRequest {
-  // => Protects aggregate integrity
   name: string | null; // => May be null from external source
-  // => Ensures transactional consistency
   price: number | null; // => May be null
-  // => Manages entity lifecycle
   category: string | null; // => May be null
-  // => Preserves domain model
 }
-// => Executes domain logic
 
 // Domain Model - assumes valid input
 class Product {
-  // => Product: domain model element
   private constructor(
     // => Initialize object with parameters
     private readonly productId: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly name: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly price: number,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly category: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
-  // => Updates aggregate state
 
   static create(productId: string, name: string, price: number, category: string): Product {
     // => Domain factory assumes valid input (validation already done)
@@ -2608,29 +2438,23 @@ class Product {
   // => Validates business rule
 
   getProductId(): string {
-    // => Domain operation: getProductId
     return this.productId;
     // => Return result to caller
   }
   // => Enforces invariant
 }
-// => Encapsulates domain knowledge
 
 interface ProductRepository {
   // => ProductRepository: contract definition
   save(product: Product): void;
-  // => Domain operation: save
 }
-// => Delegates to domain service
 
 // Application Service - validates external input
 class CreateProductApplicationService {
-  // => CreateProductApplicationService: domain model element
   constructor(private readonly productRepository: ProductRepository) {}
   // => Initialize object with parameters
 
   createProduct(request: CreateProductRequest): string {
-    // => Domain operation: createProduct
     // => Use case with input validation
     // Step 1: Validate input (Application Service responsibility)
     this.validateRequest(request);
@@ -2657,9 +2481,7 @@ class CreateProductApplicationService {
     // => Save to repository
 
     return productId; // => Return identifier
-    // => Returns productId; // => Return identifier
   }
-  // => Maintains consistency boundary
 
   private validateRequest(request: CreateProductRequest): void {
     // => Internal logic (not part of public API)
@@ -2672,33 +2494,25 @@ class CreateProductApplicationService {
       errors.push("Name is required");
       // => Execute method
     }
-    // => Applies domain event
     if (request.name && request.name.length > 100) {
-      // => Operation: if()
       errors.push("Name cannot exceed 100 characters");
       // => Execute method
     }
-    // => Coordinates with bounded context
 
     if (request.price === null || request.price === undefined) {
-      // => Operation: if()
       errors.push("Price is required");
       // => Execute method
     }
-    // => Implements tactical pattern
     if (request.price !== null && request.price <= 0) {
-      // => Operation: if()
       errors.push("Price must be positive");
       // => Execute method
     }
-    // => Protects aggregate integrity
 
     if (!request.category || request.category.trim().length === 0) {
       // => Conditional check
       errors.push("Category is required");
       // => Execute method
     }
-    // => Ensures transactional consistency
 
     if (errors.length > 0) {
       // => Validation failed
@@ -2707,18 +2521,14 @@ class CreateProductApplicationService {
     }
     // => Validation passed
   }
-  // => Manages entity lifecycle
 }
-// => Preserves domain model
 
 // Infrastructure
 class InMemoryProductRepository implements ProductRepository {
-  // => InMemoryProductRepository: domain model element
   private products: Map<string, Product> = new Map();
   // => Encapsulated field (not publicly accessible)
 
   save(product: Product): void {
-    // => Domain operation: save
     this.products.set(product.getProductId(), product);
     // => Delegates to internal method
     console.log(`Product saved: ${product.getProductId()}`);
@@ -2726,7 +2536,6 @@ class InMemoryProductRepository implements ProductRepository {
   }
   // => Communicates domain intent
 }
-// => Executes domain logic
 
 // Usage - Application Service validates input
 const productRepo = new InMemoryProductRepository();
@@ -2738,13 +2547,12 @@ const createProductService = new CreateProductApplicationService(productRepo);
 const validRequest: CreateProductRequest = {
   // => Create data structure
   name: "Laptop",
-  // => Updates aggregate state
+  // => Modifies aggregate internal state
   price: 1200,
   // => Validates business rule
   category: "Electronics",
   // => Enforces invariant
 };
-// => Encapsulates domain knowledge
 const productId = createProductService.createProduct(validRequest);
 // => Output: Product saved: PROD-[timestamp]
 console.log(`Created product: ${productId}`);
@@ -2752,26 +2560,21 @@ console.log(`Created product: ${productId}`);
 
 // Invalid request - caught by validation
 try {
-  // => Delegates to domain service
   const invalidRequest: CreateProductRequest = {
     // => Communicates domain intent
     name: null, // => Invalid: name required
-    // => Executes domain logic
     price: -100, // => Invalid: price must be positive
-    // => Updates aggregate state
     category: "",
-    // => Maintains consistency boundary
+    // => Aggregate boundary enforced here
   };
-  // => Applies domain event
   createProductService.createProduct(invalidRequest);
   // => Execute method
 } catch (error) {
-  // => Coordinates with bounded context
+  // => Cross-context interaction point
   console.log(`Validation error: ${error.message}`);
   // => Outputs result
   // => Output: Validation error: Validation failed: Name is required, Price must be positive, Category is required
 }
-// => Implements tactical pattern
 ```
 
 **Key Takeaway**: Application Services validate external input before invoking domain logic. This separates infrastructure concerns (parsing, type coercion, null checks) from domain concerns (business rules). Domain objects can assume inputs are valid, making domain code cleaner and more focused on business logic.
@@ -2782,32 +2585,41 @@ try {
 
 Coordinating multiple aggregates within a transaction while respecting aggregate boundaries.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+sequenceDiagram
+    participant AS as Application Service
+    participant OA as Order Aggregate
+    participant IA as Inventory Aggregate
+    participant DB as Database
+
+    AS->>OA: place(items)
+    OA-->>AS: OrderPlaced event
+    AS->>IA: reserve(items)
+    IA-->>AS: InventoryReserved event
+    AS->>DB: commit transaction
+    DB-->>AS: success
+```
+
 ```typescript
 // Aggregate 1 - Customer
 class Customer {
-  // => Customer: domain model element
   private constructor(
     // => Initialize object with parameters
     private readonly customerId: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private loyaltyPoints: number,
     // => Encapsulated field (not publicly accessible)
   ) {}
-  // => Executes domain logic
 
   static create(customerId: string, initialPoints: number): Customer {
-    // => Operation: create()
     return new Customer(customerId, initialPoints);
     // => Return result to caller
   }
-  // => Updates aggregate state
 
   addLoyaltyPoints(points: number): void {
-    // => Domain operation: addLoyaltyPoints
     // => Domain logic: earn loyalty points
     if (points < 0) {
-      // => Operation: if()
       throw new Error("Points must be positive");
       // => Raise domain exception
     }
@@ -2821,125 +2633,93 @@ class Customer {
   // => Enforces invariant
 
   getCustomerId(): string {
-    // => Domain operation: getCustomerId
     return this.customerId;
     // => Return result to caller
   }
-  // => Encapsulates domain knowledge
 
   getLoyaltyPoints(): number {
-    // => Domain operation: getLoyaltyPoints
     return this.loyaltyPoints;
     // => Return result to caller
   }
-  // => Delegates to domain service
 }
-// => Maintains consistency boundary
 
 // Aggregate 2 - Order
 class Order {
-  // => Order: domain model element
   private constructor(
     // => Initialize object with parameters
     private readonly orderId: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly customerId: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly totalAmount: number,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private status: OrderStatus = "PENDING",
     // => Encapsulated field (not publicly accessible)
   ) {}
-  // => Applies domain event
 
   static create(orderId: string, customerId: string, totalAmount: number): Order {
-    // => Operation: create()
     if (totalAmount <= 0) {
-      // => Operation: if()
       throw new Error("Total amount must be positive");
       // => Raise domain exception
     }
-    // => Coordinates with bounded context
     return new Order(orderId, customerId, totalAmount);
     // => Return result to caller
   }
-  // => Implements tactical pattern
 
   confirm(): void {
-    // => Domain operation: confirm
     // => Domain logic: confirm order
     if (this.status !== "PENDING") {
-      // => Operation: if()
       throw new Error("Order already processed");
       // => Raise domain exception
     }
-    // => Protects aggregate integrity
     this.status = "CONFIRMED";
     // => Order confirmed
   }
-  // => Ensures transactional consistency
 
   getTotalAmount(): number {
-    // => Domain operation: getTotalAmount
     return this.totalAmount;
     // => Return result to caller
   }
-  // => Manages entity lifecycle
 
   getCustomerId(): string {
-    // => Domain operation: getCustomerId
     return this.customerId;
     // => Return result to caller
   }
-  // => Preserves domain model
 
   getOrderId(): string {
-    // => Domain operation: getOrderId
     return this.orderId;
     // => Return result to caller
   }
   // => Communicates domain intent
 }
-// => Executes domain logic
 
 type OrderStatus = "PENDING" | "CONFIRMED" | "SHIPPED";
-// => Updates aggregate state
+// => Modifies aggregate internal state
 
 interface CustomerRepository {
   // => CustomerRepository: contract definition
   findById(customerId: string): Customer | null;
-  // => Domain operation: findById
   save(customer: Customer): void;
-  // => Domain operation: save
 }
 // => Validates business rule
 
 interface OrderRepository {
   // => OrderRepository: contract definition
   save(order: Order): void;
-  // => Domain operation: save
 }
 // => Enforces invariant
 
 // Application Service - coordinates multiple aggregates
 class PlaceOrderWithLoyaltyService {
-  // => PlaceOrderWithLoyaltyService: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly customerRepo: CustomerRepository,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly orderRepo: OrderRepository,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
-  // => Encapsulates domain knowledge
 
   placeOrder(customerId: string, totalAmount: number): string {
-    // => Domain operation: placeOrder
     // => Use case: place order and award loyalty points
     // Step 1: Create order aggregate
     const orderId = `ORDER-${Date.now()}`;
@@ -2959,11 +2739,9 @@ class PlaceOrderWithLoyaltyService {
     const customer = this.customerRepo.findById(customerId);
     // => Store value in customer
     if (!customer) {
-      // => Operation: if()
       throw new Error("Customer not found");
       // => Raise domain exception
     }
-    // => Delegates to domain service
 
     // Step 5: Award points (within Customer aggregate)
     customer.addLoyaltyPoints(loyaltyPoints);
@@ -2979,47 +2757,34 @@ class PlaceOrderWithLoyaltyService {
     // => Both aggregates updated atomically
 
     return orderId;
-    // => Returns orderId
   }
-  // => Maintains consistency boundary
 }
-// => Applies domain event
 
 // Infrastructure
 class InMemoryCustomerRepository implements CustomerRepository {
-  // => InMemoryCustomerRepository: domain model element
   private customers: Map<string, Customer> = new Map();
   // => Encapsulated field (not publicly accessible)
 
   findById(customerId: string): Customer | null {
-    // => Domain operation: findById
     return this.customers.get(customerId) || null;
     // => Return result to caller
   }
-  // => Coordinates with bounded context
 
   save(customer: Customer): void {
-    // => Domain operation: save
     this.customers.set(customer.getCustomerId(), customer);
     // => Delegates to internal method
   }
-  // => Implements tactical pattern
 }
-// => Protects aggregate integrity
 
 class InMemoryOrderRepository implements OrderRepository {
-  // => InMemoryOrderRepository: domain model element
   private orders: Map<string, Order> = new Map();
   // => Encapsulated field (not publicly accessible)
 
   save(order: Order): void {
-    // => Domain operation: save
     this.orders.set(order.getOrderId(), order);
     // => Delegates to internal method
   }
-  // => Ensures transactional consistency
 }
-// => Manages entity lifecycle
 
 // Usage - Application Service coordinates multiple aggregates
 const customerRepo = new InMemoryCustomerRepository();
@@ -3055,112 +2820,83 @@ Application Services handle failure scenarios gracefully, implementing compensat
 ```typescript
 // Domain entities
 class Reservation {
-  // => Reservation: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly reservationId: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly customerId: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private status: ReservationStatus = "ACTIVE",
     // => Encapsulated field (not publicly accessible)
   ) {}
-  // => Executes domain logic
 
   cancel(): void {
-    // => Domain operation: cancel
     if (this.status !== "ACTIVE") {
-      // => Operation: if()
       throw new Error("Reservation already cancelled");
       // => Raise domain exception
     }
-    // => Updates aggregate state
     this.status = "CANCELLED";
     // => Update status state
   }
   // => Validates business rule
 
   getReservationId(): string {
-    // => Domain operation: getReservationId
     return this.reservationId;
     // => Return result to caller
   }
   // => Enforces invariant
 
   getCustomerId(): string {
-    // => Domain operation: getCustomerId
     return this.customerId;
     // => Return result to caller
   }
-  // => Encapsulates domain knowledge
 }
-// => Delegates to domain service
 
 type ReservationStatus = "ACTIVE" | "CANCELLED";
-// => Maintains consistency boundary
+// => Aggregate boundary enforced here
 
 class PaymentRecord {
-  // => PaymentRecord: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly paymentId: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly amount: number,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private refunded: boolean = false,
     // => Encapsulated field (not publicly accessible)
   ) {}
-  // => Applies domain event
 
   refund(): void {
-    // => Domain operation: refund
     if (this.refunded) {
-      // => Operation: if()
       throw new Error("Already refunded");
       // => Raise domain exception
     }
-    // => Coordinates with bounded context
     this.refunded = true;
     // => Update refunded state
   }
-  // => Implements tactical pattern
 
   getPaymentId(): string {
-    // => Domain operation: getPaymentId
     return this.paymentId;
     // => Return result to caller
   }
-  // => Protects aggregate integrity
 
   isRefunded(): boolean {
-    // => Domain operation: isRefunded
     return this.refunded;
     // => Return result to caller
   }
-  // => Ensures transactional consistency
 }
-// => Manages entity lifecycle
 
 // Repositories
 interface ReservationRepository {
   // => ReservationRepository: contract definition
   findById(reservationId: string): Reservation | null;
-  // => Domain operation: findById
   save(reservation: Reservation): void;
-  // => Domain operation: save
 }
-// => Preserves domain model
 
 interface PaymentRepository {
   // => PaymentRepository: contract definition
   findByReservation(reservationId: string): PaymentRecord | null;
-  // => Domain operation: findByReservation
   save(payment: PaymentRecord): void;
-  // => Domain operation: save
 }
 // => Communicates domain intent
 
@@ -3168,26 +2904,19 @@ interface PaymentRepository {
 interface NotificationService {
   // => NotificationService: contract definition
   sendCancellationEmail(customerId: string): void;
-  // => Domain operation: sendCancellationEmail
 }
-// => Executes domain logic
 
 class UnreliableNotificationService implements NotificationService {
-  // => UnreliableNotificationService: domain model element
   private shouldFail: boolean = false;
   // => Encapsulated field (not publicly accessible)
 
   setShouldFail(shouldFail: boolean): void {
-    // => Domain operation: setShouldFail
     this.shouldFail = shouldFail;
     // => Update shouldFail state
   }
-  // => Updates aggregate state
 
   sendCancellationEmail(customerId: string): void {
-    // => Domain operation: sendCancellationEmail
     if (this.shouldFail) {
-      // => Operation: if()
       throw new Error("Email service unavailable");
       // => Raise domain exception
     }
@@ -3197,43 +2926,33 @@ class UnreliableNotificationService implements NotificationService {
   }
   // => Enforces invariant
 }
-// => Encapsulates domain knowledge
 
 // Application Service with error handling and compensation
 class CancelReservationService {
-  // => CancelReservationService: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly reservationRepo: ReservationRepository,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly paymentRepo: PaymentRepository,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly notificationService: NotificationService,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
-  // => Delegates to domain service
 
   cancelReservation(reservationId: string): void {
-    // => Domain operation: cancelReservation
     let reservation: Reservation | null = null;
-    // => Maintains consistency boundary
+    // => Aggregate boundary enforced here
     let payment: PaymentRecord | null = null;
-    // => Applies domain event
+    // => Domain event triggered or handled
 
     try {
-      // => Coordinates with bounded context
       // Step 1: Load reservation
       reservation = this.reservationRepo.findById(reservationId);
-      // => Implements tactical pattern
+      // => DDD tactical pattern applied
       if (!reservation) {
-        // => Operation: if()
         throw new Error("Reservation not found");
         // => Raise domain exception
       }
-      // => Protects aggregate integrity
 
       // Step 2: Cancel reservation
       reservation.cancel();
@@ -3244,23 +2963,21 @@ class CancelReservationService {
 
       // Step 3: Process refund
       payment = this.paymentRepo.findByReservation(reservationId);
-      // => Ensures transactional consistency
+      // => Transaction boundary maintained
       if (payment) {
-        // => Operation: if()
         payment.refund();
         // => Execute method
         this.paymentRepo.save(payment);
         // => Delegates to internal method
         // => Refund processed and saved
       }
-      // => Manages entity lifecycle
 
       // Step 4: Send notification (may fail)
       this.notificationService.sendCancellationEmail(reservation.getCustomerId());
       // => Delegates to internal method
       // => Email sent successfully
     } catch (error) {
-      // => Preserves domain model
+      // => Domain model consistency maintained
       // Error occurred - implement compensation logic
       console.log(`Error during cancellation: ${error.message}`);
       // => Outputs result
@@ -3276,17 +2993,14 @@ class CancelReservationService {
 
       // Re-throw if critical steps failed
       if (!reservation || error.message === "Reservation not found") {
-        // => Protects aggregate integrity
+        // => Guard: early return when entity not found
         throw error; // => Critical failure, propagate to caller
-        // => Ensures transactional consistency
       }
-      // => Executes domain logic
 
       // Non-critical failure (email) - log but don't fail operation
       console.log("Cancellation completed despite notification failure");
       // => Outputs result
     }
-    // => Updates aggregate state
   }
   // => Validates business rule
 }
@@ -3294,46 +3008,34 @@ class CancelReservationService {
 
 // Infrastructure
 class InMemoryReservationRepository implements ReservationRepository {
-  // => InMemoryReservationRepository: domain model element
   private reservations: Map<string, Reservation> = new Map();
   // => Encapsulated field (not publicly accessible)
 
   findById(reservationId: string): Reservation | null {
-    // => Domain operation: findById
     return this.reservations.get(reservationId) || null;
     // => Return result to caller
   }
-  // => Encapsulates domain knowledge
 
   save(reservation: Reservation): void {
-    // => Domain operation: save
     this.reservations.set(reservation.getReservationId(), reservation);
     // => Delegates to internal method
   }
-  // => Delegates to domain service
 }
-// => Maintains consistency boundary
 
 class InMemoryPaymentRepository implements PaymentRepository {
-  // => InMemoryPaymentRepository: domain model element
   private payments: Map<string, PaymentRecord> = new Map();
   // => Encapsulated field (not publicly accessible)
 
   findByReservation(reservationId: string): PaymentRecord | null {
-    // => Domain operation: findByReservation
     return this.payments.get(reservationId) || null;
     // => Return result to caller
   }
-  // => Applies domain event
 
   save(payment: PaymentRecord): void {
-    // => Domain operation: save
     this.payments.set(payment.getPaymentId(), payment);
     // => Delegates to internal method
   }
-  // => Coordinates with bounded context
 }
-// => Implements tactical pattern
 
 // Usage - Application Service handles errors gracefully
 const reservationRepo = new InMemoryReservationRepository();
@@ -3389,38 +3091,28 @@ Domain Event Handlers react to domain events, implementing eventual consistency 
 ```typescript
 // Domain Event
 class OrderPlacedEvent {
-  // => OrderPlacedEvent: domain model element
   constructor(
     // => Initialize object with parameters
     public readonly orderId: string,
-    // => Field: readonly (public)
     public readonly customerId: string,
-    // => Field: readonly (public)
     public readonly totalAmount: number,
-    // => Field: readonly (public)
     public readonly occurredAt: Date,
-    // => Field: readonly (public)
   ) {}
-  // => Executes domain logic
 }
-// => Updates aggregate state
 
 // Event Handler Interface
 interface DomainEventHandler<T> {
   // => DomainEventHandler: contract definition
   handle(event: T): void;
-  // => Domain operation: handle
 }
 // => Validates business rule
 
 // Event Handler - Send Order Confirmation Email
 class SendOrderConfirmationEmailHandler implements DomainEventHandler<OrderPlacedEvent> {
-  // => SendOrderConfirmationEmailHandler: domain model element
   constructor(private readonly emailService: EmailService) {}
   // => Initialize object with parameters
 
   handle(event: OrderPlacedEvent): void {
-    // => Domain operation: handle
     // => React to OrderPlaced event
     console.log(`Handling OrderPlacedEvent for ${event.orderId}`);
     // => Outputs result
@@ -3428,34 +3120,27 @@ class SendOrderConfirmationEmailHandler implements DomainEventHandler<OrderPlace
     this.emailService.sendEmail(
       // => Enforces invariant
       event.customerId,
-      // => Encapsulates domain knowledge
+      // => Business rule enforced here
       "Order Confirmation",
-      // => Delegates to domain service
+      // => Execution delegated to domain service
       `Your order ${event.orderId} has been placed. Total: $${event.totalAmount / 100}`,
-      // => Maintains consistency boundary
+      // => Aggregate boundary enforced here
     );
     // => Send confirmation email
   }
-  // => Applies domain event
 }
-// => Coordinates with bounded context
 
 // Event Handler - Update Loyalty Points
 class AwardLoyaltyPointsHandler implements DomainEventHandler<OrderPlacedEvent> {
-  // => AwardLoyaltyPointsHandler: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly customerRepo: CustomerRepository,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly pointsCalculator: LoyaltyPointsCalculator,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
-  // => Implements tactical pattern
 
   handle(event: OrderPlacedEvent): void {
-    // => Domain operation: handle
     // => React to OrderPlaced event
     console.log(`Awarding loyalty points for order ${event.orderId}`);
     // => Outputs result
@@ -3463,13 +3148,11 @@ class AwardLoyaltyPointsHandler implements DomainEventHandler<OrderPlacedEvent> 
     const customer = this.customerRepo.findById(event.customerId);
     // => Store value in customer
     if (!customer) {
-      // => Operation: if()
       console.log("Customer not found - skipping loyalty points");
       // => Outputs result
       return;
-      // => Protects aggregate integrity
+      // => Invariant validation executed
     }
-    // => Ensures transactional consistency
 
     const points = this.pointsCalculator.calculate(event.totalAmount);
     // => Store value in points
@@ -3482,44 +3165,33 @@ class AwardLoyaltyPointsHandler implements DomainEventHandler<OrderPlacedEvent> 
     console.log(`Awarded ${points} points to ${event.customerId}`);
     // => Outputs result
   }
-  // => Manages entity lifecycle
 }
-// => Preserves domain model
 
 // Supporting classes
 interface EmailService {
   // => EmailService: contract definition
   sendEmail(recipient: string, subject: string, body: string): void;
-  // => Domain operation: sendEmail
 }
 // => Communicates domain intent
 
 class MockEmailService implements EmailService {
-  // => MockEmailService: domain model element
   sendEmail(recipient: string, subject: string, body: string): void {
-    // => Domain operation: sendEmail
     console.log(`Email sent to ${recipient}: ${subject}`);
     // => Outputs result
   }
-  // => Executes domain logic
 }
-// => Updates aggregate state
 
 interface CustomerRepository {
   // => CustomerRepository: contract definition
   findById(customerId: string): Customer | null;
-  // => Domain operation: findById
   save(customer: Customer): void;
-  // => Domain operation: save
 }
 // => Validates business rule
 
 class Customer {
-  // => Customer: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly customerId: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private loyaltyPoints: number,
     // => Encapsulated field (not publicly accessible)
@@ -3527,70 +3199,51 @@ class Customer {
   // => Enforces invariant
 
   addLoyaltyPoints(points: number): void {
-    // => Domain operation: addLoyaltyPoints
     this.loyaltyPoints += points;
     // => Modifies loyaltyPoints
     // => State change operation
     // => Modifies state value
   }
-  // => Encapsulates domain knowledge
 
   getCustomerId(): string {
-    // => Domain operation: getCustomerId
     return this.customerId;
     // => Return result to caller
   }
-  // => Delegates to domain service
 
   getLoyaltyPoints(): number {
-    // => Domain operation: getLoyaltyPoints
     return this.loyaltyPoints;
     // => Return result to caller
   }
-  // => Maintains consistency boundary
 }
-// => Applies domain event
 
 class InMemoryCustomerRepository implements CustomerRepository {
-  // => InMemoryCustomerRepository: domain model element
   private customers: Map<string, Customer> = new Map();
   // => Encapsulated field (not publicly accessible)
 
   findById(customerId: string): Customer | null {
-    // => Domain operation: findById
     return this.customers.get(customerId) || null;
     // => Return result to caller
   }
-  // => Coordinates with bounded context
 
   save(customer: Customer): void {
-    // => Domain operation: save
     this.customers.set(customer.getCustomerId(), customer);
     // => Delegates to internal method
   }
-  // => Implements tactical pattern
 }
-// => Protects aggregate integrity
 
 class LoyaltyPointsCalculator {
-  // => LoyaltyPointsCalculator: domain model element
   calculate(amount: number): number {
-    // => Domain operation: calculate
     return Math.floor(amount / 100); // 1 point per $100
-    // => Returns Math.floor(amount / 100); // 1 point per $100
   }
-  // => Ensures transactional consistency
 }
-// => Manages entity lifecycle
 
 // Event Dispatcher - coordinates handlers
 class EventDispatcher {
-  // => EventDispatcher: domain model element
   private handlers: Map<string, DomainEventHandler<any>[]> = new Map();
   // => Encapsulated field (not publicly accessible)
 
   register<T>(eventType: string, handler: DomainEventHandler<T>): void {
-    // => Preserves domain model
+    // => Method body begins here
     if (!this.handlers.has(eventType)) {
       // => Conditional check
       this.handlers.set(eventType, []);
@@ -3601,10 +3254,9 @@ class EventDispatcher {
     // => Delegates to internal method
     // => Handler registered for event type
   }
-  // => Executes domain logic
 
   dispatch<T>(eventType: string, event: T): void {
-    // => Updates aggregate state
+    // => Method body begins here
     const handlers = this.handlers.get(eventType) || [];
     // => Store value in handlers
     handlers.forEach((handler) => handler.handle(event));
@@ -3661,31 +3313,21 @@ Ensuring event handlers can safely process the same event multiple times without
 ```typescript
 // Domain Event with unique identifier
 class PaymentProcessedEvent {
-  // => PaymentProcessedEvent: domain model element
   constructor(
-    // => Maintains consistency boundary
+    // => Constructor: initializes object with provided parameters
     public readonly eventId: string, // => Unique event identifier for deduplication
-    // => Applies domain event
     public readonly paymentId: string,
-    // => Field: readonly (public)
     public readonly amount: number,
-    // => Field: readonly (public)
     public readonly occurredAt: Date,
-    // => Field: readonly (public)
   ) {}
-  // => Executes domain logic
 }
-// => Updates aggregate state
 
 // Event Processing Record - tracks processed events
 class ProcessedEvent {
-  // => ProcessedEvent: domain model element
   constructor(
     // => Initialize object with parameters
     public readonly eventId: string,
-    // => Field: readonly (public)
     public readonly processedAt: Date,
-    // => Field: readonly (public)
   ) {}
   // => Validates business rule
 }
@@ -3694,50 +3336,36 @@ class ProcessedEvent {
 interface ProcessedEventRepository {
   // => ProcessedEventRepository: contract definition
   hasBeenProcessed(eventId: string): boolean;
-  // => Domain operation: hasBeenProcessed
   markAsProcessed(eventId: string): void;
-  // => Domain operation: markAsProcessed
 }
-// => Encapsulates domain knowledge
 
 class InMemoryProcessedEventRepository implements ProcessedEventRepository {
-  // => InMemoryProcessedEventRepository: domain model element
   private processedEvents: Set<string> = new Set();
   // => Encapsulated field (not publicly accessible)
 
   hasBeenProcessed(eventId: string): boolean {
-    // => Domain operation: hasBeenProcessed
     return this.processedEvents.has(eventId);
     // => Check if event already processed
   }
-  // => Delegates to domain service
 
   markAsProcessed(eventId: string): void {
-    // => Domain operation: markAsProcessed
     this.processedEvents.add(eventId);
     // => Delegates to internal method
     // => Record event as processed
   }
-  // => Maintains consistency boundary
 }
-// => Applies domain event
 
 // Idempotent Event Handler
 class UpdateAccountingLedgerHandler implements DomainEventHandler<PaymentProcessedEvent> {
-  // => UpdateAccountingLedgerHandler: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly processedEventRepo: ProcessedEventRepository,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly ledgerService: AccountingLedgerService,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
-  // => Coordinates with bounded context
 
   handle(event: PaymentProcessedEvent): void {
-    // => Domain operation: handle
     // => Idempotent event handling
     console.log(`Processing PaymentProcessedEvent ${event.eventId}`);
     // => Outputs result
@@ -3748,9 +3376,7 @@ class UpdateAccountingLedgerHandler implements DomainEventHandler<PaymentProcess
       console.log(`Event ${event.eventId} already processed - skipping`);
       // => Outputs result
       return; // => Skip duplicate processing
-      // => Coordinates with bounded context
     }
-    // => Implements tactical pattern
 
     // Process event (first time)
     this.ledgerService.recordTransaction(event.paymentId, event.amount);
@@ -3765,46 +3391,35 @@ class UpdateAccountingLedgerHandler implements DomainEventHandler<PaymentProcess
     console.log(`Event ${event.eventId} processed successfully`);
     // => Outputs result
   }
-  // => Protects aggregate integrity
 }
-// => Ensures transactional consistency
 
 interface AccountingLedgerService {
   // => AccountingLedgerService: contract definition
   recordTransaction(paymentId: string, amount: number): void;
-  // => Domain operation: recordTransaction
 }
-// => Manages entity lifecycle
 
 class MockAccountingLedgerService implements AccountingLedgerService {
-  // => MockAccountingLedgerService: domain model element
   private transactions: Array<{ paymentId: string; amount: number }> = [];
   // => Encapsulated field (not publicly accessible)
 
   recordTransaction(paymentId: string, amount: number): void {
-    // => Domain operation: recordTransaction
     this.transactions.push({ paymentId, amount });
     // => Delegates to internal method
     console.log(`Ledger updated: ${paymentId} - $${amount / 100}`);
     // => Outputs result
   }
-  // => Preserves domain model
 
   getTransactionCount(): number {
-    // => Domain operation: getTransactionCount
     return this.transactions.length;
     // => Return result to caller
   }
   // => Communicates domain intent
 }
-// => Executes domain logic
 
 interface DomainEventHandler<T> {
   // => DomainEventHandler: contract definition
   handle(event: T): void;
-  // => Domain operation: handle
 }
-// => Updates aggregate state
 
 // Usage - Idempotent handler prevents duplicate processing
 const processedEventRepo = new InMemoryProcessedEventRepository();
@@ -3815,17 +3430,16 @@ const handler = new UpdateAccountingLedgerHandler(processedEventRepo, ledgerServ
 // => Store value in handler
 
 const event = new PaymentProcessedEvent(
-  // => Implements tactical pattern
+  // => event: value assigned for use in this scope
   "EVT-001", // => Unique event ID
-  // => Protects aggregate integrity
   "PAY-123",
   // => Validates business rule
   10000,
   // => Enforces invariant
   new Date(),
-  // => Encapsulates domain knowledge
+  // => Business rule enforced here
 );
-// => Delegates to domain service
+// => Execution delegated to domain service
 
 // Process event first time
 handler.handle(event);
@@ -3851,26 +3465,38 @@ console.log(`Total transactions recorded: ${ledgerService.getTransactionCount()}
 
 Coordinating long-running business processes across multiple aggregates using events.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+sequenceDiagram
+    participant O as Order Aggregate
+    participant S as Saga
+    participant P as Payment Aggregate
+    participant I as Inventory Aggregate
+    participant Ship as Shipping Aggregate
+
+    O->>S: OrderPlaced event
+    S->>P: processPayment()
+    P->>S: PaymentCompleted event
+    S->>I: reserveItems()
+    I->>S: ItemsReserved event
+    S->>Ship: scheduleShipment()
+    Ship->>S: ShipmentScheduled event
+```
+
 ```typescript
 // Saga Coordinator - orchestrates multi-step process
 class OrderFulfillmentSaga {
-  // => OrderFulfillmentSaga: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly sagaRepo: SagaStateRepository,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly inventoryService: InventoryService,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly shippingService: ShippingService,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
-  // => Executes domain logic
 
   onOrderPlaced(event: OrderPlacedEvent): void {
-    // => Domain operation: onOrderPlaced
     // => Saga step 1: Order placed
     console.log(`Saga started for order ${event.orderId}`);
     // => Outputs result
@@ -3883,7 +3509,6 @@ class OrderFulfillmentSaga {
 
     // Step 1: Reserve inventory
     try {
-      // => Updates aggregate state
       this.inventoryService.reserve(event.orderId, event.items);
       // => Delegates to internal method
       sagaState.markInventoryReserved();
@@ -3904,12 +3529,9 @@ class OrderFulfillmentSaga {
       return;
       // => Enforces invariant
     }
-    // => Encapsulates domain knowledge
   }
-  // => Delegates to domain service
 
   onInventoryReserved(event: InventoryReservedEvent): void {
-    // => Domain operation: onInventoryReserved
     // => Saga step 2: Inventory reserved
     const sagaState = this.sagaRepo.findByOrderId(event.orderId);
     // => Store value in sagaState
@@ -3918,13 +3540,11 @@ class OrderFulfillmentSaga {
       console.log("Saga state invalid - skipping");
       // => Outputs result
       return;
-      // => Maintains consistency boundary
+      // => Aggregate boundary enforced here
     }
-    // => Applies domain event
 
     // Step 2: Create shipment
     try {
-      // => Coordinates with bounded context
       this.shippingService.createShipment(event.orderId);
       // => Delegates to internal method
       sagaState.markShipmentCreated();
@@ -3934,7 +3554,7 @@ class OrderFulfillmentSaga {
       console.log(`Shipment created for ${event.orderId}`);
       // => Outputs result
     } catch (error) {
-      // => Implements tactical pattern
+      // => DDD tactical pattern applied
       // Compensation: Rollback inventory reservation
       this.inventoryService.release(event.orderId);
       // => Delegates to internal method
@@ -3945,21 +3565,16 @@ class OrderFulfillmentSaga {
       console.log(`Saga compensated: released inventory`);
       // => Outputs result
     }
-    // => Protects aggregate integrity
   }
-  // => Ensures transactional consistency
 
   onShipmentCreated(event: ShipmentCreatedEvent): void {
-    // => Domain operation: onShipmentCreated
     // => Saga step 3: Shipment created (final step)
     const sagaState = this.sagaRepo.findByOrderId(event.orderId);
     // => Store value in sagaState
     if (!sagaState) {
-      // => Operation: if()
       return;
-      // => Manages entity lifecycle
+      // => Entity state transition managed
     }
-    // => Preserves domain model
 
     sagaState.markCompleted();
     // => Execute method
@@ -3970,169 +3585,124 @@ class OrderFulfillmentSaga {
   }
   // => Communicates domain intent
 }
-// => Executes domain logic
 
 // Supporting classes
 class OrderPlacedEvent {
-  // => OrderPlacedEvent: domain model element
   constructor(
     // => Initialize object with parameters
     public readonly orderId: string,
-    // => Field: readonly (public)
     public readonly items: string[],
-    // => Field: readonly (public)
   ) {}
-  // => Updates aggregate state
 }
 // => Validates business rule
 
 class InventoryReservedEvent {
-  // => InventoryReservedEvent: domain model element
   constructor(public readonly orderId: string) {}
   // => Initialize object with parameters
 }
 // => Enforces invariant
 
 class ShipmentCreatedEvent {
-  // => ShipmentCreatedEvent: domain model element
   constructor(public readonly orderId: string) {}
   // => Initialize object with parameters
 }
-// => Encapsulates domain knowledge
 
 class SagaState {
-  // => SagaState: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly orderId: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private status: SagaStatus,
     // => Encapsulated field (not publicly accessible)
   ) {}
-  // => Delegates to domain service
 
   markInventoryReserved(): void {
-    // => Domain operation: markInventoryReserved
     this.status = "INVENTORY_RESERVED";
     // => Update status state
   }
-  // => Maintains consistency boundary
 
   markShipmentCreated(): void {
-    // => Domain operation: markShipmentCreated
     this.status = "SHIPMENT_CREATED";
     // => Update status state
   }
-  // => Applies domain event
 
   markCompleted(): void {
-    // => Domain operation: markCompleted
     this.status = "COMPLETED";
     // => Update status state
   }
-  // => Coordinates with bounded context
 
   markFailed(): void {
-    // => Domain operation: markFailed
     this.status = "FAILED";
     // => Update status state
   }
-  // => Implements tactical pattern
 
   getStatus(): SagaStatus {
-    // => Domain operation: getStatus
     return this.status;
     // => Return result to caller
   }
-  // => Protects aggregate integrity
 
   getOrderId(): string {
-    // => Domain operation: getOrderId
     return this.orderId;
     // => Return result to caller
   }
-  // => Ensures transactional consistency
 }
-// => Manages entity lifecycle
 
 type SagaStatus = "STARTED" | "INVENTORY_RESERVED" | "SHIPMENT_CREATED" | "COMPLETED" | "FAILED";
-// => Preserves domain model
+// => Domain model consistency maintained
 
 interface SagaStateRepository {
   // => SagaStateRepository: contract definition
   findByOrderId(orderId: string): SagaState | null;
-  // => Domain operation: findByOrderId
   save(state: SagaState): void;
-  // => Domain operation: save
 }
 // => Communicates domain intent
 
 class InMemorySagaStateRepository implements SagaStateRepository {
-  // => InMemorySagaStateRepository: domain model element
   private states: Map<string, SagaState> = new Map();
   // => Encapsulated field (not publicly accessible)
 
   findByOrderId(orderId: string): SagaState | null {
-    // => Domain operation: findByOrderId
     return this.states.get(orderId) || null;
     // => Return result to caller
   }
-  // => Executes domain logic
 
   save(state: SagaState): void {
-    // => Domain operation: save
     this.states.set(state.getOrderId(), state);
     // => Delegates to internal method
   }
-  // => Updates aggregate state
 }
 // => Validates business rule
 
 interface InventoryService {
   // => InventoryService: contract definition
   reserve(orderId: string, items: string[]): void;
-  // => Domain operation: reserve
   release(orderId: string): void;
-  // => Domain operation: release
 }
 // => Enforces invariant
 
 class MockInventoryService implements InventoryService {
-  // => MockInventoryService: domain model element
   reserve(orderId: string, items: string[]): void {
-    // => Domain operation: reserve
     console.log(`Inventory reserved: ${items.join(", ")}`);
     // => Outputs result
   }
-  // => Encapsulates domain knowledge
 
   release(orderId: string): void {
-    // => Domain operation: release
     console.log(`Inventory released for ${orderId}`);
     // => Outputs result
   }
-  // => Delegates to domain service
 }
-// => Maintains consistency boundary
 
 interface ShippingService {
   // => ShippingService: contract definition
   createShipment(orderId: string): void;
-  // => Domain operation: createShipment
 }
-// => Applies domain event
 
 class MockShippingService implements ShippingService {
-  // => MockShippingService: domain model element
   createShipment(orderId: string): void {
-    // => Domain operation: createShipment
     console.log(`Shipment created for ${orderId}`);
     // => Outputs result
   }
-  // => Coordinates with bounded context
 }
-// => Implements tactical pattern
 
 // Usage - Saga coordinates multi-step process
 const sagaRepo = new InMemorySagaStateRepository();
@@ -4178,56 +3748,39 @@ Rebuilding aggregate state from domain events.
 ```typescript
 // Domain Events
 class AccountCreatedEvent {
-  // => AccountCreatedEvent: domain model element
   constructor(
     // => Initialize object with parameters
     public readonly accountId: string,
-    // => Field: readonly (public)
     public readonly initialBalance: number,
-    // => Field: readonly (public)
     public readonly occurredAt: Date,
-    // => Field: readonly (public)
   ) {}
-  // => Executes domain logic
 }
-// => Updates aggregate state
 
 class MoneyDepositedEvent {
-  // => MoneyDepositedEvent: domain model element
   constructor(
     // => Initialize object with parameters
     public readonly accountId: string,
-    // => Field: readonly (public)
     public readonly amount: number,
-    // => Field: readonly (public)
     public readonly occurredAt: Date,
-    // => Field: readonly (public)
   ) {}
   // => Validates business rule
 }
 // => Enforces invariant
 
 class MoneyWithdrawnEvent {
-  // => MoneyWithdrawnEvent: domain model element
   constructor(
     // => Initialize object with parameters
     public readonly accountId: string,
-    // => Field: readonly (public)
     public readonly amount: number,
-    // => Field: readonly (public)
     public readonly occurredAt: Date,
-    // => Field: readonly (public)
   ) {}
-  // => Encapsulates domain knowledge
 }
-// => Delegates to domain service
 
 type AccountEvent = AccountCreatedEvent | MoneyDepositedEvent | MoneyWithdrawnEvent;
-// => Maintains consistency boundary
+// => Aggregate boundary enforced here
 
 // Event-Sourced Aggregate
 class EventSourcedBankAccount {
-  // => EventSourcedBankAccount: domain model element
   private accountId: string = "";
   // => Encapsulated field (not publicly accessible)
   private balance: number = 0;
@@ -4237,92 +3790,73 @@ class EventSourcedBankAccount {
 
   // Apply events to rebuild state
   applyEvent(event: AccountEvent): void {
-    // => Domain operation: applyEvent
     if (event instanceof AccountCreatedEvent) {
-      // => Operation: if()
       this.accountId = event.accountId;
       // => Update accountId state
       this.balance = event.initialBalance;
       // => Update balance state
     } else if (event instanceof MoneyDepositedEvent) {
-      // => Applies domain event
+      // => Domain event triggered or handled
       this.balance += event.amount;
       // => State change operation
       // => Modifies state value
       // => Balance updated
     } else if (event instanceof MoneyWithdrawnEvent) {
-      // => Coordinates with bounded context
+      // => Cross-context interaction point
       this.balance -= event.amount;
       // => State change operation
       // => Modifies state value
       // => Balance updated
     }
-    // => Implements tactical pattern
     this.version++;
     // => State updated from event
   }
-  // => Protects aggregate integrity
 
   // Rebuild from event history
   static fromEvents(events: AccountEvent[]): EventSourcedBankAccount {
-    // => Operation: fromEvents()
     const account = new EventSourcedBankAccount();
     // => Store value in account
     events.forEach((event) => account.applyEvent(event));
     // => forEach: process collection elements
     return account;
-    // => Returns account
     // => Account state reconstructed from events
   }
-  // => Ensures transactional consistency
 
   getBalance(): number {
-    // => Domain operation: getBalance
     return this.balance;
     // => Return result to caller
   }
-  // => Manages entity lifecycle
 
   getVersion(): number {
-    // => Domain operation: getVersion
     return this.version;
     // => Return result to caller
   }
-  // => Preserves domain model
 
   getAccountId(): string {
-    // => Domain operation: getAccountId
     return this.accountId;
     // => Return result to caller
   }
   // => Communicates domain intent
 }
-// => Executes domain logic
 
 // Event Store
 interface EventStore {
   // => EventStore: contract definition
   getEvents(accountId: string): AccountEvent[];
-  // => Domain operation: getEvents
   appendEvent(event: AccountEvent): void;
-  // => Domain operation: appendEvent
 }
-// => Updates aggregate state
 
 class InMemoryEventStore implements EventStore {
-  // => InMemoryEventStore: domain model element
   private events: Map<string, AccountEvent[]> = new Map();
   // => Encapsulated field (not publicly accessible)
 
   getEvents(accountId: string): AccountEvent[] {
-    // => Domain operation: getEvents
     return this.events.get(accountId) || [];
     // => Return result to caller
   }
   // => Validates business rule
 
   appendEvent(event: AccountEvent): void {
-    // => Domain operation: appendEvent
     const accountId = event.accountId;
     // => Store value in accountId
     if (!this.events.has(accountId)) {
@@ -4336,18 +3870,14 @@ class InMemoryEventStore implements EventStore {
     console.log(`Event stored: ${event.constructor.name}`);
     // => Outputs result
   }
-  // => Encapsulates domain knowledge
 }
-// => Delegates to domain service
 
 // Event Handler - Projection builder
 class AccountBalanceProjectionHandler {
-  // => AccountBalanceProjectionHandler: domain model element
   private projections: Map<string, number> = new Map();
   // => Encapsulated field (not publicly accessible)
 
   handle(event: AccountEvent): void {
-    // => Domain operation: handle
     // => Build read model from events
     const accountId = event.accountId;
     // => Store value in accountId
@@ -4355,39 +3885,33 @@ class AccountBalanceProjectionHandler {
     // => Store value in balance
 
     if (event instanceof AccountCreatedEvent) {
-      // => Operation: if()
       balance = event.initialBalance;
-      // => Maintains consistency boundary
+      // => Aggregate boundary enforced here
     } else if (event instanceof MoneyDepositedEvent) {
-      // => Applies domain event
+      // => Domain event triggered or handled
       balance += event.amount;
       // => State change operation
       // => Modifies state value
       // => Balance updated
     } else if (event instanceof MoneyWithdrawnEvent) {
-      // => Coordinates with bounded context
+      // => Cross-context interaction point
       balance -= event.amount;
       // => State change operation
       // => Modifies state value
       // => Balance updated
     }
-    // => Implements tactical pattern
 
     this.projections.set(accountId, balance);
     // => Delegates to internal method
     console.log(`Projection updated: ${accountId} -> $${balance}`);
     // => Outputs result
   }
-  // => Protects aggregate integrity
 
   getBalance(accountId: string): number {
-    // => Domain operation: getBalance
     return this.projections.get(accountId) || 0;
     // => Return result to caller
   }
-  // => Ensures transactional consistency
 }
-// => Manages entity lifecycle
 
 // Usage - Event Sourcing pattern
 const eventStore = new InMemoryEventStore();
@@ -4443,17 +3967,12 @@ Handling failures in event processing gracefully.
 ```typescript
 // Domain Event
 class OrderShippedEvent {
-  // => OrderShippedEvent: domain model element
   constructor(
     // => Initialize object with parameters
     public readonly eventId: string,
-    // => Field: readonly (public)
     public readonly orderId: string,
-    // => Field: readonly (public)
     public readonly trackingNumber: string,
-    // => Field: readonly (public)
     public readonly occurredAt: Date,
-    // => Field: readonly (public)
   ) {}
 }
 
@@ -4461,18 +3980,14 @@ class OrderShippedEvent {
 interface DeadLetterQueue {
   // => DeadLetterQueue: contract definition
   addFailedEvent(event: any, error: Error, attemptCount: number): void;
-  // => Domain operation: addFailedEvent
   getFailedEvents(): Array<{ event: any; error: Error; attemptCount: number }>;
-  // => Domain operation: getFailedEvents
 }
 
 class InMemoryDeadLetterQueue implements DeadLetterQueue {
-  // => InMemoryDeadLetterQueue: domain model element
   private failedEvents: Array<{ event: any; error: Error; attemptCount: number }> = [];
   // => Encapsulated field (not publicly accessible)
 
   addFailedEvent(event: any, error: Error, attemptCount: number): void {
-    // => Domain operation: addFailedEvent
     this.failedEvents.push({ event, error, attemptCount });
     // => Delegates to internal method
     console.log(`Event ${event.eventId} added to DLQ after ${attemptCount} attempts`);
@@ -4480,7 +3995,6 @@ class InMemoryDeadLetterQueue implements DeadLetterQueue {
   }
 
   getFailedEvents(): Array<{ event: any; error: Error; attemptCount: number }> {
-    // => Domain operation: getFailedEvents
     return this.failedEvents;
     // => Return result to caller
   }
@@ -4488,23 +4002,18 @@ class InMemoryDeadLetterQueue implements DeadLetterQueue {
 
 // Event Handler with retry logic
 class SendTrackingEmailHandler {
-  // => SendTrackingEmailHandler: domain model element
   private readonly MAX_RETRY_ATTEMPTS = 3;
-  // => Field: readonly (private)
   // => Encapsulated state, not directly accessible
 
   constructor(
     // => Initialize object with parameters
     private readonly emailService: EmailService,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly deadLetterQueue: DeadLetterQueue,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
 
   handle(event: OrderShippedEvent, attemptCount: number = 1): void {
-    // => Domain operation: handle
     // => Handle event with retry logic
     console.log(`Processing OrderShippedEvent ${event.eventId}, attempt ${attemptCount}`);
     // => Outputs result
@@ -4522,7 +4031,6 @@ class SendTrackingEmailHandler {
       // => Outputs result
 
       if (attemptCount < this.MAX_RETRY_ATTEMPTS) {
-        // => Operation: if()
         // Retry
         console.log(`Retrying... (${attemptCount + 1}/${this.MAX_RETRY_ATTEMPTS})`);
         // => Delegates to internal method
@@ -4545,15 +4053,12 @@ class SendTrackingEmailHandler {
 interface EmailService {
   // => EmailService: contract definition
   sendTrackingEmail(orderId: string, trackingNumber: string): void;
-  // => Domain operation: sendTrackingEmail
 }
 
 class UnreliableEmailService implements EmailService {
-  // => UnreliableEmailService: domain model element
   private attemptCount: number = 0;
   // => Encapsulated field (not publicly accessible)
   private readonly failUntilAttempt: number;
-  // => Field: readonly (private)
   // => Encapsulated state, not directly accessible
 
   constructor(failUntilAttempt: number) {
@@ -4563,10 +4068,8 @@ class UnreliableEmailService implements EmailService {
   }
 
   sendTrackingEmail(orderId: string, trackingNumber: string): void {
-    // => Domain operation: sendTrackingEmail
     this.attemptCount++;
     if (this.attemptCount < this.failUntilAttempt) {
-      // => Operation: if()
       throw new Error("Email service temporarily unavailable");
       // => Raise domain exception
     }
@@ -4576,7 +4079,6 @@ class UnreliableEmailService implements EmailService {
   }
 
   reset(): void {
-    // => Domain operation: reset
     this.attemptCount = 0;
     // => Update attemptCount state
   }
@@ -4641,10 +4143,30 @@ console.log(`\nDead Letter Queue size: ${dlq.getFailedEvents().length}`);
 
 Factories encapsulating complex validation and construction logic for aggregates.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A["Factory\ncreate(params)"]
+    B["Validate inputs"]
+    C["Construct Aggregate\nall invariants satisfied"]
+    D["Return valid Aggregate"]
+    E["Throw error\nif invalid"]
+
+    A --> B
+    B -->|valid| C
+    B -->|invalid| E
+    C --> D
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#CC78BC,stroke:#000,color:#fff
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#CA9161,stroke:#000,color:#fff
+```
+
 ```typescript
 // Value Objects
 class EmailAddress {
-  // => EmailAddress: domain model element
   private constructor(private readonly value: string) {}
   // => Initialize object with parameters
 
@@ -4657,14 +4179,11 @@ class EmailAddress {
       throw new Error("Invalid email format");
       // => Raise domain exception
     }
-    // => Executes domain logic
     return new EmailAddress(email);
     // => Return result to caller
   }
-  // => Updates aggregate state
 
   getValue(): string {
-    // => Domain operation: getValue
     return this.value;
     // => Return result to caller
   }
@@ -4673,7 +4192,6 @@ class EmailAddress {
 // => Enforces invariant
 
 class PhoneNumber {
-  // => PhoneNumber: domain model element
   private constructor(private readonly value: string) {}
   // => Initialize object with parameters
 
@@ -4686,46 +4204,33 @@ class PhoneNumber {
       throw new Error("Invalid phone format (use E.164)");
       // => Raise domain exception
     }
-    // => Encapsulates domain knowledge
     return new PhoneNumber(phone);
     // => Return result to caller
   }
-  // => Delegates to domain service
 
   getValue(): string {
-    // => Domain operation: getValue
     return this.value;
     // => Return result to caller
   }
-  // => Maintains consistency boundary
 }
-// => Applies domain event
 
 // Aggregate
 class Customer {
-  // => Customer: domain model element
   private constructor(
     // => Initialize object with parameters
     private readonly customerId: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly name: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly email: EmailAddress,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly phone: PhoneNumber,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly creditLimit: number,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly accountStatus: AccountStatus,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
-  // => Coordinates with bounded context
 
   // Factory method with complex validation
   static create(name: string, email: string, phone: string, requestedCreditLimit: number): Customer {
@@ -4737,13 +4242,10 @@ class Customer {
       throw new Error("Name must be at least 2 characters");
       // => Raise domain exception
     }
-    // => Implements tactical pattern
     if (name.length > 100) {
-      // => Operation: if()
       throw new Error("Name cannot exceed 100 characters");
       // => Raise domain exception
     }
-    // => Protects aggregate integrity
 
     // Validation 2: Email (delegated to value object)
     const emailVO = EmailAddress.create(email);
@@ -4755,25 +4257,20 @@ class Customer {
 
     // Business Rule: Credit limit determination
     let creditLimit: number;
-    // => Ensures transactional consistency
+    // => Transaction boundary maintained
     if (requestedCreditLimit <= 0) {
-      // => Operation: if()
       throw new Error("Credit limit must be positive");
       // => Raise domain exception
     } else if (requestedCreditLimit <= 5000) {
-      // => Manages entity lifecycle
+      // => Entity state transition managed
       creditLimit = requestedCreditLimit; // => Auto-approve small limits
-      // => Preserves domain model
     } else if (requestedCreditLimit <= 50000) {
       // => Communicates domain intent
       creditLimit = 5000; // => Cap at 5000 for manual review
-      // => Executes domain logic
     } else {
-      // => Manages entity lifecycle
       throw new Error("Credit limit exceeds maximum (50000)");
       // => Raise domain exception
     }
-    // => Preserves domain model
 
     // Business Rule: Initial account status
     const accountStatus: AccountStatus = creditLimit > 1000 ? "ACTIVE" : "PENDING_APPROVAL";
@@ -4787,41 +4284,33 @@ class Customer {
   // => Communicates domain intent
 
   getCustomerId(): string {
-    // => Domain operation: getCustomerId
     return this.customerId;
     // => Return result to caller
   }
-  // => Executes domain logic
 
   getCreditLimit(): number {
-    // => Domain operation: getCreditLimit
     return this.creditLimit;
     // => Return result to caller
   }
-  // => Updates aggregate state
 
   getAccountStatus(): AccountStatus {
-    // => Domain operation: getAccountStatus
     return this.accountStatus;
     // => Return result to caller
   }
   // => Validates business rule
 
   getEmail(): string {
-    // => Domain operation: getEmail
     return this.email.getValue();
     // => Return result to caller
   }
   // => Enforces invariant
 }
-// => Encapsulates domain knowledge
 
 type AccountStatus = "ACTIVE" | "PENDING_APPROVAL" | "SUSPENDED";
-// => Delegates to domain service
+// => Execution delegated to domain service
 
 // Usage - Factory with complex validation
 try {
-  // => Maintains consistency boundary
   const customer = Customer.create("Alice Johnson", "alice@example.com", "+14155552671", 10000);
   // => Store value in customer
   console.log(`Customer created: ${customer.getCustomerId()}`);
@@ -4834,24 +4323,21 @@ try {
   // => Output: Credit limit: $5000 (capped for manual review)
   // => Output: Status: ACTIVE
 } catch (error) {
-  // => Applies domain event
+  // => Domain event triggered or handled
   console.log(`Creation failed: ${error.message}`);
   // => Outputs result
 }
-// => Coordinates with bounded context
 
 // Invalid inputs caught by factory
 try {
-  // => Implements tactical pattern
   Customer.create("A", "invalid-email", "123", -1000);
   // => Execute method
 } catch (error) {
-  // => Protects aggregate integrity
+  // => Invariant validation executed
   console.log(`Validation error: ${error.message}`);
   // => Outputs result
   // => Output: Validation error: Name must be at least 2 characters
 }
-// => Ensures transactional consistency
 ```
 
 **Key Takeaway**: Factories encapsulate complex validation and business rules for aggregate creation, ensuring only valid aggregates enter the system. Validation logic centralized in factory method prevents duplicating rules across application layer.
@@ -4865,25 +4351,19 @@ Separating creation logic (business rules) from reconstitution logic (loading fr
 ```typescript
 // Aggregate
 class Order {
-  // => Order: domain model element
   private constructor(
     // => Initialize object with parameters
     private readonly orderId: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly customerId: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly items: OrderItem[],
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private status: OrderStatus,
     // => Encapsulated field (not publicly accessible)
     private readonly createdAt: Date,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
-  // => Executes domain logic
 
   // Factory for NEW orders (enforces business rules)
   static create(customerId: string, items: OrderItem[]): Order {
@@ -4893,9 +4373,7 @@ class Order {
       throw new Error("Customer ID required");
       // => Raise domain exception
     }
-    // => Updates aggregate state
     if (items.length === 0) {
-      // => Operation: if()
       throw new Error("Order must have at least one item");
       // => Raise domain exception
     }
@@ -4911,143 +4389,114 @@ class Order {
     return new Order(orderId, customerId, items, status, createdAt);
     // => New order created with initial state
   }
-  // => Encapsulates domain knowledge
 
   // Factory for EXISTING orders (reconstitution from database)
   static reconstitute(
-    // => Delegates to domain service
+    // => Execution delegated to domain service
     orderId: string,
-    // => Maintains consistency boundary
+    // => Aggregate boundary enforced here
     customerId: string,
-    // => Applies domain event
+    // => Domain event triggered or handled
     items: OrderItem[],
-    // => Coordinates with bounded context
+    // => Cross-context interaction point
     status: OrderStatus,
-    // => Implements tactical pattern
+    // => DDD tactical pattern applied
     createdAt: Date,
-    // => Protects aggregate integrity
+    // => Invariant validation executed
   ): Order {
     // => Reconstitution factory - NO validation
     // Assumes data from database is already valid
     return new Order(orderId, customerId, items, status, createdAt);
     // => Order rebuilt from persisted state
   }
-  // => Ensures transactional consistency
 
   confirm(): void {
-    // => Domain operation: confirm
     if (this.status !== "PENDING") {
-      // => Operation: if()
       throw new Error("Order already processed");
       // => Raise domain exception
     }
-    // => Manages entity lifecycle
     this.status = "CONFIRMED";
     // => Update status state
   }
-  // => Preserves domain model
 
   getOrderId(): string {
-    // => Domain operation: getOrderId
     return this.orderId;
     // => Return result to caller
   }
   // => Communicates domain intent
 
   getStatus(): OrderStatus {
-    // => Domain operation: getStatus
     return this.status;
     // => Return result to caller
   }
-  // => Executes domain logic
 
   getCreatedAt(): Date {
-    // => Domain operation: getCreatedAt
     return this.createdAt;
     // => Return result to caller
   }
-  // => Updates aggregate state
 }
 // => Validates business rule
 
 class OrderItem {
-  // => OrderItem: domain model element
   constructor(
     // => Initialize object with parameters
     public readonly productId: string,
-    // => Field: readonly (public)
     public readonly quantity: number,
-    // => Field: readonly (public)
     public readonly price: number,
-    // => Field: readonly (public)
   ) {}
   // => Enforces invariant
 }
-// => Encapsulates domain knowledge
 
 type OrderStatus = "PENDING" | "CONFIRMED" | "SHIPPED";
-// => Delegates to domain service
+// => Execution delegated to domain service
 
 // Repository uses reconstitute factory
 interface OrderRepository {
   // => OrderRepository: contract definition
   save(order: Order): void;
-  // => Domain operation: save
   findById(orderId: string): Order | null;
-  // => Domain operation: findById
 }
-// => Maintains consistency boundary
 
 class InMemoryOrderRepository implements OrderRepository {
-  // => InMemoryOrderRepository: domain model element
   private orders: Map<
     // => Encapsulated field (not publicly accessible)
     string,
-    // => Applies domain event
+    // => Domain event triggered or handled
     { id: string; customerId: string; items: OrderItem[]; status: OrderStatus; createdAt: Date }
-    // => Coordinates with bounded context
+    // => Cross-context interaction point
   > = new Map();
   // => Create Map instance
 
   save(order: Order): void {
-    // => Domain operation: save
     // Persist order (simplified)
     this.orders.set(order.getOrderId(), {
       // => Delegates to internal method
       id: order.getOrderId(),
       // => Execute method
       customerId: "C123", // Simplified
-      // => Implements tactical pattern
+      // => DDD tactical pattern applied
       items: [],
-      // => Protects aggregate integrity
+      // => Invariant validation executed
       status: order.getStatus(),
       // => Execute method
       createdAt: order.getCreatedAt(),
       // => Execute method
     });
-    // => Ensures transactional consistency
   }
-  // => Manages entity lifecycle
 
   findById(orderId: string): Order | null {
-    // => Domain operation: findById
     const data = this.orders.get(orderId);
     // => Store value in data
     if (!data) {
-      // => Operation: if()
       return null;
-      // => Returns null
     }
-    // => Preserves domain model
 
     // Use reconstitute factory to rebuild aggregate
     return Order.reconstitute(data.id, data.customerId, data.items, data.status, data.createdAt);
-    // => Returns Order.reconstitute(data.id, data.customerId, data.items, data.status, data.createdAt)
     // => Order rebuilt from persisted data
   }
   // => Communicates domain intent
 }
-// => Executes domain logic
 
 // Usage - Different factories for creation vs reconstitution
 const repository = new InMemoryOrderRepository();
@@ -5071,12 +4520,10 @@ repository.save(newOrder);
 const loadedOrder = repository.findById(newOrder.getOrderId());
 // => Store value in loadedOrder
 if (loadedOrder) {
-  // => Operation: if()
   console.log(`Loaded order: ${loadedOrder.getOrderId()}, status: ${loadedOrder.getStatus()}`);
   // => Outputs result
   // => Output: Loaded order: ORD-[timestamp], status: CONFIRMED
 }
-// => Updates aggregate state
 ```
 
 **Key Takeaway**: Separate factory methods for creation (validate business rules) vs reconstitution (load from database). Creation factories enforce invariants; reconstitution factories trust persisted data. This prevents unnecessary validation on every database load while ensuring new aggregates are valid.
@@ -5090,92 +4537,64 @@ Using Abstract Factory pattern to create different aggregate types based on busi
 ```typescript
 // Abstract base
 abstract class DiscountPolicy {
-  // => DiscountPolicy: domain model element
   abstract calculate(orderAmount: number): number;
-  // => Executes domain logic
+  // => Domain operation executes here
   abstract getType(): string;
-  // => Updates aggregate state
+  // => Modifies aggregate internal state
 }
 // => Validates business rule
 
 // Concrete implementations
 class PercentageDiscountPolicy extends DiscountPolicy {
-  // => PercentageDiscountPolicy: domain model element
   constructor(private readonly percentage: number) {
     // => Initialize object with parameters
     super();
     // => Enforces invariant
   }
-  // => Encapsulates domain knowledge
 
   calculate(orderAmount: number): number {
-    // => Domain operation: calculate
     return Math.floor(orderAmount * (this.percentage / 100));
-    // => Returns Math.floor(orderAmount * (this.percentage / 100))
     // => Calculate percentage discount
   }
-  // => Delegates to domain service
 
   getType(): string {
-    // => Domain operation: getType
     return `${this.percentage}% Discount`;
-    // => Returns `${this.percentage}% Discount`
   }
-  // => Maintains consistency boundary
 }
-// => Applies domain event
 
 class FixedAmountDiscountPolicy extends DiscountPolicy {
-  // => FixedAmountDiscountPolicy: domain model element
   constructor(private readonly fixedAmount: number) {
     // => Initialize object with parameters
     super();
-    // => Coordinates with bounded context
+    // => Cross-context interaction point
   }
-  // => Implements tactical pattern
 
   calculate(orderAmount: number): number {
-    // => Domain operation: calculate
     return Math.min(this.fixedAmount, orderAmount);
-    // => Returns Math.min(this.fixedAmount, orderAmount)
     // => Fixed amount, capped at order amount
   }
-  // => Protects aggregate integrity
 
   getType(): string {
-    // => Domain operation: getType
     return `$${this.fixedAmount / 100} Discount`;
-    // => Returns `$${this.fixedAmount / 100} Discount`
   }
-  // => Ensures transactional consistency
 }
-// => Manages entity lifecycle
 
 class NoDiscountPolicy extends DiscountPolicy {
-  // => NoDiscountPolicy: domain model element
   calculate(orderAmount: number): number {
-    // => Domain operation: calculate
     return 0; // => No discount
-    // => Returns 0; // => No discount
   }
-  // => Preserves domain model
 
   getType(): string {
-    // => Domain operation: getType
     return "No Discount";
-    // => Returns "No Discount"
   }
   // => Communicates domain intent
 }
-// => Executes domain logic
 
 // Abstract Factory
 class DiscountPolicyFactory {
-  // => DiscountPolicyFactory: domain model element
   static create(customerType: string, orderAmount: number, loyaltyPoints: number): DiscountPolicy {
     // => Factory logic based on business rules
     if (customerType === "VIP") {
-      // => Operation: if()
       // VIP customers get 20% discount
       return new PercentageDiscountPolicy(20);
       // => Return result to caller
@@ -5185,7 +4604,7 @@ class DiscountPolicyFactory {
       return new PercentageDiscountPolicy(10);
       // => Return result to caller
     } else if (orderAmount > 50000) {
-      // => Updates aggregate state
+      // => Modifies aggregate internal state
       // Large orders get $50 discount
       return new FixedAmountDiscountPolicy(5000); // $50
       // => Return result to caller
@@ -5197,9 +4616,7 @@ class DiscountPolicyFactory {
     }
     // => Enforces invariant
   }
-  // => Encapsulates domain knowledge
 }
-// => Delegates to domain service
 
 // Usage - Abstract Factory creates polymorphic objects
 const vipPolicy = DiscountPolicyFactory.create("VIP", 10000, 500);
@@ -5237,193 +4654,166 @@ console.log(`${noDiscountPolicy.getType()}: $${noDiscountPolicy.calculate(5000) 
 
 Encapsulating business rules as reusable, composable objects.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["SpecificationA\nisSatisfiedBy()"]
+    B["SpecificationB\nisSatisfiedBy()"]
+    C["A.and(B)\nComposite Spec"]
+    D["A.or(B)\nComposite Spec"]
+    E["A.not()\nNegated Spec"]
+
+    A -->|combines| C
+    B -->|combines| C
+    A -->|combines| D
+    B -->|combines| D
+    A -->|negates| E
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#CC78BC,stroke:#000,color:#fff
+```
+
 ```typescript
 // Specification interface
 interface Specification<T> {
   // => Specification: contract definition
   isSatisfiedBy(candidate: T): boolean;
-  // => Domain operation: isSatisfiedBy
 }
-// => Executes domain logic
 
 // Domain entity
 class Product {
-  // => Product: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly productId: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly name: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly price: number,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly category: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly inStock: boolean,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
-  // => Updates aggregate state
 
   getPrice(): number {
-    // => Domain operation: getPrice
     return this.price;
     // => Return result to caller
   }
   // => Validates business rule
 
   getCategory(): string {
-    // => Domain operation: getCategory
     return this.category;
     // => Return result to caller
   }
   // => Enforces invariant
 
   isInStock(): boolean {
-    // => Domain operation: isInStock
     return this.inStock;
     // => Return result to caller
   }
-  // => Encapsulates domain knowledge
 
   getName(): string {
-    // => Domain operation: getName
     return this.name;
     // => Return result to caller
   }
-  // => Delegates to domain service
 }
-// => Maintains consistency boundary
 
 // Concrete specifications
 class PriceRangeSpecification implements Specification<Product> {
-  // => PriceRangeSpecification: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly minPrice: number,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly maxPrice: number,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
-  // => Applies domain event
 
   isSatisfiedBy(product: Product): boolean {
-    // => Domain operation: isSatisfiedBy
     const price = product.getPrice();
     // => Store value in price
     return price >= this.minPrice && price <= this.maxPrice;
     // => Check if product price in range
   }
-  // => Coordinates with bounded context
 }
-// => Implements tactical pattern
 
 class CategorySpecification implements Specification<Product> {
-  // => CategorySpecification: domain model element
   constructor(private readonly category: string) {}
   // => Initialize object with parameters
 
   isSatisfiedBy(product: Product): boolean {
-    // => Domain operation: isSatisfiedBy
     return product.getCategory() === this.category;
-    // => Returns product.getCategory() === this.category
     // => Check if product matches category
   }
-  // => Protects aggregate integrity
 }
-// => Ensures transactional consistency
 
 class InStockSpecification implements Specification<Product> {
-  // => InStockSpecification: domain model element
   isSatisfiedBy(product: Product): boolean {
-    // => Domain operation: isSatisfiedBy
     return product.isInStock();
-    // => Returns product.isInStock()
     // => Check if product in stock
   }
-  // => Manages entity lifecycle
 }
-// => Preserves domain model
 
 // Composite specifications (AND, OR, NOT)
 class AndSpecification<T> implements Specification<T> {
-  // => AndSpecification: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly left: Specification<T>,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly right: Specification<T>,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
   // => Communicates domain intent
 
   isSatisfiedBy(candidate: T): boolean {
-    // => Domain operation: isSatisfiedBy
     return this.left.isSatisfiedBy(candidate) && this.right.isSatisfiedBy(candidate);
     // => Both specifications must be satisfied
   }
-  // => Executes domain logic
 }
-// => Updates aggregate state
 
 class OrSpecification<T> implements Specification<T> {
-  // => OrSpecification: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly left: Specification<T>,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly right: Specification<T>,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
   // => Validates business rule
 
   isSatisfiedBy(candidate: T): boolean {
-    // => Domain operation: isSatisfiedBy
     return this.left.isSatisfiedBy(candidate) || this.right.isSatisfiedBy(candidate);
     // => Either specification satisfied
   }
   // => Enforces invariant
 }
-// => Encapsulates domain knowledge
 
 class NotSpecification<T> implements Specification<T> {
-  // => NotSpecification: domain model element
   constructor(private readonly spec: Specification<T>) {}
   // => Initialize object with parameters
 
   isSatisfiedBy(candidate: T): boolean {
-    // => Domain operation: isSatisfiedBy
     return !this.spec.isSatisfiedBy(candidate);
-    // => Returns !this.spec.isSatisfiedBy(candidate)
     // => Negates specification
   }
-  // => Delegates to domain service
 }
-// => Maintains consistency boundary
 
 // Usage - Composable business rules
 const products = [
   // => Store value in products
   new Product("P1", "Laptop", 120000, "Electronics", true),
-  // => Applies domain event
+  // => Domain event triggered or handled
   new Product("P2", "Book", 2000, "Books", true),
-  // => Coordinates with bounded context
+  // => Cross-context interaction point
   new Product("P3", "Phone", 80000, "Electronics", false),
-  // => Implements tactical pattern
+  // => DDD tactical pattern applied
   new Product("P4", "Desk", 50000, "Furniture", true),
-  // => Protects aggregate integrity
+  // => Invariant validation executed
 ];
-// => Ensures transactional consistency
+// => Transaction boundary maintained
 
 // Specification: Electronics in stock, price $500-$1500
 const electronicsSpec = new CategorySpecification("Electronics");
@@ -5459,142 +4849,102 @@ Using Specifications to encapsulate complex query logic in repositories.
 interface Specification<T> {
   // => Specification: contract definition
   isSatisfiedBy(candidate: T): boolean;
-  // => Domain operation: isSatisfiedBy
   toSQLWhereClause?(): string; // Optional: for database queries
-  // => Executes domain logic
+  // => Domain operation executes here
 }
-// => Updates aggregate state
 
 // Customer entity
 class Customer {
-  // => Customer: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly customerId: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly name: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly totalSpent: number,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly loyaltyTier: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
   // => Validates business rule
 
   getTotalSpent(): number {
-    // => Domain operation: getTotalSpent
     return this.totalSpent;
     // => Return result to caller
   }
   // => Enforces invariant
 
   getLoyaltyTier(): string {
-    // => Domain operation: getLoyaltyTier
     return this.loyaltyTier;
     // => Return result to caller
   }
-  // => Encapsulates domain knowledge
 
   getCustomerId(): string {
-    // => Domain operation: getCustomerId
     return this.customerId;
     // => Return result to caller
   }
-  // => Delegates to domain service
 
   getName(): string {
-    // => Domain operation: getName
     return this.name;
     // => Return result to caller
   }
-  // => Maintains consistency boundary
 }
-// => Applies domain event
 
 // Specifications
 class HighValueCustomerSpecification implements Specification<Customer> {
   // => Immutable value type (no identity)
   private readonly HIGH_VALUE_THRESHOLD = 100000; // $1000
-  // => Field: readonly (private)
   // => Encapsulated state, not directly accessible
 
   isSatisfiedBy(customer: Customer): boolean {
-    // => Domain operation: isSatisfiedBy
     return customer.getTotalSpent() >= this.HIGH_VALUE_THRESHOLD;
-    // => Returns customer.getTotalSpent() >= this.HIGH_VALUE_THRESHOLD
   }
-  // => Coordinates with bounded context
 
   toSQLWhereClause(): string {
-    // => Domain operation: toSQLWhereClause
     return `total_spent >= ${this.HIGH_VALUE_THRESHOLD}`;
-    // => Returns `total_spent >= ${this.HIGH_VALUE_THRESHOLD}`
     // => Converts to SQL for repository query
   }
-  // => Implements tactical pattern
 }
-// => Protects aggregate integrity
 
 class PremiumTierSpecification implements Specification<Customer> {
-  // => PremiumTierSpecification: domain model element
   isSatisfiedBy(customer: Customer): boolean {
-    // => Domain operation: isSatisfiedBy
     return customer.getLoyaltyTier() === "PREMIUM";
-    // => Returns customer.getLoyaltyTier() === "PREMIUM"
   }
-  // => Ensures transactional consistency
 
   toSQLWhereClause(): string {
-    // => Domain operation: toSQLWhereClause
     return `loyalty_tier = 'PREMIUM'`;
-    // => Returns `loyalty_tier = 'PREMIUM'`
   }
-  // => Manages entity lifecycle
 }
-// => Preserves domain model
 
 // Composite specification with SQL generation
 class AndSpecificationWithSQL<T> implements Specification<T> {
-  // => AndSpecificationWithSQL: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly left: Specification<T>,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly right: Specification<T>,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
   // => Communicates domain intent
 
   isSatisfiedBy(candidate: T): boolean {
-    // => Domain operation: isSatisfiedBy
     return this.left.isSatisfiedBy(candidate) && this.right.isSatisfiedBy(candidate);
     // => Return result to caller
   }
-  // => Executes domain logic
 
   toSQLWhereClause(): string {
-    // => Domain operation: toSQLWhereClause
     const leftSQL = this.left.toSQLWhereClause?.() || "";
     // => Store value in leftSQL
     const rightSQL = this.right.toSQLWhereClause?.() || "";
     // => Store value in rightSQL
     return `(${leftSQL} AND ${rightSQL})`;
-    // => Returns `(${leftSQL} AND ${rightSQL})`
     // => Combines SQL clauses with AND
   }
-  // => Updates aggregate state
 }
 // => Validates business rule
 
 // Repository using specifications
 class CustomerRepository {
-  // => CustomerRepository: domain model element
   private customers: Customer[] = [];
   // => Encapsulated field (not publicly accessible)
 
@@ -5606,36 +4956,29 @@ class CustomerRepository {
       new Customer("C1", "Alice", 150000, "PREMIUM"),
       // => Enforces invariant
       new Customer("C2", "Bob", 50000, "REGULAR"),
-      // => Encapsulates domain knowledge
+      // => Business rule enforced here
       new Customer("C3", "Carol", 200000, "PREMIUM"),
-      // => Delegates to domain service
+      // => Execution delegated to domain service
       new Customer("C4", "Dave", 30000, "REGULAR"),
-      // => Maintains consistency boundary
+      // => Aggregate boundary enforced here
     ];
-    // => Applies domain event
+    // => Domain event triggered or handled
   }
-  // => Coordinates with bounded context
 
   findBySpecification(spec: Specification<Customer>): Customer[] {
-    // => Domain operation: findBySpecification
     // In-memory filtering (use spec.toSQLWhereClause() for real database)
     return this.customers.filter((c) => spec.isSatisfiedBy(c));
     // => Repository delegates filtering to specification
   }
-  // => Implements tactical pattern
 
   // Simulate SQL query generation
   generateSQLQuery(spec: Specification<Customer>): string {
-    // => Domain operation: generateSQLQuery
     const whereClause = spec.toSQLWhereClause?.() || "1=1";
     // => Store value in whereClause
     return `SELECT * FROM customers WHERE ${whereClause}`;
-    // => Returns `SELECT * FROM customers WHERE ${whereClause}`
     // => Specification generates SQL WHERE clause
   }
-  // => Protects aggregate integrity
 }
-// => Ensures transactional consistency
 
 // Usage - Repository queries with specifications
 const repository = new CustomerRepository();
@@ -5680,36 +5023,26 @@ Using Specifications to validate complex business rules during aggregate state c
 interface ValidationSpecification<T> {
   // => ValidationSpecification: contract definition
   isSatisfiedBy(candidate: T): boolean;
-  // => Domain operation: isSatisfiedBy
   getErrorMessage(): string;
-  // => Domain operation: getErrorMessage
 }
-// => Executes domain logic
 
 // Loan application entity
 class LoanApplication {
-  // => LoanApplication: domain model element
   private constructor(
     // => Initialize object with parameters
     private readonly applicationId: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly applicantIncome: number,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly requestedAmount: number,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly creditScore: number,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private status: LoanStatus = "PENDING",
     // => Encapsulated field (not publicly accessible)
   ) {}
-  // => Updates aggregate state
 
   static create(applicantIncome: number, requestedAmount: number, creditScore: number): LoanApplication {
-    // => Operation: create()
     const applicationId = `LOAN-${Date.now()}`;
     // => Store value in applicationId
     return new LoanApplication(applicationId, applicantIncome, requestedAmount, creditScore);
@@ -5718,7 +5051,6 @@ class LoanApplication {
   // => Validates business rule
 
   approve(validationSpec: ValidationSpecification<LoanApplication>): void {
-    // => Domain operation: approve
     // => Validate using specification before approval
     if (!validationSpec.isSatisfiedBy(this)) {
       // => Conditional check
@@ -5729,122 +5061,85 @@ class LoanApplication {
     this.status = "APPROVED";
     // => Loan approved
   }
-  // => Encapsulates domain knowledge
 
   getApplicantIncome(): number {
-    // => Domain operation: getApplicantIncome
     return this.applicantIncome;
     // => Return result to caller
   }
-  // => Delegates to domain service
 
   getRequestedAmount(): number {
-    // => Domain operation: getRequestedAmount
     return this.requestedAmount;
     // => Return result to caller
   }
-  // => Maintains consistency boundary
 
   getCreditScore(): number {
-    // => Domain operation: getCreditScore
     return this.creditScore;
     // => Return result to caller
   }
-  // => Applies domain event
 
   getStatus(): LoanStatus {
-    // => Domain operation: getStatus
     return this.status;
     // => Return result to caller
   }
-  // => Coordinates with bounded context
 
   getApplicationId(): string {
-    // => Domain operation: getApplicationId
     return this.applicationId;
     // => Return result to caller
   }
-  // => Implements tactical pattern
 }
-// => Protects aggregate integrity
 
 type LoanStatus = "PENDING" | "APPROVED" | "REJECTED";
-// => Ensures transactional consistency
+// => Transaction boundary maintained
 
 // Validation specifications
 class MinimumIncomeSpecification implements ValidationSpecification<LoanApplication> {
-  // => MinimumIncomeSpecification: domain model element
   private readonly MINIMUM_INCOME = 30000; // $300/month
-  // => Field: readonly (private)
   // => Encapsulated state, not directly accessible
 
   isSatisfiedBy(application: LoanApplication): boolean {
-    // => Domain operation: isSatisfiedBy
     return application.getApplicantIncome() >= this.MINIMUM_INCOME;
-    // => Returns application.getApplicantIncome() >= this.MINIMUM_INCOME
   }
-  // => Manages entity lifecycle
 
   getErrorMessage(): string {
-    // => Domain operation: getErrorMessage
     return `Applicant income must be at least $${this.MINIMUM_INCOME / 100}`;
-    // => Returns `Applicant income must be at least $${this.MINIMUM_INCOME / 100}`
   }
-  // => Preserves domain model
 }
 // => Communicates domain intent
 
 class DebtToIncomeRatioSpecification implements ValidationSpecification<LoanApplication> {
-  // => DebtToIncomeRatioSpecification: domain model element
   private readonly MAX_DEBT_TO_INCOME_RATIO = 0.43; // 43%
-  // => Field: readonly (private)
   // => Encapsulated state, not directly accessible
 
   isSatisfiedBy(application: LoanApplication): boolean {
-    // => Domain operation: isSatisfiedBy
     const ratio = application.getRequestedAmount() / application.getApplicantIncome();
     // => Store value in ratio
     return ratio <= this.MAX_DEBT_TO_INCOME_RATIO;
     // => Check debt-to-income ratio
   }
-  // => Executes domain logic
 
   getErrorMessage(): string {
-    // => Domain operation: getErrorMessage
     return `Debt-to-income ratio exceeds maximum (${this.MAX_DEBT_TO_INCOME_RATIO * 100}%)`;
-    // => Returns `Debt-to-income ratio exceeds maximum (${this.MAX_DEBT_TO_INCOME_RATIO * 100}%)`
   }
-  // => Updates aggregate state
 }
 // => Validates business rule
 
 class MinimumCreditScoreSpecification implements ValidationSpecification<LoanApplication> {
-  // => MinimumCreditScoreSpecification: domain model element
   private readonly MINIMUM_CREDIT_SCORE = 650;
-  // => Field: readonly (private)
   // => Encapsulated state, not directly accessible
 
   isSatisfiedBy(application: LoanApplication): boolean {
-    // => Domain operation: isSatisfiedBy
     return application.getCreditScore() >= this.MINIMUM_CREDIT_SCORE;
-    // => Returns application.getCreditScore() >= this.MINIMUM_CREDIT_SCORE
   }
   // => Enforces invariant
 
   getErrorMessage(): string {
-    // => Domain operation: getErrorMessage
     return `Credit score must be at least ${this.MINIMUM_CREDIT_SCORE}`;
-    // => Returns `Credit score must be at least ${this.MINIMUM_CREDIT_SCORE}`
   }
-  // => Encapsulates domain knowledge
 }
-// => Delegates to domain service
 
 // Composite validation specification
 class LoanApprovalSpecification implements ValidationSpecification<LoanApplication> {
-  // => LoanApprovalSpecification: domain model element
   private readonly specs: ValidationSpecification<LoanApplication>[];
-  // => Field: readonly (private)
   // => Encapsulated state, not directly accessible
 
   constructor() {
@@ -5852,34 +5147,27 @@ class LoanApprovalSpecification implements ValidationSpecification<LoanApplicati
     this.specs = [
       // => Update specs state
       new MinimumIncomeSpecification(),
-      // => Maintains consistency boundary
+      // => Aggregate boundary enforced here
       new DebtToIncomeRatioSpecification(),
-      // => Applies domain event
+      // => Domain event triggered or handled
       new MinimumCreditScoreSpecification(),
-      // => Coordinates with bounded context
+      // => Cross-context interaction point
     ];
-    // => Implements tactical pattern
+    // => DDD tactical pattern applied
   }
-  // => Protects aggregate integrity
 
   isSatisfiedBy(application: LoanApplication): boolean {
-    // => Domain operation: isSatisfiedBy
     return this.specs.every((spec) => spec.isSatisfiedBy(application));
     // => All validation rules must pass
   }
-  // => Ensures transactional consistency
 
   getErrorMessage(): string {
-    // => Domain operation: getErrorMessage
     const failures = this.specs.filter((spec) => !spec.isSatisfiedBy).map((spec) => spec.getErrorMessage());
     // => Store value in failures
     return failures.join("; ");
-    // => Returns failures.join("; ")
     // => Return all validation errors
   }
-  // => Manages entity lifecycle
 }
-// => Preserves domain model
 
 // Usage - Specifications for validation
 const approvalSpec = new LoanApprovalSpecification();
@@ -5891,9 +5179,9 @@ const validApplication = LoanApplication.create(
   100000, // $1000 income
   // => Communicates domain intent
   40000, // $400 requested (40% ratio)
-  // => Executes domain logic
+  // => Domain operation executes here
   700, // Credit score 700
-  // => Updates aggregate state
+  // => Modifies aggregate internal state
 );
 // => Validates business rule
 
@@ -5905,47 +5193,44 @@ try {
   // => Outputs result
   // => Output: Loan LOAN-[timestamp] approved
 } catch (error) {
-  // => Encapsulates domain knowledge
+  // => Business rule enforced here
   console.log(error.message);
   // => Outputs result
 }
-// => Delegates to domain service
 
 // Scenario 2: Invalid application - insufficient income
 const invalidApplication1 = LoanApplication.create(
   // => Store value in invalidApplication1
   20000, // $200 income (below minimum)
-  // => Maintains consistency boundary
+  // => Aggregate boundary enforced here
   10000, // $100 requested
-  // => Applies domain event
+  // => Domain event triggered or handled
   700,
-  // => Coordinates with bounded context
+  // => Cross-context interaction point
 );
-// => Implements tactical pattern
+// => DDD tactical pattern applied
 
 try {
-  // => Protects aggregate integrity
   invalidApplication1.approve(approvalSpec);
   // => Execute method
 } catch (error) {
-  // => Ensures transactional consistency
+  // => Transaction boundary maintained
   console.log(error.message);
   // => Outputs result
   // => Output: Cannot approve: Applicant income must be at least $300
 }
-// => Manages entity lifecycle
 
 // Scenario 3: Invalid application - high debt-to-income ratio
 const invalidApplication2 = LoanApplication.create(
   // => Store value in invalidApplication2
   100000, // $1000 income
-  // => Preserves domain model
+  // => Domain model consistency maintained
   50000, // $500 requested (50% ratio - too high)
   // => Communicates domain intent
   700,
-  // => Executes domain logic
+  // => Domain operation executes here
 );
-// => Updates aggregate state
+// => Modifies aggregate internal state
 
 try {
   // => Validates business rule
@@ -5957,7 +5242,6 @@ try {
   // => Outputs result
   // => Output: Cannot approve: Debt-to-income ratio exceeds maximum (43%)
 }
-// => Encapsulates domain knowledge
 ```
 
 **Key Takeaway**: Validation Specifications encapsulate complex business rules for state transitions. Domain methods accept Specification parameters, delegating validation to business-rule objects. This keeps validation logic testable, reusable, and explicit rather than buried in domain entity methods.
@@ -5973,122 +5257,86 @@ Ensuring domain events are published reliably even if message broker is unavaila
 ```typescript
 // Domain Event
 class OrderConfirmedEvent {
-  // => OrderConfirmedEvent: domain model element
   constructor(
     // => Initialize object with parameters
     public readonly eventId: string,
-    // => Field: readonly (public)
     public readonly orderId: string,
-    // => Field: readonly (public)
     public readonly occurredAt: Date,
-    // => Field: readonly (public)
   ) {}
-  // => Executes domain logic
 }
-// => Updates aggregate state
 
 // Outbox Entry - stores events in database
 class OutboxEntry {
-  // => OutboxEntry: domain model element
   constructor(
     // => Initialize object with parameters
     public readonly entryId: string,
-    // => Field: readonly (public)
     public readonly eventType: string,
-    // => Field: readonly (public)
     public readonly eventPayload: string, // JSON serialized event
-    // => Field: readonly (public)
     public readonly createdAt: Date,
-    // => Field: readonly (public)
     public published: boolean = false,
-    // => Field: published (public)
   ) {}
   // => Validates business rule
 
   markAsPublished(): void {
-    // => Domain operation: markAsPublished
     this.published = true;
     // => Update published state
   }
   // => Enforces invariant
 }
-// => Encapsulates domain knowledge
 
 // Outbox Repository
 interface OutboxRepository {
   // => OutboxRepository: contract definition
   save(entry: OutboxEntry): void;
-  // => Domain operation: save
   findUnpublished(): OutboxEntry[];
-  // => Domain operation: findUnpublished
   markAsPublished(entryId: string): void;
-  // => Domain operation: markAsPublished
 }
-// => Delegates to domain service
 
 class InMemoryOutboxRepository implements OutboxRepository {
-  // => InMemoryOutboxRepository: domain model element
   private entries: Map<string, OutboxEntry> = new Map();
   // => Encapsulated field (not publicly accessible)
 
   save(entry: OutboxEntry): void {
-    // => Domain operation: save
     this.entries.set(entry.entryId, entry);
     // => Delegates to internal method
     console.log(`Outbox entry saved: ${entry.entryId}`);
     // => Outputs result
   }
-  // => Maintains consistency boundary
 
   findUnpublished(): OutboxEntry[] {
-    // => Domain operation: findUnpublished
     return Array.from(this.entries.values()).filter((e) => !e.published);
-    // => Returns Array.from(this.entries.values()).filter((e) => !e.published)
   }
-  // => Applies domain event
 
   markAsPublished(entryId: string): void {
-    // => Domain operation: markAsPublished
     const entry = this.entries.get(entryId);
     // => Store value in entry
     if (entry) {
-      // => Operation: if()
       entry.markAsPublished();
       // => Execute method
       console.log(`Outbox entry ${entryId} marked published`);
       // => Outputs result
     }
-    // => Coordinates with bounded context
   }
-  // => Implements tactical pattern
 }
-// => Protects aggregate integrity
 
 // Application Service - saves to outbox instead of publishing directly
 class ConfirmOrderService {
-  // => ConfirmOrderService: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly orderRepo: OrderRepository,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly outboxRepo: OutboxRepository,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
-  // => Ensures transactional consistency
 
   confirmOrder(orderId: string): void {
-    // => Domain operation: confirmOrder
     // Step 1: Load and confirm order
     const order = this.orderRepo.findById(orderId);
     // => Store value in order
     if (!order) {
-      // => Operation: if()
       throw new Error("Order not found");
       // => Raise domain exception
     }
-    // => Manages entity lifecycle
 
     order.confirm();
     // => Execute method
@@ -6108,26 +5356,20 @@ class ConfirmOrderService {
     console.log(`Order ${orderId} confirmed, event saved to outbox`);
     // => Outputs result
   }
-  // => Preserves domain model
 }
 // => Communicates domain intent
 
 // Background worker - publishes events from outbox
 class OutboxPublisher {
-  // => OutboxPublisher: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly outboxRepo: OutboxRepository,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly eventPublisher: EventPublisher,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
-  // => Executes domain logic
 
   publishPendingEvents(): void {
-    // => Domain operation: publishPendingEvents
     // => Background job: publish unpublished events
     const unpublished = this.outboxRepo.findUnpublished();
     // => Store value in unpublished
@@ -6137,7 +5379,6 @@ class OutboxPublisher {
     unpublished.forEach((entry) => {
       // => forEach: process collection elements
       try {
-        // => Updates aggregate state
         const event = JSON.parse(entry.eventPayload);
         // => Store value in event
         this.eventPublisher.publish(event);
@@ -6155,94 +5396,69 @@ class OutboxPublisher {
       }
       // => Enforces invariant
     });
-    // => Encapsulates domain knowledge
   }
-  // => Delegates to domain service
 }
-// => Maintains consistency boundary
 
 // Supporting classes
 class Order {
-  // => Order: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly orderId: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private status: string = "PENDING",
     // => Encapsulated field (not publicly accessible)
   ) {}
-  // => Applies domain event
 
   confirm(): void {
-    // => Domain operation: confirm
     this.status = "CONFIRMED";
     // => Update status state
   }
-  // => Coordinates with bounded context
 
   getOrderId(): string {
-    // => Domain operation: getOrderId
     return this.orderId;
     // => Return result to caller
   }
-  // => Implements tactical pattern
 }
-// => Protects aggregate integrity
 
 interface OrderRepository {
   // => OrderRepository: contract definition
   findById(orderId: string): Order | null;
-  // => Domain operation: findById
   save(order: Order): void;
-  // => Domain operation: save
 }
-// => Ensures transactional consistency
 
 class InMemoryOrderRepository implements OrderRepository {
-  // => InMemoryOrderRepository: domain model element
   private orders: Map<string, Order> = new Map();
   // => Encapsulated field (not publicly accessible)
 
   findById(orderId: string): Order | null {
-    // => Domain operation: findById
     return this.orders.get(orderId) || null;
     // => Return result to caller
   }
-  // => Manages entity lifecycle
 
   save(order: Order): void {
-    // => Domain operation: save
     this.orders.set(order.getOrderId(), order);
     // => Delegates to internal method
   }
-  // => Preserves domain model
 }
 // => Communicates domain intent
 
 interface EventPublisher {
   // => EventPublisher: contract definition
   publish(event: any): void;
-  // => Domain operation: publish
 }
-// => Executes domain logic
 
 class MockEventPublisher implements EventPublisher {
-  // => MockEventPublisher: domain model element
   private publishedEvents: any[] = [];
   // => Encapsulated field (not publicly accessible)
 
   publish(event: any): void {
-    // => Domain operation: publish
     this.publishedEvents.push(event);
     // => Delegates to internal method
     console.log(`Event published to message broker: ${event.eventId}`);
     // => Outputs result
   }
-  // => Updates aggregate state
 
   getPublishedCount(): number {
-    // => Domain operation: getPublishedCount
     return this.publishedEvents.length;
     // => Return result to caller
   }
@@ -6293,85 +5509,67 @@ Integrating with external REST APIs while protecting domain model from external 
 ```typescript
 // External API Response (third-party format we don't control)
 interface ExternalProductAPIResponse {
-  // => Encapsulates domain knowledge
   product_id: string; // => Snake case naming
-  // => Delegates to domain service
   product_name: string;
-  // => Executes domain logic
+  // => Domain operation executes here
   price_in_cents: number;
-  // => Updates aggregate state
+  // => Modifies aggregate internal state
   available_qty: number;
   // => Validates business rule
   category_code: string;
   // => Enforces invariant
 }
-// => Encapsulates domain knowledge
 
 // Our Domain Model (our ubiquitous language)
 class Product {
-  // => Product: domain model element
   private constructor(
     // => Initialize object with parameters
     private readonly productId: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly name: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly price: Money,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly stockQuantity: number,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly category: ProductCategory,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
-  // => Delegates to domain service
 
   static create(
-    // => Maintains consistency boundary
+    // => Aggregate boundary enforced here
     productId: string,
-    // => Applies domain event
+    // => Domain event triggered or handled
     name: string,
-    // => Coordinates with bounded context
+    // => Cross-context interaction point
     price: Money,
-    // => Implements tactical pattern
+    // => DDD tactical pattern applied
     stockQuantity: number,
-    // => Protects aggregate integrity
+    // => Invariant validation executed
     category: ProductCategory,
-    // => Ensures transactional consistency
+    // => Transaction boundary maintained
   ): Product {
-    // => Manages entity lifecycle
     return new Product(productId, name, price, stockQuantity, category);
     // => Return result to caller
   }
-  // => Preserves domain model
 
   getProductId(): string {
-    // => Domain operation: getProductId
     return this.productId;
     // => Return result to caller
   }
   // => Communicates domain intent
 
   getName(): string {
-    // => Domain operation: getName
     return this.name;
     // => Return result to caller
   }
-  // => Executes domain logic
 
   getPrice(): Money {
-    // => Domain operation: getPrice
     return this.price;
     // => Return result to caller
   }
-  // => Updates aggregate state
 
   isAvailable(): boolean {
-    // => Domain operation: isAvailable
     return this.stockQuantity > 0;
     // => Return result to caller
   }
@@ -6380,48 +5578,36 @@ class Product {
 // => Enforces invariant
 
 class Money {
-  // => Money: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly amount: number,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly currency: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
-  // => Encapsulates domain knowledge
 
   getAmount(): number {
-    // => Domain operation: getAmount
     return this.amount;
     // => Return result to caller
   }
-  // => Delegates to domain service
 
   getCurrency(): string {
-    // => Domain operation: getCurrency
     return this.currency;
     // => Return result to caller
   }
-  // => Maintains consistency boundary
 }
-// => Applies domain event
 
 enum ProductCategory {
-  // => Coordinates with bounded context
   ELECTRONICS = "ELECTRONICS",
-  // => Implements tactical pattern
+  // => ELECTRONICS: maps to string value "ELECTRONICS"
   CLOTHING = "CLOTHING",
-  // => Protects aggregate integrity
+  // => CLOTHING: maps to string value "CLOTHING"
   BOOKS = "BOOKS",
-  // => Ensures transactional consistency
+  // => BOOKS: maps to string value "BOOKS"
 }
-// => Manages entity lifecycle
 
 // Anti-Corruption Layer - translates external API to our domain
 class ProductAPIAdapter {
-  // => ProductAPIAdapter: domain model element
   constructor(private readonly apiClient: ExternalProductAPI) {}
   // => Initialize object with parameters
 
@@ -6433,7 +5619,6 @@ class ProductAPIAdapter {
     return this.translateToDomain(externalResponse);
     // => Translate to our domain model
   }
-  // => Preserves domain model
 
   private translateToDomain(response: ExternalProductAPIResponse): Product {
     // => Internal logic (not part of public API)
@@ -6445,7 +5630,6 @@ class ProductAPIAdapter {
     // => Map external category codes to our enum
 
     return Product.create(response.product_id, response.product_name, money, response.available_qty, category);
-    // => Returns Product.create(response.product_id, response.product_name, money, response.available_qty, category)
     // => Create our domain model from external data
   }
   // => Communicates domain intent
@@ -6454,65 +5638,49 @@ class ProductAPIAdapter {
     // => Internal logic (not part of public API)
     // => Map external codes to domain enum
     switch (categoryCode) {
-      // => Operation: switch()
       case "ELEC":
-        // => Executes domain logic
+        // => Domain operation executes here
         return ProductCategory.ELECTRONICS;
-      // => Returns ProductCategory.ELECTRONICS
       case "CLTH":
-        // => Updates aggregate state
+        // => Modifies aggregate internal state
         return ProductCategory.CLOTHING;
-      // => Returns ProductCategory.CLOTHING
       case "BOOK":
         // => Validates business rule
         return ProductCategory.BOOKS;
-      // => Returns ProductCategory.BOOKS
       default:
         // => Enforces invariant
         return ProductCategory.BOOKS; // Default fallback
-      // => Returns ProductCategory.BOOKS; // Default fallback
     }
-    // => Encapsulates domain knowledge
   }
-  // => Delegates to domain service
 }
-// => Maintains consistency boundary
 
 // External API Client (simulated)
 interface ExternalProductAPI {
   // => ExternalProductAPI: contract definition
   getProduct(productId: string): Promise<ExternalProductAPIResponse>;
-  // => Domain operation: getProduct
 }
-// => Applies domain event
 
 class MockExternalProductAPI implements ExternalProductAPI {
-  // => MockExternalProductAPI: domain model element
   async getProduct(productId: string): Promise<ExternalProductAPIResponse> {
-    // => Operation: getProduct()
     // Simulate external API response
     return {
-      // => Returns {
       product_id: productId,
-      // => Coordinates with bounded context
+      // => Cross-context interaction point
       product_name: "Laptop Pro",
-      // => Implements tactical pattern
+      // => DDD tactical pattern applied
       price_in_cents: 150000,
-      // => Protects aggregate integrity
+      // => Invariant validation executed
       available_qty: 10,
-      // => Ensures transactional consistency
+      // => Transaction boundary maintained
       category_code: "ELEC",
-      // => Manages entity lifecycle
+      // => Entity state transition managed
     };
-    // => Preserves domain model
   }
   // => Communicates domain intent
 }
-// => Executes domain logic
 
 // Application Service - uses ACL adapter
 class ProductApplicationService {
-  // => ProductApplicationService: domain model element
   constructor(private readonly productAdapter: ProductAPIAdapter) {}
   // => Initialize object with parameters
 
@@ -6529,7 +5697,6 @@ class ProductApplicationService {
     // => Outputs result
     // => Work with our domain model, not external format
   }
-  // => Updates aggregate state
 }
 // => Validates business rule
 

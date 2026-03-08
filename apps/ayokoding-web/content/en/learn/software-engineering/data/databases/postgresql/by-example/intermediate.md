@@ -9,6 +9,8 @@ tags: ["postgresql", "database", "tutorial", "by-example", "intermediate", "inde
 
 Master PostgreSQL production patterns through 30 annotated examples. Each example builds on beginner concepts, covering advanced queries, indexes, JSON operations, transactions, and real-world patterns.
 
+## Group 1: Advanced Query Techniques
+
 ## Example 31: Common Table Expressions (WITH clause)
 
 CTEs improve query readability by naming subqueries - the WITH clause defines temporary named result sets you can reference multiple times in the main query.
@@ -26,7 +28,7 @@ graph TD
     C --> D
 
     style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
     style C fill:#029E73,stroke:#000,color:#fff
     style D fill:#CC78BC,stroke:#000,color:#fff
 ```
@@ -193,12 +195,12 @@ graph TD
     D --> G
 
     style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
     style C fill:#029E73,stroke:#000,color:#fff
     style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#CA9161,stroke:#000,color:#fff
+    style E fill:#CA9161,stroke:#000,color:#000
+    style F fill:#CA9161,stroke:#000,color:#000
+    style G fill:#CA9161,stroke:#000,color:#000
 ```
 
 **Code**:
@@ -357,11 +359,11 @@ graph TD
     E --> F
 
     style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
     style C fill:#029E73,stroke:#000,color:#fff
     style D fill:#029E73,stroke:#000,color:#fff
     style E fill:#CC78BC,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
+    style F fill:#CA9161,stroke:#000,color:#000
 ```
 
 **Code**:
@@ -769,6 +771,8 @@ ORDER BY email, year;
 
 ---
 
+## Group 2: Indexes and Query Analysis
+
 ## Example 36: Creating B-tree Indexes
 
 B-tree indexes (default) speed up lookups, range queries, and sorting. Create indexes on columns frequently used in WHERE, JOIN, and ORDER BY clauses.
@@ -794,8 +798,8 @@ graph TD
     F --> G
 
     style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#DE8F05,stroke:#000,color:#000
     style D fill:#029E73,stroke:#000,color:#fff
     style E fill:#029E73,stroke:#000,color:#fff
     style F fill:#029E73,stroke:#000,color:#fff
@@ -1038,12 +1042,12 @@ graph TD
     A -.->|Cannot use| G
 
     style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
     style C fill:#029E73,stroke:#000,color:#fff
     style D fill:#CC78BC,stroke:#000,color:#fff
     style E fill:#029E73,stroke:#000,color:#fff
     style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#CA9161,stroke:#000,color:#fff
+    style G fill:#CA9161,stroke:#000,color:#000
 ```
 
 **Code**:
@@ -1315,10 +1319,10 @@ graph TD
     C --> E
 
     style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
     style C fill:#029E73,stroke:#000,color:#fff
     style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    style E fill:#CA9161,stroke:#000,color:#000
 ```
 
 **Code**:
@@ -1462,6 +1466,8 @@ SELECT * FROM products WHERE price > 900;
 **Why It Matters**: EXPLAIN ANALYZE reveals the actual execution plan and timing that distinguish theoretical optimization from real-world performance, exposing cases where PostgreSQL's planner chooses sequential scans over indexes due to outdated statistics or small table sizes. The cost estimates shown in EXPLAIN output guide index creation decisions, with high-cost sequential scans on large tables being the primary indicator for missing indexes that cause 100-1000x performance degradations.
 
 ---
+
+## Group 3: Arrays, JSON, JSONB, and Range Types
 
 ## Example 41: Arrays
 
@@ -1816,11 +1822,11 @@ graph TD
     A --> F
 
     style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
     style C fill:#029E73,stroke:#000,color:#fff
     style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#DE8F05,stroke:#000,color:#fff
+    style E fill:#CA9161,stroke:#000,color:#000
+    style F fill:#DE8F05,stroke:#000,color:#000
 ```
 
 **Code**:
@@ -2106,6 +2112,8 @@ ORDER BY room, lower(stay);
 
 ---
 
+## Group 4: Transactions and Concurrency Control
+
 ## Example 46: BEGIN, COMMIT, ROLLBACK
 
 Transactions group multiple statements into atomic units - either all succeed (COMMIT) or all fail (ROLLBACK). Essential for data consistency.
@@ -2127,11 +2135,11 @@ graph TD
     D -->|No| F
 
     style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#DE8F05,stroke:#000,color:#000
     style D fill:#029E73,stroke:#000,color:#fff
     style E fill:#CC78BC,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
+    style F fill:#CA9161,stroke:#000,color:#000
 ```
 
 **Code**:
@@ -2244,12 +2252,12 @@ graph TD
     D --> G
 
     style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
     style C fill:#029E73,stroke:#000,color:#fff
     style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#CA9161,stroke:#000,color:#fff
+    style E fill:#CA9161,stroke:#000,color:#000
+    style F fill:#CA9161,stroke:#000,color:#000
+    style G fill:#CA9161,stroke:#000,color:#000
 ```
 
 **Code**:
@@ -2673,6 +2681,8 @@ ROLLBACK;
 
 ---
 
+## Group 5: Views, Functions, and Triggers
+
 ## Example 51: Creating Views
 
 Views are saved queries that act like tables - use them to simplify complex queries, restrict column access, or provide consistent interfaces.
@@ -2830,11 +2840,11 @@ graph TD
     A -.->|Data changes| E
 
     style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
     style C fill:#029E73,stroke:#000,color:#fff
     style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#DE8F05,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
+    style E fill:#DE8F05,stroke:#000,color:#000
+    style F fill:#CA9161,stroke:#000,color:#000
 ```
 
 **Code**:
@@ -3303,10 +3313,10 @@ graph TD
     D --> E
 
     style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
     style C fill:#029E73,stroke:#000,color:#fff
     style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    style E fill:#CA9161,stroke:#000,color:#000
 ```
 
 **Code**:
@@ -3466,6 +3476,8 @@ DROP TRIGGER audit_products_insert ON products;
 
 ---
 
+## Group 6: Advanced Data Patterns
+
 ## Example 56: Upsert with ON CONFLICT
 
 ON CONFLICT handles insert conflicts by updating existing rows or ignoring duplicates - essential for idempotent operations and data synchronization.
@@ -3608,15 +3620,15 @@ graph TD
     G --> J
     H --> J
 
-    style A fill:#CA9161,stroke:#000,color:#fff
+    style A fill:#CA9161,stroke:#000,color:#000
     style B fill:#029E73,stroke:#000,color:#fff
     style C fill:#0173B2,stroke:#000,color:#fff
     style D fill:#0173B2,stroke:#000,color:#fff
     style E fill:#0173B2,stroke:#000,color:#fff
-    style F fill:#DE8F05,stroke:#000,color:#fff
-    style G fill:#DE8F05,stroke:#000,color:#fff
-    style H fill:#DE8F05,stroke:#000,color:#fff
-    style I fill:#CA9161,stroke:#000,color:#fff
+    style F fill:#DE8F05,stroke:#000,color:#000
+    style G fill:#DE8F05,stroke:#000,color:#000
+    style H fill:#DE8F05,stroke:#000,color:#000
+    style I fill:#CA9161,stroke:#000,color:#000
     style J fill:#029E73,stroke:#000,color:#fff
 ```
 
@@ -3782,68 +3794,75 @@ SELECT COUNT(*) FROM orders;
 -- Generate realistic email addresses
 CREATE TABLE users (
     email VARCHAR(100),
+    -- => email: user's email address (up to 100 chars)
     created_at TIMESTAMP
+    -- => created_at: when user registered (timestamp without timezone)
 );
--- => Statement execution completes
+-- => Creates users table for generated test users
 INSERT INTO users (id, email, created_at)
--- => INSERT into users table begins
+-- => Bulk INSERT: generates 1,000 user records
 SELECT
     generate_series AS id,
-    -- => Creates alias for column/table
+    -- => Uses series number as user ID (1-1000)
     'user' || generate_series || '@example.com' AS email,
-    -- => Creates alias for column/table
+    -- => Concatenates: 'user1@example.com', 'user2@example.com', ..., 'user1000@example.com'
     NOW() - (random() * 365 || ' days')::INTERVAL AS created_at
-    -- => Creates alias for column/table
+    -- => Random date within past year: NOW() minus 0-364 random days
 FROM generate_series(1, 1000);
--- => Specifies source table for query
+-- => Generates 1,000 sequential integers (1-1000) as source
+-- => INSERT inserts 1,000 user rows
 SELECT * FROM users LIMIT 5;
--- => Specifies source table for query
--- => Query executes and returns result set
+-- => Returns first 5 rows to verify: user1@, user2@, user3@, user4@, user5@
 
 -- Generate time series data
 CREATE TABLE metrics (
     value DECIMAL(10, 2)
+    -- => value: metric measurement (2 decimal precision)
 );
--- => Statement execution completes
+-- => Creates metrics table for time series data
 INSERT INTO metrics (timestamp, value)
--- => INSERT into metrics table begins
+-- => Bulk INSERT time series with 1-minute resolution
 SELECT
     ts,
+    -- => ts: each minute timestamp from the series
     (50 + random() * 50)::DECIMAL(10, 2) AS value
-    -- => Creates alias for column/table
+    -- => Random value between 50.00 and 99.99 (simulates metric readings)
 FROM generate_series(
--- => Specifies source table for query
     '2025-12-29 00:00:00'::TIMESTAMP,
+    -- => Start: midnight on Dec 29, 2025
     '2025-12-29 23:59:00'::TIMESTAMP,
+    -- => End: 11:59 PM Dec 29, 2025
     '1 minute'::INTERVAL
+    -- => Step: 1 minute between each timestamp
 ) AS ts;
--- => Creates alias for column/table
+-- => Generates 1,440 timestamps (60 min * 24 hours = 1,440 rows)
 SELECT COUNT(*) FROM metrics;
--- => Specifies source table for query
--- => Query executes and returns result set
--- => 1,440 rows (one per minute for 24 hours)
+-- => Returns count: 1,440 rows (one per minute for 24 hours)
 
 -- Generate hierarchical test data
 CREATE TABLE categories (
     parent_id INTEGER,
+    -- => parent_id: references another category (NULL for top-level)
     name VARCHAR(100)
+    -- => name: category name (up to 100 chars)
 );
--- => Statement execution completes
+-- => Creates categories table for hierarchical test data
 INSERT INTO categories (id, parent_id, name)
--- => INSERT into categories table begins
+-- => Bulk INSERT: generates 100 categories (10 top-level + 90 subcategories)
 SELECT
     generate_series,
+    -- => Uses series number as category ID (1-100)
     CASE
-        WHEN generate_series <= 10 THEN NULL  -- => Top-level categories
-        ELSE ((generate_series - 1) / 10 + 1)  -- => Subcategories
+        WHEN generate_series <= 10 THEN NULL  -- => Top-level categories (1-10) have no parent
+        ELSE ((generate_series - 1) / 10 + 1)  -- => Subcategories (11-100) assigned to parent 1-10
     END,
     'Category ' || generate_series
+    -- => Name: 'Category 1', 'Category 2', ..., 'Category 100'
 FROM generate_series(1, 100);
--- => Specifies source table for query
+-- => Generates 100 sequential integers as source
 SELECT id, parent_id, name FROM categories WHERE parent_id IS NULL;
--- => Specifies source table for query
--- => Query executes and returns result set
--- => 10 top-level categories
+-- => Filters to top-level categories (parent_id IS NULL)
+-- => 10 top-level categories (IDs 1-10)
 ```
 
 **Key Takeaway**: GENERATE_SERIES creates numeric, date, or timestamp sequences - combine with random() for realistic test data. Use for populating development databases, performance testing, or creating time series data.

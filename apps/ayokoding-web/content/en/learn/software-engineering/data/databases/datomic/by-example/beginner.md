@@ -9,6 +9,8 @@ tags: ["datomic", "database", "tutorial", "by-example", "beginner", "fundamental
 
 Learn Datomic fundamentals through 30 annotated examples. Each example is self-contained, runnable in a Datomic REPL, and heavily commented to show what each statement does, expected outputs, and intermediate states.
 
+## Schema and Setup (Examples 1-5)
+
 ### Example 1: Setting Up Datomic and First Connection
 
 Datomic Free runs as an embedded peer library within your Clojure application. No separate database server required - the database lives in your process memory or connects to a storage service.
@@ -80,13 +82,30 @@ Connection conn = Peer.connect(uri);
 
 **Key Takeaway**: Datomic runs as a library within your application process. The connection object provides access to database values, but the database itself is a value that never changes - only grows with new facts.
 
-**Why It Matters**: Unlike traditional databases that run as separate servers, Datomic's peer architecture eliminates network latency for reads and enables REPL-driven development. You query the database as easily as you query a map or vector.
+**Why It Matters**: Unlike traditional databases that run as separate servers, Datomic's peer architecture eliminates network latency for reads and enables REPL-driven development. Every peer process has full query capabilities without routing through a central server. You query the database as easily as you query a map or vector in Clojure, making exploratory development natural. The embedded architecture also means database connections start in milliseconds - ideal for microservices and batch processing pipelines.
 
 ---
 
 ### Example 2: Defining Schema with Attributes
 
 Datomic schema consists of attributes that describe what kinds of facts can be stored. Attributes have a type, cardinality, and optional constraints. Schema itself is data stored in the database.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A[":db/ident<br/>:person/name"] --> B["Attribute<br/>Definition Map"]
+    C[":db/valueType<br/>:db.type/string"] --> B
+    D[":db/cardinality<br/>:db.cardinality/one"] --> B
+    E[":db/doc<br/>A person name"] --> B
+    B --> F["conn.transact()<br/>Schema is data!"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style C fill:#DE8F05,stroke:#000,color:#000
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#CC78BC,stroke:#000,color:#000
+    style B fill:#CA9161,stroke:#000,color:#fff
+    style F fill:#0173B2,stroke:#000,color:#fff
+```
 
 **Java Code**:
 
@@ -154,33 +173,33 @@ Map txResult = conn.transact(personSchema).get();
 ```clojure
 ;; Define schema for a person entity
 (def person-schema
-  // => Creates var 'person-schema' with vector of three maps
+  ;; => Creates var 'person-schema' with vector of three maps
   [{:db/ident       :person/name
-    // => :db/ident is unique keyword identifier for attribute
+    ;; => :db/ident is unique keyword identifier for attribute
     :db/valueType   :db.type/string
-    // => :db/valueType specifies attribute stores string values
+    ;; => :db/valueType specifies attribute stores string values
     :db/cardinality :db.cardinality/one
-    // => :db.cardinality/one means single value per entity (not collection)
+    ;; => :db.cardinality/one means single value per entity (not collection)
     :db/doc         "A person's full name"}
-    // => :db/doc provides documentation string for attribute
+    ;; => :db/doc provides documentation string for attribute
    {:db/ident       :person/email
-    // => Second attribute definition: :person/email
+    ;; => Second attribute definition: :person/email
     :db/valueType   :db.type/string
-    // => Email stored as string
+    ;; => Email stored as string
     :db/cardinality :db.cardinality/one
-    // => Single email per person
+    ;; => Single email per person
     :db/unique      :db.unique/identity
-    // => :db.unique/identity enables upserts and lookup refs [:person/email "x@y.com"]
+    ;; => :db.unique/identity enables upserts and lookup refs [:person/email "x@y.com"]
     :db/doc         "A person's email address (unique identifier)"}
-    // => Documents this as the unique identifier for person entities
+    ;; => Documents this as the unique identifier for person entities
    {:db/ident       :person/age
-    // => Third attribute definition: :person/age
+    ;; => Third attribute definition: :person/age
     :db/valueType   :db.type/long
-    // => Age stored as long integer (64-bit)
+    ;; => Age stored as long integer (64-bit)
     :db/cardinality :db.cardinality/one
-    // => Single age value per person
+    ;; => Single age value per person
     :db/doc         "A person's age in years"}])
-    // => Documents unit (years, not months/days)
+    ;; => Documents unit (years, not months/days)
 ;; => person-schema is now vector of three attribute definition maps
 ;; => :db/ident - Keyword identifier for the attribute
 ;; => :db/valueType - Type: :db.type/string, :db.type/long, :db.type/ref, etc.
@@ -203,7 +222,7 @@ Map txResult = conn.transact(personSchema).get();
 
 **Key Takeaway**: Datomic schema is data, not DDL statements. You define attributes with maps and transact them like any other facts. Schema is additive - you can add new attributes anytime without migrations.
 
-**Why It Matters**: Schema-as-data eliminates the operational complexity of migrations in traditional databases. You can evolve your schema incrementally in production without downtime, version control, or migration scripts. New attributes are instantly available to all peers, making agile development natural.
+**Why It Matters**: Schema-as-data eliminates the operational complexity of migrations in traditional databases. You can evolve your schema incrementally in production without downtime, version control, or migration scripts. New attributes are instantly available to all peers, making agile development natural. Unlike ALTER TABLE operations that lock tables or require coordination windows, Datomic schema additions are atomic transactions that complete in milliseconds. Teams can deploy schema changes independently, and you can inspect schema history just like any other data.
 
 ---
 
@@ -284,19 +303,19 @@ Map tempids = (Map) txResult.get(":tempids");
 ```clojure
 ;; Assert facts about a person
 (def tx-result
-  // => Creates var 'tx-result' to hold transaction result
+  ;; => Creates var 'tx-result' to hold transaction result
   @(d/transact conn
-     // => Calls transact with connection and transaction data
-     // => Returns future, @ derefs (blocks until complete)
+     ;; => Calls transact with connection and transaction data
+     ;; => Returns future, @ derefs (blocks until complete)
      [{:person/name  "Alice Johnson"
-       // => Map key :person/name with value "Alice Johnson" (string)
+       ;; => Map key :person/name with value "Alice Johnson" (string)
        :person/email "alice@example.com"
-       // => :person/email (unique identity) with value
+       ;; => :person/email (unique identity) with value
        :person/age   30}]))
-       // => :person/age with value 30 (Long)
-       // => Entity map syntax: keys are attributes, values are values
-       // => No :db/id key, so Datomic assigns new entity ID automatically
-       // => Datomic creates temporary ID, resolves to permanent ID in transaction
+       ;; => :person/age with value 30 (Long)
+       ;; => Entity map syntax: keys are attributes, values are values
+       ;; => No :db/id key, so Datomic assigns new entity ID automatically
+       ;; => Datomic creates temporary ID, resolves to permanent ID in transaction
 ;; => All attributes asserted in single transaction (atomic - all or nothing)
 ;; => Transaction creates three datoms (facts) for new entity
 ;; => tx-result now bound to map {:db-before ... :db-after ... :tx-data ... :tempids ...}
@@ -331,13 +350,31 @@ Map tempids = (Map) txResult.get(":tempids");
 
 **Key Takeaway**: Transactions assert facts atomically. Datomic returns a new database value that includes the added facts. The old database value remains accessible for time-travel queries.
 
-**Why It Matters**: Immutable database values enable fearless concurrent reads, perfect reproducibility for debugging, and audit trails without extra infrastructure. Every transaction creates a new logical database that you can cache, query, and reuse - making distributed caching trivial.
+**Why It Matters**: Immutable database values enable fearless concurrent reads, perfect reproducibility for debugging, and audit trails without extra infrastructure. Every transaction creates a new logical database that you can cache, query, and reuse - making distributed caching trivial. Production deployments benefit enormously: cache database values in application memory, reproduce bugs by replaying to any previous state, and eliminate read/write locks entirely. This architectural choice fundamentally changes how you think about data consistency in distributed systems.
 
 ---
 
 ### Example 4: Querying with Datalog
 
 Datalog queries pattern-match against facts in the database. The `:find` clause specifies what to return, `:where` clauses specify patterns to match.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["[:find ?name<br/>:where [?e :person/name ?name]]"] --> B["Query Engine<br/>Pattern Match"]
+    B --> C["?e binds to<br/>entity IDs"]
+    B --> D["?name binds to<br/>name values"]
+    C --> E["Unification<br/>joins patterns"]
+    D --> E
+    E --> F["#{ [Alice Johnson] }"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#fff
+    style F fill:#0173B2,stroke:#000,color:#fff
+```
 
 **Java Code**:
 
@@ -422,24 +459,24 @@ Collection results3 = Peer.q(
 ```clojure
 ;; Get current database value
 (def db (d/db conn))
-// => Calls d/db function with connection argument
-// => Returns current database snapshot (immutable value)
-// => Defines var 'db' for subsequent query operations
+;; => Calls d/db function with connection argument
+;; => Returns current database snapshot (immutable value)
+;; => Defines var 'db' for subsequent query operations
 ;; => Database value at current time (latest transaction basis-t)
 ;; => Immutable - safe to cache and reuse indefinitely
 ;; => All queries against this db return consistent results
 
 ;; Query for all person names
 (d/q '[:find ?name
-       // => Quoted data structure (not evaluated, passed as-is to q function)
-       // => :find clause specifies return variables (?name)
+       ;; => Quoted data structure (not evaluated, passed as-is to q function)
+       ;; => :find clause specifies return variables (?name)
        :where [?e :person/name ?name]]
-       // => :where clause contains patterns to match
-       // => [?e :person/name ?name] is entity-attribute-value pattern tuple
-       // => ?e binds to entity IDs having :person/name attribute
-       // => ?name binds to values of :person/name for matched entities
+       ;; => :where clause contains patterns to match
+       ;; => [?e :person/name ?name] is entity-attribute-value pattern tuple
+       ;; => ?e binds to entity IDs having :person/name attribute
+       ;; => ?name binds to values of :person/name for matched entities
      db)
-     // => db argument provides data to query
+     ;; => db argument provides data to query
 ;; => Returns: #{["Alice Johnson"]}
 ;; => #{} literal notation indicates set (unordered collection, unique elements)
 ;; => Each element is a vector ["Alice Johnson"] with one value
@@ -447,14 +484,14 @@ Collection results3 = Peer.q(
 
 ;; Query with multiple attributes
 (d/q '[:find ?name ?email
-       // => :find with two variables - returns 2-tuples
+       ;; => :find with two variables - returns 2-tuples
        :where [?e :person/name ?name]
-              // => First pattern: match entities with :person/name
-              // => Binds ?e to entity IDs, ?name to name values
+              ;; => First pattern: match entities with :person/name
+              ;; => Binds ?e to entity IDs, ?name to name values
               [?e :person/email ?email]]
-              // => Second pattern: match same ?e with :person/email
-              // => Binds ?email to email values
-              // => ?e unification joins patterns: same entity must have both attributes
+              ;; => Second pattern: match same ?e with :person/email
+              ;; => Binds ?email to email values
+              ;; => ?e unification joins patterns: same entity must have both attributes
      db)
 ;; => Returns: #{["Alice Johnson" "alice@example.com"]}
 ;; => Set of 2-element vectors (name-email pairs)
@@ -464,20 +501,20 @@ Collection results3 = Peer.q(
 
 ;; Query with input parameter
 (d/q '[:find ?email
-       // => :find clause returns email values
+       ;; => :find clause returns email values
        :in $ ?name
-       // => :in clause declares input parameters
-       // => $ is special symbol for primary database input
-       // => ?name is parameter variable (bound from arguments)
+       ;; => :in clause declares input parameters
+       ;; => $ is special symbol for primary database input
+       ;; => ?name is parameter variable (bound from arguments)
        :where [?e :person/name ?name]
-              // => Pattern uses ?name variable from :in parameters
-              // => Matches entities where :person/name equals ?name value
+              ;; => Pattern uses ?name variable from :in parameters
+              ;; => Matches entities where :person/name equals ?name value
               [?e :person/email ?email]]
-              // => Second pattern retrieves email for matched entity
+              ;; => Second pattern retrieves email for matched entity
      db
-     // => First argument after query binds to $ parameter
+     ;; => First argument after query binds to $ parameter
      "Alice Johnson")
-     // => Second argument binds to ?name parameter
+     ;; => Second argument binds to ?name parameter
 ;; => :in $ ?name declares inputs ($ is database, ?name is parameter)
 ;; => Returns: #{["alice@example.com"]}
 ;; => Finds email for person named "Alice Johnson"
@@ -487,13 +524,28 @@ Collection results3 = Peer.q(
 
 **Key Takeaway**: Datalog queries use pattern matching and unification. Logic variables (?e, ?name) bind to values that satisfy all patterns. Queries compose naturally through shared variables.
 
-**Why It Matters**: Datalog's declarative nature makes complex queries more readable than SQL. Pattern matching eliminates join syntax, unification handles relationships naturally, and parameterized queries prevent injection attacks. Queries are composable data structures you can build programmatically.
+**Why It Matters**: Datalog's declarative nature makes complex queries more readable than SQL. Pattern matching eliminates join syntax, unification handles relationships naturally, and parameterized queries prevent injection attacks. Queries are composable data structures you can build programmatically - combine query fragments, reuse patterns across queries, and generate queries from application logic. In production Datomic systems, developers frequently build query builders that compose Datalog patterns dynamically for faceted search, report generation, and multi-tenant filtering.
 
 ---
 
 ### Example 5: Using the Entity API
 
 The entity API provides map-like access to entities. Navigate attributes and references as if traversing nested maps.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["Query<br/>[:find ?e :where...]"] --> B["Entity ID<br/>17592186045418"]
+    B --> C["db.entity(id)<br/>Entity Object"]
+    C --> D["alice.get(:person/name)<br/>Lazy fetch"]
+    C --> E["alice.touch()<br/>Eager load all"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#fff
+```
 
 **Java Code**:
 
@@ -588,13 +640,29 @@ Map aliceMap = alice.touch();
 
 **Key Takeaway**: The entity API provides convenient attribute access without writing queries. Use it for navigating entity data when you already have the entity ID.
 
-**Why It Matters**: The entity API provides ergonomic navigation for exploratory coding and REPL-driven development. Lazy loading means you only fetch what you access, making it efficient for deep entity graphs. It bridges the gap between Datalog queries and application code.
+**Why It Matters**: The entity API provides ergonomic navigation for exploratory coding and REPL-driven development. Lazy loading means you only fetch what you access, making it efficient for deep entity graphs. It bridges the gap between Datalog queries and application code. In production systems, the entity API excels for loading related entities on demand - walking from an order to its customer, their address, and payment methods - without writing N+1 queries. The lazy nature prevents over-fetching while keeping code readable.
 
 ---
+
+## Core Operations: Cardinality, Retractions, and Pull (Examples 6-10)
 
 ### Example 6: Cardinality Many Attributes
 
 Attributes with `:db.cardinality/many` store sets of values. Operations automatically maintain set semantics (no duplicates).
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A[":db.cardinality/one<br/>Single value"] -->|"replace on assert"| B["Latest value only"]
+    C[":db.cardinality/many<br/>Set of values"] -->|"add on assert"| D["Accumulates values<br/>(no duplicates)"]
+    C -->|":db/retract"| E["Remove specific value<br/>from set"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#fff
+```
 
 **Java Code**:
 
@@ -709,13 +777,28 @@ alice.get(":person/favorite-colors");
 
 **Key Takeaway**: Cardinality-many attributes store sets of values. Queries bind variables to each element individually, while the entity API returns the entire set.
 
-**Why It Matters**: Cardinality-many eliminates join tables for simple many-valued attributes like tags, categories, or permissions. Set semantics prevent duplicates automatically, and queries over multi-valued attributes compose naturally with other patterns - no special syntax needed.
+**Why It Matters**: Cardinality-many eliminates join tables for simple many-valued attributes like tags, categories, or permissions. Set semantics prevent duplicates automatically, and queries over multi-valued attributes compose naturally with other patterns - no special syntax needed. Production use cases include user roles, product categories, article tags, and device capabilities. Unlike SQL's normalized join tables requiring separate queries, cardinality-many values are stored as part of the entity and returned efficiently in pull patterns. Retract individual values without touching others.
 
 ---
 
 ### Example 7: Retracting Facts
 
 Retracting facts removes them from the current database value but preserves them in history. Retracted facts remain queryable via time-travel.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A["Current DB<br/>Alice age=30"] -->|":db/retract"| B["New DB Value<br/>Alice (no age)"]
+    A -->|"Preserved in"| C["History DB<br/>Alice age=30"]
+    B -->|"d/q current"| D["#{}  (empty)"]
+    C -->|"d/history query"| E["#{[30 false]}"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#fff
+```
 
 **Java Code**:
 
@@ -817,13 +900,28 @@ conn.transact(
 
 **Key Takeaway**: Retracting removes facts from the current database view but preserves them in the immutable history. Use `:db/retract` for specific facts, `:db/retractEntity` to remove all entity attributes.
 
-**Why It Matters**: Retraction preserves complete audit history while logically deleting data from current views. You can query what was retracted, when, and why - critical for compliance, debugging, and data forensics. Soft deletes become first-class without application logic.
+**Why It Matters**: Retraction preserves complete audit history while logically deleting data from current views. You can query what was retracted, when, and why - critical for compliance, debugging, and data forensics. Soft deletes become first-class without application logic. In financial systems, retracting a payment method preserves the full history of what payment information existed when past transactions processed. In healthcare, retracting outdated diagnoses preserves the clinical record while updating the current view. Audit requirements that require 7+ years of history are trivially satisfied.
 
 ---
 
 ### Example 8: Transaction Functions with :db/cas
 
 Compare-and-swap (CAS) provides optimistic concurrency control. The transaction succeeds only if the current value matches the expected value.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A["[:db/cas entity attr expected new]"] --> B{"current == expected?"}
+    B -->|"Yes"| C["Transaction commits<br/>value updated to new"]
+    B -->|"No"| D["Transaction aborted<br/>CAS exception thrown"]
+    C --> E["New DB value with<br/>updated attribute"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#fff
+```
 
 **Java Code**:
 
@@ -951,13 +1049,26 @@ try {
 
 **Key Takeaway**: `:db/cas` enables optimistic concurrency without locks. Use it to prevent lost updates when multiple processes might modify the same entity.
 
-**Why It Matters**: Compare-and-swap provides lock-free coordination in distributed systems. Unlike pessimistic locking, CAS allows maximum concurrency while guaranteeing atomic updates. Failed CAS operations are explicit, letting you implement retry logic or conflict resolution strategies.
+**Why It Matters**: Compare-and-swap provides lock-free coordination in distributed systems. Unlike pessimistic locking, CAS allows maximum concurrency while guaranteeing atomic updates. Failed CAS operations are explicit, letting you implement retry logic or conflict resolution strategies. In e-commerce inventory systems, CAS prevents overselling by atomically decrementing stock only when the current count matches the expected value. In workflow engines, CAS enables safe state transitions (PENDING -> PROCESSING -> DONE) without distributed locks that degrade performance under load.
 
 ---
 
 ### Example 9: Lookup Refs for Entity Identification
 
 Lookup refs provide convenient entity identification using unique attributes without querying for entity IDs.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["[:person/email<br/>alice@example.com]"] -->|"Datomic resolves"| B["Entity ID 12345"]
+    B --> C["db.entity(12345)"]
+    C --> D["Entity attrs<br/>:person/name, :person/age..."]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+```
 
 **Java Code**:
 
@@ -1057,13 +1168,29 @@ Collection results = Peer.q(
 
 **Key Takeaway**: Lookup refs `[unique-attribute value]` provide ergonomic entity identification. Use them in transactions, queries, and entity API calls to avoid manual ID resolution.
 
-**Why It Matters**: Lookup refs eliminate boilerplate queries to resolve natural identifiers to entity IDs. This makes code more readable, reduces round trips, and enables declarative upserts. You work with domain identifiers directly rather than database internals.
+**Why It Matters**: Lookup refs eliminate boilerplate queries to resolve natural identifiers to entity IDs. This makes code more readable, reduces round trips, and enables declarative upserts. You work with domain identifiers directly rather than database internals. In practice, lookup refs transform code like `(d/q [:find ?e :where [?e :user/email email]] db)` followed by using the result into simply `[:user/email email]`. Production code using lookup refs is more readable, has fewer query round trips, and naturally supports idempotent data import operations.
 
 ---
 
 ### Example 10: Pull API for Declarative Data Fetching
 
 The pull API fetches nested entity data in one operation using a declarative pattern. More convenient than multiple entity API calls.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["Pull Pattern<br/>[:name :email {:address [...]}]"] -->|"d/pull db"| B["Entity resolution"]
+    B --> C["Flat attrs<br/>:name :email"]
+    B --> D["Nested join<br/>:address entity"]
+    C --> E["Result map"]
+    D --> E
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#CC78BC,stroke:#000,color:#000
+```
 
 **Java Code**:
 
@@ -1130,55 +1257,101 @@ Map result3 = (Map) Peer.pull(
 
 **Key Takeaway**: Pull API fetches entity data declaratively with a pattern. Use it for loading complete entity views without writing multiple queries or entity API calls.
 
-**Why It Matters**: Pull API solves the N+1 query problem declaratively. Specify exact data shape needed (attributes, references, nested entities), and Datomic fetches it efficiently in one operation. Perfect for GraphQL resolvers, REST APIs, and view rendering.
+**Why It Matters**: Pull API solves the N+1 query problem declaratively. Specify exact data shape needed (attributes, references, nested entities), and Datomic fetches it efficiently in one operation. Perfect for GraphQL resolvers, REST APIs, and view rendering. Pull patterns replace complex nested queries and entity API traversals with a single declarative expression. In production GraphQL APIs, a single pull expression can specify an entire subgraph - user profile, their orders, each order's line items, and product details - without N+1 round trips.
 
 ---
+
+## Reference Attributes and Datalog Queries (Examples 11-20)
 
 ### Example 11: Adding Reference Attributes
 
 Reference attributes (`:db.type/ref`) create relationships between entities. They're the foundation for entity graphs.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["Person Entity<br/>Bob Smith<br/>:person/address → ref"] --> B["Address Entity<br/>123 Main St<br/>Portland, 97201"]
+    A -->|":person/name"| C["Bob Smith"]
+    A -->|":person/email"| D["bob@example.com"]
+    B -->|":address/city"| E["Portland"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#fff
+```
+
 **Java Code**:
 
 ```java
 // Define address and reference schema
+// => Transact 4 new attributes: :person/address (ref) + 3 :address/* attributes (strings)
 conn.transact(
+    // => conn.transact() submits schema transaction asynchronously
     Util.list(
+        // => List of 4 attribute definition maps
         Util.map(":db/ident", ":person/address",
+                 // => :person/address is the attribute identifier keyword
                  ":db/valueType", ":db.type/ref",
+                 // => :db.type/ref stores entity ID (not string/int), enables navigation
                  ":db/cardinality", ":db.cardinality/one",
+                 // => One address per person
                  ":db/doc", "A person's address (reference to address entity)"),
+                 // => Documentation: this ref points to an address entity
         Util.map(":db/ident", ":address/street",
+                 // => :address/street attribute identifier
                  ":db/valueType", ":db.type/string",
+                 // => Street stored as string
                  ":db/cardinality", ":db.cardinality/one"),
+                 // => Single street per address
         Util.map(":db/ident", ":address/city",
+                 // => :address/city attribute identifier
                  ":db/valueType", ":db.type/string",
+                 // => City stored as string
                  ":db/cardinality", ":db.cardinality/one"),
+                 // => Single city per address
         Util.map(":db/ident", ":address/zipcode",
+                 // => :address/zipcode attribute identifier
                  ":db/valueType", ":db.type/string",
+                 // => Zipcode stored as string
                  ":db/cardinality", ":db.cardinality/one")
+                 // => Single zipcode per address
     )
 ).get();
+// => .get() blocks until schema transaction commits
+// => All 4 attributes available for use immediately after
 
 // Assert person with nested address
 conn.transact(
+    // => Submit data transaction asserting Bob with his address
     Util.list(
+        // => List with one entity map (Bob) containing nested address map
         Util.map(":person/name", "Bob Smith",
+                 // => Asserts :person/name attribute value
                  ":person/email", "bob@example.com",
+                 // => :person/email is unique identity (enables lookup refs)
                  ":person/age", 28,
+                 // => Asserts :person/age attribute value
                  ":person/address", Util.map(":address/street", "123 Main St",
+                                              // => Nested map creates SEPARATE address entity
                                               ":address/city", "Portland",
+                                              // => City value for address entity
                                               ":address/zipcode", "97201"))
+                                              // => Zipcode value for address entity
     )
 ).get();
-// => Nested map creates separate address entity
-// => :person/address references address entity ID
+// => Nested map creates separate address entity (new entity ID assigned)
+// => :person/address stores reference (entity ID) to address entity
 // => Both entities created in single transaction (atomic)
 
 // Navigate reference with entity API
 Database db = conn.db();
+// => Get current database snapshot after transactions
 Entity bob = db.entity(Util.list(":person/email", "bob@example.com"));
+// => Entity object for Bob using lookup ref
 Entity address = (Entity) bob.get(":person/address");
+// => :person/address returns Entity object (not raw ID) due to :db.type/ref
 address.get(":address/city");
 // => "Portland"
 // => :person/address returns entity object (not ID)
@@ -1189,51 +1362,79 @@ address.get(":address/city");
 
 ```clojure
 ;; Define address and reference schema
+;; => Transact 4 attributes: :person/address (ref type) and 3 :address/* string attributes
 @(d/transact conn
+   ;; => @ derefs future, blocks until schema transaction commits
    [{:db/ident       :person/address
+     ;; => :person/address attribute identifier
      :db/valueType   :db.type/ref
+     ;; => :db.type/ref stores entity ID; enables entity navigation
      :db/cardinality :db.cardinality/one
+     ;; => One address per person
      :db/doc         "A person's address (reference to address entity)"}
+     ;; => Documentation string for this reference attribute
     {:db/ident       :address/street
+     ;; => :address/street attribute identifier
      :db/valueType   :db.type/string
+     ;; => Street value stored as string
      :db/cardinality :db.cardinality/one}
+     ;; => One street per address
     {:db/ident       :address/city
+     ;; => :address/city attribute identifier
      :db/valueType   :db.type/string
+     ;; => City value stored as string
      :db/cardinality :db.cardinality/one}
+     ;; => One city per address
     {:db/ident       :address/zipcode
+     ;; => :address/zipcode attribute identifier
      :db/valueType   :db.type/string
+     ;; => Zipcode value stored as string
      :db/cardinality :db.cardinality/one}])
+     ;; => One zipcode per address
 
 ;; Assert person with nested address
+;; => Bob's entity map contains a nested address map
 @(d/transact conn
+   ;; => @ blocks until data transaction commits
    [{:person/name    "Bob Smith"
+     ;; => Asserts :person/name value
      :person/email   "bob@example.com"
+     ;; => :person/email is unique identity (enables lookup refs)
      :person/age     28
+     ;; => Asserts :person/age value
      :person/address {:address/street  "123 Main St"
+                      ;; => Nested map creates SEPARATE address entity automatically
                       :address/city    "Portland"
+                      ;; => City value for address entity
                       :address/zipcode "97201"}}])
-;; => Nested map creates separate address entity
+                      ;; => Zipcode value; :person/address stores resulting entity ID
+;; => Nested map creates separate address entity (new entity ID assigned)
 ;; => :person/address references address entity ID
 ;; => Both entities created in single transaction (atomic)
 
 ;; Navigate reference with entity API
 (def db (d/db conn))
+;; => Get current database snapshot after all transactions
 (def bob (d/entity db [:person/email "bob@example.com"]))
+;; => Get Bob entity using lookup ref [:person/email "bob@example.com"]
 (:address/city (:person/address bob))
+;; => (:person/address bob) returns address entity object (not raw ID)
+;; => (:address/city ...) accesses :address/city attribute of address entity
 ;; => "Portland"
-;; => :person/address returns entity object (not ID)
 ;; => Navigate nested entities naturally
 ```
 
 **Key Takeaway**: Reference attributes create entity relationships. Nested maps in transactions create referenced entities automatically, enabling graph-structured data.
 
-**Why It Matters**: Reference attributes model complex domains naturally - users own orders, orders contain line items, departments have employees. Datomic maintains referential integrity automatically, and nested transaction syntax eliminates foreign key management. Build graph databases without graph database complexity.
+**Why It Matters**: Reference attributes model complex domains naturally - users own orders, orders contain line items, departments have employees. Datomic maintains referential integrity automatically, and nested transaction syntax eliminates foreign key management. Build graph databases without graph database complexity. Unlike SQL foreign keys that require explicit constraint definitions and JOIN syntax, Datomic references are first-class values navigable with simple attribute access. Nested transaction syntax creates related entities in one atomic operation, eliminating the multi-step insert sequences required in relational databases.
 
 ---
 
 ### Example 12: Reverse References
 
 Reverse references query relationships in the opposite direction using `_` prefix. Navigate from referenced entity back to referencing entity.
+
+**Note**: This example continues from Example 11. It uses the `db` database value and `Bob Smith` person entity with address created in Example 11. Run Example 11 first to establish the schema and data.
 
 **Java Code**:
 
@@ -1301,7 +1502,7 @@ Map result = (Map) Peer.pull(
 
 **Key Takeaway**: Reverse references (`attribute/_reverse`) enable bidirectional graph navigation. Query from referenced entities back to referencing entities without separate schema definitions.
 
-**Why It Matters**: Reverse references eliminate the need for join tables and backref attributes. Navigate relationships in any direction using a simple naming convention. Query "all orders for this customer" as easily as "customer for this order" without duplicating relationship data.
+**Why It Matters**: Reverse references eliminate the need for join tables and backref attributes. Navigate relationships in any direction using a simple naming convention. Query 'all orders for this customer' as easily as 'customer for this order' without duplicating relationship data. This bidirectional navigation is especially valuable for graph-like queries: find all colleagues of a person, all documents referencing a tag, or all transactions affecting an account. The `_` prefix convention keeps queries readable without requiring separate schema definitions for reverse navigation.
 
 ---
 
@@ -1387,13 +1588,15 @@ Collection results = Peer.q(
 
 **Key Takeaway**: Component attributes create ownership relationships. Retracting the parent entity cascades to component children, ensuring referential integrity.
 
-**Why It Matters**: Component semantics model true ownership - order line items, document sections, configuration entries. Cascade deletion happens automatically without application logic, foreign key constraints, or triggers. Lifecycle coupling is declarative, making complex data management simple.
+**Why It Matters**: Component semantics model true ownership - order line items, document sections, configuration entries. Cascade deletion happens automatically without application logic, foreign key constraints, or triggers. Lifecycle coupling is declarative, making complex data management simple. In document management systems, marking paragraphs as components of documents ensures deleting a document also removes its paragraphs. In e-commerce, component line items mean canceling an order cleans up all related data atomically. This declarative cascade is safer than application-level deletion logic that can miss edge cases.
 
 ---
 
 ### Example 14: Querying with Implicit Joins
 
 Datalog queries join entities implicitly through shared variables. No explicit JOIN syntax needed.
+
+**Note**: This example continues from Example 11. It uses the `db` database value, `Bob Smith` person with Portland address, and `Alice Johnson` entities created in Examples 3 and 11. Run Examples 3 and 11 first.
 
 **Java Code**:
 
@@ -1450,7 +1653,7 @@ Collection results2 = Peer.q(
 
 **Key Takeaway**: Datalog joins entities through variable unification. Shared variables in patterns create implicit joins without explicit JOIN keywords.
 
-**Why It Matters**: Implicit joins through unification make queries more readable and less error-prone than SQL's explicit JOIN syntax. The query engine optimizes join order automatically based on data distribution. Complex multi-way joins become simple pattern lists.
+**Why It Matters**: Implicit joins through unification make queries more readable and less error-prone than SQL's explicit JOIN syntax. The query engine optimizes join order automatically based on data distribution. Complex multi-way joins become simple pattern lists. When querying across 5 or 6 related entities in SQL, JOIN chains become unwieldy and optimization hints are often needed. In Datalog, adding more constraints simply adds more pattern clauses without changing the structure. The engine selects the most selective patterns first, making complex queries automatically efficient.
 
 ---
 
@@ -1512,7 +1715,7 @@ Collection results2 = Peer.q(
 
 **Key Takeaway**: `or` clauses match alternative patterns. Each clause within `or` can contain multiple patterns that must all match together.
 
-**Why It Matters**: OR logic in Datalog is more expressive than SQL's OR - you can specify complex alternative pattern combinations. This enables queries like "find entities matching pattern A OR matching pattern B" where each pattern involves multiple constraints.
+**Why It Matters**: OR logic in Datalog is more expressive than SQL's OR - you can specify complex alternative pattern combinations. This enables queries like 'find entities matching pattern A OR matching pattern B' where each pattern involves multiple constraints. In practice, OR clauses are essential for polymorphic queries: find all entities that are either products with a price over $100 OR services with a duration over 2 hours. Each branch of the OR can involve different attributes and predicates, something SQL OR cannot cleanly express.
 
 ---
 
@@ -1590,7 +1793,7 @@ Collection results3 = Peer.q(
 
 **Key Takeaway**: Expression clauses filter and transform results using Clojure functions. Use predicates for filtering, bind results to variables for transformations.
 
-**Why It Matters**: Expression clauses bridge declarative queries with procedural code. Apply business logic, complex calculations, and custom predicates directly in queries without post-processing results. This keeps filtering close to data, reducing data transfer and improving performance.
+**Why It Matters**: Expression clauses bridge declarative queries with procedural code. Apply business logic, complex calculations, and custom predicates directly in queries without post-processing results. This keeps filtering close to data, reducing data transfer and improving performance. In production analytics, expression clauses compute age from birthdate, apply pricing formulas, evaluate risk scores, or extract substrings - all within the query engine. Any Java or Clojure function usable as a predicate or binding expression, eliminating separate transformation passes.
 
 ---
 
@@ -1662,7 +1865,7 @@ Collection results3 = Peer.q(
 
 **Key Takeaway**: Aggregates combine query results into summary values. Wrap variables in aggregate functions in the `:find` clause.
 
-**Why It Matters**: Built-in aggregates (sum, avg, min, max, count) eliminate post-processing for common analytics. Custom aggregate functions let you implement domain-specific reductions. Aggregate queries execute efficiently in the database engine, not application memory.
+**Why It Matters**: Built-in aggregates (sum, avg, min, max, count) eliminate post-processing for common analytics. Custom aggregate functions let you implement domain-specific reductions. Aggregate queries execute efficiently in the database engine, not application memory. In reporting dashboards, aggregate queries replace fetching thousands of raw records to compute totals in the application. Grouping via find specs lets you compute aggregates per category, per user, or per time period. Custom aggregates handle domain-specific metrics like median, percentile, or standard deviation that aren't built-in.
 
 ---
 
@@ -1760,7 +1963,7 @@ Collection results3 = Peer.q(
 
 **Key Takeaway**: `:in` clause declares parameterized inputs. Use `$` for database, scalar parameters for single values, `[?var ...]` for collections.
 
-**Why It Matters**: Parameterized queries enable reusable query patterns and prevent injection attacks. Collection binding eliminates the need for dynamic query generation with IN clauses. Multi-database inputs power temporal comparisons and cross-database queries.
+**Why It Matters**: Parameterized queries enable reusable query patterns and prevent injection attacks. Collection binding eliminates the need for dynamic query generation with IN clauses. Multi-database inputs power temporal comparisons and cross-database queries. In production systems, writing a query once with parameters and calling it with different inputs for each API request is much safer than string-building queries. Collection inputs handle batch lookups efficiently. The clean separation of query shape from data makes queries easy to test, cache by query hash, and audit.
 
 ---
 
@@ -1854,7 +2057,7 @@ Collection result3 = (Collection) Peer.q(
 
 **Key Takeaway**: Find specs shape query results. Use `.` for scalars, `[...]` for tuples, `[... ...]` for collections. Default is set of tuples.
 
-**Why It Matters**: Find specs eliminate post-query reshaping. Scalar results unwrap single values, tuple results preserve grouping, collection results flatten when appropriate. Return exactly the data structure your application expects, reducing boilerplate code.
+**Why It Matters**: Find specs eliminate post-query reshaping. Scalar results unwrap single values, tuple results preserve grouping, collection results flatten when appropriate. Return exactly the data structure your application expects, reducing boilerplate code. In real codebases, choosing the wrong find spec leads to messy destructuring - extra `first`, `ffirst`, or `map first` calls that obscure intent. Scalar find (`.`) is essential for existence checks and count queries. Relation specs (`[[?a ?b]]`) return structured tuples ideal for direct map conversion.
 
 ---
 
@@ -1936,13 +2139,35 @@ Collection txResults = Peer.q(
 
 **Key Takeaway**: Transactions are entities with metadata. Add custom attributes to transaction entity for auditing, user tracking, and change context.
 
-**Why It Matters**: Transaction metadata provides built-in audit trails without separate logging infrastructure. Attach user IDs, reasons, IP addresses, or application context to transactions. Query transaction metadata using standard Datalog - audit becomes data access, not log parsing.
+**Why It Matters**: Transaction metadata provides built-in audit trails without separate logging infrastructure. Attach user IDs, reasons, IP addresses, or application context to transactions. Query transaction metadata using standard Datalog - audit becomes data access, not log parsing. In regulated industries (finance, healthcare), every data change must be attributable to a specific user action or system event. Datomic's transaction entity stores this context alongside the data changes atomically. Unlike separate audit log tables that can become out of sync, transaction metadata is part of the same immutable fact store.
 
 ---
+
+## Advanced Query and Transaction Patterns (Examples 21-30)
 
 ### Example 21: Database Value as of Time
 
 Query historical database states with `as-of`. Database values are immutable snapshots at specific points in time.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["Transaction T1<br/>Alice age=30"] --> B["Transaction T2<br/>Alice age=32"]
+    B --> C["Transaction T3<br/>Bob created"]
+    C --> D["Current DB<br/>(latest)"]
+
+    E["d/as-of db T1"] --> F["DB Snapshot<br/>at T1: age=30"]
+    E2["d/as-of db T2"] --> G["DB Snapshot<br/>at T2: age=32"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#fff
+    style E2 fill:#CA9161,stroke:#000,color:#fff
+    style F fill:#0173B2,stroke:#000,color:#fff
+    style G fill:#DE8F05,stroke:#000,color:#000
+```
 
 **Java Code**:
 
@@ -2004,7 +2229,7 @@ daveHistorical.get(":person/age");
 
 **Key Takeaway**: `as-of` creates historical database values. Query any point in time using the same query and entity APIs - immutability enables perfect audit trails.
 
-**Why It Matters**: Time-travel queries enable debugging production issues by examining exact historical state. Regulatory compliance, GDPR auditing, and forensic analysis become simple database queries. Test new features against historical data without test database management.
+**Why It Matters**: Time-travel queries enable debugging production issues by examining exact historical state. Regulatory compliance, GDPR auditing, and forensic analysis become simple database queries. Test new features against historical data without test database management. When a bug is reported for a specific date, as-of queries let you reproduce the exact database state at that moment. Quarterly financial reports can be reproduced exactly by querying as-of the reporting date. GDPR right-to-access requests can be answered by querying historical personal data across all points in time.
 
 ---
 
@@ -2052,7 +2277,7 @@ Collection results = Peer.q(
 
 **Key Takeaway**: History database contains all facts ever asserted or retracted. Query it to see attribute values over time and understand change patterns.
 
-**Why It Matters**: History queries reveal data evolution patterns, track field changes over time, and detect anomalies. Answer questions like "what values did this attribute ever have?" or "when was this changed?" without event sourcing infrastructure.
+**Why It Matters**: History queries reveal data evolution patterns, track field changes over time, and detect anomalies. Answer questions like "what values did this attribute ever have?" or "when was this changed?" without event sourcing infrastructure. Customer support uses history queries to explain why a price or setting changed. Security teams use them to detect unusual data modification patterns. Instead of building event sourcing infrastructure (Kafka, Debezium, separate event store), Datomic history is the event log. Every data change is already captured with timing and transaction context.
 
 ---
 
@@ -2124,7 +2349,7 @@ Collection results = Peer.q(
 
 **Key Takeaway**: `since` creates database views containing only facts added after a transaction. Use it for change detection and incremental processing.
 
-**Why It Matters**: Since queries enable incremental ETL, change data capture, and event streaming without external tools. Process only what changed since last run. Build real-time pipelines using database timestamps as checkpoints.
+**Why It Matters**: Since queries enable incremental ETL, change data capture, and event streaming without external tools. Process only what changed since last run. Build real-time pipelines using database timestamps as checkpoints. In data warehouse pipelines, since queries identify exactly which records changed since the last ETL run, eliminating full table scans. Downstream systems (search indexes, caches, notification services) can be synchronized by polling for changes with since queries. This replaces CDC tools like Debezium or Kafka Connect for Datomic-backed systems.
 
 ---
 
@@ -2180,7 +2405,7 @@ Collection results = Peer.q(
 
 **Key Takeaway**: Query multiple database values simultaneously using named database inputs (`$before`, `$after`). Powerful for temporal comparisons and change tracking.
 
-**Why It Matters**: Multi-database queries eliminate application-level state comparisons. Find what changed between deployments, compare production to staging, or diff any two time points in a single query. Join across time naturally using Datalog unification.
+**Why It Matters**: Multi-database queries eliminate application-level state comparisons. Find what changed between deployments, compare production to staging, or diff any two time points in a single query. Join across time naturally using Datalog unification. In deployment validation, comparing a pre-deployment database snapshot with post-deployment state in one query reveals exactly what changed. Feature flag analysis compares user behavior before and after feature activation. Database migration validation compares old schema results with new schema results in a single query expression.
 
 ---
 
@@ -2278,7 +2503,7 @@ Collection results2 = Peer.q(
 
 **Key Takeaway**: Rules encapsulate reusable query patterns. Define them once, reference by name in queries. Multiple clauses for the same rule create OR semantics.
 
-**Why It Matters**: Rules enable query composition and reuse across your application. Define business logic once (access control, relationship traversal, computed attributes), reference everywhere. Changes to rules update all dependent queries automatically without code changes.
+**Why It Matters**: Rules enable query composition and reuse across your application. Define business logic once (access control, relationship traversal, computed attributes), reference everywhere. Changes to rules update all dependent queries automatically without code changes. In multi-tenant SaaS applications, access control rules are defined once and referenced in every query that filters by tenant or permission level. Changing the authorization logic in the rule automatically applies to all queries. Rules can also be parameterized, enabling flexible reuse across different contexts without code duplication.
 
 ---
 
@@ -2384,7 +2609,7 @@ Collection results = Peer.q(
 
 **Key Takeaway**: Recursive rules handle hierarchical data. Define base case (direct relationship) and recursive case (traversal), and Datomic computes transitive closure.
 
-**Why It Matters**: Recursive rules eliminate application-level graph traversal code for org charts, category trees, and dependency graphs. Datalog computes all paths efficiently using semi-naive evaluation. Add depth limits to prevent infinite recursion in cyclic graphs.
+**Why It Matters**: Recursive rules eliminate application-level graph traversal code for org charts, category trees, and dependency graphs. Datalog computes all paths efficiently using semi-naive evaluation. Add depth limits to prevent infinite recursion in cyclic graphs. In product catalogs with nested category hierarchies, recursive rules find all products under a root category in one query. Bill of materials systems use recursive rules to compute all components of a product assembly. Without recursive rules, application code must make N queries for N levels of depth - O(N) database round trips.
 
 ---
 
@@ -2438,7 +2663,7 @@ Collection results2 = Peer.q(
 
 **Key Takeaway**: `not` clauses exclude matching results. Use them for negation queries like "entities without attribute X" or "entities not matching pattern".
 
-**Why It Matters**: Negation queries answer critical business questions - "customers who haven't ordered", "users without profiles", "incomplete records". Datalog's logical negation is safer than SQL's NOT EXISTS/NOT IN, avoiding null-related pitfalls.
+**Why It Matters**: Negation queries answer critical business questions - 'customers who haven't ordered', 'users without profiles', 'incomplete records'. Datalog's logical negation is safer than SQL's NOT EXISTS/NOT IN, avoiding null-related pitfalls. Data quality pipelines use NOT clauses to find entities missing required attributes before publication. Marketing systems identify customers who haven't received a particular offer. Content moderation finds posts without review decisions. Datalog's negation semantics are cleaner than SQL's null-affected NOT IN, making negation queries reliable and predictable.
 
 ---
 
@@ -2488,7 +2713,7 @@ Collection results = Peer.q(
 
 **Key Takeaway**: `not-join` scopes negation to specific variables from outer query. Use it when negation pattern needs to reference outer-bound variables.
 
-**Why It Matters**: Not-join enables precise exclusion filters when regular `not` is too broad. Find "users who ordered product A but not product B" or "entities with attribute X but missing attribute Y". Critical for complex business rules.
+**Why It Matters**: Not-join enables precise exclusion filters when regular `not` is too broad. Find 'users who ordered product A but not product B' or 'entities with attribute X but missing attribute Y'. Critical for complex business rules. Recommendation engines use not-join to exclude items a user already has. Access control uses it to find resources the user can see but hasn't accessed recently for onboarding hints. Not-join with bound variables from outer query context enables correlated exclusion that SQL NOT EXISTS provides but is difficult to express cleanly.
 
 ---
 
@@ -2551,7 +2776,7 @@ Object helenId = Peer.q(
 
 **Key Takeaway**: Tempids provide temporary entity IDs in transactions. Datomic resolves them to permanent IDs, enabling references to not-yet-created entities within transactions.
 
-**Why It Matters**: Tempids enable complex graph creation in single transactions without pre-allocating IDs. Create orders with line items, users with permissions, or documents with sections atomically. Resolution mapping lets you reference new entities in application code immediately.
+**Why It Matters**: Tempids enable complex graph creation in single transactions without pre-allocating IDs. Create orders with line items, users with permissions, or documents with sections atomically. Resolution mapping lets you reference new entities in application code immediately. In e-commerce, creating an order with 10 line items in one transaction ensures atomicity - either all entities are created or none. The tempid resolution map enables application code to immediately use the permanent entity IDs assigned by Datomic, enabling follow-up operations without additional queries.
 
 ---
 
@@ -2626,7 +2851,7 @@ personName.get(":db/doc");
 
 **Key Takeaway**: Schema is data stored in the database. Query attributes, types, and constraints using standard datalog queries or entity API.
 
-**Why It Matters**: Schema introspection enables runtime schema discovery, dynamic UI generation, and GraphQL schema derivation. Build admin tools that adapt automatically to schema changes. Generate documentation, validation rules, and type definitions directly from the database.
+**Why It Matters**: Schema introspection enables runtime schema discovery, dynamic UI generation, and GraphQL schema derivation. Build admin tools that adapt automatically to schema changes. Generate documentation, validation rules, and type definitions directly from the database. In low-code platforms, schema introspection powers the form builder - available entity types and their attributes are discovered at runtime. GraphQL servers can derive their schema entirely from Datomic attribute definitions. Documentation generation tools produce up-to-date API documentation automatically whenever the schema changes, keeping documentation synchronized with reality.
 
 ---
 

@@ -45,7 +45,6 @@ weight: 102
 - [Platform Web](/en/learn/software-engineering/platform-web)
   - [Tools](/en/learn/software-engineering/platform-web/tools)
   - [Overview](/en/learn/software-engineering/platform-web/overview)
-  - [Elixir Phoenix Liveview](/en/learn/software-engineering/platform-web/elixir-phoenix-liveview)
 - [Architecture](/en/learn/software-engineering/architecture)
   - [C4 Architecture Model](/en/learn/software-engineering/architecture/c4-architecture-model)
   - [Overview](/en/learn/software-engineering/architecture/overview)

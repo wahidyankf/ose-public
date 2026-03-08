@@ -2,7 +2,7 @@
 title: "Beginner"
 date: 2026-01-02T06:21:48+07:00
 draft: false
-weight: 100000000
+weight: 100000001
 description: "Spring Boot basics through 25 examples in Java and Kotlin: dependency injection, beans, auto-configuration, REST controllers, data access, file handling, and CORS"
 tags:
   [
@@ -72,13 +72,10 @@ public class DemoApplication {
     public static void main(String[] args) {
     // => Begins block
         // SpringApplication.run() does:
-        // => Invokes run()
         // 1. Creates ApplicationContext (Spring IoC container)
-        // => Invokes Creates ApplicationContext()
         // 2. Scans for @Component, @Service, @Repository, @Controller classes
         // 3. Auto-configures beans based on classpath dependencies
         // 4. Starts embedded Tomcat server (if spring-boot-starter-web present)
-        // => Invokes Starts embedded Tomcat server()
         // 5. Listens on port 8080 by default
         SpringApplication.run(DemoApplication.class, args);
     // => Executes method
@@ -176,7 +173,7 @@ sequenceDiagram
 
 **Key Takeaway**: `@SpringBootApplication` combines three annotations for convention-over-configuration, eliminating XML and boilerplate setup code.
 
-**Why It Matters**: Spring Boot's annotation-driven auto-configuration eliminates thousands of lines of XML configuration required in traditional Spring applications, enabling teams to ship production-ready microservices with minimal boilerplate and allowing developers to focus on business logic instead of infrastructure wiring.
+**Why It Matters**: Spring Boot's annotation-driven auto-configuration eliminates thousands of lines of XML configuration required in traditional Spring applications, enabling teams to ship production-ready microservices with minimal boilerplate. This approach allows developers to focus on business logic instead of infrastructure wiring, reducing project setup time from days to minutes. Teams adopting Spring Boot report significantly faster delivery cycles compared to traditional Spring Framework applications that required extensive manual configuration.
 
 ---
 
@@ -217,7 +214,6 @@ class UserRepository {
 
 // @Service is semantically identical to @Component
 // Indicates this class contains business logic (service layer)
-// => Invokes // Indicates this class contains business logic()
 // Spring creates singleton and enables transaction management via AOP
 @Service
 public class UserService {
@@ -230,7 +226,6 @@ public class UserService {
 
     // Constructor injection - Spring's recommended dependency injection method
     // @Autowired optional on single constructor (since Spring 4.3)
-    // => Invokes // @Autowired optional on single constructor()
     // Spring automatically finds UserRepository bean and passes it here
     public UserService(UserRepository userRepository) {
     // => Begins block
@@ -257,13 +252,9 @@ public class UserService {
 // private UserRepository userRepository;
 // Problems:
 // 1. Cannot make field final (allows null state)
-// => Invokes Cannot make field final()
 // 2. Harder to test (requires reflection or Spring test context)
-// => Invokes Harder to test()
 // 3. Hides dependencies (not visible in constructor signature)
-// => Invokes Hides dependencies()
 // 4. Allows circular dependencies (constructor injection fails fast)
-// => Invokes Allows circular dependencies()
 ```
 
 **Code (Kotlin)**:
@@ -390,7 +381,6 @@ public class DatabaseConnection {
     public void init() {
     // => Begins block
         // Initialization logic (connect to database, open resources)
-        // => Invokes // Initialization logic()
         System.out.println("Connecting to database...");
     // => Prints to console
         // => Output appears during application startup
@@ -401,7 +391,6 @@ public class DatabaseConnection {
     // @PreDestroy called during application shutdown
     // Spring calls this before destroying bean instance
     // Use for cleanup (close connections, flush caches, release resources)
-    // => Invokes // Use for cleanup()
     @PreDestroy
     public void cleanup() {
     // => Begins block
@@ -422,7 +411,6 @@ class AppConfig {
     // @Bean method creates Spring-managed bean
     // Method name becomes bean name unless overridden
     // @Scope("prototype") creates NEW instance every time bean requested
-    // => Invokes // @Scope()
     @Bean
     @Scope("prototype")
     // => Executes method
@@ -460,7 +448,6 @@ class RequestProcessor {
 class CacheManager {
     // => Begins block
     // In real app: manages application-wide cache (shared state)
-    // => Invokes // In real app: manages application-wide cache()
 }
 ```
 
@@ -581,7 +568,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 // @Component - Generic stereotype for any Spring-managed component
 // Use when class doesn't fit other stereotypes (Service, Repository, Controller)
-// => Invokes // Use when class doesn't fit other stereotypes()
 @Component
 // => Annotation applied
 class EmailValidator {
@@ -603,7 +589,6 @@ class EmailValidator {
 // @Repository - Data access layer stereotype
 // Enables Spring's DataAccessException translation
 // Spring converts database-specific exceptions (SQLException) to Spring exceptions
-// => Invokes // Spring converts database-specific exceptions()
 // Allows switching databases without changing exception handling code
 @Repository
 // => Annotation applied
@@ -628,7 +613,6 @@ class UserService {
 
 // @RestController - Web layer stereotype
 // Combines @Controller (request handler) + @ResponseBody (JSON serialization)
-// => Invokes // Combines @Controller()
 // Methods return domain objects serialized to JSON automatically
 @RestController
 class UserController {
@@ -789,7 +773,6 @@ public class HelloController {
         // => POST with {"name":"Bob","age":25} creates User(name="Bob", age=25)
 
         // Echoing back received user (in real app: save to database)
-        // => Invokes // Echoing back received user()
         return user;
     // => Returns result
         // => Returns same JSON: {"name":"Bob","age":25}
@@ -798,9 +781,7 @@ public class HelloController {
 
 // Java 17 record - immutable data carrier
 // Compiler generates constructor, getters, equals(), hashCode(), toString()
-// => Invokes // Compiler generates constructor, getters, equals()
 // Perfect for DTOs (Data Transfer Objects)
-// => Invokes // Perfect for DTOs()
 record User(String name, int age) {
     // => Executes method
     // => Jackson serializes fields to JSON properties
@@ -890,7 +871,7 @@ data class User(
 
 **Key Takeaway**: Spring Boot auto-configures Jackson for JSON conversion. `@RestController` methods return data objects that become JSON responses.
 
-**Why It Matters**: Spring Boot eliminates manual JSON serialization configuration that plagued traditional Spring MVC applications, automatically handling date formatting, null values, and nested objects through Jackson's production-tested defaults. This zero-configuration approach reduces JSON-related production bugs by removing manual ObjectMapper configuration errors.
+**Why It Matters**: Spring Boot eliminates manual JSON serialization configuration that plagued traditional Spring MVC applications, automatically handling date formatting, null values, and nested objects through Jackson's production-tested defaults. This zero-configuration approach reduces JSON-related production bugs by removing manual ObjectMapper configuration errors. Jackson's auto-configuration supports over 20 common Java types out of the box, including Java time types, optional values, and polymorphic objects, removing the need for per-project serialization setup that traditionally caused subtle data contract bugs across API versions.
 
 ---
 
@@ -908,7 +889,6 @@ import org.springframework.web.bind.annotation.*;
 
 // @RestController returns JSON responses
 // @RequestMapping("/api/users") sets base path for all methods
-// => Invokes // @RequestMapping()
 @RestController
 @RequestMapping("/api/users")
     // => Executes method
@@ -917,7 +897,6 @@ public class UserController {
 
     // @PathVariable extracts {id} from URL path
     // GET /api/users/123 maps to getUserById(123)
-    // => Invokes // GET /api/users/123 maps to getUserById()
     @GetMapping("/{id}")
     // => Executes method
     public String getUserById(@PathVariable Long id) {
@@ -1128,7 +1107,6 @@ public class UserApiController {
         // => request.username() and request.email() available
 
         // Simulate saving to database (in real app: use JPA repository)
-        // => Invokes // Simulate saving to database()
         UserResponse user = new UserResponse(1L, request.username(), request.email());
     // => Creates new instance
         // => Created user with auto-generated ID=1
@@ -1154,7 +1132,6 @@ public class UserApiController {
     public ResponseEntity<UserResponse> getUser(@PathVariable Long id) {
     // => Begins block
         // Simulate database lookup (in real app: use repository.findById())
-        // => Invokes // Simulate database lookup()
         UserResponse user = new UserResponse(id, "alice", "alice@example.com");
     // => Creates new instance
 
@@ -1168,13 +1145,11 @@ public class UserApiController {
 
     // DELETE /api/users/1
     // Returns 204 No Content (successful deletion with no response body)
-    // => Invokes // Returns 204 No Content()
     @DeleteMapping("/{id}")
     // => Executes method
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
     // => Begins block
         // Simulate deletion (in real app: repository.deleteById(id))
-        // => Invokes // Simulate deletion()
 
         ResponseEntity<Void> response = ResponseEntity.noContent().build();
         // => HTTP/1.1 204 No Content
@@ -1318,7 +1293,6 @@ public class ProductController {
     // => Begins block
 
     // In-memory storage (in real app: use JPA repository)
-    // => Invokes // In-memory storage()
     private final Map<Long, Product> products = new HashMap<>();
     // => Creates new instance
     private Long nextId = 1L;
@@ -1401,7 +1375,6 @@ public class ProductController {
 
     // DELETE - Remove resource
     // Returns 204 No Content (successful deletion)
-    // => Invokes // Returns 204 No Content()
     @DeleteMapping("/{id}")
     // => Executes method
     public ResponseEntity<Void> delete(@PathVariable Long id) {
@@ -1751,7 +1724,6 @@ public class User {
     // @Id marks primary key field
     // @GeneratedValue tells database to auto-generate values
     // IDENTITY strategy uses database auto-increment (MySQL, PostgreSQL)
-    // => Invokes // IDENTITY strategy uses database auto-increment()
     @Id
     // => Annotation applied
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -1768,12 +1740,10 @@ public class User {
     // => SQL: email VARCHAR(255) NOT NULL UNIQUE
 
     // No @Column means defaults (nullable, non-unique)
-    // => Invokes // No @Column means defaults()
     private String name;
     // => SQL: name VARCHAR(255)
 
     // JPA requires no-arg constructor (can be protected)
-    // => Invokes // JPA requires no-arg constructor()
     protected User() {}
     // => Executes method
 
@@ -1807,43 +1777,18 @@ public class User {
 ```java
 package com.example.demo.repository;
 
-// Entity class
 import com.example.demo.model.User;
-// Spring Data JPA repository interface
 import org.springframework.data.jpa.repository.JpaRepository;
 
-// JpaRepository<Entity, ID> interface
-// Entity = User (entity class)
-// ID = Long (primary key type)
-// Spring generates implementation at runtime via proxy
+// JpaRepository<Entity, ID>: Entity=User, ID=Long
+// Spring generates complete implementation at runtime via proxy pattern
 public interface UserRepository extends JpaRepository<User, Long> {
-    // No implementation code needed!
-    // Spring Data JPA generates implementation automatically
-
-    // Inherited methods from JpaRepository:
-
-    // save(user)
-    // => INSERT if id=null, UPDATE if id exists
-    // => Returns saved entity with generated ID
-
-    // findById(id)
-    // => SELECT * FROM users WHERE id = ?
-    // => Returns Optional<User> (empty if not found)
-
-    // findAll()
-    // => SELECT * FROM users
-    // => Returns List<User>
-
-    // deleteById(id)
-    // => DELETE FROM users WHERE id = ?
-
-    // count()
-    // => SELECT COUNT(*) FROM users
-    // => Returns total number of records
-
-    // existsById(id)
-    // => SELECT COUNT(*) FROM users WHERE id = ? (optimized)
-    // => Returns boolean
+    // Zero boilerplate: save(), findById(), findAll(), deleteById() auto-generated
+    // save(user) => INSERT when id=null, UPDATE when id exists
+    // findById(id) => SELECT * FROM users WHERE id=? => Returns Optional<User>
+    // findAll() => SELECT * FROM users => Returns List<User>
+    // deleteById(id) => DELETE FROM users WHERE id=?
+    // count() => SELECT COUNT(*) => Returns total records
 }
 ```
 
@@ -1910,46 +1855,18 @@ open class User(
 ```kotlin
 package com.example.demo.repository
 
-// Entity class
 import com.example.demo.model.User
-// Spring Data JPA repository interface
 import org.springframework.data.jpa.repository.JpaRepository
 
-// JpaRepository<Entity, ID> interface in Kotlin
-// Entity = User (entity class)
-// ID = Long (primary key type)
-// Spring generates implementation at runtime via proxy
-// Kotlin interface syntax - no 'public' keyword needed
+// Kotlin uses ':' for inheritance (Java uses 'extends')
+// JpaRepository<User, Long>: entity type + primary key type
 interface UserRepository : JpaRepository<User, Long> {
-    // No implementation code needed!
-    // Spring Data JPA generates implementation automatically
-    // : (colon) used for inheritance in Kotlin instead of Java's 'extends'
-
-    // Inherited methods from JpaRepository:
-
-    // save(user)
-    // => INSERT if id=null, UPDATE if id exists
-    // => Returns saved entity with generated ID
-
-    // findById(id)
-    // => SELECT * FROM users WHERE id = ?
-    // => Returns Optional<User> (empty if not found)
-    // Kotlin can use .orElse() or convert to nullable: .orElse(null)
-
-    // findAll()
-    // => SELECT * FROM users
-    // => Returns List<User> (Kotlin uses List, not Java's ArrayList)
-
-    // deleteById(id)
-    // => DELETE FROM users WHERE id = ?
-
-    // count()
-    // => SELECT COUNT(*) FROM users
-    // => Returns total number of records as Long
-
-    // existsById(id)
-    // => SELECT COUNT(*) FROM users WHERE id = ? (optimized)
-    // => Returns Boolean (Kotlin's non-nullable boolean)
+    // No implementation needed - Spring generates complete CRUD at runtime
+    // save(user) => INSERT when id=null, UPDATE when id set
+    // findById(id) => Returns Optional<User> (.orElse(null) for nullable Kotlin type)
+    // findAll() => Returns List<User>
+    // deleteById(id) => DELETE FROM users WHERE id=?
+    // count() => Returns Long (Kotlin non-nullable)
 }
 ```
 
@@ -2155,10 +2072,8 @@ public class User {
     // => Declares name field of type String
 
     // One user has many orders (one-to-many)
-    // => Invokes // One user has many orders()
     // mappedBy="user" means Order entity owns the relationship
     // Order.user field is the owning side (has foreign key)
-    // => Invokes user field is the owning side()
     // fetch=LAZY means orders loaded only when accessed (default for @OneToMany)
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Order> orders;
@@ -2166,7 +2081,6 @@ public class User {
     // => Foreign key user_id stored in orders table
     // => orders loaded lazily: SELECT * FROM orders WHERE user_id = ?
     //    only when user.getOrders() called
-    // => Invokes getOrders()
 
     // Getters/setters
     public Long getId() { return id; }
@@ -2200,9 +2114,7 @@ public class Order {
     // => Declares product field of type String
 
     // Many orders belong to one user (many-to-one)
-    // => Invokes // Many orders belong to one user()
     // Owning side of relationship (has foreign key column)
-    // => Invokes // Owning side of relationship()
     // fetch=LAZY means user loaded only when accessed (default for @ManyToOne is EAGER!)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")  // Foreign key column in orders table
@@ -2211,7 +2123,6 @@ public class Order {
     // => Foreign key constraint: FOREIGN KEY (user_id) REFERENCES users(id)
     // => user loaded lazily: SELECT * FROM users WHERE id = ?
     //    only when order.getUser() called
-    // => Invokes getUser()
 
     // Getters/setters
     public Long getId() { return id; }
@@ -2235,7 +2146,6 @@ public class Order {
 // private List<Order> orders;
 // Problems:
 // 1. Loads ALL orders every time user fetched (even if not needed)
-// => Invokes Loads ALL orders every time user fetched()
 // 2. Cannot paginate or filter orders
 // 3. Causes N+1 queries when fetching multiple users:
 //    SELECT * FROM users                  -- 1 query
@@ -2243,7 +2153,6 @@ public class Order {
 //    SELECT * FROM orders WHERE user_id=2
 //    ...
 // Solution: Use LAZY (default) and fetch joins when needed:
-// => Invokes // Solution: Use LAZY()
 // @Query("SELECT u FROM User u LEFT JOIN FETCH u.orders WHERE u.id = :id")
 ```
 
@@ -2373,7 +2282,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // Pageable parameter enables pagination and sorting
     // Spring generates query with LIMIT/OFFSET (or database equivalent)
-    // => Invokes // Spring generates query with LIMIT/OFFSET()
     Page<User> findByNameContaining(String name, Pageable pageable);
     // => Executes method
     // => SELECT * FROM users WHERE name LIKE '%?%' LIMIT ? OFFSET ?
@@ -2416,11 +2324,8 @@ public class UserPageController {
 
     // GET /api/users?page=0&size=20&sort=name,asc
     // page: zero-based page number (default 0)
-    // => Invokes // page: zero-based page number()
     // size: number of records per page (default 10)
-    // => Invokes // size: number of records per page()
     // sort: property,direction (default id)
-    // => Invokes // sort: property,direction()
     @GetMapping
     public Page<User> getUsers(
         @RequestParam(defaultValue = "0") int page,
@@ -2445,14 +2350,10 @@ public class UserPageController {
         // - content: List<User> for current page
         // - totalElements: total records across all pages
         // - totalPages: number of pages (totalElements / size)
-        // => Invokes // - totalPages: number of pages()
         // - number: current page number (0-based)
-        // => Invokes // - number: current page number()
         // - size: records per page
         // - first: boolean (is this first page?)
-        // => Invokes // - first: boolean()
         // - last: boolean (is this last page?)
-        // => Invokes // - last: boolean()
 
         return result;
     // => Returns result
@@ -3002,7 +2903,6 @@ public class AppConfig {
 
     // @Bean method creates Spring-managed bean
     // Method name becomes bean name ("restTemplate") unless overridden
-    // => Invokes // Method name becomes bean name()
     // Return type defines bean type for dependency injection
     @Bean
     public RestTemplate restTemplate() {
@@ -3032,9 +2932,7 @@ public class AppConfig {
 
         // Can configure other Jackson features:
         // mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        // => Invokes disable()
         // mapper.setSerializationInclusion(Include.NON_NULL);
-        // => Invokes setSerializationInclusion()
 
         return mapper;
     // => Returns result
@@ -3265,9 +3163,7 @@ public class DataSourceConfig {
 
     // Multiple profiles can be specified
     // @Profile({"dev", "staging"}) - active in dev OR staging
-    // => Invokes // @Profile()
     // @Profile("!prod") - active when prod NOT active
-    // => Invokes // @Profile()
 }
 
 // Placeholder classes for demonstration
@@ -3325,6 +3221,8 @@ app.feature.debug=false
 logging.level.root=WARN
 ```
 
+> **Note on DataSource Configuration Approach**: The Java version above uses Spring Boot's recommended `spring.datasource.*` properties approach with auto-configuration. The Kotlin version below demonstrates explicit `@Bean` DataSource creation for illustration purposes. In production Kotlin applications, prefer Spring Boot's property-based auto-configuration (the same `application-{profile}.properties` approach shown in the Java version) over direct JDBC driver class imports — it avoids adding `org.postgresql:postgresql` as a direct compile-time dependency and keeps your code database-agnostic.
+
 ```kotlin
 package com.example.demo.config
 
@@ -3338,18 +3236,25 @@ import org.postgresql.ds.PGSimpleDataSource as PostgresDataSource
 
 // Must be 'open' for Spring CGLIB proxies
 @Configuration
+// => Marks class as Spring configuration (bean factory)
 open class DataSourceConfig {
+// => Class declaration
 
     // Bean active only when "dev" profile active
     // @Profile annotation controls bean creation based on active profiles
     @Bean
+    // => Declares a Spring-managed bean
     @Profile("dev")
+    // => Bean active only for specified Spring profiles
     fun devDataSource(): DataSource {
+    // => Function declaration
         val ds = H2DataSource()
+        // => Immutable binding (read-only reference)
         // => Only created when --spring.profiles.active=dev
         // => Not created in prod profile
         // Kotlin type inference knows ds is H2DataSource, returns as DataSource
         return ds
+        // => Returns value to caller
     }
 
     // Expression body alternative:
@@ -3359,17 +3264,25 @@ open class DataSourceConfig {
 
     // Bean active only when "prod" profile active
     @Bean
+    // => Declares a Spring-managed bean
     @Profile("prod")
+    // => Bean active only for specified Spring profiles
     fun prodDataSource(): DataSource {
+    // => Function declaration
         val ds = PostgresDataSource().apply {
+        // => Immutable binding (read-only reference)
             // apply scope function for configuration
             serverName = "prod-server"
+            // => Assignment
             databaseName = "myapp"
+            // => Assignment
             portNumber = 5432
+            // => Assignment
         }
         // => Only created when --spring.profiles.active=prod
         // => Not created in dev profile
         return ds
+        // => Returns value to caller
     }
 
     // Multiple profiles can be specified
@@ -3480,7 +3393,6 @@ package com.example.demo.exception;
 
 // Custom domain exception
 // Extends RuntimeException for unchecked exception (no throws declaration needed)
-// => Invokes // Extends RuntimeException for unchecked exception()
 public class ResourceNotFoundException extends RuntimeException {
     // => Begins block
 
@@ -3553,7 +3465,6 @@ public class GlobalExceptionHandler {
     }
 
     // Handle validation errors (IllegalArgumentException)
-    // => Invokes // Handle validation errors()
     @ExceptionHandler(IllegalArgumentException.class)
     // => Executes method
     public ResponseEntity<ErrorResponse> handleBadRequest(IllegalArgumentException ex) {
@@ -3587,9 +3498,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleGeneral(Exception ex) {
     // => Begins block
         // Log full exception for debugging (not shown to client)
-        // => Invokes // Log full exception for debugging()
         // logger.error("Unexpected error", ex);
-        // => Invokes error()
 
         ErrorResponse error = new ErrorResponse(
     // => Creates new instance
@@ -3646,6 +3555,7 @@ import java.time.LocalDateTime
 // Error response DTO using data class
 // Immutable data class for consistent error format across all endpoints
 data class ErrorResponse(
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
     val message: String,        // Human-readable error message
     val status: Int,            // HTTP status code (404, 400, 500, etc.)
     val timestamp: LocalDateTime // When error occurred
@@ -3656,27 +3566,35 @@ data class ErrorResponse(
 // @ControllerAdvice applies to ALL controllers globally
 // Centralized exception handling instead of try-catch in each controller
 @ControllerAdvice
+// => Annotation applied
 class GlobalExceptionHandler {
+// => Class declaration
 
     // @ExceptionHandler catches specific exception type
     // When any controller throws ResourceNotFoundException, this method handles it
     @ExceptionHandler(ResourceNotFoundException::class)  // ::class is Kotlin class reference
+    // => Annotation applied
     fun handleNotFound(ex: ResourceNotFoundException): ResponseEntity<ErrorResponse> {
+    // => Function declaration
         // Create error response with exception details
         val error = ErrorResponse(
+        // => Immutable binding (read-only reference)
             message = ex.message ?: "Resource not found",  // Elvis operator for null message
+            // => Assignment
             status = HttpStatus.NOT_FOUND.value(),         // => 404
             timestamp = LocalDateTime.now()                 // => "2026-01-02T06:21:48"
         )
         // Named parameters make construction clearer
 
         val response = ResponseEntity
+        // => Immutable binding (read-only reference)
             .status(HttpStatus.NOT_FOUND)       // => HTTP 404
             .body(error)                        // => JSON error response
 
         // => HTTP/1.1 404 Not Found
         // => {"message":"User not found","status":404,"timestamp":"2026-01-02T06:21:48"}
         return response
+        // => Returns value to caller
     }
 
     // More idiomatic Kotlin using expression body:
@@ -3687,42 +3605,55 @@ class GlobalExceptionHandler {
 
     // Handle validation errors (IllegalArgumentException)
     @ExceptionHandler(IllegalArgumentException::class)
+    // => Annotation applied
     fun handleBadRequest(ex: IllegalArgumentException): ResponseEntity<ErrorResponse> {
+    // => Function declaration
         val error = ErrorResponse(
+        // => Immutable binding (read-only reference)
             message = ex.message ?: "Bad request",
+            // => Assignment
             status = HttpStatus.BAD_REQUEST.value(),      // => 400
             timestamp = LocalDateTime.now()
+            // => Assignment
         )
 
         val response = ResponseEntity
+        // => Immutable binding (read-only reference)
             .status(HttpStatus.BAD_REQUEST)      // => HTTP 400
             .body(error)
 
         // => HTTP/1.1 400 Bad Request
         return response
+        // => Returns value to caller
     }
 
     // Catch-all handler for unexpected exceptions
     // Prevents stack traces leaking to clients
     @ExceptionHandler(Exception::class)
+    // => Annotation applied
     fun handleGeneral(ex: Exception): ResponseEntity<ErrorResponse> {
+    // => Function declaration
         // Log full exception for debugging (not shown to client)
         // logger.error("Unexpected error", ex)
         // Kotlin logging: logger.error { "Unexpected error: ${ex.message}" }
 
         val error = ErrorResponse(
+        // => Immutable binding (read-only reference)
             message = "Internal server error",             // => Generic message (hide implementation details)
             status = HttpStatus.INTERNAL_SERVER_ERROR.value(),  // => 500
             timestamp = LocalDateTime.now()
+            // => Assignment
         )
 
         val response = ResponseEntity
+        // => Immutable binding (read-only reference)
             .status(HttpStatus.INTERNAL_SERVER_ERROR)  // => HTTP 500
             .body(error)
 
         // => HTTP/1.1 500 Internal Server Error
         // => Hides exception details (security best practice)
         return response
+        // => Returns value to caller
     }
 }
 
@@ -3770,7 +3701,6 @@ record CreateUserRequest(
 // => Code line
     // @NotBlank: not null, not empty, not whitespace
     // More strict than @NotNull (rejects "", "   ")
-    // => Invokes // More strict than @NotNull()
     @NotBlank(message = "Username is required")
     // => Annotation applied
     @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
@@ -3797,43 +3727,33 @@ record CreateUserRequest(
 
 ```java
 package com.example.demo.controller;
-// => Package declaration
 
 // Validation annotations
 import jakarta.validation.Valid;
-// => Import statement
 // HTTP response
 import org.springframework.http.ResponseEntity;
-// => Import statement
 // Spring MVC annotations
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
-    // => Executes method
 public class UserValidationController {
-    // => Begins block
 
     // @Valid triggers JSR-380 validation on request body
     // Spring validates CreateUserRequest before method execution
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody CreateUserRequest request) {
-    // => Begins block
         // Validation process:
         // 1. Jackson deserializes JSON to CreateUserRequest object
         // 2. @Valid triggers validator to check constraints
         // 3a. If valid: method executes normally
         // 3b. If invalid: Spring throws MethodArgumentNotValidException
         //     (caught by @ControllerAdvice and returned as 400 Bad Request)
-        // => Invokes //()
 
         // If execution reaches here, validation passed
         // request.username() is guaranteed: not null, not blank, 3-50 chars
-        // => Invokes username()
         // request.email() is guaranteed: not null, not blank, valid email format
-        // => Invokes email()
         // request.age() is guaranteed: 18-120
-        // => Invokes age()
 
         ResponseEntity<?> response = ResponseEntity.ok(request);
         // => HTTP 200 OK with validated request echoed back
@@ -3875,21 +3795,28 @@ import jakarta.validation.constraints.*
 
 // Request DTO with validation constraints using data class
 data class CreateUserRequest(
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
     // @get:NotBlank targets the getter method (Kotlin generates getter for property)
     // Without @get:, annotation targets property, not getter (won't validate)
     @get:NotBlank(message = "Username is required")
+    // => Annotation applied
     @get:Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
+    // => Annotation applied
     val username: String,
     // => Validates: username != null && !username.isBlank() && 3 <= username.length <= 50
     // @get: prefix crucial for Kotlin - targets Java-style getter method
 
     @get:NotBlank(message = "Email is required")
+    // => Annotation applied
     @get:Email(message = "Email must be valid")
+    // => Annotation applied
     val email: String,
     // => Validates: email != null && !email.isBlank() && matches email pattern
 
     @get:Min(value = 18, message = "Age must be at least 18")
+    // => Annotation applied
     @get:Max(value = 120, message = "Age must be at most 120")
+    // => Annotation applied
     val age: Int
     // => Validates: 18 <= age <= 120
     // Int is non-nullable by default, so @NotNull not needed
@@ -3962,16 +3889,27 @@ class UserValidationController {
 ```kotlin
 // WRONG - won't validate
 @NotBlank
+// => Validation: must not be null, empty, or whitespace
+// => Bean Validation constraint
 val username: String
+// => Immutable property
 
 // CORRECT - validates properly
 @get:NotBlank
+// => Annotation applied
+// => Annotation applied
 val username: String
+// => Immutable property
 
 // Alternative - use @field: for constructor validation
 data class UserRequest(
+// => Data class: auto-generates equals/hashCode/toString/copy
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
     @field:NotBlank  // Validates during construction
+    // => Annotation applied
+    // => Annotation applied
     val username: String
+    // => Immutable property
 )
 ```
 
@@ -3998,9 +3936,7 @@ import java.lang.annotation.*;
 
 // Custom validation annotation
 // @Target specifies where annotation can be used (fields, parameters)
-// => Invokes // @Target specifies where annotation can be used()
 // @Retention(RUNTIME) makes annotation available at runtime for validation
-// => Invokes // @Retention()
 // @Constraint links annotation to validator implementation
 @Target({ElementType.FIELD, ElementType.PARAMETER})
     // => Executes method
@@ -4012,17 +3948,14 @@ public @interface ValidPassword {
     // => Begins block
 
     // Default error message (can be overridden in @ValidPassword annotation)
-    // => Invokes // Default error message()
     String message() default "Password must contain at least one uppercase, one lowercase, and one digit";
     // => Executes method
 
     // Required by JSR-380 spec (for validation groups)
-    // => Invokes // Required by JSR-380 spec()
     Class<?>[] groups() default {};
     // => Executes method
 
     // Required by JSR-380 spec (for custom payload)
-    // => Invokes // Required by JSR-380 spec()
     Class<? extends Payload>[] payload() default {};
     // => Executes method
 }
@@ -4038,7 +3971,6 @@ import jakarta.validation.ConstraintValidatorContext;
 // ConstraintValidator<AnnotationType, ValidatedType>
 // AnnotationType: @ValidPassword
 // ValidatedType: String (the field/parameter type being validated)
-// => Invokes // ValidatedType: String()
 public class PasswordValidator implements ConstraintValidator<ValidPassword, String> {
     // => Begins block
 
@@ -4049,12 +3981,10 @@ public class PasswordValidator implements ConstraintValidator<ValidPassword, Str
     // => Begins block
         // Initialization logic if needed
         // Can access annotation attributes: constraintAnnotation.message()
-        // => Invokes message()
     }
 
     // Called for each validation
     // value: the String being validated (password field value)
-    // => Invokes // value: the String being validated()
     // context: provides access to build custom error messages
     @Override
     public boolean isValid(String password, ConstraintValidatorContext context) {
@@ -4068,18 +3998,15 @@ public class PasswordValidator implements ConstraintValidator<ValidPassword, Str
         }
 
         // Check for at least one uppercase letter (A-Z)
-        // => Invokes // Check for at least one uppercase letter()
         boolean hasUppercase = password.chars().anyMatch(Character::isUpperCase);
         // => "Password123" has 'P' (uppercase) -> true
         // => "password123" has no uppercase -> false
 
         // Check for at least one lowercase letter (a-z)
-        // => Invokes // Check for at least one lowercase letter()
         boolean hasLowercase = password.chars().anyMatch(Character::isLowerCase);
         // => "Password123" has "assword" (lowercase) -> true
 
         // Check for at least one digit (0-9)
-        // => Invokes // Check for at least one digit()
         boolean hasDigit = password.chars().anyMatch(Character::isDigit);
         // => "Password123" has "123" (digits) -> true
 
@@ -4234,12 +4161,16 @@ import jakarta.validation.constraints.NotBlank
 
 // Request DTO using custom validator
 data class ChangePasswordRequest(
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
     @get:NotBlank
+    // => Annotation applied
     val oldPassword: String,
     // => Standard validation: not null, not blank
 
     @get:NotBlank
+    // => Annotation applied
     @get:ValidPassword  // Custom validator applied
+    // => Annotation applied
     val newPassword: String
     // => Validated by PasswordValidator
     // => Must be: not blank, have uppercase, have lowercase, have digit
@@ -4269,12 +4200,10 @@ import java.util.Map;
 
 // Base domain exception
 // Abstract class forces subclasses (cannot instantiate directly)
-// => Invokes // Abstract class forces subclasses()
 public abstract class DomainException extends RuntimeException {
     // => Begins block
 
     // Error code for API responses (e.g., "USER_001", "PAYMENT_FAILED")
-    // => Invokes // Error code for API responses()
     private final String errorCode;
     // => Declares errorCode field of type final
 
@@ -4302,7 +4231,6 @@ public abstract class DomainException extends RuntimeException {
 // => Block delimiter
 
 // Resource not found exception (404 errors)
-// => Invokes // Resource not found exception()
 // Extends DomainException to inherit error code functionality
 public class ResourceNotFoundException extends DomainException {
     // => Begins block
@@ -4353,7 +4281,6 @@ public class ValidationException extends DomainException {
 }
 
 // Business rule violation exception (422 errors)
-// => Invokes // Business rule violation exception()
 public class BusinessRuleException extends DomainException {
     // => Begins block
 
@@ -4402,7 +4329,6 @@ public class OrderService {
         }
 
         // Find user (simulate repository call)
-        // => Invokes // Find user()
         User user = userRepository.findById(userId)
         // => Retrieves data
             .orElseThrow(() -> new ResourceNotFoundException("User", userId));
@@ -4419,7 +4345,6 @@ public class OrderService {
         }
 
         // Process order (simulation)
-        // => Invokes // Process order()
         // ...
     }
 }
@@ -4464,16 +4389,20 @@ record ErrorDetail(
 
 // Global handler for domain exceptions
 @ControllerAdvice
+// => Annotation applied
 public class DomainExceptionHandler {
+// => Class definition begins
     // => Begins block
 
     // Handle resource not found (404)
-    // => Invokes // Handle resource not found()
     @ExceptionHandler(ResourceNotFoundException.class)
+    // => Annotation applied
     // => Executes method
     public ResponseEntity<ErrorDetail> handleNotFound(ResourceNotFoundException ex) {
+    // => Method definition
     // => Begins block
         ErrorDetail error = new ErrorDetail(
+        // => Creates new instance
     // => Creates new instance
             ex.getErrorCode(),    // => "NOT_FOUND"
             ex.getMessage(),      // => "User not found with id: 123"
@@ -4490,16 +4419,19 @@ public class DomainExceptionHandler {
         // => HTTP/1.1 404 Not Found
         // => {"errorCode":"NOT_FOUND","message":"User not found...","details":null}
         return response;
+        // => Returns value to caller
     // => Returns result
     }
 
     // Handle validation errors (400)
-    // => Invokes // Handle validation errors()
     @ExceptionHandler(ValidationException.class)
+    // => Annotation applied
     // => Executes method
     public ResponseEntity<ErrorDetail> handleValidation(ValidationException ex) {
+    // => Method definition
     // => Begins block
         ErrorDetail error = new ErrorDetail(
+        // => Creates new instance
     // => Creates new instance
             ex.getErrorCode(),      // => "VALIDATION_ERROR"
             ex.getMessage(),        // => "Validation failed"
@@ -4517,16 +4449,19 @@ public class DomainExceptionHandler {
         // => HTTP/1.1 400 Bad Request
         // => {"errorCode":"VALIDATION_ERROR","message":"...","details":{...}}
         return response;
+        // => Returns value to caller
     // => Returns result
     }
 
     // Handle business rule violations (422)
-    // => Invokes // Handle business rule violations()
     @ExceptionHandler(BusinessRuleException.class)
+    // => Annotation applied
     // => Executes method
     public ResponseEntity<ErrorDetail> handleBusinessRule(BusinessRuleException ex) {
+    // => Method definition
     // => Begins block
         ErrorDetail error = new ErrorDetail(
+        // => Creates new instance
     // => Creates new instance
             ex.getErrorCode(),    // => "BUSINESS_RULE"
             ex.getMessage(),      // => "Insufficient balance"
@@ -4543,6 +4478,7 @@ public class DomainExceptionHandler {
         // => HTTP/1.1 422 Unprocessable Entity
         // => Indicates request valid but business rule failed
         return response;
+        // => Returns value to caller
     // => Returns result
     }
 }
@@ -4556,10 +4492,12 @@ package com.example.demo.exception
 // Base domain exception - abstract class (cannot instantiate)
 // abstract = open + cannot be instantiated directly
 abstract class DomainException(
+// => Class declaration
     // Primary constructor with error code and message
     val errorCode: String,
     message: String
 ) : RuntimeException(message) {
+// => Block begins
     // => errorCode becomes immutable property
     // => message passed to RuntimeException parent
     // No need for explicit getter - errorCode is public val property
@@ -4568,12 +4506,16 @@ abstract class DomainException(
 // Resource not found exception (404 errors)
 // Extends DomainException to inherit error code functionality
 class ResourceNotFoundException(
+// => Class declaration
     resource: String,
     id: Long
 ) : DomainException(
     errorCode = "NOT_FOUND",
+    // => Assignment
     message = "$resource not found with id: $id"  // String template
+    // => Assignment
 ) {
+// => Block begins
     // => new ResourceNotFoundException("User", 123L)
     //    Creates exception with:
     //    - errorCode = "NOT_FOUND"
@@ -4584,23 +4526,29 @@ class ResourceNotFoundException(
 // Validation exception with field-level errors
 // Map<String, String> is Kotlin's Map type
 class ValidationException(
+// => Class declaration
     val fieldErrors: Map<String, String>
     // => fieldErrors becomes immutable property
     // e.g., mapOf("email" to "Invalid format", "age" to "Must be 18+")
 ) : DomainException(
     errorCode = "VALIDATION_ERROR",
+    // => Assignment
     message = "Validation failed: ${fieldErrors.size} error(s)"
+    // => Assignment
     // String template with expression ${...}
 ) {
+// => Block begins
     // Getter automatically available for fieldErrors
     // No need for explicit getter method in Kotlin
 }
 
 // Business exception (422 errors)
 class BusinessException(
+// => Class declaration
     errorCode: String,
     message: String
 ) : DomainException(errorCode, message) {
+// => Block begins
     // Simple pass-through constructor
     // errorCode and message forwarded to parent
 }
@@ -4618,69 +4566,136 @@ import java.time.LocalDateTime
 
 // Error response DTO for exceptions with error code
 data class ErrorResponseWithCode(
+// => Data class: auto-generates equals/hashCode/toString/copy
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
     val message: String,
+    // => Immutable property
     val status: Int,
+    // => Immutable property
     val errorCode: String,      // Machine-readable error code
+    // => Immutable property
     val timestamp: LocalDateTime
+    // => Immutable property
 )
 // => Clients can handle errors programmatically via errorCode
 // e.g., if (errorCode == "NOT_FOUND") navigate to 404 page
 
 // Error response DTO for validation errors
 data class ValidationErrorResponse(
+// => Data class: auto-generates equals/hashCode/toString/copy
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
     val message: String,
+    // => Immutable property
     val status: Int,
+    // => Immutable property
     val errorCode: String,
+    // => Immutable property
     val fieldErrors: Map<String, String>,  // Field-level error details
+    // => Immutable property
     val timestamp: LocalDateTime
+    // => Immutable property
 )
 // => {"fieldErrors": {"email": "Invalid", "age": "Too young"}}
 
 @ControllerAdvice
+// => Global exception handler for all controllers
+// => Annotation applied
 class DomainExceptionHandler {
+// => Class declaration
+// => Class declaration
 
     // Handle ResourceNotFoundException (404)
     @ExceptionHandler(ResourceNotFoundException::class)
+    // => Handles exceptions from controller methods
+    // => Annotation applied
     fun handleNotFound(ex: ResourceNotFoundException): ResponseEntity<ErrorResponseWithCode> {
+    // => Function definition
+    // => Function declaration
         val error = ErrorResponseWithCode(
+        // => Immutable property
+        // => Immutable binding (read-only reference)
             message = ex.message ?: "Not found",
+            // => Assignment
+            // => Assignment
             status = HttpStatus.NOT_FOUND.value(),
+            // => Assignment
+            // => Assignment
             errorCode = ex.errorCode,
+            // => Assignment
+            // => Assignment
             timestamp = LocalDateTime.now()
+            // => Assignment
+            // => Assignment
         )
 
         return ResponseEntity
+        // => Returns to caller
+        // => Returns value to caller
             .status(HttpStatus.NOT_FOUND)
             .body(error)
     }
 
     // Handle ValidationException (400)
     @ExceptionHandler(ValidationException::class)
+    // => Handles exceptions from controller methods
+    // => Annotation applied
     fun handleValidation(ex: ValidationException): ResponseEntity<ValidationErrorResponse> {
+    // => Function definition
+    // => Function declaration
         val error = ValidationErrorResponse(
+        // => Immutable property
+        // => Immutable binding (read-only reference)
             message = ex.message ?: "Validation failed",
+            // => Assignment
+            // => Assignment
             status = HttpStatus.BAD_REQUEST.value(),
+            // => Assignment
+            // => Assignment
             errorCode = ex.errorCode,
+            // => Assignment
+            // => Assignment
             fieldErrors = ex.fieldErrors,
+            // => Assignment
+            // => Assignment
             timestamp = LocalDateTime.now()
+            // => Assignment
+            // => Assignment
         )
 
         return ResponseEntity
+        // => Returns to caller
+        // => Returns value to caller
             .status(HttpStatus.BAD_REQUEST)
             .body(error)
     }
 
     // Handle BusinessException (422)
     @ExceptionHandler(BusinessException::class)
+    // => Handles exceptions from controller methods
+    // => Annotation applied
     fun handleBusiness(ex: BusinessException): ResponseEntity<ErrorResponseWithCode> {
+    // => Function definition
+    // => Function declaration
         val error = ErrorResponseWithCode(
+        // => Immutable property
+        // => Immutable binding (read-only reference)
             message = ex.message ?: "Business rule violation",
+            // => Assignment
+            // => Assignment
             status = HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            // => Assignment
+            // => Assignment
             errorCode = ex.errorCode,
+            // => Assignment
+            // => Assignment
             timestamp = LocalDateTime.now()
+            // => Assignment
+            // => Assignment
         )
 
         return ResponseEntity
+        // => Returns to caller
+        // => Returns value to caller
             .status(HttpStatus.UNPROCESSABLE_ENTITY)
             .body(error)
         // => HTTP/1.1 422 Unprocessable Entity
@@ -4755,9 +4770,7 @@ public class FileController {
     ) throws IOException {
     // => Begins block
         // @RequestParam("file") extracts file from multipart request
-        // => Invokes // @RequestParam()
         // MultipartFile provides methods: getOriginalFilename(), getSize(), getBytes(), transferTo()
-        // => Invokes // MultipartFile provides methods: getOriginalFilename()
 
         if (file.isEmpty()) {
     // => Executes method
@@ -4927,14 +4940,19 @@ import java.io.IOException
 import java.nio.file.*
 
 @RestController
+// => Combines @Controller and @ResponseBody
 @RequestMapping("/api/files")
+// => HTTP endpoint mapping
 class FileController {
+// => Class declaration
 
     // Upload directory path using Kotlin Path creation
     private val uploadDir: Path = Paths.get("uploads")
+    // => Private class member
 
     // init block replaces Java constructor for initialization logic
     init {
+    // => Block begins
         Files.createDirectories(uploadDir)
         // => Creates "uploads" directory if not exists
         // => Throws IOException if creation fails (permissions, etc.)
@@ -4944,27 +4962,35 @@ class FileController {
     // Single file upload endpoint
     // Content-Type: multipart/form-data required
     @PostMapping("/upload")
+    // => HTTP endpoint mapping
     fun uploadFile(
+    // => Function declaration
         @RequestParam("file") file: MultipartFile
+        // => Annotation applied
     ): ResponseEntity<Map<String, String>> {
+    // => Block begins
         // @RequestParam("file") extracts file from multipart request
         // MultipartFile provides methods: originalFilename, size, bytes, transferTo()
 
         if (file.isEmpty) {  // Kotlin property access (no parentheses)
             // File part present but no content
             val error = mapOf("error" to "File is empty")
+            // => Immutable binding (read-only reference)
             // mapOf creates immutable Map with to infix function
             return ResponseEntity.badRequest().body(error)
+            // => Returns value to caller
             // => HTTP 400 Bad Request
         }
 
         // Generate unique filename to prevent collisions
         val filename = "${System.currentTimeMillis()}_${file.originalFilename}"
+        // => Immutable binding (read-only reference)
         // => String template instead of concatenation
         // => For "document.pdf" uploaded at timestamp 1703433600000:
         //    filename = "1703433600000_document.pdf"
 
         val filePath = uploadDir.resolve(filename)
+        // => Immutable binding (read-only reference)
         // => Resolves to: uploads/1703433600000_document.pdf
 
         file.transferTo(filePath)
@@ -4972,6 +4998,7 @@ class FileController {
         // => Efficient streaming (doesn't load entire file into memory)
 
         val response = mapOf(
+        // => Immutable binding (read-only reference)
             "filename" to filename,
             "size" to file.size.toString(),           // => "15360" (bytes)
             "contentType" to (file.contentType ?: "application/octet-stream")
@@ -4979,23 +5006,31 @@ class FileController {
         )
 
         return ResponseEntity.ok(response)
+        // => Returns value to caller
         // => HTTP 200 OK
         // => {"filename":"1703433600000_document.pdf","size":"15360","contentType":"application/pdf"}
     }
 
     // Multiple file upload endpoint
     @PostMapping("/upload-multiple")
+    // => HTTP endpoint mapping
     fun uploadMultipleFiles(
+    // => Function declaration
         @RequestParam("files") files: Array<MultipartFile>
+        // => Annotation applied
     ): ResponseEntity<List<String>> {
+    // => Block begins
         // Array<MultipartFile> accepts multiple files with same form field name
 
         val uploadedFiles = files
+        // => Immutable binding (read-only reference)
             .filter { !it.isEmpty }  // Filter non-empty files
             .map { file ->
                 // Generate unique filename for each file
                 val filename = "${System.currentTimeMillis()}_${file.originalFilename}"
+                // => Immutable binding (read-only reference)
                 val filePath = uploadDir.resolve(filename)
+                // => Immutable binding (read-only reference)
                 file.transferTo(filePath)
                 filename  // Return filename
             }
@@ -5003,6 +5038,7 @@ class FileController {
         // => More concise than Java's imperative loop
 
         return ResponseEntity.ok(uploadedFiles)
+        // => Returns value to caller
         // => HTTP 200 OK
         // => ["1703433600000_file1.jpg", "1703433601000_file2.png"]
     }
@@ -5010,26 +5046,34 @@ class FileController {
     // File download endpoint
     // Streams file back to client
     @GetMapping("/download/{filename}")
+    // => HTTP endpoint mapping
     fun downloadFile(@PathVariable filename: String): ResponseEntity<Resource> {
+    // => Function declaration
         val filePath = uploadDir.resolve(filename).normalize()
+        // => Immutable binding (read-only reference)
         // => resolve() constructs path: uploads/filename
         // => normalize() removes ".." to prevent directory traversal attacks
 
         if (!Files.exists(filePath)) {
+        // => Block begins
             // File not found on disk
             return ResponseEntity.notFound().build()
+            // => Returns value to caller
             // => HTTP 404 Not Found
         }
 
         val resource = UrlResource(filePath.toUri())
+        // => Immutable binding (read-only reference)
         // => Wraps file as Spring Resource for streaming
         // => Doesn't load entire file into memory
 
         return ResponseEntity.ok()
+        // => Returns value to caller
             .contentType(MediaType.APPLICATION_OCTET_STREAM)  // => Binary download
             .header(
                 HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"${resource.filename}\""
+                // => Assignment
             )
             // => String template for header value
             // => Tells browser to download (not display inline)
@@ -5040,8 +5084,11 @@ class FileController {
 
     // List all uploaded files
     @GetMapping("/list")
+    // => HTTP endpoint mapping
     fun listFiles(): ResponseEntity<List<String>> {
+    // => Function declaration
         val files = Files.list(uploadDir)
+        // => Immutable binding (read-only reference)
             // => Returns Stream<Path> of files in upload directory
             .map { it.fileName }
             // => Extracts filename from full path
@@ -5052,6 +5099,7 @@ class FileController {
         // Kotlin's toList() on Java streams
 
         return ResponseEntity.ok(files)
+        // => Returns value to caller
         // => HTTP 200 OK
         // => ["1703433600000_document.pdf", "1703433601000_image.jpg"]
     }
@@ -5373,7 +5421,9 @@ logging:
     max-history: 90
 ```
 
-**Kotlin logging libraries** (alternatives to SLF4J):
+**Kotlin logging libraries** (optional ergonomics alternatives):
+
+> **Why Not Core Features**: SLF4J with Logback is the Spring Boot standard and works perfectly for all logging needs in Kotlin applications — no additional library is required. `kotlin-logging-jvm` is an optional ergonomics library that provides lambda-based log message evaluation (preventing eager string concatenation when log level is disabled). Use `kotlin-logging-jvm` if you prefer its more idiomatic Kotlin DSL syntax; use the standard SLF4J approach shown above if you want zero extra dependencies. Both work equally well in production.
 
 ```kotlin
 // kotlin-logging library (more idiomatic)
@@ -5383,9 +5433,12 @@ logging:
 import mu.KotlinLogging
 
 private val log = KotlinLogging.logger {}
+// => Private class member
 
 class LoggingController {
+// => Class declaration
     fun process(data: String) {
+    // => Function declaration
         log.info { "Processing: $data" }
         // Lambda-based logging - only evaluated if INFO enabled
         // More efficient than eager string concatenation
@@ -5475,7 +5528,6 @@ public class RequestLoggingInterceptor implements HandlerInterceptor {
 
     // postHandle called AFTER controller method execution, BEFORE view rendering
     // Only called if controller succeeds (no exception thrown)
-    // => Invokes // Only called if controller succeeds()
     @Override
     // => Annotation applied
     public void postHandle(
@@ -5499,7 +5551,6 @@ public class RequestLoggingInterceptor implements HandlerInterceptor {
 
     // afterCompletion called AFTER response is sent
     // ALWAYS executed (even if exception occurred in controller)
-    // => Invokes // ALWAYS executed()
     @Override
     // => Annotation applied
     public void afterCompletion(
@@ -5590,7 +5641,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         if (!isValidToken(token)) {
     // => Executes method
             // Token validation failed (expired, invalid signature, etc.)
-            // => Invokes // Token validation failed()
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
     // => Executes method
             // => 403 Forbidden (authenticated but not authorized)
@@ -5611,7 +5661,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     }
 
     // Simplified token validation (in real app: verify JWT signature, expiry)
-    // => Invokes // Simplified token validation()
     private boolean isValidToken(String token) {
     // => Begins block
         return token != null && !token.isEmpty();
@@ -5620,7 +5669,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     }
 
     // Simplified user ID extraction (in real app: parse JWT claims)
-    // => Invokes // Simplified user ID extraction()
     private String extractUserId(String token) {
     // => Begins block
         return "user123";
@@ -5688,18 +5736,12 @@ public class WebConfig implements WebMvcConfigurer {
 
         // Execution order:
         // 1. loggingInterceptor.preHandle()
-        // => Invokes preHandle()
         // 2. authInterceptor.preHandle()
-        // => Invokes preHandle()
         // 3. Controller method
         // 4. authInterceptor.postHandle()
-        // => Invokes postHandle()
         // 5. loggingInterceptor.postHandle()
-        // => Invokes postHandle()
         // 6. loggingInterceptor.afterCompletion()
-        // => Invokes afterCompletion()
         // 7. authInterceptor.afterCompletion()
-        // => Invokes afterCompletion()
     }
 }
 ```
@@ -5721,40 +5763,63 @@ import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.ModelAndView
 
 @Component
+// => Spring component - detected by component scan
+// => Spring-managed component bean
 class LoggingInterceptor : HandlerInterceptor {
+// => Class declaration
+// => Class declaration
 
     companion object {
+    // => Companion object: static-like members in Kotlin
         private val log = LoggerFactory.getLogger(LoggingInterceptor::class.java)
+        // => Immutable property
+        // => Private class member
     }
 
     // preHandle called BEFORE controller execution
     // Return true to continue processing, false to stop
     override fun preHandle(
+    // => Function definition
+    // => Overrides parent class/interface method
         request: HttpServletRequest,
+        // => Statement
         response: HttpServletResponse,
+        // => Statement
         handler: Any
     ): Boolean {
+    // => Block begins
         // Log incoming request details
         log.info("==> Incoming: {} {}", request.method, request.requestURI)
+        // => Assignment
         // => "==> Incoming: GET /api/users"
 
         // Store start time in request scope for duration calculation
         val startTime = System.currentTimeMillis()
+        // => Immutable property
+        // => Immutable binding (read-only reference)
         request.setAttribute("startTime", startTime)
         // => Request attribute accessible in postHandle and afterCompletion
 
         return true  // Continue to controller
+        // => Returns to caller
+        // => Returns value to caller
         // Returning false would stop processing and send current response
     }
 
     // postHandle called AFTER controller execution but BEFORE response sent
     // Only called if controller didn't throw exception
     override fun postHandle(
+    // => Function definition
+    // => Overrides parent class/interface method
         request: HttpServletRequest,
+        // => Statement
         response: HttpServletResponse,
+        // => Statement
         handler: Any,
+        // => Statement
         modelAndView: ModelAndView?
     ) {
+    // => Block begins
         log.debug("Controller method completed, status: {}", response.status)
         // => Called only if controller executed successfully
         // => Not called if exception thrown in controller
@@ -5763,26 +5828,41 @@ class LoggingInterceptor : HandlerInterceptor {
     // afterCompletion called AFTER response is sent
     // ALWAYS executed (even if exception occurred in controller)
     override fun afterCompletion(
+    // => Function definition
+    // => Overrides parent class/interface method
         request: HttpServletRequest,
+        // => Statement
         response: HttpServletResponse,
+        // => Statement
         handler: Any,
+        // => Statement
         ex: Exception?
     ) {
+    // => Block begins
         // Retrieve start time from request scope
         val startTime = request.getAttribute("startTime") as Long
+        // => Immutable property
+        // => Immutable binding (read-only reference)
         val duration = System.currentTimeMillis() - startTime
+        // => Immutable property
+        // => Immutable binding (read-only reference)
         // => Calculate request processing time
 
         log.info(
             "<== Completed: {} {} - Status: {} - Duration: {}ms",
+            // => Statement
+            // => Assignment
             request.method,
+            // => Statement
             request.requestURI,
+            // => Statement
             response.status,    // => 200, 404, 500, etc.
             duration
         )
         // => "<== Completed: GET /api/users - Status: 200 - Duration: 45ms"
 
         ex?.let {
+        // => Block begins
             // Exception occurred during processing
             log.error("Request failed with exception", it)
             // => Logs full stack trace
@@ -5792,72 +5872,121 @@ class LoggingInterceptor : HandlerInterceptor {
 }
 
 @Component
+// => Spring component - detected by component scan
+// => Spring-managed component bean
 class AuthenticationInterceptor : HandlerInterceptor {
+// => Class declaration
+// => Class declaration
 
     override fun preHandle(
+    // => Function definition
+    // => Overrides parent class/interface method
         request: HttpServletRequest,
+        // => Statement
         response: HttpServletResponse,
+        // => Statement
         handler: Any
     ): Boolean {
+    // => Block begins
         // Extract Authorization header
         val authHeader = request.getHeader("Authorization")
+        // => Immutable property
+        // => Immutable binding (read-only reference)
         // => "Bearer eyJhbGciOiJIUzI1..." or null if not present
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        // => Block begins
             // No authorization header or wrong format
             response.status = HttpServletResponse.SC_UNAUTHORIZED
+            // => Assignment
+            // => Assignment
             // => Sets HTTP status to 401 Unauthorized
             return false
+            // => Returns to caller
+            // => Returns value to caller
             // => Stops processing, returns 401 immediately
             // => Controller never executed
         }
 
         // Extract token from header
         val token = authHeader.substring(7)
+        // => Immutable property
+        // => Immutable binding (read-only reference)
         // => "Bearer " is 7 characters
         // => Extracts token part: "eyJhbGciOiJIUzI1..."
 
         if (!isValidToken(token)) {
+        // => Block begins
             // Token validation failed (expired, invalid signature, etc.)
             response.status = HttpServletResponse.SC_FORBIDDEN
+            // => Assignment
+            // => Assignment
             // => 403 Forbidden (authenticated but not authorized)
             return false
+            // => Returns to caller
+            // => Returns value to caller
         }
 
         // Token valid - extract user information
         val userId = extractUserId(token)
+        // => Immutable property
+        // => Immutable binding (read-only reference)
         request.setAttribute("userId", userId)
         // => Store userId in request scope for controller access
 
         return true
+        // => Returns to caller
+        // => Returns value to caller
         // => Continue to controller with authenticated request
     }
 
     // Simplified token validation (in real app: verify JWT signature, expiry)
     private fun isValidToken(token: String?): Boolean =
+    // => Function definition
+    // => Function declaration
         token != null && token.isNotEmpty()
+        // => Assignment
+        // => Assignment
 
     // Simplified user ID extraction (in real app: parse JWT claims)
     private fun extractUserId(token: String): String = "user123"
+    // => Function definition
+    // => Function declaration
 }
 
 // Configuration class to register interceptors
 @Configuration
+// => Configuration class - contains @Bean methods
+// => Marks class as Spring configuration (bean factory)
 open class WebMvcConfig : WebMvcConfigurer {
+// => Class declaration
+// => Class declaration
 
     // Inject interceptors via constructor
     private val loggingInterceptor: LoggingInterceptor
+    // => Immutable property
+    // => Private class member
     private val authInterceptor: AuthenticationInterceptor
+    // => Immutable property
+    // => Private class member
 
     constructor(
         loggingInterceptor: LoggingInterceptor,
+        // => Statement
         authInterceptor: AuthenticationInterceptor
     ) {
+    // => Block begins
         this.loggingInterceptor = loggingInterceptor
+        // => Assignment
+        // => Assignment
         this.authInterceptor = authInterceptor
+        // => Assignment
+        // => Assignment
     }
 
     override fun addInterceptors(registry: InterceptorRegistry) {
+    // => Function definition
+    // => Overrides parent class/interface method
         // Register logging interceptor for all paths
         registry.addInterceptor(loggingInterceptor)
             .addPathPatterns("/**")
@@ -6070,7 +6199,6 @@ public class ProductController {
     }
 
     // Method-level CORS (most specific - overrides controller-level)
-    // => Invokes // Method-level CORS()
     @PostMapping
     @CrossOrigin(origins = "*")  // Less restrictive for this endpoint only
     // => Assigns value to variable
@@ -6118,10 +6246,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 // Global CORS configuration - idiomatic Kotlin
 // Must be 'open' for Spring CGLIB proxies
 @Configuration
+// => Configuration class - contains @Bean methods
+// => Marks class as Spring configuration (bean factory)
 open class CorsConfig : WebMvcConfigurer {
+// => Class declaration
+// => Class declaration
 
     // Override addCorsMappings to configure CORS globally
     override fun addCorsMappings(registry: CorsRegistry) {
+    // => Function definition
+    // => Overrides parent class/interface method
         registry.addMapping("/**")
             // => Apply to all paths
             .allowedOrigins("http://localhost:3000", "https://myapp.com")
@@ -6151,12 +6285,24 @@ open class CorsConfig : WebMvcConfigurer {
 
 // Alternative using @Bean - more explicit
 @Configuration
+// => Configuration class - contains @Bean methods
+// => Marks class as Spring configuration (bean factory)
 open class CorsConfigAlternative {
+// => Class declaration
+// => Class declaration
 
     @Bean
+    // => Defines a Spring-managed bean
+    // => Declares a Spring-managed bean
     open fun corsConfigurer(): WebMvcConfigurer =
+    // => Function definition
+    // => Function declaration
         object : WebMvcConfigurer {
+        // => Singleton object
+        // => Kotlin singleton object
             override fun addCorsMappings(registry: CorsRegistry) {
+            // => Function definition
+            // => Overrides parent class/interface method
                 registry.addMapping("/api/**")
                     .allowedOrigins("http://localhost:3000")
                     .allowedMethods("*")
@@ -6174,38 +6320,54 @@ import org.springframework.web.bind.annotation.*
 
 // Controller-level CORS (overrides global configuration)
 @RestController
+// => Combines @Controller and @ResponseBody
 @RequestMapping("/api/products")
+// => HTTP endpoint mapping
 @CrossOrigin(
+// => Annotation applied
     origins = ["http://localhost:3000", "https://app.example.com"],
+    // => Assignment
     // Array syntax in Kotlin annotations
     methods = [RequestMethod.GET, RequestMethod.POST],
+    // => Assignment
     maxAge = 3600,
+    // => Assignment
     allowCredentials = "true"
+    // => Assignment
 )
 class ProductController {
+// => Class declaration
 
     @GetMapping
+    // => HTTP endpoint mapping
     fun getProducts(): List<Product> {
+    // => Function declaration
         // CORS headers automatically added to response
         // => Access-Control-Allow-Origin: http://localhost:3000
         // => Access-Control-Allow-Credentials: true
         return listOf(Product(1L, "Laptop"))
+        // => Returns value to caller
         // listOf creates immutable list in Kotlin
     }
 
     // Method-level CORS (most specific - overrides controller-level)
     @PostMapping
+    // => HTTP endpoint mapping
     @CrossOrigin(origins = ["*"])  // Less restrictive for this endpoint only
+    // => Annotation applied
     fun createProduct(@RequestBody product: Product): Product {
+    // => Function declaration
         // This endpoint allows ALL origins
         // => Access-Control-Allow-Origin: *
         // => No credentials allowed when origin is *
         return product
+        // => Returns value to caller
     }
 }
 
 // Product DTO using data class
 data class Product(val id: Long, val name: String)
+// => Data class: auto-generates equals/hashCode/toString/copy/componentN
 ```
 
 ```yaml
@@ -6228,15 +6390,26 @@ spring:
 ```kotlin
 // Extension function for cleaner CORS configuration
 fun CorsRegistry.apiCors() {
+// => Method definition begins
+// => Function definition
+// => Function declaration
     addMapping("/api/**")
+    // => Executes
         .allowedOrigins("http://localhost:3000")
+        // => Executes
         .allowedMethods("GET", "POST", "PUT", "DELETE")
         .allowCredentials(true)
 }
 
 @Configuration
+// => Configuration class - contains @Bean methods
+// => Marks class as Spring configuration (bean factory)
 open class CorsConfig : WebMvcConfigurer {
+// => Class declaration
+// => Class declaration
     override fun addCorsMappings(registry: CorsRegistry) {
+    // => Function definition
+    // => Overrides parent class/interface method
         registry.apiCors()  // Use extension function
     }
 }

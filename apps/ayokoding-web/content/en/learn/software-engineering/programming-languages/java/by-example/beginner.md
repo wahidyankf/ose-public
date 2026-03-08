@@ -3,7 +3,7 @@ title: "Beginner"
 date: 2026-01-02T04:41:07+07:00
 draft: false
 weight: 10000001
-description: "Learn Java basics through 40 annotated examples: variables, I/O, OOP fundamentals, interfaces, polymorphism, collections, control flow, streams, and more - perfect first examples for Java"
+description: "Learn Java basics through 33 annotated examples: variables, I/O, OOP fundamentals, interfaces, polymorphism, collections, control flow, streams, and more - perfect first examples for Java"
 tags:
   [
     "java",
@@ -20,7 +20,11 @@ tags:
   ]
 ---
 
-Learn Java fundamentals through 40 annotated code examples. Each example is self-contained, runnable in JShell or as standalone classes, and heavily commented to show what each line does, expected outputs, and intermediate values.
+Learn Java fundamentals through 33 annotated code examples. Each example is self-contained, runnable in JShell or as standalone classes, and heavily commented to show what each line does, expected outputs, and intermediate values.
+
+## Basic Syntax and Types
+
+Core Java syntax: how programs are structured, how variables are declared, and how Java's type system enforces safety at compile time.
 
 ## Example 1: Hello World and JVM Compilation
 
@@ -146,6 +150,10 @@ scanner.close();                 // => Release resources (closes System.in)
 **Why It Matters**: Scanner's tokenized parsing eliminates manual string-to-type conversion boilerplate. The delimiter-based approach (default: whitespace) enables easy parsing of structured data like CSV files or space-separated integers. The newline consumption quirk (nextInt doesn't consume trailing \n) is a common beginner gotcha. Production code often prefers BufferedReader for performance or Files.readAllLines() for modern file I/O, but Scanner remains a standard teaching tool and is used in competitive programming and quick scripts.
 
 ---
+
+## Control Flow and Iteration
+
+Java's control flow constructs: conditional branches, loops, and iteration patterns that control program execution.
 
 ## Example 4: Control Flow - If/Else and Switch
 
@@ -468,6 +476,10 @@ boolean diff = Arrays.equals(a, c); // => false (different elements)
 
 ---
 
+## Object-Oriented Programming
+
+Java's OOP model: classes, objects, inheritance hierarchies, interfaces, and the polymorphism that ties them together.
+
 ## Example 10: Classes and Objects
 
 Classes are blueprints for objects, defining fields (state) and methods (behavior). Objects are instances of classes created with the `new` keyword.
@@ -687,6 +699,10 @@ shape2.draw();                   // => Calls Square's draw()
 
 ---
 
+## Collections and Data Structures
+
+Java's collections framework: dynamic arrays, key-value maps, unique sets, and the iteration patterns that work across all collection types.
+
 ## Example 13: ArrayList - Dynamic Arrays
 
 ArrayList is a resizable array implementation providing fast random access and automatic growth. It's Java's most commonly used collection type for ordered, index-accessible elements.
@@ -883,6 +899,10 @@ set1.addAll(set2);               // => Union: set1 is {1, 2, 3, 4, 5}
 **Why It Matters**: HashSet implements mathematical set semantics (unique elements, set operations) with hash table performance, eliminating the O(n) duplicate-checking overhead of "contains before add" patterns with ArrayList. This makes HashSet useful for deduplication (removing duplicates from collections), membership testing (checking if element exists), and set algebra (union, intersection, difference). Internally, HashSet is a HashMap with elements as keys and a dummy `PRESENT` constant as value—understanding this reveals why HashSet has same performance characteristics as HashMap and why element `hashCode()` quality directly impacts performance.
 
 ---
+
+## Core Language Features
+
+Essential Java language features: operators, iteration patterns, method semantics, exception handling, and the String class.
 
 ## Example 16: Control Flow - Ternary and Operators
 
@@ -1229,81 +1249,60 @@ Strings are immutable character sequences with extensive manipulation methods. S
 String text = "Hello, World!";   // => String literal stored in string pool
 
 // LENGTH and ACCESS
-int len = text.length();         // => Returns number of characters
-                                 // => len is 13
-char first = text.charAt(0);     // => Returns character at index 0 (zero-based)
-                                 // => first is 'H'
+int len = text.length();         // => len is 13
+char first = text.charAt(0);     // => first is 'H' (zero-based index)
 
 // SUBSTRING
 String hello = text.substring(0, 5);
-                                 // => Extracts characters from index 0 to 4 (end index exclusive)
-                                 // => hello is "Hello" (5 characters, indices 0-4)
-String world = text.substring(7);// => Extracts from index 7 to end of string
-                                 // => world is "World!" (starts at index 7, includes all remaining)
+                                 // => hello is "Hello" (indices 0-4, end exclusive)
+String world = text.substring(7);// => world is "World!" (from index 7 to end)
 
 // CONCATENATION
 String greeting = "Hi" + " " + "there";
-                                 // => Concatenates 3 string literals using + operator
-                                 // => greeting is "Hi there" (new String object created)
+                                 // => greeting is "Hi there"
 String concat = "Hello".concat(" World");
-                                 // => concat() method appends " World" to "Hello"
-                                 // => concat is "Hello World" (new String object)
+                                 // => concat is "Hello World"
 
 // CASE CONVERSION
 String upper = text.toUpperCase();
-                                 // => Converts all characters to uppercase
-                                 // => upper is "HELLO, WORLD!" (new String object)
-                                 // => Original text unchanged (immutability)
+                                 // => upper is "HELLO, WORLD!" (new String, original unchanged)
 String lower = text.toLowerCase();
-                                 // => Converts all characters to lowercase
-                                 // => lower is "hello, world!" (new String object)
+                                 // => lower is "hello, world!"
 
 // TRIMMING
 String padded = "  text  ";      // => String with leading and trailing whitespace
-                                 // => padded is "  text  " (2 spaces each side)
-String trimmed = padded.trim();  // => Removes leading and trailing whitespace
-                                 // => trimmed is "text" (no spaces, new String object)
+String trimmed = padded.trim();  // => trimmed is "text" (whitespace removed)
 
 // SEARCH
 boolean contains = text.contains("World");
-                                 // => Checks if substring "World" exists in text
                                  // => contains is true ("World" found at index 7)
 boolean starts = text.startsWith("Hello");
-                                 // => Checks if text starts with "Hello"
-                                 // => starts is true (text begins with "Hello")
+                                 // => starts is true
 int index = text.indexOf("World");
-                                 // => Returns first index of substring "World"
-                                 // => index is 7 (position where "World" starts)
+                                 // => index is 7 (first position of "World")
                                  // => Returns -1 if substring not found
 
 // REPLACEMENT
 String replaced = text.replace("World", "Java");
-                                 // => Replaces all occurrences of "World" with "Java"
-                                 // => replaced is "Hello, Java!" (new String object)
-                                 // => Original text unchanged (immutability)
+                                 // => replaced is "Hello, Java!" (original unchanged)
 
 // SPLITTING
 String csv = "apple,banana,cherry";
-                                 // => Comma-separated values string
-String[] fruits = csv.split(",");// => Splits string by comma delimiter
-                                 // => fruits is ["apple", "banana", "cherry"] (String array)
-                                 // => Array of 3 elements (split creates new String objects)
+String[] fruits = csv.split(",");// => fruits is ["apple", "banana", "cherry"] (String array)
 
 // IMMUTABILITY
 String original = "Java";        // => original references String "Java"
-original.toUpperCase();          // => Creates new String "JAVA", returns it
-                                 // => But return value NOT assigned (discarded)
+original.toUpperCase();          // => Creates new String "JAVA", return value discarded
 System.out.println(original);    // => Output: Java (lowercase, unchanged)
 
 String modified = original.toUpperCase();
-                                 // => toUpperCase() returns new String "JAVA"
                                  // => modified is "JAVA", original still "Java"
-System.out.println(modified);    // => Output: JAVA (uppercase, new String)
+System.out.println(modified);    // => Output: JAVA
 ```
 
 **Key Takeaway**: Strings are immutable—all manipulation methods return new String objects rather than modifying originals. This prevents accidental modifications but requires assigning results to variables. Use `+` or `concat()` for simple concatenation, `StringBuilder` for loops or repeated modifications.
 
-**Why It Matters**: String immutability enables the string pool (literal strings share memory, reducing heap usage), thread safety (immutable objects are inherently thread-safe), and security (strings can't be modified after security checks). However, naive string concatenation in loops (`str += "x"`) creates O(n²) complexity as each concatenation allocates a new string—for 1000 iterations, this creates 1000 temporary string objects. StringBuilder solves this with mutable character buffers, providing O(n) amortized append performance. Modern Java's string deduplication (G1 garbage collector) and compact strings (Java 9, using byte[] instead of char[] for Latin-1 strings) further optimize string memory usage, critical since strings consume 25%+ of heap in typical applications.
+**Why It Matters**: String immutability enables the string pool (literal strings share memory, reducing heap usage), thread safety (immutable objects are inherently thread-safe), and security (strings can't be modified after security checks). However, naive string concatenation in loops (`str += "x"`) creates O(n²) complexity as each concatenation allocates a new string—for 1000 iterations, this creates 1000 temporary string objects. StringBuilder solves this with mutable character buffers, providing O(n) amortized append performance.
 
 ---
 
@@ -1357,6 +1356,10 @@ StringBuilder sized = new StringBuilder(1000);
 **Why It Matters**: StringBuilder's mutable design prevents the exponential object allocation of naive string concatenation—concatenating 10,000 strings with `+` creates 10,000 temporary String objects and copies characters repeatedly (O(n²) complexity). StringBuilder's internal `char[]` buffer grows exponentially (doubling when full), providing amortized O(1) append and O(n) total complexity. This performance difference is dramatic: concatenating 100,000 strings takes milliseconds with StringBuilder vs seconds with `+`. Java compilers optimize trivial cases (`"a" + "b" + "c"` → single String), but cannot optimize loop concatenation, making StringBuilder essential for string-intensive code. StringBuffer (thread-safe variant) predates StringBuilder but incurs synchronization overhead—use StringBuilder unless thread safety is required.
 
 ---
+
+## Type System and Organization
+
+Java's type system features: generics for type-safe collections, varargs, autoboxing, static members, access control, packages, and enums.
 
 ## Example 22: Generics - Type-Safe Collections
 
@@ -1451,7 +1454,7 @@ printList(nums);                 // => ? resolves to Integer at runtime
 
 **Key Takeaway**: Generics provide compile-time type safety for collections and methods, eliminating runtime ClassCastException errors. Use `<T>` for type parameters in generic classes/methods. Use bounded types (`<T extends Class>`) to restrict acceptable types. Use wildcards (`<?>`) for flexible method parameters accepting any generic type.
 
-**Why It Matters**: Pre-generics Java (before 1.5, 2004) required unsafe casts and stored everything as Object, causing ClassCastException bugs when wrong types were retrieved. Generics enabled the Collections Framework to provide type-safe APIs without code duplication—one ArrayList implementation works for all types. The compiler uses type erasure (removing generic information at runtime) for backward compatibility with pre-generics bytecode, but this creates limitations: cannot create `new T[]` arrays, cannot use primitives as type parameters (`List<int>` illegal, must use `List<Integer>`), and cannot detect type at runtime (`list instanceof List<String>` illegal). Despite these quirks, generics are important for modern Java—streams, Optional, CompletableFuture all depend on generics for type safety.
+**Why It Matters**: Pre-generics Java (before 1.5, 2004) required unsafe casts and stored everything as Object, causing ClassCastException bugs when wrong types were retrieved. Generics enabled the Collections Framework to provide type-safe APIs without code duplication—one ArrayList implementation works for all types. The compiler uses type erasure (removing generic information at runtime) for backward compatibility with pre-generics bytecode, but this creates limitations: cannot create `new T[]` arrays, cannot use primitives as type parameters (`List<int>` illegal, must use `List<Integer>`), and cannot detect type at runtime (`list instanceof List<String>` illegal).
 
 ---
 
@@ -1602,7 +1605,7 @@ System.out.println(c.equals(d)); // => true (both hold value 128, value equality
 
 **Key Takeaway**: Wrapper classes (Integer, Double, Boolean) enable primitives to be used where objects are required (collections, generics). Autoboxing automatically converts primitives to wrappers and vice versa. Always use `equals()` for wrapper comparison, NOT `==` (except for cached values -128 to 127). Check for null before auto-unboxing to avoid NullPointerException.
 
-**Why It Matters**: Autoboxing (Java 5, 2004) eliminated the tedious `Integer.valueOf()` and `intValue()` boilerplate that made pre-generics collections painful (`list.add(new Integer(5))`). However, automatic conversion hides performance costs—each autoboxing allocates a heap object, making loops like `Integer sum = 0; for (...) sum += i;` allocate many temporary Integer objects. The -128 to 127 cache optimization (valueOf returns cached instances) prevents some allocations but creates the `==` comparison trap where `Integer a = 127; Integer b = 127; a == b` is true (cached) but `Integer c = 128; Integer d = 128; c == d` is false (different objects). This is counterintuitive behavior, fixed by always using `equals()` for object comparison.
+**Why It Matters**: Autoboxing (Java 5, 2004) eliminated the tedious `Integer.valueOf()` and `intValue()` boilerplate that made pre-generics collections painful (`list.add(new Integer(5))`). However, automatic conversion hides performance costs—each autoboxing allocates a heap object, making loops like `Integer sum = 0; for (...) sum += i;` allocate many temporary Integer objects.
 
 ---
 
@@ -2060,6 +2063,10 @@ try {
 
 ---
 
+## Modern Java Basics
+
+Modern Java features (Java 8-17): lambda expressions and functional interfaces, stream pipelines, Optional for null safety, and the java.time API for date and time.
+
 ## Example 30: Lambda Expressions and Functional Interfaces
 
 Lambda expressions provide concise syntax for anonymous functions, enabling functional programming patterns. Functional interfaces (interfaces with one abstract method) can be implemented with lambdas.
@@ -2377,7 +2384,7 @@ user.ifPresent(name -> System.out.println("Found: " + name));
 
 **Key Takeaway**: Optional provides null-safe container for values that may be absent. Use `ofNullable()` to create from potentially null values, `orElse()` for default values, `map()`/`filter()` for transformations, and `ifPresent()` for conditional execution. Optional forces explicit missing-value handling, preventing NullPointerException.
 
-**Why It Matters**: Optional (Java 8, 2014) brought functional null-handling from languages like Scala/Haskell to Java, forcing developers to acknowledge missing values explicitly. Before Optional, null returns were ambiguous—does `findUser()` returning null mean "not found" or "error"? Optional makes intent explicit: `Optional<User>` clearly signals "may be absent". However, Optional is NOT a general null replacement—use it for return types signaling potential absence, NOT for fields or parameters (creates more NullPointerExceptions from unwrapping). The `get()` method is dangerous (throws if empty), prefer `orElse()` or `ifPresent()`. Despite criticism (Tony Hoare called null his "billion-dollar mistake"), Optional doesn't eliminate null—just makes it visible where values may be missing.
+**Why It Matters**: Optional (Java 8, 2014) brought functional null-handling from languages like Scala/Haskell to Java, forcing developers to acknowledge missing values explicitly. Before Optional, null returns were ambiguous—does `findUser()` returning null mean "not found" or "error"? Optional makes intent explicit: `Optional<User>` clearly signals "may be absent". However, Optional is NOT a general null replacement—use it for return types signaling potential absence, NOT for fields or parameters (creates more NullPointerExceptions from unwrapping). The `get()` method is dangerous (throws if empty), prefer `orElse()` or `ifPresent()`.
 
 ---
 
@@ -2470,9 +2477,3 @@ long epochSeconds = timestamp.getEpochSecond();
 **Why It Matters**: java.util.Date and Calendar (Java 1.0-1.1) were fundamentally broken—mutable (not thread-safe), 0-indexed months (January = 0), confusing constructors (year offset by 1900), and no timezone clarity. The java.time API (Java 8, 2014, based on Joda-Time library) fixed all issues with immutable types, clear method names (`plusDays` vs `add(Calendar.DAY_OF_MONTH, 1)`), and explicit timezone handling (LocalDateTime vs ZonedDateTime). Immutability eliminates shared-state concurrency bugs and enables safe caching. The distinction between human time (LocalDateTime) and machine time (Instant) prevents subtle bugs from timezone conversions. Modern applications use Instant for timestamps (database storage, logs) and ZonedDateTime for user-facing dates (meeting schedulers, calendars).
 
 ---
-
----
-
-## Interfaces and Polymorphism
-
-Java interfaces define contracts for classes through abstract method signatures. Unlike inheritance (single parent), interfaces enable multiple inheritance and polymorphism—the ability to treat different types uniformly through a shared interface.

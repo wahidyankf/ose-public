@@ -4,9 +4,10 @@ date: 2026-01-01T22:52:24+07:00
 draft: false
 weight: 10000002
 description: "Examples 31-60: Spring Data JPA advanced features including @Query annotation, pagination, complex relationships, transactions, and locking mechanisms (40-75% coverage)"
-categories: ["learn"]
 tags: ["spring-data-jpa", "tutorial", "by-example", "intermediate", "jpql", "pagination", "transactions", "locking"]
 ---
+
+## Group 1: Custom JPQL and SQL Queries
 
 ### Example 31: @Query with JPQL
 
@@ -632,6 +633,8 @@ public class UserService {
 
 **Why It Matters**: Specifications enable type-safe dynamic queries through Criteria API, eliminating string concatenation vulnerabilities that cause 40% of SQL injection attacks in legacy codebases. The compositional nature allows building complex search filters from optional parameters without if-else chains, reducing cyclomatic complexity by 50-70%. E-commerce product search features using Specifications report 95% code coverage in unit tests versus 40% for string-based dynamic queries, as Specifications are pure functions testable without database.
 
+## Group 2: Pagination and Sorting
+
 ### Example 39: Basic Pagination with PageRequest
 
 PageRequest enables offset-based pagination through page number and size parameters. Returns Page object with metadata.
@@ -1072,6 +1075,8 @@ public class ProductController {
 **Key Takeaway**: Slice-based infinite scroll improves UX for large datasets by loading next page only, avoiding expensive COUNT(\*) queries on every request.
 
 **Why It Matters**: @ManyToMany relationships eliminate manual join table management, mapping complex many-to-many domain models (Students-Courses, Tags-Posts) with single @JoinTable annotation. Spring Data generates CRUD operations for both sides automatically, reducing code by 70% compared to explicit join entity approaches. However, @ManyToMany creates hidden performance traps: loading collections triggers N+1 queries, and clearing large collections executes DELETE for every relationship row - use JOIN FETCH and batch operations for production performance.
+
+## Group 3: Advanced Relationships
 
 ### Example 45: @ManyToMany Relationships
 
@@ -1778,6 +1783,8 @@ public class OrderService {
 
 **Why It Matters**: FetchType.EAGER automatically loads relationships in every query regardless of usage, simplifying code by eliminating lazy loading exceptions but causing 100-1000x performance degradation when unneeded data loads. The pattern generates LEFT OUTER JOIN for @ManyToOne/@OneToOne and separate SELECT for collections, creating N+1 problems invisible until production scale. Database query logs from eager loading mishaps show 80%+ of queries fetching unused relationships - use @EntityGraph or JOIN FETCH for selective eager loading instead of blanket EAGER configuration.
 
+## Group 4: Transaction Management
+
 ### Example 51: @Transactional Propagation
 
 Propagation defines how transactions behave when a transactional method calls another transactional method. Controls transaction boundaries.
@@ -2290,24 +2297,24 @@ public class BusinessService {
 TransactionTemplate provides programmatic transaction control for scenarios where declarative @Transactional is insufficient.
 
 ```java
-@Service
+@Service                                                       // => Spring service bean
 public class BatchService {
 
     @Autowired
-    private TransactionTemplate transactionTemplate;
+    private TransactionTemplate transactionTemplate;           // => Spring's programmatic transaction helper
 
     @Autowired
-    private OrderRepository orderRepository;
+    private OrderRepository orderRepository;                   // => Repository for Order persistence
 
     public void processBatchWithTemplate(List<Order> orders) {
         orders.forEach(order -> {
 // => Iterates over collection elements
 // => May trigger lazy loading if accessing relationships
-            transactionTemplate.execute(status -> {
+            transactionTemplate.execute(status -> {            // => Each lambda = one transaction scope
                 try {
                     orderRepository.save(order);
                     // => Each order processed in separate transaction
-                    return null;
+                    return null;                               // => TransactionCallback must return value
                 } catch (Exception e) {
                     status.setRollbackOnly();
                     // => Mark transaction for rollback
@@ -2322,9 +2329,9 @@ public class BatchService {
     }
 
     public List<Order> queryWithTemplate() {
-        return transactionTemplate.execute(status -> {
+        return transactionTemplate.execute(status -> {         // => Executes lambda in transaction
             // Read-only configuration
-            status.setRollbackOnly(); // Not needed for read-only
+            status.setRollbackOnly(); // Not needed for read-only // => Forces rollback on completion
             return orderRepository.findAll();
 // => Executes SELECT * FROM table
 // => Loads ALL records into memory (dangerous for large tables)
@@ -2335,18 +2342,18 @@ public class BatchService {
 }
 
 // PlatformTransactionManager for advanced control
-@Service
+@Service                                                       // => Spring service bean
 public class AdvancedTransactionService {
 
     @Autowired
-    private PlatformTransactionManager transactionManager;
+    private PlatformTransactionManager transactionManager;     // => Low-level transaction manager
 
     @Autowired
-    private OrderRepository orderRepository;
+    private OrderRepository orderRepository;                   // => Repository for Order persistence
 
     public void manualTransactionControl() {
-        TransactionDefinition def = new DefaultTransactionDefinition();
-        TransactionStatus status = transactionManager.getTransaction(def);
+        TransactionDefinition def = new DefaultTransactionDefinition(); // => Default: PROPAGATION_REQUIRED
+        TransactionStatus status = transactionManager.getTransaction(def); // => Begins or joins transaction
         // => Transaction started manually
 
         try {
@@ -2357,23 +2364,23 @@ public class AdvancedTransactionService {
             orderRepository.save(order);
             // => Operation within transaction
 
-            transactionManager.commit(status);
+            transactionManager.commit(status);                 // => Flushes changes and ends transaction
             // => Explicit commit
         } catch (Exception e) {
-            transactionManager.rollback(status);
+            transactionManager.rollback(status);               // => Undoes all operations in transaction
             // => Explicit rollback
         }
     }
 
     public void configureTransactionDefinition() {
-        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-        def.setIsolationLevel(TransactionDefinition.ISOLATION_SERIALIZABLE);
-        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
-        def.setTimeout(30); // seconds
-        def.setReadOnly(false);
+        DefaultTransactionDefinition def = new DefaultTransactionDefinition(); // => Mutable transaction config
+        def.setIsolationLevel(TransactionDefinition.ISOLATION_SERIALIZABLE); // => Strictest isolation level
+        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW); // => Always new transaction
+        def.setTimeout(30); // seconds                         // => Transaction auto-rollback after 30s
+        def.setReadOnly(false);                                // => Allows write operations
         // => Custom transaction configuration
 
-        TransactionStatus status = transactionManager.getTransaction(def);
+        TransactionStatus status = transactionManager.getTransaction(def); // => Starts transaction with custom config
 
         try {
             // Execute operations with custom transaction settings
@@ -2381,9 +2388,9 @@ public class AdvancedTransactionService {
 // => Executes SELECT * FROM table
 // => Loads ALL records into memory (dangerous for large tables)
 // => Returns List<Entity> (never null, empty list if no records)
-            transactionManager.commit(status);
+            transactionManager.commit(status);                 // => Commits with custom isolation/propagation
         } catch (Exception e) {
-            transactionManager.rollback(status);
+            transactionManager.rollback(status);               // => Rolls back on any exception
         }
     }
 }
@@ -2540,6 +2547,8 @@ public class PropagationComparison {
 **Key Takeaway**: NESTED propagation creates savepoints for partial rollback scenarios, enabling "best-effort" operations where some failures are acceptable within a larger transaction.
 
 **Why It Matters**: Optimistic locking with @Version prevents lost updates in concurrent scenarios through automatic version checking, detecting conflicts at commit time and throwing OptimisticLockException. This enables high-concurrency applications (1000+ concurrent users) without database-level locks that limit throughput to 10-20 transactions/second. However, version conflicts require retry logic in UI layer - applications without proper conflict handling show 70% user error rates when concurrent edits increase beyond 5% of total operations.
+
+## Group 5: Locking Mechanisms
 
 ### Example 57: Optimistic Locking with @Version
 

@@ -50,6 +50,8 @@ void main() {
 Ahmad donated: Rp500000
 ```
 
+**Why It Matters**: Dart's static typing catches type errors at compile time rather than runtime, preventing bugs that would otherwise surface in production. Variable type inference reduces verbosity while maintaining safety, enabling developers to write concise code without sacrificing the protection of a type system. Understanding type declaration is foundational for all Dart development, from Flutter widgets to server-side applications where type safety prevents data corruption.
+
 **Common Pitfalls**: Using `var` without initialization causes compile error. Type cannot change after declaration.
 
 ### Example 2: Null Safety Basics
@@ -120,6 +122,8 @@ Email: donor@example.com
 Phone length: null
 ```
 
+**Why It Matters**: Null safety eliminates entire classes of runtime crashes that plague production applications. Flutter apps built with sound null safety crash less frequently because the compiler enforces null-checking before deployment. Without null safety, `NullPointerException` is the most common source of production crashes across all programming languages. Mastering Dart's null safety operators (`??`, `?.`, `!`) enables building robust applications that handle missing data gracefully.
+
 **Common Pitfalls**: Using `!` operator on null value throws runtime error. Always verify value is non-null before using `!`.
 
 ### Example 3: String Manipulation
@@ -175,11 +179,33 @@ As-salamu alaykum, ABDULLAH RAHMAN!
 Length: 16
 ```
 
+**Why It Matters**: String manipulation is ubiquitous in production applications—UI labels, log messages, API payloads, and formatted output all depend on reliable string operations. Dart's string interpolation produces more readable code than concatenation while being equally performant. Understanding immutability prevents bugs where developers expect in-place modification. Flutter UI rendering depends heavily on efficient string handling for text widget content.
+
 **Common Pitfalls**: Forgetting `{}` around complex expressions in interpolation. Strings are immutable - methods create new instances.
 
 ### Example 4: Basic Arithmetic and Operators
 
 Dart provides standard arithmetic operators and operator precedence.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+flowchart LR
+    A[Operands] --> B{Operator}
+    B -->|+| Add[Addition<br/>wealth + bonus]
+    B -->|-| Sub[Subtraction<br/>wealth - zakat]
+    B -->|*| Mul[Multiplication<br/>wealth * rate]
+    B -->|/| Div[Division double<br/>zakat / wealth]
+    B -->|~/| IntDiv[Integer Division<br/>zakat ~/ 1000]
+    B -->|%| Mod[Modulo<br/>total % 1000]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style Add fill:#029E73,stroke:#000,color:#fff
+    style Sub fill:#DE8F05,stroke:#000,color:#000
+    style Mul fill:#029E73,stroke:#000,color:#fff
+    style Div fill:#CC78BC,stroke:#000,color:#000
+    style IntDiv fill:#CA9161,stroke:#000,color:#fff
+    style Mod fill:#CA9161,stroke:#000,color:#fff
+```
 
 ```dart
 void main() {
@@ -233,6 +259,8 @@ void main() {
 Zakat amount: Rp2500000.00
 Eligible for Zakat: true
 ```
+
+**Why It Matters**: Financial calculations—the core of any fintech or Islamic finance application—require precise arithmetic. Incorrect use of integer vs. floating-point division causes subtle calculation errors that accumulate across thousands of transactions. Zakat calculations, profit-sharing ratios, and installment schedules all demand exact numeric handling. Understanding Dart's numeric types prevents off-by-one errors and rounding mistakes in production financial systems.
 
 **Common Pitfalls**: Mixing `int` and `double` works in Dart (auto-promoted), but `~/` truncates to int. Order of operations matters.
 
@@ -321,11 +349,29 @@ Donor status: Silver
 Zakat status: Optional
 ```
 
+**Why It Matters**: Conditional logic governs business rules in every application—eligibility criteria, access control, payment routing, and data validation all rely on correct branching. Mastering if-else chains enables expressing complex business rules clearly. In Flutter, conditional rendering determines which widgets appear based on application state. Readable conditional logic reduces bugs during code review and maintenance, critical for compliance-sensitive Islamic finance applications.
+
 **Common Pitfalls**: Forgetting braces with single statements works but reduces readability. Ternary operator should be simple - use if-else for complex logic.
 
 ### Example 6: Control Flow - For Loops
 
 For loops iterate a fixed number of times with counter variable.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+flowchart TD
+    Init[Initialize<br/>month = 1] --> Cond{Condition<br/>month <= 5?}
+    Cond -->|true| Body[Execute Body<br/>print month data]
+    Body --> Incr[Increment<br/>month++]
+    Incr --> Cond
+    Cond -->|false| End[Loop Exits<br/>Continue program]
+
+    style Init fill:#0173B2,stroke:#000,color:#fff
+    style Cond fill:#DE8F05,stroke:#000,color:#000
+    style Body fill:#029E73,stroke:#000,color:#fff
+    style Incr fill:#CC78BC,stroke:#000,color:#000
+    style End fill:#CA9161,stroke:#000,color:#fff
+```
 
 ```dart
 void main() {
@@ -407,6 +453,8 @@ Rp100000 Rp200000 Rp300000 Rp400000
 Rp200000 Rp400000 Rp600000 Rp800000
 Rp300000 Rp600000 Rp900000 Rp1200000
 ```
+
+**Why It Matters**: Loops are the foundation of data processing—generating reports, processing transactions, sending notifications, and computing aggregations all involve iteration. For loops are essential for Flutter list rendering, batch processing financial records, and generating scheduled payment plans. Understanding iteration patterns prevents common production bugs like off-by-one errors that cause incorrect transaction counts or skipped data in critical financial calculations.
 
 **Common Pitfalls**: Off-by-one errors with loop conditions. Forgetting to increment counter causes infinite loop. Modifying collection during for-in loop causes error.
 
@@ -573,11 +621,35 @@ Donor 5: Processed successfully
 Valid donors: 3
 ```
 
+**Why It Matters**: While loops enable dynamic iteration where the number of repetitions is unknown upfront—user authentication retry logic, payment processing attempts, and streaming data consumption all require conditional looping. Break and continue enable fine-grained control over loop execution, allowing early exit on success or skipping invalid records. Production applications rely on well-controlled loops to process variable-length data sets without hanging or crashing.
+
 **Common Pitfalls**: Infinite loops when condition never becomes false. Do-while executes at least once even if condition initially false.
 
 ### Example 8: Switch Statements
 
 Switch statements match a value against multiple cases for multi-way branching.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+flowchart TD
+    Val[switch value] --> C1{case 1?}
+    C1 -->|match| B1[Execute block 1<br/>break]
+    C1 -->|no match| C2{case 2?}
+    C2 -->|match| B2[Execute block 2<br/>break]
+    C2 -->|no match| C3{case 3?}
+    C3 -->|match| B3[Execute block 3<br/>break]
+    C3 -->|no match| Def[default block<br/>break]
+    B1 --> Exit[Continue program]
+    B2 --> Exit
+    B3 --> Exit
+    Def --> Exit
+
+    style Val fill:#0173B2,stroke:#000,color:#fff
+    style B1 fill:#029E73,stroke:#000,color:#fff
+    style B2 fill:#DE8F05,stroke:#000,color:#000
+    style B3 fill:#CC78BC,stroke:#000,color:#000
+    style Def fill:#CA9161,stroke:#000,color:#fff
+```
 
 ```dart
 void main() {
@@ -741,11 +813,33 @@ Donor category: Silver (5M - 10M)
 Zakat al-Mal (Wealth): 2.5%
 ```
 
+**Why It Matters**: Switch statements express multi-way business logic clearly and efficiently, ideal for payment method routing, Zakat type calculation, transaction status handling, and notification routing. Unlike long if-else chains, switch statements are more readable for discrete value matching and enable exhaustive case analysis. In Flutter, switch expressions handle widget rendering based on enum states, making UI logic self-documenting.
+
 **Common Pitfalls**: Forgetting `break` causes fall-through to next case. Switch only works with compile-time constants.
 
 ### Example 9: Lists - Creation and Basic Operations
 
 Lists are ordered collections of elements with dynamic or fixed length.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+flowchart LR
+    L[List<br/>Ordered Collection] --> Idx[Index Access<br/>list[0] O1]
+    L --> Add[Modification<br/>add, insert, remove]
+    L --> Iter[Iteration<br/>for-in loop]
+    L --> Info[Properties<br/>length, isEmpty, contains]
+
+    Idx --> Ex1[Ahmad = index 0]
+    Idx --> Ex2[Fatimah = index 1]
+    Add --> Ex3[add appends to end]
+    Iter --> Ex4[for donor in donors]
+
+    style L fill:#0173B2,stroke:#000,color:#fff
+    style Idx fill:#029E73,stroke:#000,color:#fff
+    style Add fill:#DE8F05,stroke:#000,color:#000
+    style Iter fill:#CC78BC,stroke:#000,color:#000
+    style Info fill:#CA9161,stroke:#000,color:#fff
+```
 
 ```dart
 void main() {
@@ -848,11 +942,33 @@ All donors:
 Payments: [500000.0, 750000.0, 1000000.0]
 ```
 
+**Why It Matters**: Lists are the primary data structure for collections in Dart applications—transaction histories, donor records, payment schedules, and API response arrays are all lists. Mastering list operations is essential for Flutter development where `ListView` widgets render dynamic data. Efficient list manipulation prevents O(n²) operations that cause UI lag when processing large datasets. Understanding list indices prevents out-of-bounds crashes in production.
+
 **Common Pitfalls**: Index out of range throws error. Lists are zero-based (first element is index 0). Modifying list during iteration causes error.
 
 ### Example 10: Maps - Key-Value Storage
 
 Maps store data as key-value pairs for efficient lookups.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+flowchart LR
+    M[Map<br/>Key-Value Storage] --> KV[Key: String<br/>Value: int]
+    KV --> K1[Ahmad → 500000]
+    KV --> K2[Fatimah → 1000000]
+    KV --> K3[Ali → 750000]
+    M --> Ops[Operations]
+    Ops --> Get[map key → value or null]
+    Ops --> Set[map key = value]
+    Ops --> Del[map.remove key]
+
+    style M fill:#0173B2,stroke:#000,color:#fff
+    style KV fill:#DE8F05,stroke:#000,color:#000
+    style K1 fill:#029E73,stroke:#000,color:#fff
+    style K2 fill:#029E73,stroke:#000,color:#fff
+    style K3 fill:#029E73,stroke:#000,color:#fff
+    style Ops fill:#CC78BC,stroke:#000,color:#000
+```
 
 ```dart
 void main() {
@@ -969,6 +1085,8 @@ Total donations: Rp2850000
 Month 9: Ramadan
 Wealth Zakat rate: 2.5%
 ```
+
+**Why It Matters**: Maps are the foundation of JSON data handling, configuration management, and caching in production applications. API responses, database query results, and user preferences are commonly represented as key-value maps. Flutter's routing system uses maps for navigation parameters. Understanding null-safe map access (`map[key] ?? default`) prevents runtime errors when keys are absent. Efficient map lookups (O(1)) enable fast data retrieval in real-time applications.
 
 **Common Pitfalls**: Accessing non-existent key returns null (not error). Keys must be unique - adding duplicate key replaces value. Map iteration order matches insertion order.
 
@@ -1097,6 +1215,8 @@ Nisab threshold: Rp85000000.0
 [LOG] Processing payment
 ```
 
+**Why It Matters**: Function design determines code usability and maintainability in large Dart codebases. Named parameters make Flutter widget constructors self-documenting—`TextButton(onPressed: handler, child: label)` is clearer than positional arguments. Required named parameters prevent calling functions with missing critical values at compile time. First-class functions enable functional programming patterns used extensively in Flutter's widget tree construction and stream transformations.
+
 **Common Pitfalls**: Named parameters are optional unless marked `required`. Positional parameters come before named parameters. Arrow functions limited to single expression.
 
 ### Example 12: Function Advanced - First-Class Functions
@@ -1113,6 +1233,7 @@ typedef ZakatCalculator = double Function(double wealth);
 double applyZakatRule(double wealth, ZakatCalculator calculator) {
                                         // => Takes wealth and calculator function
   return calculator(wealth);            // => Call passed function
+                                        // => result: returned value from calculator
 }                                       // => Returns calculated result
 
 // Function returning function
@@ -1124,6 +1245,7 @@ ZakatCalculator getCalculator(String type) {  // => Returns function type
     return (double w) => w * 0.10;      // => Return function for agriculture
   } else {
     return (double w) => 0.0;           // => Default function returns 0
+                                        // => Fallback: zero for unknown types
   }
 }
 
@@ -1213,6 +1335,8 @@ Base calculation: Rp1250000.0
 Modified calculation: Rp1500000.0
 Callback: Processed Rp750000.0
 ```
+
+**Why It Matters**: First-class functions are essential for Dart's functional programming model, enabling elegant callback patterns, higher-order collection operations (`map`, `where`, `fold`), and Flutter's callback-heavy widget API. Closures power event handlers, animation callbacks, and asynchronous operation completions throughout Flutter applications. Understanding that closures capture by reference prevents subtle bugs in long-lived closures within stateful widgets.
 
 **Common Pitfalls**: Closures capture variables by reference - modifications visible. Anonymous functions need proper syntax. Function type compatibility matters.
 
@@ -1309,6 +1433,8 @@ Ahmad donated Rp5000000.0
 Ahmad: Gold
 Fatimah: Gold
 ```
+
+**Why It Matters**: Object-oriented programming with classes is the primary design pattern for Dart applications—Flutter widgets, services, repositories, and domain models are all classes. Understanding object instantiation, field encapsulation, and method invocation is prerequisite knowledge for building any non-trivial Dart application. Getter methods enable computed properties without public field exposure, a pattern used extensively in Flutter's state management solutions like BLoC and Provider.
 
 **Common Pitfalls**: Forgetting `new` keyword is fine in Dart (optional). Getters called without `()`. Each instance has own field values.
 
@@ -1474,6 +1600,8 @@ Wealth Zakat calculated: Rp2500000.0
 Agriculture Zakat calculated: Rp5000000.0
 ```
 
+**Why It Matters**: Multiple constructors enable domain-driven object creation, making APIs expressive and preventing invalid object states. Factory constructors power deserialization patterns critical for API integration—`fromJson()` factory constructors are the standard approach for parsing API responses in Flutter applications. Named constructors like `.fromNow()` or `.fromDate()` provide semantic clarity in domain models, reducing bugs from incorrect object initialization.
+
 **Common Pitfalls**: Named constructor syntax is `ClassName.name`. Initializer list uses `:` not `{}`. Factory constructors must return instance.
 
 ### Example 15: Classes - Getters and Setters
@@ -1628,6 +1756,8 @@ Status: Premium (>= 10M)
 Caught error: Invalid argument(s): Balance cannot be negative
 Final balance: Rp12000000.0
 ```
+
+**Why It Matters**: Encapsulation through getters and setters enforces data integrity in production objects. Validation in setters prevents invalid states (negative balances, expired dates) from entering the system, reducing the surface area for bugs. Computed getters eliminate data synchronization issues by calculating values on demand rather than storing derived state. This pattern is foundational in Flutter's change notification system where computed properties trigger UI updates.
 
 **Common Pitfalls**: Setters called like assignment (`obj.field = value`), not like methods. Private fields need getters for external access. Computed getters recalculate each access.
 
@@ -1848,6 +1978,8 @@ Is gold tier: true
 Gold donors: 15
 ```
 
+**Why It Matters**: Enums replace magic strings and integers with type-safe named constants, eliminating an entire category of bugs from typos and invalid values. In production systems, Zakat types, payment methods, transaction statuses, and user roles are natural enum candidates. Enhanced enums bundle related behavior with constants (e.g., `ZakatType.wealth.rate` instead of a separate lookup), enabling more expressive and maintainable domain models in Flutter applications.
+
 **Common Pitfalls**: Enum values accessed with dot notation. Enhanced enums require const constructor. Enum values are compile-time constants.
 
 ### Example 17: Collections - Sets
@@ -1969,6 +2101,8 @@ All unique amounts:
 From list: {A, B}
 Empty set: true
 ```
+
+**Why It Matters**: Sets provide O(1) membership checking, making them ideal for deduplication and existence checks in production systems. Donor deduplication, transaction reference tracking, and permission sets all benefit from Set semantics. In performance-critical code, using Set instead of List for `contains` operations reduces O(n) linear searches to O(1) hash lookups—critical when processing thousands of records. Flutter's routing system uses sets to track visited routes.
 
 **Common Pitfalls**: Sets are unordered - iteration order may vary. Empty set needs type: `<Type>{}` or `Set<Type>()`. Adding duplicate returns false but doesn't error.
 
@@ -2136,6 +2270,8 @@ Caller caught: Invalid argument(s): Invalid amount
 Assertion passed
 ```
 
+**Why It Matters**: Robust exception handling is non-negotiable for production reliability. Unhandled exceptions crash Flutter apps and corrupt server state. Specific exception handling enables appropriate recovery (retry network errors, notify users of validation failures, log unexpected errors) rather than generic failure. Finally blocks prevent resource leaks in file operations, database connections, and stream subscriptions. Well-structured error handling is particularly critical for financial applications where partial failures can corrupt records.
+
 **Common Pitfalls**: Order matters - specific catches before generic. Finally executes even with return in try/catch. Assertions only active in debug mode.
 
 ### Example 19: String Advanced - Pattern Matching
@@ -2290,6 +2426,8 @@ Lower: zakat al-mal
 Pad left: 00042
 Pad right: 42---
 ```
+
+**Why It Matters**: String processing is ubiquitous in production—parsing user input, formatting display values, validating data, and processing API responses all require robust string manipulation. Arabic text handling (common in Islamic finance applications) requires Unicode awareness that Dart's string methods provide. Regular expressions enable complex validation patterns for financial identifiers, phone numbers, and account numbers. `tryParse` over `parse` prevents crashes from malformed input.
 
 **Common Pitfalls**: `substring` end index is exclusive. Regular expression raw strings use `r` prefix. `tryParse` returns null on failure (not exception).
 
@@ -2454,6 +2592,8 @@ Back to List: [500000, 1000000, 750000]
 Donor: Ahmad, Amount: 500000, Paid: true
 ```
 
+**Why It Matters**: Type conversion is essential when working with external data—JSON payloads, database results, and user inputs often arrive as strings that need conversion to typed values. Safe type checking with `is` before casting prevents `ClassCastException` crashes in production. Dart's type promotion feature reduces boilerplate compared to explicit casting. In Flutter, dynamic widget data often requires runtime type checking when building heterogeneous lists.
+
 **Common Pitfalls**: `parse` throws on invalid string, use `tryParse` for safety. `as` throws if type wrong, check with `is` first. Type promotions happen automatically in `is` checks.
 
 ## Examples 21-25: Advanced Basics
@@ -2470,14 +2610,17 @@ void main() {
   // forEach - execute function for each element
   print('All donations:');              // => Header
   donations.forEach((double amount) {   // => forEach with callback
+                                        // => Iterates each element sequentially
     print('- Rp$amount');               // => Execute for each element
-  });                                   // => 5 iterations
+  });                                   // => 5 iterations total
 
   // map - transform each element
   List<String> formatted = donations.map((double amount) {
                                         // => Transform function
+                                        // => Returns new value for each element
     return 'Rp ${amount.toStringAsFixed(2)}';
-                                        // => Format each amount
+                                        // => Format each amount as currency string
+                                        // => toStringAsFixed(2) provides 2 decimal places
   }).toList();                          // => Convert Iterable to List
                                         // => formatted: ['Rp 500000.00', ...]
 
@@ -2485,8 +2628,10 @@ void main() {
 
   // where - filter elements
   List<double> large = donations.where((double amount) {
-                                        // => Filter function
+                                        // => Filter function: returns bool
+                                        // => true = keep, false = exclude
     return amount >= 1000000.0;         // => Keep if >= 1M
+                                        // => 3 of 5 donations qualify
   }).toList();                          // => large: [1000000.0, 2500000.0, 1250000.0]
 
   print('Large donations: $large');     // => Output: Large donations: [1000000.0, 2500000.0, 1250000.0]
@@ -2494,7 +2639,8 @@ void main() {
   // any - check if any element matches
   bool hasLarge = donations.any((double amount) {
                                         // => Check if any match
-    return amount >= 2000000.0;         // => Condition
+                                        // => Short-circuits on first match found
+    return amount >= 2000000.0;         // => Condition: >= 2M
   });                                   // => hasLarge: true (2500000.0 matches)
 
   print('Has large (>= 2M): $hasLarge');
@@ -2503,7 +2649,8 @@ void main() {
   // every - check if all elements match
   bool allPositive = donations.every((double amount) {
                                         // => Check if all match
-    return amount > 0;                  // => Condition
+                                        // => Short-circuits on first non-match
+    return amount > 0;                  // => Condition: all positive
   });                                   // => allPositive: true (all positive)
 
   print('All positive: $allPositive');  // => Output: All positive: true
@@ -2511,7 +2658,9 @@ void main() {
   // reduce - combine elements into single value
   double total = donations.reduce((double sum, double amount) {
                                         // => Accumulator function
+                                        // => sum: running total, amount: current element
     return sum + amount;                // => Add current to accumulator
+                                        // => Combines all 5 elements into one value
   });                                   // => total: 6000000.0
 
   print('Total (reduce): Rp$total');    // => Output: Total (reduce): Rp6000000.0
@@ -2618,6 +2767,8 @@ Single exact: Rp2500000.0
 Average large: Rp1583333.33
 ```
 
+**Why It Matters**: Functional collection operations enable concise data processing pipelines for report generation, transaction filtering, and aggregation in production applications. Replacing imperative loops with `map/where/fold` improves code readability and reduces mutation bugs. Flutter's widget lists extensively use these operations to transform data models into widget trees. Understanding lazy evaluation prevents performance issues when chaining multiple transformations on large collections.
+
 **Common Pitfalls**: `map`, `where` return Iterables - call `toList()` for List. `reduce` requires non-empty collection. `singleWhere` throws if multiple matches.
 
 (continuing with remaining 4 examples in next message due to length)
@@ -2720,6 +2871,8 @@ Formatted: 2025-09-15
 UTC: 2025-01-29 04:34:56.789Z
 Local: 2025-01-29 12:34:56.789
 ```
+
+**Why It Matters**: Date handling is critical for financial applications where payment due dates, Zakat calculation periods, Hijri calendar conversions, and transaction timestamps drive business logic. Incorrect date arithmetic causes late payment alerts, wrong period calculations, and audit trail errors. Understanding UTC vs. local time prevents timezone bugs in multi-region Islamic finance platforms. Flutter applications need reliable date formatting for user interfaces.
 
 **Common Pitfalls**: Months are 1-indexed (January = 1). DateTime is immutable - methods return new instances. Timezone conversions affect displayed time.
 
@@ -2843,6 +2996,8 @@ Fatimah eligible: true
 Final count: 2
 ```
 
+**Why It Matters**: Static members enable utility functions and shared state without requiring object instantiation, patterns used throughout Flutter and Dart codebases. Singleton services, configuration constants, and stateless utility functions (currency formatters, Zakat rate lookups) benefit from static design. Static factory constructors with validation (`fromInput()` methods that return null on invalid data) prevent invalid objects from entering the system, a critical pattern for financial data integrity.
+
 **Common Pitfalls**: Static methods can't access `this` (no instance). Static fields are class-level, not instance-level. Static factory methods common pattern for validation.
 
 ### Example 24: Command-Line Input/Output
@@ -2855,19 +3010,24 @@ import 'dart:io';                       // => Import for stdin/stdout
 void main() {
   // Basic output
   print('Zakat Calculator');            // => Print with newline
+                                        // => print() adds \n automatically
   stdout.write('Enter donor name: ');   // => Print without newline
                                         // => Prompts user for input
+                                        // => stdout.write: no trailing newline
 
   // Read input (synchronous)
   String? donorName = stdin.readLineSync();
                                         // => Read line from console
                                         // => Returns String? (nullable)
-                                        // => Waits for Enter key
+                                        // => Waits for Enter key (blocking I/O)
+                                        // => Strips trailing newline character
 
   if (donorName == null || donorName.isEmpty) {
                                         // => Validate input
-    print('Error: Name required');      // => Output error
-    return;                             // => Exit program
+                                        // => null: end of stream; isEmpty: empty line
+    print('Error: Name required');      // => Output error message
+    return;                             // => Exit program early
+                                        // => return exits main() without further execution
   }
 
   print('Welcome, $donorName!');        // => Output: Welcome, [input]!
@@ -2878,8 +3038,9 @@ void main() {
                                         // => Read as string
 
   double? wealth = double.tryParse(wealthInput ?? '');
-                                        // => Parse to double
-                                        // => null if invalid
+                                        // => Parse string to double
+                                        // => tryParse: returns null if invalid (no exception)
+                                        // => ?? '': handles null wealthInput
 
   if (wealth == null) {                 // => Check parse success
     print('Error: Invalid amount');     // => Handle error
@@ -2919,10 +3080,11 @@ void main() {
                                         // => Read and convert to lowercase
                                         // => ?. handles null case
 
-  if (choice == 'y' || choice == 'yes') {  // => Check affirmative
+  if (choice == 'y' || choice == 'yes') {  // => Check affirmative input
+                                        // => Accepts both 'y' and 'yes' (already lowercased)
     print('Payment confirmed!');        // => Success message
   } else {
-    print('Payment deferred.');         // => Alternative message
+    print('Payment deferred.');         // => Alternative message for any other input
   }
 }
 ```
@@ -2946,6 +3108,8 @@ Remaining: Rp 97500000.00
 Pay now? (y/n): y
 Payment confirmed!
 ```
+
+**Why It Matters**: Command-line interfaces are the primary delivery mechanism for developer tools, automation scripts, and server utilities in Dart. CLI Zakat calculators, data migration scripts, and deployment tools all use stdin/stdout. Understanding blocking I/O helps developers distinguish when to use async alternatives. Input validation is security-critical—unvalidated CLI input can cause crashes or incorrect calculations in financial tools used by non-technical users.
 
 **Common Pitfalls**: `readLineSync()` is blocking (waits for input). Always validate and parse user input. Input is always String - convert for numbers.
 
@@ -2979,6 +3143,7 @@ class ZakatCalculator {                 // => Doc comment with triple slash
   // This is not exported in documentation
   int _calculationCount = 0;            // => Regular comment (single slash)
                                         // => For implementation details
+                                        // => _ prefix: not exported in documentation
 
   /// Calculates Zakat on wealth at 2.5% rate.
   ///
@@ -2992,19 +3157,24 @@ class ZakatCalculator {                 // => Doc comment with triple slash
                                         // => Doc comment describes behavior
                                         // => Documents parameters, return, exceptions
     // Validate input
-    if (wealth < 0) {                   // => Implementation comment
+    if (wealth < 0) {                   // => Implementation comment: explains why
+                                        // => wealth < 0 is business rule violation
       throw ArgumentError('Wealth must be positive');
+                                        // => ArgumentError: standard Dart validation exception
     }
 
     // Check nisab eligibility
     if (wealth < nisabThreshold) {      // => Explain business logic
-      return 0.0;                       // => Below threshold
+                                        // => nisabThreshold: 85000000.0 (class constant)
+      return 0.0;                       // => Below threshold: no Zakat due
     }
 
     _calculationCount++;                // => Track usage (internal)
+                                        // => Increment private counter
 
     // Calculate at standard rate
     return wealth * wealthRate;         // => Apply 2.5% rate
+                                        // => wealthRate: 0.025 (class constant)
   }                                     // => Return calculated amount
 
   /// Calculates Zakat on agricultural produce.
@@ -3029,7 +3199,8 @@ class ZakatCalculator {                 // => Doc comment with triple slash
      * Default assumes rain-watered
      */
     double rate = rainWatered ? 0.10 : 0.05;
-                                        // => Select rate based on method
+                                        // => Select rate based on irrigation method
+                                        // => rainWatered=true: 10%, false: 5%
 
     _calculationCount++;                // => Track calculation
 
@@ -3048,6 +3219,7 @@ class ZakatCalculator {                 // => Doc comment with triple slash
 void main() {
   // Create calculator instance
   var calc = ZakatCalculator();         // => Standard comment style
+                                        // => calc: instance of ZakatCalculator
 
   // Calculate wealth Zakat for different amounts
   double zakat1 = calc.calculateWealthZakat(100000000.0);
@@ -3083,6 +3255,8 @@ Wealth Zakat: Rp2500000.0
 Agriculture Zakat: Rp5000000.0
 Total calculations: 2
 ```
+
+**Why It Matters**: Documentation is a first-class requirement for maintainable production codebases and public packages. Well-documented APIs enable faster onboarding for new team members and reduce support burden for open-source Dart packages. `dart doc` generates HTML documentation from doc comments, enabling professional API references for Islamic finance libraries. In regulated environments (banking, compliance), code documentation supports audit requirements by explaining the rationale behind financial calculation implementations.
 
 **Common Pitfalls**: Over-commenting obvious code. Missing documentation for public API. Outdated comments after code changes. Use doc comments for public members only.
 

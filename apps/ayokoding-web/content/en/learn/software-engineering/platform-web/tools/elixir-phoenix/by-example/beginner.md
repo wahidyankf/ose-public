@@ -73,8 +73,11 @@ defmodule MyApp.MixProject do              # => Module for Mix build configurati
   defp deps do                             # => Private function listing dependencies
     [
       {:phoenix, "~> 1.7.0"},              # => Phoenix framework ~> allows 1.7.x
+                                            # => ~> means "compatible with" (1.7.x range)
       {:phoenix_html, "~> 3.1"},           # => HTML helpers for templates
+                                            # => Provides safe HTML tag generation
       {:phoenix_live_view, "~> 1.0.0"}    # => LiveView for real-time features
+                                            # => Server-rendered reactive UI over WebSocket
     ]
   end
 end
@@ -101,8 +104,10 @@ defmodule MyApp.Application do            # => Main application supervisor modul
     opts = [strategy: :one_for_one, name: MyApp.Supervisor]
                                            # => :one_for_one - restart failed child only
                                            # => Other strategies: :one_for_all, :rest_for_one
+                                           # => name: MyApp.Supervisor registers for introspection
     Supervisor.start_link(children, opts)  # => Starts supervisor with children
                                             # => Returns {:ok, pid} on success
+                                            # => PID is registered to MyApp.Supervisor name
   end
 
   @impl true                              # => Marks callback implementation
@@ -118,7 +123,7 @@ end
 
 **Key Takeaway**: Phoenix applications use an OTP supervision tree to manage processes. Your application supervisor starts child processes (database, endpoint, PubSub) that run for the lifetime of your app.
 
-**Why It Matters**: Supervision trees provide fault tolerance and self-healing capabilities essential for production web applications. When a child process crashes, the supervisor automatically restarts it without bringing down the entire application.
+**Why It Matters**: Supervision trees provide fault tolerance and self-healing capabilities essential for production web applications. When a child process crashes, the supervisor automatically restarts it without bringing down the entire application. This isolation means a database connection pool failure cannot corrupt your HTTP server process, and vice versa—each concern runs in its own isolated process with a dedicated restart strategy.
 
 ### Example 2: Routing Basics
 
@@ -206,9 +211,9 @@ defmodule MyAppWeb.PageController do    # => Controller for page-related actions
 end
 ```
 
-**Key Takeaway**: Routes define URL patterns and connect them to controllers. Pipelines specify middleware (plugs) that run for matching routes. Verified routes (~p) catch routing errors at compile time.
+**Key Takeaway**: Routes map URL patterns to controller actions using pipelines for middleware. Verified routes (`~p`) provide compile-time safety for URL generation.
 
-**Why It Matters**: Compile-time route verification catches URL typos and missing handlers before deployment. This prevents 404 errors in production and enables safe route refactoring with compiler assistance.
+**Why It Matters**: Compile-time route verification catches URL typos and missing handlers before deployment, preventing 404 errors in production. The `~p` verified route sigil means route refactoring is safe—renaming a path triggers compiler errors everywhere the old path is referenced, rather than silent failures discovered at runtime or by end users.
 
 ### Example 3: Controllers and Actions
 
@@ -262,9 +267,9 @@ defmodule MyAppWeb.PostController do     # => Controller for post-related action
 end
 ```
 
-**Key Takeaway**: Controllers are modules containing actions (functions). Each action receives conn (request/response) and params (URL/form data). Return values determine the response (render, redirect, json).
+**Key Takeaway**: Controllers are modules with action functions that receive `conn` and `params`, then return a response via `render`, `redirect`, or `json`.
 
-**Why It Matters**: Controllers implement the request-response pattern that forms the backbone of web applications. Understanding Phoenix controllers enables proper separation of concerns and clean HTTP interface design.
+**Why It Matters**: Controllers implement the request-response pattern by transforming `conn` through plugs and returning rendered responses. Understanding Phoenix controllers enables proper separation of concerns—keeping HTTP handling out of business logic—and designing clean interfaces where each action handles exactly one HTTP intent with predictable return shapes for both HTML and JSON clients.
 
 ### Example 4: Plugs - Request Transformation
 
@@ -356,9 +361,9 @@ defmodule MyAppWeb.Router do          # => Router configuration
 end
 ```
 
-**Key Takeaway**: Plugs are functions that take conn and return conn. Pipelines compose plugs. Use assign/3 to pass data to templates. Use halt/1 to stop processing.
+**Key Takeaway**: Plugs transform the `conn` struct in composable pipelines; `assign/3` passes data to templates and `halt/1` stops the pipeline early for auth rejections.
 
-**Why It Matters**: Plugs enable composable middleware for authentication, logging, CORS, and request transformation. This pattern allows security and cross-cutting concerns to be applied consistently across all routes.
+**Why It Matters**: Plugs enable composable middleware for authentication, logging, CORS, and request transformation. Applying cross-cutting concerns as named pipeline plugs means security rules are defined once and enforced uniformly—a developer adding a new route to the `:require_auth` pipeline automatically inherits authentication without manually adding auth checks to the controller action.
 
 ### Example 5: Templates and Layouts
 
@@ -416,9 +421,9 @@ end
                                               # => Outputs: <div class="field">...</div>
 ```
 
-**Key Takeaway**: HEEx templates use <%= %> for expressions, @assigns for data. Function components (with ~H/1) are pure functions that generate HTML. Components accept attributes and render content.
+**Key Takeaway**: HEEx templates use `<%= %>` for expressions and `@assigns` for data. Function components are pure functions accepting typed `attr` declarations and returning validated HTML.
 
-**Why It Matters**: Templates with HEEx enable component-based UI development with compile-time validation. This catches HTML errors during compilation rather than runtime, improving reliability.
+**Why It Matters**: HEEx templates catch HTML structure errors and missing attributes at compile time rather than runtime, preventing malformed markup from reaching users. Function components with typed `attr` declarations provide an explicit contract between template authors and component users, catching misuse at compile time and enabling IDE autocompletion—a level of safety unavailable in traditional string-templating systems.
 
 ### Example 6: Static Assets Pipeline
 
@@ -489,9 +494,9 @@ config :esbuild,                        # => esbuild bundler configuration
   ]
 ```
 
-**Key Takeaway**: Assets are processed by esbuild and output to priv/static. Tailwind CSS processes CSS. Use `mix phx.digest` to fingerprint files for cache busting in production.
+**Key Takeaway**: Phoenix processes assets with esbuild (JS) and Tailwind (CSS) into `priv/static`; run `mix phx.digest` to fingerprint files for cache-busting in production.
 
-**Why It Matters**: Asset processing ensures consistent, optimized delivery of CSS and JavaScript. Understanding esbuild and Tailwind integration is essential for production-ready Phoenix applications with efficient client-side resources.
+**Why It Matters**: Understanding the asset pipeline ensures optimized, cache-busted delivery of CSS and JavaScript. Esbuild processes JavaScript significantly faster than webpack, while Tailwind generates only the utility classes your templates actually use. Running `mix phx.digest` fingerprints static assets so browsers can cache them indefinitely—serving fresh versions without cache invalidation issues when you deploy updates.
 
 ## Group 2: LiveView Basics
 
@@ -523,6 +528,7 @@ graph TD
 # lib/my_app_web/live/posts_live/list.ex
 defmodule MyAppWeb.PostsLive.List do    # => LiveView module for post listing
   use Phoenix.LiveView                  # => Import LiveView behavior and macros
+                                         # => Provides mount/3, render/1, handle_event/3
 
   def mount(_params, _session, socket) do  # => Called when LiveView first loads
                                             # => _params: URL parameters (unused)
@@ -530,6 +536,7 @@ defmodule MyAppWeb.PostsLive.List do    # => LiveView module for post listing
                                             # => socket: LiveView socket (similar to conn)
     posts = MyApp.Blog.list_posts()     # => Fetch posts from database
                                          # => posts is list of %Post{} structs
+                                         # => Query runs on server, not exposed to client
     {:ok, assign(socket, :posts, posts)}  # => Assign data to socket
                                            # => socket.assigns.posts = posts
                                            # => Returns {:ok, updated_socket}
@@ -538,13 +545,16 @@ defmodule MyAppWeb.PostsLive.List do    # => LiveView module for post listing
 
   def render(assigns) do                # => Renders HTML template
                                          # => assigns: map with :posts key
+                                         # => Called on every socket update
     ~H"""                               # => HEEx template sigil
+                                         # => Compiled and validated at compile time
     <h1>Posts</h1>                      # => Static heading
     <ul>                                # => Unordered list wrapper
       <%= for post <- @posts do %>      # => Loop over posts list
                                         # => @posts from socket.assigns.posts
         <li><%= post.title %></li>      # => Render each post title
                                         # => Outputs escaped HTML
+                                        # => post is %Post{} struct from assigns
       <% end %>                         # => End loop
     </ul>
     """
@@ -566,11 +576,30 @@ end
 
 **Key Takeaway**: LiveView modules use mount/3 to initialize state and render/1 to output HTML. assign/2 stores data in socket.assigns. WebSockets keep the connection alive for real-time updates.
 
-**Why It Matters**: LiveView enables real-time interactivity without JavaScript complexity. Server-rendered updates reduce client-side bugs and simplify state management.
+**Why It Matters**: LiveView enables real-time interactivity without writing JavaScript state management. Server-rendered DOM updates mean your application logic lives entirely in Elixir, reducing the attack surface for XSS vulnerabilities and eliminating the client-server data synchronization bugs that plague traditional SPAs. All business rules run server-side, making LiveView applications easier to test and reason about compared to React or Vue frontends.
 
 ### Example 8: LiveView Events
 
 Events are user interactions (clicks, form submissions) that trigger callbacks. handle_event/3 processes events.
+
+```mermaid
+%% LiveView event handling flow
+sequenceDiagram
+    participant U as User (Browser)
+    participant C as Client JS
+    participant S as LiveView Server
+
+    U->>C: Click button phx-click="increment"
+    C->>S: Send event over WebSocket
+    S->>S: handle_event("increment", params, socket)
+    S->>S: update(socket, :count, fn c -> c + 1 end)
+    S->>C: Send minimal HTML diff
+    C->>U: Patch DOM (only count changes)
+
+    style U fill:#0173B2,color:#fff
+    style C fill:#DE8F05,color:#fff
+    style S fill:#029E73,color:#fff
+```
 
 ```elixir
 defmodule MyAppWeb.CounterLive do       # => LiveView counter component
@@ -617,7 +646,7 @@ defmodule MyAppWeb.CounterLive do       # => LiveView counter component
 end
 ```
 
-**Key Takeaway**: phx-click binds events to buttons. phx-submit binds to forms. handle_event/3 processes events and returns {:noreply, socket} to update state without re-rendering the page.
+**Key Takeaway**: `phx-click` and `phx-submit` send events over WebSocket to `handle_event/3`, which returns `{:noreply, socket}` to update state and trigger a minimal DOM re-render.
 
 **Why It Matters**: LiveView events bridge user interactions to server-side state changes over the existing WebSocket connection, with no additional HTTP requests. Every phx-click sends a lightweight message to your Elixir process, which updates state and triggers surgical DOM patches. This approach keeps your business logic in Elixir while eliminating the need for client-side JavaScript state management.
 
@@ -672,9 +701,9 @@ defmodule MyAppWeb.PostsLive do         # => LiveView for post navigation
 end
 ```
 
-**Key Takeaway**: live_patch updates URL and calls handle_params/3. Use live_redirect to force full page reload. handle_params/3 processes URL changes and updates state accordingly.
+**Key Takeaway**: `live_patch` updates the URL and calls `handle_params/3` without remounting the LiveView. Use `live_redirect` when you need a full remount with fresh state.
 
-**Why It Matters**: LiveView navigation with push_patch/push_navigate updates the URL without a full page reload, preserving WebSocket state and all in-memory assigns. Users can bookmark and share URLs while your app maintains conversation state. Compared to traditional page reloads, LiveView navigation eliminates flash of unstyled content and avoids re-mounting the supervision tree.
+**Why It Matters**: `live_patch` and `live_navigate` update the URL without a full page reload, preserving WebSocket state and all in-memory assigns. Users can bookmark and share URLs while your app maintains conversation state. Compared to traditional page reloads, LiveView navigation eliminates the flash of unstyled content and avoids remounting expensive resources like database connections or external API clients.
 
 ### Example 10: LiveView Components
 
@@ -751,7 +780,7 @@ def parent_render(assigns) do          # => Parent LiveView render function
 end
 ```
 
-**Key Takeaway**: Stateless components are functions that render HTML. Stateful components (use Phoenix.LiveComponent) maintain state and handle their own events. Use live_component/3 to render stateful components.
+**Key Takeaway**: Stateless function components render HTML from assigns. Stateful `LiveComponent` modules maintain their own socket state and handle events independently within a parent LiveView.
 
 **Why It Matters**: Function components in HEEx compile at build time, eliminating runtime rendering overhead of stateful LiveComponents for purely presentational elements. Slots allow callers to inject arbitrary HTML without prop drilling, while the function signature makes the component contract explicit. For granular DOM updates, Phoenix re-renders only the component that received changed assigns, avoiding unnecessary diffing of the entire page.
 
@@ -760,6 +789,26 @@ end
 ### Example 11: Schema and Migrations
 
 Ecto schemas define your database structure. Migrations create and modify database tables.
+
+```mermaid
+%% Ecto schema to database mapping
+graph LR
+    A["Elixir Struct
+%Post{}"] -->|"use Ecto.Schema"| B["Ecto Schema
+schema posts do
+  field :title"]
+    B -->|"mix ecto.migrate"| C["PostgreSQL Table
+posts
+  title VARCHAR"]
+    D["Migration File
+priv/repo/migrations/
+*_create_posts.exs"] -->|defines| C
+
+    style A fill:#0173B2,color:#fff
+    style B fill:#DE8F05,color:#fff
+    style C fill:#029E73,color:#fff
+    style D fill:#CC78BC,color:#fff
+```
 
 ```elixir
 # lib/my_app/blog/post.ex - Define schema
@@ -824,9 +873,9 @@ end
                                         # => Tracks migration in schema_migrations table
 ```
 
-**Key Takeaway**: Schemas define field types (:string, :text, :integer, :boolean). Migrations create database tables. Use timestamps() to add inserted_at/updated_at automatically.
+**Key Takeaway**: Ecto schemas declare field types that map to database columns, and migrations version-control schema changes; `timestamps()` automatically adds `inserted_at` and `updated_at`.
 
-**Why It Matters**: Migrations provide version-controlled database schema changes. This enables safe, reversible database updates across environments.
+**Why It Matters**: Migrations provide version-controlled database schema changes that can be safely applied or rolled back. Storing schema history alongside application code means the database structure is always in sync with the code expecting it—critical for team development and automated deployments. The `change/0` function generates both `up` and `down` paths automatically for most operations, reducing rollback risk.
 
 ### Example 12: Ecto Queries
 
@@ -881,13 +930,37 @@ posts = MyApp.Repo.all(query)             # => Executes join query
                                            # => posts is [%Post{author_id: john_id}, ...]
 ```
 
-**Key Takeaway**: Use from/2 to start queries. Pipe where/2, order_by/2, limit/2 to build complex queries. Use select/2 to choose columns. MyApp.Repo.all/1 executes the query.
+**Key Takeaway**: Build queries incrementally with `from`, `where`, `order_by`, and `limit` using the pipe operator; `Repo.all/1` executes the composed query against the database.
 
-**Why It Matters**: Query composition enables complex database operations. Understanding Ecto queries is essential for application performance.
+**Why It Matters**: Ecto's composable query API separates query construction from execution, enabling reusable query fragments that are combined safely without string concatenation. Queries are validated against your schema at compile time, catching field typos before they reach production. The pipe-based composition means each filter, sort, or join concern can be extracted into a named function and tested independently.
 
 ### Example 13: Changesets and Validation
 
 Changesets track data changes and validate them before saving. They're Ecto's way of handling data integrity.
+
+```mermaid
+%% Changeset validation pipeline
+graph TD
+    A["Input Attrs
+%{title: '', email: 'bad'}"] --> B["cast/3
+Filter allowed fields"]
+    B --> C["validate_required/2
+Check :title present"]
+    C --> D["validate_length/3
+Check field lengths"]
+    D --> E["validate_format/3
+Check email format"]
+    E --> F{"valid?"}
+    F -->|true| G["Repo.insert!
+Save to database"]
+    F -->|false| H["Return changeset
+with errors map"]
+
+    style A fill:#0173B2,color:#fff
+    style F fill:#DE8F05,color:#fff
+    style G fill:#029E73,color:#fff
+    style H fill:#CA9161,color:#fff
+```
 
 ```elixir
 defmodule MyApp.Blog.Post do             # => Schema module for posts table
@@ -970,7 +1043,7 @@ def handle_event("save", %{"post" => params}, socket) do
 end
 ```
 
-**Key Takeaway**: Changesets validate data before saving. cast/3 specifies allowed fields. validate\_\*/\_ functions add validation rules. Changesets track errors for form display.
+**Key Takeaway**: Changesets validate data through a pipeline of `cast/3` (to filter fields) and `validate_*` functions (to add rules), accumulating errors without touching the database.
 
 **Why It Matters**: Changesets enforce validation rules at the data layer before any database write occurs. All field constraints — required fields, format patterns, length limits, uniqueness — are declared once in the changeset and reused across controller actions, API endpoints, and background jobs, eliminating inconsistent validation scattered across your codebase.
 
@@ -1055,7 +1128,7 @@ posts = Post                             # => Start with Post schema
                                           # => Returns posts with loaded comments
 ```
 
-**Key Takeaway**: has_many/2 and belongs_to/2 declare associations. Migrations add foreign keys. Use preload/1 to load related data. Without preload, accessing post.comments loads from database separately.
+**Key Takeaway**: `has_many/2` and `belongs_to/2` declare associations in schemas; use `Repo.preload/2` to load related data eagerly in one query and avoid N+1 database calls.
 
 **Why It Matters**: Declaring associations in schemas tells Ecto how to JOIN tables and preload related records efficiently. belongs_to adds a foreign key reference while has_many enables one-to-many navigation. Using Repo.preload/2 fetches related data in a single additional query, preventing the N+1 problem where each record would trigger its own SELECT. Referential integrity constraints at the database level catch orphaned records before they corrupt your data.
 
@@ -1111,15 +1184,38 @@ Enum.map(posts, &MyApp.Repo.delete/1)    # => Iterates through posts
                                           # => Returns [{:ok, post1}, {:ok, post2}, ...]
 ```
 
-**Key Takeaway**: Repo.insert/1 creates records. Repo.get/2 retrieves by ID. Repo.update/1 modifies records. Repo.delete/1 removes records. All return {:ok, record} or {:error, changeset}.
+**Key Takeaway**: `Repo.insert/1`, `Repo.get/2`, `Repo.update/1`, and `Repo.delete/1` perform CRUD operations, each returning `{:ok, record}` on success or `{:error, changeset}` on failure.
 
-**Why It Matters**: Repository functions provide the interface between your application and the database. Understanding Repo operations is fundamental to data persistence in Phoenix applications.
+**Why It Matters**: Repository functions provide the explicit interface between your application and the database, making data access traceable and testable. Unlike ActiveRecord-style magic, Ecto requires you to call `Repo.*` functions explicitly—making it obvious when database queries occur. This explicitness prevents accidental lazy loading, N+1 queries, and unintended database access from deep within business logic functions.
 
 ## Group 4: Forms and Validation
 
 ### Example 16: LiveView Forms
 
 Phoenix forms in LiveView automatically handle validation, phx-change updates, and phx-submit saves.
+
+```mermaid
+%% LiveView form lifecycle
+sequenceDiagram
+    participant U as User
+    participant F as Form (Browser)
+    participant S as LiveView Server
+    participant D as Database
+
+    U->>F: Type in field
+    F->>S: phx-change "validate" event
+    S->>S: Run changeset validation
+    S->>F: Return validation errors (no DB)
+    U->>F: Submit form
+    F->>S: phx-submit "save" event
+    S->>D: Repo.update(changeset)
+    D->>S: {:ok, post} or {:error, changeset}
+    S->>F: Redirect on success or show errors
+
+    style U fill:#0173B2,color:#fff
+    style S fill:#029E73,color:#fff
+    style D fill:#DE8F05,color:#fff
+```
 
 ```elixir
 defmodule MyAppWeb.PostLive.Form do      # => LiveView module for post editing
@@ -1205,9 +1301,9 @@ defmodule MyAppWeb.PostLive.Form do      # => LiveView module for post editing
 end
 ```
 
-**Key Takeaway**: `<.form>` component binds to changeset. phx-change fires on field changes. phx-submit fires on form submission. Form automatically submits CSRF token and field values.
+**Key Takeaway**: The `<.form>` component binds to a changeset; `phx-change` fires validation on each keystroke and `phx-submit` fires on form submission, both sending data over WebSocket.
 
-**Why It Matters**: LiveView forms provide instant validation feedback on every keystroke via phx-change events, catching errors before submission. The form_for/2 helper automatically embeds CSRF tokens and maps changeset errors to field-level messages. Users see real-time feedback without any JavaScript validation code.
+**Why It Matters**: LiveView forms provide instant validation feedback on every keystroke via `phx-change` events, catching errors before submission. The `<.form>` component automatically embeds CSRF tokens and maps changeset errors to field-level messages, giving users real-time feedback without any client-side JavaScript validation code. Validation rules live in the changeset—one place that governs both real-time feedback and final save.
 
 ### Example 17: Form Validation Feedback
 
@@ -1261,7 +1357,7 @@ end
 
 **Key Takeaway**: Access changeset errors with @changeset.errors[:field]. Use phx-debounce to reduce validation calls. Display errors immediately under fields for real-time feedback.
 
-**Why It Matters**: Inline validation feedback on phx-change events lets users correct mistakes while typing, reducing form abandonment. Changesets power both the validation rules and the error display, keeping your validation logic in one place. Immediate field-level error messages are more helpful than post-submit error summaries.
+**Why It Matters**: Inline validation feedback on `phx-change` events lets users correct mistakes while typing, significantly reducing form abandonment rates. Changesets power both the real-time validation rules and the final submission error display from a single definition—keeping logic in one place prevents divergence between what the form shows and what the database accepts. Immediate field-level error messages reduce cognitive load compared to post-submit summaries.
 
 ### Example 18: File Uploads in LiveView
 
@@ -1351,7 +1447,7 @@ defmodule MyAppWeb.ProfileLive do        # => LiveView for profile editing
 end
 ```
 
-**Key Takeaway**: allow_upload/2 registers an upload. <.live_file_input> renders input. consume_uploaded_entries/3 processes files after submission. Uploads show progress and validate file types.
+**Key Takeaway**: `allow_upload/2` registers an upload configuration; `<.live_file_input>` renders the input; and `consume_uploaded_entries/3` processes completed uploads after form submission.
 
 **Why It Matters**: Server-side file upload handling in LiveView validates files before storage — checking type, size, and content on your server before a single byte reaches your storage backend. Users see real-time upload progress through LiveView's WebSocket without polling. Validation errors display instantly, preventing invalid files from consuming storage or causing downstream processing failures.
 
@@ -1439,7 +1535,7 @@ defmodule MyAppWeb.SignupLive do         # => LiveView for multi-step signup wiz
 end
 ```
 
-**Key Takeaway**: Track current step in socket assigns. Render different forms based on step. Validate before advancing. Save all data together on final submission.
+**Key Takeaway**: Track the current step in socket assigns, render different form partials per step, validate before advancing, and persist all collected data on final submission.
 
 **Why It Matters**: Multi-step forms in LiveView keep all wizard state in the process's socket assigns — no session serialization, no hidden form fields. Each step validates independently before advancing, providing targeted feedback without storing partial data. When users navigate back and forth between steps, all previously entered data is preserved in memory, making complex data collection flows feel natural.
 
@@ -1549,9 +1645,9 @@ scope "/api", MyAppWeb.API do            # => Scopes all routes under /api
 end
 ```
 
-**Key Takeaway**: Use json/2 to return JSON responses. Use put_status/2 for HTTP status codes (201, 204, 422). Convert changesets to error maps for API responses.
+**Key Takeaway**: Use `json/2` for JSON responses and `put_status/2` for HTTP status codes; serialize changeset errors into structured maps for consistent API error responses.
 
-**Why It Matters**: JSON API endpoints in Phoenix use the same controller pattern as HTML views, making REST APIs straightforward to add alongside existing web pages. The json/2 helper handles serialization, put_status/2 sets HTTP codes, and changeset errors translate naturally to 422 Unprocessable Entity responses that API clients can parse programmatically.
+**Why It Matters**: JSON API endpoints in Phoenix use the same controller pattern as HTML views, making REST APIs straightforward to add alongside existing web pages. The `json/2` helper handles serialization, `put_status/2` sets HTTP codes, and changeset errors translate naturally to 422 Unprocessable Entity responses that API clients can parse programmatically. This consistency means teams can ship HTML and API views from one codebase without duplication.
 
 ### Example 21: Nested Resources and Scoped Routes
 
@@ -1578,15 +1674,18 @@ graph TD
 
 ```elixir
 # Router with nested resources
-defmodule MyAppWeb.Router do
-  use MyAppWeb, :router
+defmodule MyAppWeb.Router do                 # => Router module for URL routing
+  use MyAppWeb, :router                      # => Import routing macros (get, post, resources)
 
-  scope "/", MyAppWeb do
-    pipe_through :browser
+  scope "/", MyAppWeb do                     # => Root scope for all routes
+    pipe_through :browser                    # => Apply browser pipeline (session, CSRF)
 
     # Nested resources - comments belong to posts
-    resources "/posts", PostController do
+    resources "/posts", PostController do    # => Generates /posts RESTful routes
+                                             # => GET /posts, POST /posts, etc.
       resources "/comments", CommentController  # => /posts/:post_id/comments
+                                                # => Nested under post routes
+                                                # => Generates /posts/:post_id/comments/...
     end
   end
 end
@@ -1650,9 +1749,9 @@ defmodule MyApp.Blog do                  # => Context module for blog domain
 end
 ```
 
-**Key Takeaway**: Nest resources to express parent-child relationships. Access parent via params["post_id"]. Use scoped queries to filter by parent. Maintains clean URL structure like /posts/123/comments.
+**Key Takeaway**: Nest resources to express parent-child relationships. Access parent via `params["post_id"]` and use scoped queries to filter by parent.
 
-**Why It Matters**: Parameter handling extracts and validates user input. Proper parameter handling prevents security vulnerabilities and improves error messages.
+**Why It Matters**: Nested resources make the parent-child relationship explicit in URLs, which improves API discoverability and enforces authorization boundaries at the routing layer. When a comment URL always includes the post ID (`/posts/123/comments/456`), you can verify the comment actually belongs to the post before returning it—preventing cross-resource access bugs common in flat routing designs. The scoped query pattern also centralizes access control logic in context functions rather than scattering it across controllers.
 
 ### Example 22: Error Handling and Custom Error Pages
 
@@ -1732,7 +1831,7 @@ def show(conn, %{"id" => id}) do         # => Alternative approach with exceptio
 end
 ```
 
-**Key Takeaway**: ErrorView renders custom error pages. Template name matches HTTP status (404.html, 500.html). Raise exceptions or set status manually. Phoenix catches errors and renders appropriate template.
+**Key Takeaway**: Define error templates named after HTTP status codes (404.html, 500.html) in `ErrorView`; Phoenix automatically renders the matching template when exceptions are raised or status codes set.
 
 **Why It Matters**: Custom error pages prevent framework stack traces from leaking to users in production. Phoenix separates dev error views (with full debugging details) from prod error views (user-friendly messages), so the same exception renders differently per environment. Mapping HTTP status codes to named templates gives you full control over 404, 422, and 500 pages, maintaining UX quality even when things go wrong.
 
@@ -1824,7 +1923,7 @@ def handle_event("delete", %{"id" => id}, socket) do
 end
 ```
 
-**Key Takeaway**: put_flash/3 sets temporary messages (:info, :error, :warning). Phoenix.Flash.get/2 retrieves messages in templates. Flash survives redirects but clears after display. Works in both controllers and LiveView.
+**Key Takeaway**: `put_flash/3` sets temporary messages that survive a redirect, are displayed once via `Phoenix.Flash.get/2` in templates, and work identically in both controllers and LiveView.
 
 **Why It Matters**: Flash messages deliver one-time feedback that survives a redirect without polluting the URL or session. put_flash/3 stores a message under a key (:info, :error) in the connection, and Phoenix.Flash.get/2 retrieves it once before clearing it. LiveView supports the same flash mechanism through put_flash/3 in event handlers, so user notifications stay consistent whether actions originate from controller actions or real-time LiveView events.
 
@@ -1921,7 +2020,7 @@ end
 # /posts?page=2&per_page=10              # => Page 2, 10 posts per page
 ```
 
-**Key Takeaway**: Build queries dynamically using pattern matching. Check for nil params before applying filters. Use limit/offset for pagination. Query functions compose cleanly with pipes.
+**Key Takeaway**: Build dynamic Ecto queries by pattern-matching on params and conditionally piping filter, sort, and pagination clauses—only applying each clause when the corresponding param is present.
 
 **Why It Matters**: Reading filter state from conn.query_params makes it shareable via URL — users can bookmark or share a filtered view. Pattern matching on parameter keys with safe defaults guards against missing or malformed values. Building queries incrementally by piping optional clauses avoids constructing SQL strings manually and keeps each filter concern isolated, making it safe to add, remove, or test filters independently.
 
@@ -2033,6 +2132,6 @@ end
 # GET /posts/1.json => JSON (format in URL)
 ```
 
-**Key Takeaway**: Phoenix negotiates format based on Accept header or file extension. Define view functions for each format (show.json, show.html). Use get_format/1 to check requested format. Return 406 for unsupported formats.
+**Key Takeaway**: Phoenix content negotiation selects HTML or JSON response format from the `Accept` header; define `show.json` and `show.html` view functions to serve each format from one controller action.
 
-**Why It Matters**: Content negotiation enables your application to serve multiple formats from the same endpoints. This pattern is essential for building APIs that support web and mobile clients.
+**Why It Matters**: Content negotiation enables your application to serve multiple formats from the same endpoints, keeping routing clean and eliminating duplicate business logic. A single controller action can respond with HTML for browsers and JSON for API clients based on the `Accept` header, making Phoenix applications naturally multi-client without maintaining separate endpoints for each consumer type.

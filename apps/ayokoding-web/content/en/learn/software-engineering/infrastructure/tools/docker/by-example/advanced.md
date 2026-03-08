@@ -9,7 +9,7 @@ tags: ["docker", "tutorial", "by-example", "advanced", "swarm", "security", "pro
 
 ### Examples 55-84: Production Mastery
 
-This chapter covers advanced Docker patterns through 25 examples, achieving 75-95% coverage. You'll learn Docker Swarm basics, security best practices, registry operations, CI/CD integration, and production deployment patterns.
+This chapter covers advanced Docker patterns through 30 examples, achieving 75-95% coverage. You'll learn Docker Swarm basics, security best practices, registry operations, CI/CD integration, and production deployment patterns.
 
 ---
 
@@ -1156,7 +1156,7 @@ HEALTHCHECK --interval=30s --timeout=3s \
 
 **Key Takeaway**: Use distroless images for maximum security in production. No shell means attackers can't run commands even if they compromise the application. Debug with `:debug` variants during development. Distroless images have near-zero vulnerabilities due to minimal contents.
 
-**Why It Matters**: Distroless images reduce attack surface by 95% compared to traditional base images - no shell means attackers cannot run commands even after exploiting application vulnerabilities. This pattern prevented lateral movement in real breaches where attackers gained container access but could not execute reconnaissance commands or download additional malware. Distroless images typically have zero CVEs compared to 50-200 vulnerabilities in full OS images, dramatically reducing compliance burden and security patch overhead. Organizations using distroless report measurable reductions in CVE counts per image — often dropping from 50–200 vulnerabilities in full OS base images to zero, dramatically accelerating security audit cycles and reducing the ongoing maintenance overhead of patching unnecessary system packages.
+**Why It Matters**: Distroless images reduce attack surface by 95% compared to traditional base images - no shell means attackers cannot run commands even after exploiting application vulnerabilities. This pattern prevented lateral movement in real breaches where attackers gained container access but could not execute reconnaissance commands or download additional malware. Distroless images typically have zero CVEs compared to 50-200 vulnerabilities in full OS images, dramatically reducing compliance burden and security patch overhead.
 
 ### Example 62: User Namespaces for Privilege Isolation
 
@@ -3567,7 +3567,24 @@ Restrict container syscalls using seccomp (Secure Computing Mode) profiles for d
 }
 ```
 
-<!-- File: seccomp-profile.json — defaultAction SCMP_ACT_ERRNO denies all syscalls not in the allow list. Architectures covers x86_64, x86, ARM32, and ARM64. The allow list contains only syscalls needed for network I/O, process management, file operations, and memory management. Dangerous syscalls (ptrace, init_module, mount, etc.) are implicitly blocked by the default deny action. -->
+**Seccomp profile breakdown**:
+
+```bash
+# => defaultAction: SCMP_ACT_ERRNO — deny ALL syscalls not explicitly allowed
+# => architectures: covers x86_64, x86, ARM32, ARM64 (multi-platform support)
+# => The allow list groups syscalls by function:
+# => - Network I/O: accept, accept4, bind, connect, listen, recvfrom, recvmsg, sendmsg, sendto
+# => - Socket management: socket, setsockopt, select, poll, epoll_* (event-driven I/O)
+# => - Process management: clone, execve, exit, exit_group, getpid, getppid, getuid
+# => - File operations: open, openat, read, write, close, fstat, lseek, getcwd, chdir
+# => - Memory management: mmap, mprotect, munmap, brk (virtual memory operations)
+# => - Signal handling: rt_sigaction, rt_sigprocmask, rt_sigreturn (async events)
+# => - Misc: futex, ioctl, dup, dup2, fcntl, getdents, readlink, access, arch_prctl
+# => Explicitly blocked by name:
+# => - reboot: SCMP_ACT_ERRNO — prevents host reboot from container
+# => All other syscalls (~370+) blocked by defaultAction: SCMP_ACT_ERRNO
+# => Example blocked syscalls: ptrace, init_module, mount, pivot_root, sethostname
+```
 
 ```bash
 # Run container with custom seccomp profile
@@ -5241,7 +5258,7 @@ EOF
 
 **Key Takeaway**: Implement automated vulnerability scanning in CI/CD pipelines. Use Trivy or similar tools to detect CRITICAL and HIGH severity issues. Auto-remediate by updating base images to latest patch versions. Create automated Pull Requests for security fixes. Enforce policies blocking deployment of vulnerable images. Monitor production images continuously for newly discovered vulnerabilities.
 
-**Why It Matters**: Vulnerability remediation automation prevents security debt accumulation - without automation, teams lag 60-90 days behind security patches, leaving exploitable windows for attackers. Daily scans with automated PR creation reduce remediation time from weeks to hours - when CRITICAL vulnerabilities are published, systems automatically test fixes and submit PRs for review instead of waiting for manual ticket creation. Organizations with automated remediation report vulnerability patch cycles compressed from weeks to hours — when a new CVE is published, automated systems identify affected images, test the fix, and open pull requests before manual processes would have even acknowledged the alert, dramatically shrinking exploitable windows.
+**Why It Matters**: Vulnerability remediation automation prevents security debt accumulation - without automation, teams lag 60-90 days behind security patches, leaving exploitable windows for attackers. Daily scans with automated PR creation reduce remediation time from weeks to hours - when CRITICAL vulnerabilities are published, systems automatically test fixes and submit PRs for review instead of waiting for manual ticket creation.
 
 ### Example 83: Docker Resource Monitoring with cAdvisor and Prometheus
 

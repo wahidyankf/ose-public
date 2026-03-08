@@ -273,7 +273,7 @@ fn broken_example() {
 
 **Key Takeaway**: Structs storing references require lifetime parameters to ensure the struct doesn't outlive the data it borrows, preventing dangling references in struct fields. The lifetime constraint is enforced at compile time with zero runtime cost.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Struct lifetimes are essential for zero-allocation data views over external buffers—parsing a network packet into a typed struct without copying requires the struct to borrow from the packet buffer with an explicit lifetime. Database row types that borrow from query result buffers use this pattern to avoid heap allocation per row. The compile-time constraint means invalid code like "return a reference to a local variable inside a struct" is caught before deployment, preventing the dangling pointer crashes that require AddressSanitizer to detect in C++.
 
 ---
 
@@ -598,7 +598,7 @@ fn advanced_example() {              // => Demonstrate default chaining
 
 **Key Takeaway**: Default trait implementations reduce code duplication by providing common behavior that types can inherit or override, enabling flexible trait-based abstraction. Default methods can call other trait methods, creating composable behavior hierarchies.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Default trait implementations enable the Template Method pattern without inheritance hierarchies. The `Iterator` trait uses this extensively—implementing only `next()` gives you access to `map`, `filter`, `fold`, and dozens of other methods for free. Web frameworks use default middleware implementations that types can selectively override, making it practical to add cross-cutting concerns like logging or authentication without modifying every handler. This composability is how Rust achieves OOP ergonomics without the fragility of deep inheritance hierarchies.
 
 ---
 
@@ -2774,7 +2774,7 @@ fn main() {
 
 **Key Takeaway**: `Send` and `Sync` marker traits automatically enforced by the compiler prevent data races by ensuring only thread-safe types can cross thread boundaries (`Send`) or be shared concurrently (`Sync`). Most types derive these traits automatically based on their fields—compiler rejects thread operations on non-Send/non-Sync types at compile time, providing fearless concurrency.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: `Send` and `Sync` are the compiler-enforced foundation of Rust's fearless concurrency promise. Tokio's async runtime requires `Send` bounds on spawned tasks, ensuring no stack references escape to background threads—a guarantee that prevents the data races requiring TSan to detect in Go or C++. The `!Send` marker on `Rc<T>` prevents accidental cross-thread sharing of reference-counted data, a common source of race conditions in C++ code using `shared_ptr`. Database connection libraries implement `!Sync` on raw connections to prevent multiple threads from interleaving SQL commands.
 
 ---
 
@@ -3488,30 +3488,24 @@ mod tests {                          // => Module containing tests
 Documentation examples in `///` comments are automatically tested, ensuring documentation stays accurate. Doc tests are extracted, compiled, and run as separate test programs, validating both code examples and documentation correctness.
 
 ````rust
-/// Adds two numbers together.                    // => Triple-slash doc comment
-///                                                // => Appears in generated docs
+/// Adds two numbers together.
+///                                                // => /// triple-slash doc comments appear in generated docs
 /// This function performs addition on two `i32` values and returns the sum.
-///                                                // => Function description
-/// # Examples                                    // => Standard section header
-///                                                // => Markdown formatting supported
-/// ```                                            // => Code block start
+///
+/// # Examples                                    // => Standard section header in docs
+///
+/// ```                                            // => Code block inside /// is compiled and run by cargo test --doc
 /// let result = intermediate_example::add(2, 3); // => Example code
-/// assert_eq!(result, 5);                        // => Assertion tested by cargo test --doc
-/// ```                                            // => Code block end
-///                                                // => This code is compiled and run!
-/// # Edge Cases                                  // => Custom section
+/// assert_eq!(result, 5);                        // => Assertion tested automatically
+/// ```
+///
+/// # Edge Cases
 ///
 /// ```
-/// // Zero addition
-/// assert_eq!(intermediate_example::add(0, 0), 0);
-///                                                // => Test zero case
-/// // Negative numbers
-/// assert_eq!(intermediate_example::add(-5, 3), -2);
-///                                                // => Test negative operands
+/// assert_eq!(intermediate_example::add(0, 0), 0);   // => Zero case
+/// assert_eq!(intermediate_example::add(-5, 3), -2);  // => Negative operands
 /// ```
-pub fn add(a: i32, b: i32) -> i32 {             // => Public function
-    a + b                                        // => Implementation
-}
+pub fn add(a: i32, b: i32) -> i32 { a + b }     // => Implementation separate from doc comments
 
 /// Subtracts two numbers.
 ///
@@ -3523,152 +3517,96 @@ pub fn add(a: i32, b: i32) -> i32 {             // => Public function
 /// let diff = intermediate_example::subtract(10, 3);
 /// assert_eq!(diff, 7);                          // => 10 - 3 = 7
 /// ```
-///
-/// ```
-/// // Negative result
-/// let result = intermediate_example::subtract(5, 10);
-/// assert_eq!(result, -5);                       // => 5 - 10 = -5
-/// ```
-pub fn subtract(a: i32, b: i32) -> i32 {
-    a - b
-}
+pub fn subtract(a: i32, b: i32) -> i32 { a - b }
 
-/// Divides two numbers.                          // => Function with error handling
+/// Divides two numbers.
 ///
 /// # Arguments
 ///
-/// * `a` - The dividend                         // => Parameter documentation
-/// * `b` - The divisor                          // => Must be non-zero
+/// * `a` - The dividend
+/// * `b` - The divisor (must be non-zero)
 ///
-/// # Returns
+/// # Errors
 ///
-/// Returns `Ok(quotient)` on success, or `Err(message)` if `b` is zero.
-///
-/// # Errors                                      // => Error documentation section
-///
-/// Returns `Err` if divisor is zero.            // => Describe error conditions
+/// Returns `Err` if divisor is zero.
 ///
 /// # Examples
-///
-/// Successful division:                         // => Example with context
 ///
 /// ```
 /// let result = intermediate_example::divide(10, 2).unwrap();
 /// assert_eq!(result, 5);                        // => 10 / 2 = 5
 /// ```
 ///
-/// Handling division by zero:                   // => Error case example
-///
 /// ```
 /// let result = intermediate_example::divide(10, 0);
-/// assert!(result.is_err());                     // => Test error case
-/// ```
-///
-/// Using pattern matching:                      // => Advanced usage
-///
-/// ```
-/// match intermediate_example::divide(15, 3) {
-///     Ok(quotient) => assert_eq!(quotient, 5),  // => Success path
-///     Err(_) => panic!("Unexpected error"),     // => Error path
-/// }
+/// assert!(result.is_err());                     // => Division by zero returns Err
 /// ```
 pub fn divide(a: i32, b: i32) -> Result<i32, String> {
-    if b == 0 {                                  // => Error condition
-        Err(String::from("Division by zero"))   // => Return error
+    if b == 0 {                                  // => Error condition check
+        Err(String::from("Division by zero"))   // => Return Err variant
     } else {
-        Ok(a / b)                                // => Return success
+        Ok(a / b)                                // => Return Ok variant
     }
 }
 
-/// Calculates the factorial of a number.        // => Recursive function
+/// Calculates the factorial of a number.
 ///
 /// # Panics
 ///
-/// Panics if `n` is negative.                   // => Document panic conditions
+/// Panics if `n` is negative.
 ///
 /// # Examples
 ///
 /// ```
-/// assert_eq!(intermediate_example::factorial(0), 1);
-///                                                // => 0! = 1 (base case)
-/// assert_eq!(intermediate_example::factorial(5), 120);
-///                                                // => 5! = 120
+/// assert_eq!(intermediate_example::factorial(0), 1);  // => 0! = 1 (base case)
+/// assert_eq!(intermediate_example::factorial(5), 120); // => 5! = 120
 /// ```
 ///
-/// # Panics Example
-///
-/// ```should_panic                               // => Annotate panic tests
-/// intermediate_example::factorial(-1);          // => This should panic
-/// ```                                            // => Test passes if code panics
+/// ```should_panic                               // => Test passes only if code panics
+/// intermediate_example::factorial(-1);
+/// ```
 pub fn factorial(n: i32) -> i32 {
-    if n < 0 {                                   // => Validate input
-        panic!("Factorial of negative number");  // => Panic on invalid input
-    }
-    if n == 0 {                                  // => Base case
-        1                                        // => 0! = 1
-    } else {
-        n * factorial(n - 1)                     // => Recursive case
-    }
+    if n < 0 { panic!("Factorial of negative number"); }
+                                                 // => Panic on invalid input (documented)
+    if n == 0 { 1 } else { n * factorial(n - 1) }
+                                                 // => Base case: 0! = 1; recursive: n * (n-1)!
 }
 
-/// Checks if a string is a palindrome.          // => String processing function
-///
-/// A palindrome reads the same forwards and backwards, ignoring case and spaces.
+/// Checks if a string is a palindrome (case/space insensitive).
 ///
 /// # Examples
 ///
 /// ```
-/// assert!(intermediate_example::is_palindrome("racecar"));
-///                                                // => Simple palindrome
+/// assert!(intermediate_example::is_palindrome("racecar"));  // => Simple palindrome
 /// assert!(intermediate_example::is_palindrome("A man a plan a canal Panama"));
-///                                                // => Case and spaces ignored
-/// assert!(!intermediate_example::is_palindrome("hello"));
-///                                                // => Not a palindrome
+/// assert!(!intermediate_example::is_palindrome("hello"));   // => Not a palindrome
+/// assert!(intermediate_example::is_palindrome(""));          // => Empty is palindrome
 /// ```
-///
-/// Empty strings:                                // => Edge case
-///
-/// ```
-/// assert!(intermediate_example::is_palindrome(""));
-///                                                // => Empty is palindrome
-/// ```
-pub fn is_palindrome(s: &str) -> bool {          // => Takes string slice
-    let cleaned: String = s.chars()              // => Remove non-alphanumeric
-        .filter(|c| c.is_alphanumeric())         // => Keep only letters/digits
+pub fn is_palindrome(s: &str) -> bool {
+    let cleaned: String = s.chars()
+        .filter(|c| c.is_alphanumeric())         // => Remove non-alphanumeric chars
         .map(|c| c.to_lowercase().next().unwrap())
-                                                 // => Convert to lowercase
-        .collect();                              // => Collect into String
-
+        .collect();                              // => Collect lowercase chars into String
     cleaned == cleaned.chars().rev().collect::<String>()
-                                                 // => Compare with reverse
+                                                 // => Compare forward vs reversed
 }
 
-/// Demonstrates code that won't compile.        // => Negative test
+/// Demonstrates compile_fail and ignore doc test annotations.
 ///
 /// # Examples
 ///
-/// This code is marked as `compile_fail`:
-///
-/// ```compile_fail                               // => Expect compilation failure
-/// let x: i32 = "not a number";                  // => Type error
-/// ```                                            // => Test passes if won't compile
-///
-/// This code is marked as `ignore`:
-///
-/// ```ignore                                      // => Skip this example
-/// // This example won't be tested
-/// let unreachable = "code";                     // => Useful for pseudocode
+/// ```compile_fail                               // => Test passes if this code fails to compile
+/// let x: i32 = "not a number";
 /// ```
-pub fn compile_examples() {
-    // Function demonstrating compile_fail and ignore annotations
-}
+///
+/// ```ignore                                     // => Skip this example in cargo test --doc
+/// let unreachable = "code";
+/// ```
+pub fn compile_examples() {}
 
-// Run documentation tests with: cargo test --doc
-// Run both unit tests and doc tests: cargo test
-// Show doc test output: cargo test --doc -- --nocapture
-
-// Generated documentation available at: target/doc/intermediate_example/index.html
-// Generate docs: cargo doc --open
+// cargo test --doc      => Run only documentation tests
+// cargo test            => Run all tests (unit + doc)
+// cargo doc --open      => Generate and open documentation
 ````
 
 **Key Takeaway**: Documentation examples in `///` comments are automatically tested by `cargo test --doc`, ensuring documentation remains accurate and providing usage examples. Use `#[should_panic]` annotation for panic tests, `compile_fail` for code that shouldn't compile, and `ignore` for examples that shouldn't run—doc tests serve as both documentation and living tests that validate code examples stay synchronized with implementation.

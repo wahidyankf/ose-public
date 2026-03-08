@@ -189,7 +189,7 @@ Examples use `;; =>` notation to show return values and side effects:
 - Deprecated features
 - Specialized libraries (datascript, datomic internals)
 
-## Tutorial Structure
+## Five-Part Structure
 
 Each example follows a five-part format:
 
@@ -260,7 +260,7 @@ This tutorial prioritizes working code over theoretical discussion:
 - **Learn by doing**: Understanding comes from running and modifying code
 - **Pattern recognition**: See the same patterns in different contexts across 80 examples
 
-If you prefer narrative explanations. By-example learning works best when you learn through experimentation.
+If you prefer narrative explanations, the By-Concept tutorial path provides deeper pedagogical coverage. By-example learning works best when you learn through experimentation and direct code exploration.
 
 ## Example Format
 
@@ -322,6 +322,4 @@ graph TD
 
 ## Next Steps
 
-Start with [Beginner](/en/learn/software-engineering/programming-languages/clojure/by-example/beginner) if you're new to Clojure, or jump to [Intermediate](/en/learn/software-engineering/programming-languages/clojure/by-example/intermediate) if you know the basics.
-
-Happy learning!
+Start with [Beginner](/en/learn/software-engineering/programming-languages/clojure/by-example/beginner) if you're new to Clojure, or jump to [Intermediate](/en/learn/software-engineering/programming-languages/clojure/by-example/intermediate) if you already know the basics. Progress through all three levels to achieve 95% Clojure coverage.

@@ -175,7 +175,7 @@ Guards.can_vote(16)
 
 **Key Takeaway**: Guards add type and value constraints to pattern matching. Only a limited set of functions is allowed in guards to ensure they remain side-effect free and fast.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Guards extend pattern matching with boolean predicates, enabling type validation and range checking directly in function heads and case clauses. The restriction to pure functions (no side effects, no user-defined functions) exists because guards are evaluated at pattern match time by the BEAM's hot path—they must be guaranteed to terminate and have no side effects. This restriction also means guards serve as compile-time-checked contracts: the compiler knows which guard functions are valid. Production code uses guards for input validation, numeric boundary checking, and type discrimination in polymorphic functions.
 
 ---
 
@@ -364,7 +364,7 @@ FunctionMatching.send_message(%{email: "b@example.com"}, "Hi", [])
 
 **Key Takeaway**: Pattern matching in function heads enables elegant multi-clause logic. Place specific patterns before general ones, and combine with guards for precise control flow.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Pattern matching in function heads is Elixir's primary mechanism for polymorphism—different implementations for different input shapes, without inheritance or method overloading. The BEAM compiles multiple clauses into an optimized decision tree, typically more efficient than if/else chains. When a GenServer receives different message types, when a Phoenix controller handles different content types, when an Ecto query handles different filter shapes—all use function head pattern matching. Writing a function that works for lists and maps means writing two clauses, not one function with type checks inside.
 
 ---
 
@@ -598,7 +598,7 @@ WithExamples.process_number(-10)
 
 **Key Takeaway**: `with` chains pattern matches and short-circuits on the first mismatch. Use it for happy path coding where you expect success, with error handling consolidated in the `else` block.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: The `with` expression solves the pyramid of doom problem for sequential operations that can each fail. Without `with`, chaining multiple operations returning `{:ok, value}` / `{:error, reason}` requires nested case statements. With `with`, happy-path bindings read linearly, and the `else` clause handles all failure cases in one place. Phoenix controller actions, Ecto multi-step transactions, and external API chains all use `with` to maintain clean linear flow while handling errors properly. This pattern is so idiomatic that reading any production Phoenix application requires fluency with `with`.
 
 ---
 
@@ -714,7 +714,7 @@ account = %Account{id: 1, balance: 1000}
 
 **Key Takeaway**: Structs are tagged maps with enforced keys and default values. They provide compile-time guarantees and clearer domain modeling compared to plain maps.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Structs are named maps with compile-time field guarantees—they combine the flexibility of maps with the safety of typed data. Unlike maps, accessing an undefined struct field raises a compile-time error (not a runtime KeyError), catching typos immediately. Elixir's struct system is the foundation of Ecto schemas (representing database rows), Phoenix.Conn (representing HTTP connections), and all domain models in production applications. Protocols dispatch differently on structs than plain maps, enabling type-specific behavior without inheritance. Always use structs when a map represents a known, fixed domain entity.
 
 ---
 
@@ -862,7 +862,7 @@ Enum.take(stream_resource, 3)
 
 **Key Takeaway**: Streams enable lazy evaluation—building a recipe without executing it. Use streams for large datasets, infinite sequences, or when you want to compose transformations efficiently.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Streams are lazy enumerables that compute values on demand, enabling processing of datasets larger than memory and avoiding unnecessary computation. When you only need the first 10 results of a million-element dataset, `Stream.take/2` stops computation after 10 elements—Enum would compute all million. Database cursors, file reading, and network response processing all benefit from laziness. Ecto's `Repo.stream/2` returns a Stream for processing large result sets without loading everything into memory. The composability of Stream operations enables building complex data pipelines that execute in a single pass.
 
 ---
 
@@ -991,7 +991,7 @@ MapSet.intersection(post1_tags, post2_tags)
 
 **Key Takeaway**: MapSets provide O(log n) membership testing and automatic deduplication. Use them for unique collections where order doesn't matter and set operations (union, intersection, difference) are needed.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: MapSet provides O(log n) membership testing—vastly more efficient than `Enum.member?/2` on lists for large collections. When you need to track seen items, deduplicate streams, or compute set intersections, MapSet is the correct tool. Implementing deduplication with a list is O(n squared); with MapSet it is O(n log n). In Phoenix, MapSets track connected WebSocket clients, permissions, and feature flags. Event deduplication in message queues, cache invalidation sets, and visited node tracking in graph algorithms all benefit from MapSet's constant-time operations over list's linear-time checks.
 
 ---
 
@@ -1166,7 +1166,7 @@ MyModule.colors()
 
 **Key Takeaway**: Module attributes (`@name`) are compile-time constants useful for documentation, configuration, and computed values. They're evaluated during compilation, not runtime.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Module attributes serve three distinct purposes: compile-time constants (zero runtime overhead), module metadata (`@moduledoc`, `@spec`, `@behaviour`), and accumulation for later use (`@before_compile` hooks). Using attributes for constants rather than functions or module variables prevents repeated computation and enables the compiler to optimize call sites. `@spec` type specifications generate documentation and enable Dialyzer static analysis to catch type errors before runtime. ExDoc generates readable API documentation from `@moduledoc` and `@doc`. Libraries like Ecto use `@before_compile` to transform accumulated attribute data into generated code.
 
 ---
 
@@ -1317,7 +1317,7 @@ end
 
 **Key Takeaway**: Use `alias` to shorten module names, `import` to bring functions into scope (sparingly!), and `require` for macros. These directives manage namespaces and reduce verbosity.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: The import/alias/require distinction reflects Elixir's philosophy around explicit dependencies. `alias` is safest—it renames modules for brevity without importing anything into the namespace. `import` brings function names into scope but risks naming conflicts; use sparingly and prefer alias. `require` is needed for macros because macros must be available at compile time, not just runtime. Phoenix controllers `use Phoenix.Controller`, which internally imports and aliases the right modules. Understanding these distinctions helps you debug undefined function errors and design clean module APIs.
 
 ---
 
@@ -1555,7 +1555,7 @@ Describable.describe([1, 2, 3])
 
 **Key Takeaway**: Protocols enable polymorphic functions that dispatch based on data type. Implement protocols for your custom types to integrate with Elixir's built-in functions (`to_string`, `Enum.*`, etc.).
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Protocols enable polymorphism without inheritance hierarchies—any data type can implement any protocol, even types defined in other libraries. This is Elixir's answer to how you make existing types work with new functions. The `String.Chars` protocol enables any type to be interpolated in strings. `Inspect` enables custom IEx printing. `Enumerable` makes custom data structures work with all Enum functions. Unlike typeclasses or interfaces, protocols dispatch at runtime based on data type, enabling open extension. Adding JSON serialization to a struct from an external library requires only implementing the Jason.Encoder protocol.
 
 ---
 
@@ -1800,7 +1800,7 @@ Bang.divide!(10, 2)
 
 **Key Takeaway**: Use tagged tuples `{:ok, value}` and `{:error, reason}` for expected error cases. Functions ending with `!` unwrap results or raise exceptions. Pattern match to handle both success and failure cases.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: The `{:ok, value}` / `{:error, reason}` convention is Elixir's universal error handling contract—every library in the ecosystem uses it. Unlike exceptions that propagate invisibly up call stacks, result tuples make failures explicit and composable. The `with` expression chains multiple result tuple operations cleanly. Pattern matching ensures all error cases are handled. Ecto changesets, GenServer calls, File operations, HTTP clients—all return result tuples. Internalizing this pattern makes reading unfamiliar code immediately comprehensible and prevents the silent failure modes common when exceptions are swallowed.
 
 ---
 
@@ -2022,7 +2022,7 @@ end
 
 **Key Takeaway**: Use `try/rescue/after` to handle exceptions from external libraries or for cleanup. Prefer result tuples for expected errors. The `after` block always runs, making it ideal for resource cleanup.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Try/rescue handles exceptional conditions—not the normal error flow (use result tuples for that). Reserve try/rescue for integrating with libraries that raise exceptions, for guarding against unexpected runtime errors, and for cleanup in `after` blocks. The `after` clause guarantees execution even if rescue raises—critical for releasing resources like file handles, database connections, and network sockets. Overusing try/rescue is an antipattern in Elixir: let processes crash and restart via Supervisors rather than catching all errors. Use try/rescue surgically at integration boundaries.
 
 ---
 
@@ -2225,7 +2225,7 @@ UserRepo.fetch!(1)
 
 **Key Takeaway**: Raise exceptions for unexpected, unrecoverable errors. Define custom exceptions for domain-specific errors. Use the `!` convention: functions ending with `!` raise exceptions, non-bang versions return result tuples.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Custom exceptions communicate error domain and carry structured data about what went wrong. Unlike string error messages, structured exceptions enable pattern matching on error type, automated error reporting classification, and documentation of failure modes in module specs. The `defexception` macro generates an exception module implementing the Exception behaviour. Libraries define custom exceptions so callers can match on specific error types: `rescue MyApp.NotFoundError ->` vs a generic rescue catching everything. Ecto.NoResultsError, Phoenix.Router.NoRouteError, and all major library exceptions follow this pattern.
 
 ---
 
@@ -2395,7 +2395,7 @@ Isolation.demonstrate()
 
 **Key Takeaway**: Processes are lightweight, isolated, and communicate via messages. Use `spawn/1` for independent processes, `spawn_link/1` for linked processes. Elixir can run millions of processes concurrently.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Spawning processes is Elixir's concurrency primitive—not threads which share memory but isolated processes that communicate only via messages. The BEAM can run millions of concurrent processes, each with its own heap, garbage collected independently with no global GC pauses. This isolation means one process crashing does not affect others—the foundation of Elixir's fault tolerance. Every GenServer, Phoenix request handler, and background job is a spawned process. Understanding the raw `spawn` API before GenServer abstractions demystifies what GenServer does and why the actor model scales so well.
 
 ---
 
@@ -2667,7 +2667,7 @@ flush()
 
 **Key Takeaway**: Processes communicate via asynchronous message passing. `send/2` puts messages in the mailbox, `receive` pattern matches and processes them. Messages are queued in FIFO order.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Message passing is how isolated Elixir processes coordinate without shared state. `send/2` places messages in the receiver's mailbox; `receive` pattern matches against them. This eliminates race conditions, deadlocks, and the need for locks—processes never directly access each other's state. The actor model (processes plus message passing) scales across CPU cores and network nodes identically: sending to a local pid and a remote pid on another machine uses the same API. Understanding `send`/`receive` at the raw level is essential before learning GenServer, which provides structured message handling on top of this foundation.
 
 ---
 
@@ -2882,7 +2882,7 @@ TimeoutHelper.call_with_timeout(fn -> :timer.sleep(2000); 42 end, 1000)  # => {:
 
 **Key Takeaway**: Use `Process.monitor/1` to watch processes and receive `:DOWN` messages when they exit. Monitoring is unidirectional (unlike linking) and ideal for detecting process failures without crashing.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Monitoring creates a unidirectional observation link: the monitor receives `{:DOWN, ref, :process, pid, reason}` when the monitored process exits, without crashing itself. This asymmetry distinguishes monitoring from linking: supervisors, connection managers, and health checkers use monitoring to observe child health without coupling their own lifecycle. Monitoring is temporary (explicitly demonitored) while links are permanent. Production patterns: GenServers monitor external resources and restart them; connection pools monitor worker processes; task supervisors monitor async tasks. Getting the linking vs monitoring choice right prevents cascading failures.
 
 ---
 
@@ -3081,7 +3081,7 @@ end
 
 **Key Takeaway**: `Task` provides async/await abstraction over processes. Use `Task.async/1` and `Task.await/1` for parallel work with results. Use `Task.async_stream/3` for processing collections in parallel.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Task provides structured concurrency over raw process spawning—async/await semantics with proper error propagation, timeout handling, and cleanup. `Task.async/1` plus `Task.await/2` enable parallel execution of independent operations while maintaining backpressure. `Task.async_stream/3` provides bounded parallelism for processing collections. Unlike fire-and-forget `spawn`, tasks integrate with supervision trees via `Task.Supervisor`, ensuring crashed tasks are reported rather than silently lost. Phoenix LiveView uses Task for parallel data loading; background job systems use Task.Supervisor for managed concurrency.
 
 ---
 
@@ -3290,7 +3290,7 @@ end                                     # => End module definition
 
 **Key Takeaway**: ExUnit provides testing with `assert`, `refute`, and `assert_raise`. Tests are organized in modules with `use ExUnit.Case`. Use `setup` for per-test initialization and tags to organize tests.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: ExUnit is Elixir's built-in testing framework, and good test coverage is especially important in a dynamically typed language where the compiler catches fewer errors. `assert` with `=` on the left uses pattern matching—you are not just checking equality but asserting the result shape. The test isolation model (each test in a separate process) prevents test ordering bugs. ExUnit's async tests run in parallel, leveraging the BEAM's concurrency for fast test suites. Documentation tests with `iex>` examples in `@doc` keep documentation accurate. Building the test-first habit in Elixir early pays dividends in production confidence.
 
 ---
 
@@ -3300,7 +3300,7 @@ Mix is Elixir's build tool. It manages dependencies, compiles code, runs tests, 
 
 ### Standard Project Structure
 
-```
+```text
 my_app/
 ├── mix.exs              # Project configuration
 ├── lib/                 # Application code
@@ -3453,7 +3453,7 @@ timeout = Application.get_env(:my_app, :timeout, 3000)  # => Reads timeout with 
 
 **Key Takeaway**: Mix provides project scaffolding, dependency management, and build tools. Standard structure: `lib/` for code, `test/` for tests, `mix.exs` for configuration. Use `mix` commands to compile, test, and manage projects.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Mix is Elixir's integrated build tool, dependency manager, and task runner—no Gradle, Maven, or Rake needed. Understanding the standard project layout (`lib/`, `test/`, `config/`, `mix.exs`) is prerequisite knowledge for reading any Elixir project. The `mix.exs` file serves as both build configuration and project metadata; Hex.pm reads it to publish packages. Environment separation (`dev`, `test`, `prod`) through Mix environments enables different dependency sets and configuration per environment. For new Elixir projects, `mix new`, `mix deps.get`, and `mix test` are the first commands you will run.
 
 ---
 
@@ -3691,7 +3691,7 @@ end
 
 **Key Takeaway**: Doctests embed executable examples in `@doc` comments using `iex>` prompts. Enable with `doctest ModuleName` in tests. They keep documentation accurate and provide basic test coverage.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Doctests bridge documentation and testing by extracting `iex>` examples from `@doc` comments and running them as actual tests. This practice keeps documentation accurate—if the code changes and a doctest fails, Mix catches it immediately. It also incentivizes writing example-driven documentation. Libraries with comprehensive doctests serve as their own tutorials. The practice is low-overhead: you write documentation examples anyway, and making them executable adds only `doctest MyModule` to test files. Particularly valuable for utility functions where behavior is best demonstrated by example.
 
 ---
 
@@ -3699,7 +3699,7 @@ end
 
 Elixir strings are UTF-8 binaries. The `String` module provides extensive manipulation functions. Understanding binaries, charlists, and Unicode handling is essential for text processing.
 
-**Brief Explanation**: Strings in Elixir are UTF-8 encoded binaries, not character lists. The `String` module provides grapheme-aware functions for proper Unicode handling. Key concepts include: binary vs charlist distinction, graphemes (visual characters) vs codepoints (Unicode units), and UTF-8 multibyte character support.
+Strings in Elixir are UTF-8 encoded binaries, not character lists. The `String` module provides grapheme-aware functions for proper Unicode handling. Key concepts include: binary vs charlist distinction, graphemes (visual characters) vs codepoints (Unicode units), and UTF-8 multibyte character support.
 
 **Code**:
 
@@ -3871,7 +3871,7 @@ name = "Alice"
 
 **Key Takeaway**: Strings are UTF-8 binaries with grapheme-aware functions. Use the `String` module for manipulation, regex for pattern matching, and understand the difference between graphemes (visual characters) and codepoints (Unicode units).
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Elixir's String module treats text as grapheme clusters (visual characters), not codepoints or bytes. `String.length/1` returns the number of graphemes—cafe with accent is 4 graphemes, not 5 bytes. This matters for UI text truncation, search indexing, and internationalization. The `String.valid?/1` function validates UTF-8 before processing user input. For performance-sensitive string processing, understanding when to work at the binary level vs the String module level prevents subtle Unicode bugs that only manifest with non-ASCII input from real users.
 
 ## Example 51: GenServer Session Manager (Production Pattern)
 
@@ -4521,7 +4521,7 @@ Supervisor.count_children(sup_pid)
 
 **Key Takeaway**: Child specs control how supervisors manage children. Use `:permanent` for critical processes, `:transient` for expected failures, `:temporary` for one-time tasks. Implement `child_spec/1` to customize restart and shutdown behavior.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Supervisor child specifications are the blueprint for building fault-tolerant systems. The child_spec map defines what to start, how to restart, how to stop, and the process type—all the information a Supervisor needs to manage a process's lifecycle. The `:permanent` restart strategy (always restart) is appropriate for services that must always run; `:temporary` (never restart) for one-off tasks; `:transient` (restart only on abnormal exit) for optional services. Getting restart strategies right prevents thundering herd problems and ensures proper cleanup before restart.
 
 ---
 
@@ -4529,7 +4529,7 @@ Supervisor.count_children(sup_pid)
 
 Application behavior defines callbacks for application startup and shutdown. Implement `start/2` to initialize supervision trees and `stop/1` for cleanup.
 
-**Brief Explanation**: The Application behavior manages application lifecycle through callbacks. `start/2` initializes the application (typically starts a supervision tree), receives startup type and arguments. `stop/1` handles graceful shutdown (cleanup resources). Applications are OTP's top-level abstraction for managing related processes and resources.
+The Application behavior manages application lifecycle through callbacks. `start/2` initializes the application (typically starts a supervision tree), receives startup type and arguments. `stop/1` handles graceful shutdown (cleanup resources). Applications are OTP's top-level abstraction for managing related processes and resources.
 
 **Code**:
 
@@ -4606,13 +4606,13 @@ end
 
 **Key Takeaway**: Applications implement `start/2` to initialize supervision trees and `stop/1` for cleanup. The Application behavior is OTP's top-level abstraction for managing related processes. Return `{:ok, supervisor_pid}` from `start/2`, `:ok` from `stop/1`.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: The Application behaviour is the top-level entry point for every OTP application—Mix compiles it, the BEAM starts it, and the supervision tree lives under it. Every Phoenix application, every Ecto-backed service, and every standalone Elixir release implements Application. The `start/2` callback is where supervision trees are created, registry processes are launched, and startup validation occurs. The `stop/1` callback enables graceful shutdown. Understanding the Application lifecycle is essential for production deployment: controlling startup order, handling configuration validation at boot, and ensuring clean process termination.
 
 ## Example 54: Custom Mix Tasks
 
 Mix tasks automate project operations. Create custom tasks by implementing `Mix.Task` behavior with `run/1` function.
 
-**Brief Explanation**: Custom Mix tasks extend Mix's functionality for project-specific automation. Tasks implement the `Mix.Task` behavior with a `run/1` entry point that receives command-line arguments. Use `OptionParser.parse/2` for argument parsing, `Mix.shell().info/1` for output, and module attributes (`@shortdoc`, `@moduledoc`) for documentation.
+Custom Mix tasks extend Mix's functionality for project-specific automation. Tasks implement the `Mix.Task` behavior with a `run/1` entry point that receives command-line arguments. Use `OptionParser.parse/2` for argument parsing, `Mix.shell().info/1` for output, and module attributes (`@shortdoc`, `@moduledoc`) for documentation.
 
 **Code**:
 
@@ -4693,13 +4693,13 @@ end
 
 **Key Takeaway**: Custom Mix tasks automate project operations. Implement `Mix.Task` behavior with `run/1`, parse arguments with `OptionParser`, and document with `@shortdoc`/`@moduledoc`. Run tasks with `mix task_name [args]`.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Custom Mix tasks extend your project's automation infrastructure—release builds, database migrations, data imports, seed scripts, and CI/CD steps all become first-class Mix commands. Unlike shell scripts, Mix tasks run in the application's context with access to all modules and configuration. The `Mix.Task` behaviour enforces the `run/1` contract; `@shortdoc` and `@moduledoc` integrate with `mix help`. Production workflows: `mix phx.gen.context`, `mix ecto.migrate`, `mix release`—all are Mix tasks. Custom tasks keep automation close to the code it automates.
 
 ## Example 55: Runtime Configuration
 
 Runtime configuration loads settings when the application starts (not compile time). Use `config/runtime.exs` for environment variables and production secrets.
 
-**Brief Explanation**: Runtime configuration (`config/runtime.exs`) loads settings at application startup, enabling environment-specific configuration and secrets management. Unlike `config/config.exs` (compile-time), runtime config values aren't baked into releases, making it safe for secrets. Use `Application.get_env/2` to read config, `Application.fetch_env!/2` for required values.
+Runtime configuration (`config/runtime.exs`) loads settings at application startup, enabling environment-specific configuration and secrets management. Unlike `config/config.exs` (compile-time), runtime config values aren't baked into releases, making it safe for secrets. Use `Application.get_env/2` to read config, `Application.fetch_env!/2` for required values.
 
 **Code**:
 
@@ -4790,7 +4790,7 @@ end
 | Execution | Mix compile                      | Application startup          |
 | Values    | Baked into release               | Loaded from environment      |
 | Use Case  | Defaults, non-secrets            | Secrets, env variables       |
-| Security  | ❌ Don't use for secrets         | ✅ Safe for secrets          |
+| Security  | Not recommended for secrets      | Recommended for secrets      |
 
 **Best Practices**:
 
@@ -4801,13 +4801,13 @@ end
 
 **Key Takeaway**: Use `config/runtime.exs` for secrets and environment-specific configuration. Runtime config loads at startup (not compile time), making it safe for production secrets. Use `Application.get_env/2` for optional config, `Application.fetch_env!/2` for required config.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Runtime configuration (`config/runtime.exs`) is essential for production deployments where secrets, database URLs, and service endpoints come from environment variables—not hardcoded values. Unlike compile-time configuration, runtime config loads at application startup, enabling the same release binary to be deployed in multiple environments. `System.fetch_env!/1` fails fast if required environment variables are absent, preventing misconfigured deployments from running. This is the right place for database credentials, API keys, and feature flags. Understanding the compile-time vs runtime config distinction prevents secrets from being baked into release artifacts.
 
 ## Example 56: Process Links and Crash Propagation
 
 Linked processes crash together—when one exits abnormally, linked processes receive exit signals. Use linking for tightly-coupled processes that should fail together.
 
-**Brief Explanation**: Links create bidirectional connections between processes for crash propagation. When a linked process crashes, all connected processes receive exit signals and crash too (unless trapping exits). This pattern enables supervisor-like behavior where parent processes detect and handle child crashes. The `:trap_exit` flag converts exit signals into messages, preventing crash propagation.
+Links create bidirectional connections between processes for crash propagation. When a linked process crashes, all connected processes receive exit signals and crash too (unless trapping exits). This pattern enables supervisor-like behavior where parent processes detect and handle child crashes. The `:trap_exit` flag converts exit signals into messages, preventing crash propagation.
 
 **Code**:
 
@@ -4953,13 +4953,13 @@ Process.unlink(pid1)
 
 **Key Takeaway**: Linked processes crash together. Use `spawn_link/1` for coupled processes. Trap exits with `Process.flag(:trap_exit, true)` to handle crashes gracefully. Supervisors use links to detect worker crashes.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Process links create bidirectional dependencies: when one crashes, all linked processes receive exit signals. This let-it-crash propagation is intentional—it ensures that when something goes wrong, the entire related group fails together rather than operating in a partially broken state. Supervisors use `:trap_exit` to intercept these signals and restart processes cleanly. Understanding link semantics prevents two failure modes: accidentally linking unrelated processes (causing cascading failures) and failing to link related processes (allowing zombies to run with dead dependencies). Links are how supervision trees maintain coherent state across process boundaries.
 
 ## Example 57: Message Mailbox Management
 
 Process mailboxes queue incoming messages. Understanding mailbox behavior prevents memory leaks and enables selective message processing.
 
-**Brief Explanation**: Every process has a mailbox that queues messages in FIFO order. Messages accumulate until processed by `receive` blocks. Selective receive pattern-matches messages, potentially scanning the entire mailbox. Monitor mailbox size with `Process.info/2` to detect message buildup and prevent memory leaks.
+Every process has a mailbox that queues messages in FIFO order. Messages accumulate until processed by `receive` blocks. Selective receive pattern-matches messages, potentially scanning the entire mailbox. Monitor mailbox size with `Process.info/2` to detect message buildup and prevent memory leaks.
 
 **Code**:
 
@@ -5035,7 +5035,7 @@ end
 
 **Key Takeaway**: Process mailboxes queue messages in FIFO order. Use `receive` to process messages. Selective receive scans the mailbox for pattern matches, potentially skipping messages. Monitor mailbox size with `Process.info/2` to prevent memory leaks from unmatched messages.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Process mailboxes are unbounded queues—if producers send faster than consumers process, the mailbox grows indefinitely until the process runs out of memory. Monitoring mailbox size with `Process.info(pid, :message_queue_len)` is a critical production observable. Selective receive (pattern matching only specific messages) leaves unmatched messages in the mailbox, causing selective receive to scan the entire queue on each call—O(n) for n unmatched messages. GenServer's structured callback model prevents mailbox unboundedness by processing all messages in order. Understanding mailbox mechanics helps debug slow GenServers and memory leaks.
 
 ## Example 58: Anonymous GenServers and Local Names
 
@@ -5292,13 +5292,15 @@ RegistryCounter.get("user_456")
 
 **Key Takeaway**: Anonymous GenServers use PIDs for identification, enabling multiple instances. Named GenServers use atoms (limited) or Registry (unlimited dynamic names). Use Registry via-tuples for scalable process registration.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Named processes provide stable references that survive process restarts—once a Supervisor restarts a GenServer, its pid changes but its registered name remains constant. This is essential for singletons: application-wide caches, rate limiters, connection pools, and configuration servers all need stable names. The Registry module enables dynamic naming with namespace isolation, solving naming conflicts in multi-tenant systems. Understanding the difference between pid references (break on restart) and name references (survive restart) prevents the common bug of storing a pid at startup and then crashing when the process restarts hours later.
 
 ---
 
 ## Example 59: Telemetry Events and Metrics
 
 Telemetry provides instrumentation for measuring application behavior. Emit events for metrics, logging, and observability without coupling code to specific reporters.
+
+**Dependency Note**: `:telemetry` is bundled with Erlang/OTP 26+ (required by Elixir 1.15+). For older OTP versions, add `{:telemetry, "~> 1.2"}` to your `deps` in `mix.exs`. Telemetry is the standard instrumentation interface because it decouples event emission from reporting and is used by Phoenix, Ecto, and the broader ecosystem.
 
 **Code**:
 
@@ -5513,7 +5515,7 @@ MyApp.Database.query("SELECT * FROM users")
 
 **Key Takeaway**: Telemetry decouples instrumentation from reporting. Emit events with `:telemetry.execute/3` for measurements and `:telemetry.span/3` for start/stop events. Attach handlers to process events for metrics, logging, or monitoring.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Telemetry's event model decouples instrumentation from observation: application code emits events with measurements; monitoring systems attach handlers that report to Prometheus, StatsD, or custom loggers. This decoupling means you can add metrics to library code without knowing which monitoring system downstream users prefer. Phoenix and Ecto emit telemetry events for every request, query, and lifecycle callback—attach handlers to build custom dashboards without modifying framework code. Production systems derive SLAs from telemetry measurements. Learning telemetry enables observability-first design where performance characteristics are measured from day one.
 
 ---
 
@@ -5689,7 +5691,7 @@ def find_user(_id), do: {:error, :invalid_id}
 
 **Key Takeaway**: Use `@spec` to document function types. Define custom types with `@type`. Type specs enable Dialyzer to catch type errors and improve documentation. Common types: `integer()`, `String.t()`, `list(type)`, `map()`, `{:ok, type} | {:error, reason}`.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Type specifications (`@spec`) serve dual purposes: documentation and static analysis via Dialyzer. Dialyzer is a success typing tool that analyzes BEAM bytecode to find type errors the compiler misses—calling a function with wrong argument types, impossible pattern matches, and incorrect return type assumptions. Unlike Haskell's type system, Dialyzer is gradual: it only reports errors it can prove, never false positives. Adding `@spec` to public functions enables Dialyzer to propagate type information across module boundaries. Libraries with comprehensive type specs enable IDEs to provide autocomplete and catch integration errors at development time.
 
 ---
 
@@ -5710,7 +5712,7 @@ You've completed the intermediate examples covering advanced pattern matching, d
 
 **Continue your learning**:
 
-- [Advanced Examples (61-90)](/en/learn/software-engineering/programming-languages/elixir/by-example/advanced) - GenServer deep dive, Supervisor patterns, metaprogramming, OTP mastery
+- [Advanced Examples (61-85)](/en/learn/software-engineering/programming-languages/elixir/by-example/advanced) - GenServer deep dive, Supervisor patterns, metaprogramming, OTP mastery
 - [Beginner Examples (1-30)](/en/learn/software-engineering/programming-languages/elixir/by-example/beginner) - Review fundamentals if needed
 
 **Deepen your understanding**:

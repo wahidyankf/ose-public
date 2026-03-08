@@ -45,24 +45,17 @@ graph TD
 ```typescript
 // Event Store - persistence for event streams
 interface StoredEvent {
-  // => Ensures transactional consistency
   eventId: string; // => Unique event identifier
-  // => Manages entity lifecycle
   aggregateId: string; // => Which aggregate this event belongs to
-  // => Preserves domain model
   eventType: string; // => Event class name
   // => Communicates domain intent
   eventData: string; // => Serialized event payload (JSON)
-  // => Executes domain logic
   version: number; // => Event version in stream (ordering)
-  // => Updates aggregate state
   timestamp: Date; // => When event occurred
   // => Validates business rule
 }
-// => Executes domain logic
 
 class EventStore {
-  // => EventStore: domain model element
   private events: Map<string, StoredEvent[]> = new Map();
   // => Encapsulated field (not publicly accessible)
   // => In-memory store: aggregateId -> event array
@@ -78,7 +71,6 @@ class EventStore {
       throw new Error(`Concurrency conflict: expected version ${expectedVersion}, got ${stream.length}`);
       // => Prevents lost updates when multiple processes modify same aggregate
     }
-    // => Updates aggregate state
 
     const storedEvents = events.map((event, index) => ({
       // => Convert domain events to stored events
@@ -102,7 +94,6 @@ class EventStore {
     // => Append new events to stream (immutable pattern)
     // => Stream now contains all historical events
   }
-  // => Encapsulates domain knowledge
 
   async getEvents(aggregateId: string): Promise<DomainEvent[]> {
     // => Retrieve all events for aggregate
@@ -110,11 +101,9 @@ class EventStore {
     // => Get event stream or empty array if aggregate doesn't exist
 
     return stream.map((stored) => this.deserialize(stored));
-    // => Returns stream.map((stored) => this.deserialize(stored))
     // => Convert stored events back to domain event objects
     // => Maintains event ordering via version numbers
   }
-  // => Delegates to domain service
 
   private deserialize(stored: StoredEvent): DomainEvent {
     // => Internal logic (not part of public API)
@@ -125,92 +114,70 @@ class EventStore {
     switch (stored.eventType) {
       // => Route to correct event class constructor
       case "AccountOpened":
-        // => Maintains consistency boundary
+        // => Aggregate boundary enforced here
         return new AccountOpened(data.accountId, data.ownerId, data.initialBalance);
       // => Return result to caller
       case "MoneyDeposited":
-        // => Applies domain event
+        // => Domain event triggered or handled
         return new MoneyDeposited(data.accountId, data.amount);
       // => Return result to caller
       case "MoneyWithdrawn":
-        // => Coordinates with bounded context
+        // => Cross-context interaction point
         return new MoneyWithdrawn(data.accountId, data.amount);
       // => Return result to caller
       default:
-        // => Implements tactical pattern
+        // => DDD tactical pattern applied
         throw new Error(`Unknown event type: ${stored.eventType}`);
       // => Raise domain exception
     }
-    // => Protects aggregate integrity
   }
-  // => Ensures transactional consistency
 }
-// => Manages entity lifecycle
 
 // Domain Events
 abstract class DomainEvent {
-  // => DomainEvent: domain model element
   constructor(public readonly occurredAt: Date = new Date()) {}
   // => Initialize object with parameters
 }
-// => Preserves domain model
 
 class AccountOpened extends DomainEvent {
-  // => AccountOpened: domain model element
   constructor(
     // => Initialize object with parameters
     public readonly accountId: string,
-    // => Field: readonly (public)
     public readonly ownerId: string,
-    // => Field: readonly (public)
     public readonly initialBalance: number,
-    // => Field: readonly (public)
   ) {
     // => Communicates domain intent
     super();
-    // => Executes domain logic
+    // => Domain operation executes here
   }
-  // => Updates aggregate state
 }
 // => Validates business rule
 
 class MoneyDeposited extends DomainEvent {
-  // => MoneyDeposited: domain model element
   constructor(
     // => Initialize object with parameters
     public readonly accountId: string,
-    // => Field: readonly (public)
     public readonly amount: number,
-    // => Field: readonly (public)
   ) {
     // => Enforces invariant
     super();
-    // => Encapsulates domain knowledge
+    // => Business rule enforced here
   }
-  // => Delegates to domain service
 }
-// => Maintains consistency boundary
 
 class MoneyWithdrawn extends DomainEvent {
-  // => MoneyWithdrawn: domain model element
   constructor(
     // => Initialize object with parameters
     public readonly accountId: string,
-    // => Field: readonly (public)
     public readonly amount: number,
-    // => Field: readonly (public)
   ) {
-    // => Applies domain event
     super();
-    // => Coordinates with bounded context
+    // => Cross-context interaction point
   }
-  // => Implements tactical pattern
 }
-// => Protects aggregate integrity
 
 // Event-Sourced Aggregate
 class BankAccount {
-  // => BankAccount: domain model element
   private accountId: string;
   // => Encapsulated field (not publicly accessible)
   private ownerId: string;
@@ -237,13 +204,10 @@ class BankAccount {
     // => Clear uncommitted (we just loaded persisted events)
 
     return account;
-    // => Returns account
     // => Aggregate now in state reflecting all past events
   }
-  // => Ensures transactional consistency
 
   openAccount(accountId: string, ownerId: string, initialBalance: number): void {
-    // => Domain operation: openAccount
     // => Command: open new account
     const event = new AccountOpened(accountId, ownerId, initialBalance);
     // => Create domain event
@@ -251,23 +215,18 @@ class BankAccount {
     // => Delegates to internal method
     // => Apply event and add to uncommitted list
   }
-  // => Manages entity lifecycle
 
   deposit(amount: number): void {
-    // => Domain operation: deposit
     // => Command: deposit money
     const event = new MoneyDeposited(this.accountId, amount);
     // => Store value in event
     this.applyAndRecord(event);
     // => Delegates to internal method
   }
-  // => Preserves domain model
 
   withdraw(amount: number): void {
-    // => Domain operation: withdraw
     // => Command: withdraw money
     if (this.balance < amount) {
-      // => Operation: if()
       throw new Error("Insufficient funds");
       // => Business rule validation
     }
@@ -277,7 +236,6 @@ class BankAccount {
     this.applyAndRecord(event);
     // => Delegates to internal method
   }
-  // => Executes domain logic
 
   private applyAndRecord(event: DomainEvent): void {
     // => Internal logic (not part of public API)
@@ -289,13 +247,11 @@ class BankAccount {
     // => Delegates to internal method
     // => Record for persistence
   }
-  // => Updates aggregate state
 
   private apply(event: DomainEvent): void {
     // => Internal logic (not part of public API)
     // => Event handler - updates aggregate state
     if (event instanceof AccountOpened) {
-      // => Operation: if()
       this.accountId = event.accountId;
       // => Update accountId state
       this.ownerId = event.ownerId;
@@ -317,35 +273,25 @@ class BankAccount {
       // => Balance updated
       // => Decrease balance
     }
-    // => Encapsulates domain knowledge
     this.version++;
     // => Increment version after each event
   }
-  // => Delegates to domain service
 
   getUncommittedEvents(): DomainEvent[] {
-    // => Domain operation: getUncommittedEvents
     return [...this.uncommittedEvents];
-    // => Returns [...this.uncommittedEvents]
     // => Return copy of uncommitted events
   }
-  // => Maintains consistency boundary
 
   getVersion(): number {
-    // => Domain operation: getVersion
     return this.version;
     // => Return result to caller
   }
-  // => Applies domain event
 
   getBalance(): number {
-    // => Domain operation: getBalance
     return this.balance;
     // => Return result to caller
   }
-  // => Coordinates with bounded context
 }
-// => Implements tactical pattern
 
 // Usage
 (async () => {
@@ -377,7 +323,7 @@ class BankAccount {
   // => Outputs result
   // => Output: 3 (three events applied)
 })();
-// => Protects aggregate integrity
+// => Invariant validation executed
 ```
 
 **Key Takeaway**: Event Store persists complete event history for aggregates. State is rebuilt by replaying events. Optimistic concurrency prevents conflicts using version numbers.
@@ -388,23 +334,39 @@ class BankAccount {
 
 Snapshots optimize event replay performance for long-lived aggregates by periodically storing current state.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["Event 1\nOrderCreated"]
+    B["Event 2\nItemAdded"]
+    C["...100 events..."]
+    D["Snapshot\n(state at event 100)"]
+    E["Event 101\nItemRemoved"]
+    F["Current State\n= Snapshot + Event101"]
+
+    A --> B --> C --> D
+    D --> E --> F
+
+    style D fill:#029E73,stroke:#000,color:#fff
+    style F fill:#0173B2,stroke:#000,color:#fff
+    style A fill:#DE8F05,stroke:#000,color:#000
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style E fill:#DE8F05,stroke:#000,color:#000
+```
+
 ```typescript
 // Snapshot - current state at specific version
 interface Snapshot {
   // => Snapshot: contract definition
   aggregateId: string;
-  // => Delegates to domain service
+  // => Execution delegated to domain service
   version: number; // => Which event version this snapshot represents
-  // => Maintains consistency boundary
   state: any; // => Serialized aggregate state
-  // => Applies domain event
   timestamp: Date;
-  // => Executes domain logic
+  // => Domain operation executes here
 }
-// => Updates aggregate state
 
 class SnapshotStore {
-  // => SnapshotStore: domain model element
   private snapshots: Map<string, Snapshot> = new Map();
   // => Encapsulated field (not publicly accessible)
   // => In-memory snapshot storage
@@ -417,27 +379,23 @@ class SnapshotStore {
       aggregateId,
       // => Enforces invariant
       version,
-      // => Encapsulates domain knowledge
+      // => Business rule enforced here
       state: JSON.stringify(state),
       // => Serialize state to JSON
       timestamp: new Date(),
-      // => Delegates to domain service
+      // => Execution delegated to domain service
     });
     // => Overwrite previous snapshot (keep latest only)
   }
-  // => Maintains consistency boundary
 
   async getSnapshot(aggregateId: string): Promise<Snapshot | null> {
     // => Retrieve latest snapshot
     return this.snapshots.get(aggregateId) || null;
     // => Return result to caller
   }
-  // => Applies domain event
 }
-// => Coordinates with bounded context
 
 class BankAccountWithSnapshots {
-  // => BankAccountWithSnapshots: domain model element
   private accountId: string;
   // => Encapsulated field (not publicly accessible)
   private ownerId: string;
@@ -450,13 +408,13 @@ class BankAccountWithSnapshots {
   // => Encapsulated field (not publicly accessible)
 
   static async load(
-    // => Implements tactical pattern
+    // => DDD tactical pattern applied
     eventStore: EventStore,
-    // => Protects aggregate integrity
+    // => Invariant validation executed
     snapshotStore: SnapshotStore,
-    // => Ensures transactional consistency
+    // => Transaction boundary maintained
     accountId: string,
-    // => Manages entity lifecycle
+    // => Entity state transition managed
   ): Promise<BankAccountWithSnapshots> {
     // => Load aggregate using snapshot + subsequent events
     const snapshot = await snapshotStore.getSnapshot(accountId);
@@ -491,12 +449,10 @@ class BankAccountWithSnapshots {
       console.log(`No snapshot found, replayed all ${events.length} events`);
       // => Outputs result
     }
-    // => Preserves domain model
 
     account.uncommittedEvents = [];
     // => Create data structure
     return account;
-    // => Returns account
   }
   // => Communicates domain intent
 
@@ -514,7 +470,6 @@ class BankAccountWithSnapshots {
     this.version = snapshot.version;
     // => State restored to snapshot version
   }
-  // => Executes domain logic
 
   async save(eventStore: EventStore, snapshotStore: SnapshotStore): Promise<void> {
     // => Persist uncommitted events and maybe snapshot
@@ -531,43 +486,37 @@ class BankAccountWithSnapshots {
       // => Snapshot policy: every 100 events
       // => Production: configurable threshold (10, 50, 100, 1000)
       await snapshotStore.saveSnapshot(this.accountId, this.version, {
-        // => Updates aggregate state
+        // => Modifies aggregate internal state
         accountId: this.accountId,
         // => Validates business rule
         ownerId: this.ownerId,
         // => Enforces invariant
         balance: this.balance,
-        // => Encapsulates domain knowledge
+        // => Business rule enforced here
       });
       // => Save current state as snapshot
       console.log(`Snapshot saved at version ${this.version}`);
       // => Delegates to internal method
       // => Outputs result
     }
-    // => Delegates to domain service
 
     this.uncommittedEvents = [];
     // => Clear uncommitted events after persistence
   }
-  // => Maintains consistency boundary
 
   openAccount(accountId: string, ownerId: string, initialBalance: number): void {
-    // => Domain operation: openAccount
     const event = new AccountOpened(accountId, ownerId, initialBalance);
     // => Store value in event
     this.applyAndRecord(event);
     // => Delegates to internal method
   }
-  // => Applies domain event
 
   deposit(amount: number): void {
-    // => Domain operation: deposit
     const event = new MoneyDeposited(this.accountId, amount);
     // => Store value in event
     this.applyAndRecord(event);
     // => Delegates to internal method
   }
-  // => Coordinates with bounded context
 
   private applyAndRecord(event: DomainEvent): void {
     // => Internal logic (not part of public API)
@@ -576,12 +525,10 @@ class BankAccountWithSnapshots {
     this.uncommittedEvents.push(event);
     // => Delegates to internal method
   }
-  // => Implements tactical pattern
 
   private apply(event: DomainEvent): void {
     // => Internal logic (not part of public API)
     if (event instanceof AccountOpened) {
-      // => Operation: if()
       this.accountId = event.accountId;
       // => Update accountId state
       this.ownerId = event.ownerId;
@@ -589,38 +536,30 @@ class BankAccountWithSnapshots {
       this.balance = event.initialBalance;
       // => Update balance state
     } else if (event instanceof MoneyDeposited) {
-      // => Protects aggregate integrity
+      // => Invariant validation executed
       this.balance += event.amount;
       // => State change operation
       // => Modifies state value
       // => Balance updated
     }
-    // => Ensures transactional consistency
     this.version++;
-    // => Manages entity lifecycle
+    // => Entity state transition managed
   }
-  // => Preserves domain model
 
   getUncommittedEvents(): DomainEvent[] {
-    // => Domain operation: getUncommittedEvents
     return [...this.uncommittedEvents];
-    // => Returns [...this.uncommittedEvents]
   }
   // => Communicates domain intent
 
   getVersion(): number {
-    // => Domain operation: getVersion
     return this.version;
     // => Return result to caller
   }
-  // => Executes domain logic
 
   getBalance(): number {
-    // => Domain operation: getBalance
     return this.balance;
     // => Return result to caller
   }
-  // => Updates aggregate state
 }
 // => Validates business rule
 
@@ -639,7 +578,6 @@ class BankAccountWithSnapshots {
   // => Execute method
 
   for (let i = 0; i < 249; i++) {
-    // => Operation: for()
     account.deposit(10);
     // => Generate 249 deposit events (total 250 with AccountOpened)
   }
@@ -663,7 +601,7 @@ class BankAccountWithSnapshots {
   // => Outputs result
   // => Output: 250
 })();
-// => Encapsulates domain knowledge
+// => Business rule enforced here
 ```
 
 **Key Takeaway**: Snapshots optimize event replay by storing periodic state checkpoints. Loading aggregates restores from latest snapshot then replays only subsequent events, reducing replay time from O(n) to O(events_since_snapshot).
@@ -676,7 +614,6 @@ Event Sourcing enables time-travel queries—reconstructing aggregate state at a
 
 ```typescript
 class EventStoreWithTemporal extends EventStore {
-  // => EventStoreWithTemporal: domain model element
   async getEventsUntil(aggregateId: string, untilDate: Date): Promise<DomainEvent[]> {
     // => Get events up to specific date (time-travel query)
     const allEvents = await this.getEvents(aggregateId);
@@ -693,9 +630,7 @@ class EventStoreWithTemporal extends EventStore {
     // => Deserialize to domain events
 
     return eventsUntilDate;
-    // => Returns eventsUntilDate
   }
-  // => Executes domain logic
 
   async getEventsBetween(aggregateId: string, startDate: Date, endDate: Date): Promise<DomainEvent[]> {
     // => Get events in date range
@@ -703,9 +638,8 @@ class EventStoreWithTemporal extends EventStore {
     // => Store value in stored
 
     return (
-      // => Returns (
       stored
-        // => Updates aggregate state
+        // => Modifies aggregate internal state
         .filter((event) => event.timestamp >= startDate && event.timestamp <= endDate)
         // => Filter by date range
         .map((event) => this.deserialize(event))
@@ -715,18 +649,16 @@ class EventStoreWithTemporal extends EventStore {
   }
   // => Enforces invariant
 }
-// => Encapsulates domain knowledge
 
 class BankAccountTemporal extends BankAccountWithSnapshots {
-  // => BankAccountTemporal: domain model element
   static async loadAtDate(
-    // => Delegates to domain service
+    // => Execution delegated to domain service
     eventStore: EventStoreWithTemporal,
-    // => Maintains consistency boundary
+    // => Aggregate boundary enforced here
     accountId: string,
-    // => Applies domain event
+    // => Domain event triggered or handled
     asOfDate: Date,
-    // => Coordinates with bounded context
+    // => Cross-context interaction point
   ): Promise<BankAccountTemporal> {
     // => Reconstruct aggregate state as it was on specific date
     const events = await eventStore.getEventsUntil(accountId, asOfDate);
@@ -740,19 +672,17 @@ class BankAccountTemporal extends BankAccountWithSnapshots {
     // => Create data structure
 
     return account;
-    // => Returns account
     // => Aggregate now in state as of target date
   }
-  // => Implements tactical pattern
 
   static async getBalanceHistory(
-    // => Protects aggregate integrity
+    // => Invariant validation executed
     eventStore: EventStoreWithTemporal,
-    // => Ensures transactional consistency
+    // => Transaction boundary maintained
     accountId: string,
-    // => Manages entity lifecycle
+    // => Entity state transition managed
     startDate: Date,
-    // => Preserves domain model
+    // => Domain model consistency maintained
     endDate: Date,
     // => Communicates domain intent
   ): Promise<Array<{ date: Date; balance: number }>> {
@@ -768,11 +698,10 @@ class BankAccountTemporal extends BankAccountWithSnapshots {
     for (const event of events) {
       // => Process events chronologically
       if (event instanceof AccountOpened) {
-        // => Operation: if()
         balance = event.initialBalance;
-        // => Executes domain logic
+        // => Domain operation executes here
       } else if (event instanceof MoneyDeposited) {
-        // => Updates aggregate state
+        // => Modifies aggregate internal state
         balance += event.amount;
         // => State change operation
         // => Modifies state value
@@ -787,22 +716,18 @@ class BankAccountTemporal extends BankAccountWithSnapshots {
       // => Enforces invariant
 
       history.push({
-        // => Encapsulates domain knowledge
+        // => Business rule enforced here
         date: event.occurredAt,
-        // => Delegates to domain service
+        // => Execution delegated to domain service
         balance,
-        // => Maintains consistency boundary
+        // => Aggregate boundary enforced here
       });
       // => Record balance after each event
     }
-    // => Applies domain event
 
     return history;
-    // => Returns history
   }
-  // => Coordinates with bounded context
 }
-// => Implements tactical pattern
 
 // Usage - temporal queries
 (async () => {
@@ -852,15 +777,15 @@ class BankAccountTemporal extends BankAccountWithSnapshots {
   const history = await BankAccountTemporal.getBalanceHistory(
     // => Store value in history
     eventStore,
-    // => Protects aggregate integrity
+    // => Invariant validation executed
     "ACC-001",
-    // => Ensures transactional consistency
+    // => Transaction boundary maintained
     new Date(Date.now() - 1000),
     // => Execute method
     new Date(),
-    // => Manages entity lifecycle
+    // => Entity state transition managed
   );
-  // => Preserves domain model
+  // => Domain model consistency maintained
   console.log("Balance history:");
   // => Outputs result
   history.forEach((entry) => {
@@ -881,20 +806,32 @@ class BankAccountTemporal extends BankAccountWithSnapshots {
 
 Events are immutable, but business requirements evolve. Event upcasting transforms old event versions to new schemas during replay.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["Event Store\nV1 events\n(old schema)"]
+    B["Upcaster\ntransforms V1 -> V2"]
+    C["Event Handler\nreceives V2 events\n(new schema)"]
+
+    A -->|replay| B
+    B -->|upcast| C
+
+    style A fill:#CA9161,stroke:#000,color:#fff
+    style B fill:#CC78BC,stroke:#000,color:#fff
+    style C fill:#029E73,stroke:#000,color:#fff
+```
+
 ```typescript
 // Old event version (V1)
 class MoneyDepositedV1 extends DomainEvent {
-  // => MoneyDepositedV1: domain model element
   constructor(
     // => Initialize object with parameters
     public readonly accountId: string,
-    // => Field: readonly (public)
     public readonly amount: number,
     // => V1: no currency field (assumed USD)
   ) {
-    // => Executes domain logic
     super();
-    // => Updates aggregate state
+    // => Modifies aggregate internal state
   }
   // => Validates business rule
 }
@@ -902,46 +839,33 @@ class MoneyDepositedV1 extends DomainEvent {
 
 // New event version (V2) - adds currency
 class MoneyDepositedV2 extends DomainEvent {
-  // => MoneyDepositedV2: domain model element
   constructor(
     // => Initialize object with parameters
     public readonly accountId: string,
-    // => Field: readonly (public)
     public readonly amount: number,
-    // => Field: readonly (public)
     public readonly currency: string,
     // => V2: explicit currency for multi-currency support
   ) {
-    // => Encapsulates domain knowledge
     super();
-    // => Delegates to domain service
+    // => Execution delegated to domain service
   }
-  // => Maintains consistency boundary
 }
-// => Applies domain event
 
 // Upcaster - transforms old events to new schema
 interface EventUpcaster {
   // => EventUpcaster: contract definition
   canUpcast(eventType: string, version: number): boolean;
-  // => Domain operation: canUpcast
   upcast(storedEvent: StoredEvent): StoredEvent;
-  // => Domain operation: upcast
 }
-// => Coordinates with bounded context
 
 class MoneyDepositedUpcaster implements EventUpcaster {
-  // => MoneyDepositedUpcaster: domain model element
   canUpcast(eventType: string, version: number): boolean {
-    // => Domain operation: canUpcast
     // => Check if this upcaster applies
     return eventType === "MoneyDeposited" && version === 1;
     // => Handles MoneyDepositedV1 -> MoneyDepositedV2
   }
-  // => Implements tactical pattern
 
   upcast(storedEvent: StoredEvent): StoredEvent {
-    // => Domain operation: upcast
     // => Transform V1 event to V2 format
     const v1Data = JSON.parse(storedEvent.eventData);
     // => Deserialize V1 event
@@ -949,19 +873,17 @@ class MoneyDepositedUpcaster implements EventUpcaster {
     const v2Data = {
       // => Store value in v2Data
       accountId: v1Data.accountId,
-      // => Protects aggregate integrity
+      // => Invariant validation executed
       amount: v1Data.amount,
-      // => Ensures transactional consistency
+      // => Transaction boundary maintained
       currency: "USD",
       // => Add default currency for historical events
       // => Business rule: pre-V2 system only supported USD
     };
-    // => Manages entity lifecycle
 
     return {
-      // => Returns {
       ...storedEvent,
-      // => Preserves domain model
+      // => Domain model consistency maintained
       eventData: JSON.stringify(v2Data),
       // => Execute method
       eventType: "MoneyDepositedV2",
@@ -971,18 +893,14 @@ class MoneyDepositedUpcaster implements EventUpcaster {
     };
     // => Communicates domain intent
   }
-  // => Executes domain logic
 }
-// => Updates aggregate state
 
 class EventStoreWithUpcast extends EventStore {
-  // => EventStoreWithUpcast: domain model element
   private upcasters: EventUpcaster[] = [];
   // => Encapsulated field (not publicly accessible)
   // => Registry of upcasters
 
   registerUpcaster(upcaster: EventUpcaster): void {
-    // => Domain operation: registerUpcaster
     // => Add upcaster to registry
     this.upcasters.push(upcaster);
     // => Delegates to internal method
@@ -990,7 +908,6 @@ class EventStoreWithUpcast extends EventStore {
   // => Validates business rule
 
   protected deserialize(stored: StoredEvent): DomainEvent {
-    // => Domain operation: deserialize
     // => Override deserialization to apply upcasting
     let upcastedEvent = stored;
     // => Store value in upcastedEvent
@@ -1005,34 +922,27 @@ class EventStoreWithUpcast extends EventStore {
       }
       // => Enforces invariant
     }
-    // => Encapsulates domain knowledge
 
     const data = JSON.parse(upcastedEvent.eventData);
     // => Parse upcast event data
 
     switch (upcastedEvent.eventType) {
-      // => Operation: switch()
       case "MoneyDepositedV2":
-        // => Delegates to domain service
+        // => Execution delegated to domain service
         return new MoneyDepositedV2(data.accountId, data.amount, data.currency);
       // => Deserialize to V2 event class
       case "MoneyDepositedV1":
-        // => Maintains consistency boundary
+        // => Aggregate boundary enforced here
         return new MoneyDepositedV1(data.accountId, data.amount);
       // => Return result to caller
       default:
-        // => Applies domain event
+        // => Domain event triggered or handled
         return super.deserialize(stored);
-      // => Returns super.deserialize(stored)
     }
-    // => Coordinates with bounded context
   }
-  // => Implements tactical pattern
 }
-// => Protects aggregate integrity
 
 class MultiCurrencyBankAccount {
-  // => MultiCurrencyBankAccount: domain model element
   private accountId: string;
   // => Encapsulated field (not publicly accessible)
   private balances: Map<string, number> = new Map();
@@ -1056,19 +966,15 @@ class MultiCurrencyBankAccount {
     // => Create data structure
 
     return account;
-    // => Returns account
   }
-  // => Ensures transactional consistency
 
   deposit(amount: number, currency: string): void {
-    // => Domain operation: deposit
     // => New deposit method with currency
     const event = new MoneyDepositedV2(this.accountId, amount, currency);
     // => Store value in event
     this.applyAndRecord(event);
     // => Delegates to internal method
   }
-  // => Manages entity lifecycle
 
   private applyAndRecord(event: DomainEvent): void {
     // => Internal logic (not part of public API)
@@ -1077,13 +983,11 @@ class MultiCurrencyBankAccount {
     this.uncommittedEvents.push(event);
     // => Delegates to internal method
   }
-  // => Preserves domain model
 
   private apply(event: DomainEvent): void {
     // => Internal logic (not part of public API)
     // => Handle both V1 (upcast to V2) and V2 events
     if (event instanceof AccountOpened) {
-      // => Operation: if()
       this.accountId = event.accountId;
       // => Update accountId state
     } else if (event instanceof MoneyDepositedV2) {
@@ -1103,25 +1007,20 @@ class MultiCurrencyBankAccount {
     }
     // => Communicates domain intent
     this.version++;
-    // => Executes domain logic
+    // => Domain operation executes here
   }
-  // => Updates aggregate state
 
   getBalance(currency: string): number {
-    // => Domain operation: getBalance
     return this.balances.get(currency) || 0;
     // => Return result to caller
   }
   // => Validates business rule
 
   getUncommittedEvents(): DomainEvent[] {
-    // => Domain operation: getUncommittedEvents
     return [...this.uncommittedEvents];
-    // => Returns [...this.uncommittedEvents]
   }
   // => Enforces invariant
 }
-// => Encapsulates domain knowledge
 
 // Usage - upcasting in action
 (async () => {
@@ -1139,7 +1038,7 @@ class MultiCurrencyBankAccount {
   const v1Event = new MoneyDepositedV1("ACC-001", 1000);
   // => Old V1 event (no currency)
   account["apply"](v1Event);
-  // => Delegates to domain service
+  // => Execution delegated to domain service
   account["uncommittedEvents"].push(v1Event);
   // => Execute method
 
@@ -1168,7 +1067,7 @@ class MultiCurrencyBankAccount {
   // => Outputs result
   // => Output: EUR: 500 (from V2 event)
 })();
-// => Maintains consistency boundary
+// => Aggregate boundary enforced here
 ```
 
 **Key Takeaway**: Event upcasting transforms old event versions to new schemas during deserialization, enabling schema evolution without migrating historical events. Immutable events preserved, transformations applied on read.
@@ -1179,30 +1078,50 @@ class MultiCurrencyBankAccount {
 
 Projections build read models from event streams, enabling optimized queries without compromising event store immutability.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A["Event Store\n(write side)\nimmutable events"]
+    B["Projection Engine\nreplays events"]
+    C["OrderSummaryView\n(read model)"]
+    D["CustomerOrdersView\n(read model)"]
+    E["Query Service\nreads from views"]
+
+    A -->|event stream| B
+    B -->|builds| C
+    B -->|builds| D
+    E -->|queries| C
+    E -->|queries| D
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#CC78BC,stroke:#000,color:#fff
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#DE8F05,stroke:#000,color:#000
+```
+
 ```typescript
 // Read Model - optimized for queries
 interface AccountSummaryReadModel {
   // => AccountSummaryReadModel: contract definition
   accountId: string;
-  // => Executes domain logic
+  // => Domain operation executes here
   ownerId: string;
-  // => Updates aggregate state
+  // => Modifies aggregate internal state
   totalDeposits: number;
   // => Validates business rule
   totalWithdrawals: number;
   // => Enforces invariant
   currentBalance: number;
-  // => Encapsulates domain knowledge
+  // => Business rule enforced here
   transactionCount: number;
-  // => Delegates to domain service
+  // => Execution delegated to domain service
   lastActivity: Date;
   // => Denormalized data optimized for queries
   // => Cannot derive efficiently from events alone
 }
-// => Maintains consistency boundary
 
 class AccountSummaryProjection {
-  // => AccountSummaryProjection: domain model element
   private summaries: Map<string, AccountSummaryReadModel> = new Map();
   // => Encapsulated field (not publicly accessible)
   // => In-memory read model storage
@@ -1211,40 +1130,37 @@ class AccountSummaryProjection {
   async handle(event: DomainEvent): Promise<void> {
     // => Event handler - updates read model when events occur
     if (event instanceof AccountOpened) {
-      // => Operation: if()
       await this.handleAccountOpened(event);
       // => Delegates to internal method
     } else if (event instanceof MoneyDeposited) {
-      // => Applies domain event
+      // => Domain event triggered or handled
       await this.handleMoneyDeposited(event);
       // => Delegates to internal method
     } else if (event instanceof MoneyWithdrawn) {
-      // => Coordinates with bounded context
+      // => Cross-context interaction point
       await this.handleMoneyWithdrawn(event);
       // => Delegates to internal method
     }
-    // => Implements tactical pattern
   }
-  // => Protects aggregate integrity
 
   private async handleAccountOpened(event: AccountOpened): Promise<void> {
     // => Initialize read model for new account
     this.summaries.set(event.accountId, {
-      // => Ensures transactional consistency
+      // => Transaction boundary maintained
       accountId: event.accountId,
-      // => Manages entity lifecycle
+      // => Entity state transition managed
       ownerId: event.ownerId,
-      // => Preserves domain model
+      // => Domain model consistency maintained
       totalDeposits: event.initialBalance,
       // => Initial balance counts as deposit
       totalWithdrawals: 0,
       // => Communicates domain intent
       currentBalance: event.initialBalance,
-      // => Executes domain logic
+      // => Domain operation executes here
       transactionCount: 1,
       // => Account opening counts as transaction
       lastActivity: event.occurredAt,
-      // => Updates aggregate state
+      // => Modifies aggregate internal state
     });
     // => Read model created, optimized for queries
   }
@@ -1294,37 +1210,32 @@ class AccountSummaryProjection {
     // => State change operation
     // => Modifies state value
     summary.transactionCount++;
-    // => Encapsulates domain knowledge
+    // => Business rule enforced here
     summary.lastActivity = event.occurredAt;
-    // => Delegates to domain service
+    // => Execution delegated to domain service
 
     this.summaries.set(event.accountId, summary);
     // => Delegates to internal method
   }
-  // => Maintains consistency boundary
 
   async getSummary(accountId: string): Promise<AccountSummaryReadModel | null> {
     // => Query read model (O(1) lookup, no event replay)
     return this.summaries.get(accountId) || null;
     // => Return result to caller
   }
-  // => Applies domain event
 
   async getActiveAccounts(since: Date): Promise<AccountSummaryReadModel[]> {
     // => Complex query enabled by denormalization
     return Array.from(this.summaries.values()).filter((summary) => summary.lastActivity >= since);
-    // => Returns Array.from(this.summaries.values()).filter((summary) => summary.lastActivity >= since)
     // => Filter by last activity (efficient with read model)
     // => Would require full event replay without projection
   }
-  // => Coordinates with bounded context
 
   async getTotalVolume(): Promise<{ deposits: number; withdrawals: number }> {
     // => Aggregate query across all accounts
     const summaries = Array.from(this.summaries.values());
     // => Store value in summaries
     return {
-      // => Returns {
       deposits: summaries.reduce((sum, s) => sum + s.totalDeposits, 0),
       // => reduce: process collection elements
       withdrawals: summaries.reduce((sum, s) => sum + s.totalWithdrawals, 0),
@@ -1332,7 +1243,6 @@ class AccountSummaryProjection {
     };
     // => Calculated from read model, not events
   }
-  // => Implements tactical pattern
 
   async rebuild(eventStore: EventStore, accountIds: string[]): Promise<void> {
     // => Rebuild projection from event history
@@ -1342,23 +1252,18 @@ class AccountSummaryProjection {
     // => Clear existing read models
 
     for (const accountId of accountIds) {
-      // => Operation: for()
       const events = await eventStore.getEvents(accountId);
       // => Get complete event history
 
       for (const event of events) {
-        // => Operation: for()
         await this.handle(event);
         // => Delegates to internal method
         // => Replay events to rebuild read model
       }
-      // => Protects aggregate integrity
     }
     // => Projection rebuilt from source of truth (events)
   }
-  // => Ensures transactional consistency
 }
-// => Manages entity lifecycle
 
 // Usage - projections enable optimized queries
 (async () => {
@@ -1383,7 +1288,6 @@ class AccountSummaryProjection {
     await projection.handle(event);
     // => Update projection as events occur
   }
-  // => Preserves domain model
   await eventStore.append("ACC-001", account1.getUncommittedEvents(), 0);
   // => Execute method
 
@@ -1430,7 +1334,7 @@ class AccountSummaryProjection {
   console.log("Projection rebuilt from event history");
   // => Outputs result
 })();
-// => Executes domain logic
+// => Domain operation executes here
 ```
 
 **Key Takeaway**: Projections build queryable read models from event streams. Events are source of truth, projections are derived views optimized for specific queries. Can rebuild projections anytime from events.
@@ -1467,95 +1371,69 @@ graph TD
 ```typescript
 // Commands - intent to change state
 abstract class Command {
-  // => Command: domain model element
   constructor(public readonly commandId: string = crypto.randomUUID()) {}
   // => Unique command identifier for idempotency tracking
 }
-// => Executes domain logic
 
 class OpenAccountCommand extends Command {
-  // => OpenAccountCommand: domain model element
   constructor(
     // => Initialize object with parameters
     public readonly accountId: string,
-    // => Field: readonly (public)
     public readonly ownerId: string,
-    // => Field: readonly (public)
     public readonly initialBalance: number,
-    // => Field: readonly (public)
   ) {
-    // => Updates aggregate state
     super();
     // => Validates business rule
   }
   // => Enforces invariant
 }
-// => Encapsulates domain knowledge
 
 class DepositMoneyCommand extends Command {
-  // => DepositMoneyCommand: domain model element
   constructor(
     // => Initialize object with parameters
     public readonly accountId: string,
-    // => Field: readonly (public)
     public readonly amount: number,
-    // => Field: readonly (public)
   ) {
-    // => Delegates to domain service
     super();
-    // => Maintains consistency boundary
+    // => Aggregate boundary enforced here
   }
-  // => Applies domain event
 }
-// => Coordinates with bounded context
 
 // Queries - request for data
 abstract class Query<TResult> {
-  // => Query: domain model element
   constructor(public readonly queryId: string = crypto.randomUUID()) {}
   // => Initialize object with parameters
 }
-// => Implements tactical pattern
 
 class GetAccountSummaryQuery extends Query<AccountSummaryReadModel | null> {
-  // => GetAccountSummaryQuery: domain model element
   constructor(public readonly accountId: string) {
     // => Initialize object with parameters
     super();
-    // => Protects aggregate integrity
+    // => Invariant validation executed
   }
-  // => Ensures transactional consistency
 }
-// => Manages entity lifecycle
 
 class GetAccountsByOwnerQuery extends Query<AccountSummaryReadModel[]> {
-  // => GetAccountsByOwnerQuery: domain model element
   constructor(public readonly ownerId: string) {
     // => Initialize object with parameters
     super();
-    // => Preserves domain model
+    // => Domain model consistency maintained
   }
   // => Communicates domain intent
 }
-// => Executes domain logic
 
 // Command Handler - processes commands, returns void or events
 interface CommandHandler<TCommand extends Command> {
   // => CommandHandler: contract definition
   handle(command: TCommand): Promise<void>;
-  // => Domain operation: handle
 }
-// => Updates aggregate state
 
 class OpenAccountCommandHandler implements CommandHandler<OpenAccountCommand> {
-  // => OpenAccountCommandHandler: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly eventStore: EventStore,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly eventBus: EventBus,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
   // => Validates business rule
@@ -1581,23 +1459,17 @@ class OpenAccountCommandHandler implements CommandHandler<OpenAccountCommand> {
   }
   // => Enforces invariant
 }
-// => Encapsulates domain knowledge
 
 class DepositMoneyCommandHandler implements CommandHandler<DepositMoneyCommand> {
-  // => DepositMoneyCommandHandler: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly eventStore: EventStore,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly eventBus: EventBus,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
-  // => Delegates to domain service
 
   async handle(command: DepositMoneyCommand): Promise<void> {
-    // => Operation: handle()
     const account = await BankAccount.load(this.eventStore, command.accountId);
     // => Load aggregate from write model
 
@@ -1615,37 +1487,27 @@ class DepositMoneyCommandHandler implements CommandHandler<DepositMoneyCommand> 
       await this.eventBus.publish(event);
       // => Delegates to internal method
     }
-    // => Maintains consistency boundary
   }
-  // => Applies domain event
 }
-// => Coordinates with bounded context
 
 // Query Handler - retrieves data from read model, never modifies state
 interface QueryHandler<TQuery extends Query<TResult>, TResult> {
   // => QueryHandler: contract definition
   handle(query: TQuery): Promise<TResult>;
-  // => Domain operation: handle
 }
-// => Implements tactical pattern
 
 class GetAccountSummaryQueryHandler implements QueryHandler<GetAccountSummaryQuery, AccountSummaryReadModel | null> {
-  // => GetAccountSummaryQueryHandler: domain model element
   constructor(private readonly projection: AccountSummaryProjection) {}
   // => Initialize object with parameters
 
   async handle(query: GetAccountSummaryQuery): Promise<AccountSummaryReadModel | null> {
     // => Query handler reads from read model (projection)
     return await this.projection.getSummary(query.accountId);
-    // => Returns data, never modifies state
     // => No domain logic, just data retrieval
   }
-  // => Protects aggregate integrity
 }
-// => Ensures transactional consistency
 
 class GetAccountsByOwnerQueryHandler implements QueryHandler<GetAccountsByOwnerQuery, AccountSummaryReadModel[]> {
-  // => GetAccountsByOwnerQueryHandler: domain model element
   constructor(private readonly projection: AccountSummaryProjection) {}
   // => Initialize object with parameters
 
@@ -1654,16 +1516,12 @@ class GetAccountsByOwnerQueryHandler implements QueryHandler<GetAccountsByOwnerQ
     const allSummaries = Array.from((this.projection as any).summaries.values());
     // => Store value in allSummaries
     return allSummaries.filter((summary) => summary.ownerId === query.ownerId);
-    // => Returns allSummaries.filter((summary) => summary.ownerId === query.ownerId)
     // => Filter by owner (efficient with read model)
   }
-  // => Manages entity lifecycle
 }
-// => Preserves domain model
 
 // Event Bus - delivers events to projections
 class EventBus {
-  // => EventBus: domain model element
   private handlers: Map<string, Array<(event: DomainEvent) => Promise<void>>> = new Map();
   // => Encapsulated field (not publicly accessible)
   // => Event type -> array of handlers
@@ -1686,26 +1544,20 @@ class EventBus {
     const handlers = this.handlers.get(event.constructor.name) || [];
     // => Store value in handlers
     for (const handler of handlers) {
-      // => Operation: for()
       await handler(event);
       // => Deliver event to each handler
     }
-    // => Executes domain logic
   }
-  // => Updates aggregate state
 }
 // => Validates business rule
 
 // CQRS Application Service - coordinates commands and queries
 class BankingApplicationService {
-  // => BankingApplicationService: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly commandHandlers: Map<string, CommandHandler<any>>,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly queryHandlers: Map<string, QueryHandler<any, any>>,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
   // => Enforces invariant
@@ -1715,32 +1567,25 @@ class BankingApplicationService {
     const handler = this.commandHandlers.get(command.constructor.name);
     // => Store value in handler
     if (!handler) {
-      // => Operation: if()
       throw new Error(`No handler for command: ${command.constructor.name}`);
       // => Raise domain exception
     }
-    // => Encapsulates domain knowledge
     await handler.handle(command);
     // => Process command (writes to event store)
   }
-  // => Delegates to domain service
 
   async executeQuery<TResult>(query: Query<TResult>): Promise<TResult> {
     // => Route query to appropriate handler
     const handler = this.queryHandlers.get(query.constructor.name);
     // => Store value in handler
     if (!handler) {
-      // => Operation: if()
       throw new Error(`No handler for query: ${query.constructor.name}`);
       // => Raise domain exception
     }
-    // => Maintains consistency boundary
     return await handler.handle(query);
     // => Execute query (reads from projection)
   }
-  // => Applies domain event
 }
-// => Coordinates with bounded context
 
 // Usage - CQRS in action
 (async () => {
@@ -1754,11 +1599,11 @@ class BankingApplicationService {
 
   // Subscribe projection to events
   eventBus.subscribe(AccountOpened, (event) => projection.handle(event));
-  // => Implements tactical pattern
+  // => DDD tactical pattern applied
   eventBus.subscribe(MoneyDeposited, (event) => projection.handle(event));
-  // => Protects aggregate integrity
+  // => Invariant validation executed
   eventBus.subscribe(MoneyWithdrawn, (event) => projection.handle(event));
-  // => Ensures transactional consistency
+  // => Transaction boundary maintained
 
   // Setup command handlers
   const commandHandlers = new Map<string, CommandHandler<any>>();
@@ -1802,7 +1647,7 @@ class BankingApplicationService {
   // => Outputs result
   // => Output: Accounts for USER-001: 1
 })();
-// => Manages entity lifecycle
+// => Entity state transition managed
 ```
 
 **Key Takeaway**: CQRS separates write operations (commands → write model) from read operations (queries → read model). Commands change state via event store, queries retrieve optimized views via projections. Enables independent scaling and optimization of reads vs writes.
@@ -1813,21 +1658,37 @@ class BankingApplicationService {
 
 CQRS introduces eventual consistency between write and read models—reads may lag behind writes temporarily.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+sequenceDiagram
+    participant C as Client
+    participant WS as Write Side
+    participant ES as Event Store
+    participant P as Projection
+    participant RS as Read Side
+
+    C->>WS: command()
+    WS->>ES: append event
+    ES-->>WS: acknowledged
+    WS-->>C: success
+    Note over P,RS: async - may lag
+    ES->>P: event stream
+    P->>RS: update read model
+    C->>RS: query() - may see old data
+```
+
 ```typescript
 // Eventual Consistency Tracker - monitors read model lag
 class EventualConsistencyMonitor {
-  // => EventualConsistencyMonitor: domain model element
   private lastProcessedVersion: Map<string, number> = new Map();
   // => Encapsulated field (not publicly accessible)
   // => Track latest version processed by read model
 
   recordProcessedEvent(aggregateId: string, version: number): void {
-    // => Domain operation: recordProcessedEvent
     // => Update last processed version
     this.lastProcessedVersion.set(aggregateId, version);
     // => Delegates to internal method
   }
-  // => Executes domain logic
 
   async isConsistent(aggregateId: string, expectedVersion: number): Promise<boolean> {
     // => Check if read model caught up to expected version
@@ -1836,7 +1697,6 @@ class EventualConsistencyMonitor {
     return processedVersion >= expectedVersion;
     // => Return result to caller
   }
-  // => Updates aggregate state
 
   async waitForConsistency(aggregateId: string, expectedVersion: number, timeoutMs: number = 5000): Promise<void> {
     // => Poll until read model consistent or timeout
@@ -1859,18 +1719,14 @@ class EventualConsistencyMonitor {
     throw new Error(`Consistency timeout: expected version ${expectedVersion} not reached`);
     // => Raise domain exception
   }
-  // => Encapsulates domain knowledge
 }
-// => Delegates to domain service
 
 class AccountSummaryProjectionWithMonitoring extends AccountSummaryProjection {
-  // => AccountSummaryProjectionWithMonitoring: domain model element
   constructor(private readonly monitor: EventualConsistencyMonitor) {
     // => Initialize object with parameters
     super();
-    // => Maintains consistency boundary
+    // => Aggregate boundary enforced here
   }
-  // => Applies domain event
 
   async handle(event: DomainEvent): Promise<void> {
     // => Process event and update monitoring
@@ -1878,41 +1734,30 @@ class AccountSummaryProjectionWithMonitoring extends AccountSummaryProjection {
     // => Execute method
 
     if (event instanceof AccountOpened || event instanceof MoneyDeposited || event instanceof MoneyWithdrawn) {
-      // => Operation: if()
       const accountId = (event as any).accountId;
       // => Store value in accountId
       const summary = await this.getSummary(accountId);
       // => Store value in summary
       if (summary) {
-        // => Operation: if()
         this.monitor.recordProcessedEvent(accountId, summary.transactionCount);
         // => Delegates to internal method
         // => Record that read model processed this event
       }
-      // => Coordinates with bounded context
     }
-    // => Implements tactical pattern
   }
-  // => Protects aggregate integrity
 }
-// => Ensures transactional consistency
 
 // Command Handler with version tracking
 class DepositMoneyWithVersionTracking implements CommandHandler<DepositMoneyCommand> {
-  // => DepositMoneyWithVersionTracking: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly eventStore: EventStore,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly eventBus: EventBus,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
-  // => Manages entity lifecycle
 
   async handle(command: DepositMoneyCommand): Promise<number> {
-    // => Operation: handle()
     const account = await BankAccount.load(this.eventStore, command.accountId);
     // => Store value in account
     account.deposit(command.amount);
@@ -1928,15 +1773,12 @@ class DepositMoneyWithVersionTracking implements CommandHandler<DepositMoneyComm
       await this.eventBus.publish(event);
       // => Delegates to internal method
     }
-    // => Preserves domain model
 
     return account.getVersion();
-    // => Returns account.getVersion()
     // => Return new version for consistency tracking
   }
   // => Communicates domain intent
 }
-// => Executes domain logic
 
 // Usage - handling eventual consistency
 (async () => {
@@ -1951,7 +1793,7 @@ class DepositMoneyWithVersionTracking implements CommandHandler<DepositMoneyComm
   // => Store value in eventBus
 
   eventBus.subscribe(AccountOpened, (event) => projection.handle(event));
-  // => Updates aggregate state
+  // => Modifies aggregate internal state
   eventBus.subscribe(MoneyDeposited, (event) => projection.handle(event));
   // => Validates business rule
 
@@ -1999,7 +1841,7 @@ class DepositMoneyWithVersionTracking implements CommandHandler<DepositMoneyComm
   // => Outputs result
   // => Now guaranteed to reflect latest deposit
 })();
-// => Encapsulates domain knowledge
+// => Business rule enforced here
 ```
 
 **Key Takeaway**: CQRS introduces eventual consistency—write model updated immediately, read model updated asynchronously. Applications must handle lag between writes and reads through monitoring and wait strategies.
@@ -2015,9 +1857,9 @@ Read models in CQRS can be optimized for specific query patterns without impacti
 interface AccountListReadModel {
   // => AccountListReadModel: contract definition
   accountId: string;
-  // => Executes domain logic
+  // => Domain operation executes here
   ownerId: string;
-  // => Updates aggregate state
+  // => Modifies aggregate internal state
   balance: number;
   // => Validates business rule
   status: "active" | "inactive";
@@ -2028,39 +1870,35 @@ interface AccountListReadModel {
 interface AccountDetailReadModel {
   // => AccountDetailReadModel: contract definition
   accountId: string;
-  // => Encapsulates domain knowledge
+  // => Business rule enforced here
   ownerId: string;
-  // => Delegates to domain service
+  // => Execution delegated to domain service
   balance: number;
-  // => Maintains consistency boundary
+  // => Aggregate boundary enforced here
   totalDeposits: number;
-  // => Applies domain event
+  // => Domain event triggered or handled
   totalWithdrawals: number;
-  // => Coordinates with bounded context
+  // => Cross-context interaction point
   transactionCount: number;
-  // => Implements tactical pattern
+  // => DDD tactical pattern applied
   lastActivity: Date;
   // => Rich data for detail views
 }
-// => Protects aggregate integrity
 
 interface AccountSearchReadModel {
   // => AccountSearchReadModel: contract definition
   accountId: string;
-  // => Ensures transactional consistency
+  // => Transaction boundary maintained
   ownerId: string;
-  // => Ensures transactional consistency
+  // => Transaction boundary maintained
   ownerName: string; // => Denormalized for search
-  // => Manages entity lifecycle
   balance: number;
-  // => Preserves domain model
+  // => Domain model consistency maintained
   tags: string[]; // => Search keywords
   // => Optimized for full-text search
 }
-// => Manages entity lifecycle
 
 class MultiReadModelProjection {
-  // => MultiReadModelProjection: domain model element
   private listModels: Map<string, AccountListReadModel> = new Map();
   // => Encapsulated field (not publicly accessible)
   private detailModels: Map<string, AccountDetailReadModel> = new Map();
@@ -2075,18 +1913,16 @@ class MultiReadModelProjection {
     // => Delegates to internal method
     // => Same event updates multiple optimized views
   }
-  // => Preserves domain model
 
   private async updateListModel(event: DomainEvent): Promise<void> {
     // => Update lightweight list view
     if (event instanceof AccountOpened) {
-      // => Operation: if()
       this.listModels.set(event.accountId, {
         // => Communicates domain intent
         accountId: event.accountId,
-        // => Executes domain logic
+        // => Domain operation executes here
         ownerId: event.ownerId,
-        // => Updates aggregate state
+        // => Modifies aggregate internal state
         balance: event.initialBalance,
         // => Validates business rule
         status: "active",
@@ -2094,11 +1930,10 @@ class MultiReadModelProjection {
       });
       // => Minimal data for fast list rendering
     } else if (event instanceof MoneyDeposited) {
-      // => Encapsulates domain knowledge
+      // => Business rule enforced here
       const model = this.listModels.get(event.accountId);
       // => Store value in model
       if (model) {
-        // => Operation: if()
         model.balance += event.amount;
         // => State change operation
         // => Modifies state value
@@ -2106,40 +1941,34 @@ class MultiReadModelProjection {
         this.listModels.set(event.accountId, model);
         // => Delegates to internal method
       }
-      // => Delegates to domain service
     }
-    // => Maintains consistency boundary
   }
-  // => Applies domain event
 
   private async updateDetailModel(event: DomainEvent): Promise<void> {
     // => Update rich detail view (same logic as AccountSummaryProjection)
     if (event instanceof AccountOpened) {
-      // => Operation: if()
       this.detailModels.set(event.accountId, {
-        // => Coordinates with bounded context
+        // => Cross-context interaction point
         accountId: event.accountId,
-        // => Implements tactical pattern
+        // => DDD tactical pattern applied
         ownerId: event.ownerId,
-        // => Protects aggregate integrity
+        // => Invariant validation executed
         balance: event.initialBalance,
-        // => Ensures transactional consistency
+        // => Transaction boundary maintained
         totalDeposits: event.initialBalance,
-        // => Manages entity lifecycle
+        // => Entity state transition managed
         totalWithdrawals: 0,
-        // => Preserves domain model
+        // => Domain model consistency maintained
         transactionCount: 1,
         // => Communicates domain intent
         lastActivity: event.occurredAt,
-        // => Executes domain logic
+        // => Domain operation executes here
       });
-      // => Updates aggregate state
     } else if (event instanceof MoneyDeposited) {
       // => Validates business rule
       const model = this.detailModels.get(event.accountId);
       // => Store value in model
       if (model) {
-        // => Operation: if()
         model.balance += event.amount;
         // => State change operation
         // => Modifies state value
@@ -2151,46 +1980,39 @@ class MultiReadModelProjection {
         model.transactionCount++;
         // => Enforces invariant
         model.lastActivity = event.occurredAt;
-        // => Encapsulates domain knowledge
+        // => Business rule enforced here
         this.detailModels.set(event.accountId, model);
         // => Delegates to internal method
       }
-      // => Delegates to domain service
     }
-    // => Maintains consistency boundary
   }
-  // => Applies domain event
 
   private async updateSearchModel(event: DomainEvent): Promise<void> {
     // => Update search-optimized view
     if (event instanceof AccountOpened) {
-      // => Operation: if()
       this.searchModels.set(event.accountId, {
-        // => Coordinates with bounded context
+        // => Cross-context interaction point
         accountId: event.accountId,
-        // => Implements tactical pattern
+        // => DDD tactical pattern applied
         ownerId: event.ownerId,
-        // => Protects aggregate integrity
+        // => Invariant validation executed
         ownerName: `User ${event.ownerId}`,
         // => Denormalized owner name (would join from user service)
         balance: event.initialBalance,
-        // => Ensures transactional consistency
+        // => Transaction boundary maintained
         tags: ["active", "new-account"],
         // => Tags for filtering/search
       });
-      // => Manages entity lifecycle
     } else if (event instanceof MoneyDeposited) {
-      // => Preserves domain model
+      // => Domain model consistency maintained
       const model = this.searchModels.get(event.accountId);
       // => Store value in model
       if (model) {
-        // => Operation: if()
         model.balance += event.amount;
         // => State change operation
         // => Modifies state value
         // => Balance updated
         if (model.balance > 10000) {
-          // => Operation: if()
           model.tags.push("high-balance");
           // => Add tag based on business rule
         }
@@ -2198,9 +2020,7 @@ class MultiReadModelProjection {
         this.searchModels.set(event.accountId, model);
         // => Delegates to internal method
       }
-      // => Executes domain logic
     }
-    // => Updates aggregate state
   }
   // => Validates business rule
 
@@ -2208,7 +2028,6 @@ class MultiReadModelProjection {
   async getAccountList(ownerId: string): Promise<AccountListReadModel[]> {
     // => Fast list query using minimal data
     return Array.from(this.listModels.values()).filter((m) => m.ownerId === ownerId);
-    // => Returns Array.from(this.listModels.values()).filter((m) => m.ownerId === ownerId)
   }
   // => Enforces invariant
 
@@ -2217,28 +2036,24 @@ class MultiReadModelProjection {
     return this.detailModels.get(accountId) || null;
     // => Return result to caller
   }
-  // => Encapsulates domain knowledge
 
   async searchAccounts(query: string): Promise<AccountSearchReadModel[]> {
     // => Search query using optimized model
     const lowerQuery = query.toLowerCase();
     // => Store value in lowerQuery
     return Array.from(this.searchModels.values()).filter(
-      // => Returns Array.from(this.searchModels.values()).filter(
       (m) =>
-        // => Delegates to domain service
+        // => Execution delegated to domain service
         m.accountId.toLowerCase().includes(lowerQuery) ||
         // => Execute method
         m.ownerName.toLowerCase().includes(lowerQuery) ||
         // => Execute method
         m.tags.some((tag) => tag.includes(lowerQuery)),
-      // => Maintains consistency boundary
+      // => Aggregate boundary enforced here
     );
     // => Search across multiple fields (would use Elasticsearch in production)
   }
-  // => Applies domain event
 }
-// => Coordinates with bounded context
 
 // Usage
 (async () => {
@@ -2250,11 +2065,9 @@ class MultiReadModelProjection {
   // => Store value in events
 
   for (const event of events) {
-    // => Operation: for()
     await projection.handle(event);
     // => Single event updates all three read models
   }
-  // => Implements tactical pattern
 
   // Different queries use different optimized models
   const list = await projection.getAccountList("USER-001");
@@ -2275,7 +2088,7 @@ class MultiReadModelProjection {
   // => Outputs result
   // => Output: Search results: 1
 })();
-// => Protects aggregate integrity
+// => Invariant validation executed
 ```
 
 **Key Takeaway**: CQRS enables multiple read models optimized for different query patterns (lists, details, search). Same events update all read models independently. Each optimized for specific use case without compromising others.
@@ -2289,39 +2102,28 @@ CQRS coordinates reads and writes across bounded context boundaries using integr
 ```typescript
 // Sales Context - owns Order aggregate
 namespace SalesContext {
-  // => Executes domain logic
   export class OrderPlaced extends DomainEvent {
-    // => OrderPlaced: domain model element
     constructor(
       // => Initialize object with parameters
       public readonly orderId: string,
-      // => Field: readonly (public)
       public readonly customerId: string,
-      // => Field: readonly (public)
       public readonly totalAmount: number,
-      // => Field: readonly (public)
     ) {
-      // => Updates aggregate state
       super();
       // => Validates business rule
     }
     // => Enforces invariant
   }
-  // => Encapsulates domain knowledge
 
   export class OrderCancelled extends DomainEvent {
-    // => OrderCancelled: domain model element
     constructor(public readonly orderId: string) {
       // => Initialize object with parameters
       super();
-      // => Delegates to domain service
+      // => Execution delegated to domain service
     }
-    // => Maintains consistency boundary
   }
-  // => Applies domain event
 
   export class Order {
-    // => Order: domain model element
     private orderId: string;
     // => Encapsulated field (not publicly accessible)
     private customerId: string;
@@ -2334,7 +2136,6 @@ namespace SalesContext {
     // => Encapsulated field (not publicly accessible)
 
     placeOrder(orderId: string, customerId: string, totalAmount: number): void {
-      // => Domain operation: placeOrder
       this.orderId = orderId;
       // => Update orderId state
       this.customerId = customerId;
@@ -2349,16 +2150,12 @@ namespace SalesContext {
       this.uncommittedEvents.push(event);
       // => Delegates to internal method
     }
-    // => Coordinates with bounded context
 
     cancelOrder(): void {
-      // => Domain operation: cancelOrder
       if (this.status !== "placed") {
-        // => Operation: if()
         throw new Error("Can only cancel placed orders");
         // => Raise domain exception
       }
-      // => Implements tactical pattern
       this.status = "cancelled";
       // => Update status state
       const event = new OrderCancelled(this.orderId);
@@ -2366,41 +2163,30 @@ namespace SalesContext {
       this.uncommittedEvents.push(event);
       // => Delegates to internal method
     }
-    // => Protects aggregate integrity
 
     getUncommittedEvents(): DomainEvent[] {
-      // => Domain operation: getUncommittedEvents
       return [...this.uncommittedEvents];
-      // => Returns [...this.uncommittedEvents]
     }
-    // => Ensures transactional consistency
   }
-  // => Manages entity lifecycle
 
   // Write Model - Order Repository
   export class OrderRepository {
-    // => OrderRepository: domain model element
     private orders: Map<string, Order> = new Map();
     // => Encapsulated field (not publicly accessible)
 
     async save(order: Order): Promise<void> {
-      // => Operation: save()
       // In production: persist to database
       this.orders.set((order as any).orderId, order);
       // => Delegates to internal method
     }
-    // => Preserves domain model
 
     async getById(orderId: string): Promise<Order | null> {
-      // => Operation: getById()
       return this.orders.get(orderId) || null;
       // => Return result to caller
     }
     // => Communicates domain intent
   }
-  // => Executes domain logic
 }
-// => Updates aggregate state
 
 // Billing Context - maintains read model of orders for invoicing
 namespace BillingContext {
@@ -2408,59 +2194,53 @@ namespace BillingContext {
   export interface OrderSummaryForBilling {
     // => Enforces invariant
     orderId: string;
-    // => Encapsulates domain knowledge
+    // => Business rule enforced here
     customerId: string;
-    // => Delegates to domain service
+    // => Execution delegated to domain service
     totalAmount: number;
-    // => Maintains consistency boundary
+    // => Aggregate boundary enforced here
     status: "pending_payment" | "cancelled";
     // => Billing's view of order (different from Sales' model)
   }
-  // => Applies domain event
 
   export class BillingReadModel {
-    // => BillingReadModel: domain model element
     private orders: Map<string, OrderSummaryForBilling> = new Map();
     // => Encapsulated field (not publicly accessible)
 
     async handleOrderPlaced(event: SalesContext.OrderPlaced): Promise<void> {
       // => Integration event handler (cross-context)
       this.orders.set(event.orderId, {
-        // => Coordinates with bounded context
+        // => Cross-context interaction point
         orderId: event.orderId,
-        // => Implements tactical pattern
+        // => DDD tactical pattern applied
         customerId: event.customerId,
-        // => Protects aggregate integrity
+        // => Invariant validation executed
         totalAmount: event.totalAmount,
-        // => Ensures transactional consistency
+        // => Transaction boundary maintained
         status: "pending_payment",
         // => Translated to Billing's ubiquitous language
       });
       // => Billing context builds own read model from Sales events
     }
-    // => Manages entity lifecycle
 
     async handleOrderCancelled(event: SalesContext.OrderCancelled): Promise<void> {
       // => Update Billing's model when Sales order cancelled
       const order = this.orders.get(event.orderId);
       // => Store value in order
       if (order) {
-        // => Operation: if()
         order.status = "cancelled";
-        // => Preserves domain model
+        // => Domain model consistency maintained
         this.orders.set(event.orderId, order);
         // => Delegates to internal method
       }
       // => Communicates domain intent
     }
-    // => Executes domain logic
 
     async getOrdersForInvoicing(customerId: string): Promise<OrderSummaryForBilling[]> {
       // => Query optimized for billing use case
       return Array.from(this.orders.values()).filter(
-        // => Returns Array.from(this.orders.values()).filter(
         (o) => o.customerId === customerId && o.status === "pending_payment",
-        // => Updates aggregate state
+        // => (o) => o.customerId === customerId && o.status === "pending_payment",: maps to string value "pending_payment"
       );
       // => Only shows orders needing payment (Billing's concern)
     }
@@ -2468,11 +2248,9 @@ namespace BillingContext {
   }
   // => Enforces invariant
 }
-// => Encapsulates domain knowledge
 
 // Integration Event Bus - crosses bounded context boundaries
 class IntegrationEventBus {
-  // => IntegrationEventBus: domain model element
   private handlers: Map<string, Array<(event: any) => Promise<void>>> = new Map();
   // => Encapsulated field (not publicly accessible)
 
@@ -2487,22 +2265,17 @@ class IntegrationEventBus {
     this.handlers.set(typeName, handlers);
     // => Delegates to internal method
   }
-  // => Delegates to domain service
 
   async publish(event: DomainEvent): Promise<void> {
     // => Publishes events across context boundaries
     const handlers = this.handlers.get(event.constructor.name) || [];
     // => Store value in handlers
     for (const handler of handlers) {
-      // => Operation: for()
       await handler(event);
       // => Asynchronous propagation to other contexts
     }
-    // => Maintains consistency boundary
   }
-  // => Applies domain event
 }
-// => Coordinates with bounded context
 
 // Usage - CQRS across bounded contexts
 (async () => {
@@ -2516,9 +2289,9 @@ class IntegrationEventBus {
 
   // Billing subscribes to Sales events
   integrationBus.subscribe(SalesContext.OrderPlaced, (event) => billingReadModel.handleOrderPlaced(event));
-  // => Implements tactical pattern
+  // => DDD tactical pattern applied
   integrationBus.subscribe(SalesContext.OrderCancelled, (event) => billingReadModel.handleOrderCancelled(event));
-  // => Protects aggregate integrity
+  // => Invariant validation executed
 
   // Sales context processes command
   const order = new SalesContext.Order();
@@ -2533,7 +2306,6 @@ class IntegrationEventBus {
     await integrationBus.publish(event);
     // => Sales events propagate to Billing context
   }
-  // => Ensures transactional consistency
 
   // Billing context now has read model updated
   const ordersForInvoicing = await billingReadModel.getOrdersForInvoicing("CUST-001");
@@ -2547,7 +2319,6 @@ class IntegrationEventBus {
   const loadedOrder = await salesRepository.getById("ORDER-001");
   // => Store value in loadedOrder
   if (loadedOrder) {
-    // => Operation: if()
     loadedOrder.cancelOrder();
     // => Execute method
     await salesRepository.save(loadedOrder);
@@ -2558,9 +2329,7 @@ class IntegrationEventBus {
       await integrationBus.publish(event);
       // => Cancellation propagates to Billing
     }
-    // => Manages entity lifecycle
   }
-  // => Preserves domain model
 
   // Billing read model updated automatically
   const afterCancellation = await billingReadModel.getOrdersForInvoicing("CUST-001");
@@ -2583,7 +2352,6 @@ CQRS read models benefit from aggressive caching since they're eventually consis
 ```typescript
 // Cached Read Model - adds caching layer to projection
 class CachedAccountProjection {
-  // => CachedAccountProjection: domain model element
   private cache: Map<string, { data: AccountSummaryReadModel; expiresAt: number }> = new Map();
   // => Encapsulated field (not publicly accessible)
   // => In-memory cache with TTL
@@ -2606,7 +2374,6 @@ class CachedAccountProjection {
       console.log(`Cache HIT for ${accountId}`);
       // => Outputs result
       return cached.data;
-      // => Returns cached.data
       // => Return cached data (no database query)
     }
 
@@ -2617,7 +2384,6 @@ class CachedAccountProjection {
     // => Query underlying projection (database)
 
     if (data) {
-      // => Operation: if()
       this.cache.set(accountId, {
         data,
         expiresAt: now + this.cacheTTLMs,
@@ -2626,7 +2392,6 @@ class CachedAccountProjection {
     }
 
     return data;
-    // => Returns data
   }
 
   invalidate(accountId: string): void {
@@ -2647,7 +2412,6 @@ class CachedAccountProjection {
     // => Update underlying read model
 
     if (event instanceof AccountOpened || event instanceof MoneyDeposited || event instanceof MoneyWithdrawn) {
-      // => Operation: if()
       const accountId = (event as any).accountId;
       // => Store value in accountId
       this.invalidate(accountId);
@@ -2659,7 +2423,6 @@ class CachedAccountProjection {
 
 // Query Handler with Caching
 class CachedGetAccountSummaryQueryHandler implements QueryHandler<
-  // => CachedGetAccountSummaryQueryHandler: domain model element
   GetAccountSummaryQuery,
   AccountSummaryReadModel | null
 > {
@@ -2752,9 +2515,9 @@ graph TD
     style C fill:#029E73,stroke:#000,color:#fff
     style D fill:#CC78BC,stroke:#000,color:#fff
     style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#E73F51,stroke:#000,color:#fff
-    style G fill:#E73F51,stroke:#000,color:#fff
-    style H fill:#E73F51,stroke:#000,color:#fff
+    style F fill:#CC78BC,stroke:#000,color:#fff
+    style G fill:#CC78BC,stroke:#000,color:#fff
+    style H fill:#CC78BC,stroke:#000,color:#fff
 ```
 
 ```typescript
@@ -2763,19 +2526,14 @@ interface SagaStep {
   // => SagaStep: contract definition
   name: string;
   execute(): Promise<void>; // => Forward action
-  // => Domain operation: execute
   compensate(): Promise<void>; // => Rollback action
-  // => Domain operation: compensate
 }
 
 // Order Saga - orchestrates order placement across services
 class OrderSaga {
-  // => OrderSaga: domain model element
   private readonly sagaId: string;
-  // => Field: readonly (private)
   // => Encapsulated state, not directly accessible
   private readonly steps: SagaStep[] = [];
-  // => Field: readonly (private)
   // => Encapsulated state, not directly accessible
   private completedSteps: SagaStep[] = [];
   // => Encapsulated field (not publicly accessible)
@@ -2785,16 +2543,12 @@ class OrderSaga {
     // => Initialize object with parameters
     sagaId: string,
     private readonly orderId: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly customerId: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly items: Array<{ productId: string; quantity: number }>,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly totalAmount: number,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {
     this.sagaId = sagaId;
@@ -2902,7 +2656,6 @@ class OrderSaga {
     // => Execute saga steps sequentially
     try {
       for (const step of this.steps) {
-        // => Operation: for()
         console.log(`[${this.sagaId}] Executing step: ${step.name}`);
         // => Delegates to internal method
         // => Outputs result
@@ -2935,7 +2688,6 @@ class OrderSaga {
     // => Compensate in reverse order (LIFO)
 
     for (const step of stepsToCompensate) {
-      // => Operation: for()
       try {
         console.log(`[${this.sagaId}] Compensating step: ${step.name}`);
         // => Delegates to internal method
@@ -2964,7 +2716,6 @@ class OrderSaga {
 
 // Saga Orchestrator - manages saga lifecycle
 class SagaOrchestrator {
-  // => SagaOrchestrator: domain model element
   private activeSagas: Map<string, OrderSaga> = new Map();
   // => Encapsulated field (not publicly accessible)
 
@@ -3033,120 +2784,90 @@ Saga Choreography achieves distributed transactions through event-driven collabo
 ```typescript
 // Services communicate via events (no central orchestrator)
 class OrderPlacedEvent extends DomainEvent {
-  // => OrderPlacedEvent: domain model element
   constructor(
     // => Initialize object with parameters
     public readonly orderId: string,
-    // => Field: readonly (public)
     public readonly customerId: string,
-    // => Field: readonly (public)
     public readonly items: Array<{ productId: string; quantity: number }>,
-    // => Field: readonly (public)
     public readonly totalAmount: number,
-    // => Field: readonly (public)
   ) {
-    // => Executes domain logic
     super();
-    // => Updates aggregate state
+    // => Modifies aggregate internal state
   }
   // => Validates business rule
 }
 // => Enforces invariant
 
 class InventoryReservedEvent extends DomainEvent {
-  // => InventoryReservedEvent: domain model element
   constructor(public readonly orderId: string) {
     // => Initialize object with parameters
     super();
-    // => Encapsulates domain knowledge
+    // => Business rule enforced here
   }
-  // => Delegates to domain service
 }
-// => Maintains consistency boundary
 
 class InventoryReservationFailedEvent extends DomainEvent {
-  // => InventoryReservationFailedEvent: domain model element
   constructor(
     // => Initialize object with parameters
     public readonly orderId: string,
-    // => Field: readonly (public)
     public readonly reason: string,
-    // => Field: readonly (public)
   ) {
-    // => Applies domain event
     super();
-    // => Coordinates with bounded context
+    // => Cross-context interaction point
   }
-  // => Implements tactical pattern
 }
-// => Protects aggregate integrity
 
 class PaymentProcessedEvent extends DomainEvent {
-  // => PaymentProcessedEvent: domain model element
   constructor(public readonly orderId: string) {
     // => Initialize object with parameters
     super();
-    // => Ensures transactional consistency
+    // => Transaction boundary maintained
   }
-  // => Manages entity lifecycle
 }
-// => Preserves domain model
 
 class PaymentFailedEvent extends DomainEvent {
-  // => PaymentFailedEvent: domain model element
   constructor(
     // => Initialize object with parameters
     public readonly orderId: string,
-    // => Field: readonly (public)
     public readonly reason: string,
-    // => Field: readonly (public)
   ) {
     // => Communicates domain intent
     super();
-    // => Executes domain logic
+    // => Domain operation executes here
   }
-  // => Updates aggregate state
 }
 // => Validates business rule
 
 class OrderCompletedEvent extends DomainEvent {
-  // => OrderCompletedEvent: domain model element
   constructor(public readonly orderId: string) {
     // => Initialize object with parameters
     super();
     // => Enforces invariant
   }
-  // => Encapsulates domain knowledge
 }
-// => Delegates to domain service
 
 class OrderCancelledEvent extends DomainEvent {
-  // => OrderCancelledEvent: domain model element
   constructor(public readonly orderId: string) {
     // => Initialize object with parameters
     super();
-    // => Maintains consistency boundary
+    // => Aggregate boundary enforced here
   }
-  // => Applies domain event
 }
-// => Coordinates with bounded context
 
 // Order Service - initiates saga by placing order
 class OrderService {
-  // => OrderService: domain model element
   constructor(private readonly eventBus: IntegrationEventBus) {}
   // => Initialize object with parameters
 
   async placeOrder(
-    // => Implements tactical pattern
+    // => DDD tactical pattern applied
     customerId: string,
-    // => Protects aggregate integrity
+    // => Invariant validation executed
     items: Array<{ productId: string; quantity: number }>,
-    // => Ensures transactional consistency
+    // => Transaction boundary maintained
     totalAmount: number,
-    // => Manages entity lifecycle
+    // => Entity state transition managed
   ): Promise<string> {
-    // => Preserves domain model
     const orderId = crypto.randomUUID();
     // => Store value in orderId
     console.log(`[OrderService] Order ${orderId} placed`);
@@ -3159,7 +2880,6 @@ class OrderService {
     // => Other services react to event
 
     return orderId;
-    // => Returns orderId
   }
   // => Communicates domain intent
 
@@ -3171,7 +2891,6 @@ class OrderService {
     // => Delegates to internal method
     // => Publish cancellation event
   }
-  // => Executes domain logic
 
   async handlePaymentFailed(event: PaymentFailedEvent): Promise<void> {
     // => React to payment failure
@@ -3180,10 +2899,8 @@ class OrderService {
     await this.eventBus.publish(new OrderCancelledEvent(event.orderId));
     // => Delegates to internal method
   }
-  // => Updates aggregate state
 
   async handleOrderCompleted(event: OrderCompletedEvent): Promise<void> {
-    // => Operation: handleOrderCompleted()
     console.log(`[OrderService] Order ${event.orderId} completed successfully`);
     // => Outputs result
   }
@@ -3193,7 +2910,6 @@ class OrderService {
 
 // Inventory Service - reacts to OrderPlaced, reserves inventory
 class InventoryService {
-  // => InventoryService: domain model element
   constructor(private readonly eventBus: IntegrationEventBus) {}
   // => Initialize object with parameters
 
@@ -3214,16 +2930,14 @@ class InventoryService {
       // => Delegates to internal method
       // => Publish success event (triggers next step)
     } catch (error) {
-      // => Encapsulates domain knowledge
+      // => Business rule enforced here
       console.error(`[InventoryService] Reservation failed for order ${event.orderId}`);
       // => Execute method
       await this.eventBus.publish(new InventoryReservationFailedEvent(event.orderId, "Insufficient inventory"));
       // => Delegates to internal method
       // => Publish failure event (triggers compensation)
     }
-    // => Delegates to domain service
   }
-  // => Maintains consistency boundary
 
   async handleOrderCancelled(event: OrderCancelledEvent): Promise<void> {
     // => Compensation: release inventory
@@ -3231,13 +2945,10 @@ class InventoryService {
     // => Outputs result
     // await this.releaseItems(event.orderId)
   }
-  // => Applies domain event
 }
-// => Coordinates with bounded context
 
 // Payment Service - reacts to InventoryReserved, processes payment
 class PaymentService {
-  // => PaymentService: domain model element
   constructor(private readonly eventBus: IntegrationEventBus) {}
   // => Initialize object with parameters
 
@@ -3258,16 +2969,14 @@ class PaymentService {
       // => Delegates to internal method
       // => Publish success event (triggers next step)
     } catch (error) {
-      // => Implements tactical pattern
+      // => DDD tactical pattern applied
       console.error(`[PaymentService] Payment failed for order ${event.orderId}`);
       // => Execute method
       await this.eventBus.publish(new PaymentFailedEvent(event.orderId, "Payment declined"));
       // => Delegates to internal method
       // => Publish failure event (triggers compensation)
     }
-    // => Protects aggregate integrity
   }
-  // => Ensures transactional consistency
 
   async handleOrderCancelled(event: OrderCancelledEvent): Promise<void> {
     // => Compensation: refund payment (if charged)
@@ -3275,13 +2984,10 @@ class PaymentService {
     // => Outputs result
     // await this.refundCustomer(event.orderId)
   }
-  // => Manages entity lifecycle
 }
-// => Preserves domain model
 
 // Shipping Service - reacts to PaymentProcessed, ships order
 class ShippingService {
-  // => ShippingService: domain model element
   constructor(private readonly eventBus: IntegrationEventBus) {}
   // => Initialize object with parameters
 
@@ -3309,9 +3015,7 @@ class ShippingService {
     // => Outputs result
     // await this.cancelShipment(event.orderId)
   }
-  // => Executes domain logic
 }
-// => Updates aggregate state
 
 // Usage - choreography saga
 (async () => {
@@ -3335,21 +3039,21 @@ class ShippingService {
   eventBus.subscribe(InventoryReservedEvent, (e) => paymentService.handleInventoryReserved(e));
   // => Enforces invariant
   eventBus.subscribe(PaymentProcessedEvent, (e) => shippingService.handlePaymentProcessed(e));
-  // => Encapsulates domain knowledge
+  // => Business rule enforced here
   eventBus.subscribe(OrderCompletedEvent, (e) => orderService.handleOrderCompleted(e));
-  // => Delegates to domain service
+  // => Execution delegated to domain service
 
   // Compensation handlers
   eventBus.subscribe(InventoryReservationFailedEvent, (e) => orderService.handleInventoryReservationFailed(e));
-  // => Maintains consistency boundary
+  // => Aggregate boundary enforced here
   eventBus.subscribe(PaymentFailedEvent, (e) => orderService.handlePaymentFailed(e));
-  // => Applies domain event
+  // => Domain event triggered or handled
   eventBus.subscribe(OrderCancelledEvent, (e) => inventoryService.handleOrderCancelled(e));
-  // => Coordinates with bounded context
+  // => Cross-context interaction point
   eventBus.subscribe(OrderCancelledEvent, (e) => paymentService.handleOrderCancelled(e));
-  // => Implements tactical pattern
+  // => DDD tactical pattern applied
   eventBus.subscribe(OrderCancelledEvent, (e) => shippingService.handleOrderCancelled(e));
-  // => Protects aggregate integrity
+  // => Invariant validation executed
 
   console.log("=== Successful Choreography Saga ===");
   // => Outputs result
@@ -3365,7 +3069,7 @@ class ShippingService {
 
   // No central orchestrator - services react to events
 })();
-// => Ensures transactional consistency
+// => Transaction boundary maintained
 ```
 
 **Key Takeaway**: Saga Choreography achieves distributed transactions through event-driven service collaboration. No central orchestrator—each service publishes events and reacts to others' events. Compensation triggered by failure events flowing through system.
@@ -3376,21 +3080,34 @@ class ShippingService {
 
 Sagas must handle failures gracefully and ensure idempotent operations to prevent duplicate processing.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+stateDiagram-v2
+    [*] --> Started
+    Started --> PaymentProcessing : OrderPlaced
+    PaymentProcessing --> InventoryReserving : PaymentCompleted
+    PaymentProcessing --> Compensating : PaymentFailed
+    InventoryReserving --> Completed : InventoryReserved
+    InventoryReserving --> Compensating : InventoryFailed
+    Compensating --> Failed : CompensationCompleted
+    Completed --> [*]
+    Failed --> [*]
+```
+
 ```typescript
 // Idempotency Key - prevents duplicate saga step execution
 interface IdempotencyRecord {
   // => IdempotencyRecord: contract definition
   key: string;
-  // => Executes domain logic
+  // => Domain operation executes here
   processedAt: Date;
-  // => Updates aggregate state
+  // => Modifies aggregate internal state
   result?: any;
   // => Validates business rule
 }
 // => Enforces invariant
 
 class IdempotencyStore {
-  // => IdempotencyStore: domain model element
   private records: Map<string, IdempotencyRecord> = new Map();
   // => Encapsulated field (not publicly accessible)
   // => Track processed operations
@@ -3401,57 +3118,44 @@ class IdempotencyStore {
     return this.records.has(key);
     // => Return result to caller
   }
-  // => Encapsulates domain knowledge
 
   async recordProcessed(key: string, result?: any): Promise<void> {
     // => Mark operation as processed
     this.records.set(key, {
-      // => Delegates to domain service
+      // => Execution delegated to domain service
       key,
-      // => Maintains consistency boundary
+      // => Aggregate boundary enforced here
       processedAt: new Date(),
-      // => Applies domain event
+      // => Domain event triggered or handled
       result,
-      // => Coordinates with bounded context
+      // => Cross-context interaction point
     });
-    // => Implements tactical pattern
   }
-  // => Protects aggregate integrity
 
   async getResult(key: string): Promise<any | null> {
     // => Retrieve cached result for idempotent replay
     const record = this.records.get(key);
     // => Store value in record
     return record?.result || null;
-    // => Returns record?.result || null
   }
-  // => Ensures transactional consistency
 }
-// => Manages entity lifecycle
 
 // Idempotent Saga Step
 class IdempotentSagaStep implements SagaStep {
-  // => IdempotentSagaStep: domain model element
   constructor(
     // => Initialize object with parameters
     public readonly name: string,
-    // => Field: readonly (public)
     private readonly stepId: string,
     // => Unique ID for this step instance
     private readonly executeAction: () => Promise<void>,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly compensateAction: () => Promise<void>,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly idempotencyStore: IdempotencyStore,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
-  // => Preserves domain model
 
   async execute(): Promise<void> {
-    // => Operation: execute()
     const idempotencyKey = `execute-${this.stepId}`;
     // => Unique key for this execution
 
@@ -3473,10 +3177,8 @@ class IdempotentSagaStep implements SagaStep {
     // => Delegates to internal method
     // => Mark as processed
   }
-  // => Executes domain logic
 
   async compensate(): Promise<void> {
-    // => Operation: compensate()
     const idempotencyKey = `compensate-${this.stepId}`;
     // => Separate key for compensation
 
@@ -3486,7 +3188,7 @@ class IdempotentSagaStep implements SagaStep {
       // => Delegates to internal method
       // => Outputs result
       return;
-      // => Updates aggregate state
+      // => Modifies aggregate internal state
     }
     // => Validates business rule
 
@@ -3497,59 +3199,47 @@ class IdempotentSagaStep implements SagaStep {
   }
   // => Enforces invariant
 }
-// => Encapsulates domain knowledge
 
 // Saga with Retry Logic
 class ResilientOrderSaga extends OrderSaga {
-  // => ResilientOrderSaga: domain model element
   private maxRetries = 3;
   // => Encapsulated field (not publicly accessible)
   private retryDelayMs = 1000;
   // => Encapsulated field (not publicly accessible)
 
   async executeWithRetry(): Promise<void> {
-    // => Operation: executeWithRetry()
     let attempt = 0;
     // => Store value in attempt
 
     while (attempt < this.maxRetries) {
-      // => Operation: while()
       try {
-        // => Delegates to domain service
         await this.execute();
         // => Delegates to internal method
         return;
         // => Success, exit retry loop
       } catch (error) {
-        // => Maintains consistency boundary
+        // => Aggregate boundary enforced here
         attempt++;
-        // => Applies domain event
+        // => Domain event triggered or handled
         console.error(`Saga attempt ${attempt} failed:`, error);
         // => Execute method
 
         if (attempt < this.maxRetries) {
-          // => Operation: if()
           console.log(`Retrying in ${this.retryDelayMs}ms...`);
           // => Delegates to internal method
           // => Outputs result
           await new Promise((resolve) => setTimeout(resolve, this.retryDelayMs));
           // => Wait before retry
         } else {
-          // => Coordinates with bounded context
           console.error(`Saga failed after ${this.maxRetries} attempts`);
           // => Delegates to internal method
           throw error;
           // => Exhausted retries, propagate error
         }
-        // => Implements tactical pattern
       }
-      // => Protects aggregate integrity
     }
-    // => Ensures transactional consistency
   }
-  // => Manages entity lifecycle
 }
-// => Preserves domain model
 
 // Saga Failure Recovery - restores saga state after crash
 interface SagaState {
@@ -3557,88 +3247,72 @@ interface SagaState {
   sagaId: string;
   // => Communicates domain intent
   orderId: string;
-  // => Executes domain logic
+  // => Domain operation executes here
   currentStep: number;
-  // => Updates aggregate state
+  // => Modifies aggregate internal state
   status: "in_progress" | "completed" | "compensating" | "failed";
   // => Validates business rule
   completedSteps: string[];
   // => Enforces invariant
   createdAt: Date;
-  // => Encapsulates domain knowledge
+  // => Business rule enforced here
 }
-// => Delegates to domain service
 
 class SagaStateStore {
-  // => SagaStateStore: domain model element
   private states: Map<string, SagaState> = new Map();
   // => Encapsulated field (not publicly accessible)
   // => Persist saga state for recovery
   // => Production: database with strong consistency
 
   async saveState(state: SagaState): Promise<void> {
-    // => Operation: saveState()
     this.states.set(state.sagaId, state);
     // => Delegates to internal method
   }
-  // => Maintains consistency boundary
 
   async getState(sagaId: string): Promise<SagaState | null> {
-    // => Operation: getState()
     return this.states.get(sagaId) || null;
     // => Return result to caller
   }
-  // => Applies domain event
 
   async getInProgressSagas(): Promise<SagaState[]> {
     // => Find sagas that didn't complete (for recovery)
     return Array.from(this.states.values()).filter((state) => state.status === "in_progress");
-    // => Returns Array.from(this.states.values()).filter((state) => state.status === "in_progress")
   }
-  // => Coordinates with bounded context
 }
-// => Implements tactical pattern
 
 class RecoverableOrderSaga {
-  // => RecoverableOrderSaga: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly sagaId: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly orderId: string,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly steps: SagaStep[],
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly stateStore: SagaStateStore,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
-  // => Protects aggregate integrity
 
   async execute(): Promise<void> {
     // => Execute with state persistence for recovery
     for (let i = 0; i < this.steps.length; i++) {
-      // => Operation: for()
       const step = this.steps[i];
       // => Store value in step
 
       await this.stateStore.saveState({
-        // => Ensures transactional consistency
+        // => Transaction boundary maintained
         sagaId: this.sagaId,
-        // => Manages entity lifecycle
+        // => Entity state transition managed
         orderId: this.orderId,
-        // => Preserves domain model
+        // => Domain model consistency maintained
         currentStep: i,
         // => Communicates domain intent
         status: "in_progress",
-        // => Executes domain logic
+        // => Domain operation executes here
         completedSteps: this.steps.slice(0, i).map((s) => s.name),
         // => map: process collection elements
         createdAt: new Date(),
-        // => Updates aggregate state
+        // => Modifies aggregate internal state
       });
       // => Persist state before each step
 
@@ -3649,34 +3323,31 @@ class RecoverableOrderSaga {
       } catch (error) {
         // => Enforces invariant
         await this.stateStore.saveState({
-          // => Encapsulates domain knowledge
+          // => Business rule enforced here
           sagaId: this.sagaId,
-          // => Delegates to domain service
+          // => Execution delegated to domain service
           orderId: this.orderId,
-          // => Maintains consistency boundary
+          // => Aggregate boundary enforced here
           currentStep: i,
-          // => Applies domain event
+          // => Domain event triggered or handled
           status: "compensating",
-          // => Coordinates with bounded context
+          // => Cross-context interaction point
           completedSteps: this.steps.slice(0, i).map((s) => s.name),
           // => map: process collection elements
           createdAt: new Date(),
-          // => Implements tactical pattern
+          // => DDD tactical pattern applied
         });
-        // => Protects aggregate integrity
         throw error;
-        // => Ensures transactional consistency
+        // => Transaction boundary maintained
       }
-      // => Manages entity lifecycle
     }
-    // => Preserves domain model
 
     await this.stateStore.saveState({
       // => Communicates domain intent
       sagaId: this.sagaId,
-      // => Executes domain logic
+      // => Domain operation executes here
       orderId: this.orderId,
-      // => Updates aggregate state
+      // => Modifies aggregate internal state
       currentStep: this.steps.length,
       // => Validates business rule
       status: "completed",
@@ -3684,11 +3355,10 @@ class RecoverableOrderSaga {
       completedSteps: this.steps.map((s) => s.name),
       // => map: process collection elements
       createdAt: new Date(),
-      // => Encapsulates domain knowledge
+      // => Business rule enforced here
     });
     // => Mark saga as completed
   }
-  // => Delegates to domain service
 
   static async recover(state: SagaState, steps: SagaStep[], stateStore: SagaStateStore): Promise<void> {
     // => Resume saga from failure point
@@ -3700,27 +3370,20 @@ class RecoverableOrderSaga {
       const saga = new RecoverableOrderSaga(state.sagaId, state.orderId, steps, stateStore);
       // => Store value in saga
       try {
-        // => Maintains consistency boundary
         // Resume from current step
         for (let i = state.currentStep; i < steps.length; i++) {
-          // => Operation: for()
           await steps[i].execute();
           // => Execute method
         }
-        // => Applies domain event
       } catch (error) {
-        // => Coordinates with bounded context
+        // => Cross-context interaction point
         console.error("Recovery failed, compensating");
         // => Execute method
         // Compensate completed steps
       }
-      // => Implements tactical pattern
     }
-    // => Protects aggregate integrity
   }
-  // => Ensures transactional consistency
 }
-// => Manages entity lifecycle
 
 // Usage
 (async () => {
@@ -3731,7 +3394,7 @@ class RecoverableOrderSaga {
   const step1 = new IdempotentSagaStep(
     // => Store value in step1
     "Reserve Inventory",
-    // => Preserves domain model
+    // => Domain model consistency maintained
     "saga-1-step-1",
     // => Communicates domain intent
     async () => {
@@ -3741,11 +3404,10 @@ class RecoverableOrderSaga {
       await new Promise((resolve) => setTimeout(resolve, 100));
       // => Create Promise instance
     },
-    // => Executes domain logic
     async () => console.log("Releasing inventory..."),
     // => Outputs result
     idempotencyStore,
-    // => Updates aggregate state
+    // => Modifies aggregate internal state
   );
   // => Validates business rule
 
@@ -3771,10 +3433,28 @@ class RecoverableOrderSaga {
 
 Process Managers coordinate long-running business processes with complex branching logic and state management.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+sequenceDiagram
+    participant PM as Process Manager
+    participant O as Order Service
+    participant P as Payment Service
+    participant I as Inventory Service
+    participant S as Shipping Service
+
+    O->>PM: OrderCreated
+    PM->>P: InitiatePayment
+    P->>PM: PaymentCompleted
+    PM->>I: ReserveInventory
+    I->>PM: InventoryReserved
+    PM->>S: ScheduleShipment
+    S->>PM: ShipmentScheduled
+    PM->>O: CompleteOrder
+```
+
 ```typescript
 // Process Manager - maintains state and orchestrates multi-step workflow
 class OrderFulfillmentProcessManager {
-  // => OrderFulfillmentProcessManager: domain model element
   private orderId: string;
   // => Encapsulated field (not publicly accessible)
   private status: "new" | "payment_pending" | "inventory_reserved" | "shipped" | "completed" | "failed";
@@ -3793,7 +3473,6 @@ class OrderFulfillmentProcessManager {
     this.status = "new";
     // => Update status state
   }
-  // => Executes domain logic
 
   // Handle incoming events and transition state
   async handleOrderPlaced(event: OrderPlacedEvent): Promise<void> {
@@ -3812,12 +3491,10 @@ class OrderFulfillmentProcessManager {
     // => Delegates to internal method
     // => Emit command to process payment
   }
-  // => Updates aggregate state
 
   async handlePaymentProcessed(event: PaymentProcessedEvent): Promise<void> {
     // => Payment succeeded
     if (this.status !== "payment_pending") {
-      // => Operation: if()
       console.log(`[ProcessManager] Ignoring PaymentProcessed, wrong state: ${this.status}`);
       // => Delegates to internal method
       // => Outputs result
@@ -3841,7 +3518,7 @@ class OrderFulfillmentProcessManager {
   async handlePaymentFailed(event: PaymentFailedEvent): Promise<void> {
     // => Payment failed
     this.paymentAttempts++;
-    // => Encapsulates domain knowledge
+    // => Business rule enforced here
     console.log(`[ProcessManager] Payment failed (attempt ${this.paymentAttempts}/${this.maxPaymentAttempts})`);
     // => Delegates to internal method
     // => Outputs result
@@ -3865,18 +3542,14 @@ class OrderFulfillmentProcessManager {
       // => Delegates to internal method
       // => Cancel order
     }
-    // => Delegates to domain service
   }
-  // => Maintains consistency boundary
 
   async handleInventoryReserved(event: InventoryReservedEvent): Promise<void> {
     // => Inventory reserved successfully
     if (this.status !== "inventory_reserved") {
-      // => Operation: if()
       return;
-      // => Applies domain event
+      // => Domain event triggered or handled
     }
-    // => Coordinates with bounded context
 
     this.status = "shipped";
     // => Update status state
@@ -3887,16 +3560,13 @@ class OrderFulfillmentProcessManager {
     // => Delegates to internal method
     // => Emit shipping command
   }
-  // => Implements tactical pattern
 
   async handleOrderShipped(event: any): Promise<void> {
     // => Order shipped
     if (this.status !== "shipped") {
-      // => Operation: if()
       return;
-      // => Protects aggregate integrity
+      // => Invariant validation executed
     }
-    // => Ensures transactional consistency
 
     this.status = "completed";
     // => Update status state
@@ -3905,98 +3575,73 @@ class OrderFulfillmentProcessManager {
     // => Outputs result
     // => Process complete
   }
-  // => Manages entity lifecycle
 
   getUncommittedEvents(): DomainEvent[] {
-    // => Domain operation: getUncommittedEvents
     return [...this.uncommittedEvents];
-    // => Returns [...this.uncommittedEvents]
   }
-  // => Preserves domain model
 
   clearUncommittedEvents(): void {
-    // => Domain operation: clearUncommittedEvents
     this.uncommittedEvents = [];
     // => Update uncommittedEvents state
   }
   // => Communicates domain intent
 
   getStatus(): string {
-    // => Domain operation: getStatus
     return this.status;
     // => Return result to caller
   }
-  // => Executes domain logic
 }
-// => Updates aggregate state
 
 // Commands emitted by Process Manager
 class ProcessPaymentCommand extends DomainEvent {
-  // => ProcessPaymentCommand: domain model element
   constructor(
     // => Initialize object with parameters
     public readonly orderId: string,
-    // => Field: readonly (public)
     public readonly customerId: string,
-    // => Field: readonly (public)
     public readonly amount: number,
-    // => Field: readonly (public)
   ) {
     // => Validates business rule
     super();
     // => Enforces invariant
   }
-  // => Encapsulates domain knowledge
 }
-// => Delegates to domain service
 
 class ReserveInventoryCommand extends DomainEvent {
-  // => ReserveInventoryCommand: domain model element
   constructor(public readonly orderId: string) {
     // => Initialize object with parameters
     super();
-    // => Maintains consistency boundary
+    // => Aggregate boundary enforced here
   }
-  // => Applies domain event
 }
-// => Coordinates with bounded context
 
 class ShipOrderCommand extends DomainEvent {
-  // => ShipOrderCommand: domain model element
   constructor(public readonly orderId: string) {
     // => Initialize object with parameters
     super();
-    // => Implements tactical pattern
+    // => DDD tactical pattern applied
   }
-  // => Protects aggregate integrity
 }
-// => Ensures transactional consistency
 
 class CancelOrderCommand extends DomainEvent {
-  // => CancelOrderCommand: domain model element
   constructor(public readonly orderId: string) {
     // => Initialize object with parameters
     super();
-    // => Manages entity lifecycle
+    // => Entity state transition managed
   }
-  // => Preserves domain model
 }
 // => Communicates domain intent
 
 class OrderShippedEvent extends DomainEvent {
-  // => OrderShippedEvent: domain model element
   constructor(public readonly orderId: string) {
     // => Initialize object with parameters
     super();
-    // => Executes domain logic
+    // => Domain operation executes here
   }
-  // => Updates aggregate state
 }
 // => Validates business rule
 
 // Process Manager Repository
 class ProcessManagerRepository {
-  // => ProcessManagerRepository: domain model element
   private managers: Map<string, OrderFulfillmentProcessManager> = new Map();
   // => Encapsulated field (not publicly accessible)
 
@@ -4006,7 +3651,6 @@ class ProcessManagerRepository {
     // => Store value in manager
 
     if (!manager) {
-      // => Operation: if()
       manager = new OrderFulfillmentProcessManager();
       // => Create OrderFulfillmentProcessManager instance
       this.managers.set(orderId, manager);
@@ -4016,19 +3660,14 @@ class ProcessManagerRepository {
     // => Enforces invariant
 
     return manager;
-    // => Returns manager
   }
-  // => Encapsulates domain knowledge
 
   async save(orderId: string, manager: OrderFulfillmentProcessManager): Promise<void> {
-    // => Operation: save()
     this.managers.set(orderId, manager);
     // => Delegates to internal method
     // => Persist process state
   }
-  // => Delegates to domain service
 }
-// => Maintains consistency boundary
 
 // Usage
 (async () => {
@@ -4044,17 +3683,16 @@ class ProcessManagerRepository {
     if (
       // => Validates business rule
       event instanceof OrderPlacedEvent ||
-      // => Applies domain event
+      // => Domain event triggered or handled
       event instanceof PaymentProcessedEvent ||
-      // => Coordinates with bounded context
+      // => Cross-context interaction point
       event instanceof PaymentFailedEvent ||
-      // => Implements tactical pattern
+      // => DDD tactical pattern applied
       event instanceof InventoryReservedEvent ||
-      // => Protects aggregate integrity
+      // => Invariant validation executed
       event instanceof OrderShippedEvent
-      // => Ensures transactional consistency
+      // => Transaction boundary maintained
     ) {
-      // => Manages entity lifecycle
       const orderId = (event as any).orderId;
       // => Store value in orderId
       const manager = await repository.getOrCreate(orderId);
@@ -4062,11 +3700,10 @@ class ProcessManagerRepository {
 
       // Route to appropriate handler
       if (event instanceof OrderPlacedEvent) {
-        // => Operation: if()
         await manager.handleOrderPlaced(event);
         // => Execute method
       } else if (event instanceof PaymentProcessedEvent) {
-        // => Preserves domain model
+        // => Domain model consistency maintained
         await manager.handlePaymentProcessed(event);
         // => Execute method
       } else if (event instanceof PaymentFailedEvent) {
@@ -4074,11 +3711,11 @@ class ProcessManagerRepository {
         await manager.handlePaymentFailed(event);
         // => Execute method
       } else if (event instanceof InventoryReservedEvent) {
-        // => Executes domain logic
+        // => Domain operation executes here
         await manager.handleInventoryReserved(event);
         // => Execute method
       } else if (event instanceof OrderShippedEvent) {
-        // => Updates aggregate state
+        // => Modifies aggregate internal state
         await manager.handleOrderShipped(event);
         // => Execute method
       }
@@ -4097,9 +3734,7 @@ class ProcessManagerRepository {
       await repository.save(orderId, manager);
       // => Persist updated state
     }
-    // => Encapsulates domain knowledge
   };
-  // => Delegates to domain service
 
   // Subscribe process manager to events
   eventBus.subscribe(OrderPlacedEvent, routeEvent);
@@ -4134,7 +3769,7 @@ class ProcessManagerRepository {
   // => Outputs result
   // => Output: Final status: completed
 })();
-// => Maintains consistency boundary
+// => Aggregate boundary enforced here
 ```
 
 **Key Takeaway**: Process Managers maintain state across long-running workflows, handling complex branching logic and coordinating multiple services. Unlike sagas, they persist state and can handle arbitrary complexity including retries, timeouts, and conditional branching.
@@ -4150,38 +3785,34 @@ Process Managers must persist state to survive service restarts and enable recov
 interface PersistedProcessState {
   // => PersistedProcessState: contract definition
   processId: string;
-  // => Executes domain logic
+  // => Domain operation executes here
   orderId: string;
-  // => Updates aggregate state
+  // => Modifies aggregate internal state
   status: string;
   // => Validates business rule
   customerId: string;
   // => Enforces invariant
   paymentAttempts: number;
-  // => Encapsulates domain knowledge
+  // => Business rule enforced here
   metadata: Record<string, any>;
-  // => Delegates to domain service
+  // => Execution delegated to domain service
   createdAt: Date;
-  // => Maintains consistency boundary
+  // => Aggregate boundary enforced here
   updatedAt: Date;
-  // => Applies domain event
+  // => Domain event triggered or handled
   version: number;
   // => Optimistic locking
 }
-// => Coordinates with bounded context
 
 class ProcessStateStore {
-  // => ProcessStateStore: domain model element
   private states: Map<string, PersistedProcessState> = new Map();
   // => Encapsulated field (not publicly accessible)
   // => Production: PostgreSQL, DynamoDB
 
   async load(processId: string): Promise<PersistedProcessState | null> {
-    // => Operation: load()
     return this.states.get(processId) || null;
     // => Return result to caller
   }
-  // => Implements tactical pattern
 
   async save(state: PersistedProcessState): Promise<void> {
     // => Save with optimistic locking
@@ -4189,29 +3820,24 @@ class ProcessStateStore {
     // => Store value in existing
 
     if (existing && existing.version !== state.version) {
-      // => Operation: if()
       throw new Error(`Concurrency conflict: expected version ${state.version}, found ${existing.version}`);
       // => Prevent lost updates
     }
-    // => Protects aggregate integrity
 
     this.states.set(state.processId, {
-      // => Ensures transactional consistency
+      // => Transaction boundary maintained
       ...state,
-      // => Manages entity lifecycle
+      // => Entity state transition managed
       updatedAt: new Date(),
-      // => Preserves domain model
+      // => Domain model consistency maintained
       version: state.version + 1,
       // => Increment version
     });
     // => Communicates domain intent
   }
-  // => Executes domain logic
 }
-// => Updates aggregate state
 
 class PersistentOrderFulfillmentProcessManager extends OrderFulfillmentProcessManager {
-  // => PersistentOrderFulfillmentProcessManager: domain model element
   private processId: string;
   // => Encapsulated field (not publicly accessible)
   private version: number = 0;
@@ -4222,16 +3848,14 @@ class PersistentOrderFulfillmentProcessManager extends OrderFulfillmentProcessMa
     processId: string,
     // => Validates business rule
     private readonly stateStore: ProcessStateStore,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {
     // => Enforces invariant
     super();
-    // => Encapsulates domain knowledge
+    // => Business rule enforced here
     this.processId = processId;
     // => Update processId state
   }
-  // => Delegates to domain service
 
   static async load(orderId: string, stateStore: ProcessStateStore): Promise<PersistentOrderFulfillmentProcessManager> {
     // => Load process from storage
@@ -4254,7 +3878,7 @@ class PersistentOrderFulfillmentProcessManager extends OrderFulfillmentProcessMa
       manager["paymentAttempts"] = state.paymentAttempts;
       // => Create data structure
       manager.version = state.version;
-      // => Maintains consistency boundary
+      // => Aggregate boundary enforced here
       console.log(`[ProcessManager] Loaded process ${processId} (version ${state.version})`);
       // => Outputs result
     } else {
@@ -4264,33 +3888,30 @@ class PersistentOrderFulfillmentProcessManager extends OrderFulfillmentProcessMa
       console.log(`[ProcessManager] Created new process ${processId}`);
       // => Outputs result
     }
-    // => Applies domain event
 
     return manager;
-    // => Returns manager
   }
-  // => Coordinates with bounded context
 
   async save(): Promise<void> {
     // => Persist current state
     const state: PersistedProcessState = {
       // => Create data structure
       processId: this.processId,
-      // => Implements tactical pattern
+      // => DDD tactical pattern applied
       orderId: this["orderId"],
-      // => Protects aggregate integrity
+      // => Invariant validation executed
       status: this["status"],
-      // => Ensures transactional consistency
+      // => Transaction boundary maintained
       customerId: this["customerId"],
-      // => Manages entity lifecycle
+      // => Entity state transition managed
       paymentAttempts: this["paymentAttempts"],
-      // => Preserves domain model
+      // => Domain model consistency maintained
       metadata: {},
       // => Communicates domain intent
       createdAt: new Date(),
-      // => Executes domain logic
+      // => Domain operation executes here
       updatedAt: new Date(),
-      // => Updates aggregate state
+      // => Modifies aggregate internal state
       version: this.version,
       // => Validates business rule
     };
@@ -4301,38 +3922,30 @@ class PersistentOrderFulfillmentProcessManager extends OrderFulfillmentProcessMa
     this.version = state.version + 1;
     // => Update local version after save
   }
-  // => Encapsulates domain knowledge
 
   // Override handlers to persist after state changes
   async handleOrderPlaced(event: OrderPlacedEvent): Promise<void> {
-    // => Operation: handleOrderPlaced()
     await super.handleOrderPlaced(event);
     // => Execute method
     await this.save();
     // => Delegates to internal method
     // => Persist after state transition
   }
-  // => Delegates to domain service
 
   async handlePaymentProcessed(event: PaymentProcessedEvent): Promise<void> {
-    // => Operation: handlePaymentProcessed()
     await super.handlePaymentProcessed(event);
     // => Execute method
     await this.save();
     // => Delegates to internal method
   }
-  // => Maintains consistency boundary
 
   async handlePaymentFailed(event: PaymentFailedEvent): Promise<void> {
-    // => Operation: handlePaymentFailed()
     await super.handlePaymentFailed(event);
     // => Execute method
     await this.save();
     // => Delegates to internal method
   }
-  // => Applies domain event
 }
-// => Coordinates with bounded context
 
 // Usage
 (async () => {
@@ -4359,7 +3972,7 @@ class PersistentOrderFulfillmentProcessManager extends OrderFulfillmentProcessMa
   await manager2.handlePaymentProcessed(new PaymentProcessedEvent("ORDER-001"));
   // => Process continues from persisted state
 })();
-// => Implements tactical pattern
+// => DDD tactical pattern applied
 ```
 
 **Key Takeaway**: Process Manager persistence enables recovery after service restarts. State stored with optimistic locking prevents concurrent modification. Load existing state or create new process on first event.
@@ -4373,20 +3986,18 @@ Process Managers handle timeouts for steps that don't complete within expected t
 ```typescript
 // Timeout-aware Process Manager
 class TimeoutAwareProcessManager extends PersistentOrderFulfillmentProcessManager {
-  // => TimeoutAwareProcessManager: domain model element
   private timeouts: Map<string, { deadline: Date; action: () => Promise<void> }> = new Map();
   // => Encapsulated field (not publicly accessible)
 
   async handleOrderPlaced(event: OrderPlacedEvent): Promise<void> {
-    // => Operation: handleOrderPlaced()
     await super.handleOrderPlaced(event);
     // => Execute method
 
     // Set payment timeout
     this.setTimeout(
-      // => Executes domain logic
+      // => Domain operation executes here
       "payment",
-      // => Updates aggregate state
+      // => Modifies aggregate internal state
       30000,
       // => 30 second timeout for payment
       async () => {
@@ -4401,10 +4012,8 @@ class TimeoutAwareProcessManager extends PersistentOrderFulfillmentProcessManage
     );
     // => Enforces invariant
   }
-  // => Encapsulates domain knowledge
 
   async handlePaymentProcessed(event: PaymentProcessedEvent): Promise<void> {
-    // => Operation: handlePaymentProcessed()
     this.clearTimeout("payment");
     // => Delegates to internal method
     // => Clear timeout when payment succeeds
@@ -4413,9 +4022,9 @@ class TimeoutAwareProcessManager extends PersistentOrderFulfillmentProcessManage
 
     // Set inventory timeout
     this.setTimeout(
-      // => Delegates to domain service
+      // => Execution delegated to domain service
       "inventory",
-      // => Maintains consistency boundary
+      // => Aggregate boundary enforced here
       60000,
       // => 60 second timeout for inventory
       async () => {
@@ -4429,20 +4038,16 @@ class TimeoutAwareProcessManager extends PersistentOrderFulfillmentProcessManage
         await this.save();
         // => Delegates to internal method
       },
-      // => Applies domain event
     );
-    // => Coordinates with bounded context
+    // => Cross-context interaction point
   }
-  // => Implements tactical pattern
 
   async handleInventoryReserved(event: InventoryReservedEvent): Promise<void> {
-    // => Operation: handleInventoryReserved()
     this.clearTimeout("inventory");
     // => Delegates to internal method
     await super.handleInventoryReserved(event);
     // => Execute method
   }
-  // => Protects aggregate integrity
 
   private setTimeout(name: string, ms: number, action: () => Promise<void>): void {
     // => Register timeout handler
@@ -4463,11 +4068,9 @@ class TimeoutAwareProcessManager extends PersistentOrderFulfillmentProcessManage
         this.timeouts.delete(name);
         // => Delegates to internal method
       }
-      // => Ensures transactional consistency
     }, ms);
-    // => Manages entity lifecycle
+    // => Entity state transition managed
   }
-  // => Preserves domain model
 
   private clearTimeout(name: string): void {
     // => Internal logic (not part of public API)
@@ -4476,21 +4079,16 @@ class TimeoutAwareProcessManager extends PersistentOrderFulfillmentProcessManage
   }
   // => Communicates domain intent
 }
-// => Executes domain logic
 
 // Timeout Monitor - recovers abandoned processes
 class ProcessTimeoutMonitor {
-  // => ProcessTimeoutMonitor: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly stateStore: ProcessStateStore,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly eventBus: IntegrationEventBus,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
-  // => Updates aggregate state
 
   async checkTimeouts(): Promise<void> {
     // => Periodic check for timed-out processes
@@ -4504,7 +4102,6 @@ class ProcessTimeoutMonitor {
     // => Store value in now
 
     for (const state of allStates) {
-      // => Operation: for()
       const ageMs = now.getTime() - state.updatedAt.getTime();
       // => Store value in ageMs
 
@@ -4525,9 +4122,7 @@ class ProcessTimeoutMonitor {
     }
     // => Enforces invariant
   }
-  // => Encapsulates domain knowledge
 }
-// => Delegates to domain service
 
 // Usage
 (async () => {
@@ -4551,7 +4146,7 @@ class ProcessTimeoutMonitor {
   const monitor = new ProcessTimeoutMonitor(stateStore, eventBus);
   // => Monitor runs periodically to detect timeouts
 })();
-// => Maintains consistency boundary
+// => Aggregate boundary enforced here
 ```
 
 **Key Takeaway**: Process Managers handle timeouts using timer infrastructure (persistent timers, scheduled jobs). Timeout monitors detect abandoned processes by checking state age, providing safety net if in-process timeouts fail.
@@ -4564,73 +4159,78 @@ class ProcessTimeoutMonitor {
 
 Context Maps document relationships between bounded contexts using standardized patterns.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A["Sales Context\n(Upstream)"]
+    B["Shipping Context\n(Downstream)\nConformist"]
+    C["Billing Context\n(Customer-Supplier)"]
+    D["Notification Context\n(Open Host Service)"]
+    E["Legacy ERP\n(Anti-Corruption Layer)"]
+
+    A -->|Shared Kernel| C
+    A -->|Customer-Supplier| B
+    A -->|Published Language| D
+    E -->|ACL protects| A
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#fff
+    style E fill:#CA9161,stroke:#000,color:#fff
+```
+
 ```typescript
 // Customer-Supplier Pattern - downstream depends on upstream
 namespace InventoryContext {
-  // => Executes domain logic
   // Upstream context - defines API
   export interface ProductAvailability {
-    // => Updates aggregate state
     productId: string;
     // => Validates business rule
     quantityAvailable: number;
     // => Enforces invariant
     reservedUntil?: Date;
-    // => Encapsulates domain knowledge
+    // => Business rule enforced here
   }
-  // => Delegates to domain service
 
   export class InventoryAPI {
-    // => InventoryAPI: domain model element
     async checkAvailability(productId: string): Promise<ProductAvailability> {
       // => Published interface that downstream depends on
       console.log(`[Inventory] Checking availability for ${productId}`);
       // => Outputs result
       return {
-        // => Returns {
         productId,
-        // => Maintains consistency boundary
+        // => Aggregate boundary enforced here
         quantityAvailable: 100,
-        // => Applies domain event
+        // => Domain event triggered or handled
         reservedUntil: undefined,
-        // => Coordinates with bounded context
+        // => Cross-context interaction point
       };
-      // => Implements tactical pattern
     }
-    // => Protects aggregate integrity
 
     async reserve(productId: string, quantity: number): Promise<void> {
-      // => Operation: reserve()
       console.log(`[Inventory] Reserved ${quantity} units of ${productId}`);
       // => Outputs result
     }
-    // => Ensures transactional consistency
   }
-  // => Manages entity lifecycle
 }
-// => Preserves domain model
 
 namespace OrderContext {
   // => Communicates domain intent
   // Downstream context - depends on upstream
   export class OrderService {
-    // => OrderService: domain model element
     constructor(private readonly inventoryAPI: InventoryContext.InventoryAPI) {
       // => Dependency on upstream context's published API
     }
-    // => Executes domain logic
 
     async placeOrder(productId: string, quantity: number): Promise<void> {
-      // => Operation: placeOrder()
       const availability = await this.inventoryAPI.checkAvailability(productId);
       // => Call upstream API
 
       if (availability.quantityAvailable < quantity) {
-        // => Operation: if()
         throw new Error("Insufficient inventory");
         // => Raise domain exception
       }
-      // => Updates aggregate state
 
       await this.inventoryAPI.reserve(productId, quantity);
       // => Delegates to internal method
@@ -4641,62 +4241,51 @@ namespace OrderContext {
   }
   // => Enforces invariant
 }
-// => Encapsulates domain knowledge
 
 // Conformist Pattern - downstream conforms to upstream without negotiation
 namespace ExternalPaymentProvider {
-  // => Delegates to domain service
   // Upstream (external) - we have no control
   export interface PaymentRequest {
-    // => Maintains consistency boundary
     card_number: string;
     // => Uses snake_case (external API convention)
     exp_month: number;
-    // => Applies domain event
+    // => Domain event triggered or handled
     exp_year: number;
-    // => Coordinates with bounded context
+    // => Cross-context interaction point
     cvv: string;
-    // => Implements tactical pattern
+    // => DDD tactical pattern applied
     amount_cents: number;
     // => Amounts in cents
   }
-  // => Protects aggregate integrity
 
   export class ExternalPaymentAPI {
-    // => ExternalPaymentAPI: domain model element
     async charge(request: PaymentRequest): Promise<{ charge_id: string }> {
-      // => Operation: charge()
       console.log(`[ExternalPaymentAPI] Charging ${request.amount_cents} cents`);
       // => Outputs result
       return { charge_id: "ch_123" };
-      // => Returns { charge_id: "ch_123" }
     }
-    // => Ensures transactional consistency
   }
-  // => Manages entity lifecycle
 }
-// => Preserves domain model
 
 namespace PaymentContext {
   // => Communicates domain intent
   // Downstream - conforms to external payment provider's model
   export class PaymentService {
-    // => PaymentService: domain model element
     constructor(private readonly externalAPI: ExternalPaymentProvider.ExternalPaymentAPI) {}
     // => Initialize object with parameters
 
     async processPayment(
-      // => Executes domain logic
+      // => Domain operation executes here
       cardNumber: string,
-      // => Updates aggregate state
+      // => Modifies aggregate internal state
       expMonth: number,
       // => Validates business rule
       expYear: number,
       // => Enforces invariant
       cvv: string,
-      // => Encapsulates domain knowledge
+      // => Business rule enforced here
       amountDollars: number,
-      // => Delegates to domain service
+      // => Execution delegated to domain service
     ): Promise<string> {
       // => Adapt our model to external provider's required format
       const request: ExternalPaymentProvider.PaymentRequest = {
@@ -4704,52 +4293,43 @@ namespace PaymentContext {
         card_number: cardNumber,
         // => Convert camelCase to snake_case
         exp_month: expMonth,
-        // => Maintains consistency boundary
+        // => Aggregate boundary enforced here
         exp_year: expYear,
-        // => Applies domain event
+        // => Domain event triggered or handled
         cvv,
-        // => Coordinates with bounded context
+        // => Cross-context interaction point
         amount_cents: Math.round(amountDollars * 100),
         // => Convert dollars to cents
       };
-      // => Implements tactical pattern
 
       const result = await this.externalAPI.charge(request);
       // => Conform to external API structure
       console.log(`[Payment] Payment processed: ${result.charge_id}`);
       // => Outputs result
       return result.charge_id;
-      // => Returns result.charge_id
     }
-    // => Protects aggregate integrity
   }
-  // => Ensures transactional consistency
 }
-// => Manages entity lifecycle
 
 // Partnership Pattern - mutual dependency with coordinated evolution
 namespace ShippingContext {
-  // => Preserves domain model
   export interface ShipmentCreatedEvent {
     // => Communicates domain intent
     shipmentId: string;
-    // => Executes domain logic
+    // => Domain operation executes here
     orderId: string;
-    // => Updates aggregate state
+    // => Modifies aggregate internal state
     estimatedDelivery: Date;
     // => Validates business rule
   }
   // => Enforces invariant
 
   export class ShippingService {
-    // => ShippingService: domain model element
     constructor(private readonly orderEventBus: any) {
       // => Coordinate with Order context
     }
-    // => Encapsulates domain knowledge
 
     async createShipment(orderId: string): Promise<void> {
-      // => Operation: createShipment()
       const shipmentId = crypto.randomUUID();
       // => Store value in shipmentId
       console.log(`[Shipping] Created shipment ${shipmentId} for order ${orderId}`);
@@ -4757,43 +4337,34 @@ namespace ShippingContext {
 
       // Publish event for Order context
       await this.orderEventBus.publish({
-        // => Delegates to domain service
+        // => Execution delegated to domain service
         shipmentId,
-        // => Maintains consistency boundary
+        // => Aggregate boundary enforced here
         orderId,
-        // => Applies domain event
+        // => Domain event triggered or handled
         estimatedDelivery: new Date(Date.now() + 86400000),
         // => Execute method
       } as ShipmentCreatedEvent);
       // => Coordinate state across contexts
     }
-    // => Coordinates with bounded context
   }
-  // => Implements tactical pattern
 }
-// => Protects aggregate integrity
 
 namespace OrderContext {
-  // => Ensures transactional consistency
   export class OrderServiceWithShipping {
-    // => OrderServiceWithShipping: domain model element
     constructor(
       // => Initialize object with parameters
       private readonly shippingService: ShippingContext.ShippingService,
       // => Mutual dependency
       private readonly eventBus: any,
-      // => Field: readonly (private)
       // => Encapsulated state, not directly accessible
     ) {
-      // => Manages entity lifecycle
       // Subscribe to shipping events
       this.eventBus.subscribe("ShipmentCreated", this.handleShipmentCreated.bind(this));
       // => Delegates to internal method
     }
-    // => Preserves domain model
 
     private async handleShipmentCreated(event: ShippingContext.ShipmentCreatedEvent): Promise<void> {
-      // => Field: async (private)
       // => Encapsulated state, not directly accessible
       console.log(`[Order] Received shipment ${event.shipmentId} for order ${event.orderId}`);
       // => Outputs result
@@ -4802,16 +4373,13 @@ namespace OrderContext {
     // => Communicates domain intent
 
     async fulfillOrder(orderId: string): Promise<void> {
-      // => Operation: fulfillOrder()
       console.log(`[Order] Fulfilling order ${orderId}`);
       // => Outputs result
       await this.shippingService.createShipment(orderId);
       // => Delegates to internal method
       // => Coordinate with partner context
     }
-    // => Executes domain logic
   }
-  // => Updates aggregate state
 }
 // => Validates business rule
 
@@ -4866,22 +4434,16 @@ Shared Kernel allows two contexts to share subset of domain model, with discipli
 ```typescript
 // Shared Kernel - common model shared between contexts
 namespace SharedKernel {
-  // => Executes domain logic
   // Value Objects shared across contexts
   export class Money {
-    // => Money: domain model element
     constructor(
       // => Initialize object with parameters
       private readonly amount: number,
-      // => Field: readonly (private)
       // => Encapsulated state, not directly accessible
       private readonly currency: string,
-      // => Field: readonly (private)
       // => Encapsulated state, not directly accessible
     ) {
-      // => Updates aggregate state
       if (amount < 0) {
-        // => Operation: if()
         throw new Error("Amount cannot be negative");
         // => Raise domain exception
       }
@@ -4890,43 +4452,31 @@ namespace SharedKernel {
     // => Enforces invariant
 
     getAmount(): number {
-      // => Domain operation: getAmount
       return this.amount;
       // => Return result to caller
     }
-    // => Encapsulates domain knowledge
 
     getCurrency(): string {
-      // => Domain operation: getCurrency
       return this.currency;
       // => Return result to caller
     }
-    // => Delegates to domain service
 
     add(other: Money): Money {
-      // => Domain operation: add
       if (this.currency !== other.currency) {
-        // => Operation: if()
         throw new Error("Cannot add different currencies");
         // => Raise domain exception
       }
-      // => Maintains consistency boundary
       return new Money(this.amount + other.amount, this.currency);
       // => Return result to caller
     }
-    // => Applies domain event
 
     equals(other: Money): boolean {
-      // => Domain operation: equals
       return this.amount === other.amount && this.currency === other.currency;
       // => Return result to caller
     }
-    // => Coordinates with bounded context
   }
-  // => Implements tactical pattern
 
   export class CustomerId {
-    // => CustomerId: domain model element
     constructor(private readonly value: string) {
       // => Initialize object with parameters
       if (!value.startsWith("CUST-")) {
@@ -4934,152 +4484,116 @@ namespace SharedKernel {
         throw new Error("Invalid customer ID format");
         // => Raise domain exception
       }
-      // => Protects aggregate integrity
     }
-    // => Ensures transactional consistency
 
     getValue(): string {
-      // => Domain operation: getValue
       return this.value;
       // => Return result to caller
     }
-    // => Manages entity lifecycle
 
     equals(other: CustomerId): boolean {
-      // => Domain operation: equals
       return this.value === other.value;
       // => Return result to caller
     }
-    // => Preserves domain model
   }
   // => Communicates domain intent
 
   // Shared Events
   export class CustomerRegistered extends DomainEvent {
-    // => CustomerRegistered: domain model element
     constructor(
       // => Initialize object with parameters
       public readonly customerId: CustomerId,
-      // => Field: readonly (public)
       public readonly email: string,
-      // => Field: readonly (public)
     ) {
-      // => Executes domain logic
       super();
-      // => Updates aggregate state
+      // => Modifies aggregate internal state
     }
     // => Validates business rule
   }
   // => Enforces invariant
 }
-// => Encapsulates domain knowledge
 
 // Sales Context - uses Shared Kernel
 namespace SalesContext {
-  // => Delegates to domain service
   import Money = SharedKernel.Money;
-  // => Maintains consistency boundary
+  // => Aggregate boundary enforced here
   import CustomerId = SharedKernel.CustomerId;
-  // => Applies domain event
+  // => Domain event triggered or handled
 
   export class Order {
-    // => Order: domain model element
     constructor(
       // => Initialize object with parameters
       private readonly orderId: string,
-      // => Field: readonly (private)
       // => Encapsulated state, not directly accessible
       private readonly customerId: CustomerId,
       // => Uses shared CustomerId
       private readonly total: Money,
       // => Uses shared Money
     ) {}
-    // => Coordinates with bounded context
 
     getTotal(): Money {
-      // => Domain operation: getTotal
       return this.total;
       // => Return result to caller
     }
-    // => Implements tactical pattern
 
     getCustomerId(): CustomerId {
-      // => Domain operation: getCustomerId
       return this.customerId;
       // => Return result to caller
     }
-    // => Protects aggregate integrity
   }
-  // => Ensures transactional consistency
 
   export class OrderService {
-    // => OrderService: domain model element
     async placeOrder(customerId: CustomerId, total: Money): Promise<void> {
-      // => Operation: placeOrder()
       const order = new Order(crypto.randomUUID(), customerId, total);
       // => Store value in order
       console.log(
-        // => Manages entity lifecycle
+        // => Entity state transition managed
         `[Sales] Order placed for customer ${customerId.getValue()}: ${total.getCurrency()} ${total.getAmount()}`,
         // => Execute method
       );
       // => Both contexts understand shared types
     }
-    // => Preserves domain model
   }
   // => Communicates domain intent
 }
-// => Executes domain logic
 
 // Billing Context - also uses Shared Kernel
 namespace BillingContext {
-  // => Updates aggregate state
   import Money = SharedKernel.Money;
   // => Validates business rule
   import CustomerId = SharedKernel.CustomerId;
   // => Enforces invariant
 
   export class Invoice {
-    // => Invoice: domain model element
     constructor(
       // => Initialize object with parameters
       private readonly invoiceId: string,
-      // => Field: readonly (private)
       // => Encapsulated state, not directly accessible
       private readonly customerId: CustomerId,
       // => Same CustomerId type as Sales
       private readonly amount: Money,
       // => Same Money type as Sales
     ) {}
-    // => Encapsulates domain knowledge
 
     getAmount(): Money {
-      // => Domain operation: getAmount
       return this.amount;
       // => Return result to caller
     }
-    // => Delegates to domain service
   }
-  // => Maintains consistency boundary
 
   export class BillingService {
-    // => BillingService: domain model element
     async createInvoice(customerId: CustomerId, amount: Money): Promise<void> {
-      // => Operation: createInvoice()
       const invoice = new Invoice(crypto.randomUUID(), customerId, amount);
       // => Store value in invoice
       console.log(
-        // => Applies domain event
+        // => Domain event triggered or handled
         `[Billing] Invoice created for customer ${customerId.getValue()}: ${amount.getCurrency()} ${amount.getAmount()}`,
         // => Execute method
       );
       // => Shared types enable seamless integration
     }
-    // => Coordinates with bounded context
   }
-  // => Implements tactical pattern
 }
-// => Protects aggregate integrity
 
 // Usage
 (async () => {
@@ -5106,7 +4620,7 @@ namespace BillingContext {
   // => Outputs result
   // => Output: Total: USD 200
 })();
-// => Ensures transactional consistency
+// => Transaction boundary maintained
 ```
 
 **Key Takeaway**: Shared Kernel allows two closely-aligned contexts to share domain model subset (value objects, events, core concepts). Requires coordination for changes—both teams must agree on modifications. Reduces duplication but increases coupling.
@@ -5117,6 +4631,27 @@ namespace BillingContext {
 
 Published Language defines standard format for inter-context communication, often using industry standards.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A["Context A\npublisher"]
+    B["Published Language\nstandard schema\n(JSON/Protobuf/FHIR)"]
+    C["Context B\nconsumer"]
+    D["Context C\nconsumer"]
+    E["Context D\nconsumer"]
+
+    A -->|publishes to| B
+    B -->|consumed by| C
+    B -->|consumed by| D
+    B -->|consumed by| E
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#029E73,stroke:#000,color:#fff
+    style C fill:#DE8F05,stroke:#000,color:#000
+    style D fill:#DE8F05,stroke:#000,color:#000
+    style E fill:#DE8F05,stroke:#000,color:#000
+```
+
 ```typescript
 // Published Language - standard format for integration
 namespace PublishedLanguage {
@@ -5125,9 +4660,9 @@ namespace PublishedLanguage {
   export interface OrderEventV1 {
     // => Block scope begins
     eventType: "order.placed" | "order.cancelled" | "order.shipped";
-    // => Executes domain logic
+    // => Domain operation executes here
     eventId: string;
-    // => Updates aggregate state
+    // => Modifies aggregate internal state
     timestamp: string;
     // => ISO 8601 format
     data: {
@@ -5139,7 +4674,7 @@ namespace PublishedLanguage {
       totalAmount: {
         // => Block scope begins
         value: number;
-        // => Encapsulates domain knowledge
+        // => Business rule enforced here
         currency: string;
         // => ISO 4217 currency code
       };
@@ -5147,15 +4682,15 @@ namespace PublishedLanguage {
       items: Array<{
         // => Block scope begins
         productId: string;
-        // => Delegates to domain service
+        // => Execution delegated to domain service
         quantity: number;
-        // => Maintains consistency boundary
+        // => Aggregate boundary enforced here
         unitPrice: {
           // => Block scope begins
           value: number;
-          // => Applies domain event
+          // => Domain event triggered or handled
           currency: string;
-          // => Coordinates with bounded context
+          // => Cross-context interaction point
         };
         // => Block scope ends
       }>;
@@ -5165,9 +4700,9 @@ namespace PublishedLanguage {
     metadata: {
       // => Block scope begins
       version: "1.0";
-      // => Implements tactical pattern
+      // => DDD tactical pattern applied
       source: string;
-      // => Protects aggregate integrity
+      // => Invariant validation executed
     };
     // => Block scope ends
   }
@@ -5186,7 +4721,6 @@ namespace PublishedLanguage {
       // => Block scope begins
       // => Outputs result
       return json;
-      // => Returns json
       // => Consumers parse this standard format
     }
     // => Block scope ends
@@ -5215,7 +4749,6 @@ namespace PublishedLanguage {
       // => Block scope begins
       // => Outputs result
       return event;
-      // => Returns event
     }
     // => Block scope ends
   }
@@ -5227,7 +4760,7 @@ namespace PublishedLanguage {
 namespace OrderContextWithPublishedLanguage {
   // => Block scope begins
   import OrderEventV1 = PublishedLanguage.OrderEventV1;
-  // => Ensures transactional consistency
+  // => Transaction boundary maintained
 
   export class OrderService {
     // => Block scope begins
@@ -5235,15 +4768,15 @@ namespace OrderContextWithPublishedLanguage {
     // => Block scope begins
 
     async placeOrder(
-      // => Manages entity lifecycle
+      // => Entity state transition managed
       orderId: string,
-      // => Preserves domain model
+      // => Domain model consistency maintained
       customerId: string,
       // => Communicates domain intent
       items: Array<{ productId: string; quantity: number; unitPrice: number }>,
       // => Block scope begins
       currency: string,
-      // => Executes domain logic
+      // => Domain operation executes here
     ): Promise<void> {
       // => Block scope begins
       const totalAmount = items.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0);
@@ -5253,7 +4786,7 @@ namespace OrderContextWithPublishedLanguage {
       const event: OrderEventV1 = {
         // => Block scope begins
         eventType: "order.placed",
-        // => Updates aggregate state
+        // => Modifies aggregate internal state
         eventId: crypto.randomUUID(),
         // => Execute method
         timestamp: new Date().toISOString(),
@@ -5267,7 +4800,7 @@ namespace OrderContextWithPublishedLanguage {
           totalAmount: {
             // => Block scope begins
             value: totalAmount,
-            // => Encapsulates domain knowledge
+            // => Business rule enforced here
             currency,
             // => ISO 4217
           },
@@ -5275,31 +4808,25 @@ namespace OrderContextWithPublishedLanguage {
           items: items.map((item) => ({
             // => Block scope begins
             productId: item.productId,
-            // => Delegates to domain service
+            // => Execution delegated to domain service
             quantity: item.quantity,
-            // => Maintains consistency boundary
+            // => Aggregate boundary enforced here
             unitPrice: {
               // => Block scope begins
               value: item.unitPrice,
-              // => Applies domain event
+              // => Domain event triggered or handled
               currency,
-              // => Coordinates with bounded context
+              // => Cross-context interaction point
             },
-            // => Implements tactical pattern
           })),
-          // => Protects aggregate integrity
         },
-        // => Ensures transactional consistency
         metadata: {
-          // => Manages entity lifecycle
           version: "1.0",
-          // => Preserves domain model
+          // => Domain model consistency maintained
           source: "OrderService",
           // => Communicates domain intent
         },
-        // => Executes domain logic
       };
-      // => Updates aggregate state
 
       this.eventPublisher.publish(event);
       // => Delegates to internal method
@@ -5309,18 +4836,15 @@ namespace OrderContextWithPublishedLanguage {
   }
   // => Enforces invariant
 }
-// => Encapsulates domain knowledge
 
 // Warehouse Context - consumes events in Published Language
 namespace WarehouseContext {
-  // => Delegates to domain service
   import OrderEventConsumer = PublishedLanguage.OrderEventConsumer;
-  // => Maintains consistency boundary
+  // => Aggregate boundary enforced here
   import OrderEventV1 = PublishedLanguage.OrderEventV1;
-  // => Applies domain event
+  // => Domain event triggered or handled
 
   export class WarehouseService {
-    // => WarehouseService: domain model element
     constructor(private readonly eventConsumer: OrderEventConsumer) {}
     // => Initialize object with parameters
 
@@ -5330,20 +4854,15 @@ namespace WarehouseContext {
       // => Store value in event
 
       if (event.eventType === "order.placed") {
-        // => Operation: if()
         console.log(`[Warehouse] Processing order ${event.data.orderId}`);
         // => Outputs result
         console.log(`[Warehouse] Items to pick: ${event.data.items.length}`);
         // => Outputs result
         // => Parse standard format without context-specific knowledge
       }
-      // => Coordinates with bounded context
     }
-    // => Implements tactical pattern
   }
-  // => Protects aggregate integrity
 }
-// => Ensures transactional consistency
 
 // Usage
 (async () => {
@@ -5360,21 +4879,21 @@ namespace WarehouseContext {
 
   // Order context publishes in Published Language
   await orderService.placeOrder(
-    // => Manages entity lifecycle
+    // => Entity state transition managed
     "ORDER-001",
-    // => Preserves domain model
+    // => Domain model consistency maintained
     "CUST-001",
     // => Communicates domain intent
     [
-      // => Executes domain logic
+      // => Domain operation executes here
       { productId: "PROD-001", quantity: 2, unitPrice: 50 },
-      // => Updates aggregate state
+      // => Modifies aggregate internal state
       { productId: "PROD-002", quantity: 1, unitPrice: 100 },
       // => Validates business rule
     ],
     // => Enforces invariant
     "USD",
-    // => Encapsulates domain knowledge
+    // => Business rule enforced here
   );
   // => Output: [Publisher] Publishing event: { ... JSON ... }
 
@@ -5382,29 +4901,27 @@ namespace WarehouseContext {
   const eventJson = `{
     // => Store value in eventJson
     "eventType": "order.placed",
-      // => Delegates to domain service
+      // => Execution delegated to domain service
     "eventId": "evt-123",
-      // => Maintains consistency boundary
+      // => Aggregate boundary enforced here
     "timestamp": "2026-01-31T12:00:00Z",
-      // => Applies domain event
+      // => Domain event triggered or handled
     "data": {
-      // => Coordinates with bounded context
       "orderId": "ORDER-001",
-        // => Implements tactical pattern
+        // => DDD tactical pattern applied
       "customerId": "CUST-001",
-        // => Protects aggregate integrity
+        // => Invariant validation executed
       "totalAmount": { "value": 200, "currency": "USD" },
-        // => Ensures transactional consistency
+        // => Transaction boundary maintained
       "items": [
-        // => Manages entity lifecycle
+        // => Entity state transition managed
         { "productId": "PROD-001", "quantity": 2, "unitPrice": { "value": 50, "currency": "USD" } }
-          // => Preserves domain model
+          // => Domain model consistency maintained
       ]
         // => Communicates domain intent
     },
-      // => Executes domain logic
     "metadata": { "version": "1.0", "source": "OrderService" }
-      // => Updates aggregate state
+      // => Modifies aggregate internal state
   }`;
   // => Validates business rule
 
@@ -5429,7 +4946,7 @@ Organizing hundreds of bounded contexts in large enterprises requires governance
 interface BoundedContextMetadata {
   // => BoundedContextMetadata: contract definition
   name: string;
-  // => Executes domain logic
+  // => Domain operation executes here
   team: string;
   // => Owning team
   purpose: string;
@@ -5445,15 +4962,12 @@ interface BoundedContextMetadata {
   contextMapPatterns: Record<string, string>;
   // => Relationship with other contexts
 }
-// => Updates aggregate state
 
 class ContextCatalog {
-  // => ContextCatalog: domain model element
   private contexts: Map<string, BoundedContextMetadata> = new Map();
   // => Encapsulated field (not publicly accessible)
 
   register(context: BoundedContextMetadata): void {
-    // => Domain operation: register
     // => Register new context
     this.contexts.set(context.name, context);
     // => Delegates to internal method
@@ -5463,21 +4977,16 @@ class ContextCatalog {
   // => Validates business rule
 
   findContext(name: string): BoundedContextMetadata | null {
-    // => Domain operation: findContext
     return this.contexts.get(name) || null;
     // => Return result to caller
   }
   // => Enforces invariant
 
   findByTeam(team: string): BoundedContextMetadata[] {
-    // => Domain operation: findByTeam
     return Array.from(this.contexts.values()).filter((ctx) => ctx.team === team);
-    // => Returns Array.from(this.contexts.values()).filter((ctx) => ctx.team === team)
   }
-  // => Encapsulates domain knowledge
 
   getDependencies(contextName: string): BoundedContextMetadata[] {
-    // => Domain operation: getDependencies
     // => Find all upstream contexts
     const context = this.contexts.get(contextName);
     // => Store value in context
@@ -5493,12 +5002,10 @@ class ContextCatalog {
         .filter((ctx): ctx is BoundedContextMetadata => ctx !== undefined)
       // => filter: process collection elements
     );
-    // => Delegates to domain service
+    // => Execution delegated to domain service
   }
-  // => Maintains consistency boundary
 
   getConsumers(contextName: string): BoundedContextMetadata[] {
-    // => Domain operation: getConsumers
     // => Find all downstream contexts
     const context = this.contexts.get(contextName);
     // => Store value in context
@@ -5514,12 +5021,10 @@ class ContextCatalog {
         .filter((ctx): ctx is BoundedContextMetadata => ctx !== undefined)
       // => filter: process collection elements
     );
-    // => Applies domain event
+    // => Domain event triggered or handled
   }
-  // => Coordinates with bounded context
 
   analyzeImpact(contextName: string): void {
-    // => Domain operation: analyzeImpact
     // => Analyze impact of changes to context
     console.log(`\n=== Impact Analysis for ${contextName} ===`);
     // => Outputs result
@@ -5527,13 +5032,11 @@ class ContextCatalog {
     const context = this.contexts.get(contextName);
     // => Store value in context
     if (!context) {
-      // => Operation: if()
       console.log("Context not found");
       // => Outputs result
       return;
-      // => Implements tactical pattern
+      // => DDD tactical pattern applied
     }
-    // => Protects aggregate integrity
 
     const consumers = this.getConsumers(contextName);
     // => Store value in consumers
@@ -5549,7 +5052,6 @@ class ContextCatalog {
     // => Store value in queue
 
     while (queue.length > 0) {
-      // => Operation: while()
       const current = queue.shift()!;
       // => Store value in current
       if (allAffected.has(current.name)) continue;
@@ -5562,15 +5064,12 @@ class ContextCatalog {
       queue.push(...indirectConsumers);
       // => Execute method
     }
-    // => Ensures transactional consistency
 
     console.log(`Total affected contexts: ${allAffected.size - 1}`);
     // => Outputs result
     // => Helps plan changes in large systems
   }
-  // => Manages entity lifecycle
 }
-// => Preserves domain model
 
 // Usage - large-scale context organization
 (async () => {
@@ -5582,89 +5081,80 @@ class ContextCatalog {
   catalog.register({
     // => Communicates domain intent
     name: "Customer",
-    // => Executes domain logic
+    // => Domain operation executes here
     team: "Customer Experience",
-    // => Updates aggregate state
+    // => Modifies aggregate internal state
     purpose: "Manage customer profiles and preferences",
     // => Validates business rule
     publishedAPIs: ["GET /customers/{id}", "POST /customers"],
     // => Enforces invariant
     dependencies: [],
-    // => Encapsulates domain knowledge
+    // => Business rule enforced here
     consumers: ["Sales", "Support", "Marketing"],
-    // => Delegates to domain service
+    // => Execution delegated to domain service
     publishedLanguages: ["CustomerEventV1"],
-    // => Maintains consistency boundary
+    // => Aggregate boundary enforced here
     contextMapPatterns: {
-      // => Applies domain event
       Sales: "Customer-Supplier",
-      // => Coordinates with bounded context
+      // => Cross-context interaction point
       Support: "Customer-Supplier",
-      // => Implements tactical pattern
+      // => DDD tactical pattern applied
       Marketing: "Customer-Supplier",
-      // => Protects aggregate integrity
+      // => Invariant validation executed
     },
-    // => Ensures transactional consistency
   });
-  // => Manages entity lifecycle
 
   catalog.register({
-    // => Preserves domain model
+    // => Domain model consistency maintained
     name: "Sales",
     // => Communicates domain intent
     team: "Revenue",
-    // => Executes domain logic
+    // => Domain operation executes here
     purpose: "Manage orders and quotes",
-    // => Updates aggregate state
+    // => Modifies aggregate internal state
     publishedAPIs: ["GET /orders/{id}", "POST /orders"],
     // => Validates business rule
     dependencies: ["Customer", "Inventory"],
     // => Enforces invariant
     consumers: ["Billing", "Fulfillment"],
-    // => Encapsulates domain knowledge
+    // => Business rule enforced here
     publishedLanguages: ["OrderEventV1"],
-    // => Delegates to domain service
+    // => Execution delegated to domain service
     contextMapPatterns: {
-      // => Maintains consistency boundary
       Customer: "Customer-Supplier",
-      // => Applies domain event
+      // => Domain event triggered or handled
       Inventory: "Customer-Supplier",
-      // => Coordinates with bounded context
+      // => Cross-context interaction point
       Billing: "Partnership",
-      // => Implements tactical pattern
+      // => DDD tactical pattern applied
       Fulfillment: "Customer-Supplier",
-      // => Protects aggregate integrity
+      // => Invariant validation executed
     },
-    // => Ensures transactional consistency
   });
-  // => Manages entity lifecycle
 
   catalog.register({
-    // => Preserves domain model
+    // => Domain model consistency maintained
     name: "Billing",
     // => Communicates domain intent
     team: "Finance",
-    // => Executes domain logic
+    // => Domain operation executes here
     purpose: "Process payments and generate invoices",
-    // => Updates aggregate state
+    // => Modifies aggregate internal state
     publishedAPIs: ["GET /invoices/{id}", "POST /payments"],
     // => Validates business rule
     dependencies: ["Sales", "Customer"],
     // => Enforces invariant
     consumers: ["Accounting"],
-    // => Encapsulates domain knowledge
+    // => Business rule enforced here
     publishedLanguages: ["PaymentEventV1"],
-    // => Delegates to domain service
+    // => Execution delegated to domain service
     contextMapPatterns: {
-      // => Maintains consistency boundary
       Sales: "Partnership",
-      // => Applies domain event
+      // => Domain event triggered or handled
       Customer: "Customer-Supplier",
-      // => Coordinates with bounded context
+      // => Cross-context interaction point
     },
-    // => Implements tactical pattern
   });
-  // => Protects aggregate integrity
 
   // Analyze impact of changing Customer context
   catalog.analyzeImpact("Customer");
@@ -5682,7 +5172,7 @@ class ContextCatalog {
   // => Outputs result
   // => Output: Sales context dependencies: [ 'Customer', 'Inventory' ]
 })();
-// => Ensures transactional consistency
+// => Transaction boundary maintained
 ```
 
 **Key Takeaway**: Large-scale DDD requires context catalog documenting all bounded contexts, their relationships, and ownership. Impact analysis reveals ripple effects of changes. Governance patterns prevent context sprawl and integration chaos.
@@ -5698,11 +5188,9 @@ Each Bounded Context becomes independent microservice with own database and depl
 ```typescript
 // Order Microservice - owns Order bounded context
 class OrderMicroservice {
-  // => OrderMicroservice: domain model element
   private readonly orderRepository: Map<string, any> = new Map();
   // => Private database (not shared with other services)
   private readonly eventBus: IntegrationEventBus;
-  // => Field: readonly (private)
   // => Encapsulated state, not directly accessible
 
   constructor(eventBus: IntegrationEventBus) {
@@ -5710,28 +5198,25 @@ class OrderMicroservice {
     this.eventBus = eventBus;
     // => Update eventBus state
   }
-  // => Executes domain logic
 
   // REST API endpoint
   async createOrder(request: { customerId: string; items: any[]; total: number }): Promise<string> {
-    // => Operation: createOrder()
     const orderId = crypto.randomUUID();
     // => Store value in orderId
 
     const order = {
       // => Store value in order
       orderId,
-      // => Updates aggregate state
+      // => Modifies aggregate internal state
       customerId: request.customerId,
       // => Validates business rule
       items: request.items,
       // => Enforces invariant
       total: request.total,
-      // => Encapsulates domain knowledge
+      // => Business rule enforced here
       status: "pending",
-      // => Delegates to domain service
+      // => Execution delegated to domain service
     };
-    // => Maintains consistency boundary
 
     this.orderRepository.set(orderId, order);
     // => Delegates to internal method
@@ -5744,32 +5229,26 @@ class OrderMicroservice {
     console.log(`[OrderService] Order ${orderId} created`);
     // => Outputs result
     return orderId;
-    // => Returns orderId
   }
-  // => Applies domain event
 
   async getOrder(orderId: string): Promise<any> {
     // => Query own database
     return this.orderRepository.get(orderId) || null;
     // => Return result to caller
   }
-  // => Coordinates with bounded context
 }
-// => Implements tactical pattern
 
 // Inventory Microservice - owns Inventory bounded context
 class InventoryMicroservice {
-  // => InventoryMicroservice: domain model element
   private readonly inventory: Map<string, number> = new Map([
     // => Create Map instance
     ["PROD-001", 100],
-    // => Protects aggregate integrity
+    // => Invariant validation executed
     ["PROD-002", 50],
-    // => Ensures transactional consistency
+    // => Transaction boundary maintained
   ]);
   // => Private database
   private readonly eventBus: IntegrationEventBus;
-  // => Field: readonly (private)
   // => Encapsulated state, not directly accessible
 
   constructor(eventBus: IntegrationEventBus) {
@@ -5781,7 +5260,6 @@ class InventoryMicroservice {
     this.eventBus.subscribe(OrderPlacedEvent, this.handleOrderPlaced.bind(this));
     // => Delegates to internal method
   }
-  // => Manages entity lifecycle
 
   private async handleOrderPlaced(event: OrderPlacedEvent): Promise<void> {
     // => React to events from other services
@@ -5789,27 +5267,22 @@ class InventoryMicroservice {
     // => Outputs result
 
     for (const item of event.items) {
-      // => Operation: for()
       const available = this.inventory.get(item.productId) || 0;
       // => Store value in available
 
       if (available >= item.quantity) {
-        // => Operation: if()
         this.inventory.set(item.productId, available - item.quantity);
         // => Delegates to internal method
         // => Update own database
         console.log(`[InventoryService] Reserved ${item.quantity} units of ${item.productId}`);
         // => Outputs result
       } else {
-        // => Preserves domain model
         await this.eventBus.publish(new InventoryReservationFailedEvent(event.orderId, "Insufficient stock"));
         // => Delegates to internal method
         return;
         // => Communicates domain intent
       }
-      // => Executes domain logic
     }
-    // => Updates aggregate state
 
     await this.eventBus.publish(new InventoryReservedEvent(event.orderId));
     // => Delegates to internal method
@@ -5824,21 +5297,16 @@ class InventoryMicroservice {
   }
   // => Enforces invariant
 }
-// => Encapsulates domain knowledge
 
 // API Gateway - routes requests to appropriate microservice
 class APIGateway {
-  // => APIGateway: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly orderService: OrderMicroservice,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly inventoryService: InventoryMicroservice,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
-  // => Delegates to domain service
 
   async handleRequest(path: string, method: string, body?: any): Promise<any> {
     // => Route to appropriate microservice
@@ -5859,14 +5327,11 @@ class APIGateway {
       return await this.inventoryService.checkStock(productId);
       // => Return result to caller
     }
-    // => Maintains consistency boundary
 
     throw new Error("Not found");
     // => Raise domain exception
   }
-  // => Applies domain event
 }
-// => Coordinates with bounded context
 
 // Usage - microservices architecture
 (async () => {
@@ -5885,11 +5350,11 @@ class APIGateway {
   const orderId = await gateway.handleRequest("/orders", "POST", {
     // => Store value in orderId
     customerId: "CUST-001",
-    // => Implements tactical pattern
+    // => DDD tactical pattern applied
     items: [{ productId: "PROD-001", quantity: 5 }],
-    // => Protects aggregate integrity
+    // => Invariant validation executed
     total: 250,
-    // => Ensures transactional consistency
+    // => Transaction boundary maintained
   });
   // => Output: [OrderService] Order order-id created
   // => Output: [InventoryService] Processing order order-id
@@ -5908,7 +5373,7 @@ class APIGateway {
   // => Outputs result
   // => Output: Stock remaining: 95
 })();
-// => Manages entity lifecycle
+// => Entity state transition managed
 ```
 
 **Key Takeaway**: Map each Bounded Context to independent microservice with private database and REST/event-based APIs. Services communicate via integration events or synchronous calls through API Gateway. Database per service ensures loose coupling.
@@ -5922,34 +5387,27 @@ Microservices architecture requires distributed sagas spanning multiple services
 ```typescript
 // Saga Coordinator Service - orchestrates distributed transactions
 class OrderSagaCoordinator {
-  // => OrderSagaCoordinator: domain model element
   constructor(
     // => Initialize object with parameters
     private readonly orderService: OrderMicroservice,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly inventoryService: InventoryMicroservice,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly paymentService: PaymentMicroservice,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
     private readonly shippingService: ShippingMicroservice,
-    // => Field: readonly (private)
     // => Encapsulated state, not directly accessible
   ) {}
-  // => Executes domain logic
 
   async executeOrderSaga(
-    // => Updates aggregate state
+    // => Modifies aggregate internal state
     customerId: string,
     // => Validates business rule
     items: Array<{ productId: string; quantity: number }>,
     // => Enforces invariant
     totalAmount: number,
-    // => Encapsulates domain knowledge
+    // => Business rule enforced here
   ): Promise<void> {
-    // => Delegates to domain service
     const orderId = crypto.randomUUID();
     // => Store value in orderId
     const sagaId = crypto.randomUUID();
@@ -5961,7 +5419,6 @@ class OrderSagaCoordinator {
     // => Create data structure
 
     try {
-      // => Maintains consistency boundary
       // Step 1: Create order
       await this.orderService.createOrder({ customerId, items, total: totalAmount });
       // => Delegates to internal method
@@ -5997,7 +5454,7 @@ class OrderSagaCoordinator {
       console.log(`[SagaCoordinator] Saga ${sagaId} completed successfully`);
       // => Outputs result
     } catch (error) {
-      // => Applies domain event
+      // => Domain event triggered or handled
       console.error(`[SagaCoordinator] Saga ${sagaId} failed at step:`, completedSteps[completedSteps.length - 1]);
       // => Execute method
 
@@ -6005,25 +5462,21 @@ class OrderSagaCoordinator {
       await this.compensate(completedSteps, orderId, customerId, items, totalAmount);
       // => Delegates to internal method
     }
-    // => Coordinates with bounded context
   }
-  // => Implements tactical pattern
 
   private async compensate(
-    // => Field: async (private)
     // => Encapsulated state, not directly accessible
     completedSteps: string[],
-    // => Protects aggregate integrity
+    // => Invariant validation executed
     orderId: string,
-    // => Ensures transactional consistency
+    // => Transaction boundary maintained
     customerId: string,
-    // => Manages entity lifecycle
+    // => Entity state transition managed
     items: any[],
-    // => Preserves domain model
+    // => Domain model consistency maintained
     amount: number,
     // => Communicates domain intent
   ): Promise<void> {
-    // => Executes domain logic
     console.log(`[SagaCoordinator] Starting compensation for ${completedSteps.length} steps`);
     // => Outputs result
 
@@ -6031,11 +5484,8 @@ class OrderSagaCoordinator {
     // => Store value in reversed
 
     for (const step of reversed) {
-      // => Operation: for()
       try {
-        // => Updates aggregate state
         switch (step) {
-          // => Operation: switch()
           case "shipping":
             // => Validates business rule
             await this.shippingService.cancelShipment(orderId);
@@ -6045,62 +5495,54 @@ class OrderSagaCoordinator {
             break;
           // => Enforces invariant
           case "payment":
-            // => Encapsulates domain knowledge
+            // => Business rule enforced here
             await this.paymentService.refundPayment(customerId, amount);
             // => Delegates to internal method
             console.log(`[SagaCoordinator] Payment refunded`);
             // => Outputs result
             break;
-          // => Delegates to domain service
+          // => Execution delegated to domain service
           case "inventory":
-            // => Maintains consistency boundary
+            // => Aggregate boundary enforced here
             await this.inventoryService.releaseInventory(items);
             // => Delegates to internal method
             console.log(`[SagaCoordinator] Inventory released`);
             // => Outputs result
             break;
-          // => Applies domain event
+          // => Domain event triggered or handled
           case "order":
-            // => Coordinates with bounded context
+            // => Cross-context interaction point
             await this.orderService.cancelOrder(orderId);
             // => Delegates to internal method
             console.log(`[SagaCoordinator] Order cancelled`);
             // => Outputs result
             break;
-          // => Implements tactical pattern
+          // => DDD tactical pattern applied
         }
-        // => Protects aggregate integrity
       } catch (error) {
-        // => Ensures transactional consistency
+        // => Transaction boundary maintained
         console.error(`[SagaCoordinator] Compensation failed for ${step}:`, error);
         // => Execute method
       }
-      // => Manages entity lifecycle
     }
-    // => Preserves domain model
 
     console.log(`[SagaCoordinator] Compensation completed`);
     // => Outputs result
   }
   // => Communicates domain intent
 }
-// => Executes domain logic
 
 // Payment Microservice
 class PaymentMicroservice {
-  // => PaymentMicroservice: domain model element
   async processPayment(customerId: string, amount: number): Promise<void> {
-    // => Operation: processPayment()
     console.log(`[PaymentService] Processing payment of ${amount} for ${customerId}`);
     // => Outputs result
     // Simulate remote call
     await new Promise((resolve) => setTimeout(resolve, 100));
     // => Create Promise instance
   }
-  // => Updates aggregate state
 
   async refundPayment(customerId: string, amount: number): Promise<void> {
-    // => Operation: refundPayment()
     console.log(`[PaymentService] Refunding ${amount} to ${customerId}`);
     // => Outputs result
     await new Promise((resolve) => setTimeout(resolve, 100));
@@ -6112,36 +5554,27 @@ class PaymentMicroservice {
 
 // Shipping Microservice
 class ShippingMicroservice {
-  // => ShippingMicroservice: domain model element
   async createShipment(orderId: string): Promise<void> {
-    // => Operation: createShipment()
     console.log(`[ShippingService] Creating shipment for order ${orderId}`);
     // => Outputs result
     await new Promise((resolve) => setTimeout(resolve, 100));
     // => Create Promise instance
   }
-  // => Encapsulates domain knowledge
 
   async cancelShipment(orderId: string): Promise<void> {
-    // => Operation: cancelShipment()
     console.log(`[ShippingService] Cancelling shipment for order ${orderId}`);
     // => Outputs result
     await new Promise((resolve) => setTimeout(resolve, 100));
     // => Create Promise instance
   }
-  // => Delegates to domain service
 }
-// => Maintains consistency boundary
 
 // Inventory Microservice Extensions
 interface InventoryMicroserviceExtended extends InventoryMicroservice {
   // => InventoryMicroserviceExtended: contract definition
   reserveInventory(items: Array<{ productId: string; quantity: number }>): Promise<void>;
-  // => Domain operation: reserveInventory
   releaseInventory(items: Array<{ productId: string; quantity: number }>): Promise<void>;
-  // => Domain operation: releaseInventory
 }
-// => Applies domain event
 
 // Usage
 (async () => {
@@ -6163,13 +5596,11 @@ interface InventoryMicroserviceExtended extends InventoryMicroservice {
     console.log(`[InventoryService] Reserving items:`, items);
     // => Outputs result
   };
-  // => Coordinates with bounded context
   inventoryService.releaseInventory = async (items: any[]) => {
     // => Create data structure
     console.log(`[InventoryService] Releasing items:`, items);
     // => Outputs result
   };
-  // => Implements tactical pattern
 
   // Add methods to order service
   (orderService as any).cancelOrder = async (orderId: string) => {
@@ -6177,7 +5608,6 @@ interface InventoryMicroserviceExtended extends InventoryMicroservice {
     console.log(`[OrderService] Cancelling order ${orderId}`);
     // => Outputs result
   };
-  // => Protects aggregate integrity
 
   const coordinator = new OrderSagaCoordinator(orderService, inventoryService, paymentService, shippingService);
   // => Store value in coordinator
@@ -6186,7 +5616,7 @@ interface InventoryMicroserviceExtended extends InventoryMicroservice {
   // => Coordinates saga across 4 microservices
   // => Handles compensations if any step fails
 })();
-// => Ensures transactional consistency
+// => Transaction boundary maintained
 ```
 
 **Key Takeaway**: Distributed sagas coordinate transactions across microservices using saga coordinator that orchestrates steps and handles compensations. Each microservice provides both forward operations and compensating operations.
@@ -6197,15 +5627,36 @@ interface InventoryMicroserviceExtended extends InventoryMicroservice {
 
 Event-driven architecture enables loose coupling between microservices using domain events.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A["Order Service\npublishes OrderPlaced"]
+    B["Event Bus\nKafka/RabbitMQ"]
+    C["Payment Service\nsubscribes OrderPlaced"]
+    D["Inventory Service\nsubscribes OrderPlaced"]
+    E["Notification Service\nsubscribes multiple events"]
+
+    A -->|publish| B
+    B -->|consume| C
+    B -->|consume| D
+    B -->|consume| E
+    C -->|publish PaymentCompleted| B
+    D -->|publish InventoryReserved| B
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#CC78BC,stroke:#000,color:#fff
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#DE8F05,stroke:#000,color:#000
+```
+
 ```typescript
 // Event Store Microservice - centralized event log
 class EventStoreMicroservice {
-  // => EventStoreMicroservice: domain model element
   private events: Array<{ eventId: string; eventType: string; data: any; timestamp: Date }> = [];
   // => Encapsulated field (not publicly accessible)
 
   async appendEvent(eventType: string, data: any): Promise<string> {
-    // => Operation: appendEvent()
     const eventId = crypto.randomUUID();
     // => Store value in eventId
     const event = { eventId, eventType, data, timestamp: new Date() };
@@ -6217,22 +5668,17 @@ class EventStoreMicroservice {
     // => Outputs result
 
     return eventId;
-    // => Returns eventId
   }
-  // => Executes domain logic
 
   async getEvents(since?: Date): Promise<any[]> {
-    // => Operation: getEvents()
     if (!since) return this.events;
     // => Conditional check
 
     return this.events.filter((e) => e.timestamp >= since);
     // => Return result to caller
   }
-  // => Updates aggregate state
 
   async getEventsByType(eventType: string): Promise<any[]> {
-    // => Operation: getEventsByType()
     return this.events.filter((e) => e.eventType === eventType);
     // => Return result to caller
   }
@@ -6242,7 +5688,6 @@ class EventStoreMicroservice {
 
 // Event Bus with Persistent Log
 class PersistentEventBus {
-  // => PersistentEventBus: domain model element
   private handlers: Map<string, Array<(event: any) => Promise<void>>> = new Map();
   // => Encapsulated field (not publicly accessible)
 
@@ -6260,10 +5705,8 @@ class PersistentEventBus {
     this.handlers.set(typeName, handlers);
     // => Delegates to internal method
   }
-  // => Encapsulates domain knowledge
 
   async publish(event: DomainEvent): Promise<void> {
-    // => Operation: publish()
     // Persist event first
     await this.eventStore.appendEvent(event.constructor.name, event);
     // => Delegates to internal method
@@ -6272,28 +5715,21 @@ class PersistentEventBus {
     const handlers = this.handlers.get(event.constructor.name) || [];
     // => Store value in handlers
     for (const handler of handlers) {
-      // => Operation: for()
       try {
-        // => Delegates to domain service
         await handler(event);
-        // => Maintains consistency boundary
+        // => Aggregate boundary enforced here
       } catch (error) {
-        // => Applies domain event
+        // => Domain event triggered or handled
         console.error(`Event handler failed for ${event.constructor.name}:`, error);
         // => Execute method
         // Log error but continue delivering to other handlers
       }
-      // => Coordinates with bounded context
     }
-    // => Implements tactical pattern
   }
-  // => Protects aggregate integrity
 }
-// => Ensures transactional consistency
 
 // Analytics Microservice - subscribes to events
 class AnalyticsMicroservice {
-  // => AnalyticsMicroservice: domain model element
   private orderCount = 0;
   // => Encapsulated field (not publicly accessible)
   private revenue = 0;
@@ -6306,13 +5742,11 @@ class AnalyticsMicroservice {
     eventBus.subscribe(OrderCancelledEvent, this.handleOrderCancelled.bind(this));
     // => Delegates to internal method
   }
-  // => Manages entity lifecycle
 
   private async handleOrderPlaced(event: OrderPlacedEvent): Promise<void> {
-    // => Field: async (private)
     // => Encapsulated state, not directly accessible
     this.orderCount++;
-    // => Preserves domain model
+    // => Domain model consistency maintained
     this.revenue += event.totalAmount;
     // => Modifies revenue
     // => State change operation
@@ -6324,20 +5758,16 @@ class AnalyticsMicroservice {
   // => Communicates domain intent
 
   private async handleOrderCancelled(event: OrderCancelledEvent): Promise<void> {
-    // => Field: async (private)
     // => Encapsulated state, not directly accessible
     this.orderCount--;
-    // => Executes domain logic
+    // => Domain operation executes here
     console.log(`[Analytics] Order cancelled. Total orders: ${this.orderCount}`);
     // => Delegates to internal method
     // => Outputs result
   }
-  // => Updates aggregate state
 
   async getMetrics(): Promise<{ orders: number; revenue: number }> {
-    // => Operation: getMetrics()
     return { orders: this.orderCount, revenue: this.revenue };
-    // => Returns { orders: this.orderCount, revenue: this.revenue }
   }
   // => Validates business rule
 }
@@ -6345,7 +5775,6 @@ class AnalyticsMicroservice {
 
 // Notification Microservice - subscribes to events
 class NotificationMicroservice {
-  // => NotificationMicroservice: domain model element
   constructor(eventBus: PersistentEventBus) {
     // => Initialize object with parameters
     eventBus.subscribe(OrderPlacedEvent, this.handleOrderPlaced.bind(this));
@@ -6353,27 +5782,21 @@ class NotificationMicroservice {
     eventBus.subscribe(InventoryReservedEvent, this.handleInventoryReserved.bind(this));
     // => Delegates to internal method
   }
-  // => Encapsulates domain knowledge
 
   private async handleOrderPlaced(event: OrderPlacedEvent): Promise<void> {
-    // => Field: async (private)
     // => Encapsulated state, not directly accessible
     console.log(`[Notification] Sending order confirmation to customer ${event.customerId}`);
     // => Outputs result
     // Send email/SMS
   }
-  // => Delegates to domain service
 
   private async handleInventoryReserved(event: InventoryReservedEvent): Promise<void> {
-    // => Field: async (private)
     // => Encapsulated state, not directly accessible
     console.log(`[Notification] Inventory reserved for order ${event.orderId}`);
     // => Outputs result
     // Send status update
   }
-  // => Maintains consistency boundary
 }
-// => Applies domain event
 
 // Usage - event-driven microservices
 (async () => {
@@ -6397,11 +5820,11 @@ class NotificationMicroservice {
   const orderId = await orderService.createOrder({
     // => Store value in orderId
     customerId: "CUST-001",
-    // => Coordinates with bounded context
+    // => Cross-context interaction point
     items: [{ productId: "PROD-001", quantity: 2 }],
-    // => Implements tactical pattern
+    // => DDD tactical pattern applied
     total: 100,
-    // => Protects aggregate integrity
+    // => Invariant validation executed
   });
   // => Output: [EventStore] Stored event evt-id: OrderPlaced
   // => Output: [OrderService] Order order-id created
@@ -6424,7 +5847,7 @@ class NotificationMicroservice {
   console.log(`Total OrderPlaced events: ${events.length}`);
   // => Outputs result
 })();
-// => Ensures transactional consistency
+// => Transaction boundary maintained
 ```
 
 **Key Takeaway**: Event-driven microservices architecture uses persistent event bus and event store. Services publish domain events that other services subscribe to. Event store provides audit log and enables rebuilding read models.
@@ -6448,25 +5871,20 @@ interface ServiceIdentity {
   endpoints: string[];
   // => Service endpoints
 }
-// => Executes domain logic
 
 // Service Registry - discovers services by bounded context
 class ServiceRegistry {
-  // => ServiceRegistry: domain model element
   private services: Map<string, ServiceIdentity> = new Map();
   // => Encapsulated field (not publicly accessible)
 
   register(service: ServiceIdentity): void {
-    // => Domain operation: register
     this.services.set(service.contextName, service);
     // => Delegates to internal method
     console.log(`[ServiceRegistry] Registered ${service.contextName} v${service.version}`);
     // => Outputs result
   }
-  // => Updates aggregate state
 
   discover(contextName: string): ServiceIdentity | null {
-    // => Domain operation: discover
     return this.services.get(contextName) || null;
     // => Return result to caller
   }
@@ -6476,50 +5894,40 @@ class ServiceRegistry {
 
 // Circuit Breaker - prevents cascading failures
 class CircuitBreaker {
-  // => CircuitBreaker: domain model element
   private state: "CLOSED" | "OPEN" | "HALF_OPEN" = "CLOSED";
   // => Encapsulated field (not publicly accessible)
   private failureCount = 0;
   // => Encapsulated field (not publicly accessible)
   private readonly threshold = 5;
-  // => Field: readonly (private)
   // => Encapsulated state, not directly accessible
   private lastFailureTime?: Date;
-  // => Field: lastFailureTime (private)
   // => Encapsulated state, not directly accessible
 
   async execute<T>(operation: () => Promise<T>, contextName: string): Promise<T> {
     // => Create data structure
     if (this.state === "OPEN") {
-      // => Operation: if()
       const now = Date.now();
       // => Store value in now
       const lastFailure = this.lastFailureTime?.getTime() || 0;
       // => Store value in lastFailure
 
       if (now - lastFailure > 60000) {
-        // => Operation: if()
         // 60s timeout
         this.state = "HALF_OPEN";
         // => Update state state
         console.log(`[CircuitBreaker] ${contextName} entering HALF_OPEN`);
         // => Outputs result
       } else {
-        // => Encapsulates domain knowledge
         throw new Error(`Circuit breaker OPEN for ${contextName}`);
         // => Raise domain exception
       }
-      // => Delegates to domain service
     }
-    // => Maintains consistency boundary
 
     try {
-      // => Applies domain event
       const result = await operation();
       // => Store value in result
       // Success - reset circuit breaker
       if (this.state === "HALF_OPEN") {
-        // => Operation: if()
         this.state = "CLOSED";
         // => Update state state
         this.failureCount = 0;
@@ -6527,37 +5935,30 @@ class CircuitBreaker {
         console.log(`[CircuitBreaker] ${contextName} recovered to CLOSED`);
         // => Outputs result
       }
-      // => Coordinates with bounded context
       return result;
-      // => Returns result
     } catch (error) {
-      // => Implements tactical pattern
+      // => DDD tactical pattern applied
       this.failureCount++;
-      // => Protects aggregate integrity
+      // => Invariant validation executed
       this.lastFailureTime = new Date();
       // => Update lastFailureTime state
 
       if (this.failureCount >= this.threshold) {
-        // => Operation: if()
         this.state = "OPEN";
         // => Update state state
         console.log(`[CircuitBreaker] ${contextName} circuit breaker OPEN`);
         // => Outputs result
       }
-      // => Ensures transactional consistency
 
       throw error;
-      // => Manages entity lifecycle
+      // => Entity state transition managed
     }
-    // => Preserves domain model
   }
   // => Communicates domain intent
 }
-// => Executes domain logic
 
 // Service Client with Circuit Breaker
 class ResilientServiceClient {
-  // => ResilientServiceClient: domain model element
   private circuitBreakers: Map<string, CircuitBreaker> = new Map();
   // => Encapsulated field (not publicly accessible)
 
@@ -6570,17 +5971,14 @@ class ResilientServiceClient {
     const service = this.registry.discover(contextName);
     // => Store value in service
     if (!service) {
-      // => Operation: if()
       throw new Error(`Service ${contextName} not found in registry`);
       // => Raise domain exception
     }
-    // => Updates aggregate state
 
     // Get or create circuit breaker
     let breaker = this.circuitBreakers.get(contextName);
     // => Store value in breaker
     if (!breaker) {
-      // => Operation: if()
       breaker = new CircuitBreaker();
       // => Create CircuitBreaker instance
       this.circuitBreakers.set(contextName, breaker);
@@ -6594,7 +5992,6 @@ class ResilientServiceClient {
   }
   // => Enforces invariant
 }
-// => Encapsulates domain knowledge
 
 // Usage - service mesh patterns
 (async () => {
@@ -6604,30 +6001,28 @@ class ResilientServiceClient {
 
   // Register bounded contexts as services
   registry.register({
-    // => Delegates to domain service
+    // => Execution delegated to domain service
     contextName: "Order",
-    // => Maintains consistency boundary
+    // => Aggregate boundary enforced here
     namespace: "sales",
-    // => Applies domain event
+    // => Domain event triggered or handled
     version: "1.0",
-    // => Coordinates with bounded context
+    // => Cross-context interaction point
     endpoints: ["http://order-service:8080"],
-    // => Implements tactical pattern
+    // => DDD tactical pattern applied
   });
-  // => Protects aggregate integrity
 
   registry.register({
-    // => Ensures transactional consistency
+    // => Transaction boundary maintained
     contextName: "Inventory",
-    // => Manages entity lifecycle
+    // => Entity state transition managed
     namespace: "warehouse",
-    // => Preserves domain model
+    // => Domain model consistency maintained
     version: "2.1",
     // => Communicates domain intent
     endpoints: ["http://inventory-service:8080"],
-    // => Executes domain logic
+    // => Domain operation executes here
   });
-  // => Updates aggregate state
 
   const client = new ResilientServiceClient(registry);
   // => Store value in client
@@ -6641,7 +6036,6 @@ class ResilientServiceClient {
       // => Outputs result
       // Simulate service call
       return { available: true };
-      // => Returns { available: true }
     });
     // => Output: [Client] Calling Inventory service
   } catch (error) {
@@ -6649,47 +6043,38 @@ class ResilientServiceClient {
     console.error("Service call failed:", error);
     // => Execute method
   }
-  // => Encapsulates domain knowledge
 
   // Simulate failures to trigger circuit breaker
   for (let i = 0; i < 6; i++) {
-    // => Operation: for()
     try {
-      // => Delegates to domain service
       await client.call("Inventory", async () => {
         // => Create data structure
         throw new Error("Service unavailable");
         // => Raise domain exception
       });
-      // => Maintains consistency boundary
     } catch (error) {
-      // => Applies domain event
+      // => Domain event triggered or handled
       console.log(`Attempt ${i + 1} failed`);
       // => Outputs result
     }
-    // => Coordinates with bounded context
   }
   // => After 5 failures, circuit breaker opens
   // => Output: [CircuitBreaker] Inventory circuit breaker OPEN
 
   // Subsequent calls fail fast
   try {
-    // => Implements tactical pattern
     await client.call("Inventory", async () => {
       // => Create data structure
       return { available: true };
-      // => Returns { available: true }
     });
-    // => Protects aggregate integrity
   } catch (error) {
-    // => Ensures transactional consistency
+    // => Transaction boundary maintained
     console.log("Call blocked by circuit breaker");
     // => Outputs result
     // => Output: Call blocked by circuit breaker
   }
-  // => Manages entity lifecycle
 })();
-// => Preserves domain model
+// => Domain model consistency maintained
 ```
 
 **Key Takeaway**: Service mesh handles cross-cutting concerns (service discovery, circuit breaking, retries, observability) at infrastructure level. Bounded contexts map to service identities. Circuit breakers prevent cascading failures between contexts.
@@ -6703,33 +6088,27 @@ Different bounded contexts optimize storage based on their specific needs, not f
 ```typescript
 // Order Context - uses relational database (PostgreSQL)
 class OrderContextWithPostgreSQL {
-  // => OrderContextWithPostgreSQL: domain model element
   private orders: Map<string, any> = new Map();
   // => Encapsulated field (not publicly accessible)
   // => Simulates PostgreSQL
   // => Production: use pg library
 
   async saveOrder(order: any): Promise<void> {
-    // => Operation: saveOrder()
     this.orders.set(order.orderId, order);
     // => Delegates to internal method
     console.log(`[OrderDB] Saved order to PostgreSQL: ${order.orderId}`);
     // => Outputs result
     // => Relational model for ACID transactions
   }
-  // => Executes domain logic
 
   async findOrder(orderId: string): Promise<any> {
-    // => Operation: findOrder()
     return this.orders.get(orderId);
     // => Return result to caller
   }
-  // => Updates aggregate state
 
   async findOrdersByCustomer(customerId: string): Promise<any[]> {
     // => Efficient indexed queries
     return Array.from(this.orders.values()).filter((o) => o.customerId === customerId);
-    // => Returns Array.from(this.orders.values()).filter((o) => o.customerId === customerId)
   }
   // => Validates business rule
 }
@@ -6737,64 +6116,51 @@ class OrderContextWithPostgreSQL {
 
 // Product Catalog Context - uses document database (MongoDB)
 class ProductCatalogContextWithMongoDB {
-  // => ProductCatalogContextWithMongoDB: domain model element
   private products: Map<string, any> = new Map();
   // => Encapsulated field (not publicly accessible)
   // => Simulates MongoDB
   // => Production: use mongodb library
 
   async saveProduct(product: any): Promise<void> {
-    // => Operation: saveProduct()
     this.products.set(product.productId, product);
     // => Delegates to internal method
     console.log(`[CatalogDB] Saved product to MongoDB: ${product.productId}`);
     // => Outputs result
     // => Document model for flexible schema
   }
-  // => Encapsulates domain knowledge
 
   async findProduct(productId: string): Promise<any> {
-    // => Operation: findProduct()
     return this.products.get(productId);
     // => Return result to caller
   }
-  // => Delegates to domain service
 
   async searchProducts(query: string): Promise<any[]> {
     // => Full-text search on nested documents
     return Array.from(this.products.values()).filter((p) => p.name.toLowerCase().includes(query.toLowerCase()));
-    // => Returns Array.from(this.products.values()).filter((p) => p.name.toLowerCase().includes(query.toLowerCase()))
   }
-  // => Maintains consistency boundary
 }
-// => Applies domain event
 
 // Session Context - uses in-memory cache (Redis)
 class SessionContextWithRedis {
-  // => SessionContextWithRedis: domain model element
   private sessions: Map<string, { data: any; expiresAt: number }> = new Map();
   // => Encapsulated field (not publicly accessible)
   // => Simulates Redis
   // => Production: use ioredis library
 
   async saveSession(sessionId: string, data: any, ttlSeconds: number): Promise<void> {
-    // => Operation: saveSession()
     this.sessions.set(sessionId, {
-      // => Coordinates with bounded context
+      // => Cross-context interaction point
       data,
-      // => Implements tactical pattern
+      // => DDD tactical pattern applied
       expiresAt: Date.now() + ttlSeconds * 1000,
       // => Execute method
     });
-    // => Protects aggregate integrity
     console.log(`[SessionCache] Cached session ${sessionId} (TTL: ${ttlSeconds}s)`);
     // => Outputs result
     // => In-memory storage for fast access
   }
-  // => Ensures transactional consistency
 
   async getSession(sessionId: string): Promise<any | null> {
-    // => Operation: getSession()
     const session = this.sessions.get(sessionId);
     // => Store value in session
     if (!session) return null;
@@ -6805,32 +6171,26 @@ class SessionContextWithRedis {
       this.sessions.delete(sessionId);
       // => Delegates to internal method
       return null;
-      // => Returns null
       // => Automatic expiration
     }
-    // => Manages entity lifecycle
 
     return session.data;
-    // => Returns session.data
   }
-  // => Preserves domain model
 }
 // => Communicates domain intent
 
 // Analytics Context - uses columnar database (ClickHouse/BigQuery)
 class AnalyticsContextWithClickHouse {
-  // => AnalyticsContextWithClickHouse: domain model element
   private events: any[] = [];
   // => Encapsulated field (not publicly accessible)
   // => Simulates columnar storage
   // => Production: use ClickHouse, BigQuery, Redshift
 
   async recordEvent(event: any): Promise<void> {
-    // => Operation: recordEvent()
     this.events.push({
-      // => Executes domain logic
+      // => Domain operation executes here
       ...event,
-      // => Updates aggregate state
+      // => Modifies aggregate internal state
       timestamp: new Date(),
       // => Validates business rule
     });
@@ -6839,7 +6199,6 @@ class AnalyticsContextWithClickHouse {
     // => Outputs result
     // => Columnar format optimized for aggregations
   }
-  // => Encapsulates domain knowledge
 
   async getOrderCountByDay(): Promise<Array<{ date: string; count: number }>> {
     // => Efficient aggregation queries
@@ -6855,47 +6214,38 @@ class AnalyticsContextWithClickHouse {
       byDay.set(date, (byDay.get(date) || 0) + 1);
       // => Execute method
     });
-    // => Delegates to domain service
 
     return Array.from(byDay.entries()).map(([date, count]) => ({ date, count }));
-    // => Returns Array.from(byDay.entries()).map(([date, count]) => ({ date, count }))
   }
-  // => Maintains consistency boundary
 }
-// => Applies domain event
 
 // Search Context - uses search engine (Elasticsearch)
 class SearchContextWithElasticsearch {
-  // => SearchContextWithElasticsearch: domain model element
   private documents: any[] = [];
   // => Encapsulated field (not publicly accessible)
   // => Simulates Elasticsearch
   // => Production: use @elastic/elasticsearch
 
   async indexProduct(product: any): Promise<void> {
-    // => Operation: indexProduct()
     this.documents.push(product);
     // => Delegates to internal method
     console.log(`[SearchIndex] Indexed product in Elasticsearch: ${product.productId}`);
     // => Outputs result
     // => Inverted index for full-text search
   }
-  // => Coordinates with bounded context
 
   async search(query: string): Promise<any[]> {
     // => Full-text search with ranking
     return this.documents.filter(
       // => Return result to caller
       (doc) =>
-        // => Implements tactical pattern
+        // => DDD tactical pattern applied
         Object.values(doc).some((value) => String(value).toLowerCase().includes(query.toLowerCase())),
-      // => Protects aggregate integrity
+      // => Invariant validation executed
     );
-    // => Ensures transactional consistency
+    // => Transaction boundary maintained
   }
-  // => Manages entity lifecycle
 }
-// => Preserves domain model
 
 // Usage - polyglot persistence
 (async () => {
@@ -6916,9 +6266,9 @@ class SearchContextWithElasticsearch {
   await orderDB.saveOrder({
     // => Communicates domain intent
     orderId: "ORDER-001",
-    // => Executes domain logic
+    // => Domain operation executes here
     customerId: "CUST-001",
-    // => Updates aggregate state
+    // => Modifies aggregate internal state
     total: 150,
     // => Validates business rule
     status: "placed",
@@ -6928,15 +6278,15 @@ class SearchContextWithElasticsearch {
 
   // Catalog Context - document for flexibility
   await catalogDB.saveProduct({
-    // => Encapsulates domain knowledge
+    // => Business rule enforced here
     productId: "PROD-001",
-    // => Delegates to domain service
+    // => Execution delegated to domain service
     name: "Laptop Pro",
-    // => Maintains consistency boundary
+    // => Aggregate boundary enforced here
     specs: { cpu: "M2", ram: "16GB", storage: "512GB" },
     // => Nested document structure
     tags: ["electronics", "computers"],
-    // => Applies domain event
+    // => Domain event triggered or handled
   });
   // => Output: [CatalogDB] Saved product to MongoDB: PROD-001
 
@@ -6977,11 +6327,11 @@ class SearchContextWithElasticsearch {
   console.log(`- Search results: ${searchResults.length} (Elasticsearch)`);
   // => Outputs result
 })();
-// => Coordinates with bounded context
+// => Cross-context interaction point
 ```
 
 **Key Takeaway**: Polyglot persistence allows each bounded context to use database technology optimized for its access patterns: relational for ACID transactions, document for flexible schemas, cache for speed, columnar for analytics, search engine for full-text queries.
 
-**Why It Matters**: Forcing all contexts into single database type creates suboptimal performance. Order context needs ACID transactions (PostgreSQL), Product Catalog needs flexible schema (MongoDB), Analytics needs fast aggregations (ClickHouse), Search needs full-text ranking (Elasticsearch). Large-scale systems use multiple database technologies across bounded contexts—NoSQL for streaming metadata, relational databases for billing, search engines for content discovery. Each context optimized independently, no compromise. DDD bounded context boundaries enable polyglot persistence without chaos—clear ownership prevents database sprawl.
+**Why It Matters**: Forcing all contexts into a single database type creates suboptimal performance. Large-scale systems use multiple database technologies—relational for ACID transactions, document for flexible schemas, columnar for analytics, search for full-text queries. DDD bounded context boundaries enable polyglot persistence without chaos: clear ownership prevents database sprawl and lets each context choose the storage technology optimized for its specific access patterns.
 
 **Final Note**: This completes the DDD By-Example tutorial series, covering 85 examples across tactical patterns (Examples 1-30), strategic patterns (Examples 31-60), and advanced distributed systems patterns (Examples 61-85). You now have comprehensive knowledge to design and implement domain-driven systems from simple entities to large-scale microservices architectures, achieving comprehensive coverage of DDD concepts and patterns used in production systems.

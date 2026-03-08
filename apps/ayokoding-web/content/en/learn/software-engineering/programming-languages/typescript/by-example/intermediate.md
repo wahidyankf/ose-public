@@ -3,11 +3,11 @@ title: "Intermediate"
 date: 2026-02-07T00:00:00+07:00
 draft: false
 weight: 10000002
-description: "Examples 31-60: Generics, utility types, decorators, async/await, modules, conditional types, and mapped types (40-75% coverage)"
+description: "Examples 31-51: Generics, utility types, decorators, async/await, modules, conditional types, and mapped types (40-75% coverage)"
 tags: ["typescript", "tutorial", "by-example", "intermediate", "generics", "decorators", "async", "modules"]
 ---
 
-Learn intermediate TypeScript through 30 production-ready examples covering generics, utility types, decorators, async patterns, modules, and advanced type transformations.
+Learn intermediate TypeScript through 21 production-ready examples covering generics, utility types, decorators, async patterns, modules, and advanced type transformations.
 
 ## Example 31: Generic Functions
 
@@ -101,11 +101,29 @@ console.log(age); // => Output: 30
 
 **Key Takeaway**: Generic functions use angle brackets `<T>` to define type parameters. They preserve type information across function calls. Use `extends` to constrain generic types. Combine multiple type parameters for complex operations.
 
-**Why It Matters**: Generics eliminate code duplication while maintaining type safety. Array methods like `map<T>`, `filter<T>` are generic—they work with any type. Utility libraries can use generics for type-preserving transformations. State management can infer types from initial values. Generics are fundamental to type-safe libraries and frameworks.
+**Why It Matters**: Generics eliminate code duplication while maintaining type safety. Array methods like `map<T>`, `filter<T>` are generic—they work with any element type without losing type information. Custom data structures (trees, queues, event emitters) all use generics. Without generics, developers choose between duplicating type definitions or using `any`, sacrificing safety. Generics are the cornerstone of reusable, type-safe library design.
 
 ## Example 32: Generic Classes
 
 Generic classes define type parameters at the class level. All methods share the same type parameter scope.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["Stack&lt;T&gt;"] -->|"instantiate with string"| B["Stack&lt;string&gt;"]
+    A -->|"instantiate with number"| C["Stack&lt;number&gt;"]
+
+    B --> D["push('hello')"]
+    B --> E["pop() => string"]
+    C --> F["push(42)"]
+    C --> G["pop() => number"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style F fill:#CC78BC,stroke:#000,color:#000
+```
 
 **Code**:
 
@@ -212,7 +230,7 @@ console.log(stringStack.pop()); // => Output: b
 
 **Key Takeaway**: Generic classes use `<T>` after the class name to define type parameters. All methods and properties can use the type parameter. Instantiate with specific types or let TypeScript infer from constructor arguments.
 
-**Why It Matters**: Generic classes power data structures (Stack, Queue, LinkedList) that work with any type. Component classes can use generics for props and state: `class Component<P, S>`. ORM models can use generics for query builders. This pattern enables reusable, type-safe class libraries.
+**Why It Matters**: Generic classes power data structures (Stack, Queue, LinkedList) that work with any type. Component classes can use generics for typed stores. Repository patterns use generics for typed CRUD operations—`Repository<User>` ensures `findById` returns `User`, not `any`. Without generic classes, every data structure needs separate typed implementations. In React, generic hooks and context providers rely on the same principles.
 
 ## Example 33: Generic Interfaces
 
@@ -315,11 +333,22 @@ console.log(scores.alice); // => Output: 95
 
 **Key Takeaway**: Generic interfaces use `<T>` to parameterize contracts. They're used for API response shapes, data structures, and function signatures. Classes implementing generic interfaces must specify concrete types.
 
-**Why It Matters**: Generic interfaces define contracts for libraries and frameworks. API responses can use `Response<T>`. Promise chains use `Promise<T>`. Action creators can use generic interfaces for type safety. This pattern enables building type-safe APIs where callers specify the data types they expect.
+**Why It Matters**: Generic interfaces define contracts for libraries and frameworks. API responses use `Response<T>` to carry typed data. Promise chains use `Promise<T>` for typed resolution. Dependency injection containers use generic interfaces for typed service registration. Without generic interfaces, library consumers receive `any` and lose type safety at integration boundaries—the most common source of runtime errors in large TypeScript applications.
 
-## Example 34: Utility Type - Partial and Required
+## Example 34: Utility Types in API Design - Partial and Required
 
-`Partial<T>` makes all properties optional. `Required<T>` makes all properties required. They're essential for update operations and validation.
+`Partial<T>` and `Required<T>` are covered in Beginner Example 18 at the syntax level. This example focuses on combining them with other utility types for real-world API patterns: PATCH endpoints, configuration validation, and composed transformations.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["User {name: string, email: string, age: number}"] -->|"Partial<User>"| B["Partial<User> {name?, email?, age?}"]
+    A -->|"Required<User>"| C["Required<User> {name!, email!, age!}"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+```
 
 **Code**:
 
@@ -404,11 +433,11 @@ console.log(formUpdate); // => Output: { username: 'alice', email: 'alice@exampl
 
 **Key Takeaway**: `Partial<T>` makes all properties optional for update operations. `Required<T>` makes all properties required for validation. Combine them with other utility types for complex transformations.
 
-**Why It Matters**: `Partial<T>` eliminates boilerplate for update DTOs in REST APIs. Instead of defining separate `UserUpdate` interfaces, use `Partial<User>`. `Required<T>` enforces complete configuration objects after validation. Form libraries can use these patterns extensively.
+**Why It Matters**: `Partial<T>` eliminates boilerplate for update DTOs in REST APIs. Instead of defining separate `UserUpdate` interfaces, `Partial<User>` makes all fields optional automatically. `Required<T>` enforces complete configurations where defaults are not safe—database connection configs must have all fields present. These two utilities are the most-used TypeScript utility types in production codebases with server-side data handling.
 
-## Example 35: Utility Type - Pick and Omit
+## Example 35: Utility Types in Security Patterns - Pick and Omit
 
-`Pick<T, K>` selects specific properties. `Omit<T, K>` excludes properties. They create derived types without duplication.
+`Pick<T, K>` and `Omit<T, K>` are covered in Beginner Example 18 at the syntax level. This example demonstrates security-focused patterns: stripping sensitive fields from API responses, creating focused view models, and composing complex type transformations for multi-layer architectures.
 
 **Code**:
 
@@ -488,13 +517,13 @@ console.log(publicUser); // => Output: { id: 1, name: 'Diana', email: 'diana@exa
 
 **Key Takeaway**: `Pick<T, K>` extracts specific properties for focused DTOs. `Omit<T, K>` removes properties for safe public interfaces. Combine with `Partial` for flexible update types.
 
-**Why It Matters**: These utilities prevent type duplication in layered architectures. Database models have all fields; API responses `Omit<Model, "password">` for security; Create DTOs `Omit<Model, "id">` for client input. This pattern keeps types DRY (Don't Repeat Yourself) while maintaining safety.
+**Why It Matters**: These utilities prevent type duplication in layered architectures. Database models have all fields; API responses use `Omit<Model, "password">` for security; Create DTOs use `Omit<Model, "id">` for client input. Frontend forms use `Pick<Model, "name" | "email">` for focused types. Without these utilities, developers manually maintain parallel type definitions that drift out of sync when models evolve.
 
 ## Example 36: Decorators (Experimental)
 
 Decorators add metadata and behavior to classes, methods, properties, and parameters. They're used in frameworks for dependency injection and routing.
 
-**Note**: Decorators require `"experimentalDecorators": true` in tsconfig.json.
+**Prerequisite**: Requires `"experimentalDecorators": true` in tsconfig.json for legacy decorators. TypeScript 5.0+ supports a new decorator syntax (TC39 Stage 3) that does NOT require this flag. Legacy and new decorators are not compatible - choose one approach per project.
 
 **Code**:
 
@@ -618,7 +647,7 @@ console.log(account.password); // => Output: secure123
 
 **Key Takeaway**: Decorators use `@` syntax to modify classes, methods, properties, and parameters. Decorator factories accept parameters and return decorators. Enable with `experimentalDecorators` compiler option.
 
-**Why It Matters**: Decorators enable declarative programming patterns. Frameworks can use decorators for dependency injection, routing, and database mapping. Decorators move cross-cutting concerns (logging, validation, caching) out of business logic.
+**Why It Matters**: Decorators enable declarative programming patterns. Frameworks use decorators for dependency injection, routing, and validation—Angular, NestJS, and TypeORM all rely heavily on experimental decorators. With TypeScript 5.0+, standard decorators are now part of the language specification. Production codebases using these frameworks must understand decorator mechanics to debug injection errors, middleware composition, and property metadata at runtime.
 
 ## Example 37: Async/Await and Promises
 
@@ -754,7 +783,7 @@ async function* generateNumbers(): AsyncGenerator<number> {
 
 **Key Takeaway**: Use `Promise<T>` for asynchronous values. `async` functions automatically return Promises. `await` unwraps Promises to their resolved types. Use `try/catch` for error handling. `Promise.all` infers tuple types from input promises.
 
-**Why It Matters**: Type-safe async code prevents bugs from incorrect return types and missing error handling. API clients can use `Promise<Response<T>>` for typed responses. Database queries can use `Promise<Model[]>` for result sets. Effects can understand Promise return types. This pattern makes asynchronous TypeScript as safe as synchronous code.
+**Why It Matters**: Type-safe async code prevents bugs from incorrect return types and missing error handling. API clients use `Promise<User>` to ensure callers handle the typed response correctly. Async iterators use `AsyncIterableIterator<T>` for typed streaming data. Without typed async, race conditions and unhandled rejections are harder to detect at compile time. In production applications handling payment processing or data pipelines, typed async is non-negotiable.
 
 ## Example 38: Modules and Namespaces
 
@@ -854,11 +883,27 @@ import { doSomething } from "legacy-lib"; // => TypeScript knows about it
 
 **Key Takeaway**: Use ES modules (`import`/`export`) for modern TypeScript. Default exports for single exports, named exports for multiple. Type-only imports (`import type`) optimize bundle size. Namespaces are legacy—prefer ES modules.
 
-**Why It Matters**: Module systems enable code organization and tree-shaking. ES modules integrate with bundlers. Type-only imports prevent runtime bloat from type definitions. Ambient modules (`declare module`) add types to JavaScript libraries without types. This pattern is essential for scalable TypeScript applications.
+**Why It Matters**: Module systems enable code organization and tree-shaking. ES modules integrate with bundlers for optimal production bundles. Type-only imports prevent circular dependency runtime errors while maintaining compile-time type checking. Namespace augmentation allows extending third-party library types without forking. Understanding module resolution is essential for debugging import errors in monorepos and multi-package TypeScript projects.
 
 ## Example 39: Conditional Types with Distributive Behavior
 
 Conditional types distribute over union types automatically. This enables powerful type transformations.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A["ToArray&lt;string | number&gt;"] -->|"distributes"| B["ToArray&lt;string&gt;"]
+    A -->|"distributes"| C["ToArray&lt;number&gt;"]
+    B --> D["string[]"]
+    C --> E["number[]"]
+    D -->|"union result"| F["string[] | number[]"]
+    E --> F
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style F fill:#CC78BC,stroke:#000,color:#000
+```
 
 **Code**:
 
@@ -940,7 +985,7 @@ type ValidResponses = ApiResult<SuccessResponse | ErrorResponse>;
 
 **Key Takeaway**: Conditional types use `T extends U ? X : Y` syntax. They distribute over unions automatically. Use `infer` to extract types from complex structures. Combine with utility types for powerful transformations.
 
-**Why It Matters**: Conditional types enable advanced type-level programming. `ReturnType`, `Parameters`, and `Awaited` are built with conditional types. Framework authors can use them for type inference. This pattern makes TypeScript's type system Turing-complete.
+**Why It Matters**: Conditional types enable advanced type-level programming. `ReturnType`, `Parameters`, and `Awaited` are built with conditional types. Type-safe dependency injection containers infer service types from factory functions. Schema validation libraries derive TypeScript types from runtime validators, keeping types and validation logic in sync. Without conditional types, these derivations require manual maintenance and inevitably drift.
 
 ## Example 40: Mapped Types with Key Remapping
 
@@ -1063,15 +1108,7 @@ console.log(nullUser); // => Output: { id: null, name: 'Charlie' }
 
 **Key Takeaway**: Mapped types use `[P in keyof T]` to iterate over keys. Key remapping with `as` transforms key names. Use template literals for pattern-based transformations. Return `never` to exclude keys.
 
-**Why It Matters**: Mapped types with key remapping enable advanced type transformations. ORM libraries generate `findByX` methods for each field. Form libraries create `onXChange` handlers. GraphQL code generators transform schema fields to resolver types. This pattern eliminates manual type definitions for repetitive patterns.
-
-## Example 41-60: Continue in next response
-
-Due to length constraints, Examples 41-60 will be provided when you request the advanced.md file.
-
-**Key Takeaway for Intermediate Section**: These 10 examples (31-40) cover generics, utility types, decorators, async patterns, modules, and advanced type transformations. Master these patterns for production-ready TypeScript development.
-
-**Why It Matters**: Intermediate TypeScript separates library users from library authors. Generics enable type-safe data structures. Utility types eliminate boilerplate. Decorators enable framework integration. Conditional and mapped types power advanced type inference. These patterns are essential for building scalable, maintainable applications and libraries.
+**Why It Matters**: Mapped types with key remapping enable advanced type transformations. ORM libraries generate `findByX` methods for each field. Form libraries create `onXChange` handlers. GraphQL code generators transform schema fields to resolver types. Without key remapping, developers write repetitive type definitions for every property variant. This pattern eliminates hundreds of lines of manual type definitions in well-typed TypeScript libraries.
 
 ## Example 41: Function Overloading
 
@@ -1137,7 +1174,7 @@ console.log(nums); // => Output: [42]
 
 **Key Takeaway**: Function overloads provide multiple type signatures for a single implementation. The implementation must handle all overload cases. TypeScript uses the most specific matching signature.
 
-**Why It Matters**: Overloading enables type-safe APIs with flexible call patterns. DOM APIs use overloads extensively (addEventListener has 3 signatures). Utility libraries can provide overloaded functions for different input types. This pattern maintains type safety while supporting diverse usage patterns.
+**Why It Matters**: Overloading enables type-safe APIs with flexible call patterns. DOM APIs use overloads extensively—`createElement("canvas")` returns `HTMLCanvasElement`, not just `HTMLElement`. React's `useReducer` uses overloads for different argument patterns. Without overloads, functions that accept multiple argument shapes return union types, forcing callers to narrow the return type manually. Good overload design is what separates library-grade TypeScript from application-grade TypeScript.
 
 ## Example 42: Abstract Classes and Interfaces Compared
 
@@ -1235,7 +1272,7 @@ duck.swim(); // => Output: Mallard is swimming
 
 **Key Takeaway**: Use interfaces for pure contracts supporting multiple inheritance. Use abstract classes for shared implementation code. A class can extend one abstract class but implement multiple interfaces.
 
-**Why It Matters**: Interfaces enable composition over inheritance. Components can implement multiple interfaces (Props, State, LifecycleMethods). Abstract classes share code between subclasses while enforcing contracts. This pattern supports flexible, maintainable designs.
+**Why It Matters**: Interfaces enable composition over inheritance. Components implement multiple interfaces (Props, State, LifecycleMethods) without deep inheritance chains. Abstract classes provide template method patterns with shared implementation. The key rule: use interfaces for pure contracts and when multiple inheritance is needed, use abstract classes when sharing implementation logic. Understanding this distinction drives TypeScript architecture decisions for large-scale applications.
 
 ## Example 43: Module Augmentation
 
@@ -1320,7 +1357,7 @@ console.log(numbers.first()); // => Output: 1 (type-safe)
 
 **Key Takeaway**: Module augmentation extends existing types without modifying source code. Use `declare module` for external modules, `declare global` for global scope. Namespaces can be augmented by declaring them again.
 
-**Why It Matters**: Augmentation enables adding types to JavaScript libraries. Middleware can add properties to Request. Libraries can add methods to models. Testing frameworks can augment global expect. This pattern maintains type safety when extending third-party code.
+**Why It Matters**: Augmentation enables adding types to JavaScript libraries. Middleware adds properties to Express Request objects. Libraries add methods to built-in types. Testing frameworks add matchers to global types. Without augmentation, developers resort to type casts or `any`, losing safety at integration points. Module augmentation is the professional way to extend third-party types in enterprise TypeScript projects.
 
 ## Example 44: This Type and Polymorphic This
 
@@ -1418,11 +1455,25 @@ console.log(query); // => Output: age > 18 active = true ORDER BY name
 
 **Key Takeaway**: The `this` type refers to the actual instance type, enabling proper method chaining in inheritance hierarchies. Use explicit `this` parameters to enforce calling context.
 
-**Why It Matters**: Polymorphic `this` enables fluent APIs that work correctly with inheritance. Method chaining libraries use this pattern. ORM query builders can return `this` for chaining. The pattern maintains type safety across subclass methods without manual type assertions.
+**Why It Matters**: Polymorphic `this` enables fluent APIs that work correctly with inheritance. Method chaining libraries like query builders use `this` return types so subclass methods return the subclass type, not the base type. Without polymorphic `this`, subclass method chains lose type information and return the parent type. This pattern is essential for framework base classes that expect users to extend them while preserving fluent interfaces.
 
 ## Example 45: Branded Types (Nominal Typing)
 
 Branded types create distinct types from the same underlying type. They prevent mixing incompatible values that have the same structure.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["string (unbranded)"] -->|"brand as UserId"| B["UserId = string & {_brand: UserId}"]
+    A -->|"brand as ProductId"| C["ProductId = string & {_brand: ProductId}"]
+
+    B -->|"not assignable to"| C
+    C -->|"not assignable to"| B
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#029E73,stroke:#000,color:#fff
+    style C fill:#DE8F05,stroke:#000,color:#000
+```
 
 **Code**:
 
@@ -1511,7 +1562,7 @@ console.log(value); // => Output: 10
 
 **Key Takeaway**: Branded types create nominal typing in TypeScript's structural type system. Use intersection with unique brand markers. Factory functions enforce validation before branding.
 
-**Why It Matters**: Branded types prevent mixing semantically different values with the same underlying type. User IDs and product IDs are both numbers but shouldn't be interchangeable. Meters and feet prevent unit confusion bugs. Email strings must be validated. This pattern adds compile-time safety to domain-specific types.
+**Why It Matters**: Branded types prevent mixing semantically different values with the same underlying type. User IDs and product IDs are both strings, but branded types make them incompatible—passing a `ProductId` where `UserId` is expected is a compile error. Financial applications use branded types for currencies and amounts. Security-sensitive code uses them for sanitized vs unsanitized strings. This zero-runtime-cost technique prevents entire categories of semantic type confusion bugs.
 
 ## Example 46: Symbols and Unique Symbols
 
@@ -1615,7 +1666,7 @@ console.log(Object.keys(user)); // => Output: ["name"] (symbol not enumerable)
 
 **Key Takeaway**: Symbols create unique property keys that avoid conflicts. Unique symbols create compile-time distinct types. Well-known symbols customize object behavior (iteration, conversion).
 
-**Why It Matters**: Symbols enable private-like properties without hard private fields. Libraries use symbols to attach metadata without property name conflicts. Unique symbols power branded types and compile-time type distinctions. Well-known symbols integrate with JavaScript protocols (iteration, async iteration, type conversion).
+**Why It Matters**: Symbols enable private-like properties without hard private fields. Libraries use symbols to attach metadata without polluting string key space. Iterators use `Symbol.iterator` for interoperability. Unique symbols provide nominal typing at the type level. In large codebases, symbols prevent accidental property collision when multiple libraries attach metadata to the same objects. Understanding unique symbols is necessary for implementing custom iterator protocols.
 
 ## Example 47: Assertion Functions
 
@@ -1707,7 +1758,7 @@ validator.processAge(25); // => Output: Valid age: 25
 
 **Key Takeaway**: Assertion functions use `asserts condition` or `asserts value is Type` to narrow types through control flow. They throw errors when assertions fail, enabling type-safe validation.
 
-**Why It Matters**: Assertion functions eliminate defensive programming patterns. Instead of if-checks everywhere, assert early and TypeScript knows the type. Testing frameworks use assertions extensively. Validation libraries use `asserts` for type narrowing. This pattern makes validation code reusable while maintaining type safety.
+**Why It Matters**: Assertion functions eliminate defensive programming patterns. Instead of if-checks everywhere, assert early and TypeScript narrows the type for all subsequent code. Validation middleware can use assertion functions to narrow request body types. Input parsers assert parsed values are correctly shaped. Without assertion functions, developers either use type guards everywhere or resort to non-null assertions (`!`) that bypass type safety entirely.
 
 ## Example 48: Variadic Tuple Types (Basic)
 
@@ -1776,7 +1827,7 @@ type NumbersTail = Tail<Numbers>; // => Type: [2, 3, 4]
 
 **Key Takeaway**: Variadic tuple types use `...` to spread tuple elements. They enable type-safe tuple concatenation, prepend/append operations, and rest parameter typing.
 
-**Why It Matters**: Variadic tuples power advanced functional programming patterns. Currying functions maintain type safety. Pipe/compose utilities preserve tuple types. State management can return tuples that can be spread. This pattern enables building higher-order functions with full type inference.
+**Why It Matters**: Variadic tuples power advanced functional programming patterns. Currying functions maintain type safety across arbitrary arities. Pipe/compose utilities preserve type flow through transformation chains. React hooks with spread arguments use variadic tuples for typed argument forwarding. Without variadic tuples, higher-order functions that manipulate argument lists lose type information. This enables writing type-safe utility libraries comparable to fp-ts or ramda.
 
 ## Example 49: String Manipulation Types
 
@@ -1858,11 +1909,26 @@ type BackgroundColor = KebabCase<"backgroundColor">; // => Type: "background-col
 
 **Key Takeaway**: Built-in string manipulation types (`Uppercase`, `Lowercase`, `Capitalize`, `Uncapitalize`) transform string literal types. Combine with template literals for powerful type-level string transformations.
 
-**Why It Matters**: String manipulation types enable compile-time validation of naming conventions. Event handler naming follows `onEventName` pattern. CSS properties convert from camelCase to kebab-case. Database column names transform from PascalCase to snake_case. This pattern catches naming inconsistencies at compile time.
+**Why It Matters**: String manipulation types enable compile-time validation of naming conventions. Event handler naming follows `on${EventName}` patterns enforced by types. API route parameter extraction from URL templates is type-safe. CSS-in-JS libraries use template literal types for validated class names. Without string manipulation types, naming convention enforcement requires runtime validation or documentation. These types catch naming errors immediately in the IDE.
 
 ## Example 50: Awaited Type
 
 The `Awaited<T>` utility type unwraps Promise types recursively. It's essential for typing async function return values.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["Promise&lt;string&gt;"] -->|"Awaited<>"| B["string"]
+    C["Promise&lt;Promise&lt;number&gt;&gt;"] -->|"Awaited<>"| D["number"]
+    E["Promise&lt;User[]&gt;"] -->|"Awaited<>"| F["User[]"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#029E73,stroke:#000,color:#fff
+    style C fill:#DE8F05,stroke:#000,color:#000
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#CC78BC,stroke:#000,color:#000
+    style F fill:#029E73,stroke:#000,color:#fff
+```
 
 **Code**:
 
@@ -1930,7 +1996,7 @@ type Test2 = UnwrapPromise<number>; // => Type: number
 
 **Key Takeaway**: `Awaited<T>` recursively unwraps Promise types to their resolved values. It handles nested promises and promise unions. Use with `ReturnType` to extract async function return types.
 
-**Why It Matters**: `Awaited` simplifies typing async code. Extract types from async function returns without manual unwrapping. Type Promise.all results correctly. Handle promise chains with proper type inference. This utility is essential for async-heavy codebases.
+**Why It Matters**: `Awaited` simplifies typing async code. Extract types from async function returns without manual unwrapping. Type Promise chains correctly when intermediate steps return nested promises. Library code that accepts both synchronous and asynchronous inputs uses `Awaited` to normalize types. Without `Awaited`, developers write complex conditional types to unwrap promise layers. This utility type is essential for correctly typing generic async wrappers in data-fetching libraries.
 
 ## Example 51: Type Narrowing with Switch Statements
 
@@ -2016,30 +2082,4 @@ console.log(reducer(10, { type: "reset", value: 0 })); // => Output: 0
 
 **Key Takeaway**: Switch statements on discriminators narrow types automatically. Use `never` in default case for exhaustiveness checking. Multiple cases can share handlers with fallthrough.
 
-**Why It Matters**: Switch-based narrowing is cleaner than if-else chains for discriminated unions. Action reducers can use switch for action handling. State machines can use switch for state transitions. The exhaustiveness check prevents forgetting new variants when unions grow.
-
-## Example 52-60: Remaining Examples
-
-The intermediate section is now complete with Examples 31-51 covering:
-
-- Generics (functions, classes, interfaces)
-- Utility types (Partial, Required, Pick, Omit, Record)
-- Decorators
-- Async/await
-- Modules and augmentation
-- Conditional types
-- Mapped types with key remapping
-- Function overloading
-- Abstract classes vs interfaces
-- This types
-- Branded types
-- Symbols
-- Assertion functions
-- Variadic tuples
-- String manipulation
-- Awaited type
-- Switch narrowing
-
-**Examples 52-60 will be included in advanced.md to maintain better content distribution.**
-
-**Why This Section Matters**: Intermediate TypeScript enables production-ready application development. Generics provide type-safe data structures. Utility types eliminate boilerplate. Decorators integrate with frameworks. Async patterns handle asynchronous operations safely. These patterns are essential for scalable TypeScript codebases.
+**Why It Matters**: Switch-based narrowing is cleaner than if-else chains for discriminated unions. Action reducers use switch for action handling. State machines use switch for state transitions. The exhaustiveness check prevents forgetting new variants when unions grow—the default `never` case ensures TypeScript errors if a new action type is added without a handler. This pattern is foundational to Redux-style state management and event-driven architectures.

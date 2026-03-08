@@ -1,6 +1,6 @@
 ---
 title: "Beginner"
-weight: 100000000
+weight: 10000001
 date: 2026-01-29T16:00:00+07:00
 draft: false
 description: "Master fundamental React with TypeScript concepts through 25 annotated examples covering components, props, state, hooks, events, forms, and composition"
@@ -50,9 +50,7 @@ export default App;
 
 **Key Takeaway**: React components are TypeScript functions that return JSX. They must start with capital letters and return a single root element.
 
-**Expected Output**: Page displays heading "Welcome to React" and paragraph "This is your first component."
-
-**Common Pitfalls**: Forgetting to capitalize component name (React won't recognize it), or returning multiple root elements without wrapper.
+**Why It Matters**: React's component model is the foundation of every modern React application in production. Understanding that components are TypeScript functions lets you apply standard TypeScript patterns - generics, utility types, function overloads - directly to UI building blocks. Every React codebase you encounter structures its entire architecture around composable function components. When you debug a production app, trace a performance issue, or onboard to a new codebase, you navigate a tree of these components. This mental model is essential from the first line of React code you write.
 
 ### Example 2: JSX and TSX Syntax
 
@@ -70,6 +68,7 @@ function JsxDemo() {
   const greeting = `Salam, ${name}!`;        // => "Salam, Fatima!"
 
   return (
+  // => Returns JSX element tree
     <div>
       {/* => Curly braces {} embed TypeScript expressions */}
       <h1>{greeting}</h1>
@@ -88,17 +87,33 @@ function JsxDemo() {
 }
 
 export default JsxDemo;
+
+
 ```
 
 **Key Takeaway**: Use curly braces `{}` in JSX to embed TypeScript expressions. Any valid TypeScript expression works: variables, functions, operators, ternaries.
 
-**Expected Output**: Page displays personalized greeting, age information, student status, and calculated future age.
-
-**Common Pitfalls**: Using single curly brace for CSS-like styling (JSX uses double braces: `style={{ color: 'red' }}`), or forgetting curly braces around expressions.
+**Why It Matters**: JSX is not just syntax sugar - it's the mechanism that makes React's declarative model readable and maintainable. Production React codebases contain thousands of JSX expressions. Understanding curly brace embedding allows you to write dynamic UI that reacts to data changes without manual DOM manipulation. TypeScript's type inference in JSX prevents entire categories of runtime errors: passing numbers where strings are expected, undefined values into required display positions, or wrong data shapes to components. This pattern appears in every React component you'll ever write.
 
 ### Example 3: Component Props with Interfaces
 
 Props pass data from parent to child components. Use TypeScript interfaces for type safety.
+
+```mermaid
+graph TD
+    P["App (Parent)\n passes props"] -->|"name='Aisha' age=28\nisStudent=false"| C1["Greeting\ncomponent"]
+    P -->|"name='Omar' age=22\nisStudent=true"| C2["Greeting\ncomponent"]
+    C1 -->|"read-only props"| R1["Renders profile\nfor Aisha"]
+    C2 -->|"read-only props"| R2["Renders profile\nfor Omar"]
+
+    style P fill:#0173B2,stroke:#000,color:#fff
+    style C1 fill:#DE8F05,stroke:#000,color:#000
+    style C2 fill:#029E73,stroke:#000,color:#fff
+    style R1 fill:#CC78BC,stroke:#000,color:#000
+    style R2 fill:#CA9161,stroke:#000,color:#000
+```
+
+**Props flow**: Parent controls child data through one-way prop passing.
 
 ```typescript
 // => Interface defines prop types - TypeScript validates at compile time
@@ -115,7 +130,9 @@ function Greeting({ name, age, isStudent }: GreetingProps) {
   // => Alternative syntax: function Greeting(props: GreetingProps)
 
   return (
+  // => Returns JSX element tree
     <div>
+    {/* => Container div for layout grouping */}
       <h2>Profile: {name}</h2>
       {/* => One-way data flow: parent → child */}
 
@@ -131,6 +148,7 @@ function Greeting({ name, age, isStudent }: GreetingProps) {
 // => Parent component controls child's props
 function App() {
   return (
+  // => Returns JSX element tree
     <div>
       {/* => String props use quotes, number/boolean props use curly braces */}
       <Greeting name="Aisha" age={28} isStudent={false} />
@@ -143,17 +161,37 @@ function App() {
 }
 
 export default App;
+
+
+
 ```
 
 **Key Takeaway**: Define prop types with TypeScript interfaces. Destructure props in component parameter. Props are read-only and flow one-way from parent to child.
 
-**Expected Output**: Two profile cards displaying names, ages, and status ("Professional" for Aisha, "Student" for Omar).
-
-**Common Pitfalls**: Mutating props directly (props are immutable), forgetting to pass required props (TypeScript error), or using wrong types for props.
+**Why It Matters**: TypeScript interfaces for props are the primary documentation and contract mechanism in React production code. When you use a component, the interface tells you exactly what data it needs and what types are acceptable - no need to read the implementation. Teams rely on this contract to safely refactor components: change an interface and TypeScript immediately shows every call site that needs updating. In large codebases with hundreds of components, typed props prevent integration bugs that would otherwise only surface at runtime, saving significant debugging time.
 
 ### Example 4: Children Props Pattern
 
 The `children` prop passes nested JSX content to components. Use `ReactNode` type for flexibility.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A["App (Parent)"] -->|"children prop"| B["Card Component"]
+    B --> C["title: string"]
+    B --> D["children: ReactNode"]
+    D --> E["Text nodes"]
+    D --> F["JSX elements"]
+    D --> G["Mixed content"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#fff
+    style F fill:#CA9161,stroke:#000,color:#fff
+    style G fill:#CA9161,stroke:#000,color:#fff
+```
 
 ```typescript
 import { ReactNode } from 'react';          // => ReactNode: type for all renderable content
@@ -170,10 +208,12 @@ function Card({ title, children }: CardProps) {
   return (
     // => Inline styles use object with camelCase properties
     <div style={{ border: '1px solid #ccc', padding: '16px', margin: '8px' }}>
+    {/* => Container div with inline styles */}
       <h3>{title}</h3>
       {/* => title prop renders as header */}
 
       <div>
+      {/* => Container div for layout grouping */}
         {children}
         {/* => children renders whatever parent passed between tags */}
       </div>
@@ -184,10 +224,13 @@ function Card({ title, children }: CardProps) {
 // => Parent using Card with different children content
 function App() {
   return (
+  // => Returns JSX element tree
     <div>
+    {/* => Container div for layout grouping */}
       <Card title="Zakat Information">
         {/* => Everything between <Card> and </Card> becomes children prop */}
         <p>Annual wealth threshold: 85g gold</p>
+        {/* => Paragraph: "Annual wealth threshold: 85g gold" */}
         <p>Rate: 2.5% of qualifying wealth</p>
         {/* => Two <p> elements passed as children */}
       </Card>
@@ -195,6 +238,7 @@ function App() {
       <Card title="Prayer Times">
         {/* => Different content, same Card styling */}
         <ul>
+        {/* => Unordered list of items */}
           <li>Fajr: 5:30 AM</li>
           <li>Dhuhr: 12:45 PM</li>
         </ul>
@@ -206,13 +250,14 @@ function App() {
 }
 
 export default App;
+
+
+
 ```
 
 **Key Takeaway**: Use `children` prop for component composition. Type it as `ReactNode` to accept any JSX content. This pattern enables flexible, reusable layout components.
 
-**Expected Output**: Two styled cards - one showing Zakat information with two paragraphs, one showing prayer times in a list.
-
-**Common Pitfalls**: Forgetting to render `{children}` in component (content won't appear), or using wrong type for children (use `ReactNode` not `JSX.Element`).
+**Why It Matters**: The children pattern enables the Component Composition strategy that React applications rely on for UI flexibility. Instead of creating separate components for every layout variation, you create layout components that accept any content as children. This pattern powers virtually every UI library: modals, cards, tooltips, sidebars, and panels all use children to remain content-agnostic. Production applications use children extensively to separate structural concerns (layout, styling) from content concerns (data, business logic), making both independently maintainable and testable.
 
 ### Example 5: Default Props with TypeScript
 
@@ -240,8 +285,10 @@ function Button({
   // => primary: white text, secondary: black text
 
   return (
+  // => Returns JSX element tree
     <button
       disabled={disabled}
+      {/* => disabled: prevents interaction when true */}
       style={{ backgroundColor, color, padding: '8px 16px', border: 'none' }}
     >
       {text}
@@ -251,7 +298,9 @@ function Button({
 
 function App() {
   return (
+  // => Returns JSX element tree
     <div>
+    {/* => Container div for layout grouping */}
       <Button text="Submit" />
       {/* => Uses defaults: variant='primary', disabled=false */}
 
@@ -265,19 +314,34 @@ function App() {
 }
 
 export default App;
+
+
+
 ```
 
 **Key Takeaway**: Use optional props (`?`) with default parameter values for flexibility. TypeScript enforces type safety even with defaults. Destructure with `=` to provide fallback values.
 
-**Expected Output**: Three buttons - blue "Submit", orange "Cancel", and grayed-out blue "Disabled" button.
-
-**Common Pitfalls**: Providing defaults in interface instead of component parameter (doesn't work), or using nullable types (`| null`) when optional (`?`) is more appropriate.
+**Why It Matters**: Default props reduce the surface area of required configuration in production components. When a component works sensibly without every prop being specified, it becomes easier to use and less likely to be misused. The TypeScript pattern of optional props with defaults provides the best of both worlds: callers see exactly which props exist (full interface), but only need to provide the ones that differ from sensible defaults. This principle - sensible defaults with override capability - is fundamental to building component libraries and design systems that teams actually adopt.
 
 ## Group 2: State Management Basics
 
 ### Example 6: useState Hook with TypeScript
 
 State stores component data that changes over time. `useState` returns current value and setter function.
+
+```mermaid
+graph LR
+    A["useState(0)\n count = 0"] -->|"setCount(1)"| B["Re-render\n count = 1"]
+    B -->|"setCount(2)"| C["Re-render\n count = 2"]
+    D["User clicks button"] -->|"handleIncrement()"| A
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#029E73,stroke:#000,color:#fff
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#DE8F05,stroke:#000,color:#000
+```
+
+**State update cycle**: useState triggers re-render when setter called.
 
 ```typescript
 import { useState } from 'react';           // => Hook for managing component state
@@ -298,6 +362,7 @@ function Counter() {
   };
 
   return (
+  // => Returns JSX element tree
     <div>
       <p>Count: {count}</p>
       {/* => Displays current state: "Count: 0", then "Count: 1", etc. */}
@@ -310,13 +375,12 @@ function Counter() {
 }
 
 export default Counter;
+
 ```
 
 **Key Takeaway**: Use `useState` to store values that change over time. Calling the setter function triggers re-render with new value. State updates are asynchronous.
 
-**Expected Output**: Page displays "Count: 0" initially. Clicking "Increment" updates display to "Count: 1", "Count: 2", etc.
-
-**Common Pitfalls**: Calling state setter directly in render (infinite loop), expecting state to update immediately (updates are asynchronous), or mutating state directly instead of using setter.
+**Why It Matters**: useState is the core mechanism for reactivity in React applications. Understanding that state updates are asynchronous and trigger re-renders is essential for avoiding the two most common React bugs: reading stale state values immediately after setting them, and creating infinite render loops by setting state unconditionally in the render body. Every interactive feature in a production React application - forms, toggles, counters, modals, loading states - is built on useState or its more powerful counterparts. This hook is the entry point to React's reactive programming model.
 
 ### Example 7: Multiple State Variables
 
@@ -347,27 +411,38 @@ function DonationForm() {
   };
 
   return (
+  // => Returns JSX element tree
     <div>
+    {/* => Container div for layout grouping */}
       <input
         type="number"
+        {/* => type: "number" input type */}
         value={amount}
         {/* => Controlled input: state → UI */}
         onChange={handleAmountChange}
+        {/* => onChange: fires on every change → state update */}
         placeholder="Amount"
+        {/* => placeholder: "Amount" */}
       />
 
       <input
         type="text"
+        {/* => type: "text" input type */}
         value={donorName}
+        {/* => value: controlled by state (state → UI) */}
         onChange={(e) => setDonorName(e.target.value)}
         {/* => Inline handler */}
         placeholder="Donor Name"
+        {/* => placeholder: "Donor Name" */}
       />
 
       <label>
+      {/* => Label element for form input */}
         <input
           type="checkbox"
+          {/* => type: "checkbox" input type */}
           checked={isAnonymous}
+          {/* => checked: boolean state → checkbox UI */}
           onChange={(e) => setIsAnonymous(e.target.checked)}
           {/* => e.target.checked: boolean */}
         />
@@ -375,18 +450,20 @@ function DonationForm() {
       </label>
 
       <button onClick={handleSubmit}>Submit Donation</button>
+      {/* => Button "Submit Donation" - triggers onClick handler */}
     </div>
   );
 }
 
 export default DonationForm;
+
+
+
 ```
 
 **Key Takeaway**: Use multiple `useState` calls for independent state variables. Each state has its own setter. Group related state into single object if they always change together.
 
-**Expected Output**: Form with three inputs (amount, donor name, anonymous checkbox) and submit button. Each input updates its own state independently.
-
-**Common Pitfalls**: Using one giant state object when values are independent (harder to update), or forgetting to convert input values to correct types (inputs return strings).
+**Why It Matters**: Choosing between single-object state and multiple useState calls is a daily decision in production React. Grouping related state (form fields that submit together) in a single object simplifies reset operations and makes the relationship explicit. Separating independent state (a modal flag and an active item) into individual hooks ensures that changing one doesn't trigger unnecessary renders of components using the other. Production performance tuning often involves splitting or grouping state variables to minimize re-render scope. This pattern directly impacts application responsiveness at scale.
 
 ### Example 8: State with Objects
 
@@ -473,13 +550,29 @@ export default UserProfile;
 
 **Key Takeaway**: When updating object state, create new object with spread operator (`...`). Never mutate state directly. Spread existing properties and override specific ones.
 
-**Expected Output**: Profile displaying name, email, age. Buttons update respective fields. Clicking "Change Name" updates only name, preserving email and age.
-
-**Common Pitfalls**: Mutating state directly (`user.name = 'New'` - won't trigger re-render), forgetting spread operator (loses other properties), or using nested object updates (requires nested spreads).
+**Why It Matters**: Immutable object updates are non-negotiable in React. React uses object identity (reference equality) to detect state changes - mutating an object in place does not change its reference, so React sees no change and skips the re-render. This causes silent bugs: the user clicks a button, nothing happens visually, but the underlying data has been corrupted. Understanding the spread operator for immutable updates prevents entire categories of production bugs. This pattern also enables time-travel debugging (Redux DevTools), undo/redo functionality, and React's concurrent rendering optimizations.
 
 ### Example 9: State with Arrays
 
 Arrays in state require creating new arrays for updates. Use array methods that return new arrays.
+
+```mermaid
+graph LR
+    A["todos: [Pray Fajr,\nRead Quran]"] -->|"addTodo(text)"| B["[...todos, newTodo]\nnew array"]
+    A -->|"toggleTodo(id)"| C["todos.map(...)\nnew array"]
+    A -->|"deleteTodo(id)"| D["todos.filter(...)\nnew array"]
+    B --> E["React re-render\nDOM updated"]
+    C --> E
+    D --> E
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#029E73,stroke:#000,color:#fff
+    style C fill:#DE8F05,stroke:#000,color:#000
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#000
+```
+
+**Immutable array updates**: Always return new arrays, never mutate in place.
 
 ```typescript
 import { useState } from 'react';
@@ -495,6 +588,7 @@ function TodoList() {
   // => State holds array of Todo objects
   const [todos, setTodos] = useState<Todo[]>([
     { id: 1, text: 'Pray Fajr', completed: true },
+    // => Initial array item object
     { id: 2, text: 'Read Quran', completed: false }
   ]);
   // => Initial: [{ id: 1, text: 'Pray Fajr', completed: true }, { id: 2, ... }]
@@ -530,15 +624,19 @@ function TodoList() {
   };
 
   return (
+  // => Returns JSX element tree
     <div>
+    {/* => Container div for layout grouping */}
       <ul>
         {/* => Map array to JSX list items */}
         {todos.map(todo => (
+        {/* => Maps array to JSX elements */}
           <li key={todo.id}>
             {/* => key prop REQUIRED: unique, stable identifier for React reconciliation */}
 
             <input
               type="checkbox"
+              {/* => type: "checkbox" input type */}
               checked={todo.completed}
               {/* => Controlled component: checked from state */}
               onChange={() => toggleTodo(todo.id)}
@@ -551,9 +649,11 @@ function TodoList() {
             </span>
 
             <button onClick={() => deleteTodo(todo.id)}>Delete</button>
+            {/* => Button "deleteTodo(todo.id)}>Delete" - triggers onClick handler */}
           </li>
         ))}
       </ul>
+      {/* => Closes unordered list */}
 
       <button onClick={() => addTodo('Study Fiqh')}>Add Todo</button>
       {/* => Clicking adds new todo with text "Study Fiqh" */}
@@ -562,13 +662,14 @@ function TodoList() {
 }
 
 export default TodoList;
+
+
+
 ```
 
 **Key Takeaway**: Use array methods that return new arrays (`map`, `filter`, `concat`, spread). Never mutate arrays directly (`push`, `splice`). Always provide `key` prop for list items.
 
-**Expected Output**: Todo list with two items. Checkboxes toggle completion (strikethrough). "Add Todo" adds new item. "Delete" removes items.
-
-**Common Pitfalls**: Using mutating methods (`push`, `splice` - won't trigger re-render), forgetting `key` prop (React warning), or using array index as key (causes bugs with reordering).
+**Why It Matters**: Array state patterns are ubiquitous in production applications: todo lists, shopping carts, notification queues, search results, data tables. The requirement to use methods that return new arrays (map, filter, spread) rather than mutating methods (push, splice) enforces the immutability constraint React depends on. The `key` prop requirement exists because React uses keys to match virtual DOM nodes with actual DOM nodes during reconciliation - using array index as key causes incorrect component reuse when items reorder, leading to visual bugs and lost component state that are notoriously difficult to debug.
 
 ### Example 10: Functional State Updates
 
@@ -614,7 +715,9 @@ function ZakatCalculator() {
   };
 
   return (
+  // => Returns JSX element tree
     <div>
+    {/* => Container div for layout grouping */}
       <p>Wealth: ${wealth.toFixed(2)}</p>
       {/* => toFixed(2) formats to 2 decimal places */}
 
@@ -625,24 +728,39 @@ function ZakatCalculator() {
       {/* => Applies Zakat rate to current wealth */}
 
       <button onClick={reset}>Reset</button>
+      {/* => Button "Reset" - triggers onClick handler */}
     </div>
   );
 }
 
 export default ZakatCalculator;
+
+
+
 ```
 
 **Key Takeaway**: Use functional updates (`setState(prev => newValue)`) when new state depends on previous state. Prevents stale closure bugs. Use direct values when state is independent.
 
-**Expected Output**: Counter starting at \$0.00. "Add \$1000" increases by \$1000 each click. "Calculate Zakat" applies 2.5% rate. "Reset" returns to \$0.00.
-
-**Common Pitfalls**: Not using functional updates for derived state (stale closures), overusing functional updates when unnecessary (adds complexity), or misunderstanding when state updates happen (asynchronous).
+**Why It Matters**: Functional state updates solve a fundamental concurrency problem in React. When multiple state updates are batched (React 18 automatic batching) or when updates happen inside async callbacks, the closure over `state` may be stale. Using the functional form `setState(prev => prev + 1)` always receives the latest state value from React's queue, not the captured closure value. Production applications with rapid user interactions - clicking multiple times quickly, keyboard shortcuts, real-time data updates - require functional updates to avoid lost updates. This pattern becomes critical when building high-frequency interactive features.
 
 ## Group 3: Side Effects and Lifecycle
 
 ### Example 11: useEffect Basics
 
 `useEffect` runs side effects after render. Use for DOM manipulation, subscriptions, or data fetching.
+
+```mermaid
+graph TD
+    A["Component Renders"] -->|"After paint"| B["useEffect runs"]
+    B -->|"No cleanup"| C["Effect executes\n (DOM updates, fetch, timer)"]
+    C -->|"State changes"| A
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+```
+
+**useEffect lifecycle**: Runs after every render without dependency array.
 
 ```typescript
 import { useState, useEffect } from 'react';
@@ -665,8 +783,11 @@ function DocumentTitleUpdater() {
   // => No dependency array: runs after EVERY render (usually not ideal)
 
   return (
+  // => Returns JSX element tree
     <div>
+    {/* => Container div for layout grouping */}
       <p>Count: {count}</p>
+      {/* => Paragraph with content */}
 
       <button onClick={() => setCount(count + 1)}>Increment</button>
       {/* => Flow: click → setCount → re-render → effect runs */}
@@ -675,13 +796,14 @@ function DocumentTitleUpdater() {
 }
 
 export default DocumentTitleUpdater;
+
+
+
 ```
 
 **Key Takeaway**: `useEffect` runs side effects after component renders to DOM. Without dependency array, runs after every render. Use for DOM manipulation, subscriptions, or external interactions.
 
-**Expected Output**: Counter displays "Count: 0". Browser tab title shows "Count: 0". Clicking button updates both counter and tab title. Console logs effect execution.
-
-**Common Pitfalls**: Running effects every render (performance issue), performing effects in render body (use `useEffect`), or accessing state before render completes (use `useEffect`).
+**Why It Matters**: useEffect is React's mechanism for synchronizing with external systems: APIs, DOM manipulation, subscriptions, timers. Production React applications use useEffect for initial data loading, setting up WebSocket connections, integrating third-party libraries that manipulate the DOM directly, and synchronizing state with browser APIs like localStorage. The key insight - effects run after render and optionally return cleanup functions - prevents the most common React memory leak: effects that set state on unmounted components. Understanding useEffect's lifecycle is prerequisite for building any production feature that interacts with systems outside React.
 
 ### Example 12: useEffect with Dependencies
 
@@ -741,9 +863,7 @@ export default PrayerTimeAlert;
 
 **Key Takeaway**: Dependency array controls effect execution. Empty array `[]` runs once on mount. Array with values runs when those values change. Omitting array runs every render.
 
-**Expected Output**: Initially shows "Time for Fajr prayer!". Console logs mount message once. Clicking prayer buttons updates message and logs dependency change.
-
-**Common Pitfalls**: Missing dependencies (linter warns), including unnecessary dependencies (effect runs too often), or mutating objects/arrays in dependencies (reference doesn't change, effect won't run).
+**Why It Matters**: The dependency array is the most misunderstood aspect of useEffect, responsible for a significant portion of React production bugs. An empty array `[]` makes an effect run once; a populated array makes it run when those values change; omitting the array makes it run on every render. Each case has legitimate uses, but using the wrong case causes either stale closures (outdated values from old renders) or infinite loops (effects that trigger their own re-runs). Production code quality tools like `eslint-plugin-react-hooks` enforce correct dependencies. Understanding why dependencies matter prevents hours of debugging silent data synchronization failures.
 
 ### Example 13: useEffect Cleanup
 
@@ -779,7 +899,9 @@ function TimerComponent() {
   // => Empty array []: runs once on mount, cleanup once on unmount
 
   return (
+  // => Returns JSX element tree
     <div>
+    {/* => Container div for layout grouping */}
       <p>Timer: {seconds} seconds</p>
       {/* => Updates every second when setInterval calls setSeconds */}
     </div>
@@ -792,7 +914,9 @@ function App() {
   // => Controls whether TimerComponent is mounted
 
   return (
+  // => Returns JSX element tree
     <div>
+    {/* => Container div for layout grouping */}
       <button onClick={() => setShowTimer(!showTimer)}>
         {/* => Toggles showTimer between true and false */}
         {/* => !showTimer flips boolean value */}
@@ -810,17 +934,34 @@ function App() {
 }
 
 export default App;
+
+
+
 ```
 
 **Key Takeaway**: Return cleanup function from `useEffect` to prevent memory leaks. Cleanup runs before next effect and when component unmounts. Essential for timers, subscriptions, and event listeners.
 
-**Expected Output**: Timer counts seconds. "Hide Timer" button removes component and cleans up timer. Console logs show setup and cleanup. No timer runs after hiding.
-
-**Common Pitfalls**: Forgetting cleanup for timers/listeners (memory leaks), not returning cleanup function (can't cancel side effects), or accessing stale state in cleanup (use refs or functional updates).
+**Why It Matters**: Cleanup functions are essential for production application stability. Without cleanup, subscribing to events in useEffect creates multiple stacked subscriptions each time the component re-mounts (strict mode, navigation, authentication changes). Each subscription fires independently, causing duplicate event handling, state updates on unmounted components (React warning and potential crash), and memory leaks that slowly degrade performance. In single-page applications where users navigate without full page refreshes, leaked subscriptions accumulate throughout a session. Every WebSocket connection, event listener, interval timer, and third-party subscription set up in useEffect requires a corresponding cleanup.
 
 ### Example 14: Fetching Data with useEffect
 
 Fetch external data in `useEffect` with proper loading and error states.
+
+```mermaid
+graph TD
+    A["Component mounts\nuseEffect fires"] -->|"fetch()"| B["Network request"]
+    B -->|"loading"| C["isLoading=true\nUI: spinner"]
+    B -->|"success"| D["setUser(data)\nisLoading=false\nUI: profile"]
+    B -->|"error"| E["setError(msg)\nisLoading=false\nUI: error"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#CA9161,stroke:#000,color:#000
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#CC78BC,stroke:#000,color:#000
+```
+
+**Data fetching states**: Loading → success or error, with conditional UI rendering.
 
 ```typescript
 import { useState, useEffect } from 'react';
@@ -828,8 +969,11 @@ import { useState, useEffect } from 'react';
 // => Type for fetched user data
 interface User {
   id: number;
+  // => id: numeric value field
   name: string;
+  // => name: text value field
   email: string;
+  // => email: text value field
 }
 
 function UserFetcher() {
@@ -893,24 +1037,29 @@ function UserFetcher() {
 
   // => Success state
   return (
+  // => Returns JSX element tree
     <div>
+    {/* => Container div for layout grouping */}
       <h2>User Profile</h2>
+      {/* => H2: "User Profile" section heading */}
       <p>Name: {user?.name}</p>
       {/* => Optional chaining (?) handles null case */}
       {/* => If user is null, expression returns undefined */}
       <p>Email: {user?.email}</p>
+      {/* => Paragraph with content */}
     </div>
   );
 }
 
 export default UserFetcher;
+
+
+
 ```
 
 **Key Takeaway**: Fetch data in `useEffect` with empty dependency array. Track loading and error states separately. Use conditional rendering for loading/error/success states.
 
-**Expected Output**: Initially shows "Loading user data...". After fetch succeeds, displays user name and email. If fetch fails, shows error message.
-
-**Common Pitfalls**: Not handling loading state (flashes old content), not handling errors (app crashes), fetching every render (infinite loop), or race conditions with multiple requests.
+**Why It Matters**: Data fetching in useEffect is the pattern that drives virtually every production web application. Understanding the loading state, error state, and success state pattern (`isLoading`, `error`, `data`) gives you the foundation for handling asynchronous data throughout your application. The challenge of canceling in-flight requests when components unmount or dependencies change is a real production concern: if a user navigates away during a slow request, the resolved data should not update state on an unmounted component. This example establishes patterns you'll apply to every data-dependent screen.
 
 ### Example 15: useEffect with Async/Await
 
@@ -992,10 +1141,15 @@ function ZakatHistory() {
   // => Early return shows error state
 
   return (
+  // => Returns JSX element tree
     <div>
+    {/* => Container div for layout grouping */}
       <h2>Zakat Calculation History</h2>
+      {/* => H2: "Zakat Calculation History" section heading */}
       <ul>
+      {/* => Unordered list of items */}
         {calculations.map((calc, index) => (
+        {/* => Maps array to JSX elements */}
           <li key={index}>
             {/* => Using index as key (OK here - static list, no reordering) */}
             Wealth: ${calc.wealth} → Zakat: ${calc.zakatAmount}
@@ -1003,18 +1157,20 @@ function ZakatHistory() {
           </li>
         ))}
       </ul>
+      {/* => Closes unordered list */}
     </div>
   );
 }
 
 export default ZakatHistory;
+
+
+
 ```
 
 **Key Takeaway**: Define async function inside `useEffect`, then call it immediately. Can't make effect callback itself async. Use try/catch for error handling with async/await.
 
-**Expected Output**: Initially shows "Loading calculations...". After successful fetch, displays list of 3 Zakat calculations with wealth and Zakat amounts. Shows error message if fetch fails.
-
-**Common Pitfalls**: Making effect callback async (TypeScript error), not handling errors with try/catch, forgetting to call async function after defining it, or not handling cleanup for cancelled requests.
+**Why It Matters**: Async/await in useEffect requires the internal async function pattern because the effect callback itself cannot be async (effects must return a cleanup function or nothing, not a Promise). This pattern is the foundation for data fetching in production: structured error handling with try/catch, request cancellation with AbortController, and sequential operations that depend on previous results. Real applications fetch user data, then user-specific settings, then related records - each awaiting the previous. Understanding this pattern enables you to implement complex data loading flows that are readable and maintainable.
 
 ## Group 4: Event Handling and Forms
 
@@ -1062,8 +1218,11 @@ function DonationButton() {
   };
 
   return (
+  // => Returns JSX element tree
     <div>
+    {/* => Container div for layout grouping */}
       <p>Total Donations: {donations}</p>
+      {/* => Paragraph with content */}
 
       <button onClick={handleDonation}>
         {/* => onClick expects function, not function call */}
@@ -1073,6 +1232,7 @@ function DonationButton() {
       </button>
 
       <button onClick={handleDonationWithEvent}>
+      {/* => Button: triggers click handler */}
         Donate \$1 (with event)
       </button>
 
@@ -1083,6 +1243,7 @@ function DonationButton() {
       </button>
 
       <button onClick={() => handleDonationAmount(10)}>
+      {/* => Button: triggers click handler */}
         Donate \$10
       </button>
     </div>
@@ -1090,13 +1251,14 @@ function DonationButton() {
 }
 
 export default DonationButton;
+
+
+
 ```
 
 **Key Takeaway**: Pass function reference to event handlers, not function call. Use arrow functions for handlers with parameters. React synthetic events wrap browser events with consistent API.
 
-**Expected Output**: Counter starts at 0. Each button increments by its amount (\$1, \$5, \$10). Console logs click events with position and details.
-
-**Common Pitfalls**: Calling function immediately in JSX (`onClick={handleClick()}` - runs on render), forgetting arrow function wrapper for parameters, or misunderstanding event object properties.
+**Why It Matters**: Event handling is where React applications become interactive. Understanding that React uses synthetic events (cross-browser wrappers), that event handlers should be function references not function calls, and that `e.preventDefault()` is needed for form submissions and link clicks prevents the most common event handling mistakes in production. Production applications handle dozens of event types across hundreds of components. The TypeScript event types (`React.MouseEvent`, `React.ChangeEvent`) catch parameter access errors at compile time, preventing runtime exceptions when users interact with your application.
 
 ### Example 17: Form Input Events
 
@@ -1147,11 +1309,15 @@ function RegistrationForm() {
   };
 
   return (
+  // => Returns JSX element tree
     <form>
+    {/* => Form element */}
       <div>
+      {/* => Container div for layout grouping */}
         <label>Name:</label>
         <input
           type="text"
+          {/* => type: "text" input type */}
           value={name}
           {/* => Controlled input: value from state */}
           onChange={handleNameChange}
@@ -1161,49 +1327,61 @@ function RegistrationForm() {
       </div>
 
       <div>
+      {/* => Container div for layout grouping */}
         <label>Email:</label>
         <input
           type="email"
+          {/* => type: "email" input type */}
           value={email}
+          {/* => value: controlled by state (state → UI) */}
           onChange={handleEmailChange}
           {/* => Inline handler (no separate function) */}
         />
       </div>
 
       <div>
+      {/* => Container div for layout grouping */}
         <label>Age:</label>
         <input
           type="number"
+          {/* => type: "number" input type */}
           value={age}
+          {/* => value: controlled by state (state → UI) */}
           onChange={handleAgeChange}
           {/* => Number input still returns string value */}
         />
       </div>
 
       <div>
+      {/* => Container div for layout grouping */}
         <label>Bio:</label>
         <textarea
+        {/* => textarea: multi-line text input */}
           value={bio}
+          {/* => value: controlled by state (state → UI) */}
           onChange={handleBioChange}
           {/* => textarea uses value prop (not children) */}
           rows={4}
+          {/* => rows prop */}
         />
       </div>
 
       <p>Form Data: {JSON.stringify({ name, email, age, bio }, null, 2)}</p>
       {/* => Display current form state */}
     </form>
+    {/* => Closes form element */}
   );
 }
 
 export default RegistrationForm;
+
+
+
 ```
 
 **Key Takeaway**: Use `onChange` for input events. Event type varies by element (HTMLInputElement, HTMLTextAreaElement, etc.). Input values are always strings - convert to numbers when needed.
 
-**Expected Output**: Form with four fields. Typing updates state immediately. Bottom displays current form data as JSON. Number input requires manual conversion to number type.
-
-**Common Pitfalls**: Forgetting value conversion for number inputs (state becomes string), using wrong event type (TypeScript error), or not using controlled components (state not synced).
+**Why It Matters**: Form input event handling is the foundation of every data entry feature in production applications. The `React.ChangeEvent<HTMLInputElement>` type gives full TypeScript safety on event object properties, catching bugs like accessing `e.target.checked` on a text input or `e.target.value` on a checkbox. Production forms handle text inputs, selects, textareas, checkboxes, radio buttons, and file inputs - each with different event object shapes. Understanding how to type each event correctly ensures that form data is processed correctly before being sent to APIs or stored in state.
 
 ### Example 18: Controlled Components
 
@@ -1250,61 +1428,78 @@ function DonationAmountForm() {
   };
 
   return (
+  // => Returns JSX element tree
     <form>
+    {/* => Form element */}
       <div>
+      {/* => Container div for layout grouping */}
         <label>Amount:</label>
         <input
           type="number"
+          {/* => type: "number" input type */}
           value={amount}
           {/* => value controlled by state */}
           {/* => React prevents typing that would violate state */}
           onChange={handleAmountChange}
+          {/* => onChange: fires on every change → state update */}
           min="0"
           {/* => HTML validation attribute (additional check) */}
         />
       </div>
 
       <div>
+      {/* => Container div for layout grouping */}
         <label>Currency:</label>
         <select value={currency} onChange={handleCurrencyChange}>
           {/* => value prop on select (not option) */}
           {/* => Controls which option selected */}
           <option value="USD">USD</option>
+          {/* => Option: value="USD" displays "USD" */}
           <option value="EUR">EUR</option>
+          {/* => Option: value="EUR" displays "EUR" */}
           <option value="IDR">IDR</option>
           {/* => option values match state values */}
         </select>
+        {/* => Closes select dropdown */}
       </div>
 
       <div>
+      {/* => Container div for layout grouping */}
         <label>
+        {/* => Label element for form input */}
           <input
             type="checkbox"
+            {/* => type: "checkbox" input type */}
             checked={recurring}
             {/* => checked prop (not value) for checkboxes */}
             {/* => Controls checkbox state */}
             onChange={handleRecurringChange}
+            {/* => onChange: fires on every change → state update */}
           />
           Recurring Monthly Donation
         </label>
       </div>
 
       <p>
+      {/* => Paragraph with content */}
         You are donating: {amount} {currency}
         {recurring ? ' monthly' : ' one-time'}
+        {/* => Ternary conditional rendering */}
       </p>
     </form>
+    {/* => Closes form element */}
   );
 }
 
 export default DonationAmountForm;
+
+
+
 ```
 
 **Key Takeaway**: Controlled components use `value` (or `checked`) prop from state. State is single source of truth. React controls input value - allows validation before updating state.
 
-**Expected Output**: Form with amount input, currency dropdown, and recurring checkbox. Amount rejects negative values. Display shows formatted donation details based on current state.
-
-**Common Pitfalls**: Forgetting value prop (uncontrolled component), using value with checkbox (use checked), or not handling all input changes (some inputs won't work).
+**Why It Matters**: Controlled components are React's authoritative model for form state management. The controlled pattern (state → UI → event → state) gives you complete control: you can validate before updating, transform values, prevent certain inputs, or synchronize multiple fields. The alternative (uncontrolled components) requires refs and manual DOM queries, losing React's type safety and making values inaccessible without DOM queries. Production applications use controlled components for form validation, field dependencies (show this field if that field has a specific value), and complex form logic. This is the standard pattern for form implementation.
 
 ### Example 19: Form Submission
 
@@ -1379,69 +1574,93 @@ function DonationSubmitForm() {
   // => Conditional render: success message
   if (submitted && submittedData) {
     return (
+    // => Returns JSX element tree
       <div>
+      {/* => Container div for layout grouping */}
         <h2>Thank you for your donation!</h2>
+        {/* => H2: "Thank you for your donation!" section heading */}
         <p>Donor: {submittedData.donorName}</p>
+        {/* => Paragraph with content */}
         <p>Amount: ${submittedData.amount}</p>
+        {/* => Paragraph with content */}
         <p>Message: {submittedData.message}</p>
+        {/* => Paragraph with content */}
         <button onClick={() => setSubmitted(false)}>Make Another Donation</button>
+        {/* => Button "setSubmitted(false)}>Make Another Donation" - triggers onClick handler */}
       </div>
     );
   }
 
   // => Render form (default state)
   return (
+  // => Returns JSX element tree
     <form onSubmit={handleSubmit}>
       {/* => onSubmit on form (not button) - triggered by submit button or Enter key */}
 
       <div>
+      {/* => Container div for layout grouping */}
         <label>Donor Name:</label>
         <input
           type="text"
+          {/* => type: "text" input type */}
           name="donorName"
           {/* => name attribute matches state property (handleChange uses this) */}
           value={formData.donorName}
+          {/* => value: controlled by state (state → UI) */}
           onChange={handleChange}
+          {/* => onChange: fires on every change → state update */}
           required
         />
       </div>
 
       <div>
+      {/* => Container div for layout grouping */}
         <label>Amount ($):</label>
         <input
           type="number"
+          {/* => type: "number" input type */}
           name="amount"
+          {/* => name: "amount" */}
           value={formData.amount}
+          {/* => value: controlled by state (state → UI) */}
           onChange={handleChange}
+          {/* => onChange: fires on every change → state update */}
           required
         />
       </div>
 
       <div>
+      {/* => Container div for layout grouping */}
         <label>Message (optional):</label>
         <textarea
+        {/* => textarea: multi-line text input */}
           name="message"
+          {/* => name: "message" */}
           value={formData.message}
           {/* => textarea uses value prop (not children) */}
           onChange={handleChange}
+          {/* => onChange: fires on every change → state update */}
           rows={3}
+          {/* => rows prop */}
         />
       </div>
 
       <button type="submit">Submit Donation</button>
       {/* => type="submit" triggers form onSubmit event */}
     </form>
+    {/* => Closes form element */}
   );
 }
 
 export default DonationSubmitForm;
+
+
+
 ```
 
 **Key Takeaway**: Handle form submission with `onSubmit` on form element. Always call `e.preventDefault()` to prevent browser refresh. Use `name` attribute matching state properties for generic handlers.
 
-**Expected Output**: Form with three fields. Clicking "Submit Donation" validates inputs and shows thank you message. Form resets after successful submission.
-
-**Common Pitfalls**: Forgetting `e.preventDefault()` (page refreshes), putting `onSubmit` on button instead of form, or not validating inputs before processing.
+**Why It Matters**: Form submission handling demonstrates the complete user input lifecycle in production applications. `e.preventDefault()` is non-negotiable: without it, form submission triggers a page navigation that resets all React state. The submission pattern - validate inputs, show loading state, call API, handle success/error, clear or redirect - is repeated across every create, update, and action form in your application. TypeScript typing of the handler function ensures you're writing handler logic that TypeScript validates at every call site. This pattern is the template for every form feature you'll build.
 
 ### Example 20: Form Validation Basics
 
@@ -1454,6 +1673,7 @@ import { useState } from 'react';
 interface FormErrors {
   email?: string;                            // => Optional: only exists if error
   age?: string;
+  // => age: optional field (undefined if not provided)
 }
 
 function ValidatedRegistrationForm() {
@@ -1557,19 +1777,26 @@ function ValidatedRegistrationForm() {
   };
 
   return (
+  // => Returns JSX element tree
     <form onSubmit={handleSubmit}>
+    {/* => Form with submit handler */}
       <div>
+      {/* => Container div for layout grouping */}
         <label>Email:</label>
         <input
           type="email"
+          {/* => type: "email" input type */}
           value={email}
+          {/* => value: controlled by state (state → UI) */}
           onChange={handleEmailChange}
+          {/* => onChange: fires on every change → state update */}
           onBlur={handleEmailBlur}
           {/* => onBlur fires when input loses focus */}
           style={{ borderColor: errors.email ? 'red' : undefined }}
           {/* => Red border if error exists */}
         />
         {errors.email && (
+        {/* => Short-circuit: renders only if left side is truthy */}
           <p style={{ color: 'red', fontSize: '0.875rem' }}>
             {errors.email}
             {/* => Conditional rendering: only show if error exists */}
@@ -1578,15 +1805,21 @@ function ValidatedRegistrationForm() {
       </div>
 
       <div>
+      {/* => Container div for layout grouping */}
         <label>Age:</label>
         <input
           type="number"
+          {/* => type: "number" input type */}
           value={age}
+          {/* => value: controlled by state (state → UI) */}
           onChange={handleAgeChange}
+          {/* => onChange: fires on every change → state update */}
           onBlur={handleAgeBlur}
+          {/* => onBlur: blur handler → fires when element loses focus */}
           style={{ borderColor: errors.age ? 'red' : undefined }}
         />
         {errors.age && (
+        {/* => Short-circuit: renders only if left side is truthy */}
           <p style={{ color: 'red', fontSize: '0.875rem' }}>
             {errors.age}
           </p>
@@ -1594,18 +1827,21 @@ function ValidatedRegistrationForm() {
       </div>
 
       <button type="submit">Register</button>
+      {/* => Button element */}
     </form>
+    {/* => Closes form element */}
   );
 }
 
 export default ValidatedRegistrationForm;
+
+
+
 ```
 
 **Key Takeaway**: Validate on blur (when input loses focus) and on submit. Store errors in state. Show error messages conditionally. Visual feedback (red border) improves UX.
 
-**Expected Output**: Form with email and age inputs. Typing clears errors. Losing focus validates field and shows errors if invalid. Submit button validates all fields.
-
-**Common Pitfalls**: Validating on every keystroke (annoying UX), not clearing errors when user starts typing again, or forgetting to validate on submit (only validating on blur).
+**Why It Matters**: Form validation is a user experience and data quality requirement in production applications. Validating before submission (not just relying on server-side validation) reduces API round trips, provides immediate user feedback, and prevents obvious data quality issues. The pattern of validation state as a separate object (with field-specific error messages) is more maintainable than error flags scattered across component state. Production forms validate: required fields, minimum/maximum lengths, format patterns (email, phone), numeric ranges, and cross-field dependencies. This foundation scales to complex multi-step forms and real-time validation.
 
 ## Group 5: Component Patterns
 
@@ -1613,12 +1849,34 @@ export default ValidatedRegistrationForm;
 
 Render different UI based on state. Use ternary operators, `&&` operator, or early returns.
 
+```mermaid
+graph TD
+    A{"isAuthenticated?"} -->|"true"| B["Dashboard renders"]
+    A -->|"false"| C["Login page renders"]
+    D{"isLoading?"} -->|"true"| E["Spinner renders"]
+    D -->|"false"| A
+    F{"hasItems?"} -->|"true"| G["List renders"]
+    F -->|"false"| H["Empty state renders"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#029E73,stroke:#000,color:#fff
+    style C fill:#CC78BC,stroke:#000,color:#000
+    style D fill:#DE8F05,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#000
+    style F fill:#0173B2,stroke:#000,color:#fff
+    style G fill:#029E73,stroke:#000,color:#fff
+    style H fill:#CC78BC,stroke:#000,color:#000
+```
+
+**Conditional rendering tree**: Different UI states based on boolean conditions.
+
 ```typescript
 import { useState } from 'react';
 
 // => Type for user authentication status
 interface User {
   name: string;
+  // => name: text value field
   role: 'admin' | 'user';
 }
 
@@ -1642,9 +1900,13 @@ function ConditionalRenderingDemo() {
   // => Return different JSX based on condition
   if (!isLoggedIn) {
     return (
+    // => Returns JSX element tree
       <div>
+      {/* => Container div for layout grouping */}
         <h2>Please Log In</h2>
+        {/* => H2: "Please Log In" section heading */}
         <button onClick={handleLogin}>Log In</button>
+        {/* => Button "Log In" - triggers onClick handler */}
       </div>
     );
     // => Early return prevents rest of component from rendering
@@ -1653,13 +1915,17 @@ function ConditionalRenderingDemo() {
   // => Pattern 2: Ternary operator for inline conditions
   // => condition ? trueValue : falseValue
   return (
+  // => Returns JSX element tree
     <div>
+    {/* => Container div for layout grouping */}
       <h2>Welcome, {user?.name}!</h2>
 
       {/* => Pattern 3: Logical AND (&&) for conditional rendering */}
       {/* => condition && elementToRender */}
       {user?.role === 'admin' && (
+      {/* => Short-circuit: renders only if left side is truthy */}
         <div style={{ backgroundColor: '#029E73', padding: '8px', color: '#fff' }}>
+        {/* => Container div with inline styles */}
           Admin Controls
           {/* => Only renders if user.role is 'admin' */}
           {/* => If false, nothing renders (not even null) */}
@@ -1668,12 +1934,14 @@ function ConditionalRenderingDemo() {
 
       {/* => Ternary for either/or rendering */}
       <p>
+      {/* => Paragraph with content */}
         Status: {user?.role === 'admin' ? 'Administrator' : 'Regular User'}
         {/* => Shows one of two strings */}
       </p>
 
       {/* => Multiple conditions with nested ternaries */}
       <p>
+      {/* => Paragraph with content */}
         Access Level: {
           user?.role === 'admin'
             ? 'Full Access'
@@ -1686,22 +1954,38 @@ function ConditionalRenderingDemo() {
       </p>
 
       <button onClick={handleLogout}>Log Out</button>
+      {/* => Button "Log Out" - triggers onClick handler */}
     </div>
   );
 }
 
 export default ConditionalRenderingDemo;
+
+
+
 ```
 
 **Key Takeaway**: Use early returns for entire component branches. Use `&&` for conditional elements. Use ternary for either/or rendering. Extract complex conditions to variables or functions.
 
-**Expected Output**: Initially shows "Please Log In" with login button. After login, shows personalized welcome, admin controls (if admin), access level, and logout button.
-
-**Common Pitfalls**: Using `&&` with falsy numbers (0 renders as "0"), nesting too many ternaries (hard to read), or using `if` statements in JSX (doesn't work - use ternary or `&&`).
+**Why It Matters**: Conditional rendering is how React applications handle the full range of application states: loading, error, empty, authenticated, unauthenticated, permissioned. Every production screen needs to handle these states, and React's JSX conditional patterns (ternary, &&, if/else, switch) provide readable ways to express complex rendering logic. The key production insight is that not showing something (returning null, short-circuit evaluation) is as important as showing something - inappropriate display of loading spinners, error messages, or content for wrong permission levels creates broken user experiences. This pattern is used in every non-trivial component.
 
 ### Example 22: Lists and Keys
 
 Render arrays of data with `map()`. Provide unique `key` prop for performance.
+
+```mermaid
+graph TD
+    A["prayers array\n[5 items]"] -->|".map()"| B["JSX elements\n[li key=fajr]\n[li key=dhuhr]\n..."]
+    B -->|"React reconciliation"| C["DOM list\n5 rendered items"]
+    D["togglePrayer(id)"] -->|"setState"| A
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+```
+
+**List rendering**: Array maps to JSX elements via key-tracked reconciliation.
 
 ```typescript
 import { useState } from 'react';
@@ -1709,17 +1993,25 @@ import { useState } from 'react';
 // => Type for prayer time
 interface PrayerTime {
   id: string;
+  // => id: text value field
   name: string;
+  // => name: text value field
   time: string;
+  // => time: text value field
   completed: boolean;
+  // => completed: true/false flag field
 }
 
 function PrayerTimesList() {
   const [prayers, setPrayers] = useState<PrayerTime[]>([
     { id: 'fajr', name: 'Fajr', time: '5:30 AM', completed: true },
+    // => Initial array item object
     { id: 'dhuhr', name: 'Dhuhr', time: '12:45 PM', completed: false },
+    // => Initial array item object
     { id: 'asr', name: 'Asr', time: '4:15 PM', completed: false },
+    // => Initial array item object
     { id: 'maghrib', name: 'Maghrib', time: '6:30 PM', completed: false },
+    // => Initial array item object
     { id: 'isha', name: 'Isha', time: '8:00 PM', completed: false }
   ]);
   // => Array of 5 prayer objects
@@ -1742,12 +2034,16 @@ function PrayerTimesList() {
   const incompletePrayers = prayers.filter(p => !p.completed);
 
   return (
+  // => Returns JSX element tree
     <div>
+    {/* => Container div for layout grouping */}
       <h2>Today's Prayers</h2>
 
       {/* => Render all prayers */}
       <ul>
+      {/* => Unordered list of items */}
         {prayers.map(prayer => (
+        {/* => Maps array to JSX elements */}
           <li key={prayer.id}>
             {/* => key prop REQUIRED for list items */}
             {/* => Must be unique and stable (don't use index if order changes) */}
@@ -1755,8 +2051,11 @@ function PrayerTimesList() {
 
             <input
               type="checkbox"
+              {/* => type: "checkbox" input type */}
               checked={prayer.completed}
+              {/* => checked: boolean state → checkbox UI */}
               onChange={() => togglePrayer(prayer.id)}
+              {/* => onChange: fires on every change → state update */}
             />
 
             <span style={{
@@ -1771,40 +2070,66 @@ function PrayerTimesList() {
 
       {/* => Render filtered subset */}
       <h3>Completed ({completedPrayers.length})</h3>
+      {/* => H3: "Completed ({completedPrayers.length})" section heading */}
       {completedPrayers.length === 0 ? (
+      {/* => Ternary conditional rendering */}
         <p>No prayers completed yet</p>
         {/* => Fallback when list empty */}
       ) : (
+      {/* => False branch: rendered when condition is false */}
         <ul>
+        {/* => Unordered list of items */}
           {completedPrayers.map(prayer => (
+          {/* => Maps array to JSX elements */}
             <li key={prayer.id}>{prayer.name}</li>
             {/* => Same key prop required even in filtered list */}
           ))}
         </ul>
+        {/* => Closes unordered list */}
       )}
 
       <h3>Remaining ({incompletePrayers.length})</h3>
+      {/* => H3: "Remaining ({incompletePrayers.length})" section heading */}
       <ul>
+      {/* => Unordered list of items */}
         {incompletePrayers.map(prayer => (
+        {/* => Maps array to JSX elements */}
           <li key={prayer.id}>{prayer.name} - {prayer.time}</li>
+          {/* => List item with unique key for React reconciliation */}
         ))}
       </ul>
+      {/* => Closes unordered list */}
     </div>
   );
 }
 
 export default PrayerTimesList;
+
+
+
 ```
 
 **Key Takeaway**: Use `map()` to transform arrays into JSX. Always provide unique, stable `key` prop. Keys help React identify which items changed. Avoid using array index as key when list can reorder.
 
-**Expected Output**: List of 5 prayers with checkboxes. Initially Fajr is checked. Checking prayer adds strikethrough. Completed and Remaining sections update automatically.
-
-**Common Pitfalls**: Missing key prop (React warning), using index as key when order changes (causes bugs), or using non-unique keys (unpredictable behavior).
+**Why It Matters**: List rendering with keys is the foundation of dynamic data display throughout production applications - data tables, search results, activity feeds, notification lists, message threads. The key prop is not optional: React uses it to efficiently reconcile DOM changes when the list updates, determining which items were added, moved, or removed without re-rendering unchanged items. Using non-unique or unstable keys (array index when items can reorder) causes subtle bugs: incorrect component state reuse, animation artifacts, form field mixing. Stable, unique identifiers from your data (database IDs) are always the correct key choice.
 
 ### Example 23: Lifting State Up
 
 Share state between components by lifting it to common parent.
+
+```mermaid
+graph TD
+    Parent["TemperatureConverter\n state: celsius, fahrenheit"] -->|"celsius prop + handler"| C["CelsiusInput"]
+    Parent -->|"fahrenheit prop + handler"| F["FahrenheitInput"]
+    C -->|"onChange → handleCelsiusChange"| Parent
+    F -->|"onChange → handleFahrenheitChange"| Parent
+
+    style Parent fill:#0173B2,stroke:#000,color:#fff
+    style C fill:#DE8F05,stroke:#000,color:#000
+    style F fill:#029E73,stroke:#000,color:#fff
+```
+
+**Lifting state up**: Parent owns state, siblings share via parent props/callbacks.
 
 ```typescript
 import { useState } from 'react';
@@ -1826,14 +2151,19 @@ function TemperatureInput({ scale, temperature, onTemperatureChange }: Temperatu
   };
 
   return (
+  // => Returns JSX element tree
     <div>
+    {/* => Container div for layout grouping */}
       <label>
+      {/* => Label element for form input */}
         Temperature in {scale === 'celsius' ? 'Celsius' : 'Fahrenheit'}:
         <input
           type="number"
+          {/* => type: "number" input type */}
           value={temperature}
           {/* => Controlled: value from parent props */}
           onChange={handleChange}
+          {/* => onChange: fires on every change → state update */}
         />
       </label>
     </div>
@@ -1875,24 +2205,32 @@ function TemperatureConverter() {
   // => If stored as °C, convert to °F. Example: °C=0 → °F=32
 
   return (
+  // => Returns JSX element tree
     <div>
+    {/* => Container div for layout grouping */}
       <h2>Temperature Converter</h2>
+      {/* => H2: "Temperature Converter" section heading */}
 
       <TemperatureInput
+      {/* => Renders TemperatureInput component */}
         scale="celsius"
         temperature={celsius}
+        {/* => temperature prop */}
         onTemperatureChange={handleCelsiusChange}
         {/* => Celsius input: displays computed value, calls handler */}
       />
 
       <TemperatureInput
+      {/* => Renders TemperatureInput component */}
         scale="fahrenheit"
         temperature={fahrenheit}
+        {/* => temperature prop */}
         onTemperatureChange={handleFahrenheitChange}
         {/* => Fahrenheit input: stays in sync via parent state */}
       />
 
       <p>
+      {/* => Paragraph with content */}
         Water boils at 100°C (212°F).
         {temperature >= (scale === 'celsius' ? 100 : 212)
           // => Check against boiling point: 100°C or 212°F
@@ -1904,13 +2242,14 @@ function TemperatureConverter() {
 }
 
 export default TemperatureConverter;
+
+
+
 ```
 
 **Key Takeaway**: Lift state to closest common parent when multiple components need same data. Parent owns state and passes handlers down. Children are controlled by parent. Single source of truth prevents inconsistency.
 
-**Expected Output**: Two temperature inputs (Celsius and Fahrenheit). Editing either updates both automatically via conversion. Message indicates if water boils at current temperature.
-
-**Common Pitfalls**: Duplicating state in children (gets out of sync), forgetting to pass handlers (children can't update), or lifting state too high (unnecessary prop drilling).
+**Why It Matters**: Lifting state up is the fundamental React pattern for sharing state between sibling components without a state management library. When two components need to read and modify the same value, that value must live in their closest common ancestor, which passes it down via props and callbacks. Production applications lift state to coordinate: search input with results display, filter controls with data tables, form fields with validation summaries, step indicators with multi-step forms. Understanding when and how to lift state is a prerequisite for building complex UI without reaching for Context or external state management prematurely.
 
 ### Example 24: Component Composition
 
@@ -1928,6 +2267,7 @@ interface PanelProps {
 
 function Panel({ title, children, color = '#0173B2' }: PanelProps) {
   return (
+  // => Returns JSX element tree
     <div style={{
       border: `2px solid ${color}`,          // => Colored border using template literal
       borderRadius: '8px',
@@ -1944,16 +2284,24 @@ function Panel({ title, children, color = '#0173B2' }: PanelProps) {
 // => Content component: prayer information display
 interface PrayerInfoProps {
   name: string;
+  // => name: text value field
   time: string;
+  // => time: text value field
   description: string;
+  // => description: text value field
 }
 
 function PrayerInfo({ name, time, description }: PrayerInfoProps) {
   return (
+  // => Returns JSX element tree
     <div>
+    {/* => Container div for layout grouping */}
       <h4>{name}</h4>
+      {/* => H4: "{name}" section heading */}
       <p><strong>Time:</strong> {time}</p>
+      {/* => Paragraph with content */}
       <p>{description}</p>
+      {/* => Paragraph with content */}
     </div>
   );
 }
@@ -1961,17 +2309,24 @@ function PrayerInfo({ name, time, description }: PrayerInfoProps) {
 // => Content component: Zakat calculation display
 interface ZakatInfoProps {
   wealth: number;
+  // => wealth: numeric value field
   rate: number;
+  // => rate: numeric value field
 }
 
 function ZakatInfo({ wealth, rate }: ZakatInfoProps) {
   const zakatAmount = wealth * (rate / 100); // => Calculate 2.5% of wealth
 
   return (
+  // => Returns JSX element tree
     <div>
+    {/* => Container div for layout grouping */}
       <p><strong>Wealth:</strong> ${wealth.toFixed(2)}</p>
+      {/* => Paragraph with content */}
       <p><strong>Zakat Rate:</strong> {rate}%</p>
+      {/* => Paragraph with content */}
       <p><strong>Zakat Amount:</strong> ${zakatAmount.toFixed(2)}</p>
+      {/* => Paragraph with content */}
     </div>
   );
 }
@@ -1979,13 +2334,18 @@ function ZakatInfo({ wealth, rate }: ZakatInfoProps) {
 // => Main app: demonstrates component composition
 function IslamicDashboard() {
   return (
+  // => Returns JSX element tree
     <div>
+    {/* => Container div for layout grouping */}
       <h1>Islamic Dashboard</h1>
 
       {/* => Composition: Panel wrapping PrayerInfo */}
       <Panel title="Next Prayer: Dhuhr" color="#0173B2">
+      {/* => Opens Panel component */}
         <PrayerInfo
+        {/* => Renders PrayerInfo component */}
           name="Dhuhr (Noon Prayer)"
+          {/* => name: "Dhuhr (Noon Prayer)" */}
           time="12:45 PM"
           description="The second daily prayer, performed after the sun passes its zenith."
         />
@@ -1993,30 +2353,44 @@ function IslamicDashboard() {
 
       {/* => Composition: Panel wrapping ZakatInfo */}
       <Panel title="Zakat Calculation" color="#DE8F05">
+      {/* => Opens Panel component */}
         <ZakatInfo wealth={50000} rate={2.5} />
+        {/* => Renders ZakatInfo component */}
       </Panel>
 
       {/* => Composition: Panel with custom JSX content */}
       <Panel title="Daily Reminder" color="#029E73">
+      {/* => Opens Panel component */}
         <p>Remember to recite morning and evening adhkar.</p>
+        {/* => Paragraph: "Remember to recite morning and evening a..." */}
         <ul>
+        {/* => Unordered list of items */}
           <li>Ayat al-Kursi after Fajr</li>
           <li>Last two verses of Surah Al-Baqarah before sleep</li>
         </ul>
+        {/* => Closes unordered list */}
       </Panel>
 
       {/* => Nested composition: Panel containing other Panels */}
       <Panel title="Weekly Overview" color="#CC78BC">
+      {/* => Opens Panel component */}
         <p>Track your spiritual progress:</p>
+        {/* => Paragraph: "Track your spiritual progress:" */}
 
         <Panel title="Quran Reading" color="#0173B2">
+        {/* => Opens Panel component */}
           <p>Pages read this week: 35</p>
+          {/* => Paragraph: "Pages read this week: 35" */}
           <p>Goal: 50 pages</p>
+          {/* => Paragraph: "Goal: 50 pages" */}
         </Panel>
 
         <Panel title="Charity Given" color="#DE8F05">
+        {/* => Opens Panel component */}
           <p>Total donations: \$150</p>
+          {/* => Paragraph: "Total donations: \$150" */}
           <p>Monthly goal: \$200</p>
+          {/* => Paragraph: "Monthly goal: \$200" */}
         </Panel>
       </Panel>
     </div>
@@ -2024,17 +2398,37 @@ function IslamicDashboard() {
 }
 
 export default IslamicDashboard;
+
+
+
 ```
 
 **Key Takeaway**: Compose complex UIs from smaller, focused components. Use `children` prop for flexible composition. Nest components arbitrarily. Each component has single responsibility.
 
-**Expected Output**: Dashboard with 4 panels. First shows prayer info, second shows Zakat calculation, third shows reminder, fourth contains nested panels for weekly overview.
-
-**Common Pitfalls**: Creating monolithic components (hard to maintain), prop drilling through many levels (consider Context), or over-abstracting (premature optimization).
+**Why It Matters**: Component composition through explicit composition (passing components as props or using children) is the primary scalability pattern in large React codebases. It avoids prop drilling while maintaining explicit data flow, unlike Context which makes dependencies implicit. Production component libraries (MUI, Ant Design, Shadcn) are built entirely around composition: Dialog accepts a Footer component, Table accepts Column definitions, Form accepts Field components. This pattern separates concerns cleanly: the layout component handles structure and styling, the content components handle data and behavior. Understanding composition prevents premature abstractions that become maintenance burdens.
 
 ### Example 25: Simple Zakat Calculator (Financial Domain Example)
 
 Combine concepts from all previous examples into practical application.
+
+```mermaid
+graph TD
+    A["WealthCategories\n state: categories[]"] -->|"updateCategory(id, amount)"| A
+    A -->|"reduce"| B["totalWealth"]
+    B -->|"- debts"| C["zakatableWealth"]
+    C -->|">= nisab?"| D{"isZakatDue"}
+    D -->|"Yes"| E["zakatAmount = 2.5%"]
+    D -->|"No"| F["zakatAmount = 0"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CA9161,stroke:#000,color:#000
+    style E fill:#029E73,stroke:#000,color:#fff
+    style F fill:#CC78BC,stroke:#000,color:#000
+```
+
+**Data flow**: State → derived values → conditional output.
 
 ```typescript
 import { useState } from 'react';
@@ -2042,18 +2436,25 @@ import { useState } from 'react';
 // => Type for wealth categories
 interface WealthCategory {
   id: string;
+  // => id: text value field
   name: string;
+  // => name: text value field
   amount: number;
+  // => amount: numeric value field
 }
 
 function ZakatCalculator() {
   // => State: Array of wealth categories
   const [categories, setCategories] = useState<WealthCategory[]>([
     { id: '1', name: 'Cash & Bank Accounts', amount: 0 },
+    // => Initial array item object
     { id: '2', name: 'Gold & Silver', amount: 0 },
+    // => Initial array item object
     { id: '3', name: 'Business Inventory', amount: 0 },
+    // => Initial array item object
     { id: '4', name: 'Investment Accounts', amount: 0 }
   ]);
+  // => End of initial state array
 
   const [debts, setDebts] = useState<number>(0);
   // => Debts to deduct from total wealth
@@ -2083,23 +2484,33 @@ function ZakatCalculator() {
   // => Zakat: 2.5% of zakatable wealth if due
 
   return (
+  // => Returns JSX element tree
     <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
+    {/* => Container div with inline styles */}
       <h1>Zakat Calculator</h1>
+      {/* => H1: "Zakat Calculator" section heading */}
       <p>Calculate your annual Zakat obligation (2.5% of zakatable wealth)</p>
 
       {/* => Render wealth categories */}
       <div>
+      {/* => Container div for layout grouping */}
         <h2>Your Wealth Categories</h2>
+        {/* => H2: "Your Wealth Categories" section heading */}
         {categories.map(category => (
+        {/* => Maps array to JSX elements */}
           <div key={category.id} style={{ marginBottom: '12px' }}>
             <label style={{ display: 'block', marginBottom: '4px' }}>
               {category.name}:
             </label>
             <input
               type="number"
+              {/* => type: "number" input type */}
               value={category.amount}
+              {/* => value: controlled by state (state → UI) */}
               onChange={(e) => updateCategory(category.id, Number(e.target.value))}
+              {/* => onChange: fires on every change → state update */}
               min="0"
+              {/* => min: 0 constraint on input */}
               style={{ width: '100%', padding: '8px' }}
             />
           </div>
@@ -2108,15 +2519,21 @@ function ZakatCalculator() {
 
       {/* => Debts input */}
       <div style={{ marginTop: '24px' }}>
+      {/* => Container div with inline styles */}
         <h2>Debts & Liabilities</h2>
+        {/* => H2: "Debts & Liabilities" section heading */}
         <label style={{ display: 'block', marginBottom: '4px' }}>
           Total Debts:
         </label>
         <input
           type="number"
+          {/* => type: "number" input type */}
           value={debts}
+          {/* => value: controlled by state (state → UI) */}
           onChange={(e) => setDebts(Number(e.target.value))}
+          {/* => onChange: fires on every change → state update */}
           min="0"
+          {/* => min: 0 constraint on input */}
           style={{ width: '100%', padding: '8px' }}
         />
       </div>
@@ -2129,12 +2546,15 @@ function ZakatCalculator() {
         borderRadius: '8px'
       }}>
         <h2>Calculation Summary</h2>
+        {/* => H2: "Calculation Summary" section heading */}
 
         <div style={{ marginBottom: '8px' }}>
+        {/* => Container div with inline styles */}
           <strong>Total Wealth:</strong> ${totalWealth.toFixed(2)}
         </div>
 
         <div style={{ marginBottom: '8px' }}>
+        {/* => Container div with inline styles */}
           <strong>Debts:</strong> -${debts.toFixed(2)}
         </div>
 
@@ -2147,11 +2567,13 @@ function ZakatCalculator() {
         </div>
 
         <div style={{ marginBottom: '8px' }}>
+        {/* => Container div with inline styles */}
           <strong>Nisab Threshold:</strong> ${nisabThreshold.toFixed(2)}
         </div>
 
         {/* => Conditional rendering based on Zakat due status */}
         {isZakatDue ? (
+        {/* => Ternary conditional rendering */}
           <div style={{
             marginTop: '16px',
             padding: '12px',
@@ -2168,6 +2590,7 @@ function ZakatCalculator() {
             </p>
           </div>
         ) : (
+        {/* => False branch: rendered when condition is false */}
           <div style={{
             marginTop: '16px',
             padding: '12px',
@@ -2187,20 +2610,23 @@ function ZakatCalculator() {
 
       {/* => Educational note */}
       <div style={{ marginTop: '16px', fontSize: '0.875rem', color: '#666' }}>
+      {/* => Container div with inline styles */}
         <p><strong>Note:</strong> This calculator provides an estimate. Consult with a qualified Islamic scholar for specific questions about your Zakat obligation.</p>
+        {/* => Paragraph with content */}
       </div>
     </div>
   );
 }
 
 export default ZakatCalculator;
+
+
+
 ```
 
 **Key Takeaway**: Combine state management, event handling, forms, lists, conditional rendering, and derived state to build complete feature. Separate concerns with focused functions. Use descriptive variable names for clarity.
 
-**Expected Output**: Full Zakat calculator with 4 wealth category inputs, debt input, and live calculation summary. Shows total wealth, debts, zakatable wealth, and Zakat amount (or message if below nisab).
-
-**Common Pitfalls**: Computing derived state incorrectly (recalculate dependencies), storing derived state (duplicates data), or mixing display logic with calculation logic (separate concerns).
+**Why It Matters**: Real-world applications combine multiple React patterns to implement domain logic. Zakat calculation demonstrates how component hierarchy mirrors domain hierarchy: a calculator screen contains input forms, computation logic, and formatted results. TypeScript interfaces model domain objects (NisabValues, ZakatResult) that flow through components with full type safety, catching bugs like unit mismatches or missing edge cases at compile time. Production financial applications require precise computation, clear UI states (below/above threshold), and accessible formatting of monetary values. This example shows how React primitives combine into a complete feature.
 
 ## Next Steps
 

@@ -74,6 +74,24 @@ end
 
 Mount is where LiveView state begins. This example shows how to initialize socket assigns during mount.
 
+**State initialization flow**:
+
+```mermaid
+%% Mount initialization flow
+graph TD
+    A[mount/3 Called] --> B[assign/3 :count 0]
+    B --> C[assign/3 :message]
+    C --> D[Return socket]
+    D --> E[render/1 Called]
+    E --> F[Display @count and @message]
+
+    style A fill:#0173B2,color:#fff
+    style B fill:#DE8F05,color:#fff
+    style C fill:#029E73,color:#fff
+    style D fill:#CC78BC,color:#fff
+    style F fill:#0173B2,color:#fff
+```
+
 **Code**:
 
 ```elixir
@@ -450,11 +468,31 @@ end
 
 **Key Takeaway**: Lifecycle flows: mount (2x: static + connected) → render (initial) → event → render (update) → event → render... Mount happens twice, render happens on every state change.
 
-**Why It Matters**: Understanding the lifecycle prevents common mistakes like assuming mount runs only once or wondering why render is called multiple times. The mount-render-event-render pattern is fundamental - knowing when each callback runs helps you optimize performance, manage side effects, and debug state issues. Every LiveView feature builds on this cycle.
+**Why It Matters**: Understanding the lifecycle prevents common mistakes like assuming mount runs only once or wondering why render is called multiple times. The mount-render-event-render pattern is fundamental - knowing when each callback runs helps you optimize performance, manage side effects, and debug state issues. Lifecycle knowledge also guides where to place initialization logic, subscriptions, and cleanup.. Every LiveView feature builds on this cycle.
 
 ### Example 7: Initial vs Dynamic State
 
 Distinguishing between initial state (set in mount) and dynamic state (updated by events) clarifies state management.
+
+**State transition diagram**:
+
+```mermaid
+%% Socket assigns state transitions
+stateDiagram-v2
+    [*] --> Initialized: mount/3 assigns defaults
+    Initialized --> Updated: handle_event changes assign
+    Updated --> Updated: further events
+    Updated --> [*]: LiveView terminated
+
+    note right of Initialized
+        count = 0
+        status = "ready"
+    end note
+    note right of Updated
+        count = N
+        status = "active"
+    end note
+```
 
 **Code**:
 
@@ -710,6 +748,21 @@ end
 
 LiveView mounts twice - once for static HTML, once for WebSocket connection. Use `connected?/1` to distinguish between them.
 
+**Two-phase mount sequence**:
+
+```mermaid
+%% Connected vs disconnected mount sequence
+sequenceDiagram
+    participant Browser
+    participant LiveView
+    Browser->>LiveView: HTTP GET (static render)
+    LiveView->>Browser: HTML (connected? = false)
+    Browser->>LiveView: WebSocket connect
+    LiveView->>Browser: Live data (connected? = true)
+    note over LiveView: mount/3 runs TWICE
+    note over Browser: Second render has live data
+```
+
 **Code**:
 
 ```elixir
@@ -789,6 +842,23 @@ end
 ### Example 11: HEEx Template Syntax Deep Dive
 
 HEEx provides powerful template syntax for dynamic HTML generation. This example demonstrates core syntax patterns.
+
+**HEEx compilation pipeline**:
+
+```mermaid
+%% HEEx template rendering pipeline
+graph LR
+    A[HEEx Template] --> B[Compile Time Parse]
+    B --> C[Static Parts Cached]
+    C --> D[Runtime: Dynamic Expressions Evaluated]
+    D --> E[HTML Output with Assigns]
+
+    style A fill:#0173B2,color:#fff
+    style B fill:#DE8F05,color:#fff
+    style C fill:#029E73,color:#fff
+    style D fill:#CC78BC,color:#fff
+    style E fill:#CA9161,color:#fff
+```
 
 **Code**:
 
@@ -1110,11 +1180,29 @@ end
 
 **Key Takeaway**: Use `if` for positive conditions, `unless` for negative conditions. `unless` is more readable than `if !condition`.
 
-**Why It Matters**: Conditional rendering is fundamental to dynamic UIs - showing login buttons, displaying empty states, toggling sections. Using if vs unless appropriately makes intent clear. The pattern of render-based-on-state is how LiveView builds reactive interfaces without JavaScript. Master conditionals and you can build any dynamic UI pattern.
+**Why It Matters**: Conditional rendering is fundamental to dynamic UIs - showing login buttons, displaying empty states, toggling sections. Using if vs unless appropriately makes intent clear. The pattern of render-based-on-state is how LiveView builds reactive interfaces without JavaScript. Master conditionals and you can express any UI logic declaratively in templates without custom JavaScript.u can build any dynamic UI pattern.
 
 ### Example 14: Looping with for Comprehension
 
 Loops transform collections into lists of elements. This example shows for comprehension patterns in templates.
+
+**List rendering flow**:
+
+```mermaid
+%% List rendering with for comprehension
+graph TD
+    A[@items List] --> B[for item <- @items]
+    B --> C[Render each item template]
+    C --> D[Key by id field]
+    D --> E[Keyed DOM nodes]
+    E --> F[Efficient diff on updates]
+
+    style A fill:#0173B2,color:#fff
+    style B fill:#DE8F05,color:#fff
+    style C fill:#029E73,color:#fff
+    style E fill:#CC78BC,color:#fff
+    style F fill:#CA9161,color:#fff
+```
 
 **Code**:
 
@@ -1326,7 +1414,7 @@ end
 
 **Key Takeaway**: Function components are private functions returning `~H` templates. Call with `<.component_name attr={value} />` syntax.
 
-**Why It Matters**: Function components reduce template duplication and make complex UIs manageable. Extract repeated patterns into components and reuse across the template. This is LiveView's simplest abstraction - just functions returning templates. Understanding function components unlocks component-based architecture without heavyweight abstractions. As templates grow, components keep them organized and maintainable.
+**Why It Matters**: Function components reduce template duplication and make complex UIs manageable. Extract repeated patterns into components and reuse across the template. This is LiveView's simplest abstraction - just functions returning templates. Understanding function components unlocks component-based architecture for building scalable, maintainable UIs from composable building blocks.ture without heavyweight abstractions. As templates grow, components keep them organized and maintainable.
 
 ### Example 16: Slots Basics
 
@@ -1466,7 +1554,7 @@ end
 
 **Key Takeaway**: Use `render_slot(@inner_block)` for default slot, named slots with `<:slot_name>` syntax. Slots enable flexible component APIs.
 
-**Why It Matters**: Slots make components flexible by letting callers provide custom content. Instead of rigid components that only accept data, slots accept entire content blocks. This enables building reusable containers like cards, modals, and layouts that wrap arbitrary content. Understanding slots unlocks component composition patterns essential for complex UIs.
+**Why It Matters**: Slots make components flexible by letting callers provide custom content. Instead of rigid components that only accept data, slots accept entire content blocks. This enables building reusable containers like cards, modals, and layouts that wrap arbitrary content. Understanding slots unlocks component composition patterns used in professional Phoenix component libraries.t composition patterns essential for complex UIs.
 
 ### Example 17: LiveComponent Basics
 
@@ -1710,7 +1798,7 @@ end
 
 **Key Takeaway**: Use `attr/3` to declare component attributes with types, defaults, and validation. Provides type safety and documentation.
 
-**Why It Matters**: Attribute declarations make components self-documenting and catch errors early. Type validation prevents passing wrong data types. Default values make components flexible. This is LiveView's component contract system - explicit declarations that make component APIs clear and prevent misuse. Well-declared attributes make components easier to use and maintain.
+**Why It Matters**: Attribute declarations make components self-documenting and catch errors early. Type validation prevents passing wrong data types. Default values make components flexible. This is LiveView's component contract system - explicit declarations that make component APIs clear and prevent misuse. Well-declared components are easier to test and maintain as applications grow.lared attributes make components easier to use and maintain.
 
 ### Example 19: CSS Classes and Dynamic Styling
 
@@ -2105,11 +2193,32 @@ end
 
 **Key Takeaway**: `phx-click="event_name"` binds clicks to `handle_event/3`. Works on any HTML element, not just buttons.
 
-**Why It Matters**: Click events are how users trigger actions - incrementing counters, submitting forms, toggling panels. The phx-click binding is declarative - you specify what happens in HTML and handle logic in Elixir. No JavaScript event listeners needed. Understanding click events unlocks all interactive features in LiveView.
+**Why It Matters**: Click events are how users trigger actions - incrementing counters, submitting forms, toggling panels. The phx-click binding is declarative - you specify what happens in HTML and handle logic in Elixir. No JavaScript event listeners needed. Understanding click events unlocks all interactive features in LiveView and enables building fully interactive UIs with pure server-side Elixir. in LiveView.
 
 ### Example 22: Form Events - phx-change and phx-submit
 
 Forms are central to web interactions. This example demonstrates live form events for instant validation and submission.
+
+**Form event flow**:
+
+```mermaid
+%% Form event handling cycle
+graph TD
+    A[User types input] -->|phx-change fires| B[handle_event validate]
+    B --> C[Build changeset]
+    C --> D[Re-render with errors]
+    D -->|User clicks submit| E[phx-submit fires]
+    E --> F[handle_event save]
+    F --> G{Valid?}
+    G -->|Yes| H[Process and redirect]
+    G -->|No| I[Show errors]
+
+    style A fill:#0173B2,color:#fff
+    style B fill:#DE8F05,color:#fff
+    style C fill:#029E73,color:#fff
+    style F fill:#CC78BC,color:#fff
+    style H fill:#CA9161,color:#fff
+```
 
 **Code**:
 
@@ -2412,7 +2521,7 @@ end
 
 **Key Takeaway**: Use `phx-keydown` and `phx-keyup` for keyboard events. `phx-window-*` captures events globally. Pattern match `%{"key" => "Enter"}` for specific keys.
 
-**Why It Matters**: Keyboard events enable power user features - keyboard shortcuts, quick navigation, accessibility. Window-level events capture global shortcuts. Input-level events handle field-specific keys like Enter to submit. Pattern matching specific keys makes handlers clean and focused. Understanding keyboard events means you can build keyboard-driven UIs that feel professional and accessible.
+**Why It Matters**: Keyboard events enable power user features - keyboard shortcuts, quick navigation, accessibility. Window-level events capture global shortcuts. Input-level events handle field-specific keys like Enter to submit. Pattern matching specific keys makes handlers clean and focused. Understanding keyboard events is essential for building professional applications with accessibility and power user support. events means you can build keyboard-driven UIs that feel professional and accessible.
 
 ### Example 24: Focus Events
 
@@ -2595,7 +2704,7 @@ end
 
 **Key Takeaway**: `phx-focus` triggers when element gains focus, `phx-blur` when it loses focus. Useful for input highlighting and validation timing.
 
-**Why It Matters**: Focus events enable sophisticated input interactions - highlighting active fields, showing tooltips, triggering validation on blur. Focus state is crucial for accessibility and UX. Understanding focus events means you can build forms that guide users, provide contextual help, and validate at the right moments.
+**Why It Matters**: Focus events enable sophisticated input interactions - highlighting active fields, showing tooltips, triggering validation on blur. Focus state is crucial for accessibility and UX. Understanding focus events means you can build forms that guide users, provide contextual help, and validate at the right moment without overwhelming users with premature error messages.ht moments.
 
 ### Example 25: Window Events
 
@@ -2731,7 +2840,7 @@ end
 
 **Key Takeaway**: `phx-window-scroll` and `phx-window-resize` capture global window events. Sends scroll position and dimensions in params.
 
-**Why It Matters**: Window events enable responsive behaviors - sticky headers, infinite scroll, responsive layouts. Tracking scroll position lets you hide/show UI elements based on scroll depth. Window dimensions enable device-specific rendering. Understanding window events means you can build UIs that respond to user's viewport and scrolling behavior.
+**Why It Matters**: Window events enable responsive behaviors - sticky headers, infinite scroll, responsive layouts. Tracking scroll position lets you hide/show UI elements based on scroll depth. Window dimensions enable device-specific rendering. Understanding window events means you can build UIs that respond to user and browser context without JavaScript frameworks or media query overhead.'s viewport and scrolling behavior.
 
 ### Example 26: Event Values and Targets
 
@@ -2876,7 +2985,7 @@ end
 
 **Key Takeaway**: Use `phx-value-*` to send custom data with events. Attribute name becomes param key (kebab-case), value sent as string. Multiple phx-value-\* attributes combine in params map.
 
-**Why It Matters**: Event values let you pass contextual data without hidden inputs or global state. The phx-value-\* pattern makes data flow explicit - you see what's sent right in the template. This is essential for building dynamic lists, color pickers, and interactive widgets where each element needs to send unique data.
+**Why It Matters**: Event values let you pass contextual data without hidden inputs or global state. The phx-value-\* pattern makes data flow explicit - you see what's sent right in the template. This is essential for building dynamic lists, color pickers, and interactive widgets where each element needs to send unique data through the same event handler. data.
 
 ### Example 27: Debouncing Events
 
@@ -3357,7 +3466,7 @@ end
 
 **Key Takeaway**: Use `phx-value-*` with dynamic data from loops. Values automatically converted to strings - convert back to integers/atoms in event handler when needed.
 
-**Why It Matters**: Event parameters enable building dynamic interfaces where each element needs unique behavior - product lists, todos, settings panels. The phx-value-\* pattern makes data flow explicit and type-safe (always strings). Understanding this pattern means you can build any list-based or grid-based interface where items have actions.
+**Why It Matters**: Event parameters enable building dynamic interfaces where each element needs unique behavior - product lists, todos, settings panels. The phx-value-\* pattern makes data flow explicit and type-safe (always strings). Understanding this pattern means you can build any list-based or grid-based interface where individual items trigger their own actions through shared event handlers.e where items have actions.
 
 ### Example 30: Preventing Default Behavior
 

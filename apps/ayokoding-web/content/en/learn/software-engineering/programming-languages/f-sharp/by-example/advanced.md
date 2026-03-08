@@ -95,7 +95,7 @@ printfn "Count: %d" currentCount
 
 **Key Takeaway**: MailboxProcessor provides actor-model concurrency with sequential message processing, eliminating race conditions through isolated state and message-passing instead of shared memory.
 
-**Why It Matters**: Actor-based concurrency prevents data races without locks, deadlocks, or complex synchronization primitives. MailboxProcessor agents can process millions of concurrent updates with zero race conditions, achieving throughput improvements over lock-based implementations while simplifying debugging through message tracing.
+**Why It Matters**: Actor-based concurrency prevents data races without locks, deadlocks, or complex synchronization primitives. MailboxProcessor agents process messages sequentially, eliminating shared mutable state as a source of bugs. Financial systems using MailboxProcessor process millions of concurrent account updates with zero race conditions, achieving throughput comparable to lock-based implementations while simplifying debugging through message tracing and replay capabilities.
 
 ## Example 62: Agent-Based State Management
 
@@ -103,66 +103,77 @@ Agents encapsulate mutable state safely, enabling concurrent updates without exp
 
 ```fsharp
 // Example 62: Agent-Based State Management
-type BankMessage =
+type BankMessage =       // => Message type for bank account agent
     | Deposit of amount: float
+                         // => Deposit: no reply needed (fire and forget)
     | Withdraw of amount: float * AsyncReplyChannel<Result<float, string>>
+                         // => Withdraw with reply channel for result
     | GetBalance of AsyncReplyChannel<float>
+                         // => GetBalance: replies with current balance
 
 let createBankAccount initialBalance =
                          // => Factory function creating bank account agent
     MailboxProcessor.Start(fun inbox ->
+                         // => inbox receives messages sequentially
         let rec loop balance =
-                         // => Loop maintains current balance
+                         // => Loop maintains current balance (immutable state)
             async {
                 let! msg = inbox.Receive()
+                         // => Await next message (blocks if none pending)
                 match msg with
                 | Deposit amount ->
+                         // => Deposit case: no reply needed
                     return! loop (balance + amount)
-                         // => Add deposit to balance
+                         // => Tail recursion with new balance (no stack growth)
                 | Withdraw (amount, reply) ->
-                         // => Withdraw with reply channel
+                         // => Withdraw with reply channel (PostAndReply pattern)
                     if balance >= amount then
                         reply.Reply(Ok (balance - amount))
-                         // => Success: reply with new balance
+                         // => Success: reply with new balance wrapped in Ok
                         return! loop (balance - amount)
                          // => Continue with updated balance
                     else
                         reply.Reply(Error "Insufficient funds")
-                         // => Error: insufficient funds
+                         // => Error: reply with Error message
                         return! loop balance
-                         // => Balance unchanged
+                         // => Balance unchanged (keep current balance)
                 | GetBalance reply ->
                     reply.Reply(balance)
-                         // => Return current balance
+                         // => Return current balance to caller
                     return! loop balance
+                         // => Continue loop with same balance
             }
         loop initialBalance
+                         // => Start loop with provided initial balance
     )
 
 let account = createBankAccount 1000.0
                          // => Create account with $1000 initial balance
 
 account.Post(Deposit 500.0)
-                         // => Deposit $500 (balance: $1500)
+                         // => Fire-and-forget deposit $500 (balance: $1500)
 
 let withdrawResult = account.PostAndReply(fun reply -> Withdraw (300.0, reply))
+                         // => PostAndReply: sends message and waits for reply
                          // => Attempt to withdraw $300
 match withdrawResult with
 | Ok newBalance ->
+                         // => Withdrawal succeeded
     printfn "Withdrawal successful, new balance: %.2f" newBalance
                          // => Outputs: Withdrawal successful, new balance: 1200.00
 | Error msg ->
     printfn "Withdrawal failed: %s" msg
+                         // => Outputs when insufficient funds
 
 let balance = account.PostAndReply(GetBalance)
-                         // => Query current balance
+                         // => Query current balance synchronously
 printfn "Current balance: %.2f" balance
                          // => Outputs: Current balance: 1200.00
 ```
 
 **Key Takeaway**: Agents encapsulate state and enforce sequential access through message passing, preventing concurrent modification bugs without explicit locks.
 
-**Why It Matters**: Agent-based state management eliminates many concurrency bugs, as state mutations are serialized automatically. Financial systems use agents to manage account balances with zero race conditions, processing thousands of concurrent transactions per second with correctness guarantees impossible in lock-based systems.
+**Why It Matters**: Agent-based state management eliminates concurrent modification bugs by serializing all state mutations through message passing. Unlike lock-based approaches that require careful synchronization, agents provide correctness by design. Financial systems use agents to manage account balances, processing thousands of concurrent transactions per second. The actor model scales to millions of lightweight agents, enabling fine-grained concurrency without deadlock risk.
 
 ## Example 63: Async Parallelism with Async.Parallel
 
@@ -228,7 +239,7 @@ for data in allData do
 
 **Key Takeaway**: Async.Parallel executes async operations concurrently and collects results into an array, enabling efficient parallel I/O without thread blocking.
 
-**Why It Matters**: Parallel async operations reduce latency by factor of N for independent I/O operations. Microservices aggregate data from multiple backend APIs using Async.Parallel, achieving faster response times, improving user experience while maintaining thread pool efficiency.
+**Why It Matters**: Parallel async operations reduce response latency by the number of concurrent operations for independent I/O tasks. Microservices aggregating data from multiple backend APIs use `Async.Parallel` to achieve near-simultaneous fetching, reducing total latency from sum-of-calls to max-of-calls. API gateway patterns benefit especially when fan-out to multiple services is required. Thread pool efficiency is maintained since threads are released during I/O waits.
 
 ## Example 64: Custom Computation Expression Builders
 
@@ -282,7 +293,7 @@ printfn "Final result: %d" result
 
 **Key Takeaway**: Computation expression builders define custom control flow by implementing Bind, Return, and other members, creating domain-specific syntax embedded in F#.
 
-**Why It Matters**: Custom builders enable domain-specific languages without leaving F#. Financial modeling libraries use builders to create pricing workflows with automatic risk calculations, validation, and logging, making complex financial logic read like business rules while maintaining type safety and composability.
+**Why It Matters**: Custom computation expression builders enable domain-specific languages embedded in F# without external parser tools or code generation. Financial modeling libraries create pricing workflows where each step includes automatic risk calculations, validation, and audit logging. The builder pattern makes complex domain logic read like business specifications while the F# compiler enforces type safety, preventing domain rule violations at compile time.
 
 ## Example 65: Query Expressions (LINQ Integration)
 
@@ -291,22 +302,23 @@ Query expressions integrate LINQ into F#, providing SQL-like syntax for data que
 ```fsharp
 // Example 65: Query Expressions (LINQ Integration)
 type Person = { Name: string; Age: int; City: string }
+                         // => Record type for query demonstrations
 
-let people = [
+let people = [           // => Sample data for querying
     { Name = "Alice"; Age = 30; City = "New York" }
     { Name = "Bob"; Age = 25; City = "London" }
     { Name = "Charlie"; Age = 35; City = "New York" }
     { Name = "Diana"; Age = 28; City = "Paris" }
-]
+]                        // => List of 4 Person records
 
 let newYorkers = query {
                          // => query { } is built-in computation expression
     for person in people do
-                         // => Iterate over people
+                         // => Iterate over collection (FROM clause)
     where (person.City = "New York")
-                         // => Filter by city
-    sortBy person.Age    // => Sort by age
-    select person        // => Select full person record
+                         // => Filter by condition (WHERE clause)
+    sortBy person.Age    // => Sort ascending by Age (ORDER BY clause)
+    select person        // => Project result (SELECT clause)
 }                        // => Returns IQueryable<Person>
 
 printfn "New Yorkers:"
@@ -319,10 +331,12 @@ for person in newYorkers do
 // Grouping query
 let byCity = query {
     for person in people do
+                         // => Iterate over people
     groupBy person.City into cityGroup
-                         // => Group by city
+                         // => Group by City field (GROUP BY clause)
+                         // => cityGroup is the IGrouping variable
     select (cityGroup.Key, cityGroup.Count())
-                         // => Select city and count
+                         // => Select city key and count of members
 }
 
 printfn "\nPeople by city:"
@@ -336,7 +350,7 @@ for (city, count) in byCity do
 
 **Key Takeaway**: Query expressions provide SQL-like syntax for querying collections with compile-time type checking, integrating F# with LINQ for database and collection operations.
 
-**Why It Matters**: Query expressions enable type-safe database queries that compile to SQL, preventing runtime errors from typos or schema changes. Enterprise applications use query expressions to access SQL databases with 100% type safety, catching bugs at compile time that would manifest as runtime exceptions in string-based SQL.
+**Why It Matters**: Query expressions provide type-safe LINQ integration that compiles to efficient SQL, preventing runtime errors from column name typos or type mismatches. Enterprise data access layers use query expressions to query SQL Server, PostgreSQL, and other databases with full IntelliSense support and compile-time schema verification. When database schemas change, compilation fails immediately rather than surfacing as runtime exceptions in production.
 
 ## Example 66: Quotations - Code as Data
 
@@ -361,48 +375,59 @@ graph TD
 
 ```fsharp
 // Example 66: Quotations - Code as Data
-open FSharp.Quotations
-open FSharp.Quotations.Patterns
+open FSharp.Quotations           // => FSharp.Quotations (standard library)
+open FSharp.Quotations.Patterns  // => Pattern-matching helpers for AST
 
 let simpleExpr = <@ 1 + 2 @>
-                         // => <@ ... @> creates quotation
-                         // => Captures expression as AST
+                         // => <@ ... @> creates typed quotation
+                         // => Captures expression as AST (not evaluated)
                          // => Type: Expr<int>
 
 let inspectQuotation (expr: Expr) =
-                         // => Function analyzing quotation
+                         // => Function analyzing quotation AST structure
     match expr with
     | Call (None, methodInfo, args) ->
-                         // => Pattern match on method call
+                         // => Pattern: static method call (None = no object)
         printfn "Method call: %s with %d arguments" methodInfo.Name args.Length
+                         // => Outputs method name and argument count
     | Value (value, typ) ->
-                         // => Pattern match on value
+                         // => Pattern: constant value in expression
         printfn "Value: %A of type %s" value typ.Name
+                         // => Outputs value and its type name
     | _ ->
         printfn "Other expression: %A" expr
+                         // => Fallback: show raw expression
 
 inspectQuotation simpleExpr
-                         // => Analyzes 1 + 2 quotation
+                         // => Analyzes 1 + 2 quotation (outputs method call info)
 
 // More complex quotation
 let complexExpr = <@ fun x -> x * 2 + 1 @>
-                         // => Lambda quotation
+                         // => Lambda quotation captures function as AST
 
 let rec printExpr (expr: Expr) =
-                         // => Recursive quotation printer
+                         // => Recursive quotation printer (processes AST)
     match expr with
     | Lambda (var, body) ->
+                         // => Lambda pattern: var is parameter, body is expression
         printfn "Lambda: %s => ..." var.Name
-        printExpr body   // => Recurse into body
+                         // => Print lambda parameter name
+        printExpr body   // => Recurse into function body
     | Call (target, methodInfo, args) ->
+                         // => Method call pattern (operators are calls)
         printfn "Call: %s" methodInfo.Name
+                         // => Print method/operator name
         args |> List.iter printExpr
+                         // => Recurse into all arguments
     | Value (value, _) ->
         printfn "Value: %A" value
+                         // => Leaf: constant value
     | Var var ->
         printfn "Variable: %s" var.Name
+                         // => Leaf: variable reference
     | _ ->
         printfn "Expression: %A" expr
+                         // => Fallback for other expression types
 
 printExpr complexExpr
                          // => Outputs:
@@ -416,7 +441,7 @@ printExpr complexExpr
 
 **Key Takeaway**: Quotations capture F# code as abstract syntax trees (AST), enabling code analysis, transformation, and runtime generation through pattern matching on expression structure.
 
-**Why It Matters**: Quotations enable compiler-verified code generation and domain-specific optimizations. Type providers use quotations to generate optimized database queries from F# expressions, translating `<@ person.Age > 25 @>` into SQL `WHERE Age > 25` with compile-time verification, achieving native database performance with type safety.
+**Why It Matters**: Quotations enable compiler-verified code generation, metaprogramming, and domain-specific optimizations that are impossible without access to the expression AST. Type providers use quotations to generate optimized queries by translating F# expressions into SQL or other query languages. Machine learning frameworks use quotations to compile F# functions to GPU kernels. Note that `FSharp.Quotations` is part of the F# standard library and requires no NuGet packages.
 
 ## Example 67: Reflection and Type Information
 
@@ -482,7 +507,7 @@ printRecord product
 
 **Key Takeaway**: Reflection provides runtime type inspection and dynamic property access, enabling generic algorithms that work across types without compile-time knowledge.
 
-**Why It Matters**: Reflection enables serialization libraries, ORMs, and testing frameworks to work generically across all F# types. JSON serializers use reflection to convert any F# record to JSON automatically, eliminating 90% of boilerplate code required in languages without powerful reflection while maintaining type safety at compile time.
+**Why It Matters**: Reflection enables infrastructure libraries to work generically across all F# types without explicit type registration. JSON serializers convert any F# record to JSON automatically, eliminating boilerplate data transfer object (DTO) definitions. ORMs map database rows to F# records using property names. Testing frameworks enumerate record fields for property-based tests. While slower than direct access, reflection is essential for cross-cutting infrastructure concerns.
 
 ## Example 68: Advanced Type Constraints with SRTP
 
@@ -549,7 +574,7 @@ printfn "Float total: %.1f" floatTotal
 
 **Key Takeaway**: SRTP with inline functions enables compile-time polymorphism through operator and member constraints, creating generic code that works across types without runtime overhead.
 
-**Why It Matters**: SRTP provides zero-cost abstractions impossible in languages with runtime generics. Numerical libraries use SRTP to write algorithms once that work efficiently for int, float, BigInteger, and custom numeric types, achieving C++ template-level performance while maintaining F#'s type safety and avoiding code duplication.
+**Why It Matters**: SRTP provides zero-cost abstractions at compile time, unlike runtime generics which require boxing or reflection overhead. Numerical computing libraries use SRTP to implement algorithms once that work efficiently for int, float, decimal, and BigInteger without duplication. The `inline` keyword ensures SRTP functions are specialized at each call site, achieving C++ template-level performance. This is essential for performance-critical mathematical libraries in F#.
 
 ## Example 69: Custom Operators and Operator Overloading
 
@@ -606,7 +631,7 @@ printfn "Doubled: %A" doubled
 
 **Key Takeaway**: Custom operators create domain-specific syntax for types, enabling expressive code that reads like mathematical notation while maintaining type safety.
 
-**Why It Matters**: Custom operators make domain logic self-documenting. Physics simulations use vector operators (`v1 +. v2`) that mirror mathematical notation exactly, reducing transcription errors compared to method calls (`v1.Add(v2)`) while improving readability for scientists reviewing code.
+**Why It Matters**: Custom operators make domain-specific code self-documenting by mirroring mathematical notation. Physics simulations use vector operators like `v1 +. v2` that directly correspond to textbook formulas, reducing transcription errors and improving code review efficiency for domain experts. Financial modeling uses custom operators for bond pricing calculations. However, operators should be used sparingly - only when notation genuinely improves readability over named functions.
 
 ## Example 70: Parameterized Active Patterns
 
@@ -616,19 +641,21 @@ Parameterized active patterns accept arguments, enabling flexible pattern matchi
 // Example 70: Parameterized Active Patterns
 let (|DivisibleBy|_|) divisor n =
                          // => Parameterized partial active pattern
-                         // => divisor is parameter
-                         // => n is value being matched
+                         // => divisor is the pattern parameter
+                         // => n is the value being matched against
     if n % divisor = 0 then
+                         // => Test divisibility
         Some (n / divisor)
-                         // => Return Some with quotient
+                         // => Return Some with quotient when divisible
     else
         None             // => Return None if not divisible
 
 let describe n =
     match n with
     | DivisibleBy 15 quotient ->
-                         // => Pass 15 as divisor parameter
+                         // => Pass 15 as divisor; quotient bound on match
         sprintf "%d is divisible by 15 (quotient: %d)" n quotient
+                         // => Returns formatted string with quotient
     | DivisibleBy 3 quotient ->
                          // => Pass 3 as divisor parameter
         sprintf "%d is divisible by 3 (quotient: %d)" n quotient
@@ -637,6 +664,7 @@ let describe n =
         sprintf "%d is divisible by 5 (quotient: %d)" n quotient
     | _ ->
         sprintf "%d is not divisible by 3, 5, or 15" n
+                         // => Wildcard: no match for any pattern
 
 printfn "%s" (describe 15)
                          // => Outputs: 15 is divisible by 15 (quotient: 1)
@@ -649,23 +677,26 @@ printfn "%s" (describe 7)
 
 // Regex parameterized pattern
 open System.Text.RegularExpressions
+                         // => System.Text.RegularExpressions is standard .NET
 
 let (|Regex|_|) pattern input =
-                         // => Regex active pattern
+                         // => Parameterized regex active pattern
     let m = Regex.Match(input, pattern)
+                         // => Run regex against input string
     if m.Success then
         Some (List.tail [ for g in m.Groups -> g.Value ])
-                         // => Return captured groups
+                         // => Return captured groups (skip whole match at index 0)
     else
-        None
+        None             // => No match: return None
 
 let parseEmail email =
     match email with
     | Regex @"(.+)@(.+)\.(.+)" [user; domain; tld] ->
-                         // => Match email pattern with captures
+                         // => Match email pattern and bind 3 capture groups
         sprintf "User: %s, Domain: %s.%s" user domain tld
+                         // => Format parsed components
     | _ ->
-        "Invalid email"
+        "Invalid email"  // => Regex did not match
 
 printfn "%s" (parseEmail "alice@example.com")
                          // => Outputs: User: alice, Domain: example.com
@@ -673,7 +704,7 @@ printfn "%s" (parseEmail "alice@example.com")
 
 **Key Takeaway**: Parameterized active patterns accept arguments for flexible pattern matching, enabling patterns that adapt to context like divisibility checks or regex matching.
 
-**Why It Matters**: Parameterized patterns eliminate repetitive conditional logic. Parsing libraries use regex patterns to extract data from structured text, reducing string manipulation code to declarative pattern matches that are easier to test and maintain.
+**Why It Matters**: Parameterized active patterns eliminate repetitive conditional logic by encapsulating validation and extraction into reusable patterns. Parsing libraries use parameterized regex patterns to extract structured data from text, reducing string manipulation code to clean declarative pattern matches. Each pattern becomes independently testable. Configuration parsers, log analyzers, and protocol parsers all benefit from custom patterns that abstract complex validation behind readable pattern names.
 
 ## Example 71: Type Extensions and Augmentations
 
@@ -683,16 +714,17 @@ Type extensions add members to existing types, including types from external lib
 // Example 71: Type Extensions and Augmentations
 // Intrinsic extension (same file as type definition)
 type Person = { Name: string; Age: int }
+                         // => Base type being extended
 
-type Person with
-                         // => Intrinsic extension
-                         // => Adds members to Person type
+type Person with         // => Intrinsic extension (same file as type)
+                         // => Adds members to Person type definition
     member this.IsAdult = this.Age >= 18
-                         // => Computed property
+                         // => Computed property (no parens = property, not method)
     member this.Greet() = sprintf "Hello, I'm %s" this.Name
-                         // => Instance method
+                         // => Instance method (with parens)
 
 let alice = { Name = "Alice"; Age = 30 }
+                         // => Create Person record
 
 printfn "%s" (alice.Greet())
                          // => Outputs: Hello, I'm Alice
@@ -700,34 +732,38 @@ printfn "Is adult: %b" alice.IsAdult
                          // => Outputs: Is adult: true
 
 // Optional extension (any file)
-module StringExtensions =
+module StringExtensions = // => Module for organizing extensions
     type System.String with
-                         // => Extend .NET String type
+                         // => Extend .NET standard library String type
         member this.Reverse() =
-                         // => New method on String
+                         // => New method on all String instances
             System.String(this.ToCharArray() |> Array.rev)
+                         // => Convert to array, reverse, convert back
         member this.IsPalindrome() =
-                         // => Another extension method
+                         // => Another extension method using Reverse
             this = this.Reverse()
+                         // => Compare string to its reverse
 
-open StringExtensions
+open StringExtensions    // => Bring extensions into scope
 
 let text = "hello"
 let reversed = text.Reverse()
-                         // => Call extension method
+                         // => Call extension method on string
                          // => reversed is "olleh"
 
 printfn "Reversed: %s" reversed
+                         // => Outputs: Reversed: olleh
 
 let palindrome = "racecar"
 printfn "Is '%s' a palindrome? %b" palindrome (palindrome.IsPalindrome())
                          // => Outputs: Is 'racecar' a palindrome? true
 
 // Extension with operators
-type System.Int32 with
-                         // => Extend int type
+type System.Int32 with   // => Extend built-in int type
     member this.IsEven() = this % 2 = 0
+                         // => Returns true if int is even
     member this.IsOdd() = this % 2 <> 0
+                         // => Returns true if int is odd
 
 printfn "Is 10 even? %b" (10.IsEven())
                          // => Outputs: Is 10 even? true
@@ -735,7 +771,7 @@ printfn "Is 10 even? %b" (10.IsEven())
 
 **Key Takeaway**: Type extensions add members to existing types without inheritance, enabling extension of .NET types and third-party libraries with custom functionality.
 
-**Why It Matters**: Type extensions adapt external libraries to domain needs without wrapper classes. Enterprise applications extend .NET types like DateTime with domain-specific methods (`date.IsBusinessDay()`, `date.NextQuarter()`), improving readability while avoiding the performance cost and ceremony of wrapper objects.
+**Why It Matters**: Type extensions adapt external .NET libraries to domain-specific needs without the ceremony and performance overhead of wrapper objects. Enterprise applications extend `DateTime` with `IsBusinessDay()`, `NextSettlementDate()`, and `FiscalQuarter()` methods, making date calculations read like domain specifications. Extensions also improve discoverability through IntelliSense on the extended type. The approach aligns with the Open/Closed Principle - extending without modifying external types.
 
 ## Example 72: Units of Measure - Type-Safe Calculations
 
@@ -812,7 +848,7 @@ let total = add 10.0<meter> 20.0<meter>
 
 **Key Takeaway**: Units of measure provide compile-time dimensional analysis with zero runtime cost, preventing unit conversion errors through type system enforcement.
 
-**Why It Matters**: The Mars Climate Orbiter was lost due to metric/imperial unit confusion. Units of measure eliminate this entire class of errors at compile time with zero runtime overhead, making F# ideal for scientific computing, physics simulations, and financial calculations where unit correctness is critical.
+**Why It Matters**: Units of measure eliminate dimensional analysis errors at compile time with zero runtime overhead. The Mars Climate Orbiter failure ($328M loss) resulted from metric/imperial unit confusion - a bug impossible with F# units. Advanced physics simulations compose velocity with position, force with mass, and energy with time, with the compiler verifying dimensional consistency. Financial systems separate currency units (USD, EUR, GBP) preventing inadvertent cross-currency arithmetic.
 
 ## Example 73: Phantom Types for Type-State Pattern
 
@@ -897,7 +933,7 @@ printfn "Result: %s" result
 
 **Key Takeaway**: Phantom types encode state in the type system, making illegal state transitions impossible at compile time through type-level state tracking.
 
-**Why It Matters**: Phantom types eliminate entire categories of runtime errors. Database connection pools use phantom types to prevent querying closed connections, file APIs prevent reading closed files, and authentication systems prevent accessing resources without valid tokens—all enforced at compile time with zero runtime cost.
+**Why It Matters**: Phantom types enforce state machine constraints at compile time, eliminating entire categories of runtime errors with zero overhead. Database connection pools use phantom types to prevent querying closed connections or double-closing open ones. Authentication APIs use phantom types to distinguish authenticated from unauthenticated requests, preventing access to protected resources without login. The compiler acts as a verifier for state machine correctness.
 
 ## Example 74: GADTs Emulation with Discriminated Unions
 
@@ -922,74 +958,88 @@ graph TD
 
 ```fsharp
 // Example 74: GADTs Emulation with Discriminated Unions
-type Value<'a> =
-    | IntValue of int
+type Value<'a> =         // => Parameterized discriminated union
+    | IntValue of int    // => Wraps an int
     | StringValue of string
-    | BoolValue of bool
+                         // => Wraps a string
+    | BoolValue of bool  // => Wraps a bool
 
 let eval (value: Value<'a>) : 'a =
-                         // => Generic return type
+                         // => Generic return type ('a matches caller expectation)
     match value with
     | IntValue i -> box i :?> 'a
-                         // => Cast int to 'a
+                         // => box: int -> obj; :?> 'a: downcast to caller type
     | StringValue s -> box s :?> 'a
-                         // => Cast string to 'a
+                         // => box string, downcast to 'a
     | BoolValue b -> box b :?> 'a
-                         // => Cast bool to 'a
+                         // => box bool, downcast to 'a
 
 let intVal: int = eval (IntValue 42)
-                         // => intVal is 42 (type: int)
+                         // => Type annotation: 'a = int; intVal is 42
 
 let strVal: string = eval (StringValue "hello")
-                         // => strVal is "hello" (type: string)
+                         // => Type annotation: 'a = string; strVal is "hello"
 
 printfn "Int: %d" intVal
+                         // => Outputs: Int: 42
 printfn "String: %s" strVal
+                         // => Outputs: String: hello
 
 // Better GADT emulation with type-safe evaluation
-type Expr =
-    | Lit of int
-    | Add of Expr * Expr
-    | Eq of Expr * Expr
+type Expr =              // => Untyped expression tree
+    | Lit of int         // => Integer literal
+    | Add of Expr * Expr // => Addition
+    | Eq of Expr * Expr  // => Equality test
 
-type 'a TypedExpr =
-    | TLit of int
+type 'a TypedExpr =      // => Typed expression tree (emulating GADT)
+    | TLit of int        // => Typed integer literal
     | TAdd of int TypedExpr * int TypedExpr
+                         // => Typed addition (both sides must be int)
     | TEq of int TypedExpr * int TypedExpr
+                         // => Typed equality (returns bool)
 
 let rec evalTyped (expr: 'a TypedExpr) : 'a =
-                         // => Type-safe evaluation
+                         // => Type-safe evaluation: return type matches 'a
     match expr with
     | TLit i -> box i :?> 'a
+                         // => Literal: box int and downcast
     | TAdd (e1, e2) ->
         let v1 = evalTyped e1
+                         // => Evaluate left operand
         let v2 = evalTyped e2
+                         // => Evaluate right operand
         box (v1 + v2) :?> 'a
+                         // => Add values and downcast to 'a
     | TEq (e1, e2) ->
         let v1 = evalTyped e1
+                         // => Evaluate left side
         let v2 = evalTyped e2
+                         // => Evaluate right side
         box (v1 = v2) :?> 'a
+                         // => Compare and downcast bool to 'a
 
 let expr = TAdd(TLit 10, TLit 20)
-                         // => expr has type int TypedExpr
+                         // => Build typed expression tree: 10 + 20
 
 let result: int = evalTyped expr
-                         // => result is 30
+                         // => Evaluate: result is 30
 
 printfn "Expression result: %d" result
+                         // => Outputs: Expression result: 30
 
 let eqExpr = TEq(TLit 5, TLit 5)
-                         // => eqExpr has type int TypedExpr
+                         // => Build equality expression: 5 = 5
 
 let eqResult: bool = evalTyped eqExpr
                          // => eqResult is true
 
 printfn "Equality result: %b" eqResult
+                         // => Outputs: Equality result: true
 ```
 
 **Key Takeaway**: F# emulates GADTs using discriminated unions with type parameters and runtime casts, enabling type-safe expression evaluation with heterogeneous return types.
 
-**Why It Matters**: GADT emulation enables building type-safe interpreters and compilers in F#. Expression evaluators use GADTs to ensure arithmetic expressions return int and boolean expressions return bool, catching type errors at compile time that would be runtime exceptions in dynamically typed languages.
+**Why It Matters**: GADT emulation enables type-safe interpreters and compilers where expression types are verified at compile time. Type-safe SQL builders use GADT patterns to ensure integer columns compare with integer values and string columns use string predicates. Domain-specific language (DSL) interpreters enforce semantic constraints - arithmetic operations on numbers, boolean operations on predicates - catching type errors at compile time rather than at query execution time.
 
 ## Example 75: Functional Dependency Injection
 
@@ -997,53 +1047,66 @@ Dependency injection in functional style uses higher-order functions and closure
 
 ```fsharp
 // Example 75: Functional Dependency Injection
-type ILogger =
+type ILogger =           // => Interface defining logging contract
     abstract member Log : string -> unit
+                         // => Log method: takes string, returns unit
 
-type ConsoleLogger() =
+type ConsoleLogger() =   // => Concrete ILogger implementation
     interface ILogger with
         member _.Log(msg) = printfn "LOG: %s" msg
+                         // => Writes to console with LOG prefix
 
-type IDatabase =
+type IDatabase =         // => Interface defining data access contract
     abstract member Query : string -> string
+                         // => Query method: takes SQL, returns result string
 
-type MockDatabase() =
+type MockDatabase() =    // => Test double implementation
     interface IDatabase with
         member _.Query(sql) = sprintf "Mock result for: %s" sql
+                         // => Returns mock result instead of real DB
 
 // Service using dependency injection
 type UserService(logger: ILogger, db: IDatabase) =
+                         // => Constructor injection: takes ILogger and IDatabase
     member _.GetUser(id: int) =
+                         // => Method using injected dependencies
         logger.Log(sprintf "Fetching user %d" id)
+                         // => Use logger dependency
         let result = db.Query(sprintf "SELECT * FROM users WHERE id = %d" id)
+                         // => Use database dependency
         logger.Log(sprintf "Query returned: %s" result)
-        result
+        result           // => Return query result
 
 // Functional DI: Functions taking dependencies as parameters
 let createUserService (logger: ILogger) (db: IDatabase) =
-                         // => Factory function
-    fun (id: int) ->     // => Returns function with dependencies captured
+                         // => Curried factory: each dependency is a parameter
+    fun (id: int) ->     // => Returns function with dependencies captured in closure
         logger.Log(sprintf "Fetching user %d" id)
+                         // => Closure accesses captured logger
         let result = db.Query(sprintf "SELECT * FROM users WHERE id = %d" id)
+                         // => Closure accesses captured db
         logger.Log(sprintf "Query returned: %s" result)
         result
 
 // Setup dependencies
 let logger = ConsoleLogger() :> ILogger
+                         // => :> ILogger: upcast to interface
 let db = MockDatabase() :> IDatabase
+                         // => Upcast to interface (hides concrete type)
 
 // Object-oriented DI
 let service = UserService(logger, db)
+                         // => Create service with injected deps
 let user1 = service.GetUser(42)
                          // => Outputs: LOG: Fetching user 42
                          // => Outputs: LOG: Query returned: Mock result for: SELECT * FROM users WHERE id = 42
 
 // Functional DI
 let getUser = createUserService logger db
-                         // => getUser is function with dependencies
+                         // => Partial application captures logger and db
                          // => getUser has type: int -> string
 
-let user2 = getUser 99   // => Call function with injected dependencies
+let user2 = getUser 99   // => Call with only the remaining parameter
                          // => Outputs: LOG: Fetching user 99
 
 printfn "User 1: %s" user1
@@ -1051,25 +1114,30 @@ printfn "User 2: %s" user2
 
 // Reader monad for DI
 type Reader<'env, 'a> = Reader of ('env -> 'a)
+                         // => Reader wraps a function from environment to value
 
 let runReader (Reader f) env = f env
+                         // => Provide environment to run the reader
 
-let ask = Reader id      // => Gets environment
+let ask = Reader id      // => ask: returns environment itself
 
 let getUserReader userId = Reader(fun (logger: ILogger, db: IDatabase) ->
-                         // => Reader computation capturing dependencies
+                         // => Reader computation: dependencies are the environment
     logger.Log(sprintf "Fetching user %d" userId)
+                         // => Access logger from environment
     db.Query(sprintf "SELECT * FROM users WHERE id = %d" userId)
+                         // => Access db from environment
 )
 
 let user3 = runReader (getUserReader 123) (logger, db)
-                         // => Run reader with environment
+                         // => Provide environment tuple (logger, db) to run
 printfn "User 3: %s" user3
+                         // => Outputs: User 3: Mock result for: SELECT ...
 ```
 
 **Key Takeaway**: Functional dependency injection uses higher-order functions and closures to inject dependencies, avoiding heavy IoC containers while maintaining testability and composition.
 
-**Why It Matters**: Functional DI eliminates runtime reflection and container complexity. Microservices inject database connections, loggers, and configuration through function parameters, improving testability (easy to pass mocks) and performance (no reflection overhead) compared to traditional IoC containers.
+**Why It Matters**: Functional dependency injection eliminates IoC container complexity and runtime reflection overhead common in OOP DI frameworks. Microservices receive database connections, loggers, and configuration through function parameters - test doubles are simply different function values. Startup time is faster without container initialization. Functions with injected dependencies are trivially testable: call with mock implementations, no container setup required. Partial application creates configured functions from generic ones.
 
 ## Example 76: Event Sourcing Pattern
 
@@ -1092,38 +1160,46 @@ graph TD
 
 ```fsharp
 // Example 76: Event Sourcing Pattern
-type Event =
+type Event =             // => Discriminated union of event types
     | AccountCreated of accountId: string * initialBalance: float
+                         // => Account opened event with initial balance
     | MoneyDeposited of amount: float
+                         // => Deposit event
     | MoneyWithdrawn of amount: float
+                         // => Withdrawal event
 
-type AccountState = {
-    AccountId: string
-    Balance: float
+type AccountState = {    // => Current state snapshot
+    AccountId: string    // => Account identifier
+    Balance: float       // => Current balance
 }
 
 let applyEvent state event =
-                         // => State transition function
-                         // => Pure function: state + event -> new state
+                         // => State transition: pure function (no side effects)
+                         // => state + event -> new state
     match event with
     | AccountCreated (id, balance) ->
         { AccountId = id; Balance = balance }
+                         // => First event: create initial state
     | MoneyDeposited amount ->
         { state with Balance = state.Balance + amount }
+                         // => Update balance with deposit amount
     | MoneyWithdrawn amount ->
         { state with Balance = state.Balance - amount }
+                         // => Update balance with withdrawal
 
 // Event stream (immutable history)
-let events = [
+let events = [           // => Immutable list of events (append-only in real system)
     AccountCreated ("ACC001", 1000.0)
-    MoneyDeposited 500.0
-    MoneyWithdrawn 200.0
-    MoneyDeposited 100.0
+                         // => Account opened with $1000
+    MoneyDeposited 500.0 // => +$500 deposit
+    MoneyWithdrawn 200.0 // => -$200 withdrawal
+    MoneyDeposited 100.0 // => +$100 deposit
 ]
 
 // Rebuild current state from events
 let currentState = events |> List.fold applyEvent { AccountId = ""; Balance = 0.0 }
-                         // => Fold applies each event sequentially
+                         // => List.fold: apply applyEvent to each event in sequence
+                         // => Initial state: empty account
                          // => currentState is { AccountId = "ACC001"; Balance = 1400.0 }
 
 printfn "Current state: %A" currentState
@@ -1132,34 +1208,41 @@ printfn "Current state: %A" currentState
 // Time travel: state at any point in history
 let stateAfterSecondEvent = events
                             |> List.take 2
+                            // => Take first 2 events only
                             |> List.fold applyEvent { AccountId = ""; Balance = 0.0 }
-                         // => State after first 2 events
+                         // => Replay only first 2 events
                          // => Balance is 1500.0 (1000 + 500)
 
 printfn "State after 2 events: %A" stateAfterSecondEvent
+                         // => Outputs: { AccountId = "ACC001"; Balance = 1500.0 }
 
 // Projections: different views of same events
 let totalDeposited = events
                      |> List.choose (function
                          | MoneyDeposited amt -> Some amt
-                         | _ -> None)
+                                          // => Keep deposit events, extract amount
+                         | _ -> None)     // => Discard other events
                      |> List.sum
+                         // => Sum all deposit amounts
                          // => totalDeposited is 600.0 (500 + 100)
 
 let totalWithdrawn = events
                      |> List.choose (function
                          | MoneyWithdrawn amt -> Some amt
+                                          // => Keep withdrawal events
                          | _ -> None)
                      |> List.sum
                          // => totalWithdrawn is 200.0
 
 printfn "Total deposited: %.2f" totalDeposited
+                         // => Outputs: Total deposited: 600.00
 printfn "Total withdrawn: %.2f" totalWithdrawn
+                         // => Outputs: Total withdrawn: 200.00
 ```
 
 **Key Takeaway**: Event sourcing stores state as immutable event streams, enabling complete audit trails, time travel debugging, and multiple projections from the same event history.
 
-**Why It Matters**: Event sourcing provides complete audit trails required by financial regulations and enables debugging production issues by replaying events. Banks use event sourcing for account transactions, storing every state change as an immutable event, enabling regulatory compliance and forensic analysis of issues that manifest only after thousands of operations.
+**Why It Matters**: Event sourcing provides complete, immutable audit trails required by financial regulations (SOX, PCI-DSS) and enables powerful debugging by replaying historical events. Banks store every account transaction as an immutable event, enabling regulatory compliance and forensic analysis of complex issues. F#'s discriminated unions model event types with compile-time exhaustiveness checking, preventing unhandled event types. The pattern also enables temporal queries like "what was the account balance on this date?"
 
 ## Example 77: CQRS with F# - Command Query Separation
 
@@ -1185,88 +1268,105 @@ graph TD
 ```fsharp
 // Example 77: CQRS with F# - Command Query Separation
 // Commands (write operations)
-type Command =
+type Command =           // => Command types represent intent to change state
     | CreateOrder of orderId: string * customerId: string * items: string list
+                         // => Create new order command
     | AddItem of orderId: string * item: string
+                         // => Add item to existing order
     | CancelOrder of orderId: string
+                         // => Cancel order command
 
 // Events (facts about what happened)
-type OrderEvent =
+type OrderEvent =        // => Event types represent facts (immutable history)
     | OrderCreated of orderId: string * customerId: string * items: string list
+                         // => Order creation event
     | ItemAdded of orderId: string * item: string
+                         // => Item added event
     | OrderCancelled of orderId: string
+                         // => Order cancelled event
 
 // Write model (command handler)
 let handleCommand command =
-                         // => Command -> Event
-                         // => Validates and produces events
+                         // => Command handler: validates command, produces events
+                         // => Returns Result<OrderEvent list, string>
     match command with
     | CreateOrder (id, customerId, items) ->
         Ok [OrderCreated (id, customerId, items)]
+                         // => Produce OrderCreated event
     | AddItem (id, item) ->
         Ok [ItemAdded (id, item)]
+                         // => Produce ItemAdded event
     | CancelOrder id ->
         Ok [OrderCancelled id]
+                         // => Produce OrderCancelled event
 
 // Read model (optimized for queries)
-type OrderReadModel = {
+type OrderReadModel = {  // => Denormalized view for query performance
     OrderId: string
     CustomerId: string
     Items: string list
-    Status: string
+    Status: string       // => Derived from events
 }
 
 let applyEventToReadModel (model: OrderReadModel option) event =
-                         // => Event -> ReadModel
-                         // => Builds denormalized read model
+                         // => Project event onto read model
+                         // => Takes optional current model, returns updated model
     match event with
     | OrderCreated (id, customerId, items) ->
         Some { OrderId = id; CustomerId = customerId; Items = items; Status = "Active" }
+                         // => First event creates the read model
     | ItemAdded (id, item) ->
         model |> Option.map (fun m -> { m with Items = item :: m.Items })
+                         // => Prepend item to list
     | OrderCancelled id ->
         model |> Option.map (fun m -> { m with Status = "Cancelled" })
+                         // => Update status field
 
 // Event store (simplified)
 let mutable eventStore: OrderEvent list = []
+                         // => Mutable list simulating event store
 
 let executeCommand command =
-                         // => Execute command and store events
+                         // => Execute: handle command, persist events
     match handleCommand command with
     | Ok events ->
         eventStore <- eventStore @ events
-                         // => Append events to store
-        events
+                         // => Append events (in production: use event store DB)
+        events           // => Return produced events
     | Error msg ->
         printfn "Command failed: %s" msg
-        []
+        []               // => Return empty list on failure
 
 // Query side (read model projection)
 let buildReadModel events =
-                         // => Build read model from events
+                         // => Rebuild read model by replaying events
     events |> List.fold applyEventToReadModel None
+                         // => Fold over events, starting with no model
 
 // Execute commands
 executeCommand (CreateOrder ("ORD1", "CUST1", ["Item1"; "Item2"]))
+                         // => Creates order event in store
 executeCommand (AddItem ("ORD1", "Item3"))
+                         // => Adds item event in store
 
 // Query read model
 let readModel = buildReadModel eventStore
-                         // => Build current read model
+                         // => Build current read model from all events
 
 match readModel with
-| Some model ->
+| Some model ->          // => Read model exists
     printfn "Order: %s" model.OrderId
     printfn "Customer: %s" model.CustomerId
     printfn "Items: %A" model.Items
     printfn "Status: %s" model.Status
 | None ->
     printfn "No order found"
+                         // => No events processed (empty store)
 ```
 
 **Key Takeaway**: CQRS separates commands (writes) from queries (reads), optimizing write models for consistency and read models for query performance with denormalization.
 
-**Why It Matters**: CQRS enables independent scaling of read and write workloads. E-commerce platforms handle 100x more reads than writes—CQRS allows caching aggressive read models while maintaining strict consistency in write models, achieving low query latency for product listings while ensuring order transactions remain ACID-compliant.
+**Why It Matters**: CQRS enables independent scaling and optimization of read and write workloads with different consistency requirements. E-commerce platforms handling 100x more reads than writes use CQRS to cache aggressively optimized read models (denormalized product views) while maintaining normalized write models for ACID-compliant order processing. F#'s type system cleanly separates Command types from Query types, making the architectural boundary explicit and enforced at compile time.
 
 ## Example 78: Make Illegal States Unrepresentable
 
@@ -1275,82 +1375,94 @@ Domain modeling with types makes invalid states impossible to construct, elimina
 ```fsharp
 // Example 78: Make Illegal States Unrepresentable
 // BAD: Allows invalid states
-type BadOrder = {
+type BadOrder = {        // => Antipattern: too permissive
     Id: string
-    Status: string       // => Can be any string (typos possible)
+    Status: string       // => Any string allowed (typos: "shiped", "SHIPPED", etc.)
     ShippingAddress: string option
-                         // => Can be None even for shipped orders
+                         // => Can be None even for shipped orders (invalid!)
 }
 
 // GOOD: Invalid states are unrepresentable
 type UnshippedOrder = { Id: string }
+                         // => Unshipped order has no address (cannot be shipped)
 type ShippedOrder = { Id: string; ShippingAddress: string }
-                         // => Shipped MUST have address
+                         // => Shipped order MUST have address (compile-time guarantee)
 type CancelledOrder = { Id: string; Reason: string }
+                         // => Cancelled order MUST have reason
 
-type OrderStatus =
+type OrderStatus =       // => Union of all valid states
     | Unshipped of UnshippedOrder
     | Shipped of ShippedOrder
     | Cancelled of CancelledOrder
 
 // State transitions enforce business rules
 let ship (order: UnshippedOrder) (address: string) : ShippedOrder =
-                         // => Can only ship unshipped orders
-                         // => MUST provide address
+                         // => Input type enforces: only unshipped orders can ship
+                         // => MUST provide address (non-optional)
     { Id = order.Id; ShippingAddress = address }
+                         // => Returns ShippedOrder type
 
 let cancel (order: UnshippedOrder) (reason: string) : CancelledOrder =
-                         // => Can only cancel unshipped orders
+                         // => Input type enforces: only unshipped orders can cancel
     { Id = order.Id; Reason = reason }
+                         // => Returns CancelledOrder type
 
 // Usage
 let order = Unshipped { Id = "ORD123" }
-                         // => Order starts unshipped
+                         // => Order starts in Unshipped state
 
 let shippedOrder = match order with
                    | Unshipped o -> ship o "123 Main St"
-                         // => Ship with address
+                         // => Extract UnshippedOrder from union, then ship
                    | _ -> failwith "Cannot ship this order"
+                         // => Other states: runtime error (exhaustive match)
 
 printfn "Shipped to: %s" shippedOrder.ShippingAddress
+                         // => Outputs: Shipped to: 123 Main St
 
 // COMPILE ERROR: Cannot ship already shipped order
 // let reshipped = ship shippedOrder "456 Elm St"
-                         // => Type error: ship requires UnshippedOrder
+                         // => COMPILE ERROR: ship requires UnshippedOrder, not ShippedOrder
 
 // More complex example: Email validation
 type UnvalidatedEmail = UnvalidatedEmail of string
+                         // => Single-case DU wrapping raw string
 type ValidatedEmail = private ValidatedEmail of string
-                         // => private constructor prevents direct creation
+                         // => private constructor: only Email module can create this
 
 module Email =
     let create (s: string) : Result<ValidatedEmail, string> =
-                         // => Smart constructor
+                         // => Smart constructor: validates before wrapping
         if s.Contains("@") then
             Ok (ValidatedEmail s)
+                         // => Valid: wrap in private ValidatedEmail
         else
             Error "Invalid email format"
+                         // => Invalid: return error message
 
     let value (ValidatedEmail s) = s
-                         // => Unwrap validated email
+                         // => Unwrap validated email (pattern match on single-case DU)
 
 // Usage
 let emailResult = Email.create "alice@example.com"
+                         // => emailResult is Ok (ValidatedEmail "alice@example.com")
 
 match emailResult with
 | Ok email ->
     printfn "Valid email: %s" (Email.value email)
+                         // => Outputs: Valid email: alice@example.com
 | Error msg ->
     printfn "Error: %s" msg
+                         // => Outputs when email format invalid
 
 // COMPILE ERROR: Cannot create ValidatedEmail directly
 // let badEmail = ValidatedEmail "notanemail"
-                         // => Constructor is private
+                         // => COMPILE ERROR: ValidatedEmail constructor is private
 ```
 
 **Key Takeaway**: Design types so invalid states cannot be constructed, moving validation from runtime checks to compile-time guarantees through the type system.
 
-**Why It Matters**: Making illegal states unrepresentable eliminates much validation logic and prevents bugs that slip through validation. Financial systems model trades with separate types for PendingTrade, ExecutedTrade, and SettledTrade, making it impossible to settle a pending trade or re-execute an executed trade—errors caught at compile time instead of production.
+**Why It Matters**: Making illegal states unrepresentable eliminates validation logic and prevents bugs that survive traditional runtime checks. Financial systems model trade lifecycle as separate types - `PendingTrade`, `ExecutedTrade`, `SettledTrade` - making it literally impossible to settle a pending trade or re-execute a completed one. These impossible state transitions become compile errors rather than production incidents. Domain-driven design benefits enormously from this approach to type-safety.
 
 ## Example 79: Advanced Parser Combinators
 
@@ -1359,61 +1471,80 @@ Parser combinators compose small parsers into complex grammars using functional 
 ```fsharp
 // Example 79: Advanced Parser Combinators
 type Parser<'a> = Parser of (string -> Result<'a * string, string>)
-                         // => Parser is function: input -> Result
+                         // => Parser wraps a function: input -> Result<(value, remaining), error>
 
 let run (Parser p) input = p input
+                         // => Unwrap and run parser on input
 
 // Primitive parsers
 let pchar c = Parser(fun input ->
-                         // => Parse single character
+                         // => Parse a specific character c
     if String.length input > 0 && input.[0] = c then
+                         // => Check: non-empty and first char matches
         Ok (c, input.[1..])
-                         // => Success: return char and remaining input
+                         // => Success: return matched char and remaining input
     else
         Error (sprintf "Expected '%c'" c)
+                         // => Failure: descriptive error message
 )
 
 let (<|>) (Parser p1) (Parser p2) = Parser(fun input ->
-                         // => Choice combinator: try p1, then p2
+                         // => Choice combinator: try p1, fallback to p2
     match p1 input with
     | Ok result -> Ok result
+                         // => p1 succeeded: use its result
     | Error _ -> p2 input
+                         // => p1 failed: try p2 with same input
 )
 
 let (>>=) (Parser p) f = Parser(fun input ->
-                         // => Bind combinator: sequence parsers
+                         // => Bind/sequence combinator (monadic bind)
     match p input with
     | Ok (value, remaining) ->
+                         // => p succeeded: pass value to continuation f
         let (Parser p2) = f value
-        p2 remaining
+                         // => f returns another parser based on value
+        p2 remaining     // => Run continuation parser on remaining input
     | Error msg -> Error msg
+                         // => p failed: propagate error
 )
 
 let preturn value = Parser(fun input -> Ok (value, input))
-                         // => Return combinator: always succeeds
+                         // => Return combinator: always succeeds with value, no input consumed
 
 // Parse digit
 let pdigit = Parser(fun input ->
+                         // => Parse a single digit character (0-9)
     if String.length input > 0 && System.Char.IsDigit(input.[0]) then
         Ok (input.[0], input.[1..])
+                         // => Success: return digit char, advance input
     else
         Error "Expected digit"
+                         // => Failure if not a digit
 )
 
 // Many combinator: 0 or more
 let rec many (Parser p) = Parser(fun input ->
+                         // => many: parse 0 or more times (never fails)
     match p input with
     | Ok (value, remaining) ->
+                         // => One match: try to match more
         match run (many (Parser p)) remaining with
         | Ok (values, final) -> Ok (value :: values, final)
+                         // => More matches: prepend current value
         | Error _ -> Ok ([value], remaining)
+                         // => No more: return single-element list
     | Error _ -> Ok ([], input)
+                         // => Zero matches: succeed with empty list
 )
 
 // Parse integer
 let pint = many pdigit >>= (fun digits ->
+                         // => many pdigit gives list of digit chars
     let s = System.String(List.toArray digits)
+                         // => Convert char list to string
     preturn (int s)
+                         // => Convert string to int, return as parser result
 )
 
 // Test parsers
@@ -1434,7 +1565,7 @@ match run pint "123abc" with
 
 **Key Takeaway**: Parser combinators compose primitive parsers using functional operators, building complex grammars from simple building blocks without parser generators.
 
-**Why It Matters**: Parser combinators enable embedded DSLs for parsing without external tools. Compilers use parser combinators to parse programming languages entirely in F#, achieving faster development than yacc/bison while maintaining type safety and composability for parser evolution.
+**Why It Matters**: Parser combinators enable building sophisticated parsers as composable F# functions without external parser generator tools or code generation steps. Compilers and DSL interpreters built with parser combinators are faster to develop than yacc/bison approaches, more maintainable as grammars evolve, and fully type-safe. FParsec, the standard F# parser combinator library, parses complex formats like JSON, XML, and programming language grammars with excellent error messages.
 
 ## Example 80: Metaprogramming with Code Generation
 
@@ -1514,7 +1645,7 @@ printfn "Modified: %A" modified
 
 **Key Takeaway**: Metaprogramming with quotations and code generation enables compile-time code synthesis from schemas, reducing boilerplate and ensuring generated code type-checks.
 
-**Why It Matters**: Type providers generate type-safe database access code from schemas at compile time. SQL type providers read database schemas and generate F# types with IntelliSense support, eliminating most hand-written data access code while catching schema mismatches at compile time instead of runtime.
+**Why It Matters**: SQL type providers generate type-safe database access code directly from live or file-based schemas at compile time, eliminating hand-written data access layer code. IntelliSense shows actual table and column names from the database. Schema mismatches fail at compile time rather than at runtime in production. Teams using SQL type providers report dramatically reduced data access code while eliminating entire categories of runtime errors from schema drift between code and database.
 
 ## Example 81: C# Interop - Consuming and Exposing APIs
 
@@ -1590,7 +1721,7 @@ printfn "Nullable: %A" (lib.GetOption(someValue))
 
 **Key Takeaway**: F# interoperates seamlessly with C# using attribute annotations, converting F# types (options, lists) to C#-friendly equivalents (Nullable, IEnumerable) at API boundaries.
 
-**Why It Matters**: Seamless C# interop enables incremental F# adoption in existing .NET codebases. Teams introduce F# for domain modeling and business logic (exploiting algebraic types and immutability) while exposing C#-friendly APIs, reducing bugs through F# safety without rewriting entire applications.
+**Why It Matters**: Seamless C# interop enables incremental F# adoption in existing .NET codebases without disruptive rewrites. Teams introduce F# modules for domain modeling and business logic, exploiting discriminated unions and immutability to reduce bugs, while exposing C#-compatible interfaces for existing code. F# assemblies appear as regular .NET assemblies to C# consumers. This hybrid approach reduces risk compared to big-bang rewrites while still benefiting from F#'s correctness advantages.
 
 ## Example 82: Performance Optimization - Struct vs Class
 
@@ -1650,7 +1781,7 @@ printfn "Sum: %d" sum
 
 **Key Takeaway**: Structs reduce GC pressure through stack allocation and inlining, improving performance for small, frequently-allocated types at the cost of value semantics.
 
-**Why It Matters**: Struct optimization eliminates 90% of garbage collection pauses in numerical computing. Game engines use structs for vectors and points, processing millions per frame with zero GC overhead, achieving high frame rates triggering GC every frame.
+**Why It Matters**: Struct optimization eliminates garbage collection pressure in allocation-intensive numerical code. Game engines use struct vectors and points, processing millions of geometric operations per frame with zero GC overhead. Scientific simulations avoid stop-the-world GC pauses that would disrupt real-time calculations. The `[<Struct>]` attribute makes the optimization opt-in while keeping F#'s algebraic type benefits. Value types also improve CPU cache locality for sequential array processing.
 
 ## Example 83: Profiling and Benchmarking
 
@@ -1739,7 +1870,7 @@ printfn "Fast fib: %d" fast
 
 **Key Takeaway**: Profile before optimizing using Stopwatch for timing and GC.GetTotalMemory for allocation tracking. Common optimizations: avoid boxing, use arrays for hot paths, memoize expensive computations.
 
-**Why It Matters**: Profiling reveals actual bottlenecks vs assumed ones. Production systems often discover performance bottlenecks in unexpected places—profiling prevents premature optimization while identifying real issues like unnecessary allocations causing GC pauses.
+**Why It Matters**: Profiling reveals actual bottlenecks versus assumed ones, enabling data-driven optimization decisions rather than premature optimization that complicates code without measurable benefit. Production F# systems routinely discover bottlenecks in unexpected places - JSON serialization, string allocation, or LINQ overhead rather than the business logic developers intuitively optimize. BenchmarkDotNet provides statistically rigorous measurements including memory allocation and GC pressure, essential for validating optimization effectiveness.
 
 ## Example 84: Concurrent Collections and Lock-Free Data Structures
 
@@ -1815,7 +1946,7 @@ printfn "Unsafe counter: %d" unsafeCounter
 
 **Key Takeaway**: Use ConcurrentBag, ConcurrentDictionary, and ConcurrentQueue for thread-safe collections. Use Interlocked for lock-free atomic operations on primitives.
 
-**Why It Matters**: Concurrent collections eliminate explicit locking complexity while maintaining thread safety. Web services use ConcurrentDictionary for request caches shared across threads, achieving significant throughput improvements over lock-based dictionaries without deadlock risk.
+**Why It Matters**: Concurrent collections eliminate explicit locking complexity while maintaining thread safety through lock-free algorithms and fine-grained locks. Web services use `ConcurrentDictionary` for per-request caches shared across thread pool threads, achieving throughput improvements over lock-based approaches. `ConcurrentQueue` enables producer-consumer patterns for background processing queues. F# complements concurrent collections well - immutable data shared between threads never requires synchronization.
 
 ## Example 85: Advanced Async Patterns - Cancellation and Timeouts
 
@@ -1937,7 +2068,7 @@ for result in results do
 
 **Key Takeaway**: Async workflows integrate cancellation tokens for cooperative cancellation and support timeout patterns through Async.Choice, enabling robust async programming with graceful degradation.
 
-**Why It Matters**: Cancellation prevents resource leaks when requests are abandoned. Microservices cancel downstream requests when clients disconnect, preventing wasted computation and database queries for results no one will receive, improving throughput during traffic spikes by freeing resources immediately.
+**Why It Matters**: Cancellation prevents resource waste and improves system resilience when operations are no longer needed. Microservices propagate cancellation tokens through service call chains - when a client disconnects, all downstream database queries, API calls, and computations are cancelled immediately. This prevents cascading resource exhaustion during traffic spikes. Properly cancellation-aware F# services handle load gracefully rather than continuing expensive work for abandoned requests.
 
 ---
 

@@ -54,7 +54,7 @@ console.log(numbers[0]); // => Output: 1
 
 **Key Takeaway**: TypeScript adds type annotations (`: type`) to JavaScript variables. The compiler infers types when possible but allows explicit annotations for clarity or when inference isn't available.
 
-**Why It Matters**: Type annotations catch errors at compile time rather than runtime. The compile-time checking means fewer runtime errors, better IDE autocomplete, and safer refactoring compared to JavaScript. This prevents production crashes and makes large codebases easier to maintain.
+**Why It Matters**: Type annotations catch errors at compile time rather than runtime. The compile-time checking means fewer bugs reach production. In large teams, annotations serve as living documentation—developers reading unfamiliar code can instantly understand what values a function accepts and returns without running it. IDEs provide precise autocompletion, inline error highlighting, and safe refactoring only when types are explicit, reducing debugging sessions significantly.
 
 ## Example 2: Functions and Parameter Types
 
@@ -716,6 +716,32 @@ shapes.forEach((shape) => {
 
 Literal types restrict values to specific literals. Type narrowing uses control flow to refine union types to more specific types.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A["string | number | boolean"] -->|"typeof x === 'string'"| B["string"]
+    A -->|"typeof x === 'number'"| C["number"]
+    A -->|"typeof x === 'boolean'"| D["boolean"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#029E73,stroke:#000,color:#fff
+    style C fill:#DE8F05,stroke:#000,color:#000
+    style D fill:#CC78BC,stroke:#000,color:#000
+```
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A["Union Type: string | number | boolean"] -->|"typeof x === 'string'"| B["Narrowed: string"]
+    A -->|"typeof x === 'number'"| C["Narrowed: number"]
+    A -->|"typeof x === 'boolean'"| D["Narrowed: boolean"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#029E73,stroke:#000,color:#fff
+    style C fill:#DE8F05,stroke:#000,color:#000
+    style D fill:#CC78BC,stroke:#000,color:#000
+```
+
 **Code**:
 
 ```typescript
@@ -912,6 +938,32 @@ console.log(user2.name); // => Output: Bob
 ## Example 13: Type Guards with User-Defined Functions
 
 Custom type guard functions use `is` keyword to narrow types. They return booleans that TypeScript uses for control flow narrowing.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["value: Cat | Dog"] -->|"isCat(value) === true"| B["Cat
+.meow() available"]
+    A -->|"isDog(value) === true"| C["Dog
+.bark() available"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#029E73,stroke:#000,color:#fff
+    style C fill:#DE8F05,stroke:#000,color:#000
+```
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["value: Cat | Dog"] -->|"isCat(value) === true"| B["Narrowed: Cat
+.meow() available"]
+    A -->|"isDog(value) === true"| C["Narrowed: Dog
+.bark() available"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#029E73,stroke:#000,color:#fff
+    style C fill:#DE8F05,stroke:#000,color:#000
+```
 
 **Code**:
 
@@ -1382,7 +1434,7 @@ const readonlyUser: ReadonlyUser = {
 
 **Key Takeaway**: `keyof T` creates a union of property names from type `T`. `typeof value` infers the type from a JavaScript value. Use `K extends keyof T` in generics for type-safe property access.
 
-**Why It Matters**: `keyof` enables type-safe property access without hardcoding property names. ORM libraries use `keyof Model` for type-safe queries. Form libraries use `keyof FormData` for field validation. `typeof` eliminates duplicate type definitions—define the JavaScript value once, infer the type. This is fundamental to TypeScript's mapped types and generic constraints.
+**Why It Matters**: `keyof` enables type-safe property access without hardcoding property names. ORM libraries use `keyof` to build type-safe query builders where invalid field names are compile errors. `typeof` enables deriving types from existing values, keeping type definitions and runtime values in sync automatically. Together, these operators power dynamic accessor patterns in lodash-style utility libraries without sacrificing type safety.
 
 ## Example 18: Partial, Required, Pick, Omit Utility Types
 
@@ -1481,7 +1533,7 @@ console.log(contact); // => Output: { email: 'diana@example.com', address: '456 
 
 **Key Takeaway**: `Partial<T>` makes all properties optional. `Required<T>` makes all required. `Pick<T, K>` selects specific properties. `Omit<T, K>` excludes properties. Combine them for complex transformations without manual type definitions.
 
-**Why It Matters**: Utility types eliminate boilerplate and prevent drift between related types. API request/response types use `Partial` for updates. Database models use `Omit<User, "password">` for public data. Form state uses `Required<FormData>` after validation. These utilities are the foundation of type-safe APIs—they adapt existing types to specific contexts without duplication.
+**Why It Matters**: Utility types eliminate boilerplate and prevent drift between related types. API request/response types use `Partial<T>` for optional update DTOs, `Omit<T, "password">` for safe public responses, and `Required<T>` to enforce complete configurations. Without utility types, developers manually define overlapping interfaces that fall out of sync when base types change. These four utilities are essential vocabulary in any TypeScript codebase.
 
 ## Example 19: Record Utility Type
 
@@ -2185,45 +2237,84 @@ cats.forEach((cat) => cat.meow()); // => Output: Meow (type-safe)
 
 Discriminated unions use a common literal property (discriminator) to distinguish between union members. They enable exhaustive pattern matching.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A["Shape (union)"] -->|"kind: 'circle'"| B["Circle {kind, radius}"]
+    A -->|"kind: 'square'"| C["Square {kind, sideLength}"]
+    A -->|"kind: 'triangle'"| D["Triangle {kind, base, height}"]
+
+    E["switch(shape.kind)"] -->|"case 'circle'"| F["pi * radius^2"]
+    E -->|"case 'square'"| G["sideLength^2"]
+    E -->|"case 'triangle'"| H["base * height / 2"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#029E73,stroke:#000,color:#fff
+    style C fill:#DE8F05,stroke:#000,color:#000
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#000
+```
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A["Shape (discriminated union)"] -->|"kind: 'circle'"| B["Circle
+{kind, radius}"]
+    A -->|"kind: 'square'"| C["Square
+{kind, sideLength}"]
+    A -->|"kind: 'triangle'"| D["Triangle
+{kind, base, height}"]
+
+    E["switch(shape.kind)"] -->|"case 'circle'"| F["π × radius²"]
+    E -->|"case 'square'"| G["sideLength²"]
+    E -->|"case 'triangle'"| H["base × height / 2"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#029E73,stroke:#000,color:#fff
+    style C fill:#DE8F05,stroke:#000,color:#000
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#000
+```
+
 **Code**:
 
 ```typescript
 // DISCRIMINATED UNION
 interface Circle {
-  kind: "circle"; // => Discriminator (literal type)
-  radius: number;
+  kind: "circle"; // => Discriminator (literal type "circle")
+  radius: number; // => Circle-specific property
 }
 
 interface Square {
-  kind: "square"; // => Discriminator
-  sideLength: number;
+  kind: "square"; // => Discriminator (literal type "square")
+  sideLength: number; // => Square-specific property
 }
 
 interface Triangle {
-  kind: "triangle"; // => Discriminator
-  base: number;
-  height: number;
+  kind: "triangle"; // => Discriminator (literal type "triangle")
+  base: number; // => Triangle base length
+  height: number; // => Triangle height
 }
 
-type Shape = Circle | Square | Triangle; // => Union of shapes
+type Shape = Circle | Square | Triangle; // => Union of three shapes
 
 // PATTERN MATCHING WITH DISCRIMINATOR
 function getArea(shape: Shape): number {
-  // => Calculate area by shape
+  // => TypeScript narrows type in each case branch
   switch (
-    shape.kind // => Switch on discriminator
+    shape.kind // => Switch on discriminator property
   ) {
     case "circle":
-      // TypeScript knows shape is Circle here
-      return Math.PI * shape.radius ** 2; // => radius available
+      // => TypeScript narrows: shape is Circle here
+      return Math.PI * shape.radius ** 2; // => radius now accessible (Circle)
     case "square":
-      // TypeScript knows shape is Square here
-      return shape.sideLength ** 2; // => sideLength available
+      // => TypeScript narrows: shape is Square here
+      return shape.sideLength ** 2; // => sideLength now accessible (Square)
     case "triangle":
-      // TypeScript knows shape is Triangle here
-      return (shape.base * shape.height) / 2; // => base & height available
+      // => TypeScript narrows: shape is Triangle here
+      return (shape.base * shape.height) / 2; // => base & height accessible (Triangle)
     default:
-      const exhaustiveCheck: never = shape; // => Exhaustiveness check
+      const exhaustiveCheck: never = shape; // => Error if new Shape variant not handled
       throw new Error(`Unhandled shape: ${exhaustiveCheck}`);
   }
 }
@@ -2308,7 +2399,7 @@ console.log(renderState({ state: "failure", error: "Network issue" })); // => Ou
 
 **Key Takeaway**: Discriminated unions use a common literal property to distinguish union members. Switch on the discriminator to narrow types automatically. Use `never` in the default case for exhaustiveness checking.
 
-**Why It Matters**: Discriminated unions are the foundation of type-safe state management. Redux actions use `type` as discriminator. API responses use `status`. Async states use `state`. This pattern eliminates defensive programming—TypeScript proves all cases handled at compile time. Adding new variants triggers compiler errors in unhandled switches, preventing bugs from forgotten cases.
+**Why It Matters**: Discriminated unions are the foundation of type-safe state management. Redux actions use `type` as discriminator—switch statements narrow correctly and TypeScript enforces exhaustiveness. React component state machines use discriminated unions to prevent invalid state combinations. GraphQL response handlers use them for success/error typing. Libraries like XState rely on discriminated unions for statechart modeling.
 
 ## Example 27: Index Signatures and Mapped Types
 
@@ -2431,11 +2522,47 @@ const config: FlexibleConfig = {
 
 **Key Takeaway**: Index signatures enable dynamic property names with type constraints. Mapped types iterate over property keys to transform types. Use `in keyof` to iterate and `as` for key transformations.
 
-**Why It Matters**: Index signatures handle dynamic data structures (dictionaries, configuration objects, translation maps) while maintaining type safety. Mapped types power TypeScript's utility types (`Partial`, `Readonly`, `Pick`) and enable generic type transformations. This pattern is fundamental to generic component props and normalized state shapes.
+**Why It Matters**: Index signatures handle dynamic data structures (dictionaries, configuration objects, translation maps). They enable typed access to runtime-determined keys, critical for i18n libraries, feature flag systems, and dynamic configuration. Mapped types build on index signatures to transform existing types systematically. Understanding when to use index signatures vs `Record<K, V>` vs mapped types is essential for robust TypeScript architecture.
 
 ## Example 28: Conditional Types
 
 Conditional types select types based on conditions using `extends` keyword. They enable type-level programming for advanced type transformations.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["T extends string ?"] -->|"true"| B["TrueType"]
+    A -->|"false"| C["FalseType"]
+
+    D["IsString&lt;string&gt;"] --> E["true"]
+    F["IsString&lt;number&gt;"] --> G["false"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#029E73,stroke:#000,color:#fff
+    style C fill:#DE8F05,stroke:#000,color:#000
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#029E73,stroke:#000,color:#fff
+    style F fill:#CA9161,stroke:#000,color:#000
+    style G fill:#DE8F05,stroke:#000,color:#000
+```
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["T extends string ?"] -->|"true"| B["TrueType"]
+    A -->|"false"| C["FalseType"]
+
+    D["IsString<string>"] --> E["true"]
+    F["IsString<number>"] --> G["false"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#029E73,stroke:#000,color:#fff
+    style C fill:#DE8F05,stroke:#000,color:#000
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#029E73,stroke:#000,color:#fff
+    style F fill:#CA9161,stroke:#000,color:#000
+    style G fill:#DE8F05,stroke:#000,color:#000
+```
 
 **Code**:
 
@@ -2519,7 +2646,7 @@ greet(...params); // => Output: Alice is 30
 
 **Key Takeaway**: Conditional types use `T extends U ? X : Y` syntax for type-level conditions. Use `infer` to extract types from complex structures. Conditional types distribute over union types automatically.
 
-**Why It Matters**: Conditional types power advanced type utilities (`ReturnType`, `Parameters`, `NonNullable`). They enable generic libraries to infer types from function signatures, Promise unwrapping, and discriminated union handling. Prop inference can use conditional types. Code generators can use them to transform schema types. This feature makes TypeScript Turing-complete at the type level.
+**Why It Matters**: Conditional types power advanced type utilities (`ReturnType`, `Parameters`, `NonNullable`). They enable type-level programming that adapts to input shapes—a form library can infer field validation types from a schema type, ensuring field names and value types are always in sync. Conditional types combined with `infer` unlock extraction of nested generic parameters, which underpins type-safe ORM and framework integrations.
 
 ## Example 29: Recursive Types
 
@@ -2530,13 +2657,13 @@ Recursive types reference themselves in their definition. They model nested data
 ```typescript
 // RECURSIVE LINKED LIST
 interface LinkedListNode<T> {
-  value: T;
-  next: LinkedListNode<T> | null; // => Self-reference
+  value: T; // => Payload of any type T
+  next: LinkedListNode<T> | null; // => Self-reference (or null for last node)
 }
 
-const node3: LinkedListNode<number> = { value: 3, next: null };
-const node2: LinkedListNode<number> = { value: 2, next: node3 };
-const node1: LinkedListNode<number> = { value: 1, next: node2 };
+const node3: LinkedListNode<number> = { value: 3, next: null }; // => Tail node
+const node2: LinkedListNode<number> = { value: 2, next: node3 }; // => Points to node3
+const node1: LinkedListNode<number> = { value: 1, next: node2 }; // => Head: 1 -> 2 -> 3 -> null
 
 console.log(node1.value); // => Output: 1
 console.log(node1.next?.value); // => Output: 2
@@ -2544,42 +2671,43 @@ console.log(node1.next?.next?.value); // => Output: 3
 
 // RECURSIVE TREE
 interface TreeNode<T> {
-  value: T;
-  children: TreeNode<T>[]; // => Array of self-references
+  value: T; // => Node data of type T
+  children: TreeNode<T>[]; // => Array of self-references (empty for leaves)
 }
 
-const leaf1: TreeNode<string> = { value: "A", children: [] };
-const leaf2: TreeNode<string> = { value: "B", children: [] };
-const branch: TreeNode<string> = { value: "Root", children: [leaf1, leaf2] };
+const leaf1: TreeNode<string> = { value: "A", children: [] }; // => Leaf node (no children)
+const leaf2: TreeNode<string> = { value: "B", children: [] }; // => Leaf node (no children)
+const branch: TreeNode<string> = { value: "Root", children: [leaf1, leaf2] }; // => Root with two children
 
 console.log(branch.value); // => Output: Root
-console.log(branch.children[0].value); // => Output: A
+console.log(branch.children[0].value); // => Output: A (first child)
 
 // RECURSIVE JSON TYPE
 type JSONValue = // => Recursive union
-  | string
-  | number
-  | boolean
-  | null
-  | JSONValue[] // => Array of JSONValue
-  | { [key: string]: JSONValue }; // => Object with JSONValue values
+  | string // => JSON string
+  | number // => JSON number
+  | boolean // => JSON boolean
+  | null // => JSON null
+  | JSONValue[] // => JSON array (recursive)
+  | { [key: string]: JSONValue }; // => JSON object (recursive)
 
 const jsonData: JSONValue = {
-  name: "Alice",
-  age: 30,
-  active: true,
+  name: "Alice", // => string value
+  age: 30, // => number value
+  active: true, // => boolean value
   address: {
+    // => nested object (JSONValue recursion)
     city: "New York",
     zip: 10001,
   },
-  hobbies: ["reading", "coding"],
+  hobbies: ["reading", "coding"], // => array (JSONValue recursion)
 };
 
 console.log(jsonData); // => Output: { name: 'Alice', age: 30, ... }
 
 // RECURSIVE TYPE WITH CONSTRAINTS
 type DeepReadonly<T> = {
-  // => Recursive readonly
+  // => Recursive readonly mapped type
   readonly [P in keyof T]: T[P] extends object
     ? DeepReadonly<T[P]> // => Recursively apply to nested objects
     : T[P]; // => Primitives stay as-is
@@ -2587,29 +2715,30 @@ type DeepReadonly<T> = {
 
 interface Config {
   database: {
-    host: string;
-    port: number;
+    // => Nested object (will become DeepReadonly)
+    host: string; // => string field
+    port: number; // => number field
   };
-  features: string[];
+  features: string[]; // => Array field
 }
 
-type ReadonlyConfig = DeepReadonly<Config>;
+type ReadonlyConfig = DeepReadonly<Config>; // => All nested properties readonly
 
 const config: ReadonlyConfig = {
-  database: { host: "localhost", port: 5432 },
-  features: ["auth", "logging"],
+  database: { host: "localhost", port: 5432 }, // => Readonly nested object
+  features: ["auth", "logging"], // => Readonly array
 };
 
-// config.database.host = "prod";        // => ERROR: readonly property
+// config.database.host = "prod";        // => ERROR: Cannot assign to readonly property
 
 // RECURSIVE FLATTEN TYPE
 type Flatten<T> =
-  T extends Array<infer U> // => If T is array
-    ? Flatten<U> // => Recursively flatten
-    : T; // => Base case: return T
+  T extends Array<infer U> // => If T is array, extract element type U
+    ? Flatten<U> // => Recursively flatten U
+    : T; // => Base case: T is not array, return T
 
-type NestedArray = number[][][];
-type Flattened = Flatten<NestedArray>; // => Type: number
+type NestedArray = number[][][]; // => Three levels of nesting
+type Flattened = Flatten<NestedArray>; // => Type: number (fully flattened)
 
 // RECURSIVE PARTIAL TYPE
 type DeepPartial<T> = {
@@ -2726,4 +2855,4 @@ navigateTo("/about"); // => Output: Navigating to /about
 
 **Key Takeaway**: `as const` narrows types to literal types and makes objects/arrays deeply readonly. Use it to prevent widening of literals and to create immutable configurations.
 
-**Why It Matters**: Const assertions eliminate type widening that loses precision. Configuration objects become truly immutable—no accidental mutations. Route definitions, action types, and enum-like objects use const assertions to create compile-time constants. This pattern bridges the gap between JavaScript's `const` (only prevents reassignment) and true immutability with literal types.
+**Why It Matters**: Const assertions eliminate type widening that loses precision. Configuration objects become truly immutable tuples and literal types rather than mutable strings and numbers. React query key factories use const assertions to preserve tuple types for cache invalidation. Route definition objects use const assertions to preserve string literal union types. Without const assertions, routes and config values are widened to `string`, losing the precision needed for type checking.

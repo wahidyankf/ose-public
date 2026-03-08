@@ -50,6 +50,7 @@ graph TD
 ```csharp
 // Example 61: ValueTask for High-Performance Async
 static class CachedService
+                         // => Static class for cached value retrieval
 {
     private static Dictionary<int, string> _cache = new()
                          // => Dictionary simulates cache storage
@@ -107,7 +108,7 @@ Console.WriteLine(result2);
 
 **Key Takeaway**: Use ValueTask&lt;T&gt; for frequently-called async methods where most operations complete synchronously (cache hits, pooled connections). Use Task&lt;T&gt; for methods that always go async.
 
-**Why It Matters**: In high-throughput APIs processing thousands of requests per second, ValueTask eliminates millions of Task allocations when operations complete synchronously from cache or connection pools. This reduces GC pressure and improves latency. Controllers using cached database connections see significant reductions in Gen0 collections.
+**Why It Matters**: In high-throughput APIs processing thousands of requests per second, ValueTask eliminates millions of Task allocations when operations complete synchronously from cache or connection pools. This reduces GC pressure and improves latency. Controllers using cached database connections see significant reductions in Gen0 collections. ValueTask must not be awaited multiple times - unlike Task, it lacks built-in multi-await support and will throw or return incorrect results on the second await.
 
 ## Example 62: IAsyncEnumerable for Streaming Data
 
@@ -184,6 +185,7 @@ static async IAsyncEnumerable<Customer> StreamCustomersAsync()
     };
 
     foreach (var customer in customers)
+                         // => Yield each customer as it's "fetched"
     {
         await Task.Delay(50);
                          // => Simulates row fetch delay
@@ -293,7 +295,7 @@ Console.WriteLine($"{y}-{m:D2}-{d:D2}");
 
 **Key Takeaway**: Span&lt;T&gt; provides zero-copy views over contiguous memory. Use for slicing, parsing, and buffer operations to eliminate allocations. Stack-only type (can't be stored in fields or used in async methods).
 
-**Why It Matters**: Traditional string parsing allocates substrings for each segment (year/month/day), creating garbage. High-throughput parsers (log processors, CSV readers) processing millions of lines per second generate gigabytes of garbage with traditional approaches, causing frequent GC pauses. Span&lt;T&gt; eliminates these allocations entirely, dramatically reducing GC pressure and improving latency in parsing-heavy workloads.
+**Why It Matters**: Traditional string parsing allocates substrings for each segment (year/month/day), creating garbage. High-throughput parsers (log processors, CSV readers) processing millions of lines per second generate gigabytes of garbage with traditional approaches, causing frequent GC pauses. Span&lt;T&gt; eliminates these allocations entirely, dramatically reducing GC pressure and improving latency in parsing-heavy workloads. Span&lt;T&gt; cannot be stored on the heap (no boxing, no field storage) - use Memory&lt;T&gt; when you need heap-accessible slice references across async boundaries.
 
 ## Example 64: Memory&lt;T&gt; for Async-Safe Memory Access
 
@@ -305,6 +307,7 @@ Memory&lt;T&gt; provides async-compatible memory access where Span&lt;T&gt; can'
 // Example 64: Memory<T> for Async-Safe Memory Access
 async Task ProcessWithSpanAsync()
                          // => Span limitation demonstration
+                         // => Shows why Span<T> fails in async methods
 {
     // Span<byte> buffer = stackalloc byte[1024];
                          // => ❌ COMPILER ERROR: Span<T> can't be in async
@@ -317,25 +320,30 @@ async Task ProcessWithMemoryAsync()
 {
     byte[] data = new byte[1024];
                          // => Heap array for async safety
+                         // => Heap-allocated, safe across await boundaries
     Memory<byte> memory = data;
                          // => Memory wraps array
                          // => Can cross async boundaries
     await Task.Delay(100);
                          // => ✅ Valid with Memory<T>
+                         // => Memory survives await (unlike Span)
     Span<byte> span = memory.Span;
                          // => Convert to Span when needed (in sync context)
     span[0] = 42;
                          // => Direct access through span
+                         // => span[0] modifies data[0]
 }
 
 static async Task ReadFromStreamAsync(Stream stream)
                          // => Async buffer processing example
+                         // => Stream parameter: source of data
 {
     byte[] buffer = new byte[4096];
                          // => Allocate buffer once for multiple reads
     Memory<byte> memory = buffer;
                          // => Wrap for async operations
     int bytesRead;
+                         // => Track actual bytes read per iteration
     while ((bytesRead = await stream.ReadAsync(memory)) > 0)
                          // => ReadAsync accepts Memory<byte> (async-compatible)
                          // => No allocation per read iteration
@@ -345,6 +353,7 @@ static async Task ReadFromStreamAsync(Stream stream)
                          // => No copy
         ProcessChunk(chunk);
                          // => Pass Memory to other methods
+                         // => Processing happens synchronously
     }
 }
 
@@ -354,6 +363,7 @@ static void ProcessChunk(Memory<byte> data)
     Span<byte> span = data.Span;
                          // => Convert to Span for actual processing
     int nonZeroCount = 0;
+                         // => Accumulator for non-zero bytes
     foreach (byte b in span)
                          // => Iterate span directly
     {
@@ -366,6 +376,7 @@ static void ProcessChunk(Memory<byte> data)
 
 var stream = new MemoryStream(new byte[] { 1, 0, 2, 0, 3 });
                          // => Create stream with sample data
+                         // => 3 non-zero bytes (1, 2, 3)
 await ReadFromStreamAsync(stream);
                          // => Process asynchronously
                          // => Output: Non-zero bytes: 3
@@ -610,12 +621,15 @@ Custom attributes attach metadata to types, methods, and properties. Reflection 
                          // => This attribute applies to properties only
 class ValidateRangeAttribute : Attribute
                          // => Custom attribute (inherits Attribute)
+                         // => Attribute classes end in "Attribute" by convention
 {
     public int Min { get; }
                          // => Minimum value for validation
+                         // => Read-only property (set in constructor)
     public int Max { get; }
                          // => Maximum value for validation
     public ValidateRangeAttribute(int min, int max)
+                         // => Constructor with validation bounds
     {
         Min = min;
                          // => Store min constraint
@@ -625,15 +639,18 @@ class ValidateRangeAttribute : Attribute
 }
 
 class Product
+                         // => Product with validation attributes
 {
     [ValidateRange(1, 100)]
                          // => Apply custom attribute with parameters
                          // => Metadata attached to Quantity property
     public int Quantity { get; set; }
+                         // => Quantity: must be 1-100
 
     [ValidateRange(0, 10000)]
                          // => Different range for Price
     public decimal Price { get; set; }
+                         // => Price: must be 0-10000
 }
 
 static bool Validate<T>(T obj)
@@ -661,6 +678,7 @@ static bool Validate<T>(T obj)
                     Console.WriteLine($"{prop.Name} out of range: {intValue} (valid: {attr.Min}-{attr.Max})");
                          // => Validation failed
                     return false;
+                         // => Return false on first violation
                 }
             }
         }
@@ -683,7 +701,7 @@ Console.WriteLine($"Product2 valid: {Validate(product2)}");
 
 **Key Takeaway**: Custom attributes attach metadata to code elements. Use AttributeUsage to specify valid targets. Use GetCustomAttribute() to read attributes at runtime for validation, configuration, or framework behavior.
 
-**Why It Matters**: Attributes enable declarative programming - express intent through metadata rather than code. Web frameworks use [Route], [HttpGet], [Authorize] attributes for routing and authentication. ORMs use [Key], [Required], [MaxLength] for database schema. This reduces boilerplate compared to imperative configuration - one [Required] attribute replaces validation code in every method.
+**Why It Matters**: Attributes enable declarative programming - express intent through metadata rather than code. Web frameworks use [Route], [HttpGet], [Authorize] attributes for routing and authentication. ORMs use [Key], [Required], [MaxLength] for database schema. This reduces boilerplate compared to imperative configuration - one [Required] attribute replaces validation code in every method. Custom validation attributes like `[MustBeAdult]` or `[ValidCurrency]` centralize domain rules, ensuring consistent validation across all controllers that accept the same model type.
 
 ## Example 68: Expression Trees - Code as Data
 
@@ -752,6 +770,7 @@ Console.WriteLine($"Parameter: {param.Name}, Body: {bodyExpr}");
                          // => Output: Parameter: p, Body: (p.Age > 25)
 
 class Person
+                         // => Data class for expression tree demonstrations
 {
     public string Name { get; set; } = "";
     public int Age { get; set; }
@@ -827,6 +846,7 @@ partial class PersonJsonContext : JsonSerializerContext
 var person = new Person { Name = "Bob", Age = 25 };
                          // => Create person instance
 string json = JsonSerializer.Serialize(person, PersonJsonContext.Default.Person);
+                         // => Generated serializer (no reflection)
                          // => Use generated serialization code
                          // => No reflection at runtime (faster)
                          // => json is {"Name":"Bob","Age":25}
@@ -960,16 +980,19 @@ var channel = Channel.CreateBounded<int>(new BoundedChannelOptions(10)
     FullMode = BoundedChannelFullMode.Wait
                          // => Wait when full (alternative: DropOldest, DropNewest, DropWrite)
 });
+                         // => channel type: Channel<int>
 
 var producer = Task.Run(async () =>
                          // => Producer task writes to channel
 {
     for (int i = 1; i <= 20; i++)
+                         // => Produces items 1 through 20
     {
         await channel.Writer.WriteAsync(i);
                          // => Write item to channel
                          // => Blocks if channel full (backpressure)
         Console.WriteLine($"Produced: {i}");
+                         // => Log each produced item
         await Task.Delay(100);
                          // => Simulate production delay
     }
@@ -986,6 +1009,7 @@ var consumer = Task.Run(async () =>
                          // => Completes when channel completed
     {
         Console.WriteLine($"Consumed: {item}");
+                         // => Process each consumed item
         await Task.Delay(200);
                          // => Simulate processing delay (slower than producer)
                          // => Backpressure kicks in when channel fills
@@ -1001,12 +1025,15 @@ var unboundedChannel = Channel.CreateUnbounded<string>();
                          // => No backpressure, but risk of memory growth
 
 var writer = unboundedChannel.Writer;
+                         // => Get channel writer endpoint
 writer.TryWrite("Message 1");
                          // => TryWrite for synchronous, non-blocking write
                          // => Returns false if bounded channel full
 writer.TryWrite("Message 2");
+                         // => Write second message
 
 var reader = unboundedChannel.Reader;
+                         // => Get channel reader endpoint
 if (reader.TryRead(out var message))
                          // => TryRead for synchronous, non-blocking read
                          // => Returns false if no items available
@@ -1340,6 +1367,7 @@ unsafe void UnsafeArrayAccess()
                          // => unsafe keyword required for pointer code
 {
     int[] numbers = { 1, 2, 3, 4, 5 };
+                         // => Managed array to pin with fixed
     fixed (int* ptr = numbers)
                          // => fixed prevents GC from moving array
                          // => ptr points to first element
@@ -1362,6 +1390,7 @@ unsafe int SumWithPointers(int[] arr)
                          // => Unsafe method for performance
 {
     int sum = 0;
+                         // => Accumulator for sum
     fixed (int* ptr = arr)
                          // => Pin array for pointer access
     {
@@ -1387,6 +1416,7 @@ unsafe
     UnsafeArrayAccess();
                          // => Call unsafe method
     int[] data = { 10, 20, 30, 40, 50 };
+                         // => Test data for SumWithPointers
     int total = SumWithPointers(data);
                          // => total is 150
     Console.WriteLine($"Sum: {total}");
@@ -1400,11 +1430,14 @@ unsafe void StackAllocWithPointers()
                          // => Allocate 10 ints on stack
                          // => Returns pointer (not Span)
     for (int i = 0; i < 10; i++)
+                         // => Fill buffer with squares
     {
         buffer[i] = i * i;
                          // => Pointer indexing (like array)
+                         // => Stores 0, 1, 4, 9, 16, ...
     }
     for (int i = 0; i < 10; i++)
+                         // => Print all values
     {
         Console.WriteLine($"buffer[{i}] = {buffer[i]}");
                          // => Output: buffer[0] = 0, buffer[1] = 1, buffer[2] = 4, ...
@@ -1421,7 +1454,9 @@ unsafe struct UnmanagedStruct
                          // => Struct with only unmanaged types
 {
     public int Id;
+                         // => ID field (unmanaged int)
     public float Value;
+                         // => Value field (unmanaged float)
     public fixed byte Buffer[16];
                          // => Fixed-size buffer (inline array)
                          // => Only allowed in unsafe structs
@@ -1430,9 +1465,13 @@ unsafe struct UnmanagedStruct
 unsafe
 {
     UnmanagedStruct data;
+                         // => Stack-allocated struct
     data.Id = 42;
+                         // => Set ID field
     data.Value = 3.14f;
+                         // => Set Value field
     for (int i = 0; i < 16; i++)
+                         // => Fill inline buffer
     {
         data.Buffer[i] = (byte)i;
                          // => Initialize fixed buffer
@@ -1576,14 +1615,18 @@ BenchmarkDotNet provides accurate performance benchmarking with statistical anal
 // Example 76: BenchmarkDotNet for Performance Measurement
 // Install NuGet: BenchmarkDotNet
 using BenchmarkDotNet.Attributes;
+                         // => [Benchmark], [MemoryDiagnoser], [Arguments]
 using BenchmarkDotNet.Running;
+                         // => BenchmarkRunner.Run<T>()
 
 [MemoryDiagnoser]
                          // => MemoryDiagnoser tracks allocations
                          // => Reports Gen0/Gen1/Gen2 collections and bytes allocated
 public class StringBenchmarks
+                         // => Benchmark class for string operations
 {
     private const int Iterations = 1000;
+                         // => Loop count for all benchmarks
 
     [Benchmark]
                          // => Benchmark attribute marks method for measurement
@@ -1591,34 +1634,43 @@ public class StringBenchmarks
                          // => Concatenation via + operator
     {
         string result = "";
+                         // => Start with empty string
         for (int i = 0; i < Iterations; i++)
+                         // => 1000 iterations
         {
             result += "x";
                          // => Creates new string each iteration
                          // => O(n²) complexity
         }
         return result;
+                         // => 1000-character string result
     }
 
     [Benchmark]
+                         // => Second benchmark method
     public string StringBuilderConcat()
                          // => Concatenation via StringBuilder
     {
         var sb = new StringBuilder();
+                         // => Mutable string builder (no reallocations below capacity)
         for (int i = 0; i < Iterations; i++)
+                         // => 1000 iterations
         {
             sb.Append("x");
                          // => Amortized O(1) per append
                          // => O(n) total complexity
         }
         return sb.ToString();
+                         // => Single allocation for final string
     }
 
     [Benchmark]
+                         // => Third benchmark method
     public string StringCreate()
                          // => string.Create (C# 7.2+)
     {
         return string.Create(Iterations, 'x', (span, c) =>
+                         // => string.Create: single allocation, fill in-place
         {
             span.Fill(c);
                          // => Fill Span<char> directly
@@ -1628,38 +1680,50 @@ public class StringBenchmarks
 }
 
 [MemoryDiagnoser]
+                         // => Track allocations for collection benchmarks
 public class CollectionBenchmarks
+                         // => Collection operation benchmarks
 {
     private readonly int[] _data = Enumerable.Range(0, 10000).ToArray();
+                         // => 10000-element array for benchmarks
 
     [Benchmark]
+                         // => List-based Sum
     public int ListSum()
                          // => LINQ Sum on List
     {
         return _data.ToList().Sum();
                          // => ToList() allocates new List
+                         // => Extra allocation vs direct Sum
     }
 
     [Benchmark]
+                         // => Array Sum
     public int ArraySum()
                          // => Direct array Sum
     {
         return _data.Sum();
                          // => No allocation
+                         // => Iterates array directly
     }
 
     [Benchmark]
+                         // => Span-based Sum
     public int SpanSum()
                          // => Span-based sum
     {
         Span<int> span = _data;
+                         // => Wrap array in Span
         int sum = 0;
+                         // => Accumulator
         foreach (var item in span)
+                         // => Iterate span directly
         {
             sum += item;
                          // => Direct iteration
         }
         return sum;
+                         // => Return total
     }
 }
 
@@ -1679,18 +1743,26 @@ public class CollectionBenchmarks
                          // => Allocation differences show GC impact
 
 [Benchmark]
+                         // => Parameterized benchmark
 [Arguments(10)]
+                         // => Test with 10 items
 [Arguments(100)]
+                         // => Test with 100 items
 [Arguments(1000)]
                          // => Test with different input sizes
 public int ParameterizedBenchmark(int size)
+                         // => size injected from [Arguments]
 {
     var list = new List<int>(size);
+                         // => Pre-sized list (avoids resizing)
     for (int i = 0; i < size; i++)
+                         // => Fill list up to size
     {
         list.Add(i);
+                         // => Add each element
     }
     return list.Sum();
+                         // => Sum all elements
 }
 ```
 
@@ -1715,6 +1787,7 @@ builder.Services.AddSwaggerGen();
                          // => Add Swagger/OpenAPI generation
 var app = builder.Build();
                          // => Build application from builder
+                         // => app type: WebApplication
 
 app.MapGet("/", () => "Hello World!");
                          // => GET endpoint at root
@@ -1735,6 +1808,7 @@ app.MapPost("/users", (User user) =>
                          // => user deserialized from request body
 {
     Console.WriteLine($"Created user: {user.Name}");
+                         // => Log created user name
     return Results.Created($"/users/{user.Id}", user);
                          // => Returns 201 Created with Location header
 });
@@ -1743,6 +1817,7 @@ app.MapGet("/products", async (HttpContext context) =>
                          // => Access HttpContext directly
 {
     var products = new[] { "Product1", "Product2", "Product3" };
+                         // => Sample products array
     await context.Response.WriteAsJsonAsync(products);
                          // => Write JSON response
 });
@@ -1754,14 +1829,19 @@ app.MapGet("/search", (string? query, int page = 1, int pageSize = 10) =>
     return new
     {
         Query = query ?? "none",
+                         // => Use "none" if query omitted
         Page = page,
+                         // => Current page (default: 1)
         PageSize = pageSize,
+                         // => Items per page (default: 10)
         Results = Array.Empty<string>()
+                         // => Empty results array
     };
                          // => Anonymous type serialized to JSON
 });
 
 record User(int Id, string Name);
+                         // => Simple data record for user responses
 
 var group = app.MapGroup("/api/v1")
                          // => Group related endpoints
@@ -1779,6 +1859,7 @@ app.MapGet("/weather", async () =>
     await Task.Delay(100);
                          // => Simulate async work
     return new { Temperature = 72, Condition = "Sunny" };
+                         // => Anonymous type auto-serialized to JSON
 });
 
 if (app.Environment.IsDevelopment())
@@ -1825,7 +1906,9 @@ graph TD
 ```csharp
 // Example 78: Middleware Pipeline - Request Processing
 var builder = WebApplication.CreateBuilder(args);
+                         // => Create builder (type: WebApplicationBuilder)
 var app = builder.Build();
+                         // => Build the application (type: WebApplication)
 
 app.Use(async (context, next) =>
                          // => Custom middleware (inline)
@@ -1844,10 +1927,11 @@ app.Use(async (context, next) =>
                          // => Timing middleware
 {
     var sw = System.Diagnostics.Stopwatch.StartNew();
-                         // => Start timer
+                         // => Start timer (type: Stopwatch)
     await next();
                          // => Process request through pipeline
     sw.Stop();
+                         // => Stop timer after processing
     Console.WriteLine($"Request took {sw.ElapsedMilliseconds}ms");
                          // => Log request duration
 });
@@ -1855,12 +1939,14 @@ app.Use(async (context, next) =>
 app.UseWhen(context => context.Request.Path.StartsWithSegments("/api"),
                          // => Conditional middleware (only for /api paths)
     appBuilder =>
+                         // => Inner builder for conditional branch
     {
         appBuilder.Use(async (context, next) =>
         {
             context.Response.Headers.Add("X-API-Version", "1.0");
                          // => Add header only for API requests
             await next();
+                         // => Continue to next middleware
         });
     });
 
@@ -1872,6 +1958,7 @@ app.Map("/admin", adminApp =>
         Console.WriteLine("Admin middleware");
                          // => Only runs for /admin requests
         await next();
+                         // => Continue pipeline for /admin
     });
     adminApp.Run(async context =>
                          // => Terminal middleware (doesn't call next)
@@ -1882,7 +1969,7 @@ app.Map("/admin", adminApp =>
 });
 
 app.MapGet("/", () => "Root endpoint");
-                         // => Regular endpoint
+                         // => Regular endpoint (mapped to GET /)
 
 class RequestLoggingMiddleware
                          // => Custom middleware class
@@ -1890,9 +1977,10 @@ class RequestLoggingMiddleware
     private readonly RequestDelegate _next;
                          // => Next middleware in pipeline
     public RequestLoggingMiddleware(RequestDelegate next)
+                         // => Constructor receives next middleware delegate
     {
         _next = next;
-                         // => Constructor receives next middleware
+                         // => Store next middleware delegate
     }
     public async Task InvokeAsync(HttpContext context)
                          // => Called for each request
@@ -1906,12 +1994,14 @@ class RequestLoggingMiddleware
 
 app.UseMiddleware<RequestLoggingMiddleware>();
                          // => Register custom middleware class
+                         // => Added to pipeline after previous middleware
 
 app.Run(async context =>
                          // => Fallback middleware (terminal)
                          // => Handles requests not matched by earlier middleware
 {
     context.Response.StatusCode = 404;
+                         // => Set 404 status code
     await context.Response.WriteAsync("Not Found");
                          // => 404 response for unmatched routes
 });
@@ -1933,11 +2023,13 @@ Health checks expose service health status for load balancers, orchestrators (Ku
 ```csharp
 // Example 79: Health Checks - Service Monitoring
 var builder = WebApplication.CreateBuilder(args);
+                         // => Create builder
 
 builder.Services.AddHealthChecks()
                          // => Register health check services
     .AddCheck("self", () => HealthCheckResult.Healthy("API is running"))
                          // => Basic liveness check
+                         // => Always healthy if this code runs
     .AddCheck("database", () =>
                          // => Custom database health check
     {
@@ -1947,8 +2039,11 @@ builder.Services.AddHealthChecks()
             bool dbConnected = true;
                          // => Replace with actual database check
             return dbConnected
+                         // => Conditional health result
                 ? HealthCheckResult.Healthy("Database is reachable")
+                         // => Healthy: database responds
                 : HealthCheckResult.Unhealthy("Database is unreachable");
+                         // => Unhealthy: cannot reach database
         }
         catch (Exception ex)
         {
@@ -1965,6 +2060,7 @@ builder.Services.AddHealthChecks()
     });
 
 var app = builder.Build();
+                         // => Build application
 
 app.MapHealthChecks("/health");
                          // => Health check endpoint at /health
@@ -1976,18 +2072,26 @@ app.MapHealthChecks("/health/ready", new HealthCheckOptions
     Predicate = check => check.Tags.Contains("ready"),
                          // => Only run checks tagged "ready"
     ResponseWriter = async (context, report) =>
+                         // => Custom JSON response writer
     {
         context.Response.ContentType = "application/json";
+                         // => Set JSON content type
         var result = System.Text.Json.JsonSerializer.Serialize(new
+                         // => Serialize health report to JSON
         {
             status = report.Status.ToString(),
                          // => Overall status: Healthy/Degraded/Unhealthy
             checks = report.Entries.Select(e => new
+                         // => Map each check entry to anonymous type
             {
                 name = e.Key,
+                         // => Check name
                 status = e.Value.Status.ToString(),
+                         // => Individual check status
                 description = e.Value.Description,
+                         // => Descriptive message
                 duration = e.Value.Duration.TotalMilliseconds
+                         // => Check duration in ms
             })
         });
         await context.Response.WriteAsync(result);
@@ -2007,29 +2111,37 @@ class DatabaseHealthCheck : IHealthCheck
                          // => Custom health check class
 {
     public async Task<HealthCheckResult> CheckHealthAsync(
+                         // => Required IHealthCheck method
         HealthCheckContext context,
+                         // => Context with check name and timeout
         CancellationToken cancellationToken = default)
+                         // => Cancellation support
     {
         try
         {
             await Task.Delay(100, cancellationToken);
                          // => Simulate async database check
             return HealthCheckResult.Healthy("Database connection OK");
+                         // => Return healthy status
         }
         catch (Exception ex)
         {
             return HealthCheckResult.Unhealthy("Database connection failed", ex);
+                         // => Return unhealthy with exception
         }
     }
 }
 
 builder.Services.AddHealthChecks()
+                         // => Register additional check
     .AddCheck<DatabaseHealthCheck>("database-v2", tags: new[] { "ready", "db" });
                          // => Register custom health check with tags
 
 app.MapGet("/", () => "Use /health, /health/ready, /health/live for health checks");
+                         // => Info endpoint
 
 // app.Run();
+                         // => Start server
 
 // Example responses:
 // GET /health
@@ -2077,10 +2189,14 @@ graph TD
 // Example 80: OpenTelemetry - Distributed Tracing
 // Install NuGet: OpenTelemetry, OpenTelemetry.Exporter.Console
 using System.Diagnostics;
+                         // => ActivitySource, Activity
 using OpenTelemetry.Trace;
+                         // => Tracing provider configuration
 using OpenTelemetry.Resources;
+                         // => Resource builder for service metadata
 
 var builder = WebApplication.CreateBuilder(args);
+                         // => Create web application builder
 
 builder.Services.AddOpenTelemetry()
                          // => Register OpenTelemetry services
@@ -2099,12 +2215,14 @@ builder.Services.AddOpenTelemetry()
                          // => Production: use Jaeger, Zipkin, Azure Monitor
 
 var app = builder.Build();
+                         // => Build application
 
 var activitySource = new ActivitySource("MyApp");
                          // => Create activity source for custom spans
                          // => Name must match AddSource registration
 
 app.MapGet("/process", async () =>
+                         // => Endpoint with custom tracing
 {
     using var activity = activitySource.StartActivity("ProcessRequest");
                          // => Start custom span
@@ -2112,6 +2230,7 @@ app.MapGet("/process", async () =>
     activity?.SetTag("user.id", "12345");
                          // => Add custom attributes to span
     activity?.SetTag("operation.type", "batch-processing");
+                         // => Additional span attribute
 
     await Task.Delay(100);
                          // => Simulate work
@@ -2122,14 +2241,18 @@ app.MapGet("/process", async () =>
                          // => Start child span
     {
         childActivity?.SetTag("db.system", "postgresql");
+                         // => Tag: database type
         childActivity?.SetTag("db.statement", "SELECT * FROM users");
+                         // => Tag: SQL statement
         await Task.Delay(50);
                          // => Simulate database query
     }
                          // => Child span ends (auto-disposed)
 
     activity?.AddEvent(new ActivityEvent("Processing completed"));
+                         // => Add completion event to timeline
     return "Processed successfully";
+                         // => Response body
 });
 
 app.MapGet("/chain", async (HttpContext context) =>
@@ -2138,6 +2261,7 @@ app.MapGet("/chain", async (HttpContext context) =>
     using var activity = activitySource.StartActivity("ChainRequest");
                          // => Parent span
     activity?.SetTag("endpoint", "/chain");
+                         // => Tag the endpoint
 
     var httpClient = new HttpClient();
                          // => HttpClient auto-instrumented
@@ -2148,6 +2272,7 @@ app.MapGet("/chain", async (HttpContext context) =>
                          // => Outgoing HTTP call creates child span
                          // => Trace ID propagated via W3C Trace Context headers
         activity?.SetTag("response.length", response.Length);
+                         // => Tag response size
         return "Chain completed";
     }
     catch (Exception ex)
@@ -2157,12 +2282,15 @@ app.MapGet("/chain", async (HttpContext context) =>
         activity?.RecordException(ex);
                          // => Record exception details
         throw;
+                         // => Re-throw to propagate
     }
 });
 
 app.MapGet("/", () => "Use /process or /chain to generate traces");
+                         // => Info endpoint
 
 // app.Run();
+                         // => Start server
 
 // Console output (simplified):
 // Activity.TraceId:         80000000-0000-0000-0000-000000000001
@@ -2358,6 +2486,7 @@ with expressions (C# 9+) create modified copies of records with minimal syntax. 
 // Example 82: with Expressions for Immutable Updates
 record Person(string Name, int Age, string City);
                          // => Record type (immutable by default)
+                         // => Compiler generates value equality and ToString
 
 var alice = new Person("Alice", 30, "New York");
                          // => Create record instance
@@ -2377,12 +2506,14 @@ Console.WriteLine($"Modified: {olderAlice}");
 var relocated = alice with { City = "San Francisco" };
                          // => Change different property
                          // => relocated is Person { Name = "Alice", Age = 30, City = "San Francisco" }
+                         // => alice unchanged
 
 var completeChange = alice with { Name = "Alicia", Age = 35, City = "Boston" };
                          // => Change multiple properties
                          // => completeChange is Person { Name = "Alicia", Age = 35, City = "Boston" }
 
 record Address(string Street, string City, string ZipCode);
+                         // => Nested record type
 record Customer(string Name, Address Address);
                          // => Nested records
 
@@ -2418,6 +2549,7 @@ var devConfig = new Configuration("Development", 10, true);
 var prodConfig = devConfig.WithProduction();
                          // => Convert to production configuration
                          // => prodConfig is Configuration { Environment = "Production", MaxConnections = 10, EnableLogging = false }
+                         // => devConfig unchanged
 
 Console.WriteLine($"Dev: {devConfig}");
                          // => Output: Dev: Configuration { Environment = Development, MaxConnections = 10, EnableLogging = True }
@@ -2439,15 +2571,19 @@ Discriminated unions (via record hierarchies) model mutually exclusive states ex
 // Example 83: Discriminated Unions with Records
 abstract record Result;
                          // => Abstract base record (union type)
+                         // => Cannot be instantiated directly
 record Success(string Value) : Result;
                          // => Success case
+                         // => Value contains result data
 record Failure(string Error) : Result;
                          // => Failure case
                          // => Result is Success OR Failure (never both)
 
 static Result Divide(int a, int b)
+                         // => Returns discriminated union (never null)
 {
     if (b == 0)
+                         // => Guard against division by zero
         return new Failure("Division by zero");
                          // => Return Failure case
     return new Success($"{a / b}");
@@ -2476,6 +2612,7 @@ abstract record PaymentStatus;
                          // => Payment state machine
 record Pending : PaymentStatus;
                          // => Pending payment
+                         // => No data needed
 record Processing(string TransactionId) : PaymentStatus;
                          // => Processing with transaction ID
 record Completed(string TransactionId, DateTime CompletedAt) : PaymentStatus;
@@ -2487,8 +2624,11 @@ static string DescribeStatus(PaymentStatus status) => status switch
                          // => Exhaustive pattern matching
 {
     Pending => "Payment is pending",
+                         // => No data to extract
     Processing p => $"Processing transaction {p.TransactionId}",
+                         // => Destructure TransactionId
     Completed c => $"Completed at {c.CompletedAt}",
+                         // => Destructure CompletedAt
     Failed f => $"Failed: {f.Reason}",
                          // => Must handle all cases (compiler enforced)
 };
@@ -2501,8 +2641,11 @@ Console.WriteLine(DescribeStatus(payment));
 abstract record Shape;
                          // => Geometric shape union
 record Circle(double Radius) : Shape;
+                         // => Circle with radius
 record Rectangle(double Width, double Height) : Shape;
+                         // => Rectangle with dimensions
 record Triangle(double Base, double Height) : Shape;
+                         // => Triangle with base and height
 
 static double Area(Shape shape) => shape switch
                          // => Calculate area (different formula per shape)
@@ -2514,10 +2657,13 @@ static double Area(Shape shape) => shape switch
     Triangle t => 0.5 * t.Base * t.Height,
                          // => Triangle area formula
     _ => throw new ArgumentException("Unknown shape")
+                         // => Unreachable if Shape is sealed hierarchy
 };
 
 var circle = new Circle(5);
+                         // => Circle with radius 5
 var rectangle = new Rectangle(4, 6);
+                         // => Rectangle 4x6
 Console.WriteLine($"Circle area: {Area(circle)}");
                          // => Output: Circle area: 78.54
 Console.WriteLine($"Rectangle area: {Area(rectangle)}");
@@ -2532,8 +2678,10 @@ record None<T> : Option<T>;
                          // => Type-safe null alternative
 
 static Option<int> ParseInt(string s)
+                         // => Returns Option<int>, never null
 {
     if (int.TryParse(s, out int value))
+                         // => Try to parse string as int
         return new Some<int>(value);
                          // => Return Some if parse succeeds
     return new None<int>();
@@ -2541,15 +2689,19 @@ static Option<int> ParseInt(string s)
 }
 
 var parsed1 = ParseInt("42");
+                         // => parsed1 is Some<int>(42)
 var parsed2 = ParseInt("invalid");
+                         // => parsed2 is None<int>
 
 int GetValueOrDefault(Option<int> option, int defaultValue) => option switch
+                         // => Safely extract value or use default
 {
     Some<int> s => s.Value,
                          // => Extract value from Some
     None<int> => defaultValue,
                          // => Use default for None
     _ => defaultValue
+                         // => Exhaustive fallback
 };
 
 Console.WriteLine($"Parsed1: {GetValueOrDefault(parsed1, 0)}");
@@ -2732,7 +2884,9 @@ Practical source generator creating INotifyPropertyChanged implementations autom
 // Source generator implementation is separate (analyzer project)
 
 using System.ComponentModel;
+                         // => INotifyPropertyChanged interface
 using System.Runtime.CompilerServices;
+                         // => CallerMemberName attribute
 
 [AutoNotify]
                          // => Attribute triggers source generator
@@ -2762,6 +2916,7 @@ partial class ViewModel : INotifyPropertyChanged
                          // => CallerMemberName automatically fills property name
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                         // => Null-conditional: safe invocation of event
     }
 }
 
@@ -2839,7 +2994,9 @@ vm.Name = "Alice";
 partial class Product
 {
     private string _name = "";
+                         // => Backing field for Name property
     private decimal _price;
+                         // => Backing field for Price property
     private int _quantity;
                          // => Generator creates properties for all private fields
 }

@@ -116,7 +116,7 @@ Console.WriteLine(shape2.GetArea());
 
 **Key Takeaway**: Interfaces enable polymorphism by defining contracts that multiple types can implement with their own specialized behavior.
 
-**Why It Matters**: Interfaces are fundamental to SOLID design principles (especially Dependency Inversion). They enable testable, flexible architectures where code depends on abstractions rather than concrete implementations. Payment processing systems use interfaces to support multiple providers (Stripe, PayPal) through a single `IPaymentProcessor` interface, allowing provider switching without code changes.
+**Why It Matters**: Interfaces are fundamental to SOLID design principles (especially Dependency Inversion). They enable testable, flexible architectures where code depends on abstractions rather than concrete implementations. Payment processing systems use interfaces to support multiple providers (Stripe, PayPal) through a single `IPaymentProcessor` interface, allowing provider switching without code changes. Unit tests inject mock implementations through interface references, isolating components from their dependencies and enabling fast, reliable test suites.
 
 ## Example 32: Inheritance - Base and Derived Classes
 
@@ -188,79 +188,101 @@ animal2.MakeSound();      // => Calls Cat.MakeSound()
 
 **Key Takeaway**: Use inheritance for "is-a" relationships and shared behavior. Virtual methods enable runtime polymorphism through method overriding.
 
-**Why It Matters**: Inheritance enables code reuse and hierarchical type relationships. However, favor composition over inheritance when possible - deep inheritance hierarchies become brittle and hard to maintain. Use inheritance only when there's a clear "is-a" relationship and significant shared implementation.
+**Why It Matters**: Inheritance enables code reuse and hierarchical type relationships. However, favor composition over inheritance when possible - deep inheritance hierarchies become brittle and hard to maintain. Use inheritance only when there's a clear "is-a" relationship and significant shared implementation. The Liskov Substitution Principle requires derived types to be substitutable for base types without altering program correctness. Violating this principle by overriding methods with fundamentally different behavior causes subtle bugs when code uses base class references polymorphically.
 
 ## Example 33: Abstract Classes - Partial Implementations
 
 Abstract classes combine interface contracts (abstract methods) with shared implementation (concrete methods). They cannot be instantiated directly.
 
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A["abstract Shape\n(abstract class)\ncannot instantiate"] -->|"inherits"| B["Circle\n(concrete class)\nGetArea() overrides"]
+    A -->|"inherits"| C["Rectangle\n(concrete class)\nGetArea() overrides"]
+    A -->|"provides shared impl"| D["Describe()\n(concrete method)\nshared by all subclasses"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CA9161,stroke:#000,color:#fff
+```
+
 ```csharp
 // Example 33: Abstract Classes
 abstract class Shape      // => abstract prevents direct instantiation
 {                         // => Can't do: new Shape()
-    public abstract double GetArea();
-                          // => abstract method: no implementation
-                          // => Derived classes MUST implement
+    public abstract double GetArea();  // => abstract: no body, must override
+                          // => abstract method: signature only
+                          // => Derived classes MUST provide implementation
 
-    public abstract double GetPerimeter();
-                          // => Another required method
+    public abstract double GetPerimeter();  // => Another required method
+                          // => Both methods enforced by compiler
 
-    public void PrintInfo()
-    {                     // => Concrete method with implementation
-                          // => Shared by all derived classes
+    public void PrintInfo()  // => Concrete method (has implementation)
+    {                     // => Shared by ALL derived classes (Square, Circle)
+                          // => Code reuse: defined once in abstract class
         Console.WriteLine($"Area: {GetArea()}");
-                          // => Calls derived class's GetArea()
+                          // => Polymorphic call: invokes derived GetArea()
+                          // => Runtime dispatches to Square.GetArea() or Circle.GetArea()
         Console.WriteLine($"Perimeter: {GetPerimeter()}");
-                          // => Polymorphic calls
+                          // => Similarly calls derived GetPerimeter()
     }
 }
 
 class Square : Shape      // => Square must implement abstract methods
-{
+{                         // => Concrete derived class (can be instantiated)
     private double side;
+                          // => Private backing field for side length
 
-    public Square(double s)
-    {
-        side = s;         // => Store side length
+    public Square(double s)  // => Constructor: s is the side length
+    {                     // => s parameter initializes the square's size
+        side = s;         // => Store: side = provided dimension
+                          // => side is now 5 (for new Square(5))
     }
 
-    public override double GetArea()
-    {                     // => Required implementation
-        return side * side;
-                          // => Square area: s²
+    public override double GetArea()  // => Implementation of abstract GetArea
+    {                     // => Satisfies abstract contract from Shape
+        return side * side;  // => Square area: s²
+                          // => Returns: 25.0 (for side=5)
     }
 
-    public override double GetPerimeter()
-    {                     // => Required implementation
+    public override double GetPerimeter()  // => Implementation of abstract GetPerimeter
+    {                     // => Required by Shape
         return 4 * side;  // => Square perimeter: 4s
+                          // => Returns: 20.0 (for side=5)
     }
 }
 
-class Circle : Shape
-{
+class Circle : Shape      // => Circle: different shape, same abstract contract
+{                         // => Must implement GetArea and GetPerimeter
     private double radius;
+                          // => Backing field for circle's radius
 
-    public Circle(double r)
-    {
-        radius = r;
+    public Circle(double r)  // => Constructor: r is the radius
+    {                     // => Initializes Circle's dimension
+        radius = r;       // => Store radius value
+                          // => radius is now r
     }
 
-    public override double GetArea()
-    {
-        return Math.PI * radius * radius;
-                          // => Circle area: πr²
+    public override double GetArea()  // => Circle-specific area implementation
+    {                     // => Satisfies Shape.GetArea() contract
+        return Math.PI * radius * radius;  // => Circle area: πr²
+                          // => Math.PI = 3.14159...
+                          // => Returns: 78.54 (for radius=5)
     }
 
-    public override double GetPerimeter()
-    {
-        return 2 * Math.PI * radius;
-                          // => Circle circumference: 2πr
+    public override double GetPerimeter()  // => Circle-specific circumference
+    {                     // => Satisfies Shape.GetPerimeter() contract
+        return 2 * Math.PI * radius;  // => Circumference: 2πr
+                          // => Returns: 31.42 (for radius=5)
     }
 }
 
-Shape shape = new Square(5);
-                          // => Can't instantiate Shape directly
-                          // => Must use derived class
+Shape shape = new Square(5);  // => Instantiate Square, assign to Shape reference
+                          // => Abstract class reference polymorphism
+                          // => shape variable type: Shape; actual: Square
 
 shape.PrintInfo();        // => Calls shared PrintInfo from Shape
                           // => Output: Area: 25
@@ -269,7 +291,7 @@ shape.PrintInfo();        // => Calls shared PrintInfo from Shape
 
 **Key Takeaway**: Abstract classes provide partial implementation - abstract methods define contracts while concrete methods provide shared functionality.
 
-**Why It Matters**: Abstract classes are ideal when you need shared implementation plus enforced contracts. They're more flexible than interfaces (before C# 8 default interface implementations) but more rigid than pure interfaces. Use abstract classes when derived types share significant common code but need specific implementations for certain operations.
+**Why It Matters**: Abstract classes are ideal when you need shared implementation plus enforced contracts. They're more flexible than interfaces (before C# 8 default interface implementations) but more rigid than pure interfaces. Use abstract classes when derived types share significant common code but need specific implementations for certain operations. The Template Method pattern uses abstract classes to define algorithm skeletons where concrete subclasses fill in specific steps, enabling code reuse while enforcing structural consistency across implementations.
 
 ## Example 34: Async/Await - Basic Asynchronous Operations
 
@@ -328,7 +350,7 @@ Console.WriteLine(result);// => Output: Data
 
 **Key Takeaway**: Async/await enables non-blocking asynchronous operations. `async` keyword enables `await`, and `await` pauses execution without blocking threads.
 
-**Why It Matters**: Async/await dramatically improves scalability for I/O-bound operations. Web servers handle thousands of concurrent requests on a single thread pool instead of dedicating one thread per request. Applications achieve higher throughput by using async controllers that release threads during database/API calls.
+**Why It Matters**: Async/await dramatically improves scalability for I/O-bound operations. Web servers handle thousands of concurrent requests on a single thread pool instead of dedicating one thread per request. Applications achieve higher throughput by using async controllers that release threads during database/API calls. ASP.NET Core applications should use async throughout the stack (controllers, services, repositories) to avoid thread pool starvation under load. Mixing sync and async code with `.Result` or `.Wait()` causes deadlocks in certain synchronization contexts.
 
 ## Example 35: Task.WhenAll - Parallel Async Operations
 
@@ -405,11 +427,28 @@ Console.WriteLine(string.Join(", ", results));
 
 **Key Takeaway**: `Task.WhenAll` runs tasks concurrently and waits for all to complete. Total time equals the longest task, not the sum of all tasks.
 
-**Why It Matters**: Parallel async operations dramatically reduce I/O-bound operation times. Dashboard pages fetch data from multiple APIs concurrently (users, orders, analytics) in 500ms instead of 1500ms sequentially. E-commerce sites load product details, reviews, and recommendations in parallel, improving page load times significantly.
+**Why It Matters**: Parallel async operations dramatically reduce I/O-bound operation times. Dashboard pages fetch data from multiple APIs concurrently (users, orders, analytics) in 500ms instead of 1500ms sequentially. E-commerce sites load product details, reviews, and recommendations in parallel, improving page load times significantly. `Task.WhenAll` propagates all exceptions together in an `AggregateException`, so error handling must unwrap all failures rather than just the first. For partial failures, `Task.WhenAll` should be combined with individual task exception handling to continue with successful results.
 
 ## Example 36: Task.WhenAny - Race Conditions
 
 `Task.WhenAny` completes when the first task finishes, enabling timeout patterns and race conditions.
+
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["Task.WhenAny(task1, task2, timeoutTask)"] -->|"first to complete wins"| B{"Which finished first?"}
+    B -->|"SlowService"| C["Use SlowService result"]
+    B -->|"FastService"| D["Use FastService result"]
+    B -->|"timeoutTask"| E["Timeout - use fallback"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#CC78BC,stroke:#000,color:#000
+```
 
 ```csharp
 // Example 36: Task.WhenAny - Race Conditions
@@ -469,7 +508,7 @@ Console.WriteLine(result);// => Output: Fast result
 
 **Key Takeaway**: `Task.WhenAny` returns when the first task completes, enabling timeout patterns and service races.
 
-**Why It Matters**: `Task.WhenAny` enables resilience patterns. Services race primary and fallback APIs, using whichever responds first. Timeout patterns combine operations with `Task.Delay` timeouts, canceling slow operations automatically. This improves user experience by preventing indefinite waits and enabling graceful degradation.
+**Why It Matters**: `Task.WhenAny` enables resilience patterns. Services race primary and fallback APIs, using whichever responds first. Timeout patterns combine operations with `Task.Delay` timeouts, canceling slow operations automatically. This improves user experience by preventing indefinite waits and enabling graceful degradation. Remember to cancel or abandon the losing task to avoid resource leaks - even after `WhenAny` returns, the other tasks continue running unless explicitly canceled via `CancellationToken`. Circuit breaker patterns build on `WhenAny` to route traffic away from unhealthy services.
 
 ## Example 37: File I/O - Reading and Writing Files
 
@@ -523,7 +562,7 @@ bool exists = File.Exists(path);
 
 **Key Takeaway**: `File.WriteAllText`, `File.ReadAllText`, and `File.ReadAllLines` provide simple file I/O operations. Use `File.AppendAllText` for appending.
 
-**Why It Matters**: File I/O is fundamental for data persistence, logging, and configuration. Simple methods like `File.ReadAllText` are sufficient for small files. For large files, use `StreamReader`/`StreamWriter` for memory-efficient line-by-line processing. Log aggregation systems process gigabyte-sized log files using streaming APIs that maintain constant memory usage.
+**Why It Matters**: File I/O is fundamental for data persistence, logging, and configuration. Simple methods like `File.ReadAllText` are sufficient for small files. For large files, use `StreamReader`/`StreamWriter` for memory-efficient line-by-line processing. Log aggregation systems process gigabyte-sized log files using streaming APIs that maintain constant memory usage. Always use `using` declarations for file streams to ensure handles are released promptly. Applications that hold file handles without closing them accumulate resource leaks that eventually exhaust operating system file descriptor limits.
 
 ## Example 38: JSON Serialization with System.Text.Json
 
@@ -586,7 +625,7 @@ Console.WriteLine($"{deserializedPerson?.Name}, {deserializedPerson?.Age}");
 
 **Key Takeaway**: `System.Text.Json` provides high-performance JSON serialization. Use `JsonSerializer.Serialize` for objects→JSON and `JsonSerializer.Deserialize<T>` for JSON→objects.
 
-**Why It Matters**: JSON is the dominant data interchange format for web APIs and configuration files. `System.Text.Json` is the standard library in modern .NET. RESTful APIs serialize response objects to JSON automatically, and configuration systems load `appsettings.json` using the same serializer.
+**Why It Matters**: JSON is the dominant data interchange format for web APIs and configuration files. `System.Text.Json` is the standard library in modern .NET. RESTful APIs serialize response objects to JSON automatically, and configuration systems load `appsettings.json` using the same serializer. Use `[JsonPropertyName]` attributes to control serialized property names when C# naming conventions differ from API contracts. `JsonSerializerOptions` with `PropertyNameCaseInsensitive = true` makes deserialization robust to casing variations in external API responses.
 
 ## Example 39: HTTP Client - Making API Requests
 
@@ -675,7 +714,7 @@ postResponse.EnsureSuccessStatusCode();
 
 **Key Takeaway**: `HttpClient` provides async HTTP operations. Use `GetAsync` for GET requests and `PostAsync` with `StringContent` for POST with JSON bodies.
 
-**Why It Matters**: HTTP clients are essential for microservice communication and third-party API integration. Reusing `HttpClient` instances is critical - creating new instances per request exhausts socket connections under high load. The `IHttpClientFactory` pattern manages client lifetimes and handles transient faults.
+**Why It Matters**: HTTP clients are essential for microservice communication and third-party API integration. Reusing `HttpClient` instances is critical - creating new instances per request exhausts socket connections under high load. The `IHttpClientFactory` pattern manages client lifetimes and handles transient faults. Polly integration with `IHttpClientFactory` adds retry policies, circuit breakers, and timeout handling declaratively. Named or typed clients encapsulate base URL configuration and authentication headers, centralizing API client configuration and enabling easy mocking in unit tests.
 
 ## Example 40: LINQ GroupBy - Grouping Data
 
@@ -776,7 +815,7 @@ foreach (var ct in categoryTotals)
 
 **Key Takeaway**: `GroupBy` creates groups based on key selector. Each group has a `Key` property and contains elements matching that key.
 
-**Why It Matters**: GroupBy is essential for categorization and aggregation scenarios. Sales reports group transactions by date/product/region to calculate daily totals. Analytics dashboards group user events by action type to compute engagement metrics. GroupBy replaces verbose manual dictionary-building code with declarative LINQ expressions.
+**Why It Matters**: GroupBy is essential for categorization and aggregation scenarios. Sales reports group transactions by date/product/region to calculate daily totals. Analytics dashboards group user events by action type to compute engagement metrics. GroupBy replaces verbose manual dictionary-building code with declarative LINQ expressions. When combined with `ToDictionary`, GroupBy builds lookup structures for efficient repeated access. Entity Framework translates LINQ GroupBy to SQL GROUP BY clauses with aggregate functions (COUNT, SUM, AVG), pushing computation to the database where it's most efficient.
 
 ## Example 41: LINQ Join - Combining Collections
 
@@ -988,7 +1027,7 @@ foreach (var item in studentsWithSchool)
 
 **Key Takeaway**: `SelectMany` flattens nested collections into a single sequence. Use the two-parameter overload to preserve parent context.
 
-**Why It Matters**: SelectMany is essential for hierarchical data structures. Order processing systems flatten order lines across multiple orders to calculate total revenue. Analytics platforms flatten user sessions (each containing multiple events) to compute event frequencies. SelectMany replaces nested loops with declarative LINQ expressions that are more readable and optimizable.
+**Why It Matters**: SelectMany is essential for hierarchical data structures. Order processing systems flatten order lines across multiple orders to calculate total revenue. Analytics platforms flatten user sessions (each containing multiple events) to compute event frequencies. SelectMany replaces nested loops with declarative LINQ expressions that are more readable and optimizable. In Entity Framework, SelectMany translates to SQL JOINs, enabling efficient relational queries without manual join syntax. Graph traversal algorithms use SelectMany to expand node neighbor lists.
 
 ## Example 43: Delegates - Function Pointers
 
@@ -1069,7 +1108,7 @@ ExecuteOperation(10, 2, Multiply);
 
 **Key Takeaway**: Delegates are type-safe function pointers that can reference methods with matching signatures. They enable callbacks and higher-order functions.
 
-**Why It Matters**: Delegates are foundational to C#'s event system and LINQ. They enable inversion of control where caller provides behavior (strategy pattern). UI frameworks use delegates for button click handlers. LINQ methods like `Where` and `Select` accept delegates (Func<T, TResult>) to customize filtering and projection logic.
+**Why It Matters**: Delegates are foundational to C#'s event system and LINQ. They enable inversion of control where caller provides behavior (strategy pattern). UI frameworks use delegates for button click handlers. LINQ methods like `Where` and `Select` accept delegates (Func<T, TResult>) to customize filtering and projection logic. Multicast delegates combine multiple method calls into a single invocation chain, used extensively in event systems where multiple subscribers respond to a single event notification.
 
 ## Example 44: Events - Publisher-Subscriber Pattern
 
@@ -1173,6 +1212,25 @@ button.Click();           // => Only analytics notified now
 
 Generics enable writing reusable code that works with multiple types while maintaining type safety.
 
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A["Box<T>\n(generic class)"] -->|"T = int"| B["Box<int>\nstores integers only"]
+    A -->|"T = string"| C["Box<string>\nstores strings only"]
+    A -->|"T = Person"| D["Box<Person>\nstores Person only"]
+    B -->|"type safety"| E["Compiler enforces\ncorrect type at compile time"]
+    C -->|"type safety"| E
+    D -->|"type safety"| E
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#000
+    style E fill:#CA9161,stroke:#000,color:#fff
+```
+
 ```csharp
 // Example 45: Generics - Type Parameters
 class Box<T>              // => Generic class with type parameter T
@@ -1244,6 +1302,25 @@ Console.WriteLine($"{firstNumber}, {firstWord}");
 ## Example 46: Generic Constraints - Restricting Type Parameters
 
 Generic constraints restrict type parameters to specific types or capabilities, enabling type-specific operations.
+
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    A["Repository<T>\nwhere T : IStorable, new()"] -->|"constraint: T must implement"| B["IStorable\n(has Id property)"]
+    A -->|"constraint: T must have"| C["new()\n(parameterless constructor)"]
+    A -->|"enables"| D["Save(entity)\nGetById(id)"]
+    B -->|"satisfied by"| E["User : IStorable"]
+    B -->|"satisfied by"| F["Product : IStorable"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CA9161,stroke:#000,color:#fff
+    style E fill:#CC78BC,stroke:#000,color:#000
+    style F fill:#CC78BC,stroke:#000,color:#000
+```
 
 ```csharp
 // Example 46: Generic Constraints
@@ -1326,6 +1403,23 @@ Console.WriteLine(retrieved?.Name);
 
 Extension methods enable adding methods to existing types without modifying their source code or creating derived types.
 
+#### Diagram
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+    A["static class StringExtensions\n(extension method host)"] -->|"extends"| B["string type\n(existing type, not modified)"]
+    B -->|"new methods available"| C["str.IsPalindrome()"]
+    B -->|"new methods available"| D["str.WordCount()"]
+    B -->|"new methods available"| E["str.ToTitleCase()"]
+
+    style A fill:#0173B2,stroke:#000,color:#fff
+    style B fill:#DE8F05,stroke:#000,color:#000
+    style C fill:#029E73,stroke:#000,color:#fff
+    style D fill:#029E73,stroke:#000,color:#fff
+    style E fill:#029E73,stroke:#000,color:#fff
+```
+
 ```csharp
 // Example 47: Extension Methods
 static class StringExtensions
@@ -1403,7 +1497,7 @@ Console.WriteLine(isEmpty);
 
 **Key Takeaway**: Extension methods use `this` keyword on first parameter to extend existing types. They appear as instance methods but are static methods.
 
-**Why It Matters**: Extension methods enable fluent APIs and adding functionality to types you don't own (framework types, third-party libraries). LINQ is entirely built on extension methods - `Where`, `Select`, `GroupBy` are extensions on `IEnumerable<T>`. Custom extension methods improve code readability by enabling method chaining and domain-specific operations without inheritance.
+**Why It Matters**: Extension methods enable fluent APIs and adding functionality to types you don't own (framework types, third-party libraries). LINQ is entirely built on extension methods - `Where`, `Select`, `GroupBy` are extensions on `IEnumerable<T>`. Custom extension methods improve code readability by enabling method chaining and domain-specific operations without inheritance. Extension methods on `ILogger` create structured logging helpers. Fluent validation libraries use extension methods to build readable validation rules like `RuleFor(x => x.Email).NotEmpty().EmailAddress()`.
 
 ## Example 48: Indexers - Array-Like Access
 
@@ -1416,81 +1510,91 @@ class ShoppingCart        // => Shopping cart class
     private Dictionary<string, int> items = new();
                           // => Internal storage: product name → quantity
                           // => Dictionary maps string keys to int values
+                          // => new() uses target-type inference (Dictionary<string,int>)
 
-    public int this[string productName]
-    {                     // => Indexer declaration
-                          // => this[string] enables cart["Apple"] syntax
-                          // => Property-like syntax with parameter
-        get               // => Get accessor
-        {                 // => Returns quantity for product
+    public int this[string productName]  // => Indexer declaration
+    {                     // => this[string] enables cart["Apple"] syntax
+                          // => Property-like syntax with a parameter
+        get               // => Get accessor returns current quantity
+        {                 // => Called when reading: cart["Apple"]
             return items.ContainsKey(productName) ? items[productName] : 0;
+                          // => ContainsKey prevents KeyNotFoundException
                           // => Returns quantity or 0 if not in cart
-                          // => Ternary operator for safe access
         }
-        set
-        {                 // => Set accessor
-                          // => value is implicit parameter
-            if (value > 0)
+        set               // => Set accessor updates quantity
+        {                 // => value is implicit parameter (the right-hand side)
+            if (value > 0)   // => Positive quantity: add/update
                 items[productName] = value;
-                          // => Add or update quantity
-            else
+                          // => Add new key or update existing
+            else             // => Zero/negative: remove from cart
                 items.Remove(productName);
-                          // => Remove if quantity 0 or negative
+                          // => Remove product entry entirely
         }
     }
 
     public int Count => items.Count;
-                          // => Number of distinct products
+                          // => Expression-bodied property
+                          // => Number of distinct products in cart
 }
 
 var cart = new ShoppingCart();
+                          // => Empty cart: no items
 
-cart["Apple"] = 5;        // => Uses indexer setter
-                          // => Adds 5 apples to cart
+cart["Apple"] = 5;        // => Calls indexer setter with productName="Apple", value=5
+                          // => items["Apple"]=5 (added to dictionary)
 
-cart["Banana"] = 3;       // => Adds 3 bananas
+cart["Banana"] = 3;       // => Adds bananas to cart
+                          // => items["Banana"]=3
 
 Console.WriteLine(cart["Apple"]);
-                          // => Uses indexer getter
+                          // => Calls indexer getter: returns items["Apple"]
                           // => Output: 5
 
 Console.WriteLine(cart["Orange"]);
-                          // => Not in cart
-                          // => Output: 0 (default)
+                          // => "Orange" not in dictionary
+                          // => Returns 0 (default case in getter)
+                          // => Output: 0
 
-cart["Apple"] = 10;       // => Updates apple quantity
-                          // => cart["Apple"] is now 10
+cart["Apple"] = 10;       // => Updates apple quantity via setter
+                          // => items["Apple"] is now 10 (overwritten)
 
-cart["Banana"] = 0;       // => Removes banana (quantity 0)
-                          // => cart.Count is now 1
+cart["Banana"] = 0;       // => value=0: triggers Remove in setter
+                          // => Banana entry deleted from dictionary
+                          // => cart.Count is now 1 (only Apple remains)
 
 Console.WriteLine(cart.Count);
+                          // => Reads Count property
                           // => Output: 1
 
 // Multi-parameter indexer
-class Matrix
+class Matrix               // => 2D grid with row/col indexer
 {
     private int[,] data = new int[3, 3];
+                          // => 3x3 two-dimensional array (all zeros initially)
 
-    public int this[int row, int col]
-    {                     // => Two-parameter indexer
-                          // => Enables matrix[1, 2] syntax
-        get => data[row, col];
-        set => data[row, col] = value;
+    public int this[int row, int col]  // => Two-parameter indexer
+    {                     // => Enables matrix[row, col] syntax
+                          // => Matches mathematical matrix notation
+        get => data[row, col];   // => Read element at position
+        set => data[row, col] = value;  // => Write element at position
     }
 }
 
 var matrix = new Matrix();
-matrix[0, 0] = 1;         // => Set element at row 0, col 0
-matrix[1, 1] = 5;
+                          // => 3x3 matrix, all zeros
+matrix[0, 0] = 1;         // => Set top-left element to 1
+                          // => data[0,0] = 1
+matrix[1, 1] = 5;         // => Set center element to 5
+                          // => data[1,1] = 5
 
 Console.WriteLine(matrix[0, 0]);
+                          // => Reads data[0,0]
                           // => Output: 1
 ```
 
 **Key Takeaway**: Indexers use `this[type param]` syntax to enable array-like access with custom logic. They can have multiple parameters for multi-dimensional access.
 
-**Why It Matters**: Indexers make collection-like classes intuitive by providing familiar array syntax. They're essential for custom collections and data structures. JSON libraries use indexers for `json["property"]["nested"]` syntax. Entity Framework uses indexers for `entity["PropertyName"]` dynamic property access. Matrix math libraries use multi-parameter indexers for `matrix[row, col]` notation matching mathematical convention.
+**Why It Matters**: Indexers make collection-like classes intuitive by providing familiar array syntax. They're essential for custom collections and data structures. JSON libraries use indexers for `json["property"]["nested"]` syntax. Entity Framework uses indexers for `entity["PropertyName"]` dynamic property access. Matrix math libraries use multi-parameter indexers for `matrix[row, col]` notation matching mathematical convention. Custom cache classes use string indexers to provide consistent access syntax while encapsulating cache expiry and miss-handling logic transparently.
 
 ## Example 49: Pattern Matching - Type Patterns and Switch Expressions
 
@@ -1513,86 +1617,100 @@ if (obj is string str)    // => is checks type AND extracts value
 }
 
 // Switch expression with patterns
-string GetDescription(object value) => value switch
-{                         // => Switch expression (not statement)
-                          // => Returns value directly
-                          // => Expression-bodied method
+string GetDescription(object value) => value switch  // => Expression-bodied method
+{                         // => Switch expression returns string value
+                          // => Each arm: pattern => result
     int i => $"Integer: {i}",
-                          // => Type pattern for int
-                          // => i captures matched int value
+                          // => Type pattern: matches int, captures as i
+                          // => i is the matched integer value
     string s => $"String of length {s.Length}",
-                          // => Type pattern with variable
-                          // => s is extracted string
+                          // => Type pattern: matches string, captures as s
+                          // => s.Length accesses the matched string's length
     bool b => $"Boolean: {b}",
-                          // => Type pattern for bool
-                          // => b is extracted boolean value
+                          // => Type pattern: matches bool, captures as b
+                          // => b is the matched boolean value
     null => "Null value",
-                          // => Null pattern
-                          // => Matches null values
-    _ => "Unknown type"   // => Discard pattern (default)
-                          // => Matches anything not matched above
-};                        // => Exhaustive matching recommended
+                          // => Null pattern: explicit null matching
+                          // => Must appear before _ to avoid warnings
+    _ => "Unknown type"   // => Discard pattern: catches everything else
+                          // => Exhaustive - no unhandled cases
+};
 
 Console.WriteLine(GetDescription(42));
-                          // => Calls with int 42
-                          // => Matches int pattern
+                          // => 42 is int → matches int pattern
+                          // => i=42, returns "Integer: 42"
                           // => Output: Integer: 42
 
 Console.WriteLine(GetDescription("Test"));
-                          // => Calls with string "Test"
-                          // => Matches string pattern
+                          // => "Test" is string → matches string pattern
+                          // => s="Test", s.Length=4
                           // => Output: String of length 4
 
 Console.WriteLine(GetDescription(true));
-                          // => Calls with bool true
-                          // => Matches bool pattern
+                          // => true is bool → matches bool pattern
+                          // => b=true
                           // => Output: Boolean: True
 
 Console.WriteLine(GetDescription(null));
+                          // => null → matches null pattern
                           // => Output: Null value
 
 // Property patterns
-class Person
+class Person               // => Data class for pattern matching
 {
-    public string Name { get; set; } = "";
-    public int Age { get; set; }
+    public string Name { get; set; } = "";  // => Auto-property with default
+    public int Age { get; set; }             // => Age: used in property patterns
 }
 
-string GetAgeGroup(Person person) => person switch
+string GetAgeGroup(Person person) => person switch  // => Pattern match on Person
 {
     { Age: < 13 } => "Child",
-                          // => Property pattern: Age < 13
+                          // => Property pattern: { Age: < 13 }
+                          // => Matches persons with Age < 13
     { Age: < 20 } => "Teenager",
+                          // => Matches Age 13-19 (< 13 already matched above)
     { Age: < 65 } => "Adult",
+                          // => Matches Age 20-64
     { Age: >= 65 } => "Senior",
-    _ => "Unknown"
+                          // => Matches Age 65+
+    _ => "Unknown"        // => Default: handles null or edge cases
 };
 
 var person1 = new Person { Name = "Alice", Age = 10 };
+                          // => Alice: Age=10 → will match "Child" pattern
 var person2 = new Person { Name = "Bob", Age = 30 };
+                          // => Bob: Age=30 → will match "Adult" pattern
 
 Console.WriteLine(GetAgeGroup(person1));
+                          // => { Age: < 13 } matches (Age=10 < 13)
                           // => Output: Child
 
 Console.WriteLine(GetAgeGroup(person2));
+                          // => { Age: < 65 } matches (Age=30)
                           // => Output: Adult
 
 // Positional patterns with tuples
 (int, int) point = (3, 4);
+                          // => point is a ValueTuple<int,int> with x=3, y=4
 
-string GetQuadrant((int x, int y) p) => p switch
+string GetQuadrant((int x, int y) p) => p switch  // => Pattern match on tuple
 {
-    (0, 0) => "Origin",   // => Exact value pattern
+    (0, 0) => "Origin",   // => Exact match: x=0 AND y=0
+                          // => Constant patterns in both positions
     ( > 0, > 0) => "Quadrant I",
-                          // => Relational patterns
+                          // => Relational patterns: x > 0 AND y > 0
     ( < 0, > 0) => "Quadrant II",
+                          // => x < 0 AND y > 0
     ( < 0, < 0) => "Quadrant III",
+                          // => x < 0 AND y < 0
     ( > 0, < 0) => "Quadrant IV",
-    (_, 0) => "X-axis",   // => Discard pattern for x
-    (0, _) => "Y-axis"
+                          // => x > 0 AND y < 0
+    (_, 0) => "X-axis",   // => _ discards x value; y must equal 0
+    (0, _) => "Y-axis"    // => x=0; _ discards y value
 };
 
 Console.WriteLine(GetQuadrant(point));
+                          // => point=(3,4): x=3>0, y=4>0 → Quadrant I
                           // => Output: Quadrant I
 ```
 
@@ -1687,27 +1805,32 @@ Init-only properties allow property assignment during object initialization but 
 
 ```csharp
 // Example 51: Init-Only Properties
-class Product
+class Product             // => Product entity with init-only properties
 {
-    public string Name { get; init; }
-                          // => init accessor (C# 9+)
-                          // => Can set during initialization
+    public string Name { get; init; }  // => Name property with init accessor
+                          // => init accessor (C# 9+): assign only during init
                           // => Immutable after construction
 
-    public decimal Price { get; init; }
-    public string Category { get; init; }
+    public decimal Price { get; init; }  // => Price: init-only decimal
+                          // => Settable in object initializer, then locked
+    public string Category { get; init; }  // => Category: init-only
+                          // => Any type can use init accessor
 
     // Constructor not required for init properties
 }
 
-var product = new Product
-{                         // => Object initializer
-    Name = "Laptop",      // => ALLOWED during initialization
-    Price = 999.99m,
-    Category = "Electronics"
+var product = new Product  // => Create Product using object initializer
+{                         // => Object initializer: sets all init properties
+    Name = "Laptop",      // => Calls init setter for Name
+                          // => Name is "Laptop" from this point
+    Price = 999.99m,      // => Calls init setter for Price (decimal literal)
+    Category = "Electronics"  // => Calls init setter for Category
+                          // => Category is "Electronics"
 };
+                          // => Initialization complete: product is immutable
 
-Console.WriteLine($"{product.Name}: ${product.Price}");
+Console.WriteLine($"{product.Name}: ${product.Price}");  // => Read init properties
+                          // => get accessors have no restrictions
                           // => Output: Laptop: $999.99
 
 // product.Price = 899.99m;
@@ -1715,59 +1838,69 @@ Console.WriteLine($"{product.Name}: ${product.Price}");
                           // => init properties are read-only after initialization
 
 // With constructor
-class Person
+class Person              // => Person with init properties AND constructor
 {
-    public string FirstName { get; init; }
-    public string LastName { get; init; }
+    public string FirstName { get; init; }  // => First name: init-only
+                          // => Init accessor allows both constructor and initializer
+    public string LastName { get; init; }   // => Last name: init-only
+                          // => Both properties settable during construction
 
-    public Person(string firstName, string lastName)
+    public Person(string firstName, string lastName)  // => Traditional constructor
     {                     // => Constructor can set init properties
-        FirstName = firstName;
-        LastName = lastName;
+        FirstName = firstName;  // => Initialize from constructor parameter
+                          // => This is allowed: init properties settable in ctor
+        LastName = lastName;    // => LastName receives constructor argument
+                          // => lastName is "Smith" → LastName is "Smith"
     }
 
-    public string FullName => $"{FirstName} {LastName}";
-                          // => Computed property
+    public string FullName => $"{FirstName} {LastName}";  // => Computed property
+                          // => Expression-bodied: returns interpolated string
+                          // => Uses both init properties
 }
 
-var person1 = new Person("Alice", "Smith");
-                          // => Via constructor
+var person1 = new Person("Alice", "Smith");  // => Calls constructor
+                          // => FirstName="Alice", LastName="Smith"
+                          // => No object initializer
 
-var person2 = new Person("Bob", "Jones")
+var person2 = new Person("Bob", "Jones")  // => Constructor + object initializer
 {
-    FirstName = "Robert"  // => Override constructor value
-};                        // => ALLOWED during initialization
+    FirstName = "Robert"  // => Override FirstName set by constructor
+                          // => Init accessor allows this override
+};                        // => person2.FirstName is "Robert" (not "Bob")
 
-Console.WriteLine(person1.FullName);
+Console.WriteLine(person1.FullName);  // => Access computed FullName property
+                          // => FirstName="Alice", LastName="Smith"
                           // => Output: Alice Smith
 
-Console.WriteLine(person2.FullName);
-                          // => Output: Robert Jones
+Console.WriteLine(person2.FullName);  // => person2 has overridden FirstName
+                          // => Output: Robert Jones (overridden first name)
 
 // Init with required (C# 11+)
-class User
+class User                // => User with required init property
 {
-    public required string Username { get; init; }
-                          // => required keyword
-                          // => MUST be set during initialization
+    public required string Username { get; init; }  // => required + init
+                          // => required: must be set (compiler enforces)
+                          // => init: immutable after initialization
 
-    public string? Email { get; init; }
-                          // => Optional init property
+    public string? Email { get; init; }  // => Optional nullable init property
+                          // => Can be omitted from object initializer
 }
 
-var user = new User
+var user = new User       // => Instantiate User
 {
-    Username = "alice123" // => Required, must provide
+    Username = "alice123"  // => Required property: must provide
+                          // => Omitting Username → compile error
 };
+                          // => user.Email is null (optional, not provided)
 
 // var invalidUser = new User { };
                           // => COMPILATION ERROR
-                          // => Username not set (required)
+                          // => Username not set (required property missing)
 ```
 
 **Key Takeaway**: Init-only properties enable immutability while supporting flexible object initialization patterns. Combined with `required`, they enforce mandatory properties at compile time.
 
-**Why It Matters**: Init properties provide immutability benefits without sacrificing initialization flexibility. Traditional readonly fields require constructor parameters, leading to long parameter lists. Init properties support object initializers with named parameters, improving readability. Configuration objects use init properties for immutable settings that are set once at startup.
+**Why It Matters**: Init properties provide immutability benefits without sacrificing initialization flexibility. Traditional readonly fields require constructor parameters, leading to long parameter lists. Init properties support object initializers with named parameters, improving readability. Configuration objects use init properties for immutable settings that are set once at startup. `System.Text.Json` deserializes into init-only records without requiring constructors, enabling immutable API request models that cannot be accidentally mutated during request processing.
 
 ## Example 52: Tuples - Lightweight Data Structures
 
@@ -1775,75 +1908,85 @@ Tuples provide lightweight, unnamed data structures for returning multiple value
 
 ```csharp
 // Example 52: Tuples
-(string, int) GetPersonInfo()
-{                         // => Return tuple: (string, int)
-                          // => No need to define separate class
-    return ("Alice", 30); // => Tuple literal
+(string, int) GetPersonInfo()   // => Return type: unnamed tuple
+{                         // => No need to define separate class
+                          // => Parenthesized type list
+    return ("Alice", 30); // => Tuple literal: name "Alice", age 30
+                          // => Creates ValueTuple<string, int>
 }
 
 var info = GetPersonInfo();
-                          // => info type is (string, int)
+                          // => info is (string, int) tuple
+                          // => Type inferred: ValueTuple<string, int>
 
 Console.WriteLine($"{info.Item1}, {info.Item2}");
-                          // => Item1, Item2 are default names
+                          // => Item1="Alice", Item2=30 (default names)
                           // => Output: Alice, 30
 
 // Named tuple elements
-(string Name, int Age) GetNamedPersonInfo()
-{                         // => Named tuple elements
+(string Name, int Age) GetNamedPersonInfo()  // => Named tuple return type
+{                         // => Named tuple elements improve readability
     return (Name: "Bob", Age: 25);
-                          // => Names improve readability
+                          // => Named tuple literal
+                          // => Names are not stored at runtime (compiler feature)
 }
 
 var namedInfo = GetNamedPersonInfo();
-                          // => Access via names
+                          // => namedInfo.Name="Bob", namedInfo.Age=25
+                          // => Access via element names instead of Item1/Item2
 
 Console.WriteLine($"{namedInfo.Name}, {namedInfo.Age}");
+                          // => Uses named properties for clarity
                           // => Output: Bob, 25
 
 // Tuple deconstruction
 var (name, age) = GetNamedPersonInfo();
-                          // => Deconstruct into separate variables
-                          // => name is "Bob", age is 25
+                          // => Deconstruct tuple into individual variables
+                          // => name is "Bob" (type: string)
+                          // => age is 25 (type: int)
 
 Console.WriteLine($"Name: {name}, Age: {age}");
+                          // => Access deconstructed variables directly
                           // => Output: Name: Bob, Age: 25
 
 // Discard unwanted elements
 var (personName, _) = GetNamedPersonInfo();
-                          // => _ discards age
-                          // => Only captures name
+                          // => _ is discard: explicitly ignore age
+                          // => personName is "Bob"
 
 Console.WriteLine(personName);
+                          // => Access only the captured variable
                           // => Output: Bob
 
 // Tuples in LINQ
-var products = new List<(string Name, decimal Price)>
-{                         // => List of tuples
-    ("Laptop", 999.99m),
-    ("Mouse", 29.99m),
-    ("Keyboard", 79.99m)
+var products = new List<(string Name, decimal Price)>  // => List of named tuples
+{                         // => Collection initializer with tuple literals
+    ("Laptop", 999.99m),  // => First tuple: Name="Laptop", Price=999.99
+    ("Mouse", 29.99m),    // => Second tuple: Name="Mouse", Price=29.99
+    ("Keyboard", 79.99m)  // => Third tuple: Name="Keyboard", Price=79.99
 };
+                          // => products has 3 tuples
 
 var expensiveProducts = products
-    .Where(p => p.Price > 50)
-                          // => Filter by Price
-    .Select(p => p.Name);
-                          // => Project to Name
+    .Where(p => p.Price > 50)     // => Filter: keep tuples where Price > 50
+                          // => Filtered: Laptop(999.99) and Keyboard(79.99)
+    .Select(p => p.Name); // => Project: extract Name from each tuple
+                          // => Result: IEnumerable<string> ["Laptop", "Keyboard"]
 
 foreach (var product in expensiveProducts)
-{
+{                         // => Iterate projected names
     Console.WriteLine(product);
                           // => Output: Laptop
                           // =>         Keyboard
 }
 
 // Tuple equality
-var tuple1 = (1, "Test");
-var tuple2 = (1, "Test");
+var tuple1 = (1, "Test");   // => ValueTuple with Item1=1, Item2="Test"
+var tuple2 = (1, "Test");   // => Separate instance with same values
 
 Console.WriteLine(tuple1 == tuple2);
-                          // => Value-based equality
+                          // => Value-based equality (struct semantics)
+                          // => Compares element-by-element
                           // => Output: True
 ```
 
@@ -1858,26 +2001,33 @@ Console.WriteLine(tuple1 == tuple2);
 ```csharp
 // Example 53: IEnumerable<T> and Deferred Execution
 List<int> numbers = new() { 1, 2, 3, 4, 5 };
+                          // => Target-typed new: List<int> inferred
+                          // => numbers is [1, 2, 3, 4, 5]
 
 Console.WriteLine("Creating query...");
+                          // => Output: Creating query...
 
-IEnumerable<int> query = numbers.Where(n =>
+IEnumerable<int> query = numbers.Where(n =>  // => Build lazy LINQ query
 {                         // => LINQ query
     Console.WriteLine($"Filtering {n}");
+                          // => Proves when lambda executes
                           // => Side effect to show execution timing
-    return n % 2 == 0;    // => Filter even numbers
+    return n % 2 == 0;   // => Same even-number predicate    // => Filter even numbers
 });                       // => Query NOT executed yet (deferred)
                           // => No "Filtering X" printed
 
 Console.WriteLine("Query created (not executed)");
+                          // => This executes before any filtering
                           // => Output: Creating query...
                           // =>         Query created (not executed)
                           // => No filtering happened yet
 
 Console.WriteLine("\nFirst enumeration:");
+                          // => Output: First enumeration:
 foreach (var n in query)  // => Query executes NOW
 {                         // => "Filtering X" messages appear
     Console.WriteLine($"Result: {n}");
+                          // => Prints matching results
                           // => Output: Filtering 1
                           // =>         Filtering 2
                           // =>         Result: 2
@@ -1888,6 +2038,7 @@ foreach (var n in query)  // => Query executes NOW
 }
 
 Console.WriteLine("\nSecond enumeration:");
+                          // => Starting second iteration
 foreach (var n in query)  // => Query EXECUTES AGAIN
 {                         // => Deferred execution means re-evaluation
     Console.WriteLine($"Result: {n}");
@@ -1896,7 +2047,8 @@ foreach (var n in query)  // => Query EXECUTES AGAIN
 
 // Forcing immediate execution
 Console.WriteLine("\n\nWith ToList:");
-var list = numbers.Where(n =>
+                          // => Demonstrating eager evaluation
+var list = numbers.Where(n =>  // => New query then force evaluation
 {
     Console.WriteLine($"Filtering {n}");
     return n % 2 == 0;
@@ -1905,6 +2057,7 @@ var list = numbers.Where(n =>
                           // => list is List<int>, not IEnumerable<int>
 
 Console.WriteLine("ToList completed");
+                          // => All filtering already happened during ToList()
 
 foreach (var n in list)   // => Iterates cached results
 {                         // => No filtering happens (already executed)
@@ -1942,95 +2095,97 @@ graph TD
 // Example 54: Dependency Injection
 interface ILogger         // => Abstraction for logging
 {                         // => Interface defines contract
-    void Log(string message);
-                          // => Single method signature
+    void Log(string message);  // => Single method signature
+                          // => Any type implementing this can be used as ILogger
 }
 
-class ConsoleLogger : ILogger
-{                         // => Concrete implementation of ILogger
-                          // => Implements interface contract
-    public void Log(string message)
-    {                     // => Method implementation
+class ConsoleLogger : ILogger  // => Concrete implementation
+{                         // => Implements ILogger interface
+    public void Log(string message)  // => Required implementation
+    {                     // => Must be public (interface member)
         Console.WriteLine($"[LOG] {message}");
-                          // => Writes to console with [LOG] prefix
+                          // => Adds [LOG] prefix for clarity
+                          // => Writes to standard output
     }
 }
 
-interface IEmailService   // => Abstraction for email
+interface IEmailService   // => Abstraction for email sending
 {                         // => Separates contract from implementation
-    void SendEmail(string to, string subject);
-                          // => Email sending method signature
+    void SendEmail(string to, string subject);  // => Email signature
+                          // => to: recipient address, subject: email subject
 }
 
-class EmailService : IEmailService
-{                         // => Email service implementation
+class EmailService : IEmailService  // => Email service implementation
+{                         // => Concrete class satisfying IEmailService contract
     private readonly ILogger logger;
-                          // => Dependency on ILogger
-                          // => readonly ensures immutability after construction
+                          // => Logging dependency: declared as interface
+                          // => readonly ensures field set only in constructor
 
-    public EmailService(ILogger logger)
-    {                     // => Constructor injection
-                          // => EmailService doesn't create logger
-                          // => Receives logger from outside (inversion of control)
-                          // => Enables testing with mock logger
+    public EmailService(ILogger logger)  // => Constructor injection
+    {                     // => logger provided by caller (DI container/test)
+                          // => EmailService doesn't know which ILogger it gets
         this.logger = logger;
-                          // => Store injected dependency
+                          // => Store injected ILogger for use in methods
+                          // => this.logger disambiguates from parameter
     }
 
-    public void SendEmail(string to, string subject)
-    {                     // => Email sending method
+    public void SendEmail(string to, string subject)  // => Required by interface
+    {                     // => Implementation of IEmailService.SendEmail
         logger.Log($"Sending email to {to}: {subject}");
-                          // => Uses injected logger
-                          // => Logs email operation
+                          // => Uses injected logger (could be Console, File, Mock)
+                          // => Output depends on ILogger implementation
     }
 }
 
-class UserService         // => High-level service class
-{                         // => Depends on abstractions (ILogger, IEmailService)
+class UserService         // => High-level service with multiple dependencies
+{                         // => Depends on abstractions, not concrete types
     private readonly ILogger logger;
-                          // => Logging dependency
+                          // => ILogger interface type: any logger works
     private readonly IEmailService emailService;
-                          // => Two dependencies
-                          // => Email service dependency
+                          // => IEmailService interface: any email implementation
 
-    public UserService(ILogger logger, IEmailService emailService)
-    {                     // => Constructor injection for both dependencies
-                          // => DI container provides implementations
+    public UserService(ILogger logger, IEmailService emailService)  // => Two dependencies
+    {                     // => DI container resolves and provides both
         this.logger = logger;
-                          // => Store logger dependency
+                          // => Store logger reference
         this.emailService = emailService;
-                          // => Store email service dependency
+                          // => Store email service reference
     }
 
-    public void RegisterUser(string email)
-    {                     // => User registration method
+    public void RegisterUser(string email)  // => Business method
+    {                     // => Orchestrates logging and email notification
         logger.Log($"Registering user: {email}");
-                          // => Uses injected dependencies
-                          // => Logs registration action
+                          // => Calls ILogger.Log (could be any implementation)
+                          // => Output: [LOG] Registering user: alice@example.com
 
         emailService.SendEmail(email, "Welcome!");
-                          // => Sends welcome email via injected service
+                          // => Calls IEmailService.SendEmail
+                          // => Triggers logger.Log inside EmailService
     }
 }
 
 // Manual composition (DI container does this in real apps)
 ILogger logger = new ConsoleLogger();
-                          // => Create logger once
+                          // => Create concrete logger, assign to interface variable
+                          // => Type: ILogger (abstraction), Value: ConsoleLogger
 
 IEmailService emailService = new EmailService(logger);
-                          // => Inject logger into email service
+                          // => Inject logger into email service constructor
+                          // => EmailService receives ILogger reference
 
 UserService userService = new UserService(logger, emailService);
-                          // => Inject both dependencies
+                          // => Inject both dependencies into UserService
+                          // => All classes receive their dependencies externally
 
 userService.RegisterUser("alice@example.com");
+                          // => Calls RegisterUser: triggers log + email
                           // => Output: [LOG] Registering user: alice@example.com
                           // =>         [LOG] Sending email to alice@example.com: Welcome!
 ```
 
 **Key Takeaway**: Dependency injection provides dependencies through constructors, inverting control from classes creating their dependencies to dependencies being provided externally.
 
-**Why It Matters**: DI enables loose coupling, testability, and flexibility. Classes depend on abstractions (interfaces) rather than concrete implementations. Tests inject mock dependencies to isolate behavior. ASP.NET Core's built-in DI container manages service lifetimes (singleton, scoped, transient) and resolves dependency graphs automatically. This eliminates manual object construction and enables centralized configuration.
+**Why It Matters**: DI enables loose coupling, testability, and flexibility. Classes depend on abstractions (interfaces) rather than concrete implementations. Tests inject mock dependencies to isolate behavior. ASP.NET Core's built-in DI container manages service lifetimes (singleton, scoped, transient) and resolves dependency graphs automatically. This eliminates manual object construction and enables centralized configuration. Choosing the wrong lifetime causes bugs: singleton services holding scoped (per-request) data leak state between requests in multi-user applications.
 
 ## Example 55: Configuration - Reading App Settings
 
@@ -2144,49 +2299,60 @@ Minimal APIs provide lightweight HTTP endpoints with minimal ceremony.
 // Real code uses ASP.NET Core builder APIs
 
 // Simulated minimal API structure
-class WebApp
+class WebApp              // => Simulates WebApplication in real ASP.NET Core
 {
-    public void MapGet(string route, Func<string> handler)
+    public void MapGet(string route, Func<string> handler)  // => Map GET route
     {                     // => Register GET endpoint
+                          // => route is path pattern (e.g., "/users/{id}")
         Console.WriteLine($"GET {route} registered");
+                          // => Outputs registration confirmation
     }
 
-    public void MapPost(string route, Func<object, string> handler)
+    public void MapPost(string route, Func<object, string> handler)  // => Map POST route
     {                     // => Register POST endpoint
+                          // => handler takes request body as first param
         Console.WriteLine($"POST {route} registered");
+                          // => Outputs: POST /users registered
     }
 
-    public void Run()
-    {
+    public void Run()     // => Start the HTTP server
+    {                     // => Begins accepting incoming connections
         Console.WriteLine("App running...");
+                          // => Server now listening for requests
     }
 }
 
-var app = new WebApp();
+var app = new WebApp();   // => Create web application instance
+                          // => Real: WebApplication.CreateBuilder().Build()
 
 // GET endpoint
-app.MapGet("/hello", () =>
-{                         // => Lambda handler
-    return "Hello, World!";
-                          // => Returns plain text response
-});                       // => Real API: returns IResult
+app.MapGet("/hello", () =>   // => Register GET /hello handler
+{                         // => Lambda: no parameters (route has no params)
+    return "Hello, World!";  // => Return plain text response string
+                          // => Real API: return Results.Ok("Hello, World!")
+});                       // => Endpoint registered
 
 // GET with route parameter
-app.MapGet("/users/{id}", (int id) =>
-{                         // => Route parameter binds to id
-    return $"User {id}";  // => Returns: User 42 (for /users/42)
-});
+app.MapGet("/users/{id}", (int id) =>   // => Route template: {id} captured
+{                         // => id bound from URL: /users/42 → id=42
+                          // => ASP.NET Core auto-parses route parameters
+    return $"User {id}";  // => Returns: "User 42" (for /users/42)
+                          // => id is the parsed integer from URL
+});                       // => Real API: return Results.Ok(new { ... })
 
 // POST endpoint with body
-app.MapPost("/users", (UserDto user) =>
-{                         // => user automatically deserialized from JSON body
-    return $"Created user: {user.Name}";
+app.MapPost("/users", (UserDto user) =>  // => Register POST /users handler
+{                         // => user: auto-deserialized from JSON request body
+                          // => Content-Type: application/json required
+    return $"Created user: {user.Name}";  // => Confirmation with user's name
+                          // => Real: return Results.Created(location, user)
 });
 
-record UserDto(string Name, string Email);
-                          // => DTO for request body
+record UserDto(string Name, string Email);  // => Request body DTO record
+                          // => Immutable: matches JSON {"Name":"...","Email":"..."}
+                          // => System.Text.Json deserializes into this record
 
-app.Run();                // => Start server
+app.Run();                // => Start server and begin accepting requests
                           // => Output: GET /hello registered
                           // =>         GET /users/{id} registered
                           // =>         POST /users registered
@@ -2195,91 +2361,114 @@ app.Run();                // => Start server
 
 **Key Takeaway**: Minimal APIs use lambda handlers for HTTP endpoints with automatic parameter binding and JSON serialization.
 
-**Why It Matters**: Minimal APIs reduce boilerplate for simple APIs compared to controller-based APIs. They're ideal for microservices and lightweight APIs where full MVC features aren't needed. Modern .NET applications favor minimal APIs for performance and simplicity while controllers remain available for complex scenarios with filters, model validation, and view rendering.
+**Why It Matters**: Minimal APIs reduce boilerplate for simple APIs compared to controller-based APIs. They're ideal for microservices and lightweight APIs where full MVC features aren't needed. Modern .NET applications favor minimal APIs for performance and simplicity while controllers remain available for complex scenarios with filters, model validation, and view rendering. Minimal API endpoints run as the fastest path through ASP.NET Core's middleware pipeline, benchmarking higher than controller actions and making them suitable for latency-sensitive internal service endpoints.
 
 ## Example 57: Entity Framework Core - Basic CRUD
 
-Entity Framework Core is an ORM that maps C# classes to database tables.
+Entity Framework Core is an ORM that maps C# classes to database tables. **Why not ADO.NET?** ADO.NET provides raw database access but requires manual SQL strings, parameter binding, and object mapping - hundreds of lines of repetitive code per entity. EF Core eliminates this boilerplate while remaining compatible with raw SQL for complex queries. Install: `dotnet add package Microsoft.EntityFrameworkCore`.
 
 ```csharp
 // Example 57: Entity Framework Core (Conceptual)
 // Real code uses Entity Framework Core
 
-class Product             // => Entity class
+class Product             // => Entity class (maps to Products table)
 {
     public int Id { get; set; }
                           // => Primary key (convention: Id or ProductId)
+                          // => EF Core auto-increments this column
     public string Name { get; set; } = "";
+                          // => Column: Name VARCHAR/NVARCHAR
+                          // => = "" provides non-null default
     public decimal Price { get; set; }
+                          // => Column: Price DECIMAL(18,2)
 }
 
 // DbContext - database session
 class AppDbContext
 {                         // => Real: inherits DbContext
+                          // => Manages database connections and change tracking
     public List<Product> Products { get; set; } = new();
                           // => Simulates DbSet<Product>
                           // => Real: represents Products table
+                          // => DbSet<T> supports LINQ queries translated to SQL
 
     public void Add(Product product)
     {                     // => Add entity (INSERT)
+                          // => Marks entity as Added in change tracker
         Products.Add(product);
+                          // => Adds to in-memory collection
         Console.WriteLine($"Added: {product.Name}");
+                          // => Outputs: Added: Laptop
     }
 
     public void SaveChanges()
     {                     // => Commit changes to database
+                          // => Generates INSERT/UPDATE/DELETE SQL statements
         Console.WriteLine("Changes saved to database");
+                          // => Real: executes within transaction
     }
 
     public Product? Find(int id)
-    {                     // => Find by primary key (SELECT)
+    {                     // => Find by primary key (SELECT WHERE Id=id)
+                          // => Returns null if not found
         return Products.FirstOrDefault(p => p.Id == id);
+                          // => Linear search in simulation (EF uses indexed lookup)
     }
 
     public void Remove(Product product)
     {                     // => Delete entity (DELETE)
+                          // => Marks entity as Deleted in change tracker
         Products.Remove(product);
+                          // => Removes from in-memory collection
         Console.WriteLine($"Removed: {product.Name}");
+                          // => Outputs: Removed: Laptop
     }
 }
 
 var context = new AppDbContext();
+                          // => Create database session (unit of work)
+                          // => Real: connects to database server
 
 // Create (INSERT)
 var product = new Product
 {
-    Id = 1,
-    Name = "Laptop",
-    Price = 999.99m
+    Id = 1,               // => Primary key value
+    Name = "Laptop",      // => Product name
+    Price = 999.99m       // => m suffix: decimal literal (not double)
 };
+                          // => product is a new Product instance
 
-context.Add(product);     // => Track for insertion
-context.SaveChanges();    // => Execute INSERT
+context.Add(product);     // => Track for insertion (change state: Added)
+context.SaveChanges();    // => Execute INSERT SQL to database
                           // => Output: Added: Laptop
                           // =>         Changes saved to database
 
 // Read (SELECT)
 var retrieved = context.Find(1);
-                          // => Finds product with Id=1
+                          // => SELECT WHERE Id=1
+                          // => retrieved is Product? (nullable)
 
 Console.WriteLine($"{retrieved?.Name}: ${retrieved?.Price}");
+                          // => Null-conditional: safe if retrieved is null
                           // => Output: Laptop: $999.99
 
 // Update
-if (retrieved != null)
+if (retrieved != null)    // => Guard: only update if found
 {
     retrieved.Price = 899.99m;
-                          // => Modify tracked entity
+                          // => Modify tracked entity property
+                          // => EF Core change tracker detects this mutation
     context.SaveChanges();
-                          // => Execute UPDATE
+                          // => Execute UPDATE SET Price=899.99 WHERE Id=1
 }
 
 // Delete (DELETE)
-if (retrieved != null)
+if (retrieved != null)    // => Guard: only delete if found
 {
     context.Remove(retrieved);
+                          // => Mark entity for deletion (change state: Deleted)
     context.SaveChanges();
-                          // => Execute DELETE
+                          // => Execute DELETE WHERE Id=1
                           // => Output: Removed: Laptop
                           // =>         Changes saved to database
 }
@@ -2287,8 +2476,10 @@ if (retrieved != null)
 // LINQ queries
 var expensiveProducts = context.Products
     .Where(p => p.Price > 500)
-                          // => Translated to SQL WHERE clause
-    .ToList();            // => Execute query
+                          // => Translated to SQL: WHERE Price > 500
+                          // => Filter executed at database, not in memory
+    .ToList();            // => Execute query, materialize results to List<Product>
+                          // => expensiveProducts is List<Product> (empty after delete)
 ```
 
 **Key Takeaway**: Entity Framework Core maps classes to database tables with CRUD operations through `DbContext`. LINQ queries are translated to SQL.
@@ -2297,148 +2488,138 @@ var expensiveProducts = context.Products
 
 ## Example 58: Testing with xUnit - Unit Tests
 
-xUnit is a testing framework for writing unit tests with facts, theories, and assertions.
+xUnit is a testing framework for writing unit tests with facts, theories, and assertions. **Why not MSTest?** xUnit is the modern choice for .NET - extensible via custom `IXunitSerializable`, runs tests in parallel by default, and has no test class initialization order issues. MSTest is available built-in but lacks these advantages. Install: `dotnet add package xunit` and `dotnet add package xunit.runner.visualstudio`.
 
 ```csharp
 // Example 58: Testing with xUnit (Conceptual)
 // Real code uses Xunit namespace
                           // => This is a simplified demonstration
 
-class Calculator         // => System under test (SUT)
-{                         // => Production code being tested
-    public int Add(int a, int b) => a + b;
-                          // => Expression-bodied method
-                          // => Returns sum of a and b
-    public int Divide(int a, int b)
-    {                     // => Division method with validation
-        if (b == 0)       // => Guard clause for divide-by-zero
-            throw new DivideByZeroException();
-                          // => Throws exception if divisor is zero
-        return a / b;     // => Returns quotient
+class Calculator         // => System under test (SUT): the class being tested
+{                         // => Production code under test
+    public int Add(int a, int b) => a + b;  // => Expression-bodied method
+                          // => Simple: single expression, no braces
+                          // => Returns sum: Add(5, 3) → 8
+    public int Divide(int a, int b)  // => Division with error handling
+    {                     // => Guard clause protects against invalid input
+        if (b == 0)       // => Check for zero divisor before dividing
+            throw new DivideByZeroException();  // => Defensive error
+                          // => Test must verify this exception is thrown
+        return a / b;     // => Integer division: 10/3=3 (truncates)
     }
 }
 
 // Test class
-class CalculatorTests    // => Test class contains test methods
-{                         // => Convention: NameTests suffix
+class CalculatorTests    // => Test class: contains all tests for Calculator
+{                         // => Convention: {SystemUnderTest}Tests naming
     // [Fact] attribute marks test method
-    public void Add_TwoPositiveNumbers_ReturnsSum()
-    {                     // => Test naming: Method_Scenario_ExpectedResult
-                          // => [Fact] attribute in real xUnit marks as test
+    public void Add_TwoPositiveNumbers_ReturnsSum()  // => Test method name
+    {                     // => AAA pattern: Arrange, Act, Assert
+                          // => Naming: Method_Scenario_ExpectedBehavior
         // Arrange
-        var calculator = new Calculator();
-                          // => Create system under test
-                          // => Arrange phase: set up test dependencies
-        int a = 5, b = 3; // => Test inputs
-                          // => a is 5, b is 3
+        var calculator = new Calculator();  // => Create fresh SUT instance
+                          // => Fresh instance per test (no shared state)
+        int a = 5, b = 3; // => Test inputs: a=5, b=3
+                          // => Meaningful names improve test readability
 
         // Act
-        int result = calculator.Add(a, b);
-                          // => Execute method under test
-                          // => Act phase: perform action being tested
-                          // => result is 8 (5 + 3)
+        int result = calculator.Add(a, b);  // => Call method under test
+                          // => Isolated: only calling Add, nothing else
+                          // => result should be 8 (5 + 3)
 
         // Assert
-        Assert.Equal(8, result);
-                          // => Verify expected result
-                          // => Test passes if equal
-                          // => Assert phase: verify outcome
+        Assert.Equal(8, result);  // => Verify: expected=8, actual=result
+                          // => Test PASSES if values are equal
+                          // => Test FAILS with message if not equal
     }
 
-    public void Divide_ByZero_ThrowsException()
-    {                     // => Test exception throwing behavior
+    public void Divide_ByZero_ThrowsException()  // => Exception test
+    {                     // => Tests that the method throws as specified
         // Arrange
-        var calculator = new Calculator();
-                          // => Set up calculator instance
+        var calculator = new Calculator();  // => Create fresh SUT
+                          // => Isolated from other tests
 
         // Act & Assert
-        Assert.Throws<DivideByZeroException>(() =>
-        {                 // => Lambda expression for action
-            calculator.Divide(10, 0);
-                          // => Attempt division by zero
-                          // => Should throw DivideByZeroException
-        });               // => Verify exception thrown
-                          // => Test passes if exception thrown
-                          // => Generic constraint ensures correct exception type
+        Assert.Throws<DivideByZeroException>(() =>  // => Verify exception
+        {                 // => Lambda wraps the action that should throw
+            calculator.Divide(10, 0);  // => This MUST throw
+                          // => 10 / 0 triggers guard clause in Divide
+        });               // => Test passes only if DivideByZeroException thrown
+                          // => Test FAILS if no exception or wrong exception type
     }
 
     // [Theory] with [InlineData] for parameterized tests
-    public void Add_VariousInputs_ReturnsCorrectSum(int a, int b, int expected)
-    {                     // => Theory runs multiple times with different data
-                          // => Parameterized test method
-                          // => [Theory] attribute in real xUnit
+    public void Add_VariousInputs_ReturnsCorrectSum(int a, int b, int expected)  // => Theory
+    {                     // => Parameterized: receives different inputs per run
+                          // => Real xUnit: decorated with [Theory][InlineData(1,1,2)]
         // Arrange
-        var calculator = new Calculator();
-                          // => Fresh instance per test case
+        var calculator = new Calculator();  // => Fresh instance per data set
+                          // => Prevents state from leaking between parameterized runs
 
         // Act
-        int result = calculator.Add(a, b);
-                          // => Execute with provided parameters
-                          // => result varies by test case
+        int result = calculator.Add(a, b);  // => Invoke with test case inputs
+                          // => result depends on which InlineData is running
 
         // Assert
-        Assert.Equal(expected, result);
-                          // => Verify result matches expected
-                          // => expected provided by test case
+        Assert.Equal(expected, result);  // => Verify correct result for this data
+                          // => expected from test parameter, result from method
     }
 
     // Simulated InlineData (real xUnit uses attributes)
-    public void RunTheoryTests()
-    {                     // => Simulates running theory with multiple data sets
-                          // => Real xUnit uses [InlineData] attributes
-        Add_VariousInputs_ReturnsCorrectSum(1, 1, 2);
-                          // => Test case 1: 1 + 1 = 2
-        Add_VariousInputs_ReturnsCorrectSum(5, 3, 8);
-                          // => Test case 2: 5 + 3 = 8
-        Add_VariousInputs_ReturnsCorrectSum(-1, 1, 0);
-                          // => Test case 3: negative numbers (-1 + 1 = 0)
-        Add_VariousInputs_ReturnsCorrectSum(0, 0, 0);
-                          // => Test case 4: zero handling (0 + 0 = 0)
+    public void RunTheoryTests()  // => Manually runs theory with all data sets
+    {                     // => Real xUnit: [InlineData(1,1,2)] on method
+        Add_VariousInputs_ReturnsCorrectSum(1, 1, 2);   // => Case 1: 1+1=2
+                          // => Test case 1: basic addition
+        Add_VariousInputs_ReturnsCorrectSum(5, 3, 8);   // => Case 2: 5+3=8
+                          // => Test case 2: larger numbers
+        Add_VariousInputs_ReturnsCorrectSum(-1, 1, 0);  // => Case 3: -1+1=0
+                          // => Test case 3: negative input
+        Add_VariousInputs_ReturnsCorrectSum(0, 0, 0);   // => Case 4: 0+0=0
+                          // => Test case 4: zero edge case
     }
 }
 
 // Simulated assertion helpers
-static class Assert      // => Test assertion library
-{                         // => Real xUnit provides these
-    public static void Equal<T>(T expected, T actual)
-    {                     // => Generic equality assertion
-                          // => T is type parameter
-        if (!Equals(expected, actual))
-                          // => Compare expected vs actual
+static class Assert      // => Simplified Assert class (xUnit provides full version)
+{                         // => static: all methods are class-level
+    public static void Equal<T>(T expected, T actual)  // => Generic equality assertion
+    {                     // => T can be any type: int, string, custom object
+        if (!Equals(expected, actual))  // => Compares using object.Equals
+                          // => Fails if expected ≠ actual
             throw new Exception($"Expected {expected}, got {actual}");
-                          // => Fail test with message
+                          // => Test failure with descriptive message
         Console.WriteLine($"✓ Test passed: {expected} == {actual}");
-                          // => Success output
+                          // => Success indicator when values match
     }
 
-    public static void Throws<T>(Action action) where T : Exception
-    {                     // => Exception assertion
-                          // => Generic constraint: T must be Exception
-        try               // => Try to execute action
+    public static void Throws<T>(Action action) where T : Exception  // => Exception test
+    {                     // => where T : Exception: constrains to exception types
+        try               // => Execute the action
         {
-            action();     // => Invoke the action delegate
-                          // => Should throw exception
+            action();     // => Invoke lambda: expects this to throw
+                          // => If no exception: fall through to fail
             throw new Exception($"Expected {typeof(T).Name} but no exception thrown");
-                          // => Fail if no exception
+                          // => Test failure: expected exception didn't occur
         }
-        catch (T)         // => Catch expected exception type
-        {                 // => Correct exception type
-                          // => Test passes
+        catch (T)         // => Catch specifically T (the expected exception type)
+        {                 // => If T is thrown: this catch executes → test passes
             Console.WriteLine($"✓ Test passed: {typeof(T).Name} thrown");
-                          // => Success message with exception type name
+                          // => Success: correct exception was thrown
         }
     }
 }
 
-var tests = new CalculatorTests();
+var tests = new CalculatorTests();  // => Instantiate test class
+                          // => Manual test runner (xUnit uses reflection)
 
-tests.Add_TwoPositiveNumbers_ReturnsSum();
+tests.Add_TwoPositiveNumbers_ReturnsSum();  // => Run first test
                           // => Output: ✓ Test passed: 8 == 8
 
-tests.Divide_ByZero_ThrowsException();
+tests.Divide_ByZero_ThrowsException();  // => Run exception test
                           // => Output: ✓ Test passed: DivideByZeroException thrown
 
-tests.RunTheoryTests();   // => Runs all theory test cases
+tests.RunTheoryTests();   // => Run all parameterized test cases
+                          // => Outputs 4 "✓ Test passed" lines
 ```
 
 **Key Takeaway**: xUnit uses `[Fact]` for simple tests and `[Theory]` with `[InlineData]` for parameterized tests. Follow Arrange-Act-Assert pattern.

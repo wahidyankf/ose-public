@@ -1155,16 +1155,20 @@ volumes:
 ```bash
 # Start all services
 docker compose up -d
+# => Startup order: database → message-queue → worker, api (health-check gated)
+# => Services with condition: service_healthy wait for health checks to pass
 
 # Simulate database crash
 docker compose exec database pkill postgres
 # => Database main process killed
+# => Docker detects exit code != 0 and triggers restart policy
 
 # Observe automatic recovery
 docker compose ps -a
 # => database: Restarting (restart policy: always)
 # => worker: Up (waiting for database to be healthy)
 # => api: Up (health check will fail until database recovers)
+# => Worker and api remain Up but degrade gracefully until db recovers
 
 # Wait for database to recover
 sleep 40
@@ -1177,17 +1181,20 @@ docker compose ps
 # Simulate repeated worker failures
 docker compose exec worker sh -c 'exit 1'
 # => Worker exits with error code 1
+# => restart: on-failure:3 counts this as failure 1 of 3
 
 # First restart attempt
 sleep 5
 docker compose ps worker
 # => STATUS: Restarting (1/3 attempts)
+# => Docker waits briefly before restart (exponential backoff)
 
 # Simulate second failure
 docker compose exec worker sh -c 'exit 1'
 sleep 5
 docker compose ps worker
 # => STATUS: Restarting (2/3 attempts)
+# => Backoff interval increases between attempts
 
 # Simulate third failure
 docker compose exec worker sh -c 'exit 1'
@@ -1195,11 +1202,13 @@ sleep 5
 docker compose ps worker
 # => STATUS: Exited (1) (max restarts reached)
 # => Worker stops trying after 3 failures
+# => Prevents infinite restart loop from crashing the host
 
 # Manually restart worker after fixing issue
 docker compose up -d worker
 # => Restart count resets
 # => Worker starts fresh
+# => Use this after deploying a fix to the worker code
 
 # Test API resilience during message queue restart
 docker compose restart message-queue
@@ -2243,6 +2252,8 @@ The EFK (Elasticsearch, Fluentd, Kibana) stack provides centralized log aggregat
 
 version: "3.8"
 # => Compose file format version
+# => EFK stack: 5 services — api, web, fluentd, elasticsearch, kibana
+# => All api/web logs flow: container stdout → fluentd → elasticsearch → kibana
 
 services:
  # Application services using fluentd driver
@@ -2251,6 +2262,7 @@ services:
  build: ./api  # => Build from ./api/Dockerfile
  logging:
  # => Logging driver for API
+ # => fluentd driver replaces default json-file driver for this service
  driver: fluentd  # => Send logs to Fluentd forwarder
  options:
  # => Fluentd connection options
@@ -2421,10 +2433,13 @@ volumes:
 # Start EFK stack
 docker compose up -d
 # => Starts elasticsearch, fluentd, kibana, api, web
+# => Startup order: elasticsearch first (fluentd depends on it)
+# => Elasticsearch takes 30-60 seconds before accepting connections
 
 # Wait for Elasticsearch to be ready
 until curl -s http://localhost:9200/_cluster/health | grep -q '"status":"green\|yellow"'; do
 # => Poll cluster health until green or yellow status
+# => green = all shards allocated, yellow = some replica shards missing (normal for single-node)
  echo "Waiting for Elasticsearch.."
 # => Print status message while waiting
  sleep 5
@@ -2547,6 +2562,8 @@ graph TD
 # File: docker-compose.yml
 
 version: "3.8"
+# => Three services: frontend (web tier), api (app tier), database (data tier)
+# => Network segmentation enforces security boundaries between tiers
 
 services:
  frontend:
@@ -2554,8 +2571,10 @@ services:
  networks:
  - frontend-net
  # => Isolated network for frontend services
+ # => frontend cannot reach database — not on backend-net
  ports:
  - "8080:80"
+ # => Only frontend is exposed to host — single entry point
 
  api:
  image: my-api
@@ -2563,38 +2582,47 @@ services:
  - frontend-net
  - backend-net
  # => Connects to both networks (bridge between frontend and backend)
+ # => api is the only service with access to both tiers
  environment:
  DATABASE_URL: postgresql://postgres:secret@database:5432/mydb
  # => Uses service name "database" for DNS resolution
+ # => DNS works because api and database share backend-net
 
  database:
  image: postgres:15-alpine
  networks:
  - backend-net
  # => Only accessible from backend network (isolated from frontend)
+ # => No ports exposed — database unreachable from outside backend-net
  environment:
  POSTGRES_PASSWORD: secret
  volumes:
  - db-data:/var/lib/postgresql/data
+ # => Named volume: data persists across container restarts
 
 networks:
  frontend-net:
  driver: bridge
  # => Custom bridge network with automatic DNS
+ # => Containers on this network resolve each other by service name
  ipam:
  config:
  - subnet: 172.20.0.0/16
  # => Custom subnet (avoids conflicts)
+ # => Explicit subnet prevents overlap with host network ranges
  backend-net:
  driver: bridge
  internal: true
  # => Internal-only network (no external access)
+ # => database cannot make outbound internet requests (data exfiltration prevention)
  ipam:
  config:
  - subnet: 172.21.0.0/16
+ # => Different subnet range from frontend-net
 
 volumes:
  db-data:
+ # => Named volume managed by Docker (persists across restarts)
 ```
 
 ```bash
@@ -4492,11 +4520,15 @@ docker events \
  --filter 'type=container' \
  --format '{{.Time}} {{.Action}} {{.Actor.Attributes.name}}' \
  >> /var/log/docker-events.log &
+# => & runs in background — continues after terminal closes
+# => Appends events continuously to log file for audit trail
 
 # Audit trail (track all Docker operations)
 docker events \
  --format '{{.Time}} {{.Type}} {{.Action}} {{.Actor.Attributes}}' \
  | tee -a /var/log/docker-audit.log
+# => tee: writes to both stdout (terminal) and file simultaneously
+# => Captures ALL event types (not just containers) for full audit
 
 # Detect container restarts
 docker events \
@@ -4505,7 +4537,9 @@ docker events \
  --format '{{.Time}} Container {{.Actor.Attributes.name}} restarted' | \
 while read line; do
  echo "$line" | mail -s "Container Restart Alert" admin@example.com
+# => Sends email alert for every container restart event
 done
+# => Loop runs indefinitely — each restart triggers one email
 
 # Network troubleshooting with events
 docker events \
@@ -4513,6 +4547,7 @@ docker events \
  --format '{{.Time}} {{.Action}} network={{.Actor.Attributes.name}} container={{.Actor.Attributes.container}}'
 # => 2025-12-29T12:30:01 connect network=frontend-net container=abc123def456
 # => 2025-12-29T12:30:15 disconnect network=frontend-net container=abc123def456
+# => Useful for diagnosing why containers cannot communicate
 
 # Volume lifecycle tracking
 docker events \
@@ -4521,6 +4556,7 @@ docker events \
 # => 2025-12-29T12:25:00 create volume=myproject_db-data
 # => 2025-12-29T12:30:00 mount volume=myproject_db-data
 # => 2025-12-29T12:35:00 unmount volume=myproject_db-data
+# => Track volume mount/unmount patterns for storage debugging
 
 # Image pull tracking
 docker events \
@@ -4528,14 +4564,17 @@ docker events \
  --filter 'event=pull' \
  --format '{{.Time}} Pulled image {{.Actor.Attributes.name}}'
 # => 2025-12-29T12:20:00 Pulled image nginx:alpine
+# => Useful for auditing which images are being pulled to the host
 
 # Export events to monitoring system
 docker events --format 'json' | while read event; do
  curl -X POST http://monitoring.example.com/events \
  -H "Content-Type: application/json" \
  -d "$event"
+# => Each event POSTed as JSON to monitoring API
 done
 # => Streams events to external monitoring system
+# => Enables integration with Datadog, New Relic, Splunk, etc.
 
 # Historical analysis (last 24 hours)
 docker events \
@@ -4547,6 +4586,7 @@ docker events \
 # => 15 worker
 # => 8 api
 # => 3 frontend
+# => Sorted by crash frequency — identify most unstable services
 # => Shows which containers crashed most frequently
 ```
 

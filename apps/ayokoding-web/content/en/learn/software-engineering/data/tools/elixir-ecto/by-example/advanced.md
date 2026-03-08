@@ -43,105 +43,101 @@ graph TD
 
 ```elixir
 defmodule User do
-                                                      # => Module starts
+                                      # => Defines User module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "users" do
-                                                      # => Schema declaration
+                                        # => Maps to "users" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :name, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     field :age, :integer
-                                                      # => Field defined
+                                          # => INTEGER column (4-byte signed; range -2,147,483,648 to 2,147,483,647)
     field :country, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 defmodule UserQuery do
-                                                      # => Module starts
+                                      # => Defines UserQuery module; Elixir module is just a named atom with function table
   import Ecto.Query
-                                                      # => Operation executes
+                                        # => Imports all public functions from Ecto.Query into scope (use alias for explicit control)
+                                        # => Brings from/2, where/3, select/3, order_by/3, join/5 query macros into scope
 
   def build_query(filters) do
-                                                      # => Operation executes
+                                        # => Returns composed Ecto query struct; no DB call until Repo operation
+                                        # => Public function build_query/N; callable from any module
     User
-                                                      # => Operation executes
+                                          # => Ecto queryable; equivalent to from(u in User)
     |> filter_by_name(filters[:name])
-                                                      # => Operation executes
+                                          # => Conditionally adds name filter; no-op if argument is nil
+                                          # => Conditionally applies filter clause (no-op if argument is nil)
     |> filter_by_age_range(filters[:min_age], filters[:max_age])
-                                                      # => Operation executes
+                                          # => Conditionally adds age range WHERE clause
+                                          # => Conditionally applies filter clause (no-op if argument is nil)
     |> filter_by_country(filters[:country])
-                                                      # => Operation executes
+                                          # => Conditionally applies filter clause (no-op if argument is nil)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 
   defp filter_by_name(query, nil), do: query
-                                                      # => Operation executes
   defp filter_by_name(query, name) do
-                                                      # => Operation executes
+                                        # => Private function filter_by_name; only callable within this module
+                                        # => Private function filter_by_name/N; only callable within this module
     where(query, [u], ilike(u.name, ^"%#{name}%"))
-                                                      # => Operation executes
                                       # => Case-insensitive LIKE search
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 
   defp filter_by_age_range(query, nil, nil), do: query
-                                                      # => Operation executes
   defp filter_by_age_range(query, min_age, nil) do
-                                                      # => Operation executes
+                                        # => Private function filter_by_age_range; only callable within this module
+                                        # => Private function filter_by_age_range/N; only callable within this module
     where(query, [u], u.age >= ^min_age)
-                                                      # => Value assigned
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
   defp filter_by_age_range(query, nil, max_age) do
-                                                      # => Operation executes
+                                        # => Private function filter_by_age_range; only callable within this module
+                                        # => Private function filter_by_age_range/N; only callable within this module
     where(query, [u], u.age <= ^max_age)
-                                                      # => Value assigned
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
   defp filter_by_age_range(query, min_age, max_age) do
-                                                      # => Operation executes
+                                        # => Private function filter_by_age_range; only callable within this module
+                                        # => Private function filter_by_age_range/N; only callable within this module
     where(query, [u], u.age >= ^min_age and u.age <= ^max_age)
-                                                      # => Value assigned
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 
   defp filter_by_country(query, nil), do: query
-                                                      # => Operation executes
   defp filter_by_country(query, country) do
-                                                      # => Operation executes
+                                        # => Private function filter_by_country; only callable within this module
+                                        # => Private function filter_by_country/N; only callable within this module
     where(query, [u], u.country == ^country)
-                                                      # => Value assigned
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 # Insert test data
-                                                      # => Operation executes
 Repo.insert(%User{name: "Alice", age: 25, country: "USA"})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; result discarded (capture for id/timestamps)
 Repo.insert(%User{name: "Bob", age: 30, country: "UK"})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; result discarded (capture for id/timestamps)
 Repo.insert(%User{name: "Charlie", age: 35, country: "USA"})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; result discarded (capture for id/timestamps)
 
 # Dynamic query with name filter only
-                                                      # => Operation executes
 query1 = UserQuery.build_query(%{name: "ali"})
-                                                      # => Value assigned
 results1 = Repo.all(query1)           # => results1 is [%User{name: "Alice"}]
                                       # => SQL: SELECT * FROM users WHERE name ILIKE '%ali%'
 
 # Dynamic query with multiple filters
-                                                      # => Operation executes
 query2 = UserQuery.build_query(%{min_age: 28, country: "USA"})
-                                                      # => Value assigned
 results2 = Repo.all(query2)           # => results2 is [%User{name: "Charlie"}]
                                       # => SQL: SELECT * FROM users WHERE age >= 28 AND country = 'USA'
 
@@ -182,95 +178,92 @@ graph TD
 
 ```elixir
 defmodule User do
-                                                      # => Module starts
+                                      # => Defines User module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "users" do
-                                                      # => Schema declaration
+                                        # => Maps to "users" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :name, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     field :age, :integer
-                                                      # => Field defined
+                                          # => INTEGER column (4-byte signed; range -2,147,483,648 to 2,147,483,647)
     field :created_at, :naive_datetime
-                                                      # => Field defined
+                                          # => TIMESTAMP WITHOUT TIME ZONE column (no timezone info stored)
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 defmodule UserQuery do
-                                                      # => Module starts
+                                      # => Defines UserQuery module; Elixir module is just a named atom with function table
   import Ecto.Query
-                                                      # => Operation executes
+                                        # => Imports all public functions from Ecto.Query into scope (use alias for explicit control)
+                                        # => Brings from/2, where/3, select/3, order_by/3, join/5 query macros into scope
 
   def list_users(opts \\ []) do
-                                                      # => Operation executes
+                                        # => Public function list_users/N; callable from any module
     sort_by = opts[:sort_by] || :name  # => Default sort by name
     direction = opts[:direction] || :asc
-                                                      # => Value assigned
                                       # => Default ascending
 
     User
-                                                      # => Operation executes
+                                          # => Ecto queryable; equivalent to from(u in User)
     |> apply_sorting(sort_by, direction)
-                                                      # => Operation executes
+                                          # => Adds ORDER BY clause; field validated to prevent invalid column references
     |> Repo.all()
-                                                      # => Database operation
+                                          # => Executes accumulated query against DB; returns list of structs (may be empty)
+                                          # => Executes accumulated query against DB; returns list of structs (may be empty)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 
   defp apply_sorting(query, field, :asc) do
-                                                      # => Field defined
+                                        # => Private function apply_sorting; only callable within this module
+                                        # => Private function apply_sorting/N; only callable within this module
     order_by(query, [u], asc: field(u, ^field))
-                                                      # => Field defined
                                       # => Dynamic field reference
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 
   defp apply_sorting(query, field, :desc) do
-                                                      # => Field defined
+                                        # => Private function apply_sorting; only callable within this module
+                                        # => Private function apply_sorting/N; only callable within this module
     order_by(query, [u], desc: field(u, ^field))
-                                                      # => Field defined
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 # Insert test data
-                                                      # => Operation executes
 Repo.insert(%User{name: "Zara", age: 28})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; result discarded (capture for id/timestamps)
 Repo.insert(%User{name: "Alice", age: 32})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; result discarded (capture for id/timestamps)
 Repo.insert(%User{name: "Bob", age: 25})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; result discarded (capture for id/timestamps)
 
 # Sort by name ascending (default)
-                                                      # => Block ends
 users1 = UserQuery.list_users()       # => [%User{name: "Alice"}, %User{name: "Bob"}, %User{name: "Zara"}]
                                       # => SQL: SELECT * FROM users ORDER BY name ASC
 
 # Sort by age descending
-                                                      # => Block ends
 users2 = UserQuery.list_users(sort_by: :age, direction: :desc)
-                                                      # => Value assigned
                                       # => [%User{age: 32}, %User{age: 28}, %User{age: 25}]
                                       # => SQL: SELECT * FROM users ORDER BY age DESC
 
 IO.inspect(Enum.map(users1, & &1.name))
-                                                      # => Operation executes
+                                      # => Prints Enum.map(users1, & &1.name) to stdout and returns value (useful for debugging pipelines)
                                       # => Output: ["Alice", "Bob", "Zara"]
 IO.inspect(Enum.map(users2, & &1.age))
-                                                      # => Operation executes
+                                      # => Prints Enum.map(users2, & &1.age) to stdout and returns value (useful for debugging pipelines)
                                       # => Output: [32, 28, 25]
 ```
 
 **Key Takeaway**: Use field(binding, ^field_atom) for dynamic field references in order_by, and always validate field names against a whitelist to prevent invalid column references.
 
-**Why It Matters**: Data tables, admin interfaces, and API endpoints commonly need user-controlled sorting. Hardcoding sort logic for every possible field creates unmaintainable code explosion. Dynamic ordering enables flexible UIs while the field whitelist prevents SQL injection through invalid column names, balancing user flexibility with security.
+**Why It Matters**: Data tables, admin interfaces, and API endpoints commonly need user-controlled sorting. Hardcoding sort logic for every possible field creates unmaintainable code that cannot adapt to changing requirements. Dynamic ordering enables flexible UIs while the field whitelist prevents SQL injection through invalid column names, balancing user flexibility with security. This pattern is foundational for any sortable grid or table component.
 
 ---
 
@@ -297,70 +290,69 @@ graph TD
 
 ```elixir
 defmodule EncryptedString do
-                                                      # => Module starts
+                                      # => Defines EncryptedString module; Elixir module is just a named atom with function table
   use Ecto.Type
-                                                      # => Imports Ecto
+                                        # => Injects type behaviour; implement cast/1, load/1, dump/1, type/0
 
   def type, do: :string                # => Database type
 
   def cast(value) when is_binary(value) do
-                                                      # => Operation executes
+                                        # => Called when setting value from user input; return {:ok, value} or :error
+                                        # => Public function cast/N; callable from any module
     {:ok, value}                       # => Accept strings
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
   def cast(_), do: :error
-                                                      # => Operation executes
 
   def load(value) when is_binary(value) do
-                                                      # => Operation executes
+                                        # => Called when reading from DB; convert raw DB value to Elixir type
+                                        # => Public function load/N; callable from any module
     {:ok, decrypt(value)}              # => Decrypt when loading from database
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 
   def dump(value) when is_binary(value) do
-                                                      # => Operation executes
+                                        # => Called when writing to DB; convert Elixir type to DB-compatible value
+                                        # => Public function dump/N; callable from any module
     {:ok, encrypt(value)}              # => Encrypt when saving to database
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
   def dump(_), do: :error
-                                                      # => Operation executes
+                                        # => Reject invalid values (catch-all)
 
   # Simplified encryption (use real crypto in production)
-                                                      # => Operation executes
   defp encrypt(value), do: Base.encode64(value)
-                                                      # => Operation executes
+                                        # => Simple Base64 encoding (use proper encryption library in production)
   defp decrypt(value), do: Base.decode64!(value)
-                                                      # => Operation executes
+                                        # => Decode Base64; bang version raises on invalid input
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 defmodule User do
-                                                      # => Module starts
+                                      # => Defines User module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "users" do
-                                                      # => Schema declaration
+                                        # => Maps to "users" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :name, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     field :ssn, EncryptedString         # => Custom type for sensitive data
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 # Insert user with encrypted SSN
-                                                      # => Operation executes
 {:ok, user} = Repo.insert(%User{name: "Diana", ssn: "123-45-6789"})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; user has database-assigned id and timestamps
                                       # => user.ssn is "123-45-6789" (in memory)
                                       # => Database stores: "MTIzLTQ1LTY3ODk=" (encrypted)
                                       # => SQL: INSERT INTO users (name, ssn) VALUES ('Diana', 'MTIzLTQ1LTY3ODk=')
 
 # Load user (automatic decryption)
-                                                      # => Operation executes
 loaded = Repo.get(User, user.id)      # => loaded.ssn is "123-45-6789" (decrypted)
                                       # => SQL: SELECT * FROM users WHERE id = 1
 
@@ -379,65 +371,62 @@ Parameterized types accept compile-time parameters, allowing you to create confi
 
 ```elixir
 defmodule EnumType do
-                                                      # => Module starts
+                                      # => Defines EnumType module; Elixir module is just a named atom with function table
   use Ecto.ParameterizedType
-                                                      # => Imports Ecto
+                                        # => Parameterized type; accepts options at field declaration time (e.g., values: list)
 
   def type(_params), do: :string      # => Database type
 
   def init(opts) do
-                                                      # => Operation executes
+                                        # => Called at compile time to validate and store type options
+                                        # => Public function init/N; callable from any module
     values = Keyword.fetch!(opts, :values)
-                                                      # => Value assigned
+                                          # => Raises KeyError if :values not in opts (required option validation)
                                       # => Required parameter: list of valid values
     %{values: values}                 # => Return params map
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 
   def cast(value, %{values: values}) when value in values do
-                                                      # => Operation executes
+                                        # => Only accepts values in the allowed list; returns {:ok, value}
     {:ok, value}                      # => Value must be in allowed list
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
   def cast(_, _), do: :error
-                                                      # => Operation executes
+                                        # => Reject all other types (catch-all clause returns :error)
 
   def load(value, _, _), do: {:ok, value}
-                                                      # => Operation executes
+                                        # => Pass-through load: DB value returned as-is (no transformation needed)
   def dump(value, _, _), do: {:ok, value}
-                                                      # => Operation executes
+                                        # => Pass-through dump: Elixir value stored in DB as-is
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 defmodule User do
-                                                      # => Module starts
+                                      # => Defines User module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "users" do
-                                                      # => Schema declaration
+                                        # => Maps to "users" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :name, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     field :role, EnumType, values: ["admin", "user", "guest"]
-                                                      # => Field defined
                                       # => Parameterized enum with allowed values
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 # Valid role
-                                                      # => Operation executes
 {:ok, admin} = Repo.insert(%User{name: "Eve", role: "admin"})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; admin has database-assigned id and timestamps
                                       # => role is "admin" (valid)
 
 # Invalid role would fail at changeset level
-                                                      # => Operation executes
 changeset = Ecto.Changeset.cast(%User{}, %{name: "Frank", role: "invalid"}, [:name, :role])
-                                                      # => Value assigned
                                       # => changeset.valid? is false
                                       # => changeset.errors has role error
 
@@ -475,76 +464,69 @@ graph TD
 
 ```elixir
 defmodule Product do
-                                                      # => Module starts
+                                      # => Defines Product module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "products" do
-                                                      # => Schema declaration
+                                        # => Maps to "products" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :name, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     field :stock, :integer
-                                                      # => Field defined
+                                          # => INTEGER column (4-byte signed; range -2,147,483,648 to 2,147,483,647)
     field :version, :integer, default: 1
-                                                      # => Field defined
+                                          # => INTEGER column with application-side default 1 (not a DB constraint)
                                       # => Optimistic lock version field
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 # Migration for version field
-                                                      # => Field defined
 defmodule Repo.Migrations.AddVersionToProducts do
-                                                      # => Module starts
+                                      # => AddVersionToProducts module under Repo.Migrations namespace (common pattern for Repo/Migrations)
+                                      # => Defines Repo.Migrations.AddVersionToProducts module; Elixir module is just a named atom with function table
   use Ecto.Migration
-                                                      # => Imports Ecto
+                                        # => Provides create/2, alter/2, add/3, index/2 migration DSL (runs in transaction)
 
   def change do
-                                                      # => Operation executes
+                                        # => Zero-arity public function change/0
     alter table(:products) do
-                                                      # => Operation executes
+                                          # => SQL: ALTER TABLE products ...; add/remove/modify columns atomically
       add :version, :integer, default: 1, null: false
-                                                      # => Operation executes
     end
-                                                      # => Block ends
+                                          # => Closes the nearest open block (do...end)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 # Insert product
-                                                      # => Operation executes
 {:ok, product} = Repo.insert(%Product{name: "Widget", stock: 100, version: 1})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; product has database-assigned id and timestamps
                                       # => product.version is 1
 
 # Concurrent update simulation
-                                                      # => Operation executes
 # Transaction 1: Read product
-                                                      # => Operation executes
 product_t1 = Repo.get(Product, product.id)
-                                                      # => Database operation
+                                      # => SQL: SELECT * FROM table WHERE id = product.id; returns struct or nil
                                       # => product_t1.version is 1
 
 # Transaction 2: Update stock
-                                                      # => Operation executes
 changeset_t2 = Ecto.Changeset.change(product, stock: 95)
-                                                      # => Value assigned
+                                      # => Builds changeset with forced change (bypasses cast/2; no type casting or validation)
 {:ok, updated_t2} = Repo.update(changeset_t2)
-                                                      # => Database operation
+                                      # => SQL: UPDATE ... SET ... WHERE id=N; updated_t2 reflects persisted state
                                       # => updated_t2.version is 2 (auto-incremented)
                                       # => SQL: UPDATE products SET stock = 95, version = 2
                                       # =>      WHERE id = 1 AND version = 1
 
 # Transaction 1: Try to update with stale version
-                                                      # => Operation executes
 changeset_t1 = Ecto.Changeset.change(product_t1, stock: 90)
-                                                      # => Value assigned
+                                      # => Builds changeset with forced change (bypasses cast/2; no type casting or validation)
 # {:error, _} = Repo.update(changeset_t1)
-                                                      # => Database operation
                                       # => Raises Ecto.StaleEntryError
                                       # => SQL: UPDATE products SET stock = 90, version = 2
                                       # =>      WHERE id = 1 AND version = 1
@@ -587,72 +569,67 @@ graph TD
 
 ```elixir
 defmodule User do
-                                                      # => Module starts
+                                      # => Defines User module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "users" do
-                                                      # => Schema declaration
+                                        # => Maps to "users" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :name, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     has_many :posts, Post
-                                                      # => Operation executes
+                                          # => Virtual association field; no DB column added; loaded only via Repo.preload/3
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 defmodule Post do
-                                                      # => Module starts
+                                      # => Post module mapping to posts table; declares schema and associations
+                                      # => Defines Post module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "posts" do
-                                                      # => Schema declaration
+                                        # => Maps to "posts" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :title, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     belongs_to :user, User
-                                                      # => Operation executes
+                                          # => Adds :USER_id foreign key INTEGER column + :USER virtual field (not preloaded by default)
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 # Insert test data
-                                                      # => Operation executes
 {:ok, user1} = Repo.insert(%User{name: "Grace"})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; user1 has database-assigned id and timestamps
 {:ok, user2} = Repo.insert(%User{name: "Henry"})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; user2 has database-assigned id and timestamps
 Repo.insert(%Post{title: "Post 1", user_id: user1.id})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; result discarded (capture for id/timestamps)
 Repo.insert(%Post{title: "Post 2", user_id: user1.id})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; result discarded (capture for id/timestamps)
 Repo.insert(%Post{title: "Post 3", user_id: user2.id})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; result discarded (capture for id/timestamps)
 
 # Preload with separate query (default)
-                                                      # => Operation executes
 users_separate = User |> Repo.all() |> Repo.preload(:posts)
-                                                      # => Database operation
                                       # => SQL 1: SELECT * FROM users
                                       # => SQL 2: SELECT * FROM posts WHERE user_id IN (1, 2)
                                       # => Two queries total
 
 # Preload with join
-                                                      # => Operation executes
 import Ecto.Query
-                                                      # => Operation executes
+                                      # => Imports all public functions from Ecto.Query into scope (use alias for explicit control)
+                                      # => Brings from/2, where/3, select/3, order_by/3, join/5 query macros into scope
 users_join = User
-                                                      # => Value assigned
   |> join(:left, [u], p in assoc(u, :posts))
-                                                      # => Operation executes
   |> preload([u, p], posts: p)
-                                                      # => Operation executes
   |> Repo.all()                       # => SQL: SELECT u.*, p.* FROM users u
                                       # =>      LEFT JOIN posts p ON p.user_id = u.id
                                       # => Single query with join
@@ -693,80 +670,76 @@ graph TD
 
 ```elixir
 defmodule User do
-                                                      # => Module starts
+                                      # => Defines User module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "users" do
-                                                      # => Schema declaration
+                                        # => Maps to "users" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :name, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     has_many :posts, Post
-                                                      # => Operation executes
+                                          # => Virtual association field; no DB column added; loaded only via Repo.preload/3
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 defmodule Post do
-                                                      # => Module starts
+                                      # => Post module mapping to posts table; declares schema and associations
+                                      # => Defines Post module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "posts" do
-                                                      # => Schema declaration
+                                        # => Maps to "posts" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :title, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     belongs_to :user, User
-                                                      # => Operation executes
+                                          # => Adds :USER_id foreign key INTEGER column + :USER virtual field (not preloaded by default)
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 # Insert test data
-                                                      # => Operation executes
 {:ok, user1} = Repo.insert(%User{name: "Iris"})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; user1 has database-assigned id and timestamps
 {:ok, user2} = Repo.insert(%User{name: "Jack"})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; user2 has database-assigned id and timestamps
 Repo.insert(%Post{title: "Post 1", user_id: user1.id})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; result discarded (capture for id/timestamps)
 Repo.insert(%Post{title: "Post 2", user_id: user2.id})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; result discarded (capture for id/timestamps)
 
 # N+1 query problem (BAD)
-                                                      # => Operation executes
 users = Repo.all(User)                # => SQL 1: SELECT * FROM users
 Enum.each(users, fn user ->
-                                                      # => Operation executes
+                                      # => Iterates collection for side effects; returns :ok (not a list)
   posts = Repo.preload(user, :posts).posts
-                                                      # => Database operation
                                       # => SQL 2: SELECT * FROM posts WHERE user_id = 1
                                       # => SQL 3: SELECT * FROM posts WHERE user_id = 2
                                       # => N additional queries (1 per user)
   IO.inspect({user.name, length(posts)})
-                                                      # => Operation executes
+                                        # => Prints {user.name, length(posts)} to stdout and returns value (useful for debugging pipelines)
 end)
-                                                      # => Block ends
+                                      # => Closes do...end block and the enclosing function call
 
 # Fixed with preload (GOOD)
-                                                      # => Operation executes
 users_fixed = User |> Repo.all() |> Repo.preload(:posts)
-                                                      # => Database operation
                                       # => SQL 1: SELECT * FROM users
                                       # => SQL 2: SELECT * FROM posts WHERE user_id IN (1, 2)
                                       # => Only 2 queries total
 Enum.each(users_fixed, fn user ->
-                                                      # => Operation executes
+                                      # => Iterates collection for side effects; returns :ok (not a list)
   IO.inspect({user.name, length(user.posts)})
-                                                      # => Operation executes
+                                        # => Prints {user.name, length(user.posts)} to stdout and returns value (useful for debugging pipelines)
 end)
-                                                      # => Block ends
+                                      # => Closes do...end block and the enclosing function call
 ```
 
 **Key Takeaway**: Always preload associations before iterating over parent records to prevent N+1 queries; use Repo.preload/2 on the query result, not inside loops.
@@ -801,76 +774,70 @@ graph TD
 
 ```elixir
 defmodule User do
-                                                      # => Module starts
+                                      # => Defines User module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "users" do
-                                                      # => Schema declaration
+                                        # => Maps to "users" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :name, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     has_many :posts, Post
-                                                      # => Operation executes
+                                          # => Virtual association field; no DB column added; loaded only via Repo.preload/3
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 defmodule Post do
-                                                      # => Module starts
+                                      # => Post module mapping to posts table; declares schema and associations
+                                      # => Defines Post module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "posts" do
-                                                      # => Schema declaration
+                                        # => Maps to "posts" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :title, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     belongs_to :user, User
-                                                      # => Operation executes
+                                          # => Adds :USER_id foreign key INTEGER column + :USER virtual field (not preloaded by default)
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 # Insert test data
-                                                      # => Operation executes
 {:ok, user} = Repo.insert(%User{name: "Kate"})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; user has database-assigned id and timestamps
 Repo.insert(%Post{title: "Post 1", user_id: user.id})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; result discarded (capture for id/timestamps)
 
 # Lazy loading (association not loaded)
-                                                      # => Operation executes
 user_lazy = Repo.get(User, user.id)   # => user_lazy.posts is %Ecto.Association.NotLoaded{}
                                       # => SQL: SELECT * FROM users WHERE id = 1
                                       # => Posts NOT loaded
 
 # Accessing unloaded association raises
-                                                      # => Operation executes
 # user_lazy.posts                     # => Raises: association :posts is not loaded
 
 # Eager loading (preload in query)
-                                                      # => Operation executes
 import Ecto.Query
-                                                      # => Operation executes
+                                      # => Imports all public functions from Ecto.Query into scope (use alias for explicit control)
+                                      # => Brings from/2, where/3, select/3, order_by/3, join/5 query macros into scope
 user_eager = User
-                                                      # => Value assigned
   |> where([u], u.id == ^user.id)
-                                                      # => Value assigned
+                                        # => SQL: WHERE u.id == ^user.id (adds to any existing WHERE conditions)
   |> preload(:posts)
-                                                      # => Operation executes
   |> Repo.one()                       # => user_eager.posts is [%Post{...}]
                                       # => SQL 1: SELECT * FROM users WHERE id = 1
                                       # => SQL 2: SELECT * FROM posts WHERE user_id IN (1)
 
 # Lazy preload (load after fetching)
-                                                      # => Operation executes
 user_lazy_preload = user_lazy |> Repo.preload(:posts)
-                                                      # => Database operation
                                       # => user_lazy_preload.posts is [%Post{...}]
                                       # => SQL: SELECT * FROM posts WHERE user_id IN (1)
 
@@ -913,60 +880,57 @@ graph TD
 
 ```elixir
 defmodule User do
-                                                      # => Module starts
+                                      # => Defines User module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "users" do
-                                                      # => Schema declaration
+                                        # => Maps to "users" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :name, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     field :age, :integer
-                                                      # => Field defined
+                                          # => INTEGER column (4-byte signed; range -2,147,483,648 to 2,147,483,647)
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 import Ecto.Query
-                                                      # => Operation executes
+                                      # => Imports all public functions from Ecto.Query into scope (use alias for explicit control)
+                                      # => Brings from/2, where/3, select/3, order_by/3, join/5 query macros into scope
 
 # Insert large dataset
-                                                      # => Operation executes
 Enum.each(1..10000, fn i ->
-                                                      # => Operation executes
+                                      # => Iterates collection for side effects; returns :ok (not a list)
   Repo.insert(%User{name: "User #{i}", age: rem(i, 100)})
-                                                      # => Database operation
+                                        # => SQL: INSERT INTO ... RETURNING *; result discarded (capture for id/timestamps)
 end)
-                                                      # => Block ends
+                                      # => Closes do...end block and the enclosing function call
 
 # Process large result set with streaming
-                                                      # => Operation executes
 Repo.transaction(fn ->                # => Stream requires transaction
   User
-                                                      # => Operation executes
+                                        # => Ecto queryable; equivalent to from(u in User)
   |> where([u], u.age > 25)
-                                                      # => Operation executes
+                                        # => SQL: WHERE age > 25 (Elixir variable 25 pinned via ^ if needed)
   |> Repo.stream()                    # => Returns stream (lazy)
   |> Stream.map(fn user ->
-                                                      # => Operation executes
+                                        # => Lazy map: processes one element at a time (memory-efficient for large datasets)
     # Process each user (e.g., send email)
-                                                      # => Block ends
     {user.id, user.name}
-                                                      # => Operation executes
   end)
-                                                      # => Block ends
+                                        # => Closes do...end block and the enclosing function call
   |> Stream.take(5)                   # => Limit processing for example
   |> Enum.to_list()                   # => Triggers execution
                                       # => SQL: Cursor-based streaming
                                       # => Only loads chunk into memory at a time
 end)
-                                                      # => Block ends
+                                      # => Closes do...end block and the enclosing function call
 
 IO.inspect("Processed users in streaming fashion")
-                                                      # => Operation executes
+                                      # => Prints "Processed users in streaming fashion" to stdout and returns value (useful for debugging pipelines)
 ```
 
 **Key Takeaway**: Repo.stream/1 must be used inside a transaction and returns a lazy stream that fetches rows in batches, preventing memory issues when processing millions of records.
@@ -997,69 +961,64 @@ graph TD
 
 ```elixir
 defmodule User do
-                                                      # => Module starts
+                                      # => Defines User module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "users" do
-                                                      # => Schema declaration
+                                        # => Maps to "users" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :name, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     field :age, :integer
-                                                      # => Field defined
+                                          # => INTEGER column (4-byte signed; range -2,147,483,648 to 2,147,483,647)
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 import Ecto.Query
-                                                      # => Operation executes
+                                      # => Imports all public functions from Ecto.Query into scope (use alias for explicit control)
+                                      # => Brings from/2, where/3, select/3, order_by/3, join/5 query macros into scope
 
 # Define reusable query
-                                                      # => Operation executes
 get_user_by_age_query = fn age ->
-                                                      # => Value assigned
   from u in User,
-                                                      # => Operation executes
+                                        # => Start Ecto query; u is the binding alias for User schema fields
+                                        # => Begins Ecto query DSL; no SQL executed yet (lazy query construction)
     where: u.age == ^age,
-                                                      # => Value assigned
+                                          # => ^age, pins Elixir variable into query (prevents SQL injection via parameterized query)
     select: u
-                                                      # => Operation executes
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 # Execute query multiple times (each is prepared)
-                                                      # => Operation executes
 users_25 = get_user_by_age_query.(25) |> Repo.all()
-                                                      # => Database operation
                                       # => SQL: Prepared statement cached
 users_30 = get_user_by_age_query.(30) |> Repo.all()
-                                                      # => Database operation
                                       # => Reuses prepared statement
 
 # Named prepared query (advanced)
-                                                      # => Operation executes
 defmodule UserQueries do
-                                                      # => Module starts
+                                      # => Defines UserQueries module; Elixir module is just a named atom with function table
   import Ecto.Query
-                                                      # => Operation executes
+                                        # => Imports all public functions from Ecto.Query into scope (use alias for explicit control)
+                                        # => Brings from/2, where/3, select/3, order_by/3, join/5 query macros into scope
 
   def by_age_prepared do
-                                                      # => Operation executes
+                                        # => Zero-arity public function by_age_prepared/0
     from u in User,
-                                                      # => Operation executes
+                                          # => Start Ecto query; u is the binding alias for User schema fields
+                                          # => Begins Ecto query DSL; no SQL executed yet (lazy query construction)
       where: u.age == ^1                # => Positional parameter
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 # Ecto automatically prepares and caches queries
-                                                      # => Operation executes
 result = UserQueries.by_age_prepared() |> Repo.all([25])
-                                                      # => Database operation
                                       # => Executes prepared statement with age = 25
 
 IO.inspect(length(users_25))          # => Output: count of users aged 25
@@ -1077,101 +1036,90 @@ Understanding when and how to create indexes is crucial for query performance. I
 
 ```elixir
 # Migration: Create strategic indexes
-                                                      # => Operation executes
 defmodule Repo.Migrations.AddPerformanceIndexes do
-                                                      # => Module starts
+                                      # => AddPerformanceIndexes module under Repo.Migrations namespace (common pattern for Repo/Migrations)
+                                      # => Defines Repo.Migrations.AddPerformanceIndexes module; Elixir module is just a named atom with function table
   use Ecto.Migration
-                                                      # => Imports Ecto
+                                        # => Provides create/2, alter/2, add/3, index/2 migration DSL (runs in transaction)
 
   def change do
-                                                      # => Operation executes
+                                        # => Zero-arity public function change/0
     # Index foreign key (for joins)
-                                                      # => Operation executes
     create index(:posts, [:user_id])  # => Speeds up JOIN operations
 
     # Index frequently filtered field
-                                                      # => Field defined
     create index(:users, [:country])  # => WHERE country = ...
 
     # Composite index for multi-field queries
-                                                      # => Field defined
     create index(:posts, [:user_id, :published_at])
-                                                      # => Operation executes
                                       # => WHERE user_id = ? AND published_at > ?
 
     # Partial index for specific condition
-                                                      # => Operation executes
     create index(:posts, [:published_at], where: "status = 'published'")
-                                                      # => Value assigned
                                       # => Only indexes published posts
 
     # Unique index for constraints
-                                                      # => Operation executes
     create unique_index(:users, [:email])
-                                                      # => Operation executes
+                                          # => SQL: CREATE UNIQUE INDEX users_email_index ON users(email); enforces uniqueness at DB level
                                       # => Enforces uniqueness
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 defmodule Post do
-                                                      # => Module starts
+                                      # => Post module mapping to posts table; declares schema and associations
+                                      # => Defines Post module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "posts" do
-                                                      # => Schema declaration
+                                        # => Maps to "posts" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :title, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     field :status, :string
-                                                      # => Field defined
+                                          # => VARCHAR column for status enum (consider :atom type or Ecto.Enum in production)
+                                          # => VARCHAR column (no length limit unless size: N option added)
     field :published_at, :naive_datetime
-                                                      # => Field defined
+                                          # => TIMESTAMP WITHOUT TIME ZONE; nil when draft, set when published
+                                          # => TIMESTAMP WITHOUT TIME ZONE column (no timezone info stored)
     belongs_to :user, User
-                                                      # => Operation executes
+                                          # => Adds :USER_id foreign key INTEGER column + :USER virtual field (not preloaded by default)
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 import Ecto.Query
-                                                      # => Operation executes
+                                      # => Imports all public functions from Ecto.Query into scope (use alias for explicit control)
+                                      # => Brings from/2, where/3, select/3, order_by/3, join/5 query macros into scope
 
 # Query benefits from user_id index
-                                                      # => Operation executes
 query1 = from p in Post,
-                                                      # => Value assigned
+                                      # => Builds Ecto query struct; lazy evaluation - no DB hit until Repo.all/one/etc.
   where: p.user_id == 1,              # => Uses posts_user_id_index
   select: p
-                                                      # => Operation executes
 
 # Query benefits from composite index
-                                                      # => Operation executes
 query2 = from p in Post,
-                                                      # => Value assigned
+                                      # => Builds Ecto query struct; lazy evaluation - no DB hit until Repo.all/one/etc.
   where: p.user_id == 1 and p.published_at > ^~N[2024-01-01 00:00:00],
-                                                      # => Value assigned
                                       # => Uses posts_user_id_published_at_index
   select: p
-                                                      # => Operation executes
 
 # Query benefits from partial index
-                                                      # => Operation executes
 query3 = from p in Post,
-                                                      # => Value assigned
+                                      # => Builds Ecto query struct; lazy evaluation - no DB hit until Repo.all/one/etc.
   where: p.status == "published" and p.published_at > ^~N[2024-01-01 00:00:00],
-                                                      # => Value assigned
                                       # => Uses partial index (smaller, faster)
   select: p
-                                                      # => Operation executes
 ```
 
 **Key Takeaway**: Index foreign keys for joins, frequently filtered fields for WHERE clauses, and consider composite indexes for multi-field queries; use partial indexes for queries with consistent WHERE conditions.
 
-**Why It Matters**: Missing indexes cause production queries to scan entire tables, degrading exponentially as tables grow. Conversely, over-indexing slows writes and wastes storage. Production database tuning balances index coverage (WHERE/ORDER BY/JOIN columns) against write performance and maintenance costs, using query plans to guide index decisions based on actual workload patterns.
+**Why It Matters**: Missing indexes cause production queries to scan entire tables, degrading exponentially as tables grow. Conversely, over-indexing slows writes and wastes storage. Production database tuning balances index coverage against write performance and maintenance costs, using query execution plans (EXPLAIN ANALYZE) to guide index decisions based on actual workload patterns rather than assumptions.
 
 ---
 
@@ -1181,60 +1129,50 @@ Use Ecto.Adapters.SQL.explain/2 to analyze query execution plans and identify pe
 
 ```elixir
 defmodule User do
-                                                      # => Module starts
+                                      # => Defines User module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "users" do
-                                                      # => Schema declaration
+                                        # => Maps to "users" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :name, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     field :age, :integer
-                                                      # => Field defined
+                                          # => INTEGER column (4-byte signed; range -2,147,483,648 to 2,147,483,647)
     field :country, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 import Ecto.Query
-                                                      # => Operation executes
+                                      # => Imports all public functions from Ecto.Query into scope (use alias for explicit control)
+                                      # => Brings from/2, where/3, select/3, order_by/3, join/5 query macros into scope
 
 # Build query
-                                                      # => Operation executes
 query = from u in User,
-                                                      # => Value assigned
+                                      # => Builds Ecto query struct for User; no SQL executed until Repo operation
   where: u.country == "USA" and u.age > 25,
-                                                      # => Value assigned
   order_by: [desc: u.age],
-                                                      # => Operation executes
   limit: 10
-                                                      # => Operation executes
+                                        # => SQL: LIMIT 10; prevents unbounded result sets in production
 
 # Get EXPLAIN output
-                                                      # => Operation executes
 explain_result = Ecto.Adapters.SQL.explain(Repo, :all, query)
-                                                      # => Value assigned
                                       # => Returns database EXPLAIN output
                                       # => Shows: query plan, indexes used, cost estimates
 
 IO.puts(explain_result)               # => Output: EXPLAIN query plan
 # Example output:
-                                                      # => Operation executes
 # Limit  (cost=0.00..1.23 rows=10)
-                                                      # => Value assigned
 #   ->  Index Scan using users_country_age_index on users
-                                                      # => Operation executes
 #       Filter: (country = 'USA' AND age > 25)
-                                                      # => Value assigned
 
 # Use explain: :analyze for actual execution stats
-                                                      # => Operation executes
 query_with_analyze = query |> Ecto.Query.plan(:all) |> Ecto.Adapters.SQL.explain(Repo, analyze: true)
-                                                      # => Value assigned
                                       # => Shows actual vs estimated rows, execution time
 ```
 
@@ -1277,76 +1215,68 @@ graph TD
 
 ```elixir
 defmodule User do
-                                                      # => Module starts
+                                      # => Defines User module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "users" do
-                                                      # => Schema declaration
+                                        # => Maps to "users" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :name, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     field :balance, :decimal
-                                                      # => Field defined
+                                          # => NUMERIC/DECIMAL column (exact arithmetic; prevents floating-point rounding errors)
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 # Insert test user
-                                                      # => Operation executes
 {:ok, user} = Repo.insert(%User{name: "Liam", balance: Decimal.new("100.00")})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; user has database-assigned id and timestamps
 
 # Transaction with savepoints
-                                                      # => Operation executes
 Repo.transaction(fn ->
-                                                      # => Database operation
+                                      # => Opens transaction; auto-commits on fn success, rolls back on exception
+                                      # => Wraps fn block in BEGIN/COMMIT; auto-rollback on Repo.rollback/1 or exception
   # Update 1: Deduct 20
-                                                      # => Operation executes
   changeset1 = Ecto.Changeset.change(user, balance: Decimal.sub(user.balance, Decimal.new("20.00")))
-                                                      # => Value assigned
+                                        # => Builds changeset with forced change (bypasses cast/2; no type casting or validation)
   {:ok, user_v1} = Repo.update(changeset1)
-                                                      # => Database operation
+                                        # => SQL: UPDATE ... SET ... WHERE id=N; user_v1 reflects persisted state
                                       # => balance is 80.00
 
   # Savepoint
-                                                      # => Operation executes
   Repo.transaction(fn ->
-                                                      # => Database operation
+                                        # => Opens transaction; auto-commits on fn success, rolls back on exception
+                                        # => Wraps fn block in BEGIN/COMMIT; auto-rollback on Repo.rollback/1 or exception
     # Update 2: Deduct another 30
-                                                      # => Operation executes
     changeset2 = Ecto.Changeset.change(user_v1, balance: Decimal.sub(user_v1.balance, Decimal.new("30.00")))
-                                                      # => Value assigned
+                                          # => Builds changeset with forced change (bypasses cast/2; no type casting or validation)
     {:ok, user_v2} = Repo.update(changeset2)
-                                                      # => Database operation
+                                          # => SQL: UPDATE ... SET ... WHERE id=N; user_v2 reflects persisted state
                                       # => balance is 50.00
 
     # Rollback to savepoint (balance back to 80)
-                                                      # => Operation executes
     if Decimal.lt?(user_v2.balance, Decimal.new("60.00")) do
-                                                      # => Operation executes
+                                          # => Decimal.lt? compares exact decimal values (no floating-point rounding)
       Repo.rollback(:insufficient_funds)
-                                                      # => Database operation
                                       # => Rollback inner transaction only
     end
-                                                      # => Block ends
+                                          # => Closes the nearest open block (do...end)
   end)
-                                                      # => Block ends
+                                        # => Closes do...end block and the enclosing function call
 
   # Outer transaction continues
-                                                      # => Operation executes
   # Balance is still 80.00 (savepoint rollback worked)
-                                                      # => Operation executes
   final = Repo.get(User, user.id)     # => final.balance is 80.00
   final
-                                                      # => Operation executes
 end)
-                                                      # => Block ends
+                                      # => Closes do...end block and the enclosing function call
 
 loaded = Repo.get(User, user.id)
-                                                      # => Database operation
+                                      # => SQL: SELECT * FROM table WHERE id = user.id; returns struct or nil
 IO.inspect(loaded.balance)            # => Output: #Decimal<80.00>
 ```
 
@@ -1362,49 +1292,46 @@ Changesets can validate data without schemas, useful for form validations or API
 
 ```elixir
 import Ecto.Changeset
-                                                      # => Operation executes
+                                      # => Imports all public functions from Ecto.Changeset into scope (use alias for explicit control)
+                                      # => Brings cast/3, validate_required/2, validate_length/3 into scope
 
 # Schema-less changeset for registration form
-                                                      # => Operation executes
 def validate_registration(params) do
-                                                      # => Operation executes
+                                      # => Schemaless validation: validates params without a persistent schema module
+                                      # => Public function validate_registration/N; callable from any module
   types = %{
-                                                      # => Value assigned
+                                        # => Type map for schemaless changeset (no schema module needed)
     email: :string,
-                                                      # => Operation executes
+                                          # => email field type for cast/4 (schemaless changeset)
     password: :string,
-                                                      # => Operation executes
+                                          # => password field type for cast/4 (schemaless changeset)
     age: :integer
-                                                      # => Operation executes
+                                          # => age field type for cast/4 (schemaless changeset)
   }                                   # => Define field types
 
   {%{}, types}                        # => Empty data, type spec
   |> cast(params, Map.keys(types))    # => Cast params
   |> validate_required([:email, :password])
-                                                      # => Operation executes
+                                        # => Adds error if :email, :password missing or blank; check changeset.errors before Repo operations
   |> validate_format(:email, ~r/@/)
-                                                      # => Operation executes
+                                        # => Adds error if :email doesn't match regex; regex run client-side, no DB query
   |> validate_length(:password, min: 8)
-                                                      # => Operation executes
+                                        # => Adds error if :password length violates constraints (checked against cast value)
   |> validate_number(:age, greater_than_or_equal_to: 18)
-                                                      # => Operation executes
+                                        # => Adds error if :age fails numeric constraints (greater_than, less_than, etc.)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 # Valid registration
-                                                      # => Operation executes
 valid_params = %{email: "user@example.com", password: "secure123", age: 25}
-                                                      # => Value assigned
 changeset = validate_registration(valid_params)
-                                                      # => Value assigned
+                                      # => changeset.valid? is true; changes contain all valid fields
                                       # => changeset.valid? is true
 
 # Invalid registration
-                                                      # => Operation executes
 invalid_params = %{email: "invalid", password: "short", age: 15}
-                                                      # => Value assigned
 invalid_changeset = validate_registration(invalid_params)
-                                                      # => Value assigned
+                                      # => invalid_changeset.valid? is false; errors populated for each violated rule
                                       # => invalid_changeset.valid? is false
                                       # => errors: [email: {"has invalid format"}, password: {"too short"}, age: {"must be >= 18"}]
 
@@ -1425,106 +1352,108 @@ Create reusable custom validators for domain-specific validation logic by defini
 
 ```elixir
 defmodule CustomValidators do
-                                                      # => Module starts
+                                      # => Reusable validation module; imported into schemas that need custom rules
+                                      # => Defines CustomValidators module; Elixir module is just a named atom with function table
   import Ecto.Changeset
-                                                      # => Operation executes
+                                        # => Imports all public functions from Ecto.Changeset into scope (use alias for explicit control)
+                                        # => Brings cast/3, validate_required/2, validate_length/3 into scope
 
   def validate_url(changeset, field) do
-                                                      # => Field defined
+                                        # => Reusable URL validator; add to any changeset with |> validate_url(:url)
+                                        # => Public function validate_url/N; callable from any module
     validate_change(changeset, field, fn ^field, value ->
-                                                      # => Field defined
+                                          # => Custom validation fn; called only when field has value; return [] or [{field, msg}]
       uri = URI.parse(value)
-                                                      # => Value assigned
+                                            # => Parses URL string into %URI{scheme: "https", host: "...", ...}
       if uri.scheme in ["http", "https"] and uri.host do
-                                                      # => Operation executes
+                                            # => Evaluates condition; Elixir if is an expression returning a value
         []                            # => Valid URL, no errors
       else
-                                                      # => Operation executes
+                                            # => Fallback clause in if/else expression
         [{field, "must be a valid HTTP/HTTPS URL"}]
-                                                      # => Field defined
+                                              # => Returns error tuple list; Ecto appends to changeset.errors
                                       # => Add error
       end
-                                                      # => Block ends
+                                            # => Closes the nearest open block (do...end)
     end)
-                                                      # => Block ends
+                                          # => Closes do...end block and the enclosing function call
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 
   def validate_not_in_list(changeset, field, forbidden_values) do
-                                                      # => Field defined
+                                        # => Reusable blocklist validator; prevents reserved names/emails
+                                        # => Public function validate_not_in_list/N; callable from any module
     validate_change(changeset, field, fn ^field, value ->
-                                                      # => Field defined
+                                          # => Custom validation fn; called only when field has value; return [] or [{field, msg}]
       if value in forbidden_values do
-                                                      # => Operation executes
+                                            # => Evaluates condition; Elixir if is an expression returning a value
         [{field, "is reserved and cannot be used"}]
-                                                      # => Field defined
+                                              # => Returns error tuple; changeset.errors will contain [{:field, "is reserved..."}]
       else
-                                                      # => Operation executes
+                                            # => Fallback clause in if/else expression
         []
-                                                      # => Operation executes
+                                              # => Empty error list: validation passed for this field
       end
-                                                      # => Block ends
+                                            # => Closes the nearest open block (do...end)
     end)
-                                                      # => Block ends
+                                          # => Closes do...end block and the enclosing function call
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 defmodule Website do
-                                                      # => Module starts
+                                      # => Website schema with custom validators defined separately
+                                      # => Defines Website module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
   import Ecto.Changeset
-                                                      # => Operation executes
+                                        # => Imports all public functions from Ecto.Changeset into scope (use alias for explicit control)
+                                        # => Brings cast/3, validate_required/2, validate_length/3 into scope
   import CustomValidators
-                                                      # => Operation executes
+                                        # => Brings validate_url/2, validate_not_in_list/3 into scope
 
   schema "websites" do
-                                                      # => Schema declaration
+                                        # => Maps to "websites" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :name, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     field :url, :string
-                                                      # => Field defined
+                                          # => VARCHAR column for URL storage (no format validation at schema level)
+                                          # => VARCHAR column (no length limit unless size: N option added)
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 
   def changeset(website, params \\ %{}) do
-                                                      # => Operation executes
+                                        # => Public function changeset/N; callable from any module
     website
-                                                      # => Operation executes
     |> cast(params, [:name, :url])
-                                                      # => Operation executes
     |> validate_required([:name, :url])
-                                                      # => Operation executes
+                                          # => Adds error if :name, :url missing or blank; check changeset.errors before Repo operations
     |> validate_url(:url)             # => Custom URL validator
     |> validate_not_in_list(:name, ["admin", "root", "system"])
-                                                      # => Operation executes
+                                          # => Checks :name against reserved list at changeset level (before DB)
                                       # => Custom forbidden names validator
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 # Valid website
-                                                      # => Operation executes
 valid = Website.changeset(%Website{}, %{name: "myblog", url: "https://example.com"})
-                                                      # => Value assigned
+                                      # => valid.valid? is true; represents a passing validation scenario
                                       # => valid.valid? is true
 
 # Invalid URL
-                                                      # => Operation executes
 invalid_url = Website.changeset(%Website{}, %{name: "test", url: "not-a-url"})
-                                                      # => Value assigned
+                                      # => invalid_url.valid? is false; errors on :url field
                                       # => invalid_url.valid? is false
                                       # => errors: [url: {"must be a valid HTTP/HTTPS URL"}]
 
 # Forbidden name
-                                                      # => Operation executes
 invalid_name = Website.changeset(%Website{}, %{name: "admin", url: "https://example.com"})
-                                                      # => Value assigned
+                                      # => invalid_name.valid? is false; errors on :name field (reserved word)
                                       # => invalid_name.valid? is false
                                       # => errors: [name: {"is reserved and cannot be used"}]
 
@@ -1544,56 +1473,49 @@ Understanding when fragments are safe vs unsafe is critical for security. Always
 
 ```elixir
 defmodule User do
-                                                      # => Module starts
+                                      # => Defines User module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "users" do
-                                                      # => Schema declaration
+                                        # => Maps to "users" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :name, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     field :email, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 import Ecto.Query
-                                                      # => Operation executes
+                                      # => Imports all public functions from Ecto.Query into scope (use alias for explicit control)
+                                      # => Brings from/2, where/3, select/3, order_by/3, join/5 query macros into scope
 
 # UNSAFE: String interpolation in fragment (NEVER DO THIS)
-                                                      # => Operation executes
 # user_input = "admin' OR '1'='1"
-                                                      # => Value assigned
 # unsafe_query = from u in User,
-                                                      # => Value assigned
 #   where: fragment("email = '#{user_input}'")
-                                                      # => Value assigned
                                       # => SQL INJECTION VULNERABILITY!
                                       # => Attacker can inject arbitrary SQL
 
 # SAFE: Parameter binding in fragment
-                                                      # => Operation executes
 safe_user_input = "admin@example.com"
-                                                      # => Value assigned
 safe_query = from u in User,
-                                                      # => Value assigned
+                                      # => Builds Ecto query struct; lazy evaluation - no DB hit until Repo.all/one/etc.
   where: fragment("LOWER(email) = LOWER(?)", ^safe_user_input)
-                                                      # => Value assigned
                                       # => SQL: WHERE LOWER(email) = LOWER($1)
                                       # => Database escapes parameter safely
 
 users = Repo.all(safe_query)          # => Safe execution
 
 # SAFE: Ecto DSL (preferred when possible)
-                                                      # => Operation executes
 safest_query = from u in User,
-                                                      # => Value assigned
+                                      # => Builds Ecto query struct; lazy evaluation - no DB hit until Repo.all/one/etc.
   where: ilike(u.email, ^safe_user_input)
-                                                      # => Operation executes
+                                        # => Case-insensitive LIKE search; uses DB-level ilike (index-unfriendly for large tables)
                                       # => Ecto handles escaping automatically
 
 IO.inspect(length(users))             # => Output: count of matching users
@@ -1623,90 +1545,87 @@ graph TD
 
 ```elixir
 defmodule Post do
-                                                      # => Module starts
+                                      # => Post module mapping to posts table; declares schema and associations
+                                      # => Defines Post module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "posts" do
-                                                      # => Schema declaration
+                                        # => Maps to "posts" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :title, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 defmodule Video do
-                                                      # => Module starts
+                                      # => Defines Video module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "videos" do
-                                                      # => Schema declaration
+                                        # => Maps to "videos" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :url, :string
-                                                      # => Field defined
+                                          # => VARCHAR column for URL storage (no format validation at schema level)
+                                          # => VARCHAR column (no length limit unless size: N option added)
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 defmodule Comment do
-                                                      # => Module starts
+                                      # => Defines Comment module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "comments" do
-                                                      # => Schema declaration
+                                        # => Maps to "comments" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :content, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     field :commentable_id, :integer   # => Foreign key (polymorphic)
     field :commentable_type, :string  # => Type discriminator ("Post" or "Video")
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 
   def for_commentable(query \\ __MODULE__, type, id) do
-                                                      # => Operation executes
+                                        # => Public function for_commentable/N; callable from any module
     import Ecto.Query
-                                                      # => Operation executes
+                                          # => Imports all public functions from Ecto.Query into scope (use alias for explicit control)
+                                          # => Brings from/2, where/3, select/3, order_by/3, join/5 query macros into scope
     from c in query,
-                                                      # => Operation executes
+                                          # => Begins Ecto query DSL; no SQL executed yet (lazy query construction)
       where: c.commentable_type == ^type and c.commentable_id == ^id
-                                                      # => Value assigned
+                                            # => ^type and c.commentable_id == ^id pins Elixir variable into query (prevents SQL injection via parameterized query)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 # Create post and video
-                                                      # => Operation executes
 {:ok, post} = Repo.insert(%Post{title: "My Post"})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; post has database-assigned id and timestamps
 {:ok, video} = Repo.insert(%Video{url: "https://example.com/video.mp4"})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; video has database-assigned id and timestamps
 
 # Add comments to different types
-                                                      # => Operation executes
 {:ok, comment1} = Repo.insert(%Comment{content: "Great post!", commentable_type: "Post", commentable_id: post.id})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; comment1 has database-assigned id and timestamps
 {:ok, comment2} = Repo.insert(%Comment{content: "Nice video!", commentable_type: "Video", commentable_id: video.id})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; comment2 has database-assigned id and timestamps
 
 # Query comments for post
-                                                      # => Operation executes
 post_comments = Comment.for_commentable("Post", post.id) |> Repo.all()
-                                                      # => Database operation
                                       # => post_comments is [%Comment{content: "Great post!"}]
 
 # Query comments for video
-                                                      # => Operation executes
 video_comments = Comment.for_commentable("Video", video.id) |> Repo.all()
-                                                      # => Database operation
                                       # => video_comments is [%Comment{content: "Nice video!"}]
 
 IO.inspect(length(post_comments))     # => Output: 1
@@ -1725,52 +1644,46 @@ Ecto.Query.API provides type-safe functions for queries, enabling explicit type 
 
 ```elixir
 defmodule User do
-                                                      # => Module starts
+                                      # => Defines User module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "users" do
-                                                      # => Schema declaration
+                                        # => Maps to "users" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :name, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     field :data, :map                 # => JSONB field in PostgreSQL
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 import Ecto.Query
-                                                      # => Operation executes
+                                      # => Imports all public functions from Ecto.Query into scope (use alias for explicit control)
+                                      # => Brings from/2, where/3, select/3, order_by/3, join/5 query macros into scope
 
 # Insert test data with JSON field
-                                                      # => Field defined
 Repo.insert(%User{name: "Mia", data: %{"age" => 30, "city" => "NYC"}})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; result discarded (capture for id/timestamps)
 
 # Query JSON field with type casting
-                                                      # => Field defined
 query = from u in User,
-                                                      # => Value assigned
+                                      # => Builds Ecto query struct for User; no SQL executed until Repo operation
   where: fragment("?->>'age' = ?", u.data, type(^"30", :string)),
-                                                      # => Value assigned
                                       # => Cast parameter to string type
   select: u
-                                                      # => Operation executes
 
 users = Repo.all(query)               # => users is [%User{name: "Mia"}]
                                       # => SQL: WHERE data->>'age' = '30'
 
 # Using Ecto.Query.API.type/2 for explicit casting
-                                                      # => Operation executes
 typed_query = from u in User,
-                                                      # => Value assigned
+                                      # => Builds Ecto query struct; lazy evaluation - no DB hit until Repo.all/one/etc.
   where: fragment("(?->>'age')::integer > ?", u.data, type(^25, :integer)),
-                                                      # => Operation executes
                                       # => Cast age to integer for comparison
   select: u
-                                                      # => Operation executes
 
 typed_users = Repo.all(typed_query)   # => typed_users is [%User{name: "Mia"}]
 
@@ -1790,48 +1703,43 @@ Repo.exists?/1 checks if any records match a query without loading data, more ef
 
 ```elixir
 defmodule User do
-                                                      # => Module starts
+                                      # => Defines User module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "users" do
-                                                      # => Schema declaration
+                                        # => Maps to "users" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :email, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     field :active, :boolean
-                                                      # => Field defined
+                                          # => BOOLEAN column (stored as true/false in PostgreSQL)
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 import Ecto.Query
-                                                      # => Operation executes
+                                      # => Imports all public functions from Ecto.Query into scope (use alias for explicit control)
+                                      # => Brings from/2, where/3, select/3, order_by/3, join/5 query macros into scope
 
 # Insert test data
-                                                      # => Operation executes
 Repo.insert(%User{email: "active@example.com", active: true})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; result discarded (capture for id/timestamps)
 Repo.insert(%User{email: "inactive@example.com", active: false})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; result discarded (capture for id/timestamps)
 
 # Check if any active users exist
-                                                      # => Operation executes
 query = from u in User, where: u.active == true
-                                                      # => Value assigned
 
 exists = Repo.exists?(query)          # => exists is true
                                       # => SQL: SELECT EXISTS(SELECT 1 FROM users WHERE active = TRUE)
                                       # => Much faster than COUNT or fetching
 
 # Check if specific email exists
-                                                      # => Operation executes
 email_query = from u in User, where: u.email == "unknown@example.com"
-                                                      # => Value assigned
 email_exists = Repo.exists?(email_query)
-                                                      # => Database operation
                                       # => email_exists is false
 
 IO.inspect(exists)                    # => Output: true
@@ -1850,76 +1758,71 @@ Subqueries can compute aggregates that are used in outer query filters, enabling
 
 ```elixir
 defmodule User do
-                                                      # => Module starts
+                                      # => Defines User module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "users" do
-                                                      # => Schema declaration
+                                        # => Maps to "users" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :name, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     has_many :posts, Post
-                                                      # => Operation executes
+                                          # => Virtual association field; no DB column added; loaded only via Repo.preload/3
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 defmodule Post do
-                                                      # => Module starts
+                                      # => Post module mapping to posts table; declares schema and associations
+                                      # => Defines Post module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "posts" do
-                                                      # => Schema declaration
+                                        # => Maps to "posts" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :title, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     belongs_to :user, User
-                                                      # => Operation executes
+                                          # => Adds :USER_id foreign key INTEGER column + :USER virtual field (not preloaded by default)
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 import Ecto.Query
-                                                      # => Operation executes
+                                      # => Imports all public functions from Ecto.Query into scope (use alias for explicit control)
+                                      # => Brings from/2, where/3, select/3, order_by/3, join/5 query macros into scope
 
 # Insert test data
-                                                      # => Operation executes
 {:ok, user1} = Repo.insert(%User{name: "Noah"})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; user1 has database-assigned id and timestamps
 {:ok, user2} = Repo.insert(%User{name: "Olivia"})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; user2 has database-assigned id and timestamps
 Repo.insert(%Post{title: "Post 1", user_id: user1.id})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; result discarded (capture for id/timestamps)
 Repo.insert(%Post{title: "Post 2", user_id: user1.id})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; result discarded (capture for id/timestamps)
 Repo.insert(%Post{title: "Post 3", user_id: user1.id})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; result discarded (capture for id/timestamps)
 Repo.insert(%Post{title: "Post 4", user_id: user2.id})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; result discarded (capture for id/timestamps)
 
 # Find users with more than 2 posts using subquery
-                                                      # => Operation executes
 post_count_subquery = from p in Post,
-                                                      # => Value assigned
+                                      # => Builds Ecto query struct; lazy evaluation - no DB hit until Repo.all/one/etc.
   group_by: p.user_id,
-                                                      # => Operation executes
   select: %{user_id: p.user_id, count: count(p.id)}
-                                                      # => Operation executes
 
 query = from u in User,
-                                                      # => Value assigned
+                                      # => Builds Ecto query struct for User; no SQL executed until Repo operation
   join: pc in subquery(post_count_subquery), on: pc.user_id == u.id,
-                                                      # => Value assigned
   where: pc.count > 2,
-                                                      # => Operation executes
   select: u
-                                                      # => Operation executes
 
 users = Repo.all(query)               # => users is [%User{name: "Noah"}]
                                       # => SQL: SELECT u.* FROM users u
@@ -1944,68 +1847,64 @@ Repo.in_transaction?/0 checks if code is executing inside a transaction, useful 
 
 ```elixir
 defmodule UserService do
-                                                      # => Module starts
+                                      # => Service module encapsulating complex multi-step business operations
+                                      # => Defines UserService module; Elixir module is just a named atom with function table
   def create_user_with_posts(user_params, posts_params) do
-                                                      # => Operation executes
+                                        # => Public function create_user_with_posts/N; callable from any module
     if Repo.in_transaction?() do
-                                                      # => Database operation
+                                          # => Evaluates condition; Elixir if is an expression returning a value
       # Already in transaction, just execute
-                                                      # => Operation executes
       do_create_user_with_posts(user_params, posts_params)
-                                                      # => Operation executes
+                                            # => Calls private helper function; separates public API from transaction logic
     else
-                                                      # => Operation executes
+                                          # => Fallback clause in if/else expression
       # Not in transaction, wrap in one
-                                                      # => Operation executes
       Repo.transaction(fn ->
-                                                      # => Database operation
+                                            # => Opens transaction; auto-commits on fn success, rolls back on exception
+                                            # => Wraps fn block in BEGIN/COMMIT; auto-rollback on Repo.rollback/1 or exception
         do_create_user_with_posts(user_params, posts_params)
-                                                      # => Operation executes
+                                              # => Calls private helper function; separates public API from transaction logic
       end)
-                                                      # => Block ends
+                                            # => Closes do...end block and the enclosing function call
     end
-                                                      # => Block ends
+                                          # => Closes the nearest open block (do...end)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 
   defp do_create_user_with_posts(user_params, posts_params) do
-                                                      # => Operation executes
+                                        # => Private function do_create_user_with_posts; only callable within this module
+                                        # => Private function do_create_user_with_posts/N; only callable within this module
     {:ok, user} = Repo.insert(%User{name: user_params.name})
-                                                      # => Database operation
+                                          # => SQL: INSERT INTO ... RETURNING *; user has database-assigned id and timestamps
     posts = Enum.map(posts_params, fn p ->
-                                                      # => Value assigned
+                                          # => Maps posts_params list to new list; each p element processed by fn
       Repo.insert!(%Post{title: p.title, user_id: user.id})
-                                                      # => Database operation
+                                            # => Raises Ecto.InvalidChangesetError on failure (no error tuple returned)
     end)
-                                                      # => Block ends
+                                          # => Closes do...end block and the enclosing function call
     {user, posts}
-                                                      # => Operation executes
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 # Call from outside transaction
-                                                      # => Operation executes
 result1 = UserService.create_user_with_posts(%{name: "Paul"}, [%{title: "Post 1"}])
-                                                      # => Value assigned
                                       # => Wrapped in transaction automatically
                                       # => SQL: BEGIN; INSERT users...; INSERT posts...; COMMIT;
 
 # Call from inside transaction
-                                                      # => Operation executes
 Repo.transaction(fn ->
-                                                      # => Database operation
+                                      # => Opens transaction; auto-commits on fn success, rolls back on exception
+                                      # => Wraps fn block in BEGIN/COMMIT; auto-rollback on Repo.rollback/1 or exception
   result2 = UserService.create_user_with_posts(%{name: "Quinn"}, [%{title: "Post 2"}])
-                                                      # => Value assigned
                                       # => Uses existing transaction (no nested BEGIN)
   result2
-                                                      # => Operation executes
 end)
-                                                      # => Block ends
+                                      # => Closes do...end block and the enclosing function call
 
 IO.inspect("UserService handles transaction context automatically")
-                                                      # => Operation executes
+                                      # => Prints "UserService handles transaction context automatically" to stdout and returns value (useful for debugging pipelines)
 ```
 
 **Key Takeaway**: Use Repo.in_transaction?/0 to write functions that adapt to transactional context, avoiding nested transaction overhead when already inside a transaction.
@@ -2040,56 +1939,50 @@ graph TD
 
 ```elixir
 defmodule Product do
-                                                      # => Module starts
+                                      # => Defines Product module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "products" do
-                                                      # => Schema declaration
+                                        # => Maps to "products" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :name, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     field :price, :decimal
-                                                      # => Field defined
+                                          # => NUMERIC/DECIMAL column (exact arithmetic; prevents floating-point rounding errors)
     field :discount_percent, :integer
-                                                      # => Field defined
+                                          # => INTEGER column (4-byte signed; range -2,147,483,648 to 2,147,483,647)
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 import Ecto.Query
-                                                      # => Operation executes
+                                      # => Imports all public functions from Ecto.Query into scope (use alias for explicit control)
+                                      # => Brings from/2, where/3, select/3, order_by/3, join/5 query macros into scope
 
 # Insert test data
-                                                      # => Operation executes
 Repo.insert(%Product{name: "Widget", price: Decimal.new("100.00"), discount_percent: 0})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; result discarded (capture for id/timestamps)
 Repo.insert(%Product{name: "Gadget", price: Decimal.new("200.00"), discount_percent: 10})
-                                                      # => Database operation
+                                      # => SQL: INSERT INTO ... RETURNING *; result discarded (capture for id/timestamps)
 
 # Apply 10% discount to all products (atomic calculation)
-                                                      # => Operation executes
 query = from p in Product
-                                                      # => Value assigned
+                                      # => Minimal query (SELECT * FROM Product); add where/select/order_by to refine
 
 {count, _} = Repo.update_all(query,
-                                                      # => Database operation
   set: [price: dynamic([p], p.price * (1.0 - p.discount_percent / 100.0))]
-                                                      # => Operation executes
 )                                     # => count is 2
                                       # => SQL: UPDATE products
                                       # =>      SET price = price * (1.0 - discount_percent / 100.0)
 
 # Verify updates
-                                                      # => Operation executes
 products = Repo.all(Product)
-                                                      # => Database operation
+                                      # => SQL: SELECT * FROM table; loads all records into memory (use limit for large tables)
 # Widget: 100 * (1.0 - 0/100) = 100.00
-                                                      # => Value assigned
 # Gadget: 200 * (1.0 - 10/100) = 180.00
-                                                      # => Value assigned
 
 IO.inspect(count)                     # => Output: 2
 ```
@@ -2106,94 +1999,99 @@ While Ecto doesn't have built-in repository callbacks, you can implement them us
 
 ```elixir
 defmodule MyApp.Repo do
-                                                      # => Module starts
+                                      # => Custom Repo module extending Ecto.Repo with logging and audit functions
+                                      # => Defines MyApp.Repo module; Elixir module is just a named atom with function table
   use Ecto.Repo,
-                                                      # => Imports Ecto
+                                        # => Injects Repo functions (insert/2, get/3, all/2, transaction/2, etc.)
     otp_app: :my_app,
-                                                      # => Operation executes
+                                          # => Config key: looks up :my_app app config for database connection settings
     adapter: Ecto.Adapters.Postgres
-                                                      # => Operation executes
+                                          # => Postgres-specific driver; swap for MySQL (Myxql) or SQLite3 adapter
 
   # Wrapper for insert with logging
-                                                      # => Operation executes
   def insert_with_logging(changeset_or_struct, opts \\ []) do
-                                                      # => Operation executes
+                                        # => Wraps Repo.insert with logging; opts forwarded to underlying Repo.insert/2
+                                        # => Public function insert_with_logging/N; callable from any module
     result = insert(changeset_or_struct, opts)
-                                                      # => Value assigned
+                                          # => Calls superclass Repo.insert/2 (no module prefix since we're inside Repo module)
 
     case result do
-                                                      # => Operation executes
+                                          # => Pattern match result against clauses below (exhaustive - all cases must match)
       {:ok, struct} ->
-                                                      # => Operation executes
+                                            # => Successful case: struct is the persisted struct with id and timestamps
         IO.inspect("Inserted: #{inspect(struct)}")
-                                                      # => Operation executes
+                                              # => Logs success: inspect/1 renders struct as readable string (Elixir debug output)
+                                              # => Prints "Inserted: #{inspect(struct)}" to stdout and returns value (useful for debugging pipelines)
         result
-                                                      # => Operation executes
+                                              # => Last expression in block (implicit return value in Elixir)
+                                              # => Last expression in function body (implicit return in Elixir)
       {:error, changeset} ->
-                                                      # => Operation executes
+                                            # => Error case: changeset is changeset with errors populated
         IO.inspect("Insert failed: #{inspect(changeset.errors)}")
-                                                      # => Operation executes
+                                              # => Logs failure: changeset.errors shows which fields/rules failed
+                                              # => Prints "Insert failed: #{inspect(changeset.errors)}" to stdout and returns value (useful for debugging pipelines)
         result
-                                                      # => Operation executes
+                                              # => Last expression in block (implicit return value in Elixir)
+                                              # => Last expression in function body (implicit return in Elixir)
     end
-                                                      # => Block ends
+                                          # => Closes the nearest open block (do...end)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 
   # Wrapper for update with audit
-                                                      # => Operation executes
   def update_with_audit(changeset, opts \\ []) do
-                                                      # => Operation executes
+                                        # => Wraps Repo.update with audit logging; pattern matches on {:ok/:error}
+                                        # => Public function update_with_audit/N; callable from any module
     result = update(changeset, opts)
-                                                      # => Value assigned
+                                          # => Calls Repo.update/2 (self-call within custom Repo module)
 
     case result do
-                                                      # => Operation executes
+                                          # => Pattern match result against clauses below (exhaustive - all cases must match)
       {:ok, struct} ->
-                                                      # => Operation executes
+                                            # => Successful case: struct is the persisted struct with id and timestamps
         # Log audit trail
-                                                      # => Operation executes
         IO.inspect("Updated #{struct.__struct__} id=#{struct.id}")
-                                                      # => Value assigned
+                                              # => Logs struct type and id for audit trail
+                                              # => Prints "Updated #{struct.__struct__} id=#{struct.id}" to stdout and returns value (useful for debugging pipelines)
         result
-                                                      # => Operation executes
+                                              # => Last expression in block (implicit return value in Elixir)
+                                              # => Last expression in function body (implicit return in Elixir)
       error ->
-                                                      # => Operation executes
+                                            # => Catch-all clause: any non-{:ok, _} result returned unchanged
         error
-                                                      # => Operation executes
     end
-                                                      # => Block ends
+                                          # => Closes the nearest open block (do...end)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 defmodule User do
-                                                      # => Module starts
+                                      # => Defines User module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "users" do
-                                                      # => Schema declaration
+                                        # => Maps to "users" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :name, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 # Use custom repo functions
-                                                      # => Operation executes
 {:ok, user} = MyApp.Repo.insert_with_logging(%User{name: "Ruby"})
-                                                      # => Database operation
+                                      # => Uses custom Repo method; internally calls standard Repo.insert/2
                                       # => Output: Inserted: %User{id: 1, name: "Ruby"}
 
 changeset = Ecto.Changeset.change(user, name: "Ruby Updated")
-                                                      # => Value assigned
+                                      # => Forced changeset (bypasses cast); trusted update for programmatic use
+                                      # => Builds changeset with forced change (bypasses cast/2; no type casting or validation)
 {:ok, updated} = MyApp.Repo.update_with_audit(changeset)
-                                                      # => Database operation
+                                      # => Custom Repo.update with audit logging; returns {:ok, updated_struct}
                                       # => Output: Updated User id=1
 ```
 
@@ -2209,66 +2107,66 @@ Ecto schemas expose metadata via **schema**/1, useful for metaprogramming and bu
 
 ```elixir
 defmodule User do
-                                                      # => Module starts
+                                      # => Defines User module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "users" do
-                                                      # => Schema declaration
+                                        # => Maps to "users" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :name, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     field :email, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     field :age, :integer
-                                                      # => Field defined
+                                          # => INTEGER column (4-byte signed; range -2,147,483,648 to 2,147,483,647)
     has_many :posts, Post
-                                                      # => Operation executes
+                                          # => Virtual association field; no DB column added; loaded only via Repo.preload/3
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 # Introspect schema
-                                                      # => Schema declaration
 table = User.__schema__(:source)      # => "users"
 primary_key = User.__schema__(:primary_key)
-                                                      # => Schema declaration
+                                      # => Returns [:id] (or custom primary key field name) as list of atoms
                                       # => [:id]
 fields = User.__schema__(:fields)     # => [:id, :name, :email, :age, :inserted_at, :updated_at]
 associations = User.__schema__(:associations)
-                                                      # => Schema declaration
+                                      # => Returns list of association names (atoms) declared in schema
                                       # => [:posts]
 field_type = User.__schema__(:type, :name)
-                                                      # => Schema declaration
+                                      # => Returns Ecto type atom for :name field (e.g., :string, :integer)
                                       # => :string
 
 # Generic function using schema reflection
-                                                      # => Schema declaration
 defmodule SchemaInspector do
-                                                      # => Module starts
+                                      # => Utility module using __schema__/1 metadata to inspect Ecto schemas at runtime
+                                      # => Defines SchemaInspector module; Elixir module is just a named atom with function table
   def inspect_schema(schema_module) do
-                                                      # => Schema declaration
+                                        # => Runtime schema introspection using __schema__/1 metadata
+                                        # => Public function inspect_schema/N; callable from any module
     %{
-                                                      # => Operation executes
+                                          # => Map literal (key-value pairs for structured data)
       table: schema_module.__schema__(:source),
-                                                      # => Schema declaration
+                                            # => Returns table name string (e.g., "users") from schema metadata
       fields: schema_module.__schema__(:fields),
-                                                      # => Schema declaration
+                                            # => Returns list of field atoms defined in schema (not virtual fields)
       associations: schema_module.__schema__(:associations),
-                                                      # => Schema declaration
+                                            # => Returns list of association names (belongs_to, has_many, etc.)
       primary_key: schema_module.__schema__(:primary_key)
-                                                      # => Schema declaration
+                                            # => Returns primary key field name(s) as list of atoms
     }
-                                                      # => Operation executes
+                                          # => End of map literal
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 info = SchemaInspector.inspect_schema(User)
-                                                      # => Schema declaration
+                                      # => info is %{table: "users", fields: [:name, ...], associations: [:posts, ...], primary_key: [:id]}
 
 IO.inspect(info.table)                # => Output: "users"
 IO.inspect(info.fields)               # => Output: [:id, :name, :email, :age, :inserted_at, :updated_at]
@@ -2287,262 +2185,252 @@ This example summarizes key patterns and best practices for production Ecto usag
 
 ```elixir
 # 1. ALWAYS use parameter binding (prevent SQL injection)
-                                                      # => Operation executes
 defmodule SafeQueries do
-                                                      # => Module starts
+                                      # => Defines SafeQueries module; Elixir module is just a named atom with function table
   import Ecto.Query
-                                                      # => Operation executes
+                                        # => Imports all public functions from Ecto.Query into scope (use alias for explicit control)
+                                        # => Brings from/2, where/3, select/3, order_by/3, join/5 query macros into scope
 
   def search_users(name_input) do
-                                                      # => Operation executes
+                                        # => Public function search_users/N; callable from any module
     from u in User,
-                                                      # => Operation executes
+                                          # => Start Ecto query; u is the binding alias for User schema fields
+                                          # => Begins Ecto query DSL; no SQL executed yet (lazy query construction)
       where: ilike(u.name, ^"%#{name_input}%")
-                                                      # => Operation executes
+                                            # => Case-insensitive LIKE search; uses DB-level ilike (index-unfriendly for large tables)
                                       # => SAFE: Parameter binding with ^
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 # 2. ALWAYS preload associations (prevent N+1)
-                                                      # => Operation executes
 defmodule UserController do
-                                                      # => Module starts
+                                      # => Defines UserController module; Elixir module is just a named atom with function table
   def index do
-                                                      # => Operation executes
+                                        # => Zero-arity public function index/0
     users = User
-                                                      # => Value assigned
       |> Repo.all()
-                                                      # => Database operation
+                                            # => Executes accumulated query against DB; returns list of structs (may be empty)
+                                            # => Executes accumulated query against DB; returns list of structs (may be empty)
       |> Repo.preload(:posts)         # => Load all associations upfront
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 # 3. Use indexes on foreign keys and WHERE clauses
-                                                      # => Operation executes
 defmodule Repo.Migrations.AddProductionIndexes do
-                                                      # => Module starts
+                                      # => AddProductionIndexes module under Repo.Migrations namespace (common pattern for Repo/Migrations)
+                                      # => Defines Repo.Migrations.AddProductionIndexes module; Elixir module is just a named atom with function table
   use Ecto.Migration
-                                                      # => Imports Ecto
+                                        # => Provides create/2, alter/2, add/3, index/2 migration DSL (runs in transaction)
 
   def change do
-                                                      # => Operation executes
+                                        # => Zero-arity public function change/0
     create index(:posts, [:user_id]) # => Foreign key index
     create index(:users, [:email])   # => Frequently searched field
     create index(:posts, [:published_at], where: "status = 'published'")
-                                                      # => Value assigned
                                       # => Partial index
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 # 4. Use transactions for multi-step operations
-                                                      # => Operation executes
 defmodule TransferMoney do
-                                                      # => Module starts
+                                      # => Defines TransferMoney module; Elixir module is just a named atom with function table
   def transfer(from_id, to_id, amount) do
-                                                      # => Operation executes
+                                        # => Public function transfer/N; callable from any module
     Repo.transaction(fn ->
-                                                      # => Database operation
+                                          # => Opens transaction; auto-commits on fn success, rolls back on exception
+                                          # => Wraps fn block in BEGIN/COMMIT; auto-rollback on Repo.rollback/1 or exception
       from_user = Repo.get!(User, from_id)
-                                                      # => Database operation
+                                            # => SQL: SELECT * FROM table WHERE id = from_id; raises Ecto.NoResultsError if not found
       to_user = Repo.get!(User, to_id)
-                                                      # => Database operation
+                                            # => SQL: SELECT * FROM table WHERE id = to_id; raises Ecto.NoResultsError if not found
 
       # Deduct from sender
-                                                      # => Block ends
       from_changeset = Ecto.Changeset.change(from_user, balance: Decimal.sub(from_user.balance, amount))
-                                                      # => Value assigned
+                                            # => Builds changeset with forced change (bypasses cast/2; no type casting or validation)
       {:ok, _} = Repo.update(from_changeset)
-                                                      # => Database operation
+                                            # => SQL: UPDATE ... SET ... WHERE id=N; _ reflects persisted state
 
       # Add to receiver
-                                                      # => Operation executes
       to_changeset = Ecto.Changeset.change(to_user, balance: Decimal.add(to_user.balance, amount))
-                                                      # => Value assigned
+                                            # => Builds changeset with forced change (bypasses cast/2; no type casting or validation)
       {:ok, _} = Repo.update(to_changeset)
-                                                      # => Database operation
+                                            # => SQL: UPDATE ... SET ... WHERE id=N; _ reflects persisted state
     end)
-                                                      # => Block ends
+                                          # => Closes do...end block and the enclosing function call
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 # 5. Use Repo.stream for large datasets
-                                                      # => Database operation
 defmodule DataExport do
-                                                      # => Module starts
+                                      # => Defines DataExport module; Elixir module is just a named atom with function table
   import Ecto.Query
-                                                      # => Operation executes
+                                        # => Imports all public functions from Ecto.Query into scope (use alias for explicit control)
+                                        # => Brings from/2, where/3, select/3, order_by/3, join/5 query macros into scope
 
   def export_users do
-                                                      # => Operation executes
+                                        # => Zero-arity public function export_users/0
     Repo.transaction(fn ->
-                                                      # => Database operation
+                                          # => Opens transaction; auto-commits on fn success, rolls back on exception
+                                          # => Wraps fn block in BEGIN/COMMIT; auto-rollback on Repo.rollback/1 or exception
       User
-                                                      # => Operation executes
+                                            # => Ecto queryable; equivalent to from(u in User)
       |> Repo.stream()                # => Stream instead of loading all
       |> Stream.map(&format_user/1)
-                                                      # => Operation executes
       |> Enum.to_list()
-                                                      # => Operation executes
+                                            # => Materializes stream into List; loads all results into memory
     end)
-                                                      # => Block ends
+                                          # => Closes do...end block and the enclosing function call
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 
   defp format_user(user), do: "#{user.name},#{user.email}"
-                                                      # => Operation executes
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 # 6. Use unique constraints for data integrity
-                                                      # => Operation executes
 defmodule User do
-                                                      # => Module starts
+                                      # => Defines User module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
   import Ecto.Changeset
-                                                      # => Operation executes
+                                        # => Imports all public functions from Ecto.Changeset into scope (use alias for explicit control)
+                                        # => Brings cast/3, validate_required/2, validate_length/3 into scope
 
   schema "users" do
-                                                      # => Schema declaration
+                                        # => Maps to "users" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :email, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 
   def changeset(user, params) do
-                                                      # => Operation executes
+                                        # => Public function changeset/N; callable from any module
     user
-                                                      # => Operation executes
+                                          # => Last expression in block (implicit return value in Elixir)
+                                          # => Existing struct passed to changeset (tracks original values for diffing)
     |> cast(params, [:email])
-                                                      # => Operation executes
     |> validate_required([:email])
-                                                      # => Operation executes
+                                          # => Adds error if :email missing or blank; check changeset.errors before Repo operations
     |> unique_constraint(:email)      # => Enforce uniqueness
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 # 7. Use Ecto.Multi for complex transactions
-                                                      # => Operation executes
 defmodule CreateUserWithPosts do
-                                                      # => Module starts
+                                      # => Defines CreateUserWithPosts module; Elixir module is just a named atom with function table
   alias Ecto.Multi
-                                                      # => Operation executes
+                                        # => Creates local alias Multi for Ecto.Multi (reduces repetition in this module)
+                                        # => Multi groups multiple Repo operations into a single atomic transaction
 
   def create(user_params, posts_params) do
-                                                      # => Operation executes
+                                        # => Public function create/N; callable from any module
     Multi.new()
-                                                      # => Operation executes
+                                          # => Creates empty Multi pipeline; operations added lazily, executed atomically
     |> Multi.insert(:user, %User{name: user_params.name})
-                                                      # => Operation executes
+                                          # => Adds named :user insert step to Multi pipeline (not executed yet)
+                                          # => Adds named :user insert to transaction pipeline (not executed yet)
     |> Multi.insert_all(:posts, Post, fn %{user: user} ->
-                                                      # => Operation executes
       Enum.map(posts_params, &Map.put(&1, :user_id, user.id))
-                                                      # => Operation executes
     end)
-                                                      # => Block ends
+                                          # => Closes do...end block and the enclosing function call
     |> Repo.transaction()
-                                                      # => Database operation
+                                          # => Executes all Multi steps atomically; returns {:ok, results} or {:error, step, reason, changes}
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 # 8. Use EXPLAIN to verify query plans
-                                                      # => Operation executes
 defmodule QueryAnalyzer do
-                                                      # => Module starts
+                                      # => Defines QueryAnalyzer module; Elixir module is just a named atom with function table
   import Ecto.Query
-                                                      # => Operation executes
+                                        # => Imports all public functions from Ecto.Query into scope (use alias for explicit control)
+                                        # => Brings from/2, where/3, select/3, order_by/3, join/5 query macros into scope
 
   def analyze_query do
-                                                      # => Operation executes
+                                        # => Zero-arity public function analyze_query/0
     query = from u in User,
-                                                      # => Value assigned
+                                          # => Builds Ecto query struct for User; no SQL executed until Repo operation
       join: p in assoc(u, :posts),
-                                                      # => Operation executes
       where: p.published == true
-                                                      # => Value assigned
 
     Ecto.Adapters.SQL.explain(Repo, :all, query)
-                                                      # => Operation executes
                                       # => Check if indexes are used
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 # 9. Use optimistic locking for concurrent updates
-                                                      # => Operation executes
 defmodule Product do
-                                                      # => Module starts
+                                      # => Defines Product module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
 
   schema "products" do
-                                                      # => Schema declaration
+                                        # => Maps to "products" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :name, :string
-                                                      # => Field defined
+                                          # => VARCHAR column (no length limit unless size: N option added)
     field :stock, :integer
-                                                      # => Field defined
+                                          # => INTEGER column (4-byte signed; range -2,147,483,648 to 2,147,483,647)
     field :version, :integer, default: 1
-                                                      # => Field defined
+                                          # => INTEGER column with application-side default 1 (not a DB constraint)
                                       # => Optimistic lock
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 
 # 10. Validate at changeset level, not database level
-                                                      # => Operation executes
 defmodule Order do
-                                                      # => Module starts
+                                      # => Defines Order module; Elixir module is just a named atom with function table
   use Ecto.Schema
-                                                      # => Imports Ecto
+                                        # => Injects schema/2, field/3, timestamps/1 macros into this module
   import Ecto.Changeset
-                                                      # => Operation executes
+                                        # => Imports all public functions from Ecto.Changeset into scope (use alias for explicit control)
+                                        # => Brings cast/3, validate_required/2, validate_length/3 into scope
 
   schema "orders" do
-                                                      # => Schema declaration
+                                        # => Maps to "orders" table; Ecto auto-adds :id primary key (bigserial) unless @primary_key false
     field :total, :decimal
-                                                      # => Field defined
+                                          # => NUMERIC/DECIMAL column (exact arithmetic; prevents floating-point rounding errors)
     field :status, :string
-                                                      # => Field defined
+                                          # => VARCHAR column for status enum (consider :atom type or Ecto.Enum in production)
+                                          # => VARCHAR column (no length limit unless size: N option added)
     timestamps()
-                                                      # => Operation executes
+                                          # => Adds inserted_at, updated_at (naive_datetime; auto-set by Repo on write)
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 
   def changeset(order, params) do
-                                                      # => Operation executes
+                                        # => Public function changeset/N; callable from any module
     order
-                                                      # => Operation executes
     |> cast(params, [:total, :status])
-                                                      # => Operation executes
     |> validate_required([:total, :status])
-                                                      # => Operation executes
+                                          # => Adds error if :total, :status missing or blank; check changeset.errors before Repo operations
     |> validate_number(:total, greater_than: 0)
-                                                      # => Operation executes
+                                          # => Adds error if :total fails numeric constraints (greater_than, less_than, etc.)
     |> validate_inclusion(:status, ["pending", "confirmed", "shipped"])
-                                                      # => Block ends
+                                          # => Adds error if :status not in allowed values; prevents invalid enum states
                                       # => Validate before database
   end
-                                                      # => Block ends
+                                        # => Closes the nearest open block (do...end)
 end
-                                                      # => Block ends
+                                      # => Closes the nearest open block (do...end)
 ```
 
 **Key Takeaway**: Production Ecto requires: parameter binding for security, preloading for performance, indexes for speed, transactions for consistency, streaming for large data, constraints for integrity, Multi for complex operations, EXPLAIN for optimization, optimistic locking for concurrency, and changeset validation for data quality.

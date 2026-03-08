@@ -94,7 +94,7 @@ fun main() {                         // => Entry point, no return value (Unit ty
 
 **Key Takeaway**: Use `val` by default for immutability and thread safety; only use `var` when you genuinely need to reassign values.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: In production Kotlin code, `val` is the default choice because immutability prevents bugs caused by unexpected state changes. When multiple threads read a `val`, no synchronization is needed, making concurrent code safer and faster. Immutable data structures compose better in functional pipelines and are easier to reason about during code review. Defaulting to `val` and upgrading to `var` only when mutation is genuinely needed is a Kotlin best practice that reduces entire categories of bugs, especially in Android ViewModels, data transfer objects, and configuration objects.
 
 ---
 
@@ -143,7 +143,7 @@ fun main() {                         // => Entry point, demonstrates numeric typ
 
 **Key Takeaway**: Kotlin's type inference reduces boilerplate while maintaining type safety, and underscores in numeric literals improve readability for large numbers.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Choosing the right numeric type directly affects memory usage and correctness in production systems. Using `Int` for pixel coordinates and `Long` for timestamps prevents overflow bugs that are notoriously hard to debug. In Android development, `Byte` arrays are used for image buffers and network packets, where using `Int` would quadruple memory consumption. The underscore separator in numeric literals (`1_000_000`) dramatically improves readability of financial and scientific constants, reducing transcription errors when reviewing code that handles large values like currency amounts or row counts.
 
 ---
 
@@ -208,7 +208,7 @@ fun main() {
 
 **Key Takeaway**: Use `$variable` for simple interpolation and `${expression}` for complex expressions; triple-quoted strings preserve formatting and support multi-line text.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: String templates eliminate a whole class of concatenation-related bugs where developers forget to call `.toString()` or accidentally use `+` with mixed types. In production Kotlin, multi-line triple-quoted strings are essential for embedded SQL queries, JSON templates, and HTML generation, where escape characters would clutter the code with `\n`, `\t`, and `\"`. The `trimMargin()` pattern enables properly indented template strings in code while producing clean output, making large string literals readable in source code without sacrificing the output format.
 
 ---
 
@@ -279,7 +279,7 @@ fun main() {                         // => Entry point demonstrating function fe
 
 **Key Takeaway**: Use single-expression syntax (`=`) for concise functions, leverage default parameters to reduce overloading, and use named arguments for clarity with multiple parameters.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Default and named parameters eliminate the function overloading explosion that plagues Java APIs. Instead of writing `greet()`, `greet(name)`, and `greet(name, greeting)` as three separate functions, one function with defaults covers all cases. Named arguments make call sites self-documenting: `sendEmail(to = user.email, subject = title, body = content)` is far clearer than positional `sendEmail(user.email, title, content)`. This pattern is especially valuable in configuration functions with many optional parameters, like database connection setup or HTTP client configuration in production services.
 
 ---
 
@@ -363,7 +363,7 @@ fun main() {
 
 **Key Takeaway**: Use `when` as an expression to return values directly, leverage ranges and type checks for concise branching, and omit the argument for complex boolean conditions.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: The `when` expression's return value eliminates the temporary variable anti-pattern common in Java switch statements. Instead of declaring `String grade;` then assigning in each case, `val grade = when(score) {...}` is both safer (no uninitialized variable risk) and more expressive. The sealed class exhaustiveness enforcement—where `when` without `else` produces a compile error if cases are missing—catches entire categories of bugs at compile time when adding new enum values or sealed subclasses, a critical feature in evolving production codebases.
 
 ---
 
@@ -437,7 +437,7 @@ fun main() {
 
 **Key Takeaway**: Use `..` for inclusive ranges, `until` for exclusive ranges, `downTo` for descending sequences, and `step` to skip values in progression.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Ranges and progressions enable expressive iteration patterns that would require manual index tracking in Java. `for (i in 0 until array.size)` replaces error-prone `for (int i = 0; i < array.size(); i++)` patterns. The `step` progression is particularly useful for processing every Nth element in data streams or implementing pagination with configurable page sizes. The `in` membership check is O(1) for ranges, making `score in 0..100` a clean and efficient validation idiom. These patterns appear constantly in Android animations, game loops, and data processing pipelines.
 
 ---
 
@@ -605,7 +605,7 @@ fun main() {
 
 **Key Takeaway**: Use `while` for conditional loops, `do-while` when you need at least one execution, and combine with `break`/`continue` for flow control within loops.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: While loops with `break` and `continue` are essential for implementing state machines, polling loops, and interactive I/O that cannot be expressed as simple collection iterations. The `do-while` loop guarantees at least one execution, which is critical for prompting user input where the condition depends on what was entered. In production systems, these loops appear in connection retry logic (poll until connected or max retries), game loops (run while game is active), and streaming data consumers (read while data available). Understanding both forms enables choosing the right tool for control-flow requirements.
 
 ---
 
@@ -710,7 +710,7 @@ fun main() {                         // => Entry point demonstrating null safety
 
 **Key Takeaway**: Use `Type?` for nullable types, `?.` for safe calls that propagate null, `?:` for default values, and avoid `!!` unless you're absolutely certain a value is non-null.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Null safety is Kotlin's most impactful feature for production reliability. Java codebases commonly spend 20-30% of lines on null checks, and `NullPointerException` is one of the top production exceptions. Kotlin's type system makes nullability explicit: `String` is guaranteed non-null, `String?` requires handling before use. The safe call `?.` and Elvis operator `?:` enable concise null handling without nested if-checks. In Android development, this eliminates crashes from uninitialized views, network response fields, or user preference values that haven't been set yet.
 
 ---
 
@@ -809,7 +809,7 @@ fun main() {                         // => Entry point for list operations demon
 
 **Key Takeaway**: Use `listOf` for immutable lists that prevent accidental modification, `mutableListOf` when you need to add/remove elements, and leverage functional operations like `map` and `filter` for transformations.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Kotlin's distinction between read-only (`List`) and mutable (`MutableList`) collection interfaces directly impacts thread safety and API design. Exposing `List<T>` from a class prevents callers from modifying internal state, a critical encapsulation boundary. The `toList()` defensive copy pattern is essential when returning collections from concurrent data structures. In practice, most data processing in Kotlin uses the immutable `List` API with transformation functions like `map`, `filter`, and `reduce`, producing new lists rather than mutating existing ones—a pattern that eliminates side effects and makes code testable.
 
 ---
 
@@ -896,7 +896,7 @@ fun main() {                         // => Entry point demonstrating set operati
 
 **Key Takeaway**: Use sets when you need unique elements and efficient membership testing; leverage set operations (union, intersect, subtract) for mathematical set manipulations.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Sets are the appropriate data structure when uniqueness matters more than order—checking if a user has permission, deduplicating event IDs, or tracking visited nodes in a graph traversal. The O(1) average lookup of `HashSet` versus O(n) for `List.contains()` is significant for large permission tables or feature flag checks that happen on every request. `LinkedHashSet` preserves insertion order while maintaining uniqueness, essential for building ordered unique sequences like recently viewed items or tag lists where display order matters but duplicates must be prevented.
 
 ---
 
@@ -995,7 +995,7 @@ fun main() {
 
 **Key Takeaway**: Use `to` infix function for readable map creation, access values with `[]` operator (returns null if missing), and use `getOrDefault` or `getOrElse` for safe fallback values.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Maps are the fundamental data structure for modeling domain objects as key-value stores, configuration systems, and lookup caches. Kotlin's `mapOf` vs `mutableMapOf` distinction enforces immutability at the API boundary—a view model returning `Map<String, Any>` cannot be accidentally mutated by a caller. The `getOrDefault` and `getOrElse` patterns replace null-check boilerplate for optional map entries, making configuration lookup concise. In production, maps appear in HTTP header handling, JSON deserialization, feature flag systems, and cache implementations where O(1) key lookup performance is required.
 
 ---
 
@@ -1305,7 +1305,7 @@ fun main() {
 
 **Key Takeaway**: Mark classes with `open` to allow inheritance (final by default), use `override` keyword explicitly for method overriding, and leverage polymorphism through base class references.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: The `open` modifier and inheritance model prevents the Fragile Base Class problem: by default, Kotlin classes are final and cannot be subclassed without explicit `open` declaration. This forces API designers to consciously decide what behavior is intended to be extended. The `override` keyword requirement at call sites makes inheritance hierarchies immediately visible during code review. In production, this matters for Android Fragment subclassing, domain entity hierarchies, and framework integration points where unintended subclassing causes hard-to-debug behavioral changes. The sealed modifier provides the most controlled form of inheritance for discriminated unions.
 
 ---
 
@@ -1781,7 +1781,7 @@ fun main() {
 
 **Key Takeaway**: Use `object` declarations for singletons that need shared state or stateless utilities; they're thread-safe, lazily initialized, and accessed by name without instantiation.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Kotlin `object` declarations provide thread-safe, lazily initialized singletons without the double-checked locking boilerplate required in Java. The JVM class loader guarantees initialization happens exactly once, making object declarations safe for application-wide state like database connection pools, configuration registries, and service locators. In Android, `object` is widely used for analytics trackers, event buses, and application-level caches. Unlike Java singletons, Kotlin objects support interface implementation, making them mockable in tests and substitutable with alternative implementations during development.
 
 ---
 
@@ -1908,7 +1908,7 @@ fun main() {
 
 **Key Takeaway**: Sealed classes enable compile-time exhaustive `when` expressions by restricting hierarchies to a known set of subclasses, eliminating the need for `else` branches and preventing unexpected subtypes.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Sealed classes make illegal states unrepresentable in your type system. A network request result that can only be `Success`, `Error`, or `Loading` modeled as a sealed class prevents the anti-pattern of using nullable fields or magic values to indicate state. The compiler enforces exhaustive `when` expressions over sealed hierarchies, so adding a new `Retry` state to the sealed class immediately shows all the `when` blocks that need updating. This pattern is central to Kotlin MVI and Redux-style architectures in Android, and to functional Result types in server-side Kotlin.
 
 ---
 
@@ -1925,51 +1925,73 @@ Extension functions add methods to existing classes without modifying their sour
 **Static resolution**: Extensions don't actually modify the class - they're compiled to static utility methods. The receiver becomes the first parameter. This means extensions can be added to final classes and third-party libraries.
 
 ```kotlin
-fun String.isPalindrome(): Boolean {
-                                     // => Extension function on String
-    val cleaned = this.lowercase().replace(" ", "")
-                                     // => Remove spaces, convert to lowercase
+fun String.isPalindrome(): Boolean {  // => Extension function on String type
+                                       // => 'this' inside refers to the String instance
+    val cleaned = this.lowercase()     // => this.lowercase() converts to lowercase
+        .replace(" ", "")              // => Remove spaces for "race car" -> "racecar"
+                                       // => cleaned is prepared string without spaces
     return cleaned == cleaned.reversed()
-                                     // => Compare with reversed string
-}
+                                       // => reversed() creates a new reversed String
+                                       // => Compares original (cleaned) with reversed
+                                       // => "radar" == "radar" → true; "kotlin" ≠ "niltok" → false
+}                                      // => Returns Boolean: true if palindrome
 
 fun Int.times(action: (Int) -> Unit) {
-                                     // => Extension function on Int
-    for (i in 1..this) {             // => Loop from 1 to this value
-        action(i)                    // => Execute action for each iteration
-    }
-}
+                                       // => Extension function on Int type
+                                       // => action parameter: lambda taking Int, returning Unit
+    for (i in 1..this) {               // => Loop from 1 to this (the Int receiver)
+                                       // => 5.times {} → i goes 1, 2, 3, 4, 5
+        action(i)                      // => Execute action lambda with current i value
+                                       // => action is invoked once per iteration
+    }                                  // => Loop ends after 'this' iterations
+}                                      // => Returns Unit (no return value)
 
-val String.wordCount: Int            // => Extension property on String
-    get() = this.split("\\s+".toRegex()).size
-                                     // => Count words by splitting on whitespace
+val String.wordCount: Int              // => Extension property on String (read-only)
+    get() = this.split("\s+".toRegex()).size
+                                       // => \s+ matches one or more whitespace characters
+                                       // => split() produces List<String> of words
+                                       // => .size returns count of word tokens
+                                       // => "Hello Kotlin World".wordCount → 3
 
 fun String?.orDefault(default: String = "N/A"): String {
-                                     // => Nullable receiver extension
-    return this ?: default           // => Return this or default if null
-}
+                                       // => Nullable receiver: 'this' may be null (String?)
+                                       // => default parameter: "N/A" if not specified
+    return this ?: default             // => Elvis operator: return this if non-null, else default
+                                       // => null?.orDefault() → "N/A"
+                                       // => "Hello"?.orDefault() → "Hello"
+}                                      // => Returns non-nullable String in all cases
 
 fun main() {
-    val word1 = "radar"              // => word1 is "radar"
-    val word2 = "kotlin"             // => word2 is "kotlin"
+    val word1 = "radar"                // => word1 is "radar" (String, inferred)
+    val word2 = "kotlin"               // => word2 is "kotlin" (String, inferred)
 
-    println(word1.isPalindrome())    // => Output: true
-    println(word2.isPalindrome())    // => Output: false
+    println(word1.isPalindrome())      // => Calls String extension on word1
+                                       // => "radar" → cleaned="radar" == "radar" reversed
+                                       // => Output: true
+    println(word2.isPalindrome())      // => "kotlin" → "kotlin" ≠ "niltok"
+                                       // => Output: false
 
-    5.times { i ->                   // => Call extension on Int literal
-        print("$i ")                 // => Output: 1 2 3 4 5
-    }
-    println()
+    5.times { i ->                     // => Int literal 5 as extension receiver
+                                       // => Lambda receives i: 1, 2, 3, 4, 5 sequentially
+        print("$i ")                   // => Prints each i value with space separator
+    }                                  // => Output: 1 2 3 4 5 (printed across 5 iterations)
+    println()                          // => Newline after the sequence output
 
-    val text = "Hello Kotlin World"  // => text is "Hello Kotlin World"
-    println(text.wordCount)          // => Output: 3
+    val text = "Hello Kotlin World"    // => text is "Hello Kotlin World" (3 words)
+    println(text.wordCount)            // => Accesses wordCount extension property
+                                       // => split("\s+") → ["Hello", "Kotlin", "World"]
+                                       // => Output: 3
 
-    val str1: String? = null         // => str1 is null
-    val str2: String? = "Hello"      // => str2 is "Hello"
+    val str1: String? = null           // => str1 is null (explicitly nullable String?)
+    val str2: String? = "Hello"        // => str2 is "Hello" (non-null but nullable type)
 
-    println(str1.orDefault())        // => Output: N/A
-    println(str2.orDefault())        // => Output: Hello
-    println(str1.orDefault("Empty")) // => Output: Empty
+    println(str1.orDefault())          // => str1 is null → returns default "N/A"
+                                       // => Output: N/A
+    println(str2.orDefault())          // => str2 is "Hello" (non-null) → returns "Hello"
+                                       // => Output: Hello
+    println(str1.orDefault("Empty"))   // => str1 is null → returns custom default "Empty"
+                                       // => Output: Empty
+                                       // => Returns Unit, program completes
 }
 ```
 
@@ -2058,46 +2080,69 @@ Scope functions execute a block of code in the context of an object. They differ
 
 ```kotlin
 data class Person(val name: String, var age: Int)
+                                       // => Mutable data class (age is var for apply demo)
+                                       // => Data class provides equals, hashCode, copy, toString
 
 fun main() {
     // let: context is 'it', returns lambda result
-    val name: String? = "Kotlin"
-    val length = name?.let {         // => Calls block if name not null
-        println("Processing: $it")   // => Output: Processing: Kotlin
-        it.length                    // => Returns length
-    }                                // => length is 6
+    val name: String? = "Kotlin"       // => nullable String for null-safe let demo
+                                       // => String? allows null values
+    val length = name?.let {           // => Safe call: executes let only if name is not null
+                                       // => 'it' refers to the non-null String value
+        println("Processing: $it")     // => Output: Processing: Kotlin
+                                       // => 'it' is "Kotlin" (the receiver, non-null)
+        it.length                      // => Last expression is the return value of let
+                                       // => length is 6 (characters in "Kotlin")
+    }                                  // => length is Int? because name was String?
 
     // run: context is 'this', returns lambda result
-    val message = "Hello".run {      // => 'this' refers to "Hello"
-        println("Length: $length")   // => Output: Length: 6
-        this.uppercase()             // => Returns "HELLO"
-    }                                // => message is "HELLO"
+    val message = "Hello".run {        // => 'this' refers to "Hello" (String receiver)
+                                       // => run is extension function, receiver becomes 'this'
+        println("Length: ${this.length}")
+                                       // => Output: Length: 5 (length of "Hello")
+                                       // => Accesses 'this' members without explicit qualifier
+        this.uppercase()               // => Returns "HELLO" (last expression = return value)
+                                       // => Original "Hello" unchanged (Strings are immutable)
+    }                                  // => message is "HELLO"
 
     // with: context is 'this', returns lambda result
     val numbers = mutableListOf(1, 2, 3)
-    val sum = with(numbers) {        // => 'this' refers to numbers
-        add(4)                       // => Adds 4
-        add(5)                       // => Adds 5
-        sum()                        // => Returns sum: 15
-    }                                // => sum is 15
+                                       // => Mutable list [1, 2, 3] as with receiver
+    val sum = with(numbers) {          // => 'this' refers to numbers list
+                                       // => with is not extension function (different from run)
+        add(4)                         // => this.add(4) → list is now [1, 2, 3, 4]
+        add(5)                         // => this.add(5) → list is now [1, 2, 3, 4, 5]
+        this.sum()                     // => Returns 15 (1+2+3+4+5) as last expression
+                                       // => sum() is extension function on Collection
+    }                                  // => sum is 15 (Int)
 
     // apply: context is 'this', returns context object
     val person = Person("Alice", 25).apply {
-        println("Configuring $name") // => Output: Configuring Alice
-        age = 26                     // => Mutates age field
-    }                                // => person is Person(name="Alice", age=26)
+                                       // => 'this' is the Person instance inside apply
+                                       // => apply returns 'this' (the Person), not lambda result
+        println("Configuring $name")   // => name is this.name = "Alice"
+                                       // => Output: Configuring Alice
+        age = 26                       // => Mutates this.age from 25 to 26
+                                       // => Directly modifies the Person object
+    }                                  // => person is Person(name="Alice", age=26)
+                                       // => apply returned the configured Person instance
 
     // also: context is 'it', returns context object
     val numbers2 = mutableListOf(1, 2, 3).also {
-        println("Initial list: $it") // => Output: Initial list: [1, 2, 3]
-        it.add(4)                    // => Adds 4
-    }                                // => numbers2 is [1, 2, 3, 4]
+                                       // => 'it' refers to the list (not 'this')
+                                       // => also returns 'it' (the receiver), not lambda result
+        println("Initial list: $it")   // => Output: Initial list: [1, 2, 3]
+                                       // => Side effect: logging initial state
+        it.add(4)                      // => Modifies the list (it.add)
+                                       // => Must use 'it.' prefix (not implicit like apply)
+    }                                  // => numbers2 is [1, 2, 3, 4] (also returned the list)
 
-    println(length)                  // => Output: 6
-    println(message)                 // => Output: HELLO
-    println(sum)                     // => Output: 15
-    println(person.age)              // => Output: 26
-    println(numbers2)                // => Output: [1, 2, 3, 4]
+    println(length)                    // => Output: 6 (nullable Int? prints as 6)
+    println(message)                   // => Output: HELLO
+    println(sum)                       // => Output: 15
+    println(person.age)                // => Output: 26 (age was mutated in apply)
+    println(numbers2)                  // => Output: [1, 2, 3, 4]
+                                       // => Returns Unit, program completes
 }
 ```
 
@@ -2113,141 +2158,97 @@ Kotlin's exception handling uses try-catch-finally blocks similar to Java, but `
 
 ```kotlin
 fun main() {
-    // try as expression (returns value)
+    // try-catch-finally: Kotlin exception handling
+    // => try is an expression in Kotlin (returns a value, unlike Java)
+    // => Pattern: val x = try { riskyOp() } catch (e: SomeException) { fallback }
+    // => All exceptions are unchecked in Kotlin (no "throws" declaration required)
+
+    // Case 1: try succeeds, catch is skipped
     val result1 = try {
-        // => try block START
-        // => Attempting to parse "42" as integer
-                                     // => Parsing successful
-                                     // => No exception thrown
-        num * 2                      // => Multiply 42 by 2
-                                     // => Result is 84
-                                     // => This becomes the try block's return value
+        // => Block executes: attempt parsing "42"
+        // => "42" is a valid integer in string form
+        val num = "42".toInt()       // => num = 42 (String.toInt() converts "42" → 42)
+        num * 2                      // => 42 * 2 = 84 → try block return value
     } catch (e: NumberFormatException) {
-        // => catch block NOT executed (no exception thrown)
-        // => This catch handles NumberFormatException only
-        println("Invalid number")    // => NOT executed (no exception occurred)
-                                     // => Returned value from try block is 84
+        // => catch NOT executed: no exception was thrown above
+        0                            // => Would return 0 only if parsing had failed
+    }
+    // => result1 = 84 (assigned from try block return value)
 
-    // try expression with exception thrown
+    // Case 2: exception thrown, catch executes
     val result2 = try {
-        // => try block START
-        // => Attempting to parse "abc" as integer
-                                     // => "abc" is NOT a valid integer
-                                     // => Throws NumberFormatException immediately
-                                     // => Execution jumps to catch block
+        // => Block executes: attempt parsing "abc"
+        // => "abc" cannot be converted to an integer
+        "abc".toInt()                // => Throws NumberFormatException: invalid format
+        // => Execution immediately transfers to catch block
     } catch (e: NumberFormatException) {
-        // => catch block executed (exception caught)
-        // => e is NumberFormatException instance
-        // => e.message is "For input string: \"abc\""
+        // => catch EXECUTED: NumberFormatException caught here
+        // => e.message = "For input string: "abc""
         println("Error: ${e.message}")
-                                     // => Output: Error: For input string: "abc"
-        -1                           // => Return -1 as error indicator
-                                     // => This becomes the catch block's return value
-                                     // => Returned value from catch is -1
+        // => Output: Error: For input string: "abc"
+        -1                           // => -1 is the catch block's return value
+    }
+    // => result2 = -1 (assigned from catch block return value)
 
-    // Multiple catch blocks (order matters)
+    // Case 3: multiple catch blocks - specific types BEFORE general
     fun divide(a: Int, b: Int): Int = try {
-        // => Parameters: a (Int), b (Int)
-        a / b                        // => Integer division operation
-                                     // => If b is 0, throws ArithmeticException
-                                     // => Becomes return value if no exception
+        // => Single-expression function: result of try-catch is the return value
+        a / b                        // => Integer division attempt
+        // => If b == 0: JVM throws ArithmeticException ("/ by zero")
+        // => If b != 0: returns the quotient (no exception)
     } catch (e: ArithmeticException) {
-        // => Catches ArithmeticException ONLY (more specific)
-        // => Handles division by zero case
-        // => e is ArithmeticException instance
-        println("Division by zero")  // => Output when division by zero occurs
-        0                            // => Return 0 as safe default for division by zero
+        // => ArithmeticException is more specific than Exception
+        // => Must be listed FIRST or general Exception catch would shadow it
+        println("Division by zero")  // => Output: Division by zero
+        0                            // => Returns 0 as safe fallback for ÷ 0
     } catch (e: Exception) {
-        // => Catches ANY other Exception (more general)
-        // => e is Exception instance
-        println("Other error: ${e.message}")
-                                     // => Output for any other exception type
-                                     // => e.message contains exception details
-        -1                           // => Return -1 for other errors
-                                     // => Different from division by zero return
+        // => General catch: handles any Exception not caught by specific blocks above
+        println("Other: ${e.message}")
+        -1                           // => Returns -1 for unexpected exception types
     }
 
-    // Call divide with normal values
-                                     // => a is 10, b is 2
-                                     // => Computes 10 / 2 = 5
-                                     // => No exception thrown
-                                     // => catch blocks NOT executed
-                                     // => Output: 5
+    println(divide(10, 2))           // => divide(10, 2): no exception → returns 5
+    // => Output: 5
+    println(divide(10, 0))           // => divide(10, 0): ArithmeticException thrown
+    // => ArithmeticException catch executes: prints "Division by zero", returns 0
+    // => Output: Division by zero
+    // => Output: 0
 
-    // Call divide with zero divisor
-                                     // => a is 10, b is 0
-                                     // => Attempts 10 / 0
-                                     // => Throws ArithmeticException
-                                     // => Output: Division by zero
-                                     // => Output: 0
-
-    // finally block (always executes, regardless of exception)
-    fun readFile(name: String): String {
-        // => Function declared with block body
-        // => Parameter: name (String)
+    // Case 4: finally block - guaranteed cleanup
+    fun tryRead(name: String): String {
         return try {
-            // => try block START
-            println("Opening file: $name")
-                                     // => Output: Opening file: [name value]
-                                     // => Simulates file opening operation
+            // => try block: attempt file read operation
             if (name.isEmpty()) throw IllegalArgumentException("Empty name")
-                                     // => Check if name is empty string
-                                     // => If empty, throw IllegalArgumentException
-                                     // => Exception message is "Empty name"
-                                     // => Execution jumps to catch if thrown
-            "File content"           // => If name is NOT empty, return this
-                                     // => Simulates file content reading
-                                     // => Becomes try block's return value
+            // => throw is an expression: throws if name is blank
+            // => IllegalArgumentException jumps execution to matching catch block
+            "File: $name"            // => try block return value when name is non-empty
         } catch (e: IllegalArgumentException) {
-            // => catch block for IllegalArgumentException
-            // => e is IllegalArgumentException instance
-            // => e.message is "Empty name"
+            // => catch EXECUTED when IllegalArgumentException thrown above
             println("Error: ${e.message}")
-                                     // => Output: Error: Empty name
-                                     // => Reports validation error
-                                     // => Becomes catch block's return value
+            // => Output: Error: Empty name
+            ""                       // => Empty String returned from catch block
         } finally {
-            // => Runs even if return statement executed
-            // => Runs even if uncaught exception occurs
-            println("Closing file")  // => Output: Closing file
-                                     // => Simulates file cleanup operation
-                                     // => Does NOT affect return value
+            // => finally ALWAYS executes: after try success OR after catch execution
+            // => Executes even when try or catch contains explicit return
+            // => Cannot change the expression return value (only for side effects)
+            println("Cleanup done")  // => Output: Cleanup done (always printed)
+        }
     }
 
-    // Call readFile with valid name
-                                     // => name is "data.txt"
-                                     // => Output: Opening file: data.txt
-                                     // => name.isEmpty() is false
-                                     // => No exception thrown
-                                     // => Output: File content
-                                     // => Total output:
-                                     // => Opening file: data.txt
-                                     // => Closing file
-                                     // => File content
+    tryRead("data.txt")              // => try executes → returns "File: data.txt"
+    // => Output: Cleanup done
+    tryRead("")                      // => throw executes → catch runs → returns ""
+    // => Output: Error: Empty name
+    // => Output: Cleanup done
 
-    // Call readFile with empty name
-                                     // => name is "" (empty string)
-                                     // => Output: Opening file:
-                                     // => name.isEmpty() is true
-                                     // => IllegalArgumentException thrown
-                                     // => Output: Error: Empty name
-                                     // => Total output:
-                                     // => Opening file:
-                                     // => Error: Empty name
-                                     // => Closing file
-                                     // => (empty line)
-
-    // Print previously calculated results
-    println(result1)                 // => result1 is 84 (from successful parsing)
-                                     // => Output: 84
-    println(result2)                 // => result2 is -1 (from failed parsing)
-                                     // => Output: -1
+    println(result1)                 // => Output: 84
+    println(result2)                 // => Output: -1
 }
 ```
 
 **Key Takeaway**: Use `try` as an expression to return values from error handling, leverage multiple catch blocks for specific exception types (order from specific to general), and ensure cleanup with `finally` blocks that always execute regardless of success or failure.
 
-**Why It Matters**: This concept is fundamental to understanding the language and helps build robust, maintainable code.
+**Why It Matters**: Kotlin's structured exception handling integrates with the null safety system: functions that might fail can return `Result<T>` or nullable types instead of throwing, keeping error handling in the type signature. The `try` expression (returning a value) enables concise fallback patterns: `val port = try { env.getInt("PORT") } catch(e: Exception) { 8080 }`. In production, distinguishing checked-equivalent handling (using `runCatching`) from unchecked runtime exceptions (via `try-catch`) improves API clarity. The `finally` block is critical for resource cleanup in non-try-with-resources patterns.
 
 ---
 

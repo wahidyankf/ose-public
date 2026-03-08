@@ -147,7 +147,7 @@ defmodule MyApp.Transfers do                          # => Defines Transfers ser
 end                                                   # => End MyApp.Transfers module
 ```
 
-**Key Takeaway**: Ecto.Multi ensures all-or-nothing execution. Operations reference previous results with fn. Rollback happens automatically on any failure. Perfect for transfers, account creation, multi-step operations.
+**Key Takeaway**: `Ecto.Multi` chains database operations atomically—all succeed or all rollback—with each step able to reference previous results, making it ideal for transfers and multi-step writes.
 
 **Why It Matters**: Ecto.Multi makes complex multi-step database operations atomic without manual transaction management. Naming each operation allows precise error reporting — when :debit fails, you know exactly which operation failed without inspecting raw database errors. This is essential for financial operations, user registration flows, and any workflow where partial completion leaves data in an inconsistent state.
 
@@ -255,9 +255,9 @@ defmodule MyApp.Accounts do                           # => Defines Accounts cont
 end                                                   # => End MyApp.Accounts module
 ```
 
-**Key Takeaway**: unique_constraint/2 catches database uniqueness violations. assoc_constraint/2 catches foreign key errors. Changesets provide user-friendly error messages without SQL errors exposed.
+**Key Takeaway**: `unique_constraint/2` and `assoc_constraint/2` translate database constraint violations into user-friendly changeset errors, keeping SQL details out of your API responses.
 
-**Why It Matters**: Database constraints enforced via changesets catch integrity errors and translate them into user-friendly messages. unique_constraint/2 and assoc_constraint/2 catch database-level violations and convert them to changeset errors, so users see "Email already taken" instead of a 500 error when a unique index fails.
+**Why It Matters**: Database constraints enforced via changesets catch integrity errors and translate them into user-friendly messages. `unique_constraint/2` and `assoc_constraint/2` convert database-level violations into changeset errors, so users see "Email already taken" instead of a 500 error. This dual-layer approach—application validation for fast feedback and database constraints for absolute correctness—prevents race conditions where two concurrent requests both pass validation but only one satisfies the unique index.
 
 ### Example 53: Polymorphic Associations with many_to_many :through
 
@@ -383,7 +383,7 @@ posts = from p in Post,                               # => Starts Ecto query for
                                                        # => Result: list of Post structs [%Post{...}, ...]
 ```
 
-**Key Takeaway**: many_to_many/3 with join_through creates flexible relationships. Use put_assoc/3 to update related records. Query across relationships with join.
+**Key Takeaway**: `many_to_many/3` with a join table creates flexible relationships; `put_assoc/3` replaces associated records atomically and `join` in queries enables filtering across relationship boundaries.
 
 **Why It Matters**: Polymorphic associations (taggable_type/taggable_id) let a single tags table serve multiple parent models without duplicating tables. The pattern comes with query complexity — you must always filter by both taggable_type and taggable_id to avoid cross-model contamination. In Ecto, this requires custom join conditions since the ORM cannot infer the relationship automatically. Understanding when polymorphic associations are justified versus when separate join tables are cleaner is a key database design decision.
 
@@ -446,7 +446,7 @@ User                                                  # => Starts with User sche
                                                        # => Each tenant has independent tables
 ```
 
-**Key Takeaway**: Always filter by tenant_id in queries. Use scopes (functions that return queries) to prevent tenant leaks. Consider separate schemas per tenant for complete isolation.
+**Key Takeaway**: Always filter queries by `tenant_id` using composable scope functions to prevent data leaks between tenants; for stronger isolation, use separate database schemas per tenant.
 
 **Why It Matters**: PostgreSQL schema-based multi-tenancy isolates each tenant's data into a separate database schema, providing hard boundaries that row-level tenant_id filtering cannot guarantee. Ecto's prefix: option routes every query to the correct schema without application-layer branching. This approach simplifies backup and restore per tenant and enables compliance requirements that demand physical data isolation, though it increases migration complexity since schema changes must be applied across all tenant schemas.
 
@@ -534,7 +534,7 @@ results = from p in Post,                             # => Full-text search quer
                                                        # => Result: posts matching search term
 ```
 
-**Key Takeaway**: Use :map for JSONB, {:array, :string} for arrays. Full-text search with tsvector. Use fragment/2 for database-specific SQL. Index JSONB and tsvector for performance.
+**Key Takeaway**: Use `:map` for JSONB and `{:array, :string}` for arrays; leverage `tsvector` for full-text search and `fragment/2` for database-specific SQL, always with indexes for performance.
 
 **Why It Matters**: PostgreSQL's JSONB, array, and full-text search types, accessed through Ecto fragments, let you handle semi-structured data without a separate NoSQL database. tsvector full-text search is significantly faster than LIKE queries and supports ranked results. Using native PostgreSQL types avoids application-layer parsing and keeps complex queries close to the data.
 
@@ -598,7 +598,7 @@ IO.inspect(Repo.explain(:all, Post))                  # => Print EXPLAIN ANALYZE
                                                        # => Shows index usage, seq scans, row estimates
 ```
 
-**Key Takeaway**: Use preload/1 to eager-load associations. Use join for aggregations and filtering. Always check your queries with EXPLAIN. Avoid fetching in loops.
+**Key Takeaway**: Eager-load associations with `preload/1` to prevent N+1 queries, use `join` for aggregations, and always verify complex queries with `EXPLAIN ANALYZE` before deploying.
 
 **Why It Matters**: N+1 queries grow exponentially: fetching 100 posts then loading comments for each triggers 101 SELECT statements instead of 2. Repo.preload/2 collapses these into a single IN-clause query, reducing database round trips regardless of result set size. Dataloader batches nested resolver calls in GraphQL APIs. Adding telemetry to track query counts per request lets you catch N+1 regressions in CI before they reach production and degrade response times under real load.
 
@@ -704,7 +704,7 @@ defmodule MyApp.Blog do                               # => Example using Cachex 
 end                                                   # => End MyApp.Blog module
 ```
 
-**Key Takeaway**: Cache expensive queries with TTL (time-to-live). Invalidate cache when data changes. Use Cachex for distributed caching. Cache at controller or service layer.
+**Key Takeaway**: Cache expensive queries with TTL using Cachex and invalidate entries on data changes—caching at the context layer keeps controllers clean and makes cache behavior testable.
 
 **Why It Matters**: Caching eliminates repeated computation for expensive queries, but each strategy has different tradeoffs. ETS caches live in node memory — fast but lost on restart and not shared across cluster nodes. Cachex provides distributed TTL-based caching with automatic invalidation. HTTP cache headers (ETag, Cache-Control) let browsers and CDNs cache responses, reducing server load entirely for public content. Measuring cache hit rates and tracking invalidation latency are essential to knowing whether caching actually helps or masks deeper query problems.
 
@@ -785,9 +785,9 @@ defmodule MyApp.Application do                        # => OTP Application modul
 end
 ```
 
-**Key Takeaway**: Create Worker modules implementing Oban.Worker. Queue jobs asynchronously. Implement retry logic. Use Oban for background processing and cron jobs.
+**Key Takeaway**: Oban workers implement `Oban.Worker` with a `perform/1` callback; jobs are enqueued asynchronously with automatic retries and cron scheduling backed by PostgreSQL for durability.
 
-**Why It Matters**: Oban persists jobs in PostgreSQL before processing, ensuring no job is lost even if the server crashes mid-flight. Failed jobs retry with configurable backoff, and dead jobs are retained for inspection. This reliability matters for critical operations like sending emails or processing payments where silent failures are unacceptable.
+**Why It Matters**: Oban persists jobs in PostgreSQL before processing, ensuring no job is lost even if the server crashes mid-flight. Failed jobs retry with configurable exponential backoff, and dead jobs are retained in a queryable table for inspection and manual requeue. This durability is essential for critical operations like sending emails or processing payments where silent failures—jobs that ran once and disappeared—are unacceptable in production.
 
 ### Example 59: Phoenix LiveDashboard for Metrics
 
@@ -881,9 +881,9 @@ scope "/" do                                          # => Defines root scope
 end                                                   # => End scope
 ```
 
-**Key Takeaway**: Phoenix LiveDashboard shows real-time metrics. Monitor request performance, database connections, memory usage, processes. Access at /dashboard.
+**Key Takeaway**: Phoenix LiveDashboard at `/dashboard` provides real-time visibility into request performance, database pool health, memory usage, and running processes with zero additional infrastructure.
 
-**Why It Matters**: LiveDashboard provides real-time visibility into your running application without any external monitoring setup. You can see slow Ecto queries, process memory growth, and request latency in the same dashboard, enabling rapid diagnosis of production incidents. All metrics are generated from existing Telemetry instrumentation built into Phoenix and Ecto.
+**Why It Matters**: LiveDashboard provides real-time visibility into your running application without any external monitoring infrastructure. You can see slow Ecto queries, process memory growth, and request latency in a single dashboard, enabling rapid diagnosis of production incidents. All metrics are generated from Telemetry instrumentation already built into Phoenix and Ecto—no additional instrumentation code required to get immediate production observability from day one.
 
 ### Example 60: Custom Metrics with Telemetry
 
@@ -944,7 +944,7 @@ MyApp.TelemetryHandler.attach_handlers()               # => Register all handler
                                                         # => Must be called before events fire
 ```
 
-**Key Takeaway**: Use :telemetry.execute/3 to emit metrics. Attach handlers with :telemetry.attach/4. Track custom business metrics for monitoring and alerting.
+**Key Takeaway**: Emit custom metrics with `:telemetry.execute/3` and attach handlers with `:telemetry.attach/4` to route events into StatsD, Prometheus, or any observability backend.
 
 **Why It Matters**: Custom business metrics via :telemetry.execute/3 instrument your application domain — post creation rates, checkout durations, user signup flows — not just infrastructure. Decoupling metric emission from metric handling via event names means you can attach multiple handlers (logging, StatsD, Prometheus) without touching the business logic code.
 
@@ -1036,9 +1036,9 @@ end                                                   # => End production config
                                                        # => Ctrl+C stops the application
 ```
 
-**Key Takeaway**: Mix.Release builds independent package. config/runtime.exs loads at runtime. Set environment variables for secrets. Releases don't require Elixir installation.
+**Key Takeaway**: `mix release` builds a self-contained package with `config/runtime.exs` loading secrets from environment variables at startup—no Elixir installation required on the production server.
 
-**Why It Matters**: Runtime configuration enables environment-specific settings. This pattern allows the same release to run in different environments without rebuilding.
+**Why It Matters**: Runtime configuration via `config/runtime.exs` enables the same release artifact to run in staging, production, and disaster recovery with different credentials and endpoints—without rebuilding. `mix release` creates a self-contained package that includes the Erlang runtime, so deployment targets don't need Elixir installed. This makes releases predictable, reproducible, and safe to promote from staging to production with no build-time differences.
 
 ### Example 62: Docker Containerization with Multi-Stage Build
 
@@ -1140,9 +1140,9 @@ CMD ["./bin/my_app", "start"]                         # => Default command when 
                                                        # => Runs in foreground (required for Docker)
 ```
 
-**Key Takeaway**: Multi-stage builds keep image small. Builder stage compiles, runtime stage runs. Use Alpine Linux for minimal footprint. Include health checks.
+**Key Takeaway**: Multi-stage Docker builds compile the release in a builder stage and copy only the result to a minimal Alpine runtime image, keeping the production image small and fast to pull.
 
-**Why It Matters**: Health checks enable load balancer integration and monitoring. This is essential for zero-downtime deployments and auto-scaling.
+**Why It Matters**: Multi-stage Docker builds reduce image size by 60-80% compared to single-stage builds by excluding the Elixir compiler, Mix toolchain, and intermediate build artifacts from the runtime image. Smaller images pull faster during Kubernetes rolling deployments and reduce the attack surface for security vulnerabilities. Alpine Linux as the runtime base layer ensures minimal footprint while remaining compatible with most Erlang runtime requirements.
 
 ### Example 63: Health Checks for Kubernetes
 
@@ -1224,7 +1224,7 @@ end
 #   periodSeconds: 5
 ```
 
-**Key Takeaway**: Readiness probe indicates if app can handle traffic. Liveness probe indicates if app needs restart. Health endpoints check critical dependencies (database, cache).
+**Key Takeaway**: Expose separate `/healthz/ready` and `/healthz/live` endpoints—readiness checks dependencies before accepting traffic while liveness signals whether the pod needs restarting.
 
 **Why It Matters**: Kubernetes uses separate liveness and readiness endpoints to distinguish between "restart me" and "stop sending traffic". A liveness check failing restarts the pod; a readiness check failing removes it from the load balancer without restarting. During database migrations or startup initialization, a pod that is alive but not ready should return 503 on the readiness endpoint while passing liveness, preventing traffic from hitting an uninitialized application and causing request failures during rolling deployments.
 
@@ -1274,9 +1274,9 @@ config :my_app, MyAppWeb.Endpoint,
   drain_on_stop: true                              # => Complete in-flight requests before exit
 ```
 
-**Key Takeaway**: prep_stop/1 gives app chance to drain requests. Set shutdown timeout. Complete in-flight work before terminating. Important for zero-downtime deployments.
+**Key Takeaway**: `prep_stop/1` provides a shutdown hook to drain in-flight requests before termination; set `shutdown_timeout` in mix releases to guarantee the app finishes current work gracefully.
 
-**Why It Matters**: Deployment releases enable zero-downtime updates and easy rollbacks. Understanding OTP releases is essential for production Phoenix applications.
+**Why It Matters**: `prep_stop/1` and `stop/1` OTP callbacks give your application control over the shutdown sequence, ensuring in-flight requests complete before the BEAM terminates. Without graceful shutdown, Kubernetes rolling deployments can result in 502 errors as the load balancer continues routing requests to a pod that's already shutting down. Setting `shutdown_timeout` in your Mix release configuration prevents deployment-induced request failures and makes zero-downtime deployments reliable.
 
 ### Example 65: Environment Configuration Management
 
@@ -1372,7 +1372,7 @@ config :my_app, MyAppWeb.Endpoint,                    # => Endpoint runtime conf
                                                        # => Affects url_for/3 and route helpers
 ```
 
-**Key Takeaway**: config/ files configure at compile time. config/runtime.exs loads at runtime (for secrets). Use environment variables for production secrets. Never commit secrets to git.
+**Key Takeaway**: Use `config/runtime.exs` to read secrets from environment variables at startup—unlike compile-time config, this enables the same release artifact to be deployed across environments.
 
 **Why It Matters**: Separating compile-time config (config/\*.exs) from runtime config (config/runtime.exs) is critical for deployable releases. Runtime config reads environment variables when the application starts, so the same release artifact works in staging and production with different credentials. This eliminates the need to rebuild for each deployment environment.
 
@@ -1465,7 +1465,7 @@ defmodule MyApp.Blog do                               # => Defines Blog context 
 end                                                   # => End MyApp.Blog module
 ```
 
-**Key Takeaway**: Sentry captures production errors. Structured logging adds context. Use Logger.info/warn/error with metadata maps. Include request IDs for tracing.
+**Key Takeaway**: Integrate Sentry for automatic exception capture and use `Logger` with metadata maps for structured logs; include request IDs in all log entries to enable distributed tracing.
 
 **Why It Matters**: Structured logging with consistent correlation IDs lets you trace a single request across multiple log lines in centralized aggregators like Elasticsearch or Datadog. Sentry integration captures exception context — request params, user identity, stack trace — that plain log lines miss. Combining structured logs with error tracking reduces mean time to resolution (MTTR) because you can jump directly from an error alert to the correlated request trace, rather than grepping through unstructured log files.
 
@@ -1493,45 +1493,62 @@ stateDiagram-v2
 defmodule MyApp.RateLimiter do               # => GenServer for token bucket rate limiting
   use GenServer                                 # => OTP GenServer behavior
 
-  def start_link(opts) do
+  def start_link(opts) do                    # => Starts GenServer process
     GenServer.start_link(__MODULE__, opts, name: __MODULE__)
                                                # => Start GenServer named globally
+                                               # => name: __MODULE__ registers by module name
+                                               # => Single global limiter shared across requests
   end
 
   def allow_request?(key, max_requests, time_window_ms) do
                                                # => Public API: check if request is allowed
                                                # => key: e.g., IP address or user ID
+                                               # => max_requests: e.g., 100 requests per window
+                                               # => time_window_ms: e.g., 60_000 for 60 seconds
     GenServer.call(__MODULE__, {:check, key, max_requests, time_window_ms})
                                                # => Synchronous call to GenServer
+                                               # => Blocks until GenServer replies
   end
 
   @impl true
-  def init(_opts) do
+  def init(_opts) do                           # => GenServer initialization callback
     {:ok, %{}}                                 # => Initial state: empty map of {key => {count, reset_time}}
+                                               # => State grows as keys accumulate (consider periodic cleanup)
   end
 
   @impl true
   def handle_call({:check, key, max_requests, time_window_ms}, _from, state) do
                                                # => Check if key has remaining requests
+                                               # => _from: caller PID (unused, reply handles it)
     now = System.monotonic_time(:millisecond)  # => Current time in milliseconds
+                                               # => Monotonic clock never goes backward (unlike UTC)
 
     {requests, state} = case Map.get(state, key) do
+                                               # => Look up existing rate limit record for this key
       {count, reset_time} when reset_time > now ->
+                                               # => Window still active: reset_time is in the future
         {count, state}                                # => Window still active
+                                               # => Return current count, state unchanged
 
-      _ ->
+      _ ->                                     # => Window expired or new key
         # Reset bucket
         reset_time = now + time_window_ms             # => New window starts
+                                                       # => Reset time = now + window duration
         {0, Map.put(state, key, {0, reset_time})}     # => Reset counter
+                                                       # => Stores {count: 0, reset_time} for key
     end  # => Token bucket refills
 
-    if requests < max_requests do
+    if requests < max_requests do             # => Check if under the limit
       {count, reset_time} = Map.get(state, key)
+                                               # => Fetch current record to increment
       new_state = Map.put(state, key, {count + 1, reset_time})  # => Consume token
+                                                                  # => Increments request count by 1
       {:reply, :ok, new_state}                        # => Allow request
+                                               # => Replies :ok to caller, saves updated state
 
     else
       {:reply, :rate_limited, state}                  # => Reject request
+                                               # => state unchanged (don't record over-limit requests)
     end  # => Returns 429 Too Many Requests
   end
 end
@@ -1539,27 +1556,33 @@ end
 # Plug for rate limiting
 defmodule MyAppWeb.Plugs.RateLimit do       # => Plug: applies rate limiting per IP
   def init(opts), do: opts                     # => Compile-time options pass-through
+                                               # => opts set in router: plug RateLimit, max_requests: 100
 
   def call(conn, opts) do                      # => Called for every request
     max_requests = opts[:max_requests] || 100  # => Max requests per window (default: 100)
     time_window = opts[:time_window] || 60_000 # => Time window in ms (default: 60s)
+                                               # => 60_000ms = 60 seconds = 1 minute
 
     key = conn.remote_ip |> Tuple.to_list() |> Enum.join(".")
                                                # => Build string key from IP: "127.0.0.1"
+                                               # => conn.remote_ip is {127, 0, 0, 1} tuple
+                                               # => Tuple.to_list/1 -> [127, 0, 0, 1]
+                                               # => Enum.join(".") -> "127.0.0.1"
 
     case MyApp.RateLimiter.allow_request?(key, max_requests, time_window) do
-      :ok -> conn
-      :rate_limited ->
+                                               # => Check if IP is under rate limit
+      :ok -> conn                              # => Under limit: continue to action
+      :rate_limited ->                         # => Over limit: return error response
         conn
-        |> put_status(:too_many_requests)
-        |> json(%{error: "Rate limit exceeded"})
-        |> halt()
+        |> put_status(:too_many_requests)      # => HTTP 429 status code
+        |> json(%{error: "Rate limit exceeded"})  # => JSON error body
+        |> halt()                              # => Stop plug pipeline, send response
     end
   end
 end
 ```
 
-**Key Takeaway**: Rate limiting prevents abuse. Token bucket algorithm is fair and flexible. Apply per IP or per user. Return 429 Too Many Requests when limited.
+**Key Takeaway**: Token bucket rate limiting with a GenServer allows per-IP and per-user enforcement; the plug returns HTTP 429 when the bucket is empty and stores counters in process state for low-latency checks.
 
 **Why It Matters**: The token bucket algorithm allows controlled bursting — a user can make several rapid requests as long as they have tokens — unlike fixed-window rate limiting that resets abruptly and allows double-rate spikes at window boundaries. Storing counters in ETS avoids database round trips on every request. Rate limiting at the plug level protects downstream services from abusive clients and reduces DDoS impact, while per-user limits prevent one heavy user from degrading service for others.
 
@@ -1593,22 +1616,27 @@ graph TD
 
 ```elixir
 # mix.exs
-defp deps do
+defp deps do                                          # => Project dependencies
   [
-    {:libcluster, "~> 3.3"},
-    {:observer_cli, "~> 1.7"}
+    {:libcluster, "~> 3.3"},                          # => Automatic node clustering library
+                                                       # => Supports Kubernetes DNS, Gossip, Static strategies
+    {:observer_cli, "~> 1.7"}                         # => Terminal-based cluster observer
+                                                       # => Shows node connections, process counts
   ]
 end
 
 # config/config.exs
-config :libcluster,
+config :libcluster,                                   # => Configure node discovery for Kubernetes
   topologies: [
     example: [
       strategy: Cluster.Strategy.Kubernetes.DNS,      # => Auto-discover in K8s
                                                        # => Queries DNS for pod IPs
+                                                       # => K8s headless service returns all pod IPs
       config: [
         service: "my_app-headless",                   # => Headless service name
+                                                       # => DNS: my_app-headless.default.svc.cluster.local
         namespace: "default"                          # => K8s namespace
+                                                       # => Matches deployed namespace in manifests
       ]
     ]
   ]  # => Nodes connect automatically via DNS
@@ -1618,41 +1646,49 @@ config :libcluster,                                   # => Static topology for n
   topologies: [
     fixed: [
       strategy: Cluster.Strategy.Static,              # => Fixed node list
+                                                       # => Nodes listed explicitly, no auto-discovery
       config: [
         nodes: [:"app1@10.0.0.1", :"app2@10.0.0.2", :"app3@10.0.0.3"]
                                                        # => Node names: name@ip format
+                                                       # => name must match --name VM flag at startup
       ]
     ]
   ]
 
 # lib/my_app/cluster.ex
 defmodule MyApp.Cluster do                            # => Cluster manager supervisor
-  def start_link(opts) do
+  def start_link(opts) do                             # => Called by Application supervisor
     Supervisor.start_link(
       [{:libcluster, Cluster.Strategy.Kubernetes.DNS, [topologies: topologies()]}],
                                                        # => Start libcluster with configured topology
+                                                       # => libcluster watches DNS and connects new nodes
       opts
     )
   end
 
-  defp topologies do
+  defp topologies do                                  # => Private helper to read topologies config
     Application.get_env(:libcluster, :topologies)     # => Read topology config
                                                        # => Returns the topologies map from config/config.exs
   end
 end
 
 # Distributed PubSub across nodes
-broadcast_all = fn event, data ->
-  MyApp.PubSub
+broadcast_all = fn event, data ->                     # => Anonymous function for cross-node broadcast
+  MyApp.PubSub                                        # => Local PubSub server name
   |> Phoenix.PubSub.broadcast("topic", {:event, event, data})
+                                                       # => Phoenix.PubSub.broadcast/3 sends to all subscribers
   # => Sends to ALL nodes in cluster
+                                                       # => PubSub automatically routes to all cluster nodes
+                                                       # => Each node delivers to its own LiveView subscribers
 end  # => Every connected LiveView receives update
 
 # List connected nodes
-Node.list()
+Node.list()                                           # => Returns [:"app2@10.0.0.2", :"app3@10.0.0.3"]
+                                                       # => Lists all currently connected Erlang nodes
+                                                       # => Empty list [] means isolated (no cluster)
 ```
 
-**Key Takeaway**: libcluster connects nodes automatically. Distribute PubSub across cluster. All nodes share state. Provides fault tolerance.
+**Key Takeaway**: `libcluster` automates node discovery in Kubernetes and bare-metal environments; once connected, Phoenix.PubSub broadcasts messages to all nodes so WebSocket updates reach any pod in the cluster.
 
 **Why It Matters**: libcluster automates node discovery so newly started pods join the cluster without manual configuration, enabling auto-scaling. Once nodes are connected, Phoenix.PubSub broadcasts messages across all nodes so WebSocket messages reach users connected to any pod. Erlang distribution requires correct cookie configuration and EPMD port access — misconfigured cluster security is a common production issue where nodes silently fail to communicate despite appearing healthy individually.
 
@@ -1731,7 +1767,7 @@ backend phoenix_nodes                                 # => Defines HAProxy backe
                                                        # => WebSockets stay on same server
 ```
 
-**Key Takeaway**: WebSockets require persistent connections to same server. Use sticky sessions (by IP or cookie). Load balancer must preserve connection. Forward X-Forwarded-For headers.
+**Key Takeaway**: WebSocket connections must stay on the same server—configure sticky sessions in nginx via IP hash or cookie affinity, and forward `X-Forwarded-For` headers for accurate client identification.
 
 **Why It Matters**: WebSocket connections require sticky sessions because the stateful connection must reach the same server on reconnect. Without sticky routing, a reconnecting client may land on a different node that knows nothing about that user's channel subscriptions. Proper load balancer configuration is a prerequisite for scaling any Phoenix application with real-time features.
 
@@ -1850,9 +1886,9 @@ else
 fi                                                    # => End if statement
 ```
 
-**Key Takeaway**: Blue-green keeps current version running while deploying new version. Switch traffic only after verification. Can rollback instantly. Zero-downtime deployments.
+**Key Takeaway**: Blue-green deployments run two environments side-by-side so you can verify the new version before switching traffic—enabling instant rollback by pointing the load balancer back to the old environment.
 
-**Why It Matters**: Deployment releases enable zero-downtime updates and easy rollbacks. Understanding OTP releases is essential for production Phoenix applications.
+**Why It Matters**: `prep_stop/1` and `stop/1` OTP callbacks give your application control over the shutdown sequence, ensuring in-flight requests complete before the BEAM terminates. Without graceful shutdown, Kubernetes rolling deployments can result in 502 errors as the load balancer continues routing requests to a pod that's already shutting down. Setting `shutdown_timeout` in your Mix release configuration prevents deployment-induced request failures and makes zero-downtime deployments reliable.
 
 ### Example 71: Custom Ecto Types for Domain Logic
 
@@ -1954,9 +1990,9 @@ end                                                   # => End MyApp.Shop.Produc
                                                        # => Returns {:ok, %Product{}} on success
 ```
 
-**Key Takeaway**: Custom Ecto types encapsulate domain logic. Implement cast/1, load/1, dump/1, and type/0. Use Decimal for money to avoid floating-point errors.
+**Key Takeaway**: Custom Ecto types implement `cast/1`, `load/1`, `dump/1`, and `type/0` to encapsulate domain conversions—always use `Decimal` for money to avoid floating-point rounding errors.
 
-**Why It Matters**: Ecto provides type-safe database interactions with compile-time query validation. This prevents SQL injection and catches query errors before deployment.
+**Why It Matters**: Custom Ecto types enforce domain invariants at the data layer—a `Money` type ensures currency amounts are always stored as integer cents, a `Status` type restricts values to a defined atom set, and an `Encrypted` type transparently encrypts sensitive fields. Centralizing these conversions in a type module means the business logic never handles raw database representations, and schema changes propagate automatically to all contexts that use the type.
 
 ### Example 72: Database Fragments for Advanced Queries
 
@@ -2069,7 +2105,7 @@ defmodule MyApp.Blog do                               # => Blog context module
 end                                                   # => End module
 ```
 
-**Key Takeaway**: Use fragment/1 for database-specific SQL. Supports full-text search, JSONB queries, window functions, and CTEs. Always use ^pinned parameters to prevent SQL injection.
+**Key Takeaway**: `fragment/1` lets you write raw SQL for database-specific features like window functions and CTEs; always use `^`-pinned parameters—never string interpolation—to prevent SQL injection.
 
 **Why It Matters**: Ecto.Query.fragment/1 injects raw SQL into otherwise composable Ecto queries, giving access to database-specific functions like PostgreSQL's to_tsvector/tsquery for full-text search, earthdistance for geospatial queries, and window functions. The tradeoff is portability: fragments couple your queries to a specific database engine. Using fragments deliberately for performance-critical paths, while keeping business logic in portable Ecto syntax, balances power with maintainability.
 
@@ -2083,12 +2119,17 @@ defmodule MyApp.Telemetry do                        # => Centralized telemetry h
   require Logger                                       # => Import Logger macros
 
   def attach_handlers do                               # => Register all handlers at startup
+                                                       # => Call once at application boot
     :telemetry.attach(
-      "my-app-ecto-query",                            # => Handler ID
+      "my-app-ecto-query",                            # => Handler ID (must be unique globally)
+                                                       # => Used to detach or identify the handler
       [:my_app, :repo, :query],                       # => Event name
                                                        # => Ecto emits this for every query
+                                                       # => Pattern: [:app_name, :repo_name, :query]
       &__MODULE__.handle_query/4,                     # => Handler function
+                                                       # => Called with (event, measurements, metadata, config)
       nil                                              # => No extra config
+                                                       # => Passed as 4th arg to handler function
     )
   end
 
@@ -2110,10 +2151,13 @@ defmodule MyApp.Telemetry do                        # => Centralized telemetry h
 
     # Send to monitoring service
     if query_time_ms > 1000 do                        # => Very slow (>1s)
+                                                       # => Critical threshold: > 1 second
       MyApp.Monitoring.report_slow_query(%{
         query: metadata.query,                        # => SQL text
-        time_ms: query_time_ms,
+                                                       # => Full SQL with placeholders
+        time_ms: query_time_ms,                       # => Duration in milliseconds
         type: metadata.type                           # => :ecto_sql_query
+                                                       # => Or :ecto_sql_sandbox for test queries
       })
     end
   end
@@ -2137,13 +2181,14 @@ end
 defmodule MyApp.QueryStats do                         # => GenServer for aggregating query metrics
   use GenServer                                        # => OTP GenServer behavior
 
-  def start_link(opts) do
+  def start_link(opts) do                          # => Starts the stats GenServer process
     GenServer.start_link(__MODULE__, opts, name: __MODULE__)
                                                        # => Register globally by module name
+                                                       # => Accessible as MyApp.QueryStats from any process
   end
 
   def init(_opts) do                                  # => Initialize GenServer state
-    :telemetry.attach_many(
+    :telemetry.attach_many(                           # => attach_many registers multiple handlers at once
       "query-stats",                                  # => Unique handler ID
       [
         [:my_app, :repo, :query],                     # => Ecto queries
@@ -2159,36 +2204,44 @@ defmodule MyApp.QueryStats do                         # => GenServer for aggrega
 
   def handle_event([:my_app, :repo, :query], measurements, _metadata, state) do
                                                        # => Called for each Ecto query
+                                                       # => Pattern match on event name tuple
     state = %{
       query_count: state.query_count + 1,             # => Increment counter
+                                                       # => Total queries since server start
       total_time: state.total_time + measurements.total_time
                                                        # => Accumulate total time in native units
+                                                       # => Use :native for precision (convert on read)
     }
     {:ok, state}                                       # => Update GenServer state
+                                                       # => Return value from handle_event (not handle_call!)
   end
 
-  def get_stats do
+  def get_stats do                                    # => Public API to retrieve aggregated stats
     GenServer.call(__MODULE__, :get_stats)            # => Retrieve stats
+                                                       # => Synchronous call, blocks until reply
   end
 
   def handle_call(:get_stats, _from, state) do        # => Synchronous stats fetch
     avg_time = if state.query_count > 0 do
       state.total_time / state.query_count            # => Average query time
+                                                       # => Float division: total / count
     else
       0                                               # => No queries yet
+                                                       # => Avoids division by zero
     end
 
     {:reply, %{
-      query_count: state.query_count,
+      query_count: state.query_count,                 # => Total queries executed
       avg_time_ms: System.convert_time_unit(avg_time, :native, :millisecond)
-    }, state}
+                                                       # => Convert :native units to milliseconds
+    }, state}                                          # => Return reply, preserve state
   end
 end
 ```
 
-**Key Takeaway**: Attach telemetry handlers to [:repo, :query] events. Log slow queries (>100ms). Track query count and average time. Use for production monitoring and optimization.
+**Key Takeaway**: Attach to `[:my_app, :repo, :query]` telemetry events to log slow queries (>100ms), track per-operation timing, and surface N+1 patterns before they cause production degradation.
 
-**Why It Matters**: Telemetry enables observability and performance monitoring. This is critical for debugging production issues and understanding application behavior.
+**Why It Matters**: Query profiling telemetry catches N+1 problems, missing indexes, and unexpectedly slow operations before they become user-visible incidents. Attaching to `[:my_app, :repo, :query]` events gives you query duration, the SQL text, and the source call site in one handler—no ORM-level monkey-patching required. Setting alert thresholds on p95 query duration creates automated regression detection so new code that accidentally introduces slow queries fails CI before deployment.
 
 ### Example 74: Advanced LiveView Performance Optimization
 
@@ -2312,7 +2365,7 @@ defmodule MyAppWeb.DashboardLive do          # => LiveView for performance-optim
 end                                                   # => End MyAppWeb.DashboardLive module
 ```
 
-**Key Takeaway**: Use assign_new/3 for expensive one-time computation. Prefer streams over lists for collections. Debounce rapid events. Use push_event for client-side updates. Break templates into small function components.
+**Key Takeaway**: Combine `assign_new/3` for lazy computation, streams for list efficiency, `phx-debounce` for event throttling, and `push_event` for client-side callbacks to build high-performance LiveView interfaces.
 
 **Why It Matters**: LiveView performance problems compound: a single missed assign_new call on a high-traffic page can double database queries. assign_new prevents redundant data fetching on reconnect, streams replace full list re-renders with targeted DOM patches for large collections, and push_event offloads animations to client JS without server round trips. Measuring DOM diff size with telemetry before optimizing identifies which pattern actually reduces latency rather than applying all techniques speculatively.
 
@@ -2449,9 +2502,9 @@ defmodule MyApp.MemoryMonitor do             # => GenServer that monitors memory
 end
 ```
 
-**Key Takeaway**: Use remote IEx to connect to production. Inspect process state with :sys.get_state/1. Monitor memory leaks. Use LiveDashboard for real-time metrics. Trace function calls with :dbg.
+**Key Takeaway**: Connect a remote IEx shell to running production nodes with `--remsh`; use `:sys.get_state/1` for process inspection, `:dbg` for tracing, and LiveDashboard for real-time cluster metrics.
 
-**Why It Matters**: Remote IEx sessions let you inspect live production state without restarting or redeploying. :sys.get_state/1 reads GenServer internals non-destructively, :dbg traces function calls in real time, and LiveDashboard shows aggregate metrics. Together these tools let you diagnose production anomalies in minutes rather than hours of log analysis.
+**Why It Matters**: Remote IEx sessions let you inspect live production state without restarting or redeploying—essential when you cannot reproduce a bug locally. `:sys.get_state/1` reads GenServer internals non-destructively, `:dbg` traces function calls in real time with minimal overhead, and LiveDashboard shows aggregate cluster metrics. Together these tools reduce mean time to diagnosis from hours of log analysis to minutes of targeted introspection.
 
 ### Example 76: Security Best Practices
 
@@ -2614,7 +2667,7 @@ defmodule MyApp.Accounts.User do               # => User schema module
 end
 ```
 
-**Key Takeaway**: Set security headers (CSP, HSTS, X-Frame-Options). CSRF tokens automatic in Phoenix. Sanitize user HTML with HtmlSanitizeEx. Always use Ecto for queries (prevents SQL injection). Rate limit login attempts.
+**Key Takeaway**: Phoenix provides automatic CSRF tokens and secure headers; add CSP/HSTS via plugs, sanitize user HTML with `HtmlSanitizeEx`, and use Ecto parameterized queries exclusively to prevent SQL injection.
 
 **Why It Matters**: Security requires layered defenses because no single mechanism stops all attacks. CSP headers block XSS injection, CSRF tokens prevent cross-site request forgery, HTML sanitization strips malicious input from user-generated content, bcrypt makes stolen password hashes computationally expensive to crack, and rate limiting stops credential stuffing. Each layer handles a different attack vector — missing any one leaves a gap. Phoenix provides built-in support for most layers; understanding all of them prevents the common mistake of deploying with only one or two active.
 
@@ -2772,9 +2825,9 @@ defmodule MyAppWeb.Presence do
 end
 ```
 
-**Key Takeaway**: Limit connections per user to prevent abuse. Use Hackney pool for HTTP connection pooling. Track WebSocket connections across cluster with Presence. Distribute load across multiple nodes.
+**Key Takeaway**: Enforce per-user connection limits in `join/3`, use Hackney connection pooling for HTTP clients, and track cluster-wide WebSocket counts via `Presence` to prevent connection abuse at scale.
 
-**Why It Matters**: Limiting WebSocket connections per user prevents a single user from exhausting server resources through multiple browser tabs or API clients. Hackney connection pooling reuses HTTP connections to external services, avoiding the latency of TCP handshakes on each request. Both patterns protect server capacity as user numbers grow.
+**Why It Matters**: Limiting WebSocket connections per user prevents a single browser session with many open tabs from exhausting server file descriptor limits and memory. Hackney connection pooling reuses HTTP connections to external services, avoiding TCP handshake overhead on each API call—critical for endpoints that call external services synchronously. Both patterns protect server capacity as concurrent user numbers grow, ensuring one heavy user cannot degrade service quality for others.
 
 ### Example 78: GraphQL API with Absinthe
 
@@ -2993,7 +3046,7 @@ end                                                   # => End router
 # }                                                   # => Mutation triggers subscription
 ```
 
-**Key Takeaway**: Absinthe provides GraphQL for Phoenix. Define schema with queries, mutations, subscriptions. Clients request only needed fields. Use resolvers to load data. GraphiQL provides interactive API explorer.
+**Key Takeaway**: Absinthe defines GraphQL schemas with queries, mutations, and subscriptions in Elixir; resolvers load data on demand and clients request only the fields they need, reducing over-fetching.
 
 **Why It Matters**: GraphQL lets clients request exactly the fields they need, eliminating over-fetching (receiving unused data) and under-fetching (requiring multiple round trips). Absinthe compiles the schema at startup, catches type errors at compile time, and maps queries to resolver functions that load data from your existing Ecto contexts. Subscriptions via PubSub push data to clients over the existing WebSocket without polling. For frontends with diverse data needs — mobile, web, third-party — a single GraphQL endpoint replaces multiple REST endpoints.
 
@@ -3282,7 +3335,7 @@ defmodule MyApp.Orders.Projection do             # => GenServer that maintains a
 end
 ```
 
-**Key Takeaway**: Store all state changes as immutable events. Rebuild state by replaying events. Use projections for fast queries. Events provide complete audit trail. Supports time travel and debugging.
+**Key Takeaway**: Event sourcing stores immutable domain events as the source of truth; state is derived by replaying events through projections, providing a complete audit trail and enabling time-travel debugging.
 
 **Why It Matters**: Event sourcing stores every state change as an immutable event rather than overwriting rows, providing a complete audit trail and the ability to replay history to reconstruct past states — useful for debugging, compliance, and retroactive analytics. Projections rebuild read models from events, separating query-optimized views from the event log. The tradeoff is significant complexity: eventual consistency between write and read models, and aggregate rebuilding latency for large event streams that require snapshotting.
 
@@ -3583,6 +3636,6 @@ defmodule MyApp.PerformanceTest do                    # => Performance test modu
 end                                                   # => End MyApp.PerformanceTest module
 ```
 
-**Key Takeaway**: Property-based testing validates invariants across random inputs. Contract testing ensures API stability. Integration tests verify full user flows. Performance tests catch regressions. Use async: true for parallel test execution.
+**Key Takeaway**: Use property-based testing with StreamData for invariant validation, contract tests for API stability, and performance benchmarks with Benchee to prevent regressions across all levels of the test pyramid.
 
 **Why It Matters**: Property-based tests with StreamData find edge cases that example-based tests miss by generating hundreds of random inputs. Contract tests prevent API versioning regressions by verifying both producer and consumer agree on the interface. Together these testing strategies raise confidence that real-world usage patterns are handled correctly, not just the cases developers thought to test.

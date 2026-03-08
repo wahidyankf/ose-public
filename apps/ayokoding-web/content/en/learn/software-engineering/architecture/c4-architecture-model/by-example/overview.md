@@ -54,8 +54,9 @@ Every example follows a consistent format:
 
 1. **Brief Explanation**: What the example demonstrates and why it matters
 2. **C4 Diagram**: Mermaid diagram showing the architecture
-3. **Key Elements**: Explanation of major components and relationships
+3. **Key Elements**: Explanation of major components and relationships (sequence diagrams use **Key Steps** instead)
 4. **Design Rationale**: Why this structure was chosen
 5. **Key Takeaway**: The core insight to retain
+6. **Why It Matters**: Business impact and real-world significance
 
 This structure provides context, visualization, and understanding all in one place.

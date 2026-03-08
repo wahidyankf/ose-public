@@ -10,7 +10,7 @@ Week 0016, Phase 1 Week 4
 
 🚀 Phase 1 Week 4: OrganicLever Takes Shape
 
-Four weeks into Phase 1. OrganicLever is real — frontend deployed at www.organiclever.com, Spring Boot backend running in local dev, and a testing infrastructure built for scale.
+Four weeks into Phase 1. OrganicLever is real — frontend deployed at www.organiclever.com, Spring Boot backend running in local dev, and a testing infrastructure built for scale. All product content is placeholder for now — the focus is on CI/CD infrastructure, not features.
 
 **What shipped in 379 commits:**
 

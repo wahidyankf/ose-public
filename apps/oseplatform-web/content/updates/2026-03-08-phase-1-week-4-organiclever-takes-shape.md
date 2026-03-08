@@ -10,11 +10,11 @@ showtoc: true
 
 Phase 1 promised to exercise Phase 0 systems with a real product. Four weeks in, OrganicLever exists: frontend deployed at [www.organiclever.com](https://www.organiclever.com), Spring Boot backend running in local development with Docker Compose, E2E tests on schedule. 379 commits landed across infrastructure solidification, testing infrastructure, coverage enforcement, CI/CD pipelines, and dependency modernization.
 
-Infrastructure solidification remains the primary goal. Product features come second—we're building the systems that let us build products reliably.
+Infrastructure solidification remains the primary goal. Product features come second—we're building the systems that let us build products reliably. The OrganicLever content you see today is placeholder—auth flows, dashboard layout, members CRUD—just enough to exercise the CI/CD pipeline end-to-end.
 
 ## OrganicLever: From Plan to Product
 
-Four weeks ago, OrganicLever was a plan. Now it's four projects in the Nx monorepo.
+Four weeks ago, OrganicLever was a plan. Now it's four projects in the Nx monorepo. All content is placeholder for now—the focus is on building and validating the CI/CD infrastructure, not product features.
 
 **organiclever-web** — Next.js 16 with React 19, TailwindCSS v4, shadcn-ui components, cookie-based auth, dashboard layout, members CRUD, Storybook 10 for component development. 99.57% test coverage via Vitest with v8 provider.
 

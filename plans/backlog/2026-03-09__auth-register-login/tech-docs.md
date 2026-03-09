@@ -42,19 +42,20 @@ graph TD
 
 All new packages follow the existing convention: annotated with `@NullMarked` in `package-info.java`, no wildcard imports.
 
-| Package                                        | Purpose                                                                                                                    |
-| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `com.organiclever.be.auth.controller`          | `AuthController` - REST endpoints                                                                                          |
-| `com.organiclever.be.auth.service`             | `AuthService`, `UserDetailsServiceImpl`                                                                                    |
-| `com.organiclever.be.auth.repository`          | `UserRepository` (Spring Data JPA)                                                                                         |
-| `com.organiclever.be.auth.model`               | `User` JPA entity                                                                                                          |
-| `com.organiclever.be.auth.dto`                 | `RegisterRequest`, `LoginRequest`, `RegisterResponse`, `AuthResponse`                                                      |
-| `com.organiclever.be.security`                 | `JwtUtil`, `JwtAuthFilter`, `SecurityConfig`                                                                               |
-| `com.organiclever.be.config`                   | `JpaAuditingConfig`, `GlobalExceptionHandler`                                                                              |
-| `com.organiclever.be.integration.steps`        | `AuthSteps`, `CommonSteps` (updated), `HelloSteps`, `ResponseStore`, `TokenStore`, `BaseCucumberContextConfig` (test-only) |
-| `com.organiclever.be.integration.registration` | `RegistrationContextConfig`, `RegistrationIT` (test-only; runs `register.feature`)                                         |
-| `com.organiclever.be.integration.login`        | `LoginContextConfig`, `LoginIT` (test-only; runs `login.feature`)                                                          |
-| `com.organiclever.be.integration.jwtprotected` | `JwtProtectedContextConfig`, `JwtProtectedIT` (test-only; runs `jwt-protection.feature`)                                   |
+| Package                                        | Purpose                                                                                                                  |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `com.organiclever.be.auth.controller`          | `AuthController` - REST endpoints                                                                                        |
+| `com.organiclever.be.auth.service`             | `AuthService`, `UserDetailsServiceImpl`, `UsernameAlreadyExistsException`, `InvalidCredentialsException`                 |
+| `com.organiclever.be.auth.repository`          | `UserRepository` (Spring Data JPA)                                                                                       |
+| `com.organiclever.be.auth.model`               | `User` JPA entity                                                                                                        |
+| `com.organiclever.be.auth.dto`                 | `RegisterRequest`, `LoginRequest`, `RegisterResponse`, `AuthResponse`                                                    |
+| `com.organiclever.be.security`                 | `JwtUtil`, `JwtAuthFilter`, `SecurityConfig`                                                                             |
+| `com.organiclever.be.config`                   | `JpaAuditingConfig`, `GlobalExceptionHandler`                                                                            |
+| `com.organiclever.be.integration`              | `ResponseStore` (existing; updated to add `@Scope("cucumber-glue")`)                                                     |
+| `com.organiclever.be.integration.steps`        | `AuthSteps`, `CommonSteps` (updated), `HelloSteps`, `HealthSteps`, `TokenStore`, `BaseCucumberContextConfig` (test-only) |
+| `com.organiclever.be.integration.registration` | `RegistrationContextConfig`, `RegistrationIT` (test-only; runs `register.feature`)                                       |
+| `com.organiclever.be.integration.login`        | `LoginContextConfig`, `LoginIT` (test-only; runs `login.feature`)                                                        |
+| `com.organiclever.be.integration.jwtprotected` | `JwtProtectedContextConfig`, `JwtProtectedIT` (test-only; runs `jwt-protection.feature`)                                 |
 
 ### package-info.java template
 
@@ -990,7 +991,7 @@ and limits the glue path to prevent Cucumber from discovering the other context 
 // RegistrationIT.java — in com.organiclever.be.integration.registration
 @Suite
 @IncludeEngines("cucumber")
-@SelectClasspathResource("specs/apps/organiclever-be/auth/register.feature")
+@SelectClasspathResource("auth/register.feature")
 @ConfigurationParameter(
     key = GLUE_PROPERTY_NAME,
     value = "com.organiclever.be.integration.registration"
@@ -1005,7 +1006,7 @@ public class RegistrationIT {}
 // LoginIT.java — in com.organiclever.be.integration.login
 @Suite
 @IncludeEngines("cucumber")
-@SelectClasspathResource("specs/apps/organiclever-be/auth/login.feature")
+@SelectClasspathResource("auth/login.feature")
 @ConfigurationParameter(
     key = GLUE_PROPERTY_NAME,
     value = "com.organiclever.be.integration.login"
@@ -1020,7 +1021,7 @@ public class LoginIT {}
 // JwtProtectedIT.java — in com.organiclever.be.integration.jwtprotected
 @Suite
 @IncludeEngines("cucumber")
-@SelectClasspathResource("specs/apps/organiclever-be/auth/jwt-protection.feature")
+@SelectClasspathResource("auth/jwt-protection.feature")
 @ConfigurationParameter(
     key = GLUE_PROPERTY_NAME,
     value = "com.organiclever.be.integration.jwtprotected"
@@ -1354,8 +1355,9 @@ Spring Data JPA reduces boilerplate for the simple CRUD operations required here
 `UserRepository` needs only `findByUsername` and `existsByUsername` — both generated from
 method names without any custom SQL. This is consistent with the functional preference for
 minimal code. The `User` entity uses `@GeneratedValue(strategy = GenerationType.UUID)` and
-`@PrePersist` for `createdAt`, keeping all DB default logic in the Java layer rather than
-relying on database-side defaults.
+`@EntityListeners(AuditingEntityListener.class)` with `@CreatedDate` / `@LastModifiedDate` /
+`@CreatedBy` / `@LastModifiedBy` for audit fields — this is declarative JPA Auditing,
+not `@PrePersist`. All audit metadata is populated automatically by Spring Data JPA Auditing.
 
 ### Why BCrypt strength 10?
 
@@ -1468,11 +1470,11 @@ avoids any risk of the endpoint being accidentally exposed in production profile
 
 The following project documentation files need updates as part of this plan:
 
-| File                                                                                                              | What to update                                                                                                                                                                        |
-| ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `docs/explanation/software-engineering/platform-web/tools/jvm-spring-boot/ex-soen-plwe-to-jvspbo__data-access.md` | Add or expand the Spring Data JPA section with the repository pattern used in this project (`findByUsername`, `existsByUsername`, `@Entity` with `@PrePersist`)                       |
-| `docs/explanation/software-engineering/platform-web/tools/jvm-spring-boot/ex-soen-plwe-to-jvspbo__security.md`    | Add a section with the project-specific JWT + Spring Security pattern (`SecurityFilterChain`, `JwtAuthFilter`, `OncePerRequestFilter`, stateless sessions, `CorsConfigurationSource`) |
-| `specs/apps/organiclever-be/README.md`                                                                            | List the three new auth feature files (`auth/register.feature`, `auth/login.feature`, `auth/jwt-protection.feature`)                                                                  |
-| `apps/organiclever-be/README.md`                                                                                  | Document `POST /api/v1/auth/register`, `POST /api/v1/auth/login`, required env vars (`APP_JWT_SECRET`, `SPRING_DATASOURCE_URL`), and Liquibase changelog approach                     |
-| `apps/organiclever-be-e2e/README.md`                                                                              | Document auth step definitions, `token-store.ts`, `db-cleanup.ts` fixture, `DATABASE_URL` env var, and `pg` package prerequisite                                                      |
-| `infra/dev/organiclever/README.md`                                                                                | Document new `organiclever-db` PostgreSQL service, how to start the full stack, and `POSTGRES_USER`/`POSTGRES_PASSWORD`/`APP_JWT_SECRET` env vars                                     |
+| File                                                                                                              | What to update                                                                                                                                                                                                                                                                                                     |
+| ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `docs/explanation/software-engineering/platform-web/tools/jvm-spring-boot/ex-soen-plwe-to-jvspbo__data-access.md` | Add or expand the Spring Data JPA section with the repository pattern used in this project (`findByUsername`, `existsByUsername`, `@Entity` with `@GeneratedValue(strategy=GenerationType.UUID)`, `@EntityListeners(AuditingEntityListener.class)`, `@CreatedDate`, `@LastModifiedDate`, `@Where` for soft-delete) |
+| `docs/explanation/software-engineering/platform-web/tools/jvm-spring-boot/ex-soen-plwe-to-jvspbo__security.md`    | Add a section with the project-specific JWT + Spring Security pattern (`SecurityFilterChain`, `JwtAuthFilter`, `OncePerRequestFilter`, stateless sessions, `CorsConfigurationSource`)                                                                                                                              |
+| `specs/apps/organiclever-be/README.md`                                                                            | List the three new auth feature files (`auth/register.feature`, `auth/login.feature`, `auth/jwt-protection.feature`)                                                                                                                                                                                               |
+| `apps/organiclever-be/README.md`                                                                                  | Document `POST /api/v1/auth/register`, `POST /api/v1/auth/login`, required env vars (`APP_JWT_SECRET`, `SPRING_DATASOURCE_URL`), and Liquibase changelog approach                                                                                                                                                  |
+| `apps/organiclever-be-e2e/README.md`                                                                              | Document auth step definitions, `token-store.ts`, `db-cleanup.ts` fixture, `DATABASE_URL` env var, and `pg` package prerequisite                                                                                                                                                                                   |
+| `infra/dev/organiclever/README.md`                                                                                | Document new `organiclever-db` PostgreSQL service, how to start the full stack, and `POSTGRES_USER`/`POSTGRES_PASSWORD`/`APP_JWT_SECRET` env vars                                                                                                                                                                  |

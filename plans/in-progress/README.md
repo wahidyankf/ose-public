@@ -4,8 +4,6 @@ Active project plans currently being worked on.
 
 ## Active Plans
 
-- **[2026-03-09\_\_auth-register-login](./2026-03-09__auth-register-login/README.md)** - Add user registration and JWT-based login to the organiclever-be Spring Boot backend, with PostgreSQL persistence, Liquibase migrations, Spring Security configuration, and full integration + E2E test coverage
-
 ## Instructions
 
 **Quick Idea Capture**: For 1-3 liner ideas not ready for formal planning, use `../ideas.md`.

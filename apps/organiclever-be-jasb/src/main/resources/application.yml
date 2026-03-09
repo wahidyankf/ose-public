@@ -1,6 +1,6 @@
 spring:
   application:
-    name: organiclever-be
+    name: organiclever-be-jasb
   profiles:
     active: dev
   web:

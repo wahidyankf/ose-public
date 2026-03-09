@@ -7,6 +7,7 @@ import com.organiclever.be.auth.dto.RegisterResponse;
 import com.organiclever.be.auth.model.User;
 import com.organiclever.be.auth.repository.UserRepository;
 import com.organiclever.be.security.JwtUtil;
+import java.util.Objects;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,10 @@ public class AuthService {
         if (userRepository.existsByUsername(request.username())) {
             throw new UsernameAlreadyExistsException(request.username());
         }
-        User user = new User(request.username(), passwordEncoder.encode(request.password()));
+        // BCryptPasswordEncoder.encode() never returns null; requireNonNull removes the @Nullable
+        // that NullAway sees on the PasswordEncoder interface's return type.
+        String encoded = Objects.requireNonNull(passwordEncoder.encode(request.password()));
+        User user = new User(request.username(), encoded);
         User saved = userRepository.save(user);
         return new RegisterResponse(saved.getId(), saved.getUsername(), saved.getCreatedAt());
     }

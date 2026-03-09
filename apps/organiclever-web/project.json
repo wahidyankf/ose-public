@@ -83,5 +83,5 @@
     }
   },
   "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:organiclever"],
-  "implicitDependencies": ["organiclever-be"]
+  "implicitDependencies": ["organiclever-be-jasb"]
 }

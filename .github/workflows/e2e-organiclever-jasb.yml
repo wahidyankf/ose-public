@@ -1,4 +1,4 @@
-name: E2E - OrganicLever
+name: E2E - OrganicLever (JASB)
 
 on:
   schedule:
@@ -19,13 +19,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Start backend
-        run: docker compose -f infra/dev/organiclever/docker-compose.yml -f infra/dev/organiclever/docker-compose.e2e.yml up --build -d organiclever-be
+        run: docker compose -f infra/dev/organiclever-jasb/docker-compose.yml -f infra/dev/organiclever-jasb/docker-compose.e2e.yml up --build -d organiclever-be-jasb
 
       - name: Wait for backend to be healthy
         run: |
           echo "Waiting for backend to become healthy..."
           for i in $(seq 1 24); do
-            STATUS=$(docker inspect --format='{{.State.Health.Status}}' organiclever-be 2>/dev/null || echo "unknown")
+            STATUS=$(docker inspect --format='{{.State.Health.Status}}' 'organiclever-be-jasb' 2>/dev/null || echo "unknown")
             echo "[$i/24] Health: $STATUS"
             if [ "$STATUS" = "healthy" ]; then
               echo "Backend is healthy"
@@ -34,7 +34,7 @@ jobs:
             sleep 10
           done
           echo "Backend did not become healthy within 4 minutes"
-          docker logs organiclever-be
+          docker logs organiclever-be-jasb
           exit 1
 
       - name: Setup Volta
@@ -56,7 +56,7 @@ jobs:
 
       - name: Stop backend
         if: always()
-        run: docker compose -f infra/dev/organiclever/docker-compose.yml down
+        run: docker compose -f infra/dev/organiclever-jasb/docker-compose.yml down
 
   e2e-web:
     name: Run web E2E tests
@@ -91,7 +91,7 @@ jobs:
       # START_COMMAND=production → npm install --omit=dev + next start (no rebuild).
       # --omit=dev skips Storybook/vitest and cuts install time from ~7 min to <2 min.
       - name: Start web app
-        run: docker compose -f infra/dev/organiclever/docker-compose.yml up --build -d organiclever-web
+        run: docker compose -f infra/dev/organiclever-jasb/docker-compose.yml up --build -d organiclever-web
         env:
           START_COMMAND: production
 
@@ -124,4 +124,4 @@ jobs:
 
       - name: Stop web app
         if: always()
-        run: docker compose -f infra/dev/organiclever/docker-compose.yml down
+        run: docker compose -f infra/dev/organiclever-jasb/docker-compose.yml down

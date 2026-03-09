@@ -44,8 +44,8 @@ jobs:
       - name: test:quick (all projects)
         run: npx nx run-many -t test:quick --all
 
-      - name: Generate JaCoCo XML report (organiclever-be)
-        run: cd apps/organiclever-be && mvn jacoco:report -Pintegration
+      - name: Generate JaCoCo XML report (organiclever-be-jasb)
+        run: cd apps/organiclever-be-jasb && mvn jacoco:report -Pintegration
 
       - name: Upload coverage — rhino-cli
         uses: codecov/codecov-action@v5
@@ -87,12 +87,12 @@ jobs:
           flags: hugo-commons
           fail_ci_if_error: false
 
-      - name: Upload coverage — organiclever-be
+      - name: Upload coverage — organiclever-be-jasb
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: apps/organiclever-be/target/site/jacoco/jacoco.xml
-          flags: organiclever-be
+          files: apps/organiclever-be-jasb/target/site/jacoco/jacoco.xml
+          flags: organiclever-be-jasb
           fail_ci_if_error: false
 
       - name: Upload coverage — organiclever-web

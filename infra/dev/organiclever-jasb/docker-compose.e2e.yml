@@ -6,10 +6,10 @@
 # This makes the "Anonymous health check does not expose component details"
 # scenario behave as it would in production / when-authorized configuration.
 services:
-  organiclever-be:
+  organiclever-be-jasb:
     environment:
       - MANAGEMENT_ENDPOINT_HEALTH_SHOWDETAILS=when-authorized
   organiclever-be-e2e:
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER:-organiclever}:${POSTGRES_PASSWORD:-organiclever}@organiclever-db:5432/organiclever
-      - BASE_URL=http://organiclever-be:8201
+      - BASE_URL=http://organiclever-be-jasb:8201

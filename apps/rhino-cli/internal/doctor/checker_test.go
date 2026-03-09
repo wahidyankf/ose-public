@@ -628,7 +628,7 @@ func setupCheckAllRepo(t *testing.T) string {
 	t.Helper()
 	tmpDir := t.TempDir()
 
-	if err := os.MkdirAll(filepath.Join(tmpDir, "apps", "organiclever-be"), 0755); err != nil {
+	if err := os.MkdirAll(filepath.Join(tmpDir, "apps", "organiclever-be-jasb"), 0755); err != nil {
 		t.Fatalf("failed to create dirs: %v", err)
 	}
 	if err := os.MkdirAll(filepath.Join(tmpDir, "apps", "rhino-cli"), 0755); err != nil {
@@ -639,7 +639,7 @@ func setupCheckAllRepo(t *testing.T) string {
 		[]byte(`{"volta":{"node":"24.11.1","npm":"11.6.3"}}`), 0644); err != nil {
 		t.Fatalf("failed to write test file: %v", err)
 	}
-	if err := os.WriteFile(filepath.Join(tmpDir, "apps", "organiclever-be", "pom.xml"),
+	if err := os.WriteFile(filepath.Join(tmpDir, "apps", "organiclever-be-jasb", "pom.xml"),
 		[]byte(`<project><properties><java.version>25</java.version></properties></project>`), 0644); err != nil {
 		t.Fatalf("failed to write test file: %v", err)
 	}
@@ -787,11 +787,11 @@ func TestCheckAll_WithWarningStatus(t *testing.T) {
 		"git":   {stdout: "git version 2.47.2\n", exitCode: 0},
 		"volta": {stdout: "2.0.2\n", exitCode: 0},
 		// node returns old version → Warning
-		"node":  {stdout: "v20.0.0\n", exitCode: 0},
-		"npm":   {stdout: "11.6.3\n", exitCode: 0},
-		"java":  {stderr: `openjdk version "25" 2025-09-16`, exitCode: 0},
-		"mvn":   {stdout: "Apache Maven 3.9.9 (abc)\nMaven home: /usr\n", exitCode: 0},
-		"go":    {stdout: "go version go1.24.2 linux/amd64\n", exitCode: 0},
+		"node": {stdout: "v20.0.0\n", exitCode: 0},
+		"npm":  {stdout: "11.6.3\n", exitCode: 0},
+		"java": {stderr: `openjdk version "25" 2025-09-16`, exitCode: 0},
+		"mvn":  {stdout: "Apache Maven 3.9.9 (abc)\nMaven home: /usr\n", exitCode: 0},
+		"go":   {stdout: "go version go1.24.2 linux/amd64\n", exitCode: 0},
 	})
 
 	result, err := CheckAll(CheckOptions{RepoRoot: tmpDir, Runner: runner})

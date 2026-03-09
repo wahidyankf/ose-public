@@ -49,5 +49,5 @@
     }
   },
   "tags": ["type:e2e", "platform:playwright", "lang:ts", "domain:organiclever"],
-  "implicitDependencies": ["organiclever-be"]
+  "implicitDependencies": ["organiclever-be-jasb"]
 }

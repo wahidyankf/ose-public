@@ -36,11 +36,11 @@ func setupDoctorTestRepo(t *testing.T) func() {
 	}
 
 	// pom.xml
-	if err := os.MkdirAll(filepath.Join(tmpDir, "apps", "organiclever-be"), 0755); err != nil {
+	if err := os.MkdirAll(filepath.Join(tmpDir, "apps", "organiclever-be-jasb"), 0755); err != nil {
 		t.Fatalf("Failed to create pom.xml dir: %v", err)
 	}
 	pomXML := `<project><properties><java.version>25</java.version></properties></project>`
-	if err := os.WriteFile(filepath.Join(tmpDir, "apps", "organiclever-be", "pom.xml"), []byte(pomXML), 0644); err != nil {
+	if err := os.WriteFile(filepath.Join(tmpDir, "apps", "organiclever-be-jasb", "pom.xml"), []byte(pomXML), 0644); err != nil {
 		t.Fatalf("Failed to create pom.xml: %v", err)
 	}
 

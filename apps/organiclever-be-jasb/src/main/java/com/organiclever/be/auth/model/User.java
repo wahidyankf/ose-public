@@ -55,7 +55,8 @@ public class User {
     @Column(name = "deleted_by", length = 255)
     private @Nullable String deletedBy;
 
-    // Required by JPA
+    // Required by JPA — NullAway suppressed because id is populated by JPA/Hibernate
+    @SuppressWarnings("NullAway")
     protected User() {
         this.username = "";
         this.passwordHash = "";
@@ -65,6 +66,9 @@ public class User {
         this.updatedBy = "";
     }
 
+    // NullAway suppressed: id, createdAt, createdBy, updatedAt, updatedBy are populated by
+    // JPA @GeneratedValue and Spring Data Auditing — they are not set in the constructor.
+    @SuppressWarnings("NullAway")
     public User(final String username, final String passwordHash) {
         this.username = username;
         this.passwordHash = passwordHash;

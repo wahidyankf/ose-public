@@ -130,11 +130,11 @@ func writeDoctorConfigFiles(tmpDir, nodeVer, npmVer, javaMajor, goVer string) er
 		return fmt.Errorf("write package.json: %w", err)
 	}
 
-	if err := os.MkdirAll(filepath.Join(tmpDir, "apps", "organiclever-be"), 0755); err != nil {
-		return fmt.Errorf("mkdir organiclever-be: %w", err)
+	if err := os.MkdirAll(filepath.Join(tmpDir, "apps", "organiclever-be-jasb"), 0755); err != nil {
+		return fmt.Errorf("mkdir organiclever-be-jasb: %w", err)
 	}
 	pomXML := fmt.Sprintf(`<project><properties><java.version>%s</java.version></properties></project>`, javaMajor)
-	if err := os.WriteFile(filepath.Join(tmpDir, "apps", "organiclever-be", "pom.xml"), []byte(pomXML), 0644); err != nil {
+	if err := os.WriteFile(filepath.Join(tmpDir, "apps", "organiclever-be-jasb", "pom.xml"), []byte(pomXML), 0644); err != nil {
 		return fmt.Errorf("write pom.xml: %w", err)
 	}
 
@@ -194,11 +194,11 @@ func (s *doctorSteps) aRequiredDevelopmentToolIsInstalledWithANonMatchingVersion
 		return fmt.Errorf("write package.json: %w", err)
 	}
 
-	if err := os.MkdirAll(filepath.Join(s.tmpDir, "apps", "organiclever-be"), 0755); err != nil {
-		return fmt.Errorf("mkdir organiclever-be: %w", err)
+	if err := os.MkdirAll(filepath.Join(s.tmpDir, "apps", "organiclever-be-jasb"), 0755); err != nil {
+		return fmt.Errorf("mkdir organiclever-be-jasb: %w", err)
 	}
 	pomXML := fmt.Sprintf(`<project><properties><java.version>%s</java.version></properties></project>`, javaMajor)
-	if err := os.WriteFile(filepath.Join(s.tmpDir, "apps", "organiclever-be", "pom.xml"), []byte(pomXML), 0644); err != nil {
+	if err := os.WriteFile(filepath.Join(s.tmpDir, "apps", "organiclever-be-jasb", "pom.xml"), []byte(pomXML), 0644); err != nil {
 		return fmt.Errorf("write pom.xml: %w", err)
 	}
 

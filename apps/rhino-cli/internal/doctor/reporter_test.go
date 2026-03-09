@@ -31,7 +31,7 @@ var allOKChecks = []ToolCheck{
 	{Name: "volta", Binary: "volta", Status: StatusOK, InstalledVersion: "2.0.2", Source: "(no config file)", Note: "no version requirement"},
 	{Name: "node", Binary: "node", Status: StatusOK, InstalledVersion: "24.11.1", RequiredVersion: "24.11.1", Source: "package.json → volta.node", Note: "required: 24.11.1"},
 	{Name: "npm", Binary: "npm", Status: StatusOK, InstalledVersion: "11.6.3", RequiredVersion: "11.6.3", Source: "package.json → volta.npm", Note: "required: 11.6.3"},
-	{Name: "java", Binary: "java", Status: StatusOK, InstalledVersion: "25", RequiredVersion: "25", Source: "apps/organiclever-be/pom.xml → <java.version>", Note: "required: 25"},
+	{Name: "java", Binary: "java", Status: StatusOK, InstalledVersion: "25", RequiredVersion: "25", Source: "apps/organiclever-be-jasb/pom.xml → <java.version>", Note: "required: 25"},
 	{Name: "maven", Binary: "mvn", Status: StatusOK, InstalledVersion: "3.9.9", Source: "(no config file)", Note: "no version requirement"},
 	{Name: "golang", Binary: "go", Status: StatusOK, InstalledVersion: "1.24.2", RequiredVersion: "1.24.2", Source: "apps/rhino-cli/go.mod → go directive", Note: "required: \u22651.24.2"},
 }

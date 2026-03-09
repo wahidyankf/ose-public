@@ -24,9 +24,9 @@ flags:
     paths:
       - apps/oseplatform-cli/
     carryforward: true
-  organiclever-be:
+  organiclever-be-jasb:
     paths:
-      - apps/organiclever-be/
+      - apps/organiclever-be-jasb/
     carryforward: true
   organiclever-web:
     paths:

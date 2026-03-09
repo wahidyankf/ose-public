@@ -7,9 +7,9 @@ Docker Compose configuration for OrganicLever services ecosystem.
 This infrastructure setup provides Docker Compose configuration for the OrganicLever ecosystem. The full ecosystem includes:
 
 - **organiclever-db** - PostgreSQL 17 database (port 5432, runs in Docker Compose)
-- **organiclever-be** - Spring Boot backend service (port 8201, depends on organiclever-db)
+- **organiclever-be-jasb** - Spring Boot backend service (port 8201, depends on organiclever-db)
 - **organiclever-web** - Next.js landing website (port 3200, runs in Docker Compose)
-- **organiclever-be-e2e** - Playwright API E2E tests (requires organiclever-be + organiclever-db)
+- **organiclever-be-e2e** - Playwright API E2E tests (requires organiclever-be-jasb + organiclever-db)
 - **organiclever-web-e2e** - Playwright browser E2E tests (requires organiclever-web)
 
 ## Prerequisites
@@ -35,7 +35,7 @@ npm run organiclever:dev:restart
 
 This automatically:
 
-- Starts **both** `organiclever-be` (port 8201) and `organiclever-web` (port 3200)
+- Starts **both** `organiclever-be-jasb` (port 8201) and `organiclever-web` (port 3200)
 - Mounts source code for hot-reload (backend: Spring Boot DevTools, frontend: Next.js dev server)
 - Installs frontend dependencies inside the container (isolated from host `node_modules`)
 - Shows logs in the terminal
@@ -49,7 +49,7 @@ If you prefer manual control or need specific docker-compose options:
 The development environment uses a custom Docker image with Maven pre-installed. Build it once:
 
 ```bash
-# From infra/dev/organiclever directory
+# From infra/dev/organiclever-jasb directory
 docker compose build
 ```
 
@@ -64,7 +64,7 @@ This creates a custom development image (~666MB) that includes:
 #### 2. Configure Environment
 
 ```bash
-# From infra/dev/organiclever directory
+# From infra/dev/organiclever-jasb directory
 cp .env.example .env
 ```
 
@@ -112,7 +112,7 @@ curl -s http://localhost:3200
 
 **Port**: 5432
 **Image**: `postgres:17-alpine`
-**Purpose**: PostgreSQL database for organiclever-be
+**Purpose**: PostgreSQL database for organiclever-be-jasb
 
 **Environment Variables** (set in `.env`):
 
@@ -123,10 +123,10 @@ curl -s http://localhost:3200
 **Health check**: `pg_isready -U $POSTGRES_USER -d organiclever` (every 10 seconds)
 **Data persistence**: `organiclever-db-data` named Docker volume
 
-**Note**: `organiclever-be` depends on `organiclever-db` with `condition: service_healthy`,
+**Note**: `organiclever-be-jasb` depends on `organiclever-db` with `condition: service_healthy`,
 so the backend will not start until PostgreSQL is ready.
 
-### organiclever-be
+### organiclever-be-jasb
 
 **Port**: 8201
 **Image**: Custom dev image (built from `Dockerfile.be.dev`)
@@ -176,10 +176,10 @@ so the backend will not start until PostgreSQL is ready.
 docker-compose logs -f
 
 # Specific service
-docker-compose logs -f organiclever-be
+docker-compose logs -f organiclever-be-jasb
 
 # Last 100 lines
-docker-compose logs --tail=100 organiclever-be
+docker-compose logs --tail=100 organiclever-be-jasb
 ```
 
 ### Stop Services
@@ -192,7 +192,7 @@ docker-compose down
 docker-compose down -v
 
 # Stop specific service
-docker-compose stop organiclever-be
+docker-compose stop organiclever-be-jasb
 ```
 
 ### Restart Services
@@ -202,7 +202,7 @@ docker-compose stop organiclever-be
 docker-compose restart
 
 # Restart specific service
-docker-compose restart organiclever-be
+docker-compose restart organiclever-be-jasb
 ```
 
 ### Check Status
@@ -219,12 +219,12 @@ docker stats
 
 ```bash
 # 1. Rebuild the application
-cd ../../apps/organiclever-be
+cd ../../apps/organiclever-be-jasb
 mvn clean package -DskipTests
 
 # 2. Restart the service
 cd ../../infra/organiclever
-docker-compose restart organiclever-be
+docker-compose restart organiclever-be-jasb
 ```
 
 ## Development with Auto-Reload
@@ -242,14 +242,14 @@ npm run organiclever:dev
 **Alternative: Direct docker compose**:
 
 ```bash
-cd infra/dev/organiclever
+cd infra/dev/organiclever-jasb
 docker compose up
 ```
 
 **What happens**:
 
 - Uses custom dev image with Maven pre-installed (no runtime installation)
-- Mounts source code from `apps/organiclever-be/` (read-write)
+- Mounts source code from `apps/organiclever-be-jasb/` (read-write)
 - Runs `mvn spring-boot:run` with DevTools enabled
 - DevTools watches for file changes and triggers fast restarts (1-2 seconds)
 - First startup: ~2-3 minutes (Maven downloads dependencies)
@@ -257,7 +257,7 @@ docker compose up
 
 ### Auto-Reload Workflow
 
-1. **Edit code**: Make changes to any file in `apps/organiclever-be/src/`
+1. **Edit code**: Make changes to any file in `apps/organiclever-be-jasb/src/`
 2. **Save file**: Press Ctrl+S (or Cmd+S on Mac)
 3. **Wait**: Watch Docker logs for restart message (~1-2 seconds)
 4. **Test**: Changes are live immediately
@@ -272,7 +272,7 @@ npm run organiclever:dev
 curl http://localhost:8201/api/v1/hello
 # Output: {"message":"world!"}
 
-# Edit apps/organiclever-be/src/main/java/com/organiclever/be/controller/HelloController.java
+# Edit apps/organiclever-be-jasb/src/main/java/com/organiclever/be/controller/HelloController.java
 # Change "world!" to "auto-reload works!"
 # Save file
 
@@ -304,10 +304,10 @@ For even faster development (0.5-1 second restarts), run directly on host:
 
 ```bash
 # From repository root
-nx dev organiclever-be
+nx dev organiclever-be-jasb
 
 # Or from app directory
-cd apps/organiclever-be
+cd apps/organiclever-be-jasb
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
@@ -336,7 +336,7 @@ The development environment uses a custom Docker image built from `Dockerfile.be
 **Building the image** (first-time only):
 
 ```bash
-# From infra/dev/organiclever
+# From infra/dev/organiclever-jasb
 docker compose build
 ```
 
@@ -389,7 +389,7 @@ This project uses a 3-environment architecture:
 - **Health**: No details exposed
 - **Configuration**: See `infra/k8s/organiclever/production/`
 
-**Production Docker images**: Defined in each app directory (`apps/organiclever-be/Dockerfile`, `apps/organiclever-web/Dockerfile`), independent of this dev setup.
+**Production Docker images**: Defined in each app directory (`apps/organiclever-be-jasb/Dockerfile`, `apps/organiclever-web/Dockerfile`), independent of this dev setup.
 
 **Deployment Flow**: dev (local) → staging (K8s) → prod (K8s)
 
@@ -410,16 +410,16 @@ npm run organiclever:dev:restart
 1. **Docker Compose** (direct control):
 
 ```bash
-cd infra/dev/organiclever
+cd infra/dev/organiclever-jasb
 docker compose up
 ```
 
 1. **Local Maven** (fastest, requires local Java 25):
 
 ```bash
-nx dev organiclever-be
+nx dev organiclever-be-jasb
 # or
-cd apps/organiclever-be && mvn spring-boot:run -Dspring-boot.run.profiles=dev
+cd apps/organiclever-be-jasb && mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
 ### Environment Configuration
@@ -427,7 +427,7 @@ cd apps/organiclever-be && mvn spring-boot:run -Dspring-boot.run.profiles=dev
 You can customize settings via `.env` file:
 
 ```bash
-# In infra/dev/organiclever/.env
+# In infra/dev/organiclever-jasb/.env
 SPRING_PROFILES_ACTIVE=dev
 MAVEN_OPTS=-Xmx512m
 ```
@@ -468,7 +468,7 @@ All services communicate through the `organiclever-network` bridge network.
 
 Both services include Docker health checks:
 
-**organiclever-be** — Spring Boot Actuator:
+**organiclever-be-jasb** — Spring Boot Actuator:
 
 - **Endpoint**: `http://localhost:8201/actuator/health`
 - **Interval**: 30 seconds / **Timeout**: 10 seconds / **Retries**: 3
@@ -486,13 +486,13 @@ Both services include Docker health checks:
 
 ```bash
 # Check logs
-docker-compose logs organiclever-be
+docker-compose logs organiclever-be-jasb
 
 # Check if JAR file exists
-ls -lh ../../apps/organiclever-be/target/organiclever-be-1.0.0.jar
+ls -lh ../../apps/organiclever-be-jasb/target/organiclever-be-jasb-1.0.0.jar
 
 # Rebuild the application
-cd ../../apps/organiclever-be && mvn clean package -DskipTests
+cd ../../apps/organiclever-be-jasb && mvn clean package -DskipTests
 ```
 
 ### Port already in use
@@ -511,10 +511,10 @@ lsof -i :8201
 docker-compose ps
 
 # Check logs for errors
-docker-compose logs organiclever-be
+docker-compose logs organiclever-be-jasb
 
 # Test health endpoint manually
-docker exec organiclever-be wget -O- http://localhost:8201/actuator/health
+docker exec organiclever-be-jasb wget -O- http://localhost:8201/actuator/health
 ```
 
 ### Out of memory
@@ -532,7 +532,7 @@ JAVA_OPTS=-Xms512m -Xmx1024m -XX:+UseZGC
 docker-compose ps
 
 # Verify port mapping
-docker port organiclever-be
+docker port organiclever-be-jasb
 
 # Check firewall rules
 sudo ufw status
@@ -568,7 +568,7 @@ Add resource limits to services:
 
 ```yaml
 services:
-  organiclever-be:
+  organiclever-be-jasb:
     deploy:
       resources:
         limits:
@@ -591,7 +591,7 @@ services:
 
 ### Completed
 
-- **Production Dockerfiles**: Multi-stage builds in `apps/organiclever-be/Dockerfile` and `apps/organiclever-web/Dockerfile`
+- **Production Dockerfiles**: Multi-stage builds in `apps/organiclever-be-jasb/Dockerfile` and `apps/organiclever-web/Dockerfile`
 
 ### Planned
 
@@ -609,7 +609,7 @@ Once the backend is running via Docker Compose, run the API-level Playwright tes
 
 ```bash
 # Start backend only (avoids spinning up the frontend unnecessarily)
-docker compose up -d organiclever-be
+docker compose up -d organiclever-be-jasb
 
 # Run tests
 nx run organiclever-be-e2e:test:e2e
@@ -641,7 +641,7 @@ See [`apps/organiclever-web-e2e/`](../../../apps/organiclever-web-e2e/) for full
 
 ## Related Documentation
 
-- [organiclever-be README](../../../apps/organiclever-be/README.md)
+- [organiclever-be-jasb README](../../../apps/organiclever-be-jasb/README.md)
 - [organiclever-web README](../../../apps/organiclever-web/README.md)
 - [organiclever-be-e2e README](../../../apps/organiclever-be-e2e/README.md)
 - [Docker Documentation](https://docs.docker.com/)

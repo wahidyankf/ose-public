@@ -13,9 +13,9 @@
     </parent>
 
     <groupId>com.organiclever</groupId>
-    <artifactId>organiclever-be</artifactId>
+    <artifactId>organiclever-be-jasb</artifactId>
     <version>1.0.0</version>
-    <name>organiclever-be</name>
+    <name>organiclever-be-jasb</name>
     <description>OrganicLever Platform Backend</description>
 
     <properties>

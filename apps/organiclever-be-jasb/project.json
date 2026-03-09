@@ -1,14 +1,14 @@
 {
-  "name": "organiclever-be",
+  "name": "organiclever-be-jasb",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/organiclever-be/src",
+  "sourceRoot": "apps/organiclever-be-jasb/src",
   "projectType": "application",
   "targets": {
     "build": {
       "executor": "nx:run-commands",
       "options": {
         "command": "mvn clean package -DskipTests",
-        "cwd": "apps/organiclever-be"
+        "cwd": "apps/organiclever-be-jasb"
       },
       "outputs": ["{projectRoot}/target"],
       "dependsOn": []
@@ -17,14 +17,14 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "mvn spring-boot:run -Dspring-boot.run.profiles=dev",
-        "cwd": "apps/organiclever-be"
+        "cwd": "apps/organiclever-be-jasb"
       }
     },
     "start": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "sh -c 'java -jar target/organiclever-be-*.jar'",
-        "cwd": "apps/organiclever-be"
+        "command": "sh -c 'java -jar target/organiclever-be-jasb-*.jar'",
+        "cwd": "apps/organiclever-be-jasb"
       }
     },
     "test:quick": {
@@ -32,36 +32,36 @@
       "options": {
         "commands": ["mvn test", "mvn test -Pintegration"],
         "parallel": true,
-        "cwd": "apps/organiclever-be"
+        "cwd": "apps/organiclever-be-jasb"
       }
     },
     "test:unit": {
       "executor": "nx:run-commands",
       "options": {
         "command": "mvn test",
-        "cwd": "apps/organiclever-be"
+        "cwd": "apps/organiclever-be-jasb"
       }
     },
     "test:integration": {
       "executor": "nx:run-commands",
       "options": {
         "command": "mvn test -Pintegration",
-        "cwd": "apps/organiclever-be"
+        "cwd": "apps/organiclever-be-jasb"
       }
     },
     "lint": {
       "executor": "nx:run-commands",
       "options": {
         "command": "mvn checkstyle:check",
-        "cwd": "apps/organiclever-be"
+        "cwd": "apps/organiclever-be-jasb"
       }
     },
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "nx run rhino-cli:build --skip-nx-cache && ./apps/rhino-cli/dist/rhino-cli java validate-annotations apps/organiclever-be/src/main/java",
-          "cd apps/organiclever-be && mvn compile -Pnullcheck"
+          "nx run rhino-cli:build --skip-nx-cache && ./apps/rhino-cli/dist/rhino-cli java validate-annotations apps/organiclever-be-jasb/src/main/java",
+          "cd apps/organiclever-be-jasb && mvn compile -Pnullcheck"
         ],
         "parallel": false
       }

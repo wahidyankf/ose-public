@@ -23,16 +23,16 @@ the command checks:
 
 Any package that fails either check is reported as a violation.`,
 	Example: `  # Validate with default annotation (@NullMarked)
-  rhino-cli java validate-annotations apps/organiclever-be/src/main/java
+  rhino-cli java validate-annotations apps/organiclever-be-jasb/src/main/java
 
   # Use a custom annotation
-  rhino-cli java validate-annotations apps/organiclever-be/src/main/java --annotation NonNull
+  rhino-cli java validate-annotations apps/organiclever-be-jasb/src/main/java --annotation NonNull
 
   # Output as JSON
-  rhino-cli java validate-annotations apps/organiclever-be/src/main/java -o json
+  rhino-cli java validate-annotations apps/organiclever-be-jasb/src/main/java -o json
 
   # Output as markdown report
-  rhino-cli java validate-annotations apps/organiclever-be/src/main/java -o markdown`,
+  rhino-cli java validate-annotations apps/organiclever-be-jasb/src/main/java -o markdown`,
 	Args:          cobra.ExactArgs(1),
 	SilenceErrors: true,
 	RunE:          runValidateJavaAnnotations,

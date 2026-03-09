@@ -298,11 +298,11 @@ Runs the app inside a Node.js 24 Alpine container. Useful when you need the back
 frontend, or want an environment closer to CI.
 
 ```bash
-# From repository root — starts both organiclever-web and organiclever-be
+# From repository root — starts both organiclever-web and organiclever-be-jasb
 npm run organiclever:dev
 
 # Or start the frontend container only
-docker compose -f infra/dev/organiclever/docker-compose.yml up organiclever-web
+docker compose -f infra/dev/organiclever-jasb/docker-compose.yml up organiclever-web
 ```
 
 **First startup** (~2-4 min): installs npm dependencies inside the container.
@@ -418,9 +418,9 @@ export default function Counter() {
 
 **Infrastructure**:
 
-- [infra/dev/organiclever/README.md](../../../infra/dev/organiclever/README.md) - Docker Compose setup for both services
-- [infra/dev/organiclever/docker-compose.yml](../../../infra/dev/organiclever/docker-compose.yml) - Service definitions
-- [infra/dev/organiclever/Dockerfile.web.dev](../../../infra/dev/organiclever/Dockerfile.web.dev) - Frontend container image
+- [infra/dev/organiclever-jasb/README.md](../../../infra/dev/organiclever-jasb/README.md) - Docker Compose setup for both services
+- [infra/dev/organiclever-jasb/docker-compose.yml](../../../infra/dev/organiclever-jasb/docker-compose.yml) - Service definitions
+- [infra/dev/organiclever-jasb/Dockerfile.web.dev](../../../infra/dev/organiclever-jasb/Dockerfile.web.dev) - Frontend container image
 
 **Related Skills**:
 

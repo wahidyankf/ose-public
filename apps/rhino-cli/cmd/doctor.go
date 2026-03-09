@@ -20,7 +20,7 @@ Tools checked:
   volta    — any version (no config file)
   node     — from package.json → volta.node
   npm      — from package.json → volta.npm
-  java     — from apps/organiclever-be/pom.xml → <java.version> (major version only)
+  java     — from apps/organiclever-be-jasb/pom.xml → <java.version> (major version only)
   maven    — any version (no config file)
   golang   — from apps/rhino-cli/go.mod → go directive
 

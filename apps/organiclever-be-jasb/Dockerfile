@@ -11,7 +11,7 @@ RUN mvn clean package -DskipTests -B
 FROM eclipse-temurin:25-jre-alpine
 RUN addgroup -S app && adduser -S app -G app
 WORKDIR /app
-COPY --from=build --chown=app:app /build/target/organiclever-be-1.0.0.jar app.jar
+COPY --from=build --chown=app:app /build/target/organiclever-be-jasb-1.0.0.jar app.jar
 USER app
 EXPOSE 8201
 ENV SPRING_PROFILES_ACTIVE=prod

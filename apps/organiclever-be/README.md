@@ -257,11 +257,9 @@ Pass the token in subsequent requests as `Authorization: Bearer <token>`.
 
 - `GET /api/v1/hello` - Hello world endpoint (requires Bearer token)
 
-### Actuator (Monitoring)
+### Health
 
-- `GET /actuator/health` - Health check (no auth required)
-- `GET /actuator/info` - Application info (no auth required)
-- `GET /actuator/metrics` - Metrics (no auth required)
+- `GET /health` - Health check (no auth required)
 
 ## Configuration Profiles
 
@@ -526,7 +524,7 @@ nx run organiclever-be-e2e:test:e2e
 Tests cover:
 
 - `GET /api/v1/hello` — status 200, `{"message":"world!"}`, JSON content-type
-- `GET /actuator/health` — status 200, `{"status":"UP"}`
+- `GET /health` — status 200, `{"status":"UP"}`
 
 ## Next Steps
 

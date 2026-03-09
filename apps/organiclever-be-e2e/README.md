@@ -14,7 +14,7 @@ Feature files in `specs/apps/organiclever-be/` are the source of truth:
 - `auth/login.feature` — `POST /api/v1/auth/login` login scenarios (5)
 - `auth/jwt-protection.feature` — JWT-protected endpoint scenarios (6)
 - `hello/hello-endpoint.feature` — `GET /api/v1/hello` returns greeting and respects CORS
-- `actuator/health-check.feature` — `GET /actuator/health` reports service status
+- `health/health-check.feature` — `GET /health` reports service status
 
 ## Architecture
 
@@ -122,8 +122,8 @@ apps/organiclever-be-e2e/
 │   │   ├── common.steps.ts        # Shared: Given API running, Then status code
 │   │   ├── hello/
 │   │   │   └── hello.steps.ts     # When/Then for GET /api/v1/hello
-│   │   └── actuator/
-│   │       └── health.steps.ts    # When/Then for GET /actuator/health
+│   │   └── health/
+│   │       └── health.steps.ts    # When/Then for GET /health
 │   └── utils/
 │       ├── response-store.ts      # Shared APIResponse state between steps
 │       └── token-store.ts         # Stored JWT token for JWT-protected scenarios

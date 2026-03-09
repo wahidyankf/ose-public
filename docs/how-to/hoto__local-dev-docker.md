@@ -118,7 +118,7 @@ docker-compose ps
 curl http://localhost:8201/api/v1/hello
 # Expected: {"message":"world"}
 
-curl http://localhost:8201/actuator/health
+curl http://localhost:8201/health
 # Expected: {"status":"UP"}
 
 # Check frontend (waits for Next.js dev server to compile)
@@ -375,7 +375,7 @@ Services include health checks for monitoring:
 docker-compose ps
 
 # Check health via endpoint
-curl http://localhost:8201/actuator/health
+curl http://localhost:8201/health
 ```
 
 **Health check features**:
@@ -431,7 +431,7 @@ docker-compose ps
 docker inspect organiclever-be | grep -A 10 Health
 
 # Test from inside container
-docker exec organiclever-be wget -O- http://localhost:8201/actuator/health
+docker exec organiclever-be wget -O- http://localhost:8201/health
 ```
 
 ### Build Failed
@@ -479,7 +479,7 @@ volumes:
 
 ```yaml
 healthcheck:
-  test: ["CMD", "wget", "--spider", "http://localhost:8201/actuator/health"]
+  test: ["CMD", "wget", "--spider", "http://localhost:8201/health"]
   interval: 30s
   timeout: 10s
   retries: 3

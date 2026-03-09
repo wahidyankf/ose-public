@@ -162,8 +162,8 @@ When(/^a client sends GET \/api\/v1\/hello$/, async ({ request }) => {
   setResponse(await request.get("/api/v1/hello"));
 });
 
-When(/^an operations engineer sends GET \/actuator\/health$/, async ({ request }) => {
-  setResponse(await request.get("/actuator/health"));
+When(/^an operations engineer sends GET \/health$/, async ({ request }) => {
+  setResponse(await request.get("/health"));
 });
 
 // WRONG — Cucumber expression parser splits on / and produces empty alternatives
@@ -172,7 +172,7 @@ When("a client sends GET /api/v1/hello", async ({ request }) => {
 });
 ```
 
-**Rule**: Any step text containing a URL path (e.g., `/api/v1/hello`, `/actuator/health`) must be
+**Rule**: Any step text containing a URL path (e.g., `/api/v1/hello`, `/health`) must be
 a regex literal (`/^…$/`).
 
 ### Typed parameters: {string}, {int}, and (.+)

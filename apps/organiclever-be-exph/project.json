@@ -1,0 +1,84 @@
+{
+  "name": "organiclever-be-exph",
+  "sourceRoot": "apps/organiclever-be-exph/lib",
+  "projectType": "application",
+  "implicitDependencies": ["elixir-gherkin", "elixir-cabbage"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "MIX_ENV=prod mix do deps.get --only prod, compile --warnings-as-errors",
+        "cwd": "apps/organiclever-be-exph"
+      }
+    },
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "mix phx.server",
+        "cwd": "apps/organiclever-be-exph"
+      }
+    },
+    "start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "mix phx.server",
+        "cwd": "apps/organiclever-be-exph"
+      }
+    },
+    "test:quick": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "mix coveralls.lcov",
+          "(cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/organiclever-be-exph/cover/lcov.info 90)",
+          "mix credo --strict",
+          "mix format --check-formatted"
+        ],
+        "parallel": false,
+        "cwd": "apps/organiclever-be-exph"
+      }
+    },
+    "test:unit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "mix test --only unit",
+        "cwd": "apps/organiclever-be-exph"
+      }
+    },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "mix test --only integration",
+        "cwd": "apps/organiclever-be-exph"
+      },
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/lib/**/*.ex",
+        "{projectRoot}/test/**/*.exs",
+        "{workspaceRoot}/specs/apps/organiclever-be/**/*.feature"
+      ]
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "mix credo --strict",
+        "cwd": "apps/organiclever-be-exph"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "mix dialyzer",
+        "cwd": "apps/organiclever-be-exph"
+      }
+    },
+    "install": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "mix deps.get",
+        "cwd": "apps/organiclever-be-exph"
+      }
+    }
+  },
+  "tags": ["type:app", "platform:phoenix", "lang:elixir", "domain:organiclever"]
+}

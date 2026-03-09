@@ -6,13 +6,13 @@ Execute phases in order. Each phase produces a working, committable state.
 
 ## Phase 0: Prerequisites
 
-- [ ] Read `tech-docs.md` — "Why We Fork" section confirms **elixir-gherkin** and
+- [x] Read `tech-docs.md` — "Why We Fork" section confirms **elixir-gherkin** and
       **elixir-cabbage** as the chosen BDD stack
-- [ ] Verify `organiclever-be-e2e` Playwright config reads `BASE_URL` from env; patch if not
-- [ ] Confirm Elixir 1.17 / OTP 27 available in CI (`erlef/setup-beam@v1`)
-- [ ] Confirm `rhino-cli test-coverage validate` supports LCOV (it does — already used by
+- [x] Verify `organiclever-be-e2e` Playwright config reads `BASE_URL` from env; patch if not
+- [x] Confirm Elixir 1.17 / OTP 27 available in CI (`erlef/setup-beam@v1`)
+- [x] Confirm `rhino-cli test-coverage validate` supports LCOV (it does — already used by
       `organiclever-web`)
-- [ ] Clone `cabbage-ex/gherkin` and `cabbage-ex/cabbage` locally to inspect source before
+- [x] Clone `cabbage-ex/gherkin` and `cabbage-ex/cabbage` locally to inspect source before
       forking — verify no surprises (no GPL dependencies, no binary blobs)
 
 ---
@@ -44,7 +44,7 @@ Execute phases in order. Each phase produces a working, committable state.
 - [x] Run `mix deps.get` inside `libs/elixir-gherkin/`
 - [x] Verify `nx run elixir-gherkin:test:quick` passes — 30 tests, 94.35% coverage, credo clean
 - [ ] Verify `nx run elixir-gherkin:typecheck` passes (initial PLT build) — CI only (see FORK_NOTES.md)
-- [ ] Commit
+- [x] Commit
 
 ### elixir-cabbage
 
@@ -71,7 +71,7 @@ Execute phases in order. Each phase produces a working, committable state.
       `Application.put_env(:cabbage, ...)` → `Application.put_env(:elixir_cabbage, ...)`
       in `feature_tags_test.exs`
 - [ ] Verify `nx run elixir-cabbage:typecheck` passes (CI only — see FORK_NOTES.md)
-- [ ] Commit
+- [x] Commit
 
 > **Note**: If Credo or Dialyzer flags pre-existing upstream issues, add suppressions to
 > `.dialyzer_ignore.exs` / `.credo.exs` with a comment linking to the upstream issue. Fix
@@ -208,7 +208,7 @@ Execute phases in order. Each phase produces a working, committable state.
   - Job `e2e-be`: checkout → docker compose up → wait-healthy (6 min) → Volta → npm ci
     → `nx run organiclever-be-e2e:test:e2e` with `BASE_URL=http://localhost:8201`
     → upload artifact `playwright-report-be-exph` → docker down (always)
-- [ ] Trigger `workflow_dispatch` manually; verify green (pending CI run)
+- [ ] Trigger `workflow_dispatch` manually; verify green (pending CI run — workflow committed)
 
 ---
 

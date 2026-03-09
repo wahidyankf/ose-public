@@ -1,4 +1,4 @@
-package com.organiclever.be.integration.actuator;
+package com.organiclever.be.integration.health;
 
 import com.organiclever.be.integration.steps.BaseCucumberContextConfig;
 import io.cucumber.spring.CucumberContextConfiguration;

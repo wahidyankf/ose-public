@@ -20,19 +20,19 @@ public class HealthSteps {
     @Autowired
     private ResponseStore responseStore;
 
-    @When("^an operations engineer sends GET /actuator/health$")
+    @When("^an operations engineer sends GET /health$")
     public void anOperationsEngineerSendsGetHealth() throws Exception {
-        responseStore.setResult(mockMvc.perform(get("/actuator/health")).andReturn());
+        responseStore.setResult(mockMvc.perform(get("/health")).andReturn());
     }
 
-    @When("^an unauthenticated engineer sends GET /actuator/health$")
+    @When("^an unauthenticated engineer sends GET /health$")
     public void anUnauthenticatedEngineerSendsGetHealth() throws Exception {
-        responseStore.setResult(mockMvc.perform(get("/actuator/health")).andReturn());
+        responseStore.setResult(mockMvc.perform(get("/health")).andReturn());
     }
 
-    @When("^a client sends GET /actuator/health$")
+    @When("^a client sends GET /health$")
     public void aClientSendsGetHealth() throws Exception {
-        responseStore.setResult(mockMvc.perform(get("/actuator/health")).andReturn());
+        responseStore.setResult(mockMvc.perform(get("/health")).andReturn());
     }
 
     @Then("the health status should be {string}")

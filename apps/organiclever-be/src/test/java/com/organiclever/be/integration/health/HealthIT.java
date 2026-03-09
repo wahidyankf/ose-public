@@ -1,4 +1,4 @@
-package com.organiclever.be.integration.actuator;
+package com.organiclever.be.integration.health;
 
 import org.junit.platform.suite.api.ConfigurationParameter;
 import org.junit.platform.suite.api.IncludeEngines;
@@ -10,10 +10,10 @@ import static io.cucumber.junit.platform.engine.Constants.PLUGIN_PROPERTY_NAME;
 
 @Suite
 @IncludeEngines("cucumber")
-@SelectClasspathResource("actuator/health-check.feature")
+@SelectClasspathResource("health/health-check.feature")
 @ConfigurationParameter(
     key = GLUE_PROPERTY_NAME,
-    value = "com.organiclever.be.integration.actuator"
+    value = "com.organiclever.be.integration.health"
         + ",com.organiclever.be.integration.steps")
 @ConfigurationParameter(
     key = PLUGIN_PROPERTY_NAME,

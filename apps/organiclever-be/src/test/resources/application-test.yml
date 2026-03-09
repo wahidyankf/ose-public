@@ -1,4 +1,4 @@
-# Test profile: mirrors production actuator config (NOT dev which sets show-details: always)
+# Test profile: mirrors production health config (NOT dev which sets show-details: always)
 spring:
   liquibase:
     enabled: false

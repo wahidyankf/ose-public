@@ -21,8 +21,8 @@ Feature: JWT Protected Endpoints
     When a client sends GET /api/v1/hello with Authorization header "Bearer not.a.jwt"
     Then the response status code should be 401
 
-  Scenario: Actuator health endpoint is accessible without authentication
-    When a client sends GET /actuator/health
+  Scenario: Health endpoint is accessible without authentication
+    When a client sends GET /health
     Then the response status code should be 200
 
   Scenario: Auth endpoints are accessible without authentication

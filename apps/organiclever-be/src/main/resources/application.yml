@@ -22,11 +22,8 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics
-      base-path: /actuator
+        include: health
+      base-path: /
   endpoint:
     health:
       show-details: when-authorized
-  info:
-    env:
-      enabled: true

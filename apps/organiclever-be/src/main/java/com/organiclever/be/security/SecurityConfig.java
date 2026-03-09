@@ -37,7 +37,7 @@ public class SecurityConfig {
                         auth ->
                                 auth.requestMatchers("/api/v1/auth/**")
                                         .permitAll()
-                                        .requestMatchers("/actuator/**")
+                                        .requestMatchers("/health")
                                         .permitAll()
                                         .requestMatchers("/error")
                                         .permitAll()

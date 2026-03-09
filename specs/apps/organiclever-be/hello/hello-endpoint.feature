@@ -13,6 +13,6 @@ Feature: Hello World Endpoint
 
   Scenario: Cross-origin request from localhost is permitted
     Given the OrganicLever API is running
-    When a client sends GET /api/v1/hello with an Origin header of http://localhost:3201
+    When a client sends GET /api/v1/hello with an Origin header of http://localhost:3200
     Then the response status code should be 200
     And the response should include an Access-Control-Allow-Origin header permitting the request

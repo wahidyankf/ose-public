@@ -29,7 +29,7 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "mix coveralls.lcov",
+          "MIX_ENV=test mix coveralls.lcov",
           "(cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/organiclever-be-exph/cover/lcov.info 90)",
           "mix credo --strict",
           "mix format --check-formatted"

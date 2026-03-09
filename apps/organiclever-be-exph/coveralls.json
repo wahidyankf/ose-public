@@ -1,8 +1,14 @@
 {
   "skip_files": [
     "test/support/",
+    "deps/",
+    "lib/organiclever_be_exph.ex",
     "lib/organiclever_be_exph/repo.ex",
     "lib/organiclever_be_exph_web/gettext.ex",
-    "lib/organiclever_be_exph/accounts/accounts.ex"
+    "lib/organiclever_be_exph/accounts/accounts.ex",
+    "lib/organiclever_be_exph/accounts/accounts_behaviour.ex",
+    "lib/organiclever_be_exph/auth/guardian.ex",
+    "lib/organiclever_be_exph_web/endpoint.ex",
+    "lib/organiclever_be_exph_web/telemetry.ex"
   ]
 }

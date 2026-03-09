@@ -96,7 +96,7 @@ docker compose down && docker compose up
 
 ```bash
 # Check backend health
-curl http://localhost:8201/actuator/health
+curl http://localhost:8201/health
 
 # Test backend hello endpoint
 curl http://localhost:8201/api/v1/hello
@@ -138,8 +138,7 @@ so the backend will not start until PostgreSQL is ready.
 - `POST /api/v1/auth/register` - Register new user
 - `POST /api/v1/auth/login` - Login, returns JWT token
 - `GET /api/v1/hello` - Hello world (requires Bearer token)
-- `GET /actuator/health` - Health check (no auth)
-- `GET /actuator/info` - Service information (no auth)
+- `GET /health` - Health check (no auth)
 
 **Environment Variables**:
 
@@ -468,9 +467,9 @@ All services communicate through the `organiclever-network` bridge network.
 
 Both services include Docker health checks:
 
-**organiclever-be-jasb** — Spring Boot Actuator:
+**organiclever-be-jasb** — custom health endpoint:
 
-- **Endpoint**: `http://localhost:8201/actuator/health`
+- **Endpoint**: `http://localhost:8201/health`
 - **Interval**: 30 seconds / **Timeout**: 10 seconds / **Retries**: 3
 - **Start Period**: 60 seconds
 
@@ -514,7 +513,7 @@ docker-compose ps
 docker-compose logs organiclever-be-jasb
 
 # Test health endpoint manually
-docker exec organiclever-be-jasb wget -O- http://localhost:8201/actuator/health
+docker exec organiclever-be-jasb wget -O- http://localhost:8201/health
 ```
 
 ### Out of memory

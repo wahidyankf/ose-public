@@ -23,6 +23,7 @@ These patterns define **HOW to structure development workflows and code**, cover
 
 ## Documents
 
+- [Database Audit Trail Pattern](./database-audit-trail.md) - Required 6-column audit trail (created_at/by, updated_at/by, deleted_at/by) for every database table, covering Liquibase SQL changelogs, Spring Data JPA Auditing, soft-delete discipline, and `@NullMarked` compatibility
 - [Functional Programming Practices](./functional-programming.md) - Guidelines for applying functional programming principles in TypeScript/JavaScript (immutability patterns, pure functions, function composition)
 - [Maker-Checker-Fixer Pattern](./maker-checker-fixer.md) - Three-stage quality workflow for content creation and validation with user review gates and confidence level integration
 

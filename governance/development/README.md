@@ -116,6 +116,7 @@ Development practices in this directory fall into several categories:
 
 ### Pattern Documentation
 
+- [Database Audit Trail Pattern](./pattern/database-audit-trail.md) - Required 6-column audit trail (created_at/by, updated_at/by, deleted_at/by) that every database table must include. Covers Liquibase SQL changelogs with PostgreSQL/H2 qualifiers, Spring Data JPA Auditing configuration, soft-delete discipline, and `@NullMarked` compatibility
 - [Maker-Checker-Fixer Pattern Convention](./pattern/maker-checker-fixer.md) - Three-stage quality workflow for content creation and validation. Covers agent roles, workflow stages with user review gates, and confidence level integration
 - [Functional Programming Practices](./pattern/functional-programming.md) - Guidelines for applying functional programming principles in TypeScript/JavaScript. Covers immutability patterns, pure functions, and function composition
 

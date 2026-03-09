@@ -826,15 +826,29 @@ public class AuthSteps {
 }
 ```
 
-**Updated CommonSteps.java** - add `@Before` to clear `TokenStore` alongside `ResponseStore`:
+**Updated CommonSteps.java** - add `@Before` to clear `TokenStore`, `ResponseStore`, and the
+H2 database before every scenario:
 
 ```java
+@Autowired private UserRepository userRepository;
+
 @Before
 public void resetState() {
+    // deleteAllInBatch() issues a single DELETE FROM users, bypassing @Where soft-delete
+    // filter. This is intentional: test isolation requires wiping all rows, including any
+    // soft-deleted ones left from prior scenarios. This is test-only cleanup — it does not
+    // violate the application-layer soft-delete convention.
+    userRepository.deleteAllInBatch();
     responseStore.clear();
     tokenStore.clear();
 }
 ```
+
+The H2 in-memory database (`DB_CLOSE_DELAY=-1`) persists its state across all scenarios in
+the same JVM run. Without this cleanup, a scenario that registers `"alice"` in the database
+causes every subsequent scenario attempting to register `"alice"` to fail with 409. The
+`deleteAllInBatch()` call resets the database to a known-empty state before each scenario,
+making every scenario independent and repeatable.
 
 ### CucumberSpringContextConfig.java update
 

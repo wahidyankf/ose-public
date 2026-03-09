@@ -155,20 +155,22 @@ Create Gherkin feature files and Cucumber step definitions for all auth scenario
 - [ ] 5.5 Update `specs/apps/organiclever-be/README.md` to list the new `auth/` directory and its feature files
 - [ ] 5.6 Create `TokenStore.java` in `apps/organiclever-be/src/test/java/com/organiclever/be/integration/` (see tech-docs for class definition)
 - [ ] 5.7 Create `AuthSteps.java` in `apps/organiclever-be/src/test/java/com/organiclever/be/integration/steps/` (see tech-docs for class definition)
-- [ ] 5.8 Update `CommonSteps.java` `@Before` hook to also call `tokenStore.clear()`; inject `TokenStore`
+- [ ] 5.8 Update `CommonSteps.java` `@Before` hook: inject `UserRepository` and `TokenStore`; call `userRepository.deleteAllInBatch()` first (resets H2 state between scenarios — `deleteAllInBatch()` bypasses `@Where` and issues a single `DELETE FROM users`), then `responseStore.clear()`, then `tokenStore.clear()`
 - [ ] 5.9 Update `CucumberSpringContextConfig.java` to apply `SecurityMockMvcConfigurer.springSecurity()` to `MockMvc` builder
 - [ ] 5.10 Add additional `Then` steps to `AuthSteps.java` for response body assertions: "the response body should contain {string} equal to {string}", "the response body should not contain a {string} field", "the response body should contain a non-null {string} field", "the response body should contain a {string} field", "the response body should contain an error message about duplicate username", "the response body should contain an error message about invalid credentials", "the response body should contain a validation error for {string}"
 - [ ] 5.11 Add steps for JWT-protected endpoint tests to `HelloSteps.java` or a new `ProtectedEndpointSteps.java`: "a client sends GET /api/v1/hello without an Authorization header", "a client sends GET /api/v1/hello with the stored Bearer token", "a client sends GET /api/v1/hello with an expired Bearer token", "a client sends GET /api/v1/hello with Authorization header {string}"
 - [ ] 5.12 Run `mvn test -P integration -q` and verify all scenarios pass
-- [ ] 5.13 Run `mvn test -P integration -P nullcheck` to verify NullAway finds no errors
-- [ ] 5.14 Check JaCoCo coverage report: `mvn test -P integration` then open `target/site/jacoco/index.html`; confirm ≥95% line coverage
-- [ ] 5.15 If coverage is below 95%, identify uncovered lines and add missing scenarios or step definitions
-- [ ] 5.16 Commit: `feat(organiclever-be): add auth specs and integration tests`
+- [ ] 5.13 Run `mvn test -P integration` **twice in a row** to confirm scenario isolation: the second run must produce identical results (no 409 from leftover `"alice"` data)
+- [ ] 5.14 Run `mvn test -P integration -P nullcheck` to verify NullAway finds no errors
+- [ ] 5.15 Check JaCoCo coverage report: `mvn test -P integration` then open `target/site/jacoco/index.html`; confirm ≥95% line coverage
+- [ ] 5.16 If coverage is below 95%, identify uncovered lines and add missing scenarios or step definitions
+- [ ] 5.17 Commit: `feat(organiclever-be): add auth specs and integration tests`
 
 ### Validation
 
 - [ ] All Gherkin scenarios have corresponding step definitions (no `Undefined step` warnings)
 - [ ] `mvn test -P integration` exits 0
+- [ ] Running `mvn test -P integration` twice consecutively produces identical results (scenario isolation confirmed)
 - [ ] JaCoCo line coverage ≥ 95%
 - [ ] `package-info.java` exists for `com.organiclever.be.integration.steps` (already present) and for `TokenStore`'s package
 

@@ -1023,7 +1023,7 @@ Before committing documentation with diagrams:
 - [ ] **Parentheses and brackets escaped in node text** (use HTML entities: `#40;` `#41;` `#91;` `#93;`)
 - [ ] **No literal quotes inside node text** (remove quotes or use descriptive text like "string value")
 - [ ] **No style commands in sequence diagrams** (use `box` syntax or switch to flowchart)
-- [ ] **No `\n` in any label** (use single-line text; `\n` renders as literal characters in both node labels `["text"]` and edge labels `-->|"text"|` in Hugo-rendered Mermaid)
+- [ ] **No `\n` in any label** (`\n` renders as literal characters in node labels and edge labels — use `<br/>` for multi-line labels or shorten to single-line)
 - [ ] Mermaid diagrams tested in GitHub preview or Obsidian
 - [ ] ASCII art (if used) verified in monospace font
 - [ ] Format choice is intentional (not mixing Mermaid and ASCII unnecessarily)
@@ -1345,7 +1345,7 @@ stateDiagram-v2
 - Also required in **edge labels** (`-->|text|` syntax)
 - NOT needed in regular text, comments, or code blocks
 
-> **Note on `\n` in labels**: `\n` renders as literal text in **both** node labels (`["line1\nline2"]`) and edge labels (`-->|"line1\nline2"|`) in Hugo-rendered Mermaid. Always use single-line text for all labels.
+> **Note on `\n` in labels**: `\n` renders as literal text in **both** node labels (`["line1\nline2"]`) and edge labels (`-->|"line1\nline2"|`). Use `<br/>` for multi-line labels (`["line1<br/>line2"]`) or shorten to single-line text.
 
 **Example: Complex node text with multiple escapes:**
 
@@ -1463,15 +1463,15 @@ This renders node labels as `Phase 0\nRepository Setup\n& Knowledge Base` and ed
 
 **Solution (PASS: WORKING)**:
 
-Keep all labels single-line. Shorten or rephrase to fit:
+Use `<br/>` for multi-line labels, or shorten to single-line text:
 
 ```mermaid
 graph LR
-    P0["Phase 0: Setup & Knowledge Base"]:::blue
+    P0["Phase 0<br/>Setup & Knowledge Base"]:::blue
     P1["Phase 1"] -->|"Revenue & Learnings"| P2["Phase 2"]
 ```
 
-**Rule**: Never use `\n` in any Mermaid label (node or edge) in Hugo-rendered diagrams. Always use single-line text. If a label is too long, shorten it.
+**Rule**: Never use `\n` in any Mermaid label (node or edge). Use `<br/>` for multi-line node labels. For edge labels, keep them single-line (edge labels do not support `<br/>`).
 
 **Real-World Context**: Discovered when building a roadmap diagram on `apps/oseplatform-web/content/about.md`. Both node labels (`"Phase 3\nEnterprise Application\nLarge Organizations"`) and edge labels (`"Revenue\n& Learnings"`) rendered with literal `\n` characters visible.
 

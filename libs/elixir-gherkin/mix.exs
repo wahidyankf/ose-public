@@ -35,7 +35,7 @@ defmodule ElixirGherkin.Mixfile do
       # Use the custom cover.lcov alias (below) which pre-starts :tools so
       # :cover.stop() does not fail on first use.
       {:excoveralls, "0.18.3", only: :test},
-      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
     ]
   end
 

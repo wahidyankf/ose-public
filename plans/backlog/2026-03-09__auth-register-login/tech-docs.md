@@ -380,28 +380,54 @@ public CorsConfigurationSource corsConfigurationSource() {
 
 ## Database Schema
 
-### Flyway Migration File
+### Liquibase Changelog Structure
 
-**Location**: `apps/organiclever-be/src/main/resources/db/migration/`
+**Master changelog**: `apps/organiclever-be/src/main/resources/db/changelog/db.changelog-master.yaml`
 
-**File name**: `V1__create_users_table.sql`
+```yaml
+databaseChangeLog:
+  - includeAll:
+      path: db/changelog/changes/
+```
+
+**Changeset file**: `apps/organiclever-be/src/main/resources/db/changelog/changes/001-create-users-table.sql`
+
+A single SQL file with `dbms`-qualified changesets handles both PostgreSQL and H2 — no
+separate H2 directory required:
 
 ```sql
+-- liquibase formatted sql
+
+-- changeset organiclever:001-create-users-table dbms:postgresql
 CREATE TABLE users (
-    id           UUID         NOT NULL DEFAULT gen_random_uuid(),
-    username     VARCHAR(50)  NOT NULL,
+    id            UUID         NOT NULL DEFAULT gen_random_uuid(),
+    username      VARCHAR(50)  NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    created_at   TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    created_at    TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
     CONSTRAINT pk_users PRIMARY KEY (id),
     CONSTRAINT uq_users_username UNIQUE (username)
 );
+-- rollback DROP TABLE users;
+
+-- changeset organiclever:001-create-users-table-h2 dbms:h2
+CREATE TABLE users (
+    id            UUID         NOT NULL DEFAULT RANDOM_UUID(),
+    username      VARCHAR(50)  NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at    TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    CONSTRAINT pk_users PRIMARY KEY (id),
+    CONSTRAINT uq_users_username UNIQUE (username)
+);
+-- rollback DROP TABLE users;
 ```
 
 **Notes**:
 
 - `gen_random_uuid()` is available in PostgreSQL 13+ without extensions.
+- `RANDOM_UUID()` is the H2 equivalent.
 - `TIMESTAMPTZ` stores timezone-aware timestamps; always use UTC in the application.
 - The `password_hash` column is 255 chars; BCrypt output is 60 chars but 255 gives future headroom.
+- The `-- rollback` directive enables `liquibase rollback` without writing separate rollback SQL.
 
 ## Dependencies to Add to pom.xml
 
@@ -433,15 +459,10 @@ CREATE TABLE users (
     <scope>runtime</scope>
 </dependency>
 
-<!-- Flyway core + PostgreSQL dialect -->
+<!-- Liquibase (single dependency; no dialect jar needed) -->
 <dependency>
-    <groupId>org.flywaydb</groupId>
-    <artifactId>flyway-core</artifactId>
-</dependency>
-<dependency>
-    <groupId>org.flywaydb</groupId>
-    <artifactId>flyway-database-postgresql</artifactId>
-    <scope>runtime</scope>
+    <groupId>org.liquibase</groupId>
+    <artifactId>liquibase-core</artifactId>
 </dependency>
 
 <!-- JJWT - JWT library -->
@@ -494,6 +515,20 @@ app:
     expiration-ms: 86400000 # 24 hours
 ```
 
+### application.yml additions
+
+Point Liquibase at the master changelog (applies to all profiles unless overridden):
+
+```yaml
+spring:
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+app:
+  jwt:
+    secret: ${APP_JWT_SECRET:change-me-in-production-at-least-32-chars-long}
+    expiration-ms: 86400000 # 24 hours
+```
+
 ### application-dev.yml additions
 
 ```yaml
@@ -506,14 +541,13 @@ spring:
     hibernate:
       ddl-auto: validate
     show-sql: false
-  flyway:
-    enabled: true
-    locations: classpath:db/migration
 ```
 
 ### application-test.yml additions
 
-H2 in PostgreSQL compatibility mode, with H2-specific Flyway migration location:
+H2 in PostgreSQL compatibility mode. No separate Liquibase config is needed — the same
+master changelog runs against H2, and Liquibase selects the correct `dbms:h2` changeset
+automatically:
 
 ```yaml
 spring:
@@ -527,9 +561,6 @@ spring:
       ddl-auto: none
     database-platform: org.hibernate.dialect.H2Dialect
     show-sql: false
-  flyway:
-    enabled: true
-    locations: classpath:db/migration/h2
 
 app:
   jwt:
@@ -537,27 +568,13 @@ app:
     expiration-ms: 3600000 # 1 hour for tests
 ```
 
-### H2 compatibility note for Flyway
+### H2 compatibility note for Liquibase
 
-H2 in `PostgreSQL` compatibility mode supports most PostgreSQL syntax but not `gen_random_uuid()`. Supply a separate H2-specific migration at test-resources scope:
-
-**Location**: `apps/organiclever-be/src/test/resources/db/migration/h2/`
-
-**File**: `V1__create_users_table.sql` — same version number, H2-only dialect:
-
-```sql
--- db/migration/h2/V1__create_users_table.sql
-CREATE TABLE users (
-    id            UUID         NOT NULL DEFAULT RANDOM_UUID(),
-    username      VARCHAR(50)  NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    created_at    TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
-    CONSTRAINT pk_users PRIMARY KEY (id),
-    CONSTRAINT uq_users_username UNIQUE (username)
-);
-```
-
-`application-test.yml` points Flyway to `classpath:db/migration/h2` so H2 picks up only this file. Dev/staging/prod profiles use `classpath:db/migration` with the PostgreSQL `gen_random_uuid()` version.
+Liquibase's `dbms` attribute in the SQL formatted changelog selects the correct changeset
+at runtime based on the active JDBC connection. When the test profile connects to H2, the
+`dbms:postgresql` changeset is skipped and `dbms:h2` runs instead — no separate changelog
+file or test-resources migration directory needed. This is simpler than the Flyway approach,
+which required a separate `db/migration/h2/` directory.
 
 ### application-staging.yml and application-prod.yml additions
 
@@ -570,9 +587,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-  flyway:
-    enabled: true
-    locations: classpath:db/migration
 ```
 
 ## Docker Compose Updates
@@ -1002,7 +1016,7 @@ JJWT 0.12.x uses the fluent `Jwts.builder()` / `Jwts.parser()` API that is compa
 
 ### Why H2 for integration tests?
 
-The existing integration tests are cached by Nx (`cache: true`). Introducing a real PostgreSQL dependency would break caching because Nx cannot guarantee an external service is identical between runs. H2 in PostgreSQL compatibility mode replays the same Flyway migration and provides sufficient fidelity for testing the auth logic.
+The existing integration tests are cached by Nx (`cache: true`). Introducing a real PostgreSQL dependency would break caching because Nx cannot guarantee an external service is identical between runs. H2 in PostgreSQL compatibility mode runs the same Liquibase changelog (selecting the `dbms:h2` changeset) and provides sufficient fidelity for testing the auth logic.
 
 ### Why Spring Data JPA?
 
@@ -1040,6 +1054,6 @@ The following project documentation files need updates as part of this plan:
 | `docs/explanation/software-engineering/platform-web/tools/jvm-spring-boot/ex-soen-plwe-to-jvspbo__data-access.md` | Add or expand the Spring Data JPA section with the repository pattern used in this project (`findByUsername`, `existsByUsername`, `@Entity` with `@PrePersist`)                       |
 | `docs/explanation/software-engineering/platform-web/tools/jvm-spring-boot/ex-soen-plwe-to-jvspbo__security.md`    | Add a section with the project-specific JWT + Spring Security pattern (`SecurityFilterChain`, `JwtAuthFilter`, `OncePerRequestFilter`, stateless sessions, `CorsConfigurationSource`) |
 | `specs/apps/organiclever-be/README.md`                                                                            | List the three new auth feature files (`auth/register.feature`, `auth/login.feature`, `auth/jwt-protection.feature`)                                                                  |
-| `apps/organiclever-be/README.md`                                                                                  | Document `POST /api/v1/auth/register`, `POST /api/v1/auth/login`, required env vars (`APP_JWT_SECRET`, `SPRING_DATASOURCE_URL`), and Flyway migration approach                        |
+| `apps/organiclever-be/README.md`                                                                                  | Document `POST /api/v1/auth/register`, `POST /api/v1/auth/login`, required env vars (`APP_JWT_SECRET`, `SPRING_DATASOURCE_URL`), and Liquibase changelog approach                     |
 | `apps/organiclever-be-e2e/README.md`                                                                              | Document auth step definitions, `token-store.ts`, `db-cleanup.ts` fixture, `DATABASE_URL` env var, and `pg` package prerequisite                                                      |
 | `infra/dev/organiclever/README.md`                                                                                | Document new `organiclever-db` PostgreSQL service, how to start the full stack, and `POSTGRES_USER`/`POSTGRES_PASSWORD`/`APP_JWT_SECRET` env vars                                     |

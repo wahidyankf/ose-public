@@ -28,7 +28,7 @@ graph TD
 
 ## Phase 1 - Dependencies and Database Setup
 
-Add all new Maven dependencies and create the Flyway migration file.
+Add all new Maven dependencies and create the Liquibase changelog.
 
 ### Tasks
 
@@ -36,26 +36,25 @@ Add all new Maven dependencies and create the Flyway migration file.
 - [ ] 1.2 Add `spring-boot-starter-data-jpa` to `pom.xml`
 - [ ] 1.3 Add `spring-boot-starter-validation` to `pom.xml`
 - [ ] 1.4 Add `postgresql` driver (runtime scope) to `pom.xml`
-- [ ] 1.5 Add `flyway-core` and `flyway-database-postgresql` (runtime scope) to `pom.xml`
+- [ ] 1.5 Add `liquibase-core` to `pom.xml` (no separate dialect jar required)
 - [ ] 1.6 Add `jjwt-api`, `jjwt-impl` (runtime), `jjwt-jackson` (runtime) to `pom.xml`; add `<jjwt.version>0.12.6</jjwt.version>` property; use `${jjwt.version}` in version tags
 - [ ] 1.7 Add `h2` (test scope) to `pom.xml`
-- [ ] 1.8 Create directory `apps/organiclever-be/src/main/resources/db/migration/`
-- [ ] 1.9 Create `V1__create_users_table.sql` (PostgreSQL version using `gen_random_uuid()`) in `db/migration/`
-- [ ] 1.10 Create directory `apps/organiclever-be/src/test/resources/db/migration/h2/`
-- [ ] 1.11 Create `V1__create_users_table.sql` (H2 version using `RANDOM_UUID()`) in `src/test/resources/db/migration/h2/`
-- [ ] 1.12 Add JWT and datasource properties to `application.yml` (secret, expiration-ms)
-- [ ] 1.13 Add datasource + JPA + Flyway config to `application-dev.yml`
-- [ ] 1.14 Update `application-test.yml`: add H2 datasource, H2 Dialect, `flyway.locations: classpath:db/migration/h2`, and test JWT secret
-- [ ] 1.15 Add datasource + JPA + Flyway config to `application-staging.yml` (env-var-driven)
-- [ ] 1.16 Add datasource + JPA + Flyway config to `application-prod.yml` (env-var-driven)
-- [ ] 1.17 Verify `mvn compile -q` succeeds with new dependencies
-- [ ] 1.18 Commit: `feat(organiclever-be): add DB dependencies and Flyway migration`
+- [ ] 1.8 Create directory `apps/organiclever-be/src/main/resources/db/changelog/changes/`
+- [ ] 1.9 Create `db/changelog/db.changelog-master.yaml` with `includeAll` pointing to `db/changelog/changes/`
+- [ ] 1.10 Create `db/changelog/changes/001-create-users-table.sql` as a Liquibase SQL formatted changelog; include two changesets: `dbms:postgresql` (using `gen_random_uuid()`) and `dbms:h2` (using `RANDOM_UUID()`); add `-- rollback DROP TABLE users;` after each `CREATE TABLE`
+- [ ] 1.11 Add `spring.liquibase.change-log` and JWT properties to `application.yml`
+- [ ] 1.12 Add datasource + JPA config to `application-dev.yml` (no Liquibase override needed)
+- [ ] 1.13 Update `application-test.yml`: add H2 datasource and H2 Dialect (no separate Liquibase config — `dbms:h2` changeset is selected automatically)
+- [ ] 1.14 Add datasource + JPA config to `application-staging.yml` (env-var-driven)
+- [ ] 1.15 Add datasource + JPA config to `application-prod.yml` (env-var-driven)
+- [ ] 1.16 Verify `mvn compile -q` succeeds with new dependencies
+- [ ] 1.17 Commit: `feat(organiclever-be): add DB dependencies and Liquibase changelog`
 
 ### Validation
 
 - [ ] `mvn compile` exits 0
-- [ ] `V1__create_users_table.sql` (main) contains `CREATE TABLE users` with `id UUID`, `username VARCHAR(50) UNIQUE`, `password_hash VARCHAR(255)`, `created_at TIMESTAMPTZ`
-- [ ] H2 variant uses `RANDOM_UUID()` instead of `gen_random_uuid()`
+- [ ] `001-create-users-table.sql` contains two changesets: `dbms:postgresql` with `gen_random_uuid()` and `dbms:h2` with `RANDOM_UUID()`; both include `-- rollback DROP TABLE users;`
+- [ ] `db.changelog-master.yaml` references `db/changelog/changes/` via `includeAll`
 
 ## Phase 2 - Domain Model and Repository
 
@@ -203,7 +202,7 @@ Update all affected documentation files.
 ### Tasks
 
 - [ ] 7.1 Update `specs/apps/organiclever-be/README.md`: list the three new auth feature files under a new `auth/` section (`auth/register.feature`, `auth/login.feature`, `auth/jwt-protection.feature`)
-- [ ] 7.2 Update `apps/organiclever-be/README.md`: document `POST /api/v1/auth/register` and `POST /api/v1/auth/login` endpoints; list required env vars (`APP_JWT_SECRET`, `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`); note Flyway migration approach; note that `JdbcClient` is used instead of ORM
+- [ ] 7.2 Update `apps/organiclever-be/README.md`: document `POST /api/v1/auth/register` and `POST /api/v1/auth/login` endpoints; list required env vars (`APP_JWT_SECRET`, `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`); note Liquibase changelog approach
 - [ ] 7.3 Update `apps/organiclever-be-e2e/README.md`: add auth step definitions section, document `tests/utils/token-store.ts`, `tests/fixtures/db-cleanup.ts`, `tests/hooks/db.hooks.ts`; document `DATABASE_URL` env var and `pg` package prerequisite
 - [ ] 7.4 Update `infra/dev/organiclever/README.md`: document the new `organiclever-db` PostgreSQL service, how to start the full stack, and all required env vars (`POSTGRES_USER`, `POSTGRES_PASSWORD`, `APP_JWT_SECRET`)
 - [ ] 7.5 Update `docs/explanation/software-engineering/platform-web/tools/jvm-spring-boot/ex-soen-plwe-to-jvspbo__data-access.md`: add a `JdbcClient` section documenting it as the preferred query-builder approach in this project (explicit SQL, named parameters, `RowMapper`); note preference over Spring Data JPA for simple domain tables; include a minimal code example matching the `UserRepository` pattern
@@ -238,7 +237,7 @@ Scenario: Auth feature complete
 
 Execute commits in this order, one per domain boundary:
 
-1. `feat(organiclever-be): add DB dependencies and Flyway migration` (Phase 1)
+1. `feat(organiclever-be): add DB dependencies and Liquibase changelog` (Phase 1)
 2. `feat(organiclever-be): add User domain model and repository` (Phase 2)
 3. `feat(organiclever-be): add Spring Security and JWT infrastructure` (Phase 3)
 4. `feat(organiclever-be): add auth register and login endpoints` (Phase 4)

@@ -9,7 +9,7 @@ title: "Auth Register and Login - Requirements"
 1. Provide a `POST /api/v1/auth/register` endpoint that creates a new user account with a BCrypt-hashed password and returns the created user's public data.
 2. Provide a `POST /api/v1/auth/login` endpoint that validates credentials and returns a signed JWT Bearer token.
 3. Configure Spring Security so that `/api/v1/auth/**` and `/actuator/**` are publicly accessible while all other endpoints require a valid JWT.
-4. Persist users in PostgreSQL with Flyway-managed schema; use H2 for the test profile so integration tests remain in-process and cacheable.
+4. Persist users in PostgreSQL with Liquibase-managed schema; use H2 for the test profile so integration tests remain in-process and cacheable.
 5. Cover all new code paths with integration tests to maintain the 95% JaCoCo line-coverage gate.
 
 ## Non-Functional Requirements
@@ -19,7 +19,7 @@ title: "Auth Register and Login - Requirements"
 - JWT tokens expire after 24 hours.
 - Validation failures return structured JSON error bodies consistent with Spring's existing error format.
 - Integration tests must not require an external database or network call.
-- The Flyway baseline migration must be idempotent when re-run against an empty schema.
+- The Liquibase changelog must be idempotent when re-run against an empty schema.
 
 ## Constraints
 

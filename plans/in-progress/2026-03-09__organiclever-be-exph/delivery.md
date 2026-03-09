@@ -48,24 +48,29 @@ Execute phases in order. Each phase produces a working, committable state.
 
 ### elixir-cabbage
 
-- [ ] Copy source of `cabbage-ex/cabbage` tag `0.4.1` into `libs/elixir-cabbage/`
+- [x] Copy source of `cabbage-ex/cabbage` tag `0.4.1` into `libs/elixir-cabbage/`
       (preserve: `lib/`, `test/`, `mix.exs`, `mix.lock`, `LICENSE`, `CHANGELOG.md`)
-- [ ] In `mix.exs`: rename `app: :cabbage` → `app: :elixir_cabbage`; bump version to
+- [x] In `mix.exs`: rename `app: :cabbage` → `app: :elixir_cabbage`; bump version to
       `0.4.1-ose.1`
-- [ ] In `mix.exs` deps: replace `{:gherkin, "~> 2.0"}` with
+- [x] In `mix.exs` deps: replace `{:gherkin, "~> 2.0"}` with
       `{:elixir_gherkin, path: "../../libs/elixir-gherkin"}`; add
-      `{:excoveralls, "~> 0.18", only: :test}`
-- [ ] In `mix.exs` `project/0`: add `test_coverage: [tool: ExCoveralls]` and
-      `preferred_cli_env: [coveralls: :test, "coveralls.lcov": :test]`
-- [ ] Add `project.json` with targets + `"implicitDependencies": ["elixir-gherkin"]`
-- [ ] Add `.credo.exs` (strict mode)
-- [ ] Add `.formatter.exs`
-- [ ] Add `.dialyzer_ignore.exs` (empty initially; upstream may have pre-existing Dialyzer
-      suppressions — evaluate and document each one)
-- [ ] Add `FORK_NOTES.md`
-- [ ] Run `mix deps.get` inside `libs/elixir-cabbage/`
-- [ ] Verify `nx run elixir-cabbage:test:quick` passes
-- [ ] Verify `nx run elixir-cabbage:typecheck` passes
+      `{:excoveralls, "0.18.3", only: :test}` (same Alpine Docker workaround as elixir-gherkin)
+- [x] In `mix.exs` `project/0`: add `test_coverage: [tool: ExCoveralls]` and
+      `preferred_cli_env: [coveralls: :test, "coveralls.lcov": :test, "cover.lcov": :test]`
+- [x] Add `project.json` with targets + `"implicitDependencies": ["elixir-gherkin"]`
+- [x] Add `.credo.exs` (strict mode; 10 upstream issues suppressed with comments)
+- [x] Add `.formatter.exs`
+- [x] Add `.dialyzer_ignore.exs` (empty — no upstream dialyzer suppressions needed)
+- [x] Add `FORK_NOTES.md`
+- [x] Run `mix deps.get` inside `libs/elixir-cabbage/`
+- [x] Verify `nx run elixir-cabbage:test:quick` passes — 1 scenario, 40 tests, 98.43%
+      coverage, credo clean, format clean (commands verified via Docker; `nx run` requires
+      `mix` in PATH, available only in CI via `erlef/setup-beam`)
+      Notes: fixed `fix_17_elixir_test_result` in test_helper.exs to unwrap
+      `{result, aborted}` tuple from Elixir 1.17 `ExUnit.Runner.run/2`; also updated
+      `Application.put_env(:cabbage, ...)` → `Application.put_env(:elixir_cabbage, ...)`
+      in `feature_tags_test.exs`
+- [ ] Verify `nx run elixir-cabbage:typecheck` passes (CI only — see FORK_NOTES.md)
 - [ ] Commit
 
 > **Note**: If Credo or Dialyzer flags pre-existing upstream issues, add suppressions to

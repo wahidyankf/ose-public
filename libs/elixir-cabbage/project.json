@@ -1,0 +1,50 @@
+{
+  "name": "elixir-cabbage",
+  "sourceRoot": "libs/elixir-cabbage/lib",
+  "projectType": "library",
+  "implicitDependencies": ["elixir-gherkin"],
+  "targets": {
+    "test:quick": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "mix cover.lcov",
+          "(cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate libs/elixir-cabbage/cover/lcov.info 90)",
+          "mix credo --strict",
+          "mix format --check-formatted"
+        ],
+        "parallel": false,
+        "cwd": "libs/elixir-cabbage"
+      }
+    },
+    "test:unit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "mix test",
+        "cwd": "libs/elixir-cabbage"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "mix credo --strict",
+        "cwd": "libs/elixir-cabbage"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "mix dialyzer",
+        "cwd": "libs/elixir-cabbage"
+      }
+    },
+    "install": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "mix deps.get",
+        "cwd": "libs/elixir-cabbage"
+      }
+    }
+  },
+  "tags": ["type:lib", "lang:elixir"]
+}

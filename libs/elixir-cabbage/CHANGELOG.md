@@ -1,0 +1,71 @@
+# Changelog
+
+## OSE Fork Entries
+
+### v0.4.1-ose.1 (2026-03-09)
+
+- OSE fork: renamed Mix app atom from `:cabbage` to `:elixir_cabbage` to avoid Hex atom collision
+- `Application.get_env/3` calls in `lib/cabbage.ex` updated from `:cabbage` to `:elixir_cabbage`
+- `Application.put_env` call in `test/feature_tags_test.exs` updated from `:cabbage` to `:elixir_cabbage`
+- Config key in `Cabbage.Feature` moduledoc updated from `config :cabbage` to `config :elixir_cabbage`
+- Added `{:excoveralls, "0.18.3", only: :test}` with `cover.lcov` alias (Alpine Docker workaround)
+- Added `{:credo, "~> 1.7"}` and `{:dialyxir, "~> 1.4"}` for monorepo quality standards
+- Replaced `{:gherkin, "~> 2.0"}` (Hex) with `{:elixir_gherkin, path: "../../libs/elixir-gherkin"}`
+- Added `project.json` for Nx monorepo integration
+- Added `.credo.exs`, `.formatter.exs`, `.dialyzer_ignore.exs`, `.gitignore`, `FORK_NOTES.md`
+
+## Upstream Entries
+
+### v0.4.1
+
+- Updated dependencies, remove dependency on retired `gherkin 1.6.1`
+
+### v0.4.0
+
+- Support for new Elixir versions >= 1.13
+
+### v0.3.4-dev
+
+- Support for Elixir 1.7 #50.
+
+### v0.3.3
+
+- Support for Elixir 1.5 #38. Thanks to @lboekhorst and @rawkode
+
+### v0.3.2
+
+- Fix for improper state tracking #33. Thanks to @lboekhorst
+
+### v0.3.1
+
+- Better support for missing steps (produces the pattern match for the given missing data). #26 Thanks to @shdblowers
+- Breaks `import_feature/1` into two separate macros for more explicit control. Issue #21. Thanks for @hisapy for the
+  suggestion.
+
+### v0.3.0
+
+- Support for running specific tests #15 on a specific line number.
+- Bug fix #19 Thanks to @rawkode - Defaulting steps and tags to empty list when get_attributes returns nil
+- Missing step advisor improvements #14 Thanks to @shdblowers
+- Data tables and doc strings are now available in the variables under the `:table` and `:doc_string` keys
+
+### v0.2.2
+
+- Support for ExUnit case templates. Simply specify the case template module name like
+  `use Cabbage, template: MyApp.ConnCase, feature: "some_file.feature"`
+- Support for tags as ExUnit setup callbacks.
+
+### v0.2.1
+
+- Bug fix #9 Thanks to @shdblowers - Fixes updating of state properly from one step to the next
+
+### v0.2.0
+
+- Support for Scenario Outlines. Scenario Outlines are supported by expanding them into
+  basic scenarios by filling in all variables. The name of each scenario is appended to have
+  `(Example x)` where `x` is the row from the `Examples` block in the Scenario Outline. See
+  https://github.com/cabbage-ex/cabbage/blob/master/test/outline_test.exs for an example.
+
+### v0.1.0
+
+- Initial features to run a simple scenario with variable matching and state tracking.

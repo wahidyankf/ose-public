@@ -112,9 +112,11 @@
         </dependency>
 
         <!-- Liquibase (single dependency; no dialect jar needed) -->
+        <!-- Liquibase starter: includes liquibase-core + spring-boot-liquibase auto-configuration
+             (Spring Boot 4.0 requires the starter; bare liquibase-core omits auto-config) -->
         <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-liquibase</artifactId>
         </dependency>
 
         <!-- JJWT - JWT library -->

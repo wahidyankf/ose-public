@@ -153,26 +153,35 @@ Create Gherkin feature files and Cucumber step definitions for all auth scenario
 - [ ] 5.3 Create `specs/apps/organiclever-be/auth/login.feature` with all login scenarios from `requirements.md` Story 2 acceptance criteria (5 scenarios: success, wrong password, unknown user, empty username, empty password)
 - [ ] 5.4 Create `specs/apps/organiclever-be/auth/jwt-protection.feature` with all JWT protection scenarios from `requirements.md` Story 3 acceptance criteria (6 scenarios: no token 401, valid token 200, expired token 401, malformed token 401, actuator no-auth, auth endpoint no-auth)
 - [ ] 5.5 Update `specs/apps/organiclever-be/README.md` to list the new `auth/` directory and its feature files
-- [ ] 5.6 Create `TokenStore.java` in `apps/organiclever-be/src/test/java/com/organiclever/be/integration/` (see tech-docs for class definition)
-- [ ] 5.7 Create `AuthSteps.java` in `apps/organiclever-be/src/test/java/com/organiclever/be/integration/steps/` (see tech-docs for class definition)
-- [ ] 5.8 Update `CommonSteps.java` `@Before` hook: inject `UserRepository` and `TokenStore`; call `userRepository.deleteAllInBatch()` first (resets H2 state between scenarios — `deleteAllInBatch()` bypasses `@Where` and issues a single `DELETE FROM users`), then `responseStore.clear()`, then `tokenStore.clear()`
-- [ ] 5.9 Update `CucumberSpringContextConfig.java` to apply `SecurityMockMvcConfigurer.springSecurity()` to `MockMvc` builder
-- [ ] 5.10 Add additional `Then` steps to `AuthSteps.java` for response body assertions: "the response body should contain {string} equal to {string}", "the response body should not contain a {string} field", "the response body should contain a non-null {string} field", "the response body should contain a {string} field", "the response body should contain an error message about duplicate username", "the response body should contain an error message about invalid credentials", "the response body should contain a validation error for {string}"
-- [ ] 5.11 Add steps for JWT-protected endpoint tests to `HelloSteps.java` or a new `ProtectedEndpointSteps.java`: "a client sends GET /api/v1/hello without an Authorization header", "a client sends GET /api/v1/hello with the stored Bearer token", "a client sends GET /api/v1/hello with an expired Bearer token", "a client sends GET /api/v1/hello with Authorization header {string}"
-- [ ] 5.12 Run `mvn test -P integration -q` and verify all scenarios pass
-- [ ] 5.13 Run `mvn test -P integration` **twice in a row** to confirm scenario isolation: the second run must produce identical results (no 409 from leftover `"alice"` data)
-- [ ] 5.14 Run `mvn test -P integration -P nullcheck` to verify NullAway finds no errors
-- [ ] 5.15 Check JaCoCo coverage report: `mvn test -P integration` then open `target/site/jacoco/index.html`; confirm ≥95% line coverage
-- [ ] 5.16 If coverage is below 95%, identify uncovered lines and add missing scenarios or step definitions
-- [ ] 5.17 Commit: `feat(organiclever-be): add auth specs and integration tests`
+- [ ] 5.6 Create `TokenStore.java` in `apps/organiclever-be/src/test/java/com/organiclever/be/integration/steps/` annotated `@Component @Scope("cucumber-glue")` (see tech-docs)
+- [ ] 5.7 Add `@Scope("cucumber-glue")` to `ResponseStore.java` in the same package
+- [ ] 5.8 Create `AuthSteps.java` in `apps/organiclever-be/src/test/java/com/organiclever/be/integration/steps/` annotated `@Component @Scope("cucumber-glue")` (see tech-docs)
+- [ ] 5.9 Update `CommonSteps.java`: add `@Scope("cucumber-glue")`; replace `deleteAllInBatch()` cleanup with `PlatformTransactionManager` — inject `transactionManager`, start transaction in `@Before`, rollback in `@After` (see tech-docs for full implementation); clear `responseStore` and `tokenStore` in `@Before`
+- [ ] 5.10 Create `BaseCucumberContextConfig.java` (abstract, no `@CucumberContextConfiguration`) in `com.organiclever.be.integration.steps`; define `@Bean MockMvc mockMvc()` applying `SecurityMockMvcConfigurer.springSecurity()` (see tech-docs)
+- [ ] 5.11 Create subpackage `com.organiclever.be.integration.registration` with `package-info.java`; create `RegistrationContextConfig.java` (`@CucumberContextConfiguration @SpringBootTest(MOCK) @ActiveProfiles("test") @TestPropertySource(url=testdb_registration)` extending `BaseCucumberContextConfig`); create `RegistrationIT.java` (`@Suite @IncludeEngines("cucumber")` selecting `register.feature`, glue = registration + steps packages)
+- [ ] 5.12 Create subpackage `com.organiclever.be.integration.login` with `package-info.java`; create `LoginContextConfig.java` (url=`testdb_login`) and `LoginIT.java` (selects `login.feature`, glue = login + steps)
+- [ ] 5.13 Create subpackage `com.organiclever.be.integration.jwtprotected` with `package-info.java`; create `JwtProtectedContextConfig.java` (url=`testdb_jwt`) and `JwtProtectedIT.java` (selects `jwt-protection.feature`, glue = jwtprotected + steps)
+- [ ] 5.14 Add Maven Surefire `<parallel>classes</parallel> <threadCount>3</threadCount>` configuration to the integration profile in `pom.xml` (see tech-docs)
+- [ ] 5.15 Remove the existing `CucumberSpringContextConfig.java` if it previously held the single context config (its `MockMvc` bean now lives in `BaseCucumberContextConfig`)
+- [ ] 5.16 Add additional `Then` steps to `AuthSteps.java`: "the response body should contain {string} equal to {string}", "the response body should not contain a {string} field", "the response body should contain a non-null {string} field", "the response body should contain a {string} field", "the response body should contain an error message about duplicate username", "the response body should contain an error message about invalid credentials", "the response body should contain a validation error for {string}"
+- [ ] 5.17 Add steps for JWT-protected endpoint tests to `HelloSteps.java` or a new `ProtectedEndpointSteps.java` (annotated `@Component @Scope("cucumber-glue")`): "a client sends GET /api/v1/hello without an Authorization header", "a client sends GET /api/v1/hello with the stored Bearer token", "a client sends GET /api/v1/hello with an expired Bearer token", "a client sends GET /api/v1/hello with Authorization header {string}"
+- [ ] 5.18 Run `mvn test -P integration -q` and verify all scenarios pass
+- [ ] 5.19 Run `mvn test -P integration` **twice in a row** to confirm repeatable results
+- [ ] 5.20 Run `mvn test -P integration -P nullcheck` to verify NullAway finds no errors
+- [ ] 5.21 Check JaCoCo coverage report: `mvn test -P integration` then open `target/site/jacoco/index.html`; confirm ≥95% line coverage
+- [ ] 5.22 If coverage is below 95%, identify uncovered lines and add missing scenarios or step definitions
+- [ ] 5.23 Commit: `feat(organiclever-be): add auth specs and integration tests`
 
 ### Validation
 
 - [ ] All Gherkin scenarios have corresponding step definitions (no `Undefined step` warnings)
 - [ ] `mvn test -P integration` exits 0
-- [ ] Running `mvn test -P integration` twice consecutively produces identical results (scenario isolation confirmed)
+- [ ] Running `mvn test -P integration` twice consecutively produces identical results
+- [ ] `mvn test -P integration` with Surefire `parallel=classes` shows three runner classes executing concurrently in the log output
 - [ ] JaCoCo line coverage ≥ 95%
-- [ ] `package-info.java` exists for `com.organiclever.be.integration.steps` (already present) and for `TokenStore`'s package
+- [ ] `package-info.java` exists for `integration.steps`, `integration.registration`, `integration.login`, `integration.jwtprotected`
+- [ ] No `@CucumberContextConfiguration` conflict: each runner's glue path finds exactly one context config class
+- [ ] `ResponseStore`, `TokenStore`, `AuthSteps`, `CommonSteps`, step definition classes all annotated `@Scope("cucumber-glue")`
 
 ## Phase 6 - E2E Tests and Docker Compose
 

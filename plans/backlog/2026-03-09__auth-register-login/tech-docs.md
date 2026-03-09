@@ -42,16 +42,19 @@ graph TD
 
 All new packages follow the existing convention: annotated with `@NullMarked` in `package-info.java`, no wildcard imports.
 
-| Package                                 | Purpose                                                               |
-| --------------------------------------- | --------------------------------------------------------------------- |
-| `com.organiclever.be.auth.controller`   | `AuthController` - REST endpoints                                     |
-| `com.organiclever.be.auth.service`      | `AuthService`, `UserDetailsServiceImpl`                               |
-| `com.organiclever.be.auth.repository`   | `UserRepository` (Spring Data JPA)                                    |
-| `com.organiclever.be.auth.model`        | `User` JPA entity                                                     |
-| `com.organiclever.be.auth.dto`          | `RegisterRequest`, `LoginRequest`, `RegisterResponse`, `AuthResponse` |
-| `com.organiclever.be.security`          | `JwtUtil`, `JwtAuthFilter`, `SecurityConfig`                          |
-| `com.organiclever.be.config`            | `JpaAuditingConfig`, `GlobalExceptionHandler`                         |
-| `com.organiclever.be.integration.steps` | `AuthSteps` (test), `TokenStore` (test)                               |
+| Package                                        | Purpose                                                                                                                    |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `com.organiclever.be.auth.controller`          | `AuthController` - REST endpoints                                                                                          |
+| `com.organiclever.be.auth.service`             | `AuthService`, `UserDetailsServiceImpl`                                                                                    |
+| `com.organiclever.be.auth.repository`          | `UserRepository` (Spring Data JPA)                                                                                         |
+| `com.organiclever.be.auth.model`               | `User` JPA entity                                                                                                          |
+| `com.organiclever.be.auth.dto`                 | `RegisterRequest`, `LoginRequest`, `RegisterResponse`, `AuthResponse`                                                      |
+| `com.organiclever.be.security`                 | `JwtUtil`, `JwtAuthFilter`, `SecurityConfig`                                                                               |
+| `com.organiclever.be.config`                   | `JpaAuditingConfig`, `GlobalExceptionHandler`                                                                              |
+| `com.organiclever.be.integration.steps`        | `AuthSteps`, `CommonSteps` (updated), `HelloSteps`, `ResponseStore`, `TokenStore`, `BaseCucumberContextConfig` (test-only) |
+| `com.organiclever.be.integration.registration` | `RegistrationContextConfig`, `RegistrationIT` (test-only; runs `register.feature`)                                         |
+| `com.organiclever.be.integration.login`        | `LoginContextConfig`, `LoginIT` (test-only; runs `login.feature`)                                                          |
+| `com.organiclever.be.integration.jwtprotected` | `JwtProtectedContextConfig`, `JwtProtectedIT` (test-only; runs `jwt-protection.feature`)                                   |
 
 ### package-info.java template
 
@@ -742,10 +745,12 @@ APP_JWT_SECRET=change-me-in-production-use-a-real-random-secret
 
 ### Test class additions
 
-**TokenStore.java** - stores the JWT from login steps:
+**TokenStore.java** - stores the JWT from login steps. `@Scope("cucumber-glue")` creates a
+fresh instance per scenario, so parallel scenarios never share a stored token:
 
 ```java
 @Component
+@Scope("cucumber-glue")
 public class TokenStore {
     @Nullable
     private String token;
@@ -759,9 +764,25 @@ public class TokenStore {
 }
 ```
 
-**AuthSteps.java** - step definitions for register and login:
+(Import: `org.springframework.context.annotation.Scope`)
+
+**ResponseStore.java** must also be `@Scope("cucumber-glue")`. The same reasoning applies:
+parallel scenarios each need their own stored `MvcResult`:
 
 ```java
+@Component
+@Scope("cucumber-glue")
+public class ResponseStore {
+    // ... existing fields and methods unchanged
+}
+```
+
+**AuthSteps.java** - step definitions for register and login. `@Scope("cucumber-glue")`
+ensures a fresh instance (and fresh `ObjectMapper`) per scenario:
+
+```java
+@Component
+@Scope("cucumber-glue")
 public class AuthSteps {
     @Autowired private MockMvc mockMvc;
     @Autowired private ResponseStore responseStore;
@@ -826,47 +847,219 @@ public class AuthSteps {
 }
 ```
 
-**Updated CommonSteps.java** - add `@Before` to clear `TokenStore`, `ResponseStore`, and the
-H2 database before every scenario:
+**Updated CommonSteps.java** - `@Scope("cucumber-glue")` plus per-scenario
+`PlatformTransactionManager` rollback for both within-feature and across-feature isolation:
 
 ```java
-@Autowired private UserRepository userRepository;
+@Component
+@Scope("cucumber-glue")
+public class CommonSteps {
+    @Autowired private ResponseStore responseStore;
+    @Autowired private TokenStore tokenStore;
+    @Autowired private PlatformTransactionManager transactionManager;
 
-@Before
-public void resetState() {
-    // deleteAllInBatch() issues a single DELETE FROM users, bypassing @Where soft-delete
-    // filter. This is intentional: test isolation requires wiping all rows, including any
-    // soft-deleted ones left from prior scenarios. This is test-only cleanup — it does not
-    // violate the application-layer soft-delete convention.
-    userRepository.deleteAllInBatch();
-    responseStore.clear();
-    tokenStore.clear();
+    @Nullable
+    private TransactionStatus transactionStatus;
+
+    @Before
+    public void beginScenario() {
+        // Start a transaction that will be rolled back after every scenario.
+        // With @SpringBootTest(webEnvironment = MOCK), MockMvc dispatches requests
+        // synchronously on the test thread. The service's @Transactional(REQUIRED)
+        // joins this outer transaction, so ALL database writes made via MockMvc are
+        // covered by the rollback. No deleteAllInBatch() call is needed.
+        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+        transactionStatus = transactionManager.getTransaction(def);
+        responseStore.clear();
+        tokenStore.clear();
+    }
+
+    @After
+    public void rollbackScenario() {
+        if (transactionStatus != null) {
+            transactionManager.rollback(transactionStatus);
+            transactionStatus = null;
+        }
+    }
+
+    // ... existing @Then step methods unchanged
 }
 ```
 
-The H2 in-memory database (`DB_CLOSE_DELAY=-1`) persists its state across all scenarios in
-the same JVM run. Without this cleanup, a scenario that registers `"alice"` in the database
-causes every subsequent scenario attempting to register `"alice"` to fail with 409. The
-`deleteAllInBatch()` call resets the database to a known-empty state before each scenario,
-making every scenario independent and repeatable.
+(Imports: `org.springframework.transaction.PlatformTransactionManager`,
+`org.springframework.transaction.TransactionStatus`,
+`org.springframework.transaction.support.DefaultTransactionDefinition`,
+`org.springframework.transaction.TransactionDefinition`)
 
-### CucumberSpringContextConfig.java update
+**Why transaction rollback instead of `deleteAllInBatch()`:**
 
-Add `apply(SecurityMockMvcConfigurer)` so Spring Security's filter chain participates in MockMvc:
+`deleteAllInBatch()` is a sequential-only solution. With parallel feature execution, Thread A
+calls `deleteAllInBatch()` in its `@Before` and deletes data that Thread B's scenario just
+inserted mid-test. The rollback approach is safe for parallelism because each scenario's
+transaction is thread-local — no thread can see or delete another thread's uncommitted data.
+
+The rollback approach also works correctly for within-feature sequential scenarios:
+Scenario N ends → rollback → Scenario N+1 begins with a clean database, without any
+explicit DELETE statement.
+
+### Parallel test architecture
+
+Running all three feature files in parallel requires **separate Spring contexts per feature**,
+each backed by a **distinct named H2 database**. The architecture has three layers:
+
+**Layer 1 — Shared abstract base** (`BaseCucumberContextConfig.java` in
+`com.organiclever.be.integration.steps`):
 
 ```java
-@Bean
-public MockMvc mockMvc() {
-    return MockMvcBuilders
-        .webAppContextSetup(webApplicationContext)
-        .apply(SecurityMockMvcConfigurer.springSecurity())
-        .build();
+// Not annotated with @CucumberContextConfiguration — only the concrete subclasses are.
+// Spring processes @Bean methods inherited from superclasses, so MockMvc is defined once.
+public abstract class BaseCucumberContextConfig {
+
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+
+    @Bean
+    public MockMvc mockMvc() {
+        // Apply Spring Security's filter chain so JwtAuthFilter runs in tests
+        // exactly as in production.
+        return MockMvcBuilders
+            .webAppContextSetup(webApplicationContext)
+            .apply(SecurityMockMvcConfigurer.springSecurity())
+            .build();
+    }
 }
 ```
 
 (Import: `org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurer`)
 
-This ensures `JwtAuthFilter` runs in integration tests exactly as it does in production.
+**Layer 2 — Feature-specific context configs** (one per feature file). Each extends
+`BaseCucumberContextConfig` and declares a unique H2 database URL, causing Spring to create
+a separate ApplicationContext (and separate in-memory database) per runner class. This
+prevents unique-constraint conflicts between parallel features that use the same username
+(e.g., `"alice"` appears in all three features):
+
+```java
+// RegistrationContextConfig.java — in com.organiclever.be.integration.registration
+@CucumberContextConfiguration
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@ActiveProfiles("test")
+@TestPropertySource(properties = {
+    "spring.datasource.url="
+        + "jdbc:h2:mem:testdb_registration;DB_CLOSE_DELAY=-1;"
+        + "MODE=PostgreSQL;DATABASE_TO_UPPER=false"
+})
+public class RegistrationContextConfig extends BaseCucumberContextConfig {}
+```
+
+```java
+// LoginContextConfig.java — in com.organiclever.be.integration.login
+@CucumberContextConfiguration
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@ActiveProfiles("test")
+@TestPropertySource(properties = {
+    "spring.datasource.url="
+        + "jdbc:h2:mem:testdb_login;DB_CLOSE_DELAY=-1;"
+        + "MODE=PostgreSQL;DATABASE_TO_UPPER=false"
+})
+public class LoginContextConfig extends BaseCucumberContextConfig {}
+```
+
+```java
+// JwtProtectedContextConfig.java — in com.organiclever.be.integration.jwtprotected
+@CucumberContextConfiguration
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@ActiveProfiles("test")
+@TestPropertySource(properties = {
+    "spring.datasource.url="
+        + "jdbc:h2:mem:testdb_jwt;DB_CLOSE_DELAY=-1;"
+        + "MODE=PostgreSQL;DATABASE_TO_UPPER=false"
+})
+public class JwtProtectedContextConfig extends BaseCucumberContextConfig {}
+```
+
+Crucially, Cucumber Spring requires exactly **one** `@CucumberContextConfiguration` class in
+the glue path. Each runner below specifies a glue path that includes only its own context
+config package (plus the shared steps package), so Cucumber finds exactly one context config
+per runner.
+
+**Layer 3 — Runner classes** (one per feature file). Each runner selects its feature file
+and limits the glue path to prevent Cucumber from discovering the other context configs:
+
+```java
+// RegistrationIT.java — in com.organiclever.be.integration.registration
+@Suite
+@IncludeEngines("cucumber")
+@SelectClasspathResource("specs/apps/organiclever-be/auth/register.feature")
+@ConfigurationParameter(
+    key = GLUE_PROPERTY_NAME,
+    value = "com.organiclever.be.integration.registration"
+          + ",com.organiclever.be.integration.steps")
+@ConfigurationParameter(
+    key = PLUGIN_PROPERTY_NAME,
+    value = "pretty,html:target/cucumber-reports/registration.html")
+public class RegistrationIT {}
+```
+
+```java
+// LoginIT.java — in com.organiclever.be.integration.login
+@Suite
+@IncludeEngines("cucumber")
+@SelectClasspathResource("specs/apps/organiclever-be/auth/login.feature")
+@ConfigurationParameter(
+    key = GLUE_PROPERTY_NAME,
+    value = "com.organiclever.be.integration.login"
+          + ",com.organiclever.be.integration.steps")
+@ConfigurationParameter(
+    key = PLUGIN_PROPERTY_NAME,
+    value = "pretty,html:target/cucumber-reports/login.html")
+public class LoginIT {}
+```
+
+```java
+// JwtProtectedIT.java — in com.organiclever.be.integration.jwtprotected
+@Suite
+@IncludeEngines("cucumber")
+@SelectClasspathResource("specs/apps/organiclever-be/auth/jwt-protection.feature")
+@ConfigurationParameter(
+    key = GLUE_PROPERTY_NAME,
+    value = "com.organiclever.be.integration.jwtprotected"
+          + ",com.organiclever.be.integration.steps")
+@ConfigurationParameter(
+    key = PLUGIN_PROPERTY_NAME,
+    value = "pretty,html:target/cucumber-reports/jwt-protected.html")
+public class JwtProtectedIT {}
+```
+
+(Imports for runner classes:
+`org.junit.platform.suite.api.Suite`,
+`org.junit.platform.suite.api.IncludeEngines`,
+`org.junit.platform.suite.api.SelectClasspathResource`,
+`org.junit.platform.suite.api.ConfigurationParameter`,
+`static io.cucumber.junit.platform.engine.Constants.GLUE_PROPERTY_NAME`,
+`static io.cucumber.junit.platform.engine.Constants.PLUGIN_PROPERTY_NAME`)
+
+### Maven Surefire parallel configuration
+
+Add to the integration Maven profile in `pom.xml` so the three runner classes execute in
+parallel (three threads, one per feature file):
+
+```xml
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-surefire-plugin</artifactId>
+    <configuration>
+        <parallel>classes</parallel>
+        <threadCount>3</threadCount>
+        <includes>
+            <include>**/*IT.java</include>
+        </includes>
+    </configuration>
+</plugin>
+```
+
+Each runner class gets its own thread. Since each has a separate Spring context and a
+separate H2 database, the three threads are completely independent at the database level.
 
 ## E2E Test Architecture
 
@@ -1122,6 +1315,38 @@ JJWT 0.12.x uses the fluent `Jwts.builder()` / `Jwts.parser()` API that is compa
 ### Why H2 for integration tests?
 
 The existing integration tests are cached by Nx (`cache: true`). Introducing a real PostgreSQL dependency would break caching because Nx cannot guarantee an external service is identical between runs. H2 in PostgreSQL compatibility mode runs the same Liquibase changelog (selecting the `dbms:h2` changeset) and provides sufficient fidelity for testing the auth logic.
+
+### Why separate H2 database per feature file?
+
+Running the three feature files in parallel with a single shared H2 database produces
+non-deterministic failures. Two distinct hazards arise:
+
+**Hazard 1 — Unique constraint at statement time, not commit time.**
+H2 (like PostgreSQL) checks unique constraints when the `INSERT` statement executes, not
+when the transaction commits. If Thread A (registration feature) and Thread B (login feature)
+both `INSERT username='alice'` concurrently, one thread gets a constraint violation even
+though neither transaction has committed. `@Transactional` rollback cannot prevent this
+because the conflict occurs before rollback is possible.
+
+**Hazard 2 — Race condition between `@Before` cleanup and in-progress assertions.**
+If Thread A's `@Before` calls `deleteAllInBatch()` while Thread B's scenario just registered
+`"alice"` and is about to assert the response, Thread A deletes Thread B's data mid-scenario.
+The assertion fails non-deterministically.
+
+**Solution: a unique H2 URL per feature file.**
+`@TestPropertySource` overrides `spring.datasource.url` with a unique name
+(`testdb_registration`, `testdb_login`, `testdb_jwt`). Spring's context cache key includes
+the full set of properties, so three different URLs → three separate `ApplicationContext`
+instances → three independent in-memory databases. Features running in parallel operate on
+completely separate database instances and cannot interfere with each other.
+
+**Why `@Transactional` rollback replaces `deleteAllInBatch()` for within-feature isolation.**
+With `@SpringBootTest(webEnvironment = MOCK)`, MockMvc dispatches requests synchronously on
+the test thread. The service layer's `@Transactional(REQUIRED)` propagation joins the
+test-managed transaction. When `CommonSteps.rollbackScenario()` calls
+`PlatformTransactionManager.rollback()`, every database write from the entire scenario
+(across all step methods) is undone atomically. The next scenario starts with a clean
+database without any explicit DELETE statement.
 
 ### Why Spring Data JPA?
 

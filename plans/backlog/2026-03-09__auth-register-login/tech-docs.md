@@ -50,6 +50,7 @@ All new packages follow the existing convention: annotated with `@NullMarked` in
 | `com.organiclever.be.auth.model`        | `User` JPA entity                                                     |
 | `com.organiclever.be.auth.dto`          | `RegisterRequest`, `LoginRequest`, `RegisterResponse`, `AuthResponse` |
 | `com.organiclever.be.security`          | `JwtUtil`, `JwtAuthFilter`, `SecurityConfig`                          |
+| `com.organiclever.be.config`            | `AuditorAwareImpl`, `GlobalExceptionHandler`                          |
 | `com.organiclever.be.integration.steps` | `AuthSteps` (test), `TokenStore` (test)                               |
 
 ### package-info.java template
@@ -96,6 +97,8 @@ public record AuthResponse(String token, String type) {
 ```java
 @Entity
 @Table(name = "users")
+@EntityListeners(AuditingEntityListener.class)
+@Where(clause = "deleted_at IS NULL")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -107,11 +110,27 @@ public class User {
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
+    @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    @PrePersist
-    private void prePersist() { this.createdAt = Instant.now(); }
+    @CreatedBy
+    @Column(name = "created_by", nullable = false, updatable = false, length = 255)
+    private String createdBy;
+
+    @LastModifiedDate
+    @Column(name = "updated_at", nullable = false)
+    private Instant updatedAt;
+
+    @LastModifiedBy
+    @Column(name = "updated_by", nullable = false, length = 255)
+    private String updatedBy;
+
+    @Column(name = "deleted_at")
+    private @Nullable Instant deletedAt;
+
+    @Column(name = "deleted_by", length = 255)
+    private @Nullable String deletedBy;
 
     // Required by JPA
     protected User() {}
@@ -124,6 +143,29 @@ public class User {
     // getters, no public setters
 }
 ```
+
+### AuditorAwareImpl
+
+Required to supply the `created_by` / `updated_by` values via Spring Data JPA Auditing:
+
+```java
+// in com.organiclever.be.config
+@Component
+public class AuditorAwareImpl implements AuditorAware<String> {
+    @Override
+    public Optional<String> getCurrentAuditor() {
+        Authentication auth =
+            SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()
+                || auth.getPrincipal().equals("anonymousUser")) {
+            return Optional.of("system");
+        }
+        return Optional.of(auth.getName());
+    }
+}
+```
+
+Enable auditing by adding `@EnableJpaAuditing` to any `@Configuration` class (e.g., `SecurityConfig` or a dedicated `JpaConfig`).
 
 ### UserRepository
 
@@ -418,6 +460,11 @@ CREATE TABLE users (
     username      VARCHAR(50)  NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     created_at    TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    created_by    VARCHAR(255) NOT NULL DEFAULT 'system',
+    updated_at    TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    updated_by    VARCHAR(255) NOT NULL DEFAULT 'system',
+    deleted_at    TIMESTAMPTZ,
+    deleted_by    VARCHAR(255),
     CONSTRAINT pk_users PRIMARY KEY (id),
     CONSTRAINT uq_users_username UNIQUE (username)
 );
@@ -429,6 +476,11 @@ CREATE TABLE users (
     username      VARCHAR(50)  NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     created_at    TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    created_by    VARCHAR(255) NOT NULL DEFAULT 'system',
+    updated_at    TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    updated_by    VARCHAR(255) NOT NULL DEFAULT 'system',
+    deleted_at    TIMESTAMPTZ,
+    deleted_by    VARCHAR(255),
     CONSTRAINT pk_users PRIMARY KEY (id),
     CONSTRAINT uq_users_username UNIQUE (username)
 );
@@ -442,6 +494,7 @@ CREATE TABLE users (
 - `TIMESTAMPTZ` stores timezone-aware timestamps; always use UTC in the application.
 - The `password_hash` column is 255 chars; BCrypt output is 60 chars but 255 gives future headroom.
 - The `-- rollback` directive enables `liquibase rollback` without writing separate rollback SQL.
+- All 6 audit trail columns (`created_at`, `created_by`, `updated_at`, `updated_by`, `deleted_at`, `deleted_by`) are mandatory per the [database audit trail convention](../../../../governance/development/pattern/database-audit-trail.md). `deleted_at` / `deleted_by` being NULL means the row is active (soft-delete pattern).
 
 ## Dependencies to Add to pom.xml
 
@@ -1050,6 +1103,19 @@ JWT-based authentication is inherently stateless. Enabling `SessionCreationPolic
 ### Why remove CorsConfig and move CORS to SecurityConfig?
 
 When Spring Security is active, it processes requests before `WebMvcConfigurer.addCorsMappings`. CORS preflight (`OPTIONS`) requests must be handled by the security filter chain. Configuring CORS via `CorsConfigurationSource` in `SecurityConfig` ensures consistent behavior.
+
+### Why audit trail columns on every table?
+
+All tables carry 6 audit columns (`created_at`, `created_by`, `updated_at`, `updated_by`,
+`deleted_at`, `deleted_by`) as required by the
+[database audit trail convention](../../../../governance/development/pattern/database-audit-trail.md).
+`deleted_at`/`deleted_by` implement the soft-delete pattern so rows are never physically removed
+— this preserves the audit record, allows undo, and avoids foreign-key cascades.
+The `@Where(clause = "deleted_at IS NULL")` annotation on the entity ensures queries automatically
+exclude soft-deleted rows without any manual filter in service code.
+Spring Data JPA Auditing (`@EnableJpaAuditing`, `AuditorAware<String>`) populates
+`created_by`/`updated_by` from `SecurityContextHolder`, falling back to `"system"` for
+unauthenticated operations (e.g., self-registration).
 
 ### Why checked exceptions instead of RuntimeException?
 

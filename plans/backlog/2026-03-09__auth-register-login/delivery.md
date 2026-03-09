@@ -41,7 +41,7 @@ Add all new Maven dependencies and create the Liquibase changelog.
 - [ ] 1.7 Add `h2` (test scope) and `spring-security-test` (test scope) to `pom.xml`
 - [ ] 1.8 Create directory `apps/organiclever-be/src/main/resources/db/changelog/changes/`
 - [ ] 1.9 Create `db/changelog/db.changelog-master.yaml` with `includeAll` pointing to `db/changelog/changes/`
-- [ ] 1.10 Create `db/changelog/changes/001-create-users-table.sql` as a Liquibase SQL formatted changelog; include two changesets: `dbms:postgresql` (using `gen_random_uuid()`) and `dbms:h2` (using `RANDOM_UUID()`); add `-- rollback DROP TABLE users;` after each `CREATE TABLE`
+- [ ] 1.10 Create `db/changelog/changes/001-create-users-table.sql` as a Liquibase SQL formatted changelog; include two changesets: `dbms:postgresql` (using `gen_random_uuid()`) and `dbms:h2` (using `RANDOM_UUID()`); both changesets MUST include all 6 audit trail columns (`created_at`, `created_by`, `updated_at`, `updated_by`, `deleted_at`, `deleted_by`) per the database audit trail convention; add `-- rollback DROP TABLE users;` after each `CREATE TABLE`
 - [ ] 1.11 Add `spring.liquibase.change-log` and JWT properties to `application.yml`
 - [ ] 1.12 Add datasource + JPA config to `application-dev.yml` (no Liquibase override needed)
 - [ ] 1.13 Update `application-test.yml`: add H2 datasource and H2 Dialect (no separate Liquibase config — `dbms:h2` changeset is selected automatically)
@@ -63,7 +63,7 @@ Create the `User` entity, `UserRepository`, and all associated packages.
 ### Tasks
 
 - [ ] 2.1 Create package `com.organiclever.be.auth.model` with `package-info.java` (`@NullMarked`)
-- [ ] 2.2 Create `User.java` entity with fields: `id (UUID)`, `username`, `passwordHash`, `createdAt`; annotate with `@Entity`, `@Table(name="users")`; use `@GeneratedValue(strategy=GenerationType.UUID)` for `id`; add `@PrePersist` to set `createdAt`; add a `protected User()` no-arg constructor (required by JPA) and a `public User(String username, String passwordHash)` constructor; no public setters
+- [ ] 2.2 Create `User.java` entity with fields: `id (UUID)`, `username`, `passwordHash`, and all 6 audit trail fields (`createdAt`, `createdBy`, `updatedAt`, `updatedBy`, `@Nullable deletedAt`, `@Nullable deletedBy`); annotate with `@Entity`, `@Table(name="users")`, `@EntityListeners(AuditingEntityListener.class)`, `@Where(clause = "deleted_at IS NULL")`; use `@CreatedDate`, `@CreatedBy`, `@LastModifiedDate`, `@LastModifiedBy` on audit fields; add a `protected User()` no-arg constructor (required by JPA) and a `public User(String username, String passwordHash)` constructor; no public setters
 - [ ] 2.3 Create package `com.organiclever.be.auth.repository` with `package-info.java`
 - [ ] 2.4 Create `UserRepository.java` extending `JpaRepository<User, UUID>` with methods: `Optional<User> findByUsername(String username)` and `boolean existsByUsername(String username)`
 - [ ] 2.5 Create package `com.organiclever.be.auth.dto` with `package-info.java`
@@ -71,13 +71,18 @@ Create the `User` entity, `UserRepository`, and all associated packages.
 - [ ] 2.7 Create `LoginRequest.java` record with `@NotBlank String username` and `@NotBlank String password`
 - [ ] 2.8 Create `RegisterResponse.java` record with `UUID id`, `String username`, `Instant createdAt`
 - [ ] 2.9 Create `AuthResponse.java` record with `String token`, `String type`; add static factory `bearer(String token)`
-- [ ] 2.10 Verify `mvn compile -q` succeeds
-- [ ] 2.11 Commit: `feat(organiclever-be): add User domain model and repository`
+- [ ] 2.10 Create package `com.organiclever.be.config` with `package-info.java`
+- [ ] 2.11 Create `AuditorAwareImpl.java` in `com.organiclever.be.config` implementing `AuditorAware<String>`; return `auth.getName()` when a non-anonymous user is authenticated, otherwise return `Optional.of("system")`
+- [ ] 2.12 Add `@EnableJpaAuditing` to `SecurityConfig` (or a dedicated `JpaConfig`) to activate Spring Data JPA Auditing
+- [ ] 2.13 Verify `mvn compile -q` succeeds
+- [ ] 2.14 Commit: `feat(organiclever-be): add User domain model and repository`
 
 ### Validation
 
 - [ ] `mvn compile` exits 0
 - [ ] `User` entity has `@NullMarked` on its package (via `package-info.java`)
+- [ ] `User` entity has all 6 audit trail columns annotated with `@CreatedDate`, `@CreatedBy`, `@LastModifiedDate`, `@LastModifiedBy`, and `@Nullable` for soft-delete fields
+- [ ] `User` entity is annotated with `@EntityListeners(AuditingEntityListener.class)` and `@Where(clause = "deleted_at IS NULL")`
 - [ ] All DTO classes are Java records (immutable)
 - [ ] `UserRepository` extends `JpaRepository<User, UUID>` with no custom SQL
 

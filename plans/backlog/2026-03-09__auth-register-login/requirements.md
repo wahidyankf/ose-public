@@ -30,6 +30,7 @@ title: "Auth Register and Login - Requirements"
 - Functional style preferred: immutable DTOs (records), pure service methods.
 - All REST API endpoints must be versioned under `/api/v1/` (e.g., `/api/v1/auth/register`).
 - No `RuntimeException` subclasses in application code: use checked exceptions (`extends Exception`) so error paths are visible in method signatures.
+- Every database table MUST include 6 audit trail columns: `created_at`, `created_by`, `updated_at`, `updated_by`, `deleted_at` (nullable), `deleted_by` (nullable). Deletion is always soft (set `deleted_at`/`deleted_by`; never `DELETE` rows).
 
 ## User Stories
 

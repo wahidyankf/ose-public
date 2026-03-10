@@ -12,7 +12,7 @@ tags:
   - accessibility
   - color-blindness
 created: 2025-11-24
-updated: 2026-02-22
+updated: 2026-03-10
 ---
 
 # Diagram and Schema Convention
@@ -1024,6 +1024,10 @@ Before committing documentation with diagrams:
 - [ ] **No literal quotes inside node text** (remove quotes or use descriptive text like "string value")
 - [ ] **No style commands in sequence diagrams** (use `box` syntax or switch to flowchart)
 - [ ] **No `\n` in any label** (`\n` renders as literal characters in node labels and edge labels — use `<br/>` for multi-line labels or shorten to single-line)
+- [ ] **No `<br/>` in edge labels** (edge labels do not support HTML — use plain text only)
+- [ ] **Node label lines ≤20 characters** (each line between `<br/>` tags must not exceed 20 characters)
+- [ ] **Edge label strings ≤20 characters** (text inside `|"..."|` must not exceed 20 characters)
+- [ ] **No URL paths or dot-prefixed tokens in edge labels** (leading `.` is parsed as a CSS class selector — describe the action in plain words instead)
 - [ ] Mermaid diagrams tested in GitHub preview or Obsidian
 - [ ] ASCII art (if used) verified in monospace font
 - [ ] Format choice is intentional (not mixing Mermaid and ASCII unnecessarily)
@@ -1474,6 +1478,169 @@ graph LR
 **Rule**: Never use `\n` in any Mermaid label (node or edge). Use `<br/>` for multi-line node labels. For edge labels, keep them single-line (edge labels do not support `<br/>`).
 
 **Real-World Context**: Discovered when building a roadmap diagram on `apps/oseplatform-web/content/about.md`. Both node labels (`"Phase 3\nEnterprise Application\nLarge Organizations"`) and edge labels (`"Revenue\n& Learnings"`) rendered with literal `\n` characters visible.
+
+### Error 9: Label Constraints — Character Width Limit, No HTML in Edge Labels, No URL Paths
+
+**CRITICAL**: Mermaid renderers silently clip label text beyond approximately 20–22 characters with no warning. Edge labels do not support HTML tags. URL paths and dot-prefixed tokens in edge labels break the parser.
+
+These three constraints apply everywhere labels appear and are documented together because they all stem from the same root problem: edge labels and node label lines have tight rendering limits and restricted syntax.
+
+#### Rule 1: Node label line breaks — `<br/>` only
+
+Use `<br/>` to create line breaks inside node labels. The `\n` escape sequence renders as the literal characters `\n` (see Error 8). `<br/>` is the only supported mechanism.
+
+**DO:**
+
+```mermaid
+graph TD
+    A["Auth service<br/>issues JWT"]:::blue
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+```
+
+**DO NOT:**
+
+```mermaid
+graph TD
+    A["Auth service\nissues JWT"]:::blue
+    %% BROKEN: renders as "Auth service\nissues JWT" (literal backslash-n)
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+```
+
+#### Rule 2: Edge labels — plain text only, no HTML
+
+Edge labels are the text inside `|"..."|` arrow syntax: `A -->|"text"| B`. They do not support `<br/>` or any other HTML. The tag renders as literal text characters, making the label long and broken.
+
+**DO:**
+
+```mermaid
+graph TD
+    A[Client]-->|"JWKS public key"| B[Auth service]
+```
+
+**DO NOT:**
+
+```mermaid
+graph TD
+    A[Client]-->|"JWKS key<br/>via HTTPS"| B[Auth service]
+    %% BROKEN: renders as "JWKS key<br/>via HTTPS" with visible tag
+```
+
+Keep edge labels single-line plain text. If you need multi-line detail, move it into the destination node label.
+
+#### Rule 3: Maximum line length — 20 characters
+
+Both node label lines (each segment between `<br/>` tags) and edge label strings must not exceed **20 characters**. Most Mermaid renderers clip text beyond approximately 20–22 characters with no error or warning.
+
+Count every character including spaces, colons, slashes, and Unicode.
+
+**Safe examples (≤20 chars):**
+
+| Text                 | Length |
+| -------------------- | ------ |
+| `"Auth and profile"` | 16     |
+| `"health check"`     | 12     |
+| `"JWKS public key"`  | 15     |
+| `"issues JWT"`       | 10     |
+
+**Unsafe examples (>20 chars — will be clipped):**
+
+| Text                                  | Length | Clipped rendering          |
+| ------------------------------------- | ------ | -------------------------- |
+| `"Single deployable backend process"` | 34     | `"Single deployable back"` |
+| `"HTTPS: fetch JWKS public key"`      | 28     | `"HTTPS: fetch JWKS publ"` |
+| `"GET /.well-known/jwks.json"`        | 26     | cut at `.well-known`       |
+
+**DO:**
+
+```mermaid
+graph TD
+    A["Backend process<br/>single deployable"]:::blue
+    B[Client]-->|"JWKS public key"| A
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+```
+
+**DO NOT:**
+
+```mermaid
+graph TD
+    A["Single deployable backend process"]:::blue
+    %% BROKEN: "Single deployable backend process" is 34 chars — clipped
+    B[Client]-->|"HTTPS: fetch JWKS public key"| A
+    %% BROKEN: "HTTPS: fetch JWKS public key" is 28 chars — clipped
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+```
+
+**Technique**: Split long phrases across two `<br/>` segments, each ≤20 chars.
+
+```mermaid
+graph TD
+    A["Backend process<br/>single deployable"]:::blue
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+```
+
+#### Rule 4: No URL paths or dot-prefixed tokens in edge labels
+
+Any token starting with `.` inside an edge label (for example `/.well-known/`, `./path`, or `.json`) breaks the Mermaid parser. Mermaid interprets a leading `.` as the start of a CSS class selector, causing a parse failure.
+
+Describe the action in plain words instead of quoting a URL path.
+
+**DO:**
+
+```mermaid
+graph TD
+    A[Client]-->|"JWKS public key"| B[Auth service]
+    C[Client]-->|"health check"| D[API]
+```
+
+**DO NOT:**
+
+```mermaid
+graph TD
+    A[Client]-->|"GET /.well-known/jwks.json"| B[Auth service]
+    %% BROKEN: "." in "/.well-known" is parsed as CSS class selector
+    C[Client]-->|"POST /api/v1/auth/register"| D[API]
+    %% BROKEN AND too long (>20 chars)
+```
+
+URL paths belong in node label boxes (where HTML renders correctly), not on arrows.
+
+#### Rule 5: Keep separator lines proportional
+
+Separator characters like `────────────────────` set the minimum node width. Make them match the longest text line in the node label, keeping that longest line at ≤20 characters.
+
+**DO:**
+
+```mermaid
+graph TD
+    A["Auth service<br/>────────────<br/>issues JWT"]:::blue
+    %% Separator length matches "Auth service" (12 chars)
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+```
+
+**DO NOT:**
+
+```mermaid
+graph TD
+    A["Auth service<br/>────────────────────────────<br/>issues JWT"]:::blue
+    %% BROKEN: separator (28 dashes) forces node wider than text lines,
+    %% which causes adjacent text to be clipped
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+```
+
+#### Quick reference: label constraint summary
+
+| Location                               | `<br/>` supported? | Max length | URL paths allowed?            |
+| -------------------------------------- | ------------------ | ---------- | ----------------------------- |
+| Node label line (between `<br/>` tags) | Yes                | 20 chars   | Yes (node labels render HTML) |
+| Edge label `\|"text"\|`                | No                 | 20 chars   | No (`.` breaks parser)        |
+
+**Real-World Context**: All five rules were verified when fixing C4 architecture diagrams in `specs/apps/demo-be/c4/`. Failures observed:
+
+- `\n` in node labels rendered as literal `\n` (fixed by switching to `<br/>`)
+- `<br/>` in edge labels rendered as literal `<br/>` text (fixed by removing HTML, using plain text)
+- `"HTTPS: fetch JWKS public key"` (28 chars) clipped to `"HTTPS: fetch JWKS publ"` (fixed by shortening to `"JWKS public key"`)
+- `"Single deployable backend process"` (34 chars) clipped to `"Single deployable back"` (fixed by splitting across two `<br/>` lines)
+- `"GET /.well-known/jwks.json"` broke the parser at the leading `.` (fixed by replacing with `"JWKS public key"`)
 
 ## Diagram Size and Splitting
 

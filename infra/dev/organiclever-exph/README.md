@@ -2,7 +2,7 @@
 
 Local development environment for `organiclever-be-exph`, the Elixir/Phoenix
 alternative backend for OrganicLever. Runs on the same port (8201) as the
-Spring Boot backend (`organiclever-be-jasb`) — the two stacks are mutually
+Spring Boot backend (`demo-be-jasb`) — the two stacks are mutually
 exclusive and **must not be started simultaneously**.
 
 ## Port Assignment
@@ -67,7 +67,7 @@ curl http://localhost:8201/api/v1/hello \
 
 ## Shared Database Note
 
-Both `organiclever-be-jasb` and `organiclever-be-exph` use PostgreSQL on port 5432.
+Both `demo-be-jasb` and `organiclever-be-exph` use PostgreSQL on port 5432.
 They cannot run simultaneously since both bind port 8201. The databases have different
 names (`organiclever` for jasb, `organiclever_exph` for exph) so they can share the
 same PostgreSQL instance if needed, but this requires custom setup.
@@ -79,7 +79,7 @@ same PostgreSQL instance if needed, but this requires custom setup.
 docker compose -f docker-compose.yml -f docker-compose.e2e.yml up --build -d
 
 # Run E2E tests from workspace root
-BASE_URL=http://localhost:8201 npx nx run organiclever-be-e2e:test:e2e
+BASE_URL=http://localhost:8201 npx nx run demo-be-e2e:test:e2e
 
 # Stop stack
 docker compose -f docker-compose.yml -f docker-compose.e2e.yml down

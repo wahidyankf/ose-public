@@ -57,7 +57,7 @@ Runs the app inside a Node.js 24 Alpine container. Useful when you need the back
 frontend, or want an environment closer to CI.
 
 ```bash
-# From repository root — starts both organiclever-web and organiclever-be-jasb
+# From repository root — starts both organiclever-web and demo-be-jasb
 npm run organiclever:dev
 
 # Or start the frontend container only

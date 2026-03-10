@@ -17,8 +17,8 @@ Apps follow the naming pattern: **`[domain]-[type]`**
 - `oseplatform-cli` - OSE Platform CLI tool for link validation - Go application
 - `organiclever-web` - OrganicLever landing website (www.organiclever.com) - Next.js app (port 3200)
 - `organiclever-web-e2e` - E2E tests for organiclever-web - Playwright (browser testing)
-- `organiclever-be-jasb` - OrganicLever backend API (Java Spring Boot) - Spring Boot application (port 8201)
-- `organiclever-be-e2e` - E2E tests for organiclever-be-jasb REST API - Playwright (API testing)
+- `demo-be-jasb` - OrganicLever backend API (Java Spring Boot) - Spring Boot application (port 8201)
+- `demo-be-e2e` - E2E tests for demo-be-jasb REST API - Playwright (API testing)
 
 ## Application Characteristics
 
@@ -84,7 +84,7 @@ apps/oseplatform-cli/
 ### Spring Boot Application (Current)
 
 ```
-apps/organiclever-be-jasb/
+apps/demo-be-jasb/
 ├── src/main/java/           # Java source code
 │   └── com/organiclever/be/
 │       ├── OrganicLeverApplication.java
@@ -104,7 +104,7 @@ apps/organiclever-be-jasb/
 ### Playwright E2E Test App (Current)
 
 ```
-apps/organiclever-be-e2e/
+apps/demo-be-e2e/
 ├── playwright.config.ts         # Playwright configuration (baseURL, reporters)
 ├── package.json                 # Pinned @playwright/test dependency
 ├── tsconfig.json                # TypeScript config (extends workspace base)
@@ -238,7 +238,7 @@ nx clean oseplatform-web
 nx run organiclever-web-e2e:test:e2e
 
 # Run API E2E tests (backend must be running first)
-nx run organiclever-be-e2e:test:e2e
+nx run demo-be-e2e:test:e2e
 ```
 
 ## Deployment Branches
@@ -271,7 +271,7 @@ Currently:
 - **Hugo** (static sites) - oseplatform-web, ayokoding-web
 - **Go** (CLI tools) - ayokoding-cli, rhino-cli
 - **TypeScript/Next.js** (landing website) - organiclever-web
-- **Java/Spring Boot** (backend API) - organiclever-be-jasb
-- **TypeScript/Playwright** (E2E testing) - organiclever-be-e2e, organiclever-web-e2e
+- **Java/Spring Boot** (backend API) - demo-be-jasb
+- **TypeScript/Playwright** (E2E testing) - demo-be-e2e, organiclever-web-e2e
 
 Future: Kotlin, Python apps (each language will have language-specific structure and tooling)

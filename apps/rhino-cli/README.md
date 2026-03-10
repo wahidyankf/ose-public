@@ -36,7 +36,7 @@ rhino-cli docs validate-links --staged-only
 rhino-cli spec-coverage validate specs/apps/organiclever-web apps/organiclever-web
 
 # Validate Java packages have @NullMarked in package-info.java
-rhino-cli java validate-annotations apps/organiclever-be-jasb/src/main/java
+rhino-cli java validate-annotations apps/demo-be-jasb/src/main/java
 
 # Echo a message
 rhino-cli --say "hello world"
@@ -579,23 +579,23 @@ Missing steps (2):
 ### java validate-annotations
 
 Validate that all Java packages in a source tree have the required null-safety annotation in
-`package-info.java`. Used by `organiclever-be-jasb`'s `typecheck` target.
+`package-info.java`. Used by `demo-be-jasb`'s `typecheck` target.
 
 ```bash
 # Validate with default annotation (@NullMarked)
-rhino-cli java validate-annotations apps/organiclever-be-jasb/src/main/java
+rhino-cli java validate-annotations apps/demo-be-jasb/src/main/java
 
 # Use a custom annotation
-rhino-cli java validate-annotations apps/organiclever-be-jasb/src/main/java --annotation NonNull
+rhino-cli java validate-annotations apps/demo-be-jasb/src/main/java --annotation NonNull
 
 # Output as JSON
-rhino-cli java validate-annotations apps/organiclever-be-jasb/src/main/java -o json
+rhino-cli java validate-annotations apps/demo-be-jasb/src/main/java -o json
 
 # Output as markdown report
-rhino-cli java validate-annotations apps/organiclever-be-jasb/src/main/java -o markdown
+rhino-cli java validate-annotations apps/demo-be-jasb/src/main/java -o markdown
 
 # Quiet mode (suppress "0 violations found" on success)
-rhino-cli java validate-annotations apps/organiclever-be-jasb/src/main/java -q
+rhino-cli java validate-annotations apps/demo-be-jasb/src/main/java -q
 ```
 
 **What it does:**
@@ -607,7 +607,7 @@ rhino-cli java validate-annotations apps/organiclever-be-jasb/src/main/java -q
 
 **Arguments:**
 
-- `<source-root>` - Path to the Java source root (e.g. `apps/organiclever-be-jasb/src/main/java`)
+- `<source-root>` - Path to the Java source root (e.g. `apps/demo-be-jasb/src/main/java`)
 
 **Flags:**
 
@@ -686,15 +686,15 @@ rhino-cli doctor --quiet
 
 **Tools checked:**
 
-| Tool   | Binary  | Required Version Source                                | Comparison |
-| ------ | ------- | ------------------------------------------------------ | ---------- |
-| git    | `git`   | (no config file — any version OK)                      | any        |
-| volta  | `volta` | (no config file — any version OK)                      | any        |
-| node   | `node`  | `package.json` → `volta.node`                          | exact      |
-| npm    | `npm`   | `package.json` → `volta.npm`                           | exact      |
-| java   | `java`  | `apps/organiclever-be-jasb/pom.xml` → `<java.version>` | major only |
-| maven  | `mvn`   | (no config file — any version OK)                      | any        |
-| golang | `go`    | `apps/rhino-cli/go.mod` → `go` directive               | ≥ (GTE)    |
+| Tool   | Binary  | Required Version Source                        | Comparison |
+| ------ | ------- | ---------------------------------------------- | ---------- |
+| git    | `git`   | (no config file — any version OK)              | any        |
+| volta  | `volta` | (no config file — any version OK)              | any        |
+| node   | `node`  | `package.json` → `volta.node`                  | exact      |
+| npm    | `npm`   | `package.json` → `volta.npm`                   | exact      |
+| java   | `java`  | `apps/demo-be-jasb/pom.xml` → `<java.version>` | major only |
+| maven  | `mvn`   | (no config file — any version OK)              | any        |
+| golang | `go`    | `apps/rhino-cli/go.mod` → `go` directive       | ≥ (GTE)    |
 
 **Flags:**
 
@@ -1082,7 +1082,7 @@ rhino-cli say
 - Absorbed `javaproject-cli` as `java validate-annotations` subcommand
 - Validates Java packages have required null-safety annotation in `package-info.java`
 - Supports text, JSON, and markdown output formats; `--annotation` flag for custom annotations
-- Integrates into `organiclever-be-jasb` `typecheck` target (replaces standalone `javaproject-cli`)
+- Integrates into `demo-be-jasb` `typecheck` target (replaces standalone `javaproject-cli`)
 - `javaproject-cli` standalone project removed from workspace
 
 ### v0.8.0 (2026-03-04)

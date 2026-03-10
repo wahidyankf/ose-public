@@ -97,12 +97,12 @@ The platform consists of 9 applications across 4 technology stacks:
 
 ### Backend Services (Spring Boot)
 
-#### organiclever-be-jasb
+#### demo-be-jasb
 
 - **Purpose**: REST API backend for OrganicLever (Java Spring Boot implementation)
 - **Technology**: Spring Boot + Java + Maven
-- **Build Command**: `nx build organiclever-be-jasb`
-- **Location**: `apps/organiclever-be-jasb/`
+- **Build Command**: `nx build demo-be-jasb`
+- **Location**: `apps/demo-be-jasb/`
 - **Features**:
   - JaCoCo code coverage enforcement (>=90%)
   - Production Dockerfile with multi-stage build
@@ -117,12 +117,12 @@ The platform consists of 9 applications across 4 technology stacks:
 - **Run Command**: `nx run organiclever-web-e2e:test:e2e`
 - **Location**: `apps/organiclever-web-e2e/`
 
-#### organiclever-be-e2e
+#### demo-be-e2e
 
-- **Purpose**: End-to-end tests for organiclever-be-jasb REST API
+- **Purpose**: End-to-end tests for demo-be-jasb REST API
 - **Technology**: Playwright
-- **Run Command**: `nx run organiclever-be-e2e:test:e2e`
-- **Location**: `apps/organiclever-be-e2e/`
+- **Run Command**: `nx run demo-be-e2e:test:e2e`
+- **Location**: `apps/demo-be-e2e/`
 
 ## C4 Level 2: Container Diagram
 
@@ -137,9 +137,9 @@ graph TB
 
     subgraph "OrganicLever Platform"
         OL_WEB[organiclever-web<br/>Next.js App]
-        OL_BE[organiclever-be-jasb<br/>Spring Boot API]
+        OL_BE[demo-be-jasb<br/>Spring Boot API]
         OL_WEB_E2E[organiclever-web-e2e<br/>Playwright E2E]
-        OL_BE_E2E[organiclever-be-e2e<br/>Playwright E2E]
+        OL_BE_E2E[demo-be-e2e<br/>Playwright E2E]
     end
 
     subgraph "CLI Tools"

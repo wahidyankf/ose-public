@@ -396,7 +396,7 @@ class PaymentServiceIntegrationTest {
 **PROHIBITED**: Testcontainers in unit or integration tests.
 
 ```java
-// ✅ Correct — Testcontainers in E2E test project (organiclever-be-e2e)
+// ✅ Correct — Testcontainers in E2E test project (demo-be-e2e)
 @Testcontainers
 class InvoiceApiE2ETest {
     @Container

@@ -1,7 +1,7 @@
 # organiclever-be-exph
 
 Elixir/Phoenix REST API backend for the OrganicLever productivity tracker.
-This is an alternative implementation of `organiclever-be-jasb` (Spring Boot), built with
+This is an alternative implementation of `demo-be-jasb` (Spring Boot), built with
 Phoenix 1.7+ on Elixir 1.17 / OTP 27.
 
 ## Local Development (Docker)

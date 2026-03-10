@@ -30,7 +30,7 @@ Both images run as non-root `app` user and use multi-stage builds for minimal si
 For local development, use Docker Compose with `dev` profile:
 
 ```bash
-npm run organiclever:dev
+npm run demo-be:dev
 ```
 
-See [infra/dev/organiclever/README.md](../../dev/organiclever/README.md)
+See [infra/dev/demo-be/README.md](../../dev/demo-be/README.md)

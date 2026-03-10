@@ -143,28 +143,28 @@ Every project declares tags along four dimensions. Each dimension uses a fixed p
 
 ### Current Project Tags
 
-| Project                | Tags                                                                       |
-| ---------------------- | -------------------------------------------------------------------------- |
-| `ayokoding-web`        | `["type:app", "platform:hugo", "domain:ayokoding"]`                        |
-| `ayokoding-cli`        | `["type:app", "platform:cli", "lang:golang", "domain:ayokoding"]`          |
-| `rhino-cli`            | `["type:app", "platform:cli", "lang:golang", "domain:tooling"]`            |
-| `organiclever-be-jasb` | `["type:app", "platform:spring-boot", "lang:java", "domain:organiclever"]` |
-| `organiclever-be-e2e`  | `["type:e2e", "platform:playwright", "lang:ts", "domain:organiclever"]`    |
-| `organiclever-web`     | `["type:app", "platform:nextjs", "lang:ts", "domain:organiclever"]`        |
-| `organiclever-web-e2e` | `["type:e2e", "platform:playwright", "lang:ts", "domain:organiclever"]`    |
-| `oseplatform-cli`      | `["type:app", "platform:cli", "lang:golang", "domain:oseplatform"]`        |
-| `oseplatform-web`      | `["type:app", "platform:hugo", "domain:oseplatform"]`                      |
-| `hugo-commons`         | `["type:lib", "lang:golang"]`                                              |
-| `golang-commons`       | `["type:lib", "lang:golang"]`                                              |
+| Project                | Tags                                                                    |
+| ---------------------- | ----------------------------------------------------------------------- |
+| `ayokoding-web`        | `["type:app", "platform:hugo", "domain:ayokoding"]`                     |
+| `ayokoding-cli`        | `["type:app", "platform:cli", "lang:golang", "domain:ayokoding"]`       |
+| `rhino-cli`            | `["type:app", "platform:cli", "lang:golang", "domain:tooling"]`         |
+| `demo-be-jasb`         | `["type:app", "platform:spring-boot", "lang:java", "domain:demo-be"]`   |
+| `demo-be-e2e`          | `["type:e2e", "platform:playwright", "lang:ts", "domain:demo-be"]`      |
+| `organiclever-web`     | `["type:app", "platform:nextjs", "lang:ts", "domain:organiclever"]`     |
+| `organiclever-web-e2e` | `["type:e2e", "platform:playwright", "lang:ts", "domain:organiclever"]` |
+| `oseplatform-cli`      | `["type:app", "platform:cli", "lang:golang", "domain:oseplatform"]`     |
+| `oseplatform-web`      | `["type:app", "platform:hugo", "domain:oseplatform"]`                   |
+| `hugo-commons`         | `["type:lib", "lang:golang"]`                                           |
+| `golang-commons`       | `["type:lib", "lang:golang"]`                                           |
 
 ### Example: Complete Tag Declaration
 
-A Spring Boot app for the OrganicLever domain declares all four dimensions:
+A Spring Boot app for the demo-be domain declares all four dimensions:
 
 ```json
 {
-  "name": "organiclever-be-jasb",
-  "tags": ["type:app", "platform:spring-boot", "lang:java", "domain:organiclever"]
+  "name": "demo-be-jasb",
+  "tags": ["type:app", "platform:spring-boot", "lang:java", "domain:demo-be"]
 }
 ```
 
@@ -312,11 +312,11 @@ Playwright suites (`*-e2e`):
 **BDD suites**: When the E2E project uses playwright-bdd, `test:e2e` runs
 `npx bddgen && npx playwright test`. The `bddgen` step regenerates `.features-gen/`
 spec files from the Gherkin feature files before Playwright executes them.
-See `apps/organiclever-be-e2e/project.json` for the canonical example.
+See `apps/demo-be-e2e/project.json` for the canonical example.
 
-**`test:integration` with Cucumber JVM**: `organiclever-be-jasb` also exposes `test:integration` which
+**`test:integration` with Cucumber JVM**: `demo-be-jasb` also exposes `test:integration` which
 runs `mvn test -Pintegration`. This activates Cucumber JVM 7+ with MockMvc — the same Gherkin
-feature files from `specs/apps/organiclever-be/` are executed via a full Spring context but without a
+feature files from `specs/apps/demo-be/gherkin/` are executed via a full Spring context but without a
 running server. Unlike `test:e2e`, no live service is required.
 
 ### Hugo Sites

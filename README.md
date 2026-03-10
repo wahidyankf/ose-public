@@ -3,7 +3,7 @@
 ✨ An enterprise solutions platform for Sharia-compliant business systems.
 
 [![Main CI](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/main-ci.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/main-ci.yml)
-[![E2E - OrganicLever (JASB)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-organiclever-jasb.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-organiclever-jasb.yml)
+[![E2E - Demo Backend (JASB)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-demo-be.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-demo-be.yml)
 [![E2E - OrganicLever (EXPH)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-organiclever-exph.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-organiclever-exph.yml)
 [![Test and Deploy - AyoKoding Web](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/deploy-ayokoding-web.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/deploy-ayokoding-web.yml)
 [![Test and Deploy - OSE Platform Web](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/deploy-oseplatform-web.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/deploy-oseplatform-web.yml)
@@ -17,7 +17,7 @@ All projects enforce ≥95% test coverage as part of `test:quick`. Coverage is u
 | `apps/rhino-cli`            | [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=rhino-cli)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise)            |
 | `apps/ayokoding-cli`        | [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=ayokoding-cli)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise)        |
 | `apps/oseplatform-cli`      | [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=oseplatform-cli)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise)      |
-| `apps/organiclever-be-jasb` | [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=organiclever-be-jasb)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise) |
+| `apps/demo-be-jasb`         | [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=demo-be-jasb)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise)         |
 | `apps/organiclever-be-exph` | [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=organiclever-be-exph)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise) |
 | `apps/organiclever-web`     | [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=organiclever-web)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise)     |
 | `libs/golang-commons`       | [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=golang-commons)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise)       |
@@ -38,7 +38,7 @@ All projects enforce ≥95% test coverage as part of `test:quick`. Coverage is u
 Building OrganicLever, a full-stack individual productivity tracker:
 
 - 🌐 **Landing site**: [organiclever.com](https://www.organiclever.com/) ([organiclever-web](./apps/organiclever-web/)) - Next.js promotional website
-- ☕ **Backend API**: Spring Boot REST API ([organiclever-be-jasb](./apps/organiclever-be-jasb/))
+- ☕ **Backend API**: Spring Boot REST API ([demo-be-jasb](./apps/demo-be-jasb/))
 - ✅ **Phase 0 complete**: [ayokoding.com](https://ayokoding.com), [oseplatform.com](https://oseplatform.com), AI agents, governance, CLI tools
 
 **Next Phase: Phase 2 (SMB Application)** - Small and medium business application building on OrganicLever's foundation.
@@ -138,7 +138,7 @@ open-sharia-enterprise/
 
 This project uses **Nx** to manage applications and libraries:
 
-- **`apps/`** - Deployable applications (current: [`oseplatform-web`](./apps/oseplatform-web/), [`ayokoding-web`](./apps/ayokoding-web/), [`ayokoding-cli`](./apps/ayokoding-cli/), [`rhino-cli`](./apps/rhino-cli/), [`oseplatform-cli`](./apps/oseplatform-cli/), [`organiclever-web`](./apps/organiclever-web/), [`organiclever-web-e2e`](./apps/organiclever-web-e2e/), [`organiclever-be-jasb`](./apps/organiclever-be-jasb/), [`organiclever-be-e2e`](./apps/organiclever-be-e2e/))
+- **`apps/`** - Deployable applications (current: [`oseplatform-web`](./apps/oseplatform-web/), [`ayokoding-web`](./apps/ayokoding-web/), [`ayokoding-cli`](./apps/ayokoding-cli/), [`rhino-cli`](./apps/rhino-cli/), [`oseplatform-cli`](./apps/oseplatform-cli/), [`organiclever-web`](./apps/organiclever-web/), [`organiclever-web-e2e`](./apps/organiclever-web-e2e/), [`demo-be-jasb`](./apps/demo-be-jasb/), [`demo-be-e2e`](./apps/demo-be-e2e/))
 - **`libs/`** - Reusable libraries with language prefixes (`ts-*`, future: `java-*`, `py-*`) - currently empty
 - **`apps-labs/`** - Experimental apps and POCs (framework evaluation, language exploration) - currently empty
 

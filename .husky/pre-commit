@@ -1,1 +1,1 @@
-CGO_ENABLED=0 go run -C apps/rhino-cli main.go pre-commit
+CGO_ENABLED=0 go run -C apps/rhino-cli main.go git pre-commit

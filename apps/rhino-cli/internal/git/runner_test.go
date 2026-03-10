@@ -1,4 +1,4 @@
-package precommit
+package git
 
 import (
 	"bytes"

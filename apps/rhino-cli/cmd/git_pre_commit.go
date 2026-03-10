@@ -4,10 +4,10 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/wahidyankf/open-sharia-enterprise/apps/rhino-cli/internal/precommit"
+	"github.com/wahidyankf/open-sharia-enterprise/apps/rhino-cli/internal/git"
 )
 
-var preCommitCmd = &cobra.Command{
+var gitPreCommitCmd = &cobra.Command{
 	Use:   "pre-commit",
 	Short: "Run all pre-commit checks (config, lint, format, docs)",
 	Long: `Orchestrate all pre-commit hook steps in order:
@@ -29,10 +29,10 @@ Exits immediately on the first failure (except step 3 which only warns).`,
 		if err != nil {
 			return fmt.Errorf("failed to find git repository root: %w", err)
 		}
-		return precommit.Run(gitRoot, precommit.DefaultDeps())
+		return git.Run(gitRoot, git.DefaultDeps())
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(preCommitCmd)
+	gitCmd.AddCommand(gitPreCommitCmd)
 }

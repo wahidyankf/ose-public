@@ -125,7 +125,7 @@ npx prettier --write [file-path]
 
 1. You run `git commit`
 2. Pre-commit hook triggers (`.husky/pre-commit` — a single `go run` line)
-3. `rhino-cli pre-commit` orchestrates all 9 steps in order, failing fast:
+3. `rhino-cli git pre-commit` orchestrates all 9 steps in order, failing fast:
 
 | Step | Trigger                           | Action                                                                | On failure |
 | ---- | --------------------------------- | --------------------------------------------------------------------- | ---------- |
@@ -141,7 +141,7 @@ npx prettier --write [file-path]
 
 1. Commit proceeds if no errors
 
-**Implementation**: `apps/rhino-cli/internal/precommit/runner.go` — all steps call internal Go functions directly (no subprocess round-trips for rhino-cli-owned logic); external tools are shelled out via `os/exec`.
+**Implementation**: `apps/rhino-cli/internal/git/runner.go` — all steps call internal Go functions directly (no subprocess round-trips for rhino-cli-owned logic); external tools are shelled out via `os/exec`.
 
 **What It Validates**:
 
@@ -535,7 +535,7 @@ lint-staged changes the working directory per file glob, which breaks the projec
 A dedicated hook step groups staged files by their nearest Mix project root and runs `mix format`
 from each one.
 
-**Implementation**: `apps/rhino-cli/internal/precommit/runner.go` (`step6ElixirFormat`). The logic runs as part of `rhino-cli pre-commit` (step 6).
+**Implementation**: `apps/rhino-cli/internal/git/runner.go` (`step6ElixirFormat`). The logic runs as part of `rhino-cli git pre-commit` (step 6).
 
 **How It Works**:
 

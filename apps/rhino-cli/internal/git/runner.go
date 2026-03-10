@@ -1,5 +1,5 @@
-// Package precommit orchestrates all pre-commit hook steps.
-package precommit
+// Package git orchestrates all pre-commit hook steps.
+package git
 
 import (
 	"fmt"

@@ -29,19 +29,24 @@ defmodule CabbageTestHelper do
 
   defp versioned_callbacks() do
     System.version()
-    |> then(&{Version.compare(&1, "1.6.6"), Version.compare(&1, "1.15.0")})
+    |> then(&{Version.compare(&1, "1.6.6"), Version.compare(&1, "1.15.0"), Version.compare(&1, "1.19.0")})
     |> case do
-      {:lt, _} ->
+      {:lt, _, _} ->
         {&ExUnit.Server.add_sync_case/1, &ExUnit.Server.cases_loaded/0, &fix_13_elixir_test_result/1}
 
-      {:eq, _} ->
+      {:eq, _, _} ->
         {&ExUnit.Server.add_async_module/1, &ExUnit.Server.modules_loaded/0, &fix_13_elixir_test_result/1}
 
-      {_, :lt} ->
+      {_, :lt, _} ->
         {&ExUnit.Server.add_sync_module/1, &ExUnit.Server.modules_loaded/0, &fix_17_elixir_test_result/1}
 
-      {_, _} ->
+      {_, _, :lt} ->
         {&ExUnit.Server.add_sync_module/1, fn -> ExUnit.Server.modules_loaded(true) end, &fix_17_elixir_test_result/1}
+
+      # Elixir 1.19+: ExUnit.Server.add_sync_module/1 replaced by add_module/2
+      {_, _, _} ->
+        {&ExUnit.Server.add_module(&1, %{async?: false, group: nil, parameterize: nil}),
+         fn -> ExUnit.Server.modules_loaded(true) end, &fix_17_elixir_test_result/1}
     end
   end
 

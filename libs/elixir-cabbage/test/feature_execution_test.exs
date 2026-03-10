@@ -46,7 +46,8 @@ defmodule Cabbage.FeatureExecutionTest do
 
       {result, output} = CabbageTestHelper.run()
       assert result == %{failures: 1, skipped: 0, total: 1, excluded: 0}
-      assert output =~ "** (BadMapError) expected a map, got: [some: :some]"
+      assert output =~ "** (BadMapError)"
+      assert output =~ "[some: :some]"
     end
 
     test "accepts state steps that does comply to pattern {:ok, map}" do

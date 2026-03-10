@@ -1,19 +1,22 @@
-# Demo IAM C4 Diagrams
+# Demo Backend C4 Diagrams
 
-C4 architecture diagrams for the demo IAM service.
+C4 architecture diagrams for the demo backend service.
 
-## Status
+## Diagrams
 
-Placeholder — diagrams to be added as implementations mature.
+| Level     | File           | What It Shows                                                                    |
+| --------- | -------------- | -------------------------------------------------------------------------------- |
+| Context   | `context.md`   | The system and its four external actors                                          |
+| Container | `container.md` | Runtime containers: REST API, Database, File Storage                             |
+| Component | `component.md` | Internal structure of the REST API: handlers, services, repositories, middleware |
 
-## Planned Diagrams
+## C4 Level Summary
 
-| Level     | Diagram        | Description                                        |
-| --------- | -------------- | -------------------------------------------------- |
-| Context   | `context.md`   | IAM service in relation to users and external deps |
-| Container | `container.md` | Runtime containers (API, DB, token store)          |
-| Component | `component.md` | Internal components (auth, RBAC, token lifecycle)  |
+- **Context** — answers: who uses the system and how?
+- **Container** — answers: what processes run and what data stores exist?
+- **Component** — answers: what are the logical building blocks inside the REST API?
 
 ## Related
 
 - **Parent**: [demo-be specs](../README.md)
+- **Gherkin specs**: [gherkin/](../gherkin/README.md)

@@ -30,7 +30,7 @@ config :organiclever_be_exph, OrganicleverBeExph.Auth.Guardian,
 
 # Elixir Cabbage BDD — feature files relative to workspace root
 config :elixir_cabbage,
-  features: Path.expand("../../../../specs/apps/organiclever-be/", __DIR__) <> "/"
+  features: Path.expand("../../../specs/apps/organiclever-be/", __DIR__) <> "/"
 
 # Print only warnings and errors during test
 config :logger, level: :warning

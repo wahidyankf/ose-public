@@ -47,6 +47,7 @@ jobs:
         run: npx nx run organiclever-be-e2e:test:e2e
         env:
           BASE_URL: http://localhost:8201
+          DATABASE_URL: postgresql://organiclever:organiclever@localhost:5432/organiclever_exph
 
       - name: Upload test report
         if: always()

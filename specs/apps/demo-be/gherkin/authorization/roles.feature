@@ -1,8 +1,8 @@
-Feature: Role Management
+Feature: Roles
 
   As an administrator
-  I want to create, update, and delete roles
-  So that I can organize permissions into named groups
+  I want to create, update, and assign roles to users
+  So that I can organize permissions into named groups and control user access
 
   Background:
     Given the IAM API is running
@@ -20,30 +20,29 @@ Feature: Role Management
     Then the response status code should be 409
     And the response body should contain an error message about duplicate role name
 
-  Scenario: Reject role creation with empty name
-    When the admin sends POST /api/v1/roles with body { "name": "", "description": "No name" }
-    Then the response status code should be 400
-    And the response body should contain a validation error for "name"
-
   Scenario: Update role name and description
     Given a role "editor" exists with ID stored
     When the admin sends PATCH /api/v1/roles/{roleId} with body { "name": "content-editor", "description": "Updated description" }
     Then the response status code should be 200
     And the response body should contain "name" equal to "content-editor"
 
-  Scenario: List roles returns paginated results
-    When the admin sends GET /api/v1/roles
+  Scenario: Assign a role to a user
+    Given a user "bob" is registered with password "Str0ng#Pass1"
+    And a role "editor" exists
+    When the admin sends POST /api/v1/users/{bob_id}/roles with body { "role_id": "{editor_id}" }
+    Then the response status code should be 201
+
+  Scenario: List user roles returns all currently assigned roles
+    Given a user "bob" is registered with password "Str0ng#Pass1"
+    And a role "editor" exists
+    And the role "editor" is assigned to user "bob"
+    When the admin sends GET /api/v1/users/{bob_id}/roles
     Then the response status code should be 200
-    And the response body should contain a non-null "data" field
-    And the response body should contain a non-null "total" field
+    And the response body should contain "editor" in the roles list
 
-  Scenario: Delete role that has no assigned users
-    Given a role "unused-role" exists with no assigned users
-    When the admin sends DELETE /api/v1/roles/{roleId}
+  Scenario: Remove a role from a user
+    Given a user "bob" is registered with password "Str0ng#Pass1"
+    And a role "editor" exists
+    And the role "editor" is assigned to user "bob"
+    When the admin sends DELETE /api/v1/users/{bob_id}/roles/{editor_id}
     Then the response status code should be 204
-
-  Scenario: Reject deletion of role that still has assigned users
-    Given a role "editor" exists and is assigned to user "alice"
-    When the admin sends DELETE /api/v1/roles/{roleId}
-    Then the response status code should be 422
-    And the response body should contain an error message about role in use

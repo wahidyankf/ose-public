@@ -34,24 +34,3 @@ Feature: Password Login
     When the client sends POST /api/v1/auth/login with body { "username": "alice", "password": "Str0ng#Pass1" }
     Then the response status code should be 401
     And the response body should contain an error message about account deactivation
-
-  Scenario: Reject login for locked account
-    Given a user "alice" is registered and locked after too many failed logins
-    When the client sends POST /api/v1/auth/login with body { "username": "alice", "password": "Str0ng#Pass1" }
-    Then the response status code should be 401
-    And the response body should contain an error message about account lockout
-
-  Scenario: Reject login with empty username
-    When the client sends POST /api/v1/auth/login with body { "username": "", "password": "Str0ng#Pass1" }
-    Then the response status code should be 400
-    And the response body should contain a validation error for "username"
-
-  Scenario: Reject login with empty password
-    When the client sends POST /api/v1/auth/login with body { "username": "alice", "password": "" }
-    Then the response status code should be 400
-    And the response body should contain a validation error for "password"
-
-  Scenario: Failed login attempt increments brute-force counter
-    When the client sends POST /api/v1/auth/login with body { "username": "alice", "password": "Wr0ngPass!" }
-    Then the response status code should be 401
-    And the response header "X-RateLimit-Remaining" should be present

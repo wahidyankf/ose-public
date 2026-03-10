@@ -135,9 +135,11 @@ npx prettier --write [file-path]
 6. `lint-staged` selects staged files
 7. Prettier formats matching files
 8. Formatted files are automatically staged
-9. Validates markdown links in staged files
-10. Validates all markdown files (markdownlint)
-11. Commit proceeds if no errors
+9. **Elixir formatting** (if `.ex`/`.exs` staged): runs `mix format` per project root
+10. Re-stages Elixir files after formatting
+11. Validates markdown links in staged files
+12. Validates all markdown files (markdownlint)
+13. Commit proceeds if no errors
 
 **What It Validates**:
 
@@ -515,6 +517,46 @@ golangci-lint run -v ./... 2>&1 | grep "Config"
 ```
 
 **Convention**: All Go projects in this repository share the root `.golangci.yml`. Per-project override files should only be added if a specific project genuinely needs different rules — which should be rare given the CLIs have the same purpose and audience.
+
+## Elixir Formatting
+
+**Purpose**: Auto-format Elixir source files to maintain consistent style across the three Elixir
+projects: `apps/organiclever-be-exph`, `libs/elixir-gherkin`, and `libs/elixir-cabbage`.
+
+**Tool**: `mix format`
+
+**Why a Separate Hook Step (Not lint-staged)**:
+
+`organiclever-be-exph`'s `.formatter.exs` uses `import_deps: [:ecto, :ecto_sql, :phoenix]`, which
+loads `locals_without_parens` rules from those dependencies (e.g. Phoenix route macros, Ecto schema
+macros). `mix format` must run from the project root where `mix.exs` and `_build/` are present.
+Running from the repository root (no `mix.exs`) would silently apply incorrect formatting —
+removing parentheses that Phoenix/Ecto expect to be omitted.
+
+lint-staged changes the working directory per file glob, which breaks the project-root requirement.
+A dedicated hook step groups staged files by their nearest Mix project root and runs `mix format`
+from each one.
+
+**How It Works**:
+
+1. Collect staged `.ex`/`.exs` files (excluding `deps/` and `_build/`)
+2. If none staged: skip with message
+3. If `mix` not installed: skip with warning (graceful degradation)
+4. Walk up from each file's directory to find the nearest `mix.exs` (the project root)
+5. For each unique project root, run `mix format <relative-file-paths>`
+6. Re-stage all formatted files
+
+**Configuration**: Each project's `.formatter.exs` governs formatting rules — no global config.
+
+**Manual Formatting**:
+
+```bash
+# From a project root (e.g. apps/organiclever-be-exph)
+mix format
+
+# Format specific file
+mix format lib/my_module.ex
+```
 
 ## Best Practices
 

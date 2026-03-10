@@ -262,12 +262,13 @@ done
 
 ### Practice 8: Enable Lint-Staged for Incremental Quality
 
-**Principle**: Format and lint only staged files in pre-commit.
+**Principle**: Format and lint only staged files in pre-commit. For languages that require project
+context (e.g. Go, Elixir), use dedicated hook steps rather than lint-staged.
 
 **Good Example:**
 
 ```json
-// package.json
+// package.json — lint-staged for JS/TS/JSON/YAML/CSS/MD
 {
   "lint-staged": {
     "*.md": ["prettier --write", "markdownlint-cli2 --fix"]
@@ -275,19 +276,37 @@ done
 }
 ```
 
+```sh
+# .husky/pre-commit — dedicated step for language-native formatters
+
+# gofmt: no project context required, safe in lint-staged or hook
+gofmt -w staged_go_files
+
+# mix format: MUST run from project root (import_deps in .formatter.exs)
+# Groups staged .ex/.exs files by Mix project root and runs mix format per root
+for project_dir in $project_roots; do
+  (cd "$project_dir" && mix format $project_files)
+done
+```
+
 **Bad Example:**
 
 ```bash
 # Format entire repo on every commit (DO NOT DO THIS)
 prettier --write .  # SLOW!
+
+# Running mix format from repo root (DO NOT DO THIS)
+# Silently applies wrong formatting — import_deps rules are missing
+mix format apps/organiclever-be-exph/lib/my_module.ex
 ```
 
 **Rationale:**
 
-- Fast pre-commit hooks
-- Only affects changed files
-- Gradual quality improvement
-- Developer-friendly
+- Fast pre-commit hooks — only affects changed files
+- Language-native formatters (gofmt, mix format) enforce language-specific style
+- `mix format` requires project root for `import_deps` (Phoenix/Ecto macros); running from repo
+  root silently strips required parentheses for route/schema macros
+- Gradual quality improvement; developer-friendly
 
 ### Practice 9: Document Validation Rules and Rationale
 

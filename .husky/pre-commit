@@ -44,7 +44,47 @@ git add apps/ayokoding-web/content/ 2>/dev/null || true
 # 5. Run lint-staged for formatting
 npx lint-staged
 
-# 6. Validate and auto-fix docs file naming conventions (if docs/ affected)
+# 6. Auto-format staged Elixir files (mix format per project)
+staged_elixir=$(git diff --cached --name-only | grep -E '\.(ex|exs)$' | grep -vE '/(deps|_build)/' || true)
+if [ -n "$staged_elixir" ]; then
+  if ! command -v mix >/dev/null 2>&1; then
+    echo "⚠️  mix not found, skipping Elixir formatting"
+  else
+    echo "🔧 Formatting Elixir files..."
+    # Collect unique Mix project roots
+    project_roots=""
+    for file in $staged_elixir; do
+      dir=$(dirname "$file")
+      while [ "$dir" != "." ] && [ ! -f "$dir/mix.exs" ]; do
+        dir=$(dirname "$dir")
+      done
+      if [ -f "$dir/mix.exs" ]; then
+        case " $project_roots " in
+          *" $dir "*) ;;
+          *) project_roots="$project_roots $dir" ;;
+        esac
+      fi
+    done
+    # Run mix format per project with its relevant files
+    for project_dir in $project_roots; do
+      project_files=""
+      for file in $staged_elixir; do
+        case "$file" in
+          "$project_dir/"*) project_files="$project_files ${file#${project_dir}/}" ;;
+        esac
+      done
+      if [ -n "$project_files" ]; then
+        (cd "$project_dir" && mix format $project_files)
+      fi
+    done
+    git add $staged_elixir
+    echo "✅ Elixir files formatted"
+  fi
+else
+  echo "⏭️  Skipping Elixir formatting (no .ex/.exs files staged)"
+fi
+
+# 7. Validate and auto-fix docs file naming conventions (if docs/ affected)
 if git diff --cached --name-only | grep -qE '^docs/'; then
   echo "🔍 Validating and fixing documentation file naming..."
   CGO_ENABLED=0 go run -C apps/rhino-cli main.go docs validate-naming --staged-only --fix --apply || exit 1
@@ -55,8 +95,8 @@ else
   echo "⏭️  Skipping docs naming validation (no docs/ changes in staged files)"
 fi
 
-# 7. Validate markdown links in staged files
+# 8. Validate markdown links in staged files
 CGO_ENABLED=0 go run -C apps/rhino-cli main.go docs validate-links --staged-only || exit 1
 
-# 8. Validate all markdown files
+# 9. Validate all markdown files
 npm run lint:md || exit 1

@@ -196,7 +196,7 @@ Husky + lint-staged enforce quality:
     - Auto-syncs `.claude/` → `.opencode/`
     - Validates `.opencode/` output (semantic equivalence)
   - When ayokoding-web content changes: rebuilds CLI, updates titles, regenerates navigation
-  - Formats staged files with Prettier
+  - Formats staged files with Prettier (JS/TS/JSON/YAML/CSS/MD), gofmt (Go), and mix format (Elixir)
   - Validates markdown links in staged files
   - Validates all markdown files (markdownlint)
   - Auto-stages changes

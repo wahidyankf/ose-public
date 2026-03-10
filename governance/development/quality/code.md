@@ -124,22 +124,24 @@ npx prettier --write [file-path]
 **Execution Order**:
 
 1. You run `git commit`
-2. Pre-commit hook triggers
-3. **Configuration Validation** (if `.claude/` or `.opencode/` staged):
-   - Validates `.claude/` source format (YAML, tools, model, skills)
-   - Syncs `.claude/` → `.opencode/` (auto-sync)
-   - Validates `.opencode/` output (semantic equivalence)
-   - Skipped if no config changes in staged files (work avoidance)
-4. Runs ayokoding-web pre-commit scripts if affected (title updates + navigation)
-5. Stages any changes made by scripts
-6. `lint-staged` selects staged files
-7. Prettier formats matching files
-8. Formatted files are automatically staged
-9. **Elixir formatting** (if `.ex`/`.exs` staged): runs `mix format` per project root
-10. Re-stages Elixir files after formatting
-11. Validates markdown links in staged files
-12. Validates all markdown files (markdownlint)
-13. Commit proceeds if no errors
+2. Pre-commit hook triggers (`.husky/pre-commit` — a single `go run` line)
+3. `rhino-cli pre-commit` orchestrates all 9 steps in order, failing fast:
+
+| Step | Trigger                           | Action                                                                | On failure |
+| ---- | --------------------------------- | --------------------------------------------------------------------- | ---------- |
+| 1    | `.claude/` or `.opencode/` staged | Validate → Sync → Validate-sync                                       | exit 1     |
+| 2    | `docker-compose.ya?ml` staged     | `docker compose -f <file> config` per file                            | exit 1     |
+| 3    | always                            | `nx affected -t run-pre-commit --skip-nx-cache`                       | warn only  |
+| 4    | always                            | `git add apps/ayokoding-web/content/`                                 | ignored    |
+| 5    | always                            | `npx lint-staged`                                                     | exit 1     |
+| 6    | `.ex`/`.exs` staged, `mix` found  | `mix format <files>` per project root, then `git add`                 | exit 1     |
+| 7    | `docs/` staged                    | Validate + auto-fix naming, then `git add docs/ governance/ .claude/` | exit 1     |
+| 8    | always                            | Validate markdown links (staged only)                                 | exit 1     |
+| 9    | always                            | `npm run lint:md`                                                     | exit 1     |
+
+1. Commit proceeds if no errors
+
+**Implementation**: `apps/rhino-cli/internal/precommit/runner.go` — all steps call internal Go functions directly (no subprocess round-trips for rhino-cli-owned logic); external tools are shelled out via `os/exec`.
 
 **What It Validates**:
 
@@ -178,14 +180,10 @@ Validates `.claude/` and `.opencode/` consistency before commit:
 ```bash
 $ git commit -m "feat: add new feature"
 🔍 Validating .claude/ and .opencode/ configuration...
-Validation Complete (513 checks passed)
-Sync Complete (N agents, N skills)
-Validation Complete (68 checks passed)
 ✅ Configuration validation passed
- Preparing lint-staged...
- Running tasks for staged files...
- Applying modifications from tasks...
- Cleaning up temporary files...
+⏭️  Skipping docker-compose validation (no docker-compose.yml changes in staged files)
+⏭️  Skipping Elixir formatting (no .ex/.exs files staged)
+⏭️  Skipping docs naming validation (no docs/ changes in staged files)
 [main abc1234] feat: add new feature
 ```
 
@@ -536,6 +534,8 @@ removing parentheses that Phoenix/Ecto expect to be omitted.
 lint-staged changes the working directory per file glob, which breaks the project-root requirement.
 A dedicated hook step groups staged files by their nearest Mix project root and runs `mix format`
 from each one.
+
+**Implementation**: `apps/rhino-cli/internal/precommit/runner.go` (`step6ElixirFormat`). The logic runs as part of `rhino-cli pre-commit` (step 6).
 
 **How It Works**:
 

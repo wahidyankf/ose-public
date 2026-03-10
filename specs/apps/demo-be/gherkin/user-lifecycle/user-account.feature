@@ -34,8 +34,8 @@ Feature: User Account
     When alice sends POST /api/v1/users/me/deactivate
     Then the response status code should be 200
 
-  Scenario: Deactivated user cannot log in
-    Given a user "alice" is registered and deactivated
+  Scenario: Self-deactivated user cannot log in with previous credentials
+    Given alice has deactivated her own account via POST /api/v1/users/me/deactivate
     When the client sends POST /api/v1/auth/login with body { "username": "alice", "password": "Str0ng#Pass1" }
     Then the response status code should be 401
     And the response body should contain an error message about account deactivation

@@ -12,8 +12,8 @@ Feature: Security
     Then the response status code should be 400
     And the response body should contain a validation error for "password"
 
-  Scenario: Reject password with no uppercase letter
-    When the client sends POST /api/v1/auth/register with body { "username": "alice", "email": "alice@example.com", "password": "alllowercase1!" }
+  Scenario: Reject password with no special character
+    When the client sends POST /api/v1/auth/register with body { "username": "alice", "email": "alice@example.com", "password": "AllUpperCase1234" }
     Then the response status code should be 400
     And the response body should contain a validation error for "password"
 

@@ -36,7 +36,7 @@ Feature: Token Lifecycle
   Scenario: Logout current session invalidates the access token
     When the client sends POST /api/v1/auth/logout with alice's access token
     Then the response status code should be 200
-    And subsequent requests using alice's access token return 401
+    And alice's access token should be invalidated
 
   Scenario: Logout all devices invalidates tokens from all sessions
     When the client sends POST /api/v1/auth/logout-all with alice's access token
@@ -44,6 +44,6 @@ Feature: Token Lifecycle
     And subsequent requests using alice's access token return 401
 
   Scenario: Logout is idempotent — repeating logout on the same token returns 200
+    Given alice has already logged out once
     When the client sends POST /api/v1/auth/logout with alice's access token
-    And the client sends POST /api/v1/auth/logout with alice's access token again
     Then the response status code should be 200

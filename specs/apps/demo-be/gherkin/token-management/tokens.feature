@@ -35,6 +35,6 @@ Feature: Tokens
 
   Scenario: Deactivating a user revokes all their active tokens
     Given an admin user "superadmin" is registered and logged in with role "admin"
-    When the admin sends POST /api/v1/admin/users/{alice_id}/disable with body { "reason": "Security review" }
-    And the client sends GET /api/v1/users/me with alice's access token
+    And the admin has disabled alice's account via POST /api/v1/admin/users/{alice_id}/disable
+    When the client sends GET /api/v1/users/me with alice's access token
     Then the response status code should be 401

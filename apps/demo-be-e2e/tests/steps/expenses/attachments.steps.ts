@@ -150,3 +150,41 @@ When(
     );
   },
 );
+
+When(/^alice sends GET \/api\/v1\/expenses\/\{bobExpenseId\}\/attachments$/, async ({ request }) => {
+  const token = getTokenForUser("alice");
+  const bobExpenseId = getIdForUser("bob_last_expense");
+  setResponse(
+    await request.get(`/api/v1/expenses/${bobExpenseId}/attachments`, {
+      headers: { Authorization: `Bearer ${token}` },
+    }),
+  );
+});
+
+When(
+  /^alice sends DELETE \/api\/v1\/expenses\/\{bobExpenseId\}\/attachments\/\{attachmentId\}$/,
+  async ({ request }) => {
+    const token = getTokenForUser("alice");
+    const bobExpenseId = getIdForUser("bob_last_expense");
+    const attachmentId = getLastAttachmentId();
+    setResponse(
+      await request.delete(`/api/v1/expenses/${bobExpenseId}/attachments/${attachmentId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+    );
+  },
+);
+
+When(
+  /^alice sends DELETE \/api\/v1\/expenses\/\{expenseId\}\/attachments\/\{randomAttachmentId\}$/,
+  async ({ request }) => {
+    const token = getTokenForUser("alice");
+    const expenseId = getLastExpenseId();
+    const randomId = crypto.randomUUID();
+    setResponse(
+      await request.delete(`/api/v1/expenses/${expenseId}/attachments/${randomId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+    );
+  },
+);

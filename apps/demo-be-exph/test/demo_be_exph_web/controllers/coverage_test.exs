@@ -102,7 +102,7 @@ defmodule DemoBeExphWeb.CoverageTest do
   # --- Attachment controller: index not found ---
 
   describe "GET /api/v1/expenses/:expense_id/attachments (not found)" do
-    test "returns 404 when expense not found" do
+    test "returns 403 when expense not found" do
       {_user, token} = create_user_and_login("attidx1")
 
       conn =
@@ -110,14 +110,14 @@ defmodule DemoBeExphWeb.CoverageTest do
         |> put_req_header("authorization", Helpers.bearer_header(token))
         |> get("/api/v1/expenses/999999/attachments")
 
-      assert conn.status == 404
+      assert conn.status == 403
     end
   end
 
   # --- Attachment controller: delete not found paths ---
 
   describe "DELETE /api/v1/expenses/:expense_id/attachments/:att_id (not found)" do
-    test "returns 404 when expense not found" do
+    test "returns 403 when expense not found" do
       {_user, token} = create_user_and_login("attdel1")
 
       conn =
@@ -125,7 +125,7 @@ defmodule DemoBeExphWeb.CoverageTest do
         |> put_req_header("authorization", Helpers.bearer_header(token))
         |> delete("/api/v1/expenses/999999/attachments/1")
 
-      assert conn.status == 404
+      assert conn.status == 403
     end
 
     test "returns 404 when attachment not found" do

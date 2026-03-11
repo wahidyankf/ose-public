@@ -83,6 +83,45 @@ defmodule DemoBeExphWeb.Integration.AttachmentsSteps do
     {:ok, Map.put(state, :conn, conn)}
   end
 
+  defwhen ~r/^alice sends GET \/api\/v1\/expenses\/\{bobExpenseId\}\/attachments$/,
+          _vars,
+          %{access_token: access_token, bob_expense_id: bob_expense_id} = state do
+    conn =
+      build_conn()
+      |> put_req_header("authorization", Helpers.bearer_header(access_token))
+      |> get("/api/v1/expenses/#{bob_expense_id}/attachments")
+
+    {:ok, Map.put(state, :conn, conn)}
+  end
+
+  defwhen ~r/^alice sends DELETE \/api\/v1\/expenses\/\{bobExpenseId\}\/attachments\/\{attachmentId\}$/,
+          _vars,
+          %{
+            access_token: access_token,
+            bob_expense_id: bob_expense_id,
+            uploaded_attachment_ids: [att_id | _]
+          } = state do
+    conn =
+      build_conn()
+      |> put_req_header("authorization", Helpers.bearer_header(access_token))
+      |> delete("/api/v1/expenses/#{bob_expense_id}/attachments/#{att_id}")
+
+    {:ok, Map.put(state, :conn, conn)}
+  end
+
+  defwhen ~r/^alice sends DELETE \/api\/v1\/expenses\/\{expenseId\}\/attachments\/\{randomAttachmentId\}$/,
+          _vars,
+          %{access_token: access_token, expense_id: expense_id} = state do
+    random_id = :rand.uniform(999_999_999)
+
+    conn =
+      build_conn()
+      |> put_req_header("authorization", Helpers.bearer_header(access_token))
+      |> delete("/api/v1/expenses/#{expense_id}/attachments/#{random_id}")
+
+    {:ok, Map.put(state, :conn, conn)}
+  end
+
   defwhen ~r/^alice uploads an oversized file to POST \/api\/v1\/expenses\/\{expenseId\}\/attachments$/,
           _vars,
           %{access_token: access_token, expense_id: expense_id} = state do

@@ -29,7 +29,7 @@ defmodule DemoBeExphWeb.AttachmentController do
 
     case expense_ctx().get_expense(user.id, expense_id_int) do
       nil ->
-        conn |> put_status(:not_found) |> json(%{message: "Expense not found"})
+        conn |> put_status(:forbidden) |> json(%{message: "Expense not found or access denied"})
 
       _expense ->
         attachments = attachment_ctx().list_attachments(expense_id_int)
@@ -72,7 +72,7 @@ defmodule DemoBeExphWeb.AttachmentController do
 
     case expense_ctx().get_expense(user.id, expense_id_int) do
       nil ->
-        conn |> put_status(:not_found) |> json(%{message: "Expense not found"})
+        conn |> put_status(:forbidden) |> json(%{message: "Expense not found or access denied"})
 
       _expense ->
         case attachment_ctx().delete_attachment(expense_id_int, String.to_integer(att_id)) do

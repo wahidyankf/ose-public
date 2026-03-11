@@ -21,7 +21,7 @@ if System.get_env("PHX_SERVER") do
 end
 
 config :demo_be_exph, DemoBeExphWeb.Endpoint,
-  http: [port: String.to_integer(System.get_env("PORT", "4000"))]
+  http: [port: String.to_integer(System.get_env("PORT", "8201"))]
 
 # Guardian JWT config — evaluated at runtime so Docker/CI can inject secrets.
 # Do not move to config/config.exs — System.get_env must run at startup, not compile time.

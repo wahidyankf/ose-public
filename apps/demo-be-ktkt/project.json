@@ -7,7 +7,7 @@
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "./gradlew build -x test",
+        "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$(ls -d ${SDKMAN_DIR:-$HOME/.sdkman}/candidates/java/21* 2>/dev/null | head -1)} ./gradlew build -x test",
         "cwd": "apps/demo-be-ktkt"
       },
       "outputs": ["{projectRoot}/build"]
@@ -15,7 +15,7 @@
     "dev": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "./gradlew run",
+        "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$(ls -d ${SDKMAN_DIR:-$HOME/.sdkman}/candidates/java/21* 2>/dev/null | head -1)} ./gradlew run",
         "cwd": "apps/demo-be-ktkt"
       }
     },
@@ -30,9 +30,9 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "./gradlew test koverXmlReport",
+          "JAVA_HOME=${JAVA_HOME_21_X64:-$(ls -d ${SDKMAN_DIR:-$HOME/.sdkman}/candidates/java/21* 2>/dev/null | head -1)} ./gradlew test koverXmlReport",
           "(cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/demo-be-ktkt/build/reports/kover/report.xml 90)",
-          "./gradlew detekt ktfmtCheck"
+          "JAVA_HOME=${JAVA_HOME_21_X64:-$(ls -d ${SDKMAN_DIR:-$HOME/.sdkman}/candidates/java/21* 2>/dev/null | head -1)} ./gradlew detekt ktfmtCheck"
         ],
         "parallel": false,
         "cwd": "apps/demo-be-ktkt"
@@ -41,14 +41,14 @@
     "test:unit": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "./gradlew test --tests '*.unit.*'",
+        "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$(ls -d ${SDKMAN_DIR:-$HOME/.sdkman}/candidates/java/21* 2>/dev/null | head -1)} ./gradlew test --tests '*.unit.*'",
         "cwd": "apps/demo-be-ktkt"
       }
     },
     "test:integration": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "./gradlew test --tests '*.integration.*'",
+        "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$(ls -d ${SDKMAN_DIR:-$HOME/.sdkman}/candidates/java/21* 2>/dev/null | head -1)} ./gradlew test --tests '*.integration.*'",
         "cwd": "apps/demo-be-ktkt"
       },
       "cache": true,
@@ -61,7 +61,7 @@
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "./gradlew detekt",
+        "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$(ls -d ${SDKMAN_DIR:-$HOME/.sdkman}/candidates/java/21* 2>/dev/null | head -1)} ./gradlew detekt",
         "cwd": "apps/demo-be-ktkt"
       }
     }

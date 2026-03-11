@@ -35,8 +35,8 @@
           "dotnet altcover --inputDirectory tests/DemoBeFsgi.Tests/bin/Debug/net10.0 --outputDirectory tests/DemoBeFsgi.Tests/bin/Debug/net10.0/__Instrumented --assemblyExcludeFilter=DemoBeFsgi.Tests '--assemblyFilter=xunit|TickSpec|Microsoft|FSharp|testhost|AltCover|coverlet' --linecover --reportFormat=lcov --report=coverage/altcov.info --save",
           "dotnet altcover Runner --recorderDirectory tests/DemoBeFsgi.Tests/bin/Debug/net10.0/__Instrumented --lcovReport coverage/altcov.info --executable dotnet -- test tests/DemoBeFsgi.Tests/bin/Debug/net10.0/__Instrumented/DemoBeFsgi.Tests.dll",
           "(cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/demo-be-fsgi/coverage/altcov.info 90)",
-          "DOTNET_ROOT=$HOME/.dotnet fantomas --check src/ tests/",
-          "DOTNET_ROOT=$HOME/.dotnet dotnet fsharplint lint --lint-config fsharplint.json src/DemoBeFsgi/DemoBeFsgi.fsproj"
+          "DOTNET_ROOT=$(dirname $(readlink -f $(which dotnet))) DOTNET_ROLL_FORWARD=LatestMajor fantomas --check src/ tests/",
+          "DOTNET_ROOT=$(dirname $(readlink -f $(which dotnet))) DOTNET_ROLL_FORWARD=LatestMajor dotnet fsharplint lint --lint-config fsharplint.json src/DemoBeFsgi/DemoBeFsgi.fsproj"
         ],
         "parallel": false,
         "cwd": "apps/demo-be-fsgi"
@@ -65,7 +65,7 @@
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "DOTNET_ROOT=$HOME/.dotnet dotnet fsharplint lint --lint-config fsharplint.json src/DemoBeFsgi/DemoBeFsgi.fsproj",
+        "command": "DOTNET_ROOT=$(dirname $(readlink -f $(which dotnet))) DOTNET_ROLL_FORWARD=LatestMajor dotnet fsharplint lint --lint-config fsharplint.json src/DemoBeFsgi/DemoBeFsgi.fsproj",
         "cwd": "apps/demo-be-fsgi"
       }
     },

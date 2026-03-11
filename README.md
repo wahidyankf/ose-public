@@ -7,10 +7,6 @@
 [![Test and Deploy - AyoKoding Web](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/deploy-ayokoding-web.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/deploy-ayokoding-web.yml)
 [![Test and Deploy - OSE Platform Web](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/deploy-oseplatform-web.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/deploy-oseplatform-web.yml)
 
-**Demo Apps:**
-[![E2E - Demo Backend (JASB)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-demo-be-jasb.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-demo-be-jasb.yml)
-[![E2E - Demo Backend (EXPH)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-demo-be-exph.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-demo-be-exph.yml)
-
 ## Test Coverage
 
 All projects enforce ≥90% test coverage as part of `test:quick`. Coverage is uploaded to [Codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise) on every push to `main`.
@@ -24,18 +20,21 @@ All projects enforce ≥90% test coverage as part of `test:quick`. Coverage is u
 | `libs/golang-commons`   | [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=golang-commons)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise)   |
 | `libs/hugo-commons`     | [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=hugo-commons)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise)     |
 
-**Demo Apps:**
-
-| Project             | Coverage                                                                                                                                                         |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `apps/demo-be-jasb` | [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=demo-be-jasb)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise) |
-| `apps/demo-be-exph` | [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=demo-be-exph)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise) |
-
 🌐 **Live Sites**:
 
 - **OSE Platform** ([oseplatform.com](https://oseplatform.com)) - Main platform website (under construction)
 - **AyoKoding** ([ayokoding.com](https://ayokoding.com)) - Shares the technological research and domain knowledge we develop for this project. What we learn while building Open Sharia Enterprise becomes accessible to the wider community through educational content
 - **OrganicLever** ([organiclever.com](https://www.organiclever.com/)) - Landing and promotional website (Phase 1, in development)
+
+## 🧪 Demo Apps
+
+[![E2E - Demo Backend (JASB)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-demo-be-jasb.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-demo-be-jasb.yml)
+[![E2E - Demo Backend (EXPH)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-demo-be-exph.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-demo-be-exph.yml)
+
+| Project             | Coverage                                                                                                                                                         |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/demo-be-jasb` | [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=demo-be-jasb)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise) |
+| `apps/demo-be-exph` | [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=demo-be-exph)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise) |
 
 ## 🚧 Project Status
 

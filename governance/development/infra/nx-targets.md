@@ -100,7 +100,7 @@ Use these canonical names. Aliases (`serve`, `start:dev`, `unit-test`) are anti-
 | `lint`             | Static analysis and code style checks                                | All projects                      |
 | `test:quick`       | Fast quality gate for pre-push and PR merge; composed of fast checks | All projects                      |
 | `test:unit`        | Isolated unit tests with no external dependencies                    | Projects with unit tests          |
-| `test:integration` | Tests that require external services (DB, APIs, filesystem)          | Projects with integration tests   |
+| `test:integration` | Tests using in-process mocking (no real DB or external services)     | Projects with integration tests   |
 | `test:e2e`         | Run E2E tests headlessly against a running app                       | E2E test projects (`*-e2e`)       |
 | `test:e2e:ui`      | Run E2E tests with interactive Playwright UI                         | E2E test projects                 |
 | `test:e2e:report`  | Open the last E2E HTML report                                        | E2E test projects                 |
@@ -114,7 +114,7 @@ Use these canonical names. Aliases (`serve`, `start:dev`, `unit-test`) are anti-
 
 - Use `dev` for the development server — never `serve`, never `start:dev`
 - Use `start` for the production server — never `serve`
-- Use `test:quick` for the fast pre-push gate; `test:unit` for isolated unit tests; `test:integration` for tests requiring external services; `test:e2e` for end-to-end tests — run targets individually rather than through an aggregate wrapper
+- Use `test:quick` for the fast pre-push gate; `test:unit` for isolated unit tests; `test:integration` for tests using in-process mocking (no real DB); `test:e2e` for end-to-end tests — run targets individually rather than through an aggregate wrapper
 - Separate target variants with a colon (`build:web`, `test:e2e:ui`), not a hyphen or underscore
 - All target names use lowercase with hyphens for multi-word names (`run-pre-commit`)
 
@@ -126,12 +126,12 @@ Tags are the standard mechanism for attaching structured metadata to projects in
 
 Every project declares tags along four dimensions. Each dimension uses a fixed prefix and a controlled vocabulary.
 
-| Dimension | Prefix      | Allowed Values                                        | Required                       | Purpose                                                       |
-| --------- | ----------- | ----------------------------------------------------- | ------------------------------ | ------------------------------------------------------------- |
-| Type      | `type:`     | `app`, `lib`, `e2e`                                   | Always                         | Distinguishes deployable apps, reusable libs, and test suites |
-| Platform  | `platform:` | `hugo`, `cli`, `nextjs`, `spring-boot`, `playwright`  | Apps and e2e projects          | Framework or runtime environment                              |
-| Language  | `lang:`     | `golang`, `ts`, `java`                                | Projects with application code | Primary language of source code                               |
-| Domain    | `domain:`   | `ayokoding`, `oseplatform`, `organiclever`, `tooling` | Always                         | Business or product domain                                    |
+| Dimension | Prefix      | Allowed Values                                                   | Required                       | Purpose                                                       |
+| --------- | ----------- | ---------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------- |
+| Type      | `type:`     | `app`, `lib`, `e2e`                                              | Always                         | Distinguishes deployable apps, reusable libs, and test suites |
+| Platform  | `platform:` | `hugo`, `cli`, `nextjs`, `spring-boot`, `phoenix`, `playwright`  | Apps and e2e projects          | Framework or runtime environment                              |
+| Language  | `lang:`     | `golang`, `ts`, `java`, `elixir`                                 | Projects with application code | Primary language of source code                               |
+| Domain    | `domain:`   | `ayokoding`, `oseplatform`, `organiclever`, `demo-be`, `tooling` | Always                         | Business or product domain                                    |
 
 ### Special Rules
 
@@ -149,6 +149,7 @@ Every project declares tags along four dimensions. Each dimension uses a fixed p
 | `ayokoding-cli`        | `["type:app", "platform:cli", "lang:golang", "domain:ayokoding"]`       |
 | `rhino-cli`            | `["type:app", "platform:cli", "lang:golang", "domain:tooling"]`         |
 | `demo-be-jasb`         | `["type:app", "platform:spring-boot", "lang:java", "domain:demo-be"]`   |
+| `demo-be-exph`         | `["type:app", "platform:phoenix", "lang:elixir", "domain:demo-be"]`     |
 | `demo-be-e2e`          | `["type:e2e", "platform:playwright", "lang:ts", "domain:demo-be"]`      |
 | `organiclever-web`     | `["type:app", "platform:nextjs", "lang:ts", "domain:organiclever"]`     |
 | `organiclever-web-e2e` | `["type:e2e", "platform:playwright", "lang:ts", "domain:organiclever"]` |
@@ -265,9 +266,9 @@ Spring Boot, Flutter, Python apps, TypeScript apps:
 
 Spring Boot, Python apps, TypeScript apps that test against DB/APIs, Go CLIs with BDD suites:
 
-| Target             | Requirement                                                                                                                                 |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `test:integration` | Run integration tests using in-process execution or mocking (MockMvc / MSW / godog `RunE`); no external services required; always cacheable |
+| Target             | Requirement                                                                                                                                                                                         |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `test:integration` | Run integration tests using in-process mocking only (MockMvc + InMemoryDataStore / in-memory context implementations / MSW / godog `RunE`); no real database or external services; always cacheable |
 
 **Go CLIs** expose `test:integration` for godog BDD tests: each command has a
 `{stem}.integration_test.go` file with `//go:build integration` that drives the command in-process
@@ -317,7 +318,13 @@ See `apps/demo-be-e2e/project.json` for the canonical example.
 **`test:integration` with Cucumber JVM**: `demo-be-jasb` also exposes `test:integration` which
 runs `mvn test -Pintegration`. This activates Cucumber JVM 7+ with MockMvc — the same Gherkin
 feature files from `specs/apps/demo-be/gherkin/` are executed via a full Spring context but without a
-running server. Unlike `test:e2e`, no live service is required.
+running server or real database. All repositories are mocked via `MockRepositoriesConfig` backed by
+`InMemoryDataStore` (ConcurrentHashMap-based).
+
+**`test:integration` with Cabbage BDD**: `demo-be-exph` exposes `test:integration` which runs
+`mix test --only integration`. The same Gherkin feature files are executed via `elixir-cabbage`
+with Phoenix ConnCase. All context modules are replaced by in-memory implementations backed by
+`InMemoryStore` (Agent-based state) — no PostgreSQL or Ecto Repo is started in test.
 
 ### Hugo Sites
 
@@ -363,22 +370,22 @@ running server. Unlike `test:e2e`, no live service is required.
 
 ### Caching Rules
 
-| Target             | Cached | Notes                                                                                                                         |
-| ------------------ | ------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| `build`            | Yes    | Declare `outputs` in `project.json` for cache restoration                                                                     |
-| `typecheck`        | Yes    | Pure analysis; safe to cache against source changes                                                                           |
-| `lint`             | Yes    | Pure static analysis; safe to cache                                                                                           |
-| `test:quick`       | Yes    | Cache hit skips redundant pre-push runs                                                                                       |
-| `test:unit`        | Yes    | Deterministic; safe to cache against source changes                                                                           |
-| `test:integration` | Yes    | Uses in-process execution or mocking (MockMvc / MSW / godog `RunE`); fully deterministic; no external service state to detect |
-| `dev`              | No     | Long-running process                                                                                                          |
-| `start`            | No     | Long-running process                                                                                                          |
-| `run`              | No     | Side-effectful execution                                                                                                      |
-| `test:e2e`         | No     | Requires live app state; run via scheduled cron, not pre-push                                                                 |
-| `test:e2e:ui`      | No     | Interactive process                                                                                                           |
-| `test:e2e:report`  | No     | Reads filesystem state at invocation time                                                                                     |
-| `install`          | No     | Must always run to ensure dep state                                                                                           |
-| `clean`            | No     | Destructive operation                                                                                                         |
+| Target             | Cached | Notes                                                                                                                                                          |
+| ------------------ | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `build`            | Yes    | Declare `outputs` in `project.json` for cache restoration                                                                                                      |
+| `typecheck`        | Yes    | Pure analysis; safe to cache against source changes                                                                                                            |
+| `lint`             | Yes    | Pure static analysis; safe to cache                                                                                                                            |
+| `test:quick`       | Yes    | Cache hit skips redundant pre-push runs                                                                                                                        |
+| `test:unit`        | Yes    | Deterministic; safe to cache against source changes                                                                                                            |
+| `test:integration` | Yes    | Uses in-process mocking only (MockMvc + InMemoryDataStore / in-memory contexts / MSW / godog `RunE`); fully deterministic; no external service state to detect |
+| `dev`              | No     | Long-running process                                                                                                                                           |
+| `start`            | No     | Long-running process                                                                                                                                           |
+| `run`              | No     | Side-effectful execution                                                                                                                                       |
+| `test:e2e`         | No     | Requires live app state; run via scheduled cron, not pre-push                                                                                                  |
+| `test:e2e:ui`      | No     | Interactive process                                                                                                                                            |
+| `test:e2e:report`  | No     | Reads filesystem state at invocation time                                                                                                                      |
+| `install`          | No     | Must always run to ensure dep state                                                                                                                            |
+| `clean`            | No     | Destructive operation                                                                                                                                          |
 
 ## Build Output Conventions
 
@@ -413,7 +420,8 @@ Example override for a Hugo site:
 - **Missing `lint`**: Projects without `lint` cannot participate in workspace-wide lint runs or the pre-push hook lint gate
 - **Heavy `test:quick`**: Including slow integration tests or E2E in `test:quick` defeats its purpose — keep the total to a few minutes, not tens of minutes
 - **Mixing concerns in `test:unit`**: `test:unit` must not spin up databases, external APIs, or network services — those belong in `test:integration`
-- **Disabling cache on `test:integration`**: Setting `cache: false` wastes CI time when integration tests use only in-process mocking (MockMvc / MSW) and are fully deterministic. Only disable if tests depend on live external services
+- **Using a real database in unit or integration tests**: Unit and integration tests must use mocked repositories or in-memory implementations — never a real database (no Testcontainers, no H2, no Ecto SQL Sandbox). Real databases belong only in E2E tests against a running service
+- **Disabling cache on `test:integration`**: Setting `cache: false` wastes CI time when integration tests use only in-process mocking (MockMvc + InMemoryDataStore / in-memory contexts / MSW) and are fully deterministic. Only disable if tests depend on live external services
 - **`build` on interpreted-language projects**: Adding a no-op `build` to Python or Ruby just to appear consistent — if there is no compile step, there is no `build` target
 - **`typecheck` on compile-enforced languages without additional analysis**: Go and plain Java enforce types through `build`; a separate `typecheck` that only re-runs the compiler is redundant. **Exception**: Java with JSpecify + NullAway warrants `typecheck` because NullAway is a distinct null-safety pass not included in `build`
 - **Undeclared outputs**: Omitting `outputs` on `build` disables caching and forces full rebuilds on every run

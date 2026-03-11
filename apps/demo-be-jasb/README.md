@@ -10,7 +10,7 @@ Demo Backend - Spring Boot REST API
 - **Port**: 8201
 - **API Base**: `/api/v1`
 - **Security**: Spring Security with stateless JWT authentication (JJWT 0.12.x)
-- **Database**: PostgreSQL (dev/prod) / H2 in-memory (integration tests)
+- **Database**: PostgreSQL (dev/prod) / mocked repositories with InMemoryDataStore (integration tests)
 - **Schema Migration**: Liquibase SQL formatted changesets
 
 **CORS Configuration**: Restricted to `http://localhost:3200` and `https://www.organiclever.com`
@@ -459,14 +459,14 @@ apps/demo-be-jasb/
     │   ├── integration/
     │   │   ├── ResponseStore.java                # Shared MvcResult state (@Component @Scope)
     │   │   ├── OrganicLeverApplicationTest.java  # Context-load test
-    │   │   ├── steps/                            # Shared step definitions + context base
-    │   │   ├── registration/                     # RegistrationIT + context config (testdb_registration)
-    │   │   ├── login/                            # LoginIT + context config (testdb_login)
-    │   │   └── jwtprotected/                     # JwtProtectedIT + context config (testdb_jwt)
+    │   │   ├── steps/                            # Shared step definitions, InMemoryDataStore, MockRepositoriesConfig
+    │   │   ├── registration/                     # RegistrationIT (Cucumber runner)
+    │   │   ├── login/                            # LoginIT (Cucumber runner)
+    │   │   └── jwtprotected/                     # JwtProtectedIT (Cucumber runner)
     │   └── unit/
     │       └── HelloControllerTest.java
     └── resources/
-        ├── application-test.yml                  # H2 datasource, ddl-auto:create
+        ├── application-test.yml                  # Excludes DB autoconfiguration; mocked repos
         └── junit-platform.properties
 ```
 
@@ -484,9 +484,10 @@ The two Maven profiles are mutually exclusive: `mvn test` includes only `**/unit
 `mvn test -Pintegration` includes only `**/*IT.java` (the three Cucumber runner classes). `test:quick`
 runs both in parallel (MockMvc needs no real server, so there is no shared resource contention).
 
-The three `*IT.java` runners execute in parallel (Surefire `parallel=classes`, `threadCount=3`)
-using separate H2 in-memory databases (`testdb_registration`, `testdb_login`, `testdb_jwt`) to
-prevent cross-thread data conflicts.
+The three `*IT.java` runners execute in parallel (Surefire `parallel=classes`, `threadCount=3`).
+All repositories are mocked via `MockRepositoriesConfig` backed by a shared `InMemoryDataStore`
+(ConcurrentHashMap-based). No real database is started — Spring Boot autoconfiguration for
+DataSource, Hibernate, Liquibase, and JPA repositories is excluded in `application-test.yml`.
 
 Integration and E2E tests share the same Gherkin feature files from `specs/apps/demo-be/gherkin/`.
 

@@ -84,3 +84,19 @@ nx run demo-be-exph:test:integration
 health, authentication, token lifecycle, user registration, user account,
 security, token management, admin, expense management, currency handling,
 unit handling, financial reporting, and attachments.
+
+### Mock Testing Architecture
+
+Integration tests run **without a real database**. All context modules
+(`Accounts`, `TokenContext`, `ExpenseContext`, `AttachmentContext`) are replaced
+at test time with in-memory implementations backed by a shared `InMemoryStore`
+(Agent-based state). The dispatch is configured via `Application.get_env` in
+`config/test.exs`:
+
+- `DemoBeExph.Accounts` -> `DemoBeExph.InMemoryAccounts`
+- `DemoBeExph.Token.TokenContext` -> `DemoBeExph.InMemoryTokenContext`
+- `DemoBeExph.Expense.ExpenseContext` -> `DemoBeExph.InMemoryExpenseContext`
+- `DemoBeExph.Attachment.AttachmentContext` -> `DemoBeExph.InMemoryAttachmentContext`
+
+The `Repo` GenServer is not started in the `:test` environment. Tests are fully
+deterministic with no external service dependencies, making them safe for Nx caching.

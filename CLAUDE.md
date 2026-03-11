@@ -120,9 +120,10 @@ Codecov's algorithm) via `rhino-cli test-coverage validate` applied to the LCOV 
 `rhino-cli test-coverage validate apps/organiclever-web/coverage/lcov.info 90` — run as part of `test:quick`.
 
 **`test:integration` caching**: Integration tests for `organiclever-web` (MSW), `demo-be-jasb`
-(MockMvc), `hugo-commons` (Godog + tmpdir mocks), and `golang-commons` (Godog + mock closures)
-use in-process mocking only — no external services required. They are fully deterministic and safe
-to cache (`cache: true` in `nx.json`).
+(MockMvc + mocked repositories via InMemoryDataStore), `demo-be-exph` (in-memory context
+implementations via InMemoryStore), `hugo-commons` (Godog + tmpdir mocks), and `golang-commons`
+(Godog + mock closures) use in-process mocking only — no external services required. They are
+fully deterministic and safe to cache (`cache: true` in `nx.json`).
 
 **Unit vs. integration test principle**: Unit tests cover only what integration tests cannot reach
 (isolated pure functions, hooks, algorithmic logic). Feature-level workflows already exercised by

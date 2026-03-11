@@ -18,10 +18,17 @@
         "cwd": "apps/demo-be-e2e"
       }
     },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx bddgen && npx tsc --noEmit",
+        "cwd": "apps/demo-be-e2e"
+      }
+    },
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["npx oxlint@latest .", "npx bddgen"],
+        "commands": ["npx oxlint@latest .", "npx bddgen && npx tsc --noEmit"],
         "parallel": true,
         "cwd": "apps/demo-be-e2e"
       }

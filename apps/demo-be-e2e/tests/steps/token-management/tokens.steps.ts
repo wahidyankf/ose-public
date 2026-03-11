@@ -18,7 +18,7 @@ When(/^alice decodes her access token payload$/, async () => {
   if (parts.length < 2) {
     throw new Error("Stored token is not a valid JWT");
   }
-  const payloadB64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+  const payloadB64 = parts[1]!.replace(/-/g, "+").replace(/_/g, "/");
   const padding = "=".repeat((4 - (payloadB64.length % 4)) % 4);
   const decoded = JSON.parse(Buffer.from(payloadB64 + padding, "base64").toString("utf-8")) as Record<string, unknown>;
   // Store decoded payload for subsequent Then steps

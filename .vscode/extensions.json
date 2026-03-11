@@ -10,6 +10,8 @@
     "github.vscode-github-actions",
     "github.vscode-pull-request-github",
     "golang.go",
+    "ionide.ionide-fake",
+    "ionide.mechanic",
     "ms-dotnettools.vscode-dotnet-pack",
     "nrwl.angular-console",
     "vmware.vscode-boot-dev-pack",

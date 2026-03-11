@@ -1,6 +1,7 @@
 {
   "recommendations": [
     "anthropic.claude-code",
+    "bierner.markdown-mermaid",
     "cucumberopen.cucumber-official",
     "dart-code.dart-code",
     "dart-code.flutter",
@@ -9,11 +10,11 @@
     "github.vscode-github-actions",
     "github.vscode-pull-request-github",
     "golang.go",
+    "ms-dotnettools.vscode-dotnet-pack",
     "nrwl.angular-console",
     "vmware.vscode-boot-dev-pack",
     "vmware.vscode-spring-boot",
     "vscjava.vscode-spring-boot-dashboard",
-    "vscjava.vscode-spring-initializr",
-    "bierner.markdown-mermaid"
+    "vscjava.vscode-spring-initializr"
   ]
 }

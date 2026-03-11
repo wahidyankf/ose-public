@@ -17,6 +17,8 @@ All projects enforce ≥90% test coverage as part of `test:quick`. Coverage is u
 | `apps/ayokoding-cli`    | [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=ayokoding-cli)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise)    |
 | `apps/oseplatform-cli`  | [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=oseplatform-cli)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise)  |
 | `apps/organiclever-web` | [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=organiclever-web)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise) |
+| `libs/golang-commons`   | [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=golang-commons)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise)   |
+| `libs/hugo-commons`     | [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=hugo-commons)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise)     |
 
 🌐 **Live Sites**:
 

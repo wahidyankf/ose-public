@@ -8,9 +8,9 @@ This infrastructure setup provides Docker Compose configuration for the demo bac
 
 - **demo-be-db** - PostgreSQL 17 database (port 5432, runs in Docker Compose)
 - **demo-be-jasb** - Spring Boot backend service (port 8201, depends on demo-be-db)
-- **organiclever-web** - Next.js landing website (port 3200, runs in Docker Compose)
 - **demo-be-e2e** - Playwright API E2E tests (requires demo-be-jasb + demo-be-db)
-- **organiclever-web-e2e** - Playwright browser E2E tests (requires organiclever-web)
+
+For the frontend (`organiclever-web`), see [`infra/dev/organiclever-web/`](../organiclever-web/README.md).
 
 ## Prerequisites
 
@@ -35,9 +35,8 @@ npm run demo-be:dev:restart
 
 This automatically:
 
-- Starts **both** `demo-be-jasb` (port 8201) and `organiclever-web` (port 3200)
-- Mounts source code for hot-reload (backend: Spring Boot DevTools, frontend: Next.js dev server)
-- Installs frontend dependencies inside the container (isolated from host `node_modules`)
+- Starts `demo-be-jasb` (port 8201) with PostgreSQL database
+- Mounts source code for hot-reload (Spring Boot DevTools)
 - Shows logs in the terminal
 
 ### Alternative: Direct Docker Compose
@@ -49,7 +48,7 @@ If you prefer manual control or need specific docker-compose options:
 The development environment uses a custom Docker image with Maven pre-installed. Build it once:
 
 ```bash
-# From infra/dev/demo-be directory
+# From infra/dev/demo-be-jasb directory
 docker compose build
 ```
 
@@ -64,7 +63,7 @@ This creates a custom development image (~666MB) that includes:
 #### 2. Configure Environment
 
 ```bash
-# From infra/dev/demo-be directory
+# From infra/dev/demo-be-jasb directory
 cp .env.example .env
 ```
 
@@ -101,9 +100,6 @@ curl http://localhost:8201/health
 # Test backend hello endpoint
 curl http://localhost:8201/api/v1/hello
 # Expected: {"message":"world"}
-
-# Check frontend (waits for Next.js dev server to compile)
-curl -s http://localhost:3200
 ```
 
 ## Service Details
@@ -148,23 +144,6 @@ so the backend will not start until PostgreSQL is ready.
 - `SPRING_DATASOURCE_PASSWORD` - Database password (from `POSTGRES_PASSWORD`)
 - `APP_JWT_SECRET` - JWT signing secret (min 32 chars)
 - `MAVEN_OPTS` - JVM options for Maven process
-
-### organiclever-web
-
-**Port**: 3200
-**Image**: Lightweight dev image (built from `Dockerfile.web.dev`)
-**Base**: node:24-alpine
-**Mode**: `next dev` by default (hot-reload); `next start` with `START_COMMAND=production` (CI)
-
-**Startup behaviour** (controlled by `START_COMMAND` env var):
-
-- `(default)` — `npm install && npm run dev` — hot-reload dev server for local development
-- `production` — `npm install --omit=dev && npm run start` — serves a pre-built `.next/` directory (CI only; host must run `nx build organiclever-web` first)
-
-**node_modules isolation**: A named Docker volume (`demo-be-web-node-modules`) shadows the host `node_modules`. This prevents platform binary conflicts between Alpine Linux (container) and macOS/Windows/Linux (host).
-
-**First startup**: ~2-4 minutes (cold `npm install`, Storybook devDeps are heavy)
-**Subsequent starts**: fast (named volume persists installed packages)
 
 ## Common Operations
 
@@ -222,7 +201,7 @@ cd ../../apps/demo-be-jasb
 mvn clean package -DskipTests
 
 # 2. Restart the service
-cd ../../infra/demo-be
+cd ../../infra/dev/demo-be-jasb
 docker-compose restart demo-be-jasb
 ```
 
@@ -241,7 +220,7 @@ npm run demo-be:dev
 **Alternative: Direct docker compose**:
 
 ```bash
-cd infra/dev/demo-be
+cd infra/dev/demo-be-jasb
 docker compose up
 ```
 
@@ -335,7 +314,7 @@ The development environment uses a custom Docker image built from `Dockerfile.be
 **Building the image** (first-time only):
 
 ```bash
-# From infra/dev/demo-be
+# From infra/dev/demo-be-jasb
 docker compose build
 ```
 
@@ -388,7 +367,7 @@ This project uses a 3-environment architecture:
 - **Health**: No details exposed
 - **Configuration**: See `infra/k8s/organiclever/production/`
 
-**Production Docker images**: Defined in each app directory (`apps/demo-be-jasb/Dockerfile`, `apps/organiclever-web/Dockerfile`), independent of this dev setup.
+**Production Docker images**: Defined in the app directory (`apps/demo-be-jasb/Dockerfile`), independent of this dev setup.
 
 **Deployment Flow**: dev (local) → staging (K8s) → prod (K8s)
 
@@ -409,7 +388,7 @@ npm run demo-be:dev:restart
 1. **Docker Compose** (direct control):
 
 ```bash
-cd infra/dev/demo-be
+cd infra/dev/demo-be-jasb
 docker compose up
 ```
 
@@ -426,7 +405,7 @@ cd apps/demo-be-jasb && mvn spring-boot:run -Dspring-boot.run.profiles=dev
 You can customize settings via `.env` file:
 
 ```bash
-# In infra/dev/demo-be/.env
+# In infra/dev/demo-be-jasb/.env
 SPRING_PROFILES_ACTIVE=dev
 MAVEN_OPTS=-Xmx512m
 ```
@@ -465,19 +444,13 @@ All services communicate through the `demo-be-network` bridge network.
 
 ## Health Checks
 
-Both services include Docker health checks:
+Services include Docker health checks:
 
 **demo-be-jasb** — custom health endpoint:
 
 - **Endpoint**: `http://localhost:8201/health`
 - **Interval**: 30 seconds / **Timeout**: 10 seconds / **Retries**: 3
 - **Start Period**: 60 seconds
-
-**organiclever-web** — HTTP probe:
-
-- **Endpoint**: `http://localhost:3200`
-- **Interval**: 30 seconds / **Timeout**: 10 seconds / **Retries**: 3
-- **Start Period**: 120 seconds (allows for cold `npm install`)
 
 ## Troubleshooting
 
@@ -590,7 +563,7 @@ services:
 
 ### Completed
 
-- **Production Dockerfiles**: Multi-stage builds in `apps/demo-be-jasb/Dockerfile` and `apps/organiclever-web/Dockerfile`
+- **Production Dockerfiles**: Multi-stage build in `apps/demo-be-jasb/Dockerfile`
 
 ### Planned
 
@@ -622,27 +595,11 @@ BASE_URL=http://staging.example.com nx run demo-be-e2e:test:e2e
 
 See [`apps/demo-be-e2e/`](../../../apps/demo-be-e2e/README.md) for full documentation.
 
-### Web E2E Tests (organiclever-web-e2e)
-
-Once the frontend is running via Docker Compose, run the Playwright browser test suite:
-
-```bash
-# Start frontend only
-docker compose up -d organiclever-web
-
-# Run tests
-nx run organiclever-web-e2e:test:e2e
-```
-
-Tests target `http://localhost:3200` by default.
-
-See [`apps/organiclever-web-e2e/`](../../../apps/organiclever-web-e2e/) for full documentation.
-
 ## Related Documentation
 
 - [demo-be-jasb README](../../../apps/demo-be-jasb/README.md)
-- [organiclever-web README](../../../apps/organiclever-web/README.md)
 - [demo-be-e2e README](../../../apps/demo-be-e2e/README.md)
+- [organiclever-web infra](../organiclever-web/README.md) — Frontend infrastructure (separate stack)
 - [Docker Documentation](https://docs.docker.com/)
 - [Docker Compose Documentation](https://docs.docker.com/compose/)
 

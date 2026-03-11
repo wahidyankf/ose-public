@@ -33,4 +33,4 @@ For local development, use Docker Compose with `dev` profile:
 npm run demo-be:dev
 ```
 
-See [infra/dev/demo-be/README.md](../../dev/demo-be/README.md)
+See [infra/dev/demo-be-jasb/README.md](../../dev/demo-be-jasb/README.md) and [infra/dev/organiclever-web/README.md](../../dev/organiclever-web/README.md)

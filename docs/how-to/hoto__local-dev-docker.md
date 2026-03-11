@@ -44,14 +44,20 @@ Docker Compose configurations are organized by deployment target:
 
 ```
 infra/
-├── dev/                      # Local development environments
-│   ├── organiclever/       # OrganicLever services ecosystem
+├── dev/                        # Local development environments
+│   ├── demo-be-jasb/         # Demo Backend (Spring Boot) stack
 │   │   ├── docker-compose.yml
 │   │   ├── .env.example
 │   │   └── README.md
-│   └── [other-service]/     # Other service ecosystems
-└── k8s/                      # Kubernetes configs
-    └── organiclever/        # OrganicLever K8s deployments
+│   ├── demo-be-exph/         # Demo Backend (Elixir/Phoenix) stack
+│   │   ├── docker-compose.yml
+│   │   └── README.md
+│   ├── organiclever-web/     # organiclever-web (Next.js) stack
+│   │   ├── docker-compose.yml
+│   │   └── README.md
+│   └── [other-service]/       # Other service ecosystems
+└── k8s/                        # Kubernetes configs
+    └── organiclever/          # OrganicLever K8s deployments
 ```
 
 ## Quick Start
@@ -69,7 +75,7 @@ Each service ecosystem has its own Docker Compose setup:
 
 ```bash
 # Example: OrganicLever services
-cd infra/dev/demo-be
+cd infra/dev/demo-be-jasb
 ```
 
 ### 3. Configure Environment (Optional)
@@ -95,7 +101,7 @@ mvn clean package -DskipTests
 nx run demo-be-jasb:build
 
 # Return to Docker Compose directory
-cd ../../infra/dev/demo-be
+cd ../../infra/dev/demo-be-jasb
 ```
 
 ### 5. Start Services
@@ -120,9 +126,6 @@ curl http://localhost:8201/api/v1/hello
 
 curl http://localhost:8201/health
 # Expected: {"status":"UP"}
-
-# Check frontend (waits for Next.js dev server to compile)
-curl -s http://localhost:3200
 ```
 
 ### 6a. Run E2E Tests (Optional)
@@ -155,26 +158,42 @@ docker-compose down -v
 
 ## Available Service Ecosystems
 
-### OrganicLever (`infra/dev/demo-be/`)
+### Demo Backend — JASB (`infra/dev/demo-be-jasb/`)
 
 **Services (Docker Compose)**:
 
+- `demo-be-db` - PostgreSQL 17 database (port 5432)
 - `demo-be-jasb` - Spring Boot backend (port 8201)
-- `organiclever-web` - Next.js landing website (port 3200)
 
 **Related Apps (run separately)**:
 
 - `demo-be-e2e` - Playwright API E2E tests — `nx run demo-be-e2e:test:e2e`
+
+**Quick Start**:
+
+```bash
+npm run demo-be:dev
+```
+
+**Documentation**: [Demo Backend (JASB) Infrastructure README](../../infra/dev/demo-be-jasb/README.md)
+
+### organiclever-web (`infra/dev/organiclever-web/`)
+
+**Services (Docker Compose)**:
+
+- `organiclever-web` - Next.js landing website (port 3200)
+
+**Related Apps (run separately)**:
+
 - `organiclever-web-e2e` - Playwright browser E2E tests — `nx run organiclever-web-e2e:test:e2e`
 
 **Quick Start**:
 
 ```bash
-cd infra/dev/demo-be
-docker-compose up -d
+npm run organiclever-web:dev
 ```
 
-**Documentation**: [OrganicLever Infrastructure README](../../infra/dev/demo-be/README.md)
+**Documentation**: [organiclever-web Infrastructure README](../../infra/dev/organiclever-web/README.md)
 
 ### Future Ecosystems
 
@@ -213,7 +232,7 @@ cd ../../apps/demo-be-jasb
 mvn clean package -DskipTests
 
 # 2. Restart the service
-cd ../../infra/dev/demo-be
+cd ../../infra/dev/demo-be-jasb
 docker-compose restart demo-be-jasb
 ```
 
@@ -251,7 +270,7 @@ docker system prune
 nx run demo-be-jasb:build
 
 # 2. Start services
-cd infra/dev/demo-be
+cd infra/dev/demo-be-jasb
 docker-compose up -d
 
 # 3. Make changes to code
@@ -273,7 +292,7 @@ cd apps/demo-be-jasb
 mvn spring-boot:run
 
 # Run dependent services in Docker
-cd ../../infra/dev/demo-be
+cd ../../infra/dev/demo-be-jasb
 # Comment out the service you're developing
 # Keep database, cache, etc. in Docker
 docker-compose up -d
@@ -285,7 +304,7 @@ docker-compose up -d
 
 ```bash
 # Run all services in Docker
-cd infra/dev/demo-be
+cd infra/dev/demo-be-jasb
 docker-compose up -d
 
 # Test inter-service communication
@@ -588,7 +607,8 @@ Docker Compose can be used in CI/CD pipelines:
 
 ## Related Documentation
 
-- [OrganicLever Infrastructure README](../../infra/dev/demo-be/README.md)
+- [Demo Backend (JASB) Infrastructure README](../../infra/dev/demo-be-jasb/README.md)
+- [organiclever-web Infrastructure README](../../infra/dev/organiclever-web/README.md)
 - [Docker Documentation](https://docs.docker.com/)
 - [Docker Compose Documentation](https://docs.docker.com/compose/)
 - [Reproducible Environments Convention](../../governance/development/workflow/reproducible-environments.md)

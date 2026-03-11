@@ -40,7 +40,7 @@ require a live PostgreSQL database (the E2E `Before` hook deletes all users befo
 **Recommended — Docker Compose** (no local Java/Maven required):
 
 ```bash
-cd infra/dev/demo-be
+cd infra/dev/demo-be-jasb
 cp .env.example .env  # set POSTGRES_USER, POSTGRES_PASSWORD, APP_JWT_SECRET
 docker compose up -d
 ```
@@ -88,11 +88,11 @@ nx run demo-be-e2e:test:quick
 
 ## Environment Variables
 
-| Variable       | Default                                                              | Description                              |
-| -------------- | -------------------------------------------------------------------- | ---------------------------------------- |
-| `BASE_URL`     | `http://localhost:8201`                                              | Backend base URL                         |
-| `DATABASE_URL` | `postgresql://organiclever:organiclever@localhost:5432/organiclever` | PostgreSQL connection string for cleanup |
-| `CI`           | unset                                                                | Enables CI mode                          |
+| Variable       | Default                                                         | Description                              |
+| -------------- | --------------------------------------------------------------- | ---------------------------------------- |
+| `BASE_URL`     | `http://localhost:8201`                                         | Backend base URL                         |
+| `DATABASE_URL` | `postgresql://organiclever:organiclever@localhost:5432/demo_be` | PostgreSQL connection string for cleanup |
+| `CI`           | unset                                                           | Enables CI mode                          |
 
 The `DATABASE_URL` is used by `tests/fixtures/db-cleanup.ts` to delete all rows from `users`
 before each scenario. This requires the `pg` package (installed as a devDependency).

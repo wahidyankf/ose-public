@@ -33,8 +33,8 @@ Demo Backend - Spring Boot REST API
 | `SPRING_DATASOURCE_PASSWORD` | Yes (non-test) | —                                                | Database password                                           |
 
 **Security note**: Set a strong `APP_JWT_SECRET` in production (min 32 random characters).
-Never commit real secrets to version control. Copy `infra/dev/demo-be/.env.example`
-to `infra/dev/demo-be/.env` for local development.
+Never commit real secrets to version control. Copy `infra/dev/demo-be-jasb/.env.example`
+to `infra/dev/demo-be-jasb/.env` for local development.
 
 ## Development Modes
 
@@ -72,7 +72,7 @@ npm run demo-be:dev:restart
 If you prefer direct Docker Compose control:
 
 ```bash
-cd infra/dev/demo-be
+cd infra/dev/demo-be-jasb
 
 # First-time only: Build the custom dev image
 docker compose build
@@ -365,7 +365,7 @@ mvn clean install
 
 ```bash
 # Start dev environment
-cd infra/dev/demo-be
+cd infra/dev/demo-be-jasb
 docker-compose up
 
 # Edit code in apps/demo-be-jasb/src/
@@ -390,13 +390,13 @@ nx run demo-be-jasb:test:integration # mvn test -Pintegration
 
 ```bash
 nx build demo-be-jasb
-cd infra/dev/demo-be
+cd infra/dev/demo-be-jasb
 docker-compose -f docker-compose.yml up
 ```
 
 ## Docker Development Image
 
-The Docker-based development environment uses a custom image built from `infra/dev/demo-be/Dockerfile.be.dev`:
+The Docker-based development environment uses a custom image built from `infra/dev/demo-be-jasb/Dockerfile.be.dev`:
 
 **Key Features**:
 
@@ -408,7 +408,7 @@ The Docker-based development environment uses a custom image built from `infra/d
 **Building the image** (first-time only):
 
 ```bash
-cd infra/dev/demo-be
+cd infra/dev/demo-be-jasb
 docker compose build
 ```
 

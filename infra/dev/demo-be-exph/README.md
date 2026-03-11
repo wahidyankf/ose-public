@@ -7,11 +7,10 @@ exclusive and **must not be started simultaneously**.
 
 ## Port Assignment
 
-| Service          | Port |
-| ---------------- | ---- |
-| demo-be-exph-db  | 5432 |
-| demo-be-exph     | 8201 |
-| organiclever-web | 3200 |
+| Service         | Port |
+| --------------- | ---- |
+| demo-be-exph-db | 5432 |
+| demo-be-exph    | 8201 |
 
 ## Quick Start
 

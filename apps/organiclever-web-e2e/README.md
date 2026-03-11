@@ -25,7 +25,7 @@ The frontend must be running on `http://localhost:3200` before executing tests.
 **Recommended — Docker Compose** (starts both backend and frontend):
 
 ```bash
-npm run organiclever:dev
+npm run organiclever-web:dev
 ```
 
 **Alternative — Nx dev server** (Next.js only):
@@ -132,5 +132,5 @@ The member editing and deletion features mutate `apps/organiclever-web/src/data/
 
 - [specs/apps/organiclever-web/](../../specs/apps/organiclever-web/README.md) — Gherkin feature files (source of truth)
 - [organiclever-web](../organiclever-web/README.md) — The frontend being tested
-- [organiclever-be-e2e](../organiclever-be-e2e/README.md) — API-level E2E counterpart (tests the Spring Boot backend)
+- [demo-be-e2e](../demo-be-e2e/README.md) — API-level E2E counterpart (tests the Spring Boot backend)
 - [Playwright docs](../../docs/explanation/software-engineering/automation-testing/tools/playwright/README.md) — Playwright standards for this project

@@ -51,17 +51,16 @@ nx run organiclever-web:test:integration
 nx run organiclever-web-e2e:test:e2e
 ```
 
-### Option 2: Docker Compose (containerized, or running alongside the backend)
+### Option 2: Docker Compose (containerized)
 
-Runs the app inside a Node.js 24 Alpine container. Useful when you need the backend alongside the
-frontend, or want an environment closer to CI.
+Runs the app inside a Node.js 24 Alpine container. Useful when you want an environment closer to CI.
 
 ```bash
-# From repository root — starts both organiclever-web and demo-be-jasb
-npm run organiclever:dev
+# From repository root
+npm run organiclever-web:dev
 
 # Or start the frontend container only
-docker compose -f infra/dev/organiclever-jasb/docker-compose.yml up organiclever-web
+docker compose -f infra/dev/organiclever-web/docker-compose.yml up organiclever-web
 ```
 
 **First startup** (~2-4 min): installs npm dependencies inside the container.

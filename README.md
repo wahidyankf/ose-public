@@ -29,12 +29,22 @@ All projects enforce ≥90% test coverage as part of `test:quick`. Coverage is u
 [![E2E - Demo Backend (JASB)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-demo-be-jasb.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-demo-be-jasb.yml)
 [![E2E - Demo Backend (EXPH)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-demo-be-exph.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-demo-be-exph.yml)
 [![E2E - Demo Backend (FSGI)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-demo-be-fsgi.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-demo-be-fsgi.yml)
+[![E2E - Demo Backend (GOGN)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-demo-be-gogn.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-demo-be-gogn.yml)
+[![E2E - Demo Backend (PYFA)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-demo-be-pyfa.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-demo-be-pyfa.yml)
+[![E2E - Demo Backend (RSAX)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-demo-be-rsax.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-demo-be-rsax.yml)
+[![E2E - Demo Backend (KTKT)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-demo-be-ktkt.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-demo-be-ktkt.yml)
+[![E2E - Demo Backend (JAVX)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-demo-be-javx.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/e2e-demo-be-javx.yml)
 
 | Project             | Coverage                                                                                                                                                         |
 | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `apps/demo-be-jasb` | [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=demo-be-jasb)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise) |
 | `apps/demo-be-exph` | [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=demo-be-exph)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise) |
 | `apps/demo-be-fsgi` | [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=demo-be-fsgi)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise) |
+| `apps/demo-be-gogn` | [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=demo-be-gogn)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise) |
+| `apps/demo-be-pyfa` | [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=demo-be-pyfa)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise) |
+| `apps/demo-be-rsax` | [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=demo-be-rsax)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise) |
+| `apps/demo-be-ktkt` | [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=demo-be-ktkt)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise) |
+| `apps/demo-be-javx` | [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=demo-be-javx)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise) |
 
 ## 🚧 Project Status
 
@@ -145,7 +155,7 @@ open-sharia-enterprise/
 
 This project uses **Nx** to manage applications and libraries:
 
-- **`apps/`** - Deployable applications (current: [`oseplatform-web`](./apps/oseplatform-web/), [`ayokoding-web`](./apps/ayokoding-web/), [`ayokoding-cli`](./apps/ayokoding-cli/), [`rhino-cli`](./apps/rhino-cli/), [`oseplatform-cli`](./apps/oseplatform-cli/), [`organiclever-web`](./apps/organiclever-web/), [`organiclever-web-e2e`](./apps/organiclever-web-e2e/), [`demo-be-jasb`](./apps/demo-be-jasb/), [`demo-be-exph`](./apps/demo-be-exph/), [`demo-be-fsgi`](./apps/demo-be-fsgi/), [`demo-be-e2e`](./apps/demo-be-e2e/))
+- **`apps/`** - Deployable applications (current: [`oseplatform-web`](./apps/oseplatform-web/), [`ayokoding-web`](./apps/ayokoding-web/), [`ayokoding-cli`](./apps/ayokoding-cli/), [`rhino-cli`](./apps/rhino-cli/), [`oseplatform-cli`](./apps/oseplatform-cli/), [`organiclever-web`](./apps/organiclever-web/), [`organiclever-web-e2e`](./apps/organiclever-web-e2e/), [`demo-be-jasb`](./apps/demo-be-jasb/), [`demo-be-exph`](./apps/demo-be-exph/), [`demo-be-fsgi`](./apps/demo-be-fsgi/), [`demo-be-gogn`](./apps/demo-be-gogn/), [`demo-be-pyfa`](./apps/demo-be-pyfa/), [`demo-be-rsax`](./apps/demo-be-rsax/), [`demo-be-ktkt`](./apps/demo-be-ktkt/), [`demo-be-javx`](./apps/demo-be-javx/), [`demo-be-e2e`](./apps/demo-be-e2e/))
 - **`libs/`** - Reusable libraries
 - **`apps-labs/`** - Experimental apps and POCs (current: `ayokoding-web__source-code`, `hello-rust-be`)
 

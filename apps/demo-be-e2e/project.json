@@ -56,5 +56,5 @@
     }
   },
   "tags": ["type:e2e", "platform:playwright", "lang:ts", "domain:demo-be"],
-  "implicitDependencies": ["demo-be-jasb", "demo-be-exph", "demo-be-fsgi"]
+  "implicitDependencies": ["demo-be-jasb", "demo-be-exph", "demo-be-fsgi", "demo-be-gogn", "demo-be-pyfa", "demo-be-rsax", "demo-be-ktkt", "demo-be-javx"]
 }

@@ -17,6 +17,8 @@
     "vmware.vscode-boot-dev-pack",
     "vmware.vscode-spring-boot",
     "vscjava.vscode-spring-boot-dashboard",
-    "vscjava.vscode-spring-initializr"
+    "vscjava.vscode-spring-initializr",
+    "rust-lang.rust-analyzer",
+    "sethjones.kotlin-on-vscode"
   ]
 }

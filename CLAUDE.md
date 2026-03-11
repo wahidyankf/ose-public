@@ -26,6 +26,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - `demo-be-jasb` - Spring Boot REST API backend (Java Spring Boot)
   - `demo-be-exph` - Elixir/Phoenix REST API backend (alternative to demo-be-jasb)
   - `demo-be-fsgi` - F#/Giraffe REST API backend (alternative to demo-be-jasb)
+  - `demo-be-gogn` - Go/Gin REST API backend (alternative to demo-be-jasb)
+  - `demo-be-pyfa` - Python/FastAPI REST API backend (alternative to demo-be-jasb)
+  - `demo-be-rsax` - Rust/Axum REST API backend (alternative to demo-be-jasb)
+  - `demo-be-ktkt` - Kotlin/Ktor REST API backend (alternative to demo-be-jasb)
+  - `demo-be-javx` - Java/Vert.x REST API backend (alternative to demo-be-jasb)
   - `demo-be-e2e` - Playwright E2E tests for demo-be REST API backends
 
 ## Project Structure
@@ -43,6 +48,11 @@ open-sharia-enterprise/
 │   ├── demo-be-jasb/ # Spring Boot REST API (Java Spring Boot)
 │   ├── demo-be-exph/ # Elixir/Phoenix REST API (alternative implementation)
 │   ├── demo-be-fsgi/ # F#/Giraffe REST API (alternative implementation)
+│   ├── demo-be-gogn/ # Go/Gin REST API (alternative implementation)
+│   ├── demo-be-pyfa/ # Python/FastAPI REST API (alternative implementation)
+│   ├── demo-be-rsax/ # Rust/Axum REST API (alternative implementation)
+│   ├── demo-be-ktkt/ # Kotlin/Ktor REST API (alternative implementation)
+│   ├── demo-be-javx/ # Java/Vert.x REST API (alternative implementation)
 │   └── demo-be-e2e/ # Playwright E2E tests for backend
 ├── apps-labs/                # Experimental apps (NOT in Nx)
 ├── libs/                     # Reusable libraries (Nx, flat structure)
@@ -112,8 +122,8 @@ npm run doctor           # Check all required tools (volta, node, npm, java, mav
 **See**: [governance/development/infra/nx-targets.md](./governance/development/infra/nx-targets.md) for canonical target names, mandatory targets per project type, and caching rules.
 
 **Go projects**: All Go projects (`ayokoding-cli`, `oseplatform-cli`, `rhino-cli`,
-`libs/golang-commons`, `libs/hugo-commons`) enforce ≥90% **line coverage** (matching Codecov's
-algorithm) via `rhino-cli test-coverage validate`. Coverage is measured with
+`libs/golang-commons`, `libs/hugo-commons`, `demo-be-gogn`) enforce ≥90% **line coverage**
+(matching Codecov's algorithm) via `rhino-cli test-coverage validate`. Coverage is measured with
 `go test -coverprofile=cover.out ./...` and enforced by
 `rhino-cli test-coverage validate <project>/cover.out 90` — both run as part of `test:quick`.
 
@@ -121,9 +131,21 @@ algorithm) via `rhino-cli test-coverage validate`. Coverage is measured with
 Codecov's algorithm) via `rhino-cli test-coverage validate` applied to the LCOV output from Vitest:
 `rhino-cli test-coverage validate apps/organiclever-web/coverage/lcov.info 90` — run as part of `test:quick`.
 
-**Java projects**: `demo-be-jasb` enforces ≥90% **line coverage** (matching Codecov's algorithm)
-via `rhino-cli test-coverage validate` applied to the JaCoCo XML report:
-`rhino-cli test-coverage validate apps/demo-be-jasb/target/site/jacoco-integration/jacoco.xml 90` — run as part of `test:quick`.
+**Java projects**: `demo-be-jasb` and `demo-be-javx` enforce ≥90% **line coverage** (matching
+Codecov's algorithm) via `rhino-cli test-coverage validate` applied to the JaCoCo XML report —
+run as part of `test:quick`.
+
+**Kotlin projects**: `demo-be-ktkt` enforces ≥90% **line coverage** (matching Codecov's algorithm)
+via `rhino-cli test-coverage validate` applied to the Kover JaCoCo XML report —
+run as part of `test:quick`.
+
+**Python projects**: `demo-be-pyfa` enforces ≥90% **line coverage** (matching Codecov's algorithm)
+via `rhino-cli test-coverage validate` applied to the LCOV output from coverage.py:
+`rhino-cli test-coverage validate apps/demo-be-pyfa/coverage/lcov.info 90` — run as part of `test:quick`.
+
+**Rust projects**: `demo-be-rsax` enforces ≥90% **line coverage** (matching Codecov's algorithm)
+via `rhino-cli test-coverage validate` applied to the LCOV output from cargo-llvm-cov:
+`rhino-cli test-coverage validate apps/demo-be-rsax/coverage/lcov.info 90` — run as part of `test:quick`.
 
 **F# projects**: `demo-be-fsgi` enforces ≥90% **line coverage** (matching Codecov's algorithm)
 via `rhino-cli test-coverage validate` applied to the AltCover LCOV report:
@@ -134,6 +156,10 @@ via `rhino-cli test-coverage validate` applied to the AltCover LCOV report:
 **`test:integration` caching**: Integration tests for `organiclever-web` (MSW), `demo-be-jasb`
 (MockMvc + mocked repositories via InMemoryDataStore), `demo-be-exph` (in-memory context
 implementations via InMemoryStore), `demo-be-fsgi` (SQLite in-memory via WebApplicationFactory),
+`demo-be-gogn` (Godog + httptest + in-memory stores), `demo-be-pyfa` (pytest-bdd + TestClient +
+in-memory stores), `demo-be-rsax` (cucumber + Tower TestClient + in-memory stores),
+`demo-be-ktkt` (Cucumber JVM + Ktor testApplication + SQLite in-memory),
+`demo-be-javx` (Cucumber JVM + Vert.x Test + in-memory stores),
 `hugo-commons` (Godog + tmpdir mocks), and `golang-commons`
 (Godog + mock closures) use in-process mocking only — no external services required. They are
 fully deterministic and safe to cache (`cache: true` in `nx.json`).

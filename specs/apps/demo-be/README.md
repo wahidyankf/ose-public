@@ -24,11 +24,16 @@ Postgres). Supported currencies: **USD** and **IDR**.
 
 ## Implementations
 
-| Implementation | Language         | Integration runner | E2E runner |
-| -------------- | ---------------- | ------------------ | ---------- |
-| demo-be-jasb   | Java (Spring)    | Cucumber + MockMvc | Playwright |
-| demo-be-exph   | Elixir (Phoenix) | Cabbage + ConnCase | Playwright |
-| demo-be-fsgi   | F# (Giraffe)     | TickSpec + xUnit   | Playwright |
+| Implementation | Language         | Integration runner          | E2E runner |
+| -------------- | ---------------- | --------------------------- | ---------- |
+| demo-be-jasb   | Java (Spring)    | Cucumber + MockMvc          | Playwright |
+| demo-be-exph   | Elixir (Phoenix) | Cabbage + ConnCase          | Playwright |
+| demo-be-fsgi   | F# (Giraffe)     | TickSpec + xUnit            | Playwright |
+| demo-be-gogn   | Go (Gin)         | Godog + httptest            | Playwright |
+| demo-be-pyfa   | Python (FastAPI) | pytest-bdd + TestClient     | Playwright |
+| demo-be-rsax   | Rust (Axum)      | cucumber + Tower TestClient | Playwright |
+| demo-be-ktkt   | Kotlin (Ktor)    | Cucumber + testApplication  | Playwright |
+| demo-be-javx   | Java (Vert.x)    | Cucumber + Vert.x Test      | Playwright |
 
 Each new language implementation adds its own step definitions. The feature files here are the
 single source of truth and must not contain language-specific concepts (framework names, library
@@ -38,7 +43,7 @@ paths, runtime-specific error formats).
 
 This spec is organized into two subdirectories:
 
-- **[gherkin/](./gherkin/README.md)** — 13 Gherkin feature files, ~73 scenarios, covering 7
+- **[gherkin/](./gherkin/README.md)** — 13 Gherkin feature files, 76 scenarios, covering 7
   domains
 - **[c4/](./c4/README.md)** — C4 architecture diagrams for the demo backend service
 
@@ -68,7 +73,7 @@ specs/apps/demo-be/
 │       ├── currency-handling.feature     (6 scenarios)
 │       ├── unit-handling.feature         (4 scenarios)
 │       ├── reporting.feature             (6 scenarios)
-│       └── attachments.feature           (7 scenarios)
+│       └── attachments.feature           (10 scenarios)
 └── c4/
     └── README.md
 ```

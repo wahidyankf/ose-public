@@ -126,12 +126,12 @@ Tags are the standard mechanism for attaching structured metadata to projects in
 
 Every project declares tags along four dimensions. Each dimension uses a fixed prefix and a controlled vocabulary.
 
-| Dimension | Prefix      | Allowed Values                                                   | Required                       | Purpose                                                       |
-| --------- | ----------- | ---------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------- |
-| Type      | `type:`     | `app`, `lib`, `e2e`                                              | Always                         | Distinguishes deployable apps, reusable libs, and test suites |
-| Platform  | `platform:` | `hugo`, `cli`, `nextjs`, `spring-boot`, `phoenix`, `playwright`  | Apps and e2e projects          | Framework or runtime environment                              |
-| Language  | `lang:`     | `golang`, `ts`, `java`, `elixir`                                 | Projects with application code | Primary language of source code                               |
-| Domain    | `domain:`   | `ayokoding`, `oseplatform`, `organiclever`, `demo-be`, `tooling` | Always                         | Business or product domain                                    |
+| Dimension | Prefix      | Allowed Values                                                                                                        | Required                       | Purpose                                                       |
+| --------- | ----------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------- |
+| Type      | `type:`     | `app`, `lib`, `e2e`                                                                                                   | Always                         | Distinguishes deployable apps, reusable libs, and test suites |
+| Platform  | `platform:` | `hugo`, `cli`, `nextjs`, `spring-boot`, `phoenix`, `giraffe`, `gin`, `fastapi`, `axum`, `ktor`, `vertx`, `playwright` | Apps and e2e projects          | Framework or runtime environment                              |
+| Language  | `lang:`     | `golang`, `ts`, `java`, `elixir`, `fsharp`, `python`, `rust`, `kotlin`                                                | Projects with application code | Primary language of source code                               |
+| Domain    | `domain:`   | `ayokoding`, `oseplatform`, `organiclever`, `demo-be`, `tooling`                                                      | Always                         | Business or product domain                                    |
 
 ### Special Rules
 
@@ -150,6 +150,12 @@ Every project declares tags along four dimensions. Each dimension uses a fixed p
 | `rhino-cli`            | `["type:app", "platform:cli", "lang:golang", "domain:tooling"]`         |
 | `demo-be-jasb`         | `["type:app", "platform:spring-boot", "lang:java", "domain:demo-be"]`   |
 | `demo-be-exph`         | `["type:app", "platform:phoenix", "lang:elixir", "domain:demo-be"]`     |
+| `demo-be-fsgi`         | `["type:app", "platform:giraffe", "lang:fsharp", "domain:demo-be"]`     |
+| `demo-be-gogn`         | `["type:app", "platform:gin", "lang:golang", "domain:demo-be"]`         |
+| `demo-be-pyfa`         | `["type:app", "platform:fastapi", "lang:python", "domain:demo-be"]`     |
+| `demo-be-rsax`         | `["type:app", "platform:axum", "lang:rust", "domain:demo-be"]`          |
+| `demo-be-ktkt`         | `["type:app", "platform:ktor", "lang:kotlin", "domain:demo-be"]`        |
+| `demo-be-javx`         | `["type:app", "platform:vertx", "lang:java", "domain:demo-be"]`         |
 | `demo-be-e2e`          | `["type:e2e", "platform:playwright", "lang:ts", "domain:demo-be"]`      |
 | `organiclever-web`     | `["type:app", "platform:nextjs", "lang:ts", "domain:organiclever"]`     |
 | `organiclever-web-e2e` | `["type:e2e", "platform:playwright", "lang:ts", "domain:organiclever"]` |
@@ -209,9 +215,12 @@ them for `nx affected -t lint`.
 | Project type       | Typical `test:quick` composition                                                                                                                                                                                                                                                                                                                                                                                    |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | TypeScript app     | unit tests via vitest (typecheck and lint run separately in pre-push); Next.js/React apps with Gherkin specs also run integration tests in parallel — both vitest project names (`--project unit`, `--project integration`) execute concurrently, integration tests use `@amiceli/vitest-cucumber` reading the same feature files as the E2E suite with all dependencies fully mocked (no running service required) |
-| Go app             | `go test -coverprofile=cover.out ./... && rhino-cli test-coverage validate <project>/cover.out 95` — compiles and runs unit tests, then enforces ≥95% line coverage (Codecov algorithm). Coverage is measured by `go test -coverprofile` and validated by `rhino-cli test-coverage validate`.                                                                                                                       |
+| Go app             | `go test -coverprofile=cover.out ./... && rhino-cli test-coverage validate <project>/cover.out 90` — compiles and runs unit tests, then enforces ≥90% line coverage (Codecov algorithm). Coverage is measured by `go test -coverprofile` and validated by `rhino-cli test-coverage validate`.                                                                                                                       |
 | Java/Spring Boot   | unit tests (`mvn test`, includes `**/unit/**/*Test.java`) + integration tests (`mvn test -Pintegration`, includes `**/integration/**/*Test.java`) in parallel; the two Surefire include lists are mutually exclusive — neither profile runs the other tier's tests                                                                                                                                                  |
-| Python app         | typecheck (mypy) + unit tests                                                                                                                                                                                                                                                                                                                                                                                       |
+| Java/Vert.x        | `mvn test -Pintegration` runs Cucumber JVM with Vert.x Test; JaCoCo XML coverage validated by `rhino-cli test-coverage validate` ≥90%                                                                                                                                                                                                                                                                               |
+| Kotlin/Ktor        | `./gradlew test koverXmlReport` runs Cucumber JVM with Ktor testApplication; Kover JaCoCo XML coverage validated by `rhino-cli test-coverage validate` ≥90%                                                                                                                                                                                                                                                         |
+| Python/FastAPI     | `pytest` with coverage → LCOV → `rhino-cli test-coverage validate` ≥90%; ruff format/check; pyright typecheck                                                                                                                                                                                                                                                                                                       |
+| Rust/Axum          | `cargo fmt --check` + `cargo clippy` + `cargo test --lib` + `cargo llvm-cov --lcov` → `rhino-cli test-coverage validate` ≥90%                                                                                                                                                                                                                                                                                       |
 | Hugo site          | link check via the site's CLI tool (build runs separately via `nx build`)                                                                                                                                                                                                                                                                                                                                           |
 | Flutter/Dart       | unit tests (`flutter test`); `flutter analyze` runs via `typecheck`, not `lint`                                                                                                                                                                                                                                                                                                                                     |
 | Playwright `*-e2e` | run the linter directly (no unit tests to add beyond linting)                                                                                                                                                                                                                                                                                                                                                       |
@@ -325,6 +334,31 @@ running server or real database. All repositories are mocked via `MockRepositori
 `mix test --only integration`. The same Gherkin feature files are executed via `elixir-cabbage`
 with Phoenix ConnCase. All context modules are replaced by in-memory implementations backed by
 `InMemoryStore` (Agent-based state) — no PostgreSQL or Ecto Repo is started in test.
+
+**`test:integration` with Godog BDD**: `demo-be-gogn` exposes `test:integration` which runs
+`go test -tags=integration -run TestIntegration ./internal/integration/...`. The same Gherkin
+feature files are executed via Godog with `httptest.Server`. All repositories use in-memory
+ConcurrentHashMap-equivalent stores — no external database required.
+
+**`test:integration` with pytest-bdd**: `demo-be-pyfa` exposes `test:integration` which runs
+`uv run pytest -m integration`. The same Gherkin feature files are executed via `pytest-bdd`
+with FastAPI `TestClient`. All repositories use in-memory dict-based stores — no external
+database required.
+
+**`test:integration` with cucumber-rs**: `demo-be-rsax` exposes `test:integration` which runs
+`cargo test --test integration`. The same Gherkin feature files are executed via `cucumber` crate
+with Tower `TestClient`. All repositories use in-memory `RwLock<HashMap>` stores — no external
+database required.
+
+**`test:integration` with Cucumber JVM (Ktor)**: `demo-be-ktkt` exposes `test:integration` which
+runs `./gradlew test`. The same Gherkin feature files are executed via Cucumber JVM with Ktor
+`testApplication {}`. All repositories use in-memory ConcurrentHashMap stores backed by Exposed +
+SQLite in-memory — no external database required.
+
+**`test:integration` with Cucumber JVM (Vert.x)**: `demo-be-javx` exposes `test:integration`
+which runs `mvn test -Pintegration`. The same Gherkin feature files are executed via Cucumber JVM
+with Vert.x Test. All repositories use in-memory ConcurrentHashMap stores — no external database
+required.
 
 ### Hugo Sites
 

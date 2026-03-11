@@ -3,6 +3,9 @@ docs/
 plans/
 *.md
 
+# Claude Code worktrees (git worktrees contain duplicate project.json files)
+.claude/worktrees/
+
 # Git files
 .git/
 .github/

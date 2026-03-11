@@ -34,7 +34,7 @@
           "cargo fmt --check",
           "cargo clippy -- -D warnings",
           "cargo test --lib",
-          "cargo llvm-cov --lcov --output-path coverage/lcov.info",
+          "mkdir -p coverage && cargo llvm-cov --lcov --output-path coverage/lcov.info",
           "(cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/demo-be-rsax/coverage/lcov.info 90)"
         ],
         "parallel": false,

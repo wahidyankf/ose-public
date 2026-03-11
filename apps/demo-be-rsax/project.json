@@ -1,0 +1,88 @@
+{
+  "name": "demo-be-rsax",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/demo-be-rsax/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo build --release",
+        "cwd": "apps/demo-be-rsax"
+      },
+      "outputs": ["{projectRoot}/target/release/demo-be-rsax"],
+      "dependsOn": []
+    },
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "APP_JWT_SECRET=dev-jwt-secret-that-is-32-chars-long! cargo run",
+        "cwd": "apps/demo-be-rsax"
+      }
+    },
+    "start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "APP_JWT_SECRET=dev-jwt-secret-that-is-32-chars-long! ./target/release/demo-be-rsax",
+        "cwd": "apps/demo-be-rsax"
+      }
+    },
+    "test:quick": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "cargo fmt --check",
+          "cargo clippy -- -D warnings",
+          "cargo test --lib",
+          "cargo llvm-cov --lcov --output-path coverage/lcov.info",
+          "(cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/demo-be-rsax/coverage/lcov.info 90)"
+        ],
+        "parallel": false,
+        "cwd": "apps/demo-be-rsax"
+      },
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/src/**/*.rs",
+        "{projectRoot}/tests/**/*.rs",
+        "{projectRoot}/Cargo.toml",
+        "{projectRoot}/Cargo.lock"
+      ],
+      "outputs": ["{projectRoot}/coverage/lcov.info"]
+    },
+    "test:unit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo test --lib",
+        "cwd": "apps/demo-be-rsax"
+      }
+    },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cargo test --test integration",
+        "cwd": "apps/demo-be-rsax"
+      },
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/src/**/*.rs",
+        "{projectRoot}/tests/**/*.rs",
+        "{projectRoot}/Cargo.toml",
+        "{projectRoot}/Cargo.lock",
+        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+      ]
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "cargo fmt --check",
+          "cargo clippy -- -D warnings"
+        ],
+        "parallel": false,
+        "cwd": "apps/demo-be-rsax"
+      }
+    }
+  },
+  "tags": ["type:app", "platform:axum", "lang:rust", "domain:demo-be"],
+  "implicitDependencies": ["rhino-cli"]
+}

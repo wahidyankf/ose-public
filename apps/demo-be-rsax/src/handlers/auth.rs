@@ -1,0 +1,245 @@
+use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
+use serde::{Deserialize, Serialize};
+use serde_json::json;
+use std::sync::Arc;
+use uuid::Uuid;
+
+use crate::auth::{
+    jwt::{decode_refresh_token, encode_access_token, encode_refresh_token},
+    middleware::AuthUser,
+    password::{hash_password, verify_password},
+};
+use crate::db::{token_repo, user_repo};
+use crate::domain::{
+    errors::AppError,
+    types::{Role, UserStatus},
+    user::{validate_email, validate_password},
+};
+use crate::state::AppState;
+
+const MAX_FAILED_ATTEMPTS: i64 = 5;
+
+#[derive(Deserialize)]
+pub struct RegisterRequest {
+    pub username: Option<String>,
+    pub email: Option<String>,
+    pub password: Option<String>,
+}
+
+#[derive(Serialize)]
+pub struct RegisterResponse {
+    pub id: String,
+    pub username: String,
+    pub email: String,
+    pub display_name: String,
+}
+
+pub async fn register(
+    State(state): State<Arc<AppState>>,
+    Json(body): Json<RegisterRequest>,
+) -> Result<impl IntoResponse, AppError> {
+    let username = body.username.unwrap_or_default();
+    let email = body.email.unwrap_or_default();
+    let password = body.password.unwrap_or_default();
+
+    // Validate inputs
+    validate_email(&email)?;
+    validate_password(&password)?;
+
+    if username.is_empty() {
+        return Err(AppError::Validation {
+            field: "username".to_string(),
+            message: "must not be empty".to_string(),
+        });
+    }
+
+    let password_hash = hash_password(password).await?;
+    let user_id = Uuid::new_v4();
+
+    let user = user_repo::create_user(
+        &state.pool,
+        user_id,
+        &username,
+        &email,
+        &username, // display_name defaults to username
+        &password_hash,
+        "USER",
+    )
+    .await?;
+
+    Ok((
+        StatusCode::CREATED,
+        Json(RegisterResponse {
+            id: user.id.to_string(),
+            username: user.username,
+            email: user.email,
+            display_name: user.display_name,
+        }),
+    ))
+}
+
+#[derive(Deserialize)]
+pub struct LoginRequest {
+    pub username: Option<String>,
+    pub password: Option<String>,
+}
+
+#[derive(Serialize)]
+pub struct LoginResponse {
+    pub access_token: String,
+    pub refresh_token: String,
+    pub token_type: String,
+}
+
+pub async fn login(
+    State(state): State<Arc<AppState>>,
+    Json(body): Json<LoginRequest>,
+) -> Result<Json<LoginResponse>, AppError> {
+    let username = body.username.unwrap_or_default();
+    let password = body.password.unwrap_or_default();
+
+    let user = user_repo::find_by_username(&state.pool, &username)
+        .await?
+        .ok_or_else(|| AppError::Unauthorized {
+            message: "Invalid credentials".to_string(),
+        })?;
+
+    let status = UserStatus::parse_str(&user.status).unwrap_or(UserStatus::Active);
+
+    // Check status before verifying password
+    if status == UserStatus::Inactive {
+        return Err(AppError::Unauthorized {
+            message: "Account has been deactivated".to_string(),
+        });
+    }
+    if status == UserStatus::Disabled {
+        return Err(AppError::Unauthorized {
+            message: "Account has been disabled".to_string(),
+        });
+    }
+    if status == UserStatus::Locked {
+        return Err(AppError::Unauthorized {
+            message: "Account is locked".to_string(),
+        });
+    }
+
+    let valid = verify_password(password, user.password_hash.clone()).await?;
+    if !valid {
+        let attempts = user_repo::increment_failed_attempts(&state.pool, user.id).await?;
+        if attempts >= MAX_FAILED_ATTEMPTS {
+            user_repo::update_status(&state.pool, user.id, "LOCKED").await?;
+        }
+        return Err(AppError::Unauthorized {
+            message: "Invalid credentials".to_string(),
+        });
+    }
+
+    // Reset failed attempts on success
+    user_repo::reset_failed_attempts(&state.pool, user.id).await?;
+
+    let role = Role::parse_str(&user.role).unwrap_or(Role::User);
+    let (access_token, _access_jti) = encode_access_token(
+        user.id,
+        &user.username,
+        &role.to_string(),
+        &state.jwt_secret,
+    )?;
+    let (refresh_token, _refresh_jti) = encode_refresh_token(user.id, &state.jwt_secret)?;
+
+    Ok(Json(LoginResponse {
+        access_token,
+        refresh_token,
+        token_type: "Bearer".to_string(),
+    }))
+}
+
+#[derive(Deserialize)]
+pub struct RefreshRequest {
+    pub refresh_token: Option<String>,
+}
+
+pub async fn refresh(
+    State(state): State<Arc<AppState>>,
+    Json(body): Json<RefreshRequest>,
+) -> Result<Json<LoginResponse>, AppError> {
+    let token_str = body.refresh_token.unwrap_or_default();
+    let claims = decode_refresh_token(&token_str, &state.jwt_secret)?;
+
+    // Check if this refresh token jti is revoked (single-use rotation)
+    let revoked = token_repo::is_revoked(&state.pool, &claims.jti).await?;
+    if revoked {
+        return Err(AppError::Unauthorized {
+            message: "Invalid token".to_string(),
+        });
+    }
+
+    let user_id = Uuid::parse_str(&claims.sub).map_err(|_| AppError::Unauthorized {
+        message: "Invalid token".to_string(),
+    })?;
+
+    // Check user is still active
+    let user = user_repo::find_by_id(&state.pool, user_id)
+        .await?
+        .ok_or_else(|| AppError::Unauthorized {
+            message: "User not found".to_string(),
+        })?;
+
+    let status = UserStatus::parse_str(&user.status).unwrap_or(UserStatus::Active);
+    if status != UserStatus::Active {
+        return Err(AppError::Unauthorized {
+            message: "Account has been deactivated".to_string(),
+        });
+    }
+
+    // Revoke old refresh token (single-use)
+    token_repo::revoke_token(&state.pool, &claims.jti, user_id).await?;
+
+    let role = Role::parse_str(&user.role).unwrap_or(Role::User);
+    let (access_token, _access_jti) = encode_access_token(
+        user.id,
+        &user.username,
+        &role.to_string(),
+        &state.jwt_secret,
+    )?;
+    let (refresh_token, _refresh_jti) = encode_refresh_token(user.id, &state.jwt_secret)?;
+
+    Ok(Json(LoginResponse {
+        access_token,
+        refresh_token,
+        token_type: "Bearer".to_string(),
+    }))
+}
+
+#[derive(Deserialize)]
+pub struct LogoutRequest {
+    pub access_token: Option<String>,
+}
+
+pub async fn logout(
+    State(state): State<Arc<AppState>>,
+    Json(body): Json<LogoutRequest>,
+) -> Result<Json<serde_json::Value>, AppError> {
+    let token_str = body.access_token.unwrap_or_default();
+    if token_str.is_empty() {
+        return Ok(Json(json!({"message": "ok"})));
+    }
+
+    // Decode without strict validation (may be expired)
+    if let Ok(claims) = crate::auth::jwt::decode_claims_unchecked(&token_str, &state.jwt_secret) {
+        let user_id = Uuid::parse_str(&claims.sub).unwrap_or_else(|_| Uuid::new_v4());
+        token_repo::revoke_token(&state.pool, &claims.jti, user_id).await?;
+    }
+
+    Ok(Json(json!({"message": "ok"})))
+}
+
+pub async fn logout_all(
+    State(state): State<Arc<AppState>>,
+    auth_user: AuthUser,
+) -> Result<Json<serde_json::Value>, AppError> {
+    // Revoke the current access token
+    token_repo::revoke_token(&state.pool, &auth_user.jti, auth_user.user_id).await?;
+    // Revoke all tokens for user
+    token_repo::revoke_all_for_user(&state.pool, auth_user.user_id).await?;
+    Ok(Json(json!({"message": "ok"})))
+}

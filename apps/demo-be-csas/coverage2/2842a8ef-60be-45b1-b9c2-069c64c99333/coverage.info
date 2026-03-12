@@ -1,0 +1,2540 @@
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/Program.cs
+FN:9,System.Void Program/<<Main>$>d__0::MoveNext()
+FNDA:78,System.Void Program/<<Main>$>d__0::MoveNext()
+DA:10,78
+DA:13,78
+DA:16,78
+DA:17,78
+DA:18,0
+DA:19,0
+DA:20,0
+DA:23,78
+DA:24,78
+DA:25,78
+DA:27,78
+DA:28,78
+DA:29,78
+DA:30,78
+DA:31,78
+DA:32,78
+DA:33,78
+DA:34,78
+DA:35,78
+DA:36,78
+DA:37,78
+DA:38,78
+DA:39,78
+DA:40,78
+DA:41,78
+DA:42,156
+DA:45,78
+DA:48,78
+DA:49,78
+DA:50,78
+DA:51,78
+DA:52,78
+DA:53,78
+DA:55,78
+DA:58,78
+DA:59,78
+DA:60,78
+DA:61,78
+DA:62,78
+DA:64,78
+DA:65,78
+DA:66,78
+DA:69,78
+DA:70,78
+DA:71,78
+DA:72,78
+DA:73,78
+DA:74,78
+DA:75,78
+DA:76,78
+DA:78,78
+BRDA:13,102,0,78
+BRDA:13,102,1,78
+BRDA:17,175,0,0
+BRDA:17,175,1,78
+BRDA:23,243,0,0
+BRDA:23,243,1,78
+LF:51
+LH:48
+BRF:6
+BRH:4
+FNF:1
+FNH:1
+end_of_record
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/obj/Debug/net10.0/System.Text.RegularExpressions.Generator/System.Text.RegularExpressions.Generator.RegexGenerator/RegexGenerator.g.cs
+FN:70,System.Void System.Text.RegularExpressions.Generated.<RegexGenerator_g>F0173E4F5E281A1ACFF5D2351861625BBC9B526EF4AC5F79C290339E047E6299D__EmailRegex_0::.ctor()
+FNDA:1,System.Void System.Text.RegularExpressions.Generated.<RegexGenerator_g>F0173E4F5E281A1ACFF5D2351861625BBC9B526EF4AC5F79C290339E047E6299D__EmailRegex_0::.ctor()
+DA:71,1
+DA:72,1
+DA:73,1
+DA:74,1
+DA:75,1
+DA:76,1
+DA:77,1
+DA:78,1
+DA:79,1
+FN:67,System.Void System.Text.RegularExpressions.Generated.<RegexGenerator_g>F0173E4F5E281A1ACFF5D2351861625BBC9B526EF4AC5F79C290339E047E6299D__EmailRegex_0::.cctor()
+FNDA:1,System.Void System.Text.RegularExpressions.Generated.<RegexGenerator_g>F0173E4F5E281A1ACFF5D2351861625BBC9B526EF4AC5F79C290339E047E6299D__EmailRegex_0::.cctor()
+DA:68,1
+FN:84,System.Text.RegularExpressions.RegexRunner System.Text.RegularExpressions.Generated.<RegexGenerator_g>F0173E4F5E281A1ACFF5D2351861625BBC9B526EF4AC5F79C290339E047E6299D__EmailRegex_0/RunnerFactory::CreateInstance()
+FNDA:1,System.Text.RegularExpressions.RegexRunner System.Text.RegularExpressions.Generated.<RegexGenerator_g>F0173E4F5E281A1ACFF5D2351861625BBC9B526EF4AC5F79C290339E047E6299D__EmailRegex_0/RunnerFactory::CreateInstance()
+DA:85,1
+FN:92,System.Void System.Text.RegularExpressions.Generated.<RegexGenerator_g>F0173E4F5E281A1ACFF5D2351861625BBC9B526EF4AC5F79C290339E047E6299D__EmailRegex_0/RunnerFactory/Runner::Scan(System.ReadOnlySpan`1<System.Char>)
+FNDA:144,System.Void System.Text.RegularExpressions.Generated.<RegexGenerator_g>F0173E4F5E281A1ACFF5D2351861625BBC9B526EF4AC5F79C290339E047E6299D__EmailRegex_0/RunnerFactory/Runner::Scan(System.ReadOnlySpan`1<System.Char>)
+DA:93,144
+DA:95,144
+DA:96,4
+DA:97,4
+DA:98,4
+DA:99,144
+BRDA:95,8,0,144
+BRDA:95,8,1,0
+BRDA:95,25,0,4
+BRDA:95,25,1,144
+FN:104,System.Boolean System.Text.RegularExpressions.Generated.<RegexGenerator_g>F0173E4F5E281A1ACFF5D2351861625BBC9B526EF4AC5F79C290339E047E6299D__EmailRegex_0/RunnerFactory/Runner::TryFindNextPossibleStartingPosition(System.ReadOnlySpan`1<System.Char>)
+FNDA:144,System.Boolean System.Text.RegularExpressions.Generated.<RegexGenerator_g>F0173E4F5E281A1ACFF5D2351861625BBC9B526EF4AC5F79C290339E047E6299D__EmailRegex_0/RunnerFactory/Runner::TryFindNextPossibleStartingPosition(System.ReadOnlySpan`1<System.Char>)
+DA:105,144
+DA:106,144
+DA:109,144
+DA:110,144
+DA:112,144
+DA:113,144
+DA:114,144
+DA:116,0
+DA:119,0
+DA:120,0
+DA:121,144
+BRDA:109,25,0,144
+BRDA:112,34,0,144
+BRDA:112,34,1,0
+BRDA:109,25,1,0
+FN:126,System.Boolean System.Text.RegularExpressions.Generated.<RegexGenerator_g>F0173E4F5E281A1ACFF5D2351861625BBC9B526EF4AC5F79C290339E047E6299D__EmailRegex_0/RunnerFactory/Runner::TryMatchAtCurrentPosition(System.ReadOnlySpan`1<System.Char>)
+FNDA:144,System.Boolean System.Text.RegularExpressions.Generated.<RegexGenerator_g>F0173E4F5E281A1ACFF5D2351861625BBC9B526EF4AC5F79C290339E047E6299D__EmailRegex_0/RunnerFactory/Runner::TryMatchAtCurrentPosition(System.ReadOnlySpan`1<System.Char>)
+DA:127,144
+DA:128,144
+DA:129,144
+DA:131,288
+DA:132,144
+DA:135,144
+DA:136,0
+DA:137,0
+DA:141,144
+DA:142,144
+DA:143,1197
+DA:144,1053
+DA:145,1053
+DA:146,1053
+DA:148,144
+DA:149,1
+DA:150,1
+DA:153,143
+DA:154,143
+DA:155,143
+DA:158,143
+DA:159,2
+DA:160,2
+DA:165,141
+DA:166,141
+DA:167,141
+DA:169,141
+DA:170,1740
+DA:171,1599
+DA:172,1599
+DA:173,1599
+DA:175,141
+DA:176,1
+DA:177,1
+DA:180,140
+DA:181,140
+DA:183,140
+DA:184,140
+DA:185,140
+DA:187,140
+DA:189,140
+DA:190,0
+DA:191,0
+DA:192,0
+DA:194,140
+DA:195,140
+DA:196,0
+DA:197,0
+DA:199,140
+DA:200,140
+DA:201,140
+DA:203,280
+DA:207,280
+DA:208,140
+DA:209,140
+DA:213,140
+DA:214,140
+DA:215,140
+DA:216,140
+DA:217,560
+DA:218,420
+DA:219,420
+DA:220,420
+DA:222,140
+DA:223,0
+DA:224,0
+DA:227,140
+DA:228,140
+DA:229,140
+DA:232,140
+DA:233,0
+DA:234,0
+DA:238,140
+DA:239,140
+DA:240,140
+DA:241,144
+BRDA:135,33,0,0
+BRDA:135,33,1,144
+BRDA:143,134,1,1053
+BRDA:143,67,0,1195
+BRDA:143,86,0,0
+BRDA:143,86,1,1195
+BRDA:143,67,1,2
+BRDA:143,134,0,144
+BRDA:148,145,0,1
+BRDA:148,145,1,143
+BRDA:158,180,0,141
+BRDA:158,180,1,2
+BRDA:158,205,0,2
+BRDA:158,205,1,141
+BRDA:170,321,1,1599
+BRDA:170,254,0,1599
+BRDA:170,273,0,0
+BRDA:170,273,1,1599
+BRDA:170,254,1,141
+BRDA:170,321,0,141
+BRDA:175,332,0,1
+BRDA:175,332,1,140
+BRDA:189,378,0,0
+BRDA:189,378,1,140
+BRDA:194,392,0,140
+BRDA:194,392,1,0
+BRDA:194,426,0,0
+BRDA:194,426,1,140
+BRDA:207,464,0,140
+BRDA:207,464,1,140
+BRDA:207,489,0,140
+BRDA:207,489,1,140
+BRDA:217,598,1,420
+BRDA:217,531,0,420
+BRDA:217,550,0,0
+BRDA:217,550,1,420
+BRDA:217,531,1,140
+BRDA:217,598,0,140
+BRDA:222,609,0,0
+BRDA:222,609,1,140
+BRDA:232,644,0,140
+BRDA:232,654,0,0
+BRDA:232,654,1,140
+BRDA:232,644,1,0
+BRDA:232,682,0,0
+BRDA:232,682,1,140
+FN:254,System.Void System.Text.RegularExpressions.Generated.<RegexGenerator_g>F0173E4F5E281A1ACFF5D2351861625BBC9B526EF4AC5F79C290339E047E6299D__UsernameRegex_1::.ctor()
+FNDA:1,System.Void System.Text.RegularExpressions.Generated.<RegexGenerator_g>F0173E4F5E281A1ACFF5D2351861625BBC9B526EF4AC5F79C290339E047E6299D__UsernameRegex_1::.ctor()
+DA:255,1
+DA:256,1
+DA:257,1
+DA:258,1
+DA:259,1
+DA:260,1
+DA:261,1
+DA:262,1
+DA:263,1
+FN:251,System.Void System.Text.RegularExpressions.Generated.<RegexGenerator_g>F0173E4F5E281A1ACFF5D2351861625BBC9B526EF4AC5F79C290339E047E6299D__UsernameRegex_1::.cctor()
+FNDA:1,System.Void System.Text.RegularExpressions.Generated.<RegexGenerator_g>F0173E4F5E281A1ACFF5D2351861625BBC9B526EF4AC5F79C290339E047E6299D__UsernameRegex_1::.cctor()
+DA:252,1
+FN:268,System.Text.RegularExpressions.RegexRunner System.Text.RegularExpressions.Generated.<RegexGenerator_g>F0173E4F5E281A1ACFF5D2351861625BBC9B526EF4AC5F79C290339E047E6299D__UsernameRegex_1/RunnerFactory::CreateInstance()
+FNDA:1,System.Text.RegularExpressions.RegexRunner System.Text.RegularExpressions.Generated.<RegexGenerator_g>F0173E4F5E281A1ACFF5D2351861625BBC9B526EF4AC5F79C290339E047E6299D__UsernameRegex_1/RunnerFactory::CreateInstance()
+DA:269,1
+FN:276,System.Void System.Text.RegularExpressions.Generated.<RegexGenerator_g>F0173E4F5E281A1ACFF5D2351861625BBC9B526EF4AC5F79C290339E047E6299D__UsernameRegex_1/RunnerFactory/Runner::Scan(System.ReadOnlySpan`1<System.Char>)
+FNDA:146,System.Void System.Text.RegularExpressions.Generated.<RegexGenerator_g>F0173E4F5E281A1ACFF5D2351861625BBC9B526EF4AC5F79C290339E047E6299D__UsernameRegex_1/RunnerFactory/Runner::Scan(System.ReadOnlySpan`1<System.Char>)
+DA:277,146
+DA:279,146
+DA:280,2
+DA:281,2
+DA:282,2
+DA:283,146
+BRDA:279,8,0,144
+BRDA:279,8,1,2
+BRDA:279,25,0,2
+BRDA:279,25,1,146
+FN:288,System.Boolean System.Text.RegularExpressions.Generated.<RegexGenerator_g>F0173E4F5E281A1ACFF5D2351861625BBC9B526EF4AC5F79C290339E047E6299D__UsernameRegex_1/RunnerFactory/Runner::TryFindNextPossibleStartingPosition(System.ReadOnlySpan`1<System.Char>)
+FNDA:146,System.Boolean System.Text.RegularExpressions.Generated.<RegexGenerator_g>F0173E4F5E281A1ACFF5D2351861625BBC9B526EF4AC5F79C290339E047E6299D__UsernameRegex_1/RunnerFactory/Runner::TryFindNextPossibleStartingPosition(System.ReadOnlySpan`1<System.Char>)
+DA:289,146
+DA:290,146
+DA:293,146
+DA:294,144
+DA:296,144
+DA:297,144
+DA:298,144
+DA:300,0
+DA:303,2
+DA:304,2
+DA:305,146
+BRDA:293,25,0,144
+BRDA:296,34,0,144
+BRDA:296,34,1,0
+BRDA:293,25,1,2
+FN:310,System.Boolean System.Text.RegularExpressions.Generated.<RegexGenerator_g>F0173E4F5E281A1ACFF5D2351861625BBC9B526EF4AC5F79C290339E047E6299D__UsernameRegex_1/RunnerFactory/Runner::TryMatchAtCurrentPosition(System.ReadOnlySpan`1<System.Char>)
+FNDA:144,System.Boolean System.Text.RegularExpressions.Generated.<RegexGenerator_g>F0173E4F5E281A1ACFF5D2351861625BBC9B526EF4AC5F79C290339E047E6299D__UsernameRegex_1/RunnerFactory/Runner::TryMatchAtCurrentPosition(System.ReadOnlySpan`1<System.Char>)
+DA:311,144
+DA:312,144
+DA:313,144
+DA:315,144
+DA:318,144
+DA:319,0
+DA:320,0
+DA:324,144
+DA:325,144
+DA:326,1186
+DA:327,1042
+DA:328,1042
+DA:329,1042
+DA:331,144
+DA:332,0
+DA:333,0
+DA:336,144
+DA:337,144
+DA:338,144
+DA:341,144
+DA:342,2
+DA:343,2
+DA:347,142
+DA:348,142
+DA:349,142
+DA:350,144
+BRDA:318,27,0,0
+BRDA:318,27,1,144
+BRDA:326,121,1,1042
+BRDA:326,56,0,1186
+BRDA:326,67,0,1044
+BRDA:326,83,0,1044
+BRDA:326,83,1,0
+BRDA:326,56,1,142
+BRDA:326,67,1,142
+BRDA:326,121,0,144
+BRDA:331,132,0,0
+BRDA:331,132,1,144
+BRDA:341,166,0,142
+BRDA:341,176,0,0
+BRDA:341,176,1,142
+BRDA:341,166,1,2
+BRDA:341,204,0,2
+BRDA:341,204,1,142
+FN:360,System.Void System.Text.RegularExpressions.Generated.<RegexGenerator_g>F0173E4F5E281A1ACFF5D2351861625BBC9B526EF4AC5F79C290339E047E6299D__Utilities::.cctor()
+FNDA:1,System.Void System.Text.RegularExpressions.Generated.<RegexGenerator_g>F0173E4F5E281A1ACFF5D2351861625BBC9B526EF4AC5F79C290339E047E6299D__Utilities::.cctor()
+DA:361,1
+DA:364,1
+BRDA:361,17,0,0
+BRDA:361,17,1,1
+FN:25,System.Text.RegularExpressions.Regex DemoBeCsas.Domain.UserValidation::EmailRegex()
+FNDA:144,System.Text.RegularExpressions.Regex DemoBeCsas.Domain.UserValidation::EmailRegex()
+DA:26,144
+FN:46,System.Text.RegularExpressions.Regex DemoBeCsas.Domain.UserValidation::UsernameRegex()
+FNDA:146,System.Text.RegularExpressions.Regex DemoBeCsas.Domain.UserValidation::UsernameRegex()
+DA:47,146
+LF:162
+LH:143
+BRF:82
+BRH:62
+FNF:15
+FNH:15
+end_of_record
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/Infrastructure/AppDbContext.cs
+FN:8,Microsoft.EntityFrameworkCore.DbSet`1<DemoBeCsas.Infrastructure.Models.UserModel> DemoBeCsas.Infrastructure.AppDbContext::get_Users()
+FNDA:711,Microsoft.EntityFrameworkCore.DbSet`1<DemoBeCsas.Infrastructure.Models.UserModel> DemoBeCsas.Infrastructure.AppDbContext::get_Users()
+DA:9,711
+FN:9,Microsoft.EntityFrameworkCore.DbSet`1<DemoBeCsas.Infrastructure.Models.ExpenseModel> DemoBeCsas.Infrastructure.AppDbContext::get_Expenses()
+FNDA:86,Microsoft.EntityFrameworkCore.DbSet`1<DemoBeCsas.Infrastructure.Models.ExpenseModel> DemoBeCsas.Infrastructure.AppDbContext::get_Expenses()
+DA:10,86
+FN:10,Microsoft.EntityFrameworkCore.DbSet`1<DemoBeCsas.Infrastructure.Models.AttachmentModel> DemoBeCsas.Infrastructure.AppDbContext::get_Attachments()
+FNDA:12,Microsoft.EntityFrameworkCore.DbSet`1<DemoBeCsas.Infrastructure.Models.AttachmentModel> DemoBeCsas.Infrastructure.AppDbContext::get_Attachments()
+DA:11,12
+FN:11,Microsoft.EntityFrameworkCore.DbSet`1<DemoBeCsas.Infrastructure.Models.RevokedTokenModel> DemoBeCsas.Infrastructure.AppDbContext::get_RevokedTokens()
+FNDA:293,Microsoft.EntityFrameworkCore.DbSet`1<DemoBeCsas.Infrastructure.Models.RevokedTokenModel> DemoBeCsas.Infrastructure.AppDbContext::get_RevokedTokens()
+DA:12,293
+FN:14,System.Void DemoBeCsas.Infrastructure.AppDbContext::OnModelCreating(Microsoft.EntityFrameworkCore.ModelBuilder)
+FNDA:1,System.Void DemoBeCsas.Infrastructure.AppDbContext::OnModelCreating(Microsoft.EntityFrameworkCore.ModelBuilder)
+DA:15,1
+DA:16,1
+DA:17,1
+DA:18,1
+DA:19,1
+DA:20,1
+DA:21,1
+DA:22,1
+DA:23,2
+DA:25,1
+DA:26,1
+DA:27,1
+DA:28,1
+DA:29,1
+DA:30,2
+DA:32,1
+DA:33,1
+DA:34,1
+DA:35,2
+DA:37,1
+DA:38,1
+DA:39,1
+DA:40,1
+DA:41,1
+DA:42,2
+DA:43,1
+FN:6,System.Void DemoBeCsas.Infrastructure.AppDbContext::.ctor(Microsoft.EntityFrameworkCore.DbContextOptions`1<DemoBeCsas.Infrastructure.AppDbContext>)
+FNDA:704,System.Void DemoBeCsas.Infrastructure.AppDbContext::.ctor(Microsoft.EntityFrameworkCore.DbContextOptions`1<DemoBeCsas.Infrastructure.AppDbContext>)
+DA:7,704
+LF:31
+LH:31
+BRF:0
+BRH:0
+FNF:6
+FNH:6
+end_of_record
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/Infrastructure/PasswordHasher.cs
+FN:10,System.String DemoBeCsas.Infrastructure.PasswordHasher::HashPassword(System.String)
+FNDA:131,System.String DemoBeCsas.Infrastructure.PasswordHasher::HashPassword(System.String)
+DA:11,131
+FN:13,System.Boolean DemoBeCsas.Infrastructure.PasswordHasher::VerifyPassword(System.String,System.String)
+FNDA:124,System.Boolean DemoBeCsas.Infrastructure.PasswordHasher::VerifyPassword(System.String,System.String)
+DA:14,124
+LF:2
+LH:2
+BRF:0
+BRH:0
+FNF:2
+FNH:2
+end_of_record
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/Infrastructure/Repositories/AttachmentRepository.cs
+FN:62,System.Threading.Tasks.Task`1<DemoBeCsas.Infrastructure.Models.AttachmentModel> DemoBeCsas.Infrastructure.Repositories.AttachmentRepository::FindByIdAsync(System.Guid,System.Threading.CancellationToken)
+FNDA:2,System.Threading.Tasks.Task`1<DemoBeCsas.Infrastructure.Models.AttachmentModel> DemoBeCsas.Infrastructure.Repositories.AttachmentRepository::FindByIdAsync(System.Guid,System.Threading.CancellationToken)
+DA:63,2
+FN:23,System.Void DemoBeCsas.Infrastructure.Repositories.AttachmentRepository::.ctor(DemoBeCsas.Infrastructure.AppDbContext)
+FNDA:15,System.Void DemoBeCsas.Infrastructure.Repositories.AttachmentRepository::.ctor(DemoBeCsas.Infrastructure.AppDbContext)
+DA:24,15
+FN:56,System.DateTimeOffset DemoBeCsas.Infrastructure.Repositories.AttachmentRepository/<>c::<ListByExpenseAsync>b__3_0(DemoBeCsas.Infrastructure.Models.AttachmentModel)
+FNDA:3,System.DateTimeOffset DemoBeCsas.Infrastructure.Repositories.AttachmentRepository/<>c::<ListByExpenseAsync>b__3_0(DemoBeCsas.Infrastructure.Models.AttachmentModel)
+DA:57,3
+FN:33,System.Void DemoBeCsas.Infrastructure.Repositories.AttachmentRepository/<CreateAsync>d__2::MoveNext()
+FNDA:7,System.Void DemoBeCsas.Infrastructure.Repositories.AttachmentRepository/<CreateAsync>d__2::MoveNext()
+DA:34,7
+DA:35,7
+DA:36,7
+DA:37,7
+DA:38,7
+DA:39,7
+DA:40,7
+DA:41,7
+DA:42,7
+DA:43,7
+DA:44,7
+DA:45,7
+DA:46,7
+DA:47,7
+DA:48,7
+FN:65,System.Void DemoBeCsas.Infrastructure.Repositories.AttachmentRepository/<DeleteAsync>d__5::MoveNext()
+FNDA:1,System.Void DemoBeCsas.Infrastructure.Repositories.AttachmentRepository/<DeleteAsync>d__5::MoveNext()
+DA:66,1
+DA:67,1
+DA:68,1
+DA:69,1
+DA:70,1
+FN:53,System.Void DemoBeCsas.Infrastructure.Repositories.AttachmentRepository/<ListByExpenseAsync>d__3::MoveNext()
+FNDA:1,System.Void DemoBeCsas.Infrastructure.Repositories.AttachmentRepository/<ListByExpenseAsync>d__3::MoveNext()
+DA:54,1
+DA:56,1
+DA:58,1
+LF:26
+LH:26
+BRF:0
+BRH:0
+FNF:6
+FNH:6
+end_of_record
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/Infrastructure/Repositories/ExpenseRepository.cs
+FN:6,System.String DemoBeCsas.Infrastructure.Repositories.CurrencySummary::get_Currency()
+FNDA:6,System.String DemoBeCsas.Infrastructure.Repositories.CurrencySummary::get_Currency()
+DA:7,6
+FN:97,System.Threading.Tasks.Task`1<DemoBeCsas.Infrastructure.Models.ExpenseModel> DemoBeCsas.Infrastructure.Repositories.ExpenseRepository::FindByIdAsync(System.Guid,System.Guid,System.Threading.CancellationToken)
+FNDA:28,System.Threading.Tasks.Task`1<DemoBeCsas.Infrastructure.Models.ExpenseModel> DemoBeCsas.Infrastructure.Repositories.ExpenseRepository::FindByIdAsync(System.Guid,System.Guid,System.Threading.CancellationToken)
+DA:98,28
+DA:99,28
+DA:100,28
+DA:101,28
+FN:56,System.Void DemoBeCsas.Infrastructure.Repositories.ExpenseRepository::.ctor(DemoBeCsas.Infrastructure.AppDbContext)
+FNDA:96,System.Void DemoBeCsas.Infrastructure.Repositories.ExpenseRepository::.ctor(DemoBeCsas.Infrastructure.AppDbContext)
+DA:57,96
+FN:113,System.DateTimeOffset DemoBeCsas.Infrastructure.Repositories.ExpenseRepository/<>c::<ListByUserAsync>b__4_1(DemoBeCsas.Infrastructure.Models.ExpenseModel)
+FNDA:4,System.DateTimeOffset DemoBeCsas.Infrastructure.Repositories.ExpenseRepository/<>c::<ListByUserAsync>b__4_1(DemoBeCsas.Infrastructure.Models.ExpenseModel)
+DA:114,4
+FN:172,System.String DemoBeCsas.Infrastructure.Repositories.ExpenseRepository/<>c::<SummaryByCurrencyAsync>b__7_0(DemoBeCsas.Infrastructure.Models.ExpenseModel)
+FNDA:3,System.String DemoBeCsas.Infrastructure.Repositories.ExpenseRepository/<>c::<SummaryByCurrencyAsync>b__7_0(DemoBeCsas.Infrastructure.Models.ExpenseModel)
+DA:173,3
+FN:173,DemoBeCsas.Infrastructure.Repositories.CurrencySummary DemoBeCsas.Infrastructure.Repositories.ExpenseRepository/<>c::<SummaryByCurrencyAsync>b__7_1(System.Linq.IGrouping`2<System.String,DemoBeCsas.Infrastructure.Models.ExpenseModel>)
+FNDA:2,DemoBeCsas.Infrastructure.Repositories.CurrencySummary DemoBeCsas.Infrastructure.Repositories.ExpenseRepository/<>c::<SummaryByCurrencyAsync>b__7_1(System.Linq.IGrouping`2<System.String,DemoBeCsas.Infrastructure.Models.ExpenseModel>)
+DA:174,2
+DA:175,2
+DA:176,3
+DA:177,6
+DA:178,2
+FN:191,System.Boolean DemoBeCsas.Infrastructure.Repositories.ExpenseRepository/<>c__DisplayClass8_0::<ListByUserAndDateRangeAsync>b__0(DemoBeCsas.Infrastructure.Models.ExpenseModel)
+FNDA:15,System.Boolean DemoBeCsas.Infrastructure.Repositories.ExpenseRepository/<>c__DisplayClass8_0::<ListByUserAndDateRangeAsync>b__0(DemoBeCsas.Infrastructure.Models.ExpenseModel)
+DA:192,15
+BRDA:192,17,0,9
+BRDA:192,17,1,0
+FN:195,System.Boolean DemoBeCsas.Infrastructure.Repositories.ExpenseRepository/<>c__DisplayClass8_1::<ListByUserAndDateRangeAsync>b__2(DemoBeCsas.Infrastructure.Models.ExpenseModel)
+FNDA:15,System.Boolean DemoBeCsas.Infrastructure.Repositories.ExpenseRepository/<>c__DisplayClass8_1::<ListByUserAndDateRangeAsync>b__2(DemoBeCsas.Infrastructure.Models.ExpenseModel)
+DA:196,15
+FN:70,System.Void DemoBeCsas.Infrastructure.Repositories.ExpenseRepository/<CreateAsync>d__2::MoveNext()
+FNDA:47,System.Void DemoBeCsas.Infrastructure.Repositories.ExpenseRepository/<CreateAsync>d__2::MoveNext()
+DA:71,47
+DA:72,47
+DA:73,47
+DA:74,47
+DA:75,47
+DA:76,47
+DA:77,47
+DA:78,47
+DA:79,47
+DA:80,47
+DA:81,47
+DA:82,47
+DA:83,47
+DA:84,47
+DA:85,47
+DA:86,47
+DA:87,47
+DA:88,47
+DA:89,47
+DA:90,47
+DA:91,47
+FN:156,System.Void DemoBeCsas.Infrastructure.Repositories.ExpenseRepository/<DeleteAsync>d__6::MoveNext()
+FNDA:1,System.Void DemoBeCsas.Infrastructure.Repositories.ExpenseRepository/<DeleteAsync>d__6::MoveNext()
+DA:157,1
+DA:158,1
+DA:159,1
+DA:160,1
+DA:161,1
+DA:162,1
+DA:163,1
+DA:164,1
+FN:188,System.Void DemoBeCsas.Infrastructure.Repositories.ExpenseRepository/<ListByUserAndDateRangeAsync>d__8::MoveNext()
+FNDA:6,System.Void DemoBeCsas.Infrastructure.Repositories.ExpenseRepository/<ListByUserAndDateRangeAsync>d__8::MoveNext()
+DA:189,6
+DA:191,6
+DA:193,6
+DA:194,6
+DA:195,6
+DA:197,6
+DA:199,6
+DA:200,6
+BRDA:193,393,0,6
+BRDA:193,393,1,6
+FN:108,System.Void DemoBeCsas.Infrastructure.Repositories.ExpenseRepository/<ListByUserAsync>d__4::MoveNext()
+FNDA:1,System.Void DemoBeCsas.Infrastructure.Repositories.ExpenseRepository/<ListByUserAsync>d__4::MoveNext()
+DA:109,1
+DA:110,1
+DA:111,1
+DA:113,1
+DA:115,1
+DA:116,1
+DA:117,1
+DA:118,1
+DA:119,1
+FN:169,System.Void DemoBeCsas.Infrastructure.Repositories.ExpenseRepository/<SummaryByCurrencyAsync>d__7::MoveNext()
+FNDA:1,System.Void DemoBeCsas.Infrastructure.Repositories.ExpenseRepository/<SummaryByCurrencyAsync>d__7::MoveNext()
+DA:170,1
+DA:171,1
+DA:172,1
+DA:179,1
+DA:180,1
+FN:133,System.Void DemoBeCsas.Infrastructure.Repositories.ExpenseRepository/<UpdateAsync>d__5::MoveNext()
+FNDA:1,System.Void DemoBeCsas.Infrastructure.Repositories.ExpenseRepository/<UpdateAsync>d__5::MoveNext()
+DA:134,1
+DA:135,1
+DA:136,1
+DA:137,1
+DA:138,1
+DA:139,1
+DA:140,1
+DA:141,1
+DA:142,1
+DA:143,1
+DA:144,1
+DA:145,1
+DA:146,1
+DA:147,1
+DA:148,1
+DA:149,1
+DA:150,1
+LF:83
+LH:83
+BRF:4
+BRH:3
+FNF:14
+FNH:14
+end_of_record
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/Infrastructure/Repositories/RevokedTokenRepository.cs
+FN:34,System.Threading.Tasks.Task`1<System.Boolean> DemoBeCsas.Infrastructure.Repositories.RevokedTokenRepository::IsRevokedAsync(System.String,System.Threading.CancellationToken)
+FNDA:138,System.Threading.Tasks.Task`1<System.Boolean> DemoBeCsas.Infrastructure.Repositories.RevokedTokenRepository::IsRevokedAsync(System.String,System.Threading.CancellationToken)
+DA:35,138
+FN:13,System.Void DemoBeCsas.Infrastructure.Repositories.RevokedTokenRepository::.ctor(DemoBeCsas.Infrastructure.AppDbContext)
+FNDA:422,System.Void DemoBeCsas.Infrastructure.Repositories.RevokedTokenRepository::.ctor(DemoBeCsas.Infrastructure.AppDbContext)
+DA:14,422
+FN:73,System.Void DemoBeCsas.Infrastructure.Repositories.RevokedTokenRepository/<GetUserRevokedBeforeAsync>d__5::MoveNext()
+FNDA:134,System.Void DemoBeCsas.Infrastructure.Repositories.RevokedTokenRepository/<GetUserRevokedBeforeAsync>d__5::MoveNext()
+DA:74,134
+DA:75,134
+DA:76,134
+DA:77,134
+DA:78,134
+DA:79,134
+DA:80,134
+DA:81,134
+BRDA:80,333,0,132
+BRDA:80,333,1,2
+FN:41,System.Void DemoBeCsas.Infrastructure.Repositories.RevokedTokenRepository/<RevokeAllForUserAsync>d__4::MoveNext()
+FNDA:4,System.Void DemoBeCsas.Infrastructure.Repositories.RevokedTokenRepository/<RevokeAllForUserAsync>d__4::MoveNext()
+DA:42,4
+DA:44,4
+DA:45,4
+DA:46,4
+DA:47,4
+DA:48,4
+DA:49,4
+DA:50,4
+DA:51,4
+DA:52,4
+DA:53,4
+DA:54,4
+DA:55,4
+DA:56,4
+DA:57,4
+DA:58,4
+DA:59,4
+DA:60,4
+DA:62,0
+DA:63,0
+DA:64,0
+DA:65,0
+DA:67,4
+DA:68,4
+BRDA:49,347,0,4
+BRDA:49,347,1,0
+FN:16,System.Void DemoBeCsas.Infrastructure.Repositories.RevokedTokenRepository/<RevokeAsync>d__2::MoveNext()
+FNDA:7,System.Void DemoBeCsas.Infrastructure.Repositories.RevokedTokenRepository/<RevokeAsync>d__2::MoveNext()
+DA:17,7
+DA:18,7
+DA:19,7
+DA:20,6
+DA:21,6
+DA:22,6
+DA:23,6
+DA:24,6
+DA:25,6
+DA:26,6
+DA:27,6
+DA:28,6
+DA:29,6
+DA:30,6
+DA:31,6
+DA:32,7
+BRDA:19,302,0,6
+BRDA:19,302,1,7
+LF:50
+LH:46
+BRF:6
+BRH:5
+FNF:5
+FNH:5
+end_of_record
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/Infrastructure/Repositories/UserRepository.cs
+FN:58,System.Threading.Tasks.Task`1<DemoBeCsas.Infrastructure.Models.UserModel> DemoBeCsas.Infrastructure.Repositories.UserRepository::FindByUsernameAsync(System.String,System.Threading.CancellationToken)
+FNDA:254,System.Threading.Tasks.Task`1<DemoBeCsas.Infrastructure.Models.UserModel> DemoBeCsas.Infrastructure.Repositories.UserRepository::FindByUsernameAsync(System.String,System.Threading.CancellationToken)
+DA:59,254
+FN:61,System.Threading.Tasks.Task`1<DemoBeCsas.Infrastructure.Models.UserModel> DemoBeCsas.Infrastructure.Repositories.UserRepository::FindByIdAsync(System.Guid,System.Threading.CancellationToken)
+FNDA:155,System.Threading.Tasks.Task`1<DemoBeCsas.Infrastructure.Models.UserModel> DemoBeCsas.Infrastructure.Repositories.UserRepository::FindByIdAsync(System.Guid,System.Threading.CancellationToken)
+DA:62,155
+FN:27,System.Void DemoBeCsas.Infrastructure.Repositories.UserRepository::.ctor(DemoBeCsas.Infrastructure.AppDbContext)
+FNDA:422,System.Void DemoBeCsas.Infrastructure.Repositories.UserRepository::.ctor(DemoBeCsas.Infrastructure.AppDbContext)
+DA:28,422
+FN:87,System.DateTimeOffset DemoBeCsas.Infrastructure.Repositories.UserRepository/<>c::<ListAsync>b__6_1(DemoBeCsas.Infrastructure.Models.UserModel)
+FNDA:5,System.DateTimeOffset DemoBeCsas.Infrastructure.Repositories.UserRepository/<>c::<ListAsync>b__6_1(DemoBeCsas.Infrastructure.Models.UserModel)
+DA:88,5
+FN:37,System.Void DemoBeCsas.Infrastructure.Repositories.UserRepository/<CreateAsync>d__2::MoveNext()
+FNDA:125,System.Void DemoBeCsas.Infrastructure.Repositories.UserRepository/<CreateAsync>d__2::MoveNext()
+DA:38,125
+DA:39,125
+DA:40,125
+DA:41,125
+DA:42,125
+DA:43,125
+DA:44,125
+DA:45,125
+DA:46,125
+DA:47,125
+DA:48,125
+DA:49,125
+DA:50,125
+DA:51,125
+DA:52,125
+DA:53,125
+DA:54,125
+DA:55,125
+DA:56,125
+FN:77,System.Void DemoBeCsas.Infrastructure.Repositories.UserRepository/<ListAsync>d__6::MoveNext()
+FNDA:2,System.Void DemoBeCsas.Infrastructure.Repositories.UserRepository/<ListAsync>d__6::MoveNext()
+DA:78,2
+DA:79,2
+DA:80,2
+DA:81,1
+DA:82,1
+DA:83,1
+DA:85,2
+DA:87,2
+DA:89,2
+DA:90,2
+DA:91,2
+DA:92,2
+DA:93,2
+BRDA:80,105,0,1
+BRDA:80,105,1,2
+FN:64,System.Void DemoBeCsas.Infrastructure.Repositories.UserRepository/<UpdateAsync>d__5::MoveNext()
+FNDA:123,System.Void DemoBeCsas.Infrastructure.Repositories.UserRepository/<UpdateAsync>d__5::MoveNext()
+DA:65,123
+DA:66,123
+DA:67,123
+DA:68,123
+DA:69,123
+DA:70,123
+LF:42
+LH:42
+BRF:2
+BRH:2
+FNF:7
+FNH:7
+end_of_record
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/Infrastructure/Models/AttachmentModel.cs
+FN:4,System.Guid DemoBeCsas.Infrastructure.Models.AttachmentModel::get_Id()
+FNDA:32,System.Guid DemoBeCsas.Infrastructure.Models.AttachmentModel::get_Id()
+DA:5,32
+FN:5,System.Guid DemoBeCsas.Infrastructure.Models.AttachmentModel::get_ExpenseId()
+FNDA:17,System.Guid DemoBeCsas.Infrastructure.Models.AttachmentModel::get_ExpenseId()
+DA:6,17
+FN:6,System.String DemoBeCsas.Infrastructure.Models.AttachmentModel::get_FileName()
+FNDA:26,System.String DemoBeCsas.Infrastructure.Models.AttachmentModel::get_FileName()
+DA:7,26
+FN:7,System.String DemoBeCsas.Infrastructure.Models.AttachmentModel::get_ContentType()
+FNDA:26,System.String DemoBeCsas.Infrastructure.Models.AttachmentModel::get_ContentType()
+DA:8,26
+FN:8,System.Int64 DemoBeCsas.Infrastructure.Models.AttachmentModel::get_FileSizeBytes()
+FNDA:16,System.Int64 DemoBeCsas.Infrastructure.Models.AttachmentModel::get_FileSizeBytes()
+DA:9,16
+FN:9,System.Byte[] DemoBeCsas.Infrastructure.Models.AttachmentModel::get_Data()
+FNDA:17,System.Byte[] DemoBeCsas.Infrastructure.Models.AttachmentModel::get_Data()
+DA:10,17
+FN:10,System.DateTimeOffset DemoBeCsas.Infrastructure.Models.AttachmentModel::get_CreatedAt()
+FNDA:18,System.DateTimeOffset DemoBeCsas.Infrastructure.Models.AttachmentModel::get_CreatedAt()
+DA:11,18
+LF:7
+LH:7
+BRF:0
+BRH:0
+FNF:7
+FNH:7
+end_of_record
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/Infrastructure/Models/ExpenseModel.cs
+FN:6,System.Guid DemoBeCsas.Infrastructure.Models.ExpenseModel::get_Id()
+FNDA:150,System.Guid DemoBeCsas.Infrastructure.Models.ExpenseModel::get_Id()
+DA:7,150
+FN:7,System.Guid DemoBeCsas.Infrastructure.Models.ExpenseModel::get_UserId()
+FNDA:47,System.Guid DemoBeCsas.Infrastructure.Models.ExpenseModel::get_UserId()
+DA:8,47
+FN:8,System.String DemoBeCsas.Infrastructure.Models.ExpenseModel::get_Title()
+FNDA:185,System.String DemoBeCsas.Infrastructure.Models.ExpenseModel::get_Title()
+DA:9,185
+FN:9,System.String DemoBeCsas.Infrastructure.Models.ExpenseModel::get_Category()
+FNDA:193,System.String DemoBeCsas.Infrastructure.Models.ExpenseModel::get_Category()
+DA:10,193
+FN:10,System.Decimal DemoBeCsas.Infrastructure.Models.ExpenseModel::get_Amount()
+FNDA:123,System.Decimal DemoBeCsas.Infrastructure.Models.ExpenseModel::get_Amount()
+DA:11,123
+FN:11,System.String DemoBeCsas.Infrastructure.Models.ExpenseModel::get_Currency()
+FNDA:197,System.String DemoBeCsas.Infrastructure.Models.ExpenseModel::get_Currency()
+DA:12,197
+FN:12,DemoBeCsas.Domain.ExpenseType DemoBeCsas.Infrastructure.Models.ExpenseModel::get_Type()
+FNDA:223,DemoBeCsas.Domain.ExpenseType DemoBeCsas.Infrastructure.Models.ExpenseModel::get_Type()
+DA:13,223
+FN:13,System.Nullable`1<System.Double> DemoBeCsas.Infrastructure.Models.ExpenseModel::get_Quantity()
+FNDA:104,System.Nullable`1<System.Double> DemoBeCsas.Infrastructure.Models.ExpenseModel::get_Quantity()
+DA:14,104
+FN:14,System.String DemoBeCsas.Infrastructure.Models.ExpenseModel::get_Unit()
+FNDA:104,System.String DemoBeCsas.Infrastructure.Models.ExpenseModel::get_Unit()
+DA:15,104
+FN:15,System.DateTimeOffset DemoBeCsas.Infrastructure.Models.ExpenseModel::get_Date()
+FNDA:125,System.DateTimeOffset DemoBeCsas.Infrastructure.Models.ExpenseModel::get_Date()
+DA:16,125
+FN:16,System.DateTimeOffset DemoBeCsas.Infrastructure.Models.ExpenseModel::get_CreatedAt()
+FNDA:103,System.DateTimeOffset DemoBeCsas.Infrastructure.Models.ExpenseModel::get_CreatedAt()
+DA:17,103
+FN:17,System.DateTimeOffset DemoBeCsas.Infrastructure.Models.ExpenseModel::get_UpdatedAt()
+FNDA:104,System.DateTimeOffset DemoBeCsas.Infrastructure.Models.ExpenseModel::get_UpdatedAt()
+DA:18,104
+LF:12
+LH:12
+BRF:0
+BRH:0
+FNF:12
+FNH:12
+end_of_record
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/Infrastructure/Models/RevokedTokenModel.cs
+FN:4,System.Guid DemoBeCsas.Infrastructure.Models.RevokedTokenModel::get_Id()
+FNDA:10,System.Guid DemoBeCsas.Infrastructure.Models.RevokedTokenModel::get_Id()
+DA:5,10
+FN:5,System.String DemoBeCsas.Infrastructure.Models.RevokedTokenModel::get_Jti()
+FNDA:22,System.String DemoBeCsas.Infrastructure.Models.RevokedTokenModel::get_Jti()
+DA:6,22
+FN:6,System.Guid DemoBeCsas.Infrastructure.Models.RevokedTokenModel::get_UserId()
+FNDA:10,System.Guid DemoBeCsas.Infrastructure.Models.RevokedTokenModel::get_UserId()
+DA:7,10
+FN:7,System.DateTimeOffset DemoBeCsas.Infrastructure.Models.RevokedTokenModel::get_RevokedAt()
+FNDA:12,System.DateTimeOffset DemoBeCsas.Infrastructure.Models.RevokedTokenModel::get_RevokedAt()
+DA:8,12
+LF:4
+LH:4
+BRF:0
+BRH:0
+FNF:4
+FNH:4
+end_of_record
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/Infrastructure/Models/UserModel.cs
+FN:6,System.Guid DemoBeCsas.Infrastructure.Models.UserModel::get_Id()
+FNDA:631,System.Guid DemoBeCsas.Infrastructure.Models.UserModel::get_Id()
+DA:7,631
+FN:7,System.String DemoBeCsas.Infrastructure.Models.UserModel::get_Username()
+FNDA:811,System.String DemoBeCsas.Infrastructure.Models.UserModel::get_Username()
+DA:8,811
+FN:8,System.String DemoBeCsas.Infrastructure.Models.UserModel::get_Email()
+FNDA:700,System.String DemoBeCsas.Infrastructure.Models.UserModel::get_Email()
+DA:9,700
+FN:9,System.String DemoBeCsas.Infrastructure.Models.UserModel::get_PasswordHash()
+FNDA:691,System.String DemoBeCsas.Infrastructure.Models.UserModel::get_PasswordHash()
+DA:10,691
+FN:10,System.String DemoBeCsas.Infrastructure.Models.UserModel::get_DisplayName()
+FNDA:258,System.String DemoBeCsas.Infrastructure.Models.UserModel::get_DisplayName()
+DA:11,258
+FN:11,DemoBeCsas.Domain.UserStatus DemoBeCsas.Infrastructure.Models.UserModel::get_Status()
+FNDA:1070,DemoBeCsas.Domain.UserStatus DemoBeCsas.Infrastructure.Models.UserModel::get_Status()
+DA:12,1070
+FN:12,DemoBeCsas.Domain.Role DemoBeCsas.Infrastructure.Models.UserModel::get_Role()
+FNDA:702,DemoBeCsas.Domain.Role DemoBeCsas.Infrastructure.Models.UserModel::get_Role()
+DA:13,702
+FN:13,System.Int32 DemoBeCsas.Infrastructure.Models.UserModel::get_FailedLoginAttempts()
+FNDA:256,System.Int32 DemoBeCsas.Infrastructure.Models.UserModel::get_FailedLoginAttempts()
+DA:14,256
+FN:14,System.DateTimeOffset DemoBeCsas.Infrastructure.Models.UserModel::get_CreatedAt()
+FNDA:131,System.DateTimeOffset DemoBeCsas.Infrastructure.Models.UserModel::get_CreatedAt()
+DA:15,131
+FN:15,System.DateTimeOffset DemoBeCsas.Infrastructure.Models.UserModel::get_UpdatedAt()
+FNDA:269,System.DateTimeOffset DemoBeCsas.Infrastructure.Models.UserModel::get_UpdatedAt()
+DA:16,269
+LF:10
+LH:10
+BRF:0
+BRH:0
+FNF:10
+FNH:10
+end_of_record
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/Endpoints/AdminEndpoints.cs
+FN:9,Microsoft.AspNetCore.Routing.IEndpointRouteBuilder DemoBeCsas.Endpoints.AdminEndpoints::MapAdminEndpoints(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder)
+FNDA:78,Microsoft.AspNetCore.Routing.IEndpointRouteBuilder DemoBeCsas.Endpoints.AdminEndpoints::MapAdminEndpoints(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder)
+DA:10,78
+DA:11,78
+DA:12,78
+DA:13,78
+DA:14,78
+DA:15,78
+DA:16,78
+DA:17,78
+FN:32,<>f__AnonymousType1`6<System.Guid,System.String,System.String,System.String,System.String,System.String> DemoBeCsas.Endpoints.AdminEndpoints/<>c::<ListUsersAsync>b__1_0(DemoBeCsas.Infrastructure.Models.UserModel)
+FNDA:5,<>f__AnonymousType1`6<System.Guid,System.String,System.String,System.String,System.String,System.String> DemoBeCsas.Endpoints.AdminEndpoints/<>c::<ListUsersAsync>b__1_0(DemoBeCsas.Infrastructure.Models.UserModel)
+DA:33,5
+DA:34,5
+DA:35,5
+DA:36,5
+DA:37,5
+DA:38,5
+DA:39,5
+DA:40,5
+DA:41,5
+FN:53,System.Void DemoBeCsas.Endpoints.AdminEndpoints/<DisableUserAsync>d__2::MoveNext()
+FNDA:4,System.Void DemoBeCsas.Endpoints.AdminEndpoints/<DisableUserAsync>d__2::MoveNext()
+DA:54,4
+DA:55,4
+DA:56,4
+DA:57,2
+DA:58,2
+DA:61,2
+DA:62,2
+DA:63,2
+DA:64,4
+BRDA:56,176,0,2
+BRDA:56,176,1,2
+FN:70,System.Void DemoBeCsas.Endpoints.AdminEndpoints/<EnableUserAsync>d__3::MoveNext()
+FNDA:3,System.Void DemoBeCsas.Endpoints.AdminEndpoints/<EnableUserAsync>d__3::MoveNext()
+DA:71,3
+DA:72,3
+DA:73,3
+DA:74,2
+DA:75,2
+DA:78,1
+DA:79,1
+DA:80,1
+DA:81,3
+BRDA:73,176,0,2
+BRDA:73,176,1,1
+FN:105,System.Void DemoBeCsas.Endpoints.AdminEndpoints/<ForcePasswordResetAsync>d__5::MoveNext()
+FNDA:3,System.Void DemoBeCsas.Endpoints.AdminEndpoints/<ForcePasswordResetAsync>d__5::MoveNext()
+DA:106,3
+DA:107,3
+DA:108,3
+DA:109,2
+DA:110,2
+DA:113,1
+DA:114,1
+DA:115,3
+BRDA:108,165,0,2
+BRDA:108,165,1,1
+FN:25,System.Void DemoBeCsas.Endpoints.AdminEndpoints/<ListUsersAsync>d__1::MoveNext()
+FNDA:2,System.Void DemoBeCsas.Endpoints.AdminEndpoints/<ListUsersAsync>d__1::MoveNext()
+DA:26,2
+DA:27,2
+DA:28,2
+DA:29,2
+DA:30,2
+DA:31,2
+DA:32,2
+DA:42,2
+DA:43,2
+DA:44,2
+DA:45,2
+DA:46,2
+DA:47,2
+BRDA:27,26,0,2
+BRDA:27,26,1,0
+BRDA:28,55,0,2
+BRDA:28,55,1,0
+FN:87,System.Void DemoBeCsas.Endpoints.AdminEndpoints/<UnlockUserAsync>d__4::MoveNext()
+FNDA:3,System.Void DemoBeCsas.Endpoints.AdminEndpoints/<UnlockUserAsync>d__4::MoveNext()
+DA:88,3
+DA:89,3
+DA:90,3
+DA:91,2
+DA:92,2
+DA:95,1
+DA:96,1
+DA:97,1
+DA:98,1
+DA:99,3
+BRDA:90,176,0,2
+BRDA:90,176,1,1
+LF:66
+LH:66
+BRF:12
+BRH:10
+FNF:7
+FNH:7
+end_of_record
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/Endpoints/AttachmentEndpoints.cs
+FN:17,Microsoft.AspNetCore.Routing.IEndpointRouteBuilder DemoBeCsas.Endpoints.AttachmentEndpoints::MapAttachmentEndpoints(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder)
+FNDA:78,Microsoft.AspNetCore.Routing.IEndpointRouteBuilder DemoBeCsas.Endpoints.AttachmentEndpoints::MapAttachmentEndpoints(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder)
+DA:18,78
+DA:19,78
+DA:20,78
+DA:21,78
+DA:22,78
+DA:23,78
+DA:24,78
+DA:25,78
+DA:26,78
+DA:27,78
+DA:28,78
+DA:29,78
+DA:30,78
+FN:165,System.Nullable`1<System.Guid> DemoBeCsas.Endpoints.AttachmentEndpoints::GetUserId(Microsoft.AspNetCore.Http.HttpContext)
+FNDA:15,System.Nullable`1<System.Guid> DemoBeCsas.Endpoints.AttachmentEndpoints::GetUserId(Microsoft.AspNetCore.Http.HttpContext)
+DA:166,15
+DA:167,15
+DA:168,15
+DA:169,15
+DA:170,15
+DA:171,15
+BRDA:167,18,0,0
+BRDA:167,18,1,15
+BRDA:170,31,0,15
+BRDA:170,31,1,0
+BRDA:170,41,0,0
+BRDA:170,41,1,15
+FN:9,System.Void DemoBeCsas.Endpoints.AttachmentEndpoints::.cctor()
+FNDA:1,System.Void DemoBeCsas.Endpoints.AttachmentEndpoints::.cctor()
+DA:10,1
+DA:11,1
+DA:12,1
+DA:13,1
+DA:14,1
+DA:15,1
+FN:119,<>f__AnonymousType4`7<System.Guid,System.Guid,System.String,System.String,System.Int64,System.String,System.DateTimeOffset> DemoBeCsas.Endpoints.AttachmentEndpoints/<>c__DisplayClass4_0::<ListAttachmentsAsync>b__0(DemoBeCsas.Infrastructure.Models.AttachmentModel)
+FNDA:2,<>f__AnonymousType4`7<System.Guid,System.Guid,System.String,System.String,System.Int64,System.String,System.DateTimeOffset> DemoBeCsas.Endpoints.AttachmentEndpoints/<>c__DisplayClass4_0::<ListAttachmentsAsync>b__0(DemoBeCsas.Infrastructure.Models.AttachmentModel)
+DA:120,2
+DA:121,2
+DA:122,2
+DA:123,2
+DA:124,2
+DA:125,2
+DA:126,2
+DA:127,2
+DA:128,2
+DA:129,2
+FN:141,System.Void DemoBeCsas.Endpoints.AttachmentEndpoints/<DeleteAttachmentAsync>d__5::MoveNext()
+FNDA:3,System.Void DemoBeCsas.Endpoints.AttachmentEndpoints/<DeleteAttachmentAsync>d__5::MoveNext()
+DA:142,3
+DA:143,3
+DA:144,3
+DA:145,0
+DA:146,0
+DA:149,3
+DA:150,3
+DA:151,1
+DA:152,1
+DA:155,2
+DA:156,2
+DA:157,1
+DA:158,1
+DA:161,1
+DA:162,1
+DA:163,3
+BRDA:144,76,0,0
+BRDA:144,76,1,3
+BRDA:150,252,0,1
+BRDA:150,252,1,2
+BRDA:156,423,0,1
+BRDA:156,423,1,1
+BRDA:156,454,0,1
+BRDA:156,454,1,1
+FN:102,System.Void DemoBeCsas.Endpoints.AttachmentEndpoints/<ListAttachmentsAsync>d__4::MoveNext()
+FNDA:2,System.Void DemoBeCsas.Endpoints.AttachmentEndpoints/<ListAttachmentsAsync>d__4::MoveNext()
+DA:103,2
+DA:104,2
+DA:105,2
+DA:106,0
+DA:107,0
+DA:110,2
+DA:111,2
+DA:112,1
+DA:113,1
+DA:116,1
+DA:117,1
+DA:118,1
+DA:119,1
+DA:130,1
+DA:131,1
+DA:132,2
+BRDA:105,90,0,0
+BRDA:105,90,1,2
+BRDA:111,271,0,1
+BRDA:111,271,1,1
+FN:39,System.Void DemoBeCsas.Endpoints.AttachmentEndpoints/<UploadAttachmentAsync>d__3::MoveNext()
+FNDA:10,System.Void DemoBeCsas.Endpoints.AttachmentEndpoints/<UploadAttachmentAsync>d__3::MoveNext()
+DA:40,10
+DA:41,10
+DA:42,10
+DA:43,0
+DA:44,0
+DA:47,10
+DA:48,10
+DA:49,1
+DA:50,1
+DA:53,9
+DA:54,0
+DA:55,0
+DA:58,9
+DA:59,1
+DA:60,1
+DA:63,8
+DA:64,1
+DA:65,1
+DA:68,7
+DA:69,7
+DA:70,7
+DA:72,7
+DA:73,7
+DA:74,7
+DA:75,7
+DA:76,7
+DA:77,7
+DA:78,7
+DA:79,7
+DA:81,7
+DA:82,7
+DA:83,7
+DA:84,7
+DA:85,7
+DA:86,7
+DA:87,7
+DA:88,7
+DA:89,7
+DA:90,7
+DA:91,7
+DA:92,7
+DA:93,7
+DA:94,10
+BRDA:40,16,0,10
+BRDA:42,64,0,0
+BRDA:42,64,1,10
+BRDA:48,240,0,1
+BRDA:48,240,1,9
+BRDA:53,277,0,0
+BRDA:53,277,1,9
+BRDA:58,329,0,1
+BRDA:58,329,1,8
+BRDA:63,382,0,1
+BRDA:63,382,1,7
+BRDA:40,16,1,7
+LF:110
+LH:102
+BRF:30
+BRH:23
+FNF:7
+FNH:7
+end_of_record
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/Endpoints/AuthEndpoints.cs
+FN:13,Microsoft.AspNetCore.Routing.IEndpointRouteBuilder DemoBeCsas.Endpoints.AuthEndpoints::MapAuthEndpoints(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder)
+FNDA:78,Microsoft.AspNetCore.Routing.IEndpointRouteBuilder DemoBeCsas.Endpoints.AuthEndpoints::MapAuthEndpoints(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder)
+DA:14,78
+DA:15,78
+DA:16,78
+DA:17,78
+DA:18,83
+DA:19,80
+DA:20,78
+DA:21,78
+FN:265,System.String DemoBeCsas.Endpoints.AuthEndpoints/RegisterRequest::get_Username()
+FNDA:675,System.String DemoBeCsas.Endpoints.AuthEndpoints/RegisterRequest::get_Username()
+DA:266,675
+FN:266,System.String DemoBeCsas.Endpoints.AuthEndpoints/RegisterRequest::get_Email()
+FNDA:405,System.String DemoBeCsas.Endpoints.AuthEndpoints/RegisterRequest::get_Email()
+DA:267,405
+FN:267,System.String DemoBeCsas.Endpoints.AuthEndpoints/RegisterRequest::get_Password()
+FNDA:403,System.String DemoBeCsas.Endpoints.AuthEndpoints/RegisterRequest::get_Password()
+DA:268,403
+FN:268,System.String DemoBeCsas.Endpoints.AuthEndpoints/RegisterRequest::get_DisplayName()
+FNDA:125,System.String DemoBeCsas.Endpoints.AuthEndpoints/RegisterRequest::get_DisplayName()
+DA:269,125
+FN:264,System.Void DemoBeCsas.Endpoints.AuthEndpoints/RegisterRequest::.ctor(System.String,System.String,System.String,System.String)
+FNDA:142,System.Void DemoBeCsas.Endpoints.AuthEndpoints/RegisterRequest::.ctor(System.String,System.String,System.String,System.String)
+DA:265,142
+DA:270,142
+FN:271,System.String DemoBeCsas.Endpoints.AuthEndpoints/LoginRequest::get_Username()
+FNDA:599,System.String DemoBeCsas.Endpoints.AuthEndpoints/LoginRequest::get_Username()
+DA:272,599
+FN:275,System.String DemoBeCsas.Endpoints.AuthEndpoints/RefreshRequest::get_RefreshToken()
+FNDA:27,System.String DemoBeCsas.Endpoints.AuthEndpoints/RefreshRequest::get_RefreshToken()
+DA:276,27
+FN:273,System.Void DemoBeCsas.Endpoints.AuthEndpoints/RefreshRequest::.ctor(System.String)
+FNDA:11,System.Void DemoBeCsas.Endpoints.AuthEndpoints/RefreshRequest::.ctor(System.String)
+DA:274,11
+DA:275,11
+DA:277,11
+FN:88,System.Void DemoBeCsas.Endpoints.AuthEndpoints/<LoginAsync>d__3::MoveNext()
+FNDA:121,System.Void DemoBeCsas.Endpoints.AuthEndpoints/<LoginAsync>d__3::MoveNext()
+DA:89,121
+DA:90,121
+DA:91,1
+DA:92,1
+DA:95,120
+DA:96,120
+DA:97,1
+DA:98,1
+DA:101,119
+DA:102,1
+DA:104,1
+DA:107,118
+DA:108,1
+DA:109,1
+DA:112,117
+DA:113,6
+DA:114,6
+DA:115,6
+DA:116,1
+DA:117,1
+DA:118,1
+DA:120,6
+DA:121,6
+DA:124,111
+DA:125,2
+DA:126,2
+DA:129,109
+DA:130,109
+DA:132,109
+DA:133,109
+DA:134,109
+DA:135,109
+DA:136,109
+DA:137,109
+DA:139,109
+DA:140,109
+DA:141,109
+DA:142,109
+DA:143,109
+DA:144,109
+DA:145,109
+DA:146,109
+DA:147,121
+BRDA:90,54,0,120
+BRDA:90,54,1,1
+BRDA:90,75,0,1
+BRDA:90,75,1,120
+BRDA:96,245,0,1
+BRDA:96,245,1,119
+BRDA:101,277,0,1
+BRDA:101,277,1,118
+BRDA:107,309,0,1
+BRDA:107,309,1,117
+BRDA:112,363,0,6
+BRDA:115,414,0,1
+BRDA:115,414,1,6
+BRDA:112,363,1,111
+BRDA:124,577,0,2
+BRDA:124,577,1,109
+FN:250,System.Void DemoBeCsas.Endpoints.AuthEndpoints/<LogoutAllAsync>d__6::MoveNext()
+FNDA:2,System.Void DemoBeCsas.Endpoints.AuthEndpoints/<LogoutAllAsync>d__6::MoveNext()
+DA:251,2
+DA:252,2
+DA:253,2
+DA:254,2
+DA:256,2
+DA:257,0
+DA:258,0
+DA:261,2
+DA:262,2
+DA:263,2
+BRDA:252,41,0,0
+BRDA:252,41,1,2
+BRDA:256,63,0,2
+BRDA:256,63,1,0
+BRDA:256,90,0,0
+BRDA:256,90,1,2
+FN:218,System.Void DemoBeCsas.Endpoints.AuthEndpoints/<LogoutAsync>d__5::MoveNext()
+FNDA:5,System.Void DemoBeCsas.Endpoints.AuthEndpoints/<LogoutAsync>d__5::MoveNext()
+DA:219,5
+DA:220,5
+DA:221,5
+DA:222,0
+DA:223,0
+DA:226,5
+DA:227,5
+DA:228,5
+DA:229,0
+DA:230,0
+DA:233,5
+DA:234,5
+DA:235,5
+DA:236,5
+DA:238,5
+DA:239,5
+DA:240,5
+DA:241,5
+DA:243,5
+DA:244,5
+BRDA:221,76,0,0
+BRDA:221,76,1,5
+BRDA:228,177,0,0
+BRDA:228,177,1,5
+BRDA:234,223,0,0
+BRDA:234,223,1,5
+BRDA:234,240,0,0
+BRDA:234,240,1,5
+BRDA:238,262,0,5
+BRDA:238,262,1,0
+BRDA:238,288,0,5
+BRDA:238,288,1,5
+FN:155,System.Void DemoBeCsas.Endpoints.AuthEndpoints/<RefreshAsync>d__4::MoveNext()
+FNDA:11,System.Void DemoBeCsas.Endpoints.AuthEndpoints/<RefreshAsync>d__4::MoveNext()
+DA:156,11
+DA:157,11
+DA:158,2
+DA:159,2
+DA:162,9
+DA:163,9
+DA:164,4
+DA:165,4
+DA:168,5
+DA:169,5
+DA:170,1
+DA:171,1
+DA:174,4
+DA:175,4
+DA:176,1
+DA:177,1
+DA:180,3
+DA:181,3
+DA:182,3
+DA:183,0
+DA:184,0
+DA:187,3
+DA:188,3
+DA:189,1
+DA:190,1
+DA:194,2
+DA:196,2
+DA:197,2
+DA:198,2
+DA:199,2
+DA:200,2
+DA:201,2
+DA:203,2
+DA:204,2
+DA:205,2
+DA:206,2
+DA:207,2
+DA:208,2
+DA:209,2
+DA:210,2
+DA:211,11
+BRDA:157,68,0,2
+BRDA:157,68,1,9
+BRDA:163,121,0,4
+BRDA:163,121,1,5
+BRDA:168,153,0,1
+BRDA:168,153,1,4
+BRDA:169,175,0,4
+BRDA:169,175,1,1
+BRDA:169,204,0,1
+BRDA:169,204,1,4
+BRDA:175,279,0,4
+BRDA:175,279,1,4
+BRDA:175,428,0,1
+BRDA:175,428,1,3
+BRDA:182,615,0,0
+BRDA:182,628,0,0
+BRDA:182,615,1,3
+BRDA:182,628,1,3
+BRDA:182,664,0,0
+BRDA:182,664,1,3
+BRDA:188,825,0,3
+BRDA:188,825,1,0
+BRDA:188,848,0,1
+BRDA:188,848,1,2
+FN:28,System.Void DemoBeCsas.Endpoints.AuthEndpoints/<RegisterAsync>d__2::MoveNext()
+FNDA:142,System.Void DemoBeCsas.Endpoints.AuthEndpoints/<RegisterAsync>d__2::MoveNext()
+DA:29,142
+DA:30,142
+DA:31,2
+DA:32,2
+DA:35,140
+DA:36,140
+DA:37,1
+DA:38,1
+DA:41,139
+DA:42,139
+DA:43,1
+DA:44,1
+DA:47,138
+DA:48,138
+DA:49,4
+DA:50,4
+DA:53,134
+DA:54,134
+DA:55,9
+DA:56,9
+DA:57,9
+DA:58,9
+DA:61,125
+DA:62,125
+DA:63,125
+DA:64,125
+DA:65,125
+DA:66,125
+DA:67,125
+DA:68,125
+DA:70,125
+DA:71,125
+DA:72,125
+DA:73,125
+DA:74,125
+DA:75,125
+DA:76,125
+DA:77,125
+DA:78,125
+DA:79,125
+DA:80,142
+BRDA:30,40,0,141
+BRDA:30,53,0,140
+BRDA:30,40,1,2
+BRDA:30,53,1,2
+BRDA:30,74,0,2
+BRDA:30,74,1,140
+BRDA:36,131,0,1
+BRDA:36,131,1,139
+BRDA:42,186,0,1
+BRDA:42,186,1,138
+BRDA:48,241,0,4
+BRDA:48,241,1,134
+BRDA:54,420,0,9
+BRDA:54,420,1,125
+BRDA:62,539,0,125
+BRDA:62,539,1,125
+LF:174
+LH:166
+BRF:74
+BRH:62
+FNF:14
+FNH:14
+end_of_record
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/Endpoints/DomainErrorMapper.cs
+FN:7,Microsoft.AspNetCore.Http.IResult DemoBeCsas.Endpoints.DomainErrorMapper::ToHttpResult(DemoBeCsas.Domain.DomainError)
+FNDA:45,Microsoft.AspNetCore.Http.IResult DemoBeCsas.Endpoints.DomainErrorMapper::ToHttpResult(DemoBeCsas.Domain.DomainError)
+DA:8,45
+DA:9,45
+DA:10,15
+DA:11,10
+DA:12,4
+DA:13,10
+DA:14,1
+DA:15,2
+DA:16,2
+DA:17,1
+DA:18,45
+BRDA:8,12,0,30
+BRDA:8,22,0,20
+BRDA:8,30,0,16
+BRDA:8,40,0,6
+BRDA:8,48,0,5
+BRDA:8,58,0,3
+BRDA:8,12,1,15
+BRDA:8,22,1,10
+BRDA:8,30,1,4
+BRDA:8,40,1,10
+BRDA:8,48,1,1
+BRDA:8,58,1,2
+BRDA:8,66,1,2
+BRDA:8,66,0,1
+LF:11
+LH:11
+BRF:14
+BRH:14
+FNF:1
+FNH:1
+end_of_record
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/Endpoints/ExpenseEndpoints.cs
+FN:9,Microsoft.AspNetCore.Routing.IEndpointRouteBuilder DemoBeCsas.Endpoints.ExpenseEndpoints::MapExpenseEndpoints(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder)
+FNDA:78,Microsoft.AspNetCore.Routing.IEndpointRouteBuilder DemoBeCsas.Endpoints.ExpenseEndpoints::MapExpenseEndpoints(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder)
+DA:10,78
+DA:12,78
+DA:13,78
+DA:14,78
+DA:15,78
+DA:16,78
+DA:17,78
+DA:18,78
+DA:19,78
+FN:237,System.Nullable`1<System.Guid> DemoBeCsas.Endpoints.ExpenseEndpoints::GetUserId(Microsoft.AspNetCore.Http.HttpContext)
+FNDA:75,System.Nullable`1<System.Guid> DemoBeCsas.Endpoints.ExpenseEndpoints::GetUserId(Microsoft.AspNetCore.Http.HttpContext)
+DA:238,75
+DA:239,75
+DA:240,75
+DA:241,75
+DA:242,75
+DA:243,75
+BRDA:239,18,0,0
+BRDA:239,18,1,75
+BRDA:242,31,0,75
+BRDA:242,31,1,0
+BRDA:242,41,0,0
+BRDA:242,41,1,75
+FN:245,DemoBeCsas.Domain.ExpenseType DemoBeCsas.Endpoints.ExpenseEndpoints::ParseExpenseType(System.String)
+FNDA:48,DemoBeCsas.Domain.ExpenseType DemoBeCsas.Endpoints.ExpenseEndpoints::ParseExpenseType(System.String)
+DA:246,48
+BRDA:246,1,0,5
+BRDA:246,1,1,43
+BRDA:246,22,0,40
+BRDA:246,22,1,8
+FN:248,System.DateTimeOffset DemoBeCsas.Endpoints.ExpenseEndpoints::ParseDate(System.String)
+FNDA:48,System.DateTimeOffset DemoBeCsas.Endpoints.ExpenseEndpoints::ParseDate(System.String)
+DA:249,48
+DA:250,48
+DA:251,8
+DA:252,8
+DA:257,40
+DA:259,40
+DA:260,40
+DA:261,40
+DA:262,40
+DA:263,40
+DA:264,40
+DA:265,40
+DA:266,40
+DA:267,39
+DA:268,39
+DA:271,1
+DA:272,48
+BRDA:250,7,0,8
+BRDA:250,7,1,40
+BRDA:257,26,0,0
+BRDA:257,26,1,40
+BRDA:259,61,0,39
+BRDA:259,61,1,1
+FN:274,System.Object DemoBeCsas.Endpoints.ExpenseEndpoints::ToResponse(DemoBeCsas.Infrastructure.Models.ExpenseModel)
+FNDA:56,System.Object DemoBeCsas.Endpoints.ExpenseEndpoints::ToResponse(DemoBeCsas.Infrastructure.Models.ExpenseModel)
+DA:275,56
+DA:276,56
+DA:277,56
+DA:278,56
+DA:279,56
+DA:280,56
+DA:281,56
+DA:282,56
+DA:283,56
+DA:284,56
+DA:285,56
+DA:286,56
+DA:287,56
+DA:288,56
+FN:290,System.String DemoBeCsas.Endpoints.ExpenseEndpoints/ExpenseRequest::get_Description()
+FNDA:63,System.String DemoBeCsas.Endpoints.ExpenseEndpoints/ExpenseRequest::get_Description()
+DA:291,63
+FN:291,System.String DemoBeCsas.Endpoints.ExpenseEndpoints/ExpenseRequest::get_Title()
+FNDA:4,System.String DemoBeCsas.Endpoints.ExpenseEndpoints/ExpenseRequest::get_Title()
+DA:292,4
+FN:292,System.String DemoBeCsas.Endpoints.ExpenseEndpoints/ExpenseRequest::get_Category()
+FNDA:48,System.String DemoBeCsas.Endpoints.ExpenseEndpoints/ExpenseRequest::get_Category()
+DA:293,48
+FN:293,System.Decimal DemoBeCsas.Endpoints.ExpenseEndpoints/ExpenseRequest::get_Amount()
+FNDA:106,System.Decimal DemoBeCsas.Endpoints.ExpenseEndpoints/ExpenseRequest::get_Amount()
+DA:294,106
+FN:294,System.String DemoBeCsas.Endpoints.ExpenseEndpoints/ExpenseRequest::get_Currency()
+FNDA:165,System.String DemoBeCsas.Endpoints.ExpenseEndpoints/ExpenseRequest::get_Currency()
+DA:295,165
+FN:295,System.String DemoBeCsas.Endpoints.ExpenseEndpoints/ExpenseRequest::get_Type()
+FNDA:48,System.String DemoBeCsas.Endpoints.ExpenseEndpoints/ExpenseRequest::get_Type()
+DA:296,48
+FN:296,System.Nullable`1<System.Double> DemoBeCsas.Endpoints.ExpenseEndpoints/ExpenseRequest::get_Quantity()
+FNDA:48,System.Nullable`1<System.Double> DemoBeCsas.Endpoints.ExpenseEndpoints/ExpenseRequest::get_Quantity()
+DA:297,48
+FN:297,System.String DemoBeCsas.Endpoints.ExpenseEndpoints/ExpenseRequest::get_Unit()
+FNDA:106,System.String DemoBeCsas.Endpoints.ExpenseEndpoints/ExpenseRequest::get_Unit()
+DA:298,106
+FN:298,System.String DemoBeCsas.Endpoints.ExpenseEndpoints/ExpenseRequest::get_DateStr()
+FNDA:48,System.String DemoBeCsas.Endpoints.ExpenseEndpoints/ExpenseRequest::get_DateStr()
+DA:299,48
+FN:289,System.Void DemoBeCsas.Endpoints.ExpenseEndpoints/ExpenseRequest::.ctor(System.String,System.String,System.String,System.Decimal,System.String,System.String,System.Nullable`1<System.Double>,System.String,System.String)
+FNDA:63,System.Void DemoBeCsas.Endpoints.ExpenseEndpoints/ExpenseRequest::.ctor(System.String,System.String,System.String,System.Decimal,System.String,System.String,System.Nullable`1<System.Double>,System.String,System.String)
+DA:290,63
+DA:300,63
+FN:121,System.String DemoBeCsas.Endpoints.ExpenseEndpoints/<>c::<GetSummaryAsync>b__3_0(DemoBeCsas.Infrastructure.Repositories.CurrencySummary)
+FNDA:2,System.String DemoBeCsas.Endpoints.ExpenseEndpoints/<>c::<GetSummaryAsync>b__3_0(DemoBeCsas.Infrastructure.Repositories.CurrencySummary)
+DA:122,2
+FN:122,System.Decimal DemoBeCsas.Endpoints.ExpenseEndpoints/<>c::<GetSummaryAsync>b__3_1(DemoBeCsas.Infrastructure.Repositories.CurrencySummary)
+FNDA:2,System.Decimal DemoBeCsas.Endpoints.ExpenseEndpoints/<>c::<GetSummaryAsync>b__3_1(DemoBeCsas.Infrastructure.Repositories.CurrencySummary)
+DA:123,2
+FN:26,System.Void DemoBeCsas.Endpoints.ExpenseEndpoints/<CreateExpenseAsync>d__1::MoveNext()
+FNDA:54,System.Void DemoBeCsas.Endpoints.ExpenseEndpoints/<CreateExpenseAsync>d__1::MoveNext()
+DA:27,54
+DA:28,54
+DA:29,54
+DA:30,0
+DA:31,0
+DA:35,54
+DA:36,54
+DA:37,3
+DA:38,3
+DA:39,3
+DA:40,3
+DA:43,51
+DA:44,51
+DA:45,3
+DA:46,3
+DA:49,48
+DA:50,3
+DA:51,3
+DA:52,3
+DA:53,1
+DA:54,1
+DA:56,2
+DA:58,47
+DA:59,47
+DA:60,47
+DA:61,47
+DA:62,47
+DA:63,47
+DA:64,47
+DA:65,47
+DA:66,47
+DA:67,47
+DA:68,47
+DA:69,47
+DA:70,47
+DA:71,47
+DA:72,47
+DA:74,47
+DA:75,54
+BRDA:29,51,0,0
+BRDA:29,51,1,54
+BRDA:35,78,0,2
+BRDA:35,78,1,54
+BRDA:36,103,0,52
+BRDA:36,103,1,2
+BRDA:36,124,0,3
+BRDA:36,124,1,51
+BRDA:44,194,0,3
+BRDA:44,194,1,48
+BRDA:49,235,0,3
+BRDA:52,273,0,1
+BRDA:52,273,1,2
+BRDA:49,235,1,47
+BRDA:60,358,0,9
+BRDA:60,358,1,47
+FN:219,System.Void DemoBeCsas.Endpoints.ExpenseEndpoints/<DeleteExpenseAsync>d__6::MoveNext()
+FNDA:3,System.Void DemoBeCsas.Endpoints.ExpenseEndpoints/<DeleteExpenseAsync>d__6::MoveNext()
+DA:220,3
+DA:221,3
+DA:222,3
+DA:223,0
+DA:224,0
+DA:227,3
+DA:228,3
+DA:229,2
+DA:230,2
+DA:233,1
+DA:234,1
+DA:235,3
+BRDA:222,62,0,0
+BRDA:222,62,1,3
+BRDA:228,238,0,2
+BRDA:228,238,1,1
+FN:134,System.Void DemoBeCsas.Endpoints.ExpenseEndpoints/<GetExpenseAsync>d__4::MoveNext()
+FNDA:7,System.Void DemoBeCsas.Endpoints.ExpenseEndpoints/<GetExpenseAsync>d__4::MoveNext()
+DA:135,7
+DA:136,7
+DA:137,7
+DA:138,0
+DA:139,0
+DA:142,7
+DA:143,7
+DA:144,2
+DA:145,2
+DA:148,5
+DA:149,7
+BRDA:137,51,0,0
+BRDA:137,51,1,7
+BRDA:143,227,0,2
+BRDA:143,227,1,5
+FN:109,System.Void DemoBeCsas.Endpoints.ExpenseEndpoints/<GetSummaryAsync>d__3::MoveNext()
+FNDA:1,System.Void DemoBeCsas.Endpoints.ExpenseEndpoints/<GetSummaryAsync>d__3::MoveNext()
+DA:110,1
+DA:111,1
+DA:112,1
+DA:113,0
+DA:114,0
+DA:117,1
+DA:121,1
+DA:124,1
+DA:126,1
+DA:127,1
+BRDA:112,51,0,0
+BRDA:112,51,1,1
+FN:83,System.Void DemoBeCsas.Endpoints.ExpenseEndpoints/<ListExpensesAsync>d__2::MoveNext()
+FNDA:1,System.Void DemoBeCsas.Endpoints.ExpenseEndpoints/<ListExpensesAsync>d__2::MoveNext()
+DA:84,1
+DA:85,1
+DA:86,1
+DA:87,0
+DA:88,0
+DA:91,1
+DA:92,1
+DA:93,1
+DA:94,1
+DA:95,1
+DA:96,1
+DA:97,1
+DA:98,1
+DA:99,1
+DA:100,1
+DA:101,1
+DA:102,1
+DA:103,1
+BRDA:86,51,0,0
+BRDA:86,51,1,1
+BRDA:91,73,0,1
+BRDA:91,73,1,0
+BRDA:92,102,0,1
+BRDA:92,102,1,0
+FN:157,System.Void DemoBeCsas.Endpoints.ExpenseEndpoints/<UpdateExpenseAsync>d__5::MoveNext()
+FNDA:9,System.Void DemoBeCsas.Endpoints.ExpenseEndpoints/<UpdateExpenseAsync>d__5::MoveNext()
+DA:158,9
+DA:159,9
+DA:160,9
+DA:161,0
+DA:162,0
+DA:165,9
+DA:166,9
+DA:167,2
+DA:168,2
+DA:169,2
+DA:170,2
+DA:173,7
+DA:174,7
+DA:175,2
+DA:176,2
+DA:179,5
+DA:180,2
+DA:181,2
+DA:182,2
+DA:183,2
+DA:184,2
+DA:186,0
+DA:188,3
+DA:189,3
+DA:190,2
+DA:191,2
+DA:194,1
+DA:195,1
+DA:196,1
+DA:197,1
+DA:198,1
+DA:199,1
+DA:200,1
+DA:201,1
+DA:202,1
+DA:203,1
+DA:204,1
+DA:205,1
+DA:206,1
+DA:207,1
+DA:208,1
+DA:209,1
+DA:211,1
+DA:212,9
+BRDA:160,62,0,0
+BRDA:160,62,1,9
+BRDA:165,89,0,2
+BRDA:165,89,1,9
+BRDA:166,114,0,7
+BRDA:166,114,1,2
+BRDA:166,135,0,2
+BRDA:166,135,1,7
+BRDA:174,205,0,2
+BRDA:174,205,1,5
+BRDA:179,246,0,2
+BRDA:182,284,0,2
+BRDA:182,284,1,0
+BRDA:179,246,1,3
+BRDA:189,477,0,2
+BRDA:189,477,1,1
+BRDA:196,558,0,0
+BRDA:196,558,1,1
+LF:194
+LH:181
+BRF:66
+BRH:52
+FNF:23
+FNH:23
+end_of_record
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/Endpoints/HealthEndpoints.cs
+FN:5,Microsoft.AspNetCore.Routing.IEndpointRouteBuilder DemoBeCsas.Endpoints.HealthEndpoints::MapHealthEndpoints(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder)
+FNDA:78,Microsoft.AspNetCore.Routing.IEndpointRouteBuilder DemoBeCsas.Endpoints.HealthEndpoints::MapHealthEndpoints(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder)
+DA:6,78
+DA:7,80
+DA:8,78
+DA:9,78
+LF:4
+LH:4
+BRF:0
+BRH:0
+FNF:1
+FNH:1
+end_of_record
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/Endpoints/ReportEndpoints.cs
+FN:9,Microsoft.AspNetCore.Routing.IEndpointRouteBuilder DemoBeCsas.Endpoints.ReportEndpoints::MapReportEndpoints(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder)
+FNDA:78,Microsoft.AspNetCore.Routing.IEndpointRouteBuilder DemoBeCsas.Endpoints.ReportEndpoints::MapReportEndpoints(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder)
+DA:10,78
+DA:11,78
+DA:12,78
+DA:13,78
+FN:79,System.Nullable`1<System.Guid> DemoBeCsas.Endpoints.ReportEndpoints::GetUserId(Microsoft.AspNetCore.Http.HttpContext)
+FNDA:6,System.Nullable`1<System.Guid> DemoBeCsas.Endpoints.ReportEndpoints::GetUserId(Microsoft.AspNetCore.Http.HttpContext)
+DA:80,6
+DA:81,6
+DA:82,6
+DA:83,6
+DA:84,6
+DA:85,6
+BRDA:81,18,0,0
+BRDA:81,18,1,6
+BRDA:84,31,0,6
+BRDA:84,31,1,0
+BRDA:84,41,0,0
+BRDA:84,41,1,6
+FN:52,System.Boolean DemoBeCsas.Endpoints.ReportEndpoints/<>c::<GetPlReportAsync>b__1_0(DemoBeCsas.Infrastructure.Models.ExpenseModel)
+FNDA:19,System.Boolean DemoBeCsas.Endpoints.ReportEndpoints/<>c::<GetPlReportAsync>b__1_0(DemoBeCsas.Infrastructure.Models.ExpenseModel)
+DA:53,19
+FN:53,System.Boolean DemoBeCsas.Endpoints.ReportEndpoints/<>c::<GetPlReportAsync>b__1_2(DemoBeCsas.Infrastructure.Models.ExpenseModel)
+FNDA:17,System.Boolean DemoBeCsas.Endpoints.ReportEndpoints/<>c::<GetPlReportAsync>b__1_2(DemoBeCsas.Infrastructure.Models.ExpenseModel)
+DA:54,17
+FN:57,System.Boolean DemoBeCsas.Endpoints.ReportEndpoints/<>c::<GetPlReportAsync>b__1_4(DemoBeCsas.Infrastructure.Models.ExpenseModel)
+FNDA:8,System.Boolean DemoBeCsas.Endpoints.ReportEndpoints/<>c::<GetPlReportAsync>b__1_4(DemoBeCsas.Infrastructure.Models.ExpenseModel)
+DA:58,8
+FN:58,System.String DemoBeCsas.Endpoints.ReportEndpoints/<>c::<GetPlReportAsync>b__1_5(DemoBeCsas.Infrastructure.Models.ExpenseModel)
+FNDA:5,System.String DemoBeCsas.Endpoints.ReportEndpoints/<>c::<GetPlReportAsync>b__1_5(DemoBeCsas.Infrastructure.Models.ExpenseModel)
+DA:59,5
+FN:59,System.String DemoBeCsas.Endpoints.ReportEndpoints/<>c::<GetPlReportAsync>b__1_6(System.Linq.IGrouping`2<System.String,DemoBeCsas.Infrastructure.Models.ExpenseModel>)
+FNDA:21,System.String DemoBeCsas.Endpoints.ReportEndpoints/<>c::<GetPlReportAsync>b__1_6(System.Linq.IGrouping`2<System.String,DemoBeCsas.Infrastructure.Models.ExpenseModel>)
+DA:60,21
+FN:62,System.Boolean DemoBeCsas.Endpoints.ReportEndpoints/<>c::<GetPlReportAsync>b__1_8(DemoBeCsas.Infrastructure.Models.ExpenseModel)
+FNDA:8,System.Boolean DemoBeCsas.Endpoints.ReportEndpoints/<>c::<GetPlReportAsync>b__1_8(DemoBeCsas.Infrastructure.Models.ExpenseModel)
+DA:63,8
+FN:63,System.String DemoBeCsas.Endpoints.ReportEndpoints/<>c::<GetPlReportAsync>b__1_9(DemoBeCsas.Infrastructure.Models.ExpenseModel)
+FNDA:3,System.String DemoBeCsas.Endpoints.ReportEndpoints/<>c::<GetPlReportAsync>b__1_9(DemoBeCsas.Infrastructure.Models.ExpenseModel)
+DA:64,3
+FN:64,System.String DemoBeCsas.Endpoints.ReportEndpoints/<>c::<GetPlReportAsync>b__1_10(System.Linq.IGrouping`2<System.String,DemoBeCsas.Infrastructure.Models.ExpenseModel>)
+FNDA:15,System.String DemoBeCsas.Endpoints.ReportEndpoints/<>c::<GetPlReportAsync>b__1_10(System.Linq.IGrouping`2<System.String,DemoBeCsas.Infrastructure.Models.ExpenseModel>)
+DA:65,15
+FN:22,System.Void DemoBeCsas.Endpoints.ReportEndpoints/<GetPlReportAsync>d__1::MoveNext()
+FNDA:6,System.Void DemoBeCsas.Endpoints.ReportEndpoints/<GetPlReportAsync>d__1::MoveNext()
+DA:23,6
+DA:24,6
+DA:25,6
+DA:26,0
+DA:27,0
+DA:30,6
+DA:31,6
+DA:32,6
+DA:33,6
+DA:34,6
+DA:35,6
+DA:36,6
+DA:37,6
+DA:38,6
+DA:39,6
+DA:40,6
+DA:41,6
+DA:42,6
+DA:43,6
+DA:45,6
+DA:46,6
+DA:47,6
+DA:48,6
+DA:49,6
+DA:50,6
+DA:51,6
+DA:57,6
+DA:62,6
+DA:67,6
+DA:68,6
+DA:69,6
+DA:70,6
+DA:71,6
+DA:72,6
+DA:73,6
+DA:74,6
+DA:75,6
+DA:76,6
+DA:77,6
+BRDA:25,51,0,0
+BRDA:25,51,1,6
+BRDA:30,72,0,0
+BRDA:30,72,1,6
+BRDA:37,119,0,0
+BRDA:37,119,1,6
+LF:57
+LH:55
+BRF:12
+BRH:6
+FNF:11
+FNH:11
+end_of_record
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/Endpoints/TokenEndpoints.cs
+FN:10,Microsoft.AspNetCore.Routing.IEndpointRouteBuilder DemoBeCsas.Endpoints.TokenEndpoints::MapTokenEndpoints(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder)
+FNDA:78,Microsoft.AspNetCore.Routing.IEndpointRouteBuilder DemoBeCsas.Endpoints.TokenEndpoints::MapTokenEndpoints(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder)
+DA:11,78
+DA:12,78
+DA:13,78
+DA:14,78
+DA:15,78
+FN:17,Microsoft.AspNetCore.Http.IResult DemoBeCsas.Endpoints.TokenEndpoints::GetClaimsAsync(Microsoft.AspNetCore.Http.HttpContext)
+FNDA:2,Microsoft.AspNetCore.Http.IResult DemoBeCsas.Endpoints.TokenEndpoints::GetClaimsAsync(Microsoft.AspNetCore.Http.HttpContext)
+DA:18,2
+DA:19,14
+DA:20,2
+DA:21,2
+FN:23,Microsoft.AspNetCore.Http.IResult DemoBeCsas.Endpoints.TokenEndpoints::GetJwks(Microsoft.Extensions.Configuration.IConfiguration)
+FNDA:1,Microsoft.AspNetCore.Http.IResult DemoBeCsas.Endpoints.TokenEndpoints::GetJwks(Microsoft.Extensions.Configuration.IConfiguration)
+DA:24,1
+DA:25,1
+DA:26,1
+DA:27,1
+DA:28,1
+DA:29,1
+DA:30,1
+DA:32,1
+DA:33,1
+DA:34,1
+DA:35,1
+DA:36,1
+DA:37,1
+DA:38,1
+DA:39,1
+DA:40,1
+DA:41,1
+DA:42,1
+DA:43,1
+DA:44,1
+DA:45,1
+DA:46,1
+DA:47,1
+BRDA:25,13,0,0
+BRDA:25,13,1,1
+LF:32
+LH:32
+BRF:2
+BRH:1
+FNF:3
+FNH:3
+end_of_record
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/Endpoints/UserEndpoints.cs
+FN:10,Microsoft.AspNetCore.Routing.IEndpointRouteBuilder DemoBeCsas.Endpoints.UserEndpoints::MapUserEndpoints(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder)
+FNDA:78,Microsoft.AspNetCore.Routing.IEndpointRouteBuilder DemoBeCsas.Endpoints.UserEndpoints::MapUserEndpoints(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder)
+DA:11,78
+DA:12,78
+DA:13,78
+DA:14,78
+DA:15,78
+DA:16,78
+DA:17,78
+FN:148,System.Nullable`1<System.Guid> DemoBeCsas.Endpoints.UserEndpoints::GetUserId(Microsoft.AspNetCore.Http.HttpContext)
+FNDA:10,System.Nullable`1<System.Guid> DemoBeCsas.Endpoints.UserEndpoints::GetUserId(Microsoft.AspNetCore.Http.HttpContext)
+DA:149,10
+DA:150,10
+DA:151,10
+DA:152,10
+DA:153,10
+DA:154,10
+BRDA:150,18,0,0
+BRDA:150,18,1,10
+BRDA:153,31,0,10
+BRDA:153,31,1,0
+BRDA:153,41,0,0
+BRDA:153,41,1,10
+FN:157,System.String DemoBeCsas.Endpoints.UserEndpoints/PatchMeRequest::get_DisplayName()
+FNDA:1,System.String DemoBeCsas.Endpoints.UserEndpoints/PatchMeRequest::get_DisplayName()
+DA:158,1
+FN:155,System.Void DemoBeCsas.Endpoints.UserEndpoints/PatchMeRequest::.ctor(System.String)
+FNDA:1,System.Void DemoBeCsas.Endpoints.UserEndpoints/PatchMeRequest::.ctor(System.String)
+DA:156,1
+DA:157,1
+DA:159,1
+FN:162,System.String DemoBeCsas.Endpoints.UserEndpoints/ChangePasswordRequest::get_OldPassword()
+FNDA:11,System.String DemoBeCsas.Endpoints.UserEndpoints/ChangePasswordRequest::get_OldPassword()
+DA:163,11
+FN:164,System.String DemoBeCsas.Endpoints.UserEndpoints/ChangePasswordRequest::get_NewPassword()
+FNDA:4,System.String DemoBeCsas.Endpoints.UserEndpoints/ChangePasswordRequest::get_NewPassword()
+DA:165,4
+FN:160,System.Void DemoBeCsas.Endpoints.UserEndpoints/ChangePasswordRequest::.ctor(System.String,System.String)
+FNDA:6,System.Void DemoBeCsas.Endpoints.UserEndpoints/ChangePasswordRequest::.ctor(System.String,System.String)
+DA:161,6
+DA:162,6
+DA:164,6
+DA:166,6
+FN:91,System.Void DemoBeCsas.Endpoints.UserEndpoints/<ChangePasswordAsync>d__3::MoveNext()
+FNDA:6,System.Void DemoBeCsas.Endpoints.UserEndpoints/<ChangePasswordAsync>d__3::MoveNext()
+DA:92,6
+DA:93,6
+DA:94,6
+DA:95,0
+DA:96,0
+DA:99,6
+DA:100,6
+DA:101,0
+DA:102,0
+DA:105,6
+DA:106,3
+DA:108,3
+DA:111,3
+DA:112,2
+DA:113,2
+DA:116,1
+DA:117,1
+DA:119,1
+DA:120,6
+BRDA:94,62,0,0
+BRDA:94,62,1,6
+BRDA:100,232,0,0
+BRDA:100,232,1,6
+BRDA:105,257,0,5
+BRDA:105,257,1,1
+BRDA:105,302,0,3
+BRDA:105,302,1,3
+BRDA:111,334,0,2
+BRDA:111,334,1,1
+FN:127,System.Void DemoBeCsas.Endpoints.UserEndpoints/<DeactivateAsync>d__4::MoveNext()
+FNDA:2,System.Void DemoBeCsas.Endpoints.UserEndpoints/<DeactivateAsync>d__4::MoveNext()
+DA:128,2
+DA:129,2
+DA:130,2
+DA:131,0
+DA:132,0
+DA:135,2
+DA:136,2
+DA:137,0
+DA:138,0
+DA:141,2
+DA:142,2
+DA:143,2
+DA:145,2
+DA:146,2
+BRDA:130,76,0,0
+BRDA:130,76,1,2
+BRDA:136,246,0,0
+BRDA:136,246,1,2
+FN:23,System.Void DemoBeCsas.Endpoints.UserEndpoints/<GetMeAsync>d__1::MoveNext()
+FNDA:1,System.Void DemoBeCsas.Endpoints.UserEndpoints/<GetMeAsync>d__1::MoveNext()
+DA:24,1
+DA:25,1
+DA:26,1
+DA:27,0
+DA:28,0
+DA:31,1
+DA:32,1
+DA:33,0
+DA:34,0
+DA:37,1
+DA:38,1
+DA:39,1
+DA:40,1
+DA:41,1
+DA:42,1
+DA:43,1
+DA:44,1
+DA:45,1
+DA:46,1
+DA:47,1
+DA:48,1
+BRDA:26,51,0,0
+BRDA:26,51,1,1
+BRDA:32,221,0,0
+BRDA:32,221,1,1
+BRDA:37,280,0,0
+BRDA:37,280,1,1
+FN:55,System.Void DemoBeCsas.Endpoints.UserEndpoints/<PatchMeAsync>d__2::MoveNext()
+FNDA:1,System.Void DemoBeCsas.Endpoints.UserEndpoints/<PatchMeAsync>d__2::MoveNext()
+DA:56,1
+DA:57,1
+DA:58,1
+DA:59,0
+DA:60,0
+DA:63,1
+DA:64,1
+DA:65,0
+DA:66,0
+DA:69,1
+DA:70,1
+DA:72,1
+DA:73,1
+DA:74,1
+DA:75,1
+DA:76,1
+DA:77,1
+DA:78,1
+DA:79,1
+DA:80,1
+DA:81,1
+DA:82,1
+DA:83,1
+BRDA:58,62,0,0
+BRDA:58,62,1,1
+BRDA:64,232,0,0
+BRDA:64,232,1,1
+LF:100
+LH:84
+BRF:30
+BRH:18
+FNF:11
+FNH:11
+end_of_record
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/Domain/Attachment.cs
+FN:3,System.Guid DemoBeCsas.Domain.AttachmentDomain::get_Id()
+FNDA:1,System.Guid DemoBeCsas.Domain.AttachmentDomain::get_Id()
+DA:4,1
+FN:4,System.Guid DemoBeCsas.Domain.AttachmentDomain::get_ExpenseId()
+FNDA:1,System.Guid DemoBeCsas.Domain.AttachmentDomain::get_ExpenseId()
+DA:5,1
+FN:5,System.String DemoBeCsas.Domain.AttachmentDomain::get_FileName()
+FNDA:1,System.String DemoBeCsas.Domain.AttachmentDomain::get_FileName()
+DA:6,1
+FN:6,System.String DemoBeCsas.Domain.AttachmentDomain::get_ContentType()
+FNDA:1,System.String DemoBeCsas.Domain.AttachmentDomain::get_ContentType()
+DA:7,1
+FN:7,System.Int64 DemoBeCsas.Domain.AttachmentDomain::get_FileSizeBytes()
+FNDA:1,System.Int64 DemoBeCsas.Domain.AttachmentDomain::get_FileSizeBytes()
+DA:8,1
+FN:8,System.Byte[] DemoBeCsas.Domain.AttachmentDomain::get_Data()
+FNDA:1,System.Byte[] DemoBeCsas.Domain.AttachmentDomain::get_Data()
+DA:9,1
+FN:9,System.DateTimeOffset DemoBeCsas.Domain.AttachmentDomain::get_CreatedAt()
+FNDA:1,System.DateTimeOffset DemoBeCsas.Domain.AttachmentDomain::get_CreatedAt()
+DA:10,1
+FN:2,System.Void DemoBeCsas.Domain.AttachmentDomain::.ctor(System.Guid,System.Guid,System.String,System.String,System.Int64,System.Byte[],System.DateTimeOffset)
+FNDA:1,System.Void DemoBeCsas.Domain.AttachmentDomain::.ctor(System.Guid,System.Guid,System.String,System.String,System.Int64,System.Byte[],System.DateTimeOffset)
+DA:3,1
+DA:11,1
+LF:9
+LH:9
+BRF:0
+BRH:0
+FNF:8
+FNH:8
+end_of_record
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/Domain/Errors.cs
+FN:2,System.String DemoBeCsas.Domain.DomainError::get_Message()
+FNDA:131,System.String DemoBeCsas.Domain.DomainError::get_Message()
+DA:3,131
+FN:4,System.String DemoBeCsas.Domain.ValidationError::get_Field()
+FNDA:36,System.String DemoBeCsas.Domain.ValidationError::get_Field()
+DA:5,36
+FN:6,System.String DemoBeCsas.Domain.NotFoundError::get_Entity()
+FNDA:11,System.String DemoBeCsas.Domain.NotFoundError::get_Entity()
+DA:7,11
+FN:8,System.Void DemoBeCsas.Domain.ForbiddenError::.ctor(System.String)
+FNDA:5,System.Void DemoBeCsas.Domain.ForbiddenError::.ctor(System.String)
+DA:9,5
+FN:10,System.Void DemoBeCsas.Domain.ConflictError::.ctor(System.String)
+FNDA:11,System.Void DemoBeCsas.Domain.ConflictError::.ctor(System.String)
+DA:11,11
+FN:12,System.Void DemoBeCsas.Domain.UnauthorizedError::.ctor(System.String)
+FNDA:2,System.Void DemoBeCsas.Domain.UnauthorizedError::.ctor(System.String)
+DA:13,2
+FN:14,System.Int64 DemoBeCsas.Domain.FileTooLargeError::get_LimitBytes()
+FNDA:1,System.Int64 DemoBeCsas.Domain.FileTooLargeError::get_LimitBytes()
+DA:15,1
+FN:15,System.Void DemoBeCsas.Domain.FileTooLargeError::.ctor(System.Int64)
+FNDA:3,System.Void DemoBeCsas.Domain.FileTooLargeError::.ctor(System.Int64)
+DA:16,3
+FN:17,System.String DemoBeCsas.Domain.UnsupportedMediaTypeError::get_Type()
+FNDA:1,System.String DemoBeCsas.Domain.UnsupportedMediaTypeError::get_Type()
+DA:18,1
+FN:18,System.Void DemoBeCsas.Domain.UnsupportedMediaTypeError::.ctor(System.String)
+FNDA:3,System.Void DemoBeCsas.Domain.UnsupportedMediaTypeError::.ctor(System.String)
+DA:19,3
+LF:10
+LH:10
+BRF:0
+BRH:0
+FNF:10
+FNH:10
+end_of_record
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/Domain/Expense.cs
+FN:3,System.Guid DemoBeCsas.Domain.ExpenseDomain::get_Id()
+FNDA:1,System.Guid DemoBeCsas.Domain.ExpenseDomain::get_Id()
+DA:4,1
+FN:4,System.Guid DemoBeCsas.Domain.ExpenseDomain::get_UserId()
+FNDA:1,System.Guid DemoBeCsas.Domain.ExpenseDomain::get_UserId()
+DA:5,1
+FN:5,System.String DemoBeCsas.Domain.ExpenseDomain::get_Title()
+FNDA:1,System.String DemoBeCsas.Domain.ExpenseDomain::get_Title()
+DA:6,1
+FN:6,System.Decimal DemoBeCsas.Domain.ExpenseDomain::get_Amount()
+FNDA:1,System.Decimal DemoBeCsas.Domain.ExpenseDomain::get_Amount()
+DA:7,1
+FN:7,System.String DemoBeCsas.Domain.ExpenseDomain::get_Currency()
+FNDA:1,System.String DemoBeCsas.Domain.ExpenseDomain::get_Currency()
+DA:8,1
+FN:8,DemoBeCsas.Domain.ExpenseType DemoBeCsas.Domain.ExpenseDomain::get_Type()
+FNDA:1,DemoBeCsas.Domain.ExpenseType DemoBeCsas.Domain.ExpenseDomain::get_Type()
+DA:9,1
+FN:9,System.String DemoBeCsas.Domain.ExpenseDomain::get_Quantity()
+FNDA:1,System.String DemoBeCsas.Domain.ExpenseDomain::get_Quantity()
+DA:10,1
+FN:10,System.String DemoBeCsas.Domain.ExpenseDomain::get_Unit()
+FNDA:1,System.String DemoBeCsas.Domain.ExpenseDomain::get_Unit()
+DA:11,1
+FN:11,System.DateTimeOffset DemoBeCsas.Domain.ExpenseDomain::get_Date()
+FNDA:1,System.DateTimeOffset DemoBeCsas.Domain.ExpenseDomain::get_Date()
+DA:12,1
+FN:12,System.DateTimeOffset DemoBeCsas.Domain.ExpenseDomain::get_CreatedAt()
+FNDA:1,System.DateTimeOffset DemoBeCsas.Domain.ExpenseDomain::get_CreatedAt()
+DA:13,1
+FN:13,System.DateTimeOffset DemoBeCsas.Domain.ExpenseDomain::get_UpdatedAt()
+FNDA:1,System.DateTimeOffset DemoBeCsas.Domain.ExpenseDomain::get_UpdatedAt()
+DA:14,1
+FN:2,System.Void DemoBeCsas.Domain.ExpenseDomain::.ctor(System.Guid,System.Guid,System.String,System.Decimal,System.String,DemoBeCsas.Domain.ExpenseType,System.String,System.String,System.DateTimeOffset,System.DateTimeOffset,System.DateTimeOffset)
+FNDA:1,System.Void DemoBeCsas.Domain.ExpenseDomain::.ctor(System.Guid,System.Guid,System.String,System.Decimal,System.String,DemoBeCsas.Domain.ExpenseType,System.String,System.String,System.DateTimeOffset,System.DateTimeOffset,System.DateTimeOffset)
+DA:3,1
+DA:15,1
+FN:25,DemoBeCsas.Domain.DomainError DemoBeCsas.Domain.CurrencyValidation::ValidateAmount(System.String,System.Decimal)
+FNDA:66,DemoBeCsas.Domain.DomainError DemoBeCsas.Domain.CurrencyValidation::ValidateAmount(System.String,System.Decimal)
+DA:26,66
+DA:27,66
+DA:28,3
+DA:29,3
+DA:32,63
+DA:33,2
+DA:34,2
+DA:37,61
+DA:38,61
+DA:39,4
+DA:40,4
+DA:41,4
+DA:42,4
+DA:43,4
+DA:46,57
+DA:47,66
+BRDA:27,24,0,3
+BRDA:27,24,1,63
+BRDA:32,69,0,2
+BRDA:32,69,1,61
+BRDA:38,109,0,4
+BRDA:38,109,1,57
+FN:18,System.Void DemoBeCsas.Domain.CurrencyValidation::.cctor()
+FNDA:1,System.Void DemoBeCsas.Domain.CurrencyValidation::.cctor()
+DA:19,1
+DA:20,1
+DA:22,1
+DA:23,1
+FN:64,DemoBeCsas.Domain.DomainError DemoBeCsas.Domain.UnitValidation::ValidateUnit(System.String)
+FNDA:20,DemoBeCsas.Domain.DomainError DemoBeCsas.Domain.UnitValidation::ValidateUnit(System.String)
+DA:65,20
+DA:66,20
+DA:67,7
+DA:68,7
+DA:69,7
+DA:70,7
+DA:71,7
+DA:74,13
+DA:75,20
+BRDA:66,22,0,7
+BRDA:66,22,1,13
+FN:51,System.Void DemoBeCsas.Domain.UnitValidation::.cctor()
+FNDA:1,System.Void DemoBeCsas.Domain.UnitValidation::.cctor()
+DA:52,1
+DA:53,1
+DA:54,1
+DA:55,1
+DA:56,1
+DA:57,1
+DA:58,1
+DA:59,1
+DA:60,1
+DA:61,1
+DA:62,1
+LF:53
+LH:53
+BRF:8
+BRH:8
+FNF:16
+FNH:16
+end_of_record
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/Domain/User.cs
+FN:5,System.Guid DemoBeCsas.Domain.UserDomain::get_Id()
+FNDA:1,System.Guid DemoBeCsas.Domain.UserDomain::get_Id()
+DA:6,1
+FN:6,System.String DemoBeCsas.Domain.UserDomain::get_Username()
+FNDA:1,System.String DemoBeCsas.Domain.UserDomain::get_Username()
+DA:7,1
+FN:7,System.String DemoBeCsas.Domain.UserDomain::get_Email()
+FNDA:1,System.String DemoBeCsas.Domain.UserDomain::get_Email()
+DA:8,1
+FN:8,System.String DemoBeCsas.Domain.UserDomain::get_PasswordHash()
+FNDA:1,System.String DemoBeCsas.Domain.UserDomain::get_PasswordHash()
+DA:9,1
+FN:9,System.String DemoBeCsas.Domain.UserDomain::get_DisplayName()
+FNDA:1,System.String DemoBeCsas.Domain.UserDomain::get_DisplayName()
+DA:10,1
+FN:10,DemoBeCsas.Domain.UserStatus DemoBeCsas.Domain.UserDomain::get_Status()
+FNDA:1,DemoBeCsas.Domain.UserStatus DemoBeCsas.Domain.UserDomain::get_Status()
+DA:11,1
+FN:11,DemoBeCsas.Domain.Role DemoBeCsas.Domain.UserDomain::get_Role()
+FNDA:1,DemoBeCsas.Domain.Role DemoBeCsas.Domain.UserDomain::get_Role()
+DA:12,1
+FN:12,System.Int32 DemoBeCsas.Domain.UserDomain::get_FailedLoginAttempts()
+FNDA:1,System.Int32 DemoBeCsas.Domain.UserDomain::get_FailedLoginAttempts()
+DA:13,1
+FN:13,System.DateTimeOffset DemoBeCsas.Domain.UserDomain::get_CreatedAt()
+FNDA:1,System.DateTimeOffset DemoBeCsas.Domain.UserDomain::get_CreatedAt()
+DA:14,1
+FN:14,System.DateTimeOffset DemoBeCsas.Domain.UserDomain::get_UpdatedAt()
+FNDA:1,System.DateTimeOffset DemoBeCsas.Domain.UserDomain::get_UpdatedAt()
+DA:15,1
+FN:4,System.Void DemoBeCsas.Domain.UserDomain::.ctor(System.Guid,System.String,System.String,System.String,System.String,DemoBeCsas.Domain.UserStatus,DemoBeCsas.Domain.Role,System.Int32,System.DateTimeOffset,System.DateTimeOffset)
+FNDA:1,System.Void DemoBeCsas.Domain.UserDomain::.ctor(System.Guid,System.String,System.String,System.String,System.String,DemoBeCsas.Domain.UserStatus,DemoBeCsas.Domain.Role,System.Int32,System.DateTimeOffset,System.DateTimeOffset)
+DA:5,1
+DA:16,1
+FN:26,DemoBeCsas.Domain.DomainError DemoBeCsas.Domain.UserValidation::ValidatePassword(System.String)
+FNDA:144,DemoBeCsas.Domain.DomainError DemoBeCsas.Domain.UserValidation::ValidatePassword(System.String)
+DA:27,144
+DA:28,144
+DA:29,3
+DA:30,3
+DA:33,141
+DA:34,2
+DA:35,2
+DA:36,2
+DA:37,2
+DA:38,2
+DA:41,1129
+DA:42,2
+DA:43,2
+DA:44,2
+DA:45,2
+DA:46,2
+DA:49,137
+DA:50,144
+BRDA:28,13,0,3
+BRDA:28,13,1,141
+BRDA:33,72,0,2
+BRDA:33,72,1,139
+BRDA:41,135,0,2
+BRDA:41,135,1,137
+FN:52,DemoBeCsas.Domain.DomainError DemoBeCsas.Domain.UserValidation::ValidateEmail(System.String)
+FNDA:145,DemoBeCsas.Domain.DomainError DemoBeCsas.Domain.UserValidation::ValidateEmail(System.String)
+DA:53,145
+DA:54,145
+DA:55,5
+DA:56,5
+DA:59,140
+DA:60,145
+BRDA:54,7,0,144
+BRDA:54,7,1,1
+BRDA:54,28,0,5
+BRDA:54,28,1,140
+FN:62,DemoBeCsas.Domain.DomainError DemoBeCsas.Domain.UserValidation::ValidateUsername(System.String)
+FNDA:147,DemoBeCsas.Domain.DomainError DemoBeCsas.Domain.UserValidation::ValidateUsername(System.String)
+DA:63,147
+DA:64,147
+DA:65,5
+DA:66,5
+DA:67,5
+DA:68,5
+DA:69,5
+DA:72,142
+DA:73,147
+BRDA:64,7,0,146
+BRDA:64,7,1,1
+BRDA:64,28,0,5
+BRDA:64,28,1,142
+LF:45
+LH:45
+BRF:14
+BRH:14
+FNF:14
+FNH:14
+end_of_record
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/Auth/AuthorizationExtensions.cs
+FN:5,Microsoft.Extensions.DependencyInjection.IServiceCollection DemoBeCsas.Auth.AuthorizationExtensions::AddDemoBeAuthorization(Microsoft.Extensions.DependencyInjection.IServiceCollection)
+FNDA:78,Microsoft.Extensions.DependencyInjection.IServiceCollection DemoBeCsas.Auth.AuthorizationExtensions::AddDemoBeAuthorization(Microsoft.Extensions.DependencyInjection.IServiceCollection)
+DA:6,78
+DA:7,78
+DA:8,78
+DA:9,78
+DA:10,78
+DA:11,78
+DA:12,15
+DA:13,78
+DA:14,78
+DA:15,156
+DA:16,78
+DA:17,78
+LF:12
+LH:12
+BRF:0
+BRH:0
+FNF:1
+FNH:1
+end_of_record
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/Auth/JwtService.cs
+FN:23,Microsoft.IdentityModel.Tokens.SymmetricSecurityKey DemoBeCsas.Auth.JwtService::get_Key()
+FNDA:243,Microsoft.IdentityModel.Tokens.SymmetricSecurityKey DemoBeCsas.Auth.JwtService::get_Key()
+DA:24,243
+FN:26,System.String DemoBeCsas.Auth.JwtService::CreateAccessToken(System.String,System.String,System.String)
+FNDA:115,System.String DemoBeCsas.Auth.JwtService::CreateAccessToken(System.String,System.String,System.String)
+DA:27,115
+DA:28,115
+DA:29,115
+DA:30,115
+DA:32,115
+DA:33,115
+DA:34,115
+DA:35,115
+DA:36,115
+DA:37,115
+DA:38,115
+DA:39,115
+DA:40,115
+DA:41,115
+DA:42,115
+DA:43,115
+DA:45,115
+DA:46,115
+FN:48,System.String DemoBeCsas.Auth.JwtService::CreateRefreshToken(System.String)
+FNDA:112,System.String DemoBeCsas.Auth.JwtService::CreateRefreshToken(System.String)
+DA:49,112
+DA:50,112
+DA:51,112
+DA:52,112
+DA:54,112
+DA:55,112
+DA:56,112
+DA:57,112
+DA:58,112
+DA:59,112
+DA:60,112
+DA:61,112
+DA:62,112
+DA:63,112
+DA:64,112
+DA:66,112
+DA:67,112
+FN:69,System.Security.Claims.ClaimsPrincipal DemoBeCsas.Auth.JwtService::DecodeToken(System.String)
+FNDA:16,System.Security.Claims.ClaimsPrincipal DemoBeCsas.Auth.JwtService::DecodeToken(System.String)
+DA:70,16
+DA:72,16
+DA:73,16
+DA:74,16
+DA:75,16
+DA:76,16
+DA:77,16
+DA:78,16
+DA:79,16
+DA:80,16
+DA:83,16
+DA:84,16
+DA:86,5
+DA:87,5
+DA:88,5
+DA:90,16
+FN:92,System.String DemoBeCsas.Auth.JwtService::GetJti(System.String)
+FNDA:145,System.String DemoBeCsas.Auth.JwtService::GetJti(System.String)
+DA:93,145
+DA:95,145
+DA:96,145
+DA:97,145
+DA:98,144
+DA:100,1
+DA:101,1
+DA:102,1
+DA:104,145
+FN:106,System.Nullable`1<System.DateTimeOffset> DemoBeCsas.Auth.JwtService::GetIssuedAt(System.String)
+FNDA:136,System.Nullable`1<System.DateTimeOffset> DemoBeCsas.Auth.JwtService::GetIssuedAt(System.String)
+DA:107,136
+DA:109,136
+DA:110,136
+DA:111,136
+DA:112,135
+DA:113,135
+DA:114,135
+DA:116,1
+DA:117,1
+DA:118,1
+DA:120,136
+BRDA:112,36,0,135
+BRDA:112,36,1,0
+FN:16,System.Void DemoBeCsas.Auth.JwtService::.ctor(Microsoft.Extensions.Configuration.IConfiguration)
+FNDA:430,System.Void DemoBeCsas.Auth.JwtService::.ctor(Microsoft.Extensions.Configuration.IConfiguration)
+DA:17,430
+DA:19,430
+DA:20,430
+DA:21,430
+BRDA:19,13,0,0
+BRDA:19,13,1,430
+LF:76
+LH:76
+BRF:4
+BRH:2
+FNF:7
+FNH:7
+end_of_record
+SF:/home/wkf/ose-projects/open-sharia-enterprise/apps/demo-be-csas/src/DemoBeCsas/Auth/TokenRevocationMiddleware.cs
+FN:11,System.Void DemoBeCsas.Auth.TokenRevocationMiddleware::.ctor(Microsoft.AspNetCore.Http.RequestDelegate)
+FNDA:78,System.Void DemoBeCsas.Auth.TokenRevocationMiddleware::.ctor(Microsoft.AspNetCore.Http.RequestDelegate)
+DA:12,78
+FN:19,System.Void DemoBeCsas.Auth.TokenRevocationMiddleware/<InvokeAsync>d__2::MoveNext()
+FNDA:422,System.Void DemoBeCsas.Auth.TokenRevocationMiddleware/<InvokeAsync>d__2::MoveNext()
+DA:20,422
+DA:22,422
+DA:23,422
+DA:25,422
+DA:26,140
+DA:27,140
+DA:28,140
+DA:29,140
+DA:31,140
+DA:32,6
+DA:33,6
+DA:34,6
+DA:38,134
+DA:39,134
+DA:40,134
+DA:41,134
+DA:42,134
+DA:43,134
+DA:44,3
+DA:45,3
+DA:46,3
+DA:50,131
+DA:51,131
+DA:52,131
+DA:53,2
+DA:54,2
+DA:55,2
+DA:57,129
+DA:60,129
+DA:61,129
+DA:62,4
+DA:63,4
+DA:64,4
+DA:66,125
+DA:68,407
+DA:69,422
+BRDA:23,77,0,0
+BRDA:23,77,1,422
+BRDA:25,110,0,140
+BRDA:25,129,0,0
+BRDA:25,129,1,140
+BRDA:25,110,1,282
+BRDA:25,145,0,140
+BRDA:27,174,0,6
+BRDA:27,174,1,134
+BRDA:31,196,0,134
+BRDA:31,196,1,6
+BRDA:31,223,0,6
+BRDA:31,223,1,134
+BRDA:39,315,0,134
+BRDA:43,427,0,134
+BRDA:43,427,1,134
+BRDA:43,581,0,3
+BRDA:43,581,1,131
+BRDA:52,784,0,2
+BRDA:52,797,0,2
+BRDA:52,784,1,129
+BRDA:52,797,1,129
+BRDA:52,833,0,2
+BRDA:52,833,1,129
+BRDA:39,315,1,129
+BRDA:61,1030,0,127
+BRDA:61,1030,1,2
+BRDA:61,1053,0,4
+BRDA:61,1053,1,125
+BRDA:25,145,1,407
+LF:37
+LH:37
+BRF:30
+BRH:28
+FNF:2
+FNH:2
+end_of_record

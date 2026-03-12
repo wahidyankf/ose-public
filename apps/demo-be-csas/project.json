@@ -1,0 +1,79 @@
+{
+  "name": "demo-be-csas",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/demo-be-csas/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet publish src/DemoBeCsas/DemoBeCsas.csproj -c Release -o dist",
+        "cwd": "apps/demo-be-csas"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    },
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet watch run --project src/DemoBeCsas/DemoBeCsas.csproj",
+        "cwd": "apps/demo-be-csas"
+      }
+    },
+    "start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet run --project src/DemoBeCsas/DemoBeCsas.csproj",
+        "cwd": "apps/demo-be-csas"
+      }
+    },
+    "test:quick": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "dotnet build tests/DemoBeCsas.Tests/DemoBeCsas.Tests.csproj -c Debug && rm -rf coverage && dotnet test tests/DemoBeCsas.Tests/DemoBeCsas.Tests.csproj --no-build --collect:\"XPlat Code Coverage\" --results-directory ./coverage -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=lcov && cp coverage/*/coverage.info coverage/lcov.info",
+          "(cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/demo-be-csas/coverage/lcov.info 90)",
+          "dotnet format --verify-no-changes",
+          "dotnet build src/DemoBeCsas/DemoBeCsas.csproj /p:TreatWarningsAsErrors=true --no-restore"
+        ],
+        "parallel": false,
+        "cwd": "apps/demo-be-csas"
+      }
+    },
+    "test:unit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet test tests/DemoBeCsas.Tests/DemoBeCsas.Tests.csproj --filter Category=Unit",
+        "cwd": "apps/demo-be-csas"
+      }
+    },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet test tests/DemoBeCsas.Tests/DemoBeCsas.Tests.csproj --filter \"Category!=Unit\"",
+        "cwd": "apps/demo-be-csas"
+      },
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/src/**/*.cs",
+        "{projectRoot}/tests/**/*.cs",
+        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+      ]
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet build src/DemoBeCsas/DemoBeCsas.csproj /p:TreatWarningsAsErrors=true --no-restore",
+        "cwd": "apps/demo-be-csas"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet build src/DemoBeCsas/DemoBeCsas.csproj /p:TreatWarningsAsErrors=true --no-restore",
+        "cwd": "apps/demo-be-csas"
+      }
+    }
+  },
+  "tags": ["type:app", "platform:aspnetcore", "lang:csharp", "domain:demo-be"],
+  "implicitDependencies": ["rhino-cli"]
+}

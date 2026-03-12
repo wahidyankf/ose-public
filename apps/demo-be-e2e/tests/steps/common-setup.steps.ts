@@ -155,7 +155,7 @@ async function ensureSuperadmin(request: import("@playwright/test").APIRequestCo
 Then("alice's account status should be {string}", async ({ request }, status: string) => {
   const adminToken = await ensureSuperadmin(request);
   const aliceId = getIdForUser("alice");
-  const res = await request.get("/api/v1/admin/users?page=0&size=100", {
+  const res = await request.get("/api/v1/admin/users?page=1&size=100", {
     headers: { Authorization: `Bearer ${adminToken}` },
   });
   const body = (await res.json()) as { data: Array<Record<string, unknown>> };

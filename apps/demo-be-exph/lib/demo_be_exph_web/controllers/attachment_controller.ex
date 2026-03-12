@@ -59,10 +59,7 @@ defmodule DemoBeExphWeb.AttachmentController do
         conn |> put_status(:not_found) |> json(%{message: "Expense not found"})
 
       _expense ->
-        case attachment_ctx().get_attachment(expense_id_int, String.to_integer(att_id)) do
-          nil -> conn |> put_status(:not_found) |> json(%{message: "Attachment not found"})
-          attachment -> json(conn, attachment_json(attachment))
-        end
+        show_attachment(conn, expense_id_int, att_id)
     end
   end
 
@@ -75,13 +72,33 @@ defmodule DemoBeExphWeb.AttachmentController do
         conn |> put_status(:forbidden) |> json(%{message: "Expense not found or access denied"})
 
       _expense ->
-        case attachment_ctx().delete_attachment(expense_id_int, String.to_integer(att_id)) do
-          {:ok, _} ->
-            conn |> put_status(:no_content) |> json(%{})
+        delete_attachment(conn, expense_id_int, att_id)
+    end
+  end
 
-          {:error, :not_found} ->
-            conn |> put_status(:not_found) |> json(%{message: "Attachment not found"})
-        end
+  defp show_attachment(conn, expense_id_int, att_id) do
+    with {:ok, att_id_int} <- safe_parse_int(att_id),
+         attachment when not is_nil(attachment) <-
+           attachment_ctx().get_attachment(expense_id_int, att_id_int) do
+      json(conn, attachment_json(attachment))
+    else
+      _ -> conn |> put_status(:not_found) |> json(%{message: "Attachment not found"})
+    end
+  end
+
+  defp delete_attachment(conn, expense_id_int, att_id) do
+    with {:ok, att_id_int} <- safe_parse_int(att_id),
+         {:ok, _} <- attachment_ctx().delete_attachment(expense_id_int, att_id_int) do
+      conn |> put_status(:no_content) |> json(%{})
+    else
+      _ -> conn |> put_status(:not_found) |> json(%{message: "Attachment not found"})
+    end
+  end
+
+  defp safe_parse_int(value) do
+    case Integer.parse(value) do
+      {int, ""} -> {:ok, int}
+      _ -> :error
     end
   end
 

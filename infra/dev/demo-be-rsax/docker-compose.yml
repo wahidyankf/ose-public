@@ -45,7 +45,7 @@ services:
 
     environment:
       - PORT=8201
-      - DATABASE_URL=postgresql://demo_be_rsax:demo_be_rsax@demo-be-rsax-db:5432/demo_be_rsax
+      - DATABASE_URL=sqlite::memory:
       - APP_JWT_SECRET=${APP_JWT_SECRET:-dev-jwt-secret-that-is-32-chars-long!}
 
     command: cargo run

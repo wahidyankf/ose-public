@@ -1,6 +1,6 @@
 # Development Docker Image for Demo Backend (JAVX — Java/Vert.x)
-# Pre-downloads Maven dependencies AND pre-compiles source so container starts fast in CI.
-# The app source is mounted via docker-compose volume at /workspace.
+# Builds a fat JAR during image build so E2E mode starts instantly with `java -jar`.
+# Dev mode still uses `mvn compile exec:java` with volume-mounted source.
 
 FROM eclipse-temurin:25-jdk-alpine
 
@@ -9,11 +9,15 @@ RUN apk add --no-cache maven wget
 
 WORKDIR /workspace
 
-# Copy pom.xml and source code, then compile to cache ALL Maven plugins and dependencies.
-# dependency:resolve alone misses build-time plugins (compiler, exec, etc.) which causes
-# 15+ minute cold downloads at container startup on CI.
+# Build fat JAR (shade plugin) to cache ALL Maven plugins/dependencies AND produce
+# a runnable artifact. E2E override uses `java -jar /app/app.jar` for instant startup;
+# dev mode still runs `mvn compile exec:java` against volume-mounted source.
 COPY pom.xml /tmp/build/pom.xml
 COPY src/ /tmp/build/src/
-RUN cd /tmp/build && mvn compile exec:java -Dexec.skip=true -B 2>/dev/null; rm -rf /tmp/build
+RUN cd /tmp/build \
+    && mvn package -DskipTests -B 2>/dev/null \
+    && mkdir -p /app \
+    && cp /tmp/build/target/demo-be-javx-1.0.0.jar /app/app.jar \
+    && rm -rf /tmp/build
 
 CMD ["mvn", "compile", "exec:java"]

@@ -1,15 +1,16 @@
 # E2E override for demo-be-e2e Playwright tests
 # Use with: docker compose -f docker-compose.yml -f docker-compose.e2e.yml
 #
-# Keeps the stack in production-equivalent mode during E2E.
+# Runs the pre-built fat JAR directly (no Maven compile at startup).
 services:
   demo-be-javx:
+    command: ["java", "-jar", "/app/app.jar"]
     environment:
       - APP_ENV=production
       - DATABASE_URL=postgresql://demo_be_javx:demo_be_javx@demo-be-javx-db:5432/demo_be_javx
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8201/health"]
-      interval: 15s
-      timeout: 10s
-      retries: 10
-      start_period: 600s
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s

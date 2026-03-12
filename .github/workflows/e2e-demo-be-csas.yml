@@ -47,7 +47,7 @@ jobs:
         run: npx nx run demo-be-e2e:test:e2e
         env:
           BASE_URL: http://localhost:8201
-          DATABASE_URL: Host=localhost;Port=5432;Database=demo_be_csas;Username=demo_be_csas;Password=demo_be_csas
+          DATABASE_URL: postgresql://demo_be_csas:demo_be_csas@localhost:5432/demo_be_csas
 
       - name: Upload test report
         if: always()

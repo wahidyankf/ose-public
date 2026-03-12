@@ -1,0 +1,79 @@
+{
+  "name": "demo-be-tsex",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/demo-be-tsex/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx vite build",
+        "cwd": "apps/demo-be-tsex"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    },
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx tsx watch src/main.ts",
+        "cwd": "apps/demo-be-tsex"
+      }
+    },
+    "start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node dist/main.js",
+        "cwd": "apps/demo-be-tsex"
+      }
+    },
+    "test:quick": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "npx vitest run --coverage",
+          "(cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/demo-be-tsex/coverage/lcov.info 90)",
+          "npx tsc --noEmit",
+          "npx oxlint ."
+        ],
+        "parallel": false,
+        "cwd": "apps/demo-be-tsex"
+      }
+    },
+    "test:unit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx vitest run tests/unit",
+        "cwd": "apps/demo-be-tsex"
+      }
+    },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx cucumber-js",
+        "cwd": "apps/demo-be-tsex"
+      },
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/src/**/*.ts",
+        "{projectRoot}/tests/**/*.ts",
+        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+      ]
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx oxlint .",
+        "cwd": "apps/demo-be-tsex"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx tsc --noEmit",
+        "cwd": "apps/demo-be-tsex"
+      }
+    }
+  },
+  "tags": ["type:app", "platform:effect", "lang:typescript", "domain:demo-be"],
+  "implicitDependencies": ["rhino-cli"]
+}

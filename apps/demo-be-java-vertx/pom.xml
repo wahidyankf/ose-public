@@ -160,6 +160,14 @@
             <artifactId>cucumber-picocontainer</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- Mockito for unit-testing handler null-guard branches -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>5.20.0</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-suite</artifactId>
@@ -320,7 +328,11 @@
                         <version>3.5.3</version>
                         <configuration>
                             <includes>
+                                <!-- Integration tests (Cucumber BDD scenarios) -->
                                 <include>**/*IT.java</include>
+                                <!-- Unit tests for branches unreachable via HTTP
+                                     (e.g. null-guard paths added for NullAway compliance) -->
+                                <include>**/unit/**/*Test.java</include>
                             </includes>
                             <systemPropertyVariables>
                                 <cucumber.junit-platform.naming-strategy>long</cucumber.junit-platform.naming-strategy>
@@ -338,8 +350,12 @@
                             <excludes>
                                 <exclude>**/package-info.class</exclude>
                                 <exclude>**/Main.class</exclude>
-                                <exclude>**/MainVerticle.class</exclude>
+                                <!-- MainVerticle* catches the top-level class and its inner records -->
+                                <exclude>**/MainVerticle*.class</exclude>
+                                <!-- PostgreSQL repository implementations (only used in prod with a real DB) -->
                                 <exclude>**/repository/pg/*.class</exclude>
+                                <!-- Database schema initialisation: pure DDL, only runs against a live DB -->
+                                <exclude>**/db/*.class</exclude>
                             </excludes>
                         </configuration>
                         <executions>

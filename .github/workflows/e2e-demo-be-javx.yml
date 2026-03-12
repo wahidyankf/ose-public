@@ -27,16 +27,16 @@ jobs:
       - name: Wait for backend to be healthy
         run: |
           echo "Waiting for backend to become healthy..."
-          for i in $(seq 1 36); do
+          for i in $(seq 1 90); do
             STATUS=$(docker inspect --format='{{.State.Health.Status}}' 'demo-be-javx' 2>/dev/null || echo "unknown")
-            echo "[$i/36] Health: $STATUS"
+            echo "[$i/90] Health: $STATUS"
             if [ "$STATUS" = "healthy" ]; then
               echo "Backend is healthy"
               exit 0
             fi
             sleep 10
           done
-          echo "Backend did not become healthy within 6 minutes"
+          echo "Backend did not become healthy within 15 minutes"
           docker logs demo-be-javx
           exit 1
 

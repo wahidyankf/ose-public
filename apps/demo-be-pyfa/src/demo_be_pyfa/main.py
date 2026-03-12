@@ -7,6 +7,7 @@ from typing import Any
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from sqlalchemy.exc import IntegrityError
 
 from demo_be_pyfa.auth.jwt_service import get_jwks
 from demo_be_pyfa.database import engine
@@ -113,6 +114,14 @@ def create_app() -> FastAPI:
         return JSONResponse(
             status_code=415,
             content={"message": "Unsupported media type", "field": "file"},
+        )
+
+    @app.exception_handler(IntegrityError)
+    async def integrity_error_handler(request: Request, exc: IntegrityError) -> JSONResponse:
+        logger.exception("Database integrity error: %s", exc)
+        return JSONResponse(
+            status_code=409,
+            content={"message": "Resource already exists or constraint violation"},
         )
 
     @app.exception_handler(Exception)

@@ -78,10 +78,6 @@ def alice_get_summary(client: TestClient, alice_tokens: dict):  # type: ignore[n
 @then(parsers.parse('the response body should contain "{currency}" total equal to "{total}"'))
 def check_currency_total(response, currency: str, total: str) -> None:
     body = response.json()
-    # Response is a list of {currency, total}
-    items = body if isinstance(body, list) else body.get("items", body.get("data", []))
-    matching = [item for item in items if item.get("currency") == currency]
-    assert matching, f"Currency '{currency}' not found in summary: {body}"
-    assert str(matching[0]["total"]) == total, (
-        f"Expected {currency} total={total}, got {matching[0]['total']}"
-    )
+    # Response is a flat dict: {"USD": "30.00", "IDR": "150000"}
+    assert currency in body, f"Currency '{currency}' not found in summary: {body}"
+    assert str(body[currency]) == total, f"Expected {currency} total={total}, got {body[currency]}"

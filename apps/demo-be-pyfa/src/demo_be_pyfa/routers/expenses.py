@@ -49,13 +49,6 @@ class ExpenseListResponse(BaseModel):
     size: int
 
 
-class SummaryItem(BaseModel):
-    """Currency summary item."""
-
-    currency: str
-    total: str
-
-
 def _validate_expense_data(body: ExpenseRequest) -> None:
     """Validate expense request data."""
     currency = validate_currency(body.currency)
@@ -114,11 +107,11 @@ def create_expense(
 def get_summary(
     db: Session = Depends(get_db),
     current_user: UserModel = Depends(get_current_user),
-) -> list[SummaryItem]:
-    """Get expense summary grouped by currency."""
+) -> dict[str, str]:
+    """Get expense summary grouped by currency as a flat currency-to-total mapping."""
     expense_repo = get_expense_repo(db)
     summaries = expense_repo.summary_by_currency(current_user.id)
-    return [SummaryItem(currency=s["currency"], total=s["total"]) for s in summaries]
+    return {s["currency"]: s["total"] for s in summaries}
 
 
 @router.get("", response_model=ExpenseListResponse)

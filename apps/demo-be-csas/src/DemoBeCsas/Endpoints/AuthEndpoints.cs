@@ -171,19 +171,8 @@ public static class AuthEndpoints
             return Results.Json(new { message = "Invalid token" }, statusCode: 401);
         }
 
-        var jti = jwtService.GetJti(req.RefreshToken);
-        if (jti is null || await revokedTokenRepo.IsRevokedAsync(jti, ct))
-        {
-            return Results.Json(new { message = "Invalid token" }, statusCode: 401);
-        }
-
-        var issuedAt = jwtService.GetIssuedAt(req.RefreshToken);
-        var revokedBefore = await revokedTokenRepo.GetUserRevokedBeforeAsync(userGuid, ct);
-        if (revokedBefore.HasValue && issuedAt.HasValue && issuedAt.Value <= revokedBefore.Value)
-        {
-            return Results.Json(new { message = "Invalid token" }, statusCode: 401);
-        }
-
+        // Check user status before token revocation — deactivation revokes all tokens,
+        // but we want to return a specific status message, not a generic "Invalid token".
         var user = await userRepo.FindByIdAsync(userGuid, ct);
         if (user is null)
         {
@@ -201,6 +190,19 @@ public static class AuthEndpoints
         }
 
         if (user.Status != UserStatus.Active)
+        {
+            return Results.Json(new { message = "Invalid token" }, statusCode: 401);
+        }
+
+        var jti = jwtService.GetJti(req.RefreshToken);
+        if (jti is null || await revokedTokenRepo.IsRevokedAsync(jti, ct))
+        {
+            return Results.Json(new { message = "Invalid token" }, statusCode: 401);
+        }
+
+        var issuedAt = jwtService.GetIssuedAt(req.RefreshToken);
+        var revokedBefore = await revokedTokenRepo.GetUserRevokedBeforeAsync(userGuid, ct);
+        if (revokedBefore.HasValue && issuedAt.HasValue && issuedAt.Value <= revokedBefore.Value)
         {
             return Results.Json(new { message = "Invalid token" }, statusCode: 401);
         }

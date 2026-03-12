@@ -159,13 +159,9 @@ const refresh = HttpServerRequest.HttpServerRequest.pipe(
 
       const tokenRepo = yield* RevokedTokenRepository;
       const isRevoked = yield* tokenRepo.isRevoked(claims.jti, claims.sub, claims.iat);
-      if (isRevoked) {
-        return yield* Effect.fail(new UnauthorizedError({ reason: "Token has been revoked" }));
-      }
 
-      // Revoke old refresh token
-      yield* tokenRepo.revoke(claims.jti, claims.sub);
-
+      // Check user status before reporting token revocation — deactivation
+      // messages take priority over generic "revoked" errors
       const userRepo = yield* UserRepository;
       const user = yield* userRepo.findById(claims.sub);
       if (!user) {
@@ -175,6 +171,13 @@ const refresh = HttpServerRequest.HttpServerRequest.pipe(
       if (user.status !== "ACTIVE") {
         return yield* Effect.fail(new UnauthorizedError({ reason: "Account is deactivated" }));
       }
+
+      if (isRevoked) {
+        return yield* Effect.fail(new UnauthorizedError({ reason: "Token has been revoked" }));
+      }
+
+      // Revoke old refresh token
+      yield* tokenRepo.revoke(claims.jti, claims.sub);
 
       const newAccessToken = yield* jwt.signAccess(user.id, user.username, user.role);
       const newRefreshToken = yield* jwt.signRefresh(user.id);

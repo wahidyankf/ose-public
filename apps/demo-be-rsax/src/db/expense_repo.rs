@@ -1,12 +1,13 @@
 use chrono::{NaiveDate, Utc};
-use sqlx::SqlitePool;
+use sqlx::any::AnyRow;
+use sqlx::AnyPool;
 use uuid::Uuid;
 
 use crate::domain::errors::AppError;
 use crate::domain::expense::Expense;
 use crate::domain::types::Currency;
 
-fn row_to_expense(row: &sqlx::sqlite::SqliteRow) -> Expense {
+fn row_to_expense(row: &AnyRow) -> Expense {
     use sqlx::Row;
     let id_str: String = row.get("id");
     let user_id_str: String = row.get("user_id");
@@ -28,7 +29,7 @@ fn row_to_expense(row: &sqlx::sqlite::SqliteRow) -> Expense {
 
 #[allow(clippy::too_many_arguments)]
 pub async fn create_expense(
-    pool: &SqlitePool,
+    pool: &AnyPool,
     id: Uuid,
     user_id: Uuid,
     amount_stored: i64,
@@ -71,7 +72,7 @@ pub async fn create_expense(
         })
 }
 
-pub async fn find_by_id(pool: &SqlitePool, id: Uuid) -> Result<Option<Expense>, AppError> {
+pub async fn find_by_id(pool: &AnyPool, id: Uuid) -> Result<Option<Expense>, AppError> {
     let id_str = id.to_string();
     let row = sqlx::query(
         r#"SELECT id, user_id, amount_stored, currency, category, description, date, entry_type, quantity, unit
@@ -90,7 +91,7 @@ pub struct ListExpensesResult {
 }
 
 pub async fn list_for_user(
-    pool: &SqlitePool,
+    pool: &AnyPool,
     user_id: Uuid,
     page: i64,
     page_size: i64,
@@ -111,11 +112,10 @@ pub async fn list_for_user(
     let expenses = rows.iter().map(row_to_expense).collect();
 
     use sqlx::Row;
-    let count_row: sqlx::sqlite::SqliteRow =
-        sqlx::query("SELECT COUNT(*) as cnt FROM expenses WHERE user_id = ?")
-            .bind(&user_id_str)
-            .fetch_one(pool)
-            .await?;
+    let count_row: AnyRow = sqlx::query("SELECT COUNT(*) as cnt FROM expenses WHERE user_id = ?")
+        .bind(&user_id_str)
+        .fetch_one(pool)
+        .await?;
     let total: i64 = count_row.get("cnt");
 
     Ok(ListExpensesResult { expenses, total })
@@ -123,7 +123,7 @@ pub async fn list_for_user(
 
 #[allow(clippy::too_many_arguments)]
 pub async fn update_expense(
-    pool: &SqlitePool,
+    pool: &AnyPool,
     id: Uuid,
     amount_stored: i64,
     currency: &str,
@@ -162,7 +162,7 @@ pub async fn update_expense(
         })
 }
 
-pub async fn delete_expense(pool: &SqlitePool, id: Uuid) -> Result<(), AppError> {
+pub async fn delete_expense(pool: &AnyPool, id: Uuid) -> Result<(), AppError> {
     let id_str = id.to_string();
     sqlx::query("DELETE FROM attachments WHERE expense_id = ?")
         .bind(&id_str)
@@ -181,7 +181,7 @@ pub struct CurrencySummary {
 }
 
 pub async fn summarize_by_currency(
-    pool: &SqlitePool,
+    pool: &AnyPool,
     user_id: Uuid,
 ) -> Result<Vec<CurrencySummary>, AppError> {
     use sqlx::Row;
@@ -216,7 +216,7 @@ pub struct CategoryAmount {
 }
 
 pub async fn pl_report(
-    pool: &SqlitePool,
+    pool: &AnyPool,
     user_id: Uuid,
     currency: &Currency,
     from: NaiveDate,
@@ -228,7 +228,7 @@ pub async fn pl_report(
     let from_str = from.to_string();
     let to_str = to.to_string();
 
-    let income_row: sqlx::sqlite::SqliteRow = sqlx::query(
+    let income_row: AnyRow = sqlx::query(
         r#"SELECT COALESCE(SUM(amount_stored), 0) as total FROM expenses
            WHERE user_id = ? AND currency = ? AND entry_type = 'income'
            AND date >= ? AND date <= ?"#,
@@ -241,7 +241,7 @@ pub async fn pl_report(
     .await?;
     let income_total: i64 = income_row.get("total");
 
-    let expense_row: sqlx::sqlite::SqliteRow = sqlx::query(
+    let expense_row: AnyRow = sqlx::query(
         r#"SELECT COALESCE(SUM(amount_stored), 0) as total FROM expenses
            WHERE user_id = ? AND currency = ? AND entry_type = 'expense'
            AND date >= ? AND date <= ?"#,

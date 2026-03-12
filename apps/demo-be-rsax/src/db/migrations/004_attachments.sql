@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS attachments (
     filename TEXT NOT NULL,
     content_type TEXT NOT NULL,
     size INTEGER NOT NULL,
-    data BLOB NOT NULL,
+    data BYTEA NOT NULL,
     created_at TEXT NOT NULL,
     FOREIGN KEY (expense_id) REFERENCES expenses(id),
     FOREIGN KEY (user_id) REFERENCES users(id)

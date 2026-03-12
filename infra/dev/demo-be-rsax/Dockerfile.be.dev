@@ -3,9 +3,14 @@
 
 FROM rust:1.87-slim
 
-# Install curl for healthcheck and pkg-config/libssl-dev for common Rust crate dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends curl pkg-config libssl-dev && \
-    rm -rf /var/lib/apt/lists/*
+# Install curl for healthcheck, pkg-config/libssl-dev for TLS,
+# and libpq-dev for PostgreSQL client libraries (required by sqlx postgres driver).
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    pkg-config \
+    libssl-dev \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /workspace
 

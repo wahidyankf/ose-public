@@ -6,3 +6,4 @@ services:
   demo-be-rsax:
     environment:
       - RUST_LOG=warn
+      - DATABASE_URL=postgresql://demo_be_rsax:demo_be_rsax@demo-be-rsax-db:5432/demo_be_rsax

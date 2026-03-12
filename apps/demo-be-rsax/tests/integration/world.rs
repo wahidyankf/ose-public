@@ -3,7 +3,7 @@ use axum::Router;
 use http::{Request, Response};
 use http_body_util::BodyExt;
 use serde_json::Value;
-use sqlx::SqlitePool;
+use sqlx::AnyPool;
 use std::sync::Arc;
 use tower::ServiceExt;
 use uuid::Uuid;
@@ -16,7 +16,7 @@ pub const TEST_JWT_SECRET: &str = "test-jwt-secret-that-is-32-chars-long!!";
 #[world(init = Self::new_world)]
 pub struct AppWorld {
     pub app: Router,
-    pub pool: SqlitePool,
+    pub pool: AnyPool,
     pub last_status: u16,
     pub last_body: Value,
     pub auth_token: Option<String>,

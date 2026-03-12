@@ -1,5 +1,6 @@
 use chrono::Utc;
-use sqlx::SqlitePool;
+use sqlx::any::AnyRow;
+use sqlx::AnyPool;
 use uuid::Uuid;
 
 use crate::domain::attachment::Attachment;
@@ -15,7 +16,7 @@ pub struct NewAttachment<'a> {
     pub data: &'a [u8],
 }
 
-fn row_to_attachment(row: &sqlx::sqlite::SqliteRow) -> Attachment {
+fn row_to_attachment(row: &AnyRow) -> Attachment {
     use sqlx::Row;
     let id_str: String = row.get("id");
     let expense_id_str: String = row.get("expense_id");
@@ -36,7 +37,7 @@ fn row_to_attachment(row: &sqlx::sqlite::SqliteRow) -> Attachment {
 }
 
 pub async fn create_attachment(
-    pool: &SqlitePool,
+    pool: &AnyPool,
     new: NewAttachment<'_>,
 ) -> Result<Attachment, AppError> {
     let id_str = new.id.to_string();
@@ -66,7 +67,7 @@ pub async fn create_attachment(
         })
 }
 
-pub async fn find_by_id(pool: &SqlitePool, id: Uuid) -> Result<Option<Attachment>, AppError> {
+pub async fn find_by_id(pool: &AnyPool, id: Uuid) -> Result<Option<Attachment>, AppError> {
     let id_str = id.to_string();
     let row = sqlx::query(
         r#"SELECT id, expense_id, user_id, filename, content_type, size, data, created_at
@@ -80,7 +81,7 @@ pub async fn find_by_id(pool: &SqlitePool, id: Uuid) -> Result<Option<Attachment
 }
 
 pub async fn list_for_expense(
-    pool: &SqlitePool,
+    pool: &AnyPool,
     expense_id: Uuid,
 ) -> Result<Vec<Attachment>, AppError> {
     let expense_id_str = expense_id.to_string();
@@ -95,7 +96,7 @@ pub async fn list_for_expense(
     Ok(rows.iter().map(row_to_attachment).collect())
 }
 
-pub async fn delete_attachment(pool: &SqlitePool, id: Uuid) -> Result<(), AppError> {
+pub async fn delete_attachment(pool: &AnyPool, id: Uuid) -> Result<(), AppError> {
     let id_str = id.to_string();
     sqlx::query("DELETE FROM attachments WHERE id = ?")
         .bind(&id_str)

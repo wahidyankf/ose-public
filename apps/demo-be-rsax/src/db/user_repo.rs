@@ -1,11 +1,12 @@
 use chrono::Utc;
-use sqlx::SqlitePool;
+use sqlx::any::AnyRow;
+use sqlx::AnyPool;
 use uuid::Uuid;
 
 use crate::domain::errors::AppError;
 use crate::domain::user::User;
 
-fn row_to_user(row: &sqlx::sqlite::SqliteRow) -> User {
+fn row_to_user(row: &AnyRow) -> User {
     use sqlx::Row;
     let id_str: String = row.get("id");
     let created_str: String = row.get("created_at");
@@ -29,7 +30,7 @@ fn row_to_user(row: &sqlx::sqlite::SqliteRow) -> User {
 }
 
 pub async fn create_user(
-    pool: &SqlitePool,
+    pool: &AnyPool,
     id: Uuid,
     username: &str,
     email: &str,
@@ -55,7 +56,10 @@ pub async fn create_user(
     .execute(pool)
     .await
     .map_err(|e| {
-        if e.to_string().contains("UNIQUE") {
+        if e.to_string().contains("UNIQUE")
+            || e.to_string().contains("unique")
+            || e.to_string().contains("duplicate key")
+        {
             AppError::Conflict {
                 message: "Username or email already exists".to_string(),
             }
@@ -71,7 +75,7 @@ pub async fn create_user(
         })
 }
 
-pub async fn find_by_id(pool: &SqlitePool, id: Uuid) -> Result<Option<User>, AppError> {
+pub async fn find_by_id(pool: &AnyPool, id: Uuid) -> Result<Option<User>, AppError> {
     let id_str = id.to_string();
     let row = sqlx::query(
         r#"SELECT id, username, email, display_name, password_hash, role, status, failed_attempts, created_at, updated_at
@@ -84,7 +88,7 @@ pub async fn find_by_id(pool: &SqlitePool, id: Uuid) -> Result<Option<User>, App
     Ok(row.as_ref().map(row_to_user))
 }
 
-pub async fn find_by_username(pool: &SqlitePool, username: &str) -> Result<Option<User>, AppError> {
+pub async fn find_by_username(pool: &AnyPool, username: &str) -> Result<Option<User>, AppError> {
     let row = sqlx::query(
         r#"SELECT id, username, email, display_name, password_hash, role, status, failed_attempts, created_at, updated_at
            FROM users WHERE username = ?"#,
@@ -96,7 +100,7 @@ pub async fn find_by_username(pool: &SqlitePool, username: &str) -> Result<Optio
     Ok(row.as_ref().map(row_to_user))
 }
 
-pub async fn update_status(pool: &SqlitePool, id: Uuid, status: &str) -> Result<(), AppError> {
+pub async fn update_status(pool: &AnyPool, id: Uuid, status: &str) -> Result<(), AppError> {
     let id_str = id.to_string();
     let now_str = Utc::now().to_rfc3339();
     sqlx::query("UPDATE users SET status = ?, updated_at = ? WHERE id = ?")
@@ -109,7 +113,7 @@ pub async fn update_status(pool: &SqlitePool, id: Uuid, status: &str) -> Result<
 }
 
 pub async fn update_display_name(
-    pool: &SqlitePool,
+    pool: &AnyPool,
     id: Uuid,
     display_name: &str,
 ) -> Result<User, AppError> {
@@ -129,7 +133,7 @@ pub async fn update_display_name(
 }
 
 pub async fn update_password_hash(
-    pool: &SqlitePool,
+    pool: &AnyPool,
     id: Uuid,
     password_hash: &str,
 ) -> Result<(), AppError> {
@@ -144,7 +148,7 @@ pub async fn update_password_hash(
     Ok(())
 }
 
-pub async fn increment_failed_attempts(pool: &SqlitePool, id: Uuid) -> Result<i64, AppError> {
+pub async fn increment_failed_attempts(pool: &AnyPool, id: Uuid) -> Result<i64, AppError> {
     let id_str = id.to_string();
     let now_str = Utc::now().to_rfc3339();
     sqlx::query(
@@ -155,16 +159,15 @@ pub async fn increment_failed_attempts(pool: &SqlitePool, id: Uuid) -> Result<i6
     .execute(pool)
     .await?;
 
-    let row: sqlx::sqlite::SqliteRow =
-        sqlx::query("SELECT failed_attempts FROM users WHERE id = ?")
-            .bind(&id_str)
-            .fetch_one(pool)
-            .await?;
     use sqlx::Row;
+    let row: AnyRow = sqlx::query("SELECT failed_attempts FROM users WHERE id = ?")
+        .bind(&id_str)
+        .fetch_one(pool)
+        .await?;
     Ok(row.get::<i64, _>("failed_attempts"))
 }
 
-pub async fn reset_failed_attempts(pool: &SqlitePool, id: Uuid) -> Result<(), AppError> {
+pub async fn reset_failed_attempts(pool: &AnyPool, id: Uuid) -> Result<(), AppError> {
     let id_str = id.to_string();
     let now_str = Utc::now().to_rfc3339();
     sqlx::query("UPDATE users SET failed_attempts = 0, updated_at = ? WHERE id = ?")
@@ -176,7 +179,7 @@ pub async fn reset_failed_attempts(pool: &SqlitePool, id: Uuid) -> Result<(), Ap
 }
 
 pub async fn set_password_reset_token(
-    pool: &SqlitePool,
+    pool: &AnyPool,
     id: Uuid,
     token: &str,
 ) -> Result<(), AppError> {
@@ -197,7 +200,7 @@ pub struct ListUsersResult {
 }
 
 pub async fn list_users(
-    pool: &SqlitePool,
+    pool: &AnyPool,
     page: i64,
     page_size: i64,
     email_filter: Option<&str>,
@@ -217,12 +220,11 @@ pub async fn list_users(
         .await?;
         let users: Vec<User> = rows.iter().map(row_to_user).collect();
 
-        let count_row: sqlx::sqlite::SqliteRow =
-            sqlx::query("SELECT COUNT(*) as cnt FROM users WHERE email LIKE ?")
-                .bind(&pattern)
-                .fetch_one(pool)
-                .await?;
         use sqlx::Row;
+        let count_row: AnyRow = sqlx::query("SELECT COUNT(*) as cnt FROM users WHERE email LIKE ?")
+            .bind(&pattern)
+            .fetch_one(pool)
+            .await?;
         let total: i64 = count_row.get::<i64, _>("cnt");
         (users, total)
     } else {
@@ -236,10 +238,10 @@ pub async fn list_users(
         .await?;
         let users: Vec<User> = rows.iter().map(row_to_user).collect();
 
-        let count_row: sqlx::sqlite::SqliteRow = sqlx::query("SELECT COUNT(*) as cnt FROM users")
+        use sqlx::Row;
+        let count_row: AnyRow = sqlx::query("SELECT COUNT(*) as cnt FROM users")
             .fetch_one(pool)
             .await?;
-        use sqlx::Row;
         let total: i64 = count_row.get::<i64, _>("cnt");
         (users, total)
     };

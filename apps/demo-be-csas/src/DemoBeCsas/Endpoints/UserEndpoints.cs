@@ -105,7 +105,7 @@ public static class UserEndpoints
         if (req.OldPassword is null || !hasher.VerifyPassword(req.OldPassword, user.PasswordHash))
         {
             // Return 401 for incorrect old password (matches feature spec)
-            return Results.Unauthorized();
+            return Results.Json(new { message = "Invalid old password" }, statusCode: 401);
         }
 
         if (req.NewPassword is null)

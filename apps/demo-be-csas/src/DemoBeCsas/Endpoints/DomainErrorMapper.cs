@@ -13,7 +13,7 @@ public static class DomainErrorMapper
             ConflictError e => Results.Conflict(new { message = e.Message }),
             UnauthorizedError => Results.Unauthorized(),
             FileTooLargeError e => Results.Json(new { message = e.Message }, statusCode: 413),
-            UnsupportedMediaTypeError => Results.StatusCode(415),
+            UnsupportedMediaTypeError e => Results.Json(new { message = e.Message }, statusCode: 415),
             _ => Results.Problem(error.Message),
         };
 }

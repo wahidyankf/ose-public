@@ -76,10 +76,10 @@ public static class ExpenseEndpoints
 
     private static async Task<IResult> ListExpensesAsync(
         HttpContext ctx,
-        [FromQuery] int page,
-        [FromQuery] int size,
         IExpenseRepository expenseRepo,
-        CancellationToken ct
+        CancellationToken ct,
+        [FromQuery] int page = 1,
+        [FromQuery] int size = 20
     )
     {
         var userId = GetUserId(ctx);

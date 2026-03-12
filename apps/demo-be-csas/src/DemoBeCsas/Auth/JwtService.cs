@@ -30,6 +30,7 @@ public class JwtService(IConfiguration config) : IJwtService
         var now = DateTimeOffset.UtcNow;
 
         var token = new JwtSecurityToken(
+            issuer: "demo-be-csas",
             claims:
             [
                 new Claim(JwtRegisteredClaimNames.Sub, userId),

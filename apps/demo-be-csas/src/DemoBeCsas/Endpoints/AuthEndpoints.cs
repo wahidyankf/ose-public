@@ -185,7 +185,22 @@ public static class AuthEndpoints
         }
 
         var user = await userRepo.FindByIdAsync(userGuid, ct);
-        if (user is null || user.Status != UserStatus.Active)
+        if (user is null)
+        {
+            return Results.Json(new { message = "Invalid token" }, statusCode: 401);
+        }
+
+        if (user.Status == UserStatus.Inactive)
+        {
+            return Results.Json(new { message = "Account is deactivated" }, statusCode: 401);
+        }
+
+        if (user.Status == UserStatus.Disabled)
+        {
+            return Results.Json(new { message = "Account is disabled" }, statusCode: 401);
+        }
+
+        if (user.Status != UserStatus.Active)
         {
             return Results.Json(new { message = "Invalid token" }, statusCode: 401);
         }

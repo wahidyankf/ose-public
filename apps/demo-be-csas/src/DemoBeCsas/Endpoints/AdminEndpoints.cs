@@ -17,11 +17,11 @@ public static class AdminEndpoints
     }
 
     private static async Task<IResult> ListUsersAsync(
-        [FromQuery] int page,
-        [FromQuery] int size,
-        [FromQuery] string? email,
         IUserRepository userRepo,
-        CancellationToken ct
+        CancellationToken ct,
+        [FromQuery] int page = 1,
+        [FromQuery] int size = 20,
+        [FromQuery] string? email = null
     )
     {
         var safePage = Math.Max(1, page == 0 ? 1 : page);

@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS expenses (
     description TEXT NOT NULL,
     date TEXT NOT NULL,
     entry_type TEXT NOT NULL,
-    quantity REAL,
+    quantity DOUBLE PRECISION,
     unit TEXT,
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL,

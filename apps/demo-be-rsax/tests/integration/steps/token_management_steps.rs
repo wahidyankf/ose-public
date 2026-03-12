@@ -55,8 +55,12 @@ async fn token_is_revoked(world: &mut AppWorld) {
 #[given("alice has logged out and her access token is blacklisted")]
 async fn alice_logged_out_blacklisted(world: &mut AppWorld) {
     let token = world.auth_token.clone().unwrap_or_default();
-    let body = format!(r#"{{"access_token": "{token}"}}"#);
-    let req = json_req("POST", "/api/v1/auth/logout", &body, None);
+    let req = json_req(
+        "POST",
+        "/api/v1/auth/logout",
+        "{}",
+        Some(&format!("Bearer {token}")),
+    );
     world.send(req).await.unwrap();
 }
 

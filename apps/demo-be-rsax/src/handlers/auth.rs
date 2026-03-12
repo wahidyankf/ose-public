@@ -1,4 +1,9 @@
-use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
+use axum::{
+    extract::State,
+    http::{HeaderMap, StatusCode},
+    response::IntoResponse,
+    Json,
+};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use std::sync::Arc;
@@ -210,27 +215,28 @@ pub async fn refresh(
     }))
 }
 
-#[derive(Deserialize)]
-pub struct LogoutRequest {
-    pub access_token: Option<String>,
-}
-
 pub async fn logout(
     State(state): State<Arc<AppState>>,
-    Json(body): Json<LogoutRequest>,
+    headers: HeaderMap,
 ) -> Result<Json<serde_json::Value>, AppError> {
-    let token_str = body.access_token.unwrap_or_default();
+    // Extract token from Authorization header (Bearer <token>)
+    let token_str = headers
+        .get("authorization")
+        .and_then(|v| v.to_str().ok())
+        .and_then(|v| v.strip_prefix("Bearer "))
+        .unwrap_or("");
+
     if token_str.is_empty() {
-        return Ok(Json(json!({"message": "ok"})));
+        return Ok(Json(json!({"message": "Logged out"})));
     }
 
     // Decode without strict validation (may be expired)
-    if let Ok(claims) = crate::auth::jwt::decode_claims_unchecked(&token_str, &state.jwt_secret) {
+    if let Ok(claims) = crate::auth::jwt::decode_claims_unchecked(token_str, &state.jwt_secret) {
         let user_id = Uuid::parse_str(&claims.sub).unwrap_or_else(|_| Uuid::new_v4());
         token_repo::revoke_token(&state.pool, &claims.jti, user_id).await?;
     }
 
-    Ok(Json(json!({"message": "ok"})))
+    Ok(Json(json!({"message": "Logged out"})))
 }
 
 pub async fn logout_all(

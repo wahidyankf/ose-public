@@ -76,8 +76,12 @@ async fn user_deactivated_step(world: &mut AppWorld, _username: String) {
 #[when("alice sends POST /api/v1/auth/logout with her access token")]
 async fn logout_alice(world: &mut AppWorld) {
     let token = world.auth_token.clone().unwrap_or_default();
-    let body = format!(r#"{{"access_token": "{token}"}}"#);
-    let req = json_req("POST", "/api/v1/auth/logout", &body, None);
+    let req = json_req(
+        "POST",
+        "/api/v1/auth/logout",
+        "{}",
+        Some(&format!("Bearer {token}")),
+    );
     world.send(req).await.unwrap();
 }
 
@@ -108,8 +112,12 @@ async fn check_token_invalidated(world: &mut AppWorld) {
 #[given("alice has already logged out once")]
 async fn alice_already_logged_out(world: &mut AppWorld) {
     let token = world.auth_token.clone().unwrap_or_default();
-    let body = format!(r#"{{"access_token": "{token}"}}"#);
-    let req = json_req("POST", "/api/v1/auth/logout", &body, None);
+    let req = json_req(
+        "POST",
+        "/api/v1/auth/logout",
+        "{}",
+        Some(&format!("Bearer {token}")),
+    );
     world.send(req).await.unwrap();
 }
 

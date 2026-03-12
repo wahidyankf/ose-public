@@ -9,7 +9,10 @@ from demo_be_python_fastapi.auth.jwt_service import decode_token
 from demo_be_python_fastapi.dependencies import get_db, get_revoked_token_repo, get_user_repo
 from demo_be_python_fastapi.domain.errors import ForbiddenError, UnauthorizedError
 from demo_be_python_fastapi.infrastructure.models import UserModel
-from demo_be_python_fastapi.infrastructure.repositories import RevokedTokenRepository, UserRepository
+from demo_be_python_fastapi.infrastructure.repositories import (
+    RevokedTokenRepository,
+    UserRepository,
+)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 

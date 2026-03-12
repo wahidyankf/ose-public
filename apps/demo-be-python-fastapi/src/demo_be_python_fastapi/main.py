@@ -22,7 +22,16 @@ from demo_be_python_fastapi.domain.errors import (
     ValidationError,
 )
 from demo_be_python_fastapi.infrastructure.models import Base
-from demo_be_python_fastapi.routers import admin, attachments, auth, expenses, health, reports, tokens, users
+from demo_be_python_fastapi.routers import (
+    admin,
+    attachments,
+    auth,
+    expenses,
+    health,
+    reports,
+    tokens,
+    users,
+)
 
 logger = logging.getLogger(__name__)
 

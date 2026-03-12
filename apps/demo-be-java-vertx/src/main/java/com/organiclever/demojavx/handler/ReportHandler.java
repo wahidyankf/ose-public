@@ -23,6 +23,10 @@ public class ReportHandler implements Handler<RoutingContext> {
     @Override
     public void handle(RoutingContext ctx) {
         String userId = ctx.get("userId");
+        if (userId == null) {
+            ctx.fail(400);
+            return;
+        }
         String fromStr = ctx.queryParam("from").stream().findFirst().orElse("");
         String toStr = ctx.queryParam("to").stream().findFirst().orElse("");
         String currency = ctx.queryParam("currency").stream().findFirst().orElse("USD")

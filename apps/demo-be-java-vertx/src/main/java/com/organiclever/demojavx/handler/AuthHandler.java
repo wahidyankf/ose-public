@@ -191,14 +191,22 @@ public class AuthHandler implements Handler<RoutingContext> {
                         return Future.failedFuture(new DomainException(401,
                                 "Account deactivated"));
                     }
-                    TokenRevocation revoke = new TokenRevocation(claims.jti(), user.id(),
+                    String uid = user.id();
+                    if (uid == null) {
+                        return Future.failedFuture(new DomainException(500, "User id is null"));
+                    }
+                    TokenRevocation revoke = new TokenRevocation(claims.jti(), uid,
                             Instant.now());
                     return revocationRepo.save(revoke).map(ignored -> user);
                 })
                 .compose(user -> {
                     JwtService.TokenPair tokens = jwtService.generateTokenPair(user);
+                    String uid = user.id();
+                    if (uid == null) {
+                        return Future.failedFuture(new DomainException(500, "User id is null"));
+                    }
                     TokenRevocation revocation = new TokenRevocation(
-                            tokens.refreshJti(), user.id(), Instant.now());
+                            tokens.refreshJti(), uid, Instant.now());
                     return revocationRepo.save(revocation).map(ignored -> tokens);
                 })
                 .onSuccess(tokens -> {
@@ -241,6 +249,10 @@ public class AuthHandler implements Handler<RoutingContext> {
         String userId = ctx.get("userId");
         String jti = ctx.get("jti");
 
+        if (userId == null || jti == null) {
+            ctx.fail(400);
+            return;
+        }
         // Revoke the current access token
         TokenRevocation accessRevocation = new TokenRevocation(jti, userId, Instant.now());
         // Revoke a sentinel entry for "all sessions" to block any existing refresh tokens

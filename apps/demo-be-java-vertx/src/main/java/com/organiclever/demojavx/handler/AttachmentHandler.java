@@ -44,6 +44,10 @@ public class AttachmentHandler implements Handler<RoutingContext> {
         String userId = ctx.get("userId");
         String expenseId = ctx.pathParam("id");
 
+        if (userId == null || expenseId == null) {
+            ctx.fail(400);
+            return;
+        }
         expenseRepo.findById(expenseId)
                 .compose(expOpt -> {
                     if (expOpt.isEmpty()) {
@@ -91,6 +95,10 @@ public class AttachmentHandler implements Handler<RoutingContext> {
         String userId = ctx.get("userId");
         String expenseId = ctx.pathParam("id");
 
+        if (userId == null || expenseId == null) {
+            ctx.fail(400);
+            return;
+        }
         expenseRepo.findById(expenseId)
                 .compose(expOpt -> {
                     if (expOpt.isEmpty()) {
@@ -121,6 +129,10 @@ public class AttachmentHandler implements Handler<RoutingContext> {
         String expenseId = ctx.pathParam("id");
         String attachmentId = ctx.pathParam("aid");
 
+        if (userId == null || expenseId == null || attachmentId == null) {
+            ctx.fail(400);
+            return;
+        }
         expenseRepo.findById(expenseId)
                 .compose(expOpt -> {
                     if (expOpt.isEmpty()) {

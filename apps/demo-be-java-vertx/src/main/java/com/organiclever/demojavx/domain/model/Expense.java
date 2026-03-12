@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import org.jspecify.annotations.Nullable;
 
 public record Expense(
-        String id,
+        @Nullable String id,
         String userId,
         String type,
         BigDecimal amount,

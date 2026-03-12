@@ -4,7 +4,7 @@ import java.time.Instant;
 import org.jspecify.annotations.Nullable;
 
 public record User(
-        String id,
+        @Nullable String id,
         String username,
         String email,
         @Nullable String displayName,

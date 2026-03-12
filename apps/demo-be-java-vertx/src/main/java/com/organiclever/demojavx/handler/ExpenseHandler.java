@@ -47,6 +47,10 @@ public class ExpenseHandler implements Handler<RoutingContext> {
             return;
         }
         String userId = ctx.get("userId");
+        if (userId == null) {
+            ctx.fail(400);
+            return;
+        }
         String amountStr = body.getString("amount", "");
         String currency = body.getString("currency", "").toUpperCase();
         String category = body.getString("category", "");
@@ -90,6 +94,10 @@ public class ExpenseHandler implements Handler<RoutingContext> {
 
     private void handleList(RoutingContext ctx) {
         String userId = ctx.get("userId");
+        if (userId == null) {
+            ctx.fail(400);
+            return;
+        }
         String pageParam = ctx.queryParam("page").stream().findFirst().orElse("1");
         String sizeParam = ctx.queryParam("size").stream().findFirst().orElse("20");
 
@@ -128,6 +136,10 @@ public class ExpenseHandler implements Handler<RoutingContext> {
         String userId = ctx.get("userId");
         String id = ctx.pathParam("id");
 
+        if (userId == null || id == null) {
+            ctx.fail(400);
+            return;
+        }
         expenseRepo.findById(id)
                 .onSuccess(expOpt -> {
                     if (expOpt.isEmpty()) {
@@ -152,6 +164,10 @@ public class ExpenseHandler implements Handler<RoutingContext> {
         String id = ctx.pathParam("id");
         JsonObject body = ctx.body().asJsonObject();
         if (body == null) {
+            ctx.fail(400);
+            return;
+        }
+        if (userId == null || id == null) {
             ctx.fail(400);
             return;
         }
@@ -201,6 +217,10 @@ public class ExpenseHandler implements Handler<RoutingContext> {
         String userId = ctx.get("userId");
         String id = ctx.pathParam("id");
 
+        if (userId == null || id == null) {
+            ctx.fail(400);
+            return;
+        }
         expenseRepo.findById(id)
                 .compose(expOpt -> {
                     if (expOpt.isEmpty()) {
@@ -218,6 +238,10 @@ public class ExpenseHandler implements Handler<RoutingContext> {
 
     private void handleSummary(RoutingContext ctx) {
         String userId = ctx.get("userId");
+        if (userId == null) {
+            ctx.fail(400);
+            return;
+        }
 
         expenseRepo.findByUserId(userId)
                 .onSuccess(expenses -> {

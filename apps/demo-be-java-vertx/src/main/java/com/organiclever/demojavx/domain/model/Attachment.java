@@ -1,9 +1,10 @@
 package com.organiclever.demojavx.domain.model;
 
 import java.time.Instant;
+import org.jspecify.annotations.Nullable;
 
 public record Attachment(
-        String id,
+        @Nullable String id,
         String expenseId,
         String userId,
         String filename,

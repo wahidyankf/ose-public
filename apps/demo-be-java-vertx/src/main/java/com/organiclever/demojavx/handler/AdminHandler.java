@@ -71,6 +71,10 @@ public class AdminHandler implements Handler<RoutingContext> {
 
     private void handleDisable(RoutingContext ctx) {
         String userId = ctx.pathParam("id");
+        if (userId == null) {
+            ctx.fail(400);
+            return;
+        }
         userRepo.findById(userId)
                 .compose(userOpt -> {
                     if (userOpt.isEmpty()) {
@@ -92,6 +96,10 @@ public class AdminHandler implements Handler<RoutingContext> {
 
     private void handleEnable(RoutingContext ctx) {
         String userId = ctx.pathParam("id");
+        if (userId == null) {
+            ctx.fail(400);
+            return;
+        }
         userRepo.findById(userId)
                 .compose(userOpt -> {
                     if (userOpt.isEmpty()) {
@@ -113,6 +121,10 @@ public class AdminHandler implements Handler<RoutingContext> {
 
     private void handleUnlock(RoutingContext ctx) {
         String userId = ctx.pathParam("id");
+        if (userId == null) {
+            ctx.fail(400);
+            return;
+        }
         userRepo.findById(userId)
                 .compose(userOpt -> {
                     if (userOpt.isEmpty()) {
@@ -129,6 +141,10 @@ public class AdminHandler implements Handler<RoutingContext> {
 
     private void handleForcePasswordReset(RoutingContext ctx) {
         String userId = ctx.pathParam("id");
+        if (userId == null) {
+            ctx.fail(400);
+            return;
+        }
         userRepo.findById(userId)
                 .compose(userOpt -> {
                     if (userOpt.isEmpty()) {

@@ -39,6 +39,10 @@ public class UserHandler implements Handler<RoutingContext> {
 
     private void handleGetMe(RoutingContext ctx) {
         String userId = ctx.get("userId");
+        if (userId == null) {
+            ctx.fail(400);
+            return;
+        }
         userRepo.findById(userId)
                 .onSuccess(userOpt -> {
                     if (userOpt.isEmpty()) {
@@ -59,6 +63,10 @@ public class UserHandler implements Handler<RoutingContext> {
         String userId = ctx.get("userId");
         JsonObject body = ctx.body().asJsonObject();
         if (body == null) {
+            ctx.fail(400);
+            return;
+        }
+        if (userId == null) {
             ctx.fail(400);
             return;
         }
@@ -89,6 +97,10 @@ public class UserHandler implements Handler<RoutingContext> {
             ctx.fail(400);
             return;
         }
+        if (userId == null) {
+            ctx.fail(400);
+            return;
+        }
         String oldPassword = body.getString("old_password", "");
         String newPassword = body.getString("new_password", "");
 
@@ -116,6 +128,10 @@ public class UserHandler implements Handler<RoutingContext> {
 
     private void handleDeactivate(RoutingContext ctx) {
         String userId = ctx.get("userId");
+        if (userId == null) {
+            ctx.fail(400);
+            return;
+        }
 
         userRepo.findById(userId)
                 .compose(userOpt -> {

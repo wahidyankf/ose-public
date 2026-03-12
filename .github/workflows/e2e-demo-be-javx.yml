@@ -18,8 +18,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Copy pom.xml to build context for dependency caching
-        run: cp apps/demo-be-javx/pom.xml infra/dev/demo-be-javx/pom.xml
+      - name: Copy source to build context for dependency and compile caching
+        run: |
+          cp apps/demo-be-javx/pom.xml infra/dev/demo-be-javx/pom.xml
+          cp -r apps/demo-be-javx/src infra/dev/demo-be-javx/src
 
       - name: Start backend
         run: docker compose -f infra/dev/demo-be-javx/docker-compose.yml -f infra/dev/demo-be-javx/docker-compose.e2e.yml up --build -d demo-be-javx

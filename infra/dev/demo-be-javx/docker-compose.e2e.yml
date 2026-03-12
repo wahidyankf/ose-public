@@ -9,7 +9,7 @@ services:
       - APP_ENV=production
       - DATABASE_URL=postgresql://demo_be_javx:demo_be_javx@demo-be-javx-db:5432/demo_be_javx
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8201/health"]
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost:8201/health"]
       interval: 10s
       timeout: 5s
       retries: 5

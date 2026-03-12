@@ -74,7 +74,7 @@ def register(
     validate_password_strength(body.password)
     user_repo = get_user_repo(db)
     if user_repo.find_by_username(body.username) is not None:
-        raise ConflictError(f"Username '{body.username}' is already taken")
+        raise ConflictError(f"Username '{body.username}' already exists")
     password_hash = hash_password(body.password)
     user = user_repo.create(
         username=body.username,

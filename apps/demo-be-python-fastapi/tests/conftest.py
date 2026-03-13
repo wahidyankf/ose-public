@@ -20,6 +20,10 @@ _USE_POSTGRES = _DATABASE_URL.startswith("postgresql")
 def test_client() -> Generator[TestClient]:
     """Provide a FastAPI TestClient backed by the configured database.
 
+    Used by unit BDD tests.  Integration tests override this fixture via
+    ``tests/integration/conftest.py`` to return a ``ServiceClient`` that
+    calls service functions directly without HTTP dispatch.
+
     - Local / unit tests: SQLite shared-cache in-memory (no external services).
     - Docker integration tests: PostgreSQL via DATABASE_URL environment variable.
     """

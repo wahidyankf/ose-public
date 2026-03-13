@@ -2,10 +2,47 @@
 
 import os
 import pathlib
+from collections.abc import Generator
 
 import pytest
-from fastapi.testclient import TestClient
 from pytest_bdd import given, parsers, then, when
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+from demo_be_python_fastapi.infrastructure.models import Base
+from tests.integration.service_client import FakeResponse, ServiceClient
+
+_DATABASE_URL = os.environ.get("DATABASE_URL", "")
+_USE_POSTGRES = _DATABASE_URL.startswith("postgresql")
+
+
+@pytest.fixture
+def test_client() -> Generator[ServiceClient]:  # type: ignore[override]
+    """Override root test_client with a ServiceClient for integration tests.
+
+    The ServiceClient calls service/repository functions directly against a
+    real database, with no HTTP dispatch.  This satisfies the three-level
+    testing standard for integration tests.
+    """
+    if _USE_POSTGRES:
+        engine = create_engine(_DATABASE_URL)
+        Base.metadata.create_all(engine)
+        testing_session_local = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    else:
+        engine = create_engine(
+            "sqlite:///file:integ_testdb?mode=memory&cache=shared&uri=true",
+            connect_args={"check_same_thread": False},
+        )
+        Base.metadata.create_all(engine)
+        testing_session_local = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+    db = testing_session_local()
+    try:
+        yield ServiceClient(db)
+    finally:
+        db.close()
+    Base.metadata.drop_all(engine)
+    engine.dispose()
 
 # Path to the shared Gherkin feature files.
 # GHERKIN_ROOT_ENV allows Docker containers to override the path directly
@@ -21,52 +58,47 @@ _STRONG_PASSWORD = "Str0ng#Pass1"
 
 
 def _register_user_helper(
-    client: TestClient,
+    client: ServiceClient,
     username: str,
     email: str | None = None,
     password: str = _STRONG_PASSWORD,
 ) -> dict:
     email = email or f"{username}@example.com"
-    resp = client.post(
-        "/api/v1/auth/register",
-        json={"username": username, "email": email, "password": password},
-    )
-    assert resp.status_code == 201, f"Registration failed: {resp.text}"
-    return resp.json()
+    return client.register_user(username, email=email, password=password)
 
 
 # Shared step definitions available to ALL integration tests via this conftest.py
 
 
 @given("the API is running", target_fixture="client")
-def api_is_running(test_client: TestClient) -> TestClient:
-    """Provide the test client fixture."""
+def api_is_running(test_client: ServiceClient) -> ServiceClient:
+    """Provide the service client fixture."""
     return test_client
 
 
 @then(parsers.parse("the response status code should be {code:d}"))
-def check_status_code(response, code: int) -> None:  # type: ignore[no-untyped-def]
+def check_status_code(response: FakeResponse, code: int) -> None:
     assert response.status_code == code, (
         f"Expected {code}, got {response.status_code}. Body: {response.text}"
     )
 
 
 @then(parsers.parse('the response body should contain "{field}" equal to "{value}"'))
-def check_body_field_string(response, field: str, value: str) -> None:  # type: ignore[no-untyped-def]
+def check_body_field_string(response: FakeResponse, field: str, value: str) -> None:
     body = response.json()
     assert field in body, f"Field '{field}' not in response: {body}"
     assert str(body[field]) == value, f"Expected {field}={value!r}, got {body[field]!r}"
 
 
 @then(parsers.parse('the response body should contain a non-null "{field}" field'))
-def check_body_field_not_null(response, field: str) -> None:  # type: ignore[no-untyped-def]
+def check_body_field_not_null(response: FakeResponse, field: str) -> None:
     body = response.json()
     assert field in body, f"Field '{field}' not in response: {body}"
     assert body[field] is not None, f"Field '{field}' is null in response: {body}"
 
 
 @then("the response body should contain an error message about invalid credentials")
-def check_invalid_credentials(response) -> None:  # type: ignore[no-untyped-def]
+def check_invalid_credentials(response: FakeResponse) -> None:
     body = response.json()
     assert "message" in body
     msg = body["message"].lower()
@@ -76,7 +108,7 @@ def check_invalid_credentials(response) -> None:  # type: ignore[no-untyped-def]
 
 
 @then("the response body should contain an error message about account deactivation")
-def check_account_deactivation(response) -> None:  # type: ignore[no-untyped-def]
+def check_account_deactivation(response: FakeResponse) -> None:
     body = response.json()
     assert "message" in body
     msg = body["message"].lower()
@@ -86,7 +118,7 @@ def check_account_deactivation(response) -> None:  # type: ignore[no-untyped-def
 
 
 @then("the response body should contain an error message about token expiration")
-def check_token_expiration(response) -> None:  # type: ignore[no-untyped-def]
+def check_token_expiration(response: FakeResponse) -> None:
     body = response.json()
     assert "message" in body
     msg = body["message"].lower()
@@ -96,7 +128,7 @@ def check_token_expiration(response) -> None:  # type: ignore[no-untyped-def]
 
 
 @then("the response body should contain an error message about invalid token")
-def check_invalid_token(response) -> None:  # type: ignore[no-untyped-def]
+def check_invalid_token(response: FakeResponse) -> None:
     body = response.json()
     assert "message" in body
     msg = body["message"].lower()
@@ -106,7 +138,7 @@ def check_invalid_token(response) -> None:  # type: ignore[no-untyped-def]
 
 
 @then("the response body should contain an error message about file size")
-def check_file_size_error(response) -> None:  # type: ignore[no-untyped-def]
+def check_file_size_error(response: FakeResponse) -> None:
     body = response.json()
     assert "message" in body
     msg = body["message"].lower()
@@ -122,7 +154,9 @@ def check_file_size_error(response) -> None:  # type: ignore[no-untyped-def]
     parsers.parse('a user "{username}" is registered with password "{password}"'),
     target_fixture="registered_user",
 )
-def shared_register_user_with_password(client: TestClient, username: str, password: str) -> dict:
+def shared_register_user_with_password(
+    client: ServiceClient, username: str, password: str
+) -> dict:
     return _register_user_helper(client, username, password=password)
 
 
@@ -133,7 +167,7 @@ def shared_register_user_with_password(client: TestClient, username: str, passwo
     target_fixture="registered_user",
 )
 def shared_register_user_with_email(
-    client: TestClient, username: str, email: str, password: str
+    client: ServiceClient, username: str, email: str, password: str
 ) -> dict:
     return _register_user_helper(client, username, email=email, password=password)
 
@@ -142,26 +176,30 @@ def shared_register_user_with_email(
     parsers.parse("the client sends POST /api/v1/auth/login with body {body}"),
     target_fixture="response",
 )
-def shared_post_login(client: TestClient, body: str):  # type: ignore[no-untyped-def]
+def shared_post_login(client: ServiceClient, body: str) -> FakeResponse:
     import json
 
     data = json.loads(body)
-    return client.post("/api/v1/auth/login", json=data)
+    return client.post_login(data.get("username", ""), data.get("password", ""))
 
 
 @when(
     parsers.parse("the client sends POST /api/v1/auth/register with body {body}"),
     target_fixture="response",
 )
-def shared_post_register(client: TestClient, body: str):  # type: ignore[no-untyped-def]
+def shared_post_register(client: ServiceClient, body: str) -> FakeResponse:
     import json
 
     data = json.loads(body)
-    return client.post("/api/v1/auth/register", json=data)
+    return client.post_register(
+        data.get("username", ""),
+        data.get("email", ""),
+        data.get("password", ""),
+    )
 
 
 @then(parsers.parse('the response body should contain a validation error for "{field}"'))
-def shared_check_validation_error(response, field: str) -> None:  # type: ignore[no-untyped-def]
+def shared_check_validation_error(response: FakeResponse, field: str) -> None:
     import json
 
     assert response.status_code in (400, 422), f"Expected 400 or 422, got {response.status_code}"

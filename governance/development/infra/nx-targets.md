@@ -10,7 +10,7 @@ tags:
   - build
   - scripts
 created: 2026-02-23
-updated: 2026-03-04
+updated: 2026-03-13
 ---
 
 # Nx Target Standards
@@ -61,14 +61,17 @@ Deeper tests run outside the pre-push/PR cycle — on a schedule or triggered ex
 
 ```mermaid
 flowchart TD
-    H["GitHub Actions<br/>cron 4× per day"] --> I["test:e2e<br/>per -e2e project"]
+    H["GitHub Actions<br/>integration-ci.yml<br/>cron 4× per day<br/>(WIB 04, 10, 16, 22)"] --> I["test:integration<br/>all projects with<br/>integration tests"]
+    H2["GitHub Actions<br/>e2e-*.yml<br/>cron 2× per day<br/>(WIB 06, 18)"] --> I2["test:e2e<br/>per -e2e project"]
 
     J[On demand / CI matrix] --> K[test:unit]
     J --> L[test:integration]
     J --> M[test:e2e]
 
     style H fill:#0173B2,color:#fff
+    style H2 fill:#0173B2,color:#fff
     style I fill:#CA9161,color:#fff
+    style I2 fill:#CA9161,color:#fff
     style J fill:#0173B2,color:#fff
     style K fill:#CA9161,color:#fff
     style L fill:#CA9161,color:#fff
@@ -93,28 +96,28 @@ flowchart TD
 
 Use these canonical names. Aliases (`serve`, `start:dev`, `unit-test`) are anti-patterns.
 
-| Target             | Purpose                                                              | When Required                     |
-| ------------------ | -------------------------------------------------------------------- | --------------------------------- |
-| `build`            | Produce deployable or runnable artifacts                             | Compiled and bundled projects     |
-| `typecheck`        | Verify type correctness without producing artifacts                  | Statically typed languages        |
-| `lint`             | Static analysis and code style checks                                | All projects                      |
-| `test:quick`       | Fast quality gate for pre-push and PR merge; composed of fast checks | All projects                      |
-| `test:unit`        | Isolated unit tests with no external dependencies                    | Projects with unit tests          |
-| `test:integration` | Tests using in-process mocking (no real DB or external services)     | Projects with integration tests   |
-| `test:e2e`         | Run E2E tests headlessly against a running app                       | E2E test projects (`*-e2e`)       |
-| `test:e2e:ui`      | Run E2E tests with interactive Playwright UI                         | E2E test projects                 |
-| `test:e2e:report`  | Open the last E2E HTML report                                        | E2E test projects                 |
-| `dev`              | Start local development server with hot-reload                       | Apps with dev servers             |
-| `start`            | Start server in production mode                                      | Apps with production server mode  |
-| `run`              | Execute the application directly                                     | CLI applications                  |
-| `install`          | Install project-local dependencies                                   | E2E suites, Flutter, Go CLIs      |
-| `clean`            | Remove build artifacts and caches                                    | Projects with large build outputs |
+| Target             | Purpose                                                                                                          | When Required                     |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| `build`            | Produce deployable or runnable artifacts                                                                         | Compiled and bundled projects     |
+| `typecheck`        | Verify type correctness without producing artifacts                                                              | Statically typed languages        |
+| `lint`             | Static analysis and code style checks                                                                            | All projects                      |
+| `test:quick`       | Fast quality gate for pre-push and PR merge; composed of fast checks                                             | All projects                      |
+| `test:unit`        | Isolated unit tests with mocked dependencies; must consume Gherkin specs (demo-be backends)                      | Projects with unit tests          |
+| `test:integration` | Demo-be: real PostgreSQL via docker-compose, direct code calls (no HTTP). Others: existing patterns (MSW, Godog) | Projects with integration tests   |
+| `test:e2e`         | Run E2E tests headlessly against a running app; must consume Gherkin specs (demo-be backends) via Playwright     | E2E test projects (`*-e2e`)       |
+| `test:e2e:ui`      | Run E2E tests with interactive Playwright UI                                                                     | E2E test projects                 |
+| `test:e2e:report`  | Open the last E2E HTML report                                                                                    | E2E test projects                 |
+| `dev`              | Start local development server with hot-reload                                                                   | Apps with dev servers             |
+| `start`            | Start server in production mode                                                                                  | Apps with production server mode  |
+| `run`              | Execute the application directly                                                                                 | CLI applications                  |
+| `install`          | Install project-local dependencies                                                                               | E2E suites, Flutter, Go CLIs      |
+| `clean`            | Remove build artifacts and caches                                                                                | Projects with large build outputs |
 
 ### Naming Rules
 
 - Use `dev` for the development server — never `serve`, never `start:dev`
 - Use `start` for the production server — never `serve`
-- Use `test:quick` for the fast pre-push gate; `test:unit` for isolated unit tests; `test:integration` for tests using in-process mocking (no real DB); `test:e2e` for end-to-end tests — run targets individually rather than through an aggregate wrapper
+- Use `test:quick` for the fast pre-push gate; `test:unit` for isolated unit tests with mocked dependencies; `test:integration` for tests with real infrastructure (demo-be: PostgreSQL via docker-compose) or in-process mocking (MSW, Godog); `test:e2e` for end-to-end tests — run targets individually rather than through an aggregate wrapper
 - Separate target variants with a colon (`build:web`, `test:e2e:ui`), not a hyphen or underscore
 - All target names use lowercase with hyphens for multi-word names (`run-pre-commit`)
 
@@ -194,6 +197,23 @@ A Go lib has no platform boundary and no domain, so it omits both:
 
 ## Mandatory Targets by Project Type
 
+### Summary Matrix
+
+Derived from three rules: (1) All apps+libs → unit tests, (2) All apps → integration tests, (3) All web apps (APIs + web UIs) → E2E tests. Hugo sites are exempt from all rules.
+
+| Project Type | `test:unit` | `test:integration` | `test:e2e` | `test:quick` | `lint` | `build` | `typecheck` |
+| ------------ | ----------- | ------------------ | ---------- | ------------ | ------ | ------- | ----------- |
+| API Backend  | Yes         | Yes (PG)           | Yes\*      | Yes          | Yes    | Yes     | If typed    |
+| Web UI App   | Yes         | Yes (MSW)          | Yes\*      | Yes          | Yes    | Yes     | If typed    |
+| CLI App      | Yes         | Yes (Godog)        | —          | Yes          | Yes    | Yes     | If typed    |
+| Library      | Yes         | Optional           | —          | Yes          | Yes    | —       | If typed    |
+| Hugo Site    | —           | —                  | —          | Yes          | —      | Yes     | —           |
+| E2E Runner   | —           | —                  | Yes        | Yes          | Yes    | —       | If typed    |
+
+\* E2E tests live in dedicated `*-e2e` runner projects, not in the backend/frontend project itself.
+
+**CI schedules**: `test:integration` runs 4x daily (WIB 04, 10, 16, 22), `test:e2e` runs 2x daily (WIB 06, 18), `test:quick` runs on every push to main and every PR.
+
 ### All Projects
 
 Every project in `apps/` and `libs/` must expose:
@@ -212,18 +232,18 @@ them for `nx affected -t lint`.
 
 **`test:quick` composition** — each project decides which fast checks form its gate. The target runs its checks directly (calling the underlying tools, not other Nx targets) to avoid double execution when `lint` or `typecheck` are also run standalone by the pre-push hook. Common compositions:
 
-| Project type       | Typical `test:quick` composition                                                                                                                                                                                                                                                                                                                                                                                    |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| TypeScript app     | unit tests via vitest (typecheck and lint run separately in pre-push); Next.js/React apps with Gherkin specs also run integration tests in parallel — both vitest project names (`--project unit`, `--project integration`) execute concurrently, integration tests use `@amiceli/vitest-cucumber` reading the same feature files as the E2E suite with all dependencies fully mocked (no running service required) |
-| Go app             | `go test -coverprofile=cover.out ./... && rhino-cli test-coverage validate <project>/cover.out 90` — compiles and runs unit tests, then enforces ≥90% line coverage (Codecov algorithm). Coverage is measured by `go test -coverprofile` and validated by `rhino-cli test-coverage validate`.                                                                                                                       |
-| Java/Spring Boot   | unit tests (`mvn test`, includes `**/unit/**/*Test.java`) + integration tests (`mvn test -Pintegration`, includes `**/integration/**/*Test.java`) in parallel; the two Surefire include lists are mutually exclusive — neither profile runs the other tier's tests                                                                                                                                                  |
-| Java/Vert.x        | `mvn test -Pintegration` runs Cucumber JVM with Vert.x Test; JaCoCo XML coverage validated by `rhino-cli test-coverage validate` ≥90%                                                                                                                                                                                                                                                                               |
-| Kotlin/Ktor        | `./gradlew test koverXmlReport` runs Cucumber JVM with Ktor testApplication; Kover JaCoCo XML coverage validated by `rhino-cli test-coverage validate` ≥90%                                                                                                                                                                                                                                                         |
-| Python/FastAPI     | `pytest` with coverage → LCOV → `rhino-cli test-coverage validate` ≥90%; ruff format/check; pyright typecheck                                                                                                                                                                                                                                                                                                       |
-| Rust/Axum          | `cargo fmt --check` + `cargo clippy` + `cargo test --lib` + `cargo llvm-cov --lcov` → `rhino-cli test-coverage validate` ≥90%                                                                                                                                                                                                                                                                                       |
-| Hugo site          | link check via the site's CLI tool (build runs separately via `nx build`)                                                                                                                                                                                                                                                                                                                                           |
-| Flutter/Dart       | unit tests (`flutter test`); `flutter analyze` runs via `typecheck`, not `lint`                                                                                                                                                                                                                                                                                                                                     |
-| Playwright `*-e2e` | run the linter directly (no unit tests to add beyond linting)                                                                                                                                                                                                                                                                                                                                                       |
+| Project type       | Typical `test:quick` composition                                                                                                                                                                                                   |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| TypeScript app     | unit tests via vitest (typecheck and lint run separately in pre-push); coverage from unit tests only via `rhino-cli test-coverage validate` ≥90%                                                                                   |
+| Go app             | `go test -coverprofile=cover.out ./... && rhino-cli test-coverage validate <project>/cover.out 90` — compiles and runs unit tests (excluding `//go:build integration` files), then enforces ≥90% line coverage (Codecov algorithm) |
+| Java/Spring Boot   | unit tests only (`mvn test`, includes `**/unit/**/*Test.java`); JaCoCo XML coverage validated by `rhino-cli test-coverage validate` ≥90%. Integration tests run separately via `test:integration`                                  |
+| Java/Vert.x        | unit tests with Cucumber JVM (mocked dependencies); JaCoCo XML coverage validated by `rhino-cli test-coverage validate` ≥90%                                                                                                       |
+| Kotlin/Ktor        | unit tests with Cucumber JVM (mocked dependencies); Kover JaCoCo XML coverage validated by `rhino-cli test-coverage validate` ≥90%                                                                                                 |
+| Python/FastAPI     | unit tests with `pytest` (mocked dependencies) → LCOV → `rhino-cli test-coverage validate` ≥90%                                                                                                                                    |
+| Rust/Axum          | unit tests with `cargo test --lib` + `cargo llvm-cov --lcov` → `rhino-cli test-coverage validate` ≥90%                                                                                                                             |
+| Hugo site          | link check via the site's CLI tool (build runs separately via `nx build`)                                                                                                                                                          |
+| Flutter/Dart       | unit tests (`flutter test`); `flutter analyze` runs via `typecheck`, not `lint`                                                                                                                                                    |
+| Playwright `*-e2e` | run the linter directly (no unit tests to add beyond linting)                                                                                                                                                                      |
 
 The rule: include only checks that complete fast. If `test:unit` is slow for a project, exclude it from `test:quick` and run it separately. **The target must always exist** — even if it only runs the type checker — so the pre-push hook covers every project.
 
@@ -273,11 +293,14 @@ Spring Boot, Flutter, Python apps, TypeScript apps:
 
 ### Projects with Integration Tests
 
-Spring Boot, Python apps, TypeScript apps that test against DB/APIs, Go CLIs with BDD suites:
+Two integration test patterns exist depending on project type:
 
-| Target             | Requirement                                                                                                                                                                                         |
-| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `test:integration` | Run integration tests using in-process mocking only (MockMvc + InMemoryDataStore / in-memory context implementations / MSW / godog `RunE`); no real database or external services; always cacheable |
+| Pattern             | Projects                                                   | Requirement                                                                                                                                            | Cacheable |
+| ------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- |
+| Docker + PostgreSQL | All 11 demo-be backends                                    | Real PostgreSQL via `docker-compose.integration.yml`; calls application code directly (no HTTP layer); runs all 76 Gherkin scenarios; fresh DB per run | No        |
+| In-process mocking  | `organiclever-web` (MSW), Go CLIs (Godog), Go libs (Godog) | In-process mocking only (MSW / godog `RunE` / mock fixtures); no real database or external services; fully deterministic                               | Yes       |
+
+**Demo-be backends** expose `test:integration` which runs `docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build`. This starts a fresh PostgreSQL container, runs migrations, and executes all 76 Gherkin scenarios by calling application service/repository functions directly — no HTTP layer. Each backend has a `docker-compose.integration.yml` (postgres + test runner services) and a `Dockerfile.integration` (language runtime + test execution). Coverage is NOT measured at the integration level — coverage comes from `test:unit` only.
 
 **Go CLIs** expose `test:integration` for godog BDD tests: each command has a
 `{stem}.integration_test.go` file with `//go:build integration` that drives the command in-process
@@ -317,48 +340,21 @@ Playwright suites (`*-e2e`):
 | `test:e2e:ui`     | Run tests with Playwright UI |
 | `test:e2e:report` | Open the HTML test report    |
 
-**Execution strategy**: `test:e2e` is **not** part of the pre-push hook. It runs on a scheduled GitHub Actions cron job (twice daily per workflow) targeting each `*-e2e` project individually. This keeps pre-push fast while ensuring continuous E2E coverage against deployed or locally running services.
+**Execution strategy**: `test:e2e` is **not** part of the pre-push hook. It runs on a scheduled GitHub Actions cron job (2x daily at WIB 06:00 and 18:00) targeting each `*-e2e` project individually. This keeps pre-push fast while ensuring continuous E2E coverage against deployed or locally running services.
 
 **BDD suites**: When the E2E project uses playwright-bdd, `test:e2e` runs
 `npx bddgen && npx playwright test`. The `bddgen` step regenerates `.features-gen/`
 spec files from the Gherkin feature files before Playwright executes them.
 See `apps/demo-be-e2e/project.json` for the canonical example.
 
-**`test:integration` with Cucumber JVM**: `demo-be-java-springboot` also exposes `test:integration` which
-runs `mvn test -Pintegration`. This activates Cucumber JVM 7+ with MockMvc — the same Gherkin
-feature files from `specs/apps/demo-be/gherkin/` are executed via a full Spring context but without a
-running server or real database. All repositories are mocked via `MockRepositoriesConfig` backed by
-`InMemoryDataStore` (ConcurrentHashMap-based).
-
-**`test:integration` with Cabbage BDD**: `demo-be-elixir-phoenix` exposes `test:integration` which runs
-`mix test --only integration`. The same Gherkin feature files are executed via `elixir-cabbage`
-with Phoenix ConnCase. All context modules are replaced by in-memory implementations backed by
-`InMemoryStore` (Agent-based state) — no PostgreSQL or Ecto Repo is started in test.
-
-**`test:integration` with Godog BDD**: `demo-be-golang-gin` exposes `test:integration` which runs
-`go test -tags=integration -run TestIntegration ./internal/integration/...`. The same Gherkin
-feature files are executed via Godog with `httptest.Server`. All repositories use in-memory
-ConcurrentHashMap-equivalent stores — no external database required.
-
-**`test:integration` with pytest-bdd**: `demo-be-python-fastapi` exposes `test:integration` which runs
-`uv run pytest -m integration`. The same Gherkin feature files are executed via `pytest-bdd`
-with FastAPI `TestClient`. All repositories use in-memory dict-based stores — no external
-database required.
-
-**`test:integration` with cucumber-rs**: `demo-be-rust-axum` exposes `test:integration` which runs
-`cargo test --test integration`. The same Gherkin feature files are executed via `cucumber` crate
-with Tower `TestClient`. All repositories use in-memory `RwLock<HashMap>` stores — no external
-database required.
-
-**`test:integration` with Cucumber JVM (Ktor)**: `demo-be-kotlin-ktor` exposes `test:integration` which
-runs `./gradlew test`. The same Gherkin feature files are executed via Cucumber JVM with Ktor
-`testApplication {}`. All repositories use in-memory ConcurrentHashMap stores backed by Exposed +
-SQLite in-memory — no external database required.
-
-**`test:integration` with Cucumber JVM (Vert.x)**: `demo-be-java-vertx` exposes `test:integration`
-which runs `mvn test -Pintegration`. The same Gherkin feature files are executed via Cucumber JVM
-with Vert.x Test. All repositories use in-memory ConcurrentHashMap stores — no external database
-required.
+**Demo-be `test:integration` with docker-compose**: All 11 demo-be backends expose `test:integration`
+which runs `docker compose -f docker-compose.integration.yml down -v && docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build`.
+Each backend's `docker-compose.integration.yml` defines a `postgres` service (postgres:17-alpine with healthcheck)
+and a `test-runner` service that depends on PostgreSQL being healthy. The test runner runs migrations,
+optionally loads seed data, then executes all 76 Gherkin scenarios from `specs/apps/demo-be/gherkin/`
+by calling application service/repository functions directly — no HTTP layer. The specs volume is
+mounted read-only at `../../specs:/specs:ro`. After tests complete, `docker-compose` tears down all
+containers and volumes.
 
 ### Hugo Sites
 
@@ -393,7 +389,7 @@ required.
       "cache": true
     },
     "test:integration": {
-      "cache": true
+      "cache": false
     },
     "test:e2e": {
       "cache": false
@@ -404,22 +400,22 @@ required.
 
 ### Caching Rules
 
-| Target             | Cached | Notes                                                                                                                                                          |
-| ------------------ | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `build`            | Yes    | Declare `outputs` in `project.json` for cache restoration                                                                                                      |
-| `typecheck`        | Yes    | Pure analysis; safe to cache against source changes                                                                                                            |
-| `lint`             | Yes    | Pure static analysis; safe to cache                                                                                                                            |
-| `test:quick`       | Yes    | Cache hit skips redundant pre-push runs                                                                                                                        |
-| `test:unit`        | Yes    | Deterministic; safe to cache against source changes                                                                                                            |
-| `test:integration` | Yes    | Uses in-process mocking only (MockMvc + InMemoryDataStore / in-memory contexts / MSW / godog `RunE`); fully deterministic; no external service state to detect |
-| `dev`              | No     | Long-running process                                                                                                                                           |
-| `start`            | No     | Long-running process                                                                                                                                           |
-| `run`              | No     | Side-effectful execution                                                                                                                                       |
-| `test:e2e`         | No     | Requires live app state; run via scheduled cron, not pre-push                                                                                                  |
-| `test:e2e:ui`      | No     | Interactive process                                                                                                                                            |
-| `test:e2e:report`  | No     | Reads filesystem state at invocation time                                                                                                                      |
-| `install`          | No     | Must always run to ensure dep state                                                                                                                            |
-| `clean`            | No     | Destructive operation                                                                                                                                          |
+| Target             | Cached | Notes                                                                                                                                                                                                                                      |
+| ------------------ | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `build`            | Yes    | Declare `outputs` in `project.json` for cache restoration                                                                                                                                                                                  |
+| `typecheck`        | Yes    | Pure analysis; safe to cache against source changes                                                                                                                                                                                        |
+| `lint`             | Yes    | Pure static analysis; safe to cache                                                                                                                                                                                                        |
+| `test:quick`       | Yes    | Cache hit skips redundant pre-push runs                                                                                                                                                                                                    |
+| `test:unit`        | Yes    | Deterministic; safe to cache against source changes                                                                                                                                                                                        |
+| `test:integration` | No     | Demo-be backends use real PostgreSQL via docker-compose (non-deterministic external state). Default `cache: false` in `nx.json`. Projects using in-process mocking only (MSW, Godog) may override to `cache: true` in their `project.json` |
+| `dev`              | No     | Long-running process                                                                                                                                                                                                                       |
+| `start`            | No     | Long-running process                                                                                                                                                                                                                       |
+| `run`              | No     | Side-effectful execution                                                                                                                                                                                                                   |
+| `test:e2e`         | No     | Requires live app state; run via scheduled cron, not pre-push                                                                                                                                                                              |
+| `test:e2e:ui`      | No     | Interactive process                                                                                                                                                                                                                        |
+| `test:e2e:report`  | No     | Reads filesystem state at invocation time                                                                                                                                                                                                  |
+| `install`          | No     | Must always run to ensure dep state                                                                                                                                                                                                        |
+| `clean`            | No     | Destructive operation                                                                                                                                                                                                                      |
 
 ## Build Output Conventions
 
@@ -454,8 +450,8 @@ Example override for a Hugo site:
 - **Missing `lint`**: Projects without `lint` cannot participate in workspace-wide lint runs or the pre-push hook lint gate
 - **Heavy `test:quick`**: Including slow integration tests or E2E in `test:quick` defeats its purpose — keep the total to a few minutes, not tens of minutes
 - **Mixing concerns in `test:unit`**: `test:unit` must not spin up databases, external APIs, or network services — those belong in `test:integration`
-- **Using a real database in unit or integration tests**: Unit and integration tests must use mocked repositories or in-memory implementations — never a real database (no Testcontainers, no H2, no Ecto SQL Sandbox). Real databases belong only in E2E tests against a running service
-- **Disabling cache on `test:integration`**: Setting `cache: false` wastes CI time when integration tests use only in-process mocking (MockMvc + InMemoryDataStore / in-memory contexts / MSW) and are fully deterministic. Only disable if tests depend on live external services
+- **Using a real database in unit tests**: Unit tests must use mocked repositories or in-memory implementations — never a real database (no Testcontainers, no H2, no Ecto SQL Sandbox). Real databases belong in integration tests (demo-be backends via docker-compose) or E2E tests
+- **Enabling cache on demo-be `test:integration`**: Demo-be integration tests use real PostgreSQL via docker-compose — setting `cache: true` would serve stale results when database state matters. Only in-process-mocking integration tests (MSW, Godog) may enable caching
 - **`build` on interpreted-language projects**: Adding a no-op `build` to Python or Ruby just to appear consistent — if there is no compile step, there is no `build` target
 - **`typecheck` on compile-enforced languages without additional analysis**: Go and plain Java enforce types through `build`; a separate `typecheck` that only re-runs the compiler is redundant. **Exception**: Java with JSpecify + NullAway warrants `typecheck` because NullAway is a distinct null-safety pass not included in `build`
 - **Undeclared outputs**: Omitting `outputs` on `build` disables caching and forces full rebuilds on every run

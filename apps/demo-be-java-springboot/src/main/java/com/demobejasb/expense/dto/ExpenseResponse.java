@@ -1,9 +1,7 @@
 package com.demobejasb.expense.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.demobejasb.expense.model.Expense;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.util.UUID;
 import org.jspecify.annotations.Nullable;
 
@@ -13,7 +11,7 @@ public record ExpenseResponse(
         String currency,
         String category,
         String description,
-        @JsonFormat(pattern = "yyyy-MM-dd") LocalDate date,
+        String date,
         String type,
         @Nullable Double quantity,
         @Nullable String unit) {
@@ -41,7 +39,7 @@ public record ExpenseResponse(
                 expense.getCurrency(),
                 expense.getCategory(),
                 expense.getDescription(),
-                expense.getDate(),
+                expense.getDate().toString(),
                 expense.getType(),
                 qty,
                 expense.getUnit());

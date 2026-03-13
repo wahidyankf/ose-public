@@ -55,7 +55,8 @@ public class AuthService {
         String encoded = Objects.requireNonNull(passwordEncoder.encode(request.password()));
         User user = new User(request.username(), request.email(), encoded);
         User saved = userRepository.save(user);
-        return new RegisterResponse(saved.getId(), saved.getUsername(), saved.getCreatedAt());
+        return new RegisterResponse(
+                saved.getId(), saved.getUsername(), saved.getCreatedAt().toString());
     }
 
     @Transactional
@@ -127,7 +128,20 @@ public class AuthService {
     }
 
     public boolean isTokenRevoked(final String token) {
-        return revokedTokenRepository.existsByToken(token);
+        if (revokedTokenRepository.existsByToken(token)) {
+            return true;
+        }
+        // A token issued to a disabled or locked account is effectively revoked.
+        // This ensures that disabling a user immediately invalidates all outstanding tokens
+        // without requiring an explicit logout.
+        try {
+            String username = jwtUtil.extractUsername(token);
+            return userRepository.findByUsername(username)
+                    .map(u -> !"ACTIVE".equals(u.getStatus()))
+                    .orElse(false);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private AuthResponse generateTokenPair(final User user) {

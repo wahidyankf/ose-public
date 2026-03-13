@@ -1,45 +1,53 @@
 (ns demo-be-cjpd.domain.user
   "User domain model, validation, and business rules."
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str]
+            [malli.core :as m]))
 
 (def max-failed-attempts 5)
 
 (def statuses #{:ACTIVE :INACTIVE :DISABLED :LOCKED})
 (def roles #{:USER :ADMIN})
 
+(def Email
+  "Schema: valid email address."
+  [:re #"^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$"])
+
+(def Username
+  "Schema: 3-50 chars of letters, numbers, underscores, hyphens."
+  [:re #"^[a-zA-Z0-9_\-]{3,50}$"])
+
+(def password-rules
+  "Ordered password validation rules with paired error messages."
+  [[[:fn {:description "at least 12 characters"} #(>= (count %) 12)]
+    "password must be at least 12 characters"]
+   [[:fn {:description "has uppercase"} #(boolean (re-find #"[A-Z]" %))]
+    "password must contain at least one uppercase letter"]
+   [[:fn {:description "has lowercase"} #(boolean (re-find #"[a-z]" %))]
+    "password must contain at least one lowercase letter"]
+   [[:fn {:description "has digit"} #(boolean (re-find #"[0-9]" %))]
+    "password must contain at least one digit"]
+   [[:fn {:description "has special char"} #(boolean (re-find #"[^a-zA-Z0-9]" %))]
+    "password must contain at least one special character"]])
+
 (defn valid-email?
   "Return true if the email address is valid."
   [email]
-  (boolean (re-matches #"^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$" (or email ""))))
+  (boolean (m/validate Email (or email ""))))
 
 (defn valid-username?
   "Return true if the username is 3-50 chars of letters, numbers, underscores, hyphens."
   [username]
-  (boolean (re-matches #"^[a-zA-Z0-9_\-]{3,50}$" (or username ""))))
+  (boolean (m/validate Username (or username ""))))
 
 (defn validate-password-strength
   "Validate password complexity rules. Returns nil on success or error map on failure."
   [password]
-  (cond
-    (or (nil? password) (str/blank? password))
+  (if (or (nil? password) (str/blank? password))
     {:field "password" :message "password is required"}
-
-    (< (count password) 12)
-    {:field "password" :message "password must be at least 12 characters"}
-
-    (not (re-find #"[A-Z]" password))
-    {:field "password" :message "password must contain at least one uppercase letter"}
-
-    (not (re-find #"[a-z]" password))
-    {:field "password" :message "password must contain at least one lowercase letter"}
-
-    (not (re-find #"[0-9]" password))
-    {:field "password" :message "password must contain at least one digit"}
-
-    (not (re-find #"[^a-zA-Z0-9]" password))
-    {:field "password" :message "password must contain at least one special character"}
-
-    :else nil))
+    (some (fn [[schema message]]
+            (when-not (m/validate schema password)
+              {:field "password" :message message}))
+          password-rules)))
 
 (defn should-lock?
   "Return true if the failed attempt count exceeds the threshold."

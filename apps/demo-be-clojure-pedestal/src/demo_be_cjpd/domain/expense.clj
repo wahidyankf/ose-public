@@ -1,6 +1,7 @@
 (ns demo-be-cjpd.domain.expense
   "Expense domain model, currency, and unit validation."
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str]
+            [malli.core :as m]))
 
 (def supported-currencies
   "Map of currency code to decimal places."
@@ -14,21 +15,34 @@
 
 (def entry-types #{"income" "expense"})
 
+(def EntryType
+  "Schema: allowed entry types."
+  [:enum "income" "expense"])
+
+(def Unit
+  "Schema: valid unit (nil, empty string, or supported unit)."
+  [:or [:nil] [:= ""] (into [:enum] supported-units)])
+
+(def Currency
+  "Schema: supported 3-letter currency code (case-insensitive)."
+  [:and :string
+   [:fn {:description "3 characters"} #(= 3 (count %))]
+   [:fn {:description "supported currency"} #(contains? supported-currencies (str/upper-case %))]])
+
 (defn valid-currency?
   "Return true if currency is a supported 3-letter code."
   [currency]
-  (and (= 3 (count currency))
-       (contains? supported-currencies (str/upper-case currency))))
+  (m/validate Currency currency))
 
 (defn valid-unit?
   "Return true if unit is supported or nil/empty."
   [unit]
-  (or (nil? unit) (= "" unit) (contains? supported-units unit)))
+  (m/validate Unit unit))
 
 (defn valid-type?
   "Return true if the entry type is income or expense."
   [t]
-  (contains? entry-types t))
+  (m/validate EntryType t))
 
 (defn parse-amount
   "Parse amount string to BigDecimal. Returns nil on parse failure."

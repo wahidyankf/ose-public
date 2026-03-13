@@ -45,6 +45,9 @@ public class PgAttachmentRepository implements AttachmentRepository {
 
     @Override
     public Future<Optional<Attachment>> findById(String id) {
+        if (!isValidUuid(id)) {
+            return Future.succeededFuture(Optional.empty());
+        }
         return pool.preparedQuery(
                         "SELECT id, expense_id, user_id, filename, content_type, size, data,"
                                 + " created_at FROM attachments WHERE id = $1::uuid")
@@ -59,6 +62,9 @@ public class PgAttachmentRepository implements AttachmentRepository {
 
     @Override
     public Future<List<Attachment>> findByExpenseId(String expenseId) {
+        if (!isValidUuid(expenseId)) {
+            return Future.succeededFuture(new ArrayList<>());
+        }
         return pool.preparedQuery(
                         "SELECT id, expense_id, user_id, filename, content_type, size, data,"
                                 + " created_at FROM attachments WHERE expense_id = $1::uuid"
@@ -69,6 +75,18 @@ public class PgAttachmentRepository implements AttachmentRepository {
                     rows.forEach(row -> result.add(rowToAttachment(row)));
                     return result;
                 });
+    }
+
+    private static boolean isValidUuid(String id) {
+        if (id == null) {
+            return false;
+        }
+        try {
+            UUID.fromString(id);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
     @Override

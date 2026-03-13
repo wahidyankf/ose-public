@@ -76,6 +76,9 @@ public class PgExpenseRepository implements ExpenseRepository {
 
     @Override
     public Future<Optional<Expense>> findById(String id) {
+        if (!isValidUuid(id)) {
+            return Future.succeededFuture(Optional.empty());
+        }
         return pool.preparedQuery(
                         "SELECT id, user_id, type, amount, currency, category, description,"
                                 + " date, quantity, unit, created_at"
@@ -87,6 +90,18 @@ public class PgExpenseRepository implements ExpenseRepository {
                     }
                     return Optional.of(rowToExpense(rows.iterator().next()));
                 });
+    }
+
+    private static boolean isValidUuid(String id) {
+        if (id == null) {
+            return false;
+        }
+        try {
+            UUID.fromString(id);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
     @Override

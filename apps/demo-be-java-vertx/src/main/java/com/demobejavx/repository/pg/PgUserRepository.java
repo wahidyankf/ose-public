@@ -70,6 +70,9 @@ public class PgUserRepository implements UserRepository {
 
     @Override
     public Future<Optional<User>> findById(String id) {
+        if (!isValidUuid(id)) {
+            return Future.succeededFuture(Optional.empty());
+        }
         return pool.preparedQuery(
                         "SELECT id, username, email, display_name, password_hash,"
                                 + " role, status, failed_login_attempts, created_at"
@@ -81,6 +84,18 @@ public class PgUserRepository implements UserRepository {
                     }
                     return Optional.of(rowToUser(rows.iterator().next()));
                 });
+    }
+
+    private static boolean isValidUuid(String id) {
+        if (id == null) {
+            return false;
+        }
+        try {
+            UUID.fromString(id);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
     @Override

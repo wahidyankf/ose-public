@@ -19,6 +19,7 @@ This directory contains specialized AI agents for the open-sharia-enterprise pro
 - **plan-maker** - Project plan creation
 - **repo-governance-maker** - Governance document creation
 - **repo-workflow-maker** - Workflow documentation
+- **specs-maker** - Spec area scaffolding and feature file creation
 - **social-linkedin-post-maker** - LinkedIn content creation
 - **agent-maker** - Agent definition creation
 
@@ -40,6 +41,7 @@ This directory contains specialized AI agents for the open-sharia-enterprise pro
 - **plan-execution-checker** - Plan execution validation
 - **repo-governance-checker** - Governance compliance validation
 - **repo-workflow-checker** - Workflow documentation validation
+- **specs-checker** - Specs structural completeness and cross-spec consistency validation
 
 ### 🟨 Updating (Updaters/Fixers)
 
@@ -58,6 +60,7 @@ This directory contains specialized AI agents for the open-sharia-enterprise pro
 - **plan-fixer** - Apply plan fixes
 - **repo-governance-fixer** - Fix governance compliance issues
 - **repo-workflow-fixer** - Fix workflow documentation
+- **specs-fixer** - Fix specs structural and accuracy issues
 
 ### 🟪 Operations
 

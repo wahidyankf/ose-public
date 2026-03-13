@@ -184,21 +184,21 @@ let zakatProperties =
 
 ### Mandatory Standards (All F# Code MUST Follow)
 
-1. **[Coding Standards](../../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fs__coding-standards.md)** - F# naming conventions, module organization, pipeline idioms
-2. **[Testing Standards](../../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fs__testing-standards.md)** - Expecto, FsCheck property-based testing, AltCover coverage
-3. **[Code Quality Standards](../../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fs__code-quality-standards.md)** - Fantomas, FSharpLint, exhaustive pattern matching
-4. **[Build Configuration](../../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fs__build-configuration.md)** - .fsproj file order, dotnet CLI, Nx integration
+1. **[Coding Standards](../../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fsh__coding-standards.md)** - F# naming conventions, module organization, pipeline idioms
+2. **[Testing Standards](../../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fsh__testing-standards.md)** - Expecto, FsCheck property-based testing, AltCover coverage
+3. **[Code Quality Standards](../../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fsh__code-quality-standards.md)** - Fantomas, FSharpLint, exhaustive pattern matching
+4. **[Build Configuration](../../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fsh__build-configuration.md)** - .fsproj file order, dotnet CLI, Nx integration
 
 ### Context-Specific Standards (Apply When Relevant)
 
-1. **[Error Handling Standards](../../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fs__error-handling-standards.md)** - Result type, railway-oriented programming, computation expressions
-2. **[Concurrency Standards](../../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fs__concurrency-standards.md)** - Async workflows, MailboxProcessor, Task interop
-3. **[Functional Programming Standards](../../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fs__functional-programming-standards.md)** - Computation expressions, monads, applicatives
-4. **[Type Safety Standards](../../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fs__type-safety-standards.md)** - DUs, units of measure, phantom types
-5. **[Performance Standards](../../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fs__performance-standards.md)** - Tail recursion, sequences, lazy evaluation
-6. **[Security Standards](../../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fs__security-standards.md)** - Type-driven validation, Giraffe authentication
-7. **[API Standards](../../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fs__api-standards.md)** - Giraffe HttpHandler composition, Saturn routing
-8. **[DDD Standards](../../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fs__ddd-standards.md)** - DU-based domain modeling, making illegal states unrepresentable
+1. **[Error Handling Standards](../../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fsh__error-handling-standards.md)** - Result type, railway-oriented programming, computation expressions
+2. **[Concurrency Standards](../../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fsh__concurrency-standards.md)** - Async workflows, MailboxProcessor, Task interop
+3. **[Functional Programming Standards](../../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fsh__functional-programming-standards.md)** - Computation expressions, monads, applicatives
+4. **[Type Safety Standards](../../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fsh__type-safety-standards.md)** - DUs, units of measure, phantom types
+5. **[Performance Standards](../../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fsh__performance-standards.md)** - Tail recursion, sequences, lazy evaluation
+6. **[Security Standards](../../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fsh__security-standards.md)** - Type-driven validation, Giraffe authentication
+7. **[API Standards](../../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fsh__api-standards.md)** - Giraffe HttpHandler composition, Saturn routing
+8. **[DDD Standards](../../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fsh__ddd-standards.md)** - DU-based domain modeling, making illegal states unrepresentable
 
 ## Related Skills
 

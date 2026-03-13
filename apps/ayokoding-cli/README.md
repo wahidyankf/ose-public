@@ -410,8 +410,8 @@ Integration tests use [godog](https://github.com/cucumber/godog) to run Gherkin
 scenarios from `specs/apps/ayokoding-cli/`. They are co-located in `cmd/` (same
 package) to access unexported flag variables. Three suites cover all 3 commands:
 
-| Test function                 | Feature file                                       | Scenarios |
-| ----------------------------- | -------------------------------------------------- | --------- |
+| Test function                 | Feature file                                            | Scenarios |
+| ----------------------------- | ------------------------------------------------------- | --------- |
 | `TestIntegrationNavRegen`     | `specs/apps/ayokoding-cli/nav/nav-regen.feature`        | 5         |
 | `TestIntegrationTitlesUpdate` | `specs/apps/ayokoding-cli/titles/titles-update.feature` | 4         |
 | `TestIntegrationLinksCheck`   | `specs/apps/ayokoding-cli/links/links-check.feature`    | 4         |

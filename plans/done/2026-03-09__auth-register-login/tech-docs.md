@@ -42,8 +42,8 @@ graph TD
 
 All new packages follow the existing convention: annotated with `@NullMarked` in `package-info.java`, no wildcard imports.
 
-| Package                                        | Purpose                                                                                                                  |
-| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Package                                   | Purpose                                                                                                                  |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | `com.demobejasb.auth.controller`          | `AuthController` - REST endpoints                                                                                        |
 | `com.demobejasb.auth.service`             | `AuthService`, `UserDetailsServiceImpl`, `UsernameAlreadyExistsException`, `InvalidCredentialsException`                 |
 | `com.demobejasb.auth.repository`          | `UserRepository` (Spring Data JPA)                                                                                       |
@@ -513,7 +513,7 @@ CREATE TABLE users (
 - `TIMESTAMPTZ` stores timezone-aware timestamps; always use UTC in the application.
 - The `password_hash` column is 255 chars; BCrypt output is 60 chars but 255 gives future headroom.
 - The `-- rollback` directive enables `liquibase rollback` without writing separate rollback SQL.
-- All 6 audit trail columns (`created_at`, `created_by`, `updated_at`, `updated_by`, `deleted_at`, `deleted_by`) are mandatory per the [database audit trail convention](../../../../governance/development/pattern/database-audit-trail.md). `deleted_at` / `deleted_by` being NULL means the row is active (soft-delete pattern).
+- All 6 audit trail columns (`created_at`, `created_by`, `updated_at`, `updated_by`, `deleted_at`, `deleted_by`) are mandatory per the [database audit trail convention](../../../governance/development/pattern/database-audit-trail.md). `deleted_at` / `deleted_by` being NULL means the row is active (soft-delete pattern).
 - `CONSTRAINT uq_users_username UNIQUE (username)` serves as both the uniqueness constraint and the lookup index for `findByUsername`. PostgreSQL and H2 both create a B-tree index automatically from this constraint — no separate `CREATE INDEX` is required.
 
 ## Dependencies to Add to pom.xml
@@ -1432,7 +1432,7 @@ in the `errors` array.
 
 All tables carry 6 audit columns (`created_at`, `created_by`, `updated_at`, `updated_by`,
 `deleted_at`, `deleted_by`) as required by the
-[database audit trail convention](../../../../governance/development/pattern/database-audit-trail.md).
+[database audit trail convention](../../../governance/development/pattern/database-audit-trail.md).
 `deleted_at`/`deleted_by` implement the soft-delete pattern so rows are never physically removed
 — this preserves the audit record, allows undo, and avoids foreign-key cascades.
 The `@Where(clause = "deleted_at IS NULL")` annotation on the entity ensures queries automatically

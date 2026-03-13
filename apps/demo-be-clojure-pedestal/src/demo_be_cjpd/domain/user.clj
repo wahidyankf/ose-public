@@ -1,12 +1,11 @@
 (ns demo-be-cjpd.domain.user
-  "User domain model, validation, and business rules."
+  "User domain model, validation, and business rules.
+   Status/role enums defined in domain.schemas (UserStatus, UserRole)."
   (:require [clojure.string :as str]
-            [malli.core :as m]))
+            [malli.core :as m]
+            [demo-be-cjpd.domain.schemas :as schemas]))
 
 (def max-failed-attempts 5)
-
-(def statuses #{:ACTIVE :INACTIVE :DISABLED :LOCKED})
-(def roles #{:USER :ADMIN})
 
 (def Email
   "Schema: valid email address."
@@ -38,6 +37,16 @@
   "Return true if the username is 3-50 chars of letters, numbers, underscores, hyphens."
   [username]
   (boolean (m/validate Username (or username ""))))
+
+(defn valid-status?
+  "Return true if the status string is a valid UserStatus."
+  [status]
+  (m/validate schemas/UserStatus status))
+
+(defn valid-role?
+  "Return true if the role string is a valid UserRole."
+  [role]
+  (m/validate schemas/UserRole role))
 
 (defn validate-password-strength
   "Validate password complexity rules. Returns nil on success or error map on failure."

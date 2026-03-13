@@ -1,8 +1,11 @@
 (ns demo-be-cjpd.auth.jwt
-  "JWT token signing and verification using buddy-sign."
+  "JWT token signing and verification using buddy-sign.
+   Claims schemas defined in domain.schemas (AccessTokenClaims, RefreshTokenClaims)."
   (:require [buddy.sign.jwt :as jwt]
             [cheshire.core :as json]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [malli.core :as m]
+            [demo-be-cjpd.domain.schemas :as schemas])
   (:import (java.util UUID Base64)))
 
 (def ^:private issuer "demo-be-cjpd")
@@ -14,7 +17,8 @@
   (.getBytes secret "UTF-8"))
 
 (defn sign-access-token
-  "Sign an access token with 15-minute expiry."
+  "Sign an access token with 15-minute expiry.
+   Claims validated against schemas/AccessTokenClaims."
   [secret user-id username role]
   (let [now    (now-epoch)
         exp    (+ now (* 15 60))
@@ -26,10 +30,13 @@
                 :iss      issuer
                 :iat      now
                 :exp      exp}]
+    (assert (m/validate schemas/AccessTokenClaims claims)
+            (str "Invalid access token claims: " (pr-str (m/explain schemas/AccessTokenClaims claims))))
     (jwt/sign claims (secret->bytes secret) {:alg :hs256})))
 
 (defn sign-refresh-token
-  "Sign a refresh token with 7-day expiry."
+  "Sign a refresh token with 7-day expiry.
+   Claims validated against schemas/RefreshTokenClaims."
   [secret user-id]
   (let [now    (now-epoch)
         exp    (+ now (* 7 24 60 60))
@@ -40,6 +47,8 @@
                 :iss  issuer
                 :iat  now
                 :exp  exp}]
+    (assert (m/validate schemas/RefreshTokenClaims claims)
+            (str "Invalid refresh token claims: " (pr-str (m/explain schemas/RefreshTokenClaims claims))))
     (jwt/sign claims (secret->bytes secret) {:alg :hs256})))
 
 (defn verify-token

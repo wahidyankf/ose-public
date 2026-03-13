@@ -1,9 +1,12 @@
 (ns demo-be-cjpd.interceptors.auth
-  "Authentication interceptors for Pedestal."
+  "Authentication interceptors for Pedestal.
+   Identity schema: see domain.schemas/Identity."
   (:require [clojure.string :as str]
+            [malli.core :as m]
             [demo-be-cjpd.auth.jwt :as jwt]
             [demo-be-cjpd.db.token-repo :as token-repo]
-            [demo-be-cjpd.db.user-repo :as user-repo]))
+            [demo-be-cjpd.db.user-repo :as user-repo]
+            [demo-be-cjpd.domain.schemas :as schemas]))
 
 (defn- extract-bearer-token [request]
   (let [auth-header (get-in request [:headers "authorization"] "")]
@@ -12,6 +15,7 @@
 
 (defn require-auth
   "Interceptor factory that validates JWT and attaches identity to request.
+   The identity map conforms to schemas/Identity.
    Takes app config and datasource."
   [config ds]
   {:name  ::require-auth
@@ -53,9 +57,11 @@
                                        {:status  401
                                         :headers {"Content-Type" "application/json"}
                                         :body    "{\"error\":\"User account is not active\"}"})
-                                (assoc-in ctx [:request :identity]
-                                          {:user-id  user-id
-                                           :username (:username claims)
-                                           :role     (:role claims)
-                                           :jti      jti
-                                           :iat      iat}))))))))))))})
+                                (let [identity {:user-id  user-id
+                                                :username (:username claims)
+                                                :role     (:role claims)
+                                                :jti      jti
+                                                :iat      iat}]
+                                  (assert (m/validate schemas/Identity identity)
+                                          (str "Invalid identity: " (pr-str (m/explain schemas/Identity identity))))
+                                  (assoc-in ctx [:request :identity] identity)))))))))))))})

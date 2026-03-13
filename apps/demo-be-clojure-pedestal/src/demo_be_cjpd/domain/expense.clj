@@ -1,7 +1,9 @@
 (ns demo-be-cjpd.domain.expense
-  "Expense domain model, currency, and unit validation."
+  "Expense domain model, currency, and unit validation.
+   ExpenseType enum defined in domain.schemas."
   (:require [clojure.string :as str]
-            [malli.core :as m]))
+            [malli.core :as m]
+            [demo-be-cjpd.domain.schemas :as schemas]))
 
 (def supported-currencies
   "Map of currency code to decimal places."
@@ -13,11 +15,9 @@
   #{"liter" "ml" "kg" "g" "km" "meter"
     "gallon" "lb" "oz" "mile" "piece" "hour"})
 
-(def entry-types #{"income" "expense"})
-
 (def EntryType
   "Schema: allowed entry types."
-  [:enum "income" "expense"])
+  schemas/ExpenseType)
 
 (def Unit
   "Schema: valid unit (nil, empty string, or supported unit)."

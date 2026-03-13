@@ -1,5 +1,7 @@
 (ns demo-be-cjpd.handlers.auth
-  "Authentication handlers: register, login, refresh, logout, logout-all."
+  "Authentication handlers: register, login, refresh, logout, logout-all.
+   Request/response schemas: see domain.schemas (RegisterRequest, LoginRequest,
+   RefreshRequest, TokenResponse)."
   (:require [cheshire.core :as json]
             [clojure.string :as str]
             [demo-be-cjpd.auth.jwt :as jwt]

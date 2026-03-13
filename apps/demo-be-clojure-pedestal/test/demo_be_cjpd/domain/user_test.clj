@@ -46,6 +46,27 @@
   (testing "no digit"
     (is (some? (sut/validate-password-strength "NoDigits#Here!")))))
 
+(deftest valid-status-test
+  (testing "valid statuses"
+    (is (true? (sut/valid-status? "ACTIVE")))
+    (is (true? (sut/valid-status? "INACTIVE")))
+    (is (true? (sut/valid-status? "DISABLED")))
+    (is (true? (sut/valid-status? "LOCKED"))))
+
+  (testing "invalid statuses"
+    (is (false? (sut/valid-status? "UNKNOWN")))
+    (is (false? (sut/valid-status? "active")))
+    (is (false? (sut/valid-status? nil)))))
+
+(deftest valid-role-test
+  (testing "valid roles"
+    (is (true? (sut/valid-role? "USER")))
+    (is (true? (sut/valid-role? "ADMIN"))))
+
+  (testing "invalid roles"
+    (is (false? (sut/valid-role? "SUPERADMIN")))
+    (is (false? (sut/valid-role? nil)))))
+
 (deftest should-lock-test
   (testing "below threshold"
     (is (false? (sut/should-lock? 4))))

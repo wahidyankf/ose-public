@@ -1,0 +1,17 @@
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration
+      - org.springframework.boot.hibernate.autoconfigure.HibernateJpaAutoConfiguration
+      - org.springframework.boot.liquibase.autoconfigure.LiquibaseAutoConfiguration
+      - org.springframework.boot.data.jpa.autoconfigure.DataJpaRepositoriesAutoConfiguration
+      - org.springframework.boot.security.autoconfigure.SecurityAutoConfiguration
+      - org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration
+  main:
+    allow-bean-definition-overriding: true
+
+app:
+  jwt:
+    secret: unit-test-jwt-secret-at-least-32-chars-long
+    expiration-ms: 3600000
+    issuer: demo-be

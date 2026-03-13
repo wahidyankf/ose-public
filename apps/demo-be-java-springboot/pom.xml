@@ -237,6 +237,54 @@
                     </includes>
                 </configuration>
             </plugin>
+
+            <!-- JaCoCo for unit tests — generates report at target/site/jacoco/jacoco.xml -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.13</version>
+                <configuration>
+                    <destFile>${project.build.directory}/jacoco.exec</destFile>
+                    <dataFile>${project.build.directory}/jacoco.exec</dataFile>
+                    <excludes>
+                        <exclude>**/OrganicLeverApplication.class</exclude>
+                        <exclude>**/package-info.class</exclude>
+                        <exclude>**/JpaAuditingConfig.class</exclude>
+                        <!-- JPA entity models: auto-generated getters/setters/equals/hashCode -->
+                        <exclude>**/model/User.class</exclude>
+                        <exclude>**/model/Expense.class</exclude>
+                        <exclude>**/model/Attachment.class</exclude>
+                        <exclude>**/model/RevokedToken.class</exclude>
+                        <exclude>**/model/RefreshToken.class</exclude>
+                        <!-- DTO record classes -->
+                        <exclude>**/dto/*Request.class</exclude>
+                        <exclude>**/dto/*Response.class</exclude>
+                        <!-- Spring Security infrastructure: requires full Spring context -->
+                        <exclude>**/security/SecurityConfig.class</exclude>
+                        <exclude>**/security/JwtAuthFilter.class</exclude>
+                        <exclude>**/auth/service/UserDetailsServiceImpl.class</exclude>
+                        <!-- Spring MVC exception handler: invoked by DispatcherServlet only -->
+                        <exclude>**/config/GlobalExceptionHandler.class</exclude>
+                        <!-- Simple exception class: no business logic to test in unit scope -->
+                        <exclude>**/attachment/FileSizeLimitExceededException.class</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>unit-prepare-agent</id>
+                        <goals><goal>prepare-agent</goal></goals>
+                    </execution>
+                    <execution>
+                        <id>unit-report</id>
+                        <phase>test</phase>
+                        <goals><goal>report</goal></goals>
+                        <configuration>
+                            <dataFile>${project.build.directory}/jacoco.exec</dataFile>
+                            <outputDirectory>${project.build.directory}/site/jacoco</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
         <!-- M2E lifecycle mapping: tells Eclipse/VS Code Java extension how to handle
              plugin executions that M2E does not know about by default. -->

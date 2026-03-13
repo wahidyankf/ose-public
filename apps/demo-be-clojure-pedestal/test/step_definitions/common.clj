@@ -2,6 +2,7 @@
   "Shared utilities for step definitions.
    Calls service handler functions directly — no HTTP client, no embedded server."
   (:require [cheshire.core :as json]
+            [next.jdbc :as jdbc]
             [demo-be-cjpd.auth.jwt :as jwt]
             [demo-be-cjpd.config :as config]
             [demo-be-cjpd.db.core :as db]
@@ -27,18 +28,37 @@
       (let [db-name (str "testdb_" (java.util.UUID/randomUUID))]
         (str "jdbc:sqlite:file:" db-name "?mode=memory&cache=shared"))))
 
+;; Shared datasource: created once for the entire test suite run.
+;; Prevents exhausting PostgreSQL's max_connections across 70+ scenarios.
+(defonce ^:private shared-test-context
+  (delay
+    (let [database-url (build-database-url)
+          cfg          (assoc (config/load-config) :database-url database-url)
+          ds           (db/create-datasource database-url)
+          _            (schema/create-schema! ds database-url)]
+      {:ds       ds
+       :config   cfg
+       :database-url database-url
+       :server   :direct
+       :base-url "http://localhost:0"})))
+
+(defn- truncate-all-tables!
+  "Delete all rows from every table to reset state between scenarios.
+   Uses DELETE rather than TRUNCATE for SQLite compatibility."
+  [ds]
+  (jdbc/execute! ds ["DELETE FROM attachments"])
+  (jdbc/execute! ds ["DELETE FROM expenses"])
+  (jdbc/execute! ds ["DELETE FROM revoked_tokens"])
+  (jdbc/execute! ds ["DELETE FROM users"]))
+
 (defn start-test-server!
-  "Create and migrate database, instantiate handlers.
-   Returns a context map used throughout the test run — no HTTP server is started."
+  "Return the shared test context, resetting all table data for test isolation.
+   A single datasource is reused across scenarios to avoid exhausting
+   PostgreSQL's max_connections limit."
   []
-  (let [database-url (build-database-url)
-        cfg          (assoc (config/load-config) :database-url database-url)
-        ds           (db/create-datasource database-url)
-        _            (schema/create-schema! ds database-url)]
-    {:ds      ds
-     :config  cfg
-     :server  :direct   ; sentinel value — no server needed
-     :base-url "http://localhost:0"}))
+  (let [ctx @shared-test-context]
+    (truncate-all-tables! (:ds ctx))
+    ctx))
 
 (defn stop-test-server! [{:keys [ds]}]
   (.close ds))

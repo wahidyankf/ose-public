@@ -1,6 +1,6 @@
 use serde_json::Value;
 use sqlx::AnyPool;
-use std::sync::Arc;
+use std::sync::{Arc, OnceLock};
 use uuid::Uuid;
 
 use demo_be_rust_axum::{
@@ -169,11 +169,39 @@ pub struct AppWorld {
     pub alice_id: Option<Uuid>,
 }
 
+/// Shared pool created once for the entire test run.
+/// Migrations run exactly once; each scenario truncates tables instead.
+static SHARED_POOL: OnceLock<tokio::sync::Mutex<Option<AnyPool>>> = OnceLock::new();
+
+async fn get_or_init_pool() -> Result<AnyPool, anyhow::Error> {
+    let mutex = SHARED_POOL.get_or_init(|| tokio::sync::Mutex::new(None));
+    let mut guard = mutex.lock().await;
+    if let Some(pool) = guard.as_ref() {
+        return Ok(pool.clone());
+    }
+    let database_url =
+        std::env::var("DATABASE_URL").unwrap_or_else(|_| "sqlite::memory:".to_string());
+    let pool = demo_be_rust_axum::db::pool::create_pool(&database_url).await?;
+    *guard = Some(pool.clone());
+    Ok(pool)
+}
+
+async fn truncate_all_tables(pool: &AnyPool) -> Result<(), sqlx::Error> {
+    // Delete in reverse dependency order to satisfy foreign key constraints.
+    // token_revocations and attachments reference users/expenses.
+    sqlx::query("DELETE FROM attachments").execute(pool).await?;
+    sqlx::query("DELETE FROM token_revocations")
+        .execute(pool)
+        .await?;
+    sqlx::query("DELETE FROM expenses").execute(pool).await?;
+    sqlx::query("DELETE FROM users").execute(pool).await?;
+    Ok(())
+}
+
 impl AppWorld {
     async fn new_world() -> Result<Self, anyhow::Error> {
-        let database_url =
-            std::env::var("DATABASE_URL").unwrap_or_else(|_| "sqlite::memory:".to_string());
-        let pool = demo_be_rust_axum::db::pool::create_pool(&database_url).await?;
+        let pool = get_or_init_pool().await?;
+        truncate_all_tables(&pool).await?;
         let state = Arc::new(AppState::new(pool.clone(), TEST_JWT_SECRET.to_string()));
         Ok(Self {
             state,

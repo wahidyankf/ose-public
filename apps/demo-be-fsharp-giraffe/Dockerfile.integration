@@ -21,8 +21,8 @@ COPY apps/demo-be-fsharp-giraffe/tests/DemoBeFsgi.Tests/DemoBeFsgi.Tests.fsproj 
 
 # Copy specs so the CopyGherkinSpecs MSBuild target can find feature files at build time.
 # The .fsproj references: $(ProjectDir)..\..\..\..\specs\apps\demo-be\gherkin\**\*.feature
-# With WORKDIR=/build, that path resolves to /build/specs/apps/demo-be/gherkin.
-COPY specs/apps/demo-be/gherkin /build/specs/apps/demo-be/gherkin
+# Going up 4 levels from /build/tests/DemoBeFsgi.Tests/ resolves to /specs/apps/demo-be/gherkin.
+COPY specs/apps/demo-be/gherkin /specs/apps/demo-be/gherkin
 
 # Restore dependencies (layer cache until project files change).
 RUN dotnet restore tests/DemoBeFsgi.Tests/DemoBeFsgi.Tests.fsproj
@@ -37,4 +37,4 @@ RUN dotnet build tests/DemoBeFsgi.Tests/DemoBeFsgi.Tests.fsproj --no-restore
 # Run all tests against real PostgreSQL.
 # DATABASE_URL and APP_JWT_SECRET are supplied by docker-compose as environment variables.
 # The TestWebAppFactory detects DATABASE_URL and uses Npgsql instead of SQLite.
-CMD ["dotnet", "test", "tests/DemoBeFsgi.Tests/DemoBeFsgi.Tests.fsproj", "--no-build", "--logger", "console;verbosity=normal"]
+CMD ["dotnet", "test", "tests/DemoBeFsgi.Tests/DemoBeFsgi.Tests.fsproj", "--no-build", "--filter", "Category=Integration", "--logger", "console;verbosity=normal"]

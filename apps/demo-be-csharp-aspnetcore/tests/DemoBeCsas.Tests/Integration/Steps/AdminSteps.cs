@@ -8,7 +8,7 @@ namespace DemoBeCsas.Tests.Integration.Steps;
 
 [Binding]
 [Trait("Category", "Integration")]
-public class AdminSteps(SharedState state, AuthSteps auth)
+public class AdminSteps(ServiceLayer svc, SharedState state, AuthSteps auth)
 {
     // ─────────────────────────────────────────────────────────────
     // When steps
@@ -17,16 +17,17 @@ public class AdminSteps(SharedState state, AuthSteps auth)
     [When(@"^the admin sends GET /api/v1/admin/users$")]
     public async Task WhenAdminListsUsers()
     {
-        var client = auth.AdminClient();
-        state.LastResponse = await client.GetAsync("/api/v1/admin/users?page=1&size=20");
+        state.LastResponse = await svc.AdminListUsersAsync(auth._adminToken, page: 1, size: 20);
     }
 
     [When(@"^the admin sends GET /api/v1/admin/users\?email=alice@example\.com$")]
     public async Task WhenAdminSearchesByEmail()
     {
-        var client = auth.AdminClient();
-        state.LastResponse = await client.GetAsync(
-            "/api/v1/admin/users?email=alice@example.com&page=1&size=20"
+        state.LastResponse = await svc.AdminListUsersAsync(
+            auth._adminToken,
+            page: 1,
+            size: 20,
+            email: "alice@example.com"
         );
     }
 
@@ -35,8 +36,7 @@ public class AdminSteps(SharedState state, AuthSteps auth)
     {
         var aliceId = state.LastCreatedId ?? auth._aliceId;
         aliceId.Should().NotBeNull("alice's ID should be known");
-        var client = auth.AdminClient();
-        state.LastResponse = await client.PostAsync($"/api/v1/admin/users/{aliceId}/disable", null);
+        state.LastResponse = await svc.AdminDisableUserAsync(auth._adminToken, aliceId!.Value);
     }
 
     [When(@"^the admin sends POST /api/v1/admin/users/\{alice_id\}/enable$")]
@@ -44,8 +44,7 @@ public class AdminSteps(SharedState state, AuthSteps auth)
     {
         var aliceId = state.LastCreatedId ?? auth._aliceId;
         aliceId.Should().NotBeNull("alice's ID should be known");
-        var client = auth.AdminClient();
-        state.LastResponse = await client.PostAsync($"/api/v1/admin/users/{aliceId}/enable", null);
+        state.LastResponse = await svc.AdminEnableUserAsync(auth._adminToken, aliceId!.Value);
     }
 
     [When(@"^the admin sends POST /api/v1/admin/users/\{alice_id\}/unlock$")]
@@ -53,8 +52,7 @@ public class AdminSteps(SharedState state, AuthSteps auth)
     {
         var aliceId = state.LastCreatedId ?? auth._aliceId;
         aliceId.Should().NotBeNull("alice's ID should be known");
-        var client = auth.AdminClient();
-        state.LastResponse = await client.PostAsync($"/api/v1/admin/users/{aliceId}/unlock", null);
+        state.LastResponse = await svc.AdminUnlockUserAsync(auth._adminToken, aliceId!.Value);
     }
 
     [When(@"^the admin sends POST /api/v1/admin/users/\{alice_id\}/force-password-reset$")]
@@ -62,15 +60,13 @@ public class AdminSteps(SharedState state, AuthSteps auth)
     {
         var aliceId = state.LastCreatedId ?? auth._aliceId;
         aliceId.Should().NotBeNull("alice's ID should be known");
-        var client = auth.AdminClient();
-        state.LastResponse = await client.PostAsync(
-            $"/api/v1/admin/users/{aliceId}/force-password-reset",
-            null
+        state.LastResponse = await svc.AdminForcePasswordResetAsync(
+            auth._adminToken,
+            aliceId!.Value
         );
-        if (state.LastResponse.IsSuccessStatusCode)
+        if (state.LastResponse.IsSuccess)
         {
-            var body = await state.LastResponse.Content.ReadAsStringAsync();
-            using var doc = JsonDocument.Parse(body);
+            using var doc = JsonDocument.Parse(state.LastResponse.Body);
             if (doc.RootElement.TryGetProperty("reset_token", out var rt))
             {
                 state.LastResetToken = rt.GetString();
@@ -83,10 +79,10 @@ public class AdminSteps(SharedState state, AuthSteps auth)
     // ─────────────────────────────────────────────────────────────
 
     [Then(@"^the response body should contain at least one user with ""email"" equal to ""([^""]+)""$")]
-    public async Task ThenResponseContainsUserWithEmail(string email)
+    public void ThenResponseContainsUserWithEmail(string email)
     {
         state.LastResponse.Should().NotBeNull();
-        var body = await state.LastResponse!.Content.ReadAsStringAsync();
+        var body = state.LastResponse!.Body;
         body.Should().Contain(email, $"Expected user with email '{email}' in: {body}");
     }
 }

@@ -1,5 +1,3 @@
-using System.Net.Http.Headers;
-using System.Text;
 using System.Text.Json;
 using DemoBeCsas.Tests.ScenarioContext;
 using FluentAssertions;
@@ -10,7 +8,7 @@ namespace DemoBeCsas.Tests.Integration.Steps;
 
 [Binding]
 [Trait("Category", "Integration")]
-public class UserAccountSteps(SharedState state, AuthSteps auth)
+public class UserAccountSteps(ServiceLayer svc, SharedState state)
 {
     // ─────────────────────────────────────────────────────────────
     // When steps
@@ -19,19 +17,13 @@ public class UserAccountSteps(SharedState state, AuthSteps auth)
     [When(@"^alice sends GET /api/v1/users/me$")]
     public async Task WhenAliceSendsGetMe()
     {
-        var client = auth.AuthorizedClient();
-        state.LastResponse = await client.GetAsync("/api/v1/users/me");
+        state.LastResponse = await svc.GetMeAsync(state.AccessToken);
     }
 
     [When(@"^alice sends PATCH /api/v1/users/me with body \{ ""display_name"": ""([^""]+)"" \}$")]
     public async Task WhenAlicePatchesMe(string displayName)
     {
-        var client = auth.AuthorizedClient();
-        var body = JsonSerializer.Serialize(new { display_name = displayName });
-        state.LastResponse = await client.PatchAsync(
-            "/api/v1/users/me",
-            new StringContent(body, Encoding.UTF8, "application/json")
-        );
+        state.LastResponse = await svc.PatchMeAsync(state.AccessToken, displayName);
     }
 
     [When(
@@ -39,21 +31,13 @@ public class UserAccountSteps(SharedState state, AuthSteps auth)
     )]
     public async Task WhenAliceChangesPassword(string oldPassword, string newPassword)
     {
-        var client = auth.AuthorizedClient();
-        var body = JsonSerializer.Serialize(
-            new { old_password = oldPassword, new_password = newPassword }
-        );
-        state.LastResponse = await client.PostAsync(
-            "/api/v1/users/me/password",
-            new StringContent(body, Encoding.UTF8, "application/json")
-        );
+        state.LastResponse = await svc.ChangePasswordAsync(state.AccessToken, oldPassword, newPassword);
     }
 
     [When(@"^alice sends POST /api/v1/users/me/deactivate$")]
     public async Task WhenAliceDeactivates()
     {
-        var client = auth.AuthorizedClient();
-        state.LastResponse = await client.PostAsync("/api/v1/users/me/deactivate", null);
+        state.LastResponse = await svc.DeactivateAsync(state.AccessToken);
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -61,9 +45,9 @@ public class UserAccountSteps(SharedState state, AuthSteps auth)
     // ─────────────────────────────────────────────────────────────
 
     [Then(@"^the response body should contain an error message about incorrect password$")]
-    public async Task ThenErrorAboutIncorrectPassword()
+    public void ThenErrorAboutIncorrectPassword()
     {
         state.LastResponse.Should().NotBeNull();
-        ((int)state.LastResponse!.StatusCode).Should().BeOneOf(400, 401);
+        state.LastResponse!.StatusCode.Should().BeOneOf(400, 401);
     }
 }

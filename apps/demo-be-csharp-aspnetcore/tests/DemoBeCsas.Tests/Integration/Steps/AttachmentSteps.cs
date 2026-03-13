@@ -1,4 +1,3 @@
-using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using DemoBeCsas.Tests.ScenarioContext;
@@ -11,8 +10,8 @@ namespace DemoBeCsas.Tests.Integration.Steps;
 [Binding]
 [Trait("Category", "Integration")]
 public class AttachmentSteps(
+    ServiceLayer svc,
     SharedState state,
-    AuthSteps auth,
     ExpenseSteps expenseSteps
 )
 {
@@ -24,23 +23,19 @@ public class AttachmentSteps(
     public async Task GivenAliceUploadedFile(string filename, string contentType)
     {
         state.LastExpenseId.Should().NotBeNull("expense ID should be set");
-        var client = auth.AuthorizedClient();
-        var content = new MultipartFormDataContent();
-        var fileContent = new ByteArrayContent(
-            Encoding.UTF8.GetBytes($"dummy content for {filename}")
-        );
-        fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(contentType);
-        content.Add(fileContent, "file", filename);
-        var response = await client.PostAsync(
-            $"/api/v1/expenses/{state.LastExpenseId}/attachments",
-            content
+        var data = Encoding.UTF8.GetBytes($"dummy content for {filename}");
+        var response = await svc.UploadAttachmentAsync(
+            state.AccessToken,
+            state.LastExpenseId!.Value,
+            filename,
+            contentType,
+            data
         );
         ((int)response.StatusCode).Should().Be(
             201,
-            $"Failed to upload attachment: {await response.Content.ReadAsStringAsync()}"
+            $"Failed to upload attachment: {response.Body}"
         );
-        var responseBody = await response.Content.ReadAsStringAsync();
-        using var doc = JsonDocument.Parse(responseBody);
+        using var doc = JsonDocument.Parse(response.Body);
         if (doc.RootElement.TryGetProperty("id", out var idEl))
         {
             state.LastAttachmentId = Guid.Parse(idEl.GetString()!);
@@ -55,21 +50,17 @@ public class AttachmentSteps(
     public async Task WhenAliceUploadsFileToExpense(string filename, string contentType)
     {
         state.LastExpenseId.Should().NotBeNull("expense ID should be set");
-        var client = auth.AuthorizedClient();
-        var content = new MultipartFormDataContent();
-        var fileContent = new ByteArrayContent(
-            Encoding.UTF8.GetBytes($"dummy content for {filename}")
+        var data = Encoding.UTF8.GetBytes($"dummy content for {filename}");
+        state.LastResponse = await svc.UploadAttachmentAsync(
+            state.AccessToken,
+            state.LastExpenseId!.Value,
+            filename,
+            contentType,
+            data
         );
-        fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(contentType);
-        content.Add(fileContent, "file", filename);
-        state.LastResponse = await client.PostAsync(
-            $"/api/v1/expenses/{state.LastExpenseId}/attachments",
-            content
-        );
-        if (state.LastResponse.IsSuccessStatusCode)
+        if (state.LastResponse.IsSuccess)
         {
-            var responseBody = await state.LastResponse.Content.ReadAsStringAsync();
-            using var doc = JsonDocument.Parse(responseBody);
+            using var doc = JsonDocument.Parse(state.LastResponse.Body);
             if (doc.RootElement.TryGetProperty("id", out var idEl))
             {
                 state.LastAttachmentId = Guid.Parse(idEl.GetString()!);
@@ -81,16 +72,13 @@ public class AttachmentSteps(
     public async Task WhenAliceUploadsFileToBobsExpense(string filename, string contentType)
     {
         expenseSteps._bobExpenseId.Should().NotBeNull("bob's expense ID should be set");
-        var client = auth.AuthorizedClient();
-        var content = new MultipartFormDataContent();
-        var fileContent = new ByteArrayContent(
-            Encoding.UTF8.GetBytes($"dummy content for {filename}")
-        );
-        fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(contentType);
-        content.Add(fileContent, "file", filename);
-        state.LastResponse = await client.PostAsync(
-            $"/api/v1/expenses/{expenseSteps._bobExpenseId}/attachments",
-            content
+        var data = Encoding.UTF8.GetBytes($"dummy content for {filename}");
+        state.LastResponse = await svc.UploadAttachmentAsync(
+            state.AccessToken,
+            expenseSteps._bobExpenseId!.Value,
+            filename,
+            contentType,
+            data
         );
     }
 
@@ -98,17 +86,15 @@ public class AttachmentSteps(
     public async Task WhenAliceUploadsOversizedFile()
     {
         state.LastExpenseId.Should().NotBeNull("expense ID should be set");
-        var client = auth.AuthorizedClient();
-        var content = new MultipartFormDataContent();
         // 11 MB exceeds the 10 MB limit
         var largeData = new byte[11 * 1024 * 1024];
         Array.Fill(largeData, (byte)'x');
-        var fileContent = new ByteArrayContent(largeData);
-        fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("image/jpeg");
-        content.Add(fileContent, "file", "large.jpg");
-        state.LastResponse = await client.PostAsync(
-            $"/api/v1/expenses/{state.LastExpenseId}/attachments",
-            content
+        state.LastResponse = await svc.UploadAttachmentAsync(
+            state.AccessToken,
+            state.LastExpenseId!.Value,
+            "large.jpg",
+            "image/jpeg",
+            largeData
         );
     }
 
@@ -116,9 +102,9 @@ public class AttachmentSteps(
     public async Task WhenAliceListsAttachments()
     {
         state.LastExpenseId.Should().NotBeNull("expense ID should be set");
-        var client = auth.AuthorizedClient();
-        state.LastResponse = await client.GetAsync(
-            $"/api/v1/expenses/{state.LastExpenseId}/attachments"
+        state.LastResponse = await svc.ListAttachmentsAsync(
+            state.AccessToken,
+            state.LastExpenseId!.Value
         );
     }
 
@@ -126,9 +112,9 @@ public class AttachmentSteps(
     public async Task WhenAliceListsBobsAttachments()
     {
         expenseSteps._bobExpenseId.Should().NotBeNull("bob's expense ID should be set");
-        var client = auth.AuthorizedClient();
-        state.LastResponse = await client.GetAsync(
-            $"/api/v1/expenses/{expenseSteps._bobExpenseId}/attachments"
+        state.LastResponse = await svc.ListAttachmentsAsync(
+            state.AccessToken,
+            expenseSteps._bobExpenseId!.Value
         );
     }
 
@@ -137,9 +123,10 @@ public class AttachmentSteps(
     {
         state.LastExpenseId.Should().NotBeNull("expense ID should be set");
         state.LastAttachmentId.Should().NotBeNull("attachment ID should be set");
-        var client = auth.AuthorizedClient();
-        state.LastResponse = await client.DeleteAsync(
-            $"/api/v1/expenses/{state.LastExpenseId}/attachments/{state.LastAttachmentId}"
+        state.LastResponse = await svc.DeleteAttachmentAsync(
+            state.AccessToken,
+            state.LastExpenseId!.Value,
+            state.LastAttachmentId!.Value
         );
     }
 
@@ -148,9 +135,10 @@ public class AttachmentSteps(
     {
         expenseSteps._bobExpenseId.Should().NotBeNull("bob's expense ID should be set");
         state.LastAttachmentId.Should().NotBeNull("attachment ID should be set");
-        var client = auth.AuthorizedClient();
-        state.LastResponse = await client.DeleteAsync(
-            $"/api/v1/expenses/{expenseSteps._bobExpenseId}/attachments/{state.LastAttachmentId}"
+        state.LastResponse = await svc.DeleteAttachmentAsync(
+            state.AccessToken,
+            expenseSteps._bobExpenseId!.Value,
+            state.LastAttachmentId!.Value
         );
     }
 
@@ -158,10 +146,11 @@ public class AttachmentSteps(
     public async Task WhenAliceDeletesNonExistentAttachment()
     {
         state.LastExpenseId.Should().NotBeNull("expense ID should be set");
-        var client = auth.AuthorizedClient();
         var randomId = Guid.NewGuid();
-        state.LastResponse = await client.DeleteAsync(
-            $"/api/v1/expenses/{state.LastExpenseId}/attachments/{randomId}"
+        state.LastResponse = await svc.DeleteAttachmentAsync(
+            state.AccessToken,
+            state.LastExpenseId!.Value,
+            randomId
         );
     }
 
@@ -170,10 +159,10 @@ public class AttachmentSteps(
     // ─────────────────────────────────────────────────────────────
 
     [Then(@"^the response body should contain (\d+) items in the ""([^""]+)"" array$")]
-    public async Task ThenResponseContainsItemsInArray(int count, string arrayField)
+    public void ThenResponseContainsItemsInArray(int count, string arrayField)
     {
         state.LastResponse.Should().NotBeNull();
-        var body = await state.LastResponse!.Content.ReadAsStringAsync();
+        var body = state.LastResponse!.Body;
         using var doc = JsonDocument.Parse(body);
         doc.RootElement.TryGetProperty(arrayField, out var arr)
             .Should().BeTrue($"'{arrayField}' not found in: {body}");
@@ -182,18 +171,18 @@ public class AttachmentSteps(
     }
 
     [Then(@"^the response body should contain an attachment with ""filename"" equal to ""([^""]+)""$")]
-    public async Task ThenResponseContainsAttachmentWithFilename(string filename)
+    public void ThenResponseContainsAttachmentWithFilename(string filename)
     {
         state.LastResponse.Should().NotBeNull();
-        var body = await state.LastResponse!.Content.ReadAsStringAsync();
+        var body = state.LastResponse!.Body;
         body.Should().Contain(filename, $"Expected attachment with filename '{filename}' in: {body}");
     }
 
     [Then(@"^the response body should contain an error message about file size$")]
-    public async Task ThenErrorAboutFileSize()
+    public void ThenErrorAboutFileSize()
     {
         state.LastResponse.Should().NotBeNull();
-        var body = await state.LastResponse!.Content.ReadAsStringAsync();
+        var body = state.LastResponse!.Body;
         // 413 status is sufficient
         body.Should().ContainAny("size", "large", "limit", "413", "exceed");
     }

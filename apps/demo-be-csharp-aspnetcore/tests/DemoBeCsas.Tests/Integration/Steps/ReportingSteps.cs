@@ -8,7 +8,7 @@ namespace DemoBeCsas.Tests.Integration.Steps;
 
 [Binding]
 [Trait("Category", "Integration")]
-public class ReportingSteps(SharedState state, AuthSteps auth)
+public class ReportingSteps(ServiceLayer svc, SharedState state)
 {
     // ─────────────────────────────────────────────────────────────
     // When steps — each PL query variant
@@ -55,10 +55,10 @@ public class ReportingSteps(SharedState state, AuthSteps auth)
     // ─────────────────────────────────────────────────────────────
 
     [Then(@"^the income breakdown should contain ""([^""]+)"" with amount ""([^""]+)""$")]
-    public async Task ThenIncomeBreakdownContains(string category, string amount)
+    public void ThenIncomeBreakdownContains(string category, string amount)
     {
         state.LastResponse.Should().NotBeNull();
-        var body = await state.LastResponse!.Content.ReadAsStringAsync();
+        var body = state.LastResponse!.Body;
         using var doc = JsonDocument.Parse(body);
         doc.RootElement.TryGetProperty("income_breakdown", out var breakdown)
             .Should().BeTrue($"'income_breakdown' not found in: {body}");
@@ -71,10 +71,10 @@ public class ReportingSteps(SharedState state, AuthSteps auth)
     }
 
     [Then(@"^the expense breakdown should contain ""([^""]+)"" with amount ""([^""]+)""$")]
-    public async Task ThenExpenseBreakdownContains(string category, string amount)
+    public void ThenExpenseBreakdownContains(string category, string amount)
     {
         state.LastResponse.Should().NotBeNull();
-        var body = await state.LastResponse!.Content.ReadAsStringAsync();
+        var body = state.LastResponse!.Body;
         using var doc = JsonDocument.Parse(body);
         doc.RootElement.TryGetProperty("expense_breakdown", out var breakdown)
             .Should().BeTrue($"'expense_breakdown' not found in: {body}");
@@ -92,9 +92,6 @@ public class ReportingSteps(SharedState state, AuthSteps auth)
 
     private async Task PerformGetPl(string from, string to, string currency)
     {
-        var client = auth.AuthorizedClient();
-        state.LastResponse = await client.GetAsync(
-            $"/api/v1/reports/pl?from={from}&to={to}&currency={currency}"
-        );
+        state.LastResponse = await svc.GetPlReportAsync(state.AccessToken, from, to, currency);
     }
 }

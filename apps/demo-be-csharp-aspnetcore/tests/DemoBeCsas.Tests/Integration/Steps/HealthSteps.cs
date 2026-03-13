@@ -8,36 +8,34 @@ namespace DemoBeCsas.Tests.Integration.Steps;
 
 [Binding]
 [Trait("Category", "Integration")]
-public class HealthSteps(TestWebApplicationFactory factory, SharedState state)
+public class HealthSteps(ServiceLayer svc, SharedState state)
 {
     [When(@"^an operations engineer sends GET \/health$")]
-    public async Task WhenGetHealth()
+    public void WhenGetHealth()
     {
-        var client = factory.CreateClient();
-        state.LastResponse = await client.GetAsync("/health");
+        state.LastResponse = svc.HealthCheck();
     }
 
     [When(@"^an unauthenticated engineer sends GET \/health$")]
-    public async Task WhenUnauthenticatedGetHealth()
+    public void WhenUnauthenticatedGetHealth()
     {
-        var client = factory.CreateClient();
-        state.LastResponse = await client.GetAsync("/health");
+        state.LastResponse = svc.HealthCheck();
     }
 
     [Then("the health status should be {string}")]
-    public async Task ThenHealthStatus(string expectedStatus)
+    public void ThenHealthStatus(string expectedStatus)
     {
         state.LastResponse.Should().NotBeNull();
-        var body = await state.LastResponse!.Content.ReadAsStringAsync();
+        var body = state.LastResponse!.Body;
         using var doc = JsonDocument.Parse(body);
         doc.RootElement.GetProperty("status").GetString().Should().Be(expectedStatus);
     }
 
     [Then("the response should not include detailed component health information")]
-    public async Task ThenNoDetailedHealthInfo()
+    public void ThenNoDetailedHealthInfo()
     {
         state.LastResponse.Should().NotBeNull();
-        var body = await state.LastResponse!.Content.ReadAsStringAsync();
+        var body = state.LastResponse!.Body;
         body.Should().NotContain("components");
         body.Should().NotContain("details");
     }

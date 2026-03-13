@@ -9,10 +9,7 @@ namespace DemoBeCsas.Tests.Integration.Steps;
 
 [Binding]
 [Trait("Category", "Integration")]
-public class TokenManagementSteps(
-    TestWebApplicationFactory factory,
-    SharedState state
-)
+public class TokenManagementSteps(ServiceLayer svc, SharedState state)
 {
     // ─────────────────────────────────────────────────────────────
     // When steps
@@ -26,10 +23,9 @@ public class TokenManagementSteps(
     }
 
     [When(@"^the client sends GET /\.well-known/jwks\.json$")]
-    public async Task WhenGetJwks()
+    public void WhenGetJwks()
     {
-        var client = factory.CreateClient();
-        state.LastResponse = await client.GetAsync("/.well-known/jwks.json");
+        state.LastResponse = svc.GetJwks();
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -66,10 +62,10 @@ public class TokenManagementSteps(
     }
 
     [Then(@"^the response body should contain at least one key in the ""keys"" array$")]
-    public async Task ThenJwksContainsKeys()
+    public void ThenJwksContainsKeys()
     {
         state.LastResponse.Should().NotBeNull();
-        var body = await state.LastResponse!.Content.ReadAsStringAsync();
+        var body = state.LastResponse!.Body;
         using var doc = JsonDocument.Parse(body);
         doc.RootElement.TryGetProperty("keys", out var keys).Should().BeTrue($"'keys' not found in: {body}");
         keys.GetArrayLength().Should().BeGreaterThan(0, "JWKS should contain at least one key");

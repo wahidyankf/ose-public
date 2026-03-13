@@ -1,4 +1,3 @@
-using System.Text;
 using System.Text.Json;
 using DemoBeCsas.Tests.ScenarioContext;
 using FluentAssertions;
@@ -9,7 +8,7 @@ namespace DemoBeCsas.Tests.Integration.Steps;
 
 [Binding]
 [Trait("Category", "Integration")]
-public class ExpenseSteps(TestWebApplicationFactory factory, SharedState state, AuthSteps auth)
+public class ExpenseSteps(ServiceLayer svc, SharedState state, AuthSteps auth)
 {
     internal Guid? _bobExpenseId;
 
@@ -18,19 +17,27 @@ public class ExpenseSteps(TestWebApplicationFactory factory, SharedState state, 
     // ─────────────────────────────────────────────────────────────
 
     [Given(@"^alice has created an entry with body (.+)$")]
-    public async Task GivenAliceCreatedEntry(string body)
+    public async Task GivenAliceCreatedEntry(string bodyJson)
     {
-        var client = auth.AuthorizedClient();
-        var response = await client.PostAsync(
-            "/api/v1/expenses",
-            new StringContent(body, Encoding.UTF8, "application/json")
+        var (desc, title, category, amount, currency, type, quantity, unit, date) =
+            ParseExpenseBody(bodyJson);
+        var response = await svc.CreateExpenseAsync(
+            state.AccessToken,
+            desc,
+            title,
+            category,
+            amount,
+            currency,
+            type,
+            quantity,
+            unit,
+            date
         );
         ((int)response.StatusCode).Should().Be(
             201,
-            $"Failed to create entry: {await response.Content.ReadAsStringAsync()}"
+            $"Failed to create entry: {response.Body}"
         );
-        var responseBody = await response.Content.ReadAsStringAsync();
-        using var doc = JsonDocument.Parse(responseBody);
+        using var doc = JsonDocument.Parse(response.Body);
         if (doc.RootElement.TryGetProperty("id", out var idEl))
         {
             state.LastExpenseId = Guid.Parse(idEl.GetString()!);
@@ -38,7 +45,8 @@ public class ExpenseSteps(TestWebApplicationFactory factory, SharedState state, 
     }
 
     [Given(@"^alice has created an expense with body (.+)$")]
-    public async Task GivenAliceCreatedExpense(string body) => await GivenAliceCreatedEntry(body);
+    public async Task GivenAliceCreatedExpense(string bodyJson) =>
+        await GivenAliceCreatedEntry(bodyJson);
 
     [Given(@"^alice has created 3 entries$")]
     public async Task GivenAliceCreated3Entries()
@@ -56,25 +64,30 @@ public class ExpenseSteps(TestWebApplicationFactory factory, SharedState state, 
     }
 
     [Given(@"^bob has created an entry with body (.+)$")]
-    public async Task GivenBobCreatedEntry(string body)
+    public async Task GivenBobCreatedEntry(string bodyJson)
     {
-        // Login as bob (bob was registered earlier in the scenario background)
         var (bobToken, _) = await auth.LoginUserAsync("bob", "Str0ng#Pass2");
         bobToken.Should().NotBeNull("bob should be able to login");
 
-        var client = factory.CreateClient();
-        client.DefaultRequestHeaders.Authorization =
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", bobToken!);
-        var response = await client.PostAsync(
-            "/api/v1/expenses",
-            new StringContent(body, Encoding.UTF8, "application/json")
+        var (desc, title, category, amount, currency, type, quantity, unit, date) =
+            ParseExpenseBody(bodyJson);
+        var response = await svc.CreateExpenseAsync(
+            bobToken,
+            desc,
+            title,
+            category,
+            amount,
+            currency,
+            type,
+            quantity,
+            unit,
+            date
         );
         ((int)response.StatusCode).Should().Be(
             201,
-            $"Failed to create bob's entry: {await response.Content.ReadAsStringAsync()}"
+            $"Failed to create bob's entry: {response.Body}"
         );
-        var responseBody = await response.Content.ReadAsStringAsync();
-        using var doc = JsonDocument.Parse(responseBody);
+        using var doc = JsonDocument.Parse(response.Body);
         if (doc.RootElement.TryGetProperty("id", out var idEl))
         {
             _bobExpenseId = Guid.Parse(idEl.GetString()!);
@@ -86,17 +99,25 @@ public class ExpenseSteps(TestWebApplicationFactory factory, SharedState state, 
     // ─────────────────────────────────────────────────────────────
 
     [When(@"^alice sends POST /api/v1/expenses with body (.+)$")]
-    public async Task WhenAliceCreatesExpense(string body)
+    public async Task WhenAliceCreatesExpense(string bodyJson)
     {
-        var client = auth.AuthorizedClient();
-        state.LastResponse = await client.PostAsync(
-            "/api/v1/expenses",
-            new StringContent(body, Encoding.UTF8, "application/json")
+        var (desc, title, category, amount, currency, type, quantity, unit, date) =
+            ParseExpenseBody(bodyJson);
+        state.LastResponse = await svc.CreateExpenseAsync(
+            state.AccessToken,
+            desc,
+            title,
+            category,
+            amount,
+            currency,
+            type,
+            quantity,
+            unit,
+            date
         );
-        if (state.LastResponse.IsSuccessStatusCode)
+        if (state.LastResponse.IsSuccess)
         {
-            var responseBody = await state.LastResponse.Content.ReadAsStringAsync();
-            using var doc = JsonDocument.Parse(responseBody);
+            using var doc = JsonDocument.Parse(state.LastResponse.Body);
             if (doc.RootElement.TryGetProperty("id", out var idEl))
             {
                 state.LastExpenseId = Guid.Parse(idEl.GetString()!);
@@ -105,12 +126,21 @@ public class ExpenseSteps(TestWebApplicationFactory factory, SharedState state, 
     }
 
     [When(@"^the client sends POST /api/v1/expenses with body (.+)$")]
-    public async Task WhenUnauthenticatedClientCreatesExpense(string body)
+    public async Task WhenUnauthenticatedClientCreatesExpense(string bodyJson)
     {
-        var client = factory.CreateClient();
-        state.LastResponse = await client.PostAsync(
-            "/api/v1/expenses",
-            new StringContent(body, Encoding.UTF8, "application/json")
+        var (desc, title, category, amount, currency, type, quantity, unit, date) =
+            ParseExpenseBody(bodyJson);
+        state.LastResponse = await svc.CreateExpenseAsync(
+            null, // no token — unauthenticated
+            desc,
+            title,
+            category,
+            amount,
+            currency,
+            type,
+            quantity,
+            unit,
+            date
         );
     }
 
@@ -118,25 +148,33 @@ public class ExpenseSteps(TestWebApplicationFactory factory, SharedState state, 
     public async Task WhenAliceGetsExpense()
     {
         state.LastExpenseId.Should().NotBeNull("expense ID should be set");
-        var client = auth.AuthorizedClient();
-        state.LastResponse = await client.GetAsync($"/api/v1/expenses/{state.LastExpenseId}");
+        state.LastResponse = await svc.GetExpenseAsync(state.AccessToken, state.LastExpenseId!.Value);
     }
 
     [When(@"^alice sends GET /api/v1/expenses$")]
     public async Task WhenAliceListsExpenses()
     {
-        var client = auth.AuthorizedClient();
-        state.LastResponse = await client.GetAsync("/api/v1/expenses?page=1&size=20");
+        state.LastResponse = await svc.ListExpensesAsync(state.AccessToken);
     }
 
     [When(@"^alice sends PUT /api/v1/expenses/\{expenseId\} with body (.+)$")]
-    public async Task WhenAliceUpdatesExpense(string body)
+    public async Task WhenAliceUpdatesExpense(string bodyJson)
     {
         state.LastExpenseId.Should().NotBeNull("expense ID should be set");
-        var client = auth.AuthorizedClient();
-        state.LastResponse = await client.PutAsync(
-            $"/api/v1/expenses/{state.LastExpenseId}",
-            new StringContent(body, Encoding.UTF8, "application/json")
+        var (desc, title, category, amount, currency, type, quantity, unit, date) =
+            ParseExpenseBody(bodyJson);
+        state.LastResponse = await svc.UpdateExpenseAsync(
+            state.AccessToken,
+            state.LastExpenseId!.Value,
+            desc,
+            title,
+            category,
+            amount,
+            currency,
+            type,
+            quantity,
+            unit,
+            date
         );
     }
 
@@ -144,15 +182,16 @@ public class ExpenseSteps(TestWebApplicationFactory factory, SharedState state, 
     public async Task WhenAliceDeletesExpense()
     {
         state.LastExpenseId.Should().NotBeNull("expense ID should be set");
-        var client = auth.AuthorizedClient();
-        state.LastResponse = await client.DeleteAsync($"/api/v1/expenses/{state.LastExpenseId}");
+        state.LastResponse = await svc.DeleteExpenseAsync(
+            state.AccessToken,
+            state.LastExpenseId!.Value
+        );
     }
 
     [When(@"^alice sends GET /api/v1/expenses/summary$")]
     public async Task WhenAliceGetsSummary()
     {
-        var client = auth.AuthorizedClient();
-        state.LastResponse = await client.GetAsync("/api/v1/expenses/summary");
+        state.LastResponse = await svc.GetExpenseSummaryAsync(state.AccessToken);
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -160,10 +199,10 @@ public class ExpenseSteps(TestWebApplicationFactory factory, SharedState state, 
     // ─────────────────────────────────────────────────────────────
 
     [Then(@"^the response body should contain ""([^""]+)"" equal to (\d+(?:\.\d+)?)$")]
-    public async Task ThenResponseBodyContainsNumericField(string field, double value)
+    public void ThenResponseBodyContainsNumericField(string field, double value)
     {
         state.LastResponse.Should().NotBeNull();
-        var body = await state.LastResponse!.Content.ReadAsStringAsync();
+        var body = state.LastResponse!.Body;
         using var doc = JsonDocument.Parse(body);
         doc.RootElement.TryGetProperty(field, out var el)
             .Should().BeTrue($"Field '{field}' not found in: {body}");
@@ -174,10 +213,10 @@ public class ExpenseSteps(TestWebApplicationFactory factory, SharedState state, 
     }
 
     [Then(@"^the response body should contain ""([^""]+)"" total equal to ""([^""]+)""$")]
-    public async Task ThenResponseBodyContainsCurrencyTotal(string currency, string expectedTotal)
+    public void ThenResponseBodyContainsCurrencyTotal(string currency, string expectedTotal)
     {
         state.LastResponse.Should().NotBeNull();
-        var body = await state.LastResponse!.Content.ReadAsStringAsync();
+        var body = state.LastResponse!.Body;
         using var doc = JsonDocument.Parse(body);
         doc.RootElement.TryGetProperty(currency, out var el)
             .Should().BeTrue($"Currency '{currency}' not found in: {body}");
@@ -185,5 +224,54 @@ public class ExpenseSteps(TestWebApplicationFactory factory, SharedState state, 
             ? el.GetDecimal()
             : decimal.Parse(el.GetString()!);
         actual.Should().Be(decimal.Parse(expectedTotal));
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // Helpers
+    // ─────────────────────────────────────────────────────────────
+
+    private static (
+        string? Description,
+        string? Title,
+        string? Category,
+        decimal Amount,
+        string? Currency,
+        string? Type,
+        double? Quantity,
+        string? Unit,
+        string? Date
+    ) ParseExpenseBody(string bodyJson)
+    {
+        using var doc = JsonDocument.Parse(bodyJson);
+        var root = doc.RootElement;
+
+        string? description = root.TryGetProperty("description", out var d) ? d.GetString() : null;
+        string? title = root.TryGetProperty("title", out var t) ? t.GetString() : null;
+        string? category = root.TryGetProperty("category", out var c) ? c.GetString() : null;
+        string? currency = root.TryGetProperty("currency", out var cur) ? cur.GetString() : null;
+        string? type = root.TryGetProperty("type", out var tp) ? tp.GetString() : null;
+        string? unit = root.TryGetProperty("unit", out var u) ? u.GetString() : null;
+        string? date = root.TryGetProperty("date", out var dt) ? dt.GetString() : null;
+
+        decimal amount = 0m;
+        if (root.TryGetProperty("amount", out var amtEl))
+        {
+            if (amtEl.ValueKind == JsonValueKind.Number)
+            {
+                amount = amtEl.GetDecimal();
+            }
+            else if (amtEl.ValueKind == JsonValueKind.String)
+            {
+                amount = decimal.Parse(amtEl.GetString()!, System.Globalization.CultureInfo.InvariantCulture);
+            }
+        }
+
+        double? quantity = null;
+        if (root.TryGetProperty("quantity", out var qEl) && qEl.ValueKind == JsonValueKind.Number)
+        {
+            quantity = qEl.GetDouble();
+        }
+
+        return (description, title, category, amount, currency, type, quantity, unit, date);
     }
 }

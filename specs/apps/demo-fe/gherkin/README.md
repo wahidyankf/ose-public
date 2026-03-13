@@ -37,7 +37,9 @@ These specs are the **frontend counterpart** to
 - **demo-be**: HTTP-semantic (GET, POST, status codes, response bodies)
 - **demo-fe**: UI-semantic (clicks, types, sees, navigates, form submissions)
 
-The demo-fe app consumes the demo-be API. Step definitions translate UI actions into API calls.
+Each `apps/demo-fe-{framework}/` (e.g., `demo-fe-react-nextjs`) consumes these specs, just as
+`apps/demo-be-{lang}-{framework}/` consumes `specs/apps/demo-be/gherkin/`. Step definitions
+translate UI actions into component renders and API call verifications.
 
 ## Related
 

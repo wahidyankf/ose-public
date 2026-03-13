@@ -30,29 +30,59 @@ expense CRUD, financial reporting, and file attachment handling.
 Both spec sets cover the same functional surface. The frontend app consumes the backend API — step
 definitions translate UI actions into API calls and verify the rendered output.
 
-## Spec Consumption
+## Implementations
 
-Frontend implementations consume these specs at **two test levels**:
+Each frontend implementation lives in `apps/demo-fe-{framework}/` (e.g., `demo-fe-react-nextjs`,
+`demo-fe-vue-nuxt`). This mirrors the backend pattern where `specs/apps/demo-be/` is consumed by
+`apps/demo-be-{lang}-{framework}/`.
+
+Frontend implementations consume these 76 Gherkin scenarios at **three test levels**. The feature
+files are the shared contract — only the step implementations differ per level.
 
 | Level           | Nx Target          | What Happens                                         | Dependencies                |
 | --------------- | ------------------ | ---------------------------------------------------- | --------------------------- |
+| **Unit**        | `test:unit`        | Steps test component logic with mocked API calls     | All mocked                  |
 | **Integration** | `test:integration` | Steps render components with mocked API responses    | MSW or similar mock layer   |
 | **E2E**         | `test:e2e`         | Playwright drives a real browser against running app | Full running frontend + API |
+
+### Unit Level
+
+- Steps test component logic and state management with fully mocked dependencies
+- No DOM rendering, no HTTP calls
+- Coverage is measured here (>=90% line coverage via `rhino-cli test-coverage validate`)
+- All 76 scenarios must pass
 
 ### Integration Level
 
 - Steps render components in a test harness (JSDOM, Testing Library, etc.)
 - API responses are mocked (MSW, vi.mock, etc.)
 - No real backend needed — all API calls intercepted
-- Coverage is measured here (>=90% line coverage)
 - All 76 scenarios must pass
 
 ### E2E Level
 
 - Playwright drives a real browser
-- Frontend runs against a real backend (demo-be) with real PostgreSQL
+- Frontend runs against a real backend (demo-be-\*) with real PostgreSQL
 - Tests verify full user journeys end-to-end
 - All 76 scenarios must pass
+
+### Recommended Directory Structure for Step Definitions
+
+Each frontend implementation should separate test levels:
+
+```
+apps/demo-fe-{framework}/
+├── src/                          # Application source code
+├── test/
+│   ├── unit/                     # Unit-level step definitions (mocked deps)
+│   │   ├── steps/                # Gherkin step implementations
+│   │   └── support/              # Test helpers, mock factories
+│   └── integration/              # Integration-level step definitions (rendered components)
+│       ├── steps/                # Gherkin step implementations
+│       └── support/              # MSW handlers, test harness setup
+├── project.json
+└── README.md
+```
 
 ## Feature File Organization
 

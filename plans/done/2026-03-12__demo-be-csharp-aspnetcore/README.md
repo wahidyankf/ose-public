@@ -12,7 +12,7 @@ using C# 12 and ASP.NET Core 9 Minimal APIs.
 
 - Provide a functionally equivalent backend to all existing `demo-be-*` implementations using
   the C# / .NET ecosystem
-- Consume the shared `specs/apps/demo-be/gherkin/` Gherkin feature files (76 scenarios across
+- Consume the shared `specs/apps/demo/be/gherkin/` Gherkin feature files (76 scenarios across
   13 feature files) for BDD integration tests
 - Integrate into the Nx monorepo with the same target surface (`build`, `dev`, `start`,
   `test:quick`, `test:unit`, `test:integration`, `lint`, `typecheck`)
@@ -100,7 +100,7 @@ using C# 12 and ASP.NET Core 9 Minimal APIs.
 - `infra/dev/demo-be-csharp-aspnetcore/` — Docker Compose dev infra
 - `.github/workflows/e2e-demo-be-csharp-aspnetcore.yml` — E2E workflow
 - `.github/workflows/main-ci.yml` — .NET SDK setup + coverage upload
-- `specs/apps/demo-be/` — shared Gherkin specs (consumed, not modified)
+- `specs/apps/demo/be/` — shared Gherkin specs (consumed, not modified)
 - `apps/demo-be-e2e/` — reused Playwright E2E suite (consumed, not modified)
 
 ## Files to Update
@@ -109,7 +109,7 @@ using C# 12 and ASP.NET Core 9 Minimal APIs.
 | ------------------------------- | ------------------------------------------------------------------------ |
 | `CLAUDE.md`                     | Add demo-be-csharp-aspnetcore to Current Apps list, add C# coverage info |
 | `README.md`                     | Add demo-be-csharp-aspnetcore badge and description in demo apps section |
-| `specs/apps/demo-be/README.md`  | Add C#/ASP.NET Core row to Implementations table                         |
+| `specs/apps/demo/be/README.md`  | Add C#/ASP.NET Core row to Implementations table                         |
 | `apps/demo-be-e2e/project.json` | Add `demo-be-csharp-aspnetcore` to `implicitDependencies`                |
 | `.github/workflows/main-ci.yml` | Add .NET SDK setup + coverage upload step                                |
 

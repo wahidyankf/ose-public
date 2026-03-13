@@ -40,7 +40,7 @@
       "inputs": [
         "{projectRoot}/src/**",
         "{projectRoot}/pom.xml",
-        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature"
       ]
     },
     "test:unit": {
@@ -52,7 +52,7 @@
       "inputs": [
         "{projectRoot}/src/**",
         "{projectRoot}/pom.xml",
-        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature"
       ]
     },
     "test:integration": {
@@ -66,10 +66,7 @@
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": [
-          "mvn checkstyle:check",
-          "mvn pmd:check"
-        ],
+        "commands": ["mvn checkstyle:check", "mvn pmd:check"],
         "parallel": false,
         "cwd": "apps/demo-be-java-vertx"
       }

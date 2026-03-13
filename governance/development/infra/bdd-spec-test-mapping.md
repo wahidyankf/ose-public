@@ -148,12 +148,12 @@ rhino-cli spec-coverage validate specs/apps/rhino-cli apps/rhino-cli
 
 ## Demo-be Backend: Three-Level Spec Consumption
 
-All 11 demo-be backends consume the **same 76 Gherkin scenarios** from `specs/apps/demo-be/gherkin/` at three test levels. The feature files are the shared contract — only the step implementations change per level.
+All 11 demo-be backends consume the **same 76 Gherkin scenarios** from `specs/apps/demo/be/gherkin/` at three test levels. The feature files are the shared contract — only the step implementations change per level.
 
 ### Shared Specs
 
 ```
-specs/apps/demo-be/gherkin/
+specs/apps/demo/be/gherkin/
 ├── auth/
 │   ├── login.feature
 │   ├── register.feature
@@ -224,4 +224,4 @@ All three commands must report 76 scenarios passing. The Gherkin feature files s
 - [Nx Target Standards](./nx-targets.md) - `test:integration` target definitions and caching rules
 - [specs/README.md](../../../specs/README.md) - Spec directory organization
 - [specs/apps/rhino-cli/README.md](../../../specs/apps/rhino-cli/README.md) - rhino-cli spec structure
-- [specs/apps/demo-be/README.md](../../../specs/apps/demo-be/README.md) - Demo-be spec structure and three-level consumption
+- [specs/apps/demo/be/README.md](../../../specs/apps/demo/be/README.md) - Demo-be spec structure and three-level consumption

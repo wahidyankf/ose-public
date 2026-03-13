@@ -21,7 +21,7 @@ Standardize testing across **all apps and libs** in the monorepo with three simp
 2. **All apps must also have integration tests** (`test:integration`) — libs are exempt; Hugo/static sites are exempt
 3. **All web apps (APIs and web UIs) must have E2E tests** (`test:e2e`) — CLIs and libs are exempt; Hugo/static sites are exempt
 
-These rules determine the mandatory test levels for each project. Integration tests for demo-be backends run in Docker (docker-compose with PostgreSQL). For demo-be backends specifically, the same Gherkin specs (`specs/apps/demo-be/gherkin/`) serve as the contract at every level — only the step implementations change.
+These rules determine the mandatory test levels for each project. Integration tests for demo-be backends run in Docker (docker-compose with PostgreSQL). For demo-be backends specifically, the same Gherkin specs (`specs/apps/demo/be/gherkin/`) serve as the contract at every level — only the step implementations change.
 
 ## Project Inventory
 

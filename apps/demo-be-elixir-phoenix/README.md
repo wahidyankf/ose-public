@@ -136,7 +136,7 @@ deployed stack. See that project's README for details.
 
 ## BDD Feature Specifications
 
-Feature specifications live in `specs/apps/demo-be/gherkin/` (workspace root) and are shared
+Feature specifications live in `specs/apps/demo/be/gherkin/` (workspace root) and are shared
 across all demo backend implementations. 76 scenarios across 13 feature domains cover:
 
 - Health check

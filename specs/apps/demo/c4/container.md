@@ -1,0 +1,58 @@
+# Container Diagram: Demo Application
+
+Level 2 of the C4 model. Shows the five runtime containers inside the Demo Application system
+boundary: the browser-based SPA, the static file server, the REST API, the database, and file
+storage.
+
+The SPA runs in the user's browser. Build artifacts are served by a static file server (CDN, Nginx,
+or framework dev server). All API calls go through the REST API to the database and file storage.
+The token blacklist is stored inside the Database — no separate cache is required at demo scale.
+
+```mermaid
+%% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Brown #CA9161 | Gray #808080
+graph TD
+    EU("End User<br/>Desktop / Tablet / Mobile"):::actor
+    ADM("Administrator"):::actor_admin
+    OPS("Operations Engineer"):::actor_ops
+    SI("Service Integrator"):::actor_si
+
+    subgraph SYSTEM["Demo Application"]
+        SPA["Single Page Application<br/>──────────────────<br/>Browser-based SPA<br/><br/>Responsive layout<br/>Client-side routing<br/>State management<br/>Form validation<br/>Token management"]:::container_fe
+
+        STATIC["Static File Server<br/>──────────────────<br/>CDN or Nginx<br/><br/>HTML, CSS, JS bundles<br/>Static assets"]:::infra
+
+        API["REST API<br/>──────────────────<br/>Single REST API<br/><br/>All HTTP routes<br/>Auth enforcement<br/>Input validation<br/>Business logic<br/>JWKS endpoint"]:::container_be
+
+        DB[("Database<br/>──────────────────<br/>SQLite or Postgres<br/><br/>Users and status<br/>Tokens and blacklist<br/>Entries<br/>Attachment metadata")]:::datastore
+
+        FS[("File Storage<br/>──────────────────<br/>Filesystem or volume<br/><br/>JPEG, PNG, PDF")]:::filestorage
+    end
+
+    EU -->|"browser"| SPA
+    ADM -->|"browser"| SPA
+    OPS -->|"browser / health check"| SPA
+    SI -->|"JWKS public key"| API
+
+    SPA -->|"initial page load"| STATIC
+    SPA -->|"REST API calls<br/>JSON + multipart"| API
+
+    API -->|"users, tokens, entries"| DB
+    API -->|"binary files"| FS
+
+    classDef actor fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef actor_admin fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef actor_ops fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef actor_si fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef container_fe fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef container_be fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef infra fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef datastore fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef filestorage fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px,stroke-dasharray:5 5
+```
+
+## Related
+
+- **Context diagram**: [context.md](./context.md)
+- **Backend component diagram**: [component-be.md](./component-be.md)
+- **Frontend component diagram**: [component-fe.md](./component-fe.md)
+- **Parent**: [demo specs](../README.md)

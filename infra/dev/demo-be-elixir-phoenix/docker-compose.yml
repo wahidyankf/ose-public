@@ -39,7 +39,7 @@ services:
       - ../../../apps/demo-be-elixir-phoenix:/workspace:rw
       - ../../../libs/elixir-gherkin:/libs/elixir-gherkin:ro
       - ../../../libs/elixir-cabbage:/libs/elixir-cabbage:ro
-      - ../../../specs/apps/demo-be/gherkin:/specs/apps/demo-be/gherkin:ro
+      - ../../../specs/apps/demo/be/gherkin:/specs/apps/demo/be/gherkin:ro
 
     ports:
       - "8201:8201"

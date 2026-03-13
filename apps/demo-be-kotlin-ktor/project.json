@@ -39,7 +39,7 @@
       "inputs": [
         "{projectRoot}/src/**",
         "{projectRoot}/build.gradle.kts",
-        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature"
       ]
     },
     "test:unit": {

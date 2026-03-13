@@ -101,7 +101,7 @@ and runs `testIntegration` against the PostgreSQL service.
 ### Cucumber Glue Isolation
 
 Both unit and integration test suites share the same Gherkin feature files
-(`specs/apps/demo-be/gherkin/`). The `cucumber.glue` system property in each Gradle task controls
+(`specs/apps/demo/be/gherkin/`). The `cucumber.glue` system property in each Gradle task controls
 which step definitions are used:
 
 - `testUnit`: `cucumber.glue=com.demobektkt.unit.steps`

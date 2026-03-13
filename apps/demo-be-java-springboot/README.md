@@ -481,7 +481,7 @@ apps/demo-be-java-springboot/
 
 ## Testing
 
-Three levels of testing consume the same 76 Gherkin scenarios from `specs/apps/demo-be/gherkin/`:
+Three levels of testing consume the same 76 Gherkin scenarios from `specs/apps/demo/be/gherkin/`:
 
 | Level       | Tool                           | Dependencies         | Command                                           | Cached? |
 | ----------- | ------------------------------ | -------------------- | ------------------------------------------------- | ------- |

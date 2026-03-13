@@ -24,6 +24,6 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: "postgresql://demo_be_fastapi:demo_be_fastapi@postgres:5432/demo_be_fastapi_test"
-      GHERKIN_ROOT: "/specs/apps/demo-be/gherkin"
+      GHERKIN_ROOT: "/specs/apps/demo/be/gherkin"
     volumes:
       - ../../specs:/specs:ro

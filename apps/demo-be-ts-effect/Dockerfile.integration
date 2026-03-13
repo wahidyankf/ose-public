@@ -23,7 +23,7 @@ COPY cucumber.js .
 # Specs are mounted from the host by docker-compose.
 # DATABASE_URL and APP_JWT_SECRET are supplied by docker-compose.
 CMD ["sh", "-c", \
-     "cp -r /specs/apps/demo-be/gherkin /tmp/gherkin && \
+     "cp -r /specs/apps/demo/be/gherkin /tmp/gherkin && \
       npx cucumber-js '/tmp/gherkin/**/*.feature' \
         --require-module tsx/cjs \
         --require tests/integration/hooks.ts \

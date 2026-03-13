@@ -40,7 +40,7 @@
         "{projectRoot}/src/**/*",
         "{projectRoot}/test/**/*",
         "{projectRoot}/tests.edn",
-        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature"
       ],
       "outputs": ["{projectRoot}/coverage"]
     },
@@ -54,7 +54,7 @@
         "{projectRoot}/src/**/*",
         "{projectRoot}/test/**/*",
         "{projectRoot}/tests.edn",
-        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature"
       ]
     },
     "test:integration": {

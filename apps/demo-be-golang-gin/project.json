@@ -36,7 +36,7 @@
       "inputs": [
         "{projectRoot}/internal/**/*.go",
         "{projectRoot}/cmd/**/*.go",
-        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature"
       ],
       "outputs": ["{projectRoot}/cover.out", "{projectRoot}/cover_unit.out"]
     },

@@ -39,7 +39,7 @@
       "inputs": [
         "{projectRoot}/src/**/*.cs",
         "{projectRoot}/tests/**/*.cs",
-        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature"
       ]
     },
     "test:unit": {

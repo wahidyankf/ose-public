@@ -6,7 +6,7 @@
 
 - **Infrastructure**: Mocks exclusively. No real databases, no HTTP calls, no API calls, no external services.
 - **Entry point**: Call application code directly (service/handler/context functions). NOT through HTTP or Playwright.
-- **Spec consumption** (demo-be only): MUST consume all corresponding Gherkin specs from `specs/apps/demo-be/gherkin/`. Gherkin step definitions call service/handler functions with mocked dependencies.
+- **Spec consumption** (demo-be only): MUST consume all corresponding Gherkin specs from `specs/apps/demo/be/gherkin/`. Gherkin step definitions call service/handler functions with mocked dependencies.
 - **Additional scope**: Individual function tests (pure logic, validation, domain rules) that go beyond what Gherkin covers.
 - **Applies to**: All projects except Hugo static sites and E2E runners.
 - **Deterministic**: Yes. Fully cacheable.
@@ -138,7 +138,7 @@ All 11 backends need to migrate to PostgreSQL. Four backends currently use SQLit
 
 E2E tests already align with the new standard:
 
-- **`demo-be-e2e`**: Uses Playwright + playwright-bdd, consumes `specs/apps/demo-be/gherkin/**/*.feature`, makes real HTTP calls. **Already compliant.**
+- **`demo-be-e2e`**: Uses Playwright + playwright-bdd, consumes `specs/apps/demo/be/gherkin/**/*.feature`, makes real HTTP calls. **Already compliant.**
 - **`organiclever-web-e2e`**: Uses Playwright + bddgen, tests organiclever-web. **Already compliant.**
 
 ## Gap Analysis
@@ -282,7 +282,7 @@ Key design decisions:
 3. **Clean spawn**: `docker compose down -v && docker compose up --abort-on-container-exit` ensures no state carries over. The `-v` flag removes volumes (database data).
 4. **Migrations**: The test runner container runs migrations as its first step (Flyway, Ecto, EF Core, Diesel, Alembic, JDBC, etc.) before executing tests.
 5. **Seed files**: If a backend has seed data (e.g., default admin user, reference data), the seed file executes after migrations and before tests. Each backend defines its own seed mechanism.
-6. **Specs mount**: Gherkin specs from `specs/apps/demo-be/gherkin/` are mounted read-only into the test runner container at `/specs`.
+6. **Specs mount**: Gherkin specs from `specs/apps/demo/be/gherkin/` are mounted read-only into the test runner container at `/specs`.
 7. **Nx target**: `test:integration` runs `docker compose -f docker-compose.integration.yml down -v && docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build` and checks the exit code. NOT cacheable (`cache: false` in nx.json) — Docker builds and container execution are not tracked by Nx file-based caching.
 8. **Coverage extraction**: The test runner writes coverage reports to a mounted volume so `rhino-cli test-coverage validate` can read them on the host.
 
@@ -397,7 +397,7 @@ Both paths guarantee `test:quick` runs. PRs additionally run `typecheck` and `li
 - **Three-level consumption** — Document that specs are consumed at unit, integration, AND e2e levels with different step implementations.
 - **Validation** — Define how to validate that all 76 scenarios pass at each level.
 
-#### 4. `specs/apps/demo-be/README.md`
+#### 4. `specs/apps/demo/be/README.md`
 
 **Sections to add/update**:
 
@@ -420,7 +420,7 @@ Both paths guarantee `test:quick` runs. PRs additionally run `typecheck` and `li
 - **`test:unit` target** — Add or update to run BDD specs with mocked dependencies + pure function tests.
 - **`test:integration` target** — Update to run BDD specs via docker-compose with real PostgreSQL, no HTTP.
 - **`test:quick` target** — Ensure it runs `test:unit` + coverage check + specs coverage check. Does NOT include lint, typecheck, `test:integration`, or `test:e2e`.
-- **Caching inputs** — Ensure `specs/apps/demo-be/gherkin/**/*.feature`, `docker-compose.integration.yml`, and `Dockerfile.integration` are in inputs for `test:integration`. Specs also in inputs for `test:unit`.
+- **Caching inputs** — Ensure `specs/apps/demo/be/gherkin/**/*.feature`, `docker-compose.integration.yml`, and `Dockerfile.integration` are in inputs for `test:integration`. Specs also in inputs for `test:unit`.
 
 ### Files That Do NOT Need Documentation Overhaul
 

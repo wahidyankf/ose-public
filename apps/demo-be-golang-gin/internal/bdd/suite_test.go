@@ -13,7 +13,7 @@ func TestUnit(t *testing.T) {
 		ScenarioInitializer: initializeScenario,
 		Options: &godog.Options{
 			Format:   "pretty",
-			Paths:    []string{"../../../../specs/apps/demo-be/gherkin"},
+			Paths:    []string{"../../../../specs/apps/demo/be/gherkin"},
 			TestingT: t,
 		},
 	}

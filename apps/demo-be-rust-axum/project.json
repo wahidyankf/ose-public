@@ -44,7 +44,7 @@
         "{projectRoot}/tests/unit/**/*.rs",
         "{projectRoot}/Cargo.toml",
         "{projectRoot}/Cargo.lock",
-        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature"
       ],
       "outputs": ["{projectRoot}/coverage/lcov.info"]
     },
@@ -60,7 +60,7 @@
         "{projectRoot}/tests/unit/**/*.rs",
         "{projectRoot}/Cargo.toml",
         "{projectRoot}/Cargo.lock",
-        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature"
       ]
     },
     "test:integration": {

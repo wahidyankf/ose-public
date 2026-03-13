@@ -350,7 +350,7 @@ See `apps/demo-be-e2e/project.json` for the canonical example.
 which runs `docker compose -f docker-compose.integration.yml down -v && docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build`.
 Each backend's `docker-compose.integration.yml` defines a `postgres` service (postgres:17-alpine with healthcheck)
 and a `test-runner` service that depends on PostgreSQL being healthy. The test runner runs migrations,
-optionally loads seed data, then executes all 76 Gherkin scenarios from `specs/apps/demo-be/gherkin/`
+optionally loads seed data, then executes all 76 Gherkin scenarios from `specs/apps/demo/be/gherkin/`
 by calling application service/repository functions directly — no HTTP layer. The specs volume is
 mounted read-only at `../../specs:/specs:ro`. After tests complete, `docker-compose` tears down all
 containers and volumes.

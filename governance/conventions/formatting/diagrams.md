@@ -1634,7 +1634,7 @@ graph TD
 | Node label line (between `<br/>` tags) | Yes                | 20 chars   | Yes (node labels render HTML) |
 | Edge label `\|"text"\|`                | No                 | 20 chars   | No (`.` breaks parser)        |
 
-**Real-World Context**: All five rules were verified when fixing C4 architecture diagrams in `specs/apps/demo-be/c4/`. Failures observed:
+**Real-World Context**: All five rules were verified when fixing C4 architecture diagrams in `specs/apps/demo/c4/`. Failures observed:
 
 - `\n` in node labels rendered as literal `\n` (fixed by switching to `<br/>`)
 - `<br/>` in edge labels rendered as literal `<br/>` text (fixed by removing HTML, using plain text)

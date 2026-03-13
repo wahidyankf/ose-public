@@ -8,19 +8,19 @@ variants.
 
 ## Tech Stack
 
-| Concern          | Choice                                          |
-| ---------------- | ----------------------------------------------- |
-| Language         | TypeScript (strict)                             |
-| Runtime          | Node.js (managed by Volta)                      |
-| Build            | Vite (library mode for server build)            |
-| Web framework    | `@effect/platform` Node.js HTTP server          |
-| Database         | `@effect/sql` + SQLite (unit) / PostgreSQL (int)|
-| JWT              | `jose` library                                  |
-| Password hashing | `bcrypt`                                        |
-| Unit BDD tests   | Cucumber.js + SQLite in-memory                  |
-| Coverage         | Vitest v8 → LCOV → rhino-cli                    |
-| Linting          | oxlint                                          |
-| Port             | **8201**                                        |
+| Concern          | Choice                                           |
+| ---------------- | ------------------------------------------------ |
+| Language         | TypeScript (strict)                              |
+| Runtime          | Node.js (managed by Volta)                       |
+| Build            | Vite (library mode for server build)             |
+| Web framework    | `@effect/platform` Node.js HTTP server           |
+| Database         | `@effect/sql` + SQLite (unit) / PostgreSQL (int) |
+| JWT              | `jose` library                                   |
+| Password hashing | `bcrypt`                                         |
+| Unit BDD tests   | Cucumber.js + SQLite in-memory                   |
+| Coverage         | Vitest v8 → LCOV → rhino-cli                     |
+| Linting          | oxlint                                           |
+| Port             | **8201**                                         |
 
 ## Test Architecture
 
@@ -33,7 +33,7 @@ fast with no external dependencies.
 
 ### Level 2: Unit BDD (`tests/unit/bdd/`)
 
-Cucumber.js BDD scenarios from `specs/apps/demo-be/gherkin/` run against an in-process server
+Cucumber.js BDD scenarios from `specs/apps/demo/be/gherkin/` run against an in-process server
 backed by SQLite in-memory. All 76 Gherkin scenarios execute with no real database required.
 Deterministic, fast, and safe to cache.
 
@@ -135,6 +135,6 @@ The application uses Effect TS throughout:
 
 ## Related
 
-- [specs/apps/demo-be/](../../specs/apps/demo-be/) — shared Gherkin specifications
+- [specs/apps/demo/be/](../../specs/apps/demo/be/) — shared Gherkin specifications
 - [apps/demo-be-e2e/](../demo-be-e2e/) — Playwright E2E test suite
 - [infra/dev/demo-be-ts-effect/](../../infra/dev/demo-be-ts-effect/) — Docker Compose dev environment

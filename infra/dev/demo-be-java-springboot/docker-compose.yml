@@ -32,10 +32,10 @@ services:
 
     # Mount full source code for development.
     # specs/ is mounted so Maven antrun can copy feature files to the test classpath
-    # (pom.xml resolves ${project.basedir}/../../specs/apps/demo-be/gherkin → /specs/apps/demo-be/gherkin).
+    # (pom.xml resolves ${project.basedir}/../../specs/apps/demo/be/gherkin → /specs/apps/demo/be/gherkin).
     volumes:
       - ../../../apps/demo-be-java-springboot:/workspace:rw
-      - ../../../specs/apps/demo-be/gherkin:/specs/apps/demo-be/gherkin:ro
+      - ../../../specs/apps/demo/be/gherkin:/specs/apps/demo/be/gherkin:ro
 
     ports:
       - "8201:8201"

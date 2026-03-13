@@ -63,7 +63,7 @@ See [plan README](../../plans/done/2026-03-11__demo-be-golang-gin/README.md) for
 ## Test Architecture
 
 This project follows the three-level testing standard where the same Gherkin feature files
-(`specs/apps/demo-be/gherkin/`) drive all three levels. Only the step implementations differ.
+(`specs/apps/demo/be/gherkin/`) drive all three levels. Only the step implementations differ.
 
 ### Level 1: Unit tests (`test:quick`, `test:unit`)
 
@@ -101,7 +101,7 @@ hook before each scenario runs. PostgreSQL is started as a `postgres:17-alpine` 
 
 The `Dockerfile.integration` builds the Go project inside a `golang:1.24-alpine` container and
 runs `go test -tags=integration_pg`. The `docker-compose.integration.yml` mounts
-`../../specs` at `/specs` so the Godog path `/specs/apps/demo-be/gherkin` resolves correctly.
+`../../specs` at `/specs` so the Godog path `/specs/apps/demo/be/gherkin` resolves correctly.
 
 ### Level 3: E2E tests
 

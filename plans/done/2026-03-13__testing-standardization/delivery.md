@@ -44,7 +44,7 @@ Update governance and documentation files before changing any code.
   - [x] Document three-level consumption model (unit/integration/e2e with different step implementations)
   - [x] Define how to validate all 76 scenarios pass at each level
   - [x] Commit: `docs: update bdd-spec-test-mapping.md for demo-be three-level consumption` → push
-- [x] **1.4 Update `specs/apps/demo-be/README.md`**
+- [x] **1.4 Update `specs/apps/demo/be/README.md`**
   - [x] Document three-level consumption model: unit (mocked), integration (PostgreSQL, no HTTP), e2e (Playwright)
   - [x] Recommend directory structure for separating unit vs integration step definitions within each backend
   - [x] Commit: `docs(demo-be): document three-level spec consumption model` → push
@@ -83,7 +83,7 @@ Implement one backend at a time. Each backend follows 7 steps. The first backend
   - [x] Update `test:unit` target — run Cucumber with mocked dependencies + existing pure function tests
   - [x] Update `test:integration` target — marked cache: false (docker-compose update pending step 2.1.2-2.1.4)
   - [x] Update `test:quick` target — `test:unit` + `rhino-cli test-coverage validate` from unit JaCoCo (no integration)
-  - [x] Add caching inputs: `specs/apps/demo-be/gherkin/**/*.feature` for `test:unit` and `test:quick`
+  - [x] Add caching inputs: `specs/apps/demo/be/gherkin/**/*.feature` for `test:unit` and `test:quick`
 - [x] **2.1.6 Update `apps/demo-be-java-springboot/README.md`**
   - [x] Document unit vs integration test directory layout
   - [x] Document `test:unit`, `test:integration`, `test:quick` commands

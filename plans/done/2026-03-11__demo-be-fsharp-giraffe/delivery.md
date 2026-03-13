@@ -239,7 +239,7 @@ Execute phases in order. Each phase produces a working, committable state.
   - Add demo-be-fsharp-giraffe badge in demo apps section
   - Add coverage badge row
   - Add to monorepo architecture listing
-- [x] Update `specs/apps/demo-be/README.md`:
+- [x] Update `specs/apps/demo/be/README.md`:
   - Add F#/Giraffe row to Implementations table
 - [x] Update `apps/demo-be-e2e/project.json`:
   - Add `demo-be-fsharp-giraffe` to `implicitDependencies`

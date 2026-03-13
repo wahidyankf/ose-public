@@ -9,7 +9,7 @@ Execute phases in order. Each phase produces a working, committable state.
 - [x] Verify Java 25 available locally (`java -version` shows 25)
 - [x] Verify Maven available (`mvn -version`)
 - [x] Verify `rhino-cli test-coverage validate` supports JaCoCo XML (same as demo-be-java-springboot — it does)
-- [x] Confirm Cucumber JVM 7+ supports the Gherkin syntax used in `specs/apps/demo-be/gherkin/`
+- [x] Confirm Cucumber JVM 7+ supports the Gherkin syntax used in `specs/apps/demo/be/gherkin/`
 - [x] Verify `demo-be-e2e` Playwright config reads `BASE_URL` from env (it does)
 - [x] Verify Vert.x 4.x or 5.x release available on Maven Central
 - [x] Check that `rhino-cli java validate-annotations` recognizes `@NullMarked` from JSpecify
@@ -357,7 +357,7 @@ Execute phases in order. Each phase produces a working, committable state.
   - Add demo-be-java-vertx badge in demo apps section
   - Add coverage badge row
   - Add to monorepo architecture listing
-- [x] Update `specs/apps/demo-be/README.md`:
+- [x] Update `specs/apps/demo/be/README.md`:
   - Add Java/Vert.x row to Implementations table
 - [x] Update `apps/demo-be-e2e/project.json`:
   - Add `demo-be-java-vertx` to `implicitDependencies`

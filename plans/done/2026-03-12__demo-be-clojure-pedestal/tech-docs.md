@@ -61,7 +61,7 @@ apps/demo-be-clojure-pedestal/
 │   │       ├── expense_repo_test.clj
 │   │       ├── token_repo_test.clj
 │   │       └── attachment_repo_test.clj
-│   ├── features/                   # Symlink to specs/apps/demo-be/gherkin/
+│   ├── features/                   # Symlink to specs/apps/demo/be/gherkin/
 │   └── step_definitions/           # Cucumber step definitions
 │       ├── common_steps.clj        # Shared steps (API running, auth)
 │       ├── health_steps.clj
@@ -103,7 +103,7 @@ Clojure's natural functional style maps well to the demo-be pattern:
 ### Test Strategy
 
 - **Integration tests**: kaocha-cucumber reads `.feature` files from
-  `specs/apps/demo-be/gherkin/` (symlinked or copied), step definitions in
+  `specs/apps/demo/be/gherkin/` (symlinked or copied), step definitions in
   `test/step_definitions/`. Uses real Pedestal server on random port with SQLite in-memory.
 - **Unit tests**: clojure.test for domain logic, JWT, password hashing, repo operations
 - **Coverage**: cloverage with `--lcov` output, validated by `rhino-cli ≥90%`

@@ -73,7 +73,7 @@ Three-level testing strategy with clear separation of concerns.
 Runs with `mvn test` (default Maven profile, no `-P` flag needed).
 
 - **Cucumber BDD scenarios** (76 scenarios): All Gherkin feature files from
-  `specs/apps/demo-be/gherkin/` run against an in-process Vert.x HTTP server
+  `specs/apps/demo/be/gherkin/` run against an in-process Vert.x HTTP server
   backed by in-memory repositories (ConcurrentHashMap). Step definitions live in
   `src/test/java/.../unit/steps/`. Runner: `UnitCucumberTest.java`.
 - **Plain JUnit tests**: `ExpenseValidatorTest`, `JwtServiceTest`, `PasswordServiceTest`,

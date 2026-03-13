@@ -10,7 +10,7 @@ Java + Vert.x reimplementation of the demo backend REST API — a functional twi
 
 - Provide a functionally equivalent backend to `demo-be-java-springboot`, `demo-be-elixir-phoenix`, and `demo-be-fsharp-giraffe`
   using the Vert.x reactive Java ecosystem
-- Consume the shared `specs/apps/demo-be/gherkin/` Gherkin feature files (76 scenarios across
+- Consume the shared `specs/apps/demo/be/gherkin/` Gherkin feature files (76 scenarios across
   13 feature files) for BDD integration tests
 - Integrate into the Nx monorepo with the same target surface (`build`, `dev`, `start`,
   `test:quick`, `test:unit`, `test:integration`, `lint`, `typecheck`)
@@ -99,7 +99,7 @@ Java + Vert.x reimplementation of the demo backend REST API — a functional twi
 - `infra/dev/demo-be-java-vertx/` — Docker Compose dev infra
 - `.github/workflows/e2e-demo-be-java-vertx.yml` — E2E workflow
 - `.github/workflows/main-ci.yml` — JDK setup already present; add coverage upload
-- `specs/apps/demo-be/` — shared Gherkin specs (consumed, not modified)
+- `specs/apps/demo/be/` — shared Gherkin specs (consumed, not modified)
 - `apps/demo-be-e2e/` — reused Playwright E2E suite (consumed, not modified)
 
 ## Files to Update
@@ -108,7 +108,7 @@ Java + Vert.x reimplementation of the demo backend REST API — a functional twi
 | -------------------------------------------- | ------------------------------------------------------------------ |
 | `CLAUDE.md`                                  | Add demo-be-java-vertx to Current Apps list                        |
 | `README.md`                                  | Add demo-be-java-vertx badge and description in demo apps section  |
-| `specs/apps/demo-be/README.md`               | Add Java/Vert.x row to Implementations table                       |
+| `specs/apps/demo/be/README.md`               | Add Java/Vert.x row to Implementations table                       |
 | `apps/demo-be-e2e/project.json`              | Add `demo-be-java-vertx` to `implicitDependencies`                 |
 | `.github/workflows/main-ci.yml`              | Add coverage upload step for demo-be-java-vertx                    |
 | `governance/development/infra/nx-targets.md` | Add `platform:vertx` to platform vocab; add demo-be-java-vertx row |

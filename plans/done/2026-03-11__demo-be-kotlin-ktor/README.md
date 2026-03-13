@@ -10,7 +10,7 @@ Kotlin + Ktor reimplementation of the demo backend REST API — a functional twi
 
 - Provide a functionally equivalent backend to `demo-be-java-springboot`, `demo-be-elixir-phoenix`, and
   `demo-be-fsharp-giraffe` using the Kotlin/JVM ecosystem
-- Consume the shared `specs/apps/demo-be/gherkin/` Gherkin feature files (76 scenarios across
+- Consume the shared `specs/apps/demo/be/gherkin/` Gherkin feature files (76 scenarios across
   13 feature files) for BDD integration tests
 - Integrate into the Nx monorepo with the same target surface (`build`, `dev`, `start`,
   `test:quick`, `test:unit`, `test:integration`, `lint`)
@@ -97,7 +97,7 @@ Kotlin + Ktor reimplementation of the demo backend REST API — a functional twi
 - `infra/dev/demo-be-kotlin-ktor/` — Docker Compose dev infra
 - `.github/workflows/e2e-demo-be-kotlin-ktor.yml` — E2E workflow
 - `.github/workflows/main-ci.yml` — JDK setup + coverage upload
-- `specs/apps/demo-be/` — shared Gherkin specs (consumed, not modified)
+- `specs/apps/demo/be/` — shared Gherkin specs (consumed, not modified)
 - `apps/demo-be-e2e/` — reused Playwright E2E suite (consumed, not modified)
 
 ## Files to Update
@@ -106,7 +106,7 @@ Kotlin + Ktor reimplementation of the demo backend REST API — a functional twi
 | -------------------------------------------- | ---------------------------------------------------------------------- |
 | `CLAUDE.md`                                  | Add demo-be-kotlin-ktor to Current Apps list, add Kotlin coverage info |
 | `README.md`                                  | Add demo-be-kotlin-ktor badge and description in demo apps section     |
-| `specs/apps/demo-be/README.md`               | Add Kotlin/Ktor row to Implementations table                           |
+| `specs/apps/demo/be/README.md`               | Add Kotlin/Ktor row to Implementations table                           |
 | `apps/demo-be-e2e/project.json`              | Add `demo-be-kotlin-ktor` to `implicitDependencies`                    |
 | `.github/workflows/main-ci.yml`              | Add JDK setup (already present) + Kover XML coverage upload            |
 | `governance/development/infra/nx-targets.md` | Add `platform:ktor` to tag vocabulary, add Kotlin row                  |

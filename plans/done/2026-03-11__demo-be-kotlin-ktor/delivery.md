@@ -354,7 +354,7 @@ apps/demo-be-kotlin-ktor/build/reports/kover/report.xml 90` passes (91.27% >= 90
   - Add demo-be-kotlin-ktor badge in demo apps section
   - Add coverage badge row
   - Add to monorepo architecture listing
-- [x] Update `specs/apps/demo-be/README.md`:
+- [x] Update `specs/apps/demo/be/README.md`:
   - Add Kotlin/Ktor row to Implementations table
 - [x] Update `apps/demo-be-e2e/project.json`:
   - Add `demo-be-kotlin-ktor` to `implicitDependencies`

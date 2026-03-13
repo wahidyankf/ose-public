@@ -9,13 +9,13 @@ from pytest_bdd import given, parsers, then, when
 
 # Path to the shared Gherkin feature files.
 # GHERKIN_ROOT_ENV allows Docker containers to override the path directly
-# (e.g. GHERKIN_ROOT=/specs/apps/demo-be/gherkin) since the relative parent
+# (e.g. GHERKIN_ROOT=/specs/apps/demo/be/gherkin) since the relative parent
 # traversal may exceed path depth in non-monorepo contexts.
 _gherkin_root_env = os.environ.get("GHERKIN_ROOT")
 if _gherkin_root_env:
     GHERKIN_ROOT = pathlib.Path(_gherkin_root_env)
 else:
-    GHERKIN_ROOT = pathlib.Path(__file__).parents[4] / "specs" / "apps" / "demo-be" / "gherkin"
+    GHERKIN_ROOT = pathlib.Path(__file__).parents[4] / "specs" / "apps" / "demo" / "be" / "gherkin"
 
 _STRONG_PASSWORD = "Str0ng#Pass1"
 

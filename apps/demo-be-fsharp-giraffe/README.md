@@ -163,7 +163,7 @@ environment variable:
 - **`DATABASE_URL` present** (docker-compose integration mode): delegates to the production
   Npgsql/PostgreSQL registration in `Program.fs` — uses real PostgreSQL.
 
-All BDD tests share the same Gherkin feature files from `specs/apps/demo-be/gherkin/` as
+All BDD tests share the same Gherkin feature files from `specs/apps/demo/be/gherkin/` as
 `demo-be-java-springboot`, `demo-be-elixir-phoenix`, and other backend implementations.
 
 ## See Also

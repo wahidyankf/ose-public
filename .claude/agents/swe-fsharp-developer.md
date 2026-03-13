@@ -82,21 +82,21 @@ Follow the standard 6-step workflow (see `swe-developing-applications-common` Sk
 
 ### Core Standards (Mandatory for All Code)
 
-1. **[Coding Standards](../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fs__coding-standards.md)** - F# naming, module organization, pipeline idioms
-2. **[Testing Standards](../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fs__testing-standards.md)** - Expecto, FsCheck property-based testing
-3. **[Code Quality Standards](../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fs__code-quality-standards.md)** - Fantomas, FSharpLint
-4. **[Build Configuration](../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fs__build-configuration.md)** - .fsproj file order, dotnet CLI
+1. **[Coding Standards](../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fsh__coding-standards.md)** - F# naming, module organization, pipeline idioms
+2. **[Testing Standards](../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fsh__testing-standards.md)** - Expecto, FsCheck property-based testing
+3. **[Code Quality Standards](../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fsh__code-quality-standards.md)** - Fantomas, FSharpLint
+4. **[Build Configuration](../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fsh__build-configuration.md)** - .fsproj file order, dotnet CLI
 
 ### Context-Specific Standards (Apply When Relevant)
 
-1. **[Security Standards](../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fs__security-standards.md)** - Type-driven validation, Giraffe auth
-2. **[Concurrency Standards](../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fs__concurrency-standards.md)** - Async workflows, MailboxProcessor
-3. **[DDD Standards](../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fs__ddd-standards.md)** - DU-based domain modeling
-4. **[API Standards](../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fs__api-standards.md)** - Giraffe HttpHandler composition
-5. **[Performance Standards](../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fs__performance-standards.md)** - Tail recursion, sequences
-6. **[Error Handling Standards](../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fs__error-handling-standards.md)** - Result type, railway-oriented programming
-7. **[Functional Programming Standards](../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fs__functional-programming-standards.md)** - Computation expressions, monads
-8. **[Type Safety Standards](../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fs__type-safety-standards.md)** - DUs, units of measure, phantom types
+1. **[Security Standards](../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fsh__security-standards.md)** - Type-driven validation, Giraffe auth
+2. **[Concurrency Standards](../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fsh__concurrency-standards.md)** - Async workflows, MailboxProcessor
+3. **[DDD Standards](../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fsh__ddd-standards.md)** - DU-based domain modeling
+4. **[API Standards](../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fsh__api-standards.md)** - Giraffe HttpHandler composition
+5. **[Performance Standards](../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fsh__performance-standards.md)** - Tail recursion, sequences
+6. **[Error Handling Standards](../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fsh__error-handling-standards.md)** - Result type, railway-oriented programming
+7. **[Functional Programming Standards](../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fsh__functional-programming-standards.md)** - Computation expressions, monads
+8. **[Type Safety Standards](../../docs/explanation/software-engineering/programming-languages/f-sharp/ex-soen-prla-fsh__type-safety-standards.md)** - DUs, units of measure, phantom types
 
 **See `swe-programming-fsharp` Skill** for quick access to coding standards.
 

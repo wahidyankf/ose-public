@@ -17,7 +17,7 @@ Execute phases in order. Each phase produces a working, committable state.
       `organiclever-web`, `demo-be-python-fastapi`, and `demo-be-rust-axum`)
 - [ ] Confirm `demo-be-e2e` Playwright config reads `BASE_URL` from env (it does)
 - [ ] Confirm Cucumber.js is compatible with the current Gherkin syntax in
-      `specs/apps/demo-be/gherkin/` (Given/When/Then with doc string and data table parameters)
+      `specs/apps/demo/be/gherkin/` (Given/When/Then with doc string and data table parameters)
 - [ ] Review `@effect/platform` Node.js HTTP server API for current stable version
 
 ---
@@ -32,7 +32,7 @@ Execute phases in order. Each phase produces a working, committable state.
 - [ ] Create `tsconfig.json` with strict TypeScript config per tech-docs.md
 - [ ] Create `vite.config.ts` with library mode build config per tech-docs.md
 - [ ] Create `vitest.config.ts` with v8 coverage config per tech-docs.md
-- [ ] Create `.cucumber.js` pointing to `specs/apps/demo-be/gherkin/**/*.feature`
+- [ ] Create `.cucumber.js` pointing to `specs/apps/demo/be/gherkin/**/*.feature`
 - [ ] Create `oxlint.json` with TypeScript-appropriate rules
 - [ ] Create `src/main.ts` — entry point that starts the Effect HTTP server on port 8201
 - [ ] Create `src/app.ts` — minimal Effect `Layer` composition (no routes yet)
@@ -310,7 +310,7 @@ Execute phases in order. Each phase produces a working, committable state.
 **Commit**: `feat(demo-be-ts-effect): integrate into monorepo and update documentation`
 
 - [ ] Update `apps/demo-be-e2e/project.json` — add `demo-be-ts-effect` to `implicitDependencies`
-- [ ] Update `specs/apps/demo-be/README.md` — add TypeScript/Effect row to Implementations
+- [ ] Update `specs/apps/demo/be/README.md` — add TypeScript/Effect row to Implementations
       table: `| demo-be-ts-effect | TypeScript (Effect) | Cucumber.js + Effect HTTP client | Playwright |`
 - [ ] Update `CLAUDE.md`:
   - Add `demo-be-ts-effect` to Current Apps list under demo backend variants
@@ -339,7 +339,7 @@ Scenario: demo-be-ts-effect integrated into monorepo
   When running nx affected -t test:quick
   Then demo-be-ts-effect appears in affected projects
   And demo-be-e2e lists demo-be-ts-effect as an implicit dependency
-  And specs/apps/demo-be/README.md lists demo-be-ts-effect in the Implementations table
+  And specs/apps/demo/be/README.md lists demo-be-ts-effect in the Implementations table
 
 Scenario: demo-be-ts-effect E2E tests pass
   Given the Docker Compose stack is running at port 8201

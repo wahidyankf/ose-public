@@ -8,6 +8,6 @@ use world::AppWorld;
 async fn main() {
     AppWorld::cucumber()
         .max_concurrent_scenarios(Some(1))
-        .run("/specs/apps/demo-be/gherkin")
+        .run("/specs/apps/demo/be/gherkin")
         .await;
 }

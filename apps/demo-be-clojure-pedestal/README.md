@@ -101,15 +101,15 @@ The `demo-be-cjpd.main` namespace is excluded from coverage (entry point only).
 
 ## Nx Targets
 
-| Target             | Description                                              |
-| ------------------ | -------------------------------------------------------- |
-| `dev`              | Start development server (port 8201)                     |
-| `build`            | Build uberjar via tools.build                            |
-| `start`            | Run the built uberjar                                    |
-| `test:quick`       | Unit + BDD (in-memory) tests + coverage check (no lint)  |
-| `test:unit`        | Unit + BDD (in-memory) tests without coverage            |
-| `test:integration` | BDD tests against PostgreSQL via docker-compose          |
-| `lint`             | Run clj-kondo linting                                    |
+| Target             | Description                                             |
+| ------------------ | ------------------------------------------------------- |
+| `dev`              | Start development server (port 8201)                    |
+| `build`            | Build uberjar via tools.build                           |
+| `start`            | Run the built uberjar                                   |
+| `test:quick`       | Unit + BDD (in-memory) tests + coverage check (no lint) |
+| `test:unit`        | Unit + BDD (in-memory) tests without coverage           |
+| `test:integration` | BDD tests against PostgreSQL via docker-compose         |
+| `lint`             | Run clj-kondo linting                                   |
 
 ```bash
 nx run demo-be-clojure-pedestal:test:quick

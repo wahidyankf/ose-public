@@ -5,18 +5,18 @@ Rust + Axum REST API backend — a functional twin of `demo-be-java-springboot` 
 
 ## Tech Stack
 
-| Concern   | Choice                            |
-| --------- | --------------------------------- |
-| Language  | Rust (stable)                     |
-| Framework | Axum 0.8                          |
-| Runtime   | Tokio                             |
+| Concern   | Choice                                          |
+| --------- | ----------------------------------------------- |
+| Language  | Rust (stable)                                   |
+| Framework | Axum 0.8                                        |
+| Runtime   | Tokio                                           |
 | Database  | SQLx + SQLite (unit) / PostgreSQL (integration) |
-| JWT       | jsonwebtoken                      |
-| Passwords | bcrypt                            |
-| BDD Tests | cucumber-rs + Tower TestClient    |
-| Coverage  | cargo-llvm-cov (LCOV) + rhino-cli |
-| Linting   | clippy + rustfmt                  |
-| Port      | 8201                              |
+| JWT       | jsonwebtoken                                    |
+| Passwords | bcrypt                                          |
+| BDD Tests | cucumber-rs + Tower TestClient                  |
+| Coverage  | cargo-llvm-cov (LCOV) + rhino-cli               |
+| Linting   | clippy + rustfmt                                |
+| Port      | 8201                                            |
 
 ## Local Development
 
@@ -28,11 +28,11 @@ Rust + Axum REST API backend — a functional twin of `demo-be-java-springboot` 
 
 ### Environment Variables
 
-| Variable       | Default           | Description        |
-| -------------- | ----------------- | ------------------ |
-| `PORT`         | `8201`            | HTTP port          |
+| Variable       | Default           | Description         |
+| -------------- | ----------------- | ------------------- |
+| `PORT`         | `8201`            | HTTP port           |
 | `DATABASE_URL` | `sqlite::memory:` | Database connection |
-| `JWT_SECRET`   | (dev default)     | JWT signing secret |
+| `JWT_SECRET`   | (dev default)     | JWT signing secret  |
 
 ### Run locally
 
@@ -76,7 +76,7 @@ This project uses a three-level test architecture:
 
 - Run all 76 Gherkin scenarios against a real PostgreSQL 17 database
 - Launched via Docker Compose (`docker-compose.integration.yml`)
-- Reads specs from `/specs/apps/demo-be/gherkin/` (mounted volume)
+- Reads specs from `/specs/apps/demo/be/gherkin/` (mounted volume)
 - Not cached — always runs fresh
 - Used by `test:integration` target
 

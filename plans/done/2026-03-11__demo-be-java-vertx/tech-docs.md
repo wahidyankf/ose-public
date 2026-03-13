@@ -262,7 +262,7 @@ router.route().failureHandler(ctx -> {
 
 ## BDD Integration Tests: Cucumber JVM + Vert.x Test
 
-Integration tests parse the canonical `.feature` files from `specs/apps/demo-be/gherkin/`
+Integration tests parse the canonical `.feature` files from `specs/apps/demo/be/gherkin/`
 using **Cucumber JVM 7+** with Java step definitions.
 
 HTTP calls use Vert.x's own `WebClient` against a live Vert.x HTTP server deployed in the
@@ -384,7 +384,7 @@ source root, Maven copies them during the `generate-test-resources` phase:
         <outputDirectory>${project.build.testOutputDirectory}/specs</outputDirectory>
         <resources>
           <resource>
-            <directory>../../specs/apps/demo-be/gherkin</directory>
+            <directory>../../specs/apps/demo/be/gherkin</directory>
             <filtering>false</filtering>
           </resource>
         </resources>
@@ -690,7 +690,7 @@ JaCoCo is configured in the `integration` profile to output XML for `rhino-cli`:
         "cwd": "apps/demo-be-java-vertx"
       },
       "cache": true,
-      "inputs": ["{projectRoot}/src/**/*.java", "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"]
+      "inputs": ["{projectRoot}/src/**/*.java", "{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature"]
     },
     "lint": {
       "executor": "nx:run-commands",
@@ -776,7 +776,7 @@ services:
       - APP_PORT=8201
     volumes:
       - ../../../apps/demo-be-java-vertx:/workspace:rw
-      - ../../../specs/apps/demo-be:/specs/apps/demo-be:ro
+      - ../../../specs/apps/demo/be:/specs/apps/demo/be:ro
     depends_on:
       demo-be-db:
         condition: service_healthy

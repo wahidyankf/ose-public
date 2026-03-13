@@ -10,7 +10,7 @@ TypeScript / Effect TS reimplementation of the demo backend REST API — a funct
 
 - Provide a functionally equivalent backend to all existing `demo-be-*` variants using the
   TypeScript/Effect ecosystem
-- Consume the shared `specs/apps/demo-be/gherkin/` Gherkin feature files (76 scenarios across
+- Consume the shared `specs/apps/demo/be/gherkin/` Gherkin feature files (76 scenarios across
   13 feature files) for BDD integration tests via Cucumber.js
 - Integrate into the Nx monorepo with the same target surface (`build`, `dev`, `start`,
   `test:quick`, `test:unit`, `test:integration`, `lint`, `typecheck`)
@@ -98,7 +98,7 @@ Boot), `-pyfa` (Python FastAPI), `-rsax` (Rust Axum), `-ktkt` (Kotlin Ktor), etc
 - `infra/dev/demo-be-ts-effect/` — Docker Compose dev infra
 - `.github/workflows/e2e-demo-be-ts-effect.yml` — E2E workflow
 - `.github/workflows/main-ci.yml` — coverage upload step
-- `specs/apps/demo-be/` — shared Gherkin specs (consumed, not modified)
+- `specs/apps/demo/be/` — shared Gherkin specs (consumed, not modified)
 - `apps/demo-be-e2e/` — reused Playwright E2E suite (consumed, not modified)
 
 ## Files to Update
@@ -107,7 +107,7 @@ Boot), `-pyfa` (Python FastAPI), `-rsax` (Rust Axum), `-ktkt` (Kotlin Ktor), etc
 | ------------------------------- | ------------------------------------------------------------------------------- |
 | `CLAUDE.md`                     | Add demo-be-ts-effect to Current Apps list, add TypeScript/Effect coverage note |
 | `README.md`                     | Add demo-be-ts-effect badge and description in demo apps section                |
-| `specs/apps/demo-be/README.md`  | Add TypeScript/Effect row to Implementations table                              |
+| `specs/apps/demo/be/README.md`  | Add TypeScript/Effect row to Implementations table                              |
 | `apps/demo-be-e2e/project.json` | Add `demo-be-ts-effect` to `implicitDependencies`                               |
 | `.github/workflows/main-ci.yml` | Add coverage upload step for demo-be-ts-effect LCOV                             |
 

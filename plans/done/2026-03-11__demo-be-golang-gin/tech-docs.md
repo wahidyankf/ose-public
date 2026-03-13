@@ -2,7 +2,7 @@
 
 ## BDD Integration Test: Godog + net/http/httptest
 
-Integration tests parse the canonical `.feature` files in `specs/apps/demo-be/gherkin/` using
+Integration tests parse the canonical `.feature` files in `specs/apps/demo/be/gherkin/` using
 **Godog**, the Go-native Gherkin BDD runner. Each step function receives a shared scenario
 context struct passed via a pointer through `ScenarioContext.Before`. HTTP calls use Go's
 standard `net/http/httptest.NewRecorder` and a Gin engine configured with the SQLite in-memory
@@ -34,7 +34,7 @@ func TestIntegration(t *testing.T) {
         ScenarioInitializer: InitializeScenario,
         Options: &godog.Options{
             Format:   "pretty",
-            Paths:    []string{"../../../../specs/apps/demo-be/gherkin"},
+            Paths:    []string{"../../../../specs/apps/demo/be/gherkin"},
             TestingT: t,
         },
     }
@@ -108,7 +108,7 @@ Feature files are resolved relative to the test file location using a path trave
 workspace root:
 
 ```go
-Paths: []string{"../../../../specs/apps/demo-be/gherkin"},
+Paths: []string{"../../../../specs/apps/demo/be/gherkin"},
 ```
 
 This resolves from `apps/demo-be-golang-gin/internal/integration/` up to the workspace root and
@@ -536,7 +536,7 @@ Threshold configurable via environment variable (default: 5). After threshold, s
       "inputs": [
         "{projectRoot}/internal/**/*.go",
         "{projectRoot}/cmd/**/*.go",
-        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature"
       ]
     },
     "lint": {

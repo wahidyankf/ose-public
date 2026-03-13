@@ -2,7 +2,7 @@
 
 ## BDD Integration Tests: Reqnroll + WebApplicationFactory
 
-Integration tests parse the canonical `.feature` files in `specs/apps/demo-be/gherkin/` using
+Integration tests parse the canonical `.feature` files in `specs/apps/demo/be/gherkin/` using
 **Reqnroll**, the actively maintained successor to SpecFlow. Reqnroll integrates natively with
 xUnit and discovers step definitions via attributes on plain C# methods.
 
@@ -46,7 +46,7 @@ public class HealthSteps
 
 ### Feature File Path Resolution
 
-Feature files are referenced from the `specs/apps/demo-be/gherkin/` workspace root. Reqnroll
+Feature files are referenced from the `specs/apps/demo/be/gherkin/` workspace root. Reqnroll
 discovers feature files via the `FeatureFiles` item group in the `.csproj`:
 
 ```xml
@@ -487,7 +487,7 @@ public class AuthSteps(HttpClient client, SharedState state)
       "inputs": [
         "{projectRoot}/src/**/*.cs",
         "{projectRoot}/tests/**/*.cs",
-        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature"
       ]
     },
     "lint": {
@@ -702,7 +702,7 @@ services:
       - APP_JWT_SECRET=dev-jwt-secret-at-least-32-chars-long
     volumes:
       - ../../../apps/demo-be-csharp-aspnetcore:/workspace:rw
-      - ../../../specs/apps/demo-be:/specs/apps/demo-be:ro
+      - ../../../specs/apps/demo/be:/specs/apps/demo/be:ro
     depends_on:
       demo-be-db:
         condition: service_healthy

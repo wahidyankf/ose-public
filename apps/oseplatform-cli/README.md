@@ -85,8 +85,8 @@ Integration tests use [godog](https://github.com/cucumber/godog) to run Gherkin
 scenarios from `specs/apps/oseplatform-cli/`. They are co-located in `cmd/` (same
 package) to access unexported flag variables.
 
-| Test function               | Feature file                                      | Scenarios |
-| --------------------------- | ------------------------------------------------- | --------- |
+| Test function               | Feature file                                           | Scenarios |
+| --------------------------- | ------------------------------------------------------ | --------- |
 | `TestIntegrationLinksCheck` | `specs/apps/oseplatform-cli/links/links-check.feature` | 4         |
 
 The `test:integration` target is cached — it only re-runs when `cmd/**/*.go` or

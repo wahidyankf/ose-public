@@ -10,7 +10,7 @@ Giraffe, and ASP.NET Core.
 
 - Provide a functionally equivalent backend to `demo-be-java-springboot` and `demo-be-elixir-phoenix` using the
   F# ecosystem
-- Consume the shared `specs/apps/demo-be/gherkin/` Gherkin feature files (76 scenarios across
+- Consume the shared `specs/apps/demo/be/gherkin/` Gherkin feature files (76 scenarios across
   13 feature files) for BDD integration tests
 - Integrate into the Nx monorepo with the same target surface (`build`, `dev`, `start`,
   `test:quick`, `test:unit`, `test:integration`, `lint`, `typecheck`)
@@ -95,7 +95,7 @@ Giraffe, and ASP.NET Core.
 - `infra/dev/demo-be-fsharp-giraffe/` — Docker Compose dev infra
 - `.github/workflows/e2e-demo-be-fsharp-giraffe.yml` — E2E workflow
 - `.github/workflows/main-ci.yml` — .NET SDK setup + coverage upload
-- `specs/apps/demo-be/` — shared Gherkin specs (consumed, not modified)
+- `specs/apps/demo/be/` — shared Gherkin specs (consumed, not modified)
 - `apps/demo-be-e2e/` — reused Playwright E2E suite (consumed, not modified)
 
 ## Files to Update
@@ -104,7 +104,7 @@ Giraffe, and ASP.NET Core.
 | ------------------------------- | --------------------------------------------------------------------- |
 | `CLAUDE.md`                     | Add demo-be-fsharp-giraffe to Current Apps list, add F# coverage info |
 | `README.md`                     | Add demo-be-fsharp-giraffe badge and description in demo apps section |
-| `specs/apps/demo-be/README.md`  | Add F#/Giraffe row to Implementations table                           |
+| `specs/apps/demo/be/README.md`  | Add F#/Giraffe row to Implementations table                           |
 | `apps/demo-be-e2e/project.json` | Add `demo-be-fsharp-giraffe` to `implicitDependencies`                |
 | `.github/workflows/main-ci.yml` | Add .NET SDK setup + coverage upload step                             |
 | `plans/in-progress/README.md`   | Add this plan to active plans list                                    |

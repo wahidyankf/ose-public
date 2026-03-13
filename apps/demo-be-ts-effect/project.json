@@ -32,7 +32,7 @@
         "commands": [
           "npx vitest run --coverage",
           "(cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/demo-be-ts-effect/coverage/lcov.info 90)",
-          "npx cucumber-js '../../specs/apps/demo-be/gherkin/**/*.feature' --require-module tsx/cjs --require 'tests/unit/bdd/hooks.ts' --require 'tests/unit/bdd/world.ts' --require 'tests/unit/bdd/steps/**/*.ts' --format progress --format 'json:coverage/cucumber-unit-report.json'"
+          "npx cucumber-js '../../specs/apps/demo/be/gherkin/**/*.feature' --require-module tsx/cjs --require 'tests/unit/bdd/hooks.ts' --require 'tests/unit/bdd/world.ts' --require 'tests/unit/bdd/steps/**/*.ts' --format progress --format 'json:coverage/cucumber-unit-report.json'"
         ],
         "parallel": false,
         "cwd": "apps/demo-be-ts-effect"
@@ -42,7 +42,7 @@
         "{projectRoot}/src/**/*.ts",
         "{projectRoot}/tests/unit/**/*.ts",
         "{projectRoot}/vitest.config.ts",
-        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature"
       ]
     },
     "test:unit": {
@@ -50,7 +50,7 @@
       "options": {
         "commands": [
           "npx vitest run tests/unit",
-          "npx cucumber-js '../../specs/apps/demo-be/gherkin/**/*.feature' --require-module tsx/cjs --require 'tests/unit/bdd/hooks.ts' --require 'tests/unit/bdd/world.ts' --require 'tests/unit/bdd/steps/**/*.ts' --format progress --format 'json:coverage/cucumber-unit-report.json'"
+          "npx cucumber-js '../../specs/apps/demo/be/gherkin/**/*.feature' --require-module tsx/cjs --require 'tests/unit/bdd/hooks.ts' --require 'tests/unit/bdd/world.ts' --require 'tests/unit/bdd/steps/**/*.ts' --format progress --format 'json:coverage/cucumber-unit-report.json'"
         ],
         "parallel": false,
         "cwd": "apps/demo-be-ts-effect"
@@ -59,7 +59,7 @@
       "inputs": [
         "{projectRoot}/src/**/*.ts",
         "{projectRoot}/tests/unit/**/*.ts",
-        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature"
       ]
     },
     "test:integration": {

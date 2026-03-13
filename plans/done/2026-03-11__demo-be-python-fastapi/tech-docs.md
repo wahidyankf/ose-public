@@ -2,7 +2,7 @@
 
 ## BDD Integration Tests: pytest-bdd
 
-Integration tests parse the canonical `.feature` files in `specs/apps/demo-be/gherkin/` using
+Integration tests parse the canonical `.feature` files in `specs/apps/demo/be/gherkin/` using
 **pytest-bdd**, a pytest plugin that implements the Gherkin BDD syntax natively. pytest-bdd
 discovers scenarios via `@scenario` decorators or bulk collection helpers in `conftest.py`.
 
@@ -34,7 +34,7 @@ def status_code_200(response):
 
 ### Feature File Path Resolution
 
-Feature files are referenced from the `specs/apps/demo-be/gherkin/` workspace root. pytest-bdd
+Feature files are referenced from the `specs/apps/demo/be/gherkin/` workspace root. pytest-bdd
 discovers feature files via absolute or relative paths passed to `@scenario` or
 `scenarios()` helpers. A `conftest.py` at `tests/integration/` resolves the path using
 `pathlib.Path`:
@@ -450,7 +450,7 @@ def validate_amount(currency: str, amount: Decimal) -> Decimal:
       "inputs": [
         "{projectRoot}/src/**/*.py",
         "{projectRoot}/tests/**/*.py",
-        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature"
       ]
     },
     "lint": {

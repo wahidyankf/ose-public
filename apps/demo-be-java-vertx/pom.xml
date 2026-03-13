@@ -255,7 +255,7 @@
                         <configuration>
                             <target>
                                 <copy todir="${project.build.testOutputDirectory}">
-                                    <fileset dir="${project.basedir}/../../specs/apps/demo-be/gherkin"/>
+                                    <fileset dir="${project.basedir}/../../specs/apps/demo/be/gherkin"/>
                                 </copy>
                             </target>
                         </configuration>

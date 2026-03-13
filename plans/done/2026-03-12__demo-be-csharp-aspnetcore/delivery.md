@@ -11,7 +11,7 @@ Execute phases in order. Each phase produces a working, committable state.
       (`dotnet tool install -g dotnet-ef`)
 - [ ] Verify `rhino-cli test-coverage validate` supports LCOV (it does — already used by
       `organiclever-web`, `demo-be-elixir-phoenix`, `demo-be-python-fastapi`, `demo-be-rust-axum`, `demo-be-fsharp-giraffe`)
-- [ ] Confirm Reqnroll supports current Gherkin syntax in `specs/apps/demo-be/gherkin/`
+- [ ] Confirm Reqnroll supports current Gherkin syntax in `specs/apps/demo/be/gherkin/`
       (Given/When/Then with doc_string and data table parameters)
 - [ ] Verify `demo-be-e2e` Playwright config reads `BASE_URL` from env (it does)
 - [ ] Confirm Coverlet XPlat Code Coverage with LCOV format works for C# tests (same mechanism
@@ -349,7 +349,7 @@ Execute phases in order. Each phase produces a working, committable state.
   - Add demo-be-csharp-aspnetcore badge in demo apps section
   - Add coverage badge row
   - Add to monorepo architecture listing
-- [ ] Update `specs/apps/demo-be/README.md`:
+- [ ] Update `specs/apps/demo/be/README.md`:
   - Add C#/ASP.NET Core row to Implementations table
 - [ ] Update `apps/demo-be-e2e/project.json`:
   - Add `demo-be-csharp-aspnetcore` to `implicitDependencies`

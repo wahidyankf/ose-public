@@ -2,7 +2,7 @@
 
 ## BDD Integration Test: TickSpec + xUnit
 
-Integration tests parse the canonical `.feature` files in `specs/apps/demo-be/gherkin/` using
+Integration tests parse the canonical `.feature` files in `specs/apps/demo/be/gherkin/` using
 **TickSpec**, an F#-native Gherkin runner that integrates with xUnit. TickSpec discovers
 feature files at test time and maps step definitions via regex-annotated methods.
 
@@ -310,7 +310,7 @@ let validateAmount (currency: string) (amount: decimal) =
       "inputs": [
         "{projectRoot}/src/**/*.fs",
         "{projectRoot}/tests/**/*.fs",
-        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature"
       ]
     },
     "lint": {
@@ -389,7 +389,7 @@ services:
       - APP_JWT_SECRET=dev-jwt-secret-at-least-32-chars-long
     volumes:
       - ../../../apps/demo-be-fsharp-giraffe:/workspace:rw
-      - ../../../specs/apps/demo-be:/specs/apps/demo-be:ro
+      - ../../../specs/apps/demo/be:/specs/apps/demo/be:ro
     depends_on:
       demo-be-db:
         condition: service_healthy

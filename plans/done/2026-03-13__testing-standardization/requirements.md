@@ -10,7 +10,7 @@ Feature: Testing Standardization
   Scenario: Demo-be unit tests consume Gherkin specs with mocked dependencies
     Given a demo-be backend with unit tests configured
     When the unit test suite runs
-    Then all 76 Gherkin scenarios from specs/apps/demo-be/gherkin/ execute
+    Then all 76 Gherkin scenarios from specs/apps/demo/be/gherkin/ execute
     And all dependencies (database, HTTP, external APIs) are mocked
     And no real database connections are created
     And no HTTP requests are made
@@ -23,7 +23,7 @@ Feature: Testing Standardization
     And a test runner container starts after PostgreSQL is healthy
     And all migrations are executed against the fresh database
     And seed files are executed if present
-    And all 76 Gherkin scenarios from specs/apps/demo-be/gherkin/ execute
+    And all 76 Gherkin scenarios from specs/apps/demo/be/gherkin/ execute
     And no HTTP requests are made
     And no external API calls are made
     And application code is called directly (not through HTTP)
@@ -32,7 +32,7 @@ Feature: Testing Standardization
   Scenario: Demo-be E2E tests use Playwright with no restrictions
     Given the demo-be-e2e project
     When the E2E test suite runs against a backend
-    Then all 76 Gherkin scenarios from specs/apps/demo-be/gherkin/ execute
+    Then all 76 Gherkin scenarios from specs/apps/demo/be/gherkin/ execute
     And Playwright makes real HTTP requests to the running backend
     And no infrastructure restrictions are enforced
 
@@ -141,7 +141,7 @@ Feature: Testing Standardization
     Then CLAUDE.md describes the three-level testing standard for all project types
     And nx-targets.md defines mandatory targets per project type and CI schedules
     And bdd-spec-test-mapping.md covers demo-be backends
-    And specs/apps/demo-be/README.md documents three-level consumption
+    And specs/apps/demo/be/README.md documents three-level consumption
     And each demo-be backend README describes its test architecture
     And each demo-be project.json has correct test targets
     And root README.md shows Integration, E2E, and Coverage badges per project

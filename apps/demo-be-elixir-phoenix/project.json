@@ -38,7 +38,7 @@
       "inputs": [
         "{projectRoot}/lib/**/*.ex",
         "{projectRoot}/test/**/*.exs",
-        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature"
       ]
     },
     "test:unit": {
@@ -54,7 +54,7 @@
       "inputs": [
         "{projectRoot}/lib/**/*.ex",
         "{projectRoot}/test/**/*.exs",
-        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature"
       ]
     },
     "test:integration": {

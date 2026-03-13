@@ -10,7 +10,7 @@ Go + Gin reimplementation of the demo backend REST API — a functional twin of
 
 - Provide a functionally equivalent backend to `demo-be-java-springboot`, `demo-be-elixir-phoenix`, and `demo-be-fsharp-giraffe`
   using the Go ecosystem
-- Consume the shared `specs/apps/demo-be/gherkin/` Gherkin feature files (76 scenarios across
+- Consume the shared `specs/apps/demo/be/gherkin/` Gherkin feature files (76 scenarios across
   13 feature files) for BDD integration tests via Godog
 - Integrate into the Nx monorepo with the same target surface (`build`, `dev`, `start`,
   `test:quick`, `test:unit`, `test:integration`, `lint`)
@@ -95,7 +95,7 @@ Go + Gin reimplementation of the demo backend REST API — a functional twin of
 - `infra/dev/demo-be-golang-gin/` — Docker Compose dev infra
 - `.github/workflows/e2e-demo-be-golang-gin.yml` — E2E workflow
 - `.github/workflows/main-ci.yml` — coverage upload (Go SDK already present)
-- `specs/apps/demo-be/` — shared Gherkin specs (consumed, not modified)
+- `specs/apps/demo/be/` — shared Gherkin specs (consumed, not modified)
 - `apps/demo-be-e2e/` — reused Playwright E2E suite (consumed, not modified)
 
 ## Files to Update
@@ -104,7 +104,7 @@ Go + Gin reimplementation of the demo backend REST API — a functional twin of
 | -------------------------------------------- | ----------------------------------------------------------------- |
 | `CLAUDE.md`                                  | Add demo-be-golang-gin to Current Apps list, add Go coverage info |
 | `README.md`                                  | Add demo-be-golang-gin badge and description in demo apps section |
-| `specs/apps/demo-be/README.md`               | Add Go/Gin row to Implementations table                           |
+| `specs/apps/demo/be/README.md`               | Add Go/Gin row to Implementations table                           |
 | `apps/demo-be-e2e/project.json`              | Add `demo-be-golang-gin` to `implicitDependencies`                |
 | `.github/workflows/main-ci.yml`              | Add coverage upload step for `apps/demo-be-golang-gin/cover.out`  |
 | `governance/development/infra/nx-targets.md` | Add `demo-be-golang-gin` to Current Project Tags table            |

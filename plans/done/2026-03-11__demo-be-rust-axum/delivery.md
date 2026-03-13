@@ -228,7 +228,7 @@ Execute phases in order. Each phase produces a working, committable state.
 
 - [x] Update `CLAUDE.md`
 - [x] Update `README.md`
-- [x] Update `specs/apps/demo-be/README.md`
+- [x] Update `specs/apps/demo/be/README.md`
 - [x] Update `apps/demo-be-e2e/project.json`
 
 ---

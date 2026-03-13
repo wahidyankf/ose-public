@@ -85,8 +85,8 @@ import { defineConfig } from "@playwright/test";
 import { defineBddConfig } from "playwright-bdd";
 
 const testDir = defineBddConfig({
-  featuresRoot: "../../specs/apps/demo-be/gherkin",
-  features: "../../specs/apps/demo-be/gherkin/**/*.feature",
+  featuresRoot: "../../specs/apps/demo/be/gherkin",
+  features: "../../specs/apps/demo/be/gherkin/**/*.feature",
   steps: "./tests/steps/**/*.ts",
 });
 
@@ -293,7 +293,7 @@ npx bddgen && npx playwright test
 
 - **[BDD Standards](../../../development/behavior-driven-development-bdd/README.md)** — Framework
   requirements, Three Amigos process, coverage rules
-- **[specs/apps/demo-be/gherkin/](../../../../../../specs/apps/demo-be/gherkin/README.md)** — Feature files
+- **[specs/apps/demo/be/gherkin/](../../../../../../specs/apps/demo/be/gherkin/README.md)** — Feature files
   and their organization
 - **[Configuration Standards](ex-soen-aute-to-pl__configuration.md)** — playwright.config.ts
   patterns including the BDD configuration section

@@ -21,7 +21,7 @@ config :demo_be_exph, :attachment_module, DemoBeExph.Test.InMemoryAttachmentCont
 
 # Elixir Cabbage BDD — feature files relative to workspace root
 config :elixir_cabbage,
-  features: Path.expand("../../../specs/apps/demo-be/gherkin/", __DIR__) <> "/"
+  features: Path.expand("../../../specs/apps/demo/be/gherkin/", __DIR__) <> "/"
 
 # Print only warnings and errors during test
 config :logger, level: :warning

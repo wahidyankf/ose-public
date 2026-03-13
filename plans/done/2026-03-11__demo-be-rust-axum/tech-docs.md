@@ -2,7 +2,7 @@
 
 ## BDD Integration Test: cucumber-rs
 
-Integration tests parse the canonical `.feature` files in `specs/apps/demo-be/gherkin/` using
+Integration tests parse the canonical `.feature` files in `specs/apps/demo/be/gherkin/` using
 **cucumber-rs**, the Rust Gherkin runner. cucumber-rs discovers step definitions via Rust async
 functions annotated with `#[given]`, `#[when]`, and `#[then]` macros, and executes scenarios
 concurrently by default (can be made sequential per feature with `@serial`).
@@ -82,14 +82,14 @@ impl cucumber::World for AppWorld {
 
 ### Feature File Path Resolution
 
-Feature files are located in `specs/apps/demo-be/gherkin/`. The cucumber-rs runner is
+Feature files are located in `specs/apps/demo/be/gherkin/`. The cucumber-rs runner is
 configured to discover them relative to the workspace root:
 
 ```rust
 // tests/integration/main.rs
 #[tokio::main]
 async fn main() {
-    AppWorld::run("../../specs/apps/demo-be/gherkin").await;
+    AppWorld::run("../../specs/apps/demo/be/gherkin").await;
 }
 ```
 
@@ -515,7 +515,7 @@ pub async fn verify_password(password: String, hash: String) -> Result<bool, App
       "inputs": [
         "{projectRoot}/src/**/*.rs",
         "{projectRoot}/tests/**/*.rs",
-        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature"
       ]
     },
     "lint": {

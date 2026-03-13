@@ -65,16 +65,16 @@ docker compose up --build
 
 ## Nx Targets
 
-| Target                                           | Description                                                           |
-| ------------------------------------------------ | --------------------------------------------------------------------- |
-| `nx build demo-be-python-fastapi`                | Build distributable wheel                                             |
-| `nx dev demo-be-python-fastapi`                  | Start dev server with reload                                          |
-| `nx start demo-be-python-fastapi`                | Start production server                                               |
-| `nx run demo-be-python-fastapi:test:quick`       | Unit tests + coverage check (no lint, no integration)                 |
-| `nx run demo-be-python-fastapi:test:unit`        | Unit tests only (SQLite in-memory, no external services)              |
-| `nx run demo-be-python-fastapi:test:integration` | Integration tests via Docker Compose (real PostgreSQL)                |
-| `nx lint demo-be-python-fastapi`                 | Ruff lint check                                                       |
-| `nx run demo-be-python-fastapi:typecheck`        | Pyright type check                                                    |
+| Target                                           | Description                                              |
+| ------------------------------------------------ | -------------------------------------------------------- |
+| `nx build demo-be-python-fastapi`                | Build distributable wheel                                |
+| `nx dev demo-be-python-fastapi`                  | Start dev server with reload                             |
+| `nx start demo-be-python-fastapi`                | Start production server                                  |
+| `nx run demo-be-python-fastapi:test:quick`       | Unit tests + coverage check (no lint, no integration)    |
+| `nx run demo-be-python-fastapi:test:unit`        | Unit tests only (SQLite in-memory, no external services) |
+| `nx run demo-be-python-fastapi:test:integration` | Integration tests via Docker Compose (real PostgreSQL)   |
+| `nx lint demo-be-python-fastapi`                 | Ruff lint check                                          |
+| `nx run demo-be-python-fastapi:typecheck`        | Pyright type check                                       |
 
 ## Three-Level Test Architecture
 
@@ -158,7 +158,7 @@ uv run coverage lcov -o coverage/lcov.info
 
 ## Gherkin BDD Tests
 
-Tests consume the shared `specs/apps/demo-be/gherkin/` feature files (76 scenarios across 13
+Tests consume the shared `specs/apps/demo/be/gherkin/` feature files (76 scenarios across 13
 features) using **pytest-bdd**.
 
 Unit-level BDD tests (`tests/unit/steps/`) use `TestClient` backed by SQLite in-memory for fast,

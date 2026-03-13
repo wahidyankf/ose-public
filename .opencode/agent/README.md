@@ -134,7 +134,7 @@
 - **agent-maker** - Creates new AI agent files following AI Agents Convention
 - **social-linkedin-post-maker** - Creates LinkedIn posts from project updates
 
-### Development (swe-* Family)
+### Development (swe-\* Family)
 
 **Language Developers**:
 

@@ -15,7 +15,7 @@ func TestIntegration(t *testing.T) {
 		ScenarioInitializer: InitializeScenario,
 		Options: &godog.Options{
 			Format:   "pretty",
-			Paths:    []string{"../../../../specs/apps/demo-be/gherkin"},
+			Paths:    []string{"../../../../specs/apps/demo/be/gherkin"},
 			TestingT: t,
 		},
 	}

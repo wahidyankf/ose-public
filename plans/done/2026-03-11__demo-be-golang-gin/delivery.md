@@ -12,7 +12,7 @@ Execute phases in order. Each phase produces a working, committable state.
       used by `rhino-cli`, `ayokoding-cli`, `oseplatform-cli`, `golang-commons`, `hugo-commons`)
 - [x] Verify `demo-be-e2e` Playwright config reads `BASE_URL` from env (it does)
 - [x] Verify Godog is compatible with the Gherkin feature files in
-      `specs/apps/demo-be/gherkin/` (Godog v0.15+ supports all used syntax)
+      `specs/apps/demo/be/gherkin/` (Godog v0.15+ supports all used syntax)
 - [x] Confirm SQLite CGO is available for integration test builds (requires `gcc` in PATH)
 
 ---
@@ -322,7 +322,7 @@ if err != nil { return err }
   - Add demo-be-golang-gin badge in demo apps section
   - Add coverage badge row
   - Add to monorepo architecture listing
-- [x] Update `specs/apps/demo-be/README.md`:
+- [x] Update `specs/apps/demo/be/README.md`:
   - Add Go/Gin row to Implementations table
 - [x] Update `apps/demo-be-e2e/project.json`:
   - Add `demo-be-golang-gin` to `implicitDependencies`

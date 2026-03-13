@@ -5,7 +5,7 @@ termination: "Zero findings remain after validation at the configured mode thres
 inputs:
   - name: folders
     type: file-list
-    description: "Explicit list of spec folders to validate (e.g., [specs/apps/demo-be, specs/apps/demo-fe]). Each folder and its subfolders are validated. Cross-folder consistency is checked between listed folders."
+    description: "Explicit list of spec folders to validate (e.g., [specs/apps/demo/be, specs/apps/demo/fe]). Each folder and its subfolders are validated. Cross-folder consistency is checked between listed folders."
     required: true
   - name: mode
     type: enum
@@ -52,7 +52,7 @@ fixes iteratively until all issues are resolved.
 
 **Key Design Principle**: This workflow only validates folders you explicitly list. It does not
 discover or scan the entire specs/ tree. Subfolders are included automatically — listing
-`specs/apps/demo-be` includes `specs/apps/demo-be/gherkin/`, `specs/apps/demo-be/c4/`, etc.
+`specs/apps/demo/be` includes `specs/apps/demo/be/gherkin/`, `specs/apps/demo/c4/`, etc.
 When multiple folders are listed, cross-folder consistency is checked between them (contradictions,
 coverage gaps, terminology drift).
 
@@ -83,9 +83,9 @@ workflow steps directly using Read/Write/Edit tools. File changes persist to the
 **How to Execute**:
 
 ```
-User: "Run specs validation for specs/apps/demo-be"
-User: "Run specs validation for specs/apps/demo-be and specs/apps/demo-fe in strict mode"
-User: "Run specs validation for specs/apps/demo-be, specs/apps/demo-fe, specs/apps/organiclever-be with max-iterations=5"
+User: "Run specs validation for specs/apps/demo/be"
+User: "Run specs validation for specs/apps/demo/be and specs/apps/demo/fe in strict mode"
+User: "Run specs validation for specs/apps/demo/be, specs/apps/demo/fe, specs/apps/organiclever-be with max-iterations=5"
 ```
 
 The AI will:
@@ -260,12 +260,12 @@ Report final status and summary.
 ### Single Folder (Normal Strictness)
 
 ```
-User: "Run specs validation for specs/apps/demo-be"
+User: "Run specs validation for specs/apps/demo/be"
 ```
 
 The AI will:
 
-- Validate `specs/apps/demo-be/` and all its subfolders
+- Validate `specs/apps/demo/be/` and all its subfolders
 - Fix CRITICAL and HIGH findings (missing READMEs, wrong counts, broken links)
 - Report MEDIUM/LOW findings without fixing them
 - Skip cross-folder consistency (only one folder listed)
@@ -273,7 +273,7 @@ The AI will:
 ### Multiple Folders — Cross-Folder Consistency
 
 ```
-User: "Run specs validation for specs/apps/demo-be and specs/apps/demo-fe"
+User: "Run specs validation for specs/apps/demo/be and specs/apps/demo/fe"
 ```
 
 The AI will:
@@ -287,7 +287,7 @@ The AI will:
 ### Strict Mode After Refactor
 
 ```
-User: "Run specs validation for specs/apps/demo-be, specs/apps/demo-fe in strict mode"
+User: "Run specs validation for specs/apps/demo/be, specs/apps/demo/fe in strict mode"
 ```
 
 The AI will:
@@ -299,7 +299,7 @@ The AI will:
 ### Comprehensive Audit (OCD Mode with Bounds)
 
 ```
-User: "Run specs validation for specs/apps/demo-be, specs/apps/demo-fe, specs/apps/organiclever-be in ocd mode with max-iterations=10"
+User: "Run specs validation for specs/apps/demo/be, specs/apps/demo/fe, specs/apps/organiclever-be in ocd mode with max-iterations=10"
 ```
 
 The AI will:
@@ -311,7 +311,7 @@ The AI will:
 
 ## Iteration Example
 
-Typical execution flow (folders: `[specs/apps/demo-be, specs/apps/demo-fe]`):
+Typical execution flow (folders: `[specs/apps/demo/be, specs/apps/demo/fe]`):
 
 ```
 Iteration 1:

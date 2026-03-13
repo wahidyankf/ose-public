@@ -2,7 +2,7 @@
 
 ## BDD Integration Tests: Cucumber.js
 
-Integration tests parse the canonical `.feature` files in `specs/apps/demo-be/gherkin/` using
+Integration tests parse the canonical `.feature` files in `specs/apps/demo/be/gherkin/` using
 **Cucumber.js**, the official JavaScript/TypeScript Gherkin BDD runner. Cucumber.js discovers
 step definitions from the configured `require` (or `import`) glob patterns in `.cucumber.js`.
 
@@ -36,14 +36,14 @@ Then("the response status code should be {int}", async function (this: CustomWor
 
 ### Feature File Path Resolution
 
-Feature files are referenced from the `specs/apps/demo-be/gherkin/` workspace root. The
+Feature files are referenced from the `specs/apps/demo/be/gherkin/` workspace root. The
 Cucumber.js configuration in `.cucumber.js` (or `cucumber.js`) at the project root specifies
 the feature file paths relative to the workspace root:
 
 ```javascript
 // apps/demo-be-ts-effect/.cucumber.js
 const path = require("path");
-const gherkinRoot = path.resolve(__dirname, "../../specs/apps/demo-be/gherkin");
+const gherkinRoot = path.resolve(__dirname, "../../specs/apps/demo/be/gherkin");
 
 module.exports = {
   default: {
@@ -402,7 +402,7 @@ export default defineConfig({
       "inputs": [
         "{projectRoot}/src/**/*.ts",
         "{projectRoot}/tests/**/*.ts",
-        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature"
       ]
     },
     "lint": {

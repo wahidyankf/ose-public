@@ -22,7 +22,7 @@ config :demo_be_exph, DemoBeExph.Auth.Guardian,
   ttl: {24, :hours}
 
 # Elixir Cabbage BDD — specs volume mounted at /specs by docker-compose.
-config :elixir_cabbage, features: "/specs/apps/demo-be/gherkin/"
+config :elixir_cabbage, features: "/specs/apps/demo/be/gherkin/"
 
 # Print only warnings and errors during test
 config :logger, level: :warning

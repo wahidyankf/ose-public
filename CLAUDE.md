@@ -179,7 +179,7 @@ in-process mocking only (MSW, Godog) override to `cache: true` in their `project
 
 **Three-level testing standard** (demo-be backends):
 
-1. **Unit (`test:unit`)**: All mocked dependencies; must consume Gherkin specs from `specs/apps/demo-be/gherkin/`; call service functions directly with mocked repositories; coverage measured here (>=90%)
+1. **Unit (`test:unit`)**: All mocked dependencies; must consume Gherkin specs from `specs/apps/demo/be/gherkin/`; call service functions directly with mocked repositories; coverage measured here (>=90%)
 2. **Integration (`test:integration`)**: Real PostgreSQL via docker-compose; **no HTTP calls** (no MockMvc, TestClient, httptest, ConnTest, WebApplicationFactory, fetch, clj-http, Router.oneshot); must consume Gherkin specs; call service functions directly with real DB
 3. **E2E (`test:e2e`)**: Full stack via Playwright; real HTTP + real DB; must consume Gherkin specs
 

@@ -193,7 +193,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Copies specs/apps/demo-be/gherkin feature files to the test classpath.
+            <!-- Copies specs/apps/demo/be/gherkin feature files to the test classpath.
                  Uses maven-antrun-plugin (Ant copy task) instead of build-helper-maven-plugin
                  to avoid maven-resources-plugin's "outside project base directory" warning,
                  which cannot be suppressed via plugin configuration. -->
@@ -209,7 +209,7 @@
                         <configuration>
                             <target>
                                 <copy todir="${project.build.testOutputDirectory}">
-                                    <fileset dir="${project.basedir}/../../specs/apps/demo-be/gherkin"/>
+                                    <fileset dir="${project.basedir}/../../specs/apps/demo/be/gherkin"/>
                                 </copy>
                             </target>
                         </configuration>

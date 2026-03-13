@@ -14,7 +14,7 @@ using Clojure 1.12+ and Pedestal 0.7.
 
 - Provide a functionally equivalent backend to all existing `demo-be-*` implementations using
   the Clojure / Pedestal ecosystem
-- Consume the shared `specs/apps/demo-be/gherkin/` Gherkin feature files (76 scenarios across
+- Consume the shared `specs/apps/demo/be/gherkin/` Gherkin feature files (76 scenarios across
   13 feature files) for BDD integration tests
 - Integrate into the Nx monorepo with the same target surface (`build`, `dev`, `start`,
   `test:quick`, `test:unit`, `test:integration`, `lint`)
@@ -102,7 +102,7 @@ and `-csas` (C# ASP.NET Core).
 - `infra/dev/demo-be-clojure-pedestal/` — Docker Compose dev infra
 - `.github/workflows/e2e-demo-be-clojure-pedestal.yml` — E2E workflow
 - `.github/workflows/main-ci.yml` — Clojure setup + coverage upload
-- `specs/apps/demo-be/` — shared Gherkin specs (consumed, not modified)
+- `specs/apps/demo/be/` — shared Gherkin specs (consumed, not modified)
 - `apps/demo-be-e2e/` — reused Playwright E2E suite (consumed, not modified)
 
 ## Files to Update
@@ -111,7 +111,7 @@ and `-csas` (C# ASP.NET Core).
 | ------------------------------- | ---------------------------------------------------------------------------- |
 | `CLAUDE.md`                     | Add demo-be-clojure-pedestal to Current Apps list, add Clojure coverage info |
 | `README.md`                     | Add demo-be-clojure-pedestal badge and description in demo apps section      |
-| `specs/apps/demo-be/README.md`  | Add Clojure/Pedestal row to Implementations table                            |
+| `specs/apps/demo/be/README.md`  | Add Clojure/Pedestal row to Implementations table                            |
 | `apps/demo-be-e2e/project.json` | Add `demo-be-clojure-pedestal` to `implicitDependencies`                     |
 | `.github/workflows/main-ci.yml` | Add Clojure setup + coverage upload step                                     |
 | `codecov.yml`                   | Add `demo-be-clojure-pedestal` flag                                          |

@@ -34,7 +34,7 @@ services:
     # Mount app source and shared Gherkin specs.
     volumes:
       - ../../../apps/demo-be-java-vertx:/workspace:rw
-      - ../../../specs/apps/demo-be/gherkin:/specs/apps/demo-be/gherkin:ro
+      - ../../../specs/apps/demo/be/gherkin:/specs/apps/demo/be/gherkin:ro
 
     ports:
       - "8201:8201"

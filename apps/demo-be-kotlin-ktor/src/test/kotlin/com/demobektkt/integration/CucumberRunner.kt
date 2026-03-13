@@ -10,7 +10,7 @@ import org.junit.platform.suite.api.Suite
 @Tag("integration")
 @Suite
 @IncludeEngines("cucumber")
-@SelectClasspathResource("specs/apps/demo-be/gherkin")
+@SelectClasspathResource("specs/apps/demo/be/gherkin")
 @ConfigurationParameter(key = Constants.PLUGIN_PROPERTY_NAME, value = "pretty")
 @ConfigurationParameter(key = Constants.PLUGIN_PUBLISH_QUIET_PROPERTY_NAME, value = "true")
 class CucumberRunner

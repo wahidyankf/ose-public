@@ -6,5 +6,5 @@ use world::AppWorld;
 
 #[tokio::main]
 async fn main() {
-    AppWorld::run("../../specs/apps/demo-be/gherkin").await;
+    AppWorld::run("../../specs/apps/demo/be/gherkin").await;
 }

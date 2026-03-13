@@ -2,7 +2,7 @@
 
 ## BDD Integration Test: Cucumber JVM + Ktor testApplication
 
-Integration tests parse the canonical `.feature` files in `specs/apps/demo-be/gherkin/` using
+Integration tests parse the canonical `.feature` files in `specs/apps/demo/be/gherkin/` using
 **Cucumber JVM** with Kotlin lambda step definitions. Cucumber discovers feature files at test
 time via classpath resource loading.
 
@@ -42,14 +42,14 @@ Feature files are copied into the test classpath via a Gradle `processTestResour
 ```kotlin
 // build.gradle.kts
 tasks.processTestResources {
-    from("${rootProject.projectDir}/../../specs/apps/demo-be/gherkin") {
-        into("specs/apps/demo-be/gherkin")
+    from("${rootProject.projectDir}/../../specs/apps/demo/be/gherkin") {
+        into("specs/apps/demo/be/gherkin")
     }
 }
 ```
 
 Cucumber discovers feature files from the classpath path
-`specs/apps/demo-be/gherkin/**/*.feature` configured in `junit-platform.properties`.
+`specs/apps/demo/be/gherkin/**/*.feature` configured in `junit-platform.properties`.
 
 ### Cucumber JUnit 5 Platform Configuration
 
@@ -58,7 +58,7 @@ Cucumber discovers feature files from the classpath path
 cucumber.publish.enabled=false
 cucumber.plugin=pretty,json:build/reports/cucumber.json
 cucumber.glue=com.demobektkt.integration.steps
-cucumber.features=classpath:specs/apps/demo-be/gherkin
+cucumber.features=classpath:specs/apps/demo/be/gherkin
 ```
 
 ---
@@ -494,7 +494,7 @@ data class Expense(
       "inputs": [
         "{projectRoot}/src/main/**/*.kt",
         "{projectRoot}/src/test/**/*.kt",
-        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature"
       ]
     },
     "lint": {

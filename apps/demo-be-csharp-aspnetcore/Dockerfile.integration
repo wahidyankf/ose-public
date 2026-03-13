@@ -22,9 +22,9 @@ COPY apps/demo-be-csharp-aspnetcore/src/DemoBeCsas/DemoBeCsas.csproj src/DemoBeC
 COPY apps/demo-be-csharp-aspnetcore/tests/DemoBeCsas.Tests/DemoBeCsas.Tests.csproj tests/DemoBeCsas.Tests/
 
 # Copy specs so Reqnroll code-behind generation can find feature files at build time.
-# The .csproj references: ../../../../specs/apps/demo-be/gherkin/**/*.feature
-# With WORKDIR=/build, that path resolves to /specs/apps/demo-be/gherkin.
-COPY specs/apps/demo-be/gherkin /specs/apps/demo-be/gherkin
+# The .csproj references: ../../../../specs/apps/demo/be/gherkin/**/*.feature
+# With WORKDIR=/build, that path resolves to /specs/apps/demo/be/gherkin.
+COPY specs/apps/demo/be/gherkin /specs/apps/demo/be/gherkin
 
 # Restore dependencies (layer cache until project files change).
 # Use --force-evaluate to regenerate lock files in the container environment

@@ -91,7 +91,7 @@
 
 - [x] Update `CLAUDE.md` — add to Current Apps, add coverage info
 - [x] Update `README.md` — add badge + coverage row
-- [x] Update `specs/apps/demo-be/README.md` — add implementation row
+- [x] Update `specs/apps/demo/be/README.md` — add implementation row
 - [x] Update `apps/demo-be-e2e/project.json` — add to implicitDependencies
 
 ## Phase 11: Verification

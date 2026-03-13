@@ -8,7 +8,7 @@ Tests use Playwright's `APIRequestContext` to validate HTTP endpoints — no bro
 
 ## What This Tests
 
-Feature files in `specs/apps/demo-be/gherkin/` are the source of truth:
+Feature files in `specs/apps/demo/be/gherkin/` are the source of truth:
 
 - `health/health-check.feature, authentication/_, user-lifecycle/_, security/_, token-management/_, admin/_, expenses/_, expenses/\*
 - `
@@ -19,7 +19,7 @@ Feature files in `specs/apps/demo-be/gherkin/` are the source of truth:
 ## Architecture
 
 ```
-specs/apps/demo-be/gherkin/**/*.feature    ← source of truth (read-only)
+specs/apps/demo/be/gherkin/**/*.feature    ← source of truth (read-only)
         │
         ▼  (defineBddConfig reads features)
 playwright.config.ts
@@ -148,5 +148,5 @@ this scenario will fail — which is expected, as E2E tests validate production-
 ## Related
 
 - [demo-be-java-springboot](../demo-be-java-springboot/README.md) — The backend being tested
-- [specs/apps/demo-be/gherkin](../../specs/apps/demo-be/gherkin/) — Gherkin feature files (source of truth)
+- [specs/apps/demo/be/gherkin](../../specs/apps/demo/be/gherkin/) — Gherkin feature files (source of truth)
 - [Playwright docs](../../docs/explanation/software-engineering/automation-testing/tools/playwright/README.md) — Playwright standards for this project

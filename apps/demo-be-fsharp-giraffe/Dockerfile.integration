@@ -21,8 +21,8 @@ COPY apps/demo-be-fsharp-giraffe/tests/DemoBeFsgi.Tests/DemoBeFsgi.Tests.fsproj 
 
 # Copy specs so the CopyGherkinSpecs MSBuild target can find feature files at build time.
 # The .fsproj references: $(ProjectDir)..\..\..\..\specs\apps\demo-be\gherkin\**\*.feature
-# Going up 4 levels from /build/tests/DemoBeFsgi.Tests/ resolves to /specs/apps/demo-be/gherkin.
-COPY specs/apps/demo-be/gherkin /specs/apps/demo-be/gherkin
+# Going up 4 levels from /build/tests/DemoBeFsgi.Tests/ resolves to /specs/apps/demo/be/gherkin.
+COPY specs/apps/demo/be/gherkin /specs/apps/demo/be/gherkin
 
 # Restore dependencies (layer cache until project files change).
 RUN dotnet restore tests/DemoBeFsgi.Tests/DemoBeFsgi.Tests.fsproj

@@ -24,7 +24,7 @@ created: 2026-03-09
 updated: 2026-03-09
 ---
 
-# F #
+# F
 
 **This is THE authoritative reference** for F# coding standards in OSE Platform.
 
@@ -84,7 +84,6 @@ OSE Platform F# applications MUST use the following stack:
 
 - **[F# Learning Path](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/f-sharp/)** - Complete language coverage from basics to advanced
 - **[F# By Example](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/f-sharp/by-example/)** - Annotated code examples covering discriminated unions, computation expressions, and more
-- **[F# In the Field](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/f-sharp/in-the-field/)** - Production patterns and domain modeling approaches
 
 **What this documentation covers**: OSE Platform naming conventions, framework choices, repository-specific patterns, how to apply F# knowledge in THIS codebase.
 

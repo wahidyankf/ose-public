@@ -88,8 +88,6 @@ OSE Platform Kotlin applications MUST use the following stack:
 
 - **[Kotlin Learning Path](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/kotlin/)** - Complete 0-95% language coverage
 - **[Kotlin By Example](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/kotlin/by-example/)** - Annotated code examples (beginner to advanced)
-- **[Kotlin In the Field](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/kotlin/in-the-field/)** - Production patterns and design approaches
-- **[Kotlin Release Highlights](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/kotlin/release-highlights/)** - Kotlin 2.0, 2.1 features (K2 compiler, coroutines advances)
 
 **What this documentation covers**: OSE Platform naming conventions, framework choices, repository-specific patterns, how to apply Kotlin knowledge in THIS codebase.
 
@@ -148,7 +146,7 @@ OSE Platform follows a three-tier Kotlin versioning strategy focused on modern, 
 
 **Unlike Go's 6-month cadence**: Kotlin follows a roughly quarterly release schedule with LTS designations every few major versions. The K2 compiler (Kotlin 2.0+) is a significant milestone providing 2x faster compilation and improved IDE support.
 
-**See**: [Kotlin Release Highlights](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/kotlin/release-highlights/) for detailed feature documentation
+**See**: Kotlin release highlights documentation (when available) for detailed feature documentation
 
 ## OSE Platform Coding Standards (Authoritative)
 

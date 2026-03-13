@@ -25,7 +25,7 @@ created: 2026-03-09
 updated: 2026-03-09
 ---
 
-# C #
+# C
 
 **This is THE authoritative reference** for C# coding standards in OSE Platform.
 
@@ -87,8 +87,6 @@ OSE Platform C# applications MUST use the following stack:
 
 - **[C# Learning Path](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/c-sharp/)** - Complete 0-95% language coverage
 - **[C# By Example](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/c-sharp/by-example/)** - Annotated code examples (beginner to advanced)
-- **[C# In the Field](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/c-sharp/in-the-field/)** - Production patterns and design approaches
-- **[C# Release Highlights](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/c-sharp/release-highlights/)** - C# 10-14 and .NET 6-10 features
 
 **What this documentation covers**: OSE Platform naming conventions, framework choices, repository-specific patterns, how to apply C# knowledge in THIS codebase.
 
@@ -148,7 +146,7 @@ OSE Platform follows a three-tier .NET versioning strategy aligned with Microsof
 
 **Unlike Go's 6-month cadence**: .NET follows an annual release cycle with every other release being LTS (Long-Term Support, 3 years). OSE Platform targets LTS releases for production services; STS releases for experimental features and tooling.
 
-**See**: [C# Release Highlights](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/c-sharp/release-highlights/) for detailed feature documentation
+**See**: C# release highlights documentation (when available) for detailed feature documentation
 
 ## OSE Platform Coding Standards (Authoritative)
 

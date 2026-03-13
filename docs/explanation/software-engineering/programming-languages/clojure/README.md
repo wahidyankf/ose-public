@@ -88,7 +88,6 @@ OSE Platform Clojure applications MUST use the following stack:
 
 - **[Clojure Learning Path](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/clojure/)** - Complete language coverage
 - **[Clojure By Example](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/clojure/by-example/)** - Annotated code examples (beginner to advanced)
-- **[Clojure In the Field](../../../../../apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/clojure/in-the-field/)** - Production patterns and design approaches
 
 **What this documentation covers**: OSE Platform naming conventions, framework choices, repository-specific patterns, how to apply Clojure knowledge in THIS codebase.
 

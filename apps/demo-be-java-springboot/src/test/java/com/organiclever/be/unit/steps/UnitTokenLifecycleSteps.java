@@ -15,8 +15,6 @@ import java.time.temporal.ChronoUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -36,12 +34,6 @@ public class UnitTokenLifecycleSteps {
 
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
-
-    @Autowired
-    private UnitInMemoryDataStore dataStore;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @When("^alice sends POST /api/v1/auth/refresh with her refresh token$")
     public void aliceSendsPostRefreshWithHerRefreshToken() {

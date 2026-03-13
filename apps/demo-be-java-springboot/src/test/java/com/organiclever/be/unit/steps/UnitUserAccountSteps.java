@@ -1,7 +1,6 @@
 package com.organiclever.be.unit.steps;
 
 import com.organiclever.be.auth.repository.UserRepository;
-import com.organiclever.be.auth.service.AuthService;
 import com.organiclever.be.auth.service.InvalidCredentialsException;
 import com.organiclever.be.user.controller.UserController;
 import com.organiclever.be.user.dto.ChangePasswordRequest;
@@ -12,7 +11,6 @@ import io.cucumber.java.en.When;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * Unit-level step definitions for user account management (profile, password change, deactivation).
@@ -25,12 +23,6 @@ public class UnitUserAccountSteps {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private AuthService authService;
 
     @Autowired
     private UserController userController;

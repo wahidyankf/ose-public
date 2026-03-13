@@ -1,7 +1,5 @@
 package com.organiclever.be.unit.steps;
 
-import com.organiclever.be.auth.repository.UserRepository;
-import com.organiclever.be.expense.repository.ExpenseRepository;
 import com.organiclever.be.report.controller.ReportController;
 import com.organiclever.be.report.dto.PlReportResponse;
 import io.cucumber.java.en.Then;
@@ -21,12 +19,6 @@ public class UnitReportingSteps {
 
     @Autowired
     private UnitStateStore stateStore;
-
-    @Autowired
-    private ExpenseRepository expenseRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private ReportController reportController;

@@ -38,9 +38,6 @@ public class UnitTokenManagementSteps {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private UnitInMemoryDataStore dataStore;
-
     /** Decoded JWT payload stored between When/Then steps. */
     private String jwtPayloadJson = "";
 

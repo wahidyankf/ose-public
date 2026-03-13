@@ -32,26 +32,36 @@
       "options": {
         "commands": [
           "mvn test",
-          "mvn test -Pintegration",
-          "(cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/demo-be-java-springboot/target/site/jacoco-integration/jacoco.xml 90)"
+          "(cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/demo-be-java-springboot/target/site/jacoco/jacoco.xml 90)"
         ],
         "parallel": false,
         "cwd": "apps/demo-be-java-springboot"
-      }
+      },
+      "inputs": [
+        "{projectRoot}/src/**",
+        "{projectRoot}/pom.xml",
+        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+      ]
     },
     "test:unit": {
       "executor": "nx:run-commands",
       "options": {
         "command": "mvn test",
         "cwd": "apps/demo-be-java-springboot"
-      }
+      },
+      "inputs": [
+        "{projectRoot}/src/**",
+        "{projectRoot}/pom.xml",
+        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+      ]
     },
     "test:integration": {
       "executor": "nx:run-commands",
       "options": {
         "command": "mvn test -Pintegration",
         "cwd": "apps/demo-be-java-springboot"
-      }
+      },
+      "cache": false
     },
     "lint": {
       "executor": "nx:run-commands",

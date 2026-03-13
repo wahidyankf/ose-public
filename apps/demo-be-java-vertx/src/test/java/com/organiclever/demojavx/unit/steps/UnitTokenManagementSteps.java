@@ -1,14 +1,13 @@
 package com.organiclever.demojavx.unit.steps;
 
 import com.organiclever.demojavx.support.AppFactory;
+import com.organiclever.demojavx.support.DirectCallService;
 import com.organiclever.demojavx.support.ScenarioState;
+import com.organiclever.demojavx.support.ServiceResponse;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.client.HttpResponse;
-import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Assertions;
 
 public class UnitTokenManagementSteps {
@@ -19,48 +18,42 @@ public class UnitTokenManagementSteps {
         this.state = state;
     }
 
+    private DirectCallService svc() {
+        return AppFactory.getService();
+    }
+
     @When("alice decodes her access token payload")
-    public void aliceDecodesHerAccessTokenPayload() throws Exception {
+    public void aliceDecodesHerAccessTokenPayload() {
         String token = state.getAccessToken();
         Assertions.assertNotNull(token, "Access token must be set");
-        HttpResponse<Buffer> response = AppFactory.getClient()
-                .get("/api/v1/tokens/claims")
-                .bearerTokenAuthentication(token)
-                .send()
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        ServiceResponse response = svc().getTokenClaims(token);
         state.setLastResponse(response);
     }
 
     @Then("the token should contain a non-null {string} claim")
     public void theTokenShouldContainNonNullClaim(String claim) {
-        HttpResponse<Buffer> response = state.getLastResponse();
+        ServiceResponse response = state.getLastResponse();
         Assertions.assertNotNull(response, "Response must be set");
         Assertions.assertEquals(200, response.statusCode(),
                 "Expected 200 from claims endpoint but got " + response.statusCode());
-        JsonObject body = response.bodyAsJsonObject();
+        JsonObject body = response.body();
         Assertions.assertNotNull(body, "Claims response body must not be null");
         Object value = body.getValue(claim);
-        Assertions.assertNotNull(value, "Expected non-null claim '" + claim + "' in: " + body.encode());
+        Assertions.assertNotNull(value,
+                "Expected non-null claim '" + claim + "' in: " + body.encode());
     }
 
     @When("^the client sends GET /\\.well-known/jwks\\.json$")
-    public void clientSendsGetJwks() throws Exception {
-        HttpResponse<Buffer> response = AppFactory.getClient()
-                .get("/.well-known/jwks.json")
-                .send()
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+    public void clientSendsGetJwks() {
+        ServiceResponse response = svc().getJwks();
         state.setLastResponse(response);
     }
 
     @Then("the response body should contain at least one key in the {string} array")
     public void responseBodyContainsAtLeastOneKeyInArray(String field) {
-        HttpResponse<Buffer> response = state.getLastResponse();
+        ServiceResponse response = state.getLastResponse();
         Assertions.assertNotNull(response);
-        JsonObject body = response.bodyAsJsonObject();
+        JsonObject body = response.body();
         Assertions.assertNotNull(body);
         io.vertx.core.json.JsonArray keys = body.getJsonArray(field);
         Assertions.assertNotNull(keys, "Expected '" + field + "' array in response");
@@ -72,13 +65,7 @@ public class UnitTokenManagementSteps {
     public void alicesAccessTokenShouldBeRecordedAsRevoked() throws Exception {
         String token = state.getAccessToken();
         Assertions.assertNotNull(token);
-        HttpResponse<Buffer> response = AppFactory.getClient()
-                .get("/api/v1/users/me")
-                .bearerTokenAuthentication(token)
-                .send()
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        ServiceResponse response = svc().getMe(token);
         Assertions.assertEquals(401, response.statusCode());
     }
 
@@ -86,13 +73,7 @@ public class UnitTokenManagementSteps {
     public void aliceHasLoggedOutAndTokenIsBlacklisted() throws Exception {
         String token = state.getAccessToken();
         Assertions.assertNotNull(token);
-        AppFactory.getClient()
-                .post("/api/v1/auth/logout")
-                .bearerTokenAuthentication(token)
-                .send()
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        svc().logout(token);
     }
 
     @Given("^the admin has disabled alice's account via POST /api/v1/admin/users/\\{alice_id\\}/disable$")
@@ -100,22 +81,10 @@ public class UnitTokenManagementSteps {
         String adminToken = state.getAdminAccessToken();
         Assertions.assertNotNull(adminToken);
 
-        HttpResponse<Buffer> listResp = AppFactory.getClient()
-                .get("/api/v1/admin/users")
-                .bearerTokenAuthentication(adminToken)
-                .send()
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        ServiceResponse listResp = svc().adminListUsers(adminToken, null, 1, 100);
         String aliceId = UnitSecuritySteps.findUserIdByUsername(
-                listResp.bodyAsJsonObject().getJsonArray("data"), "alice");
+                listResp.body().getJsonArray("data"), "alice");
 
-        AppFactory.getClient()
-                .post("/api/v1/admin/users/" + aliceId + "/disable")
-                .bearerTokenAuthentication(adminToken)
-                .sendJsonObject(new JsonObject().put("reason", "test"))
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        svc().adminDisableUser(adminToken, aliceId);
     }
 }

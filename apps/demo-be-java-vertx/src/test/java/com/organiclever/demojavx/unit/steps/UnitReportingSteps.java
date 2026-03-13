@@ -1,14 +1,13 @@
 package com.organiclever.demojavx.unit.steps;
 
 import com.organiclever.demojavx.support.AppFactory;
+import com.organiclever.demojavx.support.DirectCallService;
 import com.organiclever.demojavx.support.ScenarioState;
-import io.cucumber.java.en.When;
+import com.organiclever.demojavx.support.ServiceResponse;
 import io.cucumber.java.en.Then;
-import io.vertx.core.buffer.Buffer;
+import io.cucumber.java.en.When;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.client.HttpResponse;
-import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Assertions;
 
 public class UnitReportingSteps {
@@ -19,16 +18,14 @@ public class UnitReportingSteps {
         this.state = state;
     }
 
+    private DirectCallService svc() {
+        return AppFactory.getService();
+    }
+
     @When("^alice sends GET /api/v1/reports/pl\\?from=([^&]+)&to=([^&]+)&currency=([^&]+)$")
     public void aliceSendsGetPlReport(String from, String to, String currency) throws Exception {
         String token = state.getAccessToken();
-        HttpResponse<Buffer> response = AppFactory.getClient()
-                .get("/api/v1/reports/pl?from=" + from + "&to=" + to + "&currency=" + currency)
-                .bearerTokenAuthentication(token)
-                .send()
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        ServiceResponse response = svc().getPlReport(token, from, to, currency);
         state.setLastResponse(response);
     }
 
@@ -43,9 +40,9 @@ public class UnitReportingSteps {
     }
 
     private void checkBreakdown(String field, String category, String amount) {
-        HttpResponse<Buffer> response = state.getLastResponse();
+        ServiceResponse response = state.getLastResponse();
         Assertions.assertNotNull(response);
-        JsonObject body = response.bodyAsJsonObject();
+        JsonObject body = response.body();
         Assertions.assertNotNull(body);
         JsonArray breakdown = body.getJsonArray(field);
         Assertions.assertNotNull(breakdown, "Expected '" + field + "' in response");

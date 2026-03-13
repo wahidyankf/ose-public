@@ -23,6 +23,6 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      DATABASE_URL: "jdbc:postgresql://postgres:5432/demo_be_java_vertx?user=demo_be_java_vertx&password=demo_be_java_vertx"
+      DATABASE_URL: "postgresql://demo_be_java_vertx:demo_be_java_vertx@postgres:5432/demo_be_java_vertx"
     volumes:
       - ../../specs:/specs:ro

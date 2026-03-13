@@ -45,4 +45,9 @@ public record User(
         return new User(id, username, email, displayName, newHash, role, status,
                 failedLoginAttempts, createdAt);
     }
+
+    public User withRole(String newRole) {
+        return new User(id, username, email, displayName, passwordHash, newRole, status,
+                failedLoginAttempts, createdAt);
+    }
 }

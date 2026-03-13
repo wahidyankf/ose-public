@@ -1,13 +1,16 @@
 package com.organiclever.demojavx.support;
 
-import io.vertx.ext.web.client.HttpResponse;
-import io.vertx.core.buffer.Buffer;
 import org.jspecify.annotations.Nullable;
 
+/**
+ * Per-scenario mutable state shared across Cucumber step definition classes via
+ * PicoContainer constructor injection. Every field is reset before each scenario
+ * by {@link com.organiclever.demojavx.integration.steps.CommonSteps#resetState}.
+ */
 public class ScenarioState {
 
     @Nullable
-    private HttpResponse<Buffer> lastResponse;
+    private ServiceResponse lastResponse;
     @Nullable
     private String accessToken;
     @Nullable
@@ -41,11 +44,11 @@ public class ScenarioState {
     }
 
     @Nullable
-    public HttpResponse<Buffer> getLastResponse() {
+    public ServiceResponse getLastResponse() {
         return lastResponse;
     }
 
-    public void setLastResponse(HttpResponse<Buffer> response) {
+    public void setLastResponse(ServiceResponse response) {
         this.lastResponse = response;
     }
 

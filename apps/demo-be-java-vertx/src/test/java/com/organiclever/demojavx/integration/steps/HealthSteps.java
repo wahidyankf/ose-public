@@ -2,11 +2,10 @@ package com.organiclever.demojavx.integration.steps;
 
 import com.organiclever.demojavx.support.AppFactory;
 import com.organiclever.demojavx.support.ScenarioState;
+import com.organiclever.demojavx.support.ServiceResponse;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.ext.web.client.HttpResponse;
-import java.util.concurrent.TimeUnit;
+import io.vertx.core.json.JsonObject;
 import org.junit.jupiter.api.Assertions;
 
 public class HealthSteps {
@@ -18,41 +17,33 @@ public class HealthSteps {
     }
 
     @When("^an operations engineer sends GET /health$")
-    public void operationsEngineerSendsGetHealth() throws Exception {
-        HttpResponse<Buffer> response = AppFactory.getClient()
-                .get("/health")
-                .send()
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+    public void operationsEngineerSendsGetHealth() {
+        ServiceResponse response = AppFactory.getService().getHealth();
         state.setLastResponse(response);
     }
 
     @When("^an unauthenticated engineer sends GET /health$")
-    public void unauthenticatedEngineerSendsGetHealth() throws Exception {
-        HttpResponse<Buffer> response = AppFactory.getClient()
-                .get("/health")
-                .send()
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+    public void unauthenticatedEngineerSendsGetHealth() {
+        ServiceResponse response = AppFactory.getService().getHealth();
         state.setLastResponse(response);
     }
 
     @Then("the health status should be {string}")
     public void healthStatusShouldBe(String expected) {
-        HttpResponse<Buffer> response = state.getLastResponse();
+        ServiceResponse response = state.getLastResponse();
         Assertions.assertNotNull(response);
-        String status = response.bodyAsJsonObject().getString("status");
+        JsonObject body = response.body();
+        Assertions.assertNotNull(body);
+        String status = body.getString("status");
         Assertions.assertEquals(expected, status);
     }
 
     @Then("the response should not include detailed component health information")
     public void responseDoesNotIncludeDetailedComponentHealth() {
-        HttpResponse<Buffer> response = state.getLastResponse();
+        ServiceResponse response = state.getLastResponse();
         Assertions.assertNotNull(response);
-        io.vertx.core.json.JsonObject body = response.bodyAsJsonObject();
-        // Only "status" field should be present — no "components", "db", etc.
+        JsonObject body = response.body();
+        Assertions.assertNotNull(body);
         Assertions.assertNull(body.getValue("components"),
                 "Response should not include component details");
     }

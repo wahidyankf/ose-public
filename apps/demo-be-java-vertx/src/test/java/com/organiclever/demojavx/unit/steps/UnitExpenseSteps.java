@@ -1,13 +1,11 @@
 package com.organiclever.demojavx.unit.steps;
 
 import com.organiclever.demojavx.support.AppFactory;
+import com.organiclever.demojavx.support.DirectCallService;
 import com.organiclever.demojavx.support.ScenarioState;
+import com.organiclever.demojavx.support.ServiceResponse;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.client.HttpResponse;
-import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Assertions;
 
 public class UnitExpenseSteps {
@@ -18,28 +16,19 @@ public class UnitExpenseSteps {
         this.state = state;
     }
 
+    private DirectCallService svc() {
+        return AppFactory.getService();
+    }
+
     @Given("^alice has created an entry with body \\{ \"amount\": \"([^\"]*)\", \"currency\": \"([^\"]*)\", \"category\": \"([^\"]*)\", \"description\": \"([^\"]*)\", \"date\": \"([^\"]*)\", \"type\": \"([^\"]*)\" \\}$")
     public void aliceHasCreatedEntry(String amount, String currency, String category,
             String description, String date, String type) throws Exception {
         String token = state.getAccessToken();
-        JsonObject body = new JsonObject()
-                .put("amount", amount)
-                .put("currency", currency)
-                .put("category", category)
-                .put("description", description)
-                .put("date", date)
-                .put("type", type);
-        HttpResponse<Buffer> resp = AppFactory.getClient()
-                .post("/api/v1/expenses")
-                .bearerTokenAuthentication(token)
-                .sendJsonObject(body)
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        ServiceResponse resp = svc().createExpense(token, amount, currency, category, description,
+                date, type);
         Assertions.assertEquals(201, resp.statusCode(),
-                "Expected 201 creating entry but got " + resp.statusCode() + ": "
-                        + resp.bodyAsString());
-        state.setExpenseId(resp.bodyAsJsonObject().getString("id"));
+                "Expected 201 creating entry but got " + resp.statusCode());
+        state.setExpenseId(resp.body().getString("id"));
     }
 
     @Given("^alice has created an expense with body \\{ \"amount\": \"([^\"]*)\", \"currency\": \"([^\"]*)\", \"category\": \"([^\"]*)\", \"description\": \"([^\"]*)\", \"date\": \"([^\"]*)\", \"type\": \"([^\"]*)\" \\}$")
@@ -54,26 +43,11 @@ public class UnitExpenseSteps {
             String unit) throws Exception {
         String token = state.getAccessToken();
         double quantityVal = Double.parseDouble(quantityStr);
-        JsonObject body = new JsonObject()
-                .put("amount", amount)
-                .put("currency", currency)
-                .put("category", category)
-                .put("description", description)
-                .put("date", date)
-                .put("type", type)
-                .put("quantity", quantityVal)
-                .put("unit", unit);
-        HttpResponse<Buffer> resp = AppFactory.getClient()
-                .post("/api/v1/expenses")
-                .bearerTokenAuthentication(token)
-                .sendJsonObject(body)
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        ServiceResponse resp = svc().createExpenseWithUnit(token, amount, currency, category,
+                description, date, type, quantityVal, unit);
         Assertions.assertEquals(201, resp.statusCode(),
-                "Expected 201 creating entry but got " + resp.statusCode() + ": "
-                        + resp.bodyAsString());
-        state.setExpenseId(resp.bodyAsJsonObject().getString("id"));
+                "Expected 201 creating entry but got " + resp.statusCode());
+        state.setExpenseId(resp.body().getString("id"));
     }
 
     @Given("alice has created {int} entries")
@@ -88,60 +62,30 @@ public class UnitExpenseSteps {
     public void aliceSendsGetExpense() throws Exception {
         String id = state.getExpenseId();
         Assertions.assertNotNull(id, "Expense ID must be set");
-        HttpResponse<Buffer> response = AppFactory.getClient()
-                .get("/api/v1/expenses/" + id)
-                .bearerTokenAuthentication(state.getAccessToken())
-                .send()
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        ServiceResponse response = svc().getExpense(state.getAccessToken(), id);
         state.setLastResponse(response);
     }
 
     @When("^alice sends GET /api/v1/expenses$")
     public void aliceSendsGetExpenses() throws Exception {
-        HttpResponse<Buffer> response = AppFactory.getClient()
-                .get("/api/v1/expenses")
-                .bearerTokenAuthentication(state.getAccessToken())
-                .send()
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        ServiceResponse response = svc().listExpenses(state.getAccessToken(), 1, 100);
         state.setLastResponse(response);
     }
 
     @When("^alice sends GET /api/v1/expenses/summary$")
     public void aliceSendsGetSummary() throws Exception {
-        HttpResponse<Buffer> response = AppFactory.getClient()
-                .get("/api/v1/expenses/summary")
-                .bearerTokenAuthentication(state.getAccessToken())
-                .send()
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        ServiceResponse response = svc().getExpenseSummary(state.getAccessToken());
         state.setLastResponse(response);
     }
 
     @When("^alice sends POST /api/v1/expenses with body \\{ \"amount\": \"([^\"]*)\", \"currency\": \"([^\"]*)\", \"category\": \"([^\"]*)\", \"description\": \"([^\"]*)\", \"date\": \"([^\"]*)\", \"type\": \"([^\"]*)\" \\}$")
     public void aliceSendsCreateExpense(String amount, String currency, String category,
             String description, String date, String type) throws Exception {
-        JsonObject body = new JsonObject()
-                .put("amount", amount)
-                .put("currency", currency)
-                .put("category", category)
-                .put("description", description)
-                .put("date", date)
-                .put("type", type);
-        HttpResponse<Buffer> response = AppFactory.getClient()
-                .post("/api/v1/expenses")
-                .bearerTokenAuthentication(state.getAccessToken())
-                .sendJsonObject(body)
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        ServiceResponse response = svc().createExpense(state.getAccessToken(), amount, currency,
+                category, description, date, type);
         state.setLastResponse(response);
-        if (response.statusCode() == 201) {
-            state.setExpenseId(response.bodyAsJsonObject().getString("id"));
+        if (response.statusCode() == 201 && response.body() != null) {
+            state.setExpenseId(response.body().getString("id"));
         }
     }
 
@@ -150,25 +94,11 @@ public class UnitExpenseSteps {
             String description, String date, String type, String quantityStr,
             String unit) throws Exception {
         double quantityVal = Double.parseDouble(quantityStr);
-        JsonObject body = new JsonObject()
-                .put("amount", amount)
-                .put("currency", currency)
-                .put("category", category)
-                .put("description", description)
-                .put("date", date)
-                .put("type", type)
-                .put("quantity", quantityVal)
-                .put("unit", unit);
-        HttpResponse<Buffer> response = AppFactory.getClient()
-                .post("/api/v1/expenses")
-                .bearerTokenAuthentication(state.getAccessToken())
-                .sendJsonObject(body)
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        ServiceResponse response = svc().createExpenseWithUnit(state.getAccessToken(), amount,
+                currency, category, description, date, type, quantityVal, unit);
         state.setLastResponse(response);
-        if (response.statusCode() == 201) {
-            state.setExpenseId(response.bodyAsJsonObject().getString("id"));
+        if (response.statusCode() == 201 && response.body() != null) {
+            state.setExpenseId(response.body().getString("id"));
         }
     }
 
@@ -177,20 +107,8 @@ public class UnitExpenseSteps {
             String description, String date, String type) throws Exception {
         String id = state.getExpenseId();
         Assertions.assertNotNull(id, "Expense ID must be set");
-        JsonObject body = new JsonObject()
-                .put("amount", amount)
-                .put("currency", currency)
-                .put("category", category)
-                .put("description", description)
-                .put("date", date)
-                .put("type", type);
-        HttpResponse<Buffer> response = AppFactory.getClient()
-                .put("/api/v1/expenses/" + id)
-                .bearerTokenAuthentication(state.getAccessToken())
-                .sendJsonObject(body)
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        ServiceResponse response = svc().updateExpense(state.getAccessToken(), id, amount,
+                currency, category, description, date, type);
         state.setLastResponse(response);
     }
 
@@ -198,32 +116,15 @@ public class UnitExpenseSteps {
     public void aliceSendsDeleteExpense() throws Exception {
         String id = state.getExpenseId();
         Assertions.assertNotNull(id, "Expense ID must be set");
-        HttpResponse<Buffer> response = AppFactory.getClient()
-                .delete("/api/v1/expenses/" + id)
-                .bearerTokenAuthentication(state.getAccessToken())
-                .send()
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        ServiceResponse response = svc().deleteExpense(state.getAccessToken(), id);
         state.setLastResponse(response);
     }
 
     @When("^the client sends POST /api/v1/expenses with body \\{ \"amount\": \"([^\"]*)\", \"currency\": \"([^\"]*)\", \"category\": \"([^\"]*)\", \"description\": \"([^\"]*)\", \"date\": \"([^\"]*)\", \"type\": \"([^\"]*)\" \\}$")
     public void unauthClientSendsCreateExpense(String amount, String currency, String category,
             String description, String date, String type) throws Exception {
-        JsonObject body = new JsonObject()
-                .put("amount", amount)
-                .put("currency", currency)
-                .put("category", category)
-                .put("description", description)
-                .put("date", date)
-                .put("type", type);
-        HttpResponse<Buffer> response = AppFactory.getClient()
-                .post("/api/v1/expenses")
-                .sendJsonObject(body)
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        ServiceResponse response = svc().createExpense(null, amount, currency, category,
+                description, date, type);
         state.setLastResponse(response);
     }
 }

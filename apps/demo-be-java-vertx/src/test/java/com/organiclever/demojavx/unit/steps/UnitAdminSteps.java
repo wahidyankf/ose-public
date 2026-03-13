@@ -1,15 +1,14 @@
 package com.organiclever.demojavx.unit.steps;
 
 import com.organiclever.demojavx.support.AppFactory;
+import com.organiclever.demojavx.support.DirectCallService;
 import com.organiclever.demojavx.support.ScenarioState;
+import com.organiclever.demojavx.support.ServiceResponse;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.client.HttpResponse;
-import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Assertions;
 
 public class UnitAdminSteps {
@@ -20,45 +19,31 @@ public class UnitAdminSteps {
         this.state = state;
     }
 
+    private DirectCallService svc() {
+        return AppFactory.getService();
+    }
+
     @Given("users {string}, {string}, and {string} are registered")
     public void usersAreRegistered(String u1, String u2, String u3) throws Exception {
         UnitAuthSteps authSteps = new UnitAuthSteps(state);
         authSteps.registerUser(u1, u1 + "@example.com", "Str0ng#Pass1");
         authSteps.registerUser(u2, u2 + "@example.com", "Str0ng#Pass1");
         authSteps.registerUser(u3, u3 + "@example.com", "Str0ng#Pass1");
-        HttpResponse<Buffer> listResp = AppFactory.getClient()
-                .get("/api/v1/admin/users")
-                .bearerTokenAuthentication(state.getAdminAccessToken())
-                .send()
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
-        JsonArray data = listResp.bodyAsJsonObject().getJsonArray("data");
+        ServiceResponse listResp = svc().adminListUsers(state.getAdminAccessToken(), null, 1, 100);
+        JsonArray data = listResp.body().getJsonArray("data");
         String aliceId = UnitSecuritySteps.findUserIdByUsername(data, "alice");
         state.setUserId(aliceId);
     }
 
     @When("^the admin sends GET /api/v1/admin/users$")
     public void adminSendsGetUsers() throws Exception {
-        HttpResponse<Buffer> response = AppFactory.getClient()
-                .get("/api/v1/admin/users")
-                .bearerTokenAuthentication(state.getAdminAccessToken())
-                .send()
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        ServiceResponse response = svc().adminListUsers(state.getAdminAccessToken(), null, 1, 100);
         state.setLastResponse(response);
     }
 
     @When("^the admin sends GET /api/v1/admin/users\\?email=(.+)$")
     public void adminSendsGetUsersWithEmailFilter(String email) throws Exception {
-        HttpResponse<Buffer> response = AppFactory.getClient()
-                .get("/api/v1/admin/users?email=" + email)
-                .bearerTokenAuthentication(state.getAdminAccessToken())
-                .send()
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        ServiceResponse response = svc().adminListUsers(state.getAdminAccessToken(), email, 1, 100);
         state.setLastResponse(response);
     }
 
@@ -66,13 +51,7 @@ public class UnitAdminSteps {
     public void adminSendsDisableUser(String reason) throws Exception {
         String userId = state.getUserId();
         Assertions.assertNotNull(userId, "Alice's user ID must be set");
-        HttpResponse<Buffer> response = AppFactory.getClient()
-                .post("/api/v1/admin/users/" + userId + "/disable")
-                .bearerTokenAuthentication(state.getAdminAccessToken())
-                .sendJsonObject(new JsonObject().put("reason", reason))
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        ServiceResponse response = svc().adminDisableUser(state.getAdminAccessToken(), userId);
         state.setLastResponse(response);
     }
 
@@ -80,13 +59,7 @@ public class UnitAdminSteps {
     public void adminSendsEnableUser() throws Exception {
         String userId = state.getUserId();
         Assertions.assertNotNull(userId, "Alice's user ID must be set");
-        HttpResponse<Buffer> response = AppFactory.getClient()
-                .post("/api/v1/admin/users/" + userId + "/enable")
-                .bearerTokenAuthentication(state.getAdminAccessToken())
-                .send()
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        ServiceResponse response = svc().adminEnableUser(state.getAdminAccessToken(), userId);
         state.setLastResponse(response);
     }
 
@@ -94,21 +67,16 @@ public class UnitAdminSteps {
     public void adminSendsForcePasswordReset() throws Exception {
         String userId = state.getUserId();
         Assertions.assertNotNull(userId, "Alice's user ID must be set");
-        HttpResponse<Buffer> response = AppFactory.getClient()
-                .post("/api/v1/admin/users/" + userId + "/force-password-reset")
-                .bearerTokenAuthentication(state.getAdminAccessToken())
-                .send()
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        ServiceResponse response = svc().adminForcePasswordReset(state.getAdminAccessToken(),
+                userId);
         state.setLastResponse(response);
     }
 
     @Then("the response body should contain at least one user with {string} equal to {string}")
     public void responseContainsUserWithField(String field, String value) {
-        HttpResponse<Buffer> response = state.getLastResponse();
+        ServiceResponse response = state.getLastResponse();
         Assertions.assertNotNull(response);
-        JsonObject body = response.bodyAsJsonObject();
+        JsonObject body = response.body();
         Assertions.assertNotNull(body);
         JsonArray data = body.getJsonArray("data");
         Assertions.assertNotNull(data, "Expected 'data' array in response");
@@ -128,18 +96,11 @@ public class UnitAdminSteps {
     public void alicesAccountHasBeenDisabledByAdmin() throws Exception {
         String userId = state.getUserId();
         Assertions.assertNotNull(userId);
-        AppFactory.getClient()
-                .post("/api/v1/admin/users/" + userId + "/disable")
-                .bearerTokenAuthentication(state.getAdminAccessToken())
-                .sendJsonObject(new JsonObject().put("reason", "test"))
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        svc().adminDisableUser(state.getAdminAccessToken(), userId);
     }
 
     @Given("alice's account has been disabled")
     public void alicesAccountHasBeenDisabled() throws Exception {
         alicesAccountHasBeenDisabledByAdmin();
     }
-
 }

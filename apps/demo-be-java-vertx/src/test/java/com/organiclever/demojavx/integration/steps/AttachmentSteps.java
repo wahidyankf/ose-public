@@ -2,15 +2,12 @@ package com.organiclever.demojavx.integration.steps;
 
 import com.organiclever.demojavx.support.AppFactory;
 import com.organiclever.demojavx.support.ScenarioState;
+import com.organiclever.demojavx.support.ServiceResponse;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.client.HttpResponse;
-import io.vertx.ext.web.multipart.MultipartForm;
-import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Assertions;
 
 public class AttachmentSteps {
@@ -30,39 +27,27 @@ public class AttachmentSteps {
         Assertions.assertNotNull(expenseId, "Expense ID must be set");
 
         byte[] content = createSampleContent(filename);
-        MultipartForm form = MultipartForm.create()
-                .binaryFileUpload("file", filename, Buffer.buffer(content), contentType);
-
-        HttpResponse<Buffer> response = AppFactory.getClient()
-                .post("/api/v1/expenses/" + expenseId + "/attachments")
-                .bearerTokenAuthentication(token)
-                .sendMultipartForm(form)
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        ServiceResponse response = AppFactory.getService()
+                .uploadAttachment(token, expenseId, filename, contentType, content);
         state.setLastResponse(response);
         if (response.statusCode() == 201) {
-            state.setAttachmentId(response.bodyAsJsonObject().getString("id"));
+            JsonObject body = response.body();
+            if (body != null) {
+                state.setAttachmentId(body.getString("id"));
+            }
         }
     }
 
     @When("^alice uploads file \"([^\"]*)\" with content type \"([^\"]*)\" to POST /api/v1/expenses/\\{bobExpenseId\\}/attachments$")
-    public void aliceUploadsFileToBobsExpense(String filename, String contentType) throws Exception {
+    public void aliceUploadsFileToBobsExpense(String filename,
+            String contentType) throws Exception {
         String token = state.getAccessToken();
         String expenseId = state.getBobExpenseId();
         Assertions.assertNotNull(expenseId, "Bob's expense ID must be set");
 
         byte[] content = createSampleContent(filename);
-        MultipartForm form = MultipartForm.create()
-                .binaryFileUpload("file", filename, Buffer.buffer(content), contentType);
-
-        HttpResponse<Buffer> response = AppFactory.getClient()
-                .post("/api/v1/expenses/" + expenseId + "/attachments")
-                .bearerTokenAuthentication(token)
-                .sendMultipartForm(form)
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        ServiceResponse response = AppFactory.getService()
+                .uploadAttachment(token, expenseId, filename, contentType, content);
         state.setLastResponse(response);
     }
 
@@ -73,16 +58,8 @@ public class AttachmentSteps {
         Assertions.assertNotNull(expenseId, "Expense ID must be set");
 
         byte[] oversizedContent = new byte[MAX_FILE_SIZE + 1024];
-        MultipartForm form = MultipartForm.create()
-                .binaryFileUpload("file", "big.jpg", Buffer.buffer(oversizedContent), "image/jpeg");
-
-        HttpResponse<Buffer> response = AppFactory.getClient()
-                .post("/api/v1/expenses/" + expenseId + "/attachments")
-                .bearerTokenAuthentication(token)
-                .sendMultipartForm(form)
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(10, TimeUnit.SECONDS);
+        ServiceResponse response = AppFactory.getService()
+                .uploadAttachment(token, expenseId, "big.jpg", "image/jpeg", oversizedContent);
         state.setLastResponse(response);
     }
 
@@ -92,13 +69,8 @@ public class AttachmentSteps {
         String expenseId = state.getExpenseId();
         Assertions.assertNotNull(expenseId, "Expense ID must be set");
 
-        HttpResponse<Buffer> response = AppFactory.getClient()
-                .get("/api/v1/expenses/" + expenseId + "/attachments")
-                .bearerTokenAuthentication(token)
-                .send()
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        ServiceResponse response = AppFactory.getService()
+                .listAttachments(token, expenseId);
         state.setLastResponse(response);
     }
 
@@ -108,13 +80,8 @@ public class AttachmentSteps {
         String expenseId = state.getBobExpenseId();
         Assertions.assertNotNull(expenseId, "Bob's expense ID must be set");
 
-        HttpResponse<Buffer> response = AppFactory.getClient()
-                .get("/api/v1/expenses/" + expenseId + "/attachments")
-                .bearerTokenAuthentication(token)
-                .send()
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        ServiceResponse response = AppFactory.getService()
+                .listAttachments(token, expenseId);
         state.setLastResponse(response);
     }
 
@@ -126,13 +93,8 @@ public class AttachmentSteps {
         Assertions.assertNotNull(expenseId, "Expense ID must be set");
         Assertions.assertNotNull(attachmentId, "Attachment ID must be set");
 
-        HttpResponse<Buffer> response = AppFactory.getClient()
-                .delete("/api/v1/expenses/" + expenseId + "/attachments/" + attachmentId)
-                .bearerTokenAuthentication(token)
-                .send()
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        ServiceResponse response = AppFactory.getService()
+                .deleteAttachment(token, expenseId, attachmentId);
         state.setLastResponse(response);
     }
 
@@ -144,13 +106,8 @@ public class AttachmentSteps {
         Assertions.assertNotNull(expenseId, "Bob's expense ID must be set");
         Assertions.assertNotNull(attachmentId, "Attachment ID must be set");
 
-        HttpResponse<Buffer> response = AppFactory.getClient()
-                .delete("/api/v1/expenses/" + expenseId + "/attachments/" + attachmentId)
-                .bearerTokenAuthentication(token)
-                .send()
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        ServiceResponse response = AppFactory.getService()
+                .deleteAttachment(token, expenseId, attachmentId);
         state.setLastResponse(response);
     }
 
@@ -160,22 +117,21 @@ public class AttachmentSteps {
         String expenseId = state.getExpenseId();
         Assertions.assertNotNull(expenseId, "Expense ID must be set");
 
-        HttpResponse<Buffer> response = AppFactory.getClient()
-                .delete("/api/v1/expenses/" + expenseId + "/attachments/99999")
-                .bearerTokenAuthentication(token)
-                .send()
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        ServiceResponse response = AppFactory.getService()
+                .deleteAttachment(token, expenseId, "99999");
         state.setLastResponse(response);
     }
 
     @Given("alice has uploaded file {string} with content type {string} to the entry")
-    public void aliceHasUploadedFileToEntry(String filename, String contentType) throws Exception {
+    public void aliceHasUploadedFileToEntry(String filename,
+            String contentType) throws Exception {
         aliceUploadsFileToExpense(filename, contentType);
-        HttpResponse<Buffer> resp = state.getLastResponse();
+        ServiceResponse resp = state.getLastResponse();
         if (resp != null && resp.statusCode() == 201) {
-            state.setAttachmentId(resp.bodyAsJsonObject().getString("id"));
+            JsonObject body = resp.body();
+            if (body != null) {
+                state.setAttachmentId(body.getString("id"));
+            }
         }
     }
 
@@ -184,30 +140,20 @@ public class AttachmentSteps {
             String description, String date, String type) throws Exception {
         String bobToken = state.getBobAccessToken();
         Assertions.assertNotNull(bobToken, "Bob's access token must be set");
-        JsonObject body = new JsonObject()
-                .put("amount", amount)
-                .put("currency", currency)
-                .put("category", category)
-                .put("description", description)
-                .put("date", date)
-                .put("type", type);
-        HttpResponse<Buffer> resp = AppFactory.getClient()
-                .post("/api/v1/expenses")
-                .bearerTokenAuthentication(bobToken)
-                .sendJsonObject(body)
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+        ServiceResponse resp = AppFactory.getService()
+                .createExpense(bobToken, amount, currency, category, description, date, type);
         Assertions.assertEquals(201, resp.statusCode(),
                 "Expected 201 creating bob's entry but got " + resp.statusCode());
-        state.setBobExpenseId(resp.bodyAsJsonObject().getString("id"));
+        JsonObject body = resp.body();
+        Assertions.assertNotNull(body);
+        state.setBobExpenseId(body.getString("id"));
     }
 
     @Then("the response body should contain {int} items in the {string} array")
     public void responseBodyContainsItemsInArray(int count, String field) {
-        HttpResponse<Buffer> response = state.getLastResponse();
+        ServiceResponse response = state.getLastResponse();
         Assertions.assertNotNull(response);
-        JsonObject body = response.bodyAsJsonObject();
+        JsonObject body = response.body();
         Assertions.assertNotNull(body);
         JsonArray arr = body.getJsonArray(field);
         Assertions.assertNotNull(arr, "Expected '" + field + "' array in response");
@@ -217,9 +163,9 @@ public class AttachmentSteps {
 
     @Then("the response body should contain an attachment with {string} equal to {string}")
     public void responseBodyContainsAttachmentWithField(String field, String value) {
-        HttpResponse<Buffer> response = state.getLastResponse();
+        ServiceResponse response = state.getLastResponse();
         Assertions.assertNotNull(response);
-        JsonObject body = response.bodyAsJsonObject();
+        JsonObject body = response.body();
         Assertions.assertNotNull(body);
         JsonArray attachments = body.getJsonArray("attachments");
         Assertions.assertNotNull(attachments, "Expected 'attachments' array");

@@ -9,11 +9,11 @@ import static io.cucumber.junit.platform.engine.Constants.GLUE_PROPERTY_NAME;
 import static io.cucumber.junit.platform.engine.Constants.PLUGIN_PROPERTY_NAME;
 
 /**
- * Unit-level Cucumber test runner. Runs all Gherkin scenarios against
- * an in-process Vert.x HTTP server backed by in-memory repositories.
- * Identical in behaviour to the integration-level CucumberIT but lives
- * under the {@code unit} package so it is picked up by the default
- * Maven Surefire configuration (no profile required).
+ * Unit-level Cucumber test runner. Runs all Gherkin scenarios via
+ * {@link com.organiclever.demojavx.support.DirectCallService} backed by a real
+ * PostgreSQL database (same as the integration-level CucumberIT). Lives under
+ * the {@code unit} package so it is picked up by the default Maven Surefire
+ * configuration (no profile required).
  */
 @Suite
 @IncludeEngines("cucumber")

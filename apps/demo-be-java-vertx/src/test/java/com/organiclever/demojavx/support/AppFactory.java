@@ -2,112 +2,145 @@ package com.organiclever.demojavx.support;
 
 import com.organiclever.demojavx.auth.JwtService;
 import com.organiclever.demojavx.auth.PasswordService;
-import com.organiclever.demojavx.domain.model.User;
-import com.organiclever.demojavx.repository.memory.InMemoryAttachmentRepository;
-import com.organiclever.demojavx.repository.memory.InMemoryExpenseRepository;
-import com.organiclever.demojavx.repository.memory.InMemoryTokenRevocationRepository;
-import com.organiclever.demojavx.repository.memory.InMemoryUserRepository;
-import com.organiclever.demojavx.router.AppRouter;
+import com.organiclever.demojavx.db.SchemaInitializer;
+import com.organiclever.demojavx.repository.AttachmentRepository;
+import com.organiclever.demojavx.repository.ExpenseRepository;
+import com.organiclever.demojavx.repository.TokenRevocationRepository;
+import com.organiclever.demojavx.repository.UserRepository;
+import com.organiclever.demojavx.repository.pg.PgAttachmentRepository;
+import com.organiclever.demojavx.repository.pg.PgExpenseRepository;
+import com.organiclever.demojavx.repository.pg.PgTokenRevocationRepository;
+import com.organiclever.demojavx.repository.pg.PgUserRepository;
 import io.vertx.core.Vertx;
-import io.vertx.ext.web.Router;
-import io.vertx.ext.web.client.WebClient;
-import io.vertx.ext.web.client.WebClientOptions;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.util.Optional;
+import io.vertx.pgclient.PgBuilder;
+import io.vertx.pgclient.PgConnectOptions;
+import io.vertx.sqlclient.Pool;
+import io.vertx.sqlclient.PoolOptions;
+import java.net.URI;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Singleton factory used by integration tests. It initialises a real PostgreSQL
+ * connection pool using the {@code DATABASE_URL} environment variable, runs the
+ * schema DDL once (idempotent), and exposes a {@link DirectCallService} that
+ * step definitions can call without any HTTP transport.
+ *
+ * <p>Between Cucumber scenarios {@link #reset()} truncates all application
+ * tables so each scenario starts with a clean slate.
+ */
 public final class AppFactory {
 
     private static Vertx vertx;
-    private static WebClient client;
-    private static int port;
-    private static InMemoryUserRepository userRepo;
-    private static InMemoryExpenseRepository expenseRepo;
-    private static InMemoryAttachmentRepository attachmentRepo;
-    private static InMemoryTokenRevocationRepository revocationRepo;
+    private static Pool pool;
+    private static DirectCallService service;
     private static JwtService jwtService;
-    private static PasswordService passwordService;
 
     private AppFactory() {
     }
 
     public static synchronized void deploy() throws Exception {
-        if (vertx != null) {
+        if (service != null) {
             return;
         }
         vertx = Vertx.vertx();
-        port = findFreePort();
 
-        jwtService = new JwtService("test-secret-32-chars-or-more-here!!");
-        passwordService = new PasswordService();
-        userRepo = new InMemoryUserRepository();
-        expenseRepo = new InMemoryExpenseRepository();
-        attachmentRepo = new InMemoryAttachmentRepository();
-        revocationRepo = new InMemoryTokenRevocationRepository();
+        String databaseUrl = System.getenv("DATABASE_URL");
+        if (databaseUrl == null || databaseUrl.isBlank()) {
+            throw new IllegalStateException(
+                    "DATABASE_URL environment variable must be set for integration tests. "
+                            + "Example: postgresql://user:pass@host:5432/dbname");
+        }
 
-        Router router = AppRouter.create(vertx, jwtService, userRepo, expenseRepo,
-                attachmentRepo, revocationRepo, passwordService);
+        pool = createPgPool(databaseUrl);
 
-        vertx.createHttpServer()
-                .requestHandler(router)
-                .listen(port)
+        // Initialise schema (idempotent DDL — safe to call on every test run)
+        SchemaInitializer.initialize(pool)
                 .toCompletionStage()
                 .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
+                .get(30, TimeUnit.SECONDS);
 
-        client = WebClient.create(vertx,
-                new WebClientOptions()
-                        .setDefaultHost("localhost")
-                        .setDefaultPort(port));
+        jwtService = new JwtService("test-secret-32-chars-or-more-here!!");
+        PasswordService passwordService = new PasswordService();
+
+        UserRepository userRepo = new PgUserRepository(pool);
+        ExpenseRepository expenseRepo = new PgExpenseRepository(pool);
+        AttachmentRepository attachmentRepo = new PgAttachmentRepository(pool);
+        TokenRevocationRepository revocationRepo = new PgTokenRevocationRepository(pool);
+
+        service = new DirectCallService(userRepo, expenseRepo, attachmentRepo, revocationRepo,
+                jwtService, passwordService);
     }
 
-    public static WebClient getClient() {
-        return client;
+    public static DirectCallService getService() {
+        return service;
     }
 
     public static JwtService getJwtService() {
         return jwtService;
     }
 
-    public static PasswordService getPasswordService() {
-        return passwordService;
-    }
-
-    public static void reset() {
-        userRepo.reset();
-        expenseRepo.reset();
-        attachmentRepo.reset();
-        revocationRepo.reset();
+    /**
+     * Truncates all data in every application table. Called before each
+     * Cucumber scenario to guarantee full isolation between scenarios.
+     */
+    public static void reset() throws Exception {
+        // Delete in FK-safe order: attachments → revoked_tokens → expenses → users
+        pool.query("DELETE FROM attachments").execute()
+                .toCompletionStage().toCompletableFuture().get(10, TimeUnit.SECONDS);
+        pool.query("DELETE FROM revoked_tokens").execute()
+                .toCompletionStage().toCompletableFuture().get(10, TimeUnit.SECONDS);
+        pool.query("DELETE FROM expenses").execute()
+                .toCompletionStage().toCompletableFuture().get(10, TimeUnit.SECONDS);
+        pool.query("DELETE FROM users").execute()
+                .toCompletionStage().toCompletableFuture().get(10, TimeUnit.SECONDS);
     }
 
     public static synchronized void close() {
+        if (pool != null) {
+            pool.close();
+            pool = null;
+        }
         if (vertx != null) {
             vertx.close();
             vertx = null;
         }
+        service = null;
     }
 
-    public static void promoteUserToAdmin(String userId) throws Exception {
-        Optional<User> userOpt = userRepo.findById(userId)
-                .toCompletionStage()
-                .toCompletableFuture()
-                .get(5, TimeUnit.SECONDS);
-        if (userOpt.isPresent()) {
-            User admin = new User(userOpt.get().id(), userOpt.get().username(),
-                    userOpt.get().email(), userOpt.get().displayName(),
-                    userOpt.get().passwordHash(), User.ROLE_ADMIN, userOpt.get().status(),
-                    0, userOpt.get().createdAt());
-            userRepo.update(admin)
-                    .toCompletionStage()
-                    .toCompletableFuture()
-                    .get(5, TimeUnit.SECONDS);
-        }
-    }
+    // ─────────────────────────── helpers ─────────────────────────────
 
-    private static int findFreePort() throws IOException {
-        try (ServerSocket socket = new ServerSocket(0)) {
-            return socket.getLocalPort();
+    private static Pool createPgPool(String databaseUrl) {
+        URI uri = URI.create(databaseUrl);
+        String host = uri.getHost();
+        int pgPort = uri.getPort() > 0 ? uri.getPort() : 5432;
+        String path = uri.getPath();
+        String database = path != null && path.startsWith("/") ? path.substring(1) : path;
+        String userInfo = uri.getUserInfo();
+        String user = "";
+        String password = "";
+        if (userInfo != null && !userInfo.isBlank()) {
+            int colon = userInfo.indexOf(':');
+            if (colon >= 0) {
+                user = userInfo.substring(0, colon);
+                password = userInfo.substring(colon + 1);
+            } else {
+                user = userInfo;
+            }
         }
+
+        PgConnectOptions connectOptions = new PgConnectOptions()
+                .setHost(host)
+                .setPort(pgPort)
+                .setDatabase(database)
+                .setUser(user)
+                .setPassword(password);
+
+        PoolOptions poolOptions = new PoolOptions().setMaxSize(5);
+
+        return PgBuilder.pool()
+                .with(poolOptions)
+                .connectingTo(connectOptions)
+                .using(vertx)
+                .build();
     }
 }

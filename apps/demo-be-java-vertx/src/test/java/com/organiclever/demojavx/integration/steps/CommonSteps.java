@@ -2,15 +2,14 @@ package com.organiclever.demojavx.integration.steps;
 
 import com.organiclever.demojavx.support.AppFactory;
 import com.organiclever.demojavx.support.ScenarioState;
+import com.organiclever.demojavx.support.ServiceResponse;
 import io.cucumber.java.After;
+import io.cucumber.java.AfterAll;
 import io.cucumber.java.Before;
 import io.cucumber.java.BeforeAll;
-import io.cucumber.java.AfterAll;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.client.HttpResponse;
 import org.junit.jupiter.api.Assertions;
 
 public class CommonSteps {
@@ -32,7 +31,7 @@ public class CommonSteps {
     }
 
     @Before
-    public void resetState() {
+    public void resetState() throws Exception {
         AppFactory.reset();
         state.reset();
     }
@@ -44,23 +43,23 @@ public class CommonSteps {
 
     @Given("the API is running")
     public void theApiIsRunning() {
-        // Vert.x server is deployed in @BeforeAll
+        // Repositories are initialised in @BeforeAll via AppFactory.deploy()
     }
 
     @Then("the response status code should be {int}")
     public void theResponseStatusCodeShouldBe(int expected) {
-        HttpResponse<Buffer> response = state.getLastResponse();
+        ServiceResponse response = state.getLastResponse();
         Assertions.assertNotNull(response, "No response stored in state");
         Assertions.assertEquals(expected, response.statusCode(),
                 "Expected status " + expected + " but got " + response.statusCode()
-                        + ". Body: " + response.bodyAsString());
+                        + ". Body: " + response.body());
     }
 
     @Then("the response body should contain a non-null {string} field")
     public void theResponseBodyShouldContainNonNullField(String field) {
-        HttpResponse<Buffer> response = state.getLastResponse();
+        ServiceResponse response = state.getLastResponse();
         Assertions.assertNotNull(response);
-        JsonObject body = response.bodyAsJsonObject();
+        JsonObject body = response.body();
         Assertions.assertNotNull(body, "Response body is null");
         String mapped = mapFieldName(field);
         Assertions.assertNotNull(body.getValue(mapped),
@@ -69,9 +68,9 @@ public class CommonSteps {
 
     @Then("the response body should contain {string} equal to {string}")
     public void theResponseBodyShouldContainStringEqualTo(String field, String value) {
-        HttpResponse<Buffer> response = state.getLastResponse();
+        ServiceResponse response = state.getLastResponse();
         Assertions.assertNotNull(response);
-        JsonObject body = response.bodyAsJsonObject();
+        JsonObject body = response.body();
         Assertions.assertNotNull(body);
         String mapped = mapFieldName(field);
         Assertions.assertEquals(value, body.getString(mapped),
@@ -81,9 +80,9 @@ public class CommonSteps {
 
     @Then("the response body should not contain a {string} field")
     public void theResponseBodyShouldNotContainField(String field) {
-        HttpResponse<Buffer> response = state.getLastResponse();
+        ServiceResponse response = state.getLastResponse();
         Assertions.assertNotNull(response);
-        JsonObject body = response.bodyAsJsonObject();
+        JsonObject body = response.body();
         Assertions.assertNotNull(body);
         String mapped = mapFieldName(field);
         Assertions.assertNull(body.getValue(mapped),
@@ -112,11 +111,10 @@ public class CommonSteps {
 
     @Then("the response body should contain a validation error for {string}")
     public void theResponseBodyShouldContainValidationError(String field) {
-        HttpResponse<Buffer> response = state.getLastResponse();
+        ServiceResponse response = state.getLastResponse();
         Assertions.assertNotNull(response);
-        JsonObject body = response.bodyAsJsonObject();
+        JsonObject body = response.body();
         Assertions.assertNotNull(body, "Expected JSON body for validation error");
-        // Either message contains the field name or field property matches
         String msg = body.getString("message", "");
         String fieldProp = body.getString("field", "");
         boolean containsField = msg.toLowerCase().contains(field.toLowerCase())
@@ -136,9 +134,9 @@ public class CommonSteps {
     }
 
     private void checkErrorResponse(String... fragments) {
-        HttpResponse<Buffer> response = state.getLastResponse();
+        ServiceResponse response = state.getLastResponse();
         Assertions.assertNotNull(response);
-        JsonObject body = response.bodyAsJsonObject();
+        JsonObject body = response.body();
         if (body == null) {
             return;
         }

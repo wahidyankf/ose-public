@@ -1,11 +1,10 @@
 package com.organiclever.demojavx.unit.steps;
 
 import com.organiclever.demojavx.support.ScenarioState;
+import com.organiclever.demojavx.support.ServiceResponse;
 import io.cucumber.java.en.Then;
-import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.client.HttpResponse;
 import org.junit.jupiter.api.Assertions;
 
 public class UnitCurrencySteps {
@@ -18,9 +17,9 @@ public class UnitCurrencySteps {
 
     @Then("the response body should contain {string} total equal to {string}")
     public void responseContainsCurrencyTotal(String currency, String total) {
-        HttpResponse<Buffer> response = state.getLastResponse();
+        ServiceResponse response = state.getLastResponse();
         Assertions.assertNotNull(response);
-        JsonObject body = response.bodyAsJsonObject();
+        JsonObject body = response.body();
         Assertions.assertNotNull(body);
         JsonArray summary = body.getJsonArray("summary");
         Assertions.assertNotNull(summary, "Expected 'summary' array in response");

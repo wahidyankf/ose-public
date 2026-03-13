@@ -1,0 +1,25 @@
+# Integration test runner
+# Resolves Clojure dependencies inside the container and runs kaocha-cucumber
+# BDD tests against the postgres service in docker-compose.integration.yml.
+FROM clojure:temurin-21-tools-deps-alpine
+
+WORKDIR /build
+
+# Copy dependency descriptor first for layer caching
+COPY deps.edn .
+
+# Pre-fetch all test + coverage dependencies
+RUN clojure -P -M:test
+
+# Copy source, resources, test code, and kaocha config
+COPY src/ src/
+COPY resources/ resources/
+COPY test/ test/
+COPY tests.edn .
+
+# Specs are mounted from the host by docker-compose.
+# Copy them into the test features directory before running tests.
+# DATABASE_URL, DB_USER, DB_PASSWORD and APP_JWT_SECRET are supplied by docker-compose.
+CMD ["sh", "-c", \
+     "cp -r /specs/apps/demo-be/gherkin/* test/features/ && \
+      clojure -M:test -m kaocha.runner bdd"]

@@ -6,7 +6,9 @@
    :test-paths  ["test"]
    :ns-patterns ["demo-be-cjpd\\..*-test"]}
 
-  {:id          :integration
+  ;; BDD-level tests: kaocha-cucumber with in-memory SQLite — no external services required.
+  ;; These run at the "unit" level (fast, deterministic, no Docker).
+  {:id          :bdd
    :type        :kaocha.type/cucumber
    :source-paths ["src"]
    :test-paths  ["test/features"]

@@ -58,17 +58,58 @@ export DB_PASSWORD="demo_be_cjpd"
 docker-compose up
 ```
 
+## Test Architecture
+
+The project uses a three-level test architecture aligned with the monorepo standard:
+
+### Level 1: Unit tests (`test:unit`)
+
+Pure clojure.test unit tests plus kaocha-cucumber BDD scenarios that run against an in-memory
+SQLite database. No external services required.
+
+- `test/demo_be_cjpd/**/*_test.clj` — clojure.test namespaces
+- `test/features/**/*.feature` + `test/step_definitions/` — BDD scenarios (76 total)
+
+The BDD step definitions start the Pedestal server in-process against a named in-memory SQLite
+database (`:memory:` with shared cache), so all 76 Gherkin scenarios run without Docker.
+
+### Level 2: Quick gate (`test:quick`)
+
+Runs all unit-level tests (both `:unit` and `:bdd` kaocha suites) with cloverage LCOV output,
+then validates ≥90% line coverage via `rhino-cli`. No lint. This is the pre-push gate.
+
+```bash
+nx run demo-be-clojure-pedestal:test:quick
+```
+
+### Level 3: Integration tests (`test:integration`)
+
+Runs the BDD scenarios against a real PostgreSQL 17 database inside Docker. Uses
+`docker-compose.integration.yml` + `Dockerfile.integration`.
+
+```bash
+nx run demo-be-clojure-pedestal:test:integration
+```
+
+This target is **not cached** (`cache: false`) because it exercises an external database service.
+
+### Coverage
+
+Coverage is measured via cloverage LCOV output (`coverage/lcov.info`) and validated by
+`rhino-cli test-coverage validate` using the Codecov line-based algorithm. The threshold is ≥90%.
+The `demo-be-cjpd.main` namespace is excluded from coverage (entry point only).
+
 ## Nx Targets
 
-| Target             | Description                                |
-| ------------------ | ------------------------------------------ |
-| `dev`              | Start development server (port 8201)       |
-| `build`            | Build uberjar via tools.build              |
-| `start`            | Run the built uberjar                      |
-| `test:quick`       | Unit + integration tests + coverage + lint |
-| `test:unit`        | Unit tests only (kaocha)                   |
-| `test:integration` | Integration tests via Cucumber/Gherkin     |
-| `lint`             | Run clj-kondo linting                      |
+| Target             | Description                                              |
+| ------------------ | -------------------------------------------------------- |
+| `dev`              | Start development server (port 8201)                     |
+| `build`            | Build uberjar via tools.build                            |
+| `start`            | Run the built uberjar                                    |
+| `test:quick`       | Unit + BDD (in-memory) tests + coverage check (no lint)  |
+| `test:unit`        | Unit + BDD (in-memory) tests without coverage            |
+| `test:integration` | BDD tests against PostgreSQL via docker-compose          |
+| `lint`             | Run clj-kondo linting                                    |
 
 ```bash
 nx run demo-be-clojure-pedestal:test:quick

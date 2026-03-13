@@ -30,34 +30,40 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -M:coverage -m kaocha.runner --plugin cloverage --lcov --cov-output coverage --cov-ns-exclude-regex demo-be-cjpd\\.main",
-          "(cd ../../ && CGO_ENABLED=0 go run apps/rhino-cli/main.go test-coverage validate apps/demo-be-clojure-pedestal/coverage/lcov.info 90)",
-          "clj-kondo --lint src test"
+          "JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -M:coverage -m kaocha.runner unit bdd --plugin cloverage --lcov --cov-output coverage --cov-ns-exclude-regex demo-be-cjpd\\.main",
+          "(cd ../../ && CGO_ENABLED=0 go run apps/rhino-cli/main.go test-coverage validate apps/demo-be-clojure-pedestal/coverage/lcov.info 90)"
         ],
         "parallel": false,
         "cwd": "apps/demo-be-clojure-pedestal"
       },
+      "inputs": [
+        "{projectRoot}/src/**/*",
+        "{projectRoot}/test/**/*",
+        "{projectRoot}/tests.edn",
+        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+      ],
       "outputs": ["{projectRoot}/coverage"]
     },
     "test:unit": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -M:test -m kaocha.runner unit",
+        "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -M:test -m kaocha.runner unit bdd",
         "cwd": "apps/demo-be-clojure-pedestal"
-      }
+      },
+      "inputs": [
+        "{projectRoot}/src/**/*",
+        "{projectRoot}/test/**/*",
+        "{projectRoot}/tests.edn",
+        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+      ]
     },
     "test:integration": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -M:test -m kaocha.runner integration",
+        "command": "docker compose -f docker-compose.integration.yml down -v && docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build",
         "cwd": "apps/demo-be-clojure-pedestal"
       },
-      "cache": true,
-      "inputs": [
-        "{projectRoot}/src/**/*",
-        "{projectRoot}/test/**/*",
-        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
-      ]
+      "cache": false
     },
     "lint": {
       "executor": "nx:run-commands",

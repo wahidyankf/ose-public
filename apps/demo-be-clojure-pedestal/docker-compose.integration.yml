@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: demo_be_cjpd_test
+      POSTGRES_USER: demo_be_cjpd
+      POSTGRES_PASSWORD: demo_be_cjpd
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U demo_be_cjpd -d demo_be_cjpd_test"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+
+  test-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile.integration
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "jdbc:postgresql://postgres:5432/demo_be_cjpd_test"
+      DB_USER: "demo_be_cjpd"
+      DB_PASSWORD: "demo_be_cjpd"
+      APP_JWT_SECRET: "integration-test-secret-key-at-least-32-characters"
+    volumes:
+      - ../../specs:/specs:ro

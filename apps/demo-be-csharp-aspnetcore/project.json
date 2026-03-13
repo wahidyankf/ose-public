@@ -30,37 +30,32 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "dotnet tool restore",
-          "dotnet build tests/DemoBeCsas.Tests/DemoBeCsas.Tests.csproj",
-          "mkdir -p coverage && dotnet altcover --inputDirectory tests/DemoBeCsas.Tests/bin/Debug/net10.0 --outputDirectory tests/DemoBeCsas.Tests/bin/Debug/net10.0/__Instrumented --assemblyExcludeFilter=DemoBeCsas.Tests '--assemblyFilter=xunit|Reqnroll|Microsoft|testhost|AltCover|coverlet|FluentAssertions|BCrypt|Cucumber|Gherkin|Newtonsoft|Npgsql|SQLitePCLRaw|System.IdentityModel|Validation|CucumberExpressions' --linecover --reportFormat=lcov --report=coverage/altcov.info --save",
-          "dotnet altcover Runner --recorderDirectory tests/DemoBeCsas.Tests/bin/Debug/net10.0/__Instrumented --lcovReport coverage/altcov.info --executable dotnet -- test tests/DemoBeCsas.Tests/bin/Debug/net10.0/__Instrumented/DemoBeCsas.Tests.dll",
-          "(cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/demo-be-csharp-aspnetcore/coverage/altcov.info 90)",
-          "dotnet format --verify-no-changes",
-          "dotnet build src/DemoBeCsas/DemoBeCsas.csproj /p:TreatWarningsAsErrors=true --no-restore"
+          "dotnet test tests/DemoBeCsas.Tests/DemoBeCsas.Tests.csproj --collect:'XPlat Code Coverage' --results-directory coverage --settings tests/DemoBeCsas.Tests/coverage.runsettings",
+          "COVERAGE=$(find coverage -name 'coverage.info' | head -1) && (cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate \"apps/demo-be-csharp-aspnetcore/$COVERAGE\" 90)"
         ],
         "parallel": false,
         "cwd": "apps/demo-be-csharp-aspnetcore"
-      }
+      },
+      "inputs": [
+        "{projectRoot}/src/**/*.cs",
+        "{projectRoot}/tests/**/*.cs",
+        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+      ]
     },
     "test:unit": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "dotnet test tests/DemoBeCsas.Tests/DemoBeCsas.Tests.csproj --filter Category=Unit",
+        "command": "dotnet test tests/DemoBeCsas.Tests/DemoBeCsas.Tests.csproj",
         "cwd": "apps/demo-be-csharp-aspnetcore"
       }
     },
     "test:integration": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "dotnet test tests/DemoBeCsas.Tests/DemoBeCsas.Tests.csproj --filter \"Category!=Unit\"",
+        "command": "docker compose -f docker-compose.integration.yml down -v && docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build",
         "cwd": "apps/demo-be-csharp-aspnetcore"
       },
-      "cache": true,
-      "inputs": [
-        "{projectRoot}/src/**/*.cs",
-        "{projectRoot}/tests/**/*.cs",
-        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
-      ]
+      "cache": false
     },
     "lint": {
       "executor": "nx:run-commands",

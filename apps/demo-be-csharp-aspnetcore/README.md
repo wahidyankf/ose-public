@@ -9,7 +9,7 @@ twin of `demo-be-java-springboot` (Java Spring Boot), `demo-be-elixir-phoenix` (
 ### Prerequisites
 
 - .NET 10 SDK (`dotnet --version` ≥ 10.0)
-- Docker + Docker Compose (for local PostgreSQL)
+- Docker + Docker Compose (for local PostgreSQL and integration tests)
 
 ### Run with Docker Compose
 
@@ -27,18 +27,50 @@ export DATABASE_URL="Host=localhost;Port=5432;Database=demo_be_csharp_aspnetcore
 dotnet run --project src/DemoBeCsas/DemoBeCsas.csproj
 ```
 
+## Test Architecture
+
+This project uses a three-level test architecture:
+
+### Level 1: Unit tests (`test:unit`)
+
+All tests in `tests/DemoBeCsas.Tests/` run against SQLite in-memory using
+`WebApplicationFactory`. No external services are required. This includes:
+
+- **Reqnroll BDD scenarios** (`Integration/Steps/`) — Gherkin feature scenarios run
+  in-process with SQLite in-memory. `TestWebApplicationFactory` substitutes the
+  production PostgreSQL registration when `DATABASE_URL` is not set.
+- **Pure xUnit unit tests** (`Unit/`) — Isolated tests for domain functions, validators,
+  JWT service, and endpoint edge cases.
+
+### Level 2: Quick quality gate (`test:quick`)
+
+Runs all unit tests (Level 1) and then validates coverage with `rhino-cli`. Coverage
+must reach at least 90% (Coverlet LCOV → `rhino-cli test-coverage validate`). This is
+the pre-push gate — no external services required, fully cacheable by Nx.
+
+### Level 3: Integration tests (`test:integration`)
+
+The same Reqnroll BDD scenarios run inside Docker against a real PostgreSQL 17 instance.
+This validates that the production database configuration (Npgsql + snake_case naming
+conventions) works correctly end-to-end. Not cached by Nx.
+
+```bash
+# Run docker-compose integration tests
+nx run demo-be-csharp-aspnetcore:test:integration
+```
+
 ## Nx Targets
 
-| Target             | Command                                             | Description                                          |
-| ------------------ | --------------------------------------------------- | ---------------------------------------------------- |
-| `build`            | `nx build demo-be-csharp-aspnetcore`                | Publish release artifact to `dist/`                  |
-| `dev`              | `nx dev demo-be-csharp-aspnetcore`                  | Hot-reload development server                        |
-| `start`            | `nx start demo-be-csharp-aspnetcore`                | Run without hot-reload                               |
-| `test:quick`       | `nx run demo-be-csharp-aspnetcore:test:quick`       | Full quality gate (tests + coverage + format + lint) |
-| `test:unit`        | `nx run demo-be-csharp-aspnetcore:test:unit`        | Unit tests only                                      |
-| `test:integration` | `nx run demo-be-csharp-aspnetcore:test:integration` | Integration tests only (Reqnroll BDD)                |
-| `lint`             | `nx run demo-be-csharp-aspnetcore:lint`             | Run Roslyn analyzers                                 |
-| `typecheck`        | `nx run demo-be-csharp-aspnetcore:typecheck`        | Build with TreatWarningsAsErrors                     |
+| Target             | Command                                             | Description                                               |
+| ------------------ | --------------------------------------------------- | --------------------------------------------------------- |
+| `build`            | `nx build demo-be-csharp-aspnetcore`                | Publish release artifact to `dist/`                       |
+| `dev`              | `nx dev demo-be-csharp-aspnetcore`                  | Hot-reload development server                             |
+| `start`            | `nx start demo-be-csharp-aspnetcore`                | Run without hot-reload                                    |
+| `test:quick`       | `nx run demo-be-csharp-aspnetcore:test:quick`       | All tests (SQLite) + Coverlet LCOV coverage ≥90% (cached) |
+| `test:unit`        | `nx run demo-be-csharp-aspnetcore:test:unit`        | All tests (SQLite in-memory, no coverage report)          |
+| `test:integration` | `nx run demo-be-csharp-aspnetcore:test:integration` | BDD scenarios against real PostgreSQL via docker-compose  |
+| `lint`             | `nx run demo-be-csharp-aspnetcore:lint`             | Run Roslyn analyzers                                      |
+| `typecheck`        | `nx run demo-be-csharp-aspnetcore:typecheck`        | Build with TreatWarningsAsErrors                          |
 
 ## Environment Variables
 
@@ -92,19 +124,21 @@ dotnet run --project src/DemoBeCsas/DemoBeCsas.csproj
 | BDD integration  | Reqnroll (Gherkin BDD runner) + WebApplicationFactory + xUnit    |
 | Unit tests       | xUnit + FluentAssertions                                         |
 | Linting          | Roslyn Analyzers + SonarAnalyzer.CSharp                          |
-| Coverage         | Coverlet LCOV → `rhino-cli test-coverage validate` ≥90%          |
+| Coverage         | Coverlet XPlat Code Coverage (LCOV) → `rhino-cli` ≥90%           |
 | Port             | 8201                                                             |
 
 ## Project Structure
 
 ```
 apps/demo-be-csharp-aspnetcore/
+├── docker-compose.integration.yml  # PostgreSQL + test-runner for integration tests
+├── Dockerfile.integration          # .NET 10 SDK image for docker-compose integration tests
 ├── src/DemoBeCsas/
 │   ├── Domain/          # Records, enums, validation functions
 │   ├── Infrastructure/  # EF Core DbContext, repositories, password hasher
 │   ├── Auth/            # JWT service, authorization extensions
 │   └── Endpoints/       # Minimal API route handlers
 └── tests/DemoBeCsas.Tests/
-    ├── Unit/            # Pure function tests (xUnit)
-    └── Integration/     # Reqnroll BDD scenarios (WebApplicationFactory + SQLite)
+    ├── Unit/            # Pure function tests (xUnit, Category=Unit)
+    └── Integration/     # Reqnroll BDD step definitions (WebApplicationFactory)
 ```

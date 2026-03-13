@@ -12,14 +12,17 @@ namespace DemoBeCsas.Tests.Integration.Steps;
 public class CommonSteps(TestWebApplicationFactory factory, SharedState state)
 {
     [BeforeScenario]
-    public void CleanDatabase()
+    public async Task CleanDatabase()
     {
         using var scope = factory.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        db.Database.ExecuteSqlRaw("DELETE FROM Attachments");
-        db.Database.ExecuteSqlRaw("DELETE FROM Expenses");
-        db.Database.ExecuteSqlRaw("DELETE FROM RevokedTokens");
-        db.Database.ExecuteSqlRaw("DELETE FROM Users");
+        // Use EF Core's typed ExecuteDeleteAsync so the provider's naming conventions
+        // (e.g., snake_case for PostgreSQL) are applied automatically — avoiding raw SQL
+        // table name mismatches between SQLite (PascalCase) and PostgreSQL (snake_case).
+        await db.Attachments.ExecuteDeleteAsync();
+        await db.Expenses.ExecuteDeleteAsync();
+        await db.RevokedTokens.ExecuteDeleteAsync();
+        await db.Users.ExecuteDeleteAsync();
     }
 
     [Given("the API is running")]

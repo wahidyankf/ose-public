@@ -7,9 +7,10 @@ services:
       POSTGRES_PASSWORD: demo_be_cjpd
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U demo_be_cjpd -d demo_be_cjpd_test"]
-      interval: 2s
+      interval: 5s
       timeout: 5s
       retries: 10
+      start_period: 10s
     ports:
       - "5432"
     tmpfs:

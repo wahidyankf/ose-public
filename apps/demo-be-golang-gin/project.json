@@ -32,6 +32,12 @@
         "command": "CGO_ENABLED=0 go test -coverprofile=cover.out ./... -count=1 && head -1 cover.out > cover_unit.out && grep -v 'gorm_store\\|internal/server\\|cmd/server' cover.out >> cover_unit.out && (cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/demo-be-golang-gin/cover_unit.out 90)",
         "cwd": "apps/demo-be-golang-gin"
       },
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/internal/**/*.go",
+        "{projectRoot}/cmd/**/*.go",
+        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+      ],
       "outputs": ["{projectRoot}/cover.out", "{projectRoot}/cover_unit.out"]
     },
     "test:unit": {
@@ -44,12 +50,10 @@
     "test:integration": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "CGO_ENABLED=0 go test -v -tags=integration -run TestIntegration -coverprofile=cover_spec.out ./internal/integration/... -count=1",
+        "command": "docker compose -f docker-compose.integration.yml down -v && docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build",
         "cwd": "apps/demo-be-golang-gin"
       },
-      "cache": true,
-      "inputs": ["{projectRoot}/internal/**/*.go", "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"],
-      "outputs": ["{projectRoot}/cover_spec.out"]
+      "cache": false
     },
     "lint": {
       "executor": "nx:run-commands",

@@ -26,6 +26,7 @@ These standards define **HOW to manage development infrastructure**, including w
 
 - [Acceptance Criteria Convention](./acceptance-criteria.md) - Writing testable acceptance criteria using Gherkin format for clarity and automation
 - [BDD Spec-to-Test Mapping Convention](./bdd-spec-test-mapping.md) - Mandatory 1:1 mapping between CLI commands and Gherkin specifications
+- [GitHub Actions Workflow Naming Convention](./github-actions-workflow-naming.md) - Workflow filenames must mirror their `name:` field using a consistent kebab-case derivation rule
 - [Nx Target Standards](./nx-targets.md) - Standard Nx targets that apps and libs must expose, canonical target names, caching rules, build output conventions, and the four-dimension tag scheme for `project.json`
 - [Temporary Files Convention](./temporary-files.md) - Guidelines for AI agents creating temporary uncommitted files and folders
 

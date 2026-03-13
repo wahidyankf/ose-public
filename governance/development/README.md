@@ -133,6 +133,7 @@ Development practices in this directory fall into several categories:
 - [Temporary Files Convention](./infra/temporary-files.md) - Guidelines for AI agents creating temporary uncommitted files and folders
 - [Acceptance Criteria Convention](./infra/acceptance-criteria.md) - Writing testable acceptance criteria using Gherkin format for clarity and automation. Covers Gherkin syntax and common patterns
 - [BDD Spec-to-Test Mapping Convention](./infra/bdd-spec-test-mapping.md) - Mandatory 1:1 mapping between CLI commands and Gherkin specifications. Covers domain-prefixed subcommand pattern, Go file naming (underscores), feature file naming (hyphens), and coverage enforcement via `spec-coverage validate`
+- [GitHub Actions Workflow Naming Convention](./infra/github-actions-workflow-naming.md) - Workflow filenames must mirror their `name:` field using a consistent kebab-case derivation rule, enabling developers to navigate between the GitHub UI and the filesystem without ambiguity
 
 ### Hugo Development Documentation
 

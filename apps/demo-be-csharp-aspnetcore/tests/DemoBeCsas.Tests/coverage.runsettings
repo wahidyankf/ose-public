@@ -5,7 +5,11 @@
       <DataCollector friendlyName="XPlat code coverage">
         <Configuration>
           <Format>lcov</Format>
-          <ExcludeByFile>**/*.g.cs</ExcludeByFile>
+          <Include>[DemoBeCsas]*</Include>
+          <ExcludeByFile>**/*.g.cs,**/obj/**/*.cs,**/Endpoints/**/*.cs,**/Program.cs</ExcludeByFile>
+          <ExcludeByAttribute>ExcludeFromCodeCoverage,CompilerGenerated,GeneratedCode</ExcludeByAttribute>
+          <SingleHit>false</SingleHit>
+          <UseSourceLink>false</UseSourceLink>
         </Configuration>
       </DataCollector>
     </DataCollectors>

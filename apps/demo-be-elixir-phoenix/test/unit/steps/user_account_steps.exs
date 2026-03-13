@@ -1,11 +1,11 @@
-defmodule DemoBeExphWeb.Integration.UserAccountSteps do
+defmodule DemoBeExphWeb.Unit.UserAccountSteps do
   use Cabbage.Feature, async: false, file: "user-lifecycle/user-account.feature"
 
-  use DemoBeExphWeb.ConnCaseIntegration
+  use DemoBeExphWeb.ConnCase
 
   alias DemoBeExph.Integration.Helpers
 
-  @moduletag :integration
+  @moduletag :unit
 
   defgiven ~r/^the API is running$/, _vars, state do
     {:ok, state}

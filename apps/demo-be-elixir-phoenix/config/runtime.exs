@@ -27,15 +27,16 @@ config :demo_be_exph, DemoBeExphWeb.Endpoint,
 # Do not move to config/config.exs — System.get_env must run at startup, not compile time.
 # In :test env this block is unreachable because config/test.exs overrides the Guardian
 # key before runtime.exs is evaluated, so the || raise(...) guard never fires during tests.
-if config_env() != :test do
+# In :integration env, APP_JWT_SECRET is supplied by docker-compose.
+if config_env() not in [:test] do
   config :demo_be_exph, DemoBeExph.Auth.Guardian,
     issuer: "demo_be_exph",
     secret_key: System.get_env("APP_JWT_SECRET") || raise("APP_JWT_SECRET is not set"),
     ttl: {24, :hours}
 end
 
-# DATABASE_URL for dev/prod Docker environments
-if config_env() in [:dev, :prod] and System.get_env("DATABASE_URL") do
+# DATABASE_URL for dev/prod/integration Docker environments
+if config_env() in [:dev, :prod, :integration] and System.get_env("DATABASE_URL") do
   config :demo_be_exph, DemoBeExph.Repo,
     url: System.get_env("DATABASE_URL"),
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10")

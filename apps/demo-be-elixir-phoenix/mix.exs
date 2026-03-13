@@ -12,7 +12,7 @@ defmodule DemoBeExph.MixProject do
       deps: deps(),
       listeners: [Phoenix.CodeReloader],
       test_coverage: [tool: ExCoveralls],
-      test_paths: ["test"],
+      test_paths: test_paths(Mix.env()),
       test_pattern: "**/*_{test,steps}.exs",
       test_load_filters: [~r/_test\.exs$/, ~r/_steps\.exs$/],
       preferred_cli_env: [
@@ -35,14 +35,21 @@ defmodule DemoBeExph.MixProject do
       preferred_envs: [
         precommit: :test,
         "test:unit": :test,
-        "test:integration": :test
+        "test:integration": :integration
       ]
     ]
   end
 
   # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(:integration), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
+
+  # Specifies test paths per environment.
+  # :integration runs only the integration step definitions (real PostgreSQL via docker).
+  # :test runs unit steps, existing unit tests, and controller coverage tests.
+  defp test_paths(:integration), do: ["test/integration"]
+  defp test_paths(_), do: ["test"]
 
   # Specifies your project dependencies.
   defp deps do
@@ -63,8 +70,8 @@ defmodule DemoBeExph.MixProject do
       {:guardian, "~> 2.3"},
       {:bcrypt_elixir, "~> 3.0"},
       # Test / BDD — vendored forks (local path deps, not Hex)
-      {:elixir_gherkin, path: "../../libs/elixir-gherkin", only: :test},
-      {:elixir_cabbage, path: "../../libs/elixir-cabbage", only: :test},
+      {:elixir_gherkin, path: "../../libs/elixir-gherkin", only: [:test, :integration]},
+      {:elixir_cabbage, path: "../../libs/elixir-cabbage", only: [:test, :integration]},
       {:excoveralls, "~> 0.18", only: :test},
       # Dev / quality
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false}

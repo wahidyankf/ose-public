@@ -6,7 +6,7 @@ defmodule DemoBeExphWeb.CoverageTest do
 
   alias DemoBeExph.Integration.Helpers
 
-  @moduletag :integration
+  @moduletag :unit
 
   # --- Shared setup helpers ---
 

@@ -14,6 +14,8 @@
     "lib/demo_be_exph/token/token_context.ex",
     "lib/demo_be_exph_web/gettext.ex",
     "lib/demo_be_exph_web/telemetry.ex",
-    "lib/demo_be_exph_web/plugs/cors_plug.ex"
+    "lib/demo_be_exph_web/plugs/cors_plug.ex",
+    "test/support/conn_case_integration.ex",
+    "test/support/data_case.ex"
   ]
 }

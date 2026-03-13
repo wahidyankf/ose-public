@@ -31,9 +31,9 @@ The server listens on port **8201** (`http://localhost:8201`).
 ```bash
 nx run demo-be-elixir-phoenix:install          # mix deps.get
 nx run demo-be-elixir-phoenix:dev              # mix phx.server (development)
-nx run demo-be-elixir-phoenix:test:quick       # lint + format + coverage gate (>=90%)
-nx run demo-be-elixir-phoenix:test:unit        # mix test --only unit
-nx run demo-be-elixir-phoenix:test:integration # mix test --only integration (Gherkin BDD)
+nx run demo-be-elixir-phoenix:test:quick       # unit tests + coverage gate (>=90%)
+nx run demo-be-elixir-phoenix:test:unit        # unit tests with coverage (same as test:quick)
+nx run demo-be-elixir-phoenix:test:integration # docker compose: real PostgreSQL + all BDD scenarios
 nx run demo-be-elixir-phoenix:lint             # mix credo --strict
 nx run demo-be-elixir-phoenix:typecheck        # mix compile (warnings-as-errors)
 nx run demo-be-elixir-phoenix:build            # mix compile (prod, warnings-as-errors)
@@ -71,32 +71,87 @@ nx run demo-be-elixir-phoenix:build            # mix compile (prod, warnings-as-
 | DELETE | `/api/v1/expenses/:id/attachments/:att_id`     | Bearer | Delete attachment            |
 | GET    | `/api/v1/reports/pl`                           | Bearer | P&L report for date range    |
 
-## BDD Integration Tests
+## Three-Level Test Architecture
 
-Feature specifications live in `specs/apps/demo-be/gherkin/` and are executed via
-`elixir-cabbage` (vendored Gherkin BDD framework):
+This application follows the standard three-level testing strategy:
+
+```
+unit        → fast, in-memory, no external services, fully cached
+integration → Docker Compose + real PostgreSQL, not cached
+e2e         → Playwright against a live running stack (apps/demo-be-e2e)
+```
+
+### Level 1: Unit Tests (`test:quick` / `test:unit`)
+
+Unit tests run with `MIX_ENV=test` using in-memory context implementations. No database
+or external services are required. These tests are **fully cached** by Nx.
+
+```bash
+nx run demo-be-elixir-phoenix:test:quick
+# or equivalently:
+nx run demo-be-elixir-phoenix:test:unit
+```
+
+**What runs:**
+
+- All 76 Gherkin BDD scenarios re-implemented in `test/unit/steps/` with `@moduletag :unit`
+- Controller error-path tests in `test/demo_be_exph_web/controllers/coverage_test.exs`
+- ExCoveralls LCOV report generated to `cover/lcov.info`
+- `rhino-cli test-coverage validate` enforces ≥90% line coverage
+
+**Mock architecture:**
+
+All context modules are replaced at test time via `config/test.exs`:
+
+- `DemoBeExph.Accounts` → `DemoBeExph.InMemoryAccounts`
+- `DemoBeExph.Token.TokenContext` → `DemoBeExph.InMemoryTokenContext`
+- `DemoBeExph.Expense.ExpenseContext` → `DemoBeExph.InMemoryExpenseContext`
+- `DemoBeExph.Attachment.AttachmentContext` → `DemoBeExph.InMemoryAttachmentContext`
+
+The `Repo` GenServer is not started in the `:test` environment. Tests are fully
+deterministic with no external service dependencies, making them safe for Nx caching.
+
+### Level 2: Integration Tests (`test:integration`)
+
+Integration tests run the same 76 Gherkin BDD scenarios (`test/integration/steps/`) against
+a real PostgreSQL 17 database via Docker Compose. These tests are **never cached**.
 
 ```bash
 nx run demo-be-elixir-phoenix:test:integration
 ```
 
-73 scenarios across 13 feature files cover all 9 feature domains:
-health, authentication, token lifecycle, user registration, user account,
-security, token management, admin, expense management, currency handling,
-unit handling, financial reporting, and attachments.
+**What runs:**
 
-### Mock Testing Architecture
+- `docker-compose.integration.yml` spins up `postgres:17-alpine` + an `elixir:1.17-otp-27-alpine` test runner
+- Migrations run with `MIX_ENV=integration mix ecto.create && mix ecto.migrate`
+- All integration step files tagged `@moduletag :integration` execute against the real Ecto repo
+- Ecto SQL Sandbox (`:manual` mode) provides test isolation
 
-Integration tests run **without a real database**. All context modules
-(`Accounts`, `TokenContext`, `ExpenseContext`, `AttachmentContext`) are replaced
-at test time with in-memory implementations backed by a shared `InMemoryStore`
-(Agent-based state). The dispatch is configured via `Application.get_env` in
-`config/test.exs`:
+**Prerequisites:** Docker with Compose plugin must be installed.
 
-- `DemoBeExph.Accounts` -> `DemoBeExph.InMemoryAccounts`
-- `DemoBeExph.Token.TokenContext` -> `DemoBeExph.InMemoryTokenContext`
-- `DemoBeExph.Expense.ExpenseContext` -> `DemoBeExph.InMemoryExpenseContext`
-- `DemoBeExph.Attachment.AttachmentContext` -> `DemoBeExph.InMemoryAttachmentContext`
+### Level 3: E2E Tests
 
-The `Repo` GenServer is not started in the `:test` environment. Tests are fully
-deterministic with no external service dependencies, making them safe for Nx caching.
+End-to-end tests live in `apps/demo-be-e2e` and run Playwright scenarios against a fully
+deployed stack. See that project's README for details.
+
+## BDD Feature Specifications
+
+Feature specifications live in `specs/apps/demo-be/gherkin/` (workspace root) and are shared
+across all demo backend implementations. 76 scenarios across 13 feature domains cover:
+
+- Health check
+- User registration
+- Password login
+- Token lifecycle
+- Token management
+- User account management
+- Security (lockout, brute-force)
+- Admin operations
+- Expense management
+- Currency handling
+- Unit handling
+- Financial reporting (P&L)
+- Attachments
+
+Both `test/unit/steps/` and `test/integration/steps/` contain step definitions for all
+76 scenarios — the unit steps use in-memory stores, the integration steps use the real Ecto repo.

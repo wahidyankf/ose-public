@@ -1,11 +1,11 @@
-defmodule DemoBeExphWeb.Integration.AdminSteps do
+defmodule DemoBeExphWeb.Unit.AdminSteps do
   use Cabbage.Feature, async: false, file: "admin/admin.feature"
 
-  use DemoBeExphWeb.ConnCaseIntegration
+  use DemoBeExphWeb.ConnCase
 
   alias DemoBeExph.Integration.Helpers
 
-  @moduletag :integration
+  @moduletag :unit
 
   defp accounts, do: Application.get_env(:demo_be_exph, :accounts_module)
 

@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: demo_be_exph_test
+      POSTGRES_USER: demo_be_exph
+      POSTGRES_PASSWORD: demo_be_exph
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U demo_be_exph -d demo_be_exph_test"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+
+  test-runner:
+    build:
+      context: ../..
+      dockerfile: apps/demo-be-elixir-phoenix/Dockerfile.integration
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgresql://demo_be_exph:demo_be_exph@postgres:5432/demo_be_exph_test"
+      APP_JWT_SECRET: "integration-test-secret-key-at-least-32-characters"
+    volumes:
+      - ../../specs:/specs:ro

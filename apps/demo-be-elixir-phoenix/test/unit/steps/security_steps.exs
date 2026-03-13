@@ -1,11 +1,12 @@
-defmodule DemoBeExphWeb.Integration.SecuritySteps do
+defmodule DemoBeExphWeb.Unit.SecuritySteps do
   use Cabbage.Feature, async: false, file: "security/security.feature"
 
-  use DemoBeExphWeb.ConnCaseIntegration
+  use DemoBeExphWeb.ConnCase
 
   alias DemoBeExph.Integration.Helpers
+  alias DemoBeExph.Test.InMemoryStore
 
-  @moduletag :integration
+  @moduletag :unit
 
   defp accounts, do: Application.get_env(:demo_be_exph, :accounts_module)
 
@@ -24,11 +25,15 @@ defmodule DemoBeExphWeb.Integration.SecuritySteps do
   defgiven ~r/^"alice" has had the maximum number of failed login attempts$/,
            _vars,
            %{alice: user} = state do
-    Enum.reduce_while(1..5, user, fn _attempt, _acc ->
-      case accounts().authenticate_user(user.username, "wrong_#{System.unique_integer()}") do
-        {:error, :account_locked} -> {:halt, :locked}
-        _ -> {:cont, user}
-      end
+    InMemoryStore.update_state(fn s ->
+      locked_user =
+        Map.merge(user, %{
+          status: "LOCKED",
+          failed_login_attempts: 5,
+          locked_at: DateTime.utc_now() |> DateTime.truncate(:second)
+        })
+
+      Map.update!(s, :users, fn users -> Map.put(users, user.id, locked_user) end)
     end)
 
     {:ok, state}
@@ -40,12 +45,12 @@ defmodule DemoBeExphWeb.Integration.SecuritySteps do
     password = "Str0ng#Pass1"
     email = "#{username}@example.com"
     user = Helpers.register_user!(username, email, password)
+    {:ok, _} = accounts().deactivate_user(user)
 
-    Enum.reduce_while(1..5, user, fn _attempt, _acc ->
-      case accounts().authenticate_user(user.username, "wrong_#{System.unique_integer()}") do
-        {:error, :account_locked} -> {:halt, :locked}
-        _ -> {:cont, user}
-      end
+    InMemoryStore.update_state(fn s ->
+      Map.update!(s, :users, fn users ->
+        Map.update!(users, user.id, fn u -> Map.put(u, :status, "LOCKED") end)
+      end)
     end)
 
     updated_user = accounts().get_user(user.id)

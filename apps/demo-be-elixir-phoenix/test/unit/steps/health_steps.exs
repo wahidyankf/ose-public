@@ -1,9 +1,9 @@
-defmodule DemoBeExphWeb.Integration.HealthSteps do
+defmodule DemoBeExphWeb.Unit.HealthSteps do
   use Cabbage.Feature, async: false, file: "health/health-check.feature"
 
-  use DemoBeExphWeb.ConnCaseIntegration
+  use DemoBeExphWeb.ConnCase
 
-  @moduletag :integration
+  @moduletag :unit
 
   defgiven ~r/^the API is running$/, _vars, state do
     {:ok, state}

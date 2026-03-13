@@ -1,11 +1,11 @@
-defmodule DemoBeExphWeb.Integration.ExpenseManagementSteps do
+defmodule DemoBeExphWeb.Unit.ExpenseManagementSteps do
   use Cabbage.Feature, async: false, file: "expenses/expense-management.feature"
 
-  use DemoBeExphWeb.ConnCaseIntegration
+  use DemoBeExphWeb.ConnCase
 
   alias DemoBeExph.Integration.Helpers
 
-  @moduletag :integration
+  @moduletag :unit
 
   defgiven ~r/^the API is running$/, _vars, state do
     {:ok, state}

@@ -1,11 +1,11 @@
-defmodule DemoBeExphWeb.Integration.AttachmentsSteps do
+defmodule DemoBeExphWeb.Unit.AttachmentsSteps do
   use Cabbage.Feature, async: false, file: "expenses/attachments.feature"
 
-  use DemoBeExphWeb.ConnCaseIntegration
+  use DemoBeExphWeb.ConnCase
 
   alias DemoBeExph.Integration.Helpers
 
-  @moduletag :integration
+  @moduletag :unit
 
   defgiven ~r/^the API is running$/, _vars, state do
     {:ok, state}
@@ -125,7 +125,6 @@ defmodule DemoBeExphWeb.Integration.AttachmentsSteps do
   defwhen ~r/^alice uploads an oversized file to POST \/api\/v1\/expenses\/\{expenseId\}\/attachments$/,
           _vars,
           %{access_token: access_token, expense_id: expense_id} = state do
-    # Create a file larger than max_size_bytes (5MB)
     large_data = :crypto.strong_rand_bytes(6 * 1024 * 1024)
     tmp_path = System.tmp_dir!() <> "/oversized_test_#{System.unique_integer()}.jpg"
     File.write!(tmp_path, large_data)
@@ -230,9 +229,7 @@ defmodule DemoBeExphWeb.Integration.AttachmentsSteps do
     {:ok, state}
   end
 
-  # Helper to upload a file in multipart form
   defp upload_file(conn, access_token, expense_id, filename, content_type) do
-    # Create a small temp file with test content
     ext = filename |> Path.extname()
     tmp_path = System.tmp_dir!() <> "/test_upload_#{System.unique_integer()}#{ext}"
     File.write!(tmp_path, "test content for #{filename}")

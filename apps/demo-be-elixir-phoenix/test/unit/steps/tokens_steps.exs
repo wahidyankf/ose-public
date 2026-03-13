@@ -1,11 +1,11 @@
-defmodule DemoBeExphWeb.Integration.TokensSteps do
+defmodule DemoBeExphWeb.Unit.TokensSteps do
   use Cabbage.Feature, async: false, file: "token-management/tokens.feature"
 
-  use DemoBeExphWeb.ConnCaseIntegration
+  use DemoBeExphWeb.ConnCase
 
   alias DemoBeExph.Integration.Helpers
 
-  @moduletag :integration
+  @moduletag :unit
 
   defp token_ctx, do: Application.get_env(:demo_be_exph, :token_module)
 

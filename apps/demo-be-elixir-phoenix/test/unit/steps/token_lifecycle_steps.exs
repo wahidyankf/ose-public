@@ -1,11 +1,11 @@
-defmodule DemoBeExphWeb.Integration.TokenLifecycleSteps do
+defmodule DemoBeExphWeb.Unit.TokenLifecycleSteps do
   use Cabbage.Feature, async: false, file: "authentication/token-lifecycle.feature"
 
-  use DemoBeExphWeb.ConnCaseIntegration
+  use DemoBeExphWeb.ConnCase
 
   alias DemoBeExph.Integration.Helpers
 
-  @moduletag :integration
+  @moduletag :unit
 
   defp accounts, do: Application.get_env(:demo_be_exph, :accounts_module)
   defp token_ctx, do: Application.get_env(:demo_be_exph, :token_module)

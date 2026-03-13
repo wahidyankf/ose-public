@@ -1,11 +1,11 @@
-defmodule DemoBeExphWeb.Integration.ReportingSteps do
-  use Cabbage.Feature, async: false, file: "expenses/reporting.feature"
+defmodule DemoBeExphWeb.Unit.CurrencyHandlingSteps do
+  use Cabbage.Feature, async: false, file: "expenses/currency-handling.feature"
 
-  use DemoBeExphWeb.ConnCaseIntegration
+  use DemoBeExphWeb.ConnCase
 
   alias DemoBeExph.Integration.Helpers
 
-  @moduletag :integration
+  @moduletag :unit
 
   defgiven ~r/^the API is running$/, _vars, state do
     {:ok, state}
@@ -25,7 +25,7 @@ defmodule DemoBeExphWeb.Integration.ReportingSteps do
     {:ok, Map.put(state, :access_token, access_token)}
   end
 
-  defgiven ~r/^alice has created an entry with body \{ (?<body>.+) \}$/,
+  defgiven ~r/^alice has created an expense with body \{ (?<body>.+) \}$/,
            %{body: body_content},
            %{access_token: access_token} = state do
     body = Jason.encode!(Jason.decode!("{" <> body_content <> "}"))
@@ -37,16 +37,42 @@ defmodule DemoBeExphWeb.Integration.ReportingSteps do
       |> post("/api/v1/expenses", body)
 
     assert conn.status == 201
-    {:ok, state}
+    expense_body = Jason.decode!(conn.resp_body)
+    {:ok, Map.put(state, :expense_id, expense_body["id"])}
   end
 
-  defwhen ~r/^alice sends GET \/api\/v1\/reports\/pl\?from=(?<from>[^&]+)&to=(?<to>[^&]+)&currency=(?<currency>[^\s]+)$/,
-          %{from: from, to: to, currency: currency},
+  defwhen ~r/^alice sends GET \/api\/v1\/expenses\/\{expenseId\}$/,
+          _vars,
+          %{access_token: access_token, expense_id: expense_id} = state do
+    conn =
+      build_conn()
+      |> put_req_header("authorization", Helpers.bearer_header(access_token))
+      |> get("/api/v1/expenses/#{expense_id}")
+
+    {:ok, Map.put(state, :conn, conn)}
+  end
+
+  defwhen ~r/^alice sends POST \/api\/v1\/expenses with body \{ (?<body>.+) \}$/,
+          %{body: body_content},
+          %{access_token: access_token} = state do
+    body = Jason.encode!(Jason.decode!("{" <> body_content <> "}"))
+
+    conn =
+      build_conn()
+      |> put_req_header("authorization", Helpers.bearer_header(access_token))
+      |> put_req_header("content-type", "application/json")
+      |> post("/api/v1/expenses", body)
+
+    {:ok, Map.put(state, :conn, conn)}
+  end
+
+  defwhen ~r/^alice sends GET \/api\/v1\/expenses\/summary$/,
+          _vars,
           %{access_token: access_token} = state do
     conn =
       build_conn()
       |> put_req_header("authorization", Helpers.bearer_header(access_token))
-      |> get("/api/v1/reports/pl?from=#{from}&to=#{to}&currency=#{currency}")
+      |> get("/api/v1/expenses/summary")
 
     {:ok, Map.put(state, :conn, conn)}
   end
@@ -62,31 +88,26 @@ defmodule DemoBeExphWeb.Integration.ReportingSteps do
           %{field: field, value: value},
           %{conn: conn} = state do
     body = Jason.decode!(conn.resp_body)
-    stored = body[field] |> Decimal.new() |> Decimal.to_string()
-    expected = value |> Decimal.new() |> Decimal.to_string()
-    assert stored == expected
+    assert to_string(body[field]) == value
     {:ok, state}
   end
 
-  defthen ~r/^the income breakdown should contain "(?<category>[^"]+)" with amount "(?<amount>[^"]+)"$/,
-          %{category: category, amount: amount},
+  defthen ~r/^the response body should contain a validation error for "(?<field>[^"]+)"$/,
+          %{field: field},
           %{conn: conn} = state do
     body = Jason.decode!(conn.resp_body)
-    income_breakdown = body["income_breakdown"]
-    assert Map.has_key?(income_breakdown, category)
-    stored = income_breakdown[category] |> Decimal.new() |> Decimal.to_string()
-    expected = amount |> Decimal.new() |> Decimal.to_string()
-    assert stored == expected
+    assert Map.has_key?(body, "errors")
+    errors = body["errors"]
+    assert Map.has_key?(errors, field)
     {:ok, state}
   end
 
-  defthen ~r/^the expense breakdown should contain "(?<category>[^"]+)" with amount "(?<amount>[^"]+)"$/,
-          %{category: category, amount: amount},
+  defthen ~r/^the response body should contain "(?<currency>[^"]+)" total equal to "(?<amount>[^"]+)"$/,
+          %{currency: currency, amount: amount},
           %{conn: conn} = state do
     body = Jason.decode!(conn.resp_body)
-    expense_breakdown = body["expense_breakdown"]
-    assert Map.has_key?(expense_breakdown, category)
-    stored = expense_breakdown[category] |> Decimal.new() |> Decimal.to_string()
+    assert Map.has_key?(body, currency)
+    stored = body[currency] |> Decimal.new() |> Decimal.to_string()
     expected = amount |> Decimal.new() |> Decimal.to_string()
     assert stored == expected
     {:ok, state}

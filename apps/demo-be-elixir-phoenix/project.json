@@ -29,34 +29,41 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "MIX_ENV=test mix coveralls.lcov",
-          "(cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/demo-be-elixir-phoenix/cover/lcov.info 90)",
-          "mix credo --strict",
-          "mix format --check-formatted"
+          "MIX_ENV=test mix coveralls.lcov --only unit",
+          "(cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/demo-be-elixir-phoenix/cover/lcov.info 90)"
         ],
         "parallel": false,
         "cwd": "apps/demo-be-elixir-phoenix"
-      }
-    },
-    "test:unit": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "mix test --only unit",
-        "cwd": "apps/demo-be-elixir-phoenix"
-      }
-    },
-    "test:integration": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "mix test --only integration",
-        "cwd": "apps/demo-be-elixir-phoenix"
       },
-      "cache": true,
       "inputs": [
         "{projectRoot}/lib/**/*.ex",
         "{projectRoot}/test/**/*.exs",
         "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
       ]
+    },
+    "test:unit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "MIX_ENV=test mix coveralls.lcov --only unit",
+          "(cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/demo-be-elixir-phoenix/cover/lcov.info 90)"
+        ],
+        "parallel": false,
+        "cwd": "apps/demo-be-elixir-phoenix"
+      },
+      "inputs": [
+        "{projectRoot}/lib/**/*.ex",
+        "{projectRoot}/test/**/*.exs",
+        "{workspaceRoot}/specs/apps/demo-be/gherkin/**/*.feature"
+      ]
+    },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker compose -f docker-compose.integration.yml down -v && docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build",
+        "cwd": "apps/demo-be-elixir-phoenix"
+      },
+      "cache": false
     },
     "lint": {
       "executor": "nx:run-commands",

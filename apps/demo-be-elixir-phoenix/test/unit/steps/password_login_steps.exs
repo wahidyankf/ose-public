@@ -1,11 +1,11 @@
-defmodule DemoBeExphWeb.Integration.PasswordLoginSteps do
+defmodule DemoBeExphWeb.Unit.PasswordLoginSteps do
   use Cabbage.Feature, async: false, file: "authentication/password-login.feature"
 
-  use DemoBeExphWeb.ConnCaseIntegration
+  use DemoBeExphWeb.ConnCase
 
   alias DemoBeExph.Integration.Helpers
 
-  @moduletag :integration
+  @moduletag :unit
 
   defp accounts, do: Application.get_env(:demo_be_exph, :accounts_module)
 

@@ -5,8 +5,8 @@ package integration_pg_test
 import (
 	"fmt"
 
-	"github.com/gin-gonic/gin"
 	"github.com/cucumber/godog"
+	"github.com/gin-gonic/gin"
 
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/domain"
 )
@@ -173,9 +173,9 @@ func (ctx *scenarioCtx) bobHasCreatedEntry(amount, currency, category, descripti
 	if loginStatus != 200 {
 		return fmt.Errorf("bob login failed: %v", loginBody)
 	}
-	bobToken, ok := loginBody["access_token"].(string)
+	bobToken, ok := loginBody["accessToken"].(string)
 	if !ok {
-		return fmt.Errorf("access_token is not a string")
+		return fmt.Errorf("accessToken is not a string")
 	}
 	ctx.BobAccessToken = bobToken
 

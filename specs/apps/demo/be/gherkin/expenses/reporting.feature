@@ -14,8 +14,8 @@ Feature: Financial Reporting
     And alice has created an entry with body { "amount": "150.00", "currency": "USD", "category": "food", "description": "Groceries", "date": "2025-01-20", "type": "expense" }
     When alice sends GET /api/v1/reports/pl?from=2025-01-01&to=2025-01-31&currency=USD
     Then the response status code should be 200
-    And the response body should contain "income_total" equal to "5000.00"
-    And the response body should contain "expense_total" equal to "150.00"
+    And the response body should contain "totalIncome" equal to "5000.00"
+    And the response body should contain "totalExpense" equal to "150.00"
     And the response body should contain "net" equal to "4850.00"
 
   Scenario: P&L breakdown includes category-level amounts for income and expenses
@@ -32,26 +32,26 @@ Feature: Financial Reporting
     Given alice has created an entry with body { "amount": "1000.00", "currency": "USD", "category": "salary", "description": "Bonus", "date": "2025-03-05", "type": "income" }
     When alice sends GET /api/v1/reports/pl?from=2025-03-01&to=2025-03-31&currency=USD
     Then the response status code should be 200
-    And the response body should contain "income_total" equal to "1000.00"
-    And the response body should contain "expense_total" equal to "0.00"
+    And the response body should contain "totalIncome" equal to "1000.00"
+    And the response body should contain "totalExpense" equal to "0.00"
 
   Scenario: Expense entries are excluded from income total
     Given alice has created an entry with body { "amount": "75.00", "currency": "USD", "category": "utilities", "description": "Internet bill", "date": "2025-04-10", "type": "expense" }
     When alice sends GET /api/v1/reports/pl?from=2025-04-01&to=2025-04-30&currency=USD
     Then the response status code should be 200
-    And the response body should contain "income_total" equal to "0.00"
-    And the response body should contain "expense_total" equal to "75.00"
+    And the response body should contain "totalIncome" equal to "0.00"
+    And the response body should contain "totalExpense" equal to "75.00"
 
   Scenario: P&L summary filters by currency without cross-currency mixing
     Given alice has created an entry with body { "amount": "1000.00", "currency": "USD", "category": "freelance", "description": "USD project", "date": "2025-05-01", "type": "income" }
     And alice has created an entry with body { "amount": "5000000", "currency": "IDR", "category": "freelance", "description": "IDR project", "date": "2025-05-01", "type": "income" }
     When alice sends GET /api/v1/reports/pl?from=2025-05-01&to=2025-05-31&currency=USD
     Then the response status code should be 200
-    And the response body should contain "income_total" equal to "1000.00"
+    And the response body should contain "totalIncome" equal to "1000.00"
 
   Scenario: P&L summary for a period with no entries returns zero totals
     When alice sends GET /api/v1/reports/pl?from=2099-01-01&to=2099-01-31&currency=USD
     Then the response status code should be 200
-    And the response body should contain "income_total" equal to "0.00"
-    And the response body should contain "expense_total" equal to "0.00"
+    And the response body should contain "totalIncome" equal to "0.00"
+    And the response body should contain "totalExpense" equal to "0.00"
     And the response body should contain "net" equal to "0.00"

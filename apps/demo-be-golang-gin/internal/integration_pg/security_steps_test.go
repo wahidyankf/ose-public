@@ -6,8 +6,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/gin-gonic/gin"
 	"github.com/cucumber/godog"
+	"github.com/gin-gonic/gin"
 
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/domain"
 )
@@ -100,9 +100,9 @@ func (ctx *scenarioCtx) anAdminUserIsRegisteredAndLoggedIn(username string) erro
 	if loginStatus != 200 {
 		return fmt.Errorf("admin login failed: %v", loginBody)
 	}
-	adminToken, ok := loginBody["access_token"].(string)
+	adminToken, ok := loginBody["accessToken"].(string)
 	if !ok {
-		return fmt.Errorf("access_token is not a string")
+		return fmt.Errorf("accessToken is not a string")
 	}
 	ctx.AdminToken = adminToken
 	return nil

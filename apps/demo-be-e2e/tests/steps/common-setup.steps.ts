@@ -49,8 +49,8 @@ Given(
       headers: { "Content-Type": "application/json" },
     });
     const loginBody = (await loginRes.json()) as Record<string, unknown>;
-    if (loginBody["access_token"]) {
-      setTokenForUser(username, loginBody["access_token"] as string);
+    if (loginBody["accessToken"]) {
+      setTokenForUser(username, loginBody["accessToken"] as string);
     }
   },
 );
@@ -67,7 +67,7 @@ Given("a user {string} is registered and deactivated", async ({ request }, usern
     headers: { "Content-Type": "application/json" },
   });
   const loginBody = (await loginRes.json()) as Record<string, unknown>;
-  const token = loginBody["access_token"] as string;
+  const token = loginBody["accessToken"] as string;
   // Deactivate the account
   await request.post("/api/v1/users/me/deactivate", {
     headers: { Authorization: `Bearer ${token}` },
@@ -84,7 +84,7 @@ Given("{string} has logged in and stored the access token", async ({ request }, 
     headers: { "Content-Type": "application/json" },
   });
   const body = (await res.json()) as Record<string, unknown>;
-  setTokenForUser(username, body["access_token"] as string);
+  setTokenForUser(username, body["accessToken"] as string);
 });
 
 Given("{string} has logged in and stored the access token and refresh token", async ({ request }, username: string) => {
@@ -93,8 +93,8 @@ Given("{string} has logged in and stored the access token and refresh token", as
     headers: { "Content-Type": "application/json" },
   });
   const body = (await res.json()) as Record<string, unknown>;
-  setTokenForUser(username, body["access_token"] as string);
-  setRefreshTokenForUser(username, body["refresh_token"] as string);
+  setTokenForUser(username, body["accessToken"] as string);
+  setRefreshTokenForUser(username, body["refreshToken"] as string);
 });
 
 // ---------------------------------------------------------------------------
@@ -119,7 +119,7 @@ Given("an admin user {string} is registered and logged in", async ({ request }, 
     headers: { "Content-Type": "application/json" },
   });
   const loginBody = (await loginRes.json()) as Record<string, unknown>;
-  setTokenForUser(username, loginBody["access_token"] as string);
+  setTokenForUser(username, loginBody["accessToken"] as string);
 });
 
 // ---------------------------------------------------------------------------
@@ -146,7 +146,7 @@ async function ensureSuperadmin(request: import("@playwright/test").APIRequestCo
       headers: { "Content-Type": "application/json" },
     });
     const loginBody = (await loginRes.json()) as Record<string, unknown>;
-    const token = loginBody["access_token"] as string;
+    const token = loginBody["accessToken"] as string;
     setTokenForUser("superadmin", token);
     return token;
   }

@@ -18,7 +18,7 @@ When(/^alice sends POST \/api\/v1\/auth\/refresh with her refresh token$/, async
   const token = getRefreshTokenForUser("alice");
   setResponse(
     await request.post("/api/v1/auth/refresh", {
-      data: { refresh_token: token },
+      data: { refreshToken: token },
       headers: { "Content-Type": "application/json" },
     }),
   );
@@ -34,14 +34,14 @@ Given("alice has used her refresh token to get a new token pair", async ({ reque
   const originalRefresh = getRefreshTokenForUser("alice");
   // Perform a refresh to rotate the token pair
   const res = await request.post("/api/v1/auth/refresh", {
-    data: { refresh_token: originalRefresh },
+    data: { refreshToken: originalRefresh },
     headers: { "Content-Type": "application/json" },
   });
   const body = (await res.json()) as Record<string, unknown>;
   // Store new tokens but keep the original refresh token accessible via a
   // secondary key so the scenario can still send it
-  setTokenForUser("alice_new", body["access_token"] as string);
-  setRefreshTokenForUser("alice_new", body["refresh_token"] as string);
+  setTokenForUser("alice_new", body["accessToken"] as string);
+  setRefreshTokenForUser("alice_new", body["refreshToken"] as string);
   // alice's refresh token remains as the original (for the "send original" step)
 });
 
@@ -49,7 +49,7 @@ When(/^alice sends POST \/api\/v1\/auth\/refresh with her original refresh token
   const token = getRefreshTokenForUser("alice");
   setResponse(
     await request.post("/api/v1/auth/refresh", {
-      data: { refresh_token: token },
+      data: { refreshToken: token },
       headers: { "Content-Type": "application/json" },
     }),
   );

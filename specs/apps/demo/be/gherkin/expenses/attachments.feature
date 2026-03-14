@@ -17,7 +17,7 @@ Feature: Entry Attachments
     Then the response status code should be 201
     And the response body should contain a non-null "id" field
     And the response body should contain "filename" equal to "receipt.jpg"
-    And the response body should contain "content_type" equal to "image/jpeg"
+    And the response body should contain "contentType" equal to "image/jpeg"
     And the response body should contain a non-null "url" field
 
   Scenario: Upload PDF document returns 201 with attachment metadata
@@ -25,7 +25,7 @@ Feature: Entry Attachments
     Then the response status code should be 201
     And the response body should contain a non-null "id" field
     And the response body should contain "filename" equal to "invoice.pdf"
-    And the response body should contain "content_type" equal to "application/pdf"
+    And the response body should contain "contentType" equal to "application/pdf"
     And the response body should contain a non-null "url" field
 
   Scenario: List attachments for an entry returns all uploaded files with metadata

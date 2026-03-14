@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/cucumber/godog"
+	"github.com/gin-gonic/gin"
 
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/domain"
 )
@@ -29,7 +29,7 @@ func registerTokenLifecycleSteps(sc *godog.ScenarioContext, ctx *scenarioCtx) {
 
 // refresh calls the Refresh handler directly.
 func (ctx *scenarioCtx) refresh(refreshToken string) (int, map[string]interface{}) {
-	body := map[string]string{"refresh_token": refreshToken}
+	body := map[string]string{"refreshToken": refreshToken}
 	c, w := buildGinContext("POST", "/api/v1/auth/refresh", body, "", gin.Params{}, nil)
 	ctx.Handler.Refresh(c)
 	return w.Code, readResponse(w)
@@ -81,14 +81,14 @@ func (ctx *scenarioCtx) aliceHasUsedRefreshTokenToGetNewPair() error {
 	if status != 200 {
 		return fmt.Errorf("refresh failed with %d: %v", status, body)
 	}
-	accessToken, ok := body["access_token"].(string)
+	accessToken, ok := body["accessToken"].(string)
 	if !ok {
-		return fmt.Errorf("access_token is not a string")
+		return fmt.Errorf("accessToken is not a string")
 	}
 	ctx.AccessToken = accessToken
-	refreshToken, ok := body["refresh_token"].(string)
+	refreshToken, ok := body["refreshToken"].(string)
 	if !ok {
-		return fmt.Errorf("refresh_token is not a string")
+		return fmt.Errorf("refreshToken is not a string")
 	}
 	ctx.RefreshToken = refreshToken
 	// Store original refresh token for the next step.

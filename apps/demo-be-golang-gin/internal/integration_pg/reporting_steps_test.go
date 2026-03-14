@@ -5,8 +5,8 @@ package integration_pg_test
 import (
 	"fmt"
 
-	"github.com/gin-gonic/gin"
 	"github.com/cucumber/godog"
+	"github.com/gin-gonic/gin"
 )
 
 func registerReportingSteps(sc *godog.ScenarioContext, ctx *scenarioCtx) {
@@ -16,7 +16,7 @@ func registerReportingSteps(sc *godog.ScenarioContext, ctx *scenarioCtx) {
 }
 
 func (ctx *scenarioCtx) aliceSendsGetPLReport(from, to, currency string) error {
-	rawQuery := fmt.Sprintf("from=%s&to=%s&currency=%s", from, to, currency)
+	rawQuery := fmt.Sprintf("startDate=%s&endDate=%s&currency=%s", from, to, currency)
 	c, w := buildGinContext("GET", "/api/v1/reports/pl?"+rawQuery, nil, ctx.AccessToken, gin.Params{}, ctx.JWTSvc)
 	c.Request.URL.RawQuery = rawQuery
 	ctx.Handler.PLReport(c)
@@ -26,39 +26,49 @@ func (ctx *scenarioCtx) aliceSendsGetPLReport(from, to, currency string) error {
 }
 
 func (ctx *scenarioCtx) theIncomeBreakdownShouldContainCategory(category, amount string) error {
-	breakdown, ok := ctx.LastBody["income_breakdown"]
+	breakdown, ok := ctx.LastBody["incomeBreakdown"]
 	if !ok {
-		return fmt.Errorf("response does not contain 'income_breakdown'; body: %v", ctx.LastBody)
+		return fmt.Errorf("response does not contain 'incomeBreakdown'; body: %v", ctx.LastBody)
 	}
-	breakdownMap, ok := breakdown.(map[string]interface{})
+	items, ok := breakdown.([]interface{})
 	if !ok {
-		return fmt.Errorf("'income_breakdown' is not a map")
+		return fmt.Errorf("'incomeBreakdown' is not an array")
 	}
-	v, ok := breakdownMap[category]
-	if !ok {
-		return fmt.Errorf("income_breakdown does not contain category %q", category)
+	for _, item := range items {
+		m, ok := item.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		if fmt.Sprintf("%v", m["category"]) == category {
+			if fmt.Sprintf("%v", m["total"]) == amount {
+				return nil
+			}
+			return fmt.Errorf("incomeBreakdown category %q: expected amount %q, got %q", category, amount, fmt.Sprintf("%v", m["total"]))
+		}
 	}
-	if fmt.Sprintf("%v", v) != amount {
-		return fmt.Errorf("expected income_breakdown[%q] = %q, got %q", category, amount, fmt.Sprintf("%v", v))
-	}
-	return nil
+	return fmt.Errorf("incomeBreakdown does not contain category %q", category)
 }
 
 func (ctx *scenarioCtx) theExpenseBreakdownShouldContainCategory(category, amount string) error {
-	breakdown, ok := ctx.LastBody["expense_breakdown"]
+	breakdown, ok := ctx.LastBody["expenseBreakdown"]
 	if !ok {
-		return fmt.Errorf("response does not contain 'expense_breakdown'; body: %v", ctx.LastBody)
+		return fmt.Errorf("response does not contain 'expenseBreakdown'; body: %v", ctx.LastBody)
 	}
-	breakdownMap, ok := breakdown.(map[string]interface{})
+	items, ok := breakdown.([]interface{})
 	if !ok {
-		return fmt.Errorf("'expense_breakdown' is not a map")
+		return fmt.Errorf("'expenseBreakdown' is not an array")
 	}
-	v, ok := breakdownMap[category]
-	if !ok {
-		return fmt.Errorf("expense_breakdown does not contain category %q", category)
+	for _, item := range items {
+		m, ok := item.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		if fmt.Sprintf("%v", m["category"]) == category {
+			if fmt.Sprintf("%v", m["total"]) == amount {
+				return nil
+			}
+			return fmt.Errorf("expenseBreakdown category %q: expected amount %q, got %q", category, amount, fmt.Sprintf("%v", m["total"]))
+		}
 	}
-	if fmt.Sprintf("%v", v) != amount {
-		return fmt.Errorf("expected expense_breakdown[%q] = %q, got %q", category, amount, fmt.Sprintf("%v", v))
-	}
-	return nil
+	return fmt.Errorf("expenseBreakdown does not contain category %q", category)
 }

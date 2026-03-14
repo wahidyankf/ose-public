@@ -16,7 +16,7 @@ func registerReportingSteps(sc *godog.ScenarioContext, ctx *ScenarioCtx) {
 }
 
 func (ctx *ScenarioCtx) aliceSendsGetPLReport(from, to, currency string) error {
-	url := fmt.Sprintf("/api/v1/reports/pl?from=%s&to=%s&currency=%s", from, to, currency)
+	url := fmt.Sprintf("/api/v1/reports/pl?startDate=%s&endDate=%s&currency=%s", from, to, currency)
 	resp, body := doRequest(ctx.Router, "GET", url, nil, ctx.AccessToken)
 	ctx.LastResponse = resp
 	ctx.LastBody = body
@@ -25,40 +25,50 @@ func (ctx *ScenarioCtx) aliceSendsGetPLReport(from, to, currency string) error {
 
 func (ctx *ScenarioCtx) theIncomeBreakdownShouldContainCategory(category, amount string) error {
 	body := parseBody(ctx.LastBody)
-	breakdown, ok := body["income_breakdown"]
+	breakdown, ok := body["incomeBreakdown"]
 	if !ok {
-		return fmt.Errorf("response does not contain 'income_breakdown'; body: %s", string(ctx.LastBody))
+		return fmt.Errorf("response does not contain 'incomeBreakdown'; body: %s", string(ctx.LastBody))
 	}
-	breakdownMap, ok := breakdown.(map[string]interface{})
+	items, ok := breakdown.([]interface{})
 	if !ok {
-		return fmt.Errorf("'income_breakdown' is not a map")
+		return fmt.Errorf("'incomeBreakdown' is not an array")
 	}
-	v, ok := breakdownMap[category]
-	if !ok {
-		return fmt.Errorf("income_breakdown does not contain category %q", category)
+	for _, item := range items {
+		m, ok := item.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		if fmt.Sprintf("%v", m["category"]) == category {
+			if fmt.Sprintf("%v", m["total"]) == amount {
+				return nil
+			}
+			return fmt.Errorf("incomeBreakdown category %q: expected amount %q, got %q", category, amount, fmt.Sprintf("%v", m["total"]))
+		}
 	}
-	if fmt.Sprintf("%v", v) != amount {
-		return fmt.Errorf("expected income_breakdown[%q] = %q, got %q", category, amount, fmt.Sprintf("%v", v))
-	}
-	return nil
+	return fmt.Errorf("incomeBreakdown does not contain category %q", category)
 }
 
 func (ctx *ScenarioCtx) theExpenseBreakdownShouldContainCategory(category, amount string) error {
 	body := parseBody(ctx.LastBody)
-	breakdown, ok := body["expense_breakdown"]
+	breakdown, ok := body["expenseBreakdown"]
 	if !ok {
-		return fmt.Errorf("response does not contain 'expense_breakdown'; body: %s", string(ctx.LastBody))
+		return fmt.Errorf("response does not contain 'expenseBreakdown'; body: %s", string(ctx.LastBody))
 	}
-	breakdownMap, ok := breakdown.(map[string]interface{})
+	items, ok := breakdown.([]interface{})
 	if !ok {
-		return fmt.Errorf("'expense_breakdown' is not a map")
+		return fmt.Errorf("'expenseBreakdown' is not an array")
 	}
-	v, ok := breakdownMap[category]
-	if !ok {
-		return fmt.Errorf("expense_breakdown does not contain category %q", category)
+	for _, item := range items {
+		m, ok := item.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		if fmt.Sprintf("%v", m["category"]) == category {
+			if fmt.Sprintf("%v", m["total"]) == amount {
+				return nil
+			}
+			return fmt.Errorf("expenseBreakdown category %q: expected amount %q, got %q", category, amount, fmt.Sprintf("%v", m["total"]))
+		}
 	}
-	if fmt.Sprintf("%v", v) != amount {
-		return fmt.Errorf("expected expense_breakdown[%q] = %q, got %q", category, amount, fmt.Sprintf("%v", v))
-	}
-	return nil
+	return fmt.Errorf("expenseBreakdown does not contain category %q", category)
 }

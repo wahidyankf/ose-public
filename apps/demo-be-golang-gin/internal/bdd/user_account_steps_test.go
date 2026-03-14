@@ -8,8 +8,8 @@ import (
 
 func registerUserAccountSteps(sc *godog.ScenarioContext, ctx *scenarioCtx) {
 	sc.Step(`^alice sends GET /api/v1/users/me$`, ctx.aliceSendsGetProfile)
-	sc.Step(`^alice sends PATCH /api/v1/users/me with body \{ "display_name": "([^"]*)" \}$`, ctx.aliceSendsUpdateProfile)
-	sc.Step(`^alice sends POST /api/v1/users/me/password with body \{ "old_password": "([^"]*)", "new_password": "([^"]*)" \}$`, ctx.aliceSendsChangePassword)
+	sc.Step(`^alice sends PATCH /api/v1/users/me with body \{ "displayName": "([^"]*)" \}$`, ctx.aliceSendsUpdateProfile)
+	sc.Step(`^alice sends POST /api/v1/users/me/password with body \{ "oldPassword": "([^"]*)", "newPassword": "([^"]*)" \}$`, ctx.aliceSendsChangePassword)
 	sc.Step(`^alice sends POST /api/v1/users/me/deactivate$`, ctx.aliceSendsDeactivate)
 	sc.Step(`^alice has deactivated her own account via POST /api/v1/users/me/deactivate$`, ctx.aliceHasDeactivatedHerAccount)
 }

@@ -5,8 +5,8 @@ package integration_pg_test
 import (
 	"fmt"
 
-	"github.com/gin-gonic/gin"
 	"github.com/cucumber/godog"
+	"github.com/gin-gonic/gin"
 )
 
 func registerAuthSteps(sc *godog.ScenarioContext, ctx *scenarioCtx) {
@@ -82,9 +82,9 @@ func (ctx *scenarioCtx) aUserIsRegisteredAndDeactivated(username string) error {
 	if loginStatus != 200 {
 		return fmt.Errorf("login failed: %v", loginBody)
 	}
-	token, ok := loginBody["access_token"].(string)
+	token, ok := loginBody["accessToken"].(string)
 	if !ok {
-		return fmt.Errorf("access_token is not a string")
+		return fmt.Errorf("accessToken is not a string")
 	}
 	deactivateStatus, deactivateBody := ctx.deactivateSelf(token)
 	if deactivateStatus != 200 {
@@ -179,14 +179,14 @@ func (ctx *scenarioCtx) userHasLoggedInAndStoredBothTokens(username string) erro
 	if status != 200 {
 		return fmt.Errorf("login failed with status %d: %v", status, body)
 	}
-	accessToken, ok := body["access_token"].(string)
+	accessToken, ok := body["accessToken"].(string)
 	if !ok {
-		return fmt.Errorf("access_token is not a string")
+		return fmt.Errorf("accessToken is not a string")
 	}
 	ctx.AccessToken = accessToken
-	refreshToken, ok := body["refresh_token"].(string)
+	refreshToken, ok := body["refreshToken"].(string)
 	if !ok {
-		return fmt.Errorf("refresh_token is not a string")
+		return fmt.Errorf("refreshToken is not a string")
 	}
 	ctx.RefreshToken = refreshToken
 	return nil

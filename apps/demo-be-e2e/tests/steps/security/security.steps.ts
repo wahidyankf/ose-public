@@ -22,7 +22,7 @@ async function ensureSuperadmin(request: import("@playwright/test").APIRequestCo
       headers: { "Content-Type": "application/json" },
     });
     const loginBody = (await loginRes.json()) as Record<string, unknown>;
-    const token = loginBody["access_token"] as string;
+    const token = loginBody["accessToken"] as string;
     setTokenForUser("superadmin", token);
     return token;
   }

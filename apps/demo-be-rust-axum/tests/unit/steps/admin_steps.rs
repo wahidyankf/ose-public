@@ -34,7 +34,10 @@ async fn admin_list_users(world: &mut AppWorld) {
 #[when(regex = r#"the admin sends GET /api/v1/admin/users\?search=alice@example\.com"#)]
 async fn admin_search_users_by_email(world: &mut AppWorld) {
     let bearer = world.admin_bearer();
-    let req = get_req("/api/v1/admin/users?search=alice@example.com", Some(&bearer));
+    let req = get_req(
+        "/api/v1/admin/users?search=alice@example.com",
+        Some(&bearer),
+    );
     world.send(req).await.unwrap();
 }
 

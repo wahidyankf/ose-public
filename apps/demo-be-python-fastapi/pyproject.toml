@@ -68,6 +68,7 @@ line-length = 100
 select = ["E", "F", "I", "N", "UP", "B", "A", "C4", "PT"]
 ignore = [
     "B008",  # FastAPI Depends() in argument defaults is idiomatic and correct
+    "N815",  # Pydantic response models use camelCase field names to match the camelCase JSON API contract
 ]
 
 [tool.pyright]

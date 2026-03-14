@@ -28,6 +28,8 @@ object UnitTestWorld {
   val expenseRepo = InMemoryExpenseRepository()
   val attachmentRepo = InMemoryAttachmentRepository()
 
+  var testApiEnabled: Boolean = true
+
   fun reset() {
     lastResponseStatus = 0
     lastResponseBody = ""
@@ -41,5 +43,6 @@ object UnitTestWorld {
     tokenRepo.clear()
     expenseRepo.clear()
     attachmentRepo.clear()
+    testApiEnabled = true
   }
 }

@@ -862,6 +862,57 @@ object UnitServiceDispatcher {
         }
 
     // -------------------------------------------------------------------------
+    // Test-support routes
+    // -------------------------------------------------------------------------
+
+    fun testResetDb(): Pair<Int, String> {
+        if (!UnitTestWorld.testApiEnabled) {
+            return Pair(404, buildJsonObject { put("message", "Not found") }.toString())
+        }
+        return runBlocking {
+            UnitTestWorld.userRepo.clear()
+            UnitTestWorld.tokenRepo.clear()
+            UnitTestWorld.expenseRepo.clear()
+            UnitTestWorld.attachmentRepo.clear()
+            UnitTestWorld.userIds.clear()
+            UnitTestWorld.accessTokens.clear()
+            UnitTestWorld.refreshTokens.clear()
+            UnitTestWorld.expenseIds.clear()
+            UnitTestWorld.attachmentIds.clear()
+            Pair(200, buildJsonObject { put("message", "Database reset") }.toString())
+        }
+    }
+
+    fun testPromoteAdmin(username: String): Pair<Int, String> {
+        if (!UnitTestWorld.testApiEnabled) {
+            return Pair(404, buildJsonObject { put("message", "Not found") }.toString())
+        }
+        return runBlocking {
+            val user =
+                UnitTestWorld.userRepo.findByUsername(username)
+                    ?: return@runBlocking Pair(
+                        404,
+                        buildJsonObject { put("message", "Not found: user") }.toString(),
+                    )
+            val promoted =
+                UnitTestWorld.userRepo.promoteToAdmin(user.id)
+                    ?: return@runBlocking Pair(
+                        404,
+                        buildJsonObject { put("message", "Not found: user") }.toString(),
+                    )
+            Pair(
+                200,
+                buildJsonObject {
+                        put("id", promoted.id.toString())
+                        put("username", promoted.username)
+                        put("role", promoted.role.name)
+                    }
+                    .toString(),
+            )
+        }
+    }
+
+    // -------------------------------------------------------------------------
     // Internal helpers
     // -------------------------------------------------------------------------
 

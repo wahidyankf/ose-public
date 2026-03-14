@@ -84,6 +84,13 @@ class InMemoryUserRepository : UserRepository {
     store.clear()
   }
 
+  fun promoteToAdmin(id: UUID): User? {
+    val user = store[id] ?: return null
+    val updated = user.copy(role = Role.ADMIN, updatedAt = Instant.now())
+    store[id] = updated
+    return updated
+  }
+
   fun createAdmin(username: String, email: String, passwordHash: String): User {
     val now = Instant.now()
     val user =

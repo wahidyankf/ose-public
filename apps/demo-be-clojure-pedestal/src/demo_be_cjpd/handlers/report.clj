@@ -16,8 +16,8 @@
           report   (expense-repo/pl-report ds user-id from to currency)]
       {:status  200
        :headers {"Content-Type" "application/json"}
-       :body    (json/generate-string {:incomeTotal      (:income-total report)
-                                       :expenseTotal     (:expense-total report)
+       :body    (json/generate-string {:totalIncome      (:income-total report)
+                                       :totalExpense     (:expense-total report)
                                        :net              (:net report)
                                        :incomeBreakdown  (:income-breakdown report)
                                        :expenseBreakdown (:expense-breakdown report)})})))

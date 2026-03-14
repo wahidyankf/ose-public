@@ -63,6 +63,8 @@ services:
         condition: service_healthy
     environment:
       - BACKEND_URL=http://demo-be:8201
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE:-demo_fe_exph_secret_key_base_for_local_dev_only_not_for_prod_use}
+      - PHX_HOST=localhost
     restart: unless-stopped
     networks:
       - demo-fe-exph-network

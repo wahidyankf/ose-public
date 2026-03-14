@@ -21,5 +21,5 @@ WORKDIR /app
 COPY --from=build --chown=app:app /app/_build/prod/rel/demo_fe_exph ./
 USER app
 EXPOSE 3301
-ENV PORT=3301 PHX_HOST=localhost SECRET_KEY_BASE=placeholder
+ENV PORT=3301 PHX_HOST=localhost SECRET_KEY_BASE=demo_fe_exph_default_secret_key_base_for_build_only_override_at_runtime
 CMD ["bin/demo_fe_exph", "start"]

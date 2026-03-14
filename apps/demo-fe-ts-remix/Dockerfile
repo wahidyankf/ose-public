@@ -10,7 +10,9 @@ COPY . .
 RUN npx react-router build
 
 FROM node:24-alpine
-RUN apk add --no-cache nginx && mkdir -p /run/nginx
+RUN apk add --no-cache nginx && mkdir -p /run/nginx \
+    && sed -i 's|error_log /var/log/nginx/error.log warn;|error_log /dev/stderr warn;|' /etc/nginx/nginx.conf \
+    && sed -i 's|access_log  /var/log/nginx/access.log  main;|access_log /dev/stdout;|' /etc/nginx/nginx.conf || true
 WORKDIR /app
 COPY --from=build /app/build ./build
 COPY --from=build /app/node_modules ./node_modules
@@ -47,4 +49,4 @@ server {
 EOF
 EXPOSE 3301
 ENV PORT=3300 NODE_ENV=production
-CMD sh -c "npx react-router-serve build/server/index.js & nginx -g 'daemon off;'"
+CMD sh -c "nginx -t 2>&1; npx react-router-serve build/server/index.js & nginx -g 'daemon off;'"

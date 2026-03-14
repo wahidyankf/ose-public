@@ -83,6 +83,12 @@ jobs:
           sudo ./install-clj-kondo
           rm install-clj-kondo
 
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.41.2"
+          channel: "stable"
+
       - name: Install .NET global tools
         run: |
           dotnet tool install -g fantomas
@@ -240,6 +246,14 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: apps/demo-be-clojure-pedestal/coverage/lcov.info
           flags: demo-be-clojure-pedestal
+          fail_ci_if_error: false
+
+      - name: Upload coverage — demo-fe-dart-flutter
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: apps/demo-fe-dart-flutter/coverage/lcov.info
+          flags: demo-fe-dart-flutter
           fail_ci_if_error: false
 
       - name: Upload coverage — demo-fe-ts-nextjs

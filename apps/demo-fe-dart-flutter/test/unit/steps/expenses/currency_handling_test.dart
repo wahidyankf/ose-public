@@ -55,7 +55,7 @@ Widget _buildDetailWidget(_MockExpense expense) {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Amount: ${expense.amount}'),
+          Text('Amount: ${expense.amount.toStringAsFixed(2)}'),
           Text('Currency: ${expense.currency}'),
           Text('Category: ${expense.category}'),
           Text('Date: ${expense.date}'),

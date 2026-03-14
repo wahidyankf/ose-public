@@ -104,7 +104,7 @@ Widget _buildDetailWidget(_MockExpense expense) {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Amount: ${expense.amount}'),
+          Text('Amount: ${expense.amount.toStringAsFixed(2)}'),
           Text('Currency: ${expense.currency}'),
           Text('Category: ${expense.category}'),
           Text('Description: ${expense.description ?? expense.title}'),
@@ -334,7 +334,7 @@ Future<void> andAliceSavesTheChanges(WidgetTester tester) async {
 /// `Then the entry detail should display amount "12.00"`
 Future<void> thenTheEntryDetailShouldDisplayAmount1200(
     WidgetTester tester) async {
-  expect(find.textContaining('12.0'), findsWidgets);
+  expect(find.textContaining('12.00'), findsWidgets);
 }
 
 /// `And the entry detail should display description "Updated breakfast"`

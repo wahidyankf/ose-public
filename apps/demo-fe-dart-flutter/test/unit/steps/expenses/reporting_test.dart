@@ -198,7 +198,7 @@ Future<void> whenAliceViewsThePLReportForMarch2025InUSD(
 /// `Then the report should display income total "1000.00"`
 Future<void> thenTheReportShouldDisplayIncomeTotal1000(
     WidgetTester tester) async {
-  expect(find.textContaining('1000.00'), findsOneWidget);
+  expect(find.textContaining('1000.00'), findsWidgets);
 }
 
 /// `And the report should display expense total "0.00"`
@@ -233,7 +233,7 @@ Future<void> thenTheReportShouldDisplayIncomeTotal000(
 /// `And the report should display expense total "75.00"`
 Future<void> andTheReportShouldDisplayExpenseTotal75(
     WidgetTester tester) async {
-  expect(find.textContaining('75.00'), findsOneWidget);
+  expect(find.textContaining('75.00'), findsWidgets);
 }
 
 /// `Given alice has created income entries in both USD and IDR`

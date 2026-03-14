@@ -441,20 +441,6 @@ Future<void> _fillRegistrationForm(
   required String email,
   required String password,
 }) async {
-  final usernameField = find.byWidgetPredicate(
-    (w) =>
-        w is TextFormField &&
-        ((tester.widget<TextFormField>(find.byType(TextFormField).at(0))
-                    .decoration
-                    ?.labelText
-                    ?.toLowerCase()
-                    .contains('username') ??
-                false)
-            ? identical(w,
-                tester.widget<TextFormField>(find.byType(TextFormField).at(0)))
-            : false),
-  );
-  // Simpler approach: use positional indexing
   final fields = find.byType(TextFormField);
   await tester.enterText(fields.at(0), username);
   await tester.enterText(fields.at(1), email);

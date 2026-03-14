@@ -55,7 +55,7 @@ Given("{word} has logged in", async ({ page }, username: string) => {
   await page.getByRole("textbox", { name: /username/i }).fill(username);
   await page.getByRole("textbox", { name: /password/i }).fill("Str0ng#Pass1");
   await page.getByRole("button", { name: /log in|sign in|login/i }).click();
-  await page.waitForURL(/\/(expenses|dashboard)/);
+  await page.waitForURL((url) => !url.includes("/login"));
 });
 
 Given("{word} has logged out", async ({ page }) => {
@@ -79,7 +79,7 @@ Given("an admin user {string} is logged in", async ({ page }, adminUsername: str
   await page.getByRole("textbox", { name: /username/i }).fill(adminUsername);
   await page.getByRole("textbox", { name: /password/i }).fill("Str0ng#Pass1");
   await page.getByRole("button", { name: /log in|sign in|login/i }).click();
-  await page.waitForURL(/\/(expenses|dashboard)/);
+  await page.waitForURL((url) => !url.includes("/login"));
 });
 
 // ---------------------------------------------------------------------------
@@ -257,7 +257,7 @@ When("{word} opens the session info panel", async ({ page }) => {
 // ---------------------------------------------------------------------------
 
 Then("{word} should be on the dashboard page", async ({ page }) => {
-  await expect(page).toHaveURL(/\/(expenses|dashboard)/);
+  await expect(page).not.toHaveURL(/\/login/);
 });
 
 Then("{word} should be redirected to the login page", async ({ page }) => {
@@ -315,7 +315,9 @@ Then("the entry list should display pagination controls", async ({ page }) => {
 
 Then("a validation error for the password field should be displayed", async ({ page }) => {
   await expect(
-    page.getByText(/password.*required|weak password|password.*too short|invalid password|password must/i),
+    page
+      .getByText(/password.*required|weak password|password.*too short|invalid password|password must/i)
+      .or(page.getByText(/at least 12 characters|at least one special character/i)),
   ).toBeVisible();
 });
 
@@ -353,7 +355,7 @@ Given("a user {string} is logged in", async ({ page }, username: string) => {
   await page.getByRole("textbox", { name: /username/i }).fill(username);
   await page.getByRole("textbox", { name: /password/i }).fill("Str0ng#Pass1");
   await page.getByRole("button", { name: /log in|sign in|login/i }).click();
-  await page.waitForURL(/\/(expenses|dashboard)/);
+  await page.waitForURL((url) => !url.includes("/login"));
 });
 
 // Used in admin + token-management

@@ -1,0 +1,54 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "demo-fe-elixir-phoenix",
+  "sourceRoot": "apps/demo-fe-elixir-phoenix/lib",
+  "projectType": "application",
+  "targets": {
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "mix phx.server",
+        "cwd": "{projectRoot}",
+        "env": { "PORT": "3301" }
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "mix compile",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "mix phx.server",
+        "cwd": "{projectRoot}",
+        "env": { "MIX_ENV": "prod", "PORT": "3301" }
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "mix credo --strict",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "test:quick": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "MIX_ENV=test mix coveralls.lcov && (cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/demo-fe-elixir-phoenix/cover/lcov.info 25)",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "test:unit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "MIX_ENV=test mix coveralls.lcov",
+        "cwd": "{projectRoot}"
+      }
+    }
+  },
+  "tags": ["type:app", "platform:phoenix", "lang:elixir", "domain:demo-fe"],
+  "implicitDependencies": []
+}

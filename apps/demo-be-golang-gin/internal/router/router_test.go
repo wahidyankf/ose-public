@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/auth"
+	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/config"
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/router"
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/store"
 )
@@ -15,7 +16,7 @@ func TestUnitNewRouter(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	ms := store.NewMemoryStore()
 	jwtSvc := auth.NewJWTService("test-secret-at-least-32-chars-long")
-	r := router.NewRouter(ms, jwtSvc)
+	r := router.NewRouter(ms, jwtSvc, &config.Config{})
 	if r == nil {
 		t.Fatal("expected non-nil router")
 	}

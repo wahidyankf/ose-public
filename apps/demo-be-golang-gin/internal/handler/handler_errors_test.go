@@ -14,6 +14,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/auth"
+	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/config"
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/domain"
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/handler"
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/router"
@@ -215,6 +216,14 @@ func (s *errStore) PLReport(ctx context.Context, q store.PLReportQuery) (*domain
 	return s.inner.PLReport(ctx, q)
 }
 
+func (s *errStore) ResetDB(ctx context.Context) error {
+	return s.inner.ResetDB(ctx)
+}
+
+func (s *errStore) PromoteToAdmin(ctx context.Context, username string) error {
+	return s.inner.PromoteToAdmin(ctx, username)
+}
+
 // bodyID extracts the "id" field from a response body, failing the test if not found.
 func bodyID(t *testing.T, body map[string]interface{}) string {
 	t.Helper()
@@ -230,7 +239,7 @@ func newErrRouter(es *errStore) *gin.Engine {
 	gin.SetMode(gin.TestMode)
 	es.inner = store.NewMemoryStore()
 	jwtSvc := auth.NewJWTService(testSecret)
-	return router.NewRouter(es, jwtSvc)
+	return router.NewRouter(es, jwtSvc, &config.Config{})
 }
 
 const defaultErrStorePassword = "Str0ng#Pass1"

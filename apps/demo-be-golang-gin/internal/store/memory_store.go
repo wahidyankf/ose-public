@@ -358,6 +358,31 @@ func (m *MemoryStore) PLReport(_ context.Context, q PLReportQuery) (*domain.PLRe
 	return report, nil
 }
 
+// ResetDB clears all in-memory data (for test use only).
+func (m *MemoryStore) ResetDB(_ context.Context) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	m.users = make(map[string]*domain.User)
+	m.usersByUsername = make(map[string]string)
+	m.expenses = make(map[string]*domain.Expense)
+	m.attachments = make(map[string]*domain.Attachment)
+	m.refreshTokens = make(map[string]*domain.RefreshToken)
+	m.blacklist = make(map[string]time.Time)
+	return nil
+}
+
+// PromoteToAdmin sets the role of the given username to "ADMIN" (for test use only).
+func (m *MemoryStore) PromoteToAdmin(_ context.Context, username string) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	id, ok := m.usersByUsername[username]
+	if !ok {
+		return domain.NewNotFoundError("user not found")
+	}
+	m.users[id].Role = "ADMIN"
+	return nil
+}
+
 // Ensure MemoryStore implements Store at compile time.
 var _ Store = (*MemoryStore)(nil)
 

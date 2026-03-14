@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/auth"
+	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/config"
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/router"
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/store"
 )
@@ -37,7 +38,7 @@ func (c *ScenarioCtx) reset() {
 	memStore := store.NewMemoryStore()
 	jwtSvc := auth.NewJWTService(testJWTSecret)
 	c.Store = memStore
-	c.Router = router.NewRouter(memStore, jwtSvc)
+	c.Router = router.NewRouter(memStore, jwtSvc, &config.Config{})
 	c.LastResponse = nil
 	c.LastBody = nil
 	c.AccessToken = ""

@@ -36,7 +36,7 @@ func Run() {
 	}
 
 	jwtSvc := auth.NewJWTService(cfg.JWTSecret)
-	r := router.NewRouter(gormStore, jwtSvc)
+	r := router.NewRouter(gormStore, jwtSvc, cfg)
 
 	addr := fmt.Sprintf(":%s", cfg.Port)
 	log.Printf("Starting demo-be-golang-gin on %s", addr)

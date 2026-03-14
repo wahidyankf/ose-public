@@ -304,5 +304,37 @@ func (s *GORMStore) PLReport(_ context.Context, q PLReportQuery) (*domain.PLRepo
 	return report, nil
 }
 
+// ResetDB deletes all user-created data (for test use only).
+// Deletions follow FK constraint order: attachments → expenses → refresh_tokens → blacklisted_tokens → users.
+func (s *GORMStore) ResetDB(_ context.Context) error {
+	if err := s.db.Session(&gorm.Session{AllowGlobalUpdate: true}).Delete(&domain.Attachment{}).Error; err != nil {
+		return err
+	}
+	if err := s.db.Session(&gorm.Session{AllowGlobalUpdate: true}).Delete(&domain.Expense{}).Error; err != nil {
+		return err
+	}
+	if err := s.db.Session(&gorm.Session{AllowGlobalUpdate: true}).Delete(&domain.RefreshToken{}).Error; err != nil {
+		return err
+	}
+	if err := s.db.Session(&gorm.Session{AllowGlobalUpdate: true}).Delete(&domain.BlacklistedToken{}).Error; err != nil {
+		return err
+	}
+	return s.db.Session(&gorm.Session{AllowGlobalUpdate: true}).Delete(&domain.User{}).Error
+}
+
+// PromoteToAdmin sets the role of the given username to "ADMIN" (for test use only).
+func (s *GORMStore) PromoteToAdmin(_ context.Context, username string) error {
+	var u domain.User
+	result := s.db.Where("username = ?", username).First(&u)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return domain.NewNotFoundError("user not found")
+		}
+		return result.Error
+	}
+	u.Role = "ADMIN"
+	return s.db.Save(&u).Error
+}
+
 // Ensure GORMStore implements Store at compile time.
 var _ Store = (*GORMStore)(nil)

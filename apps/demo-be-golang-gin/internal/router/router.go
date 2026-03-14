@@ -6,12 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/auth"
+	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/config"
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/handler"
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/store"
 )
 
 // NewRouter builds and returns the Gin engine with all routes registered.
-func NewRouter(st store.Store, jwtSvc *auth.JWTService) *gin.Engine {
+func NewRouter(st store.Store, jwtSvc *auth.JWTService, cfg *config.Config) *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Recovery())
 
@@ -58,6 +59,12 @@ func NewRouter(st store.Store, jwtSvc *auth.JWTService) *gin.Engine {
 
 	reports := api.Group("/reports", auth.JWTMiddleware(jwtSvc, st))
 	reports.GET("/pl", h.PLReport)
+
+	if cfg.EnableTestAPI {
+		testGroup := api.Group("/test")
+		testGroup.POST("/reset-db", h.ResetDB)
+		testGroup.POST("/promote-admin", h.PromoteAdmin)
+	}
 
 	return r
 }

@@ -12,6 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/auth"
+	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/config"
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/router"
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/store"
 )
@@ -22,7 +23,7 @@ func newTestRouter() (*gin.Engine, *store.MemoryStore) {
 	gin.SetMode(gin.TestMode)
 	ms := store.NewMemoryStore()
 	jwtSvc := auth.NewJWTService(testSecret)
-	r := router.NewRouter(ms, jwtSvc)
+	r := router.NewRouter(ms, jwtSvc, &config.Config{})
 	return r, ms
 }
 

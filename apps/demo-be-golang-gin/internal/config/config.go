@@ -5,9 +5,10 @@ import "os"
 
 // Config holds the application configuration loaded from environment variables.
 type Config struct {
-	Port        string
-	JWTSecret   string
-	DatabaseURL string
+	Port          string
+	JWTSecret     string
+	DatabaseURL   string
+	EnableTestAPI bool
 }
 
 // Load reads configuration from environment variables with defaults.
@@ -21,9 +22,11 @@ func Load() *Config {
 		jwtSecret = "dev-jwt-secret-at-least-32-chars-long"
 	}
 	databaseURL := os.Getenv("DATABASE_URL")
+	enableTestAPI := os.Getenv("ENABLE_TEST_API") == "true"
 	return &Config{
-		Port:        port,
-		JWTSecret:   jwtSecret,
-		DatabaseURL: databaseURL,
+		Port:          port,
+		JWTSecret:     jwtSecret,
+		DatabaseURL:   databaseURL,
+		EnableTestAPI: enableTestAPI,
 	}
 }

@@ -62,4 +62,8 @@ type Store interface {
 
 	// Reports
 	PLReport(ctx context.Context, q PLReportQuery) (*domain.PLReport, error)
+
+	// Test helpers (only exposed when ENABLE_TEST_API=true)
+	ResetDB(ctx context.Context) error
+	PromoteToAdmin(ctx context.Context, username string) error
 }

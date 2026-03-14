@@ -1,6 +1,6 @@
 # demo-be-rust-axum
 
-Rust + Axum REST API backend — a functional twin of `demo-be-java-springboot` (Java/Spring Boot),
+Rust + Axum REST API backend — a functional twin of `demo-be-golang-gin` (Go/Gin),
 `demo-be-elixir-phoenix` (Elixir/Phoenix), and other demo-be backends using Rust and the Axum framework.
 
 ## Tech Stack

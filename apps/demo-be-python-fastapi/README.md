@@ -1,6 +1,6 @@
 # demo-be-python-fastapi
 
-Python/FastAPI implementation of the demo backend REST API — a functional twin of `demo-be-java-springboot`,
+Python/FastAPI implementation of the demo backend REST API — a functional twin of `demo-be-golang-gin`,
 `demo-be-elixir-phoenix`, and `demo-be-fsharp-giraffe`.
 
 ## Tech Stack

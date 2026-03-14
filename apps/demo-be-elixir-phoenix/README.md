@@ -1,7 +1,7 @@
 # demo-be-elixir-phoenix
 
 Elixir/Phoenix REST API backend for the Demo Backend platform.
-This is an alternative implementation of `demo-be-java-springboot` (Spring Boot), built with
+This is an alternative implementation of `demo-be-golang-gin` (Go/Gin), built with
 Phoenix 1.7+ on Elixir 1.19 / OTP 27.
 
 ## Local Development (Docker)

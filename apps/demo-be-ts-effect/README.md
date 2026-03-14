@@ -1,6 +1,6 @@
 # demo-be-ts-effect
 
-TypeScript/Effect REST API backend — a functional twin of `demo-be-java-springboot`, `demo-be-python-fastapi`,
+TypeScript/Effect REST API backend — a functional twin of `demo-be-golang-gin`, `demo-be-python-fastapi`,
 `demo-be-rust-axum`, and others, using Node.js, Vite, and Effect TS.
 
 **tsex** = **T**ype**S**cript + **E**ffect**X** — matching the suffix pattern of other demo-be

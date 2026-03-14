@@ -1,6 +1,6 @@
 # demo-be-kotlin-ktor
 
-Kotlin + Ktor REST API backend — a functional twin of `demo-be-java-springboot` (Java/Spring Boot),
+Kotlin + Ktor REST API backend — a functional twin of `demo-be-golang-gin` (Go/Gin),
 `demo-be-elixir-phoenix` (Elixir/Phoenix), and `demo-be-fsharp-giraffe` (F#/Giraffe) using Kotlin, Ktor, and Exposed.
 
 ## Tech Stack
@@ -69,7 +69,7 @@ surface.
 
 ## Test Architecture
 
-Three-level testing strategy following the same pattern as `demo-be-java-springboot`:
+Three-level testing strategy following the same pattern as `demo-be-golang-gin`:
 
 ### Level 1: Unit Tests (`test:unit` / `testUnit`)
 

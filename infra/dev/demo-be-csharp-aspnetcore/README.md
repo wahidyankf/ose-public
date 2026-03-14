@@ -2,7 +2,7 @@
 
 Local development environment for `demo-be-csharp-aspnetcore`, the C#/ASP.NET Core
 alternative backend for the Demo Backend platform. Runs on the same port (8201) as the
-Spring Boot backend (`demo-be-java-springboot`) and other alternative implementations — the
+Go/Gin backend (`demo-be-golang-gin`) and other alternative implementations — the
 stacks are mutually exclusive and **must not be started simultaneously**.
 
 ## Port Assignment

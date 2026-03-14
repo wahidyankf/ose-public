@@ -1,6 +1,6 @@
 # demo-be-java-vertx
 
-Java + Vert.x REST API backend — a functional twin of `demo-be-java-springboot` (Java/Spring Boot),
+Java + Vert.x REST API backend — a functional twin of `demo-be-golang-gin` (Go/Gin),
 `demo-be-elixir-phoenix` (Elixir/Phoenix), and other demo-be backends using Java and Eclipse Vert.x.
 
 ## Tech Stack

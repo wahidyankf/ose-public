@@ -6,7 +6,7 @@ on:
     paths:
       - "apps/demo-fe-ts-tanstackstart/**"
       - "apps/demo-fe-e2e/**"
-      - "apps/demo-be-java-springboot/**"
+      - "apps/demo-be-golang-gin/**"
       - "specs/apps/demo/fe/**"
       - "infra/dev/demo-fe-ts-tanstackstart/**"
   schedule:

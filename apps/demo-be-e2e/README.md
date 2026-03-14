@@ -1,6 +1,6 @@
 # demo-be-e2e
 
-End-to-end tests for the [demo-be-java-springboot](../demo-be-java-springboot) Spring Boot REST API backend,
+End-to-end tests for the demo-be REST API backends (default: [demo-be-golang-gin](../demo-be-golang-gin)),
 using [playwright-bdd](https://github.com/vitalets/playwright-bdd) to drive tests from Gherkin
 feature files.
 
@@ -40,7 +40,7 @@ require a live PostgreSQL database (the E2E `Before` hook deletes all users befo
 **Recommended — Docker Compose** (no local Java/Maven required):
 
 ```bash
-cd infra/dev/demo-be-java-springboot
+cd infra/dev/demo-be-golang-gin
 cp .env.example .env  # set POSTGRES_USER, POSTGRES_PASSWORD, APP_JWT_SECRET
 docker compose up -d
 ```
@@ -48,10 +48,10 @@ docker compose up -d
 **Alternative — local Maven** (requires Maven installed):
 
 ```bash
-nx dev demo-be-java-springboot
+nx dev demo-be-golang-gin
 ```
 
-See [demo-be-java-springboot README](../demo-be-java-springboot/README.md) for full startup options.
+See [demo-be-golang-gin README](../demo-be-golang-gin/README.md) for full startup options.
 
 ## Setup
 

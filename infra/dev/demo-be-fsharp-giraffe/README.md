@@ -2,7 +2,7 @@
 
 Local development environment for `demo-be-fsharp-giraffe`, the F#/Giraffe
 alternative backend for the Demo Backend platform. Runs on the same port (8201) as the
-Spring Boot backend (`demo-be-java-springboot`) and the Elixir/Phoenix backend (`demo-be-elixir-phoenix`) — the
+Go/Gin backend (`demo-be-golang-gin`) and the Elixir/Phoenix backend (`demo-be-elixir-phoenix`) — the
 stacks are mutually exclusive and **must not be started simultaneously**.
 
 ## Port Assignment

@@ -1,7 +1,7 @@
 # demo-be-golang-gin
 
-Go + Gin REST API backend — a functional twin of `demo-be-java-springboot` (Java/Spring Boot),
-`demo-be-elixir-phoenix` (Elixir/Phoenix), and other demo-be backends using Go and the Gin framework.
+Go + Gin REST API backend — the default demo backend. Alternative implementations exist:
+`demo-be-java-springboot` (Java/Spring Boot), `demo-be-elixir-phoenix` (Elixir/Phoenix), and other demo-be backends. Uses Go and the Gin framework.
 
 ## Tech Stack
 

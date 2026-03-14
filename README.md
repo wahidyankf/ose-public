@@ -17,7 +17,7 @@
 Building OrganicLever, a full-stack individual productivity tracker:
 
 - 🌐 **Landing site**: [organiclever.com](https://www.organiclever.com/) ([organiclever-web](./apps/organiclever-web/)) - Next.js promotional website
-- ☕ **Backend API**: Spring Boot REST API ([demo-be-java-springboot](./apps/demo-be-java-springboot/))
+- 🐹 **Backend API**: Go/Gin REST API ([demo-be-golang-gin](./apps/demo-be-golang-gin/))
 - ✅ **Phase 0 complete**: [ayokoding.com](https://ayokoding.com), [oseplatform.com](https://oseplatform.com), AI agents, governance, CLI tools
 
 **Next Phase: Phase 2 (SMB Application)** - Small and medium business application building on OrganicLever's foundation.
@@ -73,7 +73,7 @@ npm install
 
 **Current Phase 1 (OrganicLever):**
 
-- Backend: Java + Spring Boot
+- Backend: Go + Gin
 - Frontend (landing): Next.js + TypeScript
 - Infrastructure: Kubernetes
 

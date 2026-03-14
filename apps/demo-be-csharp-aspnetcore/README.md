@@ -1,7 +1,7 @@
 # demo-be-csharp-aspnetcore — C#/ASP.NET Core REST API Backend
 
 C# 12 / ASP.NET Core 10 Minimal APIs implementation of the demo backend REST API. A functional
-twin of `demo-be-java-springboot` (Java Spring Boot), `demo-be-elixir-phoenix` (Elixir Phoenix), `demo-be-fsharp-giraffe`
+twin of `demo-be-golang-gin` (Go/Gin), `demo-be-elixir-phoenix` (Elixir Phoenix), `demo-be-fsharp-giraffe`
 (F# Giraffe), and other alternatives. Runs on port **8201**.
 
 ## Local Development

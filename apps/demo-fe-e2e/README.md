@@ -54,7 +54,7 @@ backend must be running on `http://localhost:8201` before executing tests.
 **Start a backend**:
 
 ```bash
-nx dev demo-be-java-springboot
+nx dev demo-be-golang-gin
 ```
 
 **Start a frontend** (pick one):
@@ -134,5 +134,5 @@ apps/demo-fe-e2e/
 - [demo-fe-ts-remix](../demo-fe-ts-remix/README.md) - React Router v7 frontend implementation
 - [demo-fe-dart-flutter](../demo-fe-dart-flutter/README.md) - Flutter Web frontend implementation
 - [demo-fe-elixir-phoenix](../demo-fe-elixir-phoenix/README.md) - Phoenix LiveView frontend implementation
-- [demo-be-java-springboot](../demo-be-java-springboot/README.md) - Backend API
+- [demo-be-golang-gin](../demo-be-golang-gin/README.md) - Backend API
 - [specs/apps/demo/fe/gherkin](../../specs/apps/demo/fe/gherkin/) - Gherkin feature files (source of truth)

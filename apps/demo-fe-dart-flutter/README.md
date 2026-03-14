@@ -1,7 +1,7 @@
 # demo-fe-dart-flutter
 
 Demo Frontend - Flutter Web implementation consuming the
-[demo-be API](../demo-be-java-springboot/README.md).
+[demo-be API](../demo-be-golang-gin/README.md).
 
 ## Overview
 
@@ -18,7 +18,7 @@ Demo Frontend - Flutter Web implementation consuming the
 
 - **Flutter SDK 3.41+** (includes Dart 3.11+)
 - **Chrome** (for Flutter web development)
-- A running [demo-be backend](../demo-be-java-springboot/README.md) on port 8201 (for E2E tests)
+- A running [demo-be backend](../demo-be-golang-gin/README.md) on port 8201 (for E2E tests)
 
 ## Nx Commands
 
@@ -84,7 +84,7 @@ for all demo-fe frontends. Run them after starting this frontend and a backend:
 
 ```bash
 # Start backend
-nx dev demo-be-java-springboot
+nx dev demo-be-golang-gin
 
 # Build and serve this frontend (in another terminal)
 nx build demo-fe-dart-flutter
@@ -105,5 +105,5 @@ docker build -t demo-fe-dart-flutter:latest apps/demo-fe-dart-flutter/
 ## Related
 
 - [demo-fe-e2e](../demo-fe-e2e/README.md) - Centralized E2E tests for all demo-fe frontends
-- [demo-be-java-springboot](../demo-be-java-springboot/README.md) - Backend API consumed by this frontend
+- [demo-be-golang-gin](../demo-be-golang-gin/README.md) - Backend API consumed by this frontend
 - [specs/apps/demo/fe/gherkin](../../specs/apps/demo/fe/gherkin/) - Gherkin feature files (source of truth)

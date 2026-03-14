@@ -17,8 +17,8 @@ Apps follow the naming pattern: **`[domain]-[type]`**
 - `oseplatform-cli` - OSE Platform CLI tool for link validation - Go application
 - `organiclever-web` - OrganicLever landing website (www.organiclever.com) - Next.js app (port 3200)
 - `organiclever-web-e2e` - E2E tests for organiclever-web - Playwright (browser testing)
-- `demo-be-java-springboot` - OrganicLever backend API (Java Spring Boot) - Spring Boot application (port 8201)
-- `demo-be-e2e` - E2E tests for demo-be-java-springboot REST API - Playwright (API testing)
+- `demo-be-golang-gin` - OrganicLever backend API (Go/Gin) - Go application (port 8201)
+- `demo-be-e2e` - E2E tests for demo-be REST API - Playwright (API testing)
 
 ## Application Characteristics
 
@@ -81,22 +81,21 @@ apps/oseplatform-cli/
 └── README.md                # App documentation
 ```
 
-### Spring Boot Application (Current)
+### Go/Gin Application (Current Default)
 
 ```
-apps/demo-be-java-springboot/
-├── src/main/java/           # Java source code
-│   └── com/organiclever/be/
-│       ├── OrganicLeverApplication.java
-│       ├── config/          # Configuration classes
-│       └── controller/      # REST controllers
-├── src/main/resources/      # Application config
-│   ├── application.yml
-│   ├── application-dev.yml
-│   └── application-staging.yml
-├── src/test/java/           # Test files
-├── target/                  # Build output (gitignored)
-├── pom.xml                  # Maven configuration
+apps/demo-be-golang-gin/
+├── cmd/server/              # Main entry point
+│   └── main.go
+├── internal/                # Internal packages
+│   ├── config/              # Configuration (env vars)
+│   ├── handler/             # HTTP handlers
+│   ├── router/              # Gin router setup
+│   ├── server/              # Server startup
+│   └── store/               # Data access layer
+├── go.mod                   # Go module definition
+├── go.sum                   # Dependency checksums
+├── Dockerfile               # Production Docker image
 ├── project.json             # Nx configuration
 └── README.md                # App documentation
 ```
@@ -271,7 +270,7 @@ Currently:
 - **Hugo** (static sites) - oseplatform-web, ayokoding-web
 - **Go** (CLI tools) - ayokoding-cli, rhino-cli
 - **TypeScript/Next.js** (landing website) - organiclever-web
-- **Java/Spring Boot** (backend API) - demo-be-java-springboot
+- **Go/Gin** (backend API) - demo-be-golang-gin
 - **TypeScript/Playwright** (E2E testing) - demo-be-e2e, organiclever-web-e2e
 
 Future: Kotlin, Python apps (each language will have language-specific structure and tooling)

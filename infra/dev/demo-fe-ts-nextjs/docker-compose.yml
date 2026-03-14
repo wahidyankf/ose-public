@@ -1,5 +1,5 @@
 # Local Development Environment for Demo Frontend
-# Stack: Frontend + Backend (Spring Boot) + Database (PostgreSQL)
+# Stack: Frontend + Backend (Go/Gin) + Database (PostgreSQL)
 
 services:
   demo-be-db:
@@ -25,7 +25,7 @@ services:
 
   demo-be:
     build:
-      context: ../../../apps/demo-be-java-springboot
+      context: ../../../apps/demo-be-golang-gin
       dockerfile: Dockerfile
     container_name: demo-fe-tsnx-be
     ports:
@@ -34,19 +34,15 @@ services:
       demo-be-db:
         condition: service_healthy
     environment:
-      - SPRING_PROFILES_ACTIVE=dev
-      - SERVER_PORT=8201
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://demo-be-db:5432/demo_be
-      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-organiclever}
-      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-organiclever}
+      - PORT=8201
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-organiclever}:${POSTGRES_PASSWORD:-organiclever}@demo-be-db:5432/demo_be
       - APP_JWT_SECRET=${APP_JWT_SECRET:-change-me-in-dev-only-not-for-production}
-      - ENABLE_TEST_API=true
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8201/health"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 60s
+      start_period: 30s
     restart: unless-stopped
     networks:
       - demo-fe-tsnx-network

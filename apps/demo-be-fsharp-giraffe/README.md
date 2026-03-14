@@ -13,7 +13,7 @@ Demo Backend - F#/Giraffe REST API
 - **Database**: PostgreSQL (dev/prod) / SQLite (tests)
 - **Testing**: TickSpec (BDD), xunit, Microsoft.AspNetCore.Mvc.Testing
 
-This application mirrors the same REST API contract as `demo-be-java-springboot` (Spring Boot) and
+This application mirrors the same REST API contract as `demo-be-golang-gin` (Go/Gin) and
 `demo-be-elixir-phoenix` (Elixir/Phoenix), providing an F#/Giraffe alternative implementation.
 
 ## Prerequisites
@@ -164,7 +164,7 @@ environment variable:
   Npgsql/PostgreSQL registration in `Program.fs` — uses real PostgreSQL.
 
 All BDD tests share the same Gherkin feature files from `specs/apps/demo/be/gherkin/` as
-`demo-be-java-springboot`, `demo-be-elixir-phoenix`, and other backend implementations.
+`demo-be-golang-gin`, `demo-be-elixir-phoenix`, and other backend implementations.
 
 ## See Also
 

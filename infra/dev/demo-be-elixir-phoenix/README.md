@@ -2,7 +2,7 @@
 
 Local development environment for `demo-be-elixir-phoenix`, the Elixir/Phoenix
 alternative backend for the Demo Backend platform. Runs on the same port (8201) as the
-Spring Boot backend (`demo-be-java-springboot`) — the two stacks are mutually
+Go/Gin backend (`demo-be-golang-gin`) — the two stacks are mutually
 exclusive and **must not be started simultaneously**.
 
 ## Port Assignment
@@ -66,7 +66,7 @@ curl http://localhost:8201/api/v1/users/me \
 
 ## Shared Database Note
 
-Both `demo-be-java-springboot` and `demo-be-elixir-phoenix` use PostgreSQL on port 5432.
+Both `demo-be-golang-gin` and `demo-be-elixir-phoenix` use PostgreSQL on port 5432.
 They cannot run simultaneously since both bind port 8201. The databases have different
 names (`organiclever` for jasb, `demo_be_elixir_phoenix` for exph) so they can share the
 same PostgreSQL instance if needed, but this requires custom setup.

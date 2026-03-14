@@ -288,7 +288,7 @@ class _CreateExpenseDialogState extends ConsumerState<_CreateExpenseDialog> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: DropdownButtonFormField<String>(
-                      value: _currency,
+                      initialValue: _currency,
                       decoration: const InputDecoration(
                         labelText: 'Currency',
                         border: OutlineInputBorder(),
@@ -306,7 +306,7 @@ class _CreateExpenseDialogState extends ConsumerState<_CreateExpenseDialog> {
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
-                value: _category,
+                initialValue: _category,
                 decoration: const InputDecoration(
                   labelText: 'Category',
                   border: OutlineInputBorder(),
@@ -398,7 +398,7 @@ class _Pagination extends StatelessWidget {
             icon: const Icon(Icons.chevron_left),
             onPressed: page > 1 ? () => onPageChanged(page - 1) : null,
           ),
-          Text('Page $page of $_totalPages  (${total} items)'),
+          Text('Page $page of $_totalPages  ($total items)'),
           IconButton(
             tooltip: 'Next page',
             icon: const Icon(Icons.chevron_right),

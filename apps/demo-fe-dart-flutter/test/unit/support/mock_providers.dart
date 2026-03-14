@@ -7,7 +7,6 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:demo_fe_dart_flutter/core/models/models.dart';
 import 'package:demo_fe_dart_flutter/core/providers/auth_provider.dart';
 import 'package:demo_fe_dart_flutter/core/providers/expense_provider.dart';
@@ -48,7 +47,7 @@ class MockAuthNotifier extends AuthNotifier {
     required String email,
     required String password,
   }) async {
-    state = AuthState(
+    state = const AuthState(
       accessToken: 'mock.access.token',
       refreshToken: 'mock.refresh.token',
     );
@@ -66,7 +65,7 @@ class MockAuthNotifier extends AuthNotifier {
 
   @override
   Future<void> refresh() async {
-    state = AuthState(
+    state = const AuthState(
       accessToken: 'new.access.token',
       refreshToken: 'new.refresh.token',
     );
@@ -78,7 +77,7 @@ class MockAuthNotifier extends AuthNotifier {
 // ---------------------------------------------------------------------------
 
 class MockUserNotifier extends UserNotifier {
-  MockUserNotifier(Ref ref) : super(ref);
+  MockUserNotifier(super.ref);
 
   bool changePasswordShouldSucceed = true;
 
@@ -110,7 +109,7 @@ class MockUserNotifier extends UserNotifier {
 // ---------------------------------------------------------------------------
 
 class MockExpenseNotifier extends ExpenseNotifier {
-  MockExpenseNotifier(Ref ref) : super(ref);
+  MockExpenseNotifier(super.ref);
 
   Expense? expenseToReturn;
 
@@ -172,7 +171,7 @@ class MockExpenseNotifier extends ExpenseNotifier {
 // ---------------------------------------------------------------------------
 
 class MockAdminNotifier extends AdminNotifier {
-  MockAdminNotifier(Ref ref) : super(ref);
+  MockAdminNotifier(super.ref);
 
   @override
   Future<void> disableUser(String id, String reason) async {

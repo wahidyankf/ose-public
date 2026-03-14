@@ -39,7 +39,6 @@ class _TestRegisterScreen extends StatefulWidget {
 class _TestRegisterScreenState extends State<_TestRegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final _passwordController = TextEditingController();
-  bool _submitted = false;
 
   @override
   void dispose() {
@@ -89,7 +88,6 @@ class _TestRegisterScreenState extends State<_TestRegisterScreen> {
               FilledButton(
                 onPressed: () {
                   setState(() {
-                    _submitted = true;
                     _formKey.currentState!.validate();
                   });
                 },
@@ -125,11 +123,11 @@ class _TestLoginScreenState extends State<_TestLoginScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            TextField(
-              decoration: const InputDecoration(labelText: 'Username'),
+            const TextField(
+              decoration: InputDecoration(labelText: 'Username'),
             ),
-            TextField(
-              decoration: const InputDecoration(labelText: 'Password'),
+            const TextField(
+              decoration: InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
             const SizedBox(height: 16),
@@ -212,11 +210,11 @@ class _TestUnlockedLoginScreenState extends State<_TestUnlockedLoginScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            TextField(
-              decoration: const InputDecoration(labelText: 'Username'),
+            const TextField(
+              decoration: InputDecoration(labelText: 'Username'),
             ),
-            TextField(
-              decoration: const InputDecoration(labelText: 'Password'),
+            const TextField(
+              decoration: InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
             const SizedBox(height: 16),

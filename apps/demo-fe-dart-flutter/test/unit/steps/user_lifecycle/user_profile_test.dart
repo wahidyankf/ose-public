@@ -94,13 +94,12 @@ class _TestProfileScreenState extends State<_TestProfileScreen> {
               child: const Text('Save'),
             ),
             const Divider(),
-            TextField(
-              decoration:
-                  const InputDecoration(labelText: 'Current Password'),
+            const TextField(
+              decoration: InputDecoration(labelText: 'Current Password'),
               obscureText: true,
             ),
-            TextField(
-              decoration: const InputDecoration(labelText: 'New Password'),
+            const TextField(
+              decoration: InputDecoration(labelText: 'New Password'),
               obscureText: true,
             ),
             FilledButton(
@@ -119,7 +118,7 @@ class _TestProfileScreenState extends State<_TestProfileScreen> {
             const Divider(),
             TextButton(
               onPressed: () {
-                showDialog(
+                showDialog<void>(
                   context: context,
                   builder: (ctx) => AlertDialog(
                     title: const Text('Deactivate Account'),
@@ -176,11 +175,11 @@ class _TestDeactivatedLoginScreenState
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            TextField(
-              decoration: const InputDecoration(labelText: 'Username'),
+            const TextField(
+              decoration: InputDecoration(labelText: 'Username'),
             ),
-            TextField(
-              decoration: const InputDecoration(labelText: 'Password'),
+            const TextField(
+              decoration: InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
             const SizedBox(height: 16),

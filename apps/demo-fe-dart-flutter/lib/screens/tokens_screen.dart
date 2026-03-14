@@ -169,7 +169,7 @@ class _JwksCard extends StatelessWidget {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const Divider(),
-            _ClaimRow(label: 'URL', value: jwksUrl),
+            const _ClaimRow(label: 'URL', value: jwksUrl),
             const SizedBox(height: 8),
             jwksAsync.when(
               loading: () => const Padding(

@@ -102,28 +102,28 @@ class AppShell extends ConsumerWidget {
         final width = constraints.maxWidth;
         if (width >= _kDesktopBreak) {
           return _DesktopLayout(
-            child: child,
             destinations: visibleDests,
             selectedIndex: selectedIndex,
             userAsync: userAsync,
             ref: ref,
+            child: child,
           );
         }
         if (width >= _kTabletBreak) {
           return _TabletLayout(
-            child: child,
             destinations: visibleDests,
             selectedIndex: selectedIndex,
             userAsync: userAsync,
             ref: ref,
+            child: child,
           );
         }
         return _MobileLayout(
-          child: child,
           destinations: visibleDests,
           selectedIndex: selectedIndex,
           userAsync: userAsync,
           ref: ref,
+          child: child,
         );
       },
     );

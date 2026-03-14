@@ -100,10 +100,10 @@ class _TestAdminPanelState extends State<_TestAdminPanel> {
       appBar: AppBar(title: const Text('Admin Panel')),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8),
+          const Padding(
+            padding: EdgeInsets.all(8),
             child: TextField(
-              decoration: const InputDecoration(labelText: 'Search users'),
+              decoration: InputDecoration(labelText: 'Search users'),
             ),
           ),
           Text('Total: ${_filteredUsers.length}'),

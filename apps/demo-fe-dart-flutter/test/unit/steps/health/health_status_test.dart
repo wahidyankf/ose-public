@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:demo_fe_dart_flutter/core/models/models.dart';
-import 'package:demo_fe_dart_flutter/screens/health_screen.dart';
 
 // Feature file path consumed by the bdd_widget_test builder.
 // ignore: unused_element

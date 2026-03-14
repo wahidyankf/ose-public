@@ -3,7 +3,6 @@
 /// Wraps the `/api/v1/reports/*` endpoints.
 library;
 
-import 'package:dio/dio.dart';
 import 'package:demo_fe_dart_flutter/core/api/api_client.dart';
 import 'package:demo_fe_dart_flutter/core/models/models.dart';
 

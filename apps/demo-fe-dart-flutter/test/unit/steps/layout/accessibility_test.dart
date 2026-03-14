@@ -190,7 +190,7 @@ class _DetailWithDialogState extends State<_DetailWithDialog> {
           IconButton(
             icon: const Icon(Icons.delete),
             onPressed: () {
-              showDialog(
+              showDialog<void>(
                 context: context,
                 builder: (ctx) => AlertDialog(
                   title: const Text('Confirm Delete'),

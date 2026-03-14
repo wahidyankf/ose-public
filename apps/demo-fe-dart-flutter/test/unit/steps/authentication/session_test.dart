@@ -10,9 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:demo_fe_dart_flutter/core/providers/auth_provider.dart';
-import 'package:demo_fe_dart_flutter/screens/expense_list_screen.dart';
 import 'package:demo_fe_dart_flutter/screens/login_screen.dart';
-import 'package:demo_fe_dart_flutter/screens/tokens_screen.dart';
 
 // Feature file consumed by the bdd_widget_test builder.
 // ignore: unused_element

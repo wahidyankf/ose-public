@@ -6,7 +6,6 @@ library;
 
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
 import 'package:demo_fe_dart_flutter/core/api/api_client.dart';
 
 /// Returns the JSON Web Key Set published by the backend.

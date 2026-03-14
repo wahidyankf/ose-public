@@ -353,7 +353,7 @@ class _EditFormState extends ConsumerState<_EditForm> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: DropdownButtonFormField<String>(
-                      value: _currency,
+                      initialValue: _currency,
                       decoration: const InputDecoration(
                         labelText: 'Currency',
                         border: OutlineInputBorder(),
@@ -371,7 +371,7 @@ class _EditFormState extends ConsumerState<_EditForm> {
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
-                value: _category,
+                initialValue: _category,
                 decoration: const InputDecoration(
                   labelText: 'Category',
                   border: OutlineInputBorder(),
@@ -564,7 +564,7 @@ class _AttachmentTile extends StatelessWidget {
     return ListTile(
       leading: const Icon(Icons.attach_file),
       title: Text(attachment.filename),
-      subtitle: Text('${attachment.contentType} · ${sizeKb} KB'),
+      subtitle: Text('${attachment.contentType} · $sizeKb KB'),
       trailing: IconButton(
         tooltip: 'Delete attachment',
         icon: const Icon(Icons.delete_outline),

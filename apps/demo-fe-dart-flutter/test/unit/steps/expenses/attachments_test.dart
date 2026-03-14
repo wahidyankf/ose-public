@@ -36,7 +36,7 @@ final _testAttachmentsProvider =
 late _AttachmentsState _s;
 
 class _AttachmentsState {
-  final expense = Expense(
+  final expense = const Expense(
     id: 'exp-001',
     userId: 'user-001',
     title: 'Lunch',
@@ -48,7 +48,7 @@ class _AttachmentsState {
     description: 'Lunch',
   );
 
-  final bobExpense = Expense(
+  final bobExpense = const Expense(
     id: 'exp-bob',
     userId: 'user-bob',
     title: 'Taxi',
@@ -83,7 +83,7 @@ class _AttachmentsState {
 // Widget builder
 // ---------------------------------------------------------------------------
 
-final _attachmentMockUser = User(
+const _attachmentMockUser = User(
   id: 'user-001',
   username: 'alice',
   email: 'alice@example.com',

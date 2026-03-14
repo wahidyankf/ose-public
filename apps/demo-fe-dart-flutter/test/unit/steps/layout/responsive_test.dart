@@ -157,11 +157,11 @@ Widget _buildAdminApp(_ResponsiveState state) {
       data: MediaQueryData(size: state.viewport),
       child: Scaffold(
         appBar: AppBar(title: const Text('Admin')),
-        body: SingleChildScrollView(
+        body: const SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Text('alice'),
               Text('bob'),
               Text('carol'),

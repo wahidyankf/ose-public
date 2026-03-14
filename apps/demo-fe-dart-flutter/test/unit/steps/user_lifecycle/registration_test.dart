@@ -42,7 +42,6 @@ class _TestRegisterScreen extends StatefulWidget {
 class _TestRegisterScreenState extends State<_TestRegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final _passwordController = TextEditingController();
-  bool _submitted = false;
   bool _navigatedToLogin = false;
   String? _serverError;
 
@@ -118,7 +117,6 @@ class _TestRegisterScreenState extends State<_TestRegisterScreen> {
               FilledButton(
                 onPressed: () {
                   setState(() {
-                    _submitted = true;
                     if (_formKey.currentState!.validate()) {
                       if (widget.outcome == _RegOutcome.duplicateUsername) {
                         _serverError = 'Username or email already in use.';

@@ -8,9 +8,10 @@ linter:
     prefer_single_quotes: true
 
 analyzer:
-  strict-casts: true
-  strict-inference: true
-  strict-raw-types: true
+  language:
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
   exclude:
     - "**/*.g.dart"
     - "**/*.freezed.dart"

@@ -4,7 +4,6 @@
 /// caller to hold the ADMIN role; the backend returns 403 otherwise.
 library;
 
-import 'package:dio/dio.dart';
 import 'package:demo_fe_dart_flutter/core/api/api_client.dart';
 import 'package:demo_fe_dart_flutter/core/models/models.dart';
 

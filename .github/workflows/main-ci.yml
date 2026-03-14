@@ -249,6 +249,14 @@ jobs:
           flags: demo-be-clojure-pedestal
           fail_ci_if_error: false
 
+      - name: Upload coverage — demo-fe-elixir-phoenix
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: apps/demo-fe-elixir-phoenix/cover/lcov.info
+          flags: demo-fe-elixir-phoenix
+          fail_ci_if_error: false
+
       - name: Upload coverage — demo-fe-dart-flutter
         uses: codecov/codecov-action@v5
         with:

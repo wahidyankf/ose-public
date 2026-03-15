@@ -165,7 +165,6 @@ Every project declares tags along four dimensions. Each dimension uses a fixed p
 | `demo-fe-ts-tanstackstart` | `["type:app", "platform:tanstackstart", "lang:ts", "domain:demo-fe"]`   |
 | `demo-fe-ts-remix`         | `["type:app", "platform:reactrouter", "lang:ts", "domain:demo-fe"]`     |
 | `demo-fe-dart-flutter`     | `["type:app", "platform:flutter", "lang:dart", "domain:demo-fe"]`       |
-| `demo-fe-elixir-phoenix`   | `["type:app", "platform:phoenix", "lang:elixir", "domain:demo-fe"]`     |
 | `demo-fe-e2e`              | `["type:e2e", "platform:playwright", "lang:ts", "domain:demo-fe"]`      |
 | `oseplatform-cli`          | `["type:app", "platform:cli", "lang:golang", "domain:oseplatform"]`     |
 | `oseplatform-web`          | `["type:app", "platform:hugo", "domain:oseplatform"]`                   |

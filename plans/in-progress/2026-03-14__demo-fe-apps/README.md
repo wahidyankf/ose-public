@@ -26,7 +26,6 @@ test suite.
 | `demo-fe-ts-tanstackstart` | TanStack Start (v1 RC)      | React frontend with type-safe routing, Vite    |
 | `demo-fe-ts-remix`         | React Router v7 (framework) | React frontend with loaders/actions, Vite      |
 | `demo-fe-dart-flutter`     | Flutter Web (Dart)          | Flutter frontend (web-first), Riverpod + dio   |
-| `demo-fe-elixir-phoenix`   | Phoenix LiveView (Elixir)   | Server-rendered frontend, WebSocket, no JS     |
 | `demo-fe-e2e`              | Playwright + playwright-bdd | Centralized E2E test suite for all FE variants |
 
 ## Naming
@@ -111,7 +110,6 @@ gated behind `ENABLE_TEST_API=true`. All other setup uses public APIs (register,
 | `demo-fe-ts-tanstackstart` | 3301     |
 | `demo-fe-ts-remix`         | 3301     |
 | `demo-fe-dart-flutter`     | 3301     |
-| `demo-fe-elixir-phoenix`   | 3301     |
 
 All five frontend apps use port 3301. They are mutually exclusive — only one runs at a time. This
 is intentional: the E2E suite targets `http://localhost:3301` regardless of which implementation
@@ -155,19 +153,16 @@ is under test. All connect to `demo-be-java-springboot` running on port 8201.
 | `apps/demo-fe-ts-tanstackstart/`                           | TanStack Start frontend                  |
 | `apps/demo-fe-ts-remix/`                                   | React Router v7 frontend (Remix)         |
 | `apps/demo-fe-dart-flutter/`                               | Flutter Web frontend (Dart)              |
-| `apps/demo-fe-elixir-phoenix/`                             | Phoenix LiveView frontend (Elixir)       |
 | `apps/demo-fe-e2e/`                                        | Centralized Playwright E2E suite         |
 | `specs/apps/demo/be/gherkin/test-support/test-api.feature` | Gherkin spec for test-only API endpoints |
 | `infra/dev/demo-fe-ts-nextjs/`                             | Docker Compose dev infra (FE + BE + DB)  |
 | `infra/dev/demo-fe-ts-tanstackstart/`                      | Docker Compose dev infra (FE + BE + DB)  |
 | `infra/dev/demo-fe-ts-remix/`                              | Docker Compose dev infra (FE + BE + DB)  |
 | `infra/dev/demo-fe-dart-flutter/`                          | Docker Compose dev infra (FE + BE + DB)  |
-| `infra/dev/demo-fe-elixir-phoenix/`                        | Docker Compose dev infra (FE + BE + DB)  |
 | `.github/workflows/e2e-demo-fe-ts-nextjs.yml`              | E2E CI workflow                          |
 | `.github/workflows/e2e-demo-fe-ts-tanstackstart.yml`       | E2E CI workflow                          |
 | `.github/workflows/e2e-demo-fe-ts-remix.yml`               | E2E CI workflow                          |
 | `.github/workflows/e2e-demo-fe-dart-flutter.yml`           | E2E CI workflow                          |
-| `.github/workflows/e2e-demo-fe-elixir-phoenix.yml`         | E2E CI workflow                          |
 
 ## Files to Update
 

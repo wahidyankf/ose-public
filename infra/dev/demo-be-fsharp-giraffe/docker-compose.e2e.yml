@@ -1,8 +1,0 @@
-# E2E override for demo-be-e2e Playwright tests
-# Use with: docker compose -f docker-compose.yml -f docker-compose.e2e.yml
-#
-# Keeps the stack in production-equivalent mode during E2E.
-services:
-  demo-be-fsharp-giraffe:
-    environment:
-      - DOTNET_ENVIRONMENT=Production

@@ -1,0 +1,26 @@
+# CI overlay — production-equivalent mode + test-only API + Next.js frontend
+# Usage:
+#   BE E2E: docker compose -f docker-compose.yml -f docker-compose.ci.yml up --build -d demo-be-elixir-phoenix
+#   FE E2E: docker compose -f docker-compose.yml -f docker-compose.ci.yml up --build -d
+
+services:
+  demo-be-elixir-phoenix:
+    environment:
+      - HEALTH_SHOW_DETAILS=false
+      - ENABLE_TEST_API=true
+
+  demo-fe:
+    build:
+      context: ../../../apps/demo-fe-ts-nextjs
+      dockerfile: Dockerfile
+      args:
+        BACKEND_URL: http://demo-be-elixir-phoenix:8201
+    container_name: demo-be-exph-ci-fe
+    ports:
+      - "3301:3301"
+    depends_on:
+      demo-be-elixir-phoenix:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - demo-be-elixir-phoenix-network

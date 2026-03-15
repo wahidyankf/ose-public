@@ -1,0 +1,36 @@
+# CI overlay — production-equivalent mode + test-only API + Next.js frontend
+# Usage:
+#   BE E2E: docker compose -f docker-compose.yml -f docker-compose.ci.yml up --build -d demo-be-java-vertx
+#   FE E2E: docker compose -f docker-compose.yml -f docker-compose.ci.yml up --build -d
+#
+# Runs the pre-built fat JAR directly (no Maven compile at startup).
+
+services:
+  demo-be-java-vertx:
+    command: ["java", "-jar", "/app/app.jar"]
+    environment:
+      - APP_ENV=production
+      - DATABASE_URL=postgresql://demo_be_java_vertx:demo_be_java_vertx@demo-be-java-vertx-db:5432/demo_be_java_vertx
+      - ENABLE_TEST_API=true
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost:8201/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+  demo-fe:
+    build:
+      context: ../../../apps/demo-fe-ts-nextjs
+      dockerfile: Dockerfile
+      args:
+        BACKEND_URL: http://demo-be-java-vertx:8201
+    container_name: demo-be-javx-ci-fe
+    ports:
+      - "3301:3301"
+    depends_on:
+      demo-be-java-vertx:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - demo-be-java-vertx-network

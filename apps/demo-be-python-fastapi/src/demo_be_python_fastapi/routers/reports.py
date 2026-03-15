@@ -32,8 +32,8 @@ class PLResponse(BaseModel):
 
 @router.get("/pl", response_model=PLResponse)
 def get_pl_report(
-    startDate: str = Query(),
-    endDate: str = Query(),
+    start_date: str = Query(alias="startDate"),
+    end_date: str = Query(alias="endDate"),
     currency: str = Query(),
     db: Session = Depends(get_db),
     current_user: UserModel = Depends(get_current_user),
@@ -41,7 +41,7 @@ def get_pl_report(
     """Generate profit and loss report for a date range."""
     validated_currency = validate_currency(currency)
     expense_repo = get_expense_repo(db)
-    report = expense_repo.pl_report(current_user.id, startDate, endDate, validated_currency)
+    report = expense_repo.pl_report(current_user.id, start_date, end_date, validated_currency)
     income_breakdown = [
         BreakdownItem(category=cat, type="income", total=amt)
         for cat, amt in report["income_breakdown"].items()

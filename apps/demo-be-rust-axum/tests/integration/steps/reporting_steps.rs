@@ -119,7 +119,10 @@ async fn alice_pl_future(world: &mut AppWorld) {
 
 #[then(expr = "the income breakdown should contain {string} with amount {string}")]
 async fn income_breakdown_contains(world: &mut AppWorld, category: String, amount: String) {
-    let breakdown = world.last_body.get("incomeBreakdown").and_then(|v| v.as_array());
+    let breakdown = world
+        .last_body
+        .get("incomeBreakdown")
+        .and_then(|v| v.as_array());
     let actual = breakdown
         .and_then(|arr| {
             arr.iter().find(|item| {
@@ -139,7 +142,10 @@ async fn income_breakdown_contains(world: &mut AppWorld, category: String, amoun
 
 #[then(expr = "the expense breakdown should contain {string} with amount {string}")]
 async fn expense_breakdown_contains(world: &mut AppWorld, category: String, amount: String) {
-    let breakdown = world.last_body.get("expenseBreakdown").and_then(|v| v.as_array());
+    let breakdown = world
+        .last_body
+        .get("expenseBreakdown")
+        .and_then(|v| v.as_array());
     let actual = breakdown
         .and_then(|arr| {
             arr.iter().find(|item| {

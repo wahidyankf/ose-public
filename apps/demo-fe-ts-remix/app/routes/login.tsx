@@ -22,7 +22,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      void navigate("/");
+      void navigate("/expenses");
     }
   }, [isAuthenticated, navigate]);
 
@@ -42,7 +42,7 @@ export default function LoginPage() {
       { username, password },
       {
         onSuccess: () => {
-          void navigate("/");
+          void navigate("/expenses");
         },
       },
     );

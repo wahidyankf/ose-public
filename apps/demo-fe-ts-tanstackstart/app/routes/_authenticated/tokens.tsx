@@ -64,6 +64,7 @@ function TokensPage() {
                   {String(label)}
                 </dt>
                 <dd
+                  data-testid={String(label) === "Subject (User ID)" ? "token-subject" : undefined}
                   style={{
                     margin: 0,
                     fontFamily: "monospace",

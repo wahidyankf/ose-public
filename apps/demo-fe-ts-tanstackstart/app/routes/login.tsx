@@ -22,7 +22,7 @@ function LoginPage() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      void navigate({ to: "/" });
+      void navigate({ to: "/expenses" });
     }
   }, [isAuthenticated, navigate]);
 
@@ -42,7 +42,7 @@ function LoginPage() {
       { username, password },
       {
         onSuccess: () => {
-          void navigate({ to: "/" });
+          void navigate({ to: "/expenses" });
         },
       },
     );

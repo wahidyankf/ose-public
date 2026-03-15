@@ -8,6 +8,7 @@ export default [
   route("admin", "routes/admin.tsx"),
   route("tokens", "routes/tokens.tsx"),
   route("expenses", "routes/expenses._index.tsx"),
+  route("expenses/new", "routes/expenses.new.tsx"),
   route("expenses/summary", "routes/expenses.summary.tsx"),
   route("expenses/:id", "routes/expenses.$id.tsx"),
 ] satisfies RouteConfig;

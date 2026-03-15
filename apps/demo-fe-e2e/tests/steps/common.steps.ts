@@ -207,11 +207,11 @@ When("{word} navigates to {word}'s entry detail", async ({ page }, _viewer: stri
 });
 
 When("the admin navigates to the user management page", async ({ page }) => {
-  await page.goto("/admin/users");
+  await page.goto("/admin");
 });
 
 When("the admin navigates to {word}'s user detail page", async ({ page }, username: string) => {
-  await page.goto("/admin/users");
+  await page.goto("/admin");
   const searchInput = page.getByRole("textbox", { name: /search/i }).or(page.getByPlaceholder(/search/i));
   if (await searchInput.isVisible({ timeout: 2000 }).catch(() => false)) {
     await searchInput.fill(username);
@@ -222,7 +222,7 @@ When("the admin navigates to {word}'s user detail page", async ({ page }, userna
 });
 
 When("the admin navigates to {word}'s user detail in the admin panel", async ({ page }, username: string) => {
-  await page.goto("/admin/users");
+  await page.goto("/admin");
   const searchInput = page.getByRole("textbox", { name: /search/i }).or(page.getByPlaceholder(/search/i));
   await searchInput.fill(username);
   await page.keyboard.press("Enter");

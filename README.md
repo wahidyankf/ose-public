@@ -120,7 +120,7 @@ open-sharia-enterprise/
 
 **Libraries** (`libs/`): Reusable shared code
 
-**Labs** (`apps-labs/`): Experimental apps and POCs (`ayokoding-web__source-code`, `hello-rust-be`)
+**Labs** (`apps-labs/`): Standalone experiments and POCs (outside Nx)
 
 **Learn More**: [Monorepo Structure Reference](./docs/reference/re__monorepo-structure.md) | [How to Add New App](./docs/how-to/hoto__add-new-app.md) | [How to Add New Library](./docs/how-to/hoto__add-new-lib.md) | [How to Run Nx Commands](./docs/how-to/hoto__run-nx-commands.md)
 

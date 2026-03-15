@@ -278,11 +278,6 @@ The repository contains two distinct project structures with different purposes 
 - Quick prototypes without monorepo integration overhead
 - Temporary experiments that might be deleted after evaluation
 
-**Current examples**:
-
-- `hello-rust-be` - Rust backend exploration
-- `ayokoding-web__source-code` - AyoKoding web source code examples
-
 **Note on Nx integration**: Even projects with non-Node.js toolchains (like Hugo, Go, Python) can be integrated with Nx using the `nx:run-commands` executor to wrap their CLI commands. This provides benefits like task caching, unified command interface, and dependency graph visualization. See `apps/ayokoding-web/` as an example of a Hugo static site integrated with Nx monorepo.
 
 ### Key Differences

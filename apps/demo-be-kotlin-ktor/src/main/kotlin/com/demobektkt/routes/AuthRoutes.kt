@@ -33,7 +33,7 @@ data class RegisterRequest(val username: String, val email: String, val password
 
 @Serializable data class LoginRequest(val username: String, val password: String)
 
-@Serializable data class RefreshRequest(val refresh_token: String)
+@Serializable data class RefreshRequest(val refreshToken: String)
 
 @Serializable data class LogoutRequest(val access_token: String? = null)
 
@@ -111,8 +111,8 @@ object AuthRoutes : KoinComponent {
 
     call.respond(
       mapOf(
-        "access_token" to accessToken,
-        "refresh_token" to refreshToken,
+        "accessToken" to accessToken,
+        "refreshToken" to refreshToken,
         "token_type" to "Bearer",
       )
     )
@@ -120,7 +120,7 @@ object AuthRoutes : KoinComponent {
 
   suspend fun refresh(call: RoutingCall) {
     val request = call.receive<RefreshRequest>()
-    val refreshToken = request.refresh_token
+    val refreshToken = request.refreshToken
 
     val decoded =
       jwtService.decodeToken(refreshToken)
@@ -154,8 +154,8 @@ object AuthRoutes : KoinComponent {
 
     call.respond(
       mapOf(
-        "access_token" to newAccessToken,
-        "refresh_token" to newRefreshToken,
+        "accessToken" to newAccessToken,
+        "refreshToken" to newRefreshToken,
         "token_type" to "Bearer",
       )
     )

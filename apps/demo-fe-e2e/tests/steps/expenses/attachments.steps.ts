@@ -120,7 +120,7 @@ When("{word} uploads file {string} as an image attachment", async ({ page }, _us
     ),
     fileInput.setInputFiles(filePath),
   ]);
-  await page.waitForLoadState("networkidle").catch(() => {});
+  
 });
 
 When(
@@ -135,7 +135,7 @@ When(
       ),
       fileInput.setInputFiles(filePath),
     ]);
-    await page.waitForLoadState("networkidle").catch(() => {});
+    
   },
 );
 

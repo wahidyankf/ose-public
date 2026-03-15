@@ -176,7 +176,7 @@ When(
 );
 
 When("{word} views the P&L report for March 2025 in USD", async ({ page }) => {
-  await page.goto("/reporting");
+  await page.goto("/expenses/summary");
   await page
     .getByRole("textbox", { name: /start.?date|from/i })
     .or(page.getByLabel(/start.?date|from/i))
@@ -193,7 +193,7 @@ When("{word} views the P&L report for March 2025 in USD", async ({ page }) => {
 });
 
 When("{word} views the P&L report for April 2025 in USD", async ({ page }) => {
-  await page.goto("/reporting");
+  await page.goto("/expenses/summary");
   await page
     .getByRole("textbox", { name: /start.?date|from/i })
     .or(page.getByLabel(/start.?date|from/i))
@@ -210,7 +210,7 @@ When("{word} views the P&L report for April 2025 in USD", async ({ page }) => {
 });
 
 When("{word} views the P&L report filtered to {string} only", async ({ page }, _username: string, currency: string) => {
-  await page.goto("/reporting");
+  await page.goto("/expenses/summary");
   await page
     .getByRole("textbox", { name: /start.?date|from/i })
     .or(page.getByLabel(/start.?date|from/i))

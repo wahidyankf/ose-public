@@ -34,7 +34,7 @@ Given("a user {string} was locked and has been unlocked by an admin", async ({},
 // "When the admin clicks the {string} button" is in admin-panel.steps.ts
 
 Then("an error message about account lockout should be displayed", async ({ page }) => {
-  await expect(page.getByRole("alert").or(page.getByText(/locked|too many attempts|account locked/i))).toBeVisible();
+  await expect(page.getByText(/locked|too many attempts|account locked/i)).toBeVisible();
 });
 
 Then("the error should mention minimum length requirements", async ({ page }) => {

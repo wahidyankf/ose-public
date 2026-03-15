@@ -106,7 +106,7 @@ Given("an admin user {string} is logged in", async ({ page }, adminUsername: str
     sessionStorage.clear();
   }).catch(() => {});
   await page.goto("/login");
-  await page.waitForLoadState("networkidle");
+  await page.waitForLoadState("load");
   await page.getByRole("textbox", { name: /username/i }).fill(adminUsername);
   await page.getByRole("textbox", { name: /password/i }).fill("Str0ng#Pass1");
   await page.getByRole("button", { name: /log in|sign in|login/i }).click();
@@ -175,7 +175,8 @@ When("{word} navigates to the entry list page", async ({ page }) => {
 });
 
 When("{word} navigates to the new entry form", async ({ page }) => {
-  await page.goto("/expenses/new");
+  await page.goto("/expenses");
+  await page.getByRole("button", { name: /new expense/i }).click();
 });
 
 When("{word} navigates to the profile page", async ({ page }) => {
@@ -183,7 +184,18 @@ When("{word} navigates to the profile page", async ({ page }) => {
 });
 
 When("{word} navigates to the reporting page", async ({ page }) => {
-  await page.goto("/reporting");
+  await page.goto("/expenses/summary");
+  await page.waitForLoadState("load");
+  await page
+    .getByRole("textbox", { name: /start.?date|from/i })
+    .or(page.getByLabel(/start.?date|from/i))
+    .fill("2020-01-01");
+  await page
+    .getByRole("textbox", { name: /end.?date/i })
+    .or(page.getByLabel(/end.?date/i))
+    .fill("2030-12-31");
+  await page.getByRole("button", { name: /generate report/i }).click();
+  await page.waitForLoadState("load");
 });
 
 When("{word} navigates to the change password form", async ({ page }) => {
@@ -303,7 +315,7 @@ When("{word} confirms the deletion", async ({ page }) => {
 
 When("{word} opens the entry detail for {string}", async ({ page }, _username: string, description: string) => {
   await page.goto("/expenses");
-  await page.waitForLoadState("networkidle");
+  await page.waitForLoadState("load");
   await page.getByText(description).first().click();
 });
 
@@ -377,8 +389,11 @@ Then("the authentication session should be cleared", async ({ page }) => {
   expect(hasToken).toBe(false);
 });
 
-Then("{word}'s status should display as {string}", async ({ page }, _username: string, status: string) => {
-  await expect(page.getByText(new RegExp(status, "i"))).toBeVisible();
+Then("{word}'s status should display as {string}", async ({ page }, username: string, status: string) => {
+  // Scope to the row containing the username to avoid strict mode violations
+  // when multiple users have the same status
+  const row = page.getByRole("row").filter({ hasText: username });
+  await expect(row.getByText(new RegExp(status, "i"))).toBeVisible();
 });
 
 Then("the entry list should contain an entry with description {string}", async ({ page }, description: string) => {
@@ -437,7 +452,7 @@ Then("the health status indicator should display {string}", async ({ page }, sta
 Given("a user {string} is logged in", async ({ page }, username: string) => {
   await registerUser(username, `${username}@example.com`, "Str0ng#Pass1");
   await page.goto("/login");
-  await page.waitForLoadState("networkidle");
+  await page.waitForLoadState("load");
   await page.getByRole("textbox", { name: /username/i }).fill(username);
   await page.getByRole("textbox", { name: /password/i }).fill("Str0ng#Pass1");
   await page.getByRole("button", { name: /log in|sign in|login/i }).click();
@@ -454,7 +469,7 @@ Given("{word}'s account has been disabled by the admin", async ({ page }, userna
   });
   // Log in as the target user
   await page.goto("/login");
-  await page.waitForLoadState("networkidle");
+  await page.waitForLoadState("load");
   await page.getByRole("textbox", { name: /username/i }).fill(username);
   await page.getByRole("textbox", { name: /password/i }).fill("Str0ng#Pass1");
   await page.getByRole("button", { name: /log in|sign in|login/i }).click();
@@ -478,7 +493,7 @@ Given("an admin has disabled {word}'s account", async ({ page }, username: strin
   });
   // Log in as the target user
   await page.goto("/login");
-  await page.waitForLoadState("networkidle");
+  await page.waitForLoadState("load");
   await page.getByRole("textbox", { name: /username/i }).fill(username);
   await page.getByRole("textbox", { name: /password/i }).fill("Str0ng#Pass1");
   await page.getByRole("button", { name: /log in|sign in|login/i }).click();

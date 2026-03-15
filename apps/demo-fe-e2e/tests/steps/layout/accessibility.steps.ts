@@ -25,10 +25,10 @@ Given("{word} is on an entry with an attachment", async ({ page }, username: str
     type: "expense",
   });
   await page.goto("/expenses");
-  await page.waitForLoadState("networkidle");
+  await page.waitForLoadState("load");
   await page.getByText("A11y test entry").first().click();
   await page.waitForURL(/\/expenses\/[0-9a-f-]+/, { timeout: 10000 });
-  await page.waitForLoadState("networkidle");
+  await page.waitForLoadState("load");
   void username;
 });
 
@@ -45,7 +45,7 @@ Given("{word} has an entry with a JPEG attachment", async ({ page }, username: s
   const receiptPath = path.resolve(process.cwd(), "tests/fixtures/receipt.jpg");
   await uploadAttachmentApi(accessToken, expense.id, receiptPath, "receipt.jpg", "image/jpeg");
   await page.goto(`/expenses/${expense.id}`);
-  await page.waitForLoadState("networkidle");
+  await page.waitForLoadState("load");
 });
 
 When("a visitor navigates to the registration page", async ({ page }) => {
@@ -58,9 +58,9 @@ When("the visitor submits the form with empty fields", async ({ page }) => {
 
 When("{word} presses Tab repeatedly on the dashboard", async ({ page }) => {
   await page.goto("/expenses");
-  await page.waitForLoadState("networkidle");
-  // Click page body to ensure keyboard focus is on the page before tabbing
-  await page.mouse.click(200, 200);
+  await page.waitForLoadState("load");
+  // Click main content area (not sidebar) to establish keyboard focus without triggering navigation
+  await page.locator("#main-content").click();
   for (let i = 0; i < 10; i++) {
     await page.keyboard.press("Tab");
   }

@@ -104,9 +104,9 @@ When(
   async ({ page }, _username: string, description: string) => {
     // Edit button is only on the detail page, not the list
     await page.goto("/expenses");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("load");
     await page.getByText(description).first().click();
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("load");
     await page.getByRole("button", { name: /edit/i }).first().click();
   },
 );

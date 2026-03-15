@@ -1,4 +1,4 @@
-name: Test Demo Backend (Kotlin/Ktor)
+name: Test Demo BE (Kotlin/Ktor)
 
 on:
   schedule:

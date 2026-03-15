@@ -1,4 +1,4 @@
-name: Test Demo Backend (F#/Giraffe)
+name: Test Demo BE (F#/Giraffe)
 
 on:
   schedule:

@@ -1,4 +1,4 @@
-name: Test Demo Backend (Rust/Axum)
+name: Test Demo BE (Rust/Axum)
 
 on:
   schedule:

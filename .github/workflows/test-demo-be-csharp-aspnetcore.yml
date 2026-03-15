@@ -1,4 +1,4 @@
-name: Test Demo Backend (C#/ASP.NET Core)
+name: Test Demo BE (C#/ASP.NET Core)
 
 on:
   schedule:

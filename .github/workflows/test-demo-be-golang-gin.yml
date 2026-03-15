@@ -1,4 +1,4 @@
-name: Test Demo Backend (Go/Gin)
+name: Test Demo BE (Go/Gin)
 
 on:
   push:

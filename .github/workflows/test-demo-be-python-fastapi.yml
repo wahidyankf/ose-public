@@ -1,4 +1,4 @@
-name: Test Demo Backend (Python/FastAPI)
+name: Test Demo BE (Python/FastAPI)
 
 on:
   schedule:

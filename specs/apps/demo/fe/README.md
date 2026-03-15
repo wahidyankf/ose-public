@@ -36,10 +36,9 @@ definitions translate UI actions into API calls and verify the rendered output.
 Frontend implementations consume these 92 Gherkin scenarios at **two test levels**. The feature
 files are the shared contract — only the step implementations differ per level.
 
-| Implementation           | Framework               | BDD Tool                 | Port |
-| ------------------------ | ----------------------- | ------------------------ | ---- |
-| `demo-fe-ts-nextjs`      | Next.js 16 (App Router) | @amiceli/vitest-cucumber | 3301 |
-| `demo-fe-elixir-phoenix` | Phoenix LiveView        | Cabbage                  | 3301 |
+| Implementation      | Framework               | BDD Tool                 | Port |
+| ------------------- | ----------------------- | ------------------------ | ---- |
+| `demo-fe-ts-nextjs` | Next.js 16 (App Router) | @amiceli/vitest-cucumber | 3301 |
 
 E2E tests are centralized in `demo-fe-e2e` (Playwright + playwright-bdd v8), which tests any
 frontend via `BASE_URL` env var against `demo-be-java-springboot` on port 8201.

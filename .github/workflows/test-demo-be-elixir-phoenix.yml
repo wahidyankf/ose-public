@@ -1,4 +1,4 @@
-name: Test Demo Backend (Elixir/Phoenix)
+name: Test Demo BE (Elixir/Phoenix)
 
 on:
   schedule:

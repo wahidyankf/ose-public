@@ -1,4 +1,4 @@
-name: Test Demo Backend (Clojure/Pedestal)
+name: Test Demo BE (Clojure/Pedestal)
 
 on:
   schedule:

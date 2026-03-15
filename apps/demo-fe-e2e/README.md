@@ -38,10 +38,9 @@ tests/steps/**/*.ts                   <- step implementations
 
 This centralized E2E suite tests any demo-fe frontend by setting `BASE_URL`:
 
-| Frontend                 | Framework               | Default Port |
-| ------------------------ | ----------------------- | ------------ |
-| `demo-fe-ts-nextjs`      | Next.js 16 (App Router) | 3301         |
-| `demo-fe-elixir-phoenix` | Phoenix LiveView        | 3301         |
+| Frontend            | Framework               | Default Port |
+| ------------------- | ----------------------- | ------------ |
+| `demo-fe-ts-nextjs` | Next.js 16 (App Router) | 3301         |
 
 ## Prerequisites
 
@@ -54,11 +53,10 @@ backend must be running on `http://localhost:8201` before executing tests.
 nx dev demo-be-golang-gin
 ```
 
-**Start a frontend** (pick one):
+**Start a frontend**:
 
 ```bash
 nx dev demo-fe-ts-nextjs
-# or: nx dev demo-fe-elixir-phoenix
 ```
 
 ## Setup
@@ -125,6 +123,5 @@ apps/demo-fe-e2e/
 ## Related
 
 - [demo-fe-ts-nextjs](../demo-fe-ts-nextjs/README.md) - Next.js frontend implementation
-- [demo-fe-elixir-phoenix](../demo-fe-elixir-phoenix/README.md) - Phoenix LiveView frontend implementation
 - [demo-be-golang-gin](../demo-be-golang-gin/README.md) - Backend API
 - [specs/apps/demo/fe/gherkin](../../specs/apps/demo/fe/gherkin/) - Gherkin feature files (source of truth)

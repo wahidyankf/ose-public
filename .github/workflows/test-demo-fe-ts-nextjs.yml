@@ -1,4 +1,4 @@
-name: Test - demo-fe-ts-nextjs
+name: Test Demo FE (TypeScript/Next.js)
 
 on:
   push:

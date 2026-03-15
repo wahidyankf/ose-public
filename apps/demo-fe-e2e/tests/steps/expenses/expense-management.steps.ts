@@ -95,14 +95,18 @@ When("{word} navigates to the new entry form URL directly", async ({ page }) => 
 });
 
 When("{word} clicks the entry {string} in the list", async ({ page }, _username: string, description: string) => {
+  await page.goto("/expenses");
   await page.getByText(description).first().click();
 });
 
 When(
   "{word} clicks the edit button on the entry {string}",
   async ({ page }, _username: string, description: string) => {
-    const row = page.getByText(description).first();
-    await row.hover();
+    // Edit button is only on the detail page, not the list
+    await page.goto("/expenses");
+    await page.waitForLoadState("networkidle");
+    await page.getByText(description).first().click();
+    await page.waitForLoadState("networkidle");
     await page.getByRole("button", { name: /edit/i }).first().click();
   },
 );
@@ -128,6 +132,7 @@ When("{word} saves the changes", async ({ page }) => {
 When(
   "{word} clicks the delete button on the entry {string}",
   async ({ page }, _username: string, description: string) => {
+    await page.goto("/expenses");
     const row = page.getByText(description).first();
     await row.hover();
     await page
@@ -158,7 +163,7 @@ Then("the entry detail should display date {string}", async ({ page }, date: str
 });
 
 Then("the entry detail should display type {string}", async ({ page }, type: string) => {
-  await expect(page.getByText(new RegExp(type, "i"))).toBeVisible();
+  await expect(page.getByText(new RegExp(type, "i")).first()).toBeVisible();
 });
 
 Then("the entry list should show the total count", async ({ page }) => {

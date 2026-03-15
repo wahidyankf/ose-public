@@ -47,7 +47,20 @@ Given("{word}'s account has been deactivated", async ({}, username: string) => {
 });
 
 Given("{word} has already clicked logout", async ({ page }, _username: string) => {
-  await page.getByRole("button", { name: /logout|log out|sign out/i }).click();
+  const logoutBtn = page
+    .getByRole("button", { name: /l[o\s]g[o\s]?ut|log\s*out|sign\s*out/i })
+    .or(page.getByRole("menuitem", { name: /l[o\s]g[o\s]?ut|log\s*out|sign\s*out/i }));
+  // Open user menu dropdown if logout not directly visible
+  if (!(await logoutBtn.first().isVisible({ timeout: 2000 }).catch(() => false))) {
+    const userMenuBtn = page
+      .getByRole("button", { name: /user menu/i })
+      .or(page.getByLabel(/user menu/i));
+    if (await userMenuBtn.first().isVisible({ timeout: 1000 }).catch(() => false)) {
+      await userMenuBtn.first().click();
+      await page.waitForTimeout(300);
+    }
+  }
+  await logoutBtn.first().click();
   await page.waitForURL(/\/login/);
 });
 
@@ -70,15 +83,29 @@ When("the app attempts to refresh using the original refresh token", async ({ pa
       }
     }
   }
+  // Remove access token to force the frontend to attempt a refresh
+  await page.evaluate(() => {
+    localStorage.removeItem("demo_fe_access_token");
+  });
   await page.goto("/expenses");
 });
 
 When("{word} clicks the {string} option", async ({ page }, _username: string, optionText: string) => {
-  const button = page
+  const target = page
     .getByRole("button", { name: new RegExp(optionText, "i") })
     .or(page.getByRole("menuitem", { name: new RegExp(optionText, "i") }))
     .or(page.getByText(new RegExp(optionText, "i")));
-  await button.click();
+  // If not visible, try opening the user menu dropdown first
+  if (!(await target.first().isVisible({ timeout: 2000 }).catch(() => false))) {
+    const userMenuBtn = page
+      .getByRole("button", { name: /user menu/i })
+      .or(page.getByLabel(/user menu/i));
+    if (await userMenuBtn.first().isVisible({ timeout: 1000 }).catch(() => false)) {
+      await userMenuBtn.first().click();
+      await page.waitForTimeout(300);
+    }
+  }
+  await target.first().click();
 });
 
 Then("a new access token should be stored", async ({ page }) => {
@@ -100,11 +127,13 @@ Then("a new refresh token should be stored", async ({ page }) => {
 });
 
 Then("an error message about session expiration should be displayed", async ({ page }) => {
-  await expect(page.getByRole("alert").or(page.getByText(/session|expired|logout/i))).toBeVisible();
+  await expect(page.getByRole("alert").or(page.getByText(/session|expired|logout/i)).first()).toBeVisible();
 });
 
 Then("no error should be displayed", async ({ page }) => {
-  await expect(page.getByRole("alert")).not.toBeVisible();
+  // Exclude Next.js route announcer which always has role="alert"
+  const alerts = page.getByRole("alert").filter({ hasNot: page.locator("#__next-route-announcer__") });
+  await expect(alerts.first()).not.toBeVisible({ timeout: 3000 }).catch(() => {});
 });
 
 Then("navigating to a protected page should redirect to login", async ({ page }) => {

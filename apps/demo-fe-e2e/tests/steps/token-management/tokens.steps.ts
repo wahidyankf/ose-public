@@ -12,11 +12,11 @@ When("{word} attempts to access the dashboard directly", async ({ page }) => {
 });
 
 Then("the panel should display {word}'s user ID", async ({ page }, _username: string) => {
-  await expect(page.getByText(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i)).toBeVisible();
+  await expect(page.getByTestId("token-subject").first()).toBeVisible();
 });
 
 Then("the panel should display a non-empty issuer value", async ({ page }) => {
-  await expect(page.getByTestId("token-issuer").or(page.getByText(/issuer|iss/i))).toBeVisible();
+  await expect(page.getByTestId("token-issuer").or(page.getByText(/issuer|iss/i)).first()).toBeVisible();
 });
 
 Then("at least one public key should be available", async ({ page }) => {

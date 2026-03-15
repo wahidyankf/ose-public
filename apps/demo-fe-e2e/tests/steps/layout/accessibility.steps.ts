@@ -1,7 +1,8 @@
+import path from "node:path";
 import { createBdd } from "playwright-bdd";
 import { expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
-import { loginUser, createExpense, registerUser } from "@/utils/api-helpers.js";
+import { loginUser, createExpense, registerUser, uploadAttachmentApi } from "@/utils/api-helpers.js";
 
 const { Given, When, Then } = createBdd();
 
@@ -24,19 +25,27 @@ Given("{word} is on an entry with an attachment", async ({ page }, username: str
     type: "expense",
   });
   await page.goto("/expenses");
+  await page.waitForLoadState("networkidle");
   await page.getByText("A11y test entry").first().click();
+  await page.waitForURL(/\/expenses\/[0-9a-f-]+/, { timeout: 10000 });
+  await page.waitForLoadState("networkidle");
   void username;
 });
 
 Given("{word} has an entry with a JPEG attachment", async ({ page }, username: string) => {
-  await page.goto("/expenses");
-  const entry = page.getByTestId("entry-with-attachment").first();
-  if (await entry.isVisible({ timeout: 1000 }).catch(() => false)) {
-    await entry.click();
-  } else {
-    await page.getByRole("link").first().click();
-  }
-  void username;
+  const { accessToken } = await loginUser(username, "Str0ng#Pass1");
+  const expense = (await createExpense(accessToken, {
+    amount: "12.00",
+    currency: "USD",
+    category: "receipts",
+    description: "A11y img test",
+    date: "2025-01-10",
+    type: "EXPENSE",
+  })) as { id: string };
+  const receiptPath = path.resolve(process.cwd(), "tests/fixtures/receipt.jpg");
+  await uploadAttachmentApi(accessToken, expense.id, receiptPath, "receipt.jpg", "image/jpeg");
+  await page.goto(`/expenses/${expense.id}`);
+  await page.waitForLoadState("networkidle");
 });
 
 When("a visitor navigates to the registration page", async ({ page }) => {
@@ -49,6 +58,9 @@ When("the visitor submits the form with empty fields", async ({ page }) => {
 
 When("{word} presses Tab repeatedly on the dashboard", async ({ page }) => {
   await page.goto("/expenses");
+  await page.waitForLoadState("networkidle");
+  // Click page body to ensure keyboard focus is on the page before tabbing
+  await page.mouse.click(200, 200);
   for (let i = 0; i < 10; i++) {
     await page.keyboard.press("Tab");
   }
@@ -57,6 +69,8 @@ When("{word} presses Tab repeatedly on the dashboard", async ({ page }) => {
 When("{word} clicks the delete button and a confirmation dialog appears", async ({ page }) => {
   const deleteBtn = page.getByRole("button", { name: /delete|remove/i }).first();
   await deleteBtn.click();
+  // Wait for the dialog to appear (ensures state update has rendered)
+  await page.waitForSelector('[role="alertdialog"], [role="dialog"]', { state: "visible", timeout: 5000 });
 });
 
 When("{word} views the attachment", async ({ page }) => {
@@ -97,7 +111,7 @@ Then("every input field should have an accessible name", async ({ page }) => {
 
 Then("validation errors should have role {string}", async ({ page }, role: string) => {
   const errors = page.getByRole(role as Parameters<typeof page.getByRole>[0]);
-  await expect(errors).toBeVisible({ timeout: 5000 });
+  await expect(errors.first()).toBeVisible({ timeout: 5000 });
 });
 
 Then("the errors should be associated with their respective fields via aria-describedby", async ({ page }) => {
@@ -114,8 +128,12 @@ Then("the errors should be associated with their respective fields via aria-desc
 });
 
 Then("focus should move through all interactive elements in logical order", async ({ page }) => {
-  const focused = page.locator(":focus");
-  await expect(focused).toBeVisible();
+  // After Tab key presses, some interactive element should have focus (not just the body)
+  const hasFocus = await page.evaluate(() => {
+    const active = document.activeElement;
+    return active !== null && active !== document.body && active.tagName !== "HTML";
+  });
+  expect(hasFocus, "An interactive element should have keyboard focus after Tab presses").toBe(true);
 });
 
 Then("the currently focused element should have a visible focus indicator", async ({ page }) => {
@@ -127,10 +145,12 @@ Then("the currently focused element should have a visible focus indicator", asyn
 });
 
 Then("focus should be trapped within the dialog", async ({ page }) => {
-  const dialog = page.getByRole("dialog");
-  await expect(dialog).toBeVisible();
+  // Use CSS selector since getByRole("dialog") doesn't match role="alertdialog" in all Playwright versions
+  const dialog = page.locator('[role="dialog"], [role="alertdialog"]');
+  await expect(dialog.first()).toBeVisible();
   await page.keyboard.press("Tab");
   const isInDialog = await dialog
+    .first()
     .locator(":focus")
     .count()
     .then((c) => c > 0);
@@ -139,7 +159,7 @@ Then("focus should be trapped within the dialog", async ({ page }) => {
 
 Then("pressing Escape should close the dialog and return focus to the trigger", async ({ page }) => {
   await page.keyboard.press("Escape");
-  await expect(page.getByRole("dialog")).not.toBeVisible({ timeout: 2000 });
+  await expect(page.locator('[role="dialog"], [role="alertdialog"]').first()).not.toBeVisible({ timeout: 2000 });
 });
 
 Then("all text should meet a minimum contrast ratio of 4.5:1 against its background", async ({ page }) => {

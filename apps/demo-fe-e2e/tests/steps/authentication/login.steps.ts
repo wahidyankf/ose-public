@@ -4,6 +4,21 @@ import { expect } from "@playwright/test";
 const { Then } = createBdd();
 
 Then("an authentication session should be active", async ({ page }) => {
+  // Wait for login to complete: either token appears in localStorage or URL leaves /login
+  await page
+    .waitForFunction(
+      () => {
+        const hasLocalToken = Object.values(window.localStorage).some((v) => v && (v.includes("eyJ") || v.length > 50));
+        const hasSessionToken = Object.values(window.sessionStorage).some(
+          (v) => v && (v.includes("eyJ") || v.length > 50),
+        );
+        const leftLogin = !window.location.href.includes("/login");
+        return hasLocalToken || hasSessionToken || leftLogin;
+      },
+      { timeout: 10000 },
+    )
+    .catch(() => {});
+
   const localStorageHasToken = await page.evaluate(() => {
     const keys = Object.keys(window.localStorage);
     return keys.reduce(

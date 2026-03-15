@@ -38,17 +38,19 @@ When("the admin types {string} in the search field", async ({ page }, searchTerm
 When(
   "the admin clicks the {string} button with reason {string}",
   async ({ page }, buttonText: string, reason: string) => {
-    await page.getByRole("button", { name: new RegExp(buttonText, "i") }).click();
+    await page.getByRole("button", { name: new RegExp(buttonText, "i") }).first().click();
     const reasonInput = page.getByRole("textbox", { name: /reason/i }).or(page.getByLabel(/reason/i));
     if (await reasonInput.isVisible({ timeout: 2000 }).catch(() => false)) {
       await reasonInput.fill(reason);
     }
-    const confirmBtn = page.getByRole("button", {
-      name: /confirm|submit|disable|yes/i,
-    });
+    // Click confirm button inside the alertdialog
+    const dialog = page.getByRole("alertdialog");
+    const confirmBtn = dialog.getByRole("button", { name: /confirm|submit|disable|yes/i });
     if (await confirmBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
       await confirmBtn.click();
     }
+    // Wait for dialog to close before returning
+    await dialog.waitFor({ state: "hidden", timeout: 10000 }).catch(() => {});
   },
 );
 
@@ -67,8 +69,8 @@ When("{word} attempts to access the dashboard", async ({ page }) => {
 });
 
 Then("the user list should display registered users", async ({ page }) => {
-  await expect(page.getByRole("table").or(page.getByRole("list"))).toBeVisible();
-  const rows = page.getByRole("row").or(page.getByRole("listitem"));
+  await expect(page.getByRole("table").first()).toBeVisible();
+  const rows = page.getByRole("row");
   const count = await rows.count();
   expect(count).toBeGreaterThan(0);
 });
@@ -79,7 +81,8 @@ Then("the list should include pagination controls", async ({ page }) => {
       .getByRole("navigation", { name: /pagination/i })
       .or(page.getByTestId("pagination"))
       .or(page.getByText(/page \d+ of \d+/i))
-      .or(page.getByRole("button", { name: /next|previous/i })),
+      .or(page.getByRole("button", { name: /next|previous/i }))
+      .first(),
   ).toBeVisible();
 });
 
@@ -92,7 +95,7 @@ Then("the user list should display only users matching {string}", async ({ page 
 });
 
 Then("a password reset token should be displayed", async ({ page }) => {
-  await expect(page.getByTestId("reset-token").or(page.getByText(/reset token/i))).toBeVisible();
+  await expect(page.getByTestId("reset-token").first()).toBeVisible();
 });
 
 Then("a copy-to-clipboard button should be available", async ({ page }) => {

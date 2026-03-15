@@ -13,6 +13,6 @@ When("an unauthenticated user opens the app", async ({ page }) => {
 
 Then("no detailed component health information should be visible", async ({ page }) => {
   await expect(page.getByTestId("health-components")).not.toBeVisible();
-  await expect(page.getByText("diskSpace")).not.toBeVisible();
-  await expect(page.getByText("db")).not.toBeVisible();
+  await expect(page.getByText("diskSpace", { exact: true })).not.toBeVisible();
+  await expect(page.getByText("db", { exact: true })).not.toBeVisible();
 });

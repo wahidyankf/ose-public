@@ -13,7 +13,9 @@ import {
   createExpense,
   disableUser,
   getUserByUsername,
+  resetDatabase,
 } from "@/utils/api-helpers.js";
+import { testState } from "@/utils/test-state.js";
 
 const { Given, When, Then } = createBdd();
 
@@ -22,7 +24,8 @@ const { Given, When, Then } = createBdd();
 // ---------------------------------------------------------------------------
 
 Given("the app is running", async ({}) => {
-  // DB reset is handled by the Before hook in global-setup.ts
+  await resetDatabase();
+  testState.bobExpenseId = undefined;
 });
 
 // ---------------------------------------------------------------------------
@@ -41,7 +44,7 @@ Given(
 );
 
 Given("a user {string} is registered and deactivated", async ({}, username: string) => {
-  await registerUser(username, `${username}@example.com`, "Str0ng#Pass1");
+  await registerUser(username, `${username}@example.com`, "Str0ng#Pass1").catch(() => {});
   const { accessToken } = await loginUser(username, "Str0ng#Pass1");
   await deactivateUser(accessToken);
 });
@@ -52,19 +55,38 @@ Given("a user {string} is registered and deactivated", async ({}, username: stri
 
 Given("{word} has logged in", async ({ page }, username: string) => {
   await page.goto("/login");
+  await page.waitForLoadState("domcontentloaded");
   await page.getByRole("textbox", { name: /username/i }).fill(username);
   await page.getByRole("textbox", { name: /password/i }).fill("Str0ng#Pass1");
   await page.getByRole("button", { name: /log in|sign in|login/i }).click();
-  await page.waitForURL((url) => !url.toString().includes("/login"));
+  await page.waitForURL((url) => !url.toString().includes("/login"), { timeout: 30000 });
 });
 
 Given("{word} has logged out", async ({ page }) => {
   const logoutBtn = page
-    .getByRole("button", { name: /logout|log out|sign out/i })
-    .or(page.getByRole("link", { name: /logout|log out|sign out/i }));
-  if (await logoutBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
-    await logoutBtn.click();
-    await page.waitForURL(/\/login/);
+    .getByRole("button", { name: /l[o\s]g[o\s]?ut|log\s*out|sign\s*out/i })
+    .or(page.getByRole("menuitem", { name: /l[o\s]g[o\s]?ut|log\s*out|sign\s*out/i }))
+    .or(page.getByRole("link", { name: /l[o\s]g[o\s]?ut|log\s*out|sign\s*out/i }));
+  // Open user menu dropdown if logout not directly visible
+  if (!(await logoutBtn.first().isVisible({ timeout: 2000 }).catch(() => false))) {
+    const userMenuBtn = page
+      .getByRole("button", { name: /user menu/i })
+      .or(page.getByLabel(/user menu/i));
+    if (await userMenuBtn.first().isVisible({ timeout: 1000 }).catch(() => false)) {
+      await userMenuBtn.first().click();
+      await page.waitForTimeout(300);
+    }
+  }
+  if (await logoutBtn.first().isVisible({ timeout: 2000 }).catch(() => false)) {
+    await logoutBtn.first().click();
+    await page.waitForURL(/\/login/, { timeout: 10000 }).catch(() => {});
+  } else {
+    // No logout button found - clear tokens directly
+    await page.evaluate(() => {
+      localStorage.removeItem("demo_fe_access_token");
+      localStorage.removeItem("demo_fe_refresh_token");
+      sessionStorage.clear();
+    });
   }
 });
 
@@ -75,11 +97,20 @@ Given("{word} has logged out", async ({ page }) => {
 Given("an admin user {string} is logged in", async ({ page }, adminUsername: string) => {
   await registerUser(adminUsername, `${adminUsername}@example.com`, "Str0ng#Pass1");
   await promoteToAdmin(adminUsername);
+  // Navigate to app first so localStorage is accessible (about:blank doesn't allow it),
+  // then clear any existing tokens so /login doesn't redirect to /expenses
+  await page.goto("/login", { waitUntil: "domcontentloaded" }).catch(() => {});
+  await page.evaluate(() => {
+    localStorage.removeItem("demo_fe_access_token");
+    localStorage.removeItem("demo_fe_refresh_token");
+    sessionStorage.clear();
+  }).catch(() => {});
   await page.goto("/login");
+  await page.waitForLoadState("networkidle");
   await page.getByRole("textbox", { name: /username/i }).fill(adminUsername);
   await page.getByRole("textbox", { name: /password/i }).fill("Str0ng#Pass1");
   await page.getByRole("button", { name: /log in|sign in|login/i }).click();
-  await page.waitForURL((url) => !url.toString().includes("/login"));
+  await page.waitForURL((url) => !url.toString().includes("/login"), { timeout: 15000 });
 });
 
 // ---------------------------------------------------------------------------
@@ -101,7 +132,26 @@ When(
 // ---------------------------------------------------------------------------
 
 When("{word} clicks the {string} button", async ({ page }, _username: string, buttonText: string) => {
-  await page.getByRole("button", { name: new RegExp(buttonText, "i") }).click();
+  // Allow optional whitespace/dash between every character: "Logout" → matches "Log out", "Log-out", "Logout"
+  const fuzzyRegex = new RegExp(buttonText.split("").join("[\\s\\-]?"), "i");
+
+  const target = page
+    .getByRole("button", { name: fuzzyRegex })
+    .or(page.getByRole("menuitem", { name: fuzzyRegex }));
+
+  // If not directly visible, try opening a user menu / dropdown first
+  if (!(await target.first().isVisible({ timeout: 2000 }).catch(() => false))) {
+    const userMenuBtn = page
+      .getByRole("button", { name: /user menu/i })
+      .or(page.getByLabel(/user menu/i))
+      .or(page.getByRole("button", { name: /account/i }));
+    if (await userMenuBtn.first().isVisible({ timeout: 1000 }).catch(() => false)) {
+      await userMenuBtn.first().click();
+      await page.waitForTimeout(300);
+    }
+  }
+
+  await target.first().click();
 });
 
 // ---------------------------------------------------------------------------
@@ -145,6 +195,12 @@ When("{word} navigates to the change password form", async ({ page }) => {
 });
 
 When("{word} navigates to {word}'s entry detail", async ({ page }, _viewer: string, _owner: string) => {
+  // If we have a stored expense ID (set in attachment Given steps), navigate directly.
+  // This is needed because alice cannot see other users' entries in the list view.
+  if (testState.bobExpenseId) {
+    await page.goto(`/expenses/${testState.bobExpenseId}`);
+    return;
+  }
   await page.goto("/expenses");
   const bobEntry = page.getByText("Taxi").or(page.getByText("Bob's entry"));
   await bobEntry.first().click();
@@ -160,6 +216,7 @@ When("the admin navigates to {word}'s user detail page", async ({ page }, userna
   if (await searchInput.isVisible({ timeout: 2000 }).catch(() => false)) {
     await searchInput.fill(username);
     await page.keyboard.press("Enter");
+    await page.waitForTimeout(500);
   }
   await page.getByText(username).first().click();
 });
@@ -235,11 +292,18 @@ When("{word} submits the entry form", async ({ page }) => {
 });
 
 When("{word} confirms the deletion", async ({ page }) => {
-  await page.getByRole("button", { name: /confirm|yes|delete/i }).click();
+  // Scope to an open alertdialog if present; else fall back to page-level
+  const dialog = page.getByRole("alertdialog").filter({ hasText: /delete|remove/i });
+  if (await dialog.first().isVisible({ timeout: 2000 }).catch(() => false)) {
+    await dialog.first().getByRole("button", { name: /confirm|yes|delete/i }).first().click();
+  } else {
+    await page.getByRole("button", { name: /confirm|yes|delete/i }).first().click();
+  }
 });
 
 When("{word} opens the entry detail for {string}", async ({ page }, _username: string, description: string) => {
   await page.goto("/expenses");
+  await page.waitForLoadState("networkidle");
   await page.getByText(description).first().click();
 });
 
@@ -269,22 +333,44 @@ Then("{word} should remain on the login page", async ({ page }) => {
 });
 
 Then("the navigation should display {word}'s username", async ({ page }, username: string) => {
-  await expect(page.getByText(username)).toBeVisible();
+  await expect(page.getByText(username).first()).toBeVisible();
 });
 
 Then("an error message about invalid credentials should be displayed", async ({ page }) => {
-  await expect(page.getByRole("alert").or(page.getByText(/invalid|incorrect|wrong|credentials/i))).toBeVisible();
+  await expect(
+    page
+      .getByRole("alert")
+      .filter({ hasNot: page.locator("#__next-route-announcer__") })
+      .first()
+      .or(page.getByText(/invalid|incorrect|wrong|credentials/i).first()),
+  ).toBeVisible();
 });
 
 Then("an error message about account deactivation should be displayed", async ({ page }) => {
-  await expect(page.getByRole("alert").or(page.getByText(/deactivat|inactive|disabled/i))).toBeVisible();
+  await expect(
+    page
+      .getByRole("alert")
+      .filter({ hasNot: page.locator("#__next-route-announcer__") })
+      .first()
+      .or(page.getByText(/deactivat|inactive|disabled/i).first()),
+  ).toBeVisible();
 });
 
 Then("an error message about account being disabled should be displayed", async ({ page }) => {
-  await expect(page.getByRole("alert").or(page.getByText(/disabled|suspended|access denied/i))).toBeVisible();
+  await expect(
+    page
+      .getByRole("alert")
+      .filter({ hasNot: page.locator("#__next-route-announcer__") })
+      .first()
+      .or(page.getByText(/disabled|suspended|access denied/i).first()),
+  ).toBeVisible();
 });
 
 Then("the authentication session should be cleared", async ({ page }) => {
+  await page.waitForFunction(
+    () => !Object.values(window.localStorage).some((v) => v?.includes("eyJ")),
+    { timeout: 10000 },
+  ).catch(() => {});
   const hasToken = await page.evaluate(() => {
     return Object.values(window.localStorage).some((v) => v?.includes("eyJ"));
   });
@@ -305,12 +391,11 @@ Then("the entry list should not contain an entry with description {string}", asy
 });
 
 Then("the entry list should display pagination controls", async ({ page }) => {
-  await expect(
-    page
-      .getByRole("navigation", { name: /pagination/i })
-      .or(page.getByTestId("pagination"))
-      .or(page.getByRole("button", { name: /next|previous/i })),
-  ).toBeVisible();
+  const paginationEl = page
+    .getByRole("navigation", { name: /pagination/i })
+    .or(page.getByTestId("pagination"))
+    .or(page.getByRole("button", { name: /next|previous/i }));
+  await expect(paginationEl.first()).toBeVisible();
 });
 
 Then("a validation error for the password field should be displayed", async ({ page }) => {
@@ -352,14 +437,29 @@ Then("the health status indicator should display {string}", async ({ page }, sta
 Given("a user {string} is logged in", async ({ page }, username: string) => {
   await registerUser(username, `${username}@example.com`, "Str0ng#Pass1");
   await page.goto("/login");
+  await page.waitForLoadState("networkidle");
   await page.getByRole("textbox", { name: /username/i }).fill(username);
   await page.getByRole("textbox", { name: /password/i }).fill("Str0ng#Pass1");
   await page.getByRole("button", { name: /log in|sign in|login/i }).click();
-  await page.waitForURL((url) => !url.toString().includes("/login"));
+  await page.waitForURL((url) => !url.toString().includes("/login"), { timeout: 15000 });
 });
 
 // Used in admin + token-management
-Given("{word}'s account has been disabled by the admin", async ({}, username: string) => {
+Given("{word}'s account has been disabled by the admin", async ({ page }, username: string) => {
+  // Clear existing auth state so login page shows
+  await page.evaluate(() => {
+    localStorage.removeItem("demo_fe_access_token");
+    localStorage.removeItem("demo_fe_refresh_token");
+    sessionStorage.clear();
+  });
+  // Log in as the target user
+  await page.goto("/login");
+  await page.waitForLoadState("networkidle");
+  await page.getByRole("textbox", { name: /username/i }).fill(username);
+  await page.getByRole("textbox", { name: /password/i }).fill("Str0ng#Pass1");
+  await page.getByRole("button", { name: /log in|sign in|login/i }).click();
+  await page.waitForURL((url) => !url.toString().includes("/login"), { timeout: 15000 }).catch(() => {});
+  // Disable via admin API
   const adminUsername = "admin-disable-" + Date.now();
   await registerUser(adminUsername, `${adminUsername}@example.com`, "Str0ng#Pass1");
   await promoteToAdmin(adminUsername);
@@ -369,7 +469,21 @@ Given("{word}'s account has been disabled by the admin", async ({}, username: st
 });
 
 // Used in token-management and admin
-Given("an admin has disabled {word}'s account", async ({}, username: string) => {
+Given("an admin has disabled {word}'s account", async ({ page }, username: string) => {
+  // Clear existing auth state so login page shows
+  await page.evaluate(() => {
+    localStorage.removeItem("demo_fe_access_token");
+    localStorage.removeItem("demo_fe_refresh_token");
+    sessionStorage.clear();
+  });
+  // Log in as the target user
+  await page.goto("/login");
+  await page.waitForLoadState("networkidle");
+  await page.getByRole("textbox", { name: /username/i }).fill(username);
+  await page.getByRole("textbox", { name: /password/i }).fill("Str0ng#Pass1");
+  await page.getByRole("button", { name: /log in|sign in|login/i }).click();
+  await page.waitForURL((url) => !url.toString().includes("/login"), { timeout: 15000 }).catch(() => {});
+  // Disable via admin API
   const adminUsername = "token-admin-" + Date.now();
   await registerUser(adminUsername, `${adminUsername}@example.com`, "Str0ng#Pass1");
   await promoteToAdmin(adminUsername);

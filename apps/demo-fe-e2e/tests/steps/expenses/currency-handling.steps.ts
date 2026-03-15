@@ -71,7 +71,7 @@ Then("a validation error for the currency field should be displayed", async ({ p
 });
 
 Then("the summary should display a separate total for {string}", async ({ page }, currency: string) => {
-  await expect(page.getByText(currency)).toBeVisible();
+  await expect(page.getByText(currency).first()).toBeVisible();
 });
 
 Then("no cross-currency total should be shown", async ({ page }) => {

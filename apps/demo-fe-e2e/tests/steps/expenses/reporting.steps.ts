@@ -142,10 +142,12 @@ Given("{word} has created income and expense entries", async ({}, username: stri
 When(
   "{word} selects date range {string} to {string} with currency {string}",
   async ({ page }, _username: string, startDate: string, endDate: string, currency: string) => {
-    const startInput = page.getByRole("textbox", { name: /start date|from/i }).or(page.getByLabel(/start date|from/i));
+    const startInput = page
+      .getByRole("textbox", { name: /start.?date|from/i })
+      .or(page.getByLabel(/start.?date|from/i));
     await startInput.fill(startDate);
 
-    const endInput = page.getByRole("textbox", { name: /end date|to/i }).or(page.getByLabel(/end date|to/i));
+    const endInput = page.getByRole("textbox", { name: /end.?date/i }).or(page.getByLabel(/end.?date/i));
     await endInput.fill(endDate);
 
     const currencySelect = page.getByRole("combobox", { name: /currency/i }).or(page.getByLabel(/currency/i));
@@ -158,10 +160,12 @@ When(
 When(
   "{word} selects the appropriate date range and currency {string}",
   async ({ page }, _username: string, currency: string) => {
-    const startInput = page.getByRole("textbox", { name: /start date|from/i }).or(page.getByLabel(/start date|from/i));
+    const startInput = page
+      .getByRole("textbox", { name: /start.?date|from/i })
+      .or(page.getByLabel(/start.?date|from/i));
     await startInput.fill("2025-01-01");
 
-    const endInput = page.getByRole("textbox", { name: /end date|to/i }).or(page.getByLabel(/end date|to/i));
+    const endInput = page.getByRole("textbox", { name: /end.?date/i }).or(page.getByLabel(/end.?date/i));
     await endInput.fill("2025-12-31");
 
     const currencySelect = page.getByRole("combobox", { name: /currency/i }).or(page.getByLabel(/currency/i));
@@ -174,12 +178,12 @@ When(
 When("{word} views the P&L report for March 2025 in USD", async ({ page }) => {
   await page.goto("/reporting");
   await page
-    .getByRole("textbox", { name: /start date|from/i })
-    .or(page.getByLabel(/start date|from/i))
+    .getByRole("textbox", { name: /start.?date|from/i })
+    .or(page.getByLabel(/start.?date|from/i))
     .fill("2025-03-01");
   await page
-    .getByRole("textbox", { name: /end date|to/i })
-    .or(page.getByLabel(/end date|to/i))
+    .getByRole("textbox", { name: /end.?date/i })
+    .or(page.getByLabel(/end.?date/i))
     .fill("2025-03-31");
   await page
     .getByRole("combobox", { name: /currency/i })
@@ -191,12 +195,12 @@ When("{word} views the P&L report for March 2025 in USD", async ({ page }) => {
 When("{word} views the P&L report for April 2025 in USD", async ({ page }) => {
   await page.goto("/reporting");
   await page
-    .getByRole("textbox", { name: /start date|from/i })
-    .or(page.getByLabel(/start date|from/i))
+    .getByRole("textbox", { name: /start.?date|from/i })
+    .or(page.getByLabel(/start.?date|from/i))
     .fill("2025-04-01");
   await page
-    .getByRole("textbox", { name: /end date|to/i })
-    .or(page.getByLabel(/end date|to/i))
+    .getByRole("textbox", { name: /end.?date/i })
+    .or(page.getByLabel(/end.?date/i))
     .fill("2025-04-30");
   await page
     .getByRole("combobox", { name: /currency/i })
@@ -208,12 +212,12 @@ When("{word} views the P&L report for April 2025 in USD", async ({ page }) => {
 When("{word} views the P&L report filtered to {string} only", async ({ page }, _username: string, currency: string) => {
   await page.goto("/reporting");
   await page
-    .getByRole("textbox", { name: /start date|from/i })
-    .or(page.getByLabel(/start date|from/i))
+    .getByRole("textbox", { name: /start.?date|from/i })
+    .or(page.getByLabel(/start.?date|from/i))
     .fill("2025-01-01");
   await page
-    .getByRole("textbox", { name: /end date|to/i })
-    .or(page.getByLabel(/end date|to/i))
+    .getByRole("textbox", { name: /end.?date/i })
+    .or(page.getByLabel(/end.?date/i))
     .fill("2025-12-31");
   await page
     .getByRole("combobox", { name: /currency/i })
@@ -223,15 +227,15 @@ When("{word} views the P&L report filtered to {string} only", async ({ page }, _
 });
 
 Then("the report should display income total {string}", async ({ page }, amount: string) => {
-  await expect(page.getByText(amount)).toBeVisible();
+  await expect(page.getByText(amount).first()).toBeVisible();
 });
 
 Then("the report should display expense total {string}", async ({ page }, amount: string) => {
-  await expect(page.getByText(amount)).toBeVisible();
+  await expect(page.getByText(amount).first()).toBeVisible();
 });
 
 Then("the report should display net {string}", async ({ page }, amount: string) => {
-  await expect(page.getByText(amount)).toBeVisible();
+  await expect(page.getByText(amount).first()).toBeVisible();
 });
 
 Then(
@@ -247,7 +251,7 @@ Then("the expense breakdown should list {string} category", async ({ page }, cat
 });
 
 Then("the report should display only USD amounts", async ({ page }) => {
-  await expect(page.getByText("USD")).toBeVisible();
+  await expect(page.getByTestId("pl-chart").getByText("USD").first()).toBeVisible();
 });
 
 Then("no IDR amounts should be included", async ({ page }) => {

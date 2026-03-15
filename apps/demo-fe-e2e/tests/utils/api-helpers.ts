@@ -16,7 +16,7 @@ export async function registerUser(username: string, email: string, password: st
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, email, password }),
   });
-  if (!response.ok) {
+  if (!response.ok && response.status !== 409) {
     throw new Error(`registerUser failed: ${response.status}`);
   }
 }
@@ -143,6 +143,71 @@ export async function enableUser(adminToken: string, userId: string): Promise<vo
   });
   if (!response.ok) {
     throw new Error(`enableUser failed: ${response.status}`);
+  }
+}
+
+export async function listExpenses(
+  accessToken: string,
+): Promise<Array<{ id: string; description: string }>> {
+  const response = await fetch(`${BACKEND_URL}/api/v1/expenses?page=0&size=100`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (!response.ok) {
+    throw new Error(`listExpenses failed: ${response.status}`);
+  }
+  const data = (await response.json()) as { content: Array<{ id: string; description: string }> };
+  return data.content;
+}
+
+export async function uploadAttachmentApi(
+  accessToken: string,
+  expenseId: string,
+  filePath: string,
+  filename: string,
+  mimeType: string,
+): Promise<void> {
+  const fs = await import("node:fs");
+  const fileBuffer = fs.readFileSync(filePath);
+  const formData = new FormData();
+  formData.append("file", new Blob([fileBuffer], { type: mimeType }), filename);
+  const response = await fetch(`${BACKEND_URL}/api/v1/expenses/${expenseId}/attachments`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${accessToken}` },
+    body: formData,
+  });
+  if (!response.ok) {
+    throw new Error(`uploadAttachmentApi failed: ${response.status}`);
+  }
+}
+
+export async function listAttachmentsApi(
+  accessToken: string,
+  expenseId: string,
+): Promise<Array<{ id: string; filename: string }>> {
+  const response = await fetch(`${BACKEND_URL}/api/v1/expenses/${expenseId}/attachments`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (!response.ok) {
+    throw new Error(`listAttachmentsApi failed: ${response.status}`);
+  }
+  const data = (await response.json()) as
+    | { attachments: Array<{ id: string; filename: string }> }
+    | Array<{ id: string; filename: string }>;
+  if (Array.isArray(data)) return data;
+  return data.attachments ?? [];
+}
+
+export async function deleteAttachmentApi(
+  accessToken: string,
+  expenseId: string,
+  attachmentId: string,
+): Promise<void> {
+  const response = await fetch(`${BACKEND_URL}/api/v1/expenses/${expenseId}/attachments/${attachmentId}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (!response.ok) {
+    throw new Error(`deleteAttachmentApi failed: ${response.status}`);
   }
 }
 

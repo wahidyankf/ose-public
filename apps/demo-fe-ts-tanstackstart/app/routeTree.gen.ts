@@ -19,6 +19,7 @@ import { Route as AuthenticatedAdminRouteImport } from "./routes/_authenticated/
 import { Route as AuthenticatedExpensesIndexRouteImport } from "./routes/_authenticated/expenses/index";
 import { Route as AuthenticatedExpensesSummaryRouteImport } from "./routes/_authenticated/expenses/summary";
 import { Route as AuthenticatedExpensesIdRouteImport } from "./routes/_authenticated/expenses/$id";
+import { Route as AuthenticatedExpensesNewRouteImport } from "./routes/_authenticated/expenses/new";
 
 const RegisterRoute = RegisterRouteImport.update({
   id: "/register",
@@ -54,6 +55,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: "/admin",
   getParentRoute: () => AuthenticatedRoute,
 } as any);
+const AuthenticatedExpensesNewRoute = AuthenticatedExpensesNewRouteImport.update({
+  id: "/expenses/new",
+  path: "/expenses/new",
+  getParentRoute: () => AuthenticatedRoute,
+} as any);
 const AuthenticatedExpensesIndexRoute = AuthenticatedExpensesIndexRouteImport.update({
   id: "/expenses/",
   path: "/expenses/",
@@ -79,6 +85,7 @@ export interface FileRoutesByFullPath {
   "/tokens": typeof AuthenticatedTokensRoute;
   "/expenses/$id": typeof AuthenticatedExpensesIdRoute;
   "/expenses/summary": typeof AuthenticatedExpensesSummaryRoute;
+  "/expenses/new": typeof AuthenticatedExpensesNewRoute;
   "/expenses/": typeof AuthenticatedExpensesIndexRoute;
 }
 export interface FileRoutesByTo {
@@ -90,6 +97,7 @@ export interface FileRoutesByTo {
   "/tokens": typeof AuthenticatedTokensRoute;
   "/expenses/$id": typeof AuthenticatedExpensesIdRoute;
   "/expenses/summary": typeof AuthenticatedExpensesSummaryRoute;
+  "/expenses/new": typeof AuthenticatedExpensesNewRoute;
   "/expenses": typeof AuthenticatedExpensesIndexRoute;
 }
 export interface FileRoutesById {
@@ -103,6 +111,7 @@ export interface FileRoutesById {
   "/_authenticated/tokens": typeof AuthenticatedTokensRoute;
   "/_authenticated/expenses/$id": typeof AuthenticatedExpensesIdRoute;
   "/_authenticated/expenses/summary": typeof AuthenticatedExpensesSummaryRoute;
+  "/_authenticated/expenses/new": typeof AuthenticatedExpensesNewRoute;
   "/_authenticated/expenses/": typeof AuthenticatedExpensesIndexRoute;
 }
 export interface FileRouteTypes {
@@ -116,6 +125,7 @@ export interface FileRouteTypes {
     | "/tokens"
     | "/expenses/$id"
     | "/expenses/summary"
+    | "/expenses/new"
     | "/expenses/";
   fileRoutesByTo: FileRoutesByTo;
   to:
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | "/tokens"
     | "/expenses/$id"
     | "/expenses/summary"
+    | "/expenses/new"
     | "/expenses";
   id:
     | "__root__"
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | "/_authenticated/tokens"
     | "/_authenticated/expenses/$id"
     | "/_authenticated/expenses/summary"
+    | "/_authenticated/expenses/new"
     | "/_authenticated/expenses/";
   fileRoutesById: FileRoutesById;
 }
@@ -221,6 +233,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AuthenticatedExpensesIdRouteImport;
       parentRoute: typeof AuthenticatedRoute;
     };
+    "/_authenticated/expenses/new": {
+      id: "/_authenticated/expenses/new";
+      path: "/expenses/new";
+      fullPath: "/expenses/new";
+      preLoaderRoute: typeof AuthenticatedExpensesNewRouteImport;
+      parentRoute: typeof AuthenticatedRoute;
+    };
   }
 }
 
@@ -230,6 +249,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedTokensRoute: typeof AuthenticatedTokensRoute;
   AuthenticatedExpensesIdRoute: typeof AuthenticatedExpensesIdRoute;
   AuthenticatedExpensesSummaryRoute: typeof AuthenticatedExpensesSummaryRoute;
+  AuthenticatedExpensesNewRoute: typeof AuthenticatedExpensesNewRoute;
   AuthenticatedExpensesIndexRoute: typeof AuthenticatedExpensesIndexRoute;
 }
 
@@ -239,6 +259,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedTokensRoute: AuthenticatedTokensRoute,
   AuthenticatedExpensesIdRoute: AuthenticatedExpensesIdRoute,
   AuthenticatedExpensesSummaryRoute: AuthenticatedExpensesSummaryRoute,
+  AuthenticatedExpensesNewRoute: AuthenticatedExpensesNewRoute,
   AuthenticatedExpensesIndexRoute: AuthenticatedExpensesIndexRoute,
 };
 

@@ -233,7 +233,7 @@ class ErrorPathsTest {
     fun `admin can list users`() {
         val (status, body) = ServiceDispatcher.listUsers(adminToken)
         assertEquals(200, status)
-        assertTrue(body.contains("data"), "Expected data in response: $body")
+        assertTrue(body.contains("content"), "Expected content in response: $body")
     }
 
     @Test

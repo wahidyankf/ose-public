@@ -1,6 +1,5 @@
 package com.demobejasb.admin.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.demobejasb.auth.model.User;
 import java.util.UUID;
 
@@ -10,7 +9,7 @@ public record AdminUserResponse(
         String email,
         String status,
         String role,
-        @JsonProperty("display_name") String displayName) {
+        String displayName) {
 
     public static AdminUserResponse from(final User user) {
         String email = user.getEmail() != null ? user.getEmail() : "";

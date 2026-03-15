@@ -62,11 +62,14 @@ object AdminRoutes : KoinComponent {
       }
     }
 
+    val totalPages =
+      if (result.total == 0L) 1
+      else ((result.total + pageSize - 1) / pageSize).toInt()
     val response: JsonObject = buildJsonObject {
-      put("data", usersArray)
-      put("total", result.total)
+      put("content", usersArray)
+      put("totalElements", result.total)
+      put("totalPages", totalPages)
       put("page", result.page)
-      put("pageSize", result.pageSize)
     }
 
     call.respond(response)
@@ -127,7 +130,7 @@ object AdminRoutes : KoinComponent {
 
     call.respond(
       HttpStatusCode.OK,
-      mapOf("reset_token" to resetToken, "user_id" to userId.toString()),
+      mapOf("token" to resetToken),
     )
   }
 }

@@ -12,12 +12,11 @@ export default defineConfig({
   timeout: 60000,
   // Each scenario resets the shared database before running, so tests must
   // run sequentially within a single machine to avoid DB state conflicts.
-  // CI parallelism is achieved via matrix sharding (each shard = separate machine + DB).
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: 1,
-  reporter: process.env.CI ? "html" : "list",
+  reporter: process.env.CI ? [["list"], ["html"]] : "list",
   use: {
     baseURL: process.env.BASE_URL || "http://localhost:3301",
     trace: "on-first-retry",

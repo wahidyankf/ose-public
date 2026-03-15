@@ -1,4 +1,4 @@
-name: Test Integration + E2E Demo Backend (Java/Vert.x)
+name: Test Demo Backend (Java/Vert.x)
 
 on:
   schedule:

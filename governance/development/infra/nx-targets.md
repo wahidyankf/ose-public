@@ -214,7 +214,7 @@ Derived from three rules: (1) All apps+libs → unit tests, (2) All apps → int
 
 \* E2E tests live in dedicated `*-e2e` runner projects, not in the backend/frontend project itself.
 
-**CI schedules**: Per-service "Test Integration + E2E" workflows run 2x daily (WIB 06, 18) combining `test:integration` + `test:e2e` for each service. `test:quick` runs on every push to main and every PR.
+**CI schedules**: Per-service "Test" workflows run 2x daily (WIB 06, 18) combining `test:integration` + `test:e2e` for each service. `test:quick` runs on every push to main and every PR.
 
 ### All Projects
 
@@ -337,7 +337,7 @@ Playwright suites (`*-e2e`):
 | `test:e2e:ui`     | Run tests with Playwright UI |
 | `test:e2e:report` | Open the HTML test report    |
 
-**Execution strategy**: `test:e2e` is **not** part of the pre-push hook. It runs on scheduled GitHub Actions cron jobs (2x daily at WIB 06:00 and 18:00) in per-service "Test Integration + E2E" workflows that combine `test:integration` + `test:e2e` for each service. This keeps pre-push fast while ensuring continuous integration and E2E coverage.
+**Execution strategy**: `test:e2e` is **not** part of the pre-push hook. It runs on scheduled GitHub Actions cron jobs (2x daily at WIB 06:00 and 18:00) in per-service "Test" workflows that combine `test:integration` + `test:e2e` for each service. This keeps pre-push fast while ensuring continuous integration and E2E coverage.
 
 **BDD suites**: When the E2E project uses playwright-bdd, `test:e2e` runs
 `npx bddgen && npx playwright test`. The `bddgen` step regenerates `.features-gen/`

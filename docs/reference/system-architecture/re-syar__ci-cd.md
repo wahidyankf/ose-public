@@ -238,7 +238,7 @@ graph TB
 
 ### E2E OrganicLever Workflow
 
-**File**: `.github/workflows/test-integration-e2e-demo-be-java-springboot.yml`
+**File**: `.github/workflows/test-demo-be-java-springboot.yml`
 
 **Trigger**: Push to `main` or pull request (when organiclever apps change)
 

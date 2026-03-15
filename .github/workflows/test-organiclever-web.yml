@@ -1,4 +1,4 @@
-name: Test Integration + E2E OrganicLever Web
+name: Test OrganicLever Web
 
 on:
   schedule:

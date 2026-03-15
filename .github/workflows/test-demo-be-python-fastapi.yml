@@ -1,4 +1,4 @@
-name: Test Integration + E2E Demo Backend (Elixir/Phoenix)
+name: Test Demo Backend (Python/FastAPI)
 
 on:
   schedule:
@@ -20,30 +20,30 @@ jobs:
 
       - name: Run integration tests
         run: |
-          docker compose -f apps/demo-be-elixir-phoenix/docker-compose.integration.yml down -v 2>/dev/null || true
-          docker compose -f apps/demo-be-elixir-phoenix/docker-compose.integration.yml up --abort-on-container-exit --build
+          docker compose -f apps/demo-be-python-fastapi/docker-compose.integration.yml down -v 2>/dev/null || true
+          docker compose -f apps/demo-be-python-fastapi/docker-compose.integration.yml up --abort-on-container-exit --build
 
       - name: Teardown integration
         if: always()
-        run: docker compose -f apps/demo-be-elixir-phoenix/docker-compose.integration.yml down -v
+        run: docker compose -f apps/demo-be-python-fastapi/docker-compose.integration.yml down -v
 
       - name: Start backend
-        run: docker compose -f infra/dev/demo-be-elixir-phoenix/docker-compose.yml -f infra/dev/demo-be-elixir-phoenix/docker-compose.e2e.yml up --build -d demo-be-elixir-phoenix
+        run: docker compose -f infra/dev/demo-be-python-fastapi/docker-compose.yml -f infra/dev/demo-be-python-fastapi/docker-compose.e2e.yml up --build -d demo-be-python-fastapi
 
       - name: Wait for backend to be healthy
         run: |
           echo "Waiting for backend to become healthy..."
-          for i in $(seq 1 36); do
-            STATUS=$(docker inspect --format='{{.State.Health.Status}}' 'demo-be-elixir-phoenix' 2>/dev/null || echo "unknown")
-            echo "[$i/36] Health: $STATUS"
+          for i in $(seq 1 24); do
+            STATUS=$(docker inspect --format='{{.State.Health.Status}}' 'demo-be-python-fastapi' 2>/dev/null || echo "unknown")
+            echo "[$i/24] Health: $STATUS"
             if [ "$STATUS" = "healthy" ]; then
               echo "Backend is healthy"
               exit 0
             fi
             sleep 10
           done
-          echo "Backend did not become healthy within 6 minutes"
-          docker logs demo-be-elixir-phoenix
+          echo "Backend did not become healthy within 4 minutes"
+          docker logs demo-be-python-fastapi
           exit 1
 
       - name: Setup Volta
@@ -56,16 +56,16 @@ jobs:
         run: npx nx run demo-be-e2e:test:e2e:no-test-api
         env:
           BASE_URL: http://localhost:8201
-          DATABASE_URL: postgresql://demo_be_elixir_phoenix:demo_be_elixir_phoenix@localhost:5432/demo_be_elixir_phoenix
+          DATABASE_URL: postgresql://demo_be_python_fastapi:demo_be_python_fastapi@localhost:5432/demo_be_python_fastapi
 
       - name: Upload test report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-demo-be-elixir-phoenix
+          name: playwright-report-demo-be-python-fastapi
           path: apps/demo-be-e2e/playwright-report/
           retention-days: 7
 
       - name: Stop backend
         if: always()
-        run: docker compose -f infra/dev/demo-be-elixir-phoenix/docker-compose.yml down
+        run: docker compose -f infra/dev/demo-be-python-fastapi/docker-compose.yml down

@@ -81,27 +81,27 @@ The result must exactly match the filename (without path).
 
 Every workflow currently in the repository follows this rule:
 
-| `name:` field                                             | Filename                                             |
-| --------------------------------------------------------- | ---------------------------------------------------- |
-| `Main CI`                                                 | `main-ci.yml`                                        |
-| `PR - Quality Gate`                                       | `pr-quality-gate.yml`                                |
-| `PR - Format`                                             | `pr-format.yml`                                      |
-| `PR - Validate Links`                                     | `pr-validate-links.yml`                              |
-| `Test and Deploy - AyoKoding Web`                         | `test-and-deploy-ayokoding-web.yml`                  |
-| `Test and Deploy - OSE Platform Web`                      | `test-and-deploy-oseplatform-web.yml`                |
-| `Test Integration + E2E Demo Backend (Java/Spring Boot)`  | `test-integration-e2e-demo-be-java-springboot.yml`   |
-| `Test Integration + E2E Demo Backend (Java/Vert.x)`       | `test-integration-e2e-demo-be-java-vertx.yml`        |
-| `Test Integration + E2E Demo Backend (Elixir/Phoenix)`    | `test-integration-e2e-demo-be-elixir-phoenix.yml`    |
-| `Test Integration + E2E Demo Backend (F#/Giraffe)`        | `test-integration-e2e-demo-be-fsharp-giraffe.yml`    |
-| `Test Integration + E2E Demo Backend (Go/Gin)`            | `test-integration-e2e-demo-be-golang-gin.yml`        |
-| `Test Integration + E2E Demo Backend (Python/FastAPI)`    | `test-integration-e2e-demo-be-python-fastapi.yml`    |
-| `Test Integration + E2E Demo Backend (Rust/Axum)`         | `test-integration-e2e-demo-be-rust-axum.yml`         |
-| `Test Integration + E2E Demo Backend (Kotlin/Ktor)`       | `test-integration-e2e-demo-be-kotlin-ktor.yml`       |
-| `Test Integration + E2E Demo Backend (TypeScript/Effect)` | `test-integration-e2e-demo-be-ts-effect.yml`         |
-| `Test Integration + E2E Demo Backend (C#/ASP.NET Core)`   | `test-integration-e2e-demo-be-csharp-aspnetcore.yml` |
-| `Test Integration + E2E Demo Backend (Clojure/Pedestal)`  | `test-integration-e2e-demo-be-clojure-pedestal.yml`  |
-| `Test Integration + E2E OrganicLever Web`                 | `test-integration-e2e-organiclever-web.yml`          |
-| `E2E - demo-fe-ts-nextjs`                                 | `e2e-demo-fe-ts-nextjs.yml`                          |
+| `name:` field                           | Filename                              |
+| --------------------------------------- | ------------------------------------- |
+| `Main CI`                               | `main-ci.yml`                         |
+| `PR - Quality Gate`                     | `pr-quality-gate.yml`                 |
+| `PR - Format`                           | `pr-format.yml`                       |
+| `PR - Validate Links`                   | `pr-validate-links.yml`               |
+| `Test and Deploy - AyoKoding Web`       | `test-and-deploy-ayokoding-web.yml`   |
+| `Test and Deploy - OSE Platform Web`    | `test-and-deploy-oseplatform-web.yml` |
+| `Test Demo Backend (Java/Spring Boot)`  | `test-demo-be-java-springboot.yml`    |
+| `Test Demo Backend (Java/Vert.x)`       | `test-demo-be-java-vertx.yml`         |
+| `Test Demo Backend (Elixir/Phoenix)`    | `test-demo-be-elixir-phoenix.yml`     |
+| `Test Demo Backend (F#/Giraffe)`        | `test-demo-be-fsharp-giraffe.yml`     |
+| `Test Demo Backend (Go/Gin)`            | `test-demo-be-golang-gin.yml`         |
+| `Test Demo Backend (Python/FastAPI)`    | `test-demo-be-python-fastapi.yml`     |
+| `Test Demo Backend (Rust/Axum)`         | `test-demo-be-rust-axum.yml`          |
+| `Test Demo Backend (Kotlin/Ktor)`       | `test-demo-be-kotlin-ktor.yml`        |
+| `Test Demo Backend (TypeScript/Effect)` | `test-demo-be-ts-effect.yml`          |
+| `Test Demo Backend (C#/ASP.NET Core)`   | `test-demo-be-csharp-aspnetcore.yml`  |
+| `Test Demo Backend (Clojure/Pedestal)`  | `test-demo-be-clojure-pedestal.yml`   |
+| `Test OrganicLever Web`                 | `test-organiclever-web.yml`           |
+| `Test - demo-fe-ts-nextjs`              | `test-demo-fe-ts-nextjs.yml`          |
 
 ## Examples
 
@@ -117,13 +117,13 @@ Derivation: `PR - Quality Gate` → lowercase → `pr - quality gate` → spaces
 ---
 
 ```yaml
-# File: .github/workflows/test-integration-e2e-demo-be-java-springboot.yml
-name: Test Integration + E2E Demo Backend (Java/Spring Boot)
+# File: .github/workflows/test-demo-be-java-springboot.yml
+name: Test Demo Backend (Java/Spring Boot)
 ```
 
-Derivation: `Test Integration + E2E Demo Backend (Java/Spring Boot)` → lowercase → `test integration + e2e demo backend (java/spring boot)` → remove `+`, `(`, `)`, `/` → `test integration  e2e demo backend javaspring boot` → spaces to hyphens → `test-integration--e2e-demo-backend-javaspring-boot` → collapse hyphens → `test-integration-e2e-demo-backend-javaspring-boot` → append `.yml` → `test-integration-e2e-demo-backend-javaspring-boot.yml`.
+Derivation: `Test Demo Backend (Java/Spring Boot)` → lowercase → `test demo backend (java/spring boot)` → remove `(`, `)`, `/` → `test demo backend javaspring boot` → spaces to hyphens → `test-demo-backend-javaspring-boot` → collapse hyphens → `test-demo-backend-javaspring-boot` → append `.yml` → `test-demo-backend-javaspring-boot.yml`.
 
-Wait — the actual filename is `test-integration-e2e-demo-be-java-springboot.yml`. The `name:` uses the full word `Backend` while the filename abbreviates to `be`, and `Java/Spring Boot` maps to `java-springboot`. This is deliberate shortening for filename length. See the Special Considerations section below.
+The actual filename is `test-demo-be-java-springboot.yml`. The `name:` uses the full word `Backend` while the filename abbreviates to `be`, and `Java/Spring Boot` maps to `java-springboot`. This is deliberate shortening for filename length. See the Special Considerations section below.
 
 ### FAIL: Misaligned name and filename
 

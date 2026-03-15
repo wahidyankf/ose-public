@@ -1,4 +1,4 @@
-name: E2E - demo-fe-ts-nextjs
+name: Test - demo-fe-ts-nextjs
 
 on:
   push:

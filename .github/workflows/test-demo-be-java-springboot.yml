@@ -1,4 +1,4 @@
-name: Test Integration + E2E Demo Backend (Java/Spring Boot)
+name: Test Demo Backend (Java/Spring Boot)
 
 on:
   schedule:

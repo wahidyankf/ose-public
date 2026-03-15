@@ -1,4 +1,4 @@
-name: Test Integration + E2E Demo Backend (Kotlin/Ktor)
+name: Test Demo Backend (Rust/Axum)
 
 on:
   schedule:
@@ -20,30 +20,30 @@ jobs:
 
       - name: Run integration tests
         run: |
-          docker compose -f apps/demo-be-kotlin-ktor/docker-compose.integration.yml down -v 2>/dev/null || true
-          docker compose -f apps/demo-be-kotlin-ktor/docker-compose.integration.yml up --abort-on-container-exit --build
+          docker compose -f apps/demo-be-rust-axum/docker-compose.integration.yml down -v 2>/dev/null || true
+          docker compose -f apps/demo-be-rust-axum/docker-compose.integration.yml up --abort-on-container-exit --build
 
       - name: Teardown integration
         if: always()
-        run: docker compose -f apps/demo-be-kotlin-ktor/docker-compose.integration.yml down -v
+        run: docker compose -f apps/demo-be-rust-axum/docker-compose.integration.yml down -v
 
       - name: Start backend
-        run: docker compose -f infra/dev/demo-be-kotlin-ktor/docker-compose.yml -f infra/dev/demo-be-kotlin-ktor/docker-compose.e2e.yml up --build -d demo-be-kotlin-ktor
+        run: docker compose -f infra/dev/demo-be-rust-axum/docker-compose.yml -f infra/dev/demo-be-rust-axum/docker-compose.e2e.yml up --build -d demo-be-rust-axum
 
       - name: Wait for backend to be healthy
         run: |
           echo "Waiting for backend to become healthy..."
-          for i in $(seq 1 36); do
-            STATUS=$(docker inspect --format='{{.State.Health.Status}}' 'demo-be-kotlin-ktor' 2>/dev/null || echo "unknown")
-            echo "[$i/36] Health: $STATUS"
+          for i in $(seq 1 60); do
+            STATUS=$(docker inspect --format='{{.State.Health.Status}}' 'demo-be-rust-axum' 2>/dev/null || echo "unknown")
+            echo "[$i/60] Health: $STATUS"
             if [ "$STATUS" = "healthy" ]; then
               echo "Backend is healthy"
               exit 0
             fi
             sleep 10
           done
-          echo "Backend did not become healthy within 6 minutes"
-          docker logs demo-be-kotlin-ktor
+          echo "Backend did not become healthy within 10 minutes"
+          docker logs demo-be-rust-axum
           exit 1
 
       - name: Setup Volta
@@ -56,16 +56,16 @@ jobs:
         run: npx nx run demo-be-e2e:test:e2e:no-test-api
         env:
           BASE_URL: http://localhost:8201
-          DATABASE_URL: postgresql://demo_be_kotlin_ktor:demo_be_kotlin_ktor@localhost:5432/demo_be_kotlin_ktor
+          DATABASE_URL: postgresql://demo_be_rust_axum:demo_be_rust_axum@localhost:5432/demo_be_rust_axum
 
       - name: Upload test report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-demo-be-kotlin-ktor
+          name: playwright-report-demo-be-rust-axum
           path: apps/demo-be-e2e/playwright-report/
           retention-days: 7
 
       - name: Stop backend
         if: always()
-        run: docker compose -f infra/dev/demo-be-kotlin-ktor/docker-compose.yml down
+        run: docker compose -f infra/dev/demo-be-rust-axum/docker-compose.yml down

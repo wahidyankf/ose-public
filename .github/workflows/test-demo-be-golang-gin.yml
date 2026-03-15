@@ -1,4 +1,4 @@
-name: Test Integration + E2E Demo Backend (Go/Gin)
+name: Test Demo Backend (Go/Gin)
 
 on:
   push:

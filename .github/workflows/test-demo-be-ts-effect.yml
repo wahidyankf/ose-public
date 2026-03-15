@@ -1,4 +1,4 @@
-name: Test Integration + E2E Demo Backend (TypeScript/Effect)
+name: Test Demo Backend (TypeScript/Effect)
 
 on:
   schedule:

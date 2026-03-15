@@ -191,7 +191,7 @@ The three-level standard applies universally, with adaptations per project type:
 
 ## CI Integration
 
-Integration and E2E tests run together in per-service GitHub Actions workflows named "Test Integration + E2E {service name}". Each workflow:
+Integration and E2E tests run together in per-service GitHub Actions workflows named "Test {service name}". Each workflow:
 
 1. Starts PostgreSQL via docker-compose
 2. Runs integration tests (direct service calls with real DB)

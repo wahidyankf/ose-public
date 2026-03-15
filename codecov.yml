@@ -48,3 +48,39 @@ flags:
     paths:
       - apps/demo-be-clojure-pedestal/
     carryforward: true
+  demo-be-fsharp-giraffe:
+    paths:
+      - apps/demo-be-fsharp-giraffe/
+    carryforward: true
+  demo-be-golang-gin:
+    paths:
+      - apps/demo-be-golang-gin/
+    carryforward: true
+  demo-be-python-fastapi:
+    paths:
+      - apps/demo-be-python-fastapi/
+    carryforward: true
+  demo-be-rust-axum:
+    paths:
+      - apps/demo-be-rust-axum/
+    carryforward: true
+  demo-be-kotlin-ktor:
+    paths:
+      - apps/demo-be-kotlin-ktor/
+    carryforward: true
+  demo-be-java-vertx:
+    paths:
+      - apps/demo-be-java-vertx/
+    carryforward: true
+  demo-be-ts-effect:
+    paths:
+      - apps/demo-be-ts-effect/
+    carryforward: true
+  demo-be-csharp-aspnetcore:
+    paths:
+      - apps/demo-be-csharp-aspnetcore/
+    carryforward: true
+  demo-fe-ts-nextjs:
+    paths:
+      - apps/demo-fe-ts-nextjs/
+    carryforward: true

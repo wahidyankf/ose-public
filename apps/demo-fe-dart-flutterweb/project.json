@@ -1,0 +1,47 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "demo-fe-dart-flutterweb",
+  "sourceRoot": "apps/demo-fe-dart-flutterweb/lib",
+  "projectType": "application",
+  "targets": {
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "flutter run -d chrome --web-port 3301",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "flutter build web --release",
+        "cwd": "{projectRoot}"
+      },
+      "outputs": ["{projectRoot}/build/web"],
+      "dependsOn": []
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dart analyze --fatal-infos",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "test:quick": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "flutter test --coverage test/unit && (cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/demo-fe-dart-flutterweb/coverage/lcov.info 70)",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "test:unit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "flutter test test/unit",
+        "cwd": "{projectRoot}"
+      }
+    }
+  },
+  "tags": ["type:app", "platform:flutter", "lang:dart", "domain:demo-fe"],
+  "implicitDependencies": []
+}

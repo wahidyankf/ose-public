@@ -280,6 +280,7 @@ public static class ExpenseEndpoints
         new
         {
             id = e.Id,
+            userId = e.UserId,
             description = e.Title,
             category = e.Category,
             amount = FormatAmount(e.Amount, e.Currency),

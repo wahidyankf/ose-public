@@ -75,6 +75,9 @@ pub async fn pl_report(
         .collect();
 
     Ok(Json(json!({
+        "startDate": from_str,
+        "endDate": to_str,
+        "currency": currency_str.to_uppercase(),
         "totalIncome": currency.format_amount(report.income_total),
         "totalExpense": currency.format_amount(report.expense_total),
         "net": currency.format_amount(net),

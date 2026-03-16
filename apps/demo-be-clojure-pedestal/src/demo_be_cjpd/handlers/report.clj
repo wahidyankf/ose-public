@@ -24,7 +24,10 @@
                 (:expense-breakdown report))]
       {:status  200
        :headers {"Content-Type" "application/json"}
-       :body    (json/generate-string {:totalIncome      (:income-total report)
+       :body    (json/generate-string {:startDate        from
+                                       :endDate          to
+                                       :currency         (.toUpperCase (str currency))
+                                       :totalIncome      (:income-total report)
                                        :totalExpense     (:expense-total report)
                                        :net              (:net report)
                                        :incomeBreakdown  income-breakdown

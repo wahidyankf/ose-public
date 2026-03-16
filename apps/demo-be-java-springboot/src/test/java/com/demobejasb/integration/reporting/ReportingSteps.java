@@ -175,6 +175,9 @@ public class ReportingSteps {
                 .collect(Collectors.toList());
 
         responseStore.setResponse(200, new PlReportResponse(
+                from,
+                to,
+                currency,
                 format(incomeTotal, currency),
                 format(expenseTotal, currency),
                 format(net, currency),

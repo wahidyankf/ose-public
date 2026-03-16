@@ -117,6 +117,9 @@ public class ReportController {
 
         return ResponseEntity.ok(
                 new PlReportResponse(
+                        startDate.toString(),
+                        endDate.toString(),
+                        currency,
                         format(incomeTotal, currency),
                         format(expenseTotal, currency),
                         format(net, currency),

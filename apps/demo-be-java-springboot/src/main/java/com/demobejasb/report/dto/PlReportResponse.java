@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 public record PlReportResponse(
+        String startDate,
+        String endDate,
+        String currency,
         String totalIncome,
         String totalExpense,
         String net,

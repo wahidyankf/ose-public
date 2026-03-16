@@ -78,6 +78,9 @@ public static class ReportEndpoints
         return Results.Ok(
             new
             {
+                startDate,
+                endDate,
+                currency,
                 totalIncome = FormatAmount(incomeTotal, currency ?? "USD"),
                 totalExpense = FormatAmount(expenseTotal, currency ?? "USD"),
                 net = FormatAmount(incomeTotal - expenseTotal, currency ?? "USD"),

@@ -23,6 +23,9 @@ class BreakdownItem(BaseModel):
 class PLResponse(BaseModel):
     """Profit and loss report response."""
 
+    startDate: str
+    endDate: str
+    currency: str
     totalIncome: str
     totalExpense: str
     net: str
@@ -51,6 +54,9 @@ def get_pl_report(
         for cat, amt in report["expense_breakdown"].items()
     ]
     return PLResponse(
+        startDate=start_date,
+        endDate=end_date,
+        currency=validated_currency,
         totalIncome=report["totalIncome"],
         totalExpense=report["totalExpense"],
         net=report["net"],

@@ -110,6 +110,14 @@ jobs:
           path: apps/demo-fe-e2e/playwright-report/
           retention-days: 7
 
+      - name: Dump backend and frontend logs
+        if: always()
+        run: |
+          echo "=== Backend logs (last 200 lines) ==="
+          docker logs demo-be-clojure-pedestal --tail 200 2>&1 || true
+          echo "=== Frontend logs (last 100 lines) ==="
+          docker logs demo-be-cjpd-ci-fe --tail 100 2>&1 || true
+
       - name: Stop full stack
         if: always()
         run: docker compose -f infra/dev/demo-be-clojure-pedestal/docker-compose.yml -f infra/dev/demo-be-clojure-pedestal/docker-compose.ci.yml down -v

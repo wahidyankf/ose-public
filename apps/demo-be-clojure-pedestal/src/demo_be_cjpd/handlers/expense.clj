@@ -100,8 +100,8 @@
   (fn [request]
     (let [user-id  (:user-id (:identity request))
           params   (:query-params request)
-          page     (Integer/parseInt (or (get params "page") "1"))
-          size     (Integer/parseInt (or (get params "size") "20"))
+          page     (Integer/parseInt (or (some-> params :page str) (get params "page") "1"))
+          size     (Integer/parseInt (or (some-> params :size str) (get params "size") "20"))
           result   (expense-repo/list-by-user ds user-id {:page page :size size})]
       (json-response 200 {:content        (mapv expense->response (:data result))
                           :total-elements (:total result)

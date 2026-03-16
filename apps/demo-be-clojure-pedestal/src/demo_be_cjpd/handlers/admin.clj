@@ -29,9 +29,10 @@
   [ds]
   (fn [request]
     (let [params  (:query-params request)
-          search  (or (get params "search") (get params "email"))
-          page    (Integer/parseInt (or (get params "page") "1"))
-          size    (Integer/parseInt (or (get params "size") "20"))
+          search  (or (:search params) (:email params)
+                      (get params "search") (get params "email"))
+          page    (Integer/parseInt (or (some-> params :page str) (get params "page") "1"))
+          size    (Integer/parseInt (or (some-> params :size str) (get params "size") "20"))
           result  (user-repo/list-users ds {:search search :page page :size size})]
       (json-response 200 {:content       (mapv user->public (:data result))
                           :total-elements (:total result)

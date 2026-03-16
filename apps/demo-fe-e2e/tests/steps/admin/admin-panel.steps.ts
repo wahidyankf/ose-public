@@ -69,8 +69,11 @@ When("the admin clicks the {string} button", async ({ page }, buttonText: string
 
 When("{word} attempts to access the dashboard", async ({ page }) => {
   await page.goto("/expenses");
-  // Wait for all async auth checks (API response + state update + redirect) to settle
+  // Wait for network to settle then explicitly wait for the /login redirect.
+  // Slow JVM backends may still be processing the auth check when networkidle fires,
+  // so we give an additional 15 s for the redirect to complete.
   await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
+  await page.waitForURL(/\/login/, { timeout: 15000 }).catch(() => {});
 });
 
 Then("the user list should display registered users", async ({ page }) => {

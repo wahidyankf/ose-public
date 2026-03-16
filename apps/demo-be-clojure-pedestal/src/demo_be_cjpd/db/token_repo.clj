@@ -50,5 +50,5 @@
              (let [revoked-epoch (-> (:revoked_at row)
                                      java.time.Instant/parse
                                      .getEpochSecond)]
-               (> revoked-epoch iat)))
+               (>= revoked-epoch iat)))
            rows))))

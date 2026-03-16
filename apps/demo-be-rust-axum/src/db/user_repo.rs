@@ -223,11 +223,12 @@ pub async fn list_users(
         let users: Vec<User> = rows.iter().map(row_to_user).collect();
 
         use sqlx::Row;
-        let count_row: AnyRow =
-            sqlx::query("SELECT COUNT(*) as cnt FROM users WHERE email LIKE $1 OR username LIKE $1")
-                .bind(&pattern)
-                .fetch_one(pool)
-                .await?;
+        let count_row: AnyRow = sqlx::query(
+            "SELECT COUNT(*) as cnt FROM users WHERE email LIKE $1 OR username LIKE $1",
+        )
+        .bind(&pattern)
+        .fetch_one(pool)
+        .await?;
         let total: i64 = count_row.get::<i64, _>("cnt");
         (users, total)
     } else {

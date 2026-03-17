@@ -24,7 +24,11 @@ auto-generated type-safe code (encoders/decoders) in every app.
 3. **Compile-time enforcement** — apps import generated types; mismatches fail `typecheck`/`build`
 4. **Pre-push safety** — violations caught by `nx affected -t typecheck`, `lint`, and `test:quick`
    (already in pre-push hook and PR quality gate)
-5. **Language-agnostic** — the contract is YAML; code generators produce Go structs, Java DTOs,
+5. **Strict camelCase** — all JSON fields use camelCase (no snake_case or kebab-case), enforced
+   by Spectral linting with zero exceptions
+6. **API documentation** — auto-generated browsable API docs (Redoc) viewable by
+   public/product/any team via `nx run demo-contracts:docs`
+7. **Language-agnostic** — the contract is YAML; code generators produce Go structs, Java DTOs,
    Kotlin data classes, Python Pydantic models, Rust serde structs, Elixir structs, F#/C# records,
    Clojure Malli schemas, TypeScript types, and Dart classes
 
@@ -69,6 +73,7 @@ auto-generated type-safe code (encoders/decoders) in every app.
 - Spectral linting enforces API style conventions
 - Mature code generators exist for all 11 languages (web-verified)
 - Generated types include encoders/decoders for type-safe serialization
+- Auto-generated browsable API documentation (Redoc) for product/public teams
 
 ## Plan Structure
 

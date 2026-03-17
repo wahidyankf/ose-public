@@ -33,21 +33,52 @@
   - [ ] `paths/admin.yaml` — GET users, POST disable/enable/unlock/force-password-reset
   - [ ] `paths/tokens.yaml` — GET claims, GET /.well-known/jwks.json
   - [ ] `paths/test-support.yaml` — POST reset-db, POST promote-admin
-- [ ] Write `.spectral.yaml` with camelCase, description, and example rules
-- [ ] Add `demo-contracts` as Nx project (`project.json`) with `lint` and `bundle` targets
+- [ ] Write `.spectral.yaml` with strict camelCase (zero exceptions), description, and example
+      rules
+- [ ] Write `redocly.yaml` with docs theme config and `x-test-only` filtering
+- [ ] Add `demo-contracts` as Nx project (`project.json`) with `lint`, `bundle`, and `docs` targets
 - [ ] Add `**/generated-contracts/`, `**/generated_contracts/` (Python), and
       `specs/apps/demo/contracts/generated/` to root `.gitignore`
-- [ ] Verify Spectral lint passes with zero errors
+- [ ] Ensure ALL schema fields use camelCase (e.g., `tokenType` not `token_type`)
+- [ ] Verify Spectral lint passes with zero errors and zero camelCase violations
 - [ ] Verify Redocly CLI bundle resolves all `$ref`s into `generated/openapi-bundled.yaml` and
       `generated/openapi-bundled.json` (JSON needed for ajv in E2E tests)
+- [ ] Verify Redocly CLI `build-docs` generates browsable HTML at `generated/docs/index.html`
+- [ ] Verify test-only endpoints (`/api/v1/test/*`) are excluded from generated docs
 - [ ] Write example files for major endpoints
 
 **Validation**:
 
-- `npx @stoplight/spectral-cli lint openapi.yaml` exits 0
-- `npx @redocly/cli bundle openapi.yaml` produces valid bundled output
+- `npx @stoplight/spectral-cli lint openapi.yaml` exits 0 with zero camelCase errors
+- `npx @redocly/cli bundle openapi.yaml` produces valid bundled output (YAML + JSON)
+- `npx @redocly/cli build-docs` produces browsable HTML documentation
 - All endpoints from Gherkin specs are covered
 - `.gitignore` patterns correctly exclude generated folders
+- Generated docs show all public endpoints grouped by domain, with schemas and examples
+
+---
+
+### Phase 1b: camelCase Migration (Prerequisite)
+
+**Goal**: Migrate existing `token_type` (snake_case) to `tokenType` (camelCase) across all backends,
+frontends, Gherkin specs, and E2E tests before the contract enforces strict camelCase.
+
+**Implementation Steps**:
+
+- [ ] Update Gherkin spec: `specs/apps/demo/be/gherkin/authentication/password-login.feature`
+      (`"token_type"` → `"tokenType"`)
+- [ ] Update all 11 backend implementations to return `tokenType` instead of `token_type` in auth
+      login and refresh responses
+- [ ] Update frontend API clients to read `tokenType` (or verify they only use `accessToken` and
+      `refreshToken` fields)
+- [ ] Update E2E test assertions that check for `token_type`
+- [ ] Run `nx affected -t test:quick` — verify all pass with the new field name
+- [ ] Run `nx run demo-be-e2e:test:e2e` — verify E2E passes
+
+**Validation**:
+
+- `grep -r "token_type" specs/apps/demo/` returns zero results
+- All `test:quick` and `test:e2e` pass with `tokenType`
 
 ---
 
@@ -157,16 +188,19 @@ schemas/models. Enforcement via `test:unit` (part of `test:quick`).
 - [ ] Update `specs/apps/demo/README.md` — add contracts section with link to
       `specs/apps/demo/contracts/README.md`
 - [ ] Update `specs/apps/demo/contracts/README.md` — document codegen workflow, how to modify
-      contract, how generated code flows to each app
+      contract, how generated code flows to each app, how to generate/view docs
 - [ ] Update `CLAUDE.md`:
   - Add `demo-contracts` to Current Apps list
-  - Document `codegen` Nx target and dependency chain
+  - Document `codegen` and `docs` Nx targets and dependency chain
   - Document `generated-contracts/` gitignore pattern
+  - Document strict camelCase convention for all API JSON fields
   - Add note about contract enforcement in Three-Level Testing section
-- [ ] Update `governance/development/infra/nx-targets.md` — add `codegen` as a standard target
-      for demo apps
+- [ ] Update `governance/development/infra/nx-targets.md` — add `codegen` and `docs` as standard
+      targets for demo apps
 - [ ] Verify fresh clone workflow: `git clone` → `npm install` → `nx affected -t typecheck` passes
 - [ ] Verify contract change workflow: modify schema → `nx affected -t typecheck` catches all apps
+- [ ] Verify docs workflow: `nx run demo-contracts:docs` → open `generated/docs/index.html` in
+      browser → verify all endpoints visible, test-only excluded
 
 **Validation**:
 
@@ -174,6 +208,8 @@ schemas/models. Enforcement via `test:unit` (part of `test:quick`).
 - Contract change: `nx affected` shows all demo apps, codegen re-runs, compile catches mismatches
 - Pre-push: `git push` triggers `typecheck` + `lint` + `test:quick`, all pass
 - PR: quality gate runs same checks, all pass
+- Docs: `nx run demo-contracts:docs` produces browsable HTML with all public endpoints
+- camelCase: zero snake_case or kebab-case fields in any schema
 
 ---
 
@@ -187,9 +223,8 @@ schemas/models. Enforcement via `test:unit` (part of `test:quick`).
    Fall back to simpler generation (e.g., just types without full server interface) and add
    runtime validation for unsupported features. Document per-language limitations.
 
-3. **How to handle the `token_type` (snake_case) exception?**
-   Add Spectral rule exception for OAuth2 fields. Code generators handle this natively since
-   they follow the spec literally.
+3. **~~How to handle the `token_type` (snake_case) exception?~~** **Resolved**: No exceptions.
+   All fields use camelCase. `token_type` → `tokenType`. Phase 1b handles migration.
 
 4. **Should the postinstall codegen run on CI?**
    Yes — `npm ci` in CI triggers postinstall, which runs codegen. This ensures CI has all

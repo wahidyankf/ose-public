@@ -30,9 +30,12 @@ specs/apps/demo/contracts/
 │   ├── pagination.yaml       # Reusable pagination envelope
 │   ├── error.yaml            # Standardized error response
 │   └── health.yaml           # HealthResponse
-├── generated/                # Bundled spec output (gitignored)
+├── redocly.yaml              # Redocly config (docs theme, x-test-only filtering)
+├── generated/                # Bundled spec + docs output (gitignored)
 │   ├── openapi-bundled.yaml  # Single resolved file for code generators
-│   └── openapi-bundled.json  # JSON variant for ajv validation in E2E tests
+│   ├── openapi-bundled.json  # JSON variant for ajv validation in E2E tests
+│   └── docs/
+│       └── index.html        # Browsable API documentation (Redoc)
 └── examples/
     ├── auth-login.yaml       # Example request/response pairs
     └── expense-create.yaml   # Example expense creation
@@ -182,6 +185,13 @@ and `test:unit` target depends on `codegen`. This ensures:
       "cache": true,
       "inputs": ["specs/apps/demo/contracts/**/*.yaml"],
       "outputs": ["specs/apps/demo/contracts/generated/"]
+    },
+    "docs": {
+      "command": "npx @redocly/cli build-docs specs/apps/demo/contracts/generated/openapi-bundled.yaml -o specs/apps/demo/contracts/generated/docs/index.html --config specs/apps/demo/contracts/redocly.yaml",
+      "dependsOn": ["bundle"],
+      "cache": true,
+      "inputs": ["specs/apps/demo/contracts/generated/openapi-bundled.yaml"],
+      "outputs": ["specs/apps/demo/contracts/generated/docs/"]
     }
   }
 }
@@ -284,8 +294,10 @@ rules:
       function: truthy
 ```
 
-**Note**: `token_type` (snake_case) is an exception to camelCase per OAuth2 RFC 6749. The Spectral
-rule will need a property-level exception for this field.
+**Strict camelCase, zero exceptions**: All JSON fields must be camelCase. The OAuth2-standard
+`token_type` field is renamed to `tokenType` in our contract. This requires migrating existing
+backends and Gherkin specs that use `token_type`. Consistency across all fields takes priority
+over OAuth2 convention compliance.
 
 ## Existing CI Integration
 
@@ -370,7 +382,7 @@ The contract covers all endpoints from the existing Gherkin specs:
 
 Based on the canonical types from `demo-fe-ts-nextjs/src/lib/api/types.ts` and Gherkin specs:
 
-**AuthTokens**: `{ accessToken: string, refreshToken: string, token_type: string }`
+**AuthTokens**: `{ accessToken: string, refreshToken: string, tokenType: string }`
 
 **User**: `{ id: string, username: string, email: string, displayName: string, status: string, roles: string[], createdAt: string, updatedAt: string }`
 
@@ -444,9 +456,71 @@ via Pydantic validation (Python), struct enforcement (Elixir), and Malli validat
 - Malli `m/decode` with `:strip-extra-keys` catches schema violations
 - This matches each language's idiom rather than fighting it
 
-### Decision 5: Test-Only Endpoints Use OpenAPI Extension
+### Decision 5: Strict camelCase, Zero Exceptions
+
+**Context**: OAuth2 RFC 6749 uses `token_type` (snake_case). Our API currently follows this.
+
+**Decision**: All JSON fields use camelCase with zero exceptions. `token_type` becomes `tokenType`.
+
+**Rationale**:
+
+- Consistency across all fields is more valuable than OAuth2 convention compliance
+- Spectral can enforce a single rule with no exceptions — simpler, no edge cases
+- Code generators produce consistent field names across all languages
+- Consumers of the API (frontends, E2E tests) never see mixed casing
+
+**Migration required**:
+
+- Update Gherkin spec: `specs/apps/demo/be/gherkin/authentication/password-login.feature`
+  (`token_type` → `tokenType`)
+- Update all 11 backend implementations to return `tokenType` instead of `token_type`
+- Update frontend API clients to read `tokenType`
+- Update E2E test assertions
+
+### Decision 6: Test-Only Endpoints Use OpenAPI Extension
 
 **Context**: `/api/v1/test/*` endpoints exist only for testing.
 
 **Decision**: Mark with `x-test-only: true`. Code generators include them. Documentation generators
 filter them out.
+
+### Decision 7: Browsable API Documentation via Redoc
+
+**Context**: Product managers, stakeholders, and external teams need to understand the API without
+reading code or YAML.
+
+**Decision**: Generate static HTML documentation using `@redocly/cli build-docs`. Served locally
+via `nx run demo-contracts:docs` and optionally deployable to a public URL.
+
+**Rationale**:
+
+- Redoc produces beautiful, responsive, single-page HTML documentation
+- Generated from the same OpenAPI spec that drives code generation — always in sync
+- No hosting infrastructure needed — static HTML file can be opened directly
+- `x-test-only` endpoints are excluded via Redocly's `x-tagGroups` or `remove-x-internal` config
+- `@redocly/cli` is already a dependency (used for bundling)
+
+**Documentation features**:
+
+- Grouped by domain (Authentication, Users, Expenses, Admin, etc.)
+- Request/response schemas with types and descriptions
+- Example request/response pairs inline
+- Try-it-out panel (when served with a running backend)
+- Search across all endpoints
+- Mobile-responsive layout
+
+**Redocly configuration** (`specs/apps/demo/contracts/redocly.yaml`):
+
+```yaml
+apis:
+  demo:
+    root: openapi.yaml
+theme:
+  openapi:
+    hideDownloadButton: false
+    disableSearch: false
+    expandResponses: "200,201"
+decorators:
+  remove-x-internal:
+    internalFlagProperty: x-test-only
+```

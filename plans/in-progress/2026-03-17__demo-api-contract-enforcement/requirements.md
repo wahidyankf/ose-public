@@ -10,12 +10,13 @@
 3. Apps import generated types; mismatches fail at compile time (`typecheck`/`build`)
 4. Generated folders are gitignored — code is regenerated via `nx run <app>:codegen`
 5. Violations caught by existing PR quality gate (`nx affected -t typecheck`, `lint`, `test:quick`)
+6. All JSON fields use **strict camelCase** — no snake_case, no kebab-case, zero exceptions
+7. Generate browsable API documentation (Redoc) viewable by public/product/any team
 
 **Secondary Objectives**:
 
-1. Generate API documentation (Swagger UI / Redoc) from the contract
-2. Establish API style conventions (camelCase fields, consistent error format) via Spectral linting
-3. Provide example request/response pairs as documentation and test fixtures
+1. Provide example request/response pairs as documentation and test fixtures
+2. Enable future deployment of API docs to a public URL
 
 ## User Stories
 
@@ -98,6 +99,49 @@ Scenario: Generated code is excluded from git
   Given apps/demo-be-golang-gin/generated-contracts/ exists locally
   When I run git status
   Then generated-contracts/ should not appear as untracked
+```
+
+**Story 5: Product Team Views API Documentation**
+
+```gherkin
+Feature: Browsable API documentation from the contract
+  As a product manager or stakeholder
+  I want to browse the API documentation
+  So that I can understand available endpoints without reading code
+
+Scenario: Generate API documentation locally
+  Given the OpenAPI contract is valid
+  When I run nx run demo-contracts:docs
+  Then a browsable HTML page is generated at specs/apps/demo/contracts/generated/docs/index.html
+  And it shows all endpoints with request/response schemas
+  And it includes example request/response pairs
+  And test-only endpoints (/api/v1/test/*) are excluded
+
+Scenario: Documentation reflects latest contract
+  Given I add a new "tags" field to the Expense schema
+  When I run nx run demo-contracts:docs
+  Then the Expense section in the docs shows the new "tags" field
+```
+
+**Story 6: Strict camelCase Enforcement**
+
+```gherkin
+Feature: All JSON fields use camelCase
+  As a developer
+  I want all API JSON fields to be camelCase
+  So that the API is consistent across all endpoints
+
+Scenario: Spectral rejects snake_case fields
+  Given a schema defines a field named "token_type"
+  When Spectral lints the OpenAPI specification
+  Then it should report an error for the non-camelCase field
+  And the lint target should fail
+
+Scenario: All existing fields are camelCase
+  Given the complete OpenAPI specification
+  When Spectral lints all schema properties
+  Then every field name should be camelCase
+  And there should be zero camelCase violations
 ```
 
 ## Alternatives Analysis
@@ -270,6 +314,20 @@ Feature: API contract enforcement via code generation
     When they run npm install
     Then postinstall triggers codegen for all demo apps
     And typecheck/build succeeds immediately
+
+  Scenario: All JSON fields are strict camelCase
+    Given the complete OpenAPI specification
+    When Spectral lints all schema properties
+    Then every field name should be camelCase (e.g., tokenType, not token_type)
+    And there should be zero exceptions to the camelCase rule
+
+  Scenario: API documentation is generated
+    Given the OpenAPI specification is valid
+    When nx run demo-contracts:docs runs
+    Then a browsable HTML page is generated
+    And it shows all endpoints grouped by domain
+    And it includes request/response schemas with examples
+    And test-only endpoints are excluded from the documentation
 ```
 
 ## Constraints
@@ -282,6 +340,10 @@ Feature: API contract enforcement via code generation
 5. **Trunk Based Development** — all work on main branch
 6. **Generated code must include encoders AND decoders** — not just types but full
    serialization/deserialization support
+7. **Strict camelCase** — all JSON field names must be camelCase, zero exceptions. Existing
+   snake_case fields (e.g., `token_type` → `tokenType`) must be migrated.
+8. **Browsable documentation** — the contract must produce HTML documentation viewable by
+   non-developers (product, stakeholders, public)
 
 ## Out of Scope
 

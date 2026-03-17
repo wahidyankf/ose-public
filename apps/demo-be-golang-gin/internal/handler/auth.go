@@ -145,7 +145,7 @@ func (h *Handler) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"accessToken":  accessToken,
 		"refreshToken": refreshTokenStr,
-		"token_type":   "Bearer",
+		"tokenType":    "Bearer",
 	})
 }
 
@@ -229,7 +229,7 @@ func (h *Handler) Refresh(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"accessToken":  accessToken,
 		"refreshToken": newRefreshStr,
-		"token_type":   "Bearer",
+		"tokenType":    "Bearer",
 	})
 }
 

@@ -56,7 +56,7 @@ class TokenResponse(BaseModel):
 
     accessToken: str
     refreshToken: str
-    token_type: str = "Bearer"
+    tokenType: str = "Bearer"
 
 
 class RefreshRequest(BaseModel):

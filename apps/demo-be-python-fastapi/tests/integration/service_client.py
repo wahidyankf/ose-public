@@ -252,7 +252,7 @@ class ServiceClient:
                 {
                     "accessToken": access_token,
                     "refreshToken": refresh_token,
-                    "token_type": "Bearer",
+                    "tokenType": "Bearer",
                 }
             )
         except (UnauthorizedError, AccountLockedError) as exc:
@@ -296,7 +296,7 @@ class ServiceClient:
                 {
                     "accessToken": new_access,
                     "refreshToken": new_refresh,
-                    "token_type": "Bearer",
+                    "tokenType": "Bearer",
                 }
             )
         except (UnauthorizedError, AccountLockedError) as exc:

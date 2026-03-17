@@ -150,8 +150,8 @@ func TestUnitLoginHandler(t *testing.T) {
 	if code != 200 {
 		t.Errorf("expected 200, got %d", code)
 	}
-	if body["token_type"] != "Bearer" {
-		t.Errorf("expected Bearer token type, got %v", body["token_type"])
+	if body["tokenType"] != "Bearer" {
+		t.Errorf("expected Bearer token type, got %v", body["tokenType"])
 	}
 
 	// Wrong password.

@@ -119,7 +119,7 @@ object ServiceDispatcher {
                 buildJsonObject {
                         put("accessToken", accessToken)
                         put("refreshToken", refreshToken)
-                        put("token_type", "Bearer")
+                        put("tokenType", "Bearer")
                     }
                     .toString(),
             )
@@ -164,7 +164,7 @@ object ServiceDispatcher {
                 buildJsonObject {
                         put("accessToken", newAccess)
                         put("refreshToken", newRefresh)
-                        put("token_type", "Bearer")
+                        put("tokenType", "Bearer")
                     }
                     .toString(),
             )

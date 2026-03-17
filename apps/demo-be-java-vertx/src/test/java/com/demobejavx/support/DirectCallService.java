@@ -177,7 +177,7 @@ public final class DirectCallService {
         return ServiceResponse.of(200, new JsonObject()
                 .put("accessToken", tokens.accessToken())
                 .put("refreshToken", tokens.refreshToken())
-                .put("token_type", "Bearer"));
+                .put("tokenType", "Bearer"));
     }
 
     public ServiceResponse refresh(String refreshToken) throws Exception {
@@ -226,7 +226,7 @@ public final class DirectCallService {
         return ServiceResponse.of(200, new JsonObject()
                 .put("accessToken", tokens.accessToken())
                 .put("refreshToken", tokens.refreshToken())
-                .put("token_type", "Bearer"));
+                .put("tokenType", "Bearer"));
     }
 
     public ServiceResponse logout(@Nullable String bearerToken) throws Exception {

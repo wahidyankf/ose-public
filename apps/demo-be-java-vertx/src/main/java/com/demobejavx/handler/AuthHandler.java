@@ -140,7 +140,7 @@ public class AuthHandler implements Handler<RoutingContext> {
                     JsonObject resp = new JsonObject()
                             .put("accessToken", tokens.accessToken())
                             .put("refreshToken", tokens.refreshToken())
-                            .put("token_type", "Bearer");
+                            .put("tokenType", "Bearer");
                     ctx.response()
                             .setStatusCode(200)
                             .putHeader("Content-Type", "application/json")
@@ -213,7 +213,7 @@ public class AuthHandler implements Handler<RoutingContext> {
                     JsonObject resp = new JsonObject()
                             .put("accessToken", tokens.accessToken())
                             .put("refreshToken", tokens.refreshToken())
-                            .put("token_type", "Bearer");
+                            .put("tokenType", "Bearer");
                     ctx.response()
                             .setStatusCode(200)
                             .putHeader("Content-Type", "application/json")

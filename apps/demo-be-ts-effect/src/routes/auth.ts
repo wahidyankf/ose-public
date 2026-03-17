@@ -102,7 +102,7 @@ const login = HttpServerRequest.HttpServerRequest.pipe(
       return yield* HttpServerResponse.json({
         accessToken,
         refreshToken,
-        token_type: "Bearer",
+        tokenType: "Bearer",
       });
     }),
   ),
@@ -185,7 +185,7 @@ const refresh = HttpServerRequest.HttpServerRequest.pipe(
       return yield* HttpServerResponse.json({
         accessToken: newAccessToken,
         refreshToken: newRefreshToken,
-        token_type: "Bearer",
+        tokenType: "Bearer",
       });
     }),
   ),

@@ -319,7 +319,7 @@ let login (db: AppDbContext) (username: string) (password: string) : Async<int *
                 ok
                     {| accessToken = accessToken
                        refreshToken = refreshTokenStr
-                       token_type = "Bearer" |}
+                       tokenType = "Bearer" |}
     }
 
 let refresh (db: AppDbContext) (refreshTokenStr: string) : Async<int * string> =
@@ -368,7 +368,7 @@ let refresh (db: AppDbContext) (refreshTokenStr: string) : Async<int * string> =
                     ok
                         {| accessToken = accessToken
                            refreshToken = newRefreshToken
-                           token_type = "Bearer" |}
+                           tokenType = "Bearer" |}
     }
 
 let logout (db: AppDbContext) (token: string option) : Async<int * string> =

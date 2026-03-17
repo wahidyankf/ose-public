@@ -147,7 +147,7 @@ public sealed class ServiceLayer(IntegrationTestHost host)
             {
                 accessToken,
                 refreshToken,
-                token_type = "Bearer",
+                tokenType = "Bearer",
             }
         );
     }
@@ -230,7 +230,7 @@ public sealed class ServiceLayer(IntegrationTestHost host)
             {
                 accessToken = newAccessToken,
                 refreshToken = newRefreshToken,
-                token_type = "Bearer",
+                tokenType = "Bearer",
             }
         );
     }

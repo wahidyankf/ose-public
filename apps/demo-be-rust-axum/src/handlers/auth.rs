@@ -96,6 +96,7 @@ pub struct LoginResponse {
     pub access_token: String,
     #[serde(rename = "refreshToken")]
     pub refresh_token: String,
+    #[serde(rename = "tokenType")]
     pub token_type: String,
 }
 

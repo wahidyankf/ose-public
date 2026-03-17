@@ -141,7 +141,7 @@ public static class AuthEndpoints
             {
                 accessToken,
                 refreshToken,
-                token_type = "Bearer",
+                tokenType = "Bearer",
             }
         );
     }
@@ -222,7 +222,7 @@ public static class AuthEndpoints
             {
                 accessToken = newAccessToken,
                 refreshToken = newRefreshToken,
-                token_type = "Bearer",
+                tokenType = "Bearer",
             }
         );
     }

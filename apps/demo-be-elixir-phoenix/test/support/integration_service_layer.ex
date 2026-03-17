@@ -102,7 +102,7 @@ defmodule DemoBeExph.Integration.ServiceLayer do
           body: %{
             "accessToken" => access_token,
             "refreshToken" => refresh_token,
-            "token_type" => "Bearer"
+            "tokenType" => "Bearer"
           }
         }
 
@@ -191,7 +191,7 @@ defmodule DemoBeExph.Integration.ServiceLayer do
             body: %{
               "accessToken" => access_token,
               "refreshToken" => new_refresh_token,
-              "token_type" => "Bearer"
+              "tokenType" => "Bearer"
             }
           }
         end

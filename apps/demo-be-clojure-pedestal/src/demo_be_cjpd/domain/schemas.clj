@@ -194,6 +194,6 @@
 (def TokenResponse
   "Successful authentication response with tokens."
   [:map
-   [:access_token :string]
-   [:refresh_token :string]
-   [:token_type [:= "Bearer"]]])
+   [:accessToken :string]
+   [:refreshToken :string]
+   [:tokenType [:= "Bearer"]]])

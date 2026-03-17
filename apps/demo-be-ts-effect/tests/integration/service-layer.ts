@@ -301,7 +301,7 @@ export async function login(body: Record<string, unknown>): Promise<HttpResponse
       return {
         accessToken,
         refreshToken,
-        token_type: "Bearer",
+        tokenType: "Bearer",
       };
     }),
   );
@@ -399,7 +399,7 @@ export async function refreshToken(body: Record<string, unknown>): Promise<HttpR
       return {
         accessToken: newAccessToken,
         refreshToken: newRefreshToken,
-        token_type: "Bearer",
+        tokenType: "Bearer",
       };
     }),
   );

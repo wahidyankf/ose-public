@@ -106,7 +106,7 @@ defmodule DemoBeExphWeb.AuthController do
         json(conn, %{
           accessToken: access_token,
           refreshToken: refresh_token,
-          token_type: "Bearer"
+          tokenType: "Bearer"
         })
 
       {:error, :invalid_credentials} ->
@@ -153,7 +153,7 @@ defmodule DemoBeExphWeb.AuthController do
           json(conn, %{
             accessToken: access_token,
             refreshToken: new_refresh_token,
-            token_type: "Bearer"
+            tokenType: "Bearer"
           })
         end
     end

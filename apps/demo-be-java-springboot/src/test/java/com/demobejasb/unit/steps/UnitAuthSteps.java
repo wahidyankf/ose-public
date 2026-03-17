@@ -45,8 +45,7 @@ public class UnitAuthSteps {
     /** Maps JSON property names (snake_case) to AuthResponse component names (camelCase). */
     private static final Map<String, String> AUTH_FIELD_MAP = Map.of(
             "access_token", "accessToken",
-            "refresh_token", "refreshToken",
-            "token_type", "tokenType");
+            "refresh_token", "refreshToken");
 
     @Autowired
     private UnitStateStore stateStore;

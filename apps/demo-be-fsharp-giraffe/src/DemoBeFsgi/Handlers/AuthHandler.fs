@@ -272,7 +272,7 @@ let login: HttpHandler =
                         json
                             {| accessToken = accessToken
                                refreshToken = refreshTokenStr
-                               token_type = "Bearer" |}
+                               tokenType = "Bearer" |}
                             earlyReturn
                             ctx
         }
@@ -374,7 +374,7 @@ let refresh: HttpHandler =
                             json
                                 {| accessToken = accessToken
                                    refreshToken = newRefreshToken
-                                   token_type = "Bearer" |}
+                                   tokenType = "Bearer" |}
                                 earlyReturn
                                 ctx
         }

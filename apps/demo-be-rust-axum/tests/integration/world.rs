@@ -693,7 +693,7 @@ pub async fn svc_login(state: &AppState, username: &str, password: &str) -> Serv
     ServiceResponse::ok(json!({
         "accessToken": access_token,
         "refreshToken": refresh_token,
-        "token_type": "Bearer",
+        "tokenType": "Bearer",
     }))
 }
 
@@ -763,7 +763,7 @@ pub async fn svc_refresh(state: &AppState, refresh_token_str: &str) -> ServiceRe
     ServiceResponse::ok(json!({
         "accessToken": access_token,
         "refreshToken": refresh_token,
-        "token_type": "Bearer",
+        "tokenType": "Bearer",
     }))
 }
 

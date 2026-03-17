@@ -1,11 +1,9 @@
 package com.demobejasb.auth.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public record AuthResponse(
     String accessToken,
     String refreshToken,
-    @JsonProperty("token_type") String tokenType) {
+    String tokenType) {
 
     public static AuthResponse bearer(final String accessToken, final String refreshToken) {
         return new AuthResponse(accessToken, refreshToken, "Bearer");

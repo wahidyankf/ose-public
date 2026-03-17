@@ -109,7 +109,7 @@
                 refresh-token (jwt/sign-refresh-token (:jwt-secret config) (:id user))]
             (json-response 200 {:access-token  access-token
                                 :refresh-token refresh-token
-                                "token_type"   "Bearer"
+                                "tokenType"    "Bearer"
                                 :user          (user->public user)})))))))
 
 (defn refresh-handler
@@ -153,7 +153,7 @@
                             new-refresh (jwt/sign-refresh-token (:jwt-secret config) user-id)]
                         (json-response 200 {:access-token  new-access
                                             :refresh-token new-refresh
-                                            "token_type"   "Bearer"}))))))))))))))
+                                            "tokenType"    "Bearer"}))))))))))))))
 
 (defn logout-handler
   "POST /api/v1/auth/logout — Revoke the provided access token."

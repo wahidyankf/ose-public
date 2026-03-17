@@ -113,7 +113,7 @@ object AuthRoutes : KoinComponent {
       mapOf(
         "accessToken" to accessToken,
         "refreshToken" to refreshToken,
-        "token_type" to "Bearer",
+        "tokenType" to "Bearer",
       )
     )
   }
@@ -156,7 +156,7 @@ object AuthRoutes : KoinComponent {
       mapOf(
         "accessToken" to newAccessToken,
         "refreshToken" to newRefreshToken,
-        "token_type" to "Bearer",
+        "tokenType" to "Bearer",
       )
     )
   }

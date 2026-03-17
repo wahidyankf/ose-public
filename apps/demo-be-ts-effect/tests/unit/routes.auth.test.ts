@@ -245,7 +245,7 @@ describe("POST /api/v1/auth/login", () => {
     expect(status).toBe(200);
     expect(body["accessToken"]).toBeDefined();
     expect(body["refreshToken"]).toBeDefined();
-    expect(body["token_type"]).toBe("Bearer");
+    expect(body["tokenType"]).toBe("Bearer");
   });
 
   it("returns 401 for wrong password", async () => {

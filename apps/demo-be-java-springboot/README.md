@@ -248,7 +248,7 @@ lowercase, digit, and special character.
 **Login response**:
 
 ```json
-{ "access_token": "<jwt>", "refresh_token": "<refresh>", "token_type": "Bearer" }
+{ "accessToken": "<jwt>", "refreshToken": "<refresh>", "tokenType": "Bearer" }
 ```
 
 Pass the token in subsequent requests as `Authorization: Bearer <token>`.

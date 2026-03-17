@@ -25,9 +25,10 @@ jobs:
 
       - name: Generate contract types
         run: |
-          npm ci
+          npm ci --ignore-scripts
           npx nx run demo-contracts:bundle
           npx nx run demo-fe-ts-nextjs:codegen
+          npx nx run demo-fe-ts-tanstack-start:codegen
 
       - name: Start full stack (DB + backend + frontend)
         run: docker compose -f infra/dev/demo-fe-dart-flutterweb/docker-compose.yml up --build -d

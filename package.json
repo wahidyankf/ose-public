@@ -21,7 +21,7 @@
     "graph": "nx graph",
     "nx": "nx",
     "prepare": "husky",
-    "postinstall": "npm run doctor && npx nx run-many -t codegen --projects=demo-* --parallel=5",
+    "postinstall": "npm run doctor || true",
     "demo-be:dev": "cd infra/dev/demo-be-java-springboot && docker compose up",
     "demo-be:dev:restart": "cd infra/dev/demo-be-java-springboot && docker compose down && docker compose up",
     "demo-be:clean": "sudo chown -R $USER:$USER apps/demo-be-java-springboot/target && rm -rf apps/demo-be-java-springboot/target",

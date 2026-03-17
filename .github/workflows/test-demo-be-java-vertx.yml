@@ -48,9 +48,10 @@ jobs:
 
       - name: Generate contract types
         run: |
-          npm ci
+          npm ci --ignore-scripts
           npx nx run demo-contracts:bundle
           npx nx run demo-fe-ts-nextjs:codegen
+          npx nx run demo-fe-ts-tanstack-start:codegen
 
       - name: Copy source to build context for dependency and compile caching
         run: |

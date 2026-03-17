@@ -43,9 +43,10 @@ jobs:
 
       - name: Generate contract types
         run: |
-          npm ci
+          npm ci --ignore-scripts
           npx nx run demo-contracts:bundle
           npx nx run demo-fe-ts-nextjs:codegen
+          npx nx run demo-fe-ts-tanstack-start:codegen
 
       - name: Start full stack (DB + backend + frontend)
         run: docker compose -f infra/dev/demo-be-fsharp-giraffe/docker-compose.yml -f infra/dev/demo-be-fsharp-giraffe/docker-compose.ci.yml up --build -d

@@ -94,7 +94,7 @@ Scenario: Vert.x handler uses generated types instead of raw JsonObject
   When contract adoption is complete for demo-be-java-vertx
   Then handlers deserialize request bodies into generated contract types
   And handlers serialize generated contract types into responses
-  And a field name mismatch causes mvn compile to fail
+  And a field name mismatch causes `nx run demo-be-java-vertx:build` to fail
 ```
 
 ## Functional Requirements
@@ -237,10 +237,15 @@ Scenario: E2E suites pass with contract validation active
 
 ### Out of Scope
 
-- Modifying the OpenAPI spec itself (it is already correct — except potentially adding missing
-  types like `RegisterResponse` or `AttachmentListResponse` if needed; this should be evaluated
-  during implementation)
-- Changing the codegen tools or generators (already set up)
 - Adding new endpoints to the contract
+- Changing existing endpoint semantics
+- Changing the codegen tools or generators (already set up)
 - Adding new Gherkin scenarios (existing scenarios already cover the API)
 - Changing the Nx dependency chain (already set up: codegen -> typecheck/build/test:unit)
+
+### Conditionally In Scope (Evaluated in Phase 0)
+
+- Adding missing response type schemas to the OpenAPI spec (`RegisterResponse`,
+  `AttachmentListResponse`) if needed for complete contract coverage — covered in Phase 0.
+  The spec modification is in scope only for filling gaps in existing API shapes, not for
+  changing existing endpoint behavior.

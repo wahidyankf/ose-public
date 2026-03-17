@@ -40,7 +40,9 @@ generation was planned but never confirmed.
   - [ ] Run `nx run demo-be-elixir-phoenix:codegen` and capture output
   - [ ] Verify `.ex` struct files appear in `apps/demo-be-elixir-phoenix/generated-contracts/`
   - [ ] Verify each struct has `defstruct`, `@enforce_keys`, and `@type` typespecs
-  - [ ] Verify module namespace matches expected pattern (e.g., `DemoBeExph.Contracts.User`)
+  - [ ] Verify module namespace from generated files (expected `GeneratedSchemas.User` based on
+        `@default_namespace "GeneratedSchemas"` in the codegen lib; no namespace override is
+        passed in `project.json`). If different, note the actual prefix for Phase 10.
   - [ ] If generation fails, debug `libs/elixir-openapi-codegen` and fix
   - [ ] Run `nx run elixir-openapi-codegen:test:quick` to confirm lib is healthy
 - [ ] **demo-be-clojure-pedestal codegen verification**
@@ -55,6 +57,9 @@ generation was planned but never confirmed.
   - [ ] Run `nx run demo-fe-dart-flutterweb:codegen` and capture output
   - [ ] Verify Dart classes appear in `generated-contracts/` with `fromJson`/`toJson`
   - [ ] Run `dart analyze` on generated code to verify validity
+  - [ ] Compare `fromJson` and `toJson` signatures of one generated Dart class (e.g., `User`)
+        against the equivalent hand-written model class in `lib/models/user.dart` to confirm
+        serialization compatibility before Phase 11 begins (field naming, null handling)
   - [ ] If codegen target missing or broken, implement/fix it
 
 **Validation**:
@@ -70,8 +75,13 @@ generation was planned but never confirmed.
 **Goal**: Wire the TypeScript backend — request body type annotations + response type annotations.
 
 - [ ] **Create re-export layer**
-  - [ ] Create `src/lib/api/types.ts` mirroring `demo-fe-ts-nextjs` pattern
-  - [ ] Re-export ALL 23 types from `../../generated-contracts/types.gen`
+  - [ ] Create `src/lib/api/types.ts` (create `src/lib/api/` directories first) mirroring
+        `demo-fe-ts-nextjs` pattern
+  - [ ] Re-export all primary domain types from `../../generated-contracts/types.gen`
+  - [ ] Note: `types.gen.ts` has 97+ exports; the re-export layer selects the 23 primary domain
+        types used by route handlers
+  - [ ] Use `PlReport as PLReport` alias (the generated name is `PlReport`, conventional usage
+        is `PLReport`; see `demo-fe-ts-nextjs/src/lib/api/types.ts` for the exact alias)
 - [ ] **Wire `src/routes/auth.ts`** (request + response)
   - [ ] Import `LoginRequest`, `RegisterRequest`, `RefreshRequest` (request types)
   - [ ] Import `AuthTokens`, `User` (response types)
@@ -166,7 +176,9 @@ response maps with typed generated structs.
 **Goal**: Replace 18 local DTO classes with generated `contracts.*` imports. Resolve name
 mismatches.
 
-- [ ] **Verify** `pom.xml` has `generated-contracts/src/main/java` as Maven source root
+- [ ] **Add** `generated-contracts/src/main/java` as Maven source root to `pom.xml` (use
+      `build-helper-maven-plugin` `add-source` execution — this configuration does not exist yet;
+      see tech-docs.md Java section for the required XML snippet)
 - [ ] **Wire auth DTOs** (7 request + 2 response)
   - [ ] Delete `auth/dto/LoginRequest.java` — replace with `contracts.LoginRequest`
   - [ ] Delete `auth/dto/RegisterRequest.java` — replace with `contracts.RegisterRequest`
@@ -211,7 +223,9 @@ mismatches.
 **Goal**: Refactor handlers from raw `JsonObject` to use generated contract types for BOTH request
 parsing and response serialization. This is the most invasive backend change.
 
-- [ ] **Verify** `pom.xml` has `generated-contracts/src/main/java` as Maven source root
+- [ ] **Add** `generated-contracts/src/main/java` as Maven source root to `pom.xml` (same as
+      Phase 4 — use `build-helper-maven-plugin` `add-source`; Vert.x model package is
+      `com.demobejavx.contracts`, verified from `project.json`'s `--model-package` argument)
 - [ ] **Wire auth handlers** (`AuthHandler.java`)
   - [ ] Replace `body.getString("username")` pattern with deserialization into
         `contracts.LoginRequest` / `contracts.RegisterRequest` / `contracts.RefreshRequest`
@@ -249,7 +263,9 @@ parsing and response serialization. This is the most invasive backend change.
 **Goal**: Replace 9 inline data classes with generated imports. Convert `mapOf()` responses to
 generated type instances.
 
-- [ ] **Verify** `build.gradle.kts` includes `generated-contracts/src/main/kotlin` in source set
+- [ ] **Add** `sourceSets.main { kotlin.srcDirs("generated-contracts/src/main/kotlin") }` to
+      `build.gradle.kts` (Kotlin DSL syntax; this configuration does not exist yet — see
+      tech-docs.md Kotlin section for the correct syntax)
 - [ ] **Wire `AuthRoutes.kt`** (request + response)
   - [ ] Remove local `RegisterRequest` data class — import `contracts.RegisterRequest`
   - [ ] Remove local `LoginRequest` data class — import `contracts.LoginRequest`
@@ -291,15 +307,19 @@ generated type instances.
 **Goal**: Replace 12 local structs with generated model imports. Add generated-contracts as crate
 dependency.
 
-- [ ] **Add crate dependency**
-  - [ ] Verify `generated-contracts/Cargo.toml` crate name
-  - [ ] Add path dependency to main `Cargo.toml`
+- [ ] **Create crate scaffolding** (generated-contracts/ has no Cargo.toml — must be created)
+  - [ ] Create `generated-contracts/Cargo.toml` with `[package] name = "demo-contracts"` and
+        `edition = "2021"`
+  - [ ] Create `generated-contracts/src/lib.rs` with `pub mod models;`
+  - [ ] Create `generated-contracts/src/models/mod.rs` re-exporting all generated model files
+  - [ ] Add `demo-contracts = { path = "generated-contracts" }` to main `Cargo.toml`
+        (crate name is `demo-contracts`, not `generated-contracts`)
 - [ ] **Wire `src/handlers/auth.rs`** (request + response)
   - [ ] Remove local `RegisterRequest`, `LoginRequest`, `RefreshRequest` structs
   - [ ] Remove local `RegisterResponse`, `LoginResponse` structs
-  - [ ] Import generated types: `use contracts::models::{RegisterRequest, LoginRequest, ...}`
-  - [ ] Replace `RegisterResponse` with `models::User`
-  - [ ] Replace `LoginResponse` with `models::AuthTokens`
+  - [ ] Import generated types: `use demo_contracts::models::{RegisterRequest, LoginRequest, ...}`
+  - [ ] Replace `RegisterResponse` with `demo_contracts::models::User`
+  - [ ] Replace `LoginResponse` with `demo_contracts::models::AuthTokens`
 - [ ] **Wire `src/handlers/user.rs`** (request + response)
   - [ ] Remove local `UpdateProfileRequest`, `ChangePasswordRequest` structs
   - [ ] Remove local `UserProfile` struct
@@ -334,45 +354,47 @@ dependency.
 
 ### Phase 8: Wire demo-be-python-fastapi (Python/FastAPI)
 
-**Goal**: Replace 18 local Pydantic models with generated imports. Update `response_model=`
-parameters to use generated types.
+**Goal**: Replace 22 local Pydantic models (8 request-type + 14 response-type) with generated
+imports. Update `response_model=` parameters to use generated types.
 
 - [ ] **Verify** `from generated_contracts import LoginRequest` works from app source root
-- [ ] **Wire `routers/auth.py`** (request + response)
+- [ ] Note: All router files are under `src/demo_be_python_fastapi/routers/` (e.g.,
+      `src/demo_be_python_fastapi/routers/auth.py`)
+- [ ] **Wire `src/demo_be_python_fastapi/routers/auth.py`** (request + response)
   - [ ] Remove local `RegisterRequest` class — import from `generated_contracts`
   - [ ] Remove local `LoginRequest` class — import from `generated_contracts`
   - [ ] Remove local `RefreshRequest` class — import from `generated_contracts`
   - [ ] Remove local `TokenResponse` class — import `AuthTokens` from `generated_contracts`
   - [ ] Remove local `RegisterResponse` class — evaluate (use `User` or keep)
   - [ ] Update `response_model=` parameters to use generated types
-- [ ] **Wire `routers/users.py`** (request + response)
+- [ ] **Wire `src/demo_be_python_fastapi/routers/users.py`** (request + response)
   - [ ] Remove local `UpdateProfileRequest` — import from `generated_contracts`
   - [ ] Remove local `ChangePasswordRequest` — import from `generated_contracts`
   - [ ] Remove local `UserProfileResponse` — import `User` from `generated_contracts`
   - [ ] Update `response_model=` to use `User`
-- [ ] **Wire `routers/expenses.py`** (request + response)
+- [ ] **Wire `src/demo_be_python_fastapi/routers/expenses.py`** (request + response)
   - [ ] Remove local `ExpenseRequest` — import `CreateExpenseRequest` from `generated_contracts`
   - [ ] Add import for `UpdateExpenseRequest` (may not exist locally)
   - [ ] Remove local `ExpenseResponse` — import `Expense` from `generated_contracts`
   - [ ] Remove local `ExpenseListResponse` — import from `generated_contracts`
   - [ ] Update `response_model=` parameters
-- [ ] **Wire `routers/admin.py`** (request + response)
+- [ ] **Wire `src/demo_be_python_fastapi/routers/admin.py`** (request + response)
   - [ ] Remove local `DisableRequest` — import from `generated_contracts`
   - [ ] Remove local `UserSummary` — import `User` from `generated_contracts`
   - [ ] Remove local `UserListResponse` — import from `generated_contracts`
   - [ ] Update `response_model=` parameters
-- [ ] **Wire `routers/attachments.py`** (response only)
+- [ ] **Wire `src/demo_be_python_fastapi/routers/attachments.py`** (response only)
   - [ ] Remove local `AttachmentResponse` — import `Attachment` from `generated_contracts`
   - [ ] Evaluate `AttachmentListResponse` (not in spec — keep or add)
   - [ ] Update `response_model=`
-- [ ] **Wire `routers/reports.py`** (response only)
+- [ ] **Wire `src/demo_be_python_fastapi/routers/reports.py`** (response only)
   - [ ] Remove local `BreakdownItem` — import `CategoryBreakdown` from `generated_contracts`
   - [ ] Remove local `PLResponse` — import `PLReport` from `generated_contracts`
   - [ ] Update `response_model=`
-- [ ] **Wire `routers/tokens.py`** (response only)
+- [ ] **Wire `src/demo_be_python_fastapi/routers/tokens.py`** (response only)
   - [ ] Remove local `ClaimsResponse` — import `TokenClaims` from `generated_contracts`
   - [ ] Update `response_model=`
-- [ ] **Wire `routers/health.py`** (response only)
+- [ ] **Wire `src/demo_be_python_fastapi/routers/health.py`** (response only)
   - [ ] Remove local `HealthResponse` — import from `generated_contracts`
   - [ ] Update `response_model=`
 - [ ] **Update all tests** referencing removed models
@@ -382,16 +404,26 @@ parameters to use generated types.
 
 ### Phase 9: Wire demo-be-fsharp-giraffe and demo-be-csharp-aspnetcore (.NET)
 
-**Goal**: Add ProjectReference to generated projects. Replace inline records/classes with
-generated types for both request parsing and response construction.
+**Goal**: Add source inclusion of generated `.fs`/`.cs` files to app projects. Replace inline
+records/classes with generated types for both request parsing and response construction.
 
 **demo-be-fsharp-giraffe**:
 
-- [ ] **Add ProjectReference** to generated `.fsproj` in main app's `.fsproj`
+- [ ] **Add source inclusion** in main app's `.fsproj` (no `.fsproj` in `generated-contracts/`)
+  - [ ] Add `<Compile Include="../generated-contracts/OpenAPI/src/DemoBeFsgi.Contracts/*.fs" />`
+        to main `.fsproj` before any files that reference generated types
+- [ ] **Create `[<CLIMutable>]` wrapper records** for request binding
+  - [ ] Generated F# records do NOT carry `[<CLIMutable>]`; Giraffe's `bindJsonAsync<T>()` fails
+        without it
+  - [ ] Create thin `[<CLIMutable>]` wrapper records that map to/from generated types for each
+        request type: `RegisterRequest`, `LoginRequest`, `RefreshRequest`, `UpdateProfileRequest`,
+        `ChangePasswordRequest`, `CreateExpenseRequest`, `UpdateExpenseRequest`, `DisableRequest`
+  - [ ] Use generated types directly for response construction (no `[<CLIMutable>]` needed)
 - [ ] **Wire `AuthHandler.fs`** (request + response)
   - [ ] Remove local `RegisterRequest`, `LoginRequest`, `RefreshRequest` records
   - [ ] Open `OpenAPI.DemoBeFsgi.Contracts` namespace
-  - [ ] Use generated types for request deserialization
+  - [ ] Use thin `[<CLIMutable>]` wrapper records for request deserialization
+  - [ ] Map wrapper records to generated types for business logic
   - [ ] Use generated types for response construction (`AuthTokens`, `User`)
 - [ ] **Wire `UserHandler.fs`** (request + response)
   - [ ] Remove local `UpdateProfileRequest`, `ChangePasswordRequest` records
@@ -417,10 +449,12 @@ generated types for both request parsing and response construction.
 
 **demo-be-csharp-aspnetcore**:
 
-- [ ] **Add ProjectReference** to generated `.csproj` in main app's `.csproj`
+- [ ] **Add source inclusion** in main app's `.csproj` (no `.csproj` in `generated-contracts/`)
+  - [ ] Add `<Compile Include="../generated-contracts/src/Org.OpenAPITools/DemoBeCsas.Contracts/*.cs" />`
+        to main `.csproj`
 - [ ] **Wire `AuthEndpoints.cs`** (request + response)
   - [ ] Remove local `RegisterRequest`, `LoginRequest`, `RefreshRequest` sealed records
-  - [ ] Add `using DemoBeCsas.Contracts;`
+  - [ ] Add `using Org.OpenAPITools.DemoBeCsas.Contracts;` (actual namespace — not `DemoBeCsas.Contracts`)
   - [ ] Use generated types for request binding and response (`AuthTokens`, `User`)
 - [ ] **Wire `UserEndpoints.cs`** (request + response)
   - [ ] Remove local `PatchMeRequest` (replace with `UpdateProfileRequest`)
@@ -453,30 +487,40 @@ generated types for both request parsing and response construction.
 **demo-be-elixir-phoenix**:
 
 - [ ] **Add generated-contracts to Mix source paths** in `mix.exs`
+- [ ] **Verify module namespace from Phase 1 output** — expected `GeneratedSchemas.*` (the codegen
+      defaults to `@default_namespace "GeneratedSchemas"`; no namespace override is passed in
+      `project.json`). All struct references below use `GeneratedSchemas.*` as the expected prefix.
+      Update if Phase 1 reveals a different namespace.
 - [ ] **Wire `AuthController`** (request validation + response struct construction)
-  - [ ] Alias generated `LoginRequest`, `RegisterRequest`, `RefreshRequest` modules
+  - [ ] Alias generated `GeneratedSchemas.LoginRequest`, `GeneratedSchemas.RegisterRequest`,
+        `GeneratedSchemas.RefreshRequest` modules
   - [ ] Validate incoming params against generated struct fields
-  - [ ] Construct `%AuthTokens{}` for login/refresh responses
-  - [ ] Construct `%User{}` for register/profile responses
+  - [ ] Construct `%GeneratedSchemas.AuthTokens{}` for login/refresh responses
+  - [ ] Construct `%GeneratedSchemas.User{}` for register/profile responses
 - [ ] **Wire `UserController`** (request + response)
-  - [ ] Alias generated `UpdateProfileRequest`, `ChangePasswordRequest`
+  - [ ] Alias generated `GeneratedSchemas.UpdateProfileRequest`,
+        `GeneratedSchemas.ChangePasswordRequest`
   - [ ] Validate incoming params
-  - [ ] Construct `%User{}` for user profile response
+  - [ ] Construct `%GeneratedSchemas.User{}` for user profile response
 - [ ] **Wire `ExpenseController`** (request + response)
-  - [ ] Alias generated `CreateExpenseRequest`, `UpdateExpenseRequest`
+  - [ ] Alias generated `GeneratedSchemas.CreateExpenseRequest`,
+        `GeneratedSchemas.UpdateExpenseRequest`
   - [ ] Validate incoming params
-  - [ ] Construct `%Expense{}` / `%ExpenseListResponse{}` for responses
+  - [ ] Construct `%GeneratedSchemas.Expense{}` / `%GeneratedSchemas.ExpenseListResponse{}` for
+        responses
 - [ ] **Wire `AdminController`** (request + response)
-  - [ ] Alias generated `DisableRequest`
-  - [ ] Construct `%User{}` / `%UserListResponse{}` / `%PasswordResetResponse{}` for responses
+  - [ ] Alias generated `GeneratedSchemas.DisableRequest`
+  - [ ] Construct `%GeneratedSchemas.User{}` / `%GeneratedSchemas.UserListResponse{}` /
+        `%GeneratedSchemas.PasswordResetResponse{}` for responses
 - [ ] **Wire `AttachmentController`** (response only)
-  - [ ] Construct `%Attachment{}` for responses
+  - [ ] Construct `%GeneratedSchemas.Attachment{}` for responses
 - [ ] **Wire `ReportController`** (response only)
-  - [ ] Construct `%PLReport{}` for response
+  - [ ] Construct `%GeneratedSchemas.PLReport{}` for response
 - [ ] **Wire `TokenController`** (response only)
-  - [ ] Construct `%TokenClaims{}` / `%JwksResponse{}` for responses
+  - [ ] Construct `%GeneratedSchemas.TokenClaims{}` / `%GeneratedSchemas.JwksResponse{}` for
+        responses
 - [ ] **Wire `HealthController`** (response only)
-  - [ ] Construct `%HealthResponse{}` for response
+  - [ ] Construct `%GeneratedSchemas.HealthResponse{}` for response
 - [ ] **Add struct construction tests** — at least one test per generated struct verifying
       `@enforce_keys` catches missing required fields
 - [ ] **Verify** `nx run demo-be-elixir-phoenix:test:quick` passes
@@ -484,28 +528,36 @@ generated types for both request parsing and response construction.
 **demo-be-clojure-pedestal**:
 
 - [ ] **Add generated schemas to classpath** in `deps.edn`
+- [ ] **Verify namespace from Phase 1 output** — generated schemas use namespace
+      `openapi-codegen.schemas.<kebab-name>` (e.g., `openapi-codegen.schemas.auth-tokens`).
+      Confirm exact names by inspecting the Phase 1 codegen output.
 - [ ] **Create contract validation helper**
-  - [ ] Create `contracts.clj` namespace that requires all generated schemas
+  - [ ] Create `contracts.clj` namespace that requires all generated schemas, e.g.:
+        `(:require [openapi-codegen.schemas.auth-tokens :as auth-tokens-schema] ...)`
   - [ ] Add `validate-response` function using `m/validate`
 - [ ] **Wire auth handlers** (request + response validation)
-  - [ ] Require generated request schemas for validation
+  - [ ] Require `openapi-codegen.schemas.login-request`, `openapi-codegen.schemas.register-request`,
+        `openapi-codegen.schemas.refresh-request` for request validation
   - [ ] Add `validate-response` calls on login/register/refresh responses against
-        `auth-tokens` / `user` generated schemas
+        `openapi-codegen.schemas.auth-tokens` / `openapi-codegen.schemas.user` generated schemas
 - [ ] **Wire user handlers** (request + response validation)
-  - [ ] Validate user profile response against `user` schema
+  - [ ] Validate user profile response against `openapi-codegen.schemas.user` schema
 - [ ] **Wire expense handlers** (request + response validation)
-  - [ ] Validate expense responses against `expense` / `expense-list-response` schemas
+  - [ ] Validate expense responses against `openapi-codegen.schemas.expense` /
+        `openapi-codegen.schemas.expense-list-response` schemas
 - [ ] **Wire admin handlers** (request + response validation)
-  - [ ] Validate admin responses against `user` / `user-list-response` /
-        `password-reset-response` schemas
+  - [ ] Validate admin responses against `openapi-codegen.schemas.user` /
+        `openapi-codegen.schemas.user-list-response` /
+        `openapi-codegen.schemas.password-reset-response` schemas
 - [ ] **Wire attachment handlers** (response validation)
-  - [ ] Validate against `attachment` schema
+  - [ ] Validate against `openapi-codegen.schemas.attachment` schema
 - [ ] **Wire report handlers** (response validation)
-  - [ ] Validate against `pl-report` schema
+  - [ ] Validate against `openapi-codegen.schemas.pl-report` schema
 - [ ] **Wire token handlers** (response validation)
-  - [ ] Validate against `token-claims` / `jwks-response` schemas
+  - [ ] Validate against `openapi-codegen.schemas.token-claims` /
+        `openapi-codegen.schemas.jwks-response` schemas
 - [ ] **Wire health handler** (response validation)
-  - [ ] Validate against `health-response` schema
+  - [ ] Validate against `openapi-codegen.schemas.health-response` schema
 - [ ] **Add schema validation tests** — at least one test per generated schema verifying
       validation catches missing required fields
 - [ ] **Verify** `nx run demo-be-clojure-pedestal:test:quick` passes
@@ -546,33 +598,75 @@ generated types for both request parsing and response construction.
 **Goal**: Activate the existing `validateResponseAgainstContract` function in all E2E step
 definitions.
 
-**demo-be-e2e**:
+**demo-be-e2e** (15 step files):
 
-- [ ] **Wire auth step definitions** (`tests/steps/auth/`)
+- [ ] **Wire `tests/steps/auth/auth.steps.ts`**
   - [ ] Import `validateResponseAgainstContract`
-  - [ ] Add contract validation after every 2xx response in login, register, refresh, logout steps
-- [ ] **Wire expense step definitions** (`tests/steps/expenses/`)
-  - [ ] Add contract validation after every 2xx response in CRUD expense steps
-- [ ] **Wire user step definitions** (`tests/steps/user/` or `tests/steps/users/`)
-  - [ ] Add contract validation after every 2xx response in profile, password change steps
-- [ ] **Wire admin step definitions** (`tests/steps/admin/`)
-  - [ ] Add contract validation after every 2xx response in user management steps
-- [ ] **Wire attachment step definitions** (`tests/steps/attachments/`)
   - [ ] Add contract validation after every 2xx response
-- [ ] **Wire report step definitions** (`tests/steps/reports/`)
+- [ ] **Wire `tests/steps/auth/token-lifecycle.steps.ts`**
   - [ ] Add contract validation after every 2xx response
-- [ ] **Wire token step definitions** (`tests/steps/token-management/` or `tests/steps/tokens/`)
+- [ ] **Wire `tests/steps/expenses/expenses.steps.ts`**
   - [ ] Add contract validation after every 2xx response
-- [ ] **Wire health step definitions** (if exists)
+- [ ] **Wire `tests/steps/expenses/units.steps.ts`**
+  - [ ] Add contract validation after every 2xx response
+- [ ] **Wire `tests/steps/expenses/currency.steps.ts`**
+  - [ ] Add contract validation after every 2xx response
+- [ ] **Wire `tests/steps/expenses/attachments.steps.ts`**
+  - [ ] Add contract validation after every 2xx response
+- [ ] **Wire `tests/steps/expenses/reporting.steps.ts`**
+  - [ ] Add contract validation after every 2xx response
+- [ ] **Wire `tests/steps/user/user-lifecycle.steps.ts`**
+  - [ ] Add contract validation after every 2xx response
+- [ ] **Wire `tests/steps/admin/admin.steps.ts`**
+  - [ ] Add contract validation after every 2xx response
+- [ ] **Wire `tests/steps/token-management/tokens.steps.ts`**
+  - [ ] Add contract validation after every 2xx response
+- [ ] **Wire `tests/steps/health/health.steps.ts`**
   - [ ] Add contract validation after health check response
-- [ ] **Wire common/shared steps** (`tests/steps/common.steps.ts` or similar)
+- [ ] **Wire `tests/steps/security/security.steps.ts`**
+  - [ ] Add contract validation after every 2xx response
+- [ ] **Wire `tests/steps/common.steps.ts`**
   - [ ] Add contract validation for any shared response handling
+- [ ] **Wire `tests/steps/common-setup.steps.ts`**
+  - [ ] Add contract validation if it handles responses
+- [ ] **Wire `tests/steps/test-support/test-api.steps.ts`**
+  - [ ] Add contract validation for test-support responses (if applicable)
 
-**demo-fe-e2e**:
+**demo-fe-e2e** (16 step files):
 
-- [ ] **Wire all step definition files** (same pattern as demo-be-e2e)
-  - [ ] Import `validateResponseAgainstContract` in each step file
-  - [ ] Add contract validation after every 2xx HTTP response
+- [ ] **Wire `tests/steps/authentication/login.steps.ts`**
+  - [ ] Import `validateResponseAgainstContract`
+  - [ ] Add contract validation after every 2xx response
+- [ ] **Wire `tests/steps/authentication/session.steps.ts`**
+  - [ ] Add contract validation after every 2xx response
+- [ ] **Wire `tests/steps/user-lifecycle/user-profile.steps.ts`**
+  - [ ] Add contract validation after every 2xx response
+- [ ] **Wire `tests/steps/user-lifecycle/registration.steps.ts`**
+  - [ ] Add contract validation after every 2xx response
+- [ ] **Wire `tests/steps/expenses/expense-management.steps.ts`**
+  - [ ] Add contract validation after every 2xx response
+- [ ] **Wire `tests/steps/expenses/attachments.steps.ts`**
+  - [ ] Add contract validation after every 2xx response
+- [ ] **Wire `tests/steps/expenses/reporting.steps.ts`**
+  - [ ] Add contract validation after every 2xx response
+- [ ] **Wire `tests/steps/expenses/currency-handling.steps.ts`**
+  - [ ] Add contract validation after every 2xx response
+- [ ] **Wire `tests/steps/expenses/unit-handling.steps.ts`**
+  - [ ] Add contract validation after every 2xx response
+- [ ] **Wire `tests/steps/admin/admin-panel.steps.ts`**
+  - [ ] Add contract validation after every 2xx response
+- [ ] **Wire `tests/steps/token-management/tokens.steps.ts`**
+  - [ ] Add contract validation after every 2xx response
+- [ ] **Wire `tests/steps/health/health.steps.ts`**
+  - [ ] Add contract validation after health check response
+- [ ] **Wire `tests/steps/security/security.steps.ts`**
+  - [ ] Add contract validation after every 2xx response
+- [ ] **Wire `tests/steps/layout/responsive.steps.ts`**
+  - [ ] Add contract validation if it handles API responses
+- [ ] **Wire `tests/steps/layout/accessibility.steps.ts`**
+  - [ ] Add contract validation if it handles API responses
+- [ ] **Wire `tests/steps/common.steps.ts`**
+  - [ ] Add contract validation for shared response handling
 - [ ] **Verify** grep confirms `validateResponseAgainstContract` is imported in all step files
 
 **Validation**:
@@ -588,6 +682,7 @@ definitions.
 
 - [ ] **Run full test suite**
   - [ ] `nx run-many -t test:quick --projects=demo-*` — all 16 demo apps pass
+        (14 newly wired + 2 previously wired by 2026-03-17 plan)
 - [ ] **Run builds for compiled backends**
   - [ ] `nx run-many -t build --projects=demo-be-golang-gin,demo-be-java-springboot,demo-be-java-vertx,demo-be-kotlin-ktor,demo-be-rust-axum,demo-be-fsharp-giraffe,demo-be-csharp-aspnetcore`
 - [ ] **Run typechecks for TypeScript and Dart**
@@ -600,22 +695,26 @@ definitions.
         failure
   - [ ] Run `nx run demo-be-python-fastapi:codegen && nx run demo-be-python-fastapi:test:unit` —
         expect failure
-  - [ ] Revert the rename in `schemas/auth.yaml` and rebundle
+  - [ ] Revert the rename in `specs/apps/demo/contracts/schemas/auth.yaml`
+  - [ ] Run `nx run demo-contracts:bundle`
+  - [ ] Run `nx run demo-be-golang-gin:codegen && nx run demo-be-ts-effect:codegen && nx run demo-be-python-fastapi:codegen`
+  - [ ] Verify builds/typechecks pass again (confirm clean revert)
 - [ ] **Verify pre-push hook**: Stage and push a minor change; confirm hook runs `test:quick` for
       affected projects and passes
 - [ ] **Update `CLAUDE.md`** — note that all 16 demo apps now import from generated-contracts/
-      for both request and response types
+      for both request and response types (14 wired in this plan, 2 wired in 2026-03-17 plan)
 - [ ] **Update `specs/apps/demo/contracts/README.md`** — update adoption status to reflect all
       apps are wired
-- [ ] **Trigger all E2E CI workflows manually** — verify all 14 pass
+- [ ] **Trigger all E2E CI workflows manually** — verify all 14 newly-wired apps pass
 
 **Validation**:
 
-- `nx run-many -t test:quick --projects=demo-*` exits 0
+- `nx run-many -t test:quick --projects=demo-*` exits 0 (all 16 apps: 14 newly wired + 2
+  previously wired by 2026-03-17 plan)
 - Enforcement smoke test confirms contract change causes failures in at least one statically typed
   and one dynamically typed app before revert
 - Pre-push hook passes on clean working tree
-- All 14 E2E CI workflows pass
+- All 14 newly-wired app E2E CI workflows pass
 - Documentation updated
 
 ---
@@ -639,7 +738,11 @@ definitions.
 5. **Kotlin `@Serializable`**: Verify generated Kotlin data classes carry `@Serializable` annotation
    needed for Ktor's `ContentNegotiation`.
 
-6. **F# `[<CLIMutable>]`**: Verify generated F# records carry `[<CLIMutable>]` for request types.
+6. **F# `[<CLIMutable>]`**: Verified — generated F# records do NOT carry `[<CLIMutable>]`.
+   Giraffe's `bindJsonAsync<T>()` and ASP.NET Core model binding require a default constructor,
+   which immutable F# records lack without this attribute. Mitigation: create thin
+   `[<CLIMutable>]` wrapper records for request binding (see Phase 9). Use generated types
+   directly for response construction.
 
 7. **Dart generator output format**: Verify generated Dart classes have `fromJson`/`toJson` methods
    compatible with existing service layer expectations.

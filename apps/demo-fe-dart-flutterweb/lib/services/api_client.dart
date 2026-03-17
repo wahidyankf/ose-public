@@ -83,7 +83,8 @@ Future<Map<String, dynamic>> keepalivePost(
   }
 
   final jsHeaders = Headers();
-  headers.forEach(jsHeaders.append);
+  // ignore: unnecessary_lambdas
+  headers.forEach((k, v) => jsHeaders.append(k, v));
 
   final response = await window
       .fetch(
@@ -118,7 +119,8 @@ Future<Map<String, dynamic>> keepalivePut(
   }
 
   final jsHeaders = Headers();
-  headers.forEach(jsHeaders.append);
+  // ignore: unnecessary_lambdas
+  headers.forEach((k, v) => jsHeaders.append(k, v));
 
   final response = await window
       .fetch(

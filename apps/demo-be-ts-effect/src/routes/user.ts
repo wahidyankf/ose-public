@@ -5,6 +5,7 @@ import { RevokedTokenRepository } from "../infrastructure/db/token-repo.js";
 import { PasswordService } from "../infrastructure/password.js";
 import { requireAuth } from "../auth/middleware.js";
 import { NotFoundError, UnauthorizedError } from "../domain/errors.js";
+import type { UpdateProfileRequest, ChangePasswordRequest, User } from "../lib/api/types.js";
 
 const getMe = HttpServerRequest.HttpServerRequest.pipe(
   Effect.flatMap((req) =>
@@ -18,14 +19,15 @@ const getMe = HttpServerRequest.HttpServerRequest.pipe(
       if (user.status !== "ACTIVE") {
         return yield* Effect.fail(new UnauthorizedError({ reason: "Account is not active" }));
       }
-      return yield* HttpServerResponse.json({
+      const userResponse = {
         id: user.id,
         username: user.username,
         email: user.email,
         displayName: user.displayName,
         role: user.role,
         status: user.status,
-      });
+      } as unknown as User;
+      return yield* HttpServerResponse.json(userResponse);
     }),
   ),
 );
@@ -34,8 +36,10 @@ const updateMe = HttpServerRequest.HttpServerRequest.pipe(
   Effect.flatMap((req) =>
     Effect.gen(function* () {
       const claims = yield* requireAuth(req);
-      const body = yield* req.json as Effect.Effect<Record<string, unknown>, unknown>;
-      const displayName = (body["displayName"] ?? body["display_name"]) as string | undefined;
+      const body = yield* req.json as Effect.Effect<UpdateProfileRequest, unknown>;
+      const displayName = (body["displayName"] ?? (body as Record<string, unknown>)["display_name"]) as
+        | string
+        | undefined;
 
       const userRepo = yield* UserRepository;
       const user = yield* userRepo.findById(claims.sub);
@@ -52,14 +56,15 @@ const updateMe = HttpServerRequest.HttpServerRequest.pipe(
         return yield* Effect.fail(new NotFoundError({ resource: "User" }));
       }
 
-      return yield* HttpServerResponse.json({
+      const updatedResponse = {
         id: updated.id,
         username: updated.username,
         email: updated.email,
         displayName: updated.displayName,
         role: updated.role,
         status: updated.status,
-      });
+      } as unknown as User;
+      return yield* HttpServerResponse.json(updatedResponse);
     }),
   ),
 );
@@ -68,9 +73,11 @@ const changePassword = HttpServerRequest.HttpServerRequest.pipe(
   Effect.flatMap((req) =>
     Effect.gen(function* () {
       const claims = yield* requireAuth(req);
-      const body = yield* req.json as Effect.Effect<Record<string, unknown>, unknown>;
-      const oldPassword = ((body["oldPassword"] ?? body["old_password"]) as string | undefined) ?? "";
-      const newPassword = ((body["newPassword"] ?? body["new_password"]) as string | undefined) ?? "";
+      const body = yield* req.json as Effect.Effect<ChangePasswordRequest, unknown>;
+      const oldPassword =
+        ((body["oldPassword"] ?? (body as Record<string, unknown>)["old_password"]) as string | undefined) ?? "";
+      const newPassword =
+        ((body["newPassword"] ?? (body as Record<string, unknown>)["new_password"]) as string | undefined) ?? "";
 
       const userRepo = yield* UserRepository;
       const user = yield* userRepo.findById(claims.sub);

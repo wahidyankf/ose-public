@@ -6,6 +6,7 @@ import { NotFoundError, ValidationError, ForbiddenError } from "../domain/errors
 import { validateAmount, validateUnit } from "../domain/expense.js";
 import { CURRENCY_DECIMALS, isSupportedCurrency } from "../domain/types.js";
 import type { ExpenseType } from "../domain/expense.js";
+import type { CreateExpenseRequest, UpdateExpenseRequest, Expense, ExpenseListResponse } from "../lib/api/types.js";
 
 function formatAmount(amount: number, currency: string): string {
   const upperCurrency = currency.toUpperCase();
@@ -49,7 +50,7 @@ const createExpense = HttpServerRequest.HttpServerRequest.pipe(
   Effect.flatMap((req) =>
     Effect.gen(function* () {
       const claims = yield* requireAuth(req);
-      const body = yield* req.json as Effect.Effect<Record<string, unknown>, unknown>;
+      const body = yield* req.json as Effect.Effect<CreateExpenseRequest, unknown>;
 
       const typeRaw = ((body["type"] as string | undefined) ?? "expense").toUpperCase() as ExpenseType;
       const amountRaw = body["amount"] as string | number | undefined;
@@ -92,7 +93,7 @@ const createExpense = HttpServerRequest.HttpServerRequest.pipe(
       };
       const expense = yield* expenseRepo.create(createData);
 
-      return yield* HttpServerResponse.json(expenseToResponse(expense), { status: 201 });
+      return yield* HttpServerResponse.json(expenseToResponse(expense) as unknown as Expense, { status: 201 });
     }),
   ),
 );
@@ -108,12 +109,13 @@ const listExpenses = HttpServerRequest.HttpServerRequest.pipe(
       const expenseRepo = yield* ExpenseRepository;
       const result = yield* expenseRepo.findByUserId(claims.sub, page, size);
 
-      return yield* HttpServerResponse.json({
+      const listResponse = {
         content: result.items.map(expenseToResponse),
         totalElements: result.total,
         page,
         size,
-      });
+      } as unknown as ExpenseListResponse;
+      return yield* HttpServerResponse.json(listResponse);
     }),
   ),
 );
@@ -136,7 +138,7 @@ const getExpense = HttpRouter.params.pipe(
             return yield* Effect.fail(new ForbiddenError({ reason: "Access denied" }));
           }
 
-          return yield* HttpServerResponse.json(expenseToResponse(expense));
+          return yield* HttpServerResponse.json(expenseToResponse(expense) as unknown as Expense);
         }),
       ),
     ),
@@ -150,7 +152,7 @@ const updateExpense = HttpRouter.params.pipe(
         Effect.gen(function* () {
           const claims = yield* requireAuth(req);
           const expenseId = params["id"] ?? "";
-          const body = yield* req.json as Effect.Effect<Record<string, unknown>, unknown>;
+          const body = yield* req.json as Effect.Effect<UpdateExpenseRequest, unknown>;
 
           const expenseRepo = yield* ExpenseRepository;
           const existing = yield* expenseRepo.findById(expenseId);
@@ -200,7 +202,7 @@ const updateExpense = HttpRouter.params.pipe(
           };
           const updated = yield* expenseRepo.update(expenseId, updateData);
 
-          return yield* HttpServerResponse.json(expenseToResponse(updated));
+          return yield* HttpServerResponse.json(expenseToResponse(updated) as unknown as Expense);
         }),
       ),
     ),

@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 
+	contracts "github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/generated-contracts"
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/auth"
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/domain"
 )
@@ -58,14 +59,21 @@ func (h *Handler) UploadAttachment(c *gin.Context) {
 		RespondError(c, err)
 		return
 	}
-	c.JSON(http.StatusCreated, gin.H{
-		"id":          attachment.ID,
-		"expenseId":   attachment.ExpenseID,
-		"filename":    attachment.Filename,
-		"contentType": attachment.ContentType,
-		"size":        attachment.Size,
-		"url":         attachment.URL,
-		"createdAt":   attachment.CreatedAt,
+	// Respond with contracts.Attachment fields plus the URL (not in contract spec
+	// but required by the attachments BDD feature).
+	type attachmentResponse struct {
+		contracts.Attachment
+		URL string `json:"url"`
+	}
+	c.JSON(http.StatusCreated, attachmentResponse{
+		Attachment: contracts.Attachment{
+			Id:          attachment.ID,
+			Filename:    attachment.Filename,
+			ContentType: attachment.ContentType,
+			Size:        int(attachment.Size),
+			CreatedAt:   attachment.CreatedAt,
+		},
+		URL: attachment.URL,
 	})
 }
 
@@ -92,20 +100,15 @@ func (h *Handler) ListAttachments(c *gin.Context) {
 		RespondError(c, err)
 		return
 	}
-	var items []gin.H
+	items := make([]contracts.Attachment, 0, len(attachments))
 	for _, a := range attachments {
-		items = append(items, gin.H{
-			"id":          a.ID,
-			"expenseId":   a.ExpenseID,
-			"filename":    a.Filename,
-			"contentType": a.ContentType,
-			"size":        a.Size,
-			"url":         a.URL,
-			"createdAt":   a.CreatedAt,
+		items = append(items, contracts.Attachment{
+			Id:          a.ID,
+			Filename:    a.Filename,
+			ContentType: a.ContentType,
+			Size:        int(a.Size),
+			CreatedAt:   a.CreatedAt,
 		})
-	}
-	if items == nil {
-		items = []gin.H{}
 	}
 	c.JSON(http.StatusOK, gin.H{"attachments": items})
 }

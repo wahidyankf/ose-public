@@ -1,3 +1,5 @@
 import { HttpRouter, HttpServerResponse } from "@effect/platform";
+import type { HealthResponse } from "../lib/api/types.js";
 
-export const healthRouter = HttpRouter.empty.pipe(HttpRouter.get("/health", HttpServerResponse.json({ status: "UP" })));
+const healthBody = { status: "UP" } satisfies HealthResponse;
+export const healthRouter = HttpRouter.empty.pipe(HttpRouter.get("/health", HttpServerResponse.json(healthBody)));

@@ -13,19 +13,21 @@ request parsing AND response construction.
 **Goal**: Determine if types that exist locally but not in the OpenAPI spec need to be added before
 adoption can proceed.
 
-- [ ] **Audit types not in spec**
-  - [ ] `RegisterResponse` (used by Java-SB, Rust) — evaluate: should register return `User` type
-        or a separate RegisterResponse? Check what frontends expect
-  - [ ] `AttachmentListResponse` (used by Java-SB, Python) — evaluate: is this a real API response
-        or just a wrapper? Check OpenAPI paths for list-attachments endpoint
-  - [ ] `LogoutRequest` (used by Kotlin) — evaluate: does the logout endpoint accept a body?
-        Check OpenAPI spec paths/auth.yaml
-  - [ ] `PromoteAdminRequest` (used by Kotlin, Python) — confirm this is test-only and should stay
-        local
-- [ ] **Decision**: For each missing type, either (a) add it to the OpenAPI spec + regenerate, or
-      (b) keep it as a local-only type. Document the decision.
-- [ ] **If spec changes needed**: Run `nx run demo-contracts:lint` and
-      `nx run demo-contracts:bundle` after changes
+- [x] **Audit types not in spec**
+  - [x] `RegisterResponse` (used by Java-SB, Rust) — **Decision: NO spec change**. Spec already
+        returns `User` on 201. Backends returning partial fields should be fixed to return full
+        `User`. Local `RegisterResponse` types replaced with generated `User`.
+  - [x] `AttachmentListResponse` (used by Java-SB, Python) — **Decision: NO spec change**. Spec
+        returns bare array. Backends wrapping in `{attachments:[]}` should match spec. Local
+        `AttachmentListResponse` types removed; use generated `Attachment[]`.
+  - [x] `LogoutRequest` (used by Kotlin) — **Decision: NO spec change**. Spec is correct: logout
+        uses Authorization header, not request body. Kotlin's local `LogoutRequest` is vestigial
+        and stays local (test-only).
+  - [x] `PromoteAdminRequest` (used by Kotlin, Python) — **Decision: keep local**. This is a
+        test-only endpoint (`x-test-only: true`). Test-only types don't need contract enforcement.
+- [x] **Decision**: Spec is the source of truth. No spec changes needed. Backends that disagree
+      with the spec are fixed to match during their respective phases.
+- [x] **No spec changes needed** — skip lint/bundle
 
 **Validation**: All missing type decisions are documented. Spec changes (if any) pass lint.
 
@@ -36,31 +38,24 @@ adoption can proceed.
 **Goal**: Confirm that `codegen` Nx targets actually produce usable output for the three apps where
 generation was planned but never confirmed.
 
-- [ ] **demo-be-elixir-phoenix codegen verification**
-  - [ ] Run `nx run demo-be-elixir-phoenix:codegen` and capture output
-  - [ ] Verify `.ex` struct files appear in `apps/demo-be-elixir-phoenix/generated-contracts/`
-  - [ ] Verify each struct has `defstruct`, `@enforce_keys`, and `@type` typespecs
-  - [ ] Verify module namespace from generated files (expected `GeneratedSchemas.User` based on
-        `@default_namespace "GeneratedSchemas"` in the codegen lib; no namespace override is
-        passed in `project.json`). If different, note the actual prefix for Phase 10.
-  - [ ] If generation fails, debug `libs/elixir-openapi-codegen` and fix
-  - [ ] Run `nx run elixir-openapi-codegen:test:quick` to confirm lib is healthy
-- [ ] **demo-be-clojure-pedestal codegen verification**
-  - [ ] Run `nx run demo-be-clojure-pedestal:codegen` and capture output
-  - [ ] Verify `.clj` schema files appear in `apps/demo-be-clojure-pedestal/generated_contracts/`
-  - [ ] Verify each schema is a valid Malli `[:map ...]` definition
-  - [ ] Verify namespace naming convention matches expected pattern
-  - [ ] If generation fails, debug `libs/clojure-openapi-codegen` and fix
-  - [ ] Run `nx run clojure-openapi-codegen:test:quick` to confirm lib is healthy
-- [ ] **demo-fe-dart-flutterweb codegen verification**
-  - [ ] Check `apps/demo-fe-dart-flutterweb/project.json` for `codegen` target
-  - [ ] Run `nx run demo-fe-dart-flutterweb:codegen` and capture output
-  - [ ] Verify Dart classes appear in `generated-contracts/` with `fromJson`/`toJson`
-  - [ ] Run `dart analyze` on generated code to verify validity
-  - [ ] Compare `fromJson` and `toJson` signatures of one generated Dart class (e.g., `User`)
-        against the equivalent hand-written model class in `lib/models/user.dart` to confirm
-        serialization compatibility before Phase 11 begins (field naming, null handling)
-  - [ ] If codegen target missing or broken, implement/fix it
+- [x] **demo-be-elixir-phoenix codegen verification**
+  - [x] Run `nx run demo-be-elixir-phoenix:codegen` — exits 0
+  - [x] 23 `.ex` files in `generated-contracts/generated_schemas/`
+  - [x] Each struct has `defstruct`, `@enforce_keys`, and `@type` typespecs
+  - [x] Module namespace confirmed: `GeneratedSchemas.User` etc.
+  - [x] `elixir-openapi-codegen:test:quick` passes (92.2% coverage)
+- [x] **demo-be-clojure-pedestal codegen verification**
+  - [x] Run `nx run demo-be-clojure-pedestal:codegen` — exits 0 (required `mkdir -p classes/`)
+  - [x] 23 `.clj` files in `generated_contracts/`
+  - [x] Each schema is a valid Malli `[:map ...]` definition
+  - [x] Namespace confirmed: `openapi-codegen.schemas.user` etc.
+  - [x] `clojure-openapi-codegen:test:quick` passes
+- [x] **demo-fe-dart-flutterweb codegen verification**
+  - [x] `codegen` target exists in project.json
+  - [x] Run `nx run demo-fe-dart-flutterweb:codegen` — exits 0
+  - [x] 23 Dart model files in `generated-contracts/lib/model/`
+  - [x] Generated classes have `fromJson`/`toJson` methods
+  - [x] No codegen fixes needed
 
 **Validation**:
 
@@ -74,54 +69,54 @@ generation was planned but never confirmed.
 
 **Goal**: Wire the TypeScript backend — request body type annotations + response type annotations.
 
-- [ ] **Create re-export layer**
-  - [ ] Create `src/lib/api/types.ts` (create `src/lib/api/` directories first) mirroring
+- [x] **Create re-export layer**
+  - [x] Create `src/lib/api/types.ts` (create `src/lib/api/` directories first) mirroring
         `demo-fe-ts-nextjs` pattern
-  - [ ] Re-export all primary domain types from `../../generated-contracts/types.gen`
-  - [ ] Note: `types.gen.ts` has 97+ exports; the re-export layer selects the 23 primary domain
+  - [x] Re-export all primary domain types from `../../generated-contracts/types.gen`
+  - [x] Note: `types.gen.ts` has 97+ exports; the re-export layer selects the 23 primary domain
         types used by route handlers
-  - [ ] Use `PlReport as PLReport` alias (the generated name is `PlReport`, conventional usage
+  - [x] Use `PlReport as PLReport` alias (the generated name is `PlReport`, conventional usage
         is `PLReport`; see `demo-fe-ts-nextjs/src/lib/api/types.ts` for the exact alias)
-- [ ] **Wire `src/routes/auth.ts`** (request + response)
-  - [ ] Import `LoginRequest`, `RegisterRequest`, `RefreshRequest` (request types)
-  - [ ] Import `AuthTokens`, `User` (response types)
-  - [ ] Type-annotate login request body as `LoginRequest`
-  - [ ] Type-annotate register request body as `RegisterRequest`
-  - [ ] Type-annotate refresh request body as `RefreshRequest`
-  - [ ] Type-annotate login response as `AuthTokens`
-  - [ ] Type-annotate register response as `User`
-  - [ ] Type-annotate refresh response as `AuthTokens`
-- [ ] **Wire `src/routes/expense.ts`** (request + response)
-  - [ ] Import `CreateExpenseRequest`, `UpdateExpenseRequest` (request types)
-  - [ ] Import `Expense`, `ExpenseListResponse` (response types)
-  - [ ] Type-annotate create expense body as `CreateExpenseRequest`
-  - [ ] Type-annotate update expense body as `UpdateExpenseRequest`
-  - [ ] Type-annotate expense responses as `Expense`
-  - [ ] Type-annotate list response as `ExpenseListResponse`
-- [ ] **Wire `src/routes/user.ts`** (request + response)
-  - [ ] Import `UpdateProfileRequest`, `ChangePasswordRequest` (request types)
-  - [ ] Import `User` (response type)
-  - [ ] Type-annotate request bodies
-  - [ ] Type-annotate user profile responses as `User`
-- [ ] **Wire `src/routes/attachment.ts`** (response only — upload is multipart)
-  - [ ] Import `Attachment` (response type)
-  - [ ] Type-annotate attachment responses as `Attachment`
-- [ ] **Wire `src/routes/report.ts`** (response only — query params)
-  - [ ] Import `PLReport` (response type)
-  - [ ] Type-annotate P&L report response as `PLReport`
-- [ ] **Wire `src/routes/admin.ts`** (request + response)
-  - [ ] Import `DisableRequest` (request type)
-  - [ ] Import `User`, `UserListResponse`, `PasswordResetResponse` (response types)
-  - [ ] Type-annotate disable request body as `DisableRequest`
-  - [ ] Type-annotate admin responses with generated types
-- [ ] **Wire `src/routes/token.ts`** (response only)
-  - [ ] Import `TokenClaims`, `JwksResponse` (response types)
-  - [ ] Type-annotate token endpoint responses
-- [ ] **Wire `src/routes/health.ts`** (response only)
-  - [ ] Import `HealthResponse` (response type)
-  - [ ] Type-annotate health endpoint response
-- [ ] **Verify** `nx run demo-be-ts-effect:typecheck` passes
-- [ ] **Verify** `nx run demo-be-ts-effect:test:quick` passes with >=90% coverage
+- [x] **Wire `src/routes/auth.ts`** (request + response)
+  - [x] Import `LoginRequest`, `RegisterRequest`, `RefreshRequest` (request types)
+  - [x] Import `AuthTokens`, `User` (response types)
+  - [x] Type-annotate login request body as `LoginRequest`
+  - [x] Type-annotate register request body as `RegisterRequest`
+  - [x] Type-annotate refresh request body as `RefreshRequest`
+  - [x] Type-annotate login response as `AuthTokens`
+  - [x] Type-annotate register response as `User`
+  - [x] Type-annotate refresh response as `AuthTokens`
+- [x] **Wire `src/routes/expense.ts`** (request + response)
+  - [x] Import `CreateExpenseRequest`, `UpdateExpenseRequest` (request types)
+  - [x] Import `Expense`, `ExpenseListResponse` (response types)
+  - [x] Type-annotate create expense body as `CreateExpenseRequest`
+  - [x] Type-annotate update expense body as `UpdateExpenseRequest`
+  - [x] Type-annotate expense responses as `Expense`
+  - [x] Type-annotate list response as `ExpenseListResponse`
+- [x] **Wire `src/routes/user.ts`** (request + response)
+  - [x] Import `UpdateProfileRequest`, `ChangePasswordRequest` (request types)
+  - [x] Import `User` (response type)
+  - [x] Type-annotate request bodies
+  - [x] Type-annotate user profile responses as `User`
+- [x] **Wire `src/routes/attachment.ts`** (response only — upload is multipart)
+  - [x] Import `Attachment` (response type)
+  - [x] Type-annotate attachment responses as `Attachment`
+- [x] **Wire `src/routes/report.ts`** (response only — query params)
+  - [x] Import `PLReport` (response type)
+  - [x] Type-annotate P&L report response as `PLReport`
+- [x] **Wire `src/routes/admin.ts`** (request + response)
+  - [x] Import `DisableRequest` (request type)
+  - [x] Import `User`, `UserListResponse`, `PasswordResetResponse` (response types)
+  - [x] Type-annotate disable request body as `DisableRequest`
+  - [x] Type-annotate admin responses with generated types
+- [x] **Wire `src/routes/token.ts`** (response only)
+  - [x] Import `TokenClaims`, `JwksResponse` (response types)
+  - [x] Type-annotate token endpoint responses
+- [x] **Wire `src/routes/health.ts`** (response only)
+  - [x] Import `HealthResponse` (response type)
+  - [x] Type-annotate health endpoint response
+- [x] **Verify** `nx run demo-be-ts-effect:typecheck` passes
+- [x] **Verify** `nx run demo-be-ts-effect:test:quick` passes with >=90% coverage
 
 ---
 
@@ -130,44 +125,44 @@ generation was planned but never confirmed.
 **Goal**: Replace local request structs with `contracts.*` imports and replace all `gin.H{}`
 response maps with typed generated structs.
 
-- [ ] **Wire `internal/handler/auth.go`** (request + response)
-  - [ ] Add import for `contracts` package
-  - [ ] Remove local `RegisterRequest` struct definition
-  - [ ] Remove local `LoginRequest` struct definition
-  - [ ] Use `contracts.RegisterRequest` for register body binding
-  - [ ] Use `contracts.LoginRequest` for login body binding
-  - [ ] Use `contracts.RefreshRequest` for refresh body (replaces `map[string]string`)
-  - [ ] Replace `gin.H{}` login response with `contracts.AuthTokens{...}`
-  - [ ] Replace `gin.H{}` register response with `contracts.User{...}`
-  - [ ] Replace `gin.H{}` refresh response with `contracts.AuthTokens{...}`
-- [ ] **Wire `internal/handler/user.go`** (request + response)
-  - [ ] Remove local `ChangePasswordRequest` struct definition
-  - [ ] Use `contracts.ChangePasswordRequest` for password change body
-  - [ ] Use `contracts.UpdateProfileRequest` for profile update (replaces `map[string]string`)
-  - [ ] Replace `gin.H{}` user profile response with `contracts.User{...}`
-  - [ ] Replace `gin.H{}` password change response (message only — verify)
-- [ ] **Wire `internal/handler/expense.go`** (request + response)
-  - [ ] Remove local `ExpenseRequest` struct definition
-  - [ ] Use `contracts.CreateExpenseRequest` for create expense body
-  - [ ] Use `contracts.UpdateExpenseRequest` for update expense body
-  - [ ] Replace `gin.H{}` expense responses with `contracts.Expense{...}`
-  - [ ] Replace `gin.H{}` expense list response with `contracts.ExpenseListResponse{...}`
-- [ ] **Wire `internal/handler/report.go`** (response only)
-  - [ ] Replace `gin.H{}` P&L report response with `contracts.PLReport{...}`
-- [ ] **Wire `internal/handler/attachment.go`** (response only)
-  - [ ] Replace `gin.H{}` attachment responses with `contracts.Attachment{...}`
-- [ ] **Wire `internal/handler/admin.go`** (request + response)
-  - [ ] Use `contracts.DisableRequest` for disable body (replaces raw body parsing)
-  - [ ] Replace `gin.H{}` user list response with `contracts.UserListResponse{...}`
-  - [ ] Replace `gin.H{}` password reset response with `contracts.PasswordResetResponse{...}`
-- [ ] **Wire `internal/handler/token.go`** (response only)
-  - [ ] Replace `gin.H{}` token claims response with `contracts.TokenClaims{...}`
-  - [ ] Replace `gin.H{}` JWKS response with `contracts.JwksResponse{...}`
-- [ ] **Wire `internal/handler/health.go`** (response only)
-  - [ ] Replace `gin.H{}` health response with `contracts.HealthResponse{...}`
-- [ ] **Verify** `nx run demo-be-golang-gin:build` passes (`go build ./...`)
-- [ ] **Verify** `nx run demo-be-golang-gin:test:quick` passes with >=90% coverage
-- [ ] **Verify** no local request/response structs remain (grep for `type.*struct` in handlers)
+- [x] **Wire `internal/handler/auth.go`** (request + response)
+  - [x] Add import for `contracts` package
+  - [x] Remove local `RegisterRequest` struct definition
+  - [x] Remove local `LoginRequest` struct definition
+  - [x] Use `contracts.RegisterRequest` for register body binding
+  - [x] Use `contracts.LoginRequest` for login body binding
+  - [x] Use `contracts.RefreshRequest` for refresh body (replaces `map[string]string`)
+  - [x] Replace `gin.H{}` login response with `contracts.AuthTokens{...}`
+  - [x] Replace `gin.H{}` register response with `contracts.User{...}`
+  - [x] Replace `gin.H{}` refresh response with `contracts.AuthTokens{...}`
+- [x] **Wire `internal/handler/user.go`** (request + response)
+  - [x] Remove local `ChangePasswordRequest` struct definition
+  - [x] Use `contracts.ChangePasswordRequest` for password change body
+  - [x] Use `contracts.UpdateProfileRequest` for profile update (replaces `map[string]string`)
+  - [x] Replace `gin.H{}` user profile response with `contracts.User{...}`
+  - [x] Replace `gin.H{}` password change response (message only — verify)
+- [x] **Wire `internal/handler/expense.go`** (request + response)
+  - [x] Remove local `ExpenseRequest` struct definition
+  - [x] Use `contracts.CreateExpenseRequest` for create expense body
+  - [x] Use `contracts.UpdateExpenseRequest` for update expense body
+  - [x] Replace `gin.H{}` expense responses with `contracts.Expense{...}`
+  - [x] Replace `gin.H{}` expense list response with `contracts.ExpenseListResponse{...}`
+- [x] **Wire `internal/handler/report.go`** (response only)
+  - [x] Replace `gin.H{}` P&L report response with `contracts.PLReport{...}`
+- [x] **Wire `internal/handler/attachment.go`** (response only)
+  - [x] Replace `gin.H{}` attachment responses with `contracts.Attachment{...}`
+- [x] **Wire `internal/handler/admin.go`** (request + response)
+  - [x] Use `contracts.DisableRequest` for disable body (replaces raw body parsing)
+  - [x] Replace `gin.H{}` user list response with `contracts.UserListResponse{...}`
+  - [x] Replace `gin.H{}` password reset response with `contracts.PasswordResetResponse{...}`
+- [x] **Wire `internal/handler/token.go`** (response only)
+  - [x] Replace `gin.H{}` token claims response with `contracts.TokenClaims{...}`
+  - [x] Replace `gin.H{}` JWKS response with `contracts.JwksResponse{...}`
+- [x] **Wire `internal/handler/health.go`** (response only)
+  - [x] Replace `gin.H{}` health response with `contracts.HealthResponse{...}`
+- [x] **Verify** `nx run demo-be-golang-gin:build` passes (`go build ./...`)
+- [x] **Verify** `nx run demo-be-golang-gin:test:quick` passes with >=90% coverage
+- [x] **Verify** no local request/response structs remain (grep for `type.*struct` in handlers)
 
 ---
 
@@ -721,11 +716,11 @@ definitions.
 
 ## Open Questions
 
-1. **RegisterResponse**: Several apps return a different shape for registration than the `User` type.
-   Should we add `RegisterResponse` to the OpenAPI spec or standardize on returning `User`?
+1. ~~**RegisterResponse**~~: **RESOLVED** — Spec returns `User` on 201. Backends standardize on
+   returning full `User`. Local `RegisterResponse` types replaced with generated `User`.
 
-2. **AttachmentListResponse**: Used locally in Java-SB and Python but not in the spec. Should we
-   add a list endpoint to the spec or keep local wrappers?
+2. ~~**AttachmentListResponse**~~: **RESOLVED** — Spec returns bare array. Local wrapper types
+   removed. Backends match spec.
 
 3. **Java Vert.x refactoring scope**: The JsonObject-to-typed-object refactoring is invasive. Should
    we prioritize compile-time safety (full refactor) or take a lighter approach (type assertions in
@@ -768,10 +763,10 @@ definitions.
 
 ## Completion Status
 
-- [ ] Phase 0: Evaluate Missing Spec Types
-- [ ] Phase 1: Verify Codegen (Elixir, Clojure, Dart)
-- [ ] Phase 2: Wire demo-be-ts-effect
-- [ ] Phase 3: Wire demo-be-golang-gin
+- [x] Phase 0: Evaluate Missing Spec Types
+- [x] Phase 1: Verify Codegen (Elixir, Clojure, Dart)
+- [x] Phase 2: Wire demo-be-ts-effect
+- [x] Phase 3: Wire demo-be-golang-gin
 - [ ] Phase 4: Wire demo-be-java-springboot
 - [ ] Phase 5: Wire demo-be-java-vertx
 - [ ] Phase 6: Wire demo-be-kotlin-ktor

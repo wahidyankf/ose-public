@@ -4,9 +4,12 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 
+	contracts "github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/generated-contracts"
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/auth"
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/domain"
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/store"
@@ -42,22 +45,32 @@ func (h *Handler) PLReport(c *gin.Context) {
 		RespondError(c, err)
 		return
 	}
-	incomeBreakdown := make([]gin.H, 0, len(report.IncomeBreakdown))
+	incomeBreakdown := make([]contracts.CategoryBreakdown, 0, len(report.IncomeBreakdown))
 	for cat, amt := range report.IncomeBreakdown {
-		incomeBreakdown = append(incomeBreakdown, gin.H{"category": cat, "type": "income", "total": fmt.Sprintf("%.2f", amt)})
+		incomeBreakdown = append(incomeBreakdown, contracts.CategoryBreakdown{
+			Category: cat,
+			Type:     "income",
+			Total:    fmt.Sprintf("%.2f", amt),
+		})
 	}
-	expenseBreakdown := make([]gin.H, 0, len(report.ExpenseBreakdown))
+	expenseBreakdown := make([]contracts.CategoryBreakdown, 0, len(report.ExpenseBreakdown))
 	for cat, amt := range report.ExpenseBreakdown {
-		expenseBreakdown = append(expenseBreakdown, gin.H{"category": cat, "type": "expense", "total": fmt.Sprintf("%.2f", amt)})
+		expenseBreakdown = append(expenseBreakdown, contracts.CategoryBreakdown{
+			Category: cat,
+			Type:     "expense",
+			Total:    fmt.Sprintf("%.2f", amt),
+		})
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"totalIncome":      fmt.Sprintf("%.2f", report.IncomTotal),
-		"totalExpense":     fmt.Sprintf("%.2f", report.ExpenseTotal),
-		"net":              fmt.Sprintf("%.2f", report.Net),
-		"incomeBreakdown":  incomeBreakdown,
-		"expenseBreakdown": expenseBreakdown,
-		"startDate":        startDate,
-		"endDate":          endDate,
-		"currency":         strings.ToUpper(currency),
+	startTime, _ := time.Parse("2006-01-02", startDate)
+	endTime, _ := time.Parse("2006-01-02", endDate)
+	c.JSON(http.StatusOK, contracts.PLReport{
+		TotalIncome:      fmt.Sprintf("%.2f", report.IncomTotal),
+		TotalExpense:     fmt.Sprintf("%.2f", report.ExpenseTotal),
+		Net:              fmt.Sprintf("%.2f", report.Net),
+		IncomeBreakdown:  incomeBreakdown,
+		ExpenseBreakdown: expenseBreakdown,
+		StartDate:        openapi_types.Date{Time: startTime},
+		EndDate:          openapi_types.Date{Time: endTime},
+		Currency:         strings.ToUpper(currency),
 	})
 }

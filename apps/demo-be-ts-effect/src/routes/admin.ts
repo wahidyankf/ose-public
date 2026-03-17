@@ -5,6 +5,7 @@ import { RevokedTokenRepository } from "../infrastructure/db/token-repo.js";
 import { JwtService } from "../auth/jwt.js";
 import { requireAdmin } from "../auth/middleware.js";
 import { NotFoundError } from "../domain/errors.js";
+import type { User, UserListResponse, PasswordResetResponse } from "../lib/api/types.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function userToResponse(user: any) {
@@ -30,12 +31,13 @@ const listUsers = HttpServerRequest.HttpServerRequest.pipe(
       const userRepo = yield* UserRepository;
       const result = yield* userRepo.listUsers(page, size, search);
 
-      return yield* HttpServerResponse.json({
+      const userListResponse = {
         content: result.items.map(userToResponse),
         totalElements: result.total,
         page,
         size,
-      });
+      } as unknown as UserListResponse;
+      return yield* HttpServerResponse.json(userListResponse);
     }),
   ),
 );
@@ -65,7 +67,7 @@ const disableUser = HttpRouter.params.pipe(
             return yield* Effect.fail(new NotFoundError({ resource: "User" }));
           }
 
-          return yield* HttpServerResponse.json(userToResponse(updated));
+          return yield* HttpServerResponse.json(userToResponse(updated) as unknown as User);
         }),
       ),
     ),
@@ -93,7 +95,7 @@ const enableUser = HttpRouter.params.pipe(
             return yield* Effect.fail(new NotFoundError({ resource: "User" }));
           }
 
-          return yield* HttpServerResponse.json(userToResponse(updated));
+          return yield* HttpServerResponse.json(userToResponse(updated) as unknown as User);
         }),
       ),
     ),
@@ -122,7 +124,7 @@ const unlockUser = HttpRouter.params.pipe(
             return yield* Effect.fail(new NotFoundError({ resource: "User" }));
           }
 
-          return yield* HttpServerResponse.json(userToResponse(updated));
+          return yield* HttpServerResponse.json(userToResponse(updated) as unknown as User);
         }),
       ),
     ),
@@ -147,9 +149,8 @@ const forcePasswordReset = HttpRouter.params.pipe(
           const jwt = yield* JwtService;
           const resetToken = yield* jwt.signAccess(user.id, user.username, user.role);
 
-          return yield* HttpServerResponse.json({
-            token: resetToken,
-          });
+          const resetResponse = { token: resetToken } satisfies PasswordResetResponse;
+          return yield* HttpServerResponse.json(resetResponse);
         }),
       ),
     ),

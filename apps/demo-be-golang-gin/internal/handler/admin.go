@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 
+	contracts "github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/generated-contracts"
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/domain"
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/store"
 )
@@ -32,35 +33,25 @@ func (h *Handler) ListUsers(c *gin.Context) {
 		RespondError(c, err)
 		return
 	}
-	var content []gin.H
+	content := make([]contracts.User, 0, len(users))
 	for _, u := range users {
-		content = append(content, gin.H{
-			"id":          u.ID,
-			"username":    u.Username,
-			"email":       u.Email,
-			"displayName": u.DisplayName,
-			"status":      u.Status,
-			"roles":       []string{string(u.Role)},
-			"createdAt":   u.CreatedAt,
-			"updatedAt":   u.UpdatedAt,
-		})
-	}
-	if content == nil {
-		content = []gin.H{}
+		content = append(content, domainUserToContract(u))
 	}
 	totalPages := int(math.Ceil(float64(total) / float64(size)))
-	c.JSON(http.StatusOK, gin.H{
-		"content":       content,
-		"totalElements": total,
-		"totalPages":    totalPages,
-		"page":          page,
-		"size":          size,
+	c.JSON(http.StatusOK, contracts.UserListResponse{
+		Content:       content,
+		TotalElements: int(total),
+		TotalPages:    totalPages,
+		Page:          page,
+		Size:          size,
 	})
 }
 
 // DisableUser handles POST /api/v1/admin/users/:id/disable.
 func (h *Handler) DisableUser(c *gin.Context) {
 	id := c.Param("id")
+	var req contracts.DisableRequest
+	_ = c.ShouldBindJSON(&req)
 	user, err := h.store.GetUserByID(c.Request.Context(), id)
 	if err != nil {
 		RespondError(c, err)
@@ -125,5 +116,5 @@ func (h *Handler) ForcePasswordReset(c *gin.Context) {
 		return
 	}
 	resetToken := uuid.New().String()
-	c.JSON(http.StatusOK, gin.H{"token": resetToken})
+	c.JSON(http.StatusOK, contracts.PasswordResetResponse{Token: resetToken})
 }

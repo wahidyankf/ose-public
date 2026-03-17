@@ -4,6 +4,7 @@ import { ExpenseRepository } from "../infrastructure/db/expense-repo.js";
 import { requireAuth } from "../auth/middleware.js";
 import { ValidationError } from "../domain/errors.js";
 import { CURRENCY_DECIMALS, isSupportedCurrency } from "../domain/types.js";
+import type { PLReport, CategoryBreakdown } from "../lib/api/types.js";
 
 function formatAmount(amount: number, currency: string): string {
   const upperCurrency = currency.toUpperCase();
@@ -55,26 +56,27 @@ const getPL = HttpServerRequest.HttpServerRequest.pipe(
 
       const net = incomeTotal - expenseTotal;
 
-      const incomeBreakdown = Object.entries(incomeBreakdownMap).map(([cat, amount]) => ({
+      const incomeBreakdown: CategoryBreakdown[] = Object.entries(incomeBreakdownMap).map(([cat, amount]) => ({
         category: cat,
         type: "income",
         total: formatAmount(amount, currency),
       }));
 
-      const expenseBreakdown = Object.entries(expenseBreakdownMap).map(([cat, amount]) => ({
+      const expenseBreakdown: CategoryBreakdown[] = Object.entries(expenseBreakdownMap).map(([cat, amount]) => ({
         category: cat,
         type: "expense",
         total: formatAmount(amount, currency),
       }));
 
-      return yield* HttpServerResponse.json({
+      const plResponse = {
         totalIncome: formatAmount(incomeTotal, currency),
         totalExpense: formatAmount(expenseTotal, currency),
         net: formatAmount(net, currency),
         incomeBreakdown,
         expenseBreakdown,
         currency,
-      });
+      } as unknown as PLReport;
+      return yield* HttpServerResponse.json(plResponse);
     }),
   ),
 );

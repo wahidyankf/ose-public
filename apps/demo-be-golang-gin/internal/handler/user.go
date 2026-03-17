@@ -6,11 +6,27 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 	"golang.org/x/crypto/bcrypt"
 
+	contracts "github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/generated-contracts"
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/auth"
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/domain"
 )
+
+// domainUserToContract converts a domain.User to contracts.User.
+func domainUserToContract(user *domain.User) contracts.User {
+	return contracts.User{
+		Id:          user.ID,
+		Username:    user.Username,
+		Email:       openapi_types.Email(user.Email),
+		DisplayName: user.DisplayName,
+		Status:      contracts.UserStatus(user.Status),
+		Roles:       []string{string(user.Role)},
+		CreatedAt:   user.CreatedAt,
+		UpdatedAt:   user.UpdatedAt,
+	}
+}
 
 // GetProfile handles GET /api/v1/users/me.
 func (h *Handler) GetProfile(c *gin.Context) {
@@ -42,16 +58,7 @@ func (h *Handler) GetProfile(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "account is not active"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"id":          user.ID,
-		"username":    user.Username,
-		"email":       user.Email,
-		"displayName": user.DisplayName,
-		"status":      user.Status,
-		"roles":       []string{string(user.Role)},
-		"createdAt":   user.CreatedAt,
-		"updatedAt":   user.UpdatedAt,
-	})
+	c.JSON(http.StatusOK, domainUserToContract(user))
 }
 
 // UpdateProfile handles PATCH /api/v1/users/me.
@@ -62,8 +69,8 @@ func (h *Handler) UpdateProfile(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "unauthorized"})
 		return
 	}
-	var body map[string]string
-	if err := c.ShouldBindJSON(&body); err != nil {
+	var req contracts.UpdateProfileRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "invalid request body"})
 		return
 	}
@@ -72,30 +79,13 @@ func (h *Handler) UpdateProfile(c *gin.Context) {
 		RespondError(c, err)
 		return
 	}
-	if displayName, ok := body["displayName"]; ok {
-		user.DisplayName = displayName
-	}
+	user.DisplayName = req.DisplayName
 	user.UpdatedAt = time.Now()
 	if err := h.store.UpdateUser(c.Request.Context(), user); err != nil {
 		RespondError(c, err)
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"id":          user.ID,
-		"username":    user.Username,
-		"email":       user.Email,
-		"displayName": user.DisplayName,
-		"status":      user.Status,
-		"roles":       []string{string(user.Role)},
-		"createdAt":   user.CreatedAt,
-		"updatedAt":   user.UpdatedAt,
-	})
-}
-
-// ChangePasswordRequest is the request body for password change.
-type ChangePasswordRequest struct {
-	OldPassword string `json:"oldPassword"`
-	NewPassword string `json:"newPassword"`
+	c.JSON(http.StatusOK, domainUserToContract(user))
 }
 
 // ChangePassword handles POST /api/v1/users/me/password.
@@ -106,7 +96,7 @@ func (h *Handler) ChangePassword(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "unauthorized"})
 		return
 	}
-	var req ChangePasswordRequest
+	var req contracts.ChangePasswordRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "invalid request body"})
 		return

@@ -8,30 +8,19 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 	"golang.org/x/crypto/bcrypt"
 
+	contracts "github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/generated-contracts"
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/auth"
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/domain"
 )
 
 const maxFailedAttempts = 5
 
-// RegisterRequest is the request body for user registration.
-type RegisterRequest struct {
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
-// LoginRequest is the request body for login.
-type LoginRequest struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
 // Register handles POST /api/v1/auth/register.
 func (h *Handler) Register(c *gin.Context) {
-	var req RegisterRequest
+	var req contracts.RegisterRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "invalid request body"})
 		return
@@ -40,7 +29,7 @@ func (h *Handler) Register(c *gin.Context) {
 		RespondError(c, err)
 		return
 	}
-	if err := domain.ValidateEmail(req.Email); err != nil {
+	if err := domain.ValidateEmail(string(req.Email)); err != nil {
 		RespondError(c, err)
 		return
 	}
@@ -53,34 +42,37 @@ func (h *Handler) Register(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "internal server error"})
 		return
 	}
+	now := time.Now()
 	user := &domain.User{
 		ID:           uuid.New().String(),
 		Username:     req.Username,
-		Email:        req.Email,
+		Email:        string(req.Email),
 		PasswordHash: string(hash),
 		DisplayName:  req.Username,
 		Status:       domain.StatusActive,
 		Role:         domain.RoleUser,
-		CreatedAt:    time.Now(),
-		UpdatedAt:    time.Now(),
+		CreatedAt:    now,
+		UpdatedAt:    now,
 	}
 	if err := h.store.CreateUser(c.Request.Context(), user); err != nil {
 		RespondError(c, err)
 		return
 	}
-	c.JSON(http.StatusCreated, gin.H{
-		"id":           user.ID,
-		"username":     user.Username,
-		"email":        user.Email,
-		"display_name": user.DisplayName,
-		"status":       user.Status,
-		"role":         user.Role,
+	c.JSON(http.StatusCreated, contracts.User{
+		Id:          user.ID,
+		Username:    user.Username,
+		Email:       openapi_types.Email(user.Email),
+		DisplayName: user.DisplayName,
+		Status:      contracts.UserStatus(user.Status),
+		Roles:       []string{string(user.Role)},
+		CreatedAt:   user.CreatedAt,
+		UpdatedAt:   user.UpdatedAt,
 	})
 }
 
 // Login handles POST /api/v1/auth/login.
 func (h *Handler) Login(c *gin.Context) {
-	var req LoginRequest
+	var req contracts.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "invalid request body"})
 		return
@@ -142,21 +134,21 @@ func (h *Handler) Login(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "internal server error"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"accessToken":  accessToken,
-		"refreshToken": refreshTokenStr,
-		"tokenType":    "Bearer",
+	c.JSON(http.StatusOK, contracts.AuthTokens{
+		AccessToken:  accessToken,
+		RefreshToken: refreshTokenStr,
+		TokenType:    "Bearer",
 	})
 }
 
 // Refresh handles POST /api/v1/auth/refresh.
 func (h *Handler) Refresh(c *gin.Context) {
-	var body map[string]string
-	if err := c.ShouldBindJSON(&body); err != nil {
+	var req contracts.RefreshRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "invalid request body"})
 		return
 	}
-	refreshTokenStr := body["refreshToken"]
+	refreshTokenStr := req.RefreshToken
 	if refreshTokenStr == "" {
 		// Try Authorization header.
 		header := c.GetHeader("Authorization")
@@ -226,10 +218,10 @@ func (h *Handler) Refresh(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "internal server error"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"accessToken":  accessToken,
-		"refreshToken": newRefreshStr,
-		"tokenType":    "Bearer",
+	c.JSON(http.StatusOK, contracts.AuthTokens{
+		AccessToken:  accessToken,
+		RefreshToken: newRefreshStr,
+		TokenType:    "Bearer",
 	})
 }
 

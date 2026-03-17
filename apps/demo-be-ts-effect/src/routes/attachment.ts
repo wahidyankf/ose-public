@@ -5,6 +5,7 @@ import { ExpenseRepository } from "../infrastructure/db/expense-repo.js";
 import { requireAuth } from "../auth/middleware.js";
 import { NotFoundError, ForbiddenError, FileTooLargeError, UnsupportedMediaTypeError } from "../domain/errors.js";
 import { isAllowedContentType, MAX_ATTACHMENT_SIZE } from "../domain/attachment.js";
+import type { Attachment } from "../lib/api/types.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function attachmentToResponse(attachment: any) {
@@ -82,7 +83,9 @@ const uploadAttachment = HttpRouter.params.pipe(
             data: fileData,
           });
 
-          return yield* HttpServerResponse.json(attachmentToResponse(attachment), { status: 201 });
+          return yield* HttpServerResponse.json(attachmentToResponse(attachment) as unknown as Attachment, {
+            status: 201,
+          });
         }),
       ),
     ),

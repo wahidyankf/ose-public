@@ -10,23 +10,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 
+	contracts "github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/generated-contracts"
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/auth"
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/domain"
 	"github.com/wahidyankf/open-sharia-enterprise/apps/demo-be-golang-gin/internal/store"
 )
-
-// ExpenseRequest is the request body for creating or updating an expense.
-type ExpenseRequest struct {
-	Amount      string   `json:"amount"`
-	Currency    string   `json:"currency"`
-	Category    string   `json:"category"`
-	Description string   `json:"description"`
-	Date        string   `json:"date"`
-	Type        string   `json:"type"`
-	Quantity    *float64 `json:"quantity,omitempty"`
-	Unit        string   `json:"unit,omitempty"`
-}
 
 func formatAmountString(currency string, amount float64) string {
 	upper := strings.ToUpper(currency)
@@ -38,24 +28,27 @@ func formatAmountString(currency string, amount float64) string {
 	}
 }
 
-func expenseToResponse(e *domain.Expense) gin.H {
-	resp := gin.H{
-		"id":          e.ID,
-		"userId":      e.UserID,
-		"amount":      formatAmountString(e.Currency, e.Amount),
-		"currency":    e.Currency,
-		"category":    e.Category,
-		"description": e.Description,
-		"date":        e.Date,
-		"type":        e.Type,
-		"createdAt":   e.CreatedAt,
-		"updatedAt":   e.UpdatedAt,
+func domainExpenseToContract(e *domain.Expense) contracts.Expense {
+	dateTime, _ := time.Parse("2006-01-02", e.Date)
+	resp := contracts.Expense{
+		Id:          e.ID,
+		UserId:      e.UserID,
+		Amount:      formatAmountString(e.Currency, e.Amount),
+		Currency:    e.Currency,
+		Category:    e.Category,
+		Description: e.Description,
+		Date:        openapi_types.Date{Time: dateTime},
+		Type:        contracts.ExpenseType(e.Type),
+		CreatedAt:   e.CreatedAt,
+		UpdatedAt:   e.UpdatedAt,
 	}
 	if e.Quantity != nil {
-		resp["quantity"] = *e.Quantity
+		q := float32(*e.Quantity)
+		resp.Quantity = &q
 	}
 	if e.Unit != "" {
-		resp["unit"] = e.Unit
+		u := e.Unit
+		resp.Unit = &u
 	}
 	return resp
 }
@@ -68,7 +61,7 @@ func (h *Handler) CreateExpense(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "unauthorized"})
 		return
 	}
-	var req ExpenseRequest
+	var req contracts.CreateExpenseRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "invalid request body"})
 		return
@@ -86,9 +79,18 @@ func (h *Handler) CreateExpense(c *gin.Context) {
 		RespondError(c, err)
 		return
 	}
-	if err := domain.ValidateUnit(req.Unit); err != nil {
+	unit := ""
+	if req.Unit != nil {
+		unit = *req.Unit
+	}
+	if err := domain.ValidateUnit(unit); err != nil {
 		RespondError(c, err)
 		return
+	}
+	var quantity *float64
+	if req.Quantity != nil {
+		q := float64(*req.Quantity)
+		quantity = &q
 	}
 	expense := &domain.Expense{
 		ID:          uuid.New().String(),
@@ -97,10 +99,10 @@ func (h *Handler) CreateExpense(c *gin.Context) {
 		Currency:    strings.ToUpper(req.Currency),
 		Category:    req.Category,
 		Description: req.Description,
-		Date:        req.Date,
+		Date:        req.Date.Time.Format("2006-01-02"),
 		Type:        domain.EntryType(req.Type),
-		Quantity:    req.Quantity,
-		Unit:        req.Unit,
+		Quantity:    quantity,
+		Unit:        unit,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
@@ -108,7 +110,7 @@ func (h *Handler) CreateExpense(c *gin.Context) {
 		RespondError(c, err)
 		return
 	}
-	c.JSON(http.StatusCreated, expenseToResponse(expense))
+	c.JSON(http.StatusCreated, domainExpenseToContract(expense))
 }
 
 // GetExpense handles GET /api/v1/expenses/:id.
@@ -129,7 +131,7 @@ func (h *Handler) GetExpense(c *gin.Context) {
 		c.JSON(http.StatusForbidden, gin.H{"message": "access denied"})
 		return
 	}
-	c.JSON(http.StatusOK, expenseToResponse(expense))
+	c.JSON(http.StatusOK, domainExpenseToContract(expense))
 }
 
 // ListExpenses handles GET /api/v1/expenses.
@@ -156,20 +158,17 @@ func (h *Handler) ListExpenses(c *gin.Context) {
 		RespondError(c, err)
 		return
 	}
-	var content []gin.H
+	content := make([]contracts.Expense, 0, len(expenses))
 	for _, e := range expenses {
-		content = append(content, expenseToResponse(e))
-	}
-	if content == nil {
-		content = []gin.H{}
+		content = append(content, domainExpenseToContract(e))
 	}
 	totalPages := int(math.Ceil(float64(total) / float64(size)))
-	c.JSON(http.StatusOK, gin.H{
-		"content":       content,
-		"totalElements": total,
-		"totalPages":    totalPages,
-		"page":          page,
-		"size":          size,
+	c.JSON(http.StatusOK, contracts.ExpenseListResponse{
+		Content:       content,
+		TotalElements: int(total),
+		TotalPages:    totalPages,
+		Page:          page,
+		Size:          size,
 	})
 }
 
@@ -191,42 +190,59 @@ func (h *Handler) UpdateExpense(c *gin.Context) {
 		c.JSON(http.StatusForbidden, gin.H{"message": "access denied"})
 		return
 	}
-	var req ExpenseRequest
+	var req contracts.UpdateExpenseRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "invalid request body"})
 		return
 	}
-	if err := domain.ValidateCurrency(req.Currency); err != nil {
-		RespondError(c, err)
-		return
+	if req.Currency != nil {
+		if err := domain.ValidateCurrency(*req.Currency); err != nil {
+			RespondError(c, err)
+			return
+		}
+		expense.Currency = strings.ToUpper(*req.Currency)
 	}
-	amount, err := strconv.ParseFloat(req.Amount, 64)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "invalid amount", "field": "amount"})
-		return
+	if req.Amount != nil {
+		amount, err := strconv.ParseFloat(*req.Amount, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"message": "invalid amount", "field": "amount"})
+			return
+		}
+		if err := domain.ValidateAmount(expense.Currency, amount); err != nil {
+			RespondError(c, err)
+			return
+		}
+		expense.Amount = amount
 	}
-	if err := domain.ValidateAmount(req.Currency, amount); err != nil {
-		RespondError(c, err)
-		return
+	if req.Unit != nil {
+		if err := domain.ValidateUnit(*req.Unit); err != nil {
+			RespondError(c, err)
+			return
+		}
+		expense.Unit = *req.Unit
 	}
-	if err := domain.ValidateUnit(req.Unit); err != nil {
-		RespondError(c, err)
-		return
+	if req.Category != nil {
+		expense.Category = *req.Category
 	}
-	expense.Amount = amount
-	expense.Currency = strings.ToUpper(req.Currency)
-	expense.Category = req.Category
-	expense.Description = req.Description
-	expense.Date = req.Date
-	expense.Type = domain.EntryType(req.Type)
-	expense.Quantity = req.Quantity
-	expense.Unit = req.Unit
+	if req.Description != nil {
+		expense.Description = *req.Description
+	}
+	if req.Date != nil {
+		expense.Date = req.Date.Time.Format("2006-01-02")
+	}
+	if req.Type != nil {
+		expense.Type = domain.EntryType(*req.Type)
+	}
+	if req.Quantity != nil {
+		q := float64(*req.Quantity)
+		expense.Quantity = &q
+	}
 	expense.UpdatedAt = time.Now()
 	if err := h.store.UpdateExpense(c.Request.Context(), expense); err != nil {
 		RespondError(c, err)
 		return
 	}
-	c.JSON(http.StatusOK, expenseToResponse(expense))
+	c.JSON(http.StatusOK, domainExpenseToContract(expense))
 }
 
 // DeleteExpense handles DELETE /api/v1/expenses/:id.

@@ -7,13 +7,14 @@ import { JwtService } from "../auth/jwt.js";
 import { requireAuth } from "../auth/middleware.js";
 import { validatePasswordStrength, validateEmailFormat, validateUsername } from "../domain/user.js";
 import { ValidationError, UnauthorizedError } from "../domain/errors.js";
+import type { RegisterRequest, LoginRequest, RefreshRequest, AuthTokens, User } from "../lib/api/types.js";
 
 const MAX_FAILED_ATTEMPTS = 5;
 
 const register = HttpServerRequest.HttpServerRequest.pipe(
   Effect.flatMap((req) =>
     Effect.gen(function* () {
-      const body = yield* req.json as Effect.Effect<Record<string, unknown>, unknown>;
+      const body = yield* req.json as Effect.Effect<RegisterRequest, unknown>;
       const username = (body["username"] as string | undefined) ?? "";
       const email = (body["email"] as string | undefined) ?? "";
       const password = (body["password"] as string | undefined) ?? "";
@@ -38,17 +39,15 @@ const register = HttpServerRequest.HttpServerRequest.pipe(
       const userRepo = yield* UserRepository;
       const user = yield* userRepo.create({ username, email, passwordHash, displayName: username });
 
-      return yield* HttpServerResponse.json(
-        {
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          displayName: user.displayName,
-          role: user.role,
-          status: user.status,
-        },
-        { status: 201 },
-      );
+      const userResponse: User = {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        displayName: user.displayName,
+        role: user.role,
+        status: user.status,
+      } as unknown as User;
+      return yield* HttpServerResponse.json(userResponse, { status: 201 });
     }),
   ),
 );
@@ -56,7 +55,7 @@ const register = HttpServerRequest.HttpServerRequest.pipe(
 const login = HttpServerRequest.HttpServerRequest.pipe(
   Effect.flatMap((req) =>
     Effect.gen(function* () {
-      const body = yield* req.json as Effect.Effect<Record<string, unknown>, unknown>;
+      const body = yield* req.json as Effect.Effect<LoginRequest, unknown>;
       const username = (body["username"] as string | undefined) ?? "";
       const password = (body["password"] as string | undefined) ?? "";
 
@@ -99,11 +98,8 @@ const login = HttpServerRequest.HttpServerRequest.pipe(
       const accessToken = yield* jwt.signAccess(user.id, user.username, user.role);
       const refreshToken = yield* jwt.signRefresh(user.id);
 
-      return yield* HttpServerResponse.json({
-        accessToken,
-        refreshToken,
-        tokenType: "Bearer",
-      });
+      const tokens = { accessToken, refreshToken, tokenType: "Bearer" } satisfies AuthTokens;
+      return yield* HttpServerResponse.json(tokens);
     }),
   ),
 );
@@ -143,8 +139,9 @@ const logoutAll = HttpServerRequest.HttpServerRequest.pipe(
 const refresh = HttpServerRequest.HttpServerRequest.pipe(
   Effect.flatMap((req) =>
     Effect.gen(function* () {
-      const body = yield* req.json as Effect.Effect<Record<string, unknown>, unknown>;
-      const refreshToken = ((body["refreshToken"] ?? body["refresh_token"]) as string | undefined) ?? "";
+      const body = yield* req.json as Effect.Effect<RefreshRequest, unknown>;
+      const refreshToken =
+        ((body["refreshToken"] ?? (body as Record<string, unknown>)["refresh_token"]) as string | undefined) ?? "";
 
       if (!refreshToken) {
         return yield* Effect.fail(new UnauthorizedError({ reason: "Missing refresh token" }));
@@ -182,11 +179,12 @@ const refresh = HttpServerRequest.HttpServerRequest.pipe(
       const newAccessToken = yield* jwt.signAccess(user.id, user.username, user.role);
       const newRefreshToken = yield* jwt.signRefresh(user.id);
 
-      return yield* HttpServerResponse.json({
+      const refreshedTokens = {
         accessToken: newAccessToken,
         refreshToken: newRefreshToken,
         tokenType: "Bearer",
-      });
+      } satisfies AuthTokens;
+      return yield* HttpServerResponse.json(refreshedTokens);
     }),
   ),
 );

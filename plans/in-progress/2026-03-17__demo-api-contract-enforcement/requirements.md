@@ -123,27 +123,6 @@ Scenario: Documentation reflects latest contract
   Then the Expense section in the docs shows the new "tags" field
 ```
 
-**Story 6: Strict camelCase Enforcement**
-
-```gherkin
-Feature: All JSON fields use camelCase
-  As a developer
-  I want all API JSON fields to be camelCase
-  So that the API is consistent across all endpoints
-
-Scenario: Spectral rejects snake_case fields
-  Given a schema defines a field named "token_type"
-  When Spectral lints the OpenAPI specification
-  Then it should report an error for the non-camelCase field
-  And the lint target should fail
-
-Scenario: All existing fields are camelCase
-  Given the complete OpenAPI specification
-  When Spectral lints all schema properties
-  Then every field name should be camelCase
-  And there should be zero camelCase violations
-```
-
 ## Alternatives Analysis
 
 ### Alternative 1: OpenAPI 3.1 (Single YAML) + Language-Specific Validators
@@ -315,12 +294,6 @@ Feature: API contract enforcement via code generation
     Then postinstall triggers codegen for all demo apps
     And typecheck/build succeeds immediately
 
-  Scenario: All JSON fields are strict camelCase
-    Given the complete OpenAPI specification
-    When Spectral lints all schema properties
-    Then every field name should be camelCase (e.g., tokenType, not token_type)
-    And there should be zero exceptions to the camelCase rule
-
   Scenario: API documentation is generated
     Given the OpenAPI specification is valid
     When nx run demo-contracts:docs runs
@@ -340,8 +313,7 @@ Feature: API contract enforcement via code generation
 5. **Trunk Based Development** — all work on main branch
 6. **Generated code must include encoders AND decoders** — not just types but full
    serialization/deserialization support
-7. **Strict camelCase** — all JSON field names must be camelCase, zero exceptions. Existing
-   snake_case fields (e.g., `token_type` → `tokenType`) must be migrated.
+7. **Strict camelCase** — all JSON field names use camelCase, zero exceptions
 8. **Browsable documentation** — the contract must produce HTML documentation viewable by
    non-developers (product, stakeholders, public)
 

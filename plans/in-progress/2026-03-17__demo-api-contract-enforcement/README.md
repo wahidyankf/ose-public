@@ -38,8 +38,8 @@ auto-generated type-safe code (encoders/decoders) in every app.
   but not the exact shape of every field, type, or constraint
 - **Types are duplicated** — each backend has its own DTOs/structs, each frontend has its own
   `types.ts` / Dart models. Nothing enforces sync.
-- **Drift is invisible** — naming mismatches (e.g., `created_at` vs `createdAt`) only surface in
-  E2E tests, and only if a scenario asserts that field
+- **Drift is invisible** — naming mismatches can only be caught by E2E tests, and only if a
+  scenario asserts that specific field
 - **No machine-readable contract** — Gherkin is human-readable but cannot drive code generation
 
 ### Enforcement Model

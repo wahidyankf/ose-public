@@ -294,10 +294,8 @@ rules:
       function: truthy
 ```
 
-**Strict camelCase, zero exceptions**: All JSON fields must be camelCase. The OAuth2-standard
-`token_type` field is renamed to `tokenType` in our contract. This requires migrating existing
-backends and Gherkin specs that use `token_type`. Consistency across all fields takes priority
-over OAuth2 convention compliance.
+**Strict camelCase, zero exceptions**: All JSON fields must be camelCase. Spectral enforces this
+rule with no property-level exceptions.
 
 ## Existing CI Integration
 
@@ -456,35 +454,14 @@ via Pydantic validation (Python), struct enforcement (Elixir), and Malli validat
 - Malli `m/decode` with `:strip-extra-keys` catches schema violations
 - This matches each language's idiom rather than fighting it
 
-### Decision 5: Strict camelCase, Zero Exceptions
-
-**Context**: OAuth2 RFC 6749 uses `token_type` (snake_case). Our API currently follows this.
-
-**Decision**: All JSON fields use camelCase with zero exceptions. `token_type` becomes `tokenType`.
-
-**Rationale**:
-
-- Consistency across all fields is more valuable than OAuth2 convention compliance
-- Spectral can enforce a single rule with no exceptions — simpler, no edge cases
-- Code generators produce consistent field names across all languages
-- Consumers of the API (frontends, E2E tests) never see mixed casing
-
-**Migration required**:
-
-- Update Gherkin spec: `specs/apps/demo/be/gherkin/authentication/password-login.feature`
-  (`token_type` → `tokenType`)
-- Update all 11 backend implementations to return `tokenType` instead of `token_type`
-- Update frontend API clients to read `tokenType`
-- Update E2E test assertions
-
-### Decision 6: Test-Only Endpoints Use OpenAPI Extension
+### Decision 5: Test-Only Endpoints Use OpenAPI Extension
 
 **Context**: `/api/v1/test/*` endpoints exist only for testing.
 
 **Decision**: Mark with `x-test-only: true`. Code generators include them. Documentation generators
 filter them out.
 
-### Decision 7: Browsable API Documentation via Redoc
+### Decision 6: Browsable API Documentation via Redoc
 
 **Context**: Product managers, stakeholders, and external teams need to understand the API without
 reading code or YAML.

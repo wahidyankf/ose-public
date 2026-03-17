@@ -26,7 +26,7 @@ const SUPPORTED_UNITS = [
   "box",
   "pack",
 ];
-const EXPENSE_TYPES = ["INCOME", "EXPENSE"];
+const EXPENSE_TYPES = ["income", "expense"];
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
@@ -60,7 +60,7 @@ const EMPTY_FORM: CreateExpenseRequest = {
   category: "",
   description: "",
   date: new Date().toISOString().split("T")[0] ?? "",
-  type: "EXPENSE",
+  type: "expense",
   quantity: undefined,
   unit: undefined,
 };
@@ -91,7 +91,7 @@ export default function ExpensesPage() {
     if (!form.category.trim()) errors.category = "Category is required";
     if (!form.description.trim()) errors.description = "Description is required";
     if (!form.date) errors.date = "Date is required";
-    if (!EXPENSE_TYPES.includes(form.type.trim().toUpperCase())) errors.type = "Type is required";
+    if (!EXPENSE_TYPES.includes(form.type.trim().toLowerCase())) errors.type = "Type is required";
     if (form.unit && !SUPPORTED_UNITS.includes(form.unit.trim().toLowerCase())) {
       errors.unit = "Invalid unit";
     }
@@ -107,7 +107,7 @@ export default function ExpensesPage() {
     const payload: CreateExpenseRequest = {
       ...form,
       currency: form.currency.trim().toUpperCase(),
-      type: form.type.trim().toUpperCase(),
+      type: form.type.trim().toLowerCase() as CreateExpenseRequest["type"],
       quantity: form.quantity ?? undefined,
       unit: form.unit || undefined,
     };
@@ -250,7 +250,7 @@ export default function ExpensesPage() {
                   type="text"
                   list="create-type-list"
                   value={form.type}
-                  onChange={(e) => setForm({ ...form, type: e.target.value })}
+                  onChange={(e) => setForm({ ...form, type: e.target.value as CreateExpenseRequest["type"] })}
                   style={inputStyle}
                 />
                 <datalist id="create-type-list">
@@ -456,9 +456,7 @@ export default function ExpensesPage() {
       {data && (
         <>
           {data.totalElements !== undefined && (
-            <p style={{ color: "#555", marginBottom: "0.75rem", fontSize: "0.9rem" }}>
-              {data.totalElements} entries
-            </p>
+            <p style={{ color: "#555", marginBottom: "0.75rem", fontSize: "0.9rem" }}>{data.totalElements} entries</p>
           )}
           <div style={{ overflowX: "auto" }}>
             <table
@@ -511,7 +509,7 @@ export default function ExpensesPage() {
                     <td style={{ padding: "0.75rem", fontSize: "0.9rem" }}>
                       <span
                         style={{
-                          color: expense.type === "INCOME" ? "#27ae60" : "#c0392b",
+                          color: expense.type === "income" ? "#27ae60" : "#c0392b",
                           fontWeight: "600",
                         }}
                       >
@@ -522,7 +520,7 @@ export default function ExpensesPage() {
                       style={{
                         padding: "0.75rem",
                         fontWeight: "600",
-                        color: expense.type === "INCOME" ? "#27ae60" : "#c0392b",
+                        color: expense.type === "income" ? "#27ae60" : "#c0392b",
                       }}
                     >
                       {expense.currency} {expense.amount}

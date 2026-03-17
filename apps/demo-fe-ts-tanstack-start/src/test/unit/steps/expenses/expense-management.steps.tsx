@@ -108,7 +108,7 @@ const mockUser = {
   username: "alice",
   email: "alice@example.com",
   displayName: "Alice",
-  status: "ACTIVE",
+  status: "ACTIVE" as const,
   roles: [],
   createdAt: "2025-01-01T00:00:00Z",
   updatedAt: "2025-01-01T00:00:00Z",
@@ -122,12 +122,12 @@ function makeExpenseBase(overrides: Record<string, unknown> = {}) {
     category: "food",
     description: "Lunch",
     date: "2025-01-15",
-    type: "EXPENSE",
+    type: "expense" as "income" | "expense",
     userId: "user-1",
     createdAt: "2025-01-15T00:00:00Z",
     updatedAt: "2025-01-15T00:00:00Z",
     ...overrides,
-  };
+  } as import("@/lib/api/types").Expense;
 }
 
 const emptyList = { content: [], totalElements: 0, totalPages: 1, page: 0, size: 20 };
@@ -214,7 +214,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
           category: "salary",
           description: "Monthly salary",
           date: "2025-01-31",
-          type: "INCOME",
+          type: "income" as const,
         }),
       );
       const { Route } = await import("@/routes/_auth/expenses/index");
@@ -267,7 +267,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       category: "food",
       description: "Lunch",
       date: "2025-01-15",
-      type: "EXPENSE",
+      type: "expense" as const,
     });
 
     Given(
@@ -365,7 +365,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       category: "food",
       description: "Breakfast",
       date: "2025-01-10",
-      type: "EXPENSE",
+      type: "expense" as const,
     });
     const updatedExpense = makeExpenseBase({
       id: "exp-edit-1",
@@ -373,7 +373,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       category: "food",
       description: "Updated breakfast",
       date: "2025-01-10",
-      type: "EXPENSE",
+      type: "expense" as const,
     });
 
     Given(

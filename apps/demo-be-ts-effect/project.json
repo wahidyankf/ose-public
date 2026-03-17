@@ -4,6 +4,16 @@
   "sourceRoot": "apps/demo-be-ts-effect/src",
   "projectType": "application",
   "targets": {
+    "codegen": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx @hey-api/openapi-ts -i specs/apps/demo/contracts/generated/openapi-bundled.yaml -o apps/demo-be-ts-effect/generated-contracts -s"
+      },
+      "dependsOn": ["demo-contracts:bundle"],
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/demo/contracts/generated/openapi-bundled.yaml"],
+      "outputs": ["{projectRoot}/generated-contracts"]
+    },
     "build": {
       "executor": "nx:run-commands",
       "options": {
@@ -82,7 +92,8 @@
       "options": {
         "command": "npx tsc --noEmit",
         "cwd": "apps/demo-be-ts-effect"
-      }
+      },
+      "dependsOn": ["codegen"]
     }
   },
   "tags": ["type:app", "platform:effect", "lang:typescript", "domain:demo-be"],

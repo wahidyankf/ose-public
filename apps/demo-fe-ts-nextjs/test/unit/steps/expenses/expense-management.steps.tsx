@@ -8,6 +8,7 @@ import { vi, expect } from "vitest";
 import * as expensesApi from "@/lib/api/expenses";
 import * as attachmentsApi from "@/lib/api/attachments";
 import * as usersApi from "@/lib/api/users";
+import type { Expense } from "@/lib/api/types";
 
 const feature = await loadFeature(
   path.resolve(__dirname, "../../../../../../specs/apps/demo/fe/gherkin/expenses/expense-management.feature"),
@@ -112,17 +113,13 @@ const mockUser = {
   username: "alice",
   email: "alice@example.com",
   displayName: "Alice",
-  status: "ACTIVE",
-  roles: [],
+  status: "ACTIVE" as const,
+  roles: [] as string[],
   createdAt: "2025-01-01T00:00:00Z",
   updatedAt: "2025-01-01T00:00:00Z",
 };
 
-function makeExpense(overrides: Partial<ReturnType<typeof makeExpenseBase>> = {}) {
-  return makeExpenseBase(overrides);
-}
-
-function makeExpenseBase(overrides: Record<string, unknown> = {}) {
+function makeExpense(overrides: Partial<Expense> = {}): Expense {
   return {
     id: "exp-1",
     amount: "10.50",
@@ -130,7 +127,7 @@ function makeExpenseBase(overrides: Record<string, unknown> = {}) {
     category: "food",
     description: "Lunch",
     date: "2025-01-15",
-    type: "EXPENSE",
+    type: "expense",
     userId: "user-1",
     createdAt: "2025-01-15T00:00:00Z",
     updatedAt: "2025-01-15T00:00:00Z",
@@ -221,7 +218,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
           category: "salary",
           description: "Monthly salary",
           date: "2025-01-31",
-          type: "INCOME",
+          type: "income",
         }),
       );
       const ExpensesPage = (await import("@/app/expenses/page")).default;
@@ -273,7 +270,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       category: "food",
       description: "Lunch",
       date: "2025-01-15",
-      type: "EXPENSE",
+      type: "expense",
     });
 
     Given(
@@ -323,7 +320,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
 
     And('the entry detail should display type "expense"', () => {
-      expect(screen.getByText("EXPENSE")).toBeInTheDocument();
+      expect(screen.getByText("expense")).toBeInTheDocument();
     });
   });
 
@@ -369,7 +366,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       category: "food",
       description: "Breakfast",
       date: "2025-01-10",
-      type: "EXPENSE",
+      type: "expense",
     });
 
     Given(
@@ -446,7 +443,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       category: "food",
       description: "Snack",
       date: "2025-01-05",
-      type: "EXPENSE",
+      type: "expense",
     });
 
     Given(

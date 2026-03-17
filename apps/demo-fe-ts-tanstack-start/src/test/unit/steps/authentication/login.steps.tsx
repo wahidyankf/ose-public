@@ -90,6 +90,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       vi.mocked(authApi.login).mockResolvedValue({
         accessToken: "mock-access-token",
         refreshToken: "mock-refresh-token",
+        tokenType: "Bearer",
       });
       const { Route } = await import("@/routes/login");
       const Component = (Route as { options: { component: React.ComponentType } }).options.component;
@@ -121,6 +122,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       vi.mocked(authApi.login).mockResolvedValue({
         accessToken: "mock-access-token",
         refreshToken: "mock-refresh-token",
+        tokenType: "Bearer",
       });
       const { Route } = await import("@/routes/login");
       const Component = (Route as { options: { component: React.ComponentType } }).options.component;

@@ -4,6 +4,16 @@
   "sourceRoot": "apps/demo-fe-ts-nextjs/src",
   "projectType": "application",
   "targets": {
+    "codegen": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx @hey-api/openapi-ts -i specs/apps/demo/contracts/generated/openapi-bundled.yaml -o apps/demo-fe-ts-nextjs/src/generated-contracts -s"
+      },
+      "dependsOn": ["demo-contracts:bundle"],
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/demo/contracts/generated/openapi-bundled.yaml"],
+      "outputs": ["{projectRoot}/src/generated-contracts"]
+    },
     "dev": {
       "executor": "nx:run-commands",
       "options": {
@@ -32,7 +42,8 @@
       "options": {
         "command": "tsc --noEmit",
         "cwd": "{projectRoot}"
-      }
+      },
+      "dependsOn": ["codegen"]
     },
     "lint": {
       "executor": "nx:run-commands",
@@ -53,7 +64,8 @@
       "options": {
         "command": "npx vitest run --project unit",
         "cwd": "{projectRoot}"
-      }
+      },
+      "dependsOn": ["codegen"]
     }
   },
   "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:demo-fe"],

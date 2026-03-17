@@ -83,7 +83,12 @@ function createQueryClient() {
   });
 }
 
-const makeUser = (id: string, username: string, email: string, status = "ACTIVE") => ({
+const makeUser = (
+  id: string,
+  username: string,
+  email: string,
+  status: "ACTIVE" | "INACTIVE" | "DISABLED" | "LOCKED" = "ACTIVE",
+) => ({
   id,
   username,
   email,
@@ -191,7 +196,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
         page: 0,
         size: 20,
       });
-      vi.mocked(adminApi.disableUser).mockResolvedValue({ ...aliceUser, status: "DISABLED" });
+      vi.mocked(adminApi.disableUser).mockResolvedValue({ ...aliceUser, status: "DISABLED" as const });
       await renderAdminPage(queryClient);
     });
 
@@ -218,7 +223,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
   Scenario("Disabled user sees an error when trying to access their dashboard", ({ Given, When, Then, And }) => {
     Given("alice's account has been disabled by the admin", () => {
       vi.mocked(adminApi.listUsers).mockResolvedValue({
-        content: [{ ...aliceUser, status: "DISABLED" }],
+        content: [{ ...aliceUser, status: "DISABLED" as const }],
         totalElements: 1,
         totalPages: 1,
         page: 0,
@@ -242,13 +247,13 @@ describeFeature(feature, ({ Scenario, Background }) => {
   Scenario("Admin re-enables a disabled user account", ({ Given, When, Then, And }) => {
     Given("alice's account has been disabled", () => {
       vi.mocked(adminApi.listUsers).mockResolvedValue({
-        content: [{ ...aliceUser, status: "DISABLED" }],
+        content: [{ ...aliceUser, status: "DISABLED" as const }],
         totalElements: 1,
         totalPages: 1,
         page: 0,
         size: 20,
       });
-      vi.mocked(adminApi.enableUser).mockResolvedValue({ ...aliceUser, status: "ACTIVE" });
+      vi.mocked(adminApi.enableUser).mockResolvedValue({ ...aliceUser, status: "ACTIVE" as const });
     });
 
     When("the admin navigates to alice's user detail page", async () => {

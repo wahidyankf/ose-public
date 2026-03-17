@@ -108,7 +108,7 @@ const mockUser = {
   username: "alice",
   email: "alice@example.com",
   displayName: "Alice",
-  status: "ACTIVE",
+  status: "ACTIVE" as const,
   roles: [],
   createdAt: "2025-01-01T00:00:00Z",
   updatedAt: "2025-01-01T00:00:00Z",
@@ -122,12 +122,12 @@ function makeExpense(overrides: Record<string, unknown> = {}) {
     category: "food",
     description: "Lunch",
     date: "2025-01-15",
-    type: "EXPENSE",
+    type: "expense" as "income" | "expense",
     userId: "user-1",
     createdAt: "2025-01-15T00:00:00Z",
     updatedAt: "2025-01-15T00:00:00Z",
     ...overrides,
-  };
+  } as import("@/lib/api/types").Expense;
 }
 
 function makeAttachment(id: string, filename: string, contentType: string, size = 1024) {

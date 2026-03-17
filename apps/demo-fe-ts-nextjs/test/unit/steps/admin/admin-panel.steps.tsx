@@ -77,13 +77,18 @@ function createQueryClient() {
   });
 }
 
-const makeUser = (id: string, username: string, email: string, status = "ACTIVE") => ({
+const makeUser = (
+  id: string,
+  username: string,
+  email: string,
+  status: "ACTIVE" | "INACTIVE" | "DISABLED" | "LOCKED" = "ACTIVE",
+) => ({
   id,
   username,
   email,
   displayName: username,
   status,
-  roles: [],
+  roles: [] as string[],
   createdAt: "2025-01-01T00:00:00Z",
   updatedAt: "2025-01-01T00:00:00Z",
 });

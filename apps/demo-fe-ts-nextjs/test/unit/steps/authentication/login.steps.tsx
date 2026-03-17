@@ -79,6 +79,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       vi.mocked(authApi.login).mockResolvedValue({
         accessToken: "mock-access-token",
         refreshToken: "mock-refresh-token",
+        tokenType: "Bearer",
       });
       render(
         <QueryClientProvider client={queryClient}>
@@ -109,6 +110,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       vi.mocked(authApi.login).mockResolvedValue({
         accessToken: "mock-access-token",
         refreshToken: "mock-refresh-token",
+        tokenType: "Bearer",
       });
       render(
         <QueryClientProvider client={queryClient}>

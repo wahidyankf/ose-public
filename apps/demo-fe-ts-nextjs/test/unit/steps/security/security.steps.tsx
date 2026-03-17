@@ -85,7 +85,7 @@ const mockAdminUser = {
   username: "superadmin",
   email: "admin@example.com",
   displayName: "Admin",
-  status: "ACTIVE",
+  status: "ACTIVE" as const,
   roles: ["ADMIN"],
   createdAt: "2025-01-01T00:00:00Z",
   updatedAt: "2025-01-01T00:00:00Z",
@@ -96,13 +96,13 @@ const mockAliceUser = {
   username: "alice",
   email: "alice@example.com",
   displayName: "Alice",
-  status: "ACTIVE",
-  roles: [],
+  status: "ACTIVE" as const,
+  roles: [] as string[],
   createdAt: "2025-01-01T00:00:00Z",
   updatedAt: "2025-01-01T00:00:00Z",
 };
 
-const mockLockedAlice = { ...mockAliceUser, status: "LOCKED" };
+const mockLockedAlice = { ...mockAliceUser, status: "LOCKED" as const };
 
 describeFeature(feature, ({ Scenario, Background }) => {
   let queryClient: QueryClient;
@@ -273,6 +273,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       vi.mocked(authApi.login).mockResolvedValue({
         accessToken: "mock-access-token",
         refreshToken: "mock-refresh-token",
+        tokenType: "Bearer",
       });
       const LoginPage = (await import("@/app/login/page")).default;
       render(

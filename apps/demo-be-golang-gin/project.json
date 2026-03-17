@@ -4,6 +4,16 @@
   "projectType": "application",
   "tags": ["type:app", "platform:gin", "lang:golang", "domain:demo-be"],
   "targets": {
+    "codegen": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "mkdir -p apps/demo-be-golang-gin/generated-contracts && oapi-codegen -generate types -package contracts -o apps/demo-be-golang-gin/generated-contracts/types.gen.go specs/apps/demo/contracts/generated/openapi-bundled.yaml"
+      },
+      "dependsOn": ["demo-contracts:bundle"],
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/demo/contracts/generated/openapi-bundled.yaml"],
+      "outputs": ["{projectRoot}/generated-contracts"]
+    },
     "build": {
       "executor": "nx:run-commands",
       "options": {
@@ -29,7 +39,7 @@
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "CGO_ENABLED=0 go test -coverprofile=cover.out ./... -count=1 && head -1 cover.out > cover_unit.out && grep -v 'gorm_store\\|internal/server\\|cmd/server' cover.out >> cover_unit.out && (cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/demo-be-golang-gin/cover_unit.out 90)",
+        "command": "CGO_ENABLED=0 go test -coverprofile=cover.out ./... -count=1 && head -1 cover.out > cover_unit.out && grep -v 'gorm_store\\|internal/server\\|cmd/server\\|generated-contracts' cover.out >> cover_unit.out && (cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/demo-be-golang-gin/cover_unit.out 90)",
         "cwd": "apps/demo-be-golang-gin"
       },
       "cache": true,

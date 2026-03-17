@@ -1,0 +1,9 @@
+package: contracts
+output: generated-contracts/types.gen.go
+generate:
+  models: true
+  embedded-spec: false
+  strict-server: false
+  chi-server: false
+  gin-server: false
+  client: false

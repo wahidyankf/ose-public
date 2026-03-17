@@ -64,7 +64,7 @@ for all statically typed apps. Wire `codegen` as dependency of `typecheck`/`buil
 
 **Implementation Steps**:
 
-- [ ] **demo-be-golang-gin**: Install `oapi-codegen`, create config (`oapi-codegen.yaml` with
+- [x] **demo-be-golang-gin**: Install `oapi-codegen`, create config (`oapi-codegen.yaml` with
       strict-server + gin output), add `codegen` target, update handlers to implement generated
       strict server interface, verify `go build` passes
 - [ ] **demo-be-java-springboot**: Add `openapi-generator-maven-plugin` to `pom.xml`, configure
@@ -83,13 +83,13 @@ for all statically typed apps. Wire `codegen` as dependency of `typecheck`/`buil
 - [ ] **demo-be-csharp-aspnetcore**: Add `NSwag.MSBuild` NuGet package, configure C# class
       generation, add `codegen` target, update controllers to use generated classes, verify
       `dotnet build` passes
-- [ ] **demo-be-ts-effect**: Add `@hey-api/openapi-ts` dev dependency, add `codegen` target
+- [x] **demo-be-ts-effect**: Add `@hey-api/openapi-ts` dev dependency, add `codegen` target
       generating TS types + Effect Schema definitions, update handlers to use generated types with
       `Schema.decode`/`Schema.encode`, verify `tsc` passes
-- [ ] **demo-fe-ts-nextjs**: Add `@hey-api/openapi-ts` with Zod plugin, add `codegen` target
+- [x] **demo-fe-ts-nextjs**: Add `@hey-api/openapi-ts` with Zod plugin, add `codegen` target
       generating TS types + Zod schemas + SDK client, replace hand-written `types.ts` with generated
       types, use generated Zod schemas as runtime decoders for API responses, verify `tsc` passes
-- [ ] **demo-fe-ts-tanstack-start**: Same as demo-fe-ts-nextjs — `@hey-api/openapi-ts` + Zod
+- [x] **demo-fe-ts-tanstack-start**: Same as demo-fe-ts-nextjs — `@hey-api/openapi-ts` + Zod
       plugin, add `codegen` target, replace types, use Zod runtime decoders, verify `tsc` passes
 - [ ] **demo-fe-dart-flutterweb**: Add `openapi-generator` Dart generator, add `codegen` target,
       replace hand-written models with generated classes using `json_serializable`, verify

@@ -29,7 +29,7 @@ const SUPPORTED_UNITS = [
   "box",
   "pack",
 ];
-const EXPENSE_TYPES = ["INCOME", "EXPENSE"];
+const EXPENSE_TYPES = ["income", "expense"];
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
@@ -435,8 +435,8 @@ export default function ExpenseDetailPage({ params }: PageProps) {
                   id="edit-type"
                   type="text"
                   list="edit-type-list"
-                  value={editForm.type ?? "EXPENSE"}
-                  onChange={(e) => setEditForm({ ...editForm, type: e.target.value })}
+                  value={editForm.type ?? "expense"}
+                  onChange={(e) => setEditForm({ ...editForm, type: e.target.value as UpdateExpenseRequest["type"] })}
                   style={inputStyle}
                 />
                 <datalist id="edit-type-list">

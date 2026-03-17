@@ -4,6 +4,16 @@
   "sourceRoot": "apps/demo-fe-dart-flutterweb/lib",
   "projectType": "application",
   "targets": {
+    "codegen": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx openapi-generator-cli generate -i $(pwd)/specs/apps/demo/contracts/generated/openapi-bundled.yaml -g dart -o $(pwd)/apps/demo-fe-dart-flutterweb/generated-contracts --additional-properties=pubName=demo_contracts --global-property=models,modelDocs=false,apiDocs=false"
+      },
+      "dependsOn": ["demo-contracts:bundle"],
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/demo/contracts/generated/openapi-bundled.yaml"],
+      "outputs": ["{projectRoot}/generated-contracts"]
+    },
     "dev": {
       "executor": "nx:run-commands",
       "options": {

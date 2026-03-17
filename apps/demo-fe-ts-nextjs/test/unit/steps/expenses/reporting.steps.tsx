@@ -88,8 +88,8 @@ const mockUser = {
   username: "alice",
   email: "alice@example.com",
   displayName: "Alice",
-  status: "ACTIVE",
-  roles: [],
+  status: "ACTIVE" as const,
+  roles: [] as string[],
   createdAt: "2025-01-01T00:00:00Z",
   updatedAt: "2025-01-01T00:00:00Z",
 };

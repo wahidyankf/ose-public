@@ -104,8 +104,8 @@ const mockUser = {
   username: "alice",
   email: "alice@example.com",
   displayName: "Alice",
-  status: "ACTIVE",
-  roles: [],
+  status: "ACTIVE" as const,
+  roles: [] as string[],
   createdAt: "2025-01-01T00:00:00Z",
   updatedAt: "2025-01-01T00:00:00Z",
 };
@@ -138,7 +138,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
           category: "food",
           description: "Coffee",
           date: "2025-01-15",
-          type: "EXPENSE",
+          type: "expense" as const,
           userId: "user-1",
           createdAt: "2025-01-15T00:00:00Z",
           updatedAt: "2025-01-15T00:00:00Z",
@@ -183,7 +183,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
           category: "transport",
           description: "Taxi",
           date: "2025-01-15",
-          type: "EXPENSE",
+          type: "expense" as const,
           userId: "user-1",
           createdAt: "2025-01-15T00:00:00Z",
           updatedAt: "2025-01-15T00:00:00Z",
@@ -343,7 +343,10 @@ describeFeature(feature, ({ Scenario, Background }) => {
         incomeBreakdown: [{ category: "salary", type: "INCOME", total: "5000.00" }],
         expenseBreakdown: [{ category: "food", type: "EXPENSE", total: "150.00" }],
       });
-      vi.mocked(expensesApi.getExpenseSummary).mockResolvedValue({ USD: "50.00", IDR: "100000.00" } as unknown as Awaited<ReturnType<typeof expensesApi.getExpenseSummary>>);
+      vi.mocked(expensesApi.getExpenseSummary).mockResolvedValue({
+        USD: "50.00",
+        IDR: "100000.00",
+      } as unknown as Awaited<ReturnType<typeof expensesApi.getExpenseSummary>>);
     });
 
     When("alice navigates to the expense summary page", async () => {

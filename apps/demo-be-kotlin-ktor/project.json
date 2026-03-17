@@ -4,6 +4,16 @@
   "sourceRoot": "apps/demo-be-kotlin-ktor/src",
   "projectType": "application",
   "targets": {
+    "codegen": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx openapi-generator-cli generate -i $(pwd)/specs/apps/demo/contracts/generated/openapi-bundled.yaml -g kotlin -o $(pwd)/apps/demo-be-kotlin-ktor/generated-contracts --model-package com.demobektkt.contracts --additional-properties=library=jvm-ktor,serializationLibrary=kotlinx_serialization,dateLibrary=kotlinx-datetime --global-property=models,modelDocs=false,apiDocs=false"
+      },
+      "dependsOn": ["demo-contracts:bundle"],
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/demo/contracts/generated/openapi-bundled.yaml"],
+      "outputs": ["{projectRoot}/generated-contracts"]
+    },
     "build": {
       "executor": "nx:run-commands",
       "options": {

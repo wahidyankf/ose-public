@@ -4,6 +4,16 @@
   "sourceRoot": "apps/demo-be-fsharp-giraffe/src",
   "projectType": "application",
   "targets": {
+    "codegen": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx openapi-generator-cli generate -i $(pwd)/specs/apps/demo/contracts/generated/openapi-bundled.yaml -g fsharp-giraffe-server -o $(pwd)/apps/demo-be-fsharp-giraffe/generated-contracts --model-package DemoBeFsgi.Contracts --global-property=models,modelDocs=false,apiDocs=false"
+      },
+      "dependsOn": ["demo-contracts:bundle"],
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/demo/contracts/generated/openapi-bundled.yaml"],
+      "outputs": ["{projectRoot}/generated-contracts"]
+    },
     "build": {
       "executor": "nx:run-commands",
       "options": {
@@ -75,7 +85,8 @@
       "options": {
         "command": "dotnet build src/DemoBeFsgi/DemoBeFsgi.fsproj --no-restore /p:TreatWarningsAsErrors=true",
         "cwd": "apps/demo-be-fsharp-giraffe"
-      }
+      },
+      "dependsOn": ["codegen"]
     }
   },
   "tags": ["type:app", "platform:giraffe", "lang:fsharp", "domain:demo-be"],

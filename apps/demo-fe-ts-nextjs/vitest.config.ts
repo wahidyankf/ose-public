@@ -17,6 +17,7 @@ export default defineConfig({
         "src/lib/api/**",
         "src/lib/auth/**",
         "src/lib/queries/**",
+        "src/generated-contracts/**",
         "**/*.{test,spec}.{ts,tsx}",
       ],
       thresholds: {

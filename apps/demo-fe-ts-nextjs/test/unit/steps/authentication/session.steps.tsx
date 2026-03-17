@@ -148,6 +148,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
       vi.mocked(authApi.refreshToken).mockResolvedValue({
         accessToken: "new-access-token",
         refreshToken: "new-refresh-token",
+        tokenType: "Bearer",
       });
       await authApi.refreshToken("refresh-token");
       clientModule.setTokens("new-access-token", "new-refresh-token");

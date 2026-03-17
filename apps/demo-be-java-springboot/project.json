@@ -4,6 +4,16 @@
   "sourceRoot": "apps/demo-be-java-springboot/src",
   "projectType": "application",
   "targets": {
+    "codegen": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx openapi-generator-cli generate -i $(pwd)/specs/apps/demo/contracts/generated/openapi-bundled.yaml -g java -o $(pwd)/apps/demo-be-java-springboot/generated-contracts --model-package com.demobejasb.contracts --additional-properties=library=resttemplate,dateLibrary=java8,openApiNullable=false,useBeanValidation=false,serializationLibrary=jackson --global-property=models,modelDocs=false,apiDocs=false"
+      },
+      "dependsOn": ["demo-contracts:bundle"],
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/demo/contracts/generated/openapi-bundled.yaml"],
+      "outputs": ["{projectRoot}/generated-contracts"]
+    },
     "build": {
       "executor": "nx:run-commands",
       "options": {
@@ -79,7 +89,8 @@
           "cd apps/demo-be-java-springboot && mvn compile -Pnullcheck"
         ],
         "parallel": false
-      }
+      },
+      "dependsOn": ["codegen"]
     }
   },
   "tags": ["type:app", "platform:spring-boot", "lang:java", "domain:demo-be"],

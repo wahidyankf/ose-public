@@ -23,6 +23,14 @@ jobs:
         with:
           node-version: "24"
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install datamodel-codegen
+        run: pip install datamodel-code-generator[http]
+
       - name: Generate contract types for backend
         run: |
           npm ci --ignore-scripts
@@ -51,6 +59,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "24"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install datamodel-codegen
+        run: pip install datamodel-code-generator[http]
 
       - name: Generate contract types
         run: |

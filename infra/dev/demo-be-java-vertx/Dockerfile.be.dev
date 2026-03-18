@@ -14,6 +14,7 @@ WORKDIR /workspace
 # dev mode still runs `mvn compile exec:java` against volume-mounted source.
 COPY pom.xml /tmp/build/pom.xml
 COPY src/ /tmp/build/src/
+COPY generated-contracts/ /tmp/build/generated-contracts/
 RUN cd /tmp/build \
     && mvn package -Dmaven.test.skip=true -Dmaven.antrun.skip=true -B \
     && mkdir -p /app \

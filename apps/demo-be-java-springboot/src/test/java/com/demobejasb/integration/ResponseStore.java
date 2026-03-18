@@ -2,9 +2,9 @@ package com.demobejasb.integration;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import java.util.Map;
 import org.jspecify.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -17,15 +17,18 @@ import org.springframework.stereotype.Component;
 @Scope("cucumber-glue")
 public class ResponseStore {
 
-    private final ObjectMapper mapper;
+    private static final ObjectMapper MAPPER;
+
+    static {
+        MAPPER = new ObjectMapper();
+        MAPPER.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        // Auto-discover and register any available Jackson modules (including JSR310/JavaTime)
+        MAPPER.findAndRegisterModules();
+    }
+
     private int statusCode;
     @Nullable
     private String body;
-
-    @Autowired
-    public ResponseStore(ObjectMapper mapper) {
-        this.mapper = mapper;
-    }
 
     public void setResponse(final int statusCode, final @Nullable Object bodyObject) {
         this.statusCode = statusCode;
@@ -35,7 +38,7 @@ public class ResponseStore {
             this.body = s;
         } else {
             try {
-                this.body = mapper.writeValueAsString(bodyObject);
+                this.body = MAPPER.writeValueAsString(bodyObject);
             } catch (Exception e) {
                 throw new RuntimeException("Failed to serialise response body", e);
             }
@@ -70,7 +73,7 @@ public class ResponseStore {
             if (b == null || b.isBlank()) {
                 return Map.of();
             }
-            return mapper.readValue(b, new TypeReference<Map<String, Object>>() {});
+            return MAPPER.readValue(b, new TypeReference<Map<String, Object>>() {});
         } catch (Exception e) {
             throw new RuntimeException("Failed to parse response body as map: " + body, e);
         }

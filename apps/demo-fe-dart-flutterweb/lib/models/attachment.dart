@@ -1,3 +1,5 @@
+import 'package:demo_contracts/demo_contracts.dart' as gen;
+
 class Attachment {
   final String id;
   final String filename;
@@ -14,12 +16,13 @@ class Attachment {
   });
 
   factory Attachment.fromJson(Map<String, dynamic> json) {
+    final g = gen.Attachment.fromJson(json)!;
     return Attachment(
-      id: json['id'] as String,
-      filename: json['filename'] as String,
-      contentType: json['contentType'] as String,
-      size: json['size'] as int,
-      createdAt: json['createdAt'] as String,
+      id: g.id,
+      filename: g.filename,
+      contentType: g.contentType,
+      size: g.size,
+      createdAt: g.createdAt.toIso8601String(),
     );
   }
 }

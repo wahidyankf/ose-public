@@ -1,3 +1,5 @@
+import 'package:demo_contracts/demo_contracts.dart' as gen;
+
 class User {
   final String id;
   final String username;
@@ -20,15 +22,16 @@ class User {
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
+    final g = gen.User.fromJson(json)!;
     return User(
-      id: json['id'] as String,
-      username: json['username'] as String,
-      email: json['email'] as String,
-      displayName: json['displayName'] as String,
-      status: json['status'] as String,
-      roles: (json['roles'] as List<dynamic>).cast<String>(),
-      createdAt: json['createdAt'] as String,
-      updatedAt: json['updatedAt'] as String,
+      id: g.id,
+      username: g.username,
+      email: g.email,
+      displayName: g.displayName,
+      status: g.status.value,
+      roles: List<String>.from(g.roles),
+      createdAt: g.createdAt.toIso8601String(),
+      updatedAt: g.updatedAt.toIso8601String(),
     );
   }
 }
@@ -49,14 +52,24 @@ class UserListResponse {
   });
 
   factory UserListResponse.fromJson(Map<String, dynamic> json) {
+    final g = gen.UserListResponse.fromJson(json)!;
     return UserListResponse(
-      content: (json['content'] as List<dynamic>)
-          .map((e) => User.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      totalElements: json['totalElements'] as int,
-      totalPages: json['totalPages'] as int,
-      page: json['page'] as int,
-      size: json['size'] as int,
+      content: g.content.map(
+        (u) => User(
+          id: u.id,
+          username: u.username,
+          email: u.email,
+          displayName: u.displayName,
+          status: u.status.value,
+          roles: List<String>.from(u.roles),
+          createdAt: u.createdAt.toIso8601String(),
+          updatedAt: u.updatedAt.toIso8601String(),
+        ),
+      ).toList(),
+      totalElements: g.totalElements,
+      totalPages: g.totalPages,
+      page: g.page,
+      size: g.size,
     );
   }
 }
@@ -66,7 +79,10 @@ class UpdateProfileRequest {
 
   const UpdateProfileRequest({required this.displayName});
 
-  Map<String, dynamic> toJson() => {'displayName': displayName};
+  Map<String, dynamic> toJson() {
+    final g = gen.UpdateProfileRequest(displayName: displayName);
+    return g.toJson();
+  }
 }
 
 class ChangePasswordRequest {
@@ -78,10 +94,13 @@ class ChangePasswordRequest {
     required this.newPassword,
   });
 
-  Map<String, dynamic> toJson() => {
-        'oldPassword': oldPassword,
-        'newPassword': newPassword,
-      };
+  Map<String, dynamic> toJson() {
+    final g = gen.ChangePasswordRequest(
+      oldPassword: oldPassword,
+      newPassword: newPassword,
+    );
+    return g.toJson();
+  }
 }
 
 class DisableRequest {
@@ -89,7 +108,10 @@ class DisableRequest {
 
   const DisableRequest({required this.reason});
 
-  Map<String, dynamic> toJson() => {'reason': reason};
+  Map<String, dynamic> toJson() {
+    final g = gen.DisableRequest(reason: reason);
+    return g.toJson();
+  }
 }
 
 class PasswordResetResponse {
@@ -98,6 +120,7 @@ class PasswordResetResponse {
   const PasswordResetResponse({required this.token});
 
   factory PasswordResetResponse.fromJson(Map<String, dynamic> json) {
-    return PasswordResetResponse(token: json['token'] as String);
+    final g = gen.PasswordResetResponse.fromJson(json)!;
+    return PasswordResetResponse(token: g.token);
   }
 }

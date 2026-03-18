@@ -1,3 +1,5 @@
+import 'package:demo_contracts/demo_contracts.dart' as gen;
+
 class TokenClaims {
   final String sub;
   final String iss;
@@ -13,13 +15,27 @@ class TokenClaims {
     required this.roles,
   });
 
+  /// Parses JWT claims with defensive defaults for optional fields.
+  ///
+  /// JWT payloads may omit standard claims, so this constructor applies
+  /// defaults rather than throwing on missing keys.
   factory TokenClaims.fromJson(Map<String, dynamic> json) {
+    // Normalize: supply defaults for missing/null JWT claim fields before
+    // delegating to the generated parser, which asserts required keys.
+    final normalized = <String, dynamic>{
+      'sub': json['sub'] ?? '',
+      'iss': json['iss'] ?? '',
+      'exp': json['exp'] ?? 0,
+      'iat': json['iat'] ?? 0,
+      'roles': json['roles'] ?? <String>[],
+    };
+    final g = gen.TokenClaims.fromJson(normalized)!;
     return TokenClaims(
-      sub: json['sub'] as String? ?? '',
-      iss: json['iss'] as String? ?? '',
-      exp: json['exp'] as int? ?? 0,
-      iat: json['iat'] as int? ?? 0,
-      roles: (json['roles'] as List<dynamic>?)?.cast<String>() ?? [],
+      sub: g.sub,
+      iss: g.iss,
+      exp: g.exp,
+      iat: g.iat,
+      roles: List<String>.from(g.roles),
     );
   }
 }
@@ -40,12 +56,21 @@ class JwkKey {
   });
 
   factory JwkKey.fromJson(Map<String, dynamic> json) {
+    // Apply defensive defaults for optional JWK fields.
+    final normalized = <String, dynamic>{
+      'kty': json['kty'] ?? '',
+      'kid': json['kid'] ?? '',
+      'use': json['use'] ?? '',
+      'n': json['n'] ?? '',
+      'e': json['e'] ?? '',
+    };
+    final g = gen.JwkKey.fromJson(normalized)!;
     return JwkKey(
-      kty: json['kty'] as String? ?? '',
-      kid: json['kid'] as String? ?? '',
-      use: json['use'] as String? ?? '',
-      n: json['n'] as String? ?? '',
-      e: json['e'] as String? ?? '',
+      kty: g.kty,
+      kid: g.kid,
+      use: g.use,
+      n: g.n,
+      e: g.e,
     );
   }
 }
@@ -56,9 +81,18 @@ class JwksResponse {
   const JwksResponse({required this.keys});
 
   factory JwksResponse.fromJson(Map<String, dynamic> json) {
+    final g = gen.JwksResponse.fromJson(json)!;
     return JwksResponse(
-      keys: (json['keys'] as List<dynamic>)
-          .map((e) => JwkKey.fromJson(e as Map<String, dynamic>))
+      keys: g.keys
+          .map(
+            (k) => JwkKey(
+              kty: k.kty,
+              kid: k.kid,
+              use: k.use,
+              n: k.n,
+              e: k.e,
+            ),
+          )
           .toList(),
     );
   }

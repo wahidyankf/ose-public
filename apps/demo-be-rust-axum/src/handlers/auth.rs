@@ -4,7 +4,6 @@ use axum::{
     response::IntoResponse,
     Json,
 };
-use serde::Serialize;
 use serde_json::json;
 use std::sync::Arc;
 use uuid::Uuid;
@@ -21,18 +20,11 @@ use crate::domain::{
     user::{validate_email, validate_password},
 };
 use crate::state::AppState;
-use demo_contracts::models::{AuthTokens, LoginRequest, RefreshRequest, RegisterRequest};
+use demo_contracts::models::{
+    user::Status as ContractStatus, AuthTokens, LoginRequest, RefreshRequest, RegisterRequest, User,
+};
 
 const MAX_FAILED_ATTEMPTS: i64 = 5;
-
-#[derive(Serialize)]
-pub struct RegisterResponse {
-    pub id: String,
-    pub username: String,
-    pub email: String,
-    #[serde(rename = "displayName")]
-    pub display_name: String,
-}
 
 pub async fn register(
     State(state): State<Arc<AppState>>,
@@ -69,11 +61,15 @@ pub async fn register(
 
     Ok((
         StatusCode::CREATED,
-        Json(RegisterResponse {
+        Json(User {
             id: user.id.to_string(),
             username: user.username,
             email: user.email,
             display_name: user.display_name,
+            status: ContractStatus::Active,
+            roles: vec!["USER".to_string()],
+            created_at: user.created_at.to_rfc3339(),
+            updated_at: user.updated_at.to_rfc3339(),
         }),
     ))
 }

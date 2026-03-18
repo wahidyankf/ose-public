@@ -1,5 +1,4 @@
 use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
-use serde::Serialize;
 use serde_json::json;
 use std::sync::Arc;
 
@@ -10,36 +9,38 @@ use crate::auth::{
 use crate::db::{token_repo, user_repo};
 use crate::domain::errors::AppError;
 use crate::state::AppState;
-use demo_contracts::models::{ChangePasswordRequest, UpdateProfileRequest};
+use demo_contracts::models::{
+    user::Status as ContractStatus, ChangePasswordRequest, UpdateProfileRequest, User,
+};
 
-#[derive(Serialize)]
-pub struct UserProfile {
-    pub id: String,
-    pub username: String,
-    pub email: String,
-    #[serde(rename = "displayName")]
-    pub display_name: String,
-    pub role: String,
-    pub status: String,
+fn domain_status_to_contract(status: &str) -> ContractStatus {
+    match status {
+        "INACTIVE" => ContractStatus::Inactive,
+        "DISABLED" => ContractStatus::Disabled,
+        "LOCKED" => ContractStatus::Locked,
+        _ => ContractStatus::Active,
+    }
 }
 
 pub async fn get_profile(
     State(state): State<Arc<AppState>>,
     auth_user: AuthUser,
-) -> Result<Json<UserProfile>, AppError> {
+) -> Result<Json<User>, AppError> {
     let user = user_repo::find_by_id(&state.pool, auth_user.user_id)
         .await?
         .ok_or_else(|| AppError::NotFound {
             entity: "user".to_string(),
         })?;
 
-    Ok(Json(UserProfile {
+    Ok(Json(User {
         id: user.id.to_string(),
         username: user.username,
         email: user.email,
         display_name: user.display_name,
-        role: user.role,
-        status: user.status,
+        status: domain_status_to_contract(&user.status),
+        roles: vec![user.role],
+        created_at: user.created_at.to_rfc3339(),
+        updated_at: user.updated_at.to_rfc3339(),
     }))
 }
 
@@ -47,18 +48,20 @@ pub async fn update_profile(
     State(state): State<Arc<AppState>>,
     auth_user: AuthUser,
     Json(body): Json<UpdateProfileRequest>,
-) -> Result<Json<UserProfile>, AppError> {
+) -> Result<Json<User>, AppError> {
     let display_name = body.display_name;
     let user =
         user_repo::update_display_name(&state.pool, auth_user.user_id, &display_name).await?;
 
-    Ok(Json(UserProfile {
+    Ok(Json(User {
         id: user.id.to_string(),
         username: user.username,
         email: user.email,
         display_name: user.display_name,
-        role: user.role,
-        status: user.status,
+        status: domain_status_to_contract(&user.status),
+        roles: vec![user.role],
+        created_at: user.created_at.to_rfc3339(),
+        updated_at: user.updated_at.to_rfc3339(),
     }))
 }
 

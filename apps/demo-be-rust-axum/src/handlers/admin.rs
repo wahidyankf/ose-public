@@ -4,7 +4,7 @@ use axum::{
     response::IntoResponse,
     Json,
 };
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use serde_json::json;
 use std::sync::Arc;
 use uuid::Uuid;
@@ -13,6 +13,9 @@ use crate::auth::middleware::AdminUser;
 use crate::db::{token_repo, user_repo};
 use crate::domain::errors::AppError;
 use crate::state::AppState;
+use demo_contracts::models::{
+    user::Status as UserStatus, PasswordResetResponse, User, UserListResponse,
+};
 
 #[derive(Deserialize)]
 pub struct ListUsersQuery {
@@ -21,55 +24,49 @@ pub struct ListUsersQuery {
     pub search: Option<String>,
 }
 
-#[derive(Serialize)]
-pub struct UserSummary {
-    pub id: String,
-    pub username: String,
-    pub email: String,
-    #[serde(rename = "displayName")]
-    pub display_name: String,
-    pub role: String,
-    pub status: String,
-}
-
-#[derive(Serialize)]
-pub struct ListUsersResponse {
-    pub content: Vec<UserSummary>,
-    #[serde(rename = "totalElements")]
-    pub total: i64,
-    pub page: i64,
-    pub page_size: i64,
+fn domain_status_to_contract(status: &str) -> UserStatus {
+    match status {
+        "INACTIVE" => UserStatus::Inactive,
+        "DISABLED" => UserStatus::Disabled,
+        "LOCKED" => UserStatus::Locked,
+        _ => UserStatus::Active,
+    }
 }
 
 pub async fn list_users(
     State(state): State<Arc<AppState>>,
     _admin: AdminUser,
     Query(params): Query<ListUsersQuery>,
-) -> Result<Json<ListUsersResponse>, AppError> {
+) -> Result<Json<UserListResponse>, AppError> {
     let page = params.page.unwrap_or(1).max(1);
     let page_size = params.page_size.unwrap_or(20);
     let search_filter = params.search.as_deref();
 
     let result = user_repo::list_users(&state.pool, page, page_size, search_filter).await?;
 
-    let content = result
+    let content: Vec<User> = result
         .users
         .into_iter()
-        .map(|u| UserSummary {
+        .map(|u| User {
             id: u.id.to_string(),
             username: u.username,
             email: u.email,
             display_name: u.display_name,
-            role: u.role,
-            status: u.status,
+            status: domain_status_to_contract(&u.status),
+            roles: vec![u.role],
+            created_at: u.created_at.to_rfc3339(),
+            updated_at: u.updated_at.to_rfc3339(),
         })
         .collect();
 
-    Ok(Json(ListUsersResponse {
+    let total_pages = ((result.total as f64) / (page_size as f64)).ceil() as i32;
+
+    Ok(Json(UserListResponse {
         content,
-        total: result.total,
-        page,
-        page_size,
+        total_elements: result.total as i32,
+        total_pages,
+        page: page as i32,
+        size: page_size as i32,
     }))
 }
 
@@ -107,7 +104,7 @@ pub async fn force_password_reset(
     State(state): State<Arc<AppState>>,
     _admin: AdminUser,
     Path(user_id): Path<Uuid>,
-) -> Result<Json<serde_json::Value>, AppError> {
+) -> Result<Json<PasswordResetResponse>, AppError> {
     // Verify user exists
     let _ = user_repo::find_by_id(&state.pool, user_id)
         .await?
@@ -118,5 +115,5 @@ pub async fn force_password_reset(
     let reset_token = Uuid::new_v4().to_string();
     user_repo::set_password_reset_token(&state.pool, user_id, &reset_token).await?;
 
-    Ok(Json(json!({"token": reset_token})))
+    Ok(Json(PasswordResetResponse { token: reset_token }))
 }

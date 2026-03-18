@@ -1,3 +1,5 @@
+import 'package:demo_contracts/demo_contracts.dart' as gen;
+
 class CategoryBreakdown {
   final String category;
   final String type;
@@ -10,10 +12,11 @@ class CategoryBreakdown {
   });
 
   factory CategoryBreakdown.fromJson(Map<String, dynamic> json) {
+    final g = gen.CategoryBreakdown.fromJson(json)!;
     return CategoryBreakdown(
-      category: json['category'] as String,
-      type: json['type'] as String,
-      total: json['total'] as String,
+      category: g.category,
+      type: g.type,
+      total: g.total,
     );
   }
 }
@@ -34,13 +37,20 @@ class ExpenseSummary {
   });
 
   factory ExpenseSummary.fromJson(Map<String, dynamic> json) {
+    final g = gen.ExpenseSummary.fromJson(json)!;
     return ExpenseSummary(
-      currency: json['currency'] as String,
-      totalIncome: json['totalIncome'] as String,
-      totalExpense: json['totalExpense'] as String,
-      net: json['net'] as String,
-      categories: (json['categories'] as List<dynamic>)
-          .map((e) => CategoryBreakdown.fromJson(e as Map<String, dynamic>))
+      currency: g.currency,
+      totalIncome: g.totalIncome,
+      totalExpense: g.totalExpense,
+      net: g.net,
+      categories: g.categories
+          .map(
+            (c) => CategoryBreakdown(
+              category: c.category,
+              type: c.type,
+              total: c.total,
+            ),
+          )
           .toList(),
     );
   }
@@ -68,18 +78,31 @@ class PLReport {
   });
 
   factory PLReport.fromJson(Map<String, dynamic> json) {
+    final g = gen.PLReport.fromJson(json)!;
     return PLReport(
-      startDate: json['startDate'] as String,
-      endDate: json['endDate'] as String,
-      currency: json['currency'] as String,
-      totalIncome: json['totalIncome'] as String,
-      totalExpense: json['totalExpense'] as String,
-      net: json['net'] as String,
-      incomeBreakdown: (json['incomeBreakdown'] as List<dynamic>)
-          .map((e) => CategoryBreakdown.fromJson(e as Map<String, dynamic>))
+      startDate: g.startDate.toIso8601String().split('T').first,
+      endDate: g.endDate.toIso8601String().split('T').first,
+      currency: g.currency,
+      totalIncome: g.totalIncome,
+      totalExpense: g.totalExpense,
+      net: g.net,
+      incomeBreakdown: g.incomeBreakdown
+          .map(
+            (c) => CategoryBreakdown(
+              category: c.category,
+              type: c.type,
+              total: c.total,
+            ),
+          )
           .toList(),
-      expenseBreakdown: (json['expenseBreakdown'] as List<dynamic>)
-          .map((e) => CategoryBreakdown.fromJson(e as Map<String, dynamic>))
+      expenseBreakdown: g.expenseBreakdown
+          .map(
+            (c) => CategoryBreakdown(
+              category: c.category,
+              type: c.type,
+              total: c.total,
+            ),
+          )
           .toList(),
     );
   }

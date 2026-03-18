@@ -4,13 +4,13 @@ use axum::{
 };
 use chrono::NaiveDate;
 use serde::Deserialize;
-use serde_json::{json, Value};
 use std::sync::Arc;
 
 use crate::auth::middleware::AuthUser;
 use crate::db::expense_repo;
 use crate::domain::{errors::AppError, types::Currency};
 use crate::state::AppState;
+use demo_contracts::models::{CategoryBreakdown, PlReport};
 
 #[derive(Deserialize)]
 pub struct PlReportQuery {
@@ -25,7 +25,7 @@ pub async fn pl_report(
     State(state): State<Arc<AppState>>,
     auth_user: AuthUser,
     Query(params): Query<PlReportQuery>,
-) -> Result<Json<Value>, AppError> {
+) -> Result<Json<PlReport>, AppError> {
     let from_str = params.start_date.unwrap_or_default();
     let to_str = params.end_date.unwrap_or_default();
     let currency_str = params.currency.unwrap_or_else(|| "USD".to_string());
@@ -50,38 +50,34 @@ pub async fn pl_report(
 
     let net = report.income_total - report.expense_total;
 
-    let income_breakdown: Vec<Value> = report
+    let income_breakdown: Vec<CategoryBreakdown> = report
         .income_breakdown
         .iter()
-        .map(|c| {
-            json!({
-                "category": c.category,
-                "type": "income",
-                "total": currency.format_amount(c.total)
-            })
+        .map(|c| CategoryBreakdown {
+            category: c.category.clone(),
+            r#type: "income".to_string(),
+            total: currency.format_amount(c.total),
         })
         .collect();
 
-    let expense_breakdown: Vec<Value> = report
+    let expense_breakdown: Vec<CategoryBreakdown> = report
         .expense_breakdown
         .iter()
-        .map(|c| {
-            json!({
-                "category": c.category,
-                "type": "expense",
-                "total": currency.format_amount(c.total)
-            })
+        .map(|c| CategoryBreakdown {
+            category: c.category.clone(),
+            r#type: "expense".to_string(),
+            total: currency.format_amount(c.total),
         })
         .collect();
 
-    Ok(Json(json!({
-        "startDate": from_str,
-        "endDate": to_str,
-        "currency": currency_str.to_uppercase(),
-        "totalIncome": currency.format_amount(report.income_total),
-        "totalExpense": currency.format_amount(report.expense_total),
-        "net": currency.format_amount(net),
-        "incomeBreakdown": income_breakdown,
-        "expenseBreakdown": expense_breakdown,
-    })))
+    Ok(Json(PlReport {
+        start_date: from_str,
+        end_date: to_str,
+        currency: currency_str.to_uppercase(),
+        total_income: currency.format_amount(report.income_total),
+        total_expense: currency.format_amount(report.expense_total),
+        net: currency.format_amount(net),
+        income_breakdown,
+        expense_breakdown,
+    }))
 }

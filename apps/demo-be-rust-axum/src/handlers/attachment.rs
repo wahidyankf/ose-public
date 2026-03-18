@@ -5,6 +5,7 @@ use axum::{
     response::IntoResponse,
     Json,
 };
+use serde::Serialize;
 use serde_json::{json, Value};
 use std::sync::Arc;
 use uuid::Uuid;
@@ -19,16 +20,34 @@ use crate::domain::{
     errors::AppError,
 };
 use crate::state::AppState;
+use demo_contracts::models::Attachment;
+
+/// Extended attachment response that includes the `url` field (not in contract spec)
+/// and the `expense_id` for client convenience.
+#[derive(Serialize)]
+struct AttachmentResponse {
+    #[serde(flatten)]
+    attachment: Attachment,
+    pub expense_id: String,
+    pub url: String,
+}
+
+fn attachment_to_response(att: &crate::domain::attachment::Attachment) -> AttachmentResponse {
+    AttachmentResponse {
+        attachment: Attachment {
+            id: att.id.to_string(),
+            filename: att.filename.clone(),
+            content_type: att.content_type.clone(),
+            size: att.size as i32,
+            created_at: att.created_at.to_rfc3339(),
+        },
+        expense_id: att.expense_id.to_string(),
+        url: format!("/api/v1/expenses/{}/attachments/{}", att.expense_id, att.id),
+    }
+}
 
 fn attachment_to_json(att: &crate::domain::attachment::Attachment) -> Value {
-    json!({
-        "id": att.id.to_string(),
-        "expense_id": att.expense_id.to_string(),
-        "filename": att.filename,
-        "contentType": att.content_type,
-        "size": att.size,
-        "url": format!("/api/v1/expenses/{}/attachments/{}", att.expense_id, att.id),
-    })
+    serde_json::to_value(attachment_to_response(att)).unwrap_or_else(|_| json!({}))
 }
 
 pub async fn upload_attachment(

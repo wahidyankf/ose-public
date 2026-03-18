@@ -6,7 +6,7 @@
         <Configuration>
           <Format>lcov</Format>
           <Include>[DemoBeCsas]*</Include>
-          <ExcludeByFile>**/*.g.cs,**/obj/**/*.cs,**/Endpoints/**/*.cs,**/Program.cs</ExcludeByFile>
+          <ExcludeByFile>**/*.g.cs,**/obj/**/*.cs,**/Endpoints/**/*.cs,**/Program.cs,**/generated-contracts/**/*.cs</ExcludeByFile>
           <ExcludeByAttribute>ExcludeFromCodeCoverage,CompilerGenerated,GeneratedCode</ExcludeByAttribute>
           <SingleHit>false</SingleHit>
           <UseSourceLink>false</UseSourceLink>

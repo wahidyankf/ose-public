@@ -23,10 +23,19 @@ jobs:
         with:
           node-version: "24"
 
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+
+      - name: Install oapi-codegen
+        run: go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest
+
       - name: Generate contract types
         run: |
           npm ci --ignore-scripts
           npx nx run demo-contracts:bundle
+          npx nx run demo-be-golang-gin:codegen
           npx nx run demo-fe-ts-nextjs:codegen
           npx nx run demo-fe-ts-tanstack-start:codegen
 

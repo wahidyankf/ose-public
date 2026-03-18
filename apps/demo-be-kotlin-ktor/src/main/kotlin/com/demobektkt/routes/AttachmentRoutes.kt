@@ -1,6 +1,5 @@
 package com.demobektkt.routes
 
-import com.demobektkt.contracts.Attachment as ContractAttachment
 import com.demobektkt.domain.DomainError
 import com.demobektkt.domain.DomainException
 import com.demobektkt.domain.validateContentType

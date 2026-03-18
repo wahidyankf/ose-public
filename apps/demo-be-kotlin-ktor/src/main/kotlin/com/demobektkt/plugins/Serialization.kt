@@ -25,7 +25,8 @@ object BigDecimalSerializer : KSerializer<BigDecimal> {
     encoder.encodeDouble(value.stripTrailingZeros().toDouble())
   }
 
-  override fun deserialize(decoder: Decoder): BigDecimal = BigDecimal(decoder.decodeDouble().toString())
+  override fun deserialize(decoder: Decoder): BigDecimal =
+    BigDecimal(decoder.decodeDouble().toString())
 }
 
 /** Serializer for [kotlin.time.Instant] (kotlinx-datetime) as ISO-8601. */

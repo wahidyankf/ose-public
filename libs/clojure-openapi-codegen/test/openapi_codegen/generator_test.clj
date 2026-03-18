@@ -156,10 +156,10 @@
       (is (every? #(.exists (java.io.File. %)) paths)))))
 
 (deftest generate-schema-files-file-names-test
-  (testing "file names follow kebab-case schema name convention"
+  (testing "file names follow underscore convention at correct namespace path"
     (let [dir   (make-temp-dir)
           paths (sut/generate-schema-files [sample-schema-all-required] dir)]
-      (is (str/ends-with? (first paths) "login-request.clj")))))
+      (is (str/ends-with? (first paths) "openapi_codegen/schemas/login_request.clj")))))
 
 (deftest generate-schema-files-do-not-edit-comment-test
   (testing "generated files contain the DO NOT EDIT comment"
@@ -183,12 +183,12 @@
       (is (str/includes? source "(def schema")))))
 
 (deftest generate-schema-files-creates-output-dir-test
-  (testing "creates the output directory if it does not exist"
+  (testing "creates the nested output directory if it does not exist"
     (let [base  (make-temp-dir)
           dir   (str base "/nested/schemas")
           paths (sut/generate-schema-files [sample-schema-empty] dir)]
       (is (seq paths))
-      (is (.exists (java.io.File. dir))))))
+      (is (.exists (java.io.File. (str dir "/openapi_codegen/schemas")))))))
 
 (deftest generate-schema-files-description-in-comment-test
   (testing "description is emitted as a comment when present"
@@ -207,7 +207,7 @@
           paths (sut/generate-schema-files
                   [{:name "UserProfile" :type "object" :description nil :required #{} :properties []}]
                   dir)]
-      (is (str/ends-with? (first paths) "user-profile.clj")))))
+      (is (str/ends-with? (first paths) "openapi_codegen/schemas/user_profile.clj")))))
 
 (deftest kebab-case-naming-acronym-test
   (testing "Acronym-prefixed schema name is converted correctly"
@@ -223,4 +223,4 @@
           paths (sut/generate-schema-files
                   [{:name "JwkKey" :type "object" :description nil :required #{} :properties []}]
                   dir)]
-      (is (str/ends-with? (first paths) "jwk-key.clj")))))
+      (is (str/ends-with? (first paths) "openapi_codegen/schemas/jwk_key.clj")))))

@@ -77,19 +77,30 @@
          "(def schema\n"
          "  " (pr-str malli-form) ")\n")))
 
+(defn- ns-segment->file-segment
+  "Convert a kebab-case namespace segment to an underscore file segment.
+
+  Clojure namespace `openapi-codegen.schemas.login-request` maps to
+  file path `openapi_codegen/schemas/login_request.clj`."
+  [ns-segment]
+  (str/replace ns-segment "-" "_"))
+
 (defn generate-schema-files
   "For each parsed schema in schemas, write a .clj file to output-dir.
 
-  The file is named after the kebab-case schema name.
+  Files are written at the correct Clojure namespace path:
+  output-dir/openapi_codegen/schemas/<underscore_name>.clj
   Returns a sequence of written file paths."
   [schemas output-dir]
-  (let [dir (java.io.File. output-dir)]
+  (let [schema-dir (str output-dir "/openapi_codegen/schemas")
+        dir        (java.io.File. schema-dir)]
     (.mkdirs dir)
     (mapv (fn [parsed-schema]
-            (let [ns-segment (schema-name->ns-name (:name parsed-schema))
-                  file-name  (str ns-segment ".clj")
-                  file-path  (str output-dir "/" file-name)
-                  source     (schema->clj-source parsed-schema)]
+            (let [ns-segment    (schema-name->ns-name (:name parsed-schema))
+                  file-segment  (ns-segment->file-segment ns-segment)
+                  file-name     (str file-segment ".clj")
+                  file-path     (str schema-dir "/" file-name)
+                  source        (schema->clj-source parsed-schema)]
               (spit file-path source)
               file-path))
           schemas)))

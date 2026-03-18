@@ -48,11 +48,11 @@
     (let [dir       (make-temp-dir)
           paths     (sut/generate bundled-spec-path dir)
           file-names (set (map #(.getName (java.io.File. %)) paths))]
-      (is (contains? file-names "login-request.clj"))
+      (is (contains? file-names "login_request.clj"))
       (is (contains? file-names "user.clj"))
       (is (contains? file-names "expense.clj"))
-      (is (contains? file-names "error-response.clj"))
-      (is (contains? file-names "health-response.clj")))))
+      (is (contains? file-names "error_response.clj"))
+      (is (contains? file-names "health_response.clj")))))
 
 (deftest generate-files-have-do-not-edit-test
   (testing "all generated files contain the DO NOT EDIT header"

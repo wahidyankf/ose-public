@@ -108,6 +108,11 @@ jobs:
       - name: Install Clojure dependencies
         run: (cd apps/demo-be-clojure-pedestal && JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -P && JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -P -M:test:coverage)
 
+      - name: Generate contract types (required before Flutter pub get)
+        run: |
+          npx nx run demo-contracts:bundle
+          npx nx run demo-fe-dart-flutterweb:codegen
+
       - name: Install Flutter dependencies
         run: (cd apps/demo-fe-dart-flutterweb && flutter pub get)
 

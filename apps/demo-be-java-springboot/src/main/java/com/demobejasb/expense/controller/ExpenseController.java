@@ -205,6 +205,10 @@ public class ExpenseController {
         if (currency == null || currency.length() != 3 || !SUPPORTED_CURRENCIES.contains(currency.toUpperCase())) {
             throw new ValidationException("unsupported or invalid currency: " + currency, "currency");
         }
+        BigDecimal amount = new BigDecimal(request.getAmount());
+        if (amount.compareTo(BigDecimal.ZERO) < 0) {
+            throw new ValidationException("amount must not be negative", "amount");
+        }
         String unit = request.getUnit();
         if (unit != null && !unit.isBlank() && !SUPPORTED_UNITS.contains(unit.toLowerCase())) {
             throw new ValidationException("unsupported unit: " + unit, "unit");

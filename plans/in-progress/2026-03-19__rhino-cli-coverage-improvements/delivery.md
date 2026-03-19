@@ -159,9 +159,10 @@
 - Coverage merging produces correct LCOV output from mixed-format inputs
 - Diff coverage correctly identifies changed lines and their coverage status
 - File exclusion works across validate, merge, and diff commands
-- spec-coverage file matching works for all 11 languages (Go, TS/JS, Java, Kotlin, Python,
-  Elixir, Rust, F#, C#, Clojure, Dart)
-- spec-coverage step extraction works for all 11 languages with framework-specific regex patterns
+- spec-coverage file matching works for all 10 backend languages (Go, TS/JS, Java, Kotlin,
+  Python, Elixir, Rust, F#, C#, Clojure)
+- spec-coverage step extraction works for all 10 backend languages with framework-specific
+  regex patterns
 - spec-coverage scenario extraction works for languages with explicit scenario markers
 - Backward compatibility: existing organiclever-web and CLI app spec-coverage unchanged
 - All existing tests still pass (zero regressions)

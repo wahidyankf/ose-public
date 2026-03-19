@@ -29,16 +29,16 @@ graph LR
     P["spec-coverage validate"] --> Q["checker.go (MODIFIED)"]
     Q --> R["Multi-language matcher (ENHANCED)"]
 
-    style F fill:#2196F3,color:#fff
-    style H fill:#2196F3,color:#fff
-    style I fill:#2196F3,color:#fff
-    style J fill:#4CAF50,color:#fff
-    style K fill:#4CAF50,color:#fff
-    style L fill:#4CAF50,color:#fff
-    style M fill:#FF9800,color:#fff
-    style N fill:#FF9800,color:#fff
-    style O fill:#FF9800,color:#fff
-    style R fill:#9C27B0,color:#fff
+    style F fill:#0173B2,color:#fff
+    style H fill:#0173B2,color:#fff
+    style I fill:#0173B2,color:#fff
+    style J fill:#029E73,color:#fff
+    style K fill:#029E73,color:#fff
+    style L fill:#029E73,color:#fff
+    style M fill:#DE8F05,color:#fff
+    style N fill:#DE8F05,color:#fff
+    style O fill:#DE8F05,color:#fff
+    style R fill:#CC78BC,color:#fff
 ```
 
 ## Design Decisions

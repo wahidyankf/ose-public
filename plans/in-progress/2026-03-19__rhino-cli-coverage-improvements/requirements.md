@@ -233,7 +233,7 @@ Feature: Diff coverage
     And the current directory is a git repository
 
   Scenario: Diff coverage against main branch
-    Given a coverage file and uncommitted changes
+    Given a coverage file and committed changes on current branch vs main
     When I run "rhino-cli test-coverage diff coverage.info --base main"
     Then only lines added or modified vs main are evaluated
     And the output shows "Diff coverage: X%" for changed lines only
@@ -333,6 +333,11 @@ Feature: File exclusion patterns
     Given two coverage files
     When I run "rhino-cli test-coverage merge --exclude 'gen/*' --out-file out.info f1.info f2.info"
     Then excluded files are omitted from the merged output
+
+  Scenario: Exclude works with diff command
+    Given a coverage file and changes in source and generated files
+    When I run "rhino-cli test-coverage diff coverage.info --base main --exclude 'gen/*'"
+    Then excluded files are omitted from diff coverage calculation
 ```
 
 ---
@@ -341,7 +346,7 @@ Feature: File exclusion patterns
 
 ### Description
 
-Extend `spec-coverage validate` to support all 11 demo-be backend languages. The current
+Extend `spec-coverage validate` to support all 10 demo-be backend languages. The current
 implementation has **three layers** that each only support Go and TS/JS:
 
 1. **File matching** (`findMatchingTestFile`): Only matches `HasPrefix(base, stem+".")` -- misses
@@ -367,7 +372,7 @@ All three layers must be extended for each language.
 | F#            | No                        | No                   | No                        |
 | C#            | No                        | No                   | No                        |
 | Clojure       | No                        | No                   | No                        |
-| Dart          | No                        | No                   | No                        |
+| Dart          | N/A (frontend only)       | N/A                  | N/A                       |
 
 ### Step Definition Patterns Per Language
 
@@ -407,9 +412,9 @@ Feature: spec-coverage multi-language support
 
   Scenario: Match Go BDD step files (underscore pattern)
     Given specs with "health-check.feature"
-    And a Go test file "health_steps_test.go" containing sc.Step definitions
+    And a Go test file "health_check_steps_test.go" containing sc.Step definitions
     When I run "rhino-cli spec-coverage validate specs-dir app-dir"
-    Then "health-check.feature" is matched to "health_steps_test.go"
+    Then "health-check.feature" is matched to "health_check_steps_test.go"
     And step definitions from sc.Step are extracted
 
   Scenario: Match and extract Java Cucumber steps
@@ -462,12 +467,6 @@ Feature: spec-coverage multi-language support
     And a Clojure file "health_check_steps.clj" with (Given "..." ...) forms
     When I run "rhino-cli spec-coverage validate specs-dir app-dir"
     Then step texts from (Given/When/Then "text" ...) forms are extracted
-
-  Scenario: Match and extract Dart Flutter test steps
-    Given specs with "health-check.feature" in demo-fe specs
-    And a Dart file with step definitions
-    When I run "rhino-cli spec-coverage validate specs-dir app-dir"
-    Then step texts are extracted from Dart test patterns
 
   Scenario: Backward compatibility with CLI apps
     Given specs and test files following existing CLI naming conventions

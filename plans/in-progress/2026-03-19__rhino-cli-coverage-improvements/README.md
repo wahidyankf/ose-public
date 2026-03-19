@@ -38,9 +38,9 @@ for external use cases (GitLab CI, Python default, .NET Coverlet default).
 3. **Coverage merging** -- Combine multiple coverage files into a unified report
 4. **Diff coverage** -- Report coverage only for changed lines (git diff), enabling PR quality gates
 5. **File exclusion patterns** -- Exclude generated code and test utilities from coverage calculation
-6. **spec-coverage multi-language support** -- Extend `spec-coverage validate` to support all 11
+6. **spec-coverage multi-language support** -- Extend `spec-coverage validate` to support all 10
    demo-be backend languages: file matching, scenario extraction, and step definition extraction
-   for Go, TS/JS, Java, Kotlin, Python, Elixir, Rust, F#, C#, Clojure, and Dart
+   for Go, TS/JS, Java, Kotlin, Python, Elixir, Rust, F#, C#, and Clojure
 
 ### Non-Goals
 

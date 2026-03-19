@@ -92,7 +92,8 @@
         "command": "uv run pyright",
         "cwd": "apps/demo-be-python-fastapi"
       },
-      "dependsOn": ["codegen"]
+      "dependsOn": ["codegen"],
+      "cache": true
     }
   },
   "tags": ["type:app", "platform:fastapi", "lang:python", "domain:demo-be"],

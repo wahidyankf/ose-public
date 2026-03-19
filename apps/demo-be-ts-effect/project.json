@@ -97,7 +97,8 @@
         "command": "npx tsc --noEmit",
         "cwd": "apps/demo-be-ts-effect"
       },
-      "dependsOn": ["codegen"]
+      "dependsOn": ["codegen"],
+      "cache": true
     }
   },
   "tags": ["type:app", "platform:effect", "lang:typescript", "domain:demo-be"],

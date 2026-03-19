@@ -99,7 +99,8 @@
         ],
         "parallel": false
       },
-      "dependsOn": ["codegen"]
+      "dependsOn": ["codegen"],
+      "cache": true
     }
   },
   "tags": ["type:app", "platform:vertx", "lang:java", "domain:demo-be"],

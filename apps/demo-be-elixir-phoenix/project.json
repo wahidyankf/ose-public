@@ -90,7 +90,8 @@
         "command": "mix compile --warnings-as-errors",
         "cwd": "apps/demo-be-elixir-phoenix"
       },
-      "dependsOn": ["codegen"]
+      "dependsOn": ["codegen"],
+      "cache": true
     },
     "install": {
       "executor": "nx:run-commands",

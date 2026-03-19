@@ -98,7 +98,8 @@
         "command": "dotnet build src/DemoBeFsgi/DemoBeFsgi.fsproj --no-restore /p:TreatWarningsAsErrors=true",
         "cwd": "apps/demo-be-fsharp-giraffe"
       },
-      "dependsOn": ["codegen"]
+      "dependsOn": ["codegen"],
+      "cache": true
     }
   },
   "tags": ["type:app", "platform:giraffe", "lang:fsharp", "domain:demo-be"],

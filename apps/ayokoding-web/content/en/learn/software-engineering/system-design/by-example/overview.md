@@ -27,3 +27,13 @@ challenges. Each example stands alone and can be studied independently.
   Moderate complexity covering common real-world patterns
 - [Advanced](/en/learn/software-engineering/system-design/by-example/advanced) -
   Complex distributed systems and large-scale architectures
+
+## Structure of Each Example
+
+Every example follows a consistent five-part format:
+
+1. **Brief Explanation** — what the design addresses and why it matters (2-3 sentences)
+2. **Mermaid Diagram** — visual representation of system components, data flow, or architecture (when appropriate)
+3. **Heavily Annotated Code** — implementation or configuration with `// =>` comments documenting decisions and trade-offs
+4. **Key Takeaway** — the core insight to retain from the example (1-2 sentences)
+5. **Why It Matters** — production relevance and real-world impact (50-100 words)

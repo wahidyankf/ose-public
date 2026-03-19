@@ -17,12 +17,12 @@ Examples are grouped by complexity:
 - **Intermediate**: Branching, merging, rebasing, resolving conflicts, stashing, and tagging.
 - **Advanced**: Interactive rebase, cherry-picking, bisect, hooks, worktrees, and submodules.
 
-## Reading the Examples
+## Structure of Each Example
 
-Each example follows a consistent format:
+Every example follows a consistent five-part format:
 
-1. A short description of the operation being demonstrated.
-2. The shell commands to run, annotated with `# =>` comments that describe the effect of each command and the state it produces.
-3. Any relevant output, also annotated.
-
-Content coming soon.
+1. **Brief Explanation** — what the operation does and why it matters (2-3 sentences)
+2. **Mermaid Diagram** — visual representation of repository state, branch topology, or workflow (when appropriate)
+3. **Heavily Annotated Commands** — shell commands with `# =>` comments describing the effect and resulting state
+4. **Key Takeaway** — the core insight to retain from the example (1-2 sentences)
+5. **Why It Matters** — production relevance and real-world impact (50-100 words)

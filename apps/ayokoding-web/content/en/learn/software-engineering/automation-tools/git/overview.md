@@ -26,5 +26,3 @@ Git organizes work around a few foundational ideas:
 ## What This Section Covers
 
 This section teaches Git through practical, annotated examples. The by-example path provides heavily annotated code samples covering the full Git workflow, from initializing a repository to advanced techniques such as interactive rebase, cherry-picking, bisect, hooks, and worktrees.
-
-Content coming soon.

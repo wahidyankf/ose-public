@@ -61,10 +61,10 @@ theoretical analysis.
 
 Every example follows a consistent five-part format:
 
-1. **Brief Explanation** — what the example demonstrates and why it matters
-2. **Annotated Code** — runnable implementation with `// =>` comments documenting values and outcomes
-3. **Key Elements** — breakdown of the most important lines and design decisions
-4. **Complexity Note** — time and space complexity in plain language
-5. **Key Takeaway** — the core insight to retain from the example
+1. **Brief Explanation** — what the example demonstrates and why it matters (2-3 sentences)
+2. **Mermaid Diagram** — visual representation of data flow, state transitions, or structure (when appropriate)
+3. **Heavily Annotated Code** — runnable implementation with `// =>` comments documenting values and outcomes
+4. **Key Takeaway** — the core insight to retain from the example (1-2 sentences)
+5. **Why It Matters** — production relevance and real-world impact (50-100 words)
 
 This structure ensures you gain both understanding and intuition from every example.

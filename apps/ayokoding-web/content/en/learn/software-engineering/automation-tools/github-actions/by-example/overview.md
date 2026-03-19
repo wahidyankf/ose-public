@@ -22,10 +22,18 @@ The examples are organized into three levels based on complexity:
 - [Advanced](/en/learn/software-engineering/automation-tools/github-actions/by-example/advanced) —
   Reusable workflows, custom actions, complex event handling, and deployment patterns
 
+## Structure of Each Example
+
+Every example follows a consistent five-part format:
+
+1. **Brief Explanation** — what the workflow does and why it matters (2-3 sentences)
+2. **Mermaid Diagram** — visual representation of workflow execution, job dependencies, or trigger flow (when appropriate)
+3. **Heavily Annotated YAML** — workflow files with `# =>` comments describing each directive and its effect
+4. **Key Takeaway** — the core insight to retain from the example (1-2 sentences)
+5. **Why It Matters** — production relevance and real-world impact (50-100 words)
+
 ## How to Use This Series
 
 Each page presents annotated YAML workflow files. Read the annotations alongside the code
 to understand both the mechanics and the intent. The examples build on each other within
 each level, so reading sequentially gives the fullest understanding.
-
-Content coming soon.

@@ -20,3 +20,13 @@ The examples in this section cover patterns, principles, architectural styles, t
 ## How to Use This Section
 
 Each example is self-contained and annotated to explain not just what the code does, but why each architectural decision was made. Start at the level that matches your current understanding and progress through the examples in order.
+
+## Structure of Each Example
+
+Every example follows a consistent five-part format:
+
+1. **Brief Explanation** — what the pattern or principle addresses and why it matters (2-3 sentences)
+2. **Mermaid Diagram** — visual representation of component relationships, layers, or data flow (when appropriate)
+3. **Heavily Annotated Code** — implementation with `// =>` comments documenting architectural decisions and trade-offs
+4. **Key Takeaway** — the core insight to retain from the example (1-2 sentences)
+5. **Why It Matters** — production relevance and real-world impact (50-100 words)

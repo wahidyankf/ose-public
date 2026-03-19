@@ -417,20 +417,20 @@ step libraries where multiple features share step files like `common.steps.ts`.
 
 ### Step Definition Patterns Per Language
 
-| Language | Framework       | Step Pattern                                       | Example                                                    |
-| -------- | --------------- | -------------------------------------------------- | ---------------------------------------------------------- |
-| Go       | godog           | `sc.Step(\`^text$\`, fn)`                          | `sc.Step(\`^the system is running$\`, theSystemIsRunning)` |
-| TS/JS    | Cucumber.js     | `Given("text", fn)`                                | `Given("the system is running", async () => { ... })`      |
-| Java     | Cucumber-JVM    | `@Given("text")`                                   | `@Given("the system is running")`                          |
-| Kotlin   | Cucumber-JVM    | `@Given("text")`                                   | `@Given("the system is running")`                          |
-| Python   | pytest-bdd      | `@given("text")` / `@given(parsers.parse("text"))` | `@given("the system is running")`                          |
-| Elixir   | Cabbage         | `defgiven ~r/^text$/`                              | `defgiven ~r/^the system is running$/, _vars, state do`    |
-| Rust     | cucumber-rs     | `#[given("text")]`                                 | `#[given("the system is running")]`                        |
-| F#       | TickSpec        | `let [<Given>] \`\`text\`\` ()`                    | `let [<Given>] \`\`the system is running\`\` () =`         |
-| C#       | Reqnroll        | `[Given("text")]`                                  | `[Given("the system is running")]`                         |
-| Clojure  | kaocha-cucumber | `(Given "text" [state] ...)`                       | `(Given "the system is running" [state] ...)`              |
-| TS/JS    | playwright-bdd  | `Given("text", fn)` (via `createBdd()`)            | `Given("the API is running", async () => { ... })`         |
-| Dart     | bdd_widget_test | `given("text", fn)` / `when("text", fn)`           | `given("the app is running", () { ... })`                  |
+| Language | Framework       | Step Pattern                                                                                                                         | Example                                                    |
+| -------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------- |
+| Go       | godog           | `sc.Step(\`^text$\`, fn)`                                                                                                            | `sc.Step(\`^the system is running$\`, theSystemIsRunning)` |
+| TS/JS    | Cucumber.js     | `Given("text", fn)`                                                                                                                  | `Given("the system is running", async () => { ... })`      |
+| Java     | Cucumber-JVM    | `@Given("text")`                                                                                                                     | `@Given("the system is running")`                          |
+| Kotlin   | Cucumber-JVM    | `@Given("text")`                                                                                                                     | `@Given("the system is running")`                          |
+| Python   | pytest-bdd      | `@given("text")` / `@given(parsers.parse("text"))`                                                                                   | `@given("the system is running")`                          |
+| Elixir   | Cabbage         | `defgiven ~r/^text$/`                                                                                                                | `defgiven ~r/^the system is running$/, _vars, state do`    |
+| Rust     | cucumber-rs     | `#[given("text")]` / `#[given(expr = "text")]` / `#[given(regex = r#"..."#)]`                                                        | `#[given("the system is running")]`                        |
+| F#       | TickSpec        | `let [<Given>] \`\`text\`\` ()`                                                                                                      | `let [<Given>] \`\`the system is running\`\` () =`         |
+| C#       | Reqnroll        | `[Given("text")]` / `[Given(@"^regex$")]` (verbatim string for regex)                                                                | `[Given(@"^the system is running$")]`                      |
+| Clojure  | kaocha-cucumber | `(Given "text" [state] ...)`                                                                                                         | `(Given "the system is running" [state] ...)`              |
+| TS/JS    | playwright-bdd  | `Given("text", fn)` (via `createBdd()`)                                                                                              | `Given("the API is running", async () => { ... })`         |
+| Dart     | TBD             | Framework not yet adopted. `bdd_widget_test` is code-gen (no runtime API). Step extraction approach TBD pending framework selection. | N/A -- see note below                                      |
 
 ### Scenario Title Extraction Per Language
 
@@ -511,11 +511,12 @@ Feature: spec-coverage multi-language support
     When I run "rhino-cli spec-coverage validate specs-dir app-dir"
     Then step texts from (Given/When/Then "text" ...) forms are extracted
 
-  Scenario: Match and extract Dart step definitions
-    Given specs with "health-check.feature"
-    And a Dart file with given/when/then step definitions
-    When I run "rhino-cli spec-coverage validate specs-dir app-dir"
-    Then step texts from Dart given/when/then functions are extracted
+  Scenario: Dart BDD support (deferred pending framework adoption)
+    Given demo-fe-dart-flutterweb adopts a Gherkin BDD framework
+    When the framework's step definition pattern is known
+    Then Dart step extraction is implemented for that specific pattern
+    # Note: bdd_widget_test is code-gen (no runtime given/when/then API).
+    # Dart BDD extraction is deferred until a framework is adopted.
 
   Scenario: Shared steps mode for E2E projects (playwright-bdd)
     Given BE specs at specs/apps/demo/be/gherkin/ with 14 feature files
@@ -583,4 +584,4 @@ Extend `extractAllStepTexts` switch statement with new cases:
 | `.fs`               | New: `let [<Given>]`text` ` backtick method regex                                 |
 | `.cs`               | New: `[Given("text")]` / `[When("text")]` / `[Then("text")]` attribute regex      |
 | `.clj`              | New: `(Given "text" ...)` / `(When "text" ...)` / `(Then "text" ...)` form regex  |
-| `.dart`             | New: `given("text", fn)` / `when("text", fn)` / `then("text", fn)` function regex |
+| `.dart`             | Deferred: framework not yet adopted. Will implement once BDD framework is chosen. |

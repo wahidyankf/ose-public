@@ -118,7 +118,8 @@
 - [ ] Create `internal/speccoverage/dotnet_steps.go` — C# `[Given("...")]` and F#
       `[<Given>]`text` ` backtick method regex
 - [ ] Create `internal/speccoverage/clojure_steps.go` — Clojure `(Given "..." ...)` form regex
-- [ ] Create `internal/speccoverage/dart_steps.go` — Dart `given("text", fn)` lowercase regex
+- [ ] Create `internal/speccoverage/dart_steps.go` — placeholder (deferred: no runtime BDD
+      framework for Flutter; `bdd_widget_test` is code-gen only)
 - [ ] Extend `extractAllStepTexts` switch statement with `.java`, `.kt`, `.py`, `.ex`, `.exs`,
       `.rs`, `.fs`, `.cs`, `.clj`, `.dart` cases dispatching to new extractors
 - [ ] Verify: existing TS/JS regex already handles playwright-bdd `Given("text", fn)` (no

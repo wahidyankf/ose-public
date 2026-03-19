@@ -28,6 +28,7 @@ graph LR
 
     P["spec-coverage validate"] --> Q["checker.go (MODIFIED)"]
     Q --> R["Multi-language matcher (ENHANCED)"]
+    P --> S["shared_steps.go (NEW)"]
 
     style F fill:#0173B2,color:#fff
     style H fill:#0173B2,color:#fff
@@ -39,6 +40,7 @@ graph LR
     style N fill:#DE8F05,color:#fff
     style O fill:#DE8F05,color:#fff
     style R fill:#CC78BC,color:#fff
+    style S fill:#CC78BC,color:#fff
 ```
 
 ## Design Decisions
@@ -273,8 +275,10 @@ func checkSharedSteps(opts ScanOptions) (*CheckResult, error) {
 `Given("text", fn)` syntax is identical to Cucumber.js. The existing TS/JS step regex already
 handles this. No new regex needed for playwright-bdd.
 
-**Dart note**: Uses `bdd_widget_test` or custom BDD patterns with lowercase `given("text", fn)`.
-Need a Dart-specific regex for lowercase step keywords.
+**Dart note**: No established runtime BDD framework exists for Flutter. `bdd_widget_test` is a
+code-generation tool (no runtime `given()`/`when()`/`then()` API). Dart step extraction is
+deferred until a BDD framework is adopted for `demo-fe-dart-flutterweb`. File matching and
+test file recognition for `.dart` are still implemented; only step/scenario extraction is deferred.
 
 #### Layer 1: File Matching (`findMatchingTestFile`)
 
@@ -342,11 +346,12 @@ pyStepRe = regexp.MustCompile(`@(?:given|when|then|step)\s*\(\s*"((?:[^"\\]|\\.)
 // Elixir: defgiven ~r/^text$/ or defwhen ~r/^text$/ or defthen ~r/^text$/
 exStepRe = regexp.MustCompile(`def(?:given|when|then|and_|but_)\s+~r/\^?(.*?)\$?/`)
 
-// Rust: #[given("text")] #[when("text")] #[then("text")]
-rsStepRe = regexp.MustCompile(`#\[(?:given|when|then)\s*\(\s*"((?:[^"\\]|\\.)*)"\s*\)\s*\]`)
+// Rust: #[given("text")] #[given(expr = "text")] #[given(regex = r#"text"#)]
+// Handles all three cucumber-rs attribute forms (literal, expr, regex)
+rsStepRe = regexp.MustCompile(`#\[(?:given|when|then)\s*\(\s*(?:(?:expr|regex)\s*=\s*)?(?:r#")?"((?:[^"\\]|\\.)*)"\s*"?#?\s*\)\s*\]`)
 
-// C#: [Given("text")] [When("text")] [Then("text")]
-csStepRe = regexp.MustCompile(`\[(?:Given|When|Then|And|But)\s*\(\s*"((?:[^"\\]|\\.)*)"\s*\)\s*\]`)
+// C#: [Given("text")] [Given(@"^regex$")] — handles optional @ verbatim string prefix
+csStepRe = regexp.MustCompile(`\[(?:Given|When|Then|And|But)\s*\(\s*@?"((?:[^"\\]|\\.)*)"\s*\)\s*\]`)
 
 // F#: let [<Given>] ``text`` () = (backtick-quoted method name IS the step text)
 fsStepRe = regexp.MustCompile("\\[<(?:Given|When|Then)>\\]\\s+``((?:[^`]|`[^`])*)``")
@@ -354,8 +359,9 @@ fsStepRe = regexp.MustCompile("\\[<(?:Given|When|Then)>\\]\\s+``((?:[^`]|`[^`])*
 // Clojure: (Given "text" ...) (When "text" ...) (Then "text" ...)
 cljStepRe = regexp.MustCompile(`\((?:Given|When|Then|And|But)\s+"((?:[^"\\]|\\.)*)"\s`)
 
-// Dart: given("text", fn) when("text", fn) then("text", fn) (lowercase from bdd_widget_test)
-dartStepRe = regexp.MustCompile(`(?:given|when|then|and|but)\s*\(\s*"((?:[^"\\]|\\.)*)"\s*,`)
+// Dart: DEFERRED — no established runtime BDD framework for Flutter.
+// bdd_widget_test is code-gen, not runtime API. Will implement once framework is adopted.
+// dartStepRe = TBD
 ```
 
 **Extraction type per language**: Java/Kotlin/Python/Rust/C#/Clojure extract exact text.

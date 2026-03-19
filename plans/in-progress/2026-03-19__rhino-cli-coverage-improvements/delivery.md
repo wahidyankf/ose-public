@@ -67,7 +67,7 @@
 - [ ] Map changed lines to file paths from diff output
 - [ ] Create `internal/testcoverage/diff.go` with diff coverage logic
 - [ ] Cross-reference changed lines with coverage data
-- [ ] Calculate diff coverage: `covered_changed / total_changed`
+- [ ] Calculate diff coverage using Codecov 3-state algorithm: `covered / (covered + partial + missed)`
 - [ ] Handle edge cases: renamed files, binary files, missing coverage data
 - [ ] Create `cmd/test_coverage_diff.go` subcommand
 - [ ] Add `--base`, `--threshold`, `--staged`, `--per-file`, `--exclude` flags
@@ -179,6 +179,9 @@
 
 ## Success Criteria
 
+- **Codecov compatibility**: All formats produce identical results to Codecov's algorithm
+  (`covered / (covered + partial + missed)`; partial = NOT covered). Validate, merge, diff,
+  and per-file all use the same 3-state formula.
 - All 4 coverage formats detected and validated correctly (Go, LCOV, JaCoCo, Cobertura)
 - Kover `report.xml` (no "jacoco" in filename) correctly detected as JaCoCo via content
 - test-coverage works for ALL project stacks: Go, TS, Java, Kotlin, Python, Elixir, Rust,

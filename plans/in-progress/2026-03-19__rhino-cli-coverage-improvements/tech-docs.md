@@ -199,8 +199,9 @@ or are more complex to generate (JaCoCo XML requires class/method structure).
 
 1. Run `git diff --unified=0 <base>...HEAD` (or `git diff --staged --unified=0`)
 2. Parse diff hunks to extract changed line numbers per file
-3. Cross-reference with coverage data to classify each changed line
-4. Calculate diff coverage: `covered_changed / total_changed`
+3. Cross-reference with coverage data to classify each changed line as covered/partial/missed
+4. Calculate diff coverage using Codecov algorithm: `covered / (covered + partial + missed)`
+   (same 3-state formula as `test-coverage validate` — partial lines count as NOT covered)
 
 **Git diff parsing**: Parse unified diff output to extract file paths and line ranges from
 `@@ -a,b +c,d @@` hunk headers. Only count added/modified lines (+ lines), not deleted lines.
@@ -474,6 +475,7 @@ New `.feature` files in `specs/apps/rhino-cli/`:
 - `test-coverage-merge.feature`
 - `test-coverage-diff.feature`
 - `spec-coverage-validate-multilang.feature`
+- `spec-coverage-validate-shared-steps.feature`
 
 ### Coverage Target
 

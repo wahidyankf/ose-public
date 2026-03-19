@@ -9,8 +9,9 @@
 ## Overview
 
 Enhance rhino-cli's `test-coverage` command family with additional format support, per-file
-reporting, coverage merging, diff coverage, and file exclusion. Also fix `spec-coverage validate`
-to support demo-be backend naming conventions.
+reporting, coverage merging, diff coverage, and file exclusion. Extend `spec-coverage validate`
+to support all demo projects (backends, frontends, E2E) across all languages. All coverage
+calculations use the Codecov-compatible algorithm: `covered / (covered + partial + missed)`.
 
 ### Current State
 
@@ -61,11 +62,14 @@ for external use cases (GitLab CI, Python default, .NET Coverlet default).
 
 ### Projects Affected
 
-| Component                    | Change                              |
-| ---------------------------- | ----------------------------------- |
-| `apps/rhino-cli/`            | New parsers, commands, flags, tests |
-| `apps/rhino-cli/README.md`   | Document new features               |
-| All `demo-be-*/project.json` | Potential spec-coverage integration |
+| Component                    | Change                                         |
+| ---------------------------- | ---------------------------------------------- |
+| `apps/rhino-cli/`            | New parsers, commands, flags, tests            |
+| `apps/rhino-cli/README.md`   | Document new features                          |
+| All `demo-be-*/project.json` | Potential spec-coverage integration            |
+| All `demo-fe-*/project.json` | Potential spec-coverage integration (FE specs) |
+| `demo-be-e2e/project.json`   | Potential `--shared-steps` spec-coverage       |
+| `demo-fe-e2e/project.json`   | Potential `--shared-steps` spec-coverage       |
 
 ### Version Bump
 

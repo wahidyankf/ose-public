@@ -1,5 +1,31 @@
 # Requirements
 
+## Codecov Compatibility Guarantee
+
+All `test-coverage` calculations (validate, merge, diff, per-file) MUST produce results
+identical to Codecov's algorithm. This is a cross-cutting requirement for R1-R5.
+
+**Algorithm**: Three-state line classification (covered / partial / missed):
+
+- **Covered**: Line executed AND all branches taken (or no branches)
+- **Partial**: Line executed BUT some branches not taken
+- **Missed**: Line not executed
+- **Formula**: `coverage% = covered / (covered + partial + missed)`
+- **Partial lines count as NOT covered** (matching Codecov's badge/status check calculation)
+
+This applies to:
+
+- **R1 (Cobertura)**: Same algorithm applied to Cobertura XML `hits` + `condition-coverage`
+- **R2 (Per-file)**: Each file's percentage uses the same 3-state formula
+- **R3 (Merge)**: Merged data preserves hit counts and branch data; validation uses same formula
+- **R4 (Diff)**: Changed lines classified as covered/partial/missed using same 3-state formula
+- **R5 (Exclude)**: Excluded files removed before aggregation; remaining use same formula
+
+The existing Go cover.out, LCOV, and JaCoCo parsers already implement this algorithm.
+Cobertura (R1) must match it exactly.
+
+---
+
 ## R1: Cobertura XML Format Support
 
 ### Description
@@ -271,7 +297,7 @@ Feature: Diff coverage
   Scenario: JSON output for diff coverage
     Given a coverage file and changes
     When I run "rhino-cli test-coverage diff coverage.info --base main -o json"
-    Then JSON output contains changed_lines, covered_lines, diff_pct fields
+    Then JSON output contains covered, partial, missed, total, diff_pct fields
     And a files array with per-file diff coverage
 ```
 

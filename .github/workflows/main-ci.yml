@@ -126,6 +126,11 @@ jobs:
       - name: Install Flutter dependencies
         run: (cd apps/demo-fe-dart-flutterweb && flutter pub get)
 
+      - name: Restore .NET dependencies (required before --no-restore typecheck)
+        run: |
+          dotnet restore apps/demo-be-fsharp-giraffe/src/DemoBeFsgi/DemoBeFsgi.fsproj
+          dotnet restore apps/demo-be-csharp-aspnetcore/src/DemoBeCsas/DemoBeCsas.csproj
+
       - name: typecheck (all projects)
         run: npx nx run-many -t typecheck --all
 

@@ -149,6 +149,28 @@ nx run demo-be-e2e:test:e2e
 nx run demo-be-{lang}-{framework}:test:quick
 ```
 
+## Nx Cache Inputs
+
+Gherkin spec paths are explicit Nx cache inputs for `test:unit` and `test:quick` in all 11
+backends. This ensures that modifying any `.feature` file triggers a cache miss and re-runs the
+affected test targets automatically.
+
+The canonical input pattern used in every backend's `project.json`:
+
+```
+"{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature"
+```
+
+`test:integration` has `cache: false` and does not need explicit spec inputs.
+
+## Spec-Coverage Enforcement
+
+Spec-coverage validation (`rhino-cli spec-coverage validate`) is **planned but deferred**. The tool
+was designed for CLI apps (Go/godog and TypeScript/vitest-cucumber naming conventions) and needs
+enhancement to support demo-be test file naming patterns (e.g., `health_steps_test.go`,
+`HealthSteps.java`) before it can be enforced in `test:quick`. This will be addressed in a separate
+follow-up plan.
+
 ## Adding a Feature File
 
 1. Identify the bounded context (e.g., `authentication`, `user-lifecycle`)

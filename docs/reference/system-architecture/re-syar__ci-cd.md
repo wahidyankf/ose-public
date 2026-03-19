@@ -244,6 +244,17 @@ graph TB
 
 **Trigger**: Scheduled (6 AM and 6 PM WIB daily) or manual `workflow_dispatch`. The golang-gin workflow also triggers on push to `main` when its paths change.
 
+**Language version alignment**: All scheduled demo workflows use the same language versions as `main-ci.yml`:
+
+- **Go**: 1.26.0 (used in golang-gin backend and all frontend workflows for codegen)
+- **Elixir**: 1.19 (OTP 27)
+- **Python**: 3.13
+- **Node.js**: 24 (all TypeScript/JavaScript backends and frontends)
+- **Rust**: `dtolnay/rust-toolchain@stable` (compilation inside Docker containers)
+- **Flutter**: `subosito/flutter-action@v2` with `channel: stable`
+
+**Health check standardization**: All dev docker-compose files use `curl -f http://localhost:8201/health` for backend health checks. The Docker images for golang-gin, java-springboot, kotlin-ktor have `apk add --no-cache curl` in their Dockerfiles. Integration compose files only have PostgreSQL health checks (`pg_isready`) — no backend health checks needed there.
+
 **Job structure** (per workflow):
 
 Each backend workflow runs its own backend stack — never a different backend.

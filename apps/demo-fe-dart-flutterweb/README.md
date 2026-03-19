@@ -27,9 +27,23 @@ nx dev demo-fe-dart-flutterweb
 # Build
 nx build demo-fe-dart-flutterweb
 
-# Lint
+# Lint (dart analyze — depends on codegen)
 nx lint demo-fe-dart-flutterweb
+
+# Fast quality gate: unit tests + coverage check (>=70%)
+nx run demo-fe-dart-flutterweb:test:quick
+
+# Unit tests only
+nx run demo-fe-dart-flutterweb:test:unit
 ```
+
+**See**: [Nx Target Standards](../../governance/development/infra/nx-targets.md) for canonical target names.
+
+## Testing
+
+`test:quick` runs `flutter test test/unit --coverage` followed by `rhino-cli test-coverage validate` (>=70% line coverage, Codecov algorithm). The cache inputs include `{projectRoot}/generated-contracts/**/*` so contract changes invalidate the cache.
+
+`dart analyze` is the `lint` target only (not a separate `typecheck` step — both `lint` and `typecheck` run `dart analyze --fatal-infos` and depend on `codegen`).
 
 ## Docker
 
@@ -40,6 +54,16 @@ docker compose -f infra/dev/demo-fe-dart-flutterweb/docker-compose.yml up --buil
 # Frontend: http://localhost:3301
 # Backend:  http://localhost:8201
 ```
+
+## Contracts
+
+Generated Dart types live in `generated-contracts/` (gitignored). The `codegen` target:
+
+1. Runs `openapi-generator-cli` to produce Dart models from `specs/apps/demo/contracts/generated/openapi-bundled.yaml`
+2. Runs `rhino-cli contracts dart-scaffold` to add Dart library scaffolding
+3. Runs `flutter pub get` to install the generated package
+
+`codegen` is a dependency of `build`, `lint`, `typecheck`, `test:quick`, and `test:unit` — so contract violations are caught by the pre-push quality gate.
 
 ## E2E Tests
 

@@ -80,7 +80,7 @@ cd apps/demo-be-e2e && npx bddgen
 # Lint TypeScript source files (oxlint)
 nx run demo-be-e2e:lint
 
-# Pre-push quality gate (same as lint for E2E projects)
+# Pre-push quality gate (lint + typecheck in parallel)
 nx run demo-be-e2e:test:quick
 ```
 

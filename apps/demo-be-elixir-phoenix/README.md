@@ -31,13 +31,21 @@ The server listens on port **8201** (`http://localhost:8201`).
 ```bash
 nx run demo-be-elixir-phoenix:install          # mix deps.get
 nx run demo-be-elixir-phoenix:dev              # mix phx.server (development)
-nx run demo-be-elixir-phoenix:test:quick       # unit tests + coverage gate (>=90%)
-nx run demo-be-elixir-phoenix:test:unit        # unit tests with coverage (same as test:quick)
+nx run demo-be-elixir-phoenix:test:quick       # coveralls.lcov (unit only) + rhino-cli coverage gate (>=90%)
+nx run demo-be-elixir-phoenix:test:unit        # mix test --only unit (no coverage measurement)
 nx run demo-be-elixir-phoenix:test:integration # docker compose: real PostgreSQL + all BDD scenarios
 nx run demo-be-elixir-phoenix:lint             # mix credo --strict
-nx run demo-be-elixir-phoenix:typecheck        # mix compile (warnings-as-errors)
-nx run demo-be-elixir-phoenix:build            # mix compile (prod, warnings-as-errors)
+nx run demo-be-elixir-phoenix:typecheck        # mix compile (warnings-as-errors; depends on codegen)
+nx run demo-be-elixir-phoenix:build            # mix compile (prod, warnings-as-errors; depends on codegen)
 ```
+
+`test:quick` and `test:unit` are distinct targets. `test:unit` runs `mix test --only unit` for fast
+feedback without coverage overhead. `test:quick` runs `mix coveralls.lcov --only unit` to generate
+the LCOV report, then validates coverage with `rhino-cli test-coverage validate` at the ≥90%
+threshold — this is the pre-push gate.
+
+`codegen` generates Elixir contract modules from the OpenAPI spec into `generated-contracts/` and
+is a dependency of both `typecheck` and `build`.
 
 ## API Endpoints
 
@@ -81,23 +89,28 @@ integration → Docker Compose + real PostgreSQL, not cached
 e2e         → Playwright against a live running stack (apps/demo-be-e2e)
 ```
 
-### Level 1: Unit Tests (`test:quick` / `test:unit`)
+### Level 1: Unit Tests (`test:unit` / `test:quick`)
 
 Unit tests run with `MIX_ENV=test` using in-memory context implementations. No database
 or external services are required. These tests are **fully cached** by Nx.
 
 ```bash
-nx run demo-be-elixir-phoenix:test:quick
-# or equivalently:
+# Fast feedback — run unit tests without coverage overhead
 nx run demo-be-elixir-phoenix:test:unit
+
+# Pre-push quality gate — run unit tests with coverage + enforce >=90%
+nx run demo-be-elixir-phoenix:test:quick
 ```
+
+`test:unit` runs `mix test --only unit`. `test:quick` runs `mix coveralls.lcov --only unit` to
+produce the LCOV report, then validates coverage with `rhino-cli test-coverage validate`.
 
 **What runs:**
 
 - All 76 Gherkin BDD scenarios re-implemented in `test/unit/steps/` with `@moduletag :unit`
 - Controller error-path tests in `test/demo_be_exph_web/controllers/coverage_test.exs`
-- ExCoveralls LCOV report generated to `cover/lcov.info`
-- `rhino-cli test-coverage validate` enforces ≥90% line coverage
+- (`test:quick` only) ExCoveralls LCOV report generated to `cover/lcov.info`
+- (`test:quick` only) `rhino-cli test-coverage validate` enforces ≥90% line coverage
 
 **Mock architecture:**
 

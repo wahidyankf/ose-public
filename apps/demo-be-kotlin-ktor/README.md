@@ -53,13 +53,15 @@ curl http://localhost:8201/health
 ## Nx Targets
 
 ```bash
-nx build demo-be-kotlin-ktor          # Compile and package fat JAR
-nx dev demo-be-kotlin-ktor            # Start development server
-nx start demo-be-kotlin-ktor          # Start production JAR
-nx run demo-be-kotlin-ktor:test:quick # Unit tests + coverage gate + lint
-nx run demo-be-kotlin-ktor:test:unit  # Unit tests only (Cucumber + JUnit)
-nx run demo-be-kotlin-ktor:test:integration  # Integration tests (Cucumber + JUnit, in-memory repos)
-nx lint demo-be-kotlin-ktor           # Run detekt linter
+nx build demo-be-kotlin-ktor              # Compile and package fat JAR (depends on codegen)
+nx dev demo-be-kotlin-ktor               # Start development server
+nx start demo-be-kotlin-ktor             # Start production JAR
+nx run demo-be-kotlin-ktor:codegen       # Generate contract types from OpenAPI spec
+nx run demo-be-kotlin-ktor:test:quick    # Unit tests + coverage gate (no lint)
+nx run demo-be-kotlin-ktor:test:unit     # Unit tests only (Cucumber + JUnit)
+nx run demo-be-kotlin-ktor:test:integration  # Integration tests (Docker + PostgreSQL)
+nx lint demo-be-kotlin-ktor              # Run detekt linter
+nx run demo-be-kotlin-ktor:typecheck     # Compile Kotlin sources (./gradlew compileKotlin, depends on codegen)
 ```
 
 ## API Endpoints

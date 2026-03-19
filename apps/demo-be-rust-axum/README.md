@@ -47,13 +47,17 @@ curl http://localhost:8201/health
 ## Nx Targets
 
 ```bash
-nx build demo-be-rust-axum                    # Compile release binary
+nx build demo-be-rust-axum                    # Compile release binary (depends on codegen)
 nx dev demo-be-rust-axum                      # Start development server
-nx run demo-be-rust-axum:test:quick           # Unit tests + coverage gate (no lint)
-nx run demo-be-rust-axum:test:unit            # Unit tests only (lib + BDD with SQLite in-memory)
+nx run demo-be-rust-axum:typecheck            # cargo check (depends on codegen)
+nx run demo-be-rust-axum:test:quick           # Unit tests + coverage gate (no lint; depends on codegen)
+nx run demo-be-rust-axum:test:unit            # Unit tests only (lib + BDD with SQLite in-memory; depends on codegen)
 nx run demo-be-rust-axum:test:integration     # Integration tests via Docker Compose (PostgreSQL)
 nx lint demo-be-rust-axum                     # Run clippy + rustfmt check
 ```
+
+`codegen` generates Rust model structs from the OpenAPI contract spec into `generated-contracts/`
+and is a dependency of `typecheck`, `build`, `test:quick`, and `test:unit`.
 
 ## API Endpoints
 

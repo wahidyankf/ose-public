@@ -63,14 +63,15 @@ nx run demo-be-csharp-aspnetcore:test:integration
 
 | Target             | Command                                             | Description                                               |
 | ------------------ | --------------------------------------------------- | --------------------------------------------------------- |
-| `build`            | `nx build demo-be-csharp-aspnetcore`                | Publish release artifact to `dist/`                       |
+| `codegen`          | `nx run demo-be-csharp-aspnetcore:codegen`          | Generate contract types from OpenAPI spec                 |
+| `build`            | `nx build demo-be-csharp-aspnetcore`                | Publish release artifact to `dist/` (depends on codegen)  |
 | `dev`              | `nx dev demo-be-csharp-aspnetcore`                  | Hot-reload development server                             |
 | `start`            | `nx start demo-be-csharp-aspnetcore`                | Run without hot-reload                                    |
 | `test:quick`       | `nx run demo-be-csharp-aspnetcore:test:quick`       | All tests (SQLite) + Coverlet LCOV coverage ≥90% (cached) |
 | `test:unit`        | `nx run demo-be-csharp-aspnetcore:test:unit`        | All tests (SQLite in-memory, no coverage report)          |
 | `test:integration` | `nx run demo-be-csharp-aspnetcore:test:integration` | BDD scenarios against real PostgreSQL via docker-compose  |
 | `lint`             | `nx run demo-be-csharp-aspnetcore:lint`             | Run Roslyn analyzers                                      |
-| `typecheck`        | `nx run demo-be-csharp-aspnetcore:typecheck`        | Build with TreatWarningsAsErrors                          |
+| `typecheck`        | `nx run demo-be-csharp-aspnetcore:typecheck`        | Build with TreatWarningsAsErrors (depends on codegen)     |
 
 ## Environment Variables
 

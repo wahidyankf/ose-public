@@ -209,14 +209,20 @@ in-process mocking only (MSW, Godog) override to `cache: true` in their `project
 3. **E2E (`test:e2e`)**: Full stack via Playwright; real HTTP + real DB; must consume Gherkin specs
 
 All three levels consume the same Gherkin specs — only step implementations change. `test:quick`
-includes only `test:unit` + coverage check + specs coverage check. It does NOT include `lint`,
-`typecheck`, `test:integration`, or `test:e2e`.
+includes only `test:unit` + coverage validation. It does NOT include `lint`, `typecheck`,
+`test:integration`, or `test:e2e`. Spec-coverage validation (`rhino-cli spec-coverage validate`)
+is deferred pending tool enhancement for demo-be naming conventions.
+
+**Mandatory Nx targets for demo apps**: All `demo-be-*` and `demo-fe-*` apps must have 7 targets:
+`codegen`, `typecheck`, `lint`, `build`, `test:unit`, `test:quick`, `test:integration`. Coverage
+thresholds: backends ≥90%, frontends ≥70%.
 
 **Contract enforcement**: All demo apps have a `codegen` Nx target that generates types +
 encoders/decoders from the OpenAPI spec at `specs/apps/demo/contracts/`. Generated code lives in
-`generated-contracts/` (gitignored). The `codegen` target is a dependency of `typecheck`, `build`,
-and `test:unit` — so contract violations are caught by `nx affected -t typecheck` and `test:quick`
-in the pre-push hook and PR quality gate.
+`generated-contracts/` (gitignored). The `codegen` target is a dependency of `typecheck` and
+`build` — so contract violations are caught by `nx affected -t typecheck` and `test:quick`
+in the pre-push hook and PR quality gate. (Exception: Rust and Flutter also declare `codegen` as a
+dependency of `test:unit` due to generated code being required at compile time.)
 
 **See**: [governance/development/quality/three-level-testing-standard.md](./governance/development/quality/three-level-testing-standard.md)
 

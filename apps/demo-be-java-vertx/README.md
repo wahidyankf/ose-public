@@ -52,13 +52,17 @@ curl http://localhost:8201/health
 ## Nx Targets
 
 ```bash
-nx build demo-be-java-vertx                    # Compile with Maven
+nx build demo-be-java-vertx                    # Compile with Maven (depends on codegen)
 nx dev demo-be-java-vertx                      # Start development server
+nx run demo-be-java-vertx:typecheck            # Annotation + null-safety check (JSpecify + NullAway; depends on codegen)
 nx run demo-be-java-vertx:test:quick           # Unit tests + coverage gate (fast, cacheable)
 nx run demo-be-java-vertx:test:unit            # Unit tests only (mvn test)
 nx run demo-be-java-vertx:test:integration     # Integration tests via Docker Compose + PostgreSQL
-nx lint demo-be-java-vertx                     # Run Checkstyle
+nx lint demo-be-java-vertx                     # Run Checkstyle + PMD
 ```
+
+`codegen` generates Java model classes from the OpenAPI contract spec into `generated-contracts/`
+and is a dependency of both `typecheck` and `build`.
 
 ## API Endpoints
 

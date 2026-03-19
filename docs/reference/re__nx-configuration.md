@@ -188,10 +188,28 @@ Default configuration for targets across all projects.
 
 **Standard target names**: Use `test:quick`, `test:unit`, `test:integration`, `test:e2e` — not a generic `test` target. See [Nx Target Standards](../../governance/development/infra/nx-targets.md) for the complete target naming standard.
 
+**Codegen dependency chain** (demo apps): All demo app `typecheck` and `build` targets must declare `dependsOn: ["codegen"]`. This ensures generated types from the OpenAPI spec are always up to date before type checking or building. Example:
+
+```json
+{
+  "typecheck": {
+    "command": "go vet ./...",
+    "dependsOn": ["codegen"],
+    "cache": true
+  },
+  "build": {
+    "command": "go build ./...",
+    "dependsOn": ["codegen"],
+    "outputs": ["{projectRoot}/dist"]
+  }
+}
+```
+
 **Dependency Patterns**:
 
 - `["^build"]` - Build all dependencies first
 - `["build"]` - Build self first
+- `["codegen"]` - Run codegen (contract generation) first
 - `["^build", "prebuild"]` - Build dependencies, then run prebuild
 
 #### `namedInputs`

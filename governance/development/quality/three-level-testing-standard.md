@@ -48,6 +48,7 @@ Defines the mandatory three-level testing architecture for all projects in the m
 | External services | None                                                                |
 | Coverage          | Measured here (>=90% line coverage via `rhino-cli`)                 |
 | Nx caching        | `cache: true` (deterministic)                                       |
+| Nx inputs         | Source files + `generated-contracts/**/*` + Gherkin specs           |
 | Runs in           | `test:quick` (pre-push gate)                                        |
 
 **Architecture**: Step definitions call service/handler functions directly, injecting mocked repository implementations. No HTTP framework, no routing, no serialization.
@@ -140,6 +141,31 @@ All three levels consume the same 76 Gherkin scenarios from 13 feature files in 
 | Unit        | Calls service functions with mocked repos    | Repository implementations |
 | Integration | Calls service functions with real PostgreSQL | Database (real vs mock)    |
 | E2E         | Sends HTTP requests via Playwright           | Entire stack (HTTP + DB)   |
+
+## Nx Cache Inputs Requirement
+
+For Nx to invalidate cached test results when relevant files change, all `test:unit` and
+`test:quick` targets must declare explicit `inputs` in `project.json` that include:
+
+1. **Source files** — language-specific glob patterns (e.g., `{projectRoot}/src/**/*.go`)
+2. **Generated contracts** — `{projectRoot}/generated-contracts/**/*` (or `generated_contracts/`
+   for Python and Clojure, which use underscore)
+3. **Gherkin specs** — `{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature` (demo-be
+   backends only)
+
+Without these explicit inputs, Nx may serve a cached result after a Gherkin spec is updated or
+after the OpenAPI contract spec triggers a `codegen` run — causing stale test results.
+
+Frontend apps (`demo-fe-*`) include generated contracts in `inputs` but do not include Gherkin
+specs because they use a separate spec directory (`specs/apps/demo/fe/gherkin/`).
+
+See [Nx Target Standards](../infra/nx-targets.md) for the full canonical inputs table per language.
+
+**Note on spec-coverage enforcement**: Running `rhino-cli spec-coverage validate` in `test:quick`
+to enforce that all Gherkin scenarios have corresponding step definitions is planned for demo-be
+backends but currently deferred. The tool needs enhancement to support demo-be test file naming
+conventions (e.g., `health_steps_test.go`) before this can be enforced. Spec-coverage enforcement
+is currently active for CLI apps only. This will be addressed in a follow-up plan.
 
 ## Per-Backend Implementation Pattern
 

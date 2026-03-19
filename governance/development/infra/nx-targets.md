@@ -204,15 +204,31 @@ A Go lib has no platform boundary and no domain, so it omits both:
 
 Derived from three rules: (1) All apps+libs → unit tests, (2) All apps → integration tests, (3) All web apps (APIs + web UIs) → E2E tests. Hugo sites are exempt from all rules.
 
-| Project Type | `test:unit` | `test:integration` | `test:e2e` | `test:quick` | `lint` | `build` | `typecheck` |
-| ------------ | ----------- | ------------------ | ---------- | ------------ | ------ | ------- | ----------- |
-| API Backend  | Yes         | Yes (PG)           | Yes\*      | Yes          | Yes    | Yes     | If typed    |
-| Web UI App   | Yes         | Yes (MSW)          | Yes\*      | Yes          | Yes    | Yes     | If typed    |
-| Demo-fe FE   | Yes         | —                  | Yes\*      | Yes          | Yes    | Yes     | If typed    |
-| CLI App      | Yes         | Yes (Godog)        | —          | Yes          | Yes    | Yes     | If typed    |
-| Library      | Yes         | Optional           | —          | Yes          | Yes    | —       | If typed    |
-| Hugo Site    | —           | —                  | —          | Yes          | —      | Yes     | —           |
-| E2E Runner   | —           | —                  | Yes        | Yes          | Yes    | —       | If typed    |
+| Project Type | `test:unit` | `test:integration` | `test:e2e` | `test:quick` | `lint` | `build` | `typecheck`  |
+| ------------ | ----------- | ------------------ | ---------- | ------------ | ------ | ------- | ------------ |
+| API Backend  | Yes         | Yes (PG)           | Yes\*      | Yes          | Yes    | Yes     | Yes (all 11) |
+| Web UI App   | Yes         | Yes (MSW)          | Yes\*      | Yes          | Yes    | Yes     | If typed     |
+| Demo-fe FE   | Yes         | —                  | Yes\*      | Yes          | Yes    | Yes     | If typed     |
+| CLI App      | Yes         | Yes (Godog)        | —          | Yes          | Yes    | Yes     | If typed     |
+| Library      | Yes         | Optional           | —          | Yes          | Yes    | —       | If typed     |
+| Hugo Site    | —           | —                  | —          | Yes          | —      | Yes     | —            |
+| E2E Runner   | —           | —                  | Yes        | Yes          | Yes    | —       | If typed     |
+
+**Demo-be backend `typecheck` commands** (all 11 backends have `typecheck` with `dependsOn: ["codegen"]`):
+
+| Backend                     | `typecheck` command                                               |
+| --------------------------- | ----------------------------------------------------------------- |
+| `demo-be-golang-gin`        | `CGO_ENABLED=0 go vet ./...`                                      |
+| `demo-be-java-springboot`   | `rhino-cli java validate-annotations` + `mvn compile -Pnullcheck` |
+| `demo-be-java-vertx`        | `rhino-cli java validate-annotations` + `mvn compile -Pnullcheck` |
+| `demo-be-elixir-phoenix`    | `mix compile --warnings-as-errors`                                |
+| `demo-be-python-fastapi`    | `uv run pyright`                                                  |
+| `demo-be-fsharp-giraffe`    | `dotnet build .fsproj /p:TreatWarningsAsErrors=true --no-restore` |
+| `demo-be-ts-effect`         | `npx tsc --noEmit`                                                |
+| `demo-be-kotlin-ktor`       | `./gradlew compileKotlin`                                         |
+| `demo-be-csharp-aspnetcore` | `dotnet build .csproj /p:TreatWarningsAsErrors=true --no-restore` |
+| `demo-be-clojure-pedestal`  | `clj-kondo --lint src`                                            |
+| `demo-be-rust-axum`         | `cargo check`                                                     |
 
 \* E2E tests live in dedicated `*-e2e` runner projects, not in the backend/frontend project itself.
 
@@ -222,39 +238,55 @@ Derived from three rules: (1) All apps+libs → unit tests, (2) All apps → int
 
 Every project in `apps/` and `libs/` must expose:
 
-| Target       | Requirement                                                                                                                                                                                |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `test:quick` | Complete in a few minutes (not tens of minutes); enforced by the pre-push hook and as a required GitHub Actions status check before PR merge                                               |
-| `lint`       | Exit non-zero on violations; enforced by the pre-push hook                                                                                                                                 |
-| `typecheck`  | Required for statically typed projects (TypeScript, Python/mypy, Java with JSpecify + NullAway); enforced by the pre-push hook; skipped by Nx for projects that do not declare this target |
+| Target       | Requirement                                                                                                                                                |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `test:quick` | Complete in a few minutes (not tens of minutes); enforced by the pre-push hook and as a required GitHub Actions status check before PR merge               |
+| `lint`       | Exit non-zero on violations; enforced by the pre-push hook                                                                                                 |
+| `typecheck`  | Required for statically typed projects and all demo-be backends; enforced by the pre-push hook; skipped by Nx for projects that do not declare this target |
 
 **`test:quick` composition** — each project decides which fast checks form its gate. The target runs its checks directly (calling the underlying tools, not other Nx targets) to avoid double execution when `lint` or `typecheck` are also run standalone by the pre-push hook. Common compositions:
 
-| Project type       | Typical `test:quick` composition                                                                                                                                                                                                   |
-| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| TypeScript app     | unit tests via vitest (typecheck and lint run separately in pre-push); coverage from unit tests only via `rhino-cli test-coverage validate` ≥90%                                                                                   |
-| Go app             | `go test -coverprofile=cover.out ./... && rhino-cli test-coverage validate <project>/cover.out 90` — compiles and runs unit tests (excluding `//go:build integration` files), then enforces ≥90% line coverage (Codecov algorithm) |
-| Java/Spring Boot   | unit tests only (`mvn test`, includes `**/unit/**/*Test.java`); JaCoCo XML coverage validated by `rhino-cli test-coverage validate` ≥90%. Integration tests run separately via `test:integration`                                  |
-| Java/Vert.x        | unit tests with Cucumber JVM (mocked dependencies); JaCoCo XML coverage validated by `rhino-cli test-coverage validate` ≥90%                                                                                                       |
-| Kotlin/Ktor        | unit tests with Cucumber JVM (mocked dependencies); Kover JaCoCo XML coverage validated by `rhino-cli test-coverage validate` ≥90%                                                                                                 |
-| Python/FastAPI     | unit tests with `pytest` (mocked dependencies) → LCOV → `rhino-cli test-coverage validate` ≥90%                                                                                                                                    |
-| Rust/Axum          | unit tests with `cargo test --lib` + `cargo llvm-cov --lcov` → `rhino-cli test-coverage validate` ≥90%                                                                                                                             |
-| Hugo site          | link check via the site's CLI tool (build runs separately via `nx build`)                                                                                                                                                          |
-| Demo-fe TS app     | unit tests via vitest (typecheck and lint run separately in pre-push); coverage from unit tests only via `rhino-cli test-coverage validate` >=90%; specs coverage via `rhino-cli spec-coverage validate`                           |
-| Demo-fe Elixir     | unit tests (`mix coveralls.lcov`); LCOV coverage validated via `rhino-cli test-coverage validate` >=90%; specs coverage via `rhino-cli spec-coverage validate`                                                                     |
-| Playwright `*-e2e` | run the linter directly (no unit tests to add beyond linting)                                                                                                                                                                      |
+| Project type           | Typical `test:quick` composition                                                                                                                                                                                                   |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| TypeScript app         | unit tests via vitest (typecheck and lint run separately in pre-push); coverage from unit tests only via `rhino-cli test-coverage validate` ≥90%                                                                                   |
+| Go app                 | `go test -coverprofile=cover.out ./... && rhino-cli test-coverage validate <project>/cover.out 90` — compiles and runs unit tests (excluding `//go:build integration` files), then enforces ≥90% line coverage (Codecov algorithm) |
+| Java/Spring Boot       | unit tests only (`mvn test`, includes `**/unit/**/*Test.java`); JaCoCo XML coverage validated by `rhino-cli test-coverage validate` ≥90%. Integration tests run separately via `test:integration`                                  |
+| Java/Vert.x            | unit tests with Cucumber JVM (mocked dependencies); JaCoCo XML coverage validated by `rhino-cli test-coverage validate` ≥90%                                                                                                       |
+| Kotlin/Ktor            | unit tests with Cucumber JVM (mocked dependencies); Kover JaCoCo XML coverage validated by `rhino-cli test-coverage validate` ≥90%                                                                                                 |
+| Python/FastAPI         | unit tests with `pytest` (mocked dependencies) → LCOV → `rhino-cli test-coverage validate` ≥90%                                                                                                                                    |
+| Rust/Axum              | unit tests with `cargo test --lib` + `cargo llvm-cov --lcov` → `rhino-cli test-coverage validate` ≥90%                                                                                                                             |
+| Hugo site              | link check via the site's CLI tool (build runs separately via `nx build`)                                                                                                                                                          |
+| Demo-fe TS app         | unit tests via vitest (typecheck and lint run separately in pre-push); coverage from unit tests only via `rhino-cli test-coverage validate` ≥70%                                                                                   |
+| Demo-fe Dart/Flutter   | `flutter test test/unit --coverage`; LCOV coverage validated via `rhino-cli test-coverage validate` ≥70%                                                                                                                           |
+| Demo-be Elixir/Phoenix | unit tests (`mix coveralls.lcov --only unit`); LCOV coverage validated via `rhino-cli test-coverage validate` ≥90%                                                                                                                 |
+| Playwright `*-e2e`     | run the linter directly (no unit tests to add beyond linting)                                                                                                                                                                      |
 
 The rule: include only checks that complete fast. If `test:unit` is slow for a project, exclude it from `test:quick` and run it separately. **The target must always exist** — even if it only runs the type checker — so the pre-push hook covers every project.
 
 ### Statically Typed Projects
 
-TypeScript, Python (with mypy):
+TypeScript, Python (with pyright), and all demo-be backends:
 
 | Target      | Requirement                                                                |
 | ----------- | -------------------------------------------------------------------------- |
 | `typecheck` | Run the type checker without emitting artifacts (`tsc --noEmit`, `mypy .`) |
 
-**Not required for dynamically typed languages** (plain JavaScript, Ruby) or languages where compilation already enforces types and `build` covers it (Go, plain Java). **Exception**: Java projects that use JSpecify + NullAway declare `typecheck` because NullAway runs as a separate Error Prone plugin pass (via a dedicated Maven profile) that is not part of the standard `build`. The `typecheck` target also runs `rhino-cli java validate-annotations` to enforce that every Java package has a `package-info.java` annotated with `@NullMarked` — packages without it are silently skipped by NullAway.
+**All 11 demo-be backends declare `typecheck`** with `dependsOn: ["codegen"]`. See the "Demo-be
+backend `typecheck` commands" table in the Summary Matrix section for per-language commands.
+
+**Not required for dynamically typed languages** (plain JavaScript, Ruby) or languages where
+compilation already enforces types and `build` covers it — except when an additional static
+analysis pass is warranted. **Exceptions that do declare `typecheck`**:
+
+- **Go demo-be backends**: `go vet ./...` catches type errors not caught by `go build` alone, and
+  ensures generated contract types compile correctly.
+- **Java projects (JSpecify + NullAway)**: NullAway runs as a separate Error Prone plugin pass via
+  a dedicated Maven profile not included in `build`. The `typecheck` target also runs
+  `rhino-cli java validate-annotations` to enforce that every package has a `package-info.java`
+  annotated with `@NullMarked`.
+- **Rust**: `cargo check` type-checks without linking — faster than `cargo build` for pure type
+  verification against generated contract types.
+- **Clojure**: `clj-kondo --lint src` catches type and arity errors the REPL-based build misses.
 
 ### Compiled and Bundled Projects
 
@@ -440,6 +472,72 @@ Example override for a Hugo site:
   }
 }
 ```
+
+## Cache and Inputs Convention
+
+Declaring explicit `inputs` in `project.json` ensures Nx invalidates the cache when any relevant
+file changes. Without explicit inputs, Nx uses a broad default (all project files) and misses
+cross-project dependencies like shared Gherkin specs or generated contracts.
+
+### Canonical Inputs per Language
+
+All demo-be backends must include Gherkin specs and generated contracts in `test:unit` and
+`test:quick` inputs. The Gherkin specs path is always
+`{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature`. The generated-contracts path varies by
+language:
+
+| Language        | Source files                                                                                                       | Generated contracts                                   | Gherkin specs                                             |
+| --------------- | ------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------- | --------------------------------------------------------- |
+| Go              | `{projectRoot}/internal/**/*.go`, `{projectRoot}/cmd/**/*.go`, `{projectRoot}/go.mod`, `{projectRoot}/go.sum`      | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature` |
+| Java (Maven)    | `{projectRoot}/src/**`, `{projectRoot}/pom.xml`                                                                    | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature` |
+| Kotlin (Gradle) | `{projectRoot}/src/**`, `{projectRoot}/build.gradle.kts`                                                           | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature` |
+| Rust            | `{projectRoot}/src/**/*.rs`, `{projectRoot}/tests/**/*.rs`, `{projectRoot}/Cargo.toml`, `{projectRoot}/Cargo.lock` | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature` |
+| TypeScript      | `{projectRoot}/src/**/*.ts`, `{projectRoot}/tests/**/*.ts`, `{projectRoot}/vitest.config.ts`                       | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature` |
+| Python          | `{projectRoot}/src/**/*.py`, `{projectRoot}/tests/**/*.py`                                                         | `{projectRoot}/generated_contracts/**/*` (underscore) | `{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature` |
+| Elixir          | `{projectRoot}/lib/**/*.ex`, `{projectRoot}/test/**/*.exs`                                                         | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature` |
+| F#              | `{projectRoot}/src/**/*.fs`, `{projectRoot}/tests/**/*.fs`                                                         | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature` |
+| C#              | `{projectRoot}/src/**/*.cs`, `{projectRoot}/tests/**/*.cs`                                                         | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature` |
+| Clojure         | `{projectRoot}/src/**/*`, `{projectRoot}/test/**/*`, `{projectRoot}/tests.edn`                                     | `{projectRoot}/generated_contracts/**/*` (underscore) | `{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature` |
+| Frontend TS     | `{projectRoot}/src/**/*.ts`, `{projectRoot}/src/**/*.tsx`, `{projectRoot}/vitest.config.ts`                        | `{projectRoot}/src/generated-contracts/**/*`          | N/A                                                       |
+| Frontend Dart   | `{projectRoot}/lib/**/*.dart`, `{projectRoot}/test/**/*.dart`                                                      | `{projectRoot}/generated-contracts/**/*`              | N/A                                                       |
+
+**Note**: Python and Clojure use underscore in `generated_contracts/` (matching their language
+conventions). All other languages use hyphen in `generated-contracts/`.
+
+**Why specs and contracts in inputs**: If a Gherkin feature file changes or the OpenAPI contract
+spec changes (triggering `codegen`), `test:unit` and `test:quick` must re-run even if application
+source files are unchanged. Without these paths in `inputs`, Nx incorrectly serves cached results.
+
+**Note on spec-coverage enforcement in test:quick**: Enforcing that all Gherkin scenarios have step
+definitions via `rhino-cli spec-coverage validate` in `test:quick` is planned for demo-be backends
+but currently deferred. The tool needs enhancement to support demo-be test file naming conventions
+(e.g., `health_steps_test.go` instead of feature stem patterns). Spec-coverage is currently
+enforced for CLI apps only.
+
+## Codegen Dependency Chain
+
+All demo apps share a `codegen` target that generates types and encoders/decoders from the OpenAPI
+contract spec at `specs/apps/demo/contracts/` into `generated-contracts/`.
+
+The dependency chain is:
+
+```
+codegen → typecheck
+codegen → build
+```
+
+Both `typecheck` and `build` declare `dependsOn: ["codegen"]` in their `project.json`. This
+ensures generated contract types are always present before type-checking or building begins.
+
+**`test:unit` and `test:quick` do NOT directly depend on `codegen`** — they depend on source
+files being correct, which is already enforced by `typecheck` and `build`. The exceptions are
+`demo-be-rust-axum` and `demo-fe-dart-flutterweb`, which keep `dependsOn: ["codegen"]` in
+`test:unit` / `test:quick` because their build systems require generated code to be present before
+test compilation.
+
+**Rationale**: Making `codegen` a dependency of `typecheck` and `build` (rather than of test
+targets) keeps the dependency graph minimal and avoids running codegen redundantly during test
+runs when artifacts already exist from a prior `build` or `typecheck` execution.
 
 ## Anti-Patterns
 

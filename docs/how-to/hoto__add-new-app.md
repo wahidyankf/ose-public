@@ -286,6 +286,32 @@ TypeScript path mappings are configured in `tsconfig.base.json`.
 - [ ] `nx graph` shows app in dependency graph
 - [ ] Libraries import correctly (if applicable)
 
+### Additional Checklist for New Demo Apps
+
+New `demo-be-*` and `demo-fe-*` apps must satisfy these additional requirements:
+
+**Mandatory Nx targets** (all 7 required):
+
+- [ ] `codegen` — generates types + encoders/decoders from the OpenAPI spec at `specs/apps/demo/contracts/`
+- [ ] `typecheck` — verifies types compile; must include `dependsOn: ["codegen"]`
+- [ ] `lint` — static analysis / format check
+- [ ] `build` — production build; must include `dependsOn: ["codegen"]`
+- [ ] `test:unit` — unit tests with mocked dependencies; cacheable
+- [ ] `test:quick` — unit tests + coverage validation (≥90% for backends, ≥70% for frontends); cacheable
+- [ ] `test:integration` — real PostgreSQL via docker-compose; must set `cache: false`
+
+**Note**: `rhino-cli spec-coverage validate` in `test:quick` is deferred pending tool enhancement for demo-be naming conventions.
+
+**Codegen dependency chain**: Both `typecheck` and `build` must declare `dependsOn: ["codegen"]`. This ensures contract violations surface during `nx affected -t typecheck` and the pre-push `test:quick` gate.
+
+**Canonical inputs for cache invalidation** (add to `test:unit` and `test:quick`):
+
+- Include `{projectRoot}/generated-contracts/**/*` (or `generated_contracts` for Python/Clojure)
+- Include `{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature` for backends
+- Include language-specific source file globs (see `governance/development/infra/nx-targets.md` for per-language patterns)
+
+**See**: [Nx Target Standards](../../governance/development/infra/nx-targets.md) for canonical target names, caching rules, and per-language input patterns.
+
 ## Common Issues
 
 ### Issue: TypeScript can't find library imports

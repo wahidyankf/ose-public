@@ -195,7 +195,7 @@ java -XX:+UseZGC -jar apps/demo-be-java-springboot/target/demo-be-java-springboo
 ## Nx Commands
 
 ```bash
-# Build JAR
+# Build JAR (depends on codegen)
 nx build demo-be-java-springboot
 
 # Start development server (Maven spring-boot:run)
@@ -216,7 +216,7 @@ nx run demo-be-java-springboot:test:integration
 # Lint code
 nx lint demo-be-java-springboot
 
-# Package annotation + null-safety check (JSpecify + NullAway — runs in pre-push hook)
+# Package annotation + null-safety check (JSpecify + NullAway — runs in pre-push hook; depends on codegen)
 nx typecheck demo-be-java-springboot
 ```
 

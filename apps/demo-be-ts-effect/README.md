@@ -55,13 +55,14 @@ nx run demo-be-ts-effect:test:integration  # requires Docker
 
 ```bash
 nx dev demo-be-ts-effect                      # Start dev server with tsx watch
-nx build demo-be-ts-effect                    # Build with Vite
+nx build demo-be-ts-effect                    # Build with Vite (depends on codegen)
 nx start demo-be-ts-effect                    # Run built dist/main.js
+nx run demo-be-ts-effect:codegen              # Generate contract types from OpenAPI spec
 nx run demo-be-ts-effect:test:quick           # Unit tests + coverage + BDD scenarios (pre-push gate)
 nx run demo-be-ts-effect:test:unit            # Unit tests + BDD scenarios only
 nx run demo-be-ts-effect:test:integration     # Cucumber.js BDD against PostgreSQL (Docker)
 nx run demo-be-ts-effect:lint                 # oxlint
-nx run demo-be-ts-effect:typecheck            # tsc --noEmit
+nx run demo-be-ts-effect:typecheck            # tsc --noEmit (depends on codegen)
 ```
 
 ## Environment Variables

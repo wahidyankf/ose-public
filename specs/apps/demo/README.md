@@ -56,6 +56,19 @@ consumes the backend API.
 - **[contracts/](./contracts/README.md)** — OpenAPI 3.1 API contract (request/response shapes,
   code generation, browsable documentation)
 
+## Spec Consumption
+
+All demo backends consume the backend Gherkin specs at **all three test levels**:
+
+- **`test:unit`** — steps call service functions with mocked dependencies; Gherkin spec paths
+  are included in Nx cache inputs so cache invalidates when specs change
+- **`test:quick`** — unit + coverage check; Gherkin spec paths included in Nx cache inputs
+- **`test:integration`** — steps call service functions with real PostgreSQL; cache disabled
+
+Spec-coverage validation (`rhino-cli spec-coverage validate`) is planned but deferred — the tool
+needs enhancement to support demo-be test file naming conventions before it can be enforced in
+`test:quick`.
+
 ## Related
 
 - [Three-Level Testing Standard](../../../governance/development/quality/three-level-testing-standard.md)

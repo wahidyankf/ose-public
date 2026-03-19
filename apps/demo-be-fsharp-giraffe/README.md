@@ -41,7 +41,7 @@ The application starts on `http://localhost:8201`.
 ## Nx Targets
 
 ```bash
-# Build release artifact
+# Build release artifact (depends on codegen)
 nx build demo-be-fsharp-giraffe
 
 # Start development server with hot reload
@@ -50,7 +50,7 @@ nx dev demo-be-fsharp-giraffe
 # Start production server
 nx start demo-be-fsharp-giraffe
 
-# Run fast quality gate (BDD + unit tests with SQLite in-memory + coverage + format + lint)
+# Run fast quality gate (BDD + unit tests with SQLite in-memory + coverage)
 nx run demo-be-fsharp-giraffe:test:quick
 
 # Run isolated unit tests only (pure function tests, no WebApplicationFactory)
@@ -59,11 +59,14 @@ nx run demo-be-fsharp-giraffe:test:unit
 # Run integration tests against real PostgreSQL via Docker Compose
 nx run demo-be-fsharp-giraffe:test:integration
 
-# Lint with FSharpLint
+# Lint with Fantomas (format check) and FSharpLint (style rules)
 nx lint demo-be-fsharp-giraffe
 
-# Type check (build with TreatWarningsAsErrors)
+# Type check (build with TreatWarningsAsErrors; depends on codegen)
 nx typecheck demo-be-fsharp-giraffe
+
+# Generate contract types from OpenAPI spec (required before build/typecheck)
+nx run demo-be-fsharp-giraffe:codegen
 ```
 
 ## API Endpoints
@@ -148,12 +151,12 @@ apps/demo-be-fsharp-giraffe/
 
 Three levels of tests provide fast feedback at every stage:
 
-| Tier        | Nx Target          | Tool                                        | Database             | Description                                   | Requires External Service |
-| ----------- | ------------------ | ------------------------------------------- | -------------------- | --------------------------------------------- | ------------------------- |
-| Unit        | `test:unit`        | xunit (`Category=Unit`)                     | None                 | Isolated pure functions and domain logic      | No                        |
-| BDD (quick) | `test:quick`       | TickSpec + WebApplicationFactory + AltCover | SQLite in-memory     | Full BDD scenarios, in-process, with coverage | No                        |
-| Integration | `test:integration` | TickSpec + WebApplicationFactory + Docker   | PostgreSQL 17 (real) | Full BDD scenarios against real PostgreSQL    | Yes (Docker)              |
-| E2E         | (demo-be-e2e)      | Playwright                                  | PostgreSQL 17 (real) | Full HTTP against running server              | Yes (port 8201)           |
+| Tier        | Nx Target          | Tool                                        | Database             | Description                                                    | Requires External Service |
+| ----------- | ------------------ | ------------------------------------------- | -------------------- | -------------------------------------------------------------- | ------------------------- |
+| Unit        | `test:unit`        | xunit (`Category=Unit`)                     | None                 | Isolated pure functions and domain logic                       | No                        |
+| BDD (quick) | `test:quick`       | TickSpec + WebApplicationFactory + AltCover | SQLite in-memory     | Full BDD scenarios, in-process, with coverage (no format/lint) | No                        |
+| Integration | `test:integration` | TickSpec + WebApplicationFactory + Docker   | PostgreSQL 17 (real) | Full BDD scenarios against real PostgreSQL                     | Yes (Docker)              |
+| E2E         | (demo-be-e2e)      | Playwright                                  | PostgreSQL 17 (real) | Full HTTP against running server                               | Yes (port 8201)           |
 
 The `TestWebAppFactory` automatically switches database providers based on the `DATABASE_URL`
 environment variable:

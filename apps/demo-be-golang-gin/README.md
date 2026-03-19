@@ -48,13 +48,17 @@ curl http://localhost:8201/health
 ## Nx Targets
 
 ```bash
-nx build demo-be-golang-gin                   # Compile binary
+nx build demo-be-golang-gin                   # Compile binary (depends on codegen)
 nx dev demo-be-golang-gin                     # Start development server
+nx run demo-be-golang-gin:typecheck           # go vet ./... (depends on codegen)
 nx run demo-be-golang-gin:test:quick          # Unit (BDD) tests + coverage gate (>=90%)
 nx run demo-be-golang-gin:test:unit           # BDD unit tests only (verbose)
 nx run demo-be-golang-gin:test:integration    # PostgreSQL integration tests via Docker Compose
 nx lint demo-be-golang-gin                    # Run golangci-lint
 ```
+
+`codegen` generates Go types from the OpenAPI contract spec into `generated-contracts/` and is a
+dependency of both `typecheck` and `build`.
 
 ## API Endpoints
 

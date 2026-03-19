@@ -67,14 +67,17 @@ docker compose up --build
 
 | Target                                           | Description                                              |
 | ------------------------------------------------ | -------------------------------------------------------- |
-| `nx build demo-be-python-fastapi`                | Build distributable wheel                                |
+| `nx build demo-be-python-fastapi`                | Build distributable wheel (depends on codegen)           |
 | `nx dev demo-be-python-fastapi`                  | Start dev server with reload                             |
 | `nx start demo-be-python-fastapi`                | Start production server                                  |
 | `nx run demo-be-python-fastapi:test:quick`       | Unit tests + coverage check (no lint, no integration)    |
 | `nx run demo-be-python-fastapi:test:unit`        | Unit tests only (SQLite in-memory, no external services) |
 | `nx run demo-be-python-fastapi:test:integration` | Integration tests via Docker Compose (real PostgreSQL)   |
 | `nx lint demo-be-python-fastapi`                 | Ruff lint check                                          |
-| `nx run demo-be-python-fastapi:typecheck`        | Pyright type check                                       |
+| `nx run demo-be-python-fastapi:typecheck`        | Pyright type check (depends on codegen)                  |
+
+`codegen` generates Pydantic models from the OpenAPI contract spec into `generated_contracts/` and
+is a dependency of both `typecheck` and `build`.
 
 ## Three-Level Test Architecture
 

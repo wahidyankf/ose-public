@@ -7,13 +7,14 @@
     "codegen": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx openapi-generator-cli generate -i $(pwd)/specs/apps/demo/contracts/generated/openapi-bundled.yaml -g java -o $(pwd)/apps/demo-be-java-vertx/generated-contracts --model-package com.demobejavx.contracts --additional-properties=library=resttemplate,dateLibrary=java8,openApiNullable=false,useBeanValidation=false,serializationLibrary=jackson --global-property=models,modelDocs=false,apiDocs=false && bash $(pwd)/scripts/clean-generated-java-imports.sh $(pwd)/apps/demo-be-java-vertx/generated-contracts"
+        "command": "npx openapi-generator-cli generate -i $(pwd)/specs/apps/demo/contracts/generated/openapi-bundled.yaml -g java -o $(pwd)/apps/demo-be-java-vertx/generated-contracts --model-package com.demobejavx.contracts --additional-properties=library=resttemplate,dateLibrary=java8,openApiNullable=false,useBeanValidation=false,serializationLibrary=jackson --global-property=models,modelDocs=false,apiDocs=false && (WS_ROOT=$(pwd) && cd $(pwd)/apps/rhino-cli && CGO_ENABLED=0 go run main.go contracts java-clean-imports $WS_ROOT/apps/demo-be-java-vertx/generated-contracts)"
       },
       "dependsOn": ["demo-contracts:bundle"],
       "cache": true,
       "inputs": [
         "{workspaceRoot}/specs/apps/demo/contracts/generated/openapi-bundled.yaml",
-        "{workspaceRoot}/scripts/clean-generated-java-imports.sh"
+        "{workspaceRoot}/apps/rhino-cli/cmd/**/*.go",
+        "{workspaceRoot}/apps/rhino-cli/internal/**/*.go"
       ],
       "outputs": ["{projectRoot}/generated-contracts"]
     },

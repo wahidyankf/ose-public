@@ -7,13 +7,14 @@
     "codegen": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx openapi-generator-cli generate -i $(pwd)/specs/apps/demo/contracts/generated/openapi-bundled.yaml -g dart -o $(pwd)/apps/demo-fe-dart-flutterweb/generated-contracts --additional-properties=pubName=demo_contracts --global-property=models,modelDocs=false,apiDocs=false && sh $(pwd)/apps/demo-fe-dart-flutterweb/scripts/post-codegen.sh && cd $(pwd)/apps/demo-fe-dart-flutterweb && flutter pub get"
+        "command": "npx openapi-generator-cli generate -i $(pwd)/specs/apps/demo/contracts/generated/openapi-bundled.yaml -g dart -o $(pwd)/apps/demo-fe-dart-flutterweb/generated-contracts --additional-properties=pubName=demo_contracts --global-property=models,modelDocs=false,apiDocs=false && (WS_ROOT=$(pwd) && cd $(pwd)/apps/rhino-cli && CGO_ENABLED=0 go run main.go contracts dart-scaffold $WS_ROOT/apps/demo-fe-dart-flutterweb/generated-contracts) && cd $(pwd)/apps/demo-fe-dart-flutterweb && flutter pub get"
       },
       "dependsOn": ["demo-contracts:bundle"],
       "cache": true,
       "inputs": [
         "{workspaceRoot}/specs/apps/demo/contracts/generated/openapi-bundled.yaml",
-        "{projectRoot}/scripts/post-codegen.sh"
+        "{workspaceRoot}/apps/rhino-cli/cmd/**/*.go",
+        "{workspaceRoot}/apps/rhino-cli/internal/**/*.go"
       ],
       "outputs": ["{projectRoot}/generated-contracts"]
     },
@@ -67,5 +68,5 @@
     }
   },
   "tags": ["type:app", "platform:flutter", "lang:dart", "domain:demo-fe"],
-  "implicitDependencies": []
+  "implicitDependencies": ["rhino-cli"]
 }

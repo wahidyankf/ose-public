@@ -18,7 +18,7 @@ let healthHandler: HttpHandler = fun next ctx -> json {| status = "UP" |} next c
 let setAdminRoleForUser (username: string) : HttpHandler =
     fun next ctx ->
         task {
-            let db = ctx.GetService<DemoBeFsgi.Infrastructure.AppDbContext.AppDbContext>()
+            let db = ctx.GetService<AppDbContext>()
 
             let! user = db.Users.AsNoTracking().FirstOrDefaultAsync(fun u -> u.Username = username)
 
@@ -124,8 +124,7 @@ let main args =
 
     use scope = host.Services.CreateScope()
 
-    let db =
-        scope.ServiceProvider.GetRequiredService<DemoBeFsgi.Infrastructure.AppDbContext.AppDbContext>()
+    let db = scope.ServiceProvider.GetRequiredService<AppDbContext>()
 
     db.Database.EnsureCreated() |> ignore
 

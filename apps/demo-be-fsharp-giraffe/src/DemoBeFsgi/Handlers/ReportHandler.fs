@@ -3,7 +3,6 @@ module DemoBeFsgi.Handlers.ReportHandler
 open System
 open System.Linq
 open Giraffe
-open Microsoft.AspNetCore.Http
 open Microsoft.EntityFrameworkCore
 open DemoBeFsgi.Infrastructure.AppDbContext
 

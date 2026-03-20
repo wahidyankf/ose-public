@@ -17,7 +17,7 @@ type User =
 
 // Password validation: min 12 chars, at least one uppercase, one special char, one digit
 let validatePassword (password: string) : Result<string, DomainError> =
-    if String.IsNullOrEmpty(password) then
+    if String.IsNullOrEmpty password then
         Error(ValidationError("password", "Password is required"))
     elif password.Length < 12 then
         Error(ValidationError("password", "Password must be at least 12 characters"))
@@ -31,7 +31,7 @@ let validatePassword (password: string) : Result<string, DomainError> =
         Ok password
 
 let validateEmail (email: string) : Result<string, DomainError> =
-    if String.IsNullOrEmpty(email) then
+    if String.IsNullOrEmpty email then
         Error(ValidationError("email", "Email is required"))
     elif not (email.Contains("@") && email.Contains(".")) then
         Error(ValidationError("email", "Invalid email format"))
@@ -39,7 +39,7 @@ let validateEmail (email: string) : Result<string, DomainError> =
         Ok email
 
 let validateUsername (username: string) : Result<string, DomainError> =
-    if String.IsNullOrEmpty(username) then
+    if String.IsNullOrEmpty username then
         Error(ValidationError("username", "Username is required"))
     elif username.Length < 3 then
         Error(ValidationError("username", "Username must be at least 3 characters"))

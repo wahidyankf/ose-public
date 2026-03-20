@@ -4,7 +4,6 @@ open System
 open System.Linq
 open System.Text.Json
 open Giraffe
-open Microsoft.AspNetCore.Http
 open Microsoft.EntityFrameworkCore
 open DemoBeFsgi.Infrastructure.AppDbContext
 open DemoBeFsgi.Domain.Types
@@ -72,7 +71,7 @@ let disableUser (userId: Guid) : HttpHandler =
         task {
             let! body = ctx.ReadBodyFromRequestAsync()
 
-            let req =
+            let _req =
                 try
                     JsonSerializer.Deserialize<DisableRequest>(
                         body,

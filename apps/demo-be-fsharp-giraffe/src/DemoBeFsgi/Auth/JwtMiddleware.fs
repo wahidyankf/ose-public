@@ -3,7 +3,6 @@ module DemoBeFsgi.Auth.JwtMiddleware
 open System
 open System.Security.Claims
 open Giraffe
-open Microsoft.AspNetCore.Http
 open Microsoft.EntityFrameworkCore
 open DemoBeFsgi.Infrastructure.AppDbContext
 open DemoBeFsgi.Domain.Types
@@ -13,7 +12,7 @@ let requireAuth: HttpHandler =
         task {
             let authHeader = ctx.Request.Headers["Authorization"].ToString()
 
-            if String.IsNullOrEmpty(authHeader) || not (authHeader.StartsWith("Bearer ")) then
+            if String.IsNullOrEmpty authHeader || not (authHeader.StartsWith("Bearer ")) then
                 ctx.Response.StatusCode <- 401
 
                 return!
@@ -42,7 +41,7 @@ let requireAuth: HttpHandler =
 
                     let! isRevoked =
                         match jti with
-                        | None -> System.Threading.Tasks.Task.FromResult(true)
+                        | None -> Threading.Tasks.Task.FromResult(true)
                         | Some j -> db.RevokedTokens.AsNoTracking().AnyAsync(fun rt -> rt.TokenJti = j)
 
                     if isRevoked then

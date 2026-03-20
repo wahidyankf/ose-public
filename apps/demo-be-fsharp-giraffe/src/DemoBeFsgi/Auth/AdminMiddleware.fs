@@ -1,7 +1,6 @@
 module DemoBeFsgi.Auth.AdminMiddleware
 
 open Giraffe
-open Microsoft.AspNetCore.Http
 
 let requireAdmin: HttpHandler =
     fun next ctx ->

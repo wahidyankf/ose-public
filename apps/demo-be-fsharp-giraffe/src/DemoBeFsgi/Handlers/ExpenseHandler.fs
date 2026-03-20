@@ -4,7 +4,6 @@ open System
 open System.Linq
 open System.Text.Json
 open Giraffe
-open Microsoft.AspNetCore.Http
 open Microsoft.EntityFrameworkCore
 open DemoBeFsgi.Infrastructure.AppDbContext
 open DemoBeFsgi.Domain.Types
@@ -12,21 +11,15 @@ open DemoBeFsgi.Domain.Expense
 open DemoBeFsgi.Contracts.ContractWrappers
 
 let private parseAmount (s: string) =
-    if String.IsNullOrEmpty(s) then
+    if String.IsNullOrEmpty s then
         Error(ValidationError("amount", "Amount is required"))
     else
-        match
-            Decimal.TryParse(
-                s,
-                System.Globalization.NumberStyles.Any,
-                System.Globalization.CultureInfo.InvariantCulture
-            )
-        with
+        match Decimal.TryParse(s, Globalization.NumberStyles.Any, Globalization.CultureInfo.InvariantCulture) with
         | true, v -> Ok v
         | _ -> Error(ValidationError("amount", "Invalid amount format"))
 
 let create: HttpHandler =
-    fun next ctx ->
+    fun _next ctx ->
         task {
             let! body = ctx.ReadBodyFromRequestAsync()
 
@@ -123,7 +116,7 @@ let create: HttpHandler =
                                     earlyReturn
                                     ctx
                         | Ok validAmount ->
-                            let unitOpt = if String.IsNullOrEmpty(r.unit) then None else Some r.unit
+                            let unitOpt = if String.IsNullOrEmpty r.unit then None else Some r.unit
                             let unitResult = validateUnit unitOpt
 
                             match unitResult with
@@ -453,7 +446,7 @@ let update (expenseId: Guid) : HttpHandler =
         }
 
 let delete (expenseId: Guid) : HttpHandler =
-    fun next ctx ->
+    fun _next ctx ->
         task {
             let userId = ctx.Items["UserId"] :?> Guid
             let db = ctx.GetService<AppDbContext>()

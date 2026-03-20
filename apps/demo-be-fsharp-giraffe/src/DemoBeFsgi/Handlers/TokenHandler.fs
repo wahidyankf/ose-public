@@ -3,7 +3,6 @@ module DemoBeFsgi.Handlers.TokenHandler
 open System
 open System.IdentityModel.Tokens.Jwt
 open Giraffe
-open Microsoft.AspNetCore.Http
 open DemoBeFsgi.Auth.JwtService
 
 let claims: HttpHandler =

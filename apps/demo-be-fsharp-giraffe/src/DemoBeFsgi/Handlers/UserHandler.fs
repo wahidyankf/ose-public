@@ -3,7 +3,6 @@ module DemoBeFsgi.Handlers.UserHandler
 open System
 open System.Text.Json
 open Giraffe
-open Microsoft.AspNetCore.Http
 open Microsoft.EntityFrameworkCore
 open DemoBeFsgi.Infrastructure.AppDbContext
 open DemoBeFsgi.Infrastructure.PasswordHasher

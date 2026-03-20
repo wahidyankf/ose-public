@@ -4,7 +4,6 @@ open System
 open System.Linq
 open System.Text.Json
 open Giraffe
-open Microsoft.AspNetCore.Http
 open Microsoft.EntityFrameworkCore
 open DemoBeFsgi.Infrastructure.AppDbContext
 open DemoBeFsgi.Infrastructure.PasswordHasher
@@ -16,7 +15,7 @@ open DemoBeFsgi.Contracts.ContractWrappers
 let private maxFailedAttempts = 5
 
 let register: HttpHandler =
-    fun next ctx ->
+    fun _next ctx ->
         task {
             let! body = ctx.ReadBodyFromRequestAsync()
 
@@ -131,7 +130,7 @@ let register: HttpHandler =
         }
 
 let login: HttpHandler =
-    fun next ctx ->
+    fun _next ctx ->
         task {
             let! body = ctx.ReadBodyFromRequestAsync()
 
@@ -267,7 +266,7 @@ let login: HttpHandler =
         }
 
 let refresh: HttpHandler =
-    fun next ctx ->
+    fun _next ctx ->
         task {
             let! body = ctx.ReadBodyFromRequestAsync()
 

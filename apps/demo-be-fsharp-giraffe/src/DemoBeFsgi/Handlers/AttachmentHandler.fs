@@ -3,13 +3,12 @@ module DemoBeFsgi.Handlers.AttachmentHandler
 open System
 open System.Linq
 open Giraffe
-open Microsoft.AspNetCore.Http
 open Microsoft.EntityFrameworkCore
 open DemoBeFsgi.Infrastructure.AppDbContext
 open DemoBeFsgi.Domain.Attachment
 
 let upload (expenseId: Guid) : HttpHandler =
-    fun next ctx ->
+    fun _next ctx ->
         task {
             let userId = ctx.Items["UserId"] :?> Guid
             let db = ctx.GetService<AppDbContext>()
@@ -109,7 +108,7 @@ let upload (expenseId: Guid) : HttpHandler =
                                         earlyReturn
                                         ctx
                             | Ok _ ->
-                                use ms = new System.IO.MemoryStream()
+                                use ms = new IO.MemoryStream()
                                 do! file.CopyToAsync(ms)
                                 let data = ms.ToArray()
                                 let attachmentId = Guid.NewGuid()
@@ -185,7 +184,7 @@ let list (expenseId: Guid) : HttpHandler =
         }
 
 let delete (expenseId: Guid, attachmentId: Guid) : HttpHandler =
-    fun next ctx ->
+    fun _next ctx ->
         task {
             let userId = ctx.Items["UserId"] :?> Guid
             let db = ctx.GetService<AppDbContext>()

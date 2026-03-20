@@ -77,47 +77,47 @@ package main
 import "fmt"
 
 func binarySearch(arr []int, target int) int {
-	// => arr must be sorted in ascending order for binary search to work
-	// => target is the value we want to find
+    // => arr must be sorted in ascending order for binary search to work
+    // => target is the value we want to find
 
-	left, right := 0, len(arr)-1
-	// => left starts at index 0, right starts at last valid index
-	// => these two pointers define the active search window
+    left, right := 0, len(arr)-1
+    // => left starts at index 0, right starts at last valid index
+    // => these two pointers define the active search window
 
-	for left <= right {
-		// => loop continues as long as search window is non-empty
-		// => when left > right the target is not in the array
+    for left <= right {
+        // => loop continues as long as search window is non-empty
+        // => when left > right the target is not in the array
 
-		mid := left + (right-left)/2
-		// => mid is the index of the middle element
-		// => use (right - left) / 2 instead of (left + right) / 2 to avoid integer overflow
+        mid := left + (right-left)/2
+        // => mid is the index of the middle element
+        // => use (right - left) / 2 instead of (left + right) / 2 to avoid integer overflow
 
-		if arr[mid] == target {
-			// => found the target — return its index immediately
-			return mid
-		} else if arr[mid] < target {
-			// => mid element is too small, target must be to the right
-			left = mid + 1
-			// => discard left half including mid
-		} else {
-			// => mid element is too large, target must be to the left
-			right = mid - 1
-			// => discard right half including mid
-		}
-	}
+        if arr[mid] == target {
+            // => found the target — return its index immediately
+            return mid
+        } else if arr[mid] < target {
+            // => mid element is too small, target must be to the right
+            left = mid + 1
+            // => discard left half including mid
+        } else {
+            // => mid element is too large, target must be to the left
+            right = mid - 1
+            // => discard right half including mid
+        }
+    }
 
-	return -1
-	// => target not found, return sentinel value -1
+    return -1
+    // => target not found, return sentinel value -1
 }
 
 func main() {
-	arr := []int{2, 5, 8, 12, 16, 23, 38, 56, 72, 91}
-	// => sorted array with 10 elements, indices 0-9
+    arr := []int{2, 5, 8, 12, 16, 23, 38, 56, 72, 91}
+    // => sorted array with 10 elements, indices 0-9
 
-	fmt.Println(binarySearch(arr, 23))  // => Output: 5  (arr[5] == 23)
-	fmt.Println(binarySearch(arr, 100)) // => Output: -1 (100 not in array)
-	fmt.Println(binarySearch(arr, 2))   // => Output: 0  (first element)
-	fmt.Println(binarySearch(arr, 91))  // => Output: 9  (last element)
+    fmt.Println(binarySearch(arr, 23))  // => Output: 5  (arr[5] == 23)
+    fmt.Println(binarySearch(arr, 100)) // => Output: -1 (100 not in array)
+    fmt.Println(binarySearch(arr, 2))   // => Output: 0  (first element)
+    fmt.Println(binarySearch(arr, 91))  // => Output: 9  (last element)
 }
 ```
 
@@ -282,37 +282,37 @@ package main
 import "fmt"
 
 func searchInsertPosition(arr []int, target int) int {
-	// => returns index where target is found, or where it should be inserted
-	// => result is always in range [0, len(arr)] inclusive
+    // => returns index where target is found, or where it should be inserted
+    // => result is always in range [0, len(arr)] inclusive
 
-	left, right := 0, len(arr)
-	// => right is len(arr), not len(arr)-1, because insertion can happen at end
+    left, right := 0, len(arr)
+    // => right is len(arr), not len(arr)-1, because insertion can happen at end
 
-	for left < right {
-		// => strict less-than: when left == right the window is one slot wide
-		mid := left + (right-left)/2
-		// => floor-division always rounds toward zero, biasing toward left
+    for left < right {
+        // => strict less-than: when left == right the window is one slot wide
+        mid := left + (right-left)/2
+        // => floor-division always rounds toward zero, biasing toward left
 
-		if arr[mid] < target {
-			// => mid is strictly less than target, so insert position is right of mid
-			left = mid + 1
-		} else {
-			// => arr[mid] >= target: insertion point is at mid or to its left
-			right = mid
-			// => do NOT subtract 1; mid is a candidate for insertion position
-		}
-	}
+        if arr[mid] < target {
+            // => mid is strictly less than target, so insert position is right of mid
+            left = mid + 1
+        } else {
+            // => arr[mid] >= target: insertion point is at mid or to its left
+            right = mid
+            // => do NOT subtract 1; mid is a candidate for insertion position
+        }
+    }
 
-	return left
-	// => left == right at loop exit, which is the insertion index
+    return left
+    // => left == right at loop exit, which is the insertion index
 }
 
 func main() {
-	arr := []int{1, 3, 5, 6}
-	fmt.Println(searchInsertPosition(arr, 5)) // => Output: 2  (found at index 2)
-	fmt.Println(searchInsertPosition(arr, 2)) // => Output: 1  (2 goes between 1 and 3)
-	fmt.Println(searchInsertPosition(arr, 7)) // => Output: 4  (7 appended at end)
-	fmt.Println(searchInsertPosition(arr, 0)) // => Output: 0  (0 prepended at start)
+    arr := []int{1, 3, 5, 6}
+    fmt.Println(searchInsertPosition(arr, 5)) // => Output: 2  (found at index 2)
+    fmt.Println(searchInsertPosition(arr, 2)) // => Output: 1  (2 goes between 1 and 3)
+    fmt.Println(searchInsertPosition(arr, 7)) // => Output: 4  (7 appended at end)
+    fmt.Println(searchInsertPosition(arr, 0)) // => Output: 0  (0 prepended at start)
 }
 ```
 
@@ -400,6 +400,7 @@ public class SearchInsertPosition {
 **Why It Matters**: Insert-position binary search powers sorted container implementations such as Python's `bisect` module and Java's `Collections.binarySearch`. It enables O(log n) maintenance of sorted order when inserting into arrays, underpins event scheduling (find the correct slot in a sorted timeline), and is used in constraint solvers that need to place items in sorted priority queues efficiently.
 
 ---
+
 ## Hash Tables and Collision Resolution
 
 ### Example 31: Hash Table with Chaining
@@ -552,98 +553,98 @@ import "fmt"
 const capacity = 8
 
 type entry struct {
-	key   string
-	value int
-	next  *entry
-	// => each entry points to the next in its chain (linked list)
+    key   string
+    value int
+    next  *entry
+    // => each entry points to the next in its chain (linked list)
 }
 
 type HashTable struct {
-	buckets [capacity]*entry
-	// => each bucket is the head of a linked list (chain) of entries
-	size int
-	// => tracks number of key-value pairs stored
+    buckets [capacity]*entry
+    // => each bucket is the head of a linked list (chain) of entries
+    size int
+    // => tracks number of key-value pairs stored
 }
 
 func hashFunc(key string) int {
-	h := 0
-	for _, c := range key {
-		h = h*31 + int(c)
-	}
-	return h % capacity
-	// => simple polynomial hash mapped to a valid bucket index [0, capacity-1]
+    h := 0
+    for _, c := range key {
+        h = h*31 + int(c)
+    }
+    return h % capacity
+    // => simple polynomial hash mapped to a valid bucket index [0, capacity-1]
 }
 
 func (ht *HashTable) Put(key string, value int) {
-	idx := hashFunc(key)
-	// => idx is the target bucket index
-	cur := ht.buckets[idx]
-	// => retrieve the chain at that bucket
+    idx := hashFunc(key)
+    // => idx is the target bucket index
+    cur := ht.buckets[idx]
+    // => retrieve the chain at that bucket
 
-	for cur != nil {
-		if cur.key == key {
-			cur.value = value
-			// => update existing key's value in-place
-			return
-		}
-		cur = cur.next
-	}
+    for cur != nil {
+        if cur.key == key {
+            cur.value = value
+            // => update existing key's value in-place
+            return
+        }
+        cur = cur.next
+    }
 
-	e := &entry{key: key, value: value, next: ht.buckets[idx]}
-	// => key not found in chain: prepend new entry
-	ht.buckets[idx] = e
-	ht.size++
-	// => increment count of stored pairs
+    e := &entry{key: key, value: value, next: ht.buckets[idx]}
+    // => key not found in chain: prepend new entry
+    ht.buckets[idx] = e
+    ht.size++
+    // => increment count of stored pairs
 }
 
 func (ht *HashTable) Get(key string) (int, bool) {
-	idx := hashFunc(key)
-	// => compute bucket index for this key
-	cur := ht.buckets[idx]
-	for cur != nil {
-		if cur.key == key {
-			return cur.value, true
-			// => found key: return its associated value
-		}
-		cur = cur.next
-	}
-	return 0, false
-	// => key not present in any chain
+    idx := hashFunc(key)
+    // => compute bucket index for this key
+    cur := ht.buckets[idx]
+    for cur != nil {
+        if cur.key == key {
+            return cur.value, true
+            // => found key: return its associated value
+        }
+        cur = cur.next
+    }
+    return 0, false
+    // => key not present in any chain
 }
 
 func (ht *HashTable) Remove(key string) {
-	idx := hashFunc(key)
-	cur := ht.buckets[idx]
-	var prev *entry
-	for cur != nil {
-		if cur.key == key {
-			if prev != nil {
-				prev.next = cur.next
-			} else {
-				ht.buckets[idx] = cur.next
-			}
-			return
-		}
-		prev = cur
-		cur = cur.next
-	}
+    idx := hashFunc(key)
+    cur := ht.buckets[idx]
+    var prev *entry
+    for cur != nil {
+        if cur.key == key {
+            if prev != nil {
+                prev.next = cur.next
+            } else {
+                ht.buckets[idx] = cur.next
+            }
+            return
+        }
+        prev = cur
+        cur = cur.next
+    }
 }
 
 func main() {
-	ht := &HashTable{}
-	ht.Put("apple", 1)
-	ht.Put("banana", 2)
-	ht.Put("cherry", 3)
-	ht.Put("banana", 99) // => update existing key
+    ht := &HashTable{}
+    ht.Put("apple", 1)
+    ht.Put("banana", 2)
+    ht.Put("cherry", 3)
+    ht.Put("banana", 99) // => update existing key
 
-	v, _ := ht.Get("apple")
-	fmt.Println(v) // => Output: 1
-	v, _ = ht.Get("banana")
-	fmt.Println(v) // => Output: 99 (updated value)
-	_, ok := ht.Get("grape")
-	if !ok {
-		fmt.Println("None") // => Output: None (not present)
-	}
+    v, _ := ht.Get("apple")
+    fmt.Println(v) // => Output: 1
+    v, _ = ht.Get("banana")
+    fmt.Println(v) // => Output: 99 (updated value)
+    _, ok := ht.Get("grape")
+    if !ok {
+        fmt.Println("None") // => Output: None (not present)
+    }
 }
 ```
 
@@ -811,6 +812,7 @@ public class HashTableChaining {
 **Why It Matters**: Hash tables are the most widely used data structure in software engineering, backing Python dictionaries, Java's `HashMap`, Redis key-value storage, and database hash indexes. The choice of collision resolution strategy — chaining vs open addressing — affects cache locality, memory usage, and worst-case behavior. Understanding these trade-offs guides decisions when performance requirements exceed what a language's built-in map provides.
 
 ---
+
 ### Example 32: Hash Map for Frequency Counting
 
 Python's `collections.Counter` and `dict` both build on hash tables. Counting element frequencies in O(n) time using a hash map is a foundational technique for anagram detection, histogram construction, and mode finding.
@@ -883,25 +885,25 @@ package main
 import "fmt"
 
 func countWithMap(items []string) map[string]int {
-	freq := make(map[string]int)
-	// => empty map; will be populated key-by-key
+    freq := make(map[string]int)
+    // => empty map; will be populated key-by-key
 
-	for _, item := range items {
-		// => iterate over every element in O(n) time
-		freq[item]++
-		// => if key absent, Go zero-initialises to 0 then increments to 1
-		// => if key present, simply increments existing count
-	}
-	return freq
-	// => returns map[item]count
+    for _, item := range items {
+        // => iterate over every element in O(n) time
+        freq[item]++
+        // => if key absent, Go zero-initialises to 0 then increments to 1
+        // => if key present, simply increments existing count
+    }
+    return freq
+    // => returns map[item]count
 }
 
 func main() {
-	words := []string{"apple", "banana", "apple", "cherry", "banana", "apple"}
+    words := []string{"apple", "banana", "apple", "cherry", "banana", "apple"}
 
-	result := countWithMap(words)
-	fmt.Println(result)
-	// => Output: map[apple:3 banana:2 cherry:1]
+    result := countWithMap(words)
+    fmt.Println(result)
+    // => Output: map[apple:3 banana:2 cherry:1]
 }
 ```
 
@@ -1119,55 +1121,55 @@ package main
 import "fmt"
 
 type BSTNode struct {
-	Val   int
-	Left  *BSTNode
-	Right *BSTNode
+    Val   int
+    Left  *BSTNode
+    Right *BSTNode
 }
 
 func bstInsert(root *BSTNode, val int) *BSTNode {
-	if root == nil {
-		return &BSTNode{Val: val}
-		// => base case: empty spot found, create new node here
-	}
-	if val < root.Val {
-		root.Left = bstInsert(root.Left, val)
-		// => value belongs in left subtree; recurse and reattach
-	} else if val > root.Val {
-		root.Right = bstInsert(root.Right, val)
-		// => value belongs in right subtree; recurse and reattach
-	}
-	// => if val == root.Val, duplicate — do nothing
-	return root
-	// => return root so callers can chain insertions
+    if root == nil {
+        return &BSTNode{Val: val}
+        // => base case: empty spot found, create new node here
+    }
+    if val < root.Val {
+        root.Left = bstInsert(root.Left, val)
+        // => value belongs in left subtree; recurse and reattach
+    } else if val > root.Val {
+        root.Right = bstInsert(root.Right, val)
+        // => value belongs in right subtree; recurse and reattach
+    }
+    // => if val == root.Val, duplicate — do nothing
+    return root
+    // => return root so callers can chain insertions
 }
 
 func bstSearch(root *BSTNode, val int) bool {
-	if root == nil {
-		return false
-		// => reached empty subtree: value not present in tree
-	}
-	if val == root.Val {
-		return true
-		// => found exact match at current node
-	} else if val < root.Val {
-		return bstSearch(root.Left, val)
-		// => target smaller: must be in left subtree
-	} else {
-		return bstSearch(root.Right, val)
-		// => target larger: must be in right subtree
-	}
+    if root == nil {
+        return false
+        // => reached empty subtree: value not present in tree
+    }
+    if val == root.Val {
+        return true
+        // => found exact match at current node
+    } else if val < root.Val {
+        return bstSearch(root.Left, val)
+        // => target smaller: must be in left subtree
+    } else {
+        return bstSearch(root.Right, val)
+        // => target larger: must be in right subtree
+    }
 }
 
 func main() {
-	var root *BSTNode
-	for _, v := range []int{50, 30, 70, 20, 40, 60, 80} {
-		root = bstInsert(root, v)
-		// => build tree one node at a time
-		// => final structure matches diagram above
-	}
+    var root *BSTNode
+    for _, v := range []int{50, 30, 70, 20, 40, 60, 80} {
+        root = bstInsert(root, v)
+        // => build tree one node at a time
+        // => final structure matches diagram above
+    }
 
-	fmt.Println(bstSearch(root, 40)) // => Output: true  (40 is in tree)
-	fmt.Println(bstSearch(root, 55)) // => Output: false (55 not in tree)
+    fmt.Println(bstSearch(root, 40)) // => Output: true  (40 is in tree)
+    fmt.Println(bstSearch(root, 55)) // => Output: false (55 not in tree)
 }
 ```
 
@@ -1297,6 +1299,7 @@ public class BSTInsertSearch {
 **Why It Matters**: BSTs are the conceptual foundation for balanced trees (AVL, Red-Black) used in most production ordered-map implementations — Java's `TreeMap`, C++'s `std::map`, and PostgreSQL's B-tree indexes. Understanding BST structure and the degenerate sorted-input problem motivates why databases use B-trees with balanced branching factors rather than plain BSTs, enabling logarithmic lookups even on multi-terabyte datasets.
 
 ---
+
 ### Example 34: BST Inorder Traversal
 
 Inorder traversal (left → root → right) visits BST nodes in ascending sorted order. This is the defining property of BSTs and is used to extract sorted sequences from tree-based indexes.
@@ -1398,73 +1401,73 @@ package main
 import "fmt"
 
 type BSTNode struct {
-	Val   int
-	Left  *BSTNode
-	Right *BSTNode
+    Val   int
+    Left  *BSTNode
+    Right *BSTNode
 }
 
 func insert(root *BSTNode, val int) *BSTNode {
-	if root == nil {
-		return &BSTNode{Val: val}
-	}
-	if val < root.Val {
-		root.Left = insert(root.Left, val)
-	} else if val > root.Val {
-		root.Right = insert(root.Right, val)
-	}
-	return root
+    if root == nil {
+        return &BSTNode{Val: val}
+    }
+    if val < root.Val {
+        root.Left = insert(root.Left, val)
+    } else if val > root.Val {
+        root.Right = insert(root.Right, val)
+    }
+    return root
 }
 
 func inorder(root *BSTNode, result *[]int) {
-	if root == nil {
-		return
-		// => base case: empty node contributes nothing
-	}
-	inorder(root.Left, result)
-	// => 1. recurse left subtree first (all smaller values)
-	*result = append(*result, root.Val)
-	// => 2. visit current node (add value in sorted position)
-	inorder(root.Right, result)
-	// => 3. recurse right subtree last (all larger values)
+    if root == nil {
+        return
+        // => base case: empty node contributes nothing
+    }
+    inorder(root.Left, result)
+    // => 1. recurse left subtree first (all smaller values)
+    *result = append(*result, root.Val)
+    // => 2. visit current node (add value in sorted position)
+    inorder(root.Right, result)
+    // => 3. recurse right subtree last (all larger values)
 }
 
 func preorder(root *BSTNode, result *[]int) {
-	if root == nil {
-		return
-	}
-	*result = append(*result, root.Val)
-	// => visit root FIRST (before children)
-	preorder(root.Left, result)
-	preorder(root.Right, result)
+    if root == nil {
+        return
+    }
+    *result = append(*result, root.Val)
+    // => visit root FIRST (before children)
+    preorder(root.Left, result)
+    preorder(root.Right, result)
 }
 
 func postorder(root *BSTNode, result *[]int) {
-	if root == nil {
-		return
-	}
-	postorder(root.Left, result)
-	postorder(root.Right, result)
-	*result = append(*result, root.Val)
-	// => visit root LAST (after both children)
+    if root == nil {
+        return
+    }
+    postorder(root.Left, result)
+    postorder(root.Right, result)
+    *result = append(*result, root.Val)
+    // => visit root LAST (after both children)
 }
 
 func main() {
-	var root *BSTNode
-	for _, v := range []int{50, 30, 70, 20, 40, 60, 80} {
-		root = insert(root, v)
-	}
+    var root *BSTNode
+    for _, v := range []int{50, 30, 70, 20, 40, 60, 80} {
+        root = insert(root, v)
+    }
 
-	var res []int
-	inorder(root, &res)
-	fmt.Println(res) // => Output: [20 30 40 50 60 70 80]  (sorted!)
+    var res []int
+    inorder(root, &res)
+    fmt.Println(res) // => Output: [20 30 40 50 60 70 80]  (sorted!)
 
-	res = nil
-	preorder(root, &res)
-	fmt.Println(res) // => Output: [50 30 20 40 70 60 80]  (root first)
+    res = nil
+    preorder(root, &res)
+    fmt.Println(res) // => Output: [50 30 20 40 70 60 80]  (root first)
 
-	res = nil
-	postorder(root, &res)
-	fmt.Println(res) // => Output: [20 40 30 60 80 70 50]  (root last)
+    res = nil
+    postorder(root, &res)
+    fmt.Println(res) // => Output: [20 40 30 60 80 70 50]  (root last)
 }
 ```
 
@@ -1622,6 +1625,7 @@ public class BSTTraversal {
 **Why It Matters**: Tree traversal order is not academic — database query planners use inorder traversal of B-tree indexes to execute range scans efficiently. Compilers use postorder traversal to evaluate abstract syntax trees (evaluate children before applying the operator). Serialising and deserialising distributed state often uses preorder traversal for deterministic reconstruction. Choosing the right traversal order directly affects algorithmic correctness.
 
 ---
+
 ## Heaps
 
 ### Example 35: Min-Heap with heapq
@@ -1750,8 +1754,8 @@ int main(void) {
 package main
 
 import (
-	"container/heap"
-	"fmt"
+    "container/heap"
+    "fmt"
 )
 
 type IntHeap []int
@@ -1761,39 +1765,39 @@ func (h IntHeap) Less(i, j int) bool { return h[i] < h[j] }
 func (h IntHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
 func (h *IntHeap) Push(x any)        { *h = append(*h, x.(int)) }
 func (h *IntHeap) Pop() any {
-	old := *h
-	n := len(old)
-	x := old[n-1]
-	*h = old[:n-1]
-	return x
+    old := *h
+    n := len(old)
+    x := old[n-1]
+    *h = old[:n-1]
+    return x
 }
 
 func main() {
-	h := &IntHeap{}
-	// => heap.Interface operates on a slice
-	// => elements are stored so (*h)[0] is always the minimum
+    h := &IntHeap{}
+    // => heap.Interface operates on a slice
+    // => elements are stored so (*h)[0] is always the minimum
 
-	for _, val := range []int{5, 3, 7, 1, 4, 2, 6} {
-		heap.Push(h, val)
-		// => Push inserts val and sifts it up to restore heap property
-		// => O(log n) time per push
-	}
+    for _, val := range []int{5, 3, 7, 1, 4, 2, 6} {
+        heap.Push(h, val)
+        // => Push inserts val and sifts it up to restore heap property
+        // => O(log n) time per push
+    }
 
-	fmt.Println((*h)[0]) // => Output: 1  (minimum always at index 0, O(1) peek)
+    fmt.Println((*h)[0]) // => Output: 1  (minimum always at index 0, O(1) peek)
 
-	var sorted []int
-	for h.Len() > 0 {
-		sorted = append(sorted, heap.Pop(h).(int))
-		// => Pop removes and returns the minimum element
-		// => O(log n) time per pop
-	}
-	fmt.Println(sorted) // => Output: [1 2 3 4 5 6 7]  (heap sort!)
+    var sorted []int
+    for h.Len() > 0 {
+        sorted = append(sorted, heap.Pop(h).(int))
+        // => Pop removes and returns the minimum element
+        // => O(log n) time per pop
+    }
+    fmt.Println(sorted) // => Output: [1 2 3 4 5 6 7]  (heap sort!)
 
-	// heapify: convert an existing slice to a heap in O(n) time
-	data := &IntHeap{9, 4, 7, 1, 8, 2, 6, 3, 5}
-	heap.Init(data)
-	// => data is now heap-ordered in-place: (*data)[0] == 1 (minimum)
-	fmt.Println((*data)[0]) // => Output: 1
+    // heapify: convert an existing slice to a heap in O(n) time
+    data := &IntHeap{9, 4, 7, 1, 8, 2, 6, 3, 5}
+    heap.Init(data)
+    // => data is now heap-ordered in-place: (*data)[0] == 1 (minimum)
+    fmt.Println((*data)[0]) // => Output: 1
 }
 ```
 
@@ -1959,8 +1963,8 @@ int main(void) {
 package main
 
 import (
-	"container/heap"
-	"fmt"
+    "container/heap"
+    "fmt"
 )
 
 // MaxHeap: negate values to invert ordering
@@ -1971,17 +1975,17 @@ func (h MaxIntHeap) Less(i, j int) bool { return h[i] > h[j] }
 func (h MaxIntHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
 func (h *MaxIntHeap) Push(x any)        { *h = append(*h, x.(int)) }
 func (h *MaxIntHeap) Pop() any {
-	old := *h
-	n := len(old)
-	x := old[n-1]
-	*h = old[:n-1]
-	return x
+    old := *h
+    n := len(old)
+    x := old[n-1]
+    *h = old[:n-1]
+    return x
 }
 
 // Priority queue with (priority, task) tuples
 type Task struct {
-	priority int
-	name     string
+    priority int
+    name     string
 }
 type TaskHeap []Task
 
@@ -1990,40 +1994,40 @@ func (h TaskHeap) Less(i, j int) bool  { return h[i].priority < h[j].priority }
 func (h TaskHeap) Swap(i, j int)       { h[i], h[j] = h[j], h[i] }
 func (h *TaskHeap) Push(x any)         { *h = append(*h, x.(Task)) }
 func (h *TaskHeap) Pop() any {
-	old := *h
-	n := len(old)
-	x := old[n-1]
-	*h = old[:n-1]
-	return x
+    old := *h
+    n := len(old)
+    x := old[n-1]
+    *h = old[:n-1]
+    return x
 }
 
 func main() {
-	// Max-heap
-	mh := &MaxIntHeap{}
-	for _, val := range []int{5, 3, 7, 1, 4} {
-		heap.Push(mh, val)
-	}
-	fmt.Println(heap.Pop(mh)) // => Output: 7  (largest original value)
-	fmt.Println(heap.Pop(mh)) // => Output: 5
-	fmt.Println(heap.Pop(mh)) // => Output: 4
+    // Max-heap
+    mh := &MaxIntHeap{}
+    for _, val := range []int{5, 3, 7, 1, 4} {
+        heap.Push(mh, val)
+    }
+    fmt.Println(heap.Pop(mh)) // => Output: 7  (largest original value)
+    fmt.Println(heap.Pop(mh)) // => Output: 5
+    fmt.Println(heap.Pop(mh)) // => Output: 4
 
-	// Priority queue with (priority, task) tuples
-	tasks := &TaskHeap{}
-	heap.Push(tasks, Task{3, "send report"})
-	// => priority 3 (lower = higher priority)
-	heap.Push(tasks, Task{1, "deploy fix"})
-	// => priority 1 — this will be returned first
-	heap.Push(tasks, Task{2, "review PR"})
-	// => priority 2
+    // Priority queue with (priority, task) tuples
+    tasks := &TaskHeap{}
+    heap.Push(tasks, Task{3, "send report"})
+    // => priority 3 (lower = higher priority)
+    heap.Push(tasks, Task{1, "deploy fix"})
+    // => priority 1 — this will be returned first
+    heap.Push(tasks, Task{2, "review PR"})
+    // => priority 2
 
-	for tasks.Len() > 0 {
-		t := heap.Pop(tasks).(Task)
-		fmt.Printf("[P%d] %s\n", t.priority, t.name)
-	}
-	// => Output:
-	// => [P1] deploy fix
-	// => [P2] review PR
-	// => [P3] send report
+    for tasks.Len() > 0 {
+        t := heap.Pop(tasks).(Task)
+        fmt.Printf("[P%d] %s\n", t.priority, t.name)
+    }
+    // => Output:
+    // => [P1] deploy fix
+    // => [P2] review PR
+    // => [P3] send report
 }
 ```
 
@@ -2117,6 +2121,7 @@ public class MaxHeapPriorityQueue {
 **Why It Matters**: Priority queues are the core data structure in scheduling systems: Kubernetes schedules pods by priority class, operating systems schedule processes with priority levels, and network routers implement quality-of-service using priority queues. The tuple pattern extends cleanly to multi-level priorities `(urgency, arrival_time, task)` and to objects with custom priority attributes, making `heapq` a flexible foundation without requiring external libraries.
 
 ---
+
 ### Example 37: Heapify and the Heap Property
 
 `heapq.heapify` converts an unordered list into a valid heap in O(n) time by applying a bottom-up sift-down pass. This is more efficient than pushing n elements one at a time (O(n log n)).
@@ -2197,8 +2202,8 @@ int main(void) {
 package main
 
 import (
-	"container/heap"
-	"fmt"
+    "container/heap"
+    "fmt"
 )
 
 type IntHeap []int
@@ -2208,40 +2213,40 @@ func (h IntHeap) Less(i, j int) bool { return h[i] < h[j] }
 func (h IntHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
 func (h *IntHeap) Push(x any)        { *h = append(*h, x.(int)) }
 func (h *IntHeap) Pop() any {
-	old := *h
-	n := len(old)
-	x := old[n-1]
-	*h = old[:n-1]
-	return x
+    old := *h
+    n := len(old)
+    x := old[n-1]
+    *h = old[:n-1]
+    return x
 }
 
 func verifyHeapProperty(h []int) bool {
-	// => checks that every parent <= both children (min-heap invariant)
-	for i := range h {
-		left := 2*i + 1
-		right := 2*i + 2
-		if left < len(h) && h[i] > h[left] {
-			return false
-		}
-		if right < len(h) && h[i] > h[right] {
-			return false
-		}
-	}
-	return true
+    // => checks that every parent <= both children (min-heap invariant)
+    for i := range h {
+        left := 2*i + 1
+        right := 2*i + 2
+        if left < len(h) && h[i] > h[left] {
+            return false
+        }
+        if right < len(h) && h[i] > h[right] {
+            return false
+        }
+    }
+    return true
 }
 
 func main() {
-	data := IntHeap{9, 4, 7, 1, 8, 2, 6, 3, 5}
-	fmt.Println("Before heapify:", []int(data))
-	// => Output: Before heapify: [9 4 7 1 8 2 6 3 5]  (unordered)
+    data := IntHeap{9, 4, 7, 1, 8, 2, 6, 3, 5}
+    fmt.Println("Before heapify:", []int(data))
+    // => Output: Before heapify: [9 4 7 1 8 2 6 3 5]  (unordered)
 
-	heap.Init(&data)
-	// => heapify rearranges data in-place, O(n) time
-	fmt.Println("After heapify:", []int(data))
-	// => Output: After heapify: [1 3 2 4 8 7 6 9 5]  (heap-ordered)
+    heap.Init(&data)
+    // => heapify rearranges data in-place, O(n) time
+    fmt.Println("After heapify:", []int(data))
+    // => Output: After heapify: [1 3 2 4 8 7 6 9 5]  (heap-ordered)
 
-	fmt.Println("Min element:", data[0])                       // => Output: Min element: 1
-	fmt.Println("Heap valid:", verifyHeapProperty([]int(data))) // => Output: Heap valid: true
+    fmt.Println("Min element:", data[0])                       // => Output: Min element: 1
+    fmt.Println("Heap valid:", verifyHeapProperty([]int(data))) // => Output: Heap valid: true
 }
 ```
 
@@ -2346,6 +2351,7 @@ public class HeapifyExample {
 **Why It Matters**: The O(n) heapify bound matters in algorithms like heap sort and median-of-medians that need to convert an input array into a heap before processing. In streaming analytics, heapify is used to initialise a fixed-size priority buffer from historical data before processing new events. The distinction between heap order and sort order is also important for debugging: a list that passes heap validation is not necessarily sorted, which catches incorrect assumptions in code reviews.
 
 ---
+
 ## Merge Sort
 
 ### Example 38: Merge Sort Implementation
@@ -2454,52 +2460,52 @@ package main
 import "fmt"
 
 func mergeSort(arr []int) []int {
-	if len(arr) <= 1 {
-		return arr
-		// => base case: single element or empty array is already sorted
-	}
+    if len(arr) <= 1 {
+        return arr
+        // => base case: single element or empty array is already sorted
+    }
 
-	mid := len(arr) / 2
-	// => find midpoint to split array into two halves
+    mid := len(arr) / 2
+    // => find midpoint to split array into two halves
 
-	left := mergeSort(arr[:mid])
-	// => recursively sort left half: arr[0 .. mid-1]
-	right := mergeSort(arr[mid:])
-	// => recursively sort right half: arr[mid .. end]
+    left := mergeSort(arr[:mid])
+    // => recursively sort left half: arr[0 .. mid-1]
+    right := mergeSort(arr[mid:])
+    // => recursively sort right half: arr[mid .. end]
 
-	return merge(left, right)
-	// => combine two sorted halves into one sorted array
+    return merge(left, right)
+    // => combine two sorted halves into one sorted array
 }
 
 func merge(left, right []int) []int {
-	result := make([]int, 0, len(left)+len(right))
-	// => accumulate merged elements here
-	i, j := 0, 0
-	// => i is pointer into left, j is pointer into right
+    result := make([]int, 0, len(left)+len(right))
+    // => accumulate merged elements here
+    i, j := 0, 0
+    // => i is pointer into left, j is pointer into right
 
-	for i < len(left) && j < len(right) {
-		// => advance whichever pointer holds the smaller element
-		if left[i] <= right[j] {
-			result = append(result, left[i])
-			// => left element is smaller or equal: take it
-			i++
-		} else {
-			result = append(result, right[j])
-			// => right element is smaller: take it
-			j++
-		}
-	}
+    for i < len(left) && j < len(right) {
+        // => advance whichever pointer holds the smaller element
+        if left[i] <= right[j] {
+            result = append(result, left[i])
+            // => left element is smaller or equal: take it
+            i++
+        } else {
+            result = append(result, right[j])
+            // => right element is smaller: take it
+            j++
+        }
+    }
 
-	result = append(result, left[i:]...)
-	// => append any remaining elements from left (right exhausted)
-	result = append(result, right[j:]...)
-	// => append any remaining elements from right (left exhausted)
-	return result
+    result = append(result, left[i:]...)
+    // => append any remaining elements from left (right exhausted)
+    result = append(result, right[j:]...)
+    // => append any remaining elements from right (left exhausted)
+    return result
 }
 
 func main() {
-	arr := []int{38, 27, 43, 3, 9, 82, 10}
-	fmt.Println(mergeSort(arr)) // => Output: [3 9 10 27 38 43 82]
+    arr := []int{38, 27, 43, 3, 9, 82, 10}
+    fmt.Println(mergeSort(arr)) // => Output: [3 9 10 27 38 43 82]
 }
 ```
 
@@ -2618,6 +2624,7 @@ public class MergeSortExample {
 **Why It Matters**: Merge sort is the algorithm behind Python's `sorted()` and Java's `Arrays.sort()` for objects (TimSort is a merge sort hybrid). Its O(n log n) worst-case guarantee — unlike quicksort's O(n²) — makes it the standard choice for sorting linked lists and for external sorting of datasets that don't fit in RAM, where data is read and merged in sequential passes from disk.
 
 ---
+
 ## Quicksort
 
 ### Example 39: Quicksort with Lomuto Partition
@@ -2691,48 +2698,48 @@ int main(void) {
 package main
 
 import (
-	"fmt"
-	"math/rand"
+    "fmt"
+    "math/rand"
 )
 
 func partition(arr []int, low, high int) int {
-	// => Lomuto partition scheme: pivot is arr[high]
-	randIdx := low + rand.Intn(high-low+1)
-	arr[randIdx], arr[high] = arr[high], arr[randIdx]
-	// => swap random element to high position to avoid O(n^2) on sorted input
+    // => Lomuto partition scheme: pivot is arr[high]
+    randIdx := low + rand.Intn(high-low+1)
+    arr[randIdx], arr[high] = arr[high], arr[randIdx]
+    // => swap random element to high position to avoid O(n^2) on sorted input
 
-	pivot := arr[high]
-	// => pivot is now at arr[high]
-	i := low - 1
-	// => i tracks the boundary: elements left of i+1 are <= pivot
+    pivot := arr[high]
+    // => pivot is now at arr[high]
+    i := low - 1
+    // => i tracks the boundary: elements left of i+1 are <= pivot
 
-	for j := low; j < high; j++ {
-		// => j scans from low to high-1
-		if arr[j] <= pivot {
-			i++
-			arr[i], arr[j] = arr[j], arr[i]
-			// => element <= pivot: move it to the left partition
-		}
-	}
+    for j := low; j < high; j++ {
+        // => j scans from low to high-1
+        if arr[j] <= pivot {
+            i++
+            arr[i], arr[j] = arr[j], arr[i]
+            // => element <= pivot: move it to the left partition
+        }
+    }
 
-	arr[i+1], arr[high] = arr[high], arr[i+1]
-	// => move pivot from high to its correct sorted position i+1
-	return i + 1
-	// => return pivot's final index
+    arr[i+1], arr[high] = arr[high], arr[i+1]
+    // => move pivot from high to its correct sorted position i+1
+    return i + 1
+    // => return pivot's final index
 }
 
 func quicksort(arr []int, low, high int) {
-	if low < high {
-		pivotIdx := partition(arr, low, high)
-		quicksort(arr, low, pivotIdx-1)
-		quicksort(arr, pivotIdx+1, high)
-	}
+    if low < high {
+        pivotIdx := partition(arr, low, high)
+        quicksort(arr, low, pivotIdx-1)
+        quicksort(arr, pivotIdx+1, high)
+    }
 }
 
 func main() {
-	arr := []int{64, 34, 25, 12, 22, 11, 90}
-	quicksort(arr, 0, len(arr)-1)
-	fmt.Println(arr) // => Output: [11 12 22 25 34 64 90]
+    arr := []int{64, 34, 25, 12, 22, 11, 90}
+    quicksort(arr, 0, len(arr)-1)
+    fmt.Println(arr) // => Output: [11 12 22 25 34 64 90]
 }
 ```
 
@@ -2916,42 +2923,42 @@ package main
 import "fmt"
 
 func countingSort(arr []int) []int {
-	if len(arr) == 0 {
-		return []int{}
-		// => empty input: return immediately
-	}
+    if len(arr) == 0 {
+        return []int{}
+        // => empty input: return immediately
+    }
 
-	maxVal := arr[0]
-	for _, v := range arr {
-		if v > maxVal {
-			maxVal = v
-		}
-	}
-	// => find the range maximum; O(n) scan
+    maxVal := arr[0]
+    for _, v := range arr {
+        if v > maxVal {
+            maxVal = v
+        }
+    }
+    // => find the range maximum; O(n) scan
 
-	count := make([]int, maxVal+1)
-	// => count[i] will store how many times value i appears in arr
+    count := make([]int, maxVal+1)
+    // => count[i] will store how many times value i appears in arr
 
-	for _, v := range arr {
-		count[v]++
-		// => increment count for each value seen
-	}
+    for _, v := range arr {
+        count[v]++
+        // => increment count for each value seen
+    }
 
-	output := make([]int, 0, len(arr))
-	for val, freq := range count {
-		for f := 0; f < freq; f++ {
-			output = append(output, val)
-			// => append freq copies of val to output
-		}
-	}
-	// => values are added in ascending order because we iterate from 0
+    output := make([]int, 0, len(arr))
+    for val, freq := range count {
+        for f := 0; f < freq; f++ {
+            output = append(output, val)
+            // => append freq copies of val to output
+        }
+    }
+    // => values are added in ascending order because we iterate from 0
 
-	return output
+    return output
 }
 
 func main() {
-	arr := []int{4, 2, 2, 8, 3, 3, 1}
-	fmt.Println(countingSort(arr)) // => Output: [1 2 2 3 3 4 8]
+    arr := []int{4, 2, 2, 8, 3, 3, 1}
+    fmt.Println(countingSort(arr)) // => Output: [1 2 2 3 3 4 8]
 }
 ```
 
@@ -3056,6 +3063,7 @@ public class CountingSortExample {
 **Why It Matters**: Counting sort and its extension radix sort power ultra-fast sorting in domains with bounded integer keys: sorting network packets by port number (0-65535), sorting grades (0-100), and bucket sorting IP addresses for routing table lookups. Database engines use counting sort variants for sorting small integer columns in analytics queries where the value range fits in L1 cache. In competitive programming, counting sort frequently enables solutions that would otherwise time-out with comparison-based O(n log n) algorithms.
 
 ---
+
 ## Tree Balancing Concepts
 
 ### Example 41: AVL Tree Height and Balance Factor
@@ -3173,99 +3181,99 @@ package main
 import "fmt"
 
 type AVLNode struct {
-	Val    int
-	Left   *AVLNode
-	Right  *AVLNode
-	Height int
-	// => height of a leaf node is 1 (counts the node itself)
+    Val    int
+    Left   *AVLNode
+    Right  *AVLNode
+    Height int
+    // => height of a leaf node is 1 (counts the node itself)
 }
 
 func getHeight(node *AVLNode) int {
-	if node == nil {
-		return 0
-		// => empty subtree has height 0
-	}
-	return node.Height
+    if node == nil {
+        return 0
+        // => empty subtree has height 0
+    }
+    return node.Height
 }
 
 func getBalance(node *AVLNode) int {
-	if node == nil {
-		return 0
-	}
-	return getHeight(node.Left) - getHeight(node.Right)
-	// => positive balance: left-heavy tree
-	// => negative balance: right-heavy tree
+    if node == nil {
+        return 0
+    }
+    return getHeight(node.Left) - getHeight(node.Right)
+    // => positive balance: left-heavy tree
+    // => negative balance: right-heavy tree
 }
 
 func maxInt(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
+    if a > b {
+        return a
+    }
+    return b
 }
 
 func rightRotate(z *AVLNode) *AVLNode {
-	y := z.Left
-	T3 := y.Right
-	y.Right = z
-	z.Left = T3
-	z.Height = 1 + maxInt(getHeight(z.Left), getHeight(z.Right))
-	y.Height = 1 + maxInt(getHeight(y.Left), getHeight(y.Right))
-	return y
+    y := z.Left
+    T3 := y.Right
+    y.Right = z
+    z.Left = T3
+    z.Height = 1 + maxInt(getHeight(z.Left), getHeight(z.Right))
+    y.Height = 1 + maxInt(getHeight(y.Left), getHeight(y.Right))
+    return y
 }
 
 func leftRotate(z *AVLNode) *AVLNode {
-	y := z.Right
-	T2 := y.Left
-	y.Left = z
-	z.Right = T2
-	z.Height = 1 + maxInt(getHeight(z.Left), getHeight(z.Right))
-	y.Height = 1 + maxInt(getHeight(y.Left), getHeight(y.Right))
-	return y
+    y := z.Right
+    T2 := y.Left
+    y.Left = z
+    z.Right = T2
+    z.Height = 1 + maxInt(getHeight(z.Left), getHeight(z.Right))
+    y.Height = 1 + maxInt(getHeight(y.Left), getHeight(y.Right))
+    return y
 }
 
 func avlInsert(root *AVLNode, val int) *AVLNode {
-	if root == nil {
-		return &AVLNode{Val: val, Height: 1}
-	}
-	if val < root.Val {
-		root.Left = avlInsert(root.Left, val)
-	} else if val > root.Val {
-		root.Right = avlInsert(root.Right, val)
-	} else {
-		return root
-	}
+    if root == nil {
+        return &AVLNode{Val: val, Height: 1}
+    }
+    if val < root.Val {
+        root.Left = avlInsert(root.Left, val)
+    } else if val > root.Val {
+        root.Right = avlInsert(root.Right, val)
+    } else {
+        return root
+    }
 
-	root.Height = 1 + maxInt(getHeight(root.Left), getHeight(root.Right))
-	balance := getBalance(root)
+    root.Height = 1 + maxInt(getHeight(root.Left), getHeight(root.Right))
+    balance := getBalance(root)
 
-	if balance > 1 && val < root.Left.Val {
-		return rightRotate(root)
-	}
-	if balance < -1 && val > root.Right.Val {
-		return leftRotate(root)
-	}
-	if balance > 1 && val > root.Left.Val {
-		root.Left = leftRotate(root.Left)
-		return rightRotate(root)
-	}
-	if balance < -1 && val < root.Right.Val {
-		root.Right = rightRotate(root.Right)
-		return leftRotate(root)
-	}
+    if balance > 1 && val < root.Left.Val {
+        return rightRotate(root)
+    }
+    if balance < -1 && val > root.Right.Val {
+        return leftRotate(root)
+    }
+    if balance > 1 && val > root.Left.Val {
+        root.Left = leftRotate(root.Left)
+        return rightRotate(root)
+    }
+    if balance < -1 && val < root.Right.Val {
+        root.Right = rightRotate(root.Right)
+        return leftRotate(root)
+    }
 
-	return root
+    return root
 }
 
 func main() {
-	var root *AVLNode
-	for _, v := range []int{10, 20, 30, 40, 50, 25} {
-		root = avlInsert(root, v)
-	}
+    var root *AVLNode
+    for _, v := range []int{10, 20, 30, 40, 50, 25} {
+        root = avlInsert(root, v)
+    }
 
-	fmt.Println("Root:", root.Val)               // => Output: Root: 30
-	fmt.Println("Root height:", root.Height)      // => Output: Root height: 3
-	fmt.Println("Root balance:", getBalance(root)) // => Output: Root balance: 0
+    fmt.Println("Root:", root.Val)               // => Output: Root: 30
+    fmt.Println("Root height:", root.Height)      // => Output: Root height: 3
+    fmt.Println("Root balance:", getBalance(root)) // => Output: Root balance: 0
 }
 ```
 
@@ -3475,6 +3483,7 @@ public class AVLTreeExample {
 **Why It Matters**: AVL trees and their cousin Red-Black trees guarantee O(log n) worst-case search, insert, and delete — unlike plain BSTs that degrade to O(n). Java's `TreeMap` and `TreeSet` use Red-Black trees, Linux's completely fair scheduler uses a Red-Black tree to track process runtimes, and PostgreSQL uses B-trees (a generalisation of balanced binary trees) for its primary indexes. Understanding balance factors and rotations is prerequisite knowledge for implementing custom ordered containers and for diagnosing slow queries caused by index imbalance.
 
 ---
+
 ## BFS and DFS on Trees
 
 ### Example 42: BFS on a Binary Tree (Level-Order Traversal)
@@ -3577,59 +3586,59 @@ package main
 import "fmt"
 
 type TreeNode struct {
-	Val   int
-	Left  *TreeNode
-	Right *TreeNode
+    Val   int
+    Left  *TreeNode
+    Right *TreeNode
 }
 
 func bfsLevelOrder(root *TreeNode) [][]int {
-	if root == nil {
-		return nil
-		// => empty tree: return empty level list
-	}
+    if root == nil {
+        return nil
+        // => empty tree: return empty level list
+    }
 
-	var result [][]int
-	// => will contain one slice per level
-	queue := []*TreeNode{root}
-	// => slice used as queue; dequeue from front, enqueue at back
+    var result [][]int
+    // => will contain one slice per level
+    queue := []*TreeNode{root}
+    // => slice used as queue; dequeue from front, enqueue at back
 
-	for len(queue) > 0 {
-		// => process one full level per iteration
-		levelSize := len(queue)
-		// => number of nodes at the current level
-		level := make([]int, 0, levelSize)
+    for len(queue) > 0 {
+        // => process one full level per iteration
+        levelSize := len(queue)
+        // => number of nodes at the current level
+        level := make([]int, 0, levelSize)
 
-		for i := 0; i < levelSize; i++ {
-			node := queue[0]
-			queue = queue[1:]
-			// => dequeue the next node from the front
-			level = append(level, node.Val)
+        for i := 0; i < levelSize; i++ {
+            node := queue[0]
+            queue = queue[1:]
+            // => dequeue the next node from the front
+            level = append(level, node.Val)
 
-			if node.Left != nil {
-				queue = append(queue, node.Left)
-				// => enqueue left child for next level processing
-			}
-			if node.Right != nil {
-				queue = append(queue, node.Right)
-				// => enqueue right child for next level processing
-			}
-		}
+            if node.Left != nil {
+                queue = append(queue, node.Left)
+                // => enqueue left child for next level processing
+            }
+            if node.Right != nil {
+                queue = append(queue, node.Right)
+                // => enqueue right child for next level processing
+            }
+        }
 
-		result = append(result, level)
-		// => current level is complete; add to result
-	}
+        result = append(result, level)
+        // => current level is complete; add to result
+    }
 
-	return result
+    return result
 }
 
 func main() {
-	root := &TreeNode{Val: 1,
-		Left:  &TreeNode{Val: 2, Left: &TreeNode{Val: 4}, Right: &TreeNode{Val: 5}},
-		Right: &TreeNode{Val: 3},
-	}
+    root := &TreeNode{Val: 1,
+        Left:  &TreeNode{Val: 2, Left: &TreeNode{Val: 4}, Right: &TreeNode{Val: 5}},
+        Right: &TreeNode{Val: 3},
+    }
 
-	fmt.Println(bfsLevelOrder(root))
-	// => Output: [[1] [2 3] [4 5]]
+    fmt.Println(bfsLevelOrder(root))
+    // => Output: [[1] [2 3] [4 5]]
 }
 ```
 
@@ -3835,88 +3844,88 @@ package main
 import "fmt"
 
 type TreeNode struct {
-	Val   int
-	Left  *TreeNode
-	Right *TreeNode
+    Val   int
+    Left  *TreeNode
+    Right *TreeNode
 }
 
 func dfsIterativePreorder(root *TreeNode) []int {
-	if root == nil {
-		return nil
-	}
+    if root == nil {
+        return nil
+    }
 
-	var result []int
-	stack := []*TreeNode{root}
-	// => stack holds nodes yet to be visited
-	// => use a slice as a stack (append/pop are O(1))
+    var result []int
+    stack := []*TreeNode{root}
+    // => stack holds nodes yet to be visited
+    // => use a slice as a stack (append/pop are O(1))
 
-	for len(stack) > 0 {
-		node := stack[len(stack)-1]
-		stack = stack[:len(stack)-1]
-		// => pop from top of stack: LIFO order gives DFS behavior
-		result = append(result, node.Val)
-		// => process node (preorder: root before children)
+    for len(stack) > 0 {
+        node := stack[len(stack)-1]
+        stack = stack[:len(stack)-1]
+        // => pop from top of stack: LIFO order gives DFS behavior
+        result = append(result, node.Val)
+        // => process node (preorder: root before children)
 
-		if node.Right != nil {
-			stack = append(stack, node.Right)
-			// => push right child first so left is processed first
-		}
-		if node.Left != nil {
-			stack = append(stack, node.Left)
-			// => left child is on top and will be processed next
-		}
-	}
+        if node.Right != nil {
+            stack = append(stack, node.Right)
+            // => push right child first so left is processed first
+        }
+        if node.Left != nil {
+            stack = append(stack, node.Left)
+            // => left child is on top and will be processed next
+        }
+    }
 
-	return result
+    return result
 }
 
 func dfsAllPaths(root *TreeNode) [][]int {
-	if root == nil {
-		return nil
-	}
+    if root == nil {
+        return nil
+    }
 
-	type entry struct {
-		node *TreeNode
-		path []int
-	}
+    type entry struct {
+        node *TreeNode
+        path []int
+    }
 
-	var paths [][]int
-	stack := []entry{{root, []int{root.Val}}}
+    var paths [][]int
+    stack := []entry{{root, []int{root.Val}}}
 
-	for len(stack) > 0 {
-		e := stack[len(stack)-1]
-		stack = stack[:len(stack)-1]
+    for len(stack) > 0 {
+        e := stack[len(stack)-1]
+        stack = stack[:len(stack)-1]
 
-		if e.node.Left == nil && e.node.Right == nil {
-			paths = append(paths, e.path)
-		} else {
-			if e.node.Right != nil {
-				p := make([]int, len(e.path)+1)
-				copy(p, e.path)
-				p[len(e.path)] = e.node.Right.Val
-				stack = append(stack, entry{e.node.Right, p})
-			}
-			if e.node.Left != nil {
-				p := make([]int, len(e.path)+1)
-				copy(p, e.path)
-				p[len(e.path)] = e.node.Left.Val
-				stack = append(stack, entry{e.node.Left, p})
-			}
-		}
-	}
+        if e.node.Left == nil && e.node.Right == nil {
+            paths = append(paths, e.path)
+        } else {
+            if e.node.Right != nil {
+                p := make([]int, len(e.path)+1)
+                copy(p, e.path)
+                p[len(e.path)] = e.node.Right.Val
+                stack = append(stack, entry{e.node.Right, p})
+            }
+            if e.node.Left != nil {
+                p := make([]int, len(e.path)+1)
+                copy(p, e.path)
+                p[len(e.path)] = e.node.Left.Val
+                stack = append(stack, entry{e.node.Left, p})
+            }
+        }
+    }
 
-	return paths
+    return paths
 }
 
 func main() {
-	root := &TreeNode{Val: 1,
-		Left:  &TreeNode{Val: 2, Left: &TreeNode{Val: 4}, Right: &TreeNode{Val: 5}},
-		Right: &TreeNode{Val: 3},
-	}
+    root := &TreeNode{Val: 1,
+        Left:  &TreeNode{Val: 2, Left: &TreeNode{Val: 4}, Right: &TreeNode{Val: 5}},
+        Right: &TreeNode{Val: 3},
+    }
 
-	fmt.Println(dfsIterativePreorder(root)) // => Output: [1 2 4 5 3]
-	fmt.Println(dfsAllPaths(root))
-	// => Output: [[1 2 4] [1 2 5] [1 3]]
+    fmt.Println(dfsIterativePreorder(root)) // => Output: [1 2 4 5 3]
+    fmt.Println(dfsAllPaths(root))
+    // => Output: [[1 2 4] [1 2 5] [1 3]]
 }
 ```
 
@@ -4089,6 +4098,7 @@ public class DFSIterative {
 **Why It Matters**: Iterative DFS is used in production compilers for abstract syntax tree analysis, in static analysis tools (linters, type checkers) that walk expression trees, and in file system scanners (find equivalent) that traverse directory trees. Path enumeration with `dfs_all_paths` is used in network routing to find all paths between two nodes and in game engines to enumerate decision trees for AI planning.
 
 ---
+
 ## Recursion Patterns
 
 ### Example 44: Divide and Conquer — Maximum Subarray
@@ -4155,58 +4165,58 @@ int main(void) {
 package main
 
 import (
-	"fmt"
-	"math"
+    "fmt"
+    "math"
 )
 
 func maxCrossingSum(arr []int, left, mid, right int) int {
-	// => find maximum sum of subarray that crosses the midpoint
-	leftSum := math.MinInt
-	total := 0
-	for i := mid; i >= left; i-- {
-		total += arr[i]
-		if total > leftSum {
-			leftSum = total
-		}
-	}
+    // => find maximum sum of subarray that crosses the midpoint
+    leftSum := math.MinInt
+    total := 0
+    for i := mid; i >= left; i-- {
+        total += arr[i]
+        if total > leftSum {
+            leftSum = total
+        }
+    }
 
-	rightSum := math.MinInt
-	total = 0
-	for i := mid + 1; i <= right; i++ {
-		total += arr[i]
-		if total > rightSum {
-			rightSum = total
-		}
-	}
+    rightSum := math.MinInt
+    total = 0
+    for i := mid + 1; i <= right; i++ {
+        total += arr[i]
+        if total > rightSum {
+            rightSum = total
+        }
+    }
 
-	return leftSum + rightSum
+    return leftSum + rightSum
 }
 
 func maxSubarrayDC(arr []int, left, right int) int {
-	if left == right {
-		return arr[left]
-		// => base case: single element is its own max subarray
-	}
+    if left == right {
+        return arr[left]
+        // => base case: single element is its own max subarray
+    }
 
-	mid := (left + right) / 2
-	leftMax := maxSubarrayDC(arr, left, mid)
-	rightMax := maxSubarrayDC(arr, mid+1, right)
-	crossMax := maxCrossingSum(arr, left, mid, right)
+    mid := (left + right) / 2
+    leftMax := maxSubarrayDC(arr, left, mid)
+    rightMax := maxSubarrayDC(arr, mid+1, right)
+    crossMax := maxCrossingSum(arr, left, mid, right)
 
-	m := leftMax
-	if rightMax > m {
-		m = rightMax
-	}
-	if crossMax > m {
-		m = crossMax
-	}
-	return m
+    m := leftMax
+    if rightMax > m {
+        m = rightMax
+    }
+    if crossMax > m {
+        m = crossMax
+    }
+    return m
 }
 
 func main() {
-	arr := []int{-2, 1, -3, 4, -1, 2, 1, -5, 4}
-	fmt.Println(maxSubarrayDC(arr, 0, len(arr)-1))
-	// => Output: 6  (subarray [4, -1, 2, 1] sums to 6)
+    arr := []int{-2, 1, -3, 4, -1, 2, 1, -5, 4}
+    fmt.Println(maxSubarrayDC(arr, 0, len(arr)-1))
+    // => Output: 6  (subarray [4, -1, 2, 1] sums to 6)
 }
 ```
 
@@ -4434,45 +4444,45 @@ package main
 import "fmt"
 
 func permutations(nums []int) [][]int {
-	var result [][]int
-	// => will hold all complete permutations
+    var result [][]int
+    // => will hold all complete permutations
 
-	var backtrack func(current, remaining []int)
-	backtrack = func(current, remaining []int) {
-		if len(remaining) == 0 {
-			perm := make([]int, len(current))
-			copy(perm, current)
-			result = append(result, perm)
-			// => base case: all elements placed, record this permutation
-			return
-		}
+    var backtrack func(current, remaining []int)
+    backtrack = func(current, remaining []int) {
+        if len(remaining) == 0 {
+            perm := make([]int, len(current))
+            copy(perm, current)
+            result = append(result, perm)
+            // => base case: all elements placed, record this permutation
+            return
+        }
 
-		for i, num := range remaining {
-			// => try each remaining element as the next choice
-			current = append(current, num)
-			// => choose: extend current path with num
+        for i, num := range remaining {
+            // => try each remaining element as the next choice
+            current = append(current, num)
+            // => choose: extend current path with num
 
-			nextRemaining := make([]int, 0, len(remaining)-1)
-			nextRemaining = append(nextRemaining, remaining[:i]...)
-			nextRemaining = append(nextRemaining, remaining[i+1:]...)
-			// => remaining without num
+            nextRemaining := make([]int, 0, len(remaining)-1)
+            nextRemaining = append(nextRemaining, remaining[:i]...)
+            nextRemaining = append(nextRemaining, remaining[i+1:]...)
+            // => remaining without num
 
-			backtrack(current, nextRemaining)
-			// => explore: recurse with updated state
+            backtrack(current, nextRemaining)
+            // => explore: recurse with updated state
 
-			current = current[:len(current)-1]
-			// => unchoose: remove num to try next alternative (backtrack)
-		}
-	}
+            current = current[:len(current)-1]
+            // => unchoose: remove num to try next alternative (backtrack)
+        }
+    }
 
-	backtrack(nil, nums)
-	return result
+    backtrack(nil, nums)
+    return result
 }
 
 func main() {
-	fmt.Println(permutations([]int{1, 2, 3}))
-	// => Output: [[1 2 3] [1 3 2] [2 1 3] [2 3 1] [3 1 2] [3 2 1]]
-	fmt.Println(len(permutations([]int{1, 2, 3, 4}))) // => Output: 24  (4! = 24)
+    fmt.Println(permutations([]int{1, 2, 3}))
+    // => Output: [[1 2 3] [1 3 2] [2 1 3] [2 3 1] [3 1 2] [3 2 1]]
+    fmt.Println(len(permutations([]int{1, 2, 3, 4}))) // => Output: 24  (4! = 24)
 }
 ```
 
@@ -4573,6 +4583,7 @@ public class Permutations {
 **Why It Matters**: Backtracking solves constraint satisfaction problems that appear across domains: Sudoku solvers, N-queens placement, regex matching engines, and SAT solvers all use this pattern. The Python standard library's `itertools.permutations` uses an equivalent algorithm. In compiler design, backtracking is used for parsing ambiguous grammars. The key insight — "try, recurse, undo" — transfers directly to solving problems that would require exponential space to enumerate iteratively.
 
 ---
+
 ## Two-Pointer Technique
 
 ### Example 46: Two Pointers — Two Sum in Sorted Array
@@ -4651,61 +4662,61 @@ package main
 import "fmt"
 
 func twoSumSorted(arr []int, target int) (int, int, bool) {
-	// => arr must be sorted in ascending order
-	left, right := 0, len(arr)-1
-	// => left starts at smallest, right starts at largest
+    // => arr must be sorted in ascending order
+    left, right := 0, len(arr)-1
+    // => left starts at smallest, right starts at largest
 
-	for left < right {
-		sum := arr[left] + arr[right]
-		if sum == target {
-			return arr[left], arr[right], true
-			// => found pair: return the actual values
-		} else if sum < target {
-			left++
-			// => sum too small: moving left rightward increases sum
-		} else {
-			right--
-			// => sum too large: moving right leftward decreases sum
-		}
-	}
-	return 0, 0, false
-	// => no pair found
+    for left < right {
+        sum := arr[left] + arr[right]
+        if sum == target {
+            return arr[left], arr[right], true
+            // => found pair: return the actual values
+        } else if sum < target {
+            left++
+            // => sum too small: moving left rightward increases sum
+        } else {
+            right--
+            // => sum too large: moving right leftward decreases sum
+        }
+    }
+    return 0, 0, false
+    // => no pair found
 }
 
 func removeDuplicatesSorted(arr []int) int {
-	if len(arr) == 0 {
-		return 0
-	}
-	slow := 0
-	// => slow pointer marks the last position of the unique-values prefix
+    if len(arr) == 0 {
+        return 0
+    }
+    slow := 0
+    // => slow pointer marks the last position of the unique-values prefix
 
-	for fast := 1; fast < len(arr); fast++ {
-		if arr[fast] != arr[slow] {
-			slow++
-			arr[slow] = arr[fast]
-		}
-	}
-	return slow + 1
+    for fast := 1; fast < len(arr); fast++ {
+        if arr[fast] != arr[slow] {
+            slow++
+            arr[slow] = arr[fast]
+        }
+    }
+    return slow + 1
 }
 
 func main() {
-	arr := []int{1, 2, 3, 4, 6}
-	a, b, ok := twoSumSorted(arr, 6)
-	if ok {
-		fmt.Printf("(%d, %d)\n", a, b) // => Output: (2, 4)
-	}
-	a, b, ok = twoSumSorted(arr, 9)
-	if ok {
-		fmt.Printf("(%d, %d)\n", a, b) // => Output: (3, 6)
-	}
-	_, _, ok = twoSumSorted(arr, 10)
-	if !ok {
-		fmt.Println("None") // => Output: None  (no valid pair)
-	}
+    arr := []int{1, 2, 3, 4, 6}
+    a, b, ok := twoSumSorted(arr, 6)
+    if ok {
+        fmt.Printf("(%d, %d)\n", a, b) // => Output: (2, 4)
+    }
+    a, b, ok = twoSumSorted(arr, 9)
+    if ok {
+        fmt.Printf("(%d, %d)\n", a, b) // => Output: (3, 6)
+    }
+    _, _, ok = twoSumSorted(arr, 10)
+    if !ok {
+        fmt.Println("None") // => Output: None  (no valid pair)
+    }
 
-	nums := []int{0, 0, 1, 1, 1, 2, 2, 3, 3, 4}
-	length := removeDuplicatesSorted(nums)
-	fmt.Println(nums[:length]) // => Output: [0 1 2 3 4]
+    nums := []int{0, 0, 1, 1, 1, 2, 2, 3, 3, 4}
+    length := removeDuplicatesSorted(nums)
+    fmt.Println(nums[:length]) // => Output: [0 1 2 3 4]
 }
 ```
 
@@ -4888,37 +4899,37 @@ package main
 import "fmt"
 
 func maxWater(height []int) int {
-	left, right := 0, len(height)-1
-	maxArea := 0
+    left, right := 0, len(height)-1
+    maxArea := 0
 
-	for left < right {
-		width := right - left
-		h := height[left]
-		if height[right] < h {
-			h = height[right]
-		}
-		area := h * width
-		// => area is limited by the shorter of the two lines
+    for left < right {
+        width := right - left
+        h := height[left]
+        if height[right] < h {
+            h = height[right]
+        }
+        area := h * width
+        // => area is limited by the shorter of the two lines
 
-		if area > maxArea {
-			maxArea = area
-		}
+        if area > maxArea {
+            maxArea = area
+        }
 
-		if height[left] < height[right] {
-			left++
-			// => left line is shorter: moving left inward might find a taller line
-		} else {
-			right--
-			// => right line is shorter or equal: move right inward
-		}
-	}
-	return maxArea
+        if height[left] < height[right] {
+            left++
+            // => left line is shorter: moving left inward might find a taller line
+        } else {
+            right--
+            // => right line is shorter or equal: move right inward
+        }
+    }
+    return maxArea
 }
 
 func main() {
-	heights := []int{1, 8, 6, 2, 5, 4, 8, 3, 7}
-	fmt.Println(maxWater(heights))
-	// => Output: 49
+    heights := []int{1, 8, 6, 2, 5, 4, 8, 3, 7}
+    fmt.Println(maxWater(heights))
+    // => Output: 49
 }
 ```
 
@@ -5010,6 +5021,7 @@ public class ContainerMostWater {
 **Why It Matters**: This greedy two-pointer strategy reduces an O(n²) brute-force search to O(n) with a proof-by-contradiction argument: moving the taller side cannot improve the result, so we never miss the optimal pair. The same reasoning applies to problems like "minimize maximum difference" and "maximize rectangle in histogram" variants. Recognizing when a sorted or monotonic structure allows pointer convergence rather than nested iteration is a key technique for reducing time complexity in interval and geometric algorithms.
 
 ---
+
 ## Sliding Window
 
 ### Example 48: Fixed-Size Sliding Window — Maximum Sum Subarray
@@ -5081,38 +5093,38 @@ package main
 import "fmt"
 
 func maxSumSubarrayK(arr []int, k int) int {
-	// => find maximum sum of any contiguous subarray of exactly k elements
-	n := len(arr)
-	if n < k {
-		return -1
-	}
+    // => find maximum sum of any contiguous subarray of exactly k elements
+    n := len(arr)
+    if n < k {
+        return -1
+    }
 
-	windowSum := 0
-	for i := 0; i < k; i++ {
-		windowSum += arr[i]
-	}
-	// => compute sum of first window [0 .. k-1]
-	maxSum := windowSum
+    windowSum := 0
+    for i := 0; i < k; i++ {
+        windowSum += arr[i]
+    }
+    // => compute sum of first window [0 .. k-1]
+    maxSum := windowSum
 
-	for i := k; i < n; i++ {
-		// => slide window one position to the right
-		windowSum += arr[i]
-		// => add incoming element (right edge of new window)
-		windowSum -= arr[i-k]
-		// => remove outgoing element (left edge of old window)
+    for i := k; i < n; i++ {
+        // => slide window one position to the right
+        windowSum += arr[i]
+        // => add incoming element (right edge of new window)
+        windowSum -= arr[i-k]
+        // => remove outgoing element (left edge of old window)
 
-		if windowSum > maxSum {
-			maxSum = windowSum
-		}
-	}
+        if windowSum > maxSum {
+            maxSum = windowSum
+        }
+    }
 
-	return maxSum
+    return maxSum
 }
 
 func main() {
-	arr := []int{2, 1, 5, 1, 3, 2}
-	fmt.Println(maxSumSubarrayK(arr, 3)) // => Output: 9  (window [5,1,3])
-	fmt.Println(maxSumSubarrayK(arr, 2)) // => Output: 6  (window [1,5])
+    arr := []int{2, 1, 5, 1, 3, 2}
+    fmt.Println(maxSumSubarrayK(arr, 3)) // => Output: 9  (window [5,1,3])
+    fmt.Println(maxSumSubarrayK(arr, 2)) // => Output: 6  (window [1,5])
 }
 ```
 
@@ -5254,35 +5266,35 @@ package main
 import "fmt"
 
 func lengthOfLongestUniqueSubstring(s string) int {
-	charSet := make(map[byte]bool)
-	// => tracks characters currently in the window
-	left := 0
-	maxLength := 0
+    charSet := make(map[byte]bool)
+    // => tracks characters currently in the window
+    left := 0
+    maxLength := 0
 
-	for right := 0; right < len(s); right++ {
-		// => right pointer expands window one character at a time
-		for charSet[s[right]] {
-			// => current character already in window: shrink from left
-			delete(charSet, s[left])
-			left++
-		}
+    for right := 0; right < len(s); right++ {
+        // => right pointer expands window one character at a time
+        for charSet[s[right]] {
+            // => current character already in window: shrink from left
+            delete(charSet, s[left])
+            left++
+        }
 
-		charSet[s[right]] = true
-		// => add current character to window
-		windowLength := right - left + 1
-		if windowLength > maxLength {
-			maxLength = windowLength
-		}
-	}
+        charSet[s[right]] = true
+        // => add current character to window
+        windowLength := right - left + 1
+        if windowLength > maxLength {
+            maxLength = windowLength
+        }
+    }
 
-	return maxLength
+    return maxLength
 }
 
 func main() {
-	fmt.Println(lengthOfLongestUniqueSubstring("abcabcbb")) // => Output: 3  ("abc")
-	fmt.Println(lengthOfLongestUniqueSubstring("bbbbb"))    // => Output: 1  ("b")
-	fmt.Println(lengthOfLongestUniqueSubstring("pwwkew"))   // => Output: 3  ("wke")
-	fmt.Println(lengthOfLongestUniqueSubstring(""))         // => Output: 0  (empty string)
+    fmt.Println(lengthOfLongestUniqueSubstring("abcabcbb")) // => Output: 3  ("abc")
+    fmt.Println(lengthOfLongestUniqueSubstring("bbbbb"))    // => Output: 1  ("b")
+    fmt.Println(lengthOfLongestUniqueSubstring("pwwkew"))   // => Output: 3  ("wke")
+    fmt.Println(lengthOfLongestUniqueSubstring(""))         // => Output: 0  (empty string)
 }
 ```
 
@@ -5376,6 +5388,7 @@ public class SlidingWindowVariable {
 **Why It Matters**: Variable sliding windows solve many substring/subarray optimisation problems: minimum window substring (find smallest window containing all characters of a target), longest subarray with sum ≤ k, and maximum number of consecutive 1s with k flips allowed. These patterns appear in text editors (efficient search-and-highlight), network protocol parsers (framing variable-length messages), and genomics (finding repeating motifs in DNA sequences). The amortised O(n) proof — each pointer moves at most n steps — is a recurring argument in algorithm analysis.
 
 ---
+
 ## Prefix Sums
 
 ### Example 50: Prefix Sum Array for Range Queries
@@ -5462,48 +5475,48 @@ package main
 import "fmt"
 
 func buildPrefixSum(arr []int) []int {
-	n := len(arr)
-	prefix := make([]int, n+1)
-	// => prefix[0] = 0 (sum of zero elements)
-	for i := 0; i < n; i++ {
-		prefix[i+1] = prefix[i] + arr[i]
-		// => each prefix entry adds one more element to the running sum
-	}
-	return prefix
+    n := len(arr)
+    prefix := make([]int, n+1)
+    // => prefix[0] = 0 (sum of zero elements)
+    for i := 0; i < n; i++ {
+        prefix[i+1] = prefix[i] + arr[i]
+        // => each prefix entry adds one more element to the running sum
+    }
+    return prefix
 }
 
 func rangeSum(prefix []int, left, right int) int {
-	// => sum of arr[left..right] inclusive
-	return prefix[right+1] - prefix[left]
+    // => sum of arr[left..right] inclusive
+    return prefix[right+1] - prefix[left]
 }
 
 func countSubarraysWithSumK(arr []int, k int) int {
-	count := 0
-	prefixSum := 0
-	freq := map[int]int{0: 1}
-	// => freq[s] = number of indices where prefix sum equals s
+    count := 0
+    prefixSum := 0
+    freq := map[int]int{0: 1}
+    // => freq[s] = number of indices where prefix sum equals s
 
-	for _, val := range arr {
-		prefixSum += val
-		complement := prefixSum - k
-		count += freq[complement]
-		freq[prefixSum]++
-	}
-	return count
+    for _, val := range arr {
+        prefixSum += val
+        complement := prefixSum - k
+        count += freq[complement]
+        freq[prefixSum]++
+    }
+    return count
 }
 
 func main() {
-	arr := []int{2, 4, 3, 7, 1, 5}
-	prefix := buildPrefixSum(arr)
-	fmt.Println(prefix) // => Output: [0 2 6 9 16 17 22]
+    arr := []int{2, 4, 3, 7, 1, 5}
+    prefix := buildPrefixSum(arr)
+    fmt.Println(prefix) // => Output: [0 2 6 9 16 17 22]
 
-	fmt.Println(rangeSum(prefix, 0, 2)) // => Output: 9   (2+4+3)
-	fmt.Println(rangeSum(prefix, 1, 4)) // => Output: 15  (4+3+7+1)
-	fmt.Println(rangeSum(prefix, 2, 5)) // => Output: 16  (3+7+1+5)
+    fmt.Println(rangeSum(prefix, 0, 2)) // => Output: 9   (2+4+3)
+    fmt.Println(rangeSum(prefix, 1, 4)) // => Output: 15  (4+3+7+1)
+    fmt.Println(rangeSum(prefix, 2, 5)) // => Output: 16  (3+7+1+5)
 
-	arr2 := []int{1, 1, 1}
-	fmt.Println(countSubarraysWithSumK(arr2, 2))
-	// => Output: 2  ([1,1] at positions 0-1 and 1-2)
+    arr2 := []int{1, 1, 1}
+    fmt.Println(countSubarraysWithSumK(arr2, 2))
+    // => Output: 2  ([1,1] at positions 0-1 and 1-2)
 }
 ```
 
@@ -5634,6 +5647,7 @@ public class PrefixSumExample {
 **Why It Matters**: Prefix sums underpin database aggregate functions over sliding windows, image processing (summed-area tables for fast blur filters), and financial analytics (cumulative return calculations). The prefix sum complement trick (`freq[prefix_sum - k]`) appears in LeetCode's top 10 most-asked problems and is used in fraud detection systems to find suspicious transaction subsequences that sum to threshold amounts in a single O(n) pass.
 
 ---
+
 ## Graph Representation
 
 ### Example 51: Adjacency List Representation
@@ -5752,68 +5766,68 @@ package main
 import "fmt"
 
 type Graph struct {
-	adj      map[string][]string
-	directed bool
+    adj      map[string][]string
+    directed bool
 }
 
 func NewGraph(directed bool) *Graph {
-	return &Graph{adj: make(map[string][]string), directed: directed}
+    return &Graph{adj: make(map[string][]string), directed: directed}
 }
 
 func (g *Graph) AddEdge(u, v string) {
-	g.adj[u] = append(g.adj[u], v)
-	if !g.directed {
-		g.adj[v] = append(g.adj[v], u)
-	}
+    g.adj[u] = append(g.adj[u], v)
+    if !g.directed {
+        g.adj[v] = append(g.adj[v], u)
+    }
 }
 
 func (g *Graph) BFS(start string) []string {
-	visited := map[string]bool{start: true}
-	queue := []string{start}
-	var order []string
+    visited := map[string]bool{start: true}
+    queue := []string{start}
+    var order []string
 
-	for len(queue) > 0 {
-		node := queue[0]
-		queue = queue[1:]
-		order = append(order, node)
+    for len(queue) > 0 {
+        node := queue[0]
+        queue = queue[1:]
+        order = append(order, node)
 
-		for _, nb := range g.adj[node] {
-			if !visited[nb] {
-				visited[nb] = true
-				queue = append(queue, nb)
-			}
-		}
-	}
-	return order
+        for _, nb := range g.adj[node] {
+            if !visited[nb] {
+                visited[nb] = true
+                queue = append(queue, nb)
+            }
+        }
+    }
+    return order
 }
 
 func (g *Graph) DFS(start string) []string {
-	visited := map[string]bool{}
-	var order []string
+    visited := map[string]bool{}
+    var order []string
 
-	var dfsRecursive func(node string)
-	dfsRecursive = func(node string) {
-		visited[node] = true
-		order = append(order, node)
-		for _, nb := range g.adj[node] {
-			if !visited[nb] {
-				dfsRecursive(nb)
-			}
-		}
-	}
+    var dfsRecursive func(node string)
+    dfsRecursive = func(node string) {
+        visited[node] = true
+        order = append(order, node)
+        for _, nb := range g.adj[node] {
+            if !visited[nb] {
+                dfsRecursive(nb)
+            }
+        }
+    }
 
-	dfsRecursive(start)
-	return order
+    dfsRecursive(start)
+    return order
 }
 
 func main() {
-	g := NewGraph(true)
-	for _, e := range [][2]string{{"A", "B"}, {"A", "C"}, {"B", "D"}, {"C", "D"}, {"D", "E"}} {
-		g.AddEdge(e[0], e[1])
-	}
+    g := NewGraph(true)
+    for _, e := range [][2]string{{"A", "B"}, {"A", "C"}, {"B", "D"}, {"C", "D"}, {"D", "E"}} {
+        g.AddEdge(e[0], e[1])
+    }
 
-	fmt.Println("BFS:", g.BFS("A")) // => Output: BFS: [A B C D E]
-	fmt.Println("DFS:", g.DFS("A")) // => Output: DFS: [A B D E C]
+    fmt.Println("BFS:", g.BFS("A")) // => Output: BFS: [A B C D E]
+    fmt.Println("DFS:", g.DFS("A")) // => Output: DFS: [A B D E C]
 }
 ```
 
@@ -5972,6 +5986,7 @@ public class AdjacencyListGraph {
 **Why It Matters**: Adjacency lists represent social networks (Twitter follows), dependency graphs (package managers), and network topologies (router connections). Python's NetworkX library uses adjacency list storage internally. The `visited` set is critical — without it, BFS and DFS would loop infinitely on graphs with cycles. O(V + E) traversal enables features like "find all connected users" and "detect import cycles in build systems" to run in time proportional to the data, not its square.
 
 ---
+
 ### Example 52: Adjacency Matrix Representation
 
 An adjacency matrix stores edges as a V×V boolean or weighted grid. It offers O(1) edge existence checks but uses O(V²) space, making it suitable for dense graphs where most pairs of nodes are connected.
@@ -6032,46 +6047,46 @@ package main
 import "fmt"
 
 func createAdjacencyMatrix(numNodes int, edges [][2]int, directed bool) [][]int {
-	matrix := make([][]int, numNodes)
-	for i := range matrix {
-		matrix[i] = make([]int, numNodes)
-	}
-	for _, e := range edges {
-		matrix[e[0]][e[1]] = 1
-		if !directed {
-			matrix[e[1]][e[0]] = 1
-		}
-	}
-	return matrix
+    matrix := make([][]int, numNodes)
+    for i := range matrix {
+        matrix[i] = make([]int, numNodes)
+    }
+    for _, e := range edges {
+        matrix[e[0]][e[1]] = 1
+        if !directed {
+            matrix[e[1]][e[0]] = 1
+        }
+    }
+    return matrix
 }
 
 func hasEdge(matrix [][]int, u, v int) bool {
-	return matrix[u][v] == 1
-	// => O(1) check for edge existence
+    return matrix[u][v] == 1
+    // => O(1) check for edge existence
 }
 
 func getNeighbours(matrix [][]int, u int) []int {
-	var result []int
-	for v, connected := range matrix[u] {
-		if connected == 1 {
-			result = append(result, v)
-		}
-	}
-	return result
+    var result []int
+    for v, connected := range matrix[u] {
+        if connected == 1 {
+            result = append(result, v)
+        }
+    }
+    return result
 }
 
 func main() {
-	edges := [][2]int{{0, 1}, {0, 2}, {1, 3}, {2, 3}, {3, 4}}
-	matrix := createAdjacencyMatrix(5, edges, true)
+    edges := [][2]int{{0, 1}, {0, 2}, {1, 3}, {2, 3}, {3, 4}}
+    matrix := createAdjacencyMatrix(5, edges, true)
 
-	fmt.Println("Edge 0->1:", hasEdge(matrix, 0, 1)) // => Output: Edge 0->1: true
-	fmt.Println("Edge 1->0:", hasEdge(matrix, 1, 0)) // => Output: Edge 1->0: false (directed)
-	fmt.Println("Neighbours of 0:", getNeighbours(matrix, 0))
-	// => Output: Neighbours of 0: [1 2]
+    fmt.Println("Edge 0->1:", hasEdge(matrix, 0, 1)) // => Output: Edge 0->1: true
+    fmt.Println("Edge 1->0:", hasEdge(matrix, 1, 0)) // => Output: Edge 1->0: false (directed)
+    fmt.Println("Neighbours of 0:", getNeighbours(matrix, 0))
+    // => Output: Neighbours of 0: [1 2]
 
-	for _, row := range matrix {
-		fmt.Println(row)
-	}
+    for _, row := range matrix {
+        fmt.Println(row)
+    }
 }
 ```
 
@@ -6183,6 +6198,7 @@ public class AdjacencyMatrixGraph {
 **Why It Matters**: Adjacency matrices power algorithms that need repeated edge existence checks: Floyd-Warshall all-pairs shortest path runs with matrix multiplication semantics on a weight matrix. Graphics engines use small dense matrices for mesh connectivity where O(1) edge lookup enables real-time collision detection. Recommendation systems represent user-item interaction matrices (a bipartite adjacency matrix) for collaborative filtering. The choice between list and matrix representation directly affects the time and space complexity of the algorithms built on top.
 
 ---
+
 ## Recursive Patterns Combined
 
 ### Example 53: Fibonacci with Memoisation
@@ -6246,42 +6262,42 @@ package main
 import "fmt"
 
 func fibNaive(n int) int {
-	if n <= 1 {
-		return n
-		// => base cases: fib(0)=0, fib(1)=1
-	}
-	return fibNaive(n-1) + fibNaive(n-2)
+    if n <= 1 {
+        return n
+        // => base cases: fib(0)=0, fib(1)=1
+    }
+    return fibNaive(n-1) + fibNaive(n-2)
 }
 
 func fibMemo(n int, memo map[int]int) int {
-	if v, ok := memo[n]; ok {
-		return v
-		// => return cached result immediately
-	}
-	if n <= 1 {
-		return n
-	}
-	memo[n] = fibMemo(n-1, memo) + fibMemo(n-2, memo)
-	return memo[n]
+    if v, ok := memo[n]; ok {
+        return v
+        // => return cached result immediately
+    }
+    if n <= 1 {
+        return n
+    }
+    memo[n] = fibMemo(n-1, memo) + fibMemo(n-2, memo)
+    return memo[n]
 }
 
 func fibDP(n int) int {
-	if n <= 1 {
-		return n
-	}
-	prev2, prev1 := 0, 1
-	for i := 2; i <= n; i++ {
-		curr := prev1 + prev2
-		prev2 = prev1
-		prev1 = curr
-	}
-	return prev1
+    if n <= 1 {
+        return n
+    }
+    prev2, prev1 := 0, 1
+    for i := 2; i <= n; i++ {
+        curr := prev1 + prev2
+        prev2 = prev1
+        prev1 = curr
+    }
+    return prev1
 }
 
 func main() {
-	fmt.Println(fibNaive(10))             // => Output: 55
-	fmt.Println(fibMemo(50, map[int]int{})) // => Output: 12586269025
-	fmt.Println(fibDP(50))                // => Output: 12586269025
+    fmt.Println(fibNaive(10))             // => Output: 55
+    fmt.Println(fibMemo(50, map[int]int{})) // => Output: 12586269025
+    fmt.Println(fibDP(50))                // => Output: 12586269025
 }
 ```
 
@@ -6462,51 +6478,51 @@ package main
 import "fmt"
 
 func powerSet(nums []int) [][]int {
-	result := [][]int{{}}
-	// => start with the empty subset; every set has it
+    result := [][]int{{}}
+    // => start with the empty subset; every set has it
 
-	for _, num := range nums {
-		// => for each element, extend every existing subset with it
-		var newSubsets [][]int
-		for _, subset := range result {
-			newSub := make([]int, len(subset)+1)
-			copy(newSub, subset)
-			newSub[len(subset)] = num
-			newSubsets = append(newSubsets, newSub)
-		}
-		result = append(result, newSubsets...)
-	}
+    for _, num := range nums {
+        // => for each element, extend every existing subset with it
+        var newSubsets [][]int
+        for _, subset := range result {
+            newSub := make([]int, len(subset)+1)
+            copy(newSub, subset)
+            newSub[len(subset)] = num
+            newSubsets = append(newSubsets, newSub)
+        }
+        result = append(result, newSubsets...)
+    }
 
-	return result
+    return result
 }
 
 func subsetsRecursive(nums []int) [][]int {
-	var result [][]int
+    var result [][]int
 
-	var backtrack func(start int, current []int)
-	backtrack = func(start int, current []int) {
-		cp := make([]int, len(current))
-		copy(cp, current)
-		result = append(result, cp)
+    var backtrack func(start int, current []int)
+    backtrack = func(start int, current []int) {
+        cp := make([]int, len(current))
+        copy(cp, current)
+        result = append(result, cp)
 
-		for i := start; i < len(nums); i++ {
-			current = append(current, nums[i])
-			backtrack(i+1, current)
-			current = current[:len(current)-1]
-		}
-	}
+        for i := start; i < len(nums); i++ {
+            current = append(current, nums[i])
+            backtrack(i+1, current)
+            current = current[:len(current)-1]
+        }
+    }
 
-	backtrack(0, nil)
-	return result
+    backtrack(0, nil)
+    return result
 }
 
 func main() {
-	fmt.Println(powerSet([]int{1, 2, 3}))
-	// => Output: [[] [1] [2] [1 2] [3] [1 3] [2 3] [1 2 3]]
-	fmt.Println(len(powerSet([]int{1, 2, 3, 4}))) // => Output: 16  (2^4 = 16)
+    fmt.Println(powerSet([]int{1, 2, 3}))
+    // => Output: [[] [1] [2] [1 2] [3] [1 3] [2 3] [1 2 3]]
+    fmt.Println(len(powerSet([]int{1, 2, 3, 4}))) // => Output: 16  (2^4 = 16)
 
-	fmt.Println(subsetsRecursive([]int{1, 2, 3}))
-	// => Output: [[] [1] [1 2] [1 2 3] [1 3] [2] [2 3] [3]]
+    fmt.Println(subsetsRecursive([]int{1, 2, 3}))
+    // => Output: [[] [1] [1 2] [1 2 3] [1 3] [2] [2 3] [3]]
 }
 ```
 
@@ -6626,6 +6642,7 @@ public class PowerSetExample {
 **Why It Matters**: Power set enumeration appears in feature selection (try every subset of features), distributed system partition fault modeling (consider every subset of nodes failing), and cryptographic key combination analysis. The backtracking variant is the skeleton for combination-sum problems, Sudoku solvers, and branch-and-bound optimisation used in integer linear programming solvers. Understanding the 2^n combinatorial explosion motivates constraint-based pruning as the central efficiency technique in search problems.
 
 ---
+
 ## Combining Techniques
 
 ### Example 55: Sliding Window + Hash Map — Minimum Window Substring
@@ -6710,62 +6727,62 @@ int main(void) {
 package main
 
 import (
-	"fmt"
-	"math"
+    "fmt"
+    "math"
 )
 
 func minWindowSubstring(s, t string) string {
-	if len(t) == 0 || len(s) == 0 {
-		return ""
-	}
+    if len(t) == 0 || len(s) == 0 {
+        return ""
+    }
 
-	need := map[byte]int{}
-	for i := range t {
-		need[t[i]]++
-	}
+    need := map[byte]int{}
+    for i := range t {
+        need[t[i]]++
+    }
 
-	required := len(need)
-	formed := 0
-	windowCounts := map[byte]int{}
+    required := len(need)
+    formed := 0
+    windowCounts := map[byte]int{}
 
-	bestLen := math.MaxInt
-	bestLeft := 0
+    bestLen := math.MaxInt
+    bestLeft := 0
 
-	left := 0
-	for right := 0; right < len(s); right++ {
-		c := s[right]
-		windowCounts[c]++
+    left := 0
+    for right := 0; right < len(s); right++ {
+        c := s[right]
+        windowCounts[c]++
 
-		if need[c] > 0 && windowCounts[c] == need[c] {
-			formed++
-		}
+        if need[c] > 0 && windowCounts[c] == need[c] {
+            formed++
+        }
 
-		for formed == required && left <= right {
-			wLen := right - left + 1
-			if wLen < bestLen {
-				bestLen = wLen
-				bestLeft = left
-			}
+        for formed == required && left <= right {
+            wLen := right - left + 1
+            if wLen < bestLen {
+                bestLen = wLen
+                bestLeft = left
+            }
 
-			lc := s[left]
-			windowCounts[lc]--
-			if need[lc] > 0 && windowCounts[lc] < need[lc] {
-				formed--
-			}
-			left++
-		}
-	}
+            lc := s[left]
+            windowCounts[lc]--
+            if need[lc] > 0 && windowCounts[lc] < need[lc] {
+                formed--
+            }
+            left++
+        }
+    }
 
-	if bestLen == math.MaxInt {
-		return ""
-	}
-	return s[bestLeft : bestLeft+bestLen]
+    if bestLen == math.MaxInt {
+        return ""
+    }
+    return s[bestLeft : bestLeft+bestLen]
 }
 
 func main() {
-	fmt.Println(minWindowSubstring("ADOBECODEBANC", "ABC")) // => Output: BANC
-	fmt.Println(minWindowSubstring("a", "a"))               // => Output: a
-	fmt.Println(minWindowSubstring("a", "aa"))              // => Output:   (not enough a's)
+    fmt.Println(minWindowSubstring("ADOBECODEBANC", "ABC")) // => Output: BANC
+    fmt.Println(minWindowSubstring("a", "a"))               // => Output: a
+    fmt.Println(minWindowSubstring("a", "aa"))              // => Output:   (not enough a's)
 }
 ```
 
@@ -6969,52 +6986,52 @@ int main(void) {
 package main
 
 import (
-	"fmt"
-	"sort"
+    "fmt"
+    "sort"
 )
 
 func threeSum(nums []int) [][]int {
-	sort.Ints(nums)
-	// => sort first: O(n log n)
-	var result [][]int
+    sort.Ints(nums)
+    // => sort first: O(n log n)
+    var result [][]int
 
-	for i := 0; i < len(nums)-2; i++ {
-		if i > 0 && nums[i] == nums[i-1] {
-			continue
-			// => skip duplicate values for the first element
-		}
+    for i := 0; i < len(nums)-2; i++ {
+        if i > 0 && nums[i] == nums[i-1] {
+            continue
+            // => skip duplicate values for the first element
+        }
 
-		left, right := i+1, len(nums)-1
-		for left < right {
-			total := nums[i] + nums[left] + nums[right]
-			if total == 0 {
-				result = append(result, []int{nums[i], nums[left], nums[right]})
+        left, right := i+1, len(nums)-1
+        for left < right {
+            total := nums[i] + nums[left] + nums[right]
+            if total == 0 {
+                result = append(result, []int{nums[i], nums[left], nums[right]})
 
-				for left < right && nums[left] == nums[left+1] {
-					left++
-				}
-				for left < right && nums[right] == nums[right-1] {
-					right--
-				}
-				left++
-				right--
-			} else if total < 0 {
-				left++
-			} else {
-				right--
-			}
-		}
-	}
-	return result
+                for left < right && nums[left] == nums[left+1] {
+                    left++
+                }
+                for left < right && nums[right] == nums[right-1] {
+                    right--
+                }
+                left++
+                right--
+            } else if total < 0 {
+                left++
+            } else {
+                right--
+            }
+        }
+    }
+    return result
 }
 
 func main() {
-	fmt.Println(threeSum([]int{-1, 0, 1, 2, -1, -4}))
-	// => Output: [[-1 -1 2] [-1 0 1]]
-	fmt.Println(threeSum([]int{0, 0, 0, 0}))
-	// => Output: [[0 0 0]]
-	fmt.Println(threeSum([]int{1, 2, -2, -1}))
-	// => Output: []
+    fmt.Println(threeSum([]int{-1, 0, 1, 2, -1, -4}))
+    // => Output: [[-1 -1 2] [-1 0 1]]
+    fmt.Println(threeSum([]int{0, 0, 0, 0}))
+    // => Output: [[0 0 0]]
+    fmt.Println(threeSum([]int{1, 2, -2, -1}))
+    // => Output: []
 }
 ```
 
@@ -7230,55 +7247,55 @@ package main
 import "fmt"
 
 func shortestPathBFS(graph map[string][]string, start, end string) []string {
-	if start == end {
-		return []string{start}
-	}
+    if start == end {
+        return []string{start}
+    }
 
-	visited := map[string]bool{start: true}
-	type entry struct {
-		node string
-		path []string
-	}
-	queue := []entry{{start, []string{start}}}
+    visited := map[string]bool{start: true}
+    type entry struct {
+        node string
+        path []string
+    }
+    queue := []entry{{start, []string{start}}}
 
-	for len(queue) > 0 {
-		e := queue[0]
-		queue = queue[1:]
+    for len(queue) > 0 {
+        e := queue[0]
+        queue = queue[1:]
 
-		for _, nb := range graph[e.node] {
-			if !visited[nb] {
-				newPath := make([]string, len(e.path)+1)
-				copy(newPath, e.path)
-				newPath[len(e.path)] = nb
+        for _, nb := range graph[e.node] {
+            if !visited[nb] {
+                newPath := make([]string, len(e.path)+1)
+                copy(newPath, e.path)
+                newPath[len(e.path)] = nb
 
-				if nb == end {
-					return newPath
-					// => BFS guarantees this is shortest path
-				}
+                if nb == end {
+                    return newPath
+                    // => BFS guarantees this is shortest path
+                }
 
-				visited[nb] = true
-				queue = append(queue, entry{nb, newPath})
-			}
-		}
-	}
+                visited[nb] = true
+                queue = append(queue, entry{nb, newPath})
+            }
+        }
+    }
 
-	return nil
+    return nil
 }
 
 func main() {
-	graph := map[string][]string{
-		"A": {"B", "C"},
-		"B": {"A", "D", "E"},
-		"C": {"A", "F"},
-		"D": {"B"},
-		"E": {"B", "F"},
-		"F": {"C", "E"},
-	}
+    graph := map[string][]string{
+        "A": {"B", "C"},
+        "B": {"A", "D", "E"},
+        "C": {"A", "F"},
+        "D": {"B"},
+        "E": {"B", "F"},
+        "F": {"C", "E"},
+    }
 
-	fmt.Println(shortestPathBFS(graph, "A", "F")) // => Output: [A C F]
-	fmt.Println(shortestPathBFS(graph, "A", "E")) // => Output: [A B E]
-	fmt.Println(shortestPathBFS(graph, "D", "F")) // => Output: [D B E F]
-	fmt.Println(shortestPathBFS(graph, "A", "A")) // => Output: [A]
+    fmt.Println(shortestPathBFS(graph, "A", "F")) // => Output: [A C F]
+    fmt.Println(shortestPathBFS(graph, "A", "E")) // => Output: [A B E]
+    fmt.Println(shortestPathBFS(graph, "D", "F")) // => Output: [D B E F]
+    fmt.Println(shortestPathBFS(graph, "A", "A")) // => Output: [A]
 }
 ```
 

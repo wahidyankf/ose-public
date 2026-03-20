@@ -66,25 +66,25 @@ var cache [101]int64
 var computed [101]bool
 
 func fibMemo(n int) int64 {
-	if computed[n] {
-		return cache[n] // => O(1) lookup: already solved this subproblem
-	}
-	if n <= 1 {
-		computed[n] = true
-		cache[n] = int64(n) // => Base cases: fib(0)=0, fib(1)=1
-		return cache[n]
-	}
-	cache[n] = fibMemo(n-1) + fibMemo(n-2)
-	// => Store result before returning — this is the memoization step
-	// => Without this, fib(50) would require ~2^50 recursive calls (~1 quadrillion)
-	computed[n] = true
-	return cache[n] // => Return cached result
+    if computed[n] {
+        return cache[n] // => O(1) lookup: already solved this subproblem
+    }
+    if n <= 1 {
+        computed[n] = true
+        cache[n] = int64(n) // => Base cases: fib(0)=0, fib(1)=1
+        return cache[n]
+    }
+    cache[n] = fibMemo(n-1) + fibMemo(n-2)
+    // => Store result before returning — this is the memoization step
+    // => Without this, fib(50) would require ~2^50 recursive calls (~1 quadrillion)
+    computed[n] = true
+    return cache[n] // => Return cached result
 }
 
 func main() {
-	fmt.Println(fibMemo(10)) // => Output: 55
-	fmt.Println(fibMemo(50)) // => Output: 12586269025 (computed instantly due to cache)
-	// => fib(100) exceeds int64 range; Python handles arbitrary precision natively
+    fmt.Println(fibMemo(10)) // => Output: 55
+    fmt.Println(fibMemo(50)) // => Output: 12586269025 (computed instantly due to cache)
+    // => fib(100) exceeds int64 range; Python handles arbitrary precision natively
 }
 ```
 
@@ -231,42 +231,42 @@ package main
 import "fmt"
 
 func knapsack01(weights, values []int, capacity int) int {
-	// => weights[i] and values[i] describe item i
-	// => capacity is the maximum weight the knapsack can hold
-	n := len(weights)
-	dp := make([][]int, n+1)
-	for i := range dp {
-		dp[i] = make([]int, capacity+1)
-	}
-	// => dp[i][w] = max value using first i items with weight limit w
-	// => All initialized to 0: no items or no capacity -> zero value
+    // => weights[i] and values[i] describe item i
+    // => capacity is the maximum weight the knapsack can hold
+    n := len(weights)
+    dp := make([][]int, n+1)
+    for i := range dp {
+        dp[i] = make([]int, capacity+1)
+    }
+    // => dp[i][w] = max value using first i items with weight limit w
+    // => All initialized to 0: no items or no capacity -> zero value
 
-	for i := 1; i <= n; i++ { // => Process each item 1..n
-		for w := 0; w <= capacity; w++ { // => For each capacity 0..W
-			// => Option 1: skip item i (don't include it)
-			dp[i][w] = dp[i-1][w] // => Inherit value from previous row
-			wi := weights[i-1]    // => Weight of current item (0-indexed)
-			vi := values[i-1]     // => Value of current item (0-indexed)
-			if wi <= w {
-				// => Option 2: include item i if it fits
-				include := dp[i-1][w-wi] + vi
-				// => dp[i-1][w-wi]: best value with remaining capacity after taking item i
-				if include > dp[i][w] {
-					dp[i][w] = include
-				}
-				// => Take the better of skipping or including
-			}
-		}
-	}
-	return dp[n][capacity] // => Maximum achievable value
+    for i := 1; i <= n; i++ { // => Process each item 1..n
+        for w := 0; w <= capacity; w++ { // => For each capacity 0..W
+            // => Option 1: skip item i (don't include it)
+            dp[i][w] = dp[i-1][w] // => Inherit value from previous row
+            wi := weights[i-1]    // => Weight of current item (0-indexed)
+            vi := values[i-1]     // => Value of current item (0-indexed)
+            if wi <= w {
+                // => Option 2: include item i if it fits
+                include := dp[i-1][w-wi] + vi
+                // => dp[i-1][w-wi]: best value with remaining capacity after taking item i
+                if include > dp[i][w] {
+                    dp[i][w] = include
+                }
+                // => Take the better of skipping or including
+            }
+        }
+    }
+    return dp[n][capacity] // => Maximum achievable value
 }
 
 func main() {
-	weights := []int{2, 3, 4, 5}
-	values := []int{3, 4, 5, 6}
-	W := 5
-	fmt.Println(knapsack01(weights, values, W)) // => Output: 7
-	// => Best: item 0 (weight=2, value=3) + item 1 (weight=3, value=4) = total weight 5, value 7
+    weights := []int{2, 3, 4, 5}
+    values := []int{3, 4, 5, 6}
+    W := 5
+    fmt.Println(knapsack01(weights, values, W)) // => Output: 7
+    // => Best: item 0 (weight=2, value=3) + item 1 (weight=3, value=4) = total weight 5, value 7
 }
 ```
 
@@ -427,55 +427,55 @@ package main
 import "fmt"
 
 func lcs(s1, s2 string) (int, string) {
-	m, n := len(s1), len(s2) // => m=len(s1), n=len(s2)
-	dp := make([][]int, m+1)
-	for i := range dp {
-		dp[i] = make([]int, n+1)
-	}
-	// => dp[i][j] = LCS length of s1[:i] and s2[:j]
-	// => Extra row/col for empty-string base cases (all zeros)
+    m, n := len(s1), len(s2) // => m=len(s1), n=len(s2)
+    dp := make([][]int, m+1)
+    for i := range dp {
+        dp[i] = make([]int, n+1)
+    }
+    // => dp[i][j] = LCS length of s1[:i] and s2[:j]
+    // => Extra row/col for empty-string base cases (all zeros)
 
-	for i := 1; i <= m; i++ {
-		for j := 1; j <= n; j++ {
-			if s1[i-1] == s2[j-1] {
-				dp[i][j] = dp[i-1][j-1] + 1
-				// => Characters match: extend LCS by 1
-			} else {
-				if dp[i-1][j] > dp[i][j-1] {
-					dp[i][j] = dp[i-1][j]
-				} else {
-					dp[i][j] = dp[i][j-1]
-				}
-				// => No match: take better of skipping a character from either string
-			}
-		}
-	}
+    for i := 1; i <= m; i++ {
+        for j := 1; j <= n; j++ {
+            if s1[i-1] == s2[j-1] {
+                dp[i][j] = dp[i-1][j-1] + 1
+                // => Characters match: extend LCS by 1
+            } else {
+                if dp[i-1][j] > dp[i][j-1] {
+                    dp[i][j] = dp[i-1][j]
+                } else {
+                    dp[i][j] = dp[i][j-1]
+                }
+                // => No match: take better of skipping a character from either string
+            }
+        }
+    }
 
-	// => Reconstruct the actual LCS string by backtracking through dp table
-	lcsStr := []byte{}
-	i, j := m, n // => Start from bottom-right corner
-	for i > 0 && j > 0 {
-		if s1[i-1] == s2[j-1] {
-			lcsStr = append(lcsStr, s1[i-1]) // => This character is in the LCS
-			i--
-			j--
-		} else if dp[i-1][j] > dp[i][j-1] {
-			i-- // => Move up: came from dp[i-1][j]
-		} else {
-			j-- // => Move left: came from dp[i][j-1]
-		}
-	}
-	// => Reverse because we backtracked
-	for l, r := 0, len(lcsStr)-1; l < r; l, r = l+1, r-1 {
-		lcsStr[l], lcsStr[r] = lcsStr[r], lcsStr[l]
-	}
-	return dp[m][n], string(lcsStr)
+    // => Reconstruct the actual LCS string by backtracking through dp table
+    lcsStr := []byte{}
+    i, j := m, n // => Start from bottom-right corner
+    for i > 0 && j > 0 {
+        if s1[i-1] == s2[j-1] {
+            lcsStr = append(lcsStr, s1[i-1]) // => This character is in the LCS
+            i--
+            j--
+        } else if dp[i-1][j] > dp[i][j-1] {
+            i-- // => Move up: came from dp[i-1][j]
+        } else {
+            j-- // => Move left: came from dp[i][j-1]
+        }
+    }
+    // => Reverse because we backtracked
+    for l, r := 0, len(lcsStr)-1; l < r; l, r = l+1, r-1 {
+        lcsStr[l], lcsStr[r] = lcsStr[r], lcsStr[l]
+    }
+    return dp[m][n], string(lcsStr)
 }
 
 func main() {
-	length, seq := lcs("ABCBDAB", "BDCABA")
-	fmt.Println(length) // => Output: 4
-	fmt.Println(seq)    // => Output: BCBA  (one valid LCS; others like BDAB also valid)
+    length, seq := lcs("ABCBDAB", "BDCABA")
+    fmt.Println(length) // => Output: 4
+    fmt.Println(seq)    // => Output: BCBA  (one valid LCS; others like BDAB also valid)
 }
 ```
 
@@ -572,6 +572,7 @@ public class LCS {
 **Why It Matters**: Git's `diff` command, `patch` utilities, and code review tools all rely on LCS or edit-distance variants to show what changed between file versions. Bioinformatics tools like BLAST use LCS to align DNA and protein sequences across genomes. Understanding LCS gives you the foundation for edit distance (Levenshtein), which powers spell checkers, fuzzy search, and OCR post-correction in production systems.
 
 ---
+
 ### Example 61: Longest Increasing Subsequence (LIS)
 
 LIS finds the length of the longest strictly increasing subsequence in an array. The O(n log n) patience-sorting approach improves on the naive O(n²) DP.
@@ -645,35 +646,35 @@ int main(void) {
 package main
 
 import (
-	"fmt"
-	"sort"
+    "fmt"
+    "sort"
 )
 
 func lisLength(nums []int) int {
-	tails := []int{}
-	// => tails[i] = smallest tail element of all increasing subsequences of length i+1
-	// => tails is always sorted (maintained as invariant)
+    tails := []int{}
+    // => tails[i] = smallest tail element of all increasing subsequences of length i+1
+    // => tails is always sorted (maintained as invariant)
 
-	for _, num := range nums {
-		pos := sort.SearchInts(tails, num)
-		// => Binary search: find leftmost position where num can be inserted
-		// => O(log n) per element instead of O(n) linear scan
-		if pos == len(tails) {
-			tails = append(tails, num) // => num extends the longest subsequence found so far
-		} else {
-			tails[pos] = num // => Replace: num is a better (smaller) tail for length pos+1
-			// => This greedy replacement keeps tails as small as possible
-			// => Smaller tails allow more elements to extend subsequences later
-		}
-	}
-	return len(tails) // => Length of tails = LIS length
+    for _, num := range nums {
+        pos := sort.SearchInts(tails, num)
+        // => Binary search: find leftmost position where num can be inserted
+        // => O(log n) per element instead of O(n) linear scan
+        if pos == len(tails) {
+            tails = append(tails, num) // => num extends the longest subsequence found so far
+        } else {
+            tails[pos] = num // => Replace: num is a better (smaller) tail for length pos+1
+            // => This greedy replacement keeps tails as small as possible
+            // => Smaller tails allow more elements to extend subsequences later
+        }
+    }
+    return len(tails) // => Length of tails = LIS length
 }
 
 func main() {
-	nums := []int{10, 9, 2, 5, 3, 7, 101, 18}
-	fmt.Println(lisLength(nums)) // => Output: 4
-	// => One LIS is [2, 3, 7, 18] or [2, 5, 7, 18] or [2, 3, 7, 101]
-	// => The tails array after processing: [2, 3, 7, 18] (not the actual LIS, but its length is correct)
+    nums := []int{10, 9, 2, 5, 3, 7, 101, 18}
+    fmt.Println(lisLength(nums)) // => Output: 4
+    // => One LIS is [2, 3, 7, 18] or [2, 5, 7, 18] or [2, 3, 7, 101]
+    // => The tails array after processing: [2, 3, 7, 18] (not the actual LIS, but its length is correct)
 }
 ```
 
@@ -805,42 +806,42 @@ int main(void) {
 package main
 
 import (
-	"fmt"
-	"math"
+    "fmt"
+    "math"
 )
 
 func coinChange(coins []int, amount int) int {
-	INF := math.MaxInt32                      // => Sentinel for "impossible" states
-	dp := make([]int, amount+1)
-	// => dp[i] = minimum coins to make amount i
-	// => Initialize all to INF (impossible) except dp[0]
-	for i := range dp {
-		dp[i] = INF
-	}
-	dp[0] = 0 // => Base case: 0 coins needed for amount 0
+    INF := math.MaxInt32                      // => Sentinel for "impossible" states
+    dp := make([]int, amount+1)
+    // => dp[i] = minimum coins to make amount i
+    // => Initialize all to INF (impossible) except dp[0]
+    for i := range dp {
+        dp[i] = INF
+    }
+    dp[0] = 0 // => Base case: 0 coins needed for amount 0
 
-	for i := 1; i <= amount; i++ { // => Fill dp table from 1 to amount
-		for _, coin := range coins {
-			if coin <= i && dp[i-coin] != INF {
-				// => coin fits: can we do better using this coin?
-				candidate := dp[i-coin] + 1
-				if candidate < dp[i] {
-					dp[i] = candidate
-				}
-				// => +1 for using this coin; dp[i-coin] subproblem already solved
-			}
-		}
-	}
-	if dp[amount] != INF {
-		return dp[amount]
-	}
-	return -1 // => Return -1 if amount is unreachable with given coins
+    for i := 1; i <= amount; i++ { // => Fill dp table from 1 to amount
+        for _, coin := range coins {
+            if coin <= i && dp[i-coin] != INF {
+                // => coin fits: can we do better using this coin?
+                candidate := dp[i-coin] + 1
+                if candidate < dp[i] {
+                    dp[i] = candidate
+                }
+                // => +1 for using this coin; dp[i-coin] subproblem already solved
+            }
+        }
+    }
+    if dp[amount] != INF {
+        return dp[amount]
+    }
+    return -1 // => Return -1 if amount is unreachable with given coins
 }
 
 func main() {
-	fmt.Println(coinChange([]int{1, 5, 6, 9}, 11)) // => Output: 2  (coins: 5+6)
-	fmt.Println(coinChange([]int{2}, 3))            // => Output: -1 (3 unreachable with only even coins)
-	fmt.Println(coinChange([]int{1, 2, 5}, 11))     // => Output: 3  (coins: 5+5+1)
+    fmt.Println(coinChange([]int{1, 5, 6, 9}, 11)) // => Output: 2  (coins: 5+6)
+    fmt.Println(coinChange([]int{2}, 3))            // => Output: -1 (3 unreachable with only even coins)
+    fmt.Println(coinChange([]int{1, 2, 5}, 11))     // => Output: 3  (coins: 5+5+1)
 }
 ```
 
@@ -1033,15 +1034,15 @@ int main(void) {
 package main
 
 import (
-	"container/heap"
-	"fmt"
-	"math"
+    "container/heap"
+    "fmt"
+    "math"
 )
 
 // => Min-heap for (distance, node) pairs
 type Item struct {
-	dist int
-	node string
+    dist int
+    node string
 }
 type MinHeap []Item
 
@@ -1050,53 +1051,53 @@ func (h MinHeap) Less(i, j int) bool  { return h[i].dist < h[j].dist }
 func (h MinHeap) Swap(i, j int)       { h[i], h[j] = h[j], h[i] }
 func (h *MinHeap) Push(x interface{}) { *h = append(*h, x.(Item)) }
 func (h *MinHeap) Pop() interface{} {
-	old := *h
-	n := len(old)
-	x := old[n-1]
-	*h = old[:n-1]
-	return x
+    old := *h
+    n := len(old)
+    x := old[n-1]
+    *h = old[:n-1]
+    return x
 }
 
 func dijkstra(graph map[string][][2]interface{}, source string) map[string]int {
-	// => graph: map[node] -> list of [weight, neighbor]
-	dist := map[string]int{}
-	for node := range graph {
-		dist[node] = math.MaxInt32
-	}
-	dist[source] = 0 // => Distance from source to itself is 0
+    // => graph: map[node] -> list of [weight, neighbor]
+    dist := map[string]int{}
+    for node := range graph {
+        dist[node] = math.MaxInt32
+    }
+    dist[source] = 0 // => Distance from source to itself is 0
 
-	h := &MinHeap{{0, source}}
-	heap.Init(h)
+    h := &MinHeap{{0, source}}
+    heap.Init(h)
 
-	for h.Len() > 0 {
-		item := heap.Pop(h).(Item) // => Extract node with minimum distance; O(log V)
-		d, u := item.dist, item.node
-		if d > dist[u] {
-			continue // => Stale entry: a shorter path was already found
-		}
-		for _, edge := range graph[u] {
-			w := edge[0].(int)
-			v := edge[1].(string)
-			newDist := dist[u] + w // => Candidate distance to v via u
-			if newDist < dist[v] {
-				dist[v] = newDist // => Found shorter path to v
-				heap.Push(h, Item{newDist, v})
-			}
-		}
-	}
-	return dist
+    for h.Len() > 0 {
+        item := heap.Pop(h).(Item) // => Extract node with minimum distance; O(log V)
+        d, u := item.dist, item.node
+        if d > dist[u] {
+            continue // => Stale entry: a shorter path was already found
+        }
+        for _, edge := range graph[u] {
+            w := edge[0].(int)
+            v := edge[1].(string)
+            newDist := dist[u] + w // => Candidate distance to v via u
+            if newDist < dist[v] {
+                dist[v] = newDist // => Found shorter path to v
+                heap.Push(h, Item{newDist, v})
+            }
+        }
+    }
+    return dist
 }
 
 func main() {
-	graph := map[string][][2]interface{}{
-		"A": {{1, "B"}, {4, "C"}},
-		"B": {{2, "C"}, {5, "D"}},
-		"C": {{1, "D"}},
-		"D": {},
-	}
-	fmt.Println(dijkstra(graph, "A"))
-	// => Output: map[A:0 B:1 C:3 D:4]
-	// => A->B=1, A->B->C=3 (better than A->C=4), A->B->C->D=4
+    graph := map[string][][2]interface{}{
+        "A": {{1, "B"}, {4, "C"}},
+        "B": {{2, "C"}, {5, "D"}},
+        "C": {{1, "D"}},
+        "D": {},
+    }
+    fmt.Println(dijkstra(graph, "A"))
+    // => Output: map[A:0 B:1 C:3 D:4]
+    // => A->B=1, A->B->C=3 (better than A->C=4), A->B->C->D=4
 }
 ```
 
@@ -1293,54 +1294,54 @@ int main(void) {
 package main
 
 import (
-	"fmt"
-	"math"
+    "fmt"
+    "math"
 )
 
 type Edge struct {
-	u, v   int
-	weight int
+    u, v   int
+    weight int
 }
 
 func bellmanFord(nv int, edges []Edge, source int) (map[int]int, bool) {
-	dist := make(map[int]int, nv)
-	for i := 0; i < nv; i++ {
-		dist[i] = math.MaxInt32
-	}
-	dist[source] = 0 // => Source distance is 0
+    dist := make(map[int]int, nv)
+    for i := 0; i < nv; i++ {
+        dist[i] = math.MaxInt32
+    }
+    dist[source] = 0 // => Source distance is 0
 
-	// => Relax all edges V-1 times
-	for iter := 0; iter < nv-1; iter++ {
-		updated := false
-		for _, e := range edges {
-			if dist[e.u] != math.MaxInt32 && dist[e.u]+e.weight < dist[e.v] {
-				dist[e.v] = dist[e.u] + e.weight // => Relax edge
-				updated = true
-			}
-		}
-		if !updated {
-			break // => Early exit: no changes, already optimal
-		}
-	}
+    // => Relax all edges V-1 times
+    for iter := 0; iter < nv-1; iter++ {
+        updated := false
+        for _, e := range edges {
+            if dist[e.u] != math.MaxInt32 && dist[e.u]+e.weight < dist[e.v] {
+                dist[e.v] = dist[e.u] + e.weight // => Relax edge
+                updated = true
+            }
+        }
+        if !updated {
+            break // => Early exit: no changes, already optimal
+        }
+    }
 
-	// => Detect negative-weight cycles
-	for _, e := range edges {
-		if dist[e.u] != math.MaxInt32 && dist[e.u]+e.weight < dist[e.v] {
-			return nil, false // => Negative cycle detected
-		}
-	}
-	return dist, true
+    // => Detect negative-weight cycles
+    for _, e := range edges {
+        if dist[e.u] != math.MaxInt32 && dist[e.u]+e.weight < dist[e.v] {
+            return nil, false // => Negative cycle detected
+        }
+    }
+    return dist, true
 }
 
 func main() {
-	// => Map: A=0, B=1, C=2, D=3, E=4
-	edges := []Edge{
-		{0, 1, -1}, {0, 2, 4}, {1, 2, 3}, {1, 3, 2},
-		{1, 4, 2}, {3, 1, 1}, {3, 2, 5}, {4, 3, -3},
-	}
-	dist, _ := bellmanFord(5, edges, 0)
-	fmt.Println(dist)
-	// => Output: map[0:0 1:-1 2:2 3:-2 4:1]
+    // => Map: A=0, B=1, C=2, D=3, E=4
+    edges := []Edge{
+        {0, 1, -1}, {0, 2, 4}, {1, 2, 3}, {1, 3, 2},
+        {1, 4, 2}, {3, 1, 1}, {3, 2, 5}, {4, 3, -3},
+    }
+    dist, _ := bellmanFord(5, edges, 0)
+    fmt.Println(dist)
+    // => Output: map[0:0 1:-1 2:2 3:-2 4:1]
 }
 ```
 
@@ -1522,52 +1523,52 @@ int main(void) {
 package main
 
 import (
-	"fmt"
-	"math"
+    "fmt"
+    "math"
 )
 
 func floydWarshall(n int, edges [][3]int) [][]int {
-	INF := math.MaxInt32 / 2
-	dist := make([][]int, n)
-	for i := range dist {
-		dist[i] = make([]int, n)
-		for j := range dist[i] {
-			if i == j {
-				dist[i][j] = 0
-			} else {
-				dist[i][j] = INF
-			}
-		}
-	}
+    INF := math.MaxInt32 / 2
+    dist := make([][]int, n)
+    for i := range dist {
+        dist[i] = make([]int, n)
+        for j := range dist[i] {
+            if i == j {
+                dist[i][j] = 0
+            } else {
+                dist[i][j] = INF
+            }
+        }
+    }
 
-	for _, e := range edges {
-		u, v, w := e[0], e[1], e[2]
-		if w < dist[u][v] {
-			dist[u][v] = w // => Initialize with direct edge weights; min handles parallel edges
-		}
-	}
+    for _, e := range edges {
+        u, v, w := e[0], e[1], e[2]
+        if w < dist[u][v] {
+            dist[u][v] = w // => Initialize with direct edge weights; min handles parallel edges
+        }
+    }
 
-	// => DP: for each intermediate vertex k, check if going through k improves i->j
-	for k := 0; k < n; k++ { // => k is the intermediate vertex
-		for i := 0; i < n; i++ {
-			for j := 0; j < n; j++ {
-				if dist[i][k]+dist[k][j] < dist[i][j] {
-					dist[i][j] = dist[i][k] + dist[k][j]
-					// => Path i->k->j is shorter than current best i->j
-				}
-			}
-		}
-	}
-	return dist
+    // => DP: for each intermediate vertex k, check if going through k improves i->j
+    for k := 0; k < n; k++ { // => k is the intermediate vertex
+        for i := 0; i < n; i++ {
+            for j := 0; j < n; j++ {
+                if dist[i][k]+dist[k][j] < dist[i][j] {
+                    dist[i][j] = dist[i][k] + dist[k][j]
+                    // => Path i->k->j is shorter than current best i->j
+                }
+            }
+        }
+    }
+    return dist
 }
 
 func main() {
-	edges := [][3]int{{0,1,3},{0,3,7},{1,0,8},{1,2,2},{2,0,5},{2,3,1},{3,0,2}}
-	result := floydWarshall(4, edges)
-	for _, row := range result {
-		fmt.Println(row)
-	}
-	// => Output: [0 3 5 6] [5 0 2 3] [4 7 0 1] [2 5 7 0]
+    edges := [][3]int{{0,1,3},{0,3,7},{1,0,8},{1,2,2},{2,0,5},{2,3,1},{3,0,2}}
+    result := floydWarshall(4, edges)
+    for _, row := range result {
+        fmt.Println(row)
+    }
+    // => Output: [0 3 5 6] [5 0 2 3] [4 7 0 1] [2 5 7 0]
 }
 ```
 
@@ -1748,45 +1749,45 @@ package main
 import "fmt"
 
 func topologicalSort(n int, edges [][2]int) []int {
-	adj := make([][]int, n)
-	inDegree := make([]int, n)
+    adj := make([][]int, n)
+    inDegree := make([]int, n)
 
-	for _, e := range edges {
-		u, v := e[0], e[1]
-		adj[u] = append(adj[u], v) // => Record directed edge u->v
-		inDegree[v]++              // => v has one more incoming edge
-	}
+    for _, e := range edges {
+        u, v := e[0], e[1]
+        adj[u] = append(adj[u], v) // => Record directed edge u->v
+        inDegree[v]++              // => v has one more incoming edge
+    }
 
-	queue := []int{}
-	for i := 0; i < n; i++ {
-		if inDegree[i] == 0 {
-			queue = append(queue, i) // => Start with nodes that have no prerequisites
-		}
-	}
+    queue := []int{}
+    for i := 0; i < n; i++ {
+        if inDegree[i] == 0 {
+            queue = append(queue, i) // => Start with nodes that have no prerequisites
+        }
+    }
 
-	result := []int{}
-	for len(queue) > 0 {
-		u := queue[0]
-		queue = queue[1:]          // => Process next node with no remaining prerequisites
-		result = append(result, u) // => Add to topological order
-		for _, v := range adj[u] {
-			inDegree[v]--          // => Remove edge u->v
-			if inDegree[v] == 0 {
-				queue = append(queue, v) // => v is now ready
-			}
-		}
-	}
+    result := []int{}
+    for len(queue) > 0 {
+        u := queue[0]
+        queue = queue[1:]          // => Process next node with no remaining prerequisites
+        result = append(result, u) // => Add to topological order
+        for _, v := range adj[u] {
+            inDegree[v]--          // => Remove edge u->v
+            if inDegree[v] == 0 {
+                queue = append(queue, v) // => v is now ready
+            }
+        }
+    }
 
-	if len(result) != n {
-		return nil // => Cycle detected
-	}
-	return result
+    if len(result) != n {
+        return nil // => Cycle detected
+    }
+    return result
 }
 
 func main() {
-	edges := [][2]int{{5,2},{5,0},{4,0},{4,1},{2,3},{3,1}}
-	fmt.Println(topologicalSort(6, edges))
-	// => Output: [4 5 0 2 3 1] (one valid order)
+    edges := [][2]int{{5,2},{5,0},{4,0},{4,1},{2,3},{3,1}}
+    fmt.Println(topologicalSort(6, edges))
+    // => Output: [4 5 0 2 3 1] (one valid order)
 }
 ```
 
@@ -1946,61 +1947,61 @@ int main(void) {
 package main
 
 import (
-	"fmt"
-	"sort"
+    "fmt"
+    "sort"
 )
 
 type Edge struct{ w, u, v int }
 
 type UF struct {
-	parent, rank []int
+    parent, rank []int
 }
 
 func newUF(n int) *UF {
-	p := make([]int, n)
-	for i := range p { p[i] = i }
-	return &UF{p, make([]int, n)}
+    p := make([]int, n)
+    for i := range p { p[i] = i }
+    return &UF{p, make([]int, n)}
 }
 
 func (uf *UF) find(x int) int {
-	if uf.parent[x] != x {
-		uf.parent[x] = uf.find(uf.parent[x]) // => Path compression
-	}
-	return uf.parent[x]
+    if uf.parent[x] != x {
+        uf.parent[x] = uf.find(uf.parent[x]) // => Path compression
+    }
+    return uf.parent[x]
 }
 
 func (uf *UF) union(x, y int) bool {
-	px, py := uf.find(x), uf.find(y)
-	if px == py { return false }              // => Same component: cycle
-	if uf.rank[px] < uf.rank[py] { px, py = py, px }
-	uf.parent[py] = px                        // => Union by rank
-	if uf.rank[px] == uf.rank[py] { uf.rank[px]++ }
-	return true
+    px, py := uf.find(x), uf.find(y)
+    if px == py { return false }              // => Same component: cycle
+    if uf.rank[px] < uf.rank[py] { px, py = py, px }
+    uf.parent[py] = px                        // => Union by rank
+    if uf.rank[px] == uf.rank[py] { uf.rank[px]++ }
+    return true
 }
 
 func kruskal(n int, edges []Edge) (int, []Edge) {
-	sort.Slice(edges, func(i, j int) bool { return edges[i].w < edges[j].w })
-	uf := newUF(n)
-	mstWeight := 0
-	var mstEdges []Edge
-	for _, e := range edges {
-		if uf.union(e.u, e.v) {               // => Add edge if no cycle
-			mstWeight += e.w
-			mstEdges = append(mstEdges, e)
-		}
-		if len(mstEdges) == n-1 { break }     // => MST complete
-	}
-	return mstWeight, mstEdges
+    sort.Slice(edges, func(i, j int) bool { return edges[i].w < edges[j].w })
+    uf := newUF(n)
+    mstWeight := 0
+    var mstEdges []Edge
+    for _, e := range edges {
+        if uf.union(e.u, e.v) {               // => Add edge if no cycle
+            mstWeight += e.w
+            mstEdges = append(mstEdges, e)
+        }
+        if len(mstEdges) == n-1 { break }     // => MST complete
+    }
+    return mstWeight, mstEdges
 }
 
 func main() {
-	edges := []Edge{
-		{4,0,1},{8,0,7},{11,1,7},{7,1,2},{4,7,8},{9,7,6},
-		{2,8,2},{6,8,6},{7,2,5},{14,2,3},{10,3,4},{9,3,5},{2,5,4},{6,6,5},
-	}
-	weight, tree := kruskal(9, edges)
-	fmt.Println(weight)    // => Output: 37
-	fmt.Println(len(tree)) // => Output: 8
+    edges := []Edge{
+        {4,0,1},{8,0,7},{11,1,7},{7,1,2},{4,7,8},{9,7,6},
+        {2,8,2},{6,8,6},{7,2,5},{14,2,3},{10,3,4},{9,3,5},{2,5,4},{6,6,5},
+    }
+    weight, tree := kruskal(9, edges)
+    fmt.Println(weight)    // => Output: 37
+    fmt.Println(len(tree)) // => Output: 8
 }
 ```
 
@@ -2194,8 +2195,8 @@ int main(void) {
 package main
 
 import (
-	"container/heap"
-	"fmt"
+    "container/heap"
+    "fmt"
 )
 
 type PrimItem struct{ cost, vertex, from int }
@@ -2206,42 +2207,42 @@ func (h PrimHeap) Less(i, j int) bool  { return h[i].cost < h[j].cost }
 func (h PrimHeap) Swap(i, j int)       { h[i], h[j] = h[j], h[i] }
 func (h *PrimHeap) Push(x interface{}) { *h = append(*h, x.(PrimItem)) }
 func (h *PrimHeap) Pop() interface{} {
-	old := *h; n := len(old); x := old[n-1]; *h = old[:n-1]; return x
+    old := *h; n := len(old); x := old[n-1]; *h = old[:n-1]; return x
 }
 
 func prim(n int, adj [][]PrimItem) int {
-	visited := make([]bool, n)
-	h := &PrimHeap{{0, 0, -1}} // => Start at vertex 0
-	heap.Init(h)
-	total := 0
+    visited := make([]bool, n)
+    h := &PrimHeap{{0, 0, -1}} // => Start at vertex 0
+    heap.Init(h)
+    total := 0
 
-	for h.Len() > 0 {
-		item := heap.Pop(h).(PrimItem)
-		if visited[item.vertex] { continue }  // => Already in MST
-		visited[item.vertex] = true
-		total += item.cost
-		for _, e := range adj[item.vertex] {
-			if !visited[e.vertex] {
-				heap.Push(h, e)
-			}
-		}
-	}
-	return total
+    for h.Len() > 0 {
+        item := heap.Pop(h).(PrimItem)
+        if visited[item.vertex] { continue }  // => Already in MST
+        visited[item.vertex] = true
+        total += item.cost
+        for _, e := range adj[item.vertex] {
+            if !visited[e.vertex] {
+                heap.Push(h, e)
+            }
+        }
+    }
+    return total
 }
 
 func main() {
-	adj := make([][]PrimItem, 9)
-	for i := range adj { adj[i] = []PrimItem{} }
-	raw := [][3]int{
-		{4,0,1},{8,0,7},{11,1,7},{7,1,2},{4,7,8},{9,7,6},
-		{2,8,2},{6,8,6},{7,2,5},{14,2,3},{10,3,4},{9,3,5},{2,5,4},{6,6,5},
-	}
-	for _, e := range raw {
-		w, u, v := e[0], e[1], e[2]
-		adj[u] = append(adj[u], PrimItem{w, v, u}) // => Undirected
-		adj[v] = append(adj[v], PrimItem{w, u, v})
-	}
-	fmt.Println(prim(9, adj)) // => Output: 37
+    adj := make([][]PrimItem, 9)
+    for i := range adj { adj[i] = []PrimItem{} }
+    raw := [][3]int{
+        {4,0,1},{8,0,7},{11,1,7},{7,1,2},{4,7,8},{9,7,6},
+        {2,8,2},{6,8,6},{7,2,5},{14,2,3},{10,3,4},{9,3,5},{2,5,4},{6,6,5},
+    }
+    for _, e := range raw {
+        w, u, v := e[0], e[1], e[2]
+        adj[u] = append(adj[u], PrimItem{w, v, u}) // => Undirected
+        adj[v] = append(adj[v], PrimItem{w, u, v})
+    }
+    fmt.Println(prim(9, adj)) // => Output: 37
 }
 ```
 
@@ -2446,64 +2447,64 @@ package main
 import "fmt"
 
 type TrieNode struct {
-	children map[byte]*TrieNode // => char -> TrieNode mapping
-	isEnd    bool               // => true if a word ends at this node
+    children map[byte]*TrieNode // => char -> TrieNode mapping
+    isEnd    bool               // => true if a word ends at this node
 }
 
 type Trie struct {
-	root *TrieNode // => Root node represents empty prefix
+    root *TrieNode // => Root node represents empty prefix
 }
 
 func NewTrie() *Trie {
-	return &Trie{root: &TrieNode{children: map[byte]*TrieNode{}}}
+    return &Trie{root: &TrieNode{children: map[byte]*TrieNode{}}}
 }
 
 func (t *Trie) Insert(word string) {
-	node := t.root
-	for i := 0; i < len(word); i++ {
-		ch := word[i]
-		if _, ok := node.children[ch]; !ok {
-			node.children[ch] = &TrieNode{children: map[byte]*TrieNode{}}
-		}
-		node = node.children[ch] // => Traverse to child
-	}
-	node.isEnd = true // => Mark end of word
+    node := t.root
+    for i := 0; i < len(word); i++ {
+        ch := word[i]
+        if _, ok := node.children[ch]; !ok {
+            node.children[ch] = &TrieNode{children: map[byte]*TrieNode{}}
+        }
+        node = node.children[ch] // => Traverse to child
+    }
+    node.isEnd = true // => Mark end of word
 }
 
 func (t *Trie) Search(word string) bool {
-	node := t.root
-	for i := 0; i < len(word); i++ {
-		ch := word[i]
-		if _, ok := node.children[ch]; !ok {
-			return false // => Character not found -> word absent
-		}
-		node = node.children[ch]
-	}
-	return node.isEnd // => True only if exact word was inserted
+    node := t.root
+    for i := 0; i < len(word); i++ {
+        ch := word[i]
+        if _, ok := node.children[ch]; !ok {
+            return false // => Character not found -> word absent
+        }
+        node = node.children[ch]
+    }
+    return node.isEnd // => True only if exact word was inserted
 }
 
 func (t *Trie) StartsWith(prefix string) bool {
-	node := t.root
-	for i := 0; i < len(prefix); i++ {
-		ch := prefix[i]
-		if _, ok := node.children[ch]; !ok {
-			return false // => Prefix not in trie
-		}
-		node = node.children[ch]
-	}
-	return true // => Reached end of prefix -> prefix exists
+    node := t.root
+    for i := 0; i < len(prefix); i++ {
+        ch := prefix[i]
+        if _, ok := node.children[ch]; !ok {
+            return false // => Prefix not in trie
+        }
+        node = node.children[ch]
+    }
+    return true // => Reached end of prefix -> prefix exists
 }
 
 func main() {
-	trie := NewTrie()
-	for _, word := range []string{"apple", "app", "bat", "ball"} {
-		trie.Insert(word)
-	}
-	fmt.Println(trie.Search("apple"))      // => Output: true
-	fmt.Println(trie.Search("app"))        // => Output: true
-	fmt.Println(trie.Search("ap"))         // => Output: false
-	fmt.Println(trie.StartsWith("ap"))     // => Output: true
-	fmt.Println(trie.StartsWith("xyz"))    // => Output: false
+    trie := NewTrie()
+    for _, word := range []string{"apple", "app", "bat", "ball"} {
+        trie.Insert(word)
+    }
+    fmt.Println(trie.Search("apple"))      // => Output: true
+    fmt.Println(trie.Search("app"))        // => Output: true
+    fmt.Println(trie.Search("ap"))         // => Output: false
+    fmt.Println(trie.StartsWith("ap"))     // => Output: true
+    fmt.Println(trie.StartsWith("xyz"))    // => Output: false
 }
 ```
 
@@ -2698,56 +2699,56 @@ package main
 import "fmt"
 
 type SegmentTree struct {
-	tree []int
-	n    int
+    tree []int
+    n    int
 }
 
 func NewSegmentTree(data []int) *SegmentTree {
-	n := len(data)
-	st := &SegmentTree{tree: make([]int, 4*n), n: n}
-	st.build(data, 1, 0, n-1)
-	return st
+    n := len(data)
+    st := &SegmentTree{tree: make([]int, 4*n), n: n}
+    st.build(data, 1, 0, n-1)
+    return st
 }
 
 func (st *SegmentTree) build(data []int, node, start, end int) {
-	if start == end {
-		st.tree[node] = data[start] // => Leaf node holds the array value
-		return
-	}
-	mid := (start + end) / 2
-	st.build(data, 2*node, start, mid)        // => Build left child
-	st.build(data, 2*node+1, mid+1, end)      // => Build right child
-	st.tree[node] = st.tree[2*node] + st.tree[2*node+1] // => Sum of children
+    if start == end {
+        st.tree[node] = data[start] // => Leaf node holds the array value
+        return
+    }
+    mid := (start + end) / 2
+    st.build(data, 2*node, start, mid)        // => Build left child
+    st.build(data, 2*node+1, mid+1, end)      // => Build right child
+    st.tree[node] = st.tree[2*node] + st.tree[2*node+1] // => Sum of children
 }
 
 func (st *SegmentTree) Update(node, start, end, idx, val int) {
-	if start == end {
-		st.tree[node] = val // => Found the leaf: update it
-		return
-	}
-	mid := (start + end) / 2
-	if idx <= mid {
-		st.Update(2*node, start, mid, idx, val)
-	} else {
-		st.Update(2*node+1, mid+1, end, idx, val)
-	}
-	st.tree[node] = st.tree[2*node] + st.tree[2*node+1] // => Recompute sum
+    if start == end {
+        st.tree[node] = val // => Found the leaf: update it
+        return
+    }
+    mid := (start + end) / 2
+    if idx <= mid {
+        st.Update(2*node, start, mid, idx, val)
+    } else {
+        st.Update(2*node+1, mid+1, end, idx, val)
+    }
+    st.tree[node] = st.tree[2*node] + st.tree[2*node+1] // => Recompute sum
 }
 
 func (st *SegmentTree) Query(node, start, end, l, r int) int {
-	if r < start || end < l { return 0 }      // => No overlap
-	if l <= start && end <= r { return st.tree[node] } // => Total overlap
-	mid := (start + end) / 2
-	return st.Query(2*node, start, mid, l, r) +
-		st.Query(2*node+1, mid+1, end, l, r)  // => Partial overlap
+    if r < start || end < l { return 0 }      // => No overlap
+    if l <= start && end <= r { return st.tree[node] } // => Total overlap
+    mid := (start + end) / 2
+    return st.Query(2*node, start, mid, l, r) +
+        st.Query(2*node+1, mid+1, end, l, r)  // => Partial overlap
 }
 
 func main() {
-	data := []int{1, 2, 3, 4, 5, 6, 7, 8}
-	st := NewSegmentTree(data)
-	fmt.Println(st.Query(1, 0, 7, 1, 5))     // => Output: 20
-	st.Update(1, 0, 7, 3, 10)
-	fmt.Println(st.Query(1, 0, 7, 1, 5))     // => Output: 26
+    data := []int{1, 2, 3, 4, 5, 6, 7, 8}
+    st := NewSegmentTree(data)
+    fmt.Println(st.Query(1, 0, 7, 1, 5))     // => Output: 20
+    st.Update(1, 0, 7, 3, 10)
+    fmt.Println(st.Query(1, 0, 7, 1, 5))     // => Output: 26
 }
 ```
 
@@ -2935,44 +2936,44 @@ package main
 import "fmt"
 
 type UnionFind struct {
-	parent     []int
-	rank       []int
-	components int
+    parent     []int
+    rank       []int
+    components int
 }
 
 func NewUnionFind(n int) *UnionFind {
-	p := make([]int, n)
-	for i := range p { p[i] = i }            // => parent[i] = i initially
-	return &UnionFind{p, make([]int, n), n}
+    p := make([]int, n)
+    for i := range p { p[i] = i }            // => parent[i] = i initially
+    return &UnionFind{p, make([]int, n), n}
 }
 
 func (uf *UnionFind) Find(x int) int {
-	if uf.parent[x] != x {
-		uf.parent[x] = uf.Find(uf.parent[x]) // => Path compression
-	}
-	return uf.parent[x]
+    if uf.parent[x] != x {
+        uf.parent[x] = uf.Find(uf.parent[x]) // => Path compression
+    }
+    return uf.parent[x]
 }
 
 func (uf *UnionFind) Union(x, y int) bool {
-	rx, ry := uf.Find(x), uf.Find(y)
-	if rx == ry { return false }              // => Already in same set
-	if uf.rank[rx] < uf.rank[ry] { rx, ry = ry, rx }
-	uf.parent[ry] = rx                        // => Merge
-	if uf.rank[rx] == uf.rank[ry] { uf.rank[rx]++ }
-	uf.components--
-	return true
+    rx, ry := uf.Find(x), uf.Find(y)
+    if rx == ry { return false }              // => Already in same set
+    if uf.rank[rx] < uf.rank[ry] { rx, ry = ry, rx }
+    uf.parent[ry] = rx                        // => Merge
+    if uf.rank[rx] == uf.rank[ry] { uf.rank[rx]++ }
+    uf.components--
+    return true
 }
 
 func (uf *UnionFind) Connected(x, y int) bool { return uf.Find(x) == uf.Find(y) }
 
 func main() {
-	uf := NewUnionFind(6)                     // => 6 components
-	uf.Union(0, 1)
-	uf.Union(1, 2)
-	uf.Union(3, 4)
-	fmt.Println(uf.Connected(0, 2))           // => Output: true
-	fmt.Println(uf.Connected(0, 3))           // => Output: false
-	fmt.Println(uf.components)                // => Output: 3
+    uf := NewUnionFind(6)                     // => 6 components
+    uf.Union(0, 1)
+    uf.Union(1, 2)
+    uf.Union(3, 4)
+    fmt.Println(uf.Connected(0, 2))           // => Output: true
+    fmt.Println(uf.Connected(0, 3))           // => Output: false
+    fmt.Println(uf.components)                // => Output: 3
 }
 ```
 
@@ -3132,40 +3133,40 @@ package main
 import "fmt"
 
 func solveNQueens(n int) [][]int {
-	var solutions [][]int
-	cols := map[int]bool{}  // => Columns already having a queen
-	diag1 := map[int]bool{} // => Major diagonals: row - col is constant
-	diag2 := map[int]bool{} // => Minor diagonals: row + col is constant
+    var solutions [][]int
+    cols := map[int]bool{}  // => Columns already having a queen
+    diag1 := map[int]bool{} // => Major diagonals: row - col is constant
+    diag2 := map[int]bool{} // => Minor diagonals: row + col is constant
 
-	var backtrack func(row int, placement []int)
-	backtrack = func(row int, placement []int) {
-		if row == n {
-			sol := make([]int, n)
-			copy(sol, placement)
-			solutions = append(solutions, sol) // => All n queens placed
-			return
-		}
-		for col := 0; col < n; col++ {
-			d1, d2 := row-col, row+col
-			if cols[col] || diag1[d1] || diag2[d2] {
-				continue // => Prune: conflict
-			}
-			cols[col], diag1[d1], diag2[d2] = true, true, true
-			backtrack(row+1, append(placement, col))
-			cols[col], diag1[d1], diag2[d2] = false, false, false
-			placement = placement[:len(placement)-1] // => Undo
-		}
-	}
-	backtrack(0, []int{})
-	return solutions
+    var backtrack func(row int, placement []int)
+    backtrack = func(row int, placement []int) {
+        if row == n {
+            sol := make([]int, n)
+            copy(sol, placement)
+            solutions = append(solutions, sol) // => All n queens placed
+            return
+        }
+        for col := 0; col < n; col++ {
+            d1, d2 := row-col, row+col
+            if cols[col] || diag1[d1] || diag2[d2] {
+                continue // => Prune: conflict
+            }
+            cols[col], diag1[d1], diag2[d2] = true, true, true
+            backtrack(row+1, append(placement, col))
+            cols[col], diag1[d1], diag2[d2] = false, false, false
+            placement = placement[:len(placement)-1] // => Undo
+        }
+    }
+    backtrack(0, []int{})
+    return solutions
 }
 
 func main() {
-	solutions := solveNQueens(4)
-	fmt.Println(len(solutions)) // => Output: 2
-	for _, sol := range solutions {
-		fmt.Println(sol)        // => Output: [1 3 0 2] and [2 0 3 1]
-	}
+    solutions := solveNQueens(4)
+    fmt.Println(len(solutions)) // => Output: 2
+    for _, sol := range solutions {
+        fmt.Println(sol)        // => Output: [1 3 0 2] and [2 0 3 1]
+    }
 }
 ```
 
@@ -3328,48 +3329,48 @@ import "fmt"
 var board [9][9]int
 
 func isValid(row, col, num int) bool {
-	for i := 0; i < 9; i++ {
-		if board[row][i] == num { return false } // => num already in row
-		if board[i][col] == num { return false } // => num already in column
-	}
-	br, bc := 3*(row/3), 3*(col/3)
-	for r := br; r < br+3; r++ {
-		for c := bc; c < bc+3; c++ {
-			if board[r][c] == num { return false } // => num already in 3x3 box
-		}
-	}
-	return true
+    for i := 0; i < 9; i++ {
+        if board[row][i] == num { return false } // => num already in row
+        if board[i][col] == num { return false } // => num already in column
+    }
+    br, bc := 3*(row/3), 3*(col/3)
+    for r := br; r < br+3; r++ {
+        for c := bc; c < bc+3; c++ {
+            if board[r][c] == num { return false } // => num already in 3x3 box
+        }
+    }
+    return true
 }
 
 func backtrack() bool {
-	for row := 0; row < 9; row++ {
-		for col := 0; col < 9; col++ {
-			if board[row][col] == 0 { // => Found an empty cell
-				for num := 1; num <= 9; num++ {
-					if isValid(row, col, num) {
-						board[row][col] = num
-						if backtrack() { return true }
-						board[row][col] = 0 // => Backtrack
-					}
-				}
-				return false // => No valid digit works here
-			}
-		}
-	}
-	return true // => All cells filled
+    for row := 0; row < 9; row++ {
+        for col := 0; col < 9; col++ {
+            if board[row][col] == 0 { // => Found an empty cell
+                for num := 1; num <= 9; num++ {
+                    if isValid(row, col, num) {
+                        board[row][col] = num
+                        if backtrack() { return true }
+                        board[row][col] = 0 // => Backtrack
+                    }
+                }
+                return false // => No valid digit works here
+            }
+        }
+    }
+    return true // => All cells filled
 }
 
 func main() {
-	board = [9][9]int{
-		{5,3,0,0,7,0,0,0,0}, {6,0,0,1,9,5,0,0,0},
-		{0,9,8,0,0,0,0,6,0}, {8,0,0,0,6,0,0,0,3},
-		{4,0,0,8,0,3,0,0,1}, {7,0,0,0,2,0,0,0,6},
-		{0,6,0,0,0,0,2,8,0}, {0,0,0,4,1,9,0,0,5},
-		{0,0,0,0,8,0,0,7,9},
-	}
-	backtrack()
-	fmt.Println(board[0]) // => Output: [5 3 4 6 7 8 9 1 2]
-	fmt.Println(board[1]) // => Output: [6 7 2 1 9 5 3 4 8]
+    board = [9][9]int{
+        {5,3,0,0,7,0,0,0,0}, {6,0,0,1,9,5,0,0,0},
+        {0,9,8,0,0,0,0,6,0}, {8,0,0,0,6,0,0,0,3},
+        {4,0,0,8,0,3,0,0,1}, {7,0,0,0,2,0,0,0,6},
+        {0,6,0,0,0,0,2,8,0}, {0,0,0,4,1,9,0,0,5},
+        {0,0,0,0,8,0,0,7,9},
+    }
+    backtrack()
+    fmt.Println(board[0]) // => Output: [5 3 4 6 7 8 9 1 2]
+    fmt.Println(board[1]) // => Output: [6 7 2 1 9 5 3 4 8]
 }
 ```
 
@@ -3566,43 +3567,43 @@ package main
 import "fmt"
 
 func kmpSearch(text, pattern string) []int {
-	n, m := len(text), len(pattern)
-	if m == 0 { return nil }
+    n, m := len(text), len(pattern)
+    if m == 0 { return nil }
 
-	// => Build the LPS array
-	lps := make([]int, m)
-	length, i := 0, 1
-	for i < m {
-		if pattern[i] == pattern[length] {
-			length++
-			lps[i] = length
-			i++
-		} else if length > 0 {
-			length = lps[length-1] // => Fall back using lps
-		} else {
-			lps[i] = 0
-			i++
-		}
-	}
+    // => Build the LPS array
+    lps := make([]int, m)
+    length, i := 0, 1
+    for i < m {
+        if pattern[i] == pattern[length] {
+            length++
+            lps[i] = length
+            i++
+        } else if length > 0 {
+            length = lps[length-1] // => Fall back using lps
+        } else {
+            lps[i] = 0
+            i++
+        }
+    }
 
-	// => KMP search
-	var matches []int
-	i, j := 0, 0
-	for i < n {
-		if text[i] == pattern[j] { i++; j++ }
-		if j == m {
-			matches = append(matches, i-j) // => Match found
-			j = lps[j-1]
-		} else if i < n && text[i] != pattern[j] {
-			if j > 0 { j = lps[j-1] } else { i++ }
-		}
-	}
-	return matches
+    // => KMP search
+    var matches []int
+    i, j := 0, 0
+    for i < n {
+        if text[i] == pattern[j] { i++; j++ }
+        if j == m {
+            matches = append(matches, i-j) // => Match found
+            j = lps[j-1]
+        } else if i < n && text[i] != pattern[j] {
+            if j > 0 { j = lps[j-1] } else { i++ }
+        }
+    }
+    return matches
 }
 
 func main() {
-	fmt.Println(kmpSearch("AABAACAADAABAABA", "AABA")) // => Output: [0 9 12]
-	fmt.Println(kmpSearch("aababab", "abab"))           // => Output: [1 3]
+    fmt.Println(kmpSearch("AABAACAADAABAABA", "AABA")) // => Output: [0 9 12]
+    fmt.Println(kmpSearch("aababab", "abab"))           // => Output: [1 3]
 }
 ```
 
@@ -3770,38 +3771,38 @@ package main
 import "fmt"
 
 func rabinKarp(text, pattern string) []int {
-	n, m := len(text), len(pattern)
-	if m > n { return nil }
+    n, m := len(text), len(pattern)
+    if m > n { return nil }
 
-	const BASE = 256
-	const MOD = 1000000007
+    const BASE = 256
+    const MOD = 1000000007
 
-	// => Precompute BASE^(m-1) mod MOD
-	highPow := 1
-	for i := 0; i < m-1; i++ { highPow = (highPow * BASE) % MOD }
+    // => Precompute BASE^(m-1) mod MOD
+    highPow := 1
+    for i := 0; i < m-1; i++ { highPow = (highPow * BASE) % MOD }
 
-	patHash, winHash := 0, 0
-	for i := 0; i < m; i++ {
-		patHash = (patHash*BASE + int(pattern[i])) % MOD
-		winHash = (winHash*BASE + int(text[i])) % MOD
-	}
+    patHash, winHash := 0, 0
+    for i := 0; i < m; i++ {
+        patHash = (patHash*BASE + int(pattern[i])) % MOD
+        winHash = (winHash*BASE + int(text[i])) % MOD
+    }
 
-	var matches []int
-	for i := 0; i <= n-m; i++ {
-		if winHash == patHash && text[i:i+m] == pattern {
-			matches = append(matches, i) // => Hash matches + verified
-		}
-		if i < n-m {
-			winHash = (winHash - int(text[i])*highPow%MOD + MOD) % MOD
-			winHash = (winHash*BASE + int(text[i+m])) % MOD
-		}
-	}
-	return matches
+    var matches []int
+    for i := 0; i <= n-m; i++ {
+        if winHash == patHash && text[i:i+m] == pattern {
+            matches = append(matches, i) // => Hash matches + verified
+        }
+        if i < n-m {
+            winHash = (winHash - int(text[i])*highPow%MOD + MOD) % MOD
+            winHash = (winHash*BASE + int(text[i+m])) % MOD
+        }
+    }
+    return matches
 }
 
 func main() {
-	fmt.Println(rabinKarp("GEEKS FOR GEEKS", "GEEKS")) // => Output: [0 10]
-	fmt.Println(rabinKarp("aaaa", "aa"))                // => Output: [0 1 2]
+    fmt.Println(rabinKarp("GEEKS FOR GEEKS", "GEEKS")) // => Output: [0 10]
+    fmt.Println(rabinKarp("aaaa", "aa"))                // => Output: [0 1 2]
 }
 ```
 
@@ -3959,44 +3960,44 @@ int main(void) {
 package main
 
 import (
-	"fmt"
-	"math/bits"
+    "fmt"
+    "math/bits"
 )
 
 func popcount(x uint) int {
-	count := 0
-	for x != 0 {
-		x &= x - 1 // => Clear the lowest set bit
-		count++
-	}
-	return count
+    count := 0
+    for x != 0 {
+        x &= x - 1 // => Clear the lowest set bit
+        count++
+    }
+    return count
 }
 
 func main() {
-	var n uint = 0xB6 // => n = 182 = 0b10110110
+    var n uint = 0xB6 // => n = 182 = 0b10110110
 
-	// => Check if k-th bit is set (0-indexed from right)
-	k := uint(4)
-	isSet := (n & (1 << k)) != 0             // => 1 << 4 = 0b10000; AND extracts bit k
-	fmt.Println(isSet)                        // => Output: true
+    // => Check if k-th bit is set (0-indexed from right)
+    k := uint(4)
+    isSet := (n & (1 << k)) != 0             // => 1 << 4 = 0b10000; AND extracts bit k
+    fmt.Println(isSet)                        // => Output: true
 
-	// => Set the k-th bit
-	_ = n | (1 << k)                         // => OR sets bit k to 1
+    // => Set the k-th bit
+    _ = n | (1 << k)                         // => OR sets bit k to 1
 
-	// => Clear the k-th bit
-	_ = n & ^(1 << k)                        // => ^(1 << k) has all bits 1 except bit k
+    // => Clear the k-th bit
+    _ = n & ^(1 << k)                        // => ^(1 << k) has all bits 1 except bit k
 
-	// => Toggle the k-th bit
-	_ = n ^ (1 << k)                         // => XOR flips bit k
+    // => Toggle the k-th bit
+    _ = n ^ (1 << k)                         // => XOR flips bit k
 
-	// => Count set bits
-	fmt.Println(popcount(182))                // => Output: 5
-	fmt.Println(bits.OnesCount(182))          // => Output: 5 (standard library)
+    // => Count set bits
+    fmt.Println(popcount(182))                // => Output: 5
+    fmt.Println(bits.OnesCount(182))          // => Output: 5 (standard library)
 
-	// => Isolate lowest set bit
-	x := 12                                  // => x = 0b1100
-	lsb := x & (-x)
-	fmt.Println(lsb)                          // => Output: 4 (0b0100)
+    // => Isolate lowest set bit
+    x := 12                                  // => x = 0b1100
+    lsb := x & (-x)
+    fmt.Println(lsb)                          // => Output: 4 (0b0100)
 }
 ```
 
@@ -4146,30 +4147,30 @@ package main
 import "fmt"
 
 func findSingle(nums []int) int {
-	result := 0
-	for _, n := range nums {
-		result ^= n // => XOR cancels pairs: a^a=0; unique survives
-	}
-	return result
+    result := 0
+    for _, n := range nums {
+        result ^= n // => XOR cancels pairs: a^a=0; unique survives
+    }
+    return result
 }
 
 func findTwoSingles(nums []int) (int, int) {
-	xorAll := 0
-	for _, n := range nums { xorAll ^= n }   // => xorAll = a ^ b
-	diffBit := xorAll & (-xorAll)             // => Isolate lowest differing bit
+    xorAll := 0
+    for _, n := range nums { xorAll ^= n }   // => xorAll = a ^ b
+    diffBit := xorAll & (-xorAll)             // => Isolate lowest differing bit
 
-	a := 0
-	for _, n := range nums {
-		if n&diffBit != 0 { a ^= n }         // => XOR group with diffBit set
-	}
-	b := xorAll ^ a                           // => b = (a^b) ^ a = b
-	return a, b
+    a := 0
+    for _, n := range nums {
+        if n&diffBit != 0 { a ^= n }         // => XOR group with diffBit set
+    }
+    b := xorAll ^ a                           // => b = (a^b) ^ a = b
+    return a, b
 }
 
 func main() {
-	fmt.Println(findSingle([]int{4, 1, 2, 1, 2}))        // => Output: 4
-	a, b := findTwoSingles([]int{1, 2, 3, 2, 3, 4})
-	fmt.Println(a, b)                                      // => Output: 1 4 (in some order)
+    fmt.Println(findSingle([]int{4, 1, 2, 1, 2}))        // => Output: 4
+    a, b := findTwoSingles([]int{1, 2, 3, 2, 3, 4})
+    fmt.Println(a, b)                                      // => Output: 1 4 (in some order)
 }
 ```
 
@@ -4314,25 +4315,25 @@ package main
 import "fmt"
 
 func nextGreaterElement(nums []int) []int {
-	n := len(nums)
-	result := make([]int, n)
-	for i := range result { result[i] = -1 } // => Default: no greater element
-	stack := []int{}                          // => Stack holds indices
+    n := len(nums)
+    result := make([]int, n)
+    for i := range result { result[i] = -1 } // => Default: no greater element
+    stack := []int{}                          // => Stack holds indices
 
-	for i := 0; i < n; i++ {
-		for len(stack) > 0 && nums[i] > nums[stack[len(stack)-1]] {
-			idx := stack[len(stack)-1]
-			stack = stack[:len(stack)-1]
-			result[idx] = nums[i]             // => idx's next greater element is nums[i]
-		}
-		stack = append(stack, i)              // => Push current index
-	}
-	return result
+    for i := 0; i < n; i++ {
+        for len(stack) > 0 && nums[i] > nums[stack[len(stack)-1]] {
+            idx := stack[len(stack)-1]
+            stack = stack[:len(stack)-1]
+            result[idx] = nums[i]             // => idx's next greater element is nums[i]
+        }
+        stack = append(stack, i)              // => Push current index
+    }
+    return result
 }
 
 func main() {
-	fmt.Println(nextGreaterElement([]int{4, 1, 2, 3}))    // => Output: [-1 2 3 -1]
-	fmt.Println(nextGreaterElement([]int{2, 1, 2, 4, 3})) // => Output: [4 2 4 -1 -1]
+    fmt.Println(nextGreaterElement([]int{4, 1, 2, 3}))    // => Output: [-1 2 3 -1]
+    fmt.Println(nextGreaterElement([]int{2, 1, 2, 4, 3})) // => Output: [4 2 4 -1 -1]
 }
 ```
 
@@ -4456,28 +4457,28 @@ package main
 import "fmt"
 
 func slidingWindowMax(nums []int, k int) []int {
-	dq := []int{}                             // => Stores indices; values are decreasing
-	var result []int
+    dq := []int{}                             // => Stores indices; values are decreasing
+    var result []int
 
-	for i := 0; i < len(nums); i++ {
-		// => Remove indices out of current window
-		for len(dq) > 0 && dq[0] < i-k+1 { dq = dq[1:] }
+    for i := 0; i < len(nums); i++ {
+        // => Remove indices out of current window
+        for len(dq) > 0 && dq[0] < i-k+1 { dq = dq[1:] }
 
-		// => Maintain decreasing order
-		for len(dq) > 0 && nums[dq[len(dq)-1]] < nums[i] { dq = dq[:len(dq)-1] }
+        // => Maintain decreasing order
+        for len(dq) > 0 && nums[dq[len(dq)-1]] < nums[i] { dq = dq[:len(dq)-1] }
 
-		dq = append(dq, i)
+        dq = append(dq, i)
 
-		if i >= k-1 {
-			result = append(result, nums[dq[0]]) // => Front is window max
-		}
-	}
-	return result
+        if i >= k-1 {
+            result = append(result, nums[dq[0]]) // => Front is window max
+        }
+    }
+    return result
 }
 
 func main() {
-	fmt.Println(slidingWindowMax([]int{1, 3, -1, -3, 5, 3, 6, 7}, 3))
-	// => Output: [3 3 5 5 6 7]
+    fmt.Println(slidingWindowMax([]int{1, 3, -1, -3, 5, 3, 6, 7}, 3))
+    // => Output: [3 3 5 5 6 7]
 }
 ```
 
@@ -4630,35 +4631,35 @@ package main
 import "fmt"
 
 func countingSortByDigit(arr []int, exp int) []int {
-	n := len(arr)
-	output := make([]int, n)
-	count := make([]int, 10)
+    n := len(arr)
+    output := make([]int, n)
+    count := make([]int, 10)
 
-	for _, num := range arr { count[(num/exp)%10]++ }
-	for i := 1; i < 10; i++ { count[i] += count[i-1] } // => Cumulative count
-	for i := n - 1; i >= 0; i-- {             // => Backwards for stable sort
-		digit := (arr[i] / exp) % 10
-		count[digit]--
-		output[count[digit]] = arr[i]
-	}
-	return output
+    for _, num := range arr { count[(num/exp)%10]++ }
+    for i := 1; i < 10; i++ { count[i] += count[i-1] } // => Cumulative count
+    for i := n - 1; i >= 0; i-- {             // => Backwards for stable sort
+        digit := (arr[i] / exp) % 10
+        count[digit]--
+        output[count[digit]] = arr[i]
+    }
+    return output
 }
 
 func radixSort(arr []int) []int {
-	if len(arr) == 0 { return arr }
-	maxVal := arr[0]
-	for _, v := range arr { if v > maxVal { maxVal = v } }
+    if len(arr) == 0 { return arr }
+    maxVal := arr[0]
+    for _, v := range arr { if v > maxVal { maxVal = v } }
 
-	for exp := 1; maxVal/exp > 0; exp *= 10 {
-		arr = countingSortByDigit(arr, exp)   // => Each pass: stable sort by one digit
-	}
-	return arr
+    for exp := 1; maxVal/exp > 0; exp *= 10 {
+        arr = countingSortByDigit(arr, exp)   // => Each pass: stable sort by one digit
+    }
+    return arr
 }
 
 func main() {
-	nums := []int{170, 45, 75, 90, 802, 24, 2, 66}
-	fmt.Println(radixSort(nums))
-	// => Output: [2 24 45 66 75 90 170 802]
+    nums := []int{170, 45, 75, 90, 802, 24, 2, 66}
+    fmt.Println(radixSort(nums))
+    // => Output: [2 24 45 66 75 90 170 802]
 }
 ```
 
@@ -4814,39 +4815,39 @@ package main
 import "fmt"
 
 type DynamicArray struct {
-	data     []int
-	capacity int
-	size     int
+    data     []int
+    capacity int
+    size     int
 }
 
 func NewDynamicArray() *DynamicArray {
-	return &DynamicArray{data: make([]int, 1), capacity: 1, size: 0}
+    return &DynamicArray{data: make([]int, 1), capacity: 1, size: 0}
 }
 
 func (da *DynamicArray) Append(val int) {
-	if da.size == da.capacity {
-		da.capacity *= 2 // => Double the capacity
-		newData := make([]int, da.capacity)
-		copy(newData, da.data) // => Copy all elements
-		da.data = newData
-	}
-	da.data[da.size] = val // => Insert at next free position; O(1)
-	da.size++
+    if da.size == da.capacity {
+        da.capacity *= 2 // => Double the capacity
+        newData := make([]int, da.capacity)
+        copy(newData, da.data) // => Copy all elements
+        da.data = newData
+    }
+    da.data[da.size] = val // => Insert at next free position; O(1)
+    da.size++
 }
 
 func (da *DynamicArray) Get(idx int) int { return da.data[idx] }
 
 func (da *DynamicArray) LoadFactor() float64 {
-	return float64(da.size) / float64(da.capacity)
+    return float64(da.size) / float64(da.capacity)
 }
 
 func main() {
-	da := NewDynamicArray()
-	for i := 0; i < 10; i++ { da.Append(i) }
-	fmt.Println(da.size)                      // => Output: 10
-	fmt.Println(da.Get(5))                    // => Output: 5
-	fmt.Println(da.capacity)                  // => Output: 16
-	fmt.Printf("%.3f\n", da.LoadFactor())     // => Output: 0.625
+    da := NewDynamicArray()
+    for i := 0; i < 10; i++ { da.Append(i) }
+    fmt.Println(da.size)                      // => Output: 10
+    fmt.Println(da.Get(5))                    // => Output: 5
+    fmt.Println(da.capacity)                  // => Output: 16
+    fmt.Printf("%.3f\n", da.LoadFactor())     // => Output: 0.625
 }
 ```
 
@@ -5003,39 +5004,39 @@ package main
 import "fmt"
 
 type TwoStackQueue struct {
-	inbox  []int // => New elements pushed here (enqueue)
-	outbox []int // => Elements consumed from here (dequeue)
+    inbox  []int // => New elements pushed here (enqueue)
+    outbox []int // => Elements consumed from here (dequeue)
 }
 
 func (q *TwoStackQueue) Enqueue(val int) {
-	q.inbox = append(q.inbox, val) // => Always O(1): push to inbox
+    q.inbox = append(q.inbox, val) // => Always O(1): push to inbox
 }
 
 func (q *TwoStackQueue) Dequeue() int {
-	if len(q.outbox) == 0 {
-		for len(q.inbox) > 0 {
-			n := len(q.inbox)
-			q.outbox = append(q.outbox, q.inbox[n-1])
-			q.inbox = q.inbox[:n-1]
-			// => Transfer: reverse inbox into outbox; each element transferred once
-		}
-	}
-	n := len(q.outbox)
-	val := q.outbox[n-1]
-	q.outbox = q.outbox[:n-1]
-	return val // => O(1): pop from outbox
+    if len(q.outbox) == 0 {
+        for len(q.inbox) > 0 {
+            n := len(q.inbox)
+            q.outbox = append(q.outbox, q.inbox[n-1])
+            q.inbox = q.inbox[:n-1]
+            // => Transfer: reverse inbox into outbox; each element transferred once
+        }
+    }
+    n := len(q.outbox)
+    val := q.outbox[n-1]
+    q.outbox = q.outbox[:n-1]
+    return val // => O(1): pop from outbox
 }
 
 func main() {
-	q := &TwoStackQueue{}
-	for i := 0; i < 5; i++ { q.Enqueue(i) }
-	fmt.Println(q.Dequeue()) // => Output: 0
-	fmt.Println(q.Dequeue()) // => Output: 1
-	q.Enqueue(5)
-	fmt.Println(q.Dequeue()) // => Output: 2
-	fmt.Println(q.Dequeue()) // => Output: 3
-	fmt.Println(q.Dequeue()) // => Output: 4
-	fmt.Println(q.Dequeue()) // => Output: 5
+    q := &TwoStackQueue{}
+    for i := 0; i < 5; i++ { q.Enqueue(i) }
+    fmt.Println(q.Dequeue()) // => Output: 0
+    fmt.Println(q.Dequeue()) // => Output: 1
+    q.Enqueue(5)
+    fmt.Println(q.Dequeue()) // => Output: 2
+    fmt.Println(q.Dequeue()) // => Output: 3
+    fmt.Println(q.Dequeue()) // => Output: 4
+    fmt.Println(q.Dequeue()) // => Output: 5
 }
 ```
 
@@ -5185,41 +5186,41 @@ package main
 import "fmt"
 
 type FenwickTree struct {
-	tree []int
-	n    int
+    tree []int
+    n    int
 }
 
 func NewFenwickTree(n int) *FenwickTree {
-	return &FenwickTree{tree: make([]int, n+1), n: n} // => 1-indexed; tree[0] unused
+    return &FenwickTree{tree: make([]int, n+1), n: n} // => 1-indexed; tree[0] unused
 }
 
 func (ft *FenwickTree) Update(i, delta int) {
-	for ; i <= ft.n; i += i & (-i) { // => Move to next responsible ancestor
-		ft.tree[i] += delta
-	}
+    for ; i <= ft.n; i += i & (-i) { // => Move to next responsible ancestor
+        ft.tree[i] += delta
+    }
 }
 
 func (ft *FenwickTree) PrefixSum(i int) int {
-	s := 0
-	for ; i > 0; i -= i & (-i) { // => Move to parent: remove lowest set bit
-		s += ft.tree[i]
-	}
-	return s
+    s := 0
+    for ; i > 0; i -= i & (-i) { // => Move to parent: remove lowest set bit
+        s += ft.tree[i]
+    }
+    return s
 }
 
 func (ft *FenwickTree) RangeSum(l, r int) int {
-	return ft.PrefixSum(r) - ft.PrefixSum(l-1)
+    return ft.PrefixSum(r) - ft.PrefixSum(l-1)
 }
 
 func main() {
-	data := []int{3, 2, -1, 6, 5, 4, -3, 3, 7, 2, 3}
-	ft := NewFenwickTree(len(data))
-	for i, v := range data { ft.Update(i+1, v) } // => Build (1-indexed)
+    data := []int{3, 2, -1, 6, 5, 4, -3, 3, 7, 2, 3}
+    ft := NewFenwickTree(len(data))
+    for i, v := range data { ft.Update(i+1, v) } // => Build (1-indexed)
 
-	fmt.Println(ft.PrefixSum(6))              // => Output: 19
-	fmt.Println(ft.RangeSum(2, 6))            // => Output: 16
-	ft.Update(3, 10)
-	fmt.Println(ft.RangeSum(2, 6))            // => Output: 26
+    fmt.Println(ft.PrefixSum(6))              // => Output: 19
+    fmt.Println(ft.RangeSum(2, 6))            // => Output: 16
+    ft.Update(3, 10)
+    fmt.Println(ft.RangeSum(2, 6))            // => Output: 26
 }
 ```
 
@@ -5378,33 +5379,33 @@ package main
 import "fmt"
 
 func floodFill(grid [][]int, sr, sc, newColor int) [][]int {
-	rows, cols := len(grid), len(grid[0])
-	oldColor := grid[sr][sc]
-	if oldColor == newColor { return grid }   // => Prevents infinite loop
+    rows, cols := len(grid), len(grid[0])
+    oldColor := grid[sr][sc]
+    if oldColor == newColor { return grid }   // => Prevents infinite loop
 
-	type pos struct{ r, c int }
-	queue := []pos{{sr, sc}}
-	grid[sr][sc] = newColor                   // => Mark start immediately
+    type pos struct{ r, c int }
+    queue := []pos{{sr, sc}}
+    grid[sr][sc] = newColor                   // => Mark start immediately
 
-	dirs := [][2]int{{0,1},{0,-1},{1,0},{-1,0}} // => 4-directional
-	for len(queue) > 0 {
-		p := queue[0]; queue = queue[1:]
-		for _, d := range dirs {
-			nr, nc := p.r+d[0], p.c+d[1]
-			if nr >= 0 && nr < rows && nc >= 0 && nc < cols && grid[nr][nc] == oldColor {
-				grid[nr][nc] = newColor       // => Mark before enqueuing
-				queue = append(queue, pos{nr, nc})
-			}
-		}
-	}
-	return grid
+    dirs := [][2]int{{0,1},{0,-1},{1,0},{-1,0}} // => 4-directional
+    for len(queue) > 0 {
+        p := queue[0]; queue = queue[1:]
+        for _, d := range dirs {
+            nr, nc := p.r+d[0], p.c+d[1]
+            if nr >= 0 && nr < rows && nc >= 0 && nc < cols && grid[nr][nc] == oldColor {
+                grid[nr][nc] = newColor       // => Mark before enqueuing
+                queue = append(queue, pos{nr, nc})
+            }
+        }
+    }
+    return grid
 }
 
 func main() {
-	grid := [][]int{{1,1,1},{1,1,0},{1,0,1}}
-	result := floodFill(grid, 1, 1, 2)
-	for _, row := range result { fmt.Println(row) }
-	// => Output: [2 2 2] [2 2 0] [2 0 1]
+    grid := [][]int{{1,1,1},{1,1,0},{1,0,1}}
+    result := floodFill(grid, 1, 1, 2)
+    for _, row := range result { fmt.Println(row) }
+    // => Output: [2 2 2] [2 2 0] [2 0 1]
 }
 ```
 
@@ -5639,14 +5640,14 @@ int main(void) {
 package main
 
 import (
-	"container/heap"
-	"fmt"
-	"math"
+    "container/heap"
+    "fmt"
+    "math"
 )
 
 type ANode struct {
-	f    float64
-	r, c int
+    f    float64
+    r, c int
 }
 type AHeap []ANode
 
@@ -5655,71 +5656,71 @@ func (h AHeap) Less(i, j int) bool  { return h[i].f < h[j].f }
 func (h AHeap) Swap(i, j int)       { h[i], h[j] = h[j], h[i] }
 func (h *AHeap) Push(x interface{}) { *h = append(*h, x.(ANode)) }
 func (h *AHeap) Pop() interface{} {
-	old := *h; n := len(old); x := old[n-1]; *h = old[:n-1]; return x
+    old := *h; n := len(old); x := old[n-1]; *h = old[:n-1]; return x
 }
 
 func heuristic(r1, c1, r2, c2 int) float64 {
-	dr := float64(r1 - r2); dc := float64(c1 - c2)
-	return math.Sqrt(dr*dr + dc*dc) // => Euclidean distance heuristic
+    dr := float64(r1 - r2); dc := float64(c1 - c2)
+    return math.Sqrt(dr*dr + dc*dc) // => Euclidean distance heuristic
 }
 
 func astar(grid [][]int, start, goal [2]int) [][2]int {
-	rows, cols := len(grid), len(grid[0])
-	gScore := make([][]float64, rows)
-	cameFrom := make([][][2]int, rows)
-	closed := make([][]bool, rows)
-	for i := range gScore {
-		gScore[i] = make([]float64, cols)
-		cameFrom[i] = make([][2]int, cols)
-		closed[i] = make([]bool, cols)
-		for j := range gScore[i] {
-			gScore[i][j] = math.MaxFloat64
-			cameFrom[i][j] = [2]int{-1, -1}
-		}
-	}
-	gScore[start[0]][start[1]] = 0
-	h := &AHeap{{heuristic(start[0], start[1], goal[0], goal[1]), start[0], start[1]}}
-	heap.Init(h)
+    rows, cols := len(grid), len(grid[0])
+    gScore := make([][]float64, rows)
+    cameFrom := make([][][2]int, rows)
+    closed := make([][]bool, rows)
+    for i := range gScore {
+        gScore[i] = make([]float64, cols)
+        cameFrom[i] = make([][2]int, cols)
+        closed[i] = make([]bool, cols)
+        for j := range gScore[i] {
+            gScore[i][j] = math.MaxFloat64
+            cameFrom[i][j] = [2]int{-1, -1}
+        }
+    }
+    gScore[start[0]][start[1]] = 0
+    h := &AHeap{{heuristic(start[0], start[1], goal[0], goal[1]), start[0], start[1]}}
+    heap.Init(h)
 
-	dirs := [][2]int{{-1,0},{1,0},{0,-1},{0,1},{-1,-1},{-1,1},{1,-1},{1,1}}
-	for h.Len() > 0 {
-		cur := heap.Pop(h).(ANode)
-		r, c := cur.r, cur.c
-		if closed[r][c] { continue }
-		if r == goal[0] && c == goal[1] {
-			// => Reconstruct path
-			var path [][2]int
-			for r != -1 {
-				path = append([][2]int{{r, c}}, path...)
-				nr, nc := cameFrom[r][c][0], cameFrom[r][c][1]
-				r, c = nr, nc
-			}
-			return path
-		}
-		closed[r][c] = true
-		for _, d := range dirs {
-			nr, nc := r+d[0], c+d[1]
-			if nr < 0 || nr >= rows || nc < 0 || nc >= cols { continue }
-			if grid[nr][nc] == 1 || closed[nr][nc] { continue }
-			step := math.Sqrt(float64(d[0]*d[0] + d[1]*d[1]))
-			ng := gScore[r][c] + step
-			if ng < gScore[nr][nc] {
-				gScore[nr][nc] = ng
-				cameFrom[nr][nc] = [2]int{r, c}
-				heap.Push(h, ANode{ng + heuristic(nr, nc, goal[0], goal[1]), nr, nc})
-			}
-		}
-	}
-	return nil // => No path exists
+    dirs := [][2]int{{-1,0},{1,0},{0,-1},{0,1},{-1,-1},{-1,1},{1,-1},{1,1}}
+    for h.Len() > 0 {
+        cur := heap.Pop(h).(ANode)
+        r, c := cur.r, cur.c
+        if closed[r][c] { continue }
+        if r == goal[0] && c == goal[1] {
+            // => Reconstruct path
+            var path [][2]int
+            for r != -1 {
+                path = append([][2]int{{r, c}}, path...)
+                nr, nc := cameFrom[r][c][0], cameFrom[r][c][1]
+                r, c = nr, nc
+            }
+            return path
+        }
+        closed[r][c] = true
+        for _, d := range dirs {
+            nr, nc := r+d[0], c+d[1]
+            if nr < 0 || nr >= rows || nc < 0 || nc >= cols { continue }
+            if grid[nr][nc] == 1 || closed[nr][nc] { continue }
+            step := math.Sqrt(float64(d[0]*d[0] + d[1]*d[1]))
+            ng := gScore[r][c] + step
+            if ng < gScore[nr][nc] {
+                gScore[nr][nc] = ng
+                cameFrom[nr][nc] = [2]int{r, c}
+                heap.Push(h, ANode{ng + heuristic(nr, nc, goal[0], goal[1]), nr, nc})
+            }
+        }
+    }
+    return nil // => No path exists
 }
 
 func main() {
-	grid := [][]int{
-		{0,0,0,0,1},{0,1,1,0,0},{0,0,0,1,0},{0,1,0,0,0},{0,0,0,1,0},
-	}
-	path := astar(grid, [2]int{0, 0}, [2]int{4, 4})
-	fmt.Println(path)
-	// => Output: path from (0,0) to (4,4)
+    grid := [][]int{
+        {0,0,0,0,1},{0,1,1,0,0},{0,0,0,1,0},{0,1,0,0,0},{0,0,0,1,0},
+    }
+    path := astar(grid, [2]int{0, 0}, [2]int{4, 4})
+    fmt.Println(path)
+    // => Output: path from (0,0) to (4,4)
 }
 ```
 

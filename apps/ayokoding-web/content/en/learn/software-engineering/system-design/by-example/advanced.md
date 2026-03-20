@@ -40,81 +40,81 @@ graph TD
 package main
 
 import (
-	"fmt"
-	"errors"
-	"sync"
+    "fmt"
+    "errors"
+    "sync"
 )
 
 type CPDatabase struct {
-	data        map[string]string // => primary data store
-	partitioned bool              // => partition flag; true means split-brain risk
-	mu          sync.Mutex
+    data        map[string]string // => primary data store
+    partitioned bool              // => partition flag; true means split-brain risk
+    mu          sync.Mutex
 }
 
 func NewCPDatabase() *CPDatabase {
-	return &CPDatabase{data: make(map[string]string)}
+    return &CPDatabase{data: make(map[string]string)}
 }
 
 func (db *CPDatabase) Write(key, value string) bool {
-	// => Writes always succeed on primary node
-	db.mu.Lock()
-	defer db.mu.Unlock()
-	db.data[key] = value
-	return true // => write confirmed
+    // => Writes always succeed on primary node
+    db.mu.Lock()
+    defer db.mu.Unlock()
+    db.data[key] = value
+    return true // => write confirmed
 }
 
 func (db *CPDatabase) Read(key string) (string, error) {
-	// => CP: refuses reads during partition to prevent stale data
-	if db.partitioned {
-		return "", errors.New("Service unavailable: partition detected")
-		// => raises instead of returning possibly stale value
-	}
-	db.mu.Lock()
-	defer db.mu.Unlock()
-	return db.data[key], nil // => returns current consistent value
+    // => CP: refuses reads during partition to prevent stale data
+    if db.partitioned {
+        return "", errors.New("Service unavailable: partition detected")
+        // => raises instead of returning possibly stale value
+    }
+    db.mu.Lock()
+    defer db.mu.Unlock()
+    return db.data[key], nil // => returns current consistent value
 }
 
 type APDatabase struct {
-	data        map[string]string // => local data, may diverge from other nodes
-	partitioned bool
+    data        map[string]string // => local data, may diverge from other nodes
+    partitioned bool
 }
 
 func NewAPDatabase() *APDatabase {
-	return &APDatabase{data: make(map[string]string)}
+    return &APDatabase{data: make(map[string]string)}
 }
 
 func (db *APDatabase) Write(key, value string) bool {
-	db.data[key] = value // => writes locally even during partition
-	return true          // => always acknowledges write
+    db.data[key] = value // => writes locally even during partition
+    return true          // => always acknowledges write
 }
 
 func (db *APDatabase) Read(key string) string {
-	// => AP: always responds, even if value is stale
-	return db.data[key]
-	// => caller cannot know if value is the most recent globally
+    // => AP: always responds, even if value is stale
+    return db.data[key]
+    // => caller cannot know if value is the most recent globally
 }
 
 func main() {
-	// Demonstrate the tradeoff
-	cpDB := NewCPDatabase() // => CP database instance
-	apDB := NewAPDatabase() // => AP database instance
+    // Demonstrate the tradeoff
+    cpDB := NewCPDatabase() // => CP database instance
+    apDB := NewAPDatabase() // => AP database instance
 
-	cpDB.Write("user:1", "alice") // => stored: {"user:1": "alice"}
-	apDB.Write("user:1", "alice") // => stored: {"user:1": "alice"}
+    cpDB.Write("user:1", "alice") // => stored: {"user:1": "alice"}
+    apDB.Write("user:1", "alice") // => stored: {"user:1": "alice"}
 
-	// Simulate partition
-	cpDB.partitioned = true // => partition starts
-	apDB.partitioned = true // => partition starts
+    // Simulate partition
+    cpDB.partitioned = true // => partition starts
+    apDB.partitioned = true // => partition starts
 
-	_, err := cpDB.Read("user:1") // => returns error (CP refuses)
-	if err != nil {
-		fmt.Printf("CP during partition: %v\n", err)
-		// => Output: CP during partition: Service unavailable: partition detected
-	}
+    _, err := cpDB.Read("user:1") // => returns error (CP refuses)
+    if err != nil {
+        fmt.Printf("CP during partition: %v\n", err)
+        // => Output: CP during partition: Service unavailable: partition detected
+    }
 
-	val := apDB.Read("user:1") // => returns "alice" (possibly stale)
-	fmt.Printf("AP during partition: %s\n", val)
-	// => Output: AP during partition: alice
+    val := apDB.Read("user:1") // => returns "alice" (possibly stale)
+    fmt.Printf("AP during partition: %s\n", val)
+    // => Output: AP during partition: alice
 }
 ```
 
@@ -209,86 +209,86 @@ PACELC (proposed by Daniel Abadi, 2012) extends CAP by observing that even when 
 package main
 
 import (
-	"fmt"
-	"sync"
-	"time"
+    "fmt"
+    "sync"
+    "time"
 )
 
 type ReplicationStrategy struct {
-	nodes []map[string]string // => 3-node cluster; node[0] is primary
+    nodes []map[string]string // => 3-node cluster; node[0] is primary
 }
 
 func NewReplicationStrategy(n int) *ReplicationStrategy {
-	nodes := make([]map[string]string, n)
-	for i := range nodes {
-		nodes[i] = make(map[string]string)
-	}
-	return &ReplicationStrategy{nodes: nodes}
+    nodes := make([]map[string]string, n)
+    for i := range nodes {
+        nodes[i] = make(map[string]string)
+    }
+    return &ReplicationStrategy{nodes: nodes}
 }
 
 func (rs *ReplicationStrategy) WriteSynchronous(key, value string) map[string]interface{} {
-	// PC/EC path: wait for all replicas before acknowledging.
-	start := time.Now()
-	// Simulate replication to all nodes with network delay
-	for _, node := range rs.nodes {
-		time.Sleep(10 * time.Millisecond) // => 10ms per replica round-trip
-		node[key] = value
-	}
-	latencyMs := float64(time.Since(start).Milliseconds())
-	// => All 3 nodes written: latency = ~30ms (3 x 10ms)
-	return map[string]interface{}{
-		"ack": true, "consistent": true, "latency_ms": latencyMs,
-	}
+    // PC/EC path: wait for all replicas before acknowledging.
+    start := time.Now()
+    // Simulate replication to all nodes with network delay
+    for _, node := range rs.nodes {
+        time.Sleep(10 * time.Millisecond) // => 10ms per replica round-trip
+        node[key] = value
+    }
+    latencyMs := float64(time.Since(start).Milliseconds())
+    // => All 3 nodes written: latency = ~30ms (3 x 10ms)
+    return map[string]interface{}{
+        "ack": true, "consistent": true, "latency_ms": latencyMs,
+    }
 }
 
 func (rs *ReplicationStrategy) WriteAsynchronous(key, value string) map[string]interface{} {
-	// PA/EL path: acknowledge after primary write, replicate async.
-	start := time.Now()
-	rs.nodes[0][key] = value // => write to primary only
-	latencyMs := float64(time.Since(start).Microseconds()) / 1000.0
-	// => Only primary written: latency = ~0ms
-	// Async replication happens eventually (simulated)
-	go func() {
-		for _, node := range rs.nodes[1:] {
-			time.Sleep(10 * time.Millisecond) // => background replication, caller unblocked
-			node[key] = value
-		}
-	}() // => fire-and-forget replication
-	return map[string]interface{}{
-		"ack": true, "consistent": false, "latency_ms": latencyMs,
-	}
+    // PA/EL path: acknowledge after primary write, replicate async.
+    start := time.Now()
+    rs.nodes[0][key] = value // => write to primary only
+    latencyMs := float64(time.Since(start).Microseconds()) / 1000.0
+    // => Only primary written: latency = ~0ms
+    // Async replication happens eventually (simulated)
+    go func() {
+        for _, node := range rs.nodes[1:] {
+            time.Sleep(10 * time.Millisecond) // => background replication, caller unblocked
+            node[key] = value
+        }
+    }() // => fire-and-forget replication
+    return map[string]interface{}{
+        "ack": true, "consistent": false, "latency_ms": latencyMs,
+    }
 }
 
 func (rs *ReplicationStrategy) ReadQuorum(key string, quorum int) map[string]interface{} {
-	// Read from majority quorum to detect inconsistency.
-	values := make([]string, 0, quorum)
-	for _, node := range rs.nodes[:quorum] {
-		values = append(values, node[key])
-		// => read from quorum nodes; majority rules
-	}
-	consistent := true
-	for _, v := range values[1:] {
-		if v != values[0] {
-			consistent = false
-			break
-		}
-	}
-	// => consistent=true if all quorum nodes agree
-	return map[string]interface{}{
-		"value": values[0], "consistent": consistent,
-	}
+    // Read from majority quorum to detect inconsistency.
+    values := make([]string, 0, quorum)
+    for _, node := range rs.nodes[:quorum] {
+        values = append(values, node[key])
+        // => read from quorum nodes; majority rules
+    }
+    consistent := true
+    for _, v := range values[1:] {
+        if v != values[0] {
+            consistent = false
+            break
+        }
+    }
+    // => consistent=true if all quorum nodes agree
+    return map[string]interface{}{
+        "value": values[0], "consistent": consistent,
+    }
 }
 
 func main() {
-	strategy := NewReplicationStrategy(3)
+    strategy := NewReplicationStrategy(3)
 
-	syncResult := strategy.WriteSynchronous("order:42", "confirmed")
-	// => {"ack": true, "consistent": true, "latency_ms": 30}
-	fmt.Printf("Sync write: %v\n", syncResult)
+    syncResult := strategy.WriteSynchronous("order:42", "confirmed")
+    // => {"ack": true, "consistent": true, "latency_ms": 30}
+    fmt.Printf("Sync write: %v\n", syncResult)
 
-	asyncResult := strategy.WriteAsynchronous("feed:99", "post_data")
-	// => {"ack": true, "consistent": false, "latency_ms": 0.x}
-	fmt.Printf("Async write: %v\n", asyncResult)
+    asyncResult := strategy.WriteAsynchronous("feed:99", "post_data")
+    // => {"ack": true, "consistent": false, "latency_ms": 0.x}
+    fmt.Printf("Async write: %v\n", asyncResult)
 }
 ```
 
@@ -389,100 +389,100 @@ stateDiagram-v2
 package main
 
 import (
-	"fmt"
-	"math/rand"
-	"time"
+    "fmt"
+    "math/rand"
+    "time"
 )
 
 const (
-	Follower  = "follower"
-	Candidate = "candidate"
-	Leader    = "leader"
+    Follower  = "follower"
+    Candidate = "candidate"
+    Leader    = "leader"
 )
 
 type RaftNode struct {
-	ID              int
-	State           string
-	CurrentTerm     int
-	VotedFor        int    // => -1 means no vote
-	VotesReceived   int
-	ClusterSize     int
-	ElectionTimeout time.Duration
+    ID              int
+    State           string
+    CurrentTerm     int
+    VotedFor        int    // => -1 means no vote
+    VotesReceived   int
+    ClusterSize     int
+    ElectionTimeout time.Duration
 }
 
 func NewRaftNode(id, clusterSize int) *RaftNode {
-	// Randomized timeout: 150-300ms (Raft spec range)
-	timeout := time.Duration(150+rand.Intn(150)) * time.Millisecond
-	// => random timeout prevents simultaneous elections (split votes)
-	return &RaftNode{
-		ID:              id,
-		State:           Follower,  // => all nodes start as followers
-		CurrentTerm:     0,         // => monotonically increasing election term
-		VotedFor:        -1,        // => no vote yet
-		ClusterSize:     clusterSize, // => total nodes; majority = size/2 + 1
-		ElectionTimeout: timeout,
-	}
+    // Randomized timeout: 150-300ms (Raft spec range)
+    timeout := time.Duration(150+rand.Intn(150)) * time.Millisecond
+    // => random timeout prevents simultaneous elections (split votes)
+    return &RaftNode{
+        ID:              id,
+        State:           Follower,  // => all nodes start as followers
+        CurrentTerm:     0,         // => monotonically increasing election term
+        VotedFor:        -1,        // => no vote yet
+        ClusterSize:     clusterSize, // => total nodes; majority = size/2 + 1
+        ElectionTimeout: timeout,
+    }
 }
 
 func (n *RaftNode) StartElection() int {
-	// Transition to candidate and request votes.
-	n.State = Candidate        // => become candidate
-	n.CurrentTerm++            // => increment term (new election epoch)
-	n.VotedFor = n.ID          // => vote for self
-	n.VotesReceived = 1        // => count self-vote
-	fmt.Printf("Node %d: starting election for term %d\n", n.ID, n.CurrentTerm)
-	return n.CurrentTerm       // => return term for RequestVote RPCs
+    // Transition to candidate and request votes.
+    n.State = Candidate        // => become candidate
+    n.CurrentTerm++            // => increment term (new election epoch)
+    n.VotedFor = n.ID          // => vote for self
+    n.VotesReceived = 1        // => count self-vote
+    fmt.Printf("Node %d: starting election for term %d\n", n.ID, n.CurrentTerm)
+    return n.CurrentTerm       // => return term for RequestVote RPCs
 }
 
 func (n *RaftNode) ReceiveVote(voterID, term int) {
-	// Process an incoming vote grant.
-	if term == n.CurrentTerm && n.State == Candidate {
-		n.VotesReceived++      // => tally the vote
-		majority := n.ClusterSize/2 + 1
-		// => majority required: 3 of 5, 2 of 3, etc.
-		if n.VotesReceived >= majority {
-			n.State = Leader   // => won election!
-			fmt.Printf("Node %d: elected LEADER for term %d\n", n.ID, n.CurrentTerm)
-			fmt.Printf("  Votes: %d/%d\n", n.VotesReceived, n.ClusterSize)
-		}
-	}
+    // Process an incoming vote grant.
+    if term == n.CurrentTerm && n.State == Candidate {
+        n.VotesReceived++      // => tally the vote
+        majority := n.ClusterSize/2 + 1
+        // => majority required: 3 of 5, 2 of 3, etc.
+        if n.VotesReceived >= majority {
+            n.State = Leader   // => won election!
+            fmt.Printf("Node %d: elected LEADER for term %d\n", n.ID, n.CurrentTerm)
+            fmt.Printf("  Votes: %d/%d\n", n.VotesReceived, n.ClusterSize)
+        }
+    }
 }
 
 func (n *RaftNode) GrantVote(candidateID, candidateTerm int) bool {
-	// Decide whether to grant vote to candidate.
-	if candidateTerm > n.CurrentTerm {
-		n.CurrentTerm = candidateTerm // => update to higher term
-		n.State = Follower            // => step down if was leader/candidate
-		n.VotedFor = -1               // => reset vote for new term
-	}
-	if n.VotedFor == -1 || n.VotedFor == candidateID {
-		n.VotedFor = candidateID      // => grant vote
-		return true                   // => true = vote granted
-	}
-	return false                      // => false = already voted this term
+    // Decide whether to grant vote to candidate.
+    if candidateTerm > n.CurrentTerm {
+        n.CurrentTerm = candidateTerm // => update to higher term
+        n.State = Follower            // => step down if was leader/candidate
+        n.VotedFor = -1               // => reset vote for new term
+    }
+    if n.VotedFor == -1 || n.VotedFor == candidateID {
+        n.VotedFor = candidateID      // => grant vote
+        return true                   // => true = vote granted
+    }
+    return false                      // => false = already voted this term
 }
 
 func main() {
-	// Simulate 5-node cluster election
-	nodes := make([]*RaftNode, 5)
-	for i := range nodes {
-		nodes[i] = NewRaftNode(i, 5)
-	}
-	// => [node0, node1, node2, node3, node4], all followers, term=0
+    // Simulate 5-node cluster election
+    nodes := make([]*RaftNode, 5)
+    for i := range nodes {
+        nodes[i] = NewRaftNode(i, 5)
+    }
+    // => [node0, node1, node2, node3, node4], all followers, term=0
 
-	// Node 0's timeout fires first (smallest random timeout)
-	term := nodes[0].StartElection()
-	// => node0 becomes candidate, term=1, votes=1
+    // Node 0's timeout fires first (smallest random timeout)
+    term := nodes[0].StartElection()
+    // => node0 becomes candidate, term=1, votes=1
 
-	// Other nodes grant votes
-	for _, n := range nodes[1:] {
-		granted := n.GrantVote(0, term) // => each follower evaluates vote request
-		if granted {
-			nodes[0].ReceiveVote(n.ID, term)
-			// => node0 accumulates votes; becomes leader at 3/5
-		}
-	}
-	// Output shows node0 becoming leader when majority (3) grants vote
+    // Other nodes grant votes
+    for _, n := range nodes[1:] {
+        granted := n.GrantVote(0, term) // => each follower evaluates vote request
+        if granted {
+            nodes[0].ReceiveVote(n.ID, term)
+            // => node0 accumulates votes; becomes leader at 3/5
+        }
+    }
+    // Output shows node0 becoming leader when majority (3) grants vote
 }
 ```
 
@@ -582,125 +582,125 @@ package main
 import "fmt"
 
 type Acceptor struct {
-	ID            int
-	PromisedID    int         // => highest proposal number promised
-	AcceptedID    int         // => proposal number of last accepted value
-	AcceptedValue string      // => last accepted value (if any)
+    ID            int
+    PromisedID    int         // => highest proposal number promised
+    AcceptedID    int         // => proposal number of last accepted value
+    AcceptedValue string      // => last accepted value (if any)
 }
 
 func NewAcceptor(id int) *Acceptor {
-	return &Acceptor{ID: id, PromisedID: -1, AcceptedID: -1}
+    return &Acceptor{ID: id, PromisedID: -1, AcceptedID: -1}
 }
 
 type PrepareResponse struct {
-	Promise       bool
-	AcceptedID    int
-	AcceptedValue string
+    Promise       bool
+    AcceptedID    int
+    AcceptedValue string
 }
 
 func (a *Acceptor) Prepare(proposalID int) PrepareResponse {
-	// Phase 1: respond to Prepare(n) from proposer.
-	if proposalID > a.PromisedID {
-		a.PromisedID = proposalID
-		// => promise to reject proposals with id < proposalID
-		return PrepareResponse{
-			Promise:       true,
-			AcceptedID:    a.AcceptedID,    // => tell proposer what we accepted before
-			AcceptedValue: a.AcceptedValue,
-			// => proposer must use this value if non-empty (safety constraint)
-		}
-	}
-	return PrepareResponse{Promise: false} // => already promised to a higher proposal
+    // Phase 1: respond to Prepare(n) from proposer.
+    if proposalID > a.PromisedID {
+        a.PromisedID = proposalID
+        // => promise to reject proposals with id < proposalID
+        return PrepareResponse{
+            Promise:       true,
+            AcceptedID:    a.AcceptedID,    // => tell proposer what we accepted before
+            AcceptedValue: a.AcceptedValue,
+            // => proposer must use this value if non-empty (safety constraint)
+        }
+    }
+    return PrepareResponse{Promise: false} // => already promised to a higher proposal
 }
 
 type AcceptResponse struct {
-	Accepted bool
-	Value    string
+    Accepted bool
+    Value    string
 }
 
 func (a *Acceptor) Accept(proposalID int, value string) AcceptResponse {
-	// Phase 2: respond to Accept(n, v) from proposer.
-	if proposalID >= a.PromisedID {
-		// => only accept if we haven't promised something higher
-		a.AcceptedID = proposalID
-		a.AcceptedValue = value     // => record the accepted value
-		a.PromisedID = proposalID   // => update promise to this id
-		return AcceptResponse{Accepted: true, Value: value}
-	}
-	return AcceptResponse{Accepted: false} // => rejected: already promised higher
+    // Phase 2: respond to Accept(n, v) from proposer.
+    if proposalID >= a.PromisedID {
+        // => only accept if we haven't promised something higher
+        a.AcceptedID = proposalID
+        a.AcceptedValue = value     // => record the accepted value
+        a.PromisedID = proposalID   // => update promise to this id
+        return AcceptResponse{Accepted: true, Value: value}
+    }
+    return AcceptResponse{Accepted: false} // => rejected: already promised higher
 }
 
 type Proposer struct {
-	ID              int
-	Acceptors       []*Acceptor // => list of Acceptor objects
-	ProposalCounter int         // => local counter for unique proposal IDs
+    ID              int
+    Acceptors       []*Acceptor // => list of Acceptor objects
+    ProposalCounter int         // => local counter for unique proposal IDs
 }
 
 func NewProposer(id int, acceptors []*Acceptor) *Proposer {
-	return &Proposer{ID: id, Acceptors: acceptors}
+    return &Proposer{ID: id, Acceptors: acceptors}
 }
 
 func (p *Proposer) Propose(desiredValue string) (string, bool) {
-	// Run full Paxos protocol to get consensus on a value.
-	p.ProposalCounter++
-	// => unique proposal_id: combine proposer_id and counter
-	proposalID := p.ID*100 + p.ProposalCounter
+    // Run full Paxos protocol to get consensus on a value.
+    p.ProposalCounter++
+    // => unique proposal_id: combine proposer_id and counter
+    proposalID := p.ID*100 + p.ProposalCounter
 
-	// --- Phase 1: Prepare ---
-	var promises []PrepareResponse
-	for _, acceptor := range p.Acceptors {
-		response := acceptor.Prepare(proposalID)
-		// => send Prepare(proposalID) to each acceptor
-		if response.Promise {
-			promises = append(promises, response) // => collect promises
-		}
-	}
+    // --- Phase 1: Prepare ---
+    var promises []PrepareResponse
+    for _, acceptor := range p.Acceptors {
+        response := acceptor.Prepare(proposalID)
+        // => send Prepare(proposalID) to each acceptor
+        if response.Promise {
+            promises = append(promises, response) // => collect promises
+        }
+    }
 
-	majority := len(p.Acceptors)/2 + 1
-	if len(promises) < majority {
-		return "", false // => failed to get majority promises; retry needed
-	}
+    majority := len(p.Acceptors)/2 + 1
+    if len(promises) < majority {
+        return "", false // => failed to get majority promises; retry needed
+    }
 
-	// Safety: if any acceptor already accepted a value, use highest-id one
-	valueToPropose := desiredValue
-	highestAcceptedID := -1
-	for _, pr := range promises {
-		if pr.AcceptedValue != "" && pr.AcceptedID > highestAcceptedID {
-			// => must preserve previously chosen value (Paxos safety rule)
-			highestAcceptedID = pr.AcceptedID
-			valueToPropose = pr.AcceptedValue
-			// => cannot use desiredValue; must preserve consensus
-		}
-	}
+    // Safety: if any acceptor already accepted a value, use highest-id one
+    valueToPropose := desiredValue
+    highestAcceptedID := -1
+    for _, pr := range promises {
+        if pr.AcceptedValue != "" && pr.AcceptedID > highestAcceptedID {
+            // => must preserve previously chosen value (Paxos safety rule)
+            highestAcceptedID = pr.AcceptedID
+            valueToPropose = pr.AcceptedValue
+            // => cannot use desiredValue; must preserve consensus
+        }
+    }
 
-	// --- Phase 2: Accept ---
-	acceptedCount := 0
-	for _, acceptor := range p.Acceptors {
-		response := acceptor.Accept(proposalID, valueToPropose)
-		if response.Accepted {
-			acceptedCount++ // => tally acceptances
-		}
-	}
+    // --- Phase 2: Accept ---
+    acceptedCount := 0
+    for _, acceptor := range p.Acceptors {
+        response := acceptor.Accept(proposalID, valueToPropose)
+        if response.Accepted {
+            acceptedCount++ // => tally acceptances
+        }
+    }
 
-	if acceptedCount >= majority {
-		return valueToPropose, true // => consensus reached!
-	}
-	return "", false               // => failed; retry with higher id
+    if acceptedCount >= majority {
+        return valueToPropose, true // => consensus reached!
+    }
+    return "", false               // => failed; retry with higher id
 }
 
 func main() {
-	// 3-acceptor Paxos run
-	acceptors := []*Acceptor{NewAcceptor(0), NewAcceptor(1), NewAcceptor(2)}
-	// => a0, a1, a2
-	proposer := NewProposer(1, acceptors)
+    // 3-acceptor Paxos run
+    acceptors := []*Acceptor{NewAcceptor(0), NewAcceptor(1), NewAcceptor(2)}
+    // => a0, a1, a2
+    proposer := NewProposer(1, acceptors)
 
-	result, ok := proposer.Propose("commit_transaction_42")
-	// => Phase 1: all 3 promise; no prior accepted values
-	// => Phase 2: all 3 accept "commit_transaction_42"
-	// => result = "commit_transaction_42" (consensus achieved)
-	if ok {
-		fmt.Printf("Consensus: %s\n", result)
-	}
+    result, ok := proposer.Propose("commit_transaction_42")
+    // => Phase 1: all 3 promise; no prior accepted values
+    // => Phase 2: all 3 accept "commit_transaction_42"
+    // => result = "commit_transaction_42" (consensus achieved)
+    if ok {
+        fmt.Printf("Consensus: %s\n", result)
+    }
 }
 ```
 
@@ -841,108 +841,108 @@ package main
 import "fmt"
 
 type Event struct {
-	EventType   string            // => "OrderPlaced", "ItemAdded", "OrderShipped", etc.
-	AggregateID string            // => which aggregate this event belongs to
-	Timestamp   string            // => ISO timestamp for ordering
-	Data        map[string]interface{} // => event payload; immutable after append
+    EventType   string            // => "OrderPlaced", "ItemAdded", "OrderShipped", etc.
+    AggregateID string            // => which aggregate this event belongs to
+    Timestamp   string            // => ISO timestamp for ordering
+    Data        map[string]interface{} // => event payload; immutable after append
 }
 
 type EventStore struct {
-	log []Event // => the immutable log
+    log []Event // => the immutable log
 }
 
 func (es *EventStore) Append(event Event) {
-	es.log = append(es.log, event) // => append only; no updates
-	fmt.Printf("Appended: %s @ %s\n", event.EventType, event.Timestamp)
+    es.log = append(es.log, event) // => append only; no updates
+    fmt.Printf("Appended: %s @ %s\n", event.EventType, event.Timestamp)
 }
 
 func (es *EventStore) GetEvents(aggregateID string) []Event {
-	var events []Event
-	for _, e := range es.log {
-		if e.AggregateID == aggregateID {
-			events = append(events, e)
-		}
-	}
-	return events // => filter log for one aggregate's history
+    var events []Event
+    for _, e := range es.log {
+        if e.AggregateID == aggregateID {
+            events = append(events, e)
+        }
+    }
+    return events // => filter log for one aggregate's history
 }
 
 type OrderState struct {
-	Items    []string
-	Status   string
-	Total    float64
-	Customer string
+    Items    []string
+    Status   string
+    Total    float64
+    Customer string
 }
 
 type OrderAggregate struct {
-	OrderID string
-	Store   *EventStore
-	State   OrderState // => state derived from events, not stored directly
+    OrderID string
+    Store   *EventStore
+    State   OrderState // => state derived from events, not stored directly
 }
 
 func NewOrderAggregate(orderID string, store *EventStore) *OrderAggregate {
-	oa := &OrderAggregate{OrderID: orderID, Store: store}
-	oa.State = oa.replay() // => state derived from events, not stored directly
-	return oa
+    oa := &OrderAggregate{OrderID: orderID, Store: store}
+    oa.State = oa.replay() // => state derived from events, not stored directly
+    return oa
 }
 
 func (oa *OrderAggregate) replay() OrderState {
-	// Rebuild state from event log — the core ES mechanism.
-	state := OrderState{Status: "new"}
-	for _, event := range oa.Store.GetEvents(oa.OrderID) {
-		// => apply each event in order to evolve state
-		switch event.EventType {
-		case "OrderPlaced":
-			state.Status = "placed"
-			state.Customer = event.Data["customer"].(string)
-		case "ItemAdded":
-			state.Items = append(state.Items, event.Data["item"].(string))
-			state.Total += event.Data["price"].(float64)
-			// => total accumulates from ItemAdded events
-		case "OrderShipped":
-			state.Status = "shipped"
-		}
-	}
-	return state // => current state as of all replayed events
+    // Rebuild state from event log — the core ES mechanism.
+    state := OrderState{Status: "new"}
+    for _, event := range oa.Store.GetEvents(oa.OrderID) {
+        // => apply each event in order to evolve state
+        switch event.EventType {
+        case "OrderPlaced":
+            state.Status = "placed"
+            state.Customer = event.Data["customer"].(string)
+        case "ItemAdded":
+            state.Items = append(state.Items, event.Data["item"].(string))
+            state.Total += event.Data["price"].(float64)
+            // => total accumulates from ItemAdded events
+        case "OrderShipped":
+            state.Status = "shipped"
+        }
+    }
+    return state // => current state as of all replayed events
 }
 
 func (oa *OrderAggregate) PlaceOrder(customer string) {
-	event := Event{
-		EventType:   "OrderPlaced",
-		AggregateID: oa.OrderID,
-		Timestamp:   "2026-03-20T10:00:00Z",
-		Data:        map[string]interface{}{"customer": customer},
-	}
-	oa.Store.Append(event)  // => emit event; do NOT write state directly
-	oa.State = oa.replay()  // => update in-memory state
+    event := Event{
+        EventType:   "OrderPlaced",
+        AggregateID: oa.OrderID,
+        Timestamp:   "2026-03-20T10:00:00Z",
+        Data:        map[string]interface{}{"customer": customer},
+    }
+    oa.Store.Append(event)  // => emit event; do NOT write state directly
+    oa.State = oa.replay()  // => update in-memory state
 }
 
 func (oa *OrderAggregate) AddItem(item string, price float64) {
-	event := Event{
-		EventType:   "ItemAdded",
-		AggregateID: oa.OrderID,
-		Timestamp:   "2026-03-20T10:01:00Z",
-		Data:        map[string]interface{}{"item": item, "price": price},
-	}
-	oa.Store.Append(event)
-	oa.State = oa.replay()
+    event := Event{
+        EventType:   "ItemAdded",
+        AggregateID: oa.OrderID,
+        Timestamp:   "2026-03-20T10:01:00Z",
+        Data:        map[string]interface{}{"item": item, "price": price},
+    }
+    oa.Store.Append(event)
+    oa.State = oa.replay()
 }
 
 func main() {
-	// Run event sourcing demo
-	store := &EventStore{}
-	order := NewOrderAggregate("order-42", store)
+    // Run event sourcing demo
+    store := &EventStore{}
+    order := NewOrderAggregate("order-42", store)
 
-	order.PlaceOrder("alice")        // => appends OrderPlaced event
-	order.AddItem("laptop", 999.99)  // => appends ItemAdded event
-	order.AddItem("mouse", 29.99)    // => appends ItemAdded event
+    order.PlaceOrder("alice")        // => appends OrderPlaced event
+    order.AddItem("laptop", 999.99)  // => appends ItemAdded event
+    order.AddItem("mouse", 29.99)    // => appends ItemAdded event
 
-	fmt.Printf("Current state: %+v\n", order.State)
-	// => {Items:[laptop mouse] Status:placed Total:1029.98 Customer:alice}
+    fmt.Printf("Current state: %+v\n", order.State)
+    // => {Items:[laptop mouse] Status:placed Total:1029.98 Customer:alice}
 
-	// Temporal query: reconstruct state after first event only
-	pastEvents := store.GetEvents("order-42")[:1]
-	// => only OrderPlaced event; state would be {Items:[], Status:placed, ...}
-	_ = pastEvents
+    // Temporal query: reconstruct state after first event only
+    pastEvents := store.GetEvents("order-42")[:1]
+    // => only OrderPlaced event; state would be {Items:[], Status:placed, ...}
+    _ = pastEvents
 }
 ```
 
@@ -1055,132 +1055,132 @@ Command Query Responsibility Segregation (CQRS) separates the model used to hand
 package main
 
 import (
-	"fmt"
+    "fmt"
 )
 
 // --- Write Side: Command Model ---
 type Product struct {
-	ProductID string
-	Name      string
-	Price     float64
-	Stock     int
+    ProductID string
+    Name      string
+    Price     float64
+    Stock     int
 }
 
 type ProductCommandHandler struct {
-	products map[string]*Product // => write-side store
-	events   []map[string]interface{} // => event log for projection
+    products map[string]*Product // => write-side store
+    events   []map[string]interface{} // => event log for projection
 }
 
 func NewProductCommandHandler() *ProductCommandHandler {
-	return &ProductCommandHandler{
-		products: make(map[string]*Product),
-	}
+    return &ProductCommandHandler{
+        products: make(map[string]*Product),
+    }
 }
 
 func (h *ProductCommandHandler) CreateProduct(productID, name string, price float64, stock int) error {
-	if _, exists := h.products[productID]; exists {
-		return fmt.Errorf("Product %s already exists", productID)
-		// => command handler enforces uniqueness invariant
-	}
-	h.products[productID] = &Product{productID, name, price, stock}
-	// Emit event for read-side projection to consume
-	h.events = append(h.events, map[string]interface{}{
-		"type": "ProductCreated", "id": productID,
-		"name": name, "price": price, "stock": stock,
-	})
-	// => event published; query side will update eventually
-	return nil
+    if _, exists := h.products[productID]; exists {
+        return fmt.Errorf("Product %s already exists", productID)
+        // => command handler enforces uniqueness invariant
+    }
+    h.products[productID] = &Product{productID, name, price, stock}
+    // Emit event for read-side projection to consume
+    h.events = append(h.events, map[string]interface{}{
+        "type": "ProductCreated", "id": productID,
+        "name": name, "price": price, "stock": stock,
+    })
+    // => event published; query side will update eventually
+    return nil
 }
 
 func (h *ProductCommandHandler) UpdateStock(productID string, delta int) error {
-	product := h.products[productID]
-	newStock := product.Stock + delta
-	if newStock < 0 {
-		return fmt.Errorf("Stock cannot go negative")
-		// => command model enforces non-negative stock invariant
-	}
-	product.Stock = newStock
-	h.events = append(h.events, map[string]interface{}{
-		"type": "StockUpdated", "id": productID, "new_stock": newStock,
-	})
-	return nil
+    product := h.products[productID]
+    newStock := product.Stock + delta
+    if newStock < 0 {
+        return fmt.Errorf("Stock cannot go negative")
+        // => command model enforces non-negative stock invariant
+    }
+    product.Stock = newStock
+    h.events = append(h.events, map[string]interface{}{
+        "type": "StockUpdated", "id": productID, "new_stock": newStock,
+    })
+    return nil
 }
 
 // --- Read Side: Query Model (Projection) ---
 type CatalogItem struct {
-	ID           string
-	Name         string
-	Price        float64
-	Stock        int
-	Available    bool   // => computed field for queries
-	DisplayPrice string // => pre-formatted for API responses
+    ID           string
+    Name         string
+    Price        float64
+    Stock        int
+    Available    bool   // => computed field for queries
+    DisplayPrice string // => pre-formatted for API responses
 }
 
 type ProductQueryHandler struct {
-	catalog []CatalogItem // => flat list for O(1) search
+    catalog []CatalogItem // => flat list for O(1) search
 }
 
 func (q *ProductQueryHandler) ApplyEvent(event map[string]interface{}) {
-	// Update projection when event arrives from write side.
-	switch event["type"] {
-	case "ProductCreated":
-		stock := event["stock"].(int)
-		price := event["price"].(float64)
-		q.catalog = append(q.catalog, CatalogItem{
-			ID:           event["id"].(string),
-			Name:         event["name"].(string),
-			Price:        price,
-			Stock:        stock,
-			Available:    stock > 0,                    // => computed field for queries
-			DisplayPrice: fmt.Sprintf("$%.2f", price),  // => pre-formatted; avoids repeated computation
-		})
-	case "StockUpdated":
-		id := event["id"].(string)
-		newStock := event["new_stock"].(int)
-		for i := range q.catalog {
-			if q.catalog[i].ID == id {
-				q.catalog[i].Stock = newStock
-				q.catalog[i].Available = newStock > 0
-				// => projection updated asynchronously; may lag briefly
-			}
-		}
-	}
+    // Update projection when event arrives from write side.
+    switch event["type"] {
+    case "ProductCreated":
+        stock := event["stock"].(int)
+        price := event["price"].(float64)
+        q.catalog = append(q.catalog, CatalogItem{
+            ID:           event["id"].(string),
+            Name:         event["name"].(string),
+            Price:        price,
+            Stock:        stock,
+            Available:    stock > 0,                    // => computed field for queries
+            DisplayPrice: fmt.Sprintf("$%.2f", price),  // => pre-formatted; avoids repeated computation
+        })
+    case "StockUpdated":
+        id := event["id"].(string)
+        newStock := event["new_stock"].(int)
+        for i := range q.catalog {
+            if q.catalog[i].ID == id {
+                q.catalog[i].Stock = newStock
+                q.catalog[i].Available = newStock > 0
+                // => projection updated asynchronously; may lag briefly
+            }
+        }
+    }
 }
 
 func (q *ProductQueryHandler) GetAvailableProducts() []CatalogItem {
-	// Read query: fast scan of denormalized projection.
-	var result []CatalogItem
-	for _, p := range q.catalog {
-		if p.Available {
-			result = append(result, p)
-		}
-	}
-	return result
-	// => no joins, no computation; just filter pre-built projection
+    // Read query: fast scan of denormalized projection.
+    var result []CatalogItem
+    for _, p := range q.catalog {
+        if p.Available {
+            result = append(result, p)
+        }
+    }
+    return result
+    // => no joins, no computation; just filter pre-built projection
 }
 
 func main() {
-	// Wire up CQRS
-	commands := NewProductCommandHandler()
-	queries := &ProductQueryHandler{}
+    // Wire up CQRS
+    commands := NewProductCommandHandler()
+    queries := &ProductQueryHandler{}
 
-	commands.CreateProduct("p1", "Laptop", 999.99, 10)
-	commands.CreateProduct("p2", "Mouse", 29.99, 0)  // => stock=0, not available
-	commands.CreateProduct("p3", "Keyboard", 79.99, 5)
+    commands.CreateProduct("p1", "Laptop", 999.99, 10)
+    commands.CreateProduct("p2", "Mouse", 29.99, 0)  // => stock=0, not available
+    commands.CreateProduct("p3", "Keyboard", 79.99, 5)
 
-	// Sync events to query side (in production: Kafka/SNS/outbox pattern)
-	for _, event := range commands.events {
-		queries.ApplyEvent(event) // => projection updated from events
-	}
+    // Sync events to query side (in production: Kafka/SNS/outbox pattern)
+    for _, event := range commands.events {
+        queries.ApplyEvent(event) // => projection updated from events
+    }
 
-	available := queries.GetAvailableProducts()
-	// => [Laptop, Keyboard]; p2 excluded because stock=0
-	names := make([]string, len(available))
-	for i, p := range available {
-		names[i] = p.Name
-	}
-	fmt.Printf("Available: %v\n", names)
-	// => Output: Available: [Laptop Keyboard]
+    available := queries.GetAvailableProducts()
+    // => [Laptop, Keyboard]; p2 excluded because stock=0
+    names := make([]string, len(available))
+    for i, p := range available {
+        names[i] = p.Name
+    }
+    fmt.Printf("Available: %v\n", names)
+    // => Output: Available: [Laptop Keyboard]
 }
 ```
 
@@ -1334,104 +1334,104 @@ sequenceDiagram
 package main
 
 import (
-	"fmt"
+    "fmt"
 )
 
 type SagaStep struct {
-	Name         string
-	Action       func(map[string]interface{}) error // => forward transaction
-	Compensation func(map[string]interface{})       // => undo action for rollback
+    Name         string
+    Action       func(map[string]interface{}) error // => forward transaction
+    Compensation func(map[string]interface{})       // => undo action for rollback
 }
 
 type SagaOrchestrator struct {
-	Steps     []SagaStep
-	Completed []SagaStep // => successfully completed steps
+    Steps     []SagaStep
+    Completed []SagaStep // => successfully completed steps
 }
 
 func (s *SagaOrchestrator) Execute(context map[string]interface{}) map[string]interface{} {
-	// Run all steps; compensate on failure.
-	for _, step := range s.Steps {
-		fmt.Printf("  Executing: %s\n", step.Name)
-		err := step.Action(context) // => run forward step
-		if err != nil {
-			fmt.Printf("  FAILED: %s — %v\n", step.Name, err)
-			s.compensate(context) // => rollback in reverse order
-			return map[string]interface{}{"success": false, "failed_at": step.Name}
-		}
-		s.Completed = append(s.Completed, step)
-		// => record completion for compensation ordering
-	}
-	return map[string]interface{}{"success": true} // => all steps completed
+    // Run all steps; compensate on failure.
+    for _, step := range s.Steps {
+        fmt.Printf("  Executing: %s\n", step.Name)
+        err := step.Action(context) // => run forward step
+        if err != nil {
+            fmt.Printf("  FAILED: %s — %v\n", step.Name, err)
+            s.compensate(context) // => rollback in reverse order
+            return map[string]interface{}{"success": false, "failed_at": step.Name}
+        }
+        s.Completed = append(s.Completed, step)
+        // => record completion for compensation ordering
+    }
+    return map[string]interface{}{"success": true} // => all steps completed
 }
 
 func (s *SagaOrchestrator) compensate(context map[string]interface{}) {
-	// Run compensations in reverse order (LIFO).
-	for i := len(s.Completed) - 1; i >= 0; i-- {
-		// => reverse order ensures proper undo (reverse dependency)
-		step := s.Completed[i]
-		fmt.Printf("  Compensating: %s\n", step.Name)
-		step.Compensation(context)
-	}
+    // Run compensations in reverse order (LIFO).
+    for i := len(s.Completed) - 1; i >= 0; i-- {
+        // => reverse order ensures proper undo (reverse dependency)
+        step := s.Completed[i]
+        fmt.Printf("  Compensating: %s\n", step.Name)
+        step.Compensation(context)
+    }
 }
 
 func main() {
-	chargePayment := func(ctx map[string]interface{}) error {
-		ctx["payment_id"] = "pay-789" // => payment charged
-		fmt.Printf("    charged customer $%v\n", ctx["amount"])
-		return nil
-	}
-	refundPayment := func(ctx map[string]interface{}) {
-		fmt.Printf("    refunded payment %v\n", ctx["payment_id"])
-		// => compensation: reverse the payment
-	}
-	reserveInventory := func(ctx map[string]interface{}) error {
-		if _, ok := ctx["simulate_stock_failure"]; ok {
-			return fmt.Errorf("out of stock") // => simulated failure
-		}
-		ctx["reservation_id"] = "res-456"
-		fmt.Println("    inventory reserved")
-		return nil
-	}
-	releaseInventory := func(ctx map[string]interface{}) {
-		fmt.Printf("    released reservation %v\n", ctx["reservation_id"])
-		// => compensation: release the reserved inventory
-	}
-	sendConfirmation := func(ctx map[string]interface{}) error {
-		fmt.Println("    confirmation email sent")
-		return nil
-	}
-	cancelConfirmation := func(ctx map[string]interface{}) {
-		fmt.Println("    confirmation email cancelled")
-		// => compensation: in practice, send cancellation email
-	}
+    chargePayment := func(ctx map[string]interface{}) error {
+        ctx["payment_id"] = "pay-789" // => payment charged
+        fmt.Printf("    charged customer $%v\n", ctx["amount"])
+        return nil
+    }
+    refundPayment := func(ctx map[string]interface{}) {
+        fmt.Printf("    refunded payment %v\n", ctx["payment_id"])
+        // => compensation: reverse the payment
+    }
+    reserveInventory := func(ctx map[string]interface{}) error {
+        if _, ok := ctx["simulate_stock_failure"]; ok {
+            return fmt.Errorf("out of stock") // => simulated failure
+        }
+        ctx["reservation_id"] = "res-456"
+        fmt.Println("    inventory reserved")
+        return nil
+    }
+    releaseInventory := func(ctx map[string]interface{}) {
+        fmt.Printf("    released reservation %v\n", ctx["reservation_id"])
+        // => compensation: release the reserved inventory
+    }
+    sendConfirmation := func(ctx map[string]interface{}) error {
+        fmt.Println("    confirmation email sent")
+        return nil
+    }
+    cancelConfirmation := func(ctx map[string]interface{}) {
+        fmt.Println("    confirmation email cancelled")
+        // => compensation: in practice, send cancellation email
+    }
 
-	// Happy path
-	fmt.Println("=== Happy Path ===")
-	saga := &SagaOrchestrator{
-		Steps: []SagaStep{
-			{"charge_payment", chargePayment, refundPayment},
-			{"reserve_inventory", reserveInventory, releaseInventory},
-			{"send_confirmation", sendConfirmation, cancelConfirmation},
-		},
-	}
-	result := saga.Execute(map[string]interface{}{"amount": 99.99})
-	fmt.Printf("Result: %v\n", result) // => {"success": true}
+    // Happy path
+    fmt.Println("=== Happy Path ===")
+    saga := &SagaOrchestrator{
+        Steps: []SagaStep{
+            {"charge_payment", chargePayment, refundPayment},
+            {"reserve_inventory", reserveInventory, releaseInventory},
+            {"send_confirmation", sendConfirmation, cancelConfirmation},
+        },
+    }
+    result := saga.Execute(map[string]interface{}{"amount": 99.99})
+    fmt.Printf("Result: %v\n", result) // => {"success": true}
 
-	// Failure path (inventory fails)
-	fmt.Println("\n=== Failure Path ===")
-	saga2 := &SagaOrchestrator{
-		Steps: []SagaStep{
-			{"charge_payment", chargePayment, refundPayment},
-			{"reserve_inventory", reserveInventory, releaseInventory},
-			{"send_confirmation", sendConfirmation, cancelConfirmation},
-		},
-	}
-	result = saga2.Execute(map[string]interface{}{
-		"amount": 99.99, "simulate_stock_failure": true,
-	})
-	// => charge_payment succeeds → reserve_inventory FAILS
-	// => compensate: refund_payment (charges reversed)
-	fmt.Printf("Result: %v\n", result) // => {"success": false, "failed_at": "reserve_inventory"}
+    // Failure path (inventory fails)
+    fmt.Println("\n=== Failure Path ===")
+    saga2 := &SagaOrchestrator{
+        Steps: []SagaStep{
+            {"charge_payment", chargePayment, refundPayment},
+            {"reserve_inventory", reserveInventory, releaseInventory},
+            {"send_confirmation", sendConfirmation, cancelConfirmation},
+        },
+    }
+    result = saga2.Execute(map[string]interface{}{
+        "amount": 99.99, "simulate_stock_failure": true,
+    })
+    // => charge_payment succeeds → reserve_inventory FAILS
+    // => compensate: refund_payment (charges reversed)
+    fmt.Printf("Result: %v\n", result) // => {"success": false, "failed_at": "reserve_inventory"}
 }
 ```
 
@@ -1553,123 +1553,123 @@ Two-phase commit (2PC) coordinates an atomic transaction across multiple partici
 package main
 
 import (
-	"fmt"
-	"math/rand"
+    "fmt"
+    "math/rand"
 )
 
 const (
-	StateReady     = "ready"
-	StatePrepared  = "prepared"
-	StateCommitted = "committed"
-	StateAborted   = "aborted"
+    StateReady     = "ready"
+    StatePrepared  = "prepared"
+    StateCommitted = "committed"
+    StateAborted   = "aborted"
 )
 
 type Participant struct {
-	Name           string
-	State          string
-	FailureRate    float64           // => probability of prepare failure
-	LockedResource map[string]interface{} // => holds lock during prepared state
+    Name           string
+    State          string
+    FailureRate    float64           // => probability of prepare failure
+    LockedResource map[string]interface{} // => holds lock during prepared state
 }
 
 func NewParticipant(name string, failureRate float64) *Participant {
-	return &Participant{Name: name, State: StateReady, FailureRate: failureRate}
+    return &Participant{Name: name, State: StateReady, FailureRate: failureRate}
 }
 
 func (p *Participant) Prepare(transactionID string, operation map[string]interface{}) bool {
-	// Phase 1: lock resource and vote.
-	if rand.Float64() < p.FailureRate {
-		fmt.Printf("  %s: VOTE ABORT (simulated failure)\n", p.Name)
-		return false // => vote abort; coordinator will abort all
-	}
-	p.LockedResource = operation // => lock resource (DANGEROUS if coordinator crashes)
-	p.State = StatePrepared
-	fmt.Printf("  %s: VOTE COMMIT (prepared, resource locked)\n", p.Name)
-	return true // => vote commit
+    // Phase 1: lock resource and vote.
+    if rand.Float64() < p.FailureRate {
+        fmt.Printf("  %s: VOTE ABORT (simulated failure)\n", p.Name)
+        return false // => vote abort; coordinator will abort all
+    }
+    p.LockedResource = operation // => lock resource (DANGEROUS if coordinator crashes)
+    p.State = StatePrepared
+    fmt.Printf("  %s: VOTE COMMIT (prepared, resource locked)\n", p.Name)
+    return true // => vote commit
 }
 
 func (p *Participant) Commit(transactionID string) {
-	// Phase 2a: apply and release lock.
-	p.State = StateCommitted
-	fmt.Printf("  %s: COMMITTED\n", p.Name)
-	p.LockedResource = nil // => release lock after commit
+    // Phase 2a: apply and release lock.
+    p.State = StateCommitted
+    fmt.Printf("  %s: COMMITTED\n", p.Name)
+    p.LockedResource = nil // => release lock after commit
 }
 
 func (p *Participant) Abort(transactionID string) {
-	// Phase 2b: rollback and release lock.
-	p.State = StateAborted
-	p.LockedResource = nil // => release lock after abort
-	fmt.Printf("  %s: ABORTED (lock released)\n", p.Name)
+    // Phase 2b: rollback and release lock.
+    p.State = StateAborted
+    p.LockedResource = nil // => release lock after abort
+    fmt.Printf("  %s: ABORTED (lock released)\n", p.Name)
 }
 
 type TwoPhaseCoordinator struct{}
 
 func (c *TwoPhaseCoordinator) Execute(transactionID string,
-	participants []*Participant, operations []map[string]interface{}) bool {
+    participants []*Participant, operations []map[string]interface{}) bool {
 
-	fmt.Println("\n--- Phase 1: Prepare ---")
-	votes := make([]bool, len(participants))
-	for i, participant := range participants {
-		votes[i] = participant.Prepare(transactionID, operations[i])
-		// => collect votes; any false means abort entire transaction
-	}
+    fmt.Println("\n--- Phase 1: Prepare ---")
+    votes := make([]bool, len(participants))
+    for i, participant := range participants {
+        votes[i] = participant.Prepare(transactionID, operations[i])
+        // => collect votes; any false means abort entire transaction
+    }
 
-	allPrepared := true
-	for _, v := range votes {
-		if !v {
-			allPrepared = false
-			break
-		}
-	}
-	// => 2PC is blocking: if coordinator crashes here, participants hold locks forever
+    allPrepared := true
+    for _, v := range votes {
+        if !v {
+            allPrepared = false
+            break
+        }
+    }
+    // => 2PC is blocking: if coordinator crashes here, participants hold locks forever
 
-	action := "Abort"
-	if allPrepared {
-		action = "Commit"
-	}
-	fmt.Printf("\n--- Phase 2: %s ---\n", action)
-	for _, participant := range participants {
-		if allPrepared {
-			participant.Commit(transactionID) // => commit all
-		} else {
-			participant.Abort(transactionID) // => abort all (release locks)
-		}
-	}
-	return allPrepared
+    action := "Abort"
+    if allPrepared {
+        action = "Commit"
+    }
+    fmt.Printf("\n--- Phase 2: %s ---\n", action)
+    for _, participant := range participants {
+        if allPrepared {
+            participant.Commit(transactionID) // => commit all
+        } else {
+            participant.Abort(transactionID) // => abort all (release locks)
+        }
+    }
+    return allPrepared
 }
 
 func main() {
-	coord := &TwoPhaseCoordinator{}
-	operations := []map[string]interface{}{
-		{"insert": "order"}, {"debit": 99.99}, {"decrement": 1},
-	}
+    coord := &TwoPhaseCoordinator{}
+    operations := []map[string]interface{}{
+        {"insert": "order"}, {"debit": 99.99}, {"decrement": 1},
+    }
 
-	// Demonstrate 2PC success
-	fmt.Println("=== Success Case ===")
-	participantsOK := []*Participant{
-		NewParticipant("OrderDB", 0.0),
-		NewParticipant("PaymentDB", 0.0),
-		NewParticipant("InventoryDB", 0.0),
-	}
-	success := coord.Execute("txn-001", participantsOK, operations)
-	result := "aborted"
-	if success {
-		result = "committed"
-	}
-	fmt.Printf("Result: %s\n", result)
+    // Demonstrate 2PC success
+    fmt.Println("=== Success Case ===")
+    participantsOK := []*Participant{
+        NewParticipant("OrderDB", 0.0),
+        NewParticipant("PaymentDB", 0.0),
+        NewParticipant("InventoryDB", 0.0),
+    }
+    success := coord.Execute("txn-001", participantsOK, operations)
+    result := "aborted"
+    if success {
+        result = "committed"
+    }
+    fmt.Printf("Result: %s\n", result)
 
-	// Demonstrate 2PC failure
-	fmt.Println("\n=== Failure Case ===")
-	participantsFail := []*Participant{
-		NewParticipant("OrderDB", 0.0),
-		NewParticipant("PaymentDB", 1.0), // => always fails
-		NewParticipant("InventoryDB", 0.0),
-	}
-	success = coord.Execute("txn-002", participantsFail, operations)
-	result = "aborted"
-	if success {
-		result = "committed"
-	}
-	fmt.Printf("Result: %s\n", result)
+    // Demonstrate 2PC failure
+    fmt.Println("\n=== Failure Case ===")
+    participantsFail := []*Participant{
+        NewParticipant("OrderDB", 0.0),
+        NewParticipant("PaymentDB", 1.0), // => always fails
+        NewParticipant("InventoryDB", 0.0),
+    }
+    success = coord.Execute("txn-002", participantsFail, operations)
+    result = "aborted"
+    if success {
+        result = "committed"
+    }
+    fmt.Printf("Result: %s\n", result)
 }
 ```
 
@@ -1795,99 +1795,99 @@ package main
 import "fmt"
 
 type VectorClock struct {
-	NodeID string
-	Clock  map[string]int
+    NodeID string
+    Clock  map[string]int
 }
 
 func NewVectorClock(nodeID string, nodes []string) *VectorClock {
-	clock := make(map[string]int)
-	for _, n := range nodes {
-		clock[n] = 0
-	}
-	// => {"A": 0, "B": 0, "C": 0}
-	return &VectorClock{NodeID: nodeID, Clock: clock}
+    clock := make(map[string]int)
+    for _, n := range nodes {
+        clock[n] = 0
+    }
+    // => {"A": 0, "B": 0, "C": 0}
+    return &VectorClock{NodeID: nodeID, Clock: clock}
 }
 
 func (vc *VectorClock) Tick() map[string]int {
-	// Increment own counter before sending a message.
-	vc.Clock[vc.NodeID]++
-	// => own counter advances; signals local event occurred
-	snapshot := make(map[string]int)
-	for k, v := range vc.Clock {
-		snapshot[k] = v
-	}
-	return snapshot // => return snapshot for transmission
+    // Increment own counter before sending a message.
+    vc.Clock[vc.NodeID]++
+    // => own counter advances; signals local event occurred
+    snapshot := make(map[string]int)
+    for k, v := range vc.Clock {
+        snapshot[k] = v
+    }
+    return snapshot // => return snapshot for transmission
 }
 
 func (vc *VectorClock) Receive(incoming map[string]int) {
-	// Merge incoming vector clock on message receipt.
-	for node, ts := range incoming {
-		if current, ok := vc.Clock[node]; !ok || ts > current {
-			vc.Clock[node] = ts
-		}
-		// => merge: local knowledge updated if incoming is more recent
-	}
-	vc.Clock[vc.NodeID]++ // => increment own counter on receive
+    // Merge incoming vector clock on message receipt.
+    for node, ts := range incoming {
+        if current, ok := vc.Clock[node]; !ok || ts > current {
+            vc.Clock[node] = ts
+        }
+        // => merge: local knowledge updated if incoming is more recent
+    }
+    vc.Clock[vc.NodeID]++ // => increment own counter on receive
 }
 
 func (vc *VectorClock) HappensBefore(other map[string]int) bool {
-	// Returns true if self happened-before other.
-	// Condition: all components of self <= other, with at least one strictly <
-	allLeq := true
-	anyLt := false
-	allNodes := make(map[string]bool)
-	for k := range vc.Clock {
-		allNodes[k] = true
-	}
-	for k := range other {
-		allNodes[k] = true
-	}
-	for n := range allNodes {
-		selfVal := vc.Clock[n]
-		otherVal := other[n]
-		if selfVal > otherVal {
-			allLeq = false
-		}
-		if selfVal < otherVal {
-			anyLt = true
-		}
-	}
-	return allLeq && anyLt // => true means self causally precedes other
+    // Returns true if self happened-before other.
+    // Condition: all components of self <= other, with at least one strictly <
+    allLeq := true
+    anyLt := false
+    allNodes := make(map[string]bool)
+    for k := range vc.Clock {
+        allNodes[k] = true
+    }
+    for k := range other {
+        allNodes[k] = true
+    }
+    for n := range allNodes {
+        selfVal := vc.Clock[n]
+        otherVal := other[n]
+        if selfVal > otherVal {
+            allLeq = false
+        }
+        if selfVal < otherVal {
+            anyLt = true
+        }
+    }
+    return allLeq && anyLt // => true means self causally precedes other
 }
 
 func (vc *VectorClock) ConcurrentWith(other map[string]int) bool {
-	// Neither clock happens-before the other — events are concurrent.
-	aBeforeB := vc.HappensBefore(other)
-	temp := &VectorClock{NodeID: vc.NodeID, Clock: other}
-	bBeforeA := temp.HappensBefore(vc.Clock)
-	return !aBeforeB && !bBeforeA
-	// => concurrent: neither causal order established
+    // Neither clock happens-before the other — events are concurrent.
+    aBeforeB := vc.HappensBefore(other)
+    temp := &VectorClock{NodeID: vc.NodeID, Clock: other}
+    bBeforeA := temp.HappensBefore(vc.Clock)
+    return !aBeforeB && !bBeforeA
+    // => concurrent: neither causal order established
 }
 
 func main() {
-	// Simulate three nodes
-	nodes := []string{"A", "B", "C"}
-	vcA := NewVectorClock("A", nodes)
-	vcB := NewVectorClock("B", nodes)
+    // Simulate three nodes
+    nodes := []string{"A", "B", "C"}
+    vcA := NewVectorClock("A", nodes)
+    vcB := NewVectorClock("B", nodes)
 
-	// A performs local event
-	snapA1 := vcA.Tick() // => A: {"A":1, "B":0, "C":0}
-	fmt.Printf("A after tick: %v\n", vcA.Clock)
+    // A performs local event
+    snapA1 := vcA.Tick() // => A: {"A":1, "B":0, "C":0}
+    fmt.Printf("A after tick: %v\n", vcA.Clock)
 
-	// A sends message to B
-	vcB.Receive(snapA1) // => B merges: {"A":1, "B":1, "C":0}
-	fmt.Printf("B after receive: %v\n", vcB.Clock)
+    // A sends message to B
+    vcB.Receive(snapA1) // => B merges: {"A":1, "B":1, "C":0}
+    fmt.Printf("B after receive: %v\n", vcB.Clock)
 
-	// C performs independent event without receiving from A first
-	vcC := NewVectorClock("C", nodes)
-	snapC1 := vcC.Tick() // => C: {"A":0, "B":0, "C":1}
+    // C performs independent event without receiving from A first
+    vcC := NewVectorClock("C", nodes)
+    snapC1 := vcC.Tick() // => C: {"A":0, "B":0, "C":1}
 
-	// Compare: does A's event happen-before C's event?
-	// A clock: {"A":1,"B":0,"C":0}, C clock: {"A":0,"B":0,"C":1}
-	fmt.Printf("A before C? %v\n", vcA.HappensBefore(snapC1))
-	// => false: A[A]=1 > C[A]=0, so A does NOT happen-before C
-	fmt.Printf("A concurrent with C? %v\n", vcA.ConcurrentWith(snapC1))
-	// => true: neither dominates — events are concurrent
+    // Compare: does A's event happen-before C's event?
+    // A clock: {"A":1,"B":0,"C":0}, C clock: {"A":0,"B":0,"C":1}
+    fmt.Printf("A before C? %v\n", vcA.HappensBefore(snapC1))
+    // => false: A[A]=1 > C[A]=0, so A does NOT happen-before C
+    fmt.Printf("A concurrent with C? %v\n", vcA.ConcurrentWith(snapC1))
+    // => true: neither dominates — events are concurrent
 }
 ```
 
@@ -1986,141 +1986,141 @@ The gossip protocol (Demers et al., 1987) spreads information through a cluster 
 package main
 
 import (
-	"fmt"
-	"math/rand"
-	"time"
+    "fmt"
+    "math/rand"
+    "time"
 )
 
 type NodeState struct {
-	NodeID         string
-	Heartbeat      int     // => monotonically increasing; updated on each gossip round
-	LastUpdated    float64 // => local time when this state was last updated
-	SuspectedFailed bool   // => true if heartbeat hasn't advanced recently
+    NodeID         string
+    Heartbeat      int     // => monotonically increasing; updated on each gossip round
+    LastUpdated    float64 // => local time when this state was last updated
+    SuspectedFailed bool   // => true if heartbeat hasn't advanced recently
 }
 
 type GossipNode struct {
-	ID         string
-	Membership map[string]*NodeState // => membership table of known cluster state
+    ID         string
+    Membership map[string]*NodeState // => membership table of known cluster state
 }
 
 const (
-	GossipFanout   = 2   // => gossip to 2 random peers per round
-	FailureTimeout = 3.0 // => seconds without heartbeat update = suspected failure
+    GossipFanout   = 2   // => gossip to 2 random peers per round
+    FailureTimeout = 3.0 // => seconds without heartbeat update = suspected failure
 )
 
 func NewGossipNode(nodeID string) *GossipNode {
-	now := float64(time.Now().UnixMilli()) / 1000.0
-	membership := map[string]*NodeState{
-		nodeID: {NodeID: nodeID, Heartbeat: 0, LastUpdated: now},
-	}
-	// => starts knowing only itself
-	return &GossipNode{ID: nodeID, Membership: membership}
+    now := float64(time.Now().UnixMilli()) / 1000.0
+    membership := map[string]*NodeState{
+        nodeID: {NodeID: nodeID, Heartbeat: 0, LastUpdated: now},
+    }
+    // => starts knowing only itself
+    return &GossipNode{ID: nodeID, Membership: membership}
 }
 
 func (g *GossipNode) JoinCluster(peerMembership map[string]*NodeState) {
-	// Merge peer's membership table on join.
-	for nodeID, state := range peerMembership {
-		if _, exists := g.Membership[nodeID]; !exists {
-			g.Membership[nodeID] = state
-			// => learn about nodes the peer knows
-		}
-	}
+    // Merge peer's membership table on join.
+    for nodeID, state := range peerMembership {
+        if _, exists := g.Membership[nodeID]; !exists {
+            g.Membership[nodeID] = state
+            // => learn about nodes the peer knows
+        }
+    }
 }
 
 func (g *GossipNode) HeartbeatTick() {
-	// Increment own heartbeat counter — proof of liveness.
-	g.Membership[g.ID].Heartbeat++
-	g.Membership[g.ID].LastUpdated = float64(time.Now().UnixMilli()) / 1000.0
-	// => other nodes detect failure if this counter stops advancing
+    // Increment own heartbeat counter — proof of liveness.
+    g.Membership[g.ID].Heartbeat++
+    g.Membership[g.ID].LastUpdated = float64(time.Now().UnixMilli()) / 1000.0
+    // => other nodes detect failure if this counter stops advancing
 }
 
 func (g *GossipNode) Gossip(peers []*GossipNode) {
-	// Select random peers and exchange membership tables.
-	n := GossipFanout
-	if len(peers) < n {
-		n = len(peers)
-	}
-	perm := rand.Perm(len(peers))
-	for i := 0; i < n; i++ {
-		peers[perm[i]].ReceiveGossip(g.Membership) // => push own table to peer
-	}
+    // Select random peers and exchange membership tables.
+    n := GossipFanout
+    if len(peers) < n {
+        n = len(peers)
+    }
+    perm := rand.Perm(len(peers))
+    for i := 0; i < n; i++ {
+        peers[perm[i]].ReceiveGossip(g.Membership) // => push own table to peer
+    }
 }
 
 func (g *GossipNode) ReceiveGossip(incoming map[string]*NodeState) {
-	// Merge incoming membership table: take higher heartbeat per node.
-	now := float64(time.Now().UnixMilli()) / 1000.0
-	for nodeID, incomingState := range incoming {
-		local, exists := g.Membership[nodeID]
-		if !exists {
-			g.Membership[nodeID] = incomingState
-			// => discovered new node via gossip
-		} else if incomingState.Heartbeat > local.Heartbeat {
-			// => incoming has fresher state; update local view
-			g.Membership[nodeID] = incomingState
-			g.Membership[nodeID].LastUpdated = now
-		}
-	}
+    // Merge incoming membership table: take higher heartbeat per node.
+    now := float64(time.Now().UnixMilli()) / 1000.0
+    for nodeID, incomingState := range incoming {
+        local, exists := g.Membership[nodeID]
+        if !exists {
+            g.Membership[nodeID] = incomingState
+            // => discovered new node via gossip
+        } else if incomingState.Heartbeat > local.Heartbeat {
+            // => incoming has fresher state; update local view
+            g.Membership[nodeID] = incomingState
+            g.Membership[nodeID].LastUpdated = now
+        }
+    }
 }
 
 func (g *GossipNode) DetectFailures() []string {
-	// Mark nodes suspected failed if heartbeat stale.
-	now := float64(time.Now().UnixMilli()) / 1000.0
-	var suspected []string
-	for nodeID, state := range g.Membership {
-		if nodeID == g.ID {
-			continue // => don't suspect ourselves
-		}
-		age := now - state.LastUpdated
-		state.SuspectedFailed = age > FailureTimeout
-		// => if heartbeat hasn't advanced in FailureTimeout, suspect failure
-		if state.SuspectedFailed {
-			suspected = append(suspected, nodeID)
-		}
-	}
-	return suspected
+    // Mark nodes suspected failed if heartbeat stale.
+    now := float64(time.Now().UnixMilli()) / 1000.0
+    var suspected []string
+    for nodeID, state := range g.Membership {
+        if nodeID == g.ID {
+            continue // => don't suspect ourselves
+        }
+        age := now - state.LastUpdated
+        state.SuspectedFailed = age > FailureTimeout
+        // => if heartbeat hasn't advanced in FailureTimeout, suspect failure
+        if state.SuspectedFailed {
+            suspected = append(suspected, nodeID)
+        }
+    }
+    return suspected
 }
 
 func main() {
-	// Build a 5-node cluster
-	cluster := make([]*GossipNode, 5)
-	for i := range cluster {
-		cluster[i] = NewGossipNode(fmt.Sprintf("node-%d", i))
-	}
+    // Build a 5-node cluster
+    cluster := make([]*GossipNode, 5)
+    for i := range cluster {
+        cluster[i] = NewGossipNode(fmt.Sprintf("node-%d", i))
+    }
 
-	// Bootstrap: all nodes join with knowledge of node-0's membership
-	for _, node := range cluster[1:] {
-		node.JoinCluster(cluster[0].Membership) // => initial cluster discovery
-	}
+    // Bootstrap: all nodes join with knowledge of node-0's membership
+    for _, node := range cluster[1:] {
+        node.JoinCluster(cluster[0].Membership) // => initial cluster discovery
+    }
 
-	// Simulate 3 gossip rounds (each node heartbeats and gossips)
-	for round := 0; round < 3; round++ {
-		for _, node := range cluster {
-			node.HeartbeatTick() // => advance own heartbeat
-		}
-		for _, node := range cluster {
-			var peers []*GossipNode
-			for _, n := range cluster {
-				if n.ID != node.ID {
-					peers = append(peers, n)
-				}
-			}
-			node.Gossip(peers) // => gossip to 2 random peers
-		}
-	}
+    // Simulate 3 gossip rounds (each node heartbeats and gossips)
+    for round := 0; round < 3; round++ {
+        for _, node := range cluster {
+            node.HeartbeatTick() // => advance own heartbeat
+        }
+        for _, node := range cluster {
+            var peers []*GossipNode
+            for _, n := range cluster {
+                if n.ID != node.ID {
+                    peers = append(peers, n)
+                }
+            }
+            node.Gossip(peers) // => gossip to 2 random peers
+        }
+    }
 
-	// After 3 rounds, every node should know about all 5 members
-	keys := make([]string, 0)
-	for k := range cluster[0].Membership {
-		keys = append(keys, k)
-	}
-	fmt.Printf("node-0 knows: %v\n", keys)
-	// => node-0 knows: [node-0 node-1 node-2 node-3 node-4]
+    // After 3 rounds, every node should know about all 5 members
+    keys := make([]string, 0)
+    for k := range cluster[0].Membership {
+        keys = append(keys, k)
+    }
+    fmt.Printf("node-0 knows: %v\n", keys)
+    // => node-0 knows: [node-0 node-1 node-2 node-3 node-4]
 
-	// Simulate node-4 failure (stops heartbeating)
-	time.Sleep(100 * time.Millisecond) // => brief pause for timing
-	suspected := cluster[0].DetectFailures()
-	fmt.Printf("Suspected failed (before timeout): %v\n", suspected)
-	// => [] — node-4 recently heartbeated, not yet suspected
+    // Simulate node-4 failure (stops heartbeating)
+    time.Sleep(100 * time.Millisecond) // => brief pause for timing
+    suspected := cluster[0].DetectFailures()
+    fmt.Printf("Suspected failed (before timeout): %v\n", suspected)
+    // => [] — node-4 recently heartbeated, not yet suspected
 }
 ```
 
@@ -2243,112 +2243,112 @@ A Bloom filter (Burton Howard Bloom, 1970) is a space-efficient probabilistic da
 package main
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
-	"fmt"
-	"math"
-	"strconv"
+    "crypto/sha256"
+    "encoding/hex"
+    "fmt"
+    "math"
+    "strconv"
 )
 
 type BloomFilter struct {
-	m        int     // => bit array size
-	k        int     // => number of hash functions
-	bitArray []bool  // => all bits start at false
-	count    int     // => track actual element count
+    m        int     // => bit array size
+    k        int     // => number of hash functions
+    bitArray []bool  // => all bits start at false
+    count    int     // => track actual element count
 }
 
 func NewBloomFilter(expectedElements int, fpRate float64) *BloomFilter {
-	// Optimal bit array size: m = -n*ln(p) / (ln(2))^2
-	m := int(math.Ceil(
-		-float64(expectedElements) * math.Log(fpRate) / (math.Log(2) * math.Log(2)),
-	))
-	// => m bits needed for n elements at target false positive rate p
+    // Optimal bit array size: m = -n*ln(p) / (ln(2))^2
+    m := int(math.Ceil(
+        -float64(expectedElements) * math.Log(fpRate) / (math.Log(2) * math.Log(2)),
+    ))
+    // => m bits needed for n elements at target false positive rate p
 
-	// Optimal number of hash functions: k = (m/n) * ln(2)
-	k := int(math.Round(float64(m) / float64(expectedElements) * math.Log(2)))
-	if k < 1 {
-		k = 1
-	}
-	// => k hash functions minimizes false positive rate for given m and n
+    // Optimal number of hash functions: k = (m/n) * ln(2)
+    k := int(math.Round(float64(m) / float64(expectedElements) * math.Log(2)))
+    if k < 1 {
+        k = 1
+    }
+    // => k hash functions minimizes false positive rate for given m and n
 
-	fmt.Printf("Bloom filter: %d bits, %d hash functions\n", m, k)
-	fmt.Printf("  Space: %.2f KB for %d elements\n",
-		float64(m)/8/1024, expectedElements)
+    fmt.Printf("Bloom filter: %d bits, %d hash functions\n", m, k)
+    fmt.Printf("  Space: %.2f KB for %d elements\n",
+        float64(m)/8/1024, expectedElements)
 
-	return &BloomFilter{m: m, k: k, bitArray: make([]bool, m)}
+    return &BloomFilter{m: m, k: k, bitArray: make([]bool, m)}
 }
 
 func (bf *BloomFilter) hashPositions(item string) []int {
-	// Generate k independent bit positions for an item.
-	positions := make([]int, bf.k)
-	for i := 0; i < bf.k; i++ {
-		// Derive k independent hashes using different seeds
-		hashInput := fmt.Sprintf("%d:%s", i, item)
-		hash := sha256.Sum256([]byte(hashInput))
-		hexStr := hex.EncodeToString(hash[:])
-		val, _ := strconv.ParseUint(hexStr[:16], 16, 64)
-		positions[i] = int(val % uint64(bf.m)) // => position in bit array
-	}
-	return positions
+    // Generate k independent bit positions for an item.
+    positions := make([]int, bf.k)
+    for i := 0; i < bf.k; i++ {
+        // Derive k independent hashes using different seeds
+        hashInput := fmt.Sprintf("%d:%s", i, item)
+        hash := sha256.Sum256([]byte(hashInput))
+        hexStr := hex.EncodeToString(hash[:])
+        val, _ := strconv.ParseUint(hexStr[:16], 16, 64)
+        positions[i] = int(val % uint64(bf.m)) // => position in bit array
+    }
+    return positions
 }
 
 func (bf *BloomFilter) Add(item string) {
-	// Set k bit positions to 1 for the item.
-	for _, pos := range bf.hashPositions(item) {
-		bf.bitArray[pos] = true // => set bit at each hash position
-	}
-	bf.count++
-	// => item is now "in" the filter; cannot be removed without false negatives
+    // Set k bit positions to 1 for the item.
+    for _, pos := range bf.hashPositions(item) {
+        bf.bitArray[pos] = true // => set bit at each hash position
+    }
+    bf.count++
+    // => item is now "in" the filter; cannot be removed without false negatives
 }
 
 func (bf *BloomFilter) MightContain(item string) bool {
-	// Return true if item MIGHT be in set; false if DEFINITELY absent.
-	for _, pos := range bf.hashPositions(item) {
-		if !bf.bitArray[pos] {
-			return false // => definitely not in set; at least one bit is 0
-		}
-	}
-	return true // => probably in set (false positive possible)
+    // Return true if item MIGHT be in set; false if DEFINITELY absent.
+    for _, pos := range bf.hashPositions(item) {
+        if !bf.bitArray[pos] {
+            return false // => definitely not in set; at least one bit is 0
+        }
+    }
+    return true // => probably in set (false positive possible)
 }
 
 func (bf *BloomFilter) FalsePositiveProbability() float64 {
-	// Estimate current false positive rate based on element count.
-	if bf.count == 0 {
-		return 0.0
-	}
-	// p = (1 - e^(-k*n/m))^k
-	p := math.Pow(1-math.Exp(-float64(bf.k)*float64(bf.count)/float64(bf.m)),
-		float64(bf.k))
-	return p // => actual FP rate grows as more elements added
+    // Estimate current false positive rate based on element count.
+    if bf.count == 0 {
+        return 0.0
+    }
+    // p = (1 - e^(-k*n/m))^k
+    p := math.Pow(1-math.Exp(-float64(bf.k)*float64(bf.count)/float64(bf.m)),
+        float64(bf.k))
+    return p // => actual FP rate grows as more elements added
 }
 
 func main() {
-	// Demo: URL deduplication (web crawler use case)
-	bf := NewBloomFilter(10000, 0.01)
-	// => Bloom filter: ~95851 bits (~11.5 KB), ~7 hash functions
-	// => Compare: storing 10000 URLs as strings = ~250 KB+
+    // Demo: URL deduplication (web crawler use case)
+    bf := NewBloomFilter(10000, 0.01)
+    // => Bloom filter: ~95851 bits (~11.5 KB), ~7 hash functions
+    // => Compare: storing 10000 URLs as strings = ~250 KB+
 
-	crawledURLs := []string{
-		"https://example.com/page1",
-		"https://example.com/page2",
-		"https://news.site/article/42",
-	}
-	for _, url := range crawledURLs {
-		bf.Add(url) // => mark as crawled
-	}
+    crawledURLs := []string{
+        "https://example.com/page1",
+        "https://example.com/page2",
+        "https://news.site/article/42",
+    }
+    for _, url := range crawledURLs {
+        bf.Add(url) // => mark as crawled
+    }
 
-	// Check membership
-	fmt.Println(bf.MightContain("https://example.com/page1"))
-	// => true (definitely crawled — no false negatives)
+    // Check membership
+    fmt.Println(bf.MightContain("https://example.com/page1"))
+    // => true (definitely crawled — no false negatives)
 
-	fmt.Println(bf.MightContain("https://example.com/page999"))
-	// => false (definitely NOT crawled — bit was 0)
+    fmt.Println(bf.MightContain("https://example.com/page999"))
+    // => false (definitely NOT crawled — bit was 0)
 
-	fmt.Println(bf.MightContain("https://unknown.com/new"))
-	// => false (definitely not crawled) OR true (rare false positive ~1%)
+    fmt.Println(bf.MightContain("https://unknown.com/new"))
+    // => false (definitely not crawled) OR true (rare false positive ~1%)
 
-	fmt.Printf("FP rate at %d elements: %.4f\n", bf.count, bf.FalsePositiveProbability())
-	// => FP rate at 3 elements: ~0.0000 (very low at this fill level)
+    fmt.Printf("FP rate at %d elements: %.4f\n", bf.count, bf.FalsePositiveProbability())
+    // => FP rate at 3 elements: ~0.0000 (very low at this fill level)
 }
 ```
 
@@ -2486,111 +2486,111 @@ graph TD
 package main
 
 import (
-	"fmt"
-	"time"
+    "fmt"
+    "time"
 )
 
 type MockDatabase struct {
-	store      map[string]string
-	readCount  int
-	writeCount int
+    store      map[string]string
+    readCount  int
+    writeCount int
 }
 
 func NewMockDatabase() *MockDatabase {
-	return &MockDatabase{
-		store: map[string]string{"user:1": "alice", "user:2": "bob"},
-	}
+    return &MockDatabase{
+        store: map[string]string{"user:1": "alice", "user:2": "bob"},
+    }
 }
 
 func (db *MockDatabase) Read(key string) string {
-	db.readCount++
-	time.Sleep(10 * time.Millisecond) // => simulate 10ms DB latency
-	return db.store[key]
+    db.readCount++
+    time.Sleep(10 * time.Millisecond) // => simulate 10ms DB latency
+    return db.store[key]
 }
 
 func (db *MockDatabase) Write(key, value string) {
-	db.writeCount++
-	db.store[key] = value
+    db.writeCount++
+    db.store[key] = value
 }
 
 type MockCache struct {
-	store     map[string]string
-	hitCount  int
-	missCount int
+    store     map[string]string
+    hitCount  int
+    missCount int
 }
 
 func NewMockCache() *MockCache {
-	return &MockCache{store: make(map[string]string)}
+    return &MockCache{store: make(map[string]string)}
 }
 
 func (c *MockCache) Get(key string) (string, bool) {
-	val, ok := c.store[key]
-	if ok {
-		c.hitCount++
-		return val, true // => cache hit; no DB access needed
-	}
-	c.missCount++
-	return "", false // => cache miss; caller must load from DB
+    val, ok := c.store[key]
+    if ok {
+        c.hitCount++
+        return val, true // => cache hit; no DB access needed
+    }
+    c.missCount++
+    return "", false // => cache miss; caller must load from DB
 }
 
 func (c *MockCache) Set(key, value string) {
-	c.store[key] = value // => in production: set with TTL expiry
+    c.store[key] = value // => in production: set with TTL expiry
 }
 
 func cacheAsideRead(key string, cache *MockCache, db *MockDatabase) string {
-	// Cache-aside: check cache first; load from DB on miss.
-	if val, ok := cache.Get(key); ok {
-		return val
-	}
-	val := db.Read(key)  // => cache miss: go to DB (slow path)
-	if val != "" {
-		cache.Set(key, val) // => populate cache for subsequent reads
-	}
-	return val // => subsequent reads are cache hits
+    // Cache-aside: check cache first; load from DB on miss.
+    if val, ok := cache.Get(key); ok {
+        return val
+    }
+    val := db.Read(key)  // => cache miss: go to DB (slow path)
+    if val != "" {
+        cache.Set(key, val) // => populate cache for subsequent reads
+    }
+    return val // => subsequent reads are cache hits
 }
 
 func writeThroughWrite(key, value string, cache *MockCache, db *MockDatabase) {
-	// Write-through: write to both cache and DB synchronously.
-	cache.Set(key, value) // => update cache immediately
-	db.Write(key, value)  // => synchronously persist to DB
-	// => write latency = cache latency + DB latency
-	// => benefit: cache always consistent with DB after write
+    // Write-through: write to both cache and DB synchronously.
+    cache.Set(key, value) // => update cache immediately
+    db.Write(key, value)  // => synchronously persist to DB
+    // => write latency = cache latency + DB latency
+    // => benefit: cache always consistent with DB after write
 }
 
 func writeBehindWrite(key, value string, cache *MockCache, writeQueue *[][]string) {
-	// Write-behind: write to cache; queue DB write for async flush.
-	cache.Set(key, value) // => update cache immediately (fast)
-	*writeQueue = append(*writeQueue, []string{key, value})
-	// => DB write deferred; app gets fast ack but data not yet durable
-	// => risk: cache crash before flush = data loss
+    // Write-behind: write to cache; queue DB write for async flush.
+    cache.Set(key, value) // => update cache immediately (fast)
+    *writeQueue = append(*writeQueue, []string{key, value})
+    // => DB write deferred; app gets fast ack but data not yet durable
+    // => risk: cache crash before flush = data loss
 }
 
 func main() {
-	db := NewMockDatabase()
-	cache := NewMockCache()
-	var writeQueue [][]string
+    db := NewMockDatabase()
+    cache := NewMockCache()
+    var writeQueue [][]string
 
-	// First read: cache miss, DB read
-	val := cacheAsideRead("user:1", cache, db)
-	// => cache miss → DB read (10ms) → cache populated
-	fmt.Printf("First read: %s, DB reads: %d\n", val, db.readCount) // => DB reads: 1
+    // First read: cache miss, DB read
+    val := cacheAsideRead("user:1", cache, db)
+    // => cache miss → DB read (10ms) → cache populated
+    fmt.Printf("First read: %s, DB reads: %d\n", val, db.readCount) // => DB reads: 1
 
-	// Second read: cache hit, no DB
-	val = cacheAsideRead("user:1", cache, db)
-	fmt.Printf("Second read: %s, DB reads: %d\n", val, db.readCount) // => DB reads: 1
-	fmt.Printf("Cache hits: %d, misses: %d\n", cache.hitCount, cache.missCount)
-	// => Cache hits: 1, misses: 1
+    // Second read: cache hit, no DB
+    val = cacheAsideRead("user:1", cache, db)
+    fmt.Printf("Second read: %s, DB reads: %d\n", val, db.readCount) // => DB reads: 1
+    fmt.Printf("Cache hits: %d, misses: %d\n", cache.hitCount, cache.missCount)
+    // => Cache hits: 1, misses: 1
 
-	// Write-through demo
-	writeThroughWrite("user:3", "charlie", cache, db)
-	// => cache and DB both have "charlie"; consistent immediately
-	fmt.Printf("Write-through DB count: %d\n", db.writeCount) // => 1
+    // Write-through demo
+    writeThroughWrite("user:3", "charlie", cache, db)
+    // => cache and DB both have "charlie"; consistent immediately
+    fmt.Printf("Write-through DB count: %d\n", db.writeCount) // => 1
 
-	// Write-behind demo
-	writeBehindWrite("user:4", "diana", cache, &writeQueue)
-	// => cache has "diana"; DB does not yet
-	fmt.Printf("Write-behind queue: %v\n", writeQueue) // => [[user:4 diana]]
-	fmt.Printf("Write-behind DB writes: %d\n", db.writeCount) // => 1 (DB not yet written)
+    // Write-behind demo
+    writeBehindWrite("user:4", "diana", cache, &writeQueue)
+    // => cache has "diana"; DB does not yet
+    fmt.Printf("Write-behind queue: %v\n", writeQueue) // => [[user:4 diana]]
+    fmt.Printf("Write-behind DB writes: %d\n", db.writeCount) // => 1 (DB not yet written)
 }
 ```
 
@@ -2708,130 +2708,130 @@ Leader election ensures exactly one node acts as coordinator at any time, preven
 package main
 
 import (
-	"fmt"
-	"sync"
-	"time"
+    "fmt"
+    "sync"
+    "time"
 )
 
 type LockEntry struct {
-	Holder    string
-	ExpiresAt time.Time
+    Holder    string
+    ExpiresAt time.Time
 }
 
 type DistributedLockSimulator struct {
-	lockStore map[string]*LockEntry // => {key: {holder, expiresAt}}
-	mu        sync.Mutex            // => protect lockStore
+    lockStore map[string]*LockEntry // => {key: {holder, expiresAt}}
+    mu        sync.Mutex            // => protect lockStore
 }
 
 func NewDistributedLockSimulator() *DistributedLockSimulator {
-	return &DistributedLockSimulator{lockStore: make(map[string]*LockEntry)}
+    return &DistributedLockSimulator{lockStore: make(map[string]*LockEntry)}
 }
 
 func (d *DistributedLockSimulator) Acquire(key, holderID string, ttl time.Duration) bool {
-	// Try to acquire lock; returns true if successful.
-	d.mu.Lock()
-	defer d.mu.Unlock()
-	now := time.Now()
-	existing := d.lockStore[key]
-	if existing != nil && existing.ExpiresAt.After(now) {
-		return false // => lock held by another node, not expired
-	}
-	// Lock is free (not held, or TTL expired)
-	d.lockStore[key] = &LockEntry{
-		Holder:    holderID,
-		ExpiresAt: now.Add(ttl),
-		// => lease expires in ttl; must be renewed
-	}
-	return true // => lock acquired
+    // Try to acquire lock; returns true if successful.
+    d.mu.Lock()
+    defer d.mu.Unlock()
+    now := time.Now()
+    existing := d.lockStore[key]
+    if existing != nil && existing.ExpiresAt.After(now) {
+        return false // => lock held by another node, not expired
+    }
+    // Lock is free (not held, or TTL expired)
+    d.lockStore[key] = &LockEntry{
+        Holder:    holderID,
+        ExpiresAt: now.Add(ttl),
+        // => lease expires in ttl; must be renewed
+    }
+    return true // => lock acquired
 }
 
 func (d *DistributedLockSimulator) Renew(key, holderID string, ttl time.Duration) bool {
-	// Renew lease; prevents expiry if leader is still alive.
-	d.mu.Lock()
-	defer d.mu.Unlock()
-	entry := d.lockStore[key]
-	if entry != nil && entry.Holder == holderID {
-		entry.ExpiresAt = time.Now().Add(ttl)
-		return true // => lease extended
-	}
-	return false // => no longer the holder (lease stolen)
+    // Renew lease; prevents expiry if leader is still alive.
+    d.mu.Lock()
+    defer d.mu.Unlock()
+    entry := d.lockStore[key]
+    if entry != nil && entry.Holder == holderID {
+        entry.ExpiresAt = time.Now().Add(ttl)
+        return true // => lease extended
+    }
+    return false // => no longer the holder (lease stolen)
 }
 
 func (d *DistributedLockSimulator) CurrentLeader(key string) string {
-	// Return current lock holder, or empty if expired.
-	d.mu.Lock()
-	defer d.mu.Unlock()
-	entry := d.lockStore[key]
-	if entry != nil && entry.ExpiresAt.After(time.Now()) {
-		return entry.Holder // => valid leader
-	}
-	return "" // => no current leader
+    // Return current lock holder, or empty if expired.
+    d.mu.Lock()
+    defer d.mu.Unlock()
+    entry := d.lockStore[key]
+    if entry != nil && entry.ExpiresAt.After(time.Now()) {
+        return entry.Holder // => valid leader
+    }
+    return "" // => no current leader
 }
 
 type LeaderElectionNode struct {
-	ID       string
-	Lock     *DistributedLockSimulator
-	IsLeader bool
-	running  bool
+    ID       string
+    Lock     *DistributedLockSimulator
+    IsLeader bool
+    running  bool
 }
 
 const (
-	LeaseTTL      = 5 * time.Second // => 5 second lease TTL
-	RenewInterval = 2 * time.Second // => renew every 2s (well before TTL expiry)
+    LeaseTTL      = 5 * time.Second // => 5 second lease TTL
+    RenewInterval = 2 * time.Second // => renew every 2s (well before TTL expiry)
 )
 
 func (n *LeaderElectionNode) Start() {
-	// Begin election loop in background goroutine.
-	n.running = true
-	go n.electionLoop()
+    // Begin election loop in background goroutine.
+    n.running = true
+    go n.electionLoop()
 }
 
 func (n *LeaderElectionNode) electionLoop() {
-	for n.running {
-		if n.IsLeader {
-			// Leader: renew lease to stay leader
-			renewed := n.Lock.Renew("election/leader", n.ID, LeaseTTL)
-			if !renewed {
-				n.IsLeader = false // => lost leadership (lock stolen or expired)
-				fmt.Printf("%s: lost leadership!\n", n.ID)
-			}
-		} else {
-			// Follower: try to acquire leadership
-			acquired := n.Lock.Acquire("election/leader", n.ID, LeaseTTL)
-			if acquired {
-				n.IsLeader = true
-				fmt.Printf("%s: elected LEADER\n", n.ID)
-			}
-			// => followers poll at RenewInterval; first to acquire becomes leader
-		}
-		time.Sleep(RenewInterval)
-	}
+    for n.running {
+        if n.IsLeader {
+            // Leader: renew lease to stay leader
+            renewed := n.Lock.Renew("election/leader", n.ID, LeaseTTL)
+            if !renewed {
+                n.IsLeader = false // => lost leadership (lock stolen or expired)
+                fmt.Printf("%s: lost leadership!\n", n.ID)
+            }
+        } else {
+            // Follower: try to acquire leadership
+            acquired := n.Lock.Acquire("election/leader", n.ID, LeaseTTL)
+            if acquired {
+                n.IsLeader = true
+                fmt.Printf("%s: elected LEADER\n", n.ID)
+            }
+            // => followers poll at RenewInterval; first to acquire becomes leader
+        }
+        time.Sleep(RenewInterval)
+    }
 }
 
 func main() {
-	// Simulate 3-node cluster
-	lock := NewDistributedLockSimulator()
-	nodes := make([]*LeaderElectionNode, 3)
-	for i := range nodes {
-		nodes[i] = &LeaderElectionNode{
-			ID: fmt.Sprintf("worker-%d", i), Lock: lock,
-		}
-		nodes[i].Start() // => all nodes start election loop
-	}
+    // Simulate 3-node cluster
+    lock := NewDistributedLockSimulator()
+    nodes := make([]*LeaderElectionNode, 3)
+    for i := range nodes {
+        nodes[i] = &LeaderElectionNode{
+            ID: fmt.Sprintf("worker-%d", i), Lock: lock,
+        }
+        nodes[i].Start() // => all nodes start election loop
+    }
 
-	time.Sleep(100 * time.Millisecond) // => brief time for first node to win
-	leaderID := lock.CurrentLeader("election/leader")
-	fmt.Printf("Current leader: %s\n", leaderID)
-	// => Current leader: worker-0 (first to acquire)
+    time.Sleep(100 * time.Millisecond) // => brief time for first node to win
+    leaderID := lock.CurrentLeader("election/leader")
+    fmt.Printf("Current leader: %s\n", leaderID)
+    // => Current leader: worker-0 (first to acquire)
 
-	var leaders []string
-	for _, n := range nodes {
-		if n.IsLeader {
-			leaders = append(leaders, n.ID)
-		}
-	}
-	fmt.Printf("Nodes claiming leadership: %v\n", leaders)
-	// => Exactly 1 node should be leader at any time
+    var leaders []string
+    for _, n := range nodes {
+        if n.IsLeader {
+            leaders = append(leaders, n.ID)
+        }
+    }
+    fmt.Printf("Nodes claiming leadership: %v\n", leaders)
+    // => Exactly 1 node should be leader at any time
 }
 ```
 
@@ -2954,94 +2954,94 @@ Geo-replication distributes data across multiple geographic regions for latency 
 package main
 
 import (
-	"fmt"
-	"time"
+    "fmt"
+    "time"
 )
 
 type DataEntry struct {
-	Value     string
-	Timestamp float64
+    Value     string
+    Timestamp float64
 }
 
 type RegionNode struct {
-	Region          string
-	IsPrimary       bool              // => true = accepts writes; false = read-only in A/P
-	Data            map[string]*DataEntry // => local data store
-	ReplicationLagMs int              // => simulated replication delay
+    Region          string
+    IsPrimary       bool              // => true = accepts writes; false = read-only in A/P
+    Data            map[string]*DataEntry // => local data store
+    ReplicationLagMs int              // => simulated replication delay
 }
 
 func NewRegionNode(region string, isPrimary bool) *RegionNode {
-	return &RegionNode{
-		Region:    region,
-		IsPrimary: isPrimary,
-		Data:      make(map[string]*DataEntry),
-	}
+    return &RegionNode{
+        Region:    region,
+        IsPrimary: isPrimary,
+        Data:      make(map[string]*DataEntry),
+    }
 }
 
 func (r *RegionNode) Write(key, value string, timestamp float64) bool {
-	if !r.IsPrimary {
-		return false // => active-passive: reject writes on replicas
-	}
-	r.Data[key] = &DataEntry{Value: value, Timestamp: timestamp}
-	return true
+    if !r.IsPrimary {
+        return false // => active-passive: reject writes on replicas
+    }
+    r.Data[key] = &DataEntry{Value: value, Timestamp: timestamp}
+    return true
 }
 
 func (r *RegionNode) ActiveActiveWrite(key, value string, timestamp float64) bool {
-	// Active-active: always accept writes; use last-write-wins on conflict.
-	existing := r.Data[key]
-	if existing != nil && existing.Timestamp > timestamp {
-		return false // => local version is newer; reject older write
-	}
-	r.Data[key] = &DataEntry{Value: value, Timestamp: timestamp}
-	// => last-write-wins based on timestamp (requires clock synchronization)
-	return true
+    // Active-active: always accept writes; use last-write-wins on conflict.
+    existing := r.Data[key]
+    if existing != nil && existing.Timestamp > timestamp {
+        return false // => local version is newer; reject older write
+    }
+    r.Data[key] = &DataEntry{Value: value, Timestamp: timestamp}
+    // => last-write-wins based on timestamp (requires clock synchronization)
+    return true
 }
 
 func (r *RegionNode) ReplicateFrom(source *RegionNode) {
-	// Pull replication: sync data from another region.
-	time.Sleep(time.Duration(r.ReplicationLagMs) * time.Millisecond)
-	for key, entry := range source.Data {
-		local := r.Data[key]
-		if local == nil || entry.Timestamp > local.Timestamp {
-			r.Data[key] = entry // => accept newer version from source
-		}
-	}
+    // Pull replication: sync data from another region.
+    time.Sleep(time.Duration(r.ReplicationLagMs) * time.Millisecond)
+    for key, entry := range source.Data {
+        local := r.Data[key]
+        if local == nil || entry.Timestamp > local.Timestamp {
+            r.Data[key] = entry // => accept newer version from source
+        }
+    }
 }
 
 func main() {
-	// Demonstrate active-passive
-	primary := NewRegionNode("us-east-1", true)
-	replicaEU := NewRegionNode("eu-west-1", false)
-	replicaEU.ReplicationLagMs = 80 // => 80ms replication lag
-	replicaAP := NewRegionNode("ap-southeast-1", false)
-	replicaAP.ReplicationLagMs = 150 // => 150ms replication lag
+    // Demonstrate active-passive
+    primary := NewRegionNode("us-east-1", true)
+    replicaEU := NewRegionNode("eu-west-1", false)
+    replicaEU.ReplicationLagMs = 80 // => 80ms replication lag
+    replicaAP := NewRegionNode("ap-southeast-1", false)
+    replicaAP.ReplicationLagMs = 150 // => 150ms replication lag
 
-	ts := float64(time.Now().UnixMilli()) / 1000.0
-	primary.Write("config:theme", "dark", ts) // => only us-east-1 accepts write
-	// Async replication to replicas
-	replicaEU.ReplicateFrom(primary)
-	replicaAP.ReplicateFrom(primary)
+    ts := float64(time.Now().UnixMilli()) / 1000.0
+    primary.Write("config:theme", "dark", ts) // => only us-east-1 accepts write
+    // Async replication to replicas
+    replicaEU.ReplicateFrom(primary)
+    replicaAP.ReplicateFrom(primary)
 
-	usVal := primary.Data["config:theme"].Value   // => "dark" (immediate)
-	euVal := replicaEU.Data["config:theme"].Value // => "dark" (after 80ms lag)
-	fmt.Printf("US: %s, EU: %s\n", usVal, euVal)
+    usVal := primary.Data["config:theme"].Value   // => "dark" (immediate)
+    euVal := replicaEU.Data["config:theme"].Value // => "dark" (after 80ms lag)
+    fmt.Printf("US: %s, EU: %s\n", usVal, euVal)
 
-	// Active-active conflict resolution
-	aaUS := NewRegionNode("us-east-1", false)
-	aaEU := NewRegionNode("eu-west-1", false)
+    // Active-active conflict resolution
+    aaUS := NewRegionNode("us-east-1", false)
+    aaEU := NewRegionNode("eu-west-1", false)
 
-	tsUS := float64(time.Now().UnixMilli()) / 1000.0
-	tsEU := tsUS + 0.001 // => EU write is 1ms later (wins last-write-wins)
-	aaUS.ActiveActiveWrite("prefs:color", "blue", tsUS)
-	aaEU.ActiveActiveWrite("prefs:color", "red", tsEU)
-	// => EU has "red" (its own write), US has "blue"
+    tsUS := float64(time.Now().UnixMilli()) / 1000.0
+    tsEU := tsUS + 0.001 // => EU write is 1ms later (wins last-write-wins)
+    aaUS.ActiveActiveWrite("prefs:color", "blue", tsUS)
+    aaEU.ActiveActiveWrite("prefs:color", "red", tsEU)
+    // => EU has "red" (its own write), US has "blue"
 
-	// Cross-replicate: both converge to EU's value (higher timestamp)
-	aaUS.ActiveActiveWrite("prefs:color",
-		aaEU.Data["prefs:color"].Value,
-		aaEU.Data["prefs:color"].Timestamp)
-	fmt.Printf("After convergence — US: %s\n", aaUS.Data["prefs:color"].Value)
-	// => After convergence — US: red (last-write-wins resolved conflict)
+    // Cross-replicate: both converge to EU's value (higher timestamp)
+    aaUS.ActiveActiveWrite("prefs:color",
+        aaEU.Data["prefs:color"].Value,
+        aaEU.Data["prefs:color"].Timestamp)
+    fmt.Printf("After convergence — US: %s\n", aaUS.Data["prefs:color"].Value)
+    // => After convergence — US: red (last-write-wins resolved conflict)
 }
 ```
 
@@ -3184,129 +3184,129 @@ graph LR
 package main
 
 import (
-	"crypto/md5"
-	"encoding/binary"
-	"fmt"
+    "crypto/md5"
+    "encoding/binary"
+    "fmt"
 )
 
 type KafkaMessage struct {
-	Key       string // => determines partition (hash-based routing)
-	Value     string // => message payload
-	Offset    int    // => monotonically increasing position in partition
-	Partition int    // => which partition this message belongs to
+    Key       string // => determines partition (hash-based routing)
+    Value     string // => message payload
+    Offset    int    // => monotonically increasing position in partition
+    Partition int    // => which partition this message belongs to
 }
 
 type KafkaTopic struct {
-	Name          string
-	NumPartitions int
-	Partitions    [][]KafkaMessage // => each partition is an ordered append-only log
+    Name          string
+    NumPartitions int
+    Partitions    [][]KafkaMessage // => each partition is an ordered append-only log
 }
 
 func NewKafkaTopic(name string, numPartitions int) *KafkaTopic {
-	partitions := make([][]KafkaMessage, numPartitions)
-	for i := range partitions {
-		partitions[i] = []KafkaMessage{}
-	}
-	return &KafkaTopic{Name: name, NumPartitions: numPartitions, Partitions: partitions}
+    partitions := make([][]KafkaMessage, numPartitions)
+    for i := range partitions {
+        partitions[i] = []KafkaMessage{}
+    }
+    return &KafkaTopic{Name: name, NumPartitions: numPartitions, Partitions: partitions}
 }
 
 func (t *KafkaTopic) assignPartition(key string) int {
-	// Hash key to partition: same key always goes to same partition.
-	hash := md5.Sum([]byte(key))
-	val := binary.BigEndian.Uint32(hash[:4])
-	return int(val) % t.NumPartitions
-	// => guarantees ordering for events with the same key (e.g., same user_id)
+    // Hash key to partition: same key always goes to same partition.
+    hash := md5.Sum([]byte(key))
+    val := binary.BigEndian.Uint32(hash[:4])
+    return int(val) % t.NumPartitions
+    // => guarantees ordering for events with the same key (e.g., same user_id)
 }
 
 func (t *KafkaTopic) Produce(key, value string) KafkaMessage {
-	// Append message to determined partition.
-	partitionID := t.assignPartition(key)
-	offset := len(t.Partitions[partitionID]) // => next offset in this partition
-	msg := KafkaMessage{Key: key, Value: value, Offset: offset, Partition: partitionID}
-	t.Partitions[partitionID] = append(t.Partitions[partitionID], msg)
-	// => append-only; never modify existing messages
-	return msg
+    // Append message to determined partition.
+    partitionID := t.assignPartition(key)
+    offset := len(t.Partitions[partitionID]) // => next offset in this partition
+    msg := KafkaMessage{Key: key, Value: value, Offset: offset, Partition: partitionID}
+    t.Partitions[partitionID] = append(t.Partitions[partitionID], msg)
+    // => append-only; never modify existing messages
+    return msg
 }
 
 type ConsumerGroup struct {
-	GroupID          string
-	Topic            *KafkaTopic
-	CommittedOffsets map[int]int // => last consumed position per partition
+    GroupID          string
+    Topic            *KafkaTopic
+    CommittedOffsets map[int]int // => last consumed position per partition
 }
 
 func NewConsumerGroup(groupID string, topic *KafkaTopic) *ConsumerGroup {
-	offsets := make(map[int]int)
-	for i := 0; i < topic.NumPartitions; i++ {
-		offsets[i] = 0 // => offset = next message to consume; starts at 0
-	}
-	return &ConsumerGroup{GroupID: groupID, Topic: topic, CommittedOffsets: offsets}
+    offsets := make(map[int]int)
+    for i := 0; i < topic.NumPartitions; i++ {
+        offsets[i] = 0 // => offset = next message to consume; starts at 0
+    }
+    return &ConsumerGroup{GroupID: groupID, Topic: topic, CommittedOffsets: offsets}
 }
 
 func (cg *ConsumerGroup) AssignPartitions(consumers []string) map[string][]int {
-	// Assign partitions to consumers — each partition to exactly one consumer.
-	assignment := make(map[string][]int)
-	for pid := 0; pid < cg.Topic.NumPartitions; pid++ {
-		consumer := consumers[pid%len(consumers)]
-		assignment[consumer] = append(assignment[consumer], pid)
-		// => if 3 partitions, 2 consumers: consumer0 gets [0,2], consumer1 gets [1]
-	}
-	return assignment
+    // Assign partitions to consumers — each partition to exactly one consumer.
+    assignment := make(map[string][]int)
+    for pid := 0; pid < cg.Topic.NumPartitions; pid++ {
+        consumer := consumers[pid%len(consumers)]
+        assignment[consumer] = append(assignment[consumer], pid)
+        // => if 3 partitions, 2 consumers: consumer0 gets [0,2], consumer1 gets [1]
+    }
+    return assignment
 }
 
 func (cg *ConsumerGroup) Consume(partitionID, maxMessages int) []KafkaMessage {
-	// Pull messages from a partition starting at committed offset.
-	partition := cg.Topic.Partitions[partitionID]
-	start := cg.CommittedOffsets[partitionID]
-	end := start + maxMessages
-	if end > len(partition) {
-		end = len(partition)
-	}
-	// => read from committed offset forward (at-least-once delivery)
-	return partition[start:end]
+    // Pull messages from a partition starting at committed offset.
+    partition := cg.Topic.Partitions[partitionID]
+    start := cg.CommittedOffsets[partitionID]
+    end := start + maxMessages
+    if end > len(partition) {
+        end = len(partition)
+    }
+    // => read from committed offset forward (at-least-once delivery)
+    return partition[start:end]
 }
 
 func (cg *ConsumerGroup) Commit(partitionID, offset int) {
-	// Mark messages up to offset as processed.
-	cg.CommittedOffsets[partitionID] = offset + 1
-	// => next consume will start at offset+1; prevents reprocessing
+    // Mark messages up to offset as processed.
+    cg.CommittedOffsets[partitionID] = offset + 1
+    // => next consume will start at offset+1; prevents reprocessing
 }
 
 func main() {
-	// Demo: order processing pipeline
-	topic := NewKafkaTopic("order-events", 3)
+    // Demo: order processing pipeline
+    topic := NewKafkaTopic("order-events", 3)
 
-	// Producers write to topic (partition by order_id for ordering)
-	msgs := []KafkaMessage{
-		topic.Produce("order:100", `{"event":"placed","amount":99}`),
-		topic.Produce("order:200", `{"event":"placed","amount":50}`),
-		topic.Produce("order:100", `{"event":"paid","amount":99}`), // => same key->same partition
-		topic.Produce("order:300", `{"event":"placed","amount":25}`),
-		topic.Produce("order:200", `{"event":"paid","amount":50}`),
-	}
+    // Producers write to topic (partition by order_id for ordering)
+    msgs := []KafkaMessage{
+        topic.Produce("order:100", `{"event":"placed","amount":99}`),
+        topic.Produce("order:200", `{"event":"placed","amount":50}`),
+        topic.Produce("order:100", `{"event":"paid","amount":99}`), // => same key->same partition
+        topic.Produce("order:300", `{"event":"placed","amount":25}`),
+        topic.Produce("order:200", `{"event":"paid","amount":50}`),
+    }
 
-	// Show partition assignment (order:100 always same partition)
-	for _, msg := range msgs {
-		fmt.Printf("  key=%s -> partition=%d, offset=%d\n", msg.Key, msg.Partition, msg.Offset)
-	}
-	// => order:100 -> same partition (consistent; both "placed" and "paid" together)
+    // Show partition assignment (order:100 always same partition)
+    for _, msg := range msgs {
+        fmt.Printf("  key=%s -> partition=%d, offset=%d\n", msg.Key, msg.Partition, msg.Offset)
+    }
+    // => order:100 -> same partition (consistent; both "placed" and "paid" together)
 
-	// Consumer group with 2 consumers
-	group := NewConsumerGroup("order-processor", topic)
-	assignment := group.AssignPartitions([]string{"worker-0", "worker-1"})
-	fmt.Printf("\nPartition assignment: %v\n", assignment)
-	// => {"worker-0": [0, 2], "worker-1": [1]}
+    // Consumer group with 2 consumers
+    group := NewConsumerGroup("order-processor", topic)
+    assignment := group.AssignPartitions([]string{"worker-0", "worker-1"})
+    fmt.Printf("\nPartition assignment: %v\n", assignment)
+    // => {"worker-0": [0, 2], "worker-1": [1]}
 
-	// Worker-0 reads its partitions
-	for _, pid := range assignment["worker-0"] {
-		messages := group.Consume(pid, 10)
-		for _, msg := range messages {
-			fmt.Printf("  worker-0 processing: %s -> %s\n", msg.Key, msg.Value)
-		}
-		if len(messages) > 0 {
-			group.Commit(pid, messages[len(messages)-1].Offset)
-			// => commit last offset; prevents reprocessing after crash
-		}
-	}
+    // Worker-0 reads its partitions
+    for _, pid := range assignment["worker-0"] {
+        messages := group.Consume(pid, 10)
+        for _, msg := range messages {
+            fmt.Printf("  worker-0 processing: %s -> %s\n", msg.Key, msg.Value)
+        }
+        if len(messages) > 0 {
+            group.Commit(pid, messages[len(messages)-1].Offset)
+            // => commit last offset; prevents reprocessing after crash
+        }
+    }
 }
 ```
 
@@ -3439,124 +3439,124 @@ A service mesh manages service-to-service communication by deploying a sidecar p
 package main
 
 import (
-	"fmt"
-	"math"
-	"sort"
-	"time"
+    "fmt"
+    "math"
+    "sort"
+    "time"
 )
 
 type SidecarProxy struct {
-	ServiceName      string
-	failureCount     int
-	circuitOpen      bool    // => true = circuit open; reject calls
-	failureThreshold int     // => open circuit after 3 failures
-	recoveryTimeout  float64 // => seconds before trying half-open
-	lastFailureTime  float64
-	metrics          struct {
-		requests  int
-		errors    int
-		latencies []float64
-	}
+    ServiceName      string
+    failureCount     int
+    circuitOpen      bool    // => true = circuit open; reject calls
+    failureThreshold int     // => open circuit after 3 failures
+    recoveryTimeout  float64 // => seconds before trying half-open
+    lastFailureTime  float64
+    metrics          struct {
+        requests  int
+        errors    int
+        latencies []float64
+    }
 }
 
 func NewSidecarProxy(serviceName string) *SidecarProxy {
-	return &SidecarProxy{
-		ServiceName:      serviceName,
-		failureThreshold: 3,
-		recoveryTimeout:  5.0,
-	}
+    return &SidecarProxy{
+        ServiceName:      serviceName,
+        failureThreshold: 3,
+        recoveryTimeout:  5.0,
+    }
 }
 
 func (s *SidecarProxy) Call(upstream func() (string, error), retries int) (string, error) {
-	// Intercept outgoing call: apply circuit breaker + retries + metrics.
-	if s.circuitOpen {
-		elapsed := float64(time.Now().UnixMilli())/1000.0 - s.lastFailureTime
-		if elapsed < s.recoveryTimeout {
-			s.metrics.errors++
-			return "", fmt.Errorf("Circuit OPEN for %s (fast fail)", s.ServiceName)
-			// => reject call without attempting upstream; protects upstream from load
-		}
-		s.circuitOpen = false // => half-open: allow one probe
-		s.failureCount = 0   // => reset counter for probe
-	}
+    // Intercept outgoing call: apply circuit breaker + retries + metrics.
+    if s.circuitOpen {
+        elapsed := float64(time.Now().UnixMilli())/1000.0 - s.lastFailureTime
+        if elapsed < s.recoveryTimeout {
+            s.metrics.errors++
+            return "", fmt.Errorf("Circuit OPEN for %s (fast fail)", s.ServiceName)
+            // => reject call without attempting upstream; protects upstream from load
+        }
+        s.circuitOpen = false // => half-open: allow one probe
+        s.failureCount = 0   // => reset counter for probe
+    }
 
-	var lastErr error
-	for attempt := 0; attempt <= retries; attempt++ {
-		start := time.Now()
-		s.metrics.requests++
-		result, err := upstream() // => actual call to upstream service
-		if err == nil {
-			latency := float64(time.Since(start).Microseconds()) / 1000.0
-			s.metrics.latencies = append(s.metrics.latencies, latency)
-			s.failureCount = 0 // => reset on success
-			return result, nil
-		}
-		lastErr = err
-		s.failureCount++
-		s.metrics.errors++
-		if attempt < retries {
-			backoff := 50 * time.Millisecond * time.Duration(math.Pow(2, float64(attempt)))
-			time.Sleep(backoff) // => exponential backoff: 50ms, 100ms
-		}
-	}
+    var lastErr error
+    for attempt := 0; attempt <= retries; attempt++ {
+        start := time.Now()
+        s.metrics.requests++
+        result, err := upstream() // => actual call to upstream service
+        if err == nil {
+            latency := float64(time.Since(start).Microseconds()) / 1000.0
+            s.metrics.latencies = append(s.metrics.latencies, latency)
+            s.failureCount = 0 // => reset on success
+            return result, nil
+        }
+        lastErr = err
+        s.failureCount++
+        s.metrics.errors++
+        if attempt < retries {
+            backoff := 50 * time.Millisecond * time.Duration(math.Pow(2, float64(attempt)))
+            time.Sleep(backoff) // => exponential backoff: 50ms, 100ms
+        }
+    }
 
-	// All retries exhausted
-	s.lastFailureTime = float64(time.Now().UnixMilli()) / 1000.0
-	if s.failureCount >= s.failureThreshold {
-		s.circuitOpen = true // => open circuit after threshold reached
-		fmt.Printf("  Circuit OPENED for %s\n", s.ServiceName)
-	}
-	return "", lastErr // => propagate error to caller
+    // All retries exhausted
+    s.lastFailureTime = float64(time.Now().UnixMilli()) / 1000.0
+    if s.failureCount >= s.failureThreshold {
+        s.circuitOpen = true // => open circuit after threshold reached
+        fmt.Printf("  Circuit OPENED for %s\n", s.ServiceName)
+    }
+    return "", lastErr // => propagate error to caller
 }
 
 func (s *SidecarProxy) MetricsSummary() map[string]interface{} {
-	// Return aggregated metrics (Prometheus-compatible in production).
-	lats := make([]float64, len(s.metrics.latencies))
-	copy(lats, s.metrics.latencies)
-	sort.Float64s(lats)
-	p99 := 0.0
-	if len(lats) > 0 {
-		p99 = lats[int(float64(len(lats))*0.99)]
-	}
-	errRate := 0.0
-	if s.metrics.requests > 0 {
-		errRate = float64(s.metrics.errors) / float64(s.metrics.requests)
-	}
-	return map[string]interface{}{
-		"service":      s.ServiceName,
-		"requests":     s.metrics.requests,
-		"error_rate":   errRate,
-		"p99_latency":  p99,
-		"circuit_open": s.circuitOpen,
-	}
+    // Return aggregated metrics (Prometheus-compatible in production).
+    lats := make([]float64, len(s.metrics.latencies))
+    copy(lats, s.metrics.latencies)
+    sort.Float64s(lats)
+    p99 := 0.0
+    if len(lats) > 0 {
+        p99 = lats[int(float64(len(lats))*0.99)]
+    }
+    errRate := 0.0
+    if s.metrics.requests > 0 {
+        errRate = float64(s.metrics.errors) / float64(s.metrics.requests)
+    }
+    return map[string]interface{}{
+        "service":      s.ServiceName,
+        "requests":     s.metrics.requests,
+        "error_rate":   errRate,
+        "p99_latency":  p99,
+        "circuit_open": s.circuitOpen,
+    }
 }
 
 func main() {
-	// Simulate payment service sidecar
-	paymentSidecar := NewSidecarProxy("payment-service")
+    // Simulate payment service sidecar
+    paymentSidecar := NewSidecarProxy("payment-service")
 
-	callCount := 0
-	flakyPaymentUpstream := func() (string, error) {
-		// Simulated upstream that fails 60% of the time.
-		callCount++
-		if callCount%5 == 0 || callCount%5 == 1 || callCount%5 == 2 {
-			return "", fmt.Errorf("upstream timeout") // => 60% failure rate
-		}
-		return "payment_ok", nil
-	}
+    callCount := 0
+    flakyPaymentUpstream := func() (string, error) {
+        // Simulated upstream that fails 60% of the time.
+        callCount++
+        if callCount%5 == 0 || callCount%5 == 1 || callCount%5 == 2 {
+            return "", fmt.Errorf("upstream timeout") // => 60% failure rate
+        }
+        return "payment_ok", nil
+    }
 
-	// Make several calls through sidecar
-	for i := 0; i < 6; i++ {
-		result, err := paymentSidecar.Call(flakyPaymentUpstream, 2)
-		if err != nil {
-			fmt.Printf("Call %d: ERROR — %v\n", i+1, err)
-		} else {
-			fmt.Printf("Call %d: %s\n", i+1, result)
-		}
-	}
+    // Make several calls through sidecar
+    for i := 0; i < 6; i++ {
+        result, err := paymentSidecar.Call(flakyPaymentUpstream, 2)
+        if err != nil {
+            fmt.Printf("Call %d: ERROR — %v\n", i+1, err)
+        } else {
+            fmt.Printf("Call %d: %s\n", i+1, result)
+        }
+    }
 
-	fmt.Printf("\nSidecar metrics: %v\n", paymentSidecar.MetricsSummary())
-	// => Shows error_rate, circuit_open status, p99_latency
+    fmt.Printf("\nSidecar metrics: %v\n", paymentSidecar.MetricsSummary())
+    // => Shows error_rate, circuit_open status, p99_latency
 }
 ```
 
@@ -3678,104 +3678,104 @@ Chaos engineering (Netflix, 2011) is the practice of intentionally injecting fai
 package main
 
 import (
-	"fmt"
-	"math/rand"
-	"time"
+    "fmt"
+    "math/rand"
+    "time"
 )
 
 type FaultExperiment struct {
-	FaultType   string  // => "latency", "exception", "corruption"
-	Probability float64 // => 0.0-1.0 chance of injecting
-	DelayMs     int     // => for latency faults
+    FaultType   string  // => "latency", "exception", "corruption"
+    Probability float64 // => 0.0-1.0 chance of injecting
+    DelayMs     int     // => for latency faults
 }
 
 type ChaosMonkey struct {
-	Enabled     bool              // => set false in production; true in chaos tests
-	Experiments []FaultExperiment // => registered fault injection rules
+    Enabled     bool              // => set false in production; true in chaos tests
+    Experiments []FaultExperiment // => registered fault injection rules
 }
 
 func (cm *ChaosMonkey) Register(faultType string, probability float64, delayMs int) {
-	// Register a fault injection rule.
-	cm.Experiments = append(cm.Experiments, FaultExperiment{
-		FaultType: faultType, Probability: probability, DelayMs: delayMs,
-	})
+    // Register a fault injection rule.
+    cm.Experiments = append(cm.Experiments, FaultExperiment{
+        FaultType: faultType, Probability: probability, DelayMs: delayMs,
+    })
 }
 
 func (cm *ChaosMonkey) Inject(fn func() (map[string]interface{}, error)) (map[string]interface{}, error) {
-	// Wrap function with fault injection.
-	if !cm.Enabled {
-		return fn() // => pass-through in production
-	}
-	for _, exp := range cm.Experiments {
-		if rand.Float64() < exp.Probability {
-			switch exp.FaultType {
-			case "latency":
-				delay := time.Duration(exp.DelayMs) * time.Millisecond
-				fmt.Printf("  [CHAOS] Injecting %dms latency\n", exp.DelayMs)
-				time.Sleep(delay) // => simulate slow upstream
-			case "exception":
-				fmt.Println("  [CHAOS] Injecting exception: TimeoutError")
-				return nil, fmt.Errorf("Chaos-injected failure")
-			case "corruption":
-				result, _ := fn()
-				fmt.Println("  [CHAOS] Corrupting response data")
-				_ = result
-				return nil, nil // => return nil instead of valid data
-			}
-		}
-	}
-	return fn()
+    // Wrap function with fault injection.
+    if !cm.Enabled {
+        return fn() // => pass-through in production
+    }
+    for _, exp := range cm.Experiments {
+        if rand.Float64() < exp.Probability {
+            switch exp.FaultType {
+            case "latency":
+                delay := time.Duration(exp.DelayMs) * time.Millisecond
+                fmt.Printf("  [CHAOS] Injecting %dms latency\n", exp.DelayMs)
+                time.Sleep(delay) // => simulate slow upstream
+            case "exception":
+                fmt.Println("  [CHAOS] Injecting exception: TimeoutError")
+                return nil, fmt.Errorf("Chaos-injected failure")
+            case "corruption":
+                result, _ := fn()
+                fmt.Println("  [CHAOS] Corrupting response data")
+                _ = result
+                return nil, nil // => return nil instead of valid data
+            }
+        }
+    }
+    return fn()
 }
 
 type OrderService struct {
-	chaos        *ChaosMonkey
-	successCount int
-	failureCount int
+    chaos        *ChaosMonkey
+    successCount int
+    failureCount int
 }
 
 func (os *OrderService) PlaceOrder(userID string, amount float64) map[string]interface{} {
-	start := time.Now()
-	result, err := os.chaos.Inject(func() (map[string]interface{}, error) {
-		// Actual payment processing logic.
-		return map[string]interface{}{
-			"status": "charged", "amount": amount, "user": userID,
-		}, nil
-	})
+    start := time.Now()
+    result, err := os.chaos.Inject(func() (map[string]interface{}, error) {
+        // Actual payment processing logic.
+        return map[string]interface{}{
+            "status": "charged", "amount": amount, "user": userID,
+        }, nil
+    })
 
-	latency := float64(time.Since(start).Milliseconds())
-	if err != nil {
-		os.failureCount++
-		return map[string]interface{}{
-			"error": err.Error(), "fallback": "order_queued_for_retry",
-		}
-		// => graceful degradation: queue for retry rather than returning 500
-	}
-	if result == nil {
-		os.failureCount++
-		return map[string]interface{}{"error": "payment_corrupted"}
-	}
-	os.successCount++
-	return map[string]interface{}{
-		"order": "placed", "payment": result, "latency_ms": latency,
-	}
+    latency := float64(time.Since(start).Milliseconds())
+    if err != nil {
+        os.failureCount++
+        return map[string]interface{}{
+            "error": err.Error(), "fallback": "order_queued_for_retry",
+        }
+        // => graceful degradation: queue for retry rather than returning 500
+    }
+    if result == nil {
+        os.failureCount++
+        return map[string]interface{}{"error": "payment_corrupted"}
+    }
+    os.successCount++
+    return map[string]interface{}{
+        "order": "placed", "payment": result, "latency_ms": latency,
+    }
 }
 
 func main() {
-	// Configure chaos experiment: 30% latency + 20% exception injection
-	chaos := &ChaosMonkey{Enabled: true}
-	chaos.Register("latency", 0.30, 300)   // => 30% chance 300ms lag
-	chaos.Register("exception", 0.20, 0)   // => 20% timeout
+    // Configure chaos experiment: 30% latency + 20% exception injection
+    chaos := &ChaosMonkey{Enabled: true}
+    chaos.Register("latency", 0.30, 300)   // => 30% chance 300ms lag
+    chaos.Register("exception", 0.20, 0)   // => 20% timeout
 
-	orders := &OrderService{chaos: chaos}
+    orders := &OrderService{chaos: chaos}
 
-	// Run 5 orders under chaos conditions
-	for i := 0; i < 5; i++ {
-		result := orders.PlaceOrder(fmt.Sprintf("user-%d", i), 99.99)
-		fmt.Printf("Order %d: %v\n", i+1, result)
-	}
+    // Run 5 orders under chaos conditions
+    for i := 0; i < 5; i++ {
+        result := orders.PlaceOrder(fmt.Sprintf("user-%d", i), 99.99)
+        fmt.Printf("Order %d: %v\n", i+1, result)
+    }
 
-	fmt.Printf("\nSuccess: %d, Failures: %d\n", orders.successCount, orders.failureCount)
-	// => Shows how the system behaves under fault injection
+    fmt.Printf("\nSuccess: %d, Failures: %d\n", orders.successCount, orders.failureCount)
+    // => Shows how the system behaves under fault injection
 }
 ```
 
@@ -3970,120 +3970,120 @@ spec:
 package main
 
 import (
-	"fmt"
-	"math"
-	"math/rand"
-	"sort"
+    "fmt"
+    "math"
+    "math/rand"
+    "sort"
 )
 
 type CanaryRouter struct {
-	CanaryPercentage float64   // => start with 5% to canary
-	StableMetrics    []float64 // => latencies for stable version
-	CanaryMetrics    []float64 // => latencies for canary version
-	StableErrors     int
-	CanaryErrors     int
-	StableRequests   int
-	CanaryRequests   int
+    CanaryPercentage float64   // => start with 5% to canary
+    StableMetrics    []float64 // => latencies for stable version
+    CanaryMetrics    []float64 // => latencies for canary version
+    StableErrors     int
+    CanaryErrors     int
+    StableRequests   int
+    CanaryRequests   int
 }
 
 func NewCanaryRouter(canaryPct float64) *CanaryRouter {
-	return &CanaryRouter{CanaryPercentage: canaryPct}
+    return &CanaryRouter{CanaryPercentage: canaryPct}
 }
 
 func (cr *CanaryRouter) Route() string {
-	// Route incoming request to stable or canary based on percentage.
-	if rand.Float64() < cr.CanaryPercentage {
-		return "canary" // => send to new version
-	}
-	return "stable" // => send to current version
+    // Route incoming request to stable or canary based on percentage.
+    if rand.Float64() < cr.CanaryPercentage {
+        return "canary" // => send to new version
+    }
+    return "stable" // => send to current version
 }
 
 func (cr *CanaryRouter) Record(version string, latencyMs float64, isError bool) {
-	// Record request outcome for automated analysis.
-	if version == "stable" {
-		cr.StableRequests++
-		cr.StableMetrics = append(cr.StableMetrics, latencyMs)
-		if isError {
-			cr.StableErrors++
-		}
-	} else {
-		cr.CanaryRequests++
-		cr.CanaryMetrics = append(cr.CanaryMetrics, latencyMs)
-		if isError {
-			cr.CanaryErrors++
-		}
-	}
+    // Record request outcome for automated analysis.
+    if version == "stable" {
+        cr.StableRequests++
+        cr.StableMetrics = append(cr.StableMetrics, latencyMs)
+        if isError {
+            cr.StableErrors++
+        }
+    } else {
+        cr.CanaryRequests++
+        cr.CanaryMetrics = append(cr.CanaryMetrics, latencyMs)
+        if isError {
+            cr.CanaryErrors++
+        }
+    }
 }
 
 func (cr *CanaryRouter) ShouldRollback() bool {
-	// Automated rollback: trigger if canary error rate significantly higher.
-	if cr.CanaryRequests < 100 {
-		return false // => insufficient data; wait for more requests
-	}
-	canaryErrRate := float64(cr.CanaryErrors) / float64(cr.CanaryRequests)
-	stableReq := cr.StableRequests
-	if stableReq == 0 {
-		stableReq = 1
-	}
-	stableErrRate := float64(cr.StableErrors) / float64(stableReq)
-	// Rollback if canary error rate > 2x stable error rate
-	if canaryErrRate > stableErrRate*2.0 {
-		return true // => canary is significantly worse
-	}
-	// Rollback if canary p99 latency > 1.5x stable p99
-	if len(cr.CanaryMetrics) >= 50 && len(cr.StableMetrics) >= 50 {
-		stableSorted := make([]float64, len(cr.StableMetrics))
-		copy(stableSorted, cr.StableMetrics)
-		sort.Float64s(stableSorted)
-		canarySorted := make([]float64, len(cr.CanaryMetrics))
-		copy(canarySorted, cr.CanaryMetrics)
-		sort.Float64s(canarySorted)
-		stableP99 := stableSorted[int(float64(len(stableSorted))*0.99)]
-		canaryP99 := canarySorted[int(float64(len(canarySorted))*0.99)]
-		if canaryP99 > stableP99*1.5 {
-			return true // => canary latency regression
-		}
-	}
-	return false // => canary healthy; continue rollout
+    // Automated rollback: trigger if canary error rate significantly higher.
+    if cr.CanaryRequests < 100 {
+        return false // => insufficient data; wait for more requests
+    }
+    canaryErrRate := float64(cr.CanaryErrors) / float64(cr.CanaryRequests)
+    stableReq := cr.StableRequests
+    if stableReq == 0 {
+        stableReq = 1
+    }
+    stableErrRate := float64(cr.StableErrors) / float64(stableReq)
+    // Rollback if canary error rate > 2x stable error rate
+    if canaryErrRate > stableErrRate*2.0 {
+        return true // => canary is significantly worse
+    }
+    // Rollback if canary p99 latency > 1.5x stable p99
+    if len(cr.CanaryMetrics) >= 50 && len(cr.StableMetrics) >= 50 {
+        stableSorted := make([]float64, len(cr.StableMetrics))
+        copy(stableSorted, cr.StableMetrics)
+        sort.Float64s(stableSorted)
+        canarySorted := make([]float64, len(cr.CanaryMetrics))
+        copy(canarySorted, cr.CanaryMetrics)
+        sort.Float64s(canarySorted)
+        stableP99 := stableSorted[int(float64(len(stableSorted))*0.99)]
+        canaryP99 := canarySorted[int(float64(len(canarySorted))*0.99)]
+        if canaryP99 > stableP99*1.5 {
+            return true // => canary latency regression
+        }
+    }
+    return false // => canary healthy; continue rollout
 }
 
 func main() {
-	// Simulate canary rollout with a slightly regressed canary
-	router := NewCanaryRouter(0.10) // => 10% canary
+    // Simulate canary rollout with a slightly regressed canary
+    router := NewCanaryRouter(0.10) // => 10% canary
 
-	for i := 0; i < 200; i++ {
-		version := router.Route()
-		var isError bool
-		var latency float64
-		// Simulate: canary has 5% error rate vs stable's 1%
-		if version == "canary" {
-			isError = rand.Float64() < 0.05            // => 5% error rate
-			latency = rand.NormFloat64()*20 + 120      // => 120ms avg latency
-		} else {
-			isError = rand.Float64() < 0.01            // => 1% error rate
-			latency = rand.NormFloat64()*10 + 80       // => 80ms avg latency
-		}
-		latency = math.Max(latency, 1)
-		router.Record(version, latency, isError)
-	}
+    for i := 0; i < 200; i++ {
+        version := router.Route()
+        var isError bool
+        var latency float64
+        // Simulate: canary has 5% error rate vs stable's 1%
+        if version == "canary" {
+            isError = rand.Float64() < 0.05            // => 5% error rate
+            latency = rand.NormFloat64()*20 + 120      // => 120ms avg latency
+        } else {
+            isError = rand.Float64() < 0.01            // => 1% error rate
+            latency = rand.NormFloat64()*10 + 80       // => 80ms avg latency
+        }
+        latency = math.Max(latency, 1)
+        router.Record(version, latency, isError)
+    }
 
-	stableReq := router.StableRequests
-	if stableReq == 0 {
-		stableReq = 1
-	}
-	fmt.Printf("Stable error rate: %.2f%%\n",
-		float64(router.StableErrors)/float64(stableReq)*100)
-	fmt.Printf("Canary error rate: %.2f%%\n",
-		float64(router.CanaryErrors)/float64(max(1, router.CanaryRequests))*100)
-	fmt.Printf("Should rollback: %v\n", router.ShouldRollback())
-	// => Should rollback: True (canary error rate ~5x stable rate)
+    stableReq := router.StableRequests
+    if stableReq == 0 {
+        stableReq = 1
+    }
+    fmt.Printf("Stable error rate: %.2f%%\n",
+        float64(router.StableErrors)/float64(stableReq)*100)
+    fmt.Printf("Canary error rate: %.2f%%\n",
+        float64(router.CanaryErrors)/float64(max(1, router.CanaryRequests))*100)
+    fmt.Printf("Should rollback: %v\n", router.ShouldRollback())
+    // => Should rollback: True (canary error rate ~5x stable rate)
 }
 
 func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
+    if a > b {
+        return a
+    }
+    return b
 }
 ```
 
@@ -4189,114 +4189,114 @@ Feature flags (feature toggles) decouple code deployment from feature activation
 package main
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
-	"fmt"
-	"strconv"
+    "crypto/sha256"
+    "encoding/hex"
+    "fmt"
+    "strconv"
 )
 
 type TargetingRule struct {
-	Conditions map[string]interface{} // => attribute conditions
-	Value      bool                   // => flag value if conditions match
+    Conditions map[string]interface{} // => attribute conditions
+    Value      bool                   // => flag value if conditions match
 }
 
 type FeatureFlag struct {
-	FlagID            string
-	Enabled           bool            // => global on/off switch
-	RolloutPercentage float64         // => 0.0-1.0 gradual rollout
-	TargetingRules    []TargetingRule // => specific user/group rules
+    FlagID            string
+    Enabled           bool            // => global on/off switch
+    RolloutPercentage float64         // => 0.0-1.0 gradual rollout
+    TargetingRules    []TargetingRule // => specific user/group rules
 }
 
 type FeatureFlagService struct {
-	flags map[string]*FeatureFlag
+    flags map[string]*FeatureFlag
 }
 
 func NewFeatureFlagService() *FeatureFlagService {
-	return &FeatureFlagService{flags: make(map[string]*FeatureFlag)}
+    return &FeatureFlagService{flags: make(map[string]*FeatureFlag)}
 }
 
 func (s *FeatureFlagService) Register(flag *FeatureFlag) {
-	s.flags[flag.FlagID] = flag
+    s.flags[flag.FlagID] = flag
 }
 
 func (s *FeatureFlagService) IsEnabled(flagID string, userContext map[string]interface{}) bool {
-	// Evaluate flag for a specific user context.
-	flag, ok := s.flags[flagID]
-	if !ok || !flag.Enabled {
-		return false // => flag not found or globally disabled
-	}
+    // Evaluate flag for a specific user context.
+    flag, ok := s.flags[flagID]
+    if !ok || !flag.Enabled {
+        return false // => flag not found or globally disabled
+    }
 
-	userID, _ := userContext["user_id"].(string)
+    userID, _ := userContext["user_id"].(string)
 
-	// Check targeting rules first (highest priority)
-	for _, rule := range flag.TargetingRules {
-		if s.matchesRule(rule, userContext) {
-			return rule.Value
-			// => explicit targeting overrides percentage rollout
-		}
-	}
+    // Check targeting rules first (highest priority)
+    for _, rule := range flag.TargetingRules {
+        if s.matchesRule(rule, userContext) {
+            return rule.Value
+            // => explicit targeting overrides percentage rollout
+        }
+    }
 
-	// Percentage rollout: deterministic based on user_id hash
-	// Same user always gets same result (consistent bucketing)
-	hashInput := fmt.Sprintf("%s:%s", flagID, userID)
-	hash := sha256.Sum256([]byte(hashInput))
-	hexStr := hex.EncodeToString(hash[:])
-	hashVal, _ := strconv.ParseUint(hexStr[:8], 16, 64)
-	bucket := float64(hashVal%100) / 100.0 // => user's bucket: 0.0-1.0
-	return bucket < flag.RolloutPercentage
-	// => deterministic: user "abc" always in same bucket for same flag
+    // Percentage rollout: deterministic based on user_id hash
+    // Same user always gets same result (consistent bucketing)
+    hashInput := fmt.Sprintf("%s:%s", flagID, userID)
+    hash := sha256.Sum256([]byte(hashInput))
+    hexStr := hex.EncodeToString(hash[:])
+    hashVal, _ := strconv.ParseUint(hexStr[:8], 16, 64)
+    bucket := float64(hashVal%100) / 100.0 // => user's bucket: 0.0-1.0
+    return bucket < flag.RolloutPercentage
+    // => deterministic: user "abc" always in same bucket for same flag
 }
 
 func (s *FeatureFlagService) matchesRule(rule TargetingRule, ctx map[string]interface{}) bool {
-	// Check if user context matches targeting rule.
-	for attr, value := range rule.Conditions {
-		if ctx[attr] != value {
-			return false // => context doesn't match condition
-		}
-	}
-	return true // => all conditions matched
+    // Check if user context matches targeting rule.
+    for attr, value := range rule.Conditions {
+        if ctx[attr] != value {
+            return false // => context doesn't match condition
+        }
+    }
+    return true // => all conditions matched
 }
 
 func main() {
-	// Configure flags
-	service := NewFeatureFlagService()
+    // Configure flags
+    service := NewFeatureFlagService()
 
-	// New checkout flow: 10% rollout
-	service.Register(&FeatureFlag{
-		FlagID:            "new_checkout_v2",
-		Enabled:           true,
-		RolloutPercentage: 0.10, // => 10% of users see new checkout
-		TargetingRules: []TargetingRule{
-			{Conditions: map[string]interface{}{"is_employee": true}, Value: true},
-			// => all employees always see new checkout (for testing)
-			{Conditions: map[string]interface{}{"plan": "enterprise"}, Value: false},
-			// => enterprise users excluded (compliance review pending)
-		},
-	})
+    // New checkout flow: 10% rollout
+    service.Register(&FeatureFlag{
+        FlagID:            "new_checkout_v2",
+        Enabled:           true,
+        RolloutPercentage: 0.10, // => 10% of users see new checkout
+        TargetingRules: []TargetingRule{
+            {Conditions: map[string]interface{}{"is_employee": true}, Value: true},
+            // => all employees always see new checkout (for testing)
+            {Conditions: map[string]interface{}{"plan": "enterprise"}, Value: false},
+            // => enterprise users excluded (compliance review pending)
+        },
+    })
 
-	// Emergency kill switch (set Enabled=false to instantly disable)
-	service.Register(&FeatureFlag{
-		FlagID:            "ai_recommendations",
-		Enabled:           true,
-		RolloutPercentage: 1.0, // => 100% rollout (can kill if issues found)
-	})
+    // Emergency kill switch (set Enabled=false to instantly disable)
+    service.Register(&FeatureFlag{
+        FlagID:            "ai_recommendations",
+        Enabled:           true,
+        RolloutPercentage: 1.0, // => 100% rollout (can kill if issues found)
+    })
 
-	// Test flag evaluation
-	users := []map[string]interface{}{
-		{"user_id": "user-001", "is_employee": true},  // => targeting rule: true
-		{"user_id": "user-002", "plan": "enterprise"}, // => targeting rule: false
-		{"user_id": "user-003"},                        // => percentage bucket
-		{"user_id": "user-100"},                        // => percentage bucket
-	}
+    // Test flag evaluation
+    users := []map[string]interface{}{
+        {"user_id": "user-001", "is_employee": true},  // => targeting rule: true
+        {"user_id": "user-002", "plan": "enterprise"}, // => targeting rule: false
+        {"user_id": "user-003"},                        // => percentage bucket
+        {"user_id": "user-100"},                        // => percentage bucket
+    }
 
-	for _, user := range users {
-		result := service.IsEnabled("new_checkout_v2", user)
-		fmt.Printf("  %s: new_checkout=%v\n", user["user_id"], result)
-	}
-	// => user-001: new_checkout=true (employee targeting rule)
-	// => user-002: new_checkout=false (enterprise exclusion rule)
-	// => user-003: depends on hash bucket (deterministic)
-	// => user-100: depends on hash bucket (consistent across calls)
+    for _, user := range users {
+        result := service.IsEnabled("new_checkout_v2", user)
+        fmt.Printf("  %s: new_checkout=%v\n", user["user_id"], result)
+    }
+    // => user-001: new_checkout=true (employee targeting rule)
+    // => user-002: new_checkout=false (enterprise exclusion rule)
+    // => user-003: depends on hash bucket (deterministic)
+    // => user-100: depends on hash bucket (consistent across calls)
 }
 ```
 
@@ -4443,143 +4443,143 @@ graph TD
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"math/rand"
-	"sort"
-	"time"
+    "encoding/json"
+    "fmt"
+    "math/rand"
+    "sort"
+    "time"
 )
 
 type MetricsRegistry struct {
-	counters   map[string]float64   // => counter_name -> value
-	histograms map[string][]float64 // => histogram_name -> [values]
+    counters   map[string]float64   // => counter_name -> value
+    histograms map[string][]float64 // => histogram_name -> [values]
 }
 
 func NewMetricsRegistry() *MetricsRegistry {
-	return &MetricsRegistry{
-		counters:   make(map[string]float64),
-		histograms: make(map[string][]float64),
-	}
+    return &MetricsRegistry{
+        counters:   make(map[string]float64),
+        histograms: make(map[string][]float64),
+    }
 }
 
 func (m *MetricsRegistry) Increment(name string, labels map[string]string) {
-	key := name + labelStr(labels)
-	m.counters[key]++
-	// => counter: monotonically increasing; rate() over time = requests/sec
+    key := name + labelStr(labels)
+    m.counters[key]++
+    // => counter: monotonically increasing; rate() over time = requests/sec
 }
 
 func (m *MetricsRegistry) Observe(name string, value float64, labels map[string]string) {
-	key := name + labelStr(labels)
-	m.histograms[key] = append(m.histograms[key], value)
-	// => histogram: observe distribution of values; percentiles computed at query time
+    key := name + labelStr(labels)
+    m.histograms[key] = append(m.histograms[key], value)
+    // => histogram: observe distribution of values; percentiles computed at query time
 }
 
 func (m *MetricsRegistry) Summary() map[string]interface{} {
-	result := make(map[string]interface{})
-	for k, v := range m.counters {
-		result[k] = v
-	}
-	for k, vals := range m.histograms {
-		if len(vals) > 0 {
-			sorted := make([]float64, len(vals))
-			copy(sorted, vals)
-			sort.Float64s(sorted)
-			n := len(sorted)
-			result[k+"_p50"] = sorted[n/2]
-			result[k+"_p99"] = sorted[int(float64(n)*0.99)]
-		}
-	}
-	return result
+    result := make(map[string]interface{})
+    for k, v := range m.counters {
+        result[k] = v
+    }
+    for k, vals := range m.histograms {
+        if len(vals) > 0 {
+            sorted := make([]float64, len(vals))
+            copy(sorted, vals)
+            sort.Float64s(sorted)
+            n := len(sorted)
+            result[k+"_p50"] = sorted[n/2]
+            result[k+"_p99"] = sorted[int(float64(n)*0.99)]
+        }
+    }
+    return result
 }
 
 func labelStr(labels map[string]string) string {
-	if len(labels) == 0 {
-		return ""
-	}
-	s := "{"
-	for k, v := range labels {
-		s += fmt.Sprintf(`%s="%s",`, k, v)
-	}
-	return s[:len(s)-1] + "}"
+    if len(labels) == 0 {
+        return ""
+    }
+    s := "{"
+    for k, v := range labels {
+        s += fmt.Sprintf(`%s="%s",`, k, v)
+    }
+    return s[:len(s)-1] + "}"
 }
 
 type StructuredLogger struct {
-	Service string
+    Service string
 }
 
 func (l *StructuredLogger) Log(level, message, traceID string, extra map[string]interface{}) {
-	entry := map[string]interface{}{
-		"timestamp": time.Now().UTC().Format(time.RFC3339),
-		"level":     level,   // => INFO, WARN, ERROR — enables log filtering
-		"service":   l.Service,
-		"message":   message,
-		"trace_id":  traceID, // => links log to distributed trace
-	}
-	for k, v := range extra {
-		entry[k] = v // => structured fields; queryable in Elasticsearch
-	}
-	data, _ := json.Marshal(entry)
-	fmt.Println(string(data)) // => JSON: grep, jq, Elasticsearch all parse it
+    entry := map[string]interface{}{
+        "timestamp": time.Now().UTC().Format(time.RFC3339),
+        "level":     level,   // => INFO, WARN, ERROR — enables log filtering
+        "service":   l.Service,
+        "message":   message,
+        "trace_id":  traceID, // => links log to distributed trace
+    }
+    for k, v := range extra {
+        entry[k] = v // => structured fields; queryable in Elasticsearch
+    }
+    data, _ := json.Marshal(entry)
+    fmt.Println(string(data)) // => JSON: grep, jq, Elasticsearch all parse it
 }
 
 type Span struct {
-	SpanID       string
-	TraceID      string // => shared across all spans in request
-	ParentSpanID string // => links to parent span (call chain)
-	Name         string
-	StartTime    time.Time
+    SpanID       string
+    TraceID      string // => shared across all spans in request
+    ParentSpanID string // => links to parent span (call chain)
+    Name         string
+    StartTime    time.Time
 }
 
 func NewSpan(name, traceID, parentSpanID string) *Span {
-	return &Span{
-		SpanID:       fmt.Sprintf("%08x", rand.Uint32()),
-		TraceID:      traceID,
-		ParentSpanID: parentSpanID,
-		Name:         name,
-		StartTime:    time.Now(),
-	}
+    return &Span{
+        SpanID:       fmt.Sprintf("%08x", rand.Uint32()),
+        TraceID:      traceID,
+        ParentSpanID: parentSpanID,
+        Name:         name,
+        StartTime:    time.Now(),
+    }
 }
 
 func (s *Span) Finish() {
-	duration := float64(time.Since(s.StartTime).Microseconds()) / 1000.0
-	fmt.Printf("TRACE span=%s trace=%s op=%s duration=%.1fms\n",
-		s.SpanID, s.TraceID, s.Name, duration)
-	// => trace: waterfall view in Jaeger shows where time is spent
+    duration := float64(time.Since(s.StartTime).Microseconds()) / 1000.0
+    fmt.Printf("TRACE span=%s trace=%s op=%s duration=%.1fms\n",
+        s.SpanID, s.TraceID, s.Name, duration)
+    // => trace: waterfall view in Jaeger shows where time is spent
 }
 
 func main() {
-	metrics := NewMetricsRegistry()
-	logger := &StructuredLogger{Service: "api-service"}
+    metrics := NewMetricsRegistry()
+    logger := &StructuredLogger{Service: "api-service"}
 
-	handleRequest := func(userID, endpoint string) {
-		// Instrumented handler emitting all three observability signals.
-		traceID := fmt.Sprintf("%08x", rand.Uint32()) // => unique per request
-		rootSpan := NewSpan("handle_request", traceID, "")
+    handleRequest := func(userID, endpoint string) {
+        // Instrumented handler emitting all three observability signals.
+        traceID := fmt.Sprintf("%08x", rand.Uint32()) // => unique per request
+        rootSpan := NewSpan("handle_request", traceID, "")
 
-		logger.Log("INFO", "request_started", traceID, map[string]interface{}{
-			"endpoint": endpoint, "user_id": userID,
-		})
+        logger.Log("INFO", "request_started", traceID, map[string]interface{}{
+            "endpoint": endpoint, "user_id": userID,
+        })
 
-		metrics.Increment("http_requests_total",
-			map[string]string{"endpoint": endpoint, "method": "GET"})
+        metrics.Increment("http_requests_total",
+            map[string]string{"endpoint": endpoint, "method": "GET"})
 
-		dbSpan := NewSpan("db_query", traceID, rootSpan.SpanID)
-		time.Sleep(20 * time.Millisecond) // => simulate 20ms DB query
-		dbSpan.Finish()                   // => DB span shows DB latency in trace
+        dbSpan := NewSpan("db_query", traceID, rootSpan.SpanID)
+        time.Sleep(20 * time.Millisecond) // => simulate 20ms DB query
+        dbSpan.Finish()                   // => DB span shows DB latency in trace
 
-		durationMs := float64(time.Since(rootSpan.StartTime).Microseconds()) / 1000.0
-		metrics.Observe("http_request_duration_ms", durationMs,
-			map[string]string{"endpoint": endpoint})
+        durationMs := float64(time.Since(rootSpan.StartTime).Microseconds()) / 1000.0
+        metrics.Observe("http_request_duration_ms", durationMs,
+            map[string]string{"endpoint": endpoint})
 
-		logger.Log("INFO", "request_completed", traceID, map[string]interface{}{
-			"duration_ms": durationMs, "status": 200,
-		})
-		rootSpan.Finish()
-	}
+        logger.Log("INFO", "request_completed", traceID, map[string]interface{}{
+            "duration_ms": durationMs, "status": 200,
+        })
+        rootSpan.Finish()
+    }
 
-	handleRequest("user-42", "/api/profile")
-	fmt.Printf("\nMetrics: %v\n", metrics.Summary())
-	// => Shows request count and latency percentiles per endpoint
+    handleRequest("user-42", "/api/profile")
+    fmt.Printf("\nMetrics: %v\n", metrics.Summary())
+    // => Shows request count and latency percentiles per endpoint
 }
 ```
 
@@ -4713,89 +4713,89 @@ SLI (Service Level Indicator) is a quantitative measurement of service behavior 
 package main
 
 import (
-	"fmt"
-	"math"
+    "fmt"
+    "math"
 )
 
 type SLO struct {
-	SLIName    string  // => e.g., "availability"
-	Target     float64 // => e.g., 0.999 = 99.9% availability
-	WindowDays int     // => rolling window for measurement
+    SLIName    string  // => e.g., "availability"
+    Target     float64 // => e.g., 0.999 = 99.9% availability
+    WindowDays int     // => rolling window for measurement
 }
 
 func (s SLO) ErrorBudgetMinutes() float64 {
-	// Allowed failure minutes within the SLO window.
-	return (1.0 - s.Target) * float64(s.WindowDays) * 24 * 60
-	// => 99.9% SLO, 30-day window: 0.1% x 43200 minutes = 43.2 minutes downtime allowed
+    // Allowed failure minutes within the SLO window.
+    return (1.0 - s.Target) * float64(s.WindowDays) * 24 * 60
+    // => 99.9% SLO, 30-day window: 0.1% x 43200 minutes = 43.2 minutes downtime allowed
 }
 
 type SLOTracker struct {
-	Slo          SLO
-	Measurements []float64 // => time-series of SLI values
-	BadMinutes   float64   // => minutes where SLI breached SLO
+    Slo          SLO
+    Measurements []float64 // => time-series of SLI values
+    BadMinutes   float64   // => minutes where SLI breached SLO
 }
 
 func (t *SLOTracker) Record(value float64, durationMinutes float64) {
-	// Record an SLI measurement for a time interval.
-	t.Measurements = append(t.Measurements, value)
-	if value < t.Slo.Target {
-		t.BadMinutes += durationMinutes
-		// => this interval breached target; counts against error budget
-	}
+    // Record an SLI measurement for a time interval.
+    t.Measurements = append(t.Measurements, value)
+    if value < t.Slo.Target {
+        t.BadMinutes += durationMinutes
+        // => this interval breached target; counts against error budget
+    }
 }
 
 func (t *SLOTracker) ErrorBudgetUsedPercent() float64 {
-	allowed := t.Slo.ErrorBudgetMinutes()
-	if allowed == 0 {
-		return 100.0
-	}
-	return (t.BadMinutes / allowed) * 100
-	// => 0% = no budget consumed; 100% = budget exhausted; >100% = SLO violated
+    allowed := t.Slo.ErrorBudgetMinutes()
+    if allowed == 0 {
+        return 100.0
+    }
+    return (t.BadMinutes / allowed) * 100
+    // => 0% = no budget consumed; 100% = budget exhausted; >100% = SLO violated
 }
 
 func (t *SLOTracker) ErrorBudgetRemainingPercent() float64 {
-	return math.Max(0.0, 100.0-t.ErrorBudgetUsedPercent())
+    return math.Max(0.0, 100.0-t.ErrorBudgetUsedPercent())
 }
 
 func (t *SLOTracker) Summary() map[string]interface{} {
-	if len(t.Measurements) == 0 {
-		return nil
-	}
-	sum := 0.0
-	for _, v := range t.Measurements {
-		sum += v
-	}
-	avgSLI := sum / float64(len(t.Measurements))
-	return map[string]interface{}{
-		"slo_target":               fmt.Sprintf("%.2f%%", t.Slo.Target*100),
-		"avg_sli":                  fmt.Sprintf("%.3f%%", avgSLI*100),
-		"slo_met":                  avgSLI >= t.Slo.Target,
-		"error_budget_allowed_min": math.Round(t.Slo.ErrorBudgetMinutes()*10) / 10,
-		"error_budget_used_min":    math.Round(t.BadMinutes*10) / 10,
-		"error_budget_remaining":   fmt.Sprintf("%.1f%%", t.ErrorBudgetRemainingPercent()),
-	}
+    if len(t.Measurements) == 0 {
+        return nil
+    }
+    sum := 0.0
+    for _, v := range t.Measurements {
+        sum += v
+    }
+    avgSLI := sum / float64(len(t.Measurements))
+    return map[string]interface{}{
+        "slo_target":               fmt.Sprintf("%.2f%%", t.Slo.Target*100),
+        "avg_sli":                  fmt.Sprintf("%.3f%%", avgSLI*100),
+        "slo_met":                  avgSLI >= t.Slo.Target,
+        "error_budget_allowed_min": math.Round(t.Slo.ErrorBudgetMinutes()*10) / 10,
+        "error_budget_used_min":    math.Round(t.BadMinutes*10) / 10,
+        "error_budget_remaining":   fmt.Sprintf("%.1f%%", t.ErrorBudgetRemainingPercent()),
+    }
 }
 
 func main() {
-	// 30-day availability SLO: 99.9%
-	availabilitySLO := SLO{SLIName: "availability", Target: 0.999, WindowDays: 30}
-	// => allows 43.2 minutes of downtime per 30 days
+    // 30-day availability SLO: 99.9%
+    availabilitySLO := SLO{SLIName: "availability", Target: 0.999, WindowDays: 30}
+    // => allows 43.2 minutes of downtime per 30 days
 
-	tracker := &SLOTracker{Slo: availabilitySLO}
+    tracker := &SLOTracker{Slo: availabilitySLO}
 
-	// 28 perfect days + 2 degraded days (97% availability each)
-	for i := 0; i < 28; i++ {
-		tracker.Record(1.0, 60*24) // => 1440 min/day perfect
-	}
-	for i := 0; i < 2; i++ {
-		tracker.Record(0.97, 60*24) // => 3% downtime = 43.2 bad min/day
-	}
+    // 28 perfect days + 2 degraded days (97% availability each)
+    for i := 0; i < 28; i++ {
+        tracker.Record(1.0, 60*24) // => 1440 min/day perfect
+    }
+    for i := 0; i < 2; i++ {
+        tracker.Record(0.97, 60*24) // => 3% downtime = 43.2 bad min/day
+    }
 
-	fmt.Printf("%v\n", tracker.Summary())
-	// => {"slo_target":"99.90%", "avg_sli":"99.800%", "slo_met": false,
-	//     "error_budget_allowed_min":43.2, "error_budget_used_min":86.4,
-	//     "error_budget_remaining":"0.0%"}
-	// => Two degraded days consumed 200% of the error budget — SLO violated
+    fmt.Printf("%v\n", tracker.Summary())
+    // => {"slo_target":"99.90%", "avg_sli":"99.800%", "slo_met": false,
+    //     "error_budget_allowed_min":43.2, "error_budget_used_min":86.4,
+    //     "error_budget_remaining":"0.0%"}
+    // => Two degraded days consumed 200% of the error budget — SLO violated
 }
 ```
 
@@ -4900,66 +4900,66 @@ Back-of-envelope estimation helps validate system design decisions quickly witho
 package main
 
 import (
-	"fmt"
-	"math"
+    "fmt"
+    "math"
 )
 
 // Storage size reference numbers
 const (
-	UUIDBytes          = 16
-	URLBytes           = 100 // => average URL length
-	UserProfileKB      = 1   // => compressed user profile
-	PhotoCompressedKB  = 300 // => JPEG photo (compressed)
+    UUIDBytes          = 16
+    URLBytes           = 100 // => average URL length
+    UserProfileKB      = 1   // => compressed user profile
+    PhotoCompressedKB  = 300 // => JPEG photo (compressed)
 )
 
 func estimateRPS(dau, actionsPerUser int, peakMultiplier float64) map[string]interface{} {
-	// Estimate RPS from DAU and usage patterns.
-	totalDaily := dau * actionsPerUser
-	avgRPS := float64(totalDaily) / 86400.0 // => 86400 seconds per day
-	peakRPS := avgRPS * peakMultiplier       // => peak = 2-3x average (traffic spikes)
-	return map[string]interface{}{
-		"daily_requests": totalDaily,
-		"avg_rps":        int(math.Round(avgRPS)),
-		"peak_rps":       int(math.Round(peakRPS)), // => size infrastructure for peak
-	}
+    // Estimate RPS from DAU and usage patterns.
+    totalDaily := dau * actionsPerUser
+    avgRPS := float64(totalDaily) / 86400.0 // => 86400 seconds per day
+    peakRPS := avgRPS * peakMultiplier       // => peak = 2-3x average (traffic spikes)
+    return map[string]interface{}{
+        "daily_requests": totalDaily,
+        "avg_rps":        int(math.Round(avgRPS)),
+        "peak_rps":       int(math.Round(peakRPS)), // => size infrastructure for peak
+    }
 }
 
 func estimateStoragePerYear(recordsPerDay, bytesPerRecord, replicationFactor int) map[string]interface{} {
-	// Estimate storage growth with replication overhead.
-	rawBytesPerYear := float64(recordsPerDay) * float64(bytesPerRecord) * 365
-	totalWithReplication := rawBytesPerYear * float64(replicationFactor)
-	// => 3x replication: primary + 2 replicas (standard for durability)
-	return map[string]interface{}{
-		"raw_gb_per_year":   math.Round(rawBytesPerYear/1e9*10) / 10,
-		"total_gb_per_year": math.Round(totalWithReplication/1e9*10) / 10,
-		"daily_write_mb":    math.Round(float64(recordsPerDay)*float64(bytesPerRecord)/1e6*10) / 10,
-	}
+    // Estimate storage growth with replication overhead.
+    rawBytesPerYear := float64(recordsPerDay) * float64(bytesPerRecord) * 365
+    totalWithReplication := rawBytesPerYear * float64(replicationFactor)
+    // => 3x replication: primary + 2 replicas (standard for durability)
+    return map[string]interface{}{
+        "raw_gb_per_year":   math.Round(rawBytesPerYear/1e9*10) / 10,
+        "total_gb_per_year": math.Round(totalWithReplication/1e9*10) / 10,
+        "daily_write_mb":    math.Round(float64(recordsPerDay)*float64(bytesPerRecord)/1e6*10) / 10,
+    }
 }
 
 func serversNeeded(peakRPS, rpsPerServer int, safetyFactor float64) int {
-	// Estimate server count with safety margin.
-	raw := math.Ceil(float64(peakRPS) / float64(rpsPerServer))
-	return int(math.Ceil(raw * safetyFactor)) // => 1.5x safety margin for headroom
+    // Estimate server count with safety margin.
+    raw := math.Ceil(float64(peakRPS) / float64(rpsPerServer))
+    return int(math.Ceil(raw * safetyFactor)) // => 1.5x safety margin for headroom
 }
 
 func main() {
-	// URL shortener at scale (100M DAU, 3 actions/user/day)
-	fmt.Println("=== URL Shortener: 100M DAU ===")
-	rps := estimateRPS(100_000_000, 3, 3.0)
-	fmt.Printf("RPS estimate: %v\n", rps)
-	// => {"daily_requests": 300000000, "avg_rps": 3472, "peak_rps": 10417}
+    // URL shortener at scale (100M DAU, 3 actions/user/day)
+    fmt.Println("=== URL Shortener: 100M DAU ===")
+    rps := estimateRPS(100_000_000, 3, 3.0)
+    fmt.Printf("RPS estimate: %v\n", rps)
+    // => {"daily_requests": 300000000, "avg_rps": 3472, "peak_rps": 10417}
 
-	storage := estimateStoragePerYear(300_000_000, URLBytes+UUIDBytes, 3)
-	fmt.Printf("Storage estimate: %v\n", storage)
-	// => {"raw_gb_per_year": 12.7, "total_gb_per_year": 38.1, "daily_write_mb": 34.8}
+    storage := estimateStoragePerYear(300_000_000, URLBytes+UUIDBytes, 3)
+    fmt.Printf("Storage estimate: %v\n", storage)
+    // => {"raw_gb_per_year": 12.7, "total_gb_per_year": 38.1, "daily_write_mb": 34.8}
 
-	cacheServers := serversNeeded(rps["peak_rps"].(int), 50_000, 1.5)
-	fmt.Printf("Redis servers needed: %d\n", cacheServers)
-	// => 1 server (10K RPS is well within 50K capacity per Redis node)
+    cacheServers := serversNeeded(rps["peak_rps"].(int), 50_000, 1.5)
+    fmt.Printf("Redis servers needed: %d\n", cacheServers)
+    // => 1 server (10K RPS is well within 50K capacity per Redis node)
 
-	apiServers := serversNeeded(rps["peak_rps"].(int), 2_000, 1.5)
-	fmt.Printf("API servers needed: %d\n", apiServers)
-	// => 8 servers (10K RPS / 2K per server x 1.5 safety = ~8 instances)
+    apiServers := serversNeeded(rps["peak_rps"].(int), 2_000, 1.5)
+    fmt.Printf("API servers needed: %d\n", apiServers)
+    // => 8 servers (10K RPS / 2K per server x 1.5 safety = ~8 instances)
 }
 ```
 
@@ -5066,107 +5066,107 @@ Capacity planning determines when a single database node becomes insufficient an
 package main
 
 import (
-	"fmt"
-	"math"
+    "fmt"
+    "math"
 )
 
 type DatabaseCapacity struct {
-	StorageGB   float64 // => current data size in GB
-	ReadRPS     int     // => reads per second
-	WriteRPS    int     // => writes per second
-	P99QueryMs  float64 // => p99 query latency
+    StorageGB   float64 // => current data size in GB
+    ReadRPS     int     // => reads per second
+    WriteRPS    int     // => writes per second
+    P99QueryMs  float64 // => p99 query latency
 }
 
 var shardThresholds = map[string]float64{
-	"storage_gb":     500,   // => consider sharding above 500 GB
-	"write_rps":      5000,  // => RDBMS write limit before lock contention
-	"read_rps":       50000, // => read limit (add read replicas first)
-	"p99_latency_ms": 100,   // => latency SLO violation triggers action
+    "storage_gb":     500,   // => consider sharding above 500 GB
+    "write_rps":      5000,  // => RDBMS write limit before lock contention
+    "read_rps":       50000, // => read limit (add read replicas first)
+    "p99_latency_ms": 100,   // => latency SLO violation triggers action
 }
 
 func assessShardingNeed(current DatabaseCapacity, growthRate float64) map[string]interface{} {
-	// Assess whether sharding is needed now or in the near future.
-	issues := []string{}
-	urgency := "ok"
+    // Assess whether sharding is needed now or in the near future.
+    issues := []string{}
+    urgency := "ok"
 
-	storagePct := current.StorageGB / shardThresholds["storage_gb"] * 100
-	if storagePct >= 100 {
-		issues = append(issues, fmt.Sprintf("Storage exceeded: %.0f GB", current.StorageGB))
-		urgency = "urgent"
-	} else if storagePct >= 70 {
-		issues = append(issues, fmt.Sprintf("Storage at %.0f%% of limit", storagePct))
-		urgency = "soon" // => plan sharding within 6 months
-	}
+    storagePct := current.StorageGB / shardThresholds["storage_gb"] * 100
+    if storagePct >= 100 {
+        issues = append(issues, fmt.Sprintf("Storage exceeded: %.0f GB", current.StorageGB))
+        urgency = "urgent"
+    } else if storagePct >= 70 {
+        issues = append(issues, fmt.Sprintf("Storage at %.0f%% of limit", storagePct))
+        urgency = "soon" // => plan sharding within 6 months
+    }
 
-	if float64(current.WriteRPS) > shardThresholds["write_rps"] {
-		issues = append(issues, fmt.Sprintf("Write RPS %d exceeds threshold", current.WriteRPS))
-		urgency = "critical" // => write contention is happening now
-	}
+    if float64(current.WriteRPS) > shardThresholds["write_rps"] {
+        issues = append(issues, fmt.Sprintf("Write RPS %d exceeds threshold", current.WriteRPS))
+        urgency = "critical" // => write contention is happening now
+    }
 
-	if current.P99QueryMs > shardThresholds["p99_latency_ms"] {
-		issues = append(issues, fmt.Sprintf("p99 latency %.0fms exceeds SLO", current.P99QueryMs))
-		if urgency != "critical" {
-			urgency = "urgent"
-		}
-	}
+    if current.P99QueryMs > shardThresholds["p99_latency_ms"] {
+        issues = append(issues, fmt.Sprintf("p99 latency %.0fms exceeds SLO", current.P99QueryMs))
+        if urgency != "critical" {
+            urgency = "urgent"
+        }
+    }
 
-	// Project months until storage threshold
-	monthlyGrowthGB := current.StorageGB * (growthRate - 1) / 12
-	var monthsToLimit interface{} = nil
-	if monthlyGrowthGB > 0 && storagePct < 100 {
-		remainingGB := shardThresholds["storage_gb"] - current.StorageGB
-		monthsToLimit = int(math.Round(remainingGB / monthlyGrowthGB))
-	}
+    // Project months until storage threshold
+    monthlyGrowthGB := current.StorageGB * (growthRate - 1) / 12
+    var monthsToLimit interface{} = nil
+    if monthlyGrowthGB > 0 && storagePct < 100 {
+        remainingGB := shardThresholds["storage_gb"] - current.StorageGB
+        monthsToLimit = int(math.Round(remainingGB / monthlyGrowthGB))
+    }
 
-	recommendations := map[string]string{
-		"ok":       "No sharding needed. Monitor quarterly.",
-		"soon":     "Plan sharding strategy. Add read replicas now.",
-		"urgent":   "Implement sharding within 3 months.",
-		"critical": "EMERGENCY: shard or implement write queue immediately.",
-	}
+    recommendations := map[string]string{
+        "ok":       "No sharding needed. Monitor quarterly.",
+        "soon":     "Plan sharding strategy. Add read replicas now.",
+        "urgent":   "Implement sharding within 3 months.",
+        "critical": "EMERGENCY: shard or implement write queue immediately.",
+    }
 
-	return map[string]interface{}{
-		"urgency":                urgency,
-		"issues":                 issues,
-		"months_to_storage_limit": monthsToLimit,
-		"recommendation":         recommendations[urgency],
-	}
+    return map[string]interface{}{
+        "urgency":                urgency,
+        "issues":                 issues,
+        "months_to_storage_limit": monthsToLimit,
+        "recommendation":         recommendations[urgency],
+    }
 }
 
 func chooseShardKeyAdvice(entity string) map[string]interface{} {
-	// Recommend shard key for common entity types.
-	advice := map[string]map[string]interface{}{
-		"users": {
-			"shard_key":           "user_id",
-			"rationale":           "Even distribution; most queries filter by user_id",
-			"hotspot_risk":        "low",
-			"cross_shard_queries": []string{"global user counts", "admin search by email"},
-		},
-		"orders": {
-			"shard_key":           "user_id (not order_id)",
-			"rationale":           "Order history fetched by user; collocates same-user orders",
-			"hotspot_risk":        "low",
-			"cross_shard_queries": []string{"merchant revenue reports"},
-		},
-	}
-	if a, ok := advice[entity]; ok {
-		return a
-	}
-	return map[string]interface{}{"shard_key": "analyze access patterns first"}
+    // Recommend shard key for common entity types.
+    advice := map[string]map[string]interface{}{
+        "users": {
+            "shard_key":           "user_id",
+            "rationale":           "Even distribution; most queries filter by user_id",
+            "hotspot_risk":        "low",
+            "cross_shard_queries": []string{"global user counts", "admin search by email"},
+        },
+        "orders": {
+            "shard_key":           "user_id (not order_id)",
+            "rationale":           "Order history fetched by user; collocates same-user orders",
+            "hotspot_risk":        "low",
+            "cross_shard_queries": []string{"merchant revenue reports"},
+        },
+    }
+    if a, ok := advice[entity]; ok {
+        return a
+    }
+    return map[string]interface{}{"shard_key": "analyze access patterns first"}
 }
 
 func main() {
-	// Assess a growing database
-	current := DatabaseCapacity{StorageGB: 380, ReadRPS: 8000, WriteRPS: 1200, P99QueryMs: 85}
-	result := assessShardingNeed(current, 2.5)
-	fmt.Printf("Assessment: %s — %s\n", result["urgency"], result["recommendation"])
-	// => soon — Plan sharding strategy. Add read replicas now.
-	fmt.Printf("Months to limit: %v\n", result["months_to_storage_limit"])
-	// => ~5 months at 2.5x annual growth
+    // Assess a growing database
+    current := DatabaseCapacity{StorageGB: 380, ReadRPS: 8000, WriteRPS: 1200, P99QueryMs: 85}
+    result := assessShardingNeed(current, 2.5)
+    fmt.Printf("Assessment: %s — %s\n", result["urgency"], result["recommendation"])
+    // => soon — Plan sharding strategy. Add read replicas now.
+    fmt.Printf("Months to limit: %v\n", result["months_to_storage_limit"])
+    // => ~5 months at 2.5x annual growth
 
-	advice := chooseShardKeyAdvice("orders")
-	fmt.Printf("Shard key: %s (%s)\n", advice["shard_key"], advice["rationale"])
-	// => user_id — collocates same-user orders; avoids cross-shard joins
+    advice := chooseShardKeyAdvice("orders")
+    fmt.Printf("Shard key: %s (%s)\n", advice["shard_key"], advice["rationale"])
+    // => user_id — collocates same-user orders; avoids cross-shard joins
 }
 ```
 
@@ -5295,72 +5295,72 @@ A data lake stores raw, unprocessed data at scale in a centralized repository, e
 package main
 
 import (
-	"fmt"
-	"time"
+    "fmt"
+    "time"
 )
 
 type DataLakePartitioner struct {
-	BasePath string // => s3://my-data-lake/events
+    BasePath string // => s3://my-data-lake/events
 }
 
 func (d *DataLakePartitioner) PartitionPath(eventDate time.Time,
-	entityType, region string) string {
-	// Generate partition path for predicate pushdown optimization.
-	return fmt.Sprintf("%s/entity_type=%s/region=%s/year=%d/month=%02d/day=%02d/",
-		d.BasePath,
-		entityType,           // => partition by event type
-		region,               // => partition by region
-		eventDate.Year(),
-		eventDate.Month(),
-		eventDate.Day())
-	// => Athena/Spark pushes year/month/day predicates to skip irrelevant partitions
-	// => full scan without partitioning = reading all data for every query
+    entityType, region string) string {
+    // Generate partition path for predicate pushdown optimization.
+    return fmt.Sprintf("%s/entity_type=%s/region=%s/year=%d/month=%02d/day=%02d/",
+        d.BasePath,
+        entityType,           // => partition by event type
+        region,               // => partition by region
+        eventDate.Year(),
+        eventDate.Month(),
+        eventDate.Day())
+    // => Athena/Spark pushes year/month/day predicates to skip irrelevant partitions
+    // => full scan without partitioning = reading all data for every query
 }
 
 func (d *DataLakePartitioner) IsSmallFileRisk(eventsPerDay, bytesPerEvent int) bool {
-	dailyBytes := eventsPerDay * bytesPerEvent
-	return dailyBytes < 1024*1024 // => <1 MB: small-file problem
-	// => small files cause metadata overhead to exceed read overhead in Hadoop/Spark
+    dailyBytes := eventsPerDay * bytesPerEvent
+    return dailyBytes < 1024*1024 // => <1 MB: small-file problem
+    // => small files cause metadata overhead to exceed read overhead in Hadoop/Spark
 }
 
 func validateEventSchema(event map[string]interface{}, requiredFields []string) bool {
-	// Schema validation at ingestion: reject invalid events early.
-	for _, f := range requiredFields {
-		if _, ok := event[f]; !ok {
-			return false
-		}
-	}
-	return true
-	// => invalid events are quarantined, not silently dropped
+    // Schema validation at ingestion: reject invalid events early.
+    for _, f := range requiredFields {
+        if _, ok := event[f]; !ok {
+            return false
+        }
+    }
+    return true
+    // => invalid events are quarantined, not silently dropped
 }
 
 func main() {
-	lake := &DataLakePartitioner{BasePath: "s3://analytics-lake"}
-	path := lake.PartitionPath(time.Date(2026, 3, 20, 0, 0, 0, 0, time.UTC), "click", "us")
-	fmt.Printf("Partition path: %s\n", path)
-	// => s3://analytics-lake/entity_type=click/region=us/year=2026/month=03/day=20/
+    lake := &DataLakePartitioner{BasePath: "s3://analytics-lake"}
+    path := lake.PartitionPath(time.Date(2026, 3, 20, 0, 0, 0, 0, time.UTC), "click", "us")
+    fmt.Printf("Partition path: %s\n", path)
+    // => s3://analytics-lake/entity_type=click/region=us/year=2026/month=03/day=20/
 
-	// Validate events before writing
-	events := []map[string]interface{}{
-		{"event_type": "click", "user_id": "u1", "timestamp": "2026-03-20T10:00:00Z"},
-		{"event_type": "click", "timestamp": "missing_user_id"}, // => invalid; rejected
-	}
-	required := []string{"event_type", "user_id", "timestamp"}
-	validCount := 0
-	invalidCount := 0
-	for _, e := range events {
-		if validateEventSchema(e, required) {
-			validCount++
-		} else {
-			invalidCount++
-		}
-	}
-	fmt.Printf("Valid: %d, Invalid: %d\n", validCount, invalidCount)
-	// => Valid: 1, Invalid: 1
+    // Validate events before writing
+    events := []map[string]interface{}{
+        {"event_type": "click", "user_id": "u1", "timestamp": "2026-03-20T10:00:00Z"},
+        {"event_type": "click", "timestamp": "missing_user_id"}, // => invalid; rejected
+    }
+    required := []string{"event_type", "user_id", "timestamp"}
+    validCount := 0
+    invalidCount := 0
+    for _, e := range events {
+        if validateEventSchema(e, required) {
+            validCount++
+        } else {
+            invalidCount++
+        }
+    }
+    fmt.Printf("Valid: %d, Invalid: %d\n", validCount, invalidCount)
+    // => Valid: 1, Invalid: 1
 
-	smallFileRisk := lake.IsSmallFileRisk(1000, 500)
-	fmt.Printf("Small file risk: %v\n", smallFileRisk)
-	// => true (1000 x 500 = 500 KB < 1 MB threshold)
+    smallFileRisk := lake.IsSmallFileRisk(1000, 500)
+    fmt.Printf("Small file risk: %v\n", smallFileRisk)
+    // => true (1000 x 500 = 500 KB < 1 MB threshold)
 }
 ```
 
@@ -5465,104 +5465,104 @@ Stream processing applies operations to continuous, unbounded data streams. Tumb
 package main
 
 import (
-	"fmt"
-	"sort"
+    "fmt"
+    "sort"
 )
 
 type WindowResult struct {
-	WindowStartMs int
-	WindowEndMs   int
-	Counts        map[string]int
+    WindowStartMs int
+    WindowEndMs   int
+    Counts        map[string]int
 }
 
 type TumblingWindowAggregator struct {
-	WindowSizeMs     int
-	WatermarkDelayMs int
-	// => watermark_delay: tolerate events up to this many ms late
-	windows          map[int]map[string]int // => windows[window_start_ms][user_id] = count
-	maxEventTimeMs   int                    // => track latest observed event time
+    WindowSizeMs     int
+    WatermarkDelayMs int
+    // => watermark_delay: tolerate events up to this many ms late
+    windows          map[int]map[string]int // => windows[window_start_ms][user_id] = count
+    maxEventTimeMs   int                    // => track latest observed event time
 }
 
 func NewTumblingWindowAggregator(windowSizeMs, watermarkDelayMs int) *TumblingWindowAggregator {
-	return &TumblingWindowAggregator{
-		WindowSizeMs:     windowSizeMs,
-		WatermarkDelayMs: watermarkDelayMs,
-		windows:          make(map[int]map[string]int),
-	}
+    return &TumblingWindowAggregator{
+        WindowSizeMs:     windowSizeMs,
+        WatermarkDelayMs: watermarkDelayMs,
+        windows:          make(map[int]map[string]int),
+    }
 }
 
 func (t *TumblingWindowAggregator) windowStart(tsMs int) int {
-	// Assign event to its window bucket.
-	return (tsMs / t.WindowSizeMs) * t.WindowSizeMs
-	// => floor to window boundary: ts=65000, size=60000 -> window_start=60000
+    // Assign event to its window bucket.
+    return (tsMs / t.WindowSizeMs) * t.WindowSizeMs
+    // => floor to window boundary: ts=65000, size=60000 -> window_start=60000
 }
 
 func (t *TumblingWindowAggregator) Process(userID, eventType string, tsMs int) []WindowResult {
-	// Process one event; return any completed (closed) windows.
-	if tsMs > t.maxEventTimeMs {
-		t.maxEventTimeMs = tsMs
-	}
-	window := t.windowStart(tsMs)
-	if t.windows[window] == nil {
-		t.windows[window] = make(map[string]int)
-	}
-	t.windows[window][userID]++
-	// => accumulate event into its time bucket
+    // Process one event; return any completed (closed) windows.
+    if tsMs > t.maxEventTimeMs {
+        t.maxEventTimeMs = tsMs
+    }
+    window := t.windowStart(tsMs)
+    if t.windows[window] == nil {
+        t.windows[window] = make(map[string]int)
+    }
+    t.windows[window][userID]++
+    // => accumulate event into its time bucket
 
-	watermark := t.maxEventTimeMs - t.WatermarkDelayMs
-	// => events before watermark are considered late and rejected
+    watermark := t.maxEventTimeMs - t.WatermarkDelayMs
+    // => events before watermark are considered late and rejected
 
-	// Close and emit windows whose end is before the watermark
-	var toClose []int
-	for w := range t.windows {
-		if w+t.WindowSizeMs <= watermark {
-			toClose = append(toClose, w)
-		}
-	}
-	sort.Ints(toClose)
+    // Close and emit windows whose end is before the watermark
+    var toClose []int
+    for w := range t.windows {
+        if w+t.WindowSizeMs <= watermark {
+            toClose = append(toClose, w)
+        }
+    }
+    sort.Ints(toClose)
 
-	var completed []WindowResult
-	for _, w := range toClose {
-		completed = append(completed, WindowResult{
-			WindowStartMs: w,
-			WindowEndMs:   w + t.WindowSizeMs,
-			Counts:        t.windows[w],
-			// => emit final counts; window removed from state
-		})
-		delete(t.windows, w)
-	}
-	return completed
+    var completed []WindowResult
+    for _, w := range toClose {
+        completed = append(completed, WindowResult{
+            WindowStartMs: w,
+            WindowEndMs:   w + t.WindowSizeMs,
+            Counts:        t.windows[w],
+            // => emit final counts; window removed from state
+        })
+        delete(t.windows, w)
+    }
+    return completed
 }
 
 func main() {
-	// 1-minute tumbling windows, tolerate 5s late arrivals
-	agg := NewTumblingWindowAggregator(60_000, 5_000)
+    // 1-minute tumbling windows, tolerate 5s late arrivals
+    agg := NewTumblingWindowAggregator(60_000, 5_000)
 
-	stream := []struct {
-		UserID    string
-		EventType string
-		TsMs      int
-	}{
-		// Window [0, 60s): events at 10s and 20s
-		{"user-1", "click", 10_000},
-		{"user-2", "click", 20_000},
-		// Window [60, 120s): events at 70s, 75s, 80s
-		{"user-1", "click", 70_000},
-		{"user-3", "click", 75_000},
-		{"user-2", "click", 80_000},
-		// Event at 130s: watermark=125s, closes window [0,60s)
-		{"user-1", "view", 130_000},
-	}
+    stream := []struct {
+        UserID    string
+        EventType string
+        TsMs      int
+    }{
+        // Window [0, 60s): events at 10s and 20s
+        {"user-1", "click", 10_000},
+        {"user-2", "click", 20_000},
+        // Window [60, 120s): events at 70s, 75s, 80s
+        {"user-1", "click", 70_000},
+        {"user-3", "click", 75_000},
+        {"user-2", "click", 80_000},
+        // Event at 130s: watermark=125s, closes window [0,60s)
+        {"user-1", "view", 130_000},
+    }
 
-	for _, e := range stream {
-		completed := agg.Process(e.UserID, e.EventType, e.TsMs)
-		for _, window := range completed {
-			fmt.Printf("Window [%ds-%ds]: %v\n",
-				window.WindowStartMs/1000, window.WindowEndMs/1000, window.Counts)
-		}
-	}
-	// => Window [0s-60s]: map[user-1:1 user-2:1]
-	// => first window closed when ts=130s pushed watermark to 125s > 60s (window end)
+    for _, e := range stream {
+        completed := agg.Process(e.UserID, e.EventType, e.TsMs)
+        for _, window := range completed {
+            fmt.Printf("Window [%ds-%ds]: %v\n",
+                window.WindowStartMs/1000, window.WindowEndMs/1000, window.Counts)
+        }
+    }
+    // => Window [0s-60s]: map[user-1:1 user-2:1]
+    // => first window closed when ts=130s pushed watermark to 125s > 60s (window end)
 }
 ```
 
@@ -5658,69 +5658,69 @@ Incident management is a structured process for detecting, responding to, and le
 package main
 
 import (
-	"fmt"
-	"strings"
+    "fmt"
+    "strings"
 )
 
 type IncidentAction struct {
-	Timestamp string // => when action was taken
-	Actor     string // => who took this action
-	Action    string // => what was done
-	Outcome   string // => result observed
+    Timestamp string // => when action was taken
+    Actor     string // => who took this action
+    Action    string // => what was done
+    Outcome   string // => result observed
 }
 
 type Incident struct {
-	ID         string
-	Severity   string // => P1 (critical), P2 (major), P3 (minor)
-	Summary    string
-	Driver     string // => incident commander (single decision-maker)
-	Actions    []IncidentAction
-	RootCause  string
-	Resolution string
+    ID         string
+    Severity   string // => P1 (critical), P2 (major), P3 (minor)
+    Summary    string
+    Driver     string // => incident commander (single decision-maker)
+    Actions    []IncidentAction
+    RootCause  string
+    Resolution string
 }
 
 var runbooks = map[string][]string{
-	"high_error_rate": {
-		"1. Check recent deployments: kubectl rollout history deployment/api",
-		"2. Compare error rate before/after last deploy in Grafana",
-		"3. If deploy caused: rollback — kubectl rollout undo deployment/api",
-		"4. If not deploy: check DB connection pool utilization",
-		"5. If pool exhausted: increase pool_size or restart app pods",
-		"6. Verify error rate returns to baseline (< SLO threshold)",
-	},
-	"high_latency": {
-		"1. Check p99 latency breakdown per endpoint in Jaeger traces",
-		"2. Identify slowest span: DB query, external API, or CPU-bound",
-		"3. If slow DB query: check pg_stat_statements; EXPLAIN the query",
-		"4. If missing index: CREATE INDEX CONCURRENTLY (non-blocking)",
-		"5. If external API slow: enable circuit breaker or increase timeout",
-		"6. Confirm p99 latency below SLO threshold",
-	},
+    "high_error_rate": {
+        "1. Check recent deployments: kubectl rollout history deployment/api",
+        "2. Compare error rate before/after last deploy in Grafana",
+        "3. If deploy caused: rollback — kubectl rollout undo deployment/api",
+        "4. If not deploy: check DB connection pool utilization",
+        "5. If pool exhausted: increase pool_size or restart app pods",
+        "6. Verify error rate returns to baseline (< SLO threshold)",
+    },
+    "high_latency": {
+        "1. Check p99 latency breakdown per endpoint in Jaeger traces",
+        "2. Identify slowest span: DB query, external API, or CPU-bound",
+        "3. If slow DB query: check pg_stat_statements; EXPLAIN the query",
+        "4. If missing index: CREATE INDEX CONCURRENTLY (non-blocking)",
+        "5. If external API slow: enable circuit breaker or increase timeout",
+        "6. Confirm p99 latency below SLO threshold",
+    },
 }
 
 func executeRunbook(failureType string) []string {
-	// Return runbook steps for known failure type.
-	steps, ok := runbooks[failureType]
-	if !ok {
-		return []string{"No runbook found. Escalate to on-call lead immediately."}
-	}
-	return steps
-	// => runbooks prevent improvisation; consistency reduces errors under stress
+    // Return runbook steps for known failure type.
+    steps, ok := runbooks[failureType]
+    if !ok {
+        return []string{"No runbook found. Escalate to on-call lead immediately."}
+    }
+    return steps
+    // => runbooks prevent improvisation; consistency reduces errors under stress
 }
 
 func generatePostMortem(incident Incident) string {
-	// Generate blameless post-mortem template.
-	var actionLines []string
-	for _, a := range incident.Actions {
-		actionLines = append(actionLines,
-			fmt.Sprintf("- %s [%s]: %s -> %s", a.Timestamp, a.Actor, a.Action, a.Outcome))
-	}
-	rootCause := incident.RootCause
-	if rootCause == "" {
-		rootCause = "TBD — complete 5-Whys analysis"
-	}
+    // Generate blameless post-mortem template.
+    var actionLines []string
+    for _, a := range incident.Actions {
+        actionLines = append(actionLines,
+            fmt.Sprintf("- %s [%s]: %s -> %s", a.Timestamp, a.Actor, a.Action, a.Outcome))
+    }
+    rootCause := incident.RootCause
+    if rootCause == "" {
+        rootCause = "TBD — complete 5-Whys analysis"
+    }
 
-	return fmt.Sprintf(`## Post-Mortem: %s (%s)
+    return fmt.Sprintf(`## Post-Mortem: %s (%s)
 
 ### Impact Summary
 %s
@@ -5740,43 +5740,43 @@ func generatePostMortem(incident Incident) string {
 ### Lessons Learned
 - What worked well in the response?
 - What should be improved?`,
-		incident.ID, incident.Severity,
-		incident.Summary,
-		strings.Join(actionLines, "\n"),
-		rootCause)
+        incident.ID, incident.Severity,
+        incident.Summary,
+        strings.Join(actionLines, "\n"),
+        rootCause)
 }
 
 func main() {
-	// Demo incident
-	incident := Incident{
-		ID:       "INC-2026-042",
-		Severity: "P1",
-		Summary:  "Payment API error rate reached 8% (SLO: 1%) for 22 minutes",
-		Driver:   "alice@example.com",
-		Actions: []IncidentAction{
-			{"10:15", "PagerDuty", "Alert fired", "error_rate=8%"},
-			{"10:17", "alice", "Checked deployment history",
-				"Found deploy at 10:05 with 3 unhealthy pods"},
-			{"10:19", "alice", "Rolled back deployment",
-				"error_rate returning to 0.8% baseline"},
-			{"10:37", "alice", "Confirmed recovery", "SLO restored"},
-		},
-		RootCause:  "Null pointer in payment handler introduced by v1.3.0 deploy",
-		Resolution: "Rolled back to v1.2.3; hotfix v1.3.1 deployed at 14:00",
-	}
+    // Demo incident
+    incident := Incident{
+        ID:       "INC-2026-042",
+        Severity: "P1",
+        Summary:  "Payment API error rate reached 8% (SLO: 1%) for 22 minutes",
+        Driver:   "alice@example.com",
+        Actions: []IncidentAction{
+            {"10:15", "PagerDuty", "Alert fired", "error_rate=8%"},
+            {"10:17", "alice", "Checked deployment history",
+                "Found deploy at 10:05 with 3 unhealthy pods"},
+            {"10:19", "alice", "Rolled back deployment",
+                "error_rate returning to 0.8% baseline"},
+            {"10:37", "alice", "Confirmed recovery", "SLO restored"},
+        },
+        RootCause:  "Null pointer in payment handler introduced by v1.3.0 deploy",
+        Resolution: "Rolled back to v1.2.3; hotfix v1.3.1 deployed at 14:00",
+    }
 
-	// Execute runbook steps
-	steps := executeRunbook("high_error_rate")
-	fmt.Println("Runbook steps:")
-	for _, step := range steps[:3] { // => show first 3 steps
-		fmt.Printf("  %s\n", step)
-	}
+    // Execute runbook steps
+    steps := executeRunbook("high_error_rate")
+    fmt.Println("Runbook steps:")
+    for _, step := range steps[:3] { // => show first 3 steps
+        fmt.Printf("  %s\n", step)
+    }
 
-	// Generate post-mortem
-	pm := generatePostMortem(incident)
-	if len(pm) > 400 {
-		fmt.Printf("\nPost-mortem (first 400 chars):\n%s...\n", pm[:400])
-	}
+    // Generate post-mortem
+    pm := generatePostMortem(incident)
+    if len(pm) > 400 {
+        fmt.Printf("\nPost-mortem (first 400 chars):\n%s...\n", pm[:400])
+    }
 }
 ```
 
@@ -5921,103 +5921,103 @@ package main
 import "fmt"
 
 type Region struct {
-	Name             string
-	Continent        string
-	LatencyMs        map[string]int // => typical latency from user zones
-	AllowedUserZones []string       // => data residency: which user zones allowed
+    Name             string
+    Continent        string
+    LatencyMs        map[string]int // => typical latency from user zones
+    AllowedUserZones []string       // => data residency: which user zones allowed
 }
 
 var regions = []Region{
-	{
-		Name: "us-east-1", Continent: "americas",
-		LatencyMs:        map[string]int{"us": 20, "eu": 110, "ap": 200},
-		AllowedUserZones: []string{"us", "ca", "latam"},
-	},
-	{
-		Name: "eu-west-1", Continent: "europe",
-		LatencyMs:        map[string]int{"us": 110, "eu": 15, "ap": 180},
-		AllowedUserZones: []string{"eu"}, // => GDPR: EU data must stay in EU
-	},
-	{
-		Name: "ap-southeast-1", Continent: "asia-pacific",
-		LatencyMs:        map[string]int{"us": 200, "eu": 180, "ap": 25},
-		AllowedUserZones: []string{"ap", "au"},
-	},
+    {
+        Name: "us-east-1", Continent: "americas",
+        LatencyMs:        map[string]int{"us": 20, "eu": 110, "ap": 200},
+        AllowedUserZones: []string{"us", "ca", "latam"},
+    },
+    {
+        Name: "eu-west-1", Continent: "europe",
+        LatencyMs:        map[string]int{"us": 110, "eu": 15, "ap": 180},
+        AllowedUserZones: []string{"eu"}, // => GDPR: EU data must stay in EU
+    },
+    {
+        Name: "ap-southeast-1", Continent: "asia-pacific",
+        LatencyMs:        map[string]int{"us": 200, "eu": 180, "ap": 25},
+        AllowedUserZones: []string{"ap", "au"},
+    },
 }
 
 func contains(slice []string, item string) bool {
-	for _, s := range slice {
-		if s == item {
-			return true
-		}
-	}
-	return false
+    for _, s := range slice {
+        if s == item {
+            return true
+        }
+    }
+    return false
 }
 
 func routeUser(userZone string, regs []Region) map[string]interface{} {
-	// Route user to compliant region with lowest latency.
-	var compliant []Region
-	for _, r := range regs {
-		if contains(r.AllowedUserZones, userZone) {
-			compliant = append(compliant, r)
-		}
-	}
-	// => EU users: only eu-west-1 is compliant
+    // Route user to compliant region with lowest latency.
+    var compliant []Region
+    for _, r := range regs {
+        if contains(r.AllowedUserZones, userZone) {
+            compliant = append(compliant, r)
+        }
+    }
+    // => EU users: only eu-west-1 is compliant
 
-	if len(compliant) == 0 {
-		return map[string]interface{}{"error": "no_compliant_region_for_" + userZone}
-	}
+    if len(compliant) == 0 {
+        return map[string]interface{}{"error": "no_compliant_region_for_" + userZone}
+    }
 
-	// Among compliant regions, choose lowest latency
-	best := compliant[0]
-	for _, r := range compliant[1:] {
-		if r.LatencyMs[userZone] < best.LatencyMs[userZone] {
-			best = r
-		}
-	}
-	return map[string]interface{}{
-		"user_zone":  userZone,
-		"routed_to":  best.Name,
-		"latency_ms": best.LatencyMs[userZone],
-		"compliance": fmt.Sprintf("%s_data_stays_in_%s", userZone, best.Continent),
-	}
+    // Among compliant regions, choose lowest latency
+    best := compliant[0]
+    for _, r := range compliant[1:] {
+        if r.LatencyMs[userZone] < best.LatencyMs[userZone] {
+            best = r
+        }
+    }
+    return map[string]interface{}{
+        "user_zone":  userZone,
+        "routed_to":  best.Name,
+        "latency_ms": best.LatencyMs[userZone],
+        "compliance": fmt.Sprintf("%s_data_stays_in_%s", userZone, best.Continent),
+    }
 }
 
 func failoverRoute(userZone, failedRegion string, regs []Region) map[string]interface{} {
-	// Re-route on region failure; must remain compliant.
-	var available []Region
-	for _, r := range regs {
-		if r.Name != failedRegion {
-			available = append(available, r)
-		}
-	}
-	result := routeUser(userZone, available)
-	if _, hasErr := result["error"]; hasErr {
-		return map[string]interface{}{
-			"action": "serve_cached_or_return_503",
-			"reason": "no_compliant_region_available_for_" + userZone,
-			// => EU user during EU outage: cannot route to US; return 503
-		}
-	}
-	result["note"] = "failover_from_" + failedRegion
-	return result
+    // Re-route on region failure; must remain compliant.
+    var available []Region
+    for _, r := range regs {
+        if r.Name != failedRegion {
+            available = append(available, r)
+        }
+    }
+    result := routeUser(userZone, available)
+    if _, hasErr := result["error"]; hasErr {
+        return map[string]interface{}{
+            "action": "serve_cached_or_return_503",
+            "reason": "no_compliant_region_available_for_" + userZone,
+            // => EU user during EU outage: cannot route to US; return 503
+        }
+    }
+    result["note"] = "failover_from_" + failedRegion
+    return result
 }
 
 func main() {
-	// Route users from different zones
-	for _, zone := range []string{"us", "eu", "ap"} {
-		result := routeUser(zone, regions)
-		fmt.Printf("%s: %s (%vms) — %s\n",
-			zone, result["routed_to"], result["latency_ms"], result["compliance"])
-	}
-	// => us: us-east-1 (20ms) — us_data_stays_in_americas
-	// => eu: eu-west-1 (15ms) — eu_data_stays_in_europe
-	// => ap: ap-southeast-1 (25ms) — ap_data_stays_in_asia-pacific
+    // Route users from different zones
+    for _, zone := range []string{"us", "eu", "ap"} {
+        result := routeUser(zone, regions)
+        fmt.Printf("%s: %s (%vms) — %s\n",
+            zone, result["routed_to"], result["latency_ms"], result["compliance"])
+    }
+    // => us: us-east-1 (20ms) — us_data_stays_in_americas
+    // => eu: eu-west-1 (15ms) — eu_data_stays_in_europe
+    // => ap: ap-southeast-1 (25ms) — ap_data_stays_in_asia-pacific
 
-	// EU region failure scenario
-	euFailover := failoverRoute("eu", "eu-west-1", regions)
-	fmt.Printf("\nEU failover: %v\n", euFailover)
-	// => {"action":"serve_cached_or_return_503","reason":"no_compliant_region_available_for_eu"}
+    // EU region failure scenario
+    euFailover := failoverRoute("eu", "eu-west-1", regions)
+    fmt.Printf("\nEU failover: %v\n", euFailover)
+    // => {"action":"serve_cached_or_return_503","reason":"no_compliant_region_available_for_eu"}
 }
 ```
 
@@ -6144,169 +6144,169 @@ graph TD
 package main
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
-	"fmt"
-	"strconv"
-	"strings"
+    "crypto/sha256"
+    "encoding/hex"
+    "fmt"
+    "strconv"
+    "strings"
 )
 
 // URLShortener applies patterns from Examples 58-84.
 // Target: 100M DAU, 300M daily redirects (~10K peak RPS)
 // Storage: 12.7 GB raw/year (116 bytes x 300M x 365) + 3x replication = 38 GB/year
 type URLShortener struct {
-	bloom       []bool            // => Bloom filter: fast negative lookup (Example 68)
-	cache       map[string]string // => Cache-aside: hot redirects (Example 69)
-	cacheHits   int
-	cacheMisses int
-	db          map[string]string // => Simulated DB sharded by short_code (Example 80)
-	clickEvents []map[string]string // => Click events for analytics (Example 72/82)
-	metrics     map[string]int
+    bloom       []bool            // => Bloom filter: fast negative lookup (Example 68)
+    cache       map[string]string // => Cache-aside: hot redirects (Example 69)
+    cacheHits   int
+    cacheMisses int
+    db          map[string]string // => Simulated DB sharded by short_code (Example 80)
+    clickEvents []map[string]string // => Click events for analytics (Example 72/82)
+    metrics     map[string]int
 }
 
 const base62Chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
 func NewURLShortener() *URLShortener {
-	return &URLShortener{
-		bloom:   make([]bool, 10*1024*1024), // => 10M bits; ~1% FP rate at 1M URLs
-		cache:   make(map[string]string),
-		db:      make(map[string]string),
-		metrics: map[string]int{"creates": 0, "redirects": 0},
-	}
+    return &URLShortener{
+        bloom:   make([]bool, 10*1024*1024), // => 10M bits; ~1% FP rate at 1M URLs
+        cache:   make(map[string]string),
+        db:      make(map[string]string),
+        metrics: map[string]int{"creates": 0, "redirects": 0},
+    }
 }
 
 func (u *URLShortener) base62Encode(num uint64, length int) string {
-	// Encode integer to 7-character base-62 short code.
-	var result []byte
-	for num > 0 {
-		result = append([]byte{base62Chars[num%62]}, result...)
-		num /= 62 // => 62^7 = 3.5 trillion unique codes
-	}
-	for len(result) < length {
-		result = append([]byte{'a'}, result...)
-	}
-	if len(result) > length {
-		result = result[:length]
-	}
-	return string(result)
+    // Encode integer to 7-character base-62 short code.
+    var result []byte
+    for num > 0 {
+        result = append([]byte{base62Chars[num%62]}, result...)
+        num /= 62 // => 62^7 = 3.5 trillion unique codes
+    }
+    for len(result) < length {
+        result = append([]byte{'a'}, result...)
+    }
+    if len(result) > length {
+        result = result[:length]
+    }
+    return string(result)
 }
 
 func (u *URLShortener) shortCode(longURL string) string {
-	// Deterministic hash-based short code: same URL -> same code.
-	hash := sha256.Sum256([]byte(longURL))
-	hexStr := hex.EncodeToString(hash[:])
-	val, _ := strconv.ParseUint(hexStr[:12], 16, 64)
-	return u.base62Encode(val, 7)
-	// => deterministic: idempotent creates (duplicate URLs return same code)
+    // Deterministic hash-based short code: same URL -> same code.
+    hash := sha256.Sum256([]byte(longURL))
+    hexStr := hex.EncodeToString(hash[:])
+    val, _ := strconv.ParseUint(hexStr[:12], 16, 64)
+    return u.base62Encode(val, 7)
+    // => deterministic: idempotent creates (duplicate URLs return same code)
 }
 
 func (u *URLShortener) bloomContains(url string) bool {
-	// Check Bloom filter: false = definitely not stored.
-	for i := 0; i < 7; i++ { // => 7 independent hash functions
-		input := fmt.Sprintf("%d:%s", i, url)
-		hash := sha256.Sum256([]byte(input))
-		hexStr := hex.EncodeToString(hash[:])
-		h, _ := strconv.ParseUint(hexStr[:8], 16, 64)
-		if !u.bloom[h%uint64(len(u.bloom))] {
-			return false // => definitely absent (no false negatives)
-		}
-	}
-	return true // => probably present (1% false positive rate)
+    // Check Bloom filter: false = definitely not stored.
+    for i := 0; i < 7; i++ { // => 7 independent hash functions
+        input := fmt.Sprintf("%d:%s", i, url)
+        hash := sha256.Sum256([]byte(input))
+        hexStr := hex.EncodeToString(hash[:])
+        h, _ := strconv.ParseUint(hexStr[:8], 16, 64)
+        if !u.bloom[h%uint64(len(u.bloom))] {
+            return false // => definitely absent (no false negatives)
+        }
+    }
+    return true // => probably present (1% false positive rate)
 }
 
 func (u *URLShortener) bloomAdd(url string) {
-	for i := 0; i < 7; i++ {
-		input := fmt.Sprintf("%d:%s", i, url)
-		hash := sha256.Sum256([]byte(input))
-		hexStr := hex.EncodeToString(hash[:])
-		h, _ := strconv.ParseUint(hexStr[:8], 16, 64)
-		u.bloom[h%uint64(len(u.bloom))] = true
-		// => mark URL bits; cannot remove individual entries
-	}
+    for i := 0; i < 7; i++ {
+        input := fmt.Sprintf("%d:%s", i, url)
+        hash := sha256.Sum256([]byte(input))
+        hexStr := hex.EncodeToString(hash[:])
+        h, _ := strconv.ParseUint(hexStr[:8], 16, 64)
+        u.bloom[h%uint64(len(u.bloom))] = true
+        // => mark URL bits; cannot remove individual entries
+    }
 }
 
 func (u *URLShortener) Shorten(longURL string) map[string]string {
-	// Create short URL with Bloom-filter deduplication.
-	if u.bloomContains(longURL) {
-		code := u.shortCode(longURL)
-		if _, exists := u.db[code]; exists {
-			return map[string]string{"short_code": code, "status": "existing"}
-			// => idempotent: return existing mapping
-		}
-	}
+    // Create short URL with Bloom-filter deduplication.
+    if u.bloomContains(longURL) {
+        code := u.shortCode(longURL)
+        if _, exists := u.db[code]; exists {
+            return map[string]string{"short_code": code, "status": "existing"}
+            // => idempotent: return existing mapping
+        }
+    }
 
-	code := u.shortCode(longURL)
-	u.db[code] = longURL          // => write to DB (sharded by code)
-	u.cache[code] = longURL       // => write-through cache (Example 69)
-	u.bloomAdd(longURL)           // => register in Bloom filter
-	u.metrics["creates"]++
-	return map[string]string{
-		"short_code": code,
-		"short_url":  "https://shrt.ly/" + code,
-	}
+    code := u.shortCode(longURL)
+    u.db[code] = longURL          // => write to DB (sharded by code)
+    u.cache[code] = longURL       // => write-through cache (Example 69)
+    u.bloomAdd(longURL)           // => register in Bloom filter
+    u.metrics["creates"]++
+    return map[string]string{
+        "short_code": code,
+        "short_url":  "https://shrt.ly/" + code,
+    }
 }
 
 func (u *URLShortener) Redirect(shortCode, userZone string) string {
-	// Resolve short code to long URL; publish click event.
-	u.metrics["redirects"]++
+    // Resolve short code to long URL; publish click event.
+    u.metrics["redirects"]++
 
-	// Cache-aside: check cache first (99% hit rate for popular URLs)
-	longURL, ok := u.cache[shortCode]
-	if ok {
-		u.cacheHits++ // => hot URL: no DB access needed
-	} else {
-		u.cacheMisses++
-		longURL = u.db[shortCode] // => cold URL: DB lookup
-		if longURL != "" {
-			u.cache[shortCode] = longURL // => populate cache for next request
-		}
-	}
+    // Cache-aside: check cache first (99% hit rate for popular URLs)
+    longURL, ok := u.cache[shortCode]
+    if ok {
+        u.cacheHits++ // => hot URL: no DB access needed
+    } else {
+        u.cacheMisses++
+        longURL = u.db[shortCode] // => cold URL: DB lookup
+        if longURL != "" {
+            u.cache[shortCode] = longURL // => populate cache for next request
+        }
+    }
 
-	if longURL != "" {
-		// Publish to Kafka for analytics (Example 72)
-		u.clickEvents = append(u.clickEvents, map[string]string{
-			"short_code": shortCode,
-			"user_zone":  userZone,
-			"timestamp":  "2026-03-20T10:00:00Z",
-		})
-	}
+    if longURL != "" {
+        // Publish to Kafka for analytics (Example 72)
+        u.clickEvents = append(u.clickEvents, map[string]string{
+            "short_code": shortCode,
+            "user_zone":  userZone,
+            "timestamp":  "2026-03-20T10:00:00Z",
+        })
+    }
 
-	return longURL // => 302 Redirect to longURL; "" -> 404
+    return longURL // => 302 Redirect to longURL; "" -> 404
 }
 
 func (u *URLShortener) Stats() map[string]interface{} {
-	totalCache := u.cacheHits + u.cacheMisses
-	hitRate := 0.0
-	if totalCache > 0 {
-		hitRate = float64(u.cacheHits) / float64(totalCache)
-	}
-	return map[string]interface{}{
-		"urls_stored":    len(u.db),
-		"cache_hit_rate": fmt.Sprintf("%.1f%%", hitRate*100),
-		"creates":        u.metrics["creates"],
-		"redirects":      u.metrics["redirects"],
-		"click_events":   len(u.clickEvents),
-	}
+    totalCache := u.cacheHits + u.cacheMisses
+    hitRate := 0.0
+    if totalCache > 0 {
+        hitRate = float64(u.cacheHits) / float64(totalCache)
+    }
+    return map[string]interface{}{
+        "urls_stored":    len(u.db),
+        "cache_hit_rate": fmt.Sprintf("%.1f%%", hitRate*100),
+        "creates":        u.metrics["creates"],
+        "redirects":      u.metrics["redirects"],
+        "click_events":   len(u.clickEvents),
+    }
 }
 
 func main() {
-	shortener := NewURLShortener()
+    shortener := NewURLShortener()
 
-	r1 := shortener.Shorten("https://example.com/very/long/path?utm_source=email")
-	fmt.Printf("Shortened: %v\n", r1)
-	// => {"short_code": "aBcXy12", "short_url": "https://shrt.ly/aBcXy12"}
+    r1 := shortener.Shorten("https://example.com/very/long/path?utm_source=email")
+    fmt.Printf("Shortened: %v\n", r1)
+    // => {"short_code": "aBcXy12", "short_url": "https://shrt.ly/aBcXy12"}
 
-	r2 := shortener.Shorten("https://example.com/very/long/path?utm_source=email")
-	fmt.Printf("Duplicate: %v\n", r2)
-	// => {"short_code": "aBcXy12", "status": "existing"} — idempotent
+    r2 := shortener.Shorten("https://example.com/very/long/path?utm_source=email")
+    fmt.Printf("Duplicate: %v\n", r2)
+    // => {"short_code": "aBcXy12", "status": "existing"} — idempotent
 
-	for _, zone := range []string{"us", "eu", "eu", "ap"} {
-		shortener.Redirect(r1["short_code"], zone)
-	}
+    for _, zone := range []string{"us", "eu", "eu", "ap"} {
+        shortener.Redirect(r1["short_code"], zone)
+    }
 
-	fmt.Printf("\nStats: %v\n", shortener.Stats())
-	// => {"urls_stored": 1, "cache_hit_rate": "75.0%", "creates": 1,
-	//     "redirects": 4, "click_events": 4}
+    fmt.Printf("\nStats: %v\n", shortener.Stats())
+    // => {"urls_stored": 1, "cache_hit_rate": "75.0%", "creates": 1,
+    //     "redirects": 4, "click_events": 4}
 }
 
 // Ensure strings import used

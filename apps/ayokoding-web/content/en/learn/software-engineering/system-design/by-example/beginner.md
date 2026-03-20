@@ -43,71 +43,71 @@ graph LR
 package main
 
 import (
-	"encoding/json" // => JSON encoding/decoding from standard library
-	"fmt"           // => Formatted I/O from standard library
-	"io"            // => I/O utilities from standard library
-	"net"           // => Network primitives for finding free ports
-	"net/http"      // => Built-in HTTP server and client from Go standard library
+    "encoding/json" // => JSON encoding/decoding from standard library
+    "fmt"           // => Formatted I/O from standard library
+    "io"            // => I/O utilities from standard library
+    "net"           // => Network primitives for finding free ports
+    "net/http"      // => Built-in HTTP server and client from Go standard library
 )
 
 // --- SERVER SIDE ---
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
-	// => Called automatically when a request arrives at this route
-	// => r.URL.Path contains the URL path (e.g., "/api/hello")
-	response := map[string]string{
-		"message": "Hello from server",
-		"path":    r.URL.Path,
-	}
-	// => response is map["message":"Hello from server" "path":"/api/hello"]
+    // => Called automatically when a request arrives at this route
+    // => r.URL.Path contains the URL path (e.g., "/api/hello")
+    response := map[string]string{
+        "message": "Hello from server",
+        "path":    r.URL.Path,
+    }
+    // => response is map["message":"Hello from server" "path":"/api/hello"]
 
-	w.Header().Set("Content-Type", "application/json")
-	// => Tells client how to interpret the body bytes
+    w.Header().Set("Content-Type", "application/json")
+    // => Tells client how to interpret the body bytes
 
-	w.WriteHeader(http.StatusOK)
-	// => Sends "HTTP/1.1 200 OK" status line to client
+    w.WriteHeader(http.StatusOK)
+    // => Sends "HTTP/1.1 200 OK" status line to client
 
-	json.NewEncoder(w).Encode(response)
-	// => Serializes response map to JSON and writes to the response body
+    json.NewEncoder(w).Encode(response)
+    // => Serializes response map to JSON and writes to the response body
 }
 
 func main() {
-	// --- SERVER SETUP ---
-	mux := http.NewServeMux()
-	// => Creates a new request multiplexer (router)
+    // --- SERVER SETUP ---
+    mux := http.NewServeMux()
+    // => Creates a new request multiplexer (router)
 
-	mux.HandleFunc("/api/hello", helloHandler)
-	// => Routes /api/hello to helloHandler function
+    mux.HandleFunc("/api/hello", helloHandler)
+    // => Routes /api/hello to helloHandler function
 
-	listener, _ := net.Listen("tcp", "localhost:0")
-	// => Binds to a random available port on localhost
-	port := listener.Addr().(*net.TCPAddr).Port
-	// => port is the OS-assigned port number
+    listener, _ := net.Listen("tcp", "localhost:0")
+    // => Binds to a random available port on localhost
+    port := listener.Addr().(*net.TCPAddr).Port
+    // => port is the OS-assigned port number
 
-	go http.Serve(listener, mux)
-	// => Starts server in a goroutine (concurrent, non-blocking)
-	// => Server is now listening on localhost:<port>
+    go http.Serve(listener, mux)
+    // => Starts server in a goroutine (concurrent, non-blocking)
+    // => Server is now listening on localhost:<port>
 
-	// --- CLIENT SIDE ---
-	url := fmt.Sprintf("http://localhost:%d/api/hello", port)
-	// => url is "http://localhost:<port>/api/hello"
+    // --- CLIENT SIDE ---
+    url := fmt.Sprintf("http://localhost:%d/api/hello", port)
+    // => url is "http://localhost:<port>/api/hello"
 
-	resp, _ := http.Get(url)
-	// => Opens HTTP connection, sends GET request, waits for response
+    resp, _ := http.Get(url)
+    // => Opens HTTP connection, sends GET request, waits for response
 
-	defer resp.Body.Close()
-	// => Ensures response body is closed when function returns
+    defer resp.Body.Close()
+    // => Ensures response body is closed when function returns
 
-	body, _ := io.ReadAll(resp.Body)
-	// => Reads all bytes from response body
+    body, _ := io.ReadAll(resp.Body)
+    // => Reads all bytes from response body
 
-	var result map[string]string
-	json.Unmarshal(body, &result)
-	// => Parses JSON bytes into Go map
-	// => result is map["message":"Hello from server" "path":"/api/hello"]
+    var result map[string]string
+    json.Unmarshal(body, &result)
+    // => Parses JSON bytes into Go map
+    // => result is map["message":"Hello from server" "path":"/api/hello"]
 
-	fmt.Printf("Status: %d\n", resp.StatusCode) // => Output: Status: 200
-	fmt.Printf("Body: %v\n", result)             // => Output: Body: map[message:Hello from server path:/api/hello]
+    fmt.Printf("Status: %d\n", resp.StatusCode) // => Output: Status: 200
+    fmt.Printf("Body: %v\n", result)             // => Output: Body: map[message:Hello from server path:/api/hello]
 }
 ```
 
@@ -225,113 +225,113 @@ HTTP defines a small vocabulary of methods (verbs) and status codes that carry s
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"io"
-	"net/http"
-	"strings"
-	"sync"
+    "encoding/json"
+    "fmt"
+    "io"
+    "net/http"
+    "strings"
+    "sync"
 )
 
 // In-memory "database" — a simple map simulating a resource store
 var (
-	users = map[string]map[string]string{
-		"1": {"id": "1", "name": "Alice", "email": "alice@example.com"},
-	}
-	// => users is map["1":map["id":"1" "name":"Alice" "email":"alice@example.com"]]
-	mu sync.Mutex
-	// => Mutex protects concurrent map access
+    users = map[string]map[string]string{
+        "1": {"id": "1", "name": "Alice", "email": "alice@example.com"},
+    }
+    // => users is map["1":map["id":"1" "name":"Alice" "email":"alice@example.com"]]
+    mu sync.Mutex
+    // => Mutex protects concurrent map access
 )
 
 func parseID(path string) string {
-	// => Extracts resource ID from URL path like "/users/1"
-	parts := strings.Split(strings.Trim(path, "/"), "/")
-	// => parts is ["users", "1"] for path "/users/1"
-	if len(parts) >= 2 {
-		return parts[1]
-	}
-	return ""
-	// => Returns "1", or "" if no ID in path
+    // => Extracts resource ID from URL path like "/users/1"
+    parts := strings.Split(strings.Trim(path, "/"), "/")
+    // => parts is ["users", "1"] for path "/users/1"
+    if len(parts) >= 2 {
+        return parts[1]
+    }
+    return ""
+    // => Returns "1", or "" if no ID in path
 }
 
 func sendJSON(w http.ResponseWriter, status int, data interface{}) {
-	body, _ := json.Marshal(data)
-	// => Serializes data to JSON bytes
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status) // => Sends HTTP status line
-	w.Write(body)
+    body, _ := json.Marshal(data)
+    // => Serializes data to JSON bytes
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(status) // => Sends HTTP status line
+    w.Write(body)
 }
 
 func usersHandler(w http.ResponseWriter, r *http.Request) {
-	mu.Lock()
-	defer mu.Unlock()
+    mu.Lock()
+    defer mu.Unlock()
 
-	switch r.Method {
-	case http.MethodGet:
-		// => GET: retrieve a resource — safe (no side effects) and idempotent
-		userID := parseID(r.URL.Path) // => userID is "1"
-		if user, ok := users[userID]; ok {
-			sendJSON(w, http.StatusOK, user)
-			// => 200 OK: resource found and returned
-		} else {
-			sendJSON(w, http.StatusNotFound, map[string]string{"error": "Not Found"})
-			// => 404 Not Found: valid request but resource doesn't exist
-		}
+    switch r.Method {
+    case http.MethodGet:
+        // => GET: retrieve a resource — safe (no side effects) and idempotent
+        userID := parseID(r.URL.Path) // => userID is "1"
+        if user, ok := users[userID]; ok {
+            sendJSON(w, http.StatusOK, user)
+            // => 200 OK: resource found and returned
+        } else {
+            sendJSON(w, http.StatusNotFound, map[string]string{"error": "Not Found"})
+            // => 404 Not Found: valid request but resource doesn't exist
+        }
 
-	case http.MethodPost:
-		// => POST: create a new resource — NOT idempotent (each call creates another)
-		body, _ := io.ReadAll(r.Body)
-		var data map[string]string
-		json.Unmarshal(body, &data)
-		// => data is map["name":"Bob" "email":"bob@example.com"]
+    case http.MethodPost:
+        // => POST: create a new resource — NOT idempotent (each call creates another)
+        body, _ := io.ReadAll(r.Body)
+        var data map[string]string
+        json.Unmarshal(body, &data)
+        // => data is map["name":"Bob" "email":"bob@example.com"]
 
-		newID := fmt.Sprintf("%d", len(users)+1)
-		// => newID is "2" (simple auto-increment)
-		data["id"] = newID
-		users[newID] = data
-		// => users["2"] = map["name":"Bob" "email":"bob@example.com" "id":"2"]
+        newID := fmt.Sprintf("%d", len(users)+1)
+        // => newID is "2" (simple auto-increment)
+        data["id"] = newID
+        users[newID] = data
+        // => users["2"] = map["name":"Bob" "email":"bob@example.com" "id":"2"]
 
-		sendJSON(w, http.StatusCreated, users[newID])
-		// => 201 Created: new resource created; body contains the created resource
+        sendJSON(w, http.StatusCreated, users[newID])
+        // => 201 Created: new resource created; body contains the created resource
 
-	case http.MethodPut:
-		// => PUT: replace a resource entirely — idempotent (same result every time)
-		userID := parseID(r.URL.Path)
-		if _, ok := users[userID]; !ok {
-			sendJSON(w, http.StatusNotFound, map[string]string{"error": "Not Found"})
-			return
-		}
-		body, _ := io.ReadAll(r.Body)
-		var data map[string]string
-		json.Unmarshal(body, &data)
-		data["id"] = userID
-		users[userID] = data
-		// => Replaces ALL fields — fields not in body are lost
-		sendJSON(w, http.StatusOK, users[userID])
-		// => 200 OK: replacement successful
+    case http.MethodPut:
+        // => PUT: replace a resource entirely — idempotent (same result every time)
+        userID := parseID(r.URL.Path)
+        if _, ok := users[userID]; !ok {
+            sendJSON(w, http.StatusNotFound, map[string]string{"error": "Not Found"})
+            return
+        }
+        body, _ := io.ReadAll(r.Body)
+        var data map[string]string
+        json.Unmarshal(body, &data)
+        data["id"] = userID
+        users[userID] = data
+        // => Replaces ALL fields — fields not in body are lost
+        sendJSON(w, http.StatusOK, users[userID])
+        // => 200 OK: replacement successful
 
-	case http.MethodDelete:
-		// => DELETE: remove a resource — idempotent
-		userID := parseID(r.URL.Path)
-		if _, ok := users[userID]; ok {
-			delete(users, userID) // => Removes user from map
-			sendJSON(w, http.StatusNoContent, nil)
-			// => 204 No Content: success but nothing to return
-		} else {
-			sendJSON(w, http.StatusNotFound, map[string]string{"error": "Not Found"})
-		}
-	}
+    case http.MethodDelete:
+        // => DELETE: remove a resource — idempotent
+        userID := parseID(r.URL.Path)
+        if _, ok := users[userID]; ok {
+            delete(users, userID) // => Removes user from map
+            sendJSON(w, http.StatusNoContent, nil)
+            // => 204 No Content: success but nothing to return
+        } else {
+            sendJSON(w, http.StatusNotFound, map[string]string{"error": "Not Found"})
+        }
+    }
 }
 
 func main() {
-	// Key status code groups:
-	// 2xx => Success (200 OK, 201 Created, 204 No Content)
-	// 3xx => Redirection (301 Moved Permanently, 304 Not Modified)
-	// 4xx => Client error (400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 409 Conflict)
-	// 5xx => Server error (500 Internal Server Error, 503 Service Unavailable)
+    // Key status code groups:
+    // 2xx => Success (200 OK, 201 Created, 204 No Content)
+    // 3xx => Redirection (301 Moved Permanently, 304 Not Modified)
+    // 4xx => Client error (400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 409 Conflict)
+    // 5xx => Server error (500 Internal Server Error, 503 Service Unavailable)
 
-	fmt.Println("HTTP Methods: GET (safe, idempotent), POST (not idempotent),")
-	fmt.Println("PUT (idempotent), DELETE (idempotent)")
+    fmt.Println("HTTP Methods: GET (safe, idempotent), POST (not idempotent),")
+    fmt.Println("PUT (idempotent), DELETE (idempotent)")
 }
 ```
 
@@ -459,64 +459,64 @@ import "fmt"
 // Each entry shows: method, url_pattern, operation, notes
 
 type RouteExample struct {
-	Method    string
-	Pattern   string
-	Operation string
-	Notes     string
+    Method    string
+    Pattern   string
+    Operation string
+    Notes     string
 }
 
 func main() {
-	restDesignExamples := []RouteExample{
-		// --- RESOURCE COLLECTIONS ---
-		{"GET", "/users", "List all users", "Returns array of user objects"},
-		{"POST", "/users", "Create new user", "Body contains new user data"},
+    restDesignExamples := []RouteExample{
+        // --- RESOURCE COLLECTIONS ---
+        {"GET", "/users", "List all users", "Returns array of user objects"},
+        {"POST", "/users", "Create new user", "Body contains new user data"},
 
-		// --- INDIVIDUAL RESOURCES ---
-		{"GET", "/users/{id}", "Get specific user", "Returns single user object"},
-		{"PUT", "/users/{id}", "Replace user", "Body contains full replacement"},
-		{"PATCH", "/users/{id}", "Partial update", "Body contains only changed fields"},
-		{"DELETE", "/users/{id}", "Delete user", "Returns 204 No Content"},
+        // --- INDIVIDUAL RESOURCES ---
+        {"GET", "/users/{id}", "Get specific user", "Returns single user object"},
+        {"PUT", "/users/{id}", "Replace user", "Body contains full replacement"},
+        {"PATCH", "/users/{id}", "Partial update", "Body contains only changed fields"},
+        {"DELETE", "/users/{id}", "Delete user", "Returns 204 No Content"},
 
-		// --- NESTED RESOURCES (relationships) ---
-		{"GET", "/users/{id}/orders", "List user's orders", "Scoped to specific user"},
-		{"POST", "/users/{id}/orders", "Create order for user", "Order belongs to user"},
-		{"GET", "/users/{id}/orders/{oid}", "Specific order", "Fully qualified resource"},
-	}
+        // --- NESTED RESOURCES (relationships) ---
+        {"GET", "/users/{id}/orders", "List user's orders", "Scoped to specific user"},
+        {"POST", "/users/{id}/orders", "Create order for user", "Order belongs to user"},
+        {"GET", "/users/{id}/orders/{oid}", "Specific order", "Fully qualified resource"},
+    }
 
-	// PASS: GOOD URL patterns
-	goodPatterns := map[string]string{
-		"/users":           "Plural noun — represents the collection",
-		"/users/42":        "ID identifies specific resource in collection",
-		"/users/42/orders": "Nested resource shows relationship",
-		"/search?q=alice":  "Query parameters for filtering/searching",
-	}
-	// => Each URL is a noun; HTTP method provides the verb
+    // PASS: GOOD URL patterns
+    goodPatterns := map[string]string{
+        "/users":           "Plural noun — represents the collection",
+        "/users/42":        "ID identifies specific resource in collection",
+        "/users/42/orders": "Nested resource shows relationship",
+        "/search?q=alice":  "Query parameters for filtering/searching",
+    }
+    // => Each URL is a noun; HTTP method provides the verb
 
-	// FAIL: BAD URL patterns (common anti-patterns)
-	badPatterns := map[string]string{
-		"/getUser":         "Verb in URL — method is already GET",
-		"/deleteUser/42":   "Verb in URL — method is already DELETE",
-		"/user":            "Singular noun for collection is confusing",
-		"/users/getOrders": "Mixed resource + action — use /users/{id}/orders",
-		"/createNewOrder":  "Action in URL — use POST /orders instead",
-	}
-	// => URLs should identify resources, not actions
+    // FAIL: BAD URL patterns (common anti-patterns)
+    badPatterns := map[string]string{
+        "/getUser":         "Verb in URL — method is already GET",
+        "/deleteUser/42":   "Verb in URL — method is already DELETE",
+        "/user":            "Singular noun for collection is confusing",
+        "/users/getOrders": "Mixed resource + action — use /users/{id}/orders",
+        "/createNewOrder":  "Action in URL — use POST /orders instead",
+    }
+    // => URLs should identify resources, not actions
 
-	fmt.Println("=== REST URL Design ===")
-	for _, r := range restDesignExamples {
-		fmt.Printf("%-6s %-30s | %s\n", r.Method, r.Pattern, r.Operation)
-		// => Prints e.g.: "GET    /users                         | List all users"
-	}
+    fmt.Println("=== REST URL Design ===")
+    for _, r := range restDesignExamples {
+        fmt.Printf("%-6s %-30s | %s\n", r.Method, r.Pattern, r.Operation)
+        // => Prints e.g.: "GET    /users                         | List all users"
+    }
 
-	fmt.Println("\n=== PASS: Good Patterns ===")
-	for url, reason := range goodPatterns {
-		fmt.Printf("  %-30s => %s\n", url, reason)
-	}
+    fmt.Println("\n=== PASS: Good Patterns ===")
+    for url, reason := range goodPatterns {
+        fmt.Printf("  %-30s => %s\n", url, reason)
+    }
 
-	fmt.Println("\n=== FAIL: Anti-Patterns ===")
-	for url, reason := range badPatterns {
-		fmt.Printf("  %-30s => %s\n", url, reason)
-	}
+    fmt.Println("\n=== FAIL: Anti-Patterns ===")
+    for url, reason := range badPatterns {
+        fmt.Printf("  %-30s => %s\n", url, reason)
+    }
 }
 ```
 
@@ -637,130 +637,130 @@ graph TD
 package main
 
 import (
-	"fmt"
-	"strings"
-	"time"
+    "fmt"
+    "strings"
+    "time"
 )
 
 // Simulated DNS hierarchy
 var dnsRoot = map[string]string{
-	"com": "tld-ns-com.example",
-	"org": "tld-ns-org.example",
+    "com": "tld-ns-com.example",
+    "org": "tld-ns-org.example",
 }
 
 // => ROOT knows which server handles each top-level domain (TLD)
 
 var dnsTLDCom = map[string]string{
-	"example.com": "ns1.example.com",
-	"stripe.com":  "ns1.stripe.com",
+    "example.com": "ns1.example.com",
+    "stripe.com":  "ns1.stripe.com",
 }
 
 // => TLD server knows which authoritative nameserver handles each domain
 
 var dnsAuthoritative = map[string]string{
-	"api.example.com":  "203.0.113.42",
-	"www.example.com":  "203.0.113.43",
-	"mail.example.com": "203.0.113.44",
+    "api.example.com":  "203.0.113.42",
+    "www.example.com":  "203.0.113.43",
+    "mail.example.com": "203.0.113.44",
 }
 
 // => Authoritative server stores the actual A records (name -> IP)
 
 type cacheEntry struct {
-	ip      string
-	expires time.Time
+    ip      string
+    expires time.Time
 }
 
 type DNSCache struct {
-	cache map[string]cacheEntry
-	// => cache is empty map
+    cache map[string]cacheEntry
+    // => cache is empty map
 }
 
 func newDNSCache() *DNSCache {
-	return &DNSCache{cache: make(map[string]cacheEntry)}
+    return &DNSCache{cache: make(map[string]cacheEntry)}
 }
 
 func (c *DNSCache) get(name string) (string, bool) {
-	entry, ok := c.cache[name]
-	// => Returns zero value if not cached
-	if ok && entry.expires.After(time.Now()) {
-		return entry.ip, true
-		// => Cache hit: return IP if TTL not expired
-	}
-	return "", false
-	// => Cache miss
+    entry, ok := c.cache[name]
+    // => Returns zero value if not cached
+    if ok && entry.expires.After(time.Now()) {
+        return entry.ip, true
+        // => Cache hit: return IP if TTL not expired
+    }
+    return "", false
+    // => Cache miss
 }
 
 func (c *DNSCache) set(name, ip string, ttl time.Duration) {
-	c.cache[name] = cacheEntry{
-		ip:      ip,
-		expires: time.Now().Add(ttl),
-	}
-	// => Stores IP with expiry timestamp
-	// => After ttl, the entry is considered stale
+    c.cache[name] = cacheEntry{
+        ip:      ip,
+        expires: time.Now().Add(ttl),
+    }
+    // => Stores IP with expiry timestamp
+    // => After ttl, the entry is considered stale
 }
 
 type RecursiveResolver struct {
-	cache   *DNSCache
-	queries int
-	// => Track how many upstream queries we make
+    cache   *DNSCache
+    queries int
+    // => Track how many upstream queries we make
 }
 
 func newResolver() *RecursiveResolver {
-	return &RecursiveResolver{cache: newDNSCache()}
+    return &RecursiveResolver{cache: newDNSCache()}
 }
 
 func (r *RecursiveResolver) resolve(hostname string) string {
-	// => Main resolution method: check cache first, then query hierarchy
-	if ip, ok := r.cache.get(hostname); ok {
-		fmt.Printf("  Cache hit: %s => %s\n", hostname, ip)
-		return ip
-		// => Avoids all upstream queries when cached
-	}
+    // => Main resolution method: check cache first, then query hierarchy
+    if ip, ok := r.cache.get(hostname); ok {
+        fmt.Printf("  Cache hit: %s => %s\n", hostname, ip)
+        return ip
+        // => Avoids all upstream queries when cached
+    }
 
-	fmt.Printf("  Cache miss: %s — querying DNS hierarchy\n", hostname)
+    fmt.Printf("  Cache miss: %s — querying DNS hierarchy\n", hostname)
 
-	// Step 1: Ask root for TLD nameserver
-	parts := strings.Split(hostname, ".")
-	tld := parts[len(parts)-1]
-	// => tld is "com" for "api.example.com"
-	_ = dnsRoot[tld]
-	// => tldNS is "tld-ns-com.example"
-	r.queries++
+    // Step 1: Ask root for TLD nameserver
+    parts := strings.Split(hostname, ".")
+    tld := parts[len(parts)-1]
+    // => tld is "com" for "api.example.com"
+    _ = dnsRoot[tld]
+    // => tldNS is "tld-ns-com.example"
+    r.queries++
 
-	// Step 2: Ask TLD for authoritative nameserver
-	domain := strings.Join(parts[len(parts)-2:], ".")
-	// => domain is "example.com" for "api.example.com"
-	_ = dnsTLDCom[domain]
-	// => authNS is "ns1.example.com"
-	r.queries++
+    // Step 2: Ask TLD for authoritative nameserver
+    domain := strings.Join(parts[len(parts)-2:], ".")
+    // => domain is "example.com" for "api.example.com"
+    _ = dnsTLDCom[domain]
+    // => authNS is "ns1.example.com"
+    r.queries++
 
-	// Step 3: Ask authoritative server for actual IP
-	ip := dnsAuthoritative[hostname]
-	// => ip is "203.0.113.42"
-	r.queries++
+    // Step 3: Ask authoritative server for actual IP
+    ip := dnsAuthoritative[hostname]
+    // => ip is "203.0.113.42"
+    r.queries++
 
-	if ip != "" {
-		r.cache.set(hostname, ip, 300*time.Second)
-		// => Cache for 300 seconds (5 minutes) — TTL from DNS record
-		fmt.Printf("  Resolved and cached: %s => %s\n", hostname, ip)
-	}
-	return ip
+    if ip != "" {
+        r.cache.set(hostname, ip, 300*time.Second)
+        // => Cache for 300 seconds (5 minutes) — TTL from DNS record
+        fmt.Printf("  Resolved and cached: %s => %s\n", hostname, ip)
+    }
+    return ip
 }
 
 func main() {
-	resolver := newResolver()
+    resolver := newResolver()
 
-	// First resolution — cold cache, requires full hierarchy traversal
-	ip1 := resolver.resolve("api.example.com")
-	// => Cache miss: queries root, TLD, authoritative (3 upstream queries)
-	fmt.Printf("Result: %s, Queries made: %d\n", ip1, resolver.queries)
-	// => Output: Result: 203.0.113.42, Queries made: 3
+    // First resolution — cold cache, requires full hierarchy traversal
+    ip1 := resolver.resolve("api.example.com")
+    // => Cache miss: queries root, TLD, authoritative (3 upstream queries)
+    fmt.Printf("Result: %s, Queries made: %d\n", ip1, resolver.queries)
+    // => Output: Result: 203.0.113.42, Queries made: 3
 
-	// Second resolution — warm cache, zero upstream queries
-	ip2 := resolver.resolve("api.example.com")
-	// => Output: Cache hit: api.example.com => 203.0.113.42
-	fmt.Printf("Result: %s, Queries made: %d\n", ip2, resolver.queries)
-	// => Output: Result: 203.0.113.42, Queries made: 3 (unchanged — served from cache)
+    // Second resolution — warm cache, zero upstream queries
+    ip2 := resolver.resolve("api.example.com")
+    // => Output: Cache hit: api.example.com => 203.0.113.42
+    fmt.Printf("Result: %s, Queries made: %d\n", ip2, resolver.queries)
+    // => Output: Result: 203.0.113.42, Queries made: 3 (unchanged — served from cache)
 }
 ```
 
@@ -903,79 +903,79 @@ package main
 import "fmt"
 
 type RoundRobinLoadBalancer struct {
-	servers       []string
-	index         int
-	requestCounts map[string]int
+    servers       []string
+    index         int
+    requestCounts map[string]int
 }
 
 func newRoundRobinLB(servers []string) *RoundRobinLoadBalancer {
-	counts := make(map[string]int)
-	for _, s := range servers {
-		counts[s] = 0
-	}
-	return &RoundRobinLoadBalancer{
-		servers:       servers,
-		index:         0,
-		requestCounts: counts,
-	}
-	// => servers is ["server-1:8080", "server-2:8080", "server-3:8080"]
-	// => requestCounts is map["server-1:8080":0 "server-2:8080":0 "server-3:8080":0]
+    counts := make(map[string]int)
+    for _, s := range servers {
+        counts[s] = 0
+    }
+    return &RoundRobinLoadBalancer{
+        servers:       servers,
+        index:         0,
+        requestCounts: counts,
+    }
+    // => servers is ["server-1:8080", "server-2:8080", "server-3:8080"]
+    // => requestCounts is map["server-1:8080":0 "server-2:8080":0 "server-3:8080":0]
 }
 
 func (lb *RoundRobinLoadBalancer) nextServer() string {
-	server := lb.servers[lb.index%len(lb.servers)]
-	// => Returns next server in rotation
-	// => After server-3, wraps back to server-1
-	lb.index++
-	lb.requestCounts[server]++
-	// => Tracks how many requests each server received
-	return server
+    server := lb.servers[lb.index%len(lb.servers)]
+    // => Returns next server in rotation
+    // => After server-3, wraps back to server-1
+    lb.index++
+    lb.requestCounts[server]++
+    // => Tracks how many requests each server received
+    return server
 }
 
 func (lb *RoundRobinLoadBalancer) distributionReport() {
-	total := 0
-	for _, count := range lb.requestCounts {
-		total += count
-	}
-	// => total is total number of requests dispatched
-	fmt.Printf("\nLoad distribution (%d requests):\n", total)
-	for _, s := range lb.servers {
-		count := lb.requestCounts[s]
-		pct := float64(count) / float64(total) * 100
-		fmt.Printf("  %s: %d requests (%.1f%%)\n", s, count, pct)
-		// => Each server should receive ~33.3% of traffic
-	}
+    total := 0
+    for _, count := range lb.requestCounts {
+        total += count
+    }
+    // => total is total number of requests dispatched
+    fmt.Printf("\nLoad distribution (%d requests):\n", total)
+    for _, s := range lb.servers {
+        count := lb.requestCounts[s]
+        pct := float64(count) / float64(total) * 100
+        fmt.Printf("  %s: %d requests (%.1f%%)\n", s, count, pct)
+        // => Each server should receive ~33.3% of traffic
+    }
 }
 
 func main() {
-	// Initialize balancer with three backend servers
-	lb := newRoundRobinLB([]string{
-		"server-1:8080",
-		"server-2:8080",
-		"server-3:8080",
-	})
+    // Initialize balancer with three backend servers
+    lb := newRoundRobinLB([]string{
+        "server-1:8080",
+        "server-2:8080",
+        "server-3:8080",
+    })
 
-	// Simulate 9 incoming requests
-	for i := 0; i < 9; i++ {
-		server := lb.nextServer()
-		fmt.Printf("Request %d => %s\n", i+1, server)
-		// => Request 1 => server-1:8080
-		// => Request 2 => server-2:8080
-		// => Request 3 => server-3:8080
-		// => Request 4 => server-1:8080  (wraps around)
-		// => Request 5 => server-2:8080
-		// => Request 6 => server-3:8080
-		// => Request 7 => server-1:8080
-		// => Request 8 => server-2:8080
-		// => Request 9 => server-3:8080
-	}
+    // Simulate 9 incoming requests
+    for i := 0; i < 9; i++ {
+        server := lb.nextServer()
+        fmt.Printf("Request %d => %s\n", i+1, server)
+        // => Request 1 => server-1:8080
+        // => Request 2 => server-2:8080
+        // => Request 3 => server-3:8080
+        // => Request 4 => server-1:8080  (wraps around)
+        // => Request 5 => server-2:8080
+        // => Request 6 => server-3:8080
+        // => Request 7 => server-1:8080
+        // => Request 8 => server-2:8080
+        // => Request 9 => server-3:8080
+    }
 
-	lb.distributionReport()
-	// => Load distribution (9 requests):
-	// =>   server-1:8080: 3 requests (33.3%)
-	// =>   server-2:8080: 3 requests (33.3%)
-	// =>   server-3:8080: 3 requests (33.3%)
-	// => Perfect even distribution for uniform workloads
+    lb.distributionReport()
+    // => Load distribution (9 requests):
+    // =>   server-1:8080: 3 requests (33.3%)
+    // =>   server-2:8080: 3 requests (33.3%)
+    // =>   server-3:8080: 3 requests (33.3%)
+    // => Perfect even distribution for uniform workloads
 }
 ```
 
@@ -1075,88 +1075,88 @@ package main
 import "fmt"
 
 type Server struct {
-	Name              string
-	ActiveConnections int
-	// => Tracks currently in-flight requests
-	TotalHandled int
-	// => Tracks total requests processed (for reporting)
+    Name              string
+    ActiveConnections int
+    // => Tracks currently in-flight requests
+    TotalHandled int
+    // => Tracks total requests processed (for reporting)
 }
 
 type LeastConnectionsLB struct {
-	Servers []*Server
-	// => servers is slice of Server pointers
+    Servers []*Server
+    // => servers is slice of Server pointers
 }
 
 func (lb *LeastConnectionsLB) pickServer() *Server {
-	// => Select server with fewest active connections
-	chosen := lb.Servers[0]
-	for _, s := range lb.Servers[1:] {
-		if s.ActiveConnections < chosen.ActiveConnections {
-			chosen = s
-		}
-	}
-	// => chosen is Server with lowest ActiveConnections value
-	// => If tie, picks first in slice (acceptable for this algorithm)
+    // => Select server with fewest active connections
+    chosen := lb.Servers[0]
+    for _, s := range lb.Servers[1:] {
+        if s.ActiveConnections < chosen.ActiveConnections {
+            chosen = s
+        }
+    }
+    // => chosen is Server with lowest ActiveConnections value
+    // => If tie, picks first in slice (acceptable for this algorithm)
 
-	chosen.ActiveConnections++
-	// => Increment BEFORE dispatching — connection is "active" now
-	chosen.TotalHandled++
-	return chosen
+    chosen.ActiveConnections++
+    // => Increment BEFORE dispatching — connection is "active" now
+    chosen.TotalHandled++
+    return chosen
 }
 
 func (lb *LeastConnectionsLB) completeRequest(server *Server) {
-	server.ActiveConnections--
-	// => Decrement AFTER response sent — connection is "released" now
-	// => Must always be called to prevent connection count leak
+    server.ActiveConnections--
+    // => Decrement AFTER response sent — connection is "released" now
+    // => Must always be called to prevent connection count leak
 }
 
 func (lb *LeastConnectionsLB) status() {
-	fmt.Println("Server status (active connections | total handled):")
-	for _, s := range lb.Servers {
-		fmt.Printf("  %s: %d active | %d total\n", s.Name, s.ActiveConnections, s.TotalHandled)
-	}
+    fmt.Println("Server status (active connections | total handled):")
+    for _, s := range lb.Servers {
+        fmt.Printf("  %s: %d active | %d total\n", s.Name, s.ActiveConnections, s.TotalHandled)
+    }
 }
 
 func main() {
-	lb := &LeastConnectionsLB{
-		Servers: []*Server{
-			{Name: "server-A"},
-			{Name: "server-B"},
-			{Name: "server-C"},
-		},
-	}
+    lb := &LeastConnectionsLB{
+        Servers: []*Server{
+            {Name: "server-A"},
+            {Name: "server-B"},
+            {Name: "server-C"},
+        },
+    }
 
-	// Simulate a slow request to server-A
-	slowServer := lb.pickServer()
-	fmt.Printf("Slow request => %s\n", slowServer.Name)
-	// => Slow request => server-A  (first request, all at 0, picks server-A)
-	// => server-A now has 1 active connection; B and C have 0
+    // Simulate a slow request to server-A
+    slowServer := lb.pickServer()
+    fmt.Printf("Slow request => %s\n", slowServer.Name)
+    // => Slow request => server-A  (first request, all at 0, picks server-A)
+    // => server-A now has 1 active connection; B and C have 0
 
-	// Next two requests should go to B and C (fewer connections than A)
-	r2 := lb.pickServer()
-	fmt.Printf("Request 2 => %s\n", r2.Name)
-	// => Request 2 => server-B  (0 connections vs server-A's 1)
+    // Next two requests should go to B and C (fewer connections than A)
+    r2 := lb.pickServer()
+    fmt.Printf("Request 2 => %s\n", r2.Name)
+    // => Request 2 => server-B  (0 connections vs server-A's 1)
 
-	r3 := lb.pickServer()
-	fmt.Printf("Request 3 => %s\n", r3.Name)
-	// => Request 3 => server-C  (0 connections vs A's 1 and B's 1)
+    r3 := lb.pickServer()
+    fmt.Printf("Request 3 => %s\n", r3.Name)
+    // => Request 3 => server-C  (0 connections vs A's 1 and B's 1)
 
-	// Request 4: all at 1 (A=1, B=1, C=1) — picks first (A)
-	r4 := lb.pickServer()
-	fmt.Printf("Request 4 => %s\n", r4.Name)
-	// => Request 4 => server-A  (tie broken by slice order)
+    // Request 4: all at 1 (A=1, B=1, C=1) — picks first (A)
+    r4 := lb.pickServer()
+    fmt.Printf("Request 4 => %s\n", r4.Name)
+    // => Request 4 => server-A  (tie broken by slice order)
 
-	// Now complete the slow request on server-A
-	lb.completeRequest(slowServer)
-	// => server-A.ActiveConnections decremented: 2 -> 1
+    // Now complete the slow request on server-A
+    lb.completeRequest(slowServer)
+    // => server-A.ActiveConnections decremented: 2 -> 1
 
-	lb.status()
-	// => Server status:
-	// =>   server-A: 1 active | 2 total
-	// =>   server-B: 1 active | 1 total
-	// =>   server-C: 1 active | 1 total
+    lb.status()
+    // => Server status:
+    // =>   server-A: 1 active | 2 total
+    // =>   server-B: 1 active | 1 total
+    // =>   server-C: 1 active | 1 total
 
-	_, _, _ = r2, r3, r4
+    _, _, _ = r2, r3, r4
 }
 ```
 
@@ -1298,127 +1298,127 @@ graph TD
 package main
 
 import (
-	"fmt"
-	"time"
+    "fmt"
+    "time"
 )
 
 type cacheEntry struct {
-	value   interface{}
-	expires time.Time
+    value   interface{}
+    expires time.Time
 }
 
 type TTLCache struct {
-	store      map[string]cacheEntry
-	defaultTTL time.Duration
-	// => defaultTTL is 300 seconds (5 minutes)
-	hits   int
-	misses int
-	// => Track hit/miss ratio for monitoring
+    store      map[string]cacheEntry
+    defaultTTL time.Duration
+    // => defaultTTL is 300 seconds (5 minutes)
+    hits   int
+    misses int
+    // => Track hit/miss ratio for monitoring
 }
 
 func newTTLCache(defaultTTL time.Duration) *TTLCache {
-	return &TTLCache{
-		store:      make(map[string]cacheEntry),
-		defaultTTL: defaultTTL,
-	}
-	// => store is empty map; will hold key -> {value, expires}
+    return &TTLCache{
+        store:      make(map[string]cacheEntry),
+        defaultTTL: defaultTTL,
+    }
+    // => store is empty map; will hold key -> {value, expires}
 }
 
 func (c *TTLCache) get(key string) (interface{}, bool) {
-	entry, ok := c.store[key]
-	// => Returns zero value if key never set
+    entry, ok := c.store[key]
+    // => Returns zero value if key never set
 
-	if !ok {
-		c.misses++
-		return nil, false
-		// => Cache miss: key not present
-	}
+    if !ok {
+        c.misses++
+        return nil, false
+        // => Cache miss: key not present
+    }
 
-	if time.Now().After(entry.expires) {
-		delete(c.store, key)
-		// => Evict expired entry (lazy eviction on access)
-		c.misses++
-		return nil, false
-		// => Cache miss: key existed but TTL expired
-	}
+    if time.Now().After(entry.expires) {
+        delete(c.store, key)
+        // => Evict expired entry (lazy eviction on access)
+        c.misses++
+        return nil, false
+        // => Cache miss: key existed but TTL expired
+    }
 
-	c.hits++
-	return entry.value, true
-	// => Cache hit: return stored value
+    c.hits++
+    return entry.value, true
+    // => Cache hit: return stored value
 }
 
 func (c *TTLCache) set(key string, value interface{}, ttl ...time.Duration) {
-	t := c.defaultTTL
-	if len(ttl) > 0 {
-		t = ttl[0]
-	}
-	// => Use provided TTL or fall back to default
-	c.store[key] = cacheEntry{
-		value:   value,
-		expires: time.Now().Add(t),
-	}
-	// => Stores value with absolute expiry timestamp
+    t := c.defaultTTL
+    if len(ttl) > 0 {
+        t = ttl[0]
+    }
+    // => Use provided TTL or fall back to default
+    c.store[key] = cacheEntry{
+        value:   value,
+        expires: time.Now().Add(t),
+    }
+    // => Stores value with absolute expiry timestamp
 }
 
 func (c *TTLCache) del(key string) {
-	delete(c.store, key)
-	// => Remove key if exists; no-op if not
+    delete(c.store, key)
+    // => Remove key if exists; no-op if not
 }
 
 func (c *TTLCache) hitRate() float64 {
-	total := c.hits + c.misses
-	if total == 0 {
-		return 0.0
-	}
-	return float64(c.hits) / float64(total) * 100
-	// => Returns percentage of requests served from cache
+    total := c.hits + c.misses
+    if total == 0 {
+        return 0.0
+    }
+    return float64(c.hits) / float64(total) * 100
+    // => Returns percentage of requests served from cache
 }
 
 // Simulate expensive database query
 func fetchUserFromDB(userID int) map[string]interface{} {
-	time.Sleep(10 * time.Millisecond)
-	// => Simulate 10ms DB query latency
-	return map[string]interface{}{
-		"id":   userID,
-		"name": fmt.Sprintf("User%d", userID),
-		"role": "member",
-	}
-	// => Returns map["id":1 "name":"User1" "role":"member"]
+    time.Sleep(10 * time.Millisecond)
+    // => Simulate 10ms DB query latency
+    return map[string]interface{}{
+        "id":   userID,
+        "name": fmt.Sprintf("User%d", userID),
+        "role": "member",
+    }
+    // => Returns map["id":1 "name":"User1" "role":"member"]
 }
 
 func main() {
-	cache := newTTLCache(5 * time.Second)
-	// => Cache with 5-second TTL for this demo (use 300+ in production)
+    cache := newTTLCache(5 * time.Second)
+    // => Cache with 5-second TTL for this demo (use 300+ in production)
 
-	// First call — cold cache, must hit database
-	key := "user:1"
-	user, ok := cache.get(key)
-	// => user is nil, ok is false (cache miss)
-	if !ok {
-		user = fetchUserFromDB(1)
-		// => user is map["id":1 "name":"User1" "role":"member"]
-		cache.set(key, user)
-		// => Stored in cache; expires in 5 seconds
-	}
-	fmt.Printf("First call: %v\n", user) // => Output: First call: map[id:1 name:User1 role:member]
+    // First call — cold cache, must hit database
+    key := "user:1"
+    user, ok := cache.get(key)
+    // => user is nil, ok is false (cache miss)
+    if !ok {
+        user = fetchUserFromDB(1)
+        // => user is map["id":1 "name":"User1" "role":"member"]
+        cache.set(key, user)
+        // => Stored in cache; expires in 5 seconds
+    }
+    fmt.Printf("First call: %v\n", user) // => Output: First call: map[id:1 name:User1 role:member]
 
-	// Second call — warm cache, instant response from memory
-	user, _ = cache.get(key)
-	// => user is map["id":1 "name":"User1" "role":"member"] (cache hit)
-	fmt.Printf("Second call: %v\n", user) // => Output: Second call: map[id:1 name:User1 role:member]
+    // Second call — warm cache, instant response from memory
+    user, _ = cache.get(key)
+    // => user is map["id":1 "name":"User1" "role":"member"] (cache hit)
+    fmt.Printf("Second call: %v\n", user) // => Output: Second call: map[id:1 name:User1 role:member]
 
-	fmt.Printf("Cache hit rate: %.1f%%\n", cache.hitRate())
-	// => Output: Cache hit rate: 50.0% (1 hit / 2 total)
+    fmt.Printf("Cache hit rate: %.1f%%\n", cache.hitRate())
+    // => Output: Cache hit rate: 50.0% (1 hit / 2 total)
 
-	// Simulate TTL expiry
-	time.Sleep(6 * time.Second)
-	// => 6 seconds pass; TTL was 5 seconds so entry is now expired
+    // Simulate TTL expiry
+    time.Sleep(6 * time.Second)
+    // => 6 seconds pass; TTL was 5 seconds so entry is now expired
 
-	user, ok = cache.get(key)
-	// => user is nil, ok is false (cache miss: TTL expired, entry evicted)
-	fmt.Printf("After TTL: %v\n", user) // => Output: After TTL: <nil>
-	fmt.Printf("Cache hit rate: %.1f%%\n", cache.hitRate())
-	// => Output: Cache hit rate: 33.3% (1 hit / 3 total)
+    user, ok = cache.get(key)
+    // => user is nil, ok is false (cache miss: TTL expired, entry evicted)
+    fmt.Printf("After TTL: %v\n", user) // => Output: After TTL: <nil>
+    fmt.Printf("Cache hit rate: %.1f%%\n", cache.hitRate())
+    // => Output: Cache hit rate: 33.3% (1 hit / 3 total)
 }
 ```
 
@@ -1545,13 +1545,13 @@ Cache invalidation — deciding when and how to remove stale cache entries — i
 package main
 
 import (
-	"fmt"
-	"time"
+    "fmt"
+    "time"
 )
 
 // Shared in-memory storage (simulates database)
 var db = map[string]map[string]interface{}{
-	"product:1": {"name": "Widget", "price": 9.99, "stock": 100},
+    "product:1": {"name": "Widget", "price": 9.99, "stock": 100},
 }
 
 // ===========================================================================
@@ -1561,47 +1561,47 @@ var db = map[string]map[string]interface{}{
 // ===========================================================================
 
 type TTLStrategy struct {
-	cache map[string]struct {
-		value   map[string]interface{}
-		expires time.Time
-	}
-	ttl time.Duration
-	// => ttl is 5 seconds for this demo
+    cache map[string]struct {
+        value   map[string]interface{}
+        expires time.Time
+    }
+    ttl time.Duration
+    // => ttl is 5 seconds for this demo
 }
 
 func newTTLStrategy(ttl time.Duration) *TTLStrategy {
-	return &TTLStrategy{
-		cache: make(map[string]struct {
-			value   map[string]interface{}
-			expires time.Time
-		}),
-		ttl: ttl,
-	}
+    return &TTLStrategy{
+        cache: make(map[string]struct {
+            value   map[string]interface{}
+            expires time.Time
+        }),
+        ttl: ttl,
+    }
 }
 
 func (s *TTLStrategy) get(key string) (map[string]interface{}, bool) {
-	entry, ok := s.cache[key]
-	if ok && entry.expires.After(time.Now()) {
-		return entry.value, true
-		// => Cache hit: value still fresh
-	}
-	return nil, false
-	// => Cache miss: entry absent or expired
+    entry, ok := s.cache[key]
+    if ok && entry.expires.After(time.Now()) {
+        return entry.value, true
+        // => Cache hit: value still fresh
+    }
+    return nil, false
+    // => Cache miss: entry absent or expired
 }
 
 func (s *TTLStrategy) set(key string, value map[string]interface{}) {
-	s.cache[key] = struct {
-		value   map[string]interface{}
-		expires time.Time
-	}{value: value, expires: time.Now().Add(s.ttl)}
-	// => Entry expires at current time + TTL seconds
+    s.cache[key] = struct {
+        value   map[string]interface{}
+        expires time.Time
+    }{value: value, expires: time.Now().Add(s.ttl)}
+    // => Entry expires at current time + TTL seconds
 }
 
 func (s *TTLStrategy) updateDBAndCache(key string, value map[string]interface{}) {
-	db[key] = value
-	// => Write to "database"
-	// => Cache NOT updated here — entry expires naturally after TTL
-	// => During TTL window, cache serves stale data — ACCEPTABLE for non-critical reads
+    db[key] = value
+    // => Write to "database"
+    // => Cache NOT updated here — entry expires naturally after TTL
+    // => During TTL window, cache serves stale data — ACCEPTABLE for non-critical reads
 }
 
 // ===========================================================================
@@ -1611,25 +1611,25 @@ func (s *TTLStrategy) updateDBAndCache(key string, value map[string]interface{})
 // ===========================================================================
 
 type WriteThroughStrategy struct {
-	cache map[string]map[string]interface{}
+    cache map[string]map[string]interface{}
 }
 
 func newWriteThrough() *WriteThroughStrategy {
-	return &WriteThroughStrategy{cache: make(map[string]map[string]interface{})}
+    return &WriteThroughStrategy{cache: make(map[string]map[string]interface{})}
 }
 
 func (s *WriteThroughStrategy) get(key string) (map[string]interface{}, bool) {
-	v, ok := s.cache[key]
-	return v, ok
-	// => Always fresh because every write updates cache immediately
+    v, ok := s.cache[key]
+    return v, ok
+    // => Always fresh because every write updates cache immediately
 }
 
 func (s *WriteThroughStrategy) write(key string, value map[string]interface{}) {
-	db[key] = value
-	// => 1. Write to database first
-	s.cache[key] = value
-	// => 2. Then update cache — always consistent with DB
-	// => Trade-off: every write has both DB and cache latency
+    db[key] = value
+    // => 1. Write to database first
+    s.cache[key] = value
+    // => 2. Then update cache — always consistent with DB
+    // => Trade-off: every write has both DB and cache latency
 }
 
 // ===========================================================================
@@ -1639,80 +1639,80 @@ func (s *WriteThroughStrategy) write(key string, value map[string]interface{}) {
 // ===========================================================================
 
 type CacheAsideStrategy struct {
-	cache map[string]map[string]interface{}
+    cache map[string]map[string]interface{}
 }
 
 func newCacheAside() *CacheAsideStrategy {
-	return &CacheAsideStrategy{cache: make(map[string]map[string]interface{})}
+    return &CacheAsideStrategy{cache: make(map[string]map[string]interface{})}
 }
 
 func (s *CacheAsideStrategy) get(key string) map[string]interface{} {
-	if v, ok := s.cache[key]; ok {
-		return v
-		// => Cache hit
-	}
+    if v, ok := s.cache[key]; ok {
+        return v
+        // => Cache hit
+    }
 
-	value := db[key]
-	// => Cache miss: load from database
-	if value != nil {
-		s.cache[key] = value
-		// => Populate cache for future reads
-	}
-	return value
+    value := db[key]
+    // => Cache miss: load from database
+    if value != nil {
+        s.cache[key] = value
+        // => Populate cache for future reads
+    }
+    return value
 }
 
 func (s *CacheAsideStrategy) write(key string, value map[string]interface{}) {
-	db[key] = value
-	// => Write to database
-	delete(s.cache, key)
-	// => Invalidate cache entry — forces re-load on next read
-	// => Simpler than write-through but next read is slower (cache miss)
+    db[key] = value
+    // => Write to database
+    delete(s.cache, key)
+    // => Invalidate cache entry — forces re-load on next read
+    // => Simpler than write-through but next read is slower (cache miss)
 }
 
 func main() {
-	fmt.Println("=== TTL Strategy ===")
-	ttlCache := newTTLStrategy(3 * time.Second)
-	product := map[string]interface{}{"name": "Widget", "price": 9.99, "stock": 100}
-	ttlCache.set("product:1", product)
-	v, _ := ttlCache.get("product:1")
-	fmt.Printf("Read: %v\n", v)
-	// => Read: map[name:Widget price:9.99 stock:100]
+    fmt.Println("=== TTL Strategy ===")
+    ttlCache := newTTLStrategy(3 * time.Second)
+    product := map[string]interface{}{"name": "Widget", "price": 9.99, "stock": 100}
+    ttlCache.set("product:1", product)
+    v, _ := ttlCache.get("product:1")
+    fmt.Printf("Read: %v\n", v)
+    // => Read: map[name:Widget price:9.99 stock:100]
 
-	// Update price in DB without touching cache
-	db["product:1"]["price"] = 12.99
-	v, _ = ttlCache.get("product:1")
-	fmt.Printf("DB updated, cache still shows: %v\n", v)
-	// => DB updated, cache still shows: map[name:Widget price:9.99 stock:100]
-	// => Stale data for up to TTL seconds — acceptable for product listings
+    // Update price in DB without touching cache
+    db["product:1"]["price"] = 12.99
+    v, _ = ttlCache.get("product:1")
+    fmt.Printf("DB updated, cache still shows: %v\n", v)
+    // => DB updated, cache still shows: map[name:Widget price:9.99 stock:100]
+    // => Stale data for up to TTL seconds — acceptable for product listings
 
-	fmt.Println("\n=== Write-Through Strategy ===")
-	wtCache := newWriteThrough()
-	wtCache.write("product:1", map[string]interface{}{"name": "Widget", "price": 9.99, "stock": 100})
-	v, _ = wtCache.get("product:1")
-	fmt.Printf("Read: %v\n", v)
-	// => Read: map[name:Widget price:9.99 stock:100]
+    fmt.Println("\n=== Write-Through Strategy ===")
+    wtCache := newWriteThrough()
+    wtCache.write("product:1", map[string]interface{}{"name": "Widget", "price": 9.99, "stock": 100})
+    v, _ = wtCache.get("product:1")
+    fmt.Printf("Read: %v\n", v)
+    // => Read: map[name:Widget price:9.99 stock:100]
 
-	wtCache.write("product:1", map[string]interface{}{"name": "Widget", "price": 14.99, "stock": 95})
-	// => Writes to DB AND cache atomically
-	v, _ = wtCache.get("product:1")
-	fmt.Printf("After write: %v\n", v)
-	// => After write: map[name:Widget price:14.99 stock:95]  (always fresh)
+    wtCache.write("product:1", map[string]interface{}{"name": "Widget", "price": 14.99, "stock": 95})
+    // => Writes to DB AND cache atomically
+    v, _ = wtCache.get("product:1")
+    fmt.Printf("After write: %v\n", v)
+    // => After write: map[name:Widget price:14.99 stock:95]  (always fresh)
 
-	fmt.Println("\n=== Cache-Aside Strategy ===")
-	caCache := newCacheAside()
-	result := caCache.get("product:1")
-	fmt.Printf("First read (miss): %v\n", result)
-	// => First read (miss): map[name:Widget price:14.99 stock:95]
+    fmt.Println("\n=== Cache-Aside Strategy ===")
+    caCache := newCacheAside()
+    result := caCache.get("product:1")
+    fmt.Printf("First read (miss): %v\n", result)
+    // => First read (miss): map[name:Widget price:14.99 stock:95]
 
-	result = caCache.get("product:1")
-	fmt.Printf("Second read (hit): %v\n", result)
-	// => Second read (hit): map[name:Widget price:14.99 stock:95]
+    result = caCache.get("product:1")
+    fmt.Printf("Second read (hit): %v\n", result)
+    // => Second read (hit): map[name:Widget price:14.99 stock:95]
 
-	caCache.write("product:1", map[string]interface{}{"name": "Widget", "price": 16.99, "stock": 90})
-	// => DB updated; cache entry deleted
-	result = caCache.get("product:1")
-	fmt.Printf("After write+invalidate (miss then fresh): %v\n", result)
-	// => After write+invalidate (miss then fresh): map[name:Widget price:16.99 stock:90]
+    caCache.write("product:1", map[string]interface{}{"name": "Widget", "price": 16.99, "stock": 90})
+    // => DB updated; cache entry deleted
+    result = caCache.get("product:1")
+    fmt.Printf("After write+invalidate (miss then fresh): %v\n", result)
+    // => After write+invalidate (miss then fresh): map[name:Widget price:16.99 stock:90]
 }
 ```
 
@@ -1944,66 +1944,66 @@ ORDER BY o.created_at DESC;
 package main
 
 import (
-	"encoding/json"
-	"fmt"
+    "encoding/json"
+    "fmt"
 )
 
 func main() {
-	// MongoDB-style document for a single order
-	// All related data embedded in one document
-	orderDocument := map[string]interface{}{
-		"_id": "order_001",
-		// => MongoDB uses _id as primary key; can be any unique value
+    // MongoDB-style document for a single order
+    // All related data embedded in one document
+    orderDocument := map[string]interface{}{
+        "_id": "order_001",
+        // => MongoDB uses _id as primary key; can be any unique value
 
-		"customer": map[string]interface{}{
-			"id":    "user_123",
-			"name":  "Alice",
-			"email": "alice@example.com",
-			// => Customer data embedded (denormalized) — no JOIN needed
-			// => Trade-off: if Alice changes her email, must update ALL orders
-		},
+        "customer": map[string]interface{}{
+            "id":    "user_123",
+            "name":  "Alice",
+            "email": "alice@example.com",
+            // => Customer data embedded (denormalized) — no JOIN needed
+            // => Trade-off: if Alice changes her email, must update ALL orders
+        },
 
-		"items": []map[string]interface{}{
-			{
-				"product_id":      "prod_456",
-				"name":            "Widget Pro",
-				// => Product name embedded — no JOIN needed
-				// => Trade-off: if product is renamed, old orders show old name (may be desired)
-				"quantity":        2,
-				"unit_price_cents": 1299,
-			},
-			{
-				"product_id":      "prod_789",
-				"name":            "Gadget Plus",
-				"quantity":        1,
-				"unit_price_cents": 4999,
-			},
-		},
-		// => items is a slice embedded in the document — retrieved in single read
+        "items": []map[string]interface{}{
+            {
+                "product_id":      "prod_456",
+                "name":            "Widget Pro",
+                // => Product name embedded — no JOIN needed
+                // => Trade-off: if product is renamed, old orders show old name (may be desired)
+                "quantity":        2,
+                "unit_price_cents": 1299,
+            },
+            {
+                "product_id":      "prod_789",
+                "name":            "Gadget Plus",
+                "quantity":        1,
+                "unit_price_cents": 4999,
+            },
+        },
+        // => items is a slice embedded in the document — retrieved in single read
 
-		"status":      "paid",
-		"total_cents":  7597,
-		// => total_cents is 2*1299 + 4999 = 7597 (pre-computed, stored for fast retrieval)
-		"created_at":  "2026-03-20T10:00:00Z",
-	}
+        "status":      "paid",
+        "total_cents":  7597,
+        // => total_cents is 2*1299 + 4999 = 7597 (pre-computed, stored for fast retrieval)
+        "created_at":  "2026-03-20T10:00:00Z",
+    }
 
-	// Fetching the full order requires zero JOINs — one document read
-	// ORDER document contains everything: customer, items, prices
-	// => Faster reads; no JOIN overhead
-	data, _ := json.MarshalIndent(orderDocument, "", "  ")
-	fmt.Printf("NoSQL document:\n%s\n", string(data))
+    // Fetching the full order requires zero JOINs — one document read
+    // ORDER document contains everything: customer, items, prices
+    // => Faster reads; no JOIN overhead
+    data, _ := json.MarshalIndent(orderDocument, "", "  ")
+    fmt.Printf("NoSQL document:\n%s\n", string(data))
 
-	// When to use SQL:
-	// - Complex relationships requiring JOINs
-	// - Strong consistency and ACID transactions required
-	// - Schema is stable and well-understood
-	// - Reporting and analytics with ad-hoc queries
+    // When to use SQL:
+    // - Complex relationships requiring JOINs
+    // - Strong consistency and ACID transactions required
+    // - Schema is stable and well-understood
+    // - Reporting and analytics with ad-hoc queries
 
-	// When to use NoSQL (document):
-	// - Data naturally fits a document hierarchy
-	// - High write throughput; horizontal scaling needed
-	// - Schema evolves frequently during early product development
-	// - Read pattern always fetches the complete document
+    // When to use NoSQL (document):
+    // - Data naturally fits a document hierarchy
+    // - High write throughput; horizontal scaling needed
+    // - Schema evolves frequently during early product development
+    // - Read pattern always fetches the complete document
 }
 ```
 
@@ -2174,96 +2174,96 @@ Vertical scaling (scale up) increases the capacity of a single server by adding 
 package main
 
 import (
-	"fmt"
-	"math"
-	"runtime"
-	"sync"
-	"time"
+    "fmt"
+    "math"
+    "runtime"
+    "sync"
+    "time"
 )
 
 func cpuBoundTask(n int) float64 {
-	// => Simulates a CPU-intensive operation (e.g., image processing, ML inference)
-	var result float64
-	for i := 0; i < n; i++ {
-		result += math.Sqrt(float64(i))
-	}
-	// => Computes square root of integers 0..n-1 and sums them
-	// => This is intentionally CPU-bound: no I/O waits
-	return result
+    // => Simulates a CPU-intensive operation (e.g., image processing, ML inference)
+    var result float64
+    for i := 0; i < n; i++ {
+        result += math.Sqrt(float64(i))
+    }
+    // => Computes square root of integers 0..n-1 and sums them
+    // => This is intentionally CPU-bound: no I/O waits
+    return result
 }
 
 func benchmarkWorkers(numWorkers, tasksPerBatch, workSize int) (float64, float64) {
-	// => Simulates a server with numWorkers CPU cores available
-	start := time.Now()
+    // => Simulates a server with numWorkers CPU cores available
+    start := time.Now()
 
-	var wg sync.WaitGroup
-	sem := make(chan struct{}, numWorkers)
-	// => Semaphore channel limits concurrency to numWorkers goroutines
-	// => Equivalent to having numWorkers CPU cores available on the server
+    var wg sync.WaitGroup
+    sem := make(chan struct{}, numWorkers)
+    // => Semaphore channel limits concurrency to numWorkers goroutines
+    // => Equivalent to having numWorkers CPU cores available on the server
 
-	for i := 0; i < tasksPerBatch; i++ {
-		wg.Add(1)
-		sem <- struct{}{} // => Acquire slot (blocks if numWorkers goroutines active)
-		go func() {
-			defer wg.Done()
-			defer func() { <-sem }() // => Release slot
-			cpuBoundTask(workSize)
-		}()
-	}
-	// => Submits tasksPerBatch tasks to the worker pool
+    for i := 0; i < tasksPerBatch; i++ {
+        wg.Add(1)
+        sem <- struct{}{} // => Acquire slot (blocks if numWorkers goroutines active)
+        go func() {
+            defer wg.Done()
+            defer func() { <-sem }() // => Release slot
+            cpuBoundTask(workSize)
+        }()
+    }
+    // => Submits tasksPerBatch tasks to the worker pool
 
-	wg.Wait()
-	// => Waits for all tasks to complete
+    wg.Wait()
+    // => Waits for all tasks to complete
 
-	elapsed := time.Since(start).Seconds()
-	throughput := float64(tasksPerBatch) / elapsed
-	// => throughput is tasks completed per second
-	return elapsed, throughput
+    elapsed := time.Since(start).Seconds()
+    throughput := float64(tasksPerBatch) / elapsed
+    // => throughput is tasks completed per second
+    return elapsed, throughput
 }
 
 func main() {
-	runtime.GOMAXPROCS(runtime.NumCPU())
+    runtime.GOMAXPROCS(runtime.NumCPU())
 
-	fmt.Println("=== Vertical Scaling Simulation ===")
-	fmt.Println("(Increasing CPU cores on a single server)\n")
+    fmt.Println("=== Vertical Scaling Simulation ===")
+    fmt.Println("(Increasing CPU cores on a single server)\n")
 
-	configs := []struct {
-		cores int
-		label string
-	}{
-		{1, "Small instance (1 core)"},
-		{2, "Medium instance (2 cores)"},
-		{4, "Large instance (4 cores)"},
-	}
-	// => Each config represents a different EC2/VM size
+    configs := []struct {
+        cores int
+        label string
+    }{
+        {1, "Small instance (1 core)"},
+        {2, "Medium instance (2 cores)"},
+        {4, "Large instance (4 cores)"},
+    }
+    // => Each config represents a different EC2/VM size
 
-	var baselineThroughput float64
-	for _, cfg := range configs {
-		elapsed, throughput := benchmarkWorkers(cfg.cores, 8, 100_000)
-		// => elapsed decreases as cores increase (parallel execution)
-		var speedup float64
-		if baselineThroughput == 0 {
-			baselineThroughput = throughput
-			speedup = 1.0
-		} else {
-			speedup = throughput / baselineThroughput
-			// => speedup is how much faster vs 1-core baseline
-		}
+    var baselineThroughput float64
+    for _, cfg := range configs {
+        elapsed, throughput := benchmarkWorkers(cfg.cores, 8, 100_000)
+        // => elapsed decreases as cores increase (parallel execution)
+        var speedup float64
+        if baselineThroughput == 0 {
+            baselineThroughput = throughput
+            speedup = 1.0
+        } else {
+            speedup = throughput / baselineThroughput
+            // => speedup is how much faster vs 1-core baseline
+        }
 
-		fmt.Printf("%s:\n", cfg.label)
-		fmt.Printf("  Time: %.2fs | Throughput: %.1f tasks/s | Speedup: %.1fx\n", elapsed, throughput, speedup)
-		// => Example output:
-		// => Small instance (1 core):  Time: 2.40s | Throughput: 3.3 tasks/s  | Speedup: 1.0x
-		// => Medium instance (2 cores): Time: 1.25s | Throughput: 6.4 tasks/s  | Speedup: 1.9x
-		// => Large instance (4 cores):  Time: 0.68s | Throughput: 11.8 tasks/s | Speedup: 3.6x
-	}
+        fmt.Printf("%s:\n", cfg.label)
+        fmt.Printf("  Time: %.2fs | Throughput: %.1f tasks/s | Speedup: %.1fx\n", elapsed, throughput, speedup)
+        // => Example output:
+        // => Small instance (1 core):  Time: 2.40s | Throughput: 3.3 tasks/s  | Speedup: 1.0x
+        // => Medium instance (2 cores): Time: 1.25s | Throughput: 6.4 tasks/s  | Speedup: 1.9x
+        // => Large instance (4 cores):  Time: 0.68s | Throughput: 11.8 tasks/s | Speedup: 3.6x
+    }
 
-	// Vertical scaling limits:
-	// => Linear improvement up to core count; diminishing returns beyond single-machine limits
-	// => Maximum: largest available instance (e.g., AWS c7i.metal = 192 vCPUs, 384 GB RAM)
-	// => Cost: exponential — 2x cores often costs 2x+ (larger instances are premium-priced)
-	// => Downtime: resizing a VM requires restart — brief downtime during scale events
-	// => Single point of failure: one large server is more dangerous than many small ones
+    // Vertical scaling limits:
+    // => Linear improvement up to core count; diminishing returns beyond single-machine limits
+    // => Maximum: largest available instance (e.g., AWS c7i.metal = 192 vCPUs, 384 GB RAM)
+    // => Cost: exponential — 2x cores often costs 2x+ (larger instances are premium-priced)
+    // => Downtime: resizing a VM requires restart — brief downtime during scale events
+    // => Single point of failure: one large server is more dangerous than many small ones
 }
 ```
 
@@ -2389,119 +2389,119 @@ graph TD
 package main
 
 import (
-	"fmt"
-	"sync"
+    "fmt"
+    "sync"
 )
 
 type StatelessServer struct {
-	// => Each server is identical and holds NO local state
-	// => Any request can be routed to any server instance
-	ServerID        string
-	RequestsHandled int
+    // => Each server is identical and holds NO local state
+    // => Any request can be routed to any server instance
+    ServerID        string
+    RequestsHandled int
 }
 
 func (s *StatelessServer) handle(request map[string]string) map[string]string {
-	// => Processes request using only data in the request itself
-	// => NO reference to session storage or any instance-level state
-	s.RequestsHandled++
+    // => Processes request using only data in the request itself
+    // => NO reference to session storage or any instance-level state
+    s.RequestsHandled++
 
-	return map[string]string{
-		"server":  s.ServerID,
-		"user_id": request["user_id"],
-		"data":    fmt.Sprintf("Processed by %s: %s", s.ServerID, request["payload"]),
-	}
-	// => Result is deterministic: same input on ANY server => same output
+    return map[string]string{
+        "server":  s.ServerID,
+        "user_id": request["user_id"],
+        "data":    fmt.Sprintf("Processed by %s: %s", s.ServerID, request["payload"]),
+    }
+    // => Result is deterministic: same input on ANY server => same output
 }
 
 type SharedDatabase struct {
-	// => Persistent state lives in shared DB, NOT individual servers
-	// => All servers read/write the same database
-	sessions map[string]string
-	mu       sync.Mutex
+    // => Persistent state lives in shared DB, NOT individual servers
+    // => All servers read/write the same database
+    sessions map[string]string
+    mu       sync.Mutex
 }
 
 func (db *SharedDatabase) saveSession(userID, sessionData string) {
-	db.mu.Lock()
-	defer db.mu.Unlock()
-	db.sessions[userID] = sessionData
-	// => Stored centrally — any server can read it
+    db.mu.Lock()
+    defer db.mu.Unlock()
+    db.sessions[userID] = sessionData
+    // => Stored centrally — any server can read it
 }
 
 func (db *SharedDatabase) getSession(userID string) string {
-	db.mu.Lock()
-	defer db.mu.Unlock()
-	return db.sessions[userID]
-	// => Any server retrieves the same session data
+    db.mu.Lock()
+    defer db.mu.Unlock()
+    return db.sessions[userID]
+    // => Any server retrieves the same session data
 }
 
 type HorizontalCluster struct {
-	servers       []*StatelessServer
-	db            *SharedDatabase
-	roundRobinIdx int
-	// => Simple round-robin routing
+    servers       []*StatelessServer
+    db            *SharedDatabase
+    roundRobinIdx int
+    // => Simple round-robin routing
 }
 
 func newCluster(numServers int) *HorizontalCluster {
-	servers := make([]*StatelessServer, numServers)
-	for i := range servers {
-		servers[i] = &StatelessServer{ServerID: fmt.Sprintf("server-%d", i+1)}
-	}
-	// => Creates numServers identical server instances
-	return &HorizontalCluster{
-		servers: servers,
-		db:      &SharedDatabase{sessions: make(map[string]string)},
-	}
+    servers := make([]*StatelessServer, numServers)
+    for i := range servers {
+        servers[i] = &StatelessServer{ServerID: fmt.Sprintf("server-%d", i+1)}
+    }
+    // => Creates numServers identical server instances
+    return &HorizontalCluster{
+        servers: servers,
+        db:      &SharedDatabase{sessions: make(map[string]string)},
+    }
 }
 
 func (c *HorizontalCluster) addServer() {
-	// => Horizontal scaling: add a new server to the cluster
-	newID := fmt.Sprintf("server-%d", len(c.servers)+1)
-	c.servers = append(c.servers, &StatelessServer{ServerID: newID})
-	fmt.Printf("Scaled out: added %s (total: %d servers)\n", newID, len(c.servers))
-	// => New server is immediately ready to handle requests
-	// => No state migration needed: servers are stateless
+    // => Horizontal scaling: add a new server to the cluster
+    newID := fmt.Sprintf("server-%d", len(c.servers)+1)
+    c.servers = append(c.servers, &StatelessServer{ServerID: newID})
+    fmt.Printf("Scaled out: added %s (total: %d servers)\n", newID, len(c.servers))
+    // => New server is immediately ready to handle requests
+    // => No state migration needed: servers are stateless
 }
 
 func (c *HorizontalCluster) routeRequest(request map[string]string) map[string]string {
-	server := c.servers[c.roundRobinIdx%len(c.servers)]
-	// => Route to next server in rotation
-	c.roundRobinIdx++
-	return server.handle(request)
+    server := c.servers[c.roundRobinIdx%len(c.servers)]
+    // => Route to next server in rotation
+    c.roundRobinIdx++
+    return server.handle(request)
 }
 
 func main() {
-	cluster := newCluster(2)
-	// => Cluster starts with 2 servers
+    cluster := newCluster(2)
+    // => Cluster starts with 2 servers
 
-	// Send 4 requests
-	for i := 0; i < 4; i++ {
-		req := map[string]string{
-			"user_id": fmt.Sprintf("user_%d", i),
-			"payload": fmt.Sprintf("data_%d", i),
-		}
-		result := cluster.routeRequest(req)
-		fmt.Printf("Request %d: handled by %s\n", i, result["server"])
-		// => Request 0: handled by server-1
-		// => Request 1: handled by server-2
-		// => Request 2: handled by server-1
-		// => Request 3: handled by server-2
-	}
+    // Send 4 requests
+    for i := 0; i < 4; i++ {
+        req := map[string]string{
+            "user_id": fmt.Sprintf("user_%d", i),
+            "payload": fmt.Sprintf("data_%d", i),
+        }
+        result := cluster.routeRequest(req)
+        fmt.Printf("Request %d: handled by %s\n", i, result["server"])
+        // => Request 0: handled by server-1
+        // => Request 1: handled by server-2
+        // => Request 2: handled by server-1
+        // => Request 3: handled by server-2
+    }
 
-	// Scale out: add a third server under load
-	cluster.addServer()
-	// => Output: Scaled out: added server-3 (total: 3 servers)
+    // Scale out: add a third server under load
+    cluster.addServer()
+    // => Output: Scaled out: added server-3 (total: 3 servers)
 
-	result := cluster.routeRequest(map[string]string{"user_id": "user_4", "payload": "data_4"})
-	fmt.Printf("After scale-out: %s\n", result["server"])
-	// => After scale-out: server-3 (new server immediately takes traffic)
+    result := cluster.routeRequest(map[string]string{"user_id": "user_4", "payload": "data_4"})
+    fmt.Printf("After scale-out: %s\n", result["server"])
+    // => After scale-out: server-3 (new server immediately takes traffic)
 
-	fmt.Println("\nRequest counts:")
-	for _, s := range cluster.servers {
-		fmt.Printf("  %s: %d requests\n", s.ServerID, s.RequestsHandled)
-	}
-	// => server-1: 2 requests
-	// => server-2: 2 requests
-	// => server-3: 1 request (joined mid-stream)
+    fmt.Println("\nRequest counts:")
+    for _, s := range cluster.servers {
+        fmt.Printf("  %s: %d requests\n", s.ServerID, s.RequestsHandled)
+    }
+    // => server-1: 2 requests
+    // => server-2: 2 requests
+    // => server-3: 1 request (joined mid-stream)
 }
 ```
 
@@ -2630,14 +2630,14 @@ A stateless service holds no session data between requests — every request con
 package main
 
 import (
-	"crypto/hmac"
-	"crypto/md5"
-	"crypto/sha256"
-	"encoding/base64"
-	"encoding/hex"
-	"encoding/json"
-	"fmt"
-	"time"
+    "crypto/hmac"
+    "crypto/md5"
+    "crypto/sha256"
+    "encoding/base64"
+    "encoding/hex"
+    "encoding/json"
+    "fmt"
+    "time"
 )
 
 // ===========================================================================
@@ -2646,46 +2646,46 @@ import (
 // ===========================================================================
 
 type StatefulAuthServer struct {
-	serverID string
-	sessions map[string]map[string]interface{}
-	// => Sessions stored in THIS server's memory
-	// => If request hits a DIFFERENT server, session is not found
+    serverID string
+    sessions map[string]map[string]interface{}
+    // => Sessions stored in THIS server's memory
+    // => If request hits a DIFFERENT server, session is not found
 }
 
 func newStatefulServer(id string) *StatefulAuthServer {
-	return &StatefulAuthServer{
-		serverID: id,
-		sessions: make(map[string]map[string]interface{}),
-	}
+    return &StatefulAuthServer{
+        serverID: id,
+        sessions: make(map[string]map[string]interface{}),
+    }
 }
 
 func (s *StatefulAuthServer) login(username, password string) map[string]string {
-	// => Validates credentials and creates server-side session
-	if password == "secret" {
-		hash := md5.Sum([]byte(fmt.Sprintf("%s%d", username, time.Now().UnixNano())))
-		sessionID := hex.EncodeToString(hash[:])
-		// => sessionID is a random 32-char hex string: "a1b2c3..."
-		s.sessions[sessionID] = map[string]interface{}{
-			"username": username,
-			"expires":  time.Now().Add(time.Hour).Unix(),
-		}
-		// => Session stored in server memory — not in DB, not shared
-		return map[string]string{"session_id": sessionID}
-	}
-	return map[string]string{"error": "Invalid credentials"}
+    // => Validates credentials and creates server-side session
+    if password == "secret" {
+        hash := md5.Sum([]byte(fmt.Sprintf("%s%d", username, time.Now().UnixNano())))
+        sessionID := hex.EncodeToString(hash[:])
+        // => sessionID is a random 32-char hex string: "a1b2c3..."
+        s.sessions[sessionID] = map[string]interface{}{
+            "username": username,
+            "expires":  time.Now().Add(time.Hour).Unix(),
+        }
+        // => Session stored in server memory — not in DB, not shared
+        return map[string]string{"session_id": sessionID}
+    }
+    return map[string]string{"error": "Invalid credentials"}
 }
 
 func (s *StatefulAuthServer) getProfile(sessionID string) map[string]string {
-	session, ok := s.sessions[sessionID]
-	// => Lookup in THIS server's memory
-	if !ok {
-		return map[string]string{"error": "Session not found — wrong server? Session expired?"}
-		// => PROBLEM: if load balancer routes to a different server, this fails
-	}
-	return map[string]string{
-		"username": session["username"].(string),
-		"server":   s.serverID,
-	}
+    session, ok := s.sessions[sessionID]
+    // => Lookup in THIS server's memory
+    if !ok {
+        return map[string]string{"error": "Session not found — wrong server? Session expired?"}
+        // => PROBLEM: if load balancer routes to a different server, this fails
+    }
+    return map[string]string{
+        "username": session["username"].(string),
+        "server":   s.serverID,
+    }
 }
 
 // ===========================================================================
@@ -2696,98 +2696,98 @@ func (s *StatefulAuthServer) getProfile(sessionID string) map[string]string {
 var secretKey = []byte("super-secret-key-never-hardcode-in-real-code")
 
 func createToken(username string) string {
-	payload, _ := json.Marshal(map[string]interface{}{
-		"username": username,
-		"exp":      time.Now().Add(time.Hour).Unix(),
-	})
-	// => payload is '{"username":"alice","exp":1742000000}'
-	b64Payload := base64.StdEncoding.EncodeToString(payload)
-	// => b64Payload is base64-encoded payload string
+    payload, _ := json.Marshal(map[string]interface{}{
+        "username": username,
+        "exp":      time.Now().Add(time.Hour).Unix(),
+    })
+    // => payload is '{"username":"alice","exp":1742000000}'
+    b64Payload := base64.StdEncoding.EncodeToString(payload)
+    // => b64Payload is base64-encoded payload string
 
-	mac := hmac.New(sha256.New, secretKey)
-	mac.Write([]byte(b64Payload))
-	signature := hex.EncodeToString(mac.Sum(nil))
-	// => signature is HMAC-SHA256 hash: prevents tampering without secret key
+    mac := hmac.New(sha256.New, secretKey)
+    mac.Write([]byte(b64Payload))
+    signature := hex.EncodeToString(mac.Sum(nil))
+    // => signature is HMAC-SHA256 hash: prevents tampering without secret key
 
-	return b64Payload + "." + signature
-	// => Token format: "base64payload.signature"
-	// => Contains user info — no server-side storage required
+    return b64Payload + "." + signature
+    // => Token format: "base64payload.signature"
+    // => Contains user info — no server-side storage required
 }
 
 func verifyToken(token string) (map[string]interface{}, string) {
-	parts := splitToken(token)
-	if len(parts) != 2 {
-		return nil, "Invalid token format"
-	}
+    parts := splitToken(token)
+    if len(parts) != 2 {
+        return nil, "Invalid token format"
+    }
 
-	b64Payload, signature := parts[0], parts[1]
-	mac := hmac.New(sha256.New, secretKey)
-	mac.Write([]byte(b64Payload))
-	expectedSig := hex.EncodeToString(mac.Sum(nil))
-	// => Recompute signature with the same secret key
+    b64Payload, signature := parts[0], parts[1]
+    mac := hmac.New(sha256.New, secretKey)
+    mac.Write([]byte(b64Payload))
+    expectedSig := hex.EncodeToString(mac.Sum(nil))
+    // => Recompute signature with the same secret key
 
-	if signature != expectedSig {
-		return nil, "Invalid signature — token tampered!"
-		// => Detects token forgery or corruption
-	}
+    if signature != expectedSig {
+        return nil, "Invalid signature — token tampered!"
+        // => Detects token forgery or corruption
+    }
 
-	decoded, _ := base64.StdEncoding.DecodeString(b64Payload)
-	var payload map[string]interface{}
-	json.Unmarshal(decoded, &payload)
-	// => Decode and parse the payload embedded in the token
+    decoded, _ := base64.StdEncoding.DecodeString(b64Payload)
+    var payload map[string]interface{}
+    json.Unmarshal(decoded, &payload)
+    // => Decode and parse the payload embedded in the token
 
-	if int64(payload["exp"].(float64)) < time.Now().Unix() {
-		return nil, "Token expired"
-	}
+    if int64(payload["exp"].(float64)) < time.Now().Unix() {
+        return nil, "Token expired"
+    }
 
-	return payload, ""
-	// => Returns (payload_map, "") on success; (nil, error_str) on failure
+    return payload, ""
+    // => Returns (payload_map, "") on success; (nil, error_str) on failure
 }
 
 func splitToken(token string) []string {
-	for i, c := range token {
-		if c == '.' {
-			return []string{token[:i], token[i+1:]}
-		}
-	}
-	return []string{token}
+    for i, c := range token {
+        if c == '.' {
+            return []string{token[:i], token[i+1:]}
+        }
+    }
+    return []string{token}
 }
 
 func main() {
-	// Demonstrate stateful problem: session tied to one server
-	serverA := newStatefulServer("server-A")
-	serverB := newStatefulServer("server-B")
+    // Demonstrate stateful problem: session tied to one server
+    serverA := newStatefulServer("server-A")
+    serverB := newStatefulServer("server-B")
 
-	loginResult := serverA.login("alice", "secret")
-	sessionID := loginResult["session_id"]
-	// => sessionID is stored only in server-A's memory
+    loginResult := serverA.login("alice", "secret")
+    sessionID := loginResult["session_id"]
+    // => sessionID is stored only in server-A's memory
 
-	profileOnA := serverA.getProfile(sessionID)
-	fmt.Printf("Profile on A: %v\n", profileOnA)
-	// => Profile on A: map[server:server-A username:alice]  (works)
+    profileOnA := serverA.getProfile(sessionID)
+    fmt.Printf("Profile on A: %v\n", profileOnA)
+    // => Profile on A: map[server:server-A username:alice]  (works)
 
-	profileOnB := serverB.getProfile(sessionID)
-	fmt.Printf("Profile on B: %v\n", profileOnB)
-	// => Profile on B: map[error:Session not found — wrong server? Session expired?]
-	// => FAILS: session exists in A but not in B — horizontal scaling broken!
+    profileOnB := serverB.getProfile(sessionID)
+    fmt.Printf("Profile on B: %v\n", profileOnB)
+    // => Profile on B: map[error:Session not found — wrong server? Session expired?]
+    // => FAILS: session exists in A but not in B — horizontal scaling broken!
 
-	// Demonstrate stateless: any server can validate any token
-	token := createToken("alice")
-	// => token is "eyJ1c2VybmFtZS....<signature>"
+    // Demonstrate stateless: any server can validate any token
+    token := createToken("alice")
+    // => token is "eyJ1c2VybmFtZS....<signature>"
 
-	// Any server validates by checking signature — no shared state needed
-	for _, serverID := range []string{"server-A", "server-B", "server-C"} {
-		payload, err := verifyToken(token)
-		if err != "" {
-			fmt.Printf("%s: %s\n", serverID, err)
-		} else {
-			fmt.Printf("%s: valid token for '%s'\n", serverID, payload["username"])
-			// => server-A: valid token for 'alice'
-			// => server-B: valid token for 'alice'
-			// => server-C: valid token for 'alice'
-			// => ALL servers can validate — no session lookup, no sticky routing
-		}
-	}
+    // Any server validates by checking signature — no shared state needed
+    for _, serverID := range []string{"server-A", "server-B", "server-C"} {
+        payload, err := verifyToken(token)
+        if err != "" {
+            fmt.Printf("%s: %s\n", serverID, err)
+        } else {
+            fmt.Printf("%s: valid token for '%s'\n", serverID, payload["username"])
+            // => server-A: valid token for 'alice'
+            // => server-B: valid token for 'alice'
+            // => server-C: valid token for 'alice'
+            // => ALL servers can validate — no session lookup, no sticky routing
+        }
+    }
 }
 ```
 
@@ -2940,128 +2940,128 @@ A forward proxy sits between clients and the internet, acting on behalf of the c
 package main
 
 import (
-	"fmt"
-	"strings"
+    "fmt"
+    "strings"
 )
 
 type ForwardProxy struct {
-	// => Sits between clients and external internet
-	// => Client configures its HTTP_PROXY setting to route through this proxy
-	// => External servers see proxy IP, not client IP
+    // => Sits between clients and external internet
+    // => Client configures its HTTP_PROXY setting to route through this proxy
+    // => External servers see proxy IP, not client IP
 
-	blocklist map[string]bool
-	// => Set of domains the proxy refuses to forward
-	// => Used for content filtering (corporate policy, parental controls)
+    blocklist map[string]bool
+    // => Set of domains the proxy refuses to forward
+    // => Used for content filtering (corporate policy, parental controls)
 
-	cache map[string]string
-	// => Proxy-level cache: shared across all clients behind this proxy
-	// => Multiple clients requesting same URL served from cache
+    cache map[string]string
+    // => Proxy-level cache: shared across all clients behind this proxy
+    // => Multiple clients requesting same URL served from cache
 
-	requestLog []map[string]string
-	// => Audit log: tracks all outbound requests for compliance
+    requestLog []map[string]string
+    // => Audit log: tracks all outbound requests for compliance
 }
 
 func newForwardProxy() *ForwardProxy {
-	return &ForwardProxy{
-		blocklist: map[string]bool{
-			"malware.example.com":  true,
-			"ads.tracker.example":  true,
-		},
-		cache:      make(map[string]string),
-		requestLog: nil,
-	}
+    return &ForwardProxy{
+        blocklist: map[string]bool{
+            "malware.example.com":  true,
+            "ads.tracker.example":  true,
+        },
+        cache:      make(map[string]string),
+        requestLog: nil,
+    }
 }
 
 func (p *ForwardProxy) handleRequest(clientIP, method, url string) map[string]interface{} {
-	// Extract domain from URL
-	domain := url
-	if idx := strings.Index(url, "://"); idx >= 0 {
-		domain = url[idx+3:]
-	}
-	if idx := strings.Index(domain, "/"); idx >= 0 {
-		domain = domain[:idx]
-	}
-	// => Extracts domain from URL e.g., "https://api.example.com/data" => "api.example.com"
+    // Extract domain from URL
+    domain := url
+    if idx := strings.Index(url, "://"); idx >= 0 {
+        domain = url[idx+3:]
+    }
+    if idx := strings.Index(domain, "/"); idx >= 0 {
+        domain = domain[:idx]
+    }
+    // => Extracts domain from URL e.g., "https://api.example.com/data" => "api.example.com"
 
-	// Step 1: Log the request (audit trail)
-	p.requestLog = append(p.requestLog, map[string]string{
-		"client": clientIP,
-		"method": method,
-		"url":    url,
-		"domain": domain,
-	})
-	// => Every request logged regardless of outcome
+    // Step 1: Log the request (audit trail)
+    p.requestLog = append(p.requestLog, map[string]string{
+        "client": clientIP,
+        "method": method,
+        "url":    url,
+        "domain": domain,
+    })
+    // => Every request logged regardless of outcome
 
-	// Step 2: Check blocklist (content filtering)
-	if p.blocklist[domain] {
-		fmt.Printf("[BLOCKED] %s -> %s\n", clientIP, url)
-		return map[string]interface{}{
-			"status": 403,
-			"body":   "Access denied by proxy policy",
-		}
-		// => 403 Forbidden: proxy refuses to forward this request
-		// => Client sees 403; external server never sees the request
-	}
+    // Step 2: Check blocklist (content filtering)
+    if p.blocklist[domain] {
+        fmt.Printf("[BLOCKED] %s -> %s\n", clientIP, url)
+        return map[string]interface{}{
+            "status": 403,
+            "body":   "Access denied by proxy policy",
+        }
+        // => 403 Forbidden: proxy refuses to forward this request
+        // => Client sees 403; external server never sees the request
+    }
 
-	// Step 3: Check proxy cache (bandwidth saving)
-	if method == "GET" {
-		if cached, ok := p.cache[url]; ok {
-			fmt.Printf("[CACHE HIT] %s -> %s\n", clientIP, url)
-			return map[string]interface{}{
-				"status":     200,
-				"body":       cached,
-				"from_cache": true,
-			}
-			// => Served from proxy cache: no bandwidth to external server
-		}
-	}
+    // Step 3: Check proxy cache (bandwidth saving)
+    if method == "GET" {
+        if cached, ok := p.cache[url]; ok {
+            fmt.Printf("[CACHE HIT] %s -> %s\n", clientIP, url)
+            return map[string]interface{}{
+                "status":     200,
+                "body":       cached,
+                "from_cache": true,
+            }
+            // => Served from proxy cache: no bandwidth to external server
+        }
+    }
 
-	// Step 4: Forward to external server
-	fmt.Printf("[FORWARD] %s -> %s\n", clientIP, url)
-	// => In a real proxy: open TCP connection to domain, forward request
-	// => External server sees proxy's IP, not clientIP
-	responseBody := fmt.Sprintf("Response from %s", domain)
-	// => Simulated response from external server
+    // Step 4: Forward to external server
+    fmt.Printf("[FORWARD] %s -> %s\n", clientIP, url)
+    // => In a real proxy: open TCP connection to domain, forward request
+    // => External server sees proxy's IP, not clientIP
+    responseBody := fmt.Sprintf("Response from %s", domain)
+    // => Simulated response from external server
 
-	// Step 5: Cache GET responses
-	if method == "GET" {
-		p.cache[url] = responseBody
-		// => Cache response for future requests to same URL
-	}
+    // Step 5: Cache GET responses
+    if method == "GET" {
+        p.cache[url] = responseBody
+        // => Cache response for future requests to same URL
+    }
 
-	return map[string]interface{}{
-		"status": 200,
-		"body":   responseBody,
-	}
+    return map[string]interface{}{
+        "status": 200,
+        "body":   responseBody,
+    }
 }
 
 func main() {
-	proxy := newForwardProxy()
+    proxy := newForwardProxy()
 
-	// Client 1 requests a legitimate site
-	r1 := proxy.handleRequest("192.168.1.10", "GET", "https://api.example.com/data")
-	// => [FORWARD] 192.168.1.10 -> https://api.example.com/data
-	fmt.Printf("Response: %v - %v\n", r1["status"], r1["body"])
-	// => Response: 200 - Response from api.example.com
+    // Client 1 requests a legitimate site
+    r1 := proxy.handleRequest("192.168.1.10", "GET", "https://api.example.com/data")
+    // => [FORWARD] 192.168.1.10 -> https://api.example.com/data
+    fmt.Printf("Response: %v - %v\n", r1["status"], r1["body"])
+    // => Response: 200 - Response from api.example.com
 
-	// Client 2 requests the same URL — served from proxy cache
-	r2 := proxy.handleRequest("192.168.1.11", "GET", "https://api.example.com/data")
-	// => [CACHE HIT] 192.168.1.11 -> https://api.example.com/data
-	fromCache := false
-	if v, ok := r2["from_cache"]; ok {
-		fromCache = v.(bool)
-	}
-	fmt.Printf("Response: %v - cached=%v\n", r2["status"], fromCache)
-	// => Response: 200 - cached=true  (no external request made)
+    // Client 2 requests the same URL — served from proxy cache
+    r2 := proxy.handleRequest("192.168.1.11", "GET", "https://api.example.com/data")
+    // => [CACHE HIT] 192.168.1.11 -> https://api.example.com/data
+    fromCache := false
+    if v, ok := r2["from_cache"]; ok {
+        fromCache = v.(bool)
+    }
+    fmt.Printf("Response: %v - cached=%v\n", r2["status"], fromCache)
+    // => Response: 200 - cached=true  (no external request made)
 
-	// Client tries blocked domain
-	r3 := proxy.handleRequest("192.168.1.10", "GET", "https://malware.example.com/file")
-	// => [BLOCKED] 192.168.1.10 -> https://malware.example.com/file
-	fmt.Printf("Response: %v - %v\n", r3["status"], r3["body"])
-	// => Response: 403 - Access denied by proxy policy
+    // Client tries blocked domain
+    r3 := proxy.handleRequest("192.168.1.10", "GET", "https://malware.example.com/file")
+    // => [BLOCKED] 192.168.1.10 -> https://malware.example.com/file
+    fmt.Printf("Response: %v - %v\n", r3["status"], r3["body"])
+    // => Response: 403 - Access denied by proxy policy
 
-	fmt.Printf("\nAudit log: %d entries\n", len(proxy.requestLog))
-	// => Audit log: 3 entries  (all requests logged including blocked ones)
+    fmt.Printf("\nAudit log: %d entries\n", len(proxy.requestLog))
+    // => Audit log: 3 entries  (all requests logged including blocked ones)
 }
 ```
 
@@ -3199,120 +3199,120 @@ graph LR
 package main
 
 import (
-	"fmt"
-	"strings"
+    "fmt"
+    "strings"
 )
 
 type BackendService struct {
-	Name string
-	Port int
-	// => Each backend service runs on a private port (not exposed publicly)
+    Name string
+    Port int
+    // => Each backend service runs on a private port (not exposed publicly)
 }
 
 func (b *BackendService) handle(path string, headers map[string]string) map[string]interface{} {
-	// => Simulates handling a proxied request
-	clientIP := headers["X-Forwarded-For"]
-	if clientIP == "" {
-		clientIP = "unknown"
-	}
-	// => Reverse proxy adds X-Forwarded-For header with original client IP
-	// => Backend sees proxy IP at TCP level but real IP in header
-	return map[string]interface{}{
-		"service":   b.Name,
-		"port":      b.Port,
-		"path":      path,
-		"client_ip": clientIP,
-		"body":      fmt.Sprintf("Hello from %s at %s", b.Name, path),
-	}
+    // => Simulates handling a proxied request
+    clientIP := headers["X-Forwarded-For"]
+    if clientIP == "" {
+        clientIP = "unknown"
+    }
+    // => Reverse proxy adds X-Forwarded-For header with original client IP
+    // => Backend sees proxy IP at TCP level but real IP in header
+    return map[string]interface{}{
+        "service":   b.Name,
+        "port":      b.Port,
+        "path":      path,
+        "client_ip": clientIP,
+        "body":      fmt.Sprintf("Hello from %s at %s", b.Name, path),
+    }
 }
 
 type ReverseProxy struct {
-	// => Sits in front of backend services
-	// => Clients connect to proxy; backends are never directly exposed
-	routes         []struct {
-		prefix  string
-		backend *BackendService
-	}
-	sslTerminated bool
-	// => SSL termination: proxy handles HTTPS; backends use plain HTTP internally
-	// => Backends don't need SSL certificates — proxy handles encryption
-	requestCount int
+    // => Sits in front of backend services
+    // => Clients connect to proxy; backends are never directly exposed
+    routes         []struct {
+        prefix  string
+        backend *BackendService
+    }
+    sslTerminated bool
+    // => SSL termination: proxy handles HTTPS; backends use plain HTTP internally
+    // => Backends don't need SSL certificates — proxy handles encryption
+    requestCount int
 }
 
 func newReverseProxy() *ReverseProxy {
-	return &ReverseProxy{sslTerminated: true}
+    return &ReverseProxy{sslTerminated: true}
 }
 
 func (rp *ReverseProxy) addRoute(pathPrefix string, backend *BackendService) {
-	rp.routes = append(rp.routes, struct {
-		prefix  string
-		backend *BackendService
-	}{pathPrefix, backend})
-	// => Routes checked in order; first match wins
+    rp.routes = append(rp.routes, struct {
+        prefix  string
+        backend *BackendService
+    }{pathPrefix, backend})
+    // => Routes checked in order; first match wins
 }
 
 func (rp *ReverseProxy) matchBackend(path string) *BackendService {
-	for _, route := range rp.routes {
-		if strings.HasPrefix(path, route.prefix) {
-			return route.backend
-			// => First matching prefix wins
-		}
-	}
-	return nil
-	// => No route matched — 404
+    for _, route := range rp.routes {
+        if strings.HasPrefix(path, route.prefix) {
+            return route.backend
+            // => First matching prefix wins
+        }
+    }
+    return nil
+    // => No route matched — 404
 }
 
 func (rp *ReverseProxy) handle(clientIP, method, path string) map[string]interface{} {
-	rp.requestCount++
-	headers := map[string]string{
-		"X-Forwarded-For":   clientIP,
-		// => Tells backend the original client IP
-		"X-Forwarded-Proto": "https",
-		// => Tells backend original protocol (useful for redirect URL generation)
-		"X-Request-Id":      fmt.Sprintf("req-%04d", rp.requestCount),
-		// => Tracing ID added by proxy for distributed tracing
-	}
+    rp.requestCount++
+    headers := map[string]string{
+        "X-Forwarded-For":   clientIP,
+        // => Tells backend the original client IP
+        "X-Forwarded-Proto": "https",
+        // => Tells backend original protocol (useful for redirect URL generation)
+        "X-Request-Id":      fmt.Sprintf("req-%04d", rp.requestCount),
+        // => Tracing ID added by proxy for distributed tracing
+    }
 
-	backend := rp.matchBackend(path)
-	if backend == nil {
-		return map[string]interface{}{
-			"status": 404,
-			"body":   "No route matched",
-		}
-		// => 404: proxy couldn't find a backend for this path
-	}
+    backend := rp.matchBackend(path)
+    if backend == nil {
+        return map[string]interface{}{
+            "status": 404,
+            "body":   "No route matched",
+        }
+        // => 404: proxy couldn't find a backend for this path
+    }
 
-	response := backend.handle(path, headers)
-	// => Forwards request to matched backend
-	response["status"] = 200
-	response["via_proxy"] = true
-	// => Proxy optionally adds Via header (per HTTP spec)
-	return response
+    response := backend.handle(path, headers)
+    // => Forwards request to matched backend
+    response["status"] = 200
+    response["via_proxy"] = true
+    // => Proxy optionally adds Via header (per HTTP spec)
+    return response
 }
 
 func main() {
-	// Setup
-	apiService := &BackendService{"api-service", 8001}
-	staticService := &BackendService{"static-service", 8002}
-	adminService := &BackendService{"admin-service", 8003}
+    // Setup
+    apiService := &BackendService{"api-service", 8001}
+    staticService := &BackendService{"static-service", 8002}
+    adminService := &BackendService{"admin-service", 8003}
 
-	proxy := newReverseProxy()
-	proxy.addRoute("/api/", apiService)       // => /api/* -> api-service:8001
-	proxy.addRoute("/static/", staticService) // => /static/* -> static-service:8002
-	proxy.addRoute("/admin/", adminService)   // => /admin/* -> admin-service:8003
+    proxy := newReverseProxy()
+    proxy.addRoute("/api/", apiService)       // => /api/* -> api-service:8001
+    proxy.addRoute("/static/", staticService) // => /static/* -> static-service:8002
+    proxy.addRoute("/admin/", adminService)   // => /admin/* -> admin-service:8003
 
-	// Client requests
-	r := proxy.handle("203.0.113.1", "GET", "/api/users")
-	fmt.Printf("Path /api/users -> %s (client ip: %s)\n", r["service"], r["client_ip"])
-	// => Path /api/users -> api-service (client ip: 203.0.113.1)
+    // Client requests
+    r := proxy.handle("203.0.113.1", "GET", "/api/users")
+    fmt.Printf("Path /api/users -> %s (client ip: %s)\n", r["service"], r["client_ip"])
+    // => Path /api/users -> api-service (client ip: 203.0.113.1)
 
-	r = proxy.handle("203.0.113.1", "GET", "/static/app.js")
-	fmt.Printf("Path /static/app.js -> %s\n", r["service"])
-	// => Path /static/app.js -> static-service
+    r = proxy.handle("203.0.113.1", "GET", "/static/app.js")
+    fmt.Printf("Path /static/app.js -> %s\n", r["service"])
+    // => Path /static/app.js -> static-service
 
-	r = proxy.handle("203.0.113.1", "GET", "/unknown/path")
-	fmt.Printf("Status: %v, body: %v\n", r["status"], r["body"])
-	// => Status: 404, body: No route matched
+    r = proxy.handle("203.0.113.1", "GET", "/unknown/path")
+    fmt.Printf("Status: %v, body: %v\n", r["status"], r["body"])
+    // => Status: 404, body: No route matched
 }
 ```
 
@@ -3442,108 +3442,108 @@ Latency is the time for one request to complete (milliseconds). Throughput is ho
 package main
 
 import (
-	"fmt"
-	"sort"
-	"sync"
-	"time"
+    "fmt"
+    "sort"
+    "sync"
+    "time"
 )
 
 func simulateRequest(requestID int, latencyMs int) map[string]interface{} {
-	// => Simulates an API request with fixed latency
-	start := time.Now()
-	// => time.Now() is high-resolution monotonic clock in Go
+    // => Simulates an API request with fixed latency
+    start := time.Now()
+    // => time.Now() is high-resolution monotonic clock in Go
 
-	time.Sleep(time.Duration(latencyMs) * time.Millisecond)
-	// => Simulates I/O wait (database query, network call, etc.)
+    time.Sleep(time.Duration(latencyMs) * time.Millisecond)
+    // => Simulates I/O wait (database query, network call, etc.)
 
-	elapsed := time.Since(start)
-	return map[string]interface{}{
-		"id":         requestID,
-		"latency_ms": float64(elapsed.Microseconds()) / 1000.0,
-		// => Actual measured latency in milliseconds
-	}
+    elapsed := time.Since(start)
+    return map[string]interface{}{
+        "id":         requestID,
+        "latency_ms": float64(elapsed.Microseconds()) / 1000.0,
+        // => Actual measured latency in milliseconds
+    }
 }
 
 func measureSequential(numRequests, latencyMs int) ([]float64, float64) {
-	// => Sends requests one at a time — simulates single-threaded server
-	start := time.Now()
-	latencies := make([]float64, numRequests)
-	for i := 0; i < numRequests; i++ {
-		result := simulateRequest(i, latencyMs)
-		latencies[i] = result["latency_ms"].(float64)
-		// => Each request waits for previous to complete
-	}
-	totalTime := time.Since(start).Seconds()
-	throughput := float64(numRequests) / totalTime
-	// => throughput is requests per second
-	return latencies, throughput
+    // => Sends requests one at a time — simulates single-threaded server
+    start := time.Now()
+    latencies := make([]float64, numRequests)
+    for i := 0; i < numRequests; i++ {
+        result := simulateRequest(i, latencyMs)
+        latencies[i] = result["latency_ms"].(float64)
+        // => Each request waits for previous to complete
+    }
+    totalTime := time.Since(start).Seconds()
+    throughput := float64(numRequests) / totalTime
+    // => throughput is requests per second
+    return latencies, throughput
 }
 
 func measureConcurrent(numRequests, latencyMs, maxWorkers int) ([]float64, float64) {
-	// => Sends requests concurrently — simulates multi-threaded or async server
-	start := time.Now()
-	latencies := make([]float64, numRequests)
-	var mu sync.Mutex
-	var wg sync.WaitGroup
-	sem := make(chan struct{}, maxWorkers)
+    // => Sends requests concurrently — simulates multi-threaded or async server
+    start := time.Now()
+    latencies := make([]float64, numRequests)
+    var mu sync.Mutex
+    var wg sync.WaitGroup
+    sem := make(chan struct{}, maxWorkers)
 
-	for i := 0; i < numRequests; i++ {
-		wg.Add(1)
-		sem <- struct{}{}
-		go func(idx int) {
-			defer wg.Done()
-			defer func() { <-sem }()
-			result := simulateRequest(idx, latencyMs)
-			mu.Lock()
-			latencies[idx] = result["latency_ms"].(float64)
-			mu.Unlock()
-		}(i)
-	}
-	wg.Wait()
-	// => All requests in-flight simultaneously; complete when slowest finishes
+    for i := 0; i < numRequests; i++ {
+        wg.Add(1)
+        sem <- struct{}{}
+        go func(idx int) {
+            defer wg.Done()
+            defer func() { <-sem }()
+            result := simulateRequest(idx, latencyMs)
+            mu.Lock()
+            latencies[idx] = result["latency_ms"].(float64)
+            mu.Unlock()
+        }(i)
+    }
+    wg.Wait()
+    // => All requests in-flight simultaneously; complete when slowest finishes
 
-	totalTime := time.Since(start).Seconds()
-	throughput := float64(numRequests) / totalTime
-	return latencies, throughput
+    totalTime := time.Since(start).Seconds()
+    throughput := float64(numRequests) / totalTime
+    return latencies, throughput
 }
 
 func median(data []float64) float64 {
-	sorted := make([]float64, len(data))
-	copy(sorted, data)
-	sort.Float64s(sorted)
-	n := len(sorted)
-	if n%2 == 0 {
-		return (sorted[n/2-1] + sorted[n/2]) / 2
-	}
-	return sorted[n/2]
+    sorted := make([]float64, len(data))
+    copy(sorted, data)
+    sort.Float64s(sorted)
+    n := len(sorted)
+    if n%2 == 0 {
+        return (sorted[n/2-1] + sorted[n/2]) / 2
+    }
+    return sorted[n/2]
 }
 
 func main() {
-	numRequests := 20
-	latencyMs := 20
-	// => Each simulated request takes 20ms
+    numRequests := 20
+    latencyMs := 20
+    // => Each simulated request takes 20ms
 
-	fmt.Println("=== Latency and Throughput Measurement ===\n")
+    fmt.Println("=== Latency and Throughput Measurement ===\n")
 
-	// Sequential: 20 requests * 20ms each = ~400ms total, 50 RPS
-	seqLatencies, seqThroughput := measureSequential(numRequests, latencyMs)
-	fmt.Printf("Sequential (%d requests):\n", numRequests)
-	fmt.Printf("  p50 latency: %.1fms\n", median(seqLatencies))
-	// => p50 latency: 20.x ms  (median: half of requests faster, half slower)
-	fmt.Printf("  Throughput: %.1f RPS\n", seqThroughput)
-	// => Throughput: ~50 RPS (1000ms / 20ms per request = 50)
+    // Sequential: 20 requests * 20ms each = ~400ms total, 50 RPS
+    seqLatencies, seqThroughput := measureSequential(numRequests, latencyMs)
+    fmt.Printf("Sequential (%d requests):\n", numRequests)
+    fmt.Printf("  p50 latency: %.1fms\n", median(seqLatencies))
+    // => p50 latency: 20.x ms  (median: half of requests faster, half slower)
+    fmt.Printf("  Throughput: %.1f RPS\n", seqThroughput)
+    // => Throughput: ~50 RPS (1000ms / 20ms per request = 50)
 
-	// Concurrent: all 20 requests in-flight simultaneously = ~20ms total, 1000 RPS
-	concLatencies, concThroughput := measureConcurrent(numRequests, latencyMs, 20)
-	fmt.Printf("\nConcurrent (%d requests, %d workers):\n", numRequests, 20)
-	fmt.Printf("  p50 latency: %.1fms\n", median(concLatencies))
-	// => p50 latency: ~20ms  (same per-request latency — concurrency doesn't reduce latency)
-	fmt.Printf("  Throughput: %.1f RPS\n", concThroughput)
-	// => Throughput: ~1000 RPS (20 requests in ~20ms = 1000/sec)
-	// => KEY INSIGHT: concurrency improves THROUGHPUT, not individual request LATENCY
+    // Concurrent: all 20 requests in-flight simultaneously = ~20ms total, 1000 RPS
+    concLatencies, concThroughput := measureConcurrent(numRequests, latencyMs, 20)
+    fmt.Printf("\nConcurrent (%d requests, %d workers):\n", numRequests, 20)
+    fmt.Printf("  p50 latency: %.1fms\n", median(concLatencies))
+    // => p50 latency: ~20ms  (same per-request latency — concurrency doesn't reduce latency)
+    fmt.Printf("  Throughput: %.1f RPS\n", concThroughput)
+    // => Throughput: ~1000 RPS (20 requests in ~20ms = 1000/sec)
+    // => KEY INSIGHT: concurrency improves THROUGHPUT, not individual request LATENCY
 
-	fmt.Println("\nKey insight: concurrency increases throughput without changing per-request latency")
-	// => Latency and throughput are independent axes; optimize each separately
+    fmt.Println("\nKey insight: concurrency increases throughput without changing per-request latency")
+    // => Latency and throughput are independent axes; optimize each separately
 }
 ```
 
@@ -3652,107 +3652,107 @@ Percentile latency measures tell a more complete story than averages. P50 (media
 package main
 
 import (
-	"fmt"
-	"math/rand"
-	"sort"
+    "fmt"
+    "math/rand"
+    "sort"
 )
 
 func simulateServiceLatencies(numSamples int) []float64 {
-	// => Generates realistic latency distribution (not uniform — real systems have tail latency)
-	latencies := make([]float64, 0, numSamples)
+    // => Generates realistic latency distribution (not uniform — real systems have tail latency)
+    latencies := make([]float64, 0, numSamples)
 
-	for i := 0; i < numSamples; i++ {
-		// Simulate a service with mixed latency sources
-		base := rand.NormFloat64()*5 + 20
-		// => Gaussian distribution: most requests ~20ms +/- 5ms (fast path)
+    for i := 0; i < numSamples; i++ {
+        // Simulate a service with mixed latency sources
+        base := rand.NormFloat64()*5 + 20
+        // => Gaussian distribution: most requests ~20ms +/- 5ms (fast path)
 
-		// 5% of requests hit slow database queries
-		if rand.Float64() < 0.05 {
-			base += rand.Float64()*400 + 100
-			// => Slow path: adds 100-500ms to those requests
-			// => These become the P95-P99 tail
-		}
+        // 5% of requests hit slow database queries
+        if rand.Float64() < 0.05 {
+            base += rand.Float64()*400 + 100
+            // => Slow path: adds 100-500ms to those requests
+            // => These become the P95-P99 tail
+        }
 
-		// 1% of requests experience GC pause or lock contention
-		if rand.Float64() < 0.01 {
-			base += rand.Float64()*1500 + 500
-			// => Very slow path: adds 0.5-2 seconds
-			// => These become the P99+ outliers
-		}
+        // 1% of requests experience GC pause or lock contention
+        if rand.Float64() < 0.01 {
+            base += rand.Float64()*1500 + 500
+            // => Very slow path: adds 0.5-2 seconds
+            // => These become the P99+ outliers
+        }
 
-		if base < 1 {
-			base = 1
-		}
-		// => Ensure minimum 1ms (no negative latencies)
-		latencies = append(latencies, base)
-	}
+        if base < 1 {
+            base = 1
+        }
+        // => Ensure minimum 1ms (no negative latencies)
+        latencies = append(latencies, base)
+    }
 
-	return latencies
+    return latencies
 }
 
 func analyzeLatencies(latencies []float64) {
-	sorted := make([]float64, len(latencies))
-	copy(sorted, latencies)
-	sort.Float64s(sorted)
-	n := len(sorted)
-	// => Sort ascending to compute percentiles by index
+    sorted := make([]float64, len(latencies))
+    copy(sorted, latencies)
+    sort.Float64s(sorted)
+    n := len(sorted)
+    // => Sort ascending to compute percentiles by index
 
-	percentile := func(p float64) float64 {
-		idx := int(p / 100 * float64(n))
-		// => Index for pth percentile
-		if idx >= n {
-			idx = n - 1
-		}
-		return sorted[idx]
-		// => Return value at that index
-	}
+    percentile := func(p float64) float64 {
+        idx := int(p / 100 * float64(n))
+        // => Index for pth percentile
+        if idx >= n {
+            idx = n - 1
+        }
+        return sorted[idx]
+        // => Return value at that index
+    }
 
-	var sum float64
-	for _, l := range latencies {
-		sum += l
-	}
-	avg := sum / float64(n)
-	// => avg is arithmetic mean — often misleading for skewed distributions
+    var sum float64
+    for _, l := range latencies {
+        sum += l
+    }
+    avg := sum / float64(n)
+    // => avg is arithmetic mean — often misleading for skewed distributions
 
-	p50 := percentile(50)    // => Median: half faster, half slower
-	p75 := percentile(75)    // => 75% of requests faster than this
-	p95 := percentile(95)    // => 95% of requests faster than this
-	p99 := percentile(99)    // => 99% of requests faster than this
-	p999 := percentile(99.9) // => 99.9% faster — worst 1 in 1000 requests
+    p50 := percentile(50)    // => Median: half faster, half slower
+    p75 := percentile(75)    // => 75% of requests faster than this
+    p95 := percentile(95)    // => 95% of requests faster than this
+    p99 := percentile(99)    // => 99% of requests faster than this
+    p999 := percentile(99.9) // => 99.9% faster — worst 1 in 1000 requests
 
-	fmt.Printf("Samples: %d\n", n)
-	fmt.Printf("Average: %.1fms  <- misleading! hides tail latency\n", avg)
-	fmt.Printf("P50:     %.1fms  <- typical experience for most users\n", p50)
-	fmt.Printf("P75:     %.1fms  <- upper-middle experience\n", p75)
-	fmt.Printf("P95:     %.1fms  <- slow for 1 in 20 requests\n", p95)
-	fmt.Printf("P99:     %.1fms  <- very slow for 1 in 100 requests\n", p99)
-	fmt.Printf("P99.9:   %.1fms <- worst 1 in 1000 requests\n", p999)
-	fmt.Printf("\nTail ratio (P99/P50): %.1fx slower\n", p99/p50)
-	// => A healthy service has P99/P50 ratio under 5x
-	// => Ratios over 10x indicate significant tail latency problems
+    fmt.Printf("Samples: %d\n", n)
+    fmt.Printf("Average: %.1fms  <- misleading! hides tail latency\n", avg)
+    fmt.Printf("P50:     %.1fms  <- typical experience for most users\n", p50)
+    fmt.Printf("P75:     %.1fms  <- upper-middle experience\n", p75)
+    fmt.Printf("P95:     %.1fms  <- slow for 1 in 20 requests\n", p95)
+    fmt.Printf("P99:     %.1fms  <- very slow for 1 in 100 requests\n", p99)
+    fmt.Printf("P99.9:   %.1fms <- worst 1 in 1000 requests\n", p999)
+    fmt.Printf("\nTail ratio (P99/P50): %.1fx slower\n", p99/p50)
+    // => A healthy service has P99/P50 ratio under 5x
+    // => Ratios over 10x indicate significant tail latency problems
 
-	// Distribution breakdown
-	slow5pct := 0
-	for _, l := range latencies {
-		if l > p95 {
-			slow5pct++
-		}
-	}
-	fmt.Printf("\nRequests over P95 (%.0fms): %d of %d (%.1f%%)\n",
-		p95, slow5pct, n, float64(slow5pct)/float64(n)*100)
-	// => These are the users experiencing degraded performance
+    // Distribution breakdown
+    slow5pct := 0
+    for _, l := range latencies {
+        if l > p95 {
+            slow5pct++
+        }
+    }
+    fmt.Printf("\nRequests over P95 (%.0fms): %d of %d (%.1f%%)\n",
+        p95, slow5pct, n, float64(slow5pct)/float64(n)*100)
+    // => These are the users experiencing degraded performance
 }
 
 func main() {
-	latencies := simulateServiceLatencies(1000)
-	analyzeLatencies(latencies)
-	// => Example output:
-	// => Average: 33.5ms  <- misleading!
-	// => P50:     20.3ms  <- most users are happy
-	// => P95:     120.4ms <- 1 in 20 waits 6x longer
-	// => P99:     850.2ms <- 1 in 100 waits nearly a second
-	// => P99.9:   1823ms  <- worst case approaches 2 seconds
-	// => Tail ratio: 41.8x slower
+    latencies := simulateServiceLatencies(1000)
+    analyzeLatencies(latencies)
+    // => Example output:
+    // => Average: 33.5ms  <- misleading!
+    // => P50:     20.3ms  <- most users are happy
+    // => P95:     120.4ms <- 1 in 20 waits 6x longer
+    // => P99:     850.2ms <- 1 in 100 waits nearly a second
+    // => P99.9:   1823ms  <- worst case approaches 2 seconds
+    // => Tail ratio: 41.8x slower
 }
 ```
 
@@ -3867,11 +3867,11 @@ Three storage abstractions serve different use cases. Block storage presents raw
 package main
 
 import (
-	"crypto/md5"
-	"fmt"
-	"os"
-	"path/filepath"
-	"strings"
+    "crypto/md5"
+    "fmt"
+    "os"
+    "path/filepath"
+    "strings"
 )
 
 // ===========================================================================
@@ -3880,43 +3880,43 @@ import (
 // ===========================================================================
 
 type FileStorage struct {
-	// => Hierarchical: directories contain files; files have names and paths
-	// => Mutable: files can be partially updated (seek + write)
-	// => POSIX semantics: permissions, hard links, symlinks
-	root string
+    // => Hierarchical: directories contain files; files have names and paths
+    // => Mutable: files can be partially updated (seek + write)
+    // => POSIX semantics: permissions, hard links, symlinks
+    root string
 }
 
 func newFileStorage(root string) *FileStorage {
-	os.MkdirAll(root, 0o755)
-	// => Creates root directory if not exists
-	return &FileStorage{root: root}
+    os.MkdirAll(root, 0o755)
+    // => Creates root directory if not exists
+    return &FileStorage{root: root}
 }
 
 func (fs *FileStorage) writeFile(path, content string) {
-	// => path is relative: "reports/2026/monthly.pdf"
-	fullPath := filepath.Join(fs.root, path)
-	// => fullPath is absolute OS path
-	os.MkdirAll(filepath.Dir(fullPath), 0o755)
-	// => Creates intermediate directories: "reports/2026/"
-	os.WriteFile(fullPath, []byte(content), 0o644)
-	// => File stored in hierarchical directory structure
+    // => path is relative: "reports/2026/monthly.pdf"
+    fullPath := filepath.Join(fs.root, path)
+    // => fullPath is absolute OS path
+    os.MkdirAll(filepath.Dir(fullPath), 0o755)
+    // => Creates intermediate directories: "reports/2026/"
+    os.WriteFile(fullPath, []byte(content), 0o644)
+    // => File stored in hierarchical directory structure
 }
 
 func (fs *FileStorage) readFile(path string) string {
-	fullPath := filepath.Join(fs.root, path)
-	data, _ := os.ReadFile(fullPath)
-	return string(data)
+    fullPath := filepath.Join(fs.root, path)
+    data, _ := os.ReadFile(fullPath)
+    return string(data)
 }
 
 func (fs *FileStorage) listDirectory(dirPath string) []string {
-	fullPath := filepath.Join(fs.root, dirPath)
-	entries, _ := os.ReadDir(fullPath)
-	// => Returns filenames in directory — hierarchical navigation
-	names := make([]string, len(entries))
-	for i, e := range entries {
-		names[i] = e.Name()
-	}
-	return names
+    fullPath := filepath.Join(fs.root, dirPath)
+    entries, _ := os.ReadDir(fullPath)
+    // => Returns filenames in directory — hierarchical navigation
+    names := make([]string, len(entries))
+    for i, e := range entries {
+        names[i] = e.Name()
+    }
+    return names
 }
 
 // ===========================================================================
@@ -3925,91 +3925,91 @@ func (fs *FileStorage) listDirectory(dirPath string) []string {
 // ===========================================================================
 
 type ObjectStorage struct {
-	// => Flat: no directories — objects identified by globally unique key
-	// => Immutable: entire object replaced on write; no partial updates
-	// => HTTP API: access via GET/PUT/DELETE — no file system semantics
-	store map[string]map[string]interface{}
-	// => store is map[key -> {"data": str, "metadata": map, "etag": str}]
+    // => Flat: no directories — objects identified by globally unique key
+    // => Immutable: entire object replaced on write; no partial updates
+    // => HTTP API: access via GET/PUT/DELETE — no file system semantics
+    store map[string]map[string]interface{}
+    // => store is map[key -> {"data": str, "metadata": map, "etag": str}]
 }
 
 func newObjectStorage() *ObjectStorage {
-	return &ObjectStorage{store: make(map[string]map[string]interface{})}
+    return &ObjectStorage{store: make(map[string]map[string]interface{})}
 }
 
 func (os_ *ObjectStorage) putObject(key, data string, metadata map[string]string) {
-	// => key is the full "path": "images/user-123/avatar.jpg"
-	// => Looks like a path but it's just a string — no real directories
-	hash := md5.Sum([]byte(data))
-	etag := fmt.Sprintf("%x", hash)
-	// => ETag is content hash: lets clients detect changes cheaply
+    // => key is the full "path": "images/user-123/avatar.jpg"
+    // => Looks like a path but it's just a string — no real directories
+    hash := md5.Sum([]byte(data))
+    etag := fmt.Sprintf("%x", hash)
+    // => ETag is content hash: lets clients detect changes cheaply
 
-	os_.store[key] = map[string]interface{}{
-		"data":     data,
-		"metadata": metadata,
-		"etag":     etag,
-		"size":     len(data),
-	}
-	// => Object stored as single atomic unit — no partial writes possible
+    os_.store[key] = map[string]interface{}{
+        "data":     data,
+        "metadata": metadata,
+        "etag":     etag,
+        "size":     len(data),
+    }
+    // => Object stored as single atomic unit — no partial writes possible
 }
 
 func (os_ *ObjectStorage) getObject(key string) map[string]interface{} {
-	return os_.store[key]
-	// => Returns full object map or nil if not found
+    return os_.store[key]
+    // => Returns full object map or nil if not found
 }
 
 func (os_ *ObjectStorage) listObjects(prefix string) []string {
-	// => Simulates S3-style prefix listing (not true directory listing)
-	var keys []string
-	for k := range os_.store {
-		if strings.HasPrefix(k, prefix) {
-			keys = append(keys, k)
-		}
-	}
-	return keys
-	// => prefix="images/user-123/" returns all objects with that prefix
-	// => Looks like listing a directory but is actually a key prefix filter
+    // => Simulates S3-style prefix listing (not true directory listing)
+    var keys []string
+    for k := range os_.store {
+        if strings.HasPrefix(k, prefix) {
+            keys = append(keys, k)
+        }
+    }
+    return keys
+    // => prefix="images/user-123/" returns all objects with that prefix
+    // => Looks like listing a directory but is actually a key prefix filter
 }
 
 func main() {
-	// --- Demonstration ---
-	tmpDir, _ := os.MkdirTemp("", "storage-demo")
-	defer os.RemoveAll(tmpDir)
+    // --- Demonstration ---
+    tmpDir, _ := os.MkdirTemp("", "storage-demo")
+    defer os.RemoveAll(tmpDir)
 
-	fmt.Println("=== File Storage ===")
-	fs := newFileStorage(tmpDir)
-	fs.writeFile("reports/2026/q1.txt", "Q1 2026 Report")
-	// => Creates directories: tmp/reports/2026/
-	fs.writeFile("reports/2026/q2.txt", "Q2 2026 Report")
-	contents := fs.listDirectory("reports/2026")
-	fmt.Printf("Directory listing: %v\n", contents)
-	// => Directory listing: [q1.txt q2.txt]
+    fmt.Println("=== File Storage ===")
+    fs := newFileStorage(tmpDir)
+    fs.writeFile("reports/2026/q1.txt", "Q1 2026 Report")
+    // => Creates directories: tmp/reports/2026/
+    fs.writeFile("reports/2026/q2.txt", "Q2 2026 Report")
+    contents := fs.listDirectory("reports/2026")
+    fmt.Printf("Directory listing: %v\n", contents)
+    // => Directory listing: [q1.txt q2.txt]
 
-	fmt.Println("\n=== Object Storage ===")
-	osStore := newObjectStorage()
-	osStore.putObject(
-		"images/user-123/avatar.jpg",
-		"<binary image data>",
-		map[string]string{"content-type": "image/jpeg", "user-id": "123"},
-	)
-	// => Stored at flat key — no real directory structure
-	osStore.putObject(
-		"images/user-456/avatar.jpg",
-		"<other image data>",
-		map[string]string{"content-type": "image/jpeg", "user-id": "456"},
-	)
-	userImages := osStore.listObjects("images/user-123/")
-	fmt.Printf("Objects with prefix 'images/user-123/': %v\n", userImages)
-	// => Objects with prefix 'images/user-123/': [images/user-123/avatar.jpg]
+    fmt.Println("\n=== Object Storage ===")
+    osStore := newObjectStorage()
+    osStore.putObject(
+        "images/user-123/avatar.jpg",
+        "<binary image data>",
+        map[string]string{"content-type": "image/jpeg", "user-id": "123"},
+    )
+    // => Stored at flat key — no real directory structure
+    osStore.putObject(
+        "images/user-456/avatar.jpg",
+        "<other image data>",
+        map[string]string{"content-type": "image/jpeg", "user-id": "456"},
+    )
+    userImages := osStore.listObjects("images/user-123/")
+    fmt.Printf("Objects with prefix 'images/user-123/': %v\n", userImages)
+    // => Objects with prefix 'images/user-123/': [images/user-123/avatar.jpg]
 
-	obj := osStore.getObject("images/user-123/avatar.jpg")
-	fmt.Printf("Object metadata: %v, ETag: %v\n", obj["metadata"], obj["etag"])
-	// => Object metadata: map[content-type:image/jpeg user-id:123], ETag: abc123...
+    obj := osStore.getObject("images/user-123/avatar.jpg")
+    fmt.Printf("Object metadata: %v, ETag: %v\n", obj["metadata"], obj["etag"])
+    // => Object metadata: map[content-type:image/jpeg user-id:123], ETag: abc123...
 
-	fmt.Println("\nStorage comparison:")
-	fmt.Println("  File:   Hierarchical, mutable, POSIX, shared NAS, not web-native")
-	fmt.Println("  Object: Flat keys, immutable, HTTP API, infinitely scalable, CDN-friendly")
-	fmt.Println("  Block:  Raw sectors, OS manages, fast I/O, used for DB volumes")
-	// => Block storage not simulated here — it operates at OS level (sda, nvme), not application level
+    fmt.Println("\nStorage comparison:")
+    fmt.Println("  File:   Hierarchical, mutable, POSIX, shared NAS, not web-native")
+    fmt.Println("  Object: Flat keys, immutable, HTTP API, infinitely scalable, CDN-friendly")
+    fmt.Println("  Block:  Raw sectors, OS manages, fast I/O, used for DB volumes")
+    // => Block storage not simulated here — it operates at OS level (sda, nvme), not application level
 }
 ```
 
@@ -4195,116 +4195,116 @@ graph TD
 package main
 
 import (
-	"fmt"
-	"time"
+    "fmt"
+    "time"
 )
 
 type cachedContent struct {
-	content string
-	expires time.Time
+    content string
+    expires time.Time
 }
 
 type CDNEdge struct {
-	// => Edge server located in a geographic region (PoP = Point of Presence)
-	// => Serves cached content to nearby users at low latency
-	Location           string
-	LatencyToOriginMs  int
-	// => Round-trip latency from this edge to the origin server
-	cache map[string]cachedContent
-	// => Local edge cache: stores content with TTL
+    // => Edge server located in a geographic region (PoP = Point of Presence)
+    // => Serves cached content to nearby users at low latency
+    Location           string
+    LatencyToOriginMs  int
+    // => Round-trip latency from this edge to the origin server
+    cache map[string]cachedContent
+    // => Local edge cache: stores content with TTL
 }
 
 func newCDNEdge(location string, latencyToOriginMs int) *CDNEdge {
-	return &CDNEdge{
-		Location:          location,
-		LatencyToOriginMs: latencyToOriginMs,
-		cache:             make(map[string]cachedContent),
-	}
+    return &CDNEdge{
+        Location:          location,
+        LatencyToOriginMs: latencyToOriginMs,
+        cache:             make(map[string]cachedContent),
+    }
 }
 
 func (e *CDNEdge) serve(path, userLocation string) map[string]interface{} {
-	edgeLatencyMs := 5
-	// => User-to-edge latency (edge is geographically close to user)
-	// => Typically 1-10ms for users in the same region
+    edgeLatencyMs := 5
+    // => User-to-edge latency (edge is geographically close to user)
+    // => Typically 1-10ms for users in the same region
 
-	if cached, ok := e.cache[path]; ok && cached.expires.After(time.Now()) {
-		totalLatency := edgeLatencyMs
-		// => Cache hit: served from edge memory — only edge RTT
-		return map[string]interface{}{
-			"status":     200,
-			"from":       fmt.Sprintf("CDN Edge (%s)", e.Location),
-			"cache":      "HIT",
-			"latency_ms": totalLatency,
-			"content":    cached.content,
-		}
-	}
+    if cached, ok := e.cache[path]; ok && cached.expires.After(time.Now()) {
+        totalLatency := edgeLatencyMs
+        // => Cache hit: served from edge memory — only edge RTT
+        return map[string]interface{}{
+            "status":     200,
+            "from":       fmt.Sprintf("CDN Edge (%s)", e.Location),
+            "cache":      "HIT",
+            "latency_ms": totalLatency,
+            "content":    cached.content,
+        }
+    }
 
-	// Cache miss: fetch from origin
-	totalLatency := edgeLatencyMs + e.LatencyToOriginMs
-	// => User->edge (5ms) + edge->origin (varies by region)
-	content := e.fetchFromOrigin(path)
-	// => Contacts origin server; adds origin round-trip to latency
-	e.cache[path] = cachedContent{
-		content: content,
-		expires: time.Now().Add(time.Hour),
-		// => Cache for 1 hour — static assets typically cached longer (days/weeks)
-	}
-	return map[string]interface{}{
-		"status":     200,
-		"from":       fmt.Sprintf("CDN Edge (%s) [fetched from origin]", e.Location),
-		"cache":      "MISS",
-		"latency_ms": totalLatency,
-		"content":    content,
-	}
+    // Cache miss: fetch from origin
+    totalLatency := edgeLatencyMs + e.LatencyToOriginMs
+    // => User->edge (5ms) + edge->origin (varies by region)
+    content := e.fetchFromOrigin(path)
+    // => Contacts origin server; adds origin round-trip to latency
+    e.cache[path] = cachedContent{
+        content: content,
+        expires: time.Now().Add(time.Hour),
+        // => Cache for 1 hour — static assets typically cached longer (days/weeks)
+    }
+    return map[string]interface{}{
+        "status":     200,
+        "from":       fmt.Sprintf("CDN Edge (%s) [fetched from origin]", e.Location),
+        "cache":      "MISS",
+        "latency_ms": totalLatency,
+        "content":    content,
+    }
 }
 
 func (e *CDNEdge) fetchFromOrigin(path string) string {
-	// => Simulates HTTP request from edge to origin server
-	return fmt.Sprintf("<content of %s>", path)
+    // => Simulates HTTP request from edge to origin server
+    return fmt.Sprintf("<content of %s>", path)
 }
 
 type CDN struct {
-	edges map[string]*CDNEdge
-	// => edges is map["New York" -> CDNEdge, "London" -> CDNEdge]
+    edges map[string]*CDNEdge
+    // => edges is map["New York" -> CDNEdge, "London" -> CDNEdge]
 }
 
 func (c *CDN) request(userLocation, path string) map[string]interface{} {
-	edge, ok := c.edges[userLocation]
-	if !ok {
-		// Fallback to first edge if user location not mapped
-		for _, e := range c.edges {
-			edge = e
-			break
-		}
-	}
-	return edge.serve(path, userLocation)
+    edge, ok := c.edges[userLocation]
+    if !ok {
+        // Fallback to first edge if user location not mapped
+        for _, e := range c.edges {
+            edge = e
+            break
+        }
+    }
+    return edge.serve(path, userLocation)
 }
 
 func main() {
-	cdn := &CDN{edges: map[string]*CDNEdge{
-		"New York":  newCDNEdge("New York", 120),
-		"London":    newCDNEdge("London", 90),
-		"Singapore": newCDNEdge("Singapore", 200),
-	}}
+    cdn := &CDN{edges: map[string]*CDNEdge{
+        "New York":  newCDNEdge("New York", 120),
+        "London":    newCDNEdge("London", 90),
+        "Singapore": newCDNEdge("Singapore", 200),
+    }}
 
-	asset := "/static/app.js"
+    asset := "/static/app.js"
 
-	// New York user — cache miss (first request to this edge)
-	r := cdn.request("New York", asset)
-	fmt.Printf("NY miss:  %vms | %v | via %v\n", r["latency_ms"], r["cache"], r["from"])
-	// => NY miss:  125ms | MISS | via CDN Edge (New York) [fetched from origin]
+    // New York user — cache miss (first request to this edge)
+    r := cdn.request("New York", asset)
+    fmt.Printf("NY miss:  %vms | %v | via %v\n", r["latency_ms"], r["cache"], r["from"])
+    // => NY miss:  125ms | MISS | via CDN Edge (New York) [fetched from origin]
 
-	// Second NY user — cache hit (edge cached from first request)
-	r = cdn.request("New York", asset)
-	fmt.Printf("NY hit:   %vms | %v | via %v\n", r["latency_ms"], r["cache"], r["from"])
-	// => NY hit:   5ms | HIT | via CDN Edge (New York)
-	// => 125ms -> 5ms: 25x speedup after cache warm
+    // Second NY user — cache hit (edge cached from first request)
+    r = cdn.request("New York", asset)
+    fmt.Printf("NY hit:   %vms | %v | via %v\n", r["latency_ms"], r["cache"], r["from"])
+    // => NY hit:   5ms | HIT | via CDN Edge (New York)
+    // => 125ms -> 5ms: 25x speedup after cache warm
 
-	// London user — independent edge, own cache
-	r = cdn.request("London", asset)
-	fmt.Printf("London:   %vms | %v | via %v\n", r["latency_ms"], r["cache"], r["from"])
-	// => London:   95ms | MISS | via CDN Edge (London) [fetched from origin]
-	// => London edge fetches independently; no shared cache between edges
+    // London user — independent edge, own cache
+    r = cdn.request("London", asset)
+    fmt.Printf("London:   %vms | %v | via %v\n", r["latency_ms"], r["cache"], r["from"])
+    // => London:   95ms | MISS | via CDN Edge (London) [fetched from origin]
+    // => London edge fetches independently; no shared cache between edges
 }
 ```
 
@@ -4431,128 +4431,128 @@ Rate limiting protects backend services from being overwhelmed by too many reque
 package main
 
 import (
-	"fmt"
-	"sync"
-	"time"
+    "fmt"
+    "sync"
+    "time"
 )
 
 type TokenBucket struct {
-	// => Token bucket: allows burst traffic up to 'capacity' while
-	// => enforcing 'refillRate' requests per second on average
-	capacity   float64
-	// => capacity is max tokens bucket can hold (burst limit)
-	// => e.g., capacity=10 allows burst of 10 requests
-	refillRate float64
-	// => refillRate is tokens added per second
-	// => e.g., refillRate=5 allows sustained 5 RPS
-	tokens     float64
-	// => Start full: client can immediately burst up to capacity
-	lastRefill time.Time
-	// => monotonic clock: won't jump backwards (system clock can)
-	mu         sync.Mutex
-	// => Mutex needed: multiple goroutines may call Allow() concurrently
+    // => Token bucket: allows burst traffic up to 'capacity' while
+    // => enforcing 'refillRate' requests per second on average
+    capacity   float64
+    // => capacity is max tokens bucket can hold (burst limit)
+    // => e.g., capacity=10 allows burst of 10 requests
+    refillRate float64
+    // => refillRate is tokens added per second
+    // => e.g., refillRate=5 allows sustained 5 RPS
+    tokens     float64
+    // => Start full: client can immediately burst up to capacity
+    lastRefill time.Time
+    // => monotonic clock: won't jump backwards (system clock can)
+    mu         sync.Mutex
+    // => Mutex needed: multiple goroutines may call Allow() concurrently
 }
 
 func newTokenBucket(capacity, refillRate float64) *TokenBucket {
-	return &TokenBucket{
-		capacity:   capacity,
-		refillRate: refillRate,
-		tokens:     capacity,
-		lastRefill: time.Now(),
-	}
+    return &TokenBucket{
+        capacity:   capacity,
+        refillRate: refillRate,
+        tokens:     capacity,
+        lastRefill: time.Now(),
+    }
 }
 
 func (tb *TokenBucket) refill() {
-	now := time.Now()
-	elapsed := now.Sub(tb.lastRefill).Seconds()
-	// => elapsed is seconds since last refill check
+    now := time.Now()
+    elapsed := now.Sub(tb.lastRefill).Seconds()
+    // => elapsed is seconds since last refill check
 
-	tokensToAdd := elapsed * tb.refillRate
-	// => Tokens earned during elapsed time: elapsed_sec * tokens_per_sec
-	// => e.g., 0.5s elapsed * 5 tokens/s = 2.5 tokens earned
+    tokensToAdd := elapsed * tb.refillRate
+    // => Tokens earned during elapsed time: elapsed_sec * tokens_per_sec
+    // => e.g., 0.5s elapsed * 5 tokens/s = 2.5 tokens earned
 
-	tb.tokens += tokensToAdd
-	if tb.tokens > tb.capacity {
-		tb.tokens = tb.capacity
-	}
-	// => Add earned tokens but never exceed capacity
-	// => cap enforces the burst limit
+    tb.tokens += tokensToAdd
+    if tb.tokens > tb.capacity {
+        tb.tokens = tb.capacity
+    }
+    // => Add earned tokens but never exceed capacity
+    // => cap enforces the burst limit
 
-	tb.lastRefill = now
-	// => Update timestamp for next refill calculation
+    tb.lastRefill = now
+    // => Update timestamp for next refill calculation
 }
 
 func (tb *TokenBucket) allow(tokensRequested float64) bool {
-	tb.mu.Lock()
-	defer tb.mu.Unlock()
-	// => Acquire lock: only one goroutine refills and checks at a time
+    tb.mu.Lock()
+    defer tb.mu.Unlock()
+    // => Acquire lock: only one goroutine refills and checks at a time
 
-	tb.refill()
-	// => First, add any tokens earned since last call
+    tb.refill()
+    // => First, add any tokens earned since last call
 
-	if tb.tokens >= tokensRequested {
-		tb.tokens -= tokensRequested
-		// => Consume token(s): deduct from bucket
-		return true
-		// => Request allowed: client has available capacity
-	}
+    if tb.tokens >= tokensRequested {
+        tb.tokens -= tokensRequested
+        // => Consume token(s): deduct from bucket
+        return true
+        // => Request allowed: client has available capacity
+    }
 
-	return false
-	// => Request rejected: bucket empty — client exceeded rate limit
+    return false
+    // => Request rejected: bucket empty — client exceeded rate limit
 }
 
 func (tb *TokenBucket) status() string {
-	tb.mu.Lock()
-	defer tb.mu.Unlock()
-	return fmt.Sprintf("%.2f/%.0f tokens", tb.tokens, tb.capacity)
-	// => Current fill level for monitoring/debugging
+    tb.mu.Lock()
+    defer tb.mu.Unlock()
+    return fmt.Sprintf("%.2f/%.0f tokens", tb.tokens, tb.capacity)
+    // => Current fill level for monitoring/debugging
 }
 
 func main() {
-	// Simulate rate limiting: 5 RPS sustained, burst up to 10
-	limiter := newTokenBucket(10, 5)
+    // Simulate rate limiting: 5 RPS sustained, burst up to 10
+    limiter := newTokenBucket(10, 5)
 
-	fmt.Println("=== Token Bucket Rate Limiter ===")
-	fmt.Printf("Initial: %s\n", limiter.status())
-	// => Initial: 10.00/10 tokens  (starts full)
+    fmt.Println("=== Token Bucket Rate Limiter ===")
+    fmt.Printf("Initial: %s\n", limiter.status())
+    // => Initial: 10.00/10 tokens  (starts full)
 
-	// Burst: 10 requests immediately — all should pass (bucket starts full)
-	burstAllowed := 0
-	for i := 0; i < 12; i++ {
-		allowed := limiter.allow(1)
-		if allowed {
-			burstAllowed++
-		}
-		label := "ALLOW"
-		if !allowed {
-			label = "REJECT"
-		}
-		fmt.Printf("  Request %2d: %s | %s\n", i+1, label, limiter.status())
-		// => Request  1: ALLOW | 9.00/10 tokens
-		// => ...
-		// => Request 10: ALLOW | 0.00/10 tokens
-		// => Request 11: REJECT | 0.00/10 tokens  (bucket empty)
-		// => Request 12: REJECT | 0.00/10 tokens
-	}
+    // Burst: 10 requests immediately — all should pass (bucket starts full)
+    burstAllowed := 0
+    for i := 0; i < 12; i++ {
+        allowed := limiter.allow(1)
+        if allowed {
+            burstAllowed++
+        }
+        label := "ALLOW"
+        if !allowed {
+            label = "REJECT"
+        }
+        fmt.Printf("  Request %2d: %s | %s\n", i+1, label, limiter.status())
+        // => Request  1: ALLOW | 9.00/10 tokens
+        // => ...
+        // => Request 10: ALLOW | 0.00/10 tokens
+        // => Request 11: REJECT | 0.00/10 tokens  (bucket empty)
+        // => Request 12: REJECT | 0.00/10 tokens
+    }
 
-	fmt.Printf("\nBurst allowed: %d/12\n", burstAllowed)
-	// => Burst allowed: 10/12  (10 allowed, 2 rejected after bucket empty)
+    fmt.Printf("\nBurst allowed: %d/12\n", burstAllowed)
+    // => Burst allowed: 10/12  (10 allowed, 2 rejected after bucket empty)
 
-	// Wait for refill: 5 tokens/sec * 1 second = 5 tokens refilled
-	time.Sleep(1 * time.Second)
-	fmt.Printf("\nAfter 1s wait: %s\n", limiter.status())
-	// => After 1s wait: 5.00/10 tokens  (5 tokens refilled)
+    // Wait for refill: 5 tokens/sec * 1 second = 5 tokens refilled
+    time.Sleep(1 * time.Second)
+    fmt.Printf("\nAfter 1s wait: %s\n", limiter.status())
+    // => After 1s wait: 5.00/10 tokens  (5 tokens refilled)
 
-	// 5 more requests should succeed
-	for i := 0; i < 5; i++ {
-		allowed := limiter.allow(1)
-		label := "ALLOW"
-		if !allowed {
-			label = "REJECT"
-		}
-		fmt.Printf("  Request %d: %s | %s\n", i+1, label, limiter.status())
-		// => All 5 allowed; bucket depletes back to 0
-	}
+    // 5 more requests should succeed
+    for i := 0; i < 5; i++ {
+        allowed := limiter.allow(1)
+        label := "ALLOW"
+        if !allowed {
+            label = "REJECT"
+        }
+        fmt.Printf("  Request %d: %s | %s\n", i+1, label, limiter.status())
+        // => All 5 allowed; bucket depletes back to 0
+    }
 }
 ```
 
@@ -4688,25 +4688,25 @@ package main
 import "fmt"
 
 type Order struct {
-	ID        string
-	Amount    int
-	CreatedAt int
+    ID        string
+    Amount    int
+    CreatedAt int
 }
 
 // Simulated database of orders (sorted by created_at desc)
 var orders []Order
 
 func init() {
-	orders = make([]Order, 100)
-	for i := 0; i < 100; i++ {
-		orders[i] = Order{
-			ID:        fmt.Sprintf("ord_%04d", i+1),
-			Amount:    100 + i + 1,
-			CreatedAt: 1000000 - i - 1,
-		}
-	}
-	// => 100 orders: ord_0001 (created_at=999999) through ord_0100 (created_at=999900)
-	// => Sorted descending by created_at (newest first)
+    orders = make([]Order, 100)
+    for i := 0; i < 100; i++ {
+        orders[i] = Order{
+            ID:        fmt.Sprintf("ord_%04d", i+1),
+            Amount:    100 + i + 1,
+            CreatedAt: 1000000 - i - 1,
+        }
+    }
+    // => 100 orders: ord_0001 (created_at=999999) through ord_0100 (created_at=999900)
+    // => Sorted descending by created_at (newest first)
 }
 
 // ===========================================================================
@@ -4716,27 +4716,27 @@ func init() {
 // ===========================================================================
 
 func getOrdersOffset(offset, limit int) map[string]interface{} {
-	// => offset: how many rows to skip from the beginning
-	// => limit: how many rows to return
-	end := offset + limit
-	if end > len(orders) {
-		end = len(orders)
-	}
-	pageData := orders[offset:end]
-	// => Slice the list — equivalent to SQL: LIMIT 10 OFFSET 20
+    // => offset: how many rows to skip from the beginning
+    // => limit: how many rows to return
+    end := offset + limit
+    if end > len(orders) {
+        end = len(orders)
+    }
+    pageData := orders[offset:end]
+    // => Slice the list — equivalent to SQL: LIMIT 10 OFFSET 20
 
-	hasNext := offset+limit < len(orders)
-	var nextOffset interface{}
-	if hasNext {
-		nextOffset = offset + limit
-	}
+    hasNext := offset+limit < len(orders)
+    var nextOffset interface{}
+    if hasNext {
+        nextOffset = offset + limit
+    }
 
-	return map[string]interface{}{
-		"data":        pageData,
-		"total":       len(orders),
-		"has_next":    hasNext,
-		"next_offset": nextOffset,
-	}
+    return map[string]interface{}{
+        "data":        pageData,
+        "total":       len(orders),
+        "has_next":    hasNext,
+        "next_offset": nextOffset,
+    }
 }
 
 // ===========================================================================
@@ -4746,74 +4746,74 @@ func getOrdersOffset(offset, limit int) map[string]interface{} {
 // ===========================================================================
 
 func getOrdersCursor(afterID string, limit int) map[string]interface{} {
-	// => afterID: ID of last item seen ("" for first page)
-	// => Return limit items that come AFTER afterID in sort order
+    // => afterID: ID of last item seen ("" for first page)
+    // => Return limit items that come AFTER afterID in sort order
 
-	startIdx := 0
-	if afterID != "" {
-		// Find position of cursor item
-		for i, o := range orders {
-			if o.ID == afterID {
-				startIdx = i + 1
-				break
-			}
-		}
-		// => startIdx is one past the cursor item
-	}
+    startIdx := 0
+    if afterID != "" {
+        // Find position of cursor item
+        for i, o := range orders {
+            if o.ID == afterID {
+                startIdx = i + 1
+                break
+            }
+        }
+        // => startIdx is one past the cursor item
+    }
 
-	end := startIdx + limit
-	if end > len(orders) {
-		end = len(orders)
-	}
-	pageData := orders[startIdx:end]
-	// => Returns items after the cursor
+    end := startIdx + limit
+    if end > len(orders) {
+        end = len(orders)
+    }
+    pageData := orders[startIdx:end]
+    // => Returns items after the cursor
 
-	var nextCursor interface{}
-	if len(pageData) == limit {
-		nextCursor = pageData[len(pageData)-1].ID
-	}
-	// => nextCursor is ID of last item in this page
-	// => nil means no more pages (fewer items returned than limit)
+    var nextCursor interface{}
+    if len(pageData) == limit {
+        nextCursor = pageData[len(pageData)-1].ID
+    }
+    // => nextCursor is ID of last item in this page
+    // => nil means no more pages (fewer items returned than limit)
 
-	return map[string]interface{}{
-		"data":        pageData,
-		"next_cursor": nextCursor,
-		// => Client passes next_cursor as afterID in next request
-	}
+    return map[string]interface{}{
+        "data":        pageData,
+        "next_cursor": nextCursor,
+        // => Client passes next_cursor as afterID in next request
+    }
 }
 
 func orderIDs(data interface{}) []string {
-	orderSlice := data.([]Order)
-	ids := make([]string, len(orderSlice))
-	for i, o := range orderSlice {
-		ids[i] = o.ID
-	}
-	return ids
+    orderSlice := data.([]Order)
+    ids := make([]string, len(orderSlice))
+    for i, o := range orderSlice {
+        ids[i] = o.ID
+    }
+    return ids
 }
 
 func main() {
-	fmt.Println("=== Offset Pagination ===")
-	page1 := getOrdersOffset(0, 5)
-	fmt.Printf("Page 1: %v | has_next=%v\n", orderIDs(page1["data"]), page1["has_next"])
-	// => Page 1: [ord_0001 ord_0002 ord_0003 ord_0004 ord_0005] | has_next=true
+    fmt.Println("=== Offset Pagination ===")
+    page1 := getOrdersOffset(0, 5)
+    fmt.Printf("Page 1: %v | has_next=%v\n", orderIDs(page1["data"]), page1["has_next"])
+    // => Page 1: [ord_0001 ord_0002 ord_0003 ord_0004 ord_0005] | has_next=true
 
-	page2 := getOrdersOffset(5, 5)
-	fmt.Printf("Page 2: %v | has_next=%v\n", orderIDs(page2["data"]), page2["has_next"])
-	// => Page 2: [ord_0006 ord_0007 ord_0008 ord_0009 ord_0010] | has_next=true
+    page2 := getOrdersOffset(5, 5)
+    fmt.Printf("Page 2: %v | has_next=%v\n", orderIDs(page2["data"]), page2["has_next"])
+    // => Page 2: [ord_0006 ord_0007 ord_0008 ord_0009 ord_0010] | has_next=true
 
-	// Problem with offset: if a new order is inserted BEFORE page 2 is fetched,
-	// ord_0005 from page 1 appears again at the start of page 2 (shifted by 1)
+    // Problem with offset: if a new order is inserted BEFORE page 2 is fetched,
+    // ord_0005 from page 1 appears again at the start of page 2 (shifted by 1)
 
-	fmt.Println("\n=== Cursor Pagination ===")
-	cPage1 := getOrdersCursor("", 5)
-	fmt.Printf("Page 1: %v | next_cursor=%v\n", orderIDs(cPage1["data"]), cPage1["next_cursor"])
-	// => Page 1: [ord_0001 ... ord_0005] | next_cursor=ord_0005
+    fmt.Println("\n=== Cursor Pagination ===")
+    cPage1 := getOrdersCursor("", 5)
+    fmt.Printf("Page 1: %v | next_cursor=%v\n", orderIDs(cPage1["data"]), cPage1["next_cursor"])
+    // => Page 1: [ord_0001 ... ord_0005] | next_cursor=ord_0005
 
-	cPage2 := getOrdersCursor(cPage1["next_cursor"].(string), 5)
-	fmt.Printf("Page 2: %v | next_cursor=%v\n", orderIDs(cPage2["data"]), cPage2["next_cursor"])
-	// => Page 2: [ord_0006 ... ord_0010] | next_cursor=ord_0010
-	// => If a new order is inserted at the top between page 1 and page 2,
-	// => cursor still starts from ord_0005 — no duplicate or skipped items
+    cPage2 := getOrdersCursor(cPage1["next_cursor"].(string), 5)
+    fmt.Printf("Page 2: %v | next_cursor=%v\n", orderIDs(cPage2["data"]), cPage2["next_cursor"])
+    // => Page 2: [ord_0006 ... ord_0010] | next_cursor=ord_0010
+    // => If a new order is inserted at the top between page 1 and page 2,
+    // => cursor still starts from ord_0005 — no duplicate or skipped items
 }
 ```
 
@@ -4940,111 +4940,111 @@ A client retrying a failed request can accidentally trigger duplicate operations
 package main
 
 import (
-	"fmt"
-	"time"
+    "fmt"
+    "time"
 
-	"crypto/rand"
-	"encoding/hex"
+    "crypto/rand"
+    "encoding/hex"
 )
 
 func newUUID() string {
-	b := make([]byte, 16)
-	rand.Read(b)
-	return hex.EncodeToString(b)
+    b := make([]byte, 16)
+    rand.Read(b)
+    return hex.EncodeToString(b)
 }
 
 type processedEntry struct {
-	result    map[string]interface{}
-	createdAt float64
+    result    map[string]interface{}
+    createdAt float64
 }
 
 type PaymentProcessor struct {
-	// => Simulates a payment service with idempotency support
-	// => Clients include an idempotency key; server deduplicates retries
-	processed   map[string]processedEntry
-	// => processed is map[idempotencyKey -> {result, createdAt}]
-	chargeCount int
-	// => Tracks actual charges — must not increment on retries
+    // => Simulates a payment service with idempotency support
+    // => Clients include an idempotency key; server deduplicates retries
+    processed   map[string]processedEntry
+    // => processed is map[idempotencyKey -> {result, createdAt}]
+    chargeCount int
+    // => Tracks actual charges — must not increment on retries
 }
 
 func newPaymentProcessor() *PaymentProcessor {
-	return &PaymentProcessor{
-		processed: make(map[string]processedEntry),
-	}
+    return &PaymentProcessor{
+        processed: make(map[string]processedEntry),
+    }
 }
 
 func (p *PaymentProcessor) charge(idempotencyKey, userID string, amountCents int) map[string]interface{} {
-	// => idempotencyKey: UUID generated by client BEFORE the first attempt
-	// => Same key on retry => same result; no duplicate charge
+    // => idempotencyKey: UUID generated by client BEFORE the first attempt
+    // => Same key on retry => same result; no duplicate charge
 
-	// Step 1: Check if this key was already processed
-	if existing, ok := p.processed[idempotencyKey]; ok {
-		fmt.Printf("  [IDEMPOTENT REPLAY] key=%s... returning cached result\n", idempotencyKey[:8])
-		return existing.result
-		// => Return exact same response as original request
-		// => No duplicate charge — operation is idempotent
-	}
+    // Step 1: Check if this key was already processed
+    if existing, ok := p.processed[idempotencyKey]; ok {
+        fmt.Printf("  [IDEMPOTENT REPLAY] key=%s... returning cached result\n", idempotencyKey[:8])
+        return existing.result
+        // => Return exact same response as original request
+        // => No duplicate charge — operation is idempotent
+    }
 
-	// Step 2: Execute the actual charge (only for first request with this key)
-	p.chargeCount++
-	chargeID := fmt.Sprintf("charge_%04d", p.chargeCount)
-	// => chargeID is "charge_0001" for first charge
+    // Step 2: Execute the actual charge (only for first request with this key)
+    p.chargeCount++
+    chargeID := fmt.Sprintf("charge_%04d", p.chargeCount)
+    // => chargeID is "charge_0001" for first charge
 
-	result := map[string]interface{}{
-		"charge_id":    chargeID,
-		"user_id":      userID,
-		"amount_cents": amountCents,
-		"status":       "success",
-		"timestamp":    time.Now().Unix(),
-	}
-	// => result is the authoritative payment record
+    result := map[string]interface{}{
+        "charge_id":    chargeID,
+        "user_id":      userID,
+        "amount_cents": amountCents,
+        "status":       "success",
+        "timestamp":    time.Now().Unix(),
+    }
+    // => result is the authoritative payment record
 
-	// Step 3: Store result under idempotency key
-	p.processed[idempotencyKey] = processedEntry{
-		result:    result,
-		createdAt: float64(time.Now().Unix()),
-	}
-	// => Stored result survives retries — key acts as deduplication token
+    // Step 3: Store result under idempotency key
+    p.processed[idempotencyKey] = processedEntry{
+        result:    result,
+        createdAt: float64(time.Now().Unix()),
+    }
+    // => Stored result survives retries — key acts as deduplication token
 
-	fmt.Printf("  [CHARGED] %s for user=%s, amount=%dc\n", chargeID, userID, amountCents)
-	return result
+    fmt.Printf("  [CHARGED] %s for user=%s, amount=%dc\n", chargeID, userID, amountCents)
+    return result
 }
 
 func main() {
-	processor := newPaymentProcessor()
+    processor := newPaymentProcessor()
 
-	// Client generates idempotency key BEFORE making the request
-	idemKey := newUUID()
-	// => idemKey is a UUID: "a1b2c3d4e5f6..."
-	// => Client stores this key to use for all retry attempts
+    // Client generates idempotency key BEFORE making the request
+    idemKey := newUUID()
+    // => idemKey is a UUID: "a1b2c3d4e5f6..."
+    // => Client stores this key to use for all retry attempts
 
-	fmt.Println("=== Payment with Idempotency Key ===")
-	fmt.Printf("Idempotency key: %s...\n\n", idemKey[:8])
+    fmt.Println("=== Payment with Idempotency Key ===")
+    fmt.Printf("Idempotency key: %s...\n\n", idemKey[:8])
 
-	// First attempt (network might time out before client receives response)
-	result1 := processor.charge(idemKey, "user_42", 4999)
-	// => [CHARGED] charge_0001 for user=user_42, amount=4999c
-	fmt.Printf("Attempt 1: %s | total charges: %d\n\n", result1["charge_id"], processor.chargeCount)
-	// => Attempt 1: charge_0001 | total charges: 1
+    // First attempt (network might time out before client receives response)
+    result1 := processor.charge(idemKey, "user_42", 4999)
+    // => [CHARGED] charge_0001 for user=user_42, amount=4999c
+    fmt.Printf("Attempt 1: %s | total charges: %d\n\n", result1["charge_id"], processor.chargeCount)
+    // => Attempt 1: charge_0001 | total charges: 1
 
-	// Retry 1: client timed out, retries with SAME key
-	result2 := processor.charge(idemKey, "user_42", 4999)
-	// => [IDEMPOTENT REPLAY] key=a1b2c3d4... returning cached result
-	fmt.Printf("Attempt 2: %s | total charges: %d\n\n", result2["charge_id"], processor.chargeCount)
-	// => Attempt 2: charge_0001 | total charges: 1 (no new charge!)
+    // Retry 1: client timed out, retries with SAME key
+    result2 := processor.charge(idemKey, "user_42", 4999)
+    // => [IDEMPOTENT REPLAY] key=a1b2c3d4... returning cached result
+    fmt.Printf("Attempt 2: %s | total charges: %d\n\n", result2["charge_id"], processor.chargeCount)
+    // => Attempt 2: charge_0001 | total charges: 1 (no new charge!)
 
-	// Retry 2: client still unsure, retries again
-	result3 := processor.charge(idemKey, "user_42", 4999)
-	// => [IDEMPOTENT REPLAY] returning cached result
-	fmt.Printf("Attempt 3: %s | total charges: %d\n\n", result3["charge_id"], processor.chargeCount)
-	// => Attempt 3: charge_0001 | total charges: 1 (still no duplicate!)
+    // Retry 2: client still unsure, retries again
+    result3 := processor.charge(idemKey, "user_42", 4999)
+    // => [IDEMPOTENT REPLAY] returning cached result
+    fmt.Printf("Attempt 3: %s | total charges: %d\n\n", result3["charge_id"], processor.chargeCount)
+    // => Attempt 3: charge_0001 | total charges: 1 (still no duplicate!)
 
-	// New payment with different key — does create a new charge
-	newKey := newUUID()
-	result4 := processor.charge(newKey, "user_42", 1000)
-	// => [CHARGED] charge_0002 for user=user_42, amount=1000c
-	fmt.Printf("New payment: %s | total charges: %d\n", result4["charge_id"], processor.chargeCount)
-	// => New payment: charge_0002 | total charges: 2
+    // New payment with different key — does create a new charge
+    newKey := newUUID()
+    result4 := processor.charge(newKey, "user_42", 1000)
+    // => [CHARGED] charge_0002 for user=user_42, amount=1000c
+    fmt.Printf("New payment: %s | total charges: %d\n", result4["charge_id"], processor.chargeCount)
+    // => New payment: charge_0002 | total charges: 2
 }
 ```
 
@@ -5165,122 +5165,122 @@ Health checks tell orchestration systems (Kubernetes, load balancers, AWS ALB) w
 package main
 
 import (
-	"fmt"
-	"strings"
-	"time"
+    "fmt"
+    "strings"
+    "time"
 )
 
 type ServiceHealthChecker struct {
-	// => Tracks service health for liveness and readiness probes
-	// => Kubernetes calls /healthz (liveness) and /ready (readiness) periodically
-	startedAt         time.Time
-	dbConnected       bool
-	// => False initially — service starts connecting to DB asynchronously
-	cacheWarmed       bool
-	// => False initially — cache populates after DB connection
-	consecutiveErrors int
-	// => Tracks recent error rate — too many errors signals liveness failure
-	maxAllowedErrors  int
-	// => After 10 consecutive errors, consider process unhealthy (restart it)
+    // => Tracks service health for liveness and readiness probes
+    // => Kubernetes calls /healthz (liveness) and /ready (readiness) periodically
+    startedAt         time.Time
+    dbConnected       bool
+    // => False initially — service starts connecting to DB asynchronously
+    cacheWarmed       bool
+    // => False initially — cache populates after DB connection
+    consecutiveErrors int
+    // => Tracks recent error rate — too many errors signals liveness failure
+    maxAllowedErrors  int
+    // => After 10 consecutive errors, consider process unhealthy (restart it)
 }
 
 func newHealthChecker() *ServiceHealthChecker {
-	return &ServiceHealthChecker{
-		startedAt:        time.Now(),
-		maxAllowedErrors: 10,
-	}
+    return &ServiceHealthChecker{
+        startedAt:        time.Now(),
+        maxAllowedErrors: 10,
+    }
 }
 
 func (h *ServiceHealthChecker) simulateStartup() {
-	// => Simulates async startup tasks that happen after process starts
-	go func() {
-		time.Sleep(2 * time.Second)
-		// => Simulates 2-second database connection setup
-		h.dbConnected = true
-		fmt.Println("  [DB] Connection established")
-	}()
+    // => Simulates async startup tasks that happen after process starts
+    go func() {
+        time.Sleep(2 * time.Second)
+        // => Simulates 2-second database connection setup
+        h.dbConnected = true
+        fmt.Println("  [DB] Connection established")
+    }()
 
-	go func() {
-		time.Sleep(3 * time.Second)
-		// => Cache warm-up starts after DB connects; takes 1 more second
-		h.cacheWarmed = true
-		fmt.Println("  [CACHE] Warm-up complete")
-	}()
-	// => Both run concurrently; cache warm-up overlaps with DB connection
+    go func() {
+        time.Sleep(3 * time.Second)
+        // => Cache warm-up starts after DB connects; takes 1 more second
+        h.cacheWarmed = true
+        fmt.Println("  [CACHE] Warm-up complete")
+    }()
+    // => Both run concurrently; cache warm-up overlaps with DB connection
 }
 
 func (h *ServiceHealthChecker) livenessCheck() map[string]interface{} {
-	// => Answers: "Is this process fundamentally healthy?"
-	// => Failure causes Kubernetes to RESTART the pod
-	// => Should only fail for truly unrecoverable states
+    // => Answers: "Is this process fundamentally healthy?"
+    // => Failure causes Kubernetes to RESTART the pod
+    // => Should only fail for truly unrecoverable states
 
-	if h.consecutiveErrors >= h.maxAllowedErrors {
-		return map[string]interface{}{
-			"status": "unhealthy",
-			"reason": fmt.Sprintf("Too many errors: %d", h.consecutiveErrors),
-			"action": "restart",
-		}
-		// => Signal orchestrator to restart — process is stuck
-	}
+    if h.consecutiveErrors >= h.maxAllowedErrors {
+        return map[string]interface{}{
+            "status": "unhealthy",
+            "reason": fmt.Sprintf("Too many errors: %d", h.consecutiveErrors),
+            "action": "restart",
+        }
+        // => Signal orchestrator to restart — process is stuck
+    }
 
-	uptime := time.Since(h.startedAt).Seconds()
-	return map[string]interface{}{
-		"status":         "healthy",
-		"uptime_seconds": fmt.Sprintf("%.1f", uptime),
-	}
-	// => Process is alive and not in a stuck error loop
+    uptime := time.Since(h.startedAt).Seconds()
+    return map[string]interface{}{
+        "status":         "healthy",
+        "uptime_seconds": fmt.Sprintf("%.1f", uptime),
+    }
+    // => Process is alive and not in a stuck error loop
 }
 
 func (h *ServiceHealthChecker) readinessCheck() map[string]interface{} {
-	// => Answers: "Is this service ready to handle requests?"
-	// => Failure causes load balancer to REMOVE from rotation (no restart)
-	// => Should fail during startup or temporary unavailability
+    // => Answers: "Is this service ready to handle requests?"
+    // => Failure causes load balancer to REMOVE from rotation (no restart)
+    // => Should fail during startup or temporary unavailability
 
-	var issues []string
+    var issues []string
 
-	if !h.dbConnected {
-		issues = append(issues, "database not connected")
-		// => Not ready: can't serve requests without DB
-	}
+    if !h.dbConnected {
+        issues = append(issues, "database not connected")
+        // => Not ready: can't serve requests without DB
+    }
 
-	if !h.cacheWarmed {
-		issues = append(issues, "cache not warmed")
-		// => Not ready: serving requests before cache warm-up would hammer DB
-	}
+    if !h.cacheWarmed {
+        issues = append(issues, "cache not warmed")
+        // => Not ready: serving requests before cache warm-up would hammer DB
+    }
 
-	if len(issues) > 0 {
-		return map[string]interface{}{
-			"status": "not_ready",
-			"issues": strings.Join(issues, ", "),
-			// => Load balancer stops sending traffic until issues resolve
-		}
-	}
+    if len(issues) > 0 {
+        return map[string]interface{}{
+            "status": "not_ready",
+            "issues": strings.Join(issues, ", "),
+            // => Load balancer stops sending traffic until issues resolve
+        }
+    }
 
-	return map[string]interface{}{"status": "ready"}
-	// => All dependencies healthy: service can accept traffic
+    return map[string]interface{}{"status": "ready"}
+    // => All dependencies healthy: service can accept traffic
 }
 
 func main() {
-	checker := newHealthChecker()
-	checker.simulateStartup()
-	// => Starts async DB connection (2s) and cache warm-up (3s)
+    checker := newHealthChecker()
+    checker.simulateStartup()
+    // => Starts async DB connection (2s) and cache warm-up (3s)
 
-	fmt.Println("=== Health Check Simulation ===")
-	for t := 0; t < 4; t++ {
-		time.Sleep(1 * time.Second)
-		elapsed := t + 1
-		liveness := checker.livenessCheck()
-		readiness := checker.readinessCheck()
-		fmt.Printf("t=%ds: liveness=%s, readiness=%s", elapsed, liveness["status"], readiness["status"])
-		if issues, ok := readiness["issues"]; ok {
-			fmt.Printf(" (%s)", issues)
-		}
-		fmt.Println()
-		// => t=1s: liveness=healthy, readiness=not_ready (database not connected, cache not warmed)
-		// => t=2s: liveness=healthy, readiness=not_ready (database not connected, cache not warmed)
-		// => t=3s: liveness=healthy, readiness=not_ready (cache not warmed)
-		// => t=4s: liveness=healthy, readiness=ready
-	}
+    fmt.Println("=== Health Check Simulation ===")
+    for t := 0; t < 4; t++ {
+        time.Sleep(1 * time.Second)
+        elapsed := t + 1
+        liveness := checker.livenessCheck()
+        readiness := checker.readinessCheck()
+        fmt.Printf("t=%ds: liveness=%s, readiness=%s", elapsed, liveness["status"], readiness["status"])
+        if issues, ok := readiness["issues"]; ok {
+            fmt.Printf(" (%s)", issues)
+        }
+        fmt.Println()
+        // => t=1s: liveness=healthy, readiness=not_ready (database not connected, cache not warmed)
+        // => t=2s: liveness=healthy, readiness=not_ready (database not connected, cache not warmed)
+        // => t=3s: liveness=healthy, readiness=not_ready (cache not warmed)
+        // => t=4s: liveness=healthy, readiness=ready
+    }
 }
 ```
 
@@ -5437,151 +5437,151 @@ graph LR
 package main
 
 import (
-	"fmt"
-	"sync"
-	"time"
+    "fmt"
+    "sync"
+    "time"
 )
 
 type Envelope struct {
-	ID          string
-	Payload     map[string]interface{}
-	PublishedAt time.Time
+    ID          string
+    Payload     map[string]interface{}
+    PublishedAt time.Time
 }
 
 type SimpleMessageQueue struct {
-	// => In-memory message queue (simulates RabbitMQ, SQS, Kafka at concept level)
-	// => Producer publishes; consumers subscribe and process asynchronously
-	name        string
-	queue       chan Envelope
-	// => Buffered channel acts as thread-safe FIFO queue
-	subscribers []func(Envelope)
-	// => List of consumer callback functions
-	mu          sync.Mutex
+    // => In-memory message queue (simulates RabbitMQ, SQS, Kafka at concept level)
+    // => Producer publishes; consumers subscribe and process asynchronously
+    name        string
+    queue       chan Envelope
+    // => Buffered channel acts as thread-safe FIFO queue
+    subscribers []func(Envelope)
+    // => List of consumer callback functions
+    mu          sync.Mutex
 }
 
 func newMessageQueue(name string) *SimpleMessageQueue {
-	return &SimpleMessageQueue{
-		name:  name,
-		queue: make(chan Envelope, 100),
-	}
+    return &SimpleMessageQueue{
+        name:  name,
+        queue: make(chan Envelope, 100),
+    }
 }
 
 func (mq *SimpleMessageQueue) publish(message map[string]interface{}) string {
-	// => Producer calls this to put a message into the queue
-	envelope := Envelope{
-		ID:          fmt.Sprintf("msg_%d", time.Now().UnixMilli()),
-		Payload:     message,
-		PublishedAt: time.Now(),
-	}
-	mq.queue <- envelope
-	// => Send adds to channel; non-blocking if buffer not full
-	// => Producer does NOT wait for consumer — key benefit of queuing
-	msgType := "unknown"
-	if t, ok := message["type"].(string); ok {
-		msgType = t
-	}
-	fmt.Printf("  [QUEUE] Published: %s msg_id=%s\n", msgType, envelope.ID[len(envelope.ID)-4:])
-	return envelope.ID
+    // => Producer calls this to put a message into the queue
+    envelope := Envelope{
+        ID:          fmt.Sprintf("msg_%d", time.Now().UnixMilli()),
+        Payload:     message,
+        PublishedAt: time.Now(),
+    }
+    mq.queue <- envelope
+    // => Send adds to channel; non-blocking if buffer not full
+    // => Producer does NOT wait for consumer — key benefit of queuing
+    msgType := "unknown"
+    if t, ok := message["type"].(string); ok {
+        msgType = t
+    }
+    fmt.Printf("  [QUEUE] Published: %s msg_id=%s\n", msgType, envelope.ID[len(envelope.ID)-4:])
+    return envelope.ID
 }
 
 func (mq *SimpleMessageQueue) subscribe(consumerFn func(Envelope)) {
-	mq.mu.Lock()
-	defer mq.mu.Unlock()
-	mq.subscribers = append(mq.subscribers, consumerFn)
-	// => Register a consumer function to process messages
-	// => Multiple consumers possible (fan-out pattern)
+    mq.mu.Lock()
+    defer mq.mu.Unlock()
+    mq.subscribers = append(mq.subscribers, consumerFn)
+    // => Register a consumer function to process messages
+    // => Multiple consumers possible (fan-out pattern)
 }
 
 func (mq *SimpleMessageQueue) startConsuming() {
-	// => Background goroutine that delivers messages to subscribers
-	go func() {
-		for envelope := range mq.queue {
-			mq.mu.Lock()
-			subs := make([]func(Envelope), len(mq.subscribers))
-			copy(subs, mq.subscribers)
-			mq.mu.Unlock()
+    // => Background goroutine that delivers messages to subscribers
+    go func() {
+        for envelope := range mq.queue {
+            mq.mu.Lock()
+            subs := make([]func(Envelope), len(mq.subscribers))
+            copy(subs, mq.subscribers)
+            mq.mu.Unlock()
 
-			for _, subscriber := range subs {
-				func() {
-					defer func() {
-						if r := recover(); r != nil {
-							fmt.Printf("  [ERROR] Consumer failed: %v\n", r)
-							// => In production: move to dead-letter queue for investigation
-						}
-					}()
-					subscriber(envelope)
-					// => Each subscriber processes the message independently
-				}()
-			}
-		}
-	}()
+            for _, subscriber := range subs {
+                func() {
+                    defer func() {
+                        if r := recover(); r != nil {
+                            fmt.Printf("  [ERROR] Consumer failed: %v\n", r)
+                            // => In production: move to dead-letter queue for investigation
+                        }
+                    }()
+                    subscriber(envelope)
+                    // => Each subscriber processes the message independently
+                }()
+            }
+        }
+    }()
 }
 
 func main() {
-	// --- Services ---
-	mq := newMessageQueue("order-events")
+    // --- Services ---
+    mq := newMessageQueue("order-events")
 
-	// Consumer 1: Email notification service
-	emailConsumer := func(envelope Envelope) {
-		msg := envelope.Payload
-		if msg["type"] == "order.created" {
-			fmt.Printf("  [EMAIL] Sending confirmation to %s for order %s\n",
-				msg["email"], msg["order_id"])
-			// => Sends email asynchronously; order service didn't wait for this
-		}
-	}
+    // Consumer 1: Email notification service
+    emailConsumer := func(envelope Envelope) {
+        msg := envelope.Payload
+        if msg["type"] == "order.created" {
+            fmt.Printf("  [EMAIL] Sending confirmation to %s for order %s\n",
+                msg["email"], msg["order_id"])
+            // => Sends email asynchronously; order service didn't wait for this
+        }
+    }
 
-	// Consumer 2: Inventory update service
-	inventoryConsumer := func(envelope Envelope) {
-		msg := envelope.Payload
-		if msg["type"] == "order.created" {
-			items := msg["items"].([]map[string]interface{})
-			for _, item := range items {
-				fmt.Printf("  [INVENTORY] Reserving %v x %s\n", item["qty"], item["sku"])
-				// => Decrements stock for each ordered item
-			}
-		}
-	}
+    // Consumer 2: Inventory update service
+    inventoryConsumer := func(envelope Envelope) {
+        msg := envelope.Payload
+        if msg["type"] == "order.created" {
+            items := msg["items"].([]map[string]interface{})
+            for _, item := range items {
+                fmt.Printf("  [INVENTORY] Reserving %v x %s\n", item["qty"], item["sku"])
+                // => Decrements stock for each ordered item
+            }
+        }
+    }
 
-	mq.subscribe(emailConsumer)
-	mq.subscribe(inventoryConsumer)
-	// => Both services consume from same queue — fan-out pattern
+    mq.subscribe(emailConsumer)
+    mq.subscribe(inventoryConsumer)
+    // => Both services consume from same queue — fan-out pattern
 
-	mq.startConsuming()
-	// => Background consumer goroutine started
+    mq.startConsuming()
+    // => Background consumer goroutine started
 
-	fmt.Println("=== Message Queue Demo ===\n")
+    fmt.Println("=== Message Queue Demo ===\n")
 
-	// Order service publishes event — doesn't wait for email or inventory
-	mq.publish(map[string]interface{}{
-		"type":     "order.created",
-		"order_id": "ord_001",
-		"email":    "alice@example.com",
-		"items": []map[string]interface{}{
-			{"sku": "SKU-A", "qty": 2},
-			{"sku": "SKU-B", "qty": 1},
-		},
-	})
-	// => [QUEUE] Published: order.created
-	// => Order service immediately available to handle next request
+    // Order service publishes event — doesn't wait for email or inventory
+    mq.publish(map[string]interface{}{
+        "type":     "order.created",
+        "order_id": "ord_001",
+        "email":    "alice@example.com",
+        "items": []map[string]interface{}{
+            {"sku": "SKU-A", "qty": 2},
+            {"sku": "SKU-B", "qty": 1},
+        },
+    })
+    // => [QUEUE] Published: order.created
+    // => Order service immediately available to handle next request
 
-	mq.publish(map[string]interface{}{
-		"type":     "order.created",
-		"order_id": "ord_002",
-		"email":    "bob@example.com",
-		"items": []map[string]interface{}{
-			{"sku": "SKU-C", "qty": 1},
-		},
-	})
-	// => [QUEUE] Published: order.created
+    mq.publish(map[string]interface{}{
+        "type":     "order.created",
+        "order_id": "ord_002",
+        "email":    "bob@example.com",
+        "items": []map[string]interface{}{
+            {"sku": "SKU-C", "qty": 1},
+        },
+    })
+    // => [QUEUE] Published: order.created
 
-	time.Sleep(500 * time.Millisecond)
-	// => Allow consumers to process the queued messages
-	fmt.Println("\nAll messages processed asynchronously")
-	// => [EMAIL] Sending confirmation to alice@example.com for order ord_001
-	// => [INVENTORY] Reserving 2 x SKU-A
-	// => [INVENTORY] Reserving 1 x SKU-B
-	// => [EMAIL] Sending confirmation to bob@example.com for order ord_002
+    time.Sleep(500 * time.Millisecond)
+    // => Allow consumers to process the queued messages
+    fmt.Println("\nAll messages processed asynchronously")
+    // => [EMAIL] Sending confirmation to alice@example.com for order ord_001
+    // => [INVENTORY] Reserving 2 x SKU-A
+    // => [INVENTORY] Reserving 1 x SKU-B
+    // => [EMAIL] Sending confirmation to bob@example.com for order ord_002
 }
 ```
 
@@ -5729,130 +5729,130 @@ In a dynamic environment where services scale in and out, IP addresses change co
 package main
 
 import (
-	"crypto/rand"
-	"encoding/hex"
-	"fmt"
-	"time"
+    "crypto/rand"
+    "encoding/hex"
+    "fmt"
+    "time"
 )
 
 func shortUUID() string {
-	b := make([]byte, 4)
-	rand.Read(b)
-	return hex.EncodeToString(b)
+    b := make([]byte, 4)
+    rand.Read(b)
+    return hex.EncodeToString(b)
 }
 
 type instanceInfo struct {
-	address      string
-	registeredAt time.Time
-	healthy      bool
+    address      string
+    registeredAt time.Time
+    healthy      bool
 }
 
 type ServiceRegistry struct {
-	// => Central store of available service instances
-	// => Services register on startup, deregister on shutdown
-	// => Registry removes instances that fail health checks
-	registry map[string]map[string]*instanceInfo
-	// => registry is map[serviceName -> map[instanceID -> instanceInfo]]
+    // => Central store of available service instances
+    // => Services register on startup, deregister on shutdown
+    // => Registry removes instances that fail health checks
+    registry map[string]map[string]*instanceInfo
+    // => registry is map[serviceName -> map[instanceID -> instanceInfo]]
 }
 
 func newRegistry() *ServiceRegistry {
-	return &ServiceRegistry{registry: make(map[string]map[string]*instanceInfo)}
+    return &ServiceRegistry{registry: make(map[string]map[string]*instanceInfo)}
 }
 
 func (sr *ServiceRegistry) register(serviceName, host string, port int) string {
-	// => Called when a service instance starts
-	instanceID := shortUUID()
-	// => Short UUID: "a1b2c3d4" — unique per instance
+    // => Called when a service instance starts
+    instanceID := shortUUID()
+    // => Short UUID: "a1b2c3d4" — unique per instance
 
-	if _, ok := sr.registry[serviceName]; !ok {
-		sr.registry[serviceName] = make(map[string]*instanceInfo)
-		// => Create service entry if first instance of this service
-	}
+    if _, ok := sr.registry[serviceName]; !ok {
+        sr.registry[serviceName] = make(map[string]*instanceInfo)
+        // => Create service entry if first instance of this service
+    }
 
-	sr.registry[serviceName][instanceID] = &instanceInfo{
-		address:      fmt.Sprintf("%s:%d", host, port),
-		registeredAt: time.Now(),
-		healthy:      true,
-	}
-	fmt.Printf("  [REGISTRY] Registered %s@%s:%d (id=%s)\n", serviceName, host, port, instanceID)
-	return instanceID
-	// => Returns instanceID for later deregistration
+    sr.registry[serviceName][instanceID] = &instanceInfo{
+        address:      fmt.Sprintf("%s:%d", host, port),
+        registeredAt: time.Now(),
+        healthy:      true,
+    }
+    fmt.Printf("  [REGISTRY] Registered %s@%s:%d (id=%s)\n", serviceName, host, port, instanceID)
+    return instanceID
+    // => Returns instanceID for later deregistration
 }
 
 func (sr *ServiceRegistry) deregister(serviceName, instanceID string) {
-	if instances, ok := sr.registry[serviceName]; ok {
-		if _, exists := instances[instanceID]; exists {
-			delete(instances, instanceID)
-			// => Remove instance from registry (service shutdown)
-			fmt.Printf("  [REGISTRY] Deregistered %s id=%s\n", serviceName, instanceID)
-		}
-	}
+    if instances, ok := sr.registry[serviceName]; ok {
+        if _, exists := instances[instanceID]; exists {
+            delete(instances, instanceID)
+            // => Remove instance from registry (service shutdown)
+            fmt.Printf("  [REGISTRY] Deregistered %s id=%s\n", serviceName, instanceID)
+        }
+    }
 }
 
 func (sr *ServiceRegistry) markUnhealthy(serviceName, instanceID string) {
-	if instances, ok := sr.registry[serviceName]; ok {
-		if inst, exists := instances[instanceID]; exists {
-			inst.healthy = false
-			// => Health check failed: mark unhealthy but don't remove yet
-			// => Load balancer will stop routing to this instance
-		}
-	}
+    if instances, ok := sr.registry[serviceName]; ok {
+        if inst, exists := instances[instanceID]; exists {
+            inst.healthy = false
+            // => Health check failed: mark unhealthy but don't remove yet
+            // => Load balancer will stop routing to this instance
+        }
+    }
 }
 
 func (sr *ServiceRegistry) getHealthyInstances(serviceName string) []string {
-	instances := sr.registry[serviceName]
-	var addresses []string
-	for _, inst := range instances {
-		if inst.healthy {
-			addresses = append(addresses, inst.address)
-		}
-	}
-	return addresses
-	// => Returns list of addresses for healthy instances only
-	// => Consumer uses these to make requests (with client-side load balancing)
+    instances := sr.registry[serviceName]
+    var addresses []string
+    for _, inst := range instances {
+        if inst.healthy {
+            addresses = append(addresses, inst.address)
+        }
+    }
+    return addresses
+    // => Returns list of addresses for healthy instances only
+    // => Consumer uses these to make requests (with client-side load balancing)
 }
 
 func main() {
-	registry := newRegistry()
+    registry := newRegistry()
 
-	fmt.Println("=== Service Discovery Demo ===\n")
+    fmt.Println("=== Service Discovery Demo ===\n")
 
-	// API Gateway service: 2 instances start up
-	gw1 := registry.register("api-gateway", "10.0.1.1", 8080)
-	gw2 := registry.register("api-gateway", "10.0.1.2", 8080)
-	// => [REGISTRY] Registered api-gateway@10.0.1.1:8080 (id=...)
-	// => [REGISTRY] Registered api-gateway@10.0.1.2:8080 (id=...)
+    // API Gateway service: 2 instances start up
+    gw1 := registry.register("api-gateway", "10.0.1.1", 8080)
+    gw2 := registry.register("api-gateway", "10.0.1.2", 8080)
+    // => [REGISTRY] Registered api-gateway@10.0.1.1:8080 (id=...)
+    // => [REGISTRY] Registered api-gateway@10.0.1.2:8080 (id=...)
 
-	// User service: 1 instance
-	_ = registry.register("user-service", "10.0.2.1", 9001)
+    // User service: 1 instance
+    _ = registry.register("user-service", "10.0.2.1", 9001)
 
-	fmt.Println()
-	// Consumer looks up api-gateway instances
-	gateways := registry.getHealthyInstances("api-gateway")
-	fmt.Printf("Healthy api-gateway instances: %v\n", gateways)
-	// => Healthy api-gateway instances: [10.0.1.1:8080 10.0.1.2:8080]
+    fmt.Println()
+    // Consumer looks up api-gateway instances
+    gateways := registry.getHealthyInstances("api-gateway")
+    fmt.Printf("Healthy api-gateway instances: %v\n", gateways)
+    // => Healthy api-gateway instances: [10.0.1.1:8080 10.0.1.2:8080]
 
-	// One gateway fails health check
-	registry.markUnhealthy("api-gateway", gw1)
-	// => Instance 1 fails health check
+    // One gateway fails health check
+    registry.markUnhealthy("api-gateway", gw1)
+    // => Instance 1 fails health check
 
-	gateways = registry.getHealthyInstances("api-gateway")
-	fmt.Printf("After health check failure: %v\n", gateways)
-	// => After health check failure: [10.0.1.2:8080]
-	// => Traffic automatically routes only to healthy instance
+    gateways = registry.getHealthyInstances("api-gateway")
+    fmt.Printf("After health check failure: %v\n", gateways)
+    // => After health check failure: [10.0.1.2:8080]
+    // => Traffic automatically routes only to healthy instance
 
-	// Scale out: third gateway starts
-	_ = registry.register("api-gateway", "10.0.1.3", 8080)
-	gateways = registry.getHealthyInstances("api-gateway")
-	fmt.Printf("After scale-out: %v\n", gateways)
-	// => After scale-out: [10.0.1.2:8080 10.0.1.3:8080]
-	// => New instance immediately discoverable; no config changes needed
+    // Scale out: third gateway starts
+    _ = registry.register("api-gateway", "10.0.1.3", 8080)
+    gateways = registry.getHealthyInstances("api-gateway")
+    fmt.Printf("After scale-out: %v\n", gateways)
+    // => After scale-out: [10.0.1.2:8080 10.0.1.3:8080]
+    // => New instance immediately discoverable; no config changes needed
 
-	// Service deregisters on clean shutdown
-	registry.deregister("api-gateway", gw2)
-	gateways = registry.getHealthyInstances("api-gateway")
-	fmt.Printf("After graceful shutdown of gw2: %v\n", gateways)
-	// => After graceful shutdown of gw2: [10.0.1.3:8080]
+    // Service deregisters on clean shutdown
+    registry.deregister("api-gateway", gw2)
+    gateways = registry.getHealthyInstances("api-gateway")
+    fmt.Printf("After graceful shutdown of gw2: %v\n", gateways)
+    // => After graceful shutdown of gw2: [10.0.1.3:8080]
 }
 ```
 
@@ -6008,135 +6008,135 @@ stateDiagram-v2
 package main
 
 import (
-	"errors"
-	"fmt"
-	"time"
+    "errors"
+    "fmt"
+    "time"
 )
 
 const (
-	StateClosed   = "CLOSED"
-	// => Normal state: requests pass through
-	StateOpen     = "OPEN"
-	// => Tripped state: requests fail fast without calling dependency
-	StateHalfOpen = "HALF_OPEN"
-	// => Testing state: one probe request allowed to check recovery
+    StateClosed   = "CLOSED"
+    // => Normal state: requests pass through
+    StateOpen     = "OPEN"
+    // => Tripped state: requests fail fast without calling dependency
+    StateHalfOpen = "HALF_OPEN"
+    // => Testing state: one probe request allowed to check recovery
 )
 
 type CircuitBreaker struct {
-	state            string
-	// => Start in CLOSED (normal) state
-	failureThreshold int
-	// => Open circuit after this many consecutive failures
-	recoveryTimeout  time.Duration
-	// => Seconds to wait before attempting recovery (HALF_OPEN)
-	failureCount     int
-	// => Counts consecutive failures in CLOSED state
-	lastFailureTime  time.Time
-	// => When the circuit opened — used to calculate recovery timeout
+    state            string
+    // => Start in CLOSED (normal) state
+    failureThreshold int
+    // => Open circuit after this many consecutive failures
+    recoveryTimeout  time.Duration
+    // => Seconds to wait before attempting recovery (HALF_OPEN)
+    failureCount     int
+    // => Counts consecutive failures in CLOSED state
+    lastFailureTime  time.Time
+    // => When the circuit opened — used to calculate recovery timeout
 }
 
 func newCircuitBreaker(failureThreshold int, recoveryTimeout time.Duration) *CircuitBreaker {
-	return &CircuitBreaker{
-		state:            StateClosed,
-		failureThreshold: failureThreshold,
-		recoveryTimeout:  recoveryTimeout,
-	}
+    return &CircuitBreaker{
+        state:            StateClosed,
+        failureThreshold: failureThreshold,
+        recoveryTimeout:  recoveryTimeout,
+    }
 }
 
 func (cb *CircuitBreaker) shouldAttemptReset() bool {
-	if cb.lastFailureTime.IsZero() {
-		return false
-	}
-	return time.Since(cb.lastFailureTime) >= cb.recoveryTimeout
-	// => True if enough time has passed to try recovery
+    if cb.lastFailureTime.IsZero() {
+        return false
+    }
+    return time.Since(cb.lastFailureTime) >= cb.recoveryTimeout
+    // => True if enough time has passed to try recovery
 }
 
 func (cb *CircuitBreaker) call(fn func() (interface{}, error)) (interface{}, error) {
-	// => Wraps a function call with circuit breaker logic
+    // => Wraps a function call with circuit breaker logic
 
-	if cb.state == StateOpen {
-		if cb.shouldAttemptReset() {
-			cb.state = StateHalfOpen
-			fmt.Println("  [CB] OPEN -> HALF_OPEN (testing recovery)")
-			// => Transition: try one probe request
-		} else {
-			return nil, errors.New("Circuit OPEN — fast fail (dependency unavailable)")
-			// => Fail immediately without calling the dependency
-			// => Caller gets fast error instead of waiting for timeout
-		}
-	}
+    if cb.state == StateOpen {
+        if cb.shouldAttemptReset() {
+            cb.state = StateHalfOpen
+            fmt.Println("  [CB] OPEN -> HALF_OPEN (testing recovery)")
+            // => Transition: try one probe request
+        } else {
+            return nil, errors.New("Circuit OPEN — fast fail (dependency unavailable)")
+            // => Fail immediately without calling the dependency
+            // => Caller gets fast error instead of waiting for timeout
+        }
+    }
 
-	result, err := fn()
-	// => Call the wrapped function (e.g., HTTP request to dependency)
+    result, err := fn()
+    // => Call the wrapped function (e.g., HTTP request to dependency)
 
-	if err == nil {
-		if cb.state == StateHalfOpen {
-			cb.state = StateClosed
-			cb.failureCount = 0
-			fmt.Println("  [CB] HALF_OPEN -> CLOSED (dependency recovered)")
-			// => Probe succeeded: circuit closes, normal operation resumes
-		}
-		return result, nil
-	}
+    if err == nil {
+        if cb.state == StateHalfOpen {
+            cb.state = StateClosed
+            cb.failureCount = 0
+            fmt.Println("  [CB] HALF_OPEN -> CLOSED (dependency recovered)")
+            // => Probe succeeded: circuit closes, normal operation resumes
+        }
+        return result, nil
+    }
 
-	// Error path
-	cb.failureCount++
-	// => Increment failure counter
+    // Error path
+    cb.failureCount++
+    // => Increment failure counter
 
-	if cb.state == StateHalfOpen || cb.failureCount >= cb.failureThreshold {
-		cb.state = StateOpen
-		cb.lastFailureTime = time.Now()
-		fmt.Printf("  [CB] -> OPEN (failures=%d, threshold=%d)\n", cb.failureCount, cb.failureThreshold)
-		// => Trip circuit: stop forwarding requests
-	}
+    if cb.state == StateHalfOpen || cb.failureCount >= cb.failureThreshold {
+        cb.state = StateOpen
+        cb.lastFailureTime = time.Now()
+        fmt.Printf("  [CB] -> OPEN (failures=%d, threshold=%d)\n", cb.failureCount, cb.failureThreshold)
+        // => Trip circuit: stop forwarding requests
+    }
 
-	return nil, err
-	// => Return error so caller knows the call failed
+    return nil, err
+    // => Return error so caller knows the call failed
 }
 
 func (cb *CircuitBreaker) status() string {
-	return fmt.Sprintf("state=%s, failures=%d", cb.state, cb.failureCount)
+    return fmt.Sprintf("state=%s, failures=%d", cb.state, cb.failureCount)
 }
 
 func main() {
-	// Simulated dependency (payment processor)
-	callCount := 0
+    // Simulated dependency (payment processor)
+    callCount := 0
 
-	callPaymentService := func() (interface{}, error) {
-		callCount++
-		n := callCount
-		if n >= 2 && n <= 7 {
-			return nil, errors.New("Payment service timeout")
-			// => Calls 2-7 simulate the dependency being down
-		}
-		return map[string]interface{}{"status": "ok", "call": n}, nil
-		// => Calls 1 and 8+ succeed
-	}
+    callPaymentService := func() (interface{}, error) {
+        callCount++
+        n := callCount
+        if n >= 2 && n <= 7 {
+            return nil, errors.New("Payment service timeout")
+            // => Calls 2-7 simulate the dependency being down
+        }
+        return map[string]interface{}{"status": "ok", "call": n}, nil
+        // => Calls 1 and 8+ succeed
+    }
 
-	cb := newCircuitBreaker(3, 2*time.Second)
+    cb := newCircuitBreaker(3, 2*time.Second)
 
-	fmt.Println("=== Circuit Breaker Demo ===\n")
-	for i := 0; i < 12; i++ {
-		result, err := cb.call(callPaymentService)
-		if err != nil {
-			fmt.Printf("  Call %2d: FAIL '%s' | %s\n", i+1, err, cb.status())
-		} else {
-			fmt.Printf("  Call %2d: SUCCESS %v | %s\n", i+1, result, cb.status())
-		}
+    fmt.Println("=== Circuit Breaker Demo ===\n")
+    for i := 0; i < 12; i++ {
+        result, err := cb.call(callPaymentService)
+        if err != nil {
+            fmt.Printf("  Call %2d: FAIL '%s' | %s\n", i+1, err, cb.status())
+        } else {
+            fmt.Printf("  Call %2d: SUCCESS %v | %s\n", i+1, result, cb.status())
+        }
 
-		if i == 8 {
-			fmt.Println("  (waiting 2s for recovery timeout...)")
-			time.Sleep(2100 * time.Millisecond)
-			// => After recovery_timeout, circuit transitions to HALF_OPEN
-		}
-		// => Call  1: SUCCESS — circuit CLOSED, normal
-		// => Call  2-4: FAIL — failures accumulate
-		// => Call  4: circuit trips OPEN (failures=3 >= threshold=3)
-		// => Call  5-7: FAIL 'Circuit OPEN' — fast fail, dependency not called
-		// => (wait 2s)
-		// => Call  9: HALF_OPEN -> probes dependency -> succeeds -> CLOSED
-		// => Call 10-12: SUCCESS — circuit CLOSED again
-	}
+        if i == 8 {
+            fmt.Println("  (waiting 2s for recovery timeout...)")
+            time.Sleep(2100 * time.Millisecond)
+            // => After recovery_timeout, circuit transitions to HALF_OPEN
+        }
+        // => Call  1: SUCCESS — circuit CLOSED, normal
+        // => Call  2-4: FAIL — failures accumulate
+        // => Call  4: circuit trips OPEN (failures=3 >= threshold=3)
+        // => Call  5-7: FAIL 'Circuit OPEN' — fast fail, dependency not called
+        // => (wait 2s)
+        // => Call  9: HALF_OPEN -> probes dependency -> succeeds -> CLOSED
+        // => Call 10-12: SUCCESS — circuit CLOSED again
+    }
 }
 ```
 
@@ -6281,144 +6281,144 @@ Consistent hashing assigns data to nodes in a way that minimizes redistribution 
 package main
 
 import (
-	"crypto/md5"
-	"encoding/binary"
-	"fmt"
-	"sort"
+    "crypto/md5"
+    "encoding/binary"
+    "fmt"
+    "sort"
 )
 
 type ConsistentHashRing struct {
-	// => Hash ring: maps both nodes and keys to positions 0 to 2^32
-	// => Keys route to the nearest clockwise node on the ring
-	virtualNodes    int
-	// => virtualNodes: each physical node gets N positions on ring
-	// => More virtual nodes = better load distribution
-	// => virtualNodes=3 means 3 positions per server
-	ring            map[uint32]string
-	// => ring is map[hashPosition -> nodeName]
-	sortedPositions []uint32
-	// => Sorted list of hash positions for efficient binary search
+    // => Hash ring: maps both nodes and keys to positions 0 to 2^32
+    // => Keys route to the nearest clockwise node on the ring
+    virtualNodes    int
+    // => virtualNodes: each physical node gets N positions on ring
+    // => More virtual nodes = better load distribution
+    // => virtualNodes=3 means 3 positions per server
+    ring            map[uint32]string
+    // => ring is map[hashPosition -> nodeName]
+    sortedPositions []uint32
+    // => Sorted list of hash positions for efficient binary search
 }
 
 func newConsistentHashRing(virtualNodes int) *ConsistentHashRing {
-	return &ConsistentHashRing{
-		virtualNodes: virtualNodes,
-		ring:         make(map[uint32]string),
-	}
+    return &ConsistentHashRing{
+        virtualNodes: virtualNodes,
+        ring:         make(map[uint32]string),
+    }
 }
 
 func (ch *ConsistentHashRing) hash(key string) uint32 {
-	h := md5.Sum([]byte(key))
-	// => MD5 produces 128-bit hash; use first 32 bits as ring position
-	return binary.BigEndian.Uint32(h[:4])
-	// => Range: 0 to 2^32-1 (4 billion positions)
+    h := md5.Sum([]byte(key))
+    // => MD5 produces 128-bit hash; use first 32 bits as ring position
+    return binary.BigEndian.Uint32(h[:4])
+    // => Range: 0 to 2^32-1 (4 billion positions)
 }
 
 func (ch *ConsistentHashRing) addNode(nodeName string) {
-	// => Place node at virtualNodes positions on the ring
-	for i := 0; i < ch.virtualNodes; i++ {
-		virtualKey := fmt.Sprintf("%s:vnode:%d", nodeName, i)
-		// => Each virtual node has unique key: "cache-1:vnode:0", "cache-1:vnode:1", etc.
-		position := ch.hash(virtualKey)
-		// => Hashes to a position on the ring
+    // => Place node at virtualNodes positions on the ring
+    for i := 0; i < ch.virtualNodes; i++ {
+        virtualKey := fmt.Sprintf("%s:vnode:%d", nodeName, i)
+        // => Each virtual node has unique key: "cache-1:vnode:0", "cache-1:vnode:1", etc.
+        position := ch.hash(virtualKey)
+        // => Hashes to a position on the ring
 
-		ch.ring[position] = nodeName
-		ch.sortedPositions = append(ch.sortedPositions, position)
-	}
-	sort.Slice(ch.sortedPositions, func(i, j int) bool {
-		return ch.sortedPositions[i] < ch.sortedPositions[j]
-	})
-	// => Maintain sorted order for efficient binary search
+        ch.ring[position] = nodeName
+        ch.sortedPositions = append(ch.sortedPositions, position)
+    }
+    sort.Slice(ch.sortedPositions, func(i, j int) bool {
+        return ch.sortedPositions[i] < ch.sortedPositions[j]
+    })
+    // => Maintain sorted order for efficient binary search
 
-	fmt.Printf("  Added %s at %d ring positions\n", nodeName, ch.virtualNodes)
+    fmt.Printf("  Added %s at %d ring positions\n", nodeName, ch.virtualNodes)
 }
 
 func (ch *ConsistentHashRing) removeNode(nodeName string) {
-	for i := 0; i < ch.virtualNodes; i++ {
-		virtualKey := fmt.Sprintf("%s:vnode:%d", nodeName, i)
-		position := ch.hash(virtualKey)
-		delete(ch.ring, position)
-		// => Removes node's positions from ring
-	}
-	// Rebuild sorted positions
-	ch.sortedPositions = ch.sortedPositions[:0]
-	for pos := range ch.ring {
-		ch.sortedPositions = append(ch.sortedPositions, pos)
-	}
-	sort.Slice(ch.sortedPositions, func(i, j int) bool {
-		return ch.sortedPositions[i] < ch.sortedPositions[j]
-	})
-	fmt.Printf("  Removed %s\n", nodeName)
+    for i := 0; i < ch.virtualNodes; i++ {
+        virtualKey := fmt.Sprintf("%s:vnode:%d", nodeName, i)
+        position := ch.hash(virtualKey)
+        delete(ch.ring, position)
+        // => Removes node's positions from ring
+    }
+    // Rebuild sorted positions
+    ch.sortedPositions = ch.sortedPositions[:0]
+    for pos := range ch.ring {
+        ch.sortedPositions = append(ch.sortedPositions, pos)
+    }
+    sort.Slice(ch.sortedPositions, func(i, j int) bool {
+        return ch.sortedPositions[i] < ch.sortedPositions[j]
+    })
+    fmt.Printf("  Removed %s\n", nodeName)
 }
 
 func (ch *ConsistentHashRing) getNode(key string) string {
-	// => Find which node should store/serve this key
-	if len(ch.sortedPositions) == 0 {
-		return ""
-	}
+    // => Find which node should store/serve this key
+    if len(ch.sortedPositions) == 0 {
+        return ""
+    }
 
-	keyPosition := ch.hash(key)
-	// => Hash the key to a ring position
+    keyPosition := ch.hash(key)
+    // => Hash the key to a ring position
 
-	idx := sort.Search(len(ch.sortedPositions), func(i int) bool {
-		return ch.sortedPositions[i] > keyPosition
-	})
-	// => sort.Search: find first position > keyPosition
-	// => This is the "nearest clockwise node"
+    idx := sort.Search(len(ch.sortedPositions), func(i int) bool {
+        return ch.sortedPositions[i] > keyPosition
+    })
+    // => sort.Search: find first position > keyPosition
+    // => This is the "nearest clockwise node"
 
-	if idx == len(ch.sortedPositions) {
-		idx = 0
-		// => Wrap around: keyPosition is past the last node, use first node
-	}
+    if idx == len(ch.sortedPositions) {
+        idx = 0
+        // => Wrap around: keyPosition is past the last node, use first node
+    }
 
-	return ch.ring[ch.sortedPositions[idx]]
-	// => Return the node name at this position
+    return ch.ring[ch.sortedPositions[idx]]
+    // => Return the node name at this position
 }
 
 func main() {
-	ring := newConsistentHashRing(3)
+    ring := newConsistentHashRing(3)
 
-	fmt.Println("=== Consistent Hash Ring ===\n")
-	ring.addNode("cache-1")
-	ring.addNode("cache-2")
-	ring.addNode("cache-3")
-	// => Each node placed at 3 positions on the 0..2^32 ring
+    fmt.Println("=== Consistent Hash Ring ===\n")
+    ring.addNode("cache-1")
+    ring.addNode("cache-2")
+    ring.addNode("cache-3")
+    // => Each node placed at 3 positions on the 0..2^32 ring
 
-	fmt.Println()
-	testKeys := []string{"user:1", "user:2", "user:3", "product:A", "product:B", "session:X"}
-	originalAssignments := make(map[string]string)
+    fmt.Println()
+    testKeys := []string{"user:1", "user:2", "user:3", "product:A", "product:B", "session:X"}
+    originalAssignments := make(map[string]string)
 
-	for _, key := range testKeys {
-		node := ring.getNode(key)
-		originalAssignments[key] = node
-		fmt.Printf("  %-15s -> %s\n", key, node)
-		// => user:1          -> cache-2
-		// => user:2          -> cache-1
-		// => etc.
-	}
+    for _, key := range testKeys {
+        node := ring.getNode(key)
+        originalAssignments[key] = node
+        fmt.Printf("  %-15s -> %s\n", key, node)
+        // => user:1          -> cache-2
+        // => user:2          -> cache-1
+        // => etc.
+    }
 
-	fmt.Println("\nAdding cache-4 (simulates scale-out):")
-	ring.addNode("cache-4")
-	fmt.Println()
+    fmt.Println("\nAdding cache-4 (simulates scale-out):")
+    ring.addNode("cache-4")
+    fmt.Println()
 
-	moved := 0
-	for _, key := range testKeys {
-		newNode := ring.getNode(key)
-		changed := newNode != originalAssignments[key]
-		if changed {
-			moved++
-		}
-		label := "[stable]"
-		if changed {
-			label = "[MOVED]"
-		}
-		fmt.Printf("  %-15s -> %s %s\n", key, newNode, label)
-		// => Most keys remain on same node — only keys between cache-4 and its predecessor move
-	}
+    moved := 0
+    for _, key := range testKeys {
+        newNode := ring.getNode(key)
+        changed := newNode != originalAssignments[key]
+        if changed {
+            moved++
+        }
+        label := "[stable]"
+        if changed {
+            label = "[MOVED]"
+        }
+        fmt.Printf("  %-15s -> %s %s\n", key, newNode, label)
+        // => Most keys remain on same node — only keys between cache-4 and its predecessor move
+    }
 
-	fmt.Printf("\nKeys moved after adding 1 node: %d/%d\n", moved, len(testKeys))
-	// => Keys moved: ~2/6 (approximately 1/N of keys move when adding 1 node to N+1 total)
-	// => With modular hashing (key % N), ALL keys would reassign (cache invalidation disaster)
+    fmt.Printf("\nKeys moved after adding 1 node: %d/%d\n", moved, len(testKeys))
+    // => Keys moved: ~2/6 (approximately 1/N of keys move when adding 1 node to N+1 total)
+    // => With modular hashing (key % N), ALL keys would reassign (cache invalidation disaster)
 }
 ```
 
@@ -6566,105 +6566,105 @@ const yearSeconds = 365 * 24 * 3600
 // => yearSeconds is 31,536,000 seconds per year
 
 func downtimeSeconds(percentage float64) float64 {
-	return float64(yearSeconds) * (1 - percentage/100)
-	// => Returns seconds of allowed downtime per year
+    return float64(yearSeconds) * (1 - percentage/100)
+    // => Returns seconds of allowed downtime per year
 }
 
 func formatDuration(seconds float64) string {
-	h := int(seconds) / 3600
-	m := (int(seconds) % 3600) / 60
-	s := int(seconds) % 60
-	if h > 24 {
-		d := h / 24
-		h = h % 24
-		return fmt.Sprintf("%dd %dh %dm", d, h, m)
-	}
-	return fmt.Sprintf("%dh %dm %ds", h, m, s)
-	// => Returns human-readable duration string
+    h := int(seconds) / 3600
+    m := (int(seconds) % 3600) / 60
+    s := int(seconds) % 60
+    if h > 24 {
+        d := h / 24
+        h = h % 24
+        return fmt.Sprintf("%dd %dh %dm", d, h, m)
+    }
+    return fmt.Sprintf("%dh %dm %ds", h, m, s)
+    // => Returns human-readable duration string
 }
 
 func main() {
-	// ============================================================
-	// SLA TIER DEFINITIONS
-	// ============================================================
+    // ============================================================
+    // SLA TIER DEFINITIONS
+    // ============================================================
 
-	type slaTier struct {
-		sla          string
-		architecture string
-	}
+    type slaTier struct {
+        sla          string
+        architecture string
+    }
 
-	tiers := []slaTier{
-		{"99.0", "Single server, no redundancy"},
-		{"99.9", "Redundant servers, health checks, basic failover"},
-		{"99.95", "Multi-AZ deployment, automated failover"},
-		{"99.99", "Multi-region active-active, zero-downtime deploys"},
-		{"99.999", "Global redundancy, chaos engineering, dedicated SRE team"},
-	}
+    tiers := []slaTier{
+        {"99.0", "Single server, no redundancy"},
+        {"99.9", "Redundant servers, health checks, basic failover"},
+        {"99.95", "Multi-AZ deployment, automated failover"},
+        {"99.99", "Multi-region active-active, zero-downtime deploys"},
+        {"99.999", "Global redundancy, chaos engineering, dedicated SRE team"},
+    }
 
-	fmt.Println("=== Availability SLA Tiers ===\n")
-	fmt.Printf("%-8s %-20s %-18s %s\n", "SLA", "Downtime/Year", "Downtime/Month", "Architecture Required")
-	fmt.Println("--------------------------------------------------------------------------------")
+    fmt.Println("=== Availability SLA Tiers ===\n")
+    fmt.Printf("%-8s %-20s %-18s %s\n", "SLA", "Downtime/Year", "Downtime/Month", "Architecture Required")
+    fmt.Println("--------------------------------------------------------------------------------")
 
-	for _, t := range tiers {
-		var pct float64
-		fmt.Sscanf(t.sla, "%f", &pct)
-		annualDowntime := downtimeSeconds(pct)
-		monthlyDowntime := annualDowntime / 12
-		fmt.Printf("%-8s %-20s %-18s %s\n",
-			t.sla+"%",
-			formatDuration(annualDowntime),
-			formatDuration(monthlyDowntime),
-			t.architecture)
-		// => 99.0%    3d 15h 36m           7h 13m 48s         Single server, no redundancy
-		// => 99.9%    8h 45m 36s           43m 49s             Redundant servers...
-		// => 99.99%   52m 36s              4m 23s              Multi-region...
-		// => 99.999%  5m 15s               26s                 Global redundancy...
-	}
+    for _, t := range tiers {
+        var pct float64
+        fmt.Sscanf(t.sla, "%f", &pct)
+        annualDowntime := downtimeSeconds(pct)
+        monthlyDowntime := annualDowntime / 12
+        fmt.Printf("%-8s %-20s %-18s %s\n",
+            t.sla+"%",
+            formatDuration(annualDowntime),
+            formatDuration(monthlyDowntime),
+            t.architecture)
+        // => 99.0%    3d 15h 36m           7h 13m 48s         Single server, no redundancy
+        // => 99.9%    8h 45m 36s           43m 49s             Redundant servers...
+        // => 99.99%   52m 36s              4m 23s              Multi-region...
+        // => 99.999%  5m 15s               26s                 Global redundancy...
+    }
 
-	// ============================================================
-	// COMPOSITE AVAILABILITY: chained dependencies multiply
-	// ============================================================
+    // ============================================================
+    // COMPOSITE AVAILABILITY: chained dependencies multiply
+    // ============================================================
 
-	fmt.Println("\n=== Composite Availability (Chained Services) ===\n")
+    fmt.Println("\n=== Composite Availability (Chained Services) ===\n")
 
-	type component struct {
-		name         string
-		availability float64
-	}
+    type component struct {
+        name         string
+        availability float64
+    }
 
-	components := []component{
-		{"API Gateway", 0.9999},   // => 99.99% — 52 min/year downtime
-		{"Auth Service", 0.9999},  // => 99.99%
-		{"User Service", 0.9990}, // => 99.9%  — 8.75 hr/year downtime
-		{"Database", 0.9995},     // => 99.95%
-	}
-	// => Each component may fail independently
+    components := []component{
+        {"API Gateway", 0.9999},   // => 99.99% — 52 min/year downtime
+        {"Auth Service", 0.9999},  // => 99.99%
+        {"User Service", 0.9990}, // => 99.9%  — 8.75 hr/year downtime
+        {"Database", 0.9995},     // => 99.95%
+    }
+    // => Each component may fail independently
 
-	composite := 1.0
-	for _, c := range components {
-		composite *= c.availability
-		// => Composite = product of all availabilities
-		// => If any component fails, the whole chain fails
-		// => Each additional dependency multiplies (reduces) overall availability
+    composite := 1.0
+    for _, c := range components {
+        composite *= c.availability
+        // => Composite = product of all availabilities
+        // => If any component fails, the whole chain fails
+        // => Each additional dependency multiplies (reduces) overall availability
 
-		fmt.Printf("  + %-20s %.3f%% => composite: %.4f%%\n",
-			c.name, c.availability*100, composite*100)
-		// => + API Gateway           99.990% => composite: 99.9900%
-		// => + Auth Service          99.990% => composite: 99.9800%
-		// => + User Service          99.900% => composite: 99.8802%
-		// => + Database              99.950% => composite: 99.8302%
-	}
+        fmt.Printf("  + %-20s %.3f%% => composite: %.4f%%\n",
+            c.name, c.availability*100, composite*100)
+        // => + API Gateway           99.990% => composite: 99.9900%
+        // => + Auth Service          99.990% => composite: 99.9800%
+        // => + User Service          99.900% => composite: 99.8802%
+        // => + Database              99.950% => composite: 99.8302%
+    }
 
-	annualDowntime := downtimeSeconds(composite * 100)
-	fmt.Printf("\nComposite availability: %.4f%% (%s downtime/year)\n",
-		composite*100, formatDuration(annualDowntime))
-	// => Composite availability: 99.8302% (14h 43m 23s downtime/year)
-	// => Even with all components at 99.9%+, composite drops below 99.9%!
+    annualDowntime := downtimeSeconds(composite * 100)
+    fmt.Printf("\nComposite availability: %.4f%% (%s downtime/year)\n",
+        composite*100, formatDuration(annualDowntime))
+    // => Composite availability: 99.8302% (14h 43m 23s downtime/year)
+    // => Even with all components at 99.9%+, composite drops below 99.9%!
 
-	fmt.Println("\nLesson: Serial dependencies multiply failure probabilities.")
-	fmt.Println("Redundancy (parallel paths) improves composite availability.")
-	// => Solution: active-active redundancy means both paths must fail simultaneously
-	// => P(both fail) = P(A fails) * P(B fails) = 0.001 * 0.001 = 0.000001 (99.9999%)
+    fmt.Println("\nLesson: Serial dependencies multiply failure probabilities.")
+    fmt.Println("Redundancy (parallel paths) improves composite availability.")
+    // => Solution: active-active redundancy means both paths must fail simultaneously
+    // => P(both fail) = P(A fails) * P(B fails) = 0.001 * 0.001 = 0.000001 (99.9999%)
 }
 ```
 

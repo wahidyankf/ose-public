@@ -8,7 +8,7 @@ Week 0018, Phase 1 Week 6
 
 ---
 
-192 commits. 3 frontends fully Gherkin-compliant. Dependency graph audited to 68 edges.
+188 commits. 3 frontends fully Gherkin-compliant. Dependency graph audited to 68 edges.
 
 Last week was 11 backends. This week: the frontend side caught up, and the entire monorepo's dependency graph got a deep audit and fix.
 
@@ -20,7 +20,7 @@ Last week was 11 backends. This week: the frontend side caught up, and the entir
 
 **Backend Unit Test Refactoring**
 
-Refactored 5 backends (Go/Gin, Rust/Axum, Python/FastAPI, TypeScript/Effect, plus lint fixes) to call service functions directly instead of making HTTP calls in unit tests. Unit tests now match the three-level testing standard: mocked deps, no HTTP, Gherkin-driven.
+Refactored 4 backends (Go/Gin, Rust/Axum, Python/FastAPI, TypeScript/Effect) to call service functions directly instead of making HTTP calls in unit tests. Unit tests now match the three-level testing standard: mocked deps, no HTTP, Gherkin-driven.
 
 **Nx Dependency Graph Audit**
 
@@ -63,11 +63,11 @@ Updated all 5 C4 diagrams (context, container, component-be, component-fe, READM
 
 **By the numbers:**
 
-- 192 commits
-- 14 demo backends (11 languages), all CI green, all >= 90% coverage
+- 188 commits
+- 11 demo backends (10 languages), all CI green, all >= 90% coverage
 - 3 demo frontends, all Gherkin-compliant, all >= 70% coverage
 - 30 Nx projects, 68 dependency edges, 0 circular dependencies
-- 29 Gherkin feature files (14 BE + 15 FE), 170 total scenarios
+- 29 Gherkin feature files (14 BE + 15 FE), 174 total scenarios
 
 ---
 

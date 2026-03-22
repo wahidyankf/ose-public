@@ -33,7 +33,7 @@ graph TD
     subgraph SPECS["Specifications"]
         CONTRACT["OpenAPI 3.1 Contract<br/>──────────────────<br/>specs/apps/demo/contracts/<br/><br/>Types, endpoints, schemas<br/>Generates code via codegen"]:::spec
 
-        BE_GHERKIN["Backend Gherkin<br/>──────────────────<br/>specs/apps/demo/be/gherkin/<br/><br/>14 features, 78 scenarios<br/>9 domains"]:::spec
+        BE_GHERKIN["Backend Gherkin<br/>──────────────────<br/>specs/apps/demo/be/gherkin/<br/><br/>14 features, 82 scenarios<br/>9 domains"]:::spec
 
         FE_GHERKIN["Frontend Gherkin<br/>──────────────────<br/>specs/apps/demo/fe/gherkin/<br/><br/>15 features, 92 scenarios<br/>9 domains"]:::spec
     end

@@ -125,7 +125,7 @@ graph LR
 ## Gherkin Coverage by Component
 
 Each component above is exercised by Gherkin features from
-[`specs/apps/demo/be/gherkin/`](../be/gherkin/README.md) (14 features, 78 scenarios):
+[`specs/apps/demo/be/gherkin/`](../be/gherkin/README.md) (14 features, 82 scenarios):
 
 | Component                               | Gherkin Domain(s) | Features                                                         |
 | --------------------------------------- | ----------------- | ---------------------------------------------------------------- |
@@ -152,9 +152,9 @@ All 11 backend implementations generate types from the same OpenAPI 3.1 spec:
 
 | Level              | What                           | Gherkin            | Coverage |
 | ------------------ | ------------------------------ | ------------------ | -------- |
-| `test:unit`        | Service calls, mocked repos    | Yes (78 scenarios) | >= 90%   |
-| `test:integration` | Service calls, real PostgreSQL | Yes (78 scenarios) | N/A      |
-| `test:e2e`         | Full HTTP via Playwright       | Yes (78 scenarios) | N/A      |
+| `test:unit`        | Service calls, mocked repos    | Yes (82 scenarios) | >= 90%   |
+| `test:integration` | Service calls, real PostgreSQL | Yes (82 scenarios) | N/A      |
+| `test:e2e`         | Full HTTP via Playwright       | Yes (82 scenarios) | N/A      |
 
 ## Related
 

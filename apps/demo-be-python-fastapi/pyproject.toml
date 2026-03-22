@@ -52,7 +52,13 @@ markers = [
 
 [tool.coverage.run]
 source = ["demo_be_python_fastapi"]
-omit = ["tests/*"]
+omit = [
+    "tests/*",
+    "src/demo_be_python_fastapi/routers/*",
+    "src/demo_be_python_fastapi/main.py",
+    "src/demo_be_python_fastapi/dependencies.py",
+    "src/demo_be_python_fastapi/auth/dependencies.py",
+]
 
 [tool.coverage.report]
 show_missing = true

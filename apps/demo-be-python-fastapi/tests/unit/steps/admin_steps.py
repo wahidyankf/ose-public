@@ -1,13 +1,10 @@
-"""Unit BDD step definitions for admin feature."""
+"""BDD step definitions for admin feature."""
 
-import pytest
-from fastapi.testclient import TestClient
 from pytest_bdd import given, parsers, scenarios, then, when
 
+from tests.integration.service_client import FakeResponse, ServiceClient
+from tests.integration.steps.security_steps import _ADMIN_PASSWORD, _register_and_promote_admin
 from tests.unit.conftest import GHERKIN_ROOT
-from tests.unit.steps._helpers import _ADMIN_PASSWORD, register_and_promote_admin
-
-pytestmark = pytest.mark.unit
 
 scenarios(str(GHERKIN_ROOT / "admin" / "admin.feature"))
 
@@ -18,33 +15,20 @@ _PASSWORD = "Str0ng#Pass1"
     parsers.parse('an admin user "{username}" is registered and logged in'),
     target_fixture="admin_tokens",
 )
-def admin_login(client: TestClient, username: str) -> dict:
-    user_data = register_and_promote_admin(client, username, _ADMIN_PASSWORD)
-    resp = client.post(
-        "/api/v1/auth/login",
-        json={"username": username, "password": _ADMIN_PASSWORD},
-    )
-    assert resp.status_code == 200
-    return {**resp.json(), "admin_id": user_data["id"]}
+def admin_login(client: ServiceClient, username: str) -> dict:
+    user_data = _register_and_promote_admin(client, username, _ADMIN_PASSWORD)
+    tokens = client.login_user(username, _ADMIN_PASSWORD)
+    return {**tokens, "admin_id": user_data["id"]}
 
 
 @given(
     parsers.parse('users "{a}", "{b}", and "{c}" are registered'),
     target_fixture="registered_users",
 )
-def register_multiple_users(client: TestClient, a: str, b: str, c: str) -> list:
+def register_multiple_users(client: ServiceClient, a: str, b: str, c: str) -> list:
     users = []
     for username in [a, b, c]:
-        resp = client.post(
-            "/api/v1/auth/register",
-            json={
-                "username": username,
-                "email": f"{username}@example.com",
-                "password": _PASSWORD,
-            },
-        )
-        assert resp.status_code == 201
-        users.append(resp.json())
+        users.append(client.register_user(username))
     return users
 
 
@@ -52,35 +36,34 @@ def register_multiple_users(client: TestClient, a: str, b: str, c: str) -> list:
     parsers.parse('"{username}" has logged in and stored the access token'),
     target_fixture="alice_tokens",
 )
-def alice_login_for_admin(client: TestClient, username: str) -> dict:
-    resp = client.post(
-        "/api/v1/auth/login",
-        json={"username": username, "password": _PASSWORD},
-    )
-    assert resp.status_code == 200
-    return resp.json()
+def alice_login_for_admin(client: ServiceClient, username: str) -> dict:
+    return client.login_user(username, _PASSWORD)
 
 
 @given("alice's account has been disabled by the admin")
-def disable_alice_by_admin(client: TestClient, registered_users: list, admin_tokens: dict) -> None:
+def disable_alice_by_admin(
+    client: ServiceClient, registered_users: list, admin_tokens: dict
+) -> None:
     alice = next((u for u in registered_users if u["username"] == "alice"), None)
     assert alice is not None
-    resp = client.post(
-        f"/api/v1/admin/users/{alice['id']}/disable",
-        json={"reason": "Test disable"},
-        headers={"Authorization": f"Bearer {admin_tokens['accessToken']}"},
+    resp = client.post_admin_disable_user(
+        alice["id"],
+        f"Bearer {admin_tokens['accessToken']}",
+        reason="Test disable",
     )
     assert resp.status_code == 200
 
 
 @given("alice's account has been disabled")
-def alice_account_disabled(client: TestClient, registered_users: list, admin_tokens: dict) -> None:
+def alice_account_disabled(
+    client: ServiceClient, registered_users: list, admin_tokens: dict
+) -> None:
     alice = next((u for u in registered_users if u["username"] == "alice"), None)
     assert alice is not None
-    resp = client.post(
-        f"/api/v1/admin/users/{alice['id']}/disable",
-        json={"reason": "Initial disable"},
-        headers={"Authorization": f"Bearer {admin_tokens['accessToken']}"},
+    resp = client.post_admin_disable_user(
+        alice["id"],
+        f"Bearer {admin_tokens['accessToken']}",
+        reason="Initial disable",
     )
     assert resp.status_code == 200
 
@@ -89,22 +72,18 @@ def alice_account_disabled(client: TestClient, registered_users: list, admin_tok
 
 
 @when("the admin sends GET /api/v1/admin/users", target_fixture="response")
-def admin_list_users(client: TestClient, admin_tokens: dict):  # type: ignore[no-untyped-def]
-    return client.get(
-        "/api/v1/admin/users",
-        headers={"Authorization": f"Bearer {admin_tokens['accessToken']}"},
-    )
+def admin_list_users(client: ServiceClient, admin_tokens: dict) -> FakeResponse:
+    return client.get_admin_users(f"Bearer {admin_tokens['accessToken']}")
 
 
 @when(
     "the admin sends GET /api/v1/admin/users?search=alice@example.com",
     target_fixture="response",
 )
-def admin_search_users_by_email(client: TestClient, admin_tokens: dict):  # type: ignore[no-untyped-def]
-    return client.get(
-        "/api/v1/admin/users",
-        params={"search": "alice@example.com"},
-        headers={"Authorization": f"Bearer {admin_tokens['accessToken']}"},
+def admin_search_users_by_email(client: ServiceClient, admin_tokens: dict) -> FakeResponse:
+    return client.get_admin_users(
+        f"Bearer {admin_tokens['accessToken']}",
+        search="alice@example.com",
     )
 
 
@@ -112,16 +91,18 @@ def admin_search_users_by_email(client: TestClient, admin_tokens: dict):  # type
     parsers.parse("the admin sends POST /api/v1/admin/users/{{alice_id}}/disable with body {body}"),
     target_fixture="response",
 )
-def admin_disable_alice(client: TestClient, registered_users: list, admin_tokens: dict, body: str):  # type: ignore[no-untyped-def]
+def admin_disable_alice(
+    client: ServiceClient, registered_users: list, admin_tokens: dict, body: str
+) -> FakeResponse:
     import json
 
     alice = next((u for u in registered_users if u["username"] == "alice"), None)
     assert alice is not None
     data = json.loads(body)
-    return client.post(
-        f"/api/v1/admin/users/{alice['id']}/disable",
-        json=data,
-        headers={"Authorization": f"Bearer {admin_tokens['accessToken']}"},
+    return client.post_admin_disable_user(
+        alice["id"],
+        f"Bearer {admin_tokens['accessToken']}",
+        reason=data.get("reason"),
     )
 
 
@@ -129,23 +110,22 @@ def admin_disable_alice(client: TestClient, registered_users: list, admin_tokens
     "the client sends GET /api/v1/users/me with alice's access token",
     target_fixture="response",
 )
-def get_me_alice_token(client: TestClient, alice_tokens: dict):  # type: ignore[no-untyped-def]
-    return client.get(
-        "/api/v1/users/me",
-        headers={"Authorization": f"Bearer {alice_tokens['accessToken']}"},
-    )
+def get_me_alice_token(client: ServiceClient, alice_tokens: dict) -> FakeResponse:
+    return client.get_me(f"Bearer {alice_tokens['accessToken']}")
 
 
 @when(
     parsers.parse("the admin sends POST /api/v1/admin/users/{{alice_id}}/enable"),
     target_fixture="response",
 )
-def admin_enable_alice(client: TestClient, registered_users: list, admin_tokens: dict):  # type: ignore[no-untyped-def]
+def admin_enable_alice(
+    client: ServiceClient, registered_users: list, admin_tokens: dict
+) -> FakeResponse:
     alice = next((u for u in registered_users if u["username"] == "alice"), None)
     assert alice is not None
-    return client.post(
-        f"/api/v1/admin/users/{alice['id']}/enable",
-        headers={"Authorization": f"Bearer {admin_tokens['accessToken']}"},
+    return client.post_admin_enable_user(
+        alice["id"],
+        f"Bearer {admin_tokens['accessToken']}",
     )
 
 
@@ -153,12 +133,14 @@ def admin_enable_alice(client: TestClient, registered_users: list, admin_tokens:
     parsers.parse("the admin sends POST /api/v1/admin/users/{{alice_id}}/force-password-reset"),
     target_fixture="response",
 )
-def admin_force_password_reset(client: TestClient, registered_users: list, admin_tokens: dict):  # type: ignore[no-untyped-def]
+def admin_force_password_reset(
+    client: ServiceClient, registered_users: list, admin_tokens: dict
+) -> FakeResponse:
     alice = next((u for u in registered_users if u["username"] == "alice"), None)
     assert alice is not None
-    return client.post(
-        f"/api/v1/admin/users/{alice['id']}/force-password-reset",
-        headers={"Authorization": f"Bearer {admin_tokens['accessToken']}"},
+    return client.post_admin_force_password_reset(
+        alice["id"],
+        f"Bearer {admin_tokens['accessToken']}",
     )
 
 
@@ -168,7 +150,7 @@ def admin_force_password_reset(client: TestClient, registered_users: list, admin
 @then(
     'the response body should contain at least one user with "email" equal to "alice@example.com"'
 )
-def check_alice_in_results(response) -> None:  # type: ignore[no-untyped-def]
+def check_alice_in_results(response: FakeResponse) -> None:
     body = response.json()
     users = body.get("content", [])
     assert any(u.get("email") == "alice@example.com" for u in users), (
@@ -177,13 +159,14 @@ def check_alice_in_results(response) -> None:  # type: ignore[no-untyped-def]
 
 
 @then('alice\'s account status should be "disabled"')
-def check_alice_disabled(client: TestClient, registered_users: list, admin_tokens: dict) -> None:
+def check_alice_disabled(
+    client: ServiceClient, registered_users: list, admin_tokens: dict
+) -> None:
     alice = next((u for u in registered_users if u["username"] == "alice"), None)
     assert alice is not None
-    resp = client.get(
-        "/api/v1/admin/users",
-        params={"search": "alice@example.com"},
-        headers={"Authorization": f"Bearer {admin_tokens['accessToken']}"},
+    resp = client.get_admin_users(
+        f"Bearer {admin_tokens['accessToken']}",
+        search="alice@example.com",
     )
     body = resp.json()
     users = body.get("content", [])
@@ -193,13 +176,14 @@ def check_alice_disabled(client: TestClient, registered_users: list, admin_token
 
 
 @then('alice\'s account status should be "active"')
-def check_alice_active(client: TestClient, registered_users: list, admin_tokens: dict) -> None:
+def check_alice_active(
+    client: ServiceClient, registered_users: list, admin_tokens: dict
+) -> None:
     alice = next((u for u in registered_users if u["username"] == "alice"), None)
     assert alice is not None
-    resp = client.get(
-        "/api/v1/admin/users",
-        params={"search": "alice@example.com"},
-        headers={"Authorization": f"Bearer {admin_tokens['accessToken']}"},
+    resp = client.get_admin_users(
+        f"Bearer {admin_tokens['accessToken']}",
+        search="alice@example.com",
     )
     body = resp.json()
     users = body.get("content", [])

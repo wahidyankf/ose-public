@@ -1,14 +1,11 @@
-"""Unit BDD step definitions for user account feature."""
+"""BDD step definitions for user account feature."""
 
 import json
 
-import pytest
-from fastapi.testclient import TestClient
 from pytest_bdd import given, parsers, scenarios, when
 
+from tests.integration.service_client import FakeResponse, ServiceClient
 from tests.unit.conftest import GHERKIN_ROOT
-
-pytestmark = pytest.mark.unit
 
 scenarios(str(GHERKIN_ROOT / "user-lifecycle" / "user-account.feature"))
 
@@ -19,21 +16,13 @@ _PASSWORD = "Str0ng#Pass1"
     '"alice" has logged in and stored the access token',
     target_fixture="alice_tokens",
 )
-def alice_login(client: TestClient, registered_user: dict) -> dict:
-    resp = client.post(
-        "/api/v1/auth/login",
-        json={"username": "alice", "password": _PASSWORD},
-    )
-    assert resp.status_code == 200, f"Login failed: {resp.text}"
-    return resp.json()
+def alice_login(client: ServiceClient, registered_user: dict) -> dict:
+    return client.login_user("alice", _PASSWORD)
 
 
 @given("alice has deactivated her own account via POST /api/v1/users/me/deactivate")
-def alice_self_deactivate(client: TestClient, alice_tokens: dict) -> None:
-    resp = client.post(
-        "/api/v1/users/me/deactivate",
-        headers={"Authorization": f"Bearer {alice_tokens['accessToken']}"},
-    )
+def alice_self_deactivate(client: ServiceClient, alice_tokens: dict) -> None:
+    resp = client.post_me_deactivate(f"Bearer {alice_tokens['accessToken']}")
     assert resp.status_code == 200
 
 
@@ -41,23 +30,19 @@ def alice_self_deactivate(client: TestClient, alice_tokens: dict) -> None:
 
 
 @when("alice sends GET /api/v1/users/me", target_fixture="response")
-def alice_get_me(client: TestClient, alice_tokens: dict):  # type: ignore[no-untyped-def]
-    return client.get(
-        "/api/v1/users/me",
-        headers={"Authorization": f"Bearer {alice_tokens['accessToken']}"},
-    )
+def alice_get_me(client: ServiceClient, alice_tokens: dict) -> FakeResponse:
+    return client.get_me(f"Bearer {alice_tokens['accessToken']}")
 
 
 @when(
     parsers.parse("alice sends PATCH /api/v1/users/me with body {body}"),
     target_fixture="response",
 )
-def alice_patch_me(client: TestClient, alice_tokens: dict, body: str):  # type: ignore[no-untyped-def]
+def alice_patch_me(client: ServiceClient, alice_tokens: dict, body: str) -> FakeResponse:
     data = json.loads(body)
-    return client.patch(
-        "/api/v1/users/me",
-        json=data,
-        headers={"Authorization": f"Bearer {alice_tokens['accessToken']}"},
+    return client.patch_me(
+        f"Bearer {alice_tokens['accessToken']}",
+        data.get("displayName", ""),
     )
 
 
@@ -65,18 +50,15 @@ def alice_patch_me(client: TestClient, alice_tokens: dict, body: str):  # type: 
     parsers.parse("alice sends POST /api/v1/users/me/password with body {body}"),
     target_fixture="response",
 )
-def alice_change_password(client: TestClient, alice_tokens: dict, body: str):  # type: ignore[no-untyped-def]
+def alice_change_password(client: ServiceClient, alice_tokens: dict, body: str) -> FakeResponse:
     data = json.loads(body)
-    return client.post(
-        "/api/v1/users/me/password",
-        json=data,
-        headers={"Authorization": f"Bearer {alice_tokens['accessToken']}"},
+    return client.post_me_password(
+        f"Bearer {alice_tokens['accessToken']}",
+        data.get("oldPassword", ""),
+        data.get("newPassword", ""),
     )
 
 
 @when("alice sends POST /api/v1/users/me/deactivate", target_fixture="response")
-def alice_deactivate(client: TestClient, alice_tokens: dict):  # type: ignore[no-untyped-def]
-    return client.post(
-        "/api/v1/users/me/deactivate",
-        headers={"Authorization": f"Bearer {alice_tokens['accessToken']}"},
-    )
+def alice_deactivate(client: ServiceClient, alice_tokens: dict) -> FakeResponse:
+    return client.post_me_deactivate(f"Bearer {alice_tokens['accessToken']}")

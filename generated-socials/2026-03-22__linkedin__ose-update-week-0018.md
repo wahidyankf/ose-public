@@ -72,7 +72,7 @@ Updated all 5 C4 diagrams (context, container, component-be, component-fe, READM
 ---
 
 Phase 1 Goal: OrganicLever (productivity tracker)
-Stack: Frontend TBD + backend leaning toward F#/Giraffe, but still evaluating
+Stack: Next.js + XState + Effect TS (frontend) + F#/Giraffe (backend), still evaluating
 Timeline: Quality over deadlines, Insha Allah
 
 ---

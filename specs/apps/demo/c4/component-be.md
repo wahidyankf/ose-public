@@ -122,8 +122,43 @@ graph LR
     classDef external fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px,stroke-dasharray:5 5
 ```
 
+## Gherkin Coverage by Component
+
+Each component above is exercised by Gherkin features from
+[`specs/apps/demo/be/gherkin/`](../be/gherkin/README.md) (14 features, 78 scenarios):
+
+| Component                               | Gherkin Domain(s) | Features                                                         |
+| --------------------------------------- | ----------------- | ---------------------------------------------------------------- |
+| Health Handler                          | health            | health-check (2)                                                 |
+| Auth Handler + Auth Service             | authentication    | password-login (5), token-lifecycle (7)                          |
+| User Handler + User Service             | user-lifecycle    | registration (6), user-account (6)                               |
+| Admin Handler + Admin Service           | admin             | admin (6)                                                        |
+| Expense Handler + Expense Service       | expenses          | expense-management (7), currency-handling (6), unit-handling (4) |
+| Reporting Handler + Reporting Service   | expenses          | reporting (6)                                                    |
+| Attachment Handler + Attachment Service | expenses          | attachments (10)                                                 |
+| JWT Middleware + Token Repository       | token-management  | tokens (6)                                                       |
+| JWT Middleware + Password Hasher        | security          | security (5)                                                     |
+| (test infrastructure)                   | test-support      | test-api (2)                                                     |
+
+## API Contract
+
+All 11 backend implementations generate types from the same OpenAPI 3.1 spec:
+
+- **Source**: [`specs/apps/demo/contracts/openapi.yaml`](../contracts/openapi.yaml)
+- **Codegen target**: `nx run <backend>:codegen` (depends on `demo-contracts:bundle`)
+- **Output**: `<backend>/generated-contracts/`
+
+## Testing
+
+| Level              | What                           | Gherkin            | Coverage |
+| ------------------ | ------------------------------ | ------------------ | -------- |
+| `test:unit`        | Service calls, mocked repos    | Yes (78 scenarios) | >= 90%   |
+| `test:integration` | Service calls, real PostgreSQL | Yes (78 scenarios) | N/A      |
+| `test:e2e`         | Full HTTP via Playwright       | Yes (78 scenarios) | N/A      |
+
 ## Related
 
 - **Container diagram**: [container.md](./container.md)
 - **Frontend component diagram**: [component-fe.md](./component-fe.md)
+- **API contract**: [../contracts/openapi.yaml](../contracts/openapi.yaml)
 - **Backend gherkin specs**: [be/gherkin/](../be/gherkin/README.md)

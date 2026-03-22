@@ -205,6 +205,9 @@ When("{word} navigates to a protected page", async ({ page }) => {
 });
 
 When("{word} navigates to the login page", async ({ page }) => {
+  // Wait for any in-flight navigation (e.g. auto-redirect after logout) to settle
+  // before issuing goto, to avoid "Navigation interrupted by another navigation".
+  await page.waitForLoadState("load").catch(() => {});
   await page.goto("/login");
 });
 

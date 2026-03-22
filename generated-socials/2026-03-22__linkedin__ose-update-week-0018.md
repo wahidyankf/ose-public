@@ -63,7 +63,7 @@ Frameworks, algorithms, system design content in Go, C, Java.
 - 11 demo backends (10 languages), all CI green, all >= 90% coverage
 - 3 demo frontends, all Gherkin-compliant, all >= 70% coverage
 - 30 Nx projects, 68 dependency edges, 0 circular dependencies
-- 29 Gherkin feature files (14 BE + 15 FE), 174 total scenarios
+- 29 Gherkin feature files (14 BE + 15 FE), 170 total scenarios
 - OpenAPI 3.1 contract with codegen for all 14 demo apps
 
 ---

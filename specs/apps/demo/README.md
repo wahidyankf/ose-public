@@ -35,6 +35,9 @@ specs/apps/demo/
 Both spec sets cover the same functional surface from different perspectives. The frontend app
 consumes the backend API.
 
+Fullstack apps (`apps/demo-fs-{lang}-{framework}/`) consume **both** BE and FE Gherkin specs
+since they combine backend and frontend in a single deployable unit.
+
 ## Shared Domains
 
 | Domain           | BE Features | FE Features | Description                         |

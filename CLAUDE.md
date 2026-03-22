@@ -41,6 +41,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - `demo-fe-ts-tanstack-start` - TanStack Start frontend (TypeScript, alternative to demo-fe-ts-nextjs)
   - `demo-fe-dart-flutterweb` - Flutter Web frontend (Dart, alternative to demo-fe-ts-nextjs)
   - `demo-fe-e2e` - Playwright E2E tests for demo-fe frontends
+  - `demo-fs-ts-nextjs` - Next.js 16 fullstack app (TypeScript, App Router + Route Handlers)
 
 ## Project Structure
 

@@ -1,0 +1,115 @@
+name: Test - Demo FS (TypeScript/Next.js)
+
+on:
+  schedule:
+    - cron: "0 23 * * *" # 6 AM WIB (UTC+7)
+    - cron: "0 11 * * *" # 6 PM WIB (UTC+7)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unit-tests:
+    name: Run unit tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Volta
+        uses: volta-cli/action@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests with coverage
+        run: npx nx run demo-fs-ts-nextjs:test:quick
+
+      - name: Upload coverage to Codecov
+        if: always()
+        uses: codecov/codecov-action@v4
+        with:
+          files: apps/demo-fs-ts-nextjs/coverage/lcov.info
+          flags: demo-fs-ts-nextjs
+          fail_ci_if_error: false
+
+  e2e:
+    name: Run E2E tests
+    needs: unit-tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Generate contract types
+        run: |
+          npm ci --ignore-scripts
+          npx nx run demo-contracts:bundle
+          npx nx run demo-fs-ts-nextjs:codegen
+
+      - name: Start fullstack app (DB + Next.js)
+        run: docker compose -f infra/dev/demo-fs-ts-nextjs/docker-compose.yml up --build -d
+
+      - name: Wait for app to be healthy
+        run: |
+          echo "Waiting for app to become healthy on port 3401..."
+          for i in $(seq 1 36); do
+            if curl -sf http://localhost:3401/health > /dev/null 2>&1; then
+              echo "App is healthy"
+              exit 0
+            fi
+            echo "[$i/36] Waiting..."
+            sleep 10
+          done
+          echo "App did not start within 6 minutes"
+          docker compose -f infra/dev/demo-fs-ts-nextjs/docker-compose.yml logs
+          exit 1
+
+      - name: Setup Volta
+        uses: volta-cli/action@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+        working-directory: apps/demo-fe-e2e
+
+      - name: Run BE E2E tests
+        run: npx nx run demo-be-e2e:test:e2e
+        env:
+          BASE_URL: http://localhost:3401
+
+      - name: Upload BE E2E report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-be-e2e-fs-nextjs
+          path: apps/demo-be-e2e/playwright-report/
+          retention-days: 7
+
+      - name: Run FE E2E tests
+        run: npx nx run demo-fe-e2e:test:e2e
+        env:
+          BASE_URL: http://localhost:3401
+          BACKEND_URL: http://localhost:3401
+
+      - name: Upload FE E2E report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-fe-e2e-fs-nextjs
+          path: apps/demo-fe-e2e/playwright-report/
+          retention-days: 7
+
+      - name: Stop fullstack app
+        if: always()
+        run: docker compose -f infra/dev/demo-fs-ts-nextjs/docker-compose.yml down -v

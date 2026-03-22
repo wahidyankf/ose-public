@@ -104,5 +104,5 @@
     }
   },
   "tags": ["type:app", "platform:vertx", "lang:java", "domain:demo-be"],
-  "implicitDependencies": ["rhino-cli"]
+  "implicitDependencies": ["demo-contracts", "rhino-cli"]
 }

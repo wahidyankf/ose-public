@@ -97,5 +97,5 @@
     }
   },
   "tags": ["type:app", "platform:fastapi", "lang:python", "domain:demo-be"],
-  "implicitDependencies": ["rhino-cli"]
+  "implicitDependencies": ["demo-contracts", "rhino-cli"]
 }

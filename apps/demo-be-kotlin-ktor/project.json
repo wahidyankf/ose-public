@@ -96,5 +96,5 @@
     }
   },
   "tags": ["type:app", "platform:ktor", "lang:kotlin", "domain:demo-be"],
-  "implicitDependencies": ["rhino-cli"]
+  "implicitDependencies": ["demo-contracts", "rhino-cli"]
 }

@@ -98,5 +98,5 @@
       }
     }
   },
-  "implicitDependencies": ["rhino-cli"]
+  "implicitDependencies": ["demo-contracts", "rhino-cli"]
 }

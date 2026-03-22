@@ -104,5 +104,5 @@
     }
   },
   "tags": ["type:app", "platform:giraffe", "lang:fsharp", "domain:demo-be"],
-  "implicitDependencies": ["rhino-cli"]
+  "implicitDependencies": ["demo-contracts", "rhino-cli"]
 }

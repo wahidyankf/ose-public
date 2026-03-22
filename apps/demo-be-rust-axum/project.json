@@ -108,5 +108,5 @@
     }
   },
   "tags": ["type:app", "platform:axum", "lang:rust", "domain:demo-be"],
-  "implicitDependencies": ["rhino-cli"]
+  "implicitDependencies": ["demo-contracts", "rhino-cli"]
 }

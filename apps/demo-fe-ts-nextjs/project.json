@@ -57,7 +57,8 @@
       "cache": true,
       "inputs": [
         "default",
-        "{projectRoot}/src/generated-contracts/**/*"
+        "{projectRoot}/src/generated-contracts/**/*",
+        "{workspaceRoot}/specs/apps/demo/fe/gherkin/**/*.feature"
       ],
       "outputs": ["{projectRoot}/coverage"],
       "options": {
@@ -70,7 +71,8 @@
       "cache": true,
       "inputs": [
         "default",
-        "{projectRoot}/src/generated-contracts/**/*"
+        "{projectRoot}/src/generated-contracts/**/*",
+        "{workspaceRoot}/specs/apps/demo/fe/gherkin/**/*.feature"
       ],
       "options": {
         "command": "npx vitest run --project unit",
@@ -80,5 +82,5 @@
     }
   },
   "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:demo-fe"],
-  "implicitDependencies": []
+  "implicitDependencies": ["demo-contracts", "rhino-cli"]
 }

@@ -2,7 +2,7 @@
   "name": "demo-be-elixir-phoenix",
   "sourceRoot": "apps/demo-be-elixir-phoenix/lib",
   "projectType": "application",
-  "implicitDependencies": ["elixir-gherkin", "elixir-cabbage"],
+  "implicitDependencies": ["demo-contracts", "elixir-gherkin", "elixir-cabbage", "rhino-cli"],
   "targets": {
     "codegen": {
       "executor": "nx:run-commands",

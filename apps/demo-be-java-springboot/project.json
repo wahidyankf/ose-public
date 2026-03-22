@@ -104,5 +104,5 @@
     }
   },
   "tags": ["type:app", "platform:spring-boot", "lang:java", "domain:demo-be"],
-  "implicitDependencies": ["rhino-cli"]
+  "implicitDependencies": ["demo-contracts", "rhino-cli"]
 }

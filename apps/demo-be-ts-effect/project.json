@@ -102,5 +102,5 @@
     }
   },
   "tags": ["type:app", "platform:effect", "lang:typescript", "domain:demo-be"],
-  "implicitDependencies": ["rhino-cli"]
+  "implicitDependencies": ["demo-contracts", "rhino-cli"]
 }

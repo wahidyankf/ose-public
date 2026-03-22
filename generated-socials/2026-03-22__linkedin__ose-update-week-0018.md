@@ -10,9 +10,15 @@ Week 0018, Phase 1 Week 6
 
 Phase 1 Week 6: 3 Frontends, Full Gherkin Compliance, Nx Graph Audit
 
-Last week: 11 backends, 1 frontend, all CI green. This week: 2 new frontends built and deployed, all 3 frontends now fully Gherkin-compliant, and the entire Nx dependency graph audited and fixed.
+Last week: 11 backends, 1 frontend, no shared API contract. This week: OpenAPI contract with codegen for all 14 apps, 2 new frontends, and the entire Nx dependency graph audited and fixed.
 
 **What changed since last week:**
+
+API Contract: demo-contracts (NEW)
+
+- OpenAPI 3.1 specification covering all demo app endpoints (auth, users, expenses, admin, health).
+- Codegen generates language-specific types for all 14 demo apps (11 backends + 3 frontends).
+- Contract violations caught at compile time via typecheck dependency on codegen.
 
 Frontends: 1 -> 3 (all Gherkin-compliant)
 
@@ -28,7 +34,7 @@ Nx Dependency Graph: Unaudited -> 30 projects, 68 edges, 0 cycles
 
 Previously, the Nx graph was missing many real dependencies. Deep audit found and fixed:
 
-- demo-contracts was invisible to nx affected (zero dependents). Now 18 projects depend on it.
+- demo-contracts (new this week) wired into Nx graph with 18 dependents via implicitDependencies.
 - rhino-cli missing from 10 projects that invoke it for coverage validation.
 - Frontend Gherkin spec inputs missing from all 3 frontends and 3 E2E projects.
 - Codegen lib dependencies (elixir-openapi-codegen, clojure-openapi-codegen) undeclared.

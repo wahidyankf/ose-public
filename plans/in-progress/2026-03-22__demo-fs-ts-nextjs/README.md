@@ -37,7 +37,7 @@ This is the first **fullstack** (`fs`) demo app — all existing demos are eithe
   - Backend: `specs/apps/demo/be/gherkin/` (all shared scenarios)
   - Frontend: `specs/apps/demo/fe/gherkin/` (all shared scenarios)
 - Pass E2E tests from both `demo-be-e2e` and `demo-fe-e2e` (via `BASE_URL` env var)
-- Enforce >=90% line coverage via `rhino-cli test-coverage validate` on unit tests
+- Enforce 80%+ line coverage via `rhino-cli test-coverage validate` on unit tests
 - Generate types from the OpenAPI contract via `codegen` Nx target
 - Serve on port **3401** (new port range for fullstack apps)
 - Add Docker Compose for local development and integration testing
@@ -50,11 +50,15 @@ This is the first **fullstack** (`fs`) demo app — all existing demos are eithe
 ```gherkin
 Feature: Fullstack app serves authentication API
 
-Scenario: Register and login via Route Handlers
+Scenario: Register via Route Handler
   Given the fullstack app is running on port 3401
   When a user sends POST /api/v1/auth/register with valid credentials
   Then the response status should be 201
-  When the user sends POST /api/v1/auth/login with those credentials
+  And the user account should be created
+
+Scenario: Login via Route Handler
+  Given a registered user exists
+  When the user sends POST /api/v1/auth/login with valid credentials
   Then the response should contain accessToken and refreshToken
 
 Scenario: Token refresh via Route Handler
@@ -68,12 +72,15 @@ Scenario: Token refresh via Route Handler
 ```gherkin
 Feature: Fullstack app serves expense API
 
-Scenario: CRUD operations via Route Handlers
+Scenario: Create expense via Route Handler
   Given an authenticated user
   When the user sends POST /api/v1/expenses with valid expense data
   Then the response status should be 201
+
+Scenario: List expenses via Route Handler
+  Given an authenticated user with existing expenses
   When the user sends GET /api/v1/expenses
-  Then the created expense should appear in the list
+  Then the expense list should be returned
 ```
 
 **Frontend — Login Flow:**
@@ -130,9 +137,10 @@ Scenario: Create a new expense entry
 
 ### Non-Functional Requirements
 
-- **Coverage**: >=90% line coverage (Codecov algorithm) on unit tests via Vitest v8 +
-  `rhino-cli test-coverage validate`. Note: if the frontend portion (components, pages) drags
-  blended coverage below 90%, this may be adjusted to >=80% — evaluate during Phase 9.
+- **Coverage**: 80% or higher line coverage (Codecov algorithm) on unit tests via Vitest
+  v8 + `rhino-cli test-coverage validate`. Rationale: backends enforce 90%+, frontends
+  enforce 70%+. This fullstack app blends both — 80% is the midpoint that accounts for
+  harder-to-test frontend rendering code while keeping the backend service layer well-covered.
 - **TypeScript**: Strict mode, no `any` escapes in production code
 - **Port**: 3401 (new fullstack range — distinct from BE 8201 and FE 3301)
 - **CI**: Same trigger schedule (2x daily cron + manual dispatch) as other demo app workflows
@@ -154,8 +162,8 @@ Scenario: All FE E2E scenarios pass
 
 Scenario: Unit test coverage meets threshold
   Given demo-fs-ts-nextjs unit tests are run with coverage
-  When rhino-cli test-coverage validate coverage/lcov.info 90 is executed
-  Then the validation should pass with >=90% line coverage
+  When rhino-cli test-coverage validate coverage/lcov.info 80 is executed
+  Then the validation should pass with 80%+ line coverage
 
 Scenario: Production build runs correctly in Docker
   Given docker compose up for infra/dev/demo-fs-ts-nextjs/ is run
@@ -203,15 +211,22 @@ apps/demo-fs-ts-nextjs/
 │   │   │       ├── users/            # /api/v1/users/*
 │   │   │       ├── admin/            # /api/v1/admin/*
 │   │   │       ├── expenses/         # /api/v1/expenses/*
-│   │   │       └── reports/          # /api/v1/reports/*
+│   │   │       ├── tokens/           # /api/v1/tokens/*
+│   │   │       ├── reports/          # /api/v1/reports/*
+│   │   │       └── test/             # /api/v1/test/* (test-only)
 │   │   ├── (auth)/                   # Auth pages (login, register)
 │   │   ├── (dashboard)/              # Protected pages
 │   │   │   ├── expenses/             # Expense list + detail + summary
 │   │   │   ├── profile/              # User profile + password change
 │   │   │   ├── tokens/               # Token inspector
 │   │   │   └── admin/                # Admin panel
+│   │   ├── health/                    # /health endpoint
+│   │   │   └── route.ts
+│   │   ├── .well-known/               # JWKS endpoint
+│   │   │   └── jwks.json/
+│   │   │       └── route.ts
 │   │   ├── layout.tsx                # Root layout
-│   │   └── page.tsx                  # Home/health page
+│   │   └── page.tsx                  # Home page
 │   ├── services/                     # Business logic (pure functions)
 │   │   ├── auth-service.ts           # Auth logic
 │   │   ├── user-service.ts           # User management
@@ -280,22 +295,23 @@ apps/demo-fs-ts-nextjs/
 
 ### Design Decisions
 
-| Decision         | Choice                     | Reason                                             |
-| ---------------- | -------------------------- | -------------------------------------------------- |
-| App type         | Fullstack (fs)             | First demo combining BE + FE in one app            |
-| Framework        | Next.js 16 (App Router)    | Proven fullstack framework; existing FE experience |
-| API layer        | Next.js Route Handlers     | Native, zero-config API routes in App Router       |
-| ORM              | Drizzle ORM                | Lightweight, SQL-like, type-safe, functional style |
-| Database         | PostgreSQL                 | Same as all other demo backends                    |
-| Auth             | JWT HS256 (jose library)   | Same token format as other backends                |
-| State management | TanStack Query v5          | Same as existing FE apps                           |
-| HTTP client      | fetch (native)             | No extra dependency                                |
-| Auth storage     | localStorage (client-side) | Must match keys for E2E compatibility              |
-| Coverage tool    | Vitest v8 + rhino-cli      | Same as TS projects; >=90% threshold               |
-| Linter           | oxlint                     | Same as demo-fe-ts-nextjs                          |
-| Port             | 3401                       | New range for fullstack apps                       |
-| BDD tool         | @amiceli/vitest-cucumber   | Unified coverage: both BE + FE steps run in Vitest |
-| Docker           | Multi-stage + PostgreSQL   | Same pattern as other demo backends                |
+| Decision         | Choice                     | Reason                                                |
+| ---------------- | -------------------------- | ----------------------------------------------------- |
+| App type         | Fullstack (fs)             | First demo combining BE + FE in one app               |
+| Framework        | Next.js 16 (App Router)    | Proven fullstack framework; existing FE experience    |
+| API layer        | Next.js Route Handlers     | Native, zero-config API routes in App Router          |
+| ORM              | Drizzle ORM                | Lightweight, SQL-like, type-safe, functional style    |
+| Database         | PostgreSQL                 | Same as all other demo backends                       |
+| Auth             | JWT HS256 (jose library)   | Same token format as other backends                   |
+| State management | TanStack Query v5          | Same as existing FE apps                              |
+| HTTP client      | fetch (native)             | No extra dependency                                   |
+| Auth storage     | localStorage (client-side) | Must match keys for E2E compatibility                 |
+| Coverage tool    | Vitest v8 + rhino-cli      | Same as TS projects; 80%+ threshold (BE+FE blend)     |
+| Linter           | oxlint                     | Same as demo-fe-ts-nextjs                             |
+| Port             | 3401                       | New range for fullstack apps                          |
+| BDD tool         | @amiceli/vitest-cucumber   | Unified coverage: both BE + FE steps run in Vitest    |
+| Docker           | Multi-stage + PostgreSQL   | Same pattern as other demo backends                   |
+| Integration BDD  | @cucumber/cucumber         | Proven pattern from demo-be-ts-effect; runs in Docker |
 
 ### Key Architectural Differences from Existing Apps
 
@@ -367,7 +383,7 @@ Drizzle schema format (`src/db/schema.ts`), with SQL migrations generated by Dri
 | `lint`             | oxlint                                           | Yes       |
 | `build`            | `next build`                                     | Yes       |
 | `test:unit`        | Unit tests — BE (mocked repos) + FE (mocked API) | Yes       |
-| `test:quick`       | Unit tests + coverage validation (>=90%)         | Yes       |
+| `test:quick`       | Unit tests + coverage validation (80%+)          | Yes       |
 | `test:integration` | Docker + real PostgreSQL                         | No        |
 
 **Cache inputs for `test:unit` and `test:quick`:**
@@ -435,7 +451,9 @@ workflows:
 ### Phase 1: Project Scaffolding
 
 - [ ] Create `apps/demo-fs-ts-nextjs/` directory
-- [ ] Initialize Next.js 16 project with App Router
+- [ ] Run `npx create-next-app@16` with TypeScript, App Router, src/ directory
+- [ ] Remove default Next.js boilerplate (placeholder pages, globals.css)
+- [ ] Configure `next.config.ts` with `output: 'standalone'` for Docker builds
 - [ ] Create `project.json` with 7 mandatory Nx targets (codegen, typecheck, lint, build,
       test:unit, test:quick, test:integration) + `dev`
 - [ ] Set up `tsconfig.json` with strict mode
@@ -493,6 +511,7 @@ workflows:
 - [ ] Create `src/app/api/v1/expenses/[id]/attachments/route.ts` — GET list, POST upload
 - [ ] Create `src/app/api/v1/expenses/[id]/attachments/[attId]/route.ts` — GET, DELETE
 - [ ] Create `src/app/api/v1/reports/pl/route.ts` — GET P&L report
+- [ ] Create `src/app/api/v1/tokens/claims/route.ts` — GET current token claims
 - [ ] Create `src/app/health/route.ts` — GET health check
 - [ ] Create `src/app/.well-known/jwks.json/route.ts` — GET JWKS public key
 - [ ] Create `src/app/api/v1/test/reset-db/route.ts` — POST reset database (test-only,
@@ -525,7 +544,11 @@ workflows:
 
 - [ ] Create `src/lib/auth-provider.tsx` — client-side auth context with token refresh
 - [ ] Create `src/lib/api-client.ts` — fetch wrapper for `/api/v1/*` (no proxy needed)
-- [ ] Create `src/components/` — reusable UI components (forms, tables, modals, sidebar)
+- [ ] Create navigation sidebar component (desktop/tablet/mobile responsive)
+- [ ] Create expense table component with pagination
+- [ ] Create expense form component (create + edit)
+- [ ] Create confirmation dialog component (delete actions)
+- [ ] Create user table component (admin panel)
 - [ ] Create `src/app/(auth)/login/page.tsx` — login form
 - [ ] Create `src/app/(auth)/register/page.tsx` — registration form
 - [ ] Create `src/app/(dashboard)/layout.tsx` — authenticated layout with sidebar
@@ -564,13 +587,14 @@ workflows:
 
 ### Phase 9: Coverage Gate
 
-- [ ] Run `nx run demo-fs-ts-nextjs:test:quick` (unit tests + rhino-cli >=90%)
+- [ ] Run `nx run demo-fs-ts-nextjs:test:quick` (unit tests + rhino-cli 80%+)
 - [ ] Add coverage exclusions if needed (e.g., generated-contracts, migration files)
 - [ ] Ensure `typecheck` and `lint` pass cleanly
 
 ### Phase 10: Integration Tests
 
 - [ ] Create `docker-compose.integration.yml` with PostgreSQL 17
+- [ ] Configure integration test BDD runner (`@cucumber/cucumber` with `cucumber.integration.js`)
 - [ ] Create `test/integration/be-steps/` — same BE Gherkin steps but with real DB
 - [ ] Implement Drizzle-based test setup/teardown (transaction rollback or truncation)
 - [ ] Verify all BE integration tests pass:
@@ -600,6 +624,7 @@ workflows:
       docs, and related documentation links
 - [ ] Add Codecov upload for unit test coverage
 - [ ] Update `specs/apps/demo/README.md` to mention fullstack category
+- [ ] Update CLAUDE.md to include demo-fs-ts-nextjs in Current Apps listing
 - [ ] Update Nx dependency graph documentation if needed
 - [ ] Verify CI workflow passes on push
 
@@ -610,7 +635,7 @@ workflows:
 - [ ] `nx run demo-fs-ts-nextjs:lint` succeeds
 - [ ] `nx run demo-fs-ts-nextjs:build` succeeds
 - [ ] `nx run demo-fs-ts-nextjs:test:unit` — all BE + FE Gherkin scenarios pass
-- [ ] `nx run demo-fs-ts-nextjs:test:quick` — >=90% line coverage
+- [ ] `nx run demo-fs-ts-nextjs:test:quick` — 80%+ line coverage
 - [ ] `nx run demo-fs-ts-nextjs:test:integration` — all BE scenarios pass with real PG
 - [ ] `demo-be-e2e` passes with `BASE_URL=http://localhost:3401`
 - [ ] `demo-fe-e2e` passes with `BASE_URL=http://localhost:3401` and

@@ -19,13 +19,13 @@
     "@effect/sql": "^0.49.0",
     "@effect/sql-pg": "^0.50.3",
     "@effect/sql-sqlite-node": "^0.50.1",
-    "bcrypt": "^5.1.1",
+    "bcryptjs": "^3.0.2",
     "effect": "^3.19.15",
     "jose": "^5.10.0"
   },
   "devDependencies": {
     "@cucumber/cucumber": "^11.2.0",
-    "@types/bcrypt": "^5.0.2",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^22.0.0",
     "@vitest/coverage-v8": "^4.0.0",
     "oxlint": "^0.18.0",

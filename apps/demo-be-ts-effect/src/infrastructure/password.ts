@@ -1,5 +1,5 @@
 import { Context, Effect, Layer } from "effect";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 const SALT_ROUNDS = 12;
 

@@ -4,7 +4,7 @@ Active project plans currently being worked on.
 
 ## Active Plans
 
-No active plans.
+- [demo-fs-ts-nextjs](./2026-03-22__demo-fs-ts-nextjs/README.md) — Fullstack Next.js 16 app combining backend Route Handlers + frontend App Router in a single app, consuming both BE and FE Gherkin specs
 
 ## Instructions
 

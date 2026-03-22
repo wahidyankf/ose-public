@@ -23,7 +23,11 @@
       "options": {
         "command": "npx bddgen && npx tsc --noEmit",
         "cwd": "apps/organiclever-web-e2e"
-      }
+      },
+      "inputs": [
+        "default",
+        "{workspaceRoot}/specs/apps/organiclever-web/**/*.feature"
+      ]
     },
     "test:quick": {
       "executor": "nx:run-commands",
@@ -31,7 +35,11 @@
         "commands": ["npx oxlint@latest .", "npx bddgen && npx tsc --noEmit"],
         "parallel": true,
         "cwd": "apps/organiclever-web-e2e"
-      }
+      },
+      "inputs": [
+        "default",
+        "{workspaceRoot}/specs/apps/organiclever-web/**/*.feature"
+      ]
     },
     "test:e2e": {
       "executor": "nx:run-commands",

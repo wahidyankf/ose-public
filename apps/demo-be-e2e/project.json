@@ -23,7 +23,11 @@
       "options": {
         "command": "npx bddgen && npx tsc --noEmit",
         "cwd": "apps/demo-be-e2e"
-      }
+      },
+      "inputs": [
+        "default",
+        "{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature"
+      ]
     },
     "test:quick": {
       "executor": "nx:run-commands",
@@ -31,7 +35,11 @@
         "commands": ["npx oxlint@latest .", "npx bddgen && npx tsc --noEmit"],
         "parallel": true,
         "cwd": "apps/demo-be-e2e"
-      }
+      },
+      "inputs": [
+        "default",
+        "{workspaceRoot}/specs/apps/demo/be/gherkin/**/*.feature"
+      ]
     },
     "test:e2e": {
       "executor": "nx:run-commands",

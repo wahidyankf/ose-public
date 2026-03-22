@@ -16,7 +16,11 @@
       "options": {
         "command": "tsc --noEmit",
         "cwd": "{projectRoot}"
-      }
+      },
+      "inputs": [
+        "default",
+        "{workspaceRoot}/specs/apps/demo/fe/gherkin/**/*.feature"
+      ]
     },
     "lint": {
       "executor": "nx:run-commands",
@@ -31,7 +35,11 @@
         "commands": ["tsc --noEmit", "npx oxlint@latest ."],
         "parallel": true,
         "cwd": "{projectRoot}"
-      }
+      },
+      "inputs": [
+        "default",
+        "{workspaceRoot}/specs/apps/demo/fe/gherkin/**/*.feature"
+      ]
     },
     "test:e2e": {
       "executor": "nx:run-commands",

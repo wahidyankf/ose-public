@@ -74,7 +74,7 @@ func (ctx *scenarioCtx) alicesAccessTokenShouldBeRecordedAsRevoked() error {
 	claims, err := ctx.JWTSvc.ValidateToken(ctx.AccessToken)
 	if err != nil {
 		// Token is cryptographically invalid, so it is effectively revoked.
-		return nil
+		return nil //nolint:nilerr // intentional: invalid token means effectively revoked
 	}
 	blacklisted, err := ctx.Store.IsAccessTokenBlacklisted(context.Background(), claims.ID)
 	if err != nil {

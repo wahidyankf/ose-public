@@ -4,7 +4,6 @@ use std::sync::Arc;
 use uuid::Uuid;
 
 use demo_be_rust_axum::{
-    db::pool::create_test_pool,
     auth::{
         jwt::{
             decode_access_token, decode_claims_unchecked, decode_refresh_token,
@@ -12,6 +11,7 @@ use demo_be_rust_axum::{
         },
         password::{hash_password, verify_password},
     },
+    db::pool::create_test_pool,
     db::{attachment_repo, expense_repo, token_repo, user_repo},
     domain::{
         attachment::{is_allowed_content_type, Attachment, MAX_FILE_SIZE},

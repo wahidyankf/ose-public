@@ -140,7 +140,7 @@ func (ctx *scenarioCtx) alicesAccessTokenShouldBeInvalidated() error {
 	claims, err := ctx.JWTSvc.ValidateToken(ctx.AccessToken)
 	if err != nil {
 		// Token is already cryptographically invalid — counts as invalidated.
-		return nil
+		return nil //nolint:nilerr // intentional: invalid token means effectively revoked
 	}
 	blacklisted, err := ctx.Store.IsAccessTokenBlacklisted(context.Background(), claims.ID)
 	if err != nil {

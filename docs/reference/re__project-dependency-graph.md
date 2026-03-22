@@ -55,9 +55,6 @@ invalidated and `nx affected` flags the project.
 
 ## Visual Dependency Graph
 
-%% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
-%% All colors are color-blind friendly and meet WCAG AA contrast standards
-
 ```mermaid
 graph RL
   %% Specs (leaf)
@@ -157,12 +154,14 @@ graph RL
   FSHARP --> RC
   CSHARP --> DC
   CSHARP --> RC
+  CLOJURE --> COC
   CLOJURE --> DC
   CLOJURE --> RC
   ELIXIR --> DC
   ELIXIR --> RC
   ELIXIR --> EG
   ELIXIR --> EC
+  ELIXIR --> EOC
 
   %% Demo frontends -> shared deps
   NEXTJS --> DC
@@ -260,19 +259,19 @@ Shared Go utilities (time formatting, test helpers, output capture).
 
 All demo backends share the same dependency pattern.
 
-| Project                   | Dependencies                                              | Spec Inputs                 |
-| ------------------------- | --------------------------------------------------------- | --------------------------- |
-| demo-be-clojure-pedestal  | demo-contracts, rhino-cli                                 | contracts/\*, be/gherkin/\* |
-| demo-be-csharp-aspnetcore | demo-contracts, rhino-cli                                 | contracts/\*, be/gherkin/\* |
-| demo-be-elixir-phoenix    | demo-contracts, elixir-cabbage, elixir-gherkin, rhino-cli | contracts/\*, be/gherkin/\* |
-| demo-be-fsharp-giraffe    | demo-contracts, rhino-cli                                 | contracts/\*, be/gherkin/\* |
-| demo-be-golang-gin        | demo-contracts, rhino-cli                                 | contracts/\*, be/gherkin/\* |
-| demo-be-java-springboot   | demo-contracts, rhino-cli                                 | contracts/\*, be/gherkin/\* |
-| demo-be-java-vertx        | demo-contracts, rhino-cli                                 | contracts/\*, be/gherkin/\* |
-| demo-be-kotlin-ktor       | demo-contracts, rhino-cli                                 | contracts/\*, be/gherkin/\* |
-| demo-be-python-fastapi    | demo-contracts, rhino-cli                                 | contracts/\*, be/gherkin/\* |
-| demo-be-rust-axum         | demo-contracts, rhino-cli                                 | contracts/\*, be/gherkin/\* |
-| demo-be-ts-effect         | demo-contracts, rhino-cli                                 | contracts/\*, be/gherkin/\* |
+| Project                   | Dependencies                                                                      | Spec Inputs                 |
+| ------------------------- | --------------------------------------------------------------------------------- | --------------------------- |
+| demo-be-clojure-pedestal  | clojure-openapi-codegen, demo-contracts, rhino-cli                                | contracts/\*, be/gherkin/\* |
+| demo-be-csharp-aspnetcore | demo-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
+| demo-be-elixir-phoenix    | demo-contracts, elixir-cabbage, elixir-gherkin, elixir-openapi-codegen, rhino-cli | contracts/\*, be/gherkin/\* |
+| demo-be-fsharp-giraffe    | demo-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
+| demo-be-golang-gin        | demo-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
+| demo-be-java-springboot   | demo-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
+| demo-be-java-vertx        | demo-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
+| demo-be-kotlin-ktor       | demo-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
+| demo-be-python-fastapi    | demo-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
+| demo-be-rust-axum         | demo-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
+| demo-be-ts-effect         | demo-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
 
 **Spec input paths**:
 

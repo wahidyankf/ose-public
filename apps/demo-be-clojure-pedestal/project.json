@@ -97,5 +97,5 @@
       "cache": true
     }
   },
-  "implicitDependencies": ["demo-contracts", "rhino-cli"]
+  "implicitDependencies": ["clojure-openapi-codegen", "demo-contracts", "rhino-cli"]
 }

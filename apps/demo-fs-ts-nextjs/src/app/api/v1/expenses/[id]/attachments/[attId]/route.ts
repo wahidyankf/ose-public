@@ -22,5 +22,6 @@ export async function DELETE(req: NextRequest, { params }: Params) {
 
   const { id, attId } = await params;
   const result = await deleteAttachment(repos, id, attId, authResult.sub);
+  if (result.ok) return new NextResponse(null, { status: 204 });
   return serviceResponse(result);
 }

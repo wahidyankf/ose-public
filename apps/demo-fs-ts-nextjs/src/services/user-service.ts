@@ -1,7 +1,6 @@
 import type { UserRepository, SessionRepository } from "@/repositories/interfaces";
 import { hashPassword, verifyPassword } from "@/lib/password";
-import { validatePassword } from "@/lib/validation";
-import { ok, err, type ServiceResult, type User, type PagedResult } from "@/lib/types";
+import { ok, err, type ServiceResult, type User } from "@/lib/types";
 
 interface UserDeps {
   users: UserRepository;
@@ -54,14 +53,11 @@ export async function changePassword(
   if (!data.currentPassword) return err("Current password is required", 400);
   if (!data.newPassword) return err("New password is required", 400);
 
-  const passwordErr = validatePassword(data.newPassword);
-  if (passwordErr) return err(passwordErr, 400);
-
   const user = await deps.users.findById(userId);
   if (!user) return err("User not found", 404);
 
   const valid = await verifyPassword(data.currentPassword, user.passwordHash);
-  if (!valid) return err("Current password is incorrect", 401);
+  if (!valid) return err("Invalid credentials", 401);
 
   const newHash = await hashPassword(data.newPassword);
   await deps.users.updatePassword(userId, newHash);
@@ -79,12 +75,12 @@ export async function listUsers(
   page: number,
   size: number,
   email?: string,
-): Promise<ServiceResult<PagedResult<UserProfile>>> {
+): Promise<ServiceResult<{ content: UserProfile[]; totalElements: number; page: number; size: number }>> {
   const safePage = Math.max(page, 1);
   const result = await deps.users.listUsers(safePage, size, email);
   return ok({
-    items: result.items.map(toProfile),
-    total: result.total,
+    content: result.items.map(toProfile),
+    totalElements: result.total,
     page: safePage,
     size,
   });
@@ -112,13 +108,10 @@ export async function unlockUser(deps: UserDeps, targetId: string): Promise<Serv
   return ok({ message: "User unlocked" });
 }
 
-export async function forcePasswordReset(
-  deps: UserDeps,
-  targetId: string,
-): Promise<ServiceResult<{ resetToken: string }>> {
+export async function forcePasswordReset(deps: UserDeps, targetId: string): Promise<ServiceResult<{ token: string }>> {
   const user = await deps.users.findById(targetId);
   if (!user) return err("User not found", 404);
   const resetToken = crypto.randomUUID();
   await deps.users.updatePasswordResetToken(targetId, resetToken);
-  return ok({ resetToken });
+  return ok({ token: resetToken });
 }

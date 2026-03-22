@@ -4,7 +4,6 @@ import {
   err,
   type ServiceResult,
   type Expense,
-  type PagedResult,
   SUPPORTED_CURRENCIES,
   CURRENCY_DECIMALS,
   SUPPORTED_UNITS,
@@ -14,6 +13,16 @@ import {
 
 interface ExpenseDeps {
   expenses: ExpenseRepository;
+}
+
+function formatExpense(e: Expense): Expense {
+  const decimals = CURRENCY_DECIMALS[e.currency as SupportedCurrency] ?? 2;
+  return {
+    ...e,
+    amount: parseFloat(e.amount).toFixed(decimals),
+    type: e.type.toLowerCase(),
+    quantity: e.quantity != null ? (parseFloat(e.quantity) as unknown as string) : null,
+  };
 }
 
 export async function createExpense(
@@ -69,7 +78,7 @@ export async function createExpense(
     unit: data.unit,
   });
 
-  return ok(expense);
+  return ok(formatExpense(expense));
 }
 
 export async function getExpense(
@@ -79,7 +88,7 @@ export async function getExpense(
 ): Promise<ServiceResult<Expense>> {
   const expense = await deps.expenses.findByIdAndUserId(expenseId, userId);
   if (!expense) return err("Expense not found", 404);
-  return ok(expense);
+  return ok(formatExpense(expense));
 }
 
 export async function updateExpense(
@@ -118,7 +127,7 @@ export async function updateExpense(
     type: data.type.toUpperCase(),
   });
 
-  return ok(updated);
+  return ok(formatExpense(updated));
 }
 
 export async function deleteExpense(
@@ -137,12 +146,12 @@ export async function listExpenses(
   userId: string,
   page: number,
   size: number,
-): Promise<ServiceResult<PagedResult<Expense>>> {
+): Promise<ServiceResult<{ content: Expense[]; totalElements: number; page: number; size: number }>> {
   const safePage = Math.max(page, 1);
   const result = await deps.expenses.listByUserId(userId, safePage, size);
   return ok({
-    items: result.items,
-    total: result.total,
+    content: result.items.map(formatExpense),
+    totalElements: result.total,
     page: safePage,
     size,
   });

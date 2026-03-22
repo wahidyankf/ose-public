@@ -156,16 +156,7 @@ export class ServiceClient {
       const page = parseInt(url.searchParams.get("page") ?? "1", 10);
       const size = parseInt(url.searchParams.get("size") ?? "20", 10);
       const result = await userService.listUsers(this.repos, page, size, search);
-      if (!result.ok) return toResponse(result);
-      return {
-        status: 200,
-        body: {
-          content: result.data.items,
-          totalElements: result.data.total,
-          page: result.data.page,
-          size: result.data.size,
-        },
-      };
+      return toResponse(result);
     }
 
     // Admin user actions
@@ -210,16 +201,7 @@ export class ServiceClient {
       const claims = await extractClaims(this.repos, authHeader);
       if (!claims) return { status: 401, body: { error: "Unauthorized" } };
       const result = await expenseService.listExpenses(this.repos, claims.sub, 1, 20);
-      if (!result.ok) return toResponse(result);
-      return {
-        status: 200,
-        body: {
-          content: result.data.items,
-          totalElements: result.data.total,
-          page: result.data.page,
-          size: result.data.size,
-        },
-      };
+      return toResponse(result);
     }
     if (m === "GET" && path === "/api/v1/expenses/summary") {
       const claims = await extractClaims(this.repos, authHeader);

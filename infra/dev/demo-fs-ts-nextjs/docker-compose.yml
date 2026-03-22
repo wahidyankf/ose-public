@@ -19,8 +19,8 @@ services:
 
   app:
     build:
-      context: ../../../apps/demo-fs-ts-nextjs
-      dockerfile: Dockerfile
+      context: ../../../
+      dockerfile: apps/demo-fs-ts-nextjs/Dockerfile
     environment:
       DATABASE_URL: postgresql://demo_fs_nextjs:demo_fs_nextjs@db:5432/demo_fs_nextjs
       APP_JWT_SECRET: dev-jwt-secret-at-least-32-chars-long!!

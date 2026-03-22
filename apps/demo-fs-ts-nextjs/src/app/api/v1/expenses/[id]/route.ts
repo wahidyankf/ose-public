@@ -33,5 +33,6 @@ export async function DELETE(req: NextRequest, { params }: Params) {
 
   const { id } = await params;
   const result = await deleteExpense(repos, id, authResult.sub);
+  if (result.ok) return new NextResponse(null, { status: 204 });
   return serviceResponse(result);
 }

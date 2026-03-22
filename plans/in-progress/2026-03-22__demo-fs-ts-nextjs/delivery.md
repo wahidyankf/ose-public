@@ -168,16 +168,16 @@
 
 - [x] Create `Dockerfile` (multi-stage: deps → build → runtime)
 - [x] Create `infra/dev/demo-fs-ts-nextjs/docker-compose.yml`
-- [ ] Verify app starts correctly via Docker Compose (requires Docker environment)
-- [ ] Verify health check at `http://localhost:3401/health` (requires Docker environment)
+- [x] Verify app starts correctly via Docker Compose
+- [x] Verify health check at `http://localhost:3401/health`
 
 ## Phase 12: E2E Verification
 
-- [ ] Start app + PostgreSQL locally with `ENABLE_TEST_API=true` (requires Docker)
-- [ ] Run `demo-be-e2e` with `BASE_URL=http://localhost:3401` (requires Docker)
-- [ ] Run `demo-fe-e2e` with `BASE_URL=http://localhost:3401` and
-      `BACKEND_URL=http://localhost:3401` (requires Docker)
-- [ ] Fix any E2E compatibility issues (ARIA attributes, response shapes, etc.)
+- [x] Start app + PostgreSQL locally with `ENABLE_TEST_API=true`
+- [x] Run `demo-be-e2e` with `BASE_URL=http://localhost:3401` — all 78 BE scenarios pass
+- [ ] Run `demo-fe-e2e` — deferred (requires frontend build in Docker with browser)
+- [x] Fix E2E compatibility issues (error message format, amount formatting,
+      paginated response fields, password change endpoint, delete status codes)
 
 ## Phase 13: CI and Documentation
 
@@ -197,9 +197,9 @@
 - [x] `nx run demo-fs-ts-nextjs:build` succeeds
 - [x] `nx run demo-fs-ts-nextjs:test:unit` — all BE + FE Gherkin scenarios pass (1133 tests)
 - [x] `nx run demo-fs-ts-nextjs:test:quick` — 76.91% >= 75% threshold
-- [ ] `nx run demo-fs-ts-nextjs:test:integration` — deferred (requires Docker)
-- [ ] `demo-be-e2e` passes (requires Docker)
-- [ ] `demo-fe-e2e` passes (requires Docker)
-- [ ] Docker Compose local dev setup works (requires Docker)
+- [ ] `nx run demo-fs-ts-nextjs:test:integration` — deferred (needs integration runner)
+- [x] `demo-be-e2e` passes — all 78 scenarios pass
+- [ ] `demo-fe-e2e` passes — deferred (needs frontend in Docker with browser)
+- [x] Docker Compose local dev setup works
 - [ ] CI workflow passes (requires push)
 - [x] README.md is complete with related documentation links

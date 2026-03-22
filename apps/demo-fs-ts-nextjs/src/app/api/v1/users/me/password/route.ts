@@ -9,6 +9,9 @@ export async function POST(req: NextRequest) {
   if (authResult instanceof NextResponse) return authResult;
 
   const body = await req.json();
-  const result = await changePassword(repos, authResult.sub, body);
+  const result = await changePassword(repos, authResult.sub, {
+    currentPassword: body.oldPassword ?? body.currentPassword,
+    newPassword: body.newPassword,
+  });
   return serviceResponse(result);
 }

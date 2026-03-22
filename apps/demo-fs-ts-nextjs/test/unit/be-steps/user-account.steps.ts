@@ -102,7 +102,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
 
     And("the response body should contain an error message about invalid credentials", () => {
       const body = ctx.response!.body as Record<string, unknown>;
-      expect(String(body.error).toLowerCase()).toContain("password");
+      expect(String(body.error).toLowerCase()).toContain("invalid");
     });
   });
 

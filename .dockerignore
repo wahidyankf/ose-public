@@ -20,6 +20,7 @@ local-temp
 specs
 !specs/apps/demo/be/gherkin
 !specs/apps/demo/fe/gherkin
+!specs/apps/demo/contracts/generated
 infra
 .claude
 .opencode

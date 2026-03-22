@@ -219,7 +219,7 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: apps/demo-be-golang-gin/cover_unit.out
+          files: apps/demo-be-golang-gin/cover.out
           flags: demo-be-golang-gin
           fail_ci_if_error: false
 

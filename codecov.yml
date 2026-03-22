@@ -10,6 +10,12 @@ coverage:
 # and reports ~7% lower than go-test-coverage's statement coverage.
 ignore:
   - "**/types.go"
+  # demo-be-golang-gin infrastructure excluded from coverage (matches
+  # grep -v filter in test:quick — Go has no built-in coverage exclusion)
+  - "apps/demo-be-golang-gin/internal/store/gorm_store.go"
+  - "apps/demo-be-golang-gin/internal/server/server.go"
+  - "apps/demo-be-golang-gin/cmd/server/**"
+  - "**/generated-contracts/**"
 
 flags:
   rhino-cli:

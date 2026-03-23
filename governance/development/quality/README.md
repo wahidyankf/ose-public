@@ -31,6 +31,7 @@ These standards define **HOW to maintain and validate quality**, covering automa
 - [Criticality Levels Convention](./criticality-levels.md) - Universal criticality level system for categorizing validation findings (CRITICAL/HIGH/MEDIUM/LOW)
 - [Fixer Confidence Levels Convention](./fixer-confidence-levels.md) - Universal confidence level system for fixer agents to assess and apply validated fixes (HIGH/MEDIUM/FALSE_POSITIVE)
 - [Repository Validation Methodology Convention](./repository-validation.md) - Standard validation methods and patterns for repository consistency checking
+- [No Machine-Specific Information in Commits](./no-machine-specific-commits.md) - Practice prohibiting absolute local paths, usernames, IP addresses, and environment-specific configuration from committed code
 
 ## Related Documentation
 

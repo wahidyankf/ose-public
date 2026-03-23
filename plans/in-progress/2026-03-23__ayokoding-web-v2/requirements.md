@@ -75,7 +75,8 @@ Scenario: Switch from English to Indonesian
   And the sidebar and UI labels should be in Indonesian
 
 Scenario: Default language redirect
-  Given the user navigates to /
+  Given the app is running
+  When a user navigates to /
   Then the user should be redirected to /en
 ```
 
@@ -89,6 +90,8 @@ Scenario: Get page content by slug
   When a client calls content.getBySlug with locale "en" and slug "learn/overview"
   Then the response should contain the parsed HTML content
   And the response should contain frontmatter metadata (title, weight, description)
+  And the response should contain headings for table of contents (H2-H4)
+  And the response should contain prev and next page metadata (or null)
 
 Scenario: Get navigation tree
   Given the API is available
@@ -219,7 +222,10 @@ Scenario: Mobile hamburger opens sidebar overlay
 
 - **Coverage**: 80% or higher line coverage (Codecov algorithm) on unit tests via Vitest
   v8 + `rhino-cli test-coverage validate`. Rationale: fullstack blend — backends enforce
-  90%, frontends enforce 70%, 80% is the midpoint for a combined BE+FE codebase
+  90%, frontends enforce 70%, 80% is the midpoint for a combined BE+FE codebase. Note:
+  `organiclever-web` (pure marketing site, Next.js) enforces 90%; this plan uses 80%
+  because ayokoding-web-v2 is a full-stack content platform with both BE pipeline code
+  (content parsing, tRPC, search) and FE components, making the 80% midpoint appropriate
 - **TypeScript**: Strict mode, no `any` escapes in production code
 - **Port**: 3101 (next to current ayokoding-web at 3100)
 - **CI**: 2x daily cron (WIB 06, 18) + manual dispatch (same schedule as other apps)
@@ -247,12 +253,12 @@ Scenario: Mobile hamburger opens sidebar overlay
 ```gherkin
 Scenario: All BE E2E scenarios pass
   Given ayokoding-web-v2 is running on port 3101
-  When npx nx run ayokoding-web-v2-be-e2e:test:e2e is executed with BASE_URL=http://localhost:3101
+  When nx run ayokoding-web-v2-be-e2e:test:e2e is executed with BASE_URL=http://localhost:3101
   Then all tRPC API Gherkin scenarios should pass
 
 Scenario: All FE E2E scenarios pass
   Given ayokoding-web-v2 is running on port 3101
-  When npx nx run ayokoding-web-v2-fe-e2e:test:e2e is executed with BASE_URL=http://localhost:3101
+  When nx run ayokoding-web-v2-fe-e2e:test:e2e is executed with BASE_URL=http://localhost:3101
   Then all frontend Gherkin scenarios should pass
 
 Scenario: Unit test coverage meets threshold
@@ -273,13 +279,22 @@ Scenario: Search works across all content
   Then results should include Python programming language content
   And results should not include Indonesian-only content
 
-Scenario: Bilingual routing works
+Scenario: English page renders in English
   Given ayokoding-web-v2 is running
   When a user visits /en/learn/overview
   Then the page should render in English
+
+Scenario: Language switch redirects to Indonesian URL
+  Given the user is on /en/learn/overview
   When the user switches to Indonesian
   Then the URL should change to /id/belajar/ikhtisar
   And the UI should be in Indonesian
+
+Scenario: Math expressions render correctly
+  Given ayokoding-web-v2 is running
+  When a user navigates to a page with KaTeX math expressions
+  Then inline math expressions ($...$) should be rendered as formatted equations
+  And block math expressions ($$...$$) should be rendered as centered display equations
 
 Scenario: Docker build works
   Given docker compose up for infra/dev/ayokoding-web-v2/ is run

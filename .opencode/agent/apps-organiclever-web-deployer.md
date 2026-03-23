@@ -90,6 +90,34 @@ echo "Vercel will automatically build from prod-organiclever-web branch"
 
 **Why Force Push**: Safe because prod-organiclever-web is deployment-only. We always want exact copy of main.
 
+## Common Issues
+
+### Issue 1: Not on Main Branch
+
+```bash
+# Error: Currently on feature-branch
+# Solution: Switch to main first
+git checkout main
+```
+
+### Issue 2: Uncommitted Changes
+
+```bash
+# Error: Modified files detected
+# Solution: Commit or stash changes
+git add -A && git commit -m "commit message"
+# OR
+git stash
+```
+
+### Issue 3: Behind Remote
+
+```bash
+# Warning: Local main behind origin/main
+# Solution: Pull latest changes
+git pull origin main
+```
+
 ## When to Use This Agent
 
 **Use when**:

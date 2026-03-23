@@ -14,7 +14,8 @@
   - [ ] **Tablet (768px)**: Same pages — verify sidebar behavior
   - [ ] **Mobile (375px)**: Same pages — verify hamburger menu, collapsed layout
 - [ ] Save screenshots to `plans/in-progress/2026-03-23__ayokoding-web-v2/screenshots/`
-- [ ] Analyze Hextra theme source (from Hugo module cache or GitHub):
+- [ ] Locate and analyze Hextra theme source
+      (GitHub: https://github.com/imfing/hextra or Hugo module cache at `~/.cache/hugo_cache/`):
   - [ ] Extract layout grid structure (sidebar width, content max-width, TOC width)
   - [ ] Extract color tokens (light + dark mode palettes)
   - [ ] Extract typography scale (font family, heading sizes, body size, line height)
@@ -60,14 +61,17 @@
 - [ ] Install core shadcn/ui components: Button, Input, Dialog, Alert, Tabs,
       Separator, ScrollArea, Sheet, DropdownMenu, Tooltip, Badge, Command
 - [ ] Install tRPC: `@trpc/server`, `@trpc/client`, `@trpc/tanstack-react-query`,
-      `@tanstack/react-query@^5.62.8`
+      `@tanstack/react-query@^5.62.8` (floor set at 5.62.8 — minimum version
+      verified compatible with `@trpc/tanstack-react-query`; use `^5` if no issues)
 - [ ] Install Zod: `zod@^3` (tRPC v11 validated with Zod v3; v4 has breaking changes,
       migrate later once tRPC confirms v4 support)
 - [ ] Install markdown tooling: `unified`, `remark-parse`, `remark-gfm`, `remark-math`,
       `remark-rehype` (MDAST→HAST bridge — required), `rehype-raw` (required for
       inline HTML — 1,343 occurrences in content; must come after `remark-rehype`
       with `allowDangerousHtml: true`), `rehype-pretty-code`,
-      `shiki@^1` (pin to 1.x — 2.x incompatible with rehype-pretty-code),
+      `shiki@^1` (pin to 1.x for stability — rehype-pretty-code v0.14.1+ supports
+      2.x/3.x via getSingletonHighlighter, but pin to 1.x until explicit version
+      testing is done),
       `rehype-katex`, `rehype-slug`, `rehype-autolink-headings`,
       `rehype-stringify`, `gray-matter`
 - [ ] Install `html-react-parser` (renders HTML string as React elements with
@@ -92,7 +96,8 @@
 - [ ] Copy static assets to `public/`: `favicon.ico`, `favicon.png`
 - [ ] Create `src/app/robots.ts` — generate `robots.txt` with correct sitemap URL
       (do NOT copy Hugo's `robots.txt` — it hardcodes `https://ayokoding.com/sitemap.xml`)
-- [ ] Create `postcss.config.ts` for Tailwind v4 (uses `@tailwindcss/postcss` plugin)
+- [ ] Create `postcss.config.mjs` for Tailwind v4 (uses `@tailwindcss/postcss` plugin;
+      `.mjs` matches organiclever-web pattern — not `.ts`)
 - [ ] Configure oxlint for linting
 - [ ] Verify `nx run ayokoding-web-v2:lint` passes
 - [ ] Verify `nx run ayokoding-web-v2:typecheck` passes
@@ -169,17 +174,19 @@
   - [ ] Detect `_index.md` as section pages
   - [ ] Build slug from file path (relative to content/locale/)
   - [ ] Handle both `en/` and `id/` content directories
-- [ ] Create `src/server/content/shortcodes.ts`:
-  - [ ] Custom remark plugin to transform all Hugo shortcodes used in content:
-    - [ ] `{{< callout type="warning|info|tip" >}}...{{< /callout >}}` (19 occurrences)
-          → `<div data-callout="warning|info|tip">` nodes → maps to Callout component
-    - [ ] `{{< tabs items="C,Go,Python,Java" >}}...{{< /tabs >}}` (169 blocks,
-          508 tab instances) → `<div data-tabs="...">` with `<div data-tab="...">` children
-          → maps to Tabs component (shadcn Tabs)
-    - [ ] `{{< youtube ID >}}` (45 files, Indonesian content) → responsive iframe embed
-          `<div data-youtube="ID">` → maps to YouTube component
-    - [ ] `{{% steps %}}...{{% /steps %}}` (1 file) → `<div data-steps>` with numbered
-          children → maps to Steps component
+- [ ] Create `src/server/content/shortcodes.ts` with custom remark plugin for Hugo shortcodes
+  - [ ] Transform callout shortcodes (19 occurrences):
+        `{{< callout type="warning|info|tip" >}}...{{< /callout >}}`
+        → `<div data-callout="warning|info|tip">` → maps to Callout component
+  - [ ] Transform tabs shortcodes (169 blocks, 508 tab instances):
+        `{{< tabs items="..." >}}...{{< /tabs >}}`
+        → `<div data-tabs="...">` with `<div data-tab="...">` children → maps to Tabs component (shadcn Tabs)
+  - [ ] Transform youtube shortcodes (45 files, Indonesian content):
+        `{{< youtube ID >}}`
+        → `<div data-youtube="ID">` → maps to YouTube component
+  - [ ] Transform steps shortcodes (1 file):
+        `{{% steps %}}...{{% /steps %}}`
+        → `<div data-steps>` with numbered children → maps to Steps component
   - [ ] Handle both `{{< >}}` and `{{% %}}` delimiter styles
 - [ ] Create `src/server/content/parser.ts`:
   - [ ] unified pipeline: remark-parse → remark-gfm → remark-math → shortcodes →
@@ -224,7 +231,8 @@
 - [ ] Create `src/lib/i18n/config.ts` — locale enum (`en`, `id`), segment mappings
 - [ ] Create `src/lib/i18n/translations.ts` — 9 UI string translations from Hugo i18n files
 - [ ] Create `src/lib/i18n/middleware.ts` — locale detection + redirect logic
-- [ ] Create `src/middleware.ts` — Next.js middleware (detect locale, redirect `/` → `/en`)
+      (contains locale detection logic; imported by `src/middleware.ts`)
+- [ ] Create `src/middleware.ts` — Next.js middleware entry point (detect locale, redirect `/` → `/en`)
 - [ ] Create `src/lib/hooks/use-locale.ts` — current locale hook from route params
 - [ ] Verify: navigating to `/` redirects to `/en`
 
@@ -380,6 +388,7 @@ All other content is server-rendered.
 - [ ] Create `src/app/[locale]/(content)/search/page.tsx` — dedicated search results page
       (for direct URL access, inside `(content)` for sidebar layout)
 - [ ] Verify search works for both locales
+- [ ] Verify: open http://localhost:3101/en, press Cmd+K, type "golang", confirm results appear
 
 ## Phase 8: Backend Unit Tests (BE Gherkin)
 
@@ -394,13 +403,15 @@ All other content is server-rendered.
   - [ ] In-memory FlexSearch index seeded with mock content
 - [ ] Create `test/unit/be-steps/helpers/test-caller.ts`:
   - [ ] tRPC caller factory using mock content (no filesystem)
-- [ ] Implement step definitions:
-  - [ ] `content-api.steps.ts` — getBySlug (found, not found, draft), listChildren
-        (weight ordering), getTree (hierarchy)
-  - [ ] `search-api.steps.ts` — query match, locale scope, empty query error, result shape
-  - [ ] `navigation-api.steps.ts` — tree structure, weight ordering, section children
-  - [ ] `i18n-api.steps.ts` — en content, id content, invalid locale
-  - [ ] `health-check.steps.ts` — meta.health returns `{ status: "ok" }`
+- [ ] Implement step definitions (all under `test/unit/be-steps/`):
+  - [ ] `test/unit/be-steps/content-api.steps.ts` — getBySlug (found, not found, draft),
+        listChildren (weight ordering), getTree (hierarchy)
+  - [ ] `test/unit/be-steps/search-api.steps.ts` — query match, locale scope,
+        empty query error, result shape
+  - [ ] `test/unit/be-steps/navigation-api.steps.ts` — tree structure, weight ordering,
+        section children
+  - [ ] `test/unit/be-steps/i18n-api.steps.ts` — en content, id content, invalid locale
+  - [ ] `test/unit/be-steps/health-check.steps.ts` — meta.health returns `{ status: "ok" }`
 - [ ] Verify all BE unit tests pass: `nx run ayokoding-web-v2:test:unit`
 
 ## Phase 9: Frontend Unit Tests (FE Gherkin)
@@ -456,6 +467,7 @@ All other content is server-rendered.
 - [ ] Build standalone output locally and inspect structure:
   - [ ] Run `nx build ayokoding-web-v2` (triggers `next build` with standalone)
   - [ ] Inspect `.next/standalone/` — find exact `server.js` path
+        (in Nx monorepos typically at `.next/standalone/apps/ayokoding-web-v2/server.js` — verify)
   - [ ] Inspect `.next/static/` — confirm static assets location
   - [ ] Inspect `public/` — confirm public assets location
 - [ ] Create `apps/ayokoding-web-v2/Dockerfile`:
@@ -481,7 +493,8 @@ All other content is server-rendered.
   - [ ] Fallback `../../apps/ayokoding-web/content` for dev + Vercel
 - [ ] Create `apps/ayokoding-web-v2/vercel.json`:
   - [ ] Set `installCommand`: `npm install --prefix=../.. --ignore-scripts`
-  - [ ] Set `ignoreCommand`: only build on `prod-ayokoding-web-v2` branch
+  - [ ] Set `ignoreCommand`: `[ "$VERCEL_GIT_COMMIT_REF" != "prod-ayokoding-web-v2" ]`
+        (mirrors organiclever-web pattern — only builds on the production branch)
   - [ ] Add security headers: X-Content-Type-Options, X-Frame-Options,
         X-XSS-Protection, Referrer-Policy
 
@@ -606,3 +619,6 @@ All other content is server-rendered.
 - [ ] CI workflow passes
 - [ ] Vercel deployment succeeds from `prod-ayokoding-web-v2` branch
 - [ ] README.md is complete
+- [ ] `specs/apps/ayokoding-web/README.md` updated with v2 test app references
+- [ ] CLAUDE.md updated: `ayokoding-web-v2` in Current Apps list,
+      `prod-ayokoding-web-v2` in environment branches list

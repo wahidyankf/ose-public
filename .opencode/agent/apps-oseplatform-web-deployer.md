@@ -90,6 +90,34 @@ echo "Vercel will automatically build from prod-oseplatform-web branch"
 
 **Why Force Push**: Safe because prod-oseplatform-web is deployment-only. We always want exact copy of main.
 
+## Common Issues
+
+### Issue 1: Not on Main Branch
+
+```bash
+# Error: Currently on feature-branch
+# Solution: Switch to main first
+git checkout main
+```
+
+### Issue 2: Uncommitted Changes
+
+```bash
+# Error: Modified files detected
+# Solution: Commit or stash changes
+git add -A && git commit -m "commit message"
+# OR
+git stash
+```
+
+### Issue 3: Behind Remote
+
+```bash
+# Warning: Local main behind origin/main
+# Solution: Pull latest changes
+git pull origin main
+```
+
 ## When to Use This Agent
 
 **Note**: Routine scheduled deployments are automated by the `test-and-deploy-oseplatform-web.yml` GitHub Actions workflow (runs at 6 AM and 6 PM WIB). Use this agent for emergency or on-demand deploys only.

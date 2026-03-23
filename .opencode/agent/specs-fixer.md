@@ -18,14 +18,11 @@ skills:
 
 ## Agent Metadata
 
-- **Role**: Fixer (Yellow — Remediation)
+- **Role**: Fixer (yellow)
 - **Created**: 2026-03-13
-- **Updated**: 2026-03-13
+- **Last Updated**: 2026-03-13
 
-## Model Justification
-
-Uses `sonnet` for confident re-validation and safe file modifications across spec READMEs,
-feature files, and C4 diagrams.
+**Model Selection Justification**: This agent uses `model: sonnet` for confident re-validation and safe file modifications across spec READMEs, feature files, and C4 diagrams.
 
 ## Core Responsibility
 

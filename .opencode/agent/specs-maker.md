@@ -17,14 +17,11 @@ skills:
 
 ## Agent Metadata
 
-- **Role**: Maker (Blue — Writer)
+- **Role**: Maker (blue)
 - **Created**: 2026-03-13
-- **Updated**: 2026-03-13
+- **Last Updated**: 2026-03-13
 
-## Model Justification
-
-Uses `sonnet` for generating well-structured Gherkin specifications and README documentation
-that follows repository conventions and maintains consistency with existing spec areas.
+**Model Selection Justification**: This agent uses `model: sonnet` for generating well-structured Gherkin specifications and README documentation that follows repository conventions and maintains consistency with existing spec areas.
 
 ## Core Responsibility
 

@@ -3,14 +3,22 @@
 ## Architecture
 
 The app is a single Next.js 16 server that reads markdown content from the filesystem
-and renders it as **server-side HTML** for SEO. No database is needed — all content
-lives in flat markdown files.
+and renders it as **server-side HTML** for SEO. No database is needed today — all
+content lives in flat markdown files. The architecture is designed to be **extensible**
+for future fullstack features (auth, dashboard, database) without restructuring.
 
 **Rendering strategy**: All content pages are rendered as **React Server Components
-(RSC)** — HTML is generated on the server and sent to the browser fully rendered.
-This ensures all content is crawlable by search engines without JavaScript execution.
-tRPC is used server-side (via server caller) for content pages, and client-side
-(via React Query) only for interactive features like search.
+(RSC)** with **on-demand ISR** — HTML is generated on the server on first request,
+cached, and revalidated periodically. This ensures all content is crawlable by search
+engines without JavaScript execution, while avoiding build-time generation of all 933+
+pages (which would slow builds as content grows). tRPC is used server-side (via server
+caller) for content pages, and client-side (via React Query) only for interactive
+features like search.
+
+**Extensibility**: Routes are organized with Next.js **route groups** to separate
+content-serving routes from future application routes. Adding new fullstack features
+(auth, dashboard, user accounts, database-backed pages) requires only adding new route
+groups — no restructuring of existing content routes.
 
 ```mermaid
 flowchart TD
@@ -39,24 +47,53 @@ flowchart TD
     style Index fill:#CC78BC,color:#ffffff
 ```
 
+### On-Demand ISR (Not Full SSG)
+
+Content pages use **on-demand ISR (Incremental Static Regeneration)** instead of
+full static generation at build time:
+
+```typescript
+// app/[locale]/(content)/[...slug]/page.tsx
+export const dynamicParams = true; // Allow any slug (not pre-defined)
+export const revalidate = 3600; // Cache for 1 hour, then re-render
+
+// NO generateStaticParams — pages are NOT pre-built at build time
+// First request: server-renders the page (full HTML for SEO)
+// Subsequent requests: served from cache until revalidate period
+// After revalidate: next request triggers background re-render
+```
+
+**Why not `generateStaticParams`?** With 933+ markdown files growing over time,
+pre-building all pages at build time would:
+
+- Make builds increasingly slow (minutes → tens of minutes)
+- Consume excessive build resources on Vercel
+- Provide no SEO benefit — ISR serves the same full HTML on first request
+
+**SEO is preserved**: The first request to any content page triggers server-side
+rendering, producing complete HTML with all content, meta tags, and structured data.
+Search engine crawlers receive the same full HTML as with static generation. The
+page is then cached for subsequent requests.
+
 ### Server-Side vs Client-Side Rendering
 
-| Feature                               | Rendering                       | Why                         |
-| ------------------------------------- | ------------------------------- | --------------------------- |
-| Content pages (`/[locale]/[...slug]`) | **Server (RSC)**                | SEO: full HTML for crawlers |
-| Section index pages                   | **Server (RSC)**                | SEO: full HTML for crawlers |
-| Homepage                              | **Server (RSC)**                | SEO: full HTML for crawlers |
-| Navigation sidebar                    | **Server (RSC)**                | SEO: crawlable links        |
-| Breadcrumb                            | **Server (RSC)**                | SEO: structured navigation  |
-| Table of contents                     | **Server (RSC)**                | SEO: heading links          |
-| Prev/Next navigation                  | **Server (RSC)**                | SEO: crawlable links        |
-| Open Graph / meta tags                | **Server (`generateMetadata`)** | SEO: social sharing         |
-| JSON-LD structured data               | **Server (RSC)**                | SEO: rich snippets          |
-| Sitemap                               | **Server (`app/sitemap.ts`)**   | SEO: crawler discovery      |
-| Search dialog                         | **Client (React Query)**        | Interactive: user-driven    |
-| Theme toggle                          | **Client**                      | Interactive: preference     |
-| Mobile menu drawer                    | **Client**                      | Interactive: UI state       |
-| Mermaid diagrams                      | **Client**                      | Dynamic: JS rendering       |
+| Feature                                         | Rendering                       | Why                                       |
+| ----------------------------------------------- | ------------------------------- | ----------------------------------------- |
+| Content pages (`/[locale]/(content)/[...slug]`) | **Server (RSC + ISR)**          | SEO: full HTML; cached after first render |
+| Section index pages                             | **Server (RSC + ISR)**          | SEO: full HTML; cached after first render |
+| Homepage                                        | **Server (RSC)**                | SEO: full HTML for crawlers               |
+| Navigation sidebar                              | **Server (RSC)**                | SEO: crawlable links                      |
+| Breadcrumb                                      | **Server (RSC)**                | SEO: structured navigation                |
+| Table of contents                               | **Server (RSC)**                | SEO: heading links                        |
+| Prev/Next navigation                            | **Server (RSC)**                | SEO: crawlable links                      |
+| Open Graph / meta tags                          | **Server (`generateMetadata`)** | SEO: social sharing                       |
+| JSON-LD structured data                         | **Server (RSC)**                | SEO: rich snippets                        |
+| Sitemap                                         | **Server (`app/sitemap.ts`)**   | SEO: crawler discovery                    |
+| Search dialog                                   | **Client (React Query)**        | Interactive: user-driven                  |
+| Theme toggle                                    | **Client**                      | Interactive: preference                   |
+| Mobile menu drawer                              | **Client**                      | Interactive: UI state                     |
+| Mermaid diagrams                                | **Client**                      | Dynamic: JS rendering                     |
+| Future app routes                               | **Server or Client**            | Depends on feature                        |
 
 ## Content Consumption (Detailed)
 
@@ -426,12 +463,16 @@ apps/ayokoding-web-v2/
 ├── src/
 │   ├── app/                              # Next.js App Router
 │   │   ├── [locale]/                     # i18n dynamic segment
-│   │   │   ├── layout.tsx                # Locale layout (sidebar, header, footer)
+│   │   │   ├── layout.tsx                # Locale layout (header, footer)
 │   │   │   ├── page.tsx                  # Homepage (locale root)
-│   │   │   ├── search/
-│   │   │   │   └── page.tsx              # Search results page
-│   │   │   └── [...slug]/                # Catch-all content pages
-│   │   │       └── page.tsx              # Renders markdown content
+│   │   │   ├── (content)/                # ← Route group: content pages
+│   │   │   │   ├── layout.tsx            # Content layout (sidebar + TOC)
+│   │   │   │   ├── search/
+│   │   │   │   │   └── page.tsx          # Search results page
+│   │   │   │   └── [...slug]/            # Catch-all content (on-demand ISR)
+│   │   │   │       └── page.tsx          # Server-renders markdown content
+│   │   │   └── (app)/                    # ← Route group: future fullstack routes
+│   │   │       └── .gitkeep              # Placeholder (e.g., dashboard/, admin/)
 │   │   ├── api/
 │   │   │   └── trpc/
 │   │   │       └── [trpc]/
@@ -576,31 +617,95 @@ apps/ayokoding-web-v2-fe-e2e/            # Frontend E2E (Playwright browser)
 
 ## Design Decisions
 
-| Decision            | Choice                              | Reason                                                             |
-| ------------------- | ----------------------------------- | ------------------------------------------------------------------ |
-| App type            | Fullstack (fs)                      | Content API + UI in one app                                        |
-| Framework           | Next.js 16 (App Router)             | Proven fullstack, existing team experience                         |
-| API layer           | tRPC v11                            | Type-safe end-to-end, native Zod + React Query integration         |
-| Validation          | Zod                                 | tRPC native, frontmatter validation, input/output schemas          |
-| Content rendering   | React Server Components (RSC)       | SEO: full HTML for crawlers, no client JS needed                   |
-| Data fetching       | tRPC server caller + React Query    | Server-side for content (SEO); client-side for search only         |
-| UI components       | shadcn/ui (Radix + Tailwind)        | Accessible, customizable, no vendor lock-in                        |
-| Content source      | Flat markdown files                 | Same as Hugo, no migration needed, no database                     |
-| Markdown parser     | unified (remark + rehype)           | Extensible, server-side, plugin ecosystem                          |
-| Syntax highlighting | shiki ^1.x (via rehype-pretty-code) | Server-side; pin to 1.x (2.x incompatible with rehype-pretty-code) |
-| Math                | KaTeX (via rehype-katex)            | Same as Hugo site, fast client-side rendering                      |
-| Diagrams            | Mermaid (client-side)               | Same as Hugo site, dynamic rendering                               |
-| Search              | FlexSearch                          | Same as Hugo Hextra, proven, in-memory                             |
-| i18n                | [locale] route segment              | Next.js native, no extra library                                   |
-| CSS                 | Tailwind CSS v4                     | shadcn/ui requirement, utility-first                               |
-| Port                | 3101                                | Adjacent to current Hugo site (3100)                               |
-| Coverage            | Vitest v8 + rhino-cli 80%           | Same blend threshold as demo-fs-ts-nextjs                          |
-| Linter              | oxlint                              | Same as other TypeScript apps                                      |
-| BDD (unit)          | @amiceli/vitest-cucumber            | Same as demo-fs-ts-nextjs                                          |
-| BDD (integration)   | @cucumber/cucumber                  | Proven pattern                                                     |
-| Docker              | Multi-stage, no DB                  | Local dev + CI E2E (standalone + outputFileTracingRoot)            |
-| Deployment          | Vercel                              | Same as ayokoding-web + organiclever-web                           |
-| Prod branch         | `prod-ayokoding-web-v2`             | Vercel listens for pushes (never commit directly)                  |
+| Decision            | Choice                                    | Reason                                                              |
+| ------------------- | ----------------------------------------- | ------------------------------------------------------------------- |
+| App type            | Fullstack (fs)                            | Content API + UI in one app                                         |
+| Framework           | Next.js 16 (App Router)                   | Proven fullstack, existing team experience                          |
+| API layer           | tRPC v11                                  | Type-safe end-to-end, native Zod + React Query integration          |
+| Validation          | Zod                                       | tRPC native, frontmatter validation, input/output schemas           |
+| Content rendering   | React Server Components (RSC)             | SEO: full HTML for crawlers, no client JS needed                    |
+| Data fetching       | tRPC server caller + React Query          | Server-side for content (SEO); client-side for search only          |
+| UI components       | shadcn/ui (Radix + Tailwind)              | Accessible, customizable, no vendor lock-in                         |
+| Content source      | Flat markdown files                       | Same as Hugo, no migration needed, no database                      |
+| Markdown parser     | unified (remark + rehype)                 | Extensible, server-side, plugin ecosystem                           |
+| Syntax highlighting | shiki ^1.x (via rehype-pretty-code)       | Server-side; pin to 1.x (2.x incompatible with rehype-pretty-code)  |
+| Math                | KaTeX (via rehype-katex)                  | Same as Hugo site, fast client-side rendering                       |
+| Diagrams            | Mermaid (client-side)                     | Same as Hugo site, dynamic rendering                                |
+| Search              | FlexSearch                                | Same as Hugo Hextra, proven, in-memory                              |
+| i18n                | [locale] route segment                    | Next.js native, no extra library                                    |
+| CSS                 | Tailwind CSS v4                           | shadcn/ui requirement, utility-first                                |
+| Port                | 3101                                      | Adjacent to current Hugo site (3100)                                |
+| Coverage            | Vitest v8 + rhino-cli 80%                 | Same blend threshold as demo-fs-ts-nextjs                           |
+| Linter              | oxlint                                    | Same as other TypeScript apps                                       |
+| BDD (unit)          | @amiceli/vitest-cucumber                  | Same as demo-fs-ts-nextjs                                           |
+| BDD (integration)   | @cucumber/cucumber                        | Proven pattern                                                      |
+| Docker              | Multi-stage, no DB                        | Local dev + CI E2E (standalone + outputFileTracingRoot)             |
+| Deployment          | Vercel                                    | Same as ayokoding-web + organiclever-web                            |
+| Prod branch         | `prod-ayokoding-web-v2`                   | Vercel listens for pushes (never commit directly)                   |
+| Route architecture  | Route groups `(content)` + `(app)`        | Content isolated; future fullstack routes added without restructure |
+| Content rendering   | On-demand ISR (no `generateStaticParams`) | Scales to thousands of pages without slow builds                    |
+
+## Future Extensibility
+
+The route architecture is designed so adding fullstack features requires **zero
+restructuring** of existing content routes:
+
+```
+app/[locale]/
+├── (content)/                    # ← Current: markdown content
+│   ├── layout.tsx                # Sidebar + TOC layout
+│   ├── [...slug]/page.tsx        # Markdown renderer (ISR)
+│   └── search/page.tsx           # Search results
+│
+├── (app)/                        # ← Future: fullstack features
+│   ├── layout.tsx                # App layout (different from content)
+│   ├── dashboard/page.tsx        # User dashboard
+│   ├── profile/page.tsx          # User profile
+│   ├── admin/page.tsx            # Admin panel
+│   └── settings/page.tsx         # User settings
+│
+└── layout.tsx                    # Shared: header, footer, theme
+```
+
+**Route groups** (`(content)` and `(app)`) are Next.js organizational boundaries
+that don't affect URLs. They allow:
+
+1. **Different layouts**: Content pages get sidebar + TOC; app pages get their own
+   layout (e.g., dashboard sidebar, breadcrumb-less pages)
+2. **Different rendering strategies**: Content uses ISR; app pages can use SSR or
+   client-side as needed
+3. **Independent evolution**: Content routes never need to change when app routes
+   are added
+4. **Database addition**: When a database is added for app features, it only affects
+   `(app)` routes and new tRPC procedures — content routes remain file-based
+
+**Adding a new fullstack feature** (e.g., user authentication):
+
+1. Add `(app)/login/page.tsx` and `(app)/dashboard/page.tsx`
+2. Add tRPC procedures in `server/trpc/procedures/auth.ts`
+3. Add database schema in `server/db/` (new directory)
+4. Content routes are untouched
+
+**tRPC router is already extensible**:
+
+```typescript
+// Current
+const appRouter = router({
+  content: contentRouter, // File-based content
+  search: searchRouter, // FlexSearch
+  meta: metaRouter, // Health, languages
+});
+
+// Future (just add new routers)
+const appRouter = router({
+  content: contentRouter, // Unchanged
+  search: searchRouter, // Unchanged
+  meta: metaRouter, // Unchanged
+  auth: authRouter, // ← NEW: login, register, session
+  user: userRouter, // ← NEW: profile, settings
+  admin: adminRouter, // ← NEW: user management
+});
+```
 
 ## Visual Design Capture Strategy
 

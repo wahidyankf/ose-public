@@ -3,7 +3,8 @@
 ## Objectives
 
 - Build `apps/ayokoding-web-v2` as a fullstack Next.js 16 application (App Router)
-  that replaces the Hugo-based `ayokoding-web` site
+  that replaces the Hugo-based `ayokoding-web` site, with architecture designed for
+  future fullstack features (auth, dashboard, database) without restructuring
 - Serve all content via tRPC API with type-safe procedures for content retrieval,
   navigation tree, and full-text search
 - Use the same markdown content source (`apps/ayokoding-web/content/`) — no content
@@ -190,7 +191,9 @@ Scenario: Mobile layout
 - **Deployment**: Vercel (production branch `prod-ayokoding-web-v2`), same as
   `ayokoding-web` (`prod-ayokoding-web`) and `organiclever-web` (`prod-organiclever-web`)
 - **Linting**: oxlint (same as demo-fe-ts-nextjs and demo-fs-ts-nextjs)
-- **Performance**: All content pages should load under 2s (server-rendered HTML)
+- **Performance**: All content pages should load under 2s. On-demand ISR (no
+  `generateStaticParams`) — pages server-rendered on first request, then cached.
+  Builds stay fast as content grows (no build-time generation of 933+ pages)
 - **SEO**: All content must be server-rendered (RSC) — no client-side rendering for
   content pages. Full HTML available to crawlers without JavaScript execution.
   Equivalent meta tags to current Hugo site (Open Graph, Twitter Cards, JSON-LD,

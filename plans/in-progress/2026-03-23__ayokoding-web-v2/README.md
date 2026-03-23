@@ -18,13 +18,16 @@ syntax highlighting, and all features of the current Hugo site.
 This is the first **content platform** rewrite in the monorepo. Unlike demo apps
 (CRUD + auth) or marketing sites (static pages), ayokoding-web-v2 must:
 
-- Parse and render 933 markdown files with frontmatter, code blocks, math, diagrams
+- Parse and render 933+ markdown files with frontmatter, code blocks, math, diagrams
 - Support bilingual content (809 EN + 124 ID files) with language-prefixed URLs
 - Provide full-text search across all content via FlexSearch
 - Replicate Hugo Hextra features: sidebar navigation, table of contents, breadcrumbs,
   callout admonitions, Mermaid diagrams, KaTeX math
 - Handle 5-level deep content hierarchy (domain > subdomain > tool > type > level)
 - Serve everything via tRPC (type-safe end-to-end from API to UI)
+- Use **on-demand ISR** (not full SSG) so builds stay fast as content grows
+- Be **extensible for future fullstack features** (auth, dashboard, database) via
+  route groups — adding new features requires zero restructuring of content routes
 
 ## Deployment
 

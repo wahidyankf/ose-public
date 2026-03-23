@@ -181,11 +181,15 @@
 - [ ] Create `src/middleware.ts` — Next.js middleware for locale routing
 - [ ] Create `src/app/layout.tsx` — root layout (fonts, providers, metadata)
 - [ ] Create `src/app/page.tsx` — redirect `/` → `/en`
-- [ ] Create `src/app/[locale]/layout.tsx`:
+- [ ] Create `src/app/[locale]/layout.tsx` — shared locale layout:
   - [ ] Header component (site title, search trigger, language switcher, theme toggle)
-  - [ ] Sidebar component (collapsible navigation tree)
   - [ ] Footer component (copyright, links)
   - [ ] Mobile navigation drawer (Sheet component)
+- [ ] Create `src/app/[locale]/(content)/layout.tsx` — content-specific layout:
+  - [ ] Sidebar component (collapsible navigation tree)
+  - [ ] Table of contents (right column)
+  - [ ] Note: `(content)` route group isolates content layout from future `(app)` routes
+- [ ] Create `src/app/[locale]/(app)/.gitkeep` — placeholder for future fullstack routes
 - [ ] Create `src/components/layout/header.tsx`
 - [ ] Create `src/components/layout/sidebar.tsx`:
   - [ ] Fetch navigation tree via tRPC
@@ -206,17 +210,22 @@
 
 ## Phase 6: Content Pages (Server-Rendered for SEO)
 
-All content pages are **React Server Components (RSC)** — fully server-rendered HTML
-sent to the browser. No client-side fetching for content. Search engines receive
-complete HTML without needing JavaScript execution.
+All content pages are **React Server Components (RSC)** with **on-demand ISR** — fully
+server-rendered HTML on first request, then cached. No client-side fetching for content.
+Search engines receive complete HTML without JavaScript execution. No
+`generateStaticParams` — pages are rendered on-demand so builds stay fast as content
+grows (933+ files and counting).
 
 - [ ] Create `src/app/[locale]/page.tsx` — locale homepage (RSC, server-rendered)
-- [ ] Create `src/app/[locale]/[...slug]/page.tsx` (RSC, server-rendered):
+- [ ] Create `src/app/[locale]/(content)/[...slug]/page.tsx` (RSC + ISR):
+  - [ ] Set `export const dynamicParams = true` (allow any slug)
+  - [ ] Set `export const revalidate = 3600` (cache 1 hour, then re-render)
+  - [ ] **No `generateStaticParams`** — on-demand rendering, not build-time
   - [ ] Fetch content via **tRPC server caller** (direct function call, no HTTP)
   - [ ] Render parsed HTML with custom components
   - [ ] Show breadcrumb, TOC, prev/next — all server-rendered
   - [ ] Handle section pages (`_index.md`) — show child listing
-  - [ ] Handle 404 (slug not found)
+  - [ ] Handle 404 (slug not found → `notFound()`)
   - [ ] Verify: `curl` to any content URL returns full HTML with content visible
         (no loading spinners, no "loading..." placeholders)
 - [ ] Create `src/components/content/markdown-renderer.tsx`:
@@ -229,10 +238,9 @@ complete HTML without needing JavaScript execution.
 - [ ] Create `src/components/content/code-block.tsx` — server-rendered syntax highlighting
 - [ ] Create `src/components/content/mermaid.tsx` — client-side Mermaid renderer
       (only interactive component on content pages, uses `"use client"`)
-- [ ] Add `generateStaticParams` for SSG of all content pages (pre-render at build)
 - [ ] Add `generateMetadata` for SEO (Open Graph, Twitter Cards, hreflang, canonical)
 - [ ] Add JSON-LD structured data (Article/WebSite schema)
-- [ ] Add sitemap generation (`app/sitemap.ts`)
+- [ ] Add sitemap generation (`app/sitemap.ts`) — reads content index, no full build
 - [ ] **SEO verification**: `curl -s http://localhost:3101/en/learn/overview | grep -c '<pre'`
       returns >0 (code blocks rendered in HTML, not loading placeholders)
 

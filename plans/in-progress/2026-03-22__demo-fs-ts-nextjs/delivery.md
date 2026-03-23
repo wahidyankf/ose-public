@@ -27,7 +27,7 @@
 - [x] Create `drizzle.config.ts` for migration generation
 - [x] Generate initial SQL migration via `npx drizzle-kit generate`
 - [x] Create `src/db/client.ts` — Drizzle client singleton
-- [ ] Verify migration runs against local PostgreSQL (deferred to Phase 10/11)
+- [x] Verify migration runs against local PostgreSQL (validated via integration tests)
 
 ## Phase 3: Repository Layer
 

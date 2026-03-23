@@ -4,7 +4,7 @@ import { generatePLReport } from "@/services/report-service";
 import { requireAuth, serviceResponse } from "@/lib/auth-middleware";
 
 export async function GET(req: NextRequest) {
-  const repos = getRepositories();
+  const repos = await getRepositories();
   const authResult = await requireAuth(req, repos.sessions);
   if (authResult instanceof NextResponse) return authResult;
 

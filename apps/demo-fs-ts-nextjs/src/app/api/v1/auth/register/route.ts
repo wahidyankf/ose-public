@@ -5,7 +5,7 @@ import { serviceResponse } from "@/lib/auth-middleware";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const repos = getRepositories();
+  const repos = await getRepositories();
   const result = await register(repos, body);
   return serviceResponse(result, 201);
 }

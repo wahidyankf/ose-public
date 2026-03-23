@@ -24,7 +24,8 @@ export async function requireAuth(req: NextRequest, sessions: SessionRepository)
   }
 
   // Check user status
-  const user = await (await import("@/repositories")).getRepositories().users.findById(claims.sub);
+  const repos = await (await import("@/repositories")).getRepositories();
+  const user = await repos.users.findById(claims.sub);
   if (!user || user.status === "DISABLED" || user.status === "INACTIVE" || user.status === "LOCKED") {
     return NextResponse.json({ message: "Account is not active" }, { status: 401 });
   }

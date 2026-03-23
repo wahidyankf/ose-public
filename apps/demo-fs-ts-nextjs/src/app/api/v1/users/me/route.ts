@@ -4,7 +4,7 @@ import { getProfile, updateDisplayName } from "@/services/user-service";
 import { requireAuth, serviceResponse } from "@/lib/auth-middleware";
 
 export async function GET(req: NextRequest) {
-  const repos = getRepositories();
+  const repos = await getRepositories();
   const authResult = await requireAuth(req, repos.sessions);
   if (authResult instanceof NextResponse) return authResult;
 
@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
-  const repos = getRepositories();
+  const repos = await getRepositories();
   const authResult = await requireAuth(req, repos.sessions);
   if (authResult instanceof NextResponse) return authResult;
 

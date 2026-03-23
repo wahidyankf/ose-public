@@ -5,7 +5,7 @@ import { requireAuth } from "@/lib/auth-middleware";
 import { CURRENCY_DECIMALS, type SupportedCurrency } from "@/lib/types";
 
 export async function GET(req: NextRequest) {
-  const repos = getRepositories();
+  const repos = await getRepositories();
   const authResult = await requireAuth(req, repos.sessions);
   if (authResult instanceof NextResponse) return authResult;
 

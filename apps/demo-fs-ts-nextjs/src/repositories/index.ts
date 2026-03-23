@@ -6,9 +6,9 @@ import { createAttachmentRepository } from "./attachment-repository";
 import type { Repositories } from "./interfaces";
 
 let _repos: Repositories | null = null;
-let _migrationPromise: Promise<void> | null = null;
+let _ready: Promise<void> | null = null;
 
-export function getRepositories(): Repositories {
+function initRepos(): Repositories {
   if (!_repos) {
     _repos = {
       users: createUserRepository(db),
@@ -16,12 +16,13 @@ export function getRepositories(): Repositories {
       expenses: createExpenseRepository(db),
       attachments: createAttachmentRepository(db),
     };
-    _migrationPromise = ensureMigrations();
+    _ready = ensureMigrations();
   }
   return _repos;
 }
 
-export async function ensureReady(): Promise<void> {
-  getRepositories();
-  if (_migrationPromise) await _migrationPromise;
+export async function getRepositories(): Promise<Repositories> {
+  const repos = initRepos();
+  if (_ready) await _ready;
+  return repos;
 }

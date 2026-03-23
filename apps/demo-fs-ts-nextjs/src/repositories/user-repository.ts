@@ -1,4 +1,4 @@
-import { eq, like, sql, and, isNull } from "drizzle-orm";
+import { eq, like, sql, and, or, isNull } from "drizzle-orm";
 import type { Database } from "@/db/client";
 import { users } from "@/db/schema";
 import type { UserRepository } from "./interfaces";
@@ -89,10 +89,10 @@ export function createUserRepository(db: Database): UserRepository {
       await db.update(users).set({ failedLoginAttempts: 0, updatedAt: new Date() }).where(eq(users.id, id));
     },
 
-    async listUsers(page, size, email?) {
+    async listUsers(page, size, search?) {
       const offset = (page - 1) * size;
-      const whereClause = email
-        ? and(isNull(users.deletedAt), like(users.email, `%${email}%`))
+      const whereClause = search
+        ? and(isNull(users.deletedAt), or(like(users.email, `%${search}%`), like(users.username, `%${search}%`)))
         : isNull(users.deletedAt);
 
       const [items, [countRow]] = await Promise.all([

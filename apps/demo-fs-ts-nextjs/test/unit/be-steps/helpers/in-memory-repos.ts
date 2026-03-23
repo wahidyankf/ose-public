@@ -61,10 +61,10 @@ export function createInMemoryUserRepository(): UserRepository {
     async resetFailedAttempts(id) {
       users = users.map((u) => (u.id === id ? { ...u, failedLoginAttempts: 0, updatedAt: new Date() } : u));
     },
-    async listUsers(page, size, email?) {
+    async listUsers(page, size, search?) {
       let filtered = users;
-      if (email) {
-        filtered = filtered.filter((u) => u.email === email);
+      if (search) {
+        filtered = filtered.filter((u) => u.email.includes(search) || u.username.includes(search));
       }
       const total = filtered.length;
       const offset = (page - 1) * size;

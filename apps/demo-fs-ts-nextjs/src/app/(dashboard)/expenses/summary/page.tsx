@@ -95,7 +95,7 @@ export default function ExpenseSummaryPage() {
     <>
       <h1 style={{ marginBottom: "1.5rem" }}>Expense Summary</h1>
 
-      {summaryEntries.length > 0 && (
+      {summaryEntries.length > 0 && !submitted && (
         <div style={cardStyle}>
           <h2 style={{ marginTop: 0 }}>Total by Currency</h2>
           <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
@@ -209,7 +209,7 @@ export default function ExpenseSummaryPage() {
         <div data-testid="pl-chart">
           <div style={cardStyle}>
             <h2 style={{ marginTop: 0 }}>
-              Summary: {data.currency} &mdash; {data.startDate} to {data.endDate}
+              Summary: {queryParams.currency} &mdash; {queryParams.startDate} to {queryParams.endDate}
             </h2>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "1rem" }}>
               {[

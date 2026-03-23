@@ -6,7 +6,7 @@ export async function POST() {
     return NextResponse.json({ message: "Test API is disabled" }, { status: 404 });
   }
 
-  const repos = getRepositories();
+  const repos = await getRepositories();
   await repos.attachments.deleteAll();
   await repos.expenses.deleteAll();
   await repos.sessions.deleteAll();

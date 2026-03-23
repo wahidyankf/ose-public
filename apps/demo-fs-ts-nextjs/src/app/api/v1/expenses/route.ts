@@ -4,7 +4,7 @@ import { createExpense, listExpenses } from "@/services/expense-service";
 import { requireAuth, serviceResponse } from "@/lib/auth-middleware";
 
 export async function GET(req: NextRequest) {
-  const repos = getRepositories();
+  const repos = await getRepositories();
   const authResult = await requireAuth(req, repos.sessions);
   if (authResult instanceof NextResponse) return authResult;
 
@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const repos = getRepositories();
+  const repos = await getRepositories();
   const authResult = await requireAuth(req, repos.sessions);
   if (authResult instanceof NextResponse) return authResult;
 

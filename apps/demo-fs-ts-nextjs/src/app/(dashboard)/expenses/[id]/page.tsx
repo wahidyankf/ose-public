@@ -256,6 +256,11 @@ export default function ExpenseDetailPage({ params }: PageProps) {
           role="alertdialog"
           aria-modal="true"
           aria-labelledby="delete-dialog-title"
+          onKeyDown={(e) => {
+            if (e.key === "Escape") setDeleteConfirm(false);
+          }}
+          tabIndex={-1}
+          ref={(el) => el?.focus()}
           style={{
             position: "fixed",
             inset: 0,
@@ -264,6 +269,7 @@ export default function ExpenseDetailPage({ params }: PageProps) {
             alignItems: "center",
             justifyContent: "center",
             zIndex: 300,
+            outline: "none",
           }}
         >
           <div
@@ -586,6 +592,10 @@ export default function ExpenseDetailPage({ params }: PageProps) {
             role="alertdialog"
             aria-modal="true"
             aria-labelledby="del-attach-title"
+            onKeyDown={(e) => {
+              if (e.key === "Escape") setDeleteAttachmentId(null);
+            }}
+            tabIndex={-1}
             style={{
               backgroundColor: "#fdf2f2",
               border: "1px solid #f5c6cb",

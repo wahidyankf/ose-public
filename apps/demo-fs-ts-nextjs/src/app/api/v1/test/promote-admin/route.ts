@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: "Username is required" }, { status: 400 });
   }
 
-  const repos = getRepositories();
+  const repos = await getRepositories();
   const user = await repos.users.findByUsername(username);
   if (!user) {
     return NextResponse.json({ message: "User not found" }, { status: 404 });

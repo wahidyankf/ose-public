@@ -1,5 +1,5 @@
-const TOKEN_KEY = "demo_fs_access_token";
-const REFRESH_KEY = "demo_fs_refresh_token";
+const TOKEN_KEY = "demo_fe_access_token";
+const REFRESH_KEY = "demo_fe_refresh_token";
 
 export function getAccessToken(): string | null {
   if (typeof window === "undefined") return null;

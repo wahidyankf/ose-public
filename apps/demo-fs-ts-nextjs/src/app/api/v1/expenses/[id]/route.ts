@@ -6,7 +6,7 @@ import { requireAuth, serviceResponse } from "@/lib/auth-middleware";
 type Params = { params: Promise<{ id: string }> };
 
 export async function GET(req: NextRequest, { params }: Params) {
-  const repos = getRepositories();
+  const repos = await getRepositories();
   const authResult = await requireAuth(req, repos.sessions);
   if (authResult instanceof NextResponse) return authResult;
 
@@ -16,7 +16,7 @@ export async function GET(req: NextRequest, { params }: Params) {
 }
 
 export async function PUT(req: NextRequest, { params }: Params) {
-  const repos = getRepositories();
+  const repos = await getRepositories();
   const authResult = await requireAuth(req, repos.sessions);
   if (authResult instanceof NextResponse) return authResult;
 
@@ -27,7 +27,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
 }
 
 export async function DELETE(req: NextRequest, { params }: Params) {
-  const repos = getRepositories();
+  const repos = await getRepositories();
   const authResult = await requireAuth(req, repos.sessions);
   if (authResult instanceof NextResponse) return authResult;
 

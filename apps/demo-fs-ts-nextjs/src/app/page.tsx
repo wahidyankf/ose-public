@@ -46,9 +46,17 @@ export default function HomePage() {
         )}
 
         {data && (
-          <div
+          <p
             data-testid="health-status"
-            style={{ display: "flex", alignItems: "center", gap: "0.5rem", justifyContent: "center" }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              justifyContent: "center",
+              margin: 0,
+              fontWeight: "bold",
+              color: data.status === "UP" ? "#2d7a2d" : "#c0392b",
+            }}
           >
             <span
               aria-hidden="true"
@@ -60,15 +68,8 @@ export default function HomePage() {
                 display: "inline-block",
               }}
             />
-            <span
-              style={{
-                fontWeight: "bold",
-                color: data.status === "UP" ? "#2d7a2d" : "#c0392b",
-              }}
-            >
-              {data.status}
-            </span>
-          </div>
+            {data.status}
+          </p>
         )}
       </div>
 

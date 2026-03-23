@@ -3,6 +3,42 @@
 > **Note**: All `npm install` commands run from `apps/ayokoding-web-v2/` (project root),
 > not the workspace root. This ensures packages are added to the app's own `package.json`.
 
+## Phase 0: Visual Design Capture
+
+- [ ] Start the current Hugo site locally (`nx dev ayokoding-web` on port 3100)
+- [ ] Capture screenshots at 3 breakpoints using Playwright:
+  - [ ] **Desktop (1280px)**: Homepage, section index (`/en/learn/`), content page
+        with code blocks, content page with callouts + math + mermaid, search dialog,
+        rants page
+  - [ ] **Tablet (768px)**: Same pages — verify sidebar behavior
+  - [ ] **Mobile (375px)**: Same pages — verify hamburger menu, collapsed layout
+- [ ] Save screenshots to `plans/in-progress/2026-03-23__ayokoding-web-v2/screenshots/`
+- [ ] Analyze Hextra theme source (from Hugo module cache or GitHub):
+  - [ ] Extract layout grid structure (sidebar width, content max-width, TOC width)
+  - [ ] Extract color tokens (light + dark mode palettes)
+  - [ ] Extract typography scale (font family, heading sizes, body size, line height)
+  - [ ] Extract responsive breakpoints (sm, md, lg, xl)
+  - [ ] Extract spacing system (padding, margins, gaps)
+- [ ] Create component mapping document (`plans/.../design-mapping.md`):
+  - [ ] Map each Hextra element to shadcn/ui + Tailwind equivalent
+  - [ ] Document responsive behavior per breakpoint:
+    - Desktop (≥1280px): sidebar (250px) + content (max-w-3xl) + TOC (200px)
+    - Laptop (≥1024px): sidebar (250px) + content + TOC hidden
+    - Tablet (≥768px): sidebar collapsed to icons + content
+    - Mobile (<768px): hamburger drawer + full-width content
+  - [ ] Document dark/light mode color mapping
+  - [ ] Document component-specific responsive rules:
+    - Code blocks: horizontal scroll on mobile, full-width
+    - Tables: horizontal scroll wrapper on mobile
+    - Images: max-width 100%, centered
+    - Search dialog: full-screen on mobile, centered modal on desktop
+    - Sidebar: persistent on desktop, Sheet overlay on mobile
+    - TOC: right column on desktop, collapsed/hidden on tablet+mobile
+    - Breadcrumb: truncated with ellipsis on mobile
+    - Prev/Next nav: stacked vertically on mobile, side-by-side on desktop
+- [ ] Review `apps/ayokoding-web/assets/css/custom.css` for site-specific overrides
+      to replicate in Tailwind
+
 ## Phase 1: Project Scaffolding
 
 - [ ] Create `apps/ayokoding-web-v2/` directory

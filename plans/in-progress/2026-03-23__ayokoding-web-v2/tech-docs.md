@@ -247,6 +247,77 @@ apps/ayokoding-web-v2-fe-e2e/            # Frontend E2E (Playwright browser)
 | Deployment          | Vercel                            | Same as ayokoding-web + organiclever-web                   |
 | Prod branch         | `prod-ayokoding-web-v2`           | Vercel listens for pushes (never commit directly)          |
 
+## Visual Design Capture Strategy
+
+The current ayokoding-web uses the Hextra documentation theme. To faithfully replicate
+the visual design, we reverse-engineer it before writing any UI code.
+
+### Capture Process
+
+1. **Screenshots**: Playwright captures the live Hugo site at 4 breakpoints (1280px,
+   1024px, 768px, 375px) across representative page types
+2. **Theme analysis**: Extract Hextra's design tokens (colors, typography, spacing,
+   breakpoints) from the theme source
+3. **Component mapping**: Map each Hextra element to shadcn/ui + Tailwind equivalents
+
+### Responsive Layout Grid
+
+```
+Desktop (≥1280px):
+┌──────────┬──────────────────────────────┬──────────┐
+│ Sidebar  │         Content              │   TOC    │
+│  250px   │        max-w-3xl             │  200px   │
+│          │                              │          │
+└──────────┴──────────────────────────────┴──────────┘
+
+Laptop (≥1024px):
+┌──────────┬─────────────────────────────────────────┐
+│ Sidebar  │              Content                    │
+│  250px   │             (TOC hidden)                │
+└──────────┴─────────────────────────────────────────┘
+
+Tablet (≥768px):
+┌────┬───────────────────────────────────────────────┐
+│ ≡  │                  Content                      │
+│icon│               (full width)                    │
+└────┴───────────────────────────────────────────────┘
+
+Mobile (<768px):
+┌───────────────────────────────────────────────────┐
+│ ☰  Site Title              🔍  🌙                  │
+├───────────────────────────────────────────────────┤
+│                   Content                         │
+│                (full width)                       │
+└───────────────────────────────────────────────────┘
+```
+
+### Component Responsive Behavior
+
+| Component   | Desktop                | Tablet            | Mobile                    |
+| ----------- | ---------------------- | ----------------- | ------------------------- |
+| Sidebar     | Persistent, 250px      | Collapsed icons   | Sheet overlay (hamburger) |
+| TOC         | Right column, 200px    | Hidden            | Hidden                    |
+| Search      | Centered modal (Cmd+K) | Centered modal    | Full-screen overlay       |
+| Breadcrumb  | Full path              | Full path         | Truncated with ellipsis   |
+| Code blocks | Fixed width            | Full width        | Horizontal scroll         |
+| Tables      | Normal                 | Horizontal scroll | Horizontal scroll         |
+| Prev/Next   | Side-by-side           | Side-by-side      | Stacked vertically        |
+| Images      | Centered, max-width    | Full width        | Full width                |
+
+### Hextra → shadcn/ui Component Mapping
+
+| Hextra Element      | shadcn/ui Equivalent         | Notes                                |
+| ------------------- | ---------------------------- | ------------------------------------ |
+| Sidebar nav tree    | ScrollArea + custom tree     | Collapsible sections, weight-ordered |
+| Search (FlexSearch) | Command (cmdk)               | Cmd+K trigger, same search engine    |
+| Callout admonitions | Alert (warning/info/default) | Match type→variant mapping           |
+| Breadcrumb          | Breadcrumb                   | Path-based, locale-aware             |
+| Theme toggle        | DropdownMenu + next-themes   | System/light/dark options            |
+| Language switcher   | DropdownMenu                 | EN/ID with flag icons                |
+| TOC                 | Custom component             | Extracted from heading hierarchy     |
+| Code block          | Pre + custom styling         | shiki server-side highlighting       |
+| Mobile menu         | Sheet                        | Slide-in from left                   |
+
 ## Key Architectural Differences from Current Hugo Site
 
 **What changes:**

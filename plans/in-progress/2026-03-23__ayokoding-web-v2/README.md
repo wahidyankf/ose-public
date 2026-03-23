@@ -50,4 +50,5 @@ This is the first **content platform** rewrite in the monorepo. Unlike demo apps
   requirements, acceptance criteria
 - [Technical Documentation](./tech-docs.md) — Architecture, project structure, design
   decisions, tRPC router, content pipeline, Nx configuration
-- [Delivery](./delivery.md) — 14-phase implementation checklist with validation gate
+- [Delivery](./delivery.md) — 15-phase implementation checklist (Phase 0-14) with
+  validation gate

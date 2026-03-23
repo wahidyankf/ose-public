@@ -1,7 +1,8 @@
 # Plan: Create `demo-fs-ts-nextjs` — Fullstack Next.js App
 
-**Status**: Not Started
+**Status**: Done
 **Created**: 2026-03-22
+**Completed**: 2026-03-23
 **Git Workflow**: Work on `main` (Trunk Based Development)
 
 ## Goal

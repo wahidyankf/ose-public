@@ -6,10 +6,11 @@
 ## Phase 0: Visual Design Capture
 
 - [ ] Start the current Hugo site locally (`nx dev ayokoding-web` on port 3100)
-- [ ] Capture screenshots at 3 breakpoints using Playwright:
+- [ ] Capture screenshots at 4 breakpoints using Playwright:
   - [ ] **Desktop (1280px)**: Homepage, section index (`/en/learn/`), content page
         with code blocks, content page with callouts + math + mermaid, search dialog,
         rants page
+  - [ ] **Laptop (1024px)**: Same pages — verify TOC hidden, sidebar still visible
   - [ ] **Tablet (768px)**: Same pages — verify sidebar behavior
   - [ ] **Mobile (375px)**: Same pages — verify hamburger menu, collapsed layout
 - [ ] Save screenshots to `plans/in-progress/2026-03-23__ayokoding-web-v2/screenshots/`
@@ -46,17 +47,20 @@
 - [ ] Configure `next.config.ts`:
   - [ ] `output: 'standalone'` for Docker builds (Vercel ignores this)
   - [ ] `outputFileTracingRoot: path.join(__dirname, '../../')` for monorepo
-- [ ] Install and configure Tailwind CSS v4 + PostCSS
+- [ ] Install and configure Tailwind CSS v4 + PostCSS (v4 uses CSS-based config
+      via `@theme` directive in `globals.css` — no `tailwind.config.ts` file)
 - [ ] Initialize shadcn/ui (`npx shadcn@latest init`) with `components.json`
 - [ ] Install core shadcn/ui components: Button, Input, Dialog, Alert, Separator,
       ScrollArea, Sheet, DropdownMenu, Tooltip, Badge, Command
 - [ ] Install tRPC: `@trpc/server`, `@trpc/client`, `@trpc/tanstack-react-query`,
       `@tanstack/react-query@^5.62.8`
-- [ ] Install Zod v4
+- [ ] Install Zod: `zod@^3` (tRPC v11 validated with Zod v3; v4 has breaking changes,
+      migrate later once tRPC confirms v4 support)
 - [ ] Install markdown tooling: `unified`, `remark-parse`, `remark-gfm`, `remark-math`,
-      `rehype-stringify`, `rehype-pretty-code`, `shiki@^1` (pin to 1.x — 2.x
-      incompatible with rehype-pretty-code), `rehype-katex`,
-      `rehype-slug`, `rehype-autolink-headings`, `gray-matter`
+      `remark-rehype` (MDAST→HAST bridge — required), `rehype-pretty-code`,
+      `shiki@^1` (pin to 1.x — 2.x incompatible with rehype-pretty-code),
+      `rehype-katex`, `rehype-slug`, `rehype-autolink-headings`,
+      `rehype-stringify`, `gray-matter`
 - [ ] Install FlexSearch for search indexing
 - [ ] Install test dependencies: `vitest`, `@vitest/coverage-v8`,
       `@amiceli/vitest-cucumber`, `@testing-library/react`, `jsdom`
@@ -139,8 +143,8 @@
   - [ ] Map callout types (warning, info, tip) to data attributes
 - [ ] Create `src/server/content/parser.ts`:
   - [ ] unified pipeline: remark-parse → remark-gfm → remark-math → shortcodes →
-        rehype-stringify → rehype-pretty-code → rehype-katex → rehype-slug →
-        rehype-autolink-headings
+        remark-rehype → rehype-pretty-code → rehype-katex → rehype-slug →
+        rehype-autolink-headings → rehype-stringify
   - [ ] Extract headings (H2-H4) for table of contents
   - [ ] Return { html, headings }
 - [ ] Create `src/server/content/index.ts`:

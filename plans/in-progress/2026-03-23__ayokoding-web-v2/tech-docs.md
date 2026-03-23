@@ -113,7 +113,7 @@ const CONTENT_DIR = process.env.CONTENT_DIR ?? path.resolve(process.cwd(), "../.
 | Environment       | `CONTENT_DIR`  | Resolves To                                               |
 | ----------------- | -------------- | --------------------------------------------------------- |
 | Dev (`nx dev`)    | Not set        | `../../apps/ayokoding-web/content` (relative to app root) |
-| Vercel            | Not set        | Same relative path (workspace root is build context)      |
+| Vercel            | Not set        | Same relative path (full repo cloned, app root is cwd)    |
 | Docker            | `/app/content` | Content copied into image at build time                   |
 | Integration tests | Not set        | Same relative path (runs from workspace)                  |
 
@@ -410,16 +410,16 @@ Markdown File (apps/ayokoding-web/content/en/learn/...)
   ├─ gray-matter ──→ YAML frontmatter ──→ Zod validation ──→ ContentMeta
   │
   └─ unified pipeline:
-       remark-parse (markdown → AST)
+       remark-parse (markdown → MDAST)
        → remark-gfm (tables, strikethrough)
        → remark-math (LaTeX delimiters)
        → custom remark plugin (Hugo shortcodes → custom nodes)
-       → rehype-stringify (AST → HTML)
+       → remark-rehype (MDAST → HAST — bridge from remark to rehype)
        → rehype-pretty-code + shiki (syntax highlighting)
        → rehype-katex (math rendering)
        → rehype-slug (heading IDs)
        → rehype-autolink-headings (heading anchors)
-       → HTML string
+       → rehype-stringify (HAST → HTML string — must be last)
 ```
 
 ### Hugo Shortcode Handling
@@ -558,8 +558,7 @@ apps/ayokoding-web-v2/
 ├── next.config.ts                        # Next.js config (standalone output)
 ├── vitest.config.ts                      # Vitest with v8 coverage
 ├── tsconfig.json                         # Strict TypeScript
-├── tailwind.config.ts                    # Tailwind CSS config
-├── postcss.config.ts                     # PostCSS for Tailwind
+├── postcss.config.ts                     # PostCSS for Tailwind (v4 uses CSS config)
 ├── components.json                       # shadcn/ui config
 ├── project.json                          # Nx targets
 ├── package.json                          # Dependencies
@@ -680,7 +679,7 @@ the `unknown → typed` boundary at runtime (frontmatter parsing, tRPC inputs).
 | i18n                | [locale] route segment                    | Next.js native, no extra library                                    |
 | CSS                 | Tailwind CSS v4                           | shadcn/ui requirement, utility-first                                |
 | Port                | 3101                                      | Adjacent to current Hugo site (3100)                                |
-| Coverage            | Vitest v8 + rhino-cli 80%                 | Same blend threshold as demo-fs-ts-nextjs                           |
+| Coverage            | Vitest v8 + rhino-cli 80%                 | BE+FE blend: backends 90%, frontends 70%, fullstack 80%             |
 | Linter              | oxlint                                    | Same as other TypeScript apps                                       |
 | BDD (unit)          | @amiceli/vitest-cucumber                  | Same as demo-fs-ts-nextjs                                           |
 | BDD (integration)   | @cucumber/cucumber                        | Proven pattern                                                      |
@@ -1169,23 +1168,23 @@ JSON-LD structured data via `<script type="application/ld+json">` in layout.
 
 All dependencies have been verified via web search against latest releases and docs.
 
-| Package                    | Version | Status         | Notes                                                             |
-| -------------------------- | ------- | -------------- | ----------------------------------------------------------------- |
-| Next.js                    | 16.2.1  | Stable         | Latest. Turbopack default, React 19.2                             |
-| tRPC                       | v11     | Stable         | `@trpc/tanstack-react-query` (NOT `@trpc/react-query`)            |
-| @tanstack/react-query      | ^5.62.8 | Stable         | Required by tRPC v11 TanStack integration                         |
-| Zod                        | v4.3.6  | Stable         | Latest v4. No breaking changes                                    |
-| shadcn/ui                  | CLI v4  | Stable         | `npx shadcn@latest init`. Tailwind v4 compatible                  |
-| Tailwind CSS               | v4      | Stable         | shadcn auto-detects version                                       |
-| shiki                      | ^1.x    | **Pin to 1.x** | 2.x has breaking API changes incompatible with rehype-pretty-code |
-| rehype-pretty-code         | 0.14.x  | Active         | Shiki 2.x support pending (issue #255)                            |
-| FlexSearch                 | 0.8.x   | Active         | No SSR issues, Apache 2.0                                         |
-| gray-matter                | 4.0.3   | Active         | Industry standard (Gatsby, Astro, Netlify)                        |
-| remark-math + rehype-katex | Latest  | Active         | ESM-only, compatible with unified 6+                              |
-| next-themes                | Latest  | Active         | Requires `suppressHydrationWarning` on `<html>`                   |
-| @amiceli/vitest-cucumber   | 6.3.0   | Active         | Recently updated March 2025                                       |
-| oxlint                     | v1.39+  | Stable         | 50-100x faster than ESLint, 695+ rules                            |
-| unified (remark + rehype)  | Latest  | Active         | ESM-only — use `.ts`/`.mjs` config files                          |
+| Package                    | Version | Status         | Notes                                                               |
+| -------------------------- | ------- | -------------- | ------------------------------------------------------------------- |
+| Next.js                    | 16.2.1  | Stable         | Latest. Turbopack default, React 19.2                               |
+| tRPC                       | v11     | Stable         | `@trpc/tanstack-react-query` (NOT `@trpc/react-query`)              |
+| @tanstack/react-query      | ^5.62.8 | Stable         | Required by tRPC v11 TanStack integration                           |
+| Zod                        | ^3.x    | Stable         | Use v3 (tRPC v11 validated); v4 has breaking changes, migrate later |
+| shadcn/ui                  | CLI v4  | Stable         | `npx shadcn@latest init`. Tailwind v4 compatible                    |
+| Tailwind CSS               | v4      | Stable         | shadcn auto-detects version                                         |
+| shiki                      | ^1.x    | **Pin to 1.x** | 2.x has breaking API changes incompatible with rehype-pretty-code   |
+| rehype-pretty-code         | 0.14.x  | Active         | Shiki 2.x support pending (issue #255)                              |
+| FlexSearch                 | 0.8.x   | Active         | No SSR issues, Apache 2.0                                           |
+| gray-matter                | 4.0.3   | Active         | Industry standard (Gatsby, Astro, Netlify)                          |
+| remark-math + rehype-katex | Latest  | Active         | ESM-only, compatible with unified 6+                                |
+| next-themes                | Latest  | Active         | Requires `suppressHydrationWarning` on `<html>`                     |
+| @amiceli/vitest-cucumber   | 6.3.0   | Active         | Recently updated March 2025                                         |
+| oxlint                     | v1.39+  | Stable         | 50-100x faster than ESLint, 695+ rules                              |
+| unified (remark + rehype)  | Latest  | Active         | ESM-only — use `.ts`/`.mjs` config files                            |
 
 ### Key Caveats
 
@@ -1207,3 +1206,12 @@ All dependencies have been verified via web search against latest releases and d
 
 5. **unified ecosystem is ESM-only** — All remark/rehype plugins are ESM modules.
    Since we use `next.config.ts` (not `.js`), this is handled automatically.
+
+6. **Zod v3 (not v4)** — Use `zod@^3` for tRPC v11 compatibility. Zod v4 has
+   breaking API changes and tRPC v11 has not confirmed v4 support. Migrate to v4
+   once tRPC officially validates compatibility.
+
+7. **`remark-rehype` is required** — The unified pipeline needs `remark-rehype` to
+   bridge from remark AST (MDAST) to rehype AST (HAST). Without it, rehype plugins
+   have no input. Also, `rehype-stringify` must be the last step (converts HAST to
+   HTML string).

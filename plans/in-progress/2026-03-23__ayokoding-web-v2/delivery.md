@@ -43,16 +43,19 @@
 
 - [ ] Create `apps/ayokoding-web-v2/` directory
 - [ ] Initialize Next.js 16 project with TypeScript, App Router, src/ directory
-- [ ] Configure `next.config.ts` with `output: 'standalone'` for Docker builds
+- [ ] Configure `next.config.ts`:
+  - [ ] `output: 'standalone'` for Docker builds (Vercel ignores this)
+  - [ ] `outputFileTracingRoot: path.join(__dirname, '../../')` for monorepo
 - [ ] Install and configure Tailwind CSS v4 + PostCSS
 - [ ] Initialize shadcn/ui (`npx shadcn@latest init`) with `components.json`
 - [ ] Install core shadcn/ui components: Button, Input, Dialog, Alert, Separator,
       ScrollArea, Sheet, DropdownMenu, Tooltip, Badge, Command
-- [ ] Install tRPC: `@trpc/server`, `@trpc/client`, `@trpc/react-query`,
-      `@tanstack/react-query`
-- [ ] Install Zod
+- [ ] Install tRPC: `@trpc/server`, `@trpc/client`, `@trpc/tanstack-react-query`,
+      `@tanstack/react-query@^5.62.8`
+- [ ] Install Zod v4
 - [ ] Install markdown tooling: `unified`, `remark-parse`, `remark-gfm`, `remark-math`,
-      `rehype-stringify`, `rehype-pretty-code`, `shiki`, `rehype-katex`,
+      `rehype-stringify`, `rehype-pretty-code`, `shiki@^1` (pin to 1.x — 2.x
+      incompatible with rehype-pretty-code), `rehype-katex`,
       `rehype-slug`, `rehype-autolink-headings`, `gray-matter`
 - [ ] Install FlexSearch for search indexing
 - [ ] Install test dependencies: `vitest`, `@vitest/coverage-v8`,
@@ -165,7 +168,7 @@
   - [ ] `meta.languages` — return available locales with labels
 - [ ] Create `src/server/trpc/router.ts` — merge all sub-routers
 - [ ] Create `src/app/api/trpc/[trpc]/route.ts` — tRPC HTTP adapter for App Router
-- [ ] Create `src/lib/trpc/client.ts` — tRPC React Query hooks
+- [ ] Create `src/lib/trpc/client.ts` — tRPC TanStack React Query hooks (search only)
 - [ ] Create `src/lib/trpc/server.ts` — tRPC server-side caller (for RSC)
 - [ ] Create `src/lib/trpc/provider.tsx` — TRPCProvider + QueryClientProvider wrapper
 - [ ] Verify tRPC API responds at `/api/trpc/meta.health`
@@ -195,7 +198,9 @@
 - [ ] Create `src/components/layout/mobile-nav.tsx` — hamburger drawer
 - [ ] Create `src/components/layout/prev-next.tsx` — bottom prev/next navigation
 - [ ] Create `src/lib/hooks/use-locale.ts` — current locale hook
-- [ ] Add dark/light mode toggle (next-themes or manual)
+- [ ] Add dark/light mode toggle (next-themes):
+  - [ ] Add `suppressHydrationWarning` to `<html>` element in root layout
+  - [ ] `ThemeProvider` is a client component — wrap in `"use client"` boundary
 - [ ] Add responsive breakpoints: desktop (sidebar + TOC), tablet (sidebar),
       mobile (hamburger)
 

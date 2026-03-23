@@ -576,31 +576,31 @@ apps/ayokoding-web-v2-fe-e2e/            # Frontend E2E (Playwright browser)
 
 ## Design Decisions
 
-| Decision            | Choice                           | Reason                                                     |
-| ------------------- | -------------------------------- | ---------------------------------------------------------- |
-| App type            | Fullstack (fs)                   | Content API + UI in one app                                |
-| Framework           | Next.js 16 (App Router)          | Proven fullstack, existing team experience                 |
-| API layer           | tRPC v11                         | Type-safe end-to-end, native Zod + React Query integration |
-| Validation          | Zod                              | tRPC native, frontmatter validation, input/output schemas  |
-| Content rendering   | React Server Components (RSC)    | SEO: full HTML for crawlers, no client JS needed           |
-| Data fetching       | tRPC server caller + React Query | Server-side for content (SEO); client-side for search only |
-| UI components       | shadcn/ui (Radix + Tailwind)     | Accessible, customizable, no vendor lock-in                |
-| Content source      | Flat markdown files              | Same as Hugo, no migration needed, no database             |
-| Markdown parser     | unified (remark + rehype)        | Extensible, server-side, plugin ecosystem                  |
-| Syntax highlighting | shiki (via rehype-pretty-code)   | Server-side, all languages, VS Code themes                 |
-| Math                | KaTeX (via rehype-katex)         | Same as Hugo site, fast client-side rendering              |
-| Diagrams            | Mermaid (client-side)            | Same as Hugo site, dynamic rendering                       |
-| Search              | FlexSearch                       | Same as Hugo Hextra, proven, in-memory                     |
-| i18n                | [locale] route segment           | Next.js native, no extra library                           |
-| CSS                 | Tailwind CSS v4                  | shadcn/ui requirement, utility-first                       |
-| Port                | 3101                             | Adjacent to current Hugo site (3100)                       |
-| Coverage            | Vitest v8 + rhino-cli 80%        | Same blend threshold as demo-fs-ts-nextjs                  |
-| Linter              | oxlint                           | Same as other TypeScript apps                              |
-| BDD (unit)          | @amiceli/vitest-cucumber         | Same as demo-fs-ts-nextjs                                  |
-| BDD (integration)   | @cucumber/cucumber               | Proven pattern                                             |
-| Docker              | Multi-stage, no DB               | Local dev + CI E2E (standalone output)                     |
-| Deployment          | Vercel                           | Same as ayokoding-web + organiclever-web                   |
-| Prod branch         | `prod-ayokoding-web-v2`          | Vercel listens for pushes (never commit directly)          |
+| Decision            | Choice                              | Reason                                                             |
+| ------------------- | ----------------------------------- | ------------------------------------------------------------------ |
+| App type            | Fullstack (fs)                      | Content API + UI in one app                                        |
+| Framework           | Next.js 16 (App Router)             | Proven fullstack, existing team experience                         |
+| API layer           | tRPC v11                            | Type-safe end-to-end, native Zod + React Query integration         |
+| Validation          | Zod                                 | tRPC native, frontmatter validation, input/output schemas          |
+| Content rendering   | React Server Components (RSC)       | SEO: full HTML for crawlers, no client JS needed                   |
+| Data fetching       | tRPC server caller + React Query    | Server-side for content (SEO); client-side for search only         |
+| UI components       | shadcn/ui (Radix + Tailwind)        | Accessible, customizable, no vendor lock-in                        |
+| Content source      | Flat markdown files                 | Same as Hugo, no migration needed, no database                     |
+| Markdown parser     | unified (remark + rehype)           | Extensible, server-side, plugin ecosystem                          |
+| Syntax highlighting | shiki ^1.x (via rehype-pretty-code) | Server-side; pin to 1.x (2.x incompatible with rehype-pretty-code) |
+| Math                | KaTeX (via rehype-katex)            | Same as Hugo site, fast client-side rendering                      |
+| Diagrams            | Mermaid (client-side)               | Same as Hugo site, dynamic rendering                               |
+| Search              | FlexSearch                          | Same as Hugo Hextra, proven, in-memory                             |
+| i18n                | [locale] route segment              | Next.js native, no extra library                                   |
+| CSS                 | Tailwind CSS v4                     | shadcn/ui requirement, utility-first                               |
+| Port                | 3101                                | Adjacent to current Hugo site (3100)                               |
+| Coverage            | Vitest v8 + rhino-cli 80%           | Same blend threshold as demo-fs-ts-nextjs                          |
+| Linter              | oxlint                              | Same as other TypeScript apps                                      |
+| BDD (unit)          | @amiceli/vitest-cucumber            | Same as demo-fs-ts-nextjs                                          |
+| BDD (integration)   | @cucumber/cucumber                  | Proven pattern                                                     |
+| Docker              | Multi-stage, no DB                  | Local dev + CI E2E (standalone + outputFileTracingRoot)            |
+| Deployment          | Vercel                              | Same as ayokoding-web + organiclever-web                           |
+| Prod branch         | `prod-ayokoding-web-v2`             | Vercel listens for pushes (never commit directly)                  |
 
 ## Visual Design Capture Strategy
 
@@ -1014,3 +1014,46 @@ export async function generateMetadata({ params }): Promise<Metadata> {
 ```
 
 JSON-LD structured data via `<script type="application/ld+json">` in layout.
+
+## Validated Dependencies (March 2026)
+
+All dependencies have been verified via web search against latest releases and docs.
+
+| Package                    | Version | Status         | Notes                                                             |
+| -------------------------- | ------- | -------------- | ----------------------------------------------------------------- |
+| Next.js                    | 16.2.1  | Stable         | Latest. Turbopack default, React 19.2                             |
+| tRPC                       | v11     | Stable         | `@trpc/tanstack-react-query` (NOT `@trpc/react-query`)            |
+| @tanstack/react-query      | ^5.62.8 | Stable         | Required by tRPC v11 TanStack integration                         |
+| Zod                        | v4.3.6  | Stable         | Latest v4. No breaking changes                                    |
+| shadcn/ui                  | CLI v4  | Stable         | `npx shadcn@latest init`. Tailwind v4 compatible                  |
+| Tailwind CSS               | v4      | Stable         | shadcn auto-detects version                                       |
+| shiki                      | ^1.x    | **Pin to 1.x** | 2.x has breaking API changes incompatible with rehype-pretty-code |
+| rehype-pretty-code         | 0.14.x  | Active         | Shiki 2.x support pending (issue #255)                            |
+| FlexSearch                 | 0.8.x   | Active         | No SSR issues, Apache 2.0                                         |
+| gray-matter                | 4.0.3   | Active         | Industry standard (Gatsby, Astro, Netlify)                        |
+| remark-math + rehype-katex | Latest  | Active         | ESM-only, compatible with unified 6+                              |
+| next-themes                | Latest  | Active         | Requires `suppressHydrationWarning` on `<html>`                   |
+| @amiceli/vitest-cucumber   | 6.3.0   | Active         | Recently updated March 2025                                       |
+| oxlint                     | v1.39+  | Stable         | 50-100x faster than ESLint, 695+ rules                            |
+| unified (remark + rehype)  | Latest  | Active         | ESM-only — use `.ts`/`.mjs` config files                          |
+
+### Key Caveats
+
+1. **`@trpc/react-query` is deprecated** — Use `@trpc/tanstack-react-query` instead.
+   The old package is renamed to reflect TanStack Query v5 integration.
+
+2. **Shiki must be pinned to ^1.x** — `rehype-pretty-code` uses `getHighlighter()`
+   which was removed in Shiki 2.x (replaced by `createHighlighter()`). Pin until
+   rehype-pretty-code releases 2.x support.
+
+3. **next-themes hydration** — `ThemeProvider` is a client component. The root
+   `<html>` element must include `suppressHydrationWarning` to avoid React hydration
+   mismatch warnings when theme class is applied.
+
+4. **`output: 'standalone'` + Vercel** — Vercel ignores this config and uses its own
+   builder. It's only needed for Docker. In monorepos, also set
+   `outputFileTracingRoot: path.join(__dirname, '../../')` so the standalone build
+   traces files from the workspace root.
+
+5. **unified ecosystem is ESM-only** — All remark/rehype plugins are ESM modules.
+   Since we use `next.config.ts` (not `.js`), this is handled automatically.

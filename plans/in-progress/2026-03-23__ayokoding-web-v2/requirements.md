@@ -312,4 +312,13 @@ Scenario: Vercel deployment succeeds
   Then the deployment should succeed
   And the site should be accessible at the Vercel URL
   And all content pages should render correctly
+
+Scenario: Visual parity with Hugo site (Playwright MCP)
+  Given the Hugo site is running on port 3100
+  And ayokoding-web-v2 is running on port 3101
+  When the agent navigates to 5 key pages on both sites via Playwright MCP
+  Then the layout structure (sidebar, content, TOC) should match
+  And content rendering (code blocks, tabs, callouts, math) should be equivalent
+  And responsive behavior at mobile (375px) and desktop (1280px) should match
+  And interactive flows (search, theme toggle, language switch) should work
 ```

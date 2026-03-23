@@ -2,18 +2,41 @@
 
 > **Note**: All `npm install` commands run from `apps/ayokoding-web-v2/` (project root),
 > not the workspace root. This ensures packages are added to the app's own `package.json`.
+>
+> **Playwright MCP**: This plan is designed for execution by AI agents with access to
+> Playwright MCP. Throughout the delivery phases, the agent uses Playwright MCP
+> (`browser_navigate`, `browser_snapshot`, `browser_take_screenshot`, `browser_click`,
+> `browser_press_key`, `browser_fill_form`) to interactively verify UI work against the
+> reference Hugo site. This is **complementary** to the automated Playwright E2E tests
+> in Phase 13 — MCP is for interactive agent verification during development, E2E tests
+> are for CI regression.
 
-## Phase 0: Visual Design Capture
+## Phase 0: Visual Design Capture (via Playwright MCP)
 
 - [ ] Start the current Hugo site locally (`nx dev ayokoding-web` on port 3100)
-- [ ] Capture screenshots at 4 breakpoints using Playwright:
-  - [ ] **Desktop (1280px)**: Homepage, section index (`/en/learn/`), content page
-        with code blocks, by-example page with tabs (e.g., golang by-example beginner),
-        content page with callouts + math + mermaid, search dialog, rants page
-  - [ ] **Laptop (1024px)**: Same pages — verify TOC hidden, sidebar still visible
-  - [ ] **Tablet (768px)**: Same pages — verify sidebar behavior
-  - [ ] **Mobile (375px)**: Same pages — verify hamburger menu, collapsed layout
+- [ ] Use **Playwright MCP** to browse the Hugo site and capture reference state:
+  - [ ] `browser_navigate` to each key page type on `http://localhost:3100`:
+    - Homepage, section index (`/en/learn/`), content page with code blocks,
+      by-example page with tabs (e.g., golang by-example beginner),
+      content page with callouts + math + mermaid, search dialog, rants page
+  - [ ] For each page, capture **both** visual and structural references:
+    - `browser_take_screenshot` — visual reference at each breakpoint
+    - `browser_snapshot` — DOM/accessibility tree structure (layout hierarchy,
+      ARIA roles, heading levels, navigation structure)
+  - [ ] **Desktop (1280px)**: `browser_resize` to 1280×800, then screenshot + snapshot
+        each page — note sidebar width, TOC position, content area layout
+  - [ ] **Laptop (1024px)**: `browser_resize` to 1024×768 — verify TOC hidden,
+        sidebar still visible
+  - [ ] **Tablet (768px)**: `browser_resize` to 768×1024 — verify sidebar behavior
+  - [ ] **Mobile (375px)**: `browser_resize` to 375×812 — verify hamburger menu,
+        use `browser_click` on hamburger to verify drawer opens
 - [ ] Save screenshots to `plans/in-progress/2026-03-23__ayokoding-web-v2/screenshots/`
+- [ ] Capture interactive behavior references via Playwright MCP:
+  - [ ] Search dialog: `browser_press_key` Cmd+K, verify dialog opens via
+        `browser_snapshot`, type a query, verify results appear
+  - [ ] Sidebar collapse: click collapsible sections, verify expand/collapse
+  - [ ] Theme toggle: click dark/light toggle, take screenshot of both modes
+  - [ ] Language switcher: click switcher, verify URL change to `/id/`
 - [ ] Locate and analyze Hextra theme source
       (GitHub: https://github.com/imfing/hextra or Hugo module cache at `~/.cache/hugo_cache/`):
   - [ ] Extract layout grid structure (sidebar width, content max-width, TOC width)
@@ -298,6 +321,17 @@
   - [ ] Accept prev/next ContentMeta objects
   - [ ] Side-by-side on desktop, stacked on mobile
   - [ ] Show title and section path
+- [ ] **Playwright MCP verification** (dev server on port 3101):
+  - [ ] `browser_navigate` to `http://localhost:3101/en` — verify header renders
+        (site title, search button, language switcher, theme toggle)
+  - [ ] `browser_snapshot` — verify layout structure matches Phase 0 reference
+        (sidebar present on desktop, three-column grid)
+  - [ ] `browser_navigate` to a content page — verify sidebar tree, breadcrumb,
+        TOC, and footer all render
+  - [ ] `browser_resize` to 375×812 — verify hamburger button appears, sidebar
+        hidden; `browser_click` hamburger — verify Sheet overlay opens
+  - [ ] Compare snapshots against Phase 0 Hugo reference — flag layout
+        discrepancies before proceeding
 - [ ] Verify responsive behavior at all 4 breakpoints:
   - [ ] Desktop (≥1280px): sidebar + content + TOC
   - [ ] Laptop (≥1024px): sidebar + content (TOC hidden)
@@ -370,6 +404,23 @@ grows (933+ files and counting).
 - [ ] **RSS verification**: `curl -s http://localhost:3101/feed.xml` returns valid RSS XML
 - [ ] **robots.txt verification**: `curl -s http://localhost:3101/robots.txt` contains
       correct sitemap URL (not the Hugo `ayokoding.com` URL)
+- [ ] **Playwright MCP visual verification** (compare against Phase 0 Hugo references):
+  - [ ] `browser_navigate` to content page with code blocks — `browser_snapshot`
+        to verify `<pre>` elements with syntax highlighting classes present
+  - [ ] Navigate to by-example page with tabs — `browser_click` each tab label,
+        verify tab panels switch content (compare against Hugo tab behavior)
+  - [ ] Navigate to page with callouts — verify admonition styling via snapshot
+  - [ ] Navigate to page with math (KaTeX) — `browser_take_screenshot` to verify
+        equations render visually (DOM snapshot alone cannot verify math rendering)
+  - [ ] Navigate to page with Mermaid diagrams — `browser_take_screenshot` to
+        verify diagram renders (client-side, needs visual confirmation)
+  - [ ] Navigate to Indonesian YouTube content — verify iframe embed present
+  - [ ] Navigate to page with raw HTML (`<details>`, `<table>`) — verify not stripped
+  - [ ] `browser_resize` through all 4 breakpoints on a content page — compare
+        layout against Phase 0 reference screenshots
+  - [ ] Start Hugo site on 3100 simultaneously — `browser_navigate` between
+        `localhost:3100/en/learn/overview` and `localhost:3101/en/learn/overview`,
+        take side-by-side screenshots for visual parity check
 
 ## Phase 7: Search UI (Client-Side — Only Interactive Feature)
 
@@ -388,7 +439,16 @@ All other content is server-rendered.
 - [ ] Create `src/app/[locale]/(content)/search/page.tsx` — dedicated search results page
       (for direct URL access, inside `(content)` for sidebar layout)
 - [ ] Verify search works for both locales
-- [ ] Verify: open http://localhost:3101/en, press Cmd+K, type "golang", confirm results appear
+- [ ] **Playwright MCP search verification**:
+  - [ ] `browser_navigate` to `http://localhost:3101/en`
+  - [ ] `browser_press_key` `Meta+k` — verify search dialog opens via
+        `browser_snapshot` (Command component visible)
+  - [ ] `browser_fill_form` the search input with "golang" — verify results
+        appear via `browser_snapshot` (result items with titles and excerpts)
+  - [ ] `browser_click` on a search result — verify navigation to content page
+  - [ ] `browser_press_key` `Escape` — verify dialog closes
+  - [ ] Navigate to `/id/`, repeat with Indonesian query "variabel" — verify
+        results scoped to Indonesian content
 
 ## Phase 8: Backend Unit Tests (BE Gherkin)
 
@@ -485,6 +545,16 @@ All other content is server-rendered.
 - [ ] Verify health check passes: `curl http://localhost:3101/api/trpc/meta.health`
 - [ ] Verify content page renders: `curl -s http://localhost:3101/en/learn/overview`
 - [ ] Verify no JS-only content: compare Docker output with dev server output
+- [ ] **Playwright MCP Docker verification** (verify full rendering, not just API):
+  - [ ] `browser_navigate` to `http://localhost:3101/en/learn/overview` — verify
+        full page renders (not blank or error page)
+  - [ ] `browser_snapshot` — verify content, sidebar, breadcrumb, TOC all present
+        (catches standalone output issues where content files are missing)
+  - [ ] Navigate to a by-example page with tabs — `browser_click` tabs to verify
+        client-side interactivity works in Docker build
+  - [ ] `browser_press_key` `Meta+k` — verify search works in Docker
+  - [ ] `browser_take_screenshot` — compare against dev server screenshot from
+        Phase 6 to catch any Docker-specific rendering differences
 
 ## Phase 12b: Vercel Configuration
 
@@ -608,6 +678,16 @@ All other content is server-rendered.
 - [ ] Search returns relevant results for both locales
 - [ ] Language switching works correctly
 - [ ] Responsive layout works (desktop, tablet, mobile)
+- [ ] **Playwright MCP visual parity** (final agent verification):
+  - [ ] Start both Hugo (`localhost:3100`) and Next.js (`localhost:3101`)
+  - [ ] `browser_navigate` + `browser_take_screenshot` on 5 key pages at desktop
+        breakpoint — compare side by side: homepage, section index, content page
+        with code, by-example with tabs, page with callouts + math
+  - [ ] `browser_resize` to 375×812 on same pages — compare mobile layouts
+  - [ ] `browser_snapshot` on content page — verify heading hierarchy, link
+        structure, and ARIA landmarks match Hugo reference from Phase 0
+  - [ ] Interactive flows: search (Cmd+K → type → click result), theme toggle,
+        language switch, sidebar collapse — all verified via MCP interaction
 - [ ] **Locale validation**: `curl -s -o /dev/null -w "%{http_code}" http://localhost:3101/fr/learn/overview`
       returns 404 (invalid locales rejected)
 - [ ] **ayokoding-cli backward compatibility** — Hugo v1 still works:

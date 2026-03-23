@@ -13,6 +13,20 @@ The new app reads the same markdown content from `apps/ayokoding-web/content/` a
 serves it through a tRPC API with full-text search, bilingual routing (EN/ID),
 syntax highlighting, and all features of the current Hugo site.
 
+## Agent Verification Strategy
+
+This plan is executed by AI agents with **Playwright MCP** access. Because this is a
+**rewrite** (not greenfield), visual parity with the existing Hugo site is the primary
+risk. The delivery plan uses Playwright MCP throughout:
+
+- **Phase 0**: Capture reference screenshots + DOM snapshots of the Hugo site via MCP
+- **Phase 5-7**: After each UI phase, interactively verify rendering against references
+- **Phase 12**: Verify Docker builds render correctly (catches standalone output issues)
+- **Validation**: Side-by-side visual comparison of Hugo vs Next.js via MCP
+
+This is **complementary** to the automated Playwright E2E tests (Phase 13) — MCP is for
+interactive agent verification during development, E2E tests are for CI regression.
+
 ## What Makes This Different
 
 This is the first **content platform** rewrite in the monorepo. Unlike demo apps

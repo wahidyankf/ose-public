@@ -172,8 +172,10 @@ Scenario: Mobile hamburger opens sidebar overlay
 
 1. **content.getBySlug**: Returns parsed HTML + frontmatter for a given locale + slug
 2. **content.listChildren**: Returns immediate child pages of a section (with metadata)
-3. **content.getTree**: Returns full navigation tree for a locale
-4. **search.query**: Full-text search with locale, query string, optional limit
+3. **content.getTree**: Returns full navigation tree for a locale (optionally scoped
+   to a root slug for sidebar context)
+4. **search.query**: Full-text search with locale, query string (min 1 char), optional
+   limit. Returns error for empty query.
 5. **meta.health**: Health check endpoint (returns `{ status: "ok" }`)
 6. **meta.languages**: Returns available languages with their labels
 

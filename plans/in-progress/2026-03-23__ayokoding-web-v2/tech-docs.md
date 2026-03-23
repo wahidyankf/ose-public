@@ -470,6 +470,8 @@ apps/ayokoding-web-v2/
 │   │   │   │   ├── layout.tsx            # Content layout (sidebar + TOC)
 │   │   │   │   ├── search/
 │   │   │   │   │   └── page.tsx          # Search results page
+│   │   │   │   ├── error.tsx              # Error boundary for content errors
+│   │   │   │   ├── not-found.tsx         # Custom 404 for invalid slugs
 │   │   │   │   └── [...slug]/            # Catch-all content (on-demand ISR)
 │   │   │   │       └── page.tsx          # Server-renders markdown content
 │   │   │   └── (app)/                    # ← Route group: future fullstack routes
@@ -974,27 +976,53 @@ The English and Indonesian content directories have different path structures.
 The i18n config maps between them:
 
 ```typescript
-const pathMappings: Record<string, Record<string, string>> = {
-  en: {
-    learn: "learn",
-    rants: "rants",
-    "about-ayokoding": "about-ayokoding",
-    "terms-and-conditions": "terms-and-conditions",
-  },
-  id: {
-    learn: "belajar",
-    rants: "celoteh",
-    "about-ayokoding": "tentang-ayokoding",
-    "terms-and-conditions": "syarat-dan-ketentuan",
-    "konten-video": "konten-video",
-  },
+// Segment-level mappings: translate each path segment between locales.
+// Key = English segment, Value = Indonesian equivalent.
+// Applied to EVERY segment in the path, not just top-level.
+const segmentMappings: Record<string, string> = {
+  // Top-level sections
+  learn: "belajar",
+  rants: "celoteh",
+  "about-ayokoding": "tentang-ayokoding",
+  "terms-and-conditions": "syarat-dan-ketentuan",
+  // Filenames that differ between locales
+  overview: "ikhtisar",
+  introduction: "perkenalan",
+  // Subsections
+  human: "manusia",
+  tools: "peralatan",
+  // Indonesian-only (no English equivalent)
+  "konten-video": null, // No mapping — ID-only content
 };
+
+function mapSlugToLocale(slug: string, targetLocale: "en" | "id"): string | null {
+  const segments = slug.split("/");
+  const mapped = segments.map((seg) => {
+    if (targetLocale === "id") return segmentMappings[seg] ?? seg;
+    // Reverse: find English key for Indonesian value
+    const entry = Object.entries(segmentMappings).find(([, v]) => v === seg);
+    return entry ? entry[0] : seg;
+  });
+  // Verify the mapped slug actually exists in the target locale's content
+  const targetSlug = mapped.join("/");
+  return contentIndex.has(`${targetLocale}:${targetSlug}`) ? targetSlug : null;
+}
 ```
 
+**Language switcher behavior**: When the user switches locale, the switcher:
+
+1. Translates each segment of the current slug using `segmentMappings`
+2. Checks if the translated slug exists in the target locale's content index
+3. If it exists → navigate to the translated page
+4. If it doesn't exist → fall back to the target locale's root page (`/id` or `/en`)
+
+This handles both path segment translation (`learn`→`belajar`) AND filename
+translation (`overview`→`ikhtisar`).
+
 Content slugs in tRPC use the **filesystem path relative to the locale directory**
-(e.g., `learn/software-engineering/...` for English, `belajar/manusia/...` for
-Indonesian). Slugs are locale-specific because the folder names differ between
-languages. The tRPC `locale` parameter determines which content directory to read from.
+(e.g., `learn/overview` for English, `belajar/ikhtisar` for Indonesian). Slugs are
+locale-specific because folder and file names differ between languages. The tRPC
+`locale` parameter determines which content directory to read from.
 
 ## Nx Configuration
 
@@ -1145,7 +1173,7 @@ services:
       - "3101:3101"
     environment:
       - PORT=3101
-      - CONTENT_DIR=/app/content
+      - CONTENT_DIR=/app/apps/ayokoding-web/content
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3101/api/trpc/meta.health"]
       interval: 30s
@@ -1194,6 +1222,9 @@ COPY --from=builder /app/apps/ayokoding-web/content/ ./apps/ayokoding-web/conten
 USER nextjs
 EXPOSE 3101
 ENV PORT=3101
+# Note: standalone output with outputFileTracingRoot places server.js at
+# apps/ayokoding-web-v2/server.js relative to WORKDIR. Verify exact path
+# during Phase 12 by inspecting .next/standalone/ output structure.
 CMD ["node", "apps/ayokoding-web-v2/server.js"]
 ```
 

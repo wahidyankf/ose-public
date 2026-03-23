@@ -67,8 +67,8 @@
 - [ ] Create `project.json` with 7 mandatory Nx targets (codegen, typecheck, lint, build,
       test:unit, test:quick, test:integration) + `dev` + `start`:
   - [ ] Add `implicitDependencies: ["rhino-cli", "ayokoding-cli"]`
-  - [ ] Add `ayokoding-cli links check` to `test:quick` target (validates internal
-        links in shared content directory)
+  - [ ] Add link validation to `test:quick` target:
+        `./apps/ayokoding-cli/dist/ayokoding-cli links check --content apps/ayokoding-web/content`
 - [ ] Set up `tsconfig.json` with strict mode
 - [ ] Set up `vitest.config.ts` with v8 coverage (80% threshold)
 - [ ] Copy static assets to `public/`: `favicon.ico`, `favicon.png`, `robots.txt`
@@ -317,7 +317,8 @@ All other content is server-rendered.
   - [ ] content-api.steps.ts — test against real markdown files
   - [ ] search-api.steps.ts — test FlexSearch with real content
   - [ ] navigation-api.steps.ts — test tree with real hierarchy
-- [ ] Verify all integration tests pass
+- [ ] Configure `test:integration` Nx target: `npx cucumber-js --config cucumber.integration.js`
+- [ ] Verify all integration tests pass: `nx run ayokoding-web-v2:test:integration`
 
 ## Phase 12: Docker, Vercel & Infrastructure
 

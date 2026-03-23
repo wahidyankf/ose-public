@@ -11,7 +11,9 @@
 - Implement bilingual routing (English + Indonesian) with `[locale]` URL segments
 - Use shadcn/ui (Radix + Tailwind CSS) for all UI components, replacing Hugo Hextra theme
 - Use Zod for all schema validation (frontmatter, API inputs, search queries)
-- Use React Query (via `@trpc/react-query`) for client-side data fetching and caching
+- Render all content pages as **React Server Components (RSC)** — server-side HTML
+  for SEO (no client-side rendering for content). React Query (via `@trpc/react-query`)
+  used only for interactive features like search
 - Create Gherkin specs at `specs/apps/ayokoding-web/` (both `be/` and `fe/`)
 - Create E2E test apps: `apps/ayokoding-web-v2-be-e2e` and `apps/ayokoding-web-v2-fe-e2e`
 - Enforce 80%+ line coverage via `rhino-cli test-coverage validate`
@@ -188,9 +190,11 @@ Scenario: Mobile layout
 - **Deployment**: Vercel (production branch `prod-ayokoding-web-v2`), same as
   `ayokoding-web` (`prod-ayokoding-web`) and `organiclever-web` (`prod-organiclever-web`)
 - **Linting**: oxlint (same as demo-fe-ts-nextjs and demo-fs-ts-nextjs)
-- **Performance**: All content pages should load under 2s (including SSG/ISR pre-rendering)
-- **SEO**: Equivalent meta tags to current Hugo site (Open Graph, Twitter Cards, JSON-LD,
-  hreflang, sitemap)
+- **Performance**: All content pages should load under 2s (server-rendered HTML)
+- **SEO**: All content must be server-rendered (RSC) — no client-side rendering for
+  content pages. Full HTML available to crawlers without JavaScript execution.
+  Equivalent meta tags to current Hugo site (Open Graph, Twitter Cards, JSON-LD,
+  hreflang, sitemap, canonical URLs)
 - **Accessibility**: WCAG AA compliance, keyboard navigation, ARIA labels, color contrast
 
 ## Acceptance Criteria

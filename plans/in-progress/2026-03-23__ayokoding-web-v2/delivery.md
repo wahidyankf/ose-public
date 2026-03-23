@@ -199,34 +199,47 @@
 - [ ] Add responsive breakpoints: desktop (sidebar + TOC), tablet (sidebar),
       mobile (hamburger)
 
-## Phase 6: Content Pages
+## Phase 6: Content Pages (Server-Rendered for SEO)
 
-- [ ] Create `src/app/[locale]/page.tsx` — locale homepage
-- [ ] Create `src/app/[locale]/[...slug]/page.tsx`:
-  - [ ] Fetch content via tRPC server caller
+All content pages are **React Server Components (RSC)** — fully server-rendered HTML
+sent to the browser. No client-side fetching for content. Search engines receive
+complete HTML without needing JavaScript execution.
+
+- [ ] Create `src/app/[locale]/page.tsx` — locale homepage (RSC, server-rendered)
+- [ ] Create `src/app/[locale]/[...slug]/page.tsx` (RSC, server-rendered):
+  - [ ] Fetch content via **tRPC server caller** (direct function call, no HTTP)
   - [ ] Render parsed HTML with custom components
-  - [ ] Show breadcrumb, TOC, prev/next
+  - [ ] Show breadcrumb, TOC, prev/next — all server-rendered
   - [ ] Handle section pages (`_index.md`) — show child listing
   - [ ] Handle 404 (slug not found)
+  - [ ] Verify: `curl` to any content URL returns full HTML with content visible
+        (no loading spinners, no "loading..." placeholders)
 - [ ] Create `src/components/content/markdown-renderer.tsx`:
-  - [ ] Render HTML string with component mapping
+  - [ ] Render HTML string with component mapping (server component)
   - [ ] Map callout HTML nodes to Callout React component
-  - [ ] Map code blocks to CodeBlock component
-  - [ ] Map mermaid code blocks to Mermaid component
+  - [ ] Map code blocks to CodeBlock component (server-rendered with shiki)
+  - [ ] Map mermaid code blocks to Mermaid component (client-side exception —
+        Mermaid requires DOM)
 - [ ] Create `src/components/content/callout.tsx` — admonition component (shadcn Alert)
-- [ ] Create `src/components/content/code-block.tsx` — syntax highlighted code
+- [ ] Create `src/components/content/code-block.tsx` — server-rendered syntax highlighting
 - [ ] Create `src/components/content/mermaid.tsx` — client-side Mermaid renderer
-- [ ] Add `generateStaticParams` for SSG of all content pages
-- [ ] Add `generateMetadata` for SEO (Open Graph, Twitter Cards, hreflang)
+      (only interactive component on content pages, uses `"use client"`)
+- [ ] Add `generateStaticParams` for SSG of all content pages (pre-render at build)
+- [ ] Add `generateMetadata` for SEO (Open Graph, Twitter Cards, hreflang, canonical)
 - [ ] Add JSON-LD structured data (Article/WebSite schema)
 - [ ] Add sitemap generation (`app/sitemap.ts`)
+- [ ] **SEO verification**: `curl -s http://localhost:3101/en/learn/overview | grep -c '<pre'`
+      returns >0 (code blocks rendered in HTML, not loading placeholders)
 
-## Phase 7: Search UI
+## Phase 7: Search UI (Client-Side — Only Interactive Feature)
 
-- [ ] Create `src/components/search/search-dialog.tsx`:
+Search is the **only feature using client-side tRPC + React Query** (`"use client"`).
+All other content is server-rendered.
+
+- [ ] Create `src/components/search/search-dialog.tsx` (`"use client"`):
   - [ ] shadcn Command component for search
   - [ ] Cmd+K / Ctrl+K keyboard shortcut
-  - [ ] Debounced input → tRPC search.query
+  - [ ] Debounced input → tRPC search.query (React Query client-side call)
   - [ ] Result list with title, section path, excerpt
   - [ ] Click result → navigate to page
   - [ ] Escape to close
@@ -341,6 +354,11 @@
 - [ ] `ayokoding-web-v2-fe-e2e` passes — all FE E2E scenarios pass
 - [ ] Docker build and run works
 - [ ] All content pages render correctly (spot check: overview, by-example, rants)
+- [ ] **SEO: `curl` returns full HTML** — content visible without JS execution:
+  - [ ] `curl -s http://localhost:3101/en/learn/overview` contains page content
+  - [ ] `curl -s http://localhost:3101/en/learn/overview` contains `<meta property="og:title"`
+  - [ ] `curl -s http://localhost:3101/en/learn/overview` contains `<script type="application/ld+json"`
+  - [ ] `curl -s http://localhost:3101/sitemap.xml` lists all content URLs
 - [ ] Search returns relevant results for both locales
 - [ ] Language switching works correctly
 - [ ] Responsive layout works (desktop, tablet, mobile)

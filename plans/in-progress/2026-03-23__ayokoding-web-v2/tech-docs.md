@@ -2,27 +2,61 @@
 
 ## Architecture
 
-The app is a single Next.js 16 server that reads markdown content from the filesystem,
-serves it via tRPC API, and renders it through React components. No database is needed —
-all content lives in flat markdown files.
+The app is a single Next.js 16 server that reads markdown content from the filesystem
+and renders it as **server-side HTML** for SEO. No database is needed — all content
+lives in flat markdown files.
+
+**Rendering strategy**: All content pages are rendered as **React Server Components
+(RSC)** — HTML is generated on the server and sent to the browser fully rendered.
+This ensures all content is crawlable by search engines without JavaScript execution.
+tRPC is used server-side (via server caller) for content pages, and client-side
+(via React Query) only for interactive features like search.
 
 ```mermaid
 flowchart TD
-    Browser["Browser\n(React + React Query)"]
-    NextJS["Next.js 16\nApp Router + tRPC\nport 3101"]
+    Crawler["Search Engine\nCrawler"]
+    Browser["Browser"]
+    RSC["React Server Components\n(server-side HTML rendering)"]
+    TRPC_S["tRPC Server Caller\n(direct function call, no HTTP)"]
+    TRPC_H["tRPC HTTP Endpoint\n(/api/trpc/*)"]
     FS["Filesystem\napps/ayokoding-web/content/\n(933 markdown files)"]
     Index["In-Memory Index\n(FlexSearch + content map)"]
 
-    Browser -- "tRPC calls\n+ page navigation" --> NextJS
-    NextJS -- "read markdown\n(startup + on-demand)" --> FS
-    NextJS -- "search + lookup" --> Index
+    Crawler -- "GET /en/learn/..." --> RSC
+    Browser -- "page navigation" --> RSC
+    Browser -- "search queries\n(React Query)" --> TRPC_H
+    RSC -- "server-side calls\n(no HTTP)" --> TRPC_S
+    TRPC_S --> Index
+    TRPC_H --> Index
     FS -- "build index\n(startup)" --> Index
 
+    style Crawler fill:#CA9161,color:#ffffff
     style Browser fill:#0173B2,color:#ffffff
-    style NextJS fill:#029E73,color:#ffffff
-    style FS fill:#DE8F05,color:#ffffff
+    style RSC fill:#029E73,color:#ffffff
+    style TRPC_S fill:#029E73,color:#ffffff
+    style TRPC_H fill:#DE8F05,color:#ffffff
+    style FS fill:#CC78BC,color:#ffffff
     style Index fill:#CC78BC,color:#ffffff
 ```
+
+### Server-Side vs Client-Side Rendering
+
+| Feature                               | Rendering                       | Why                         |
+| ------------------------------------- | ------------------------------- | --------------------------- |
+| Content pages (`/[locale]/[...slug]`) | **Server (RSC)**                | SEO: full HTML for crawlers |
+| Section index pages                   | **Server (RSC)**                | SEO: full HTML for crawlers |
+| Homepage                              | **Server (RSC)**                | SEO: full HTML for crawlers |
+| Navigation sidebar                    | **Server (RSC)**                | SEO: crawlable links        |
+| Breadcrumb                            | **Server (RSC)**                | SEO: structured navigation  |
+| Table of contents                     | **Server (RSC)**                | SEO: heading links          |
+| Prev/Next navigation                  | **Server (RSC)**                | SEO: crawlable links        |
+| Open Graph / meta tags                | **Server (`generateMetadata`)** | SEO: social sharing         |
+| JSON-LD structured data               | **Server (RSC)**                | SEO: rich snippets          |
+| Sitemap                               | **Server (`app/sitemap.ts`)**   | SEO: crawler discovery      |
+| Search dialog                         | **Client (React Query)**        | Interactive: user-driven    |
+| Theme toggle                          | **Client**                      | Interactive: preference     |
+| Mobile menu drawer                    | **Client**                      | Interactive: UI state       |
+| Mermaid diagrams                      | **Client**                      | Dynamic: JS rendering       |
 
 ## Content Consumption (Detailed)
 
@@ -439,9 +473,9 @@ apps/ayokoding-web-v2/
 │   │       └── search-results.tsx        # Search result list items
 │   ├── lib/
 │   │   ├── trpc/
-│   │   │   ├── client.ts                 # tRPC React Query hooks (client-side)
-│   │   │   ├── server.ts                 # tRPC server caller (RSC usage)
-│   │   │   └── provider.tsx              # TRPCProvider + QueryClientProvider
+│   │   │   ├── client.ts                 # tRPC React Query hooks (search only)
+│   │   │   ├── server.ts                 # tRPC server caller (content pages, RSC)
+│   │   │   └── provider.tsx              # TRPCProvider + QueryClientProvider (search)
 │   │   ├── schemas/                      # Zod schemas
 │   │   │   ├── content.ts                # Frontmatter schema, content input/output
 │   │   │   ├── search.ts                 # Search query/result schemas
@@ -542,30 +576,31 @@ apps/ayokoding-web-v2-fe-e2e/            # Frontend E2E (Playwright browser)
 
 ## Design Decisions
 
-| Decision            | Choice                            | Reason                                                     |
-| ------------------- | --------------------------------- | ---------------------------------------------------------- |
-| App type            | Fullstack (fs)                    | Content API + UI in one app                                |
-| Framework           | Next.js 16 (App Router)           | Proven fullstack, existing team experience                 |
-| API layer           | tRPC v11                          | Type-safe end-to-end, native Zod + React Query integration |
-| Validation          | Zod                               | tRPC native, frontmatter validation, input/output schemas  |
-| Data fetching       | React Query via @trpc/react-query | Automatic caching, deduplication, refetch                  |
-| UI components       | shadcn/ui (Radix + Tailwind)      | Accessible, customizable, no vendor lock-in                |
-| Content source      | Flat markdown files               | Same as Hugo, no migration needed, no database             |
-| Markdown parser     | unified (remark + rehype)         | Extensible, server-side, plugin ecosystem                  |
-| Syntax highlighting | shiki (via rehype-pretty-code)    | Server-side, all languages, VS Code themes                 |
-| Math                | KaTeX (via rehype-katex)          | Same as Hugo site, fast client-side rendering              |
-| Diagrams            | Mermaid (client-side)             | Same as Hugo site, dynamic rendering                       |
-| Search              | FlexSearch                        | Same as Hugo Hextra, proven, in-memory                     |
-| i18n                | [locale] route segment            | Next.js native, no extra library                           |
-| CSS                 | Tailwind CSS v4                   | shadcn/ui requirement, utility-first                       |
-| Port                | 3101                              | Adjacent to current Hugo site (3100)                       |
-| Coverage            | Vitest v8 + rhino-cli 80%         | Same blend threshold as demo-fs-ts-nextjs                  |
-| Linter              | oxlint                            | Same as other TypeScript apps                              |
-| BDD (unit)          | @amiceli/vitest-cucumber          | Same as demo-fs-ts-nextjs                                  |
-| BDD (integration)   | @cucumber/cucumber                | Proven pattern                                             |
-| Docker              | Multi-stage, no DB                | Local dev + CI E2E (standalone output)                     |
-| Deployment          | Vercel                            | Same as ayokoding-web + organiclever-web                   |
-| Prod branch         | `prod-ayokoding-web-v2`           | Vercel listens for pushes (never commit directly)          |
+| Decision            | Choice                           | Reason                                                     |
+| ------------------- | -------------------------------- | ---------------------------------------------------------- |
+| App type            | Fullstack (fs)                   | Content API + UI in one app                                |
+| Framework           | Next.js 16 (App Router)          | Proven fullstack, existing team experience                 |
+| API layer           | tRPC v11                         | Type-safe end-to-end, native Zod + React Query integration |
+| Validation          | Zod                              | tRPC native, frontmatter validation, input/output schemas  |
+| Content rendering   | React Server Components (RSC)    | SEO: full HTML for crawlers, no client JS needed           |
+| Data fetching       | tRPC server caller + React Query | Server-side for content (SEO); client-side for search only |
+| UI components       | shadcn/ui (Radix + Tailwind)     | Accessible, customizable, no vendor lock-in                |
+| Content source      | Flat markdown files              | Same as Hugo, no migration needed, no database             |
+| Markdown parser     | unified (remark + rehype)        | Extensible, server-side, plugin ecosystem                  |
+| Syntax highlighting | shiki (via rehype-pretty-code)   | Server-side, all languages, VS Code themes                 |
+| Math                | KaTeX (via rehype-katex)         | Same as Hugo site, fast client-side rendering              |
+| Diagrams            | Mermaid (client-side)            | Same as Hugo site, dynamic rendering                       |
+| Search              | FlexSearch                       | Same as Hugo Hextra, proven, in-memory                     |
+| i18n                | [locale] route segment           | Next.js native, no extra library                           |
+| CSS                 | Tailwind CSS v4                  | shadcn/ui requirement, utility-first                       |
+| Port                | 3101                             | Adjacent to current Hugo site (3100)                       |
+| Coverage            | Vitest v8 + rhino-cli 80%        | Same blend threshold as demo-fs-ts-nextjs                  |
+| Linter              | oxlint                           | Same as other TypeScript apps                              |
+| BDD (unit)          | @amiceli/vitest-cucumber         | Same as demo-fs-ts-nextjs                                  |
+| BDD (integration)   | @cucumber/cucumber               | Proven pattern                                             |
+| Docker              | Multi-stage, no DB               | Local dev + CI E2E (standalone output)                     |
+| Deployment          | Vercel                           | Same as ayokoding-web + organiclever-web                   |
+| Prod branch         | `prod-ayokoding-web-v2`          | Vercel listens for pushes (never commit directly)          |
 
 ## Visual Design Capture Strategy
 
@@ -643,7 +678,7 @@ Mobile (<768px):
 **What changes:**
 
 - Theme: Hextra → shadcn/ui custom components
-- Build: Hugo static generation → Next.js SSG/ISR
+- Build: Hugo static generation → Next.js RSC (server-rendered HTML for SEO)
 - Search: Hugo FlexSearch plugin → custom FlexSearch integration via tRPC
 - Routing: Hugo content paths → Next.js `[locale]/[...slug]` catch-all
 - Shortcodes: Hugo template shortcodes → remark plugin + React components

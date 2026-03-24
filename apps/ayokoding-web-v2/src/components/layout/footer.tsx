@@ -13,7 +13,7 @@ export function Footer({ locale }: FooterProps) {
       <div className="mx-auto flex max-w-screen-2xl flex-col items-center gap-2 px-4 text-sm text-muted-foreground sm:flex-row sm:justify-between">
         <p>&copy; {year} AyoKoding</p>
         <a
-          href="https://github.com/AyoKoding"
+          href="https://github.com/wahidyankf/open-sharia-enterprise"
           target="_blank"
           rel="noopener noreferrer"
           className="hover:text-foreground"

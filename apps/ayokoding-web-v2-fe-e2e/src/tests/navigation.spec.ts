@@ -1,4 +1,4 @@
-import { test, expect, devices } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 
 test.describe("Navigation", () => {
   test("sidebar is present on a content page", async ({ page }) => {

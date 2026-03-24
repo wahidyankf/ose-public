@@ -77,8 +77,7 @@
   }
 
   /* Image centering (replicating Hugo custom.css) */
-  img,
-  figure {
+  img {
     display: block;
     margin-left: auto;
     margin-right: auto;
@@ -86,7 +85,44 @@
     height: auto;
   }
 
-  figure {
+  /* Only center image figures, not code figures from rehype-pretty-code */
+  figure:not([data-rehype-pretty-code-figure]) {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
     text-align: center;
+  }
+
+  /* Code block styling for rehype-pretty-code (dual theme with CSS variables) */
+  figure[data-rehype-pretty-code-figure] {
+    margin: 1rem 0;
+  }
+
+  figure[data-rehype-pretty-code-figure] pre {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    background-color: var(--shiki-light-bg);
+    color: var(--shiki-light);
+  }
+
+  .dark figure[data-rehype-pretty-code-figure] pre {
+    background-color: var(--shiki-dark-bg);
+    color: var(--shiki-dark);
+  }
+
+  figure[data-rehype-pretty-code-figure] code {
+    font-size: 0.875rem;
+    line-height: 1.7;
+  }
+
+  /* Map shiki CSS variables to actual color properties */
+  figure[data-rehype-pretty-code-figure] code span {
+    color: var(--shiki-light);
+  }
+
+  .dark figure[data-rehype-pretty-code-figure] code span {
+    color: var(--shiki-dark);
   }
 }

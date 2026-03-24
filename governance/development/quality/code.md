@@ -332,6 +332,22 @@ Bypassing hooks regularly defeats the purpose of automated quality checks.
 3. Verify hook files are executable: `ls -la .husky/`
 4. If needed, make executable: `chmod +x .husky/pre-commit .husky/commit-msg .husky/pre-push`
 
+### Pre-push Hook Times Out or Runs Slowly
+
+**Symptom**: Pre-push hook takes too long or times out on large changesets
+
+**Solution** — warm the Nx cache before pushing:
+
+```bash
+# Run all three targets first (this warms the cache)
+npx nx affected -t typecheck lint test:quick
+
+# Now push — the hook replays from cache (near-instant)
+git push
+```
+
+**Why this works**: `typecheck`, `lint`, and `test:quick` are all cacheable Nx targets (`cache: true` in `nx.json`). Running them manually stores results in the local Nx cache. When the pre-push hook runs the same targets, Nx replays from cache instead of re-executing — making the hook near-instant regardless of how many projects are affected.
+
 ### Tests Fail on Pre-push
 
 **Symptom**: Pre-push hook blocks push due to test failures

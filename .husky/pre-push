@@ -2,8 +2,8 @@
 set -e
 
 # Pre-commit: rhino-cli checks (formatting, link validation, config sync)
-# Pre-push: typecheck + lint + markdown linting (fast, cacheable)
-# test:quick: deferred to CI (main CI workflow, PR quality gate) — can be slow for large changesets
+# Pre-push: typecheck + lint + test:quick + markdown linting (all cacheable by Nx)
+# If pre-push times out, run `npx nx affected -t typecheck lint test:quick` first to warm the cache, then push again
 PARALLEL=$(( $(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4) - 1 ))
-npx nx affected -t typecheck lint --parallel="$PARALLEL"
+npx nx affected -t typecheck lint test:quick --parallel="$PARALLEL"
 npm run lint:md

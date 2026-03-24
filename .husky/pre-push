@@ -1,5 +1,8 @@
 #!/usr/bin/env sh
 set -e
 
-# Run all affected quality gates in a single Nx invocation (maximizes parallelism)
-npx nx affected -t typecheck lint test:quick --parallel=8
+# typecheck + lint (fast, cached from pre-commit) + markdown linting
+# test:quick moved to pre-commit to avoid SSH timeout during push
+# (nx affected test:quick for large changesets can exceed GitHub's SSH connection timeout)
+npx nx affected -t typecheck lint --parallel=8
+npm run lint:md

@@ -1,1 +1,4 @@
 CGO_ENABLED=0 go run -C apps/rhino-cli main.go git pre-commit
+
+# Run affected quality gates in parallel
+npx nx affected -t typecheck lint test:quick --parallel=8

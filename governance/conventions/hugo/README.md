@@ -23,7 +23,7 @@ These conventions define **WHAT Hugo content rules apply** to our Hugo-based web
 - Tutorial content structure (that's tutorials/)
 - Non-Hugo documentation standards
 
-## Conventions Implemented/Respected
+## Conventions
 
 - [Hugo Content - ayokoding](./ayokoding.md) - **DEPRECATED** — Historical Hugo conventions for ayokoding-web (Hextra theme). ayokoding-web has migrated to Next.js 16
 - [Hugo Content - OSE Platform](./ose-platform.md) - Site-specific conventions for oseplatform-web (PaperMod theme, English-only)

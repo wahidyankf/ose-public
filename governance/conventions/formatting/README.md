@@ -23,7 +23,7 @@ These conventions define **HOW to format markdown content** including indentatio
 - Tutorial structure (that's tutorials/)
 - Hugo content rules (that's hugo/)
 
-## Conventions Implemented/Respected
+## Conventions
 
 - [Color Accessibility](./color-accessibility.md) - MASTER REFERENCE for all color decisions. Verified accessible color palette supporting all color blindness types
 - [Diagrams and Schemas](./diagrams.md) - Standards for Mermaid diagrams (primary) and ASCII art (optional) with color-blind friendly colors

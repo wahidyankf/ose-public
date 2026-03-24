@@ -6,7 +6,7 @@ This category contains standards for cross-referencing and internal linking in m
 
 Linking conventions ensure consistent, maintainable internal references across the repository. These standards govern how markdown files reference other files, ensuring links remain functional and follow repository conventions.
 
-## Conventions Implemented/Respected
+## Conventions
 
 ### [Internal AyoKoding References](./internal-ayokoding-references.md)
 

@@ -193,7 +193,7 @@ Is this content unique and valuable?
 - **Before:** Gherkin acceptance criteria details in `plan-maker.md` (500 lines)
 - **After:**
   - New file: `governance/development/infra/acceptance-criteria.md` (comprehensive)
-  - `plan-maker.md`: "Use Gherkin format. See [Acceptance Criteria Convention](../../conventions/formatting/linking.md)" (3 lines)
+  - `plan-maker.md`: "Use Gherkin format. See [Acceptance Criteria Convention](../infra/acceptance-criteria.md)" (3 lines)
   - Savings: 497 lines
 
 ### Option B: Merge into Existing Convention
@@ -214,8 +214,8 @@ Is this content unique and valuable?
 - **Before:** TBD workflow details duplicated in `plan-maker.md` and `plan-executor.md`
 - **After:**
   - Updated: `governance/development/workflow/trunk-based-development.md` (comprehensive)
-  - `plan-maker.md`: "Follow TBD workflow. See [TBD Convention](../../conventions/formatting/linking.md)" (2 lines)
-  - `plan-executor.md`: "Default to main branch per TBD. See [TBD Convention](../../conventions/formatting/linking.md)" (2 lines)
+  - `plan-maker.md`: "Follow TBD workflow. See [TBD Convention](../workflow/trunk-based-development.md)" (2 lines)
+  - `plan-executor.md`: "Default to main branch per TBD. See [TBD Convention](../workflow/trunk-based-development.md)" (2 lines)
   - Savings: Duplication eliminated
 
 ### Option C: Extract Common Pattern to Shared Convention
@@ -237,7 +237,7 @@ Is this content unique and valuable?
 - **Before:** Diagram standards duplicated in `docs-maker.md`, `plan-maker.md`
 - **After:**
   - New file: `governance/conventions/formatting/diagrams.md` (comprehensive)
-  - All agents: "Use Mermaid diagrams. See [Diagram Convention](../../conventions/formatting/linking.md)" (2 lines each)
+  - All agents: "Use Mermaid diagrams. See [Diagram Convention](../../conventions/formatting/diagrams.md)" (2 lines each)
   - Savings: Eliminated duplication
 - **Why Conventions Folder:** Diagrams are a content format standard, not development process
 
@@ -246,7 +246,7 @@ Is this content unique and valuable?
 - **Before:** Testing strategy duplicated across multiple agents
 - **After:**
   - New file: `governance/development/quality/testing-strategy.md` (comprehensive)
-  - All agents: "See [Testing Strategy](../../conventions/formatting/linking.md) for comprehensive testing guidelines" (2 lines each)
+  - All agents: "See `testing-strategy.md` for comprehensive testing guidelines" (2 lines each)
   - Savings: Eliminated duplication
 - **Why Development Folder:** Testing is a development process, not content format
 
@@ -287,7 +287,7 @@ Is this content unique and valuable?
 - **Before:** Commit granularity examples in `plan-executor.md`
 - **After:**
   - Updated: `governance/development/workflow/commit-messages.md` (comprehensive)
-  - `plan-executor.md`: "Split commits logically. See [Commit Messages Convention](../../conventions/formatting/linking.md)" (2 lines)
+  - `plan-executor.md`: "Split commits logically. See [Commit Messages Convention](../workflow/commit-messages.md)" (2 lines)
   - Savings: 100+ lines
 
 ## Offload Process Workflow
@@ -452,7 +452,7 @@ Before completing a content offload, verify:
 ```markdown
 ## File Naming Convention
 
-You MUST follow the [File Naming Convention](../../conventions/formatting/linking.md).
+You MUST follow the [File Naming Convention](../../conventions/structure/file-naming.md).
 
 When creating documentation files:
 

@@ -38,6 +38,7 @@ This directory contains specialized AI agents for the open-sharia-enterprise pro
 - **repo-governance-checker** - Governance compliance validation
 - **repo-workflow-checker** - Workflow documentation validation
 - **specs-checker** - Specs structural completeness and cross-spec consistency validation
+- **swe-code-checker** - Validates projects against platform coding standards (validates application code rather than documentation)
 
 ### 🟨 Fixing (Fixers)
 
@@ -66,7 +67,6 @@ This directory contains specialized AI agents for the open-sharia-enterprise pro
 
 ### 💻 Development
 
-- **swe-code-checker** - Validates projects against platform coding standards (green/checker agent — validates application code rather than documentation)
 - **swe-clojure-developer** - Clojure application development
 - **swe-csharp-developer** - C# application development
 - **swe-dart-developer** - Dart application development

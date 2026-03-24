@@ -115,6 +115,7 @@ Development practices in this directory fall into several categories:
 - [Markdown Quality Convention](./quality/markdown.md) - Standards for markdown linting and formatting using markdownlint-cli2 and Prettier for consistent markdown quality
 - [Three-Level Testing Standard](./quality/three-level-testing-standard.md) - Mandatory three-level testing architecture for all projects: unit (all mocked dependencies + Gherkin specs for demo-be), integration (real PostgreSQL, no HTTP for demo-be; in-process mocking for MSW/Godog projects), E2E (full stack + Gherkin specs via Playwright for web apps and API backends)
 - [No Machine-Specific Information in Commits](./quality/no-machine-specific-commits.md) - Practice prohibiting absolute local paths, usernames, IP addresses, and environment-specific configuration from committed code
+- [Specs-Application Sync Convention](./quality/specs-application-sync.md) - Bidirectional synchronization requirement between specs/ and application code in apps/, libs/, and apps-labs/: C4 diagrams, Gherkin feature files, and specs READMEs must reflect actual architecture and behavior
 
 ### Pattern Documentation
 

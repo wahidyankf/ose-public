@@ -754,7 +754,7 @@ Agents are categorized by their **primary role** which aligns with naming suffix
 | 🟦 **Blue**   | **Writers**      | Create new content from scratch       | Has `Write` tool                        | docs-maker<br>plan-maker<br>docs-tutorial-maker<br>repo-governance-maker                                                        |
 | 🟩 **Green**  | **Checkers**     | Validate and generate reports         | Has `Write`, `Bash` (no `Edit`)\*\*     | repo-governance-checker<br>plan-checker<br>docs-checker<br>docs-link-general-checker\*\*<br>apps-ayokoding-web-link-checker\*\* |
 | 🟨 **Yellow** | **Fixers**       | Modify and propagate existing content | Has `Edit` (usually not `Write`)        | docs-file-manager<br>readme-fixer<br>repo-governance-fixer                                                                      |
-| 🟪 **Purple** | **Implementors** | Execute plans with full tool access   | Has `Write`, `Edit`, `Bash` (or Bash)\* | plan-executor<br>deployers\*                                                                                                    |
+| 🟪 **Purple** | **Implementors** | Execute plans with full tool access   | Has `Write`, `Edit`, `Bash` (or Bash)\* | plan-executor<br>deployers\*<br>swe-\*-developer agents                                                                         |
 
 **Edge Case Notes:**
 

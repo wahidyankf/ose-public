@@ -57,12 +57,33 @@ export function MarkdownRenderer({ html }: MarkdownRendererProps) {
         return <Steps>{domToReact(domNode.children as DOMNode[], options)}</Steps>;
       }
 
-      // Replace mermaid code blocks
+      // Replace mermaid code blocks (rehype-pretty-code wraps in <figure> with data-language="mermaid")
+      if (
+        domNode.name === "figure" &&
+        domNode.attribs["data-rehype-pretty-code-figure"] !== undefined
+      ) {
+        // Check if this figure contains a mermaid code block
+        const pre = domNode.children.find(
+          (c): c is Element => c instanceof Element && c.name === "pre",
+        );
+        if (pre?.attribs["data-language"] === "mermaid") {
+          const code = pre.children.find(
+            (c): c is Element => c instanceof Element && c.name === "code",
+          );
+          if (code) {
+            const text = getTextContent(code);
+            return <MermaidDiagram chart={text} />;
+          }
+        }
+      }
+
+      // Fallback: mermaid code blocks without rehype-pretty-code wrapper
       if (
         domNode.name === "code" &&
         domNode.parent &&
         (domNode.parent as Element).name === "pre" &&
-        domNode.attribs.class?.includes("language-mermaid")
+        (domNode.attribs.class?.includes("language-mermaid") ||
+          domNode.attribs["data-language"] === "mermaid")
       ) {
         const text = getTextContent(domNode);
         return <MermaidDiagram chart={text} />;

@@ -309,8 +309,9 @@ Husky + lint-staged enforce quality:
   - Validates all markdown files (markdownlint)
   - Auto-stages changes
 - **Commit-msg**: Validates Conventional Commits format (Commitlint)
-- **Pre-push**: Runs `test:quick` for affected projects
+- **Pre-push**: Runs `typecheck` and `lint` for affected projects (parallelism: cores-1)
   - Runs markdown linting
+  - `test:quick` deferred to CI (main CI workflow, PR quality gate) — can be slow for large changesets
 
 **See**: [governance/development/quality/code.md](./governance/development/quality/code.md)
 

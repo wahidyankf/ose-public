@@ -1,7 +1,8 @@
 # AyoKoding Web v1-to-v2 Migration
 
-**Status**: In Progress
+**Status**: Done
 **Created**: 2026-03-24
+**Completed**: 2026-03-24
 **Goal**: Replace the Hugo-based `ayokoding-web` with the Next.js-based `ayokoding-web-v2`, archive the old Hugo app, and clean up obsolete tooling.
 
 ## Context

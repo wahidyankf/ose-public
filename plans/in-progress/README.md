@@ -4,7 +4,7 @@ Active project plans currently being worked on.
 
 ## Active Plans
 
-- [2026-03-24: Ayokoding Web v1-to-v2 Migration](./2026-03-24__ayokoding-web-v1-to-v2-migration/README.md) — Replace Hugo-based ayokoding-web with Next.js 16 implementation, archive Hugo app, clean up obsolete tooling.
+(none)
 
 ## Instructions
 

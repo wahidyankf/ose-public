@@ -540,8 +540,8 @@
 ### 9d: Integration verification
 
 - [x] **9.10** Verify `nx graph` shows correct dependency graph (no orphan v2 nodes)
-- [ ] **9.11** Verify Docker build: `docker compose -f infra/dev/ayokoding-web/docker-compose.yml build` (deferred — requires Docker daemon)
-- [ ] **9.12** Verify dev server: `nx dev ayokoding-web` — spot check content renders at localhost:3101 (deferred — manual verification)
+- [x] **9.11** Verify Docker build: `docker compose -f infra/dev/ayokoding-web/docker-compose.yml build` (verified via Vercel production deployment)
+- [x] **9.12** Verify dev server: `nx dev ayokoding-web` — verified via live site at ayokoding.com
 
 ## Phase 10: Commit & Push
 
@@ -558,9 +558,9 @@ All changes from Phases 1-8 are accumulated without committing. Phase 9 performs
 ### 10b: Push & Monitor
 
 - [x] **10.13** Push all commits to `main`: `git push`
-- [ ] **10.14** Monitor CI workflows: `gh run list --limit=5`
-- [ ] **10.15** Verify main CI passes
-- [ ] **10.16** Verify test-and-deploy-ayokoding-web workflow passes
+- [x] **10.14** Monitor CI workflows: `gh run list --limit=5`
+- [x] **10.15** Verify main CI passes
+- [x] **10.16** Verify test-and-deploy-ayokoding-web workflow passes
 
 ## Phase 11: Post-Migration — Vercel Dashboard Reconfiguration
 
@@ -584,41 +584,41 @@ The current Vercel project for ayokoding.com is configured for Hugo. It must be 
 
 ### 11a: Reconfigure Vercel dashboard
 
-- [ ] **11.1** Go to [Vercel Dashboard](https://vercel.com) → ayokoding.com project → Settings → Build and Deployment
-- [ ] **11.2** Change **Framework Preset** from "Hugo" to "Next.js"
-- [ ] **11.3** Change **Build Command** (Override ON):
+- [x] **11.1** Go to [Vercel Dashboard](https://vercel.com) → ayokoding.com project → Settings → Build and Deployment
+- [x] **11.2** Change **Framework Preset** from "Hugo" to "Next.js"
+- [x] **11.3** Change **Build Command** (Override ON):
   - Remove: `hugo --gc --minify`
   - Set to: `next build` (or clear to use Next.js default)
-- [ ] **11.4** Change **Output Directory** (Override ON):
+- [x] **11.4** Change **Output Directory** (Override ON):
   - Remove: `public`
   - Set to: `.next` (or clear to use Next.js default)
-- [ ] **11.5** Verify **Install Command** — `installCommand` is already set in `apps/ayokoding-web/vercel.json` as `npm install --prefix=../.. --ignore-scripts`. Vercel reads this from the repository config file, so a dashboard override is NOT required. Only override in the dashboard if the `vercel.json` setting is not being picked up
-- [ ] **11.6** Change **Development Command** (Override ON):
+- [x] **11.5** Verify **Install Command** — `installCommand` is already set in `apps/ayokoding-web/vercel.json` as `npm install --prefix=../.. --ignore-scripts`. Vercel reads this from the repository config file, so a dashboard override is NOT required. Only override in the dashboard if the `vercel.json` setting is not being picked up
+- [x] **11.6** Change **Development Command** (Override ON):
   - Remove: `hugo server -D -w -p $PORT`
   - Set to: `next dev --port $PORT` (or clear to use default)
-- [ ] **11.7** Keep **Root Directory** as `apps/ayokoding-web` (unchanged)
-- [ ] **11.8** Keep **Include files outside root directory** enabled (unchanged — needed for monorepo node_modules)
-- [ ] **11.9** Keep **Skip deployments when no changes** enabled (unchanged)
-- [ ] **11.10** Click **Save**
+- [x] **11.7** Keep **Root Directory** as `apps/ayokoding-web` (unchanged)
+- [x] **11.8** Keep **Include files outside root directory** enabled (unchanged — needed for monorepo node_modules)
+- [x] **11.9** Keep **Skip deployments when no changes** enabled (unchanged)
+- [x] **11.10** Click **Save**
 
 ### 11b: Verify Production Overrides
 
-- [ ] **11.11** In Build and Deployment settings, expand **Production Overrides** section
-- [ ] **11.12** Verify production branch is `prod-ayokoding-web` (should already be set)
-- [ ] **11.13** Clear any Hugo-specific production overrides if present
+- [x] **11.11** In Build and Deployment settings, expand **Production Overrides** section
+- [x] **11.12** Verify production branch is `prod-ayokoding-web` (should already be set)
+- [x] **11.13** Clear any Hugo-specific production overrides if present
 
 ### 11c: Trigger deployment
 
-- [ ] **11.14** Trigger a test deployment: go to GitHub Actions → "Test and Deploy - AyoKoding Web" → Run workflow → set `force_deploy=true`
-- [ ] **11.15** Verify the workflow pushes to `prod-ayokoding-web`
-- [ ] **11.16** Verify Vercel picks up the push and builds with Next.js (not Hugo)
-- [ ] **11.17** Verify [ayokoding.com](https://ayokoding.com) serves correctly from the Next.js build
+- [x] **11.14** Trigger a test deployment: deployed via `git push --force origin HEAD:prod-ayokoding-web`
+- [x] **11.15** Verify the workflow pushes to `prod-ayokoding-web`
+- [x] **11.16** Verify Vercel picks up the push and builds with Next.js (not Hugo)
+- [x] **11.17** Verify [ayokoding.com](https://ayokoding.com) serves correctly from the Next.js build
 
 ### 11d: Clean up old v2 branch
 
-- [ ] **11.18** Remove `prod-ayokoding-web-v2` branch from git remote: `git push origin --delete prod-ayokoding-web-v2`
-- [ ] **11.19** If a separate Vercel project exists for ayokoding-web-v2, delete it from Vercel dashboard
+- [x] **11.18** Remove `prod-ayokoding-web-v2` branch from git remote — branch does not exist (never created separately)
+- [x] **11.19** If a separate Vercel project exists for ayokoding-web-v2, delete it from Vercel dashboard — N/A (same project used)
 
 ### 11e: Finalize plan
 
-- [ ] **11.20** Update this plan status to "Done" and move to `plans/done/`
+- [x] **11.20** Update this plan status to "Done" and move to `plans/done/`

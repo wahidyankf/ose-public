@@ -215,9 +215,9 @@ All workflow files follow the plain-name pattern (no prefix), organized by subdi
 
 **Note**: The `ex-wf__` prefix was used before the 3-phase reorganization (completed 2026-01-01). New workflow files use plain names in their respective subdirectories. See [File Naming Convention](../../conventions/structure/file-naming.md) Migration History for details.
 
-## Execution Modes
+## Step Execution Patterns
 
-Workflows support three execution modes for steps:
+Workflows support three step execution patterns:
 
 ### Sequential
 

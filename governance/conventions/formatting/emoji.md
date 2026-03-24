@@ -179,7 +179,7 @@ PASS: **Good - Color + Text + Shape:**
 ```markdown
 ### 🟦 `docs-maker.md`
 
-Expert documentation writer specializing in Obsidian-optimized markdown.
+Expert documentation writer specializing in GitHub-compatible markdown and Diátaxis framework.
 ```
 
 **Why this works:**

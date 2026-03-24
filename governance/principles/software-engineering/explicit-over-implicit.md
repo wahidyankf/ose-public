@@ -419,7 +419,7 @@ npx lint-staged
 - No convention-based discovery
 - Behavior traceable
 
-## Related Principles
+## Relationship to Other Principles
 
 - [Simplicity Over Complexity](../general/simplicity-over-complexity.md) - Explicit configuration is often simpler than magic
 - [Accessibility First](../content/accessibility-first.md) - Explicit configuration improves understanding for all users

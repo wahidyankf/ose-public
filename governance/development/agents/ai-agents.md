@@ -172,7 +172,7 @@ skills: []
    - One-line summary of when to use this agent
    - Should complete: "Use this agent when..."
    - Be specific about the agent's expertise
-   - Example: `"Expert documentation writer specializing in Obsidian-optimized markdown and Diátaxis framework. Use when creating, editing, or organizing project documentation."`
+   - Example: `"Expert documentation writer specializing in GitHub-compatible markdown and Diátaxis framework. Use when creating, editing, or organizing project documentation."`
 
 3. **`tools`** (required)
    - Comma-separated list of allowed tool names
@@ -285,13 +285,14 @@ The `skills` field (already defined as field 6 in Required Frontmatter above) ha
 ```yaml
 ---
 name: docs-maker
-description: Expert documentation writer specializing in Obsidian-optimized markdown and Diátaxis framework.
+description: Expert documentation writer specializing in GitHub-compatible markdown and Diátaxis framework. Use when creating, editing, or organizing project documentation.
 tools: Read, Write, Edit, Glob, Grep
-model: inherit
+model: sonnet
 color: blue
 skills:
   - docs-creating-accessible-diagrams
-  - repo-applying-maker-checker-fixer
+  - docs-applying-content-quality
+  - docs-applying-diataxis-framework
 ---
 ```
 
@@ -551,7 +552,7 @@ Example - General agent:
 
 ```yaml
 name: docs-maker # Short, kebab-case, no scope (general-purpose)
-description: Expert documentation writer specializing in Obsidian-optimized markdown and Diátaxis framework. Use when creating, editing, or organizing project documentation. # Detailed usage guidance
+description: Expert documentation writer specializing in GitHub-compatible markdown and Diátaxis framework. Use when creating, editing, or organizing project documentation. # Detailed usage guidance
 ```
 
 Example - App-scoped agent:
@@ -922,7 +923,7 @@ All agent colors are from the verified accessible palette:
 ```yaml
 ---
 name: docs-maker
-description: Expert documentation writer specializing in Obsidian-optimized markdown and Diátaxis framework. Use when creating, editing, or organizing project documentation.
+description: Expert documentation writer specializing in GitHub-compatible markdown and Diátaxis framework. Use when creating, editing, or organizing project documentation.
 tools: Read, Write, Edit, Glob, Grep
 model: inherit
 color: blue
@@ -952,7 +953,7 @@ When listing agents in `.claude/agents/README.md` (or `.opencode/agent/README.md
 ```markdown
 ### 🟦 `docs-writer.md`
 
-Expert documentation writer specializing in Obsidian-optimized markdown and Diátaxis framework.
+Expert documentation writer specializing in GitHub-compatible markdown and Diátaxis framework.
 ```
 
 **Consistency with Emoji Convention:**
@@ -970,7 +971,7 @@ Colored square emojis follow the [Emoji Usage Convention](../../conventions/form
 ```yaml
 ---
 name: docs-writer
-description: Expert documentation writer specializing in Obsidian-optimized markdown and Diátaxis framework. Use when creating, editing, or organizing project documentation.
+description: Expert documentation writer specializing in GitHub-compatible markdown and Diátaxis framework. Use when creating, editing, or organizing project documentation.
 tools: Read, Write, Edit, Glob, Grep
 model: inherit
 color: blue
@@ -1023,7 +1024,7 @@ Each agent should have **one clear, focused purpose**.
 
 ```yaml
 name: doc-writer
-description: Expert documentation writer specializing in Obsidian-optimized markdown and Diátaxis framework. Use when creating, editing, or organizing project documentation.
+description: Expert documentation writer specializing in GitHub-compatible markdown and Diátaxis framework. Use when creating, editing, or organizing project documentation.
 ```
 
 **FAIL: Bad - Multiple Responsibilities:**
@@ -2095,14 +2096,14 @@ If an agent is no longer needed:
 
 ## Anti-Patterns
 
-| Anti-Pattern                     | FAIL: Bad                                                           | PASS: Good                                                                                                                                                                      |
-| -------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Vague Description**            | `description: Helper agent for various tasks`                       | `description: Expert documentation writer specializing in Obsidian-optimized markdown and Diátaxis framework. Use when creating, editing, or organizing project documentation.` |
-| **Tool Permission Creep**        | `tools: Read, Write, Edit, Glob, Grep, Bash` (for validation agent) | `tools: Read, Glob, Grep` (read-only for validation)                                                                                                                            |
-| **Unnecessary Model Override**   | Using specific model without clear need                             | Use `model: inherit` unless advanced reasoning truly required; then `model: sonnet`                                                                                             |
-| **Duplicating AGENTS.md**        | Repeating entire environment setup section                          | Reference: `AGENTS.md` - Primary guidance including environment setup                                                                                                           |
-| **Missing Reference Section**    | No references to conventions or AGENTS.md                           | Include Reference Documentation section with links to AGENTS.md and ex-de\_\_ai-agents.md                                                                                       |
-| **Overlapping Responsibilities** | `doc-writer-and-validator` (multiple responsibilities)              | Separate `doc-writer` and `doc-validator` agents                                                                                                                                |
+| Anti-Pattern                     | FAIL: Bad                                                           | PASS: Good                                                                                                                                                                     |
+| -------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Vague Description**            | `description: Helper agent for various tasks`                       | `description: Expert documentation writer specializing in GitHub-compatible markdown and Diátaxis framework. Use when creating, editing, or organizing project documentation.` |
+| **Tool Permission Creep**        | `tools: Read, Write, Edit, Glob, Grep, Bash` (for validation agent) | `tools: Read, Glob, Grep` (read-only for validation)                                                                                                                           |
+| **Unnecessary Model Override**   | Using specific model without clear need                             | Use `model: inherit` unless advanced reasoning truly required; then `model: sonnet`                                                                                            |
+| **Duplicating AGENTS.md**        | Repeating entire environment setup section                          | Reference: `AGENTS.md` - Primary guidance including environment setup                                                                                                          |
+| **Missing Reference Section**    | No references to conventions or AGENTS.md                           | Include Reference Documentation section with links to AGENTS.md and ex-de\_\_ai-agents.md                                                                                      |
+| **Overlapping Responsibilities** | `doc-writer-and-validator` (multiple responsibilities)              | Separate `doc-writer` and `doc-validator` agents                                                                                                                               |
 
 ## Validation and Compliance
 

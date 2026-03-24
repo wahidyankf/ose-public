@@ -376,12 +376,12 @@ graph TD
 
 ### AI Agent Categorization
 
-**Location**: `.opencode/agent/README.md`
+**Location**: `.claude/agents/README.md`
 
 ```markdown
 ### 🟦 docs-maker.md
 
-Expert documentation writer specializing in Obsidian-optimized markdown.
+Expert documentation writer specializing in GitHub-compatible markdown and Diátaxis framework.
 ```
 
 **Accessibility features**:
@@ -414,7 +414,7 @@ tags:
 - PASS: Semantic categorization
 - PASS: Machine-readable structure
 
-## Related Principles
+## Relationship to Other Principles
 
 - [Explicit Over Implicit](../software-engineering/explicit-over-implicit.md) - Explicit alt text and descriptions
 - [Simplicity Over Complexity](../general/simplicity-over-complexity.md) - Simple accessible design

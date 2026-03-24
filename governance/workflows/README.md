@@ -54,15 +54,17 @@ Layer 5: Workflows (WHEN)          → Multi-step processes ← YOU ARE HERE
 
 ### Using Workflows
 
-Workflows are executed through **manual orchestration** - the AI assistant follows workflow steps directly using Read/Write/Edit tools in the main execution context. This ensures file changes persist to the actual filesystem.
-
 **How to execute workflows**:
 
 ```
 User: "Run [workflow-name] workflow for [scope] in [mode] mode"
 ```
 
-The AI will execute the workflow logic directly, orchestrating checker-fixer cycles until termination criteria are met.
+Workflows support two execution modes (see [Workflow Execution Mode Convention](./meta/execution-modes.md)):
+
+**Agent Delegation (preferred)**: Invoke specialized agents via the Agent tool with `subagent_type`. Each agent runs in an isolated context, returns results to the orchestrating conversation, and file changes persist to the filesystem.
+
+**Manual Orchestration (fallback)**: When agents are unavailable as subagent types, the AI assistant follows workflow steps directly using Read/Write/Edit tools in the main execution context.
 
 All workflows support standard input parameters:
 
@@ -70,8 +72,6 @@ All workflows support standard input parameters:
 - **max-concurrency**: Parallel execution limit - default: 2
 - **min-iterations**: Minimum check-fix cycles - optional
 - **max-iterations**: Maximum check-fix cycles - optional
-
-**Future**: Automated workflow executor agent (not yet implemented).
 
 ## Available Workflows
 
@@ -120,9 +120,9 @@ Workflows for repository rules:
 
 - **repo-rules**: Validate consistency across principles, conventions, development, agents, AGENTS.md
 
-## Execution Modes
+## Step Execution Patterns
 
-Workflows support three execution patterns:
+Workflows support three step execution patterns:
 
 ### Sequential
 

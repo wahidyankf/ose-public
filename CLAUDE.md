@@ -330,14 +330,20 @@ Husky + lint-staged enforce quality:
 
 ## Core Principles
 
-All work follows foundational principles from `governance/principles/`:
+All work follows foundational principles from `governance/principles/` (key principles listed below — see [Principles Index](./governance/principles/README.md) for the complete list):
 
-- **Documentation First**: Documentation is mandatory, not optional
-- **Accessibility First**: WCAG AA compliance, color-blind friendly
+- **Deliberate Problem-Solving**: Understand before acting; prefer reversible decisions
 - **Simplicity Over Complexity**: Minimum viable abstraction
-- **Explicit Over Implicit**: Explicit configuration over magic
-- **Automation Over Manual**: Automate repetitive tasks
 - **Root Cause Orientation**: Fix root causes, not symptoms; minimal impact; senior engineer standard
+- **Accessibility First**: WCAG AA compliance, color-blind friendly
+- **Documentation First**: Documentation is mandatory, not optional
+- **No Time Estimates**: Never give time estimates; focus on outcomes
+- **Progressive Disclosure**: Layer complexity; start simple
+- **Automation Over Manual**: Automate repetitive tasks
+- **Explicit Over Implicit**: Explicit configuration over magic
+- **Immutability Over Mutability**: Prefer immutable data structures
+- **Pure Functions Over Side Effects**: Functional core, imperative shell
+- **Reproducibility First**: Deterministic builds and environments
 
 **See**: [governance/principles/README.md](./governance/principles/README.md)
 

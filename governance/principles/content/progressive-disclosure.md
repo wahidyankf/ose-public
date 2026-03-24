@@ -414,7 +414,7 @@ docs/
 
 ### Agent Tool Permissions
 
-**Location**: `.opencode/agent/` frontmatter
+**Location**: `.claude/agents/` frontmatter
 
 **Progressive tool access**:
 
@@ -463,7 +463,7 @@ ex-inse__security-basics.md    (7 letters - ex-inse)
 - PASS: Pattern scales with depth
 - PASS: Learnable incrementally
 
-## Related Principles
+## Relationship to Other Principles
 
 - [Simplicity Over Complexity](../general/simplicity-over-complexity.md) - Start simple, add complexity only when needed
 - [No Time Estimates](./no-time-estimates.md) - Focus on learning outcomes, not duration

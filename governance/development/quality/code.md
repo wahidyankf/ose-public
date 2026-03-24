@@ -569,6 +569,7 @@ mix format lib/my_module.ex
 ## Related Documentation
 
 - [Commit Message Convention](../workflow/commit-messages.md) - Detailed commit message rules
+- [No Machine-Specific Information in Commits](./no-machine-specific-commits.md) - Practice prohibiting machine-specific paths and credentials from committed code
 - [Trunk Based Development](../workflow/trunk-based-development.md) - Git workflow and branching strategy
 - [Nx Target Standards](../infra/nx-targets.md) - Canonical target names, `test:quick` composition rules, and caching configuration that the pre-push hook depends on
 - [Three-Level Testing Standard](./three-level-testing-standard.md) - Mandatory unit/integration/E2E testing architecture for all projects; defines what `test:unit`, `test:integration`, and `test:e2e` must do at each level

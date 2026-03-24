@@ -544,7 +544,7 @@ console.log("With payment:", withPayment); // Full history
 - **Reproducibility**: Same inputs always produce same outputs
 - **Trust**: Islamic scholars can audit the entire calculation chain
 
-## Related Principles
+## Relationship to Other Principles
 
 - [Pure Functions Over Side Effects](./pure-functions.md) - Pure functions naturally use immutable data
 - [Explicit Over Implicit](./explicit-over-implicit.md) - Immutability makes state changes explicit

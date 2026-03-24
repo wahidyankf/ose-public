@@ -776,6 +776,7 @@ verify();
 
 - [Reproducibility First](../../principles/software-engineering/reproducibility.md) - WHY reproducibility matters
 - [Code Quality Convention](../quality/code.md) - Automated quality in reproducible environments
+- [No Machine-Specific Information in Commits](../quality/no-machine-specific-commits.md) - Preventing machine-specific paths and credentials from entering the repository
 - [Trunk Based Development](./trunk-based-development.md) - Reproducible CI/CD for main branch
 - [Hugo Development](../hugo/development.md) - Reproducible builds for Hugo sites
 

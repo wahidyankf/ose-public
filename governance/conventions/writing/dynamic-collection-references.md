@@ -30,7 +30,7 @@ This convention implements the following core principles:
 
 ## Purpose
 
-The repository contains several collections that grow as the project evolves: AI agents, skills, conventions, development practices, principles, and workflows. Documentation files frequently describe these collections with phrases like "57 specialized AI agents" or "30 conventions". When a new agent is added, every document containing "57" must be found and updated. In practice this update is frequently missed, leaving counts that are wrong.
+The repository contains several collections that grow as the project evolves: AI agents, skills, conventions, development practices, principles, and workflows. Documentation files frequently describe these collections with phrases like "N specialized AI agents" or "N conventions". When a new agent is added, every document containing that count must be found and updated. In practice this update is frequently missed, leaving counts that are wrong.
 
 This convention establishes that documentation MUST NOT hardcode counts for dynamic collections. Instead, documentation SHOULD reference the collection by name with a link to its index, where the current count is always accurate.
 

@@ -18,9 +18,6 @@ updated: 2026-03-24
 
 **Purpose**: Prevent committed code from containing information specific to one developer's machine, ensuring the repository remains portable, reproducible, and free of accidental credential exposure.
 
-**Status**: Active
-**Last Updated**: 2026-03-24
-
 ## Principles Implemented/Respected
 
 This practice respects the following core principles:

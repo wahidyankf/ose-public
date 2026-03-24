@@ -618,7 +618,7 @@ async function saveMudharabahDistribution(profit: number, investorRatio: number)
 - **Auditable**: Each calculation step is deterministic and traceable
 - **Trustworthy**: Investors and managers can independently verify their share calculations
 
-## Related Principles
+## Relationship to Other Principles
 
 - [Immutability Over Mutability](./immutability.md) - Pure functions naturally use immutable data
 - [Explicit Over Implicit](./explicit-over-implicit.md) - Dependencies explicit in function signatures

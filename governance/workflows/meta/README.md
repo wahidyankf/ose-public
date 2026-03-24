@@ -25,7 +25,7 @@ This documentation defines **HOW workflows should be designed and documented**, 
 ## Documents
 
 - [Workflow Pattern Convention](./workflow-identifier.md) - Complete workflow structure convention including frontmatter schema, step definition patterns, and composition rules
-- [Workflow Execution Mode Convention](./execution-modes.md) - Manual orchestration mode explaining why Task tool is avoided and how to execute workflows with persistent file changes
+- [Workflow Execution Mode Convention](./execution-modes.md) - Defines execution modes — Agent Delegation (preferred via Agent tool) and Manual Orchestration (fallback when agents unavailable as subagent types)
 
 ## Related Documentation
 

@@ -520,7 +520,7 @@ All files managed and links updated!
 Next steps:
 1. Review changes: git diff
 2. Validate links: Use docs-link-general-checker to verify all links
-3. Test in Obsidian: Open docs/ in Obsidian and click links
+3. Validate links: Use docs-link-general-checker agent
 4. Commit changes: git commit -m "refactor(docs): reorganize documentation structure"
 ```
 
@@ -574,7 +574,7 @@ After completing file management operation:
 
 1. Review: git diff --stat
 2. Validate: Use docs-link-general-checker agent
-3. Test: Open docs/ in Obsidian
+3. Validate links: Use docs-link-general-checker agent
 4. Commit: git commit -m "refactor(docs): reorganize documentation structure"
 ```
 

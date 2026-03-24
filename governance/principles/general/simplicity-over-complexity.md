@@ -423,7 +423,7 @@ docs/          # Flat category directories
 
 ### Agent Responsibilities
 
-**Location**: `.opencode/agent/`
+**Location**: `.claude/agents/`
 
 Each agent has **one clear job**:
 
@@ -668,12 +668,6 @@ Simplicity Over Complexity means:
 - **Question** complexity at every step
 
 The right amount of complexity is the **minimum needed** for the current task.
-
-## Related Principles
-
-- [Explicit Over Implicit](../software-engineering/explicit-over-implicit.md) - Simple explicit configuration
-- [Progressive Disclosure](../content/progressive-disclosure.md) - Start simple, layer complexity
-- [Automation Over Manual](../software-engineering/automation-over-manual.md) - Automate simple repetitive tasks
 
 ## Related Conventions
 

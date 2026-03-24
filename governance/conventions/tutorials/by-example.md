@@ -1462,9 +1462,9 @@ This convention implements and respects:
 
 ## Related Agents
 
-- [apps-ayokoding-web-by-example-maker](../../../.opencode/agent/apps-ayokoding-web-by-example-maker.md) - Creates by-example content
-- [apps-ayokoding-web-by-example-checker](../../../.opencode/agent/apps-ayokoding-web-by-example-checker.md) - Validates by-example standards
-- [apps-ayokoding-web-by-example-fixer](../../../.opencode/agent/apps-ayokoding-web-by-example-fixer.md) - Applies validated fixes
+- [apps-ayokoding-web-by-example-maker](../../../.claude/agents/apps-ayokoding-web-by-example-maker.md) - Creates by-example content
+- [apps-ayokoding-web-by-example-checker](../../../.claude/agents/apps-ayokoding-web-by-example-checker.md) - Validates by-example standards
+- [apps-ayokoding-web-by-example-fixer](../../../.claude/agents/apps-ayokoding-web-by-example-fixer.md) - Applies validated fixes
 
 ## Related Workflows
 

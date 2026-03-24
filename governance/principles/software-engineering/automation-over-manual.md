@@ -404,7 +404,7 @@ The project enforces code quality through automated git hooks:
 
 ### AI Validation Agents
 
-**Location**: `.opencode/agent/`
+**Location**: `.claude/agents/`
 
 **Agents**:
 
@@ -456,7 +456,7 @@ The project enforces code quality through automated git hooks:
 - PASS: Timestamps for expiry
 - PASS: Centralized link status
 
-## Related Principles
+## Relationship to Other Principles
 
 - [Explicit Over Implicit](./explicit-over-implicit.md) - Automation makes behavior explicit
 - [Simplicity Over Complexity](../general/simplicity-over-complexity.md) - Automate simple, repetitive tasks

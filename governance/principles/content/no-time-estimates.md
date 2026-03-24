@@ -424,7 +424,7 @@ take 2-3 weeks" or "complete this in 30 minutes."
 Focus on WHAT needs to be done or learned, not HOW LONG it takes.
 ```
 
-## Related Principles
+## Relationship to Other Principles
 
 - [Progressive Disclosure](./progressive-disclosure.md) - Learn at your own pace through progressive levels
 - [Accessibility First](./accessibility-first.md) - Inclusive of different learning speeds

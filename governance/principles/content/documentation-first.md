@@ -656,7 +656,7 @@ function validateMurabahahContract(contract: MurabahahContract): ValidationResul
 
 **Why this works**: Developers can use APIs confidently without reading implementation. IDE autocomplete shows documentation.
 
-## Related Principles
+## Relationship to Other Principles
 
 - [Explicit Over Implicit](../software-engineering/explicit-over-implicit.md) - Documentation makes implicit knowledge explicit
 - [Accessibility First](./accessibility-first.md) - Documentation makes knowledge accessible to all

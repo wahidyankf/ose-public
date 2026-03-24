@@ -2440,9 +2440,9 @@ This convention implements and respects:
 
 ## Related Agents
 
-- [apps-ayokoding-web-in-the-field-maker](../../../.opencode/agent/apps-ayokoding-web-in-the-field-maker.md) - Creates in-the-field content
-- [apps-ayokoding-web-in-the-field-checker](../../../.opencode/agent/apps-ayokoding-web-in-the-field-checker.md) - Validates in-the-field standards
-- [apps-ayokoding-web-in-the-field-fixer](../../../.opencode/agent/apps-ayokoding-web-in-the-field-fixer.md) - Applies validated fixes
+- [apps-ayokoding-web-in-the-field-maker](../../../.claude/agents/apps-ayokoding-web-in-the-field-maker.md) - Creates in-the-field content
+- [apps-ayokoding-web-in-the-field-checker](../../../.claude/agents/apps-ayokoding-web-in-the-field-checker.md) - Validates in-the-field standards
+- [apps-ayokoding-web-in-the-field-fixer](../../../.claude/agents/apps-ayokoding-web-in-the-field-fixer.md) - Applies validated fixes
 
 ## Related Workflows
 

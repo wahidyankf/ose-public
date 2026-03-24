@@ -323,7 +323,7 @@ graph TD
 ```markdown
 ### 🟦 docs-maker.md
 
-Expert documentation writer specializing in Obsidian-optimized markdown and Diátaxis framework. Use when creating, editing, or organizing project documentation.
+Expert documentation writer specializing in GitHub-compatible markdown and Diátaxis framework. Use when creating, editing, or organizing project documentation.
 
 ### 🟩 docs-checker.md
 

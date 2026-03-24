@@ -574,7 +574,7 @@ npm install
 
 **Result**: Same git hooks for everyone after `npm install`.
 
-## Related Principles
+## Relationship to Other Principles
 
 - [Automation Over Manual](./automation-over-manual.md) - Automate environment setup
 - [Explicit Over Implicit](./explicit-over-implicit.md) - Explicit version pinning

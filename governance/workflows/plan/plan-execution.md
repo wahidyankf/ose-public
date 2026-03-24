@@ -45,26 +45,39 @@ outputs:
 
 ## Execution Mode
 
-**Current Mode**: Manual Orchestration (see [Workflow Execution Modes Convention](../meta/execution-modes.md))
+**Preferred Mode**: Agent Delegation — invoke `plan-executor` and `plan-execution-checker`
+via the Agent tool with `subagent_type`
+(see [Workflow Execution Modes Convention](../meta/execution-modes.md)).
 
-This workflow is currently executed through **manual orchestration** where the AI assistant (Claude Code or OpenCode) follows workflow steps directly using Read/Write/Edit tools. File changes persist to the actual filesystem.
+**Fallback Mode**: Manual Orchestration — execute workflow logic directly using
+Read/Write/Edit tools when Agent Delegation is unavailable.
+
+The Agent tool runs subagents that persist file changes to the actual filesystem, making it
+the preferred approach when these agents exist as defined subagent types.
 
 **How to Execute**:
 
 ```
-User: "Execute plan plans/in-progress/2025-01-15__new-feature/plan.md in manual mode"
+User: "Execute plan plans/in-progress/2025-01-15__new-feature/plan.md"
 ```
 
 The AI will:
 
-1. Execute plan-executor logic directly (read plan, implement requirements, update checklist)
-2. Execute plan-execution-checker logic directly (validate implementation, write audit)
+1. Invoke `plan-executor` via the Agent tool (reads plan, implements requirements, updates checklist)
+2. Invoke `plan-execution-checker` via the Agent tool (validates implementation, writes audit)
 3. Iterate execution and validation until zero findings achieved
 4. Move plan folder to plans/done/ using git mv
 5. Show git status with modified files
 6. Wait for user commit approval
 
-**Why Manual Mode?**: Task tool runs agents in isolated contexts where file changes don't persist. Manual orchestration ensures implementation changes, audit reports, and plan archival are actually written to the filesystem.
+**Fallback (Manual Mode)**:
+
+```
+User: "Execute plan plans/in-progress/2025-01-15__new-feature/plan.md in manual mode"
+```
+
+The AI executes plan-executor and plan-execution-checker logic directly using Read/Write/Edit
+tools in the main context — use this when agent delegation is unavailable.
 
 ## Steps
 
@@ -220,13 +233,13 @@ Report final status and archive plan if successful.
 ### Execute Plan with Default Settings
 
 ```
-User: "Execute plan plans/in-progress/2025-01-15__new-feature/plan.md in manual mode"
+User: "Execute plan plans/in-progress/2025-01-15__new-feature/plan.md"
 ```
 
-The AI will execute the workflow directly (default max 10 iterations):
+The AI will invoke specialized agents via the Agent tool (default max 10 iterations):
 
-- Implement plan requirements (plan-executor logic)
-- Validate implementation (plan-execution-checker logic)
+- Implement plan requirements (`plan-executor` subagent)
+- Validate implementation (`plan-execution-checker` subagent)
 - Iterate until zero findings and all deliverables complete
 - Move plan folder to plans/done/ on success
 
@@ -236,7 +249,7 @@ The AI will execute the workflow directly (default max 10 iterations):
 User: "Execute plan plans/in-progress/2025-01-15__complex-migration/plan.md with max-iterations=15"
 ```
 
-The AI will execute with extended iteration limit:
+The AI will invoke agents with extended iteration limit:
 
 - Allow up to 15 execute-validate cycles for complex plans
 - Suitable for large migrations or multi-phase implementations
@@ -244,12 +257,12 @@ The AI will execute with extended iteration limit:
 ### Execute Plan from Backlog
 
 ```
-User: "Execute plan plans/backlog/2025-02-01__future-feature/plan.md in manual mode"
+User: "Execute plan plans/backlog/2025-02-01__future-feature/plan.md"
 ```
 
-The AI will execute from backlog:
+The AI will invoke agents regardless of folder location:
 
-- Implement plan regardless of folder location
+- Implement plan requirements via `plan-executor` subagent
 - Won't move to done until zero findings achieved
 - Plan archived to plans/done/ only on complete success
 
@@ -259,7 +272,7 @@ The AI will execute from backlog:
 User: "Execute plan plans/in-progress/2025-01-15__new-feature/plan.md with max-iterations=1"
 ```
 
-The AI will execute once without retries:
+The AI will invoke agents for a single cycle:
 
 - Single execute-validate cycle
 - Reports findings without further iteration

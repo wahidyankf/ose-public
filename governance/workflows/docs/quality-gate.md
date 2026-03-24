@@ -69,25 +69,38 @@ This workflow implements the **Maker-Checker-Fixer pattern** across three valida
 
 ## Execution Mode
 
-**Current Mode**: Manual Orchestration (see [Workflow Execution Modes Convention](../meta/execution-modes.md))
+**Preferred Mode**: Agent Delegation — invoke `docs-checker`, `docs-tutorial-checker`,
+`docs-link-general-checker`, `docs-fixer`, and `docs-tutorial-fixer` via the Agent tool
+with `subagent_type` (see [Workflow Execution Modes Convention](../meta/execution-modes.md)).
 
-This workflow is currently executed through **manual orchestration** where the AI assistant (Claude Code or OpenCode) follows workflow steps directly using Read/Write/Edit tools. File changes persist to the actual filesystem.
+**Fallback Mode**: Manual Orchestration — execute workflow logic directly using
+Read/Write/Edit tools when Agent Delegation is unavailable.
+
+The Agent tool runs subagents that persist file changes to the actual filesystem, making it
+the preferred approach when these agents exist as defined subagent types.
 
 **How to Execute**:
+
+```
+User: "Run documentation quality gate workflow for docs/tutorials/"
+```
+
+The AI will:
+
+1. Invoke `docs-checker`, `docs-tutorial-checker`, and `docs-link-general-checker` via the Agent tool in parallel (validate, write audits)
+2. Invoke `docs-fixer` and `docs-tutorial-fixer` via the Agent tool in sequence (read audits, apply fixes, write fix reports)
+3. Iterate until zero findings achieved across all three validators
+4. Show git status with modified files
+5. Wait for user commit approval
+
+**Fallback (Manual Mode)**:
 
 ```
 User: "Run documentation quality gate workflow for docs/tutorials/ in manual mode"
 ```
 
-The AI will:
-
-1. Execute docs-checker, docs-tutorial-checker, and docs-link-general-checker logic directly in parallel (validate, write audits)
-2. Execute docs-fixer and docs-tutorial-fixer logic directly in sequence (read audits, apply fixes, write fix reports)
-3. Iterate until zero findings achieved across all three validators
-4. Show git status with modified files
-5. Wait for user commit approval
-
-**Why Manual Mode?**: Task tool runs agents in isolated contexts where file changes don't persist. Manual orchestration ensures audit reports, documentation fixes, and link cache updates are actually written to the filesystem.
+The AI executes checker and fixer logic directly using Read/Write/Edit tools in the main
+context — use this when agent delegation is unavailable.
 
 ## Workflow Overview
 
@@ -316,16 +329,16 @@ Report final status and summary.
 
 ## Example Usage
 
-### Standard Manual Invocation (Normal Strictness)
+### Standard Invocation (Normal Strictness)
 
 ```
 User: "Run documentation quality gate workflow in normal mode"
 ```
 
-The AI will execute the workflow directly:
+The AI will invoke specialized agents via the Agent tool:
 
-- Validate all docs/ content in parallel (factual, pedagogical, links)
-- Fix CRITICAL/HIGH findings (docs-fixer, docs-tutorial-fixer logic)
+- Validate all docs/ content in parallel (`docs-checker`, `docs-tutorial-checker`, `docs-link-general-checker` subagents)
+- Fix CRITICAL/HIGH findings (`docs-fixer`, `docs-tutorial-fixer` subagents)
 - Iterate until zero CRITICAL/HIGH findings achieved
 - Report MEDIUM/LOW findings without fixing them
 
@@ -335,7 +348,7 @@ The AI will execute the workflow directly:
 User: "Run documentation quality gate workflow in lax mode"
 ```
 
-The AI will execute with minimal criteria:
+The AI will invoke agents with minimal criteria:
 
 - Fix CRITICAL findings only
 - Report HIGH/MEDIUM/LOW findings without fixing them
@@ -347,7 +360,7 @@ The AI will execute with minimal criteria:
 User: "Run documentation quality gate workflow in strict mode"
 ```
 
-The AI will execute with stricter criteria:
+The AI will invoke agents with stricter criteria:
 
 - Fix CRITICAL/HIGH/MEDIUM findings
 - Report LOW findings without fixing them
@@ -359,7 +372,7 @@ The AI will execute with stricter criteria:
 User: "Run documentation quality gate workflow in ocd mode"
 ```
 
-The AI will execute with zero-tolerance criteria:
+The AI will invoke agents with zero-tolerance criteria:
 
 - Fix ALL findings (CRITICAL, HIGH, MEDIUM, LOW)
 - Iterate until zero findings at all levels
@@ -371,7 +384,7 @@ The AI will execute with zero-tolerance criteria:
 User: "Run documentation quality gate workflow for docs/tutorials/"
 ```
 
-The AI will execute with scoped validation:
+The AI will invoke agents with scoped validation:
 
 - Validate only tutorial files
 - Fix issues in that scope only
@@ -380,7 +393,7 @@ The AI will execute with scoped validation:
 User: "Run documentation quality gate workflow for governance/conventions/structure/file-naming.md"
 ```
 
-The AI will execute with single-file scope:
+The AI will invoke agents with single-file scope:
 
 - Validate specific file only
 - Fix issues in that file
@@ -391,7 +404,7 @@ The AI will execute with single-file scope:
 User: "Run documentation quality gate workflow in normal mode with min-iterations=2 and max-iterations=10"
 ```
 
-The AI will execute with iteration controls:
+The AI will invoke agents with iteration controls:
 
 - Require at least 2 check-fix cycles
 - Cap at maximum 10 iterations

@@ -60,27 +60,44 @@ outputs:
 
 ## Execution Mode
 
-**Current Mode**: Manual Orchestration (see [Workflow Execution Modes Convention](../meta/execution-modes.md))
+**Preferred Mode**: Agent Delegation — invoke `apps-ayokoding-web-general-checker`,
+`apps-ayokoding-web-facts-checker`, `apps-ayokoding-web-structure-checker`,
+`apps-ayokoding-web-link-checker`, `apps-ayokoding-web-general-fixer`,
+`apps-ayokoding-web-facts-fixer`, `apps-ayokoding-web-structure-fixer`,
+`apps-ayokoding-web-title-maker`, and `apps-ayokoding-web-navigation-maker`
+via the Agent tool with `subagent_type`
+(see [Workflow Execution Modes Convention](../meta/execution-modes.md)).
 
-This workflow is currently executed through **manual orchestration** where the AI assistant (Claude Code or OpenCode) follows workflow steps directly using Read/Write/Edit tools. File changes persist to the actual filesystem.
+**Fallback Mode**: Manual Orchestration — execute workflow logic directly using
+Read/Write/Edit tools when Agent Delegation is unavailable.
+
+The Agent tool runs subagents that persist file changes to the actual filesystem, making it
+the preferred approach when these agents exist as defined subagent types.
 
 **How to Execute**:
+
+```
+User: "Run ayokoding-web general quality gate workflow for ayokoding-web/content/en/"
+```
+
+The AI will:
+
+1. Invoke all four checkers via the Agent tool in parallel (general, facts, structure, links — validate, write audits)
+2. Invoke all three fixers via the Agent tool in sequence (general, facts, structure — read audits, apply fixes, write fix reports)
+3. Iterate until zero findings achieved across all validators
+4. Invoke `apps-ayokoding-web-title-maker` via the Agent tool (regenerate titles)
+5. Invoke `apps-ayokoding-web-navigation-maker` via the Agent tool (regenerate 2-layer navigation)
+6. Show git status with modified files
+7. Wait for user commit approval
+
+**Fallback (Manual Mode)**:
 
 ```
 User: "Run ayokoding-web general quality gate workflow for ayokoding-web/content/en/ in manual mode"
 ```
 
-The AI will:
-
-1. Execute all four checkers logic directly in parallel (general, facts, structure, links - validate, write audits)
-2. Execute all three fixers logic directly in sequence (general, facts, structure - read audits, apply fixes, write fix reports)
-3. Iterate until zero findings achieved across all validators
-4. Execute title-maker logic directly (regenerate titles from filenames)
-5. Execute navigation-maker logic directly (regenerate 2-layer navigation)
-6. Show git status with modified files
-7. Wait for user commit approval
-
-**Why Manual Mode?**: Task tool runs agents in isolated contexts where file changes don't persist. Manual orchestration ensures audit reports, content fixes, title updates, and navigation regeneration are actually written to the filesystem.
+The AI executes all checker, fixer, and regeneration logic directly using Read/Write/Edit
+tools in the main context — use this when agent delegation is unavailable.
 
 ## Steps
 
@@ -302,14 +319,14 @@ Report final status and summary.
 ### Full Content Check-Fix
 
 ```
-User: "Run ayokoding-web general quality gate workflow in manual mode"
+User: "Run ayokoding-web general quality gate workflow"
 ```
 
-The AI will execute the workflow directly:
+The AI will invoke specialized agents via the Agent tool:
 
-- Validate all ayokoding-web content in parallel (general, facts, structure, links)
-- Fix all findings (general-fixer, facts-fixer, structure-fixer logic)
-- Regenerate titles and navigation
+- Validate all ayokoding-web content in parallel (`apps-ayokoding-web-general-checker`, `apps-ayokoding-web-facts-checker`, `apps-ayokoding-web-structure-checker`, `apps-ayokoding-web-link-checker` subagents)
+- Fix all findings (`apps-ayokoding-web-general-fixer`, `apps-ayokoding-web-facts-fixer`, `apps-ayokoding-web-structure-fixer` subagents)
+- Regenerate titles and navigation (`apps-ayokoding-web-title-maker`, `apps-ayokoding-web-navigation-maker` subagents)
 - Iterate until zero findings achieved
 
 ### Validate Specific Language
@@ -318,7 +335,7 @@ The AI will execute the workflow directly:
 User: "Run ayokoding-web general quality gate workflow for ayokoding-web/content/en/"
 ```
 
-The AI will execute with language-scoped validation:
+The AI will invoke agents with language-scoped validation:
 
 - Validate only English content
 - Fix issues in English files only
@@ -330,7 +347,7 @@ The AI will execute with language-scoped validation:
 User: "Run ayokoding-web general quality gate workflow for ayokoding-web/content/en/programming/"
 ```
 
-The AI will execute with section-scoped validation:
+The AI will invoke agents with section-scoped validation:
 
 - Validate only programming section
 - Fix issues in that section
@@ -342,7 +359,7 @@ The AI will execute with section-scoped validation:
 User: "Run ayokoding-web general quality gate workflow with min-iterations=2 and max-iterations=10"
 ```
 
-The AI will execute with iteration controls:
+The AI will invoke agents with iteration controls:
 
 - Require at least 2 check-fix cycles
 - Cap at maximum 10 iterations

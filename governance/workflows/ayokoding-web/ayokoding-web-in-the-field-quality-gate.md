@@ -76,26 +76,41 @@ This workflow implements the **Maker-Checker-Fixer pattern** to ensure in-the-fi
 
 ## Execution Mode
 
-**Current Mode**: Manual Orchestration (see [Workflow Execution Modes Convention](../meta/execution-modes.md))
+**Preferred Mode**: Agent Delegation — invoke `apps-ayokoding-web-in-the-field-checker` and
+`apps-ayokoding-web-in-the-field-fixer` via the Agent tool with `subagent_type`
+(see [Workflow Execution Modes Convention](../meta/execution-modes.md)).
 
-This workflow is currently executed through **manual orchestration** where the AI assistant follows workflow steps directly using Read/Write/Edit tools. File changes persist to the actual filesystem.
+**Fallback Mode**: Manual Orchestration — execute workflow logic directly using
+Read/Write/Edit tools when Agent Delegation is unavailable.
+
+The Agent tool runs subagents that persist file changes to the actual filesystem, making it
+the preferred approach when these agents exist as defined subagent types. Note: this workflow
+includes a manual user review step (step 3) — agent delegation applies to the checker and
+fixer steps, not the human decision point.
 
 **How to Execute**:
+
+```
+User: "Run ayokoding-web in-the-field quality gate workflow for java/in-the-field/"
+```
+
+The AI will:
+
+1. Invoke `apps-ayokoding-web-in-the-field-checker` via the Agent tool (validates guides, writes audit)
+2. User reviews audit report and decides on fixes (manual decision point)
+3. Invoke `apps-ayokoding-web-in-the-field-fixer` via the Agent tool (reads audit, applies fixes, writes fix report)
+4. Iterate until EXCELLENT status achieved (zero findings, 20-40 guides, production quality)
+5. Show git status with modified files
+6. Wait for user commit approval
+
+**Fallback (Manual Mode)**:
 
 ```
 User: "Run ayokoding-web in-the-field quality gate workflow for java/in-the-field/ in manual mode"
 ```
 
-The AI will:
-
-1. Execute apps-ayokoding-web-in-the-field-checker logic directly (validate guides, write audit)
-2. User reviews audit report and decides on fixes (manual decision point)
-3. Execute apps-ayokoding-web-in-the-field-fixer logic directly (read audit, apply fixes, write fix report)
-4. Iterate until EXCELLENT status achieved (zero findings, 20-40 guides, production quality)
-5. Show git status with modified files
-6. Wait for user commit approval
-
-**Why Manual Mode?**: Task tool runs agents in isolated contexts where file changes don't persist. Manual orchestration ensures audit reports and guide fixes are actually written to the filesystem. This workflow also includes manual decision points (user review step) unlike fully automated workflows.
+The AI executes checker and fixer logic directly using Read/Write/Edit tools in the main
+context — use this when agent delegation is unavailable.
 
 ## Workflow Overview
 

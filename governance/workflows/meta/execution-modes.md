@@ -1,6 +1,6 @@
 ---
 title: "Workflow Execution Mode Convention"
-description: Defines the manual orchestration execution mode for workflows, explaining why Task tool is avoided and how to execute workflows with persistent file changes
+description: Defines execution modes for workflows — Agent Delegation (preferred) and Manual Orchestration (fallback) — explaining how to use the Agent tool for subagent invocation and when to fall back to direct execution
 category: explanation
 subcategory: workflows
 tags:
@@ -9,26 +9,90 @@ tags:
   - orchestration
   - conventions
 created: 2026-01-05
-updated: 2026-01-13
+updated: 2026-03-24
 ---
 
 # Workflow Execution Mode Convention
 
 ## Overview
 
-This convention defines the execution mode for workflows in this repository: **Manual Orchestration**. Understanding this mode is essential for executing workflows that require persistent file changes.
+This convention defines the execution modes for workflows in this repository: **Agent Delegation** (preferred) and **Manual Orchestration** (fallback). Understanding both modes is essential for executing workflows that require persistent file changes.
 
 ## The Core Challenge
 
-Workflows orchestrate multiple agents (checker → fixer → checker loops, etc.) to achieve quality outcomes. However, current Task tool implementation runs agents in **isolated contexts** where file modifications (Write, Edit) don't persist to the actual filesystem.
+Workflows orchestrate multiple agents (checker → fixer → checker loops, etc.) to achieve quality outcomes. File changes must persist to the actual filesystem for workflow outcomes to be durable.
 
-**Solution**: Manual orchestration mode executes workflow logic directly in the main context using Read/Write/Edit tools, ensuring all file changes persist to the actual filesystem.
+**Two solutions exist**:
 
-## Manual Orchestration Mode
+- **Agent Delegation** (preferred): Use the Agent tool with `subagent_type` to invoke specialized agents. Agent tool subagents persist file changes to the actual filesystem.
+- **Manual Orchestration** (fallback): Execute workflow logic directly in the main context using Read/Write/Edit tools when agents are not available as defined subagent types.
 
-### Description
+## Execution Modes
 
-User or AI assistant (OpenCode) follows workflow steps directly using tools in main context.
+### Agent Delegation Mode (Preferred)
+
+#### Description
+
+Invoke specialized agents via the Agent tool with `subagent_type` when the workflow references agents that exist as defined subagent types.
+
+**Characteristics**:
+
+- Specialized agents execute in dedicated subagent contexts
+- File changes persist to the actual filesystem
+- Agents bring their full specialized knowledge and validation rules
+- Agent tool subagents are distinct from the Task tool: file changes DO persist
+- SHOULD be used when the workflow's checker/fixer agents exist as defined subagent types
+
+#### When to Use Agent Delegation
+
+- PASS: Workflow step references a named agent (e.g., `plan-checker`, `repo-governance-fixer`)
+- PASS: That agent exists as a defined subagent_type in `.claude/agents/`
+- PASS: The step requires persistent file changes (audit reports, fixes)
+- PASS: You want the agent's full specialized validation/fixing logic applied
+
+#### Example Usage
+
+```
+User: "Run plan quality gate workflow for plans/backlog/my-plan/"
+AI: [Invokes plan-checker via Agent tool]
+1. Agent tool invokes plan-checker subagent
+   → plan-checker reads plan files, validates, writes audit report to generated-reports/
+   → audit report persists on filesystem
+2. Agent tool invokes plan-fixer subagent with audit report path
+   → plan-fixer reads audit, applies fixes to plan files, writes fix report
+   → fixes and fix report persist on filesystem
+3. Repeat until zero findings
+4. Show git status with modified files
+5. Wait for user commit approval
+```
+
+#### Agent Delegation Pattern
+
+When a workflow step references an agent, invoke it via the Agent tool:
+
+```
+Agent tool invocation:
+  subagent_type: plan-checker
+  prompt: "Validate plans/backlog/my-plan/ and write audit report"
+
+Agent tool invocation:
+  subagent_type: plan-fixer
+  prompt: "Apply fixes from generated-reports/plan__abc123__2026-03-24--10-00__audit.md"
+```
+
+#### Expected Behavior
+
+- Real audit reports created in `generated-reports/`
+- Real fixes applied to target files
+- Real fix reports documenting changes
+- Changes visible in `git status`
+- User can commit changes when satisfied
+
+### Manual Orchestration Mode (Fallback)
+
+#### Description
+
+User or AI assistant follows workflow steps directly using tools in main context when agents are not available as defined subagent types.
 
 **Characteristics**:
 
@@ -38,7 +102,14 @@ User or AI assistant (OpenCode) follows workflow steps directly using tools in m
 - Step-by-step execution with visibility at each stage
 - File changes persist to actual filesystem
 
-### Example Usage
+#### When to Use Manual Orchestration
+
+- PASS: Workflow agents are not available as defined subagent types
+- PASS: You want step-by-step visibility and granular control
+- PASS: You want to review changes between each step
+- PASS: Agent delegation is unavailable or fails
+
+#### Example Usage
 
 ```
 User: "Run plan quality gate workflow for plans/backlog/my-plan/ in manual mode"
@@ -52,30 +123,7 @@ AI: [Executes workflow steps directly]
 7. Iterates until zero findings
 ```
 
-### Expected Behavior
-
-- Real audit reports created in `generated-reports/`
-- Real fixes applied to plan files
-- Real fix reports documenting changes
-- Changes visible in `git status`
-- User can commit changes when satisfied
-
-### Use Manual Mode When
-
-- PASS: Workflow requires persistent file changes (Write, Edit operations)
-- PASS: You want step-by-step visibility and control
-- PASS: You want to review changes before continuing
-- PASS: Workflow involves validation and fixing cycles
-- PASS: You need real audit/fix reports in generated-reports/
-
-**Examples**:
-
-- Plan quality gate workflow
-- Content quality workflows (docs-checker → docs-fixer)
-- README quality workflow
-- Repository rules validation and fixing
-
-### Use Task Tool (Isolated) When
+#### Use Task Tool (Isolated) When
 
 - PASS: Agent only reads and analyzes (no file modifications needed)
 - PASS: Exploratory research and recommendations
@@ -88,6 +136,16 @@ AI: [Executes workflow steps directly]
 - Research tasks (web search + analysis)
 - Answering questions about codebase
 - Planning without implementation
+
+## Execution Mode Decision Flow
+
+```
+Workflow step references a named agent?
+├── YES → Agent exists as defined subagent_type in .claude/agents/?
+│   ├── YES → Use Agent Delegation (preferred)
+│   └── NO  → Use Manual Orchestration (fallback)
+└── NO  → Use Manual Orchestration
+```
 
 ## Manual Mode Execution Pattern
 
@@ -168,25 +226,24 @@ Every workflow should include an "Execution Mode" section:
 
 ## Execution Mode
 
-**Current Mode**: Manual Orchestration
+**Preferred Mode**: Agent Delegation — invoke `{checker-agent}` and `{fixer-agent}` via the
+Agent tool with `subagent_type` when these agents exist as defined subagent types.
 
-This workflow is executed through manual orchestration where the AI assistant (OpenCode) follows workflow steps directly using Read/Write/Edit tools.
+**Fallback Mode**: Manual Orchestration — execute workflow logic directly using
+Read/Write/Edit tools when Agent Delegation is unavailable.
 
 **How to Execute**:
 
 ```
-User: "Run my-workflow for [scope] in manual mode"
+User: "Run my-workflow for [scope]"
 ```
 
-The AI will execute the workflow steps directly with full file persistence.
+The AI will invoke specialized agents via the Agent tool. If agents are unavailable as
+subagent types, it will fall back to executing the workflow steps directly.
 
 ## Steps
 
 [Workflow steps as usual...]
-
-```
-
-```
 ````
 
 ## Future Considerations
@@ -195,7 +252,7 @@ The AI will execute the workflow steps directly with full file persistence.
 
 In the future, a workflow runner could be developed to automate workflow execution:
 
-- Execute workflows in main context with full tool access
+- Execute workflows with full tool access
 - Manage iteration state and termination criteria
 - Aggregate reports and provide summaries
 - Reduce manual effort for repetitive workflows
@@ -211,7 +268,16 @@ In the future, a workflow runner could be developed to automate workflow executi
 
 ## Tool Usage Rules
 
-### For AI Assistant in Manual Mode (OpenCode)
+### For AI Assistant Using Agent Delegation
+
+**Agent Invocation**:
+
+- PASS: Use the Agent tool with `subagent_type` matching the workflow's named agent
+- PASS: Pass the relevant scope, report paths, and mode parameters in the prompt
+- PASS: File operations performed by the subagent persist to the actual filesystem
+- PASS: Collect subagent outputs (report paths) to pass to subsequent steps
+
+### For AI Assistant in Manual Mode
 
 **File Operations** (when executing workflow logic directly):
 
@@ -220,40 +286,46 @@ In the future, a workflow runner could be developed to automate workflow executi
 - PASS: Use Bash tool for UUID generation, timestamps
 - PASS: All operations persist to actual filesystem
 
-**Agent Invocation** (during workflow execution):
-
-- PASS: Execute agent logic directly in main context
-- PASS: Follow agent's validation/fixing rules manually
-
 ## Common Pitfalls
 
-### FAIL: Pitfall 1: Using Task tool for workflows requiring persistence
+### FAIL: Pitfall 1: Confusing Agent tool and Task tool
+
+**Important distinction**:
+
+- **Agent tool** (`subagent_type`): Subagent runs with file system access — Write/Edit changes **DO persist**
+- **Task tool**: Agent runs in isolated context — Write/Edit changes **do NOT persist**
+
+```
+Agent tool (correct for workflows requiring persistence):
+  subagent_type: plan-checker → writes audit report → PERSISTS
+
+Task tool (wrong for workflows requiring persistence):
+  Task(plan-checker) → isolated context → audit report does NOT persist
+```
+
+### FAIL: Pitfall 2: Using Manual Orchestration when Agent Delegation is available
 
 **Wrong**:
 
 ```
-
-Task(plan-checker) → isolated context → audit report doesn't persist
-Task(plan-fixer) → isolated context → fixes don't persist
-
+Execute checker logic directly in main context
+Execute fixer logic directly in main context
 ```
 
-**Right**:
+**Right** (when agents exist as subagent types):
 
 ```
-
-Execute checker logic directly → audit report persists
-Execute fixer logic directly → fixes persist
-
+Agent tool invokes plan-checker subagent → audit report persists
+Agent tool invokes plan-fixer subagent → fixes persist
 ```
 
-### FAIL: Pitfall 2: Expecting automated iteration in manual mode
+### FAIL: Pitfall 3: Expecting automated iteration in manual mode
 
 **Wrong**: Assume workflow will iterate automatically until zero findings
 
 **Right**: Manually control iteration, review between cycles
 
-### FAIL: Pitfall 3: Not checking git status after manual workflow
+### FAIL: Pitfall 4: Not checking git status after workflow
 
 **Wrong**: Assume changes didn't happen because no visual feedback
 
@@ -262,9 +334,10 @@ Execute fixer logic directly → fixes persist
 ## Principles Implemented/Respected
 
 - PASS: **Explicit Over Implicit**: Clear description of execution mode behavior
-- PASS: **Simplicity Over Complexity**: Manual mode is simple and transparent
+- PASS: **Simplicity Over Complexity**: Two clearly defined modes with explicit decision flow
 - PASS: **Documentation First**: Document current reality, not ideal future state
 - PASS: **No Time Estimates**: Focus on what to do, not how long it takes
+- PASS: **Automation Over Manual**: Agent Delegation preferred over manual execution
 
 ## Conventions Implemented/Respected
 
@@ -275,10 +348,10 @@ Execute fixer logic directly → fixes persist
 ## Related Documentation
 
 - [Workflow Pattern Convention](./workflow-identifier.md) - Overall workflow structure
-- [Plan Quality Gate Workflow](../docs/quality-gate.md) - Example workflow using manual mode
+- [Plan Quality Gate Workflow](../plan/plan-quality-gate.md) - Example workflow using agent delegation
 - [AI Agents Convention](../../development/agents/ai-agents.md) - Agent invocation patterns
 - [Maker-Checker-Fixer Pattern](../../development/pattern/maker-checker-fixer.md) - Validation workflow pattern
 
 ---
 
-**Last Updated**: 2026-01-13
+**Last Updated**: 2026-03-24

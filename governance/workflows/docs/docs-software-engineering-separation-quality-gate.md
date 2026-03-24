@@ -57,25 +57,38 @@ This workflow validates **ONLY** explicit relationships listed in the Software D
 
 ## Execution Mode
 
-**Current Mode**: Manual Orchestration (see [Workflow Execution Modes Convention](../meta/execution-modes.md))
+**Preferred Mode**: Agent Delegation — invoke `docs-software-engineering-separation-checker`
+and `docs-software-engineering-separation-fixer` via the Agent tool with `subagent_type`
+(see [Workflow Execution Modes Convention](../meta/execution-modes.md)).
 
-This workflow is currently executed through **manual orchestration** where the AI assistant follows workflow steps directly using Read/Write/Edit tools. File changes persist to the actual filesystem.
+**Fallback Mode**: Manual Orchestration — execute workflow logic directly using
+Read/Write/Edit tools when Agent Delegation is unavailable.
+
+The Agent tool runs subagents that persist file changes to the actual filesystem, making it
+the preferred approach when these agents exist as defined subagent types.
 
 **How to Execute**:
+
+```
+User: "Run docs software engineering separation quality gate workflow"
+```
+
+The AI will:
+
+1. Invoke `docs-software-engineering-separation-checker` via the Agent tool (reads files, writes audit)
+2. Invoke `docs-software-engineering-separation-fixer` via the Agent tool (reads audit, applies fixes, writes fix report)
+3. Iterate until zero findings achieved
+4. Show git status with modified files
+5. Wait for user commit approval
+
+**Fallback (Manual Mode)**:
 
 ```
 User: "Run docs software engineering separation quality gate workflow in manual mode"
 ```
 
-The AI will:
-
-1. Execute docs-software-engineering-separation-checker logic directly (read, validate, write audit)
-2. Execute docs-software-engineering-separation-fixer logic directly (read audit, apply fixes, write fix report)
-3. Iterate until zero findings achieved
-4. Show git status with modified files
-5. Wait for user commit approval
-
-**Why Manual Mode?**: Task tool runs agents in isolated contexts where file changes don't persist. Manual orchestration ensures audit reports and fixes are actually written to the filesystem.
+The AI executes checker and fixer logic directly using Read/Write/Edit tools in the main
+context — use this when agent delegation is unavailable.
 
 ## Steps
 
@@ -192,22 +205,22 @@ Report final status and summary.
 ### Validate All Explicit Relationships
 
 ```
-User: "Run docs software engineering separation quality gate workflow for all in manual mode"
+User: "Run docs software engineering separation quality gate workflow for all"
 ```
 
-The AI will execute the workflow directly:
+The AI will invoke specialized agents via the Agent tool:
 
-- Validate all explicit relationships (Java, Golang, Elixir, Spring, Spring Boot)
-- Apply separation fixes
+- Validate all explicit relationships (Java, Golang, Elixir, Spring, Spring Boot) (`docs-software-engineering-separation-checker` subagent)
+- Apply separation fixes (`docs-software-engineering-separation-fixer` subagent)
 - Iterate until zero findings achieved
 
 ### Validate Specific Language
 
 ```
-User: "Run docs software engineering separation quality gate workflow for programming-languages/java in manual mode"
+User: "Run docs software engineering separation quality gate workflow for programming-languages/java"
 ```
 
-The AI will execute with scoped validation:
+The AI will invoke agents with scoped validation:
 
 - Validate only Java documentation separation
 - Fix issues in Java docs only
@@ -216,10 +229,10 @@ The AI will execute with scoped validation:
 ### Validate Specific Framework
 
 ```
-User: "Run docs software engineering separation quality gate workflow for platform-web/tools/jvm-spring-boot in manual mode"
+User: "Run docs software engineering separation quality gate workflow for platform-web/tools/jvm-spring-boot"
 ```
 
-The AI will execute with framework scope:
+The AI will invoke agents with framework scope:
 
 - Validate only Spring Boot documentation separation
 - Fix issues in Spring Boot docs
@@ -231,7 +244,7 @@ The AI will execute with framework scope:
 User: "Run docs software engineering separation quality gate workflow with min-iterations=2 and max-iterations=10"
 ```
 
-The AI will execute with iteration controls:
+The AI will invoke agents with iteration controls:
 
 - Require at least 2 check-fix cycles
 - Cap at maximum 10 iterations

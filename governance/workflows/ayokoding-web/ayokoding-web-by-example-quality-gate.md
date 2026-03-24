@@ -76,26 +76,41 @@ This workflow implements the **Maker-Checker-Fixer pattern** to ensure by-exampl
 
 ## Execution Mode
 
-**Current Mode**: Manual Orchestration (see [Workflow Execution Modes Convention](../meta/execution-modes.md))
+**Preferred Mode**: Agent Delegation — invoke `apps-ayokoding-web-by-example-checker` and
+`apps-ayokoding-web-by-example-fixer` via the Agent tool with `subagent_type`
+(see [Workflow Execution Modes Convention](../meta/execution-modes.md)).
 
-This workflow is currently executed through **manual orchestration** where the AI assistant (Claude Code or OpenCode) follows workflow steps directly using Read/Write/Edit tools. File changes persist to the actual filesystem.
+**Fallback Mode**: Manual Orchestration — execute workflow logic directly using
+Read/Write/Edit tools when Agent Delegation is unavailable.
+
+The Agent tool runs subagents that persist file changes to the actual filesystem, making it
+the preferred approach when these agents exist as defined subagent types. Note: this workflow
+includes a manual user review step (step 3) — agent delegation applies to the checker and
+fixer steps, not the human decision point.
 
 **How to Execute**:
+
+```
+User: "Run ayokoding-web by-example quality gate workflow for golang/tutorials/by-example/"
+```
+
+The AI will:
+
+1. Invoke `apps-ayokoding-web-by-example-checker` via the Agent tool (validates tutorial, writes audit)
+2. User reviews audit report and decides on fixes (manual decision point)
+3. Invoke `apps-ayokoding-web-by-example-fixer` via the Agent tool (reads audit, applies fixes, writes fix report)
+4. Iterate until EXCELLENT status achieved (zero findings, 75-85 examples, 95% coverage)
+5. Show git status with modified files
+6. Wait for user commit approval
+
+**Fallback (Manual Mode)**:
 
 ```
 User: "Run ayokoding-web by-example quality gate workflow for golang/tutorials/by-example/ in manual mode"
 ```
 
-The AI will:
-
-1. Execute apps\_\_ayokoding-web\_\_by-example-checker logic directly (validate tutorial, write audit)
-2. User reviews audit report and decides on fixes (manual decision point)
-3. Execute apps\_\_ayokoding-web\_\_by-example-fixer logic directly (read audit, apply fixes, write fix report)
-4. Iterate until EXCELLENT status achieved (zero findings, 75-85 examples, 95% coverage)
-5. Show git status with modified files
-6. Wait for user commit approval
-
-**Why Manual Mode?**: Task tool runs agents in isolated contexts where file changes don't persist. Manual orchestration ensures audit reports and tutorial fixes are actually written to the filesystem. This workflow also includes manual decision points (user review step) unlike fully automated workflows.
+The AI executes checker and fixer logic directly using Read/Write/Edit tools in the main
+context — use this when agent delegation is unavailable.
 
 ## Workflow Overview
 
@@ -672,21 +687,21 @@ User: "Run ayokoding-web by-example quality gate workflow for java/tutorials/by-
 
 ## Workflow Invocation
 
-### Manual Orchestration (Current)
+### Agent Delegation (Preferred)
 
 **User triggers workflow execution**:
 
 ```
-User: "Run ayokoding-web by-example quality gate workflow for golang/tutorials/by-example/ in manual mode"
+User: "Run ayokoding-web by-example quality gate workflow for golang/tutorials/by-example/"
 ```
 
 **AI orchestrates all phases**:
 
 1. **Create content** (if needed): User writes examples or uses maker agent
-2. **Validate**: Execute apps-ayokoding-web-by-example-checker logic directly
+2. **Validate**: Invoke `apps-ayokoding-web-by-example-checker` via Agent tool
 3. **Review**: User reads audit report from generated-reports/
-4. **Fix**: Execute apps-ayokoding-web-by-example-fixer logic directly
-5. **Re-validate**: Execute checker logic again
+4. **Fix**: Invoke `apps-ayokoding-web-by-example-fixer` via Agent tool
+5. **Re-validate**: Invoke checker via Agent tool again
 6. **Iterate**: Repeat validation-fixing until clean or max-iterations
 
 **With parameters**:
@@ -695,7 +710,7 @@ User: "Run ayokoding-web by-example quality gate workflow for golang/tutorials/b
 User: "Run ayokoding-web by-example quality gate workflow for golang/tutorials/by-example/ in strict mode with max-iterations=10"
 ```
 
-The AI applies mode-based fixing and iteration limits during execution.
+The AI invokes agents with mode-based fixing and iteration limits.
 
 ## Safety Features
 

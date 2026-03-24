@@ -10,7 +10,7 @@ tags:
   - patterns
   - conventions
 created: 2025-12-23
-updated: 2025-12-29
+updated: 2026-03-24
 ---
 
 # Workflow Pattern Convention
@@ -707,27 +707,33 @@ outputs:
 
 ## Execution Mode
 
-**Current Mode**: Manual Orchestration
+**Preferred Mode**: Agent Delegation — invoke `{input.content-type}-checker` and
+`{input.content-type}-fixer` via the Agent tool with `subagent_type` when these
+agents exist as defined subagent types.
+
+**Fallback Mode**: Manual Orchestration — execute workflow logic directly using
+Read/Write/Edit tools when Agent Delegation is unavailable.
 ```
 
 User: "Run content validation workflow for [scope] in [mode] mode"
 
 ```
 
-The AI (Claude Code or OpenCode) will execute workflow logic directly using Read/Write/Edit tools.
+The AI invokes specialized agents via the Agent tool. If agents are unavailable as
+subagent types, it falls back to executing workflow logic directly.
 
 ## Steps
 
 ### 1. Validate Content (Sequential)
 
-**Agent logic**: `{input.content-type}-checker`
+**Agent**: `{input.content-type}-checker`
 
 - Validate content in scope
 - Generate audit report in generated-reports/
 
 ### 2. Apply Fixes (Sequential)
 
-**Agent logic**: `{input.content-type}-fixer`
+**Agent**: `{input.content-type}-fixer`
 
 - Read audit report from step 1
 - Apply fixes based on mode level

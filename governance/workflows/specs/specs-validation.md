@@ -75,10 +75,15 @@ This workflow validates **specification files only** in listed folders. It does 
 
 ## Execution Mode
 
-**Current Mode**: Manual Orchestration (see [Workflow Execution Modes Convention](../meta/execution-modes.md))
+**Preferred Mode**: Agent Delegation — invoke `specs-checker` and `specs-fixer` via the
+Agent tool with `subagent_type`
+(see [Workflow Execution Modes Convention](../meta/execution-modes.md)).
 
-This workflow is executed through **manual orchestration** where the AI assistant follows
-workflow steps directly using Read/Write/Edit tools. File changes persist to the actual filesystem.
+**Fallback Mode**: Manual Orchestration — execute workflow logic directly using
+Read/Write/Edit tools when Agent Delegation is unavailable.
+
+The Agent tool runs subagents that persist file changes to the actual filesystem, making it
+the preferred approach when these agents exist as defined subagent types.
 
 **How to Execute**:
 
@@ -90,15 +95,21 @@ User: "Run specs validation for specs/apps/demo/be, specs/apps/demo/fe, specs/ap
 
 The AI will:
 
-1. Execute specs-checker logic for the listed folders (read, validate, write audit)
+1. Invoke `specs-checker` via the Agent tool for the listed folders (reads, validates, writes audit)
 2. Check cross-folder consistency if 2+ folders listed
-3. Execute specs-fixer logic (read audit, apply fixes within listed folders only)
+3. Invoke `specs-fixer` via the Agent tool (reads audit, applies fixes within listed folders only)
 4. Iterate until zero findings achieved at the configured threshold
 5. Show git status with modified files
 6. Wait for user commit approval
 
-**Why Manual Mode?**: Task tool runs agents in isolated contexts where file changes don't
-persist. Manual orchestration ensures audit reports and fixes are written to the filesystem.
+**Fallback (Manual Mode)**:
+
+```
+User: "Run specs validation for specs/apps/demo/be in manual mode"
+```
+
+The AI executes checker and fixer logic directly using Read/Write/Edit tools in the main
+context — use this when agent delegation is unavailable.
 
 ## Validation Dimensions
 

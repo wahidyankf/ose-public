@@ -41,25 +41,37 @@ outputs:
 
 ## Execution Mode
 
-**Current Mode**: Manual Orchestration (see [Workflow Execution Modes Convention](../meta/execution-modes.md))
+**Preferred Mode**: Agent Delegation — invoke `plan-checker` and `plan-fixer` via the Agent
+tool with `subagent_type` (see [Workflow Execution Modes Convention](../meta/execution-modes.md)).
 
-This workflow is currently executed through **manual orchestration** where the AI assistant (Claude Code or OpenCode) follows workflow steps directly using Read/Write/Edit tools. File changes persist to the actual filesystem.
+**Fallback Mode**: Manual Orchestration — execute workflow logic directly using
+Read/Write/Edit tools when Agent Delegation is unavailable.
+
+The Agent tool runs subagents that persist file changes to the actual filesystem, making it
+the preferred approach when these agents exist as defined subagent types.
 
 **How to Execute**:
+
+```
+User: "Run plan quality gate workflow for plans/backlog/my-plan/"
+```
+
+The AI will:
+
+1. Invoke `plan-checker` via the Agent tool (reads plan files, writes audit report)
+2. Invoke `plan-fixer` via the Agent tool (reads audit, applies fixes, writes fix report)
+3. Iterate until zero findings achieved
+4. Show git status with modified files
+5. Wait for user commit approval
+
+**Fallback (Manual Mode)**:
 
 ```
 User: "Run plan quality gate workflow for plans/backlog/my-plan/ in manual mode"
 ```
 
-The AI will:
-
-1. Execute plan-checker logic directly (read, validate, write audit)
-2. Execute plan-fixer logic directly (read audit, apply fixes, write fix report)
-3. Iterate until zero findings achieved
-4. Show git status with modified files
-5. Wait for user commit approval
-
-**Why Manual Mode?**: Task tool runs agents in isolated contexts where file changes don't persist. Manual orchestration ensures audit reports and fixes are actually written to the filesystem.
+The AI executes checker and fixer logic directly using Read/Write/Edit tools in the main
+context — use this when agent delegation is unavailable.
 
 **When to use**:
 
@@ -182,22 +194,22 @@ Report final status and summary.
 ### Validate All Plans
 
 ```
-User: "Run plan quality gate workflow for all plans in manual mode"
+User: "Run plan quality gate workflow for all plans"
 ```
 
-The AI will execute the workflow directly:
+The AI will invoke `plan-checker` and `plan-fixer` via the Agent tool:
 
-- Validate all plan files (plan-checker logic)
-- Apply all fixes (plan-fixer logic)
+- Validate all plan files (`plan-checker` subagent)
+- Apply all fixes (`plan-fixer` subagent)
 - Iterate until zero findings achieved
 
 ### Validate Specific Plan Folder
 
 ```
-User: "Run plan quality gate workflow for plans/in-progress/ in manual mode"
+User: "Run plan quality gate workflow for plans/in-progress/"
 ```
 
-The AI will execute with scoped validation:
+The AI will invoke agents with scoped validation:
 
 - Validate only in-progress plans
 - Fix issues in those plans only
@@ -206,10 +218,10 @@ The AI will execute with scoped validation:
 ### Validate Single Plan
 
 ```
-User: "Run plan quality gate workflow for plans/in-progress/2025-01-15__new-feature/plan.md in manual mode"
+User: "Run plan quality gate workflow for plans/in-progress/2025-01-15__new-feature/plan.md"
 ```
 
-The AI will execute with single-file scope:
+The AI will invoke agents with single-file scope:
 
 - Validate specific plan file only
 - Fix issues in that file
@@ -221,7 +233,7 @@ The AI will execute with single-file scope:
 User: "Run plan quality gate workflow for all plans with min-iterations=2 and max-iterations=10"
 ```
 
-The AI will execute with iteration controls:
+The AI will invoke agents with iteration controls:
 
 - Require at least 2 check-fix cycles
 - Cap at maximum 10 iterations

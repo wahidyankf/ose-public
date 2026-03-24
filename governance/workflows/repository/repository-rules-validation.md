@@ -63,25 +63,38 @@ This workflow validates **source definitions only** in `governance/`. It does NO
 
 ## Execution Mode
 
-**Current Mode**: Manual Orchestration (see [Workflow Execution Modes Convention](../meta/execution-modes.md))
+**Preferred Mode**: Agent Delegation — invoke `repo-governance-checker` and
+`repo-governance-fixer` via the Agent tool with `subagent_type`
+(see [Workflow Execution Modes Convention](../meta/execution-modes.md)).
 
-This workflow is currently executed through **manual orchestration** where the AI assistant follows workflow steps directly using Read/Write/Edit tools. File changes persist to the actual filesystem.
+**Fallback Mode**: Manual Orchestration — execute workflow logic directly using
+Read/Write/Edit tools when Agent Delegation is unavailable.
+
+The Agent tool runs subagents that persist file changes to the actual filesystem, making it
+the preferred approach when these agents exist as defined subagent types.
 
 **How to Execute**:
+
+```
+User: "Run repository rules quality gate workflow in normal mode"
+```
+
+The AI will:
+
+1. Invoke `repo-governance-checker` via the Agent tool (reads governance files, writes audit)
+2. Invoke `repo-governance-fixer` via the Agent tool (reads audit, applies fixes, writes fix report)
+3. Iterate until zero findings achieved
+4. Show git status with modified files
+5. Wait for user commit approval
+
+**Fallback (Manual Mode)**:
 
 ```
 User: "Run repository rules quality gate workflow in manual mode"
 ```
 
-The AI will:
-
-1. Execute repo-governance-checker logic directly (read, validate, write audit)
-2. Execute repo-governance-fixer logic directly (read audit, apply fixes, write fix report)
-3. Iterate until zero findings achieved
-4. Show git status with modified files
-5. Wait for user commit approval
-
-**Why Manual Mode?**: Task tool runs agents in isolated contexts where file changes don't persist. Manual orchestration ensures audit reports and fixes are actually written to the filesystem.
+The AI executes checker and fixer logic directly using Read/Write/Edit tools in the main
+context — use this when agent delegation is unavailable.
 
 ## Steps
 
@@ -233,16 +246,16 @@ Report final status and summary.
 
 ## Example Usage
 
-### Standard Manual Invocation (Normal Strictness)
+### Standard Invocation (Normal Strictness)
 
 ```
 User: "Run repository rules quality gate workflow in normal mode"
 ```
 
-The AI will execute the workflow directly:
+The AI will invoke specialized agents via the Agent tool:
 
-- Validate repository consistency (checker logic)
-- Apply fixes for CRITICAL/HIGH findings (fixer logic)
+- Validate repository consistency (`repo-governance-checker` subagent)
+- Apply fixes for CRITICAL/HIGH findings (`repo-governance-fixer` subagent)
 - Iterate until zero CRITICAL/HIGH findings achieved
 - Report MEDIUM/LOW findings without fixing them
 
@@ -252,7 +265,7 @@ The AI will execute the workflow directly:
 User: "Run repository rules quality gate workflow in strict mode"
 ```
 
-The AI will execute with stricter criteria:
+The AI will invoke agents with stricter criteria:
 
 - Fix CRITICAL/HIGH/MEDIUM findings
 - Report LOW findings without fixing them
@@ -264,7 +277,7 @@ The AI will execute with stricter criteria:
 User: "Run repository rules quality gate workflow in ocd mode"
 ```
 
-The AI will execute with zero-tolerance criteria:
+The AI will invoke agents with zero-tolerance criteria:
 
 - Fix ALL findings (CRITICAL, HIGH, MEDIUM, LOW)
 - Iterate until zero findings at all levels
@@ -276,7 +289,7 @@ The AI will execute with zero-tolerance criteria:
 User: "Run repository rules quality gate workflow in normal mode with min-iterations=2 and max-iterations=10"
 ```
 
-The AI will execute with iteration controls:
+The AI will invoke agents with iteration controls:
 
 - Require at least 2 check-fix cycles
 - Cap at maximum 10 iterations to prevent infinite loops

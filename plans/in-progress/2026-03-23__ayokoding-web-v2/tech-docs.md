@@ -450,7 +450,7 @@ Markdown File (apps/ayokoding-web/content/en/learn/...)
   └─ unified pipeline:
        remark-parse (markdown → MDAST)
        → remark-gfm (tables, strikethrough)
-       → remark-math (LaTeX: $...$ inline, $$...$$ block — singleDollarTextMath default)
+       → remark-math (LaTeX: $...$ inline, $$...$$ block — set singleDollarTextMath: true explicitly)
        → custom remark plugin (Hugo shortcodes → custom nodes)
        → remark-rehype (MDAST → HAST — with allowDangerousHtml: true)
        → rehype-raw (parses raw HTML strings into proper HAST nodes)
@@ -813,43 +813,43 @@ the `unknown → typed` boundary at runtime (frontmatter parsing, tRPC inputs).
 
 ## Design Decisions
 
-| Decision            | Choice                                       | Reason                                                                                                                                                             |
-| ------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| App type            | Fullstack (fs)                               | Content API + UI in one app                                                                                                                                        |
-| Framework           | Next.js 16 (App Router)                      | Proven fullstack, existing team experience                                                                                                                         |
-| API layer           | tRPC v11                                     | Type-safe end-to-end, native Zod + React Query integration                                                                                                         |
-| Validation          | Zod                                          | tRPC native, frontmatter validation, input/output schemas                                                                                                          |
-| Content rendering   | React Server Components (RSC)                | SEO: full HTML for crawlers, no client JS needed                                                                                                                   |
-| Data fetching       | tRPC server caller + React Query             | Server-side for content (SEO); client-side for search only                                                                                                         |
-| UI components       | shadcn/ui (Radix + Tailwind)                 | Accessible, customizable, no vendor lock-in                                                                                                                        |
-| Content source      | Flat markdown files                          | Same as Hugo, no migration needed, no database                                                                                                                     |
-| Markdown parser     | unified (remark + rehype)                    | Extensible, server-side, plugin ecosystem                                                                                                                          |
-| Syntax highlighting | shiki ^1.x (via rehype-pretty-code)          | Server-side; pin to 1.x for stability (rehype-pretty-code v0.14.1+ supports 2.x/3.x, but upgrade pending testing)                                                  |
-| Raw HTML            | rehype-raw + allowDangerousHtml              | 1,343 raw HTML occurrences in content; required for Hugo parity                                                                                                    |
-| Math                | KaTeX (via rehype-katex)                     | $/$$ delimiters only (no \(\)/\[\] — not used in content)                                                                                                          |
-| Diagrams            | Mermaid (client-side)                        | Same as Hugo site, dynamic rendering                                                                                                                               |
-| Search              | FlexSearch (in-memory)                       | Same as Hugo Hextra; ~200ms cold start to rebuild index (estimated — see below)                                                                                    |
-| Analytics           | GA4 via @next/third-parties                  | Same measurement ID (G-1NHDR7S3GV) as Hugo site                                                                                                                    |
-| RSS                 | Route handler (`app/feed.xml/route.ts`)      | Hugo outputs RSS for home + sections; preserve for subscribers                                                                                                     |
-| Theme               | next-themes                                  | Dark/light/system toggle with SSR flash prevention                                                                                                                 |
-| robots.txt          | Generated (`app/robots.ts`)                  | Dynamic sitemap URL; Hugo's static copy hardcodes domain. No `public/robots.txt` — avoids any conflict with `app/robots.ts`                                        |
-| File tracing        | outputFileTracingIncludes                    | @vercel/nft can't trace dynamic fs.readFile; standalone needs this                                                                                                 |
-| i18n                | [locale] route segment                       | Next.js native, no extra library                                                                                                                                   |
-| CSS                 | Tailwind CSS v4                              | shadcn/ui requirement, utility-first                                                                                                                               |
-| Typography          | @tailwindcss/typography                      | `prose` classes for rendered markdown; `@plugin` in globals.css                                                                                                    |
-| HTML-to-React       | html-react-parser                            | Component mapping + next/link replacement from HTML strings                                                                                                        |
-| Locale validation   | `hasLocale()` + `notFound()`                 | Official Next.js i18n pattern; rejects invalid `[locale]` values                                                                                                   |
-| Canonical URLs      | `alternates.canonical` in `generateMetadata` | Next.js does not auto-set canonical; required for SEO                                                                                                              |
-| Port                | 3101                                         | Adjacent to current Hugo site (3100)                                                                                                                               |
-| Coverage            | Vitest v8 + rhino-cli 80%                    | BE+FE blend: backends 90%, frontends 70%, fullstack 80%                                                                                                            |
-| Linter              | oxlint                                       | Same as other TypeScript apps                                                                                                                                      |
-| BDD (unit)          | @amiceli/vitest-cucumber                     | Same as demo-fs-ts-nextjs                                                                                                                                          |
-| BDD (integration)   | @cucumber/cucumber                           | Integration tests run outside Vitest (real filesystem, not mocked) — plain cucumber-js is the appropriate runner, same as demo-be backend integration test pattern |
-| Docker              | Multi-stage, no DB                           | Local dev + CI E2E (standalone + outputFileTracingRoot)                                                                                                            |
-| Deployment          | Vercel                                       | Same as ayokoding-web + organiclever-web                                                                                                                           |
-| Prod branch         | `prod-ayokoding-web-v2`                      | Vercel listens for pushes (never commit directly)                                                                                                                  |
-| Route architecture  | Route groups `(content)` + `(app)`           | Content isolated; future fullstack routes added without restructure                                                                                                |
-| ISR strategy        | On-demand ISR (no `generateStaticParams`)    | Scales to thousands of pages without slow builds                                                                                                                   |
+| Decision            | Choice                                              | Reason                                                                                                                                                             |
+| ------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| App type            | Fullstack (fs)                                      | Content API + UI in one app                                                                                                                                        |
+| Framework           | Next.js 16 (App Router)                             | Proven fullstack, existing team experience                                                                                                                         |
+| API layer           | tRPC v11                                            | Type-safe end-to-end, native Zod + React Query integration                                                                                                         |
+| Validation          | Zod                                                 | tRPC native, frontmatter validation, input/output schemas                                                                                                          |
+| Content rendering   | React Server Components (RSC)                       | SEO: full HTML for crawlers, no client JS needed                                                                                                                   |
+| Data fetching       | tRPC server caller + React Query                    | Server-side for content (SEO); client-side for search only                                                                                                         |
+| UI components       | shadcn/ui (Radix + Tailwind)                        | Accessible, customizable, no vendor lock-in                                                                                                                        |
+| Content source      | Flat markdown files                                 | Same as Hugo, no migration needed, no database                                                                                                                     |
+| Markdown parser     | unified (remark + rehype)                           | Extensible, server-side, plugin ecosystem                                                                                                                          |
+| Syntax highlighting | shiki ^1.x (via rehype-pretty-code)                 | Server-side; start with 1.x (rehype-pretty-code peer dep); verify upgrade path to 2.x/3.x before pinning — v0.14.1+ supports both, but upgrade requires testing    |
+| Raw HTML            | rehype-raw + allowDangerousHtml                     | 1,343 raw HTML occurrences in content; required for Hugo parity                                                                                                    |
+| Math                | KaTeX (via rehype-katex)                            | $/$$ delimiters only (no \(\)/\[\] — not used in content)                                                                                                          |
+| Diagrams            | Mermaid (client-side)                               | Same as Hugo site, dynamic rendering                                                                                                                               |
+| Search              | FlexSearch (in-memory)                              | Same as Hugo Hextra; ~200ms cold start to rebuild index (estimated — see below)                                                                                    |
+| Analytics           | GA4 via @next/third-parties                         | Same measurement ID (G-1NHDR7S3GV) as Hugo site                                                                                                                    |
+| RSS                 | Route handler (`app/feed.xml/route.ts`)             | Hugo outputs RSS for home + sections; preserve for subscribers                                                                                                     |
+| Theme               | next-themes                                         | Dark/light/system toggle with SSR flash prevention                                                                                                                 |
+| robots.txt          | Generated (`app/robots.ts`)                         | Dynamic sitemap URL; Hugo's static copy hardcodes domain. No `public/robots.txt` — `app/robots.ts` is the source of truth; having both is untested behavior        |
+| File tracing        | outputFileTracingIncludes                           | @vercel/nft can't trace dynamic fs.readFile; standalone needs this                                                                                                 |
+| i18n                | [locale] route segment                              | Next.js native, no extra library                                                                                                                                   |
+| CSS                 | Tailwind CSS v4                                     | shadcn/ui requirement, utility-first                                                                                                                               |
+| Typography          | @tailwindcss/typography                             | `prose` classes for rendered markdown; `@plugin` in globals.css                                                                                                    |
+| HTML-to-React       | html-react-parser                                   | Component mapping + next/link replacement from HTML strings                                                                                                        |
+| Locale validation   | `SUPPORTED_LOCALES.includes(locale)` + `notFound()` | Custom check (no extra dependency); rejects invalid `[locale]` values like `/fr/` or `/xyz/`                                                                       |
+| Canonical URLs      | `alternates.canonical` in `generateMetadata`        | Next.js does not auto-set canonical; required for SEO                                                                                                              |
+| Port                | 3101                                                | Adjacent to current Hugo site (3100)                                                                                                                               |
+| Coverage            | Vitest v8 + rhino-cli 80%                           | BE+FE blend: backends 90%, frontends 70%, fullstack 80%                                                                                                            |
+| Linter              | oxlint                                              | Same as other TypeScript apps                                                                                                                                      |
+| BDD (unit)          | @amiceli/vitest-cucumber                            | Same as demo-fs-ts-nextjs                                                                                                                                          |
+| BDD (integration)   | @cucumber/cucumber                                  | Integration tests run outside Vitest (real filesystem, not mocked) — plain cucumber-js is the appropriate runner, same as demo-be backend integration test pattern |
+| Docker              | Multi-stage, no DB                                  | Local dev + CI E2E (standalone + outputFileTracingRoot)                                                                                                            |
+| Deployment          | Vercel                                              | Same as ayokoding-web + organiclever-web                                                                                                                           |
+| Prod branch         | `prod-ayokoding-web-v2`                             | Vercel listens for pushes (never commit directly)                                                                                                                  |
+| Route architecture  | Route groups `(content)` + `(app)`                  | Content isolated; future fullstack routes added without restructure                                                                                                |
+| ISR strategy        | On-demand ISR (no `generateStaticParams`)           | Scales to thousands of pages without slow builds                                                                                                                   |
 
 ### FlexSearch Cold Start on Vercel
 
@@ -868,7 +868,9 @@ notice it within the overall request latency.
 FlexSearch index to a JSON file at build time via FlexSearch's
 [export/import API](https://github.com/nextapps-de/flexsearch/blob/master/doc/export-import.md)
 and load from disk instead of scanning the filesystem. This is not needed at
-launch but documented here for future reference.
+launch but documented here for future reference. Note: FlexSearch v0.8.x (latest
+as of 2026) introduced significant API changes — verify the export/import API
+against v0.8 docs if implementing this optimization.
 
 ## Future Extensibility
 
@@ -1475,25 +1477,25 @@ JSON-LD structured data via `<script type="application/ld+json">` in layout.
 
 All dependencies have been verified via web search against latest releases and docs.
 
-| Package                    | Version | Status         | Notes                                                                                              |
-| -------------------------- | ------- | -------------- | -------------------------------------------------------------------------------------------------- |
-| Next.js                    | 16.2.1  | Stable         | Latest. Turbopack default, React 19.2                                                              |
-| tRPC                       | v11     | Stable         | `@trpc/tanstack-react-query` (NOT `@trpc/react-query`)                                             |
-| @tanstack/react-query      | ^5.62.8 | Stable         | Required by tRPC v11 TanStack integration                                                          |
-| Zod                        | ^3.x    | Stable         | Use v3 (tRPC v11 validated); v4 has breaking changes, migrate later                                |
-| shadcn/ui                  | CLI v4  | Stable         | `npx shadcn@latest init`. Tailwind v4 compatible                                                   |
-| Tailwind CSS               | v4      | Stable         | shadcn auto-detects version                                                                        |
-| shiki                      | ^1.x    | **Pin to 1.x** | pin to 1.x for stability; rehype-pretty-code v0.14.1+ supports 2.x/3.x via getSingletonHighlighter |
-| rehype-pretty-code         | 0.14.x  | Active         | Shiki 1.x (pinned); 2.x/3.x also supported since v0.14.1                                           |
-| FlexSearch                 | 0.8.x   | Active         | No SSR issues, Apache 2.0                                                                          |
-| gray-matter                | 4.0.3   | Active         | Industry standard (Gatsby, Astro, Netlify)                                                         |
-| remark-math + rehype-katex | Latest  | Active         | ESM-only, compatible with unified 6+                                                               |
-| next-themes                | Latest  | Active         | Requires `suppressHydrationWarning` on `<html>`                                                    |
-| @amiceli/vitest-cucumber   | 6.3.0   | Active         | Recently updated March 2025                                                                        |
-| oxlint                     | v1.39+  | Stable         | 50-100x faster than ESLint, 695+ rules                                                             |
-| unified (remark + rehype)  | Latest  | Active         | ESM-only — use `.ts`/`.mjs` config files                                                           |
-| html-react-parser          | Latest  | Active         | Parses HTML string → React elements with `replace` callbacks                                       |
-| @tailwindcss/typography    | Latest  | Active         | `prose` classes for markdown; v4 via `@plugin` in CSS                                              |
+| Package                    | Version | Status         | Notes                                                                                                                                       |
+| -------------------------- | ------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Next.js                    | 16.2.1  | Stable         | Latest. Turbopack default, React 19.2                                                                                                       |
+| tRPC                       | v11     | Stable         | `@trpc/tanstack-react-query` (NOT `@trpc/react-query`)                                                                                      |
+| @tanstack/react-query      | ^5.62.8 | Stable         | Required by tRPC v11 TanStack integration                                                                                                   |
+| Zod                        | ^3.x    | Stable         | Use v3 (tRPC v11 validated); v4 has breaking changes, migrate later                                                                         |
+| shadcn/ui                  | CLI v4  | Stable         | `npx shadcn@latest init`. Tailwind v4 compatible                                                                                            |
+| Tailwind CSS               | v4      | Stable         | shadcn auto-detects version                                                                                                                 |
+| shiki                      | ^1.x    | **Pin to 1.x** | start with 1.x (peer dep constraint); verify upgrade path to 2.x/3.x before committing — v0.14.1+ supports both via getSingletonHighlighter |
+| rehype-pretty-code         | 0.14.x  | Active         | Shiki 1.x (pinned); 2.x/3.x also supported since v0.14.1                                                                                    |
+| FlexSearch                 | 0.8.x   | Active         | No SSR issues, Apache 2.0                                                                                                                   |
+| gray-matter                | 4.0.3   | Active         | Industry standard (Gatsby, Astro, Netlify)                                                                                                  |
+| remark-math + rehype-katex | Latest  | Active         | ESM-only, compatible with unified 6+                                                                                                        |
+| next-themes                | Latest  | Active         | Requires `suppressHydrationWarning` on `<html>`                                                                                             |
+| @amiceli/vitest-cucumber   | 6.3.0   | Active         | Recently updated March 2025                                                                                                                 |
+| oxlint                     | v1.39+  | Stable         | 50-100x faster than ESLint, 695+ rules                                                                                                      |
+| unified (remark + rehype)  | Latest  | Active         | ESM-only — use `.ts`/`.mjs` config files                                                                                                    |
+| html-react-parser          | Latest  | Active         | Parses HTML string → React elements with `replace` callbacks                                                                                |
+| @tailwindcss/typography    | Latest  | Active         | `prose` classes for markdown; v4 via `@plugin` in CSS                                                                                       |
 
 ### Key Caveats
 

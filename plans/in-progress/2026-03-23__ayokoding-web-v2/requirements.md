@@ -140,8 +140,10 @@ Scenario: Mobile hamburger opens sidebar overlay
    draft, weight, description, tags)
 3. **Code blocks**: Syntax highlighting via shiki (server-side, all languages)
 4. **Math**: KaTeX rendering for `$...$` (inline), `$$...$$` (block) delimiters.
-   `remark-math` handles both by default (`singleDollarTextMath: true`). The Hugo
-   config also lists `\(...\)` and `\[...\]` but content only uses `$`/`$$` forms
+   Set `singleDollarTextMath: true` explicitly in the remark-math configuration
+   to ensure `$...$` is treated as inline math regardless of default behavior
+   changes between versions. The Hugo config also lists `\(...\)` and `\[...\]`
+   but content only uses `$`/`$$` forms
 5. **Diagrams**: Client-side Mermaid rendering with color-blind-friendly palette
 6. **Hugo shortcodes**: Convert all shortcodes actually used in content:
    - `{{< callout type="warning|info|tip" >}}` (19 occurrences) → shadcn Alert
@@ -233,9 +235,10 @@ Scenario: Mobile hamburger opens sidebar overlay
 - **Deployment**: Vercel (production branch `prod-ayokoding-web-v2`), same as
   `ayokoding-web` (`prod-ayokoding-web`) and `organiclever-web` (`prod-organiclever-web`)
 - **Linting**: oxlint (same as demo-fe-ts-nextjs and demo-fs-ts-nextjs)
-- **Performance**: All content pages should load under 2s. On-demand ISR (no
-  `generateStaticParams`) — pages server-rendered on first request, then cached.
-  Builds stay fast as content grows (no build-time generation of 933+ pages)
+- **Performance**: All content pages should return Time to First Byte (TTFB) under
+  2s on cached requests in Vercel production (aspirational; monitor post-launch).
+  On-demand ISR (no `generateStaticParams`) — pages server-rendered on first request,
+  then cached. Builds stay fast as content grows (no build-time generation of 933+ pages)
 - **SEO**: All content must be server-rendered (RSC) — no client-side rendering for
   content pages. Full HTML available to crawlers without JavaScript execution.
   Equivalent meta tags to current Hugo site (Open Graph, Twitter Cards, JSON-LD,

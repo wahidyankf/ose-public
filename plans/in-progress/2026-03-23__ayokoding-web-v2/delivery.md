@@ -14,22 +14,43 @@
 ## Phase 0: Visual Design Capture (via Playwright MCP)
 
 - [ ] Start the current Hugo site locally (`nx dev ayokoding-web` on port 3100)
-- [ ] Use **Playwright MCP** to browse the Hugo site and capture reference state:
-  - [ ] `browser_navigate` to each key page type on `http://localhost:3100`:
-    - Homepage, section index (`/en/learn/`), content page with code blocks,
-      by-example page with tabs (e.g., golang by-example beginner),
-      content page with callouts + math + mermaid, search dialog, rants page
-  - [ ] For each page, capture **both** visual and structural references:
-    - `browser_take_screenshot` — visual reference at each breakpoint
-    - `browser_snapshot` — DOM/accessibility tree structure (layout hierarchy,
-      ARIA roles, heading levels, navigation structure)
-  - [ ] **Desktop (1280px)**: `browser_resize` to 1280×800, then screenshot + snapshot
-        each page — note sidebar width, TOC position, content area layout
-  - [ ] **Laptop (1024px)**: `browser_resize` to 1024×768 — verify TOC hidden,
-        sidebar still visible
-  - [ ] **Tablet (768px)**: `browser_resize` to 768×1024 — verify sidebar behavior
-  - [ ] **Mobile (375px)**: `browser_resize` to 375×812 — verify hamburger menu,
-        use `browser_click` on hamburger to verify drawer opens
+- [ ] Use **Playwright MCP** to browse the Hugo site and capture reference state
+- [ ] `browser_navigate` to Homepage (`http://localhost:3100/en`)
+  - [ ] `browser_take_screenshot` — visual reference at current viewport
+  - [ ] `browser_snapshot` — DOM/accessibility tree (layout hierarchy, ARIA roles, heading levels, navigation structure)
+- [ ] `browser_navigate` to section index (`/en/learn/`)
+  - [ ] `browser_take_screenshot` — visual reference at current viewport
+  - [ ] `browser_snapshot` — DOM/accessibility tree
+- [ ] `browser_navigate` to content page with code blocks
+  - [ ] `browser_take_screenshot` — visual reference at current viewport
+  - [ ] `browser_snapshot` — DOM/accessibility tree
+- [ ] `browser_navigate` to by-example page with tabs (e.g., golang by-example beginner)
+  - [ ] `browser_take_screenshot` — visual reference at current viewport
+  - [ ] `browser_snapshot` — DOM/accessibility tree
+- [ ] `browser_navigate` to content page with callouts + math + mermaid
+  - [ ] `browser_take_screenshot` — visual reference at current viewport
+  - [ ] `browser_snapshot` — DOM/accessibility tree
+- [ ] `browser_navigate` to search dialog page
+  - [ ] `browser_take_screenshot` — visual reference at current viewport
+  - [ ] `browser_snapshot` — DOM/accessibility tree
+- [ ] `browser_navigate` to rants page
+  - [ ] `browser_take_screenshot` — visual reference at current viewport
+  - [ ] `browser_snapshot` — DOM/accessibility tree
+- [ ] **Desktop (1280px)**: `browser_resize` to 1280×800 — note sidebar width, TOC position, content area layout
+  - [ ] `browser_take_screenshot` — visual reference at 1280px viewport
+  - [ ] `browser_snapshot` — DOM/accessibility tree at 1280px
+- [ ] **Laptop (1024px)**: `browser_resize` to 1024×768 — verify TOC hidden, sidebar still visible
+  - [ ] `browser_take_screenshot` — visual reference at 1024px viewport
+  - [ ] `browser_snapshot` — DOM/accessibility tree at 1024px
+- [ ] **Tablet (768px)**: `browser_resize` to 768×1024 — verify sidebar behavior
+  - [ ] `browser_take_screenshot` — visual reference at 768px viewport
+  - [ ] `browser_snapshot` — DOM/accessibility tree at 768px
+- [ ] **Mobile (375px)**: `browser_resize` to 375×812 — verify hamburger menu,
+      use `browser_click` on hamburger to verify drawer opens
+  - [ ] `browser_take_screenshot` — visual reference at 375px viewport
+  - [ ] `browser_snapshot` — DOM/accessibility tree at 375px
+- [ ] Create directory `plans/in-progress/2026-03-23__ayokoding-web-v2/screenshots/`
+      (`mkdir -p plans/in-progress/2026-03-23__ayokoding-web-v2/screenshots/`)
 - [ ] Save screenshots to `plans/in-progress/2026-03-23__ayokoding-web-v2/screenshots/`
 - [ ] Capture interactive behavior references via Playwright MCP:
   - [ ] Search dialog: `browser_press_key` Cmd+K, verify dialog opens via
@@ -46,26 +67,26 @@
   - [ ] Extract spacing system (padding, margins, gaps)
 - [ ] Create component mapping document (`plans/in-progress/2026-03-23__ayokoding-web-v2/design-mapping.md`):
   - [ ] Map each Hextra element to shadcn/ui + Tailwind equivalent
-  - [ ] Document responsive behavior per breakpoint:
-    - Desktop (≥1280px): sidebar (250px) + content (max-w-3xl) + TOC (200px)
-    - Laptop (≥1024px): sidebar (250px) + content + TOC hidden
-    - Tablet (≥768px): sidebar collapsed to icons + content
-    - Mobile (<768px): hamburger drawer + full-width content
+  - [ ] Document responsive behavior — Desktop (≥1280px): sidebar (250px) + content (max-w-3xl) + TOC (200px)
+  - [ ] Document responsive behavior — Laptop (≥1024px): sidebar (250px) + content + TOC hidden
+  - [ ] Document responsive behavior — Tablet (≥768px): sidebar collapsed to icons + content
+  - [ ] Document responsive behavior — Mobile (<768px): hamburger drawer + full-width content
   - [ ] Document dark/light mode color mapping
-  - [ ] Document component-specific responsive rules:
-    - Code blocks: horizontal scroll on mobile, full-width
-    - Tables: horizontal scroll wrapper on mobile
-    - Images: max-width 100%, centered
-    - Search dialog: full-screen on mobile, centered modal on desktop
-    - Sidebar: persistent on desktop, Sheet overlay on mobile
-    - TOC: right column on desktop, collapsed/hidden on tablet+mobile
-    - Breadcrumb: truncated with ellipsis on mobile
-    - Prev/Next nav: stacked vertically on mobile, side-by-side on desktop
+  - [ ] Document component-specific responsive rules: code blocks (horizontal scroll on mobile)
+  - [ ] Document component-specific responsive rules: tables (horizontal scroll wrapper)
+  - [ ] Document component-specific responsive rules: images (max-width 100%)
+  - [ ] Document component-specific responsive rules: search dialog (full-screen mobile / centered modal desktop)
+  - [ ] Document component-specific responsive rules: sidebar (persistent desktop / Sheet overlay mobile)
+  - [ ] Document component-specific responsive rules: TOC (right column desktop / hidden tablet+mobile)
+  - [ ] Document component-specific responsive rules: breadcrumb (truncated mobile)
+  - [ ] Document component-specific responsive rules: prev/next nav (stacked mobile / side-by-side desktop)
 - [ ] Review `apps/ayokoding-web/assets/css/custom.css` for site-specific overrides
       to replicate in Tailwind
 
 ## Phase 1: Project Scaffolding
 
+- [ ] Verify `apps/ayokoding-web/content/` exists and is non-empty
+      (pre-condition for content layer — must contain 933+ markdown files)
 - [ ] Create `apps/ayokoding-web-v2/` directory
 - [ ] Initialize Next.js 16 project with TypeScript, App Router, src/ directory
 - [ ] Configure `next.config.ts`:
@@ -84,17 +105,17 @@
 - [ ] Install core shadcn/ui components: Button, Input, Dialog, Alert, Tabs,
       Separator, ScrollArea, Sheet, DropdownMenu, Tooltip, Badge, Command
 - [ ] Install tRPC: `@trpc/server`, `@trpc/client`, `@trpc/tanstack-react-query`,
-      `@tanstack/react-query@^5.62.8` (floor set at 5.62.8 — minimum version
-      verified compatible with `@trpc/tanstack-react-query`; use `^5` if no issues)
-- [ ] Install Zod: `zod@^3` (tRPC v11 validated with Zod v3; v4 has breaking changes,
-      migrate later once tRPC confirms v4 support)
+      `@tanstack/react-query@^5.62.8` (minimum version required by
+      `@trpc/tanstack-react-query`; `^` allows compatible updates above this floor)
+- [ ] Install Zod: `zod@^3` (conservative pin — Zod v4 is compatible with tRPC v11
+      as of early 2026, migrate to v4 when ready)
 - [ ] Install markdown tooling: `unified`, `remark-parse`, `remark-gfm`, `remark-math`,
       `remark-rehype` (MDAST→HAST bridge — required), `rehype-raw` (required for
       inline HTML — 1,343 occurrences in content; must come after `remark-rehype`
       with `allowDangerousHtml: true`), `rehype-pretty-code`,
-      `shiki@^1` (pin to 1.x for stability — rehype-pretty-code v0.14.1+ supports
-      2.x/3.x via getSingletonHighlighter, but pin to 1.x until explicit version
-      testing is done),
+      `shiki@^1` (rehype-pretty-code v0.x requires `shiki ^1.0.0` per its peer
+      dependency; verify upgrade path to shiki v2/v3 before pinning — shiki v3
+      removes deprecated v1 APIs, providing a smooth migration from v1→v2→v3),
       `rehype-katex`, `rehype-slug`, `rehype-autolink-headings`,
       `rehype-stringify`, `gray-matter`
 - [ ] Install `html-react-parser` (renders HTML string as React elements with
@@ -107,11 +128,13 @@
 - [ ] Install `next-themes` (dark/light/system theme toggle)
 - [ ] Install `@next/third-parties` (Google Analytics GA4)
 - [ ] Install test dependencies: `vitest`, `@vitest/coverage-v8`,
-      `@amiceli/vitest-cucumber`, `@cucumber/cucumber` (for integration tests
+      `@amiceli/vitest-cucumber@^6.3.0` (matches demo-fs-ts-nextjs pattern),
+      `@cucumber/cucumber` (for integration tests
       in Phase 11), `@testing-library/react`, `jsdom`
 - [ ] Create `project.json` with 7 mandatory Nx targets (codegen, typecheck, lint, build,
       test:unit, test:quick, test:integration) + `dev` + `start`:
   - [ ] Add `implicitDependencies: ["rhino-cli", "ayokoding-cli"]`
+        (rhino-cli: link + coverage validation; ayokoding-cli: link checker used in test:quick target)
   - [ ] Add link validation to `test:quick` target:
         `./apps/ayokoding-cli/dist/ayokoding-cli links check --content apps/ayokoding-web/content`
 - [ ] Set up `tsconfig.json` with strict mode
@@ -181,6 +204,8 @@
   - [ ] ARIA labels present on interactive elements
   - [ ] Color contrast meets AA standard
   - [ ] Skip to content link present
+- [ ] Verify all feature files parse without error:
+      run `npx cucumber-js --dry-run` (BE) and check Vitest picks up all FE specs
 
 ## Phase 3: Content Layer
 
@@ -276,8 +301,9 @@
   - [ ] Validate locale parameter: call `notFound()` if locale is not `"en"` or
         `"id"` (the `[locale]` segment accepts any string — without this check,
         `/fr/learn/overview` or `/xyz/anything` would reach the content layer
-        and fail silently). Pattern from official Next.js i18n guide:
-        `if (!hasLocale(locale)) notFound()`
+        and fail silently). Use custom locale check (no extra dependency):
+        `if (!SUPPORTED_LOCALES.includes(locale)) notFound()` where
+        `SUPPORTED_LOCALES = ['en', 'id']` is defined in `src/lib/i18n/config.ts`
   - [ ] Import Header and Footer components
   - [ ] Wrap children with ThemeProvider (`"use client"` boundary)
   - [ ] Pass locale to context
@@ -288,6 +314,9 @@
 - [ ] Create `src/app/[locale]/(app)/.gitkeep` — placeholder for future fullstack routes
 
 ## Phase 5c: Layout Components
+
+> Consult `plans/in-progress/2026-03-23__ayokoding-web-v2/design-mapping.md` from
+> Phase 0 for component mapping and breakpoint specifications.
 
 - [ ] Create `src/components/layout/header.tsx`:
   - [ ] Site title/logo link
@@ -538,7 +567,7 @@ All other content is server-rendered.
   - [ ] Set `--chown=nextjs:nodejs` on all COPY commands
   - [ ] Adjust CMD path based on standalone inspection above
 - [ ] Create `infra/dev/ayokoding-web-v2/docker-compose.yml`:
-  - [ ] Set `CONTENT_DIR=/app/apps/ayokoding-web/content`
+  - [ ] Set `CONTENT_DIR=/app/content`
   - [ ] Set `PORT=3101`
   - [ ] Health check: `curl -f http://localhost:3101/api/trpc/meta.health`
 - [ ] Run `docker compose up` from `infra/dev/ayokoding-web-v2/`
@@ -575,6 +604,9 @@ All other content is server-rendered.
 - [ ] Create `apps/ayokoding-web-v2-be-e2e/project.json`:
   - [ ] Tags: `["type:e2e", "platform:playwright", "lang:ts", "domain:ayokoding"]`
   - [ ] Targets: `install`, `test:e2e`, `test:e2e:ui`, `test:e2e:report`
+        (E2E-only apps follow the 4-target pattern; the mandatory 7-target rule
+        applies to content/backend apps, not pure Playwright runner apps —
+        consistent with `demo-be-e2e`, `demo-fe-e2e`, `organiclever-web-e2e`)
 - [ ] Create `apps/ayokoding-web-v2-be-e2e/playwright.config.ts`:
   - [ ] `baseURL` from `BASE_URL` env var (default `http://localhost:3101`)
 - [ ] Create `apps/ayokoding-web-v2-be-e2e/tsconfig.json`
@@ -594,6 +626,8 @@ All other content is server-rendered.
 - [ ] Create `apps/ayokoding-web-v2-fe-e2e/project.json`:
   - [ ] Tags: `["type:e2e", "platform:playwright", "lang:ts", "domain:ayokoding"]`
   - [ ] Targets: `install`, `test:e2e`, `test:e2e:ui`, `test:e2e:report`
+        (E2E-only apps follow the 4-target pattern; same as `demo-be-e2e`,
+        `demo-fe-e2e`, `organiclever-web-e2e`)
 - [ ] Create `apps/ayokoding-web-v2-fe-e2e/playwright.config.ts`:
   - [ ] `baseURL` from `BASE_URL` env var (default `http://localhost:3101`)
 - [ ] Create `apps/ayokoding-web-v2-fe-e2e/tsconfig.json`
@@ -629,6 +663,8 @@ All other content is server-rendered.
   - [ ] Root directory: `apps/ayokoding-web-v2`
   - [ ] Framework: Next.js (auto-detected)
   - [ ] Production branch: `prod-ayokoding-web-v2`
+  - [ ] (See `apps/organiclever-web/vercel.json` and its Vercel project for reference
+        configuration pattern)
 - [ ] Push to `prod-ayokoding-web-v2` branch
 - [ ] Verify Vercel build succeeds (check build logs)
 - [ ] Verify deployed site serves content correctly
@@ -645,11 +681,15 @@ All other content is server-rendered.
 - [ ] Update `specs/apps/ayokoding-web/README.md` — reference v2 test apps
 - [ ] Update CLAUDE.md:
   - [ ] Add `ayokoding-web-v2` to Current Apps list with description
+  - [ ] Add `ayokoding-web-v2-be-e2e` to Current Apps list with description
+  - [ ] Add `ayokoding-web-v2-fe-e2e` to Current Apps list with description
   - [ ] Add `prod-ayokoding-web-v2` to environment branches list
 
 ## Validation Checklist
 
-- [ ] `nx run ayokoding-web-v2:codegen` succeeds (no-op)
+- [ ] `nx run ayokoding-web-v2:codegen` succeeds (no-op: ayokoding-web-v2 has no
+      OpenAPI contract; target exists to satisfy mandatory 7-target requirement
+      per nx-targets convention)
 - [ ] `nx run ayokoding-web-v2:typecheck` succeeds
 - [ ] `nx run ayokoding-web-v2:lint` succeeds
 - [ ] `nx run ayokoding-web-v2:build` succeeds

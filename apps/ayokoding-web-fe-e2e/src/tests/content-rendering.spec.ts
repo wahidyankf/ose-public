@@ -40,15 +40,13 @@ test.describe("Content Rendering", () => {
   });
 
   test("mermaid diagram renders as SVG, not raw text", async ({ page }) => {
-    // This page has a Mermaid circuit breaker diagram
-    await page.goto("/en/learn/software-engineering/platform-web/tools/clojure-pedestal/by-example/advanced");
-
-    // Wait for page to load fully, then scroll to the mermaid section
+    // Use a lightweight page with mermaid diagrams (faster load in Docker CI)
+    test.setTimeout(60000);
+    await page.goto("/en/learn/artificial-intelligence/chat-with-pdf");
     await page.waitForLoadState("networkidle");
 
     // Mermaid renders client-side — the component replaces <pre> with <svg>
-    // Look for any SVG rendered by mermaid (has class or id containing "mermaid")
     const mermaidSvg = page.locator("[id*='mermaid'], svg.mermaid");
-    await expect(mermaidSvg.first()).toBeAttached({ timeout: 30000 });
+    await expect(mermaidSvg.first()).toBeAttached({ timeout: 45000 });
   });
 });

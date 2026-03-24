@@ -15,6 +15,7 @@
 
 - [ ] **1.1** `git mv apps/ayokoding-web/content apps/ayokoding-web-v2/content`
 - [ ] **1.2** Verify content directory exists at `apps/ayokoding-web-v2/content/en/` and `apps/ayokoding-web-v2/content/id/`
+- [ ] **1.2b** Verify `apps/ayokoding-web/content/` no longer exists (confirms git mv succeeded before archiving)
 
 ### 1b: Create archive directory
 
@@ -31,6 +32,8 @@
 - [ ] **1.5** `git mv apps/ayokoding-web archived/ayokoding-web-hugo`
 - [ ] **1.6** Verify `archived/ayokoding-web-hugo/` contains Hugo files (hugo.yaml, layouts/, static/, etc.) but NOT `content/`
 - [ ] **1.7** Remove `archived/ayokoding-web-hugo/project.json` (no longer an Nx project)
+- [ ] **1.7b** Check `nx.json` for any explicit `ayokoding-web` entries referencing the Hugo app and remove them
+- [ ] **1.7c** Check `package.json` lint-staged for any entries specific to `apps/ayokoding-web` Hugo archetypes — the `apps/ayokoding-web/archetypes/**/*.md` entry will be removed in step 3.3a
 
 ### 1d: Update .dockerignore
 
@@ -46,10 +49,11 @@
 - [ ] **2.2** Update `apps/ayokoding-web/project.json`:
   - [ ] **2.2a** Change `"name"` from `"ayokoding-web-v2"` to `"ayokoding-web"`
   - [ ] **2.2b** Change `"sourceRoot"` from `"apps/ayokoding-web-v2/src"` to `"apps/ayokoding-web/src"`
-  - [ ] **2.2c** Update `test:quick` links check path: `../../apps/ayokoding-web/content` → `content` (content is now local)
-  - [ ] **2.2d** Update `test:quick` links check command: `../../apps/ayokoding-cli/dist/ayokoding-cli` → verify relative path from new cwd
-  - [ ] **2.2e** Remove `"ayokoding-cli"` from `implicitDependencies` if links check is inlined or path adjusted
-  - [ ] **2.2f** Update `specs` input path in `test:unit`: `{workspaceRoot}/specs/apps/ayokoding-web/**/*.feature` (already correct after rename)
+  - [ ] **2.2c** Update `test:quick` links check `--content` flag: change `../../apps/ayokoding-web/content` to `content` (content is now co-located in the app). The `ayokoding-cli` binary path `../../apps/ayokoding-cli/dist/ayokoding-cli` remains correct from the renamed app root and does NOT need changing
+  - [ ] **2.2d** Verify the full links check command resolves: from `cwd: apps/ayokoding-web`, the path `../../apps/ayokoding-cli/dist/ayokoding-cli` correctly resolves to the CLI binary (depth is identical to the former `apps/ayokoding-web-v2` cwd)
+  - [ ] **2.2e** Keep `"ayokoding-cli"` in `implicitDependencies` — the `test:quick` links check still depends on the CLI binary; only update the `--content` path within the command (done in 2.2c)
+  - [ ] **2.2f** Update `test:quick` coverage validation path in `project.json`: change `apps/ayokoding-web-v2/coverage/lcov.info` to `apps/ayokoding-web/coverage/lcov.info` (this is the rhino-cli validate argument — separate from the Codecov path updated in step 4.6c)
+  - [ ] **2.2g** Update `specs` input path in `test:unit`: `{workspaceRoot}/specs/apps/ayokoding-web/**/*.feature` (already correct after rename)
 - [ ] **2.3** Update `apps/ayokoding-web/package.json`:
   - [ ] **2.3a** Change `"name"` from `"ayokoding-web-v2"` to `"ayokoding-web"`
 
@@ -59,6 +63,7 @@
 - [ ] **2.5** Update `apps/ayokoding-web-be-e2e/project.json`:
   - [ ] **2.5a** Change `"name"` from `"ayokoding-web-v2-be-e2e"` to `"ayokoding-web-be-e2e"`
   - [ ] **2.5b** Update all `"cwd"` paths from `"apps/ayokoding-web-v2-be-e2e"` to `"apps/ayokoding-web-be-e2e"`
+  - [ ] **2.5c** Update `"sourceRoot"` from `"apps/ayokoding-web-v2-be-e2e/src"` to `"apps/ayokoding-web-be-e2e/src"`
 - [ ] **2.6** Update `apps/ayokoding-web-be-e2e/package.json`:
   - [ ] **2.6a** Change `"name"` from `"ayokoding-web-v2-be-e2e"` to `"ayokoding-web-be-e2e"`
 
@@ -69,6 +74,7 @@
   - [ ] **2.8a** Change `"name"` from `"ayokoding-web-v2-fe-e2e"` to `"ayokoding-web-fe-e2e"`
   - [ ] **2.8b** Update all `"cwd"` paths from `"apps/ayokoding-web-v2-fe-e2e"` to `"apps/ayokoding-web-fe-e2e"`
   - [ ] **2.8c** Change `"implicitDependencies"` from `["ayokoding-web-v2"]` to `["ayokoding-web"]`
+  - [ ] **2.8d** Update `"sourceRoot"` from `"apps/ayokoding-web-v2-fe-e2e/src"` to `"apps/ayokoding-web-fe-e2e/src"`
 - [ ] **2.9** Update `apps/ayokoding-web-fe-e2e/package.json`:
   - [ ] **2.9a** Change `"name"` from `"ayokoding-web-v2-fe-e2e"` to `"ayokoding-web-fe-e2e"`
 
@@ -77,9 +83,9 @@
 - [ ] **2.10** Update `apps/ayokoding-web/src/server/content/reader.ts`:
   - [ ] **2.10a** Change default `CONTENT_DIR` from `../../apps/ayokoding-web/content` to `content` (relative to cwd, which is the app root)
 - [ ] **2.11** Update `apps/ayokoding-web/Dockerfile`:
-  - [ ] **2.11a** Change all `apps/ayokoding-web-v2` references to `apps/ayokoding-web`
-  - [ ] **2.11b** Remove separate `COPY apps/ayokoding-web/content/` line (content now inside app dir)
-  - [ ] **2.11c** Add `COPY apps/ayokoding-web/content/` in the runner stage for runtime fs.readFile
+  - [ ] **2.11a** Change all `apps/ayokoding-web-v2` references to `apps/ayokoding-web` in paths, CMD, and comments throughout the Dockerfile
+  - [ ] **2.11b** Remove builder stage line `COPY apps/ayokoding-web/content/ ./apps/ayokoding-web/content/` — content is now inside `apps/ayokoding-web/` and is already included by the app COPY line
+  - [ ] **2.11c** Verify the runner stage already has `COPY --from=builder --chown=nextjs:nodejs /workspace/apps/ayokoding-web/content ./apps/ayokoding-web/content` — this line must remain so `fs.readFile` works at runtime (content is NOT included in `.next/standalone`)
   - [ ] **2.11d** Update comment at top of Dockerfile referencing `ayokoding-web-v2`
 - [ ] **2.12** Update `apps/ayokoding-web/vercel.json`:
   - [ ] **2.12a** Change `prod-ayokoding-web-v2` to `prod-ayokoding-web` in `ignoreCommand`
@@ -103,7 +109,7 @@
 - [ ] **3.2** Update `infra/dev/ayokoding-web/docker-compose.yml`:
   - [ ] **3.2a** Change service name from `ayokoding-web-v2` to `ayokoding-web`
   - [ ] **3.2b** Change `dockerfile` path from `apps/ayokoding-web-v2/Dockerfile` to `apps/ayokoding-web/Dockerfile`
-  - [ ] **3.2c** Update `CONTENT_DIR` env to `/app/apps/ayokoding-web/content` (verify path correct after Dockerfile changes)
+  - [ ] **3.2c** Verify `CONTENT_DIR=/app/apps/ayokoding-web/content` is correct — content moves into the renamed app and the Dockerfile runner stage copies it to `./apps/ayokoding-web/content` (relative to WORKDIR `/app`), giving absolute path `/app/apps/ayokoding-web/content`. This value is already correct and does NOT need changing
 
 ### 3b: Root package.json
 
@@ -200,7 +206,9 @@
 
 ### 5h: Update ayokoding-cli project.json
 
-- [ ] **5.18** Remove `run-pre-commit` target (Hugo-specific automation for titles/nav)
+- [ ] **5.18** Remove `run-pre-commit` target from `apps/ayokoding-cli/project.json` (Hugo-specific automation for titles/nav)
+- [ ] **5.18b** Update `.husky/pre-commit`: remove any calls to `nav regen` or `titles update` — after removing these commands from the CLI, the pre-commit hook must not invoke them
+- [ ] **5.18c** Update `package.json` lint-staged config: remove any ayokoding-web nav/titles automation entries (these are distinct from the husky hook — check the `lint-staged` key for any nav/titles invocations)
 - [ ] **5.19** Update `test:integration` inputs if they reference nav/titles spec paths
 - [ ] **5.20** Verify remaining targets are correct (`build`, `test:quick`, `test:integration`, `lint`)
 
@@ -224,9 +232,19 @@
 - [ ] **5.22** Update `specs/apps/ayokoding-cli/README.md`:
   - [ ] **5.22a** Remove `nav/` and `titles/` from Structure table
   - [ ] **5.22b** Update "Running the Tests" section: remove nav regen and titles update commands
-  - [ ] **5.22c** Update test count (from 13 to remaining links-only count)
+  - [ ] **5.22c** Update test count (from 13 to remaining links-only count — count the `*.feature` files in `specs/apps/ayokoding-cli/links/` after deleting nav/ and titles/ directories in steps 5.16-5.17)
 
-### 5k: Verify ayokoding-cli
+### 5k: Update rhino-cli pre-commit runner
+
+- [ ] **5.27** Confirm `apps/ayokoding-web/project.json` (renamed from v2) does NOT have a `run-pre-commit` target — it did not exist in v2, so no action is needed. If one exists, remove it to prevent `nx affected -t run-pre-commit` from calling deleted CLI commands
+- [ ] **5.28** Confirm `apps/rhino-cli/internal/git/runner.go` `step4StageAyokoding` path `apps/ayokoding-web/content/` is correct in the final state — content ends up at this path after Phase 1-2, so the hardcoded path is valid
+- [ ] **5.29a** Read `apps/rhino-cli/internal/git/runner.go` and locate the `step4StageAyokoding` function. Determine whether it should be kept or removed: it auto-stages `apps/ayokoding-web/content/`, which was designed for titles/nav output but is now harmless (stages any manual content edits). Done-state: write "Decision: keep" or "Decision: remove" as a comment in the file or note it in your working notes before checking this off.
+- [ ] **5.29b** Apply the decision from 5.29a — follow exactly one branch:
+  - **If keeping**: Verify the hardcoded path `apps/ayokoding-web/content/` in `step4StageAyokoding` is correct (it is, after Phase 1-2 renames) — no code change required. Check off when confirmed.
+  - **If removing**: Delete the `step4StageAyokoding` function and its `Run()` call from `runner.go`, then run `nx run rhino-cli:test:quick` to verify tests still pass. Check off when tests pass.
+- [ ] **5.30** Confirm `step3NxPreCommit` in rhino-cli runs `nx affected -t run-pre-commit`. After Phase 5, the archived Hugo app's `run-pre-commit` target is no longer an active Nx project (project.json removed in step 1.7). The renamed Next.js app has no `run-pre-commit` target. Therefore `nx affected -t run-pre-commit` is a safe no-op for ayokoding-web content — this safety chain is confirmed, no code changes needed
+
+### 5l: Verify ayokoding-cli
 
 - [ ] **5.23** Verify `ayokoding-cli` builds: `cd apps/ayokoding-cli && go build -o dist/ayokoding-cli`
 - [ ] **5.24** Verify `ayokoding-cli` unit tests pass: `nx run ayokoding-cli:test:quick`
@@ -244,6 +262,11 @@
 - [ ] **6.5** Delete `apps-ayokoding-web-structure-fixer.md` (fixes Hugo structure)
 
 ### 6b: Update ayokoding-web content agents in .claude/agents/
+
+> **Verification criterion for all Phase 6b agent updates**: After each agent update, verify that
+> (1) no `ayokoding-web-v2` references remain, (2) no Hugo-specific context that applies only to
+> the old Hugo site remains, and (3) content paths reference `apps/ayokoding-web/content/` or
+> other updated paths.
 
 - [ ] **6.6** Update `apps-ayokoding-web-deployer.md`:
   - [ ] **6.6a** Update description: Next.js deployment via `prod-ayokoding-web`
@@ -317,6 +340,11 @@
 
 ## Phase 7: Update Documentation
 
+> **Note for all Phase 7 updates**: The primary changes across Phase 7 are: replace
+> `ayokoding-web-v2` → `ayokoding-web`, replace Hugo-specific references → Next.js, update E2E app
+> names from v2 variants to renamed variants. The Phase 8 grep sweep validates completeness and
+> serves as the safety net for any missed updates.
+
 ### 7a: CLAUDE.md
 
 - [ ] **7.1** Update app list:
@@ -342,7 +370,7 @@
 - [ ] **7.7** Update agent lists: remove 5 deleted agents (navigation-maker, title-maker, structure-maker, structure-checker, structure-fixer)
 - [ ] **7.8** Update all `ayokoding-web-v2` references to `ayokoding-web` throughout the file
 - [ ] **7.9** Update Common Development Commands if they reference ayokoding-web-v2
-- [ ] **7.10** Update coverage descriptions: change `ayokoding-web-v2` to `ayokoding-web`
+- [ ] **7.10** Add coverage documentation for `ayokoding-web` to CLAUDE.md in the TypeScript Projects section — there is no existing `ayokoding-web-v2` coverage entry to rename, so add a new paragraph: `**AyoKoding Web**: \`ayokoding-web\` enforces ≥80% **line coverage** via \`rhino-cli test-coverage validate apps/ayokoding-web/coverage/lcov.info 80\` — run as part of \`test:quick\`.`
 
 ### 7b: AGENTS.md
 
@@ -481,7 +509,7 @@
 
 ## Phase 8: Final Sweep — Grep for Stale References
 
-- [ ] **8.1** Grep entire repo for `ayokoding-web-v2` — should be zero outside `archived/`, `plans/done/`, and `generated-socials/`
+- [ ] **8.1** Grep entire repo for `ayokoding-web-v2` — should be zero outside `archived/`, `plans/done/`, `generated-socials/`, `generated-reports/`, and `plans/in-progress/` (this plan file). Use: `grep -r "ayokoding-web-v2" . --exclude-dir=archived --exclude-dir=generated-reports --exclude-dir=generated-socials --exclude-dir=.git` and review any matches in `plans/in-progress/` (expected) or `plans/done/` (expected)
 - [ ] **8.2** Grep entire repo for `prod-ayokoding-web-v2` — should be zero everywhere
 - [ ] **8.3** Grep for `ayokoding-web-v2-be-e2e` — should be zero outside `plans/done/`
 - [ ] **8.4** Grep for `ayokoding-web-v2-fe-e2e` — should be zero outside `plans/done/`
@@ -517,7 +545,7 @@
 
 ## Phase 10: Thematic Commits & Push
 
-Each phase gets its own commit for clean git history and easy revert if needed. Commit after each phase's verification passes.
+All changes from Phases 1-8 are accumulated without committing. Phase 9 performs full verification. Only after Phase 9 passes are changes committed here in thematic groupings. Do NOT commit during Phases 1-8.
 
 ### 10a: Commit — Archive & Rename (Phases 1-3)
 
@@ -535,7 +563,7 @@ Each phase gets its own commit for clean git history and easy revert if needed. 
 
 - [ ] **10.5** Stage Phase 5 changes
 - [ ] **10.6** Commit: `refactor(ayokoding-cli): remove Hugo-specific nav and titles commands`
-  - Includes: delete nav/titles commands, internal packages, config, specs, update root.go, README
+  - Includes: delete nav/titles commands, internal packages, config, specs, update root.go, README (ayokoding-cli README goes in this commit — other READMEs go in Phase 10e)
 
 ### 10d: Commit — Agents & Skills (Phase 6)
 
@@ -563,6 +591,8 @@ Each phase gets its own commit for clean git history and easy revert if needed. 
 
 ## Phase 11: Post-Migration — Vercel Dashboard Reconfiguration
 
+**Prerequisite**: Steps 10.13-10.16 must be complete — the test-and-deploy workflow must have successfully pushed to `prod-ayokoding-web` before reconfiguring Vercel. Reconfiguring Vercel to Next.js before the Next.js code is deployed will cause a build failure.
+
 The current Vercel project for ayokoding.com is configured for Hugo. It must be reconfigured for Next.js.
 
 ### Current Vercel settings (to be changed)
@@ -589,9 +619,7 @@ The current Vercel project for ayokoding.com is configured for Hugo. It must be 
 - [ ] **11.4** Change **Output Directory** (Override ON):
   - Remove: `public`
   - Set to: `.next` (or clear to use Next.js default)
-- [ ] **11.5** Change **Install Command** (Override ON):
-  - Set to: `npm install --prefix=../.. --ignore-scripts`
-  - This installs from the monorepo root (same as `vercel.json` `installCommand`)
+- [ ] **11.5** Verify **Install Command** — `installCommand` is already set in `apps/ayokoding-web/vercel.json` as `npm install --prefix=../.. --ignore-scripts`. Vercel reads this from the repository config file, so a dashboard override is NOT required. Only override in the dashboard if the `vercel.json` setting is not being picked up
 - [ ] **11.6** Change **Development Command** (Override ON):
   - Remove: `hugo server -D -w -p $PORT`
   - Set to: `next dev --port $PORT` (or clear to use default)

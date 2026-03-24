@@ -1,4 +1,4 @@
-# AyoKoding Web v1→v2 Migration
+# AyoKoding Web v1-to-v2 Migration
 
 **Status**: In Progress
 **Created**: 2026-03-24
@@ -39,7 +39,7 @@ The `ayokoding-web-v2` (Next.js 16) implementation is complete and passing all C
 - Update 16 skills that reference Hugo+ayokoding-web (content, tutorials, validation, repo skills)
 - Verify 7 swe-programming-\* skills and 7 swe-\*-developer agents (paths stay correct, no changes needed)
 - Update `CLAUDE.md`, `AGENTS.md`, all READMEs
-- Update 52 governance files (conventions, development, workflows) that reference Hugo+ayokoding-web
+- Update governance files (conventions, development, workflows) that reference Hugo+ayokoding-web (approximately 52 files — see Phase 7 and Phase 8 grep sweep for complete enumeration)
 - Update 10+ docs/reference and docs/how-to files
 - Update 2 docs/explanation files with Hugo+ayokoding references
 - Update specs READMEs
@@ -55,14 +55,12 @@ The `ayokoding-web-v2` (Next.js 16) implementation is complete and passing all C
 
 ## Key Decisions
 
-1. **Same production branch**: `prod-ayokoding-web` — Vercel config changes from Hugo to Next.js on the same branch
-2. **Content moves INTO the Next.js app**: `apps/ayokoding-web/content/` → `apps/ayokoding-web-v2/content/` (before rename), eliminating cross-app file reads
-3. **Keep `links check`**: The `ayokoding-cli links check` command validates Hugo-style absolute paths in markdown content — these paths are still valid because the content format hasn't changed
-4. **Keep `hugo-commons` lib**: Shared with `oseplatform-cli` for link validation
-5. **Keep `swe-hugo-developer` agent**: Still needed for `oseplatform-web`
-6. **Hugo conventions partially preserved**: Content format (frontmatter, weights, bilingual structure) didn't change — only the rendering engine changed. Hugo content conventions in governance remain relevant for content creation
+See [tech-docs.md](./tech-docs.md) for architecture decisions, post-migration Nx dependency graph,
+and monorepo structure after migration.
 
 ## Commit Strategy
+
+All changes across Phases 1-8 are accumulated without committing. Phase 9 performs full verification across all changes. Phase 10 commits in thematic groupings. Do NOT commit during Phases 1-8 — wait until Phase 10 after Phase 9 verification passes.
 
 Thematic commits for clean git history and easy revert:
 
@@ -79,11 +77,13 @@ The current Vercel project for ayokoding.com is configured for **Hugo** (Framewo
 
 ## Risk Assessment
 
-- **Medium**: ~300+ files reference `ayokoding-web` — comprehensive find-and-replace needed
+- **Medium**: ~300+ files reference `ayokoding-web` paths (no change needed for most); ~60 specific files explicitly listed in Phase 7 need updating for Hugo→Next.js context, plus any found in Phase 8 grep sweep for `ayokoding-web-v2` strings
 - **Low**: Git history preserved via `git mv`
 - **Low**: Vercel deployment uses same branch, just different build
 - **Low**: Vercel reconfiguration is a dashboard-only change (no code changes)
 
 ## Files
 
+- [requirements.md](./requirements.md) — User stories, acceptance criteria (Gherkin), functional and non-functional requirements
+- [tech-docs.md](./tech-docs.md) — Technical approach, architecture decisions, Nx dependency graph after migration
 - [delivery.md](./delivery.md) — Execution checklist

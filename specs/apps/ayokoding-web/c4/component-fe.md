@@ -16,7 +16,7 @@ graph LR
         subgraph LAYER1["Pages (Server Components)"]
             HP["Home Page<br/>────────────────<br/>/ redirect<br/>to /[locale]/"]:::page
             LP["Locale Home<br/>────────────────<br/>/[locale]/<br/>Landing page"]:::page
-            CP["Content Page<br/>────────────────<br/>/[locale]/[...slug]<br/>ISR: 3600s<br/>maxDuration: 60s"]:::page
+            CP["Content Page<br/>────────────────<br/>/[locale]/[...slug]<br/>SSG (generateStaticParams)"]:::page
             SP["Sitemap<br/>────────────────<br/>/sitemap.xml<br/>All pages"]:::page
             FP["RSS Feed<br/>────────────────<br/>/feed.xml<br/>Recent content"]:::page
         end

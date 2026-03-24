@@ -106,7 +106,7 @@ graph TB
 
 **Component Responsibilities:**
 
-- **Next.js App Router**: Server-side rendering and routing for educational content
+- **Next.js App Router**: Static generation and routing for educational content
 - **tRPC API**: Backend API for content retrieval, search, and navigation
 - **Content Directory**: Co-located markdown content at `apps/ayokoding-web/content/`
 - **Bilingual Support**: Default English with Indonesian content

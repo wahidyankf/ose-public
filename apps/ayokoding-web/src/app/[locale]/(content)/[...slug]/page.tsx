@@ -8,10 +8,22 @@ import { TableOfContents } from "@/components/layout/toc";
 import { PrevNext } from "@/components/layout/prev-next";
 import { MarkdownRenderer } from "@/components/content/markdown-renderer";
 import { TRPCError } from "@trpc/server";
+import { getContentIndex } from "@/server/content/index";
 
-export const dynamicParams = true;
-export const revalidate = 3600;
-export const maxDuration = 60;
+export const dynamicParams = false;
+
+export async function generateStaticParams({ params }: { params: { locale: string } }) {
+  const index = await getContentIndex();
+  const slugs: { slug: string[] }[] = [];
+
+  for (const [key, meta] of index.contentMap) {
+    if (!key.startsWith(`${params.locale}:`)) continue;
+    if (meta.slug === "") continue;
+    slugs.push({ slug: meta.slug.split("/") });
+  }
+
+  return slugs;
+}
 
 interface Props {
   params: Promise<{ locale: string; slug: string[] }>;

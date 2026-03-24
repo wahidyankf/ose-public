@@ -7,7 +7,7 @@ Fullstack Next.js 16 application that serves the AyoKoding educational content p
 - **Framework**: Next.js 16 (App Router, React Server Components)
 - **API**: tRPC with server caller (RSC) and HTTP endpoint (search)
 - **Content**: Reads markdown from `content/` (co-located in the app)
-- **Rendering**: Server-side HTML (ISR) for SEO, client-side only for search/theme/tabs
+- **Rendering**: Full SSG via `generateStaticParams` for SEO, client-side only for search/theme/tabs
 - **Styling**: Tailwind CSS v4 + shadcn/ui + @tailwindcss/typography
 - **Search**: FlexSearch with per-locale indexing
 - **i18n**: English (`/en`) and Indonesian (`/id`) with segment mapping

@@ -4,9 +4,9 @@ Level 2 of the C4 model. Shows the runtime containers inside the AyoKoding Web s
 the Next.js application (server + client), the content directory, the in-memory search index,
 and the Vercel hosting platform.
 
-The Next.js app runs as a standalone deployment on Vercel. Content is read from co-located
-markdown files at startup and on ISR revalidation. The search index is built in-memory from
-content metadata using FlexSearch.
+The Next.js app runs as a standalone deployment on Vercel. Content pages are statically generated
+at build time via `generateStaticParams`. The search index is built in-memory from content
+metadata using FlexSearch.
 
 ```mermaid
 %% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Brown #CA9161 | Gray #808080
@@ -15,7 +15,7 @@ graph TD
     AUTHOR("Content Author"):::actor_author
 
     subgraph SYSTEM["AyoKoding Web"]
-        SSR["Next.js Server<br/>──────────────────<br/>App Router + tRPC<br/><br/>Server Components<br/>ISR (revalidate: 3600s)<br/>tRPC API routes<br/>Markdown parsing<br/>Syntax highlighting"]:::container_be
+        SSR["Next.js Server<br/>──────────────────<br/>App Router + tRPC<br/><br/>Server Components<br/>SSG (generateStaticParams)<br/>tRPC API routes<br/>Markdown parsing<br/>Syntax highlighting"]:::container_be
 
         CLIENT["Next.js Client<br/>──────────────────<br/>Browser SPA<br/><br/>Client Components<br/>Search dialog<br/>Theme toggle<br/>Language switcher<br/>Sidebar navigation"]:::container_fe
 
@@ -32,7 +32,7 @@ graph TD
         FE_E2E["FE E2E CI<br/>──────────────────<br/>Playwright<br/>Browser UI tests<br/>Scheduled"]:::ci
     end
 
-    VERCEL["Vercel CDN<br/>──────────────────<br/>Edge Network<br/>ISR cache<br/>Standalone output"]:::infra
+    VERCEL["Vercel CDN<br/>──────────────────<br/>Edge Network<br/>Static pages<br/>Standalone output"]:::infra
 
     LEARNER -->|"browser"| CLIENT
     AUTHOR -->|"write markdown"| CONTENT
@@ -44,7 +44,7 @@ graph TD
     SSR -->|"HTML + JS bundles"| CLIENT
 
     SSR -->|"standalone deploy"| VERCEL
-    VERCEL -->|"serve + ISR cache"| LEARNER
+    VERCEL -->|"serve static pages"| LEARNER
 
     MAIN_CI -->|"test"| SSR
     BE_E2E -->|"tRPC tests"| SSR
@@ -67,7 +67,7 @@ graph TD
 The server-side runtime handles:
 
 - **tRPC API** (`/api/trpc/[trpc]`): Procedures for content retrieval, search, and metadata
-- **Server Components**: Render pages with ISR (revalidate every 3600s, maxDuration 60s)
+- **Server Components**: Pages statically generated at build time via `generateStaticParams`
 - **Content pipeline**: gray-matter → unified (remark/rehype) → HTML with syntax highlighting (shiki)
 - **Search index**: FlexSearch built from all content metadata at startup
 

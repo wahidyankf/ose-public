@@ -6,6 +6,10 @@ import { SearchProvider } from "@/components/search/search-provider";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 
+export function generateStaticParams() {
+  return SUPPORTED_LOCALES.map((locale) => ({ locale }));
+}
+
 interface Props {
   children: React.ReactNode;
   params: Promise<{ locale: string }>;

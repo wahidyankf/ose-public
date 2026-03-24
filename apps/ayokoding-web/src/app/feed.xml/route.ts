@@ -1,5 +1,7 @@
 import { getContentIndex } from "@/server/content/index";
 
+export const dynamic = "force-static";
+
 export async function GET() {
   const index = await getContentIndex();
   const items: string[] = [];

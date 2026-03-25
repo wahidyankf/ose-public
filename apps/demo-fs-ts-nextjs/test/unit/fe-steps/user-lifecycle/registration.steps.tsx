@@ -54,11 +54,13 @@ function createQueryClient() {
 
 describeFeature(feature, ({ Scenario, Background }) => {
   let queryClient: QueryClient;
+  let user: ReturnType<typeof userEvent.setup>;
 
   Background(({ Given }) => {
     Given("the app is running", () => {
       cleanup();
       queryClient = createQueryClient();
+      user = userEvent.setup();
       mockPush.mockClear();
     });
   });
@@ -73,7 +75,6 @@ describeFeature(feature, ({ Scenario, Background }) => {
             <RegisterPage />
           </QueryClientProvider>,
         );
-        const user = userEvent.setup();
         await user.type(screen.getByLabelText(/username/i), "alice");
         await user.type(screen.getByLabelText(/email/i), "alice@example.com");
         await user.type(screen.getByLabelText(/password/i), "Str0ng#Pass1");
@@ -81,7 +82,6 @@ describeFeature(feature, ({ Scenario, Background }) => {
     );
 
     And("the visitor submits the registration form", async () => {
-      const user = userEvent.setup();
       await user.click(screen.getByRole("button", { name: /create account/i }));
       await waitFor(() => {
         expect(mockPush).toHaveBeenCalledWith("/login?registered=true");
@@ -107,7 +107,6 @@ describeFeature(feature, ({ Scenario, Background }) => {
             <RegisterPage />
           </QueryClientProvider>,
         );
-        const user = userEvent.setup();
         await user.type(screen.getByLabelText(/username/i), "alice");
         await user.type(screen.getByLabelText(/email/i), "alice@example.com");
         await user.type(screen.getByLabelText(/password/i), "Str0ng#Pass1");
@@ -115,7 +114,6 @@ describeFeature(feature, ({ Scenario, Background }) => {
     );
 
     And("the visitor submits the registration form", async () => {
-      const user = userEvent.setup();
       await user.click(screen.getByRole("button", { name: /create account/i }));
       await waitFor(() => {
         expect(mockPush).toHaveBeenCalledWith("/login?registered=true");
@@ -140,7 +138,6 @@ describeFeature(feature, ({ Scenario, Background }) => {
             <RegisterPage />
           </QueryClientProvider>,
         );
-        const user = userEvent.setup();
         await user.type(screen.getByLabelText(/username/i), "alice");
         await user.type(screen.getByLabelText(/email/i), "new@example.com");
         await user.type(screen.getByLabelText(/password/i), "Str0ng#Pass1");
@@ -148,7 +145,6 @@ describeFeature(feature, ({ Scenario, Background }) => {
     );
 
     And("the visitor submits the registration form", async () => {
-      const user = userEvent.setup();
       await user.click(screen.getByRole("button", { name: /create account/i }));
       await waitFor(() => {
         expect(screen.getByText(/username or email already exists/i)).toBeInTheDocument();
@@ -173,7 +169,6 @@ describeFeature(feature, ({ Scenario, Background }) => {
             <RegisterPage />
           </QueryClientProvider>,
         );
-        const user = userEvent.setup();
         await user.type(screen.getByLabelText(/username/i), "alice");
         await user.type(screen.getByLabelText(/email/i), "not-an-email");
         await user.type(screen.getByLabelText(/password/i), "Str0ng#Pass1");
@@ -181,7 +176,6 @@ describeFeature(feature, ({ Scenario, Background }) => {
     );
 
     And("the visitor submits the registration form", async () => {
-      const user = userEvent.setup();
       await user.click(screen.getByRole("button", { name: /create account/i }));
       await waitFor(() => {
         expect(screen.getByText(/enter a valid email/i)).toBeInTheDocument();
@@ -206,7 +200,6 @@ describeFeature(feature, ({ Scenario, Background }) => {
             <RegisterPage />
           </QueryClientProvider>,
         );
-        const user = userEvent.setup();
         await user.type(screen.getByLabelText(/username/i), "alice");
         await user.type(screen.getByLabelText(/email/i), "alice@example.com");
         // Leave password empty
@@ -214,7 +207,6 @@ describeFeature(feature, ({ Scenario, Background }) => {
     );
 
     And("the visitor submits the registration form", async () => {
-      const user = userEvent.setup();
       await user.click(screen.getByRole("button", { name: /create account/i }));
       await waitFor(() => {
         expect(screen.getByText(/password must meet/i)).toBeInTheDocument();
@@ -239,7 +231,6 @@ describeFeature(feature, ({ Scenario, Background }) => {
             <RegisterPage />
           </QueryClientProvider>,
         );
-        const user = userEvent.setup();
         await user.type(screen.getByLabelText(/username/i), "alice");
         await user.type(screen.getByLabelText(/email/i), "alice@example.com");
         // "str0ng#pass1" has no uppercase
@@ -248,7 +239,6 @@ describeFeature(feature, ({ Scenario, Background }) => {
     );
 
     And("the visitor submits the registration form", async () => {
-      const user = userEvent.setup();
       await user.click(screen.getByRole("button", { name: /create account/i }));
       await waitFor(() => {
         expect(screen.getByText(/password must meet/i)).toBeInTheDocument();

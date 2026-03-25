@@ -106,11 +106,13 @@ const mockLockedAlice = { ...mockAliceUser, status: "LOCKED" as const };
 
 describeFeature(feature, ({ Scenario, Background }) => {
   let queryClient: QueryClient;
+  let user: ReturnType<typeof userEvent.setup>;
 
   Background(({ Given }) => {
     Given("the app is running", () => {
       cleanup();
       queryClient = createQueryClient();
+      user = userEvent.setup();
       mockPush.mockClear();
     });
   });
@@ -125,7 +127,6 @@ describeFeature(feature, ({ Scenario, Background }) => {
             <RegisterPage />
           </QueryClientProvider>,
         );
-        const user = userEvent.setup();
         await user.type(screen.getByLabelText(/username/i), "alice");
         await user.type(screen.getByLabelText(/email/i), "alice@example.com");
         await user.type(screen.getByLabelText(/password/i), "Short1!Ab");
@@ -133,7 +134,6 @@ describeFeature(feature, ({ Scenario, Background }) => {
     );
 
     And("the visitor submits the registration form", async () => {
-      const user = userEvent.setup();
       await user.click(screen.getByRole("button", { name: /create account/i }));
       await waitFor(() => {
         expect(screen.getByText(/password must meet/i)).toBeInTheDocument();
@@ -159,7 +159,6 @@ describeFeature(feature, ({ Scenario, Background }) => {
             <RegisterPage />
           </QueryClientProvider>,
         );
-        const user = userEvent.setup();
         await user.type(screen.getByLabelText(/username/i), "alice");
         await user.type(screen.getByLabelText(/email/i), "alice@example.com");
         await user.type(screen.getByLabelText(/password/i), "AllUpperCase1234");
@@ -167,7 +166,6 @@ describeFeature(feature, ({ Scenario, Background }) => {
     );
 
     And("the visitor submits the registration form", async () => {
-      const user = userEvent.setup();
       await user.click(screen.getByRole("button", { name: /create account/i }));
       await waitFor(() => {
         expect(screen.getByText(/password must meet/i)).toBeInTheDocument();
@@ -197,7 +195,6 @@ describeFeature(feature, ({ Scenario, Background }) => {
           <LoginPage />
         </QueryClientProvider>,
       );
-      const user = userEvent.setup();
       await user.type(screen.getByLabelText(/username/i), "alice");
       await user.type(screen.getByLabelText(/password/i), "Str0ng#Pass1");
       await user.click(screen.getByRole("button", { name: /log in/i }));
@@ -252,7 +249,6 @@ describeFeature(feature, ({ Scenario, Background }) => {
         page: 0,
         size: 20,
       });
-      const user = userEvent.setup();
       await user.click(screen.getByRole("button", { name: /unlock user alice/i }));
       await waitFor(() => {
         expect(adminApi.unlockUser).toHaveBeenCalled();
@@ -281,7 +277,6 @@ describeFeature(feature, ({ Scenario, Background }) => {
           <LoginPage />
         </QueryClientProvider>,
       );
-      const user = userEvent.setup();
       await user.type(screen.getByLabelText(/username/i), "alice");
       await user.type(screen.getByLabelText(/password/i), "Str0ng#Pass1");
       await user.click(screen.getByRole("button", { name: /log in/i }));

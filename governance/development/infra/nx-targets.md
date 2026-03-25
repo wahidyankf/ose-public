@@ -149,7 +149,7 @@ Every project declares tags along four dimensions. Each dimension uses a fixed p
 
 | Project                   | Tags                                                                    |
 | ------------------------- | ----------------------------------------------------------------------- |
-| `ayokoding-web`           | `["type:app", "platform:hugo", "domain:ayokoding"]`                     |
+| `ayokoding-web`           | `["type:app", "platform:nextjs", "lang:ts", "domain:ayokoding"]`        |
 | `ayokoding-cli`           | `["type:app", "platform:cli", "lang:golang", "domain:ayokoding"]`       |
 | `rhino-cli`               | `["type:app", "platform:cli", "lang:golang", "domain:tooling"]`         |
 | `demo-be-java-springboot` | `["type:app", "platform:spring-boot", "lang:java", "domain:demo-be"]`   |
@@ -392,8 +392,6 @@ containers and volumes.
 | Target  | Requirement                                            |
 | ------- | ------------------------------------------------------ |
 | `clean` | Remove `public/`, `resources/`, and `.hugo_build.lock` |
-
-`ayokoding-web` also exposes `run-pre-commit` — a pre-commit hook target that rebuilds the CLI, updates titles from filenames, and regenerates navigation. This is site-specific automation, not a general Hugo convention.
 
 ## Workspace-Level Defaults
 

@@ -16,9 +16,9 @@
 
 **Implementation Steps**:
 
-- [ ] Open `governance/development/infra/nx-targets.md`
-- [ ] In the Current Project Tags table, update ayokoding-web row from `["type:app", "platform:hugo", "domain:ayokoding"]` to `["type:app", "platform:nextjs", "lang:ts", "domain:ayokoding"]`
-- [ ] Verify no other references to ayokoding-web as a Hugo site in nx-targets.md
+- [x] Open `governance/development/infra/nx-targets.md`
+- [x] In the Current Project Tags table, update ayokoding-web row from `["type:app", "platform:hugo", "domain:ayokoding"]` to `["type:app", "platform:nextjs", "lang:ts", "domain:ayokoding"]`
+- [x] Verify no other references to ayokoding-web as a Hugo site in nx-targets.md
 - [ ] Commit: `docs(nx-targets): fix stale ayokoding-web tag — platform:nextjs not hugo`
 
 ### Phase 2: Add Gherkin Spec Inputs to test:quick

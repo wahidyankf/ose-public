@@ -45,7 +45,7 @@
 - [x] Update the `deploy` job's `needs` array to include `integration`
 - [x] Update the `deploy` job's `if:` condition to include `&& needs.integration.result == 'success'` alongside the existing `needs.unit.result == 'success'` and `needs.e2e.result == 'success'` checks
 - [x] Verify the `integration` job has no explicit `if:` condition (like the `unit` job — both run unconditionally on any scheduled or manual trigger, not via an explicit `if:` guard)
-- [ ] Commit: `ci(ayokoding-web): add test:integration to scheduled workflow`
+- [x] Commit: `ci(ayokoding-web): add test:integration to scheduled workflow`
 
 ### Phase 4: Introduce ContentRepository Interface and Implementations
 
@@ -53,12 +53,12 @@
 
 **Implementation Steps**:
 
-- [ ] Create `src/server/content/repository.ts` with `ContentRepository` interface:
+- [x] Create `src/server/content/repository.ts` with `ContentRepository` interface:
   - `readAllContent(): Promise<ContentMeta[]>`
   - `readFileContent(filePath: string): Promise<{ content: string; frontmatter: Record<string, unknown> }>`
-- [ ] Create `src/server/content/repository-fs.ts` — `FileSystemContentRepository` wrapping current `reader.ts` functions
-- [ ] Create `src/server/content/repository-memory.ts` — `InMemoryContentRepository` with Maps for fixture data
-- [ ] Run `nx run ayokoding-web:typecheck` to confirm both implementations satisfy the `ContentRepository` interface
+- [x] Create `src/server/content/repository-fs.ts` — `FileSystemContentRepository` wrapping current `reader.ts` functions
+- [x] Create `src/server/content/repository-memory.ts` — `InMemoryContentRepository` with Maps for fixture data
+- [x] Run `nx run ayokoding-web:typecheck` to confirm both implementations satisfy the `ContentRepository` interface
 - [ ] Commit: `feat(ayokoding-web): add ContentRepository interface with fs and in-memory implementations`
 
 ### Phase 5: Refactor Content Service Layer

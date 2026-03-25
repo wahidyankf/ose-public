@@ -58,6 +58,26 @@ jobs:
           flags: ayokoding-web
           fail_ci_if_error: false
 
+  integration:
+    name: Integration tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run test:integration
+        run: npx nx run ayokoding-web:test:integration
+
   e2e:
     name: E2E tests (Docker)
     runs-on: ubuntu-latest
@@ -154,8 +174,8 @@ jobs:
 
   deploy:
     name: Deploy to production branch
-    needs: [unit, e2e, detect-changes]
-    if: (needs.detect-changes.outputs.has_changes == 'true' || inputs.force_deploy == 'true') && needs.unit.result == 'success' && needs.e2e.result == 'success'
+    needs: [unit, integration, e2e, detect-changes]
+    if: (needs.detect-changes.outputs.has_changes == 'true' || inputs.force_deploy == 'true') && needs.unit.result == 'success' && needs.integration.result == 'success' && needs.e2e.result == 'success'
     runs-on: ubuntu-latest
 
     steps:

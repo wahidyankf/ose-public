@@ -31,7 +31,7 @@
 - [x] Add `"inputs": ["default", "{workspaceRoot}/specs/apps/ayokoding-web/**/*.feature"]` to the `test:quick` target
 - [x] Run `nx run ayokoding-web:test:quick` locally to verify it still passes
   - Note: `test:integration` will fail at this stage — the `integration` vitest project config is not added until Phase 7. Only `test:quick` is required to pass here.
-- [ ] Commit: `fix(ayokoding-web): add Gherkin spec inputs to test:quick cache`
+- [x] Commit: `fix(ayokoding-web): add Gherkin spec inputs to test:quick cache`
 
 ### Phase 3: Add test:integration to Scheduled CI
 
@@ -39,12 +39,12 @@
 
 **Implementation Steps**:
 
-- [ ] Open `.github/workflows/test-and-deploy-ayokoding-web.yml`
-- [ ] Add a new `integration` job that runs `npx nx run ayokoding-web:test:integration`
-- [ ] Model the job setup (checkout, Volta, Node, npm ci) after the existing `unit` job
-- [ ] Update the `deploy` job's `needs` array to include `integration`
-- [ ] Update the `deploy` job's `if:` condition to include `&& needs.integration.result == 'success'` alongside the existing `needs.unit.result == 'success'` and `needs.e2e.result == 'success'` checks
-- [ ] Verify the `integration` job has no explicit `if:` condition (like the `unit` job — both run unconditionally on any scheduled or manual trigger, not via an explicit `if:` guard)
+- [x] Open `.github/workflows/test-and-deploy-ayokoding-web.yml`
+- [x] Add a new `integration` job that runs `npx nx run ayokoding-web:test:integration`
+- [x] Model the job setup (checkout, Volta, Node, npm ci) after the existing `unit` job
+- [x] Update the `deploy` job's `needs` array to include `integration`
+- [x] Update the `deploy` job's `if:` condition to include `&& needs.integration.result == 'success'` alongside the existing `needs.unit.result == 'success'` and `needs.e2e.result == 'success'` checks
+- [x] Verify the `integration` job has no explicit `if:` condition (like the `unit` job — both run unconditionally on any scheduled or manual trigger, not via an explicit `if:` guard)
 - [ ] Commit: `ci(ayokoding-web): add test:integration to scheduled workflow`
 
 ### Phase 4: Introduce ContentRepository Interface and Implementations

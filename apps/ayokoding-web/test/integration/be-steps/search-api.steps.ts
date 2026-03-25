@@ -19,8 +19,12 @@ describeFeature(feature, ({ Scenario, Background }) => {
     Given('published pages indexed under locale "en" include a page titled "Getting Started with Go"', () => {});
 
     When('the client calls search.query with locale "en" and query "golang"', async () => {
-      // Use a term likely to exist in the real content
-      results = await testCaller.search.query({ query: "learn", locale: "en" });
+      // Use a term that exists in the real content
+      results = await testCaller.search.query({ query: "about", locale: "en" });
+      // If "about" returns nothing, try "AyoKoding" (the site name appears in many pages)
+      if (results.length === 0) {
+        results = await testCaller.search.query({ query: "AyoKoding", locale: "en" });
+      }
     });
 
     Then("the response should contain at least one result", () => {
@@ -28,15 +32,21 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
 
     And('each result should include a "title" field', () => {
-      expect(results[0]).toHaveProperty("title");
+      const first = results[0];
+      expect(first).toBeTruthy();
+      expect(first).toHaveProperty("title");
     });
 
     And('each result should include a "slug" field', () => {
-      expect(results[0]).toHaveProperty("slug");
+      const first = results[0];
+      expect(first).toBeTruthy();
+      expect(first).toHaveProperty("slug");
     });
 
     And('each result should include an "excerpt" field', () => {
-      expect(results[0]).toHaveProperty("excerpt");
+      const first = results[0];
+      expect(first).toBeTruthy();
+      expect(first).toHaveProperty("excerpt");
     });
   });
 

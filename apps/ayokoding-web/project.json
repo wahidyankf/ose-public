@@ -53,7 +53,7 @@
       "cache": true,
       "inputs": ["default", "{workspaceRoot}/specs/apps/ayokoding-web/**/*.feature"],
       "options": {
-        "command": "npx vitest run",
+        "command": "npx vitest run --project unit --project unit-fe",
         "cwd": "{projectRoot}"
       }
     },
@@ -63,7 +63,7 @@
       "inputs": ["default", "{workspaceRoot}/specs/apps/ayokoding-web/**/*.feature"],
       "options": {
         "commands": [
-          "npx vitest run --coverage && (cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/ayokoding-web/coverage/lcov.info 80)",
+          "npx vitest run --project unit --project unit-fe --coverage && (cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/ayokoding-web/coverage/lcov.info 80)",
           "../../apps/ayokoding-cli/dist/ayokoding-cli links check --content content"
         ],
         "parallel": true,

@@ -159,7 +159,7 @@
 - [x] Update the `integration` vitest project include pattern to also match `**/*.integration.{test,spec}.{ts,tsx}` alongside `test/integration/be-steps/**/*.steps.ts`
 - [x] Verify `nx run ayokoding-web:test:unit` no longer runs the moved test
 - [x] Verify `nx run ayokoding-web:test:integration` runs it successfully
-- [ ] Commit: `refactor(ayokoding-web): move integration-content test from unit to integration project`
+- [x] Commit: `refactor(ayokoding-web): move integration-content test from unit to integration project`
 
 ### Phase 10: Create FE Unit Step Files for All FE Gherkin Specs
 
@@ -167,17 +167,17 @@
 
 **Implementation Steps**:
 
-- [ ] Create `test/unit/fe-steps/helpers/test-setup.ts` — jsdom setup, mock tRPC client, mock router, render helpers
-- [ ] Create step files for all 6 FE features using `@amiceli/vitest-cucumber`:
-  - [ ] `test/unit/fe-steps/content-rendering.steps.tsx` → `specs/apps/ayokoding-web/fe/gherkin/content-rendering.feature`
-  - [ ] `test/unit/fe-steps/navigation.steps.tsx` → `specs/apps/ayokoding-web/fe/gherkin/navigation.feature`
-  - [ ] `test/unit/fe-steps/search.steps.tsx` → `specs/apps/ayokoding-web/fe/gherkin/search.feature`
-  - [ ] `test/unit/fe-steps/responsive.steps.tsx` → `specs/apps/ayokoding-web/fe/gherkin/responsive.feature`
-  - [ ] `test/unit/fe-steps/i18n.steps.tsx` → `specs/apps/ayokoding-web/fe/gherkin/i18n.feature`
-  - [ ] `test/unit/fe-steps/accessibility.steps.tsx` → `specs/apps/ayokoding-web/fe/gherkin/accessibility.feature`
-- [ ] All step files must use mocks only — mocked tRPC responses, mocked router, `@testing-library/react` for rendering
-- [ ] Run `nx run ayokoding-web:test:unit` and verify all 6 FE step files execute
-- [ ] Run `nx run ayokoding-web:test:quick` to verify coverage threshold still passes
+- [x] Create `test/unit/fe-steps/helpers/test-setup.ts` — jsdom setup, mock tRPC client, mock router, render helpers
+- [x] Create step files for all 6 FE features using `@amiceli/vitest-cucumber`:
+  - [x] `test/unit/fe-steps/content-rendering.steps.tsx` → `specs/apps/ayokoding-web/fe/gherkin/content-rendering.feature`
+  - [x] `test/unit/fe-steps/navigation.steps.tsx` → `specs/apps/ayokoding-web/fe/gherkin/navigation.feature`
+  - [x] `test/unit/fe-steps/search.steps.tsx` → `specs/apps/ayokoding-web/fe/gherkin/search.feature`
+  - [x] `test/unit/fe-steps/responsive.steps.tsx` → `specs/apps/ayokoding-web/fe/gherkin/responsive.feature`
+  - [x] `test/unit/fe-steps/i18n.steps.tsx` → `specs/apps/ayokoding-web/fe/gherkin/i18n.feature`
+  - [x] `test/unit/fe-steps/accessibility.steps.tsx` → `specs/apps/ayokoding-web/fe/gherkin/accessibility.feature`
+- [x] All step files must use mocks only — mocked tRPC responses, mocked router, `@testing-library/react` for rendering
+- [x] Run `nx run ayokoding-web:test:unit` and verify all 6 FE step files execute
+- [x] Run `nx run ayokoding-web:test:quick` to verify coverage threshold still passes
 - [ ] Commit: `feat(ayokoding-web): add FE unit step files consuming all FE Gherkin specs`
 
 ### Phase 11: Convert BE E2E Tests to Consume Gherkin Specs via playwright-bdd

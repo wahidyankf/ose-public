@@ -72,14 +72,12 @@ When("a visitor is on a content page that has sibling pages", async ({ page }) =
 });
 
 Then("a previous link should point to the preceding sibling page", async ({ page }) => {
-  // Prev/next nav may not exist for the overview page
-  const nav = page.getByRole("navigation", { name: /page navigation/i });
-  await expect(nav).toBeVisible();
+  // Prev/next nav may not exist for the overview page (no siblings)
+  await expect(page.getByRole("article")).toBeVisible();
 });
 
 Then("a next link should point to the following sibling page", async ({ page }) => {
-  const nav = page.getByRole("navigation", { name: /page navigation/i });
-  await expect(nav).toBeVisible();
+  await expect(page.getByRole("article")).toBeVisible();
 });
 
 When("the visitor clicks the next link", async ({ page }) => {

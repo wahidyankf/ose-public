@@ -74,7 +74,7 @@ Unit tests compensate by using `vi.mock()` on 4 modules (`reader`, `index`, `par
 
 ### Gap 7: FE Unit Tests Are Completely Empty
 
-The `unit-fe` vitest project (jsdom env) is defined in `vitest.config.ts` with include pattern `test/unit/fe-steps/**/*.steps.{ts,tsx}`, but the `test/unit/fe-steps/` directory does not exist. Meanwhile, 6 FE Gherkin specs exist under `specs/apps/ayokoding-web/fe/gherkin/`:
+The `unit-fe` vitest project (jsdom env) is defined in `vitest.config.ts` with include pattern `test/unit/fe-steps/**/*.steps.{ts,tsx}`, but the `test/unit/fe-steps/` directory exists with only an empty `helpers/` subdirectory — no step files are present. Meanwhile, 6 FE Gherkin specs exist under `specs/apps/ayokoding-web/fe/gherkin/`:
 
 - `content-rendering.feature`
 - `navigation.feature`
@@ -127,7 +127,7 @@ This violates the three-level testing standard where unit tests must use mocked 
 3. **Phase atomicity**: Each delivery phase must be a self-contained commit that leaves the codebase in a passing state (typecheck, lint, and test:quick all green). No phase may leave the build broken.
 4. **Unit test purity**: All unit tests (`test:unit`) must use mocks only — no filesystem reads, no HTTP calls, no external dependencies. Tests that require real resources belong in `test:integration`.
 5. **Complete spec consumption**: Every Gherkin feature file under `specs/apps/ayokoding-web/be/` must be consumed by BE unit tests, BE integration tests, and BE E2E tests. Every Gherkin feature file under `specs/apps/ayokoding-web/fe/` must be consumed by FE unit tests and FE E2E tests. All three test levels consume the same specs — only step implementations differ.
-6. **Unused code as errors**: Unused variables, unused imports, and dead code must be treated as errors (not warnings) by either typecheck or linting. TypeScript strict mode (`noUnusedLocals`, `noUnusedParameters`) handles variables/parameters; oxlint config must enforce `no-unused-vars` as error for additional coverage.
+6. **Unused code as errors**: Unused variables, unused imports, and dead code must be treated as errors (not warnings) by either typecheck or linting. TypeScript strict mode (`noUnusedLocals`, `noUnusedParameters`) handles variables/parameters; oxlint config must enforce `no-unused-vars` as error for additional coverage. `no-console: error` is also enforced — this is a deliberate policy choice (not a default). Phase 8 may require fixing existing `console.log` calls in the codebase as part of the same commit.
 
 ## User Stories
 
@@ -277,6 +277,13 @@ Scenario: Oxlint config enforces unused code as errors
   When the linter runs via nx run ayokoding-web:lint
   Then unused variables are reported as errors (not warnings)
   And the lint target fails if any unused code is detected
+
+Scenario: Oxlint config enforces no-console as error
+  Given an oxlint.json config exists in apps/ayokoding-web/
+  When the linter runs via nx run ayokoding-web:lint
+  Then console.log and other console calls are reported as errors
+  And the lint target fails if any console usage is detected
+  And any existing console.log calls in the codebase are fixed in the Phase 8 commit
 
 Scenario: TypeScript strict mode is verified
   Given the apps/ayokoding-web/tsconfig.json

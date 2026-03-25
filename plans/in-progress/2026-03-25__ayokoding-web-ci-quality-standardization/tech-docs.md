@@ -6,17 +6,17 @@
 
 ayokoding-web declares these targets:
 
-| Target             | Command                                   | Cache           | Inputs                                   |
-| ------------------ | ----------------------------------------- | --------------- | ---------------------------------------- |
-| `codegen`          | `echo 'No codegen needed...'`             | inherited       | default                                  |
-| `dev`              | `next dev --port 3101`                    | no              | —                                        |
-| `build`            | `next build`                              | yes             | default                                  |
-| `start`            | `next start --port 3101`                  | no              | —                                        |
-| `typecheck`        | `tsc --noEmit`                            | yes (inherited) | default                                  |
-| `lint`             | `npx oxlint@latest .`                     | yes (inherited) | default                                  |
-| `test:unit`        | `npx vitest run`                          | yes             | `default` + Gherkin specs                |
-| `test:quick`       | vitest + coverage + link check (parallel) | yes (inherited) | **default only (missing Gherkin specs)** |
-| `test:integration` | `npx vitest run --project integration`    | no              | default                                  |
+| Target             | Command                                   | Cache           | Inputs                                                                     |
+| ------------------ | ----------------------------------------- | --------------- | -------------------------------------------------------------------------- |
+| `codegen`          | `echo 'No codegen needed...'`             | inherited       | default                                                                    |
+| `dev`              | `next dev --port 3101`                    | no              | —                                                                          |
+| `build`            | `next build`                              | yes             | default                                                                    |
+| `start`            | `next start --port 3101`                  | no              | —                                                                          |
+| `typecheck`        | `tsc --noEmit`                            | yes (inherited) | default                                                                    |
+| `lint`             | `npx oxlint@latest .`                     | yes (inherited) | default                                                                    |
+| `test:unit`        | `npx vitest run`                          | yes             | `default` + Gherkin specs                                                  |
+| `test:quick`       | vitest + coverage + link check (parallel) | yes (inherited) | **default only (missing Gherkin specs)**                                   |
+| `test:integration` | `npx vitest run --project integration`    | no              | **default only (missing Gherkin specs — addressed in Change 7 / Phase 7)** |
 
 > **Cache inheritance note**: `test:quick` has no explicit `cache` or `inputs` field in `project.json`. The `yes (inherited)` cache value is confirmed from `nx.json` workspace defaults — `test:quick` is listed as a cacheable target in the workspace-level cache configuration.
 >
@@ -352,26 +352,86 @@ The net change is: remove `index.ts` and `search-index.ts` from the exclusion li
 
 **Verified**: `apps/ayokoding-web/tsconfig.json` already has `strict: true`, `noUnusedLocals: true`, `noUnusedParameters: true`, `noUncheckedIndexedAccess: true`. No TypeScript changes needed.
 
-**Target**: Create `apps/ayokoding-web/oxlint.json` following the `demo-be-ts-effect` pattern:
+**Target**: Create `apps/ayokoding-web/oxlint.json` with full plugin and category configuration:
 
 ```json
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "react", "nextjs", "import", "unicorn", "jsx-a11y", "vitest"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn"
+  },
   "rules": {
     "no-unused-vars": "error",
-    "no-console": "warn",
+    "no-console": "error",
     "eqeqeq": "error"
-  }
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "es2022": true
+  },
+  "settings": {
+    "next": { "rootDir": "." },
+    "react": { "version": "detect" }
+  },
+  "ignorePatterns": [".next/", "coverage/", "node_modules/", "content/"]
 }
 ```
 
-> **Schema note**: The `demo-be-ts-effect` pattern uses `"./node_modules/oxlint/configuration_schema.json"` — a local reference to the oxlint package's bundled schema. This enables IDE autocomplete and validation without relying on an external URL.
+**Plugin rationale**:
 
-Also create matching configs for `apps/ayokoding-web-be-e2e/oxlint.json` and `apps/ayokoding-web-fe-e2e/oxlint.json`.
+| Plugin       | Why                                                                                  |
+| ------------ | ------------------------------------------------------------------------------------ |
+| `typescript` | TypeScript-specific rules from typescript-eslint (default, but explicit for clarity) |
+| `react`      | React hook violations, component anti-patterns, react-refresh rules                  |
+| `nextjs`     | Next.js-specific rules (`@next/eslint-plugin-next` equivalent)                       |
+| `import`     | Unused imports, missing imports, import order                                        |
+| `unicorn`    | Best-practice rules (prefer modern APIs, consistent error handling)                  |
+| `jsx-a11y`   | Accessibility rules for JSX elements                                                 |
+| `vitest`     | Test anti-patterns (no focused tests, proper assertions)                             |
+
+**Category rationale**:
+
+| Category      | Setting       | Why                                             |
+| ------------- | ------------- | ----------------------------------------------- |
+| `correctness` | `error`       | "Definitely wrong" code must block CI           |
+| `suspicious`  | `warn`        | "Likely wrong" code gets flagged for review     |
+| `pedantic`    | off (default) | Too many false positives for a content platform |
+| `style`       | off (default) | Prettier handles formatting                     |
+| `restriction` | off (default) | Too opinionated for this project                |
+
+**Skipped plugins**: `jest` (we use vitest), `vue` (not used), `jsdoc` (not used), `react-perf` (premature optimization), `promise` (TypeScript strict mode covers most cases), `node` (Next.js handles Node.js APIs).
+
+Create slimmer E2E project configs for `apps/ayokoding-web-be-e2e/oxlint.json` and `apps/ayokoding-web-fe-e2e/oxlint.json`:
+
+```json
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "import", "unicorn"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn"
+  },
+  "rules": {
+    "no-unused-vars": "error",
+    "no-console": "error",
+    "eqeqeq": "error"
+  },
+  "env": {
+    "node": true,
+    "es2022": true
+  },
+  "ignorePatterns": ["test-results/", "playwright-report/", ".features-gen/", "node_modules/"]
+}
+```
+
+E2E configs omit `react`, `nextjs`, `jsx-a11y`, and `vitest` plugins since E2E projects are Playwright test code, not React components.
 
 ### Change 7: Create FE Unit Step Files for All FE Gherkin Specs
 
-**Current state**: The `unit-fe` vitest project is defined but has zero step files. The `test/unit/fe-steps/` directory does not exist.
+**Current state**: The `unit-fe` vitest project is defined but has zero step files. The `test/unit/fe-steps/` directory exists but contains only an empty `helpers/` subdirectory — no step files are present.
 
 **Target**: Create step files for all 6 FE Gherkin specs:
 
@@ -490,17 +550,17 @@ specs/apps/ayokoding-web/
 
 ## Risks and Mitigations
 
-| Risk                                                      | Likelihood | Impact | Mitigation                                                                                           |
-| --------------------------------------------------------- | ---------- | ------ | ---------------------------------------------------------------------------------------------------- |
-| Integration tests add CI time                             | Medium     | Low    | Run in parallel with unit and e2e jobs                                                               |
-| Integration tests flaky in CI                             | Low        | Medium | ayokoding-web uses MSW (in-process), not real DB — deterministic                                     |
-| Cache input change triggers rebuilds                      | Certain    | Low    | One-time cache miss, subsequent runs benefit from correct caching                                    |
-| Repository refactor breaks existing tests                 | Medium     | Medium | Incremental approach: introduce interface first, then migrate tests one file at a time               |
-| Coverage threshold harder to meet with more code included | Low        | Medium | Service logic is well-structured; InMemoryContentRepository enables thorough unit testing            |
-| Integration tests sensitive to content/ directory changes | Medium     | Low    | Integration tests assert structural properties (non-empty, ordered, valid HTML) not specific content |
-| playwright-bdd adds complexity to E2E projects            | Medium     | Medium | Well-established library; follows same Gherkin pattern as vitest-cucumber; one-time setup cost       |
-| FE unit tests require extensive component mocking         | Medium     | Medium | Start with structural/smoke scenarios; use @testing-library/react best practices; mock at boundaries |
-| Oxlint error rules may break existing code                | Low        | Low    | Run oxlint with new config first, fix any existing violations in the same commit                     |
+| Risk                                                      | Likelihood | Impact | Mitigation                                                                                                                                                |
+| --------------------------------------------------------- | ---------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Integration tests add CI time                             | Medium     | Low    | Run in parallel with unit and e2e jobs                                                                                                                    |
+| Integration tests flaky in CI                             | Low        | Medium | ayokoding-web's integration tests read from the checked-in `content/` directory (no external DB or service) — filesystem content is stable across CI runs |
+| Cache input change triggers rebuilds                      | Certain    | Low    | One-time cache miss, subsequent runs benefit from correct caching                                                                                         |
+| Repository refactor breaks existing tests                 | Medium     | Medium | Incremental approach: introduce interface first, then migrate tests one file at a time                                                                    |
+| Coverage threshold harder to meet with more code included | Low        | Medium | Service logic is well-structured; InMemoryContentRepository enables thorough unit testing                                                                 |
+| Integration tests sensitive to content/ directory changes | Medium     | Low    | Integration tests assert structural properties (non-empty, ordered, valid HTML) not specific content                                                      |
+| playwright-bdd adds complexity to E2E projects            | Medium     | Medium | Well-established library; follows same Gherkin pattern as vitest-cucumber; one-time setup cost                                                            |
+| FE unit tests require extensive component mocking         | Medium     | Medium | Start with structural/smoke scenarios; use @testing-library/react best practices; mock at boundaries                                                      |
+| Oxlint error rules may break existing code                | Low        | Low    | Run oxlint with new config first, fix any existing violations in the same commit                                                                          |
 
 ## Out of Scope
 

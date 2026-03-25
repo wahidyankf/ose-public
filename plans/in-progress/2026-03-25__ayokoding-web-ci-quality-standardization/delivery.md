@@ -30,6 +30,7 @@
 - [ ] Open `apps/ayokoding-web/project.json`
 - [ ] Add `"inputs": ["default", "{workspaceRoot}/specs/apps/ayokoding-web/**/*.feature"]` to the `test:quick` target
 - [ ] Run `nx run ayokoding-web:test:quick` locally to verify it still passes
+  - Note: `test:integration` will fail at this stage — the `integration` vitest project config is not added until Phase 7. Only `test:quick` is required to pass here.
 - [ ] Commit: `fix(ayokoding-web): add Gherkin spec inputs to test:quick cache`
 
 ### Phase 3: Add test:integration to Scheduled CI
@@ -121,21 +122,29 @@
   - [ ] `test/integration/be-steps/search-api.steps.ts` → `specs/apps/ayokoding-web/be/gherkin/search-api/search-api.feature`
   - [ ] `test/integration/be-steps/navigation-api.steps.ts` → `specs/apps/ayokoding-web/be/gherkin/navigation-api/navigation-api.feature`
   - [ ] `test/integration/be-steps/i18n-api.steps.ts` → `specs/apps/ayokoding-web/be/gherkin/i18n/i18n-api.feature`
+- [ ] Add Gherkin spec inputs to `test:integration` in `project.json`: `"inputs": ["default", "{workspaceRoot}/specs/apps/ayokoding-web/**/*.feature"]` (even though `cache: false`, this documents the dependency for consistency with `test:unit` and `test:quick`)
 - [ ] Verify `nx run ayokoding-web:test:integration` passes
 - [ ] Commit: `feat(ayokoding-web): add integration tests with FileSystemContentRepository`
 
 ### Phase 8: Add Oxlint Config for Unused Code Errors
 
-**Goal**: Treat unused vars, imports, and dead code as linting errors
+**Goal**: Treat unused vars, imports, and dead code as linting errors with full plugin and category configuration
 
 **Implementation Steps**:
 
-- [ ] Create `apps/ayokoding-web/oxlint.json` with `no-unused-vars: error`, `no-console: warn`, `eqeqeq: error` (following `demo-be-ts-effect` pattern)
-- [ ] Create matching `apps/ayokoding-web-be-e2e/oxlint.json` and `apps/ayokoding-web-fe-e2e/oxlint.json`
-- [ ] Run `nx run ayokoding-web:lint` and fix any existing violations surfaced by the new error-level rules
+- [ ] Create `apps/ayokoding-web/oxlint.json` with:
+  - `$schema`: `"./node_modules/oxlint/configuration_schema.json"`
+  - Plugins: `["typescript", "react", "nextjs", "import", "unicorn", "jsx-a11y", "vitest"]`
+  - Categories: `{ "correctness": "error", "suspicious": "warn" }`
+  - Rules: `{ "no-unused-vars": "error", "no-console": "error", "eqeqeq": "error" }`
+  - Settings: `{ "next": { "rootDir": "." }, "react": { "version": "detect" } }`
+  - Env: `{ "browser": true, "node": true, "es2022": true }`
+  - IgnorePatterns: `[".next/", "coverage/", "node_modules/", "content/"]`
+- [ ] Create slimmer `apps/ayokoding-web-be-e2e/oxlint.json` and `apps/ayokoding-web-fe-e2e/oxlint.json` with: `typescript`, `import`, `unicorn` plugins only (no react/nextjs/jsx-a11y — these are Playwright test projects)
+- [ ] Run `nx run ayokoding-web:lint` and fix any existing violations surfaced by the new error-level rules and plugin categories
 - [ ] Run `nx run ayokoding-web-be-e2e:lint` and `nx run ayokoding-web-fe-e2e:lint` and fix any violations
 - [ ] Verify TypeScript strict mode is already enabled (`strict: true`, `noUnusedLocals: true`, `noUnusedParameters: true` in tsconfig.json)
-- [ ] Commit: `feat(ayokoding-web): add oxlint config with unused code as errors`
+- [ ] Commit: `feat(ayokoding-web): add oxlint config with plugins, categories, and strict rules`
 
 ### Phase 9: Enforce Unit Test Purity — Move Integration-Level Test
 

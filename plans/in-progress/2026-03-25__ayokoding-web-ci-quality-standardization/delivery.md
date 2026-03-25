@@ -6,7 +6,7 @@
 
 **Git Workflow**: Trunk Based Development — each phase is one commit
 
-**Phase Independence**: Phases 1–3 (CI and documentation fixes, Goals 1–4) are independently committable and can be delivered without executing Phases 4–8. Phases 4–8 (repository pattern refactor, Goals 5–6) form a cohesive refactoring that should be committed as a unit. Phase 8 (Verify and Validate) applies to whichever set of phases was most recently completed.
+**Phase Independence**: Phases 1–3 (CI and documentation fixes, Goals 1–4) are independently committable. Phases 4–7 (repository pattern refactor, Goals 5–6) form a cohesive unit. Phases 8–12 (linting, FE unit tests, unit purity, E2E Gherkin) are independently committable but Phase 9 (unit test purity) should follow Phases 4–7 since it moves a file to the integration project created in Phase 7. Phase 13 (Verify and Validate) applies to whichever set of phases was most recently completed.
 
 ## Implementation Phases
 
@@ -43,7 +43,7 @@
 - [ ] Model the job setup (checkout, Volta, Node, npm ci) after the existing `unit` job
 - [ ] Update the `deploy` job's `needs` array to include `integration`
 - [ ] Update the `deploy` job's `if:` condition to include `&& needs.integration.result == 'success'` alongside the existing `needs.unit.result == 'success'` and `needs.e2e.result == 'success'` checks
-- [ ] Verify the `integration` job condition matches the existing `unit` job (runs on schedule and manual trigger)
+- [ ] Verify the `integration` job has no explicit `if:` condition (like the `unit` job — both run unconditionally on any scheduled or manual trigger, not via an explicit `if:` guard)
 - [ ] Commit: `ci(ayokoding-web): add test:integration to scheduled workflow`
 
 ### Phase 4: Introduce ContentRepository Interface and Implementations
@@ -81,9 +81,10 @@
 - [ ] Refactor `src/server/trpc/procedures/content.ts` — delegate to `ctx.contentService` instead of importing module functions
 - [ ] Refactor `src/server/trpc/procedures/search.ts` — delegate to `ctx.contentService`
 - [ ] Update `src/app/sitemap.ts`, `src/app/feed.xml/route.ts`, `generateStaticParams` — use shared `ContentService` singleton
+- [ ] Run `nx run ayokoding-web:typecheck` to confirm all consumers compile before removing source files
 - [ ] Remove `src/server/content/index.ts` (logic moved to `service.ts`)
 - [ ] Remove `src/server/content/search-index.ts` (logic moved to `service.ts`)
-- [ ] Run `nx run ayokoding-web:typecheck` to verify no broken imports
+- [ ] Run `nx run ayokoding-web:typecheck` to verify no broken imports after deletions
 - [ ] Commit: `refactor(ayokoding-web): extract ContentService with repository injection`
 
 ### Phase 6: Refactor Unit Tests to Use InMemoryContentRepository
@@ -97,6 +98,7 @@
   - [ ] Replace the empty `createCaller({})` context with `createCaller({ contentService: new ContentService(new InMemoryContentRepository(populateFixtureData())) })`
   - [ ] Delete the entire `vi.hoisted()` block and all four `vi.mock()` calls (`@/server/content/index`, `@/server/content/reader`, `@/server/content/parser`, `@/server/content/search-index`)
   - [ ] Convert the existing `mock-content.ts` fixture data file into the `InMemoryContentRepository` fixture population function rather than deleting it
+- [ ] Run `nx run ayokoding-web:typecheck` to confirm `test-caller.ts` compiles with the new context shape before running tests
 - [ ] Verify all 5 existing step files still pass: `content-api`, `search-api`, `navigation-api`, `i18n-api`, `health-check`
 - [ ] Update `vitest.config.ts` coverage exclusions — remove `index.ts` and `search-index.ts`, keep `reader.ts`, `repository-fs.ts`, `parser.ts`, `types.ts`
 - [ ] Run `nx run ayokoding-web:test:quick` to verify coverage threshold still passes
@@ -113,11 +115,104 @@
   - `environment: "node"`
 - [ ] Create `test/integration/be-steps/helpers/test-service.ts` — instantiate `ContentService` with `FileSystemContentRepository` pointing at real `content/` directory
 - [ ] Create `test/integration/be-steps/helpers/test-caller.ts` — tRPC caller backed by real filesystem service
-- [ ] Create integration step files consuming the same Gherkin specs — assertions verify structural properties (non-empty results, valid HTML, correct ordering) not specific content
+- [ ] Create integration step files consuming the same Gherkin specs — assertions verify structural properties (non-empty results, valid HTML, correct ordering) not specific content:
+  - [ ] `test/integration/be-steps/health-check.steps.ts` → `specs/apps/ayokoding-web/be/gherkin/health/health-check.feature`
+  - [ ] `test/integration/be-steps/content-api.steps.ts` → `specs/apps/ayokoding-web/be/gherkin/content-api/content-api.feature`
+  - [ ] `test/integration/be-steps/search-api.steps.ts` → `specs/apps/ayokoding-web/be/gherkin/search-api/search-api.feature`
+  - [ ] `test/integration/be-steps/navigation-api.steps.ts` → `specs/apps/ayokoding-web/be/gherkin/navigation-api/navigation-api.feature`
+  - [ ] `test/integration/be-steps/i18n-api.steps.ts` → `specs/apps/ayokoding-web/be/gherkin/i18n/i18n-api.feature`
 - [ ] Verify `nx run ayokoding-web:test:integration` passes
 - [ ] Commit: `feat(ayokoding-web): add integration tests with FileSystemContentRepository`
 
-### Phase 8: Verify and Validate
+### Phase 8: Add Oxlint Config for Unused Code Errors
+
+**Goal**: Treat unused vars, imports, and dead code as linting errors
+
+**Implementation Steps**:
+
+- [ ] Create `apps/ayokoding-web/oxlint.json` with `no-unused-vars: error`, `no-console: warn`, `eqeqeq: error` (following `demo-be-ts-effect` pattern)
+- [ ] Create matching `apps/ayokoding-web-be-e2e/oxlint.json` and `apps/ayokoding-web-fe-e2e/oxlint.json`
+- [ ] Run `nx run ayokoding-web:lint` and fix any existing violations surfaced by the new error-level rules
+- [ ] Run `nx run ayokoding-web-be-e2e:lint` and `nx run ayokoding-web-fe-e2e:lint` and fix any violations
+- [ ] Verify TypeScript strict mode is already enabled (`strict: true`, `noUnusedLocals: true`, `noUnusedParameters: true` in tsconfig.json)
+- [ ] Commit: `feat(ayokoding-web): add oxlint config with unused code as errors`
+
+### Phase 9: Enforce Unit Test Purity — Move Integration-Level Test
+
+**Prerequisite**: Phase 7 must be complete (the `integration` vitest project must exist in `vitest.config.ts`). Step 3 below updates the `integration` project's include pattern — this will fail if Phase 7 has not been executed.
+
+**Goal**: Ensure all unit tests are mock-only by relocating real-I/O tests to integration project
+
+**Implementation Steps**:
+
+- [ ] Move `test/unit/be-steps/integration-content.unit.test.ts` to `test/integration/be-steps/integration-content.integration.test.ts`
+- [ ] Rename from `.unit.test.ts` to `.integration.test.ts`
+- [ ] Update the `integration` vitest project include pattern to also match `**/*.integration.{test,spec}.{ts,tsx}` alongside `test/integration/be-steps/**/*.steps.ts`
+- [ ] Verify `nx run ayokoding-web:test:unit` no longer runs the moved test
+- [ ] Verify `nx run ayokoding-web:test:integration` runs it successfully
+- [ ] Commit: `refactor(ayokoding-web): move integration-content test from unit to integration project`
+
+### Phase 10: Create FE Unit Step Files for All FE Gherkin Specs
+
+**Goal**: Populate the empty `unit-fe` vitest project with step files consuming all 6 FE Gherkin specs
+
+**Implementation Steps**:
+
+- [ ] Create `test/unit/fe-steps/helpers/test-setup.ts` — jsdom setup, mock tRPC client, mock router, render helpers
+- [ ] Create step files for all 6 FE features using `@amiceli/vitest-cucumber`:
+  - [ ] `test/unit/fe-steps/content-rendering.steps.tsx` → `specs/apps/ayokoding-web/fe/gherkin/content-rendering.feature`
+  - [ ] `test/unit/fe-steps/navigation.steps.tsx` → `specs/apps/ayokoding-web/fe/gherkin/navigation.feature`
+  - [ ] `test/unit/fe-steps/search.steps.tsx` → `specs/apps/ayokoding-web/fe/gherkin/search.feature`
+  - [ ] `test/unit/fe-steps/responsive.steps.tsx` → `specs/apps/ayokoding-web/fe/gherkin/responsive.feature`
+  - [ ] `test/unit/fe-steps/i18n.steps.tsx` → `specs/apps/ayokoding-web/fe/gherkin/i18n.feature`
+  - [ ] `test/unit/fe-steps/accessibility.steps.tsx` → `specs/apps/ayokoding-web/fe/gherkin/accessibility.feature`
+- [ ] All step files must use mocks only — mocked tRPC responses, mocked router, `@testing-library/react` for rendering
+- [ ] Run `nx run ayokoding-web:test:unit` and verify all 6 FE step files execute
+- [ ] Run `nx run ayokoding-web:test:quick` to verify coverage threshold still passes
+- [ ] Commit: `feat(ayokoding-web): add FE unit step files consuming all FE Gherkin specs`
+
+### Phase 11: Convert BE E2E Tests to Consume Gherkin Specs via playwright-bdd
+
+**Goal**: Replace plain Playwright spec files with Gherkin-driven tests in `ayokoding-web-be-e2e`
+
+**Implementation Steps**:
+
+- [ ] Install `playwright-bdd` in `apps/ayokoding-web-be-e2e`: `npm install -D playwright-bdd`
+- [ ] Update `playwright.config.ts` to use `defineBddConfig` with feature file paths pointing to `../../specs/apps/ayokoding-web/be/gherkin/`
+- [ ] Create step files in `src/steps/` for all 5 BE features:
+  - [ ] `health-check.steps.ts` → `health/health-check.feature`
+  - [ ] `content-api.steps.ts` → `content-api/content-api.feature`
+  - [ ] `search-api.steps.ts` → `search-api/search-api.feature`
+  - [ ] `navigation-api.steps.ts` → `navigation-api/navigation-api.feature` (NEW — was missing)
+  - [ ] `i18n-api.steps.ts` → `i18n/i18n-api.feature`
+- [ ] Remove old plain Playwright spec files from `src/tests/`
+- [ ] Update `apps/ayokoding-web-be-e2e/project.json` — add Gherkin spec inputs: `"inputs": ["default", "{workspaceRoot}/specs/apps/ayokoding-web/be/gherkin/**/*.feature"]`
+- [ ] Add `.features-gen/` to `.gitignore`
+- [ ] Verify `nx run ayokoding-web-be-e2e:test:e2e` passes against running server
+- [ ] Commit: `feat(ayokoding-web-be-e2e): convert to playwright-bdd consuming BE Gherkin specs`
+
+### Phase 12: Convert FE E2E Tests to Consume Gherkin Specs via playwright-bdd
+
+**Goal**: Replace plain Playwright spec files with Gherkin-driven tests in `ayokoding-web-fe-e2e`
+
+**Implementation Steps**:
+
+- [ ] Install `playwright-bdd` in `apps/ayokoding-web-fe-e2e`: `npm install -D playwright-bdd`
+- [ ] Update `playwright.config.ts` to use `defineBddConfig` with feature file paths pointing to `../../specs/apps/ayokoding-web/fe/gherkin/`
+- [ ] Create step files in `src/steps/` for all 6 FE features:
+  - [ ] `content-rendering.steps.ts` → `content-rendering.feature`
+  - [ ] `navigation.steps.ts` → `navigation.feature`
+  - [ ] `search.steps.ts` → `search.feature`
+  - [ ] `responsive.steps.ts` → `responsive.feature`
+  - [ ] `i18n.steps.ts` → `i18n.feature`
+  - [ ] `accessibility.steps.ts` → `accessibility.feature`
+- [ ] Remove old plain Playwright spec files from `src/tests/`
+- [ ] Update `apps/ayokoding-web-fe-e2e/project.json` — add Gherkin spec inputs: `"inputs": ["default", "{workspaceRoot}/specs/apps/ayokoding-web/fe/gherkin/**/*.feature"]`
+- [ ] Add `.features-gen/` to `.gitignore`
+- [ ] Verify `nx run ayokoding-web-fe-e2e:test:e2e` passes against running server
+- [ ] Commit: `feat(ayokoding-web-fe-e2e): convert to playwright-bdd consuming FE Gherkin specs`
+
+### Phase 13: Verify and Validate
 
 **Goal**: Confirm all changes work together
 
@@ -127,6 +222,10 @@
 - [ ] Run `nx run ayokoding-web:test:integration` and confirm it passes
 - [ ] Run `nx affected -t typecheck lint test:quick` and confirm pre-push gate passes
 - [ ] Verify `nx-targets.md` renders correctly and the tag table is accurate
+- [ ] Verify oxlint config catches unused vars/imports as errors
+- [ ] Verify all BE Gherkin specs consumed at 3 levels (unit, integration, E2E)
+- [ ] Verify all FE Gherkin specs consumed at 2 levels (unit, E2E)
+- [ ] Verify no unit test performs real filesystem I/O
 - [ ] Push to `main` and verify pre-push hook succeeds
 
 ## Validation Checklist
@@ -134,22 +233,34 @@
 - [ ] `nx-targets.md` tag table matches `apps/ayokoding-web/project.json` tags
 - [ ] `test:quick` target has explicit Gherkin spec cache inputs
 - [ ] Scheduled CI workflow has unit, integration, and e2e jobs
-- [ ] Deploy job depends on all three test jobs passing
+- [ ] Deploy job depends on all three test jobs passing (both `needs` array and `if:` condition)
 - [ ] `ContentRepository` interface exists with `InMemoryContentRepository` and `FileSystemContentRepository` implementations
 - [ ] `ContentService` encapsulates all business logic and is the sole entry point for content access
-- [ ] Unit tests use `InMemoryContentRepository` — no `vi.mock()` on content modules
+- [ ] BE unit tests use `InMemoryContentRepository` — no `vi.mock()` on content modules
 - [ ] Integration tests use `FileSystemContentRepository` against real `content/` directory — no HTTP calls
-- [ ] Both unit and integration tests consume Gherkin specs from `specs/apps/ayokoding-web/be/gherkin/`
+- [ ] Both BE unit and integration tests consume all 5 BE Gherkin specs
 - [ ] Coverage exclusions updated in `vitest.config.ts` — confirm `service.ts` is NOT in the exclusion list and `repository-fs.ts` IS in the exclusion list; run `nx run ayokoding-web:test:quick` to confirm the 80% threshold passes
+- [ ] `oxlint.json` exists in ayokoding-web, ayokoding-web-be-e2e, and ayokoding-web-fe-e2e with `no-unused-vars: error`
+- [ ] TypeScript strict mode verified: `strict: true`, `noUnusedLocals: true`, `noUnusedParameters: true`
+- [ ] No unit test performs real filesystem I/O — `integration-content.unit.test.ts` moved to integration project
+- [ ] FE unit step files exist for all 6 FE Gherkin specs with mock-only dependencies
+- [ ] `ayokoding-web-be-e2e` consumes all 5 BE Gherkin specs via `playwright-bdd` (including navigation-api)
+- [ ] `ayokoding-web-fe-e2e` consumes all 6 FE Gherkin specs via `playwright-bdd`
+- [ ] Both E2E projects declare Gherkin spec inputs in `project.json`
 - [ ] All local quality gates pass (`nx affected -t typecheck lint test:quick`)
 
 ## Success Metrics
 
-| Metric                        | Before                                        | After                                                           |
-| ----------------------------- | --------------------------------------------- | --------------------------------------------------------------- |
-| Documentation accuracy (tags) | Stale `platform:hugo`                         | Correct `platform:nextjs`                                       |
-| test:quick cache correctness  | Missing Gherkin spec inputs                   | Includes spec inputs                                            |
-| CI test level coverage        | 2 of 3 levels (unit, e2e)                     | 3 of 3 levels (unit, integration, e2e)                          |
-| Content layer testability     | `vi.mock()` on 4 modules, 0% service coverage | Repository pattern, service logic covered by unit tests         |
-| Test architecture alignment   | Diverges from demo-be pattern                 | Matches demo-be pattern (interface + two implementations + BDD) |
-| Pre-push gate                 | Passing                                       | Passing (no regression)                                         |
+| Metric                           | Before                                        | After                                                           |
+| -------------------------------- | --------------------------------------------- | --------------------------------------------------------------- |
+| Documentation accuracy (tags)    | Stale `platform:hugo`                         | Correct `platform:nextjs`                                       |
+| PR quality gate step clarity     | Steps already well-named (no change needed)   | Steps verified clear — no action taken                          |
+| test:quick cache correctness     | Missing Gherkin spec inputs                   | Includes spec inputs                                            |
+| CI test level coverage           | 2 of 3 levels (unit, e2e)                     | 3 of 3 levels (unit, integration, e2e)                          |
+| Content layer testability        | `vi.mock()` on 4 modules, 0% service coverage | Repository pattern, service logic covered by unit tests         |
+| Test architecture alignment      | Diverges from demo-be pattern                 | Matches demo-be pattern (interface + two implementations + BDD) |
+| BE spec consumption completeness | Unit: 5/5, Integration: 0/5, E2E: 4/5         | Unit: 5/5, Integration: 5/5, E2E: 5/5                           |
+| FE spec consumption completeness | Unit: 0/6, E2E: 0/6 (specs exist, unconsumed) | Unit: 6/6, E2E: 6/6                                             |
+| Unit test purity                 | 1 test reads real filesystem                  | All unit tests mock-only                                        |
+| Unused code enforcement          | Oxlint bare defaults (warnings only)          | `no-unused-vars: error` + TypeScript strict mode                |
+| Pre-push gate                    | Passing                                       | Passing (no regression)                                         |

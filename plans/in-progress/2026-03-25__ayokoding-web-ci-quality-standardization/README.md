@@ -23,10 +23,15 @@ Align ayokoding-web's CI pipelines, quality gates, and Nx target configurations 
 4. Ensure `test:quick` Nx cache inputs include Gherkin specs correctly and consistently
 5. Document ayokoding-web's testing architecture (unit projects, coverage exclusions, BDD integration) in relation to the three-level standard
 6. Introduce a repository pattern for content access — extract a `ContentRepository` interface with `InMemoryContentRepository` (unit) and `FileSystemContentRepository` (integration) implementations, enabling clean separation of unit and integration tests that both consume the same Gherkin specs
+7. Add oxlint project config to treat unused vars, imports, and dead code as errors in linting
+8. Create FE unit step files consuming all FE Gherkin specs (`specs/apps/ayokoding-web/fe/gherkin/`) with mock-only dependencies
+9. Enforce unit test purity — move `integration-content.unit.test.ts` (real filesystem reads) from unit to integration project
+10. Convert `ayokoding-web-be-e2e` to consume all BE Gherkin specs via `playwright-bdd`
+11. Convert `ayokoding-web-fe-e2e` to consume all FE Gherkin specs via `playwright-bdd`
 
 ## Delivery Notes
 
-Goals 1–4 (documentation drift, CI gaps, cache inputs, step naming) map to Phases 1–3 in the delivery plan and are independently committable. Goals 5–6 (repository pattern, ContentService) map to Phases 4–7, with Phase 8 as the final validation covering all goals, and form a cohesive refactoring that should be committed as a unit. Either set can be delivered without the other.
+Goals 1–4 (documentation drift, CI gaps, cache inputs, step naming) map to Phases 1–3 in the delivery plan and are independently committable. Goals 5–6 (repository pattern, ContentService) map to Phases 4–7 and form a cohesive refactoring. Goals 7–11 (linting strictness, FE unit tests, unit test purity, E2E Gherkin consumption) map to Phases 8–12. Phase 13 is the final validation covering all goals. Each group can be delivered independently.
 
 ## Context
 
@@ -42,3 +47,5 @@ ayokoding-web is a Next.js 16 fullstack content platform with:
 The app is substantially compliant but has documentation drift, a missing CI step, and an opportunity to align its backend architecture with the monorepo's repository pattern and three-level testing standard.
 
 Currently, all server-side content code (`src/server/content/*`, `src/server/trpc/procedures/**`) is excluded from coverage. Unit tests use `vi.mock()` at the module level rather than injecting through an interface. This prevents clean separation between unit tests (mocked data access) and integration tests (real filesystem reads), unlike the established demo-be pattern.
+
+Additional gaps: the `unit-fe` vitest project is completely empty (6 FE Gherkin specs unconsumed), both E2E projects use plain Playwright tests without consuming Gherkin specs, oxlint runs with bare defaults (no error-level rules for unused code), and one unit test file (`integration-content.unit.test.ts`) reads the real filesystem — violating mock-only unit test principles.

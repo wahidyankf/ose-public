@@ -219,7 +219,7 @@
 - [x] Update `apps/ayokoding-web-fe-e2e/project.json` — add Gherkin spec inputs: `"inputs": ["default", "{workspaceRoot}/specs/apps/ayokoding-web/fe/gherkin/**/*.feature"]`
 - [x] Add `.features-gen/` to `.gitignore`
 - [ ] Verify `nx run ayokoding-web-fe-e2e:test:e2e` passes against running server
-- [ ] Commit: `feat(ayokoding-web-fe-e2e): convert to playwright-bdd consuming FE Gherkin specs`
+- [x] Commit: `feat(ayokoding-web-fe-e2e): convert to playwright-bdd consuming FE Gherkin specs`
 
 ### Phase 13: Verify and Validate
 

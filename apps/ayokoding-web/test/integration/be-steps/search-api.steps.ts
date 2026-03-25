@@ -1,8 +1,11 @@
 import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
-import { expect } from "vitest";
+import { expect, vi } from "vitest";
 import { testCaller } from "./helpers/test-caller";
 import type { SearchResult } from "@/server/content/types";
+
+// Building search index on the full content directory can take >5s
+vi.setConfig({ testTimeout: 30000 });
 
 const feature = await loadFeature(
   path.resolve(process.cwd(), "../../specs/apps/ayokoding-web/be/gherkin/search-api/search-api.feature"),

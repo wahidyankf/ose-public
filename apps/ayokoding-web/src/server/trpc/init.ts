@@ -1,3 +1,4 @@
+import path from "node:path";
 import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { ContentService } from "@/server/content/service";
@@ -7,7 +8,8 @@ export interface TRPCContext {
   contentService: ContentService;
 }
 
-const defaultContentService = new ContentService(new FileSystemContentRepository());
+const searchDataPath = path.resolve(process.cwd(), "generated", "search-data.json");
+const defaultContentService = new ContentService(new FileSystemContentRepository(), searchDataPath);
 
 export function createTRPCContext(): TRPCContext {
   return { contentService: defaultContentService };

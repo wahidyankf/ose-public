@@ -1,3 +1,4 @@
+import fs from "node:fs/promises";
 import FlexSearch from "flexsearch";
 import type { ContentRepository } from "./repository";
 import type { ContentIndex, ContentMeta, TreeNode, PageLink, SearchResult, Heading } from "./types";
@@ -5,7 +6,7 @@ import { parseMarkdown } from "./parser";
 import { stripMarkdown } from "./reader";
 import { buildTrees, getParentSlug, findSubtree, computePrevNext } from "./tree-builder";
 
-interface SearchDoc {
+export interface SearchDoc {
   id: string;
   title: string;
   content: string;
@@ -15,12 +16,14 @@ interface SearchDoc {
 
 export class ContentService {
   private readonly repository: ContentRepository;
+  private readonly searchDataPath: string | null;
   private contentIndex: ContentIndex | null = null;
   private searchIndexes = new Map<string, FlexSearch.Document<SearchDoc, true>>();
   private docStore = new Map<string, SearchDoc>();
 
-  constructor(repository: ContentRepository) {
+  constructor(repository: ContentRepository, searchDataPath?: string) {
     this.repository = repository;
+    this.searchDataPath = searchDataPath ?? null;
   }
 
   async getIndex(): Promise<ContentIndex> {
@@ -126,6 +129,46 @@ export class ContentService {
   private async ensureSearchIndex(locale: string): Promise<void> {
     if (this.searchIndexes.has(locale)) return;
 
+    const preBuiltDocs = await this.tryLoadPreBuiltSearchData();
+
+    if (preBuiltDocs) {
+      this.buildSearchIndexFromDocs(preBuiltDocs);
+    } else {
+      await this.buildSearchIndexFromFiles();
+    }
+  }
+
+  private async tryLoadPreBuiltSearchData(): Promise<SearchDoc[] | null> {
+    if (!this.searchDataPath) return null;
+    try {
+      const raw = await fs.readFile(this.searchDataPath, "utf-8");
+      return JSON.parse(raw) as SearchDoc[];
+    } catch {
+      return null;
+    }
+  }
+
+  private buildSearchIndexFromDocs(docs: SearchDoc[]): void {
+    const locales = [...new Set(docs.map((d) => d.locale))];
+
+    for (const loc of locales) {
+      if (this.searchIndexes.has(loc)) continue;
+
+      const index = new FlexSearch.Document<SearchDoc, true>({
+        document: { id: "id", index: ["title", "content"], store: true },
+        tokenize: "full",
+      });
+
+      for (const doc of docs.filter((d) => d.locale === loc)) {
+        index.add(doc);
+        this.docStore.set(doc.id, doc);
+      }
+
+      this.searchIndexes.set(loc, index);
+    }
+  }
+
+  private async buildSearchIndexFromFiles(): Promise<void> {
     const contentIndex = await this.getIndex();
     const items = [...contentIndex.contentMap.values()];
     const locales = [...new Set(items.map((i) => i.locale))];
@@ -134,11 +177,7 @@ export class ContentService {
       if (this.searchIndexes.has(loc)) continue;
 
       const index = new FlexSearch.Document<SearchDoc, true>({
-        document: {
-          id: "id",
-          index: ["title", "content"],
-          store: true,
-        },
+        document: { id: "id", index: ["title", "content"], store: true },
         tokenize: "full",
       });
 

@@ -148,6 +148,53 @@ Feature: Database migration tooling for all demo apps
       | demo-be-ts-effect          |
       | demo-be-csharp-aspnetcore  |
 
+  # Note on demo-be-ts-effect schema: The current `src/infrastructure/db/schema.ts` contains only 4
+  # tables (users, expenses, attachments, revoked_tokens) — there is no separate `refresh_tokens`
+  # table. Phase 4b migration files must include a `refresh_tokens` migration to align with the
+  # 5-table standard shared by all other demo apps. The `revoked_tokens` table (token blacklist)
+  # and `refresh_tokens` table (active token storage) serve different purposes and must both exist.
+
+  # Note on demo-be-java-vertx schema: The current `SchemaInitializer.java` creates only 4 tables
+  # (users, expenses, attachments, revoked_tokens) — there is no `refresh_tokens` table. Phase 1a
+  # SQL changelogs must include a `refresh_tokens` migration (e.g., `004-create-refresh-tokens.sql`)
+  # to align with the 5-table standard. The revoked_tokens and refresh_tokens tables serve distinct
+  # purposes and must both exist.
+
+  # Note on demo-be-python-fastapi schema: The current `models.py` defines only 4 models (users,
+  # expenses, attachments, and a revoked/blacklisted tokens model) — there is no `RefreshToken`
+  # model or `refresh_tokens` table. Phase 3a Alembic migration scripts must include a
+  # `refresh_tokens` migration to align with the 5-table standard.
+
+  # Note on demo-be-clojure-pedestal schema: The current `schema.clj` defines DDL for only 4
+  # tables (users, expenses, attachments, revoked_tokens) — there is no `refresh_tokens` table.
+  # Phase 3b Migratus migration pairs must include a `refresh_tokens` migration to align with
+  # the 5-table standard.
+
+  # Note on demo-be-kotlin-ktor schema: The current implementation uses a single `tokens` table
+  # (via Exposed `TokensTable`) that combines refresh and revoked token semantics via a `token_type`
+  # column. This does not produce separate `refresh_tokens` and `revoked_tokens` tables. Phase 1b
+  # MUST resolve this divergence explicitly:
+  #   Option A (recommended): Keep the single `tokens` table with `token_type` column, and update
+  #     the acceptance criteria Examples table to note this app's schema divergence (the "Migrations
+  #     produce correct schema" scenario should exclude demo-be-kotlin-ktor or add a separate
+  #     scenario for it). Flyway migration V1 creates the `tokens` table; no `refresh_tokens` or
+  #     `revoked_tokens` tables are created.
+  #   Option B: Split into `refresh_tokens` + `revoked_tokens` tables — requires updating
+  #     `TokensTable.kt` and all repository code that queries by `token_type`.
+  # The executor must document the chosen option in the Phase 1b commit message.
+
+  # Note on demo-be-golang-gin schema: The current implementation uses a GORM struct
+  # `BlacklistedToken` without a `TableName()` override. GORM's snake_case pluralization creates a
+  # `blacklisted_tokens` table, NOT `revoked_tokens`. The acceptance criteria require `revoked_tokens`.
+  # Phase 4a MUST resolve this naming conflict explicitly before writing goose migrations:
+  #   Option A (recommended): Rename struct to `RevokedToken` and add `TableName() string { return
+  #     "revoked_tokens" }` method; update all repository code that references `BlacklistedToken`.
+  #     Goose migrations then use `revoked_tokens` consistently.
+  #   Option B: Keep `blacklisted_tokens` and update the acceptance criteria Examples table to note
+  #     this app uses `blacklisted_tokens` instead of `revoked_tokens`. Goose migrations use
+  #     `blacklisted_tokens`.
+  # The executor must document the chosen option in the Phase 4a commit message.
+
   Scenario Outline: Migrations are idempotent
     Given the demo app "<app>" with a fully migrated database
     When the app restarts

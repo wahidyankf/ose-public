@@ -97,7 +97,7 @@ defined in F# fail to be discovered. DbUp uses plain SQL scripts — no assembly
 ### 6. demo-be-clojure-pedestal: **Migratus**
 
 **Why**: De-facto standard for Clojure database migrations (~679 GitHub stars, Apache 2.0, v1.6.5
-released 2025). [Luminus](https://luminusweb.com/docs/migrations.html) — the most popular Clojure
+released 2026). [Luminus](https://luminusweb.com/docs/migrations.html) — the most popular Clojure
 web framework — defaults to Migratus. Git-friendly: handles branch-based workflows. Supports both
 `.up.sql`/`.down.sql` files and Clojure code migrations. Compatible with next.jdbc via JDBC.
 
@@ -164,12 +164,19 @@ tool — it cannot handle incremental changes. Switching to proper EF Core migra
 
 #### demo-be-java-vertx (Liquibase)
 
+**Schema note**: The current `SchemaInitializer.java` creates only 4 tables (users, expenses,
+attachments, revoked_tokens) — there is no `refresh_tokens` table. The SQL changelogs must include
+a `refresh_tokens` migration (e.g., `004-create-refresh-tokens.sql`) to align with the 5-table
+standard. Renumber subsequent changelogs accordingly (expenses → 005, attachments → 006) or insert
+the refresh_tokens changelog between existing ones.
+
 **Files to create:**
 
 - `src/main/resources/db/changelog/db.changelog-master.yaml` — Master changelog referencing change
   files
 - `src/main/resources/db/changelog/changes/001-create-users.sql` through
-  `006-create-attachments.sql` — SQL changelogs matching Spring Boot's format
+  `006-create-attachments.sql` — SQL changelogs matching Spring Boot's format (6 files including
+  `refresh_tokens`)
 
 **Files to modify:**
 
@@ -195,8 +202,21 @@ tool — it cannot handle incremental changes. Switching to proper EF Core migra
 **Files to modify:**
 
 - `pyproject.toml` or `requirements.txt` — Add `alembic` dependency
-- `main.py` — Replace `Base.metadata.create_all()` with Alembic `upgrade("head")` on startup
+- `main.py` — Replace `Base.metadata.create_all()` with Alembic programmatic API on startup:
+
+  ```python
+  from alembic.config import Config
+  from alembic import command
+
+  alembic_cfg = Config("alembic.ini")
+  command.upgrade(alembic_cfg, "head")
+  ```
+
 - `README.md` — Document migration approach
+
+**Schema note**: The current `models.py` defines only 4 models (no `RefreshToken` model or
+`refresh_tokens` table). Phase 3a migration scripts must include a `refresh_tokens` migration
+(e.g., `004_create_refresh_tokens.py`) to align with the 5-table standard.
 
 **Docker/CI impact:**
 
@@ -206,17 +226,54 @@ tool — it cannot handle incremental changes. Switching to proper EF Core migra
 
 #### demo-be-golang-gin (goose)
 
+**Schema note — naming conflict**: The current `gorm_store.go` uses a GORM struct `BlacklistedToken`
+without a `TableName()` override. GORM's snake_case pluralization creates a `blacklisted_tokens`
+table, not `revoked_tokens` as required by the acceptance criteria. The executor must resolve this
+before writing goose migrations — choose one option and document it in the commit message:
+
+- **Option A (recommended)**: Rename `BlacklistedToken` to `RevokedToken` and add
+  `func (RevokedToken) TableName() string { return "revoked_tokens" }`. Update all repository code
+  that references `BlacklistedToken` (queries, type assertions, constructors). Goose migrations
+  then use `revoked_tokens` consistently, matching the acceptance criteria.
+- **Option B**: Keep `blacklisted_tokens` as the table name. Goose migrations use
+  `blacklisted_tokens`. Update the acceptance criteria "Migrations produce correct schema" Examples
+  table to note this app uses `blacklisted_tokens` instead of `revoked_tokens`.
+
 **Files to create:**
 
 - `db/migrations/001_create_users.sql` through `006_create_attachments.sql` — SQL migration files
-  with `-- +goose Up` / `-- +goose Down` markers
+  with `-- +goose Up` / `-- +goose Down` markers (table name in the revoked/blacklisted tokens
+  migration depends on the option chosen above)
 
 **Files to modify:**
 
 - `go.mod` — Add `github.com/pressly/goose/v3` dependency
+- `internal/store/gorm_store.go` — Rename `BlacklistedToken` to `RevokedToken` and add
+  `TableName()` method (if Option A chosen); update all usages
 - `internal/store/store.go` (or equivalent) — Replace GORM `AutoMigrate()` with goose embedded
-  migrations (`goose.Up(db, migrationsDir)`)
+  migrations using `goose.SetBaseFS` + `goose.Up` (see implementation note below)
 - `README.md` — Document migration approach
+
+**goose embedded migrations implementation**: Use `goose.SetBaseFS` with an `embed.FS` rather than
+a filesystem directory path. The legacy `goose.Up(db, migrationsDir)` form requires a real
+directory; for embedded migrations use:
+
+```go
+//go:embed db/migrations/*.sql
+var embedMigrations embed.FS
+
+goose.SetBaseFS(embedMigrations)
+if err := goose.Up(db, "db/migrations"); err != nil {
+    // handle error
+}
+```
+
+Alternatively, use the recommended provider API:
+
+```go
+provider, err := goose.NewProvider(goose.DialectPostgres, db, embedMigrations)
+provider.Up(ctx)
+```
 
 **Docker/CI impact:**
 
@@ -227,10 +284,25 @@ tool — it cannot handle incremental changes. Switching to proper EF Core migra
 
 #### demo-be-kotlin-ktor (Flyway)
 
+**Schema note**: The current implementation uses a single `tokens` table (via Exposed `TokensTable`)
+that combines refresh and revoked token semantics via a `token_type` column. This does not produce
+separate `refresh_tokens` and `revoked_tokens` tables. The executor must choose one of the following
+options before writing Flyway migrations and document the decision in the commit message:
+
+- **Option A (recommended)**: Keep the single `tokens` table with `token_type` column. Create one
+  Flyway migration `V2__create_tokens.sql` that creates the `tokens` table. Note in the plan and
+  README that this app's schema diverges from the 5-table standard (no separate `refresh_tokens`
+  or `revoked_tokens`). The acceptance criteria "Migrations produce correct schema" scenario should
+  be amended to exclude `demo-be-kotlin-ktor` or add a separate scenario for it.
+- **Option B**: Split into `refresh_tokens` + `revoked_tokens` tables. Requires updating
+  `TokensTable.kt`, `TokenRepository.kt`, and all repository code that queries by `token_type`.
+  Flyway migrations then produce the standard 5-table schema.
+
 **Files to create:**
 
 - `src/main/resources/db/migration/V1__create_users.sql` through
-  `V6__create_attachments.sql` — Flyway-convention SQL files
+  `V6__create_attachments.sql` — Flyway-convention SQL files (number and content depend on option
+  chosen above; Option A produces a `tokens` table instead of `refresh_tokens`/`revoked_tokens`)
 
 **Files to modify:**
 
@@ -238,7 +310,7 @@ tool — it cannot handle incremental changes. Switching to proper EF Core migra
   `org.flywaydb:flyway-database-postgresql` dependencies
 - Application startup code — Add `Flyway.configure().dataSource(ds).load().migrate()` before
   Exposed table registration
-- `README.md` — Document migration approach
+- `README.md` — Document migration approach and note schema divergence if Option A is chosen
 
 **Docker/CI impact:**
 
@@ -257,7 +329,7 @@ tool — it cannot handle incremental changes. Switching to proper EF Core migra
 
 - `.fsproj` — Add `DbUp-Core` and `DbUp-PostgreSQL` NuGet packages; embed migration SQL files as
   `EmbeddedResource`
-- `Program.fs` — Replace `EnsureCreatedAsync()` with DbUp
+- `Program.fs` — Replace `EnsureCreated()` with DbUp
   `DeployChanges.To.PostgresqlDatabase(connStr).WithScriptsEmbeddedInAssembly(assembly).Build().PerformUpgrade()`
 - `README.md` — Document migration approach
 
@@ -269,10 +341,16 @@ tool — it cannot handle incremental changes. Switching to proper EF Core migra
 
 #### demo-be-clojure-pedestal (Migratus)
 
+**Schema note**: The current `schema.clj` defines DDL for only 4 tables (users, expenses,
+attachments, revoked_tokens) — there is no `refresh_tokens` table. The Migratus migration pairs
+must include a `refresh_tokens` migration pair (e.g., `004-create-refresh-tokens.up.sql` /
+`004-create-refresh-tokens.down.sql`) to align with the 5-table standard.
+
 **Files to create:**
 
 - `resources/migrations/001-create-users.up.sql` / `.down.sql` through
-  `006-create-attachments.up.sql` / `.down.sql` — Migratus SQL migration pairs
+  `006-create-attachments.up.sql` / `.down.sql` — Migratus SQL migration pairs (6 pairs including
+  `refresh_tokens`)
 
 **Files to modify:**
 
@@ -289,14 +367,20 @@ tool — it cannot handle incremental changes. Switching to proper EF Core migra
 
 #### demo-be-ts-effect (@effect/sql Migrator)
 
+**Schema note**: The current `src/infrastructure/db/schema.ts` contains only 4 tables (users,
+expenses, attachments, revoked_tokens). A 5th migration file must create the `refresh_tokens`
+table to align with the 5-table standard shared by all other demo apps. The `revoked_tokens`
+table (token blacklist) and `refresh_tokens` table (active token storage) serve distinct purposes.
+
 **Files to create:**
 
 - `src/infrastructure/db/migrations/001_create_users.ts` through
-  `006_create_attachments.ts` — Effect migration modules
+  `006_create_attachments.ts` — Effect migration modules (6 files including `refresh_tokens`)
 
 **Files to modify:**
 
-- `src/infrastructure/db/schema.ts` — Extract DDL into migration files; keep type definitions
+- `src/infrastructure/db/schema.ts` — Extract DDL into migration files; add `refresh_tokens`
+  table definition; keep type definitions
 - Application startup — Add `PgMigrator.run` (or `SqliteMigrator.run`) to the Effect layer
 - `README.md` — Document migration approach
 

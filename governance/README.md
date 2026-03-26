@@ -208,7 +208,7 @@ Is it about WHY the project exists?
 - **Principles** → MUST include "Vision Supported" section
 - **Conventions** → MUST include "Principles Implemented/Respected" section
 - **Development** → MUST include both "Principles" AND "Conventions" sections
-- **Workflows** → MUST reference which agents they orchestrate
+- **Workflows** → SHOULD reference which agents they orchestrate
 
 ### Changes Propagate Down
 

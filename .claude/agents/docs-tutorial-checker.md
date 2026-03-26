@@ -12,7 +12,7 @@ skills:
   - repo-applying-maker-checker-fixer
 ---
 
-# Tutorial Quality Validator
+# Tutorial Quality Validator Agent
 
 ## Agent Metadata
 

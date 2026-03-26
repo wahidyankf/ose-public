@@ -72,6 +72,8 @@ All checker agents in the following families MUST write audit reports to `genera
 13. **apps-ayokoding-web-in-the-field-checker** - In-the-field content validation (ayokoding-web)
 14. **docs-software-engineering-separation-checker** - Software engineering docs separation validation
 15. **repo-workflow-checker** - Workflow documentation quality validation
+16. **specs-checker** - Gherkin/BDD specs directory structural and content validation
+17. **swe-code-checker** - Software code quality validation
 
 **NO EXCEPTIONS**: Checker agents MUST NOT output results in conversation only. All validation findings MUST be written to audit report files.
 
@@ -409,6 +411,8 @@ ALL \*-checker agents must implement progressive writing:
 13. apps-ayokoding-web-in-the-field-checker
 14. docs-software-engineering-separation-checker
 15. repo-workflow-checker
+16. specs-checker
+17. swe-code-checker
 
 **Validation**: See repo-governance-checker agent for validation rules that verify progressive writing compliance across all checker agents.
 
@@ -520,7 +524,7 @@ filename="repo-rules__${uuid}__${timestamp}__audit.md"
 
 #### Fixer Reports (Universal Pattern)
 
-**Agents**: All fixer agents (repo-governance-fixer, apps-ayokoding-web-general-fixer, apps-ayokoding-web-by-example-fixer, apps-ayokoding-web-facts-fixer, apps-ayokoding-web-in-the-field-fixer, apps-ayokoding-web-link-fixer, docs-tutorial-fixer, docs-software-engineering-separation-fixer, apps-oseplatform-web-content-fixer, readme-fixer, docs-fixer, plan-fixer, repo-workflow-fixer)
+**Agents**: All fixer agents (repo-governance-fixer, apps-ayokoding-web-general-fixer, apps-ayokoding-web-by-example-fixer, apps-ayokoding-web-facts-fixer, apps-ayokoding-web-in-the-field-fixer, apps-ayokoding-web-link-fixer, docs-tutorial-fixer, docs-software-engineering-separation-fixer, apps-oseplatform-web-content-fixer, readme-fixer, docs-fixer, plan-fixer, repo-workflow-fixer, specs-fixer)
 
 **Pattern**: `{agent-family}__{uuid-chain}__{YYYY-MM-DD--HH-MM}__fix.md`
 

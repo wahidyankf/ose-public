@@ -376,11 +376,6 @@ Use both verification status AND criticality for findings:
 **DO NOT validate** other languages (TypeScript, Python, etc.) until added to Software Design Reference table.
 
 **Why**: Enables incremental migration - validate explicitly opted-in relationships only.
-**When user doesn't specify scope**, validate ALL prerequisite relationships:
-
-1. Read Software Design Reference to get complete prerequisite mapping table
-2. Validate all mappings in table
-3. Report on all findings
 
 **When user specifies scope** (e.g., "check Java prerequisites"):
 
@@ -398,6 +393,32 @@ Validation is successful when:
 - ✅ All Prerequisites sections reference correct AyoKoding paths
 - ✅ All AyoKoding learning paths have required content
 - ✅ All cross-reference links are correct and functional
+
+## Reference Documentation
+
+**Project Guidance**:
+
+- [AGENTS.md](../../AGENTS.md) - Primary project guidance
+- [AI Agents Convention](../../governance/development/agents/ai-agents.md) - Agent structure and conventions
+
+**Domain Conventions**:
+
+- [Software Design Reference](../../docs/explanation/software-engineering/ex-soen__software-design-reference.md) - Prerequisite mappings table
+- [Diátaxis Framework](../../governance/conventions/structure/diataxis-framework.md) - Tutorials vs. reference distinction
+- [Content Quality Standards](../../governance/conventions/writing/quality.md) - Prerequisites section formatting
+- [Linking Convention](../../governance/conventions/formatting/linking.md) - Cross-reference link standards
+
+**Quality Standards**:
+
+- [Criticality Levels Convention](../../governance/development/quality/criticality-levels.md) - Criticality classification
+- [Maker-Checker-Fixer Pattern](../../governance/development/pattern/maker-checker-fixer.md) - Three-stage workflow
+- [Repository Governance Architecture](../../governance/repository-governance-architecture.md) - Six-layer hierarchy
+
+**Related Agents**:
+
+- **docs-software-engineering-separation-fixer** - Fixes prerequisite issues from audit reports
+- **apps-ayokoding-web-general-checker** - Validates AyoKoding content quality
+- **docs-link-general-checker** - Validates cross-reference links
 
 ## Project Guidance
 

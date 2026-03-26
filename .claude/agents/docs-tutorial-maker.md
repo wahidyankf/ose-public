@@ -11,11 +11,11 @@ skills:
   - docs-creating-by-example-tutorials
 ---
 
-# Tutorial Documentation Maker
+# Tutorial Documentation Maker Agent
 
 ## Agent Metadata
 
-- **Role**: Writer (blue)
+- **Role**: Maker (blue)
 - **Created**: 2025-12-20
 - **Last Updated**: 2026-01-16
 

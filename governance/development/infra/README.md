@@ -31,6 +31,11 @@ These standards define **HOW to manage development infrastructure**, including w
 - [Temporary Files Convention](./temporary-files.md) - Guidelines for AI agents creating temporary uncommitted files and folders
 - [Vercel Deployment Convention](./vercel-deployment.md) - Rules for configuring `vercel.json` when Nx build targets must run before the framework build
 
+## Companion Documents
+
+- [Anti-Patterns](./anti-patterns.md) - Common infrastructure mistakes to avoid (with examples and corrections)
+- [Best Practices](./best-practices.md) - Recommended infrastructure patterns and techniques
+
 ## Related Documentation
 
 - [Development Index](../README.md) - All development practices

@@ -166,7 +166,7 @@ skills: []
    - MUST exactly match the filename (without `.md` extension)
    - Use kebab-case format
    - Should be descriptive and action-oriented
-   - Examples: `doc-writer`, `repo-governance-checker`, `api-validator`
+   - Examples: `docs-maker`, `repo-governance-checker`, `api-validator`
 
 2. **`description`** (required)
    - One-line summary of when to use this agent
@@ -188,7 +188,7 @@ skills: []
 
 5. **`color`** (required)
    - Visual categorization based on agent role
-   - Options: `blue` (writers), `green` (checkers), `yellow` (fixers), `purple` (implementors)
+   - Options: `blue` (makers), `green` (checkers), `yellow` (fixers), `purple` (implementors)
    - Helps users quickly identify agent type
    - See "Agent Color Categorization" below for assignment guidelines
 
@@ -449,7 +449,7 @@ After frontmatter, agents should follow this structure:
 
 **Required Sections:**
 
-1. **Title (H1)**: Must follow pattern `# [Name] Agent`
+1. **Title (H1)**: Must follow pattern `# [Name] Agent`. Exception: App-scoped agents may use `# [Role] for [app-name]` (e.g., `# Content Checker for oseplatform-web`)
 2. **Core Expertise/Responsibility (H2)**: Clear purpose statement
 3. **Reference Documentation (H2)**: Links to relevant conventions and guidance
 
@@ -570,8 +570,8 @@ Tool permissions follow the **principle of least privilege**: agents should only
 | ----------------- | ----------------------------------- | --------------------------------------------- | ----------------------- | ------------------------------------------------------------------ |
 | **Read-Only**     | Read, Glob, Grep                    | Analysis without reports                      | (none currently)        | Pure read operations without file output                           |
 | **Checker**       | Read, Glob, Grep, Write, Bash       | Validation with audit report generation       | repo-governance-checker | Needs Write for reports in generated-reports/, Bash for timestamps |
-| **Documentation** | Read, Write, Edit, Glob, Grep       | Creating/editing docs, managing doc structure | doc-writer              | Needs file creation/editing but no shell access                    |
-| **Development**   | Read, Write, Edit, Glob, Grep, Bash | Code generation, tests, builds, deployment    | test-runner             | Requires command execution (powerful, only when necessary)         |
+| **Documentation** | Read, Write, Edit, Glob, Grep       | Creating/editing docs, managing doc structure | docs-maker              | Needs file creation/editing but no shell access                    |
+| **Development**   | Read, Write, Edit, Glob, Grep, Bash | Code generation, tests, builds, deployment    | swe-golang-developer    | Requires command execution (powerful, only when necessary)         |
 
 ### Report-Generating Agents: Mandatory Tool Requirements
 
@@ -598,16 +598,22 @@ Tool permissions follow the **principle of least privilege**: agents should only
 ALL checker agents MUST write their validation/audit reports to `generated-reports/` directory. This is a hard requirement with NO EXCEPTIONS. The following checker agents are subject to this rule:
 
 1. repo-governance-checker
-2. apps-ayokoding-web-general-checker
-3. apps-ayokoding-web-by-example-checker
-4. apps-ayokoding-web-facts-checker
-5. apps-ayokoding-web-link-checker
-6. apps-oseplatform-web-content-checker
-7. docs-checker
-8. docs-tutorial-checker
-9. readme-checker
-10. plan-checker
-11. plan-execution-checker
+2. repo-workflow-checker
+3. apps-ayokoding-web-general-checker
+4. apps-ayokoding-web-by-example-checker
+5. apps-ayokoding-web-in-the-field-checker
+6. apps-ayokoding-web-facts-checker
+7. apps-ayokoding-web-link-checker
+8. apps-oseplatform-web-content-checker
+9. docs-checker
+10. docs-tutorial-checker
+11. docs-link-general-checker
+12. docs-software-engineering-separation-checker
+13. readme-checker
+14. plan-checker
+15. plan-execution-checker
+16. specs-checker
+17. swe-code-checker
 
 **NO conversation-only output**: Checker agents MUST NOT output validation results in conversation only. All validation findings MUST be written to audit report files following the 4-part pattern `{agent-family}__{uuid-chain}__{YYYY-MM-DD--HH-MM}__audit.md`. The UUID chain enables parallel execution without file collisions.
 
@@ -751,7 +757,7 @@ Agents are categorized by their **primary role** which aligns with naming suffix
 
 | Color         | Role             | Purpose                               | Tool Pattern                            | Agents                                                                                                                          |
 | ------------- | ---------------- | ------------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| 🟦 **Blue**   | **Writers**      | Create new content from scratch       | Has `Write` tool                        | docs-maker<br>plan-maker<br>docs-tutorial-maker<br>repo-governance-maker                                                        |
+| 🟦 **Blue**   | **Makers**       | Create new content from scratch       | Has `Write` tool                        | docs-maker<br>plan-maker<br>docs-tutorial-maker<br>repo-governance-maker                                                        |
 | 🟩 **Green**  | **Checkers**     | Validate and generate reports         | Has `Write`, `Bash` (no `Edit`)\*\*     | repo-governance-checker<br>plan-checker<br>docs-checker<br>docs-link-general-checker\*\*<br>apps-ayokoding-web-link-checker\*\* |
 | 🟨 **Yellow** | **Fixers**       | Modify and propagate existing content | Has `Edit` (usually not `Write`)        | docs-file-manager<br>readme-fixer<br>repo-governance-fixer                                                                      |
 | 🟪 **Purple** | **Implementors** | Execute plans with full tool access   | Has `Write`, `Edit`, `Bash` (or Bash)\* | plan-executor<br>deployers\*<br>swe-\*-developer agents                                                                         |
@@ -768,7 +774,7 @@ Agents are categorized by their **primary role** which aligns with naming suffix
 
 This role-based categorization was chosen because it:
 
-1. **Aligns with naming conventions** - Role suffixes (-writer, -checker, -fixer, -implementor) directly map to colors
+1. **Aligns with naming conventions** - Role suffixes (-maker, -checker, -fixer, -developer, -executor, -deployer) directly map to colors. Note: Purple (Implementor) agents use varied suffixes (-developer, -executor, -deployer) because their implementation contexts differ
 2. **Maps to tool permissions** - Clear security boundaries between read-only, edit-only, write-capable, and full-access agents
 3. **Provides clear user guidance** - Users can quickly identify which category of agent they need
 4. **Extensible** - New agents naturally fit into one of the four role categories
@@ -816,9 +822,9 @@ When creating a new agent, assign a color based on its **primary capability**:
 Start: What is the agent's primary capability?
     │
     ├─ Creates new files/content from scratch
-    │   └─> color: blue (Writer)
+    │   └─> color: blue (Maker)
     │       - Must have `Write` tool
-    │       - Examples: docs-writer, plan-writer
+    │       - Examples: docs-maker, plan-maker
     │
     ├─ Validates/checks and generates reports
     │   └─> color: green (Checker)
@@ -842,7 +848,7 @@ Start: What is the agent's primary capability?
 **Edge Cases:**
 
 - **Agent has both Write and Edit**: Choose based on primary purpose
-  - If mainly creates new content → `blue` (Writer)
+  - If mainly creates new content → `blue` (Maker)
   - If mainly executes plans/tasks → `purple` (Implementor)
 - **Link-checkers with Write, Edit, Bash**: Use `green` (Checker)
   - Write tool needed for audit reports in generated-reports/
@@ -875,7 +881,7 @@ Agents are identified through FIVE independent methods:
 | Identification Method | Example                          | Purpose                                   |
 | --------------------- | -------------------------------- | ----------------------------------------- |
 | **Agent Name**        | "docs-maker"                     | Primary text-based identifier             |
-| **Role Suffix**       | "-maker" (writer)                | Indicates category through naming pattern |
+| **Role Suffix**       | "-maker" (maker)                 | Indicates category through naming pattern |
 | **Emoji Shape**       | 🟦 (square)                      | Shape differentiation (not color)         |
 | **Description**       | "Expert documentation writer..." | Semantic purpose statement                |
 | **Color Field**       | `color: blue`                    | Text value in frontmatter                 |
@@ -883,7 +889,7 @@ Agents are identified through FIVE independent methods:
 **Users with color blindness can identify agents by:**
 
 - Reading the agent name
-- Recognizing the role suffix pattern (-maker, -checker, -fixer, -executor)
+- Recognizing the role suffix pattern (-maker, -checker, -fixer, -developer, -executor, -deployer)
 - Seeing that the emoji is a square (shape, not color)
 - Reading the description field
 
@@ -950,7 +956,7 @@ color: blue
 When listing agents in `.claude/agents/README.md` (or `.opencode/agent/README.md`), use the colored square emoji:
 
 ```markdown
-### 🟦 `docs-writer.md`
+### 🟦 `docs-maker.md`
 
 Expert documentation writer specializing in GitHub-compatible markdown and Diátaxis framework.
 ```
@@ -965,11 +971,11 @@ Colored square emojis follow the [Emoji Usage Convention](../../conventions/form
 
 ### Color Field Examples
 
-**Writer Agent (Blue):**
+**Maker Agent (Blue):**
 
 ```yaml
 ---
-name: docs-writer
+name: docs-maker
 description: Expert documentation writer specializing in GitHub-compatible markdown and Diátaxis framework. Use when creating, editing, or organizing project documentation.
 tools: Read, Write, Edit, Glob, Grep
 model: inherit
@@ -1022,7 +1028,7 @@ Each agent should have **one clear, focused purpose**.
 **PASS: Good - Single Responsibility:**
 
 ```yaml
-name: doc-writer
+name: docs-maker
 description: Expert documentation writer specializing in GitHub-compatible markdown and Diátaxis framework. Use when creating, editing, or organizing project documentation.
 ```
 
@@ -1037,7 +1043,7 @@ description: Writes documentation, generates code, runs tests, and deploys appli
 
 Before creating a new agent, check if existing agents already cover the domain:
 
-1. **Review** `.opencode/agent/` directory
+1. **Review** `.claude/agents/` directory (primary source of truth)
 2. **Check** each agent's `description` field
 3. **Consider** if you can extend an existing agent
 4. **Create new** only if there's no overlap
@@ -1059,9 +1065,9 @@ Before creating a new agent, check if existing agents already cover the domain:
 
 **PASS: Good - Specialized Agents:**
 
-- `doc-writer` - Documentation only
+- `docs-maker` - Documentation only
 - `repo-governance-checker` - Consistency validation only
-- `test-runner` - Test execution only
+- `swe-golang-developer` - Go development only
 
 **FAIL: Bad - Over-Generalized:**
 
@@ -1215,7 +1221,7 @@ Task(Explore, "find authentication code")
 Organize references into clear categories:
 
 1. **Project Guidance** - Always reference `AGENTS.md`
-2. **Agent Conventions** - Always reference this document (`ex-de__ai-agents.md`)
+2. **Agent Conventions** - Always reference this document (`ai-agents.md`)
 3. **Domain-Specific Conventions** - Reference relevant conventions
 4. **Related Agents** - Cross-reference complementary agents
 
@@ -1342,11 +1348,11 @@ Agent files are organized into **three complexity tiers** with corresponding siz
 
 Quick categorization for existing agents:
 
-| Tier                 | Agents                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Tier 1: Simple**   | apps-ayokoding-web-deployer, apps-oseplatform-web-deployer, apps-organiclever-web-deployer, social-linkedin-post-maker, apps-ayokoding-web-facts-fixer, apps-ayokoding-web-link-fixer, apps-oseplatform-web-content-fixer, repo-workflow-maker, repo-workflow-checker, repo-workflow-fixer                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| **Tier 2: Standard** | docs-maker, docs-tutorial-maker, docs-checker, docs-tutorial-checker, docs-file-manager, docs-fixer, docs-tutorial-fixer, docs-software-engineering-separation-fixer, readme-maker, readme-checker, readme-fixer, agent-maker, plan-fixer, apps-ayokoding-web-general-maker, apps-ayokoding-web-general-checker, apps-ayokoding-web-general-fixer, apps-ayokoding-web-by-example-maker, apps-ayokoding-web-by-example-checker, apps-ayokoding-web-by-example-fixer, apps-ayokoding-web-in-the-field-maker, apps-ayokoding-web-in-the-field-checker, apps-ayokoding-web-in-the-field-fixer, apps-ayokoding-web-link-checker, apps-ayokoding-web-facts-checker, apps-oseplatform-web-content-maker, apps-oseplatform-web-content-checker, swe-python-developer, swe-typescript-developer, swe-elixir-developer, swe-java-developer, swe-golang-developer, swe-e2e-test-developer, swe-hugo-developer, swe-dart-developer, swe-kotlin-developer, swe-csharp-developer, swe-fsharp-developer, swe-clojure-developer, swe-rust-developer, swe-code-checker |
-| **Tier 3: Complex**  | plan-maker, plan-executor, plan-checker, plan-execution-checker, repo-governance-maker, repo-governance-checker, repo-governance-fixer, docs-link-general-checker, docs-software-engineering-separation-checker                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Tier                 | Agents                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Tier 1: Simple**   | apps-ayokoding-web-deployer, apps-oseplatform-web-deployer, apps-organiclever-web-deployer, social-linkedin-post-maker, apps-ayokoding-web-facts-fixer, apps-ayokoding-web-link-fixer, apps-oseplatform-web-content-fixer, repo-workflow-maker, repo-workflow-checker, repo-workflow-fixer                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| **Tier 2: Standard** | docs-maker, docs-tutorial-maker, docs-checker, docs-tutorial-checker, docs-file-manager, docs-fixer, docs-tutorial-fixer, docs-software-engineering-separation-fixer, readme-maker, readme-checker, readme-fixer, agent-maker, plan-fixer, apps-ayokoding-web-general-maker, apps-ayokoding-web-general-checker, apps-ayokoding-web-general-fixer, apps-ayokoding-web-by-example-maker, apps-ayokoding-web-by-example-checker, apps-ayokoding-web-by-example-fixer, apps-ayokoding-web-in-the-field-maker, apps-ayokoding-web-in-the-field-checker, apps-ayokoding-web-in-the-field-fixer, apps-ayokoding-web-link-checker, apps-ayokoding-web-facts-checker, apps-oseplatform-web-content-maker, apps-oseplatform-web-content-checker, swe-python-developer, swe-typescript-developer, swe-elixir-developer, swe-java-developer, swe-golang-developer, swe-e2e-test-developer, swe-hugo-developer, swe-dart-developer, swe-kotlin-developer, swe-csharp-developer, swe-fsharp-developer, swe-clojure-developer, swe-rust-developer, swe-code-checker, specs-maker, specs-checker, specs-fixer |
+| **Tier 3: Complex**  | plan-maker, plan-executor, plan-checker, plan-execution-checker, repo-governance-maker, repo-governance-checker, repo-governance-fixer, docs-link-general-checker, docs-software-engineering-separation-checker                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 
 ### When to Condense or Split Agents
 
@@ -1811,7 +1817,7 @@ If information cannot be verified: (1) State the limitation explicitly, (2) Prov
 
 ### Agent-Specific Requirements
 
-- **Documentation agents (doc-writer)**: Verify code examples, file paths, project structure claims, convention references, external library docs
+- **Documentation agents (docs-maker)**: Verify code examples, file paths, project structure claims, convention references, external library docs
 - **Validation agents (repo-governance-checker)**: Read all files before validating, provide specific line numbers, verify links and frontmatter
 - **Development agents**: Read test files, verify command outputs, check error messages, confirm tool availability
 
@@ -1878,7 +1884,7 @@ Before submitting a new agent, verify:
 #### Convention Compliance
 
 - [ ] References `AGENTS.md`
-- [ ] References AI agents convention (`ex-de__ai-agents.md`)
+- [ ] References AI agents convention (`ai-agents.md`)
 - [ ] References relevant domain conventions
 - [ ] Links use correct GitHub-compatible format
 
@@ -1986,7 +1992,7 @@ Your primary job is to [clear, specific purpose statement].
 - PASS: Detailed guidelines for their area
 - PASS: Examples and checklists for their domain
 
-**This convention (ex-de\_\_ai-agents.md) provides:**
+**This convention (ai-agents.md) provides:**
 
 - PASS: Standards for how agents are structured
 - PASS: Agent creation guidelines
@@ -2099,8 +2105,8 @@ If an agent is no longer needed:
 | **Tool Permission Creep**        | `tools: Read, Write, Edit, Glob, Grep, Bash` (for validation agent) | `tools: Read, Glob, Grep` (read-only for validation)                                                                                                                           |
 | **Unnecessary Model Override**   | Using specific model without clear need                             | Use `model: inherit` unless advanced reasoning truly required; then `model: sonnet`                                                                                            |
 | **Duplicating AGENTS.md**        | Repeating entire environment setup section                          | Reference: `AGENTS.md` - Primary guidance including environment setup                                                                                                          |
-| **Missing Reference Section**    | No references to conventions or AGENTS.md                           | Include Reference Documentation section with links to AGENTS.md and ex-de\_\_ai-agents.md                                                                                      |
-| **Overlapping Responsibilities** | `doc-writer-and-validator` (multiple responsibilities)              | Separate `doc-writer` and `doc-validator` agents                                                                                                                               |
+| **Missing Reference Section**    | No references to conventions or AGENTS.md                           | Include Reference Documentation section with links to AGENTS.md and ai-agents.md                                                                                               |
+| **Overlapping Responsibilities** | `docs-maker-and-checker` (multiple responsibilities)                | Separate `docs-maker` and `docs-checker` agents                                                                                                                                |
 
 ## Validation and Compliance
 
@@ -2354,7 +2360,7 @@ Decision: Keep in plan-checker agent
 Knowledge: lax/normal/strict/ocd modes filter findings by criticality
 
 Q: Used by 3+ agents?
-A: YES (all 15 fixer agents use mode parameter)
+A: YES (all fixer agents use mode parameter)
 
 Q: Reusable domain expertise?
 A: YES (mode handling is standardized)

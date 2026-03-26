@@ -34,6 +34,11 @@ These standards define **HOW to maintain and validate quality**, covering automa
 - [No Machine-Specific Information in Commits](./no-machine-specific-commits.md) - Practice prohibiting absolute local paths, usernames, IP addresses, and environment-specific configuration from committed code
 - [Specs-Application Sync Convention](./specs-application-sync.md) - Bidirectional synchronization requirement between specs/ and application code in apps/, libs/, and apps-labs/: C4 diagrams, Gherkin feature files, and specs READMEs must reflect actual architecture and behavior
 
+## Companion Documents
+
+- [Anti-Patterns](./anti-patterns.md) - Common quality mistakes to avoid (with examples and corrections)
+- [Best Practices](./best-practices.md) - Recommended quality patterns and techniques
+
 ## Related Documentation
 
 - [Development Index](../README.md) - All development practices

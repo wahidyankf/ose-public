@@ -29,6 +29,11 @@ These standards define **HOW to execute development workflows**, covering the th
 - [Reproducible Environments Convention](./reproducible-environments.md) - Practices for creating consistent, reproducible development and build environments
 - [Trunk Based Development Convention](./trunk-based-development.md) - Git workflow using Trunk Based Development for continuous integration
 
+## Companion Documents
+
+- [Anti-Patterns](./anti-patterns.md) - Common workflow mistakes to avoid (with examples and corrections)
+- [Best Practices](./best-practices.md) - Recommended workflow patterns and techniques
+
 ## Related Documentation
 
 - [Development Index](../README.md) - All development practices
@@ -48,7 +53,7 @@ This set of development practices implements/respects the following core princip
 
 This set of development practices respects the following conventions:
 
-- **[Commit Message Convention](../../conventions/formatting/mathematical-notation.md)**: Conventional Commits format provides explicit commit metadata for automated changelog generation and version control.
+- **[Commit Message Convention](./commit-messages.md)**: Conventional Commits format provides explicit commit metadata for automated changelog generation and version control.
 
 - **[Nested Code Fences Convention](../../conventions/formatting/nested-code-fences.md)**: Workflow documentation uses proper code fence nesting when documenting markdown structure and patterns.
 

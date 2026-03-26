@@ -27,6 +27,11 @@ These patterns define **HOW to structure development workflows and code**, cover
 - [Functional Programming Practices](./functional-programming.md) - Guidelines for applying functional programming principles in TypeScript/JavaScript (immutability patterns, pure functions, function composition)
 - [Maker-Checker-Fixer Pattern](./maker-checker-fixer.md) - Three-stage quality workflow for content creation and validation with user review gates and confidence level integration
 
+## Companion Documents
+
+- [Anti-Patterns](./anti-patterns.md) - Common pattern mistakes to avoid (with examples and corrections)
+- [Best Practices](./best-practices.md) - Recommended pattern techniques and guidelines
+
 ## Related Documentation
 
 - [Development Index](../README.md) - All development practices

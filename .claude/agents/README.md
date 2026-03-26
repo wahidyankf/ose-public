@@ -37,7 +37,7 @@ This directory contains specialized AI agents for the open-sharia-enterprise pro
 - **plan-execution-checker** - Plan execution validation
 - **repo-governance-checker** - Governance compliance validation
 - **repo-workflow-checker** - Workflow documentation validation
-- **specs-checker** - Specs structural completeness and cross-spec consistency validation
+- **specs-checker** - Gherkin/BDD specs directory structural and content validation
 - **swe-code-checker** - Validates projects against platform coding standards (validates application code rather than documentation)
 
 ### 🟨 Fixing (Fixers)

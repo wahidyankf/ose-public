@@ -26,6 +26,11 @@ These standards define **HOW to develop Hugo themes and layouts**, covering them
 
 - [Hugo Development Convention](./development.md) - Complete standards for Hugo site development including theme development, asset pipeline, i18n/l10n, performance optimization, and SEO best practices
 
+## Companion Documents
+
+- [Anti-Patterns](./anti-patterns.md) - Common Hugo development mistakes to avoid (with examples and corrections)
+- [Best Practices](./best-practices.md) - Recommended Hugo development patterns and techniques
+
 ## Related Documentation
 
 - [Development Index](../README.md) - All development practices

@@ -340,6 +340,32 @@ Fixing is successful when:
 - ✅ Fix report generated with complete audit trail
 - ✅ No regressions introduced (verified by re-reading files)
 
+## Reference Documentation
+
+**Project Guidance**:
+
+- [AGENTS.md](../../AGENTS.md) - Primary project guidance
+- [AI Agents Convention](../../governance/development/agents/ai-agents.md) - Agent structure and conventions
+
+**Domain Conventions**:
+
+- [Software Design Reference](../../docs/explanation/software-engineering/ex-soen__software-design-reference.md) - Prerequisite mappings table
+- [Fixer Confidence Levels](../../governance/development/quality/fixer-confidence-levels.md) - Confidence assessment
+- [Content Quality Standards](../../governance/conventions/writing/quality.md) - Prerequisites section formatting
+- [Linking Convention](../../governance/conventions/formatting/linking.md) - Cross-reference link standards
+
+**Quality Standards**:
+
+- [Criticality Levels Convention](../../governance/development/quality/criticality-levels.md) - Criticality classification
+- [Fixer Confidence Levels Convention](../../governance/development/quality/fixer-confidence-levels.md) - Confidence assessment
+- [Maker-Checker-Fixer Pattern](../../governance/development/pattern/maker-checker-fixer.md) - Three-stage workflow
+- [Repository Governance Architecture](../../governance/repository-governance-architecture.md) - Six-layer hierarchy
+
+**Related Agents**:
+
+- **docs-software-engineering-separation-checker** - Generates audit reports this agent processes
+- **apps-ayokoding-web-general-maker** - Creates general AyoKoding content
+
 ## Project Guidance
 
 **Authoritative Sources**:

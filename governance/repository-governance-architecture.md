@@ -326,7 +326,7 @@ Development: Hugo Development Convention (semantic HTML)
 
 **Agent Families by Color**:
 
-- 🟦 **Writers (Blue)** - Create new content from scratch (has Write tool)
+- 🟦 **Makers (Blue)** - Create new content from scratch (has Write tool)
 - 🟩 **Checkers (Green)** - Validate and generate audit reports (has Write, Bash; no Edit)
 - 🟨 **Fixers (Yellow)** - Modify and propagate existing content (has Edit + Write for fix reports)
 - 🟪 **Implementors (Purple)** - Execute plans with full tool access (has Write, Edit, Bash)
@@ -423,7 +423,7 @@ Maker-Checker-Fixer Workflow:
 
 **Location**: `.claude/skills/`
 
-**Documentation**: See [AGENTS.md](../AGENTS.md) for skills documentation
+**Documentation**: See [`.claude/skills/README.md`](../.claude/skills/README.md) for skills catalog, or [AGENTS.md](../AGENTS.md) for OpenCode configuration including skills integration overview
 
 **Two Delivery Modes**:
 

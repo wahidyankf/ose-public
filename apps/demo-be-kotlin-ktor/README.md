@@ -112,6 +112,45 @@ which step definitions are used:
 JUnit test separation uses `@Tag("integration")` annotations on integration-only test classes,
 excluded via `excludeTags("integration")` in `testUnit`.
 
+## Database Migrations
+
+This app uses [Flyway Community Edition](https://flywaydb.org/) (Apache 2.0) for schema management.
+
+### Migration files
+
+All SQL migrations live in `src/main/resources/db/migration/` and follow the Flyway naming
+convention: `V{N}__{description}.sql` (V + sequential number + double underscore + description).
+
+| File                         | Description                                                               |
+| ---------------------------- | ------------------------------------------------------------------------- |
+| `V1__create_users.sql`       | `users` table — accounts with audit columns                               |
+| `V2__create_tokens.sql`      | `tokens` table — JWT JTI tracking (single table with `token_type` column) |
+| `V3__create_expenses.sql`    | `expenses` table — expense entries                                        |
+| `V4__create_attachments.sql` | `attachments` table — file attachments for expenses                       |
+
+### How migrations run
+
+Flyway runs automatically on application startup inside `DatabaseFactory.init()`. It checks the
+`flyway_schema_history` table, applies any unapplied migrations in version order, and skips
+migrations that have already been applied. No manual steps are required.
+
+### Adding a new migration
+
+Create a new file in `src/main/resources/db/migration/` using the next sequential version number:
+
+```
+V5__your_description.sql
+```
+
+Write standard PostgreSQL DDL. Flyway applies it automatically on the next startup.
+
+### Schema note
+
+This app uses a single `tokens` table with a `token_type` column (values: `ACCESS`, `REFRESH`).
+This differs from the 5-table standard used by other demo backends (which split into separate
+`refresh_tokens` and `revoked_tokens` tables). The Exposed ORM definitions in
+`infrastructure/tables/` reflect this design and stay as-is.
+
 ## Related Documentation
 
 - [Three-Level Testing Standard](../../governance/development/quality/three-level-testing-standard.md) — Unit, integration, and E2E testing boundaries

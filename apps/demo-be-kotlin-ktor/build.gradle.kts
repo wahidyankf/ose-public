@@ -21,6 +21,7 @@ val sqliteVersion = "3.49.1.0"
 val jbcryptVersion = "0.4"
 val javaJwtVersion = "4.4.0"
 val kotlinxDatetimeVersion = "0.6.1"
+val flywayVersion = "11.4.0"
 
 group = "com.demobektkt"
 
@@ -76,6 +77,10 @@ dependencies {
 
   // Database drivers
   implementation("org.postgresql:postgresql:$postgresDriverVersion")
+
+  // Database migrations
+  implementation("org.flywaydb:flyway-core:$flywayVersion")
+  implementation("org.flywaydb:flyway-database-postgresql:$flywayVersion")
 
   // kotlinx-datetime (required by generated contract types)
   implementation("org.jetbrains.kotlinx:kotlinx-datetime:$kotlinxDatetimeVersion")

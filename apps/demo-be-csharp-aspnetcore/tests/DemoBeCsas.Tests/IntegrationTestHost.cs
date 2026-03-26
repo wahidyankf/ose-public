@@ -68,10 +68,18 @@ public sealed class IntegrationTestHost : IDisposable
 
         _provider = services.BuildServiceProvider();
 
-        // Create schema once
+        // Create schema once.
+        // PostgreSQL: use MigrateAsync so __EFMigrationsHistory is populated — this
+        // prevents "relation already exists" errors when TestWebApplicationFactory
+        // boots Program.cs (which also calls MigrateAsync) in the same test run.
+        // SQLite: use EnsureCreated because EF Core migrations don't support the
+        // SQLite in-memory provider.
         using var scope = _provider.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        db.Database.EnsureCreated();
+        if (!string.IsNullOrEmpty(DatabaseUrl))
+            db.Database.Migrate();
+        else
+            db.Database.EnsureCreated();
     }
 
     /// <summary>Creates a new DI scope for a single service operation.</summary>

@@ -48,6 +48,7 @@ async def lifespan(app: FastAPI):  # type: ignore[no-untyped-def]
     database_url = os.environ.get("DATABASE_URL", "")
     if database_url.startswith("postgresql"):
         alembic_cfg = Config(str(_ALEMBIC_INI))
+        alembic_cfg.set_main_option("sqlalchemy.url", database_url)
         command.upgrade(alembic_cfg, "head")
     yield
 

@@ -50,7 +50,7 @@ SQLAlchemy model metadata against the live database.
 
 ### 3. demo-be-golang-gin: **goose** (pressly/goose)
 
-**Why**: ~10.4k GitHub stars, MIT license, actively maintained. SQL + Go function migrations,
+**Why**: MIT license, actively maintained. SQL + Go function migrations,
 transaction-safe by default. No "dirty state" problem — golang-migrate enters a dirty state on any
 migration failure and requires manual `migrate force VERSION`; goose handles failures gracefully.
 
@@ -58,7 +58,7 @@ migration failure and requires manual `migrate force VERSION`; goose handles fai
 
 | Tool                 | Stars    | License    | Pros                                                | Cons                                                   |
 | -------------------- | -------- | ---------- | --------------------------------------------------- | ------------------------------------------------------ |
-| **golang-migrate**   | ~17.8k   | MIT        | Highest adoption; broad driver support (S3, GitHub) | Dirty-state on failure requires `force` to recover     |
+| **golang-migrate**   | —        | MIT        | Highest adoption; broad driver support (S3, GitHub) | Dirty-state on failure requires `force` to recover     |
 | **Atlas**            | ~6k      | Apache 2.0 | Graph-based diffing; official GORM integration      | Heavier dependency; vendor-backed (Ariga)              |
 | **GORM AutoMigrate** | Built-in | MIT        | Zero setup                                          | Only adds, never alters/drops; no versioning; dev-only |
 
@@ -97,16 +97,16 @@ defined in F# fail to be discovered. DbUp uses plain SQL scripts — no assembly
 ### 6. demo-be-clojure-pedestal: **Migratus**
 
 **Why**: De-facto standard for Clojure database migrations (~679 GitHub stars, Apache 2.0, v1.6.5
-released 2026). [Luminus](https://luminusweb.com/docs/migrations.html) — the most popular Clojure
+as of March 2026). [Luminus](https://luminusweb.com/docs/migrations.html) — the most popular Clojure
 web framework — defaults to Migratus. Git-friendly: handles branch-based workflows. Supports both
 `.up.sql`/`.down.sql` files and Clojure code migrations. Compatible with next.jdbc via JDBC.
 
 **Alternatives considered:**
 
-| Tool        | Stars | License | Pros                                           | Cons                                              |
-| ----------- | ----- | ------- | ---------------------------------------------- | ------------------------------------------------- |
-| **Ragtime** | ~638  | EPL-1.0 | By James Reeves (Ring, Compojure); EDN support | Less active (0.8.1); confused by branch workflows |
-| **Drift**   | —     | —       | —                                              | Unmaintained                                      |
+| Tool        | Stars | License | Pros                                           | Cons                                                                                                                     |
+| ----------- | ----- | ------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **Ragtime** | ~638  | EPL-1.0 | By James Reeves (Ring, Compojure); EDN support | Less active; confused by branch workflows; new coord `dev.weavejester/ragtime` supersedes old `ragtime/ragtime` artifact |
+| **Drift**   | —     | —       | —                                              | Unmaintained                                                                                                             |
 
 ### 7. demo-be-ts-effect: **@effect/sql Migrator** (built-in)
 
@@ -127,7 +127,10 @@ dependencies.
 
 **Why**: Already uses EF Core (MIT license) for data access. `EnsureCreated` is not a migration
 tool — it cannot handle incremental changes. Switching to proper EF Core migrations
-(`dotnet ef migrations add`, `Database.MigrateAsync()`) requires no new dependencies.
+(`dotnet ef migrations add`, `Database.MigrateAsync()`) requires adding
+`Microsoft.EntityFrameworkCore.Design` (with `PrivateAssets="all"` since it is a build-time only
+dependency) to `DemoBeCsas.csproj`. Without it, `dotnet ef migrations add` fails with:
+`Your startup project 'DemoBeCsas' doesn't reference Microsoft.EntityFrameworkCore.Design.`
 
 **Alternatives considered:**
 
@@ -137,6 +140,33 @@ tool — it cannot handle incremental changes. Switching to proper EF Core migra
 | **FluentMigrator** | ~3.5k | Apache 2.0 | Rich C# fluent API     | Extra dependency when EF Core suffices        |
 
 ## Implementation Approach
+
+### Migrations-on-Startup Sequence
+
+All apps follow the same pattern: migrations run during application startup before accepting traffic.
+
+```mermaid
+sequenceDiagram
+    participant App as Application
+    participant MT as Migration Tool
+    participant DB as PostgreSQL
+
+    App->>DB: Connect (JDBC/driver)
+    App->>MT: Initialize migrator
+    MT->>DB: Check migration tracking table
+    DB-->>MT: Return applied migrations list
+    MT->>MT: Compare with available migration files
+    alt Pending migrations exist
+        MT->>DB: Apply each pending migration (in transaction)
+        DB-->>MT: Confirm applied
+    else Already up to date
+        MT-->>App: No migrations needed
+    end
+    MT-->>App: Migrations complete
+    App->>App: Register routes / start HTTP server
+```
+
+This sequence is identical across all 8 apps — only the migration tool and language differ.
 
 ### Shared Principles
 
@@ -377,11 +407,34 @@ table (token blacklist) and `refresh_tokens` table (active token storage) serve 
 - `src/infrastructure/db/migrations/001_create_users.ts` through
   `006_create_attachments.ts` — Effect migration modules (6 files including `refresh_tokens`)
 
+**Effect Layer composition pattern**: The `PgMigrator` is wired into the application startup layer
+as follows:
+
+```typescript
+import { PgMigrator } from "@effect/sql-pg";
+import { fileURLToPath } from "node:url";
+import { Layer } from "effect";
+
+const MigratorLive = Layer.provide(
+  PgMigrator.layer({
+    loader: PgMigrator.fromFileSystem(fileURLToPath(new URL("migrations", import.meta.url))),
+    table: "effect_sql_migrations",
+  }),
+  SqlLive,
+);
+```
+
+For the SQLite `test:integration` environment, substitute `SqliteMigrator` from `@effect/sql-sqlite-node`
+with an equivalent `.layer({ loader: SqliteMigrator.fromFileSystem(...) })` call. Condition on
+database type so each environment uses the appropriate migrator.
+
 **Files to modify:**
 
 - `src/infrastructure/db/schema.ts` — Extract DDL into migration files; add `refresh_tokens`
   table definition; keep type definitions
-- Application startup — Add `PgMigrator.run` (or `SqliteMigrator.run`) to the Effect layer
+- Application startup — Wire `PgMigrator.layer(...)` into the Effect application startup Layer
+  for PostgreSQL (see code example above); use `SqliteMigrator.layer(...)` for the SQLite
+  integration environment
 - `README.md` — Document migration approach
 
 **Docker/CI impact:**

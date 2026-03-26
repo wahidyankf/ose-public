@@ -26,22 +26,26 @@ for reference. Phase 6 (validation) runs after all phases complete.
 - [ ] Replace `SchemaInitializer.java` inline DDL with Liquibase programmatic API:
       `CommandScope("update")` with `ClassLoaderResourceAccessor` and JDBC `DataSource`
 - [ ] Update `README.md` with "Database Migrations" section
-- [ ] Verify: `Dockerfile.integration` — no changes needed
-- [ ] Verify: `docker-compose.integration.yml` — no changes needed
-- [ ] Verify: `.github/workflows/test-demo-be-java-vertx.yml` — no changes needed
+- [ ] Verify: `Dockerfile.integration` — open file and confirm no changes needed
+- [ ] Verify: `docker-compose.integration.yml` — open file and confirm no changes needed
+- [ ] Verify: `.github/workflows/test-demo-be-java-vertx.yml` — open file and confirm no changes needed
 - [ ] Run `nx run demo-be-java-vertx:test:quick` — verify pass
-- [ ] Run `nx run demo-be-java-vertx:test:integration` — verify schema matches previous approach
+- [ ] Run `nx run demo-be-java-vertx:test:integration` — verify integration tests pass and the
+      database schema matches the acceptance criteria (5 tables: users, refresh_tokens,
+      revoked_tokens, expenses, attachments)
 - [ ] Commit: `feat(demo-be-java-vertx): add Liquibase database migrations`
 
 #### Phase 1b: demo-be-kotlin-ktor — Flyway
 
-- [ ] **Schema decision (required before writing migrations)**: The current `TokensTable` combines
-      refresh and revoked token semantics in a single `tokens` table via a `token_type` column.
-      Choose one option and document it in the commit message:
-  - Option A (recommended): Keep single `tokens` table. Write Flyway migration for `tokens` table.
-    Note schema divergence from 5-table standard in README and commit message.
+- [ ] **Schema decision (required before writing migrations)**: Inspect `TokensTable.kt` and decide
+      which option to implement (Option A or Option B — they are mutually exclusive; choose exactly
+      one):
+  - Option A (recommended): Keep single `tokens` table with `token_type` column. Write Flyway
+    migration for `tokens` table. Note schema divergence from 5-table standard in README and commit
+    message.
   - Option B: Split into `refresh_tokens` + `revoked_tokens` tables. Update `TokensTable.kt` and
     all repository code that queries by `token_type` before writing Flyway migrations.
+- [ ] Document the chosen option (A or B) in the commit message
 - [ ] Add `org.flywaydb:flyway-core` and `org.flywaydb:flyway-database-postgresql` to
       `build.gradle.kts`
 - [ ] Create Flyway SQL files in `src/main/resources/db/migration/` — content depends on option
@@ -52,11 +56,13 @@ for reference. Phase 6 (validation) runs after all phases complete.
 - [ ] Remove `SchemaUtils.create(UsersTable, TokensTable, ExpensesTable, AttachmentsTable)` call
       from `DatabaseFactory.kt`
 - [ ] Update `README.md` with "Database Migrations" section (document schema divergence if Option A)
-- [ ] Verify: `Dockerfile.integration` — no changes needed
-- [ ] Verify: `docker-compose.integration.yml` — no changes needed
-- [ ] Verify: `.github/workflows/test-demo-be-kotlin-ktor.yml` — no changes needed
+- [ ] Verify: `Dockerfile.integration` — open file and confirm no changes needed
+- [ ] Verify: `docker-compose.integration.yml` — open file and confirm no changes needed
+- [ ] Verify: `.github/workflows/test-demo-be-kotlin-ktor.yml` — open file and confirm no changes needed
 - [ ] Run `nx run demo-be-kotlin-ktor:test:quick` — verify pass
-- [ ] Run `nx run demo-be-kotlin-ktor:test:integration` — verify schema matches previous approach
+- [ ] Run `nx run demo-be-kotlin-ktor:test:integration` — verify integration tests pass and the
+      database schema matches the option chosen in Phase 1b (Option A: users, tokens, expenses,
+      attachments; Option B: users, refresh_tokens, revoked_tokens, expenses, attachments)
 - [ ] Commit: `feat(demo-be-kotlin-ktor): add Flyway database migrations`
 
 ### Phase 2: .NET Apps (F# / C#)
@@ -73,32 +79,44 @@ for reference. Phase 6 (validation) runs after all phases complete.
 - [ ] Confirm `AppDbContext.fs` is retained for data access (not removed)
 - [ ] Verify project compiles: `dotnet build` before running tests
 - [ ] Update `README.md` with "Database Migrations" section
-- [ ] Verify: `Dockerfile.integration` — no changes needed
-- [ ] Verify: `docker-compose.integration.yml` — no changes needed
-- [ ] Verify: `.github/workflows/test-demo-be-fsharp-giraffe.yml` — no changes needed
+- [ ] Verify: `Dockerfile.integration` — open file and confirm no changes needed
+- [ ] Verify: `docker-compose.integration.yml` — open file and confirm no changes needed
+- [ ] Verify: `.github/workflows/test-demo-be-fsharp-giraffe.yml` — open file and confirm no changes needed
 - [ ] Run `nx run demo-be-fsharp-giraffe:test:quick` — verify pass
 - [ ] Run `nx run demo-be-fsharp-giraffe:test:integration` — verify schema matches previous
-      approach
+      approach (same tables as existing EnsureCreated schema; users table has 2 audit
+      columns: created_at, updated_at; does NOT include created_by, updated_by, deleted_at,
+      deleted_by)
 - [ ] Commit: `feat(demo-be-fsharp-giraffe): add DbUp database migrations`
 
 #### Phase 2b: demo-be-csharp-aspnetcore — EF Core Migrations
 
+- [ ] Add `Microsoft.EntityFrameworkCore.Design` to `DemoBeCsas.csproj` (required by `dotnet ef`
+      CLI tools; use `PrivateAssets="all"` since it is build-time only):
+      `dotnet add apps/demo-be-csharp-aspnetcore/src/DemoBeCsas/DemoBeCsas.csproj package Microsoft.EntityFrameworkCore.Design`
 - [ ] Run `dotnet ef migrations add InitialCreate` to generate `Migrations/` directory
 - [ ] Replace `Database.EnsureCreatedAsync()` with `Database.MigrateAsync()` in `Program.cs`
+- [ ] Search codebase for `EnsureCreated` — confirm all occurrences are removed:
+      `grep -r "EnsureCreated" apps/demo-be-csharp-aspnetcore/`
+- [ ] Verify project compiles: `dotnet build` or `nx run demo-be-csharp-aspnetcore:build` before
+      running tests
 - [ ] Update `README.md` with "Database Migrations" section
-- [ ] Verify: `Dockerfile.integration` — no changes needed
-- [ ] Verify: `docker-compose.integration.yml` — no changes needed
-- [ ] Verify: `.github/workflows/test-demo-be-csharp-aspnetcore.yml` — no changes needed
+- [ ] Verify: `Dockerfile.integration` — open file and confirm no changes needed
+- [ ] Verify: `docker-compose.integration.yml` — open file and confirm no changes needed
+- [ ] Verify: `.github/workflows/test-demo-be-csharp-aspnetcore.yml` — open file and confirm no changes needed
 - [ ] Run `nx run demo-be-csharp-aspnetcore:test:quick` — verify pass
 - [ ] Run `nx run demo-be-csharp-aspnetcore:test:integration` — verify schema matches previous
-      approach
+      approach (same tables as existing EF Core EnsureCreated schema; users table has 2 audit
+      columns: created_at, updated_at; does NOT include created_by, updated_by, deleted_at,
+      deleted_by)
 - [ ] Commit: `feat(demo-be-csharp-aspnetcore): upgrade to EF Core Migrations`
 
 ### Phase 3: Scripting Languages (Python / Clojure)
 
 #### Phase 3a: demo-be-python-fastapi — Alembic
 
-- [ ] Add `alembic` dependency to `pyproject.toml` or `requirements.txt`
+- [ ] Add `alembic` to `pyproject.toml` (local dev tooling)
+- [ ] Add `alembic` to `requirements.txt` (Docker image builds)
 - [ ] Create `alembic.ini` configuration file
 - [ ] Create `alembic/env.py` with SQLAlchemy model import for autogenerate support
 - [ ] Create migration scripts in `alembic/versions/` — must produce 5 tables (users,
@@ -110,13 +128,13 @@ for reference. Phase 6 (validation) runs after all phases complete.
       `alembic.command.upgrade(alembic_cfg, "head")` where `alembic_cfg` is an
       `alembic.config.Config` object initialized with `Config("alembic.ini")`
 - [ ] Update `README.md` with "Database Migrations" section
-- [ ] Add `alembic` to `requirements.txt` (ensures it is present in Docker image builds)
 - [ ] Verify `Dockerfile.integration` installs `requirements.txt` (confirm; no change expected if already the case)
-- [ ] Verify: `docker-compose.integration.yml` — no changes needed
-- [ ] Verify: `.github/workflows/test-demo-be-python-fastapi.yml` — no changes needed
+- [ ] Verify: `docker-compose.integration.yml` — open file and confirm no changes needed
+- [ ] Verify: `.github/workflows/test-demo-be-python-fastapi.yml` — open file and confirm no changes needed
 - [ ] Run `nx run demo-be-python-fastapi:test:quick` — verify pass
-- [ ] Run `nx run demo-be-python-fastapi:test:integration` — verify schema matches previous
-      approach
+- [ ] Run `nx run demo-be-python-fastapi:test:integration` — verify integration tests pass and the
+      database schema matches the acceptance criteria (5 tables: users, refresh_tokens,
+      revoked_tokens, expenses, attachments)
 - [ ] Commit: `feat(demo-be-python-fastapi): add Alembic database migrations`
 
 #### Phase 3b: demo-be-clojure-pedestal — Migratus
@@ -131,112 +149,143 @@ for reference. Phase 6 (validation) runs after all phases complete.
 - [ ] Replace `create-schema!` in `src/demo_be_cjpd/db/schema.clj` with Migratus
       `(migratus/migrate config)` call
 - [ ] Update `README.md` with "Database Migrations" section
-- [ ] Verify: `Dockerfile.integration` — no changes needed
-- [ ] Verify: `docker-compose.integration.yml` — no changes needed
-- [ ] Verify: `.github/workflows/test-demo-be-clojure-pedestal.yml` — no changes needed
+- [ ] Verify: `Dockerfile.integration` — open file and confirm no changes needed
+- [ ] Verify: `docker-compose.integration.yml` — open file and confirm no changes needed
+- [ ] Verify: `.github/workflows/test-demo-be-clojure-pedestal.yml` — open file and confirm no changes needed
 - [ ] Run `nx run demo-be-clojure-pedestal:test:quick` — verify pass
-- [ ] Run `nx run demo-be-clojure-pedestal:test:integration` — verify schema matches previous
-      approach
+- [ ] Run `nx run demo-be-clojure-pedestal:test:integration` — verify integration tests pass and
+      the database schema matches the acceptance criteria (5 tables: users, refresh_tokens,
+      revoked_tokens, expenses, attachments)
 - [ ] Commit: `feat(demo-be-clojure-pedestal): add Migratus database migrations`
 
 ### Phase 4: Go and TypeScript
 
 #### Phase 4a: demo-be-golang-gin — goose
 
-- [ ] **Naming conflict decision (required before writing migrations)**: The current `gorm_store.go`
-      struct `BlacklistedToken` (no `TableName()` override) causes GORM to create a
-      `blacklisted_tokens` table, not `revoked_tokens`. Choose one option and document it in the
-      commit message:
+- [ ] **Naming conflict decision (required before writing migrations)**: Inspect `gorm_store.go` and
+      decide which option to implement (Option A or Option B — they are mutually exclusive; choose
+      exactly one):
   - Option A (recommended): Rename `BlacklistedToken` to `RevokedToken`, add
     `func (RevokedToken) TableName() string { return "revoked_tokens" }`, and update all usages
     (queries, type assertions, constructors). Goose migrations use `revoked_tokens`.
   - Option B: Keep `blacklisted_tokens`. Goose migrations use `blacklisted_tokens`. Note this
     app's schema divergence from the acceptance criteria `revoked_tokens` requirement in commit
     message and README.
+- [ ] Document the chosen option (A or B) in the commit message
 - [ ] Add `github.com/pressly/goose/v3` dependency to `go.mod`
 - [ ] Create SQL migration files `001_create_users.sql` through `006_create_attachments.sql` in
       `db/migrations/` with `-- +goose Up` / `-- +goose Down` markers (revoked/blacklisted tokens
       table name depends on option chosen above)
 - [ ] Add `//go:embed db/migrations/*.sql` directive and declare `var embedMigrations embed.FS`
       in `internal/store/store.go` (or a dedicated migrations file)
+- [ ] Remove GORM `AutoMigrate()` call from application initialization code (must not coexist
+      with goose — remove it before or in the same commit that adds goose initialization)
 - [ ] Replace GORM `AutoMigrate()` with goose embedded migrations using
       `goose.SetBaseFS(embedMigrations)` + `goose.Up(db, "db/migrations")`, or use
       `goose.NewProvider(goose.DialectPostgres, db, embedMigrations)` — do NOT use the
       path-based `goose.Up(db, migrationsDir)` form, which requires a real filesystem directory
       rather than an embedded FS
 - [ ] Update `README.md` with "Database Migrations" section
-- [ ] Verify: `Dockerfile` — no changes needed (goose compiles into Go binary)
-- [ ] Verify: `Dockerfile.integration` — no changes needed
-- [ ] Verify: `docker-compose.integration.yml` — no changes needed
-- [ ] Verify: `.github/workflows/test-demo-be-golang-gin.yml` — no changes needed
+- [ ] Verify: `Dockerfile` — open file and confirm no changes needed (goose compiles into Go binary)
+- [ ] Verify: `Dockerfile.integration` — open file and confirm no changes needed
+- [ ] Verify: `docker-compose.integration.yml` — open file and confirm no changes needed
+- [ ] Verify: `.github/workflows/test-demo-be-golang-gin.yml` — open file and confirm no changes needed
 - [ ] Run `nx run demo-be-golang-gin:test:quick` — verify pass
-- [ ] Run `nx run demo-be-golang-gin:test:integration` — verify schema matches previous approach
+- [ ] Run `nx run demo-be-golang-gin:test:integration` — verify integration tests pass and the
+      database schema matches the option chosen in Phase 4a (Option A: users, refresh_tokens,
+      revoked_tokens, expenses, attachments; Option B: users, refresh_tokens, blacklisted_tokens,
+      expenses, attachments)
 - [ ] Commit: `feat(demo-be-golang-gin): add goose database migrations`
 
 #### Phase 4b: demo-be-ts-effect — @effect/sql Migrator
 
+- [ ] Verify `PgMigrator` is exported from the installed `@effect/sql-pg` package before writing
+      any migration files:
+      `node -e "const x = require('@effect/sql-pg'); console.log(Object.keys(x))"`
+      — confirm `PgMigrator` appears in the output. Also confirm `SqliteMigrator` from
+      `@effect/sql-sqlite-node` if used in the SQLite test environment.
 - [ ] Create Effect migration modules `001_create_users.ts` through `006_create_attachments.ts` in
       `src/infrastructure/db/migrations/`
-- [ ] Extract DDL from `src/infrastructure/db/schema.ts` into migration files; keep type definitions
-- [ ] Wire `PgMigrator.run` into the Effect application layer startup for PostgreSQL
-      (production and Docker integration environments)
-- [ ] Wire `SqliteMigrator.run` into the Effect application layer for the SQLite
+- [ ] Extract DDL from `src/infrastructure/db/schema.ts` into migration files (do not remove type definitions from `schema.ts`)
+- [ ] Wire `PgMigrator.layer(...)` into the Effect application startup Layer for PostgreSQL
+      (production and Docker integration environments) — see tech-docs.md for the Layer composition
+      pattern
+- [ ] Wire `SqliteMigrator.layer(...)` into the Effect application startup Layer for the SQLite
       `test:integration` environment — condition on database type so each environment
       uses the appropriate migrator
 - [ ] Update `README.md` with "Database Migrations" section
 - [ ] Document the `@effect/sql` version in the README "Database Migrations" section (the
       caret-range `^` in `package.json` is acceptable since `package-lock.json` pins the effective
       version; no need to remove `^` from `package.json`)
-- [ ] Verify: `Dockerfile.integration` — no changes needed
-- [ ] Verify: `docker-compose.integration.yml` — no changes needed
-- [ ] Verify: `.github/workflows/test-demo-be-ts-effect.yml` — no changes needed
+- [ ] Verify: `Dockerfile.integration` — open file and confirm no changes needed
+- [ ] Verify: `docker-compose.integration.yml` — open file and confirm no changes needed
+- [ ] Verify: `.github/workflows/test-demo-be-ts-effect.yml` — open file and confirm no changes needed
+- [ ] Update `tests/unit/bdd/hooks.ts` to use the migrator instead of importing DDL constants from
+      `schema.ts`
+- [ ] Update `tests/integration/hooks.ts` to use the migrator instead of importing DDL constants
+      from `schema.ts`; remove imports of `CREATE_TABLE_STATEMENTS` and `CREATE_TABLES_SQL_PG`
 - [ ] Run `nx run demo-be-ts-effect:test:quick` — verify pass
-- [ ] Run `nx run demo-be-ts-effect:test:integration` — verify schema matches previous approach
+- [ ] Run `nx run demo-be-ts-effect:test:integration` — verify integration tests pass and the
+      database schema matches the acceptance criteria (5 tables: users, refresh_tokens,
+      revoked_tokens, expenses, attachments)
 - [ ] Commit: `feat(demo-be-ts-effect): add Effect SQL Migrator database migrations`
 
 ### Phase 5: Documentation, Governance, and Licensing
 
 - [ ] Update `governance/development/pattern/database-audit-trail.md`:
-  - Add a "Migration Tool by Language" table listing all 12 demo apps and their migration tools
-  - Generalize the migration section to be language-agnostic
-  - Keep Liquibase/JPA-specific guidance as a "Java / Spring Boot" subsection
-  - Add brief examples for other ecosystems
+  - [ ] Add a "Migration Tool by Language" table listing all 12 demo apps and their migration tools
+  - [ ] Generalize the migration section to be language-agnostic
+  - [ ] Keep Liquibase/JPA-specific guidance as a "Java / Spring Boot" subsection
+  - [ ] Add brief examples for other ecosystems
 - [ ] Update `governance/development/pattern/README.md`:
-  - Change Database Audit Trail entry description to reflect multi-language migration support
+  - [ ] Change Database Audit Trail entry description to reflect multi-language migration support
 - [ ] Update `governance/development/README.md`:
-  - Change Database Audit Trail entry in Pattern Documentation section to reflect multi-language
-    scope
+  - [ ] Search for "Database Audit Trail" to locate the entry in the Pattern Documentation section,
+        then change its description to reflect multi-language migration scope
 - [ ] Create `docs/explanation/software-engineering/licensing/README.md` — index file
       linking to the licensing decisions document
 - [ ] Create `docs/explanation/software-engineering/licensing/ex-soen-lc__licensing-decisions.md`
-      documenting all non-OSI and copyleft licensing decisions (confirm exact prefix token
-      before creating): Liquibase FSL-1.1-ALv2 rationale (non-compete does not apply; lists
-      affected apps `demo-be-java-springboot`, `demo-be-java-vertx`; FSL converts to Apache 2.0
-      after 2 years), Hibernate LGPL-2.1 dynamic linking via JPA SPI justification,
-      sharp-libvips LGPL-3.0 dynamic native addon justification, Logback EPL-1.0/LGPL-2.1
-      EPL-1.0 elected, quarterly audit schedule
+      (confirm exact prefix token before creating):
+  - [ ] Document Liquibase FSL-1.1-ALv2 decision: non-compete does not apply; lists affected apps
+        `demo-be-java-springboot`, `demo-be-java-vertx`; FSL converts to Apache 2.0 after 2 years.
+        Use confirmed year: "Liquibase 5.0 (September 2025)"
+  - [ ] Document Hibernate LGPL-2.1 dynamic linking via JPA SPI justification
+  - [ ] Document sharp-libvips LGPL-3.0 dynamic native addon justification
+  - [ ] Document Logback EPL-1.0/LGPL-2.1 dual-license: EPL-1.0 elected
+  - [ ] Include quarterly audit schedule section
 - [ ] Verify `ex-soen-lc__licensing-decisions.md` has complete frontmatter (title, description,
       category, subcategory, tags, created, updated) matching the existing governance doc pattern
 - [ ] Update `docs/explanation/software-engineering/README.md`:
-  - Add "Licensing" section entry linking to the new `licensing/` subdirectory
+  - [ ] Add "Licensing" section entry linking to the new `licensing/` subdirectory
 - [ ] Review `docs/explanation/README.md`:
-  - Update if it references subdirectories of `software-engineering/`
+  - [ ] Update if it references subdirectories of `software-engineering/`
 - [ ] Review `specs/apps/demo/c4/component-be.md`:
-  - Add migration tool as a component in C4 diagram if not already present
+  - [ ] Add migration tool as a component in C4 diagram if not already present
 - [ ] Commit: `docs(governance): generalize database audit trail pattern, add licensing decisions`
-  - Note: consider a separate commit for the C4 specs update
-    (`chore(specs): add migration tool component to C4 backend diagram`)
-    if the change is substantial enough to warrant it.
+  - If the C4 specs change is non-trivial (adds or modifies diagram nodes), use a separate commit:
+    `chore(specs): add migration tool component to C4 backend diagram`
+    - Non-trivial means: if you added or removed a box or arrow in the diagram.
+  - If the C4 specs review results in no change, include the "no change needed" confirmation in the
+    governance commit message only (no separate commit).
 
 ### Phase 6: Local Validation
 
 - [ ] `nx affected -t test:quick` passes for all modified apps
 - [ ] `nx affected -t test:integration` passes for all modified apps with docker-compose
-- [ ] Each app's migration produces the same schema as the current programmatic approach
-- [ ] Verify idempotency: running each app twice does not fail on already-applied migrations —
-      this check covers all 12 demo apps including the 4 pre-existing ones
-      (`demo-be-java-springboot`, `demo-be-elixir-phoenix`, `demo-fs-ts-nextjs`,
-      `demo-be-rust-axum`) as a regression check to confirm their existing tooling remains correct
+- [ ] Each app's migration produces the required schema per acceptance criteria:
+  - [ ] Apps adding `refresh_tokens` (java-vertx, python-fastapi, clojure-pedestal, ts-effect,
+        golang-gin Option A): 5 tables (users, refresh_tokens, revoked_tokens, expenses, attachments)
+  - [ ] Apps with equivalent schema (fsharp-giraffe, csharp-aspnetcore, kotlin-ktor): schema matches
+        the previous programmatic approach (same tables, same columns). For fsharp-giraffe and
+        csharp-aspnetcore, the users table has only 2 audit columns (created_at, updated_at) — this
+        is correct. Adding the remaining 4 audit columns is deferred to a follow-on plan.
+- [ ] Verify idempotency for the 8 modified apps: running each app twice does not fail on
+      already-applied migrations (demo-be-java-vertx, demo-be-python-fastapi, demo-be-golang-gin,
+      demo-be-kotlin-ktor, demo-be-fsharp-giraffe, demo-be-clojure-pedestal, demo-be-ts-effect,
+      demo-be-csharp-aspnetcore)
+- [ ] Verify idempotency regression for the 4 pre-existing apps: confirm existing tooling remains
+      correct and unaffected (demo-be-java-springboot, demo-be-elixir-phoenix, demo-fs-ts-nextjs,
+      demo-be-rust-axum)
 - [ ] Verify all 8 app READMEs have a "Database Migrations" section
 - [ ] Verify `database-audit-trail.md` includes the "Migration Tool by Language" table
 - [ ] Verify `ex-soen-lc__licensing-decisions.md` documents Liquibase FSL-1.1-ALv2 decision with rationale
@@ -245,13 +294,25 @@ for reference. Phase 6 (validation) runs after all phases complete.
       Use the following to check:
 
   ```bash
-  grep -r "AutoMigrate\|create_all\|EnsureCreated\|create-schema!" \
+  grep -r "AutoMigrate\|create_all\|EnsureCreated\|create-schema!\|SchemaUtils\.create\|SchemaInitializer" \
     apps/demo-be-* \
     --include="*.go" --include="*.py" --include="*.fs" --include="*.clj" --include="*.ts" \
-    --include="*.cs"
+    --include="*.cs" --include="*.kt" --include="*.java"
+  # Note: *.sql files are intentionally excluded — migration files themselves contain CREATE TABLE
+  # statements and would produce false positives. Inspect any non-migration SQL files (e.g., seed
+  # scripts) manually if they exist.
   ```
 
-- [ ] Verify all Dockerfiles, docker-compose files, and GitHub Actions workflows still work
+- [ ] Verify 5-table schema for apps adding `refresh_tokens` (java-vertx, python-fastapi,
+      clojure-pedestal, ts-effect, golang-gin Option A): use `psql \dt` or equivalent after
+      running integration tests to confirm all 5 tables are present:
+      `docker exec <db_container> psql -U postgres -c "\dt" | grep -E "refresh_tokens|revoked_tokens"`
+- [ ] Confirm all per-phase Dockerfile verifications are complete and no Docker-affecting changes
+      were made
+- [ ] Confirm all per-phase docker-compose verifications are complete and no compose-affecting
+      changes were made
+- [ ] Confirm all per-phase GitHub Actions workflow verifications are complete and no CI-affecting
+      changes were made
 
 ### Phase 7: CI Verification
 

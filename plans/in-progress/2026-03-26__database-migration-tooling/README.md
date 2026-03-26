@@ -19,13 +19,6 @@ Liquibase (FSL-1.1-ALv2) is retained for existing Java apps with a documented li
 
 **Git Workflow**: Commit to `main` (Trunk Based Development)
 
-## Quick Links
-
-- [Requirements](./requirements.md) - Current state, gaps, licensing audit, and acceptance criteria
-- [Technical Documentation](./tech-docs.md) - Tool selection rationale, alternatives, and
-  implementation details per app
-- [Delivery Plan](./delivery.md) - Phased checklist and validation
-
 ## Goals
 
 1. Add dedicated, community-blessed migration tooling to all 7 demo apps that currently lack it
@@ -34,7 +27,15 @@ Liquibase (FSL-1.1-ALv2) is retained for existing Java apps with a documented li
 4. Generalize the [Database Audit Trail Pattern](../../../governance/development/pattern/database-audit-trail.md)
    from Liquibase/JPA-only to a language-agnostic standard
 5. Document migration setup in each app's README
-6. Document the Liquibase FSL-1.1-ALv2 licensing decision in governance docs
+6. Document the Liquibase FSL-1.1-ALv2 licensing decision (and other LGPL/EPL decisions) in a new
+   `docs/explanation/software-engineering/licensing/` governance document
+
+## Quick Links
+
+- [Requirements](./requirements.md) - Current state, gaps, licensing audit, and acceptance criteria
+- [Technical Documentation](./tech-docs.md) - Tool selection rationale, alternatives, and
+  implementation details per app
+- [Delivery Plan](./delivery.md) - Phased checklist and validation
 
 ## Tool Assignments
 

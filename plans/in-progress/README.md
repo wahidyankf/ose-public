@@ -4,7 +4,7 @@ Active project plans currently being worked on.
 
 ## Active Plans
 
-(none)
+- [Add Dedicated Database Migration Tooling to All Demo Apps](./2026-03-26__database-migration-tooling/) — Add migration tooling to 7 apps lacking it; upgrade C# from EnsureCreated; generalize the database audit trail governance doc.
 
 ## Instructions
 

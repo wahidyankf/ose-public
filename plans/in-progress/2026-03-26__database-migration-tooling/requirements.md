@@ -39,9 +39,9 @@ Liquibase (FSL-1.1-ALv2) is retained for Java apps — see [Liquibase Licensing 
 ### Liquibase Licensing Detail
 
 Liquibase switched from Apache 2.0 to the Functional Source License (FSL-1.1-ALv2) in version 5.0
-(2025 — verify exact version and year against the
-[Liquibase FSL blog post](https://www.liquibase.com/blog/liquibase-community-for-the-future-fsl)
-before finalizing `ex-soen-lc__licensing-decisions.md` in Phase 5). FSL is **not** an OSI-approved
+(September 30, 2025 — confirmed against the
+[Liquibase FSL blog post](https://www.liquibase.com/blog/liquibase-community-for-the-future-fsl)).
+FSL is **not** an OSI-approved
 open-source license — it prohibits competing commercial use for 2 years after each release, then
 converts to Apache 2.0. The Apache Software Foundation
 ([LEGAL-721](https://issues.apache.org/jira/browse/LEGAL-721)) and Keycloak
@@ -66,12 +66,15 @@ Seven apps use programmatic DDL for schema creation: `demo-be-java-vertx`,
 **Impact**: Cannot track which schema version is running, cannot roll back failed migrations,
 cannot incrementally alter schema without dropping and recreating tables.
 
-### Gap 2: EnsureCreated Is Not a Migration System (1 app)
+### Gap 2: EnsureCreated Is Not a Migration System (2 apps)
 
 `demo-be-csharp-aspnetcore` uses EF Core but calls `Database.EnsureCreatedAsync()` instead of
-`Database.MigrateAsync()`. `EnsureCreated` creates the full schema idempotently but cannot handle
-incremental changes — if a column is added to a model, `EnsureCreated` does nothing because the
-table already exists.
+`Database.MigrateAsync()`. `demo-be-fsharp-giraffe` also uses EF Core `EnsureCreated()` in
+`Program.fs`. Both apps use `EnsureCreated` which creates the full schema idempotently but cannot
+handle incremental changes — if a column is added to a model, `EnsureCreated` does nothing because
+the table already exists. Note that the two apps take different solutions: the C# app upgrades EF
+Core to use `MigrateAsync()`, while the F# app switches to DbUp because EF Core migrations are
+code-first and couple to C# class structure.
 
 **Impact**: Schema evolution requires manual database drops. Not production-safe.
 
@@ -100,6 +103,30 @@ None of the 8 affected apps document how database migrations work, how to create
 or how migrations run during startup.
 
 **Impact**: Developers unfamiliar with the app have no guidance for schema changes.
+
+## User Stories
+
+```gherkin
+Scenario: Developer inspects migration tooling for any demo app
+  Given I need to understand the migration setup for a demo backend app
+  When I inspect the app's dependencies and source code
+  Then I find a dedicated migration tool (not inline DDL)
+  And I find versioned migration files alongside the application code
+  And I find a "Database Migrations" section in the app's README
+
+Scenario: Developer adds a new column to the demo schema
+  Given a demo backend app with established migration tooling
+  When I need to add a new column to an existing table
+  Then I create a new numbered migration file following the tool's convention
+  And the migration runs automatically on the next application startup
+  And the previous migration state is preserved in the migration tracking table
+
+Scenario: Developer operator verifies licensing compliance
+  Given the repository governance documentation
+  When I review which migration tools are used
+  Then I find all new tools use OSI-approved licenses
+  And I find a licensing decisions document explaining why Liquibase (FSL-1.1-ALv2) is retained
+```
 
 ## Acceptance Criteria
 
@@ -131,7 +158,7 @@ Feature: Database migration tooling for all demo apps
     And it states that the FSL non-compete clause does not restrict this project
     And it lists the affected apps (demo-be-java-springboot, demo-be-java-vertx)
 
-  Scenario Outline: Migrations produce correct schema
+  Scenario Outline: Migrations produce correct schema (standard 5-table apps)
     Given the demo app "<app>" with an empty database
     When the app starts and runs migrations
     Then the database contains tables: users, refresh_tokens, revoked_tokens, expenses, attachments
@@ -141,11 +168,26 @@ Feature: Database migration tooling for all demo apps
       | app                        |
       | demo-be-java-vertx         |
       | demo-be-python-fastapi     |
-      | demo-be-golang-gin         |
-      | demo-be-kotlin-ktor        |
-      | demo-be-fsharp-giraffe     |
       | demo-be-clojure-pedestal   |
       | demo-be-ts-effect          |
+
+  # Note: demo-be-golang-gin also targets the 5-table standard (6 audit columns) but has a
+  # table naming conflict requiring a choice between Option A (revoked_tokens) and Option B
+  # (blacklisted_tokens). Its schema scenarios are covered by the conditional scenarios below.
+
+  Scenario Outline: Migrations preserve existing 2-column audit schema
+    Given the demo app "<app>" with an empty database
+    When the app starts and runs migrations
+    Then the users table includes created_at and updated_at columns
+    And the users table does NOT include created_by, updated_by, deleted_at, or deleted_by columns
+    # Note: These apps currently have only 2 audit columns (created_at, updated_at) in their
+    # existing schema. This plan is about migration TOOLING — it preserves the existing schema.
+    # Adding the remaining 4 audit columns to align with the Database Audit Trail Pattern is
+    # deferred to a follow-on plan.
+
+    Examples:
+      | app                        |
+      | demo-be-fsharp-giraffe     |
       | demo-be-csharp-aspnetcore  |
 
   # Note on demo-be-ts-effect schema: The current `src/infrastructure/db/schema.ts` contains only 4
@@ -170,30 +212,40 @@ Feature: Database migration tooling for all demo apps
   # Phase 3b Migratus migration pairs must include a `refresh_tokens` migration to align with
   # the 5-table standard.
 
-  # Note on demo-be-kotlin-ktor schema: The current implementation uses a single `tokens` table
-  # (via Exposed `TokensTable`) that combines refresh and revoked token semantics via a `token_type`
-  # column. This does not produce separate `refresh_tokens` and `revoked_tokens` tables. Phase 1b
-  # MUST resolve this divergence explicitly:
-  #   Option A (recommended): Keep the single `tokens` table with `token_type` column, and update
-  #     the acceptance criteria Examples table to note this app's schema divergence (the "Migrations
-  #     produce correct schema" scenario should exclude demo-be-kotlin-ktor or add a separate
-  #     scenario for it). Flyway migration V1 creates the `tokens` table; no `refresh_tokens` or
-  #     `revoked_tokens` tables are created.
-  #   Option B: Split into `refresh_tokens` + `revoked_tokens` tables — requires updating
-  #     `TokensTable.kt` and all repository code that queries by `token_type`.
-  # The executor must document the chosen option in the Phase 1b commit message.
+  # demo-be-kotlin-ktor: Schema option unresolved — two conditional scenarios below.
+  # Phase 1b MUST choose Option A or B and document it in the commit message.
+  # Option A (recommended): Keep single `tokens` table with `token_type` column (schema divergence).
+  # Option B: Split into `refresh_tokens` + `revoked_tokens` tables (standard 5-table schema).
 
-  # Note on demo-be-golang-gin schema: The current implementation uses a GORM struct
-  # `BlacklistedToken` without a `TableName()` override. GORM's snake_case pluralization creates a
-  # `blacklisted_tokens` table, NOT `revoked_tokens`. The acceptance criteria require `revoked_tokens`.
-  # Phase 4a MUST resolve this naming conflict explicitly before writing goose migrations:
-  #   Option A (recommended): Rename struct to `RevokedToken` and add `TableName() string { return
-  #     "revoked_tokens" }` method; update all repository code that references `BlacklistedToken`.
-  #     Goose migrations then use `revoked_tokens` consistently.
-  #   Option B: Keep `blacklisted_tokens` and update the acceptance criteria Examples table to note
-  #     this app uses `blacklisted_tokens` instead of `revoked_tokens`. Goose migrations use
-  #     `blacklisted_tokens`.
-  # The executor must document the chosen option in the Phase 4a commit message.
+  Scenario: demo-be-kotlin-ktor migrations produce tokens table (Option A — schema divergence)
+    Given the demo app "demo-be-kotlin-ktor" with an empty database
+    When the app starts and runs migrations (Option A chosen in Phase 1b)
+    Then the database contains tables: users, tokens, expenses, attachments
+    And the users table includes all 6 audit columns
+    # Note: tokens table uses token_type column; no separate refresh_tokens or revoked_tokens tables.
+    # This scenario applies only if Option A is chosen. If Option B is chosen, use the standard
+    # "Migrations produce correct schema" scenario above (add demo-be-kotlin-ktor to Examples).
+
+  # demo-be-golang-gin: Table naming conflict unresolved — two conditional scenarios below.
+  # Phase 4a MUST choose Option A or B and document it in the commit message.
+  # Option A (recommended): Rename BlacklistedToken to RevokedToken; goose uses revoked_tokens.
+  # Option B: Keep blacklisted_tokens; goose uses blacklisted_tokens (schema divergence).
+
+  Scenario: demo-be-golang-gin migrations produce revoked_tokens table (Option A — standard naming)
+    Given the demo app "demo-be-golang-gin" with an empty database
+    When the app starts and runs migrations (Option A chosen in Phase 4a)
+    Then the database contains tables: users, refresh_tokens, revoked_tokens, expenses, attachments
+    And the users table includes all 6 audit columns
+    # This scenario applies only if Option A is chosen. If Option B is chosen, replace
+    # revoked_tokens with blacklisted_tokens in the Then clause above.
+
+  Scenario: demo-be-golang-gin migrations produce blacklisted_tokens table (Option B — divergence)
+    Given the demo app "demo-be-golang-gin" with an empty database
+    When the app starts and runs migrations (Option B chosen in Phase 4a)
+    Then the database contains tables: users, refresh_tokens, blacklisted_tokens, expenses, attachments
+    And the users table includes all 6 audit columns
+    # This scenario applies only if Option B is chosen. The executor must document this divergence
+    # in the Phase 4a commit message and README.
 
   Scenario Outline: Migrations are idempotent
     Given the demo app "<app>" with a fully migrated database
@@ -215,6 +267,9 @@ Feature: Database migration tooling for all demo apps
       | demo-be-clojure-pedestal   |
       | demo-be-ts-effect          |
       | demo-be-csharp-aspnetcore  |
+  # Note: For demo-be-kotlin-ktor and demo-be-golang-gin, idempotency applies to whichever schema
+  # option was chosen in their respective phases (Option A or Option B). The idempotency guarantee
+  # is tool-level and does not depend on which schema option is in use.
 
   Scenario: Governance documentation is language-agnostic
     Given the file "governance/development/pattern/database-audit-trail.md"
@@ -237,6 +292,21 @@ Feature: Database migration tooling for all demo apps
     And all 11 "test-demo-be-*.yml" workflows pass (or pre-existing failures are documented)
     And "test-demo-fs-ts-nextjs.yml" passes
 ```
+
+## Non-Functional Requirements
+
+- **Idempotency**: Running migrations on an already-migrated database must not fail or create
+  duplicates. All selected tools (Liquibase, Flyway, goose, Alembic, DbUp, Migratus, @effect/sql,
+  EF Core) maintain a migration tracking table to ensure this.
+- **Startup integration**: Migrations run automatically during application startup without a
+  separate Nx target. No migration-specific `nx run` commands are needed.
+- **Test isolation**: Integration tests run against a freshly-migrated PostgreSQL instance via
+  docker-compose. Each test run starts from an empty database and applies migrations on startup.
+- **License compliance**: All NEW migration tools must use an OSI-approved license (MIT, Apache 2.0,
+  BSD). Liquibase (FSL-1.1-ALv2) is retained for Java apps — see Licensing Audit above.
+- **No dual initialization**: The old programmatic DDL (AutoMigrate, create_all, EnsureCreated,
+  create-schema!) must be removed in the same commit that adds the migration tool. No coexistence
+  period.
 
 ## Risk Assessment
 

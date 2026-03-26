@@ -18,7 +18,7 @@ skills:
 
 ## Agent Metadata
 
-- **Role**: Writer (blue)
+- **Role**: Maker (blue)
 - **Created**: 2026-02-06
 - **Last Updated**: 2026-03-24
 

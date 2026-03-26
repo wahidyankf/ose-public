@@ -22,7 +22,12 @@ for reference. Phase 6 (validation) runs after all phases complete.
       (users, refresh_tokens, revoked_tokens, expenses, attachments). The current
       `SchemaInitializer.java` only creates 4 tables (no `refresh_tokens`), so the changelogs
       must add `refresh_tokens` as a new file (e.g., `004-create-refresh-tokens.sql`) — match
-      Spring Boot format for all 6 files (`001-create-users.sql` through `006-create-attachments.sql`)
+      Spring Boot format for all 6 files (`001-create-users.sql` through `006-create-attachments.sql`).
+      **Note**: the existing `SchemaInitializer.java` users table has only `created_at` and
+      `updated_at` audit columns. The SQL changelogs must define the full 6 audit columns
+      (`created_at`, `created_by`, `updated_at`, `updated_by`, `deleted_at`, `deleted_by`) to
+      align with Goal 3 and the acceptance criteria — the 4 missing columns (`created_by`,
+      `updated_by`, `deleted_at`, `deleted_by`) are net-new additions beyond the current schema.
 - [ ] Replace `SchemaInitializer.java` inline DDL with Liquibase programmatic API:
       `CommandScope("update")` with `ClassLoaderResourceAccessor` and JDBC `DataSource`
 - [ ] Update `README.md` with "Database Migrations" section
@@ -115,8 +120,8 @@ for reference. Phase 6 (validation) runs after all phases complete.
 
 #### Phase 3a: demo-be-python-fastapi — Alembic
 
-- [ ] Add `alembic` to `pyproject.toml` (local dev tooling)
-- [ ] Add `alembic` to `requirements.txt` (Docker image builds)
+- [ ] Add `alembic` to `pyproject.toml` `[project.dependencies]` and run `uv lock` to update
+      `uv.lock` (the project uses `uv` — there is no `requirements.txt`)
 - [ ] Create `alembic.ini` configuration file
 - [ ] Create `alembic/env.py` with SQLAlchemy model import for autogenerate support
 - [ ] Create migration scripts in `alembic/versions/` — must produce 5 tables (users,
@@ -128,7 +133,9 @@ for reference. Phase 6 (validation) runs after all phases complete.
       `alembic.command.upgrade(alembic_cfg, "head")` where `alembic_cfg` is an
       `alembic.config.Config` object initialized with `Config("alembic.ini")`
 - [ ] Update `README.md` with "Database Migrations" section
-- [ ] Verify `Dockerfile.integration` installs `requirements.txt` (confirm; no change expected if already the case)
+- [ ] Inspect `tests/integration/` setup files — update any `create_all()` references there to use
+      Alembic instead (equivalent of the `hooks.ts` update step in Phase 4b)
+- [ ] Verify `Dockerfile.integration` uses `uv sync --frozen` (confirm; no change expected)
 - [ ] Verify: `docker-compose.integration.yml` — open file and confirm no changes needed
 - [ ] Verify: `.github/workflows/test-demo-be-python-fastapi.yml` — open file and confirm no changes needed
 - [ ] Run `nx run demo-be-python-fastapi:test:quick` — verify pass
@@ -206,10 +213,17 @@ for reference. Phase 6 (validation) runs after all phases complete.
       `@effect/sql-sqlite-node` if used in the SQLite test environment.
 - [ ] Create Effect migration modules `001_create_users.ts` through `006_create_attachments.ts` in
       `src/infrastructure/db/migrations/`
-- [ ] Extract DDL from `src/infrastructure/db/schema.ts` into migration files (do not remove type definitions from `schema.ts`)
+- [ ] Extract DDL for the 4 existing tables (users, expenses, attachments, revoked_tokens) from
+      `src/infrastructure/db/schema.ts` into migration files (do not remove type definitions from
+      `schema.ts`). **Note**: `refresh_tokens` does NOT exist in `schema.ts` — create
+      `005_create_refresh_tokens.ts` from scratch based on the standard `refresh_tokens` schema
+      (same columns as other apps: id, user_id, token, expires_at, created_at, etc.).
 - [ ] Wire `PgMigrator.layer(...)` into the Effect application startup Layer for PostgreSQL
       (production and Docker integration environments) — see tech-docs.md for the Layer composition
-      pattern
+      pattern. **Note**: provide `NodeFileSystem.layer` from `@effect/platform-node` in the Layer
+      stack — `PgMigrator.fromFileSystem(...)` requires the `FileSystem` service or the app will
+      fail at startup with a "service not provided" error (`@effect/platform-node` should already be
+      in `package.json` — verify with `npm ls @effect/platform-node` and install if missing).
 - [ ] Wire `SqliteMigrator.layer(...)` into the Effect application startup Layer for the SQLite
       `test:integration` environment — condition on database type so each environment
       uses the appropriate migrator
@@ -228,7 +242,7 @@ for reference. Phase 6 (validation) runs after all phases complete.
 - [ ] Run `nx run demo-be-ts-effect:test:integration` — verify integration tests pass and the
       database schema matches the acceptance criteria (5 tables: users, refresh_tokens,
       revoked_tokens, expenses, attachments)
-- [ ] Commit: `feat(demo-be-ts-effect): add Effect SQL Migrator database migrations`
+- [ ] Commit: `feat(demo-be-ts-effect): add @effect/sql Migrator database migrations`
 
 ### Phase 5: Documentation, Governance, and Licensing
 
@@ -261,12 +275,18 @@ for reference. Phase 6 (validation) runs after all phases complete.
   - [ ] Update if it references subdirectories of `software-engineering/`
 - [ ] Review `specs/apps/demo/c4/component-be.md`:
   - [ ] Add migration tool as a component in C4 diagram if not already present
-- [ ] Commit: `docs(governance): generalize database audit trail pattern, add licensing decisions`
-  - If the C4 specs change is non-trivial (adds or modifies diagram nodes), use a separate commit:
+- [ ] Commit governance changes — use separate commits per concern:
+  - `docs(governance): generalize database audit trail pattern to multi-language`
+    (covers `database-audit-trail.md`, `governance/development/pattern/README.md`,
+    `governance/development/README.md`)
+  - `docs(governance): add licensing decisions document`
+    (covers `docs/explanation/software-engineering/licensing/` new directory,
+    `docs/explanation/software-engineering/README.md`, `docs/explanation/README.md`)
+  - If the C4 specs change is non-trivial (adds or modifies diagram nodes), add a third commit:
     `chore(specs): add migration tool component to C4 backend diagram`
-    - Non-trivial means: if you added or removed a box or arrow in the diagram.
-  - If the C4 specs review results in no change, include the "no change needed" confirmation in the
-    governance commit message only (no separate commit).
+    Non-trivial means: if you added or removed a box or arrow in the diagram.
+  - If the C4 specs review results in no change, include a "no change needed" note in the
+    audit trail commit message only (no separate commit).
 
 ### Phase 6: Local Validation
 
@@ -279,10 +299,11 @@ for reference. Phase 6 (validation) runs after all phases complete.
         the previous programmatic approach (same tables, same columns). For fsharp-giraffe and
         csharp-aspnetcore, the users table has only 2 audit columns (created_at, updated_at) — this
         is correct. Adding the remaining 4 audit columns is deferred to a follow-on plan.
-- [ ] Verify idempotency for the 8 modified apps: running each app twice does not fail on
-      already-applied migrations (demo-be-java-vertx, demo-be-python-fastapi, demo-be-golang-gin,
+- [ ] Verify idempotency for the 8 modified apps: run `nx run [app]:test:integration` twice
+      consecutively (without dropping the DB between runs) and verify the second run exits 0.
+      Apps to verify: demo-be-java-vertx, demo-be-python-fastapi, demo-be-golang-gin,
       demo-be-kotlin-ktor, demo-be-fsharp-giraffe, demo-be-clojure-pedestal, demo-be-ts-effect,
-      demo-be-csharp-aspnetcore)
+      demo-be-csharp-aspnetcore
 - [ ] Verify idempotency regression for the 4 pre-existing apps: confirm existing tooling remains
       correct and unaffected (demo-be-java-springboot, demo-be-elixir-phoenix, demo-fs-ts-nextjs,
       demo-be-rust-axum)

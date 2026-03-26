@@ -231,7 +231,8 @@ the refresh_tokens changelog between existing ones.
 
 **Files to modify:**
 
-- `pyproject.toml` or `requirements.txt` — Add `alembic` dependency
+- `pyproject.toml` — Add `alembic` to `[project.dependencies]` and run `uv lock` (the project
+  uses `uv`; there is no `requirements.txt`)
 - `main.py` — Replace `Base.metadata.create_all()` with Alembic programmatic API on startup:
 
   ```python
@@ -250,7 +251,8 @@ the refresh_tokens changelog between existing ones.
 
 **Docker/CI impact:**
 
-- `Dockerfile.integration` — May need `pip install alembic` if not in requirements
+- `Dockerfile.integration` — No change expected; uses `uv sync --frozen` which installs from
+  `pyproject.toml` + `uv.lock` (alembic will be included after `uv lock`)
 - `docker-compose.integration.yml` — No change
 - `.github/workflows/test-demo-be-python-fastapi.yml` — No change
 
@@ -423,6 +425,19 @@ const MigratorLive = Layer.provide(
   SqlLive,
 );
 ```
+
+> **Important**: `PgMigrator.fromFileSystem(...)` requires the `FileSystem` service from
+> `@effect/platform-node`. You must provide `NodeFileSystem.layer` in the Effect application Layer
+> stack alongside `MigratorLive`, otherwise the application will fail at startup with a
+> "service not provided" error:
+>
+> ```typescript
+> import { NodeFileSystem } from "@effect/platform-node";
+>
+> const AppLive = Layer.mergeAll(MigratorLive, ...).pipe(
+>   Layer.provide(NodeFileSystem.layer),
+> );
+> ```
 
 For the SQLite `test:integration` environment, substitute `SqliteMigrator` from `@effect/sql-sqlite-node`
 with an equivalent `.layer({ loader: SqliteMigrator.fromFileSystem(...) })` call. Condition on

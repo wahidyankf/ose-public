@@ -70,11 +70,15 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 
 var app = builder.Build();
 
-// Auto-migrate on startup
-using (var scope = app.Services.CreateScope())
+// Apply pending EF Core migrations on startup (PostgreSQL only).
+// SQLite in-memory databases used by unit tests have their schema created via
+// EnsureCreated inside TestWebApplicationFactory / IntegrationTestHost instead,
+// because EF Core migrations do not support the SQLite in-memory provider.
+if (!string.IsNullOrEmpty(databaseUrl))
 {
+    using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await db.Database.EnsureCreatedAsync();
+    await db.Database.MigrateAsync();
 }
 
 // Map ArgumentException thrown by generated JSON converters to 400 Bad Request.

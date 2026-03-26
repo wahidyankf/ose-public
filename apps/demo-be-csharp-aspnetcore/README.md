@@ -27,6 +27,39 @@ export DATABASE_URL="Host=localhost;Port=5432;Database=demo_be_csharp_aspnetcore
 dotnet run --project src/DemoBeCsas/DemoBeCsas.csproj
 ```
 
+## Database Migrations
+
+This project uses **EF Core Migrations** to manage the PostgreSQL schema.
+
+### Tool
+
+EF Core Migrations (MIT license) via `Microsoft.EntityFrameworkCore.Design` (build-time only,
+`PrivateAssets="all"`).
+
+### How migrations run
+
+On application startup, `Database.MigrateAsync()` in `Program.cs` applies all pending migrations
+to the connected PostgreSQL database. This runs only when `DATABASE_URL` is set — SQLite in-memory
+databases used by unit tests use `EnsureCreated` instead (EF Core migrations do not support the
+SQLite in-memory provider).
+
+### Create a new migration
+
+```bash
+cd apps/demo-be-csharp-aspnetcore
+dotnet ef migrations add <MigrationName> \
+  --project src/DemoBeCsas/DemoBeCsas.csproj \
+  --startup-project src/DemoBeCsas/DemoBeCsas.csproj
+```
+
+If `dotnet ef` is not installed:
+
+```bash
+dotnet tool install --global dotnet-ef
+```
+
+Migration files are committed to git under `src/DemoBeCsas/Migrations/`.
+
 ## Test Architecture
 
 This project uses a three-level test architecture:

@@ -63,7 +63,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
             });
         }
         // When UsePostgres is true, Program.cs already registered Npgsql from DATABASE_URL.
-        // No override needed — EnsureCreated in Program.cs startup creates the schema.
+        // No override needed — MigrateAsync in Program.cs startup applies all migrations.
     }
 
     /// <summary>

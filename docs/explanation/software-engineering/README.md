@@ -11,7 +11,7 @@ tags:
   - patterns
   - index
 created: 2026-01-20
-updated: 2026-03-09
+updated: 2026-03-26
 ---
 
 # Software Design
@@ -75,6 +75,12 @@ End-to-end testing frameworks and browser automation tools:
 
 - **[Automation Testing](./automation-testing/README.md)** - E2E testing frameworks and browser automation
   - **[Playwright](./automation-testing/tools/playwright/README.md)** - Cross-browser E2E testing for web applications
+
+### ⚖️ [Licensing](./licensing/README.md)
+
+License analysis and compliance decisions for open-source dependencies:
+
+- **[Licensing Decisions](licensing/ex-soen-li__licensing-decisions.md)** - Analysis for Liquibase FSL-1.1-ALv2, Hibernate LGPL-2.1, sharp-libvips LGPL-3.0, and Logback EPL-1.0/LGPL-2.1. Includes quarterly audit schedule.
 
 ### 📚 Cross-References
 

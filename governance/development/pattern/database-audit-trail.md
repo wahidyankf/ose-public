@@ -106,7 +106,7 @@ Each demo backend uses the idiomatic migration tool for its language and framewo
 | demo-be-rust-axum         | SQLx                 | MIT / Apache 2.0 |
 | demo-fs-ts-nextjs         | Drizzle              | Apache 2.0       |
 
-For licensing decisions related to Liquibase's FSL-1.1-ALv2 licence (introduced in version 5.0), see [Licensing Decisions](../../../docs/explanation/software-engineering/licensing/ex-soen-lc__licensing-decisions.md).
+For licensing decisions related to Liquibase's FSL-1.1-ALv2 licence (introduced in version 5.0), see [Licensing Decisions](../../../docs/explanation/software-engineering/licensing/ex-soen-li__licensing-decisions.md).
 
 ## Schema Migration
 
@@ -363,7 +363,7 @@ Use this checklist when adding a new table or reviewing an existing one.
 - [Acceptance Criteria Convention](../infra/acceptance-criteria.md) - Writing testable criteria for features involving audited entities
 - [Functional Programming Practices](./functional-programming.md) - Pure functions for business logic separate from audit side effects
 - [Reproducible Environments Convention](../workflow/reproducible-environments.md) - Why H2/PostgreSQL parity matters for test reliability
-- [Licensing Decisions](../../../docs/explanation/software-engineering/licensing/ex-soen-lc__licensing-decisions.md) - License analysis for migration tools (Liquibase FSL-1.1-ALv2, Hibernate LGPL-2.1, and others)
+- [Licensing Decisions](../../../docs/explanation/software-engineering/licensing/ex-soen-li__licensing-decisions.md) - License analysis for migration tools (Liquibase FSL-1.1-ALv2, Hibernate LGPL-2.1, and others)
 
 ## References
 

@@ -125,6 +125,29 @@ static table.
 TypeScript backend change that also requires a README update), delegate each concern separately
 to its appropriate agent. Execute the implementation agent first, then the documentation agent.
 
+## Task-Checklist Synchronization
+
+The Task list (in-memory via `TaskCreate`/`TaskUpdate`) and the delivery checklist (on-disk in
+`delivery.md`) MUST always be in sync. They are two views of the same state:
+
+- **Task list**: Ephemeral, in-conversation tracking. Provides progress visibility during
+  execution. Lost when the conversation ends.
+- **Delivery checklist**: Persistent, on-disk record. Survives across conversations. Source of
+  truth for plan completion.
+
+**Sync rules**:
+
+1. **Create together**: When a task is created via `TaskCreate`, the corresponding `- [ ]` item
+   MUST already exist in `delivery.md` (it was written during planning).
+2. **Update together**: When a task is marked `completed` via `TaskUpdate`, the corresponding
+   `- [ ]` in `delivery.md` MUST be ticked to `- [x]` in the same step — never one without the
+   other.
+3. **Resume from checklist**: When resuming a plan in a new conversation, read `delivery.md` to
+   determine which items are already `- [x]` (done) and which are `- [ ]` (remaining). Create
+   tasks only for remaining items.
+4. **Never diverge**: If a task is completed but the checklist is not ticked (or vice versa), the
+   state is inconsistent. The executor must detect and fix this immediately.
+
 ## Steps
 
 ### 1. Load Delivery Checklist (Sequential)
@@ -137,10 +160,12 @@ Read the plan and its delivery document to understand all work items before exec
 - Locate the delivery checklist, typically in a `delivery.md` file adjacent to the plan or
   embedded within the plan itself
 - Parse all checklist items in sequential phase and item order
-- Use `TaskCreate` to create one task per checklist item
+- Identify already-completed items (`- [x]`) — skip these (plan may be partially complete from a
+  prior conversation)
+- Use `TaskCreate` to create one task per REMAINING (`- [ ]`) checklist item
 - Use `TaskUpdate` (`in_progress`) on each task as it begins
 
-**Output**: Full task list created, delivery document loaded
+**Output**: Full task list created for remaining items, delivery document loaded
 
 **On failure**: Terminate workflow with status `fail`.
 
@@ -149,6 +174,7 @@ Read the plan and its delivery document to understand all work items before exec
 - Tasks map 1:1 to delivery checklist items
 - Tasks must be granular — one concrete action per task
 - Preserve the phase and sequential ordering from the delivery checklist
+- Already-ticked items are skipped — the plan is resumable across conversations
 
 ### 2. Initial Execution (Sequential, Continuous)
 
@@ -161,12 +187,13 @@ Execute all delivery checklist items sequentially, delegating each to the approp
 For each checklist item in sequential order (phase by phase, item by item):
 
 1. Mark the corresponding task `in_progress` via `TaskUpdate`
-2. Analyze the item to determine the correct specialized agent (see Agent Selection table above)
+2. Analyze the item to determine the correct specialized agent (see Agent Selection above)
 3. Delegate the item to that agent via the Agent tool
 4. Verify the agent completed the work successfully
-5. Update the delivery checklist: `- [ ]` → `- [x]` in `delivery.md`
-6. Mark the task `completed` via `TaskUpdate`
-7. Proceed immediately to the next item — do not pause between items
+5. **Atomic sync**: Update BOTH in the same step:
+   - Tick the delivery checklist: `- [ ]` → `- [x]` in `delivery.md` (Edit tool)
+   - Mark the task `completed` via `TaskUpdate`
+6. Proceed immediately to the next item — do not pause between items
 
 **Output**: `{execution-started}` — all delivery checklist items completed, checklist updated
 
@@ -240,7 +267,8 @@ For each finding from the latest validation report:
 1. Analyze the finding to determine the correct specialized agent
 2. Delegate the remediation to that agent via the Agent tool
 3. Verify the agent resolved the finding successfully
-4. Update the delivery checklist if the finding corresponds to an unchecked item
+4. **Atomic sync**: If the finding corresponds to an unchecked item, tick BOTH the delivery
+   checklist (`- [x]`) and the task (`completed`) in the same step
 5. Proceed immediately to the next finding
 
 **Success criteria**: Executor addresses all findings without stopping between them.

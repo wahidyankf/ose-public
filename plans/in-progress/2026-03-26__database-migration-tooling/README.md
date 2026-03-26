@@ -7,12 +7,14 @@
 
 All demo backend (`demo-be-*`) and fullstack (`demo-fs-*`) apps share the same domain schema
 (users, refresh_tokens, revoked_tokens, expenses, attachments) defined by the OpenAPI contract in
-`specs/apps/demo/contracts/`. Currently, only 5 of 12 apps use dedicated migration tooling. The
-remaining 7 rely on programmatic DDL (`CREATE TABLE IF NOT EXISTS`, ORM auto-migrate, or
-`EnsureCreated`) which is not production-ready.
+`specs/apps/demo/contracts/`. Currently, only 4 apps use dedicated migration tooling without
+changes (`demo-be-java-springboot`, `demo-be-elixir-phoenix`, `demo-fs-ts-nextjs`,
+`demo-be-rust-axum`). One app (`demo-be-csharp-aspnetcore`) uses EF Core but requires an upgrade
+from `EnsureCreated`. The remaining 7 rely on programmatic DDL (`CREATE TABLE IF NOT EXISTS`, ORM
+auto-migrate, or `EnsureCreated`) which is not production-ready.
 
 All NEW migration tools must be fully open-source (OSI-approved license) and free for all use.
-Liquibase (FSL-1.1) is retained for existing Java apps with a documented licensing note — see
+Liquibase (FSL-1.1-ALv2) is retained for existing Java apps with a documented licensing note — see
 [Licensing Decision](#licensing-decision).
 
 **Git Workflow**: Commit to `main` (Trunk Based Development)
@@ -32,21 +34,21 @@ Liquibase (FSL-1.1) is retained for existing Java apps with a documented licensi
 4. Generalize the [Database Audit Trail Pattern](../../../governance/development/pattern/database-audit-trail.md)
    from Liquibase/JPA-only to a language-agnostic standard
 5. Document migration setup in each app's README
-6. Document the Liquibase FSL-1.1 licensing decision in governance docs
+6. Document the Liquibase FSL-1.1-ALv2 licensing decision in governance docs
 
 ## Tool Assignments
 
 ### New Migration Tooling (7 apps)
 
-| App                      | Tool                     | License    | Ecosystem Rationale                                    |
-| ------------------------ | ------------------------ | ---------- | ------------------------------------------------------ |
-| demo-be-java-vertx       | **Liquibase**            | FSL-1.1    | Consistency with Spring Boot sibling; programmatic API |
-| demo-be-python-fastapi   | **Alembic**              | MIT        | Same author as SQLAlchemy; undisputed standard         |
-| demo-be-golang-gin       | **goose**                | MIT        | Transaction-safe; no dirty-state problem               |
-| demo-be-kotlin-ktor      | **Flyway**               | Apache 2.0 | Ktor ecosystem consensus; JetBrains-endorsed           |
-| demo-be-fsharp-giraffe   | **DbUp**                 | MIT        | SQL-first; no F# compatibility issues                  |
-| demo-be-clojure-pedestal | **Migratus**             | Apache 2.0 | Luminus default; git-friendly                          |
-| demo-be-ts-effect        | **@effect/sql Migrator** | MIT        | Built-in; type-safe Effect migrations                  |
+| App                      | Tool                     | License      | Ecosystem Rationale                                    |
+| ------------------------ | ------------------------ | ------------ | ------------------------------------------------------ |
+| demo-be-java-vertx       | **Liquibase**            | FSL-1.1-ALv2 | Consistency with Spring Boot sibling; programmatic API |
+| demo-be-python-fastapi   | **Alembic**              | MIT          | Same author as SQLAlchemy; undisputed standard         |
+| demo-be-golang-gin       | **goose**                | MIT          | Transaction-safe; no dirty-state problem               |
+| demo-be-kotlin-ktor      | **Flyway**               | Apache 2.0   | Ktor ecosystem consensus; JetBrains-endorsed           |
+| demo-be-fsharp-giraffe   | **DbUp**                 | MIT          | SQL-first; no F# compatibility issues                  |
+| demo-be-clojure-pedestal | **Migratus**             | Apache 2.0   | Luminus default; git-friendly                          |
+| demo-be-ts-effect        | **@effect/sql Migrator** | MIT          | Built-in; type-safe Effect migrations                  |
 
 ### Upgrade (1 app)
 
@@ -54,15 +56,14 @@ Liquibase (FSL-1.1) is retained for existing Java apps with a documented licensi
 | ------------------------- | ---------------------- | ------- | ------------------------------------------------ |
 | demo-be-csharp-aspnetcore | **EF Core Migrations** | MIT     | Upgrade from `EnsureCreated` to versioned system |
 
-### Already Done (5 apps — no changes needed)
+### Already Done (4 apps — no changes needed)
 
-| App                     | Tool      | License          | Status                                  |
-| ----------------------- | --------- | ---------------- | --------------------------------------- |
-| demo-be-java-springboot | Liquibase | FSL-1.1          | **Done**                                |
-| demo-be-elixir-phoenix  | Ecto      | Apache 2.0       | **Done**                                |
-| demo-fs-ts-nextjs       | Drizzle   | Apache 2.0       | **Done**                                |
-| demo-be-rust-axum       | SQLx      | MIT / Apache 2.0 | **Done**                                |
-| demo-be-java-vertx      | Liquibase | FSL-1.1          | **New** (uses same tool as Spring Boot) |
+| App                     | Tool      | License          | Status   |
+| ----------------------- | --------- | ---------------- | -------- |
+| demo-be-java-springboot | Liquibase | FSL-1.1-ALv2     | **Done** |
+| demo-be-elixir-phoenix  | Ecto      | Apache 2.0       | **Done** |
+| demo-fs-ts-nextjs       | Drizzle   | Apache 2.0       | **Done** |
+| demo-be-rust-axum       | SQLx      | MIT / Apache 2.0 | **Done** |
 
 See [Technical Documentation](./tech-docs.md) for full rationale, alternatives considered, and
 licensing audit for each tool.
@@ -80,8 +81,8 @@ licensing audit for each tool.
 
 ### Licensing Decision
 
-**Liquibase** switched from Apache 2.0 to the Functional Source License (FSL-1.1) in version 5.0.
-FSL is **not** an OSI-approved open-source license — it prohibits using Liquibase to build a
+**Liquibase** switched from Apache 2.0 to the Functional Source License (FSL-1.1-ALv2) in version
+5.0. FSL is **not** an OSI-approved open-source license — it prohibits using Liquibase to build a
 **competing commercial migration tool** for 2 years after each release, then converts to
 Apache 2.0.
 

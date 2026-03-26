@@ -57,6 +57,9 @@ for reference. Phase 6 (validation) runs after all phases complete.
 - [ ] Configure `.fsproj` to embed migration files as `EmbeddedResource`
 - [ ] Replace `Database.EnsureCreatedAsync()` in `Program.fs` with DbUp:
       `DeployChanges.To.PostgresqlDatabase(connStr).WithScriptsEmbeddedInAssembly(assembly).Build().PerformUpgrade()`
+- [ ] Search entire codebase for `EnsureCreated` — confirm all occurrences are removed
+- [ ] Confirm `AppDbContext.fs` is retained for data access (not removed)
+- [ ] Verify project compiles: `dotnet build` before running tests
 - [ ] Update `README.md` with "Database Migrations" section
 - [ ] Verify: `Dockerfile.integration` — no changes needed
 - [ ] Verify: `docker-compose.integration.yml` — no changes needed
@@ -90,7 +93,8 @@ for reference. Phase 6 (validation) runs after all phases complete.
       `alembic/versions/`
 - [ ] Replace `Base.metadata.create_all()` in `main.py` with Alembic `upgrade("head")` on startup
 - [ ] Update `README.md` with "Database Migrations" section
-- [ ] Verify: `Dockerfile.integration` — may need `pip install alembic` if not in requirements
+- [ ] Add `alembic` to `requirements.txt` (ensures it is present in Docker image builds)
+- [ ] Verify `Dockerfile.integration` installs `requirements.txt` (confirm; no change expected if already the case)
 - [ ] Verify: `docker-compose.integration.yml` — no changes needed
 - [ ] Verify: `.github/workflows/test-demo-be-python-fastapi.yml` — no changes needed
 - [ ] Run `nx run demo-be-python-fastapi:test:quick` — verify pass
@@ -139,6 +143,8 @@ for reference. Phase 6 (validation) runs after all phases complete.
 - [ ] Extract DDL from `src/infrastructure/db/schema.ts` into migration files; keep type definitions
 - [ ] Wire `PgMigrator.run` (or `SqliteMigrator.run`) into the Effect application layer startup
 - [ ] Update `README.md` with "Database Migrations" section
+- [ ] Verify `@effect/sql` version in `package.json` is pinned (not a range); document the tested
+      version in the README "Database Migrations" section
 - [ ] Verify: `Dockerfile.integration` — no changes needed
 - [ ] Verify: `docker-compose.integration.yml` — no changes needed
 - [ ] Verify: `.github/workflows/test-demo-be-ts-effect.yml` — no changes needed
@@ -160,8 +166,9 @@ for reference. Phase 6 (validation) runs after all phases complete.
     scope
 - [ ] Create `docs/explanation/software-engineering/licensing/` directory with:
   - `README.md` — Index for licensing documentation
-  - `licensing-decisions.md` — Document all non-OSI and copyleft licensing decisions:
-    - **Liquibase FSL-1.1**: Why kept (non-compete does not apply to this project; we are an
+  - `ex-soen-lc__licensing-decisions.md` — Document all non-OSI and copyleft licensing decisions
+    (filename follows hierarchical prefix convention; confirm exact token before creating):
+    - **Liquibase FSL-1.1-ALv2**: Why kept (non-compete does not apply to this project; we are an
       enterprise platform, not a competing migration tool). Lists affected apps
       (`demo-be-java-springboot`, `demo-be-java-vertx`). Notes that FSL converts to Apache 2.0
       after 2 years.
@@ -169,9 +176,17 @@ for reference. Phase 6 (validation) runs after all phases complete.
     - **sharp-libvips LGPL-3.0**: Dynamic native addon justification
     - **Logback EPL-1.0/LGPL-2.1**: EPL-1.0 elected
     - **Audit schedule**: Quarterly or on major dependency upgrades
+  - Verify `ex-soen-lc__licensing-decisions.md` has complete frontmatter (title, description,
+    category, subcategory, tags, created, updated) matching the existing governance doc pattern
+- [ ] Update `docs/explanation/software-engineering/README.md`:
+  - Add "Licensing" section entry linking to the new `licensing/` subdirectory
+- [ ] Review `docs/explanation/README.md`:
+  - Update if it references subdirectories of `software-engineering/`
 - [ ] Review `specs/apps/demo/c4/component-be.md`:
   - Add migration tool as a component in C4 diagram if not already present
 - [ ] Commit: `docs(governance): generalize database audit trail pattern, add licensing decisions`
+  - Note: consider a separate commit for the C4 specs update (`chore(specs): add migration tool
+component to C4 backend diagram`) if the change is substantial enough to warrant it.
 
 ### Phase 6: Local Validation
 
@@ -181,9 +196,15 @@ for reference. Phase 6 (validation) runs after all phases complete.
 - [ ] Verify idempotency: running each app twice does not fail on already-applied migrations
 - [ ] Verify all 8 app READMEs have a "Database Migrations" section
 - [ ] Verify `database-audit-trail.md` includes the "Migration Tool by Language" table
-- [ ] Verify `licensing-decisions.md` documents Liquibase FSL-1.1 decision with rationale
+- [ ] Verify `ex-soen-lc__licensing-decisions.md` documents Liquibase FSL-1.1-ALv2 decision with rationale
 - [ ] Verify no remaining `AutoMigrate()`, `create_all()`, `EnsureCreated()`, `create-schema!`, or
-      inline DDL `CREATE TABLE` calls in modified apps (except within migration files themselves)
+      inline DDL `CREATE TABLE` calls in modified apps (except within migration files themselves).
+      Use the following to check:
+      `bash
+grep -r "AutoMigrate\|create_all\|EnsureCreated\|create-schema!" \
+  apps/demo-be-* \
+  --include="*.go" --include="*.py" --include="*.fs" --include="*.clj" --include="*.ts"
+`
 - [ ] Verify all Dockerfiles, docker-compose files, and GitHub Actions workflows still work
 
 ### Phase 7: CI Verification

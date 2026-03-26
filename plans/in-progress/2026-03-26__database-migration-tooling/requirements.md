@@ -4,7 +4,7 @@
 
 | App                       | Language/Framework   | Current Approach                    | Migration Tool        | License          | Status      |
 | ------------------------- | -------------------- | ----------------------------------- | --------------------- | ---------------- | ----------- |
-| demo-be-java-springboot   | Java / Spring Boot   | Liquibase SQL changelogs            | Liquibase             | FSL-1.1          | **Done**    |
+| demo-be-java-springboot   | Java / Spring Boot   | Liquibase SQL changelogs            | Liquibase             | FSL-1.1-ALv2     | **Done**    |
 | demo-be-elixir-phoenix    | Elixir / Phoenix     | Ecto migrations                     | Ecto                  | Apache 2.0       | **Done**    |
 | demo-fs-ts-nextjs         | TypeScript / Next.js | Drizzle ORM migrations              | Drizzle               | Apache 2.0       | **Done**    |
 | demo-be-rust-axum         | Rust / Axum          | SQLx migrate feature                | SQLx                  | MIT / Apache 2.0 | **Done**    |
@@ -20,7 +20,7 @@
 ## Licensing Audit
 
 All NEW migration tools must use an OSI-approved open-source license and be free for all use.
-Liquibase (FSL-1.1) is retained for Java apps — see [Licensing Decision](#liquibase-licensing-decision).
+Liquibase (FSL-1.1-ALv2) is retained for Java apps — see [Liquibase Licensing Detail](#liquibase-licensing-detail).
 
 | Tool                   | License          | OSI Approved | Free for Us                  | Verdict                                                       |
 | ---------------------- | ---------------- | ------------ | ---------------------------- | ------------------------------------------------------------- |
@@ -38,9 +38,12 @@ Liquibase (FSL-1.1) is retained for Java apps — see [Licensing Decision](#liqu
 
 ### Liquibase Licensing Detail
 
-Liquibase switched from Apache 2.0 to the Functional Source License (FSL-1.1) in version 5.0
-(2025). FSL is **not** an OSI-approved open-source license — it prohibits competing commercial use
-for 2 years after each release, then converts to Apache 2.0. The Apache Software Foundation
+Liquibase switched from Apache 2.0 to the Functional Source License (FSL-1.1-ALv2) in version 5.0
+(2025 — verify exact version and year against the
+[Liquibase FSL blog post](https://www.liquibase.com/blog/liquibase-community-for-the-future-fsl)
+before finalizing `ex-soen-lc__licensing-decisions.md` in Phase 5). FSL is **not** an OSI-approved
+open-source license — it prohibits competing commercial use for 2 years after each release, then
+converts to Apache 2.0. The Apache Software Foundation
 ([LEGAL-721](https://issues.apache.org/jira/browse/LEGAL-721)) and Keycloak
 ([#43391](https://github.com/keycloak/keycloak/issues/43391)) have both flagged this as
 problematic.
@@ -72,10 +75,10 @@ table already exists.
 
 **Impact**: Schema evolution requires manual database drops. Not production-safe.
 
-### Gap 3: Liquibase FSL-1.1 Licensing Undocumented
+### Gap 3: Liquibase FSL-1.1-ALv2 Licensing Undocumented
 
 `demo-be-java-springboot` and (after this plan) `demo-be-java-vertx` use Liquibase, which switched
-to the non-OSI Functional Source License (FSL-1.1) in v5.0. While the FSL non-compete clause does
+to the non-OSI Functional Source License (FSL-1.1-ALv2) in v5.0. While the FSL non-compete clause does
 not restrict this project (we are not building a competing migration tool), this licensing decision
 must be documented for future contributors.
 
@@ -121,17 +124,17 @@ Feature: Database migration tooling for all demo apps
       | demo-be-ts-effect          | @effect/sql Migrator   |
       | demo-be-csharp-aspnetcore  | EF Core Migrations     |
 
-  Scenario: Liquibase FSL-1.1 licensing decision is documented
+  Scenario: Liquibase FSL-1.1-ALv2 licensing decision is documented
     Given the repository governance documentation
     When I look for a licensing decisions document
-    Then it explains why Liquibase (FSL-1.1, non-OSI) is accepted
+    Then it explains why Liquibase (FSL-1.1-ALv2, non-OSI) is accepted
     And it states that the FSL non-compete clause does not restrict this project
     And it lists the affected apps (demo-be-java-springboot, demo-be-java-vertx)
 
   Scenario Outline: Migrations produce correct schema
     Given the demo app "<app>" with an empty database
     When the app starts and runs migrations
-    Then the database contains tables: users, refresh_tokens or tokens, revoked_tokens, expenses, attachments
+    Then the database contains tables: users, refresh_tokens, revoked_tokens, expenses, attachments
     And the users table includes all 6 audit columns (created_at, created_by, updated_at, updated_by, deleted_at, deleted_by)
 
     Examples:
@@ -154,6 +157,9 @@ Feature: Database migration tooling for all demo apps
     Examples:
       | app                        |
       | demo-be-java-springboot    |
+      | demo-be-elixir-phoenix     |
+      | demo-fs-ts-nextjs          |
+      | demo-be-rust-axum          |
       | demo-be-java-vertx         |
       | demo-be-python-fastapi     |
       | demo-be-golang-gin         |

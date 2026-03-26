@@ -156,7 +156,7 @@ export class ContentService {
 
       const index = new FlexSearch.Document<SearchDoc, true>({
         document: { id: "id", index: ["title", "content"], store: true },
-        tokenize: "full",
+        tokenize: "forward",
       });
 
       for (const doc of docs.filter((d) => d.locale === loc)) {
@@ -178,7 +178,7 @@ export class ContentService {
 
       const index = new FlexSearch.Document<SearchDoc, true>({
         document: { id: "id", index: ["title", "content"], store: true },
-        tokenize: "full",
+        tokenize: "forward",
       });
 
       const localeItems = items.filter((i) => i.locale === loc && !i.isSection);

@@ -18,7 +18,7 @@ async function main() {
   for (const item of searchable) {
     try {
       const { content } = await repository.readFileContent(item.filePath);
-      const plainText = stripMarkdown(content);
+      const plainText = stripMarkdown(content).slice(0, 2000);
       docs.push({
         id: `${item.locale}:${item.slug}`,
         title: item.title,

@@ -101,9 +101,49 @@ Validate project plans against standards defined in [Plans Organization Conventi
 
 Use `repo-generating-validation-reports` Skill for report initialization.
 
+### Step 0b: Load Known False Positive Skip List
+
+Before beginning validation, load the skip list:
+
+- **File**: `generated-reports/.known-false-positives.md`
+- If file exists, read contents and reference during ALL validation steps
+- Before reporting any finding, check if it matches an entry using stable key: `[category] | [file] | [brief-description]`
+- **If matched**: Log as `[PREVIOUSLY ACCEPTED FALSE_POSITIVE — skipped]` in informational section. Do NOT count in findings total. Do NOT include in findings report.
+
+**Informational log format** (written to report, not counted as finding):
+
+```markdown
+### [INFO] Previously Accepted FALSE_POSITIVE — Skipped
+
+**Key**: [category] | [file] | [brief-description]
+**Skipped**: Finding matches entry in generated-reports/.known-false-positives.md
+**Originally Accepted**: [date from skip list]
+```
+
+### Step 0c: Re-validation Mode Detection
+
+When a UUID chain exists from a previous iteration (multi-part UUID chain like `abc123_def456`):
+
+1. Check for `## Changed Files (for Scoped Re-validation)` section in the latest fix report
+2. **If found**: Run validation (Steps 2-6) only on CHANGED plan files. Run factual accuracy (Step 4b) only on claims in changed sections. Reuse iteration 1's `## Codebase Files Inspected` list — do NOT read additional codebase files.
+3. **If not found**: Run full validation as normal
+
+This prevents scope expansion across iterations and ensures deterministic convergence.
+
 ### Step 1: Read Complete Plan
 
 Read all plan files to understand full scope and structure.
+
+#### Comprehensive Codebase Inspection (Iteration 1 Only)
+
+On the FIRST iteration (single-segment UUID, e.g., `abc123`), perform a thorough codebase inspection of ALL files referenced in the plan:
+
+1. **Read every file listed** in "Files to modify", "Files to create", dependency lists
+2. **Search for related test files** — test fixtures, factories, helpers for each modified file
+3. **Check build/config files** — package.json, pom.xml, .csproj, Dockerfile as relevant
+4. **Record inspection scope** in the report under `## Codebase Files Inspected` — list every file path read
+
+This prevents iteration 2+ from discovering files that should have been caught in iteration 1. The inspection scope is LOCKED after iteration 1 — do not expand it in subsequent iterations.
 
 ### Step 2: Validate Structure
 
@@ -154,6 +194,18 @@ Update status to "Complete", add summary statistics and prioritized recommendati
 - `plan-execution-checker` - Validates completed work
 - `plan-fixer` - Fixes plan issues
 
+### Escalation After Repeated Disagreements
+
+If a finding was flagged in iteration N, marked FALSE_POSITIVE by fixer, and re-flagged by checker in iteration N+2:
+
+- Mark as `[ESCALATED — manual review required]` instead of a countable finding
+- Do NOT count in findings total
+- Log in report: "This finding has been re-flagged after a FALSE_POSITIVE acceptance. Manual review required."
+
+### Convergence Target
+
+Workflow should stabilize in 3-5 iterations. If not converged after 7 iterations, log a warning in the audit report: "Convergence not achieved after 7 iterations — likely non-deterministic findings or scope expansion. Remaining findings may require manual review."
+
 **Remember**: Good validation identifies issues early, before execution. Be thorough, specific, and constructive.
 
 ## Factual Accuracy Validation (Step 4b — NEW)
@@ -176,6 +228,18 @@ Use `docs-validating-factual-accuracy` Skill methodology:
 - **WebFetch** official docs for API signatures, config options, behavior claims
 - Classify each claim: `[Verified]`, `[Error]`, `[Outdated]`, `[Unverified]`
 - Report unverified claims as MEDIUM findings (may be correct but cannot confirm)
+
+#### Caching Verified Claims (Iterations 2+)
+
+On re-validation iterations (multi-part UUID chain):
+
+1. Read the iteration 1 audit report's factual verification results
+2. For claims marked `[Verified]` in iteration 1: carry forward as `[Verified — cached from iteration 1]`. Do NOT re-verify with WebSearch/WebFetch.
+3. For claims marked `[Error]` or `[Outdated]` in iteration 1 that were fixed: re-verify ONLY those specific claims
+4. For NEW claims introduced by fixer edits: verify normally
+5. Do NOT verify claims that were not in scope of the changed files
+
+This prevents non-deterministic WebSearch results from generating new findings on unchanged claims.
 
 ### Delivery Checklist Granularity Standard
 

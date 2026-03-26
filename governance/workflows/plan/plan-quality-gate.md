@@ -1,7 +1,7 @@
 ---
 name: plan-quality-gate
 goal: Validate plan completeness and technical accuracy, apply fixes iteratively until zero findings achieved
-termination: "Zero findings on two consecutive validations (max-iterations defaults to 15)"
+termination: "Zero findings on two consecutive validations (max-iterations defaults to 10, escalation warning at 7)"
 inputs:
   - name: scope
     type: string
@@ -16,7 +16,7 @@ inputs:
     type: number
     description: Maximum check-fix cycles to prevent infinite loops
     required: false
-    default: 15
+    default: 10
   - name: max-concurrency
     type: number
     description: Maximum number of agents/tasks that can run concurrently during workflow execution
@@ -141,9 +141,11 @@ Run checker again to verify fixes resolved issues and no new issues introduced.
 
 **Agent**: `plan-checker`
 
-- **Args**: `scope: {input.scope}`
+- **Args**: `scope: {input.scope}, uuid-chain: {previous-uuid-chain}, fix-report: {step3.outputs.fix-report}`
 - **Output**: `{audit-report-N}` - Verification audit report
 - **Depends on**: Step 3 completion
+
+**Re-validation mode**: The UUID chain signals re-validation mode to the checker. The fix report provides the changed files list for scoped re-validation. The checker validates only changed plan files and reuses iteration 1's codebase inspection scope.
 
 **Success criteria**: Checker completes validation.
 
@@ -167,8 +169,10 @@ Determine whether to continue fixing or terminate.
 
 **Notes**:
 
-- **Default behavior**: Runs up to 15 iterations (default max-iterations). Override with higher value or explicit `max-iterations=unlimited` for unbounded execution
+- **Default behavior**: Runs up to 10 iterations (default max-iterations). Override with higher value for more attempts
 - **Consecutive pass requirement**: Zero findings must be confirmed by a second independent check before declaring success
+- **Convergence target**: Workflow should stabilize in 3-5 iterations with convergence safeguards (scoped re-validation, cached verification, false positive tracking)
+- **Escalation threshold**: If findings count is not monotonically decreasing after iteration 7, log a warning: "Convergence not achieved — likely non-deterministic findings or scope expansion"
 - **Optional min-iterations**: Prevents premature termination before sufficient iterations
 - Each iteration uses the latest audit report
 - Tracks iteration count for observability
@@ -249,16 +253,16 @@ Typical execution flow:
 
 ```
 Iteration 1:
-  Check → 12 findings (missing requirements, incomplete checklists) → Fix → Re-check → 5 findings
+  Check (full scan + comprehensive codebase inspection) → 12 findings → Fix → captures changed files
 
 Iteration 2:
-  Check (reuse) → 5 findings (technical inaccuracies) → Fix → Re-check → 1 finding
+  Check (scoped to changed files, cached verification) → 3 findings → Fix → captures changed files
 
 Iteration 3:
-  Check (reuse) → 1 finding (formatting) → Fix → Re-check → 0 findings (consecutive_zero: 1)
+  Check (scoped) → 0 findings (consecutive_zero: 1)
 
 Iteration 4 (confirmation):
-  Re-check → 0 findings (consecutive_zero: 2 — double-zero confirmed)
+  Re-check (scoped) → 0 findings (consecutive_zero: 2 — double-zero confirmed)
 
 Result: SUCCESS (4 iterations)
 ```
@@ -267,10 +271,19 @@ Result: SUCCESS (4 iterations)
 
 **Infinite Loop Prevention**:
 
-- max-iterations defaults to 15 (override with higher value for more attempts)
+- max-iterations defaults to 10 (override with higher value for more attempts)
 - When provided, workflow terminates with `partial` if limit reached
 - Tracks iteration count for monitoring
-- Use max-iterations when fix convergence is uncertain
+- Escalation warning at iteration 7 if not converging
+
+**Convergence Safeguards**:
+
+- Checker loads `.known-false-positives.md` skip list at start of each iteration
+- Fixer persists new FALSE_POSITIVEs to skip list after each run
+- Re-validation uses scoped scan (changed files only) to prevent scope expansion
+- Comprehensive codebase inspection on iteration 1 with locked scope on iterations 2+
+- Factual claims verified in iteration 1 are cached, not re-verified with WebSearch
+- Escalation after repeated checker-fixer disagreements on the same finding
 
 **False Positive Protection**:
 

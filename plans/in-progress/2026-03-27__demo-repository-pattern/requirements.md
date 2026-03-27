@@ -95,10 +95,16 @@ Feature: Repository pattern abstraction
 Feature: Consistent repository pattern across demo apps
 
   Scenario: All demo backend apps use repository pattern
-    Given all demo-be-* apps and demo-fs-* apps
+    Given all 4 apps modified by this plan (demo-be-python-fastapi, demo-be-clojure-pedestal,
+      demo-be-rust-axum, demo-be-fsharp-giraffe)
     When I inspect their data access layer
     Then every app has abstract repository interfaces
     And every app injects repositories rather than accessing DB directly
+
+  Scenario: demo-fs-ts-nextjs remains compliant (pre-existing)
+    Given demo-fs-ts-nextjs already uses TypeScript interfaces with in-memory test doubles
+    When I inspect its data access layer
+    Then it still has abstract repository interfaces (no changes made by this plan)
 
   Scenario: Three-level testing works with repository seams
     Given any demo backend app

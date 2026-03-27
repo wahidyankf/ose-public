@@ -24,14 +24,18 @@ for unit tests.
       `RevokedTokenRepositoryProtocol`, `RefreshTokenRepositoryProtocol`
 - [ ] Create `src/demo_be_python_fastapi/infrastructure/refresh_token_repository.py` — extract
       RefreshToken DB logic from `routers/auth.py` and `routers/tokens.py`
-- [ ] Update `infrastructure/repositories.py` — ensure method signatures conform to Protocols
-- [ ] Update `dependencies.py` — type-hint return values as Protocol types, add
-      `get_refresh_token_repo` provider
+- [ ] Update `src/demo_be_python_fastapi/infrastructure/repositories.py` — ensure method signatures
+      conform to Protocols
+- [ ] Update `src/demo_be_python_fastapi/dependencies.py` — type-hint return values as Protocol
+      types, add `get_refresh_token_repo` provider (target is `dependencies.py` in the package
+      root, not `auth/dependencies.py`)
 - [ ] Update `routers/auth.py` and `routers/tokens.py` — replace inline RefreshToken Session
       calls with `RefreshTokenRepository`
 - [ ] Create `tests/unit/in_memory_repos.py` — dict-based in-memory implementations of all 5
       Protocols
 - [ ] Update `tests/unit/conftest.py` — inject in-memory repos instead of SQLite engine/session
+- [ ] Verify `nx run demo-be-python-fastapi:typecheck` passes
+- [ ] Verify `nx run demo-be-python-fastapi:lint` passes
 - [ ] Verify `nx run demo-be-python-fastapi:test:quick` passes (unit tests + coverage >= 90%)
 - [ ] Verify `nx run demo-be-python-fastapi:test:integration` passes (real Postgres)
 - [ ] Commit: `refactor(demo-be-python-fastapi): add Protocol abstractions for repository pattern`
@@ -59,6 +63,8 @@ in-memory records for unit tests.
 - [ ] Update server/system setup — create `Jdbc*Repo` records and inject into Pedestal context
 - [ ] Create `test/demo_be_cjpd/in_memory_repos.clj` — atom-backed `defrecord` implementations
 - [ ] Update `test/step_definitions/steps.clj` — inject in-memory records for unit tests
+- [ ] Verify `nx run demo-be-clojure-pedestal:typecheck` passes
+- [ ] Verify `nx run demo-be-clojure-pedestal:lint` passes
 - [ ] Verify `nx run demo-be-clojure-pedestal:test:quick` passes (unit tests + coverage >= 90%)
 - [ ] Verify `nx run demo-be-clojure-pedestal:test:integration` passes (real Postgres)
 - [ ] Commit: `refactor(demo-be-clojure-pedestal): add defprotocol abstractions for repository pattern`
@@ -70,8 +76,9 @@ in-memory records for unit tests.
 **Goal**: Add async traits, create struct implementations, update `AppState` to hold trait objects,
 and wire in-memory implementations for unit tests.
 
-- [ ] Add `async-trait = "0.1"` to `Cargo.toml` dependencies (edition is 2021, native async traits
-      require edition 2024+)
+- [ ] Add `async-trait = "0.1"` to `Cargo.toml` dependencies (`async_trait` is required because
+      Rust stable does not yet support dyn-compatible async traits for `Arc<dyn Trait>`, regardless
+      of edition)
 - [ ] Create `src/repositories/mod.rs` with trait definitions: `UserRepository`,
       `ExpenseRepository`, `AttachmentRepository`, `TokenRepository`, `RefreshTokenRepository`
 - [ ] Create `src/repositories/sqlx_user_repo.rs` — `struct SqlxUserRepo { pool: AnyPool }` +
@@ -82,11 +89,13 @@ and wire in-memory implementations for unit tests.
 - [ ] Create `src/repositories/sqlx_refresh_token_repo.rs` — same pattern
 - [ ] Update `AppState` — replace `AnyPool` with `Arc<dyn Trait>` for each repository
 - [ ] Update handler files that access the DB (admin, attachment, auth, expense, report, test_api,
-      token, user) — extract repos from `AppState` instead of calling free functions with `&pool`
-      (skip health.rs and mod.rs which don't access the DB)
+      user) — extract repos from `AppState` instead of calling free functions with `&pool`
+      (skip health.rs, mod.rs, and token.rs which have no direct pool/AnyPool access)
 - [ ] Create `tests/unit/in_memory_repos.rs` — HashMap-based implementations of all 5 traits
 - [ ] Update `tests/unit/world.rs` — inject in-memory repos instead of `create_test_pool()`
 - [ ] Update `tests/integration/world.rs` — inject sqlx repos with real Postgres pool
+- [ ] Verify `nx run demo-be-rust-axum:typecheck` passes
+- [ ] Verify `nx run demo-be-rust-axum:lint` passes
 - [ ] Verify `nx run demo-be-rust-axum:test:quick` passes (unit tests + coverage >= 90%)
 - [ ] Verify `nx run demo-be-rust-axum:test:integration` passes (real Postgres)
 - [ ] Commit: `refactor(demo-be-rust-axum): add trait abstractions for repository pattern`
@@ -120,13 +129,28 @@ wire in-memory implementations for unit tests.
 - [ ] Create `tests/DemoBeFsgi.Tests/InMemory/InMemoryTokenRepository.fs` — test mock
 - [ ] Create `tests/DemoBeFsgi.Tests/InMemory/InMemoryRefreshTokenRepository.fs` — test mock
 - [ ] Update `DemoBeFsgi.Tests.fsproj` — add new test files in correct compilation order
-- [ ] Update `TestFixture.fs` — wire in-memory repos instead of real `AppDbContext` for unit tests
+- [ ] Update `DirectServices.fs` and `Unit/UnitFeatureRunner.fs` — replace `AppDbContext` with
+      injected repository interfaces: refactor `DirectServices.fs` to accept repository interfaces
+      as parameters instead of calling `AppDbContext` inline; update `UnitScenarioServiceProvider`
+      in `UnitFeatureRunner.fs` to inject in-memory repository implementations instead of
+      constructing an `AppDbContext` via `createDb()`
+- [ ] Update `tests/DemoBeFsgi.Tests/State.fs` — replace `Db: AppDbContext` field with repository
+      interface fields; update `empty` constructor to accept in-memory repository instances
+- [ ] Update all 13 `tests/DemoBeFsgi.Tests/Integration/Steps/*.fs` files (AuthSteps.fs,
+      CommonSteps.fs, TokenLifecycleSteps.fs, TokenManagementSteps.fs, UserAccountSteps.fs,
+      SecuritySteps.fs, AdminSteps.fs, ExpenseSteps.fs, CurrencySteps.fs, UnitHandlingSteps.fs,
+      ReportingSteps.fs, AttachmentSteps.fs, HealthSteps.fs) — replace all `state.Db` call sites
+      with the appropriate repository instances from the updated `StepState`
+- [ ] Verify `nx run demo-be-fsharp-giraffe:typecheck` passes
+- [ ] Verify `nx run demo-be-fsharp-giraffe:lint` passes
 - [ ] Verify `nx run demo-be-fsharp-giraffe:test:quick` passes (unit tests + coverage >= 90%)
 - [ ] Verify `nx run demo-be-fsharp-giraffe:test:integration` passes (real Postgres)
 - [ ] Commit: `refactor(demo-be-fsharp-giraffe): add interface abstractions for repository pattern`
 
 ## Final Validation
 
+- [ ] Run `nx run-many -t typecheck --projects=demo-be-python-fastapi,demo-be-clojure-pedestal,demo-be-rust-axum,demo-be-fsharp-giraffe` — all pass
+- [ ] Run `nx run-many -t lint --projects=demo-be-python-fastapi,demo-be-clojure-pedestal,demo-be-rust-axum,demo-be-fsharp-giraffe` — all pass
 - [ ] Run `nx run-many -t test:quick --projects=demo-be-python-fastapi,demo-be-clojure-pedestal,demo-be-rust-axum,demo-be-fsharp-giraffe` — all pass
 - [ ] Verify all 4 apps have abstract repository interfaces for every entity
 - [ ] Verify no handler/router/controller in the 4 apps imports DB libraries directly

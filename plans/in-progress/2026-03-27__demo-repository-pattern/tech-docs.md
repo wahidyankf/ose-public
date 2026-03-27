@@ -38,8 +38,20 @@
 - All 8 handler files (Admin, Attachment, Auth, Expense, Report, Test, Token, User) — replace
   `ctx.GetService<AppDbContext>()` with injected repository interfaces
 - `Program.fs` — register repository implementations in DI container
-- `TestFixture.fs` — wire in-memory repositories instead of real `AppDbContext`
+- `tests/DemoBeFsgi.Tests/DirectServices.fs` — replace inline `AppDbContext` calls with injected
+  repository interfaces (this is the actual business logic layer for unit tests)
+- `tests/DemoBeFsgi.Tests/Unit/UnitFeatureRunner.fs` — update `UnitScenarioServiceProvider` to
+  inject in-memory repository implementations instead of `AppDbContext`
+- `tests/DemoBeFsgi.Tests/State.fs` — update `StepState` to hold repository interfaces instead of
+  `AppDbContext`; update `empty` constructor accordingly (propagates to all Integration step files)
+- `tests/DemoBeFsgi.Tests/Integration/Steps/*.fs` (all 13 step definition files: AuthSteps.fs,
+  CommonSteps.fs, TokenLifecycleSteps.fs, TokenManagementSteps.fs, UserAccountSteps.fs,
+  SecuritySteps.fs, AdminSteps.fs, ExpenseSteps.fs, CurrencySteps.fs, UnitHandlingSteps.fs,
+  ReportingSteps.fs, AttachmentSteps.fs, HealthSteps.fs) — update all `state.Db` call sites to
+  use repository instances from the updated `StepState`
 - `DemoBeFsgi.fsproj` — add new files to compilation order (F# requires explicit ordering)
+- `tests/DemoBeFsgi.Tests/DemoBeFsgi.Tests.fsproj` — add new InMemory test files in correct
+  compilation order
 
 **Key pattern**:
 
@@ -84,9 +96,10 @@ let createExpense (repo: IExpenseRepository) : HttpHandler = ...
 
 - `src/main.rs` — add `mod repositories;` and update `AppState` to hold `Arc<dyn Trait>`
 - `src/state.rs` (or wherever `AppState` is defined) — change fields from `AnyPool` to trait objects
-- All handler files that access the DB (admin, attachment, auth, expense, report, test_api, token,
-  user) — accept trait references instead of calling free functions with `&pool`. Handler files
-  that don't access the DB (health, mod) need no changes.
+- All handler files that access the DB (admin, attachment, auth, expense, report, test_api, user)
+  — accept trait references instead of calling free functions with `&pool`. Handler files that
+  don't access the DB directly (health, mod, token) need no changes. (`token.rs` has no direct
+  pool/AnyPool access — verified by inspection.)
 - `tests/unit/world.rs` — inject in-memory repos instead of `create_test_pool()`
 - `tests/integration/world.rs` — inject sqlx repos with real Postgres pool
 - Existing `src/db/*_repo.rs` files can be kept as the backing implementation or merged into the
@@ -119,8 +132,9 @@ pub struct AppState {
 
 **Risks**:
 
-- `async_trait` crate must be added to `Cargo.toml` (edition is 2021, native async traits require
-  edition 2024+)
+- The `async_trait` crate is required because Rust stable does not yet support dyn-compatible async
+  traits (needed for `Arc<dyn Trait>`), regardless of edition. Edition 2021 is used — this is
+  unrelated to the `async_trait` requirement.
 - `AnyPool` raw SQL may have SQLite vs Postgres dialect differences that surface when the
   abstraction changes — preserve existing query logic as-is
 
@@ -138,9 +152,11 @@ pub struct AppState {
 
 **Files to modify**:
 
-- `infrastructure/repositories.py` — add Protocol conformance (type annotations, ensure method
-  signatures match the Protocols)
-- `dependencies.py` — type-hint return values as Protocol types
+- `src/demo_be_python_fastapi/infrastructure/repositories.py` — add Protocol conformance (type
+  annotations, ensure method signatures match the Protocols)
+- `src/demo_be_python_fastapi/dependencies.py` — type-hint return values as Protocol types, add
+  `get_refresh_token_repo` provider (note: `auth/dependencies.py` is a separate file and is NOT
+  the target here)
 - `routers/auth.py` and `routers/tokens.py` — replace inline RefreshToken DB calls with
   `RefreshTokenRepository`
 - `tests/unit/conftest.py` — inject in-memory repos instead of creating SQLite engine/session

@@ -15,7 +15,12 @@ This plan introduces proper repository abstractions in the 4 apps that lack them
 - **Integration tests** use real DB repositories (PostgreSQL via docker-compose)
 - **E2E tests** use the full stack with real DB
 
-**Git Workflow**: Commit to `main` (Trunk Based Development) - one commit per app
+## Git Workflow
+
+All work is committed directly to `main` (Trunk Based Development). One commit per app, in phase
+order. No feature branches required.
+
+See [Trunk Based Development Convention](../../../governance/development/workflow/trunk-based-development.md).
 
 ## Quick Links
 

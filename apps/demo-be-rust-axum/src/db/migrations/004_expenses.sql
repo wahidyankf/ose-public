@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS expenses (
     id VARCHAR(36) PRIMARY KEY,
     user_id VARCHAR(36) NOT NULL REFERENCES users(id),
-    amount DECIMAL(19,4) NOT NULL,
+    amount DOUBLE PRECISION NOT NULL,
     currency VARCHAR(10) NOT NULL,
     category VARCHAR(100) NOT NULL,
     description VARCHAR(500) NOT NULL DEFAULT '',

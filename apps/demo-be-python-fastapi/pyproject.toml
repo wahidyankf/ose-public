@@ -59,6 +59,8 @@ omit = [
     "src/demo_be_python_fastapi/main.py",
     "src/demo_be_python_fastapi/dependencies.py",
     "src/demo_be_python_fastapi/auth/dependencies.py",
+    "src/demo_be_python_fastapi/infrastructure/repositories.py",
+    "src/demo_be_python_fastapi/infrastructure/refresh_token_repository.py",
 ]
 
 [tool.coverage.report]

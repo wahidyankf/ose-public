@@ -19,28 +19,28 @@
 **Goal**: Add `Protocol` abstractions, extract `RefreshTokenRepository`, and wire in-memory mocks
 for unit tests.
 
-- [ ] Create `src/demo_be_python_fastapi/infrastructure/protocols.py` with Protocol classes:
+- [x] Create `src/demo_be_python_fastapi/infrastructure/protocols.py` with Protocol classes:
       `UserRepositoryProtocol`, `ExpenseRepositoryProtocol`, `AttachmentRepositoryProtocol`,
       `RevokedTokenRepositoryProtocol`, `RefreshTokenRepositoryProtocol`
-- [ ] Create `src/demo_be_python_fastapi/infrastructure/refresh_token_repository.py` — extract
+- [x] Create `src/demo_be_python_fastapi/infrastructure/refresh_token_repository.py` — extract
       RefreshToken DB logic from `src/demo_be_python_fastapi/routers/auth.py` and
       `src/demo_be_python_fastapi/routers/tokens.py`
-- [ ] Update `src/demo_be_python_fastapi/infrastructure/repositories.py` — ensure method signatures
+- [x] Update `src/demo_be_python_fastapi/infrastructure/repositories.py` — ensure method signatures
       conform to Protocols
-- [ ] Update `src/demo_be_python_fastapi/dependencies.py` — type-hint return values as Protocol
+- [x] Update `src/demo_be_python_fastapi/dependencies.py` — type-hint return values as Protocol
       types, add `get_refresh_token_repo` provider (target is `dependencies.py` in the package
       root, not `auth/dependencies.py`)
-- [ ] Update `src/demo_be_python_fastapi/routers/auth.py` and
+- [x] Update `src/demo_be_python_fastapi/routers/auth.py` and
       `src/demo_be_python_fastapi/routers/tokens.py` — replace inline RefreshToken Session calls
       with `RefreshTokenRepository`
-- [ ] Create `tests/unit/in_memory_repos.py` — dict-based in-memory implementations of all 5
+- [x] Create `tests/unit/in_memory_repos.py` — dict-based in-memory implementations of all 5
       Protocols
-- [ ] Update `tests/unit/conftest.py` — inject in-memory repos instead of SQLite engine/session
-- [ ] Verify `nx run demo-be-python-fastapi:typecheck` passes
-- [ ] Verify `nx run demo-be-python-fastapi:lint` passes
-- [ ] Verify `nx run demo-be-python-fastapi:test:quick` passes (unit tests + coverage >= 90%)
-- [ ] Verify `nx run demo-be-python-fastapi:test:integration` passes (real Postgres)
-- [ ] Commit: `refactor(demo-be-python-fastapi): add Protocol abstractions for repository pattern`
+- [x] Update `tests/unit/conftest.py` — inject in-memory repos instead of SQLite engine/session
+- [x] Verify `nx run demo-be-python-fastapi:typecheck` passes
+- [x] Verify `nx run demo-be-python-fastapi:lint` passes
+- [x] Verify `nx run demo-be-python-fastapi:test:quick` passes (unit tests + coverage >= 90%)
+- [x] Verify `nx run demo-be-python-fastapi:test:integration` passes (real Postgres)
+- [x] Commit: `refactor(demo-be-python-fastapi): add Protocol abstractions for repository pattern`
 
 ### Phase 2: demo-be-clojure-pedestal (Clojure — moderate diff)
 

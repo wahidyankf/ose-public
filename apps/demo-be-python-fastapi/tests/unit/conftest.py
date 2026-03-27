@@ -3,14 +3,18 @@
 import os
 import pathlib
 from collections.abc import Generator
+from typing import Any
 
 import pytest
 from pytest_bdd import given, parsers, then, when
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 
-from demo_be_python_fastapi.infrastructure.models import Base
 from tests.integration.service_client import FakeResponse, ServiceClient
+from tests.unit.in_memory_repos import (
+    InMemoryAttachmentRepository,
+    InMemoryExpenseRepository,
+    InMemoryRevokedTokenRepository,
+    InMemoryUserRepository,
+)
 
 # Path to the shared Gherkin feature files.
 _gherkin_root_env = os.environ.get("GHERKIN_ROOT")
@@ -22,27 +26,55 @@ else:
 _STRONG_PASSWORD = "Str0ng#Pass1"
 
 
-@pytest.fixture
-def test_client() -> Generator[ServiceClient]:  # type: ignore[override]
-    """Provide a ServiceClient backed by in-memory SQLite for unit tests.
+class _FakeSession:
+    """Minimal SQLAlchemy Session stub that routes get() calls to in-memory repos.
 
-    Calls service/repository functions directly against an in-memory database,
-    with no HTTP dispatch.  This satisfies the three-level testing standard.
+    Only the ``get`` method is used by ``ServiceClient.promote_to_admin``.
+    All repo factory functions are patched separately so the session is never
+    used for actual queries.
     """
-    engine = create_engine(
-        "sqlite:///file:unit_testdb?mode=memory&cache=shared&uri=true",
-        connect_args={"check_same_thread": False},
-    )
-    Base.metadata.create_all(engine)
-    testing_session_local = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-    db = testing_session_local()
-    try:
-        yield ServiceClient(db)
-    finally:
-        db.close()
-    Base.metadata.drop_all(engine)
-    engine.dispose()
+    def __init__(self, user_repo: InMemoryUserRepository) -> None:
+        self._user_repo = user_repo
+
+    def get(self, model_class: Any, pk: Any) -> Any:
+        from demo_be_python_fastapi.infrastructure.models import UserModel
+
+        if model_class is UserModel:
+            return self._user_repo.find_by_id(str(pk))
+        return None
+
+    def commit(self) -> None:
+        pass
+
+
+@pytest.fixture
+def test_client(monkeypatch: pytest.MonkeyPatch) -> Generator[ServiceClient]:
+    """Provide a ServiceClient backed by in-memory repositories for unit tests.
+
+    Calls service/repository functions directly against in-memory dict-based
+    repositories, with no database connection required.  This satisfies the
+    three-level testing standard for the unit level.
+    """
+    user_repo = InMemoryUserRepository()
+    expense_repo = InMemoryExpenseRepository()
+    attachment_repo = InMemoryAttachmentRepository()
+    revoked_token_repo = InMemoryRevokedTokenRepository()
+
+    # Patch the repo factory functions used by ServiceClient so it receives
+    # in-memory implementations instead of SQLAlchemy-backed ones.
+    import tests.integration.service_client as _sc_module
+
+    monkeypatch.setattr(_sc_module, "get_user_repo", lambda _db: user_repo)
+    monkeypatch.setattr(_sc_module, "get_revoked_token_repo", lambda _db: revoked_token_repo)
+    monkeypatch.setattr(_sc_module, "get_expense_repo", lambda _db: expense_repo)
+    monkeypatch.setattr(_sc_module, "get_attachment_repo", lambda _db: attachment_repo)
+
+    # Provide a stub session that routes get() calls to the in-memory user
+    # repository (used by ServiceClient.promote_to_admin).
+    fake_db = _FakeSession(user_repo)
+
+    return ServiceClient(fake_db)  # type: ignore[arg-type]
 
 
 def _register_user_helper(

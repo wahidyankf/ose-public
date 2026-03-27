@@ -9,9 +9,9 @@ from demo_be_python_fastapi.auth.jwt_service import decode_token
 from demo_be_python_fastapi.dependencies import get_db, get_revoked_token_repo, get_user_repo
 from demo_be_python_fastapi.domain.errors import ForbiddenError, UnauthorizedError
 from demo_be_python_fastapi.infrastructure.models import UserModel
-from demo_be_python_fastapi.infrastructure.repositories import (
-    RevokedTokenRepository,
-    UserRepository,
+from demo_be_python_fastapi.infrastructure.protocols import (
+    RevokedTokenRepositoryProtocol,
+    UserRepositoryProtocol,
 )
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
@@ -19,8 +19,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
 def get_current_user(
     token: str = Depends(oauth2_scheme),
-    user_repo: UserRepository = Depends(lambda db=Depends(get_db): get_user_repo(db)),
-    revoked_repo: RevokedTokenRepository = Depends(
+    user_repo: UserRepositoryProtocol = Depends(lambda db=Depends(get_db): get_user_repo(db)),
+    revoked_repo: RevokedTokenRepositoryProtocol = Depends(
         lambda db=Depends(get_db): get_revoked_token_repo(db)
     ),
 ) -> UserModel:

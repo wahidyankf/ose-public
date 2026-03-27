@@ -100,7 +100,7 @@ and wire in-memory implementations for unit tests.
 - [x] Verify `nx run demo-be-rust-axum:typecheck` passes
 - [x] Verify `nx run demo-be-rust-axum:lint` passes
 - [x] Verify `nx run demo-be-rust-axum:test:quick` passes (unit tests + coverage >= 90%)
-- [ ] Verify `nx run demo-be-rust-axum:test:integration` passes (real Postgres)
+- [x] Verify `nx run demo-be-rust-axum:test:integration` passes (real Postgres)
 - [x] Commit: `refactor(demo-be-rust-axum): add trait abstractions for repository pattern`
 
 ### Phase 4: demo-be-fsharp-giraffe (F# — largest diff)
@@ -151,7 +151,7 @@ extract DB access from handlers, and wire in-memory constructor functions for un
 - [x] Run `nx run-many -t typecheck --projects=demo-be-python-fastapi,demo-be-clojure-pedestal,demo-be-rust-axum,demo-be-fsharp-giraffe` — all pass (Clojure typecheck blocked by pre-existing codegen build failure)
 - [x] Run `nx run-many -t lint --projects=demo-be-python-fastapi,demo-be-clojure-pedestal,demo-be-rust-axum,demo-be-fsharp-giraffe` — all pass
 - [x] Run `nx run-many -t test:quick --projects=demo-be-python-fastapi,demo-be-clojure-pedestal,demo-be-rust-axum,demo-be-fsharp-giraffe` — all pass
-- [ ] Run `nx run-many -t test:integration --projects=demo-be-python-fastapi,demo-be-clojure-pedestal,demo-be-rust-axum,demo-be-fsharp-giraffe` — blocked by Docker keychain lock
+- [x] Run `nx run-many -t test:integration --projects=demo-be-python-fastapi,demo-be-clojure-pedestal,demo-be-rust-axum,demo-be-fsharp-giraffe` — Python PASS, Rust PASS; Clojure/F# blocked by pre-existing Docker build issues on main
 - [x] Verify all 4 apps have abstract repository interfaces for every entity
 - [x] Verify no handler/router/controller in the 4 apps imports DB libraries directly
 - [x] Verify unit tests in all 4 apps use in-memory mock repos (no DB connection)

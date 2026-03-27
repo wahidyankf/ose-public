@@ -30,12 +30,12 @@ See [Trunk Based Development Convention](../../../governance/development/workflo
 
 ## Apps Requiring Changes
 
-| App                        | Current State                                          | Work Required                                                               |
-| -------------------------- | ------------------------------------------------------ | --------------------------------------------------------------------------- |
-| `demo-be-fsharp-giraffe`   | Handlers call `AppDbContext` directly, no repo layer   | Add repository interfaces + EF Core implementations + extract from handlers |
-| `demo-be-rust-axum`        | Free functions in `db/*_repo.rs`, no trait abstraction | Add async traits + struct implementations + inject via `AppState`           |
-| `demo-be-python-fastapi`   | Concrete repo classes, no `Protocol` abstraction       | Add `Protocol` classes + add missing `RefreshTokenRepository`               |
-| `demo-be-clojure-pedestal` | Plain namespace functions, no `defprotocol`            | Add `defprotocol` + `defrecord` implementations + inject via context map    |
+| App                        | Current State                                          | Work Required                                                                      |
+| -------------------------- | ------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| `demo-be-fsharp-giraffe`   | Handlers call `AppDbContext` directly, no repo layer   | Add function-record repositories + EF Core implementations + extract from handlers |
+| `demo-be-rust-axum`        | Free functions in `db/*_repo.rs`, no trait abstraction | Add async traits + struct implementations + inject via `AppState`                  |
+| `demo-be-python-fastapi`   | Concrete repo classes, no `Protocol` abstraction       | Add `Protocol` classes + add missing `RefreshTokenRepository`                      |
+| `demo-be-clojure-pedestal` | Plain namespace functions, no `defprotocol`            | Add `defprotocol` + `defrecord` implementations + inject via context map           |
 
 ## Apps Already Compliant (No Changes Needed)
 

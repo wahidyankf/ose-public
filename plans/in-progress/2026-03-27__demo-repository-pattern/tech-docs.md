@@ -3,7 +3,7 @@
 ## Design Principles
 
 1. **Idiomatic abstractions** — use each language's native abstraction mechanism (traits, Protocols,
-   defprotocol, interfaces), not a forced OOP pattern
+   defprotocol, function records), not a forced OOP pattern
 2. **Minimal diff** — extract interfaces from existing code; do not restructure the entire app
 3. **Same function signatures** — repository interfaces mirror the existing function signatures so
    handlers require minimal changes (just type annotations / injection)
@@ -13,70 +13,113 @@
 
 ### 1. demo-be-fsharp-giraffe
 
-**Abstraction mechanism**: F# interfaces (abstract classes or interfaces)
+**Abstraction mechanism**: F# function records — a record type whose fields are functions. This is
+the idiomatic functional F# approach: no OOP interfaces, no classes, no DI container wiring.
+Function records are first-class values that can be passed, composed, and partially overridden
+with `{ repo with FindById = fun _ -> ... }`.
 
 **New files to create**:
 
-- `src/DemoBeFsgi/Infrastructure/Repositories/IUserRepository.fs` — interface
-- `src/DemoBeFsgi/Infrastructure/Repositories/IExpenseRepository.fs` — interface
-- `src/DemoBeFsgi/Infrastructure/Repositories/IAttachmentRepository.fs` — interface
-- `src/DemoBeFsgi/Infrastructure/Repositories/ITokenRepository.fs` — interface (revoked tokens)
-- `src/DemoBeFsgi/Infrastructure/Repositories/IRefreshTokenRepository.fs` — interface
-- `src/DemoBeFsgi/Infrastructure/Repositories/EfUserRepository.fs` — EF Core implementation
-- `src/DemoBeFsgi/Infrastructure/Repositories/EfExpenseRepository.fs` — EF Core implementation
-- `src/DemoBeFsgi/Infrastructure/Repositories/EfAttachmentRepository.fs` — EF Core implementation
-- `src/DemoBeFsgi/Infrastructure/Repositories/EfTokenRepository.fs` — EF Core implementation
-- `src/DemoBeFsgi/Infrastructure/Repositories/EfRefreshTokenRepository.fs` — EF Core implementation
-- `tests/DemoBeFsgi.Tests/InMemory/InMemoryUserRepository.fs` — test mock
-- `tests/DemoBeFsgi.Tests/InMemory/InMemoryExpenseRepository.fs` — test mock
-- `tests/DemoBeFsgi.Tests/InMemory/InMemoryAttachmentRepository.fs` — test mock
-- `tests/DemoBeFsgi.Tests/InMemory/InMemoryTokenRepository.fs` — test mock
-- `tests/DemoBeFsgi.Tests/InMemory/InMemoryRefreshTokenRepository.fs` — test mock
+- `src/DemoBeFsgi/Infrastructure/Repositories/RepositoryTypes.fs` — function-record type
+  definitions (`UserRepository`, `ExpenseRepository`, `AttachmentRepository`, `TokenRepository`,
+  `RefreshTokenRepository`) where each field is a function (e.g.,
+  `FindById: Guid -> Guid -> Task<ExpenseEntity option>`)
+- `src/DemoBeFsgi/Infrastructure/Repositories/EfRepositories.fs` — constructor functions that
+  return function records wired to `AppDbContext` (e.g., `EfRepositories.createUserRepo: AppDbContext -> UserRepository`)
+- `tests/DemoBeFsgi.Tests/InMemory/InMemoryRepositories.fs` — constructor functions that return
+  function records backed by `ConcurrentDictionary` (e.g., `InMemoryRepositories.createUserRepo: unit -> UserRepository`)
 
 **Files to modify**:
 
 - All 8 handler files (Admin, Attachment, Auth, Expense, Report, Test, Token, User) — replace
-  `ctx.GetService<AppDbContext>()` with injected repository interfaces
-- `Program.fs` — register repository implementations in DI container
-- `tests/DemoBeFsgi.Tests/DirectServices.fs` — replace inline `AppDbContext` calls with injected
-  repository interfaces (this is the actual business logic layer for unit tests)
+  `ctx.GetService<AppDbContext>()` with function-record repositories resolved from DI
+  (e.g., `ctx.GetService<UserRepository>()`)
+- `Program.fs` — register function records in DI container via factory lambdas
+  (e.g., `services.AddSingleton<UserRepository>(fun sp -> EfRepositories.createUserRepo(sp.GetService<AppDbContext>()))`)
+- `tests/DemoBeFsgi.Tests/DirectServices.fs` — replace `db: AppDbContext` parameter with
+  individual function-record repositories (this is the actual business logic layer for unit tests)
 - `tests/DemoBeFsgi.Tests/Unit/UnitFeatureRunner.fs` — update `UnitScenarioServiceProvider` to
-  inject in-memory repository implementations instead of `AppDbContext`
-- `tests/DemoBeFsgi.Tests/State.fs` — update `StepState` to hold repository interfaces instead of
-  `AppDbContext`; update `empty` constructor accordingly (propagates to all Integration step files)
+  inject in-memory function records instead of constructing an `AppDbContext` via `createDb()`
+- `tests/DemoBeFsgi.Tests/State.fs` — replace `Db: AppDbContext` field with function-record
+  repository fields (e.g., `UserRepo: UserRepository`, `ExpenseRepo: ExpenseRepository`);
+  update `empty` constructor accordingly (propagates to all Integration step files)
 - `tests/DemoBeFsgi.Tests/Integration/Steps/*.fs` (all 13 step definition files: AuthSteps.fs,
   CommonSteps.fs, TokenLifecycleSteps.fs, TokenManagementSteps.fs, UserAccountSteps.fs,
   SecuritySteps.fs, AdminSteps.fs, ExpenseSteps.fs, CurrencySteps.fs, UnitHandlingSteps.fs,
-  ReportingSteps.fs, AttachmentSteps.fs, HealthSteps.fs) — update all `state.Db` call sites to
-  use repository instances from the updated `StepState`
-- `DemoBeFsgi.fsproj` — add new files to compilation order (F# requires explicit ordering)
-- `tests/DemoBeFsgi.Tests/DemoBeFsgi.Tests.fsproj` — add new InMemory test files in correct
+  ReportingSteps.fs, AttachmentSteps.fs, HealthSteps.fs) — replace all `state.Db` call sites
+  with the appropriate function-record repository from the updated `StepState`
+- `DemoBeFsgi.fsproj` — add `RepositoryTypes.fs` and `EfRepositories.fs` in correct compilation
+  order (types before constructors before handlers)
+- `tests/DemoBeFsgi.Tests/DemoBeFsgi.Tests.fsproj` — add `InMemoryRepositories.fs` in correct
   compilation order
 
 **Key pattern**:
 
 ```fsharp
-// Interface
-type IExpenseRepository =
-    abstract CreateExpense: ExpenseEntity -> Task<ExpenseEntity>
-    abstract FindById: Guid -> Guid -> Task<ExpenseEntity option>
-    abstract ListForUser: Guid -> Task<ExpenseEntity list>
-    // ... remaining operations
+// Function-record type definition (RepositoryTypes.fs)
+type ExpenseRepository = {
+    Create: ExpenseEntity -> Task<ExpenseEntity>
+    FindById: Guid -> Guid -> Task<ExpenseEntity option>
+    ListForUser: Guid -> Task<ExpenseEntity list>
+    Update: ExpenseEntity -> Task<ExpenseEntity>
+    Delete: Guid -> Guid -> Task<bool>
+}
 
-// EF Core implementation
-type EfExpenseRepository(db: AppDbContext) =
-    interface IExpenseRepository with
-        member _.CreateExpense(expense) = task { ... }
-        // ...
+// EF Core constructor (EfRepositories.fs)
+module EfRepositories =
+    let createExpenseRepo (db: AppDbContext) : ExpenseRepository = {
+        Create = fun expense -> task { ... db.Expenses.AddAsync ... }
+        FindById = fun id userId -> task { ... db.Expenses.FirstOrDefaultAsync ... }
+        ListForUser = fun userId -> task { ... db.Expenses.Where(...).ToListAsync ... }
+        Update = fun expense -> task { ... db.SaveChangesAsync ... }
+        Delete = fun id userId -> task { ... db.Expenses.Remove ... }
+    }
 
-// Handler receives interface via DI
-let createExpense (repo: IExpenseRepository) : HttpHandler = ...
+// In-memory constructor (InMemoryRepositories.fs)
+module InMemoryRepositories =
+    let createExpenseRepo () : ExpenseRepository =
+        let store = ConcurrentDictionary<Guid, ExpenseEntity>()
+        {
+            Create = fun expense -> task { store.[expense.Id] <- expense; return expense }
+            FindById = fun id _ -> task {
+                return match store.TryGetValue(id) with true, v -> Some v | _ -> None }
+            ListForUser = fun userId -> task {
+                return store.Values |> Seq.filter (fun e -> e.UserId = userId) |> Seq.toList }
+            Update = fun expense -> task { store.[expense.Id] <- expense; return expense }
+            Delete = fun id _ -> task { return store.TryRemove(id) |> fst }
+        }
+
+// Handler receives function record (no interface, no class)
+let createExpense (repo: ExpenseRepository) : HttpHandler =
+    fun _next ctx -> task {
+        let userId = ctx.Items["UserId"] :?> Guid
+        let! body = ctx.BindJsonAsync<CreateExpenseRequest>()
+        let! result = repo.Create { ... }
+        return! json result _next ctx
+    }
+
+// Partial override in tests (no mocking framework needed)
+let repo = { InMemoryRepositories.createExpenseRepo() with
+                Delete = fun _ _ -> task { return false } }
 ```
+
+**Why function records over OOP interfaces**:
+
+- **Idiomatic F#** — functions are first-class; no need for `type IFoo = abstract ...` + class
+- **Trivial partial mocking** — `{ repo with Field = ... }` replaces one function without a mock
+  framework
+- **No DI complexity** — records are values, not types needing container registration by interface
+- **Composable** — records compose, nest, and transform like any other data
+- **Already consistent** — the domain layer (`Domain/Types.fs`, `Domain/User.fs`) is already
+  functional; function records keep the repository layer in the same style
 
 **Risks**:
 
-- F# file ordering in `.fsproj` is sensitive — interfaces must compile before implementations
-- Must preserve `task {}` computation expression usage in implementations
+- F# file ordering in `.fsproj` is sensitive — `RepositoryTypes.fs` must compile before
+  `EfRepositories.fs`, which must compile before handlers
+- Must preserve `task {}` computation expression usage in EF Core implementations
+- ASP.NET DI registers function records as singletons via factory lambdas — the `AppDbContext`
+  lifetime (scoped) must be resolved per-request inside the factory, not captured at registration
 
 ### 2. demo-be-rust-axum
 

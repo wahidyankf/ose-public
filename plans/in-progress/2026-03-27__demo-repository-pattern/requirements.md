@@ -58,7 +58,7 @@ Feature: Repository pattern abstraction
   Scenario: Abstract repository interfaces exist for all entities
     Given a demo backend app
     When I inspect the repository layer
-    Then each entity has an abstract interface (trait/Protocol/defprotocol/interface)
+    Then each entity has an abstract interface (trait/Protocol/defprotocol/function record)
     And each interface defines all CRUD and query operations for that entity
     And at least one concrete implementation exists (DB-backed)
 

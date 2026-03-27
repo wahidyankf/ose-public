@@ -107,47 +107,44 @@ and wire in-memory implementations for unit tests.
 
 **Agent**: `swe-fsharp-developer`
 
-**Goal**: Add F# interfaces, create EF Core implementations, extract DB access from handlers, and
-wire in-memory implementations for unit tests.
+**Goal**: Add idiomatic F# function-record repositories, create EF Core constructor functions,
+extract DB access from handlers, and wire in-memory constructor functions for unit tests.
 
-- [ ] Create `src/DemoBeFsgi/Infrastructure/Repositories/IUserRepository.fs` — interface
-- [ ] Create `src/DemoBeFsgi/Infrastructure/Repositories/IExpenseRepository.fs` — interface
-- [ ] Create `src/DemoBeFsgi/Infrastructure/Repositories/IAttachmentRepository.fs` — interface
-- [ ] Create `src/DemoBeFsgi/Infrastructure/Repositories/ITokenRepository.fs` — interface
-- [ ] Create `src/DemoBeFsgi/Infrastructure/Repositories/IRefreshTokenRepository.fs` — interface
-- [ ] Create `src/DemoBeFsgi/Infrastructure/Repositories/EfUserRepository.fs` — EF Core impl
-- [ ] Create `src/DemoBeFsgi/Infrastructure/Repositories/EfExpenseRepository.fs` — EF Core impl
-- [ ] Create `src/DemoBeFsgi/Infrastructure/Repositories/EfAttachmentRepository.fs` — EF Core impl
-- [ ] Create `src/DemoBeFsgi/Infrastructure/Repositories/EfTokenRepository.fs` — EF Core impl
-- [ ] Create `src/DemoBeFsgi/Infrastructure/Repositories/EfRefreshTokenRepository.fs` — EF Core
-      impl
-- [ ] Update `DemoBeFsgi.fsproj` — add new files in correct compilation order (interfaces before
-      implementations before handlers)
+- [ ] Create `src/DemoBeFsgi/Infrastructure/Repositories/RepositoryTypes.fs` — function-record
+      type definitions for all 5 entities (`UserRepository`, `ExpenseRepository`,
+      `AttachmentRepository`, `TokenRepository`, `RefreshTokenRepository`) where each field is a
+      function (e.g., `FindById: Guid -> Guid -> Task<ExpenseEntity option>`)
+- [ ] Create `src/DemoBeFsgi/Infrastructure/Repositories/EfRepositories.fs` — module with
+      constructor functions that return function records wired to `AppDbContext`
+      (e.g., `EfRepositories.createUserRepo: AppDbContext -> UserRepository`)
+- [ ] Update `DemoBeFsgi.fsproj` — add `RepositoryTypes.fs` before `EfRepositories.fs`, both
+      before handler files (F# requires explicit compilation ordering)
 - [ ] Update all 8 handler files (Admin, Attachment, Auth, Expense, Report, Test, Token, User) —
-      replace `ctx.GetService<AppDbContext>()` with injected repository interfaces
-- [ ] Update `Program.fs` — register `I*Repository` → `Ef*Repository` in ASP.NET DI container
-- [ ] Create `tests/DemoBeFsgi.Tests/InMemory/InMemoryUserRepository.fs` — test mock
-- [ ] Create `tests/DemoBeFsgi.Tests/InMemory/InMemoryExpenseRepository.fs` — test mock
-- [ ] Create `tests/DemoBeFsgi.Tests/InMemory/InMemoryAttachmentRepository.fs` — test mock
-- [ ] Create `tests/DemoBeFsgi.Tests/InMemory/InMemoryTokenRepository.fs` — test mock
-- [ ] Create `tests/DemoBeFsgi.Tests/InMemory/InMemoryRefreshTokenRepository.fs` — test mock
-- [ ] Update `DemoBeFsgi.Tests.fsproj` — add new test files in correct compilation order
-- [ ] Update `DirectServices.fs` — refactor to accept repository interfaces as parameters instead
-      of calling `AppDbContext` inline
+      replace `ctx.GetService<AppDbContext>()` with function-record repositories resolved from DI
+      (e.g., `ctx.GetService<UserRepository>()`)
+- [ ] Update `Program.fs` — register function records in DI via factory lambdas
+      (e.g., `services.AddScoped<UserRepository>(fun sp -> EfRepositories.createUserRepo(sp.GetService<AppDbContext>()))`)
+- [ ] Create `tests/DemoBeFsgi.Tests/InMemory/InMemoryRepositories.fs` — module with constructor
+      functions that return function records backed by `ConcurrentDictionary`
+- [ ] Update `DemoBeFsgi.Tests.fsproj` — add `InMemoryRepositories.fs` in correct compilation
+      order
+- [ ] Update `DirectServices.fs` — replace `db: AppDbContext` parameter with individual
+      function-record repositories
 - [ ] Update `Unit/UnitFeatureRunner.fs` — update `UnitScenarioServiceProvider` to inject
-      in-memory repository implementations instead of constructing an `AppDbContext` via `createDb()`
-- [ ] Update `tests/DemoBeFsgi.Tests/State.fs` — replace `Db: AppDbContext` field with repository
-      interface fields; update `empty` constructor to accept in-memory repository instances
+      in-memory function records instead of constructing an `AppDbContext` via `createDb()`
+- [ ] Update `tests/DemoBeFsgi.Tests/State.fs` — replace `Db: AppDbContext` field with
+      function-record repository fields (e.g., `UserRepo: UserRepository`,
+      `ExpenseRepo: ExpenseRepository`); update `empty` constructor accordingly
 - [ ] Update all 13 `tests/DemoBeFsgi.Tests/Integration/Steps/*.fs` files (AuthSteps.fs,
       CommonSteps.fs, TokenLifecycleSteps.fs, TokenManagementSteps.fs, UserAccountSteps.fs,
       SecuritySteps.fs, AdminSteps.fs, ExpenseSteps.fs, CurrencySteps.fs, UnitHandlingSteps.fs,
       ReportingSteps.fs, AttachmentSteps.fs, HealthSteps.fs) — replace all `state.Db` call sites
-      with the appropriate repository instances from the updated `StepState`
+      with the appropriate function-record repository from the updated `StepState`
 - [ ] Verify `nx run demo-be-fsharp-giraffe:typecheck` passes
 - [ ] Verify `nx run demo-be-fsharp-giraffe:lint` passes
 - [ ] Verify `nx run demo-be-fsharp-giraffe:test:quick` passes (unit tests + coverage >= 90%)
 - [ ] Verify `nx run demo-be-fsharp-giraffe:test:integration` passes (real Postgres)
-- [ ] Commit: `refactor(demo-be-fsharp-giraffe): add interface abstractions for repository pattern`
+- [ ] Commit: `refactor(demo-be-fsharp-giraffe): add function-record abstractions for repository pattern`
 
 ## Final Validation
 

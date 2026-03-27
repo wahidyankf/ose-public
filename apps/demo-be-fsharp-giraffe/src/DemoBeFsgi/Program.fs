@@ -135,6 +135,11 @@ let main args =
 
         if not result.Successful then
             failwith (sprintf "Database migration failed: %s" result.Error.Message)
+    else
+        // No DATABASE_URL — use EF Core EnsureCreated for local/SQLite development
+        use scope = host.Services.CreateScope()
+        let db = scope.ServiceProvider.GetRequiredService<AppDbContext>()
+        db.Database.EnsureCreated() |> ignore
 
     host.Run()
     0

@@ -20,9 +20,7 @@ fn row_to_expense(row: &AnyRow) -> Expense {
         user_id: Uuid::parse_str(&user_id_str).unwrap_or_else(|_| Uuid::new_v4()),
         amount: row
             .try_get::<f64, _>("amount")
-            .or_else(|_| {
-                row.try_get::<i64, _>("amount").map(|v| v as f64)
-            })
+            .or_else(|_| row.try_get::<i64, _>("amount").map(|v| v as f64))
             .unwrap_or(0.0),
         currency: row.get("currency"),
         category: row.get("category"),

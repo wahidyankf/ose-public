@@ -177,7 +177,7 @@ func (s *GORMStore) BlacklistAccessToken(_ context.Context, jti string, _ time.T
 	return s.db.Create(&domain.RevokedToken{
 		ID:        uuid.New().String(),
 		JTI:       jti,
-		UserID:    "system",
+		UserID:    "00000000-0000-0000-0000-000000000000",
 		RevokedAt: time.Now(),
 	}).Error
 }

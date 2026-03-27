@@ -4,7 +4,6 @@ use std::sync::Arc;
 use uuid::Uuid;
 
 use crate::auth::jwt::decode_access_token;
-use crate::db::token_repo;
 use crate::domain::errors::AppError;
 use crate::domain::types::{Role, UserStatus};
 use crate::state::AppState;
@@ -50,7 +49,7 @@ impl FromRequestParts<Arc<AppState>> for AuthUser {
         })?;
 
         // Check if token is revoked (by jti)
-        let revoked = token_repo::is_revoked(&state.pool, &claims.jti).await?;
+        let revoked = state.token_repo.is_revoked(&claims.jti).await?;
         if revoked {
             return Err(AppError::Unauthorized {
                 message: "Token has been revoked".to_string(),
@@ -58,8 +57,10 @@ impl FromRequestParts<Arc<AppState>> for AuthUser {
         }
 
         // Check if there's a revoke-all for this user issued after token issuance
-        let all_revoked =
-            token_repo::is_user_all_revoked_after(&state.pool, user_id, claims.iat as i64).await?;
+        let all_revoked = state
+            .token_repo
+            .is_user_all_revoked_after(user_id, claims.iat as i64)
+            .await?;
         if all_revoked {
             return Err(AppError::Unauthorized {
                 message: "Token has been revoked".to_string(),
@@ -67,11 +68,14 @@ impl FromRequestParts<Arc<AppState>> for AuthUser {
         }
 
         // Check user status in database
-        let user = crate::db::user_repo::find_by_id(&state.pool, user_id)
-            .await?
-            .ok_or_else(|| AppError::Unauthorized {
-                message: "User not found".to_string(),
-            })?;
+        let user =
+            state
+                .user_repo
+                .find_by_id(user_id)
+                .await?
+                .ok_or_else(|| AppError::Unauthorized {
+                    message: "User not found".to_string(),
+                })?;
 
         let status = UserStatus::parse_str(&user.status).unwrap_or(UserStatus::Active);
         if status != UserStatus::Active {

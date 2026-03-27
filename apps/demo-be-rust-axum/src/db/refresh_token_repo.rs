@@ -5,6 +5,7 @@ use uuid::Uuid;
 
 use crate::domain::errors::AppError;
 
+#[derive(Debug, Clone)]
 pub struct RefreshToken {
     pub id: Uuid,
     pub user_id: Uuid,

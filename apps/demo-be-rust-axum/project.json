@@ -42,7 +42,7 @@
       "options": {
         "commands": [
           "cargo test --lib --test unit",
-          "mkdir -p coverage && cargo llvm-cov --lcov --output-path coverage/lcov.info --lib --test unit --ignore-filename-regex '(test_api|handlers/|app\\.rs|main\\.rs|config\\.rs|auth/middleware)'",
+          "mkdir -p coverage && cargo llvm-cov --lcov --output-path coverage/lcov.info --lib --test unit --ignore-filename-regex '(test_api|handlers/|app\\.rs|main\\.rs|config\\.rs|state\\.rs|auth/middleware|repositories/sqlx_|db/)'",
           "(cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/demo-be-rust-axum/coverage/lcov.info 90)"
         ],
         "parallel": false,

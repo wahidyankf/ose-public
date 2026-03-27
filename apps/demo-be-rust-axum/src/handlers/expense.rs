@@ -11,7 +11,6 @@ use std::sync::Arc;
 use uuid::Uuid;
 
 use crate::auth::middleware::AuthUser;
-use crate::db::expense_repo;
 use crate::domain::{
     errors::AppError,
     expense::parse_amount,
@@ -88,20 +87,21 @@ pub async fn create_expense(
     }
 
     let expense_id = Uuid::new_v4();
-    let expense = expense_repo::create_expense(
-        &state.pool,
-        expense_id,
-        auth_user.user_id,
-        amount,
-        &currency_str,
-        &category,
-        &description,
-        date,
-        &entry_type,
-        body.quantity,
-        body.unit.as_deref(),
-    )
-    .await?;
+    let expense = state
+        .expense_repo
+        .create(
+            expense_id,
+            auth_user.user_id,
+            amount,
+            &currency_str,
+            &category,
+            &description,
+            date,
+            &entry_type,
+            body.quantity,
+            body.unit.as_deref(),
+        )
+        .await?;
 
     Ok((StatusCode::CREATED, Json(expense_to_json(&expense))))
 }
@@ -120,8 +120,10 @@ pub async fn list_expenses(
     let page = params.page.unwrap_or(1).max(1);
     let page_size = params.page_size.unwrap_or(20);
 
-    let result =
-        expense_repo::list_for_user(&state.pool, auth_user.user_id, page, page_size).await?;
+    let result = state
+        .expense_repo
+        .list_for_user(auth_user.user_id, page, page_size)
+        .await?;
 
     let content: Vec<Value> = result.expenses.iter().map(expense_to_json).collect();
     Ok(Json(json!({
@@ -137,7 +139,9 @@ pub async fn get_expense(
     auth_user: AuthUser,
     Path(expense_id): Path<Uuid>,
 ) -> Result<Json<Value>, AppError> {
-    let expense = expense_repo::find_by_id(&state.pool, expense_id)
+    let expense = state
+        .expense_repo
+        .find_by_id(expense_id)
         .await?
         .ok_or_else(|| AppError::NotFound {
             entity: "expense".to_string(),
@@ -159,7 +163,9 @@ pub async fn update_expense(
     Json(body): Json<UpdateExpenseRequest>,
 ) -> Result<Json<Value>, AppError> {
     // Check ownership first
-    let existing = expense_repo::find_by_id(&state.pool, expense_id)
+    let existing = state
+        .expense_repo
+        .find_by_id(expense_id)
         .await?
         .ok_or_else(|| AppError::NotFound {
             entity: "expense".to_string(),
@@ -200,19 +206,20 @@ pub async fn update_expense(
         }
     }
 
-    let updated = expense_repo::update_expense(
-        &state.pool,
-        expense_id,
-        amount,
-        &currency_str,
-        &category,
-        &description,
-        date,
-        &entry_type,
-        body.quantity,
-        body.unit.as_deref(),
-    )
-    .await?;
+    let updated = state
+        .expense_repo
+        .update(
+            expense_id,
+            amount,
+            &currency_str,
+            &category,
+            &description,
+            date,
+            &entry_type,
+            body.quantity,
+            body.unit.as_deref(),
+        )
+        .await?;
 
     Ok(Json(expense_to_json(&updated)))
 }
@@ -222,7 +229,9 @@ pub async fn delete_expense(
     auth_user: AuthUser,
     Path(expense_id): Path<Uuid>,
 ) -> Result<impl IntoResponse, AppError> {
-    let existing = expense_repo::find_by_id(&state.pool, expense_id)
+    let existing = state
+        .expense_repo
+        .find_by_id(expense_id)
         .await?
         .ok_or_else(|| AppError::NotFound {
             entity: "expense".to_string(),
@@ -234,7 +243,7 @@ pub async fn delete_expense(
         });
     }
 
-    expense_repo::delete_expense(&state.pool, expense_id).await?;
+    state.expense_repo.delete(expense_id).await?;
     Ok(StatusCode::NO_CONTENT)
 }
 
@@ -242,7 +251,10 @@ pub async fn expense_summary(
     State(state): State<Arc<AppState>>,
     auth_user: AuthUser,
 ) -> Result<Json<Value>, AppError> {
-    let summaries = expense_repo::summarize_by_currency(&state.pool, auth_user.user_id).await?;
+    let summaries = state
+        .expense_repo
+        .summarize_by_currency(auth_user.user_id)
+        .await?;
 
     let mut result = serde_json::Map::new();
     for s in summaries {

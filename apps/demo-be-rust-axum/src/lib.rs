@@ -4,4 +4,5 @@ pub mod config;
 pub mod db;
 pub mod domain;
 pub mod handlers;
+pub mod repositories;
 pub mod state;

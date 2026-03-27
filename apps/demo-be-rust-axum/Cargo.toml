@@ -34,6 +34,7 @@ uuid = { version = "1", features = ["v4", "serde"] }
 chrono = { version = "0.4", features = ["serde"] }
 thiserror = "2"
 anyhow = "1"
+async-trait = "0.1"
 tower = "0.5"
 tower-http = { version = "0.6", features = ["cors", "request-id", "trace"] }
 tracing = "0.1"

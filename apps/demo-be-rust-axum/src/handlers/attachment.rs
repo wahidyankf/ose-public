@@ -11,14 +11,11 @@ use std::sync::Arc;
 use uuid::Uuid;
 
 use crate::auth::middleware::AuthUser;
-use crate::db::{
-    attachment_repo::{self, NewAttachment},
-    expense_repo,
-};
 use crate::domain::{
     attachment::{is_allowed_content_type, MAX_FILE_SIZE},
     errors::AppError,
 };
+use crate::repositories::NewAttachment;
 use crate::state::AppState;
 use demo_contracts::models::Attachment;
 
@@ -57,7 +54,9 @@ pub async fn upload_attachment(
     mut multipart: Multipart,
 ) -> Result<impl IntoResponse, AppError> {
     // Check expense ownership
-    let expense = expense_repo::find_by_id(&state.pool, expense_id)
+    let expense = state
+        .expense_repo
+        .find_by_id(expense_id)
         .await?
         .ok_or_else(|| AppError::NotFound {
             entity: "expense".to_string(),
@@ -123,18 +122,17 @@ pub async fn upload_attachment(
     }
 
     let att_id = Uuid::new_v4();
-    let attachment = attachment_repo::create_attachment(
-        &state.pool,
-        NewAttachment {
+    let attachment = state
+        .attachment_repo
+        .create(NewAttachment {
             id: att_id,
             expense_id,
-            filename: &filename,
-            content_type: &content_type,
+            filename,
+            content_type,
             size: data.len() as i64,
-            data: &data,
-        },
-    )
-    .await?;
+            data: data.to_vec(),
+        })
+        .await?;
 
     Ok((StatusCode::CREATED, Json(attachment_to_json(&attachment))))
 }
@@ -145,7 +143,9 @@ pub async fn list_attachments(
     Path(expense_id): Path<Uuid>,
 ) -> Result<Json<Value>, AppError> {
     // Check expense ownership
-    let expense = expense_repo::find_by_id(&state.pool, expense_id)
+    let expense = state
+        .expense_repo
+        .find_by_id(expense_id)
         .await?
         .ok_or_else(|| AppError::NotFound {
             entity: "expense".to_string(),
@@ -157,7 +157,7 @@ pub async fn list_attachments(
         });
     }
 
-    let attachments = attachment_repo::list_for_expense(&state.pool, expense_id).await?;
+    let attachments = state.attachment_repo.list_for_expense(expense_id).await?;
     let items: Vec<Value> = attachments.iter().map(attachment_to_json).collect();
 
     Ok(Json(json!({"attachments": items})))
@@ -169,7 +169,9 @@ pub async fn delete_attachment(
     Path((expense_id, attachment_id)): Path<(Uuid, Uuid)>,
 ) -> Result<impl IntoResponse, AppError> {
     // Check expense ownership
-    let expense = expense_repo::find_by_id(&state.pool, expense_id)
+    let expense = state
+        .expense_repo
+        .find_by_id(expense_id)
         .await?
         .ok_or_else(|| AppError::NotFound {
             entity: "expense".to_string(),
@@ -182,7 +184,9 @@ pub async fn delete_attachment(
     }
 
     // Check attachment exists and belongs to this expense
-    let attachment = attachment_repo::find_by_id(&state.pool, attachment_id)
+    let attachment = state
+        .attachment_repo
+        .find_by_id(attachment_id)
         .await?
         .ok_or_else(|| AppError::NotFound {
             entity: "attachment".to_string(),
@@ -194,6 +198,6 @@ pub async fn delete_attachment(
         });
     }
 
-    attachment_repo::delete_attachment(&state.pool, attachment_id).await?;
+    state.attachment_repo.delete(attachment_id).await?;
     Ok(StatusCode::NO_CONTENT)
 }

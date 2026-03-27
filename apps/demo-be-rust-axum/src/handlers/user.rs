@@ -6,7 +6,6 @@ use crate::auth::{
     middleware::AuthUser,
     password::{hash_password, verify_password},
 };
-use crate::db::{token_repo, user_repo};
 use crate::domain::errors::AppError;
 use crate::state::AppState;
 use demo_contracts::models::{
@@ -26,7 +25,9 @@ pub async fn get_profile(
     State(state): State<Arc<AppState>>,
     auth_user: AuthUser,
 ) -> Result<Json<User>, AppError> {
-    let user = user_repo::find_by_id(&state.pool, auth_user.user_id)
+    let user = state
+        .user_repo
+        .find_by_id(auth_user.user_id)
         .await?
         .ok_or_else(|| AppError::NotFound {
             entity: "user".to_string(),
@@ -50,8 +51,10 @@ pub async fn update_profile(
     Json(body): Json<UpdateProfileRequest>,
 ) -> Result<Json<User>, AppError> {
     let display_name = body.display_name;
-    let user =
-        user_repo::update_display_name(&state.pool, auth_user.user_id, &display_name).await?;
+    let user = state
+        .user_repo
+        .update_display_name(auth_user.user_id, &display_name)
+        .await?;
 
     Ok(Json(User {
         id: user.id.to_string(),
@@ -73,7 +76,9 @@ pub async fn change_password(
     let old_password = body.old_password;
     let new_password = body.new_password;
 
-    let user = user_repo::find_by_id(&state.pool, auth_user.user_id)
+    let user = state
+        .user_repo
+        .find_by_id(auth_user.user_id)
         .await?
         .ok_or_else(|| AppError::NotFound {
             entity: "user".to_string(),
@@ -93,9 +98,15 @@ pub async fn change_password(
         });
     }
     let new_hash = hash_password(new_password).await?;
-    user_repo::update_password_hash(&state.pool, auth_user.user_id, &new_hash).await?;
+    state
+        .user_repo
+        .update_password_hash(auth_user.user_id, &new_hash)
+        .await?;
     // Revoke all tokens after password change
-    token_repo::revoke_all_for_user(&state.pool, auth_user.user_id).await?;
+    state
+        .token_repo
+        .revoke_all_for_user(auth_user.user_id)
+        .await?;
 
     Ok((StatusCode::OK, Json(json!({"message": "Password changed"}))))
 }
@@ -104,8 +115,14 @@ pub async fn deactivate(
     State(state): State<Arc<AppState>>,
     auth_user: AuthUser,
 ) -> Result<impl IntoResponse, AppError> {
-    user_repo::update_status(&state.pool, auth_user.user_id, "INACTIVE").await?;
-    token_repo::revoke_all_for_user(&state.pool, auth_user.user_id).await?;
+    state
+        .user_repo
+        .update_status(auth_user.user_id, "INACTIVE")
+        .await?;
+    state
+        .token_repo
+        .revoke_all_for_user(auth_user.user_id)
+        .await?;
     Ok((
         StatusCode::OK,
         Json(json!({"message": "Account deactivated"})),

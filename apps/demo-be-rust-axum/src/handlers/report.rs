@@ -7,7 +7,6 @@ use serde::Deserialize;
 use std::sync::Arc;
 
 use crate::auth::middleware::AuthUser;
-use crate::db::expense_repo;
 use crate::domain::{errors::AppError, types::Currency};
 use crate::state::AppState;
 use demo_contracts::models::{CategoryBreakdown, PlReport};
@@ -45,8 +44,10 @@ pub async fn pl_report(
         message: format!("unsupported currency: {currency_str}"),
     })?;
 
-    let report =
-        expense_repo::pl_report(&state.pool, auth_user.user_id, &currency, from, to).await?;
+    let report = state
+        .expense_repo
+        .pl_report(auth_user.user_id, &currency, from, to)
+        .await?;
 
     let net: f64 = report.income_total - report.expense_total;
 

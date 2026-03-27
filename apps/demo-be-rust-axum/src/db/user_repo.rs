@@ -130,6 +130,18 @@ pub async fn update_status(pool: &AnyPool, id: Uuid, status: &str) -> Result<(),
     Ok(())
 }
 
+pub async fn update_role(pool: &AnyPool, id: Uuid, role: &str) -> Result<(), AppError> {
+    let id_str = id.to_string();
+    let now_str = Utc::now().to_rfc3339();
+    sqlx::query("UPDATE users SET role = $1, updated_at = $2, updated_by = 'system' WHERE id = $3")
+        .bind(role)
+        .bind(&now_str)
+        .bind(&id_str)
+        .execute(pool)
+        .await?;
+    Ok(())
+}
+
 pub async fn update_display_name(
     pool: &AnyPool,
     id: Uuid,

@@ -79,29 +79,29 @@ in-memory records for unit tests.
 **Goal**: Add async traits, create struct implementations, update `AppState` to hold trait objects,
 and wire in-memory implementations for unit tests.
 
-- [ ] Add `async-trait = "0.1"` to `Cargo.toml` dependencies (`async_trait` is required because
+- [x] Add `async-trait = "0.1"` to `Cargo.toml` dependencies (`async_trait` is required because
       Rust stable does not yet support dyn-compatible async traits for `Arc<dyn Trait>`, regardless
       of edition)
-- [ ] Create `src/repositories/mod.rs` with trait definitions: `UserRepository`,
+- [x] Create `src/repositories/mod.rs` with trait definitions: `UserRepository`,
       `ExpenseRepository`, `AttachmentRepository`, `TokenRepository`, `RefreshTokenRepository`
-- [ ] Create `src/repositories/sqlx_user_repo.rs` — `struct SqlxUserRepo { pool: AnyPool }` +
+- [x] Create `src/repositories/sqlx_user_repo.rs` — `struct SqlxUserRepo { pool: AnyPool }` +
       trait impl (move logic from `db/user_repo.rs`)
-- [ ] Create `src/repositories/sqlx_expense_repo.rs` — same pattern
-- [ ] Create `src/repositories/sqlx_attachment_repo.rs` — same pattern
-- [ ] Create `src/repositories/sqlx_token_repo.rs` — same pattern
-- [ ] Create `src/repositories/sqlx_refresh_token_repo.rs` — same pattern
-- [ ] Update `AppState` — replace `AnyPool` with `Arc<dyn Trait>` for each repository
-- [ ] Update handler files that access the DB (admin, attachment, auth, expense, report, test_api,
+- [x] Create `src/repositories/sqlx_expense_repo.rs` — same pattern
+- [x] Create `src/repositories/sqlx_attachment_repo.rs` — same pattern
+- [x] Create `src/repositories/sqlx_token_repo.rs` — same pattern
+- [x] Create `src/repositories/sqlx_refresh_token_repo.rs` — same pattern
+- [x] Update `AppState` — replace `AnyPool` with `Arc<dyn Trait>` for each repository
+- [x] Update handler files that access the DB (admin, attachment, auth, expense, report, test_api,
       user) — extract repos from `AppState` instead of calling free functions with `&pool`
       (skip health.rs, mod.rs, and token.rs which have no direct pool/AnyPool access)
-- [ ] Create `tests/unit/in_memory_repos.rs` — HashMap-based implementations of all 5 traits
-- [ ] Update `tests/unit/world.rs` — inject in-memory repos instead of `create_test_pool()`
-- [ ] Update `tests/integration/world.rs` — inject sqlx repos with real Postgres pool
-- [ ] Verify `nx run demo-be-rust-axum:typecheck` passes
-- [ ] Verify `nx run demo-be-rust-axum:lint` passes
-- [ ] Verify `nx run demo-be-rust-axum:test:quick` passes (unit tests + coverage >= 90%)
+- [x] Create `tests/unit/in_memory_repos.rs` — HashMap-based implementations of all 5 traits
+- [x] Update `tests/unit/world.rs` — inject in-memory repos instead of `create_test_pool()`
+- [x] Update `tests/integration/world.rs` — inject sqlx repos with real Postgres pool
+- [x] Verify `nx run demo-be-rust-axum:typecheck` passes
+- [x] Verify `nx run demo-be-rust-axum:lint` passes
+- [x] Verify `nx run demo-be-rust-axum:test:quick` passes (unit tests + coverage >= 90%)
 - [ ] Verify `nx run demo-be-rust-axum:test:integration` passes (real Postgres)
-- [ ] Commit: `refactor(demo-be-rust-axum): add trait abstractions for repository pattern`
+- [x] Commit: `refactor(demo-be-rust-axum): add trait abstractions for repository pattern`
 
 ### Phase 4: demo-be-fsharp-giraffe (F# — largest diff)
 

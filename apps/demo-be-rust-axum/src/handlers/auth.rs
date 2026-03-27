@@ -13,7 +13,6 @@ use crate::auth::{
     middleware::AuthUser,
     password::{hash_password, verify_password},
 };
-use crate::db::{token_repo, user_repo};
 use crate::domain::{
     errors::AppError,
     types::{Role, UserStatus},
@@ -48,16 +47,17 @@ pub async fn register(
     let password_hash = hash_password(password).await?;
     let user_id = Uuid::new_v4();
 
-    let user = user_repo::create_user(
-        &state.pool,
-        user_id,
-        &username,
-        &email,
-        &username, // display_name defaults to username
-        &password_hash,
-        "USER",
-    )
-    .await?;
+    let user = state
+        .user_repo
+        .create(
+            user_id,
+            &username,
+            &email,
+            &username, // display_name defaults to username
+            &password_hash,
+            "USER",
+        )
+        .await?;
 
     Ok((
         StatusCode::CREATED,
@@ -81,7 +81,9 @@ pub async fn login(
     let username = body.username;
     let password = body.password;
 
-    let user = user_repo::find_by_username(&state.pool, &username)
+    let user = state
+        .user_repo
+        .find_by_username(&username)
         .await?
         .ok_or_else(|| AppError::Unauthorized {
             message: "Invalid credentials".to_string(),
@@ -108,9 +110,9 @@ pub async fn login(
 
     let valid = verify_password(password, user.password_hash.clone()).await?;
     if !valid {
-        let attempts = user_repo::increment_failed_attempts(&state.pool, user.id).await?;
+        let attempts = state.user_repo.increment_failed_attempts(user.id).await?;
         if attempts >= MAX_FAILED_ATTEMPTS {
-            user_repo::update_status(&state.pool, user.id, "LOCKED").await?;
+            state.user_repo.update_status(user.id, "LOCKED").await?;
         }
         return Err(AppError::Unauthorized {
             message: "Invalid credentials".to_string(),
@@ -118,7 +120,7 @@ pub async fn login(
     }
 
     // Reset failed attempts on success
-    user_repo::reset_failed_attempts(&state.pool, user.id).await?;
+    state.user_repo.reset_failed_attempts(user.id).await?;
 
     let role = Role::parse_str(&user.role).unwrap_or(Role::User);
     let (access_token, _access_jti) = encode_access_token(
@@ -144,7 +146,7 @@ pub async fn refresh(
     let claims = decode_refresh_token(&token_str, &state.jwt_secret)?;
 
     // Check if this refresh token jti is revoked (single-use rotation)
-    let revoked = token_repo::is_revoked(&state.pool, &claims.jti).await?;
+    let revoked = state.token_repo.is_revoked(&claims.jti).await?;
     if revoked {
         return Err(AppError::Unauthorized {
             message: "Invalid token".to_string(),
@@ -156,11 +158,14 @@ pub async fn refresh(
     })?;
 
     // Check user is still active
-    let user = user_repo::find_by_id(&state.pool, user_id)
-        .await?
-        .ok_or_else(|| AppError::Unauthorized {
-            message: "User not found".to_string(),
-        })?;
+    let user =
+        state
+            .user_repo
+            .find_by_id(user_id)
+            .await?
+            .ok_or_else(|| AppError::Unauthorized {
+                message: "User not found".to_string(),
+            })?;
 
     let status = UserStatus::parse_str(&user.status).unwrap_or(UserStatus::Active);
     if status != UserStatus::Active {
@@ -170,7 +175,7 @@ pub async fn refresh(
     }
 
     // Revoke old refresh token (single-use)
-    token_repo::revoke_token(&state.pool, &claims.jti, user_id).await?;
+    state.token_repo.revoke_token(&claims.jti, user_id).await?;
 
     let role = Role::parse_str(&user.role).unwrap_or(Role::User);
     let (access_token, _access_jti) = encode_access_token(
@@ -206,7 +211,7 @@ pub async fn logout(
     // Decode without strict validation (may be expired)
     if let Ok(claims) = crate::auth::jwt::decode_claims_unchecked(token_str, &state.jwt_secret) {
         let user_id = Uuid::parse_str(&claims.sub).unwrap_or_else(|_| Uuid::new_v4());
-        token_repo::revoke_token(&state.pool, &claims.jti, user_id).await?;
+        state.token_repo.revoke_token(&claims.jti, user_id).await?;
     }
 
     Ok(Json(json!({"message": "Logged out"})))
@@ -217,8 +222,14 @@ pub async fn logout_all(
     auth_user: AuthUser,
 ) -> Result<Json<serde_json::Value>, AppError> {
     // Revoke the current access token
-    token_repo::revoke_token(&state.pool, &auth_user.jti, auth_user.user_id).await?;
+    state
+        .token_repo
+        .revoke_token(&auth_user.jti, auth_user.user_id)
+        .await?;
     // Revoke all tokens for user
-    token_repo::revoke_all_for_user(&state.pool, auth_user.user_id).await?;
+    state
+        .token_repo
+        .revoke_all_for_user(auth_user.user_id)
+        .await?;
     Ok(Json(json!({"message": "ok"})))
 }

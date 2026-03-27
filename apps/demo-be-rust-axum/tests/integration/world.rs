@@ -11,7 +11,6 @@ use demo_be_rust_axum::{
         },
         password::{hash_password, verify_password},
     },
-    db::{attachment_repo, expense_repo, token_repo, user_repo},
     domain::{
         attachment::{is_allowed_content_type, Attachment, MAX_FILE_SIZE},
         errors::AppError,
@@ -19,6 +18,7 @@ use demo_be_rust_axum::{
         types::{Currency, Role, UserStatus},
         user::{validate_email, validate_password},
     },
+    repositories::NewAttachment,
     state::AppState,
 };
 
@@ -73,13 +73,9 @@ impl ServiceResponse {
     }
 }
 
-/// Decode a Bearer token string and verify it against the pool (revocation check + user active).
+/// Decode a Bearer token string and verify it against the repos (revocation check + user active).
 /// Returns `Err(AppError::Unauthorized)` on any failure — mirrors `AuthUser::from_request_parts`.
-async fn auth_from_bearer(
-    pool: &AnyPool,
-    bearer: &str,
-    jwt_secret: &str,
-) -> Result<AuthContext, AppError> {
+async fn auth_from_bearer(state: &AppState, bearer: &str) -> Result<AuthContext, AppError> {
     let token = bearer.strip_prefix("Bearer ").unwrap_or(bearer).trim();
     if token.is_empty() {
         return Err(AppError::Unauthorized {
@@ -87,21 +83,23 @@ async fn auth_from_bearer(
         });
     }
 
-    let claims = decode_access_token(token, jwt_secret)?;
+    let claims = decode_access_token(token, &state.jwt_secret)?;
 
     let user_id = Uuid::parse_str(&claims.sub).map_err(|_| AppError::Unauthorized {
         message: "Invalid user ID in token".to_string(),
     })?;
 
-    let revoked = token_repo::is_revoked(pool, &claims.jti).await?;
+    let revoked = state.token_repo.is_revoked(&claims.jti).await?;
     if revoked {
         return Err(AppError::Unauthorized {
             message: "Token has been revoked".to_string(),
         });
     }
 
-    let all_revoked =
-        token_repo::is_user_all_revoked_after(pool, user_id, claims.iat as i64).await?;
+    let all_revoked = state
+        .token_repo
+        .is_user_all_revoked_after(user_id, claims.iat as i64)
+        .await?;
     if all_revoked {
         return Err(AppError::Unauthorized {
             message: "Token has been revoked".to_string(),
@@ -109,7 +107,9 @@ async fn auth_from_bearer(
     }
 
     let user =
-        user_repo::find_by_id(pool, user_id)
+        state
+            .user_repo
+            .find_by_id(user_id)
             .await?
             .ok_or_else(|| AppError::Unauthorized {
                 message: "User not found".to_string(),
@@ -600,16 +600,17 @@ pub async fn svc_register(
     };
 
     let user_id = Uuid::new_v4();
-    match user_repo::create_user(
-        &state.pool,
-        user_id,
-        username,
-        email,
-        username, // display_name defaults to username
-        &password_hash,
-        "USER",
-    )
-    .await
+    match state
+        .user_repo
+        .create(
+            user_id,
+            username,
+            email,
+            username, // display_name defaults to username
+            &password_hash,
+            "USER",
+        )
+        .await
     {
         Ok(user) => ServiceResponse::created(json!({
             "id": user.id.to_string(),
@@ -626,7 +627,7 @@ pub async fn svc_login(state: &AppState, username: &str, password: &str) -> Serv
 
     const MAX_FAILED_ATTEMPTS: i64 = 5;
 
-    let user = match user_repo::find_by_username(&state.pool, username).await {
+    let user = match state.user_repo.find_by_username(username).await {
         Ok(Some(u)) => u,
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::Unauthorized {
@@ -660,12 +661,12 @@ pub async fn svc_login(state: &AppState, username: &str, password: &str) -> Serv
     };
 
     if !valid {
-        let attempts = match user_repo::increment_failed_attempts(&state.pool, user.id).await {
+        let attempts = match state.user_repo.increment_failed_attempts(user.id).await {
             Ok(a) => a,
             Err(e) => return ServiceResponse::from_error(&e),
         };
         if attempts >= MAX_FAILED_ATTEMPTS {
-            if let Err(e) = user_repo::update_status(&state.pool, user.id, "LOCKED").await {
+            if let Err(e) = state.user_repo.update_status(user.id, "LOCKED").await {
                 return ServiceResponse::from_error(&e);
             }
         }
@@ -674,7 +675,7 @@ pub async fn svc_login(state: &AppState, username: &str, password: &str) -> Serv
         });
     }
 
-    if let Err(e) = user_repo::reset_failed_attempts(&state.pool, user.id).await {
+    if let Err(e) = state.user_repo.reset_failed_attempts(user.id).await {
         return ServiceResponse::from_error(&e);
     }
 
@@ -708,7 +709,7 @@ pub async fn svc_refresh(state: &AppState, refresh_token_str: &str) -> ServiceRe
         Err(e) => return ServiceResponse::from_error(&e),
     };
 
-    let revoked = match token_repo::is_revoked(&state.pool, &claims.jti).await {
+    let revoked = match state.token_repo.is_revoked(&claims.jti).await {
         Ok(r) => r,
         Err(e) => return ServiceResponse::from_error(&e),
     };
@@ -727,7 +728,7 @@ pub async fn svc_refresh(state: &AppState, refresh_token_str: &str) -> ServiceRe
         }
     };
 
-    let user = match user_repo::find_by_id(&state.pool, user_id).await {
+    let user = match state.user_repo.find_by_id(user_id).await {
         Ok(Some(u)) => u,
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::Unauthorized {
@@ -744,7 +745,7 @@ pub async fn svc_refresh(state: &AppState, refresh_token_str: &str) -> ServiceRe
         });
     }
 
-    if let Err(e) = token_repo::revoke_token(&state.pool, &claims.jti, user_id).await {
+    if let Err(e) = state.token_repo.revoke_token(&claims.jti, user_id).await {
         return ServiceResponse::from_error(&e);
     }
 
@@ -777,7 +778,7 @@ pub async fn svc_logout(state: &AppState, bearer: &str) -> ServiceResponse {
     if !token.is_empty() {
         if let Ok(claims) = decode_claims_unchecked(token, &state.jwt_secret) {
             let user_id = Uuid::parse_str(&claims.sub).unwrap_or_else(|_| Uuid::new_v4());
-            if let Err(e) = token_repo::revoke_token(&state.pool, &claims.jti, user_id).await {
+            if let Err(e) = state.token_repo.revoke_token(&claims.jti, user_id).await {
                 return ServiceResponse::from_error(&e);
             }
         }
@@ -788,15 +789,15 @@ pub async fn svc_logout(state: &AppState, bearer: &str) -> ServiceResponse {
 pub async fn svc_logout_all(state: &AppState, bearer: &str) -> ServiceResponse {
     use serde_json::json;
 
-    let auth = match auth_from_bearer(&state.pool, bearer, &state.jwt_secret).await {
+    let auth = match auth_from_bearer(state, bearer).await {
         Ok(a) => a,
         Err(e) => return ServiceResponse::from_error(&e),
     };
 
-    if let Err(e) = token_repo::revoke_token(&state.pool, &auth.jti, auth.user_id).await {
+    if let Err(e) = state.token_repo.revoke_token(&auth.jti, auth.user_id).await {
         return ServiceResponse::from_error(&e);
     }
-    if let Err(e) = token_repo::revoke_all_for_user(&state.pool, auth.user_id).await {
+    if let Err(e) = state.token_repo.revoke_all_for_user(auth.user_id).await {
         return ServiceResponse::from_error(&e);
     }
     ServiceResponse::ok(json!({"message": "ok"}))
@@ -809,7 +810,7 @@ pub async fn svc_logout_all(state: &AppState, bearer: &str) -> ServiceResponse {
 pub async fn svc_get_claims(state: &AppState, bearer: &str) -> ServiceResponse {
     use serde_json::json;
 
-    let auth = match auth_from_bearer(&state.pool, bearer, &state.jwt_secret).await {
+    let auth = match auth_from_bearer(state, bearer).await {
         Ok(a) => a,
         Err(e) => return ServiceResponse::from_error(&e),
     };
@@ -830,12 +831,12 @@ pub async fn svc_get_claims(state: &AppState, bearer: &str) -> ServiceResponse {
 pub async fn svc_get_profile(state: &AppState, bearer: &str) -> ServiceResponse {
     use serde_json::json;
 
-    let auth = match auth_from_bearer(&state.pool, bearer, &state.jwt_secret).await {
+    let auth = match auth_from_bearer(state, bearer).await {
         Ok(a) => a,
         Err(e) => return ServiceResponse::from_error(&e),
     };
 
-    match user_repo::find_by_id(&state.pool, auth.user_id).await {
+    match state.user_repo.find_by_id(auth.user_id).await {
         Ok(Some(user)) => ServiceResponse::ok(json!({
             "id": user.id.to_string(),
             "username": user.username,
@@ -858,12 +859,16 @@ pub async fn svc_update_profile(
 ) -> ServiceResponse {
     use serde_json::json;
 
-    let auth = match auth_from_bearer(&state.pool, bearer, &state.jwt_secret).await {
+    let auth = match auth_from_bearer(state, bearer).await {
         Ok(a) => a,
         Err(e) => return ServiceResponse::from_error(&e),
     };
 
-    match user_repo::update_display_name(&state.pool, auth.user_id, display_name).await {
+    match state
+        .user_repo
+        .update_display_name(auth.user_id, display_name)
+        .await
+    {
         Ok(user) => ServiceResponse::ok(json!({
             "id": user.id.to_string(),
             "username": user.username,
@@ -884,12 +889,12 @@ pub async fn svc_change_password(
 ) -> ServiceResponse {
     use serde_json::json;
 
-    let auth = match auth_from_bearer(&state.pool, bearer, &state.jwt_secret).await {
+    let auth = match auth_from_bearer(state, bearer).await {
         Ok(a) => a,
         Err(e) => return ServiceResponse::from_error(&e),
     };
 
-    let user = match user_repo::find_by_id(&state.pool, auth.user_id).await {
+    let user = match state.user_repo.find_by_id(auth.user_id).await {
         Ok(Some(u)) => u,
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::NotFound {
@@ -921,10 +926,14 @@ pub async fn svc_change_password(
         Err(e) => return ServiceResponse::from_error(&e),
     };
 
-    if let Err(e) = user_repo::update_password_hash(&state.pool, auth.user_id, &new_hash).await {
+    if let Err(e) = state
+        .user_repo
+        .update_password_hash(auth.user_id, &new_hash)
+        .await
+    {
         return ServiceResponse::from_error(&e);
     }
-    if let Err(e) = token_repo::revoke_all_for_user(&state.pool, auth.user_id).await {
+    if let Err(e) = state.token_repo.revoke_all_for_user(auth.user_id).await {
         return ServiceResponse::from_error(&e);
     }
 
@@ -934,15 +943,19 @@ pub async fn svc_change_password(
 pub async fn svc_deactivate(state: &AppState, bearer: &str) -> ServiceResponse {
     use serde_json::json;
 
-    let auth = match auth_from_bearer(&state.pool, bearer, &state.jwt_secret).await {
+    let auth = match auth_from_bearer(state, bearer).await {
         Ok(a) => a,
         Err(e) => return ServiceResponse::from_error(&e),
     };
 
-    if let Err(e) = user_repo::update_status(&state.pool, auth.user_id, "INACTIVE").await {
+    if let Err(e) = state
+        .user_repo
+        .update_status(auth.user_id, "INACTIVE")
+        .await
+    {
         return ServiceResponse::from_error(&e);
     }
-    if let Err(e) = token_repo::revoke_all_for_user(&state.pool, auth.user_id).await {
+    if let Err(e) = state.token_repo.revoke_all_for_user(auth.user_id).await {
         return ServiceResponse::from_error(&e);
     }
     ServiceResponse::ok(json!({"message": "Account deactivated"}))
@@ -952,12 +965,8 @@ pub async fn svc_deactivate(state: &AppState, bearer: &str) -> ServiceResponse {
 // ADMIN
 // ---------------------------------------------------------------------------
 
-async fn require_admin(
-    pool: &AnyPool,
-    bearer: &str,
-    jwt_secret: &str,
-) -> Result<AuthContext, AppError> {
-    let auth = auth_from_bearer(pool, bearer, jwt_secret).await?;
+async fn require_admin(state: &AppState, bearer: &str) -> Result<AuthContext, AppError> {
+    let auth = auth_from_bearer(state, bearer).await?;
     if auth.role != Role::Admin {
         return Err(AppError::Forbidden {
             message: "Admin only".to_string(),
@@ -973,11 +982,11 @@ pub async fn svc_admin_list_users(
 ) -> ServiceResponse {
     use serde_json::json;
 
-    if let Err(e) = require_admin(&state.pool, admin_bearer, &state.jwt_secret).await {
+    if let Err(e) = require_admin(state, admin_bearer).await {
         return ServiceResponse::from_error(&e);
     }
 
-    match user_repo::list_users(&state.pool, 1, 20, email_filter).await {
+    match state.user_repo.list(1, 20, email_filter).await {
         Ok(result) => {
             let data: Vec<Value> = result
                 .users
@@ -1011,14 +1020,14 @@ pub async fn svc_admin_disable_user(
 ) -> ServiceResponse {
     use serde_json::json;
 
-    if let Err(e) = require_admin(&state.pool, admin_bearer, &state.jwt_secret).await {
+    if let Err(e) = require_admin(state, admin_bearer).await {
         return ServiceResponse::from_error(&e);
     }
 
-    if let Err(e) = user_repo::update_status(&state.pool, user_id, "DISABLED").await {
+    if let Err(e) = state.user_repo.update_status(user_id, "DISABLED").await {
         return ServiceResponse::from_error(&e);
     }
-    if let Err(e) = token_repo::revoke_all_for_user(&state.pool, user_id).await {
+    if let Err(e) = state.token_repo.revoke_all_for_user(user_id).await {
         return ServiceResponse::from_error(&e);
     }
     ServiceResponse::ok(json!({"message": "User disabled"}))
@@ -1031,11 +1040,11 @@ pub async fn svc_admin_enable_user(
 ) -> ServiceResponse {
     use serde_json::json;
 
-    if let Err(e) = require_admin(&state.pool, admin_bearer, &state.jwt_secret).await {
+    if let Err(e) = require_admin(state, admin_bearer).await {
         return ServiceResponse::from_error(&e);
     }
 
-    if let Err(e) = user_repo::update_status(&state.pool, user_id, "ACTIVE").await {
+    if let Err(e) = state.user_repo.update_status(user_id, "ACTIVE").await {
         return ServiceResponse::from_error(&e);
     }
     ServiceResponse::ok(json!({"message": "User enabled"}))
@@ -1048,14 +1057,14 @@ pub async fn svc_admin_unlock_user(
 ) -> ServiceResponse {
     use serde_json::json;
 
-    if let Err(e) = require_admin(&state.pool, admin_bearer, &state.jwt_secret).await {
+    if let Err(e) = require_admin(state, admin_bearer).await {
         return ServiceResponse::from_error(&e);
     }
 
-    if let Err(e) = user_repo::update_status(&state.pool, user_id, "ACTIVE").await {
+    if let Err(e) = state.user_repo.update_status(user_id, "ACTIVE").await {
         return ServiceResponse::from_error(&e);
     }
-    if let Err(e) = user_repo::reset_failed_attempts(&state.pool, user_id).await {
+    if let Err(e) = state.user_repo.reset_failed_attempts(user_id).await {
         return ServiceResponse::from_error(&e);
     }
     ServiceResponse::ok(json!({"message": "User unlocked"}))
@@ -1068,11 +1077,11 @@ pub async fn svc_admin_force_password_reset(
 ) -> ServiceResponse {
     use serde_json::json;
 
-    if let Err(e) = require_admin(&state.pool, admin_bearer, &state.jwt_secret).await {
+    if let Err(e) = require_admin(state, admin_bearer).await {
         return ServiceResponse::from_error(&e);
     }
 
-    match user_repo::find_by_id(&state.pool, user_id).await {
+    match state.user_repo.find_by_id(user_id).await {
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::NotFound {
                 entity: "user".to_string(),
@@ -1083,7 +1092,11 @@ pub async fn svc_admin_force_password_reset(
     }
 
     let reset_token = Uuid::new_v4().to_string();
-    if let Err(e) = user_repo::set_password_reset_token(&state.pool, user_id, &reset_token).await {
+    if let Err(e) = state
+        .user_repo
+        .set_password_reset_token(user_id, &reset_token)
+        .await
+    {
         return ServiceResponse::from_error(&e);
     }
 
@@ -1110,7 +1123,7 @@ pub async fn svc_create_expense(
     use chrono::NaiveDate;
     use demo_be_rust_axum::domain::types::is_supported_unit;
 
-    let auth = match auth_from_bearer(&state.pool, bearer, &state.jwt_secret).await {
+    let auth = match auth_from_bearer(state, bearer).await {
         Ok(a) => a,
         Err(e) => return ServiceResponse::from_error(&e),
     };
@@ -1160,20 +1173,21 @@ pub async fn svc_create_expense(
     }
 
     let expense_id = Uuid::new_v4();
-    match expense_repo::create_expense(
-        &state.pool,
-        expense_id,
-        auth.user_id,
-        amount,
-        currency_str,
-        category,
-        description,
-        date,
-        &entry_type,
-        quantity,
-        unit,
-    )
-    .await
+    match state
+        .expense_repo
+        .create(
+            expense_id,
+            auth.user_id,
+            amount,
+            currency_str,
+            category,
+            description,
+            date,
+            &entry_type,
+            quantity,
+            unit,
+        )
+        .await
     {
         Ok(expense) => ServiceResponse::created(expense_to_json(&expense)),
         Err(e) => ServiceResponse::from_error(&e),
@@ -1183,12 +1197,12 @@ pub async fn svc_create_expense(
 pub async fn svc_list_expenses(state: &AppState, bearer: &str) -> ServiceResponse {
     use serde_json::json;
 
-    let auth = match auth_from_bearer(&state.pool, bearer, &state.jwt_secret).await {
+    let auth = match auth_from_bearer(state, bearer).await {
         Ok(a) => a,
         Err(e) => return ServiceResponse::from_error(&e),
     };
 
-    match expense_repo::list_for_user(&state.pool, auth.user_id, 1, 20).await {
+    match state.expense_repo.list_for_user(auth.user_id, 1, 20).await {
         Ok(result) => {
             let data: Vec<Value> = result.expenses.iter().map(expense_to_json).collect();
             ServiceResponse::ok(json!({
@@ -1203,12 +1217,12 @@ pub async fn svc_list_expenses(state: &AppState, bearer: &str) -> ServiceRespons
 }
 
 pub async fn svc_get_expense(state: &AppState, bearer: &str, expense_id: Uuid) -> ServiceResponse {
-    let auth = match auth_from_bearer(&state.pool, bearer, &state.jwt_secret).await {
+    let auth = match auth_from_bearer(state, bearer).await {
         Ok(a) => a,
         Err(e) => return ServiceResponse::from_error(&e),
     };
 
-    match expense_repo::find_by_id(&state.pool, expense_id).await {
+    match state.expense_repo.find_by_id(expense_id).await {
         Ok(Some(expense)) => {
             if expense.user_id != auth.user_id {
                 return ServiceResponse::from_error(&AppError::Forbidden {
@@ -1241,12 +1255,12 @@ pub async fn svc_update_expense(
     use chrono::NaiveDate;
     use demo_be_rust_axum::domain::types::is_supported_unit;
 
-    let auth = match auth_from_bearer(&state.pool, bearer, &state.jwt_secret).await {
+    let auth = match auth_from_bearer(state, bearer).await {
         Ok(a) => a,
         Err(e) => return ServiceResponse::from_error(&e),
     };
 
-    let existing = match expense_repo::find_by_id(&state.pool, expense_id).await {
+    let existing = match state.expense_repo.find_by_id(expense_id).await {
         Ok(Some(e)) => e,
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::NotFound {
@@ -1306,19 +1320,20 @@ pub async fn svc_update_expense(
         }
     }
 
-    match expense_repo::update_expense(
-        &state.pool,
-        expense_id,
-        amount,
-        currency_str,
-        category,
-        description,
-        date,
-        &entry_type,
-        quantity,
-        unit,
-    )
-    .await
+    match state
+        .expense_repo
+        .update(
+            expense_id,
+            amount,
+            currency_str,
+            category,
+            description,
+            date,
+            &entry_type,
+            quantity,
+            unit,
+        )
+        .await
     {
         Ok(expense) => ServiceResponse::ok(expense_to_json(&expense)),
         Err(e) => ServiceResponse::from_error(&e),
@@ -1330,12 +1345,12 @@ pub async fn svc_delete_expense(
     bearer: &str,
     expense_id: Uuid,
 ) -> ServiceResponse {
-    let auth = match auth_from_bearer(&state.pool, bearer, &state.jwt_secret).await {
+    let auth = match auth_from_bearer(state, bearer).await {
         Ok(a) => a,
         Err(e) => return ServiceResponse::from_error(&e),
     };
 
-    match expense_repo::find_by_id(&state.pool, expense_id).await {
+    match state.expense_repo.find_by_id(expense_id).await {
         Ok(Some(expense)) => {
             if expense.user_id != auth.user_id {
                 return ServiceResponse::from_error(&AppError::Forbidden {
@@ -1351,7 +1366,7 @@ pub async fn svc_delete_expense(
         Err(e) => return ServiceResponse::from_error(&e),
     }
 
-    if let Err(e) = expense_repo::delete_expense(&state.pool, expense_id).await {
+    if let Err(e) = state.expense_repo.delete(expense_id).await {
         return ServiceResponse::from_error(&e);
     }
 
@@ -1361,12 +1376,12 @@ pub async fn svc_delete_expense(
 pub async fn svc_expense_summary(state: &AppState, bearer: &str) -> ServiceResponse {
     use serde_json::json;
 
-    let auth = match auth_from_bearer(&state.pool, bearer, &state.jwt_secret).await {
+    let auth = match auth_from_bearer(state, bearer).await {
         Ok(a) => a,
         Err(e) => return ServiceResponse::from_error(&e),
     };
 
-    match expense_repo::summarize_by_currency(&state.pool, auth.user_id).await {
+    match state.expense_repo.summarize_by_currency(auth.user_id).await {
         Ok(summaries) => {
             let mut result = serde_json::Map::new();
             for s in summaries {
@@ -1393,14 +1408,12 @@ pub async fn svc_upload_attachment(
     content_type: &str,
     data: Vec<u8>,
 ) -> ServiceResponse {
-    use attachment_repo::NewAttachment;
-
-    let auth = match auth_from_bearer(&state.pool, bearer, &state.jwt_secret).await {
+    let auth = match auth_from_bearer(state, bearer).await {
         Ok(a) => a,
         Err(e) => return ServiceResponse::from_error(&e),
     };
 
-    let expense = match expense_repo::find_by_id(&state.pool, expense_id).await {
+    let expense = match state.expense_repo.find_by_id(expense_id).await {
         Ok(Some(e)) => e,
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::NotFound {
@@ -1425,18 +1438,17 @@ pub async fn svc_upload_attachment(
     }
 
     let att_id = Uuid::new_v4();
-    match attachment_repo::create_attachment(
-        &state.pool,
-        NewAttachment {
+    match state
+        .attachment_repo
+        .create(NewAttachment {
             id: att_id,
             expense_id,
-            filename,
-            content_type,
+            filename: filename.to_string(),
+            content_type: content_type.to_string(),
             size: data.len() as i64,
-            data: &data,
-        },
-    )
-    .await
+            data,
+        })
+        .await
     {
         Ok(att) => ServiceResponse::created(attachment_to_json(&att)),
         Err(e) => ServiceResponse::from_error(&e),
@@ -1450,12 +1462,12 @@ pub async fn svc_list_attachments(
 ) -> ServiceResponse {
     use serde_json::json;
 
-    let auth = match auth_from_bearer(&state.pool, bearer, &state.jwt_secret).await {
+    let auth = match auth_from_bearer(state, bearer).await {
         Ok(a) => a,
         Err(e) => return ServiceResponse::from_error(&e),
     };
 
-    let expense = match expense_repo::find_by_id(&state.pool, expense_id).await {
+    let expense = match state.expense_repo.find_by_id(expense_id).await {
         Ok(Some(e)) => e,
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::NotFound {
@@ -1471,7 +1483,7 @@ pub async fn svc_list_attachments(
         });
     }
 
-    match attachment_repo::list_for_expense(&state.pool, expense_id).await {
+    match state.attachment_repo.list_for_expense(expense_id).await {
         Ok(attachments) => {
             let items: Vec<Value> = attachments.iter().map(attachment_to_json).collect();
             ServiceResponse::ok(json!({"attachments": items}))
@@ -1486,12 +1498,12 @@ pub async fn svc_delete_attachment(
     expense_id: Uuid,
     attachment_id: Uuid,
 ) -> ServiceResponse {
-    let auth = match auth_from_bearer(&state.pool, bearer, &state.jwt_secret).await {
+    let auth = match auth_from_bearer(state, bearer).await {
         Ok(a) => a,
         Err(e) => return ServiceResponse::from_error(&e),
     };
 
-    let expense = match expense_repo::find_by_id(&state.pool, expense_id).await {
+    let expense = match state.expense_repo.find_by_id(expense_id).await {
         Ok(Some(e)) => e,
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::NotFound {
@@ -1507,7 +1519,7 @@ pub async fn svc_delete_attachment(
         });
     }
 
-    let attachment = match attachment_repo::find_by_id(&state.pool, attachment_id).await {
+    let attachment = match state.attachment_repo.find_by_id(attachment_id).await {
         Ok(Some(a)) => a,
         Ok(None) => {
             return ServiceResponse::from_error(&AppError::NotFound {
@@ -1523,7 +1535,7 @@ pub async fn svc_delete_attachment(
         });
     }
 
-    if let Err(e) = attachment_repo::delete_attachment(&state.pool, attachment_id).await {
+    if let Err(e) = state.attachment_repo.delete(attachment_id).await {
         return ServiceResponse::from_error(&e);
     }
 
@@ -1544,7 +1556,7 @@ pub async fn svc_pl_report(
     use chrono::NaiveDate;
     use serde_json::json;
 
-    let auth = match auth_from_bearer(&state.pool, bearer, &state.jwt_secret).await {
+    let auth = match auth_from_bearer(state, bearer).await {
         Ok(a) => a,
         Err(e) => return ServiceResponse::from_error(&e),
     };
@@ -1577,7 +1589,11 @@ pub async fn svc_pl_report(
         }
     };
 
-    match expense_repo::pl_report(&state.pool, auth.user_id, &currency, from, to).await {
+    match state
+        .expense_repo
+        .pl_report(auth.user_id, &currency, from, to)
+        .await
+    {
         Ok(report) => {
             let net = report.income_total - report.expense_total;
             let income_breakdown: Vec<Value> = report

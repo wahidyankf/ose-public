@@ -10,7 +10,6 @@ use std::sync::Arc;
 use uuid::Uuid;
 
 use crate::auth::middleware::AdminUser;
-use crate::db::{token_repo, user_repo};
 use crate::domain::errors::AppError;
 use crate::state::AppState;
 use demo_contracts::models::{
@@ -42,7 +41,7 @@ pub async fn list_users(
     let page_size = params.page_size.unwrap_or(20);
     let search_filter = params.search.as_deref();
 
-    let result = user_repo::list_users(&state.pool, page, page_size, search_filter).await?;
+    let result = state.user_repo.list(page, page_size, search_filter).await?;
 
     let content: Vec<User> = result
         .users
@@ -76,8 +75,8 @@ pub async fn disable_user(
     Path(user_id): Path<Uuid>,
     Json(_body): Json<serde_json::Value>,
 ) -> Result<impl IntoResponse, AppError> {
-    user_repo::update_status(&state.pool, user_id, "DISABLED").await?;
-    token_repo::revoke_all_for_user(&state.pool, user_id).await?;
+    state.user_repo.update_status(user_id, "DISABLED").await?;
+    state.token_repo.revoke_all_for_user(user_id).await?;
     Ok((StatusCode::OK, Json(json!({"message": "User disabled"}))))
 }
 
@@ -86,7 +85,7 @@ pub async fn enable_user(
     _admin: AdminUser,
     Path(user_id): Path<Uuid>,
 ) -> Result<impl IntoResponse, AppError> {
-    user_repo::update_status(&state.pool, user_id, "ACTIVE").await?;
+    state.user_repo.update_status(user_id, "ACTIVE").await?;
     Ok((StatusCode::OK, Json(json!({"message": "User enabled"}))))
 }
 
@@ -95,8 +94,8 @@ pub async fn unlock_user(
     _admin: AdminUser,
     Path(user_id): Path<Uuid>,
 ) -> Result<impl IntoResponse, AppError> {
-    user_repo::update_status(&state.pool, user_id, "ACTIVE").await?;
-    user_repo::reset_failed_attempts(&state.pool, user_id).await?;
+    state.user_repo.update_status(user_id, "ACTIVE").await?;
+    state.user_repo.reset_failed_attempts(user_id).await?;
     Ok((StatusCode::OK, Json(json!({"message": "User unlocked"}))))
 }
 
@@ -106,14 +105,19 @@ pub async fn force_password_reset(
     Path(user_id): Path<Uuid>,
 ) -> Result<Json<PasswordResetResponse>, AppError> {
     // Verify user exists
-    let _ = user_repo::find_by_id(&state.pool, user_id)
+    let _ = state
+        .user_repo
+        .find_by_id(user_id)
         .await?
         .ok_or_else(|| AppError::NotFound {
             entity: "user".to_string(),
         })?;
 
     let reset_token = Uuid::new_v4().to_string();
-    user_repo::set_password_reset_token(&state.pool, user_id, &reset_token).await?;
+    state
+        .user_repo
+        .set_password_reset_token(user_id, &reset_token)
+        .await?;
 
     Ok(Json(PasswordResetResponse { token: reset_token }))
 }

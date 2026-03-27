@@ -1,3 +1,4 @@
+mod in_memory_repos;
 mod steps;
 mod world;
 

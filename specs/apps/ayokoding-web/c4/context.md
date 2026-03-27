@@ -19,28 +19,33 @@ graph TD
 
     VERCEL("Vercel Platform<br/>──────────────────<br/>CDN + Edge Network<br/>ISR revalidation<br/>Standalone deployment"):::infra
 
+    GA4("Google Analytics<br/>──────────────────<br/>GA4 via @next/third-parties<br/>Page views + events"):::external
+
     LEARNER -->|"browse and search"| SYSTEM
     AUTHOR -->|"write markdown content"| SYSTEM
     CLI -->|"validate links"| SYSTEM
     CI -->|"typecheck, lint, test"| SYSTEM
     SYSTEM -->|"deploy + serve"| VERCEL
+    SYSTEM -->|"send analytics events"| GA4
 
     classDef actor fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef actor_author fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
     classDef system fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:3px
     classDef ci fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef infra fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef external fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ## Actors
 
-| Actor          | Role                                                                     |
-| -------------- | ------------------------------------------------------------------------ |
-| Learner        | Browses tutorials, searches content, switches between EN/ID              |
-| Content Author | Creates markdown content with YAML frontmatter in `content/` directory   |
-| ayokoding-cli  | Validates internal links in content files (runs as part of `test:quick`) |
-| CI Pipeline    | Runs typecheck, lint, unit tests, BE/FE E2E tests via Playwright         |
-| Vercel         | Hosts the production deployment with ISR and CDN edge caching            |
+| Actor            | Role                                                                     |
+| ---------------- | ------------------------------------------------------------------------ |
+| Learner          | Browses tutorials, searches content, switches between EN/ID              |
+| Content Author   | Creates markdown content with YAML frontmatter in `content/` directory   |
+| ayokoding-cli    | Validates internal links in content files (runs as part of `test:quick`) |
+| CI Pipeline      | Runs typecheck, lint, unit tests, BE/FE E2E tests via Playwright         |
+| Vercel           | Hosts the production deployment with ISR and CDN edge caching            |
+| Google Analytics | Collects page view and event data via GA4 (`@next/third-parties`)        |
 
 ## Related
 

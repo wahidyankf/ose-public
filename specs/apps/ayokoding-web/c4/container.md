@@ -19,7 +19,7 @@ graph TD
 
         CLIENT["Next.js Client<br/>──────────────────<br/>Browser SPA<br/><br/>Client Components<br/>Search dialog<br/>Theme toggle<br/>Language switcher<br/>Sidebar navigation"]:::container_fe
 
-        CONTENT[("Content Directory<br/>──────────────────<br/>Markdown + YAML<br/><br/>content/en/**/*.md<br/>content/id/**/*.md<br/>~2800+ files")]:::datastore
+        CONTENT[("Content Directory<br/>──────────────────<br/>Markdown + YAML<br/><br/>content/en/**/*.md<br/>content/id/**/*.md<br/>~1000+ files")]:::datastore
 
         SEARCH["Search Index<br/>──────────────────<br/>FlexSearch<br/><br/>In-memory index<br/>Per-locale<br/>Title + body"]:::search
     end
@@ -83,7 +83,7 @@ The browser-side application provides:
 
 ### Content Directory
 
-- ~2800+ markdown files with YAML frontmatter
+- ~1000+ markdown files with YAML frontmatter
 - Organized by locale (`en/`, `id/`) and topic hierarchy
 - Section pages use `_index.md` convention
 - Frontmatter: title, weight, date, description, tags, draft

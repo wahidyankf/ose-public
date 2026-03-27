@@ -2,7 +2,12 @@ import { describe, it, expect } from "vitest";
 import { Effect, Layer } from "effect";
 import { SqliteClient } from "@effect/sql-sqlite-node";
 import { SqlClient } from "@effect/sql";
-import { ExpenseRepository, ExpenseRepositoryLive } from "../../src/infrastructure/db/expense-repo.js";
+import {
+  ExpenseRepository,
+  ExpenseRepositoryLive,
+  normalizeDate,
+  normalizeQuantity,
+} from "../../src/infrastructure/db/expense-repo.js";
 import { UserRepository, UserRepositoryLive } from "../../src/infrastructure/db/user-repo.js";
 import { CREATE_TABLE_STATEMENTS } from "../../src/infrastructure/db/schema.js";
 import type { CreateExpenseData } from "../../src/domain/expense.js";
@@ -326,5 +331,55 @@ describe("ExpenseRepository", () => {
       );
       expect(expenses).toHaveLength(0);
     });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Pure normalization helpers — PostgreSQL ↔ SQLite compatibility
+// ---------------------------------------------------------------------------
+
+describe("normalizeDate", () => {
+  it("returns the YYYY-MM-DD portion of a plain string unchanged", () => {
+    expect(normalizeDate("2025-01-15")).toBe("2025-01-15");
+  });
+
+  it("slices the date from a JavaScript Date object (PostgreSQL DATE column)", () => {
+    // PostgreSQL DATE columns are returned as Date objects by @effect/sql-pg.
+    // The Date is midnight UTC so toISOString() starts with the correct date.
+    expect(normalizeDate(new Date("2025-01-15T00:00:00.000Z"))).toBe("2025-01-15");
+  });
+
+  it("slices only the date part when string contains a time component", () => {
+    expect(normalizeDate("2025-01-15T12:34:56.000Z")).toBe("2025-01-15");
+  });
+});
+
+describe("normalizeQuantity", () => {
+  it("returns null for null input", () => {
+    expect(normalizeQuantity(null)).toBeNull();
+  });
+
+  it("returns null for undefined input", () => {
+    expect(normalizeQuantity(undefined)).toBeNull();
+  });
+
+  it("strips trailing zeros from PostgreSQL DECIMAL(19,4) strings", () => {
+    expect(normalizeQuantity("50.5000")).toBe("50.5");
+  });
+
+  it("strips trailing zeros and decimal point for whole-number DECIMAL strings", () => {
+    expect(normalizeQuantity("10.0000")).toBe("10");
+  });
+
+  it("preserves significant decimal digits", () => {
+    expect(normalizeQuantity("1.2300")).toBe("1.23");
+  });
+
+  it("returns integer strings unchanged when there is no decimal point", () => {
+    expect(normalizeQuantity("42")).toBe("42");
+  });
+
+  it("handles numeric (SQLite REAL) input correctly", () => {
+    expect(normalizeQuantity(50.5)).toBe("50.5");
   });
 });

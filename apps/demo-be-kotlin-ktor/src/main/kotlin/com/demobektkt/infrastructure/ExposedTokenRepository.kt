@@ -3,15 +3,16 @@ package com.demobektkt.infrastructure
 import com.demobektkt.infrastructure.repositories.TokenRecord
 import com.demobektkt.infrastructure.repositories.TokenRepository
 import com.demobektkt.infrastructure.repositories.TokenType
+import com.demobektkt.infrastructure.tables.RefreshTokensTable
 import com.demobektkt.infrastructure.tables.RevokedTokensTable
 import java.time.Instant
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.sql.update
 
 class ExposedTokenRepository : TokenRepository {
   override suspend fun revoke(jti: String, userId: UUID, tokenType: TokenType, expiresAt: Instant) {
@@ -34,7 +35,9 @@ class ExposedTokenRepository : TokenRepository {
 
   override suspend fun revokeAllForUser(userId: UUID) {
     newSuspendedTransaction(Dispatchers.IO) {
-      RevokedTokensTable.deleteWhere { RevokedTokensTable.userId eq userId }
+      RefreshTokensTable.update({ RefreshTokensTable.userId eq userId }) {
+        it[revoked] = true
+      }
     }
   }
 

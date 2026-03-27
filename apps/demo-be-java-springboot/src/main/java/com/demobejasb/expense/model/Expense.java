@@ -30,7 +30,7 @@ public class Expense {
     @Column(nullable = false, precision = 19, scale = 4)
     private BigDecimal amount;
 
-    @Column(nullable = false, length = 3)
+    @Column(nullable = false, length = 10)
     private String currency;
 
     @Column(nullable = false, length = 100)
@@ -42,13 +42,13 @@ public class Expense {
     @Column(nullable = false)
     private LocalDate date;
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = 20)
     private String type;
 
     @Column(precision = 19, scale = 4)
     private @Nullable BigDecimal quantity;
 
-    @Column(length = 20)
+    @Column(length = 50)
     private @Nullable String unit;
 
     @Column(name = "created_at", nullable = false)

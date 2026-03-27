@@ -44,7 +44,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
-            if (jwtUtil.isTokenValid(token) && !revokedTokenRepository.existsByToken(token)) {
+            if (jwtUtil.isTokenValid(token) && !revokedTokenRepository.existsByJti(token)) {
                 String username = jwtUtil.extractUsername(token);
                 // Check current user status from DB
                 boolean isActive = userRepository.findByUsername(username)

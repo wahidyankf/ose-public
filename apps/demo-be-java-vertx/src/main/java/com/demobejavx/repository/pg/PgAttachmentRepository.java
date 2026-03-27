@@ -26,15 +26,14 @@ public class PgAttachmentRepository implements AttachmentRepository {
         String id = UUID.randomUUID().toString();
         Instant now = Instant.now();
         return pool.preparedQuery(
-                        "INSERT INTO attachments (id, expense_id, user_id, filename,"
+                        "INSERT INTO attachments (id, expense_id, filename,"
                                 + " content_type, size, data, created_at)"
-                                + " VALUES ($1::uuid, $2::uuid, $3::uuid, $4, $5, $6, $7, $8)"
-                                + " RETURNING id, expense_id, user_id, filename, content_type,"
+                                + " VALUES ($1::uuid, $2::uuid, $3, $4, $5, $6, $7)"
+                                + " RETURNING id, expense_id, filename, content_type,"
                                 + " size, data, created_at")
                 .execute(Tuple.of(
                         id,
                         attachment.expenseId(),
-                        attachment.userId(),
                         attachment.filename(),
                         attachment.contentType(),
                         attachment.size(),
@@ -49,7 +48,7 @@ public class PgAttachmentRepository implements AttachmentRepository {
             return Future.succeededFuture(Optional.empty());
         }
         return pool.preparedQuery(
-                        "SELECT id, expense_id, user_id, filename, content_type, size, data,"
+                        "SELECT id, expense_id, filename, content_type, size, data,"
                                 + " created_at FROM attachments WHERE id = $1::uuid")
                 .execute(Tuple.of(id))
                 .map(rows -> {
@@ -66,7 +65,7 @@ public class PgAttachmentRepository implements AttachmentRepository {
             return Future.succeededFuture(new ArrayList<>());
         }
         return pool.preparedQuery(
-                        "SELECT id, expense_id, user_id, filename, content_type, size, data,"
+                        "SELECT id, expense_id, filename, content_type, size, data,"
                                 + " created_at FROM attachments WHERE expense_id = $1::uuid"
                                 + " ORDER BY created_at ASC")
                 .execute(Tuple.of(expenseId))
@@ -109,7 +108,6 @@ public class PgAttachmentRepository implements AttachmentRepository {
         return new Attachment(
                 row.getUUID("id").toString(),
                 row.getUUID("expense_id").toString(),
-                row.getUUID("user_id").toString(),
                 row.getString("filename"),
                 row.getString("content_type"),
                 row.getLong("size"),

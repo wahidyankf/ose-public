@@ -380,11 +380,10 @@ let logout: HttpHandler =
 
             let db = ctx.GetService<AppDbContext>()
             let jti = getTokenJti token
-            let expiry = getTokenExpiry token
 
             match jti with
             | Some j ->
-                let! exists = db.RevokedTokens.AnyAsync(fun rt -> rt.TokenJti = j)
+                let! exists = db.RevokedTokens.AnyAsync(fun rt -> rt.Jti = j)
 
                 if not exists then
                     let userId =
@@ -395,10 +394,9 @@ let logout: HttpHandler =
 
                     let revokedEntity: RevokedTokenEntity =
                         { Id = Guid.NewGuid()
-                          TokenJti = j
+                          Jti = j
                           UserId = userId
-                          RevokedAt = DateTime.UtcNow
-                          ExpiresAt = expiry |> Option.defaultValue DateTime.UtcNow }
+                          RevokedAt = DateTime.UtcNow }
 
                     db.RevokedTokens.Add(revokedEntity) |> ignore
                     let! _ = db.SaveChangesAsync()
@@ -421,7 +419,6 @@ let logoutAll: HttpHandler =
                     ""
 
             let jti = getTokenJti token
-            let expiry = getTokenExpiry token
 
             let userId =
                 if ctx.Items.ContainsKey("UserId") then
@@ -431,15 +428,14 @@ let logoutAll: HttpHandler =
 
             match jti with
             | Some j ->
-                let! exists = db.RevokedTokens.AnyAsync(fun rt -> rt.TokenJti = j)
+                let! exists = db.RevokedTokens.AnyAsync(fun rt -> rt.Jti = j)
 
                 if not exists then
                     let revokedEntity: RevokedTokenEntity =
                         { Id = Guid.NewGuid()
-                          TokenJti = j
+                          Jti = j
                           UserId = userId
-                          RevokedAt = DateTime.UtcNow
-                          ExpiresAt = expiry |> Option.defaultValue DateTime.UtcNow }
+                          RevokedAt = DateTime.UtcNow }
 
                     db.RevokedTokens.Add(revokedEntity) |> ignore
                     let! _ = db.SaveChangesAsync()

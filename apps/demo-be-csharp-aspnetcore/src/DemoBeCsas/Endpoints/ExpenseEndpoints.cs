@@ -54,7 +54,6 @@ public static class ExpenseEndpoints
         }
 
         var type = req.Type == CreateExpenseRequest.TypeEnum.Income ? ExpenseType.Income : ExpenseType.Expense;
-        var date = new DateTimeOffset(req.Date.ToDateTime(TimeOnly.MinValue), TimeSpan.Zero);
         var quantity = req.Quantity.HasValue ? (double?)Convert.ToDouble(req.Quantity.Value) : null;
         var expense = await expenseRepo.CreateAsync(
             userId.Value,
@@ -65,7 +64,7 @@ public static class ExpenseEndpoints
             type,
             quantity,
             req.Unit,
-            date,
+            req.Date,
             ct
         );
 
@@ -169,7 +168,7 @@ public static class ExpenseEndpoints
         }
 
         // Resolve update fields, falling back to existing values when not provided
-        var title = req.Description ?? existing.Title;
+        var description = req.Description ?? existing.Description;
         var currency = req.Currency ?? existing.Currency;
 
         if (!decimal.TryParse(
@@ -206,9 +205,7 @@ public static class ExpenseEndpoints
         {
             type = existing.Type;
         }
-        var date = req.Date.HasValue
-            ? new DateTimeOffset(req.Date.Value.ToDateTime(TimeOnly.MinValue), TimeSpan.Zero)
-            : existing.Date;
+        var date = req.Date ?? existing.Date;
         var category = req.Category ?? existing.Category;
         var quantity = req.Quantity.HasValue
             ? (double?)Convert.ToDouble(req.Quantity.Value)
@@ -217,7 +214,7 @@ public static class ExpenseEndpoints
         var updated = await expenseRepo.UpdateAsync(
             id,
             userId.Value,
-            title,
+            description,
             category,
             amount,
             currency,
@@ -286,8 +283,8 @@ public static class ExpenseEndpoints
             amount: FormatAmount(e.Amount, e.Currency),
             currency: e.Currency,
             category: e.Category,
-            description: e.Title,
-            date: DateOnly.FromDateTime(e.Date.UtcDateTime),
+            description: e.Description,
+            date: e.Date,
             type: type,
             userId: e.UserId.ToString(),
             createdAt: e.CreatedAt.UtcDateTime,

@@ -125,7 +125,7 @@ public class AuthService {
 
     @Transactional
     public void logout(final String accessToken) {
-        if (!revokedTokenRepository.existsByToken(accessToken)) {
+        if (!revokedTokenRepository.existsByJti(accessToken)) {
             revokedTokenRepository.save(new RevokedToken(accessToken));
         }
     }
@@ -138,7 +138,7 @@ public class AuthService {
     }
 
     public boolean isTokenRevoked(final String token) {
-        if (revokedTokenRepository.existsByToken(token)) {
+        if (revokedTokenRepository.existsByJti(token)) {
             return true;
         }
         // A token issued to a disabled or locked account is effectively revoked.

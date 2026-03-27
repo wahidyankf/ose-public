@@ -160,7 +160,7 @@ let create: HttpHandler =
                                       Category = if r.category = null then "" else r.category
                                       Description = if r.description = null then "" else r.description
                                       Date = dateVal
-                                      EntryType =
+                                      Type =
                                         if r.``type`` = null then
                                             "EXPENSE"
                                         else
@@ -196,7 +196,7 @@ let create: HttpHandler =
                                            category = entity.Category
                                            description = entity.Description
                                            date = entity.Date.ToString("yyyy-MM-dd")
-                                           ``type`` = entity.EntryType.ToLowerInvariant() |}
+                                           ``type`` = entity.Type.ToLowerInvariant() |}
                                         earlyReturn
                                         ctx
         }
@@ -254,7 +254,7 @@ let list: HttpHandler =
                        category = e.Category
                        description = e.Description
                        date = e.Date.ToString("yyyy-MM-dd")
-                       ``type`` = e.EntryType.ToLowerInvariant()
+                       ``type`` = e.Type.ToLowerInvariant()
                        quantity = qtyOpt
                        unit = if e.Unit = null then None else Some e.Unit |})
                 |> Seq.toArray
@@ -315,7 +315,7 @@ let getById (expenseId: Guid) : HttpHandler =
                            category = expense.Category
                            description = expense.Description
                            date = expense.Date.ToString("yyyy-MM-dd")
-                           ``type`` = expense.EntryType.ToLowerInvariant()
+                           ``type`` = expense.Type.ToLowerInvariant()
                            quantity = qtyOpt
                            unit = if expense.Unit = null then None else Some expense.Unit |}
                         next
@@ -416,11 +416,11 @@ let update (expenseId: Guid) : HttpHandler =
                                     else
                                         expense.Description
                                 Date = dateVal
-                                EntryType =
+                                Type =
                                     if r.``type`` <> null then
                                         r.``type``.ToUpperInvariant()
                                     else
-                                        expense.EntryType
+                                        expense.Type
                                 UpdatedAt = DateTime.UtcNow }
 
                         db.Expenses.Update(updated) |> ignore
@@ -440,7 +440,7 @@ let update (expenseId: Guid) : HttpHandler =
                                    category = updated.Category
                                    description = updated.Description
                                    date = updated.Date.ToString("yyyy-MM-dd")
-                                   ``type`` = updated.EntryType.ToLowerInvariant() |}
+                                   ``type`` = updated.Type.ToLowerInvariant() |}
                                 next
                                 ctx
         }
@@ -485,7 +485,7 @@ let summary: HttpHandler =
             let userId = ctx.Items["UserId"] :?> Guid
             let db = ctx.GetService<AppDbContext>()
 
-            let! expenses = db.Expenses.Where(fun e -> e.UserId = userId && e.EntryType = "EXPENSE").ToListAsync()
+            let! expenses = db.Expenses.Where(fun e -> e.UserId = userId && e.Type = "EXPENSE").ToListAsync()
 
             let grouped =
                 expenses

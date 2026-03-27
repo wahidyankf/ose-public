@@ -374,7 +374,7 @@ public sealed class ServiceLayer(IntegrationTestHost host)
             return Json(401, new { message = "Unauthorized" });
         }
 
-        user.DisplayName = displayName;
+        user.DisplayName = displayName ?? string.Empty;
         await userRepo.UpdateAsync(user);
 
         return Json(
@@ -976,18 +976,12 @@ public sealed class ServiceLayer(IntegrationTestHost host)
         }
 
         var fromDate = from is not null
-            ? DateTimeOffset.Parse(
-                from + "T00:00:00Z",
-                System.Globalization.CultureInfo.InvariantCulture
-            )
-            : DateTimeOffset.MinValue;
+            ? DateOnly.Parse(from, System.Globalization.CultureInfo.InvariantCulture)
+            : DateOnly.MinValue;
 
         var toDate = to is not null
-            ? DateTimeOffset.Parse(
-                to + "T23:59:59Z",
-                System.Globalization.CultureInfo.InvariantCulture
-            )
-            : DateTimeOffset.MaxValue;
+            ? DateOnly.Parse(to, System.Globalization.CultureInfo.InvariantCulture)
+            : DateOnly.MaxValue;
 
         var expenseRepo = sp.GetRequiredService<IExpenseRepository>();
         var expenses = await expenseRepo.ListByUserAndDateRangeAsync(
@@ -1100,9 +1094,9 @@ public sealed class ServiceLayer(IntegrationTestHost host)
             {
                 id = attachment.Id,
                 expense_id = attachment.ExpenseId,
-                filename = attachment.FileName,
+                filename = attachment.Filename,
                 contentType = attachment.ContentType,
-                file_size_bytes = attachment.FileSizeBytes,
+                file_size_bytes = attachment.Size,
                 url = $"/api/v1/expenses/{expenseId}/attachments/{attachment.Id}/download",
                 created_at = attachment.CreatedAt,
             }
@@ -1152,9 +1146,9 @@ public sealed class ServiceLayer(IntegrationTestHost host)
                 {
                     id = a.Id,
                     expense_id = a.ExpenseId,
-                    filename = a.FileName,
+                    filename = a.Filename,
                     contentType = a.ContentType,
-                    file_size_bytes = a.FileSizeBytes,
+                    file_size_bytes = a.Size,
                     url = $"/api/v1/expenses/{expenseId}/attachments/{a.Id}/download",
                     created_at = a.CreatedAt,
                 }),
@@ -1451,30 +1445,29 @@ public sealed class ServiceLayer(IntegrationTestHost host)
             ? Math.Round(amount, 0, MidpointRounding.AwayFromZero).ToString("F0")
             : amount.ToString("F2");
 
-    private static DateTimeOffset ParseDate(string? dateStr)
+    private static DateOnly ParseDate(string? dateStr)
     {
         if (dateStr is null)
         {
-            return DateTimeOffset.UtcNow;
+            return DateOnly.FromDateTime(DateTime.UtcNow);
         }
 
-        var normalized = dateStr.Length == 10 ? dateStr + "T00:00:00Z" : dateStr;
+        var raw = dateStr.Length > 10 ? dateStr[..10] : dateStr;
 
-        return DateTimeOffset.TryParse(
-            normalized,
+        return DateOnly.TryParse(
+            raw,
             System.Globalization.CultureInfo.InvariantCulture,
-            System.Globalization.DateTimeStyles.None,
             out var parsed
         )
             ? parsed
-            : DateTimeOffset.UtcNow;
+            : DateOnly.FromDateTime(DateTime.UtcNow);
     }
 
     private static object ExpenseToResponse(Infrastructure.Models.ExpenseModel e) =>
         new
         {
             id = e.Id,
-            description = e.Title,
+            description = e.Description,
             category = e.Category,
             amount = FormatAmount(e.Amount, e.Currency),
             currency = e.Currency,

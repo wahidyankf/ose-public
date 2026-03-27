@@ -5,7 +5,6 @@ import com.demobektkt.infrastructure.repositories.CreateAttachmentRequest
 import java.time.Instant
 import java.util.UUID
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -50,7 +49,7 @@ class AttachmentModelTest {
   @Test
   fun `Attachment not equals different type`() {
     val a = Attachment(id, expenseId, "file.jpg", "image/jpeg", 3L, data, now)
-    assertFalse(a.equals("string"))
+    assertNotEquals(a, "string")
   }
 
   @Test
@@ -89,7 +88,7 @@ class AttachmentModelTest {
   @Test
   fun `CreateAttachmentRequest not equals different type`() {
     val req = CreateAttachmentRequest(expenseId, "file.jpg", "image/jpeg", 3L, data)
-    assertFalse(req.equals("string"))
+    assertNotEquals(req, "string")
   }
 
   @Test

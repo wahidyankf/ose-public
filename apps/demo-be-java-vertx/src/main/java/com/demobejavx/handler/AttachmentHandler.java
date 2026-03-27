@@ -83,7 +83,7 @@ public class AttachmentHandler implements Handler<RoutingContext> {
                     }
 
                     com.demobejavx.domain.model.Attachment attachment =
-                            new com.demobejavx.domain.model.Attachment(null, expenseId, userId,
+                            new com.demobejavx.domain.model.Attachment(null, expenseId,
                                     upload.fileName(), contentType, size, new byte[0],
                                     Instant.now());
                     return attachmentRepo.save(attachment);

@@ -50,8 +50,8 @@ let profitAndLoss: HttpHandler =
                         && e.Date <= toDate)
                     .ToListAsync()
 
-            let incomeEntries = entries |> Seq.filter (fun e -> e.EntryType = "INCOME")
-            let expenseEntries = entries |> Seq.filter (fun e -> e.EntryType = "EXPENSE")
+            let incomeEntries = entries |> Seq.filter (fun e -> e.Type = "INCOME")
+            let expenseEntries = entries |> Seq.filter (fun e -> e.Type = "EXPENSE")
 
             let incomeTotal = incomeEntries |> Seq.sumBy (fun e -> e.Amount)
             let expenseTotal = expenseEntries |> Seq.sumBy (fun e -> e.Amount)

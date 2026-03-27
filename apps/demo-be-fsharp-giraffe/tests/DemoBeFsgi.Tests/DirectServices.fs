@@ -128,7 +128,7 @@ let resolveAuth (db: AppDbContext) (token: string option) : Async<Result<Guid, i
                     match jti with
                     | None -> async { return true }
                     | Some j ->
-                        db.RevokedTokens.AsNoTracking().AnyAsync(fun rt -> rt.TokenJti = j)
+                        db.RevokedTokens.AsNoTracking().AnyAsync(fun rt -> rt.Jti = j)
                         |> Async.AwaitTask
 
                 if isRevoked then
@@ -379,7 +379,7 @@ let logout (db: AppDbContext) (token: string option) : Async<int * string> =
 
         match jti with
         | Some j ->
-            let! exists = db.RevokedTokens.AnyAsync(fun rt -> rt.TokenJti = j) |> Async.AwaitTask
+            let! exists = db.RevokedTokens.AnyAsync(fun rt -> rt.Jti = j) |> Async.AwaitTask
 
             if not exists then
                 // Resolve userId from token (best-effort; use Guid.Empty if not available)
@@ -402,10 +402,9 @@ let logout (db: AppDbContext) (token: string option) : Async<int * string> =
 
                 let revokedEntity: RevokedTokenEntity =
                     { Id = Guid.NewGuid()
-                      TokenJti = j
+                      Jti = j
                       UserId = userId
-                      RevokedAt = DateTime.UtcNow
-                      ExpiresAt = expiry |> Option.defaultValue DateTime.UtcNow }
+                      RevokedAt = DateTime.UtcNow }
 
                 db.RevokedTokens.Add(revokedEntity) |> ignore
                 let! _ = db.SaveChangesAsync() |> Async.AwaitTask
@@ -428,15 +427,14 @@ let logoutAll (db: AppDbContext) (token: string option) : Async<int * string> =
 
             match jti with
             | Some j ->
-                let! exists = db.RevokedTokens.AnyAsync(fun rt -> rt.TokenJti = j) |> Async.AwaitTask
+                let! exists = db.RevokedTokens.AnyAsync(fun rt -> rt.Jti = j) |> Async.AwaitTask
 
                 if not exists then
                     let revokedEntity: RevokedTokenEntity =
                         { Id = Guid.NewGuid()
-                          TokenJti = j
+                          Jti = j
                           UserId = userId
-                          RevokedAt = DateTime.UtcNow
-                          ExpiresAt = expiry |> Option.defaultValue DateTime.UtcNow }
+                          RevokedAt = DateTime.UtcNow }
 
                     db.RevokedTokens.Add(revokedEntity) |> ignore
                     let! _ = db.SaveChangesAsync() |> Async.AwaitTask
@@ -818,7 +816,7 @@ let createExpense
                                   Category = if category = null then "" else category
                                   Description = if description = null then "" else description
                                   Date = dateVal
-                                  EntryType =
+                                  Type =
                                     if entryType = null then
                                         "EXPENSE"
                                     else
@@ -850,7 +848,7 @@ let createExpense
                                        category = entity.Category
                                        description = entity.Description
                                        date = entity.Date.ToString("yyyy-MM-dd")
-                                       ``type`` = entity.EntryType.ToLowerInvariant() |}
+                                       ``type`` = entity.Type.ToLowerInvariant() |}
     }
 
 let listExpenses (db: AppDbContext) (token: string option) (page: int) (size: int) : Async<int * string> =
@@ -890,7 +888,7 @@ let listExpenses (db: AppDbContext) (token: string option) (page: int) (size: in
                        category = e.Category
                        description = e.Description
                        date = e.Date.ToString("yyyy-MM-dd")
-                       ``type`` = e.EntryType.ToLowerInvariant()
+                       ``type`` = e.Type.ToLowerInvariant()
                        quantity = qtyOpt
                        unit = if e.Unit = null then None else Some e.Unit |})
                 |> Seq.toArray
@@ -937,7 +935,7 @@ let getExpenseById (db: AppDbContext) (token: string option) (expenseId: Guid) :
                            category = expense.Category
                            description = expense.Description
                            date = expense.Date.ToString("yyyy-MM-dd")
-                           ``type`` = expense.EntryType.ToLowerInvariant()
+                           ``type`` = expense.Type.ToLowerInvariant()
                            quantity = qtyOpt
                            unit = if expense.Unit = null then None else Some expense.Unit |}
     }
@@ -994,11 +992,11 @@ let updateExpense
                                 else
                                     expense.Description
                             Date = dateVal
-                            EntryType =
+                            Type =
                                 if entryType <> null then
                                     entryType.ToUpperInvariant()
                                 else
-                                    expense.EntryType
+                                    expense.Type
                             UpdatedAt = DateTime.UtcNow }
 
                     db.ChangeTracker.Clear()
@@ -1018,7 +1016,7 @@ let updateExpense
                                category = updated.Category
                                description = updated.Description
                                date = updated.Date.ToString("yyyy-MM-dd")
-                               ``type`` = updated.EntryType.ToLowerInvariant() |}
+                               ``type`` = updated.Type.ToLowerInvariant() |}
     }
 
 let deleteExpense (db: AppDbContext) (token: string option) (expenseId: Guid) : Async<int * string> =
@@ -1051,7 +1049,7 @@ let expenseSummary (db: AppDbContext) (token: string option) : Async<int * strin
         | Error e -> return e
         | Ok userId ->
             let! expenses =
-                db.Expenses.Where(fun e -> e.UserId = userId && e.EntryType = "EXPENSE").ToListAsync()
+                db.Expenses.Where(fun e -> e.UserId = userId && e.Type = "EXPENSE").ToListAsync()
                 |> Async.AwaitTask
 
             let grouped =
@@ -1115,7 +1113,7 @@ let uploadAttachment
                               ExpenseId = expenseId
                               Filename = filename
                               ContentType = contentType
-                              FileSize = int64 data.Length
+                              Size = int64 data.Length
                               Data = data
                               Url = url
                               CreatedAt = now }
@@ -1128,7 +1126,7 @@ let uploadAttachment
                                 {| id = attachmentId
                                    filename = entity.Filename
                                    contentType = entity.ContentType
-                                   file_size = entity.FileSize
+                                   file_size = entity.Size
                                    url = entity.Url |}
     }
 
@@ -1158,7 +1156,7 @@ let listAttachments (db: AppDbContext) (token: string option) (expenseId: Guid) 
                         {| id = a.Id
                            filename = a.Filename
                            contentType = a.ContentType
-                           file_size = a.FileSize
+                           file_size = a.Size
                            url = a.Url |})
                     |> Seq.toArray
 
@@ -1236,8 +1234,8 @@ let profitAndLoss
                     .ToListAsync()
                 |> Async.AwaitTask
 
-            let incomeEntries = entries |> Seq.filter (fun e -> e.EntryType = "INCOME")
-            let expenseEntries = entries |> Seq.filter (fun e -> e.EntryType = "EXPENSE")
+            let incomeEntries = entries |> Seq.filter (fun e -> e.Type = "INCOME")
+            let expenseEntries = entries |> Seq.filter (fun e -> e.Type = "EXPENSE")
 
             let incomeTotal = incomeEntries |> Seq.sumBy (fun e -> e.Amount)
             let expenseTotal = expenseEntries |> Seq.sumBy (fun e -> e.Amount)

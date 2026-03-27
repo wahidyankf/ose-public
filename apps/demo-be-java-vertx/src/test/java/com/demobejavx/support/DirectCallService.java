@@ -685,7 +685,7 @@ public final class DirectCallService {
                     .put("message", "Unsupported file type: " + contentType)
                     .put("field", "file"));
         }
-        Attachment attachment = new Attachment(null, expenseId, uid, filename, contentType,
+        Attachment attachment = new Attachment(null, expenseId, filename, contentType,
                 data.length, data, Instant.now());
         Attachment saved = await(attachmentRepo.save(attachment));
         return ServiceResponse.of(201, buildAttachmentResponse(saved));

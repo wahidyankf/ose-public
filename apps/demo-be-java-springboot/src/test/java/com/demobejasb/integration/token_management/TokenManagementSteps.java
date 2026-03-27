@@ -106,7 +106,7 @@ public class TokenManagementSteps {
         if (token == null) {
             throw new IllegalStateException("Token not stored");
         }
-        assertThat(revokedTokenRepository.existsByToken(token)).isTrue();
+        assertThat(revokedTokenRepository.existsByJti(token)).isTrue();
     }
 
     @Given("alice has logged out and her access token is blacklisted")

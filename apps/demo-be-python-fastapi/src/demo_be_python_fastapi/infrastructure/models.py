@@ -4,7 +4,7 @@ import datetime as _dt
 import uuid
 from datetime import UTC, datetime
 
-from sqlalchemy import BigInteger, Boolean, Date, DateTime, ForeignKey, LargeBinary, Numeric, String
+from sqlalchemy import BigInteger, Boolean, Date, DateTime, ForeignKey, LargeBinary, String
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 

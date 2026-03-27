@@ -137,7 +137,7 @@ public class UnitInMemoryDataStore {
     public RevokedToken saveRevokedToken(final RevokedToken token) {
         assignIdIfMissing(token);
         revokedTokens.put(token.getId(), token);
-        revokedTokenStrings.add(token.getToken());
+        revokedTokenStrings.add(token.getJti());
         return token;
     }
 

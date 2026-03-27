@@ -111,7 +111,7 @@ public class UnitServicesConfig {
         RevokedTokenRepository repo = Mockito.mock(RevokedTokenRepository.class);
         when(repo.save(any(RevokedToken.class)))
                 .thenAnswer(inv -> dataStore.saveRevokedToken(inv.getArgument(0)));
-        when(repo.existsByToken(anyString()))
+        when(repo.existsByJti(anyString()))
                 .thenAnswer(inv -> dataStore.existsRevokedToken(inv.getArgument(0)));
         return repo;
     }

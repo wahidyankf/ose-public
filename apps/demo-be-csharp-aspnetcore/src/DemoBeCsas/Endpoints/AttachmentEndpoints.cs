@@ -84,9 +84,9 @@ public static class AttachmentEndpoints
             {
                 id = attachment.Id,
                 expense_id = attachment.ExpenseId,
-                filename = attachment.FileName,
+                filename = attachment.Filename,
                 contentType = attachment.ContentType,
-                file_size_bytes = attachment.FileSizeBytes,
+                file_size_bytes = attachment.Size,
                 url = $"/api/v1/expenses/{expenseId}/attachments/{attachment.Id}/download",
                 created_at = attachment.CreatedAt,
             }
@@ -121,9 +121,9 @@ public static class AttachmentEndpoints
                 {
                     id = a.Id,
                     expense_id = a.ExpenseId,
-                    filename = a.FileName,
+                    filename = a.Filename,
                     contentType = a.ContentType,
-                    file_size_bytes = a.FileSizeBytes,
+                    file_size_bytes = a.Size,
                     url = $"/api/v1/expenses/{expenseId}/attachments/{a.Id}/download",
                     created_at = a.CreatedAt,
                 }),

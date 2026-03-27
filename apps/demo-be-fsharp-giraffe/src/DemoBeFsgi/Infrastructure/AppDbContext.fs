@@ -48,8 +48,8 @@ type ExpenseEntity =
       Description: string
       [<Column("date")>]
       Date: DateTime
-      [<Column("entry_type")>]
-      EntryType: string
+      [<Column("type")>]
+      Type: string
       [<Column("quantity")>]
       Quantity: Nullable<decimal>
       [<Column("unit")>]
@@ -71,8 +71,8 @@ type AttachmentEntity =
       Filename: string
       [<Column("content_type")>]
       ContentType: string
-      [<Column("file_size")>]
-      FileSize: int64
+      [<Column("size")>]
+      Size: int64
       [<Column("data")>]
       Data: byte[]
       [<Column("url")>]
@@ -155,7 +155,7 @@ type AppDbContext(options: DbContextOptions<AppDbContext>) =
         modelBuilder.Entity<UserEntity>().HasIndex(fun u -> u.Email :> obj).IsUnique()
         |> ignore
 
-        modelBuilder.Entity<RevokedTokenEntity>().HasIndex(fun t -> t.TokenJti :> obj).IsUnique()
+        modelBuilder.Entity<RevokedTokenEntity>().HasIndex(fun t -> t.Jti :> obj).IsUnique()
         |> ignore
 
         modelBuilder.Entity<RefreshTokenEntity>().HasIndex(fun t -> t.TokenHash :> obj).IsUnique()

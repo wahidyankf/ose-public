@@ -10,14 +10,14 @@ public interface IExpenseRepository
 {
     Task<ExpenseModel> CreateAsync(
         Guid userId,
-        string title,
+        string description,
         string category,
         decimal amount,
         string currency,
         ExpenseType type,
         double? quantity,
         string? unit,
-        DateTimeOffset date,
+        DateOnly date,
         CancellationToken ct = default
     );
     Task<ExpenseModel?> FindByIdAsync(Guid expenseId, Guid userId, CancellationToken ct = default);
@@ -30,14 +30,14 @@ public interface IExpenseRepository
     Task<ExpenseModel> UpdateAsync(
         Guid expenseId,
         Guid userId,
-        string title,
+        string description,
         string category,
         decimal amount,
         string currency,
         ExpenseType type,
         double? quantity,
         string? unit,
-        DateTimeOffset date,
+        DateOnly date,
         CancellationToken ct = default
     );
     Task DeleteAsync(Guid expenseId, Guid userId, CancellationToken ct = default);
@@ -47,8 +47,8 @@ public interface IExpenseRepository
     );
     Task<IReadOnlyList<ExpenseModel>> ListByUserAndDateRangeAsync(
         Guid userId,
-        DateTimeOffset from,
-        DateTimeOffset to,
+        DateOnly from,
+        DateOnly to,
         string? currency,
         CancellationToken ct = default
     );
@@ -58,14 +58,14 @@ public class ExpenseRepository(AppDbContext db) : IExpenseRepository
 {
     public async Task<ExpenseModel> CreateAsync(
         Guid userId,
-        string title,
+        string description,
         string category,
         decimal amount,
         string currency,
         ExpenseType type,
         double? quantity,
         string? unit,
-        DateTimeOffset date,
+        DateOnly date,
         CancellationToken ct = default
     )
     {
@@ -74,7 +74,7 @@ public class ExpenseRepository(AppDbContext db) : IExpenseRepository
         {
             Id = Guid.NewGuid(),
             UserId = userId,
-            Title = title,
+            Description = description,
             Category = category,
             Amount = amount,
             Currency = currency.ToUpperInvariant(),
@@ -121,14 +121,14 @@ public class ExpenseRepository(AppDbContext db) : IExpenseRepository
     public async Task<ExpenseModel> UpdateAsync(
         Guid expenseId,
         Guid userId,
-        string title,
+        string description,
         string category,
         decimal amount,
         string currency,
         ExpenseType type,
         double? quantity,
         string? unit,
-        DateTimeOffset date,
+        DateOnly date,
         CancellationToken ct = default
     )
     {
@@ -136,7 +136,7 @@ public class ExpenseRepository(AppDbContext db) : IExpenseRepository
             e => e.Id == expenseId && e.UserId == userId,
             ct
         );
-        expense.Title = title;
+        expense.Description = description;
         expense.Category = category;
         expense.Amount = amount;
         expense.Currency = currency.ToUpperInvariant();
@@ -181,13 +181,12 @@ public class ExpenseRepository(AppDbContext db) : IExpenseRepository
 
     public async Task<IReadOnlyList<ExpenseModel>> ListByUserAndDateRangeAsync(
         Guid userId,
-        DateTimeOffset from,
-        DateTimeOffset to,
+        DateOnly from,
+        DateOnly to,
         string? currency,
         CancellationToken ct = default
     )
     {
-        // Load user's expenses into memory first to avoid SQLite DateTimeOffset comparison issue
         var allExpenses = await db.Expenses.Where(e => e.UserId == userId).ToListAsync(ct);
         var filtered = allExpenses.Where(e => e.Date >= from && e.Date <= to);
         if (!string.IsNullOrWhiteSpace(currency))

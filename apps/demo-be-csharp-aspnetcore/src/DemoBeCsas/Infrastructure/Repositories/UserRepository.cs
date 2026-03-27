@@ -43,7 +43,7 @@ public class UserRepository(AppDbContext db) : IUserRepository
             Username = username,
             Email = email,
             PasswordHash = passwordHash,
-            DisplayName = displayName,
+            DisplayName = displayName ?? string.Empty,
             Status = UserStatus.Active,
             Role = role,
             FailedLoginAttempts = 0,

@@ -29,18 +29,12 @@ public static class ReportEndpoints
 
         var fromDate =
             startDate is not null
-                ? DateTimeOffset.Parse(
-                    startDate + "T00:00:00Z",
-                    System.Globalization.CultureInfo.InvariantCulture
-                )
-                : DateTimeOffset.MinValue;
+                ? DateOnly.Parse(startDate, System.Globalization.CultureInfo.InvariantCulture)
+                : DateOnly.MinValue;
         var toDate =
             endDate is not null
-                ? DateTimeOffset.Parse(
-                    endDate + "T23:59:59Z",
-                    System.Globalization.CultureInfo.InvariantCulture
-                )
-                : DateTimeOffset.MaxValue;
+                ? DateOnly.Parse(endDate, System.Globalization.CultureInfo.InvariantCulture)
+                : DateOnly.MaxValue;
 
         var expenses = await expenseRepo.ListByUserAndDateRangeAsync(
             userId.Value,

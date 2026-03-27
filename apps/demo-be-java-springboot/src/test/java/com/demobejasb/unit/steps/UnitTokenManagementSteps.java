@@ -102,7 +102,7 @@ public class UnitTokenManagementSteps {
     public void alicesAccessTokenShouldBeRecordedAsRevoked() {
         String token = stateStore.getAccessToken();
         assertThat(token).isNotNull();
-        assertThat(revokedTokenRepository.existsByToken(token)).isTrue();
+        assertThat(revokedTokenRepository.existsByJti(token)).isTrue();
     }
 
     @Given("alice has logged out and her access token is blacklisted")

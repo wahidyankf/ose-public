@@ -17,8 +17,11 @@ public class RevokedToken {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, unique = true, length = 512)
-    private String token;
+    @Column(name = "jti", nullable = false, unique = true, length = 255)
+    private String jti;
+
+    @Column(name = "user_id", nullable = false)
+    private UUID userId;
 
     @Column(name = "revoked_at", nullable = false)
     private Instant revokedAt = Instant.now();
@@ -27,16 +30,27 @@ public class RevokedToken {
     protected RevokedToken() {}
 
     @SuppressWarnings("NullAway")
-    public RevokedToken(final String token) {
-        this.token = token;
+    public RevokedToken(final String jti) {
+        this.jti = jti;
+        this.userId = UUID.fromString("00000000-0000-0000-0000-000000000000");
+    }
+
+    @SuppressWarnings("NullAway")
+    public RevokedToken(final String jti, final UUID userId) {
+        this.jti = jti;
+        this.userId = userId;
     }
 
     public UUID getId() {
         return id;
     }
 
-    public String getToken() {
-        return token;
+    public String getJti() {
+        return jti;
+    }
+
+    public UUID getUserId() {
+        return userId;
     }
 
     public Instant getRevokedAt() {

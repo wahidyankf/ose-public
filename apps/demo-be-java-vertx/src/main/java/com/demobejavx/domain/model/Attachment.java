@@ -6,7 +6,6 @@ import org.jspecify.annotations.Nullable;
 public record Attachment(
         @Nullable String id,
         String expenseId,
-        String userId,
         String filename,
         String contentType,
         long size,
@@ -14,7 +13,7 @@ public record Attachment(
         Instant createdAt) {
 
     public Attachment withId(String newId) {
-        return new Attachment(newId, expenseId, userId, filename, contentType, size, data,
+        return new Attachment(newId, expenseId, filename, contentType, size, data,
                 createdAt);
     }
 }

@@ -34,6 +34,34 @@ export class ExpenseRepository extends Context.Tag("ExpenseRepository")<ExpenseR
 
 // DECIMAL(19,4) is returned as a string by PostgreSQL drivers; SQLite returns it as a number.
 // parseFloat handles both cases safely.
+//
+// PostgreSQL DATE columns are returned as JavaScript Date objects by @effect/sql-pg.
+// We normalize to a plain YYYY-MM-DD string to match the domain contract.
+//
+// PostgreSQL DECIMAL(19,4) quantity values (e.g. "50.5000") are stored as strings so that
+// Number(quantity) in the route layer reconstructs the original numeric value correctly.
+
+/**
+ * Normalize a raw DB date value to a plain YYYY-MM-DD string.
+ * PostgreSQL DATE columns arrive as JavaScript Date objects; SQLite returns plain strings.
+ * Exported for unit testing.
+ */
+export function normalizeDate(raw: string | Date): string {
+  return raw instanceof Date ? raw.toISOString().slice(0, 10) : String(raw).slice(0, 10);
+}
+
+/**
+ * Normalize a raw DB quantity value (null, number, or DECIMAL string) to a stripped string.
+ * PostgreSQL DECIMAL(19,4) returns e.g. "50.5000"; we strip trailing zeros so that
+ * Number(quantity) in the response layer produces the expected float (e.g. 50.5, 10).
+ * Exported for unit testing.
+ */
+export function normalizeQuantity(raw: unknown): string | null {
+  if (raw == null) return null;
+  const str = String(raw);
+  return str.includes(".") ? str.replace(/\.?0+$/, "") : str;
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function rowToExpense(row: any): Expense {
   return {
@@ -44,9 +72,9 @@ function rowToExpense(row: any): Expense {
     currency: row.currency as string,
     category: (row.category as string) ?? "",
     description: row.description as string,
-    quantity: row.quantity != null ? String(row.quantity) : null,
+    quantity: normalizeQuantity(row.quantity),
     unit: row.unit as string | null,
-    date: row.date as string,
+    date: normalizeDate(row.date as string | Date),
     createdAt: new Date(row.created_at as string),
     updatedAt: new Date(row.updated_at as string),
   };

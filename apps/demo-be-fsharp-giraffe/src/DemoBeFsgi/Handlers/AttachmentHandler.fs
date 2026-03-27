@@ -120,7 +120,7 @@ let upload (expenseId: Guid) : HttpHandler =
                                       ExpenseId = expenseId
                                       Filename = file.FileName
                                       ContentType = contentType
-                                      FileSize = file.Length
+                                      Size = file.Length
                                       Data = data
                                       Url = url
                                       CreatedAt = now }
@@ -135,7 +135,7 @@ let upload (expenseId: Guid) : HttpHandler =
                                         {| id = attachmentId
                                            filename = entity.Filename
                                            contentType = entity.ContentType
-                                           file_size = entity.FileSize
+                                           file_size = entity.Size
                                            url = entity.Url |}
                                         earlyReturn
                                         ctx
@@ -176,7 +176,7 @@ let list (expenseId: Guid) : HttpHandler =
                         {| id = a.Id
                            filename = a.Filename
                            contentType = a.ContentType
-                           file_size = a.FileSize
+                           file_size = a.Size
                            url = a.Url |})
                     |> Seq.toArray
 

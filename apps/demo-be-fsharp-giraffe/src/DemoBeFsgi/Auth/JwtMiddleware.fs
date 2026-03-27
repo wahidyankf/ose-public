@@ -45,7 +45,7 @@ let requireAuth: HttpHandler =
                     let! isRevoked =
                         match jti with
                         | None -> Threading.Tasks.Task.FromResult(true)
-                        | Some j -> db.RevokedTokens.AsNoTracking().AnyAsync(fun rt -> rt.TokenJti = j)
+                        | Some j -> db.RevokedTokens.AsNoTracking().AnyAsync(fun rt -> rt.Jti = j)
 
                     if isRevoked then
                         ctx.Response.StatusCode <- 401

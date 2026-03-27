@@ -7,9 +7,9 @@ public interface IAttachmentRepository
 {
     Task<AttachmentModel> CreateAsync(
         Guid expenseId,
-        string fileName,
+        string filename,
         string contentType,
-        long fileSizeBytes,
+        long size,
         byte[] data,
         CancellationToken ct = default
     );
@@ -25,9 +25,9 @@ public class AttachmentRepository(AppDbContext db) : IAttachmentRepository
 {
     public async Task<AttachmentModel> CreateAsync(
         Guid expenseId,
-        string fileName,
+        string filename,
         string contentType,
-        long fileSizeBytes,
+        long size,
         byte[] data,
         CancellationToken ct = default
     )
@@ -36,9 +36,9 @@ public class AttachmentRepository(AppDbContext db) : IAttachmentRepository
         {
             Id = Guid.NewGuid(),
             ExpenseId = expenseId,
-            FileName = fileName,
+            Filename = filename,
             ContentType = contentType,
-            FileSizeBytes = fileSizeBytes,
+            Size = size,
             Data = data,
             CreatedAt = DateTimeOffset.UtcNow,
         };

@@ -9,7 +9,7 @@ use crate::domain::types::{Currency, EntryType};
 pub struct Expense {
     pub id: Uuid,
     pub user_id: Uuid,
-    pub amount: i64,
+    pub amount: f64,
     pub currency: String,
     pub category: String,
     pub description: String,
@@ -42,9 +42,9 @@ impl Expense {
     }
 }
 
-/// Parse a currency amount string into an integer storage value.
-/// USD: "10.50" -> 1050, IDR: "150000" -> 150000
-pub fn parse_amount(currency: &Currency, input: &str) -> Result<i64, AppError> {
+/// Parse a currency amount string into a float storage value.
+/// USD: "10.50" -> 10.5, IDR: "150000" -> 150000.0
+pub fn parse_amount(currency: &Currency, input: &str) -> Result<f64, AppError> {
     // Reject negative amounts
     if input.starts_with('-') {
         return Err(AppError::Validation {
@@ -64,10 +64,13 @@ pub fn parse_amount(currency: &Currency, input: &str) -> Result<i64, AppError> {
                     message: format!("{} does not support decimal places", currency.as_str()),
                 });
             }
-            input.parse::<i64>().map_err(|_| AppError::Validation {
-                field: "amount".to_string(),
-                message: "invalid amount".to_string(),
-            })
+            input
+                .parse::<i64>()
+                .map(|v| v as f64)
+                .map_err(|_| AppError::Validation {
+                    field: "amount".to_string(),
+                    message: "invalid amount".to_string(),
+                })
         }
         places => {
             // USD: exactly `places` decimal digits
@@ -83,26 +86,19 @@ pub fn parse_amount(currency: &Currency, input: &str) -> Result<i64, AppError> {
                         ),
                     });
                 }
-                let int_part = &input[..dot_pos];
-                let int_val: i64 = int_part.parse().map_err(|_| AppError::Validation {
+                input.parse::<f64>().map_err(|_| AppError::Validation {
                     field: "amount".to_string(),
                     message: "invalid amount".to_string(),
-                })?;
-                let frac_val: i64 = frac_part.parse().map_err(|_| AppError::Validation {
-                    field: "amount".to_string(),
-                    message: "invalid amount".to_string(),
-                })?;
-                let multiplier: i64 = 10_i64.pow(places);
-                Ok(int_val * multiplier + frac_val)
+                })
             } else {
-                // No decimal point — treat as integer with zero decimals appended
-                // This is valid for whole amounts like "10" -> 1000 for USD
-                let int_val: i64 = input.parse().map_err(|_| AppError::Validation {
-                    field: "amount".to_string(),
-                    message: "invalid amount".to_string(),
-                })?;
-                let multiplier: i64 = 10_i64.pow(places);
-                Ok(int_val * multiplier)
+                // No decimal point — treat as whole number
+                input
+                    .parse::<i64>()
+                    .map(|v| v as f64)
+                    .map_err(|_| AppError::Validation {
+                        field: "amount".to_string(),
+                        message: "invalid amount".to_string(),
+                    })
             }
         }
     }
@@ -114,13 +110,13 @@ mod tests {
 
     #[test]
     fn parse_usd_two_decimals() {
-        assert_eq!(parse_amount(&Currency::Usd, "10.50").unwrap(), 1050);
-        assert_eq!(parse_amount(&Currency::Usd, "3000.00").unwrap(), 300_000);
+        assert_eq!(parse_amount(&Currency::Usd, "10.50").unwrap(), 10.5);
+        assert_eq!(parse_amount(&Currency::Usd, "3000.00").unwrap(), 3000.0);
     }
 
     #[test]
     fn parse_idr_whole_number() {
-        assert_eq!(parse_amount(&Currency::Idr, "150000").unwrap(), 150_000);
+        assert_eq!(parse_amount(&Currency::Idr, "150000").unwrap(), 150_000.0);
     }
 
     #[test]
@@ -146,7 +142,7 @@ mod tests {
 
     #[test]
     fn parse_usd_no_decimal() {
-        // "10" USD -> 1000 cents
-        assert_eq!(parse_amount(&Currency::Usd, "10").unwrap(), 1000);
+        // "10" USD -> 10.0
+        assert_eq!(parse_amount(&Currency::Usd, "10").unwrap(), 10.0);
     }
 }

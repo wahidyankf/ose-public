@@ -18,16 +18,12 @@ impl Currency {
         }
     }
 
-    /// Format an integer amount as a display string.
+    /// Format a float amount as a display string.
     #[must_use]
-    pub fn format_amount(&self, stored: i64) -> String {
+    pub fn format_amount(&self, stored: f64) -> String {
         match self {
-            Currency::Usd => {
-                let abs = stored.unsigned_abs();
-                let sign = if stored < 0 { "-" } else { "" };
-                format!("{sign}{}.{:02}", abs / 100, abs % 100)
-            }
-            Currency::Idr => stored.to_string(),
+            Currency::Usd => format!("{:.2}", stored),
+            Currency::Idr => format!("{:.0}", stored),
         }
     }
 
@@ -163,13 +159,13 @@ mod tests {
 
     #[test]
     fn currency_format_usd() {
-        assert_eq!(Currency::Usd.format_amount(1050), "10.50");
-        assert_eq!(Currency::Usd.format_amount(300000), "3000.00");
+        assert_eq!(Currency::Usd.format_amount(10.50), "10.50");
+        assert_eq!(Currency::Usd.format_amount(3000.00), "3000.00");
     }
 
     #[test]
     fn currency_format_idr() {
-        assert_eq!(Currency::Idr.format_amount(150000), "150000");
+        assert_eq!(Currency::Idr.format_amount(150000.0), "150000");
     }
 
     #[test]

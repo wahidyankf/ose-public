@@ -48,7 +48,7 @@ pub async fn pl_report(
     let report =
         expense_repo::pl_report(&state.pool, auth_user.user_id, &currency, from, to).await?;
 
-    let net = report.income_total - report.expense_total;
+    let net: f64 = report.income_total - report.expense_total;
 
     let income_breakdown: Vec<CategoryBreakdown> = report
         .income_breakdown

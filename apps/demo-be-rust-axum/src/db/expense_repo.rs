@@ -18,7 +18,12 @@ fn row_to_expense(row: &AnyRow) -> Expense {
     Expense {
         id: Uuid::parse_str(&id_str).unwrap_or_else(|_| Uuid::new_v4()),
         user_id: Uuid::parse_str(&user_id_str).unwrap_or_else(|_| Uuid::new_v4()),
-        amount: row.get("amount"),
+        amount: row
+            .try_get::<f64, _>("amount")
+            .or_else(|_| {
+                row.try_get::<i64, _>("amount").map(|v| v as f64)
+            })
+            .unwrap_or(0.0),
         currency: row.get("currency"),
         category: row.get("category"),
         description: row.get("description"),
@@ -60,7 +65,7 @@ pub async fn create_expense(
     pool: &AnyPool,
     id: Uuid,
     user_id: Uuid,
-    amount: i64,
+    amount: f64,
     currency: &str,
     category: &str,
     description: &str,
@@ -155,7 +160,7 @@ pub async fn list_for_user(
 pub async fn update_expense(
     pool: &AnyPool,
     id: Uuid,
-    amount: i64,
+    amount: f64,
     currency: &str,
     category: &str,
     description: &str,
@@ -207,7 +212,7 @@ pub async fn delete_expense(pool: &AnyPool, id: Uuid) -> Result<(), AppError> {
 
 pub struct CurrencySummary {
     pub currency: String,
-    pub total: i64,
+    pub total: f64,
 }
 
 pub async fn summarize_by_currency(
@@ -228,21 +233,24 @@ pub async fn summarize_by_currency(
         .iter()
         .map(|r| CurrencySummary {
             currency: r.get("currency"),
-            total: r.get::<i64, _>("total"),
+            total: r
+                .try_get::<f64, _>("total")
+                .or_else(|_| r.try_get::<i64, _>("total").map(|v| v as f64))
+                .unwrap_or(0.0),
         })
         .collect())
 }
 
 pub struct PlReport {
-    pub income_total: i64,
-    pub expense_total: i64,
+    pub income_total: f64,
+    pub expense_total: f64,
     pub income_breakdown: Vec<CategoryAmount>,
     pub expense_breakdown: Vec<CategoryAmount>,
 }
 
 pub struct CategoryAmount {
     pub category: String,
-    pub total: i64,
+    pub total: f64,
 }
 
 pub async fn pl_report(
@@ -269,7 +277,10 @@ pub async fn pl_report(
     .bind(&to_str)
     .fetch_one(pool)
     .await?;
-    let income_total: i64 = income_row.get("total");
+    let income_total: f64 = income_row
+        .try_get::<f64, _>("total")
+        .or_else(|_| income_row.try_get::<i64, _>("total").map(|v| v as f64))
+        .unwrap_or(0.0);
 
     let expense_row: AnyRow = sqlx::query(
         r#"SELECT COALESCE(SUM(amount), 0) as total FROM expenses
@@ -282,7 +293,10 @@ pub async fn pl_report(
     .bind(&to_str)
     .fetch_one(pool)
     .await?;
-    let expense_total: i64 = expense_row.get("total");
+    let expense_total: f64 = expense_row
+        .try_get::<f64, _>("total")
+        .or_else(|_| expense_row.try_get::<i64, _>("total").map(|v| v as f64))
+        .unwrap_or(0.0);
 
     let income_rows = sqlx::query(
         r#"SELECT category, SUM(amount) as total FROM expenses
@@ -315,14 +329,20 @@ pub async fn pl_report(
             .iter()
             .map(|r| CategoryAmount {
                 category: r.get("category"),
-                total: r.get::<i64, _>("total"),
+                total: r
+                    .try_get::<f64, _>("total")
+                    .or_else(|_| r.try_get::<i64, _>("total").map(|v| v as f64))
+                    .unwrap_or(0.0),
             })
             .collect(),
         expense_breakdown: expense_rows
             .iter()
             .map(|r| CategoryAmount {
                 category: r.get("category"),
-                total: r.get::<i64, _>("total"),
+                total: r
+                    .try_get::<f64, _>("total")
+                    .or_else(|_| r.try_get::<i64, _>("total").map(|v| v as f64))
+                    .unwrap_or(0.0),
             })
             .collect(),
     })

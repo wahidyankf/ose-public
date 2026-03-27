@@ -62,7 +62,7 @@ export const expenses = pgTable("expenses", {
   currency: varchar("currency", { length: 10 }).notNull(),
   category: varchar("category", { length: 100 }).notNull(),
   description: varchar("description", { length: 500 }).notNull().default(""),
-  date: date("date").notNull(),
+  date: date("date", { mode: "string" }).notNull(),
   type: varchar("type", { length: 20 }).notNull(),
   quantity: decimal("quantity", { precision: 19, scale: 4 }),
   unit: varchar("unit", { length: 50 }),

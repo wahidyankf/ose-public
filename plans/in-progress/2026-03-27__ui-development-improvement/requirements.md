@@ -179,26 +179,32 @@ enough to accommodate different brand palettes across apps.
 - Whether to use `@apply` or utility classes (answer: utility classes, except in `@layer base`)
 - How to handle dark mode (token-based automatic vs. explicit `dark:` prefixes)
 
-### G5: No Accessible Color Palette Enforcement in UI Components
+### G5: No Color Accessibility Verification for UI Components
 
-**What exists**: The repo has a well-defined [Color Accessibility Convention](../../../governance/conventions/formatting/color-accessibility.md)
-with a mandatory 5-color palette (#0173B2, #DE8F05, #029E73, #CC78BC, #CA9161) and
-[Accessibility First](../../../governance/principles/content/accessibility-first.md) principle
-requiring WCAG AA compliance.
+**What exists**: The repo has a [Color Accessibility Convention](../../../governance/conventions/formatting/color-accessibility.md)
+with a 5-color accessible palette for **documentation** (diagrams, Mermaid, agent categorization)
+and an [Accessibility First](../../../governance/principles/content/accessibility-first.md)
+principle requiring WCAG AA compliance.
 
-**Impact**: These conventions are enforced for documentation (diagrams, markdown) but **not for
-UI components**. A developer can introduce `text-red-500` or `bg-green-500` in a component
-without any CI failure, violating the color accessibility convention. The gap between documented
-principles and UI code enforcement is a governance inconsistency.
+**Scope clarification**: The Color Accessibility Convention explicitly states that **UI design
+application interface colors are out of scope** — they are covered by app-specific design docs.
+UI applications are NOT limited to the 5-color documentation palette. Applications can and
+should use a full color spectrum as long as all colors meet WCAG AA contrast requirements and
+are accessible to color-blind users.
+
+**The actual gap**: There is no mechanism to verify that UI component colors — whether from
+design tokens, Tailwind utilities, or custom CSS — meet WCAG AA contrast requirements. The
+Accessibility First principle applies, but enforcement is missing.
 
 **Specific issues**:
 
 - Chart tokens in organiclever-web (`--chart-1` through `--chart-5`) have not been verified
-  against the accessible palette
+  for WCAG AA contrast against their background colors
 - No mechanism to verify that semantic tokens (`--destructive`, `--primary`) produce WCAG AA
   contrast ratios in both light and dark modes
-- Components can use arbitrary Tailwind colors (`text-red-500`, `bg-green-500`) that are not
-  in the accessible palette
+- No mechanism to verify that per-project brand color overrides maintain sufficient contrast
+- Components can use arbitrary Tailwind colors without any contrast verification
+- No color-blind simulation testing for UI components (only for documentation diagrams)
 
 ### G6: No Automated Design Enforcement (General)
 
@@ -281,13 +287,14 @@ Feature: UI Conventions and AI Skills
       | Anti-patterns | Known bad patterns from catalog | Nested Card inside Card |
     And the report uses the criticality/confidence classification system
 
-  Scenario: Accessible color palette is enforced in UI components
-    Given the Color Accessibility Convention mandates a 5-color accessible palette
-    And the Accessibility First principle requires WCAG AA compliance
-    When a developer uses className="text-red-500" in a component
-    Then the swe-ui-checker agent flags it as a non-accessible palette violation
-    And the custom ESLint rule flags arbitrary Tailwind color values
-    And vitest-axe catches contrast violations in unit tests
+  Scenario: Color accessibility is verified for UI components
+    Given the Accessibility First principle requires WCAG AA compliance
+    And UI applications can use any colors (not limited to the 5-color doc palette)
+    When a component uses a color token or Tailwind color class
+    Then vitest-axe catches contrast violations in unit tests
+    And the swe-ui-checker agent verifies color-on-background contrast meets WCAG AA
+    And the checker flags color-only status indicators (must include text label or shape)
+    And new brand color overrides are verified for contrast in both light and dark modes
 
   Scenario: Components are responsive across all device sizes
     Given a shared component from ts-ui is rendered

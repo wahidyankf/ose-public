@@ -74,8 +74,8 @@ This plan introduces a layered UI development improvement strategy:
    repo-specific knowledge of our tokens, brand, or patterns
 4. **G4: No UI conventions documented** — no governance documents for tokens, components, color,
    typography, spacing, dark mode, animation, accessibility
-5. **G5: No accessible color palette enforcement** — Color Accessibility Convention exists for
-   docs but is not enforced in UI components; chart tokens unverified against accessible palette
+5. **G5: No color accessibility verification** — UI apps can use any colors (not limited to
+   the 5-color doc palette) but there is no mechanism to verify WCAG AA contrast compliance
 6. **G6: No automated design enforcement** — no ESLint a11y rules, no token-usage lint, no
    `prettier-plugin-tailwindcss` for class ordering
 7. **G7: No visual regression testing** — Playwright available but not configured for visual
@@ -111,7 +111,7 @@ This plan implements and respects the following governance layers:
 
 | Convention | How This Plan Respects It |
 | --- | --- |
-| [Color Accessibility](../../../governance/conventions/formatting/color-accessibility.md) | Design token conventions reference the mandatory 5-color accessible palette; anti-patterns include color-only status indicators |
+| [Color Accessibility](../../../governance/conventions/formatting/color-accessibility.md) | 5-color palette for docs only; UI apps use any colors meeting WCAG AA contrast; anti-patterns include color-only status and unverified contrast |
 | [Content Quality](../../../governance/conventions/writing/quality.md) | All convention docs follow heading hierarchy, active voice, alt text rules; no time estimates |
 | [Diagrams](../../../governance/conventions/formatting/diagrams.md) | Mermaid dependency graph uses accessible colors; vertical orientation |
 | [Three-Level Testing](../../../governance/development/quality/three-level-testing-standard.md) | axe-core in unit tests, visual regression in integration, full-page regression in E2E — maps to the existing three-level pipeline |

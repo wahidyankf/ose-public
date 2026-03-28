@@ -13,8 +13,8 @@ governance docs, skill files, agent files, and Prettier config._
 - [ ] Write `governance/development/frontend/README.md` — index linking all four convention docs
 - [ ] Write `design-tokens.md`:
   - Reference [Color Accessibility Convention](../../../governance/conventions/formatting/color-accessibility.md)
-    — all color tokens must produce WCAG AA compliant contrast ratios; chart/status colors
-    must come from the mandatory accessible palette
+    — clarify the 5-color palette is for docs only; UI tokens can use any colors as long as
+    they meet WCAG AA contrast (4.5:1 text, 3:1 UI) and pass color-blind simulation
   - Token categories: structural (radius, spacing, typography) vs. brand (primary, accent)
   - Naming convention: `--color-{name}` in `@theme`, `--{name}` as base HSL variable
   - The structural-vs-brand split: what goes in shared lib vs. app-level override
@@ -42,7 +42,8 @@ governance docs, skill files, agent files, and Prettier config._
   - Reference [Accessibility First](../../../governance/principles/content/accessibility-first.md)
     principle as the governing principle
   - Reference [Color Accessibility Convention](../../../governance/conventions/formatting/color-accessibility.md)
-    for the mandatory 5-color accessible palette (#0173B2, #DE8F05, #029E73, #CC78BC, #CA9161)
+    — clarify that the 5-color palette applies to **documentation only** (diagrams, Mermaid);
+    UI apps can use any colors as long as they meet WCAG AA contrast and color-blind friendliness
   - WCAG AA compliance: minimum requirements for all components (4.5:1 normal text, 3:1 UI)
   - `focus-visible` (not `focus`): only show focus ring for keyboard users
   - `prefers-reduced-motion`: required `@media` query or Tailwind `motion-reduce:` prefix

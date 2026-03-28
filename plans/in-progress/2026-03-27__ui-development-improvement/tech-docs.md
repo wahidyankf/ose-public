@@ -296,7 +296,7 @@ or `bashPattern` fields.
 | Inline styles in production | `style={{ color: 'red' }}` | Use Tailwind utility: `className="text-destructive"` |
 | Card inside Card | `<Card><Card>nested</Card></Card>` | Use spacing/dividers for hierarchy |
 | Color-only status | `<span className="text-red-500">Error</span>` | Include text label + shape per [Accessibility First](../../../governance/principles/content/accessibility-first.md) |
-| Non-accessible palette color | `className="text-red-500"` or `bg-green-500` | Use accessible palette or semantic tokens per [Color Accessibility Convention](../../../governance/conventions/formatting/color-accessibility.md) |
+| Unverified color contrast | Using arbitrary colors without checking WCAG AA contrast | Use semantic tokens with verified contrast, or verify new colors meet 4.5:1 (text) / 3:1 (UI) ratios |
 | Missing focus-visible | `focus:ring-2` | `focus-visible:ring-2` (keyboard users only) |
 | `transition: all` | `className="transition-all"` | `className="transition-colors"` (explicit properties) |
 | bounce/elastic easing | `animate-bounce` | `animate-ease-out` or custom exponential easing |
@@ -358,7 +358,7 @@ an existing component.
 | --- | --- | --- |
 | Token compliance | Hardcoded hex/rgb/hsl in className, style props, CSS | HIGH — drift source |
 | Accessibility | aria-*, role, focus-visible, labels, reduced-motion, contrast | HIGH — legal/compliance |
-| Color palette | Non-accessible colors (red, green, yellow outside palette) | HIGH — governance violation |
+| Color contrast | Unverified WCAG AA contrast ratios, color-only status indicators | HIGH — accessibility violation |
 | Component patterns | CVA usage, cn() calls, Radix primitives, data-slot | MEDIUM — consistency |
 | Dark mode | All visual tokens have dark variants, no light-only colors | MEDIUM — user experience |
 | Responsive | Mobile-first, viewport adaptations, 44px touch targets | MEDIUM — usability |
@@ -674,21 +674,38 @@ Every architecture decision in this plan traces to one or more governance princi
 
 ### Color Accessibility Compliance
 
-The [Color Accessibility Convention](../../../governance/conventions/formatting/color-accessibility.md)
-and [Accessibility First](../../../governance/principles/content/accessibility-first.md) principle
-require:
+The [Accessibility First](../../../governance/principles/content/accessibility-first.md) principle
+requires WCAG AA compliance for all visual elements.
 
-- **Semantic color tokens** (`--color-destructive`, `--color-primary`) must produce WCAG AA
-  contrast ratios in both light and dark modes
-- **Chart and status colors** must come from the mandatory accessible 5-color palette
-  (#0173B2, #DE8F05, #029E73, #CC78BC, #CA9161)
+**Important scope distinction**: The [Color Accessibility Convention](../../../governance/conventions/formatting/color-accessibility.md)
+defines a 5-color palette for **documentation** (Mermaid diagrams, agent categorization, markdown
+visuals). It explicitly states that **UI application interface colors are out of scope**. UI
+applications can and should use a full color spectrum — any color is acceptable as long as it
+meets WCAG AA contrast requirements and is accessible to color-blind users.
+
+**What the Accessibility First principle requires for UI**:
+
+- **All color tokens** must produce WCAG AA contrast ratios against their backgrounds:
+  4.5:1 for normal text, 3:1 for large text (18pt+) and UI components
+- **Both light and dark modes** must be verified — a color that passes in light mode may fail
+  in dark mode or vice versa
+- **Per-project brand overrides** must maintain contrast — when a new project defines
+  `--color-primary: hsl(150 60% 40%)`, it must be verified against `--color-background`
 - **Never rely on color alone** — status indicators must include text labels and/or shapes
-- **Anti-pattern catalog** includes color-only status and non-accessible palette violations
+- **Color-blind simulation** — new color palettes should be tested with color blindness
+  simulators (protanopia, deuteranopia, tritanopia) to verify distinguishability
 
-These requirements are enforced through:
+**What UI apps are NOT required to do**:
 
-1. **Conventions** (Phase 1): `accessibility.md` references the palette and contrast rules
-2. **Skill** (Phase 1): Anti-pattern catalog flags color-only and non-accessible colors
-3. **Agent** (Phase 1): `swe-ui-checker` validates token contrast and color usage
+- Use only the 5-color documentation palette — that restriction applies to diagrams and docs
+- Avoid specific hues (red, green) — any hue is fine if contrast is sufficient and information
+  is not conveyed by color alone
+
+**Enforcement chain**:
+
+1. **Conventions** (Phase 1): `accessibility.md` documents WCAG AA contrast rules for UI tokens
+2. **Skill** (Phase 1): Anti-pattern catalog flags color-only status indicators and unverified
+   contrast
+3. **Agent** (Phase 1): `swe-ui-checker` validates token-on-background contrast ratios
 4. **Lint** (Phase 3): `eslint-plugin-jsx-a11y` catches missing labels and aria attributes
 5. **Tests** (Phase 3): `vitest-axe` catches contrast and semantic violations at unit test time

@@ -337,7 +337,6 @@ export async function GET() {
 
 This variable is **not** prefixed with `NEXT_PUBLIC_` -- it is only available on the server side,
 keeping the backend URL private from the browser.
-```
 
 ### Nx Targets (project.json)
 

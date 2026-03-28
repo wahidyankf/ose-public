@@ -3,11 +3,11 @@ title: "Advanced"
 weight: 10000003
 date: 2026-03-20T00:00:00+07:00
 draft: false
-description: "Advanced Git examples covering interactive rebase, worktrees, bisect, submodules, subtree, filter-repo, rerere, bundle, sparse-checkout, object model, packfiles, LFS, and monorepo strategies (75-95% coverage)."
+description: "Advanced Git examples covering interactive rebase, worktrees (lock, bare-repo, multi-task), bisect, submodules, subtree, filter-repo, rerere, bundle, sparse-checkout, object model, packfiles, LFS, and monorepo strategies (75-95% coverage)."
 tags: ["git", "version-control", "tutorial", "by-example", "code-first", "advanced"]
 ---
 
-Examples 58–85 cover expert Git topics: interactive rebase operations, worktrees, automated bisect, submodule and subtree workflows, history rewriting with `filter-repo`, `rerere`, notes, bundles, archives, sparse-checkout, maintenance scheduling, the object model (blobs, trees, commits, tags), packfiles, shallow and partial clones, Git LFS basics, advanced merge strategies, `range-diff`, signing commits with GPG, and monorepo strategies.
+Examples 58–88 cover expert Git topics: interactive rebase operations, worktrees (parallel directories, lock/unlock/move, bare-repo workflows, practical multi-task development), automated bisect, submodule and subtree workflows, history rewriting with `filter-repo`, `rerere`, notes, bundles, archives, sparse-checkout, maintenance scheduling, the object model (blobs, trees, commits, tags), packfiles, shallow and partial clones, Git LFS basics, advanced merge strategies, `range-diff`, signing commits with GPG, and monorepo strategies.
 
 ## Interactive Rebase and History Editing
 
@@ -193,9 +193,225 @@ git worktree prune
 
 ---
 
+### Example 61: Git Worktree — Lock, Unlock, and Move
+
+Long-lived worktrees risk accidental removal by `git worktree prune` or a teammate running cleanup scripts. `git worktree lock` marks a worktree as protected, and `git worktree move` relocates one without re-creating it from scratch.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+stateDiagram-v2
+    [*] --> Active : worktree add
+    Active --> Locked : worktree lock
+    Locked --> Active : worktree unlock
+    Active --> Moved : worktree move
+    Moved --> Active : (continues as normal)
+    Active --> Removed : worktree remove
+    Locked --> Locked : prune skips
+```
+
+```bash
+cd ~/repo
+
+# Create a worktree for a long-running experiment
+git worktree add ../repo-experiment experiment/ml-pipeline
+# => Creates worktree at ../repo-experiment with experiment/ml-pipeline checked out
+
+# Lock the worktree to prevent accidental removal
+git worktree lock ../repo-experiment
+# => Writes a lock file inside .git/worktrees/repo-experiment/locked
+# => git worktree prune and git worktree remove will now refuse to touch it
+
+# Verify lock status
+git worktree list --porcelain
+# => Output includes "locked" for the protected worktree:
+# =>   worktree /home/user/repo-experiment
+# =>   HEAD a1b2c3d
+# =>   branch refs/heads/experiment/ml-pipeline
+# =>   locked
+
+# Lock with a reason (visible in list output and error messages)
+git worktree lock --reason "Multi-week ML experiment — do not remove" ../repo-experiment
+# => Updates the lock file with the reason string
+# => git worktree remove will print: "fatal: working tree is locked, reason: Multi-week ML experiment"
+
+# Attempt removal while locked — Git refuses
+git worktree remove ../repo-experiment
+# => fatal: working tree '../repo-experiment' is locked
+# => Use 'unlock' to make it removable again
+
+# Unlock when you are ready to clean up
+git worktree unlock ../repo-experiment
+# => Removes the lock file; worktree is now removable again
+
+# Move a worktree to a new directory path
+git worktree move ../repo-experiment ../experiments/ml-pipeline
+# => Relocates the worktree directory and updates .git/worktrees metadata
+# => No re-checkout needed — working tree contents are preserved as-is
+
+git worktree list
+# => Output:
+# =>   /home/user/repo                       a1b2c3d [main]
+# =>   /home/user/experiments/ml-pipeline    a1b2c3d [experiment/ml-pipeline]
+```
+
+**Key Takeaway**: `git worktree lock` protects long-lived worktrees from `prune` and `remove`; `git worktree move` relocates them without re-cloning. Always lock worktrees that will exist for more than a day.
+
+**Why It Matters**: In shared CI environments and team workflows, automated cleanup scripts routinely run `git worktree prune` to reclaim disk space. Without locking, a multi-week experiment or a staging environment worktree can be silently deleted, losing uncommitted changes and disrupting in-progress work. The `--reason` flag documents intent so that teammates know why a worktree exists before they consider removing it manually. Move is essential when reorganizing project layouts — for instance, consolidating scattered worktrees under a single `~/experiments/` directory without losing state.
+
+---
+
+### Example 62: Git Worktree — Bare Repository Workflow
+
+A bare repository has no primary working tree. Combined with `git worktree add`, this creates a workflow where every branch lives in its own dedicated directory — nothing is "special" or default. This pattern is popular in CI/CD systems and dotfile management.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    B["bare repo<br/>~/project/.bare"]
+    W1["worktree: main<br/>~/project/main"]
+    W2["worktree: develop<br/>~/project/develop"]
+    W3["worktree: release<br/>~/project/release"]
+
+    B --- W1
+    B --- W2
+    B --- W3
+
+    style B fill:#0173B2,stroke:#000,color:#fff
+    style W1 fill:#029E73,stroke:#000,color:#fff
+    style W2 fill:#DE8F05,stroke:#000,color:#fff
+    style W3 fill:#CA9161,stroke:#000,color:#fff
+```
+
+```bash
+# Clone as bare — no working tree, just the object store
+git clone --bare https://github.com/org/project.git ~/project/.bare
+# => Creates ~/project/.bare/ containing only Git objects and refs
+# => No files checked out — this is purely a data store
+
+cd ~/project/.bare
+
+# Tell Git to fetch all remote branches (bare clones default to only HEAD)
+git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+# => Ensures git fetch retrieves all branches, not just the default
+
+git fetch origin
+# => Fetches all remote branches into refs/remotes/origin/*
+
+# Create a worktree for each branch you need
+git worktree add ../main main
+# => Creates ~/project/main/ with the main branch checked out
+
+git worktree add ../develop develop
+# => Creates ~/project/develop/ with the develop branch checked out
+
+git worktree add ../release/v3 release/v3.0
+# => Creates ~/project/release/v3/ with release/v3.0 checked out
+
+# List all worktrees — the bare repo has no primary working tree
+git worktree list
+# => Output:
+# =>   /home/user/project/.bare    (bare)
+# =>   /home/user/project/main     a1b2c3d [main]
+# =>   /home/user/project/develop  9f8e7d6 [develop]
+# =>   /home/user/project/release/v3 3c4d5e6 [release/v3.0]
+
+# Work in any directory independently — commits stay on their branch
+cd ~/project/develop
+echo "new feature" >> feature.txt && git add . && git commit -m "feat: add feature"
+# => Commit recorded on develop; main and release worktrees are unaffected
+
+# Clean up a worktree when a release branch is merged
+cd ~/project/.bare
+git worktree remove ../release/v3
+# => Deletes the directory and deregisters the worktree
+```
+
+**Key Takeaway**: `git clone --bare` + `git worktree add` creates a flat directory layout where every branch has its own folder and no branch is privileged — ideal for CI agents and developers who work on multiple branches daily.
+
+**Why It Matters**: CI/CD pipelines that build multiple branches in parallel traditionally clone the repository once per branch, wasting network bandwidth and disk space. A bare repository with worktrees eliminates redundant object downloads entirely — all branches share a single object store. Dotfile managers (such as bare-repo-based setups for `~/.dotfiles`) use this pattern to track home directory files without polluting `$HOME` with a `.git` folder. The bare worktree pattern also prevents the common mistake of accidentally committing to the wrong branch, since each directory is permanently bound to its branch.
+
+---
+
+### Example 63: Git Worktree — Practical Multi-Task Development
+
+This example demonstrates a realistic development workflow: you are mid-feature when a production hotfix arrives. Instead of stashing, you create a worktree, fix the bug, run tests, merge, and return to your feature — all without losing any state.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+sequenceDiagram
+    participant F as Feature Worktree<br/>(~/repo)
+    participant H as Hotfix Worktree<br/>(~/repo-hotfix)
+    participant R as Remote
+
+    Note over F: Working on feat/dashboard
+    F->>H: git worktree add (hotfix/login-crash)
+    Note over H: Fix bug, run tests
+    H->>R: git push (hotfix branch)
+    Note over R: PR merged to main
+    H->>F: git worktree remove
+    Note over F: Resume feat/dashboard
+```
+
+```bash
+cd ~/repo
+# => Currently on feat/dashboard with uncommitted work in progress
+
+# Check current status — work in progress that you do not want to stash
+git status
+# => modified:   src/dashboard/chart.tsx
+# => modified:   src/dashboard/filters.tsx
+# => Working tree has changes; stashing risks losing context
+
+# Create a hotfix worktree branching from main
+git worktree add -b hotfix/login-crash ../repo-hotfix main
+# => Creates new branch hotfix/login-crash from main
+# => Checks it out at ../repo-hotfix
+# => Your feat/dashboard working tree in ~/repo is completely untouched
+
+# Fix the bug in the hotfix worktree
+cd ../repo-hotfix
+echo 'if (!session) return redirect("/login");' > src/auth/guard.ts
+git add src/auth/guard.ts && git commit -m "fix: redirect to login on null session"
+# => Commit recorded on hotfix/login-crash
+
+# Run the test suite in the hotfix worktree
+npm test
+# => Tests pass — the fix is verified in isolation
+
+# Push the hotfix and open a PR
+git push -u origin hotfix/login-crash
+# => Branch pushed; create PR from hotfix/login-crash → main
+
+# Run tests in your feature worktree in parallel (from another terminal)
+cd ~/repo
+npm test
+# => Feature tests run independently — no interference with hotfix worktree
+# => Both test suites execute simultaneously using the same Git objects
+
+# After the hotfix PR is merged, clean up
+cd ~/repo
+git worktree remove ../repo-hotfix
+# => Deletes the hotfix directory and deregisters the worktree
+
+# Update your feature branch with the fix from main
+git fetch origin && git rebase origin/main
+# => feat/dashboard now includes the hotfix; your WIP changes are preserved on top
+
+git worktree list
+# => Output:
+# =>   /home/user/repo    a1b2c3d [feat/dashboard]
+# => Only the primary worktree remains
+```
+
+**Key Takeaway**: Worktrees let you handle urgent interruptions without disrupting in-progress work — no stashing, no context loss, no re-cloning. Create a worktree, fix, push, remove, and resume.
+
+**Why It Matters**: Context-switching is the largest source of lost developer productivity. Studies estimate that recovering full context after an interruption takes 15–25 minutes. `git stash` partially solves this but creates hidden state that developers forget to pop, leading to lost work and confusing merge conflicts. Worktrees eliminate these risks entirely: each task lives in its own directory with its own branch, node_modules, build cache, and editor state. Teams that adopt worktree-based workflows report fewer stash-related incidents and faster hotfix turnaround times because the developer never has to rebuild mental context for the original task — they simply `cd` back to where they left off.
+
+---
+
 ## Git Bisect
 
-### Example 61: Git Bisect — Manual Binary Search for a Regression
+### Example 64: Git Bisect — Manual Binary Search for a Regression
 
 `git bisect` uses binary search to find the commit that introduced a bug. Git checks out the midpoint between a known-good and known-bad commit; you test and mark it good or bad, and Git narrows down to the culprit in O(log n) steps.
 
@@ -260,7 +476,7 @@ git bisect reset
 
 ---
 
-### Example 62: Git Bisect — Automated Binary Search with a Test Script
+### Example 65: Git Bisect — Automated Binary Search with a Test Script
 
 `git bisect run` executes a script at every bisect step, interpreting exit code 0 as good and non-zero as bad. Git automatically marks the commit and advances to the next midpoint, completing the entire search without human interaction.
 
@@ -316,7 +532,7 @@ git bisect reset
 
 ## Git Submodule
 
-### Example 63: Git Submodule — Add, Clone, Update, foreach, deinit
+### Example 66: Git Submodule — Add, Clone, Update, foreach, deinit
 
 Submodules embed a pinned reference to another Git repository inside your repository. The parent stores only the submodule's URL and commit SHA, not the submodule's files, keeping the parent repository lean.
 
@@ -390,7 +606,7 @@ git commit -m "chore: remove lib-common submodule"
 
 ## Git Subtree
 
-### Example 64: Git Subtree — Embed and Split a Project
+### Example 67: Git Subtree — Embed and Split a Project
 
 `git subtree` merges an entire external repository into a subdirectory of your project, or extracts a subdirectory into a standalone branch — without any special metadata files. Contributors who don't know about subtrees can work normally; only the maintainer needs to know the subtree commands.
 
@@ -438,7 +654,7 @@ git log lib-common-extracted --oneline -5
 
 ## History Rewriting
 
-### Example 65: `git filter-repo` — Rewrite Repository History
+### Example 68: `git filter-repo` — Rewrite Repository History
 
 `git filter-repo` is the modern replacement for the deprecated `git filter-branch`. It rewrites history by replaying every commit through a set of filters, producing a new parallel history. Common uses: remove accidentally committed secrets, strip large binary blobs, or split a monorepo.
 
@@ -485,7 +701,7 @@ git push origin --force --tags
 
 ## Git Rerere
 
-### Example 66: Git Rerere — Record and Reuse Conflict Resolutions
+### Example 69: Git Rerere — Record and Reuse Conflict Resolutions
 
 `rerere` (reuse recorded resolution) records how you resolved a merge conflict and automatically applies the same resolution if the identical conflict appears again. This is invaluable for long-running feature branches that repeatedly rebase over the same contested area.
 
@@ -540,7 +756,7 @@ git rerere forget file.go
 
 ## Git Notes
 
-### Example 67: Git Notes — Attach Metadata Without Altering Commits
+### Example 70: Git Notes — Attach Metadata Without Altering Commits
 
 Git notes attach arbitrary text to a commit object without changing the commit's SHA. Notes live in a separate ref (`refs/notes/commits` by default) and can be pushed to and fetched from remotes independently. They are ideal for storing CI results, code review outcomes, or deployment records alongside commits.
 
@@ -593,7 +809,7 @@ git notes --ref=review add -m "LGTM: approved by alice@example.com" HEAD
 
 ## Git Bundle
 
-### Example 68: Git Bundle — Offline Transfer of Repository Data
+### Example 71: Git Bundle — Offline Transfer of Repository Data
 
 `git bundle` packages a set of Git objects and refs into a single file. This file can be transported on a USB drive, email, or any medium and then applied to another repository. Bundles are essential for air-gapped environments or for bootstrapping repositories on machines with no network access.
 
@@ -657,7 +873,7 @@ git bundle verify /media/usb/update.bundle
 
 ## Git Archive
 
-### Example 69: Git Archive — Export Clean Source Snapshots
+### Example 72: Git Archive — Export Clean Source Snapshots
 
 `git archive` exports a snapshot of a tree — a branch, tag, or commit — into a tarball or zip without any `.git` metadata. The result is a clean, deployment-ready source distribution identical to what a release tarball on GitHub's releases page contains.
 
@@ -700,7 +916,7 @@ git archive --format=tar HEAD | tar -t | head -20
 
 ## Sparse Checkout
 
-### Example 70: Git Sparse-Checkout — Check Out Only a Subdirectory
+### Example 73: Git Sparse-Checkout — Check Out Only a Subdirectory
 
 Sparse checkout allows you to work with a subset of the working tree, leaving the rest untracked locally. In a monorepo where you only own one service, sparse checkout dramatically reduces disk usage and improves command performance.
 
@@ -765,7 +981,7 @@ git sparse-checkout disable
 
 ## Git Maintenance
 
-### Example 71: Git Maintenance — Automated Background Repository Optimization
+### Example 74: Git Maintenance — Automated Background Repository Optimization
 
 `git maintenance` schedules background optimisation tasks (repacking, commit-graph updates, loose-object prefetching) that keep a large repository fast without manual intervention. It replaces the old `git gc` scheduled workflow.
 
@@ -820,7 +1036,7 @@ git config --list | grep maintenance
 
 ## Git Object Model
 
-### Example 72: The Git Object Model — Blobs, Trees, Commits, Tags
+### Example 75: The Git Object Model — Blobs, Trees, Commits, Tags
 
 Every piece of data Git stores is one of four immutable object types: blobs (file contents), trees (directory listings), commits (snapshots with metadata), and tags (named pointers with optional metadata). All four are content-addressable: their SHA-1 (or SHA-256 in modern Git) is the hash of their content.
 
@@ -906,7 +1122,7 @@ echo "hello world" | git hash-object --stdin -w
 
 ---
 
-### Example 73: Packfiles and `git gc` — How Git Compresses Object Storage
+### Example 76: Packfiles and `git gc` — How Git Compresses Object Storage
 
 Git initially stores each object as a loose file. `git gc` (garbage collection) combines loose objects into binary packfiles and uses delta compression to store similar objects as a base blob plus a diff, dramatically reducing storage and improving clone performance.
 
@@ -964,7 +1180,7 @@ git fsck
 
 ## Shallow and Partial Clones
 
-### Example 74: Shallow Clone and Partial Clone — Fast CI Checkouts
+### Example 77: Shallow Clone and Partial Clone — Fast CI Checkouts
 
 Shallow clones (`--depth N`) and partial clones (`--filter=blob:none` or `--filter=tree:0`) dramatically reduce the data transferred during `git clone`, making CI/CD pipeline checkout steps seconds instead of minutes on large repositories.
 
@@ -1031,7 +1247,7 @@ git config --local remote.origin.partialclonefilter
 
 ## Git LFS
 
-### Example 75: Git LFS — Storing Large Binary Files Outside the Object Store
+### Example 78: Git LFS — Storing Large Binary Files Outside the Object Store
 
 Git LFS (Large File Storage) replaces large binary files in the repository with small text pointer files. The actual binary content is stored on a dedicated LFS server. Regular Git commands work transparently — LFS handles upload/download automatically.
 
@@ -1093,7 +1309,7 @@ GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/example/project ~/no-lfs
 
 ## Advanced Merge Strategies
 
-### Example 76: Advanced Merge Strategies — Octopus, Recursive with Options, and Ours
+### Example 79: Advanced Merge Strategies — Octopus, Recursive with Options, and Ours
 
 Git's `-s` flag selects the merge strategy and `-X` passes strategy-specific options. The default `ort`/`recursive` strategy works for most cases, but `octopus` enables multi-branch merges and `ours` discards the other branch's changes entirely.
 
@@ -1150,7 +1366,7 @@ git log --oneline --graph -3
 
 ## Git Range-Diff
 
-### Example 77: `git range-diff` — Compare Two Versions of a Patch Series
+### Example 80: `git range-diff` — Compare Two Versions of a Patch Series
 
 `git range-diff` compares two versions of the same patch series, showing what changed between v1 and v2 of a feature branch. It is the standard tool for reviewing how a patch series has evolved in response to review feedback.
 
@@ -1198,7 +1414,7 @@ git range-diff --no-color v1..v1-tip v2..v2-tip | head -40
 
 ## Signing Commits
 
-### Example 78: Signing Commits with GPG — Verified Authorship
+### Example 81: Signing Commits with GPG — Verified Authorship
 
 GPG-signed commits prove cryptographically that a commit was authored by the owner of a specific GPG key. GitHub, GitLab, and Gitea display a "Verified" badge on signed commits, which is required by many organisations' security policies.
 
@@ -1264,7 +1480,7 @@ git config --global commit.gpgsign true
 
 ## Git Replace
 
-### Example 79: `git replace` — Non-Destructive History Grafting
+### Example 82: `git replace` — Non-Destructive History Grafting
 
 `git replace` creates a mapping that makes Git transparently substitute one object for another without rewriting history. It is the safest way to connect a truncated shallow history to its deeper ancestry without touching any existing commit SHAs.
 
@@ -1318,7 +1534,7 @@ git log --no-replace-objects --oneline -3
 
 ## Git Fsck
 
-### Example 80: `git fsck` — Filesystem Consistency Check
+### Example 83: `git fsck` — Filesystem Consistency Check
 
 `git fsck` verifies the integrity of the Git object database by traversing all reachable objects and confirming their SHA checksums match their content. It also identifies dangling objects (unreachable but not yet garbage-collected) that can be inspected or pruned.
 
@@ -1368,7 +1584,7 @@ git cat-file -e a1b2c3d4 && echo "object exists" || echo "object missing"
 
 ## Monorepo Strategies
 
-### Example 81: Monorepo Strategies with Git — Nx, Sparse Checkout, and CODEOWNERS
+### Example 84: Monorepo Strategies with Git — Nx, Sparse Checkout, and CODEOWNERS
 
 Large monorepos require deliberate Git strategies to remain fast and maintainable. The three most important tools are Nx (or Turborepo) for task orchestration, sparse checkout for developer ergonomics, and CODEOWNERS for access control and review routing.
 
@@ -1404,7 +1620,7 @@ npx nx affected -t build,test --base=origin/main --head=HEAD
 # => Runs build and test only for changed projects and their dependents
 # => A change to libs/common runs tests for ALL projects that import it
 
-# Strategy 2: Sparse checkout for large monorepos (see Example 70 for full details)
+# Strategy 2: Sparse checkout for large monorepos (see Example 73 for full details)
 git clone --filter=blob:none --sparse https://github.com/org/monorepo ~/my-service-dev
 cd ~/my-service-dev
 git sparse-checkout set services/my-service libs/shared-utils
@@ -1444,7 +1660,7 @@ git log --oneline origin/main..HEAD
 
 ---
 
-### Example 82: Git Attributes and Custom Diff Drivers in a Monorepo
+### Example 85: Git Attributes and Custom Diff Drivers in a Monorepo
 
 `.gitattributes` controls per-path behaviours: line ending normalisation, merge strategies for specific file types, diff drivers for binary or generated files, and export-ignore for archive exclusions.
 
@@ -1505,7 +1721,7 @@ git commit -m "chore: normalise line endings per .gitattributes"
 
 ---
 
-### Example 83: Git Hooks in a Team — Husky, lint-staged, and Commit-msg Validation
+### Example 86: Git Hooks in a Team — Husky, lint-staged, and Commit-msg Validation
 
 Git hooks execute scripts at specific lifecycle events (pre-commit, commit-msg, pre-push, post-checkout). Managed through Husky, they enforce code quality, conventional commit messages, and test execution locally before code reaches CI.
 
@@ -1596,7 +1812,7 @@ chmod +x .husky/pre-push
 
 ---
 
-### Example 84: `git bisect` Combined with Git Notes — Document Regression Findings
+### Example 87: `git bisect` Combined with Git Notes — Document Regression Findings
 
 Combining `git bisect` with `git notes` creates a documented audit trail of regression investigations, attaching the culprit commit SHA, reproduction steps, and root cause analysis directly to the relevant Git objects for future reference.
 
@@ -1657,7 +1873,7 @@ git log --notes --all --pretty=format:"%H %s %N" | grep -i "regression"
 
 ---
 
-### Example 85: Git Reflog — Recovering Lost Commits and Branches
+### Example 88: Git Reflog — Recovering Lost Commits and Branches
 
 `git reflog` records every movement of HEAD and branch tips, including commits that are no longer reachable from any branch. It is the primary recovery tool when commits are lost due to `git reset --hard`, `git rebase`, or accidental branch deletion.
 

@@ -84,6 +84,8 @@ Existing `specs/apps/organiclever-be/` and `specs/apps/organiclever-web/` are me
 - **`apps/organiclever-be-e2e`** -- Playwright E2E for backend API
 - **`apps/organiclever-fe-e2e`** -- Playwright E2E for frontend UI (replaces `organiclever-web-e2e`)
 - **CI/CD** -- GitHub Actions workflows for all 4 apps (matching demo-* patterns)
+- **`infra/dev/organiclever/`** -- Docker Compose for local development (replaces
+  `infra/dev/organiclever-web/`), supporting both backend + frontend + PostgreSQL
 - **Cleanup** -- Archive `organiclever-web`, remove `organiclever-web-e2e`, delete old spec dirs
 - **Documentation updates** -- CLAUDE.md, agents, skills, governance, docs references
 
@@ -91,7 +93,9 @@ Existing `specs/apps/organiclever-be/` and `specs/apps/organiclever-web/` are me
 
 - Existing features (auth, dashboard, members CRUD) -- will be added in future plans
 - Landing page / marketing content
-- Production deployment pipeline for backend
+- **CD / Deployment** -- No Vercel deployment setup, no production branches, no deployer agents.
+  organiclever.com is expected to break during this transition. Deployment will be addressed in a
+  follow-up plan.
 - Database migrations beyond initial schema
 
 ## Key Decisions

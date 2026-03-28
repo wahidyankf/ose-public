@@ -109,7 +109,16 @@
 - **FR-5.2**: Consumes `specs/apps/organiclever/fe/gherkin/` specs via `bddgen`
 - **FR-5.3**: Nx targets: `install`, `lint`, `typecheck`, `test:quick`, `test:e2e`, `test:e2e:ui`
 
-### FR-6: CI/CD Pipelines
+### FR-6: Local Development Infrastructure (`infra/dev/organiclever/`)
+
+- **FR-6.1**: Docker Compose with 3 services: PostgreSQL, organiclever-be, organiclever-fe
+- **FR-6.2**: Replaces `infra/dev/organiclever-web/`
+- **FR-6.3**: `npm run organiclever:dev` starts the full stack locally
+- **FR-6.4**: Frontend connects to backend via Docker network
+  (`ORGANICLEVER_BE_URL=http://organiclever-be:8202`)
+- **FR-6.5**: CI variant (`docker-compose.ci.yml`) for integration and E2E test workflows
+
+### FR-7: CI Pipelines (No CD/Deployment)
 
 - **FR-6.1**: GitHub Actions workflow `test-organiclever-be.yml` -- Scheduled 2x daily
   (integration + E2E tests for backend)
@@ -119,36 +128,38 @@
 - **FR-6.4**: All 4 apps included in `main-ci.yml` affected targets (`typecheck`, `lint`,
   `test:quick`)
 - **FR-6.5**: All 4 apps included in `pr-quality-gate.yml` affected targets
+- **FR-6.6**: CD/deployment is **out of scope** -- no Vercel setup, no production branches,
+  no deployer agents. organiclever.com is expected to break.
 
-### FR-7: Documentation Updates
+### FR-8: Documentation Updates
 
-#### FR-7.1: CLAUDE.md
+#### FR-8.1: CLAUDE.md
 
-- **FR-7.1.1**: Replace `organiclever-web` entries with `organiclever-fe`
-- **FR-7.1.2**: Add `organiclever-be` entry (F#/Giraffe REST API)
-- **FR-7.1.3**: Replace `organiclever-web-e2e` with `organiclever-fe-e2e` and `organiclever-be-e2e`
-- **FR-7.1.4**: Update coverage sections (BE 90%, FE 70%)
-- **FR-7.1.5**: Update dev port and deployment sections
-- **FR-7.1.6**: Add codegen/contract information
+- **FR-8.1.1**: Replace `organiclever-web` entries with `organiclever-fe`
+- **FR-8.1.2**: Add `organiclever-be` entry (F#/Giraffe REST API)
+- **FR-8.1.3**: Replace `organiclever-web-e2e` with `organiclever-fe-e2e` and `organiclever-be-e2e`
+- **FR-8.1.4**: Update coverage sections (BE 90%, FE 70%)
+- **FR-8.1.5**: Update dev port and deployment sections
+- **FR-8.1.6**: Add codegen/contract information
 
-#### FR-7.2: Agents (`.claude/agents/`)
+#### FR-8.2: Agents (`.claude/agents/`)
 
-- **FR-7.2.1**: Rename/update `apps-organiclever-web-deployer.md` -> `apps-organiclever-fe-deployer.md`
-- **FR-7.2.2**: Update `README.md` agent listings
-- **FR-7.2.3**: Update `specs-maker.md` example references
+- **FR-8.2.1**: Rename/update `apps-organiclever-web-deployer.md` -> `apps-organiclever-fe-deployer.md`
+- **FR-8.2.2**: Update `README.md` agent listings
+- **FR-8.2.3**: Update `specs-maker.md` example references
 
-#### FR-7.3: Skills (`.claude/skills/`)
+#### FR-8.3: Skills (`.claude/skills/`)
 
-- **FR-7.3.1**: Rename/update `apps-organiclever-web-developing-content/` ->
+- **FR-8.3.1**: Rename/update `apps-organiclever-web-developing-content/` ->
   `apps-organiclever-fe-developing-content/`
-- **FR-7.3.2**: Rewrite SKILL.md for new architecture (Effect TS, backend integration, codegen)
+- **FR-8.3.2**: Rewrite SKILL.md for new architecture (Effect TS, backend integration, codegen)
 
-#### FR-7.4: Governance and Docs
+#### FR-8.4: Governance and Docs
 
-- **FR-7.4.1**: Update all 14+ governance files referencing `organiclever-web`
-- **FR-7.4.2**: Update all 14+ docs files referencing `organiclever-web`
-- **FR-7.4.3**: Add `organiclever-be` to technology stack, CI/CD, and deployment docs
-- **FR-7.4.4**: Update `governance/development/infra/github-actions-workflow-naming.md`
+- **FR-8.4.1**: Update all 14+ governance files referencing `organiclever-web`
+- **FR-8.4.2**: Update all 14+ docs files referencing `organiclever-web`
+- **FR-8.4.3**: Add `organiclever-be` to technology stack, CI/CD, and deployment docs
+- **FR-8.4.4**: Update `governance/development/infra/github-actions-workflow-naming.md`
 
 ## Non-Functional Requirements
 

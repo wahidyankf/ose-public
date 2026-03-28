@@ -424,9 +424,9 @@ Follows `test-demo-fe-*.yml` pattern:
 
 ### Vercel Deployment
 
-- **Branch**: Rename `prod-organiclever-web` -> `prod-organiclever-fe`
-  (or create new branch, update Vercel project settings)
-- **Deployer agent**: Updated to reference `organiclever-fe`
+**Out of scope** for this plan. organiclever.com is expected to break during this transition.
+Deployment (production branches, Vercel project settings, deployer agents) will be addressed in a
+follow-up plan.
 
 ## OpenAPI Contract
 
@@ -497,6 +497,73 @@ HelloResponse:
 | Codegen (FE)       | @hey-api/openapi-ts          | Latest  | TypeScript fetch client      |
 | E2E                | Playwright + bddgen          | Latest  | Gherkin-driven browser tests |
 
+## Local Development Infrastructure (`infra/dev/organiclever/`)
+
+Replaces `infra/dev/organiclever-web/`. The new setup runs both backend and frontend together
+with PostgreSQL for local development.
+
+```
+infra/dev/organiclever/
+├── README.md
+├── .env.example
+├── .gitignore
+├── docker-compose.yml           # Full stack: BE + FE + PostgreSQL
+├── docker-compose.ci.yml        # CI variant (integration + E2E tests)
+├── Dockerfile.be.dev            # F# backend dev image
+└── Dockerfile.fe.dev            # Next.js frontend dev image
+```
+
+### Docker Compose Services
+
+```yaml
+# docker-compose.yml
+services:
+  organiclever-db:
+    image: postgres:17-alpine
+    ports: ["5432:5432"]
+    environment:
+      POSTGRES_USER: organiclever
+      POSTGRES_PASSWORD: organiclever
+      POSTGRES_DB: organiclever
+
+  organiclever-be:
+    build:
+      context: .
+      dockerfile: Dockerfile.be.dev
+    ports: ["8202:8202"]
+    environment:
+      DATABASE_URL: "Host=organiclever-db;Port=5432;Database=organiclever;Username=organiclever;Password=organiclever"
+    depends_on: [organiclever-db]
+    volumes:
+      - ../../../apps/organiclever-be:/workspace:rw
+
+  organiclever-fe:
+    build:
+      context: .
+      dockerfile: Dockerfile.fe.dev
+    ports: ["3200:3200"]
+    environment:
+      ORGANICLEVER_BE_URL: "http://organiclever-be:8202"
+    depends_on: [organiclever-be]
+    volumes:
+      - ../../../apps/organiclever-fe:/workspace:rw
+```
+
+### npm Scripts (package.json root)
+
+| Script                        | Command                                                  |
+| ----------------------------- | -------------------------------------------------------- |
+| `organiclever:dev`            | `docker compose -f infra/dev/organiclever/docker-compose.yml up --build` |
+| `organiclever:dev:restart`    | `docker compose -f ... down -v && docker compose -f ... up --build` |
+
+### Port Assignments
+
+| Service          | Port |
+| ---------------- | ---- |
+| organiclever-db  | 5432 |
+| organiclever-be  | 8202 |
+| organiclever-fe  | 3200 |
+
 ## Files to Update (Complete Inventory)
 
 ### Agents (`.claude/agents/`)
@@ -553,6 +620,13 @@ replacement and addition of `organiclever-be` where backend apps are listed.
 | `apps/organiclever-fe-e2e/` | Create new                        |
 | `apps/organiclever-be-e2e/` | Create new                        |
 
+### Infra
+
+| Directory                           | Action                                        |
+| ----------------------------------- | --------------------------------------------- |
+| `infra/dev/organiclever-web/`       | Remove (replaced by `infra/dev/organiclever/`) |
+| `infra/dev/organiclever/`           | Create new (BE + FE + PostgreSQL)             |
+
 ### Specs
 
 | Directory                        | Action                             |
@@ -560,3 +634,12 @@ replacement and addition of `organiclever-be` where backend apps are listed.
 | `specs/apps/organiclever-be/`    | Delete after migration             |
 | `specs/apps/organiclever-web/`   | Delete after migration             |
 | `specs/apps/organiclever/`       | Create new unified structure       |
+
+### npm Scripts (package.json root)
+
+| Script                                      | Action                                      |
+| ------------------------------------------- | ------------------------------------------- |
+| `organiclever-web:dev`                      | Remove                                      |
+| `organiclever-web:dev:restart`              | Remove                                      |
+| `organiclever:dev`                          | Create (docker compose for full stack)      |
+| `organiclever:dev:restart`                  | Create (down -v + up --build)               |

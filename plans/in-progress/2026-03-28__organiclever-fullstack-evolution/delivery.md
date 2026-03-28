@@ -9,9 +9,13 @@
 | 3     | Backend (`organiclever-be`) | F#/Giraffe app with hello + health endpoints             |
 | 4     | Frontend (`organiclever-fe`)| Next.js + Effect TS with /hello page                     |
 | 5     | E2E Test Apps               | Playwright E2E for backend and frontend                  |
-| 6     | CI/CD Pipelines             | GitHub Actions workflows for all 4 apps                  |
+| 6     | CI Pipelines                | GitHub Actions workflows for all 4 apps (CI only, no CD) |
 | 7     | Documentation Updates       | CLAUDE.md, agents, skills, governance, docs              |
 | 8     | Cleanup                     | Archive old apps, remove old specs, verify no stale refs |
+
+**Note**: CD/deployment (Vercel, production branches, deployer agents) is **out of scope**.
+organiclever.com is expected to break during this transition. Deployment will be addressed in a
+follow-up plan.
 
 ## Phase 1: Unified Specifications
 
@@ -171,7 +175,24 @@
 - [ ] Verify `nx run organiclever-fe-e2e:test:quick` passes
 - [ ] Verify `nx run organiclever-fe-e2e:test:e2e` passes against running frontend + backend
 
-## Phase 6: CI/CD Pipelines
+### Milestone 5.3: Local Development Infrastructure (`infra/dev/organiclever/`)
+
+- [ ] Create `infra/dev/organiclever/` directory
+- [ ] Create `infra/dev/organiclever/README.md` (port assignments, quick start, env vars)
+- [ ] Create `infra/dev/organiclever/.env.example`
+- [ ] Create `infra/dev/organiclever/.gitignore`
+- [ ] Create `infra/dev/organiclever/Dockerfile.be.dev` (F# backend dev image)
+- [ ] Create `infra/dev/organiclever/Dockerfile.fe.dev` (Next.js frontend dev image)
+- [ ] Create `infra/dev/organiclever/docker-compose.yml`
+  (organiclever-db + organiclever-be + organiclever-fe)
+- [ ] Create `infra/dev/organiclever/docker-compose.ci.yml` (CI variant for integration + E2E)
+- [ ] Add `organiclever:dev` npm script to root `package.json`
+- [ ] Add `organiclever:dev:restart` npm script to root `package.json`
+- [ ] Remove `organiclever-web:dev` and `organiclever-web:dev:restart` npm scripts
+- [ ] Verify `npm run organiclever:dev` starts all 3 services (db, be, fe)
+- [ ] Verify frontend can reach backend via `ORGANICLEVER_BE_URL=http://organiclever-be:8202`
+
+## Phase 6: CI Pipelines
 
 ### Milestone 6.1: GitHub Actions Workflows
 
@@ -182,12 +203,6 @@
 - [ ] Delete `.github/workflows/test-organiclever-web.yml`
 - [ ] Verify `main-ci.yml` picks up all 4 organiclever projects via `nx affected`
 - [ ] Verify `pr-quality-gate.yml` picks up all 4 organiclever projects via `nx affected`
-
-### Milestone 6.2: Vercel Deployment
-
-- [ ] Create/update production branch for frontend (`prod-organiclever-fe`)
-- [ ] Update Vercel project settings if needed
-- [ ] Verify deployment works end-to-end
 
 ## Phase 7: Documentation Updates
 
@@ -259,10 +274,11 @@
 
 ## Phase 8: Cleanup
 
-### Milestone 8.1: Remove Old Apps
+### Milestone 8.1: Remove Old Apps and Infra
 
 - [ ] Archive `apps/organiclever-web/` to `archived/organiclever-web/`
 - [ ] Remove `apps/organiclever-web-e2e/`
+- [ ] Remove `infra/dev/organiclever-web/`
 
 ### Milestone 8.2: Remove Old Specs
 

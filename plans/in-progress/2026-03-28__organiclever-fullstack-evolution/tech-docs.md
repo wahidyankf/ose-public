@@ -40,8 +40,6 @@ specs/apps/organiclever/
 │       │   └── hello-endpoint.feature
 │       └── authentication/
 │           ├── google-login.feature
-│           ├── register.feature
-│           ├── login.feature
 │           └── me.feature
 ├── fe/
 │   ├── README.md
@@ -51,8 +49,6 @@ specs/apps/organiclever/
 │       │   └── hello-page.feature
 │       └── authentication/
 │           ├── google-login.feature
-│           ├── register.feature
-│           ├── login.feature
 │           ├── profile.feature
 │           └── route-protection.feature
 └── contracts/
@@ -81,7 +77,7 @@ specs/apps/organiclever/
 | -------------- | ----------- | ----------- | ------------------------------------ |
 | health         | 1           | --          | Service health status                |
 | hello          | 1           | 1           | Hello world endpoint/page            |
-| authentication | 4           | 5           | Google login, register, login, profile |
+| authentication | 2           | 3           | Google OAuth login, profile, route protection |
 
 ### Spec Migration Map
 
@@ -89,9 +85,9 @@ specs/apps/organiclever/
 | ---------------------------------------------------- | ---------------------------------------------------- |
 | `specs/apps/organiclever-be/health/health-check.feature`    | Move to `be/gherkin/health/health-check.feature`     |
 | `specs/apps/organiclever-be/hello/hello-endpoint.feature`   | Move to `be/gherkin/hello/hello-endpoint.feature`    |
-| `specs/apps/organiclever-be/auth/*.feature`                 | Rewrite as `be/gherkin/authentication/` (new Google OAuth + register/login) |
+| `specs/apps/organiclever-be/auth/*.feature`                 | Rewrite as `be/gherkin/authentication/` (Google OAuth only) |
 | `specs/apps/organiclever-web/landing/*.feature`             | Remove (out of scope)                                |
-| `specs/apps/organiclever-web/auth/*.feature`                | Rewrite as `fe/gherkin/authentication/` (new Google OAuth + register/login/profile) |
+| `specs/apps/organiclever-web/auth/*.feature`                | Rewrite as `fe/gherkin/authentication/` (Google OAuth + profile) |
 | `specs/apps/organiclever-web/dashboard/*.feature`           | Remove (out of scope)                                |
 | `specs/apps/organiclever-web/members/*.feature`             | Remove (out of scope)                                |
 | (new)                                                       | Create `fe/gherkin/hello/hello-page.feature`         |
@@ -114,7 +110,7 @@ apps/organiclever-be/
 │       ├── Handlers/
 │       │   ├── HelloHandler.fs           # GET /api/v1/hello -> {"message":"world"}
 │       │   ├── HealthHandler.fs          # GET /api/v1/health -> {"status":"UP"}
-│       │   ├── AuthHandler.fs            # POST /auth/google, POST /auth/register, POST /auth/login, GET /auth/me
+│       │   ├── AuthHandler.fs            # POST /auth/google, POST /auth/refresh, GET /auth/me
 │       │   └── TestHandler.fs            # Test-only utilities (reset-db)
 │       ├── Infrastructure/
 │       │   ├── AppDbContext.fs            # EF Core DbContext (PostgreSQL + SQLite for tests)
@@ -152,8 +148,6 @@ let webApp : HttpHandler =
             GET >=> route "/hello" >=> HelloHandler.hello
             subRoute "/auth" (choose [
                 POST >=> route "/google" >=> AuthHandler.googleLogin
-                POST >=> route "/register" >=> AuthHandler.register
-                POST >=> route "/login" >=> AuthHandler.login
                 POST >=> route "/refresh" >=> AuthHandler.refresh
                 GET >=> route "/me" >=> requireAuth >=> AuthHandler.me
             ])
@@ -205,8 +199,7 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(255) NOT NULL UNIQUE,
     name VARCHAR(200) NOT NULL,
     avatar_url VARCHAR(500),
-    google_id VARCHAR(100) UNIQUE,
-    password_hash VARCHAR(255),
+    google_id VARCHAR(100) NOT NULL UNIQUE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -300,18 +293,14 @@ apps/organiclever-fe/
 │   │   │   └── auth/
 │   │   │       ├── google/
 │   │   │       │   └── route.ts          # Proxies Google token to backend
-│   │   │       ├── register/
-│   │   │       │   └── route.ts          # Proxies register to backend
-│   │   │       ├── login/
-│   │   │       │   └── route.ts          # Proxies login to backend
+│   │   │       ├── refresh/
+│   │   │       │   └── route.ts          # Proxies refresh to backend
 │   │   │       └── me/
 │   │   │           └── route.ts          # Proxies /auth/me to backend
 │   │   ├── hello/
 │   │   │   └── page.tsx                  # /hello page (Server Component)
 │   │   ├── login/
-│   │   │   └── page.tsx                  # /login page (Google + email/password)
-│   │   ├── register/
-│   │   │   └── page.tsx                  # /register page
+│   │   │   └── page.tsx                  # /login page (Google OAuth only)
 │   │   ├── profile/
 │   │   │   └── page.tsx                  # /profile page (protected)
 │   │   ├── layout.tsx
@@ -322,7 +311,7 @@ apps/organiclever-fe/
 │   │   ├── errors.ts                     # Effect TS error types
 │   │   ├── backend-client.ts             # Server-side HTTP client to organiclever-be (Effect)
 │   │   ├── hello-service.ts              # Hello service (server-side, calls backend)
-│   │   └── auth-service.ts              # Auth service (Google login, register, login, me)
+│   │   └── auth-service.ts              # Auth service (Google login, refresh, me)
 │   ├── layers/
 │   │   ├── backend-client-live.ts        # Live HTTP layer (server-side only)
 │   │   └── backend-client-test.ts        # Mock layer for tests
@@ -483,8 +472,6 @@ apps/organiclever-be-e2e/
 │   ├── hello.steps.ts
 │   ├── health.steps.ts
 │   ├── google-login.steps.ts
-│   ├── register.steps.ts
-│   ├── login.steps.ts
 │   └── me.steps.ts
 ├── playwright.config.ts
 ├── project.json
@@ -505,8 +492,6 @@ apps/organiclever-fe-e2e/
 ├── steps/                        # Step definitions
 │   ├── hello-page.steps.ts
 │   ├── google-login.steps.ts
-│   ├── register.steps.ts
-│   ├── login.steps.ts
 │   ├── profile.steps.ts
 │   └── route-protection.steps.ts
 ├── playwright.config.ts
@@ -574,10 +559,6 @@ paths:
     $ref: "./paths/health.yaml#/health"
   /api/v1/auth/google:
     $ref: "./paths/auth.yaml#/googleLogin"
-  /api/v1/auth/register:
-    $ref: "./paths/auth.yaml#/register"
-  /api/v1/auth/login:
-    $ref: "./paths/auth.yaml#/login"
   /api/v1/auth/refresh:
     $ref: "./paths/auth.yaml#/refresh"
   /api/v1/auth/me:

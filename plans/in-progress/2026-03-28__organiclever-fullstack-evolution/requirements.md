@@ -35,7 +35,7 @@
 - **FR-1.4.1**: OpenAPI 3.1 spec with endpoints: `/api/v1/hello`, `/api/v1/health`,
   `/api/v1/auth/google`, `/api/v1/auth/me`
 - **FR-1.4.2**: Schemas: `HelloResponse`, `HealthResponse`, `AuthGoogleRequest`,
-  `AuthGoogleResponse` (JWT token), `UserProfile`, `ErrorResponse`
+  `AuthTokenResponse` (access + refresh tokens), `RefreshRequest`, `UserProfile`, `ErrorResponse`
 - **FR-1.4.3**: Paths: `paths/hello.yaml`, `paths/health.yaml`, `paths/auth.yaml`
 - **FR-1.4.4**: Spectral linting rules (camelCase enforcement)
 - **FR-1.4.5**: Nx `project.json` with lint, bundle, docs targets (as `organiclever-contracts`)
@@ -48,17 +48,14 @@
 - **FR-2.1.1**: `GET /api/v1/hello` -- Returns `{"message":"world"}` (200, no auth required)
 - **FR-2.1.2**: `GET /api/v1/health` -- Returns `{"status":"UP"}` (200, no auth required)
 - **FR-2.1.3**: `POST /api/v1/auth/google` -- Accepts Google OAuth ID token, validates with
-  Google, creates user record on first login, returns JWT access token + refresh token (200, 401)
-- **FR-2.1.4**: `POST /api/v1/auth/register` -- Email/password registration with validation,
-  returns JWT access token + refresh token (201, 400, 409)
-- **FR-2.1.5**: `POST /api/v1/auth/login` -- Email/password login, returns JWT access token +
-  refresh token (200, 401)
-- **FR-2.1.6**: `POST /api/v1/auth/refresh` -- Accepts refresh token, returns new access token +
+  Google, creates user record on first login (name, email, avatar from Google profile),
+  returns JWT access token + refresh token (200, 401)
+- **FR-2.1.4**: `POST /api/v1/auth/refresh` -- Accepts refresh token, returns new access token +
   new refresh token (200, 401). Old refresh token invalidated (rotation).
-- **FR-2.1.7**: `GET /api/v1/auth/me` -- Returns authenticated user profile (200, 401)
-- **FR-2.1.8**: JWT access token: short-lived (15 min), includes userId, email, name
-- **FR-2.1.9**: Refresh token: long-lived (7 days), stored hashed in DB, single-use (rotation)
-- **FR-2.1.10**: BCrypt password hashing for email/password auth
+- **FR-2.1.5**: `GET /api/v1/auth/me` -- Returns authenticated user profile (200, 401)
+- **FR-2.1.6**: JWT access token: short-lived (15 min), includes userId, email, name
+- **FR-2.1.7**: Refresh token: long-lived (7 days), stored hashed in DB, single-use (rotation)
+- **FR-2.1.8**: No email/password registration or login -- Google OAuth is the sole auth method
 
 #### FR-2.2: Architecture
 
@@ -106,12 +103,11 @@
 
 - **FR-3.2.1**: `/hello` page -- Server Component that calls `organiclever-be` via the Effect
   service layer on the server side, then renders the message
-- **FR-3.2.2**: `/login` page -- "Sign in with Google" button + email/password form;
-  sends credentials to backend via BFF proxy; stores JWT in httpOnly cookie
-- **FR-3.2.3**: `/register` page -- Email/password registration form
-- **FR-3.2.4**: `/profile` page (protected) -- Displays user name, email, avatar;
+- **FR-3.2.2**: `/login` page -- "Sign in with Google" button only (no email/password form);
+  sends Google ID token to backend via BFF proxy; stores JWT in httpOnly cookie
+- **FR-3.2.3**: `/profile` page (protected) -- Displays user name, email, avatar from Google;
   redirects to `/login` if not authenticated
-- **FR-3.2.5**: Token refresh: BFF proxy automatically refreshes expired access tokens
+- **FR-3.2.4**: Token refresh: BFF proxy automatically refreshes expired access tokens
   using refresh token before returning 401 to client
 
 #### FR-3.3: Effect TS Integration

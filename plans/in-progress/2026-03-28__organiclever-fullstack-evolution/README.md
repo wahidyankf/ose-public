@@ -57,8 +57,8 @@ Existing `specs/apps/organiclever-be/` and `specs/apps/organiclever-web/` are me
 | **Backend**    | F#/Giraffe REST API with PostgreSQL                                        |
 | **Frontend**   | Next.js 16 + TypeScript + Effect TS                                        |
 | **Specs**      | Unified `specs/apps/organiclever/` (c4, be, fe, contracts)                |
-| **Initial API**| `GET /api/v1/hello`, `POST /api/v1/auth/google`, `GET /api/v1/auth/me`    |
-| **Initial UI** | `/hello` page, `/login` page (Google OAuth), authenticated user display   |
+| **Initial API**| `GET /api/v1/hello`, `POST /api/v1/auth/google`, `POST /api/v1/auth/refresh`, `GET /api/v1/auth/me` |
+| **Initial UI** | `/hello`, `/login` (Google OAuth only), `/profile` (protected)            |
 | **CI/CD**      | 4 GitHub Actions workflows (matching demo-* patterns)                      |
 | **Agents**     | Updated deployer + new agents as needed                                    |
 | **Skills**     | Updated developing-content skill                                           |

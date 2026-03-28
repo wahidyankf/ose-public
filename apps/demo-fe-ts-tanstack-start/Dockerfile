@@ -1,7 +1,7 @@
 FROM node:24-alpine AS build
 WORKDIR /app
 COPY package.json ./
-RUN npm install --ignore-scripts
+RUN npm install
 COPY . .
 RUN npx vite build
 

@@ -50,8 +50,8 @@ services:
 
   demo-fe:
     build:
-      context: ../../../apps/demo-fe-ts-nextjs
-      dockerfile: Dockerfile
+      context: ../../..
+      dockerfile: apps/demo-fe-ts-nextjs/Dockerfile
       args:
         BACKEND_URL: http://demo-be:8201
     container_name: demo-fe-tsnx

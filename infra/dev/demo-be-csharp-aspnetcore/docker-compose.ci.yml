@@ -11,8 +11,8 @@ services:
 
   demo-fe:
     build:
-      context: ../../../apps/demo-fe-ts-nextjs
-      dockerfile: Dockerfile
+      context: ../../..
+      dockerfile: apps/demo-fe-ts-nextjs/Dockerfile
       args:
         BACKEND_URL: http://demo-be-csharp-aspnetcore:8201
     container_name: demo-be-csas-ci-fe

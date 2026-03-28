@@ -5,6 +5,8 @@ COPY package.json package-lock.json ./
 COPY apps/organiclever-web/package.json ./apps/organiclever-web/
 COPY apps/organiclever-web-e2e/package.json ./apps/organiclever-web-e2e/
 COPY apps/organiclever-be-e2e/package.json ./apps/organiclever-be-e2e/
+COPY libs/ts-ui/package.json ./libs/ts-ui/
+COPY libs/ts-ui-tokens/package.json ./libs/ts-ui-tokens/
 RUN npm ci
 
 # Stage 2: Build
@@ -12,6 +14,10 @@ FROM node:24-alpine AS build
 WORKDIR /app
 COPY --from=deps /app/ ./
 COPY apps/organiclever-web/ ./apps/organiclever-web/
+COPY libs/ts-ui/src/ ./libs/ts-ui/src/
+COPY libs/ts-ui/package.json ./libs/ts-ui/
+COPY libs/ts-ui-tokens/src/ ./libs/ts-ui-tokens/src/
+COPY libs/ts-ui-tokens/package.json ./libs/ts-ui-tokens/
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN cd apps/organiclever-web && npx next build
 

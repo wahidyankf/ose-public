@@ -14,29 +14,29 @@
 #### FR-1.2: Backend Gherkin Specs (`be/gherkin/`)
 
 - **FR-1.2.1**: `health/health-check.feature` -- Health endpoint returns 200 with `{"status":"UP"}`
-- **FR-1.2.2**: `hello/hello-endpoint.feature` -- Hello endpoint returns 200 with
-  `{"message":"world"}`; requires no authentication
-- **FR-1.2.3**: `authentication/google-login.feature` -- Google OAuth token exchange returns JWT;
+- **FR-1.2.2**: `authentication/google-login.feature` -- Google OAuth token exchange returns JWT;
   invalid token returns 401; user record created on first login
-- **FR-1.2.4**: `authentication/me.feature` -- Authenticated user can fetch own profile;
+- **FR-1.2.3**: `authentication/me.feature` -- Authenticated user can fetch own profile;
   unauthenticated request returns 401
-- **FR-1.2.5**: Background step convention: `Given the API is running`
+- **FR-1.2.4**: Background step convention: `Given the API is running`
 
 #### FR-1.3: Frontend Gherkin Specs (`fe/gherkin/`)
 
-- **FR-1.3.1**: `hello/hello-page.feature` -- `/hello` page displays "world" from backend;
-  shows loading state; handles backend errors gracefully
-- **FR-1.3.2**: `authentication/google-login.feature` -- `/login` page shows "Sign in with Google"
-  button; successful OAuth redirects to app; user info displayed after login
-- **FR-1.3.3**: Background step convention: `Given the app is running`
+- **FR-1.3.1**: `authentication/google-login.feature` -- `/login` page shows "Sign in with Google"
+  button; successful OAuth redirects to `/profile`; user info displayed after login
+- **FR-1.3.2**: `authentication/profile.feature` -- `/profile` page (protected) displays user
+  name, email, avatar; redirects to `/login` if not authenticated
+- **FR-1.3.3**: `authentication/route-protection.feature` -- Unauthenticated access to `/profile`
+  redirects to `/login`
+- **FR-1.3.4**: Background step convention: `Given the app is running`
 
 #### FR-1.4: OpenAPI Contract (`contracts/`)
 
-- **FR-1.4.1**: OpenAPI 3.1 spec with endpoints: `/api/v1/hello`, `/api/v1/health`,
-  `/api/v1/auth/google`, `/api/v1/auth/me`
-- **FR-1.4.2**: Schemas: `HelloResponse`, `HealthResponse`, `AuthGoogleRequest`,
+- **FR-1.4.1**: OpenAPI 3.1 spec with endpoints: `/api/v1/health`,
+  `/api/v1/auth/google`, `/api/v1/auth/refresh`, `/api/v1/auth/me`
+- **FR-1.4.2**: Schemas: `HealthResponse`, `AuthGoogleRequest`,
   `AuthTokenResponse` (access + refresh tokens), `RefreshRequest`, `UserProfile`, `ErrorResponse`
-- **FR-1.4.3**: Paths: `paths/hello.yaml`, `paths/health.yaml`, `paths/auth.yaml`
+- **FR-1.4.3**: Paths: `paths/health.yaml`, `paths/auth.yaml`
 - **FR-1.4.4**: Spectral linting rules (camelCase enforcement)
 - **FR-1.4.5**: Nx `project.json` with lint, bundle, docs targets (as `organiclever-contracts`)
 - **FR-1.4.6**: Codegen configuration for both F# backend and TypeScript frontend
@@ -45,24 +45,24 @@
 
 #### FR-2.1: Endpoints
 
-- **FR-2.1.1**: `GET /api/v1/hello` -- Returns `{"message":"world"}` (200, no auth required)
-- **FR-2.1.2**: `GET /api/v1/health` -- Returns `{"status":"UP"}` (200, no auth required)
-- **FR-2.1.3**: `POST /api/v1/auth/google` -- Accepts Google OAuth ID token, validates with
+- **FR-2.1.1**: `GET /api/v1/health` -- Returns `{"status":"UP"}` (200, no auth required)
+- **FR-2.1.2**: `POST /api/v1/auth/google` -- Accepts Google OAuth ID token, validates with
   Google, creates user record on first login (name, email, avatar from Google profile),
   returns JWT access token + refresh token (200, 401)
-- **FR-2.1.4**: `POST /api/v1/auth/refresh` -- Accepts refresh token, returns new access token +
+- **FR-2.1.3**: `POST /api/v1/auth/refresh` -- Accepts refresh token, returns new access token +
   new refresh token (200, 401). Old refresh token invalidated (rotation).
-- **FR-2.1.5**: `GET /api/v1/auth/me` -- Returns authenticated user profile (200, 401)
-- **FR-2.1.6**: JWT access token: short-lived (15 min), includes userId, email, name
-- **FR-2.1.7**: Refresh token: long-lived (7 days), stored hashed in DB, single-use (rotation)
-- **FR-2.1.8**: No email/password registration or login -- Google OAuth is the sole auth method
+- **FR-2.1.4**: `GET /api/v1/auth/me` -- Returns authenticated user profile (200, 401).
+  This is the API that powers the `/profile` page on the frontend.
+- **FR-2.1.5**: JWT access token: short-lived (15 min), includes userId, email, name
+- **FR-2.1.6**: Refresh token: long-lived (7 days), stored hashed in DB, single-use (rotation)
+- **FR-2.1.7**: No email/password registration or login -- Google OAuth is the sole auth method
 
 #### FR-2.2: Architecture
 
 - **FR-2.2.1**: F#/Giraffe HttpHandler composition
 - **FR-2.2.2**: Clean Architecture: Handlers, Domain, Infrastructure layers
 - **FR-2.2.3**: **Repository pattern** using F# function records (following demo-be-fsharp-giraffe):
-  `UserRepository`, `RefreshTokenRepository`, `HelloRepository` as interfaces; `EfRepositories`
+  `UserRepository`, `RefreshTokenRepository` as interfaces; `EfRepositories`
   as EF Core implementations; injected via DI, mockable for unit tests
 - **FR-2.2.4**: OpenAPI codegen for contract types (`generated-contracts/`). All API
   request/response types derived from OpenAPI spec -- no hand-written DTOs
@@ -109,12 +109,12 @@
 
 #### FR-3.2: Pages
 
-- **FR-3.2.1**: `/hello` page -- Server Component that calls `organiclever-be` via the Effect
-  service layer on the server side, then renders the message
-- **FR-3.2.2**: `/login` page -- "Sign in with Google" button only (no email/password form);
-  sends Google ID token to backend via BFF proxy; stores JWT in httpOnly cookie
-- **FR-3.2.3**: `/profile` page (protected) -- Displays user name, email, avatar from Google;
-  redirects to `/login` if not authenticated
+- **FR-3.2.1**: `/login` page -- "Sign in with Google" button only (no email/password form);
+  sends Google ID token to backend via BFF proxy; stores JWT in httpOnly cookie;
+  redirects to `/profile` on success
+- **FR-3.2.2**: `/profile` page (protected) -- Calls `GET /api/v1/auth/me` via BFF proxy;
+  displays user name, email, avatar from Google; redirects to `/login` if not authenticated
+- **FR-3.2.3**: Root page (`/`) -- Redirects to `/profile` if authenticated, `/login` if not
 - **FR-3.2.4**: Token refresh: BFF proxy automatically refreshes expired access tokens
   using refresh token before returning 401 to client
 
@@ -259,14 +259,19 @@ Scenario: Unified spec structure exists
   And specs/apps/organiclever-web/ no longer exists
 ```
 
-### AC-2: Backend Hello Endpoint
+### AC-2: Backend Auth + Health
 
 ```gherkin
-Scenario: Hello endpoint returns world
+Scenario: Health endpoint returns UP
   Given organiclever-be is running on port 8202
-  When I send GET /api/v1/hello
+  When I send GET /api/v1/health
   Then the response status is 200
-  And the response body is {"message":"world"}
+  And the response body contains {"status":"UP"}
+
+Scenario: Profile endpoint requires authentication
+  Given organiclever-be is running on port 8202
+  When I send GET /api/v1/auth/me without a token
+  Then the response status is 401
 
 Scenario: Backend quality gate passes
   Given I run nx run organiclever-be:test:quick
@@ -274,14 +279,19 @@ Scenario: Backend quality gate passes
   And line coverage is at least 90%
 ```
 
-### AC-3: Frontend Hello Page
+### AC-3: Frontend Profile (Protected)
 
 ```gherkin
-Scenario: Hello page shows message from backend
+Scenario: Profile page requires login
   Given organiclever-be is running on port 8202
   And organiclever-fe is running on port 3200
-  When I navigate to /hello
-  Then the page displays "world"
+  When I navigate to /profile without being logged in
+  Then I am redirected to /login
+
+Scenario: Profile page shows user info after login
+  Given I am logged in via Google OAuth
+  When I navigate to /profile
+  Then the page displays my name, email, and avatar
 
 Scenario: Frontend quality gate passes
   Given I run nx run organiclever-fe:test:quick

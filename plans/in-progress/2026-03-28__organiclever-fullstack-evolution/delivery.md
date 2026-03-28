@@ -4,10 +4,10 @@
 
 | Phase | Name                        | Description                                              |
 | ----- | --------------------------- | -------------------------------------------------------- |
-| 1     | Unified Specifications      | Create `specs/apps/organiclever/`, migrate hello + health specs |
+| 1     | Unified Specifications      | Create `specs/apps/organiclever/`, migrate health + auth specs |
 | 2     | OpenAPI Contract            | Contract with codegen for F# and TypeScript              |
-| 3     | Backend (`organiclever-be`) | F#/Giraffe app with hello + health endpoints             |
-| 4     | Frontend (`organiclever-fe`)| Next.js + Effect TS with /hello page                     |
+| 3     | Backend (`organiclever-be`) | F#/Giraffe app with health + auth endpoints              |
+| 4     | Frontend (`organiclever-fe`)| Next.js + Effect TS with /login + /profile (protected)   |
 | 5     | E2E Test Apps               | Playwright E2E for backend and frontend                  |
 | 6     | CI Pipelines                | GitHub Actions workflows for all 4 apps (CI only, no CD) |
 | 7     | Documentation Updates       | CLAUDE.md, agents, skills, governance, docs              |
@@ -34,8 +34,7 @@ follow-up plan.
 - [ ] Create `specs/apps/organiclever/be/gherkin/README.md`
 - [ ] Migrate `organiclever-be/health/health-check.feature` -> `be/gherkin/health/`
   (update background to `Given the API is running`)
-- [ ] Migrate `organiclever-be/hello/hello-endpoint.feature` -> `be/gherkin/hello/`
-  (update background to `Given the API is running`)
+- [ ] Remove `organiclever-be/hello/hello-endpoint.feature` (replaced by auth/profile flow)
 - [ ] Create `be/gherkin/authentication/google-login.feature` (Google OAuth token exchange,
   user creation on first login, JWT access + refresh token response)
 - [ ] Create `be/gherkin/authentication/me.feature` (get profile with valid JWT, 401 without)
@@ -45,8 +44,6 @@ follow-up plan.
 
 - [ ] Create `specs/apps/organiclever/fe/README.md`
 - [ ] Create `specs/apps/organiclever/fe/gherkin/README.md`
-- [ ] Create `fe/gherkin/hello/hello-page.feature` (new: /hello page shows "world" from backend,
-  loading state, error handling)
 - [ ] Create `fe/gherkin/authentication/google-login.feature` ("Sign in with Google" button,
   successful OAuth redirects, user info displayed)
 - [ ] Create `fe/gherkin/authentication/profile.feature` (/profile shows name, email, avatar)
@@ -59,17 +56,14 @@ follow-up plan.
 ### Milestone 2.1: Contract Spec
 
 - [ ] Create `specs/apps/organiclever/contracts/README.md`
-- [ ] Create `specs/apps/organiclever/contracts/openapi.yaml` (root spec, hello + health + auth)
-- [ ] Create `specs/apps/organiclever/contracts/paths/hello.yaml`
+- [ ] Create `specs/apps/organiclever/contracts/openapi.yaml` (root spec, health + auth)
 - [ ] Create `specs/apps/organiclever/contracts/paths/health.yaml`
 - [ ] Create `specs/apps/organiclever/contracts/paths/auth.yaml` (google, refresh, me)
-- [ ] Create `specs/apps/organiclever/contracts/schemas/hello.yaml` (HelloResponse)
 - [ ] Create `specs/apps/organiclever/contracts/schemas/health.yaml` (HealthResponse)
 - [ ] Create `specs/apps/organiclever/contracts/schemas/auth.yaml` (AuthGoogleRequest,
   AuthGoogleRequest, AuthTokenResponse, RefreshRequest)
 - [ ] Create `specs/apps/organiclever/contracts/schemas/user.yaml` (UserProfile)
 - [ ] Create `specs/apps/organiclever/contracts/schemas/error.yaml` (ErrorResponse)
-- [ ] Create `specs/apps/organiclever/contracts/examples/hello-response.yaml`
 - [ ] Create `specs/apps/organiclever/contracts/examples/auth-login.yaml`
 - [ ] Create `specs/apps/organiclever/contracts/.spectral.yaml` (camelCase rules)
 
@@ -93,10 +87,8 @@ follow-up plan.
 
 ### Milestone 3.2: Application Code
 
-- [ ] Create `src/OrganicLeverBe/Program.fs` (routing: hello, health, auth endpoints)
-- [ ] Create `src/OrganicLeverBe/Domain/Types.fs` (HelloResponse, HealthResponse, User,
-  DomainError, AuthTokens)
-- [ ] Create `src/OrganicLeverBe/Handlers/HelloHandler.fs` (returns `{"message":"world"}`)
+- [ ] Create `src/OrganicLeverBe/Program.fs` (routing: health + auth endpoints)
+- [ ] Create `src/OrganicLeverBe/Domain/Types.fs` (User, HealthResponse, DomainError, AuthTokens)
 - [ ] Create `src/OrganicLeverBe/Handlers/HealthHandler.fs` (returns `{"status":"UP"}`)
 - [ ] Create `src/OrganicLeverBe/Handlers/AuthHandler.fs` (google login, refresh, me)
 - [ ] Create `src/OrganicLeverBe/Handlers/TestHandler.fs` (test-only: reset-db)
@@ -108,7 +100,7 @@ follow-up plan.
   PostgreSQL + SQLite, snake_case naming)
 - [ ] Create `src/OrganicLeverBe/Infrastructure/Migrator.fs` (DbUp runner using embedded SQL)
 - [ ] Create `src/OrganicLeverBe/Infrastructure/Repositories/RepositoryTypes.fs`
-  (UserRepository, RefreshTokenRepository, HelloRepository as function records)
+  (UserRepository, RefreshTokenRepository as function records)
 - [ ] Create `src/OrganicLeverBe/Infrastructure/Repositories/EfRepositories.fs`
   (EF Core implementations of all repository function records)
 - [ ] Register repositories in `Program.fs` DI container (`AddScoped`)
@@ -116,7 +108,7 @@ follow-up plan.
 - [ ] Add NuGet packages: `Npgsql.EntityFrameworkCore.PostgreSQL` 10.x,
   `EFCore.NamingConventions` 10.x, `dbup-core` 5.x, `dbup-postgresql` 5.x
 - [ ] Add `<EmbeddedResource Include="db/migrations/*.sql" />` to `.fsproj`
-- [ ] Create `db/migrations/001-initial-schema.sql` (users, refresh_tokens, hello_config tables)
+- [ ] Create `db/migrations/001-initial-schema.sql` (users, refresh_tokens tables)
 - [ ] Wire DbUp migration call in `Program.fs` startup (before `app.Run()`)
 - [ ] Create `docker-compose.integration.yml` (PostgreSQL 17 + test runner)
 - [ ] Create `Dockerfile.integration`
@@ -127,7 +119,7 @@ follow-up plan.
 
 - [ ] Create test project `tests/OrganicLeverBe.Tests/`
 - [ ] Create unit tests consuming `be/gherkin/` specs with **mocked repository function records**
-  (hello, health, authentication domains). Use SQLite in-memory, no HTTP.
+  (health, authentication domains). Use SQLite in-memory, no HTTP.
 - [ ] Create integration tests consuming the **same `be/gherkin/` specs** with **real EF Core
   repositories** against PostgreSQL via Docker Compose. No HTTP, no mocks.
 - [ ] Verify all test assertions use **generated contract types** (not hand-written DTOs)
@@ -156,19 +148,17 @@ follow-up plan.
 - [ ] Install `effect` and `@effect/platform` packages
 - [ ] Create `src/services/errors.ts` (NetworkError, ApiError)
 - [ ] Create `src/services/backend-client.ts` (server-side HTTP client to organiclever-be)
-- [ ] Create `src/services/hello-service.ts` (HelloService tag + implementation)
-- [ ] Create `src/services/auth-service.ts` (Google login, refresh, me)
+- [ ] Create `src/services/auth-service.ts` (Google login, refresh, me/profile)
 - [ ] Create `src/layers/backend-client-live.ts` (live HTTP layer, server-side only)
 - [ ] Create `src/layers/backend-client-test.ts` (mock layer for tests)
 
-### Milestone 4.3: Hello Page + API Proxy
+### Milestone 4.3: Pages + API Proxy
 
 - [ ] Create `src/app/layout.tsx` (root layout)
 - [ ] Create `src/app/page.tsx` (minimal root page)
-- [ ] Create `src/app/hello/page.tsx` (Server Component: fetches from backend via Effect service)
+- [ ] Create `src/app/page.tsx` (root: redirect to /profile if authenticated, /login if not)
 - [ ] Create `src/app/login/page.tsx` ("Sign in with Google" button only)
 - [ ] Create `src/app/profile/page.tsx` (protected: user name, email, avatar)
-- [ ] Create `src/app/api/hello/route.ts` (Route Handler: proxies to organiclever-be)
 - [ ] Create `src/app/api/auth/google/route.ts` (proxies Google token to backend)
 - [ ] Create `src/app/api/auth/refresh/route.ts` (proxies refresh to backend)
 - [ ] Create `src/app/api/auth/me/route.ts` (proxies me to backend)
@@ -181,8 +171,8 @@ follow-up plan.
 ### Milestone 4.4: Frontend Testing
 
 - [ ] Create `test/setup.ts`
-- [ ] Create unit tests for hello-service using Effect test layers
-- [ ] Create integration tests for hello page using MSW + Gherkin specs
+- [ ] Create unit tests for auth-service using Effect test layers
+- [ ] Create integration tests for profile page using MSW + Gherkin specs
 - [ ] Verify `nx run organiclever-fe:test:quick` passes with 70% coverage
 - [ ] Verify `nx run organiclever-fe:lint` passes
 - [ ] Verify `nx run organiclever-fe:typecheck` passes
@@ -199,7 +189,7 @@ follow-up plan.
 - [ ] Create `package.json` (playwright, @playwright/test, playwright-bdd)
 - [ ] Create `playwright.config.ts` (base URL: localhost:8202)
 - [ ] Create `tsconfig.json`
-- [ ] Create step definitions for hello and health features
+- [ ] Create step definitions for health and auth features
 - [ ] Create `README.md`
 - [ ] Verify `nx run organiclever-be-e2e:test:quick` passes
 - [ ] Verify `nx run organiclever-be-e2e:test:e2e` passes against running backend
@@ -212,7 +202,7 @@ follow-up plan.
 - [ ] Create `package.json` (playwright, @playwright/test, playwright-bdd)
 - [ ] Create `playwright.config.ts` (base URL: localhost:3200)
 - [ ] Create `tsconfig.json`
-- [ ] Create step definitions for hello page feature
+- [ ] Create step definitions for google-login, profile, and route-protection features
 - [ ] Create `README.md`
 - [ ] Verify `nx run organiclever-fe-e2e:test:quick` passes
 - [ ] Verify `nx run organiclever-fe-e2e:test:e2e` passes against running frontend + backend

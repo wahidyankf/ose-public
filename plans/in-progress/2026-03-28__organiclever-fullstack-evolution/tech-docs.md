@@ -6,15 +6,15 @@
 C4Container
     title OrganicLever - Container Diagram (Target State)
 
-    Person(user, "User", "Visits the hello page")
+    Person(user, "User", "Logs in and views profile")
 
     Container_Boundary(organiclever, "OrganicLever System") {
-        Container(spa, "organiclever-fe", "Next.js 16, TypeScript, Effect TS", "/hello page")
-        Container(api, "organiclever-be", "F#, Giraffe", "GET /api/v1/hello, GET /api/v1/health")
-        ContainerDb(db, "PostgreSQL", "Database", "Users, hello config")
+        Container(spa, "organiclever-fe", "Next.js 16, TypeScript, Effect TS", "/login, /profile (protected)")
+        Container(api, "organiclever-be", "F#, Giraffe", "Auth + Health API")
+        ContainerDb(db, "PostgreSQL", "Database", "Users, refresh tokens")
     }
 
-    Rel(user, spa, "Visits /hello", "HTTPS")
+    Rel(user, spa, "Visits /login, /profile", "HTTPS")
     Rel(spa, api, "Server-side proxy call", "HTTP/JSON")
     Rel(api, db, "Reads/Writes", "TCP/SQL")
 ```
@@ -36,8 +36,6 @@ specs/apps/organiclever/
 │       ├── README.md
 │       ├── health/
 │       │   └── health-check.feature
-│       ├── hello/
-│       │   └── hello-endpoint.feature
 │       └── authentication/
 │           ├── google-login.feature
 │           └── me.feature
@@ -45,8 +43,6 @@ specs/apps/organiclever/
 │   ├── README.md
 │   └── gherkin/
 │       ├── README.md
-│       ├── hello/
-│       │   └── hello-page.feature
 │       └── authentication/
 │           ├── google-login.feature
 │           ├── profile.feature
@@ -57,40 +53,37 @@ specs/apps/organiclever/
     ├── .spectral.yaml
     ├── project.json             # Nx project: organiclever-contracts
     ├── paths/
-    │   ├── hello.yaml
     │   ├── health.yaml
     │   └── auth.yaml
     ├── schemas/
-    │   ├── hello.yaml
     │   ├── health.yaml
     │   ├── auth.yaml
     │   ├── user.yaml
     │   └── error.yaml
     └── examples/
-        ├── hello-response.yaml
         └── auth-login.yaml
 ```
 
 ### Domain Table
 
-| Domain         | BE Features | FE Features | Description                          |
-| -------------- | ----------- | ----------- | ------------------------------------ |
-| health         | 1           | --          | Service health status                |
-| hello          | 1           | 1           | Hello world endpoint/page            |
-| authentication | 2           | 3           | Google OAuth login, profile, route protection |
+| Domain         | BE Features | FE Features | Description                                   |
+| -------------- | ----------- | ----------- | --------------------------------------------- |
+| health         | 1           | --          | Service health status                         |
+| authentication | 2           | 3           | Google OAuth login, profile (protected), route protection |
 
 ### Spec Migration Map
 
 | Existing File                                        | Action                                               |
 | ---------------------------------------------------- | ---------------------------------------------------- |
 | `specs/apps/organiclever-be/health/health-check.feature`    | Move to `be/gherkin/health/health-check.feature`     |
-| `specs/apps/organiclever-be/hello/hello-endpoint.feature`   | Move to `be/gherkin/hello/hello-endpoint.feature`    |
+| `specs/apps/organiclever-be/hello/hello-endpoint.feature`   | Remove (replaced by auth/profile flow)               |
 | `specs/apps/organiclever-be/auth/*.feature`                 | Rewrite as `be/gherkin/authentication/` (Google OAuth only) |
 | `specs/apps/organiclever-web/landing/*.feature`             | Remove (out of scope)                                |
 | `specs/apps/organiclever-web/auth/*.feature`                | Rewrite as `fe/gherkin/authentication/` (Google OAuth + profile) |
 | `specs/apps/organiclever-web/dashboard/*.feature`           | Remove (out of scope)                                |
 | `specs/apps/organiclever-web/members/*.feature`             | Remove (out of scope)                                |
-| (new)                                                       | Create `fe/gherkin/hello/hello-page.feature`         |
+| (new)                                                       | Create `fe/gherkin/authentication/profile.feature`   |
+| (new)                                                       | Create `fe/gherkin/authentication/route-protection.feature` |
 
 ## Backend Architecture (`apps/organiclever-be`)
 
@@ -102,13 +95,12 @@ apps/organiclever-be/
 │   └── OrganicLeverBe/
 │       ├── Program.fs                    # Entry point, routing, DI
 │       ├── Domain/
-│       │   └── Types.fs                  # Core types (HelloResponse, HealthResponse)
+│       │   └── Types.fs                  # Core types (User, HealthResponse, DomainError)
 │       ├── Auth/
 │       │   ├── JwtService.fs             # JWT token generation/validation
 │       │   ├── JwtMiddleware.fs          # Bearer token auth middleware
 │       │   └── GoogleAuthService.fs      # Google ID token verification
 │       ├── Handlers/
-│       │   ├── HelloHandler.fs           # GET /api/v1/hello -> {"message":"world"}
 │       │   ├── HealthHandler.fs          # GET /api/v1/health -> {"status":"UP"}
 │       │   ├── AuthHandler.fs            # POST /auth/google, POST /auth/refresh, GET /auth/me
 │       │   └── TestHandler.fs            # Test-only utilities (reset-db)
@@ -123,11 +115,9 @@ apps/organiclever-be/
 ├── tests/
 │   └── OrganicLeverBe.Tests/
 │       ├── Unit/                         # Mocked repositories, same Gherkin specs
-│       │   ├── HelloHandlerTests.fs
 │       │   ├── HealthHandlerTests.fs
 │       │   └── AuthHandlerTests.fs
 │       └── Integration/                  # Real PostgreSQL, same Gherkin specs
-│           ├── HelloIntegrationTests.fs
 │           ├── HealthIntegrationTests.fs
 │           └── AuthIntegrationTests.fs
 ├── generated-contracts/                  # From OpenAPI codegen (gitignored)
@@ -150,7 +140,6 @@ let webApp : HttpHandler =
     choose [
         subRoute "/api/v1" (choose [
             GET >=> route "/health" >=> HealthHandler.check
-            GET >=> route "/hello" >=> HelloHandler.hello
             subRoute "/auth" (choose [
                 POST >=> route "/google" >=> AuthHandler.googleLogin
                 POST >=> route "/refresh" >=> AuthHandler.refresh
@@ -158,19 +147,6 @@ let webApp : HttpHandler =
             ])
         ])
     ]
-```
-
-### Hello Handler
-
-```fsharp
-module OrganicLeverBe.Handlers.HelloHandler
-
-open Giraffe
-open Microsoft.AspNetCore.Http
-
-let hello : HttpHandler =
-    fun (next: HttpFunc) (ctx: HttpContext) ->
-        json {| message = "world" |} next ctx
 ```
 
 ### Repository Pattern (Function Records)
@@ -195,9 +171,6 @@ type RefreshTokenRepository = {
     Delete: Guid -> Task<unit>
 }
 
-type HelloRepository = {
-    GetMessage: unit -> Task<string>
-}
 ```
 
 ```fsharp
@@ -222,8 +195,6 @@ services.AddScoped<UserRepository>(fun sp ->
     createUserRepo (sp.GetRequiredService<AppDbContext>()))
 services.AddScoped<RefreshTokenRepository>(fun sp ->
     createRefreshTokenRepo (sp.GetRequiredService<AppDbContext>()))
-services.AddScoped<HelloRepository>(fun sp ->
-    createHelloRepo (sp.GetRequiredService<AppDbContext>()))
 ```
 
 ### Three-Level Testing (Same Gherkin Specs)
@@ -248,7 +219,7 @@ Only the step implementations differ:
 
 Generated contract types from OpenAPI codegen (`generated-contracts/`) are used throughout:
 
-- **Handlers**: Return contract response types (e.g., `HelloResponse`, `AuthTokenResponse`)
+- **Handlers**: Return contract response types (e.g., `AuthTokenResponse`, `UserProfile`)
 - **Tests**: Assert against contract types (unit, integration, E2E all validate same shapes)
 - **Frontend**: Consumes the same contract types via `@hey-api/openapi-ts` codegen
 - **No hand-written DTOs**: All API request/response types derive from the OpenAPI spec
@@ -297,14 +268,6 @@ CREATE TABLE IF NOT EXISTS refresh_tokens (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS hello_config (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    message VARCHAR(100) NOT NULL DEFAULT 'world',
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-INSERT INTO hello_config (message) VALUES ('world')
-ON CONFLICT DO NOTHING;
 ```
 
 **NuGet packages** (in `OrganicLeverBe.fsproj`):
@@ -350,7 +313,7 @@ Handlers), never directly from the browser. The browser only talks to Next.js; N
 F# backend on the server side.
 
 ```
-Browser ──GET /hello──▶ Next.js Server Component
+Browser ──GET /profile──▶ Next.js Server Component
                               │
                               ▼ (server-side fetch)
                         Route Handler / Server Action
@@ -373,8 +336,6 @@ apps/organiclever-fe/
 ├── src/
 │   ├── app/
 │   │   ├── api/
-│   │   │   ├── hello/
-│   │   │   │   └── route.ts              # Route Handler: proxies to organiclever-be
 │   │   │   └── auth/
 │   │   │       ├── google/
 │   │   │       │   └── route.ts          # Proxies Google token to backend
@@ -382,21 +343,18 @@ apps/organiclever-fe/
 │   │   │       │   └── route.ts          # Proxies refresh to backend
 │   │   │       └── me/
 │   │   │           └── route.ts          # Proxies /auth/me to backend
-│   │   ├── hello/
-│   │   │   └── page.tsx                  # /hello page (Server Component)
 │   │   ├── login/
 │   │   │   └── page.tsx                  # /login page (Google OAuth only)
 │   │   ├── profile/
 │   │   │   └── page.tsx                  # /profile page (protected)
 │   │   ├── layout.tsx
-│   │   ├── page.tsx                      # Root page
+│   │   ├── page.tsx                      # Root: redirect to /profile or /login
 │   │   ├── globals.css
 │   │   └── metadata.ts
 │   ├── services/
 │   │   ├── errors.ts                     # Effect TS error types
 │   │   ├── backend-client.ts             # Server-side HTTP client to organiclever-be (Effect)
-│   │   ├── hello-service.ts              # Hello service (server-side, calls backend)
-│   │   └── auth-service.ts              # Auth service (Google login, refresh, me)
+│   │   └── auth-service.ts              # Auth service (Google login, refresh, me/profile)
 │   ├── layers/
 │   │   ├── backend-client-live.ts        # Live HTTP layer (server-side only)
 │   │   └── backend-client-test.ts        # Mock layer for tests
@@ -406,9 +364,9 @@ apps/organiclever-fe/
 ├── test/
 │   ├── setup.ts
 │   ├── unit/
-│   │   └── hello-service.unit.test.ts
+│   │   └── auth-service.unit.test.ts
 │   └── integration/
-│       └── hello-page.integration.test.tsx
+│       └── profile-page.integration.test.tsx
 ├── project.json
 ├── package.json
 ├── next.config.mjs
@@ -448,49 +406,56 @@ export class BackendClient extends Context.Tag("BackendClient")<
   }
 >() {}
 
-// services/hello-service.ts
+// services/auth-service.ts
 import { Effect, Context } from "effect"
 import { BackendClient } from "./backend-client"
 import type { NetworkError } from "./errors"
+import type { UserProfile } from "@/generated-contracts"  // from OpenAPI codegen
 
-export interface HelloResponse {
-  readonly message: string
-}
-
-export class HelloService extends Context.Tag("HelloService")<
-  HelloService,
+export class AuthService extends Context.Tag("AuthService")<
+  AuthService,
   {
-    readonly getMessage: () => Effect.Effect<HelloResponse, NetworkError>
+    readonly googleLogin: (idToken: string) => Effect.Effect<AuthTokenResponse, NetworkError>
+    readonly refresh: (refreshToken: string) => Effect.Effect<AuthTokenResponse, NetworkError>
+    readonly getProfile: () => Effect.Effect<UserProfile, NetworkError>
   }
 >() {}
 
-// Implementation uses BackendClient to call GET /api/v1/hello on organiclever-be
+// Implementation uses BackendClient to call organiclever-be auth endpoints
 ```
 
-### Hello Page (Server Component)
+### Profile Page (Server Component, Protected)
 
-The `/hello` page is a **Server Component** -- it calls the backend via the Effect service layer
-on the server side and renders the result. No client-side fetch, no `"use client"`.
+The `/profile` page is a **Server Component** -- it calls `GET /api/v1/auth/me` via the Effect
+service layer on the server side. If the user is not authenticated, it redirects to `/login`.
 
 ```tsx
-// app/hello/page.tsx
+// app/profile/page.tsx
+import { redirect } from "next/navigation"
 import { Effect, Exit } from "effect"
-import { HelloService } from "@/services/hello-service"
+import { AuthService } from "@/services/auth-service"
 import { BackendClientLive } from "@/layers/backend-client-live"
 
-export default async function HelloPage() {
+export default async function ProfilePage() {
   const program = Effect.gen(function* () {
-    const helloService = yield* HelloService
-    return yield* helloService.getMessage()
+    const authService = yield* AuthService
+    return yield* authService.getProfile()
   }).pipe(Effect.provide(BackendClientLive))
 
   const exit = await Effect.runPromiseExit(program)
 
   if (Exit.isFailure(exit)) {
-    return <div>Failed to load message</div>
+    redirect("/login")
   }
 
-  return <div>{exit.value.message}</div>
+  const profile = exit.value
+  return (
+    <div>
+      <img src={profile.avatarUrl} alt={profile.name} />
+      <h1>{profile.name}</h1>
+      <p>{profile.email}</p>
+    </div>
+  )
 }
 ```
 
@@ -499,22 +464,22 @@ export default async function HelloPage() {
 For any client-side code that needs backend data, Route Handlers act as the proxy layer:
 
 ```typescript
-// app/api/hello/route.ts
+// app/api/auth/me/route.ts
 import { NextResponse } from "next/server"
 import { Effect, Exit } from "effect"
-import { HelloService } from "@/services/hello-service"
+import { AuthService } from "@/services/auth-service"
 import { BackendClientLive } from "@/layers/backend-client-live"
 
 export async function GET() {
   const program = Effect.gen(function* () {
-    const helloService = yield* HelloService
-    return yield* helloService.getMessage()
+    const authService = yield* AuthService
+    return yield* authService.getProfile()
   }).pipe(Effect.provide(BackendClientLive))
 
   const exit = await Effect.runPromiseExit(program)
 
   if (Exit.isFailure(exit)) {
-    return NextResponse.json({ error: "Backend unavailable" }, { status: 502 })
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
   return NextResponse.json(exit.value)
@@ -554,7 +519,6 @@ Following `demo-fe-ts-nextjs` pattern:
 apps/organiclever-be-e2e/
 ├── features/                     # Generated by bddgen from specs
 ├── steps/                        # Step definitions
-│   ├── hello.steps.ts
 │   ├── health.steps.ts
 │   ├── google-login.steps.ts
 │   └── me.steps.ts
@@ -575,7 +539,6 @@ Tags: `type:e2e`, `platform:playwright`, `lang:ts`, `domain:organiclever-be`
 apps/organiclever-fe-e2e/
 ├── features/                     # Generated by bddgen from specs
 ├── steps/                        # Step definitions
-│   ├── hello-page.steps.ts
 │   ├── google-login.steps.ts
 │   ├── profile.steps.ts
 │   └── route-protection.steps.ts
@@ -638,8 +601,6 @@ servers:
   - url: http://localhost:8202
     description: Local development
 paths:
-  /api/v1/hello:
-    $ref: "./paths/hello.yaml#/hello"
   /api/v1/health:
     $ref: "./paths/health.yaml#/health"
   /api/v1/auth/google:
@@ -648,34 +609,6 @@ paths:
     $ref: "./paths/auth.yaml#/refresh"
   /api/v1/auth/me:
     $ref: "./paths/auth.yaml#/me"
-```
-
-```yaml
-# specs/apps/organiclever/contracts/paths/hello.yaml
-hello:
-  get:
-    operationId: getHello
-    summary: Returns a hello world message
-    tags: [hello]
-    responses:
-      "200":
-        description: Successful response
-        content:
-          application/json:
-            schema:
-              $ref: "../schemas/hello.yaml#/HelloResponse"
-```
-
-```yaml
-# specs/apps/organiclever/contracts/schemas/hello.yaml
-HelloResponse:
-  type: object
-  required: [message]
-  properties:
-    message:
-      type: string
-      description: The greeting message
-      example: "world"
 ```
 
 ## Technology Stack

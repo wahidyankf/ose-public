@@ -15,10 +15,10 @@ same patterns as `apps/demo-*`:
 - **`organiclever-be-e2e`** -- Playwright E2E tests for backend API
 - **`organiclever-fe-e2e`** -- Playwright E2E tests for frontend UI
 
-The initial scope is intentionally minimal: a `/api/v1/hello` endpoint returning `"world"` consumed
-by a `/hello` page, plus Google OAuth login as the first real database-backed feature. This
-establishes the fullstack scaffold, CI/CD pipelines, contract-driven codegen, and three-level
-testing standard before adding domain features.
+The initial scope is intentionally minimal: Google OAuth login with a protected `/profile` page
+as the core feature (first real database-backed feature), plus a health endpoint. This establishes
+the fullstack scaffold, CI/CD pipelines, contract-driven codegen, and three-level testing standard
+before adding domain features.
 
 Existing `specs/apps/organiclever-be/` and `specs/apps/organiclever-web/` are merged into a unified
 `specs/apps/organiclever/` following the `specs/apps/demo/` structure (c4, be, fe, contracts).
@@ -57,8 +57,8 @@ Existing `specs/apps/organiclever-be/` and `specs/apps/organiclever-web/` are me
 | **Backend**    | F#/Giraffe REST API with PostgreSQL                                        |
 | **Frontend**   | Next.js 16 + TypeScript + Effect TS                                        |
 | **Specs**      | Unified `specs/apps/organiclever/` (c4, be, fe, contracts)                |
-| **Initial API**| `GET /api/v1/hello`, `POST /api/v1/auth/google`, `POST /api/v1/auth/refresh`, `GET /api/v1/auth/me` |
-| **Initial UI** | `/hello`, `/login` (Google OAuth only), `/profile` (protected)            |
+| **Initial API**| `GET /api/v1/health`, `POST /api/v1/auth/google`, `POST /api/v1/auth/refresh`, `GET /api/v1/auth/me` |
+| **Initial UI** | `/login` (Google OAuth only), `/profile` (protected, logged-in users only) |
 | **CI/CD**      | 4 GitHub Actions workflows (matching demo-* patterns)                      |
 | **Agents**     | Updated deployer + new agents as needed                                    |
 | **Skills**     | Updated developing-content skill                                           |
@@ -71,16 +71,16 @@ Existing `specs/apps/organiclever-be/` and `specs/apps/organiclever-web/` are me
 
 - **`specs/apps/organiclever/`** -- Unified spec structure
   - `c4/` -- Context, container, component-be, component-fe diagrams
-  - `be/gherkin/` -- Backend Gherkin specs (HTTP-semantic): hello, health
-  - `fe/gherkin/` -- Frontend Gherkin specs (UI-semantic): hello
-  - `contracts/` -- OpenAPI 3.1 contract for `/api/v1/hello`
+  - `be/gherkin/` -- Backend Gherkin specs (HTTP-semantic): health, authentication
+  - `fe/gherkin/` -- Frontend Gherkin specs (UI-semantic): authentication, profile
+  - `contracts/` -- OpenAPI 3.1 contract (health, auth, profile)
 - **`apps/organiclever-be`** -- F#/Giraffe REST API
-  - `GET /api/v1/hello` -> `{"message":"world"}`
   - `GET /api/v1/health` -> `{"status":"UP"}`
+  - `POST /api/v1/auth/google`, `POST /api/v1/auth/refresh`, `GET /api/v1/auth/me`
   - Three-level testing, OpenAPI codegen, Docker support
 - **`apps/organiclever-fe`** -- Next.js 16 + Effect TS (replaces `organiclever-web`)
-  - `/hello` page consuming backend `/api/v1/hello`
-  - Effect TS service layer for API calls
+  - `/login` page (Google OAuth), `/profile` page (protected)
+  - Effect TS service layer for API calls via BFF proxy
   - Three-level testing, OpenAPI codegen
 - **`apps/organiclever-be-e2e`** -- Playwright E2E for backend API
 - **`apps/organiclever-fe-e2e`** -- Playwright E2E for frontend UI (replaces `organiclever-web-e2e`)
@@ -104,7 +104,7 @@ Existing `specs/apps/organiclever-be/` and `specs/apps/organiclever-web/` are me
 | Decision          | Choice                              | Rationale                                                    |
 | ----------------- | ----------------------------------- | ------------------------------------------------------------ |
 | **FE name**       | `organiclever-fe` (not `-web`)      | Matches `[domain]-[type]` convention (`demo-fe-*`)           |
-| **Initial scope** | Hello + Google login                | Establishes scaffold + CI + first DB-backed auth feature     |
+| **Initial scope** | Google login + protected profile    | First DB-backed feature, establishes scaffold + CI           |
 | **Auth provider** | Google OAuth 2.0                    | Widely used, well-documented, free, no password management   |
 | **Backend lang**  | F# / Giraffe                        | Functional-first, proven by `demo-be-fsharp-giraffe`         |
 | **Frontend extra**| Effect TS                           | Structured errors, DI, composable services                   |

@@ -14,7 +14,8 @@
     "@tanstack/react-query": "^5.80.7",
     "@tanstack/react-router": "^1.120.20",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "tiny-warning": "^1.0.3"
   },
   "devDependencies": {
     "@amiceli/vitest-cucumber": "^6.2.0",

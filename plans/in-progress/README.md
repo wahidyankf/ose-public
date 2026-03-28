@@ -8,6 +8,8 @@ Active project plans currently being worked on.
   dependencies with permissive alternatives
 - [OSE Platform Web - Next.js Rewrite](./2026-03-28__oseplatform-web-nextjs-rewrite/) — Rewrite
   oseplatform-web from Hugo to Next.js 16, following ayokoding-web patterns
+- [OrganicLever Fullstack Evolution](./2026-03-28__organiclever-fullstack-evolution/) — Rebuild
+  OrganicLever as fullstack app with F#/Giraffe backend, Next.js + Effect TS frontend, unified specs
 
 ## Instructions
 

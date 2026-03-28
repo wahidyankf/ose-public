@@ -1,7 +1,8 @@
 # Plan: OSE Platform Web - Next.js Rewrite
 
-**Status**: In Progress
+**Status**: Done
 **Created**: 2026-03-28
+**Completed**: 2026-03-28
 **Delivery Type**: Multi-phase rollout
 **Git Workflow**: Trunk Based Development
 
@@ -93,16 +94,16 @@ The current Hugo site is functional but:
 
 ## Differences from ayokoding-web
 
-| Aspect                | ayokoding-web                                          | oseplatform-web             |
-| --------------------- | ------------------------------------------------------ | --------------------------- |
-| **Content volume**    | 933+ files                                             | ~6 files                    |
-| **i18n**              | English + Indonesian                                   | English only                |
-| **Rendering**         | SSG (`generateStaticParams` + `dynamicParams = false`) | SSG (same pattern)          |
-| **Shortcodes**        | callout, tabs, youtube, steps, mermaid                 | Mermaid only                |
-| **Route groups**      | `(content)` + `(app)`                                  | None (flat structure)       |
-| **Navigation**        | Deep 5-level tree sidebar                              | Flat header nav             |
-| **Search complexity** | Heavy (933+ docs)                                      | Light (~6 pages)            |
-| **CLI dependency**    | ayokoding-cli                                          | oseplatform-cli             |
+| Aspect                | ayokoding-web                                          | oseplatform-web       |
+| --------------------- | ------------------------------------------------------ | --------------------- |
+| **Content volume**    | 933+ files                                             | ~6 files              |
+| **i18n**              | English + Indonesian                                   | English only          |
+| **Rendering**         | SSG (`generateStaticParams` + `dynamicParams = false`) | SSG (same pattern)    |
+| **Shortcodes**        | callout, tabs, youtube, steps, mermaid                 | Mermaid only          |
+| **Route groups**      | `(content)` + `(app)`                                  | None (flat structure) |
+| **Navigation**        | Deep 5-level tree sidebar                              | Flat header nav       |
+| **Search complexity** | Heavy (933+ docs)                                      | Light (~6 pages)      |
+| **CLI dependency**    | ayokoding-cli                                          | oseplatform-cli       |
 
 ## Quick Links
 

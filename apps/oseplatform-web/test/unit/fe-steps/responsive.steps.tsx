@@ -7,15 +7,7 @@ import React from "react";
 
 // Mock next/link
 vi.mock("next/link", () => ({
-  default: ({
-    href,
-    children,
-    ...props
-  }: {
-    href: string;
-    children: React.ReactNode;
-    [key: string]: unknown;
-  }) => (
+  default: ({ href, children, ...props }: { href: string; children: React.ReactNode; [key: string]: unknown }) => (
     <a href={href} {...props}>
       {children}
     </a>
@@ -75,10 +67,7 @@ vi.mock("@/lib/hooks/use-search", () => ({
 import { Header } from "@/components/layout/header";
 
 const feature = await loadFeature(
-  path.resolve(
-    process.cwd(),
-    "../../specs/apps/oseplatform-web/fe/gherkin/responsive.feature",
-  ),
+  path.resolve(process.cwd(), "../../specs/apps/oseplatform/fe/gherkin/responsive.feature"),
 );
 
 describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {

@@ -921,7 +921,7 @@ CMD ["node", "apps/oseplatform-web/server.js"]
 
 Specs follow the same directory pattern as ayokoding-web (`specs/apps/ayokoding-web/be/gherkin/`, `specs/apps/ayokoding-web/fe/gherkin/`):
 
-### Backend Specs (`specs/apps/oseplatform-web/be/gherkin/`)
+### Backend Specs (`specs/apps/oseplatform/be/gherkin/`)
 
 | Feature File                | Location             | Scenarios | Covers                                       |
 | --------------------------- | -------------------- | --------- | -------------------------------------------- |
@@ -931,7 +931,7 @@ Specs follow the same directory pattern as ayokoding-web (`specs/apps/ayokoding-
 | `health.feature`            | `health/`            | 1         | Health endpoint response                     |
 | `seo.feature`               | `seo/`               | 2         | Sitemap generation, robots.txt               |
 
-### Frontend Specs (`specs/apps/oseplatform-web/fe/gherkin/`)
+### Frontend Specs (`specs/apps/oseplatform/fe/gherkin/`)
 
 | Feature File           | Scenarios | Covers                               |
 | ---------------------- | --------- | ------------------------------------ |

@@ -7,15 +7,7 @@ import React from "react";
 
 // Mock next/link so it renders as a plain anchor
 vi.mock("next/link", () => ({
-  default: ({
-    href,
-    children,
-    ...props
-  }: {
-    href: string;
-    children: React.ReactNode;
-    [key: string]: unknown;
-  }) => (
+  default: ({ href, children, ...props }: { href: string; children: React.ReactNode; [key: string]: unknown }) => (
     <a href={href} {...props}>
       {children}
     </a>
@@ -49,31 +41,20 @@ vi.mock("@open-sharia-enterprise/ts-ui", () => ({
 // Mock @/components/ui/tooltip
 vi.mock("@/components/ui/tooltip", () => ({
   Tooltip: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-  TooltipTrigger: ({
-    children,
-    asChild,
-  }: {
-    children: React.ReactNode;
-    asChild?: boolean;
-  }) => {
+  TooltipTrigger: ({ children, asChild }: { children: React.ReactNode; asChild?: boolean }) => {
     if (asChild && React.isValidElement(children)) {
       return children;
     }
     return <>{children}</>;
   },
-  TooltipContent: ({ children }: { children: React.ReactNode }) => (
-    <span>{children}</span>
-  ),
+  TooltipContent: ({ children }: { children: React.ReactNode }) => <span>{children}</span>,
 }));
 
 import { Hero } from "@/components/landing/hero";
 import { SocialIcons } from "@/components/landing/social-icons";
 
 const feature = await loadFeature(
-  path.resolve(
-    process.cwd(),
-    "../../specs/apps/oseplatform-web/fe/gherkin/landing-page.feature",
-  ),
+  path.resolve(process.cwd(), "../../specs/apps/oseplatform/fe/gherkin/landing-page.feature"),
 );
 
 describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
@@ -93,9 +74,7 @@ describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
     });
 
     Then('the hero section displays the title "Open Sharia Enterprise Platform"', () => {
-      expect(
-        screen.getByRole("heading", { name: /Open Sharia Enterprise Platform/i }),
-      ).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: /Open Sharia Enterprise Platform/i })).toBeInTheDocument();
     });
 
     And("the hero section displays a description of the platform mission", () => {

@@ -5,7 +5,7 @@ import type { SearchResult } from "@/server/content/types";
 import { integrationCaller } from "./helpers/test-caller";
 
 const feature = await loadFeature(
-  path.resolve(process.cwd(), "../../specs/apps/oseplatform-web/be/gherkin/search/search.feature"),
+  path.resolve(process.cwd(), "../../specs/apps/oseplatform/be/gherkin/search/search.feature"),
 );
 
 describeFeature(feature, ({ Scenario, Background }) => {

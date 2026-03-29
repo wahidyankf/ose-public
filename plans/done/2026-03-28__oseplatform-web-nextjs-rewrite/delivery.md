@@ -87,10 +87,10 @@ Execute phases in order. Each phase produces a working, committable state.
 
 ### Create Spec Directory
 
-- [x] Create `specs/apps/oseplatform-web/gherkin/` directory structure (be/ and fe/ subdirs)
-- [x] Create `specs/apps/oseplatform-web/README.md` with spec overview
+- [x] Create `specs/apps/oseplatform/gherkin/` directory structure (be/ and fe/ subdirs)
+- [x] Create `specs/apps/oseplatform/README.md` with spec overview
 
-### Write Backend Feature Files (`specs/apps/oseplatform-web/be/gherkin/`)
+### Write Backend Feature Files (`specs/apps/oseplatform/be/gherkin/`)
 
 - [x] Create `content-retrieval/content-retrieval.feature` (4 scenarios: getBySlug, listUpdates, draft filtering, 404 handling)
 - [x] Create `search/search.feature` (3 scenarios: query matching, empty results, result limiting)
@@ -98,7 +98,7 @@ Execute phases in order. Each phase produces a working, committable state.
 - [x] Create `health/health.feature` (1 scenario: health endpoint response)
 - [x] Create `seo/seo.feature` (2 scenarios: sitemap generation, robots.txt)
 
-### Write Frontend Feature Files (`specs/apps/oseplatform-web/fe/gherkin/`)
+### Write Frontend Feature Files (`specs/apps/oseplatform/fe/gherkin/`)
 
 - [x] Create `landing-page.feature` (2 scenarios: hero content, social icons)
 - [x] Create `navigation.feature` (3 scenarios: header links, breadcrumbs, prev/next)

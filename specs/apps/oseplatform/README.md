@@ -7,7 +7,7 @@ frontend UI behaviour.
 ## Structure
 
 ```
-specs/apps/oseplatform-web/
+specs/apps/oseplatform/
 ├── README.md              # This file
 ├── be/                    # Backend specs (HTTP-semantic)
 │   └── gherkin/           # Backend Gherkin scenarios

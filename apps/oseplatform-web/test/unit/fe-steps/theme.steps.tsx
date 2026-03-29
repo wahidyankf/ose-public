@@ -74,13 +74,7 @@ vi.mock("next-themes", () => ({
 // Mock @/components/ui/dropdown-menu (needed for import resolution)
 vi.mock("@/components/ui/dropdown-menu", () => ({
   DropdownMenu: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-  DropdownMenuTrigger: ({
-    children,
-    asChild,
-  }: {
-    children: React.ReactNode;
-    asChild?: boolean;
-  }) => {
+  DropdownMenuTrigger: ({ children, asChild }: { children: React.ReactNode; asChild?: boolean }) => {
     if (asChild && React.isValidElement(children)) {
       return children;
     }
@@ -89,25 +83,14 @@ vi.mock("@/components/ui/dropdown-menu", () => ({
   DropdownMenuContent: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="dropdown-content">{children}</div>
   ),
-  DropdownMenuItem: ({
-    children,
-    onClick,
-  }: {
-    children: React.ReactNode;
-    onClick?: () => void;
-  }) => (
+  DropdownMenuItem: ({ children, onClick }: { children: React.ReactNode; onClick?: () => void }) => (
     <button role="menuitem" onClick={onClick}>
       {children}
     </button>
   ),
 }));
 
-const feature = await loadFeature(
-  path.resolve(
-    process.cwd(),
-    "../../specs/apps/oseplatform-web/fe/gherkin/theme.feature",
-  ),
-);
+const feature = await loadFeature(path.resolve(process.cwd(), "../../specs/apps/oseplatform/fe/gherkin/theme.feature"));
 
 describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
   AfterEachScenario(() => {

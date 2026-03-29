@@ -8,7 +8,7 @@ import { appRouter } from "@/server/trpc/router";
 import { testContentService, testContentServiceWithPhase } from "./helpers/test-service";
 
 const feature = await loadFeature(
-  path.resolve(process.cwd(), "../../specs/apps/oseplatform-web/be/gherkin/search/search.feature"),
+  path.resolve(process.cwd(), "../../specs/apps/oseplatform/be/gherkin/search/search.feature"),
 );
 
 const createCaller = createCallerFactory(appRouter);

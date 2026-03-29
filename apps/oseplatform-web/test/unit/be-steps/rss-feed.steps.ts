@@ -6,10 +6,7 @@ import { InMemoryContentRepository } from "@/server/content/repository-memory";
 import { ContentService } from "@/server/content/service";
 
 const feature = await loadFeature(
-  path.resolve(
-    process.cwd(),
-    "../../specs/apps/oseplatform-web/be/gherkin/rss-feed/rss-feed.feature",
-  ),
+  path.resolve(process.cwd(), "../../specs/apps/oseplatform/be/gherkin/rss-feed/rss-feed.feature"),
 );
 
 const SITE_URL = "https://oseplatform.com";
@@ -98,32 +95,29 @@ describeFeature(feature, ({ Scenario, Background }) => {
     let updates: ContentMeta[];
     let feedXml: string;
 
-    Given(
-      'the content repository contains an update post with title "Phase 0 End" and date "2026-02-08"',
-      async () => {
-        const repo = new InMemoryContentRepository([
-          {
-            meta: {
-              title: "Phase 0 End",
-              slug: "updates/2026-02-08-phase-0-end",
-              date: new Date("2026-02-08T00:00:00Z"),
-              draft: false,
-              description: "End of phase 0",
-              tags: [],
-              summary: "Phase 0 complete",
-              weight: 0,
-              isSection: false,
-              filePath: "/mock/updates/phase-0-end.md",
-              readingTime: 5,
-              category: "updates",
-            },
-            content: "## Phase 0 End\n\nPhase complete.",
+    Given('the content repository contains an update post with title "Phase 0 End" and date "2026-02-08"', async () => {
+      const repo = new InMemoryContentRepository([
+        {
+          meta: {
+            title: "Phase 0 End",
+            slug: "updates/2026-02-08-phase-0-end",
+            date: new Date("2026-02-08T00:00:00Z"),
+            draft: false,
+            description: "End of phase 0",
+            tags: [],
+            summary: "Phase 0 complete",
+            weight: 0,
+            isSection: false,
+            filePath: "/mock/updates/phase-0-end.md",
+            readingTime: 5,
+            category: "updates",
           },
-        ]);
-        const service = new ContentService(repo);
-        updates = await service.listUpdates();
-      },
-    );
+          content: "## Phase 0 End\n\nPhase complete.",
+        },
+      ]);
+      const service = new ContentService(repo);
+      updates = await service.listUpdates();
+    });
 
     When("the RSS feed is generated", () => {
       feedXml = buildRssFeed(updates);

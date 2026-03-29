@@ -4,7 +4,7 @@ import { expect } from "vitest";
 import { testCaller } from "./helpers/test-caller";
 
 const feature = await loadFeature(
-  path.resolve(process.cwd(), "../../specs/apps/oseplatform-web/be/gherkin/health/health.feature"),
+  path.resolve(process.cwd(), "../../specs/apps/oseplatform/be/gherkin/health/health.feature"),
 );
 
 describeFeature(feature, ({ Scenario, Background }) => {

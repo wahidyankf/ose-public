@@ -7,15 +7,7 @@ import React from "react";
 
 // Mock next/link
 vi.mock("next/link", () => ({
-  default: ({
-    href,
-    children,
-    ...props
-  }: {
-    href: string;
-    children: React.ReactNode;
-    [key: string]: unknown;
-  }) => (
+  default: ({ href, children, ...props }: { href: string; children: React.ReactNode; [key: string]: unknown }) => (
     <a href={href} {...props}>
       {children}
     </a>
@@ -71,10 +63,7 @@ import { Breadcrumb } from "@/components/layout/breadcrumb";
 import { PrevNext } from "@/components/layout/prev-next";
 
 const feature = await loadFeature(
-  path.resolve(
-    process.cwd(),
-    "../../specs/apps/oseplatform-web/fe/gherkin/navigation.feature",
-  ),
+  path.resolve(process.cwd(), "../../specs/apps/oseplatform/fe/gherkin/navigation.feature"),
 );
 
 describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {

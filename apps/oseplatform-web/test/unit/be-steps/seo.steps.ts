@@ -6,7 +6,7 @@ import { InMemoryContentRepository } from "@/server/content/repository-memory";
 import { ContentService } from "@/server/content/service";
 
 const feature = await loadFeature(
-  path.resolve(process.cwd(), "../../specs/apps/oseplatform-web/be/gherkin/seo/seo.feature"),
+  path.resolve(process.cwd(), "../../specs/apps/oseplatform/be/gherkin/seo/seo.feature"),
 );
 
 const SITE_URL = "https://oseplatform.com";
@@ -117,11 +117,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
 
     And("the sitemap contains URLs for all update pages", () => {
-      expect(
-        sitemap.some((entry) =>
-          entry.url.includes("updates/2026-02-08-phase-0-end"),
-        ),
-      ).toBe(true);
+      expect(sitemap.some((entry) => entry.url.includes("updates/2026-02-08-phase-0-end"))).toBe(true);
     });
   });
 
@@ -133,9 +129,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
 
     Then("it allows all user agents", () => {
-      expect(robots.rules).toContainEqual(
-        expect.objectContaining({ userAgent: "*", allow: "/" }),
-      );
+      expect(robots.rules).toContainEqual(expect.objectContaining({ userAgent: "*", allow: "/" }));
     });
 
     And("it references the sitemap URL", () => {

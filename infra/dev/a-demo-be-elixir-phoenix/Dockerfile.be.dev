@@ -8,13 +8,14 @@ RUN apk add --no-cache build-base curl git && \
 # Pre-install deps during image build so container startup is fast.
 # Path deps (elixir-gherkin, elixir-cabbage) are only: [:test, :integration]
 # and are excluded when MIX_ENV=dev.
-# Deps are cached in /mix-cache and copied to workspace on first run.
-WORKDIR /mix-cache
+# Use shared paths so deps survive volume mount at /workspace.
+ENV MIX_DEPS_PATH=/mix-deps
+ENV MIX_BUILD_PATH=/mix-build
+WORKDIR /tmp/mix-cache
 COPY apps/a-demo-be-elixir-phoenix/mix.exs apps/a-demo-be-elixir-phoenix/mix.lock ./
 ENV MIX_ENV=dev
 RUN mix deps.get && mix deps.compile
 
 WORKDIR /workspace
 
-# On startup: copy pre-built deps if workspace deps dir is empty, then run normally
-CMD ["sh", "-c", "[ -d deps ] || cp -a /mix-cache/deps . ; [ -d _build ] || cp -a /mix-cache/_build . ; mix deps.get && mix ecto.migrate && mix phx.server"]
+CMD ["sh", "-c", "mix deps.get && mix ecto.migrate && mix phx.server"]

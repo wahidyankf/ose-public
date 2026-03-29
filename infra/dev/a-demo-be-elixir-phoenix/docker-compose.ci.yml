@@ -5,9 +5,18 @@
 
 services:
   a-demo-be-elixir-phoenix:
+    build:
+      context: ../../..
+      dockerfile: infra/dev/a-demo-be-elixir-phoenix/Dockerfile.be.ci
+    volumes: []
+    command: ["sh", "-c", "mix ecto.migrate && mix phx.server"]
     environment:
       - HEALTH_SHOW_DETAILS=false
       - ENABLE_TEST_API=true
+      - MIX_ENV=dev
+      - PORT=8201
+      - DATABASE_URL=ecto://a_demo_be_elixir_phoenix:a_demo_be_elixir_phoenix@a-demo-be-elixir-phoenix-db:5432/a_demo_be_elixir_phoenix
+      - APP_JWT_SECRET=change-me-in-dev-only-not-for-production
 
   demo-fe:
     build:

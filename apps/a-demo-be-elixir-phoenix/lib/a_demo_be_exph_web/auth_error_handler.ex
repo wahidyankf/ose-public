@@ -1,4 +1,4 @@
-defmodule AAADemoBeExphWeb.AuthErrorHandler do
+defmodule AADemoBeExphWeb.AuthErrorHandler do
   @moduledoc """
   Guardian error handler for authentication failures.
   Returns a 401 JSON response for unauthorized requests.

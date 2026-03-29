@@ -1,4 +1,4 @@
-defmodule AAADemoBeExphWeb.ConnCase do
+defmodule AADemoBeExphWeb.ConnCase do
   @moduledoc """
   This module defines the test case to be used by
   tests that require setting up a connection.
@@ -11,13 +11,13 @@ defmodule AAADemoBeExphWeb.ConnCase do
 
   using do
     quote do
-      @endpoint AAADemoBeExphWeb.Endpoint
+      @endpoint AADemoBeExphWeb.Endpoint
 
-      use AAADemoBeExphWeb, :verified_routes
+      use AADemoBeExphWeb, :verified_routes
 
       import Plug.Conn
       import Phoenix.ConnTest
-      import AAADemoBeExphWeb.ConnCase
+      import AADemoBeExphWeb.ConnCase
     end
   end
 

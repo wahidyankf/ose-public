@@ -8,10 +8,10 @@ defmodule ADemoBeExph.Application do
   @impl true
   def start(_type, _args) do
     base_children = [
-      AAADemoBeExphWeb.Telemetry,
+      AADemoBeExphWeb.Telemetry,
       {DNSCluster, query: Application.get_env(:a_demo_be_exph, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: ADemoBeExph.PubSub},
-      AAADemoBeExphWeb.Endpoint
+      AADemoBeExphWeb.Endpoint
     ]
 
     children =
@@ -31,7 +31,7 @@ defmodule ADemoBeExph.Application do
   # whenever the application is updated.
   @impl true
   def config_change(changed, _new, removed) do
-    AAADemoBeExphWeb.Endpoint.config_change(changed, removed)
+    AADemoBeExphWeb.Endpoint.config_change(changed, removed)
     :ok
   end
 end

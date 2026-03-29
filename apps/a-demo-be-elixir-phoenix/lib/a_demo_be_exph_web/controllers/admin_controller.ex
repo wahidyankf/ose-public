@@ -1,5 +1,5 @@
-defmodule AAADemoBeExphWeb.AdminController do
-  use AAADemoBeExphWeb, :controller
+defmodule AADemoBeExphWeb.AdminController do
+  use AADemoBeExphWeb, :controller
 
   alias GeneratedSchemas.PasswordResetResponse
   alias GeneratedSchemas.User, as: UserSchema

@@ -1,5 +1,5 @@
-defmodule AAADemoBeExphWeb.ReportController do
-  use AAADemoBeExphWeb, :controller
+defmodule AADemoBeExphWeb.ReportController do
+  use AADemoBeExphWeb, :controller
 
   alias GeneratedSchemas.CategoryBreakdown
   alias GeneratedSchemas.PLReport

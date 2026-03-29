@@ -1,4 +1,4 @@
-defmodule AAADemoBeExphWeb.Integration.TokensSteps do
+defmodule AADemoBeExphWeb.Integration.TokensSteps do
   use Cabbage.Feature, async: false, file: "token-management/tokens.feature"
 
   use ADemoBeExph.DataCaseIntegration

@@ -1,7 +1,7 @@
-defmodule AAADemoBeExphWeb.Unit.SecuritySteps do
+defmodule AADemoBeExphWeb.Unit.SecuritySteps do
   use Cabbage.Feature, async: false, file: "security/security.feature"
 
-  use AAADemoBeExphWeb.ConnCase
+  use AADemoBeExphWeb.ConnCase
 
   alias ADemoBeExph.Integration.Helpers
   alias ADemoBeExph.Test.InMemoryStore

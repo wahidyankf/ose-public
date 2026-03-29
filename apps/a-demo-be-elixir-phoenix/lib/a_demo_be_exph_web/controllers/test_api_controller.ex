@@ -1,5 +1,5 @@
-defmodule AAADemoBeExphWeb.TestApiController do
-  use AAADemoBeExphWeb, :controller
+defmodule AADemoBeExphWeb.TestApiController do
+  use AADemoBeExphWeb, :controller
 
   alias ADemoBeExph.Accounts.User
   alias ADemoBeExph.Attachment.Attachment

@@ -1,4 +1,4 @@
-defmodule AAADemoBeExphWeb.Integration.PasswordLoginSteps do
+defmodule AADemoBeExphWeb.Integration.PasswordLoginSteps do
   use Cabbage.Feature, async: false, file: "authentication/password-login.feature"
 
   use ADemoBeExph.DataCaseIntegration

@@ -1,12 +1,12 @@
-defmodule AAADemoBeExphWeb do
+defmodule AADemoBeExphWeb do
   @moduledoc """
   The entrypoint for defining your web interface, such
   as controllers, components, channels, and so on.
 
   This can be used in your application as:
 
-      use AAADemoBeExphWeb, :controller
-      use AAADemoBeExphWeb, :html
+      use AADemoBeExphWeb, :controller
+      use AADemoBeExphWeb, :html
 
   The definitions below will be executed for every controller,
   component, etc, so keep them short and clean, focused
@@ -39,7 +39,7 @@ defmodule AAADemoBeExphWeb do
     quote do
       use Phoenix.Controller, formats: [:html, :json]
 
-      use Gettext, backend: AAADemoBeExphWeb.Gettext
+      use Gettext, backend: AADemoBeExphWeb.Gettext
 
       import Plug.Conn
 
@@ -50,9 +50,9 @@ defmodule AAADemoBeExphWeb do
   def verified_routes do
     quote do
       use Phoenix.VerifiedRoutes,
-        endpoint: AAADemoBeExphWeb.Endpoint,
-        router: AAADemoBeExphWeb.Router,
-        statics: AAADemoBeExphWeb.static_paths()
+        endpoint: AADemoBeExphWeb.Endpoint,
+        router: AADemoBeExphWeb.Router,
+        statics: AADemoBeExphWeb.static_paths()
     end
   end
 

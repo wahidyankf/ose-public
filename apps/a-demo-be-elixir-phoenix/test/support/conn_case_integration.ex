@@ -1,4 +1,4 @@
-defmodule AAADemoBeExphWeb.ConnCaseIntegration do
+defmodule AADemoBeExphWeb.ConnCaseIntegration do
   @moduledoc """
   Test case for integration tests that run against a real PostgreSQL database.
 
@@ -10,13 +10,13 @@ defmodule AAADemoBeExphWeb.ConnCaseIntegration do
 
   using do
     quote do
-      @endpoint AAADemoBeExphWeb.Endpoint
+      @endpoint AADemoBeExphWeb.Endpoint
 
-      use AAADemoBeExphWeb, :verified_routes
+      use AADemoBeExphWeb, :verified_routes
 
       import Plug.Conn
       import Phoenix.ConnTest
-      import AAADemoBeExphWeb.ConnCaseIntegration
+      import AADemoBeExphWeb.ConnCaseIntegration
     end
   end
 

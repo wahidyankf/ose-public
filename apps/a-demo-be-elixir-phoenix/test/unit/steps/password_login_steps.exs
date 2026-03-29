@@ -1,7 +1,7 @@
-defmodule AAADemoBeExphWeb.Unit.PasswordLoginSteps do
+defmodule AADemoBeExphWeb.Unit.PasswordLoginSteps do
   use Cabbage.Feature, async: false, file: "authentication/password-login.feature"
 
-  use AAADemoBeExphWeb.ConnCase
+  use AADemoBeExphWeb.ConnCase
 
   alias ADemoBeExph.Integration.Helpers
 

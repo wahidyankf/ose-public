@@ -1,8 +1,8 @@
-defmodule AAADemoBeExphWeb.CoverageTest do
+defmodule AADemoBeExphWeb.CoverageTest do
   @moduledoc """
   Integration tests covering controller error paths not exercised by Cabbage scenarios.
   """
-  use AAADemoBeExphWeb.ConnCase
+  use AADemoBeExphWeb.ConnCase
 
   alias ADemoBeExph.Integration.Helpers
 

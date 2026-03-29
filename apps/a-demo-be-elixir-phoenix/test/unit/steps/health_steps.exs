@@ -1,7 +1,7 @@
-defmodule AAADemoBeExphWeb.Unit.HealthSteps do
+defmodule AADemoBeExphWeb.Unit.HealthSteps do
   use Cabbage.Feature, async: false, file: "health/health-check.feature"
 
-  use AAADemoBeExphWeb.ConnCase
+  use AADemoBeExphWeb.ConnCase
 
   @moduletag :unit
 

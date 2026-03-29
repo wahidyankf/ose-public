@@ -1,7 +1,7 @@
-defmodule AAADemoBeExphWeb.Unit.AttachmentsSteps do
+defmodule AADemoBeExphWeb.Unit.AttachmentsSteps do
   use Cabbage.Feature, async: false, file: "expenses/attachments.feature"
 
-  use AAADemoBeExphWeb.ConnCase
+  use AADemoBeExphWeb.ConnCase
 
   alias ADemoBeExph.Integration.Helpers
 

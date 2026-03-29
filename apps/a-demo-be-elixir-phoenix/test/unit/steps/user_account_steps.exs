@@ -1,7 +1,7 @@
-defmodule AAADemoBeExphWeb.Unit.UserAccountSteps do
+defmodule AADemoBeExphWeb.Unit.UserAccountSteps do
   use Cabbage.Feature, async: false, file: "user-lifecycle/user-account.feature"
 
-  use AAADemoBeExphWeb.ConnCase
+  use AADemoBeExphWeb.ConnCase
 
   alias ADemoBeExph.Integration.Helpers
 

@@ -1,7 +1,7 @@
-defmodule AAADemoBeExphWeb.Unit.TokenLifecycleSteps do
+defmodule AADemoBeExphWeb.Unit.TokenLifecycleSteps do
   use Cabbage.Feature, async: false, file: "authentication/token-lifecycle.feature"
 
-  use AAADemoBeExphWeb.ConnCase
+  use AADemoBeExphWeb.ConnCase
 
   alias ADemoBeExph.Integration.Helpers
 

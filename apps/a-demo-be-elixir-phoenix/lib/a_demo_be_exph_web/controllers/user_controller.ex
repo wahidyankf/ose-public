@@ -1,5 +1,5 @@
-defmodule AAADemoBeExphWeb.UserController do
-  use AAADemoBeExphWeb, :controller
+defmodule AADemoBeExphWeb.UserController do
+  use AADemoBeExphWeb, :controller
 
   alias GeneratedSchemas.User, as: UserSchema
   alias Guardian.Plug, as: GuardianPlug

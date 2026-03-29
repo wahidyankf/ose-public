@@ -1,5 +1,5 @@
-defmodule AAADemoBeExphWeb.AuthController do
-  use AAADemoBeExphWeb, :controller
+defmodule AADemoBeExphWeb.AuthController do
+  use AADemoBeExphWeb, :controller
 
   alias ADemoBeExph.Auth.Guardian
   alias GeneratedSchemas.AuthTokens

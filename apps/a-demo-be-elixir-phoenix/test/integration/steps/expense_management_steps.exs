@@ -1,4 +1,4 @@
-defmodule AAADemoBeExphWeb.Integration.ExpenseManagementSteps do
+defmodule AADemoBeExphWeb.Integration.ExpenseManagementSteps do
   use Cabbage.Feature, async: false, file: "expenses/expense-management.feature"
 
   use ADemoBeExph.DataCaseIntegration

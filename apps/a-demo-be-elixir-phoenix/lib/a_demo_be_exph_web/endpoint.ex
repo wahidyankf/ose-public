@@ -1,4 +1,4 @@
-defmodule AAADemoBeExphWeb.Endpoint do
+defmodule AADemoBeExphWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :a_demo_be_exph
 
   # The session will be stored in the cookie and signed,
@@ -24,7 +24,7 @@ defmodule AAADemoBeExphWeb.Endpoint do
     at: "/",
     from: :a_demo_be_exph,
     gzip: not code_reloading?,
-    only: AAADemoBeExphWeb.static_paths(),
+    only: AADemoBeExphWeb.static_paths(),
     raise_on_missing_only: code_reloading?
 
   # Code reloading can be explicitly enabled under the
@@ -47,5 +47,5 @@ defmodule AAADemoBeExphWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
-  plug AAADemoBeExphWeb.Router
+  plug AADemoBeExphWeb.Router
 end

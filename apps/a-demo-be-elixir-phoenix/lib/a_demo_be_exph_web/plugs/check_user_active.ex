@@ -1,4 +1,4 @@
-defmodule AAADemoBeExphWeb.Plugs.CheckUserActive do
+defmodule AADemoBeExphWeb.Plugs.CheckUserActive do
   @moduledoc """
   Plug that loads the current user from DB and rejects requests for
   deactivated, disabled, or locked users.

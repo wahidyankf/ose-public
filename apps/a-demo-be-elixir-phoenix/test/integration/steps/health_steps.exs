@@ -1,4 +1,4 @@
-defmodule AAADemoBeExphWeb.Integration.HealthSteps do
+defmodule AADemoBeExphWeb.Integration.HealthSteps do
   use Cabbage.Feature, async: false, file: "health/health-check.feature"
 
   use ADemoBeExph.DataCaseIntegration

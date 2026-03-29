@@ -1,4 +1,4 @@
-defmodule AAADemoBeExphWeb.Integration.RegistrationSteps do
+defmodule AADemoBeExphWeb.Integration.RegistrationSteps do
   use Cabbage.Feature, async: false, file: "user-lifecycle/registration.feature"
 
   use ADemoBeExph.DataCaseIntegration

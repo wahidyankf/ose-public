@@ -1,4 +1,4 @@
-defmodule AAADemoBeExphWeb.Integration.SecuritySteps do
+defmodule AADemoBeExphWeb.Integration.SecuritySteps do
   use Cabbage.Feature, async: false, file: "security/security.feature"
 
   use ADemoBeExph.DataCaseIntegration

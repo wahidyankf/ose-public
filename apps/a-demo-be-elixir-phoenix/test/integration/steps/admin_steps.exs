@@ -1,4 +1,4 @@
-defmodule AAADemoBeExphWeb.Integration.AdminSteps do
+defmodule AADemoBeExphWeb.Integration.AdminSteps do
   use Cabbage.Feature, async: false, file: "admin/admin.feature"
 
   use ADemoBeExph.DataCaseIntegration

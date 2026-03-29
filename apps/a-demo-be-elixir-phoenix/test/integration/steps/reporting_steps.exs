@@ -1,4 +1,4 @@
-defmodule AAADemoBeExphWeb.Integration.ReportingSteps do
+defmodule AADemoBeExphWeb.Integration.ReportingSteps do
   use Cabbage.Feature, async: false, file: "expenses/reporting.feature"
 
   use ADemoBeExph.DataCaseIntegration

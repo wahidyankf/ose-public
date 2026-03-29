@@ -1,5 +1,5 @@
-defmodule AAADemoBeExphWeb.ExpenseController do
-  use AAADemoBeExphWeb, :controller
+defmodule AADemoBeExphWeb.ExpenseController do
+  use AADemoBeExphWeb, :controller
 
   alias GeneratedSchemas.Expense, as: ExpenseSchema
   alias GeneratedSchemas.ExpenseListResponse

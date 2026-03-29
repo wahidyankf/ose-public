@@ -1,5 +1,5 @@
-defmodule AAADemoBeExphWeb.AttachmentController do
-  use AAADemoBeExphWeb, :controller
+defmodule AADemoBeExphWeb.AttachmentController do
+  use AADemoBeExphWeb, :controller
 
   alias ADemoBeExph.Attachment.Attachment
   alias GeneratedSchemas.Attachment, as: AttachmentSchema

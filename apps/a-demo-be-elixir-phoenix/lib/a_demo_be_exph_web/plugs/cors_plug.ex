@@ -1,4 +1,4 @@
-defmodule AAADemoBeExphWeb.CorsPlug do
+defmodule AADemoBeExphWeb.CorsPlug do
   @moduledoc """
   Plug that adds CORS headers for allowed origins.
   Handles OPTIONS preflight requests and sets Access-Control-Allow-* headers.

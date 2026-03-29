@@ -1,4 +1,4 @@
-defmodule AAADemoBeExphWeb.Plugs.CheckRevoked do
+defmodule AADemoBeExphWeb.Plugs.CheckRevoked do
   @moduledoc """
   Plug that rejects requests carrying a blacklisted access token.
   Must be placed after Guardian.Plug.EnsureAuthenticated.

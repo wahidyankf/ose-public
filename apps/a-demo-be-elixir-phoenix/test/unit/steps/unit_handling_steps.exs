@@ -1,7 +1,7 @@
-defmodule AAADemoBeExphWeb.Unit.UnitHandlingSteps do
+defmodule AADemoBeExphWeb.Unit.UnitHandlingSteps do
   use Cabbage.Feature, async: false, file: "expenses/unit-handling.feature"
 
-  use AAADemoBeExphWeb.ConnCase
+  use AADemoBeExphWeb.ConnCase
 
   alias ADemoBeExph.Integration.Helpers
 

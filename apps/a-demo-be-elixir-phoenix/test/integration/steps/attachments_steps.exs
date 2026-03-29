@@ -1,4 +1,4 @@
-defmodule AAADemoBeExphWeb.Integration.AttachmentsSteps do
+defmodule AADemoBeExphWeb.Integration.AttachmentsSteps do
   use Cabbage.Feature, async: false, file: "expenses/attachments.feature"
 
   use ADemoBeExph.DataCaseIntegration

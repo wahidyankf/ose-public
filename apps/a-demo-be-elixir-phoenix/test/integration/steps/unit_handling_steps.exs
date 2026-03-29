@@ -1,4 +1,4 @@
-defmodule AAADemoBeExphWeb.Integration.UnitHandlingSteps do
+defmodule AADemoBeExphWeb.Integration.UnitHandlingSteps do
   use Cabbage.Feature, async: false, file: "expenses/unit-handling.feature"
 
   use ADemoBeExph.DataCaseIntegration

@@ -74,18 +74,27 @@ jobs:
           npx nx run a-demo-fe-ts-nextjs:codegen
           npx nx run a-demo-fe-ts-tanstack-start:codegen
 
-      - name: Start full stack (DB + backend + frontend)
-        run: docker compose -f infra/dev/a-demo-be-elixir-phoenix/docker-compose.yml -f infra/dev/a-demo-be-elixir-phoenix/docker-compose.ci.yml up --build -d
+      - name: Build Docker images
+        run: docker compose -f infra/dev/a-demo-be-elixir-phoenix/docker-compose.yml -f infra/dev/a-demo-be-elixir-phoenix/docker-compose.ci.yml build
+
+      - name: Start backend stack (DB + backend)
+        run: docker compose -f infra/dev/a-demo-be-elixir-phoenix/docker-compose.yml -f infra/dev/a-demo-be-elixir-phoenix/docker-compose.ci.yml up -d a-demo-be-elixir-phoenix-db a-demo-be-elixir-phoenix
 
       - name: Wait for backend to be healthy
         run: |
           echo "Waiting for backend to become healthy..."
           for i in $(seq 1 60); do
             STATUS=$(docker inspect --format='{{.State.Health.Status}}' 'a-demo-be-elixir-phoenix' 2>/dev/null || echo "unknown")
-            echo "[$i/60] Health: $STATUS"
+            RUNNING=$(docker inspect --format='{{.State.Running}}' 'a-demo-be-elixir-phoenix' 2>/dev/null || echo "unknown")
+            echo "[$i/60] Health: $STATUS, Running: $RUNNING"
             if [ "$STATUS" = "healthy" ]; then
               echo "Backend is healthy"
               break
+            fi
+            if [ "$RUNNING" = "false" ]; then
+              echo "Backend container exited!"
+              docker logs a-demo-be-elixir-phoenix
+              exit 1
             fi
             sleep 10
           done
@@ -94,6 +103,9 @@ jobs:
             docker logs a-demo-be-elixir-phoenix
             exit 1
           fi
+
+      - name: Start frontend
+        run: docker compose -f infra/dev/a-demo-be-elixir-phoenix/docker-compose.yml -f infra/dev/a-demo-be-elixir-phoenix/docker-compose.ci.yml up -d demo-fe
 
       - name: Wait for frontend to be ready
         run: |

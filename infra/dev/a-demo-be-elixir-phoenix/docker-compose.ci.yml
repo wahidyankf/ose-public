@@ -8,8 +8,8 @@ services:
     build:
       context: ../../..
       dockerfile: infra/dev/a-demo-be-elixir-phoenix/Dockerfile.be.ci
-    volumes: []
-    command: ["sh", "-c", "mix ecto.migrate && mix phx.server"]
+    volumes: !reset []
+    command: ["sh", "-c", "mix deps.get && mix ecto.migrate && mix phx.server"]
     environment:
       - HEALTH_SHOW_DETAILS=false
       - ENABLE_TEST_API=true

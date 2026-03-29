@@ -18,9 +18,9 @@ governance
 generated-reports
 local-temp
 specs
-!specs/apps/demo/be/gherkin
-!specs/apps/demo/fe/gherkin
-!specs/apps/demo/contracts/generated
+!specs/apps/a-demo/be/gherkin
+!specs/apps/a-demo/fe/gherkin
+!specs/apps/a-demo/contracts/generated
 !specs/apps/organiclever/be/gherkin
 !specs/apps/organiclever/fe/gherkin
 !specs/apps/organiclever/contracts/generated

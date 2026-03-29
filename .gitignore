@@ -156,7 +156,7 @@ coverage.xml
 # Python variant (Python packages use underscores, not hyphens)
 **/generated_contracts/
 # Bundled OpenAPI spec + docs
-specs/apps/demo/contracts/generated/
+specs/apps/a-demo/contracts/generated/
 
 # Claude Code settings
 .claude/settings.local.json

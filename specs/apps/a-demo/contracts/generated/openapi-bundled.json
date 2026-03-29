@@ -63,7 +63,9 @@
       "get": {
         "operationId": "getHealth",
         "summary": "Health check",
-        "tags": ["Health"],
+        "tags": [
+          "Health"
+        ],
         "responses": {
           "200": {
             "description": "Service is healthy",
@@ -82,7 +84,9 @@
       "post": {
         "operationId": "register",
         "summary": "Register a new user",
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -131,7 +135,9 @@
       "post": {
         "operationId": "login",
         "summary": "Authenticate with credentials",
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -170,7 +176,9 @@
       "post": {
         "operationId": "refreshToken",
         "summary": "Refresh access token",
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -209,7 +217,9 @@
       "post": {
         "operationId": "logout",
         "summary": "Logout current session",
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -226,7 +236,9 @@
       "post": {
         "operationId": "logoutAll",
         "summary": "Logout all sessions",
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -243,7 +255,9 @@
       "get": {
         "operationId": "getCurrentUser",
         "summary": "Get current user profile",
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -275,7 +289,9 @@
       "patch": {
         "operationId": "updateProfile",
         "summary": "Update current user profile",
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -319,7 +335,9 @@
       "post": {
         "operationId": "changePassword",
         "summary": "Change current user password",
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -366,7 +384,9 @@
       "post": {
         "operationId": "deactivateAccount",
         "summary": "Deactivate current user account",
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -393,7 +413,9 @@
       "post": {
         "operationId": "createExpense",
         "summary": "Create a new expense or income record",
-        "tags": ["Expenses"],
+        "tags": [
+          "Expenses"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -435,7 +457,9 @@
       "get": {
         "operationId": "listExpenses",
         "summary": "List expenses with pagination",
-        "tags": ["Expenses"],
+        "tags": [
+          "Expenses"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -477,7 +501,10 @@
             "in": "query",
             "schema": {
               "type": "string",
-              "enum": ["income", "expense"]
+              "enum": [
+                "income",
+                "expense"
+              ]
             }
           }
         ],
@@ -499,7 +526,9 @@
       "get": {
         "operationId": "getExpense",
         "summary": "Get expense by ID",
-        "tags": ["Expenses"],
+        "tags": [
+          "Expenses"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -541,7 +570,9 @@
       "put": {
         "operationId": "updateExpense",
         "summary": "Update expense by ID",
-        "tags": ["Expenses"],
+        "tags": [
+          "Expenses"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -593,7 +624,9 @@
       "delete": {
         "operationId": "deleteExpense",
         "summary": "Delete expense by ID",
-        "tags": ["Expenses"],
+        "tags": [
+          "Expenses"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -630,7 +663,9 @@
       "get": {
         "operationId": "getExpenseSummary",
         "summary": "Get expense summary grouped by currency",
-        "tags": ["Expenses"],
+        "tags": [
+          "Expenses"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -657,7 +692,9 @@
       "post": {
         "operationId": "uploadAttachment",
         "summary": "Upload attachment to expense",
-        "tags": ["Attachments"],
+        "tags": [
+          "Attachments"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -679,7 +716,9 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "required": ["file"],
+                "required": [
+                  "file"
+                ],
                 "properties": {
                   "file": {
                     "type": "string",
@@ -726,7 +765,9 @@
       "get": {
         "operationId": "listAttachments",
         "summary": "List attachments for expense",
-        "tags": ["Attachments"],
+        "tags": [
+          "Attachments"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -763,7 +804,9 @@
       "delete": {
         "operationId": "deleteAttachment",
         "summary": "Delete attachment",
-        "tags": ["Attachments"],
+        "tags": [
+          "Attachments"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -808,7 +851,9 @@
       "get": {
         "operationId": "getPLReport",
         "summary": "Get profit and loss report",
-        "tags": ["Reports"],
+        "tags": [
+          "Reports"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -857,7 +902,9 @@
       "get": {
         "operationId": "listUsers",
         "summary": "List all users (admin)",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -909,7 +956,9 @@
       "post": {
         "operationId": "disableUser",
         "summary": "Disable a user account",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -956,7 +1005,9 @@
       "post": {
         "operationId": "enableUser",
         "summary": "Enable a disabled user account",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -983,7 +1034,9 @@
       "post": {
         "operationId": "unlockUser",
         "summary": "Unlock a locked user account",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -1010,7 +1063,9 @@
       "post": {
         "operationId": "forcePasswordReset",
         "summary": "Force password reset for a user",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -1044,7 +1099,9 @@
       "get": {
         "operationId": "getTokenClaims",
         "summary": "Get current token claims",
-        "tags": ["Tokens"],
+        "tags": [
+          "Tokens"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -1068,7 +1125,9 @@
       "get": {
         "operationId": "getJwks",
         "summary": "Get JSON Web Key Set",
-        "tags": ["Tokens"],
+        "tags": [
+          "Tokens"
+        ],
         "responses": {
           "200": {
             "description": "JWKS response",
@@ -1087,7 +1146,9 @@
       "post": {
         "operationId": "resetDatabase",
         "summary": "Reset database to clean state",
-        "tags": ["Test Support"],
+        "tags": [
+          "Test Support"
+        ],
         "x-test-only": true,
         "responses": {
           "200": {
@@ -1100,7 +1161,9 @@
       "post": {
         "operationId": "promoteToAdmin",
         "summary": "Promote a user to admin role",
-        "tags": ["Test Support"],
+        "tags": [
+          "Test Support"
+        ],
         "x-test-only": true,
         "security": [
           {
@@ -1127,7 +1190,10 @@
       "LoginRequest": {
         "type": "object",
         "description": "Credentials for user authentication",
-        "required": ["username", "password"],
+        "required": [
+          "username",
+          "password"
+        ],
         "properties": {
           "username": {
             "type": "string",
@@ -1144,7 +1210,11 @@
       "RegisterRequest": {
         "type": "object",
         "description": "New user registration payload",
-        "required": ["username", "email", "password"],
+        "required": [
+          "username",
+          "email",
+          "password"
+        ],
         "properties": {
           "username": {
             "type": "string",
@@ -1165,7 +1235,9 @@
       "RefreshRequest": {
         "type": "object",
         "description": "Token refresh request",
-        "required": ["refreshToken"],
+        "required": [
+          "refreshToken"
+        ],
         "properties": {
           "refreshToken": {
             "type": "string"
@@ -1175,7 +1247,11 @@
       "AuthTokens": {
         "type": "object",
         "description": "Authentication token pair returned on login or refresh",
-        "required": ["accessToken", "refreshToken", "tokenType"],
+        "required": [
+          "accessToken",
+          "refreshToken",
+          "tokenType"
+        ],
         "properties": {
           "accessToken": {
             "type": "string"
@@ -1192,7 +1268,16 @@
       "User": {
         "type": "object",
         "description": "User account details",
-        "required": ["id", "username", "email", "displayName", "status", "roles", "createdAt", "updatedAt"],
+        "required": [
+          "id",
+          "username",
+          "email",
+          "displayName",
+          "status",
+          "roles",
+          "createdAt",
+          "updatedAt"
+        ],
         "properties": {
           "id": {
             "type": "string"
@@ -1209,7 +1294,12 @@
           },
           "status": {
             "type": "string",
-            "enum": ["ACTIVE", "INACTIVE", "DISABLED", "LOCKED"]
+            "enum": [
+              "ACTIVE",
+              "INACTIVE",
+              "DISABLED",
+              "LOCKED"
+            ]
           },
           "roles": {
             "type": "array",
@@ -1230,7 +1320,9 @@
       "UpdateProfileRequest": {
         "type": "object",
         "description": "Update user display name",
-        "required": ["displayName"],
+        "required": [
+          "displayName"
+        ],
         "properties": {
           "displayName": {
             "type": "string"
@@ -1240,7 +1332,10 @@
       "ChangePasswordRequest": {
         "type": "object",
         "description": "Change user password",
-        "required": ["oldPassword", "newPassword"],
+        "required": [
+          "oldPassword",
+          "newPassword"
+        ],
         "properties": {
           "oldPassword": {
             "type": "string"
@@ -1290,7 +1385,10 @@
           },
           "type": {
             "type": "string",
-            "enum": ["income", "expense"]
+            "enum": [
+              "income",
+              "expense"
+            ]
           },
           "quantity": {
             "type": "number",
@@ -1316,7 +1414,14 @@
       "CreateExpenseRequest": {
         "type": "object",
         "description": "Create a new expense or income record",
-        "required": ["amount", "currency", "category", "description", "date", "type"],
+        "required": [
+          "amount",
+          "currency",
+          "category",
+          "description",
+          "date",
+          "type"
+        ],
         "properties": {
           "amount": {
             "type": "string"
@@ -1336,7 +1441,10 @@
           },
           "type": {
             "type": "string",
-            "enum": ["income", "expense"]
+            "enum": [
+              "income",
+              "expense"
+            ]
           },
           "quantity": {
             "type": "number",
@@ -1370,7 +1478,10 @@
           },
           "type": {
             "type": "string",
-            "enum": ["income", "expense"]
+            "enum": [
+              "income",
+              "expense"
+            ]
           },
           "quantity": {
             "type": "number",
@@ -1385,7 +1496,13 @@
       "ExpenseListResponse": {
         "type": "object",
         "description": "Paginated list of expenses",
-        "required": ["content", "totalElements", "totalPages", "page", "size"],
+        "required": [
+          "content",
+          "totalElements",
+          "totalPages",
+          "page",
+          "size"
+        ],
         "properties": {
           "content": {
             "type": "array",
@@ -1410,7 +1527,11 @@
       "CategoryBreakdown": {
         "type": "object",
         "description": "Breakdown of totals by category",
-        "required": ["category", "type", "total"],
+        "required": [
+          "category",
+          "type",
+          "total"
+        ],
         "properties": {
           "category": {
             "type": "string"
@@ -1426,7 +1547,13 @@
       "ExpenseSummary": {
         "type": "object",
         "description": "Summary of expenses by currency",
-        "required": ["currency", "totalIncome", "totalExpense", "net", "categories"],
+        "required": [
+          "currency",
+          "totalIncome",
+          "totalExpense",
+          "net",
+          "categories"
+        ],
         "properties": {
           "currency": {
             "type": "string"
@@ -1499,7 +1626,13 @@
       "Attachment": {
         "type": "object",
         "description": "File attachment metadata",
-        "required": ["id", "filename", "contentType", "size", "createdAt"],
+        "required": [
+          "id",
+          "filename",
+          "contentType",
+          "size",
+          "createdAt"
+        ],
         "properties": {
           "id": {
             "type": "string"
@@ -1522,7 +1655,13 @@
       "TokenClaims": {
         "type": "object",
         "description": "Decoded JWT token claims",
-        "required": ["sub", "iss", "exp", "iat", "roles"],
+        "required": [
+          "sub",
+          "iss",
+          "exp",
+          "iat",
+          "roles"
+        ],
         "properties": {
           "sub": {
             "type": "string"
@@ -1547,7 +1686,13 @@
       "JwkKey": {
         "type": "object",
         "description": "JSON Web Key",
-        "required": ["kty", "kid", "use", "n", "e"],
+        "required": [
+          "kty",
+          "kid",
+          "use",
+          "n",
+          "e"
+        ],
         "properties": {
           "kty": {
             "type": "string"
@@ -1569,7 +1714,9 @@
       "JwksResponse": {
         "type": "object",
         "description": "JSON Web Key Set",
-        "required": ["keys"],
+        "required": [
+          "keys"
+        ],
         "properties": {
           "keys": {
             "type": "array",
@@ -1582,7 +1729,9 @@
       "DisableRequest": {
         "type": "object",
         "description": "Request to disable a user account",
-        "required": ["reason"],
+        "required": [
+          "reason"
+        ],
         "properties": {
           "reason": {
             "type": "string"
@@ -1592,7 +1741,9 @@
       "PasswordResetResponse": {
         "type": "object",
         "description": "Response containing a temporary password reset token",
-        "required": ["token"],
+        "required": [
+          "token"
+        ],
         "properties": {
           "token": {
             "type": "string"
@@ -1602,7 +1753,13 @@
       "UserListResponse": {
         "type": "object",
         "description": "Paginated list of users (admin view)",
-        "required": ["content", "totalElements", "totalPages", "page", "size"],
+        "required": [
+          "content",
+          "totalElements",
+          "totalPages",
+          "page",
+          "size"
+        ],
         "properties": {
           "content": {
             "type": "array",
@@ -1627,7 +1784,9 @@
       "ErrorResponse": {
         "type": "object",
         "description": "Standardized error response",
-        "required": ["error"],
+        "required": [
+          "error"
+        ],
         "properties": {
           "error": {
             "type": "string"
@@ -1644,7 +1803,9 @@
       "HealthResponse": {
         "type": "object",
         "description": "Health check response",
-        "required": ["status"],
+        "required": [
+          "status"
+        ],
         "properties": {
           "status": {
             "type": "string",

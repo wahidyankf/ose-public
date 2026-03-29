@@ -39,12 +39,12 @@ paths:
       tags:
         - Health
       responses:
-        "200":
+        '200':
           description: Service is healthy
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/HealthResponse"
+                $ref: '#/components/schemas/HealthResponse'
   /api/v1/auth/register:
     post:
       operationId: register
@@ -56,26 +56,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/RegisterRequest"
+              $ref: '#/components/schemas/RegisterRequest'
       responses:
-        "201":
+        '201':
           description: User registered successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
-        "400":
+                $ref: '#/components/schemas/User'
+        '400':
           description: Validation error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "409":
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
           description: Username or email already exists
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/v1/auth/login:
     post:
       operationId: login
@@ -87,20 +87,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/LoginRequest"
+              $ref: '#/components/schemas/LoginRequest'
       responses:
-        "200":
+        '200':
           description: Login successful
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AuthTokens"
-        "401":
+                $ref: '#/components/schemas/AuthTokens'
+        '401':
           description: Invalid credentials
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/v1/auth/refresh:
     post:
       operationId: refreshToken
@@ -112,20 +112,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/RefreshRequest"
+              $ref: '#/components/schemas/RefreshRequest'
       responses:
-        "200":
+        '200':
           description: Token refreshed successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AuthTokens"
-        "401":
+                $ref: '#/components/schemas/AuthTokens'
+        '401':
           description: Invalid or expired refresh token
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/v1/auth/logout:
     post:
       operationId: logout
@@ -135,7 +135,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        "200":
+        '200':
           description: Logged out successfully
   /api/v1/auth/logout-all:
     post:
@@ -146,7 +146,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        "200":
+        '200':
           description: All sessions logged out
   /api/v1/users/me:
     get:
@@ -157,18 +157,18 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        "200":
+        '200':
           description: Current user profile
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
-        "401":
+                $ref: '#/components/schemas/User'
+        '401':
           description: Not authenticated
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
     patch:
       operationId: updateProfile
       summary: Update current user profile
@@ -181,20 +181,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateProfileRequest"
+              $ref: '#/components/schemas/UpdateProfileRequest'
       responses:
-        "200":
+        '200':
           description: Profile updated
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
-        "401":
+                $ref: '#/components/schemas/User'
+        '401':
           description: Not authenticated
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/v1/users/me/password:
     post:
       operationId: changePassword
@@ -208,22 +208,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ChangePasswordRequest"
+              $ref: '#/components/schemas/ChangePasswordRequest'
       responses:
-        "200":
+        '200':
           description: Password changed successfully
-        "400":
+        '400':
           description: Validation error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "401":
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
           description: Not authenticated or wrong old password
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/v1/users/me/deactivate:
     post:
       operationId: deactivateAccount
@@ -233,14 +233,14 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        "200":
+        '200':
           description: Account deactivated
-        "401":
+        '401':
           description: Not authenticated
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/v1/expenses:
     post:
       operationId: createExpense
@@ -254,20 +254,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateExpenseRequest"
+              $ref: '#/components/schemas/CreateExpenseRequest'
       responses:
-        "201":
+        '201':
           description: Expense created
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Expense"
-        "400":
+                $ref: '#/components/schemas/Expense'
+        '400':
           description: Validation error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
     get:
       operationId: listExpenses
       summary: List expenses with pagination
@@ -302,12 +302,12 @@ paths:
               - income
               - expense
       responses:
-        "200":
+        '200':
           description: Paginated expense list
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ExpenseListResponse"
+                $ref: '#/components/schemas/ExpenseListResponse'
   /api/v1/expenses/{id}:
     get:
       operationId: getExpense
@@ -323,18 +323,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: Expense details
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Expense"
-        "404":
+                $ref: '#/components/schemas/Expense'
+        '404':
           description: Expense not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
     put:
       operationId: updateExpense
       summary: Update expense by ID
@@ -353,20 +353,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateExpenseRequest"
+              $ref: '#/components/schemas/UpdateExpenseRequest'
       responses:
-        "200":
+        '200':
           description: Expense updated
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Expense"
-        "404":
+                $ref: '#/components/schemas/Expense'
+        '404':
           description: Expense not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
     delete:
       operationId: deleteExpense
       summary: Delete expense by ID
@@ -381,14 +381,14 @@ paths:
           schema:
             type: string
       responses:
-        "204":
+        '204':
           description: Expense deleted
-        "404":
+        '404':
           description: Expense not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/v1/expenses/summary:
     get:
       operationId: getExpenseSummary
@@ -398,14 +398,14 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        "200":
+        '200':
           description: Expense summary by currency
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ExpenseSummary"
+                  $ref: '#/components/schemas/ExpenseSummary'
   /api/v1/expenses/{id}/attachments:
     post:
       operationId: uploadAttachment
@@ -433,24 +433,24 @@ paths:
                   type: string
                   format: binary
       responses:
-        "201":
+        '201':
           description: Attachment uploaded
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Attachment"
-        "413":
+                $ref: '#/components/schemas/Attachment'
+        '413':
           description: File too large
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "415":
+                $ref: '#/components/schemas/ErrorResponse'
+        '415':
           description: Unsupported file type
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
     get:
       operationId: listAttachments
       summary: List attachments for expense
@@ -465,14 +465,14 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: List of attachments
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Attachment"
+                  $ref: '#/components/schemas/Attachment'
   /api/v1/expenses/{id}/attachments/{aid}:
     delete:
       operationId: deleteAttachment
@@ -493,14 +493,14 @@ paths:
           schema:
             type: string
       responses:
-        "204":
+        '204':
           description: Attachment deleted
-        "404":
+        '404':
           description: Attachment not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/v1/reports/pl:
     get:
       operationId: getPLReport
@@ -525,12 +525,12 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: Profit and loss report
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PLReport"
+                $ref: '#/components/schemas/PLReport'
   /api/v1/admin/users:
     get:
       operationId: listUsers
@@ -551,18 +551,18 @@ paths:
             type: integer
             default: 20
       responses:
-        "200":
+        '200':
           description: Paginated user list
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserListResponse"
-        "403":
+                $ref: '#/components/schemas/UserListResponse'
+        '403':
           description: Not authorized (not admin)
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/v1/admin/users/{id}/disable:
     post:
       operationId: disableUser
@@ -582,16 +582,16 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DisableRequest"
+              $ref: '#/components/schemas/DisableRequest'
       responses:
-        "200":
+        '200':
           description: User disabled
-        "403":
+        '403':
           description: Not authorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /api/v1/admin/users/{id}/enable:
     post:
       operationId: enableUser
@@ -607,7 +607,7 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: User enabled
   /api/v1/admin/users/{id}/unlock:
     post:
@@ -624,7 +624,7 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: User unlocked
   /api/v1/admin/users/{id}/force-password-reset:
     post:
@@ -641,12 +641,12 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: Password reset forced
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PasswordResetResponse"
+                $ref: '#/components/schemas/PasswordResetResponse'
   /api/v1/tokens/claims:
     get:
       operationId: getTokenClaims
@@ -656,12 +656,12 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        "200":
+        '200':
           description: Token claims
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/TokenClaims"
+                $ref: '#/components/schemas/TokenClaims'
   /.well-known/jwks.json:
     get:
       operationId: getJwks
@@ -669,12 +669,12 @@ paths:
       tags:
         - Tokens
       responses:
-        "200":
+        '200':
           description: JWKS response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/JwksResponse"
+                $ref: '#/components/schemas/JwksResponse'
   /api/v1/test/reset-db:
     post:
       operationId: resetDatabase
@@ -683,7 +683,7 @@ paths:
         - Test Support
       x-test-only: true
       responses:
-        "200":
+        '200':
           description: Database reset successfully
   /api/v1/test/promote-admin:
     post:
@@ -695,7 +695,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        "200":
+        '200':
           description: User promoted to admin
 components:
   securitySchemes:
@@ -941,7 +941,7 @@ components:
         content:
           type: array
           items:
-            $ref: "#/components/schemas/Expense"
+            $ref: '#/components/schemas/Expense'
         totalElements:
           type: integer
         totalPages:
@@ -985,7 +985,7 @@ components:
         categories:
           type: array
           items:
-            $ref: "#/components/schemas/CategoryBreakdown"
+            $ref: '#/components/schemas/CategoryBreakdown'
     PLReport:
       type: object
       description: Profit and loss report for a date range
@@ -1016,11 +1016,11 @@ components:
         incomeBreakdown:
           type: array
           items:
-            $ref: "#/components/schemas/CategoryBreakdown"
+            $ref: '#/components/schemas/CategoryBreakdown'
         expenseBreakdown:
           type: array
           items:
-            $ref: "#/components/schemas/CategoryBreakdown"
+            $ref: '#/components/schemas/CategoryBreakdown'
     Attachment:
       type: object
       description: File attachment metadata
@@ -1071,7 +1071,7 @@ components:
         - kty
         - kid
         - use
-        - "n"
+        - 'n'
         - e
       properties:
         kty:
@@ -1080,7 +1080,7 @@ components:
           type: string
         use:
           type: string
-        "n":
+        'n':
           type: string
         e:
           type: string
@@ -1093,7 +1093,7 @@ components:
         keys:
           type: array
           items:
-            $ref: "#/components/schemas/JwkKey"
+            $ref: '#/components/schemas/JwkKey'
     DisableRequest:
       type: object
       description: Request to disable a user account
@@ -1123,7 +1123,7 @@ components:
         content:
           type: array
           items:
-            $ref: "#/components/schemas/User"
+            $ref: '#/components/schemas/User'
         totalElements:
           type: integer
         totalPages:

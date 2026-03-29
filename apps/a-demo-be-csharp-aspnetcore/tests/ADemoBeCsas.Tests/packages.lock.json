@@ -640,7 +640,7 @@
           "xunit.extensibility.execution": "2.4.0"
         }
       },
-      "demobecsas": {
+      "ademobecsas": {
         "type": "Project",
         "dependencies": {
           "BCrypt.Net-Next": "[4.0.3, )",

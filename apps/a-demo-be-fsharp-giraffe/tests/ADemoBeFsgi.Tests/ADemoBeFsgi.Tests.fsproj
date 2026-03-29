@@ -51,7 +51,7 @@
 
   <Target Name="CopyGherkinSpecs" BeforeTargets="Build">
     <ItemGroup>
-      <GherkinFiles Include="$(ProjectDir)..\..\..\..\specs\apps\demo\be\gherkin\**\*.feature" />
+      <GherkinFiles Include="$(ProjectDir)..\..\..\..\specs\apps\a-demo\be\gherkin\**\*.feature" />
     </ItemGroup>
     <Copy SourceFiles="@(GherkinFiles)" DestinationFolder="$(OutputPath)specs\%(RecursiveDir)" />
   </Target>

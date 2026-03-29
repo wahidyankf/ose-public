@@ -29,6 +29,7 @@ These standards define **HOW to execute development workflows**, covering the th
 - [Reproducible Environments Convention](./reproducible-environments.md) - Practices for creating consistent, reproducible development and build environments
 - [Trunk Based Development Convention](./trunk-based-development.md) - Git workflow using Trunk Based Development for continuous integration
 - [Worktree Setup](./worktree-setup.md) - Practice for running npm install in the root repository worktree after creating a new git worktree. Ensures Nx workspace and all tools remain functional across worktrees
+- [Git Push Safety Convention](./git-push-safety.md) - Requires explicit per-instance user approval before any AI agent or automation executes `git push --force`, `--force-with-lease`, or `--no-verify`; prior approval does not carry forward
 
 ## Companion Documents
 

@@ -117,8 +117,14 @@ Then("all interactive elements should have sufficient contrast", async ({ page }
 });
 
 Then("images should have alt attributes", async ({ page }) => {
-  const images = await page.getByRole("img").all();
+  // Check all images rendered by our app have alt attributes.
+  // Exclude images injected by third-party SDKs (e.g. Google Sign-In)
+  // which are inside iframes or the #google-signin-button container.
+  const images = await page.locator("img:not(#google-signin-button img)").all();
   for (const img of images) {
+    // Skip images inside the GSI container (rendered by Google's SDK)
+    const isInsideGsi = await img.evaluate((el) => !!el.closest("#google-signin-button"));
+    if (isInsideGsi) continue;
     const alt = await img.getAttribute("alt");
     // alt="" is valid for decorative images; only null is invalid.
     expect(alt, "Image must have an alt attribute").not.toBeNull();

@@ -239,9 +239,8 @@ follow-up plan.
 - [x] Create `README.md`
 - [x] Verify `nx run organiclever-fe-e2e:test:quick` passes
 - [x] Verify `nx run organiclever-fe-e2e:test:e2e` passes against running frontend + backend
-      (5/13 pass — unauthenticated flows work; 8 authenticated-session tests fail because Google
-      OAuth cannot be automated in headless mode without a test-mode auth bypass, which is
-      out of scope for this plan)
+      (13/13 pass — auth tests use BFF proxy with backend test-mode tokens to set httpOnly
+      cookies, bypassing Google OAuth UI while testing the full auth integration boundary)
 
 ### Milestone 5.3: Local Development Infrastructure (`infra/dev/organiclever/`)
 

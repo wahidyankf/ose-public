@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Script from "next/script";
-import { Card, CardContent, CardHeader, CardTitle } from "@open-sharia-enterprise/ts-ui";
+import { Card, CardContent, CardHeader } from "@open-sharia-enterprise/ts-ui";
 import { Button } from "@open-sharia-enterprise/ts-ui";
 
 const GOOGLE_CLIENT_ID = process.env["NEXT_PUBLIC_GOOGLE_CLIENT_ID"] ?? "";
@@ -85,7 +85,7 @@ export default function LoginPage() {
       <main className="flex min-h-screen items-center justify-center p-8">
         <Card className="w-full max-w-sm">
           <CardHeader>
-            <CardTitle className="text-center">Sign in to OrganicLever</CardTitle>
+            <h1 className="text-center text-lg leading-none font-semibold tracking-tight">Sign in to OrganicLever</h1>
           </CardHeader>
           <CardContent className="flex flex-col items-center gap-4">
             <div role="alert" aria-live="assertive" className="w-full">

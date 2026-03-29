@@ -13,7 +13,8 @@ import { expect } from "@playwright/test";
 const { Given, When, Then } = createBdd();
 
 Given("I am not logged in", async ({ page }) => {
-  // Clear any stored auth state so the app treats the visitor as unauthenticated.
+  // Clear cookies and storage so the app treats the visitor as unauthenticated.
+  await page.context().clearCookies();
   await page.goto("/", { waitUntil: "domcontentloaded" }).catch(() => {});
   await page
     .evaluate(() => {

@@ -3,11 +3,10 @@
  *
  * Covers: specs/apps/organiclever/fe/gherkin/authentication/google-login.feature
  *
- * The Google OAuth flow cannot be driven end-to-end in a headless browser without
- * real Google credentials, so the "complete OAuth flow" step uses a mock/stub
- * strategy: it simulates the redirect that a successful OAuth callback produces
- * by navigating directly to the post-auth destination. Real OAuth integration
- * is validated in the backend E2E suite.
+ * The Google OAuth flow cannot be driven end-to-end via the Google Sign-In
+ * popup in a headless browser. Instead, the "complete OAuth flow" step calls
+ * the frontend's BFF proxy with a test-mode token (accepted by the backend
+ * when APP_ENV=test). This sets httpOnly auth cookies in the browser context.
  */
 import { createBdd } from "playwright-bdd";
 import { expect } from "@playwright/test";
@@ -16,7 +15,6 @@ const { Given, When, Then } = createBdd();
 
 Given("the app is running", async ({}) => {
   // No-op: the app is assumed to be running at baseURL.
-  // Background step required by all scenarios.
 });
 
 When("I navigate to \\/login", async ({ page }) => {
@@ -30,7 +28,12 @@ Given("I am on the \\/login page", async ({ page }) => {
 });
 
 Then("I should see a {string} button", async ({ page }, buttonText: string) => {
-  await expect(page.getByRole("button", { name: buttonText })).toBeVisible();
+  // The Google Sign-In button is rendered by the GSI SDK into a div.
+  // In test mode the SDK may not load, so check for the placeholder div
+  // with aria-label or a native button with the text.
+  const button = page.getByRole("button", { name: buttonText });
+  const placeholder = page.locator(`[aria-label="${buttonText}"]`);
+  await expect(button.or(placeholder).first()).toBeVisible();
 });
 
 Then("there should be no email\\/password form", async ({ page }) => {
@@ -39,20 +42,29 @@ Then("there should be no email\\/password form", async ({ page }) => {
 });
 
 When("I click {string}", async ({ page }, buttonText: string) => {
-  await page.getByRole("button", { name: buttonText }).click();
+  // The Google Sign-In button may be a div rendered by GSI SDK.
+  // Try clicking a button first, then fall back to the aria-label div.
+  const button = page.getByRole("button", { name: buttonText });
+  const placeholder = page.locator(`[aria-label="${buttonText}"]`);
+  await button.or(placeholder).first().click();
 });
 
 When("I complete the Google OAuth flow successfully", async ({ page }) => {
-  // The real Google OAuth popup cannot be automated in a headless environment.
-  // This step simulates a successful OAuth callback by navigating directly to
-  // the post-authentication destination, as the backend E2E suite covers the
-  // actual OAuth token exchange.
+  // Simulate a successful OAuth callback by calling the BFF proxy with
+  // a test-mode token. The backend (APP_ENV=test) accepts tokens in the
+  // format "test:<email>:<name>:<googleId>".
+  const testToken = "test:alice@example.com:Alice Smith:google-alice";
+  const response = await page.request.post("/api/auth/google", {
+    data: { idToken: testToken },
+    headers: { "Content-Type": "application/json" },
+  });
+  expect(response.status(), "BFF login should succeed").toBe(200);
+  // Cookies are set by the BFF response. Navigate to profile.
   await page.goto("/profile");
   await page.waitForLoadState("load");
 });
 
 Then("I should see my profile information", async ({ page }) => {
-  // Profile page must render at least some user information after OAuth login.
   const profileContent = page.getByRole("main").or(page.getByTestId("profile")).or(page.locator("main"));
   await expect(profileContent.first()).toBeVisible();
 });

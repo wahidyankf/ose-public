@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, CardHeader, CardTitle } from "@open-sharia-enterprise/ts-ui";
+import { Button, Card, CardContent, CardHeader } from "@open-sharia-enterprise/ts-ui";
 
 interface ProfileCardProps {
   readonly name: string;
@@ -10,7 +10,7 @@ export function ProfileCard({ name, email, avatarUrl }: ProfileCardProps) {
   return (
     <Card className="w-full max-w-md">
       <CardHeader>
-        <CardTitle>Your Profile</CardTitle>
+        <h1 className="text-lg leading-none font-semibold tracking-tight">Your Profile</h1>
       </CardHeader>
       <CardContent className="flex flex-col items-center gap-4">
         {avatarUrl && (

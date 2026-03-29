@@ -12,23 +12,22 @@ import { expect } from "@playwright/test";
 const { Given, Then } = createBdd();
 
 Given("I am logged in via Google OAuth", async ({ page }) => {
-  // Simulate an authenticated session by navigating to the profile page.
-  // In a real test environment this step would inject a session cookie or
-  // token provided by a test-mode OAuth stub. Until the auth stub is wired
-  // up, the step navigates directly so subsequent page-level assertions work.
-  await page.goto("/profile");
-  await page.waitForLoadState("load");
+  // Call the FE BFF proxy with a test-mode token (backend accepts
+  // "test:<email>:<name>:<googleId>" when APP_ENV=test / ENABLE_TEST_API=true).
+  const testToken = "test:alice@example.com:Alice Smith:google-alice";
+  const baseURL = page.url().startsWith("http") ? new URL(page.url()).origin : "http://localhost:3200";
+  const response = await page.request.post(`${baseURL}/api/auth/google`, {
+    data: { idToken: testToken },
+    headers: { "Content-Type": "application/json" },
+  });
+  expect(response.status(), "BFF login should succeed").toBe(200);
+  // The BFF sets httpOnly cookies automatically in the response.
+  // Playwright's request context shares cookies with the page.
 });
 
 Then("I should see my name", async ({ page }) => {
-  // The profile page must render a non-empty name element.
-  const nameEl = page
-    .getByTestId("profile-name")
-    .or(page.getByRole("heading", { level: 1 }))
-    .or(page.getByRole("heading", { level: 2 }));
-  await expect(nameEl.first()).toBeVisible();
-  const text = await nameEl.first().textContent();
-  expect(text?.trim().length).toBeGreaterThan(0);
+  // Profile card renders name as <p> with font-semibold. Match the test user name.
+  await expect(page.getByText("Alice Smith")).toBeVisible();
 });
 
 Then("I should see my email address", async ({ page }) => {
@@ -45,23 +44,16 @@ Then("I should see my profile avatar", async ({ page }) => {
 });
 
 Then("the displayed name should match my Google account name", async ({ page }) => {
-  // Verify that the name element contains a non-empty string.
-  // Full name matching requires injected test credentials; this assertion
-  // validates that a name value is present and rendered.
-  const nameEl = page.getByTestId("profile-name").or(page.getByRole("heading"));
-  await expect(nameEl.first()).toBeVisible();
-  const text = await nameEl.first().textContent();
-  expect(text?.trim().length).toBeGreaterThan(0);
+  // Verify the test user's name from the Google OAuth test token is displayed.
+  await expect(page.getByText("Alice Smith")).toBeVisible();
 });
 
 Then("the displayed email should match my Google account email", async ({ page }) => {
-  // Verify that an email address is visible on the profile page.
   const emailEl = page.getByTestId("profile-email").or(page.getByText(/@/));
   await expect(emailEl.first()).toBeVisible();
 });
 
 Then("the displayed avatar should match my Google account avatar", async ({ page }) => {
-  // Verify the avatar image is present and has a src attribute (loaded from Google).
   const avatar = page.getByTestId("profile-avatar").or(page.getByRole("img", { name: /avatar|profile/i }));
   await expect(avatar.first()).toBeVisible();
   const src = await avatar.first().getAttribute("src");

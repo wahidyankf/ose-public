@@ -144,7 +144,8 @@ follow-up plan.
 - [ ] Create `apps/organiclever-fe/project.json` with all Nx targets
   (codegen, typecheck, lint, build, test:unit, test:quick, test:integration, storybook,
   build-storybook, dev, start)
-- [ ] Create `apps/organiclever-fe/package.json` (next, react, effect, typescript)
+- [ ] Create `apps/organiclever-fe/package.json` (next, react, effect, typescript,
+  `@open-sharia-enterprise/ts-ui` workspace dependency)
 - [ ] Create `apps/organiclever-fe/next.config.ts`
 - [ ] Create `apps/organiclever-fe/tsconfig.json` (strict mode)
 - [ ] Create `apps/organiclever-fe/vitest.config.ts`

@@ -80,6 +80,7 @@ Existing `specs/apps/organiclever-be/` and `specs/apps/organiclever-web/` are me
   - Three-level testing, OpenAPI codegen, Docker support
 - **`apps/organiclever-fe`** -- Next.js 16 + Effect TS (replaces `organiclever-web`)
   - `/login` page (Google OAuth), `/profile` page (protected)
+  - `@open-sharia-enterprise/ts-ui` for shared UI primitives with OrganicLever styling
   - Effect TS service layer for API calls via BFF proxy
   - Three-level testing, OpenAPI codegen
 - **`apps/organiclever-be-e2e`** -- Playwright E2E for backend API

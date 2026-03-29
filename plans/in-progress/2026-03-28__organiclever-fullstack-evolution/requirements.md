@@ -144,11 +144,19 @@
 - **FR-3.4.10**: `dev` (optional) -- `next dev --port 3200`
 - **FR-3.4.11**: `start` (optional) -- `next start --port 3200`
 
-#### FR-3.5: Storybook
+#### FR-3.5: Shared UI Library (`@open-sharia-enterprise/ts-ui`)
 
-- **FR-3.5.1**: Storybook with `@storybook/nextjs-vite` for component documentation
-- **FR-3.5.2**: Stories for all UI components (login button, profile card, layout)
-- **FR-3.5.3**: Storybook config in `.storybook/` directory
+- **FR-3.5.1**: Import shared components from `@open-sharia-enterprise/ts-ui` (Button, Card,
+  Alert, Input, Label, Dialog, `cn` utility) -- same as current `organiclever-web`
+- **FR-3.5.2**: App-specific components in `src/components/` build on top of `ts-ui` primitives
+  with OrganicLever-specific styling (colors, spacing, brand)
+- **FR-3.5.3**: No duplicate component implementations -- use `ts-ui` for all base UI primitives
+
+#### FR-3.6: Storybook
+
+- **FR-3.6.1**: Storybook with `@storybook/nextjs-vite` for component documentation
+- **FR-3.6.2**: Stories for all UI components (login button, profile card, layout)
+- **FR-3.6.3**: Storybook config in `.storybook/` directory
 
 ### FR-4: Backend E2E Tests (`apps/organiclever-be-e2e`)
 

@@ -386,8 +386,8 @@ apps/organiclever-fe/
 │   ├── layers/
 │   │   ├── backend-client-live.ts        # Live HTTP layer (server-side only)
 │   │   └── backend-client-test.ts        # Mock layer for tests
-│   ├── components/
-│   │   └── ui/                           # shadcn/ui components (with .stories.tsx)
+│   ├── components/                       # App-specific components (build on ts-ui)
+│   │   └── ui/                           # OrganicLever-styled components (with .stories.tsx)
 │   └── generated-contracts/              # From OpenAPI codegen (gitignored)
 ├── .storybook/
 │   ├── main.ts                           # Storybook config (@storybook/nextjs-vite)
@@ -692,7 +692,8 @@ This follows the same pattern used in `specs/apps/demo/contracts/paths/`.
 | Frontend web       | Next.js                      | 16.x    | App Router, RSC              |
 | Frontend lang      | TypeScript                   | 5.x     | Strict mode                  |
 | Frontend effects   | Effect TS                    | Latest  | Error handling, DI           |
-| Frontend UI        | shadcn/ui, Tailwind v4       | Latest  | Component library            |
+| Frontend UI (shared)| @open-sharia-enterprise/ts-ui | Workspace | Button, Card, Alert, Input, Label, Dialog, cn |
+| Frontend UI (style)| shadcn/ui, Tailwind v4       | Latest  | OrganicLever-specific styling on top of ts-ui |
 | Frontend testing   | Vitest, MSW                  | Latest  | Unit + integration           |
 | Database           | PostgreSQL                   | 17.x    | Initially minimal            |
 | Contract           | OpenAPI                      | 3.1     | API-first design             |

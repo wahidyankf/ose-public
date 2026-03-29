@@ -1,0 +1,17 @@
+services:
+  ayokoding-fs:
+    build:
+      context: ../../../
+      dockerfile: apps/ayokoding-fs/Dockerfile
+    ports:
+      - "3101:3101"
+    environment:
+      - CONTENT_DIR=/app/apps/ayokoding-fs/content
+      - PORT=3101
+      - HOSTNAME=0.0.0.0
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3101/api/trpc/meta.health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s

@@ -1,0 +1,171 @@
+name: Test and Deploy - OSE Platform Web
+
+on:
+  schedule:
+    - cron: "0 23 * * *" # 6 AM WIB (UTC+7)
+    - cron: "0 11 * * *" # 6 PM WIB (UTC+7)
+  workflow_dispatch:
+    inputs:
+      force_deploy:
+        description: "Deploy even if no changes detected"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  unit:
+    name: Unit tests + coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+          cache-dependency-path: apps/rhino-cli/go.sum
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build rhino-cli (coverage validation)
+        run: |
+          cd apps/rhino-cli
+          CGO_ENABLED=0 go build -o dist/rhino-cli main.go
+
+      - name: Build oseplatform-cli (link validation)
+        run: |
+          cd apps/oseplatform-cli
+          CGO_ENABLED=0 go build -o dist/oseplatform-cli main.go
+
+      - name: Typecheck
+        run: npx nx run oseplatform-fs:typecheck
+
+      - name: Lint
+        run: npx nx run oseplatform-fs:lint
+
+      - name: Run test:quick
+        run: npx nx run oseplatform-fs:test:quick
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          file: apps/oseplatform-fs/coverage/lcov.info
+          flags: oseplatform-fs
+          fail_ci_if_error: false
+
+  integration:
+    name: Integration tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate search data
+        run: npx nx run oseplatform-fs:generate-search-data
+
+      - name: Run test:integration
+        run: npx nx run oseplatform-fs:test:integration
+
+  e2e:
+    name: E2E visual tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Next.js app
+        run: npx nx run oseplatform-fs:build
+
+      - name: Install Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Start server and run visual regression
+        run: |
+          npx nx run oseplatform-fs:start &
+          sleep 5
+          npx playwright test --config=apps/oseplatform-fs/playwright.config.ts
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-oseplatform-fs
+          path: apps/oseplatform-fs/playwright-report/
+          retention-days: 7
+
+  detect-changes:
+    name: Detect changes in oseplatform-fs
+    runs-on: ubuntu-latest
+    outputs:
+      has_changes: ${{ steps.check.outputs.has_changes }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for changes vs production branch
+        id: check
+        run: |
+          git fetch origin prod-oseplatform-fs 2>/dev/null || true
+          if git show-ref --verify --quiet refs/remotes/origin/prod-oseplatform-fs; then
+            DIFF=$(git diff --name-only origin/prod-oseplatform-fs HEAD -- apps/oseplatform-fs/ libs/ts-ui/ libs/ts-ui-tokens/)
+            if [ -n "$DIFF" ]; then
+              echo "Changes detected:"
+              echo "$DIFF"
+              echo "has_changes=true" >> $GITHUB_OUTPUT
+            else
+              echo "No changes in apps/oseplatform-fs/ since last deploy"
+              echo "has_changes=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "Production branch does not exist — deploying for the first time"
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+  deploy:
+    name: Deploy to production branch
+    needs: [unit, integration, e2e, detect-changes]
+    if: (needs.detect-changes.outputs.has_changes == 'true' || inputs.force_deploy == 'true') && needs.unit.result == 'success' && needs.integration.result == 'success' && needs.e2e.result == 'success'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Deploy to production branch
+        run: git push --force origin HEAD:prod-oseplatform-fs

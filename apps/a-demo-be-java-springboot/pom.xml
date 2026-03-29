@@ -12,7 +12,7 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.aademobejasb</groupId>
+    <groupId>com.ademobejasb</groupId>
     <artifactId>a-demo-be-java-springboot</artifactId>
     <version>1.0.0</version>
     <name>a-demo-be-java-springboot</name>
@@ -467,7 +467,7 @@
                                 <arg>-XDcompilePolicy=simple</arg>
                                 <arg>--should-stop=ifError=FLOW</arg>
                                 <!-- Enable only NullAway; JSpecifyMode requires JDK 22+ (satisfied by Java 25) -->
-                                <arg>-Xplugin:ErrorProne -XepDisableAllChecks -Xep:NullAway:ERROR -XepOpt:NullAway:AnnotatedPackages=com.aademobejasb -XepOpt:NullAway:UnannotatedSubPackages=com.aademobejasb.contracts -XepOpt:NullAway:JSpecifyMode=true</arg>
+                                <arg>-Xplugin:ErrorProne -XepDisableAllChecks -Xep:NullAway:ERROR -XepOpt:NullAway:AnnotatedPackages=com.ademobejasb -XepOpt:NullAway:UnannotatedSubPackages=com.ademobejasb.contracts -XepOpt:NullAway:JSpecifyMode=true</arg>
                             </compilerArgs>
                             <annotationProcessorPaths>
                                 <path>

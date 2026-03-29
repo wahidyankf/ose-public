@@ -5,7 +5,7 @@
          http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.aademobejavx</groupId>
+    <groupId>com.ademobejavx</groupId>
     <artifactId>a-demo-be-java-vertx</artifactId>
     <version>1.0.0</version>
     <name>a-demo-be-java-vertx</name>
@@ -219,7 +219,7 @@
     <build>
         <plugins>
             <!-- Add generated-contracts/src/main/java as a source root so that
-                 the OpenAPI-generated contract types (com.aademobejavx.contracts.*)
+                 the OpenAPI-generated contract types (com.ademobejavx.contracts.*)
                  are compiled together with the main application sources. -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -266,7 +266,7 @@
                         <configuration>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.aademobejavx.Main</mainClass>
+                                    <mainClass>com.ademobejavx.Main</mainClass>
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                             </transformers>
@@ -292,7 +292,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.5.0</version>
                 <configuration>
-                    <mainClass>com.aademobejavx.Main</mainClass>
+                    <mainClass>com.ademobejavx.Main</mainClass>
                 </configuration>
             </plugin>
 
@@ -534,7 +534,7 @@
                                 <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
                                 <arg>-XDcompilePolicy=simple</arg>
                                 <arg>--should-stop=ifError=FLOW</arg>
-                                <arg>-Xplugin:ErrorProne -XepDisableAllChecks -Xep:NullAway:ERROR -XepOpt:NullAway:AnnotatedPackages=com.aademobejavx -XepOpt:NullAway:UnannotatedSubPackages=com.aademobejavx.contracts -XepOpt:NullAway:JSpecifyMode=true</arg>
+                                <arg>-Xplugin:ErrorProne -XepDisableAllChecks -Xep:NullAway:ERROR -XepOpt:NullAway:AnnotatedPackages=com.ademobejavx -XepOpt:NullAway:UnannotatedSubPackages=com.ademobejavx.contracts -XepOpt:NullAway:JSpecifyMode=true</arg>
                             </compilerArgs>
                             <annotationProcessorPaths>
                                 <path>

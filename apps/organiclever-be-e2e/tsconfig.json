@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "module": "CommonJS",
+    "moduleResolution": "node"
+  },
+  "include": ["steps/**/*.ts", "playwright.config.ts", ".features-gen/**/*.ts"],
+  "exclude": ["node_modules", "dist", "test-results", "playwright-report"]
+}

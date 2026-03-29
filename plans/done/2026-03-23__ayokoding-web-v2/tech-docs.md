@@ -709,7 +709,7 @@ apps/ayokoding-web-v2/
 ├── next.config.ts                        # Next.js config (standalone output)
 ├── vitest.config.ts                      # Vitest with v8 coverage
 ├── tsconfig.json                         # Strict TypeScript
-├── postcss.config.mjs                    # PostCSS for Tailwind v4 (`.mjs` matches organiclever-web pattern)
+├── postcss.config.mjs                    # PostCSS for Tailwind v4 (`.mjs` matches organiclever-fe pattern)
 ├── components.json                       # shadcn/ui config
 ├── project.json                          # Nx targets
 ├── package.json                          # Dependencies
@@ -846,7 +846,7 @@ the `unknown → typed` boundary at runtime (frontmatter parsing, tRPC inputs).
 | BDD (unit)          | @amiceli/vitest-cucumber                            | Same as demo-fs-ts-nextjs                                                                                                                                          |
 | BDD (integration)   | @cucumber/cucumber                                  | Integration tests run outside Vitest (real filesystem, not mocked) — plain cucumber-js is the appropriate runner, same as demo-be backend integration test pattern |
 | Docker              | Multi-stage, no DB                                  | Local dev + CI E2E (standalone + outputFileTracingRoot)                                                                                                            |
-| Deployment          | Vercel                                              | Same as ayokoding-web + organiclever-web                                                                                                                           |
+| Deployment          | Vercel                                              | Same as ayokoding-web + organiclever-fe                                                                                                                            |
 | Prod branch         | `prod-ayokoding-web-v2`                             | Vercel listens for pushes (never commit directly)                                                                                                                  |
 | Route architecture  | Route groups `(content)` + `(app)`                  | Content isolated; future fullstack routes added without restructure                                                                                                |
 | ISR strategy        | On-demand ISR (no `generateStaticParams`)           | Scales to thousands of pages without slow builds                                                                                                                   |
@@ -1355,7 +1355,7 @@ configuration. The v2 app does NOT need its own pre-commit script for content.
   (workspace root build) and Docker (standalone build) environments via `CONTENT_DIR`
   env var with a fallback
 - `installCommand` uses `--prefix=../..` to install from workspace root (same as
-  organiclever-web pattern)
+  organiclever-fe pattern)
 - `ignoreCommand` ensures Vercel only builds when the production branch is pushed
 
 **Deployment workflow** (same pattern as `apps-ayokoding-web-deployer`):

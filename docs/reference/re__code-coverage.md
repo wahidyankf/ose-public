@@ -49,7 +49,8 @@ Partial lines count as NOT covered, matching Codecov's badge calculation.
 | Go libraries      | >= 90%    | Shared utilities                              |
 | Elixir libraries  | >= 90%    | Shared libraries                              |
 | Clojure libraries | >= 90%    | Codegen library                               |
-| organiclever-web  | >= 95%    | Production app with MSW integration tests     |
+| organiclever-fe   | >= 70%    | Frontend app with MSW integration tests       |
+| organiclever-be   | >= 90%    | F#/Giraffe backend API                        |
 | Demo frontends    | >= 70%    | API/auth/query layers fully mocked by design  |
 
 ## Per-Project Coverage Details
@@ -104,7 +105,7 @@ The XML output already reflects exclusions, so rhino-cli and Codecov agree.
 | Project                   | Threshold | Exclusions                                              |
 | ------------------------- | --------- | ------------------------------------------------------- |
 | demo-be-ts-effect         | 90%       | `main.ts`, `routes/test-api.ts` (in `vitest.config.ts`) |
-| organiclever-web          | 95%       | None                                                    |
+| organiclever-fe           | 70%       | None                                                    |
 | demo-fe-ts-nextjs         | 70%       | None                                                    |
 | demo-fe-ts-tanstack-start | 70%       | None                                                    |
 

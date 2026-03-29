@@ -1,0 +1,9 @@
+bin/
+obj/
+dist/
+generated-contracts/
+*.db
+coverage/
+.ionide/
+*.user
+*.suo

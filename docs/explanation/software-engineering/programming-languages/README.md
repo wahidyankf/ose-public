@@ -336,7 +336,7 @@ Languages in this documentation are chosen based on:
 | **Kotlin**     | Coroutine-based services, Ktor APIs             | 📋 Planned - Future integration      |
 | **Python**     | Data processing, AI/ML integration              | 📋 Planned - Future integration      |
 | **Rust**       | High-performance computation, WebAssembly       | 📋 Planned - Future integration      |
-| **TypeScript** | Frontend applications, Node.js services         | ✅ Active - organiclever-web         |
+| **TypeScript** | Frontend applications, Node.js services         | ✅ Active - organiclever-fe          |
 
 **Legend**: ✅ Active (in use) | 📋 Planned (documentation ready, not yet implemented)
 

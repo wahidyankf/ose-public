@@ -32,7 +32,7 @@ that preserves correctness and does not break running applications.
 
 | Ecosystem      | Apps / Files                                                     | Package Manager       |
 | -------------- | ---------------------------------------------------------------- | --------------------- |
-| Node.js / NPM  | root workspace, `organiclever-web`, all `*-e2e` apps             | npm                   |
+| Node.js / NPM  | root workspace, `organiclever-fe`, all `*-e2e` apps              | npm                   |
 | Go modules     | `ayokoding-cli`, `rhino-cli`, `ayokoding-web`, `oseplatform-web` | go mod                |
 | Flutter / Dart | `organiclever-app`                                               | pub / flutter pub     |
 | Java / Maven   | `organiclever-be`                                                | Maven                 |

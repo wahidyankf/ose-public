@@ -5,7 +5,7 @@
 **Spring Profile**: `staging`
 **Configuration**: `apps/organiclever-be/src/main/resources/application-staging.yml`
 
-**Docker images**: Same Dockerfiles as production (`apps/organiclever-be/Dockerfile`, `apps/organiclever-web/Dockerfile`). Override Spring profile via `SPRING_PROFILES_ACTIVE=staging` env var.
+**Docker images**: Same Dockerfiles as production (`apps/organiclever-be/Dockerfile`, `apps/organiclever-fe/Dockerfile`). Override Spring profile via `SPRING_PROFILES_ACTIVE=staging` env var.
 
 Planned resources:
 

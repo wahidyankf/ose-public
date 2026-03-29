@@ -117,7 +117,7 @@ excluded by design) so that static analysis runs across the full codebase withou
 
 ---
 
-### organiclever-web — Next.js App
+### organiclever-fe — Next.js App
 
 **Current state**: `dev`, `build`, `start`, `lint`
 
@@ -135,10 +135,10 @@ in devDependencies; `tsconfig.json` exists at project root.
 - Add `test:unit`: runs `npx vitest run --project unit` — same as `test:quick`; no meaningful
   subset split until test suite grows
 - Add `test:integration`: runs `npx vitest run --project integration` — separate slow path
-- Create `apps/organiclever-web/vitest.config.ts`: configures `unit` project (files matching
+- Create `apps/organiclever-fe/vitest.config.ts`: configures `unit` project (files matching
   `*.unit.{test,spec}.{ts,tsx}` and `__tests__/`) and `integration` project (files matching
   `*.integration.{test,spec}.{ts,tsx}`); `passWithNoTests: true` set at root level (vitest 4 requirement)
-- Add devDependencies to `apps/organiclever-web/package.json`: `vitest`,
+- Add devDependencies to `apps/organiclever-fe/package.json`: `vitest`,
   `@vitejs/plugin-react`, `jsdom`, `@testing-library/react`, `vite-tsconfig-paths`
 
 ---
@@ -200,7 +200,7 @@ documented exception for Flutter projects, not an ad-hoc decision.
 
 ---
 
-### organiclever-web-e2e — Playwright E2E
+### organiclever-fe-e2e — Playwright E2E
 
 **Current state**: `install`, `e2e`, `e2e:ui`, `e2e:report`
 
@@ -218,7 +218,7 @@ devDependency install required.
 **Required changes**:
 
 - Rename all three `e2e*` targets to `test:e2e*`
-- Add `lint`: runs `npx oxlint@latest .` from `apps/organiclever-web-e2e`
+- Add `lint`: runs `npx oxlint@latest .` from `apps/organiclever-fe-e2e`
 - Add `test:quick`: runs `npx oxlint@latest .` (per the standard: Playwright `*-e2e` test:quick =
   run linter directly; no unit tests to add)
 
@@ -226,14 +226,14 @@ devDependency install required.
 
 ### organiclever-be-e2e — Playwright E2E
 
-**Same gaps as `organiclever-web-e2e`**. Identical fixes apply, with `cwd` changed to
+**Same gaps as `organiclever-fe-e2e`**. Identical fixes apply, with `cwd` changed to
 `apps/organiclever-be-e2e`.
 
 ---
 
 ### organiclever-app-web-e2e — Playwright E2E
 
-**Same gaps as `organiclever-web-e2e`**. Identical fixes apply, with `cwd` changed to
+**Same gaps as `organiclever-fe-e2e`**. Identical fixes apply, with `cwd` changed to
 `apps/organiclever-app-web-e2e`.
 
 ---
@@ -300,8 +300,8 @@ And organiclever-app static analysis is covered by "typecheck" (flutter analyze)
 ### Scenario 3: E2E projects are discoverable via canonical target name
 
 ```gherkin
-Given organiclever-web-e2e, organiclever-be-e2e, and organiclever-app-web-e2e are updated
-When I run: nx run organiclever-web-e2e:test:e2e
+Given organiclever-fe-e2e, organiclever-be-e2e, and organiclever-app-web-e2e are updated
+When I run: nx run organiclever-fe-e2e:test:e2e
 And I run: nx run organiclever-be-e2e:test:e2e
 And I run: nx run organiclever-app-web-e2e:test:e2e
 Then each command invokes the correct playwright test runner
@@ -363,28 +363,28 @@ And failure of any gate blocks the push
 And projects without a "typecheck" target are silently skipped by Nx
 ```
 
-### Scenario 9a: organiclever-web test:quick runs vitest unit project
+### Scenario 9a: organiclever-fe test:quick runs vitest unit project
 
 ```gherkin
-Given organiclever-web/vitest.config.ts exists with "unit" and "integration" named projects
-And organiclever-web/package.json has vitest devDependencies installed
-When I run: nx run organiclever-web:test:quick
+Given organiclever-fe/vitest.config.ts exists with "unit" and "integration" named projects
+And organiclever-fe/package.json has vitest devDependencies installed
+When I run: nx run organiclever-fe:test:quick
 Then vitest executes with --project unit and exits 0 (passWithNoTests: true)
 ```
 
-### Scenario 9b: organiclever-web test:unit produces same result as test:quick
+### Scenario 9b: organiclever-fe test:unit produces same result as test:quick
 
 ```gherkin
-Given organiclever-web/vitest.config.ts has a "unit" named project
-When I run: nx run organiclever-web:test:unit
+Given organiclever-fe/vitest.config.ts has a "unit" named project
+When I run: nx run organiclever-fe:test:unit
 Then vitest executes with --project unit and exits 0 (passWithNoTests: true)
 And test:quick and test:unit produce identical results
 ```
 
-### Scenario 9c: organiclever-web test:integration runs vitest integration project
+### Scenario 9c: organiclever-fe test:integration runs vitest integration project
 
 ```gherkin
-Given organiclever-web/vitest.config.ts has an "integration" named project
-When I run: nx run organiclever-web:test:integration
+Given organiclever-fe/vitest.config.ts has an "integration" named project
+When I run: nx run organiclever-fe:test:integration
 Then vitest executes with --project integration and exits 0 (passWithNoTests: true)
 ```

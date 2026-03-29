@@ -66,7 +66,7 @@ Boot), `-pyfa` (Python FastAPI), `-rsax` (Rust Axum), `-ktkt` (Kotlin Ktor), etc
 | JWT              | `jose` library                                                                 |
 | Password hashing | `bcrypt` (with `@types/bcrypt`)                                                |
 | BDD (int. tests) | Cucumber.js (Gherkin parser) with Effect TS test utilities                     |
-| Linting          | oxlint (matching `organiclever-web` pattern)                                   |
+| Linting          | oxlint (matching `organiclever-fe` pattern)                                    |
 | Type checking    | `tsc --noEmit`                                                                 |
 | Formatting       | Prettier (already in workspace)                                                |
 | Coverage         | Vitest with v8 coverage → LCOV → `rhino-cli test-coverage validate`            |

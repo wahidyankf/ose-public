@@ -298,7 +298,7 @@ src/
       UserLoginIntegrationTest.java
 ```
 
-**TypeScript** (organiclever-web pattern):
+**TypeScript** (organiclever-fe pattern):
 
 ```
 src/
@@ -331,7 +331,7 @@ import { server } from "../server";
 import { MOCK_MEMBERS } from "../helpers/mock-data";
 import { http, HttpResponse } from "msw";
 
-const feature = await loadFeature("../../specs/apps/organiclever-web/members/member-list.feature");
+const feature = await loadFeature("../../specs/apps/organiclever-fe/members/member-list.feature");
 
 describeFeature(feature, ({ Scenario }) => {
   Scenario("Viewing the member list as a logged-in user", ({ Given, When, Then }) => {

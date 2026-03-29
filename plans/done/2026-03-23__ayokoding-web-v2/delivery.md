@@ -143,7 +143,7 @@
 - [x] Create `src/app/robots.ts` — generate `robots.txt` with correct sitemap URL
       (do NOT copy Hugo's `robots.txt` — it hardcodes `https://ayokoding.com/sitemap.xml`)
 - [x] Create `postcss.config.mjs` for Tailwind v4 (uses `@tailwindcss/postcss` plugin;
-      `.mjs` matches organiclever-web pattern — not `.ts`)
+      `.mjs` matches organiclever-fe pattern — not `.ts`)
 - [x] Configure oxlint for linting
 - [x] Verify `nx run ayokoding-web-v2:lint` passes
 - [x] Verify `nx run ayokoding-web-v2:typecheck` passes
@@ -593,7 +593,7 @@ All other content is server-rendered.
 - [x] Create `apps/ayokoding-web-v2/vercel.json`:
   - [x] Set `installCommand`: `npm install --prefix=../.. --ignore-scripts`
   - [x] Set `ignoreCommand`: `[ "$VERCEL_GIT_COMMIT_REF" != "prod-ayokoding-web-v2" ]`
-        (mirrors organiclever-web pattern — only builds on the production branch)
+        (mirrors organiclever-fe pattern — only builds on the production branch)
   - [x] Add security headers: X-Content-Type-Options, X-Frame-Options,
         X-XSS-Protection, Referrer-Policy
 
@@ -606,7 +606,7 @@ All other content is server-rendered.
   - [x] Targets: `install`, `test:e2e`, `test:e2e:ui`, `test:e2e:report`
         (E2E-only apps follow the 4-target pattern; the mandatory 7-target rule
         applies to content/backend apps, not pure Playwright runner apps —
-        consistent with `demo-be-e2e`, `demo-fe-e2e`, `organiclever-web-e2e`)
+        consistent with `demo-be-e2e`, `demo-fe-e2e`, `organiclever-fe-e2e`)
 - [x] Create `apps/ayokoding-web-v2-be-e2e/playwright.config.ts`:
   - [x] `baseURL` from `BASE_URL` env var (default `http://localhost:3101`)
 - [x] Create `apps/ayokoding-web-v2-be-e2e/tsconfig.json`
@@ -627,7 +627,7 @@ All other content is server-rendered.
   - [x] Tags: `["type:e2e", "platform:playwright", "lang:ts", "domain:ayokoding"]`
   - [x] Targets: `install`, `test:e2e`, `test:e2e:ui`, `test:e2e:report`
         (E2E-only apps follow the 4-target pattern; same as `demo-be-e2e`,
-        `demo-fe-e2e`, `organiclever-web-e2e`)
+        `demo-fe-e2e`, `organiclever-fe-e2e`)
 - [x] Create `apps/ayokoding-web-v2-fe-e2e/playwright.config.ts`:
   - [x] `baseURL` from `BASE_URL` env var (default `http://localhost:3101`)
 - [x] Create `apps/ayokoding-web-v2-fe-e2e/tsconfig.json`
@@ -663,7 +663,7 @@ All other content is server-rendered.
   - [x] Root directory: `apps/ayokoding-web-v2`
   - [x] Framework: Next.js (auto-detected)
   - [x] Production branch: `prod-ayokoding-web-v2`
-  - [x] (See `apps/organiclever-web/vercel.json` and its Vercel project for reference
+  - [x] (See `apps/organiclever-fe/vercel.json` and its Vercel project for reference
         configuration pattern)
 - [x] Push to `prod-ayokoding-web-v2` branch
 - [x] Verify Vercel build succeeds (check build logs)

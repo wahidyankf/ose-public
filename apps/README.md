@@ -17,8 +17,10 @@ Apps follow the naming pattern: **`[domain]-[type]`**
 - `ayokoding-cli` - AyoKoding CLI tool for link validation - Go application
 - `rhino-cli` - Repository management CLI tools (includes `java validate-annotations`) - Go application
 - `oseplatform-cli` - OSE Platform CLI tool for link validation - Go application
-- `organiclever-web` - OrganicLever landing website (www.organiclever.com) - Next.js app (port 3200)
-- `organiclever-web-e2e` - E2E tests for organiclever-web - Playwright (browser testing)
+- `organiclever-fe` - OrganicLever landing website (www.organiclever.com) - Next.js app (port 3200)
+- `organiclever-be` - OrganicLever backend API (F#/Giraffe) - F# application (port 8202)
+- `organiclever-fe-e2e` - FE E2E tests for organiclever-fe - Playwright (browser testing)
+- `organiclever-be-e2e` - BE E2E tests for organiclever-be - Playwright (API testing)
 - `demo-be-golang-gin` - OrganicLever backend API (Go/Gin) - Go application (port 8201)
 - `demo-be-e2e` - E2E tests for demo-be REST API - Playwright (API testing)
 
@@ -124,7 +126,7 @@ apps/demo-be-e2e/
 ### Next.js Application (Current)
 
 ```
-apps/organiclever-web/
+apps/organiclever-fe/
 ├── src/
 │   ├── app/                    # Next.js App Router pages
 │   │   ├── dashboard/          # Dashboard route
@@ -219,7 +221,7 @@ Use Nx commands to run apps:
 nx dev oseplatform-web
 
 # Development mode (Next.js)
-nx dev organiclever-web
+nx dev organiclever-fe
 nx dev ayokoding-web
 
 # Build for production
@@ -227,7 +229,7 @@ nx build oseplatform-web
 nx build ayokoding-web
 nx build ayokoding-cli
 nx build rhino-cli
-nx build organiclever-web
+nx build organiclever-fe
 
 # Run CLI applications
 nx run rhino-cli
@@ -235,8 +237,8 @@ nx run rhino-cli
 # Clean build artifacts
 nx clean oseplatform-web
 
-# Run E2E tests for organiclever-web (organiclever-web must be running first)
-nx run organiclever-web-e2e:test:e2e
+# Run E2E tests for organiclever-fe (organiclever-fe must be running first)
+nx run organiclever-fe-e2e:test:e2e
 
 # Run API E2E tests (backend must be running first)
 nx run demo-be-e2e:test:e2e
@@ -246,11 +248,11 @@ nx run demo-be-e2e:test:e2e
 
 Vercel-deployed apps use dedicated production branches (deployment-only — never commit directly):
 
-| Branch                  | Production URL                                        | App              |
-| ----------------------- | ----------------------------------------------------- | ---------------- |
-| `prod-ayokoding-web`    | [ayokoding.com](https://ayokoding.com)                | ayokoding-web    |
-| `prod-oseplatform-web`  | [oseplatform.com](https://oseplatform.com)            | oseplatform-web  |
-| `prod-organiclever-web` | [www.organiclever.com](https://www.organiclever.com/) | organiclever-web |
+| Branch                 | Production URL                                        | App             |
+| ---------------------- | ----------------------------------------------------- | --------------- |
+| `prod-ayokoding-web`   | [ayokoding.com](https://ayokoding.com)                | ayokoding-web   |
+| `prod-oseplatform-web` | [oseplatform.com](https://oseplatform.com)            | oseplatform-web |
+| `prod-organiclever-fe` | [www.organiclever.com](https://www.organiclever.com/) | organiclever-fe |
 
 **ayokoding-web**: Deploy by force-pushing `main` to the production branch:
 
@@ -263,13 +265,13 @@ workflow (`test-and-deploy-oseplatform-web.yml`) running at 6 AM and 6 PM
 WIB. The workflow detects changes scoped to the app directory before building and deploying.
 Trigger on-demand from the GitHub Actions UI (set `force_deploy=true` to skip change detection).
 
-**organiclever-web**: Deploy by force-pushing `main` to the production branch:
+**organiclever-fe**: Deploy by force-pushing `main` to the production branch:
 
 ```bash
-git push origin main:prod-organiclever-web --force
+git push origin main:prod-organiclever-fe --force
 ```
 
-Use the corresponding deployer agent (e.g. `apps-organiclever-web-deployer`) for guided deployment.
+Use the corresponding deployer agent (e.g. `apps-organiclever-fe-deployer`) for guided deployment.
 
 ## Language Support
 
@@ -277,8 +279,9 @@ Currently:
 
 - **Hugo** (static sites) - oseplatform-web
 - **Go** (CLI tools) - ayokoding-cli, rhino-cli
-- **TypeScript/Next.js** (web applications) - organiclever-web, ayokoding-web
+- **TypeScript/Next.js** (web applications) - organiclever-fe, ayokoding-web
+- **F#/Giraffe** (backend API) - organiclever-be
 - **Go/Gin** (backend API) - demo-be-golang-gin
-- **TypeScript/Playwright** (E2E testing) - demo-be-e2e, organiclever-web-e2e
+- **TypeScript/Playwright** (E2E testing) - demo-be-e2e, organiclever-fe-e2e, organiclever-be-e2e
 
 Future: Kotlin, Python apps (each language will have language-specific structure and tooling)

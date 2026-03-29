@@ -1,8 +1,0 @@
-FROM node:24-alpine
-
-# wget needed for healthcheck
-RUN apk add --no-cache wget
-
-WORKDIR /workspace
-
-EXPOSE 3200

@@ -18,10 +18,10 @@ Kubernetes configurations for staging and production environments.
 
 Production container images are built from Dockerfiles co-located with each app:
 
-| Service          | Dockerfile                         | Build Command                                                                   |
-| ---------------- | ---------------------------------- | ------------------------------------------------------------------------------- |
-| organiclever-be  | `apps/organiclever-be/Dockerfile`  | `docker build -t organiclever-be:latest apps/organiclever-be/`                  |
-| organiclever-web | `apps/organiclever-web/Dockerfile` | `docker build -f apps/organiclever-web/Dockerfile -t organiclever-web:latest .` |
+| Service         | Dockerfile                        | Build Command                                                                 |
+| --------------- | --------------------------------- | ----------------------------------------------------------------------------- |
+| organiclever-be | `apps/organiclever-be/Dockerfile` | `docker build -t organiclever-be:latest apps/organiclever-be/`                |
+| organiclever-fe | `apps/organiclever-fe/Dockerfile` | `docker build -f apps/organiclever-fe/Dockerfile -t organiclever-fe:latest .` |
 
 Both images run as non-root `app` user and use multi-stage builds for minimal size (~150-200MB).
 
@@ -33,4 +33,4 @@ For local development, use Docker Compose with `dev` profile:
 npm run demo-be:dev
 ```
 
-See [infra/dev/demo-be-java-springboot/README.md](../../dev/demo-be-java-springboot/README.md) and [infra/dev/organiclever-web/README.md](../../dev/organiclever-web/README.md)
+See [infra/dev/demo-be-java-springboot/README.md](../../dev/demo-be-java-springboot/README.md) and [infra/dev/organiclever/README.md](../../dev/organiclever/README.md)

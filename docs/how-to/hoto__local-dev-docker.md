@@ -52,7 +52,7 @@ infra/
 │   ├── demo-be-elixir-phoenix/         # Demo Backend (Elixir/Phoenix) stack
 │   │   ├── docker-compose.yml
 │   │   └── README.md
-│   ├── organiclever-web/     # organiclever-web (Next.js) stack
+│   ├── organiclever-fe/     # organiclever-fe (Next.js) stack
 │   │   ├── docker-compose.yml
 │   │   └── README.md
 │   └── [other-service]/       # Other service ecosystems
@@ -141,10 +141,10 @@ See [`apps/demo-be-e2e/`](../../apps/demo-be-e2e/README.md) for setup and option
 With the frontend running, execute the web Playwright suite:
 
 ```bash
-nx run organiclever-web-e2e:test:e2e
+nx run organiclever-fe-e2e:test:e2e
 ```
 
-See [`apps/organiclever-web-e2e/`](../../apps/organiclever-web-e2e/README.md) for setup and options.
+See [`apps/organiclever-fe-e2e/`](../../apps/organiclever-fe-e2e/README.md) for setup and options.
 
 ### 7. Stop Services
 
@@ -177,23 +177,23 @@ npm run demo-be:dev
 
 **Documentation**: [Demo Backend (JASB) Infrastructure README](../../infra/dev/demo-be-java-springboot/README.md)
 
-### organiclever-web (`infra/dev/organiclever-web/`)
+### organiclever-fe (`infra/dev/organiclever-fe/`)
 
 **Services (Docker Compose)**:
 
-- `organiclever-web` - Next.js landing website (port 3200)
+- `organiclever-fe` - Next.js landing website (port 3200)
 
 **Related Apps (run separately)**:
 
-- `organiclever-web-e2e` - Playwright browser E2E tests — `nx run organiclever-web-e2e:test:e2e`
+- `organiclever-fe-e2e` - Playwright browser E2E tests — `nx run organiclever-fe-e2e:test:e2e`
 
 **Quick Start**:
 
 ```bash
-npm run organiclever-web:dev
+npm run organiclever-fe:dev
 ```
 
-**Documentation**: [organiclever-web Infrastructure README](../../infra/dev/organiclever-web/README.md)
+**Documentation**: [organiclever-fe Infrastructure README](../../infra/dev/organiclever/README.md)
 
 ### Future Ecosystems
 
@@ -382,7 +382,7 @@ Services expose ports to the host:
 | Service                  | Internal Port | Host Port | Purpose                 |
 | ------------------------ | ------------- | --------- | ----------------------- |
 | demo-be-java-springboot  | 8201          | 8201      | Backend API             |
-| organiclever-web         | 3200          | 3200      | Next.js landing website |
+| organiclever-fe          | 3200          | 3200      | Next.js landing website |
 | (future) organiclever-db | 5432          | 5432      | Database                |
 
 ## Health Checks
@@ -518,7 +518,7 @@ networks:
 Maintain a central registry of ports to avoid conflicts:
 
 - 8201: demo-be-java-springboot (also used by demo-be-e2e as `BASE_URL`)
-- 3200: organiclever-web (also used by organiclever-web-e2e as `BASE_URL`)
+- 3200: organiclever-fe (also used by organiclever-fe-e2e as `BASE_URL`)
 - 5432: PostgreSQL databases
 
 ## Performance Tips
@@ -533,7 +533,7 @@ export DOCKER_BUILDKIT=1
 ### 2. Optimize Image Size
 
 - Use Alpine-based images
-- Multi-stage builds for compiled languages (see `apps/demo-be-java-springboot Dockerfile` and `apps/organiclever-web/Dockerfile` for production examples)
+- Multi-stage builds for compiled languages (see `apps/demo-be-java-springboot Dockerfile` and `apps/organiclever-fe/Dockerfile` for production examples)
 - Remove unnecessary files
 
 ### 3. Cache Dependencies
@@ -589,7 +589,7 @@ docker-compose up -d
 
 ## CI/CD Integration
 
-**Production Dockerfiles**: Multi-stage production Dockerfiles are co-located with each app (`apps/demo-be-java-springboot/Dockerfile`, `apps/organiclever-web/Dockerfile`). These build optimized, non-root images suitable for Kubernetes deployment.
+**Production Dockerfiles**: Multi-stage production Dockerfiles are co-located with each app (`apps/demo-be-java-springboot/Dockerfile`, `apps/organiclever-fe/Dockerfile`). These build optimized, non-root images suitable for Kubernetes deployment.
 
 Docker Compose can be used in CI/CD pipelines:
 
@@ -608,7 +608,7 @@ Docker Compose can be used in CI/CD pipelines:
 ## Related Documentation
 
 - [Demo Backend (JASB) Infrastructure README](../../infra/dev/demo-be-java-springboot/README.md)
-- [organiclever-web Infrastructure README](../../infra/dev/organiclever-web/README.md)
+- [organiclever-fe Infrastructure README](../../infra/dev/organiclever/README.md)
 - [Docker Documentation](https://docs.docker.com/)
 - [Docker Compose Documentation](https://docs.docker.com/compose/)
 - [Reproducible Environments Convention](../../governance/development/workflow/reproducible-environments.md)

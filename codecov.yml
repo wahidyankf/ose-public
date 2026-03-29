@@ -34,9 +34,13 @@ flags:
     paths:
       - apps/demo-be-java-springboot/
     carryforward: true
-  organiclever-web:
+  organiclever-fe:
     paths:
-      - apps/organiclever-web/
+      - apps/organiclever-fe/
+    carryforward: true
+  organiclever-be:
+    paths:
+      - apps/organiclever-be/
     carryforward: true
   golang-commons:
     paths:

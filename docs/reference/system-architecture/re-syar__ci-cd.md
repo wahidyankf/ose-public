@@ -195,16 +195,16 @@ graph TB
 
 ### Test and Deploy OrganicLever Web Workflow
 
-**File**: `.github/workflows/deploy-organiclever-web.yml`
+**File**: `.github/workflows/deploy-organiclever-fe.yml`
 
 **Trigger**: Scheduled (6 AM and 6 PM WIB daily) or manual `workflow_dispatch`
 
 **Steps:**
 
-1. Detect changes in `apps/organiclever-web/` vs `prod-organiclever-web` branch
+1. Detect changes in `apps/organiclever-fe/` vs `prod-organiclever-fe` branch
 2. If changes exist (or `force_deploy=true`): setup Volta, install dependencies
-3. Run `nx build organiclever-web`
-4. Force-push `main` to `prod-organiclever-web`; Vercel auto-builds
+3. Run `nx build organiclever-fe`
+4. Force-push `main` to `prod-organiclever-fe`; Vercel auto-builds
 
 **Purpose**: Automated scheduled deployments for www.organiclever.com with change detection to avoid unnecessary builds
 

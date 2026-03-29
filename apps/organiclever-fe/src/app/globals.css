@@ -1,0 +1,11 @@
+@import "tailwindcss";
+@import "@open-sharia-enterprise/ts-ui-tokens/src/tokens.css";
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

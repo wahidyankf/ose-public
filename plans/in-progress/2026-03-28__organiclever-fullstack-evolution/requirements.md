@@ -147,7 +147,7 @@
 #### FR-3.5: Shared UI Library (`@open-sharia-enterprise/ts-ui`)
 
 - **FR-3.5.1**: Import shared components from `@open-sharia-enterprise/ts-ui` (Button, Card,
-  Alert, Input, Label, Dialog, `cn` utility) -- same as current `organiclever-web`
+  Alert, Input, Label, Dialog, `cn` utility) -- same as current `organiclever-fe`
 - **FR-3.5.2**: App-specific components in `src/components/` build on top of `ts-ui` primitives
   with OrganicLever-specific styling (colors, spacing, brand)
 - **FR-3.5.3**: No duplicate component implementations -- use `ts-ui` for all base UI primitives
@@ -174,7 +174,7 @@
 ### FR-6: Local Development Infrastructure (`infra/dev/organiclever/`)
 
 - **FR-6.1**: Docker Compose with 3 services: PostgreSQL, organiclever-be, organiclever-fe
-- **FR-6.2**: Replaces `infra/dev/organiclever-web/`
+- **FR-6.2**: Replaces `infra/dev/organiclever-fe/`
 - **FR-6.3**: `npm run organiclever:dev` starts the full stack locally
 - **FR-6.4**: Frontend connects to backend via Docker network
   (`ORGANICLEVER_BE_URL=http://organiclever-be:8202`)
@@ -197,29 +197,29 @@
 
 #### FR-8.1: CLAUDE.md
 
-- **FR-8.1.1**: Replace `organiclever-web` entries with `organiclever-fe`
+- **FR-8.1.1**: Replace `organiclever-fe` entries with `organiclever-fe`
 - **FR-8.1.2**: Add `organiclever-be` entry (F#/Giraffe REST API)
-- **FR-8.1.3**: Replace `organiclever-web-e2e` with `organiclever-fe-e2e` and `organiclever-be-e2e`
+- **FR-8.1.3**: Replace `organiclever-fe-e2e` with `organiclever-fe-e2e` and `organiclever-be-e2e`
 - **FR-8.1.4**: Update coverage sections (BE 90%, FE 70%)
 - **FR-8.1.5**: Update dev port and deployment sections
 - **FR-8.1.6**: Add codegen/contract information
 
 #### FR-8.2: Agents (`.claude/agents/`)
 
-- **FR-8.2.1**: Rename/update `apps-organiclever-web-deployer.md` -> `apps-organiclever-fe-deployer.md`
+- **FR-8.2.1**: Rename/update `apps-organiclever-fe-deployer.md` -> `apps-organiclever-fe-deployer.md`
 - **FR-8.2.2**: Update `README.md` agent listings
 - **FR-8.2.3**: Update `specs-maker.md` example references
 
 #### FR-8.3: Skills (`.claude/skills/`)
 
-- **FR-8.3.1**: Rename/update `apps-organiclever-web-developing-content/` ->
+- **FR-8.3.1**: Rename/update `apps-organiclever-fe-developing-content/` ->
   `apps-organiclever-fe-developing-content/`
 - **FR-8.3.2**: Rewrite SKILL.md for new architecture (Effect TS, backend integration, codegen)
 
 #### FR-8.4: Governance and Docs
 
-- **FR-8.4.1**: Update all 14+ governance files referencing `organiclever-web`
-- **FR-8.4.2**: Update all 14+ docs files referencing `organiclever-web`
+- **FR-8.4.1**: Update all 14+ governance files referencing `organiclever-fe`
+- **FR-8.4.2**: Update all 14+ docs files referencing `organiclever-fe`
 - **FR-8.4.3**: Add `organiclever-be` to technology stack, CI/CD, and deployment docs
 - **FR-8.4.4**: Update `governance/development/infra/github-actions-workflow-naming.md`
 
@@ -256,7 +256,7 @@
 
 - **NFR-4.1**: Pre-push hook: `typecheck`, `lint`, `test:quick` for affected projects
 - **NFR-4.2**: PR quality gate: Same as pre-push via GitHub Actions
-- **NFR-4.3**: Scheduled: Integration + E2E tests 2x daily (matching demo-* cron schedule)
+- **NFR-4.3**: Scheduled: Integration + E2E tests 2x daily (matching demo-\* cron schedule)
 
 ## Acceptance Criteria
 
@@ -273,7 +273,7 @@ Scenario: Unified spec structure exists
     | fe/gherkin/    |
     | contracts/     |
   And specs/apps/organiclever-be/ no longer exists
-  And specs/apps/organiclever-web/ no longer exists
+  And specs/apps/organiclever-fe/ no longer exists
 ```
 
 ### AC-2: Backend Auth + Health
@@ -350,14 +350,14 @@ Scenario: Contract changes trigger codegen
 ### AC-6: Documentation Complete
 
 ```gherkin
-Scenario: No stale references to organiclever-web
-  Given I search the repository for "organiclever-web"
+Scenario: No stale references to organiclever-fe
+  Given I search the repository for "organiclever-fe"
   Then no results are found in CLAUDE.md
   And no results are found in .claude/agents/
   And no results are found in .claude/skills/
   And no results are found in governance/
   And no results are found in docs/
-  And the only results are in archived/organiclever-web/ or plans/
+  And the only results are in archived/organiclever-fe/ or plans/
 ```
 
 ### AC-7: Local Dev Stack Works

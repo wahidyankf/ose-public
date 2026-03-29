@@ -127,7 +127,7 @@ Four categories of drift have accumulated:
 - **0 of 11** demo backends run spec-coverage validation
 - **0 of 3** demo frontends run spec-coverage validation
 - **0 of 2** E2E apps run spec-coverage validation
-- Only `organiclever-web` uses spec-coverage validation in the entire repo
+- Only `organiclever-fe` uses spec-coverage validation in the entire repo
 
 #### E2E Workflow Patterns
 

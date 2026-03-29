@@ -48,13 +48,97 @@ jobs:
           hugo-version: "0.156.0"
           extended: true
 
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Setup Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: "1.19"
+          otp-version: "27"
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install cargo-llvm-cov
+        uses: taiki-e/install-action@cargo-llvm-cov
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: "stable"
 
+      - name: Setup Clojure CLI
+        run: |
+          curl -L -O https://github.com/clojure/brew-install/releases/latest/download/linux-install.sh
+          chmod +x linux-install.sh
+          sudo ./linux-install.sh
+          rm linux-install.sh
+
+      - name: Install clj-kondo
+        run: |
+          curl -sLO https://raw.githubusercontent.com/clj-kondo/clj-kondo/master/script/install-clj-kondo
+          chmod +x install-clj-kondo
+          sudo ./install-clj-kondo
+          rm install-clj-kondo
+
+      - name: Install .NET global tools
+        run: |
+          dotnet tool install -g fantomas
+          dotnet tool install -g dotnet-fsharplint
+
+      - name: Install golangci-lint
+        run: go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.10.1
+
+      - name: Install oapi-codegen (Go OpenAPI codegen)
+        run: go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest
+
+      - name: Install datamodel-code-generator (Python OpenAPI codegen)
+        run: pip install datamodel-code-generator[http]
+
       - name: Install dependencies
         run: npm ci
+
+      - name: Install Elixir dependencies
+        run: |
+          (cd libs/elixir-openapi-codegen && mix deps.get)
+          (cd libs/elixir-gherkin && mix deps.get)
+          (cd libs/elixir-cabbage && mix deps.get)
+          (cd apps/demo-be-elixir-phoenix && mix deps.get)
+
+      - name: Install Python dependencies
+        run: (cd apps/demo-be-python-fastapi && uv sync)
+
+      - name: Install Clojure dependencies
+        run: |
+          (cd libs/clojure-openapi-codegen && JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -P)
+          (cd apps/demo-be-clojure-pedestal && JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -P && JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -P -M:test:coverage)
+
+      - name: Generate contract types (required before Flutter pub get and typecheck/test:quick)
+        run: |
+          mkdir -p libs/clojure-openapi-codegen/classes
+          npx nx run demo-contracts:bundle
+          npx nx run organiclever-contracts:bundle
+          npx nx run-many -t codegen --projects=demo-*,organiclever-*
+
+      - name: Install Flutter dependencies
+        run: (cd apps/demo-fe-dart-flutterweb && flutter pub get)
+
+      - name: Restore .NET dependencies (required before --no-restore typecheck)
+        run: |
+          dotnet restore apps/demo-be-fsharp-giraffe/src/DemoBeFsgi/DemoBeFsgi.fsproj
+          dotnet restore apps/demo-be-csharp-aspnetcore/src/DemoBeCsas/DemoBeCsas.csproj
+          dotnet restore apps/organiclever-be/src/OrganicLeverBe/OrganicLeverBe.fsproj
 
       - name: Typecheck (affected)
         run: npx nx affected -t typecheck

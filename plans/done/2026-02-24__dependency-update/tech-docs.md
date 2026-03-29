@@ -17,7 +17,7 @@ release** as of 2026-02-25. Classification:
 | Node.js (Volta pin)               | `24.11.1`     | `24.13.1`          | P       | Update Volta pin in `package.json`    |
 | npm (Volta pin)                   | `11.6.3`      | verify at runtime  | P       | `npm --version` after Node update     |
 | `nx`                              | `22.5.2`      | `22.5.2`           | ✓       | Already latest                        |
-| `next` (organiclever-web)         | `14.2.14`     | `16.1.6`           | **M×2** | Two major versions; see below         |
+| `next` (organiclever-fe)          | `14.2.14`     | `16.1.6`           | **M×2** | Two major versions; see below         |
 | `eslint-config-next`              | `14.2.14`     | `16.1.6`           | **M×2** | Must track `next` version             |
 | `react`                           | `^18`         | React 19 available | m       | Evaluate if Next 16 requires React 19 |
 | `react-dom`                       | `^18`         | React 19 available | m       | Track `react`                         |
@@ -104,7 +104,7 @@ passes:
 1. **Pass 1 — patch/minor (safe)**: `npm update` in root. Verify `package-lock.json` is
    updated. Run `nx affected -t lint` and `nx affected -t test:quick`.
 2. **Pass 2 — TailwindCSS v4 (major)**: Tailwind v4 is a ground-up rewrite with a different
-   configuration model. Evaluate feasibility for `organiclever-web`. If v4 migration is complex,
+   configuration model. Evaluate feasibility for `organiclever-fe`. If v4 migration is complex,
    pin to `^3.4` and defer to a dedicated plan.
 3. **Pass 3 — Next.js 14 → 16 (major × 2)**: This is the highest-risk NPM change (see below).
 
@@ -119,7 +119,7 @@ passes:
 - Key changes: caching semantics changed (fetch is no longer cached by default), `cookies()`/
   `headers()` are now async, `params` and `searchParams` props are now Promises.
 - Run codemod: `npx @next/codemod@latest upgrade`.
-- Validate: `nx build organiclever-web`, `nx run organiclever-web-e2e:test:e2e`.
+- Validate: `nx build organiclever-fe`, `nx run organiclever-fe-e2e:test:e2e`.
 
 **Step B: 15 → 16**
 

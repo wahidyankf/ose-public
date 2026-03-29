@@ -1,0 +1,40 @@
+# Integration test runner
+# Build context is the monorepo root (../../ relative to this file).
+# This allows specs/ to be copied into the image so TickSpec can find feature files at build time.
+FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine
+
+# Install Kerberos libraries required by Npgsql for PostgreSQL GSSAPI authentication.
+# libgssapi_krb5.so.2 is pulled in transitively by the Npgsql native dependency on Alpine.
+RUN apk add --no-cache krb5-libs
+
+WORKDIR /build
+
+# Copy solution-level files first for dependency caching.
+# Paths are relative to the monorepo root (build context).
+COPY apps/organiclever-be/global.json .
+COPY apps/organiclever-be/dotnet-tools.json .
+COPY apps/organiclever-be/.editorconfig .
+
+# Copy project files for restore (before code to cache the restore layer).
+COPY apps/organiclever-be/src/OrganicLeverBe/OrganicLeverBe.fsproj src/OrganicLeverBe/
+COPY apps/organiclever-be/tests/OrganicLeverBe.Tests/OrganicLeverBe.Tests.fsproj tests/OrganicLeverBe.Tests/
+
+# Copy specs so the CopyGherkinSpecs MSBuild target can find feature files at build time.
+# The .fsproj references: $(ProjectDir)..\..\..\..\specs\apps\organiclever\be\gherkin\**\*.feature
+# Going up 4 levels from /build/tests/OrganicLeverBe.Tests/ resolves to /specs/apps/organiclever/be/gherkin.
+COPY specs/apps/organiclever/be/gherkin /specs/apps/organiclever/be/gherkin
+
+# Restore dependencies (layer cache until project files change).
+RUN dotnet restore tests/OrganicLeverBe.Tests/OrganicLeverBe.Tests.fsproj
+
+# Copy source and test code
+COPY apps/organiclever-be/src/ src/
+COPY apps/organiclever-be/tests/ tests/
+
+# Build the test project.
+RUN dotnet build tests/OrganicLeverBe.Tests/OrganicLeverBe.Tests.fsproj --no-restore
+
+# Run all tests against real PostgreSQL.
+# DATABASE_URL, APP_JWT_SECRET, APP_ENV, and GOOGLE_CLIENT_ID are supplied by docker-compose.
+# The TestFixture detects DATABASE_URL and uses Npgsql instead of SQLite.
+CMD ["dotnet", "test", "tests/OrganicLeverBe.Tests/OrganicLeverBe.Tests.fsproj", "--no-build", "--filter", "Category=Integration", "--logger", "console;verbosity=normal"]

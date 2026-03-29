@@ -45,25 +45,25 @@ These two apps are **excluded from the pre-push hook and PR merge gate** until f
 
 - [x] **2.1** `oseplatform-web/project.json`: Add `test:quick` (runs `bash build.sh` with outputs)
 - [x] **2.2** `oseplatform-web/project.json`: Fix `clean` to include `.hugo_build.lock`
-- [x] **2.3** `organiclever-web/package.json`: Add vitest devDependencies via
+- [x] **2.3** `organiclever-fe/package.json`: Add vitest devDependencies via
       `npm install --save-dev vitest @vitejs/plugin-react jsdom @testing-library/react vite-tsconfig-paths`
-      (run from `apps/organiclever-web`)
-- [x] **2.4** Create `apps/organiclever-web/vitest.config.ts` with `unit` and `integration`
+      (run from `apps/organiclever-fe`)
+- [x] **2.4** Create `apps/organiclever-fe/vitest.config.ts` with `unit` and `integration`
       named projects (see tech-docs.md for full content; vitest 4 uses `vitest.config.ts` + `projects`)
-- [x] **2.5** `organiclever-web/project.json`: Update `lint` to `npx oxlint@latest .` (replaces
+- [x] **2.5** `organiclever-fe/project.json`: Update `lint` to `npx oxlint@latest .` (replaces
       `next lint`)
-- [x] **2.6** `organiclever-web/project.json`: Add `typecheck` (runs `tsc --noEmit`)
-- [x] **2.7** `organiclever-web/project.json`: Add `test:quick` (`npx vitest run --project unit`)
-- [x] **2.8** `organiclever-web/project.json`: Add `test:unit` (`npx vitest run --project unit`)
-- [x] **2.9** `organiclever-web/project.json`: Add `test:integration`
+- [x] **2.6** `organiclever-fe/project.json`: Add `typecheck` (runs `tsc --noEmit`)
+- [x] **2.7** `organiclever-fe/project.json`: Add `test:quick` (`npx vitest run --project unit`)
+- [x] **2.8** `organiclever-fe/project.json`: Add `test:unit` (`npx vitest run --project unit`)
+- [x] **2.9** `organiclever-fe/project.json`: Add `test:integration`
       (`npx vitest run --project integration`)
 
 **Verify**:
 
-- `nx run oseplatform-web:test:quick`, `nx run organiclever-web:test:quick`,
-  `nx run organiclever-web:typecheck`, `nx run organiclever-web:test:unit`,
-  `nx run organiclever-web:test:integration`, and
-  `nx run organiclever-web:lint` all return exit code 0.
+- `nx run oseplatform-web:test:quick`, `nx run organiclever-fe:test:quick`,
+  `nx run organiclever-fe:typecheck`, `nx run organiclever-fe:test:unit`,
+  `nx run organiclever-fe:test:integration`, and
+  `nx run organiclever-fe:lint` all return exit code 0.
 - The `clean` fix for oseplatform-web includes `.hugo_build.lock`:
 
   ```bash
@@ -146,27 +146,27 @@ Multiple renames and additions — apply all together.
 Apply the same set of changes to all three E2E projects. Use the full updated files from
 tech-docs.md to replace each project.json entirely.
 
-- [x] **6.1** `organiclever-web-e2e/project.json`: Rename `e2e` → `test:e2e`
-- [x] **6.2** `organiclever-web-e2e/project.json`: Rename `e2e:ui` → `test:e2e:ui`
-- [x] **6.3** `organiclever-web-e2e/project.json`: Rename `e2e:report` → `test:e2e:report`
-- [x] **6.4** `organiclever-web-e2e/project.json`: Add `lint` (`npx oxlint@latest .`)
-- [x] **6.5** `organiclever-web-e2e/project.json`: Add `test:quick` (`npx oxlint@latest .`)
+- [x] **6.1** `organiclever-fe-e2e/project.json`: Rename `e2e` → `test:e2e`
+- [x] **6.2** `organiclever-fe-e2e/project.json`: Rename `e2e:ui` → `test:e2e:ui`
+- [x] **6.3** `organiclever-fe-e2e/project.json`: Rename `e2e:report` → `test:e2e:report`
+- [x] **6.4** `organiclever-fe-e2e/project.json`: Add `lint` (`npx oxlint@latest .`)
+- [x] **6.5** `organiclever-fe-e2e/project.json`: Add `test:quick` (`npx oxlint@latest .`)
 - [x] **6.6** `organiclever-be-e2e/project.json`: Same 5 changes
 - [x] **6.7** `organiclever-app-web-e2e/project.json`: Same 5 changes
 
 **Verify**:
 
-- `nx run organiclever-web-e2e:lint` — exits 0
+- `nx run organiclever-fe-e2e:lint` — exits 0
 - `nx run organiclever-be-e2e:lint` — exits 0
 - `nx run organiclever-app-web-e2e:lint` — exits 0
-- `nx run organiclever-web-e2e:test:quick` — exits 0
+- `nx run organiclever-fe-e2e:test:quick` — exits 0
 - `nx run organiclever-be-e2e:test:quick` — exits 0
 - `nx run organiclever-app-web-e2e:test:quick` — exits 0
 - The old `e2e`, `e2e:ui`, and `e2e:report` targets no longer exist in any of the 3 project.json files:
 
   ```bash
   grep -E '"e2e"\s*:|"e2e:ui"\s*:|"e2e:report"\s*:' \
-    apps/organiclever-web-e2e/project.json \
+    apps/organiclever-fe-e2e/project.json \
     apps/organiclever-be-e2e/project.json \
     apps/organiclever-app-web-e2e/project.json
   # Expected: no matches — all three old targets renamed
@@ -207,7 +207,7 @@ Update the hook after all project.json targets are in place so the three gates h
 - [x] **V5** Verify E2E projects have canonical names:
 
   ```bash
-  grep '"test:e2e' apps/organiclever-web-e2e/project.json apps/organiclever-be-e2e/project.json apps/organiclever-app-web-e2e/project.json
+  grep '"test:e2e' apps/organiclever-fe-e2e/project.json apps/organiclever-be-e2e/project.json apps/organiclever-app-web-e2e/project.json
   # Expected: 9 matches (3 per file: test:e2e, test:e2e:ui, test:e2e:report)
   ```
 
@@ -227,12 +227,12 @@ Update the hook after all project.json targets are in place so the three gates h
   # Expected: typecheck, lint, and test:quick all present
   ```
 
-- [x] **V8** Verify organiclever-web vitest workspace is in place:
+- [x] **V8** Verify organiclever-fe vitest workspace is in place:
 
   ```bash
-  nx run organiclever-web:test:unit        # exits 0
-  nx run organiclever-web:test:integration # exits 0
-  grep 'name:' apps/organiclever-web/vitest.config.ts
+  nx run organiclever-fe:test:unit        # exits 0
+  nx run organiclever-fe:test:integration # exits 0
+  grep 'name:' apps/organiclever-fe/vitest.config.ts
   # Expected: shows lines containing name: "unit" and name: "integration"
   ```
 

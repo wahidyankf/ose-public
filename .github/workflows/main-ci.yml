@@ -124,7 +124,8 @@ jobs:
         run: |
           mkdir -p libs/clojure-openapi-codegen/classes
           npx nx run demo-contracts:bundle
-          npx nx run-many -t codegen --projects=demo-*
+          npx nx run organiclever-contracts:bundle
+          npx nx run-many -t codegen --projects=demo-*,organiclever-*
 
       - name: Install Flutter dependencies
         run: (cd apps/demo-fe-dart-flutterweb && flutter pub get)
@@ -133,6 +134,7 @@ jobs:
         run: |
           dotnet restore apps/demo-be-fsharp-giraffe/src/DemoBeFsgi/DemoBeFsgi.fsproj
           dotnet restore apps/demo-be-csharp-aspnetcore/src/DemoBeCsas/DemoBeCsas.csproj
+          dotnet restore apps/organiclever-be/src/OrganicLeverBe/OrganicLeverBe.fsproj
 
       - name: typecheck (all projects)
         run: npx nx run-many -t typecheck --all
@@ -191,12 +193,20 @@ jobs:
           flags: demo-be-java-springboot
           fail_ci_if_error: false
 
-      - name: Upload coverage — organiclever-web
+      - name: Upload coverage — organiclever-fe
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: apps/organiclever-web/coverage/lcov.info
-          flags: organiclever-web
+          files: apps/organiclever-fe/coverage/lcov.info
+          flags: organiclever-fe
+          fail_ci_if_error: false
+
+      - name: Upload coverage — organiclever-be
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: apps/organiclever-be/coverage/altcov.info
+          flags: organiclever-be
           fail_ci_if_error: false
 
       - name: Upload coverage — demo-be-elixir-phoenix

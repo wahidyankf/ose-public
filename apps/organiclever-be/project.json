@@ -1,0 +1,112 @@
+{
+  "name": "organiclever-be",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/organiclever-be/src",
+  "projectType": "application",
+  "targets": {
+    "codegen": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx openapi-generator-cli generate -i $(pwd)/specs/apps/organiclever/contracts/generated/openapi-bundled.yaml -g fsharp-giraffe-server -o $(pwd)/apps/organiclever-be/generated-contracts --model-package OrganicLeverBe.Contracts --global-property=models,modelDocs=false,apiDocs=false"
+      },
+      "dependsOn": ["organiclever-contracts:bundle"],
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/organiclever/contracts/generated/openapi-bundled.yaml"],
+      "outputs": ["{projectRoot}/generated-contracts"]
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet publish src/OrganicLeverBe/OrganicLeverBe.fsproj -c Release -o dist",
+        "cwd": "apps/organiclever-be"
+      },
+      "outputs": ["{projectRoot}/dist"],
+      "dependsOn": ["codegen"]
+    },
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet watch run --project src/OrganicLeverBe/OrganicLeverBe.fsproj",
+        "cwd": "apps/organiclever-be"
+      }
+    },
+    "start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet run --project src/OrganicLeverBe/OrganicLeverBe.fsproj",
+        "cwd": "apps/organiclever-be"
+      }
+    },
+    "test:quick": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "dotnet tool restore",
+          "dotnet build tests/OrganicLeverBe.Tests/OrganicLeverBe.Tests.fsproj",
+          "dotnet altcover --inputDirectory tests/OrganicLeverBe.Tests/bin/Debug/net10.0 --outputDirectory tests/OrganicLeverBe.Tests/bin/Debug/net10.0/__Instrumented --assemblyExcludeFilter=OrganicLeverBe.Tests '--assemblyFilter=xunit|TickSpec|Microsoft|FSharp|testhost|AltCover|coverlet|dbup|Npgsql|EFCore|Google' '--fileFilter=TestHandler|GoogleAuthService' --linecover --reportFormat=lcov --report=coverage/altcov.info --save",
+          "dotnet altcover Runner --recorderDirectory tests/OrganicLeverBe.Tests/bin/Debug/net10.0/__Instrumented --lcovReport coverage/altcov.info --executable dotnet -- test tests/OrganicLeverBe.Tests/bin/Debug/net10.0/__Instrumented/OrganicLeverBe.Tests.dll --filter Category=Unit",
+          "(cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/organiclever-be/coverage/altcov.info 90)"
+        ],
+        "parallel": false,
+        "cwd": "apps/organiclever-be"
+      },
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/src/**/*.fs",
+        "{projectRoot}/tests/**/*.fs",
+        "{projectRoot}/generated-contracts/**/*",
+        "{workspaceRoot}/specs/apps/organiclever/be/gherkin/**/*.feature"
+      ],
+      "outputs": ["{projectRoot}/coverage/altcov.info"]
+    },
+    "test:unit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet test tests/OrganicLeverBe.Tests/OrganicLeverBe.Tests.fsproj --filter Category=Unit",
+        "cwd": "apps/organiclever-be"
+      },
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/src/**/*.fs",
+        "{projectRoot}/tests/**/*.fs",
+        "{projectRoot}/generated-contracts/**/*",
+        "{workspaceRoot}/specs/apps/organiclever/be/gherkin/**/*.feature"
+      ]
+    },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker compose -f docker-compose.integration.yml down -v && docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build",
+        "cwd": "apps/organiclever-be"
+      },
+      "cache": false
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "DOTNET_ROOT=$(dirname $(readlink -f $(which dotnet))) DOTNET_ROLL_FORWARD=LatestMajor fantomas --check src/ tests/",
+          "DOTNET_ROOT=$(dirname $(readlink -f $(which dotnet))) DOTNET_ROLL_FORWARD=LatestMajor dotnet fsharplint lint --lint-config fsharplint.json src/OrganicLeverBe/OrganicLeverBe.fsproj",
+          "dotnet tool restore && dotnet fsharp-analyzers --project src/OrganicLeverBe/OrganicLeverBe.fsproj --analyzers-path $(find $(dotnet nuget locals global-packages --list | sed 's/.*: //')g-research.fsharp.analyzers -path '*/analyzers/dotnet/fs' -type d | head -1) --treat-as-error GRA-STRING-001 GRA-STRING-002 GRA-STRING-003 GRA-STRING-004 GRA-UNIONCASE-001 GRA-VIRTUALCALL-001 GRA-JSONOPTS-001 GRA-DISPBEFOREASYNC-001 GRA-IMMUTABLECOLLECTIONEQUALITY-001 GRA-LOGARGFUNCFULLAPP-001 GRA-LOGTEMPLMISSVALS-001 GRA-TYPE-ANNOTATE-001 GRA-INTERPOLATED-001"
+        ],
+        "parallel": false,
+        "cwd": "apps/organiclever-be"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "dotnet restore src/OrganicLeverBe/OrganicLeverBe.fsproj",
+          "dotnet build src/OrganicLeverBe/OrganicLeverBe.fsproj --no-restore /p:TreatWarningsAsErrors=true"
+        ],
+        "parallel": false,
+        "cwd": "apps/organiclever-be"
+      },
+      "dependsOn": ["codegen"],
+      "cache": true
+    }
+  },
+  "tags": ["type:app", "platform:giraffe", "lang:fsharp", "domain:organiclever-be"],
+  "implicitDependencies": ["organiclever-contracts", "rhino-cli"]
+}

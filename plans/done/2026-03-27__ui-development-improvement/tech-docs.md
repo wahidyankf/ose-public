@@ -129,7 +129,7 @@ overridden per app.
 | Override complexity | No overrides needed               | Per-app color overrides in globals.css | N/A                |
 | Maintenance         | One file for all tokens           | One shared + per-app overrides         | Per-app everything |
 
-**Rationale**: organiclever-web is a business productivity app (neutral, professional).
+**Rationale**: organiclever-fe is a business productivity app (neutral, professional).
 ayokoding-web is an educational platform (blue, approachable). Forcing identical brand colors
 would harm both products. But radius, spacing rhythm, and typography scale should be consistent
 for shared component compatibility.
@@ -149,7 +149,7 @@ Per-app override (in app's `globals.css`):
 - `--primary`, `--primary-foreground`
 - `--secondary`, `--secondary-foreground`
 - `--accent`, `--accent-foreground`
-- `--chart-1` through `--chart-5` (organiclever-web only)
+- `--chart-1` through `--chart-5` (organiclever-fe only)
 - `--sidebar-*` (ayokoding-web only)
 
 ### AD3b: Per-Project Customization at Scale
@@ -289,7 +289,7 @@ or `bashPattern` fields.
 | --------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- |
 | Hardcoded hex in CSS        | `background-color: #f6f8fa !important;` (ayokoding-web globals.css)      | Use token: `bg-muted` or `var(--color-muted)`                                                                       |
 | `!important` in Tailwind    | `color: #24292e !important;` (ayokoding-web globals.css, 10 occurrences) | Use `@layer` specificity or Tailwind modifiers                                                                      |
-| Font via `@layer utilities` | `font-family: Arial, Helvetica, sans-serif;` (organiclever-web)          | Use `next/font` for optimization                                                                                    |
+| Font via `@layer utilities` | `font-family: Arial, Helvetica, sans-serif;` (organiclever-fe)           | Use `next/font` for optimization                                                                                    |
 | Old Radix imports           | `import { Slot } from "@radix-ui/react-slot"`                            | `import { Slot } from "radix-ui"`                                                                                   |
 | forwardRef pattern          | `React.forwardRef<HTMLButtonElement, Props>`                             | `function Button(props: React.ComponentProps<"button">)`                                                            |
 | Missing data-slot           | `<button className={...}>`                                               | `<button data-slot="button" className={...}>`                                                                       |
@@ -615,7 +615,7 @@ positives (e.g., hex in SVG data URIs) can be suppressed with eslint-disable com
   "printWidth": 120,
   "proseWrap": "preserve",
   "plugins": ["prettier-plugin-tailwindcss"],
-  "tailwindStylesheet": "./apps/organiclever-web/src/app/globals.css"
+  "tailwindStylesheet": "./apps/organiclever-fe/src/app/globals.css"
 }
 ```
 
@@ -633,12 +633,12 @@ positives (e.g., hex in SVG data URIs) can be suppressed with eslint-disable com
 | Build time        | Slower (per-app builds)          | Fast (one lib)                | Slowest        |
 | Coverage          | App-specific patterns visible    | Only shared components        | Full coverage  |
 
-**Rationale**: organiclever-web already has Storybook. Rather than maintaining two (or more)
+**Rationale**: organiclever-fe already has Storybook. Rather than maintaining two (or more)
 Storybook instances, consolidate into the shared lib. App-specific components that need
 documentation can be added to the shared Storybook via composition or documented in the app's
 README.
 
-**organiclever-web's existing Storybook**: Will be migrated to `libs/ts-ui/.storybook/` as
+**organiclever-fe's existing Storybook**: Will be migrated to `libs/ts-ui/.storybook/` as
 shared components are extracted. The app-level `.storybook/` can be removed once all stories
 are moved.
 
@@ -721,14 +721,14 @@ tolerance threshold that accommodates OS differences.
 | A11y unit tests    | vitest-axe                              | Vitest already used in all TS apps | jest-axe (Jest, not our runner)                              |
 | A11y lint          | eslint-plugin-jsx-a11y                  | ESLint already configured          | axe-linter (VS Code only)                                    |
 | Visual regression  | Playwright toHaveScreenshot()           | Playwright already in E2E tests    | Chromatic (SaaS, cost), Percy (SaaS, cost)                   |
-| Component catalog  | Storybook 10                            | Already in organiclever-web        | Ladle (less mature), React Cosmos (niche)                    |
+| Component catalog  | Storybook 10                            | Already in organiclever-fe         | Ladle (less mature), React Cosmos (niche)                    |
 | Component variants | CVA (already in use)                    | Type-safe, composable              | Tailwind Variants (similar, less adopted)                    |
 | Class utilities    | cn() via clsx + tailwind-merge          | Already the pattern                | Only clsx (no merge), only tw-merge (no conditional)         |
 | Design tokens      | CSS custom properties + Tailwind @theme | Already the pattern                | Style Dictionary (overkill), Tokens Studio (Figma-dependent) |
 
 ## Migration Path — Detailed
 
-### For organiclever-web
+### For organiclever-fe
 
 1. **Token extraction**: Copy structural token definitions from `globals.css` to
    `libs/ts-ui-tokens/src/tokens.css`. Keep brand-specific overrides (`--primary: 0 0% 9%`)
@@ -747,16 +747,16 @@ tolerance threshold that accommodates OS differences.
    `src/lib/utils.ts` cn() function (now in shared lib).
 7. **Migrate Storybook stories**: Move component stories to `libs/ts-ui/`. Update
    `.storybook/main.ts` to reference shared lib.
-8. **Verify**: Run `nx run organiclever-web:test:quick` and `nx storybook ts-ui`.
+8. **Verify**: Run `nx run organiclever-fe:test:quick` and `nx storybook ts-ui`.
 
 ### For ayokoding-web
 
-1. **Token extraction**: Same as organiclever-web for structural tokens. Keep blue brand
+1. **Token extraction**: Same as organiclever-fe for structural tokens. Keep blue brand
    overrides (`--primary: 221.2 83.2% 53.3%`) and sidebar tokens in app's `globals.css`.
 2. **Fix existing violations**: Replace hardcoded hex colors (8 occurrences of 3 unique values) in code block CSS with token
    references or CSS variables. Replace `!important` declarations with `@layer` specificity
    management.
-3. **Import shared tokens**: Same pattern as organiclever-web.
+3. **Import shared tokens**: Same pattern as organiclever-fe.
 4. **Component extraction**: Move shared components (Alert, Button, Dialog, Input) to shared
    lib. Keep content-specific components (Breadcrumb, Footer, Header, LanguageSwitcher,
    MobileNav, Sidebar, SidebarTree, ThemeToggle, TOC) as app-specific.

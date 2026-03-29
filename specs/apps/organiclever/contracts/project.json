@@ -1,0 +1,24 @@
+{
+  "name": "organiclever-contracts",
+  "root": "specs/apps/organiclever/contracts",
+  "targets": {
+    "lint": {
+      "command": "mkdir -p specs/apps/organiclever/contracts/generated && npx @redocly/cli bundle specs/apps/organiclever/contracts/openapi.yaml -o specs/apps/organiclever/contracts/generated/openapi-bundled.yaml && npx @redocly/cli bundle specs/apps/organiclever/contracts/openapi.yaml -o specs/apps/organiclever/contracts/generated/openapi-bundled.json && npx @stoplight/spectral-cli lint specs/apps/organiclever/contracts/generated/openapi-bundled.yaml --ruleset specs/apps/organiclever/contracts/.spectral.yaml",
+      "cache": true,
+      "inputs": ["{projectRoot}/**/*.yaml", "!{projectRoot}/generated/**", "!{projectRoot}/examples/**"]
+    },
+    "bundle": {
+      "command": "mkdir -p specs/apps/organiclever/contracts/generated && npx @redocly/cli bundle specs/apps/organiclever/contracts/openapi.yaml -o specs/apps/organiclever/contracts/generated/openapi-bundled.yaml && npx @redocly/cli bundle specs/apps/organiclever/contracts/openapi.yaml -o specs/apps/organiclever/contracts/generated/openapi-bundled.json",
+      "cache": true,
+      "inputs": ["{projectRoot}/**/*.yaml", "!{projectRoot}/generated/**", "!{projectRoot}/examples/**"],
+      "outputs": ["{projectRoot}/generated/openapi-bundled.yaml", "{projectRoot}/generated/openapi-bundled.json"]
+    },
+    "docs": {
+      "command": "mkdir -p specs/apps/organiclever/contracts/generated/docs && npx @redocly/cli bundle specs/apps/organiclever/contracts/openapi.yaml --remove-unused-components -o specs/apps/organiclever/contracts/generated/openapi-docs.yaml && npx @redocly/cli build-docs specs/apps/organiclever/contracts/generated/openapi-docs.yaml -o specs/apps/organiclever/contracts/generated/docs/index.html",
+      "dependsOn": ["bundle"],
+      "cache": true,
+      "inputs": ["{projectRoot}/generated/openapi-bundled.yaml"],
+      "outputs": ["{projectRoot}/generated/docs/"]
+    }
+  }
+}

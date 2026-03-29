@@ -170,7 +170,7 @@ radius contained to `specs/apps/demo/` only.
 
 ## Phase 11: Local Validation — Non-Backend Projects
 
-- [x] `nx run organiclever-web:test:quick` passes
+- [x] `nx run organiclever-fe:test:quick` passes
 - [x] `nx run rhino-cli:test:quick` passes
 - [x] `nx run ayokoding-cli:test:quick` passes
 - [x] `nx run oseplatform-cli:test:quick` passes
@@ -198,7 +198,7 @@ Trigger all 11 integration + E2E workflows manually and verify they pass:
 
 ## Phase 14: GitHub Actions — Other Workflows
 
-- [x] `test-integration-e2e-organiclever-web` — SUCCESS
+- [x] `test-integration-e2e-organiclever-fe` — SUCCESS
 - [x] `pr-validate-links` — no broken links from path changes (verified via Main CI)
 - [x] `pr-format` — no formatting issues (verified via Main CI)
 - [x] `pr-quality-gate` — passes (verified via Main CI)

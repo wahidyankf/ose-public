@@ -16,11 +16,11 @@ Infrastructure solidification remains the primary goal. Product features come se
 
 Four weeks ago, OrganicLever was a plan. Now it's four projects in the Nx monorepo. All content is placeholder for now—the focus is on building and validating the CI/CD infrastructure, not product features.
 
-**organiclever-web** — Next.js 16 with React 19, TailwindCSS v4, shadcn-ui components, cookie-based auth, dashboard layout, members CRUD, Storybook 10 for component development. 99.57% test coverage via Vitest with v8 provider.
+**organiclever-fe** — Next.js 16 with React 19, TailwindCSS v4, shadcn-ui components, cookie-based auth, dashboard layout, members CRUD, Storybook 10 for component development. 99.57% test coverage via Vitest with v8 provider.
 
 **organiclever-be** — Spring Boot 4.0.3 on Java 25, JSpecify + NullAway for null safety, Docker Compose for local development, REST API with members management. 100% test coverage via JaCoCo.
 
-**organiclever-web-e2e** — Playwright E2E tests for the frontend, running on scheduled CI twice daily.
+**organiclever-fe-e2e** — Playwright E2E tests for the frontend, running on scheduled CI twice daily.
 
 **organiclever-be-e2e** — Playwright E2E tests for the backend REST API, validating API contracts end-to-end.
 
@@ -31,9 +31,9 @@ Flutter app was deferred—desktop and mobile clients will come later when the b
 ```mermaid
 %% Color Palette: Blue #0173B2 (frontend), Orange #DE8F05 (backend), Teal #029E73 (testing)
 graph TD
-    OW["organiclever-web<br/>Next.js 16 + React 19"]:::frontend
+    OW["organiclever-fe<br/>Next.js 16 + React 19"]:::frontend
     OB["organiclever-be<br/>Spring Boot 4.0.3"]:::backend
-    OWE["organiclever-web-e2e<br/>Playwright"]:::testing
+    OWE["organiclever-fe-e2e<br/>Playwright"]:::testing
     OBE["organiclever-be-e2e<br/>Playwright"]:::testing
 
     OW -->|"REST API"| OB
@@ -51,7 +51,7 @@ Testing is organized into three tiers sharing a common Gherkin specification lay
 
 **Unit tests** cover isolated pure functions, hooks, and algorithmic logic—things integration tests cannot reach. Vitest for TypeScript, JUnit for Java, Go's testing package for Go projects.
 
-**Integration tests** cover feature-level workflows with in-process mocking. Vitest-Cucumber with MSW for organiclever-web, Cucumber JVM with MockMvc for organiclever-be, Godog with mock closures for Go libraries. All integration tests are deterministic and cacheable—no external services required.
+**Integration tests** cover feature-level workflows with in-process mocking. Vitest-Cucumber with MSW for organiclever-fe, Cucumber JVM with MockMvc for organiclever-be, Godog with mock closures for Go libraries. All integration tests are deterministic and cacheable—no external services required.
 
 **E2E tests** validate deployed systems end-to-end. Playwright runs against real browser instances for web, against live API endpoints for backend. Scheduled twice daily via GitHub Actions.
 
@@ -84,7 +84,7 @@ Coverage enforcement didn't exist in Phase 0. During Phase 1, thresholds were in
 
 - **golang-commons**: 100%
 - **organiclever-be**: 100% (JaCoCo)
-- **organiclever-web**: 99.57% (Vitest v8)
+- **organiclever-fe**: 99.57% (Vitest v8)
 - **hugo-commons**: 97.59%
 - **oseplatform-cli**: 97.30%
 - **rhino-cli**: 95.68%

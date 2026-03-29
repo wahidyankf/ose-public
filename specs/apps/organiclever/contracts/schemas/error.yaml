@@ -1,0 +1,13 @@
+ErrorResponse:
+  type: object
+  description: Standardized error response
+  required:
+    - error
+  properties:
+    error:
+      type: string
+    message:
+      type: string
+    details:
+      type: object
+      additionalProperties: true

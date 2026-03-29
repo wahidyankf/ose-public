@@ -25,7 +25,7 @@ Integration tests vary by project type:
 - **Database lifecycle**: Each test run: (1) `docker compose up` starts PostgreSQL + test runner, (2) test runner waits for PostgreSQL readiness, (3) runs all migrations, (4) executes seed files if present, (5) runs tests, (6) `docker compose down -v` tears down everything including volumes.
 - **Deterministic**: Yes (clean containers per run, no shared state). However, NOT cacheable — Docker builds may pull updated base images, and container execution is not tracked by Nx file-based caching.
 
-#### organiclever-web (MSW)
+#### organiclever-fe (MSW)
 
 - **Infrastructure**: Mock Service Worker (MSW) for API mocking. In-process, no Docker needed.
 - **Entry point**: Component-level tests with mocked API boundaries.
@@ -49,7 +49,7 @@ Integration tests vary by project type:
 - **Entry point**: Through API calls or UI. Uses Playwright.
 - **Spec consumption** (demo-be only): MUST consume corresponding Gherkin specs.
 - **Purpose**: Verify the fully assembled system works end-to-end.
-- **Applies to**: `demo-be-e2e` (all 11 backends), `organiclever-web-e2e`.
+- **Applies to**: `demo-be-e2e` (all 11 backends), `organiclever-fe-e2e`.
 - **Deterministic**: Depends on external services. NOT cacheable.
 
 ### Projects Without Tests
@@ -104,12 +104,12 @@ All 11 backends need to migrate to PostgreSQL. Four backends currently use SQLit
 
 #### Web Apps
 
-| Project                | Unit Tests | Integration Tests | E2E Tests                  | Status    |
-| ---------------------- | ---------- | ----------------- | -------------------------- | --------- |
-| `organiclever-web`     | Vitest     | Vitest + MSW      | via `organiclever-web-e2e` | Compliant |
-| `organiclever-web-e2e` | —          | —                 | Playwright + bddgen        | Compliant |
-| `oseplatform-web`      | —          | —                 | —                          | Compliant |
-| `ayokoding-web`        | —          | —                 | —                          | Compliant |
+| Project               | Unit Tests | Integration Tests | E2E Tests                 | Status    |
+| --------------------- | ---------- | ----------------- | ------------------------- | --------- |
+| `organiclever-fe`     | Vitest     | Vitest + MSW      | via `organiclever-fe-e2e` | Compliant |
+| `organiclever-fe-e2e` | —          | —                 | Playwright + bddgen       | Compliant |
+| `oseplatform-web`     | —          | —                 | —                         | Compliant |
+| `ayokoding-web`       | —          | —                 | —                         | Compliant |
 
 **Gap**: None. Web apps already follow the appropriate standard for their type.
 
@@ -139,7 +139,7 @@ All 11 backends need to migrate to PostgreSQL. Four backends currently use SQLit
 E2E tests already align with the new standard:
 
 - **`demo-be-e2e`**: Uses Playwright + playwright-bdd, consumes `specs/apps/demo/be/gherkin/**/*.feature`, makes real HTTP calls. **Already compliant.**
-- **`organiclever-web-e2e`**: Uses Playwright + bddgen, tests organiclever-web. **Already compliant.**
+- **`organiclever-fe-e2e`**: Uses Playwright + bddgen, tests organiclever-fe. **Already compliant.**
 
 ## Gap Analysis
 
@@ -174,12 +174,12 @@ E2E tests already align with the new standard:
 
 These projects are already architecturally compliant with the three rules. However, some need **test:quick reconfiguration** to separate unit from integration tests (coverage must come from `test:unit` alone):
 
-- **Web UI** (`organiclever-web`): Rules 1+2+3 — test architecture already correct, but **needs test suite splitting**: currently `test:quick` runs unit + MSW together. Must split into separate `test:unit` (no MSW) and `test:integration` (MSW) targets so `test:quick` only runs unit tests.
+- **Web UI** (`organiclever-fe`): Rules 1+2+3 — test architecture already correct, but **needs test suite splitting**: currently `test:quick` runs unit + MSW together. Must split into separate `test:unit` (no MSW) and `test:integration` (MSW) targets so `test:quick` only runs unit tests.
 - **CLI apps** (`ayokoding-cli`, `oseplatform-cli`, `rhino-cli`): Rules 1+2 — test architecture already correct, but **may need target reconfiguration**: currently coverage comes from combined unit + Godog runs. Must ensure `test:quick` runs `test:unit` only and coverage ≥90% from unit tests alone.
 - **Hugo sites** (`oseplatform-web`, `ayokoding-web`): Exempt — no changes needed, build + link validation only
 - **Libraries** (`golang-commons`, `hugo-commons`): Rule 1 — no changes needed, unit tests already working (integration exists but optional)
 - **Libraries** (`elixir-cabbage`, `elixir-gherkin`): Rule 1 — no changes needed, unit tests already working
-- **E2E runners** (`demo-be-e2e`, `organiclever-web-e2e`): No changes needed, Playwright already working
+- **E2E runners** (`demo-be-e2e`, `organiclever-fe-e2e`): No changes needed, Playwright already working
 
 ### Per-Backend Work Summary (Demo-be Only)
 
@@ -235,7 +235,7 @@ For each backend, follow this sequence (per-backend README + project.json update
 
 ### Phase 3: Verify and Adapt Non-Demo-be Projects
 
-Verify that all other projects conform to the standard. Most need no code changes, but some need test suite splitting (organiclever-web, Go CLI apps). Confirm:
+Verify that all other projects conform to the standard. Most need no code changes, but some need test suite splitting (organiclever-fe, Go CLI apps). Confirm:
 
 - Each project has the correct Nx targets for its type
 - `test:quick` is the quality gate and works correctly
@@ -339,7 +339,7 @@ After standardization, each project type MUST have these Nx targets (derived fro
 
 **Coverage measurement change**: Currently coverage for many projects is measured from integration test runs. After standardization, coverage must come from `test:unit` alone. This means unit tests must exercise enough code paths to reach ≥90%. For demo-be backends, the Gherkin-driven unit tests (with mocked dependencies) will be the primary coverage source. For Go CLI apps, unit tests (excluding Godog BDD files) must reach ≥90%.
 
-**organiclever-web special case**: Currently `organiclever-web` runs all Vitest tests (unit + MSW integration) in a single `npx vitest run --coverage`. After standardization, MSW tests are reclassified as `test:integration` and excluded from `test:quick`. Unit tests alone must reach ≥90% coverage. This requires splitting the test suites or adding more unit tests.
+**organiclever-fe special case**: Currently `organiclever-fe` runs all Vitest tests (unit + MSW integration) in a single `npx vitest run --coverage`. After standardization, MSW tests are reclassified as `test:integration` and excluded from `test:quick`. Unit tests alone must reach ≥90% coverage. This requires splitting the test suites or adding more unit tests.
 
 ### CI Schedules
 
@@ -426,10 +426,10 @@ Both paths guarantee `test:quick` runs. PRs additionally run `typecheck` and `li
 
 These projects don't need the same README/architecture documentation rewrite as demo-be backends. However, some need **project.json target updates** in Phase 3 of the delivery checklist:
 
-- **`apps/organiclever-web/`** — Test architecture already correct, but `project.json` needs target splitting (unit vs MSW integration) in Phase 3.
+- **`apps/organiclever-fe/`** — Test architecture already correct, but `project.json` needs target splitting (unit vs MSW integration) in Phase 3.
 - **`apps/ayokoding-cli/`**, **`apps/oseplatform-cli/`**, **`apps/rhino-cli/`** — Test architecture already correct, but `project.json` may need target reconfiguration (unit vs Godog integration) in Phase 3.
 - **`apps/demo-be-e2e/`** — Already compliant, no changes needed.
-- **`apps/organiclever-web-e2e/`** — Already compliant (Playwright + bddgen), no changes needed.
+- **`apps/organiclever-fe-e2e/`** — Already compliant (Playwright + bddgen), no changes needed.
 - **`apps/oseplatform-web/`** — Already compliant (link validation only), no changes needed.
 - **`apps/ayokoding-web/`** — Already compliant (link validation only), no changes needed.
 - **`libs/golang-commons/`** — Already compliant (Go unit + Godog integration), no changes needed.
@@ -462,7 +462,7 @@ These projects don't need the same README/architecture documentation rewrite as 
 | `test-integration-e2e-demo-be-clojure-pedestal.yml`  | Cron 2x daily (WIB 06/18) + manual | Docker compose up → Playwright E2E → teardown                                    |
 | `test-integration-e2e-demo-be-elixir-phoenix.yml`    | Cron 2x daily (WIB 06/18) + manual | Docker compose up → Playwright E2E → teardown                                    |
 | `test-integration-e2e-demo-be-rust-axum.yml`         | Cron 2x daily (WIB 06/18) + manual | Docker compose up → Playwright E2E → teardown                                    |
-| `test-integration-e2e-organiclever-web.yml`          | Cron 2x daily (WIB 06/18) + manual | Docker compose up → Playwright E2E → teardown                                    |
+| `test-integration-e2e-organiclever-fe.yml`           | Cron 2x daily (WIB 06/18) + manual | Docker compose up → Playwright E2E → teardown                                    |
 
 ##### Changes Needed
 
@@ -496,7 +496,7 @@ These projects don't need the same README/architecture documentation rewrite as 
 
 - **"CI & Test Coverage" section** — Currently shows E2E + Coverage badges per demo-be backend. After standardization:
   - Add **Integration** badge column for demo-be backends (new CI workflow)
-  - Add Integration badge for `organiclever-web` and Go CLI apps
+  - Add Integration badge for `organiclever-fe` and Go CLI apps
   - Update table headers to reflect three CI types: Integration (4x daily) | E2E (2x daily) | Coverage
 - **Badge descriptions** — Update text to explain the CI schedule (integration 4x daily, E2E 2x daily)
 - **Clarify** that `test:quick` (run on every push via `main-ci.yml` and on every PR via `pr-quality-gate.yml`) includes unit tests + coverage, but NOT lint, typecheck, integration, or E2E (lint and typecheck run as separate targets)

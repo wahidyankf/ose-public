@@ -100,7 +100,8 @@ Every workflow currently in the repository follows this rule:
 | `Test - Demo BE (TypeScript/Effect)`         | `test-demo-be-ts-effect.yml`          |
 | `Test - Demo BE (C#/ASP.NET Core)`           | `test-demo-be-csharp-aspnetcore.yml`  |
 | `Test - Demo BE (Clojure/Pedestal)`          | `test-demo-be-clojure-pedestal.yml`   |
-| `Test - OrganicLever Web`                    | `test-organiclever-web.yml`           |
+| `Test - OrganicLever FE`                     | `test-organiclever-fe.yml`            |
+| `Test - OrganicLever BE`                     | `test-organiclever-be.yml`            |
 | `Test - Demo FE (TypeScript/Next.js)`        | `test-demo-fe-ts-nextjs.yml`          |
 | `Test - Demo FE (TypeScript/TanStack Start)` | `test-demo-fe-ts-tanstack-start.yml`  |
 | `Test - Demo FE (Dart/Flutter Web)`          | `test-demo-fe-dart-flutterweb.yml`    |

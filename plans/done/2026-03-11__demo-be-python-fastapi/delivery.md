@@ -12,7 +12,7 @@ Execute phases in order. Each phase produces a working, committable state.
 - [x] Verify `pyright` available globally or confirm it will be invoked via `uv run pyright`
 - [x] Verify `ruff` available globally or confirm it will be invoked via `uv run ruff`
 - [x] Verify `rhino-cli test-coverage validate` supports LCOV (it does — already used by
-      `organiclever-web` and `demo-be-elixir-phoenix`)
+      `organiclever-fe` and `demo-be-elixir-phoenix`)
 - [x] Confirm `demo-be-e2e` Playwright config reads `BASE_URL` from env (it does)
 - [x] Confirm pytest-bdd is compatible with the current Gherkin syntax in
       `specs/apps/demo/be/gherkin/` (Given/When/Then with doc_string and data table parameters)

@@ -613,7 +613,7 @@ no browser) pass.
 | organiclever-db      | 5432                                               |
 | organiclever-be-jasb | 8201                                               |
 | organiclever-be-exph | 8201 (same port — mutually exclusive alternatives) |
-| organiclever-web     | 3200                                               |
+| organiclever-fe      | 3200                                               |
 
 ### Docker Compose (`infra/dev/organiclever-exph/docker-compose.yml`)
 
@@ -639,7 +639,7 @@ Mirrors `infra/dev/organiclever-jasb/docker-compose.yml` with these changes:
 - Network: `organiclever-network`
 
 The `volumes:` section at the bottom of the compose file must declare `organiclever-exph-db-data:`
-for DB persistence. No `organiclever-web` service — the web app connects to whichever backend
+for DB persistence. No `organiclever-fe` service — the web app connects to whichever backend
 is configured.
 
 ### Dockerfile.be.dev (Elixir)

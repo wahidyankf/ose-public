@@ -1,0 +1,82 @@
+/api/v1/auth/google:
+  post:
+    operationId: googleLogin
+    summary: Google OAuth login
+    description: >
+      Accepts a Google ID token, validates it with Google, creates or updates
+      the user record, and returns JWT access + refresh tokens.
+    tags:
+      - Authentication
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/auth.yaml#/AuthGoogleRequest"
+    responses:
+      "200":
+        description: Login successful
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/auth.yaml#/AuthTokenResponse"
+      "401":
+        description: Invalid Google ID token
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/error.yaml#/ErrorResponse"
+
+/api/v1/auth/refresh:
+  post:
+    operationId: refreshToken
+    summary: Refresh access token
+    description: >
+      Accepts a refresh token, validates it, invalidates the old token
+      (rotation), and returns a new access + refresh token pair.
+    tags:
+      - Authentication
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/auth.yaml#/RefreshRequest"
+    responses:
+      "200":
+        description: Token refreshed successfully
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/auth.yaml#/AuthTokenResponse"
+      "401":
+        description: Invalid or expired refresh token
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/error.yaml#/ErrorResponse"
+
+/api/v1/auth/me:
+  get:
+    operationId: getMe
+    summary: Get authenticated user profile
+    description: >
+      Returns the profile of the currently authenticated user. Requires a
+      valid JWT access token in the Authorization header.
+    tags:
+      - Authentication
+    security:
+      - bearerAuth: []
+    responses:
+      "200":
+        description: User profile
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/user.yaml#/UserProfile"
+      "401":
+        description: Not authenticated or token expired
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/error.yaml#/ErrorResponse"

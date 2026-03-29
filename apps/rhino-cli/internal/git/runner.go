@@ -215,7 +215,7 @@ func step5LintStaged(gitRoot string, deps Deps) error {
 
 // step5bSyncLockfiles regenerates app-level package-lock.json when package.json is staged.
 //
-// Some apps (e.g. demo-be-ts-effect, organiclever-web) have their own package-lock.json
+// Some apps (e.g. demo-be-ts-effect, organiclever-fe) have their own package-lock.json
 // used by Dockerfile for `npm ci`. If package.json is updated but the lockfile is not
 // regenerated, `npm ci` fails in Docker builds (EUSAGE: lockfile out of sync).
 //

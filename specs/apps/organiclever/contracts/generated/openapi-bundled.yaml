@@ -1,0 +1,196 @@
+openapi: 3.1.0
+info:
+  title: OrganicLever API
+  description: REST API contract for the OrganicLever productivity platform
+  version: 1.0.0
+  contact:
+    name: Open Sharia Enterprise
+    url: https://github.com/wahidyankf/open-sharia-enterprise
+servers:
+  - url: http://localhost:8202
+    description: Local development
+tags:
+  - name: Health
+    description: Service health checks
+  - name: Authentication
+    description: Google OAuth authentication and token management
+paths:
+  /api/v1/health:
+    get:
+      operationId: getHealth
+      summary: Health check
+      tags:
+        - Health
+      responses:
+        "200":
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+  /api/v1/auth/google:
+    post:
+      operationId: googleLogin
+      summary: Google OAuth login
+      description: |
+        Accepts a Google ID token, validates it with Google, creates or updates the user record, and returns JWT access + refresh tokens.
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthGoogleRequest"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthTokenResponse"
+        "401":
+          description: Invalid Google ID token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/v1/auth/refresh:
+    post:
+      operationId: refreshToken
+      summary: Refresh access token
+      description: |
+        Accepts a refresh token, validates it, invalidates the old token (rotation), and returns a new access + refresh token pair.
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefreshRequest"
+      responses:
+        "200":
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthTokenResponse"
+        "401":
+          description: Invalid or expired refresh token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/v1/auth/me:
+    get:
+      operationId: getMe
+      summary: Get authenticated user profile
+      description: |
+        Returns the profile of the currently authenticated user. Requires a valid JWT access token in the Authorization header.
+      tags:
+        - Authentication
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+        "401":
+          description: Not authenticated or token expired
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    AuthGoogleRequest:
+      type: object
+      description: Google OAuth login request with ID token
+      required:
+        - idToken
+      properties:
+        idToken:
+          type: string
+          description: Google ID token obtained from Google Sign-In
+    AuthTokenResponse:
+      type: object
+      description: Authentication token pair returned on login or refresh
+      required:
+        - accessToken
+        - refreshToken
+        - tokenType
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        tokenType:
+          type: string
+          example: Bearer
+    RefreshRequest:
+      type: object
+      description: Token refresh request
+      required:
+        - refreshToken
+      properties:
+        refreshToken:
+          type: string
+    UserProfile:
+      type: object
+      description: Authenticated user profile from Google OAuth
+      required:
+        - id
+        - email
+        - name
+        - avatarUrl
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        avatarUrl:
+          type: string
+          format: uri
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    ErrorResponse:
+      type: object
+      description: Standardized error response
+      required:
+        - error
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+          additionalProperties: true
+    HealthResponse:
+      type: object
+      description: Health check response
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          example: UP

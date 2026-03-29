@@ -346,17 +346,17 @@ Full updated file (reference — final state after all phases):
 
 ---
 
-## apps/organiclever-web/project.json
+## apps/organiclever-fe/project.json
 
 **Add `typecheck`, `test:quick`, `test:unit`, `test:integration`, vitest config; update `lint`:**
 
-**devDependencies to add** (`apps/organiclever-web/package.json`):
+**devDependencies to add** (`apps/organiclever-fe/package.json`):
 
 ```text
 vitest @vitejs/plugin-react jsdom @testing-library/react vite-tsconfig-paths
 ```
 
-**New file** `apps/organiclever-web/vitest.config.ts`:
+**New file** `apps/organiclever-fe/vitest.config.ts`:
 
 > **Note**: vitest 4.x deprecated the separate `vitest.workspace.ts` file. Use `vitest.config.ts`
 > with the `projects` option instead. `passWithNoTests` must be set at the root level (not inside
@@ -402,8 +402,8 @@ Full updated `project.json`:
 ```json
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "name": "organiclever-web",
-  "sourceRoot": "apps/organiclever-web/src",
+  "name": "organiclever-fe",
+  "sourceRoot": "apps/organiclever-fe/src",
   "projectType": "application",
   "targets": {
     "dev": {
@@ -616,7 +616,7 @@ once via `typecheck`.
 
 ---
 
-## apps/organiclever-web-e2e/project.json
+## apps/organiclever-fe-e2e/project.json
 
 **Rename all `e2e*` targets, add `lint` and `test:quick`:**
 
@@ -625,50 +625,50 @@ Full updated file:
 ```json
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "name": "organiclever-web-e2e",
-  "sourceRoot": "apps/organiclever-web-e2e/tests",
+  "name": "organiclever-fe-e2e",
+  "sourceRoot": "apps/organiclever-fe-e2e/tests",
   "projectType": "application",
   "targets": {
     "install": {
       "executor": "nx:run-commands",
       "options": {
         "command": "npm install",
-        "cwd": "apps/organiclever-web-e2e"
+        "cwd": "apps/organiclever-fe-e2e"
       }
     },
     "lint": {
       "executor": "nx:run-commands",
       "options": {
         "command": "npx oxlint@latest .",
-        "cwd": "apps/organiclever-web-e2e"
+        "cwd": "apps/organiclever-fe-e2e"
       }
     },
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
         "command": "npx oxlint@latest .",
-        "cwd": "apps/organiclever-web-e2e"
+        "cwd": "apps/organiclever-fe-e2e"
       }
     },
     "test:e2e": {
       "executor": "nx:run-commands",
       "options": {
         "command": "npx playwright test",
-        "cwd": "apps/organiclever-web-e2e"
+        "cwd": "apps/organiclever-fe-e2e"
       }
     },
     "test:e2e:ui": {
       "executor": "nx:run-commands",
       "options": {
         "command": "npx playwright test --ui",
-        "cwd": "apps/organiclever-web-e2e"
+        "cwd": "apps/organiclever-fe-e2e"
       }
     },
     "test:e2e:report": {
       "executor": "nx:run-commands",
       "options": {
         "command": "npx playwright show-report",
-        "cwd": "apps/organiclever-web-e2e"
+        "cwd": "apps/organiclever-fe-e2e"
       }
     }
   },
@@ -680,7 +680,7 @@ Full updated file:
 
 ## apps/organiclever-be-e2e/project.json
 
-**Same pattern as `organiclever-web-e2e`:**
+**Same pattern as `organiclever-fe-e2e`:**
 
 Full updated file:
 
@@ -742,7 +742,7 @@ Full updated file:
 
 ## apps/organiclever-app-web-e2e/project.json
 
-**Same pattern as `organiclever-web-e2e`:**
+**Same pattern as `organiclever-fe-e2e`:**
 
 Full updated file:
 
@@ -830,7 +830,7 @@ per-project makes the lint target consistent with the workspace-level lint comma
 faster than ESLint. It runs zero-config (`npx oxlint@latest .` finds all `.ts`/`.js` files in
 the current directory) and requires no devDependency installation.
 
-- **`organiclever-web`**: replaces `next lint` (ESLint-backed) with oxlint for consistent, faster
+- **`organiclever-fe`**: replaces `next lint` (ESLint-backed) with oxlint for consistent, faster
   lint across all TypeScript projects
 - **Playwright E2E projects**: replaces `tsc --noEmit` used as a lint proxy; `test:quick` for
   E2E projects mirrors `lint` (both oxlint) since no unit tests exist
@@ -841,7 +841,7 @@ the current directory) and requires no devDependency installation.
 `npx oxlint@latest` always resolves the latest published version. Pin `npx oxlint@x.y.z` in
 `test:quick` only if version stability is required in CI (not needed for local pre-push).
 
-### Why vitest for organiclever-web unit and integration tests?
+### Why vitest for organiclever-fe unit and integration tests?
 
 `vitest` is the standard test runner for TypeScript/JavaScript in this workspace. It is built on
 Vite, shares the same transform pipeline as Next.js, and runs 2–10× faster than Jest.

@@ -42,7 +42,7 @@ governance docs, skill files, agent files, and Prettier config._
   - Body: seven check dimensions (token compliance, accessibility, color palette, component
     patterns, dark mode, responsive, anti-patterns) with severity levels and example violations
   - Report output to `generated-reports/` using `swe-ui__{uuid}__{timestamp}__audit.md` pattern
-- [x] Test agent against `apps/organiclever-web/src/components/ui/button.tsx`
+- [x] Test agent against `apps/organiclever-fe/src/components/ui/button.tsx`
 - [x] Verify report contains findings for: old Radix import, forwardRef pattern, missing data-slot
 
 #### 1.3b Create swe-ui-fixer (Yellow)
@@ -124,7 +124,7 @@ _Extract shared tokens and components into Nx libraries. One app migration at a 
 - [x] Create `libs/ts-ui-tokens/` manually (no Nx generator — workspace uses manual project.json)
 - [x] Create `project.json` with typecheck and lint targets
 - [x] Create `src/tokens.css` with shared structural tokens:
-  - Extract from organiclever-web `globals.css`: `--radius`, radius scale, base neutral colors
+  - Extract from organiclever-fe `globals.css`: `--radius`, radius scale, base neutral colors
   - Define spacing scale: `--space-1: 0.25rem` through `--space-16: 4rem` (4pt system)
   - Define typography scale: `--text-xs` through `--text-4xl`
   - Include `@custom-variant dark (&:is(.dark *))` for dark mode support
@@ -153,7 +153,7 @@ _Extract shared tokens and components into Nx libraries. One app migration at a 
 - [x] Verify `nx run ts-ui:test:quick` succeeds (95.65% coverage, 70% threshold)
 - [x] Create Gherkin specs in `specs/libs/ts-ui/gherkin/` with vitest-cucumber step definitions for all 6 components
 
-### 2.3 Migrate organiclever-web
+### 2.3 Migrate organiclever-fe
 
 **Goal**: Replace app-local tokens and components with shared library imports.
 
@@ -161,7 +161,7 @@ _Extract shared tokens and components into Nx libraries. One app migration at a 
 - [x] Update all component imports to `@open-sharia-enterprise/ts-ui`
 - [x] Delete migrated components (Alert, Button, Card, Dialog, Input, Label) + stories + utils.ts
 - [x] Update remaining local components (AlertDialog, Table) to use `cn` from shared lib
-- [x] Verify `nx run organiclever-web:test:quick` passes (99.57% coverage)
+- [x] Verify `nx run organiclever-fe:test:quick` passes (99.57% coverage)
 
 ### 2.4 Migrate ayokoding-web
 
@@ -187,7 +187,7 @@ _Extract shared tokens and components into Nx libraries. One app migration at a 
 
 ### Phase 2 Validation
 
-- [x] `nx affected -t typecheck lint test:quick` succeeds for organiclever-web and ayokoding-web
+- [x] `nx affected -t typecheck lint test:quick` succeeds for organiclever-fe and ayokoding-web
 - [x] No duplicate structural token definitions in migrated apps
 - [x] Each migrated app's `globals.css` contains only brand overrides and app-specific tokens
 - [x] All shared components use unified `radix-ui` import and `React.ComponentProps` pattern
@@ -207,10 +207,10 @@ adding rules to ESLint config and tests to vitest automatically enforces them._
 **Goal**: Catch accessibility violations at lint time.
 **CI enforcement**: Flows through `nx affected -t lint` in pre-push hook + PR quality gate.
 
-- [x] Install `eslint-plugin-jsx-a11y` (for organiclever-web ESLint config)
-- [x] Add `jsxA11y.flatConfigs.recommended` to organiclever-web's `eslint.config.mjs`
+- [x] Install `eslint-plugin-jsx-a11y` (for organiclever-fe ESLint config)
+- [x] Add `jsxA11y.flatConfigs.recommended` to organiclever-fe's `eslint.config.mjs`
 - [x] Enable oxlint `--jsx-a11y-plugin` for all 5 TypeScript frontend apps via project.json
-  - organiclever-web, ayokoding-web, demo-fe-ts-nextjs, demo-fs-ts-nextjs, demo-fe-ts-tanstack-start
+  - organiclever-fe, ayokoding-web, demo-fe-ts-nextjs, demo-fs-ts-nextjs, demo-fe-ts-tanstack-start
 - [x] Verify `nx run-many -t lint` passes cleanly (0 errors, all 5 projects)
 
 ### 3.2 Add vitest-axe to Unit Tests
@@ -290,7 +290,7 @@ _Make the design system browsable, self-documenting, and visually tested._
 **Goal**: Comprehensive component catalog for the shared library.
 
 - [x] Set up `libs/ts-ui/.storybook/main.ts`:
-  - Framework: `@storybook/nextjs-vite` (matching organiclever-web's existing setup)
+  - Framework: `@storybook/nextjs-vite` (matching organiclever-fe's existing setup)
   - Stories glob: `../src/**/*.stories.@(ts|tsx)`
   - Add `@tailwindcss/vite` plugin for Tailwind v4 support
 - [x] Set up `libs/ts-ui/.storybook/preview.ts`:
@@ -356,15 +356,15 @@ _Make the design system browsable, self-documenting, and visually tested._
 - [x] Add JSDoc comments to all CVA variant type definitions
 - [x] Verify Storybook's auto-docs panel shows: description, props table, default values
 
-### 4.5 Migrate organiclever-web Storybook (Optional)
+### 4.5 Migrate organiclever-fe Storybook (Optional)
 
 **Goal**: Remove app-level Storybook if all stories are in shared lib.
 
 - [x] Move any remaining app-specific stories to appropriate location
-- [x] If all UI component stories are in `libs/ts-ui/`, remove `apps/organiclever-web/.storybook/`
+- [x] If all UI component stories are in `libs/ts-ui/`, remove `apps/organiclever-fe/.storybook/`
   - App-specific stories remain (Breadcrumb, Navigation, Table, AlertDialog) — keep app-level Storybook
 - [x] If app-specific stories remain, keep app-level Storybook alongside shared one
-- [x] Update organiclever-web README to point to `nx storybook ts-ui` for component reference
+- [x] Update organiclever-fe README to point to `nx storybook ts-ui` for component reference
 
 ### Phase 4 Validation
 
@@ -396,7 +396,7 @@ flowchart TD
   subgraph Phase2[Phase 2: Shared Library]
     E[2.1 Create ts-ui-tokens]
     F[2.2 Create ts-ui]
-    G[2.3 Migrate organiclever-web]
+    G[2.3 Migrate organiclever-fe]
     H[2.4 Migrate ayokoding-web]
     I[2.5 Update demo-fe-ts-nextjs]
     J[2.6 Update demo-fs-ts-nextjs]
@@ -418,7 +418,7 @@ flowchart TD
     P[4.2 Write Stories]
     Q[4.3 Add Nx Targets]
     R[4.4 JSDoc Documentation]
-    S[4.5 Migrate organiclever-web Storybook]
+    S[4.5 Migrate organiclever-fe Storybook]
     M[3.3 Visual Regression]
     O --> P
     O --> Q
@@ -443,13 +443,13 @@ flowchart TD
 
 ## Risk Considerations
 
-| Risk                                                                 | Likelihood | Impact | Mitigation                                                                                                                           |
-| -------------------------------------------------------------------- | ---------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------ |
-| Token reconciliation between apps produces unexpected visual changes | Medium     | High   | Use organiclever-web as structural canonical; screenshot before/after each migration; per-app brand overrides preserve existing look |
-| Breaking existing components during extraction                       | Medium     | High   | Migrate one app at a time; run full `test:quick` after each; keep app-specific components local                                      |
-| Storybook version conflicts in monorepo                              | Low        | Medium | Pin version in root package.json; use same `@storybook/nextjs-vite` already in use                                                   |
-| Visual regression flakiness in CI                                    | Medium     | Medium | Set 1% pixel threshold; use consistent CI environment; document baseline update process                                              |
-| Skill triggers too broadly on TSX edits                              | Low        | Low    | Refine skill `description` wording to scope context-matching to UI component work                                                    |
-| Prettier plugin reformats too aggressively                           | Low        | Medium | Run initial format as separate commit; review diff before merging; revert if unexpected changes                                      |
-| Custom ESLint rule false positives                                   | Medium     | Low    | Start with `warn` severity; suppress known false positives; promote to `error` after stabilization                                   |
-| shadcn/ui model tension (copy-own vs. shared)                        | Medium     | Medium | Clearly document that shared components are governed by ts-ui maintainers; app-specific extensions are app-owned                     |
+| Risk                                                                 | Likelihood | Impact | Mitigation                                                                                                                          |
+| -------------------------------------------------------------------- | ---------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Token reconciliation between apps produces unexpected visual changes | Medium     | High   | Use organiclever-fe as structural canonical; screenshot before/after each migration; per-app brand overrides preserve existing look |
+| Breaking existing components during extraction                       | Medium     | High   | Migrate one app at a time; run full `test:quick` after each; keep app-specific components local                                     |
+| Storybook version conflicts in monorepo                              | Low        | Medium | Pin version in root package.json; use same `@storybook/nextjs-vite` already in use                                                  |
+| Visual regression flakiness in CI                                    | Medium     | Medium | Set 1% pixel threshold; use consistent CI environment; document baseline update process                                             |
+| Skill triggers too broadly on TSX edits                              | Low        | Low    | Refine skill `description` wording to scope context-matching to UI component work                                                   |
+| Prettier plugin reformats too aggressively                           | Low        | Medium | Run initial format as separate commit; review diff before merging; revert if unexpected changes                                     |
+| Custom ESLint rule false positives                                   | Medium     | Low    | Start with `warn` severity; suppress known false positives; promote to `error` after stabilization                                  |
+| shadcn/ui model tension (copy-own vs. shared)                        | Medium     | Medium | Clearly document that shared components are governed by ts-ui maintainers; app-specific extensions are app-owned                    |

@@ -534,7 +534,7 @@ workflows. No regressions anywhere.
   - [x] `nx run-many -t typecheck --all` — all 21 projects pass (38 tasks total)
   - [x] `nx run-many -t lint --all` — all 30 projects pass (32 tasks total)
   - [x] `nx run-many -t test:quick --all` — all 29 projects pass (34 tasks total)
-        Note: organiclever-web was flaky on first run, passed on retry
+        Note: organiclever-fe was flaky on first run, passed on retry
   - [x] Verify Nx caching: second run — all 34 tasks hit cache
   - [x] Verify cache invalidation: modified health-check.feature → demo-be-golang-gin cache miss
         (re-ran). Reverted.

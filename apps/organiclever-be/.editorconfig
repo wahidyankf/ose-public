@@ -1,0 +1,12 @@
+root = true
+
+[*.fs]
+indent_style = space
+indent_size = 4
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+fsharp_indent_size = 4
+fsharp_max_line_length = 120
+fsharp_end_of_line = lf

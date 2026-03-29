@@ -4,14 +4,14 @@ Shared React component library for the open-sharia-enterprise monorepo. Built on
 
 ## Components
 
-| Component | Source                        | Pattern                                     |
-| --------- | ----------------------------- | ------------------------------------------- |
-| Button    | ayokoding-web (reconciled)    | CVA variants, 6 variants, 8 sizes, asChild  |
-| Alert     | ayokoding-web                 | CVA variants, role="alert"                  |
-| Dialog    | ayokoding-web                 | Radix Dialog, portal, overlay, close button |
-| Input     | ayokoding-web                 | focus-visible, aria-invalid                 |
-| Card      | organiclever-web (modernized) | Subcomponents with data-slot                |
-| Label     | organiclever-web (modernized) | Radix Label                                 |
+| Component | Source                       | Pattern                                     |
+| --------- | ---------------------------- | ------------------------------------------- |
+| Button    | ayokoding-web (reconciled)   | CVA variants, 6 variants, 8 sizes, asChild  |
+| Alert     | ayokoding-web                | CVA variants, role="alert"                  |
+| Dialog    | ayokoding-web                | Radix Dialog, portal, overlay, close button |
+| Input     | ayokoding-web                | focus-visible, aria-invalid                 |
+| Card      | organiclever-fe (modernized) | Subcomponents with data-slot                |
+| Label     | organiclever-fe (modernized) | Radix Label                                 |
 
 ## Usage
 

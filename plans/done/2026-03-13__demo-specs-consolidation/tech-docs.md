@@ -232,16 +232,16 @@ specs/apps/demo-fe            →  specs/apps/demo/fe
 4. `nx affected -t lint` — all linting passes
 5. `nx affected -t typecheck` — all typechecks pass
 6. `nx run-many -t test:quick` for all 11 demo-be backends — all pass
-7. `nx run organiclever-web:test:quick` and CLI tools — all pass
+7. `nx run organiclever-fe:test:quick` and CLI tools — all pass
 
 ### Step 7: Validate on GitHub Actions
 
 1. Push to main
 2. Main CI passes (runs `test:quick` for all affected projects)
 3. Trigger all 11 integration + E2E workflows manually (`gh workflow run`)
-4. Trigger `test-integration-e2e-organiclever-web` manually
+4. Trigger `test-integration-e2e-organiclever-fe` manually
 5. Verify all 11 backend integration + E2E workflows pass
-6. Verify organiclever-web integration + E2E passes
+6. Verify organiclever-fe integration + E2E passes
 7. Verify PR workflows (validate-links, format, quality-gate) have no issues
 
 ## Risk Mitigation

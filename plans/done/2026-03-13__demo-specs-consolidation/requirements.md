@@ -217,7 +217,7 @@ Feature: Full CI validation
     And "Test Integration + E2E Demo Backend (C#/ASP.NET Core)" succeeds
     And "Test Integration + E2E Demo Backend (Clojure/Pedestal)" succeeds
 
-  Scenario: GitHub Actions organiclever-web CI passes
+  Scenario: GitHub Actions organiclever-fe CI passes
     Given the consolidation is pushed to main
     Then "Test Integration + E2E OrganicLever Web" succeeds
 

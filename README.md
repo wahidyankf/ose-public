@@ -16,7 +16,7 @@
 
 Building OrganicLever, a full-stack individual productivity tracker:
 
-- 🌐 **Landing site**: [organiclever.com](https://www.organiclever.com/) ([organiclever-web](./apps/organiclever-web/)) - Next.js promotional website
+- 🌐 **Landing site**: [organiclever.com](https://www.organiclever.com/) ([organiclever-fe](./apps/organiclever-fe/)) - Next.js promotional website
 - ✅ **Phase 0 complete**: [ayokoding.com](https://ayokoding.com), [oseplatform.com](https://oseplatform.com), AI agents, governance, CLI tools
 
 **Next Phase: Phase 2 (SMB Application)** - Small and medium business application building on OrganicLever's foundation.
@@ -113,7 +113,7 @@ open-sharia-enterprise/
 
 **Applications** (`apps/`):
 
-- **Sites**: [`oseplatform-web`](./apps/oseplatform-web/), [`ayokoding-web`](./apps/ayokoding-web/), [`organiclever-web`](./apps/organiclever-web/), [`organiclever-web-e2e`](./apps/organiclever-web-e2e/)
+- **Sites**: [`oseplatform-web`](./apps/oseplatform-web/), [`ayokoding-web`](./apps/ayokoding-web/), [`organiclever-fe`](./apps/organiclever-fe/), [`organiclever-be`](./apps/organiclever-be/), [`organiclever-fe-e2e`](./apps/organiclever-fe-e2e/), [`organiclever-be-e2e`](./apps/organiclever-be-e2e/)
 - **CLI tools**: [`ayokoding-cli`](./apps/ayokoding-cli/), [`rhino-cli`](./apps/rhino-cli/), [`oseplatform-cli`](./apps/oseplatform-cli/)
 - **Demo backends**: [`demo-be-golang-gin`](./apps/demo-be-golang-gin/), [`demo-be-java-springboot`](./apps/demo-be-java-springboot/), [`demo-be-elixir-phoenix`](./apps/demo-be-elixir-phoenix/), [`demo-be-fsharp-giraffe`](./apps/demo-be-fsharp-giraffe/), [`demo-be-python-fastapi`](./apps/demo-be-python-fastapi/), [`demo-be-rust-axum`](./apps/demo-be-rust-axum/), [`demo-be-kotlin-ktor`](./apps/demo-be-kotlin-ktor/), [`demo-be-java-vertx`](./apps/demo-be-java-vertx/), [`demo-be-ts-effect`](./apps/demo-be-ts-effect/), [`demo-be-csharp-aspnetcore`](./apps/demo-be-csharp-aspnetcore/), [`demo-be-clojure-pedestal`](./apps/demo-be-clojure-pedestal/)
 - **Demo frontends**: [`demo-fe-ts-nextjs`](./apps/demo-fe-ts-nextjs/), [`demo-fe-ts-tanstack-start`](./apps/demo-fe-ts-tanstack-start/), [`demo-fe-dart-flutterweb`](./apps/demo-fe-dart-flutterweb/)
@@ -155,9 +155,11 @@ All projects enforce ≥90% test coverage as part of `test:quick`. Coverage is u
   - [![Deploy](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/test-and-deploy-oseplatform-web.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/test-and-deploy-oseplatform-web.yml)
 - [`apps/ayokoding-web`](./apps/ayokoding-web/)
   - [![Deploy](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/test-and-deploy-ayokoding-web.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/test-and-deploy-ayokoding-web.yml)
-- [`apps/organiclever-web`](./apps/organiclever-web/)
-  - [![CI](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/test-organiclever-web.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/test-organiclever-web.yml)
-  - [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=organiclever-web)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise)
+- [`apps/organiclever-fe`](./apps/organiclever-fe/)
+  - [![CI](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/test-organiclever.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/test-organiclever.yml)
+  - [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=organiclever-fe)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise)
+- [`apps/organiclever-be`](./apps/organiclever-be/)
+  - [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=organiclever-be)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise)
 - [`apps/rhino-cli`](./apps/rhino-cli/)
   - [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=rhino-cli)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise)
 - [`apps/ayokoding-cli`](./apps/ayokoding-cli/)

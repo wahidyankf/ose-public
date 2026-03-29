@@ -22,7 +22,7 @@
 - Add Docker Compose at `infra/dev/ayokoding-web-v2/` (local dev + CI E2E)
 - Add CI workflow `.github/workflows/test-ayokoding-web-v2.yml`
 - Deploy to Vercel via production branch `prod-ayokoding-web-v2` (same pattern as
-  `ayokoding-web` and `organiclever-web`)
+  `ayokoding-web` and `organiclever-fe`)
 - Create `vercel.json` with install command, ignore command, and security headers
 
 ## User Stories
@@ -225,7 +225,7 @@ Scenario: Mobile hamburger opens sidebar overlay
 - **Coverage**: 80% or higher line coverage (Codecov algorithm) on unit tests via Vitest
   v8 + `rhino-cli test-coverage validate`. Rationale: fullstack blend — backends enforce
   90%, frontends enforce 70%, 80% is the midpoint for a combined BE+FE codebase. Note:
-  `organiclever-web` (pure marketing site, Next.js) enforces 90%; this plan uses 80%
+  `organiclever-fe` (pure marketing site, Next.js) enforces 90%; this plan uses 80%
   because ayokoding-web-v2 is a full-stack content platform with both BE pipeline code
   (content parsing, tRPC, search) and FE components, making the 80% midpoint appropriate
 - **TypeScript**: Strict mode, no `any` escapes in production code
@@ -233,7 +233,7 @@ Scenario: Mobile hamburger opens sidebar overlay
 - **CI**: 2x daily cron (WIB 06, 18) + manual dispatch (same schedule as other apps)
 - **Docker**: Multi-stage build for local dev + CI E2E, no database required
 - **Deployment**: Vercel (production branch `prod-ayokoding-web-v2`), same as
-  `ayokoding-web` (`prod-ayokoding-web`) and `organiclever-web` (`prod-organiclever-web`)
+  `ayokoding-web` (`prod-ayokoding-web`) and `organiclever-fe` (`prod-organiclever-fe`)
 - **Linting**: oxlint (same as demo-fe-ts-nextjs and demo-fs-ts-nextjs)
 - **Performance**: All content pages should return Time to First Byte (TTFB) under
   2s on cached requests in Vercel production (aspirational; monitor post-launch).

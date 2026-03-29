@@ -1,0 +1,111 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "organiclever-fe",
+  "sourceRoot": "apps/organiclever-fe/src",
+  "projectType": "application",
+  "targets": {
+    "codegen": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx @hey-api/openapi-ts -i specs/apps/organiclever/contracts/generated/openapi-bundled.yaml -o apps/organiclever-fe/src/generated-contracts -s"
+      },
+      "dependsOn": ["organiclever-contracts:bundle"],
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/organiclever/contracts/generated/openapi-bundled.yaml"],
+      "outputs": ["{projectRoot}/src/generated-contracts"]
+    },
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "next dev --port 3200",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "next build",
+        "cwd": "{projectRoot}"
+      },
+      "outputs": ["{projectRoot}/.next"],
+      "dependsOn": ["codegen"]
+    },
+    "start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "next start --port 3200",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit",
+        "cwd": "{projectRoot}"
+      },
+      "dependsOn": ["codegen"]
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx oxlint@latest --jsx-a11y-plugin .",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "test:quick": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": [
+        "default",
+        "{projectRoot}/src/generated-contracts/**/*",
+        "{workspaceRoot}/specs/apps/organiclever/fe/gherkin/**/*.feature"
+      ],
+      "outputs": ["{projectRoot}/coverage"],
+      "options": {
+        "command": "npx vitest run --coverage && (cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/organiclever-fe/coverage/lcov.info 70)",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "test:unit": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": [
+        "default",
+        "{projectRoot}/src/generated-contracts/**/*",
+        "{workspaceRoot}/specs/apps/organiclever/fe/gherkin/**/*.feature"
+      ],
+      "options": {
+        "command": "npx vitest run --project unit",
+        "cwd": "{projectRoot}"
+      },
+      "dependsOn": []
+    },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["default", "{workspaceRoot}/specs/apps/organiclever/fe/gherkin/**/*.feature"],
+      "options": {
+        "command": "npx vitest run --project integration",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "storybook": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx storybook dev -p 6006 --no-open",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "build-storybook": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "options": {
+        "command": "npx storybook build -o storybook-static",
+        "cwd": "{projectRoot}"
+      },
+      "outputs": ["{projectRoot}/storybook-static"]
+    }
+  },
+  "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:organiclever-fe"],
+  "implicitDependencies": ["organiclever-contracts", "rhino-cli", "ts-ui"]
+}

@@ -147,28 +147,30 @@ Every project declares tags along four dimensions. Each dimension uses a fixed p
 
 ### Current Project Tags
 
-| Project                   | Tags                                                                    |
-| ------------------------- | ----------------------------------------------------------------------- |
-| `ayokoding-web`           | `["type:app", "platform:nextjs", "lang:ts", "domain:ayokoding"]`        |
-| `ayokoding-cli`           | `["type:app", "platform:cli", "lang:golang", "domain:ayokoding"]`       |
-| `rhino-cli`               | `["type:app", "platform:cli", "lang:golang", "domain:tooling"]`         |
-| `demo-be-java-springboot` | `["type:app", "platform:spring-boot", "lang:java", "domain:demo-be"]`   |
-| `demo-be-elixir-phoenix`  | `["type:app", "platform:phoenix", "lang:elixir", "domain:demo-be"]`     |
-| `demo-be-fsharp-giraffe`  | `["type:app", "platform:giraffe", "lang:fsharp", "domain:demo-be"]`     |
-| `demo-be-golang-gin`      | `["type:app", "platform:gin", "lang:golang", "domain:demo-be"]`         |
-| `demo-be-python-fastapi`  | `["type:app", "platform:fastapi", "lang:python", "domain:demo-be"]`     |
-| `demo-be-rust-axum`       | `["type:app", "platform:axum", "lang:rust", "domain:demo-be"]`          |
-| `demo-be-kotlin-ktor`     | `["type:app", "platform:ktor", "lang:kotlin", "domain:demo-be"]`        |
-| `demo-be-java-vertx`      | `["type:app", "platform:vertx", "lang:java", "domain:demo-be"]`         |
-| `demo-be-e2e`             | `["type:e2e", "platform:playwright", "lang:ts", "domain:demo-be"]`      |
-| `organiclever-web`        | `["type:app", "platform:nextjs", "lang:ts", "domain:organiclever"]`     |
-| `organiclever-web-e2e`    | `["type:e2e", "platform:playwright", "lang:ts", "domain:organiclever"]` |
-| `demo-fe-ts-nextjs`       | `["type:app", "platform:nextjs", "lang:ts", "domain:demo-fe"]`          |
-| `demo-fe-e2e`             | `["type:e2e", "platform:playwright", "lang:ts", "domain:demo-fe"]`      |
-| `oseplatform-cli`         | `["type:app", "platform:cli", "lang:golang", "domain:oseplatform"]`     |
-| `oseplatform-web`         | `["type:app", "platform:nextjs", "lang:ts", "domain:oseplatform"]`      |
-| `hugo-commons`            | `["type:lib", "lang:golang"]`                                           |
-| `golang-commons`          | `["type:lib", "lang:golang"]`                                           |
+| Project                   | Tags                                                                     |
+| ------------------------- | ------------------------------------------------------------------------ |
+| `ayokoding-web`           | `["type:app", "platform:nextjs", "lang:ts", "domain:ayokoding"]`         |
+| `ayokoding-cli`           | `["type:app", "platform:cli", "lang:golang", "domain:ayokoding"]`        |
+| `rhino-cli`               | `["type:app", "platform:cli", "lang:golang", "domain:tooling"]`          |
+| `demo-be-java-springboot` | `["type:app", "platform:spring-boot", "lang:java", "domain:demo-be"]`    |
+| `demo-be-elixir-phoenix`  | `["type:app", "platform:phoenix", "lang:elixir", "domain:demo-be"]`      |
+| `demo-be-fsharp-giraffe`  | `["type:app", "platform:giraffe", "lang:fsharp", "domain:demo-be"]`      |
+| `demo-be-golang-gin`      | `["type:app", "platform:gin", "lang:golang", "domain:demo-be"]`          |
+| `demo-be-python-fastapi`  | `["type:app", "platform:fastapi", "lang:python", "domain:demo-be"]`      |
+| `demo-be-rust-axum`       | `["type:app", "platform:axum", "lang:rust", "domain:demo-be"]`           |
+| `demo-be-kotlin-ktor`     | `["type:app", "platform:ktor", "lang:kotlin", "domain:demo-be"]`         |
+| `demo-be-java-vertx`      | `["type:app", "platform:vertx", "lang:java", "domain:demo-be"]`          |
+| `demo-be-e2e`             | `["type:e2e", "platform:playwright", "lang:ts", "domain:demo-be"]`       |
+| `organiclever-fe`         | `["type:app", "platform:nextjs", "lang:ts", "domain:organiclever"]`      |
+| `organiclever-be`         | `["type:app", "platform:giraffe", "lang:fsharp", "domain:organiclever"]` |
+| `organiclever-fe-e2e`     | `["type:e2e", "platform:playwright", "lang:ts", "domain:organiclever"]`  |
+| `organiclever-be-e2e`     | `["type:e2e", "platform:playwright", "lang:ts", "domain:organiclever"]`  |
+| `demo-fe-ts-nextjs`       | `["type:app", "platform:nextjs", "lang:ts", "domain:demo-fe"]`           |
+| `demo-fe-e2e`             | `["type:e2e", "platform:playwright", "lang:ts", "domain:demo-fe"]`       |
+| `oseplatform-cli`         | `["type:app", "platform:cli", "lang:golang", "domain:oseplatform"]`      |
+| `oseplatform-web`         | `["type:app", "platform:nextjs", "lang:ts", "domain:oseplatform"]`       |
+| `hugo-commons`            | `["type:lib", "lang:golang"]`                                            |
+| `golang-commons`          | `["type:lib", "lang:golang"]`                                            |
 
 ### Example: Complete Tag Declaration
 
@@ -326,10 +328,10 @@ Spring Boot, Python apps, TypeScript apps:
 
 Two integration test patterns exist depending on project type:
 
-| Pattern             | Projects                                                   | Requirement                                                                                                                                                | Cacheable |
-| ------------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| Docker + PostgreSQL | All 11 demo-be backends                                    | Real PostgreSQL via `docker-compose.integration.yml`; calls application code directly (no HTTP layer); runs all shared Gherkin scenarios; fresh DB per run | No        |
-| In-process mocking  | `organiclever-web` (MSW), Go CLIs (Godog), Go libs (Godog) | In-process mocking only (MSW / godog `RunE` / mock fixtures); no real database or external services; fully deterministic                                   | Yes       |
+| Pattern             | Projects                                                  | Requirement                                                                                                                                                | Cacheable |
+| ------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| Docker + PostgreSQL | All 11 demo-be backends                                   | Real PostgreSQL via `docker-compose.integration.yml`; calls application code directly (no HTTP layer); runs all shared Gherkin scenarios; fresh DB per run | No        |
+| In-process mocking  | `organiclever-fe` (MSW), Go CLIs (Godog), Go libs (Godog) | In-process mocking only (MSW / godog `RunE` / mock fixtures); no real database or external services; fully deterministic                                   | Yes       |
 
 **Demo-be backends** expose `test:integration` which runs `docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build`. This starts a fresh PostgreSQL container, runs migrations, and executes all shared Gherkin scenarios by calling application service/repository functions directly — no HTTP layer. Each backend has a `docker-compose.integration.yml` (postgres + test runner services) and a `Dockerfile.integration` (language runtime + test execution). Coverage is NOT measured at the integration level — coverage comes from `test:unit` only.
 

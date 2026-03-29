@@ -12,7 +12,7 @@ convention. The convention defines canonical target names, mandatory targets per
 caching rules. All project.json files were written before the standard was finalized — they use
 non-standard names and are missing required targets.
 
-**Scope**: `nx.json` + `package.json` (workspace root) + 10 `project.json` files in `apps/` + `.husky/pre-push` + `apps/organiclever-web/package.json` + `apps/organiclever-web/vitest.config.ts` (new file)
+**Scope**: `nx.json` + `package.json` (workspace root) + 10 `project.json` files in `apps/` + `.husky/pre-push` + `apps/organiclever-fe/package.json` + `apps/organiclever-fe/vitest.config.ts` (new file)
 
 **No documentation changes needed**: READMEs were already updated by `repo-governance-maker` in a
 prior session to reference canonical target names. Only `project.json`, `nx.json`, and
@@ -34,12 +34,12 @@ prior session to reference canonical target names. Only `project.json`, `nx.json
 | `rhino-cli`                | Go CLI      | `build`, `test:quick`, `run`, `install`                           | Missing `lint`                                                                                                                                               |
 | `ayokoding-web`            | Hugo site   | `dev`, `build`, `clean`, `test:quick`, `run-pre-commit`           | Missing `lint`                                                                                                                                               |
 | `oseplatform-web`          | Hugo site   | `dev`, `build`, `clean` ⚠️                                        | Missing `test:quick`, `lint`; `clean` incomplete                                                                                                             |
-| `organiclever-web`         | Next.js     | `dev`, `build`, `start`, `lint` ⚠️                                | `lint`→oxlint (replaces `next lint`); missing `test:quick`, `typecheck`, `test:unit`, `test:integration`; add vitest + devDeps                               |
+| `organiclever-fe`          | Next.js     | `dev`, `build`, `start`, `lint` ⚠️                                | `lint`→oxlint (replaces `next lint`); missing `test:quick`, `typecheck`, `test:unit`, `test:integration`; add vitest + devDeps                               |
 | `organiclever-be`          | Spring Boot | `build`, `serve` ⚠️, `test` ⚠️, `lint`                            | `serve`→`dev`, `test`→`test:unit`; missing `test:quick`, `start`, `outputs` on `build`                                                                       |
 | `organiclever-app`         | Flutter     | `install`, `dev`, `build:web`, `test` ⚠️, `test:quick`, `lint` ⚠️ | `test`→`test:unit`; `lint` removed (redundant with `typecheck`); missing `typecheck`, `dependsOn` on `test:quick`                                            |
-| `organiclever-web-e2e`     | Playwright  | `install`, `e2e` ⚠️, `e2e:ui` ⚠️, `e2e:report` ⚠️                 | `e2e`→`test:e2e`, `e2e:ui`→`test:e2e:ui`, `e2e:report`→`test:e2e:report`; missing `lint`, `test:quick`                                                       |
-| `organiclever-be-e2e`      | Playwright  | `install`, `e2e` ⚠️, `e2e:ui` ⚠️, `e2e:report` ⚠️                 | Same as `organiclever-web-e2e`                                                                                                                               |
-| `organiclever-app-web-e2e` | Playwright  | `install`, `e2e` ⚠️, `e2e:ui` ⚠️, `e2e:report` ⚠️                 | Same as `organiclever-web-e2e`                                                                                                                               |
+| `organiclever-fe-e2e`      | Playwright  | `install`, `e2e` ⚠️, `e2e:ui` ⚠️, `e2e:report` ⚠️                 | `e2e`→`test:e2e`, `e2e:ui`→`test:e2e:ui`, `e2e:report`→`test:e2e:report`; missing `lint`, `test:quick`                                                       |
+| `organiclever-be-e2e`      | Playwright  | `install`, `e2e` ⚠️, `e2e:ui` ⚠️, `e2e:report` ⚠️                 | Same as `organiclever-fe-e2e`                                                                                                                                |
+| `organiclever-app-web-e2e` | Playwright  | `install`, `e2e` ⚠️, `e2e:ui` ⚠️, `e2e:report` ⚠️                 | Same as `organiclever-fe-e2e`                                                                                                                                |
 | `.husky/pre-push`          | hook        | `nx affected -t test:quick` only                                  | Add `nx affected -t typecheck` and `nx affected -t lint`; fixes diagram bug (lint shown but never blocked push)                                              |
 
 ## Critical Finding
@@ -47,7 +47,7 @@ prior session to reference canonical target names. Only `project.json`, `nx.json
 `oseplatform-web` has **no `test:quick` target** — it is silently excluded from the pre-push hook
 (`nx affected -t test:quick`) and the PR merge gate. This is the highest-priority fix.
 
-`organiclever-web` also has **no `test:quick` target** — same consequence.
+`organiclever-fe` also has **no `test:quick` target** — same consequence.
 
 All three Playwright E2E projects use **`e2e`** instead of **`test:e2e`** — their existing tests
 cannot be invoked via the workspace-level `nx affected -t test:e2e` cron pattern.
@@ -60,7 +60,7 @@ Commit after each phase using [Conventional Commits](../../../governance/develop
 format. Suggested messages per phase:
 
 - Phase 1: `chore(infra): update nx.json targetDefaults and package.json test scripts`
-- Phase 2: `chore(infra): add test:quick and vitest to oseplatform-web and organiclever-web`
+- Phase 2: `chore(infra): add test:quick and vitest to oseplatform-web and organiclever-fe`
 - Phase 3: `chore(infra): add lint target to Hugo sites and Go CLIs`
 - Phase 4: `chore(infra): standardize Spring Boot nx targets`
 - Phase 5: `chore(infra): standardize Flutter nx targets`
@@ -88,6 +88,6 @@ All tools except `golangci-lint` are required by the existing codebase and shoul
 - Adding test coverage where none exists today
 - Changing the logic of any existing command (only renaming and adding targets)
 - Updating README or documentation files (already done)
-- Removing ESLint devDependencies from `organiclever-web` (`eslint`, `eslint-config-next`) after
+- Removing ESLint devDependencies from `organiclever-fe` (`eslint`, `eslint-config-next`) after
   replacing `next lint` with oxlint — ESLint cleanup is a separate concern and should not block
   CI standardization

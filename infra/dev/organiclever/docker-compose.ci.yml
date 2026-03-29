@@ -1,0 +1,19 @@
+services:
+  organiclever-db:
+    volumes: !override []
+    tmpfs:
+      - /var/lib/postgresql/data
+
+  organiclever-be:
+    environment:
+      DATABASE_URL: "Host=organiclever-db;Port=5432;Database=organiclever;Username=organiclever;Password=organiclever"
+      APP_JWT_SECRET: "ci-jwt-secret-at-least-32-characters-long"
+      APP_ENV: test
+      GOOGLE_CLIENT_ID: test
+      ENABLE_TEST_API: "true"
+      ASPNETCORE_URLS: "http://+:8202"
+
+  organiclever-fe:
+    environment:
+      ORGANICLEVER_BE_URL: "http://organiclever-be:8202"
+      NEXT_PUBLIC_GOOGLE_CLIENT_ID: test

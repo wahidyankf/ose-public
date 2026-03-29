@@ -7,7 +7,7 @@
 ## Overview
 
 UI development across the monorepo lacks shared infrastructure, automated quality enforcement,
-and AI-assisted design guidance. Each frontend app (`organiclever-web`, `ayokoding-web`,
+and AI-assisted design guidance. Each frontend app (`organiclever-fe`, `ayokoding-web`,
 `demo-fe-ts-nextjs`) independently maintains its own components, tokens, and patterns — leading
 to drift, duplication, and inconsistent quality.
 
@@ -33,7 +33,7 @@ This plan introduces a layered UI development improvement strategy:
 
 | App                         | Styling        | UI Library        | Design Tokens             | Storybook | Token Format                   |
 | --------------------------- | -------------- | ----------------- | ------------------------- | --------- | ------------------------------ |
-| `organiclever-web`          | Tailwind v4    | shadcn/ui + Radix | CSS vars in globals.css   | Yes       | `hsl(var(--name))` indirection |
+| `organiclever-fe`           | Tailwind v4    | shadcn/ui + Radix | CSS vars in globals.css   | Yes       | `hsl(var(--name))` indirection |
 | `ayokoding-web`             | Tailwind v4    | shadcn/ui + Radix | CSS vars in globals.css   | No        | Direct `hsl(H S% L%)` values   |
 | `demo-fe-ts-nextjs`         | Tailwind v4    | Shared tokens     | CSS vars via ts-ui-tokens | No        | Shared structural tokens       |
 | `demo-fe-dart-flutterweb`   | Flutter themes | Material 3        | ThemeData                 | N/A       | Dart constants                 |
@@ -42,7 +42,7 @@ This plan introduces a layered UI development improvement strategy:
 
 ### Token Divergence (Specific Examples)
 
-| Token          | organiclever-web (light)  | ayokoding-web (light)           | Divergent?              |
+| Token          | organiclever-fe (light)   | ayokoding-web (light)           | Divergent?              |
 | -------------- | ------------------------- | ------------------------------- | ----------------------- |
 | `--primary`    | `0 0% 9%` (neutral black) | `221.2 83.2% 53.3%` (blue)      | Yes — different brand   |
 | `--foreground` | `0 0% 3.9%` (near-black)  | `222.2 84% 4.9%` (dark navy)    | Yes — hue differs       |
@@ -53,7 +53,7 @@ This plan introduces a layered UI development improvement strategy:
 
 ### Component Divergence (Button)
 
-| Aspect          | organiclever-web          | ayokoding-web                                      |
+| Aspect          | organiclever-fe           | ayokoding-web                                      |
 | --------------- | ------------------------- | -------------------------------------------------- |
 | Import          | `@radix-ui/react-slot`    | `radix-ui` (new unified package)                   |
 | Pattern         | `React.forwardRef`        | Function component with `React.ComponentProps`     |

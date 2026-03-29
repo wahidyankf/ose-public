@@ -82,8 +82,8 @@ graph RL
   OPW[oseplatform-web]
 
   %% OrganicLever
-  OLW[organiclever-web]
-  OLE[organiclever-web-e2e]
+  OLW[organiclever-fe]
+  OLE[organiclever-fe-e2e]
 
   %% Demo backends (grouped)
   GOLANG[demo-be-golang-gin]
@@ -241,7 +241,7 @@ Repository management CLI used by most projects for coverage validation
 contract post-processing (`contracts java-clean-imports`, `contracts dart-scaffold`),
 and annotation validation (`java validate-annotations`).
 
-- **Dependents**: 22 projects (all demo apps, CLI tools, libs, organiclever-web)
+- **Dependents**: 22 projects (all demo apps, CLI tools, libs, organiclever-fe)
 - **Mechanism**: `implicitDependencies`
 - **Own dependency**: `golang-commons`
 - **Note**: `golang-commons` does NOT depend on `rhino-cli` to avoid a circular
@@ -297,11 +297,11 @@ All demo backends share the same dependency pattern.
 
 ### E2E Test Projects
 
-| Project              | Dependencies                               | Spec Inputs                                 |
-| -------------------- | ------------------------------------------ | ------------------------------------------- |
-| demo-be-e2e          | all 11 demo-be-\* backends, demo-contracts | be/gherkin/\* (typecheck, test:quick)       |
-| demo-fe-e2e          | all 3 demo-fe-\* frontends, demo-contracts | fe/gherkin/\* (typecheck, test:quick)       |
-| organiclever-web-e2e | organiclever-web                           | organiclever-web/\* (typecheck, test:quick) |
+| Project             | Dependencies                               | Spec Inputs                                |
+| ------------------- | ------------------------------------------ | ------------------------------------------ |
+| demo-be-e2e         | all 11 demo-be-\* backends, demo-contracts | be/gherkin/\* (typecheck, test:quick)      |
+| demo-fe-e2e         | all 3 demo-fe-\* frontends, demo-contracts | fe/gherkin/\* (typecheck, test:quick)      |
+| organiclever-fe-e2e | organiclever-fe                            | organiclever-fe/\* (typecheck, test:quick) |
 
 E2E projects use `bddgen` to generate TypeScript from `.feature` files in
 `test:quick` and `typecheck`. Gherkin spec inputs ensure cache invalidation
@@ -334,9 +334,9 @@ ayokoding-web depends on ayokoding-cli for link validation.
 
 ### OrganicLever
 
-| Project          | Dependencies | Spec Inputs                            |
-| ---------------- | ------------ | -------------------------------------- |
-| organiclever-web | rhino-cli    | organiclever-web/\* (test:integration) |
+| Project         | Dependencies | Spec Inputs                           |
+| --------------- | ------------ | ------------------------------------- |
+| organiclever-fe | rhino-cli    | organiclever-fe/\* (test:integration) |
 
 ### Libraries
 
@@ -360,17 +360,17 @@ ayokoding-web depends on ayokoding-cli for link validation.
 All Gherkin specs and API contracts live under `specs/` and are consumed via
 `{workspaceRoot}` inputs.
 
-| Spec Directory                 | Consumed By                            | Targets                                 |
-| ------------------------------ | -------------------------------------- | --------------------------------------- |
-| `specs/apps/demo/contracts/`   | all 14 demo apps                       | codegen                                 |
-| `specs/apps/demo/be/gherkin/`  | 11 demo backends + demo-be-e2e         | test:unit, test:quick, typecheck        |
-| `specs/apps/demo/fe/gherkin/`  | 3 demo frontends + demo-fe-e2e         | test:unit, test:quick, typecheck        |
-| `specs/apps/organiclever-web/` | organiclever-web, organiclever-web-e2e | test:integration, typecheck, test:quick |
-| `specs/apps/rhino-cli/`        | rhino-cli                              | test:integration                        |
-| `specs/apps/ayokoding-cli/`    | ayokoding-cli                          | test:integration                        |
-| `specs/apps/oseplatform-cli/`  | oseplatform-cli                        | test:integration                        |
-| `specs/libs/golang-commons/`   | golang-commons                         | test:integration                        |
-| `specs/libs/hugo-commons/`     | hugo-commons                           | test:integration                        |
+| Spec Directory                | Consumed By                          | Targets                                 |
+| ----------------------------- | ------------------------------------ | --------------------------------------- |
+| `specs/apps/demo/contracts/`  | all 14 demo apps                     | codegen                                 |
+| `specs/apps/demo/be/gherkin/` | 11 demo backends + demo-be-e2e       | test:unit, test:quick, typecheck        |
+| `specs/apps/demo/fe/gherkin/` | 3 demo frontends + demo-fe-e2e       | test:unit, test:quick, typecheck        |
+| `specs/apps/organiclever-fe/` | organiclever-fe, organiclever-fe-e2e | test:integration, typecheck, test:quick |
+| `specs/apps/rhino-cli/`       | rhino-cli                            | test:integration                        |
+| `specs/apps/ayokoding-cli/`   | ayokoding-cli                        | test:integration                        |
+| `specs/apps/oseplatform-cli/` | oseplatform-cli                      | test:integration                        |
+| `specs/libs/golang-commons/`  | golang-commons                       | test:integration                        |
+| `specs/libs/hugo-commons/`    | hugo-commons                         | test:integration                        |
 
 ## Design Decisions
 
@@ -392,7 +392,7 @@ consuming apps.
 
 ### Why E2E projects need spec inputs
 
-E2E projects (`demo-be-e2e`, `demo-fe-e2e`, `organiclever-web-e2e`) use
+E2E projects (`demo-be-e2e`, `demo-fe-e2e`, `organiclever-fe-e2e`) use
 `bddgen` to generate TypeScript from `.feature` files in their `test:quick`
 and `typecheck` targets. Without spec inputs, feature file changes would not
 invalidate the cache, causing stale generated code.

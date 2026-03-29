@@ -89,21 +89,19 @@ graph TB
 
 **Product Deliverables:**
 
-- 🌐 [**organiclever.com**](https://www.organiclever.com/) - Landing and promotional website (organiclever-web)
+- 🌐 [**organiclever.com**](https://www.organiclever.com/) - Landing and promotional website (organiclever-fe)
 
 **Repository Apps (In Development):**
 
-- 🌐 [`organiclever-web`](./apps/organiclever-web/) - Next.js landing/promotional website (www.organiclever.com)
-- 🧪 [`organiclever-web-e2e`](./apps/organiclever-web-e2e/) - Playwright E2E tests for organiclever-web
-- 🌐 [`demo-be-java-springboot`](./apps/demo-be-java-springboot/) - Spring Boot REST API backend (port 8201)
-- 🧪 [`demo-be-e2e`](./apps/demo-be-e2e/) - Playwright API E2E tests for the backend
+- 🌐 [`organiclever-fe`](./apps/organiclever-fe/) - Next.js landing/promotional website (www.organiclever.com)
+- 🔧 [`organiclever-be`](./apps/organiclever-be/) - F#/Giraffe REST API backend (port 8202)
+- 🧪 [`organiclever-fe-e2e`](./apps/organiclever-fe-e2e/) - Playwright FE E2E tests for organiclever-fe
+- 🧪 [`organiclever-be-e2e`](./apps/organiclever-be-e2e/) - Playwright BE E2E tests for organiclever-be
 
 **Tech Stack:**
 
-- ☕ **Backend**: Java + Spring Boot
-  - **Strategic Choice**: Testing acceptability and preference of this widely-used financial industry stack
-  - Evaluating suitability for future financial applications (Phase 2/3) in low-stakes environment
-- ⚛️ **Frontend (landing)**: Next.js + TypeScript → www.organiclever.com (`organiclever-web`)
+- 🔧 **Backend**: F# + Giraffe REST API (`organiclever-be`)
+- ⚛️ **Frontend (landing)**: Next.js + TypeScript → www.organiclever.com (`organiclever-fe`)
 
 **Architecture:**
 

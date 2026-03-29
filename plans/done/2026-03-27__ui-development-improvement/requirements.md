@@ -11,10 +11,10 @@ UI-specific knowledge to assist with frontend development effectively.
 
 ### Design Tokens — Detailed Analysis
 
-Both `organiclever-web` and `ayokoding-web` define CSS custom properties in `globals.css`, but
+Both `organiclever-fe` and `ayokoding-web` define CSS custom properties in `globals.css`, but
 with architecturally different approaches:
 
-**organiclever-web** uses **double indirection**:
+**organiclever-fe** uses **double indirection**:
 
 ```css
 /* @theme block defines Tailwind aliases pointing to bare HSL variables */
@@ -45,14 +45,14 @@ with architecturally different approaches:
 
 **Consequences of divergence**:
 
-- organiclever-web tokens are neutral (grayscale primary) — business/productivity brand
+- organiclever-fe tokens are neutral (grayscale primary) — business/productivity brand
 - ayokoding-web tokens are blue-tinted — educational/tech brand
 - Different token formats mean you cannot copy-paste between apps
-- organiclever-web has chart tokens (chart-1 through chart-5) that ayokoding-web lacks
-- ayokoding-web has sidebar tokens (8 extra) that organiclever-web lacks
+- organiclever-fe has chart tokens (chart-1 through chart-5) that ayokoding-web lacks
+- ayokoding-web has sidebar tokens (8 extra) that organiclever-fe lacks
 - ayokoding-web includes `@plugin "@tailwindcss/typography"` and rehype-pretty-code CSS;
-  organiclever-web does not
-- ayokoding-web has `@source` directive; organiclever-web does not
+  organiclever-fe does not
+- ayokoding-web has `@source` directive; organiclever-fe does not
 - ayokoding-web uses hardcoded hex colors (`#f6f8fa`, `#24292e`, `#e1e4e8`) for code blocks
   — violating the token principle
 
@@ -61,24 +61,24 @@ with architecturally different approaches:
 Both apps use shadcn/ui (new-york style) with Radix UI primitives, but component
 implementations have diverged:
 
-| Component    | organiclever-web | ayokoding-web | Shared?                   |
-| ------------ | ---------------- | ------------- | ------------------------- |
-| Alert        | Yes              | Yes           | Different implementations |
-| AlertDialog  | Yes              | No            | organiclever-only         |
-| Badge        | No               | Yes           | ayokoding-only            |
-| Button       | Yes (4 sizes)    | Yes (8 sizes) | Different — see README    |
-| Card         | Yes              | No            | organiclever-only         |
-| Command      | No               | Yes           | ayokoding-only            |
-| Dialog       | Yes              | Yes           | Different implementations |
-| DropdownMenu | No               | Yes           | ayokoding-only            |
-| Input        | Yes              | Yes           | Different implementations |
-| Label        | Yes              | No            | organiclever-only         |
-| ScrollArea   | No               | Yes           | ayokoding-only            |
-| Separator    | No               | Yes           | ayokoding-only            |
-| Sheet        | No               | Yes           | ayokoding-only            |
-| Table        | Yes              | No            | organiclever-only         |
-| Tabs         | No               | Yes           | ayokoding-only            |
-| Tooltip      | No               | Yes           | ayokoding-only            |
+| Component    | organiclever-fe | ayokoding-web | Shared?                   |
+| ------------ | --------------- | ------------- | ------------------------- |
+| Alert        | Yes             | Yes           | Different implementations |
+| AlertDialog  | Yes             | No            | organiclever-only         |
+| Badge        | No              | Yes           | ayokoding-only            |
+| Button       | Yes (4 sizes)   | Yes (8 sizes) | Different — see README    |
+| Card         | Yes             | No            | organiclever-only         |
+| Command      | No              | Yes           | ayokoding-only            |
+| Dialog       | Yes             | Yes           | Different implementations |
+| DropdownMenu | No              | Yes           | ayokoding-only            |
+| Input        | Yes             | Yes           | Different implementations |
+| Label        | Yes             | No            | organiclever-only         |
+| ScrollArea   | No              | Yes           | ayokoding-only            |
+| Separator    | No              | Yes           | ayokoding-only            |
+| Sheet        | No              | Yes           | ayokoding-only            |
+| Table        | Yes             | No            | organiclever-only         |
+| Tabs         | No              | Yes           | ayokoding-only            |
+| Tooltip      | No              | Yes           | ayokoding-only            |
 
 **Union**: 16 unique components across both apps
 **Intersection**: 4 components present in both (Alert, Button, Dialog, Input)
@@ -86,12 +86,12 @@ implementations have diverged:
 
 **Radix UI import pattern divergence**:
 
-- organiclever-web: `import { Slot } from "@radix-ui/react-slot"` (individual packages)
+- organiclever-fe: `import { Slot } from "@radix-ui/react-slot"` (individual packages)
 - ayokoding-web: `import { Slot } from "radix-ui"` (unified package, newer approach)
 
 **Component pattern divergence**:
 
-- organiclever-web: `React.forwardRef` pattern (older, more boilerplate)
+- organiclever-fe: `React.forwardRef` pattern (older, more boilerplate)
 - ayokoding-web: Direct function with `React.ComponentProps<"element">` (newer, cleaner)
 
 ### Demo Frontends
@@ -119,9 +119,9 @@ implementations have diverged:
 
 ### Testing — Current State
 
-- **Unit tests**: Vitest in organiclever-web and demo-fe-ts-nextjs; no a11y assertions
-- **E2E tests**: Playwright in organiclever-web-e2e and demo-fe-e2e; no visual regression
-- **Storybook**: Only in organiclever-web with `@storybook/nextjs-vite` framework; stories exist
+- **Unit tests**: Vitest in organiclever-fe and demo-fe-ts-nextjs; no a11y assertions
+- **E2E tests**: Playwright in organiclever-fe-e2e and demo-fe-e2e; no visual regression
+- **Storybook**: Only in organiclever-fe with `@storybook/nextjs-vite` framework; stories exist
   for Alert, AlertDialog, Button, Card, Dialog, Input, Label, Table
 - **No axe-core integration anywhere**
 - **No `toHaveScreenshot()` usage anywhere**
@@ -140,7 +140,7 @@ implementations have diverged:
 
 **What exists**: Two independent `globals.css` files with similar-but-different token values.
 
-**Impact**: A developer changing the border radius in organiclever-web has no mechanism to
+**Impact**: A developer changing the border radius in organiclever-fe has no mechanism to
 propagate that change to ayokoding-web. Token values drift silently. New apps
 (demo-fe-ts-nextjs, demo-fs-ts-nextjs) start from scratch with no tokens at all.
 
@@ -155,7 +155,7 @@ The 4 overlapping components have different implementations (different Radix imp
 component patterns, different variant sets).
 
 **Impact**: A bug fix in ayokoding-web's Button (e.g., the `aria-invalid` handling) does not
-propagate to organiclever-web. Adding a new variant requires changes in multiple places.
+propagate to organiclever-fe. Adding a new variant requires changes in multiple places.
 
 **Complication**: shadcn/ui's model is "copy to your project and own the code." Extracting to a
 shared lib changes this model — the shared lib becomes a governed package rather than per-app
@@ -204,7 +204,7 @@ Accessibility First principle applies, but enforcement is missing.
 
 **Specific issues**:
 
-- Chart tokens in organiclever-web (`--chart-1` through `--chart-5`) have not been verified
+- Chart tokens in organiclever-fe (`--chart-1` through `--chart-5`) have not been verified
   for WCAG AA contrast against their background colors
 - No mechanism to verify that semantic tokens (`--destructive`, `--primary`) produce WCAG AA
   contrast ratios in both light and dark modes
@@ -225,7 +225,7 @@ inconsistent across files.
 - ayokoding-web `globals.css` has hardcoded hex colors (`#f6f8fa`, `#24292e`, `#e1e4e8`) for
   code block styling
 - ayokoding-web `globals.css` uses `!important` declarations (10 occurrences)
-- organiclever-web body font is `Arial, Helvetica, sans-serif` set via `@layer utilities` —
+- organiclever-fe body font is `Arial, Helvetica, sans-serif` set via `@layer utilities` —
   should be configured via `next/font` for optimization
 
 ### G7: No Visual Regression Testing
@@ -257,7 +257,7 @@ specs (specs-maker/checker/fixer). UI has zero coverage.
 Feature: UI Conventions and AI Skills
 
   Background:
-    Given the monorepo has frontend apps organiclever-web, ayokoding-web, and demo-fe-ts-nextjs
+    Given the monorepo has frontend apps organiclever-fe, ayokoding-web, and demo-fe-ts-nextjs
     And the governance directory exists at governance/development/
 
   Scenario: UI conventions are documented with concrete examples
@@ -281,7 +281,7 @@ Feature: UI Conventions and AI Skills
     And the skill has reference modules in a reference/ subdirectory
 
   Scenario: UI checker agent validates components against conventions
-    Given a TypeScript frontend component exists in organiclever-web
+    Given a TypeScript frontend component exists in organiclever-fe
     When the swe-ui-checker agent runs against it
     Then it produces a report in generated-reports/ covering:
       | Dimension | What It Checks | Example Violation |
@@ -355,17 +355,17 @@ Feature: Shared UI Library
     And libs/ts-ui/ exists as an Nx library
 
   Scenario: Design tokens are centralized with per-app overrides
-    When organiclever-web imports tokens from ts-ui-tokens
+    When organiclever-fe imports tokens from ts-ui-tokens
     Then it receives structural tokens (radius, spacing scale, typography)
     And it can override brand tokens (primary, accent) in its own globals.css
     And no structural token definitions are duplicated in app globals.css
 
   Scenario: Token changes propagate through the dependency graph
-    Given organiclever-web depends on ts-ui-tokens
+    Given organiclever-fe depends on ts-ui-tokens
     When I change --radius from 0.5rem to 0.375rem in ts-ui-tokens
     And I run nx affected -t build
-    Then organiclever-web rebuilds with the new radius value
-    And the Nx dependency graph shows ts-ui-tokens → organiclever-web
+    Then organiclever-fe rebuilds with the new radius value
+    And the Nx dependency graph shows ts-ui-tokens → organiclever-fe
 
   Scenario: Shared components use the unified Radix import pattern
     Given libs/ts-ui/ exports a Button component
@@ -375,7 +375,7 @@ Feature: Shared UI Library
     And it includes data-slot attributes for testing and styling
 
   Scenario: App-specific components extend shared components
-    Given organiclever-web needs a chart-specific Button variant
+    Given organiclever-fe needs a chart-specific Button variant
     When it creates a local ChartButton component
     Then ChartButton imports and wraps Button from @open-sharia-enterprise/ts-ui
     And the local variant uses tokens from ts-ui-tokens
@@ -415,7 +415,7 @@ Feature: Shared UI Library
 
   Scenario: Build and test pass after migration
     When I run nx affected -t typecheck lint test:quick build
-    Then all targets pass for organiclever-web, ayokoding-web, and demo-fe-ts-nextjs
+    Then all targets pass for organiclever-fe, ayokoding-web, and demo-fe-ts-nextjs
     And no app has duplicate token definitions in its globals.css
 ```
 
@@ -427,7 +427,7 @@ Feature: Automated UI Quality Enforcement
   Scenario: ESLint catches accessibility violations in TSX
     Given eslint-plugin-jsx-a11y is configured in ESLint flat config
     When a TSX file has an <img> without alt attribute
-    Then nx run organiclever-web:lint reports a jsx-a11y/alt-text error
+    Then nx run organiclever-fe:lint reports a jsx-a11y/alt-text error
     And the error message includes remediation guidance
 
   Scenario: ESLint catches hardcoded design values

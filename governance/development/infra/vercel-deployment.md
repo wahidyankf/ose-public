@@ -111,11 +111,11 @@ Include any directory that contains build-time generated files the runtime depen
 
 ## Current State of Vercel Apps
 
-| App                | `vercel.json` location              | `buildCommand` status                             | Notes                                                    |
-| ------------------ | ----------------------------------- | ------------------------------------------------- | -------------------------------------------------------- |
-| `ayokoding-web`    | `apps/ayokoding-web/vercel.json`    | Set (fixed after incident)                        | Runs `generate-indexes` and `generate-search-data` first |
-| `organiclever-web` | `apps/organiclever-web/vercel.json` | Not set (no build-time targets at present)        | At risk if build-time targets are added                  |
-| `oseplatform-web`  | `apps/oseplatform-web/vercel.json`  | Uses custom `build.sh` via `@vercel/static-build` | Hugo static build; no Nx involvement                     |
+| App               | `vercel.json` location             | `buildCommand` status                             | Notes                                                    |
+| ----------------- | ---------------------------------- | ------------------------------------------------- | -------------------------------------------------------- |
+| `ayokoding-web`   | `apps/ayokoding-web/vercel.json`   | Set (fixed after incident)                        | Runs `generate-indexes` and `generate-search-data` first |
+| `organiclever-fe` | `apps/organiclever-fe/vercel.json` | Not set (no build-time targets at present)        | At risk if build-time targets are added                  |
+| `oseplatform-web` | `apps/oseplatform-web/vercel.json` | Uses custom `build.sh` via `@vercel/static-build` | Hugo static build; no Nx involvement                     |
 
 ## When to Check
 

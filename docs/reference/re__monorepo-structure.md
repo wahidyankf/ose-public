@@ -78,10 +78,10 @@ Flat structure - all apps at the same level, no subdirectories.
 - `ayokoding-cli` - AyoKoding CLI tool (Go application)
 - `rhino-cli` - Repository management CLI, includes `java validate-annotations` (Go application)
 - `oseplatform-cli` - OSE Platform site maintenance CLI (Go application)
-- `organiclever-web` - OrganicLever landing website (Next.js application)
-- `organiclever-web-e2e` - Playwright E2E tests for organiclever-web
-- `demo-be-java-springboot` - OrganicLever REST API backend (Java Spring Boot application)
-- `demo-be-e2e` - Playwright E2E tests for demo-be-java-springboot
+- `organiclever-fe` - OrganicLever landing website (Next.js application)
+- `organiclever-be` - OrganicLever REST API backend (F#/Giraffe application)
+- `organiclever-fe-e2e` - Playwright FE E2E tests for organiclever-fe
+- `organiclever-be-e2e` - Playwright BE E2E tests for organiclever-be
 
 ### App Structure (Hugo Static Site)
 
@@ -119,7 +119,7 @@ apps/ayokoding-cli/
 ### App Structure (Next.js Application)
 
 ```
-apps/organiclever-web/
+apps/organiclever-fe/
 ├── src/                       # Source code
 ├── public/                    # Static assets
 ├── .storybook/                # Storybook configuration
@@ -548,7 +548,7 @@ go 1.26
 **Apps importing libs** (TypeScript apps):
 
 ```typescript
-// In apps/organiclever-web/app/page.tsx
+// In apps/organiclever-fe/app/page.tsx
 import { formatDate } from "@open-sharia-enterprise/ts-utils";
 ```
 

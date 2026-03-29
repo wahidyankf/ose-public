@@ -38,13 +38,13 @@ Low-risk. Affects root workspace and all NPM-based projects.
 - [x] Bump `eslint-config-next` `14.2.14` → `14.2.35` (matching next version)
 - [x] Bump `markdownlint-cli2` range `^0.20.0` → `^0.21.0`
 - [x] Verify `package-lock.json` is updated (no merge conflicts, lockfileVersion unchanged)
-- [x] Update `@playwright/test` to `^1.58.2` across `organiclever-web-e2e`,
+- [x] Update `@playwright/test` to `^1.58.2` across `organiclever-fe-e2e`,
       `organiclever-be-e2e`, `organiclever-app-web-e2e`
 - [x] Run `npx playwright install` in each e2e app to refresh browser binaries
-      — Ran in organiclever-web-e2e; chromium@1208, firefox@1509, webkit@2248 downloaded
+      — Ran in organiclever-fe-e2e; chromium@1208, firefox@1509, webkit@2248 downloaded
 - [x] Run `nx affected -t lint` — all pass
 - [x] Run `nx affected -t test:quick` — all pass
-- [x] Run `nx build organiclever-web` — successful production build
+- [x] Run `nx build organiclever-fe` — successful production build
 - **Note**: 4 HIGH CVEs remain after Phase 2 (2 in next@14.x, 2 in eslint-config-next@14.x).
   These require Phase 7 (Next.js major upgrade to 15/16) to resolve.
   The critical CVEs originally present are now resolved by next@14.2.35.
@@ -143,20 +143,20 @@ High-risk. Two discrete sub-phases — commit after each major.
 - [x] Read [Next.js 15 upgrade guide](https://nextjs.org/docs/app/guides/upgrading/version-15)
       — Key breaking changes: async cookies/headers/params/searchParams, React 19 required,
       fetch no longer cached by default, route handlers GET no longer cached by default
-- [x] Run official codemod: `cd apps/organiclever-web && npx @next/codemod@latest upgrade`
+- [x] Run official codemod: `cd apps/organiclever-fe && npx @next/codemod@latest upgrade`
       — Ran manually (codemod@latest would target Next.js 16); applied all async API changes
       by hand: `await cookies()` in check/route.ts, `await params` in members/[id]/route.ts
       (GET/PUT/DELETE), `use(params)` in dashboard/members/[id]/page.tsx
 - [x] Manually review codemod diff — check `cookies()`, `headers()`, `params`, `searchParams`
       async API changes — all 3 affected files updated; `headers()` not used directly
-- [x] Update `next` and `eslint-config-next` to `15.x` in `apps/organiclever-web/package.json`
+- [x] Update `next` and `eslint-config-next` to `15.x` in `apps/organiclever-fe/package.json`
       — `next`: 14.2.35 → 15.5.12; `eslint-config-next`: 14.2.35 → 15.5.12
       — Also updated: `react/react-dom` ^18 → ^19.0.0, `@types/react/react-dom` ^18 → ^19
 - [x] Run `npm install` in root workspace — 0 vulnerabilities
       — Also ran `npm dedupe` to remove duplicate React versions (fixes /404 prerender error)
-- [x] Run `nx build organiclever-web` — successful production build (12/12 static pages)
-- [x] Run `nx dev organiclever-web` — application boots, all routes load
-- [x] Run `nx run organiclever-web-e2e:test:e2e` — 17/18 pass; 1 pre-existing webkit failure
+- [x] Run `nx build organiclever-fe` — successful production build (12/12 static pages)
+- [x] Run `nx dev organiclever-fe` — application boots, all routes load
+- [x] Run `nx run organiclever-fe-e2e:test:e2e` — 17/18 pass; 1 pre-existing webkit failure
       (WebKit rejects `secure` cookie over HTTP localhost — not a Next.js 15/16 regression;
       passes in Chromium and Firefox; functions correctly in production over HTTPS)
 - [ ] Commit: `chore(deps): upgrade next.js from 14 to 15`
@@ -188,10 +188,10 @@ High-risk. Two discrete sub-phases — commit after each major.
 - [x] Update `react` and `react-dom` to React 19 if required
       — Already at ^19.0.0 from Phase 7a; no change needed
 - [x] Run `npm install` in root workspace — 0 vulnerabilities
-- [x] Run `nx build organiclever-web` — successful production build (11/11 static pages,
+- [x] Run `nx build organiclever-fe` — successful production build (11/11 static pages,
       Turbopack)
-- [x] Run `nx dev organiclever-web` — application boots, all routes load
-- [x] Run `nx run organiclever-web-e2e:test:e2e` — 17/18 pass; 1 pre-existing webkit failure
+- [x] Run `nx dev organiclever-fe` — application boots, all routes load
+- [x] Run `nx run organiclever-fe-e2e:test:e2e` — 17/18 pass; 1 pre-existing webkit failure
       (same as Phase 7a; WebKit localhost HTTP + secure cookie issue — not a regression)
 - [ ] Commit: `chore(deps): upgrade next.js from 15 to 16`
 
@@ -218,9 +218,9 @@ compared to earlier assessments.
         — `tailwind.config.ts` deleted by upgrade tool; `globals.css` migrated to
         `@import 'tailwindcss'` + `@theme {...}` with all design tokens; `@custom-variant dark`
         replaces `darkMode` config; border compatibility layer added for v3→v4 defaults
-  - [x] Visual regression check: `nx dev organiclever-web`, compare key pages
+  - [x] Visual regression check: `nx dev organiclever-fe`, compare key pages
         — Dev server started cleanly on port 3001; Next.js 16.1.6 + Turbopack, ready in 693ms
-  - [x] Run `nx build organiclever-web` — production build succeeds
+  - [x] Run `nx build organiclever-fe` — production build succeeds
         — 11/11 static pages generated; 0 vulnerabilities
   - [ ] Commit: `chore(deps): upgrade tailwindcss from v3 to v4`
 
@@ -239,7 +239,7 @@ Run after all phases are complete to confirm nothing regressed.
 - [x] `nx affected -t test:quick` (all projects) — all pass (10 projects + 1 dependency)
 - [x] `nx build ayokoding-web` — Hugo build succeeds
 - [x] `nx build oseplatform-web` — Hugo build succeeds
-- [x] `nx build organiclever-web` — Next.js production build succeeds (11/11 static pages)
+- [x] `nx build organiclever-fe` — Next.js production build succeeds (11/11 static pages)
 - [x] `go build ./...` in `apps/ayokoding-cli/` — CLI compiles
 - [x] `go build ./...` in `apps/rhino-cli/` — CLI compiles
 - [x] `mvn verify` in `apps/organiclever-be/` — all Maven tests pass (Spring Boot 4.0.2)

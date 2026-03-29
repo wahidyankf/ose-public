@@ -68,25 +68,25 @@ specs/apps/organiclever/
 
 ### Domain Table
 
-| Domain         | BE Features | FE Features | Description                                   |
-| -------------- | ----------- | ----------- | --------------------------------------------- |
-| health         | 1           | --          | Service health status                         |
+| Domain         | BE Features | FE Features | Description                                               |
+| -------------- | ----------- | ----------- | --------------------------------------------------------- |
+| health         | 1           | --          | Service health status                                     |
 | authentication | 2           | 3           | Google OAuth login, profile (protected), route protection |
-| layout         | --          | 1           | Accessibility (WCAG AA compliance)            |
+| layout         | --          | 1           | Accessibility (WCAG AA compliance)                        |
 
 ### Spec Migration Map
 
-| Existing File                                        | Action                                               |
-| ---------------------------------------------------- | ---------------------------------------------------- |
-| `specs/apps/organiclever-be/health/health-check.feature`    | Move to `be/gherkin/health/health-check.feature`     |
-| `specs/apps/organiclever-be/hello/hello-endpoint.feature`   | Remove (replaced by auth/profile flow)               |
-| `specs/apps/organiclever-be/auth/*.feature`                 | Rewrite as `be/gherkin/authentication/` (Google OAuth only) |
-| `specs/apps/organiclever-web/landing/*.feature`             | Remove (out of scope)                                |
-| `specs/apps/organiclever-web/auth/*.feature`                | Rewrite as `fe/gherkin/authentication/` (Google OAuth + profile) |
-| `specs/apps/organiclever-web/dashboard/*.feature`           | Remove (out of scope)                                |
-| `specs/apps/organiclever-web/members/*.feature`             | Remove (out of scope)                                |
-| (new)                                                       | Create `fe/gherkin/authentication/profile.feature`   |
-| (new)                                                       | Create `fe/gherkin/authentication/route-protection.feature` |
+| Existing File                                             | Action                                                           |
+| --------------------------------------------------------- | ---------------------------------------------------------------- |
+| `specs/apps/organiclever-be/health/health-check.feature`  | Move to `be/gherkin/health/health-check.feature`                 |
+| `specs/apps/organiclever-be/hello/hello-endpoint.feature` | Remove (replaced by auth/profile flow)                           |
+| `specs/apps/organiclever-be/auth/*.feature`               | Rewrite as `be/gherkin/authentication/` (Google OAuth only)      |
+| `specs/apps/organiclever-fe/landing/*.feature`            | Remove (out of scope)                                            |
+| `specs/apps/organiclever-fe/auth/*.feature`               | Rewrite as `fe/gherkin/authentication/` (Google OAuth + profile) |
+| `specs/apps/organiclever-fe/dashboard/*.feature`          | Remove (out of scope)                                            |
+| `specs/apps/organiclever-fe/members/*.feature`            | Remove (out of scope)                                            |
+| (new)                                                     | Create `fe/gherkin/authentication/profile.feature`               |
+| (new)                                                     | Create `fe/gherkin/authentication/route-protection.feature`      |
 
 ## Backend Architecture (`apps/organiclever-be`)
 
@@ -222,11 +222,11 @@ services.AddScoped<RefreshTokenRepository>(fun sp ->
 All three test levels consume the **same Gherkin specs** from `specs/apps/organiclever/be/gherkin/`.
 Only the step implementations differ:
 
-| Level       | Target             | DB                   | Repositories          | HTTP       | Gherkin Specs                  |
-| ----------- | ------------------ | -------------------- | --------------------- | ---------- | ------------------------------ |
-| Unit        | `test:unit`        | SQLite in-memory     | Mocked function records | No HTTP  | `specs/apps/organiclever/be/gherkin/` |
-| Integration | `test:integration` | PostgreSQL (Docker)  | Real EF Core           | No HTTP  | `specs/apps/organiclever/be/gherkin/` |
-| E2E         | `test:e2e`         | PostgreSQL (Docker)  | Real EF Core           | Playwright | `specs/apps/organiclever/be/gherkin/` |
+| Level       | Target             | DB                  | Repositories            | HTTP       | Gherkin Specs                         |
+| ----------- | ------------------ | ------------------- | ----------------------- | ---------- | ------------------------------------- |
+| Unit        | `test:unit`        | SQLite in-memory    | Mocked function records | No HTTP    | `specs/apps/organiclever/be/gherkin/` |
+| Integration | `test:integration` | PostgreSQL (Docker) | Real EF Core            | No HTTP    | `specs/apps/organiclever/be/gherkin/` |
+| E2E         | `test:e2e`         | PostgreSQL (Docker) | Real EF Core            | Playwright | `specs/apps/organiclever/be/gherkin/` |
 
 - **Unit**: Steps call handler/service functions directly with mocked repositories (function
   records with test values). Coverage measured here (90%).
@@ -309,28 +309,28 @@ CREATE TABLE IF NOT EXISTS refresh_tokens (
 
 **Environment variables**:
 
-| Variable                | Required       | Description                                        |
-| ----------------------- | -------------- | -------------------------------------------------- |
-| `DATABASE_URL`          | Yes (non-test) | PostgreSQL connection string                       |
-| `APP_JWT_SECRET`        | No             | JWT signing secret (dev default provided)          |
-| `GOOGLE_CLIENT_ID`      | Yes            | Google OAuth Client ID (from Cloud Console)        |
-| `GOOGLE_CLIENT_SECRET`  | Yes            | Google OAuth Client Secret (from Cloud Console)    |
+| Variable               | Required       | Description                                     |
+| ---------------------- | -------------- | ----------------------------------------------- |
+| `DATABASE_URL`         | Yes (non-test) | PostgreSQL connection string                    |
+| `APP_JWT_SECRET`       | No             | JWT signing secret (dev default provided)       |
+| `GOOGLE_CLIENT_ID`     | Yes            | Google OAuth Client ID (from Cloud Console)     |
+| `GOOGLE_CLIENT_SECRET` | Yes            | Google OAuth Client Secret (from Cloud Console) |
 
 ### Nx Targets (project.json)
 
 Following `demo-be-fsharp-giraffe` pattern exactly:
 
-| Target              | Command                                    | Cacheable | Depends On          |
-| ------------------- | ------------------------------------------ | --------- | ------------------- |
-| `codegen`           | openapi-generator-cli generate             | Yes       | organiclever-contracts:bundle |
-| `typecheck`         | dotnet build (warnings as errors)          | Yes       | codegen             |
-| `lint`              | fantomas + fsharplint + fsharp-analyzers   | Yes       | --                  |
-| `build`             | dotnet publish -c Release                  | Yes       | codegen             |
-| `test:unit`         | dotnet test --filter Category=Unit         | Yes       | --                  |
-| `test:quick`        | altcover + rhino-cli validate (90%)        | Yes       | --                  |
-| `test:integration`  | docker-compose up (real PostgreSQL)        | No        | --                  |
-| `dev`               | dotnet watch run (port 8202)               | No        | --                  |
-| `start`             | dotnet run (port 8202)                     | No        | --                  |
+| Target             | Command                                  | Cacheable | Depends On                    |
+| ------------------ | ---------------------------------------- | --------- | ----------------------------- |
+| `codegen`          | openapi-generator-cli generate           | Yes       | organiclever-contracts:bundle |
+| `typecheck`        | dotnet build (warnings as errors)        | Yes       | codegen                       |
+| `lint`             | fantomas + fsharplint + fsharp-analyzers | Yes       | --                            |
+| `build`            | dotnet publish -c Release                | Yes       | codegen                       |
+| `test:unit`        | dotnet test --filter Category=Unit       | Yes       | --                            |
+| `test:quick`       | altcover + rhino-cli validate (90%)      | Yes       | --                            |
+| `test:integration` | docker-compose up (real PostgreSQL)      | No        | --                            |
+| `dev`              | dotnet watch run (port 8202)             | No        | --                            |
+| `start`            | dotnet run (port 8202)                   | No        | --                            |
 
 ## Frontend Architecture (`apps/organiclever-fe`)
 
@@ -416,42 +416,42 @@ communication with `organiclever-be`.
 
 ```typescript
 // services/errors.ts
-import { Data } from "effect"
+import { Data } from "effect";
 
 export class NetworkError extends Data.TaggedError("NetworkError")<{
-  readonly status: number
-  readonly message: string
+  readonly status: number;
+  readonly message: string;
 }> {}
 
 export class ApiError extends Data.TaggedError("ApiError")<{
-  readonly code: string
-  readonly message: string
+  readonly code: string;
+  readonly message: string;
 }> {}
 
 // services/backend-client.ts
-import { Effect, Context } from "effect"
-import type { NetworkError } from "./errors"
+import { Effect, Context } from "effect";
+import type { NetworkError } from "./errors";
 
 // Server-side only: calls organiclever-be using ORGANICLEVER_BE_URL env var
 export class BackendClient extends Context.Tag("BackendClient")<
   BackendClient,
   {
-    readonly get: (path: string) => Effect.Effect<unknown, NetworkError>
+    readonly get: (path: string) => Effect.Effect<unknown, NetworkError>;
   }
 >() {}
 
 // services/auth-service.ts
-import { Effect, Context } from "effect"
-import { BackendClient } from "./backend-client"
-import type { NetworkError } from "./errors"
-import type { UserProfile } from "@/generated-contracts"  // from OpenAPI codegen
+import { Effect, Context } from "effect";
+import { BackendClient } from "./backend-client";
+import type { NetworkError } from "./errors";
+import type { UserProfile } from "@/generated-contracts"; // from OpenAPI codegen
 
 export class AuthService extends Context.Tag("AuthService")<
   AuthService,
   {
-    readonly googleLogin: (idToken: string) => Effect.Effect<AuthTokenResponse, NetworkError>
-    readonly refresh: (refreshToken: string) => Effect.Effect<AuthTokenResponse, NetworkError>
-    readonly getProfile: () => Effect.Effect<UserProfile, NetworkError>
+    readonly googleLogin: (idToken: string) => Effect.Effect<AuthTokenResponse, NetworkError>;
+    readonly refresh: (refreshToken: string) => Effect.Effect<AuthTokenResponse, NetworkError>;
+    readonly getProfile: () => Effect.Effect<UserProfile, NetworkError>;
   }
 >() {}
 
@@ -465,31 +465,31 @@ service layer on the server side. If the user is not authenticated, it redirects
 
 ```tsx
 // app/profile/page.tsx
-import { redirect } from "next/navigation"
-import { Effect, Exit } from "effect"
-import { AuthService } from "@/services/auth-service"
-import { BackendClientLive } from "@/layers/backend-client-live"
+import { redirect } from "next/navigation";
+import { Effect, Exit } from "effect";
+import { AuthService } from "@/services/auth-service";
+import { BackendClientLive } from "@/layers/backend-client-live";
 
 export default async function ProfilePage() {
   const program = Effect.gen(function* () {
-    const authService = yield* AuthService
-    return yield* authService.getProfile()
-  }).pipe(Effect.provide(BackendClientLive))
+    const authService = yield* AuthService;
+    return yield* authService.getProfile();
+  }).pipe(Effect.provide(BackendClientLive));
 
-  const exit = await Effect.runPromiseExit(program)
+  const exit = await Effect.runPromiseExit(program);
 
   if (!Exit.isSuccess(exit)) {
-    redirect("/login")
+    redirect("/login");
   }
 
-  const profile = exit.value
+  const profile = exit.value;
   return (
     <div>
       <img src={profile.avatarUrl} alt={profile.name} />
       <h1>{profile.name}</h1>
       <p>{profile.email}</p>
     </div>
-  )
+  );
 }
 ```
 
@@ -499,32 +499,32 @@ For any client-side code that needs backend data, Route Handlers act as the prox
 
 ```typescript
 // app/api/auth/me/route.ts
-import { NextResponse } from "next/server"
-import { Effect, Exit } from "effect"
-import { AuthService } from "@/services/auth-service"
-import { BackendClientLive } from "@/layers/backend-client-live"
+import { NextResponse } from "next/server";
+import { Effect, Exit } from "effect";
+import { AuthService } from "@/services/auth-service";
+import { BackendClientLive } from "@/layers/backend-client-live";
 
 export async function GET() {
   const program = Effect.gen(function* () {
-    const authService = yield* AuthService
-    return yield* authService.getProfile()
-  }).pipe(Effect.provide(BackendClientLive))
+    const authService = yield* AuthService;
+    return yield* authService.getProfile();
+  }).pipe(Effect.provide(BackendClientLive));
 
-  const exit = await Effect.runPromiseExit(program)
+  const exit = await Effect.runPromiseExit(program);
 
   if (!Exit.isSuccess(exit)) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  return NextResponse.json(exit.value)
+  return NextResponse.json(exit.value);
 }
 ```
 
 ### Environment Variables
 
-| Variable               | Scope       | Description                                    |
-| ---------------------- | ----------- | ---------------------------------------------- |
-| `ORGANICLEVER_BE_URL`  | Server-only | Backend base URL (e.g., `http://localhost:8202`) |
+| Variable              | Scope       | Description                                      |
+| --------------------- | ----------- | ------------------------------------------------ |
+| `ORGANICLEVER_BE_URL` | Server-only | Backend base URL (e.g., `http://localhost:8202`) |
 
 This variable is **not** prefixed with `NEXT_PUBLIC_` -- it is only available on the server side,
 keeping the backend URL private from the browser.
@@ -533,19 +533,19 @@ keeping the backend URL private from the browser.
 
 Following `demo-fe-ts-nextjs` pattern:
 
-| Target              | Command                                    | Cacheable | Depends On          |
-| ------------------- | ------------------------------------------ | --------- | ------------------- |
-| `codegen`           | @hey-api/openapi-ts                        | Yes       | organiclever-contracts:bundle |
-| `typecheck`         | tsc --noEmit                               | Yes       | codegen             |
-| `lint`              | oxlint --jsx-a11y-plugin                   | Yes       | --                  |
-| `build`             | next build                                 | Yes       | codegen             |
-| `test:unit`         | vitest run --project unit                  | Yes       | --                  |
-| `test:quick`        | vitest coverage + rhino-cli validate (70%) | Yes       | --                  |
-| `test:integration`  | vitest run --project integration (MSW)     | Yes       | --                  |
-| `storybook`         | storybook dev (port 6006)                  | No        | --                  |
-| `build-storybook`   | storybook build                            | Yes       | --                  |
-| `dev`               | next dev --port 3200                       | No        | --                  |
-| `start`             | next start --port 3200                     | No        | --                  |
+| Target             | Command                                    | Cacheable | Depends On                    |
+| ------------------ | ------------------------------------------ | --------- | ----------------------------- |
+| `codegen`          | @hey-api/openapi-ts                        | Yes       | organiclever-contracts:bundle |
+| `typecheck`        | tsc --noEmit                               | Yes       | codegen                       |
+| `lint`             | oxlint --jsx-a11y-plugin                   | Yes       | --                            |
+| `build`            | next build                                 | Yes       | codegen                       |
+| `test:unit`        | vitest run --project unit                  | Yes       | --                            |
+| `test:quick`       | vitest coverage + rhino-cli validate (70%) | Yes       | --                            |
+| `test:integration` | vitest run --project integration (MSW)     | Yes       | --                            |
+| `storybook`        | storybook dev (port 6006)                  | No        | --                            |
+| `build-storybook`  | storybook build                            | Yes       | --                            |
+| `dev`              | next dev --port 3200                       | No        | --                            |
+| `start`            | next start --port 3200                     | No        | --                            |
 
 ## E2E Test Apps
 
@@ -603,7 +603,7 @@ Follows `test-demo-be-fsharp-giraffe.yml` pattern:
 - **Job 2 -- E2E**: Start backend, wait for readiness, `nx run organiclever-be-e2e:test:e2e`
 - **Runtimes**: .NET 10, Node.js 24
 
-#### `test-organiclever-fe.yml` (new, replaces `test-organiclever-web.yml`)
+#### `test-organiclever-fe.yml` (new, replaces `test-organiclever-fe.yml`)
 
 Follows `test-demo-fe-*.yml` pattern:
 
@@ -617,7 +617,7 @@ Follows `test-demo-fe-*.yml` pattern:
 
 - **`main-ci.yml`**: No changes needed (`nx affected` picks up new projects automatically)
 - **`pr-quality-gate.yml`**: No changes needed (same reason)
-- **`test-organiclever-web.yml`**: Delete (replaced by `test-organiclever-fe.yml`)
+- **`test-organiclever-fe.yml`**: Delete (replaced by `test-organiclever-fe.yml`)
 
 ### Vercel Deployment
 
@@ -679,31 +679,31 @@ This follows the same pattern used in `specs/apps/demo/contracts/paths/`.
 
 ## Technology Stack
 
-| Component          | Technology                   | Version | Notes                        |
-| ------------------ | ---------------------------- | ------- | ---------------------------- |
-| Backend runtime    | .NET                         | 10.0    | LTS                          |
-| Backend web        | Giraffe                      | 7.x     | Functional HttpHandler       |
-| Backend ORM        | EF Core (Npgsql)             | 10.x    | PostgreSQL provider          |
-| Backend migrations | DbUp (dbup-postgresql)       | 5.x     | SQL file migrations (matches demo-be-fsharp-giraffe) |
-| Backend JSON       | FSharp.SystemTextJson         | 1.*     | F# type serialization (matches demo-be-fsharp-giraffe) |
-| Backend lint       | Fantomas, FSharpLint         | Latest  | Formatting + style           |
-| Backend coverage   | AltCover                     | Latest  | 90% line coverage            |
-| Frontend runtime   | Node.js                      | 24.x    | LTS via Volta                |
-| Frontend web       | Next.js                      | 16.x    | App Router, RSC              |
-| Frontend lang      | TypeScript                   | 5.x     | Strict mode                  |
-| Frontend effects   | Effect TS                    | Latest  | Error handling, DI           |
-| Frontend UI (shared)| @open-sharia-enterprise/ts-ui | Workspace | Button, Card, Alert, Input, Label, Dialog, cn |
-| Frontend UI (style)| shadcn/ui, Tailwind v4       | Latest  | OrganicLever-specific styling on top of ts-ui |
-| Frontend testing   | Vitest, MSW                  | Latest  | Unit + integration           |
-| Database           | PostgreSQL                   | 17.x    | Initially minimal            |
-| Contract           | OpenAPI                      | 3.1     | API-first design             |
-| Codegen (BE)       | openapi-generator-cli        | Latest  | fsharp-giraffe-server        |
-| Codegen (FE)       | @hey-api/openapi-ts          | Latest  | TypeScript fetch client      |
-| E2E                | Playwright + bddgen          | Latest  | Gherkin-driven browser tests |
+| Component            | Technology                    | Version   | Notes                                                  |
+| -------------------- | ----------------------------- | --------- | ------------------------------------------------------ |
+| Backend runtime      | .NET                          | 10.0      | LTS                                                    |
+| Backend web          | Giraffe                       | 7.x       | Functional HttpHandler                                 |
+| Backend ORM          | EF Core (Npgsql)              | 10.x      | PostgreSQL provider                                    |
+| Backend migrations   | DbUp (dbup-postgresql)        | 5.x       | SQL file migrations (matches demo-be-fsharp-giraffe)   |
+| Backend JSON         | FSharp.SystemTextJson         | 1.\*      | F# type serialization (matches demo-be-fsharp-giraffe) |
+| Backend lint         | Fantomas, FSharpLint          | Latest    | Formatting + style                                     |
+| Backend coverage     | AltCover                      | Latest    | 90% line coverage                                      |
+| Frontend runtime     | Node.js                       | 24.x      | LTS via Volta                                          |
+| Frontend web         | Next.js                       | 16.x      | App Router, RSC                                        |
+| Frontend lang        | TypeScript                    | 5.x       | Strict mode                                            |
+| Frontend effects     | Effect TS                     | Latest    | Error handling, DI                                     |
+| Frontend UI (shared) | @open-sharia-enterprise/ts-ui | Workspace | Button, Card, Alert, Input, Label, Dialog, cn          |
+| Frontend UI (style)  | shadcn/ui, Tailwind v4        | Latest    | OrganicLever-specific styling on top of ts-ui          |
+| Frontend testing     | Vitest, MSW                   | Latest    | Unit + integration                                     |
+| Database             | PostgreSQL                    | 17.x      | Initially minimal                                      |
+| Contract             | OpenAPI                       | 3.1       | API-first design                                       |
+| Codegen (BE)         | openapi-generator-cli         | Latest    | fsharp-giraffe-server                                  |
+| Codegen (FE)         | @hey-api/openapi-ts           | Latest    | TypeScript fetch client                                |
+| E2E                  | Playwright + bddgen           | Latest    | Gherkin-driven browser tests                           |
 
 ## Local Development Infrastructure (`infra/dev/organiclever/`)
 
-Replaces `infra/dev/organiclever-web/`. The new setup runs both backend and frontend together
+Replaces `infra/dev/organiclever-fe/`. The new setup runs both backend and frontend together
 with PostgreSQL for local development.
 
 ```
@@ -755,95 +755,95 @@ services:
 
 ### npm Scripts (package.json root)
 
-| Script                        | Command                                                  |
-| ----------------------------- | -------------------------------------------------------- |
-| `organiclever:dev`            | `docker compose -f infra/dev/organiclever/docker-compose.yml up --build` |
-| `organiclever:dev:restart`    | `docker compose -f ... down -v && docker compose -f ... up --build` |
+| Script                     | Command                                                                  |
+| -------------------------- | ------------------------------------------------------------------------ |
+| `organiclever:dev`         | `docker compose -f infra/dev/organiclever/docker-compose.yml up --build` |
+| `organiclever:dev:restart` | `docker compose -f ... down -v && docker compose -f ... up --build`      |
 
 ### Port Assignments
 
-| Service          | Port |
-| ---------------- | ---- |
-| organiclever-db  | 5432 |
-| organiclever-be  | 8202 |
-| organiclever-fe  | 3200 |
+| Service         | Port |
+| --------------- | ---- |
+| organiclever-db | 5432 |
+| organiclever-be | 8202 |
+| organiclever-fe | 3200 |
 
 ## Files to Update (Complete Inventory)
 
 ### Agents (`.claude/agents/`)
 
-| File                                    | Action                                      |
-| --------------------------------------- | ------------------------------------------- |
-| `apps-organiclever-web-deployer.md`     | Rename to `apps-organiclever-fe-deployer.md`, update content |
-| `README.md`                             | Update agent listings                       |
-| `specs-maker.md`                        | Update example references                   |
+| File                               | Action                                                       |
+| ---------------------------------- | ------------------------------------------------------------ |
+| `apps-organiclever-fe-deployer.md` | Rename to `apps-organiclever-fe-deployer.md`, update content |
+| `README.md`                        | Update agent listings                                        |
+| `specs-maker.md`                   | Update example references                                    |
 
 ### Skills (`.claude/skills/`)
 
-| File/Directory                                      | Action                                      |
-| --------------------------------------------------- | ------------------------------------------- |
-| `apps-organiclever-web-developing-content/`         | Rename to `apps-organiclever-fe-developing-content/`, rewrite SKILL.md |
+| File/Directory                             | Action                                                                 |
+| ------------------------------------------ | ---------------------------------------------------------------------- |
+| `apps-organiclever-fe-developing-content/` | Rename to `apps-organiclever-fe-developing-content/`, rewrite SKILL.md |
 
 ### CLAUDE.md
 
-| Section                | Change                                              |
-| ---------------------- | --------------------------------------------------- |
-| Current Apps list      | Replace `organiclever-web` with `organiclever-fe` + `organiclever-be` |
-| Project Structure      | Add `organiclever-be`, rename `organiclever-web`    |
-| Coverage sections      | Update F# and TypeScript sections                   |
-| Caching sections       | Add `organiclever-fe` MSW caching note              |
-| Git Workflow           | Update production branch name                       |
-| Hugo Sites section     | Rename organiclever-web section                     |
-| AI Agents section      | Update deployer agent name                          |
+| Section            | Change                                                               |
+| ------------------ | -------------------------------------------------------------------- |
+| Current Apps list  | Replace `organiclever-fe` with `organiclever-fe` + `organiclever-be` |
+| Project Structure  | Add `organiclever-be`, rename `organiclever-fe`                      |
+| Coverage sections  | Update F# and TypeScript sections                                    |
+| Caching sections   | Add `organiclever-fe` MSW caching note                               |
+| Git Workflow       | Update production branch name                                        |
+| Hugo Sites section | Rename organiclever-fe section                                       |
+| AI Agents section  | Update deployer agent name                                           |
 
 ### Governance (`governance/`)
 
-14+ files referencing `organiclever-web` -- all need `organiclever-web` -> `organiclever-fe`
+14+ files referencing `organiclever-fe` -- all need `organiclever-fe` -> `organiclever-fe`
 replacement and addition of `organiclever-be` where backend apps are listed.
 
 ### Docs (`docs/`)
 
-14+ files referencing `organiclever-web` -- same replacement needed.
+14+ files referencing `organiclever-fe` -- same replacement needed.
 
 ### GitHub Workflows (`.github/workflows/`)
 
-| File                           | Action                                        |
-| ------------------------------ | --------------------------------------------- |
-| `test-organiclever-web.yml`    | Delete                                        |
-| `test-organiclever-be.yml`     | Create (backend integration + E2E)            |
-| `test-organiclever-fe.yml`     | Create (frontend integration + E2E)           |
+| File                       | Action                              |
+| -------------------------- | ----------------------------------- |
+| `test-organiclever-fe.yml` | Delete                              |
+| `test-organiclever-be.yml` | Create (backend integration + E2E)  |
+| `test-organiclever-fe.yml` | Create (frontend integration + E2E) |
 
 ### Apps
 
-| Directory                | Action                               |
-| ------------------------ | ------------------------------------ |
-| `apps/organiclever-web/` | Archive to `archived/organiclever-web/` |
-| `apps/organiclever-web-e2e/` | Remove (replaced by `organiclever-fe-e2e`) |
-| `apps/organiclever-fe/`  | Create new                           |
-| `apps/organiclever-be/`  | Create new                           |
-| `apps/organiclever-fe-e2e/` | Create new                        |
-| `apps/organiclever-be-e2e/` | Create new                        |
+| Directory                   | Action                                     |
+| --------------------------- | ------------------------------------------ |
+| `apps/organiclever-fe/`     | Archive to `archived/organiclever-fe/`     |
+| `apps/organiclever-fe-e2e/` | Remove (replaced by `organiclever-fe-e2e`) |
+| `apps/organiclever-fe/`     | Create new                                 |
+| `apps/organiclever-be/`     | Create new                                 |
+| `apps/organiclever-fe-e2e/` | Create new                                 |
+| `apps/organiclever-be-e2e/` | Create new                                 |
 
 ### Infra
 
-| Directory                           | Action                                        |
-| ----------------------------------- | --------------------------------------------- |
-| `infra/dev/organiclever-web/`       | Remove (replaced by `infra/dev/organiclever/`) |
-| `infra/dev/organiclever/`           | Create new (BE + FE + PostgreSQL)             |
+| Directory                    | Action                                         |
+| ---------------------------- | ---------------------------------------------- |
+| `infra/dev/organiclever-fe/` | Remove (replaced by `infra/dev/organiclever/`) |
+| `infra/dev/organiclever/`    | Create new (BE + FE + PostgreSQL)              |
 
 ### Specs
 
-| Directory                        | Action                             |
-| -------------------------------- | ---------------------------------- |
-| `specs/apps/organiclever-be/`    | Delete after migration             |
-| `specs/apps/organiclever-web/`   | Delete after migration             |
-| `specs/apps/organiclever/`       | Create new unified structure       |
+| Directory                     | Action                       |
+| ----------------------------- | ---------------------------- |
+| `specs/apps/organiclever-be/` | Delete after migration       |
+| `specs/apps/organiclever-fe/` | Delete after migration       |
+| `specs/apps/organiclever/`    | Create new unified structure |
 
 ### npm Scripts (package.json root)
 
-| Script                                      | Action                                      |
-| ------------------------------------------- | ------------------------------------------- |
-| `organiclever-web:dev`                      | Remove                                      |
-| `organiclever-web:dev:restart`              | Remove                                      |
-| `organiclever:dev`                          | Create (docker compose for full stack)      |
-| `organiclever:dev:restart`                  | Create (down -v + up --build)               |
+| Script                        | Action                                 |
+| ----------------------------- | -------------------------------------- |
+| `organiclever-fe:dev`         | Remove                                 |
+| `organiclever-fe:dev:restart` | Remove                                 |
+| `organiclever:dev`            | Create (docker compose for full stack) |
+| `organiclever:dev:restart`    | Create (down -v + up --build)          |

@@ -1,0 +1,13 @@
+/api/v1/health:
+  get:
+    operationId: getHealth
+    summary: Health check
+    tags:
+      - Health
+    responses:
+      "200":
+        description: Service is healthy
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/health.yaml#/HealthResponse"

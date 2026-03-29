@@ -47,8 +47,8 @@ Feature: Testing Standardization
 
   # === Non-Demo-be Projects ===
 
-  Scenario: organiclever-web tests pass at unit and integration levels
-    Given the organiclever-web project
+  Scenario: organiclever-fe tests pass at unit and integration levels
+    Given the organiclever-fe project
     When test:quick runs
     Then unit tests pass via Vitest (without MSW)
     And coverage >= 90% from unit tests alone

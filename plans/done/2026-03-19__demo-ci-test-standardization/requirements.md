@@ -324,7 +324,7 @@ All changes must be validated against the full CI pipeline:
 - `main-ci.yml` must pass after pushing to main (typecheck, lint, test:quick for all projects)
 - All 11 backend E2E workflows must pass when manually triggered via `gh workflow run`
 - All 3 frontend E2E workflows must pass when manually triggered
-- `test-organiclever-web.yml` must pass when manually triggered
+- `test-organiclever-fe.yml` must pass when manually triggered
 - Total: 15 scheduled workflows + 1 main CI = 16 CI runs must pass
 
 ## Non-Functional Requirements

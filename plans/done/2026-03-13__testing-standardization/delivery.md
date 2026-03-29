@@ -225,12 +225,12 @@ Implement one backend at a time. Each backend follows 7 steps. The first backend
 
 No code changes expected for most. Verify compliance, adapt where needed.
 
-- [x] **3.1 `organiclever-web`** — already compliant
+- [x] **3.1 `organiclever-fe`** — already compliant
   - [x] `test:unit`, `test:integration`, `test:quick` targets already exist
   - [x] MSW tests are in-memory (no external services) — effectively unit-level
   - [x] Coverage 99.57% from all tests (unit + MSW), no split needed
-  - [x] Run `nx run organiclever-web:test:quick` — passes
-- [x] **3.2 `organiclever-web-e2e`** — already compliant
+  - [x] Run `nx run organiclever-fe:test:quick` — passes
+- [x] **3.2 `organiclever-fe-e2e`** — already compliant
   - [x] `test:e2e` runs Playwright, `test:quick` runs bddgen + tsc
 - [x] **3.3 `oseplatform-web`** — already compliant, `test:quick` runs link validation
 - [x] **3.4 `ayokoding-web`** — already compliant, `test:quick` runs link validation
@@ -258,11 +258,11 @@ No code changes expected for most. Verify compliance, adapt where needed.
   - [x] Confirm it runs `nx affected -t typecheck`, `nx affected -t lint`, `nx affected -t test:quick` as separate steps
   - [x] Confirm no changes needed (already compliant)
 - [x] **4.4 Verify E2E workflows (12 files)**
-  - [x] Confirm all `e2e-demo-be-*.yml` and `test-integration-e2e-organiclever-web.yml` use cron `0 23 * * *` and `0 11 * * *` (WIB 06/18)
+  - [x] Confirm all `e2e-demo-be-*.yml` and `test-integration-e2e-organiclever-fe.yml` use cron `0 23 * * *` and `0 11 * * *` (WIB 06/18)
   - [x] Confirm no changes needed (already compliant)
 - [x] **4.5 Update root `README.md`**
   - [x] ~~Add Integration badge column to CI & Test Coverage table for demo-be backends~~ (removed — `integration-tests.yml` was deleted)
-  - [x] Add Integration badge row for `organiclever-web` and Go CLI apps
+  - [x] Add Integration badge row for `organiclever-fe` and Go CLI apps
   - [x] Update table headers: Integration (4x daily) | E2E (2x daily) | Coverage
   - [x] Add description text explaining CI schedule (integration 4x daily, E2E 2x daily, test:quick on every push/PR)
   - [x] Add Integration CI badge at top level alongside Main CI badge
@@ -278,7 +278,7 @@ Run all targets end-to-end and confirm the full system works. No commits in this
   - [ ] Trigger E2E workflows manually — requires running servers (skipped in local verification; CI workflow handles this)
 - [x] **5.2 Non-demo-be projects**
   - [x] Run `nx run-many -t test:quick --all` — all 23 projects pass
-  - [x] Verified organiclever-web, Go CLI apps all included in test:quick pass
+  - [x] Verified organiclever-fe, Go CLI apps all included in test:quick pass
 - [x] **5.3 Coverage**
   - [x] Verified ≥90% line coverage for all testable projects from `test:unit` output (all pass via test:quick which includes coverage validation)
   - [x] Verified `main-ci.yml` coverage uploads point to correct files (demo-be-java-vertx fixed from jacoco-integration to jacoco)
@@ -289,7 +289,7 @@ Run all targets end-to-end and confirm the full system works. No commits in this
   - [x] Verified all 11 demo-be backends have explicit `cache: false` in their project.json `test:integration`
 - [x] **5.5 Mandatory targets audit**
   - [x] All 11 API backends have: `test:unit`, `test:integration`, `test:quick`, `lint`, `build`
-  - [x] organiclever-web has: `test:unit`, `test:integration`, `test:quick`, `lint`, `build`
+  - [x] organiclever-fe has: `test:unit`, `test:integration`, `test:quick`, `lint`, `build`
   - [x] All 3 CLI apps have: `test:unit`, `test:integration`, `test:quick`, `lint`, `build`
   - [x] All 4 libraries have: `test:unit`, `test:quick`, `lint`
   - [x] Both Hugo sites have: `test:quick`, `build`

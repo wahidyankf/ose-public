@@ -1,0 +1,62 @@
+{
+  "name": "organiclever-be-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/organiclever-be-e2e/steps",
+  "targets": {
+    "install": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm install",
+        "cwd": "apps/organiclever-be-e2e"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx oxlint@latest .",
+        "cwd": "apps/organiclever-be-e2e"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx bddgen && npx tsc --noEmit",
+        "cwd": "apps/organiclever-be-e2e"
+      },
+      "inputs": ["default", "{workspaceRoot}/specs/apps/organiclever/be/gherkin/**/*.feature"]
+    },
+    "test:quick": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["npx oxlint@latest .", "npx bddgen && npx tsc --noEmit"],
+        "parallel": true,
+        "cwd": "apps/organiclever-be-e2e"
+      },
+      "inputs": ["default", "{workspaceRoot}/specs/apps/organiclever/be/gherkin/**/*.feature"]
+    },
+    "test:e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx bddgen && npx playwright test",
+        "cwd": "apps/organiclever-be-e2e"
+      }
+    },
+    "test:e2e:ui": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx bddgen && npx playwright test --ui",
+        "cwd": "apps/organiclever-be-e2e"
+      }
+    },
+    "test:e2e:report": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx playwright show-report",
+        "cwd": "apps/organiclever-be-e2e"
+      }
+    }
+  },
+  "tags": ["type:e2e", "platform:playwright", "lang:ts", "domain:organiclever-be"],
+  "implicitDependencies": ["organiclever-be"]
+}

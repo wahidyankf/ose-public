@@ -218,9 +218,9 @@ The C4 diagram in `specs/apps/demo/c4/` is updated to remove the Clojure contain
 
 ### FAIL: Renaming an app without updating specs
 
-The team renames `apps/organiclever-web` to `apps/organiclever-landing`. The `specs/apps/organiclever-web/` folder is not renamed.
+The team renames `apps/organiclever-fe` to `apps/organiclever-landing`. The `specs/apps/organiclever-fe/` folder is not renamed.
 
-CI now has a mismatch: the app path and the spec path use different names. Reviewers and new contributors cannot determine whether `specs/apps/organiclever-web/` refers to the current `organiclever-landing` app or a removed app. This is a violation.
+CI now has a mismatch: the app path and the spec path use different names. Reviewers and new contributors cannot determine whether `specs/apps/organiclever-fe/` refers to the current `organiclever-landing` app or a removed app. This is a violation.
 
 ### PASS: Bug fix with no spec change
 

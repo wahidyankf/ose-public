@@ -23,8 +23,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - `ayokoding-cli` - Go CLI tool for content link validation
   - `rhino-cli` - Go CLI tool for repository management (Repository Hygiene & INtegration Orchestrator; includes `java validate-annotations`)
   - `oseplatform-cli` - Go CLI tool for OSE Platform site maintenance (link validation)
-  - `organiclever-web` - Next.js 16 landing and promotional website (www.organiclever.com)
-  - `organiclever-web-e2e` - Playwright E2E tests for organiclever-web
+  - `organiclever-fe` - Next.js 16 landing and promotional website (www.organiclever.com)
+  - `organiclever-be` - F#/Giraffe REST API backend for OrganicLever
+  - `organiclever-fe-e2e` - Playwright FE E2E tests for organiclever-fe
+  - `organiclever-be-e2e` - Playwright BE E2E tests for organiclever-be
+  - `organiclever-contracts` - OpenAPI 3.1 API contract spec (in `specs/apps/organiclever/contracts/`); generates
+    types + encoders/decoders for organiclever apps via `codegen` Nx target
   - `demo-be-golang-gin` - Go/Gin REST API backend (default backend)
   - `demo-be-java-springboot` - Spring Boot REST API backend (Java Spring Boot, alternative to demo-be-golang-gin)
   - `demo-be-elixir-phoenix` - Elixir/Phoenix REST API backend (alternative to demo-be-golang-gin)
@@ -57,8 +61,10 @@ open-sharia-enterprise/
 │   ├── ayokoding-cli/       # Content link validation CLI
 │   ├── rhino-cli/          # Repository management CLI (java validate-annotations)
 │   ├── oseplatform-cli/     # OSE Platform site CLI
-│   ├── organiclever-web/     # OrganicLever landing website (Next.js)
-│   ├── organiclever-web-e2e/ # Playwright E2E tests for organiclever-web
+│   ├── organiclever-fe/      # OrganicLever landing website (Next.js)
+│   ├── organiclever-be/      # OrganicLever F#/Giraffe REST API backend
+│   ├── organiclever-fe-e2e/  # Playwright FE E2E tests for organiclever-fe
+│   ├── organiclever-be-e2e/  # Playwright BE E2E tests for organiclever-be
 │   ├── demo-be-java-springboot/ # Spring Boot REST API (Java Spring Boot)
 │   ├── demo-be-elixir-phoenix/ # Elixir/Phoenix REST API (alternative implementation)
 │   ├── demo-be-fsharp-giraffe/ # F#/Giraffe REST API (alternative implementation)
@@ -155,11 +161,14 @@ npm run doctor           # Check all required tools (volta, node, npm, java, mav
 `test:unit` with `go test -coverprofile=cover.out ./...` and enforced by
 `rhino-cli test-coverage validate <project>/cover.out 90` — both run as part of `test:quick`.
 
-**TypeScript projects**: `organiclever-web` and `demo-be-ts-effect` enforce ≥90% **line coverage**
+**TypeScript projects**: `demo-be-ts-effect` enforces ≥90% **line coverage**
 (matching Codecov's algorithm) via `rhino-cli test-coverage validate` applied to the LCOV output
-from `test:unit` (Vitest): `rhino-cli test-coverage validate apps/organiclever-web/coverage/lcov.info 90` and
-`rhino-cli test-coverage validate apps/demo-be-ts-effect/coverage/lcov.info 90` — both run as part of
+from `test:unit` (Vitest): `rhino-cli test-coverage validate apps/demo-be-ts-effect/coverage/lcov.info 90` — run as part of
 `test:quick`.
+
+**OrganicLever Frontend**: `organiclever-fe` enforces ≥70% **line coverage** via
+`rhino-cli test-coverage validate` applied to the LCOV output from `test:unit` (Vitest):
+`rhino-cli test-coverage validate apps/organiclever-fe/coverage/lcov.info 70` — run as part of `test:quick`.
 
 **AyoKoding Web**: `ayokoding-web` enforces ≥80% **line coverage** via
 `rhino-cli test-coverage validate apps/ayokoding-web/coverage/lcov.info 80` — run as part of `test:quick`.
@@ -183,9 +192,10 @@ via `rhino-cli test-coverage validate` applied to the LCOV output from `test:uni
 via `rhino-cli test-coverage validate` applied to the LCOV output from `test:unit` (cargo-llvm-cov):
 `rhino-cli test-coverage validate apps/demo-be-rust-axum/coverage/lcov.info 90` — run as part of `test:quick`.
 
-**F# projects**: `demo-be-fsharp-giraffe` enforces ≥90% **line coverage** (matching Codecov's algorithm)
-via `rhino-cli test-coverage validate` applied to the AltCover LCOV report from `test:unit`:
-`rhino-cli test-coverage validate apps/demo-be-fsharp-giraffe/coverage/altcov.info 90` — run as part of
+**F# projects**: `demo-be-fsharp-giraffe` and `organiclever-be` enforce ≥90% **line coverage** (matching
+Codecov's algorithm) via `rhino-cli test-coverage validate` applied to the AltCover LCOV report from
+`test:unit`: `rhino-cli test-coverage validate apps/demo-be-fsharp-giraffe/coverage/altcov.info 90` and
+`rhino-cli test-coverage validate apps/organiclever-be/coverage/altcov.info 90` — both run as part of
 `test:quick`. Uses AltCover with `--linecover` instead of XPlat Code Coverage to avoid F#
 `task{}` async state machine BRDA inflation.
 
@@ -211,7 +221,7 @@ as part of `test:quick`.
 **`test:integration` caching**: Default `cache: false` in `nx.json`. Demo-be backends use
 docker-compose with real PostgreSQL — non-deterministic and must never be cached. Projects using
 in-process mocking only (MSW, Godog) override to `cache: true` in their `project.json`:
-`organiclever-web` (MSW), Go CLI apps (Godog + BDD features), `hugo-commons` (Godog + tmpdir mocks),
+`organiclever-fe` (MSW), Go CLI apps (Godog + BDD features), `hugo-commons` (Godog + tmpdir mocks),
 `golang-commons` (Godog + mock closures).
 
 **Three-level testing standard** (demo-be backends):
@@ -235,6 +245,11 @@ encoders/decoders from the OpenAPI spec at `specs/apps/demo/contracts/`. Generat
 `build` — so contract violations are caught by `nx affected -t typecheck` and `test:quick`
 in the pre-push hook and PR quality gate. (Exception: Rust and Flutter also declare `codegen` as a
 dependency of `test:unit` due to generated code being required at compile time.)
+
+**OrganicLever contract enforcement**: `organiclever-be` and `organiclever-fe` share an OpenAPI 3.1
+contract spec at `specs/apps/organiclever/contracts/`. The `organiclever-contracts` project lints
+and bundles the spec. Both apps have a `codegen` Nx target generating types into
+`generated-contracts/` (gitignored), following the same pattern as demo apps.
 
 **See**: [governance/development/quality/three-level-testing-standard.md](./governance/development/quality/three-level-testing-standard.md)
 
@@ -288,7 +303,7 @@ nx graph                     # Visualize dependencies
 - **Environment branches** (Vercel deployment only — never commit directly):
   - `prod-ayokoding-web` → [ayokoding.com](https://ayokoding.com)
   - `prod-oseplatform-web` → [oseplatform.com](https://oseplatform.com)
-  - `prod-organiclever-web` → [www.organiclever.com](https://www.organiclever.com/)
+  - `prod-organiclever-fe` → [www.organiclever.com](https://www.organiclever.com/)
 - **Commit format**: Conventional Commits `<type>(<scope>): <description>`
   - Types: feat, fix, docs, style, refactor, perf, test, chore, ci, revert
   - Scope optional but recommended
@@ -445,7 +460,7 @@ Plan mode for non-trivial tasks (3+ steps or architecture decisions), subagents 
 
 **Development**: swe-hugo-developer, swe-elixir-developer, swe-golang-developer, swe-java-developer, swe-python-developer, swe-typescript-developer, swe-e2e-test-developer, swe-dart-developer, swe-kotlin-developer, swe-csharp-developer, swe-fsharp-developer, swe-clojure-developer, swe-rust-developer
 
-**Operations**: apps-ayokoding-web-deployer, apps-oseplatform-web-deployer, apps-organiclever-web-deployer
+**Operations**: apps-ayokoding-web-deployer, apps-oseplatform-web-deployer, apps-organiclever-fe-deployer
 
 **Meta**: agent-maker, repo-governance-maker, repo-governance-checker, repo-governance-fixer, repo-workflow-maker, repo-workflow-checker, repo-workflow-fixer, social-linkedin-post-maker
 
@@ -578,25 +593,45 @@ nx run ayokoding-web-fe-e2e:test:e2e           # Frontend E2E tests
 
 **See**: [apps/ayokoding-web/README.md](./apps/ayokoding-web/README.md)
 
-### organiclever-web
+### organiclever-fe
 
 - **URL**: <https://www.organiclever.com/>
-- **Production branch**: `prod-organiclever-web` → www.organiclever.com
+- **Production branch**: `prod-organiclever-fe` → www.organiclever.com
 - **Framework**: Next.js 16 (App Router)
 - **Deployment**: Vercel
 - **Content**: Landing and promotional website for OrganicLever
-- **E2E tests**: `organiclever-web-e2e`
+- **E2E tests**: `organiclever-fe-e2e`
+- **Dev port**: 3200
 
 **Commands**:
 
 ```bash
-nx dev organiclever-web                    # Development server (localhost:3200)
-nx build organiclever-web                  # Production build
-nx run organiclever-web-e2e:test:e2e       # Run E2E tests headlessly
-nx run organiclever-web-e2e:test:e2e:ui   # Run E2E tests with Playwright UI
+nx dev organiclever-fe                     # Development server (localhost:3200)
+nx build organiclever-fe                   # Production build
+nx run organiclever-fe-e2e:test:e2e        # Run FE E2E tests headlessly
+nx run organiclever-fe-e2e:test:e2e:ui    # Run FE E2E tests with Playwright UI
 ```
 
-**See**: [apps/organiclever-web/README.md](./apps/organiclever-web/README.md), [.claude/skills/apps-organiclever-web-developing-content/SKILL.md](./.claude/skills/apps-organiclever-web-developing-content/SKILL.md)
+**See**: [apps/organiclever-fe/README.md](./apps/organiclever-fe/README.md), [.claude/skills/apps-organiclever-fe-developing-content/SKILL.md](./.claude/skills/apps-organiclever-fe-developing-content/SKILL.md)
+
+### organiclever-be
+
+- **Framework**: F#/Giraffe REST API
+- **Deployment**: Kubernetes (staging/production)
+- **Content**: Backend API for OrganicLever productivity tracker
+- **E2E tests**: `organiclever-be-e2e`
+- **Dev port**: 8202
+- **Contract**: OpenAPI 3.1 spec at `specs/apps/organiclever/contracts/`
+
+**Commands**:
+
+```bash
+nx dev organiclever-be                     # Development server (localhost:8202)
+nx build organiclever-be                   # Production build
+nx run organiclever-be:test:quick          # Unit tests + coverage validation
+nx run organiclever-be:test:integration    # Integration tests with real DB
+nx run organiclever-be-e2e:test:e2e        # Run BE E2E tests headlessly
+```
 
 ## Temporary Files for AI Agents
 

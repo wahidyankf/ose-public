@@ -154,7 +154,7 @@
 - [x] Smoke test: run `--shared-steps` against actual demo-be-e2e step files
 - [x] Smoke test: run `--shared-steps` against actual demo-fe-e2e step files
 - [x] Smoke test: run against actual demo-fe-dart-flutterweb test files
-- [x] Verify: existing spec-coverage for organiclever-web still works
+- [x] Verify: existing spec-coverage for organiclever-fe still works
 - [x] Verify: `nx run rhino-cli:test:quick` passes with >=90% coverage
 
 ## Phase 7: Documentation and Version Bump
@@ -206,7 +206,7 @@
 - spec-coverage `--shared-steps` mode validates frontend projects (demo-fe-\*)
 - spec-coverage scenario extraction works for languages with explicit scenario markers
 - Every Gherkin spec (feature and scenario) is implementable without exception
-- Backward compatibility: existing organiclever-web and CLI app spec-coverage unchanged
+- Backward compatibility: existing organiclever-fe and CLI app spec-coverage unchanged
 - All existing tests still pass (zero regressions)
 - Coverage >=90% maintained across all packages
 - No new golangci-lint violations

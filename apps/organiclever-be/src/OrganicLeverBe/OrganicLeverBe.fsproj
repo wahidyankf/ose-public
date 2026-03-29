@@ -1,0 +1,65 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>OrganicLeverBe</AssemblyName>
+    <RootNamespace>OrganicLeverBe</RootNamespace>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Nullable>enable</Nullable>
+    <OtherFlags>--warnon:1182 --nowarn:3261 --nowarn:3264 --nowarn:3511</OtherFlags>
+    <NoWarn>$(NoWarn);NU1605</NoWarn>
+    <!-- G-Research F# Analyzers: treat all violations as errors in build -->
+    <FSharpAnalyzersOtherFlags>--analyzers-path &quot;$(PkgG-Research_FSharp_Analyzers)/analyzers/dotnet/fs&quot; --treat-as-error GRA-STRING-001 GRA-STRING-002 GRA-STRING-003 GRA-STRING-004 GRA-UNIONCASE-001 GRA-VIRTUALCALL-001 GRA-JSONOPTS-001 GRA-DISPBEFOREASYNC-001 GRA-IMMUTABLECOLLECTIONEQUALITY-001 GRA-LOGARGFUNCFULLAPP-001 GRA-LOGTEMPLMISSVALS-001 GRA-TYPE-ANNOTATE-001 GRA-INTERPOLATED-001 --verbosity d</FSharpAnalyzersOtherFlags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- CLIMutable request wrappers for JSON deserialization -->
+    <Compile Include="Contracts/ContractWrappers.fs" />
+    <!-- Domain and infrastructure -->
+    <Compile Include="Domain/Types.fs" />
+    <Compile Include="Infrastructure/AppDbContext.fs" />
+    <Compile Include="Infrastructure/Repositories/RepositoryTypes.fs" />
+    <Compile Include="Infrastructure/Repositories/EfRepositories.fs" />
+    <Compile Include="Auth/GoogleAuthService.fs" />
+    <Compile Include="Auth/JwtService.fs" />
+    <Compile Include="Auth/JwtMiddleware.fs" />
+    <Compile Include="Handlers/HealthHandler.fs" />
+    <Compile Include="Handlers/AuthHandler.fs" />
+    <Compile Include="Handlers/TestHandler.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Giraffe" Version="7.*" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.*" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.*" />
+    <PackageReference Include="EFCore.NamingConventions" Version="10.*" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.*" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.*" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.*" />
+    <PackageReference Include="FSharp.SystemTextJson" Version="1.*" />
+    <PackageReference Include="dbup-core" Version="5.*" />
+    <PackageReference Include="dbup-postgresql" Version="5.*" />
+    <!-- F# static analyzers (G-Research) — runs via dotnet msbuild /t:AnalyzeFSharpProject -->
+    <PackageReference Include="FSharp.Analyzers.Build" Version="0.*">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>build</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="G-Research.FSharp.Analyzers" Version="0.*">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="db/migrations/*.sql" />
+  </ItemGroup>
+
+  <Target Name="CopyGherkinSpecs" BeforeTargets="Build">
+    <ItemGroup>
+      <GherkinFiles Include="$(ProjectDir)..\..\..\..\specs\apps\organiclever\be\gherkin\**\*.feature" />
+    </ItemGroup>
+    <Copy SourceFiles="@(GherkinFiles)" DestinationFolder="$(OutputPath)specs\%(RecursiveDir)" />
+  </Target>
+
+</Project>

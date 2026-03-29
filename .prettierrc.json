@@ -2,5 +2,5 @@
   "printWidth": 120,
   "proseWrap": "preserve",
   "plugins": ["prettier-plugin-tailwindcss"],
-  "tailwindStylesheet": "./apps/organiclever-web/src/app/globals.css"
+  "tailwindStylesheet": "./apps/organiclever-fe/src/app/globals.css"
 }

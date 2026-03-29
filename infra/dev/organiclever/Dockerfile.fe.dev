@@ -1,0 +1,8 @@
+FROM node:24-alpine
+
+WORKDIR /workspace
+
+EXPOSE 3200
+
+# Install dependencies on start, then run dev server
+CMD ["sh", "-c", "npm install && npx next dev --port 3200 --hostname 0.0.0.0"]

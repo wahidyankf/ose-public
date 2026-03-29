@@ -79,7 +79,7 @@ Skills are synced from `.claude/skills/` maintaining folder structure. For compl
 - **Repository Pattern Skills**: repo-applying-maker-checker-fixer, repo-assessing-criticality-confidence, repo-defining-workflows, repo-generating-validation-reports, repo-practicing-trunk-based-development, repo-understanding-repository-architecture
 - **Development Workflow Skills**: swe-developing-applications-common, swe-developing-e2e-test-with-playwright
 - **Programming Language Skills**: swe-programming-clojure, swe-programming-csharp, swe-programming-dart, swe-programming-elixir, swe-programming-fsharp, swe-programming-golang, swe-programming-java, swe-programming-kotlin, swe-programming-python, swe-programming-rust, swe-programming-typescript
-- **Application-Specific Skills**: apps-ayokoding-web-developing-content, apps-organiclever-web-developing-content, apps-oseplatform-web-developing-content
+- **Application-Specific Skills**: apps-ayokoding-web-developing-content, apps-organiclever-fe-developing-content, apps-oseplatform-web-developing-content
 
 ---
 

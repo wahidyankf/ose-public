@@ -1,0 +1,164 @@
+name: Test - OrganicLever
+
+on:
+  schedule:
+    - cron: "0 23 * * *" # 6 AM WIB (UTC+7)
+    - cron: "0 11 * * *" # 6 PM WIB (UTC+7)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  be-integration:
+    name: BE integration tests
+    runs-on: ubuntu-latest
+    environment: "Development - Organic Lever"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Generate contract types for backend
+        run: |
+          npm ci --ignore-scripts
+          npx nx run organiclever-contracts:bundle
+          npx nx run organiclever-be:codegen
+
+      - name: Run integration tests
+        run: |
+          docker compose -f apps/organiclever-be/docker-compose.integration.yml down -v 2>/dev/null || true
+          docker compose -f apps/organiclever-be/docker-compose.integration.yml up --abort-on-container-exit --build
+
+      - name: Teardown integration
+        if: always()
+        run: docker compose -f apps/organiclever-be/docker-compose.integration.yml down -v
+
+  fe-integration:
+    name: FE integration tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Volta
+        uses: volta-cli/action@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate contract types
+        run: |
+          npx nx run organiclever-contracts:bundle
+          npx nx run organiclever-fe:codegen
+
+      - name: Run integration tests
+        run: npx nx run organiclever-fe:test:integration
+
+  e2e:
+    name: E2E tests (BE + FE)
+    needs: [be-integration, fe-integration]
+    runs-on: ubuntu-latest
+    environment: "Development - Organic Lever"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Generate contract types
+        run: |
+          npm ci --ignore-scripts
+          npx nx run organiclever-contracts:bundle
+          npx nx run organiclever-be:codegen
+          npx nx run organiclever-fe:codegen
+
+      - name: Start full stack (DB + backend + frontend)
+        run: docker compose -f infra/dev/organiclever/docker-compose.yml -f infra/dev/organiclever/docker-compose.ci.yml up --build -d
+        env:
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+
+      - name: Wait for backend to be healthy
+        run: |
+          echo "Waiting for backend on port 8202..."
+          for i in $(seq 1 36); do
+            if curl -sf http://localhost:8202/api/v1/health > /dev/null 2>&1; then
+              echo "Backend is healthy"
+              exit 0
+            fi
+            echo "[$i/36] Waiting..."
+            sleep 10
+          done
+          echo "Backend did not become healthy within 6 minutes"
+          docker compose -f infra/dev/organiclever/docker-compose.yml -f infra/dev/organiclever/docker-compose.ci.yml logs organiclever-be
+          exit 1
+
+      - name: Wait for frontend to be ready
+        run: |
+          echo "Waiting for frontend on port 3200..."
+          for i in $(seq 1 36); do
+            if curl -sf http://localhost:3200 > /dev/null 2>&1; then
+              echo "Frontend is ready"
+              exit 0
+            fi
+            echo "[$i/36] Waiting..."
+            sleep 10
+          done
+          echo "Frontend did not start within 6 minutes"
+          docker compose -f infra/dev/organiclever/docker-compose.yml -f infra/dev/organiclever/docker-compose.ci.yml logs organiclever-fe
+          exit 1
+
+      - name: Setup Volta
+        uses: volta-cli/action@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers (BE E2E)
+        run: npx playwright install --with-deps chromium
+        working-directory: apps/organiclever-be-e2e
+
+      - name: Run BE E2E tests
+        run: npx nx run organiclever-be-e2e:test:e2e
+        env:
+          BASE_URL: http://localhost:8202
+
+      - name: Upload BE E2E report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-organiclever-be
+          path: apps/organiclever-be-e2e/playwright-report/
+          retention-days: 7
+
+      - name: Install Playwright browsers (FE E2E)
+        run: npx playwright install --with-deps chromium
+        working-directory: apps/organiclever-fe-e2e
+
+      - name: Run FE E2E tests
+        run: npx nx run organiclever-fe-e2e:test:e2e
+        env:
+          BASE_URL: http://localhost:3200
+
+      - name: Upload FE E2E report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-organiclever-fe
+          path: apps/organiclever-fe-e2e/playwright-report/
+          retention-days: 7
+
+      - name: Stop full stack
+        if: always()
+        run: docker compose -f infra/dev/organiclever/docker-compose.yml -f infra/dev/organiclever/docker-compose.ci.yml down -v

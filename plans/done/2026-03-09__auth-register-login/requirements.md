@@ -32,7 +32,7 @@ title: "Auth Register and Login - Requirements"
 - All REST API endpoints must be versioned under `/api/v1/` (e.g., `/api/v1/auth/register`).
 - No `RuntimeException` subclasses in application code: use checked exceptions (`extends Exception`) so error paths are visible in method signatures.
 - Every database table MUST include 6 audit trail columns: `created_at`, `created_by`, `updated_at`, `updated_by`, `deleted_at` (nullable), `deleted_by` (nullable). Deletion is always soft (set `deleted_at`/`deleted_by`; never `DELETE` rows).
-- CORS must explicitly whitelist `organiclever-web` origins only: `http://localhost:3200` (dev) and `https://www.organiclever.com` (production). Wildcard origins are forbidden.
+- CORS must explicitly whitelist `organiclever-fe` origins only: `http://localhost:3200` (dev) and `https://www.organiclever.com` (production). Wildcard origins are forbidden.
 
 ## User Stories
 

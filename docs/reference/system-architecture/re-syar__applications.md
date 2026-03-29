@@ -77,42 +77,50 @@ The platform consists of 9 applications across 4 technology stacks:
 
 ### Web Applications (Next.js)
 
-#### organiclever-web
+#### organiclever-fe
 
 - **Purpose**: Landing and promotional website for OrganicLever
 - **URL**: <https://www.organiclever.com>
 - **Technology**: Next.js 16 (App Router) + React 19 + TailwindCSS
-- **Deployment**: Vercel (via `prod-organiclever-web` branch)
-- **Build Command**: `nx build organiclever-web`
-- **Dev Command**: `nx dev organiclever-web`
-- **Location**: `apps/organiclever-web/`
+- **Deployment**: Vercel (via `prod-organiclever-fe` branch)
+- **Build Command**: `nx build organiclever-fe`
+- **Dev Command**: `nx dev organiclever-fe`
+- **Location**: `apps/organiclever-fe/`
 - **Features**:
   - Radix UI / shadcn-ui component library
   - Cookie-based authentication
   - JSON data files for content
   - Production Dockerfile with standalone output
 
-### Backend Services (Spring Boot)
+### Backend Services
 
-#### demo-be-java-springboot
+#### organiclever-be
 
-- **Purpose**: REST API backend for OrganicLever (Java Spring Boot implementation)
-- **Technology**: Spring Boot + Java + Maven
-- **Build Command**: `nx build demo-be-java-springboot`
-- **Location**: `apps/demo-be-java-springboot/`
+- **Purpose**: REST API backend for OrganicLever (F#/Giraffe implementation)
+- **Technology**: F# + Giraffe + .NET
+- **Build Command**: `nx build organiclever-be`
+- **Dev Command**: `nx dev organiclever-be`
+- **Location**: `apps/organiclever-be/`
 - **Features**:
-  - JaCoCo code coverage enforcement (>=90%)
+  - AltCover code coverage enforcement (>=90%)
   - Production Dockerfile with multi-stage build
-  - MockMvc integration testing
+  - OpenAPI 3.1 contract-first development
 
 ### E2E Test Suites (Playwright)
 
-#### organiclever-web-e2e
+#### organiclever-fe-e2e
 
-- **Purpose**: End-to-end tests for organiclever-web
+- **Purpose**: End-to-end tests for organiclever-fe
 - **Technology**: Playwright
-- **Run Command**: `nx run organiclever-web-e2e:test:e2e`
-- **Location**: `apps/organiclever-web-e2e/`
+- **Run Command**: `nx run organiclever-fe-e2e:test:e2e`
+- **Location**: `apps/organiclever-fe-e2e/`
+
+#### organiclever-be-e2e
+
+- **Purpose**: End-to-end tests for organiclever-be REST API
+- **Technology**: Playwright
+- **Run Command**: `nx run organiclever-be-e2e:test:e2e`
+- **Location**: `apps/organiclever-be-e2e/`
 
 #### demo-be-e2e
 
@@ -133,10 +141,10 @@ graph TB
     end
 
     subgraph "OrganicLever Platform"
-        OL_WEB[organiclever-web<br/>Next.js App]
-        OL_BE[demo-be-java-springboot<br/>Spring Boot API]
-        OL_WEB_E2E[organiclever-web-e2e<br/>Playwright E2E]
-        OL_BE_E2E[demo-be-e2e<br/>Playwright E2E]
+        OL_FE[organiclever-fe<br/>Next.js App]
+        OL_BE[organiclever-be<br/>F#/Giraffe API]
+        OL_FE_E2E[organiclever-fe-e2e<br/>Playwright E2E]
+        OL_BE_E2E[organiclever-be-e2e<br/>Playwright E2E]
     end
 
     subgraph "CLI Tools"

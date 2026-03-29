@@ -16,9 +16,9 @@ Four weeks into Phase 1. OrganicLever is real — frontend deployed at www.organ
 
 OrganicLever (4 projects):
 
-- organiclever-web: Next.js 16, React 19, TailwindCSS v4, shadcn-ui, cookie auth, members CRUD, Storybook 10 (99.57% coverage)
+- organiclever-fe: Next.js 16, React 19, TailwindCSS v4, shadcn-ui, cookie auth, members CRUD, Storybook 10 (99.57% coverage)
 - organiclever-be: Spring Boot 4.0.3, Java 25, JSpecify + NullAway null safety (100% coverage)
-- organiclever-web-e2e + organiclever-be-e2e: Playwright E2E tests, scheduled twice daily
+- organiclever-fe-e2e + organiclever-be-e2e: Playwright E2E tests, scheduled twice daily
 
 Three-Tier BDD Testing:
 
@@ -30,7 +30,7 @@ Coverage: Zero to 95%:
 
 - All 7 projects now enforce 95%+ via rhino-cli test-coverage validate
 - Progressive raises: 80% -> 85% -> 90% -> 95%
-- golang-commons 100%, organiclever-be 100%, organiclever-web 99.57%
+- golang-commons 100%, organiclever-be 100%, organiclever-fe 99.57%
 
 7 CI/CD Workflows:
 

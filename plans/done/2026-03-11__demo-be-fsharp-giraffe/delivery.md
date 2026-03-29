@@ -8,7 +8,7 @@ Execute phases in order. Each phase produces a working, committable state.
 
 - [x] Verify .NET 10 SDK available locally (`~/.dotnet/dotnet` v10.0.103)
 - [x] Verify `rhino-cli test-coverage validate` supports LCOV (it does — already used by
-      `organiclever-web` and `demo-be-elixir-phoenix`)
+      `organiclever-fe` and `demo-be-elixir-phoenix`)
 - [x] Confirm TickSpec supports current Gherkin syntax (Given/When/Then with regex and
       doc_string parameters)
 - [x] Verify `demo-be-e2e` Playwright config reads `BASE_URL` from env (it does)

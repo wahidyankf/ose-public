@@ -11,7 +11,7 @@ Execute phases in order. Each phase produces a working, committable state.
 - [x] Verify `organiclever-be-e2e` Playwright config reads `BASE_URL` from env; patch if not
 - [x] Confirm Elixir 1.17 / OTP 27 available in CI (`erlef/setup-beam@v1`)
 - [x] Confirm `rhino-cli test-coverage validate` supports LCOV (it does — already used by
-      `organiclever-web`)
+      `organiclever-fe`)
 - [x] Clone `cabbage-ex/gherkin` and `cabbage-ex/cabbage` locally to inspect source before
       forking — verify no surprises (no GPL dependencies, no binary blobs)
 

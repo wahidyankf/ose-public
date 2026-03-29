@@ -1,0 +1,11 @@
+# Example: POST /api/v1/auth/google
+request:
+  body:
+    idToken: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...
+
+response:
+  status: 200
+  body:
+    accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+    refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+    tokenType: Bearer

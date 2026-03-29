@@ -26,7 +26,7 @@
 
 ### US-1: NPM Workspace
 
-As a developer working on `organiclever-web` or any `*-e2e` app,
+As a developer working on `organiclever-fe` or any `*-e2e` app,
 I want all NPM packages updated to the latest compatible versions
 so that I benefit from bug fixes, performance improvements, and security patches
 without breaking the existing application behaviour.
@@ -84,7 +84,7 @@ When `npm update` and/or explicit version bumps are applied and `npm install` re
 Then `package-lock.json` reflects the updated dependency tree
 And `nx affected -t lint` passes for all affected NPM-based projects
 And `nx affected -t test:quick` passes for all affected NPM-based projects
-And `nx build organiclever-web` produces a successful production build
+And `nx build organiclever-fe` produces a successful production build
 ```
 
 ### AC-3: Go Modules Updated

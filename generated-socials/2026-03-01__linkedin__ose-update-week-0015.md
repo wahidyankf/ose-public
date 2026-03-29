@@ -17,7 +17,7 @@ Week 3 of Phase 1. This was the biggest week yet — two formal plans completed,
 CI Standardization (Plan 1 — Closed):
 
 - Canonical Nx targets (typecheck, lint, test:quick) enforced across all 11 projects
-- Typecheck + lint gates added to pre-push hook; oxlint + vitest added to organiclever-web
+- Typecheck + lint gates added to pre-push hook; oxlint + vitest added to organiclever-fe
 - Nx upgraded to 22.5.2; golangci-lint consolidated to repo root
 
 Dependency Sweep (Plan 2 — Closed):

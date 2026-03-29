@@ -40,7 +40,7 @@ code instead of generic "AI slop."
 
 **Anti-pattern library** — explicit "don't" list including:
 
-- Overused fonts (Inter, Roboto, Arial) — **we use Arial in organiclever-web**
+- Overused fonts (Inter, Roboto, Arial) — **we use Arial in organiclever-fe**
 - Pure black/white (#000/#fff) — **our tokens avoid this (darkest is `0 0% 3.9%`)**
 - The "AI color palette" (cyan-on-dark, purple-blue gradients) — not present in our apps
 - Card-wrapped everything, nested cards — relevant to future dashboard development
@@ -104,7 +104,7 @@ from tokens. Worth considering for Phase 2 (TypeScript token exports).
 JavaScript config files to merge. The `@theme` directive in CSS is directly importable across
 packages.
 
-**Our specific situation**: organiclever-web uses double indirection
+**Our specific situation**: organiclever-fe uses double indirection
 (`--color-primary: hsl(var(--primary))`) while ayokoding-web uses direct values
 (`--color-primary: hsl(221.2 83.2% 53.3%)`). The shared token package should use the direct
 value approach (simpler, ayokoding-web pattern) with per-app overrides using CSS cascade.

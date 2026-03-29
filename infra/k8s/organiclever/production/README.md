@@ -8,7 +8,7 @@
 **Docker images**:
 
 - Backend: `apps/organiclever-be/Dockerfile` — `docker build -t organiclever-be:latest apps/organiclever-be/`
-- Frontend: `apps/organiclever-web/Dockerfile` — `docker build -f apps/organiclever-web/Dockerfile -t organiclever-web:latest .`
+- Frontend: `apps/organiclever-fe/Dockerfile` — `docker build -f apps/organiclever-fe/Dockerfile -t organiclever-fe:latest .`
 
 Planned resources:
 

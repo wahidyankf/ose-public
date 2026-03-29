@@ -12,7 +12,7 @@ Execute phases in order. Each phase produces a working, committable state.
 - [x] Verify `sqlx-cli` is installed (`sqlx --version`)
 - [x] Verify `llvm-tools-preview` component is installed (`rustup component list --installed`)
 - [x] Verify `rhino-cli test-coverage validate` supports LCOV (it does — already used by
-      `organiclever-web`, `demo-be-elixir-phoenix`, and `demo-be-fsharp-giraffe`)
+      `organiclever-fe`, `demo-be-elixir-phoenix`, and `demo-be-fsharp-giraffe`)
 - [x] Verify `demo-be-e2e` Playwright config reads `BASE_URL` from env (it does)
 - [x] Confirm cucumber-rs latest version supports async `World` and `#[given]`/`#[when]`/`#[then]`
       macros compatible with the shared `.feature` file syntax

@@ -321,7 +321,7 @@
 - [x] **6.38** Update `repo-generating-validation-reports/SKILL.md`: update ayokoding domain references
 - [x] **6.39** Update `repo-practicing-trunk-based-development/SKILL.md`: verify `prod-ayokoding-web` refs (should be correct), remove any `prod-ayokoding-web-v2` refs
 - [x] **6.40** Update `repo-understanding-repository-architecture/SKILL.md`: change "Hugo sites (ayokoding-web, oseplatform-web)" to separate them
-- [x] **6.41** Update `apps-organiclever-web-developing-content/SKILL.md`: update comparison table (ayokoding-web is now Next.js)
+- [x] **6.41** Update `apps-organiclever-fe-developing-content/SKILL.md`: update comparison table (ayokoding-web is now Next.js)
 - [x] **6.42** Update `apps-oseplatform-web-developing-content/SKILL.md`: update "Contrast with ayokoding-web" section (no longer Hugo)
 - [x] **6.43** Verify `swe-programming-*` skills (7 skills: clojure, csharp, dart, fsharp, golang, kotlin, rust): paths `apps/ayokoding-web/content/...` remain correct — NO changes needed
 

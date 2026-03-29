@@ -28,7 +28,7 @@ The architecture mirrors ayokoding-web but is simplified:
 - **No generate-indexes script** -- no `_index.md` management needed (simple structure)
 - **SSG** -- all ~6 pages pre-built at build time (same pattern as ayokoding-web: `generateStaticParams` + `dynamicParams = false`)
 - **Simpler navigation** -- header links instead of sidebar tree
-- **Shared UI libs** -- uses `@open-sharia-enterprise/ts-ui` (Button, etc.) and `@open-sharia-enterprise/ts-ui-tokens` (design tokens), same as ayokoding-web and organiclever-web
+- **Shared UI libs** -- uses `@open-sharia-enterprise/ts-ui` (Button, etc.) and `@open-sharia-enterprise/ts-ui-tokens` (design tokens), same as ayokoding-web and organiclever-fe
 
 ## Project Structure
 
@@ -675,9 +675,7 @@ export default nextConfig;
   "headers": [
     {
       "source": "/_next/static/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
-      ]
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
     },
     {
       "source": "/(.*)",

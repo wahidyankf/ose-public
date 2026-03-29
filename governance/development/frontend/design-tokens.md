@@ -106,7 +106,7 @@ Brand tokens express each app's visual identity. Apps define these in their own 
 
 **App-specific extensions**
 
-- `organiclever-web`: chart tokens `--chart-1` through `--chart-5`
+- `organiclever-fe`: chart tokens `--chart-1` through `--chart-5`
 - `ayokoding-web`: sidebar tokens `--sidebar-background`, `--sidebar-foreground`, `--sidebar-primary`, `--sidebar-primary-foreground`, `--sidebar-accent`, `--sidebar-accent-foreground`, `--sidebar-border`, `--sidebar-ring`
 
 ## Naming Convention
@@ -135,7 +135,7 @@ The `--color-{name}` form is what Tailwind v4 resolves to utility classes like `
 
 The monorepo currently has two formatting approaches in production apps.
 
-**Double indirection** (`organiclever-web`):
+**Double indirection** (`organiclever-fe`):
 
 ```css
 /* globals.css */

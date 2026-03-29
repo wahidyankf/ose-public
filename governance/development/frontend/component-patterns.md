@@ -15,7 +15,7 @@ updated: 2026-03-28
 
 # Component Patterns Convention
 
-Standards for building UI components in the open-sharia-enterprise monorepo. These rules govern how components are structured, composed, and styled across `ayokoding-web`, `organiclever-web`, `demo-fe-ts-nextjs`, and `demo-fs-ts-nextjs`.
+Standards for building UI components in the open-sharia-enterprise monorepo. These rules govern how components are structured, composed, and styled across `ayokoding-web`, `organiclever-fe`, `demo-fe-ts-nextjs`, and `demo-fs-ts-nextjs`.
 
 ## File Structure
 
@@ -283,7 +283,7 @@ function Button({
 export { Button, buttonVariants };
 ```
 
-Note: `organiclever-web` currently uses `React.forwardRef` and `@radix-ui/react-slot`. Migrate it to the `React.ComponentProps` + `radix-ui` pattern described above when updating that component.
+Note: `organiclever-fe` currently uses `React.forwardRef` and `@radix-ui/react-slot`. Migrate it to the `React.ComponentProps` + `radix-ui` pattern described above when updating that component.
 
 ## Principles Implemented/Respected
 

@@ -11,7 +11,11 @@ from sqlalchemy.orm import Session
 from a_demo_be_python_fastapi.auth.dependencies import get_current_user
 from a_demo_be_python_fastapi.dependencies import get_db, get_expense_repo
 from a_demo_be_python_fastapi.domain.errors import ForbiddenError, NotFoundError
-from a_demo_be_python_fastapi.domain.expense import validate_amount, validate_currency, validate_unit
+from a_demo_be_python_fastapi.domain.expense import (
+    validate_amount,
+    validate_currency,
+    validate_unit,
+)
 from a_demo_be_python_fastapi.infrastructure.models import UserModel
 
 router = APIRouter()

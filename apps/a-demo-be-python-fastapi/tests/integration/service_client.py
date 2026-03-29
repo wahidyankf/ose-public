@@ -45,7 +45,11 @@ from a_demo_be_python_fastapi.domain.errors import (
     UnsupportedMediaTypeError,
     ValidationError,
 )
-from a_demo_be_python_fastapi.domain.expense import validate_amount, validate_currency, validate_unit
+from a_demo_be_python_fastapi.domain.expense import (
+    validate_amount,
+    validate_currency,
+    validate_unit,
+)
 from a_demo_be_python_fastapi.domain.user import validate_password_strength
 from a_demo_be_python_fastapi.infrastructure.models import UserModel
 from a_demo_be_python_fastapi.infrastructure.password_hasher import hash_password, verify_password

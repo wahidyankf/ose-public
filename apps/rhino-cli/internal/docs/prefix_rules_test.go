@@ -27,7 +27,7 @@ func TestEncodeSubdirectory(t *testing.T) {
 		{"hyphenated: programming-languages", "programming-languages", "prla"},
 		{"hyphenated: platform-web", "platform-web", "plwe"},
 		{"hyphenated: how-to", "how-to", "hoto"},
-		{"hyphenated: ayokoding-fs", "ayokoding-fs", "aywe"},
+		{"hyphenated: ayokoding-fs", "ayokoding-fs", "ayfs"},
 		{"hyphenated: software-engineering", "software-engineering", "soen"},
 		{"hyphenated: fe-nextjs", "fe-nextjs", "fene"},
 

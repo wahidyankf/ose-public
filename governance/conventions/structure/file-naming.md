@@ -427,7 +427,7 @@ ayokoding-fs-general-quality-gate.md
 | explanation/governance/development/pattern             | `ex-go-de-pa__`   | `functional-programming.md`            |
 | explanation/governance/development/hugo                | `ex-go-de-hu__`   | `development.md`                       |
 | explanation/governance/development/infra               | `ex-go-de-in__`   | `temporary-files.md`                   |
-| explanation/governance/workflows/ayokoding-fs          | `ex-go-wo-aywe__` | `ayokoding-fs-general-quality-gate.md` |
+| explanation/governance/workflows/ayokoding-fs          | `ex-go-wo-ayfs__` | `ayokoding-fs-general-quality-gate.md` |
 | explanation/governance/workflows/docs                  | `ex-go-wo-do__`   | `quality-gate.md`                      |
 | explanation/governance/workflows/meta                  | `ex-go-wo-me__`   | `workflow-identifier.md`               |
 | explanation/governance/workflows/plan                  | `ex-go-wo-pl__`   | `plan-execution.md`                    |

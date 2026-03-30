@@ -64,6 +64,7 @@ jobs:
           files: apps/oseplatform-web/coverage/lcov.info
           flags: oseplatform-web
           disable_search: true
+          network_root_prefix: apps/oseplatform-web/
           fail_ci_if_error: false
 
   integration:

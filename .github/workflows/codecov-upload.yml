@@ -148,6 +148,7 @@ jobs:
           files: apps/oseplatform-web/coverage/lcov.info
           flags: oseplatform-web
           disable_search: true
+          network_root_prefix: apps/oseplatform-web/
           fail_ci_if_error: false
 
       - name: Upload coverage — ayokoding-web
@@ -157,6 +158,7 @@ jobs:
           files: apps/ayokoding-web/coverage/lcov.info
           flags: ayokoding-web
           disable_search: true
+          network_root_prefix: apps/ayokoding-web/
           fail_ci_if_error: false
 
       - name: Upload coverage — organiclever-fe
@@ -166,6 +168,7 @@ jobs:
           files: apps/organiclever-fe/coverage/lcov.info
           flags: organiclever-fe
           disable_search: true
+          network_root_prefix: apps/organiclever-fe/
           fail_ci_if_error: false
 
       - name: Upload coverage — organiclever-be
@@ -229,6 +232,7 @@ jobs:
           files: apps/a-demo-fs-ts-nextjs/coverage/lcov.info
           flags: a-demo-fs-ts-nextjs
           disable_search: true
+          network_root_prefix: apps/a-demo-fs-ts-nextjs/
           fail_ci_if_error: false
 
       - name: Upload coverage — a-demo-be-java-springboot
@@ -274,6 +278,7 @@ jobs:
           files: apps/a-demo-be-python-fastapi/coverage/lcov.info
           flags: a-demo-be-python-fastapi
           disable_search: true
+          network_root_prefix: apps/a-demo-be-python-fastapi/
           fail_ci_if_error: false
 
       - name: Upload coverage — a-demo-be-rust-axum
@@ -310,6 +315,7 @@ jobs:
           files: apps/a-demo-be-ts-effect/coverage/lcov.info
           flags: a-demo-be-ts-effect
           disable_search: true
+          network_root_prefix: apps/a-demo-be-ts-effect/
           fail_ci_if_error: false
 
       - name: Upload coverage — a-demo-be-csharp-aspnetcore
@@ -319,6 +325,7 @@ jobs:
           files: apps/a-demo-be-csharp-aspnetcore/coverage/**/coverage.info
           flags: a-demo-be-csharp-aspnetcore
           disable_search: true
+          network_root_prefix: apps/a-demo-be-csharp-aspnetcore/
           fail_ci_if_error: false
 
       - name: Upload coverage — a-demo-be-clojure-pedestal
@@ -337,6 +344,7 @@ jobs:
           files: apps/a-demo-fe-ts-nextjs/coverage/lcov.info
           flags: a-demo-fe-ts-nextjs
           disable_search: true
+          network_root_prefix: apps/a-demo-fe-ts-nextjs/
           fail_ci_if_error: false
 
       - name: Upload coverage — a-demo-fe-ts-tanstack-start
@@ -346,6 +354,7 @@ jobs:
           files: apps/a-demo-fe-ts-tanstack-start/coverage/lcov.info
           flags: a-demo-fe-ts-tanstack-start
           disable_search: true
+          network_root_prefix: apps/a-demo-fe-ts-tanstack-start/
           fail_ci_if_error: false
 
       - name: Upload coverage — a-demo-fe-dart-flutterweb

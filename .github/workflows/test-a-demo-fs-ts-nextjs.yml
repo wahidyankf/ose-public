@@ -35,7 +35,7 @@ jobs:
           files: apps/a-demo-fs-ts-nextjs/coverage/lcov.info
           flags: a-demo-fs-ts-nextjs
           disable_search: true
-          network_root_prefix: apps/a-demo-fs-ts-nextjs/
+          network_prefix: apps/a-demo-fs-ts-nextjs/
           fail_ci_if_error: false
 
   e2e:

@@ -21,7 +21,7 @@ flags:
   oseplatform-web:
     paths:
       - apps/oseplatform-web/
-    carryforward: true
+    carryforward: false
   ayokoding-web:
     paths:
       - apps/ayokoding-web/
@@ -101,7 +101,7 @@ flags:
   a-demo-be-csharp-aspnetcore:
     paths:
       - apps/a-demo-be-csharp-aspnetcore/
-    carryforward: true
+    carryforward: false
   a-demo-fe-ts-nextjs:
     paths:
       - apps/a-demo-fe-ts-nextjs/

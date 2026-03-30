@@ -27,7 +27,9 @@ Then("the feed contains item elements for each update", async () => {
 
 Then("the feed entry has the title {string}", async ({}, expectedTitle: string) => {
   const body = state.rssFeedBody as string;
-  expect(body).toContain(`<title>${expectedTitle}</title>`);
+  // Titles may be CDATA-wrapped: <title><![CDATA[...]]></title>
+  const titlePattern = new RegExp(`<title>(?:<!\\[CDATA\\[)?[^<]*${expectedTitle}[^<]*(?:\\]\\]>)?</title>`);
+  expect(body).toMatch(titlePattern);
 });
 
 Then("the feed entry has a publication date", async () => {

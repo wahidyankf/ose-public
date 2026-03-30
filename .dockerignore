@@ -30,3 +30,5 @@ infra
 .storybook
 playwright-report
 test-results
+**/vitest.config.ts
+**/test

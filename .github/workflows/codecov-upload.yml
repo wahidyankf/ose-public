@@ -134,10 +134,10 @@ jobs:
           dotnet restore apps/organiclever-be/src/OrganicLeverBe/OrganicLeverBe.fsproj
 
       - name: typecheck (all projects)
-        run: npx nx run-many -t typecheck --all
+        run: npx nx run-many -t typecheck --all --parallel=$(($(nproc) - 1))
 
       - name: test:quick (all projects)
-        run: npx nx run-many -t test:quick --all
+        run: npx nx run-many -t test:quick --all --parallel=$(($(nproc) - 1))
 
       # --- Fix LCOV paths for monorepo (vitest/Python emit relative src/ paths) ---
       - name: Prepend app paths to LCOV source files

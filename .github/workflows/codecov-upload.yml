@@ -149,10 +149,10 @@ jobs:
               echo "Fixed paths in $lcov"
             fi
           done
-          # C# coverage uses glob pattern — fix all matches
+          # C# coverage uses absolute paths — strip to repo-relative
           for lcov in apps/a-demo-be-csharp-aspnetcore/coverage/*/coverage.info; do
             if [ -f "$lcov" ]; then
-              sed -i "s|^SF:|SF:apps/a-demo-be-csharp-aspnetcore/|" "$lcov"
+              sed -i "s|^SF:${GITHUB_WORKSPACE}/||; s|^SF:/[^a]*apps/|SF:apps/|" "$lcov"
               echo "Fixed paths in $lcov"
             fi
           done

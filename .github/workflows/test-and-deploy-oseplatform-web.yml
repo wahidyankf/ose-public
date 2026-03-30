@@ -57,6 +57,9 @@ jobs:
       - name: Run test:quick
         run: npx nx run oseplatform-web:test:quick
 
+      - name: Fix LCOV paths for monorepo
+        run: sed -i "s|^SF:|SF:apps/oseplatform-web/|" apps/oseplatform-web/coverage/lcov.info
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
@@ -64,7 +67,6 @@ jobs:
           files: apps/oseplatform-web/coverage/lcov.info
           flags: oseplatform-web
           disable_search: true
-          network_prefix: apps/oseplatform-web/
           fail_ci_if_error: false
 
   integration:

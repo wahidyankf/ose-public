@@ -27,6 +27,10 @@ jobs:
       - name: Run unit tests with coverage
         run: npx nx run a-demo-fs-ts-nextjs:test:quick
 
+      - name: Fix LCOV paths for monorepo
+        if: always()
+        run: sed -i "s|^SF:|SF:apps/a-demo-fs-ts-nextjs/|" apps/a-demo-fs-ts-nextjs/coverage/lcov.info
+
       - name: Upload coverage to Codecov
         if: always()
         uses: codecov/codecov-action@v5
@@ -35,7 +39,6 @@ jobs:
           files: apps/a-demo-fs-ts-nextjs/coverage/lcov.info
           flags: a-demo-fs-ts-nextjs
           disable_search: true
-          network_prefix: apps/a-demo-fs-ts-nextjs/
           fail_ci_if_error: false
 
   e2e:

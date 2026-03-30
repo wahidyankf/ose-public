@@ -51,6 +51,9 @@ jobs:
       - name: Run test:quick
         run: npx nx run ayokoding-web:test:quick
 
+      - name: Fix LCOV paths for monorepo
+        run: sed -i "s|^SF:|SF:apps/ayokoding-web/|" apps/ayokoding-web/coverage/lcov.info
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
@@ -58,7 +61,6 @@ jobs:
           files: apps/ayokoding-web/coverage/lcov.info
           flags: ayokoding-web
           disable_search: true
-          network_prefix: apps/ayokoding-web/
           fail_ci_if_error: false
 
   integration:

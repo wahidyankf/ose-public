@@ -93,7 +93,7 @@ jobs:
         run: npx nx run oseplatform-web:test:integration
 
   e2e:
-    name: E2E visual tests
+    name: E2E tests (Docker)
     runs-on: ubuntu-latest
 
     steps:
@@ -106,28 +106,54 @@ jobs:
           node-version: "24"
           cache: "npm"
 
+      - name: Build and start Docker
+        run: |
+          cd infra/dev/oseplatform-web
+          docker compose up -d --build
+          # Wait for health check
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:3100/api/trpc/meta.health > /dev/null 2>&1; then
+              echo "Health check passed"
+              break
+            fi
+            echo "Waiting for app... ($i/30)"
+            sleep 5
+          done
+
       - name: Install dependencies
         run: npm ci
 
-      - name: Build Next.js app
-        run: npx nx run oseplatform-web:build
+      - name: Install Playwright browsers (BE E2E)
+        run: cd apps/oseplatform-web-be-e2e && npx playwright install --with-deps chromium
 
-      - name: Install Playwright
-        run: npx playwright install --with-deps chromium
+      - name: Install Playwright browsers (FE E2E)
+        run: cd apps/oseplatform-web-fe-e2e && npx playwright install --with-deps chromium
 
-      - name: Start server and run visual regression
-        run: |
-          npx nx run oseplatform-web:start &
-          sleep 5
-          npx playwright test --config=apps/oseplatform-web/playwright.config.ts
+      - name: Run BE E2E tests
+        run: npx nx run oseplatform-web-be-e2e:test:e2e
+        env:
+          BASE_URL: http://localhost:3100
 
-      - name: Upload Playwright report
-        if: always()
+      - name: Run FE E2E tests
+        run: npx nx run oseplatform-web-fe-e2e:test:e2e
+        env:
+          BASE_URL: http://localhost:3100
+
+      - name: Upload Playwright reports
         uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: playwright-report-oseplatform-web
-          path: apps/oseplatform-web/playwright-report/
+          name: playwright-reports-oseplatform-web
+          path: |
+            apps/oseplatform-web-be-e2e/playwright-report/
+            apps/oseplatform-web-fe-e2e/playwright-report/
           retention-days: 7
+
+      - name: Stop Docker
+        if: always()
+        run: |
+          cd infra/dev/oseplatform-web
+          docker compose down
 
   detect-changes:
     name: Detect changes in oseplatform-web

@@ -1,0 +1,17 @@
+services:
+  oseplatform-web:
+    build:
+      context: ../../../
+      dockerfile: apps/oseplatform-web/Dockerfile
+    ports:
+      - "3100:3100"
+    environment:
+      - CONTENT_DIR=/workspace/apps/oseplatform-web/content
+      - PORT=3100
+      - HOSTNAME=0.0.0.0
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3100/api/trpc/meta.health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s

@@ -9,6 +9,12 @@ frontend UI behaviour.
 ```
 specs/apps/oseplatform/
 ├── README.md              # This file
+├── c4/                    # C4 architecture diagrams
+│   ├── README.md          # Diagram index, tech stack, testing summary
+│   ├── context.md         # Level 1: System context (actors + system)
+│   ├── container.md       # Level 2: Containers (server, client, stores)
+│   ├── component-be.md    # Level 3: tRPC API components
+│   └── component-fe.md    # Level 3: UI components
 ├── be/                    # Backend specs (HTTP-semantic)
 │   └── gherkin/           # Backend Gherkin scenarios
 │       ├── content-retrieval/
@@ -37,6 +43,15 @@ specs/apps/oseplatform/
 | Background  | `Given the API is running`                  | `Given the app is running`        |
 | Transport   | tRPC / Route Handlers over HTTP             | Browser interactions              |
 | Domains     | 5 domains                                   | 4 domains                         |
+
+## tRPC Procedures
+
+| Procedure             | Description                               |
+| --------------------- | ----------------------------------------- |
+| `content.getBySlug`   | Retrieve a page by slug (HTML + metadata) |
+| `content.listUpdates` | List all update posts sorted by date      |
+| `search.query`        | Full-text search across content           |
+| `meta.health`         | Liveness check                            |
 
 ## Backend Domains
 
@@ -72,8 +87,18 @@ specs/apps/oseplatform/
 | Frontend  | responsive        | 2         |
 | **Total** |                   | **21**    |
 
+## Testing
+
+| Suite           | App                    | Scope                                  |
+| --------------- | ---------------------- | -------------------------------------- |
+| Unit tests      | oseplatform-web        | Vitest, >= 80% line coverage           |
+| Backend E2E     | oseplatform-web-be-e2e | Playwright, tRPC API + route endpoints |
+| Frontend E2E    | oseplatform-web-fe-e2e | Playwright, browser interactions       |
+| Link validation | oseplatform-cli        | Internal content link checks           |
+
 ## Related
 
+- [C4 Architecture Diagrams](./c4/README.md) — context, container, and component diagrams
 - [Three-Level Testing Standard](../../../governance/development/quality/three-level-testing-standard.md)
 - [BDD Standards](../../../docs/explanation/software-engineering/development/behavior-driven-development-bdd/README.md)
 - [apps/oseplatform-web/](../../../apps/oseplatform-web/README.md) — Next.js implementation

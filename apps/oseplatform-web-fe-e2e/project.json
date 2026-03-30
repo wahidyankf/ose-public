@@ -1,0 +1,61 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "oseplatform-web-fe-e2e",
+  "sourceRoot": "apps/oseplatform-web-fe-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "install": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm install",
+        "cwd": "apps/oseplatform-web-fe-e2e"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx oxlint@latest .",
+        "cwd": "apps/oseplatform-web-fe-e2e"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx tsc --noEmit",
+        "cwd": "apps/oseplatform-web-fe-e2e"
+      }
+    },
+    "test:quick": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["npx oxlint@latest .", "npx tsc --noEmit"],
+        "parallel": true,
+        "cwd": "apps/oseplatform-web-fe-e2e"
+      }
+    },
+    "test:e2e": {
+      "executor": "nx:run-commands",
+      "inputs": ["default", "{workspaceRoot}/specs/apps/oseplatform/fe/gherkin/**/*.feature"],
+      "options": {
+        "command": "npx bddgen && npx playwright test",
+        "cwd": "apps/oseplatform-web-fe-e2e"
+      }
+    },
+    "test:e2e:ui": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx bddgen && npx playwright test --ui",
+        "cwd": "apps/oseplatform-web-fe-e2e"
+      }
+    },
+    "test:e2e:report": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx playwright show-report",
+        "cwd": "apps/oseplatform-web-fe-e2e"
+      }
+    }
+  },
+  "tags": ["type:e2e", "platform:playwright", "lang:ts", "domain:oseplatform"],
+  "implicitDependencies": ["oseplatform-web"]
+}

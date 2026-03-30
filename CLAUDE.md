@@ -17,6 +17,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Monorepo**: Nx workspace
 - **Current Apps**:
   - `oseplatform-web` - Next.js 16 content platform (TypeScript, tRPC)
+  - `oseplatform-web-be-e2e` - Playwright BE E2E tests for oseplatform-web tRPC API
+  - `oseplatform-web-fe-e2e` - Playwright FE E2E tests for oseplatform-web UI
   - `ayokoding-web` - Next.js 16 fullstack content platform (TypeScript, tRPC)
   - `ayokoding-web-be-e2e` - Playwright BE E2E tests for ayokoding-web tRPC API
   - `ayokoding-web-fe-e2e` - Playwright FE E2E tests for ayokoding-web UI
@@ -55,6 +57,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 open-sharia-enterprise/
 ├── apps/                     # Deployable applications (Nx)
 │   ├── oseplatform-web/    # OSE Platform website
+│   ├── oseplatform-web-be-e2e/ # Playwright BE E2E tests for oseplatform-web
+│   ├── oseplatform-web-fe-e2e/ # Playwright FE E2E tests for oseplatform-web
 │   ├── ayokoding-web/       # AyoKoding website (Next.js 16)
 │   ├── ayokoding-web-be-e2e/ # Playwright BE E2E tests for ayokoding-web
 │   ├── ayokoding-web-fe-e2e/ # Playwright FE E2E tests for ayokoding-web
@@ -559,6 +563,7 @@ Six-layer governance hierarchy:
 - **Deployment**: Vercel
 - **Content**: Marketing site for platform
 - **Dev port**: 3100
+- **E2E tests**: `oseplatform-web-be-e2e`, `oseplatform-web-fe-e2e`
 
 **Commands**:
 
@@ -567,6 +572,8 @@ nx dev oseplatform-web                           # Development server (localhost
 nx build oseplatform-web                         # Production build
 nx run oseplatform-web:test:quick                # Unit tests + coverage + link validation
 nx run oseplatform-web:test:integration          # Integration tests
+nx run oseplatform-web-be-e2e:test:e2e           # Backend E2E tests
+nx run oseplatform-web-fe-e2e:test:e2e           # Frontend E2E tests
 ```
 
 **See**: [apps/oseplatform-web/README.md](./apps/oseplatform-web/README.md)

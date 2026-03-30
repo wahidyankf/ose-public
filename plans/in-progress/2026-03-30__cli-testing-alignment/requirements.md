@@ -6,22 +6,22 @@
 
 **Unit tests** (`cmd/*_test.go` — no build tag):
 
-| File                                   | Gherkin? | Mocking Level                            | Notes                                                    |
-| -------------------------------------- | -------- | ---------------------------------------- | -------------------------------------------------------- |
-| `doctor_test.go`                       | No       | Real fs (temp dirs, real tool detection) | Creates temp `.git/`, config files; runs real `cmd.RunE` |
-| `test_coverage_validate_test.go`       | No       | Real fs (temp coverage files)            | Writes temp coverage data, runs command                  |
-| `agents_sync_test.go`                  | No       | Real fs (temp dirs)                      | Creates `.claude/`/`.opencode/` fixtures                 |
-| `agents_validate_claude_test.go`       | No       | Real fs (temp dirs)                      | Creates YAML fixtures                                    |
-| `agents_validate_sync_test.go`         | No       | Real fs (temp dirs)                      | Creates sync fixtures                                    |
-| `docs_validate_links_test.go`          | No       | Real fs (temp dirs)                      | Creates markdown with links                              |
-| `docs_validate_naming_test.go`         | No       | Real fs (temp dirs)                      | Creates markdown files                                   |
-| `contracts_java_clean_imports_test.go` | No       | Real fs (temp dirs)                      | Creates Java source files                                |
-| `contracts_dart_scaffold_test.go`      | No       | Real fs (temp dirs)                      | Creates Dart source files                                |
-| `java_validate_annotations_test.go`    | No       | Real fs (temp dirs)                      | Creates Java package-info files                          |
-| `spec_coverage_validate_test.go`       | No       | Real fs (temp dirs)                      | Creates feature + test fixtures                          |
-| `git_pre_commit_test.go`               | No       | Real fs (temp dirs)                      | Creates git repo fixtures                                |
-| `root_test.go`                         | No       | None                                     | Tests root command properties                            |
-| `helpers_test.go`                      | No       | Real fs                                  | Tests `findGitRoot()`                                    |
+| File                                   | Gherkin? | Mocking Level                            | Notes                                                                    |
+| -------------------------------------- | -------- | ---------------------------------------- | ------------------------------------------------------------------------ |
+| `doctor_test.go`                       | No       | Real fs (temp dirs, real tool detection) | Creates temp `.git/`, config files; runs real `cmd.RunE`                 |
+| `test_coverage_validate_test.go`       | No       | Real fs (temp coverage files)            | Writes temp coverage data, runs command                                  |
+| `agents_sync_test.go`                  | No       | Real fs (temp dirs)                      | Creates `.claude/`/`.opencode/` fixtures                                 |
+| `agents_validate_claude_test.go`       | No       | Real fs (temp dirs)                      | Creates YAML fixtures                                                    |
+| `agents_validate_sync_test.go`         | No       | Real fs (temp dirs)                      | Creates sync fixtures                                                    |
+| `docs_validate_links_test.go`          | No       | Real fs (temp dirs)                      | Creates markdown with links                                              |
+| `docs_validate_naming_test.go`         | No       | Real fs (temp dirs)                      | Creates markdown files                                                   |
+| `contracts_java_clean_imports_test.go` | No       | Real fs (temp dirs)                      | Creates Java source files                                                |
+| `contracts_dart_scaffold_test.go`      | No       | Real fs (temp dirs)                      | Creates Dart source files                                                |
+| `java_validate_annotations_test.go`    | No       | Real fs (temp dirs)                      | Creates Java package-info files                                          |
+| `spec_coverage_validate_test.go`       | No       | Real fs (temp dirs)                      | Creates feature + test fixtures                                          |
+| `git_pre_commit_test.go`               | No       | Real fs (temp dirs)                      | Creates git repo fixtures                                                |
+| `root_test.go`                         | No       | None                                     | Tests root command properties                                            |
+| `helpers_test.go`                      | No       | None                                     | Tests `writeFormatted()` helper function — no Gherkin; no filesystem I/O |
 
 **Key observation**: Current unit tests use **real filesystem** extensively — they create temp dirs,
 write files, run commands, and check output. This violates the unit test isolation principle where
@@ -33,7 +33,7 @@ All 13 files use godog + Gherkin. Each creates temp dirs, registers step definit
 scenarios from `specs/apps/rhino-cli/`. Some tests interact with real tools (e.g., `doctor` checks
 real installed tool versions).
 
-**Internal package tests** (`internal/**/*_test.go` — 42 files):
+**Internal package tests** (`internal/**/*_test.go` — 43 files):
 
 These are already well-isolated unit tests. They test pure functions (parsers, reporters,
 validators) with in-memory data or `testdata/` fixtures. **These do NOT need to change** — they
@@ -83,7 +83,7 @@ Gherkin Step → Cobra RunE (real execution) → Real FileSystem (/tmp fixtures)
 
 ### What Does NOT Change
 
-- **`internal/**/\*\_test.go`\*\* (42 files) — These test pure internal functions. They stay as-is.
+- `internal/**/*_test.go` **(43 files)** — These test pure internal functions. They stay as-is.
   They are not command-level tests and don't map to Gherkin specs.
 - **Feature files** (`specs/apps/rhino-cli/**/*.feature`) — The Gherkin specs themselves don't
   change. They are the shared contract consumed by both levels.
@@ -157,7 +157,7 @@ becomes unwieldy.
 | File                  | Gherkin? | Mocking Level                         | Notes                                                   |
 | --------------------- | -------- | ------------------------------------- | ------------------------------------------------------- |
 | `root_test.go`        | No       | Partial (mocks `osExit`)              | Tests help output and error exit                        |
-| `links_check_test.go` | No       | Real fs (temp dirs via `t.TempDir()`) | 8 tests: valid/broken links, JSON, markdown, quiet mode |
+| `links_check_test.go` | No       | Real fs (temp dirs via `t.TempDir()`) | 7 tests: valid/broken links, JSON, markdown, quiet mode |
 
 **Integration test** (`cmd/links-check.integration_test.go`):
 
@@ -204,7 +204,7 @@ variable — a partial implementation of the Option B mocking pattern.
 | `governance/development/quality/three-level-testing-standard.md` | Line 194: CLI row changes from "Go test mocks" (unit) to "Go test mocks + Gherkin (godog)". Line 204: Update CLI key rules to mention Gherkin at unit level                                                                                          |
 | `governance/development/infra/bdd-spec-test-mapping.md`          | Line 20-21: Update description. Lines 37-153: CLI section needs unit-level Gherkin guidance. Line 98: "Integration Test to Tag" becomes "Unit & Integration Test to Tag". Lines 147-153: "Adding a New Command" adds step 4 for unit test with godog |
 | `governance/development/infra/nx-targets.md`                     | Line 105: Update `test:unit` description for CLI. Line 214: CLI row in mandatory targets table. Line 334: In-process mocking row update. Lines 338-346: Go CLIs integration description                                                              |
-| `CLAUDE.md`                                                      | Lines ~170-175: Update three-level testing description for CLI apps. Line 228: Update `test:integration` caching description                                                                                                                         |
+| `CLAUDE.md`                                                      | Line ~231: Update three-level testing description for CLI apps. Line ~225: Update `test:integration` caching description                                                                                                                             |
 | `specs/apps/rhino-cli/README.md`                                 | Update "Running the Tests" section to describe dual consumption. Update "Adding New Specs" to include unit test step                                                                                                                                 |
 | `apps/rhino-cli/README.md`                                       | Update testing section to describe new architecture                                                                                                                                                                                                  |
 
@@ -242,7 +242,7 @@ Feature: CLI testing alignment with three-level standard
     And the changed scenario runs in the unit test suite
 
   Scenario: Internal package tests are unchanged
-    Given the 42 internal/**/*_test.go files in rhino-cli
+    Given the 43 internal/**/*_test.go files in rhino-cli
     Then they remain as standard Go unit tests
     And they do not consume Gherkin specs
 

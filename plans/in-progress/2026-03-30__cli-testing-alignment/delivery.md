@@ -18,26 +18,42 @@ Set up the mocking foundation before touching any command.
 
 ## Phase 2: Migrate Command Files to Mockable Calls
 
-Replace direct `os.*`/`exec.*` calls with package-level vars. Each command is a separate commit.
+Wire package-level vars into each command's execution path. Most `cmd/*.go` files delegate to
+`internal/` packages — the vars listed below reflect where they are needed in the cmd layer (thin
+wrapper + helpers) rather than the internal packages. Verify the actual call sites in each file
+before replacing; some vars may already live deeper in `internal/`. Each command is a separate
+commit.
 
 - [ ] **2.1** Migrate `cmd/helpers.go` — `findGitRoot()` uses `osGetwd`, `osStat`
-- [ ] **2.2** Migrate `cmd/doctor.go` — uses `osReadFile`, `osStat`, `execCommand`, `execLookPath`
-- [ ] **2.3** Migrate `cmd/test_coverage_validate.go` — uses `osReadFile`, `osStat`
-- [ ] **2.4** Migrate `cmd/test_coverage_merge.go` — uses `osReadFile`, `osWriteFile`
-- [ ] **2.5** Migrate `cmd/test_coverage_diff.go` — uses `osReadFile`, `execCommand`
-- [ ] **2.6** Migrate `cmd/agents_sync.go` — uses `osReadFile`, `osWriteFile`, `osMkdirAll`,
-      `walkDir`, `osStat`
-- [ ] **2.7** Migrate `cmd/agents_validate_claude.go` — uses `osReadFile`, `walkDir`, `osStat`
-- [ ] **2.8** Migrate `cmd/agents_validate_sync.go` — uses `osReadFile`, `walkDir`, `osStat`
-- [ ] **2.9** Migrate `cmd/docs_validate_links.go` — uses `osReadFile`, `walkDir`
-- [ ] **2.10** Migrate `cmd/docs_validate_naming.go` — uses `osReadFile`, `walkDir`
-- [ ] **2.11** Migrate `cmd/contracts_java_clean_imports.go` — uses `osReadFile`, `osWriteFile`,
-      `walkDir`
-- [ ] **2.12** Migrate `cmd/contracts_dart_scaffold.go` — uses `osReadFile`, `osWriteFile`,
-      `walkDir`, `osMkdirAll`
-- [ ] **2.13** Migrate `cmd/java_validate_annotations.go` — uses `osReadFile`, `walkDir`
-- [ ] **2.14** Migrate `cmd/spec_coverage_validate.go` — uses `osReadFile`, `walkDir`, `osStat`
-- [ ] **2.15** Migrate `cmd/git_pre_commit.go` — uses `osReadFile`, `execCommand`, `osGetwd`
+- [ ] **2.2** Migrate `cmd/doctor.go` — delegates to `internal/doctor.CheckAll()`; wire
+      `osGetwd`/`osStat` at the `runDoctor` boundary or pass injectable functions through
+      `CheckOptions` so unit tests can intercept I/O without calling the real `internal/` code
+- [ ] **2.3** Migrate `cmd/test_coverage_validate.go` — verify call sites; delegates to
+      `internal/`; wire `osReadFile`, `osStat` at the cmd or options boundary
+- [ ] **2.4** Migrate `cmd/test_coverage_merge.go` — verify call sites; wire `osReadFile`,
+      `osWriteFile` at the cmd or options boundary
+- [ ] **2.5** Migrate `cmd/test_coverage_diff.go` — verify call sites; wire `osReadFile`,
+      `execCommand` at the cmd or options boundary
+- [ ] **2.6** Migrate `cmd/agents_sync.go` — verify call sites; wire `osReadFile`, `osWriteFile`,
+      `osMkdirAll`, `walkDir`, `osStat` at the cmd or options boundary
+- [ ] **2.7** Migrate `cmd/agents_validate_claude.go` — verify call sites; wire `osReadFile`,
+      `walkDir`, `osStat` at the cmd or options boundary
+- [ ] **2.8** Migrate `cmd/agents_validate_sync.go` — verify call sites; wire `osReadFile`,
+      `walkDir`, `osStat` at the cmd or options boundary
+- [ ] **2.9** Migrate `cmd/docs_validate_links.go` — verify call sites; wire `osReadFile`,
+      `walkDir` at the cmd or options boundary
+- [ ] **2.10** Migrate `cmd/docs_validate_naming.go` — verify call sites; wire `osReadFile`,
+      `walkDir` at the cmd or options boundary
+- [ ] **2.11** Migrate `cmd/contracts_java_clean_imports.go` — verify call sites; wire
+      `osReadFile`, `osWriteFile`, `walkDir` at the cmd or options boundary
+- [ ] **2.12** Migrate `cmd/contracts_dart_scaffold.go` — verify call sites; wire `osReadFile`,
+      `osWriteFile`, `walkDir`, `osMkdirAll` at the cmd or options boundary
+- [ ] **2.13** Migrate `cmd/java_validate_annotations.go` — verify call sites; wire `osReadFile`,
+      `walkDir` at the cmd or options boundary
+- [ ] **2.14** Migrate `cmd/spec_coverage_validate.go` — verify call sites; wire `osReadFile`,
+      `walkDir`, `osStat` at the cmd or options boundary
+- [ ] **2.15** Migrate `cmd/git_pre_commit.go` — verify call sites; wire `osReadFile`,
+      `execCommand`, `osGetwd` at the cmd or options boundary
 - [ ] **2.16** Run `nx run rhino-cli:test:quick` — verify all existing tests still pass (migration
       is a refactor, no behavior change)
 - [ ] **2.17** Run `nx run rhino-cli:test:integration` — verify integration tests still pass
@@ -130,9 +146,9 @@ Update all governance docs and project docs to reflect the new architecture.
   - Lines 338-346 (Go CLIs section): Rewrite to describe both levels consuming Gherkin
   - Add `specs/apps/rhino-cli/**/*.feature` to the CLI `test:unit` inputs example
 - [ ] **6.4** Update `CLAUDE.md`:
-  - Lines ~170-175: Update "Three-level testing standard" section to describe CLI Gherkin
+  - Line ~231: Update "Three-level testing standard" section to describe CLI Gherkin
     consumption at unit level
-  - Line ~228: Update `test:integration` caching description to clarify CLI uses godog at
+  - Line ~225: Update `test:integration` caching description to clarify CLI uses godog at
     both levels
   - Update "test:quick" description to note it now includes Gherkin-consuming unit tests
 - [ ] **6.5** Update `specs/apps/rhino-cli/README.md`:

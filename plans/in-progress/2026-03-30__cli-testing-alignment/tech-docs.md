@@ -53,6 +53,7 @@ import (
     "io/fs"
     "os"
     "os/exec"
+    "path/filepath"
 )
 
 // Filesystem operations — overridable in unit tests.
@@ -68,7 +69,7 @@ var (
     osOpen      = os.Open
     osCreate    = os.Create
     osReadDir   = os.ReadDir
-    osUserHomeDir = os.UserHomeDir
+    osUserHomeDir = os.UserHomeDir // included for future use; no current cmd/*.go file uses this
 )
 
 // Command execution — overridable in unit tests.
@@ -126,6 +127,10 @@ package cmd
 import (
     "context"
     "io/fs"
+    "os"
+    "os/exec"
+    "path/filepath"
+    "runtime"
     "testing"
 
     "github.com/cucumber/godog"
@@ -306,6 +311,8 @@ package cmd
 
 import (
     "io/fs"
+    "os/exec"
+    "path/filepath"
     "time"
 )
 
@@ -378,6 +385,56 @@ func (m *mockFS) installMocks() func() {
         // ... restore all
     }
 }
+
+// mockCommandRunner stubs execCommand and execLookPath for unit tests.
+// Keys are binary names; outputs/errors are keyed by "binary arg1 arg2..." strings.
+type mockCommandRunner struct {
+    outputs        map[string]string // "binary arg1 arg2..." → combined stdout
+    errors         map[string]error  // "binary arg1 arg2..." → exec error (nil = success)
+    lookPathErrors map[string]error  // binary → LookPath error (nil = found at /usr/bin/binary)
+}
+
+func newMockCommandRunner() *mockCommandRunner {
+    return &mockCommandRunner{
+        outputs:        make(map[string]string),
+        errors:         make(map[string]error),
+        lookPathErrors: make(map[string]error),
+    }
+}
+
+// installMocks replaces execCommand and execLookPath with mock implementations.
+// Returns a restore function that puts back the originals.
+func (r *mockCommandRunner) installMocks() func() {
+    origExecCommand := execCommand
+    origExecLookPath := execLookPath
+
+    execLookPath = func(file string) (string, error) {
+        if err, ok := r.lookPathErrors[file]; ok {
+            return "", err
+        }
+        return "/usr/bin/" + file, nil
+    }
+    execCommand = func(name string, args ...string) *exec.Cmd {
+        key := name
+        for _, a := range args {
+            key += " " + a
+        }
+        if out, ok := r.outputs[key]; ok {
+            // Return a command that echoes the canned output.
+            return exec.Command("echo", out)
+        }
+        if err, ok := r.errors[key]; ok {
+            _ = err // caller must handle via cmd.Run() return value
+            return exec.Command("false")
+        }
+        return exec.Command("true")
+    }
+
+    return func() {
+        execCommand = origExecCommand
+        execLookPath = origExecLookPath
+    }
+}
 ```
 
 ## Step Definition Sharing
@@ -421,7 +478,13 @@ This ensures the regex patterns stay in sync without duplicating strings.
 | Mock helpers                | `testable_mock_test.go`                          | `cmd/testable_mock_test.go`                  |
 | Mockable vars               | `testable.go`                                    | `cmd/testable.go`                            |
 
-## Affected Commands (13)
+> **Note**: ayokoding-cli and oseplatform-cli use hyphens instead of underscores in their
+> integration test filenames, following the pre-existing convention in those apps (e.g.,
+> `links-check.integration_test.go`, not `links_check.integration_test.go`). The structure
+> diagrams in this document reflect the correct hyphenated names for those CLIs. The underscore
+> pattern above applies to rhino-cli only.
+
+## Affected Commands (14)
 
 Each command requires:
 
@@ -429,22 +492,22 @@ Each command requires:
 2. **Rewrite** `*_test.go` to use godog + mocks for Gherkin scenarios, keeping non-BDD tests
 3. **Verify** `*.integration_test.go` uses real fs (minimal changes expected)
 
-| Command                        | Command File                      | Unit Test                              | Integration Test                                   | Feature File                                     |
-| ------------------------------ | --------------------------------- | -------------------------------------- | -------------------------------------------------- | ------------------------------------------------ |
-| `doctor`                       | `doctor.go`                       | `doctor_test.go`                       | `doctor.integration_test.go`                       | `doctor/doctor.feature`                          |
-| `test-coverage validate`       | `test_coverage_validate.go`       | `test_coverage_validate_test.go`       | `test_coverage_validate.integration_test.go`       | `test-coverage/test-coverage-validate.feature`   |
-| `test-coverage merge`          | `test_coverage_merge.go`          | (new)                                  | `test_coverage_merge.integration_test.go`          | `test-coverage/test-coverage-merge.feature`      |
-| `test-coverage diff`           | `test_coverage_diff.go`           | (new)                                  | (new — does not exist yet)                         | `test-coverage/test-coverage-diff.feature`       |
-| `agents sync`                  | `agents_sync.go`                  | `agents_sync_test.go`                  | `agents_sync.integration_test.go`                  | `agents/agents-sync.feature`                     |
-| `agents validate-claude`       | `agents_validate_claude.go`       | `agents_validate_claude_test.go`       | `agents_validate_claude.integration_test.go`       | `agents/agents-validate-claude.feature`          |
-| `agents validate-sync`         | `agents_validate_sync.go`         | `agents_validate_sync_test.go`         | `agents_validate_sync.integration_test.go`         | `agents/agents-validate-sync.feature`            |
-| `docs validate-links`          | `docs_validate_links.go`          | `docs_validate_links_test.go`          | `docs_validate_links.integration_test.go`          | `docs/docs-validate-links.feature`               |
-| `docs validate-naming`         | `docs_validate_naming.go`         | `docs_validate_naming_test.go`         | `docs_validate_naming.integration_test.go`         | `docs/docs-validate-naming.feature`              |
-| `contracts java-clean-imports` | `contracts_java_clean_imports.go` | `contracts_java_clean_imports_test.go` | `contracts_java_clean_imports.integration_test.go` | `contracts/contracts-java-clean-imports.feature` |
-| `contracts dart-scaffold`      | `contracts_dart_scaffold.go`      | `contracts_dart_scaffold_test.go`      | `contracts_dart_scaffold.integration_test.go`      | `contracts/contracts-dart-scaffold.feature`      |
-| `java validate-annotations`    | `java_validate_annotations.go`    | `java_validate_annotations_test.go`    | `java_validate_annotations.integration_test.go`    | `java/java-validate-annotations.feature`         |
-| `spec-coverage validate`       | `spec_coverage_validate.go`       | `spec_coverage_validate_test.go`       | `spec_coverage_validate.integration_test.go`       | `spec-coverage/spec-coverage-validate.feature`   |
-| `git pre-commit`               | `git_pre_commit.go`               | `git_pre_commit_test.go`               | `git_pre_commit.integration_test.go`               | `git/git-pre-commit.feature`                     |
+| Command                        | Command File                      | Unit Test                              | Integration Test                                   | Feature File                                                |
+| ------------------------------ | --------------------------------- | -------------------------------------- | -------------------------------------------------- | ----------------------------------------------------------- |
+| `doctor`                       | `doctor.go`                       | `doctor_test.go`                       | `doctor.integration_test.go`                       | `doctor/doctor.feature`                                     |
+| `test-coverage validate`       | `test_coverage_validate.go`       | `test_coverage_validate_test.go`       | `test_coverage_validate.integration_test.go`       | `test-coverage/test-coverage-validate.feature`              |
+| `test-coverage merge`          | `test_coverage_merge.go`          | (new)                                  | `test_coverage_merge.integration_test.go`          | `test-coverage/test-coverage-merge.feature`                 |
+| `test-coverage diff`           | `test_coverage_diff.go`           | (new)                                  | (new — does not exist yet)                         | `test-coverage/test-coverage-diff.feature`                  |
+| `agents sync`                  | `agents_sync.go`                  | `agents_sync_test.go`                  | `agents_sync.integration_test.go`                  | `agents/agents-sync.feature`                                |
+| `agents validate-claude`       | `agents_validate_claude.go`       | `agents_validate_claude_test.go`       | `agents_validate_claude.integration_test.go`       | `agents/agents-validate-claude.feature`                     |
+| `agents validate-sync`         | `agents_validate_sync.go`         | `agents_validate_sync_test.go`         | `agents_validate_sync.integration_test.go`         | `agents/agents-sync.feature` (tag: `@agents-validate-sync`) |
+| `docs validate-links`          | `docs_validate_links.go`          | `docs_validate_links_test.go`          | `docs_validate_links.integration_test.go`          | `docs/docs-validate-links.feature`                          |
+| `docs validate-naming`         | `docs_validate_naming.go`         | `docs_validate_naming_test.go`         | `docs_validate_naming.integration_test.go`         | `docs/docs-validate-naming.feature`                         |
+| `contracts java-clean-imports` | `contracts_java_clean_imports.go` | `contracts_java_clean_imports_test.go` | `contracts_java_clean_imports.integration_test.go` | `contracts/contracts-java-clean-imports.feature`            |
+| `contracts dart-scaffold`      | `contracts_dart_scaffold.go`      | `contracts_dart_scaffold_test.go`      | `contracts_dart_scaffold.integration_test.go`      | `contracts/contracts-dart-scaffold.feature`                 |
+| `java validate-annotations`    | `java_validate_annotations.go`    | `java_validate_annotations_test.go`    | `java_validate_annotations.integration_test.go`    | `java/java-validate-annotations.feature`                    |
+| `spec-coverage validate`       | `spec_coverage_validate.go`       | `spec_coverage_validate_test.go`       | `spec_coverage_validate.integration_test.go`       | `spec-coverage/spec-coverage-validate.feature`              |
+| `git pre-commit`               | `git_pre_commit.go`               | `git_pre_commit_test.go`               | `git_pre_commit.integration_test.go`               | `git/git-pre-commit.feature`                                |
 
 **Note**: Files that do not currently exist and need to be created:
 
@@ -498,17 +561,17 @@ In `links_check.go`, replace:
 
 ```go
 // Before
-result, err := links.CheckLinks(contentDir, verbose)
+result, err := links.CheckLinks(contentDir)
 
 // After
-result, err := checkLinksFn(contentDir, verbose)
+result, err := checkLinksFn(contentDir)
 ```
 
 Unit test mocks `checkLinksFn` to return canned results:
 
 ```go
 func (s *linksCheckUnitSteps) before(...) {
-    checkLinksFn = func(contentDir string, verbose bool) (*links.Result, error) {
+    checkLinksFn = func(contentDir string) (*links.CheckResult, error) {
         return s.mockResult, s.mockErr
     }
 }

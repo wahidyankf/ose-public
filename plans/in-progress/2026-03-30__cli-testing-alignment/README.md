@@ -51,7 +51,7 @@ All three Go CLI apps in the monorepo:
 
 | App                     | Commands          | Feature Files | Unit Tests                          | Integration Tests |
 | ----------------------- | ----------------- | ------------- | ----------------------------------- | ----------------- |
-| `apps/rhino-cli/`       | 13                | 13            | 14                                  | 13                |
+| `apps/rhino-cli/`       | 14                | 13            | 14                                  | 13                |
 | `apps/ayokoding-cli/`   | 1 (`links check`) | 1             | 2 (`root_test`, `links_check_test`) | 1                 |
 | `apps/oseplatform-cli/` | 1 (`links check`) | 1             | 2 (`root_test`, `links_check_test`) | 1                 |
 

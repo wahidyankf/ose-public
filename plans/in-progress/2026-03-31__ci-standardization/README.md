@@ -102,33 +102,117 @@ duplication, inconsistent patterns, and undocumented conventions.
 
 ```mermaid
 flowchart TD
-    subgraph local["Local Development"]
-        PC["pre-commit<br/>(9 steps)"]
-        CM["commit-msg<br/>(commitlint)"]
-        PP["pre-push<br/>(typecheck + lint + test:quick)"]
+    subgraph local["Local (Git Hooks)"]
+        direction LR
+        subgraph precommit["pre-commit (rhino-cli, 9 steps)"]
+            PC1["1. Validate .claude/.opencode config"]
+            PC2["2. Validate docker-compose files"]
+            PC3["3. nx affected run-pre-commit (warn only)"]
+            PC4["4. Stage ayokoding-web content"]
+            PC5["5. lint-staged (Prettier, gofmt, mix format)"]
+            PC6["6. Sync app package-lock.json"]
+            PC7["7. Validate docs file naming"]
+            PC8["8. Validate markdown links"]
+            PC9["9. Lint all markdown"]
+            PC1 --> PC2 --> PC3 --> PC4 --> PC5 --> PC6 --> PC7 --> PC8 --> PC9
+        end
+        CM["commit-msg (commitlint)"]
+        subgraph prepush["pre-push (nx affected, parallel)"]
+            PPT["typecheck"]
+            PPL["lint"]
+            PPQ["test:quick"]
+            PPM["lint:md"]
+        end
+        precommit --> CM --> prepush
     end
 
-    subgraph pr["PR Workflows"]
-        QG["PR Quality Gate<br/>(monolithic, 13+ runtimes)"]
-        AF["PR Auto-Format"]
-        VL["PR Validate Links"]
+    subgraph pr["PR Workflows (on pull_request)"]
+        direction TB
+        subgraph qg["pr-quality-gate.yml (monolithic)"]
+            direction TB
+            QGS["Setup: 13+ runtimes in single job<br/>(Go, Java 21+25, .NET 10, Elixir,<br/>Python, Rust, Flutter, Clojure CLI,<br/>Hugo, Node/Volta)"]
+            QGT["typecheck (affected)"]
+            QGL["lint (affected)"]
+            QGQ["test:quick (affected)"]
+            QGMD["lint:md"]
+            QGS --> QGT --> QGL --> QGQ --> QGMD
+        end
+        AF["pr-format.yml<br/>(Prettier, auto-commit)"]
+        VL["pr-validate-links.yml<br/>(rhino-cli docs validate-links)"]
     end
 
-    subgraph scheduled["Scheduled Workflows (2x daily)"]
-        BE1["test-a-demo-be-golang-gin"]
-        BE2["test-a-demo-be-java-springboot"]
-        BEN["... 9 more backend workflows"]
-        FE1["test-a-demo-fe-ts-nextjs"]
-        OL["test-organiclever"]
+    subgraph scheduled["Scheduled Workflows (cron 2x daily + dispatch)"]
+        direction TB
+
+        subgraph be_tests["11 Backend Test Workflows (one file each)"]
+            direction LR
+            BEgo["golang-gin"]
+            BEjava["java-springboot"]
+            BEjv["java-vertx"]
+            BEfs["fsharp-giraffe"]
+            BEcs["csharp-aspnetcore"]
+            BEkt["kotlin-ktor"]
+            BEpy["python-fastapi"]
+            BErs["rust-axum"]
+            BEts["ts-effect"]
+            BEex["elixir-phoenix"]
+            BEcl["clojure-pedestal"]
+        end
+
+        subgraph be_pattern["Each Backend: integration → e2e"]
+            INT["integration-tests<br/>(docker-compose + real DB)"]
+            E2E["e2e<br/>(docker-compose full stack<br/>+ Playwright BE & FE)"]
+            INT --> E2E
+        end
+
+        subgraph fe_tests["3 Frontend Test Workflows"]
+            direction LR
+            FEnx["fe-ts-nextjs"]
+            FEts["fe-ts-tanstack-start"]
+            FEdt["fe-dart-flutterweb"]
+        end
+
+        subgraph fe_pattern["Each Frontend: e2e only"]
+            FEE2E["e2e<br/>(docker-compose + Playwright)"]
+        end
+
+        subgraph fs_test["1 Fullstack Workflow"]
+            FSts["fs-ts-nextjs<br/>(unit → e2e)"]
+        end
+
+        OL["test-organiclever.yml<br/>(be-integration + fe-integration<br/>→ e2e BE & FE)"]
+
+        be_tests -.-> be_pattern
+        fe_tests -.-> fe_pattern
     end
 
-    subgraph deploy["Test & Deploy"]
-        AW["test-and-deploy-ayokoding-web"]
-        OW["test-and-deploy-oseplatform-web"]
+    subgraph deploy["Test & Deploy (cron + dispatch)"]
+        direction TB
+        subgraph aw["test-and-deploy-ayokoding-web.yml"]
+            AW_U["unit"]
+            AW_I["integration"]
+            AW_E["e2e (docker)"]
+            AW_D["detect-changes"]
+            AW_DEP["deploy → prod-ayokoding-web"]
+            AW_U & AW_I & AW_E & AW_D --> AW_DEP
+        end
+        subgraph ow["test-and-deploy-oseplatform-web.yml"]
+            OW_U["unit + typecheck + lint"]
+            OW_I["integration"]
+            OW_E["e2e (docker)"]
+            OW_D["detect-changes"]
+            OW_DEP["deploy → prod-oseplatform-web"]
+            OW_U & OW_I & OW_E & OW_D --> OW_DEP
+        end
     end
 
-    subgraph codecov["Coverage"]
-        CC["codecov-upload<br/>(all projects, main only)"]
+    subgraph codecov["Coverage (on push to main)"]
+        CC_S["Setup all 13+ runtimes"]
+        CC_CG["Codegen all contracts"]
+        CC_TC["typecheck (all, parallel)"]
+        CC_TQ["test:quick (all, parallel)"]
+        CC_UP["Upload 27 coverage reports<br/>(11 BE + 3 FE + 1 FS + 4 product<br/>+ 3 CLI + 3 libs + 2 content)"]
+        CC_S --> CC_CG --> CC_TC --> CC_TQ --> CC_UP
     end
 
     local --> pr

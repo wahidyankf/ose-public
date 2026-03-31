@@ -147,7 +147,7 @@ strategy:
       # ... 8 more entries
 ```
 
-**Workflow structure**:
+**Workflow structure** (4 parallel tracks per R0.4):
 
 ```yaml
 # .github/workflows/test-demo-backends.yml
@@ -163,30 +163,63 @@ on:
         required: false
 
 jobs:
+  prepare:
+    # Filters matrix based on workflow_dispatch input
+    outputs:
+      matrix: ${{ steps.filter.outputs.matrix }}
+
+  # Track 1: lint (parallel, independent)
+  lint:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy: { matrix: ${{ fromJson(needs.prepare.outputs.matrix) }} }
+    steps:
+      - uses: ./.github/actions/setup-${{ matrix.backend.setup-action }}
+      - run: npx nx run a-demo-be-${{ matrix.backend.name }}:lint
+
+  # Track 2: typecheck (parallel, independent)
+  typecheck:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy: { matrix: ${{ fromJson(needs.prepare.outputs.matrix) }} }
+    steps:
+      - uses: ./.github/actions/setup-${{ matrix.backend.setup-action }}
+      - run: npx nx run a-demo-be-${{ matrix.backend.name }}:typecheck
+
+  # Track 3: test:quick (parallel, independent)
+  test-quick:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy: { matrix: ${{ fromJson(needs.prepare.outputs.matrix) }} }
+    steps:
+      - uses: ./.github/actions/setup-${{ matrix.backend.setup-action }}
+      - run: npx nx run a-demo-be-${{ matrix.backend.name }}:test:quick
+
+  # Track 4: integration → e2e (sequential chain)
   integration:
+    needs: prepare
     uses: ./.github/workflows/_reusable-backend-integration.yml
+    strategy: { matrix: ${{ fromJson(needs.prepare.outputs.matrix) }} }
     with:
       backend-name: ${{ matrix.backend.name }}
-      compose-dir: ${{ matrix.backend.compose-dir }}
       app-dir: ${{ matrix.backend.app-dir }}
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
 
   e2e:
-    needs: integration
+    needs: integration  # Sequential: integration must pass first
     uses: ./.github/workflows/_reusable-backend-e2e.yml
+    strategy: { matrix: ${{ fromJson(needs.prepare.outputs.matrix) }} }
     with:
       backend-name: ${{ matrix.backend.name }}
       compose-dir: ${{ matrix.backend.compose-dir }}
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
 ```
 
-**Filtering for workflow_dispatch**: When triggered manually, a `prepare` job filters the matrix
-based on the `backends` input. This allows developers to test a single backend without running
-all 11.
+**4 parallel tracks**: `lint`, `typecheck`, and `test:quick` run independently. `integration →
+e2e` runs as a sequential chain. A slow integration test does not block lint or typecheck
+feedback.
+
+**Filtering for workflow_dispatch**: When triggered manually, the `prepare` job filters the
+matrix based on the `backends` input. This allows developers to test a single backend without
+running all 11.
 
 ### AD4: Docker Standardization
 

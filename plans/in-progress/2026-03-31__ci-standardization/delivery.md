@@ -206,8 +206,11 @@ All integration tests still pass after changes.
 - [ ] Create `.github/workflows/test-demo-backends.yml`:
   - [ ] Matrix strategy with all 11 backends
   - [ ] Each matrix entry: name, language, compose-dir, app-dir, setup-action
-  - [ ] Integration job calls reusable integration workflow
-  - [ ] E2E job (needs: integration) calls reusable E2E workflow
+  - [ ] 4 parallel tracks per R0.4:
+    - [ ] Track 1: `lint` (independent matrix job)
+    - [ ] Track 2: `typecheck` (independent matrix job)
+    - [ ] Track 3: `test:quick` (independent matrix job)
+    - [ ] Track 4: `integration` → `e2e` (sequential chain via `needs:`)
   - [ ] Schedule: cron 2x daily (06:00 WIB, 18:00 WIB)
   - [ ] workflow_dispatch with backend filter input
 - [ ] Create `prepare` job for workflow_dispatch filtering:

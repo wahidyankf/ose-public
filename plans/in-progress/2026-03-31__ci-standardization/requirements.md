@@ -6,16 +6,21 @@
 
 #### App Directory Naming
 
-Pattern: `{domain}-{role}-{lang}-{framework}` or `{domain}-{role}` or `{domain}-{tool}`
+**Default pattern**: `apps/{service-name}-{part}`
 
-| Segment   | Values                                                                                                                                                      | Examples |
-| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| domain    | `a-demo`, `organiclever`, `ayokoding`, `oseplatform`, `rhino`                                                                                               |          |
-| role      | `be` (backend), `fe` (frontend), `fs` (fullstack), `web` (content), `cli`                                                                                   |          |
-| lang      | `golang`, `java`, `ts`, `python`, `rust`, `kotlin`, `fsharp`, `csharp`, `clojure`, `elixir`, `dart`                                                         |          |
-| framework | `gin`, `springboot`, `vertx`, `effect`, `fastapi`, `axum`, `ktor`, `giraffe`, `aspnetcore`, `pedestal`, `phoenix`, `nextjs`, `tanstack-start`, `flutterweb` |          |
+The `{service-name}` identifies the product/domain, and `{part}` identifies the component role
+within that service. For demo apps that have multiple language implementations, the part is
+extended with language and framework: `{service-name}-{part}-{lang}-{framework}`.
 
-**Consistent examples**: `a-demo-be-golang-gin`, `a-demo-fe-ts-nextjs`, `a-demo-fs-ts-nextjs`
+| Segment              | Values                                                                                                                                                      | Examples |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| service-name         | `a-demo`, `organiclever`, `ayokoding-web`, `oseplatform-web`, `rhino`                                                                                       |          |
+| part                 | `be` (backend), `fe` (frontend), `fs` (fullstack), `cli`, `contracts`, `be-e2e`, `fe-e2e`                                                                   |          |
+| lang (optional)      | `golang`, `java`, `ts`, `python`, `rust`, `kotlin`, `fsharp`, `csharp`, `clojure`, `elixir`, `dart`                                                         |          |
+| framework (optional) | `gin`, `springboot`, `vertx`, `effect`, `fastapi`, `axum`, `ktor`, `giraffe`, `aspnetcore`, `pedestal`, `phoenix`, `nextjs`, `tanstack-start`, `flutterweb` |          |
+
+**Examples**: `a-demo-be-golang-gin`, `a-demo-fe-ts-nextjs`, `organiclever-be`,
+`organiclever-fe`, `ayokoding-web`, `rhino-cli`
 
 **Inconsistencies**:
 
@@ -253,6 +258,115 @@ development and CI. This includes:
 **CLI apps**: Even though CLIs don't need a database, they benefit from a Docker Compose dev
 setup for consistent local development. The compose file would provide a containerized build
 environment with the correct Go version and tools, ensuring reproducibility.
+
+## R0.3: Architectural Patterns
+
+### Repository Pattern (Backend Services)
+
+All backend services MUST use the **repository pattern** to abstract data access. This is the
+foundation for testability across the three-level testing standard:
+
+- **Unit tests** inject **mocked repositories** (in-memory, returning canned data)
+- **Integration tests** inject **real repositories** backed by a real database
+- **E2E tests** run the full application with real repositories and real HTTP
+
+The repository interface is the **swap point** -- changing what's behind it changes the test
+level without changing business logic tests. This makes Gherkin step implementations trivially
+different between unit and integration: only the repository constructor call changes.
+
+```
+Service Layer (business logic, tested at all levels)
+    ↓ depends on
+Repository Interface (abstraction boundary)
+    ↓ implemented by
+Mock Repository (unit tests)  |  Real Repository (integration + e2e)
+```
+
+### Contract-Driven Development
+
+Backend and frontend services that communicate over a network boundary MUST have an
+**automatically generated contract**:
+
+| Communication Pattern              | Contract Technology   | Generation Flow                                                                                                    |
+| ---------------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| REST API (BE ↔ FE)                 | **OpenAPI 3.1**       | Spec defined in `specs/apps/{domain}/contracts/` → codegen generates types + client/server stubs for each language |
+| tRPC (fullstack/content platforms) | **tRPC router types** | Router defined in server code → TypeScript infers client types automatically (no spec file needed)                 |
+
+**Contract enforcement via Nx**:
+
+- `codegen` target generates types from the OpenAPI spec into `generated-contracts/` (gitignored)
+- `codegen` is a **dependency of `typecheck` and `build`** -- contract violations are caught
+  before code compiles
+- `typecheck`, `lint`, `test:quick` all run after codegen, so contract drift is caught in
+  pre-push hooks and PR quality gate
+
+**Current implementations**:
+
+- `a-demo-contracts`: OpenAPI spec for all demo BE ↔ FE communication
+- `organiclever-contracts`: OpenAPI spec for OrganicLever BE ↔ FE
+- `ayokoding-web`, `oseplatform-web`: tRPC (no OpenAPI spec needed -- types flow from server to
+  client automatically)
+
+## R0.4: Caching and CI Execution Rules
+
+### Nx Target Caching Rules
+
+| Target             | Cacheable | Rationale                                        |
+| ------------------ | --------- | ------------------------------------------------ |
+| `typecheck`        | Yes       | Deterministic: same source → same result         |
+| `lint`             | Yes       | Deterministic: same source → same result         |
+| `test:unit`        | Yes       | All dependencies mocked → deterministic          |
+| `test:quick`       | Yes       | Composition of `test:unit` + coverage validation |
+| `codegen`          | Yes       | Same spec → same generated code                  |
+| `build`            | Yes       | Same source → same artifacts                     |
+| `test:integration` | **No**    | Real database/filesystem → non-deterministic     |
+| `test:e2e`         | **No**    | Full stack → non-deterministic                   |
+
+### Pre-Push Hook (Local Quality Gate)
+
+Runs **affected projects only**:
+
+```bash
+npx nx affected -t typecheck lint test:quick --parallel="$PARALLEL"
+```
+
+Does **NOT** run `test:integration` or `test:e2e` (too slow for local push gate).
+
+### PR Quality Gate (GitHub Actions)
+
+Runs **affected projects only**. Covers:
+
+- `format` (Prettier, gofmt, fantomas, etc. -- via PR auto-format workflow)
+- `lint` (oxlint, golangci-lint, clippy, etc.)
+- `typecheck` (tsc, go vet, javac, cargo check, etc.)
+- `test:quick` (`test:unit` + coverage validation)
+
+Does **NOT** run `test:integration` or `test:e2e` -- these are too slow for PR feedback loops
+and are covered by scheduled CI.
+
+### Scheduled CI (CRON, 2x daily)
+
+Runs **all projects** (not just affected). Executes **4 parallel tracks**:
+
+```mermaid
+flowchart LR
+    CRON["CRON Trigger"] --> LINT["lint<br/>(all projects)"]
+    CRON --> TC["typecheck<br/>(all projects)"]
+    CRON --> TQ["test:quick<br/>(all projects)"]
+    CRON --> INT["test:integration<br/>(all projects)"]
+    INT --> E2E["test:e2e<br/>(all projects)"]
+```
+
+| Track   | Targets                         | Parallel?        | Rationale                                                            |
+| ------- | ------------------------------- | ---------------- | -------------------------------------------------------------------- |
+| Track 1 | `lint`                          | Independent      | Fast, catches style issues                                           |
+| Track 2 | `typecheck`                     | Independent      | Fast, catches type errors                                            |
+| Track 3 | `test:quick`                    | Independent      | Unit tests + coverage                                                |
+| Track 4 | `test:integration` → `test:e2e` | Sequential chain | Integration must pass before E2E runs (E2E assumes data layer works) |
+
+**Key design**: The 4 tracks run in parallel so a slow integration test does not block lint or
+typecheck feedback. Within Track 4, integration and E2E are sequential because E2E depends on
+the data layer being correct (proven by integration tests).
 
 ## Current State Audit
 
@@ -602,6 +716,10 @@ Elixir, Python, Rust, Flutter, and Clojure. This wastes ~5-8 minutes of setup ti
 
 **Solution**: Split into parallel, language-scoped jobs. Use `nx show projects --affected` to
 determine which language families are needed, then only run relevant setup jobs.
+
+**Scope**: PR quality gate runs `format`, `lint`, `typecheck`, `test:quick` for **affected
+projects only**. It does **NOT** run `test:integration` or `test:e2e` -- those run on scheduled
+CI only (see [R0.4](#r04-caching-and-ci-execution-rules)).
 
 ### R6: Docker Infrastructure
 

@@ -7,32 +7,32 @@
 Before copying files during `env backup`, check whether any destination files already exist in the
 backup directory. If so, prompt the user for confirmation.
 
-| Requirement | Detail                                                                                                                                                    |
-| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| FR-1.1      | After discovery and before any copy, compute the list of destination paths that already exist in the backup directory                                     |
-| FR-1.2      | If one or more destination files exist, display: `N file(s) already exist in backup. Overwrite? [y/N]` followed by the list of conflicting relative paths |
-| FR-1.3      | Default answer is "No" (pressing Enter without input aborts the operation)                                                                                |
-| FR-1.4      | Accept `y`, `Y`, `yes`, `YES`, `Yes` as confirmation; all other inputs (including empty) abort                                                            |
-| FR-1.5      | If the user declines, exit 0 with message "Backup cancelled." and 0 files copied                                                                          |
-| FR-1.6      | If no destination files exist (fresh backup), proceed without prompting                                                                                   |
-| FR-1.7      | The `--force` / `-f` flag skips the confirmation prompt entirely — always overwrite (preserves current idempotent behavior)                               |
-| FR-1.8      | JSON and markdown output modes (`-o json`, `-o markdown`) imply `--force` (non-interactive contexts should not prompt)                                    |
+| Requirement | Detail                                                                                                                                          |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| FR-1.1      | After discovery and before any copy, compute the list of destination paths that already exist in the backup directory                           |
+| FR-1.2      | If one or more destination files exist, display: `N file(s) already exist. Overwrite? [y/N]` followed by the list of conflicting relative paths |
+| FR-1.3      | Default answer is "No" (pressing Enter without input aborts the operation)                                                                      |
+| FR-1.4      | Accept `y`, `Y`, `yes`, `YES`, `Yes` as confirmation; all other inputs (including empty) abort                                                  |
+| FR-1.5      | If the user declines, exit 0 with message "Backup cancelled." and 0 files copied                                                                |
+| FR-1.6      | If no destination files exist (fresh backup), proceed without prompting                                                                         |
+| FR-1.7      | The `--force` / `-f` flag skips the confirmation prompt entirely — always overwrite (preserves current idempotent behavior)                     |
+| FR-1.8      | JSON and markdown output modes (`-o json`, `-o markdown`) imply `--force` (non-interactive contexts should not prompt)                          |
 
 ### FR-2: Overwrite Confirmation Prompt (Restore)
 
 Before copying files during `env restore`, check whether any destination files already exist in the
 repository. If so, prompt the user for confirmation.
 
-| Requirement | Detail                                                                                                                                                        |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| FR-2.1      | After discovering backup files and before any copy, compute the list of repo paths that already exist                                                         |
-| FR-2.2      | If one or more destination files exist, display: `N file(s) already exist in repository. Overwrite? [y/N]` followed by the list of conflicting relative paths |
-| FR-2.3      | Default answer is "No" (pressing Enter without input aborts)                                                                                                  |
-| FR-2.4      | Accept same confirmation inputs as FR-1.4                                                                                                                     |
-| FR-2.5      | If the user declines, exit 0 with message "Restore cancelled." and 0 files copied                                                                             |
-| FR-2.6      | If no destination files exist, proceed without prompting                                                                                                      |
-| FR-2.7      | The `--force` / `-f` flag skips the prompt                                                                                                                    |
-| FR-2.8      | JSON and markdown output modes imply `--force`                                                                                                                |
+| Requirement | Detail                                                                                                                                          |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| FR-2.1      | After discovering backup files and before any copy, compute the list of repo paths that already exist                                           |
+| FR-2.2      | If one or more destination files exist, display: `N file(s) already exist. Overwrite? [y/N]` followed by the list of conflicting relative paths |
+| FR-2.3      | Default answer is "No" (pressing Enter without input aborts)                                                                                    |
+| FR-2.4      | Accept same confirmation inputs as FR-1.4                                                                                                       |
+| FR-2.5      | If the user declines, exit 0 with message "Restore cancelled." and 0 files copied                                                               |
+| FR-2.6      | If no destination files exist, proceed without prompting                                                                                        |
+| FR-2.7      | The `--force` / `-f` flag skips the prompt                                                                                                      |
+| FR-2.8      | JSON and markdown output modes imply `--force`                                                                                                  |
 
 ### FR-3: Config File Backup (`--include-config`)
 
@@ -55,13 +55,13 @@ Extend `env backup` to also back up known uncommitted local configuration files 
 
 Extend `env restore` to also restore config files when `--include-config` is provided.
 
-| Requirement | Detail                                                                                         |
-| ----------- | ---------------------------------------------------------------------------------------------- |
-| FR-4.1      | New `--include-config` boolean flag on `env restore` (default: false)                          |
-| FR-4.2      | When enabled, discover config files in the backup directory and restore them to original paths |
-| FR-4.3      | Config file identification in backup: match against `DefaultConfigPatterns` relative paths     |
-| FR-4.4      | Config files participate in the overwrite confirmation prompt (FR-2)                           |
-| FR-4.5      | Config files are included in result output with appropriate markers                            |
+| Requirement | Detail                                                                                                                                                                                                                                            |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| FR-4.1      | New `--include-config` boolean flag on `env restore` (default: false)                                                                                                                                                                             |
+| FR-4.2      | When enabled, discover config files in the backup directory via `DiscoverConfig()` and restore them to original paths. Config entries (identified by `Source: "config"`) must bypass the existing `.env` basename filter in the restore copy loop |
+| FR-4.3      | Config file identification in backup: match against `DefaultConfigPatterns` relative paths                                                                                                                                                        |
+| FR-4.4      | Config files participate in the overwrite confirmation prompt (FR-2)                                                                                                                                                                              |
+| FR-4.5      | Config files are included in result output with appropriate markers                                                                                                                                                                               |
 
 ### FR-5: Default Config Patterns
 
@@ -96,7 +96,7 @@ Curated list of known uncommitted local configuration files. Organized by catego
 | FR-6.1      | Change default backup directory from `~/ose-env-bkup` to `~/ose-open-env-backup` |
 | FR-6.2      | Update `DefaultBackupDir` constant in `types.go`                                 |
 | FR-6.3      | Update help text for `--dir` flag on both `env backup` and `env restore`         |
-| FR-6.4      | Update README.md references                                                      |
+| FR-6.4      | Update `apps/rhino-cli/README.md` references to the default backup directory     |
 
 ### FR-7: Output Format Updates
 
@@ -128,7 +128,7 @@ Curated list of known uncommitted local configuration files. Organized by catego
 
 | Requirement | Detail                                                                                                                  |
 | ----------- | ----------------------------------------------------------------------------------------------------------------------- |
-| NFR-1       | No new external dependencies — confirmation uses `bufio.NewReader(os.Stdin)`                                            |
+| NFR-1       | No new external dependencies — confirmation uses `bufio.NewScanner(os.Stdin)`                                           |
 | NFR-2       | Backward compatible — without `--force` or `--include-config`, only change is the new confirmation prompt on overwrites |
 | NFR-3       | `--force` restores exact pre-enhancement behavior (silent overwrite)                                                    |
 | NFR-4       | Testable via dependency injection — `ConfirmFn` callback in `Options` for stdin mocking                                 |

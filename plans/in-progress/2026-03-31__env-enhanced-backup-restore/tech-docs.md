@@ -7,34 +7,35 @@
 ```text
 apps/rhino-cli/
 ├── cmd/
-│   ├── env_backup.go                       # ADD: --force, --include-config flags; confirmation logic
-│   ├── env_backup_test.go                  # ADD: new Gherkin steps for confirm + config scenarios
-│   ├── env_backup.integration_test.go      # ADD: integration steps for confirm + config scenarios
-│   ├── env_restore.go                      # ADD: --force, --include-config flags; confirmation logic
-│   ├── env_restore_test.go                 # ADD: new Gherkin steps for confirm + config scenarios
-│   ├── env_restore.integration_test.go     # ADD: integration steps for confirm + config scenarios
-│   ├── testable.go                         # ADD: confirmFn function variable
-│   └── steps_common_test.go               # ADD: confirm + config step regex constants
+│   ├── env_backup.go                       # MODIFY: --force, --include-config flags; confirmation logic
+│   ├── env_backup_test.go                  # EXTEND: new Gherkin steps for confirm + config scenarios
+│   ├── env_backup.integration_test.go      # EXTEND: integration steps for confirm + config scenarios
+│   ├── env_restore.go                      # MODIFY: --force, --include-config flags; confirmation logic
+│   ├── env_restore_test.go                 # EXTEND: new Gherkin steps for confirm + config scenarios
+│   ├── env_restore.integration_test.go     # EXTEND: integration steps for confirm + config scenarios
+│   ├── testable.go                         # EXTEND: confirmFn function variable
+│   └── steps_common_test.go               # EXTEND: confirm + config step regex constants
 └── internal/
     └── envbackup/
-        ├── types.go                        # ADD: ConfigPattern, Source field, ConfirmFn, Force, IncludeConfig
+        ├── types.go                        # EXTEND: ConfigPattern, Source field, ConfirmFn, Force, IncludeConfig
         ├── config.go                       # NEW: DiscoverConfig(), DefaultConfigPatterns
         ├── config_test.go                  # NEW: unit tests for config discovery
         ├── confirm.go                      # NEW: FindExisting(), DefaultConfirmFn()
         ├── confirm_test.go                 # NEW: unit tests for conflict detection and confirmation
         ├── backup.go                       # MODIFY: add confirmation + config integration
-        ├── backup_test.go                  # ADD: tests for confirmation and config backup
+        ├── backup_test.go                  # EXTEND: tests for confirmation and config backup
         ├── restore.go                      # MODIFY: add confirmation + config integration
-        ├── restore_test.go                 # ADD: tests for confirmation and config restore
-        └── reporter.go                     # MODIFY: display source type and config counts
+        ├── restore_test.go                 # EXTEND: tests for confirmation and config restore
+        ├── reporter.go                     # MODIFY: display source type and config counts
+        └── reporter_test.go               # EXTEND: tests for source type and cancelled output
 ```
 
 ### Spec Layout (Changes)
 
 ```text
 specs/apps/rhino-cli/env/
-├── env-backup.feature                      # ADD: @env-backup-confirm and @env-backup-config scenarios
-└── env-restore.feature                     # ADD: @env-restore-confirm and @env-restore-config scenarios
+├── env-backup.feature                      # EXTEND: @env-backup-confirm and @env-backup-config scenarios
+└── env-restore.feature                     # EXTEND: @env-restore-confirm and @env-restore-config scenarios
 ```
 
 ## Design Decisions
@@ -127,7 +128,7 @@ Backup flow:
 
 Restore flow:
   1. Discover .env* files in backup (existing Discover())
-  2. If --include-config: DiscoverConfig(srcRoot, patterns) → merge config entries
+  2. If --include-config: DiscoverConfig(srcRoot, patterns, opts.MaxSize) → merge config entries
   3. If !Force && ConfirmFn != nil:
      a. FindExisting(entries, repoRoot) → []string of existing paths
      b. If ConfirmFn returns false → return Result with Cancelled: true
@@ -176,6 +177,7 @@ import (
     "fmt"
     "io"
     "os"
+    "path/filepath"
     "strings"
 )
 
@@ -233,23 +235,23 @@ type ConfigPattern struct {
 // DefaultConfigPatterns lists known uncommitted local configuration files.
 var DefaultConfigPatterns = []ConfigPattern{
     // AI Tools
-    {".claude/settings.local.json", "Claude Code local settings", "ai-tools"},
-    {".claude/settings.local.json.bkup", "Claude Code settings backup", "ai-tools"},
-    {".cursor/mcp.json", "Cursor MCP configuration", "ai-tools"},
-    {".windsurfrules", "Windsurf project rules", "ai-tools"},
-    {".clinerules", "Cline project rules", "ai-tools"},
-    {".aider.conf.yml", "Aider configuration", "ai-tools"},
-    {".aiderignore", "Aider ignore patterns", "ai-tools"},
-    {".continue/config.json", "Continue configuration", "ai-tools"},
-    {".gemini/settings.json", "Gemini CLI settings", "ai-tools"},
-    {".amazonq/mcp.json", "Amazon Q MCP configuration", "ai-tools"},
-    {".roomodes", "Roo Code custom modes", "ai-tools"},
+    {RelPath: ".claude/settings.local.json", Description: "Claude Code local settings", Category: "ai-tools"},
+    {RelPath: ".claude/settings.local.json.bkup", Description: "Claude Code settings backup", Category: "ai-tools"},
+    {RelPath: ".cursor/mcp.json", Description: "Cursor MCP configuration", Category: "ai-tools"},
+    {RelPath: ".windsurfrules", Description: "Windsurf project rules", Category: "ai-tools"},
+    {RelPath: ".clinerules", Description: "Cline project rules", Category: "ai-tools"},
+    {RelPath: ".aider.conf.yml", Description: "Aider configuration", Category: "ai-tools"},
+    {RelPath: ".aiderignore", Description: "Aider ignore patterns", Category: "ai-tools"},
+    {RelPath: ".continue/config.json", Description: "Continue configuration", Category: "ai-tools"},
+    {RelPath: ".gemini/settings.json", Description: "Gemini CLI settings", Category: "ai-tools"},
+    {RelPath: ".amazonq/mcp.json", Description: "Amazon Q MCP configuration", Category: "ai-tools"},
+    {RelPath: ".roomodes", Description: "Roo Code custom modes", Category: "ai-tools"},
     // Docker
-    {"docker-compose.override.yml", "Docker Compose local overrides", "docker"},
+    {RelPath: "docker-compose.override.yml", Description: "Docker Compose local overrides", Category: "docker"},
     // Version Managers
-    {"mise.local.toml", "mise local overrides", "version-mgrs"},
+    {RelPath: "mise.local.toml", Description: "mise local overrides", Category: "version-mgrs"},
     // Environment
-    {".envrc", "direnv environment setup", "environment"},
+    {RelPath: ".envrc", Description: "direnv environment setup", Category: "environment"},
 }
 
 // DiscoverConfig checks each pattern against repoRoot and returns FileEntry
@@ -296,6 +298,30 @@ func Backup(opts Options) (*Result, error) {
     // ... existing copy logic (unchanged) ...
 }
 ```
+
+### Changes to restore.go
+
+The existing restore copy loop has a `.env` basename filter:
+
+```go
+base := filepath.Base(e.RelPath)
+if !strings.HasPrefix(base, ".env") {
+    continue
+}
+```
+
+When `IncludeConfig` is active, config entries (identified by `Source: "config"`) must bypass
+this filter. Update the filter condition to:
+
+```go
+if e.Source != "config" && !strings.HasPrefix(base, ".env") {
+    continue
+}
+```
+
+Config entries discovered via `DiscoverConfig()` are merged into the entries list before the copy
+loop, and the `Source: "config"` field serves as the discriminator. The confirmation check and
+worktree namespacing are inherited from the existing `srcRoot` / `repoRoot` computation.
 
 ### Changes to cmd/env_backup.go
 

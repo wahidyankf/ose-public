@@ -2,12 +2,12 @@
 
 ## Phase Overview
 
-| Phase       | Workstreams | Focus                                                | Risk   |
-| ----------- | ----------- | ---------------------------------------------------- | ------ |
-| **Phase 1** | W1, W2      | Foundation: governance docs + git hooks              | Low    |
-| **Phase 2** | W3, W4, W7  | Core: composite actions + PR gate + Docker standards | Medium |
-| **Phase 3** | W5, W6, W8  | Consolidation: workflow merge + local dev docs       | Medium |
-| **Phase 4** | W9, W10     | Optimization: caching + spec-coverage                | Low    |
+| Phase       | Workstreams               | Focus                                                                          | Risk   |
+| ----------- | ------------------------- | ------------------------------------------------------------------------------ | ------ |
+| **Phase 1** | W1, W2                    | Foundation: governance docs + git hooks                                        | Low    |
+| **Phase 2** | W3, W4, W7                | Core: composite actions + PR gate + Docker standards                           | Medium |
+| **Phase 3** | W5, W6, W8, W11, W12, W13 | Consolidation: workflows, Gherkin remediation, specs restructuring, CLI Docker | Medium |
+| **Phase 4** | W9, W10                   | Optimization: caching + spec-coverage                                          | Low    |
 
 ## Phase 1: Foundation
 
@@ -45,8 +45,15 @@
   - [ ] Nx tags configuration (type, platform, language, domain)
 - [ ] Update `governance/development/quality/three-level-testing-standard.md`:
   - [ ] Add coverage threshold rationale section
+  - [ ] Add mandatory test levels matrix (BE: unit+int+e2e, FE: unit+e2e, CLI: unit+int, etc.)
   - [ ] Add CI workflow mapping (which workflows run which test levels)
   - [ ] Add spec-coverage validation section (planned for Phase 4)
+  - [ ] Add "no network in integration" constraint (no inbound HTTP, no outbound calls)
+  - [ ] Add Gherkin-everywhere mandate (all test levels must consume specs)
+- [ ] Update `governance/development/quality/three-level-testing-standard.md`:
+  - [ ] Align definitions with R0.2 (unit = mocked, integration = real dep + no network, e2e = full stack)
+  - [ ] Remove FE integration level (FE requires unit + e2e only)
+  - [ ] Document "external deps optional in E2E" policy
 - [ ] Update README.md CI-related sections if any are outdated
 
 **Validation**: All governance docs pass `npm run lint:md` and link validation.
@@ -349,6 +356,80 @@ hot-reload within 60 seconds.
 **Validation**: `npx nx affected -t spec-coverage` passes for all projects. Unimplemented
 scenarios are tagged `@skip` with documented rationale. PR quality gate includes spec-coverage.
 
+### W11: Gherkin Consumption Remediation
+
+FE, content platform, and OrganicLever FE unit tests currently do NOT consume Gherkin specs.
+This must be fixed so all test levels verify behavioral specs.
+
+- [ ] Add Gherkin BDD runner to FE unit test setup:
+  - [ ] Evaluate vitest-cucumber or playwright-bdd for Vitest-based unit tests
+  - [ ] Configure FE unit tests to consume `specs/apps/a-demo/fe/gherkin/*.feature`
+  - [ ] Implement step definitions for FE unit specs (MSW + JSDOM)
+- [ ] Add Gherkin consumption to demo frontend unit tests:
+  - [ ] `a-demo-fe-ts-nextjs`: wire vitest to consume FE Gherkin specs
+  - [ ] `a-demo-fe-ts-tanstack-start`: wire vitest to consume FE Gherkin specs
+  - [ ] `a-demo-fe-dart-flutterweb`: wire Flutter test to consume FE Gherkin specs
+- [ ] Add Gherkin consumption to content platform unit tests:
+  - [ ] `ayokoding-web`: wire vitest to consume `specs/apps/ayokoding/{be,fe}/gherkin/*.feature`
+  - [ ] `oseplatform-web`: wire vitest to consume `specs/apps/oseplatform/{be,fe}/gherkin/*.feature`
+- [ ] Add Gherkin consumption to OrganicLever FE unit tests:
+  - [ ] `organiclever-fe`: wire vitest to consume `specs/apps/organiclever/fe/gherkin/*.feature`
+- [ ] Remove redundant FE `test:integration` targets:
+  - [ ] Remove from `a-demo-fe-ts-nextjs/project.json`
+  - [ ] Remove from `a-demo-fe-ts-tanstack-start/project.json`
+  - [ ] Remove from `a-demo-fe-dart-flutterweb/project.json`
+  - [ ] Remove from `organiclever-fe/project.json`
+  - [ ] Update nx.json if FE integration targets have special caching rules
+- [ ] Verify all unit test suites now consume Gherkin specs:
+  - [ ] Run `rhino-cli spec-coverage validate` for each project
+  - [ ] Confirm spec-to-test mapping is complete
+
+**Validation**: Every project's unit tests consume Gherkin specs. No test level exists without
+Gherkin consumption. FE `test:integration` targets are removed.
+
+### W12: Specs Folder Restructuring
+
+Align specs folder structure with the standard defined in R0.2.
+
+- [ ] Restructure CLI specs to use `cli/gherkin/` pattern:
+  - [ ] Move `specs/apps/rhino-cli/{domain}/*.feature` to `specs/apps/rhino-cli/cli/gherkin/`
+  - [ ] Move `specs/apps/ayokoding-cli/links/*.feature` to `specs/apps/ayokoding-cli/cli/gherkin/`
+  - [ ] Move `specs/apps/oseplatform-cli/links/*.feature` to `specs/apps/oseplatform-cli/cli/gherkin/`
+  - [ ] Update all godog step definition paths in CLI project configs
+  - [ ] Update all `inputs` in project.json that reference old spec paths
+- [ ] Add missing spec directories:
+  - [ ] Create `specs/apps/a-demo/c4/` with README.md
+  - [ ] Create `specs/apps/a-demo/fs/gherkin/` with README.md
+- [ ] Add README.md to all `gherkin/` directories that lack one
+- [ ] Reclassify `ayokoding/build-tools/gherkin/` to fit the standard pattern
+- [ ] Verify all Nx cache inputs still reference correct spec paths after restructuring
+- [ ] Run full test suite to confirm no broken spec references
+
+**Validation**: `find specs -name '*.feature'` shows all feature files under `{role}/gherkin/`
+pattern. All tests pass after restructuring.
+
+### W13: CLI Docker Compose Setup
+
+Add `infra/dev/` Docker Compose for CLI apps to ensure consistent local development.
+
+- [ ] Create `infra/dev/rhino-cli/docker-compose.yml`:
+  - [ ] Go build environment with correct version (1.26)
+  - [ ] Volume mount for source code (hot-rebuild)
+  - [ ] Specs mounted read-only
+- [ ] Create `infra/dev/ayokoding-cli/docker-compose.yml`:
+  - [ ] Same pattern as rhino-cli
+  - [ ] Include golang-commons and hugo-commons lib mounts
+- [ ] Create `infra/dev/oseplatform-cli/docker-compose.yml`:
+  - [ ] Same pattern as ayokoding-cli
+- [ ] Create corresponding `Dockerfile.cli.dev` for each CLI:
+  - [ ] Based on `golang:1.26-alpine`
+  - [ ] Install required tools (golangci-lint, godog, etc.)
+- [ ] Add `dev:rhino-cli`, `dev:ayokoding-cli`, `dev:oseplatform-cli` to root package.json
+- [ ] Test each CLI can build and run tests inside the container
+
+**Validation**: `npm run dev:rhino-cli` starts a containerized dev environment. `go test ./...`
+works inside the container.
+
 ## Post-Delivery Cleanup
 
 - [ ] Delete `pr-quality-gate.yml.bak` (kept as backup during Phase 2)
@@ -358,13 +439,16 @@ scenarios are tagged `@skip` with documented rationale. PR quality gate includes
 
 ## Success Metrics
 
-| Metric                               | Before                    | Target              |
-| ------------------------------------ | ------------------------- | ------------------- |
-| GitHub Actions workflow files        | 22                        | 12 (-45%)           |
-| Total workflow YAML lines            | ~4,500                    | ~1,500 (-67%)       |
-| PR quality gate time (TS-only PR)    | ~12 min                   | ~5 min (-58%)       |
-| Adding a new backend to CI           | ~3 hours                  | ~30 min (checklist) |
-| Languages with auto-format on commit | 4 (JS/TS, Go, F#, Elixir) | 9 (+5)              |
-| Apps with spec-coverage validation   | 0                         | 25+                 |
-| CI Docker cache hit rate             | 0%                        | 80%+                |
-| Governance docs covering CI          | 0                         | 3 new docs          |
+| Metric                                   | Before                    | Target                |
+| ---------------------------------------- | ------------------------- | --------------------- |
+| GitHub Actions workflow files            | 22                        | 12 (-45%)             |
+| Total workflow YAML lines                | ~4,500                    | ~1,500 (-67%)         |
+| PR quality gate time (TS-only PR)        | ~12 min                   | ~5 min (-58%)         |
+| Adding a new backend to CI               | ~3 hours                  | ~30 min (checklist)   |
+| Languages with auto-format on commit     | 4 (JS/TS, Go, F#, Elixir) | 9 (+5)                |
+| Apps with spec-coverage validation       | 0                         | 25+                   |
+| Projects with Gherkin at all test levels | ~15 (BE + CLI only)       | All testable projects |
+| Apps with `infra/dev/` Docker Compose    | 18                        | 21 (+3 CLIs)          |
+| Redundant FE `test:integration` targets  | 5                         | 0 (removed)           |
+| CI Docker cache hit rate                 | 0%                        | 80%+                  |
+| Governance docs covering CI              | 0                         | 3 new docs            |

@@ -89,6 +89,9 @@ duplication, inconsistent patterns, and undocumented conventions.
 | W8  | [Local Development with Docker](#w8-local-development-with-docker)             | 3     | W7           |
 | W9  | [CI Docker Caching & Optimization](#w9-ci-docker-caching--optimization)        | 4     | W5, W7       |
 | W10 | [Spec-Coverage Integration](#w10-spec-coverage-integration)                    | 4     | W5           |
+| W11 | [Gherkin Consumption Remediation](#w11-gherkin-consumption-remediation)        | 3     | W1           |
+| W12 | [Specs Folder Restructuring](#w12-specs-folder-restructuring)                  | 3     | W1           |
+| W13 | [CLI Docker Compose Setup](#w13-cli-docker-compose-setup)                      | 3     | W7           |
 
 ## Context
 

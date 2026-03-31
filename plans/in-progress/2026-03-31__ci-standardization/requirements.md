@@ -116,50 +116,77 @@ by **what is real vs mocked**, not by the tooling used.
 
 ### Universal Definitions
 
-| Level           | Definition                                                                                                                                                                                                                                     | Key Constraint                        | Cacheable                                    |
-| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- | -------------------------------------------- |
-| **Unit**        | All external dependencies are **mocked or stubbed**. Tests exercise business logic in complete isolation. No real databases, filesystems, network calls, or browsers.                                                                          | Everything external is fake           | Always                                       |
-| **Integration** | At least one external dependency is **real** (database, filesystem, external service). Tests exercise the interaction between application code and real infrastructure. **No HTTP layer** -- tests call service/repository functions directly. | At least one real dependency; no HTTP | Default no; override to yes if deterministic |
-| **E2E**         | The **full system** is under test. Real HTTP requests through real servers. For web apps, a real browser (Playwright). For APIs, real HTTP clients. Tests exercise the complete request-response cycle.                                        | Full stack is real; HTTP + browser    | Never                                        |
+| Level           | Definition                                                                                                                                                                                                                                                                                                                                              | Key Constraints                                                  | Cacheable                                    |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | -------------------------------------------- |
+| **Unit**        | All external dependencies are **mocked or stubbed**. Tests exercise business logic in complete isolation. No real databases, filesystems, network calls, or browsers. **Must test Gherkin specs.**                                                                                                                                                      | Everything external is fake. No I/O.                             | Always                                       |
+| **Integration** | At least one external dependency is **real** (database, filesystem). Tests exercise the interaction between application code and real infrastructure. **No network calls** -- no inbound HTTP (no server listening) and no outbound HTTP (no calling external services). Tests call service/repository functions directly. **Must test Gherkin specs.** | Real local deps only. Zero network.                              | Default no; override to yes if deterministic |
+| **E2E**         | The **full system** is under test. Real HTTP requests through real servers. For web apps, a real browser (Playwright). For APIs, real HTTP clients. Real databases. External service dependencies are **optional** (case by case -- mock when flaky or unavailable, real when critical to verify). **Must test Gherkin specs.**                         | Full stack is real. Network is real. External deps case-by-case. | Never                                        |
 
 ### Key Distinctions
 
 **Unit vs Integration**: The boundary is whether external dependencies are real.
 A unit test with a mocked database is still a unit test even if it uses Gherkin specs.
-An integration test with a real PostgreSQL is an integration test even without HTTP.
+An integration test with a real PostgreSQL is an integration test even without network.
 
-**Integration vs E2E**: The boundary is the HTTP layer.
-Integration tests call application functions directly (service layer, repository layer).
+**Integration vs E2E**: The boundary is the network layer.
+Integration tests call application functions directly (service layer, repository layer) --
+no server is running, no HTTP requests are made (inbound or outbound).
 E2E tests send real HTTP requests to a running server.
 
-**Why no HTTP in integration**: Isolating database interaction from HTTP routing makes failures
-easier to diagnose. If an integration test fails, the bug is in the data layer. If an E2E test
-fails, the bug could be anywhere in the stack.
+**Why no network in integration**: Isolating database/filesystem interaction from HTTP routing
+makes failures easier to diagnose. If an integration test fails, the bug is in the data layer.
+If an E2E test fails, the bug could be anywhere in the stack. "No network" means no listening
+server and no outbound calls to external services -- the test process talks directly to the
+database/filesystem, not through HTTP.
+
+**Gherkin everywhere**: ALL test levels (unit, integration, e2e) MUST consume Gherkin specs from
+`specs/`. The same feature files are used across all levels -- only the step implementations
+differ (mocked vs real dependencies). This ensures behavioral consistency: if a Gherkin scenario
+passes at the unit level with mocks, it must also pass at the integration level with a real
+database, and at the E2E level with real HTTP.
+
+### Mandatory Test Levels by App Type
+
+Not all app types need all three levels. The matrix below defines which levels are **mandatory**.
+
+| App Type             | Unit | Integration | E2E | Rationale                                                                                                                         |
+| -------------------- | ---- | ----------- | --- | --------------------------------------------------------------------------------------------------------------------------------- |
+| **Backend (BE)**     | Yes  | Yes         | Yes | Full business logic + data layer + HTTP routing all need verification.                                                            |
+| **Frontend (FE)**    | Yes  | --          | Yes | FE has no local infrastructure (no DB, no filesystem). Integration would be identical to unit. E2E tests the real BE+FE contract. |
+| **Fullstack (FS)**   | Yes  | Yes         | Yes | Same as BE -- has data layer that needs real DB testing.                                                                          |
+| **CLI**              | Yes  | Yes         | --  | CLIs interact with filesystem (needs integration) but have no HTTP/browser layer (no E2E).                                        |
+| **Content Platform** | Yes  | --          | Yes | Content platforms are FE-heavy with tRPC. No local DB to integrate with. E2E tests real server.                                   |
+| **Library**          | Yes  | Varies      | --  | Libraries have no deployment. Integration only if they interact with real I/O.                                                    |
 
 ### App-Type-Specific Manifestations
 
-| App Type             | Unit (mocked)                                                                      | Integration (real dep)                                                                         | E2E (full stack)                                                               |
-| -------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| **Backend (BE)**     | Mocked DB + repositories. Call service functions. Gherkin via language-native BDD. | Real PostgreSQL via Docker. Call service functions directly (no HTTP). Gherkin specs.          | Real PostgreSQL + real HTTP server + Playwright. Gherkin specs.                |
-| **Frontend (FE)**    | MSW for API mocking. JSDOM/happy-dom for DOM. Vitest/Jest.                         | MSW for API mocking. JSDOM/happy-dom. Differs from unit only in scope (cross-component flows). | Real backend + real browser (Playwright). Gherkin specs.                       |
-| **Fullstack (FS)**   | Mocked DB. JSDOM for UI. Call service functions. Gherkin specs.                    | Real PostgreSQL via Docker. Call service functions directly (no HTTP). Gherkin specs.          | Real PostgreSQL + real HTTP server + real browser (Playwright). Gherkin specs. |
-| **CLI**              | Mocked filesystem I/O via package-level function variables. Godog BDD.             | Real filesystem via `/tmp` fixtures. Godog BDD. Drives commands in-process via `cmd.RunE()`.   | N/A (no HTTP, no browser).                                                     |
-| **Content Platform** | Mocked tRPC. JSDOM for UI components. Vitest.                                      | Real tRPC router (in-process, no HTTP). No browser.                                            | Real HTTP server + real browser (Playwright). Separate BE and FE E2E suites.   |
-| **Library**          | Mocked dependencies. Language-native test framework.                               | Real dependencies (filesystem, etc.) if applicable.                                            | N/A (libraries are not deployed).                                              |
+| App Type             | Unit (mocked)                                                                             | Integration (real dep, no network)                                                                          | E2E (full stack)                                                                                              |
+| -------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| **Backend (BE)**     | Mocked DB + repositories. Call service functions. Gherkin via language-native BDD.        | Real PostgreSQL via Docker. Call service functions directly. No server running, no HTTP. Gherkin specs.     | Real PostgreSQL + real HTTP server + Playwright. External service deps mocked unless critical. Gherkin specs. |
+| **Frontend (FE)**    | MSW for API mocking. JSDOM/happy-dom for DOM. Gherkin specs via Vitest BDD.               | -- (not applicable)                                                                                         | Real backend + real browser (Playwright). Gherkin specs.                                                      |
+| **Fullstack (FS)**   | Mocked DB. JSDOM for UI. Call service functions. Gherkin specs.                           | Real PostgreSQL via Docker. Call service functions directly. No server running. Gherkin specs.              | Real PostgreSQL + real HTTP server + real browser (Playwright). Gherkin specs.                                |
+| **CLI**              | Mocked filesystem I/O via package-level function variables. Godog BDD with Gherkin specs. | Real filesystem via `/tmp` fixtures. Godog BDD. Drives commands in-process via `cmd.RunE()`. Gherkin specs. | -- (not applicable)                                                                                           |
+| **Content Platform** | Mocked tRPC. JSDOM for UI components. Gherkin specs via Vitest BDD.                       | -- (not applicable)                                                                                         | Real HTTP server + real browser (Playwright). Separate BE and FE E2E suites. Gherkin specs.                   |
+| **Library**          | Mocked dependencies. Gherkin specs where applicable.                                      | Real dependencies (filesystem, etc.) if applicable. Gherkin specs.                                          | -- (not applicable)                                                                                           |
 
 ### Gherkin Consumption by Test Level
 
-| App Type         | Unit   | Integration | E2E |
-| ---------------- | ------ | ----------- | --- |
-| Backend (BE)     | Yes    | Yes         | Yes |
-| Frontend (FE)    | No     | No          | Yes |
-| Fullstack (FS)   | Yes    | Yes         | Yes |
-| CLI              | Yes    | Yes         | N/A |
-| Content Platform | No     | No          | Yes |
-| Library          | Varies | Varies      | N/A |
+**ALL test levels MUST consume Gherkin specs.** This is a hard requirement -- no exceptions.
 
-**All three levels that consume Gherkin specs use the SAME feature files** from `specs/`. Only
+| App Type         | Unit | Integration         | E2E |
+| ---------------- | ---- | ------------------- | --- |
+| Backend (BE)     | Yes  | Yes                 | Yes |
+| Frontend (FE)    | Yes  | --                  | Yes |
+| Fullstack (FS)   | Yes  | Yes                 | Yes |
+| CLI              | Yes  | Yes                 | --  |
+| Content Platform | Yes  | --                  | Yes |
+| Library          | Yes  | Yes (if applicable) | --  |
+
+**All levels that consume Gherkin specs use the SAME feature files** from `specs/`. Only
 the step implementations differ (mocked vs real dependencies).
+
+**Current gap**: Frontend and content platform unit tests do NOT currently consume Gherkin specs.
+This must be remediated as part of this plan.
 
 ### Coverage Thresholds with Rationale
 
@@ -173,6 +200,59 @@ the step implementations differ (mocked vs real dependencies).
 
 Coverage is measured at the **unit test level only** and enforced by
 `rhino-cli test-coverage validate` as part of the `test:quick` target.
+
+### Specs Folder Standard
+
+Every app domain in `specs/` MUST contain the following subdirectories (where applicable):
+
+```
+specs/apps/{domain}/
+├── contracts/           # OpenAPI 3.1 spec (if app has API contract)
+├── c4/                  # C4 architecture diagrams
+├── be/gherkin/          # Backend Gherkin specs (if app has BE)
+├── fe/gherkin/          # Frontend Gherkin specs (if app has FE)
+├── fs/gherkin/          # Fullstack Gherkin specs (if app is FS)
+└── cli/gherkin/         # CLI Gherkin specs (if app is CLI)
+```
+
+**Key rules**:
+
+- Gherkin specs ALWAYS live under a `gherkin/` subdirectory (including CLIs -- eliminates
+  current inconsistency where CLI specs use flat domain directories)
+- The service-type subdirectory (`be/`, `fe/`, `fs/`, `cli/`) matches the role segment of the
+  app directory name
+- `contracts/` and `c4/` are optional but MUST exist for any app with an API contract or
+  documented architecture
+- Every `gherkin/` directory MUST contain a `README.md` explaining the spec scope
+
+### Docker Compose Standard for All Apps
+
+**Every app** MUST have a Docker Compose setup under `infra/dev/{app-name}/` for both local
+development and CI. This includes:
+
+| File                    | Purpose                               | Required For                           |
+| ----------------------- | ------------------------------------- | -------------------------------------- |
+| `docker-compose.yml`    | Local development with hot-reload     | All apps                               |
+| `docker-compose.ci.yml` | CI overlay (production env, test API) | All apps with E2E or integration tests |
+
+**Current gaps** (apps missing `infra/dev/` setup):
+
+| App                   | Has `infra/dev/`                    | Gap                                |
+| --------------------- | ----------------------------------- | ---------------------------------- |
+| `organiclever-be`     | Yes (via `infra/dev/organiclever/`) | OK                                 |
+| `organiclever-fe`     | Yes (via `infra/dev/organiclever/`) | OK                                 |
+| `ayokoding-web`       | Yes                                 | OK                                 |
+| `oseplatform-web`     | Yes                                 | OK                                 |
+| All `a-demo-be-*`     | Yes                                 | OK                                 |
+| All `a-demo-fe-*`     | Yes                                 | OK                                 |
+| `a-demo-fs-ts-nextjs` | Yes                                 | OK                                 |
+| `rhino-cli`           | **No**                              | Needs `infra/dev/rhino-cli/`       |
+| `ayokoding-cli`       | **No**                              | Needs `infra/dev/ayokoding-cli/`   |
+| `oseplatform-cli`     | **No**                              | Needs `infra/dev/oseplatform-cli/` |
+
+**CLI apps**: Even though CLIs don't need a database, they benefit from a Docker Compose dev
+setup for consistent local development. The compose file would provide a containerized build
+environment with the correct Go version and tools, ensuring reproducibility.
 
 ## Current State Audit
 
@@ -320,51 +400,69 @@ variations in base image, build commands, and spec mounting.
 #### R3.2: Frontend Testing (3 implementations)
 
 All demo frontends share Gherkin specs from `specs/apps/a-demo/fe/gherkin/`.
+Per R0.2, frontends require **unit + e2e** only (no integration -- no local infrastructure).
 
 - **Unit**: MSW for API mocking, JSDOM/happy-dom for DOM, Vitest. Coverage measured here (70%).
-- **Integration**: Same as unit (MSW + JSDOM). Differs only in scope (cross-component flows).
-  Cache overridden to `true`.
-- **E2E**: Real Go backend + real browser (Playwright) via `a-demo-fe-e2e`. Gherkin specs
-  consumed at this level only.
+- **E2E**: Real Go backend + real browser (Playwright) via `a-demo-fe-e2e`. Gherkin specs.
 
-**Gap**: Frontend unit/integration tests do not consume Gherkin specs (only E2E does).
+**Gaps**:
+
+- Frontend unit tests do **not** currently consume Gherkin specs. Must be remediated.
+- Current `test:integration` target exists but is redundant (identical to unit with MSW).
+  Should be removed or repurposed.
 
 #### R3.3: Fullstack Testing (1 implementation)
 
 `a-demo-fs-ts-nextjs` combines backend and frontend in a single Next.js app.
+Per R0.2, fullstack requires **unit + integration + e2e** (same as BE -- has data layer).
 
 - **Unit**: Mocked DB, JSDOM. Consumes BE Gherkin specs. Coverage measured here (75%).
-- **Integration**: Real PostgreSQL via Docker. Direct function calls (no HTTP). Gherkin specs.
+- **Integration**: Real PostgreSQL via Docker. Direct function calls (no network). Gherkin specs.
 - **E2E**: Full stack + Playwright. Gherkin specs.
 
 #### R3.4: CLI Testing (3 implementations)
 
 All CLIs written in Go, using godog for Gherkin BDD at both unit and integration levels.
+Per R0.2, CLIs require **unit + integration** only (no E2E -- no HTTP/browser).
 
 - **Unit**: Mocked filesystem I/O via package-level function variables. Coverage measured here
-  (90%).
+  (90%). Gherkin specs via godog.
 - **Integration**: Real filesystem via `/tmp` fixtures. Drives commands in-process via
-  `cmd.RunE()`. Cache overridden to `true` (deterministic tmpdir fixtures).
-- **E2E**: N/A (CLIs have no HTTP or browser layer).
+  `cmd.RunE()`. Cache overridden to `true` (deterministic tmpdir fixtures). Gherkin specs.
 
-**Status**: Well-standardized. No Docker needed.
+**Status**: Well-standardized. Gherkin consumed at both levels.
+
+**Gap**: No `infra/dev/` Docker Compose setup for local development. Must be added per
+[Docker Compose Standard](#docker-compose-standard-for-all-apps).
 
 #### R3.5: Content Platform Testing (2 implementations)
 
 ayokoding-web and oseplatform-web (Next.js 16 with tRPC).
+Per R0.2, content platforms require **unit + e2e** only (no local DB to integrate with).
 
 - **Unit (BE + FE)**: Mocked tRPC, JSDOM for UI. Vitest. Coverage measured here (80%).
-- **Integration**: Real tRPC router (in-process, no HTTP). No browser.
 - **E2E**: Separate BE and FE E2E suites via Playwright (`{app}-be-e2e`, `{app}-fe-e2e`).
+
+**Gaps**:
+
+- Unit tests do **not** currently consume Gherkin specs. Must be remediated.
+- Current `test:integration` target exists but is not a true integration test (no real local
+  dependency). Should be evaluated for removal or reclassification.
 
 #### R3.6: OrganicLever Testing
 
-Follows BE (F#/Giraffe) and FE (Next.js) patterns with product-specific specs.
+Follows the mandatory test levels for its component types: BE requires unit + integration + e2e;
+FE requires unit + e2e.
 
-- **organiclever-be**: Unit (mocked, 90%), Integration (real PostgreSQL, Docker), E2E (Playwright
-  via `organiclever-be-e2e`).
-- **organiclever-fe**: Unit (MSW, 70%), Integration (MSW, cacheable), E2E (full stack + Playwright
-  via `organiclever-fe-e2e`).
+- **organiclever-be**: Unit (mocked, 90%, Gherkin), Integration (real PostgreSQL, Docker, Gherkin),
+  E2E (Playwright via `organiclever-be-e2e`, Gherkin).
+- **organiclever-fe**: Unit (MSW, 70%), E2E (full stack + Playwright via `organiclever-fe-e2e`).
+
+**Gaps**:
+
+- organiclever-fe unit tests do **not** consume Gherkin specs. Must be remediated.
+- organiclever-fe currently has a `test:integration` target (MSW-based) that is redundant.
+  Should be removed per the FE standard (unit + e2e only).
 
 ### R4: Specs Folder Structure
 
@@ -401,13 +499,16 @@ specs/
 └── apps-labs/                   # Empty (future)
 ```
 
-**Gaps**:
+**Gaps** (measured against the standard in
+[R0.2 Specs Folder Standard](#specs-folder-standard)):
 
 - `a-demo/` lacks `c4/` directory (other apps have it)
-- CLI specs use inconsistent subdirectory structure (flat domains vs `gherkin/` nesting)
-- No `specs/apps/a-demo/fs/gherkin/` for fullstack-specific specs
-- No README.md in several spec subdirectories
+- `a-demo/` lacks `fs/gherkin/` for fullstack-specific specs
+- CLI specs (`rhino-cli/`, `ayokoding-cli/`, `oseplatform-cli/`) use flat domain directories
+  without `cli/gherkin/` nesting -- must be restructured to `specs/apps/{cli}/cli/gherkin/`
+- No README.md in several `gherkin/` subdirectories
 - `apps-labs/` exists but is empty with no convention documented
+- `ayokoding/build-tools/gherkin/` doesn't follow the `{role}/gherkin/` pattern
 
 #### R4.2: Contract Specs
 
@@ -601,12 +702,16 @@ CI overlays extend dev compose files with:
 
 ### R7: Missing CI Coverage
 
-| Gap                                                      | Impact                                | Priority |
-| -------------------------------------------------------- | ------------------------------------- | -------- |
-| spec-coverage validation not in CI                       | Specs can drift from tests undetected | High     |
-| Python/Rust/C#/Clojure/Dart not auto-formatted on commit | Manual formatting burden              | Medium   |
-| No Docker layer caching in CI                            | Slow integration/E2E test cycles      | Medium   |
-| Frontend unit/integration tests don't consume Gherkin    | Spec coverage gap                     | Low      |
+| Gap                                                             | Impact                                      | Priority |
+| --------------------------------------------------------------- | ------------------------------------------- | -------- |
+| FE/content platform unit tests don't consume Gherkin specs      | Behavioral specs not verified at unit level | High     |
+| spec-coverage validation not in CI                              | Specs can drift from tests undetected       | High     |
+| CLI apps lack `infra/dev/` Docker Compose setup                 | Inconsistent local dev experience           | High     |
+| FE `test:integration` targets are redundant (identical to unit) | Misleading test levels                      | Medium   |
+| Python/Rust/C#/Clojure/Dart not auto-formatted on commit        | Manual formatting burden                    | Medium   |
+| No Docker layer caching in CI                                   | Slow integration/E2E test cycles            | Medium   |
+| CLI specs use flat domain dirs instead of `cli/gherkin/`        | Inconsistent with other app types           | Medium   |
+| `a-demo/` lacks `c4/` and `fs/gherkin/` directories             | Incomplete spec folder structure            | Low      |
 
 ## Acceptance Criteria
 

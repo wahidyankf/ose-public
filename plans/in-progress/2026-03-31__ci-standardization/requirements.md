@@ -1,5 +1,179 @@
 # Requirements: CI/CD Standardization
 
+## R0: Naming Conventions
+
+### R0.1: Current Naming Patterns
+
+#### App Directory Naming
+
+Pattern: `{domain}-{role}-{lang}-{framework}` or `{domain}-{role}` or `{domain}-{tool}`
+
+| Segment   | Values                                                                                                                                                      | Examples |
+| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| domain    | `a-demo`, `organiclever`, `ayokoding`, `oseplatform`, `rhino`                                                                                               |          |
+| role      | `be` (backend), `fe` (frontend), `fs` (fullstack), `web` (content), `cli`                                                                                   |          |
+| lang      | `golang`, `java`, `ts`, `python`, `rust`, `kotlin`, `fsharp`, `csharp`, `clojure`, `elixir`, `dart`                                                         |          |
+| framework | `gin`, `springboot`, `vertx`, `effect`, `fastapi`, `axum`, `ktor`, `giraffe`, `aspnetcore`, `pedestal`, `phoenix`, `nextjs`, `tanstack-start`, `flutterweb` |          |
+
+**Consistent examples**: `a-demo-be-golang-gin`, `a-demo-fe-ts-nextjs`, `a-demo-fs-ts-nextjs`
+
+**Inconsistencies**:
+
+| Artifact                 | Current Name             | Expected Name (if consistent) | Issue                                   |
+| ------------------------ | ------------------------ | ----------------------------- | --------------------------------------- |
+| E2E app (demo BE)        | `a-demo-be-e2e`          | `a-demo-be-e2e`               | OK -- shared across all BE impls        |
+| E2E app (ayokoding BE)   | `ayokoding-web-be-e2e`   | `ayokoding-be-e2e`            | `web` inserted inconsistently           |
+| E2E app (ayokoding FE)   | `ayokoding-web-fe-e2e`   | `ayokoding-fe-e2e`            | `web` inserted inconsistently           |
+| E2E app (oseplatform BE) | `oseplatform-web-be-e2e` | `oseplatform-be-e2e`          | `web` inserted inconsistently           |
+| E2E app (oseplatform FE) | `oseplatform-web-fe-e2e` | `oseplatform-fe-e2e`          | `web` inserted inconsistently           |
+| Content platform         | `ayokoding-web`          | `ayokoding-web`               | OK -- `web` is the role, not a modifier |
+| Content platform         | `oseplatform-web`        | `oseplatform-web`             | OK                                      |
+
+**Analysis**: The E2E apps for content platforms use `{domain}-web-{role}-e2e` while the main apps
+use `{domain}-web`. The `web` is part of the domain identity (the app IS `ayokoding-web`), so the
+E2E naming `ayokoding-web-be-e2e` correctly derives from the app name. This is actually **consistent**
+-- the pattern is `{app-name}-{role}-e2e` where `app-name = ayokoding-web`. **No rename needed.**
+
+#### GitHub Actions Workflow Naming
+
+| Pattern                          | Examples                               | Count |
+| -------------------------------- | -------------------------------------- | ----- |
+| `test-{app-name}.yml`            | `test-a-demo-be-golang-gin.yml`        | 16    |
+| `test-and-deploy-{app-name}.yml` | `test-and-deploy-ayokoding-web.yml`    | 2     |
+| `pr-{action}.yml`                | `pr-quality-gate.yml`, `pr-format.yml` | 3     |
+| `{function}.yml`                 | `codecov-upload.yml`                   | 1     |
+| **Exception**                    | `test-organiclever.yml`                | 1     |
+
+**Inconsistency**: `test-organiclever.yml` covers both BE and FE testing in a single workflow.
+All other apps have separate per-component workflows. Should be either split into
+`test-organiclever-be.yml` + `test-organiclever-fe.yml` or explicitly documented as the
+multi-component pattern.
+
+#### Docker File Naming
+
+| Type             | Location           | Name Pattern             |
+| ---------------- | ------------------ | ------------------------ |
+| Production       | `apps/{app}/`      | `Dockerfile`             |
+| Integration test | `apps/{app}/`      | `Dockerfile.integration` |
+| Dev (backend)    | `infra/dev/{app}/` | `Dockerfile.be.dev`      |
+| Dev (frontend)   | `infra/dev/{app}/` | `Dockerfile.fe.dev`      |
+| CI (special)     | `infra/dev/{app}/` | `Dockerfile.be.ci`       |
+
+**Inconsistency**: Dev Dockerfiles use `Dockerfile.{role}.dev` but only Elixir has a
+`Dockerfile.be.ci`. No other language has a CI-specific Dockerfile.
+
+#### Docker Compose File Naming
+
+| Type             | Location                              | Name Pattern                     |
+| ---------------- | ------------------------------------- | -------------------------------- |
+| Development      | `infra/dev/{app}/`                    | `docker-compose.yml`             |
+| CI overlay       | `infra/dev/{app}/`                    | `docker-compose.ci.yml`          |
+| Integration test | `apps/{app}/`                         | `docker-compose.integration.yml` |
+| **Exception**    | `infra/dev/a-demo-be-elixir-phoenix/` | `docker-compose.ci-e2e.yml`      |
+
+**Inconsistency**: Elixir has a unique `docker-compose.ci-e2e.yml` that no other app uses.
+
+#### infra/dev Directory Naming
+
+| Pattern                 | Examples                                     |
+| ----------------------- | -------------------------------------------- |
+| `infra/dev/{app-name}/` | `infra/dev/a-demo-be-golang-gin/`            |
+| **Exception**           | `infra/dev/organiclever/` (BE + FE combined) |
+
+**Inconsistency**: OrganicLever uses a single `infra/dev/organiclever/` directory containing both
+`Dockerfile.be.dev` and `Dockerfile.fe.dev`, while all other apps have one directory per app.
+This works because organiclever-be and organiclever-fe share a single docker-compose.yml for
+full-stack local development. **No rename needed** -- the combined directory is intentional for
+co-dependent services.
+
+#### Specs Directory Naming
+
+| App Type     | Pattern                               | Example                               |
+| ------------ | ------------------------------------- | ------------------------------------- |
+| Demo apps    | `specs/apps/a-demo/{role}/gherkin/`   | `specs/apps/a-demo/be/gherkin/`       |
+| Product apps | `specs/apps/{domain}/{role}/gherkin/` | `specs/apps/organiclever/be/gherkin/` |
+| CLIs         | `specs/apps/{cli-name}/{domain}/`     | `specs/apps/rhino-cli/test-coverage/` |
+| Libraries    | `specs/libs/{lib-name}/{domain}/`     | `specs/libs/golang-commons/timeutil/` |
+
+**Inconsistency**: CLI specs use flat domain directories without a `gherkin/` subdirectory, while
+app BE/FE specs always nest under `gherkin/`. The CLI specs contain `.feature` files directly
+under each domain directory.
+
+#### Proposed Naming Standard for New Artifacts
+
+| Artifact              | Pattern                                     | Example                             |
+| --------------------- | ------------------------------------------- | ----------------------------------- |
+| Composite action      | `.github/actions/setup-{tool}/action.yml`   | `setup-golang/action.yml`           |
+| Reusable workflow     | `.github/workflows/_reusable-{purpose}.yml` | `_reusable-backend-integration.yml` |
+| Consolidated workflow | `.github/workflows/test-{group}.yml`        | `test-demo-backends.yml`            |
+| npm dev script        | `dev:{app-name}`                            | `dev:a-demo-be-golang-gin`          |
+
+## R0.2: Standardized Test Level Definitions
+
+The three-level testing standard defines **unit**, **integration**, and **e2e** tests. These
+definitions MUST be consistent across all app types. The difference between levels is defined
+by **what is real vs mocked**, not by the tooling used.
+
+### Universal Definitions
+
+| Level           | Definition                                                                                                                                                                                                                                     | Key Constraint                        | Cacheable                                    |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- | -------------------------------------------- |
+| **Unit**        | All external dependencies are **mocked or stubbed**. Tests exercise business logic in complete isolation. No real databases, filesystems, network calls, or browsers.                                                                          | Everything external is fake           | Always                                       |
+| **Integration** | At least one external dependency is **real** (database, filesystem, external service). Tests exercise the interaction between application code and real infrastructure. **No HTTP layer** -- tests call service/repository functions directly. | At least one real dependency; no HTTP | Default no; override to yes if deterministic |
+| **E2E**         | The **full system** is under test. Real HTTP requests through real servers. For web apps, a real browser (Playwright). For APIs, real HTTP clients. Tests exercise the complete request-response cycle.                                        | Full stack is real; HTTP + browser    | Never                                        |
+
+### Key Distinctions
+
+**Unit vs Integration**: The boundary is whether external dependencies are real.
+A unit test with a mocked database is still a unit test even if it uses Gherkin specs.
+An integration test with a real PostgreSQL is an integration test even without HTTP.
+
+**Integration vs E2E**: The boundary is the HTTP layer.
+Integration tests call application functions directly (service layer, repository layer).
+E2E tests send real HTTP requests to a running server.
+
+**Why no HTTP in integration**: Isolating database interaction from HTTP routing makes failures
+easier to diagnose. If an integration test fails, the bug is in the data layer. If an E2E test
+fails, the bug could be anywhere in the stack.
+
+### App-Type-Specific Manifestations
+
+| App Type             | Unit (mocked)                                                                      | Integration (real dep)                                                                         | E2E (full stack)                                                               |
+| -------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| **Backend (BE)**     | Mocked DB + repositories. Call service functions. Gherkin via language-native BDD. | Real PostgreSQL via Docker. Call service functions directly (no HTTP). Gherkin specs.          | Real PostgreSQL + real HTTP server + Playwright. Gherkin specs.                |
+| **Frontend (FE)**    | MSW for API mocking. JSDOM/happy-dom for DOM. Vitest/Jest.                         | MSW for API mocking. JSDOM/happy-dom. Differs from unit only in scope (cross-component flows). | Real backend + real browser (Playwright). Gherkin specs.                       |
+| **Fullstack (FS)**   | Mocked DB. JSDOM for UI. Call service functions. Gherkin specs.                    | Real PostgreSQL via Docker. Call service functions directly (no HTTP). Gherkin specs.          | Real PostgreSQL + real HTTP server + real browser (Playwright). Gherkin specs. |
+| **CLI**              | Mocked filesystem I/O via package-level function variables. Godog BDD.             | Real filesystem via `/tmp` fixtures. Godog BDD. Drives commands in-process via `cmd.RunE()`.   | N/A (no HTTP, no browser).                                                     |
+| **Content Platform** | Mocked tRPC. JSDOM for UI components. Vitest.                                      | Real tRPC router (in-process, no HTTP). No browser.                                            | Real HTTP server + real browser (Playwright). Separate BE and FE E2E suites.   |
+| **Library**          | Mocked dependencies. Language-native test framework.                               | Real dependencies (filesystem, etc.) if applicable.                                            | N/A (libraries are not deployed).                                              |
+
+### Gherkin Consumption by Test Level
+
+| App Type         | Unit   | Integration | E2E |
+| ---------------- | ------ | ----------- | --- |
+| Backend (BE)     | Yes    | Yes         | Yes |
+| Frontend (FE)    | No     | No          | Yes |
+| Fullstack (FS)   | Yes    | Yes         | Yes |
+| CLI              | Yes    | Yes         | N/A |
+| Content Platform | No     | No          | Yes |
+| Library          | Varies | Varies      | N/A |
+
+**All three levels that consume Gherkin specs use the SAME feature files** from `specs/`. Only
+the step implementations differ (mocked vs real dependencies).
+
+### Coverage Thresholds with Rationale
+
+| Tier                   | Threshold | Rationale                                                                                                                                                                       |
+| ---------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Backend (90%)          | 90%       | Pure business logic with injectable dependencies. Infrastructure code (DB adapters, HTTP handlers, config, main) is excluded via coverage exclusion patterns. High testability. |
+| CLI (90%)              | 90%       | Pure command logic with mockable I/O. Similar testability profile to backends.                                                                                                  |
+| Content Platform (80%) | 80%       | Mix of business logic (tRPC routers, content processing) and UI rendering. UI components are harder to unit test meaningfully.                                                  |
+| Fullstack (75%)        | 75%       | Single app serving both API and UI. UI rendering code inflates the denominator, making 90% impractical without testing trivial render paths.                                    |
+| Frontend (70%)         | 70%       | UI-heavy code where meaningful unit test coverage has diminishing returns beyond ~70%. API/auth/query layers are fully mocked by design.                                        |
+
+Coverage is measured at the **unit test level only** and enforced by
+`rhino-cli test-coverage validate` as part of the `test:quick` target.
+
 ## Current State Audit
 
 ### R1: Git Hooks
@@ -118,36 +292,40 @@ npm run lint:md
 | Fullstack (FS)    | 75%                | a-demo-fs-ts-nextjs                       |
 | Frontends (FE)    | 70%                | 3 demo frontends, organiclever-fe         |
 
-**Gap**: Coverage threshold rationale is undocumented. Needs explicit justification in governance.
+**Gap**: Coverage threshold rationale is undocumented. Now addressed in
+[R0.2 Coverage Thresholds](#coverage-thresholds-with-rationale).
 
-### R3: Three-Level Testing
+### R3: Three-Level Testing (Current State)
+
+Test level definitions and coverage thresholds are standardized in
+[R0.2](#r02-standardized-test-level-definitions). This section documents the **current
+implementation status** per app type.
 
 #### R3.1: Backend Testing (11 implementations)
 
 All demo backends share Gherkin specs from `specs/apps/a-demo/be/gherkin/` (14 feature files,
-78 scenarios).
+78 scenarios). All three test levels consume the same feature files -- only step implementations
+differ.
 
-| Level       | Real DB          | Real HTTP            | Gherkin | Docker | Cacheable |
-| ----------- | ---------------- | -------------------- | ------- | ------ | --------- |
-| Unit        | No               | No                   | Yes     | No     | Yes       |
-| Integration | Yes (PostgreSQL) | **No**               | Yes     | Yes    | No        |
-| E2E         | Yes (PostgreSQL) | **Yes** (Playwright) | Yes     | Yes    | No        |
-
-**Key constraint**: Integration tests call service functions directly -- no HTTP layer. This is
-intentional to isolate database interaction testing from HTTP routing concerns.
+- **Unit**: Language-native BDD runners (godog, Cucumber, TickSpec, Cabbage, etc.) with mocked
+  repositories. Coverage measured here (90% threshold).
+- **Integration**: Real PostgreSQL via `docker-compose.integration.yml` +
+  `Dockerfile.integration`. Call service functions directly -- **no HTTP**.
+- **E2E**: Full stack (DB + backend + frontend) via `docker-compose.yml` +
+  `docker-compose.ci.yml`. Playwright tests via `a-demo-be-e2e`.
 
 **Gap**: No `Dockerfile.integration` template documented. Each backend has its own with slight
-variations.
+variations in base image, build commands, and spec mounting.
 
 #### R3.2: Frontend Testing (3 implementations)
 
 All demo frontends share Gherkin specs from `specs/apps/a-demo/fe/gherkin/`.
 
-| Level       | API Mocking  | Browser         | Gherkin | Docker | Cacheable        |
-| ----------- | ------------ | --------------- | ------- | ------ | ---------------- |
-| Unit        | MSW          | JSDOM/happy-dom | No      | No     | Yes              |
-| Integration | MSW          | JSDOM/happy-dom | No      | No     | Yes (overridden) |
-| E2E         | Real backend | Playwright      | Yes     | Yes    | No               |
+- **Unit**: MSW for API mocking, JSDOM/happy-dom for DOM, Vitest. Coverage measured here (70%).
+- **Integration**: Same as unit (MSW + JSDOM). Differs only in scope (cross-component flows).
+  Cache overridden to `true`.
+- **E2E**: Real Go backend + real browser (Playwright) via `a-demo-fe-e2e`. Gherkin specs
+  consumed at this level only.
 
 **Gap**: Frontend unit/integration tests do not consume Gherkin specs (only E2E does).
 
@@ -155,48 +333,38 @@ All demo frontends share Gherkin specs from `specs/apps/a-demo/fe/gherkin/`.
 
 `a-demo-fs-ts-nextjs` combines backend and frontend in a single Next.js app.
 
-| Level       | Real DB | Browser    | Gherkin        | Docker | Cacheable |
-| ----------- | ------- | ---------- | -------------- | ------ | --------- |
-| Unit        | No      | JSDOM      | Yes (BE specs) | No     | Yes       |
-| Integration | Yes     | No         | Yes            | Yes    | No        |
-| E2E         | Yes     | Playwright | Yes            | Yes    | No        |
-
-**Gap**: No dedicated E2E workflow in GitHub Actions for fullstack app. Currently tested as part
-of frontend E2E.
+- **Unit**: Mocked DB, JSDOM. Consumes BE Gherkin specs. Coverage measured here (75%).
+- **Integration**: Real PostgreSQL via Docker. Direct function calls (no HTTP). Gherkin specs.
+- **E2E**: Full stack + Playwright. Gherkin specs.
 
 #### R3.4: CLI Testing (3 implementations)
 
-All CLIs written in Go, using godog for Gherkin BDD.
+All CLIs written in Go, using godog for Gherkin BDD at both unit and integration levels.
 
-| Level       | Real Filesystem       | Gherkin     | Docker | Cacheable        |
-| ----------- | --------------------- | ----------- | ------ | ---------------- |
-| Unit        | No (mocked I/O)       | Yes (godog) | No     | Yes              |
-| Integration | Yes (`/tmp` fixtures) | Yes (godog) | No     | Yes (overridden) |
-| E2E         | N/A                   | N/A         | N/A    | N/A              |
+- **Unit**: Mocked filesystem I/O via package-level function variables. Coverage measured here
+  (90%).
+- **Integration**: Real filesystem via `/tmp` fixtures. Drives commands in-process via
+  `cmd.RunE()`. Cache overridden to `true` (deterministic tmpdir fixtures).
+- **E2E**: N/A (CLIs have no HTTP or browser layer).
 
-**Status**: Well-standardized. No Docker needed for CLI testing.
+**Status**: Well-standardized. No Docker needed.
 
 #### R3.5: Content Platform Testing (2 implementations)
 
-ayokoding-web and oseplatform-web (Next.js 16).
+ayokoding-web and oseplatform-web (Next.js 16 with tRPC).
 
-| Level          | Real API    | Browser    | Docker | Cacheable |
-| -------------- | ----------- | ---------- | ------ | --------- |
-| Unit (BE + FE) | No          | JSDOM      | No     | Yes       |
-| Integration    | Real tRPC   | No         | No     | Yes       |
-| E2E (BE)       | Real tRPC   | No         | Yes    | No        |
-| E2E (FE)       | Real server | Playwright | Yes    | No        |
+- **Unit (BE + FE)**: Mocked tRPC, JSDOM for UI. Vitest. Coverage measured here (80%).
+- **Integration**: Real tRPC router (in-process, no HTTP). No browser.
+- **E2E**: Separate BE and FE E2E suites via Playwright (`{app}-be-e2e`, `{app}-fe-e2e`).
 
 #### R3.6: OrganicLever Testing
 
-| Component       | Level       | Real DB          | Docker | Cacheable |
-| --------------- | ----------- | ---------------- | ------ | --------- |
-| organiclever-be | Unit        | No               | No     | Yes       |
-| organiclever-be | Integration | Yes (PostgreSQL) | Yes    | No        |
-| organiclever-be | E2E         | Yes              | Yes    | No        |
-| organiclever-fe | Unit        | No (MSW)         | No     | Yes       |
-| organiclever-fe | Integration | No (MSW)         | No     | Yes       |
-| organiclever-fe | E2E         | Yes (full stack) | Yes    | No        |
+Follows BE (F#/Giraffe) and FE (Next.js) patterns with product-specific specs.
+
+- **organiclever-be**: Unit (mocked, 90%), Integration (real PostgreSQL, Docker), E2E (Playwright
+  via `organiclever-be-e2e`).
+- **organiclever-fe**: Unit (MSW, 70%), Integration (MSW, cacheable), E2E (full stack + Playwright
+  via `organiclever-fe-e2e`).
 
 ### R4: Specs Folder Structure
 

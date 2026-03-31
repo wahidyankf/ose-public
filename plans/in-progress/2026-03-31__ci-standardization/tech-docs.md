@@ -60,7 +60,7 @@ Each composite action:
 **Architecture**:
 
 ```mermaid
-flowchart TD
+flowchart LR
     PR["PR Opened/Updated"] --> DETECT["Detect Job:<br/>nx show projects --affected<br/>→ determine language families"]
 
     DETECT --> |"has TS projects"| TS["TypeScript Job<br/>setup-node<br/>nx affected -t typecheck lint test:quick<br/>--projects=tag:language:ts"]
@@ -379,15 +379,44 @@ fullstack, and CLIs.
 
 **Decision**: Document the rationale for coverage thresholds in governance.
 
-| Tier                   | Threshold | Rationale                                                                                                                                                         |
-| ---------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Backend (90%)          | 90%       | Pure business logic with injectable dependencies. High testability. Excludes infrastructure (DB adapters, HTTP handlers, config) via coverage exclusion patterns. |
-| CLI (90%)              | 90%       | Pure command-line logic with mockable I/O. Similar testability to backends.                                                                                       |
-| Content Platform (80%) | 80%       | Mix of business logic (tRPC, content processing) and UI rendering. UI components harder to unit test meaningfully.                                                |
-| Fullstack (75%)        | 75%       | Single app serving both API and UI. Lower than BE-only because UI rendering code inflates denominator.                                                            |
-| Frontend (70%)         | 70%       | UI-heavy code where meaningful unit test coverage has diminishing returns. API/auth/query layers are fully mocked by design.                                      |
+See [requirements.md R0.2 Coverage Thresholds](./requirements.md#coverage-thresholds-with-rationale)
+for the full rationale table. The governance doc (`ci-conventions.md`) will include this table
+verbatim.
 
-### AD8: Local Development Entrypoint
+### AD8: Naming Convention Standardization
+
+**Decision**: Formalize the existing naming patterns and fix the few inconsistencies.
+
+**What stays the same** (already consistent):
+
+- App directories: `{domain}-{role}-{lang}-{framework}` (e.g., `a-demo-be-golang-gin`)
+- E2E apps: `{app-name}-e2e` for shared, `{parent-app}-{role}-e2e` for specific
+- Workflow files: `test-{app-name}.yml`, `test-and-deploy-{app-name}.yml`, `pr-{action}.yml`
+- Docker files: `Dockerfile` (production), `Dockerfile.integration` (test),
+  `Dockerfile.{role}.dev` (development)
+- Docker compose: `docker-compose.yml` (dev), `docker-compose.ci.yml` (CI overlay),
+  `docker-compose.integration.yml` (integration test)
+- infra/dev: `infra/dev/{app-name}/` (one dir per app, except OrganicLever which intentionally
+  combines BE+FE in `infra/dev/organiclever/`)
+
+**What changes**:
+
+| Current                                                         | Proposed                                                             | Reason                                                                                  |
+| --------------------------------------------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `test-organiclever.yml` (single workflow for BE+FE)             | Keep as-is but document as the "multi-component product" pattern     | OrganicLever BE and FE are co-dependent; splitting would add complexity without benefit |
+| `docker-compose.ci-e2e.yml` (Elixir only)                       | Rename to `docker-compose.ci.yml` and merge with existing CI overlay | Eliminate the unique naming exception                                                   |
+| CLI specs at `specs/apps/{cli}/domain/` (no `gherkin/` nesting) | Keep as-is but document as the "CLI spec" pattern                    | CLIs have no BE/FE split, so `gherkin/` nesting adds no value                           |
+
+**New artifact naming conventions**:
+
+| Artifact                   | Pattern                                     | Prefix/Suffix                                             |
+| -------------------------- | ------------------------------------------- | --------------------------------------------------------- |
+| Composite action           | `.github/actions/setup-{tool}/action.yml`   | `setup-` prefix                                           |
+| Reusable workflow          | `.github/workflows/_reusable-{purpose}.yml` | `_reusable-` prefix (underscore = internal)               |
+| Consolidated test workflow | `.github/workflows/test-{group}.yml`        | `test-` prefix, group = `demo-backends`, `demo-frontends` |
+| npm dev script             | `dev:{app-name}`                            | `dev:` prefix                                             |
+
+### AD9: Local Development Entrypoint
 
 **Decision**: Create a unified `npm run dev:{app}` entrypoint for Docker-based local development.
 

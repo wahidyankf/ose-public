@@ -16,10 +16,13 @@
 - [ ] Create `governance/development/infra/ci-conventions.md` with sections:
   - [ ] Git hooks standard (pre-commit, commit-msg, pre-push)
   - [ ] Nx target naming and caching rules (reference existing nx-targets.md)
-  - [ ] Three-level testing standard (reference existing doc, add CI-specific details)
+  - [ ] Three-level testing definitions (universal: unit/integration/e2e boundaries)
+  - [ ] App-type-specific test manifestations (BE, FE, FS, CLI, content platform, library)
+  - [ ] Gherkin consumption matrix (which levels consume specs per app type)
   - [ ] Coverage threshold rationale table (90/80/75/70 with justifications)
   - [ ] Docker conventions (Dockerfile template, compose patterns, .dockerignore)
   - [ ] GitHub Actions conventions (composite actions, reusable workflows, naming)
+  - [ ] Naming conventions (apps, workflows, Docker files, compose files, infra/dev, specs)
   - [ ] Adding a new app to CI checklist
 - [ ] Create `docs/how-to/hoto__local-dev-with-docker.md`:
   - [ ] Prerequisites section (Docker Desktop, Docker Compose v2)
@@ -165,6 +168,9 @@ relevant jobs in parallel.
   - [ ] Dev compose: named volumes, source mounts, specs mount, healthchecks
   - [ ] Integration compose: tmpfs, abort-on-container-exit, cleanup
   - [ ] CI overlay: production env vars, ENABLE_TEST_API, frontend service
+- [ ] Fix naming exceptions:
+  - [ ] Rename Elixir `docker-compose.ci-e2e.yml` to `docker-compose.ci.yml` (merge with overlay)
+  - [ ] Verify Elixir CI workflow still works after rename
 - [ ] Standardize all Dockerfile.integration files:
   - [ ] Consistent base image versions per language
   - [ ] Consistent spec mount paths (`/specs` inside container)

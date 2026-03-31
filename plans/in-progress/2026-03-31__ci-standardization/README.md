@@ -134,7 +134,7 @@ flowchart TD
 ### Target CI Architecture (To-Be)
 
 ```mermaid
-flowchart TD
+flowchart LR
     subgraph local["Local Development"]
         PC["pre-commit<br/>(streamlined)"]
         CM["commit-msg<br/>(commitlint)"]

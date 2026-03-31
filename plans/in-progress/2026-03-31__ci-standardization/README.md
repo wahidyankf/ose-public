@@ -92,6 +92,7 @@ duplication, inconsistent patterns, and undocumented conventions.
 | W11 | [Gherkin Consumption Remediation](#w11-gherkin-consumption-remediation)        | 3     | W1           |
 | W12 | [Specs Folder Restructuring](#w12-specs-folder-restructuring)                  | 3     | W1           |
 | W13 | [CLI Docker Compose Setup](#w13-cli-docker-compose-setup)                      | 3     | W7           |
+| W14 | [Governance Propagation](#w14-governance-propagation)                          | 4     | W1-W13       |
 
 ## Context
 

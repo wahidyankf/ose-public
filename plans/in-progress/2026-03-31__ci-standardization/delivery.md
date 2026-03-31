@@ -7,7 +7,7 @@
 | **Phase 1** | W1, W2                    | Foundation: governance docs + git hooks                                        | Low    |
 | **Phase 2** | W3, W4, W7                | Core: composite actions + PR gate + Docker standards                           | Medium |
 | **Phase 3** | W5, W6, W8, W11, W12, W13 | Consolidation: workflows, Gherkin remediation, specs restructuring, CLI Docker | Medium |
-| **Phase 4** | W9, W10                   | Optimization: caching + spec-coverage                                          | Low    |
+| **Phase 4** | W9, W10, W14              | Optimization: caching, spec-coverage, governance propagation                   | Low    |
 
 ## Phase 1: Foundation
 
@@ -44,19 +44,34 @@
   - [ ] Adding to codecov-upload.yml
   - [ ] Nx tags configuration (type, platform, language, domain)
 - [ ] Update `governance/development/quality/three-level-testing-standard.md`:
+  - [ ] Align definitions with R0.2 (unit = mocked, integration = real dep + no network, e2e = full)
+  - [ ] Add coverage enforcement section (test:quick enforces at pre-push, PR, and CRON)
   - [ ] Add coverage threshold rationale section
   - [ ] Add mandatory test levels matrix (BE: unit+int+e2e, FE: unit+e2e, CLI: unit+int, etc.)
+  - [ ] Remove FE integration level (FE requires unit + e2e only)
   - [ ] Add CI workflow mapping (which workflows run which test levels)
   - [ ] Add spec-coverage validation section (planned for Phase 4)
   - [ ] Add "no network in integration" constraint (no inbound HTTP, no outbound calls)
   - [ ] Add Gherkin-everywhere mandate (all test levels must consume specs)
-- [ ] Update `governance/development/quality/three-level-testing-standard.md`:
-  - [ ] Align definitions with R0.2 (unit = mocked, integration = real dep + no network, e2e = full stack)
-  - [ ] Remove FE integration level (FE requires unit + e2e only)
   - [ ] Document "external deps optional in E2E" policy
+  - [ ] Add repository pattern requirement for BE (swap point for test levels)
+  - [ ] Add contract-driven development requirement (OpenAPI + tRPC)
+- [ ] Update related markdown files to reference new conventions:
+  - [ ] Update `CLAUDE.md` CI-related sections (coverage rules, test levels, CRON strategy)
+  - [ ] Update `governance/development/infra/nx-targets.md` (caching rules, 4-track CRON)
+  - [ ] Update `governance/development/quality/code.md` (hook changes, formatting additions)
+  - [ ] Update `governance/development/quality/markdown.md` (if hook behavior changes)
+  - [ ] Update `governance/development/workflow/commit-messages.md` (if commit-msg hook changes)
+  - [ ] Update `docs/how-to/hoto__add-new-app.md` (Docker Compose, specs folder, CI checklist)
+  - [ ] Update `docs/reference/re__monorepo-structure.md` (infra/dev/ structure, specs standard)
+  - [ ] Update `governance/conventions/structure/plans.md` (if any plan-related conventions change)
+  - [ ] Update `specs/README.md` (new folder standard: contracts, c4, {role}/gherkin/)
+  - [ ] Update `apps/README.md` (naming pattern: {service-name}-{part})
+  - [ ] Update relevant app-level README.md files (test level changes, Docker dev instructions)
 - [ ] Update README.md CI-related sections if any are outdated
 
-**Validation**: All governance docs pass `npm run lint:md` and link validation.
+**Validation**: All governance docs pass `npm run lint:md` and link validation. All internal
+links resolve correctly.
 
 ### W2: Git Hooks Standardization
 
@@ -432,6 +447,37 @@ Add `infra/dev/` Docker Compose for CLI apps to ensure consistent local developm
 
 **Validation**: `npm run dev:rhino-cli` starts a containerized dev environment. `go test ./...`
 works inside the container.
+
+### W14: Governance Propagation
+
+After all conventions are documented and implemented, run the `repo-governance-maker` agent to
+propagate CI/CD rules and conventions across the governance layer. This ensures the six-layer
+governance hierarchy (Vision → Principles → Conventions → Development → Agents → Workflows) is
+consistent and that new CI conventions are discoverable by all agents.
+
+- [ ] Run `repo-governance-maker` to create/update governance documents:
+  - [ ] Propagate three-level testing definitions to relevant convention docs
+  - [ ] Propagate naming conventions to relevant convention docs
+  - [ ] Propagate caching rules and CI execution strategy
+  - [ ] Propagate repository pattern and contract-driven development requirements
+  - [ ] Propagate Docker Compose standard (all apps must have `infra/dev/`)
+  - [ ] Propagate Gherkin-everywhere mandate
+  - [ ] Propagate coverage enforcement rules (test:quick at all gates)
+- [ ] Run `repo-governance-checker` to validate consistency:
+  - [ ] Check for contradictions between new ci-conventions.md and existing docs
+  - [ ] Check for stale references to old workflow names in governance docs
+  - [ ] Check for duplication between ci-conventions.md and three-level-testing-standard.md
+- [ ] Run `repo-governance-fixer` to apply any fixes from checker output
+- [ ] Verify all agents that reference CI/testing patterns have updated skill knowledge:
+  - [ ] `swe-e2e-test-developer` agent references correct test level definitions
+  - [ ] `swe-*-developer` agents reference repository pattern requirement
+  - [ ] `plan-checker` agent can validate plans against new CI conventions
+- [ ] Run `docs-checker` on all modified governance and docs files
+- [ ] Run `docs-link-general-checker` to verify no broken links after updates
+
+**Validation**: `repo-governance-checker` produces zero CRITICAL/HIGH findings related to CI
+conventions. All governance docs are internally consistent. All agents reference correct
+conventions.
 
 ## Post-Delivery Cleanup
 

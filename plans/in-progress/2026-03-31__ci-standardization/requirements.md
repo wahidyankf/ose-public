@@ -322,6 +322,19 @@ Backend and frontend services that communicate over a network boundary MUST have
 | `test:integration` | **No**    | Real database/filesystem → non-deterministic     |
 | `test:e2e`         | **No**    | Full stack → non-deterministic                   |
 
+### Coverage Enforcement
+
+Coverage validation is enforced via `test:quick` = `test:unit` + `rhino-cli test-coverage
+validate`. The `test:quick` target checks coverage against the per-project threshold (90%/80%/
+75%/70% -- see [Coverage Thresholds](#coverage-thresholds-with-rationale)). This means coverage
+is automatically checked wherever `test:quick` runs:
+
+| Gate            | Coverage Enforced? | How                                     |
+| --------------- | ------------------ | --------------------------------------- |
+| Pre-push hook   | Yes                | `test:quick` for affected projects      |
+| PR quality gate | Yes                | `test:quick` for affected projects      |
+| Scheduled CRON  | Yes                | `test:quick` for all projects (Track 3) |
+
 ### Pre-Push Hook (Local Quality Gate)
 
 Runs **affected projects only**:
@@ -330,6 +343,7 @@ Runs **affected projects only**:
 npx nx affected -t typecheck lint test:quick --parallel="$PARALLEL"
 ```
 
+Coverage is enforced because `test:quick` includes coverage validation.
 Does **NOT** run `test:integration` or `test:e2e` (too slow for local push gate).
 
 ### PR Quality Gate (GitHub Actions)
@@ -339,8 +353,9 @@ Runs **affected projects only**. Covers:
 - `format` (Prettier, gofmt, fantomas, etc. -- via PR auto-format workflow)
 - `lint` (oxlint, golangci-lint, clippy, etc.)
 - `typecheck` (tsc, go vet, javac, cargo check, etc.)
-- `test:quick` (`test:unit` + coverage validation)
+- `test:quick` (`test:unit` + **coverage validation** -- fails if below threshold)
 
+Coverage is enforced because `test:quick` includes coverage validation.
 Does **NOT** run `test:integration` or `test:e2e` -- these are too slow for PR feedback loops
 and are covered by scheduled CI.
 
@@ -352,21 +367,22 @@ Runs **all projects** (not just affected). Executes **4 parallel tracks**:
 flowchart LR
     CRON["CRON Trigger"] --> LINT["lint<br/>(all projects)"]
     CRON --> TC["typecheck<br/>(all projects)"]
-    CRON --> TQ["test:quick<br/>(all projects)"]
+    CRON --> TQ["test:quick<br/>(all projects)<br/>includes coverage"]
     CRON --> INT["test:integration<br/>(all projects)"]
     INT --> E2E["test:e2e<br/>(all projects)"]
 ```
 
-| Track   | Targets                         | Parallel?        | Rationale                                                            |
-| ------- | ------------------------------- | ---------------- | -------------------------------------------------------------------- |
-| Track 1 | `lint`                          | Independent      | Fast, catches style issues                                           |
-| Track 2 | `typecheck`                     | Independent      | Fast, catches type errors                                            |
-| Track 3 | `test:quick`                    | Independent      | Unit tests + coverage                                                |
-| Track 4 | `test:integration` → `test:e2e` | Sequential chain | Integration must pass before E2E runs (E2E assumes data layer works) |
+| Track   | Targets                         | Parallel?        | Coverage? | Rationale                                                       |
+| ------- | ------------------------------- | ---------------- | --------- | --------------------------------------------------------------- |
+| Track 1 | `lint`                          | Independent      | --        | Fast, catches style issues                                      |
+| Track 2 | `typecheck`                     | Independent      | --        | Fast, catches type errors                                       |
+| Track 3 | `test:quick`                    | Independent      | **Yes**   | Unit tests + coverage validation                                |
+| Track 4 | `test:integration` → `test:e2e` | Sequential chain | --        | Integration must pass before E2E (E2E assumes data layer works) |
 
 **Key design**: The 4 tracks run in parallel so a slow integration test does not block lint or
 typecheck feedback. Within Track 4, integration and E2E are sequential because E2E depends on
-the data layer being correct (proven by integration tests).
+the data layer being correct (proven by integration tests). Coverage is enforced in Track 3
+via `test:quick`.
 
 ## Current State Audit
 

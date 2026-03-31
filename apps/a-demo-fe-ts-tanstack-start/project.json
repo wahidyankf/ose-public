@@ -50,7 +50,8 @@
       "options": {
         "command": "npx oxlint@latest --jsx-a11y-plugin .",
         "cwd": "{projectRoot}"
-      }
+      },
+      "inputs": ["{projectRoot}/src/**/*", "{projectRoot}/oxlint.json", "{projectRoot}/tsconfig.json"]
     },
     "test:quick": {
       "executor": "nx:run-commands",
@@ -79,6 +80,11 @@
         "cwd": "{projectRoot}"
       },
       "dependsOn": ["codegen"]
+    },
+    "spec-coverage": {
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate specs/apps/a-demo/fe/gherkin apps/a-demo-fe-ts-tanstack-start",
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/a-demo/fe/gherkin/**/*.feature", "{projectRoot}/**/*.{ts,tsx}"]
     }
   },
   "tags": ["type:app", "platform:vite", "lang:ts", "domain:a-demo-fe"],

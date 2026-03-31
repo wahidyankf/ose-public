@@ -10,162 +10,44 @@ permissions:
   contents: read
 
 jobs:
-  integration-tests:
-    name: Run integration tests
-    runs-on: ubuntu-latest
+  lint:
+    uses: ./.github/workflows/_reusable-backend-lint.yml
+    with:
+      backend-name: a-demo-be-clojure-pedestal
+      setup-action: ./.github/actions/setup-clojure
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  typecheck:
+    uses: ./.github/workflows/_reusable-backend-typecheck.yml
+    with:
+      backend-name: a-demo-be-clojure-pedestal
+      setup-action: ./.github/actions/setup-clojure
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "24"
+  coverage:
+    uses: ./.github/workflows/_reusable-backend-coverage.yml
+    with:
+      backend-name: a-demo-be-clojure-pedestal
+      setup-action: ./.github/actions/setup-clojure
 
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: "21"
+  spec-coverage:
+    uses: ./.github/workflows/_reusable-backend-spec-coverage.yml
+    with:
+      backend-name: a-demo-be-clojure-pedestal
+      setup-action: ./.github/actions/setup-clojure
 
-      - name: Install Clojure CLI
-        uses: DeLaGuardo/setup-clojure@12.5
-        with:
-          cli: latest
-
-      - name: Generate contract types for backend
-        run: |
-          npm ci --ignore-scripts
-          mkdir -p libs/clojure-openapi-codegen/classes
-          npx nx run a-demo-contracts:bundle
-          npx nx run a-demo-be-clojure-pedestal:codegen
-
-      - name: Run integration tests
-        run: |
-          docker compose -f apps/a-demo-be-clojure-pedestal/docker-compose.integration.yml down -v 2>/dev/null || true
-          docker compose -f apps/a-demo-be-clojure-pedestal/docker-compose.integration.yml up --abort-on-container-exit --build
-
-      - name: Teardown integration
-        if: always()
-        run: docker compose -f apps/a-demo-be-clojure-pedestal/docker-compose.integration.yml down -v
+  integration:
+    uses: ./.github/workflows/_reusable-backend-integration.yml
+    with:
+      backend-name: a-demo-be-clojure-pedestal
+      setup-action: ./.github/actions/setup-clojure
+      compose-file: apps/a-demo-be-clojure-pedestal/docker-compose.integration.yml
 
   e2e:
-    name: Run E2E tests
-    needs: integration-tests
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "24"
-
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: "21"
-
-      - name: Install Clojure CLI
-        uses: DeLaGuardo/setup-clojure@12.5
-        with:
-          cli: latest
-
-      - name: Generate contract types
-        run: |
-          npm ci --ignore-scripts
-          mkdir -p libs/clojure-openapi-codegen/classes
-          npx nx run a-demo-contracts:bundle
-          npx nx run a-demo-be-clojure-pedestal:codegen
-          npx nx run a-demo-fe-ts-nextjs:codegen
-          npx nx run a-demo-fe-ts-tanstack-start:codegen
-
-      - name: Start full stack (DB + backend + frontend)
-        run: docker compose -f infra/dev/a-demo-be-clojure-pedestal/docker-compose.yml -f infra/dev/a-demo-be-clojure-pedestal/docker-compose.ci.yml up --build -d
-
-      - name: Wait for backend to be healthy
-        run: |
-          echo "Waiting for backend to become healthy..."
-          for i in $(seq 1 60); do
-            STATUS=$(docker inspect --format='{{.State.Health.Status}}' 'a-demo-be-clojure-pedestal' 2>/dev/null || echo "unknown")
-            echo "[$i/60] Health: $STATUS"
-            if [ "$STATUS" = "healthy" ]; then
-              echo "Backend is healthy"
-              break
-            fi
-            sleep 10
-          done
-          if [ "$STATUS" != "healthy" ]; then
-            echo "Backend did not become healthy within 10 minutes"
-            docker logs a-demo-be-clojure-pedestal
-            exit 1
-          fi
-
-      - name: Wait for frontend to be ready
-        run: |
-          echo "Waiting for frontend to be ready on port 3301..."
-          for i in $(seq 1 36); do
-            if curl -sf http://localhost:3301 > /dev/null 2>&1; then
-              echo "Frontend is ready"
-              exit 0
-            fi
-            echo "[$i/36] Waiting..."
-            sleep 10
-          done
-          echo "Frontend did not start within 6 minutes"
-          docker compose -f infra/dev/a-demo-be-clojure-pedestal/docker-compose.yml -f infra/dev/a-demo-be-clojure-pedestal/docker-compose.ci.yml logs
-          exit 1
-
-      - name: Setup Volta
-        uses: volta-cli/action@v4
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
-        working-directory: apps/a-demo-fe-e2e
-
-      - name: Run BE E2E tests
-        run: npx nx run a-demo-be-e2e:test:e2e:no-test-api
-        env:
-          BASE_URL: http://localhost:8201
-          DATABASE_URL: postgresql://a_demo_be_clojure_pedestal:a_demo_be_clojure_pedestal@localhost:5432/a_demo_be_clojure_pedestal
-
-      - name: Upload BE E2E report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report-a-demo-be-clojure-pedestal
-          path: apps/a-demo-be-e2e/playwright-report/
-          retention-days: 7
-
-      - name: Run FE E2E tests
-        run: npx nx run a-demo-fe-e2e:test:e2e
-        env:
-          BASE_URL: http://localhost:3301
-          BACKEND_URL: http://localhost:8201
-
-      - name: Upload FE E2E report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report-fe-e2e-clojure-pedestal
-          path: apps/a-demo-fe-e2e/playwright-report/
-          retention-days: 7
-
-      - name: Dump backend and frontend logs
-        if: always()
-        run: |
-          echo "=== Backend logs (last 200 lines) ==="
-          docker logs a-demo-be-clojure-pedestal --tail 200 2>&1 || true
-          echo "=== Frontend logs (last 100 lines) ==="
-          docker logs a-demo-be-cjpd-ci-fe --tail 100 2>&1 || true
-
-      - name: Stop full stack
-        if: always()
-        run: docker compose -f infra/dev/a-demo-be-clojure-pedestal/docker-compose.yml -f infra/dev/a-demo-be-clojure-pedestal/docker-compose.ci.yml down -v
+    needs: integration
+    uses: ./.github/workflows/_reusable-backend-e2e.yml
+    with:
+      backend-name: a-demo-be-clojure-pedestal
+      setup-action: ./.github/actions/setup-clojure
+      compose-dir: infra/dev/a-demo-be-clojure-pedestal
+      be-e2e-target: "test:e2e:no-test-api"
+      be-e2e-extra-env: "DATABASE_URL=postgresql://a_demo_be_clojure_pedestal:a_demo_be_clojure_pedestal@localhost:5432/a_demo_be_clojure_pedestal"
+      health-timeout: 600

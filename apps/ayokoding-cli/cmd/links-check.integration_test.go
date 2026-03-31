@@ -17,7 +17,7 @@ import (
 
 var specsLinksCheckAyokodingDir = func() string {
 	_, f, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(f), "../../../specs/apps/ayokoding-cli/links")
+	return filepath.Join(filepath.Dir(f), "../../../specs/apps/ayokoding-cli/cli/gherkin")
 }()
 
 // Scenario: A content directory with all valid Hugo-path links passes validation

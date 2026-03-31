@@ -17,10 +17,13 @@ var gitPreCommitCmd = &cobra.Command{
   4. Stage ayokoding-web content changes
   5. Run lint-staged
   5b. Sync app-level package-lock.json files (if apps/*/package.json staged)
-  6. Auto-format staged Elixir files with mix format
-  7. Validate and fix docs file naming (if docs/ staged)
-  8. Validate markdown links in staged files
-  9. Lint all markdown files
+  6. Validate and fix docs file naming (if docs/ staged)
+  7. Validate markdown links in staged files
+  8. Lint all markdown files
+
+Each step runs with a 30-second timeout; the entire hook has a 120-second
+total timeout. Timed-out steps log a warning and are skipped rather than
+blocking the commit.
 
 Exits immediately on the first failure (except step 3 which only warns).`,
 	SilenceErrors: true,

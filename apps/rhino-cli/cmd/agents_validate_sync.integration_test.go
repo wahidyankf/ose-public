@@ -17,7 +17,7 @@ import (
 
 var specsValidateSyncDir = func() string {
 	_, f, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(f), "../../../specs/apps/rhino-cli/agents")
+	return filepath.Join(filepath.Dir(f), "../../../specs/apps/rhino-cli/cli/gherkin")
 }()
 
 // Scenario: Directories that are in sync pass validation

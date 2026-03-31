@@ -13,20 +13,15 @@ jobs:
   be-integration:
     name: BE integration tests
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     environment: "Development - Organic Lever"
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "24"
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node
 
       - name: Generate contract types for backend
         run: |
-          npm ci --ignore-scripts
           npx nx run organiclever-contracts:bundle
           npx nx run organiclever-be:codegen
 
@@ -42,16 +37,11 @@ jobs:
   fe-integration:
     name: FE integration tests
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Volta
-        uses: volta-cli/action@v4
-
-      - name: Install dependencies
-        run: npm ci
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node
 
       - name: Generate contract types
         run: |
@@ -65,20 +55,15 @@ jobs:
     name: E2E tests (BE + FE)
     needs: [be-integration, fe-integration]
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     environment: "Development - Organic Lever"
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "24"
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node
 
       - name: Generate contract types
         run: |
-          npm ci --ignore-scripts
           npx nx run organiclever-contracts:bundle
           npx nx run organiclever-be:codegen
           npx nx run organiclever-fe:codegen
@@ -119,15 +104,7 @@ jobs:
           docker compose -f infra/dev/organiclever/docker-compose.yml -f infra/dev/organiclever/docker-compose.ci.yml logs organiclever-fe
           exit 1
 
-      - name: Setup Volta
-        uses: volta-cli/action@v4
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Playwright browsers (BE E2E)
-        run: npx playwright install --with-deps chromium
-        working-directory: apps/organiclever-be-e2e
+      - uses: ./.github/actions/setup-playwright
 
       - name: Run BE E2E tests
         run: npx nx run organiclever-be-e2e:test:e2e
@@ -142,10 +119,6 @@ jobs:
           path: apps/organiclever-be-e2e/playwright-report/
           retention-days: 7
 
-      - name: Install Playwright browsers (FE E2E)
-        run: npx playwright install --with-deps chromium
-        working-directory: apps/organiclever-fe-e2e
-
       - name: Run FE E2E tests
         run: npx nx run organiclever-fe-e2e:test:e2e
         env:
@@ -159,6 +132,6 @@ jobs:
           path: apps/organiclever-fe-e2e/playwright-report/
           retention-days: 7
 
-      - name: Stop full stack
+      - name: Teardown
         if: always()
         run: docker compose -f infra/dev/organiclever/docker-compose.yml -f infra/dev/organiclever/docker-compose.ci.yml down -v

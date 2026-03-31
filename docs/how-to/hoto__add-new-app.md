@@ -9,7 +9,7 @@ tags:
   - typescript
   - nextjs
 created: 2025-11-29
-updated: 2026-03-06
+updated: 2026-03-31
 ---
 
 # How to Add a New App
@@ -302,6 +302,26 @@ New `a-demo-be-*` and `a-demo-fe-*` apps must satisfy these additional requireme
 
 **Note**: `rhino-cli spec-coverage validate` in `test:quick` is deferred pending tool enhancement for demo-be naming conventions.
 
+**Docker Compose setup**: Apps with `test:integration` that use a real database must provide a
+`docker-compose.integration.yml` at the app root. The file defines the database service and a
+`test-runner` service that runs the integration test suite. The `test:integration` target invokes
+`docker compose -f docker-compose.integration.yml up --abort-on-container-exit --exit-code-from test-runner --build`
+and must set `"cache": false` in `project.json`. See existing backends (e.g., `a-demo-be-golang-gin`,
+`a-demo-fs-ts-nextjs`) for reference implementations.
+
+**Specs folder**: Create a `specs/apps/[domain]/` folder at the repository root with the following
+standard layout. Gherkin feature files must be placed here, not inside the app:
+
+```
+specs/apps/[domain]/
+├── README.md               # Describes the app and BDD framework used
+├── contracts/              # OpenAPI contract spec (if applicable)
+├── be/gherkin/             # Backend acceptance specs (.feature files)
+├── fe/gherkin/             # Frontend acceptance specs (.feature files)
+├── fs/gherkin/             # Fullstack acceptance specs (if applicable)
+└── c4/                     # C4 architecture diagrams (if applicable)
+```
+
 **Codegen dependency chain**: Both `typecheck` and `build` must declare `dependsOn: ["codegen"]`. This ensures contract violations surface during `nx affected -t typecheck` and the pre-push `test:quick` gate.
 
 **Canonical inputs for cache invalidation** (add to `test:unit` and `test:quick`):
@@ -338,3 +358,6 @@ New `a-demo-be-*` and `a-demo-fe-*` apps must satisfy these additional requireme
 - [Add New Library](./hoto__add-new-lib.md)
 - [Run Nx Commands](./hoto__run-nx-commands.md)
 - [Monorepo Structure Reference](../reference/re__monorepo-structure.md)
+- [Nx Target Standards](../../governance/development/infra/nx-targets.md)
+- [Three-Level Testing Standard](../../governance/development/quality/three-level-testing-standard.md)
+- [Specs README](../../specs/README.md) - Standard folder layout for Gherkin specs and contracts

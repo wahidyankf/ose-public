@@ -1,0 +1,27 @@
+name: "Setup Go"
+description: "Install Go, golangci-lint, and oapi-codegen with caching"
+inputs:
+  go-version:
+    description: "Go version"
+    required: false
+    default: "1.26.0"
+  golangci-lint-version:
+    description: "golangci-lint version"
+    required: false
+    default: "v2.10.1"
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: ${{ inputs.go-version }}
+        cache-dependency-path: "**/go.sum"
+
+    - name: Install golangci-lint
+      shell: bash
+      run: go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@${{ inputs.golangci-lint-version }}
+
+    - name: Install oapi-codegen
+      shell: bash
+      run: go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest

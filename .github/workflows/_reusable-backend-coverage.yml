@@ -1,0 +1,29 @@
+name: Backend - Coverage
+
+on:
+  workflow_call:
+    inputs:
+      backend-name:
+        required: true
+        type: string
+      setup-action:
+        required: true
+        type: string
+        description: "Path to composite setup action (e.g., ./.github/actions/setup-golang)"
+
+permissions:
+  contents: read
+
+jobs:
+  coverage:
+    name: Coverage ${{ inputs.backend-name }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node
+      - uses: ${{ inputs.setup-action }}
+      - name: Generate contract types
+        run: |
+          npx nx run a-demo-contracts:bundle
+          npx nx run ${{ inputs.backend-name }}:codegen
+      - run: npx nx run ${{ inputs.backend-name }}:test:quick

@@ -17,7 +17,7 @@ import (
 
 var specsValidateSpecCoverageDir = func() string {
 	_, f, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(f), "../../../specs/apps/rhino-cli/spec-coverage")
+	return filepath.Join(filepath.Dir(f), "../../../specs/apps/rhino-cli/cli/gherkin")
 }()
 
 // Scenario: All feature files have matching test implementations

@@ -35,6 +35,10 @@ ENV NEXT_PUBLIC_GOOGLE_CLIENT_ID=${NEXT_PUBLIC_GOOGLE_CLIENT_ID}
 RUN npx next build
 
 FROM node:24-alpine
+
+LABEL org.opencontainers.image.source="https://github.com/wahidyankf/open-sharia-enterprise"
+LABEL org.opencontainers.image.description="OrganicLever landing and promotional website built with Next.js"
+
 RUN addgroup -S app && adduser -S app -G app
 WORKDIR /app
 COPY --from=build --chown=app:app /app/.next/standalone ./
@@ -42,4 +46,7 @@ COPY --from=build --chown=app:app /app/.next/static ./.next/static
 USER app
 EXPOSE 3200
 ENV PORT=3200 HOSTNAME="0.0.0.0" NODE_ENV=production NEXT_TELEMETRY_DISABLED=1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3200/ || exit 1
+
 CMD ["node", "server.js"]

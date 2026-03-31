@@ -16,7 +16,7 @@ import (
 
 var specsDirUnitMergeTestCoverage = func() string {
 	_, f, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(f), "../../../specs/apps/rhino-cli/test-coverage")
+	return filepath.Join(filepath.Dir(f), "../../../specs/apps/rhino-cli/cli/gherkin")
 }()
 
 type mergeTestCoverageUnitSteps struct {

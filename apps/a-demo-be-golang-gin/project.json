@@ -98,6 +98,11 @@
         "command": "go mod tidy",
         "cwd": "apps/a-demo-be-golang-gin"
       }
+    },
+    "spec-coverage": {
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate specs/apps/a-demo/be/gherkin apps/a-demo-be-golang-gin",
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/a-demo/be/gherkin/**/*.feature", "{projectRoot}/**/*.go"]
     }
   },
   "implicitDependencies": ["a-demo-contracts", "rhino-cli"]

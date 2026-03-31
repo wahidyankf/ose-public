@@ -1,0 +1,15 @@
+# Local Development Environment for ayokoding-cli (Go CLI)
+# Content link validation CLI for AyoKoding
+
+services:
+  ayokoding-cli:
+    build:
+      context: ../../../
+      dockerfile: infra/dev/ayokoding-cli/Dockerfile.cli.dev
+    volumes:
+      - ../../../apps/ayokoding-cli:/app/apps/ayokoding-cli
+      - ../../../libs/golang-commons:/app/libs/golang-commons
+      - ../../../libs/hugo-commons:/app/libs/hugo-commons
+      - ../../../specs:/app/specs:ro
+    working_dir: /app/apps/ayokoding-cli
+    command: go test ./... -v

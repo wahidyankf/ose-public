@@ -100,6 +100,15 @@
         "cwd": "{projectRoot}"
       },
       "cache": false
+    },
+    "spec-coverage": {
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate specs/apps/ayokoding/be/gherkin apps/ayokoding-web",
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/specs/apps/ayokoding/be/gherkin/**/*.feature",
+        "{workspaceRoot}/specs/apps/ayokoding/fe/gherkin/**/*.feature",
+        "{projectRoot}/**/*.{ts,tsx}"
+      ]
     }
   },
   "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:ayokoding"],

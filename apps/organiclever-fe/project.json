@@ -50,7 +50,8 @@
       "options": {
         "command": "npx oxlint@latest --jsx-a11y-plugin .",
         "cwd": "{projectRoot}"
-      }
+      },
+      "inputs": ["{projectRoot}/src/**/*", "{projectRoot}/oxlint.json", "{projectRoot}/tsconfig.json"]
     },
     "test:quick": {
       "executor": "nx:run-commands",
@@ -104,6 +105,11 @@
         "cwd": "{projectRoot}"
       },
       "outputs": ["{projectRoot}/storybook-static"]
+    },
+    "spec-coverage": {
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate specs/apps/organiclever/fe/gherkin apps/organiclever-fe",
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/organiclever/fe/gherkin/**/*.feature", "{projectRoot}/**/*.{ts,tsx}"]
     }
   },
   "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:organiclever-fe"],

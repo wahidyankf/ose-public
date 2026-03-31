@@ -1,0 +1,99 @@
+name: Test and Deploy
+
+on:
+  workflow_call:
+    inputs:
+      app-name:
+        required: true
+        type: string
+      prod-branch:
+        required: true
+        type: string
+      health-url:
+        required: false
+        type: string
+        default: ""
+      health-timeout:
+        required: false
+        type: number
+        default: 120
+    secrets:
+      CODECOV_TOKEN:
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  unit:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node
+      - run: npx nx run ${{ inputs.app-name }}:test:quick
+
+  integration:
+    name: Integration tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node
+      - run: npx nx run ${{ inputs.app-name }}:test:integration
+
+  e2e:
+    name: E2E tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-docker-cache
+      - uses: ./.github/actions/setup-playwright
+      # Start via Docker
+      - run: docker compose -f infra/dev/${{ inputs.app-name }}/docker-compose.yml up --build -d
+      # Wait for health
+      - run: |
+          HEALTH_URL="${{ inputs.health-url }}"
+          if [ -z "$HEALTH_URL" ]; then
+            HEALTH_URL="http://localhost:3100"
+          fi
+          for i in $(seq 1 $(( ${{ inputs.health-timeout }} / 5 ))); do
+            if curl -s "$HEALTH_URL" > /dev/null 2>&1; then break; fi
+            sleep 5
+          done
+      # Run E2E
+      - run: |
+          npx nx run ${{ inputs.app-name }}-be-e2e:test:e2e || true
+          npx nx run ${{ inputs.app-name }}-fe-e2e:test:e2e
+      - if: always()
+        run: docker compose -f infra/dev/${{ inputs.app-name }}/docker-compose.yml down -v
+
+  detect-changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    outputs:
+      has-changes: ${{ steps.check.outputs.has-changes }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - id: check
+        run: |
+          CHANGED=$(git diff --name-only HEAD~1 HEAD -- "apps/${{ inputs.app-name }}/" 2>/dev/null || echo "")
+          if [ -n "$CHANGED" ]; then
+            echo "has-changes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has-changes=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  deploy:
+    name: Deploy to production
+    needs: [unit, integration, e2e, detect-changes]
+    if: needs.detect-changes.outputs.has-changes == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: |
+          git push origin HEAD:${{ inputs.prod-branch }} --force

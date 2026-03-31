@@ -17,7 +17,7 @@ import (
 
 var specsContractsDir = func() string {
 	_, f, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(f), "../../../specs/apps/rhino-cli/contracts")
+	return filepath.Join(filepath.Dir(f), "../../../specs/apps/rhino-cli/cli/gherkin")
 }()
 
 type javaCleanImportsSteps struct {

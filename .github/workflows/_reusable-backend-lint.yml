@@ -1,0 +1,25 @@
+name: Backend - Lint
+
+on:
+  workflow_call:
+    inputs:
+      backend-name:
+        required: true
+        type: string
+      setup-action:
+        required: true
+        type: string
+        description: "Path to composite setup action (e.g., ./.github/actions/setup-golang)"
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint ${{ inputs.backend-name }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node
+      - uses: ${{ inputs.setup-action }}
+      - run: npx nx run ${{ inputs.backend-name }}:lint

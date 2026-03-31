@@ -23,6 +23,10 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN cd apps/ayokoding-web && npm run build
 
 FROM node:24-alpine AS runner
+
+LABEL org.opencontainers.image.source="https://github.com/wahidyankf/open-sharia-enterprise"
+LABEL org.opencontainers.image.description="AyoKoding educational content platform built with Next.js"
+
 WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -45,4 +49,7 @@ USER nextjs
 EXPOSE 3101
 
 # server.js is at apps/ayokoding-web/server.js in standalone output
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3101/ || exit 1
+
 CMD ["node", "apps/ayokoding-web/server.js"]

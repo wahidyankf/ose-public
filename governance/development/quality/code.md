@@ -10,6 +10,7 @@ tags:
   - automation
 category: explanation
 subcategory: development
+updated: 2026-03-31
 ---
 
 # Code Quality Convention
@@ -572,6 +573,24 @@ mix format
 # Format specific file
 mix format lib/my_module.ex
 ```
+
+## Language-Specific Auto-Formatters
+
+In addition to Prettier (JS/TS/JSON/YAML/CSS/MD) and `mix format` (Elixir), the following
+language-specific formatters run automatically as part of the pre-commit hook or CI pipeline:
+
+| Language | Tool            | Trigger                                 |
+| -------- | --------------- | --------------------------------------- |
+| Go       | `gofmt`         | Pre-commit (lint-staged)                |
+| Elixir   | `mix format`    | Pre-commit (step 6, project-root aware) |
+| Python   | `ruff format`   | Pre-commit (lint-staged)                |
+| Rust     | `rustfmt`       | Pre-commit (lint-staged)                |
+| C#       | `dotnet format` | Pre-commit (lint-staged)                |
+| Clojure  | `cljfmt`        | Pre-commit (lint-staged)                |
+| Dart     | `dart format`   | Pre-commit (lint-staged)                |
+
+Each formatter uses its language's standard style conventions. No custom configuration is applied
+unless a project-specific config file exists (e.g., `rustfmt.toml`, `pyproject.toml`).
 
 ## Best Practices
 

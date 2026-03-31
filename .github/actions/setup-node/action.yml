@@ -1,0 +1,33 @@
+name: "Setup Node.js"
+description: "Install Node.js via Volta, run npm ci, and configure Nx cache"
+inputs:
+  node-version:
+    description: "Node.js version"
+    required: false
+    default: "24"
+runs:
+  using: "composite"
+  steps:
+    - name: Install Node.js via Volta
+      uses: volta-cli/action@v4
+
+    - name: Cache npm dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.npm
+        key: npm-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          npm-${{ runner.os }}-
+
+    - name: Install dependencies
+      shell: bash
+      run: npm ci
+
+    - name: Configure Nx cache
+      uses: actions/cache@v4
+      with:
+        path: .nx/cache
+        key: nx-${{ runner.os }}-${{ hashFiles('nx.json', 'package-lock.json') }}-${{ github.sha }}
+        restore-keys: |
+          nx-${{ runner.os }}-${{ hashFiles('nx.json', 'package-lock.json') }}-
+          nx-${{ runner.os }}-

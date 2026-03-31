@@ -50,7 +50,8 @@
       "options": {
         "command": "npx oxlint@latest --jsx-a11y-plugin .",
         "cwd": "{projectRoot}"
-      }
+      },
+      "inputs": ["{projectRoot}/src/**/*", "{projectRoot}/oxlint.json", "{projectRoot}/tsconfig.json"]
     },
     "test:quick": {
       "executor": "nx:run-commands",
@@ -89,6 +90,11 @@
         "cwd": "apps/a-demo-fs-ts-nextjs"
       },
       "cache": false
+    },
+    "spec-coverage": {
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate specs/apps/a-demo/fs/gherkin apps/a-demo-fs-ts-nextjs",
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/a-demo/fs/gherkin/**/*.feature", "{projectRoot}/**/*.{ts,tsx}"]
     }
   },
   "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:a-demo-fs"],

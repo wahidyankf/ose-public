@@ -1,0 +1,41 @@
+name: Backend - Integration Tests
+
+on:
+  workflow_call:
+    inputs:
+      backend-name:
+        required: true
+        type: string
+      setup-action:
+        required: true
+        type: string
+        description: "Path to composite setup action (e.g., ./.github/actions/setup-golang)"
+      compose-file:
+        required: true
+        type: string
+        description: "Path to docker-compose.integration.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  integration:
+    name: Integration tests - ${{ inputs.backend-name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-docker-cache
+      - uses: ${{ inputs.setup-action }}
+      - name: Generate contract types
+        run: |
+          npx nx run a-demo-contracts:bundle
+          npx nx run ${{ inputs.backend-name }}:codegen
+      - name: Run integration tests
+        run: |
+          docker compose -f ${{ inputs.compose-file }} down -v 2>/dev/null || true
+          docker compose -f ${{ inputs.compose-file }} up --abort-on-container-exit --build
+      - name: Teardown
+        if: always()
+        run: docker compose -f ${{ inputs.compose-file }} down -v

@@ -69,6 +69,11 @@
         "command": "npx playwright show-report",
         "cwd": "apps/a-demo-be-e2e"
       }
+    },
+    "spec-coverage": {
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate specs/apps/a-demo/be/gherkin apps/a-demo-be-e2e",
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/a-demo/be/gherkin/**/*.feature", "{projectRoot}/**/*.ts"]
     }
   },
   "tags": ["type:e2e", "platform:playwright", "lang:ts", "domain:a-demo-be"],

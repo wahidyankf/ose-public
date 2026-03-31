@@ -1,0 +1,17 @@
+FROM golang:1.26-alpine
+
+RUN apk add --no-cache git gcc musl-dev
+
+WORKDIR /app
+
+# Copy go workspace files
+COPY go.work go.work.sum ./
+COPY apps/oseplatform-cli/go.mod apps/oseplatform-cli/go.sum apps/oseplatform-cli/
+COPY libs/golang-commons/go.mod libs/golang-commons/go.sum libs/golang-commons/
+COPY libs/hugo-commons/go.mod libs/hugo-commons/go.sum libs/hugo-commons/
+
+RUN cd apps/oseplatform-cli && go mod download
+
+COPY . .
+
+WORKDIR /app/apps/oseplatform-cli

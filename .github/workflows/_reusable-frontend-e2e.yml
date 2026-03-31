@@ -1,0 +1,100 @@
+name: Frontend - E2E Tests
+
+on:
+  workflow_call:
+    inputs:
+      frontend-name:
+        required: true
+        type: string
+        description: "Frontend project name (e.g., a-demo-fe-ts-nextjs)"
+      compose-dir:
+        required: true
+        type: string
+        description: "Path to infra/dev compose directory (e.g., infra/dev/a-demo-fe-ts-nextjs)"
+      backend-compose-dir:
+        required: false
+        type: string
+        default: "infra/dev/a-demo-be-golang-gin"
+        description: "Path to backend compose directory for codegen (default: infra/dev/a-demo-be-golang-gin)"
+      extra-setup-action:
+        required: false
+        type: string
+        default: ""
+        description: "Additional composite setup action (e.g., ./.github/actions/setup-flutter)"
+      extra-codegen-targets:
+        required: false
+        type: string
+        default: ""
+        description: "Space-separated extra codegen Nx targets to run (e.g., 'a-demo-fe-ts-nextjs:codegen a-demo-fe-ts-tanstack-start:codegen')"
+      health-timeout:
+        required: false
+        type: number
+        default: 360
+        description: "Seconds to wait for frontend health (default: 360)"
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    name: E2E tests - ${{ inputs.frontend-name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-docker-cache
+      - uses: ./.github/actions/setup-golang
+
+      - name: Run extra setup action
+        if: inputs.extra-setup-action != ''
+        uses: ${{ inputs.extra-setup-action }}
+
+      - name: Generate contract types
+        run: |
+          npx nx run a-demo-contracts:bundle
+          npx nx run a-demo-be-golang-gin:codegen
+          npx nx run ${{ inputs.frontend-name }}:codegen
+          for target in ${{ inputs.extra-codegen-targets }}; do
+            npx nx run "$target"
+          done
+
+      - name: Start full stack
+        run: docker compose -f ${{ inputs.compose-dir }}/docker-compose.yml up --build -d
+
+      - name: Wait for frontend to be ready
+        run: |
+          TIMEOUT=${{ inputs.health-timeout }}
+          ITERATIONS=$((TIMEOUT / 10))
+          echo "Waiting for frontend to be ready on port 3301 (timeout: ${TIMEOUT}s)..."
+          for i in $(seq 1 $ITERATIONS); do
+            if curl -sf http://localhost:3301 > /dev/null 2>&1; then
+              echo "Frontend is ready"
+              exit 0
+            fi
+            echo "[$i/$ITERATIONS] Waiting..."
+            sleep 10
+          done
+          echo "Frontend did not start within ${TIMEOUT}s"
+          docker compose -f ${{ inputs.compose-dir }}/docker-compose.yml logs
+          exit 1
+
+      - uses: ./.github/actions/setup-playwright
+
+      - name: Run FE E2E tests
+        run: npx nx run a-demo-fe-e2e:test:e2e
+        env:
+          BASE_URL: http://localhost:3301
+          BACKEND_URL: http://localhost:8201
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fe-e2e-${{ inputs.frontend-name }}
+          path: apps/a-demo-fe-e2e/playwright-report/
+          retention-days: 7
+
+      - name: Teardown
+        if: always()
+        run: docker compose -f ${{ inputs.compose-dir }}/docker-compose.yml down -v

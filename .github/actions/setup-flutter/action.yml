@@ -1,0 +1,29 @@
+name: "Setup Flutter"
+description: "Install Flutter SDK with pub cache"
+inputs:
+  flutter-channel:
+    description: "Flutter release channel"
+    required: false
+    default: "stable"
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        channel: ${{ inputs.flutter-channel }}
+
+    - name: Cache pub dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.pub-cache
+        key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
+        restore-keys: |
+          pub-${{ runner.os }}-
+
+    - name: Get pub dependencies
+      shell: bash
+      run: |
+        if [ -f "apps/a-demo-fe-dart-flutterweb/pubspec.yaml" ]; then
+          cd apps/a-demo-fe-dart-flutterweb && flutter pub get
+        fi

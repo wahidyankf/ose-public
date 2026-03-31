@@ -93,6 +93,11 @@
       },
       "dependsOn": ["codegen"],
       "cache": true
+    },
+    "spec-coverage": {
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate specs/apps/a-demo/be/gherkin apps/a-demo-be-kotlin-ktor",
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/a-demo/be/gherkin/**/*.feature", "{projectRoot}/**/*.kt"]
     }
   },
   "tags": ["type:app", "platform:ktor", "lang:kotlin", "domain:a-demo-be"],

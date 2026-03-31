@@ -59,6 +59,11 @@
         "command": "CGO_ENABLED=0 golangci-lint run --allow-parallel-runners ./...",
         "cwd": "apps/rhino-cli"
       }
+    },
+    "spec-coverage": {
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate specs/apps/rhino-cli/cli/gherkin apps/rhino-cli --shared-steps",
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/rhino-cli/cli/gherkin/**/*.feature", "{projectRoot}/**/*.go"]
     }
   }
 }

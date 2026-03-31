@@ -1,0 +1,14 @@
+# Local Development Environment for rhino-cli (Go CLI)
+# Repository Hygiene & INtegration Orchestrator
+
+services:
+  rhino-cli:
+    build:
+      context: ../../../
+      dockerfile: infra/dev/rhino-cli/Dockerfile.cli.dev
+    volumes:
+      - ../../../apps/rhino-cli:/app/apps/rhino-cli
+      - ../../../libs/golang-commons:/app/libs/golang-commons
+      - ../../../specs:/app/specs:ro
+    working_dir: /app/apps/rhino-cli
+    command: go test ./... -v

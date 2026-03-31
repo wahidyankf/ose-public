@@ -1,0 +1,43 @@
+name: "Setup JVM"
+description: "Install Java (Temurin) with Maven and Gradle caches"
+inputs:
+  java-version:
+    description: "Primary Java version"
+    required: false
+    default: "21"
+  java-version-alt:
+    description: "Alternate Java version (set as JAVA_HOME default)"
+    required: false
+    default: "25"
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Java ${{ inputs.java-version }} (Gradle/Kotlin)
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: ${{ inputs.java-version }}
+
+    - name: Setup Java ${{ inputs.java-version-alt }} (Maven, default JAVA_HOME)
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: ${{ inputs.java-version-alt }}
+
+    - name: Cache Maven local repository
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2/repository
+        key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          maven-${{ runner.os }}-
+
+    - name: Cache Gradle
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          gradle-${{ runner.os }}-

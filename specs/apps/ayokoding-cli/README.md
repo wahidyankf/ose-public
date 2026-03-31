@@ -13,9 +13,16 @@ the contract between the CLI implementation and its consumers.
 
 ## Structure
 
-| Directory | Command(s)    |
-| --------- | ------------- |
-| `links/`  | `links check` |
+All feature files live under a single `cli/gherkin/` directory:
+
+```
+specs/apps/ayokoding-cli/
+├── README.md
+└── cli/
+    └── gherkin/    # All ayokoding-cli Gherkin feature files
+```
+
+See [cli/gherkin/README.md](./cli/gherkin/README.md) for the full file inventory.
 
 ## Running the Tests
 
@@ -46,7 +53,7 @@ This pattern will be implemented as part of the CLI testing alignment plan.
 
 ## Adding New Specs
 
-1. Create `specs/apps/ayokoding-cli/<domain>/<command>.feature`
+1. Create `specs/apps/ayokoding-cli/cli/gherkin/<domain>-<action>.feature`
 2. Create `apps/ayokoding-cli/cmd/<command>_test.go` (no build tag — unit test with godog):
    - Add `package cmd` at the top
    - Include `// Scenario: <title>` comments for every scenario

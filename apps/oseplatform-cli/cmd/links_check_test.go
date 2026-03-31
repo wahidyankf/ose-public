@@ -18,7 +18,7 @@ import (
 
 var specsDirUnitLinksCheckOseplatform = func() string {
 	_, f, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(f), "../../../specs/apps/oseplatform-cli/links")
+	return filepath.Join(filepath.Dir(f), "../../../specs/apps/oseplatform-cli/cli/gherkin")
 }()
 
 type linksCheckOseplatformUnitSteps struct {

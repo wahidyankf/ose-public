@@ -55,6 +55,11 @@
         "command": "npx playwright show-report",
         "cwd": "apps/organiclever-be-e2e"
       }
+    },
+    "spec-coverage": {
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate specs/apps/organiclever/be/gherkin apps/organiclever-be-e2e",
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/organiclever/be/gherkin/**/*.feature", "{projectRoot}/**/*.ts"]
     }
   },
   "tags": ["type:e2e", "platform:playwright", "lang:ts", "domain:organiclever-be"],

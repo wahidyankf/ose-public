@@ -1,0 +1,16 @@
+FROM golang:1.26-alpine
+
+RUN apk add --no-cache git gcc musl-dev
+
+WORKDIR /app
+
+# Copy go workspace files
+COPY go.work go.work.sum ./
+COPY apps/rhino-cli/go.mod apps/rhino-cli/go.sum apps/rhino-cli/
+COPY libs/golang-commons/go.mod libs/golang-commons/go.sum libs/golang-commons/
+
+RUN cd apps/rhino-cli && go mod download
+
+COPY . .
+
+WORKDIR /app/apps/rhino-cli

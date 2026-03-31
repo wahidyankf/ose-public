@@ -11,82 +11,10 @@ permissions:
 
 jobs:
   e2e-fe:
-    name: Run E2E tests
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "24"
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: "1.26.0"
-
-      - name: Install oapi-codegen
-        run: go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-
-      - name: Generate contract types
-        run: |
-          npm ci --ignore-scripts
-          npx nx run a-demo-contracts:bundle
-          npx nx run a-demo-be-golang-gin:codegen
-          npx nx run a-demo-fe-dart-flutterweb:codegen
-          npx nx run a-demo-fe-ts-nextjs:codegen
-          npx nx run a-demo-fe-ts-tanstack-start:codegen
-
-      - name: Start full stack (DB + backend + frontend)
-        run: docker compose -f infra/dev/a-demo-fe-dart-flutterweb/docker-compose.yml up --build -d
-
-      - name: Wait for frontend to be ready
-        run: |
-          echo "Waiting for frontend to be ready on port 3301..."
-          for i in $(seq 1 60); do
-            if curl -sf http://localhost:3301 > /dev/null 2>&1; then
-              echo "Frontend is ready"
-              exit 0
-            fi
-            echo "[$i/60] Waiting..."
-            sleep 10
-          done
-          echo "Frontend did not start within 10 minutes"
-          docker compose -f infra/dev/a-demo-fe-dart-flutterweb/docker-compose.yml logs
-          exit 1
-
-      - name: Setup Volta
-        uses: volta-cli/action@v4
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
-        working-directory: apps/a-demo-fe-e2e
-
-      - name: Run E2E tests
-        run: npx nx run a-demo-fe-e2e:test:e2e
-        env:
-          BASE_URL: http://localhost:3301
-          BACKEND_URL: http://localhost:8201
-
-      - name: Upload test report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report-a-demo-fe-dart-flutterweb
-          path: apps/a-demo-fe-e2e/playwright-report/
-          retention-days: 7
-
-      - name: Stop full stack
-        if: always()
-        run: docker compose -f infra/dev/a-demo-fe-dart-flutterweb/docker-compose.yml down -v
+    uses: ./.github/workflows/_reusable-frontend-e2e.yml
+    with:
+      frontend-name: a-demo-fe-dart-flutterweb
+      compose-dir: infra/dev/a-demo-fe-dart-flutterweb
+      extra-setup-action: ./.github/actions/setup-flutter
+      extra-codegen-targets: "a-demo-fe-ts-nextjs:codegen a-demo-fe-ts-tanstack-start:codegen"
+      health-timeout: 600

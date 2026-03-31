@@ -29,8 +29,8 @@ Acceptance specs belong at the monorepo root rather than inside app directories 
 - **[organiclever/](./apps/organiclever/README.md)** — OrganicLever specifications (backend REST API +
   frontend landing page)
 
-- **[demo/](./apps/demo/README.md)** — Demo application specifications
-  (platform-agnostic Gherkin — see [be/gherkin](./apps/demo/be/gherkin/README.md) and [fe/gherkin](./apps/demo/fe/gherkin/README.md) for details)
+- **[a-demo/](./apps/a-demo/README.md)** — Demo application specifications
+  (platform-agnostic Gherkin — see [be/gherkin](./apps/a-demo/be/gherkin/README.md) and [fe/gherkin](./apps/a-demo/fe/gherkin/README.md) for details)
 - **[rhino-cli/](./apps/rhino-cli/README.md)** — Repository management CLI specifications (Go, godog)
 - **[ayokoding-cli/](./apps/ayokoding-cli/README.md)** — Content automation CLI specifications (Go, godog)
 - **[oseplatform-cli/](./apps/oseplatform-cli/README.md)** — OSE Platform site CLI specifications (Go, godog)
@@ -44,6 +44,34 @@ Acceptance specs belong at the monorepo root rather than inside app directories 
 
 - **[golang-commons/](./libs/golang-commons/)** — Shared Go utility specifications (godog)
 - **[hugo-commons/](./libs/hugo-commons/)** — Hugo site utility specifications (godog)
+
+## Standard Folder Pattern
+
+Each application domain follows this layout under `specs/apps/{domain}/`:
+
+```
+specs/apps/{domain}/
+├── README.md               # Describes app, BDD framework, and feature organization
+├── contracts/              # OpenAPI 3.1 contract spec (bundled + source files)
+├── be/gherkin/             # Backend acceptance specs (.feature files)
+├── fe/gherkin/             # Frontend acceptance specs (.feature files)
+├── fs/gherkin/             # Fullstack acceptance specs (.feature files, if applicable)
+└── c4/                     # C4 architecture diagrams (if applicable)
+```
+
+Where `{role}` in `{domain}/{role}/gherkin/` is one of:
+
+- `be` — backend service (REST API, GraphQL, etc.)
+- `fe` — frontend application (Next.js, Flutter, etc.)
+- `fs` — fullstack application (combined frontend + backend in one app)
+- `cli` — CLI tool (Go, etc.)
+
+**Contracts** live at `specs/apps/{domain}/contracts/` and are the source of truth for API
+contracts shared between frontend and backend. The `{domain}-contracts` Nx project lints and
+bundles the spec; downstream apps consume it via their `codegen` target.
+
+**C4 diagrams** live at `specs/apps/{domain}/c4/` and describe the system architecture at the
+context, container, and component levels.
 
 ## Standards
 

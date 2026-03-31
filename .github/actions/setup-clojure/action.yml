@@ -1,0 +1,42 @@
+name: "Setup Clojure"
+description: "Install Clojure CLI and clj-kondo with Maven and gitlibs cache"
+inputs:
+  java-version:
+    description: "Java version for Clojure"
+    required: false
+    default: "21"
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Java for Clojure
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: ${{ inputs.java-version }}
+
+    - name: Install Clojure CLI
+      shell: bash
+      run: |
+        curl -L -O https://github.com/clojure/brew-install/releases/latest/download/linux-install.sh
+        chmod +x linux-install.sh
+        sudo ./linux-install.sh
+        rm linux-install.sh
+
+    - name: Install clj-kondo
+      shell: bash
+      run: |
+        curl -sLO https://raw.githubusercontent.com/clj-kondo/clj-kondo/master/script/install-clj-kondo
+        chmod +x install-clj-kondo
+        sudo ./install-clj-kondo
+        rm install-clj-kondo
+
+    - name: Cache Maven and Clojure gitlibs
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.m2/repository
+          ~/.gitlibs
+          ~/.clojure/.cpcache
+        key: clojure-${{ runner.os }}-${{ hashFiles('**/deps.edn') }}
+        restore-keys: |
+          clojure-${{ runner.os }}-

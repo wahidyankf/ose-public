@@ -18,92 +18,22 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Volta
-        uses: volta-cli/action@v4
-
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: "1.26.0"
-
-      - name: Setup Java 21 (Gradle/Kotlin — detekt requires JVM ≤24)
-        uses: actions/setup-java@v4
-        with:
-          java-version: "21"
-          distribution: "temurin"
-
-      - name: Setup Java 25 (Maven/Vert.x — default JAVA_HOME)
-        uses: actions/setup-java@v4
-        with:
-          java-version: "25"
-          distribution: "temurin"
-
-      - name: Setup Elixir
-        uses: erlef/setup-beam@v1
-        with:
-          elixir-version: "1.19"
-          otp-version: "27"
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: "10.0.x"
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.13"
-
-      - name: Install uv
-        run: pip install uv
-
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Install cargo-llvm-cov
-        uses: taiki-e/install-action@cargo-llvm-cov
+      # --- Language setup via composite actions ---
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-clojure
+      - uses: ./.github/actions/setup-golang
+      - uses: ./.github/actions/setup-jvm
+      - uses: ./.github/actions/setup-elixir
+      - uses: ./.github/actions/setup-dotnet
+      - uses: ./.github/actions/setup-python
+      - uses: ./.github/actions/setup-rust
+      - uses: ./.github/actions/setup-flutter
 
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
         with:
           hugo-version: "0.156.0"
           extended: true
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-
-      - name: Setup Clojure CLI
-        run: |
-          curl -L -O https://github.com/clojure/brew-install/releases/latest/download/linux-install.sh
-          chmod +x linux-install.sh
-          sudo ./linux-install.sh
-          rm linux-install.sh
-
-      - name: Install clj-kondo
-        run: |
-          curl -sLO https://raw.githubusercontent.com/clj-kondo/clj-kondo/master/script/install-clj-kondo
-          chmod +x install-clj-kondo
-          sudo ./install-clj-kondo
-          rm install-clj-kondo
-
-      - name: Install .NET global tools
-        run: |
-          dotnet tool install -g fantomas
-          dotnet tool install -g dotnet-fsharplint
-
-      - name: Install golangci-lint
-        run: go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.10.1
-
-      - name: Install oapi-codegen (Go OpenAPI codegen)
-        run: go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest
-
-      - name: Install datamodel-code-generator (Python OpenAPI codegen)
-        run: pip install datamodel-code-generator[http]
-
-      - name: Install dependencies
-        run: npm ci
 
       - name: Install Elixir dependencies
         run: |

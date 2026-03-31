@@ -15,7 +15,7 @@ import (
 
 var specsDirUnitJavaValidateAnnotations = func() string {
 	_, f, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(f), "../../../specs/apps/rhino-cli/java")
+	return filepath.Join(filepath.Dir(f), "../../../specs/apps/rhino-cli/cli/gherkin")
 }()
 
 type javaValidateAnnotationsUnitSteps struct {

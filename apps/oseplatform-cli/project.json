@@ -58,6 +58,11 @@
         "command": "CGO_ENABLED=0 golangci-lint run --allow-parallel-runners ./...",
         "cwd": "apps/oseplatform-cli"
       }
+    },
+    "spec-coverage": {
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate specs/apps/oseplatform-cli/cli/gherkin apps/oseplatform-cli --shared-steps",
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/oseplatform-cli/cli/gherkin/**/*.feature", "{projectRoot}/**/*.go"]
     }
   },
   "tags": ["type:app", "platform:cli", "lang:golang", "domain:oseplatform"]

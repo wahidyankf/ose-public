@@ -16,7 +16,7 @@ import (
 
 var specsDirUnitSpecCoverageValidate = func() string {
 	_, f, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(f), "../../../specs/apps/rhino-cli/spec-coverage")
+	return filepath.Join(filepath.Dir(f), "../../../specs/apps/rhino-cli/cli/gherkin")
 }()
 
 type specCoverageValidateUnitSteps struct {

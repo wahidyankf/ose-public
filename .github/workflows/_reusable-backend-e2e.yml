@@ -1,0 +1,199 @@
+name: Backend - E2E Tests
+
+on:
+  workflow_call:
+    inputs:
+      backend-name:
+        required: true
+        type: string
+      setup-action:
+        required: true
+        type: string
+        description: "Path to composite setup action (e.g., ./.github/actions/setup-golang)"
+      compose-dir:
+        required: true
+        type: string
+        description: "Path to infra/dev compose directory (e.g., infra/dev/a-demo-be-golang-gin)"
+      compose-file:
+        required: false
+        type: string
+        default: ""
+        description: "Override compose file path (for backends using non-standard compose like ci-e2e.yml). When set, compose-dir is ignored."
+      health-url:
+        required: false
+        type: string
+        default: ""
+        description: "HTTP health URL to poll (if empty, uses docker health check)"
+      health-timeout:
+        required: false
+        type: number
+        default: 240
+        description: "Seconds to wait for backend health (default: 240)"
+      frontend-port:
+        required: false
+        type: number
+        default: 3301
+        description: "Port the frontend listens on (default: 3301)"
+      backend-port:
+        required: false
+        type: number
+        default: 8201
+        description: "Port the backend listens on (default: 8201)"
+      be-e2e-target:
+        required: false
+        type: string
+        default: "test:e2e"
+        description: "BE E2E Nx target (e.g., test:e2e or test:e2e:no-test-api)"
+      be-e2e-extra-env:
+        required: false
+        type: string
+        default: ""
+        description: "Extra env vars for BE E2E as KEY=VALUE lines (one per line)"
+      docker-owned-dirs:
+        required: false
+        type: string
+        default: ""
+        description: "Space-separated paths to clean before npm ci (Docker-created node_modules)"
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    name: E2E tests - ${{ inputs.backend-name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-docker-cache
+
+      - name: Set up Node.js (for codegen)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Set up Go (for oapi-codegen used by FE codegen)
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.26.0"
+          cache-dependency-path: "**/go.sum"
+
+      - name: Install oapi-codegen
+        run: go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest
+
+      - uses: ${{ inputs.setup-action }}
+
+      - name: Generate contract types
+        run: |
+          npm ci --ignore-scripts
+          npx nx run a-demo-contracts:bundle
+          npx nx run ${{ inputs.backend-name }}:codegen
+          npx nx run a-demo-fe-ts-nextjs:codegen
+          npx nx run a-demo-fe-ts-tanstack-start:codegen
+
+      - name: Start full stack
+        run: |
+          if [ -n "${{ inputs.compose-file }}" ]; then
+            docker compose -f ${{ inputs.compose-file }} up --build -d
+          else
+            docker compose -f ${{ inputs.compose-dir }}/docker-compose.yml -f ${{ inputs.compose-dir }}/docker-compose.ci.yml up --build -d
+          fi
+
+      - name: Wait for backend to be healthy
+        run: |
+          TIMEOUT=${{ inputs.health-timeout }}
+          ITERATIONS=$((TIMEOUT / 10))
+          echo "Waiting for backend to become healthy (timeout: ${TIMEOUT}s)..."
+          for i in $(seq 1 $ITERATIONS); do
+            STATUS=$(docker inspect --format='{{.State.Health.Status}}' '${{ inputs.backend-name }}' 2>/dev/null || echo "unknown")
+            RUNNING=$(docker inspect --format='{{.State.Running}}' '${{ inputs.backend-name }}' 2>/dev/null || echo "unknown")
+            echo "[$i/$ITERATIONS] Health: $STATUS, Running: $RUNNING"
+            if [ "$STATUS" = "healthy" ]; then
+              echo "Backend is healthy"
+              break
+            fi
+            if [ "$RUNNING" = "false" ]; then
+              echo "Backend container exited!"
+              docker logs ${{ inputs.backend-name }}
+              exit 1
+            fi
+            sleep 10
+          done
+          if [ "$STATUS" != "healthy" ]; then
+            echo "Backend did not become healthy within ${TIMEOUT}s"
+            docker logs ${{ inputs.backend-name }}
+            exit 1
+          fi
+
+      - name: Wait for frontend to be ready
+        run: |
+          echo "Waiting for frontend to be ready on port ${{ inputs.frontend-port }}..."
+          for i in $(seq 1 36); do
+            if curl -sf http://localhost:${{ inputs.frontend-port }} > /dev/null 2>&1; then
+              echo "Frontend is ready"
+              exit 0
+            fi
+            echo "[$i/36] Waiting..."
+            sleep 10
+          done
+          echo "Frontend did not start within 6 minutes"
+          if [ -n "${{ inputs.compose-file }}" ]; then
+            docker compose -f ${{ inputs.compose-file }} logs
+          else
+            docker compose -f ${{ inputs.compose-dir }}/docker-compose.yml -f ${{ inputs.compose-dir }}/docker-compose.ci.yml logs
+          fi
+          exit 1
+
+      - name: Setup Volta
+        uses: volta-cli/action@v4
+
+      - name: Clean Docker-created directories
+        if: inputs.docker-owned-dirs != ''
+        run: |
+          for dir in ${{ inputs.docker-owned-dirs }}; do
+            echo "Cleaning $dir"
+            sudo rm -rf "$dir"
+          done
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+        working-directory: apps/a-demo-fe-e2e
+
+      - name: Run BE E2E tests
+        run: npx nx run a-demo-be-e2e:${{ inputs.be-e2e-target }}
+        env:
+          BASE_URL: http://localhost:${{ inputs.backend-port }}
+
+      - name: Upload BE E2E report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ inputs.backend-name }}
+          path: apps/a-demo-be-e2e/playwright-report/
+          retention-days: 7
+
+      - name: Run FE E2E tests
+        run: npx nx run a-demo-fe-e2e:test:e2e
+        env:
+          BASE_URL: http://localhost:${{ inputs.frontend-port }}
+          BACKEND_URL: http://localhost:${{ inputs.backend-port }}
+
+      - name: Upload FE E2E report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-fe-e2e-${{ inputs.backend-name }}
+          path: apps/a-demo-fe-e2e/playwright-report/
+          retention-days: 7
+
+      - name: Stop full stack
+        if: always()
+        run: |
+          if [ -n "${{ inputs.compose-file }}" ]; then
+            docker compose -f ${{ inputs.compose-file }} down -v
+          else
+            docker compose -f ${{ inputs.compose-dir }}/docker-compose.yml -f ${{ inputs.compose-dir }}/docker-compose.ci.yml down -v
+          fi

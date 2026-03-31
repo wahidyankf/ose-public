@@ -13,17 +13,16 @@ the contract between the CLI implementation and its consumers.
 
 ## Structure
 
-| Directory        | Command(s)                                                            |
-| ---------------- | --------------------------------------------------------------------- |
-| `agents/`        | `agents sync`, `agents validate-claude`, `agents validate-sync`       |
-| `docs/`          | `docs validate-links`, `docs validate-naming`                         |
-| `doctor/`        | `doctor`                                                              |
-| `env/`           | `env backup`, `env restore`                                           |
-| `contracts/`     | `contracts java-clean-imports`, `contracts dart-scaffold`             |
-| `java/`          | `java validate-annotations`                                           |
-| `git/`           | `git pre-commit`                                                      |
-| `spec-coverage/` | `spec-coverage validate`                                              |
-| `test-coverage/` | `test-coverage validate`, `test-coverage merge`, `test-coverage diff` |
+All feature files live under a single `cli/gherkin/` directory:
+
+```
+specs/apps/rhino-cli/
+├── README.md
+└── cli/
+    └── gherkin/    # All rhino-cli Gherkin feature files
+```
+
+See [cli/gherkin/README.md](./cli/gherkin/README.md) for the full file inventory.
 
 ## Running the Tests
 
@@ -52,7 +51,7 @@ The `test:integration` target is cached — it only re-runs when source files in
 
 ## Adding New Specs
 
-1. Create `specs/apps/rhino-cli/<domain>/<domain>-<action>.feature`
+1. Create `specs/apps/rhino-cli/cli/gherkin/<domain>-<action>.feature`
 2. Create `apps/rhino-cli/cmd/<domain>_<action>_test.go` (no build tag — unit test with godog):
    - Add `package cmd` at the top
    - Include `// Scenario: <title>` comments for every scenario

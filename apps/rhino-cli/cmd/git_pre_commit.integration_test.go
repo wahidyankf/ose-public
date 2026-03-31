@@ -17,7 +17,7 @@ import (
 
 var specsGitPreCommitDir = func() string {
 	_, f, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(f), "../../../specs/apps/rhino-cli/git")
+	return filepath.Join(filepath.Dir(f), "../../../specs/apps/rhino-cli/cli/gherkin")
 }()
 
 // Scenario: Running pre-commit outside a git repository fails

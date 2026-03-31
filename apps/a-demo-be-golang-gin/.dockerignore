@@ -1,0 +1,35 @@
+# Dependencies and build artifacts
+node_modules/
+.nx/
+dist/
+build/
+.next/
+coverage/
+*.log
+
+# Git and IDE
+.git
+.gitignore
+.idea
+.vscode
+*.swp
+*~
+.DS_Store
+
+# Documentation and config
+README.md
+*.md
+project.json
+tsconfig*.json
+jest.config*
+vitest.config*
+playwright.config*
+
+# Test artifacts
+test-results/
+playwright-report/
+
+# Generated
+generated-reports/
+generated-contracts/
+

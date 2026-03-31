@@ -8,7 +8,7 @@ tags:
   - architecture
   - structure
 created: 2025-11-29
-updated: 2026-03-06
+updated: 2026-03-31
 ---
 
 # Monorepo Structure Reference
@@ -36,8 +36,18 @@ open-sharia-enterprise/
 ├── plans/                     # Project planning documents
 ├── .claude/                   # Claude Code configuration
 ├── infra/                     # Infrastructure configurations
-│   ├── dev/                  # Local development (Docker Compose)
+│   ├── dev/                  # Local development Docker Compose files per service
+│   │   └── [service]/        # docker-compose.yml for local dev environment
 │   └── k8s/                  # Kubernetes deployments
+├── specs/                     # Gherkin acceptance specs and OpenAPI contracts
+│   ├── apps/                  # Per-app specs
+│   │   └── [domain]/         # e.g. a-demo/, organiclever/
+│   │       ├── contracts/    # OpenAPI 3.1 contract spec
+│   │       ├── be/gherkin/   # Backend acceptance specs
+│   │       ├── fe/gherkin/   # Frontend acceptance specs
+│   │       ├── fs/gherkin/   # Fullstack acceptance specs (if applicable)
+│   │       └── c4/           # C4 architecture diagrams (if applicable)
+│   └── libs/                  # Per-library specs
 ├── .husky/                    # Git hooks
 ├── .nx/                       # Nx cache (gitignored)
 ├── node_modules/              # Dependencies (gitignored)

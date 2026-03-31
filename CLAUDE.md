@@ -218,6 +218,10 @@ of `test:quick`. Uses cloverage with `--lcov` output format.
 part of `test:quick`. Lower threshold reflects that API/auth/queries layers are fully mocked in
 unit tests by design.
 
+**Fullstack apps**: `a-demo-fs-ts-nextjs` enforces ≥75% **line coverage** via
+`rhino-cli test-coverage validate` applied to the LCOV output from `test:unit` (Vitest):
+`rhino-cli test-coverage validate apps/a-demo-fs-ts-nextjs/coverage/lcov.info 75` — run as part of `test:quick`.
+
 **Dart frontends**: `a-demo-fe-dart-flutterweb` enforces ≥70% **line coverage** via
 `rhino-cli test-coverage validate` applied to the LCOV output from `test:unit` (Flutter test) — run
 as part of `test:quick`.

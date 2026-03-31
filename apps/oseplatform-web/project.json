@@ -97,6 +97,15 @@
     },
     "clean": {
       "command": "rm -rf .next"
+    },
+    "spec-coverage": {
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate specs/apps/oseplatform/be/gherkin apps/oseplatform-web",
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/specs/apps/oseplatform/be/gherkin/**/*.feature",
+        "{workspaceRoot}/specs/apps/oseplatform/fe/gherkin/**/*.feature",
+        "{projectRoot}/**/*.{ts,tsx}"
+      ]
     }
   },
   "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:oseplatform"]

@@ -7,7 +7,7 @@ tags:
   - local-development
   - docker-compose
 created: 2026-02-28
-updated: 2026-03-06
+updated: 2026-03-31
 ---
 
 # How to Set Up Reproducible Local Development with Docker
@@ -20,11 +20,14 @@ This guide explains how to set up a reproducible local development environment u
 
 ## Prerequisites
 
-- **Docker**: 20.10+ ([Install Docker](https://docs.docker.com/get-docker/))
-- **Docker Compose**: 2.0+ (included with Docker Desktop)
+- **Docker Desktop** (macOS/Windows) or **Docker Engine + Docker Compose v2** (Linux):
+  - Docker Engine: 20.10+ ([Install Docker](https://docs.docker.com/get-docker/))
+  - Docker Compose: v2.0+ (included with Docker Desktop; install separately on Linux)
+- **Docker resources**: Minimum 2 CPU cores and 4 GB RAM recommended (configure in Docker Desktop → Settings → Resources)
+- **Volta**: Node.js version manager for running Nx commands — install from [volta.sh](https://volta.sh/). Volta reads the pinned Node.js and npm versions from `package.json` automatically.
 - **Git**: For cloning the repository
 
-**Optional** (only needed if building applications):
+**Optional** (only needed if building applications outside Docker):
 
 - Language-specific tools (Java, Node.js, etc.) for building before containerization
 - Or use Docker multi-stage builds (future enhancement)
@@ -71,12 +74,43 @@ cd open-sharia-enterprise
 
 ### 2. Choose Your Service Ecosystem
 
-Each service ecosystem has its own Docker Compose setup:
+Each app category has its own Docker Compose setup under `infra/dev/`. Pick the one matching your development task:
+
+**Backend (demo-be)**:
 
 ```bash
-# Example: OrganicLever services
-cd infra/dev/a-demo-be-java-springboot
+docker compose -f infra/dev/a-demo-be-golang-gin/docker-compose.yml up
 ```
+
+**Frontend (demo-fe)**:
+
+```bash
+docker compose -f infra/dev/a-demo-fe-ts-nextjs/docker-compose.yml up
+```
+
+**Full-stack (demo-fs)**:
+
+```bash
+docker compose -f infra/dev/a-demo-fs-ts-nextjs/docker-compose.yml up
+```
+
+**Content platform**:
+
+```bash
+# AyoKoding
+docker compose -f infra/dev/ayokoding-web/docker-compose.yml up
+
+# OSE Platform
+docker compose -f infra/dev/oseplatform-web/docker-compose.yml up
+```
+
+**OrganicLever** (frontend + backend + database):
+
+```bash
+docker compose -f infra/dev/organiclever/docker-compose.yml up
+```
+
+> **Note**: All `a-demo-be-*` backends bind port 8201 and are mutually exclusive — do not run two backend stacks simultaneously.
 
 ### 3. Configure Environment (Optional)
 
@@ -108,13 +142,13 @@ cd ../../infra/dev/a-demo-be-java-springboot
 
 ```bash
 # Start all services in the ecosystem
-docker-compose up -d
+docker compose up -d
 
 # View logs
-docker-compose logs -f
+docker compose logs -f
 
 # Check status
-docker-compose ps
+docker compose ps
 ```
 
 ### 6. Verify Services
@@ -150,10 +184,10 @@ See [`apps/organiclever-fe-e2e/`](../../apps/organiclever-fe-e2e/README.md) for 
 
 ```bash
 # Stop services
-docker-compose down
+docker compose down
 
 # Stop and remove volumes
-docker-compose down -v
+docker compose down -v
 ```
 
 ## Available Service Ecosystems
@@ -205,35 +239,33 @@ Additional service ecosystems will be added as the platform grows.
 
 ```bash
 # All services
-docker-compose logs -f
+docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml logs -f
 
 # Specific service
-docker-compose logs -f a-demo-be-java-springboot
+docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml logs -f a-demo-be-java-springboot
 
 # Last 100 lines
-docker-compose logs --tail=100 a-demo-be-java-springboot
+docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml logs --tail=100 a-demo-be-java-springboot
 ```
 
 ### Restart Services
 
 ```bash
 # Restart all
-docker-compose restart
+docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml restart
 
 # Restart specific service
-docker-compose restart a-demo-be-java-springboot
+docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml restart a-demo-be-java-springboot
 ```
 
 ### Rebuild After Code Changes
 
 ```bash
 # 1. Rebuild the application
-cd ../../apps/a-demo-be-java-springboot
-mvn clean package -DskipTests
+nx run a-demo-be-java-springboot:build
 
 # 2. Restart the service
-cd ../../infra/dev/a-demo-be-java-springboot
-docker-compose restart a-demo-be-java-springboot
+docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml restart a-demo-be-java-springboot
 ```
 
 ### Check Resource Usage
@@ -243,17 +275,17 @@ docker-compose restart a-demo-be-java-springboot
 docker stats
 
 # Compose service status
-docker-compose ps
+docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml ps
 ```
 
 ### Clean Up
 
 ```bash
 # Stop and remove containers
-docker-compose down
+docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml down
 
 # Remove volumes (caution: deletes data)
-docker-compose down -v
+docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml down -v
 
 # Remove unused Docker resources
 docker system prune
@@ -266,19 +298,15 @@ docker system prune
 **Best for**: Frontend developers, new team members, quick testing
 
 ```bash
-# 1. Build application (one time or after changes)
+# 1. Start services
+docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml up -d
+
+# 2. Make changes to code
+# 3. Rebuild and restart (Java requires rebuild; Go/Python restart is sufficient)
 nx run a-demo-be-java-springboot:build
+docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml restart a-demo-be-java-springboot
 
-# 2. Start services
-cd infra/dev/a-demo-be-java-springboot
-docker-compose up -d
-
-# 3. Make changes to code
-# 4. Rebuild and restart
-nx run a-demo-be-java-springboot:build
-docker-compose restart a-demo-be-java-springboot
-
-# 5. Test changes
+# 4. Test changes
 curl http://localhost:8201/api/v1/hello
 ```
 
@@ -287,15 +315,12 @@ curl http://localhost:8201/api/v1/hello
 **Best for**: Backend developers, active development
 
 ```bash
-# Run service directly for faster iteration
+# Run the database in Docker only
+docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml up -d a-demo-be-db
+
+# Run the app directly on the host for faster iteration
 cd apps/a-demo-be-java-springboot
 mvn spring-boot:run
-
-# Run dependent services in Docker
-cd ../../infra/dev/a-demo-be-java-springboot
-# Comment out the service you're developing
-# Keep database, cache, etc. in Docker
-docker-compose up -d
 ```
 
 ### Workflow 3: Full Local Development
@@ -304,51 +329,125 @@ docker-compose up -d
 
 ```bash
 # Run all services in Docker
-cd infra/dev/a-demo-be-java-springboot
-docker-compose up -d
+docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml up -d
 
-# Test inter-service communication
-# All services on same network
+# All services share the same named bridge network and communicate by service name
 ```
 
-## Environment Configuration
+## Environment Variable Configuration
 
 ### Using .env Files
 
-Each service ecosystem supports environment configuration:
+Each service ecosystem that needs configuration includes an `.env.example` template:
 
 ```bash
-# Copy template
-cp .env.example .env
+# 1. Copy the template
+cp infra/dev/<ecosystem>/.env.example infra/dev/<ecosystem>/.env
 
-# Edit variables
-nano .env
+# 2. Edit your values (most defaults work without changes)
+nano infra/dev/<ecosystem>/.env
 ```
 
-**Common variables**:
+The `.env` file is loaded automatically by Docker Compose. It is git-ignored — never commit it.
+
+### Common Variables by Ecosystem
+
+**All backends (DATABASE_URL)**:
 
 ```bash
-# Spring Boot Profile
-SPRING_PROFILES_ACTIVE=dev  # or prod
-
-# JVM Options
-JAVA_OPTS=-Xms512m -Xmx1024m -XX:+UseZGC
-
-# Database (future)
-DB_HOST=organiclever-db
-DB_PORT=5432
+# Constructed by Docker Compose internally; exposed on host for E2E tests
+DATABASE_URL=postgresql://user:password@localhost:5432/dbname
 ```
 
-### Profile Selection
-
-Services support multiple profiles:
-
-- **dev**: Development mode with verbose logging
-- **prod**: Production mode with JSON logging
+**Full-stack (`a-demo-fs-ts-nextjs`)**:
 
 ```bash
-# Set in .env file
+DATABASE_URL=postgresql://demo_fs_nextjs:demo_fs_nextjs@db:5432/demo_fs_nextjs
+APP_JWT_SECRET=dev-jwt-secret-at-least-32-chars-long!!
+# Enable test-only API routes used by E2E tests
+ENABLE_TEST_API=true
+```
+
+**OrganicLever** (requires OAuth setup):
+
+```bash
+# Required: Google OAuth credentials for login
+GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+
+# JWT secret — dev default provided if omitted
+APP_JWT_SECRET=dev-jwt-secret-at-least-32-characters-long
+
+# PostgreSQL — no need to change for local dev
+POSTGRES_USER=organiclever
+POSTGRES_PASSWORD=organiclever
+POSTGRES_DB=organiclever
+```
+
+**Java Spring Boot**:
+
+```bash
+# Profile: dev (verbose logging) or prod (JSON logging)
 SPRING_PROFILES_ACTIVE=dev
+JAVA_OPTS=-Xms256m -Xmx512m -XX:+UseZGC
+```
+
+### What Each Variable Controls
+
+| Variable                    | Used By                 | Purpose                                        |
+| --------------------------- | ----------------------- | ---------------------------------------------- |
+| `DATABASE_URL`              | All backends with DB    | Connection string for PostgreSQL               |
+| `ENABLE_TEST_API`           | a-demo-fs-ts-nextjs     | Enables test-only HTTP routes for E2E teardown |
+| `APP_JWT_SECRET`            | fs-nextjs, organiclever | Signs JWT tokens (min 32 chars for HS256)      |
+| `GOOGLE_CLIENT_ID`          | organiclever-fe         | Google OAuth client identifier                 |
+| `GOOGLE_CLIENT_SECRET`      | organiclever            | Google OAuth client secret (server-side only)  |
+| `SPRING_PROFILES_ACTIVE`    | Java Spring Boot        | Selects Spring Boot configuration profile      |
+| `JAVA_OPTS` / `MAVEN_OPTS`  | Java backends           | JVM and Maven memory settings                  |
+| `POSTGRES_USER/PASSWORD/DB` | organiclever, jasb      | PostgreSQL credentials (dev defaults provided) |
+
+## Database Seeding and Migration
+
+Each backend handles database setup automatically on startup. No manual migration steps are required for local development.
+
+| Language / Framework | Migration Tool     | How It Runs                                                          |
+| -------------------- | ------------------ | -------------------------------------------------------------------- |
+| Go (Gin)             | GORM auto-migrate  | Runs on startup via `AutoMigrate` calls in `main.go`                 |
+| Java (Spring Boot)   | Flyway             | Flyway migrations run automatically during Spring Boot startup       |
+| Java (Vert.x)        | Flyway             | Flyway migrations run via `mvn compile exec:java` on startup         |
+| TypeScript (Effect)  | Drizzle            | Drizzle migrations applied before server starts                      |
+| Python (FastAPI)     | Alembic            | Alembic `upgrade head` runs in the container entrypoint              |
+| Rust (Axum)          | sqlx migrate       | `sqlx migrate run` executes on startup                               |
+| Kotlin (Ktor)        | Exposed / Flyway   | Schema creation runs on startup                                      |
+| F# (Giraffe)         | EF Core Migrations | `dotnet run` applies pending migrations on startup                   |
+| C# (ASP.NET Core)    | EF Core Migrations | `dotnet run` applies pending migrations on startup                   |
+| Elixir (Phoenix)     | Ecto               | `mix ecto.migrate` runs before `mix phx.server` in the container CMD |
+| Clojure (Pedestal)   | Custom / Korma     | Schema applied on startup                                            |
+
+For services with PostgreSQL, the database container must pass its health check before the app container starts. Docker Compose `depends_on: condition: service_healthy` enforces this ordering automatically.
+
+## Hot-Reload in Docker Development
+
+The dev Docker images mount source code as a volume and run the application directly from source. This means most changes are reflected immediately or after a fast recompile — no image rebuild required.
+
+| Language            | Container Command            | Reload Mechanism                                                  |
+| ------------------- | ---------------------------- | ----------------------------------------------------------------- |
+| Go                  | `go run ./cmd/server`        | Restart the container to pick up changes (or use `air` locally)   |
+| Java (Spring Boot)  | `mvn spring-boot:run -Pdev`  | Spring DevTools reloads classes on compilation                    |
+| Java (Vert.x)       | `mvn compile exec:java`      | Recompile via Maven; restart container                            |
+| TypeScript (Effect) | `npx tsx src/main.ts`        | Restart container after file changes                              |
+| Python (FastAPI)    | `uvicorn ... --host 0.0.0.0` | Restart container (add `--reload` flag locally for auto-reload)   |
+| Rust (Axum)         | `cargo run`                  | Full rebuild on restart (`cargo-watch` not used in Docker)        |
+| Kotlin (Ktor)       | `./gradlew run`              | Gradle restarts the JVM on change with `--continuous`             |
+| F# (Giraffe)        | `dotnet run`                 | `dotnet watch run` can be substituted for file-watching           |
+| C# (ASP.NET Core)   | `dotnet run`                 | `dotnet watch run` can be substituted for file-watching           |
+| Elixir (Phoenix)    | `mix phx.server`             | Phoenix code reloader handles module recompilation automatically  |
+| Clojure (Pedestal)  | `clojure -M -m ...`          | Restart container; nREPL connection available for REPL-driven dev |
+| Dart (Flutter Web)  | Flutter web server           | Restart container; incremental compilation applies on reload      |
+
+**Restarting a single service** to pick up code changes:
+
+```bash
+docker compose -f infra/dev/<ecosystem>/docker-compose.yml restart <service-name>
 ```
 
 ## Environment Architecture
@@ -379,11 +478,21 @@ jdbc:postgresql://organiclever-db:5432/organiclever
 
 Services expose ports to the host:
 
-| Service                   | Internal Port | Host Port | Purpose                 |
-| ------------------------- | ------------- | --------- | ----------------------- |
-| a-demo-be-java-springboot | 8201          | 8201      | Backend API             |
-| organiclever-fe           | 3200          | 3200      | Next.js landing website |
-| (future) organiclever-db  | 5432          | 5432      | Database                |
+| App / Service                    | Host Port | Service Type             |
+| -------------------------------- | --------- | ------------------------ |
+| a-demo-be-\* (all backends)      | 8201      | Backend API              |
+| a-demo-fe-ts-nextjs              | 3301      | Frontend dev server      |
+| a-demo-fe-ts-tanstack-start      | 3301      | Frontend dev server      |
+| a-demo-fe-dart-flutterweb        | 3301      | Frontend dev server      |
+| a-demo-fs-ts-nextjs              | 3401      | Full-stack dev server    |
+| ayokoding-web                    | 3101      | Content platform         |
+| oseplatform-web                  | 3100      | Content platform         |
+| organiclever-fe                  | 3200      | OrganicLever frontend    |
+| organiclever-be                  | 8202      | OrganicLever backend API |
+| PostgreSQL (most backends)       | 5432      | Database                 |
+| PostgreSQL (a-demo-fs-ts-nextjs) | 5438      | Database                 |
+
+> **Note**: Frontend stacks (`a-demo-fe-*`) are mutually exclusive — they all expose port 3301 and include the Go/Gin backend on port 8201. Do not run two frontend stacks simultaneously.
 
 ## Health Checks
 
@@ -391,7 +500,7 @@ Services include health checks for monitoring:
 
 ```bash
 # Check health via Docker
-docker-compose ps
+docker compose -f infra/dev/<ecosystem>/docker-compose.yml ps
 
 # Check health via endpoint
 curl http://localhost:8201/health
@@ -405,65 +514,109 @@ curl http://localhost:8201/health
 
 ## Troubleshooting
 
+### Docker Daemon Not Running
+
+```bash
+# Check if Docker is running
+docker info
+
+# If not, start Docker Desktop (macOS/Windows)
+# or on Linux: sudo systemctl start docker
+```
+
 ### Service Won't Start
 
 ```bash
-# Check logs
-docker-compose logs service-name
+# Check logs for error details
+docker compose -f infra/dev/<ecosystem>/docker-compose.yml logs <service-name>
 
-# Check if port is in use
+# Check if a required port is already occupied
 lsof -i :8201
 
-# Verify application was built
-ls -lh ../../apps/a-demo-be-java-springboot/target/*.jar
+# Verify application was built (Java apps)
+ls -lh apps/a-demo-be-java-springboot/target/*.jar
 ```
 
-### Port Already in Use
+### Port Conflicts
+
+All `a-demo-be-*` backends share port 8201. All `a-demo-fe-*` frontends share port 3301. Running two stacks simultaneously causes a bind error.
 
 ```bash
-# Find what's using the port
+# Find the process occupying the port
 lsof -i :8201
 
-# Kill the process
+# Kill the process by PID
 kill -9 <PID>
 
-# Or change port in docker-compose.yml
+# Or stop the conflicting Docker stack
+docker compose -f infra/dev/<other-ecosystem>/docker-compose.yml down
 ```
 
-### Out of Memory
+### Volume Permission Errors
+
+On Linux, Docker containers may run as a non-root user that cannot write to host-mounted volumes.
 
 ```bash
-# Increase Docker memory limit (Docker Desktop)
-# Settings > Resources > Memory
+# Check the error in container logs
+docker compose -f infra/dev/<ecosystem>/docker-compose.yml logs <service-name>
 
-# Or adjust JVM heap in .env
-JAVA_OPTS=-Xms256m -Xmx512m -XX:+UseZGC
+# Fix by adjusting ownership of the mounted directory
+sudo chown -R $USER:$USER apps/<app-name>
+
+# Or run the container as your UID (set in docker-compose.yml env)
+# UID=$(id -u) GID=$(id -g) docker compose up
+```
+
+### Out of Disk Space
+
+```bash
+# Check Docker disk usage
+docker system df
+
+# Remove stopped containers, unused images, networks, and build cache
+docker system prune
+
+# Also remove unused volumes (caution: deletes persistent data)
+docker system prune --volumes
 ```
 
 ### Cannot Connect to Service
 
 ```bash
-# Verify service is running
-docker-compose ps
+# Verify service is running and healthy
+docker compose -f infra/dev/<ecosystem>/docker-compose.yml ps
 
-# Check if service is healthy
-docker inspect a-demo-be-java-springboot | grep -A 10 Health
+# Inspect health status
+docker inspect <container-name> | grep -A 10 Health
 
-# Test from inside container
-docker exec a-demo-be-java-springboot wget -O- http://localhost:8201/health
+# Test connectivity from inside the container
+docker exec <container-name> curl -f http://localhost:8201/health
 ```
 
-### Build Failed
+### Network Issues Between Services
 
 ```bash
-# Check build logs
+# List Docker networks
+docker network ls
+
+# Inspect which containers are on the network
+docker network inspect <network-name>
+
+# Each ecosystem creates its own named bridge network.
+# Containers in different ecosystems cannot reach each other by service name.
+```
+
+### Build Failed (Java)
+
+```bash
+# View full build output
 mvn clean package
 
-# Verify Java version
+# Verify Java version matches requirements
 java -version
 
-# Clear Maven cache
-rm -rf ~/.m2/repository/com/opencode
+# Clear Maven local cache if corrupted
+rm -rf ~/.m2/repository/org/springframework
 ```
 
 ## Best Practices
@@ -515,11 +668,14 @@ networks:
 
 ### 6. Document Port Assignments
 
-Maintain a central registry of ports to avoid conflicts:
+Maintain a central registry of ports to avoid conflicts. See the [Port Mapping](#port-mapping) reference table in the Networking section above for the complete list. Key assignments:
 
-- 8201: a-demo-be-java-springboot (also used by a-demo-be-e2e as `BASE_URL`)
-- 3200: organiclever-fe (also used by organiclever-fe-e2e as `BASE_URL`)
-- 5432: PostgreSQL databases
+- 8201: All `a-demo-be-*` backends (shared, mutually exclusive)
+- 3301: All `a-demo-fe-*` frontends (shared, mutually exclusive)
+- 3200: organiclever-fe
+- 8202: organiclever-be
+- 5432: PostgreSQL for most backends
+- 5438: PostgreSQL for a-demo-fs-ts-nextjs
 
 ## Performance Tips
 
@@ -574,10 +730,8 @@ mvn spring-boot:run
 
 ```bash
 # Install Docker (one time)
-# Build application
-mvn clean package
-# Start with Docker Compose
-docker-compose up -d
+# Start with Docker Compose (source is volume-mounted; no pre-build needed for most backends)
+docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml up -d
 ```
 
 ### Advantages
@@ -596,13 +750,13 @@ Docker Compose can be used in CI/CD pipelines:
 ```bash
 # GitHub Actions example
 - name: Start services
-  run: docker-compose up -d
+  run: docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml up -d
 
 - name: Run tests
-  run: docker-compose exec a-demo-be-java-springboot mvn test
+  run: docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml exec a-demo-be-java-springboot mvn test
 
 - name: Stop services
-  run: docker-compose down
+  run: docker compose -f infra/dev/a-demo-be-java-springboot/docker-compose.yml down
 ```
 
 ## Related Documentation
@@ -619,5 +773,5 @@ For issues or questions:
 
 1. Check service-specific README in `infra/dev/[service]/`
 2. Review troubleshooting section above
-3. Check Docker logs: `docker-compose logs`
+3. Check Docker logs: `docker compose -f infra/dev/<ecosystem>/docker-compose.yml logs`
 4. Consult main repository documentation

@@ -1,0 +1,26 @@
+name: "Setup Rust"
+description: "Install Rust toolchain and cargo-llvm-cov with cargo cache"
+inputs:
+  rust-version:
+    description: "Rust toolchain"
+    required: false
+    default: "stable"
+runs:
+  using: "composite"
+  steps:
+    - name: Install Rust toolchain
+      uses: dtolnay/rust-toolchain@stable
+
+    - name: Cache Cargo
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          apps/a-demo-be-rust-axum/target
+        key: cargo-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          cargo-${{ runner.os }}-
+
+    - name: Install cargo-llvm-cov
+      uses: taiki-e/install-action@cargo-llvm-cov

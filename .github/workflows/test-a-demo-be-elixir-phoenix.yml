@@ -10,155 +10,42 @@ permissions:
   contents: read
 
 jobs:
-  integration-tests:
-    name: Run integration tests
-    runs-on: ubuntu-latest
+  lint:
+    uses: ./.github/workflows/_reusable-backend-lint.yml
+    with:
+      backend-name: a-demo-be-elixir-phoenix
+      setup-action: ./.github/actions/setup-elixir
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  typecheck:
+    uses: ./.github/workflows/_reusable-backend-typecheck.yml
+    with:
+      backend-name: a-demo-be-elixir-phoenix
+      setup-action: ./.github/actions/setup-elixir
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "24"
+  coverage:
+    uses: ./.github/workflows/_reusable-backend-coverage.yml
+    with:
+      backend-name: a-demo-be-elixir-phoenix
+      setup-action: ./.github/actions/setup-elixir
 
-      - name: Set up Elixir
-        uses: erlef/setup-beam@v1
-        with:
-          otp-version: "27"
-          elixir-version: "1.19"
+  spec-coverage:
+    uses: ./.github/workflows/_reusable-backend-spec-coverage.yml
+    with:
+      backend-name: a-demo-be-elixir-phoenix
+      setup-action: ./.github/actions/setup-elixir
 
-      - name: Generate contract types for backend
-        run: |
-          npm ci --ignore-scripts
-          cd libs/elixir-openapi-codegen && mix deps.get && cd ../..
-          npx nx run a-demo-contracts:bundle
-          npx nx run a-demo-be-elixir-phoenix:codegen
-
-      - name: Run integration tests
-        run: |
-          docker compose -f apps/a-demo-be-elixir-phoenix/docker-compose.integration.yml down -v 2>/dev/null || true
-          docker compose -f apps/a-demo-be-elixir-phoenix/docker-compose.integration.yml up --abort-on-container-exit --build
-
-      - name: Teardown integration
-        if: always()
-        run: docker compose -f apps/a-demo-be-elixir-phoenix/docker-compose.integration.yml down -v
+  integration:
+    uses: ./.github/workflows/_reusable-backend-integration.yml
+    with:
+      backend-name: a-demo-be-elixir-phoenix
+      setup-action: ./.github/actions/setup-elixir
+      compose-file: apps/a-demo-be-elixir-phoenix/docker-compose.integration.yml
 
   e2e:
-    name: Run E2E tests
-    needs: integration-tests
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "24"
-
-      - name: Set up Elixir
-        uses: erlef/setup-beam@v1
-        with:
-          otp-version: "27"
-          elixir-version: "1.19"
-
-      - name: Generate contract types
-        run: |
-          npm ci --ignore-scripts
-          cd libs/elixir-openapi-codegen && mix deps.get && cd ../..
-          npx nx run a-demo-contracts:bundle
-          npx nx run a-demo-be-elixir-phoenix:codegen
-          npx nx run a-demo-fe-ts-nextjs:codegen
-          npx nx run a-demo-fe-ts-tanstack-start:codegen
-
-      - name: Build Docker images
-        run: docker compose -f infra/dev/a-demo-be-elixir-phoenix/docker-compose.ci-e2e.yml build
-
-      - name: Start backend stack (DB + backend)
-        run: docker compose -f infra/dev/a-demo-be-elixir-phoenix/docker-compose.ci-e2e.yml up -d a-demo-be-elixir-phoenix-db a-demo-be-elixir-phoenix
-
-      - name: Wait for backend to be healthy
-        run: |
-          echo "Waiting for backend to become healthy..."
-          for i in $(seq 1 90); do
-            STATUS=$(docker inspect --format='{{.State.Health.Status}}' 'a-demo-be-elixir-phoenix' 2>/dev/null || echo "unknown")
-            RUNNING=$(docker inspect --format='{{.State.Running}}' 'a-demo-be-elixir-phoenix' 2>/dev/null || echo "unknown")
-            echo "[$i/90] Health: $STATUS, Running: $RUNNING"
-            if [ "$STATUS" = "healthy" ]; then
-              echo "Backend is healthy"
-              break
-            fi
-            if [ "$RUNNING" = "false" ]; then
-              echo "Backend container exited!"
-              docker logs a-demo-be-elixir-phoenix
-              exit 1
-            fi
-            sleep 10
-          done
-          if [ "$STATUS" != "healthy" ]; then
-            echo "Backend did not become healthy within 15 minutes"
-            docker logs a-demo-be-elixir-phoenix
-            exit 1
-          fi
-
-      - name: Start frontend
-        run: docker compose -f infra/dev/a-demo-be-elixir-phoenix/docker-compose.ci-e2e.yml up -d demo-fe
-
-      - name: Wait for frontend to be ready
-        run: |
-          echo "Waiting for frontend to be ready on port 3301..."
-          for i in $(seq 1 36); do
-            if curl -sf http://localhost:3301 > /dev/null 2>&1; then
-              echo "Frontend is ready"
-              exit 0
-            fi
-            echo "[$i/36] Waiting..."
-            sleep 10
-          done
-          echo "Frontend did not start within 6 minutes"
-          docker compose -f infra/dev/a-demo-be-elixir-phoenix/docker-compose.ci-e2e.yml logs
-          exit 1
-
-      - name: Setup Volta
-        uses: volta-cli/action@v4
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
-        working-directory: apps/a-demo-fe-e2e
-
-      - name: Run BE E2E tests
-        run: npx nx run a-demo-be-e2e:test:e2e
-        env:
-          BASE_URL: http://localhost:8201
-
-      - name: Upload BE E2E report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report-a-demo-be-elixir-phoenix
-          path: apps/a-demo-be-e2e/playwright-report/
-          retention-days: 7
-
-      - name: Run FE E2E tests
-        run: npx nx run a-demo-fe-e2e:test:e2e
-        env:
-          BASE_URL: http://localhost:3301
-          BACKEND_URL: http://localhost:8201
-
-      - name: Upload FE E2E report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report-fe-e2e-elixir-phoenix
-          path: apps/a-demo-fe-e2e/playwright-report/
-          retention-days: 7
-
-      - name: Stop full stack
-        if: always()
-        run: docker compose -f infra/dev/a-demo-be-elixir-phoenix/docker-compose.ci-e2e.yml down -v
+    needs: integration
+    uses: ./.github/workflows/_reusable-backend-e2e.yml
+    with:
+      backend-name: a-demo-be-elixir-phoenix
+      setup-action: ./.github/actions/setup-elixir
+      compose-dir: infra/dev/a-demo-be-elixir-phoenix
+      health-timeout: 900

@@ -17,7 +17,7 @@ import (
 
 var specsSyncAgentsDir = func() string {
 	_, f, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(f), "../../../specs/apps/rhino-cli/agents")
+	return filepath.Join(filepath.Dir(f), "../../../specs/apps/rhino-cli/cli/gherkin")
 }()
 
 // Scenario: Syncing converts agents and skills to OpenCode format

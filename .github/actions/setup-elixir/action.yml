@@ -1,0 +1,35 @@
+name: "Setup Elixir"
+description: "Install Elixir and OTP via setup-beam with deps and _build cache"
+inputs:
+  elixir-version:
+    description: "Elixir version"
+    required: false
+    default: "1.19"
+  otp-version:
+    description: "Erlang/OTP version"
+    required: false
+    default: "27"
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Elixir
+      uses: erlef/setup-beam@v1
+      with:
+        elixir-version: ${{ inputs.elixir-version }}
+        otp-version: ${{ inputs.otp-version }}
+
+    - name: Cache Elixir deps and _build
+      uses: actions/cache@v4
+      with:
+        path: |
+          apps/a-demo-be-elixir-phoenix/deps
+          apps/a-demo-be-elixir-phoenix/_build
+        key: elixir-${{ runner.os }}-${{ inputs.elixir-version }}-${{ inputs.otp-version }}-${{ hashFiles('**/mix.lock') }}
+        restore-keys: |
+          elixir-${{ runner.os }}-${{ inputs.elixir-version }}-${{ inputs.otp-version }}-
+
+    - name: Install hex and rebar
+      shell: bash
+      run: |
+        mix local.hex --force
+        mix local.rebar --force

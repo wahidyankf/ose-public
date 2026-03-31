@@ -21,6 +21,10 @@ RUN npx tsx src/scripts/generate-search-data.ts
 RUN npm run build
 
 FROM node:24-alpine AS runner
+
+LABEL org.opencontainers.image.source="https://github.com/wahidyankf/open-sharia-enterprise"
+LABEL org.opencontainers.image.description="OSE Platform content website built with Next.js"
+
 WORKDIR /workspace
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -35,4 +39,7 @@ COPY --from=builder --chown=nextjs:nodejs /workspace/apps/oseplatform-web/conten
 COPY --from=builder --chown=nextjs:nodejs /workspace/apps/oseplatform-web/generated apps/oseplatform-web/generated
 USER nextjs
 EXPOSE 3100
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3100/ || exit 1
+
 CMD ["node", "apps/oseplatform-web/server.js"]

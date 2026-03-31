@@ -22,6 +22,10 @@ RUN npx @hey-api/openapi-ts -i ../../specs/apps/a-demo/contracts/generated/opena
 RUN npx next build
 
 FROM node:24-alpine AS runner
+
+LABEL org.opencontainers.image.source="https://github.com/wahidyankf/open-sharia-enterprise"
+LABEL org.opencontainers.image.description="Demo fullstack application built with TypeScript and Next.js"
+
 WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -34,4 +38,7 @@ USER nextjs
 EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1
+
 CMD ["node", "apps/a-demo-fs-ts-nextjs/server.js"]

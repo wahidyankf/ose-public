@@ -17,7 +17,7 @@ import (
 
 var specsDirUnitLinksCheck = func() string {
 	_, f, _, _ := runtime.Caller(0)
-	return filepath.Join(filepath.Dir(f), "../../../specs/apps/ayokoding-cli/links")
+	return filepath.Join(filepath.Dir(f), "../../../specs/apps/ayokoding-cli/cli/gherkin")
 }()
 
 type linksCheckUnitSteps struct {

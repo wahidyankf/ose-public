@@ -6,8 +6,6 @@ Active project plans currently being worked on.
 
 - [LGPL Dependency Replacement](./2026-03-26__lgpl-dependency-replacement/) — Replace LGPL
   dependencies with permissive alternatives
-- [CI/CD Standardization](./2026-03-31__ci-standardization/) — Standardize CI/CD pipeline across
-  git hooks, GitHub Actions, Docker, and testing infrastructure
 
 ## Instructions
 

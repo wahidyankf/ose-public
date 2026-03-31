@@ -10,7 +10,7 @@ tags:
   - build
   - scripts
 created: 2026-02-23
-updated: 2026-03-13
+updated: 2026-03-31
 ---
 
 # Nx Target Standards
@@ -58,6 +58,8 @@ flowchart TD
 ### Scheduled and On-Demand Testing
 
 Deeper tests run outside the pre-push/PR cycle — on a schedule or triggered explicitly.
+
+Scheduled CRON workflows run 5 parallel tracks: lint, typecheck, test:quick (with coverage), spec-coverage, and integration→e2e (sequential chain).
 
 ```mermaid
 flowchart TD

@@ -4,6 +4,18 @@
 #   FE E2E: docker compose -f docker-compose.yml -f docker-compose.ci.yml up --build -d
 
 services:
+  a-demo-be-elixir-phoenix-db:
+    environment:
+      POSTGRES_DB: a_demo_be_elixir_phoenix
+      POSTGRES_USER: a_demo_be_elixir_phoenix
+      POSTGRES_PASSWORD: a_demo_be_elixir_phoenix
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U a_demo_be_elixir_phoenix -d a_demo_be_elixir_phoenix"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
   a-demo-be-elixir-phoenix:
     build:
       context: ../../..
@@ -17,6 +29,12 @@ services:
       - PORT=8201
       - DATABASE_URL=ecto://a_demo_be_elixir_phoenix:a_demo_be_elixir_phoenix@a-demo-be-elixir-phoenix-db:5432/a_demo_be_elixir_phoenix
       - APP_JWT_SECRET=change-me-in-dev-only-not-for-production
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8201/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 30
+      start_period: 600s
 
   demo-fe:
     build:

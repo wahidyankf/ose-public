@@ -32,3 +32,6 @@ playwright-report
 test-results
 **/vitest.config.ts
 **/test
+# Re-include test directories needed by integration Dockerfiles
+!apps/a-demo-be-elixir-phoenix/test
+!apps/a-demo-fs-ts-nextjs/test

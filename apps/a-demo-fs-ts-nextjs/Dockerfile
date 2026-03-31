@@ -11,7 +11,7 @@ COPY --from=deps /app/apps/a-demo-fs-ts-nextjs/node_modules ./apps/a-demo-fs-ts-
 COPY package.json ./
 COPY apps/a-demo-fs-ts-nextjs/src/ ./apps/a-demo-fs-ts-nextjs/src/
 COPY apps/a-demo-fs-ts-nextjs/public/ ./apps/a-demo-fs-ts-nextjs/public/
-COPY apps/a-demo-fs-ts-nextjs/package.json apps/a-demo-fs-ts-nextjs/tsconfig.json apps/a-demo-fs-ts-nextjs/next.config.ts apps/a-demo-fs-ts-nextjs/vitest.config.ts apps/a-demo-fs-ts-nextjs/postcss.config.mjs ./apps/a-demo-fs-ts-nextjs/
+COPY apps/a-demo-fs-ts-nextjs/package.json apps/a-demo-fs-ts-nextjs/tsconfig.json apps/a-demo-fs-ts-nextjs/next.config.ts apps/a-demo-fs-ts-nextjs/postcss.config.mjs ./apps/a-demo-fs-ts-nextjs/
 # Provide shared tokens as a resolvable node_modules package
 COPY libs/ts-ui-tokens/src/ ./node_modules/@open-sharia-enterprise/ts-ui-tokens/src/
 COPY libs/ts-ui-tokens/package.json ./node_modules/@open-sharia-enterprise/ts-ui-tokens/

@@ -502,8 +502,13 @@ for `GOOGLE_CLIENT_SECRET=` or similar patterns returns zero hits outside `.env.
 - [ ] Update `codecov-upload.yml` to use composite actions:
   - [ ] Replace inline language setup with composite action calls
   - [ ] Verify all coverage uploads still work
-- [ ] Update `test-and-deploy-ayokoding-web.yml` to use reusable workflows
-- [ ] Update `test-and-deploy-oseplatform-web.yml` to use reusable workflows
+- [ ] Create `.github/workflows/_reusable-test-and-deploy.yml`:
+  - [ ] Inputs: app-name, prod-branch, health-url, health-timeout
+  - [ ] Jobs: unit (test:quick), integration, e2e (docker-compose + Playwright), detect-changes,
+        deploy (conditional: changes detected + all tests pass → push to prod branch)
+  - [ ] Timeout: 30 minutes
+- [ ] Update `test-and-deploy-ayokoding-web.yml` to call `_reusable-test-and-deploy.yml`
+- [ ] Update `test-and-deploy-oseplatform-web.yml` to call `_reusable-test-and-deploy.yml`
 
 **Validation**: Cached CI runs are measurably faster. All coverage uploads succeed.
 

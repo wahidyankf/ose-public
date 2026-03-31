@@ -272,6 +272,31 @@ func TestRestore_WorktreeAwareEmptyName(t *testing.T) {
 	}
 }
 
+func TestRestore_NoExistingSkipsConfirmation(t *testing.T) {
+	tmp := t.TempDir()
+	bkup := makeDir(t, tmp, "backup")
+	repo := makeDir(t, tmp, "repo")
+
+	writeFile(t, filepath.Join(bkup, ".env"), "KEY=1")
+	// No pre-existing files in repo.
+
+	confirmCalled := false
+	result, err := Restore(Options{
+		RepoRoot:  repo,
+		BackupDir: bkup,
+		ConfirmFn: func(_ []string) bool { confirmCalled = true; return false },
+	})
+	if err != nil {
+		t.Fatalf("Restore error: %v", err)
+	}
+	if confirmCalled {
+		t.Error("ConfirmFn should not be called when no existing files")
+	}
+	if result.Copied != 1 {
+		t.Errorf("Copied: got %d, want 1", result.Copied)
+	}
+}
+
 func TestRestore_ForceOverwritesWithoutConfirmFn(t *testing.T) {
 	tmp := t.TempDir()
 	bkup := makeDir(t, tmp, "backup")

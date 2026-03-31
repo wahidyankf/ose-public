@@ -1137,3 +1137,33 @@ Feature: CI Conventions Documentation
     And the checklist covers: Dockerfile, docker-compose, workflow, specs, coverage
     And the new app integrates into the existing CI pipeline
 ```
+
+### AC8: CI Compliance Enforcement
+
+```gherkin
+Feature: CI Compliance Enforcement via Agents and Workflows
+
+  Scenario: ci-checker validates all projects against CI standards
+    Given the ci-checker agent
+    When run against the repository
+    Then it checks mandatory Nx targets, coverage thresholds, Docker setup,
+         Gherkin consumption, spec-coverage targets, env files, and E2E pairing
+    And it produces an audit report with findings per project
+
+  Scenario: ci-fixer remediates common CI compliance gaps
+    Given a ci-checker audit report with findings
+    When the ci-fixer agent runs
+    Then it applies validated fixes (project.json targets, missing configs)
+    And re-validates each finding before applying
+
+  Scenario: ci-quality-gate workflow runs to zero findings
+    Given a fully standardized repository
+    When the ci-quality-gate workflow runs
+    Then it completes with PASS status (zero findings on two consecutive checks)
+
+  Scenario: Developer agents use ci-standards skill for new projects
+    Given a swe-*-developer agent creating a new backend
+    When it sets up CI infrastructure
+    Then it references the ci-standards skill for mandatory requirements
+    And the new project passes ci-checker validation on first run
+```

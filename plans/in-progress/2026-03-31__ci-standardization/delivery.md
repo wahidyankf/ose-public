@@ -2,12 +2,12 @@
 
 ## Phase Overview
 
-| Phase       | Workstreams                  | Focus                                                                | Risk   |
-| ----------- | ---------------------------- | -------------------------------------------------------------------- | ------ |
-| **Phase 1** | W1, W2                       | Foundation: governance docs + git hooks                              | Low    |
-| **Phase 2** | W3, W4, W7                   | Core: composite actions + PR gate + Docker standards                 | Medium |
-| **Phase 3** | W5, W6, W8, W11-W13, W15-W16 | Consolidation: workflows, Gherkin, a11y, env vars, specs, CLI Docker | Medium |
-| **Phase 4** | W9, W10, W14                 | Optimization: caching, spec-coverage, governance propagation         | Low    |
+| Phase       | Workstreams                  | Focus                                                         | Risk   |
+| ----------- | ---------------------------- | ------------------------------------------------------------- | ------ |
+| **Phase 1** | W1, W2                       | Foundation: governance docs + git hooks                       | Low    |
+| **Phase 2** | W3, W4, W7                   | Core: composite actions + PR gate + Docker standards          | Medium |
+| **Phase 3** | W5, W6, W8, W11-W13, W15-W16 | DRY-up: workflows, Gherkin, a11y, env vars, specs, CLI Docker | Medium |
+| **Phase 4** | W9, W10, W14                 | Optimization: caching, spec-coverage, governance propagation  | Low    |
 
 ## Phase 1: Foundation
 
@@ -24,7 +24,7 @@
   - [ ] GitHub Actions conventions (composite actions, reusable workflows, naming)
   - [ ] Naming conventions (apps, workflows, Docker files, compose files, infra/dev, specs)
   - [ ] Adding a new app to CI checklist
-- [ ] Create `docs/how-to/hoto__local-dev-with-docker.md`:
+- [ ] Update existing `docs/how-to/hoto__local-dev-docker.md` (file already exists):
   - [ ] Prerequisites section (Docker Desktop, Docker Compose v2)
   - [ ] Quick start per app category (backend, frontend, full-stack, content platform)
   - [ ] Port mapping reference table
@@ -32,7 +32,7 @@
   - [ ] Database seeding and migration instructions
   - [ ] Hot-reload mechanism per language table
   - [ ] Troubleshooting section (port conflicts, volume permissions, etc.)
-- [ ] Create `docs/how-to/hoto__add-new-backend-ci.md`:
+- [ ] Update existing `docs/how-to/hoto__add-new-a-demo-backend.md` (file already exists):
   - [ ] Dockerfile creation (using template from ci-conventions.md)
   - [ ] docker-compose.yml creation (dev, integration, CI overlay)
   - [ ] Dockerfile.integration creation
@@ -204,8 +204,12 @@ relevant jobs in parallel.
   - [ ] Integration compose: tmpfs, abort-on-container-exit, cleanup
   - [ ] CI overlay: production env vars, ENABLE_TEST_API, frontend service
 - [ ] Fix naming exceptions:
-  - [ ] Rename Elixir `docker-compose.ci-e2e.yml` to `docker-compose.ci.yml` (merge with overlay)
-  - [ ] Verify Elixir CI workflow still works after rename
+  - [ ] Merge `docker-compose.ci-e2e.yml` content into the existing `docker-compose.ci.yml` in
+        `infra/dev/a-demo-be-elixir-phoenix/` (both files exist; `ci.yml` already exists so rename
+        is not possible)
+  - [ ] Delete `docker-compose.ci-e2e.yml` after confirming the merged config passes
+        `docker compose config`
+  - [ ] Verify Elixir CI workflow still works after the merge and deletion
 - [ ] Standardize all Dockerfile.integration files:
   - [ ] Consistent base image versions per language
   - [ ] Consistent spec mount paths (`/specs` inside container)
@@ -219,7 +223,7 @@ relevant jobs in parallel.
 **Validation**: All Dockerfiles follow the template. All compose files pass config validation.
 All integration tests still pass after changes.
 
-## Phase 3: Consolidation
+## Phase 3: DRY-up
 
 ### W5: Backend Test Workflow DRY-up
 
@@ -269,8 +273,10 @@ workflow file reduced from ~150 lines to ~40 lines via reusable workflow calls.
   - [ ] Each file: ~30 lines calling `_reusable-frontend-e2e.yml`
   - [ ] Preserve: schedule (cron 2x daily), workflow_dispatch trigger
 - [ ] Rewrite fullstack test workflow:
-  - [ ] `test-a-demo-fs-ts-nextjs.yml` (self-contained, no separate BE)
-  - [ ] ~30 lines calling reusable workflows
+  - [ ] `test-a-demo-fs-ts-nextjs.yml` (self-contained Next.js route handler app)
+  - [ ] ~30 lines calling `_reusable-backend-integration.yml` + `_reusable-backend-e2e.yml` with
+        FS-specific inputs (no separate `_reusable-fullstack-*.yml` needed; FS app uses same
+        integration + E2E pattern as backends)
 - [ ] Update `test-organiclever.yml` to use reusable workflows:
   - [ ] Use `_reusable-backend-integration.yml` for BE integration
   - [ ] Use `_reusable-backend-e2e.yml` or custom for full-stack E2E
@@ -307,7 +313,7 @@ file reduced from ~100+ lines to ~30 lines via reusable workflow calls.
   - [ ] Python: Alembic migrations
   - [ ] Others: language-specific migration tools
 - [ ] Verify `.env.example` exists for each dev setup (creation handled by W16)
-- [ ] Finalize `docs/how-to/hoto__local-dev-with-docker.md` with tested instructions
+- [ ] Finalize `docs/how-to/hoto__local-dev-docker.md` with tested instructions
 
 **Validation**: Developer can run `npm run dev:{any-app}` and the service health check passes,
 confirming the environment is running and hot-reload is active.
@@ -545,6 +551,49 @@ Ensure all apps use `.env.example` + `.env.local` pattern per R0.2.
 in CI workflows (except test-only defaults in docker-compose.integration.yml). `git grep`
 for `GOOGLE_CLIENT_SECRET=` or similar patterns returns zero hits outside `.env.example`.
 
+### W17: CI Compliance Enforcement
+
+After CI conventions are documented (W1) and propagated (W14), create agents, skills, and
+workflows that **automatically validate** all projects in the repository conform to CI standards.
+This is the ongoing enforcement layer — without it, standards decay as new projects are added.
+
+- [ ] Create `ci-standards` inline skill (`.claude/skills/ci-standards/SKILL.md`):
+  - [ ] Reference CI conventions governance doc (`governance/development/infra/ci-conventions.md`)
+  - [ ] Include: mandatory Nx targets per app type, coverage thresholds, test level requirements,
+        Docker setup requirements, pairing rules, Gherkin consumption mandate, env variable standard
+  - [ ] Serve `swe-*-developer` agents so they set up new projects correctly from the start
+- [ ] Create `ci-checker` agent (`.claude/agents/ci-checker.md`):
+  - [ ] Validates ALL projects against CI standards:
+    - [ ] Mandatory Nx targets present per app type (7 for demo, varies for others)
+    - [ ] Coverage thresholds configured correctly in `test:quick`
+    - [ ] `infra/dev/{app}/` exists with docker-compose.yml + docker-compose.ci.yml
+    - [ ] `.env.example` exists in every `infra/dev/` directory
+    - [ ] Gherkin specs exist under `specs/apps/{app}/{role}/gherkin/`
+    - [ ] Unit tests consume Gherkin specs (BDD runner configured)
+    - [ ] `spec-coverage` Nx target exists for testable projects
+    - [ ] Workflow file exists calling reusable workflows
+    - [ ] E2E pairing: BE variants paired with default FE, FE variants with default BE
+    - [ ] No hardcoded credentials in workflow files
+  - [ ] Skills: `ci-standards`, `repo-generating-validation-reports`, `repo-assessing-criticality-confidence`
+  - [ ] Output: audit report in `generated-reports/`
+- [ ] Create `ci-fixer` agent (`.claude/agents/ci-fixer.md`):
+  - [ ] Applies validated fixes from ci-checker audit reports
+  - [ ] Re-validates findings before applying (prevents false positives)
+  - [ ] Skills: `ci-standards`, `repo-applying-maker-checker-fixer`
+- [ ] Create `ci-quality-gate` workflow (`governance/workflows/ci/ci-quality-gate.md`):
+  - [ ] Orchestrates ci-checker → ci-fixer iteratively (same pattern as plan-quality-gate)
+  - [ ] Terminates on double-zero findings or max-iterations
+  - [ ] Scope: all projects, specific app type, or single project
+- [ ] Sync all new `.claude/` files to `.opencode/` via `npm run sync:claude-to-opencode`
+- [ ] Test ci-checker against current repository state:
+  - [ ] Run `ci-checker` to validate all existing projects
+  - [ ] Verify it catches known gaps (missing FE Gherkin, missing .env.example files)
+  - [ ] Verify it passes for fully compliant projects (e.g., a-demo-be-golang-gin)
+
+**Validation**: `ci-checker` produces accurate findings for all project types (BE, FE, FS, CLI,
+content platform, library). `ci-fixer` can remediate common issues. `ci-quality-gate` workflow
+runs to completion with zero findings on a fully standardized project.
+
 ### W14: Governance Propagation
 
 After all conventions are documented and implemented, run the `repo-governance-maker` agent to
@@ -578,27 +627,34 @@ conventions.
 
 ## Post-Delivery Cleanup
 
-- [ ] Delete `pr-quality-gate.yml.bak` (kept as backup during Phase 2)
+- [ ] Delete out-of-standards / superseded files:
+  - [ ] `infra/dev/a-demo-be-elixir-phoenix/docker-compose.ci-e2e.yml` (merged into ci.yml in W7)
+  - [ ] `.github/workflows/pr-quality-gate.yml.bak` (backup from Phase 2 refactor)
+- [ ] Verify no orphan references to deleted files:
+  - [ ] Search all `.yml` workflows for `ci-e2e` references
+  - [ ] Search all `project.json` files for removed `test:integration` targets in FE apps
+  - [ ] Run `docs-link-general-checker` to catch any broken links
 - [ ] Archive this plan to `plans/done/` with completion date
 - [ ] Update `plans/in-progress/README.md` to remove this plan
 - [ ] Update `plans/done/README.md` to add this plan
 
 ## Success Metrics
 
-| Metric                                   | Before                                          | Target                                                       |
-| ---------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------ |
-| GitHub Actions workflow files            | 22                                              | 12 (-45%)                                                    |
-| Total workflow YAML lines                | ~4,500                                          | ~1,500 (-67%)                                                |
-| PR quality gate (TS-only PR)             | 1 monolithic job (13+ runtimes installed)       | 1-2 language-scoped parallel jobs                            |
-| CRON parallel tracks                     | 2 (integration, e2e)                            | 5 (lint, typecheck, test:quick, spec-coverage, int→e2e)      |
-| Adding a new backend to CI               | Copy ~150 lines, make 5-10 manual substitutions | Create ~40-line workflow calling reusable + follow checklist |
-| Languages with auto-format on commit     | 4 (JS/TS, Go, F#, Elixir)                       | 9 (+5)                                                       |
-| Apps with spec-coverage in CI            | 0                                               | All testable projects                                        |
-| Projects with Gherkin at all test levels | ~15 (BE + CLI only)                             | All testable projects                                        |
-| UI apps with @axe-core/playwright E2E    | 2 (organiclever-fe, a-demo-fe)                  | All UI apps                                                  |
-| UI apps with a11y Gherkin specs          | 3                                               | All UI apps                                                  |
-| `infra/dev/` dirs with `.env.example`    | 5                                               | All (18+)                                                    |
-| Apps with `infra/dev/` Docker Compose    | 18                                              | 21 (+3 CLIs)                                                 |
-| Redundant FE `test:integration` targets  | 5                                               | 0 (removed)                                                  |
-| CI Docker cache hit rate                 | 0%                                              | 80%+                                                         |
-| Governance docs covering CI              | 0                                               | 3 new docs                                                   |
+| Metric                                                                           | Before                                          | Target                                                                     |
+| -------------------------------------------------------------------------------- | ----------------------------------------------- | -------------------------------------------------------------------------- |
+| GitHub Actions workflow files                                                    | 22                                              | ~30 (22 caller files rewritten + 8 new reusable workflows)                 |
+| Caller workflow YAML lines                                                       | ~4,500 (~150 lines × 22 files + 6 others)       | ~1,500 (~40 lines × 15 BE/FE/FS callers, -67% per caller)                  |
+| PR quality gate (TS-only PR)                                                     | 1 monolithic job (13+ runtimes installed)       | 1-2 language-scoped parallel jobs                                          |
+| CRON parallel tracks                                                             | 2 (integration, e2e)                            | 5 (lint, typecheck, test:quick, spec-coverage, int→e2e)                    |
+| Adding a new backend to CI                                                       | Copy ~150 lines, make 5-10 manual substitutions | Create ~40-line workflow calling reusable + follow checklist               |
+| Programming languages with auto-format on commit (markup/config already covered) | 4 (JS/TS, Go, F#, Elixir)                       | 9 (+5: adds Python, Rust, C#, Clojure, Dart)                               |
+| Apps with spec-coverage in CI                                                    | 0                                               | All testable projects                                                      |
+| Projects with Gherkin at all test levels                                         | ~15 (BE + CLI only)                             | All testable projects                                                      |
+| UI apps with @axe-core/playwright E2E                                            | 2 (organiclever-fe, a-demo-fe)                  | All UI apps                                                                |
+| UI apps with a11y Gherkin specs                                                  | 3                                               | All UI apps                                                                |
+| `infra/dev/` dirs with `.env.example`                                            | 5                                               | All (18+)                                                                  |
+| Apps with `infra/dev/` Docker Compose                                            | 18                                              | 21 (+3 CLIs)                                                               |
+| Redundant FE `test:integration` targets                                          | 5                                               | 0 (removed)                                                                |
+| CI Docker cache hit rate                                                         | 0%                                              | 80%+                                                                       |
+| Governance docs covering CI                                                      | 0                                               | 3 new docs                                                                 |
+| CI compliance enforcement (agents + workflow)                                    | 0                                               | ci-checker + ci-fixer agents, ci-quality-gate workflow, ci-standards skill |

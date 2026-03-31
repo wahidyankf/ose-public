@@ -66,6 +66,7 @@ duplication, inconsistent patterns, and undocumented conventions.
 | Local Docker development | docker-compose dev setups with autoreload for all app types                |
 | CI Docker infrastructure | Integration test Dockerfiles, CI overlays, layer caching                   |
 | Governance documentation | CI conventions doc in `governance/development/`                            |
+| Compliance enforcement   | ci-checker/ci-fixer agents, ci-quality-gate workflow, ci-standards skill   |
 
 ### Out of Scope
 
@@ -94,7 +95,8 @@ duplication, inconsistent patterns, and undocumented conventions.
 | W13 | [CLI Docker Compose Setup](#w13-cli-docker-compose-setup)                         | 3     | W7                                                             |
 | W15 | [Accessibility Testing Remediation](#w15-accessibility-testing-remediation)       | 3     | W1, W11                                                        |
 | W16 | [Environment Variable Standardization](#w16-environment-variable-standardization) | 3     | W7                                                             |
-| W14 | [Governance Propagation](#w14-governance-propagation)                             | 4     | W1-W16 (intentionally last — depends on all other workstreams) |
+| W17 | [CI Compliance Enforcement](#w17-ci-compliance-enforcement)                       | 4     | W1, W14                                                        |
+| W14 | [Governance Propagation](#w14-governance-propagation)                             | 4     | W1-W17 (intentionally last — depends on all other workstreams) |
 
 ## Context
 
@@ -121,9 +123,9 @@ flowchart TD
             PPT["typecheck"]
             PPL["lint"]
             PPQ["test:quick"]
-            PPM["lint:md"]
         end
-        precommit --> CM --> prepush
+        PPM["lint:md (sequential, after nx affected)"]
+        precommit --> CM --> prepush --> PPM
     end
 
     subgraph pr["PR Workflows (on pull_request)"]

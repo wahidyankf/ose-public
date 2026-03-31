@@ -46,12 +46,19 @@ Each composite action:
 
 ```
 .github/workflows/
+├── _reusable-backend-lint.yml          # Backend lint track
+├── _reusable-backend-typecheck.yml     # Backend typecheck track
+├── _reusable-backend-coverage.yml      # Backend coverage (test:quick) track
+├── _reusable-backend-spec-coverage.yml # Backend spec-coverage track
 ├── _reusable-backend-integration.yml   # Docker-based integration tests
 ├── _reusable-backend-e2e.yml           # Full-stack E2E via Playwright
 ├── _reusable-frontend-e2e.yml          # Frontend E2E via Playwright
-├── _reusable-test-and-deploy.yml       # Test + conditional deploy to prod branch
-└── _reusable-quality-gate-job.yml      # typecheck + lint + test:quick for a language family
+└── _reusable-test-and-deploy.yml       # Test + conditional deploy to prod branch
 ```
+
+**Note on PR quality gate**: The per-language jobs in `pr-quality-gate.yml` run inline (using
+composite actions for setup) rather than calling a separate `_reusable-quality-gate-job.yml`.
+This avoids extra job-to-job artifact passing for simple `nx affected` commands.
 
 ### AD2: PR Quality Gate -- Parallel Language-Scoped Jobs
 
@@ -396,11 +403,11 @@ verbatim.
 
 **What changes**:
 
-| Current                                                         | Proposed                                                             | Reason                                                                                  |
-| --------------------------------------------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| `test-organiclever.yml` (single workflow for BE+FE)             | Keep as-is but document as the "multi-component product" pattern     | OrganicLever BE and FE are co-dependent; splitting would add complexity without benefit |
-| `docker-compose.ci-e2e.yml` (Elixir only)                       | Rename to `docker-compose.ci.yml` and merge with existing CI overlay | Eliminate the unique naming exception                                                   |
-| CLI specs at `specs/apps/{cli}/domain/` (no `gherkin/` nesting) | Restructure to `specs/apps/{cli}/cli/gherkin/` (W12)                 | Align with the `{role}/gherkin/` standard used by all other app types                   |
+| Current                                                         | Proposed                                                                                                                                                 | Reason                                                                                                         |
+| --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `test-organiclever.yml` (single workflow for BE+FE)             | Update to call reusable workflows (W6): `_reusable-backend-integration.yml` for BE integration, `_reusable-backend-e2e.yml` or custom for full-stack E2E | OrganicLever BE and FE are co-dependent; keep as a single workflow but use reusable building blocks for DRY-up |
+| `docker-compose.ci-e2e.yml` (Elixir only)                       | Merge into existing `docker-compose.ci.yml`, then delete `docker-compose.ci-e2e.yml` (`ci.yml` already exists so rename is not possible)                 | Eliminate the unique naming exception                                                                          |
+| CLI specs at `specs/apps/{cli}/domain/` (no `gherkin/` nesting) | Restructure to `specs/apps/{cli}/cli/gherkin/` (W12)                                                                                                     | Align with the `{role}/gherkin/` standard used by all other app types                                          |
 
 **New artifact naming conventions**:
 
@@ -428,7 +435,7 @@ verbatim.
 }
 ```
 
-Complement with a **how-to guide** at `docs/how-to/hoto__local-dev-with-docker.md` covering:
+Complement with an updated **how-to guide** at `docs/how-to/hoto__local-dev-docker.md` covering:
 
 - Prerequisites (Docker, Docker Compose)
 - Starting a single backend
@@ -699,8 +706,17 @@ monorepo paths correctly. Test each integration before committing.
 | `.github/workflows/_reusable-frontend-e2e.yml`          | Frontend E2E test workflow              |
 | `.github/workflows/_reusable-test-and-deploy.yml`       | Test + deploy workflow                  |
 | `governance/development/infra/ci-conventions.md`        | CI conventions governance doc           |
-| `docs/how-to/hoto__local-dev-with-docker.md`            | Local dev how-to guide                  |
-| `docs/how-to/hoto__add-new-backend-ci.md`               | Adding a new backend to CI              |
+| `.claude/agents/ci-checker.md`                          | CI compliance checker agent             |
+| `.claude/agents/ci-fixer.md`                            | CI compliance fixer agent               |
+| `.claude/skills/ci-standards/SKILL.md`                  | CI standards inline skill               |
+| `governance/workflows/ci/ci-quality-gate.md`            | CI compliance quality gate workflow     |
+
+### Files to Update (existing, not new)
+
+| File                                          | Purpose                    |
+| --------------------------------------------- | -------------------------- |
+| `docs/how-to/hoto__local-dev-docker.md`       | Local dev how-to guide     |
+| `docs/how-to/hoto__add-new-a-demo-backend.md` | Adding a new backend to CI |
 
 ### Files to Modify
 
@@ -714,27 +730,37 @@ monorepo paths correctly. Test each integration before committing.
 
 ### Files to Rewrite (refactor to call reusable workflows)
 
-| File                                                     | Change                                         |
-| -------------------------------------------------------- | ---------------------------------------------- |
-| `.github/workflows/test-a-demo-be-golang-gin.yml`        | Rewrite to call reusable workflows (~40 lines) |
-| `.github/workflows/test-a-demo-be-java-springboot.yml`   | Rewrite to call reusable workflows (~40 lines) |
-| `.github/workflows/test-a-demo-be-java-vertx.yml`        | Rewrite to call reusable workflows (~40 lines) |
-| `.github/workflows/test-a-demo-be-python-fastapi.yml`    | Rewrite to call reusable workflows (~40 lines) |
-| `.github/workflows/test-a-demo-be-rust-axum.yml`         | Rewrite to call reusable workflows (~40 lines) |
-| `.github/workflows/test-a-demo-be-kotlin-ktor.yml`       | Rewrite to call reusable workflows (~40 lines) |
-| `.github/workflows/test-a-demo-be-fsharp-giraffe.yml`    | Rewrite to call reusable workflows (~40 lines) |
-| `.github/workflows/test-a-demo-be-csharp-aspnetcore.yml` | Rewrite to call reusable workflows (~40 lines) |
-| `.github/workflows/test-a-demo-be-clojure-pedestal.yml`  | Rewrite to call reusable workflows (~40 lines) |
-| `.github/workflows/test-a-demo-be-elixir-phoenix.yml`    | Rewrite to call reusable workflows (~40 lines) |
-| `.github/workflows/test-a-demo-be-ts-effect.yml`         | Rewrite to call reusable workflows (~40 lines) |
-| `.github/workflows/test-a-demo-fe-ts-nextjs.yml`         | Rewrite to call reusable workflows (~30 lines) |
-| `.github/workflows/test-a-demo-fe-dart-flutterweb.yml`   | Rewrite to call reusable workflows (~30 lines) |
-| `.github/workflows/test-a-demo-fe-ts-tanstack-start.yml` | Rewrite to call reusable workflows (~30 lines) |
-| `.github/workflows/test-a-demo-fs-ts-nextjs.yml`         | Rewrite to call reusable workflows (~30 lines) |
+| File                                                     | Change                                                                                                                                                                                                                                                          |
+| -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.github/workflows/test-a-demo-be-golang-gin.yml`        | Rewrite to call reusable workflows (~40 lines)                                                                                                                                                                                                                  |
+| `.github/workflows/test-a-demo-be-java-springboot.yml`   | Rewrite to call reusable workflows (~40 lines)                                                                                                                                                                                                                  |
+| `.github/workflows/test-a-demo-be-java-vertx.yml`        | Rewrite to call reusable workflows (~40 lines)                                                                                                                                                                                                                  |
+| `.github/workflows/test-a-demo-be-python-fastapi.yml`    | Rewrite to call reusable workflows (~40 lines)                                                                                                                                                                                                                  |
+| `.github/workflows/test-a-demo-be-rust-axum.yml`         | Rewrite to call reusable workflows (~40 lines)                                                                                                                                                                                                                  |
+| `.github/workflows/test-a-demo-be-kotlin-ktor.yml`       | Rewrite to call reusable workflows (~40 lines)                                                                                                                                                                                                                  |
+| `.github/workflows/test-a-demo-be-fsharp-giraffe.yml`    | Rewrite to call reusable workflows (~40 lines)                                                                                                                                                                                                                  |
+| `.github/workflows/test-a-demo-be-csharp-aspnetcore.yml` | Rewrite to call reusable workflows (~40 lines)                                                                                                                                                                                                                  |
+| `.github/workflows/test-a-demo-be-clojure-pedestal.yml`  | Rewrite to call reusable workflows (~40 lines)                                                                                                                                                                                                                  |
+| `.github/workflows/test-a-demo-be-elixir-phoenix.yml`    | Rewrite to call reusable workflows (~40 lines)                                                                                                                                                                                                                  |
+| `.github/workflows/test-a-demo-be-ts-effect.yml`         | Rewrite to call reusable workflows (~40 lines)                                                                                                                                                                                                                  |
+| `.github/workflows/test-a-demo-fe-ts-nextjs.yml`         | Rewrite to call reusable workflows (~30 lines)                                                                                                                                                                                                                  |
+| `.github/workflows/test-a-demo-fe-dart-flutterweb.yml`   | Rewrite to call reusable workflows (~30 lines)                                                                                                                                                                                                                  |
+| `.github/workflows/test-a-demo-fe-ts-tanstack-start.yml` | Rewrite to call reusable workflows (~30 lines)                                                                                                                                                                                                                  |
+| `.github/workflows/test-a-demo-fs-ts-nextjs.yml`         | Rewrite to call `_reusable-backend-integration.yml` + `_reusable-backend-e2e.yml` with FS-specific inputs (~30 lines); no separate fullstack reusable workflow needed since the FS app uses Next.js route handlers (same integration + E2E pattern as backends) |
 
-**Net change**: Create ~22 new files (11 composite actions + 8 reusable workflows + 3 docs),
-rewrite 15 workflow files from ~150 lines each to ~30-40 lines each. Total per-variant workflow
-YAML reduced from ~150 lines to ~40 lines (each calls reusable workflows for the heavy lifting).
+### Files to Delete (out-of-standards or superseded)
+
+| File                                                                       | Reason                                                                                          | Deleted In |
+| -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ---------- |
+| `infra/dev/a-demo-be-elixir-phoenix/docker-compose.ci-e2e.yml`             | Merged into `docker-compose.ci.yml` (W7); non-standard naming exception eliminated              | W7         |
+| `pr-quality-gate.yml.bak`                                                  | Temporary backup created during PR quality gate refactor (W4); no longer needed post-validation | Cleanup    |
+| Redundant FE `test:integration` targets in `project.json` (not file-level) | FE apps require unit + e2e only; `test:integration` removed from FE project configs             | W11        |
+
+**Net change**: Create ~26 new files (11 composite actions + 8 reusable workflows + 3 docs +
+2 agents + 1 skill + 1 workflow),
+rewrite 15 workflow files from ~150 lines each to ~30-40 lines each, delete 2 files. Total
+per-variant workflow YAML reduced from ~150 lines to ~40 lines (each calls reusable workflows
+for the heavy lifting).
 
 ## Risks and Mitigations
 

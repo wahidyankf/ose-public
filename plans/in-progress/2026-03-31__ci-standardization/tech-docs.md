@@ -494,7 +494,7 @@ inputs:
   golangci-lint-version:
     description: "golangci-lint version"
     required: false
-    default: "v2.1"
+    default: "v2.10.1"
 
 runs:
   using: "composite"
@@ -608,6 +608,9 @@ jobs:
 
       - name: Wait for services
         run: |
+          # Note: curl runs on the ubuntu-latest runner where curl is pre-installed.
+          # The wget requirement in AD4.1 applies to HEALTHCHECK inside Alpine Docker
+          # containers only -- not to CI runner scripts.
           timeout ${{ inputs.health-timeout }} bash -c \
             'until curl -sf ${{ inputs.health-url }}; do sleep 2; done'
 

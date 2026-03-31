@@ -82,15 +82,20 @@ links resolve correctly.
   - [ ] Add `"*.{ex,exs}": "mix format"` (move from separate pre-commit step)
   - [ ] Add `"*.py": "ruff format"` (new)
   - [ ] Add `"*.rs": "rustfmt"` (new)
+  - [ ] Add `"*.cs": "dotnet format whitespace --include"` (new)
+  - [ ] Add `"*.clj": "cljfmt fix"` (new)
   - [ ] Add `"*.dart": "dart format"` (new)
   - [ ] Test each new formatter with a sample staged file
+  - [ ] Verify `dotnet format whitespace --include` works correctly for staged file subset in monorepo
+  - [ ] Verify `cljfmt fix` handles monorepo paths (may need wrapper script)
 - [ ] Verify lint-staged wrapper script works for `mix format` in monorepo context
   - [ ] mix format needs to run from the Elixir project root, not workspace root
   - [ ] Create wrapper script if needed: `scripts/format-elixir.sh`
 - [ ] Verify lint-staged wrapper for `ruff format` handles virtualenv paths
 - [ ] Verify lint-staged wrapper for `rustfmt` handles workspace crate paths
 - [ ] Verify lint-staged wrapper for `dart format` handles Flutter project paths
-- [ ] Simplify `.husky/pre-commit`:
+- [ ] Update `apps/rhino-cli/cmd/git_pre_commit.go` (note: `.husky/pre-commit` is a single-line
+      delegation to `rhino-cli git pre-commit` -- all 9 steps are implemented in Go source):
   - [ ] Remove step 6 (Elixir formatting) -- now handled by lint-staged
   - [ ] Verify step 4 (auto-add ayokoding-web content) is still needed; document why
   - [ ] Add timeout wrapper for long-running steps (30s per step, 120s total)
@@ -108,7 +113,7 @@ links resolve correctly.
   - [ ] Steps: setup-node, npm ci, Nx cache configuration
   - [ ] Cache: npm cache directory
 - [ ] Create `.github/actions/setup-golang/action.yml`:
-  - [ ] Input: `go-version` (default: 1.26), `golangci-lint-version` (default: v2.1)
+  - [ ] Input: `go-version` (default: 1.26), `golangci-lint-version` (default: v2.10.1)
   - [ ] Steps: setup-go, install golangci-lint, install oapi-codegen
   - [ ] Cache: Go modules, Go build cache
 - [ ] Create `.github/actions/setup-jvm/action.yml`:
@@ -229,11 +234,13 @@ All integration tests still pass after changes.
 - [ ] Create `.github/workflows/test-demo-backends.yml`:
   - [ ] Matrix strategy with all 11 backends
   - [ ] Each matrix entry: name, language, compose-dir, app-dir, setup-action
-  - [ ] 5 parallel tracks per R0.4:
+  - [ ] 4 active parallel tracks initially (Track 4 enabled in W10 once Nx targets exist):
     - [ ] Track 1: `lint` (independent matrix job, includes jsx-a11y for UI)
     - [ ] Track 2: `typecheck` (independent matrix job)
     - [ ] Track 3: `test:quick` (independent, includes coverage validation)
-    - [ ] Track 4: `spec-coverage` (independent, spec-to-test mapping)
+    - [ ] Track 4: `spec-coverage` -- **leave commented out in W5**; the `spec-coverage` Nx
+          targets for all 11 backends are created in W10 (Phase 4). Enabling Track 4 before W10
+          causes CI failures for all 11 backends. Enable in W10 once targets exist.
     - [ ] Track 5: `integration` → `e2e` (sequential chain via `needs:`)
   - [ ] Schedule: cron 2x daily (06:00 WIB, 18:00 WIB)
   - [ ] workflow_dispatch with backend filter input

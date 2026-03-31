@@ -492,7 +492,12 @@ depends on the data layer being correct (proven by integration tests).
 
 #### R1.1: Pre-Commit Hook (9 Steps)
 
-**Current Implementation** (`.husky/pre-commit`):
+**Current Implementation**:
+
+> Note: `.husky/pre-commit` is a single-line delegation:
+> `CGO_ENABLED=0 go run -C apps/rhino-cli main.go git pre-commit`
+> All 9 steps below are implemented inside `apps/rhino-cli/cmd/git_pre_commit.go`.
+> Changes to hook behavior require editing the Go source, not the `.husky/pre-commit` file.
 
 | Step | Action                                    | Condition               | Notes                                 |
 | ---- | ----------------------------------------- | ----------------------- | ------------------------------------- |
@@ -616,7 +621,7 @@ implementation status** per app type.
 #### R3.1: Backend Testing (11 implementations)
 
 All demo backends share Gherkin specs from `specs/apps/a-demo/be/gherkin/` (14 feature files,
-78 scenarios). All three test levels consume the same feature files -- only step implementations
+82 scenarios). All three test levels consume the same feature files -- only step implementations
 differ.
 
 - **Unit**: Language-native BDD runners (godog, Cucumber, TickSpec, Cabbage, etc.) with mocked
@@ -704,7 +709,7 @@ FE requires unit + e2e.
 specs/
 ├── apps/
 │   ├── a-demo/
-│   │   ├── be/gherkin/          # 14 feature files, 78 scenarios
+│   │   ├── be/gherkin/          # 14 feature files, 82 scenarios
 │   │   ├── fe/gherkin/          # Frontend Gherkin specs
 │   │   └── contracts/           # OpenAPI 3.1 spec + generated output
 │   ├── organiclever/
@@ -721,7 +726,7 @@ specs/
 │   │   ├── be/gherkin/
 │   │   ├── fe/gherkin/
 │   │   └── c4/
-│   ├── rhino-cli/               # 15 feature files across 10 domains
+│   ├── rhino-cli/               # 15 feature files across 9 domains
 │   ├── ayokoding-cli/
 │   └── oseplatform-cli/
 ├── libs/

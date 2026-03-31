@@ -7,7 +7,7 @@
 
 This plan standardizes the entire CI/CD pipeline across the monorepo -- from local git hooks
 through GitHub Actions workflows to Docker-based development and testing. The repository currently
-has **22 GitHub Actions workflows**, **44 docker-compose files**, **38 Dockerfiles** (10 production, 12 integration, 13 dev, 1 CI, 2 other), a 9-step
+has **22 GitHub Actions workflows**, **44 docker-compose files**, **38 Dockerfiles** (10 production, 13 integration, 13 dev, 1 CI, 1 other), a 9-step
 pre-commit hook, and a 3-target pre-push gate spanning **13+ language runtimes**. Much of this
 infrastructure grew organically as new backends and frameworks were added, resulting in significant
 duplication, inconsistent patterns, and undocumented conventions.

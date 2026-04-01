@@ -38,7 +38,7 @@ let setAdminRoleForUser (username: string) : HttpHandler =
 let webApp: HttpHandler =
     choose
         [ GET >=> route "/health" >=> healthHandler
-          POST >=> routef "/test/set-admin-role/%s" setAdminRoleForUser
+          POST >=> routef "/api/v1/test/set-admin-role/%s" setAdminRoleForUser
           POST >=> route "/api/v1/test/reset-db" >=> Handlers.TestHandler.resetDb
           POST
           >=> route "/api/v1/test/promote-admin"

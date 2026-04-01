@@ -2075,7 +2075,7 @@ type HttpAuthHandlerTests() =
         let adminUn = $"admd_{shortId ()}"
         httpRegister client adminUn $"{adminUn}@example.com" "Str0ng#Pass1!" |> ignore
 
-        client.PostAsync($"/test/set-admin-role/{adminUn}", new StringContent(""))
+        client.PostAsync($"/api/v1/test/set-admin-role/{adminUn}", new StringContent(""))
         |> Async.AwaitTask
         |> Async.RunSynchronously
         |> ignore
@@ -2253,7 +2253,7 @@ type HttpAdminHandlerTests() =
         httpRegister client un $"{un}@example.com" "Str0ng#Pass1!" |> ignore
         // Use test helper to set admin role
         let resp =
-            client.PostAsync($"/test/set-admin-role/{un}", new StringContent(""))
+            client.PostAsync($"/api/v1/test/set-admin-role/{un}", new StringContent(""))
             |> Async.AwaitTask
             |> Async.RunSynchronously
 
@@ -3225,21 +3225,21 @@ type HttpProgramHandlerTests() =
         member _.Dispose() = (factory :> IDisposable).Dispose()
 
     [<Fact>]
-    member _.``POST /test/set-admin-role/{username} for existing user returns 200``() =
+    member _.``POST /api/v1/test/set-admin-role/{username} for existing user returns 200``() =
         let un = $"hsar_{shortId ()}"
         httpRegister client un $"{un}@example.com" "Str0ng#Pass1!" |> ignore
 
         let resp =
-            client.PostAsync($"/test/set-admin-role/{un}", new StringContent(""))
+            client.PostAsync($"/api/v1/test/set-admin-role/{un}", new StringContent(""))
             |> Async.AwaitTask
             |> Async.RunSynchronously
 
         Assert.Equal(200, int resp.StatusCode)
 
     [<Fact>]
-    member _.``POST /test/set-admin-role/{username} for nonexistent user returns 404``() =
+    member _.``POST /api/v1/test/set-admin-role/{username} for nonexistent user returns 404``() =
         let resp =
-            client.PostAsync($"/test/set-admin-role/nobody_{shortId ()}", new StringContent(""))
+            client.PostAsync($"/api/v1/test/set-admin-role/nobody_{shortId ()}", new StringContent(""))
             |> Async.AwaitTask
             |> Async.RunSynchronously
 

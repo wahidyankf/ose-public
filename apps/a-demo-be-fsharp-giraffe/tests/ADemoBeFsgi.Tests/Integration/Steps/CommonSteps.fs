@@ -317,8 +317,8 @@ let private dispatchCall
 
         listUsers state.UserRepo state.TokenRepo token 1 20 emailFilter
         |> Async.RunSynchronously
-    elif url.StartsWith("/test/set-admin-role/") && m = "POST" then
-        let username = url.Substring("/test/set-admin-role/".Length)
+    elif url.StartsWith("/api/v1/test/set-admin-role/") && m = "POST" then
+        let username = url.Substring("/api/v1/test/set-admin-role/".Length)
         setAdminRole state.UserRepo username |> Async.RunSynchronously
     elif u = "/.well-known/jwks.json" && m = "GET" then
         getJwks ()

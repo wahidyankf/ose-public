@@ -17,6 +17,12 @@ jobs:
       language: typescript
       compose-file: apps/a-demo-fs-ts-nextjs/docker-compose.integration.yml
 
-  # NOTE: BE E2E (a-demo-be-e2e) tests use Go backend API paths (/auth/login)
-  # which are incompatible with the FS Next.js API routes (/api/v1/auth/login).
-  # The FS app's backend functionality is covered by integration tests above.
+  e2e:
+    needs: integration
+    uses: ./.github/workflows/_reusable-backend-e2e.yml
+    with:
+      backend-name: a-demo-fs-ts-nextjs
+      language: typescript
+      compose-file: infra/dev/a-demo-fs-ts-nextjs/docker-compose.yml
+      frontend-port: 3401
+      backend-port: 3401

@@ -23,6 +23,7 @@ jobs:
     with:
       backend-name: a-demo-fs-ts-nextjs
       language: typescript
+      compose-dir: infra/dev/a-demo-fs-ts-nextjs
       compose-file: infra/dev/a-demo-fs-ts-nextjs/docker-compose.yml
       frontend-port: 3401
       backend-port: 3401

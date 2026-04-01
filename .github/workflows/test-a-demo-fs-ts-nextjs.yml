@@ -29,3 +29,4 @@ jobs:
       backend-port: 3401
       be-e2e-target: "test:e2e:no-test-api"
       be-e2e-extra-env: "DATABASE_URL=postgresql://demo_fs_nextjs:demo_fs_nextjs@localhost:5438/demo_fs_nextjs"
+      skip-fe-e2e: true

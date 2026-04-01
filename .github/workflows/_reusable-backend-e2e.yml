@@ -54,6 +54,11 @@ on:
         type: string
         default: ""
         description: "Space-separated paths to clean before npm ci (Docker-created node_modules)"
+      skip-fe-e2e:
+        required: false
+        type: boolean
+        default: false
+        description: "Skip FE E2E tests (for fullstack apps where a-demo-fe-e2e is not compatible)"
 
 permissions:
   contents: read
@@ -189,13 +194,14 @@ jobs:
           retention-days: 7
 
       - name: Run FE E2E tests
+        if: ${{ !inputs.skip-fe-e2e }}
         run: npx nx run a-demo-fe-e2e:test:e2e
         env:
           BASE_URL: http://localhost:${{ inputs.frontend-port }}
           BACKEND_URL: http://localhost:${{ inputs.backend-port }}
 
       - name: Upload FE E2E report
-        if: always()
+        if: ${{ always() && !inputs.skip-fe-e2e }}
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report-fe-e2e-${{ inputs.backend-name }}

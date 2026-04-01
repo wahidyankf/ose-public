@@ -10,6 +10,20 @@ permissions:
   contents: read
 
 jobs:
+  spec-coverage:
+    name: Spec coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-golang
+      - name: Run spec-coverage for all OrganicLever projects
+        run: |
+          npx nx run organiclever-be:spec-coverage
+          npx nx run organiclever-fe:spec-coverage
+          npx nx run organiclever-be-e2e:spec-coverage
+
   be-integration:
     name: BE integration tests
     runs-on: ubuntu-latest

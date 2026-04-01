@@ -33,6 +33,15 @@ jobs:
       - uses: ./.github/actions/setup-node
       - run: npx nx run ${{ inputs.app-name }}:test:quick
 
+  spec-coverage:
+    name: Spec coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-golang
+      - run: npx nx run ${{ inputs.app-name }}:spec-coverage
+
   integration:
     name: Integration tests
     runs-on: ubuntu-latest

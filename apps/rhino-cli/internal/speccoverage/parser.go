@@ -21,7 +21,8 @@ type ParsedScenario struct {
 var stepKeywords = []string{"Given ", "When ", "Then ", "And ", "But "}
 
 // ParseFeatureFile reads a .feature file and returns all scenarios and their steps.
-// Lines not matching Scenario: or a step keyword are silently ignored.
+// Background steps are collected and included as a synthetic "(Background)" scenario
+// so that spec-coverage validates Background step definitions too.
 func ParseFeatureFile(path string) ([]ParsedScenario, error) {
 	f, err := os.Open(path)
 	if err != nil {
@@ -31,32 +32,48 @@ func ParseFeatureFile(path string) ([]ParsedScenario, error) {
 
 	var scenarios []ParsedScenario
 	var current *ParsedScenario
+	var bgSteps []ParsedStep
+	inBackground := false
 
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
 
+		if strings.HasPrefix(line, "Background:") {
+			inBackground = true
+			current = nil
+			continue
+		}
+
 		if rest, ok := strings.CutPrefix(line, "Scenario:"); ok {
+			inBackground = false
 			title := strings.TrimSpace(rest)
 			scenarios = append(scenarios, ParsedScenario{Title: title})
 			current = &scenarios[len(scenarios)-1]
 			continue
 		}
 
-		if current == nil {
-			continue
-		}
-
 		for _, kw := range stepKeywords {
 			if rest, ok := strings.CutPrefix(line, kw); ok {
 				text := strings.TrimSpace(rest)
-				current.Steps = append(current.Steps, ParsedStep{
+				step := ParsedStep{
 					Keyword: strings.TrimSpace(kw),
 					Text:    text,
-				})
+				}
+				if inBackground {
+					bgSteps = append(bgSteps, step)
+				} else if current != nil {
+					current.Steps = append(current.Steps, step)
+				}
 				break
 			}
 		}
+	}
+
+	// Prepend Background steps as a synthetic scenario so they get validated
+	if len(bgSteps) > 0 {
+		bg := ParsedScenario{Title: "(Background)", Steps: bgSteps}
+		scenarios = append([]ParsedScenario{bg}, scenarios...)
 	}
 
 	return scenarios, scanner.Err()

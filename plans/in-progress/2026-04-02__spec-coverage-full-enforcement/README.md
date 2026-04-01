@@ -22,14 +22,26 @@ missing BDD step definition glue code in each project's language. No exceptions.
   per-project analysis
 - [Delivery Plan](./delivery.md) — Phased implementation checklist
 
+## Prerequisites
+
+Before implementing step definitions, the spec-coverage tool itself must be validated for
+correctness. The following tool issues were identified and fixed:
+
+- **Background steps parsed** — The parser now includes Background steps as a synthetic
+  "(Background)" scenario. Previously 33 BE steps and 37 FE steps were silently skipped.
+- **CI enforcement** — All pushes, PRs, and `Test*` CI workflows must reject when spec-coverage
+  fails. The pre-push hook enforces locally; CI workflows and PR quality gates must also enforce.
+
 ## The Gap at a Glance
+
+Counts include Background steps (corrected after parser fix):
 
 | Tier | Projects                                                                                                                        | Missing Steps | Effort  |
 | ---- | ------------------------------------------------------------------------------------------------------------------------------- | ------------- | ------- |
 | 1    | `a-demo-be-ts-effect`, `a-demo-be-python-fastapi`                                                                               | 3, 8          | Quick   |
 | 2    | `a-demo-fe-e2e`, `organiclever-fe-e2e`, `a-demo-be-clojure-pedestal`                                                            | 10, 15, 22    | Medium  |
-| 3    | `a-demo-be-java-springboot`, `a-demo-be-rust-axum`, `a-demo-be-elixir-phoenix`, `a-demo-be-java-vertx`, `a-demo-be-kotlin-ktor` | 49–96         | Large   |
-| 4    | `a-demo-fe-dart-flutterweb`                                                                                                     | 220           | Largest |
+| 3    | `a-demo-be-java-springboot`, `a-demo-be-rust-axum`, `a-demo-be-elixir-phoenix`, `a-demo-be-java-vertx`, `a-demo-be-kotlin-ktor` | 49–97         | Large   |
+| 4    | `a-demo-fe-dart-flutterweb`                                                                                                     | 241           | Largest |
 
 ## Key Constraints
 

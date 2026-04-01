@@ -2,9 +2,8 @@
 
 ## Delivery Overview
 
-Work is organized into four phases matching the effort tiers. Each project is independently
-deliverable: implement steps, verify tests + coverage, restore the `spec-coverage` Nx target,
-verify 0 gaps, commit.
+Work is organized into five phases: one prerequisite phase (tool + CI enforcement) plus four
+implementation phases matching the effort tiers. Each project is independently deliverable.
 
 **Per-project delivery template**:
 
@@ -15,7 +14,45 @@ verify 0 gaps, commit.
 4. Add the `spec-coverage` target to `apps/<project>/project.json` using the command pattern
    from [tech-docs.md](./tech-docs.md#nx-target-command-patterns).
 5. Run `npx nx run <project>:spec-coverage` to confirm 0 gaps.
-6. Commit using conventional commit format: `feat(<project>): implement missing BDD step definitions and restore spec-coverage`.
+6. Commit using conventional commit format:
+   `feat(<project>): implement missing BDD step definitions and restore spec-coverage`.
+
+---
+
+## Phase 0: Tool Correctness + CI Enforcement
+
+### 0.1 Fix rhino-cli Background step parsing
+
+- [x] Fix `ParseFeatureFile` to include Background steps as a synthetic "(Background)" scenario
+- [x] Add parser tests for Background step handling
+- [x] Verify coverage ≥90% for rhino-cli
+
+### 0.2 Enforce spec-coverage in CI
+
+All pushes, PRs, and `Test*` workflows must reject when spec-coverage fails:
+
+- [x] Add `spec-coverage` to `pr-quality-gate.yml` — all 9 language quality gate jobs
+- [x] Add `spec-coverage` job to `_reusable-test-and-deploy.yml` (ayokoding-web, oseplatform-web)
+- [x] Add `spec-coverage` job to `test-organiclever.yml`
+- [x] Add `spec-coverage` job to `test-a-demo-be-golang-gin.yml`
+- [x] Add `spec-coverage` job to `test-a-demo-be-fsharp-giraffe.yml`
+- [x] Add `spec-coverage` job to `test-a-demo-be-csharp-aspnetcore.yml`
+- [x] Add `spec-coverage` job to `test-a-demo-fs-ts-nextjs.yml`
+- [x] Add `spec-coverage` job to `test-a-demo-fe-ts-nextjs.yml`
+- [x] Add `spec-coverage` job to `test-a-demo-fe-ts-tanstack-start.yml`
+- [ ] Add `spec-coverage` job to remaining `Test*` workflows as each project's target is restored
+- [x] Pre-push hook already enforces `spec-coverage` (done in prior commit)
+
+### 0.3 Update plan gap counts (Background steps now included)
+
+Corrected totals after parser fix:
+
+| Project                   | Old | New | Delta |
+| ------------------------- | --- | --- | ----- |
+| a-demo-be-rust-axum       | 58  | 59  | +1    |
+| a-demo-be-java-vertx      | 79  | 80  | +1    |
+| a-demo-be-kotlin-ktor     | 96  | 97  | +1    |
+| a-demo-fe-dart-flutterweb | 220 | 241 | +21   |
 
 ---
 

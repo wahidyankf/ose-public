@@ -205,3 +205,76 @@ Feature: Embedded quotes
 		t.Errorf("step text = %q, want %q", scenarios[0].Steps[0].Text, want)
 	}
 }
+
+func TestParseFeatureFile_BackgroundSteps(t *testing.T) {
+	dir := t.TempDir()
+	path := writeFeatureFile(t, dir, "bg.feature", `
+Feature: Background Test
+
+  Background:
+    Given the API is running
+    And a user "alice" is registered
+
+  Scenario: First scenario
+    When alice sends GET /api/v1/users/me
+    Then the response status code should be 200
+
+  Scenario: Second scenario
+    When alice sends POST /api/v1/logout
+    Then the response status code should be 200
+`)
+
+	scenarios, err := ParseFeatureFile(path)
+	if err != nil {
+		t.Fatalf("ParseFeatureFile() error = %v", err)
+	}
+
+	// Background creates a synthetic "(Background)" scenario + 2 real scenarios = 3
+	if len(scenarios) != 3 {
+		t.Fatalf("expected 3 scenarios (1 background + 2 real), got %d", len(scenarios))
+	}
+
+	// First should be the synthetic Background scenario
+	if scenarios[0].Title != "(Background)" {
+		t.Errorf("scenarios[0].Title = %q, want %q", scenarios[0].Title, "(Background)")
+	}
+	if len(scenarios[0].Steps) != 2 {
+		t.Errorf("Background steps count = %d, want 2", len(scenarios[0].Steps))
+	}
+	if scenarios[0].Steps[0].Text != "the API is running" {
+		t.Errorf("Background step[0] = %q, want %q", scenarios[0].Steps[0].Text, "the API is running")
+	}
+
+	// Real scenarios follow
+	if scenarios[1].Title != "First scenario" {
+		t.Errorf("scenarios[1].Title = %q, want %q", scenarios[1].Title, "First scenario")
+	}
+	if len(scenarios[1].Steps) != 2 {
+		t.Errorf("scenarios[1] steps count = %d, want 2", len(scenarios[1].Steps))
+	}
+}
+
+func TestParseFeatureFile_NoBackground(t *testing.T) {
+	dir := t.TempDir()
+	path := writeFeatureFile(t, dir, "nobg.feature", `
+Feature: No Background
+
+  Scenario: Only scenario
+    Given a user exists
+    When the user logs in
+    Then the user is on the dashboard
+`)
+
+	scenarios, err := ParseFeatureFile(path)
+	if err != nil {
+		t.Fatalf("ParseFeatureFile() error = %v", err)
+	}
+
+	// No Background — should NOT have a synthetic scenario
+	if len(scenarios) != 1 {
+		t.Fatalf("expected 1 scenario (no background), got %d", len(scenarios))
+	}
+	if scenarios[0].Title != "Only scenario" {
+		t.Errorf("Title = %q, want %q", scenarios[0].Title, "Only scenario")
+	}
+}

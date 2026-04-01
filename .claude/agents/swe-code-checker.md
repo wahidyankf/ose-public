@@ -2,7 +2,7 @@
 name: swe-code-checker
 description: Validates that application and library projects conform to platform coding standards, Nx target conventions, and language-specific best practices. Outputs to generated-reports/ with progressive streaming.
 tools: Read, Glob, Grep, Write, Bash
-model: sonnet
+model:
 color: green
 skills:
   - repo-generating-validation-reports

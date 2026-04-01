@@ -2,7 +2,7 @@
 name: swe-ui-checker
 description: Validates UI component quality including token compliance, accessibility, responsive design, component patterns, and dark mode. Use when auditing frontend components.
 tools: Read, Glob, Grep, Write, Bash
-model: sonnet
+model:
 color: green
 skills:
   - swe-developing-frontend-ui

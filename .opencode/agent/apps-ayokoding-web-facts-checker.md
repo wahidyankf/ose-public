@@ -1,6 +1,6 @@
 ---
 description: Validates factual accuracy of ayokoding-web content using WebSearch/WebFetch. Verifies command syntax, versions, code examples, external references with confidence classification.
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   glob: true

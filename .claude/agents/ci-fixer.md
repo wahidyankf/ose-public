@@ -2,7 +2,7 @@
 name: ci-fixer
 description: Applies validated fixes from ci-checker audit reports. Re-validates findings before applying to prevent false positives.
 tools: Read, Write, Edit, Glob, Grep, Bash
-model: sonnet
+model:
 color: green
 skills:
   - ci-standards

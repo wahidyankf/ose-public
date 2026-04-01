@@ -2,7 +2,7 @@
 name: swe-elixir-developer
 description: Develops Elixir applications following functional programming principles, OTP patterns, and platform coding standards. Use when implementing Elixir code for OSE Platform.
 tools: Read, Write, Edit, Glob, Grep, Bash
-model: sonnet
+model:
 color: purple
 skills:
   - swe-programming-elixir

@@ -1,6 +1,6 @@
 ---
 description: Develops Rust applications following ownership principles, zero-cost abstraction patterns, and platform coding standards. Use when implementing Rust code for OSE Platform.
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   edit: true

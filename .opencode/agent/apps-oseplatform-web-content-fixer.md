@@ -1,6 +1,6 @@
 ---
 description: Applies validated fixes from content-checker audit reports. Re-validates before applying changes.
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   edit: true

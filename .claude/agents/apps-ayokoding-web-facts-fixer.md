@@ -2,7 +2,7 @@
 name: apps-ayokoding-web-facts-fixer
 description: Applies validated fixes from facts-checker audit reports. Re-validates factual findings before applying changes.
 tools: Read, Edit, Write, Glob, Grep, Bash, WebFetch, WebSearch
-model: sonnet
+model:
 color: yellow
 skills:
   - docs-applying-content-quality

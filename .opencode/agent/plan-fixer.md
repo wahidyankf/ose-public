@@ -1,6 +1,6 @@
 ---
 description: Applies validated fixes from plan-checker audit reports. Re-validates plan findings before applying changes. Use after reviewing plan-checker output.
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   edit: true

@@ -1,6 +1,6 @@
 ---
 description: Creates By Example tutorial content for ayokoding-web with 75-85 heavily annotated code examples following five-part structure. Ensures bilingual content and quality compliance.
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   edit: true

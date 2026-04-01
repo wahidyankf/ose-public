@@ -1,6 +1,6 @@
 ---
 description: Validates that application and library projects conform to platform coding standards, Nx target conventions, and language-specific best practices. Outputs to generated-reports/ with progressive streaming.
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   glob: true

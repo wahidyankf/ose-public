@@ -2,7 +2,7 @@
 name: apps-ayokoding-web-general-maker
 description: Creates general ayokoding-web content (by-concept tutorials, guides, references). Ensures bilingual completeness and content quality compliance.
 tools: Read, Write, Edit, Glob, Grep, Bash
-model: sonnet
+model:
 color: blue
 skills:
   - docs-applying-content-quality

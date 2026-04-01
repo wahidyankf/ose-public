@@ -2,7 +2,7 @@
 name: specs-checker
 description: Validates explicitly listed specs/ folders (and their subfolders) for structural completeness, content accuracy, internal consistency, and cross-folder coherence. Use when auditing specification quality or before major spec refactors.
 tools: Read, Glob, Grep, Write, Bash
-model: sonnet
+model:
 color: green
 skills:
   - repo-generating-validation-reports

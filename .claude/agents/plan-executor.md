@@ -2,7 +2,7 @@
 name: plan-executor
 description: Executes project plans systematically by following delivery checklists, implementing steps sequentially, validating work, and updating progress. Stops at final validation for plan-execution-checker handoff.
 tools: Read, Write, Edit, Glob, Grep, Bash
-model: sonnet
+model:
 color: purple
 skills:
   - docs-applying-content-quality

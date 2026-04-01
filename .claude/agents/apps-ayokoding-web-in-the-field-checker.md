@@ -2,7 +2,7 @@
 name: apps-ayokoding-web-in-the-field-checker
 description: Validates In-the-Field production guide quality including annotation density (1.0-2.25 ratio), standard library first progression, guide count (20-40), and production code quality. Use when reviewing in-the-field content.
 tools: Read, Glob, Grep, Write, Bash
-model: sonnet
+model:
 color: green
 skills:
   - docs-creating-in-the-field-tutorials

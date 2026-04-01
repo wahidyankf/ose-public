@@ -1,6 +1,6 @@
 ---
 description: Creates In-the-Field production implementation guides for ayokoding-web with 20-40 guides following standard library first principle. Ensures production-ready code with framework integration.
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   edit: true

@@ -1,6 +1,6 @@
 ---
 description: Develops Java applications following OOP principles, Spring ecosystem patterns, and platform coding standards. Use when implementing Java code for OSE Platform.
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   edit: true

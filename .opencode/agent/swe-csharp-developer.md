@@ -1,6 +1,6 @@
 ---
 description: Develops C# applications following nullable reference type principles, async/await patterns, and platform coding standards. Use when implementing C# code for OSE Platform.
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   edit: true

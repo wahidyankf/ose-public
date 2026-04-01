@@ -2,7 +2,7 @@
 name: apps-ayokoding-web-facts-checker
 description: Validates factual accuracy of ayokoding-web content using WebSearch/WebFetch. Verifies command syntax, versions, code examples, external references with confidence classification.
 tools: Read, Glob, Grep, WebFetch, WebSearch, Write, Bash
-model: sonnet
+model:
 color: green
 skills:
   - docs-applying-content-quality

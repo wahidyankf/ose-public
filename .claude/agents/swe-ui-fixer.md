@@ -2,7 +2,7 @@
 name: swe-ui-fixer
 description: Applies validated fixes from swe-ui-checker audit reports. Re-validates findings before applying changes. Use after reviewing swe-ui-checker output.
 tools: Read, Write, Edit, Glob, Grep, Bash
-model: sonnet
+model:
 color: yellow
 skills:
   - swe-developing-frontend-ui

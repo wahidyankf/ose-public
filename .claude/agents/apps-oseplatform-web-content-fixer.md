@@ -2,7 +2,7 @@
 name: apps-oseplatform-web-content-fixer
 description: Applies validated fixes from content-checker audit reports. Re-validates before applying changes.
 tools: Read, Edit, Write, Glob, Grep, Bash
-model: sonnet
+model:
 color: yellow
 skills:
   - docs-applying-content-quality

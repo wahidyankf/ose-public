@@ -2,7 +2,7 @@
 name: docs-software-engineering-separation-fixer
 description: Applies validated fixes from docs-software-engineering-separation-checker audit reports. Fixes missing prerequisite statements, removes duplicated educational content from style guides, and ensures docs/explanation focuses on repository-specific conventions only. Re-validates findings before applying changes.
 tools: Read, Edit, Glob, Grep, Write, Bash
-model: sonnet
+model:
 color: yellow
 skills:
   - docs-validating-software-engineering-separation

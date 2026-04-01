@@ -1,6 +1,6 @@
 ---
 description: Creates general ayokoding-web content (by-concept tutorials, guides, references). Ensures bilingual completeness and content quality compliance.
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   edit: true

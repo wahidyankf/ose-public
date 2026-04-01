@@ -2,7 +2,7 @@
 name: specs-maker
 description: Creates new spec areas, missing README files, and scaffolds Gherkin feature structure at explicitly specified paths under specs/. Use when adding a new app or library to the specs directory.
 tools: Read, Write, Edit, Glob, Grep, Bash
-model: sonnet
+model:
 color: blue
 skills:
   - docs-applying-content-quality

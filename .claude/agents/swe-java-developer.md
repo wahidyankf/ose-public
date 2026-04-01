@@ -2,7 +2,7 @@
 name: swe-java-developer
 description: Develops Java applications following OOP principles, Spring ecosystem patterns, and platform coding standards. Use when implementing Java code for OSE Platform.
 tools: Read, Write, Edit, Glob, Grep, Bash
-model: sonnet
+model:
 color: purple
 skills:
   - swe-programming-java

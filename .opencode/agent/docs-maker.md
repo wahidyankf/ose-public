@@ -1,6 +1,6 @@
 ---
 description: Expert documentation writer specializing in GitHub-compatible markdown and Diátaxis framework. Use when creating, editing, or organizing project documentation.
-model: zai/glm-4.7
+model: inherit
 tools:
   edit: true
   glob: true

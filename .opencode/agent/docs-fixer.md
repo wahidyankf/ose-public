@@ -1,6 +1,6 @@
 ---
 description: Applies validated fixes from docs-checker audit reports. Re-validates factual accuracy findings before applying changes. Use after reviewing docs-checker output.
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   edit: true

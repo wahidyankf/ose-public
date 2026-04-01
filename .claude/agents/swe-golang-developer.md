@@ -2,7 +2,7 @@
 name: swe-golang-developer
 description: Develops Go applications following simplicity principles, concurrency patterns, and platform coding standards. Use when implementing Go code for OSE Platform.
 tools: Read, Write, Edit, Glob, Grep, Bash
-model: sonnet
+model:
 color: purple
 skills:
   - swe-programming-golang

@@ -2,7 +2,7 @@
 name: apps-ayokoding-web-by-example-maker
 description: Creates By Example tutorial content for ayokoding-web with 75-85 heavily annotated code examples following five-part structure. Ensures bilingual content and quality compliance.
 tools: Read, Write, Edit, Glob, Grep, Bash
-model: sonnet
+model:
 color: blue
 skills:
   - docs-applying-content-quality

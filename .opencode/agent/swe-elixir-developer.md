@@ -1,6 +1,6 @@
 ---
 description: Develops Elixir applications following functional programming principles, OTP patterns, and platform coding standards. Use when implementing Elixir code for OSE Platform.
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   edit: true

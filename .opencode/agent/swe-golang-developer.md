@@ -1,6 +1,6 @@
 ---
 description: Develops Go applications following simplicity principles, concurrency patterns, and platform coding standards. Use when implementing Go code for OSE Platform.
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   edit: true

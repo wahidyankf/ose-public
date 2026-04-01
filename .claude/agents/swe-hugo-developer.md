@@ -2,7 +2,7 @@
 name: swe-hugo-developer
 description: Develops Hugo sites (oseplatform-web) including theme customization, template development, and build optimization.
 tools: Read, Write, Edit, Glob, Grep, Bash
-model: sonnet
+model:
 color: purple
 skills:
   - docs-applying-content-quality

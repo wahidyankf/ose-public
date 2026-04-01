@@ -1,6 +1,6 @@
 ---
 description: Develops Kotlin applications following null safety principles, coroutine patterns, and platform coding standards. Use when implementing Kotlin code for OSE Platform.
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   edit: true

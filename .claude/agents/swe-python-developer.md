@@ -2,7 +2,7 @@
 name: swe-python-developer
 description: Develops Python applications following Pythonic principles, data processing patterns, and platform coding standards. Use when implementing Python code for OSE Platform.
 tools: Read, Write, Edit, Glob, Grep, Bash
-model: sonnet
+model:
 color: purple
 skills:
   - swe-programming-python

@@ -1,6 +1,6 @@
 ---
 description: Expert at managing files and directories in docs/ directory. Use for renaming, moving, or deleting files/directories while maintaining conventions, updating prefixes, fixing links, and preserving git history.
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   edit: true

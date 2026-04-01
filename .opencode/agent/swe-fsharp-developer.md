@@ -1,6 +1,6 @@
 ---
 description: Develops F# applications following functional programming principles, railway-oriented error handling, and platform coding standards. Use when implementing F# code for OSE Platform.
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   edit: true

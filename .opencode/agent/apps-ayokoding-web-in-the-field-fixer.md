@@ -1,6 +1,6 @@
 ---
 description: Applies validated fixes from apps-ayokoding-web-in-the-field-checker audit reports. Re-validates in-the-field findings before applying changes. Use after reviewing checker output.
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   edit: true

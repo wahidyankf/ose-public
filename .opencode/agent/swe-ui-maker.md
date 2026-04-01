@@ -1,6 +1,6 @@
 ---
 description: Creates UI components following all conventions — CVA variants, Radix composition, accessibility, responsive design, unit tests, and Storybook stories. Use when creating new shared components.
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   edit: true

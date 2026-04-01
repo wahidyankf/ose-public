@@ -2,7 +2,7 @@
 name: ci-checker
 description: Validates all projects against CI/CD standards including mandatory Nx targets, coverage thresholds, Docker setup, Gherkin consumption, workflow files, E2E pairing, and env variable compliance
 tools: Read, Glob, Grep, Write, Bash
-model: sonnet
+model:
 color: green
 skills:
   - ci-standards

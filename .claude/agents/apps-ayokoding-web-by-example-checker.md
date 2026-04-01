@@ -2,7 +2,7 @@
 name: apps-ayokoding-web-by-example-checker
 description: Validates By Example tutorial quality including annotation density (1.0-2.25 ratio per example), five-part structure, example count (75-85), and ayokoding-web compliance. Use when reviewing By Example content.
 tools: Read, Glob, Grep, Write, Bash
-model: sonnet
+model:
 color: green
 skills:
   - docs-applying-content-quality

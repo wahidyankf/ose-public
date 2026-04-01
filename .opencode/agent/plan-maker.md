@@ -1,6 +1,6 @@
 ---
 description: Creates comprehensive project plans with requirements, technical documentation, and delivery checklists. Structures plans for systematic execution by plan-executor agent.
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   edit: true

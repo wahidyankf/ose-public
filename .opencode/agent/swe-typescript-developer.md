@@ -1,6 +1,6 @@
 ---
 description: Develops TypeScript applications following type safety principles, modern patterns, and platform coding standards. Use when implementing TypeScript code for OSE Platform.
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   edit: true

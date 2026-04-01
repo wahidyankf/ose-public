@@ -2,7 +2,7 @@
 name: swe-clojure-developer
 description: Develops Clojure applications following functional programming principles, REPL-driven development, and platform coding standards. Use when implementing Clojure code for OSE Platform.
 tools: Read, Write, Edit, Glob, Grep, Bash
-model: sonnet
+model:
 color: purple
 skills:
   - swe-programming-clojure

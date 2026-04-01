@@ -1,6 +1,6 @@
 ---
 description: Applies validated fixes from readme-checker audit reports. Re-validates README findings before applying changes. Use after reviewing readme-checker output.
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   edit: true

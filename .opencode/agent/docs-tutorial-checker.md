@@ -1,6 +1,6 @@
 ---
 description: Validates tutorial quality focusing on pedagogical structure, narrative flow, visual completeness, hands-on elements, and tutorial type compliance. Complements docs-checker (accuracy) and docs-link-general-checker (links).
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   glob: true

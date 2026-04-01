@@ -1,6 +1,6 @@
 ---
 description: Applies validated fixes from docs-tutorial-checker audit reports. Re-validates pedagogical findings before applying changes. Use after reviewing docs-tutorial-checker output.
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   edit: true

@@ -1,6 +1,6 @@
 ---
 description: Validates explicitly listed specs/ folders (and their subfolders) for structural completeness, content accuracy, internal consistency, and cross-folder coherence. Use when auditing specification quality or before major spec refactors.
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   glob: true

@@ -2,7 +2,7 @@
 name: docs-software-engineering-separation-checker
 description: Validates software engineering documentation separation between OSE Platform style guides (docs/explanation/) and AyoKoding educational content (apps/ayokoding-web/). Ensures NO DUPLICATION between platforms, proper prerequisite statements, and style guide focus on repository-specific conventions only (not language tutorials).
 tools: Read, Glob, Grep, Write, Bash
-model: sonnet
+model:
 color: green
 skills:
   - docs-validating-software-engineering-separation

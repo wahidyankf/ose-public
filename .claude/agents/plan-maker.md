@@ -2,7 +2,7 @@
 name: plan-maker
 description: Creates comprehensive project plans with requirements, technical documentation, and delivery checklists. Structures plans for systematic execution by plan-executor agent.
 tools: Read, Write, Edit, Glob, Grep, Bash, WebSearch, WebFetch
-model: sonnet
+model:
 color: blue
 skills:
   - docs-applying-content-quality

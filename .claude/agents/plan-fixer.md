@@ -2,7 +2,7 @@
 name: plan-fixer
 description: Applies validated fixes from plan-checker audit reports. Re-validates plan findings before applying changes. Use after reviewing plan-checker output.
 tools: Read, Edit, Write, Glob, Grep, Bash, WebSearch, WebFetch
-model: sonnet
+model:
 color: yellow
 skills:
   - docs-applying-content-quality

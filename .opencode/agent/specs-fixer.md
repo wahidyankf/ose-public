@@ -1,6 +1,6 @@
 ---
 description: Applies validated fixes from specs-checker audit reports for explicitly listed spec folders. Re-validates findings before applying. Use after reviewing specs-checker output.
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   edit: true

@@ -1,6 +1,6 @@
 ---
 description: Develops Hugo sites (oseplatform-web) including theme customization, template development, and build optimization.
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   edit: true

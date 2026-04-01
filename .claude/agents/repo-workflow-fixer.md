@@ -2,7 +2,7 @@
 name: repo-workflow-fixer
 description: Applies validated fixes from workflow-checker audit reports. Re-validates before applying changes.
 tools: Read, Edit, Write, Glob, Grep, Bash
-model: sonnet
+model:
 color: yellow
 skills:
   - docs-applying-content-quality

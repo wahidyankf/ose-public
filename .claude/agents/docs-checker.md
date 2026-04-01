@@ -2,7 +2,7 @@
 name: docs-checker
 description: Expert at validating factual correctness and content consistency of documentation using web verification. Checks technical accuracy, detects contradictions, validates examples and commands, and identifies outdated information. Use when verifying technical claims, checking command syntax, detecting contradictions, or auditing documentation accuracy.
 tools: Read, Glob, Grep, Write, Bash, WebFetch, WebSearch
-model: sonnet
+model:
 color: green
 skills:
   - docs-applying-content-quality

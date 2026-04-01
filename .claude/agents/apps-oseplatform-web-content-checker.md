@@ -2,7 +2,7 @@
 name: apps-oseplatform-web-content-checker
 description: Validates oseplatform-web content quality including Next.js content layer compliance and landing page standards.
 tools: Read, Glob, Grep, Write, Bash
-model: sonnet
+model:
 color: green
 skills:
   - docs-applying-content-quality

@@ -1,6 +1,6 @@
 ---
 description: Develops Python applications following Pythonic principles, data processing patterns, and platform coding standards. Use when implementing Python code for OSE Platform.
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   edit: true

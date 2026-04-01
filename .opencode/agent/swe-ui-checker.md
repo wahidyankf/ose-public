@@ -1,6 +1,6 @@
 ---
 description: Validates UI component quality including token compliance, accessibility, responsive design, component patterns, and dark mode. Use when auditing frontend components.
-model: zai/glm-4.7
+model: inherit
 tools:
   bash: true
   glob: true

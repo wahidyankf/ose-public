@@ -2,7 +2,7 @@
 name: apps-ayokoding-web-in-the-field-maker
 description: Creates In-the-Field production implementation guides for ayokoding-web with 20-40 guides following standard library first principle. Ensures production-ready code with framework integration.
 tools: Read, Write, Edit, Glob, Grep, Bash
-model: sonnet
+model:
 color: blue
 skills:
   - docs-creating-in-the-field-tutorials

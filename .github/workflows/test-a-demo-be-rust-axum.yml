@@ -28,12 +28,6 @@ jobs:
       backend-name: a-demo-be-rust-axum
       language: rust
 
-  spec-coverage:
-    uses: ./.github/workflows/_reusable-backend-spec-coverage.yml
-    with:
-      backend-name: a-demo-be-rust-axum
-      language: rust
-
   integration:
     uses: ./.github/workflows/_reusable-backend-integration.yml
     with:

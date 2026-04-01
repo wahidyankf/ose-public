@@ -24,6 +24,10 @@ jobs:
       - uses: ./.github/actions/setup-language
         with:
           language: ${{ inputs.language }}
+      - uses: ./.github/actions/install-language-deps
+        with:
+          language: ${{ inputs.language }}
+          backend-name: ${{ inputs.backend-name }}
       - name: Generate contract types
         run: |
           npx nx run a-demo-contracts:bundle

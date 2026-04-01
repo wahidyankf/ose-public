@@ -1,0 +1,47 @@
+name: "Install Language Dependencies"
+description: "Install language-specific dependencies needed before build/lint/test (Elixir mix deps.get, Clojure deps, Python uv sync, .NET restore)"
+inputs:
+  language:
+    required: true
+    description: "Language runtime (golang, jvm, dotnet, python, rust, elixir, clojure, flutter, typescript)"
+  backend-name:
+    required: false
+    default: ""
+    description: "Backend project name (used to scope dependency installation for .NET projects)"
+runs:
+  using: "composite"
+  steps:
+    - name: Install Elixir dependencies
+      if: inputs.language == 'elixir'
+      shell: bash
+      run: |
+        (cd libs/elixir-openapi-codegen && mix deps.get)
+        (cd libs/elixir-gherkin && mix deps.get)
+        (cd libs/elixir-cabbage && mix deps.get)
+        (cd apps/a-demo-be-elixir-phoenix && mix deps.get)
+
+    - name: Install Clojure dependencies
+      if: inputs.language == 'clojure'
+      shell: bash
+      run: |
+        mkdir -p libs/clojure-openapi-codegen/classes
+        (cd libs/clojure-openapi-codegen && JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -P)
+        (cd apps/a-demo-be-clojure-pedestal && JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -P && JAVA_HOME=${JAVA_HOME_21_X64:-$JAVA_HOME} clojure -P -M:test:coverage)
+
+    - name: Install Python dependencies
+      if: inputs.language == 'python'
+      shell: bash
+      run: (cd apps/a-demo-be-python-fastapi && uv sync)
+
+    - name: Restore .NET dependencies
+      if: inputs.language == 'dotnet'
+      shell: bash
+      run: |
+        if [ "${{ inputs.backend-name }}" = "a-demo-be-fsharp-giraffe" ]; then
+          dotnet restore apps/a-demo-be-fsharp-giraffe/src/ADemoBeFsgi/ADemoBeFsgi.fsproj
+        elif [ "${{ inputs.backend-name }}" = "a-demo-be-csharp-aspnetcore" ]; then
+          dotnet restore apps/a-demo-be-csharp-aspnetcore/src/ADemoBeCsas/ADemoBeCsas.csproj
+        else
+          dotnet restore apps/a-demo-be-fsharp-giraffe/src/ADemoBeFsgi/ADemoBeFsgi.fsproj
+          dotnet restore apps/a-demo-be-csharp-aspnetcore/src/ADemoBeCsas/ADemoBeCsas.csproj
+        fi

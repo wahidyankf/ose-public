@@ -55,7 +55,7 @@ jobs:
           mkdir -p libs/clojure-openapi-codegen/classes
           npx nx run a-demo-contracts:bundle
           npx nx run organiclever-contracts:bundle
-          npx nx run-many -t codegen --projects=demo-*,organiclever-*
+          npx nx run-many -t codegen --projects=a-demo-*,organiclever-*
 
       - name: Flutter pub get (after codegen generates contracts)
         run: cd apps/a-demo-fe-dart-flutterweb && flutter pub get

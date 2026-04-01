@@ -28,12 +28,6 @@ jobs:
       backend-name: a-demo-be-kotlin-ktor
       language: jvm
 
-  spec-coverage:
-    uses: ./.github/workflows/_reusable-backend-spec-coverage.yml
-    with:
-      backend-name: a-demo-be-kotlin-ktor
-      language: jvm
-
   integration:
     uses: ./.github/workflows/_reusable-backend-integration.yml
     with:

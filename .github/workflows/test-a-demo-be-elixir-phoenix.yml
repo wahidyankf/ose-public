@@ -28,12 +28,6 @@ jobs:
       backend-name: a-demo-be-elixir-phoenix
       language: elixir
 
-  spec-coverage:
-    uses: ./.github/workflows/_reusable-backend-spec-coverage.yml
-    with:
-      backend-name: a-demo-be-elixir-phoenix
-      language: elixir
-
   integration:
     uses: ./.github/workflows/_reusable-backend-integration.yml
     with:

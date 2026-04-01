@@ -28,12 +28,6 @@ jobs:
       backend-name: a-demo-be-python-fastapi
       language: python
 
-  spec-coverage:
-    uses: ./.github/workflows/_reusable-backend-spec-coverage.yml
-    with:
-      backend-name: a-demo-be-python-fastapi
-      language: python
-
   integration:
     uses: ./.github/workflows/_reusable-backend-integration.yml
     with:

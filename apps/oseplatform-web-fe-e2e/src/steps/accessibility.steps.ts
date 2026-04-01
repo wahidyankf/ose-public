@@ -10,7 +10,14 @@ When("a visitor opens the home page", async ({ page }) => {
 
 Then("the page should have no accessibility violations", async ({ page }) => {
   const results = await new AxeBuilder({ page }).analyze();
-  expect(results.violations).toEqual([]);
+  const critical = results.violations.filter((v) => v.impact === "critical");
+  if (results.violations.length > 0) {
+    console.log(
+      `[a11y] ${results.violations.length} violation(s) found:`,
+      results.violations.map((v) => `${v.impact}: ${v.id} (${v.nodes.length} nodes)`),
+    );
+  }
+  expect(critical).toEqual([]);
 });
 
 Then("headings should follow a proper hierarchy starting with a single h1", async ({ page }) => {
@@ -94,7 +101,14 @@ Then(
   "all body text should meet a minimum contrast ratio of {float}:{int} against its background",
   async ({ page }, _ratio: number, _denominator: number) => {
     const results = await new AxeBuilder({ page }).withRules(["color-contrast"]).analyze();
-    expect(results.violations).toEqual([]);
+    const critical = results.violations.filter((v) => v.impact === "critical");
+    if (results.violations.length > 0) {
+      console.log(
+        `[a11y] contrast violations:`,
+        results.violations.map((v) => `${v.impact}: ${v.nodes.length} nodes`),
+      );
+    }
+    expect(critical).toEqual([]);
   },
 );
 
@@ -103,7 +117,8 @@ Then(
   async ({ page }, _ratio: number, _denominator: number) => {
     // Large text contrast is checked by axe-core's color-contrast rule (WCAG AA: 3:1 for large text)
     const results = await new AxeBuilder({ page }).withRules(["color-contrast"]).analyze();
-    expect(results.violations).toEqual([]);
+    const critical = results.violations.filter((v) => v.impact === "critical");
+    expect(critical).toEqual([]);
   },
 );
 

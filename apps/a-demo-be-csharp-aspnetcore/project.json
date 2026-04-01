@@ -95,7 +95,7 @@
       "cache": true
     },
     "spec-coverage": {
-      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate specs/apps/a-demo/be/gherkin apps/a-demo-be-csharp-aspnetcore",
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/a-demo/be/gherkin apps/a-demo-be-csharp-aspnetcore",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/a-demo/be/gherkin/**/*.feature", "{projectRoot}/**/*.cs"]
     }

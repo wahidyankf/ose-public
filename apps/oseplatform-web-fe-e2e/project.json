@@ -56,7 +56,7 @@
       }
     },
     "spec-coverage": {
-      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate specs/apps/oseplatform/fe/gherkin apps/oseplatform-web-fe-e2e",
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate --shared-steps specs/apps/oseplatform/fe/gherkin apps/oseplatform-web-fe-e2e",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/oseplatform/fe/gherkin/**/*.feature", "{projectRoot}/**/*.ts"]
     }

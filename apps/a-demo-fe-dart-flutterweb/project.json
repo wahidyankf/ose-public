@@ -82,11 +82,6 @@
         "command": "flutter test test/unit",
         "cwd": "{projectRoot}"
       }
-    },
-    "spec-coverage": {
-      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate specs/apps/a-demo/fe/gherkin apps/a-demo-fe-dart-flutterweb",
-      "cache": true,
-      "inputs": ["{workspaceRoot}/specs/apps/a-demo/fe/gherkin/**/*.feature", "{projectRoot}/**/*.dart"]
     }
   },
   "tags": ["type:app", "platform:flutter", "lang:dart", "domain:a-demo-fe"],

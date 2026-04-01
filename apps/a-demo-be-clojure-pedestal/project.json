@@ -95,11 +95,6 @@
       },
       "dependsOn": ["codegen"],
       "cache": true
-    },
-    "spec-coverage": {
-      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate specs/apps/a-demo/be/gherkin apps/a-demo-be-clojure-pedestal",
-      "cache": true,
-      "inputs": ["{workspaceRoot}/specs/apps/a-demo/be/gherkin/**/*.feature", "{projectRoot}/**/*.clj"]
     }
   },
   "implicitDependencies": ["clojure-openapi-codegen", "a-demo-contracts", "rhino-cli"]

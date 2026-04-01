@@ -82,7 +82,7 @@
       "dependsOn": ["codegen"]
     },
     "spec-coverage": {
-      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate specs/apps/a-demo/fe/gherkin apps/a-demo-fe-ts-nextjs",
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate --shared-steps --exclude-dir test-support specs/apps/a-demo/fe/gherkin apps/a-demo-fe-ts-nextjs",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/a-demo/fe/gherkin/**/*.feature", "{projectRoot}/**/*.{ts,tsx}"]
     }

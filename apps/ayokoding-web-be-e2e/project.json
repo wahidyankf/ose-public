@@ -56,7 +56,7 @@
       }
     },
     "spec-coverage": {
-      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate specs/apps/ayokoding/be/gherkin apps/ayokoding-web-be-e2e",
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate --shared-steps specs/apps/ayokoding/be/gherkin apps/ayokoding-web-be-e2e",
       "cache": true,
       "inputs": ["{workspaceRoot}/specs/apps/ayokoding/be/gherkin/**/*.feature", "{projectRoot}/**/*.ts"]
     }

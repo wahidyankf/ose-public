@@ -16,8 +16,8 @@ var rsStepExprRe = regexp.MustCompile(`#\[(?:given|when|then)\s*\(\s*expr\s*=\s*
 var rsStepRegexRe = regexp.MustCompile(`#\[(?:given|when|then)\s*\(\s*regex\s*=\s*r#"(.*?)"#\s*\)\s*\]`)
 
 // extractRustStepTexts reads a Rust file and adds step texts/patterns.
-// Literal and expr forms are added as exact text.
-// Regex forms are compiled as regex patterns.
+// Literal and expr forms use addStepToMatcher (handles Cucumber expressions).
+// Regex forms are compiled as regex patterns directly.
 func extractRustStepTexts(path string, sm *stepMatcher) error {
 	f, err := os.Open(path)
 	if err != nil {
@@ -39,14 +39,14 @@ func extractRustStepTexts(path string, sm *stepMatcher) error {
 			sm.patterns = append(sm.patterns, re)
 		}
 
-		// Check expr form
+		// Check expr form — may contain Cucumber expressions
 		for _, m := range rsStepExprRe.FindAllStringSubmatch(line, -1) {
-			sm.exact[normalizeWS(m[1])] = true
+			addStepToMatcher(sm, m[1])
 		}
 
-		// Check literal form
+		// Check literal form — may also contain Cucumber expressions
 		for _, m := range rsStepLiteralRe.FindAllStringSubmatch(line, -1) {
-			sm.exact[normalizeWS(m[1])] = true
+			addStepToMatcher(sm, m[1])
 		}
 	}
 	return scanner.Err()

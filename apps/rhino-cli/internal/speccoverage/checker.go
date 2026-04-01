@@ -14,13 +14,17 @@ var (
 	// Handles escape sequences inside quoted strings (e.g. \' inside single-quoted strings).
 	scenarioDefRe = regexp.MustCompile(`Scenario\s*\(\s*(?:"((?:[^"\\]|\\.)*)"|'((?:[^'\\]|\\.)*)')\s*,`)
 	// stepDefRe matches Given/When/Then/And/But("text", or ('text',
+	// Uses (?s) dotall for multi-line: Then(\n  "text",\n  fn)
 	// Handles escape sequences inside quoted strings (e.g. \' inside single-quoted strings).
-	stepDefRe = regexp.MustCompile(`(?:Given|When|Then|And|But)\s*\(\s*(?:"((?:[^"\\]|\\.)*)"|'((?:[^'\\]|\\.)*)')\s*,`)
+	stepDefRe = regexp.MustCompile(`(?s)(?:Given|When|Then|And|But)\s*\(\s*(?:"((?:[^"\\]|\\.)*)"|'((?:[^'\\]|\\.)*)')\s*,`)
 	// goStepRe matches: sc.Step(`^step text here$`, fn)
 	// Raw string cannot be used here because the pattern itself contains backtick characters.
 	goStepRe = regexp.MustCompile("\\.Step\\(\\x60([^\\x60]+)\\x60") //nolint:staticcheck
 	// goScenarioCommentRe matches: // Scenario: Title Here
 	goScenarioCommentRe = regexp.MustCompile(`//\s*Scenario:\s*(.+?)\s*$`)
+	// tsRegexStepRe matches Given(/^pattern$/, fn) or When(/^pattern$/, fn) in TS/JS.
+	// Uses (?s) dotall for multi-line: When(\n  /^pattern$/,\n  fn)
+	tsRegexStepRe = regexp.MustCompile(`(?s)(?:Given|When|Then|And|But)\s*\(\s*/\^?(.*?)\$?\s*/\s*,`)
 )
 
 // stepMatcher holds both exact step texts (from TS/JS) and regex patterns (from Go godog files).
@@ -81,7 +85,7 @@ func CheckAll(opts ScanOptions) (*CheckResult, error) {
 func checkSharedSteps(opts ScanOptions) (*CheckResult, error) {
 	start := time.Now()
 
-	specFiles, err := walkFeatureFiles(opts.SpecsDir)
+	specFiles, err := walkFeatureFiles(opts.SpecsDir, opts.ExcludeDirs...)
 	if err != nil {
 		return nil, err
 	}
@@ -135,7 +139,7 @@ func checkSharedSteps(opts ScanOptions) (*CheckResult, error) {
 func checkOneToOne(opts ScanOptions) (*CheckResult, error) {
 	start := time.Now()
 
-	specFiles, err := walkFeatureFiles(opts.SpecsDir)
+	specFiles, err := walkFeatureFiles(opts.SpecsDir, opts.ExcludeDirs...)
 	if err != nil {
 		return nil, err
 	}
@@ -227,17 +231,26 @@ func normalizeWS(s string) string {
 	return strings.Join(strings.Fields(s), " ")
 }
 
-// walkFeatureFiles returns all .feature files under dir recursively.
-func walkFeatureFiles(dir string) ([]string, error) {
+// walkFeatureFiles returns all .feature files under dir recursively,
+// excluding directories whose names appear in excludeDirs.
+func walkFeatureFiles(dir string, excludeDirs ...string) ([]string, error) {
 	var files []string
 
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
 		return nil, nil
 	}
 
+	excludeSet := make(map[string]bool, len(excludeDirs))
+	for _, d := range excludeDirs {
+		excludeSet[d] = true
+	}
+
 	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
+		}
+		if info.IsDir() && excludeSet[info.Name()] {
+			return filepath.SkipDir
 		}
 		if !info.IsDir() && strings.HasSuffix(path, ".feature") {
 			files = append(files, path)
@@ -496,6 +509,8 @@ func extractAllStepTexts(appDir string) (*stepMatcher, error) {
 			return extractFSharpStepTexts(path, sm)
 		case ".clj":
 			return extractClojureStepTexts(path, sm)
+		case ".dart":
+			return extractDartStepTexts(path, sm)
 		}
 		return nil
 	})
@@ -504,24 +519,35 @@ func extractAllStepTexts(appDir string) (*stepMatcher, error) {
 }
 
 // extractTSStepTexts reads a TS/JS file and adds all step texts found in
-// Given/When/Then/And/But("...", ...) calls into sm.exact.
+// Given/When/Then/And/But("...", ...) calls and regex literals Given(/^pattern$/, ...) into the matcher.
+// Reads entire file content to handle multi-line step definitions like Then(\n  "text",\n  fn).
 func extractTSStepTexts(path string, sm *stepMatcher) error {
-	f, err := os.Open(path)
+	content, err := os.ReadFile(path)
 	if err != nil {
 		return err
 	}
-	defer func() { _ = f.Close() }()
 
-	scanner := bufio.NewScanner(f)
-	for scanner.Scan() {
-		line := scanner.Text()
-		matches := stepDefRe.FindAllStringSubmatch(line, -1)
-		for _, m := range matches {
-			text := unescapeString(firstNonEmpty(m[1], m[2]))
-			sm.exact[normalizeWS(text)] = true
-		}
+	src := string(content)
+
+	// String-style step definitions: Given("text", ...)
+	matches := stepDefRe.FindAllStringSubmatch(src, -1)
+	for _, m := range matches {
+		text := unescapeString(firstNonEmpty(m[1], m[2]))
+		addStepToMatcher(sm, text)
 	}
-	return scanner.Err()
+
+	// Regex-literal step definitions: Given(/^pattern$/, ...)
+	regexMatches := tsRegexStepRe.FindAllStringSubmatch(src, -1)
+	for _, m := range regexMatches {
+		pattern := m[1]
+		re, err := regexp.Compile(pattern)
+		if err != nil {
+			continue
+		}
+		sm.patterns = append(sm.patterns, re)
+	}
+
+	return nil
 }
 
 // extractGoStepTexts reads a Go file and adds compiled regex patterns found in
@@ -560,7 +586,7 @@ func firstNonEmpty(a, b string) string {
 
 // unescapeString processes common JavaScript/TypeScript string escape sequences
 // so that extracted step texts match the runtime string values in feature files.
-// Handles: \' \" \\ \n \t \r
+// Handles: \' \" \\ \/ \n \t \r
 func unescapeString(s string) string {
 	var buf strings.Builder
 	buf.Grow(len(s))
@@ -580,6 +606,8 @@ func unescapeString(s string) string {
 				buf.WriteByte('\t')
 			case 'r':
 				buf.WriteByte('\r')
+			case '/':
+				buf.WriteByte('/')
 			default:
 				buf.WriteByte(s[i])
 				buf.WriteByte(s[i+1])

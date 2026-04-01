@@ -9,8 +9,8 @@ import (
 // cljStepRe matches (Given "text" ...), (When "text" ...), (Then "text" ...)
 var cljStepRe = regexp.MustCompile(`\((?:Given|When|Then|And|But)\s+"((?:[^"\\]|\\.)*)"`)
 
-
-// extractClojureStepTexts reads a Clojure file and adds step texts to sm.exact.
+// extractClojureStepTexts reads a Clojure file and adds step texts to the stepMatcher.
+// Uses addStepToMatcher to handle Cucumber expressions and regex patterns.
 func extractClojureStepTexts(path string, sm *stepMatcher) error {
 	f, err := os.Open(path)
 	if err != nil {
@@ -23,7 +23,7 @@ func extractClojureStepTexts(path string, sm *stepMatcher) error {
 		line := scanner.Text()
 		matches := cljStepRe.FindAllStringSubmatch(line, -1)
 		for _, m := range matches {
-			sm.exact[normalizeWS(m[1])] = true
+			addStepToMatcher(sm, m[1])
 		}
 	}
 	return scanner.Err()

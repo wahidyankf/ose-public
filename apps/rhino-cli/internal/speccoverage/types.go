@@ -5,12 +5,13 @@ import "time"
 
 // ScanOptions configures how the spec coverage check should be performed.
 type ScanOptions struct {
-	RepoRoot    string // Absolute path to repository root
-	SpecsDir    string // Absolute path to specs directory
-	AppDir      string // Absolute path to app directory
-	Verbose     bool   // Enable verbose logging
-	Quiet       bool   // Quiet mode (errors only)
-	SharedSteps bool   // Skip file matching, validate steps across ALL files
+	RepoRoot    string   // Absolute path to repository root
+	SpecsDir    string   // Absolute path to specs directory
+	AppDir      string   // Absolute path to app directory
+	Verbose     bool     // Enable verbose logging
+	Quiet       bool     // Quiet mode (errors only)
+	SharedSteps bool     // Skip file matching, validate steps across ALL files
+	ExcludeDirs []string // Directory names to exclude from spec walking (e.g., "test-support")
 }
 
 // CoverageGap represents a spec file that has no matching test implementation.

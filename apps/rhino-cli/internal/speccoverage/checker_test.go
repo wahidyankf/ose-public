@@ -1023,3 +1023,371 @@ func TestCheckAll_ExtractAllStepTextsError(t *testing.T) {
 	// Either outcome is acceptable — we just verify it doesn't panic.
 	_, _ = CheckAll(opts)
 }
+
+// --- extractTSStepTexts: regex literal path ---
+
+func TestExtractTSStepTexts_RegexLiteral(t *testing.T) {
+	tmpDir := t.TempDir()
+	path := filepath.Join(tmpDir, "steps.ts")
+	content := "When(/^the user clicks (.*)$/, async () => {});\n" +
+		"Then(/pattern without dollar/, async () => {});\n"
+	writeContent(t, path, content)
+
+	sm := &stepMatcher{exact: map[string]bool{}}
+	err := extractTSStepTexts(path, sm)
+	if err != nil {
+		t.Fatalf("extractTSStepTexts() error = %v", err)
+	}
+	if len(sm.patterns) == 0 {
+		t.Fatal("expected patterns to be added for regex literal step definitions")
+	}
+	if !sm.matches("the user clicks submit") {
+		t.Error("expected pattern to match 'the user clicks submit'")
+	}
+}
+
+func TestExtractTSStepTexts_MultiLineStepDefinition(t *testing.T) {
+	tmpDir := t.TempDir()
+	path := filepath.Join(tmpDir, "steps.ts")
+	// Multi-line: Then(\n  "text",\n  fn)
+	content := "Then(\n  \"the result is shown\",\n  async () => {});\n"
+	writeContent(t, path, content)
+
+	sm := &stepMatcher{exact: map[string]bool{}}
+	err := extractTSStepTexts(path, sm)
+	if err != nil {
+		t.Fatalf("extractTSStepTexts() error = %v", err)
+	}
+	if !sm.matches("the result is shown") {
+		t.Error("expected 'the result is shown' to match from multi-line step definition")
+	}
+}
+
+func TestExtractTSStepTexts_RegexLiteralInvalidPattern(t *testing.T) {
+	// Invalid regex literal should be skipped gracefully
+	tmpDir := t.TempDir()
+	path := filepath.Join(tmpDir, "steps.ts")
+	content := "When(/[invalid(/, async () => {});\n" +
+		"Then(/^valid step$/, async () => {});\n"
+	writeContent(t, path, content)
+
+	sm := &stepMatcher{exact: map[string]bool{}}
+	err := extractTSStepTexts(path, sm)
+	if err != nil {
+		t.Fatalf("extractTSStepTexts() should not error for invalid regex literal, got: %v", err)
+	}
+	// Only the valid regex should be in patterns
+	if len(sm.patterns) != 1 {
+		t.Errorf("patterns = %d, want 1 (invalid regex skipped)", len(sm.patterns))
+	}
+}
+
+// --- unescapeString: \/ escape ---
+
+func TestUnescapeString_SlashEscape(t *testing.T) {
+	got := unescapeString(`path\/to\/file`)
+	want := "path/to/file"
+	if got != want {
+		t.Errorf("unescapeString(%q) = %q, want %q", `path\/to\/file`, got, want)
+	}
+}
+
+// --- walkFeatureFiles with excludeDirs ---
+
+func TestWalkFeatureFiles_ExcludeDirs(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Feature file in excluded directory
+	if err := os.MkdirAll(filepath.Join(tmpDir, "test-support"), 0755); err != nil {
+		t.Fatal(err)
+	}
+	writeContent(t, filepath.Join(tmpDir, "test-support", "excluded.feature"), "Feature: Excluded\n")
+
+	// Feature file in included directory
+	writeContent(t, filepath.Join(tmpDir, "main", "included.feature"), "Feature: Included\n")
+
+	files, err := walkFeatureFiles(tmpDir, "test-support")
+	if err != nil {
+		t.Fatalf("walkFeatureFiles() error = %v", err)
+	}
+
+	if len(files) != 1 {
+		t.Errorf("got %d files, want 1 (excluded dir should be skipped): %v", len(files), files)
+	}
+	if filepath.Base(files[0]) != "included.feature" {
+		t.Errorf("expected 'included.feature', got %q", filepath.Base(files[0]))
+	}
+}
+
+// --- extractScenarioTitles dispatch ---
+
+func TestExtractScenarioTitles_PythonFile(t *testing.T) {
+	tmpDir := t.TempDir()
+	path := filepath.Join(tmpDir, "test_login.py")
+	writeContent(t, path, `@scenario("login.feature", "User logs in")
+def test_user_logs_in():
+    pass`)
+
+	titles, err := extractScenarioTitles(path)
+	if err != nil {
+		t.Fatalf("extractScenarioTitles() error = %v", err)
+	}
+	if !titles["User logs in"] {
+		t.Error("expected 'User logs in' in Python scenario titles")
+	}
+}
+
+func TestExtractScenarioTitles_ExsFile(t *testing.T) {
+	tmpDir := t.TempDir()
+	path := filepath.Join(tmpDir, "steps_test.exs")
+	writeContent(t, path, `# Elixir auto-bind — no Scenario() calls`)
+
+	titles, err := extractScenarioTitles(path)
+	if err != nil {
+		t.Fatalf("extractScenarioTitles() error = %v", err)
+	}
+	// .exs returns empty map (auto-bind framework)
+	if len(titles) != 0 {
+		t.Errorf("expected empty titles for .exs file, got %v", titles)
+	}
+}
+
+func TestExtractScenarioTitles_FSharpFile(t *testing.T) {
+	tmpDir := t.TempDir()
+	path := filepath.Join(tmpDir, "Steps.fs")
+	writeContent(t, path, "// F# TickSpec auto-bind")
+
+	titles, err := extractScenarioTitles(path)
+	if err != nil {
+		t.Fatalf("extractScenarioTitles() error = %v", err)
+	}
+	if len(titles) != 0 {
+		t.Errorf("expected empty titles for .fs file, got %v", titles)
+	}
+}
+
+func TestExtractScenarioTitles_ClojureFile(t *testing.T) {
+	tmpDir := t.TempDir()
+	path := filepath.Join(tmpDir, "steps_test.clj")
+	writeContent(t, path, ";; Clojure auto-bind")
+
+	titles, err := extractScenarioTitles(path)
+	if err != nil {
+		t.Fatalf("extractScenarioTitles() error = %v", err)
+	}
+	if len(titles) != 0 {
+		t.Errorf("expected empty titles for .clj file, got %v", titles)
+	}
+}
+
+func TestExtractScenarioTitles_DartFile(t *testing.T) {
+	tmpDir := t.TempDir()
+	path := filepath.Join(tmpDir, "steps_test.dart")
+	writeContent(t, path, "// Scenario: My Dart scenario\nvoid main() {}")
+
+	titles, err := extractScenarioTitles(path)
+	if err != nil {
+		t.Fatalf("extractScenarioTitles() error = %v", err)
+	}
+	if !titles["My Dart scenario"] {
+		t.Errorf("expected 'My Dart scenario' in Dart scenario titles, got %v", titles)
+	}
+}
+
+func TestExtractScenarioTitles_JavaFile(t *testing.T) {
+	tmpDir := t.TempDir()
+	path := filepath.Join(tmpDir, "LoginSteps.java")
+	writeContent(t, path, "// Scenario: Java login scenario\npublic class LoginSteps {}")
+
+	titles, err := extractScenarioTitles(path)
+	if err != nil {
+		t.Fatalf("extractScenarioTitles() error = %v", err)
+	}
+	if !titles["Java login scenario"] {
+		t.Errorf("expected 'Java login scenario' in Java scenario titles, got %v", titles)
+	}
+}
+
+func TestExtractScenarioTitles_CSharpFile(t *testing.T) {
+	tmpDir := t.TempDir()
+	path := filepath.Join(tmpDir, "LoginSteps.cs")
+	writeContent(t, path, "// Scenario: CSharp login scenario\npublic class LoginSteps {}")
+
+	titles, err := extractScenarioTitles(path)
+	if err != nil {
+		t.Fatalf("extractScenarioTitles() error = %v", err)
+	}
+	if !titles["CSharp login scenario"] {
+		t.Errorf("expected 'CSharp login scenario' in C# scenario titles, got %v", titles)
+	}
+}
+
+func TestExtractScenarioTitles_RustFile(t *testing.T) {
+	tmpDir := t.TempDir()
+	path := filepath.Join(tmpDir, "steps_test.rs")
+	writeContent(t, path, "// Scenario: Rust login scenario\nfn main() {}")
+
+	titles, err := extractScenarioTitles(path)
+	if err != nil {
+		t.Fatalf("extractScenarioTitles() error = %v", err)
+	}
+	if !titles["Rust login scenario"] {
+		t.Errorf("expected 'Rust login scenario' in Rust scenario titles, got %v", titles)
+	}
+}
+
+// --- extractAllStepTexts: dispatches to language-specific extractors ---
+
+func TestExtractAllStepTexts_RustSteps(t *testing.T) {
+	root := t.TempDir()
+	writeContent(t, filepath.Join(root, "src", "steps.rs"),
+		`#[given("the Rust app is running")]
+fn given_running() {}`)
+
+	sm, err := extractAllStepTexts(root)
+	if err != nil {
+		t.Fatalf("extractAllStepTexts() error = %v", err)
+	}
+	if !sm.matches("the Rust app is running") {
+		t.Error("expected Rust literal step to match")
+	}
+}
+
+func TestExtractAllStepTexts_CSharpSteps(t *testing.T) {
+	root := t.TempDir()
+	writeContent(t, filepath.Join(root, "src", "Steps.cs"),
+		`[Given("the C# app is ready")]
+public void GivenReady() {}`)
+
+	sm, err := extractAllStepTexts(root)
+	if err != nil {
+		t.Fatalf("extractAllStepTexts() error = %v", err)
+	}
+	if !sm.matches("the C# app is ready") {
+		t.Error("expected C# step to match")
+	}
+}
+
+func TestExtractAllStepTexts_FSharpSteps(t *testing.T) {
+	root := t.TempDir()
+	writeContent(t, filepath.Join(root, "src", "Steps.fs"),
+		"let [<Given>] ``the FSharp app is ready`` () =\n    ()")
+
+	sm, err := extractAllStepTexts(root)
+	if err != nil {
+		t.Fatalf("extractAllStepTexts() error = %v", err)
+	}
+	if !sm.matches("the FSharp app is ready") {
+		t.Error("expected F# step to match")
+	}
+}
+
+func TestExtractAllStepTexts_ClojureSteps(t *testing.T) {
+	root := t.TempDir()
+	writeContent(t, filepath.Join(root, "src", "steps.clj"),
+		`(Given "the Clojure app is running"
+  (fn [state] state))`)
+
+	sm, err := extractAllStepTexts(root)
+	if err != nil {
+		t.Fatalf("extractAllStepTexts() error = %v", err)
+	}
+	if !sm.matches("the Clojure app is running") {
+		t.Error("expected Clojure step to match")
+	}
+}
+
+func TestExtractAllStepTexts_DartSteps(t *testing.T) {
+	root := t.TempDir()
+	writeContent(t, filepath.Join(root, "src", "steps_test.dart"),
+		`s.given("the Dart app is running", () async {});`)
+
+	sm, err := extractAllStepTexts(root)
+	if err != nil {
+		t.Fatalf("extractAllStepTexts() error = %v", err)
+	}
+	if !sm.matches("the Dart app is running") {
+		t.Error("expected Dart step to match")
+	}
+}
+
+func TestExtractAllStepTexts_PythonSteps(t *testing.T) {
+	root := t.TempDir()
+	writeContent(t, filepath.Join(root, "src", "steps.py"),
+		`@given("the Python app is running")
+def given_running():
+    pass`)
+
+	sm, err := extractAllStepTexts(root)
+	if err != nil {
+		t.Fatalf("extractAllStepTexts() error = %v", err)
+	}
+	if !sm.matches("the Python app is running") {
+		t.Error("expected Python step to match")
+	}
+}
+
+func TestExtractAllStepTexts_ElixirSteps(t *testing.T) {
+	root := t.TempDir()
+	writeContent(t, filepath.Join(root, "src", "steps.ex"),
+		`defgiven ~r/^the Elixir app is running$/`)
+
+	sm, err := extractAllStepTexts(root)
+	if err != nil {
+		t.Fatalf("extractAllStepTexts() error = %v", err)
+	}
+	if !sm.matches("the Elixir app is running") {
+		t.Error("expected Elixir step to match")
+	}
+}
+
+// --- CheckAll with SharedSteps via CheckAll entry point ---
+
+func TestCheckAll_SharedStepsMode(t *testing.T) {
+	root := t.TempDir()
+
+	writeContent(t, filepath.Join(root, "specs", "shared.feature"), `
+Feature: Shared
+  Scenario: Step is shared
+    Given the server is up
+    When the client connects
+    Then the connection is established
+`)
+
+	writeContent(t, filepath.Join(root, "app", "common.steps.ts"),
+		"Given(\"the server is up\", async () => {});\n"+
+			"When(\"the client connects\", async () => {});\n"+
+			"Then(\"the connection is established\", async () => {});\n")
+
+	opts := ScanOptions{
+		RepoRoot:    root,
+		SpecsDir:    filepath.Join(root, "specs"),
+		AppDir:      filepath.Join(root, "app"),
+		SharedSteps: true,
+	}
+
+	result, err := CheckAll(opts)
+	if err != nil {
+		t.Fatalf("CheckAll() error = %v", err)
+	}
+	if result.TotalSteps != 3 {
+		t.Errorf("TotalSteps = %d, want 3", result.TotalSteps)
+	}
+	if len(result.StepGaps) != 0 {
+		t.Errorf("StepGaps = %v, want none", result.StepGaps)
+	}
+	// No file-level gaps in shared-steps mode
+	if len(result.Gaps) != 0 {
+		t.Errorf("Gaps = %v, want none in shared-steps mode", result.Gaps)
+	}
+}
+
+// --- toPascalCase edge cases ---
+
+func TestToPascalCase_EmptyPart(t *testing.T) {
+	// Leading or trailing hyphens produce empty parts that should be skipped
+	got := toPascalCase("-health-check-")
+	if got != "HealthCheck" {
+		t.Errorf("toPascalCase(%q) = %q, want %q", "-health-check-", got, "HealthCheck")
+	}
+}

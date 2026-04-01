@@ -6,6 +6,5 @@ set -e
 # If pre-push times out, run `npx nx affected -t typecheck lint test:quick` first to warm the cache, then push again
 PARALLEL=$(( $(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4) - 1 ))
 npx nx affected -t typecheck lint test:quick --parallel="$PARALLEL"
-# spec-coverage deferred from pre-push until all spec gaps are fixed
-# npx nx affected -t spec-coverage --parallel="$PARALLEL"
+npx nx affected -t spec-coverage --parallel="$PARALLEL"
 npm run lint:md

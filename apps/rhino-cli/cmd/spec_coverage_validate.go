@@ -36,9 +36,11 @@ is checked here.`,
 }
 
 var sharedSteps bool
+var excludeDirs []string
 
 func init() {
 	validateSpecCoverageCmd.Flags().BoolVar(&sharedSteps, "shared-steps", false, "skip file matching, validate steps across ALL source files")
+	validateSpecCoverageCmd.Flags().StringSliceVar(&excludeDirs, "exclude-dir", nil, "spec directory names to exclude (e.g., --exclude-dir test-support)")
 	specCoverageCmd.AddCommand(validateSpecCoverageCmd)
 }
 
@@ -58,6 +60,7 @@ func runValidateSpecCoverage(cmd *cobra.Command, args []string) error {
 		Verbose:     verbose,
 		Quiet:       quiet,
 		SharedSteps: sharedSteps,
+		ExcludeDirs: excludeDirs,
 	}
 
 	result, err := specCoverageCheckAllFn(opts)

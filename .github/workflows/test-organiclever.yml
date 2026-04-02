@@ -23,6 +23,7 @@ jobs:
           npx nx run organiclever-be:spec-coverage
           npx nx run organiclever-fe:spec-coverage
           npx nx run organiclever-be-e2e:spec-coverage
+          npx nx run organiclever-fe-e2e:spec-coverage
 
   be-integration:
     name: BE integration tests

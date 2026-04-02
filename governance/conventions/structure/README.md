@@ -8,7 +8,7 @@ tags:
   - structure
   - organization
 created: 2026-01-30
-updated: 2026-02-22
+updated: 2026-04-02
 ---
 
 # Structure Conventions
@@ -25,6 +25,7 @@ This directory contains standards for how documentation is organized, named, and
 - [File Naming Convention](./file-naming.md) - Systematic approach to naming files with hierarchical prefixes encoding directory structure. Applies to docs/, governance/, and plans/ directories
 - [Plans Organization](./plans.md) - Standards for organizing project planning documents in plans/ folder including structure (ideas.md, backlog/, in-progress/, done/), naming patterns (YYYY-MM-DD\_\_identifier/), lifecycle stages, and project identifiers
 - [Programming Language Documentation Separation](./programming-language-docs-separation.md) - Establishes clear separation between repository-specific programming language style guides (docs/explanation/) and educational content (ayokoding-web). Defines scope boundaries, prerequisite requirements, cross-referencing patterns, and DRY principle application
+- [Specs Directory Structure](./specs-directory-structure.md) - Canonical directory structure for Gherkin feature files, C4 architecture diagrams, and OpenAPI contracts in the specs/ directory. Defines path patterns, domain subdirectory rules (required for BE/FE, flat for CLI), and lib spec organization
 
 ## Key Concepts
 
@@ -70,4 +71,4 @@ This set of conventions implements/respects the following core principles:
 
 ---
 
-**Last Updated**: 2026-02-22
+**Last Updated**: 2026-04-02

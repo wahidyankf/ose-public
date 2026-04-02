@@ -568,6 +568,8 @@ This Skill packages essential Gherkin acceptance criteria knowledge for writing 
 
 **Primary Convention**: [Acceptance Criteria Convention](../../../governance/development/infra/acceptance-criteria.md)
 
+**Directory Structure Convention**: [Specs Directory Structure Convention](../../../governance/conventions/structure/specs-directory-structure.md) — Where to place feature files in the specs/ directory
+
 **Related Conventions**:
 
 - [Plans Organization](../../../governance/conventions/structure/plans.md) - Using Gherkin in plans

@@ -47,7 +47,7 @@ folders: [specs/apps/a-demo/be, specs/libs/golang-commons]
 
 **Rules:**
 
-- Each folder in the list is validated independently (Categories 1-3, 5-7)
+- Each folder in the list is validated independently (Categories 1-3, 5-8)
 - Cross-folder consistency (Category 4) runs **only** across the listed folders
 - Subfolders are always included automatically — listing `specs/apps/a-demo/be` includes
   `specs/apps/a-demo/be/gherkin/`, `specs/apps/a-demo/c4/`, and all children
@@ -156,6 +156,22 @@ Verify that listed spec folders reference correct paths and implementations exis
 **MEDIUM**: Spec area has no consuming implementation (empty spec — acceptable for new areas)
 **LOW**: Implementation exists but spec area doesn't mention it
 
+### Category 8: Directory Structure Convention Compliance
+
+Verify that Gherkin feature files follow the [Specs Directory Structure Convention](../../governance/conventions/structure/specs-directory-structure.md).
+
+**HIGH**: BE or FE feature file placed directly under `gherkin/` without a domain subdirectory
+**HIGH**: CLI feature file placed in a domain subdirectory (should be flat under `gherkin/`)
+**HIGH**: Lib feature file placed directly under `gherkin/` without a package subdirectory
+**MEDIUM**: Domain subdirectory name does not match kebab-case convention
+**LOW**: Domain subdirectory contains only one feature file with a different name than the directory
+
+For each listed folder containing gherkin specs:
+
+1. Identify the layer type (be, fe, cli, build-tools, or lib)
+2. Check that feature files follow the correct nesting rule for that layer type
+3. Report violations with the expected structure
+
 ## Convergence Safeguards
 
 ### Known False Positive Skip List
@@ -189,7 +205,7 @@ Workflow should stabilize in 3-5 iterations. If not converged after 7 iterations
 ## Execution Pattern
 
 1. **Initialize**: Generate UUID, create report file in `generated-reports/`
-2. **Validate per folder**: For each listed folder, run Categories 1-3 and 5-7 on that
+2. **Validate per folder**: For each listed folder, run Categories 1-3 and 5-8 on that
    folder and all its subfolders
 3. **Cross-validate**: If 2+ folders listed, run Category 4 across them
 4. **Progressive write**: Update audit report after each category completes per folder
@@ -257,10 +273,12 @@ Use the standard audit report format:
 
 - **Explicit Over Implicit**: Only validates explicitly listed folders — no implicit discovery
 - **Automation Over Manual**: Fully automated validation with progressive reporting
-- **Simplicity Over Complexity**: Seven clear validation categories
+- **Simplicity Over Complexity**: Eight clear validation categories
 - **Accessibility First**: Validates C4 diagrams use accessible color palette
 
 ## Reference Documentation
+
+- [Specs Directory Structure Convention](../../governance/conventions/structure/specs-directory-structure.md) — Canonical path patterns and domain subdirectory rules
 
 - [AGENTS.md](../../AGENTS.md) — OpenCode agent documentation
 - [AI Agents Convention](../../governance/development/agents/agent-workflow-orchestration.md) — Agent workflow orchestration

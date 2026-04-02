@@ -60,3 +60,13 @@ Counts include Background steps (corrected after parser fix):
   added back to `project.json`.
 - **Each project is independently committable** — Work can be shipped per project without waiting
   for the full plan to complete.
+- **No shortcuts** — Every missing step definition must be implemented earnestly with correct
+  assertions matching the reference implementations. No stubs, no `pending()`, no empty bodies,
+  no `assert(true)`. If a step is hard to implement, invest the time to do it correctly.
+- **Granular task tracking** — Each project's work must use granular TaskCreate/TaskUpdate tracking
+  with one task per logical unit of work (e.g., per feature area within a project, not one task
+  per entire project).
+- **Parser recheck across ALL projects** — Before implementing any step definitions, rerun
+  `rhino-cli spec-coverage validate` on ALL projects in `apps/` and `libs/` (not just the 11
+  failing ones) to confirm the parser reports correct coverage after the Background step fix.
+  Any newly discovered gaps must be added to this plan.

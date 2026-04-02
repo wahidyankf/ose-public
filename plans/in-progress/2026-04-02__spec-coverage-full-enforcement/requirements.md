@@ -184,6 +184,32 @@ And exit code is 0
 - Step definition files MUST follow each project's existing file organization conventions.
   New files go where existing step definition files live — not in new top-level directories.
 
+### NFR-5: No Shortcuts
+
+- Every step definition MUST contain earnest, correct implementation logic — no stubs,
+  no `pending()`, no empty method bodies, no `assert(true)`, no `// TODO` placeholders.
+- Each step MUST exercise the actual service function and assert the expected outcome matching
+  the reference implementation behavior.
+- If a step is difficult to implement correctly, the executor MUST invest the time to understand
+  the reference implementation and replicate the behavior faithfully.
+
+### NFR-6: Granular Task Tracking
+
+- Each project's implementation work MUST be tracked with granular TaskCreate/TaskUpdate tasks —
+  one task per logical unit of work (e.g., per feature area within a project: "auth steps",
+  "expenses steps", "admin steps"), not one monolithic task per project.
+- Tasks MUST be marked `in_progress` when started and `completed` when done, providing
+  visible progress tracking throughout execution.
+
+### NFR-7: Parser Recheck Across All Projects
+
+- Before implementing any step definitions, the executor MUST rerun
+  `rhino-cli spec-coverage validate` on ALL projects in `apps/` and `libs/` that have a
+  `spec-coverage` Nx target — not just the 11 failing ones.
+- This confirms the parser (after the Background step fix) reports correct coverage for
+  already-passing projects and catches any newly introduced gaps.
+- Any newly discovered gaps MUST be added to this plan before proceeding with implementation.
+
 ## Acceptance Criteria
 
 ```gherkin
@@ -193,4 +219,6 @@ Then every project exits with code 0
 And no project reports "Missing step definition" warnings
 And every project's test:quick target still passes
 And every project's coverage is at or above its threshold
+And no step definition contains stubs, pending markers, or empty assertion bodies
+And ALL projects in apps/ and libs/ with spec-coverage targets pass (not just the 11)
 ```

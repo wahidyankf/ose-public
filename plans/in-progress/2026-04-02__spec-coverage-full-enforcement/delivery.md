@@ -2,19 +2,26 @@
 
 ## Delivery Overview
 
-Work is organized into five phases: one prerequisite phase (tool + CI enforcement) plus four
-implementation phases matching the effort tiers. Each project is independently deliverable.
+Work is organized into six phases: one prerequisite phase (tool + CI enforcement), one parser
+recheck phase, plus four implementation phases matching the effort tiers. Each project is
+independently deliverable.
 
 **Per-project delivery template**:
 
 1. Run `npx nx run <project>:spec-coverage` to confirm the current gap count (or note that the
    target is currently absent).
-2. Implement missing step definitions using the language-specific developer agent.
-3. Run `npx nx run <project>:test:quick` to verify tests pass and coverage meets the threshold.
-4. Add the `spec-coverage` target to `apps/<project>/project.json` using the command pattern
+2. Create granular tasks (one per feature area within the project, e.g., "auth steps",
+   "expenses steps", "admin steps") using TaskCreate. Mark each `in_progress` when starting
+   and `completed` when done.
+3. Implement missing step definitions using the language-specific developer agent. **No
+   shortcuts**: every step must contain earnest implementation logic — no stubs, no `pending()`,
+   no empty bodies, no `assert(true)`. Each step must exercise the actual service function and
+   assert the expected outcome matching the reference implementation.
+4. Run `npx nx run <project>:test:quick` to verify tests pass and coverage meets the threshold.
+5. Add the `spec-coverage` target to `apps/<project>/project.json` using the command pattern
    from [tech-docs.md](./tech-docs.md#nx-target-command-patterns).
-5. Run `npx nx run <project>:spec-coverage` to confirm 0 gaps.
-6. Commit using conventional commit format:
+6. Run `npx nx run <project>:spec-coverage` to confirm 0 gaps.
+7. Commit using conventional commit format:
    `feat(<project>): implement missing BDD step definitions and restore spec-coverage`.
 
 ---
@@ -53,6 +60,24 @@ Corrected totals after parser fix:
 | a-demo-be-java-vertx      | 79  | 80  | +1    |
 | a-demo-be-kotlin-ktor     | 96  | 97  | +1    |
 | a-demo-fe-dart-flutterweb | 220 | 241 | +21   |
+
+### 0.4 Recheck parser correctness across ALL projects
+
+Before implementing any step definitions, rerun `rhino-cli spec-coverage validate` on **every**
+project in `apps/` and `libs/` that has a `spec-coverage` Nx target — not just the 11 failing
+ones. This confirms the parser (after the Background step fix) reports correct coverage for the
+19 already-passing projects and catches any newly introduced gaps.
+
+- [ ] Run `npx nx run-many -t spec-coverage` for all projects that currently have the target
+      (the 19 passing projects). Record the output.
+- [ ] Verify every currently-passing project still reports 0 gaps.
+- [ ] If any previously-passing project now reports gaps (due to the Background step parser fix
+      surfacing new steps), add those gaps to this plan as new work items.
+- [ ] Run spec-coverage manually (via the `go run` command from tech-docs.md) for each of the
+      11 failing projects to confirm the exact gap count matches the plan. Record the actual
+      missing step lists.
+- [ ] If any gap count differs from the plan, update the plan (README.md, requirements.md,
+      delivery.md, tech-docs.md) with corrected counts before proceeding.
 
 ---
 
@@ -317,10 +342,12 @@ responsive layout, accessibility
 
 ## Final Validation
 
-- [ ] Run `npx nx run-many -t spec-coverage` across all projects and confirm all 30 exit with
-      code 0.
+- [ ] Run `npx nx run-many -t spec-coverage` across ALL projects (apps/ and libs/) and confirm
+      every project with a spec-coverage target exits with code 0.
 - [ ] Run `npx nx run-many -t test:quick` for all 11 previously failing projects and confirm
       all pass.
+- [ ] Spot-check step definitions in at least 3 projects (one per tier) to confirm no shortcuts
+      were taken — no stubs, no `pending()`, no empty bodies, no `assert(true)`.
 - [ ] Verify the pre-push hook includes spec-coverage in its affected targets run by
       simulating a push or running `npx nx affected -t spec-coverage`.
 - [ ] Update this plan's status in [README.md](./README.md) to "Completed".
@@ -335,3 +362,5 @@ responsive layout, accessibility
 - [ ] No existing passing project has regressed (still passes `test:quick` and `spec-coverage`).
 - [ ] All commits follow conventional commit format.
 - [ ] No changes made to `.feature` files — only step definition code was added.
+- [ ] No step definition contains stubs, `pending()`, empty bodies, or `assert(true)`.
+- [ ] Phase 0.4 parser recheck was completed before implementation began.

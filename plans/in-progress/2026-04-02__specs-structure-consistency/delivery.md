@@ -48,8 +48,15 @@
 
 ### 1.5 Update Spec README Files
 
-- [ ] Update `specs/apps/ayokoding/README.md`: change the FE gherkin section in the structure tree from `gherkin/           # Frontend Gherkin scenarios (future)` to show the new subdirectory structure with all 6 domain directories
-- [ ] Update `specs/apps/oseplatform/README.md`: change the FE gherkin structure tree and Frontend Domains table file paths to include subdirectories (e.g., `landing-page/landing-page.feature` instead of `landing-page.feature`)
+- [ ] Update `specs/apps/ayokoding/README.md`:
+  - [ ] Structure tree: replace `gherkin/           # Frontend Gherkin scenarios (future)` with the new subdirectory structure listing all 6 domain directories (`accessibility/`, `content-rendering/`, `i18n/`, `navigation/`, `responsive/`, `search/`) and their feature files
+  - [ ] Add a new **Frontend Domains** table (analogous to the existing Backend Domains table) with rows for all 6 FE domains: accessibility, content-rendering, i18n, navigation, responsive, search
+  - [ ] Backend vs Frontend table: change the Frontend Domains cell from `Defined separately (future)` to `6 domains`
+- [ ] Update `specs/apps/oseplatform/README.md`:
+  - [ ] Structure tree: add `accessibility/` subdirectory with `accessibility.feature` (currently missing) and change the other 4 flat feature files to subdirectory paths (e.g., `landing-page/landing-page.feature` instead of `landing-page.feature`)
+  - [ ] Frontend Domains table: add an `accessibility` row with file `accessibility/accessibility.feature`
+  - [ ] Backend vs Frontend table: change Frontend Domains cell from `4 domains` to `5 domains`
+  - [ ] Scenario Summary table: add a `Frontend | accessibility | 5` row and update the total from `21` to `26`
 
 ### 1.6 Phase 1 Validation
 

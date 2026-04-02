@@ -6,7 +6,9 @@ import { expect } from "vitest";
 
 import { Button } from "./button";
 
-const feature = await loadFeature(path.resolve(__dirname, "../../../../../specs/libs/ts-ui/gherkin/button.feature"));
+const feature = await loadFeature(
+  path.resolve(__dirname, "../../../../../specs/libs/ts-ui/gherkin/button/button.feature"),
+);
 
 describeFeature(feature, ({ Scenario }) => {
   Scenario("Renders with default variant and size", ({ Given, Then, And }) => {

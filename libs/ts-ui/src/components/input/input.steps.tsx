@@ -6,7 +6,9 @@ import { expect } from "vitest";
 
 import { Input } from "./input";
 
-const feature = await loadFeature(path.resolve(__dirname, "../../../../../specs/libs/ts-ui/gherkin/input.feature"));
+const feature = await loadFeature(
+  path.resolve(__dirname, "../../../../../specs/libs/ts-ui/gherkin/input/input.feature"),
+);
 
 describeFeature(feature, ({ Scenario }) => {
   Scenario("Renders with default props", ({ Given, Then, And }) => {

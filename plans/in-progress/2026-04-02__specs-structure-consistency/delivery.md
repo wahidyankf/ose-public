@@ -100,14 +100,14 @@
 
 ### 2.5 Phase 2 Validation
 
-- [ ] Run `npx nx run golang-commons:test:quick` -- passes
-- [ ] Run `npx nx run hugo-commons:test:quick` -- passes (if target exists; otherwise run `test:unit`)
-- [ ] Run `npx nx run golang-commons:test:integration` -- passes (verifies updated paths)
-- [ ] Run `npx nx run hugo-commons:test:integration` -- passes (verifies updated paths)
-- [ ] Verify project.json glob inputs still resolve (both use `**/*.feature`)
-- [ ] Verify no feature files remain outside `gherkin/` wrapper in `specs/libs/golang-commons/` or `specs/libs/hugo-commons/`
-- [ ] Run `npm run lint:md` -- no broken links
-- [ ] Commit: `refactor(specs): add gherkin/ wrapper to golang-commons and hugo-commons library specs`
+- [x] Run `npx nx run golang-commons:test:quick` -- passes
+- [x] Run `npx nx run hugo-commons:test:quick` -- passes (if target exists; otherwise run `test:unit`)
+- [x] Run `npx nx run golang-commons:test:integration` -- passes (verifies updated paths)
+- [x] Run `npx nx run hugo-commons:test:integration` -- passes (verifies updated paths)
+- [x] Verify project.json glob inputs still resolve (both use `**/*.feature`)
+- [x] Verify no feature files remain outside `gherkin/` wrapper in `specs/libs/golang-commons/` or `specs/libs/hugo-commons/`
+- [x] Run `npm run lint:md` -- no broken links
+- [x] Commit: `refactor(specs): add gherkin/ wrapper to golang-commons and hugo-commons library specs`
 
 ---
 
@@ -115,27 +115,27 @@
 
 ### 3.1 Move ts-ui Feature Files Into Component Subdirectories
 
-- [ ] Create directory `specs/libs/ts-ui/gherkin/alert/`
-- [ ] `git mv specs/libs/ts-ui/gherkin/alert.feature specs/libs/ts-ui/gherkin/alert/alert.feature`
-- [ ] Create directory `specs/libs/ts-ui/gherkin/button/`
-- [ ] `git mv specs/libs/ts-ui/gherkin/button.feature specs/libs/ts-ui/gherkin/button/button.feature`
-- [ ] Create directory `specs/libs/ts-ui/gherkin/card/`
-- [ ] `git mv specs/libs/ts-ui/gherkin/card.feature specs/libs/ts-ui/gherkin/card/card.feature`
-- [ ] Create directory `specs/libs/ts-ui/gherkin/dialog/`
-- [ ] `git mv specs/libs/ts-ui/gherkin/dialog.feature specs/libs/ts-ui/gherkin/dialog/dialog.feature`
-- [ ] Create directory `specs/libs/ts-ui/gherkin/input/`
-- [ ] `git mv specs/libs/ts-ui/gherkin/input.feature specs/libs/ts-ui/gherkin/input/input.feature`
-- [ ] Create directory `specs/libs/ts-ui/gherkin/label/`
-- [ ] `git mv specs/libs/ts-ui/gherkin/label.feature specs/libs/ts-ui/gherkin/label/label.feature`
+- [x] Create directory `specs/libs/ts-ui/gherkin/alert/`
+- [x] `git mv specs/libs/ts-ui/gherkin/alert.feature specs/libs/ts-ui/gherkin/alert/alert.feature`
+- [x] Create directory `specs/libs/ts-ui/gherkin/button/`
+- [x] `git mv specs/libs/ts-ui/gherkin/button.feature specs/libs/ts-ui/gherkin/button/button.feature`
+- [x] Create directory `specs/libs/ts-ui/gherkin/card/`
+- [x] `git mv specs/libs/ts-ui/gherkin/card.feature specs/libs/ts-ui/gherkin/card/card.feature`
+- [x] Create directory `specs/libs/ts-ui/gherkin/dialog/`
+- [x] `git mv specs/libs/ts-ui/gherkin/dialog.feature specs/libs/ts-ui/gherkin/dialog/dialog.feature`
+- [x] Create directory `specs/libs/ts-ui/gherkin/input/`
+- [x] `git mv specs/libs/ts-ui/gherkin/input.feature specs/libs/ts-ui/gherkin/input/input.feature`
+- [x] Create directory `specs/libs/ts-ui/gherkin/label/`
+- [x] `git mv specs/libs/ts-ui/gherkin/label.feature specs/libs/ts-ui/gherkin/label/label.feature`
 
 ### 3.2 Update ts-ui Step File Paths
 
-- [ ] Update `libs/ts-ui/src/components/alert/alert.steps.tsx`: change `gherkin/alert.feature` to `gherkin/alert/alert.feature`
-- [ ] Update `libs/ts-ui/src/components/button/button.steps.tsx`: change `gherkin/button.feature` to `gherkin/button/button.feature`
-- [ ] Update `libs/ts-ui/src/components/card/card.steps.tsx`: change `gherkin/card.feature` to `gherkin/card/card.feature`
-- [ ] Update `libs/ts-ui/src/components/dialog/dialog.steps.tsx`: change `gherkin/dialog.feature` to `gherkin/dialog/dialog.feature`
-- [ ] Update `libs/ts-ui/src/components/input/input.steps.tsx`: change `gherkin/input.feature` to `gherkin/input/input.feature`
-- [ ] Update `libs/ts-ui/src/components/label/label.steps.tsx`: change `gherkin/label.feature` to `gherkin/label/label.feature`
+- [x] Update `libs/ts-ui/src/components/alert/alert.steps.tsx`: change `gherkin/alert.feature` to `gherkin/alert/alert.feature`
+- [x] Update `libs/ts-ui/src/components/button/button.steps.tsx`: change `gherkin/button.feature` to `gherkin/button/button.feature`
+- [x] Update `libs/ts-ui/src/components/card/card.steps.tsx`: change `gherkin/card.feature` to `gherkin/card/card.feature`
+- [x] Update `libs/ts-ui/src/components/dialog/dialog.steps.tsx`: change `gherkin/dialog.feature` to `gherkin/dialog/dialog.feature`
+- [x] Update `libs/ts-ui/src/components/input/input.steps.tsx`: change `gherkin/input.feature` to `gherkin/input/input.feature`
+- [x] Update `libs/ts-ui/src/components/label/label.steps.tsx`: change `gherkin/label.feature` to `gherkin/label/label.feature`
 
 ### 3.3 Phase 3 Validation
 

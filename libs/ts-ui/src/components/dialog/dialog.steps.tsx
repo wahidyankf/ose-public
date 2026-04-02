@@ -6,7 +6,9 @@ import { expect } from "vitest";
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "./dialog";
 
-const feature = await loadFeature(path.resolve(__dirname, "../../../../../specs/libs/ts-ui/gherkin/dialog.feature"));
+const feature = await loadFeature(
+  path.resolve(__dirname, "../../../../../specs/libs/ts-ui/gherkin/dialog/dialog.feature"),
+);
 
 describeFeature(feature, ({ Scenario }) => {
   Scenario("Renders dialog with trigger button", ({ Given, Then, And }) => {

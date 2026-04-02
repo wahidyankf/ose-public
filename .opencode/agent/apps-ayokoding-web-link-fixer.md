@@ -1,6 +1,6 @@
 ---
 description: Applies validated fixes from link-checker audit reports. Re-validates link findings before applying changes.
-model: inherit
+model: zai-coding-plan/glm-5.1
 tools:
   bash: true
   edit: true

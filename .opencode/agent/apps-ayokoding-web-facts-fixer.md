@@ -1,6 +1,6 @@
 ---
 description: Applies validated fixes from facts-checker audit reports. Re-validates factual findings before applying changes.
-model: inherit
+model: zai-coding-plan/glm-5.1
 tools:
   bash: true
   edit: true

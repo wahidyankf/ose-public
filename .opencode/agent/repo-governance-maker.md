@@ -1,6 +1,6 @@
 ---
 description: Creates repository rules and conventions in docs/explanation/ directories. Documents standards, patterns, and quality requirements.
-model: inherit
+model: zai-coding-plan/glm-5.1
 tools:
   edit: true
   glob: true

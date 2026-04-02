@@ -1,6 +1,6 @@
 ---
 description: Creates LinkedIn posts from project updates and documentation. Optimizes for engagement and professional tone.
-model: inherit
+model: zai-coding-plan/glm-5.1
 tools:
   grep: true
   read: true

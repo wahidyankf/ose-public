@@ -1,6 +1,6 @@
 ---
 description: Validates all projects against CI/CD standards including mandatory Nx targets, coverage thresholds, Docker setup, Gherkin consumption, workflow files, E2E pairing, and env variable compliance
-model: inherit
+model: zai-coding-plan/glm-5.1
 tools:
   bash: true
   glob: true

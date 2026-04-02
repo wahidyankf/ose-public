@@ -1,6 +1,6 @@
 ---
 description: Creates new AI agent files in .claude/agents/ following AI Agents Convention. Changes are then synced to .opencode/agent/ via npm run sync:claude-to-opencode. Ensures proper structure, skills integration, and documentation.
-model: inherit
+model: zai-coding-plan/glm-5.1
 tools:
   bash: true
   glob: true

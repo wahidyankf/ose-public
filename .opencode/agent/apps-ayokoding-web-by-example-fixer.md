@@ -1,6 +1,6 @@
 ---
 description: Applies validated fixes from apps-ayokoding-web-by-example-checker audit reports. Re-validates By Example findings before applying changes. Use after reviewing checker output.
-model: inherit
+model: zai-coding-plan/glm-5.1
 tools:
   bash: true
   edit: true

@@ -1,6 +1,6 @@
 ---
 description: Executes project plans systematically by following delivery checklists, implementing steps sequentially, validating work, and updating progress. Stops at final validation for plan-execution-checker handoff.
-model: inherit
+model: zai-coding-plan/glm-5.1
 tools:
   bash: true
   edit: true

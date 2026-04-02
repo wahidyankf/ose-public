@@ -1,6 +1,6 @@
 ---
 description: Validates general ayokoding-web content quality including bilingual completeness and content quality.
-model: inherit
+model: zai-coding-plan/glm-5.1
 tools:
   bash: true
   glob: true

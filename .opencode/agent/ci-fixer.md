@@ -1,6 +1,6 @@
 ---
 description: Applies validated fixes from ci-checker audit reports. Re-validates findings before applying to prevent false positives.
-model: inherit
+model: zai-coding-plan/glm-5.1
 tools:
   bash: true
   edit: true

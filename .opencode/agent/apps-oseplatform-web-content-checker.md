@@ -1,6 +1,6 @@
 ---
 description: Validates oseplatform-web content quality including Next.js content layer compliance and landing page standards.
-model: inherit
+model: zai-coding-plan/glm-5.1
 tools:
   bash: true
   glob: true

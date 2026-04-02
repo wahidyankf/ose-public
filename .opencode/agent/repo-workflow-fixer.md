@@ -1,6 +1,6 @@
 ---
 description: Applies validated fixes from workflow-checker audit reports. Re-validates before applying changes.
-model: inherit
+model: zai-coding-plan/glm-5.1
 tools:
   bash: true
   edit: true

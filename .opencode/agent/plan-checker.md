@@ -1,6 +1,6 @@
 ---
 description: Validates project plan quality including requirements completeness, technical documentation clarity, and delivery checklist executability. Use when reviewing plans before execution.
-model: inherit
+model: zai-coding-plan/glm-5.1
 tools:
   bash: true
   glob: true

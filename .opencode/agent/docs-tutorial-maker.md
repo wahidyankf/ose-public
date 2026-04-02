@@ -1,6 +1,6 @@
 ---
 description: Creates and updates tutorial documentation following Diátaxis framework and tutorial conventions
-model: inherit
+model: zai-coding-plan/glm-5.1
 tools:
   bash: true
   edit: true

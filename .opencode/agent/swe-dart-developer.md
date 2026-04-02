@@ -1,6 +1,6 @@
 ---
 description: Develops Dart applications following null safety principles, Flutter integration patterns, and platform coding standards. Use when implementing Dart code for OSE Platform.
-model: inherit
+model: zai-coding-plan/glm-5.1
 tools:
   bash: true
   edit: true

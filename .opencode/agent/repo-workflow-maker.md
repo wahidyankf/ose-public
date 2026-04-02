@@ -1,6 +1,6 @@
 ---
 description: Creates workflow documentation in governance/workflows/ following workflow pattern convention.
-model: inherit
+model: zai-coding-plan/glm-5.1
 tools:
   edit: true
   glob: true

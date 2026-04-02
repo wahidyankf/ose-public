@@ -41,6 +41,8 @@ This repository maintains **dual compatibility** with both Claude Code and OpenC
 - **Tools**: Claude Code uses arrays `[Read, Write]`, OpenCode uses `{ read: true, write: true }`
 - **Models**: Claude Code uses `sonnet`/`haiku`, OpenCode uses `zai-coding-plan/glm-5.1` or `zai-coding-plan/glm-5-turbo`
 - **Skills**: Same format for both systems (SKILL.md)
+- **Permissions**: Claude Code uses `settings.json`, OpenCode uses `opencode.json` permission block (equivalent access configured)
+- **MCP/Plugins**: Claude Code uses plugins, OpenCode uses MCP servers (Playwright, Nx, Z.ai, Perplexity)
 
 # AI Agents
 

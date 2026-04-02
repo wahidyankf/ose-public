@@ -1,6 +1,6 @@
 ---
 description: Develops Clojure applications following functional programming principles, REPL-driven development, and platform coding standards. Use when implementing Clojure code for OSE Platform.
-model: inherit
+model: zai-coding-plan/glm-5.1
 tools:
   bash: true
   edit: true

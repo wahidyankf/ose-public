@@ -1,6 +1,6 @@
 ---
 description: Validates both external and internal links in documentation files to ensure they are not broken. Maintains a cache of verified external links in docs/metadata/external-links-status.yaml (the ONLY cache file) with automatic pruning and mandatory lastFullScan updates on every run. HARD REQUIREMENT - cache file usage is mandatory regardless of how this agent is invoked (spawned by other agents, processes, or direct invocation). Use when checking for dead links, verifying URL accessibility, validating internal references, or auditing documentation link health.
-model: zai/glm-4.5-air
+model: zai-coding-plan/glm-5-turbo
 tools:
   bash: true
   edit: true

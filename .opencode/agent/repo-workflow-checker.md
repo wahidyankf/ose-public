@@ -1,6 +1,6 @@
 ---
 description: Validates workflow documentation quality and compliance with workflow pattern convention.
-model: inherit
+model: zai-coding-plan/glm-5.1
 tools:
   bash: true
   glob: true

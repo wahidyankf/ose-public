@@ -7,7 +7,12 @@ if command -v cljfmt &>/dev/null; then
   cljfmt fix "$@"
 elif command -v zprint &>/dev/null; then
   for file in "$@"; do
-    zprint '{:style :community}' < "$file" > "$file.tmp" && mv "$file.tmp" "$file"
+    zprint '{:style :community}' < "$file" > "$file.tmp"
+    if [ -s "$file.tmp" ]; then
+      mv "$file.tmp" "$file"
+    else
+      rm -f "$file.tmp"
+    fi
   done
 else
   echo "Warning: No Clojure formatter (cljfmt/zprint) found, skipping" >&2

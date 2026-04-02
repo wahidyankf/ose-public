@@ -120,6 +120,18 @@ func TestCucumberExprToRegex(t *testing.T) {
 			matches: []string{`user "alice" has 3 items`, `user "bob" has 0 items`},
 			noMatch: []string{`user alice has 3 items`, `user "alice" has abc items`},
 		},
+		{
+			name:    "escaped parentheses with string parameter",
+			text:    `the viewport is set to {string} \(1280x800)`,
+			matches: []string{`the viewport is set to "desktop" (1280x800)`},
+			noMatch: []string{`the viewport is set to desktop (1280x800)`},
+		},
+		{
+			name:    "escaped parentheses with string parameter tablet",
+			text:    `the viewport is set to {string} \(768x1024)`,
+			matches: []string{`the viewport is set to "tablet" (768x1024)`},
+			noMatch: []string{`the viewport is set to "tablet" [768x1024]`},
+		},
 	}
 
 	for _, tt := range tests {
@@ -171,6 +183,20 @@ func TestAddStepToMatcherRegex(t *testing.T) {
 			text:    "the server is ready",
 			matches: []string{"the server is ready"},
 			noMatch: []string{"the server is not ready"},
+			isExact: true,
+		},
+		{
+			name:    "escaped forward slash in exact match",
+			text:    `I navigate to \/login using only the keyboard`,
+			matches: []string{"I navigate to /login using only the keyboard"},
+			noMatch: []string{`I navigate to \/login using only the keyboard`},
+			isExact: true,
+		},
+		{
+			name:    "escaped forward slash simple",
+			text:    `I navigate to \/profile`,
+			matches: []string{"I navigate to /profile"},
+			noMatch: []string{`I navigate to \/profile`},
 			isExact: true,
 		},
 	}

@@ -11,20 +11,40 @@ var cucumberParamRe = regexp.MustCompile(`\{[^}]+\}`)
 // pythonParsersParamRe matches Python pytest-bdd parsers.parse format like {name:d}, {name:g}, {name:w}, {name}
 var pythonParsersParamRe = regexp.MustCompile(`\{(\w+)(?::([dgw]))?\}`)
 
+// unescapeCucumberExpr processes Cucumber expression escape sequences in literal
+// text. In Cucumber expressions, backslash escapes special characters:
+// \( → (, \) → ), \{ → }, \} → }, \/ → /, \\ → \
+func unescapeCucumberExpr(s string) string {
+	var buf strings.Builder
+	buf.Grow(len(s))
+	i := 0
+	for i < len(s) {
+		if s[i] == '\\' && i+1 < len(s) {
+			buf.WriteByte(s[i+1])
+			i += 2
+		} else {
+			buf.WriteByte(s[i])
+			i++
+		}
+	}
+	return buf.String()
+}
+
 // cucumberExprToRegex converts a Cucumber expression string to a regex pattern string.
 // Each Cucumber parameter type is replaced by its regex equivalent, and all other
-// literal text is regexp.QuoteMeta-escaped.
+// literal text is regexp.QuoteMeta-escaped. Cucumber expression escape sequences
+// (\(, \), \{, \}, \/, \\) in literal text are unescaped before QuoteMeta.
 func cucumberExprToRegex(text string) string {
 	var sb strings.Builder
 	remaining := text
 	for {
 		loc := cucumberParamRe.FindStringIndex(remaining)
 		if loc == nil {
-			sb.WriteString(regexp.QuoteMeta(remaining))
+			sb.WriteString(regexp.QuoteMeta(unescapeCucumberExpr(remaining)))
 			break
 		}
 		// Escape the literal part before the parameter
-		sb.WriteString(regexp.QuoteMeta(remaining[:loc[0]]))
+		sb.WriteString(regexp.QuoteMeta(unescapeCucumberExpr(remaining[:loc[0]])))
 		param := remaining[loc[0]:loc[1]]
 		// param includes braces, e.g. "{string}"
 		inner := param[1 : len(param)-1]
@@ -127,8 +147,9 @@ func addStepToMatcher(sm *stepMatcher, text string) {
 		return
 	}
 
-	// Plain literal text — parentheses like (1280x800) are treated as literal
-	sm.exact[text] = true
+	// Plain literal text — unescape Cucumber expression escapes (\/, \(, etc.)
+	// so that the literal text matches the Gherkin step text.
+	sm.exact[unescapeCucumberExpr(text)] = true
 }
 
 // addPythonStepToMatcher adds a Python step text to the stepMatcher.

@@ -10,7 +10,7 @@ tags:
   - spec-coverage
   - demo-be
 created: 2026-03-06
-updated: 2026-03-13
+updated: 2026-04-02
 ---
 
 # BDD Spec-to-Test Mapping Convention
@@ -90,9 +90,9 @@ Feature: Agent Configuration Synchronisation
 Alternatively, a command with its own distinct domain gets its own feature file:
 
 ```
-specs/apps/rhino/doctor/doctor.feature                       <- single @doctor tag
-specs/apps/rhino/agents/agents-sync.feature                  <- @agents-sync + @agents-validate-sync
-specs/apps/rhino/agents/agents-validate-claude.feature       <- single @agents-validate-claude tag
+specs/apps/rhino/cli/gherkin/doctor.feature                       <- single @doctor tag
+specs/apps/rhino/cli/gherkin/agents-sync.feature                  <- @agents-sync + @agents-validate-sync
+specs/apps/rhino/cli/gherkin/agents-validate-claude.feature       <- single @agents-validate-claude tag
 ```
 
 ### 3. Unit & Integration Test to Tag (mandatory)
@@ -131,13 +131,13 @@ func TestIntegrationValidateSync(t *testing.T) {
 
 ## File Naming Convention
 
-| Artifact         | Pattern                                          | Example                                                |
-| ---------------- | ------------------------------------------------ | ------------------------------------------------------ |
-| Parent cmd       | `{domain}.go`                                    | `agents.go`                                            |
-| Command file     | `{domain}_{action}.go`                           | `agents_validate_sync.go`                              |
-| Unit test        | `{domain}_{action}_test.go`                      | `agents_validate_sync_test.go`                         |
-| Integration test | `{domain}_{action}.integration_test.go`          | `agents_validate_sync.integration_test.go`             |
-| Feature file     | `specs/{app}/{domain}/{domain}-{action}.feature` | `specs/apps/rhino/agents/agents-validate-sync.feature` |
+| Artifact         | Pattern                                     | Example                                                     |
+| ---------------- | ------------------------------------------- | ----------------------------------------------------------- |
+| Parent cmd       | `{domain}.go`                               | `agents.go`                                                 |
+| Command file     | `{domain}_{action}.go`                      | `agents_validate_sync.go`                                   |
+| Unit test        | `{domain}_{action}_test.go`                 | `agents_validate_sync_test.go`                              |
+| Integration test | `{domain}_{action}.integration_test.go`     | `agents_validate_sync.integration_test.go`                  |
+| Feature file     | `specs/{app}/cli/gherkin/{command}.feature` | `specs/apps/rhino/cli/gherkin/agents-validate-sync.feature` |
 
 **Unit test files** (`{domain}_{action}_test.go`) serve dual purpose: they contain both godog BDD step definitions (consuming Gherkin specs via `TestUnit*` functions) and any non-BDD pure function tests for edge cases not covered by the Gherkin scenarios. The godog step definitions in unit test files use mocked I/O function variables instead of real filesystem access.
 
@@ -205,7 +205,7 @@ Integration steps drive commands in-process via `cmd.RunE()` against controlled 
 The same `@agents-validate-sync` tag is consumed at both levels from the same feature file:
 
 ```
-specs/apps/rhino/agents/agents-validate-sync.feature
+specs/apps/rhino/cli/gherkin/agents-validate-sync.feature
   -> Unit steps in:       apps/rhino-cli/cmd/agents_validate_sync_test.go
   -> Integration steps in: apps/rhino-cli/cmd/agents_validate_sync.integration_test.go
 ```
@@ -284,6 +284,7 @@ All three commands must report all scenarios passing. The Gherkin feature files 
 ## Related Documentation
 
 - [Acceptance Criteria Convention](./acceptance-criteria.md) - Gherkin format standards
+- [Specs Directory Structure Convention](../../conventions/structure/specs-directory-structure.md) - Canonical path patterns and domain subdirectory rules
 - [Three-Level Testing Standard](../quality/three-level-testing-standard.md) - Mandatory isolation boundaries for unit, integration, and E2E levels where Gherkin specs are consumed
 - [Nx Target Standards](./nx-targets.md) - `test:integration` target definitions and caching rules
 - [specs/README.md](../../../specs/README.md) - Spec directory organization

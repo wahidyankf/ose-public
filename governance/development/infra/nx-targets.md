@@ -480,9 +480,9 @@ covering WCAG AA compliance. These tests verify:
 - Heading hierarchy (no skipped levels, single H1)
 
 **Gherkin accessibility specs**: UI projects must have accessibility Gherkin specs at
-`specs/apps/<domain>/fe/gherkin/accessibility.feature`. UI component library specs in
-`specs/libs/ts-ui/gherkin/` must include "Has no accessibility violations" scenarios for each
-component.
+`specs/apps/<domain>/fe/gherkin/accessibility/accessibility.feature`. UI component library specs in
+`specs/libs/ts-ui/gherkin/<component>/` must include "Has no accessibility violations" scenarios for
+each component.
 
 ### Hugo Sites
 

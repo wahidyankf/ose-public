@@ -12,7 +12,7 @@ tags:
   - nx
   - coverage
 created: 2026-03-31
-updated: 2026-03-31
+updated: 2026-04-02
 ---
 
 # CI/CD Conventions
@@ -183,7 +183,7 @@ the E2E level.
 | BE API (`a-demo-be-*`)    | Yes — `specs/apps/a-demo/be/gherkin/`                 | Yes — same specs             | Yes — same specs                  |
 | FE (`a-demo-fe-*`)        | Yes — `specs/apps/a-demo/fe/gherkin/`                 | Yes — same specs             | Yes — via `a-demo-fe-e2e`         |
 | Fullstack (`a-demo-fs-*`) | Yes — `specs/apps/a-demo/be/gherkin/` + `fe/gherkin/` | Yes — same specs             | Yes — self-contained              |
-| CLI (`*-cli`)             | Yes — `specs/apps/<cli-name>/`                        | Yes — same specs             | Not applicable                    |
+| CLI (`*-cli`)             | Yes — `specs/apps/{domain}/cli/gherkin/`              | Yes — same specs             | Not applicable                    |
 | Content platform          | Yes — project-local specs                             | Yes — same specs             | Yes — via `*-be-e2e` / `*-fe-e2e` |
 | Library                   | Yes — library-specific specs                          | Yes — same specs             | Not applicable                    |
 | Hugo site                 | Exempt                                                | Exempt                       | Exempt                            |
@@ -369,18 +369,18 @@ services themselves run in parallel across matrix entries.
 
 ## Naming Conventions
 
-| Entity              | Pattern                               | Example                                   |
-| ------------------- | ------------------------------------- | ----------------------------------------- |
-| Backend app         | `a-demo-be-{lang}-{framework}`        | `a-demo-be-golang-gin`                    |
-| Frontend app        | `a-demo-fe-{lang}-{framework}`        | `a-demo-fe-ts-nextjs`                     |
-| Fullstack app       | `a-demo-fs-{lang}-{framework}`        | `a-demo-fs-ts-nextjs`                     |
-| Infra dev directory | `infra/dev/{app-name}/`               | `infra/dev/a-demo-be-golang-gin/`         |
-| Specs directory     | `specs/apps/{domain}/{role}/gherkin/` | `specs/apps/a-demo/be/gherkin/`           |
-| Test workflow       | `test-{app-name}.yml`                 | `test-a-demo-be-golang-gin.yml`           |
-| Reusable workflow   | `_reusable-{purpose}.yml`             | `_reusable-backend-e2e.yml`               |
-| Composite action    | `.github/actions/{name}/action.yml`   | `.github/actions/setup-golang/action.yml` |
-| Deploy workflow     | `test-and-deploy-{app}.yml`           | `test-and-deploy-organiclever-fe.yml`     |
-| PR workflow         | `pr-{purpose}.yml`                    | `pr-quality-gate.yml`                     |
+| Entity              | Pattern                                                                                   | Example                                   |
+| ------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------------- |
+| Backend app         | `a-demo-be-{lang}-{framework}`                                                            | `a-demo-be-golang-gin`                    |
+| Frontend app        | `a-demo-fe-{lang}-{framework}`                                                            | `a-demo-fe-ts-nextjs`                     |
+| Fullstack app       | `a-demo-fs-{lang}-{framework}`                                                            | `a-demo-fs-ts-nextjs`                     |
+| Infra dev directory | `infra/dev/{app-name}/`                                                                   | `infra/dev/a-demo-be-golang-gin/`         |
+| Specs directory     | See [Specs Directory Structure](../../conventions/structure/specs-directory-structure.md) | `specs/apps/a-demo/be/gherkin/`           |
+| Test workflow       | `test-{app-name}.yml`                                                                     | `test-a-demo-be-golang-gin.yml`           |
+| Reusable workflow   | `_reusable-{purpose}.yml`                                                                 | `_reusable-backend-e2e.yml`               |
+| Composite action    | `.github/actions/{name}/action.yml`                                                       | `.github/actions/setup-golang/action.yml` |
+| Deploy workflow     | `test-and-deploy-{app}.yml`                                                               | `test-and-deploy-organiclever-fe.yml`     |
+| PR workflow         | `pr-{purpose}.yml`                                                                        | `pr-quality-gate.yml`                     |
 
 See [GitHub Actions Workflow Naming Convention](./github-actions-workflow-naming.md) for the full
 derivation rule between workflow `name:` fields and filenames.
@@ -397,8 +397,9 @@ Follow this checklist in order when adding a new app variant to the monorepo.
    `.env.example`.
 4. Write Dockerfiles (`Dockerfile` for production, `Dockerfile.integration` if the integration
    tests run in a container).
-5. Create the specs directory at `specs/apps/{domain}/{role}/gherkin/` and add at least one
-   `.feature` file.
+5. Create the specs directory following the
+   [Specs Directory Structure Convention](../../conventions/structure/specs-directory-structure.md)
+   and add at least one `.feature` file.
 6. Wire Gherkin consumption in unit tests using the appropriate BDD runner for the language (godog,
    Cucumber, SpecFlow, etc.).
 7. Create a per-variant test workflow at `.github/workflows/test-{name}.yml` calling the

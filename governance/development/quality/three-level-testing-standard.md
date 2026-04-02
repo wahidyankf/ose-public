@@ -344,9 +344,9 @@ covering WCAG AA compliance:
 ### Gherkin Accessibility Specs
 
 UI projects must have accessibility Gherkin specs at
-`specs/apps/<domain>/fe/gherkin/accessibility.feature`. UI component library specs in
-`specs/libs/ts-ui/gherkin/` must include "Has no accessibility violations" scenarios for each
-component.
+`specs/apps/<domain>/fe/gherkin/accessibility/accessibility.feature`. UI component library specs in
+`specs/libs/ts-ui/gherkin/<component>/` must include "Has no accessibility violations" scenarios for
+each component.
 
 See [Nx Target Standards](../infra/nx-targets.md) for the full list of projects with static a11y
 linting and the enforcement gates.

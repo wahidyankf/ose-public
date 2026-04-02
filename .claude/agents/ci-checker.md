@@ -21,7 +21,7 @@ For each project in `apps/` and `libs/`:
 1. **Mandatory Nx targets** - Verify `project.json` contains all required targets for the project type
 2. **Coverage thresholds** - Verify `test:quick` uses the correct coverage threshold (90/80/75/70)
 3. **Docker setup** - Verify `infra/dev/{app}/` exists with docker-compose.yml, docker-compose.ci.yml, .env.example
-4. **Gherkin specs** - Verify `specs/apps/{domain}/{role}/gherkin/` exists with `.feature` files
+4. **Gherkin specs** - Verify specs directory exists with `.feature` files per [Specs Directory Structure Convention](../../governance/conventions/structure/specs-directory-structure.md)
 5. **Unit test Gherkin consumption** - Verify BDD runner is configured in unit tests
 6. **spec-coverage target** - Verify `spec-coverage` Nx target exists for testable projects
 7. **Workflow file** - Verify `test-{app-name}.yml` exists calling reusable workflows

@@ -131,13 +131,13 @@ func TestIntegrationValidateSync(t *testing.T) {
 
 ## File Naming Convention
 
-| Artifact         | Pattern                                     | Example                                                     |
-| ---------------- | ------------------------------------------- | ----------------------------------------------------------- |
-| Parent cmd       | `{domain}.go`                               | `agents.go`                                                 |
-| Command file     | `{domain}_{action}.go`                      | `agents_validate_sync.go`                                   |
-| Unit test        | `{domain}_{action}_test.go`                 | `agents_validate_sync_test.go`                              |
-| Integration test | `{domain}_{action}.integration_test.go`     | `agents_validate_sync.integration_test.go`                  |
-| Feature file     | `specs/{app}/cli/gherkin/{command}.feature` | `specs/apps/rhino/cli/gherkin/agents-validate-sync.feature` |
+| Artifact         | Pattern                                     | Example                                       |
+| ---------------- | ------------------------------------------- | --------------------------------------------- |
+| Parent cmd       | `{domain}.go`                               | `agents.go`                                   |
+| Command file     | `{domain}_{action}.go`                      | `agents_validate_sync.go`                     |
+| Unit test        | `{domain}_{action}_test.go`                 | `agents_validate_sync_test.go`                |
+| Integration test | `{domain}_{action}.integration_test.go`     | `agents_validate_sync.integration_test.go`    |
+| Feature file     | `specs/{app}/cli/gherkin/{command}.feature` | `specs/apps/rhino/cli/gherkin/doctor.feature` |
 
 **Unit test files** (`{domain}_{action}_test.go`) serve dual purpose: they contain both godog BDD step definitions (consuming Gherkin specs via `TestUnit*` functions) and any non-BDD pure function tests for edge cases not covered by the Gherkin scenarios. The godog step definitions in unit test files use mocked I/O function variables instead of real filesystem access.
 
@@ -202,10 +202,10 @@ Integration steps drive commands in-process via `cmd.RunE()` against controlled 
 
 ### Example: Same Spec, Two Step Implementations
 
-The same `@agents-validate-sync` tag is consumed at both levels from the same feature file:
+The `@agents-validate-sync` tag lives inside `agents-sync.feature` (shared feature file) and is consumed at both levels:
 
 ```
-specs/apps/rhino/cli/gherkin/agents-validate-sync.feature
+specs/apps/rhino/cli/gherkin/agents-sync.feature  (contains @agents-sync + @agents-validate-sync)
   -> Unit steps in:       apps/rhino-cli/cmd/agents_validate_sync_test.go
   -> Integration steps in: apps/rhino-cli/cmd/agents_validate_sync.integration_test.go
 ```

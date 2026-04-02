@@ -479,8 +479,9 @@ covering WCAG AA compliance. These tests verify:
 - Focus management (focus moves logically, focus traps work correctly)
 - Heading hierarchy (no skipped levels, single H1)
 
-**Gherkin accessibility specs**: UI projects must have accessibility Gherkin specs at
-`specs/apps/<domain>/fe/gherkin/accessibility/accessibility.feature`. UI component library specs in
+**Gherkin accessibility specs**: UI projects must have an `accessibility.feature` file under a
+domain subdirectory in `specs/apps/<domain>/fe/gherkin/` (e.g., `accessibility/accessibility.feature`
+or `layout/accessibility.feature`). UI component library specs in
 `specs/libs/ts-ui/gherkin/<component>/` must include "Has no accessibility violations" scenarios for
 each component.
 

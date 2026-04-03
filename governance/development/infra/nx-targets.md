@@ -145,7 +145,7 @@ Every project declares tags along four dimensions. Each dimension uses a fixed p
 
 ### Special Rules
 
-**Hugo sites omit `lang:`**: Hugo sites consist of templates and markdown content; `go.mod` and `go.sum` present in a Hugo project are Hugo module dependency files, not application source code. No application code is written in Go, so `lang:` does not apply.
+**Hugo sites omit `lang:` (historical -- no active Hugo sites remain)**: Hugo sites consist of templates and markdown content; `go.mod` and `go.sum` present in a Hugo project are Hugo module dependency files, not application source code. No application code is written in Go, so `lang:` does not apply.
 
 **Go libs omit `platform:`**: A Go library has no framework or runtime boundary — only a primary language. Declare `type:lib` and `lang:golang`; omit `platform:`.
 
@@ -216,16 +216,16 @@ A Go lib has no platform boundary and no domain, so it omits both:
 
 Derived from three rules: (1) All apps+libs → unit tests, (2) All apps → integration tests, (3) All web apps (APIs + web UIs) → E2E tests. Hugo sites are exempt from all rules. `spec-coverage` is compulsory for all apps and E2E runners.
 
-| Project Type | `test:unit` | `test:integration` | `test:e2e` | `test:quick` | `spec-coverage` | `lint` | `build` | `typecheck`  |
-| ------------ | ----------- | ------------------ | ---------- | ------------ | --------------- | ------ | ------- | ------------ |
-| API Backend  | Yes         | Yes (PG)           | Yes\*      | Yes          | Yes             | Yes    | Yes     | Yes (all 11) |
-| Web UI App   | Yes         | Yes (MSW)          | Yes\*      | Yes          | Yes             | Yes    | Yes     | If typed     |
-| Demo-fe FE   | Yes         | —                  | Yes\*      | Yes          | Yes             | Yes    | Yes     | If typed     |
-| Fullstack    | Yes         | Yes                | Yes\*      | Yes          | Yes             | Yes    | Yes     | If typed     |
-| CLI App      | Yes         | Yes (Godog)        | —          | Yes          | Yes             | Yes    | Yes     | If typed     |
-| Library      | Yes         | Optional           | —          | Yes          | Yes             | Yes    | —       | If typed     |
-| Hugo Site    | —           | —                  | —          | Yes          | —               | —      | Yes     | —            |
-| E2E Runner   | —           | —                  | Yes        | Yes          | Yes             | Yes    | —       | If typed     |
+| Project Type           | `test:unit` | `test:integration` | `test:e2e` | `test:quick` | `spec-coverage` | `lint` | `build` | `typecheck`  |
+| ---------------------- | ----------- | ------------------ | ---------- | ------------ | --------------- | ------ | ------- | ------------ |
+| API Backend            | Yes         | Yes (PG)           | Yes\*      | Yes          | Yes             | Yes    | Yes     | Yes (all 11) |
+| Web UI App             | Yes         | Yes (MSW)          | Yes\*      | Yes          | Yes             | Yes    | Yes     | If typed     |
+| Demo-fe FE             | Yes         | —                  | Yes\*      | Yes          | Yes             | Yes    | Yes     | If typed     |
+| Fullstack              | Yes         | Yes                | Yes\*      | Yes          | Yes             | Yes    | Yes     | If typed     |
+| CLI App                | Yes         | Yes (Godog)        | —          | Yes          | Yes             | Yes    | Yes     | If typed     |
+| Library                | Yes         | Optional           | —          | Yes          | Yes             | Yes    | —       | If typed     |
+| Hugo Site (historical) | —           | —                  | —          | Yes          | —               | —      | Yes     | —            |
+| E2E Runner             | —           | —                  | Yes        | Yes          | Yes             | Yes    | —       | If typed     |
 
 **Demo-be backend `typecheck` commands** (all 11 backends have `typecheck` with `dependsOn: ["codegen"]`):
 
@@ -269,7 +269,7 @@ Every project in `apps/` and `libs/` must expose:
 | Kotlin/Ktor            | unit tests with Cucumber JVM (mocked dependencies); Kover JaCoCo XML coverage validated by `rhino-cli test-coverage validate` ≥90%                                                                                                 |
 | Python/FastAPI         | unit tests with `pytest` (mocked dependencies) → LCOV → `rhino-cli test-coverage validate` ≥90%                                                                                                                                    |
 | Rust/Axum              | unit tests with `cargo test --lib` + `cargo llvm-cov --lcov` → `rhino-cli test-coverage validate` ≥90%                                                                                                                             |
-| Hugo site              | link check via the site's CLI tool (build runs separately via `nx build`)                                                                                                                                                          |
+| Hugo site (historical) | link check via the site's CLI tool (build runs separately via `nx build`)                                                                                                                                                          |
 | Demo-fe TS app         | unit tests via vitest (typecheck and lint run separately in pre-push); coverage from unit tests only via `rhino-cli test-coverage validate` ≥70%                                                                                   |
 | Demo-fe Dart/Flutter   | `flutter test test/unit --coverage`; LCOV coverage validated via `rhino-cli test-coverage validate` ≥70%                                                                                                                           |
 | Demo-be Elixir/Phoenix | unit tests (`mix coveralls.lcov --only unit`); LCOV coverage validated via `rhino-cli test-coverage validate` ≥90%                                                                                                                 |
@@ -485,7 +485,7 @@ or `layout/accessibility.feature`). UI component library specs in
 `specs/libs/ts-ui/gherkin/<component>/` must include "Has no accessibility violations" scenarios for
 each component.
 
-### Hugo Sites
+### Hugo Sites (Historical -- No Active Hugo Sites Remain)
 
 | Target  | Requirement                                            |
 | ------- | ------------------------------------------------------ |
@@ -552,12 +552,12 @@ each component.
 
 Declare the output directory in `project.json` `outputs` to enable Nx cache restoration.
 
-| Project Type | Output Directory        |
-| ------------ | ----------------------- |
-| Go CLI       | `{projectRoot}/dist/`   |
-| Hugo site    | `{projectRoot}/public/` |
-| Next.js      | `{projectRoot}/.next/`  |
-| Spring Boot  | `{projectRoot}/target/` |
+| Project Type           | Output Directory        |
+| ---------------------- | ----------------------- |
+| Go CLI                 | `{projectRoot}/dist/`   |
+| Hugo site (historical) | `{projectRoot}/public/` |
+| Next.js                | `{projectRoot}/.next/`  |
+| Spring Boot            | `{projectRoot}/target/` |
 
 Example override for a Hugo site:
 

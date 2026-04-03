@@ -62,7 +62,7 @@ All checker agents in the following families MUST write audit reports to `genera
 3. **apps-ayokoding-web-by-example-checker** - By-example tutorial validation (ayokoding-web)
 4. **apps-ayokoding-web-facts-checker** - Educational content factual accuracy validation
 5. **apps-ayokoding-web-link-checker** - Link validation (ayokoding-web)
-6. **apps-oseplatform-web-content-checker** - Hugo content validation (oseplatform-web)
+6. **apps-oseplatform-web-content-checker** - Content validation (oseplatform-web, Next.js)
 7. **docs-checker** - Documentation factual accuracy validation
 8. **docs-link-general-checker** - External and internal link validation
 9. **docs-tutorial-checker** - Tutorial quality validation

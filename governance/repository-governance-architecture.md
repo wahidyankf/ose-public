@@ -281,7 +281,7 @@ Development: Hugo Development Convention (historical, semantic HTML)
 
 **Scope**:
 
-- **Source code** (JavaScript, TypeScript, future: Java, Kotlin, Python)
+- **Source code** (TypeScript, Go, Java, Kotlin, Python, Elixir, F#, Rust, C#, Clojure, Dart)
 - **Hugo themes and layouts (historical)** (Go templates)
 - **Build systems** (Nx, npm, Volta)
 - **AI agents** (.claude/agents/)

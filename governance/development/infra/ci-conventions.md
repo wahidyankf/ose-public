@@ -169,14 +169,14 @@ app type realises each level.
 | **CLI** (`*-cli`)                                         | Godog, all I/O mocked via function variables                    | Godog (`//go:build integration`), real filesystem via `/tmp` fixtures, in-process via `cmd.RunE()` | Not applicable                                       |
 | **Content platform** (`ayokoding-web`, `oseplatform-web`) | Vitest, components and tRPC routes mocked                       | MSW, in-process mocking                                                                            | Playwright BE E2E (`*-be-e2e`) + FE E2E (`*-fe-e2e`) |
 | **Library** (`golang-commons`)                            | Unit tests + Godog, mock closures                               | Godog, tmpdir mocks, cacheable                                                                     | Not applicable                                       |
-| **Hugo site**                                             | Not applicable                                                  | Not applicable                                                                                     | Not applicable                                       |
+| **Hugo site** (historical -- no active Hugo sites remain) | Not applicable                                                  | Not applicable                                                                                     | Not applicable                                       |
 | **E2E runner** (`*-e2e`)                                  | Not applicable                                                  | Not applicable                                                                                     | Playwright — this project IS the E2E suite           |
 
 ## Gherkin Consumption Matrix
 
 All testable projects must consume Gherkin specifications at every applicable test level. Hugo sites
-are exempt because they have no application logic. E2E runner projects ARE the Gherkin consumers at
-the E2E level.
+(historical -- no active Hugo sites remain) were exempt because they had no application logic. E2E
+runner projects ARE the Gherkin consumers at the E2E level.
 
 | App Type                  | Unit consumes Gherkin                                 | Integration consumes Gherkin | E2E consumes Gherkin              |
 | ------------------------- | ----------------------------------------------------- | ---------------------------- | --------------------------------- |
@@ -186,7 +186,7 @@ the E2E level.
 | CLI (`*-cli`)             | Yes — `specs/apps/{domain}/cli/gherkin/`              | Yes — same specs             | Not applicable                    |
 | Content platform          | Yes — project-local specs                             | Yes — same specs             | Yes — via `*-be-e2e` / `*-fe-e2e` |
 | Library                   | Yes — library-specific specs                          | Yes — same specs             | Not applicable                    |
-| Hugo site                 | Exempt                                                | Exempt                       | Exempt                            |
+| Hugo site (historical)    | Exempt                                                | Exempt                       | Exempt                            |
 | E2E runner                | Not applicable                                        | Not applicable               | Yes — consumes shared specs       |
 
 ## Coverage Threshold Rationale

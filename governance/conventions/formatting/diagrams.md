@@ -44,7 +44,7 @@ This convention establishes Mermaid diagrams as the primary visualization format
 
 ### What This Convention Does NOT Cover
 
-- **Hugo theme diagram rendering** - Covered in [Hugo Development Convention](../../development/hugo/development.md)
+- **Hugo theme diagram rendering** - Previously covered in Hugo Development Convention (now deprecated; no active Hugo sites remain)
 - **Diagram content strategy** - What diagrams to create (covered in specific domain conventions)
 - **Vector graphics or images** - This convention is only for text-based diagrams (Mermaid and ASCII)
 - **Interactive diagram features** - Platform-specific interactivity (zoom, pan) is implementation detail
@@ -429,7 +429,7 @@ The `%%{init:...}%%` syntax is VALID when used for Mermaid initialization direct
 
 **Key Distinction**: `%%{...}%%` is ONLY valid when containing `init:` directive for Mermaid configuration. Never use it for general comments, color palette notes, or documentation.
 
-**When to Use Init Directives**: Rarely needed. Most diagrams use default theming. Use only when you need to customize Mermaid's theme variables or configuration. See [Hugo Development Convention](../../development/hugo/development.md) for examples of valid init directive usage.
+**When to Use Init Directives**: Rarely needed. Most diagrams use default theming. Use only when you need to customize Mermaid's theme variables or configuration.
 
 ### Color Accessibility for Color Blindness
 

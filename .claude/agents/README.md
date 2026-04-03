@@ -95,7 +95,7 @@ Agents use YAML frontmatter with the following structure:
 name: agent-name
 description: Expert in X specializing in Y. Use when Z.
 tools: Read, Glob, Grep
-model: inherit
+model:
 color: blue
 skills: []
 ---
@@ -104,7 +104,7 @@ skills: []
 **Name**: Required field - unique identifier using lowercase letters and hyphens
 **Description**: Required field - when Claude should delegate to this agent
 **Tools**: Comma-separated string with capitalized tool names (only tools the agent needs)
-**Model**: Required field - use `inherit` (default), `haiku`, `sonnet`, or `opus`
+**Model**: Required field - omit for opus (default), or use \`sonnet\` or \`haiku\`
 **Color**: Required field - `blue` (makers), `green` (checkers), `yellow` (fixers), `purple` (implementors)
 **Skills**: Required field - list of Skill names (empty array `[]` if no Skills used)
 

@@ -16,6 +16,8 @@ updated: 2026-01-02
 
 # Hugo Content Convention - ayokoding-web
 
+> **DEPRECATED**: ayokoding-web has migrated to Next.js 16 and is no longer a Hugo site. This document is preserved for historical reference only. For current ayokoding-web development, see the Next.js-based application at `apps/ayokoding-web/`.
+
 This document defines Hugo content conventions specific to **ayokoding-web** - a bilingual educational platform using the Hextra theme.
 
 ## Principles Implemented/Respected

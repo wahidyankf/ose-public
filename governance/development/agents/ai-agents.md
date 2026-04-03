@@ -10,7 +10,7 @@ tags:
   - development
   - standards
 created: 2025-11-23
-updated: 2026-03-28
+updated: 2026-04-03
 ---
 
 # AI Agents Convention
@@ -148,7 +148,7 @@ Every agent file MUST begin with YAML frontmatter containing six required fields
 name: agent-name
 description: Expert in X specializing in Y. Use when Z.
 tools: Read, Glob, Grep
-model: inherit
+model:
 color: blue
 skills: []
 ---
@@ -181,9 +181,9 @@ skills: []
    - Common tools: `Read`, `Write`, `Edit`, `Glob`, `Grep`, `Bash`
 
 4. **`model`** (required)
-   - Specifies which model to use for this agent
-   - Options: `inherit` (default), `haiku`, `sonnet`, or `opus`
-   - Use `inherit` unless there's a specific need for a particular model
+   - Specifies which model tier to use for this agent
+   - Options: (empty/omitted for opus, the default), `sonnet`, or `haiku`
+   - Omit the value (leave `model:` empty) for opus-tier agents; specify `sonnet` or `haiku` only when a lower tier is justified
    - See "Model Selection Guidelines" below for decision criteria
 
 5. **`color`** (required)
@@ -231,7 +231,7 @@ In addition to the six required fields, agents may include optional metadata fie
 name: agent-name
 description: Expert in X specializing in Y. Use when Z.
 tools: Read, Glob, Grep
-model: inherit
+model:
 color: blue
 skills: []
 created: 2025-11-23
@@ -674,7 +674,7 @@ cat > .claude/agents/new-agent.md <<'END_HEREDOC'
 name: new-agent
 description: Agent description here
 tools: Read, Glob, Grep, Bash
-model: inherit
+model:
 color: blue
 ---
 
@@ -682,7 +682,7 @@ color: blue
 END_HEREDOC
 
 # Update existing agent file (sed/awk pattern)
-sed -i '/^model:/s/inherit/sonnet/' .claude/agents/agent-name.md
+sed -i '' 's/^model:$/model: sonnet/' .claude/agents/agent-name.md
 
 # Update README.md (targeted insertion)
 awk 'pattern { insert_text } { print }' .claude/agents/README.md > temp && mv temp .claude/agents/README.md
@@ -697,33 +697,40 @@ awk 'pattern { insert_text } { print }' .claude/agents/README.md > temp && mv te
 
 ## Model Selection Guidelines
 
-**Default**: Use `inherit` unless specific model capabilities are required.
+For complete model selection standards, see the [Model Selection Convention](./model-selection.md).
+
+**Three tiers**:
+
+- **Opus** (default): Omit the `model` field. For creative reasoning, code generation, architectural decisions, and nuanced content creation (makers, developers).
+- **Sonnet** (`model: sonnet`): For rule-based validation, applying validated fixes, template-driven output, and structured pattern-following tasks (checkers, fixers).
+- **Haiku** (`model: haiku`): For purely mechanical tasks with no reasoning required -- URL validation, deployment scripts, simple command execution (deployers, link checkers).
 
 ### Model Selection Decision Tree
 
 ```
 Start: Choosing Agent Model
     │
-    ├─ Does this agent require specific model capabilities?
+    ├─ Does the task require creative reasoning, code generation,
+    │   architectural decisions, or nuanced content creation?
     │   │
-    │   ├─ No → Use `model: inherit`
-    │   │        (Most agents should use inherit)
+    │   ├─ Yes → Opus (omit model field)
     │   │
-    │   └─ Yes → What specific capability?
-    │              │
-    │              ├─ Simple, straightforward tasks → `model: haiku`
-    │              │   (Pattern matching, URL validation, file checks)
-    │              │
-    │              ├─ Advanced reasoning/deep analysis → `model: sonnet`
-    │              │   (Complex validation, cascading impacts, multi-step orchestration)
-    │              │
-    │              ├─ Multi-step planning and strategy → `model: sonnet`
-    │              │
-    │              └─ Unsure → Use `model: inherit`
-    │                         (Can always change later)
+    │   └─ No → Does the task require applying rules, validating
+    │            against checklists, or following structured procedures?
+    │            │
+    │            ├─ Yes → Sonnet (model: sonnet)
+    │            │
+    │            └─ No → Is the task purely mechanical with
+    │                     no reasoning required?
+    │                     │
+    │                     ├─ Yes → Haiku (model: haiku)
+    │                     │
+    │                     └─ No → Default to Sonnet
+    │                              (safer than haiku for
+    │                               ambiguous cases)
 ```
 
-**Important**: Document your reasoning if using a specific model. Add a comment in the agent explaining why.
+**Important**: Every agent MUST include a Model Selection Justification block explaining why the chosen tier is appropriate. See [Model Selection Convention](./model-selection.md) for full requirements.
 
 ## Agent Color Categorization
 
@@ -738,7 +745,7 @@ The `color` frontmatter field provides visual categorization for agents based on
 name: agent-name
 description: Expert in X specializing in Y. Use when Z.
 tools: Read, Glob, Grep
-model: inherit
+model:
 color: blue
 ---
 ```
@@ -930,7 +937,7 @@ All agent colors are from the verified accessible palette:
 name: docs-maker
 description: Expert documentation writer specializing in GitHub-compatible markdown and Diátaxis framework. Use when creating, editing, or organizing project documentation.
 tools: Read, Write, Edit, Glob, Grep
-model: inherit
+model:
 color: blue
 ---
 ```
@@ -978,7 +985,7 @@ Colored square emojis follow the [Emoji Usage Convention](../../conventions/form
 name: docs-maker
 description: Expert documentation writer specializing in GitHub-compatible markdown and Diátaxis framework. Use when creating, editing, or organizing project documentation.
 tools: Read, Write, Edit, Glob, Grep
-model: inherit
+model:
 color: blue
 ---
 ```
@@ -1645,7 +1652,7 @@ Before committing agent changes:
 name: agent-name
 description: Brief description
 tools: Read, Write, Edit
-model: inherit
+model:
 color: blue
 skills: [docs-applying-content-quality, docs-creating-accessible-diagrams]
 created: YYYY-MM-DD
@@ -1890,7 +1897,7 @@ Before submitting a new agent, verify:
 - [ ] `name` matches filename (kebab-case, no `.md`)
 - [ ] `description` clearly states when to use this agent
 - [ ] `tools` explicitly lists required tools only (least privilege)
-- [ ] `model` set to `inherit` (or justified if specific)
+- [ ] `model` left empty for opus (or `sonnet`/`haiku` if justified)
 - [ ] `color` assigned based on agent role (blue/green/yellow/purple) - required
 - [ ] `skills` field present (can be empty `[]` or list actual Skills) - required
 
@@ -1945,7 +1952,7 @@ Use this template when creating new agents:
 name: agent-name
 description: Expert in [domain] specializing in [specific area]. Use when [specific scenario].
 tools: Read, Glob, Grep
-model: inherit
+model:
 color: blue
 skills: []
 ---
@@ -2130,7 +2137,7 @@ If an agent is no longer needed:
 | -------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Vague Description**            | `description: Helper agent for various tasks`                       | `description: Expert documentation writer specializing in GitHub-compatible markdown and Diátaxis framework. Use when creating, editing, or organizing project documentation.` |
 | **Tool Permission Creep**        | `tools: Read, Write, Edit, Glob, Grep, Bash` (for validation agent) | `tools: Read, Glob, Grep` (read-only for validation)                                                                                                                           |
-| **Unnecessary Model Override**   | Using specific model without clear need                             | Use `model: inherit` unless advanced reasoning truly required; then `model: sonnet`                                                                                            |
+| **Unnecessary Model Override**   | Using specific model without clear need                             | Use `model:` unless advanced reasoning truly required; then `model: sonnet`                                                                                                    |
 | **Duplicating AGENTS.md**        | Repeating entire environment setup section                          | Reference: `AGENTS.md` - Primary guidance including environment setup                                                                                                          |
 | **Missing Reference Section**    | No references to conventions or AGENTS.md                           | Include Reference Documentation section with links to AGENTS.md and ai-agents.md                                                                                               |
 | **Overlapping Responsibilities** | `docs-maker-and-checker` (multiple responsibilities)                | Separate `docs-maker` and `docs-checker` agents                                                                                                                                |

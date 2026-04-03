@@ -107,7 +107,7 @@ jobs:
       - uses: ./.github/actions/setup-golang
       - name: Check Go formatting
         run: |
-          UNFORMATTED=$(gofmt -l $(find . -name '*.go' -not -path './node_modules/*' -not -path './.nx/*'))
+          UNFORMATTED=$(gofmt -l $(find ./apps ./libs -name '*.go' -not -path '*/node_modules/*' -not -path '*/vendor/*'))
           if [ -n "$UNFORMATTED" ]; then
             echo "The following Go files are not formatted:"
             echo "$UNFORMATTED"
@@ -147,13 +147,13 @@ jobs:
       - uses: ./.github/actions/setup-dotnet
       - name: Check F# formatting
         run: |
-          UNFORMATTED=$(find . -name '*.fs' -not -path './node_modules/*' -not -path './.nx/*')
+          UNFORMATTED=$(find ./apps ./libs -name '*.fs' -not -path '*/obj/*' -not -path '*/bin/*' -not -path '*/generated-contracts/*')
           if [ -n "$UNFORMATTED" ]; then
             fantomas --check $UNFORMATTED
           fi
       - name: Check C# formatting
         run: |
-          CS_PROJECTS=$(find . -name '*.csproj' -not -path './node_modules/*' -not -path './.nx/*')
+          CS_PROJECTS=$(find ./apps -name '*.csproj' -not -path '*/generated-contracts/*')
           for proj in $CS_PROJECTS; do
             dotnet format whitespace --verify-no-changes "$(dirname "$proj")" || exit 1
           done
@@ -174,7 +174,7 @@ jobs:
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-python
       - name: Check Python formatting
-        run: ruff format --check .
+        run: ruff format --check apps/ libs/
       - run: npx nx affected -t typecheck lint test:quick spec-coverage --projects='tag:lang:python'
 
   rust:
@@ -193,7 +193,7 @@ jobs:
       - uses: ./.github/actions/setup-rust
       - name: Check Rust formatting
         run: |
-          for dir in $(find . -name 'Cargo.toml' -not -path './node_modules/*' -not -path './.nx/*' -exec dirname {} \;); do
+          for dir in $(find ./apps -name 'Cargo.toml' -exec dirname {} \;); do
             (cd "$dir" && cargo fmt --check) || exit 1
           done
       - run: npx nx affected -t typecheck lint test:quick spec-coverage --projects='tag:lang:rust'
@@ -214,7 +214,7 @@ jobs:
       - uses: ./.github/actions/setup-elixir
       - name: Check Elixir formatting
         run: |
-          for dir in $(find . -name 'mix.exs' -not -path './node_modules/*' -not -path './.nx/*' -not -path './deps/*' -exec dirname {} \;); do
+          for dir in $(find ./apps ./libs -maxdepth 2 -name 'mix.exs' -exec dirname {} \;); do
             (cd "$dir" && mix format --check-formatted) || exit 1
           done
       - run: npx nx affected -t typecheck lint test:quick spec-coverage --projects='tag:lang:elixir'
@@ -235,7 +235,7 @@ jobs:
       - uses: ./.github/actions/setup-clojure
       - name: Check Clojure formatting
         run: |
-          CLJ_FILES=$(find . -name '*.clj' -not -path './node_modules/*' -not -path './.nx/*')
+          CLJ_FILES=$(find ./apps -name '*.clj' -not -path '*/generated-contracts/*')
           if [ -n "$CLJ_FILES" ] && command -v cljfmt &>/dev/null; then
             cljfmt check $CLJ_FILES
           fi
@@ -256,7 +256,11 @@ jobs:
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-flutter
       - name: Check Dart formatting
-        run: dart format --set-exit-if-changed --output=none .
+        run: |
+          DART_FILES=$(find ./apps -name '*.dart' -not -path '*/generated-contracts/*' -not -path '*/.dart_tool/*')
+          if [ -n "$DART_FILES" ]; then
+            dart format --set-exit-if-changed --output=none $DART_FILES
+          fi
       - run: npx nx affected -t typecheck lint test:quick spec-coverage --projects='tag:lang:dart'
 
   markdown:

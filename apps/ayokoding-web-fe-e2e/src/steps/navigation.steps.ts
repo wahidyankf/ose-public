@@ -37,17 +37,31 @@ Then("a breadcrumb trail should be displayed above the page title", async ({ pag
   await expect(breadcrumb).toBeVisible();
 });
 
-Then("each breadcrumb segment should reflect a level of the URL hierarchy", async ({ page }) => {
+Then("each breadcrumb segment should reflect an ancestor level of the URL hierarchy", async ({ page }) => {
   const breadcrumb = page.getByRole("navigation", { name: /breadcrumb/i });
-  const items = breadcrumb.locator("a, span");
-  const count = await items.count();
+  const links = breadcrumb.getByRole("link");
+  const count = await links.count();
   expect(count).toBeGreaterThanOrEqual(1);
 });
 
-Then("each segment except the current page should be a clickable link", async ({ page }) => {
+Then("the current page should not appear in the breadcrumb", async ({ page }) => {
+  const breadcrumb = page.getByRole("navigation", { name: /breadcrumb/i });
+  // The breadcrumb should only contain links (ancestor segments), no plain text spans for current page
+  const spans = breadcrumb.locator("span:not(:has(*))");
+  const count = await spans.count();
+  expect(count).toBe(0);
+});
+
+Then("all breadcrumb segments should be clickable links", async ({ page }) => {
   const breadcrumb = page.getByRole("navigation", { name: /breadcrumb/i });
   const links = breadcrumb.getByRole("link");
   await expect(links.first()).toBeAttached();
+});
+
+Then("breadcrumb text should wrap naturally without horizontal truncation", async ({ page }) => {
+  const breadcrumb = page.getByRole("navigation", { name: /breadcrumb/i });
+  const ol = breadcrumb.locator("ol");
+  await expect(ol).toHaveCSS("flex-wrap", "wrap");
 });
 
 When("a visitor opens a content page with multiple headings", async ({ page }) => {

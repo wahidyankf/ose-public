@@ -14,11 +14,13 @@ Feature: Site Navigation
     When the visitor clicks a collapsed parent node
     Then its child items should become visible
 
-  Scenario: Breadcrumb shows path hierarchy
+  Scenario: Breadcrumb shows ancestor path hierarchy without current page
     When a visitor opens a nested content page
     Then a breadcrumb trail should be displayed above the page title
-    And each breadcrumb segment should reflect a level of the URL hierarchy
-    And each segment except the current page should be a clickable link
+    And each breadcrumb segment should reflect an ancestor level of the URL hierarchy
+    And the current page should not appear in the breadcrumb
+    And all breadcrumb segments should be clickable links
+    And breadcrumb text should wrap naturally without horizontal truncation
 
   Scenario: Table of contents shows heading links for H2 to H4
     When a visitor opens a content page with multiple headings

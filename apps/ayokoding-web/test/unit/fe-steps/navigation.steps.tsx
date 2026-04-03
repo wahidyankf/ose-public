@@ -40,7 +40,7 @@ describeFeature(feature, ({ Scenario, Background }) => {
     });
   });
 
-  Scenario("Breadcrumb shows path hierarchy", ({ When, Then, And }) => {
+  Scenario("Breadcrumb shows ancestor path hierarchy without current page", ({ When, Then, And }) => {
     When("a visitor opens a nested content page", () => {
       render(
         <Breadcrumb
@@ -59,15 +59,29 @@ describeFeature(feature, ({ Scenario, Background }) => {
       expect(screen.getByLabelText("Breadcrumb")).toBeTruthy();
     });
 
-    And("each breadcrumb segment should reflect a level of the URL hierarchy", () => {
+    And("each breadcrumb segment should reflect an ancestor level of the URL hierarchy", () => {
       expect(screen.getByText("Learn")).toBeTruthy();
       expect(screen.getByText("Software Engineering")).toBeTruthy();
-      expect(screen.getByText("Overview")).toBeTruthy();
     });
 
-    And("each segment except the current page should be a clickable link", () => {
+    And("the current page should not appear in the breadcrumb", () => {
+      expect(screen.queryByText("Overview")).toBeNull();
+    });
+
+    And("all breadcrumb segments should be clickable links", () => {
       const links = screen.getAllByRole("link");
-      expect(links.length).toBe(2); // Learn and Software Engineering are links
+      expect(links.length).toBe(2); // Learn and Software Engineering are both links
+    });
+
+    And("breadcrumb text should wrap naturally without horizontal truncation", () => {
+      const nav = screen.getByLabelText("Breadcrumb");
+      const ol = nav.querySelector("ol");
+      expect(ol?.className).toContain("flex-wrap");
+      // Ensure no truncate class is used on any link
+      const allLinks = nav.querySelectorAll("a");
+      for (const link of allLinks) {
+        expect(link.className).not.toContain("truncate");
+      }
     });
   });
 

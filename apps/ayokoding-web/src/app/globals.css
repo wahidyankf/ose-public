@@ -1,3 +1,4 @@
+/* Scan app sources + shared UI library for Tailwind class generation */
 @import "tailwindcss";
 @source "../../src/**/*.{ts,tsx}";
 @source "../../../../libs/ts-ui/src/**/*.{ts,tsx}";

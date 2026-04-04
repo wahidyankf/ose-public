@@ -55,7 +55,7 @@ The shared infrastructure that made this possible is the contract layer. Two art
 - **token-management** (6 scenarios) — JWT refresh, revocation
 - **user-lifecycle** (12 scenarios) — registration, account management
 
-These specifications are consumed at all three testing levels. Unit tests mock dependencies and call service functions directly. Integration tests use a real PostgreSQL database via Docker Compose but still call service functions directly—no HTTP. E2E tests hit real HTTP endpoints via Playwright. Same Gherkin scenarios, different step implementations. Specification drift between testing tiers is structurally impossible.
+These specifications are consumed at all three testing levels. Unit tests mock dependencies and call service functions directly. Integration tests use a real PostgreSQL database via Docker Compose but still call service functions directly—no HTTP. E2E tests hit real HTTP endpoints via Playwright. Same Gherkin scenarios, different step implementations. Specification drift between testing tiers is structurally prevented.
 
 ```mermaid
 %% Color Palette: Purple #CC78BC (contracts), Blue #0173B2 (scripting), Orange #DE8F05 (JVM), Teal #029E73 (functional)

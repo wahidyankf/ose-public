@@ -6,6 +6,8 @@ Active project plans currently being worked on.
 
 - [LGPL Dependency Replacement](./2026-03-26__lgpl-dependency-replacement/) — Replace LGPL
   dependencies with permissive alternatives
+- [Native Dev Setup Improvements](./2026-04-04__native-dev-setup-improvements/) — Improve doctor
+  with auto-install, scoping, env init, and version pinning
 
 ## Instructions
 

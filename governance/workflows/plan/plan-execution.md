@@ -148,6 +148,19 @@ The Task list (in-memory via `TaskCreate`/`TaskUpdate`) and the delivery checkli
 4. **Never diverge**: If a task is completed but the checklist is not ticked (or vice versa), the
    state is inconsistent. The executor must detect and fix this immediately.
 
+## Iron Rules (Non-Negotiable)
+
+These rules govern ALL execution steps. No exception. No shortcut.
+
+1. **Granular Task Tracking**: One `TaskCreate` per delivery checklist item. Mark `in_progress` before starting. Mark `completed` only after work is done AND checkbox is ticked. NEVER batch-complete.
+2. **Never Stop Before All Done**: Execute ALL items from first to last without stopping. No pauses between phases. No skipping items. The only acceptable stop is a hard technical blocker.
+3. **Fix ALL Issues — Including Preexisting**: When ANY test, lint, typecheck, or quality gate fails — fix it. Even if it existed before your changes. Do NOT defer. Do NOT skip. Commit preexisting fixes separately.
+4. **Delivery.md Is Sacred**: Tick checkboxes IMMEDIATELY after each item. Add implementation notes. NEVER move to next item without ticking current. Progress must be visible at ALL times.
+5. **Local Quality Gates Before Push**: Run `npx nx affected -t typecheck lint test:quick spec-coverage` before every push. Fix ALL failures. Do NOT push with any failing check.
+6. **Post-Push CI Verification**: After every push, monitor ALL GitHub Actions workflows. Fix ALL failures (including preexisting). Do NOT proceed until CI is fully green.
+7. **Thematic Commits**: Group related changes. Split different concerns. Follow Conventional Commits. Preexisting fixes get their own commits.
+8. **Manual Behavioral Assertions**: After quality gates pass, use Playwright MCP for web UI verification and curl for API verification. Fix any broken behavior before proceeding.
+
 ## Steps
 
 ### 1. Load Delivery Checklist (Sequential)
@@ -162,7 +175,7 @@ Read the plan and its delivery document to understand all work items before exec
 - Parse all checklist items in sequential phase and item order
 - Identify already-completed items (`- [x]`) — skip these (plan may be partially complete from a
   prior conversation)
-- Use `TaskCreate` to create one task per REMAINING (`- [ ]`) checklist item
+- Use `TaskCreate` to create one task per REMAINING (`- [ ]`) checklist item — one task per item, no grouping
 - Use `TaskUpdate` (`in_progress`) on each task as it begins
 
 **Output**: Full task list created for remaining items, delivery document loaded
@@ -171,10 +184,27 @@ Read the plan and its delivery document to understand all work items before exec
 
 **Notes**:
 
-- Tasks map 1:1 to delivery checklist items
+- Tasks map 1:1 to delivery checklist items — NEVER group multiple items into one task
 - Tasks must be granular — one concrete action per task
 - Preserve the phase and sequential ordering from the delivery checklist
 - Already-ticked items are skipped — the plan is resumable across conversations
+
+### 1b. Environment Setup (Sequential)
+
+Before implementing anything, ensure the development environment is ready.
+
+**Executor action**:
+
+- Run `npm install` to ensure dependencies are current
+- Run `npm run doctor` to verify all tooling is installed
+- Set up project-specific requirements (env vars, DB, Docker, etc.) as specified in the plan
+- Verify dev server starts for affected projects
+- Run existing quality gates to establish a baseline: `npx nx affected -t typecheck lint test:quick`
+- Note any preexisting failures — these MUST be fixed during execution (Iron Rule 3)
+
+**Output**: Environment ready, baseline failures identified
+
+**On failure**: If environment cannot be set up, terminate with status `fail`.
 
 ### 2. Initial Execution (Sequential, Continuous)
 
@@ -192,8 +222,9 @@ For each checklist item in sequential order (phase by phase, item by item):
 4. Verify the agent completed the work successfully
 5. **Atomic sync**: Update BOTH in the same step:
    - Tick the delivery checklist: `- [ ]` → `- [x]` in `delivery.md` (Edit tool)
+   - Add implementation notes (Date, Status, Files Changed) under the ticked item
    - Mark the task `completed` via `TaskUpdate`
-6. Proceed immediately to the next item — do not pause between items
+6. Proceed IMMEDIATELY to the next item — no pausing, no waiting for approval
 
 **Output**: `{execution-started}` — all delivery checklist items completed, checklist updated
 
@@ -205,11 +236,100 @@ status `fail`. If the failure is recoverable, retry once before escalating.
 
 **Stopping rules**:
 
-- Stop ONLY if a task fails and cannot be resolved
-- Stop ONLY if a critical decision requires user input
-- Stop ONLY when all items are complete
-- Never stop between phases
-- Never batch-complete items without actually delegating and verifying each one
+- Stop ONLY if a task fails and CANNOT be resolved after retry
+- Stop ONLY if a critical decision requires user input that cannot be inferred
+- Stop ONLY when ALL items are complete
+- NEVER stop between phases
+- NEVER batch-complete items without actually delegating and verifying each one
+- NEVER skip an item — if genuinely not applicable, add a note and tick it
+
+### 2b. Per-Phase Quality Gate (Sequential, After Each Phase)
+
+After completing all items in a delivery phase, run quality gates before proceeding.
+
+**Executor action**:
+
+1. Run local quality gates:
+
+   ```bash
+   npx nx affected -t typecheck
+   npx nx affected -t lint
+   npx nx affected -t test:quick
+   npx nx affected -t spec-coverage
+   ```
+
+2. If the plan involves integration or e2e tests, also run:
+
+   ```bash
+   npx nx affected -t test:integration
+   npx nx affected -t test:e2e
+   ```
+
+3. **Fix ALL failures** — including preexisting ones (Iron Rule 3)
+4. Re-run failing checks to confirm resolution
+5. Commit thematically (Iron Rule 7) — separate plan work from preexisting fixes
+6. Push to `main` only after ALL local quality gates pass (Iron Rule 5)
+
+**Output**: All quality gates passing, changes pushed
+
+**On failure**: Fix failures and retry. Do NOT proceed to next phase with failures.
+
+### 2c. Post-Push CI Verification (Sequential, After Each Push)
+
+After every push to `main`, verify GitHub Actions.
+
+**Executor action**:
+
+1. Identify which GitHub Actions workflows were triggered by the push
+2. Monitor their status until ALL complete
+3. If ANY workflow fails:
+   - Pull failure logs and diagnose the root cause
+   - Fix locally (including preexisting CI failures — Iron Rule 3)
+   - Run local quality gates again (Step 2b)
+   - Push fix commit
+   - Monitor CI again
+4. Repeat until ALL GitHub Actions workflows pass with zero failures
+5. Do NOT proceed to the next delivery phase until CI is fully green
+
+**Output**: All CI workflows passing
+
+**On failure**: Keep fixing and pushing until CI is green. If stuck after 3 attempts on the same failure, escalate to user.
+
+### 2d. Manual Behavioral Assertions (Sequential, After Each Phase)
+
+After CI is green, manually verify actual application behavior using Playwright MCP and curl.
+
+**Executor action**:
+
+1. **For Web UI changes** — use Playwright MCP tools:
+   - Start dev server: `nx dev [project-name]`
+   - `browser_navigate` to affected pages
+   - `browser_snapshot` to inspect rendered DOM
+   - `browser_click`, `browser_fill_form` to test interactive flows
+   - `browser_console_messages` to check for JS errors
+   - `browser_network_requests` to verify API calls
+   - `browser_take_screenshot` for visual verification
+2. **For API changes** — use curl via Bash:
+   - Start backend server: `nx dev [project-name]`
+   - Hit affected endpoints with curl and verify response status, shape, and data
+   - Test error cases with invalid payloads
+3. **For full-stack changes** — run BOTH Playwright MCP and curl:
+   - Verify UI renders correctly
+   - Verify API responds correctly
+   - Verify the full flow (UI action → API call → response → UI update)
+4. **Fix any broken behavior** — including preexisting issues (Iron Rule 3)
+5. **Document assertions** in delivery.md under the relevant items
+
+**Output**: All manual assertions pass, application behavior verified
+
+**On failure**: Fix broken behavior, re-run assertions. Do NOT proceed to next phase with broken UI or API.
+
+**Notes**:
+
+- This step is MANDATORY when the plan touches web UI or API code
+- Skip ONLY if the plan touches no UI and no API (e.g., pure documentation or governance changes)
+- Playwright MCP provides real browser interaction — use it to catch rendering, JS, and integration issues that automated tests may miss
+- curl provides direct HTTP verification — use it to catch response format, status code, and data issues
 
 ### 3. Validation (Sequential)
 
@@ -322,17 +442,35 @@ Determine whether to continue execution or terminate.
 - Each iteration uses the latest validation report
 - Tracks iteration count for observability
 
-### 8. Finalization (Sequential)
+### 8. Finalization and Archival (Sequential)
 
-Report final status and archive plan if successful.
+Report final status, archive plan if successful, and update all related READMEs.
 
 **Logic**:
 
 - If status is `pass` (zero findings):
-  - Move entire plan folder from current location to `plans/done/`
-  - Preserve folder name and structure (e.g., `plans/in-progress/2025-01-15__new-feature/` → `plans/done/2025-01-15__new-feature/`)
-  - Use `git mv` to preserve git history
-- If status is `partial` or `fail`: Leave plan in current location
+  1. Move entire plan folder from current location to `plans/done/`:
+
+     ```bash
+     git mv plans/in-progress/YYYY-MM-DD__plan-name/ plans/done/YYYY-MM-DD__plan-name/
+     ```
+
+  2. **Update `plans/in-progress/README.md`** — remove the plan entry from the list
+  3. **Update `plans/done/README.md`** — add the plan entry with completion date and brief summary:
+
+     ```markdown
+     - [Plan Name](./YYYY-MM-DD__plan-name/) — Brief description. Completed YYYY-MM-DD.
+     ```
+
+  4. **Update any other READMEs** that reference this plan (e.g., `plans/README.md`, project READMEs that link to the plan)
+  5. **Search for orphaned references** to the old `plans/in-progress/[plan-name]` path and fix them
+  6. **Commit the archival**:
+
+     ```
+     chore(plans): move [plan-identifier] to done
+     ```
+
+- If status is `partial` or `fail`: Leave plan in current location, do NOT archive
 
 **Output**: `{final-status}`, `{iterations-completed}`, `{final-report}`
 
@@ -494,10 +632,18 @@ The plan-execution-checker validates:
 
 - **Requirements Coverage**: All requirements from plan implemented
 - **Deliverables Completeness**: All deliverables created and meet quality standards
-- **Checklist Completion**: All delivery checklist items marked as completed
+- **Checklist Completion**: All delivery checklist items marked as completed with implementation notes
 - **Quality Standards**: Implementation follows repository conventions and best practices
 - **Testing Requirements**: Tests written and passing as specified in plan
 - **Documentation**: Required documentation created and accurate
+- **Operational Readiness** (CRITICAL): The checker verifies ALL of the following were executed:
+  - **Local quality gates passed**: `nx affected -t typecheck lint test:quick spec-coverage` was run and passed with zero failures before every push
+  - **CI/CD fully green**: All GitHub Actions workflows passed after every push — no exceptions
+  - **Preexisting issues fixed**: All encountered failures were fixed, including those not caused by the plan's changes (root cause orientation)
+  - **Delivery.md updated progressively**: Checkboxes ticked sequentially with implementation notes, not batch-ticked at the end (verified via git history)
+  - **Thematic commits**: Changes committed in logically cohesive groups following Conventional Commits, not monolithic dumps
+  - **Environment setup performed**: Evidence that dev environment was set up before implementation began
+  - **Manual behavioral assertions**: Playwright MCP was used to verify web UI changes (navigation, DOM, console errors, screenshots); curl was used to verify API changes (status codes, response shapes, error cases). Documented in delivery.md.
 
 ## Related Workflows
 

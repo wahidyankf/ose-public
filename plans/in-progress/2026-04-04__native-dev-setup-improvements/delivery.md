@@ -271,4 +271,4 @@ After all phases are complete:
 - [x] Rust and Flutter show version requirements in doctor output
 - [x] `npm install` uses Nx cache for rhino-cli build on second run
 - [x] `nx run rhino-cli:test:quick` passes
-- [ ] Pre-push hook passes
+- [x] Pre-push hook passes

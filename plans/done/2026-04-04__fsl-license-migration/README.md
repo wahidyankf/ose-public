@@ -1,6 +1,6 @@
 # Plan: Migrate from MIT to FSL-1.1-MIT License
 
-**Status**: In Progress
+**Status**: Done
 **Created**: 2026-04-04
 
 ## Overview

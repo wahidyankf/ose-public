@@ -23,7 +23,7 @@ order. Phase 5 (validation) must be last.
 - [x] Set Change License to `MIT`
 - [x] Verify the license text matches the canonical FSL-1.1 template exactly (except for the
       parameterized fields)
-- [ ] Commit: `chore(license): replace MIT with FSL-1.1-MIT`
+- [x] Commit: `chore(license): replace MIT with FSL-1.1-MIT`
 
 ### Phase 2: Update Package Metadata and Core Documentation
 
@@ -43,7 +43,7 @@ order. Phase 5 (validation) must be last.
   - `libs/elixir-cabbage/LICENSE` — still MIT (Matt Widmann)
   - `libs/elixir-gherkin/LICENSE` — still MIT (Matt Widmann)
   - `archived/ayokoding-web-hugo/LICENSE` — still MIT (Xin)
-- [ ] Commit: `docs(license): update core references from MIT to FSL-1.1-MIT`
+- [x] Commit: `docs(license): update core references from MIT to FSL-1.1-MIT`
 
 ### Phase 2b: Update Convention Docs, Templates, and Examples
 
@@ -63,7 +63,7 @@ project's license in examples or declarations.
   - YAML example (~line 175): change `license: MIT` to `license: FSL-1.1-MIT`
 - [x] Update `docs/how-to/hoto__add-new-lib.md`:
   - New lib README template (~line 249): change `MIT` to `FSL-1.1-MIT`
-- [ ] Commit: `docs(license): update conventions, templates, and examples to FSL-1.1-MIT`
+- [x] Commit: `docs(license): update conventions, templates, and examples to FSL-1.1-MIT`
 
 ### Phase 2c: Update GitHub Repository Attributes
 
@@ -92,7 +92,7 @@ production performance impact.
 - [x] Run `nx run ayokoding-web:build` — verify build succeeds without sharp
 - [x] Run `nx run oseplatform-web:build` — verify build succeeds without sharp
 - [x] Run `nx run organiclever-fe:build` — verify build succeeds without sharp
-- [ ] Commit: `fix(nextjs): disable server-side image optimization for FSL-1.1-MIT LGPL compliance`
+- [x] Commit: `fix(nextjs): disable server-side image optimization for FSL-1.1-MIT LGPL compliance`
 
 #### 3b: Document Dependency Audit and Licensing
 
@@ -104,7 +104,7 @@ production performance impact.
   - Demo apps (`a-demo-*`) excluded from audit with rationale
 - [x] Update `docs/explanation/software-engineering/licensing/README.md` — add entry for the new
       dependency compatibility doc (this file already exists)
-- [ ] Commit: `docs(licensing): add production dependency compatibility audit`
+- [x] Commit: `docs(licensing): add production dependency compatibility audit`
 
 ### Phase 4: Create LICENSING-NOTICE.md
 
@@ -121,7 +121,7 @@ FSL-1.1-MIT.
   - The Change Date as the floor (earliest any code becomes MIT)
   - Note about third-party code under different licenses
   - Link to the LICENSE file and fsl.software
-- [ ] Commit: `docs(license): add human-readable LICENSING-NOTICE.md`
+- [x] Commit: `docs(license): add human-readable LICENSING-NOTICE.md`
 
 ### Phase 5: Validation
 

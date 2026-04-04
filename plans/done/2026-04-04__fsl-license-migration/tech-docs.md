@@ -26,8 +26,9 @@ single blanket date for the entire repository. The FSL-1.1 license text ("Grant 
 section) states:
 
 > "We hereby irrevocably grant you an additional license to use the Software under the [Change
+>
 > > License] that is effective on the **second anniversary** of the date we make the Software
-> available."
+> > available."
 
 In practice, this means:
 

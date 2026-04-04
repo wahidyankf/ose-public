@@ -4,8 +4,7 @@ Active project plans currently being worked on.
 
 ## Active Plans
 
-- [FSL-1.1-MIT License Migration](./2026-04-04__fsl-license-migration/) — Migrate repository
-  license from MIT to FSL-1.1-MIT (converts to MIT after 2 years)
+No active plans.
 
 ## Instructions
 

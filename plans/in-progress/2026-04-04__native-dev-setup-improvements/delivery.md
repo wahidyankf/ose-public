@@ -256,19 +256,19 @@ libssl-dev ...`) before `asdf install erlang`
   - [x] Ubuntu/Linux install commands are accurate (go.dev tarball for Go, snap for
         dotnet/flutter, linux-install.sh for Clojure)
 - [x] Run `npm run lint:md` — verify all markdown passes linting
-- [ ] Commit: `docs: update setup documentation for doctor improvements`
+- [x] Commit: `docs: update setup documentation for doctor improvements`
 
 ## Validation
 
 After all phases are complete:
 
-- [ ] `npm run doctor` shows correct tool count (no Hugo, with Playwright)
-- [ ] `npm run doctor -- --fix` with all tools installed reports "nothing to fix"
-- [ ] `npm run doctor -- --fix --dry-run` previews actions without executing
-- [ ] `npm run doctor -- --scope minimal` checks only 7 tools
-- [ ] `rhino-cli env init` creates `.env` files from templates
-- [ ] `brew bundle check` passes with the new Brewfile
-- [ ] Rust and Flutter show version requirements in doctor output
-- [ ] `npm install` uses Nx cache for rhino-cli build on second run
-- [ ] `nx run rhino-cli:test:quick` passes
+- [x] `npm run doctor` shows correct tool count (no Hugo, with Playwright)
+- [x] `npm run doctor -- --fix` with all tools installed reports "nothing to fix"
+- [x] `npm run doctor -- --fix --dry-run` previews actions without executing
+- [x] `npm run doctor -- --scope minimal` checks only 7 tools
+- [x] `rhino-cli env init` creates `.env` files from templates
+- [x] `brew bundle check` passes with the new Brewfile
+- [x] Rust and Flutter show version requirements in doctor output
+- [x] `npm install` uses Nx cache for rhino-cli build on second run
+- [x] `nx run rhino-cli:test:quick` passes
 - [ ] Pre-push hook passes

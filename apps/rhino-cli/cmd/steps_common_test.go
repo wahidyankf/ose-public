@@ -26,6 +26,15 @@ const (
 	stepOutputChecksOnlyMinimalToolSet      = `^the output checks only the minimal tool set$`
 )
 
+// Doctor fix step patterns.
+const (
+	stepDeveloperRunsDoctorWithFix       = `^the developer runs the doctor command with the fix flag$`
+	stepDeveloperRunsDoctorWithFixDryRun = `^the developer runs the doctor command with fix and dry-run flags$`
+	stepOutputContainsFixProgress        = `^the output contains fix progress$`
+	stepOutputContainsDryRunPreview      = `^the output contains a dry-run preview$`
+	stepOutputReportsNothingToFix        = `^the output reports nothing to fix$`
+)
+
 // Test-coverage validate step patterns.
 const (
 	stepGoCoverageFile90Pct                        = `^a Go coverage file recording 90% line coverage$`

@@ -70,6 +70,23 @@ All tools checked by `rhino-cli doctor`, plus Playwright browsers:
 | 18  | jq             | Any                   | (no config file)                              | Brew           |
 | 19  | playwright     | (matches npm version) | node_modules                                  | npx            |
 
+## Quick Start: `doctor --fix`
+
+If you already have Homebrew (macOS) or apt (Linux) and Node.js/npm installed:
+
+```bash
+git clone https://github.com/wahidyankf/open-sharia-enterprise.git
+cd open-sharia-enterprise
+npm install
+npm run doctor -- --fix          # Auto-install all missing tools
+npm run doctor -- --fix --dry-run  # Preview what would be installed (no changes)
+```
+
+`doctor --fix` detects your platform (macOS or Linux) and uses the appropriate package
+manager for each tool. It is idempotent — running it when all tools are installed is a no-op.
+
+For manual step-by-step installation, follow the phases below.
+
 ## Steps
 
 ### Phase 1: System Package Manager (Sequential)

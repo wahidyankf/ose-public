@@ -1,6 +1,7 @@
 package doctor
 
 import (
+	"fmt"
 	"path/filepath"
 	"strings"
 )
@@ -8,14 +9,15 @@ import (
 // toolDef describes how to check a single tool: what to run, how to parse the output,
 // how to compare versions, and where to read the required version from.
 type toolDef struct {
-	name      string
-	binary    string
-	source    string
-	args      []string
-	useStderr bool // true when the version info is on stderr (e.g. java -version)
-	parseVer  func(output string) string
-	compare   func(installed, required string) (ToolStatus, string)
-	readReq   func() string // returns "" when there is no requirement
+	name       string
+	binary     string
+	source     string
+	args       []string
+	useStderr  bool // true when the version info is on stderr (e.g. java -version)
+	parseVer   func(output string) string
+	compare    func(installed, required string) (ToolStatus, string)
+	readReq    func() string // returns "" when there is no requirement
+	installCmd InstallFunc   // nil = cannot auto-install
 }
 
 // parseTrimVersion normalizes output where the version string is the whole output
@@ -48,6 +50,12 @@ func buildToolDefs(repoRoot string) []toolDef {
 			parseVer: func(s string) string { return parseLineWord(s, "git version ", 2, "") },
 			compare:  compareExact,
 			readReq:  noReq,
+			installCmd: func(req, platform string) []InstallStep {
+				if platform == "darwin" {
+					return []InstallStep{{Description: "Install Xcode Command Line Tools", Command: "xcode-select", Args: []string{"--install"}}}
+				}
+				return []InstallStep{{Description: "Install git", Command: "sudo", Args: []string{"apt-get", "install", "-y", "git"}}}
+			},
 		},
 		{
 			name:     "volta",
@@ -57,6 +65,9 @@ func buildToolDefs(repoRoot string) []toolDef {
 			parseVer: parseTrimVersion,
 			compare:  compareExact,
 			readReq:  noReq,
+			installCmd: func(req, platform string) []InstallStep {
+				return []InstallStep{{Description: "Install Volta", Command: "bash", Args: []string{"-c", "curl https://get.volta.sh | bash"}}}
+			},
 		},
 		{
 			name:     "node",
@@ -66,6 +77,9 @@ func buildToolDefs(repoRoot string) []toolDef {
 			parseVer: parseTrimVersion,
 			compare:  compareExact,
 			readReq:  func() string { v, _ := readNodeVersion(packageJSONPath); return v },
+			installCmd: func(req, platform string) []InstallStep {
+				return []InstallStep{{Description: fmt.Sprintf("Install Node.js %s via Volta", req), Command: "volta", Args: []string{"install", "node@" + req}}}
+			},
 		},
 		{
 			name:     "npm",
@@ -75,6 +89,9 @@ func buildToolDefs(repoRoot string) []toolDef {
 			parseVer: parseTrimVersion,
 			compare:  compareExact,
 			readReq:  func() string { v, _ := readNpmVersion(packageJSONPath); return v },
+			installCmd: func(req, platform string) []InstallStep {
+				return []InstallStep{{Description: fmt.Sprintf("Install npm %s via Volta", req), Command: "volta", Args: []string{"install", "npm@" + req}}}
+			},
 		},
 		{
 			name:      "java",
@@ -85,6 +102,9 @@ func buildToolDefs(repoRoot string) []toolDef {
 			parseVer:  parseJavaVersion,
 			compare:   compareMajor,
 			readReq:   func() string { v, _ := readJavaVersion(pomXMLPath); return v },
+			installCmd: func(req, platform string) []InstallStep {
+				return []InstallStep{{Description: fmt.Sprintf("Install Java %s via SDKMAN", req), Command: "bash", Args: []string{"-c", "source \"$HOME/.sdkman/bin/sdkman-init.sh\" && sdk install java " + req + "-tem"}}}
+			},
 		},
 		{
 			name:     "maven",
@@ -94,6 +114,9 @@ func buildToolDefs(repoRoot string) []toolDef {
 			parseVer: func(s string) string { return parseLineWord(s, "Apache Maven ", 2, "") },
 			compare:  compareExact,
 			readReq:  noReq,
+			installCmd: func(req, platform string) []InstallStep {
+				return []InstallStep{{Description: "Install Maven via SDKMAN", Command: "bash", Args: []string{"-c", "source \"$HOME/.sdkman/bin/sdkman-init.sh\" && sdk install maven"}}}
+			},
 		},
 		{
 			name:     "golang",
@@ -103,6 +126,12 @@ func buildToolDefs(repoRoot string) []toolDef {
 			parseVer: func(s string) string { return parseLineWord(s, "go version ", 2, "go") },
 			compare:  compareGTE,
 			readReq:  func() string { v, _ := readGoVersion(goModPath); return v },
+			installCmd: func(req, platform string) []InstallStep {
+				if platform == "darwin" {
+					return []InstallStep{{Description: "Install Go via Homebrew", Command: "brew", Args: []string{"install", "go"}}}
+				}
+				return []InstallStep{{Description: "Install Go from go.dev", Command: "bash", Args: []string{"-c", fmt.Sprintf("curl -L https://go.dev/dl/go%s.linux-amd64.tar.gz | sudo tar -xz -C /usr/local", req)}}}
+			},
 		},
 		// --- Python ---
 		{
@@ -113,6 +142,18 @@ func buildToolDefs(repoRoot string) []toolDef {
 			parseVer: parsePythonVersion,
 			compare:  compareGTE,
 			readReq:  func() string { v, _ := readPythonVersion(pythonVersionPath); return v },
+			installCmd: func(req, platform string) []InstallStep {
+				if platform == "darwin" {
+					return []InstallStep{
+						{Description: "Install pyenv via Homebrew", Command: "brew", Args: []string{"install", "pyenv"}},
+						{Description: fmt.Sprintf("Install Python %s", req), Command: "bash", Args: []string{"-c", fmt.Sprintf("pyenv install %s && pyenv global %s", req, req)}},
+					}
+				}
+				return []InstallStep{
+					{Description: "Install pyenv", Command: "bash", Args: []string{"-c", "curl https://pyenv.run | bash"}},
+					{Description: fmt.Sprintf("Install Python %s", req), Command: "bash", Args: []string{"-c", fmt.Sprintf("pyenv install %s && pyenv global %s", req, req)}},
+				}
+			},
 		},
 		// --- Rust ---
 		{
@@ -123,6 +164,9 @@ func buildToolDefs(repoRoot string) []toolDef {
 			parseVer: parseRustVersion,
 			compare:  compareGTE,
 			readReq:  func() string { v, _ := readRustVersion(cargoTomlPath); return v },
+			installCmd: func(req, platform string) []InstallStep {
+				return []InstallStep{{Description: "Install Rust via rustup", Command: "bash", Args: []string{"-c", "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"}}}
+			},
 		},
 		{
 			name:     "cargo-llvm-cov",
@@ -132,6 +176,9 @@ func buildToolDefs(repoRoot string) []toolDef {
 			parseVer: parseCargoLlvmCov,
 			compare:  compareExact,
 			readReq:  noReq,
+			installCmd: func(req, platform string) []InstallStep {
+				return []InstallStep{{Description: "Install cargo-llvm-cov", Command: "bash", Args: []string{"-c", "source \"$HOME/.cargo/env\" && cargo install cargo-llvm-cov"}}}
+			},
 		},
 		// --- Elixir/Erlang ---
 		{
@@ -149,6 +196,9 @@ func buildToolDefs(repoRoot string) []toolDef {
 				}
 				return v
 			},
+			installCmd: func(req, platform string) []InstallStep {
+				return []InstallStep{{Description: fmt.Sprintf("Install Elixir %s via asdf", req), Command: "bash", Args: []string{"-c", fmt.Sprintf("asdf plugin add elixir 2>/dev/null; asdf install elixir %s && asdf global elixir %s", req, req)}}}
+			},
 		},
 		{
 			name:     "erlang",
@@ -161,6 +211,9 @@ func buildToolDefs(repoRoot string) []toolDef {
 				v, _ := readToolVersionsEntry(toolVersionsPath, "erlang")
 				return v
 			},
+			installCmd: func(req, platform string) []InstallStep {
+				return []InstallStep{{Description: fmt.Sprintf("Install Erlang %s via asdf", req), Command: "bash", Args: []string{"-c", fmt.Sprintf("asdf plugin add erlang 2>/dev/null; asdf install erlang %s && asdf global erlang %s", req, req)}}}
+			},
 		},
 		// --- .NET ---
 		{
@@ -171,6 +224,12 @@ func buildToolDefs(repoRoot string) []toolDef {
 			parseVer: parseDotnetVersion,
 			compare:  compareMajorGTE,
 			readReq:  func() string { v, _ := readDotnetVersion(globalJSONPath); return v },
+			installCmd: func(req, platform string) []InstallStep {
+				if platform == "darwin" {
+					return []InstallStep{{Description: "Install .NET via Homebrew", Command: "brew", Args: []string{"install", "dotnet"}}}
+				}
+				return []InstallStep{{Description: "Install .NET via snap", Command: "sudo", Args: []string{"snap", "install", "dotnet-sdk", "--classic", "--channel=10.0"}}}
+			},
 		},
 		// --- Clojure ---
 		{
@@ -182,16 +241,23 @@ func buildToolDefs(repoRoot string) []toolDef {
 			parseVer:  parseClojureVersion,
 			compare:   compareExact,
 			readReq:   noReq,
+			installCmd: func(req, platform string) []InstallStep {
+				if platform == "darwin" {
+					return []InstallStep{{Description: "Install Clojure via Homebrew", Command: "brew", Args: []string{"install", "clojure/tools/clojure"}}}
+				}
+				return []InstallStep{{Description: "Install Clojure CLI", Command: "bash", Args: []string{"-c", "curl -L -O https://github.com/clojure/brew-install/releases/latest/download/linux-install.sh && chmod +x linux-install.sh && sudo ./linux-install.sh && rm linux-install.sh"}}}
+			},
 		},
 		// --- Dart/Flutter ---
 		{
-			name:     "dart",
-			binary:   "dart",
-			source:   "apps/a-demo-fe-dart-flutterweb/pubspec.yaml → environment.sdk",
-			args:     []string{"--version"},
-			parseVer: parseDartVersion,
-			compare:  compareGTE,
-			readReq:  func() string { v, _ := readDartSDKVersion(pubspecPath); return v },
+			name:       "dart",
+			binary:     "dart",
+			source:     "apps/a-demo-fe-dart-flutterweb/pubspec.yaml → environment.sdk",
+			args:       []string{"--version"},
+			parseVer:   parseDartVersion,
+			compare:    compareGTE,
+			readReq:    func() string { v, _ := readDartSDKVersion(pubspecPath); return v },
+			installCmd: nil, // Installed as part of Flutter
 		},
 		{
 			name:     "flutter",
@@ -201,6 +267,12 @@ func buildToolDefs(repoRoot string) []toolDef {
 			parseVer: parseFlutterVersion,
 			compare:  compareGTE,
 			readReq:  func() string { v, _ := readFlutterVersion(pubspecPath); return v },
+			installCmd: func(req, platform string) []InstallStep {
+				if platform == "darwin" {
+					return []InstallStep{{Description: "Install Flutter via Homebrew", Command: "brew", Args: []string{"install", "--cask", "flutter"}}}
+				}
+				return []InstallStep{{Description: "Install Flutter via snap", Command: "sudo", Args: []string{"snap", "install", "flutter", "--classic"}}}
+			},
 		},
 		// --- Infrastructure ---
 		{
@@ -211,6 +283,12 @@ func buildToolDefs(repoRoot string) []toolDef {
 			parseVer: parseDockerVersion,
 			compare:  compareExact,
 			readReq:  noReq,
+			installCmd: func(req, platform string) []InstallStep {
+				if platform == "darwin" {
+					return nil // Docker Desktop must be installed manually on macOS
+				}
+				return []InstallStep{{Description: "Install Docker", Command: "sudo", Args: []string{"apt-get", "install", "-y", "docker.io", "docker-compose-v2"}}}
+			},
 		},
 		{
 			name:     "jq",
@@ -220,6 +298,12 @@ func buildToolDefs(repoRoot string) []toolDef {
 			parseVer: parseJqVersion,
 			compare:  compareExact,
 			readReq:  noReq,
+			installCmd: func(req, platform string) []InstallStep {
+				if platform == "darwin" {
+					return []InstallStep{{Description: "Install jq via Homebrew", Command: "brew", Args: []string{"install", "jq"}}}
+				}
+				return []InstallStep{{Description: "Install jq", Command: "sudo", Args: []string{"apt-get", "install", "-y", "jq"}}}
+			},
 		},
 		// --- Playwright ---
 		{
@@ -230,6 +314,15 @@ func buildToolDefs(repoRoot string) []toolDef {
 			parseVer: parsePlaywrightVersion,
 			compare:  comparePlaywright,
 			readReq:  noReq,
+			installCmd: func(req, platform string) []InstallStep {
+				if platform == "darwin" {
+					return []InstallStep{{Description: "Install Playwright browsers", Command: "npx", Args: []string{"playwright", "install"}}}
+				}
+				return []InstallStep{
+					{Description: "Install Playwright browsers", Command: "npx", Args: []string{"playwright", "install"}},
+					{Description: "Install Playwright system deps", Command: "npx", Args: []string{"playwright", "install-deps"}},
+				}
+			},
 		},
 	}
 }

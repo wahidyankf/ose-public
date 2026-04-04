@@ -24,6 +24,7 @@ var (
 
 // doctor command delegation.
 var doctorCheckAllFn = doctor.CheckAll
+var doctorFixAllFn = doctor.FixAll
 
 // agents sync command delegation.
 var agentsSyncAllFn = agents.SyncAll

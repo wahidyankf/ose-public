@@ -164,75 +164,75 @@ Hugo removal and Playwright/version additions).
 - [x] Run `npm run doctor` — verify all tools checked (backward compatible)
 - [x] Update `governance/workflows/infra/development-environment-setup.md` minimal scope
       section to reference `doctor --scope minimal`
-- [ ] Commit: `feat(rhino-cli): add --scope flag to doctor for minimal tool checks`
+- [x] Commit: `feat(rhino-cli): add --scope flag to doctor for minimal tool checks`
 
 ### Phase 1: `doctor --fix` (auto-install)
 
 **Goal**: Add auto-install capability to doctor. Done last because it depends on the final tool
 list.
 
-- [ ] Create `apps/rhino-cli/internal/doctor/fixer.go` with `installStep` type and fix logic
-- [ ] Add `installCmd` field to `toolDef` struct in `tools.go` (takes `platform string` param)
-- [ ] Add platform detection: `runtime.GOOS` → `"darwin"` (macOS) or `"linux"` (Ubuntu)
-- [ ] Implement install commands for each tool with platform branching (see tech-docs.md table)
-  - [ ] git: `xcode-select --install`
-  - [ ] volta: `curl https://get.volta.sh | bash`
-  - [ ] node: `volta install node@{required}`
-  - [ ] npm: `volta install npm@{required}`
-  - [ ] java: `sdk install java {required}-tem`
-  - [ ] maven: `sdk install maven`
-  - [ ] golang: `brew install go`
-  - [ ] python: `brew install pyenv && pyenv install {required} && pyenv global {required}`
-  - [ ] rust: `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y`
+- [x] Create `apps/rhino-cli/internal/doctor/fixer.go` with `installStep` type and fix logic
+- [x] Add `installCmd` field to `toolDef` struct in `tools.go` (takes `platform string` param)
+- [x] Add platform detection: `runtime.GOOS` → `"darwin"` (macOS) or `"linux"` (Ubuntu)
+- [x] Implement install commands for each tool with platform branching (see tech-docs.md table)
+  - [x] git: `xcode-select --install`
+  - [x] volta: `curl https://get.volta.sh | bash`
+  - [x] node: `volta install node@{required}`
+  - [x] npm: `volta install npm@{required}`
+  - [x] java: `sdk install java {required}-tem`
+  - [x] maven: `sdk install maven`
+  - [x] golang: `brew install go`
+  - [x] python: `brew install pyenv && pyenv install {required} && pyenv global {required}`
+  - [x] rust: `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y`
         (must use `-y` for non-interactive install — bare `rustup-init` prompts interactively)
-  - [ ] cargo-llvm-cov: `cargo install cargo-llvm-cov`
-  - [ ] elixir: `asdf plugin add elixir && asdf install elixir {required}`
-  - [ ] erlang: `asdf plugin add erlang && asdf install erlang {required}`
-  - [ ] dotnet: `brew install dotnet`
-  - [ ] clojure: `brew install clojure/tools/clojure`
-  - [ ] dart/flutter: `brew install --cask flutter`
-  - [ ] docker: print manual install URL
-  - [ ] jq: `brew install jq`
-  - [ ] playwright: `npx playwright install` (macOS) / `npx playwright install && npx playwright install-deps` (Linux)
-- [ ] Implement Linux-specific install commands for each tool:
-- [ ] Linux — git: `sudo apt-get install -y git`
-- [ ] Linux — golang: download tarball from go.dev (apt `golang-go` is too old)
-- [ ] Linux — jq: `sudo apt-get install -y jq`
-- [ ] Linux — docker: `sudo apt-get install -y docker.io docker-compose-v2`
-- [ ] Linux — dotnet: `sudo snap install dotnet-sdk --classic --channel=10.0`
-- [ ] Linux — flutter: `sudo snap install flutter --classic`
-- [ ] Linux — clojure: `curl -L -O https://github.com/clojure/brew-install/releases/latest/download/linux-install.sh && chmod +x linux-install.sh && sudo ./linux-install.sh`
-- [ ] Linux — pyenv: install build deps + `curl https://pyenv.run | bash`
-- [ ] Linux — erlang (asdf): install build deps (`build-essential autoconf libncurses-dev
+  - [x] cargo-llvm-cov: `cargo install cargo-llvm-cov`
+  - [x] elixir: `asdf plugin add elixir && asdf install elixir {required}`
+  - [x] erlang: `asdf plugin add erlang && asdf install erlang {required}`
+  - [x] dotnet: `brew install dotnet`
+  - [x] clojure: `brew install clojure/tools/clojure`
+  - [x] dart/flutter: `brew install --cask flutter`
+  - [x] docker: print manual install URL
+  - [x] jq: `brew install jq`
+  - [x] playwright: `npx playwright install` (macOS) / `npx playwright install && npx playwright install-deps` (Linux)
+- [x] Implement Linux-specific install commands for each tool:
+- [x] Linux — git: `sudo apt-get install -y git`
+- [x] Linux — golang: download tarball from go.dev (apt `golang-go` is too old)
+- [x] Linux — jq: `sudo apt-get install -y jq`
+- [x] Linux — docker: `sudo apt-get install -y docker.io docker-compose-v2`
+- [x] Linux — dotnet: `sudo snap install dotnet-sdk --classic --channel=10.0`
+- [x] Linux — flutter: `sudo snap install flutter --classic`
+- [x] Linux — clojure: `curl -L -O https://github.com/clojure/brew-install/releases/latest/download/linux-install.sh && chmod +x linux-install.sh && sudo ./linux-install.sh`
+- [x] Linux — pyenv: install build deps + `curl https://pyenv.run | bash`
+- [x] Linux — erlang (asdf): install build deps (`build-essential autoconf libncurses-dev
 libssl-dev ...`) before `asdf install erlang`
-- [ ] Linux — playwright: `npx playwright install && npx playwright install-deps`
-- [ ] Add `--fix` flag to `doctor` cobra command in `cmd/doctor.go`
-- [ ] Add `--dry-run` flag to `doctor` cobra command (only effective with `--fix`)
-- [ ] Implement dry-run mode: print "Would install: {tool} via {command}" without executing
-- [ ] Implement fix loop: iterate missing tools, execute install commands, re-check after install
-- [ ] After installing Volta/SDKMAN/rustup, source the relevant shell init script so subsequent
+- [x] Linux — playwright: `npx playwright install && npx playwright install-deps`
+- [x] Add `--fix` flag to `doctor` cobra command in `cmd/doctor.go`
+- [x] Add `--dry-run` flag to `doctor` cobra command (only effective with `--fix`)
+- [x] Implement dry-run mode: print "Would install: {tool} via {command}" without executing
+- [x] Implement fix loop: iterate missing tools, execute install commands, re-check after install
+- [x] After installing Volta/SDKMAN/rustup, source the relevant shell init script so subsequent
       installs (node via volta, java via sdk, cargo-llvm-cov via cargo) can find the binary
-- [ ] Print progress: `Installing golang via brew install go...`
-- [ ] Print summary: `Fixed: 3, Failed: 1, Already OK: 15`
-- [ ] Return exit code 1 if any tools remain missing after fix
-- [ ] Create `apps/rhino-cli/internal/doctor/fixer_test.go` with mock tests
-  - [ ] Test: all tools OK → no install commands run
-  - [ ] Test: one tool missing → correct install command generated
-  - [ ] Test: install fails → error logged, continues to next tool
-  - [ ] Test: dependency ordering (volta before node)
-- [ ] Add Gherkin scenarios to `specs/apps/rhino/cli/gherkin/doctor.feature` for fix
+- [x] Print progress: `Installing golang via brew install go...`
+- [x] Print summary: `Fixed: 3, Failed: 1, Already OK: 15`
+- [x] Return exit code 1 if any tools remain missing after fix
+- [x] Create `apps/rhino-cli/internal/doctor/fixer_test.go` with mock tests
+  - [x] Test: all tools OK → no install commands run
+  - [x] Test: one tool missing → correct install command generated
+  - [x] Test: install fails → error logged, continues to next tool
+  - [x] Test: dependency ordering (volta before node)
+- [x] Add Gherkin scenarios to `specs/apps/rhino/cli/gherkin/doctor.feature` for fix
       (fix missing tool, skip already-installed, fix failure handling, dry-run preview)
-- [ ] Add new step constants to `apps/rhino-cli/cmd/steps_common_test.go` for fix/dry-run
+- [x] Add new step constants to `apps/rhino-cli/cmd/steps_common_test.go` for fix/dry-run
       scenarios (follows existing pattern: `stepDeveloperRunsDoctorCommand` etc.)
-- [ ] Register new step implementations in `apps/rhino-cli/cmd/doctor_test.go`
+- [x] Register new step implementations in `apps/rhino-cli/cmd/doctor_test.go`
       `InitializeScenario` function (godog loads all `.feature` files — unregistered steps fail)
-- [ ] Run `nx run rhino-cli:test:quick` — verify all tests pass
-- [ ] Test manually: run `doctor --fix` with all tools installed — verify "nothing to fix"
-- [ ] Test manually: run `doctor --fix --dry-run` — verify it prints what would be installed
+- [x] Run `nx run rhino-cli:test:quick` — verify all tests pass
+- [x] Test manually: run `doctor --fix` with all tools installed — verify "nothing to fix"
+- [x] Test manually: run `doctor --fix --dry-run` — verify it prints what would be installed
       without executing any commands
-- [ ] Update `governance/workflows/infra/development-environment-setup.md` to add `doctor --fix`
+- [x] Update `governance/workflows/infra/development-environment-setup.md` to add `doctor --fix`
       as the recommended setup path
-- [ ] Update `docs/how-to/hoto__setup-development-environment.md` to mention `doctor --fix`
+- [x] Update `docs/how-to/hoto__setup-development-environment.md` to mention `doctor --fix`
 - [ ] Commit: `feat(rhino-cli): add doctor --fix for auto-installing missing tools`
 
 ## Post-Delivery

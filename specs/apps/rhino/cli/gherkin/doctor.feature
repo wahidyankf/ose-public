@@ -41,3 +41,20 @@ Feature: Development Environment Health Check
     When the developer runs the doctor command
     Then the command exits successfully
     And the output reports each tool as passing
+
+  Scenario: Fix installs missing tools
+    Given a required development tool is not found in the system PATH
+    When the developer runs the doctor command with the fix flag
+    Then the output contains fix progress
+
+  Scenario: Fix with dry-run previews without executing
+    Given a required development tool is not found in the system PATH
+    When the developer runs the doctor command with fix and dry-run flags
+    Then the command exits with a failure code
+    And the output contains a dry-run preview
+
+  Scenario: Fix reports nothing to fix when all tools are present
+    Given all required development tools are present with matching versions
+    When the developer runs the doctor command with the fix flag
+    Then the command exits successfully
+    And the output reports nothing to fix

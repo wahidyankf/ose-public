@@ -31,6 +31,8 @@ func (s *doctorUnitSteps) before(_ context.Context, _ *godog.Scenario) (context.
 	quiet = false
 	output = "text"
 	scope = "full"
+	fix = false
+	dryRun = false
 	s.cmdErr = nil
 	s.cmdOutput = ""
 	s.mockResult = nil
@@ -50,6 +52,7 @@ func (s *doctorUnitSteps) before(_ context.Context, _ *godog.Scenario) (context.
 func (s *doctorUnitSteps) after(_ context.Context, _ *godog.Scenario, _ error) (context.Context, error) {
 	// Restore all real implementations
 	doctorCheckAllFn = doctor.CheckAll
+	doctorFixAllFn = doctor.FixAll
 	osGetwd = os.Getwd
 	osStat = os.Stat
 	return context.Background(), nil
@@ -222,6 +225,64 @@ func (s *doctorUnitSteps) theOutputChecksOnlyTheMinimalToolSet() error {
 	return nil
 }
 
+func (s *doctorUnitSteps) theDeveloperRunsTheDoctorCommandWithFix() error {
+	fix = true
+	dryRun = false
+	// Mock fixAll to simulate a successful install
+	doctorFixAllFn = func(result *doctor.DoctorResult, opts doctor.CheckOptions, fixOpts doctor.FixOptions, printf func(string, ...any)) doctor.FixResult {
+		fr := doctor.FixResult{}
+		for _, check := range result.Checks {
+			if check.Status == doctor.StatusMissing {
+				printf("Installing %s: mock install\n", check.Name)
+				fr.Fixed++
+			} else {
+				fr.AlreadyOK++
+			}
+		}
+		return fr
+	}
+	return s.theDeveloperRunsTheDoctorCommand()
+}
+
+func (s *doctorUnitSteps) theDeveloperRunsTheDoctorCommandWithFixDryRun() error {
+	fix = true
+	dryRun = true
+	// Mock fixAll to simulate a dry-run preview
+	doctorFixAllFn = func(result *doctor.DoctorResult, opts doctor.CheckOptions, fixOpts doctor.FixOptions, printf func(string, ...any)) doctor.FixResult {
+		fr := doctor.FixResult{}
+		for _, check := range result.Checks {
+			if check.Status == doctor.StatusMissing {
+				printf("Would install: %s via mock command\n", check.Name)
+			} else {
+				fr.AlreadyOK++
+			}
+		}
+		return fr
+	}
+	return s.theDeveloperRunsTheDoctorCommand()
+}
+
+func (s *doctorUnitSteps) theOutputContainsFixProgress() error {
+	if !strings.Contains(s.cmdOutput, "Fix summary") && !strings.Contains(s.cmdOutput, "Installing") {
+		return fmt.Errorf("expected fix progress output, got: %s", s.cmdOutput)
+	}
+	return nil
+}
+
+func (s *doctorUnitSteps) theOutputContainsDryRunPreview() error {
+	if !strings.Contains(s.cmdOutput, "Would install") && !strings.Contains(s.cmdOutput, "Skip:") {
+		return fmt.Errorf("expected dry-run preview, got: %s", s.cmdOutput)
+	}
+	return nil
+}
+
+func (s *doctorUnitSteps) theOutputReportsNothingToFix() error {
+	if !strings.Contains(s.cmdOutput, "Nothing to fix") {
+		return fmt.Errorf("expected 'Nothing to fix', got: %s", s.cmdOutput)
+	}
+	return nil
+}
+
 // makeAllOKChecks creates n tool checks all with StatusOK.
 func makeAllOKChecks(n int) []doctor.ToolCheck {
 	names := []string{"git", "volta", "node", "npm", "java", "maven", "golang",
@@ -262,6 +323,11 @@ func TestUnitDoctor(t *testing.T) {
 			sc.Step(stepJSONListsEveryCheckedToolWithStatus, s.theJSONListsEveryCheckedToolWithItsStatus)
 			sc.Step(stepDeveloperRunsDoctorWithMinimalScope, s.theDeveloperRunsTheDoctorCommandWithMinimalScope)
 			sc.Step(stepOutputChecksOnlyMinimalToolSet, s.theOutputChecksOnlyTheMinimalToolSet)
+			sc.Step(stepDeveloperRunsDoctorWithFix, s.theDeveloperRunsTheDoctorCommandWithFix)
+			sc.Step(stepDeveloperRunsDoctorWithFixDryRun, s.theDeveloperRunsTheDoctorCommandWithFixDryRun)
+			sc.Step(stepOutputContainsFixProgress, s.theOutputContainsFixProgress)
+			sc.Step(stepOutputContainsDryRunPreview, s.theOutputContainsDryRunPreview)
+			sc.Step(stepOutputReportsNothingToFix, s.theOutputReportsNothingToFix)
 		},
 		Options: &godog.Options{
 			Format:   "pretty",

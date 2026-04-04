@@ -7,7 +7,11 @@ import (
 	"github.com/wahidyankf/open-sharia-enterprise/apps/rhino-cli/internal/doctor"
 )
 
-var scope string
+var (
+	scope  string
+	fix    bool
+	dryRun bool
+)
 
 var doctorCmd = &cobra.Command{
 	Use:   "doctor",
@@ -55,7 +59,16 @@ Status codes:
   rhino-cli doctor -o markdown
 
   # Verbose output with duration
-  rhino-cli doctor --verbose`,
+  rhino-cli doctor --verbose
+
+  # Auto-install missing tools
+  rhino-cli doctor --fix
+
+  # Preview what would be installed
+  rhino-cli doctor --fix --dry-run
+
+  # Fix only core tools
+  rhino-cli doctor --fix --scope minimal`,
 	SilenceErrors: true,
 	RunE:          runDoctor,
 }
@@ -63,6 +76,8 @@ Status codes:
 func init() {
 	rootCmd.AddCommand(doctorCmd)
 	doctorCmd.Flags().StringVar(&scope, "scope", "full", "tool scope: full or minimal")
+	doctorCmd.Flags().BoolVar(&fix, "fix", false, "attempt to install missing tools")
+	doctorCmd.Flags().BoolVar(&dryRun, "dry-run", false, "preview what --fix would install (only effective with --fix)")
 }
 
 func runDoctor(cmd *cobra.Command, args []string) error {
@@ -71,7 +86,8 @@ func runDoctor(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("failed to find git repository root: %w", err)
 	}
 
-	result, err := doctorCheckAllFn(doctor.CheckOptions{RepoRoot: repoRoot, Scope: doctor.Scope(scope)})
+	checkOpts := doctor.CheckOptions{RepoRoot: repoRoot, Scope: doctor.Scope(scope)}
+	result, err := doctorCheckAllFn(checkOpts)
 	if err != nil {
 		return fmt.Errorf("doctor check failed: %w", err)
 	}
@@ -82,6 +98,24 @@ func runDoctor(cmd *cobra.Command, args []string) error {
 		markdown: func() string { return doctor.FormatMarkdown(result) },
 	}); err != nil {
 		return err
+	}
+
+	if fix && result.MissingCount > 0 {
+		printf := func(format string, a ...any) {
+			fmt.Fprintf(cmd.OutOrStdout(), format, a...)
+		}
+		fixResult := doctorFixAllFn(result, checkOpts, doctor.FixOptions{DryRun: dryRun}, printf)
+		fmt.Fprint(cmd.OutOrStdout(), doctor.FormatFixSummary(fixResult))
+		if fixResult.Failed > 0 {
+			return fmt.Errorf("%d tool(s) failed to install", fixResult.Failed)
+		}
+		if !dryRun && fixResult.Fixed > 0 {
+			return nil // Tools were fixed, don't report missing
+		}
+	}
+
+	if fix && result.MissingCount == 0 {
+		fmt.Fprintf(cmd.OutOrStdout(), "\nNothing to fix — all tools are installed.\n")
 	}
 
 	// Only missing tools cause non-zero exit; version warnings are advisory

@@ -32,8 +32,10 @@ same Nx build system and git hooks.
 
 - **Minimal** (~15 minutes) — Node.js + Go + Docker + jq. Covers git hooks, TypeScript/Go
   projects, and basic E2E tests.
-- **Full** (~45 minutes) — All 19 tools. Required if you work on Java, Kotlin, Python, Rust,
+- **Full** — All tools checked by doctor. Required if you work on Java, Kotlin, Python, Rust,
   Elixir, F#, C#, Clojure, or Dart projects.
+- **Automated** — Run `npm run doctor -- --fix` to auto-install missing tools. Use
+  `npm run doctor -- --fix --dry-run` to preview what would be installed.
 
 ## Prerequisites
 

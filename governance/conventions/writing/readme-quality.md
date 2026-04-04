@@ -245,18 +245,18 @@ nx graph                # Visualize dependencies
 
 **FAIL: Bad** (corporate, distant):
 ```markdown
-This project is licensed under the MIT License. Users are granted broad rights while maintaining proper attribution requirements as specified in the license agreement.
+This project is licensed under the FSL-1.1-MIT License. Users are granted broad rights while maintaining proper attribution requirements as specified in the license agreement.
 ````
 
 **PASS: Good** (friendly, clear):
 
 ```markdown
-This project is open-source and licensed under the MIT License. This means you are free to use this project for:
+This project is source-available under the FSL-1.1-MIT License. This means you are free to use this project for:
 
-- **Commercial projects** - Build commercial products and services
+- **Commercial projects** - Build commercial products and services (except competing platforms)
 - **Enterprise solutions** - Deploy in enterprise environments
 
-PASS: **No restrictions.** You can use this code for anything you want, with complete freedom and flexibility.
+PASS: **Converts to MIT after 2 years.** Each version becomes fully open-source on a rolling basis.
 ```
 
 **Encourage, Don't Command**: Invite participation rather than demand it.

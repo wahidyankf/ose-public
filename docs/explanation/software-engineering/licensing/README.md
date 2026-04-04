@@ -22,6 +22,7 @@ Open-source licenses impose conditions on how software may be used, modified, an
 ## Documents
 
 - [Licensing Decisions](ex-soen-li__licensing-decisions.md) - Analysis and decisions for notable dependencies: Liquibase FSL-1.1-ALv2, Hibernate LGPL-2.1, sharp-libvips LGPL-3.0, and Logback EPL-1.0/LGPL-2.1. Includes the quarterly audit schedule.
+- [Production Dependency Compatibility](ex-soen-li__dependency-compatibility.md) - Audit of all production dependency licenses for FSL-1.1-MIT compatibility, including LGPL elimination and MPL-2.0 analysis (2026-04-04).
 
 ## Related Documentation
 

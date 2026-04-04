@@ -184,7 +184,7 @@ Our tech stack reflects the progressive complexity approach — chosen for prove
 
 ## License
 
-This project is licensed under the **MIT License** - giving you complete freedom to use, modify, and distribute the code for any purpose, including commercial projects.
+This project is licensed under the **FSL-1.1-MIT (Functional Source License)** — a source-available license with a non-compete clause. You can use, modify, and distribute the code for any purpose except offering a competing commercial Sharia-compliant enterprise platform. The license converts to MIT on a rolling per-version basis: each commit becomes MIT-licensed 2 years after its first public distribution.
 
 ## Get Involved
 
@@ -215,4 +215,4 @@ While we're not yet accepting public contributions, you can stay connected and s
 - **Main Repository**: [github.com/wahidyankf/open-sharia-enterprise](https://github.com/wahidyankf/open-sharia-enterprise)
 - **Project Updates**: [oseplatform.com/updates](/updates/) - monthly, every 2nd Sunday
 - **Educational Platform**: [ayokoding.com](https://ayokoding.com)
-- **License**: MIT - complete freedom to use, modify, and distribute
+- **License**: FSL-1.1-MIT - source-available with 2-year rolling conversion to MIT

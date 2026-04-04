@@ -172,7 +172,7 @@ version: 1.0.0
 status: published
 priority: high
 visibility: public
-license: MIT
+license: FSL-1.1-MIT
 created: 2025-12-15
 updated: 2025-12-15
 reviewed: 2025-12-15

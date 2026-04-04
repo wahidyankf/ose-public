@@ -181,4 +181,13 @@ For complete principles, see [governance/principles/](./governance/principles/RE
 
 ## 📜 License
 
-**MIT License** - Complete freedom to use, modify, and distribute for any purpose including commercial projects, enterprise solutions, and education. No restrictions. See [LICENSE](./LICENSE) for details.
+**FSL-1.1-MIT (Functional Source License)** — Source-available with a non-compete clause.
+You can use, modify, and distribute this software for any purpose except offering a competing
+commercial Sharia-compliant enterprise platform.
+
+The license converts to MIT on a **rolling per-version basis**: each commit becomes MIT-licensed
+2 years after its first public distribution. Code from 2026-04-04 becomes MIT on 2028-04-04,
+code from 2026-06-15 becomes MIT on 2028-06-15, and so on. To use a fully MIT version, check
+out any commit older than 2 years.
+
+See [LICENSE](./LICENSE) for the full license text.

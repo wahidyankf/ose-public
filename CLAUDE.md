@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **open-sharia-enterprise** - Enterprise platform for Sharia-compliant business systems built with Nx monorepo architecture.
 
 **Status**: Phase 1 (OrganicLever - Productivity Tracker)
-**License**: MIT
+**License**: FSL-1.1-MIT
 **Main Branch**: `main` (Trunk Based Development)
 
 ### Tech Stack
@@ -685,7 +685,7 @@ Project planning in `plans/` folder:
 ## Important Notes
 
 - **Do NOT stage or commit** unless explicitly instructed. Per-request commits are one-time only.
-- **License**: MIT
+- **License**: FSL-1.1-MIT
 - **AI agent invocation**: Use natural language to invoke agents/workflows
 - **Token budget**: Don't worry about token limits - we have reliable compaction
 - **No time estimates**: Never give time estimates. Focus on what needs to be done, not how long it takes.

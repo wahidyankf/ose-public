@@ -8,8 +8,8 @@ tags:
   - documentation
   - open-source
   - repository-standards
-created: 2025-12-05
-updated: 2025-12-05
+created: 2026-04-04
+updated: 2026-04-04
 ---
 
 # OSS Documentation Convention
@@ -184,7 +184,7 @@ We welcome contributions! Please read our [Contributing Guide](../../../CONTRIBU
 
 ## License
 
-This project is licensed under the FSL-1.1-MIT License - see the [LICENSE](./LICENSE) file for details.
+This project uses per-directory licensing: FSL-1.1-MIT for product apps and behavioral specifications (WHAT), MIT for shared libraries and reference implementations (HOW). See [LICENSING-NOTICE.md](./LICENSING-NOTICE.md) for details.
 ````
 
 ### References
@@ -721,7 +721,7 @@ Instances of abusive, harassing, or otherwise unacceptable behavior may be repor
 - Include copyright holder name and year
 - Do not modify standard license text (except placeholders)
 
-**Current Project:** FSL-1.1-MIT License (already present)
+**Current Project:** Per-directory licensing strategy with FSL-1.1-MIT (product apps, behavioral specifications) and MIT (shared libraries, reference implementations). See [Per-Directory Licensing Convention](../structure/licensing.md) for full details.
 
 ### CHANGELOG.md
 
@@ -765,7 +765,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Security fixes
 
-## [1.0.0] - 2025-12-05
+## [1.0.0] - 2026-04-04
 
 ### Added
 
@@ -920,4 +920,4 @@ When setting up a new repository:
 
 ---
 
-**Last Updated**: 2025-12-05
+**Last Updated**: 2026-04-04

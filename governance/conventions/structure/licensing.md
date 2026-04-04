@@ -85,7 +85,7 @@ Anything that describes **what the product does** (behavioral specifications) MU
 
 This includes:
 
-- **`specs/`** -- MUST have its own FSL-1.1-MIT LICENSE file. Contains Gherkin features, OpenAPI contracts, and C4 architecture models that define product behavior. All specs are FSL regardless of whether the corresponding implementation code is MIT (e.g., demo app specs are FSL even though demo app code is MIT).
+- **`specs/`** -- MUST have its own FSL-1.1-MIT LICENSE file at the root. Contains Gherkin features, OpenAPI contracts, and C4 architecture models that define product behavior. Product specs are FSL by default. **Exception**: demo app specs (`specs/apps/a-demo/`) MUST have their own MIT LICENSE file — they are part of the educational package, consistent with demo implementation code being MIT.
 - **E2E test suites** -- E2E tests are executable behavioral specifications. They describe expected HTTP responses, UI states, user flows, and error handling. All E2E test apps MUST be FSL-licensed:
   - Product E2E tests (`*-e2e` apps for product families) inherit root FSL
   - Demo E2E tests (`apps/a-demo-be-e2e/`, `apps/a-demo-fe-e2e/`) MUST have their own FSL-1.1-MIT LICENSE file (even though the demo implementation code they test is MIT)
@@ -103,7 +103,7 @@ A new library defaults to MIT. To override, place a different LICENSE file (e.g.
 
 #### Demo and Reference Implementation Code (MIT)
 
-All demo application **implementation** directories (`apps/a-demo-be-*`, `apps/a-demo-fe-*`, `apps/a-demo-fs-*`, excluding `*-e2e`) MUST use the MIT license. These are reference implementations meant for learning and have no competing-use restrictions. Note: their E2E tests and specs are FSL (see Behavioral Specifications above).
+All demo application **implementation** directories (`apps/a-demo-be-*`, `apps/a-demo-fe-*`, `apps/a-demo-fs-*`, excluding `*-e2e`) MUST use the MIT license. These are reference implementations meant for learning and have no competing-use restrictions. Their specs (`specs/apps/a-demo/`) are also MIT. Note: their E2E tests are FSL (see Behavioral Specifications above).
 
 ### Root LICENSE Fallback
 
@@ -248,11 +248,14 @@ To verify licensing compliance across the repository:
 
 1. Every directory listed as a product application has a FSL-1.1-MIT LICENSE file
 2. Every `libs/*` directory has an MIT LICENSE file
-3. Every `apps/a-demo-*` directory has an MIT LICENSE file
-4. The root LICENSE file is FSL-1.1-MIT
-5. FSL-1.1-MIT files use the unmodified template text
-6. All LICENSE files use the correct copyright notice format
-7. `LICENSING-NOTICE.md` accurately reflects the current licensing state
+3. Every `apps/a-demo-*` **implementation** directory (excluding `*-e2e`) has an MIT LICENSE file
+4. Every `apps/a-demo-*-e2e` directory has a FSL-1.1-MIT LICENSE file (E2E tests are behavioral specifications)
+5. The `specs/` root directory has a FSL-1.1-MIT LICENSE file
+6. The `specs/apps/a-demo/` directory has an MIT LICENSE file (demo specs are educational)
+7. The root LICENSE file is FSL-1.1-MIT
+8. FSL-1.1-MIT files use the unmodified template text
+9. All LICENSE files use the correct copyright notice format
+10. `LICENSING-NOTICE.md` accurately reflects the current licensing state
 
 ## References
 

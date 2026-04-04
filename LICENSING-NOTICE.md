@@ -39,8 +39,9 @@ Anything that describes **what the product does** (behavioral specifications) is
 because these materials can be used to clean-room engineer a competing product:
 
 - **`specs/`** — Gherkin feature files, OpenAPI contracts, C4 architecture models. Has its own
-  FSL-1.1-MIT LICENSE file. All specs are FSL regardless of whether the corresponding implementation
-  code is MIT.
+  FSL-1.1-MIT LICENSE file at the root. Product specs (ayokoding, organiclever, oseplatform, rhino)
+  are FSL. **Exception**: demo app specs (`specs/apps/a-demo/`) are MIT — they have their own MIT
+  LICENSE file, consistent with demo implementation code being educational.
 - **`apps/a-demo-be-e2e/`** — Playwright E2E tests for demo backends. Describes expected HTTP
   responses, API behavior, and error handling. Has its own FSL-1.1-MIT LICENSE file.
 - **`apps/a-demo-fe-e2e/`** — Playwright E2E tests for demo frontends. Describes expected UI

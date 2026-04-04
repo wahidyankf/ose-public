@@ -10,7 +10,7 @@ tags:
   - accessibility
   - writing
 created: 2025-12-07
-updated: 2025-12-07
+updated: 2026-04-04
 ---
 
 # README Quality Convention
@@ -251,12 +251,14 @@ This project is licensed under the FSL-1.1-MIT License. Users are granted broad 
 **PASS: Good** (friendly, clear):
 
 ```markdown
-This project is source-available under the FSL-1.1-MIT License. This means you are free to use this project for:
+This project uses a per-directory licensing strategy:
 
-- **Commercial projects** - Build commercial products and services (except competing platforms)
-- **Enterprise solutions** - Deploy in enterprise environments
+- **Implementation code** (HOW) -- MIT license (shared libraries, demo/reference apps)
+- **Behavioral specifications** (WHAT) -- FSL-1.1-MIT (specs, E2E tests, product apps)
 
-PASS: **Converts to MIT after 2 years.** Each version becomes fully open-source on a rolling basis.
+FSL-licensed code **converts to MIT after 2 years** on a rolling per-commit basis.
+
+See LICENSING-NOTICE.md and the Per-Directory Licensing Convention for details.
 ```
 
 **Encourage, Don't Command**: Invite participation rather than demand it.

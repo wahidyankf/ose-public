@@ -25,11 +25,34 @@ All package metadata files that declare a license must be updated:
 
 ### FR-3: Documentation References
 
-All documentation referencing the license must be updated to accurately describe FSL-1.1-MIT:
+All project-owned documentation referencing the project's license must be updated to accurately
+describe FSL-1.1-MIT:
 
 - `README.md` — License section
 - `CLAUDE.md` — Two `License: MIT` references
 - `governance/vision/README.md` — Vision statement referencing MIT
+- `apps/oseplatform-web/content/about.md` — License section and key resources line
+- `governance/conventions/writing/oss-documentation.md` — MIT badge example, README template
+  license section, and "Current Project: MIT License" declaration
+- `governance/conventions/writing/readme-quality.md` — Good/bad example text using MIT
+- `governance/principles/general/simplicity-over-complexity.md` — `license: MIT` in YAML example
+- `docs/how-to/hoto__add-new-lib.md` — `MIT` in new-lib README template
+
+Files referencing third-party dependency licenses (e.g., "DbUp MIT license") or other products'
+licenses (e.g., "OpenCode MIT-licensed") are NOT updated — they describe external projects, not
+this project's license.
+
+Historical plan files in `plans/done/` are NOT updated — they are records of what was true at the
+time of completion.
+
+### FR-6: External Platform Attributes
+
+All external platform attributes that declare the project's license or openness must be updated:
+
+- **GitHub repository description**: Change "Open-source" to "Source-available" via `gh repo edit`
+- **GitHub license detection**: GitHub auto-detects from the LICENSE file. FSL-1.1-MIT is not in
+  GitHub's recognized license list, so the repo will show "Other" or no license badge. This is
+  expected and acceptable — the LICENSE file itself is authoritative.
 
 ### FR-4: Third-Party Code Preservation
 
@@ -114,6 +137,31 @@ Feature: Repository is licensed under FSL-1.1-MIT
     Given "governance/vision/README.md"
     When I search for license references
     Then the text describes FSL-1.1-MIT with eventual MIT conversion
+
+  Scenario: OSE Platform about page reflects FSL-1.1-MIT
+    Given "apps/oseplatform-web/content/about.md"
+    When I read the License section and key resources
+    Then both references describe FSL-1.1-MIT (not MIT)
+
+  Scenario: Convention docs reflect FSL-1.1-MIT
+    Given the following convention files:
+      | governance/conventions/writing/oss-documentation.md        |
+      | governance/conventions/writing/readme-quality.md           |
+    When I search for license examples and declarations
+    Then project-specific examples use FSL-1.1-MIT
+    And generic license lists (e.g., "MIT, Apache 2.0, GPL") remain unchanged
+
+  Scenario: Template and example files use FSL-1.1-MIT
+    Given the following template/example files:
+      | governance/principles/general/simplicity-over-complexity.md |
+      | docs/how-to/hoto__add-new-lib.md                            |
+    When I search for license references
+    Then project-specific license fields show FSL-1.1-MIT
+
+  Scenario: GitHub repository description says source-available
+    Given the GitHub repository wahidyankf/open-sharia-enterprise
+    When I check the repository description
+    Then it contains "Source-available" (not "Open-source")
 
   Scenario: Third-party licenses are preserved
     Given the following vendored license files:

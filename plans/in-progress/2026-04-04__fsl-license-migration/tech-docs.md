@@ -210,6 +210,39 @@ To:
   non-compete for 2 years, then converts to MIT
 ```
 
+### apps/oseplatform-web/content/about.md Updates
+
+Two references:
+
+- License section (~line 187): Replace "MIT License" description with FSL-1.1-MIT explanation
+  including per-version rolling conversion
+- Key Resources (~line 218): Change `License: MIT - complete freedom to use, modify, and
+distribute` to `License: FSL-1.1-MIT - source-available with 2-year rolling conversion to MIT`
+
+### Convention and Template Updates
+
+These files use MIT as a project-specific example. Update only the project-specific references,
+not generic license lists:
+
+| File                                                          | What to Change                                                                              | What NOT to Change                           |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| `governance/conventions/writing/oss-documentation.md`         | Badge (`license-MIT-blue`), README template license section, "Current Project: MIT License" | Generic lists ("MIT, Apache 2.0, GPL, etc.") |
+| `governance/conventions/writing/readme-quality.md`            | Good/bad example text ("licensed under the MIT License")                                    | The instructional text about writing style   |
+| `governance/principles/general/simplicity-over-complexity.md` | `license: MIT` in YAML example                                                              | Everything else in the principle doc         |
+| `docs/how-to/hoto__add-new-lib.md`                            | `MIT` in new-lib README template                                                            | Everything else in the how-to guide          |
+
+### GitHub Repository Attributes
+
+```bash
+# Update repository description
+gh repo edit wahidyankf/open-sharia-enterprise \
+  --description "Source-available Sharia-compliant enterprise platform. Phase 1: Building OrganicLever productivity tracker. Learning in public. No timelines—building it right."
+```
+
+GitHub's license detection reads the LICENSE file and matches against a known list. FSL-1.1-MIT is
+not in GitHub's recognized license list, so the repository will show "Other" or no license badge
+after the LICENSE file is replaced. This is expected and documented by FSL's FAQ.
+
 ## Production Dependency Compatibility
 
 A full dependency audit (2026-04-04) examined all production (non-demo) apps. Demo apps (`a-demo-*`)

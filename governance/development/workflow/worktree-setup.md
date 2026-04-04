@@ -30,7 +30,7 @@ This practice respects the following core principles:
 
 ## Conventions Implemented/Respected
 
-This practice does not directly implement documentation conventions (Layer 2). The related development practices it builds on ([AI Agents Convention](../agents/ai-agents.md) and [Reproducible Environments](./reproducible-environments.md)) are Layer 3 documents and are referenced via the Related Documentation section below.
+This practice does not directly implement Layer 2 documentation conventions. The operational context for this practice is governed by development practices referenced in the Related Documentation section.
 
 ## The Rule
 

@@ -33,6 +33,9 @@ These standards define **HOW to maintain and validate quality**, covering automa
 - [Repository Validation Methodology Convention](./repository-validation.md) - Standard validation methods and patterns for repository consistency checking
 - [No Machine-Specific Information in Commits](./no-machine-specific-commits.md) - Practice prohibiting absolute local paths, usernames, IP addresses, and environment-specific configuration from committed code
 - [Specs-Application Sync Convention](./specs-application-sync.md) - Bidirectional synchronization requirement between specs/ and application code in apps/, libs/, and apps-labs/: C4 diagrams, Gherkin feature files, and specs READMEs must reflect actual architecture and behavior
+- [Manual Behavioral Verification Convention](./manual-behavioral-verification.md) - Practice requiring manual verification of UI features and API endpoints using Playwright MCP tools and curl after implementing changes
+- [Feature Change Completeness Convention](./feature-change-completeness.md) - Practice requiring all related specs, contracts, tests, and documentation to be updated as part of any feature change
+- [CI Blocker Resolution Convention](./ci-blocker-resolution.md) - Practice mandating that preexisting CI blockers are investigated at the root cause and fixed properly, never bypassed
 
 ## Companion Documents
 
@@ -66,4 +69,4 @@ This set of development practices respects the following conventions:
 
 ---
 
-**Last Updated**: 2026-01-01
+**Last Updated**: 2026-04-04

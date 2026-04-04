@@ -119,6 +119,9 @@ Development practices in this directory fall into several categories:
 - [Three-Level Testing Standard](./quality/three-level-testing-standard.md) - Mandatory three-level testing architecture for all projects: unit (all mocked dependencies + Gherkin specs for demo-be), integration (real PostgreSQL, no HTTP for demo-be; in-process mocking for MSW/Godog projects), E2E (full stack + Gherkin specs via Playwright for web apps and API backends)
 - [No Machine-Specific Information in Commits](./quality/no-machine-specific-commits.md) - Practice prohibiting absolute local paths, usernames, IP addresses, and environment-specific configuration from committed code
 - [Specs-Application Sync Convention](./quality/specs-application-sync.md) - Bidirectional synchronization requirement between specs/ and application code in apps/, libs/, and apps-labs/: C4 diagrams, Gherkin feature files, and specs READMEs must reflect actual architecture and behavior
+- [Manual Behavioral Verification Convention](./quality/manual-behavioral-verification.md) - Practice requiring manual verification of UI features and API endpoints using Playwright MCP tools and curl after implementing changes
+- [Feature Change Completeness Convention](./quality/feature-change-completeness.md) - Practice requiring all related specs, contracts, tests, and documentation to be updated as part of any feature change
+- [CI Blocker Resolution Convention](./quality/ci-blocker-resolution.md) - Practice mandating that preexisting CI blockers are investigated at the root cause and fixed properly, never bypassed
 
 ### Pattern Documentation
 
@@ -177,4 +180,4 @@ These companion files exist in each subdirectory: `workflow/`, `quality/`, `patt
 
 ---
 
-**Last Updated**: 2026-04-03
+**Last Updated**: 2026-04-04

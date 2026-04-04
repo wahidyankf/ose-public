@@ -747,7 +747,7 @@ Skills ──does NOT govern──> Agents
 
 ✅ **Correct**:
 
-- **Layer 2 (Conventions)**: WHAT documentation rules (scope: docs/, plans/, Hugo sites)
+- **Layer 2 (Conventions)**: WHAT documentation rules (scope: docs/, plans/, web content)
 - **Layer 3 (Development)**: HOW software practices (scope: source code, builds, git, agents)
 - Layer 3 practices must respect Layer 2 conventions
 

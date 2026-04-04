@@ -424,7 +424,7 @@ The `apps/ayokoding-web/` project uses a production deployment branch:
 
 - **Branch**: `prod-ayokoding-web`
 - **Purpose**: Triggers automatic deployment to ayokoding.com via Vercel
-- **Location**: Deploys `apps/ayokoding-web/` (Nx-integrated Hugo application)
+- **Location**: Deploys `apps/ayokoding-web/` (Next.js 16 application)
 - **Workflow** (automated):
   1. All development happens in `main`
   2. The `test-and-deploy-ayokoding-web.yml` GitHub Actions workflow runs at 6 AM and 6 PM WIB, detects changes in `apps/ayokoding-web/`, builds, then force-pushes `main` to `prod-ayokoding-web`

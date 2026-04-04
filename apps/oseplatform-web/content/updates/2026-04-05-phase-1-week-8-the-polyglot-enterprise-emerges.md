@@ -59,7 +59,7 @@ These specifications are consumed at all three testing levels. Unit tests mock d
 
 ```mermaid
 %% Color Palette: Purple #CC78BC (contracts), Blue #0173B2 (scripting), Orange #DE8F05 (JVM), Teal #029E73 (functional)
-graph TD
+graph LR
     OA["OpenAPI 3.1 Contract<br/>specs/apps/a-demo/contracts/"]:::contract
     GK["Gherkin BDD Specs<br/>14 features, 78 scenarios"]:::contract
 
@@ -166,7 +166,7 @@ Kotlin/Ktor brings JVM reliability with modern language features. Coroutines mak
 
 **Functional Family — F#/Giraffe, Elixir/Phoenix, Clojure/Pedestal**
 
-F# surprised us. The function-record pattern for repository abstraction—defining a record type whose fields are functions—is elegant and testable. Computation expressions handle async and error flows cleanly. AltCover with `--linecover` avoids the BRDA inflation that `task{}` expressions cause in branch coverage. DbUp migrations are simple and reliable. This experience directly influenced the decision to pivot OrganicLever's backend to F#/Giraffe.
+F# surprised us. The function-record pattern for repository abstraction—defining a record type whose fields are functions—is elegant and testable. Computation expressions handle async and error flows cleanly. AltCover with `--linecover` avoids the BRDA inflation that `task{}` expressions cause in branch coverage. DbUp migrations are simple and reliable. This experience settled the question: F#/Giraffe is the chosen backend for OrganicLever.
 
 Elixir/Phoenix brings the BEAM's concurrency model. Pattern matching, immutability by default, and the supervision tree are genuinely different from everything else in this list. The Cabbage library for Gherkin required a custom fork (`libs/elixir-cabbage`) to work with our testing patterns, and OpenAPI codegen needed a custom library (`libs/elixir-openapi-codegen`). The ecosystem is smaller but the runtime characteristics are distinctive.
 
@@ -293,27 +293,25 @@ graph LR
 
 OrganicLever—the Phase 1 product that exercises the platform—underwent a significant architectural shift during this period.
 
-### The Backend Pivot
+### The Chosen Stack
 
-The Week 4 update described OrganicLever's backend as Spring Boot 4.0.3 on Java 25. That backend served its purpose: it validated the CI/CD pipeline, E2E testing patterns, and Docker Compose workflows. But the polyglot backend experiment revealed a better fit.
+The Week 4 update described OrganicLever's backend as Spring Boot 4.0.3 on Java 25. That backend served its purpose: it validated the CI/CD pipeline, E2E testing patterns, and Docker Compose workflows. The polyglot experiment settled the question.
 
-F#/Giraffe emerged as the preferred stack after building the demo backend in F#. The function-record pattern for repository abstraction, computation expressions for async and error handling, and the .NET ecosystem's maturity for enterprise applications aligned well with the project's functional programming principles. The decision was pragmatic—F#'s strengths matched our domain, and the demo implementation proved those strengths were not theoretical.
+**F#/Giraffe is the chosen backend.** The function-record pattern for repository abstraction, computation expressions for async and error handling, and the .NET ecosystem's maturity for enterprise applications aligned well with the project's functional programming principles. The decision was pragmatic—F#'s strengths matched our domain, and the demo implementation proved those strengths were not theoretical.
 
-The `organiclever-fullstack-evolution` plan tracked the migration. The backend now runs F#/Giraffe with PostgreSQL, DbUp migrations, AltCover for test coverage, and the same three-level testing standard applied to the demo backends.
+**Next.js with Effect-TS and TypeScript is the chosen web frontend.** The combination of React Server Components for rendering, Effect for type-safe error handling and composability, and TypeScript for the full stack gives a frontend that matches the functional discipline of the F# backend. The demo experiments with TanStack Start and Flutter Web informed this decision—both are capable frameworks, but Next.js + Effect-TS gives the strongest alignment with our functional programming principles and the broadest ecosystem support.
 
-### Contract-Driven Development
+**Mobile stack remains undecided.** Flutter is a candidate given the demo frontend evaluation, but the decision will come later when OrganicLever's domain features are mature enough to warrant a mobile client.
 
-OrganicLever adopted the same contract-driven pattern proven by the demo backends. An OpenAPI 3.1 specification at `specs/apps/organiclever/contracts/` defines the API contract. The `organiclever-contracts` project lints and bundles the specification. Both `organiclever-be` and `organiclever-fe` have `codegen` Nx targets generating types into `generated-contracts/`.
-
-This means frontend and backend developers work against the same specification. Type mismatches between what the frontend expects and what the backend provides are caught at build time, not at runtime.
+The backend now runs F#/Giraffe with PostgreSQL, DbUp migrations, AltCover for test coverage, and the same three-level testing and contract-driven patterns applied to the demo backends. OrganicLever adopted the same OpenAPI contract enforcement—an OpenAPI 3.1 specification at `specs/apps/organiclever/contracts/` with codegen for both `organiclever-be` and `organiclever-fe`.
 
 ### Authentication and OAuth
 
-The `auth-register-login` plan implemented JWT-based authentication with refresh tokens—initially in Spring Boot, then migrated to F#/Giraffe as part of the pivot. Google OAuth login was integrated, allowing users to authenticate via their Google accounts. The auth flow is end-to-end tested via Playwright in `organiclever-be-e2e` and `organiclever-fe-e2e`.
+JWT-based authentication with refresh tokens was implemented initially in Spring Boot, then migrated to F#/Giraffe as part of the pivot. Google OAuth login was integrated for user authentication. The auth flow is end-to-end tested via Playwright in `organiclever-be-e2e` and `organiclever-fe-e2e`.
 
 ```mermaid
 %% Color Palette: Blue #0173B2 (frontend), Orange #DE8F05 (backend), Purple #CC78BC (contract), Teal #029E73 (external)
-graph TD
+graph LR
     FE["organiclever-fe<br/>Next.js 16 + React 19"]:::frontend
     BE["organiclever-be<br/>F# / Giraffe"]:::backend
     CT["organiclever-contracts<br/>OpenAPI 3.1"]:::contract
@@ -485,7 +483,7 @@ Educational content on ayokoding.com remains freely available. The governance do
 
 ## Testing and Quality Standards
 
-The testing infrastructure that served 7 projects in Week 4 now serves 30+ projects across 10+ languages. The standards evolved to accommodate this scale.
+The testing infrastructure that served 7 projects in Week 4 now serves 30+ projects across 10+ languages. The three-level testing standard and contract-driven pipeline described in the polyglot section above now apply uniformly across the monorepo. The main evolution during this period was coverage recalibration.
 
 ### Coverage Recalibration
 
@@ -497,52 +495,6 @@ Week 4 enforced 95%+ coverage uniformly. That worked for 7 projects in 2 languag
 - **CLI tools** — 90%+ (core logic, command parsing, output formatting)
 
 The reduction from 95% to 90% for backends was deliberate. Across 11 languages, some coverage tools measure differently—AltCover's line coverage for F# `task{}` expressions, Cloverage's Clojure macro handling, cargo-llvm-cov's treatment of Rust's pattern matching. A uniform 95% threshold created false pressure to write tests that tested coverage tools rather than business logic. 90% is the right floor—it catches gaps without incentivizing coverage gaming.
-
-### Contract-Driven Development Pipeline
-
-The full pipeline from specification to verified implementation:
-
-1. **OpenAPI 3.1 specification** defines every endpoint, schema, and error format
-2. **`codegen` Nx target** generates language-specific types and models
-3. **Implementation** satisfies the generated type contracts
-4. **`typecheck`** catches any deviation between generated types and implementation
-5. **Gherkin BDD scenarios** define behavioral expectations
-6. **`test:unit`** verifies behavior with mocked dependencies
-7. **`test:integration`** verifies behavior against real PostgreSQL
-8. **`test:e2e`** verifies behavior via real HTTP endpoints
-9. **`spec-coverage`** ensures every Gherkin scenario has corresponding step implementations
-
-This pipeline runs on every pre-push via Nx affected targets. A specification change cascades through codegen, typecheck, and tests—catching contract violations before they reach CI.
-
-```mermaid
-%% Color Palette: Purple #CC78BC (spec), Blue #0173B2 (generate), Orange #DE8F05 (implement), Teal #029E73 (verify)
-graph LR
-    S1["OpenAPI Spec"]:::spec
-    S2["Gherkin Specs"]:::spec
-    G["codegen<br/>Generate Types"]:::generate
-    I["Implementation"]:::implement
-    T["typecheck"]:::verify
-    U["test:unit<br/>Mocked"]:::verify
-    IN["test:integration<br/>Real DB"]:::verify
-    E["test:e2e<br/>Real HTTP"]:::verify
-    SC["spec-coverage<br/>Validation"]:::verify
-
-    S1 --> G
-    G --> I
-    I --> T
-    S2 --> U
-    S2 --> IN
-    S2 --> E
-    S2 --> SC
-    I --> U
-    I --> IN
-    I --> E
-
-    classDef spec fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef generate fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef implement fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef verify fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-```
 
 ## What Changed: Week 16 to Week 20
 
@@ -571,13 +523,11 @@ The polyglot foundation is laid. The platforms are migrated. The licensing is se
 
 **Infrastructure exploration** — The monorepo now has 30+ projects across 10+ languages. That scale creates real infrastructure questions. Nx remote caching for faster builds across CI and local development. Container orchestration patterns for the multi-backend landscape. Database provisioning and migration automation in deployment contexts. Observability—knowing what is running, how it is performing, and when something breaks—before users tell us.
 
-**Fundamental building** — OrganicLever has authentication and an API contract. It does not yet have the features that make it a productivity tracker. The next phase builds domain fundamentals: the core data models, business rules, and user workflows that define what OrganicLever actually does. Infrastructure without product is just infrastructure. The F#/Giraffe backend and the contract-driven pipeline are ready to carry real business logic—it is time to give them something meaningful to carry.
+**Fundamental building** — OrganicLever has authentication and an API contract. It does not yet have the features that make it a productivity tracker. The next phase builds domain fundamentals: the core data models, business rules, and user workflows that define what OrganicLever actually does. The tech stack decisions are made—F# backend, Next.js + Effect-TS + TypeScript web frontend. The contract-driven pipeline is ready to carry real business logic. It is time to give it something meaningful to carry.
 
 ## Building in the Open
 
-Eight weeks of Phase 1 complete. Eleven backends across ten languages, three frontends, two platform migrations, one license change. The infrastructure designed in Phase 0 and stress-tested in early Phase 1 carried the load.
-
-But infrastructure without product is just infrastructure. The next phase turns from breadth to depth—from proving the platform to building on it. CI is taking shape; now CD needs to follow. OrganicLever needs to become a productivity tracker, not just a well-tested API scaffold. The polyglot knowledge needs to inform real architectural decisions, not sit as reference implementations alone.
+Eight weeks of Phase 1 complete. Eleven backends across ten languages, three frontends, two platform migrations, one license change. The tech stack is chosen. The infrastructure designed in Phase 0 and stress-tested in early Phase 1 carried the load. Now the focus shifts from proving the platform to building on it.
 
 Every commit visible on [GitHub](https://github.com/wahidyankf/open-sharia-enterprise). Platform updates published here on oseplatform.com. Educational content shared on [ayokoding.com](https://ayokoding.com).
 

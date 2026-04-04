@@ -89,12 +89,15 @@ appropriate package manager for the current platform (macOS only for initial imp
 **Constraints**:
 
 - macOS only (the primary development platform; Linux can be added later)
-- Must be idempotent — running `--fix` when all tools are installed is a no-op
+- Must be idempotent — running `--fix` when all tools are installed is a no-op (see
+  [idempotency contract](../../../governance/development/workflow/native-first-toolchain.md))
 - Must handle tools that require version managers (Volta → Node/npm, SDKMAN → Java/Maven,
   asdf → Elixir/Erlang, pyenv → Python, rustup → Rust)
 - Must handle tools installed directly via Homebrew (go, jq, dotnet, clojure, flutter)
+- Must use non-interactive install commands (e.g., `rustup-init -y`, not bare `rustup-init`)
 - Must print what it's doing (not silent)
 - Must NOT auto-install without `--fix` flag (doctor remains read-only by default)
+- Must support `--dry-run` flag to preview what would be installed without executing
 - Should skip tools that are already installed and at the correct version
 - Should report what was installed and what failed at the end
 
@@ -209,6 +212,17 @@ Feature: Doctor auto-install (R1)
     When I run "rhino-cli doctor --fix"
     Then no installation commands should be executed
     And doctor should report "nothing to fix"
+
+  Scenario: Dry-run shows what would be installed
+    Given golang is not installed
+    When I run "rhino-cli doctor --fix --dry-run"
+    Then the output should show "Would install: golang via brew install go"
+    And golang should NOT be installed
+
+  Scenario: Non-interactive rustup install
+    Given rust is not installed
+    When I run "rhino-cli doctor --fix"
+    Then rust should be installed via "rustup-init -y" without interactive prompts
 
   Scenario: Handle version manager tools
     Given volta is installed but node is missing

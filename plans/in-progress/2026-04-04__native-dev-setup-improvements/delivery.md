@@ -166,7 +166,8 @@ list.
   - [ ] maven: `sdk install maven`
   - [ ] golang: `brew install go`
   - [ ] python: `brew install pyenv && pyenv install {required} && pyenv global {required}`
-  - [ ] rust: `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
+  - [ ] rust: `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y`
+        (must use `-y` for non-interactive install — bare `rustup-init` prompts interactively)
   - [ ] cargo-llvm-cov: `cargo install cargo-llvm-cov`
   - [ ] elixir: `asdf plugin add elixir && asdf install elixir {required}`
   - [ ] erlang: `asdf plugin add erlang && asdf install erlang {required}`
@@ -177,6 +178,8 @@ list.
   - [ ] jq: `brew install jq`
   - [ ] playwright: `npx playwright install`
 - [ ] Add `--fix` flag to `doctor` cobra command in `cmd/doctor.go`
+- [ ] Add `--dry-run` flag to `doctor` cobra command (only effective with `--fix`)
+- [ ] Implement dry-run mode: print "Would install: {tool} via {command}" without executing
 - [ ] Implement fix loop: iterate missing tools, execute install commands, re-check after install
 - [ ] After installing Volta/SDKMAN/rustup, source the relevant shell init script so subsequent
       installs (node via volta, java via sdk, cargo-llvm-cov via cargo) can find the binary
@@ -192,6 +195,8 @@ list.
       (fix missing tool, skip already-installed, fix failure handling)
 - [ ] Run `nx run rhino-cli:test:quick` — verify all tests pass
 - [ ] Test manually: run `doctor --fix` with all tools installed — verify "nothing to fix"
+- [ ] Test manually: run `doctor --fix --dry-run` — verify it prints what would be installed
+      without executing any commands
 - [ ] Update `governance/workflows/infra/development-environment-setup.md` to add `doctor --fix`
       as the recommended setup path
 - [ ] Update `docs/how-to/hoto__setup-development-environment.md` to mention `doctor --fix`
@@ -215,6 +220,7 @@ After all phases are complete:
 
 - [ ] `npm run doctor` shows correct tool count (no Hugo, with Playwright)
 - [ ] `npm run doctor -- --fix` with all tools installed reports "nothing to fix"
+- [ ] `npm run doctor -- --fix --dry-run` previews actions without executing
 - [ ] `npm run doctor -- --scope minimal` checks only 7 tools
 - [ ] `rhino-cli env init` creates `.env` files from templates
 - [ ] `brew bundle check` passes with the new Brewfile

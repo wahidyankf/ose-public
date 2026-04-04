@@ -55,7 +55,7 @@ type installStep struct {
 | maven          | `sdk install maven` (requires SDKMAN)                                                                   |
 | golang         | `brew install go`                                                                                       |
 | python         | `brew install pyenv && pyenv install {required} && pyenv global {required}`                             |
-| rust           | `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \| sh`                                       |
+| rust           | `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \| sh -s -- -y` (non-interactive)            |
 | cargo-llvm-cov | `cargo install cargo-llvm-cov`                                                                          |
 | elixir         | `asdf plugin add elixir && asdf install elixir {required} && asdf global elixir {required}`             |
 | erlang         | `asdf plugin add erlang && asdf install erlang {required} && asdf global erlang {required}`             |
@@ -103,6 +103,32 @@ New features require new Gherkin scenarios:
   fix failure handling)
 - **`doctor --scope`**: Add scenarios to `doctor.feature` (minimal scope, full scope default)
 - **`env init`**: Create `specs/apps/rhino/cli/gherkin/env-init.feature`
+
+### `--dry-run` mode
+
+`doctor --fix --dry-run` prints what would be installed without executing any commands. This is
+the Terraform "plan" equivalent — it gives confidence before applying changes.
+
+Implementation: the fix loop checks `opts.DryRun` before executing each install command. When
+true, it prints the command and skips execution:
+
+```go
+if opts.DryRun {
+    fmt.Printf("Would install: %s via %s %s\n", def.name, step.command, strings.Join(step.args, " "))
+    continue
+}
+```
+
+The `--dry-run` flag is only effective with `--fix`. Running `doctor --dry-run` without `--fix`
+is equivalent to plain `doctor` (read-only check).
+
+### Architectural decision
+
+The choice to use native package managers instead of Terraform, Ansible, or Docker Dev Containers
+is recorded in
+[Native-First Toolchain Management](../../../governance/development/workflow/native-first-toolchain.md).
+Key insight: package managers already guarantee idempotency, and the installed binaries ARE the
+state — no external state file needed.
 
 ### Testing strategy
 

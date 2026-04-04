@@ -59,6 +59,11 @@ development workflow.
 - `apps/rhino-cli/cmd/doctor.go` — CLI command (add `--fix`, `--scope` flags)
 - `apps/rhino-cli/cmd/env.go` (or new file) — `env init` subcommand
 
+**Governance**:
+
+- `governance/development/workflow/native-first-toolchain.md` — architectural decision record
+  (why native package managers, not Terraform/Ansible/Docker Dev Containers)
+
 **Secondary**:
 
 - `package.json` — fix postinstall script

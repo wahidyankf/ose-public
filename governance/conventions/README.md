@@ -75,7 +75,7 @@ Conventions are organized into 6 semantic categories:
 - **[writing/](#writing)** - Content quality, validation, writing standards
 - **[structure/](#structure)** - Documentation organization, file naming, plans
 - **[tutorials/](#tutorials)** - Tutorial creation and structure conventions
-- **[hugo/](#hugo)** - Hugo site content conventions
+- **[hugo/](#hugo)** - Hugo site content conventions (mostly deprecated — all active sites now use Next.js 16)
 
 ---
 
@@ -106,6 +106,7 @@ Content quality standards, validation methodology, and writing guidelines.
 - [Conventions](./writing/conventions.md) - **Meta-convention** defining how to write and organize convention documents. Covers document structure, scope boundaries, quality checklist, when to create new vs update existing, length guidelines, and integration with agents. Essential reading for creating or updating conventions
 - [Dynamic Collection References](./writing/dynamic-collection-references.md) - Standards for referencing dynamic collections (agents, principles, conventions, practices, skills) without hardcoding counts. Prevents documentation drift by requiring count-free references with links to authoritative index documents. **Agents**: repo-governance-checker, repo-governance-fixer
 - [Factual Validation](./writing/factual-validation.md) - Universal methodology for validating factual correctness across all repository content using web verification (WebSearch + WebFetch). Defines core validation methodology (command syntax, features, versions, code examples, external refs, mathematical notation, diagram colors), web verification workflow, confidence classification (Verified, Unverified, Error, Outdated)
+- [Indonesian Content Policy](./writing/indonesian-content-policy.md) - Policy defining when and how to create Indonesian content in ayokoding-web. Establishes English-first policy for technical tutorials, defines Indonesian content categories (unique content, strategic translations, discouraged mirrors), provides decision tree for language selection, and specifies agent behavior for content creation
 - [OSS Documentation](./writing/oss-documentation.md) - Standards for repository documentation files (README, CONTRIBUTING, ADRs, security) following open source best practices
 - [README Quality](./writing/readme-quality.md) - Quality standards for README.md files ensuring engagement, accessibility, and scannability. Defines problem-solution hooks, jargon elimination (plain language over corporate speak), acronym context requirements, benefits-focused language, navigation structure, and paragraph length limits. **Agents**: readme-maker, readme-checker
 
@@ -140,7 +141,6 @@ Hugo site-specific content conventions. **All Hugo sites have migrated to Next.j
 - [Hugo Content - ayokoding](./hugo/ayokoding.md) - **DEPRECATED** — Historical Hugo conventions for ayokoding-web (Hextra theme). ayokoding-web has migrated to Next.js 16. Preserved for reference only
 - [Hugo Content - OSE Platform](./hugo/ose-platform.md) - **DEPRECATED** -- Historical Hugo conventions for oseplatform-web (PaperMod theme). oseplatform-web has migrated to Next.js 16. Preserved for reference only
 - [Hugo Content - Shared](./hugo/shared.md) - **DEPRECATED** -- Historical shared Hugo content conventions. No active Hugo sites remain. Preserved for reference only
-- [Indonesian Content Policy - ayokoding-web](./hugo/indonesian-content-policy.md) - Policy defining when and how to create Indonesian content in ayokoding-web. Establishes English-first policy for technical tutorials, defines Indonesian content categories (unique content, strategic translations, discouraged mirrors), provides decision tree for language selection, and specifies agent behavior for content creation
 
 ## Related Documentation
 

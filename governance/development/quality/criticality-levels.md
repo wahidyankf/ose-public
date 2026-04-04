@@ -54,14 +54,14 @@ See [Fixer Confidence Levels Convention](./fixer-confidence-levels.md) for compl
 ```markdown
 ## CRITICAL Issues (Must Fix)
 
-### 1. Missing Required Field Breaks Hugo Build
+### 1. Missing Required Field Breaks Content Validation
 
 **File**: `apps/ayokoding-web/content/en/programming/python/_index.md:3`
-**Criticality**: CRITICAL - Breaks Hugo build process
+**Criticality**: CRITICAL - Breaks Next.js content validation
 **Confidence**: HIGH - Field objectively missing from frontmatter
 
 **Finding**: Required `draft` field missing from frontmatter
-**Impact**: Hugo build fails with "required field missing" error
+**Impact**: Content validation fails with "required field missing" error
 ```
 
 ---
@@ -95,12 +95,12 @@ See [Fixer Confidence Levels Convention](./fixer-confidence-levels.md) for compl
 - Agent `name` field doesn't match filename (breaks agent discovery)
 - Broken internal link to non-existent file in documentation
 
-**Hugo Content (ayokoding-web/oseplatform-web)**:
+**Next.js Content (ayokoding-web/oseplatform-web)**:
 
-- Missing required `title` field (Hugo build fails)
+- Missing required `title` field (content validation fails)
 - Invalid frontmatter syntax (YAML parsing error)
 - Broken internal links (404 on site)
-- Missing language prefix in internal links (Hugo specific)
+- Missing language prefix in internal links (Next.js specific)
 
 **Documentation (docs/)**:
 
@@ -159,7 +159,7 @@ See [Fixer Confidence Levels Convention](./fixer-confidence-levels.md) for compl
 - YAML comments in agent frontmatter (convention violation)
 - Incorrect file naming prefix
 
-**Hugo Content**:
+**Next.js Content**:
 
 - Missing `weight` field (navigation order undefined)
 - Wrong heading hierarchy (H3 before H2)
@@ -225,7 +225,7 @@ See [Fixer Confidence Levels Convention](./fixer-confidence-levels.md) for compl
 - Suboptimal section ordering (still readable)
 - Minor formatting inconsistencies
 
-**Hugo Content**:
+**Next.js Content**:
 
 - Missing optional `description` field in frontmatter
 - Inconsistent emoji usage (semantic meaning clear)
@@ -288,7 +288,7 @@ See [Fixer Confidence Levels Convention](./fixer-confidence-levels.md) for compl
 - Alternative organization suggestions
 - Potential future convention additions
 
-**Hugo Content**:
+**Next.js Content**:
 
 - Suggest adding optional metadata
 - Performance optimization opportunities
@@ -654,11 +654,11 @@ Update link to current documentation URL or find alternative resource
 - Consider alternative organization
 - Potential future sections
 
-### Hugo Content - ayokoding-web (general-checker, facts-checker, structure-checker, link-checker)
+### Next.js Content - ayokoding-web (general-checker, facts-checker, link-checker)
 
 **CRITICAL**:
 
-- Missing required `title` field (Hugo build fails)
+- Missing required `title` field (content validation fails)
 - Invalid YAML syntax in frontmatter (parsing error)
 - Broken internal link without language prefix (404 on site)
 - Code example won't compile (verified via web search)
@@ -684,11 +684,11 @@ Update link to current documentation URL or find alternative resource
 - Potential cross-linking opportunity
 - Suggest mentioning alternative approach
 
-### Hugo Content - oseplatform-web (content-checker)
+### Next.js Content - oseplatform-web (content-checker)
 
 **CRITICAL**:
 
-- Missing required frontmatter for PaperMod theme
+- Missing required frontmatter for Next.js content validation
 - Broken internal link (404 error)
 - Invalid markdown syntax (rendering breaks)
 

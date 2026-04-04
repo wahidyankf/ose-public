@@ -4,14 +4,13 @@ description: Policy defining when and how to create Indonesian content in ayokod
 category: explanation
 subcategory: conventions
 tags:
-  - hugo
   - ayokoding-web
   - indonesian
   - bilingual
   - content-policy
   - translation
 created: 2026-02-07
-updated: 2026-02-07
+updated: 2026-04-04
 ---
 
 # Indonesian Content Policy - ayokoding-web
@@ -50,9 +49,9 @@ This convention establishes a clear content language policy for ayokoding-web to
 ### What This Convention Does NOT Cover
 
 - Indonesian language writing style and tone (covered in general content quality standards)
-- Indonesian-specific frontmatter or markdown conventions (covered in [ayokoding-web convention](./ayokoding.md))
-- Bilingual navigation structure (covered in [ayokoding-web convention](./ayokoding.md))
-- Hugo multilingual configuration (covered in [shared Hugo convention](./shared.md))
+- Indonesian-specific frontmatter or markdown conventions (covered in [Hugo Content - ayokoding-web (historical)](../hugo/ayokoding.md))
+- Bilingual navigation structure (covered in [Hugo Content - ayokoding-web (historical)](../hugo/ayokoding.md))
+- Hugo multilingual configuration (covered in [Hugo Content - Shared (historical)](../hugo/shared.md))
 
 ---
 
@@ -225,7 +224,7 @@ START: Should I create Indonesian content?
 > _Artikel ini adalah hasil terjemahan dengan bantuan mesin. Karenanya akan ada pergeseran nuansa dari artikel aslinya. Untuk mendapatkan pesan dan nuansa asli dari artikel ini, silakan kunjungi artikel yang asli di: [English Article Title](/en/learn/path/to/article)_
 ```
 
-**See**: [ayokoding-web convention - Cross-Reference Pattern](./ayokoding.md#cross-reference-pattern-bilingual-blogging-content) for complete cross-reference standards.
+**See**: [Hugo Content - ayokoding-web (historical)](../hugo/ayokoding.md#cross-reference-pattern-bilingual-blogging-content) for complete cross-reference standards.
 
 ---
 
@@ -415,8 +414,8 @@ Before creating Indonesian content, verify:
 
 **Related Conventions**:
 
-- [Hugo Content - ayokoding-web](./ayokoding.md) - Site-specific conventions including bilingual support, cross-reference patterns, and navigation structure
-- [Hugo Content - Shared](./shared.md) - Common Hugo conventions applying to all sites
+- [Hugo Content - ayokoding-web (historical)](../hugo/ayokoding.md) - Site-specific conventions including bilingual support, cross-reference patterns, and navigation structure
+- [Hugo Content - Shared (historical)](../hugo/shared.md) - Common Hugo conventions applying to all sites
 - [Programming Language Content Standard](../tutorials/programming-language-content.md) - Full Set Tutorial Package architecture (applies to English tutorials)
 
 **Related Principles**:

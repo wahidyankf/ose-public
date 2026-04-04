@@ -16,7 +16,7 @@ skills:
 
 - **Role**: Fixer (yellow)
 - **Created**: 2026-03-13
-- **Last Updated**: 2026-03-13
+- **Last Updated**: 2026-04-04
 
 **Model Selection Justification**: This agent uses `model: sonnet` for confident re-validation and safe file modifications across spec READMEs, feature files, and C4 diagrams.
 
@@ -68,11 +68,7 @@ the validated scope.
 
 1. **Read audit report**: Parse "Folders validated" list and findings by criticality/confidence
 2. **Verify scope**: Confirm all fixes target only files within the validated folders
-3. **Filter by mode**: Determine which criticality levels to fix
-   - lax: CRITICAL only
-   - normal: CRITICAL + HIGH
-   - strict: CRITICAL + HIGH + MEDIUM
-   - ocd: ALL levels
+3. **Filter by mode**: See `repo-applying-maker-checker-fixer` Skill for complete mode parameter logic (lax/normal/strict/ocd levels, filtering, reporting)
 4. **Sort by priority**: P0 (CRITICAL/HIGH conf) → P1 (CRITICAL/MEDIUM) → P2 (HIGH/HIGH) → etc.
 5. **Re-validate each finding**: Confirm issue still exists before fixing
 6. **Apply fix**: Use Edit tool for markdown, `git mv` via Bash for renames

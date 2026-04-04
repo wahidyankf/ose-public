@@ -45,7 +45,7 @@ graph TD
     style C fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
     style D fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
     style E fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style F fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    style F fill:#56B4E9,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 **Vision Hierarchy:**

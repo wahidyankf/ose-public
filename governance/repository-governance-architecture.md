@@ -215,7 +215,7 @@ Vision: "Accessible to everyone"
 Principle: Accessibility First
     ↓ governs
 Convention: Color Accessibility Convention
-Development: Hugo Development Convention (historical, semantic HTML)
+Development: AI Agents Convention — agent colors use accessible palette
 ```
 
 **Requirements**:

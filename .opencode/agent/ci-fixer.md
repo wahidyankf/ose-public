@@ -11,9 +11,16 @@ tools:
 skills:
   - ci-standards
   - repo-applying-maker-checker-fixer
+  - repo-assessing-criticality-confidence
 ---
 
 # CI Fixer Agent
+
+## Agent Metadata
+
+- **Role**: Fixer (yellow)
+- **Created**: 2026-04-04
+- **Last Updated**: 2026-04-04
 
 **Model Selection Justification**: This agent uses `model: sonnet` because it requires:
 

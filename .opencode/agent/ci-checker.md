@@ -15,6 +15,12 @@ skills:
 
 # CI Checker Agent
 
+## Agent Metadata
+
+- **Role**: Checker (green)
+- **Created**: 2026-04-04
+- **Last Updated**: 2026-04-04
+
 **Model Selection Justification**: This agent uses `model: sonnet` because it requires:
 
 - Systematic rule application to validate CI/CD standards against defined checklists

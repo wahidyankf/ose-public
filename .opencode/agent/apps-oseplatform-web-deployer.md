@@ -15,7 +15,7 @@ skills:
 
 - **Role**: Implementor (purple)
 - **Created**: 2025-12-20
-- **Last Updated**: 2026-03-01
+- **Last Updated**: 2026-04-04
 
 **Model Selection Justification**: This agent uses `model: haiku` because it performs straightforward deployment tasks:
 

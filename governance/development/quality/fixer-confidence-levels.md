@@ -117,7 +117,7 @@ All fixer agents implement this confidence level system:
 - **apps-ayokoding-web-in-the-field-fixer** - ayokoding-web in-the-field tutorial fixes
 - **apps-ayokoding-web-link-fixer** - ayokoding-web link validation fixes
 - **docs-tutorial-fixer** - Tutorial quality fixes
-- **apps-oseplatform-web-content-fixer** - oseplatform-web Hugo content fixes
+- **apps-oseplatform-web-content-fixer** - oseplatform-web Next.js content fixes
 - **readme-fixer** - README quality fixes
 - **docs-fixer** - Documentation factual accuracy fixes
 - **plan-fixer** - Plan structural and format fixes
@@ -308,7 +308,7 @@ The three confidence levels (HIGH, MEDIUM, FALSE_POSITIVE) are universal. Each a
 
 **apps-oseplatform-web-content-fixer:**
 
-- Checker flagged Hugo shortcode link as broken (doesn't recognize `{{< ref >}}` syntax)
+- Checker flagged Next.js MDX link as broken (doesn't recognize component-style link syntax)
 - Checker applied post validation rules to static page (about.md doesn't need date field)
 - Checker counted code block as prose paragraph (wrong content type detection)
 
@@ -478,7 +478,7 @@ Each fixer agent has domain-specific validation checks:
 
 **apps-ayokoding-web-general-fixer:**
 
-- Hugo frontmatter for Hextra theme
+- Next.js/MDX frontmatter for ayokoding-web
 - Bilingual content validation (en/id)
 - Learning content specific rules (overview/ikhtisar, weight ordering)
 - Navigation link format (absolute paths with language prefix)
@@ -492,7 +492,7 @@ Each fixer agent has domain-specific validation checks:
 
 **apps-oseplatform-web-content-fixer:**
 
-- Hugo frontmatter for PaperMod theme
+- Next.js/MDX frontmatter for oseplatform-web
 - English-only content validation
 - Cover image alt text requirements
 - Heading hierarchy (single H1 rule)
@@ -600,14 +600,14 @@ All fixer agents MUST:
 ```markdown
 ## CRITICAL Issues (Must Fix)
 
-### 1. Missing Required Field Breaks Hugo Build
+### 1. Missing Required Field Breaks Content Validation
 
 **File**: `apps/ayokoding-web/content/en/programming/python/_index.md:3`
-**Criticality**: CRITICAL - Breaks Hugo build process
+**Criticality**: CRITICAL - Breaks Next.js content validation
 **Confidence**: HIGH - Field objectively missing from frontmatter
 
 **Finding**: Required `draft` field missing from frontmatter
-**Impact**: Hugo build fails with "required field missing" error
+**Impact**: Content validation fails with "required field missing" error
 **Recommendation**: Add `draft: false` to frontmatter
 ```
 
@@ -885,11 +885,11 @@ FAIL: All agent files - Frontmatter comment detection
 ### Fixer Agents Using This Convention
 
 - [repo-governance-fixer.md](../../../.claude/agents/repo-governance-fixer.md) - Repository structural consistency fixer
-- [apps-ayokoding-web-general-fixer.md](../../../.claude/agents/apps-ayokoding-web-general-fixer.md) - ayokoding-web general Hugo content fixer
+- [apps-ayokoding-web-general-fixer.md](../../../.claude/agents/apps-ayokoding-web-general-fixer.md) - ayokoding-web general Next.js content fixer
 - [apps-ayokoding-web-by-example-fixer.md](../../../.claude/agents/apps-ayokoding-web-by-example-fixer.md) - ayokoding-web by-example tutorial fixer
 - [apps-ayokoding-web-facts-fixer.md](../../../.claude/agents/apps-ayokoding-web-facts-fixer.md) - ayokoding-web factual accuracy fixer
 - [docs-tutorial-fixer.md](../../../.claude/agents/docs-tutorial-fixer.md) - Tutorial quality fixer
-- [apps-oseplatform-web-content-fixer.md](../../../.claude/agents/apps-oseplatform-web-content-fixer.md) - oseplatform-web Hugo content fixer
+- [apps-oseplatform-web-content-fixer.md](../../../.claude/agents/apps-oseplatform-web-content-fixer.md) - oseplatform-web Next.js content fixer
 - [readme-fixer.md](../../../.claude/agents/readme-fixer.md) - README quality fixer
 - [plan-fixer.md](../../../.claude/agents/plan-fixer.md) - Plan structural and format fixer
 - [docs-fixer.md](../../../.claude/agents/docs-fixer.md) - Documentation factual accuracy fixer
@@ -910,9 +910,7 @@ FAIL: All agent files - Frontmatter comment detection
 - [Tutorial Convention](../../conventions/tutorials/general.md)
 - [Content Quality Principles](../../conventions/writing/quality.md) - Universal content quality standards
 - [README Quality Convention](../../conventions/writing/readme-quality.md)
-- [Hugo Content Convention - Shared](../../conventions/hugo/shared.md) - Shared Hugo content standards
-- [Hugo Content Convention - ayokoding](../../conventions/hugo/ayokoding.md) - ayokoding-web specific standards
-- [Hugo Content Convention - OSE Platform](../../conventions/hugo/ose-platform.md) - oseplatform-web specific standards
+- [Indonesian Content Policy](../../conventions/writing/indonesian-content-policy.md) - ayokoding-web bilingual content policy (English-first for technical tutorials)
 
 **Infrastructure:**
 - [Temporary Files Convention](../infra/temporary-files.md) - Where to store fix reports (`generated-reports/`)

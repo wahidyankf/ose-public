@@ -162,72 +162,23 @@ npm run doctor -- --scope minimal # Check only core tools (git, volta, node, npm
 
 **See**: [governance/development/infra/nx-targets.md](./governance/development/infra/nx-targets.md) for canonical target names, mandatory targets per project type, and caching rules.
 
-**Go projects**: All Go projects (`ayokoding-cli`, `oseplatform-cli`, `rhino-cli`,
-`libs/golang-commons`, `libs/hugo-commons`, `a-demo-be-golang-gin`) enforce ≥90% **line coverage**
-(matching Codecov's algorithm) via `rhino-cli test-coverage validate`. Coverage is measured from
-`test:unit` with `go test -coverprofile=cover.out ./...` and enforced by
-`rhino-cli test-coverage validate <project>/cover.out 90` — both run as part of `test:quick`.
+**Coverage thresholds** (all enforced via `rhino-cli test-coverage validate` in `test:quick`):
 
-**TypeScript projects**: `a-demo-be-ts-effect` enforces ≥90% **line coverage**
-(matching Codecov's algorithm) via `rhino-cli test-coverage validate` applied to the LCOV output
-from `test:unit` (Vitest): `rhino-cli test-coverage validate apps/a-demo-be-ts-effect/coverage/lcov.info 90` — run as part of
-`test:quick`.
-
-**OrganicLever Frontend**: `organiclever-fe` enforces ≥70% **line coverage** via
-`rhino-cli test-coverage validate` applied to the LCOV output from `test:unit` (Vitest):
-`rhino-cli test-coverage validate apps/organiclever-fe/coverage/lcov.info 70` — run as part of `test:quick`.
-
-**AyoKoding Web**: `ayokoding-web` enforces ≥80% **line coverage** via
-`rhino-cli test-coverage validate apps/ayokoding-web/coverage/lcov.info 80` — run as part of `test:quick`.
-
-**OSE Platform Web**: `oseplatform-web` enforces ≥80% **line coverage** via
-`rhino-cli test-coverage validate apps/oseplatform-web/coverage/lcov.info 80` — run as part of `test:quick`.
-
-**Java projects**: `a-demo-be-java-springboot` and `a-demo-be-java-vertx` enforce ≥90% **line coverage** (matching
-Codecov's algorithm) via `rhino-cli test-coverage validate` applied to the JaCoCo XML report from
-`test:unit` — run as part of `test:quick`.
-
-**Kotlin projects**: `a-demo-be-kotlin-ktor` enforces ≥90% **line coverage** (matching Codecov's algorithm)
-via `rhino-cli test-coverage validate` applied to the Kover JaCoCo XML report from `test:unit` —
-run as part of `test:quick`.
-
-**Python projects**: `a-demo-be-python-fastapi` enforces ≥90% **line coverage** (matching Codecov's algorithm)
-via `rhino-cli test-coverage validate` applied to the LCOV output from `test:unit` (coverage.py):
-`rhino-cli test-coverage validate apps/a-demo-be-python-fastapi/coverage/lcov.info 90` — run as part of `test:quick`.
-
-**Rust projects**: `a-demo-be-rust-axum` enforces ≥90% **line coverage** (matching Codecov's algorithm)
-via `rhino-cli test-coverage validate` applied to the LCOV output from `test:unit` (cargo-llvm-cov):
-`rhino-cli test-coverage validate apps/a-demo-be-rust-axum/coverage/lcov.info 90` — run as part of `test:quick`.
-
-**F# projects**: `a-demo-be-fsharp-giraffe` and `organiclever-be` enforce ≥90% **line coverage** (matching
-Codecov's algorithm) via `rhino-cli test-coverage validate` applied to the AltCover LCOV report from
-`test:unit`: `rhino-cli test-coverage validate apps/a-demo-be-fsharp-giraffe/coverage/altcov.info 90` and
-`rhino-cli test-coverage validate apps/organiclever-be/coverage/altcov.info 90` — both run as part of
-`test:quick`. Uses AltCover with `--linecover` instead of XPlat Code Coverage to avoid F#
-`task{}` async state machine BRDA inflation.
-
-**C# projects**: `a-demo-be-csharp-aspnetcore` enforces ≥90% **line coverage** (matching Codecov's algorithm)
-via `rhino-cli test-coverage validate` applied to the Coverlet LCOV report from `test:unit`:
-`rhino-cli test-coverage validate apps/a-demo-be-csharp-aspnetcore/coverage/**/coverage.info 90` — run as part
-of `test:quick`. Uses Coverlet XPlat Code Coverage collector with LCOV format output.
-
-**Clojure projects**: `a-demo-be-clojure-pedestal` enforces ≥90% **line coverage** (matching Codecov's algorithm)
-via `rhino-cli test-coverage validate` applied to the cloverage LCOV report from `test:unit`:
-`rhino-cli test-coverage validate apps/a-demo-be-clojure-pedestal/coverage/lcov.info 90` — run as part
-of `test:quick`. Uses cloverage with `--lcov` output format.
-
-**Demo-fe TypeScript frontends**: `a-demo-fe-ts-nextjs` enforces ≥70% **line coverage** via
-`rhino-cli test-coverage validate` applied to the LCOV output from `test:unit` (Vitest) — run as
-part of `test:quick`. Lower threshold reflects that API/auth/queries layers are fully mocked in
-unit tests by design.
-
-**Fullstack apps**: `a-demo-fs-ts-nextjs` enforces ≥75% **line coverage** via
-`rhino-cli test-coverage validate` applied to the LCOV output from `test:unit` (Vitest):
-`rhino-cli test-coverage validate apps/a-demo-fs-ts-nextjs/coverage/lcov.info 75` — run as part of `test:quick`.
-
-**Dart frontends**: `a-demo-fe-dart-flutterweb` enforces ≥70% **line coverage** via
-`rhino-cli test-coverage validate` applied to the LCOV output from `test:unit` (Flutter test) — run
-as part of `test:quick`.
+| Project(s)                                                                                                                            | Threshold | Report format                         | Notes                                                  |
+| ------------------------------------------------------------------------------------------------------------------------------------- | --------- | ------------------------------------- | ------------------------------------------------------ |
+| Go CLI projects (`ayokoding-cli`, `oseplatform-cli`, `rhino-cli`, `libs/golang-commons`, `libs/hugo-commons`, `a-demo-be-golang-gin`) | ≥90%      | `cover.out` (go test)                 |                                                        |
+| `a-demo-be-ts-effect`                                                                                                                 | ≥90%      | LCOV (Vitest)                         |                                                        |
+| `a-demo-be-java-springboot`, `a-demo-be-java-vertx`                                                                                   | ≥90%      | JaCoCo XML                            |                                                        |
+| `a-demo-be-kotlin-ktor`                                                                                                               | ≥90%      | Kover JaCoCo XML                      |                                                        |
+| `a-demo-be-python-fastapi`                                                                                                            | ≥90%      | LCOV (coverage.py)                    |                                                        |
+| `a-demo-be-rust-axum`                                                                                                                 | ≥90%      | LCOV (cargo-llvm-cov)                 |                                                        |
+| `a-demo-be-fsharp-giraffe`, `organiclever-be`                                                                                         | ≥90%      | AltCover LCOV (`altcov.info`)         | Uses `--linecover` to avoid F# `task{}` BRDA inflation |
+| `a-demo-be-csharp-aspnetcore`                                                                                                         | ≥90%      | Coverlet LCOV (`coverage.info`)       |                                                        |
+| `a-demo-be-clojure-pedestal`                                                                                                          | ≥90%      | cloverage LCOV (`--lcov`)             |                                                        |
+| `a-demo-be-elixir-phoenix`                                                                                                            | ≥90%      | LCOV (ExCoveralls, `cover/lcov.info`) |                                                        |
+| `a-demo-fs-ts-nextjs`                                                                                                                 | ≥75%      | LCOV (Vitest)                         |                                                        |
+| `ayokoding-web`, `oseplatform-web`                                                                                                    | ≥80%      | LCOV (Vitest)                         |                                                        |
+| `organiclever-fe`, `a-demo-fe-ts-nextjs`, `a-demo-fe-dart-flutterweb`                                                                 | ≥70%      | LCOV                                  | fe threshold: API/auth layers fully mocked by design   |
 
 **`test:integration` caching**: Default `cache: false` in `nx.json`. Demo-be backends use
 docker-compose with real PostgreSQL — non-deterministic and must never be cached. Projects using

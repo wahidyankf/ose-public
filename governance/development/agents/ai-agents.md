@@ -316,7 +316,7 @@ Agents can reference multiple Skills that work together:
 ```yaml
 ---
 name: apps-ayokoding-web-general-maker
-description: Expert at creating general Hugo content for ayokoding-web (Hextra theme).
+description: Expert at creating general Next.js content for ayokoding-web. Use when creating or updating general content pages for the AyoKoding website.
 tools: Read, Write, Edit, Glob, Grep
 model: sonnet
 color: blue
@@ -507,7 +507,7 @@ FAIL: Bad:
 **When to use scope prefixes:**
 
 1. **`apps-[app-name]-`** - Agent works ONLY with a specific app
-   - Content creation for Hugo sites (ayokoding-web, oseplatform-web)
+   - Content creation for Next.js sites (ayokoding-web, oseplatform-web)
    - App-specific validation, deployment, structure management
    - Examples: `apps-ayokoding-web-general-maker`, `apps-oseplatform-web-deployer`
 
@@ -559,7 +559,7 @@ Example - App-scoped agent:
 
 ```yaml
 name: apps-ayokoding-web-general-maker # Includes scope prefix
-description: Expert at creating general Hugo content for ayokoding-web (Hextra theme) following Hugo Content Convention and Content Quality Principles. # Detailed usage guidance
+description: Expert at creating general Next.js content for ayokoding-web. Use when creating or updating general content pages for the AyoKoding website. # Detailed usage guidance
 ```
 
 ## Tool Access Patterns
@@ -794,7 +794,7 @@ This role-based categorization was chosen because it:
 **Link Checker Agents:**
 
 - **docs-link-general-checker** - Validates documentation links + manages external-links-status.yaml cache
-- **apps-ayokoding-web-link-checker** - Validates Hugo content links + manages ayokoding-links-status.yaml cache
+- **apps-ayokoding-web-link-checker** - Validates ayokoding-web content links + manages ayokoding-links-status.yaml cache
 
 **Why green (not purple)?**
 
@@ -1308,9 +1308,9 @@ Agent files are organized into **three complexity tiers** with corresponding siz
 - docs-tutorial-checker (tutorial quality validation)
 - docs-file-manager (file organization, prefix calculation, link updates)
 - agent-maker (agent creation automation)
-- apps-ayokoding-web-general-maker (general Hugo content creation)
+- apps-ayokoding-web-general-maker (general Next.js content creation for ayokoding-web)
 - apps-ayokoding-web-by-example-maker (by-example tutorial creation)
-- apps-oseplatform-web-content-maker (Hugo content creation)
+- apps-oseplatform-web-content-maker (Next.js content creation for oseplatform-web)
 
 **When to use this tier**:
 
@@ -2461,8 +2461,8 @@ When simplifying an agent:
 - `repo-generating-validation-reports` - Report generation, UUID chains, timestamps
 - `repo-assessing-criticality-confidence` - Criticality levels, confidence assessment
 - `repo-applying-maker-checker-fixer` - Three-stage workflow, mode handling
-- `apps-ayokoding-web-developing-content` - Hugo Hextra patterns, bilingual content
-- `apps-oseplatform-web-developing-content` - Hugo PaperMod patterns
+- `apps-ayokoding-web-developing-content` - Next.js 16 content patterns for ayokoding-web, bilingual content strategy
+- `apps-oseplatform-web-developing-content` - Next.js 16 content patterns for oseplatform-web
 - `docs-creating-by-example-tutorials` - Annotation standards, five-part structure
 - `docs-creating-accessible-diagrams` - Color palettes, accessibility
 - `docs-applying-content-quality` - Markdown quality standards

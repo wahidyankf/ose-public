@@ -20,7 +20,7 @@ skills:
 
 - **Role**: Fixer (yellow)
 - **Created**: 2025-11-30
-- **Last Updated**: 2026-01-03
+- **Last Updated**: 2026-04-04
 - **Size Tier**: Tier 2 (standard agent with complex decision logic — cascading directory operations, multi-step link tracking, deletion safety analysis)
 
 **Model Selection Justification**: This agent uses `model: sonnet` because it requires advanced reasoning to:

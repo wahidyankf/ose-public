@@ -19,7 +19,7 @@ skills:
 
 - **Role**: Maker (blue)
 - **Created**: 2025-11-29
-- **Last Updated**: 2026-01-03
+- **Last Updated**: 2026-04-04
 
 **Model Selection Justification**: This agent uses inherited `model: opus` (omit model field) because it requires advanced reasoning to create well-structured documentation. The agent requires:
 

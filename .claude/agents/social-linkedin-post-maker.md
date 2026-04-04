@@ -14,7 +14,7 @@ skills:
 
 - **Role**: Maker (blue)
 - **Created**: 2025-12-20
-- **Last Updated**: 2026-01-03
+- **Last Updated**: 2026-04-04
 
 **Model Selection Justification**: This agent uses `model: sonnet` because it requires:
 

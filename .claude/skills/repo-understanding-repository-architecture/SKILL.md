@@ -105,7 +105,7 @@ Vision: "Accessible to everyone"
 Principle: Accessibility First
     ↓ governs
 Convention: Color Accessibility Convention
-Development: Hugo Development Convention (semantic HTML — DEPRECATED, both sites now Next.js 16)
+Development: AI Agents Convention — agent colors use accessible palette
 ```
 
 ## Layer 2: Conventions (WHAT - Documentation Rules)

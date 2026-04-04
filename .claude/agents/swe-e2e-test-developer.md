@@ -16,7 +16,7 @@ skills:
 
 - **Role**: Implementor (purple)
 - **Created**: 2026-02-08
-- **Last Updated**: 2026-02-08
+- **Last Updated**: 2026-04-04
 
 **Model Selection Justification**: This agent uses inherited `model: opus` (omit model field) because it requires:
 

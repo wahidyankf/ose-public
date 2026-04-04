@@ -344,8 +344,8 @@ Every new convention (documentation rule) or practice (software standard) must t
 
 This convention implements the following core principles:
 
-- **[Principle Name](../../principles/category/principle-name.md)**: Explain how this rule embodies the principle
-- **[Another Principle](../../principles/category/another-principle.md)**: Explain the connection
+- **Principle Name**: Explain how this rule embodies the principle
+- **Another Principle**: Explain the connection
 ```
 
 **Questions to ask**:

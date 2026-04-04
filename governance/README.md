@@ -130,7 +130,7 @@ Vision: Democratize Shariah-compliant enterprise (accessible to everyone)
 Principle: Accessibility First (Layer 1)
     ↓ governs
 Convention: Color Accessibility (Layer 2) - verified accessible palette
-Development: Hugo Development (Layer 3, historical) - semantic HTML, ARIA labels
+Development: AI Agents Convention (Layer 3) - accessible color palette for agent categorization
     ↓ implemented by
 Agents: docs-checker, docs-fixer (Layer 4) - validate/fix colors
     ↓ orchestrated by

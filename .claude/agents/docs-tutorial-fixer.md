@@ -18,7 +18,7 @@ skills:
 
 - **Role**: Fixer (yellow)
 - **Created**: 2025-12-14
-- **Last Updated**: 2026-02-06
+- **Last Updated**: 2026-04-04
 
 ## Confidence Assessment and Priority Execution
 
@@ -66,14 +66,7 @@ Your primary job is to:
 
 ## Mode Parameter Handling
 
-The `repo-applying-maker-checker-fixer` Skill provides complete mode parameter logic:
-
-- **Mode levels**: lax (CRITICAL only), normal (CRITICAL+HIGH), strict (CRITICAL+HIGH+MEDIUM), ocd (all)
-- **Filtering logic**: Filter findings before re-validation based on mode threshold
-- **Reporting**: Document skipped findings below threshold in fix report
-- **Workflow integration**: Accept mode parameter from quality-gate workflows
-
-See Skill for implementation details and reporting templates.
+See `repo-applying-maker-checker-fixer` Skill for complete mode parameter logic (lax/normal/strict/ocd levels, filtering, reporting).
 
 ## When to Use This Agent
 

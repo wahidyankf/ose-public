@@ -107,6 +107,7 @@ Development practices in this directory fall into several categories:
 - [Worktree Setup](./workflow/worktree-setup.md) - Practice for running `npm install` in the root repository worktree after creating a new git worktree. Keeps `node_modules/` consistent with `package-lock.json` and ensures Nx task caching, builds, and linting function correctly across all worktrees
 - [Git Push Safety Convention](./workflow/git-push-safety.md) - Requires explicit per-instance user approval before any AI agent or automation executes `git push --force`, `--force-with-lease`, or `--no-verify`; prior approval does not carry forward
 - [Native-First Toolchain Management Convention](./workflow/native-first-toolchain.md) - Architectural decision to use native package managers and `rhino-cli doctor` instead of Terraform, Ansible, or Docker Dev Containers for development environment setup
+- [PR Merge Protocol Convention](./workflow/pr-merge-protocol.md) - Practice requiring explicit user approval before merging pull requests and mandating all quality gates pass before merge
 
 ### Quality Standards Documentation
 

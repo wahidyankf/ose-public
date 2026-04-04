@@ -1,3 +1,16 @@
+---
+title: "Web Development Tools and Frameworks"
+description: Overview of web development frameworks and tools used in the platform
+category: explanation
+subcategory: platform-web
+tags:
+  - index
+  - platform-web
+  - frameworks
+created: 2026-01-25
+updated: 2026-04-04
+---
+
 # Web Development Tools and Frameworks
 
 This section contains comprehensive tutorials and guides for web development frameworks and tools, organized by technology stack.

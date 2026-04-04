@@ -374,13 +374,17 @@ docs/explanation/software-engineering/programming-languages/[language]/README.md
 
 **Workflow Conventions**:
 
-- [Trunk Based Development](../../../governance/development/workflow/trunk-based-development.md) - Git workflow details
+- [Trunk Based Development](../../../governance/development/workflow/trunk-based-development.md) - Git workflow details (main = direct push; worktree = branch + PR)
+- [PR Merge Protocol](../../../governance/development/workflow/pr-merge-protocol.md) - Explicit user approval required, all quality gates must pass
 - [Commit Messages Convention](../../../governance/development/workflow/commit-messages.md) - Conventional Commits specification
 - [Implementation Workflow](../../../governance/development/workflow/implementation.md) - Make it work → right → fast
 
 **Quality Conventions**:
 
 - [Code Quality Convention](../../../governance/development/quality/code.md) - Git hooks, linting, formatting
+- [Manual Behavioral Verification](../../../governance/development/quality/manual-behavioral-verification.md) - Playwright MCP for UI, curl for API testing
+- [Feature Change Completeness](../../../governance/development/quality/feature-change-completeness.md) - Specs, contracts, and tests must update with every feature change
+- [CI Blocker Resolution](../../../governance/development/quality/ci-blocker-resolution.md) - Preexisting CI failures must be investigated and fixed, never bypassed
 - [Reproducible Environments](../../../governance/development/workflow/reproducible-environments.md) - Volta, package-lock.json
 
 **Architecture Conventions**:

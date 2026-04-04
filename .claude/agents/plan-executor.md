@@ -348,3 +348,13 @@ After ALL phases complete:
 - `plan-fixer` - Fixes plan issues
 
 **Remember**: Execute systematically, validate thoroughly, document meticulously. Fix everything you touch. Leave the codebase better than you found it. NEVER stop before all items are done. NEVER skip quality gates.
+
+## Reference: Governance Practices
+
+These governance docs define the authoritative rules behind the Iron Rules:
+
+- **[Manual Behavioral Verification](../../governance/development/quality/manual-behavioral-verification.md)** — Playwright MCP for UI, curl for API (Rule 8)
+- **[Feature Change Completeness](../../governance/development/quality/feature-change-completeness.md)** — specs, contracts, and tests must be updated with every feature change
+- **[CI Blocker Resolution](../../governance/development/quality/ci-blocker-resolution.md)** — preexisting CI failures must be investigated and fixed, never bypassed (Rule 3)
+- **[PR Merge Protocol](../../governance/development/workflow/pr-merge-protocol.md)** — explicit user approval required, all quality gates must pass
+- **[Trunk Based Development](../../governance/development/workflow/trunk-based-development.md)** — main branch = direct push; worktree = branch + PR

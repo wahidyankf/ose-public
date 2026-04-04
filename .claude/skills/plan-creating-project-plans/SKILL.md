@@ -354,7 +354,11 @@ Every delivery plan MUST end with a plan archival section:
 
 **Related Conventions**:
 
-- [Trunk Based Development](../../../governance/development/workflow/trunk-based-development.md) - Git workflow for plans
+- [Trunk Based Development](../../../governance/development/workflow/trunk-based-development.md) - Git workflow (main = direct push; worktree = branch + PR)
+- [PR Merge Protocol](../../../governance/development/workflow/pr-merge-protocol.md) - Explicit approval required, all quality gates must pass
+- [Feature Change Completeness](../../../governance/development/quality/feature-change-completeness.md) - Specs, contracts, and tests must update with every feature change
+- [Manual Behavioral Verification](../../../governance/development/quality/manual-behavioral-verification.md) - Playwright MCP for UI, curl for API
+- [CI Blocker Resolution](../../../governance/development/quality/ci-blocker-resolution.md) - Preexisting CI failures must be fixed, never bypassed
 - [Acceptance Criteria Convention](../../../governance/development/infra/acceptance-criteria.md) - Gherkin format details
 - [File Naming Convention](../../../governance/conventions/structure/file-naming.md) - Naming standards
 

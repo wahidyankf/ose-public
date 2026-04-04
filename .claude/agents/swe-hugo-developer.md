@@ -23,6 +23,8 @@ skills: []
 
 No Hugo applications exist in the `apps/` directory. This agent is preserved for historical reference only. If Hugo sites are reintroduced in the future, this agent can be reactivated.
 
+**Model Selection Justification**: This agent is DEPRECATED (no active Hugo sites remain). Inherits `model: opus` (omit model field) for historical reference.
+
 ## Former Responsibilities
 
 Theme customization, template development, build optimization, deployment configuration for Hugo sites.

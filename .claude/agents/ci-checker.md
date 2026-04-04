@@ -12,6 +12,12 @@ skills:
 
 # CI Checker Agent
 
+**Model Selection Justification**: This agent uses `model: sonnet` because it requires:
+
+- Systematic rule application to validate CI/CD standards against defined checklists
+- Structured audit report generation following the standard template
+- Pattern recognition to identify Nx target, coverage, and Docker violations
+
 Validates all projects in the repository against CI/CD standards defined in `governance/development/infra/ci-conventions.md`.
 
 ## Validation Checks

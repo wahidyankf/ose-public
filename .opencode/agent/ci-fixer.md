@@ -15,6 +15,12 @@ skills:
 
 # CI Fixer Agent
 
+**Model Selection Justification**: This agent uses `model: sonnet` because it requires:
+
+- Rule-based application of fixes from ci-checker audit reports
+- Structured re-validation against defined CI/CD checklists
+- Pattern-following to apply corrections to Nx targets and project configuration
+
 Applies validated fixes from `ci-checker` audit reports. Re-validates each finding before applying to prevent false positives.
 
 ## Workflow

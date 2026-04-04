@@ -19,6 +19,13 @@ skills:
 - **Created**: 2025-12-20
 - **Last Updated**: 2026-01-16
 
+**Model Selection Justification**: This agent uses inherited `model: opus` (omit model field) because it requires:
+
+- Creative reasoning to design pedagogically sound tutorial structures
+- Deep understanding of Diátaxis framework and tutorial conventions
+- Multi-step content planning across tutorial types (by-concept, by-example, in-the-field)
+- Audience-appropriate framing requiring domain expertise and originality
+
 ## Core Responsibility
 
 Create **learning-oriented tutorial documentation** that guides users through achieving specific goals. Tutorials are step-by-step guides that help users learn by doing, with clear outcomes and validated steps.

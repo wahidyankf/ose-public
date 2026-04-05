@@ -162,6 +162,30 @@ Each backend uses the migration tool native to its ecosystem:
 
 The migration tooling standardization was its own completed plan (`database-migration-tooling`). Each backend manages schema independently—no shared migration files across languages. The schema is equivalent but owned by each stack's native tooling.
 
+### Lines of Code: Same Domain, Different Languages
+
+Before the qualitative observations, a quantitative one. Every backend implements the same domain—same endpoints, same business rules, same test coverage standard. The difference in lines of code is purely a function of the language and framework:
+
+| Language   | Framework    | Source LOC | Test LOC | Total  |
+| ---------- | ------------ | ---------- | -------- | ------ |
+| Elixir     | Phoenix      | 2,290      | 5,348    | 7,638  |
+| Java       | Spring Boot  | 2,382      | 6,835    | 9,217  |
+| TypeScript | Effect       | 2,435      | 6,087    | 8,522  |
+| Kotlin     | Ktor         | 2,649      | 7,235    | 9,884  |
+| Clojure    | Pedestal     | 2,717      | 2,190    | 4,907  |
+| F#         | Giraffe      | 2,857      | 7,347    | 10,204 |
+| Go         | Gin          | 2,902      | 6,861    | 9,763  |
+| Java       | Vert.x       | 3,442      | 5,520    | 8,962  |
+| Python     | FastAPI      | 3,809      | 3,266    | 7,075  |
+| C#         | ASP.NET Core | 3,817      | 6,313    | 10,130 |
+| Rust       | Axum         | 3,965      | 7,061    | 11,026 |
+
+Source LOC counts committed application code only—no tests, no generated files, no configs. Test LOC includes unit tests, integration step definitions, and BDD step implementations. Sorted by source LOC ascending.
+
+Elixir and TypeScript/Effect are the most concise in source—under 2,500 lines each. Rust and C# are the most verbose—approaching 4,000 lines for the same functionality. Spring Boot's low line count (2,382) is deceptive: Java's annotation-driven style offloads logic to framework magic, so the source is short but the individual lines are not more readable or expressive than other stacks. Compare with Vert.x (3,442)—same language, less framework magic, more honest line count. Clojure stands out with the lowest total (4,907) because its conciseness extends to test code too—the most concise end-to-end. F# sits in the middle at 2,857 source lines—not the fewest, but its expressiveness-per-line is high given the ML-family readability discussed below.
+
+These numbers are not the whole story. Conciseness without guardrails is not necessarily better, and verbose code is not necessarily worse if the type system catches more errors. But they give a concrete sense of how much code you are committing to maintain for the same domain.
+
 ### Language-by-Language Observations
 
 These are observations from building the same application, not rankings. Every language has trade-offs. The point was to experience those trade-offs firsthand rather than reading about them.
@@ -172,7 +196,7 @@ Spring Boot remains the most conventional path. JSpecify with NullAway provides 
 
 Vert.x offers a reactive alternative on the same JVM. The programming model differs significantly—event-loop-based, non-blocking by default. Liquibase migrations shared the same tooling as Spring Boot, but the application structure diverged. Interesting for high-concurrency scenarios, but the ecosystem is smaller.
 
-Kotlin/Ktor brings JVM reliability with modern language features. Coroutines make async code readable. Null safety is baked into the type system rather than bolted on. Flyway migrations integrate cleanly. The codebase ended up noticeably more concise than the Java equivalents. One practical friction point: editor support. Kotlin tooling in VS Code and its forks is improving but still falls short of the JetBrains/IntelliJ experience. We prefer VS Code-compatible editors—they work seamlessly on local machines and remote servers alike, which matters for our development workflow. Not wanting to depend on a paid IDE subscription for a core development language is a real consideration, and it weighs against Kotlin for primary production use.
+Kotlin/Ktor brings JVM reliability with modern language features. Coroutines make async code readable. Null safety is baked into the type system rather than bolted on. Flyway migrations integrate cleanly. The codebase reads more concisely than Java line-for-line—each line carries more intent—though the total line count lands between Spring Boot and Vert.x. One practical friction point: editor support. Kotlin tooling in VS Code and its forks is improving but still falls short of the JetBrains/IntelliJ experience. We prefer VS Code-compatible editors—they work seamlessly on local machines and remote servers alike, which matters for our development workflow. Not wanting to depend on a paid IDE subscription for a core development language is a real consideration, and it weighs against Kotlin for primary production use.
 
 **Functional Family — F#/Giraffe, Elixir/Phoenix, Clojure/Pedestal**
 
@@ -182,7 +206,7 @@ The function-record pattern for repository abstraction—defining a record type 
 
 The .NET foundation also means that if the product ever needs to target Windows-native enterprise environments—a real possibility for Sharia-compliant business systems—the path is already there. Compile times are reasonable at our current codebase size. Of all eleven backends, F# delivered the best combination of expressiveness, guardrails, ecosystem maturity, and development experience.
 
-Clojure/Pedestal represents a fundamentally different approach. `defprotocol` for the repository pattern, immutable data structures everywhere, REPL-driven development. Migratus for migrations required locale-aware configuration to handle currency formatting correctly. The codebase is the most concise of all eleven—as beautiful and descriptive as an ML-family language in its own way. The learning curve is the steepest. Where Clojure falls short for our purposes is the guardrails needed for AI-assisted coding: dynamic typing means fewer compile-time guarantees, and an AI assistant working without static type feedback produces more errors that only surface at runtime. That said, Clojure runs on both the JVM and CLR, giving it a broader base ecosystem than most dynamic languages.
+Clojure/Pedestal represents a fundamentally different approach. `defprotocol` for the repository pattern, immutable data structures everywhere, REPL-driven development. Migratus for migrations required locale-aware configuration to handle currency formatting correctly. The codebase has the lowest total line count of all eleven when source and tests are combined—as beautiful and descriptive as an ML-family language in its own way. The learning curve is the steepest. Where Clojure falls short for our purposes is the guardrails needed for AI-assisted coding: dynamic typing means fewer compile-time guarantees, and an AI assistant working without static type feedback produces more errors that only surface at runtime. That said, Clojure runs on both the JVM and CLR, giving it a broader base ecosystem than most dynamic languages.
 
 Elixir/Phoenix brings the BEAM's concurrency model. Pattern matching, immutability by default, and the supervision tree are genuinely different from everything else in this list. Elixir shares Clojure's dynamic typing limitation for AI-assisted guardrails, and has a much smaller base ecosystem—the BEAM runtime is powerful but niche compared to the JVM or .NET platforms that Clojure and F# can draw from. Multiple custom libraries were needed to fill ecosystem gaps (detailed in the Gherkin and shared libraries sections below).
 

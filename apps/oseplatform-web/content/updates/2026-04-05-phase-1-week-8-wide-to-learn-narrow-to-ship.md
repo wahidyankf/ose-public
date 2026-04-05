@@ -188,7 +188,7 @@ These numbers are not the whole story. Conciseness without guardrails is not nec
 
 ### Language-by-Language Observations
 
-These are observations from building the same application, not rankings. Every language has trade-offs. The point was to experience those trade-offs firsthand rather than reading about them.
+These are observations from building the same application, not rankings. Four weeks of part-time work is too short for a complete comparison of eleven stacks—what follows is a general feeling from hands-on experience, not a definitive verdict. Every language has trade-offs. The point was to experience those trade-offs firsthand rather than reading about them.
 
 **JVM Family — Java/Spring Boot, Java/Vert.x, Kotlin/Ktor**
 

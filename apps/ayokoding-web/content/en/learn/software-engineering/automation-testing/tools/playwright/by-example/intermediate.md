@@ -51,7 +51,7 @@ test("submits contact form with multiple fields", async ({ page }) => {
 
 **Key Takeaway**: Use getByLabel for accessible form field selection. Test complete submission workflows, not individual fields in isolation.
 
-**Why It Matters**: Multi-field forms are the primary user interaction pattern in web applications. Label-based selectors reduce test brittleness compared to CSS selectors, as labels remain stable while implementation details change. Testing complete workflows catches integration bugs that field-level tests miss.
+**Why It Matters**: Multi-field forms are the primary user interaction pattern in web applications. Label-based selectors reduce test brittleness compared to CSS selectors, as labels remain stable while implementation details change. Testing complete workflows catches integration bugs that field-level tests miss — a field may work in isolation but fail when combined with validation rules that depend on other field values. Accessibility-first selectors also double as accessibility validators, ensuring your form remains operable by screen reader users.
 
 ### Example 32: Form Validation - Client-Side Errors
 
@@ -89,7 +89,7 @@ test("displays validation error for invalid email", async ({ page }) => {
 
 **Key Takeaway**: Test validation errors appear before form submission reaches server. Verify specific error messages, not just presence of errors.
 
-**Why It Matters**: Client-side validation provides immediate user feedback and reduces server load. Immediate validation feedback improves form completion rates. Testing validation messages ensures accessibility compliance—screen reader users depend on clear error text to fix input mistakes.
+**Why It Matters**: Client-side validation provides immediate user feedback and reduces server load by preventing invalid submissions before they reach the backend. Immediate validation feedback improves form completion rates — users abandon forms when they don't understand what went wrong. Testing validation messages ensures accessibility compliance, as screen reader users depend on clear, associated error text to fix input mistakes. Broken validation messages are invisible in functional testing but significantly impact users relying on assistive technology.
 
 ### Example 33: Dynamic Forms - Conditional Fields
 
@@ -151,7 +151,7 @@ test("shows additional field when 'Other' selected", async ({ page }) => {
 
 **Key Takeaway**: Use toBeVisible/toBeHidden for conditional field testing. Test both appearance and disappearance of dynamic elements.
 
-**Why It Matters**: Dynamic forms reduce cognitive load by showing only relevant fields. Conditional fields can reduce form abandonment but increase UI complexity. Testing visibility state changes ensures JavaScript logic works correctly—broken conditional logic frustrates users who can't access needed fields or are confused by irrelevant ones.
+**Why It Matters**: Dynamic forms reduce cognitive load by showing only relevant fields, improving completion rates for complex workflows. Conditional fields increase UI complexity and create testing challenges since the form's state space grows multiplicatively. Testing visibility state changes ensures JavaScript logic works correctly — broken conditional logic frustrates users who cannot access needed fields or are shown irrelevant ones. Edge cases like toggling conditions rapidly or submitting mid-transition require explicit test coverage to prevent production bugs.
 
 ### Example 34: Date Pickers - Calendar Widget
 
@@ -305,7 +305,7 @@ test("selects item from autocomplete suggestions", async ({ page }) => {
 
 **Key Takeaway**: Wait for suggestions to load before interacting. Use role="option" to select autocomplete items accessibly.
 
-**Why It Matters**: Autocomplete reduces typing effort and guides users toward valid options. Autocomplete improves query accuracy but adds timing complexity. Testing autocomplete requires waiting for asynchronous suggestion loading—race conditions between typing and suggestions appearing cause flaky tests that mask real bugs in debounce logic or API response handling.
+**Why It Matters**: Autocomplete reduces typing effort and guides users toward valid options, but the asynchronous nature of suggestion loading makes it one of the most commonly flaky UI patterns to test. Race conditions between typing events and API responses cause intermittent failures that mask real bugs in debounce logic. Testing autocomplete properly requires explicit waits for suggestion lists to populate, verification of keyboard navigation through options, and validation that selecting a suggestion correctly populates the input without triggering duplicate API requests.
 
 ### Example 37: Rich Text Editor - WYSIWYG Input
 
@@ -686,7 +686,7 @@ test("validates element attributes", async ({ page }) => {
 
 **Key Takeaway**: Use toHaveAttribute to validate both data attributes and ARIA properties. Test attribute changes for interactive components.
 
-**Why It Matters**: HTML attributes control accessibility, behavior, and testing stability. Many ARIA attribute errors involve incorrect state management. Testing attributes validates screen reader compatibility (aria-label, aria-expanded), component state (data-testid), and dynamic behavior (attribute changes on interaction). Data attributes provide stable selectors immune to text or style changes.
+**Why It Matters**: HTML attributes control accessibility, behavior, and testing stability. Many ARIA attribute errors involve incorrect state management — an accordion that doesn't toggle `aria-expanded` breaks keyboard navigation for screen reader users even when it looks correct visually. Testing attributes validates screen reader compatibility (`aria-label`, `aria-expanded`), component state (`data-testid`), and dynamic behavior. Data attributes provide stable selectors immune to text or style changes, making tests resilient to content and design updates that would otherwise break CSS-based selectors.
 
 ### Example 43: Element Count - Collection Assertions
 
@@ -1002,7 +1002,7 @@ test("validates product prices with custom matcher", async ({ page }) => {
 
 **Key Takeaway**: Use expect.extend to create custom matchers for domain-specific patterns. Custom matchers improve test readability and reduce duplication.
 
-**Why It Matters**: Generic assertions don't express domain concepts clearly. Custom matchers can reduce test maintenance by centralizing validation logic. Custom matchers like toHaveValidPrice, toBeWithinDateRange, or toMatchPhoneFormat make tests self-documenting and easier to maintain. Domain logic changes once in the matcher instead of across dozens of tests.
+**Why It Matters**: Generic assertions don't express domain concepts clearly, making test failures hard to interpret. When `expect(value).toBe(true)` fails, you know something went wrong but not what domain rule was violated. Custom matchers like `toHaveValidPrice`, `toBeWithinDateRange`, or `toMatchPhoneFormat` make tests self-documenting and failures immediately actionable. Domain logic centralizes in the matcher instead of being duplicated across dozens of tests — when business rules change, one update propagates everywhere rather than requiring a search-and-replace across the entire test suite.
 
 ### Example 48: Soft Assertions - Continue After Failures
 

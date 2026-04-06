@@ -23,11 +23,11 @@ graph TD
     C --> D["All Exports<br/>Auto-Mocked"]
     D --> E["Functions return<br/>undefined by default"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#000
-    style E fill:#CA9161,color:#fff
+    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:
@@ -98,11 +98,11 @@ graph TD
     B --> D["Objects -> Deep Mock"]
     B --> E["Classes -> Mock Constructor"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#000
-    style E fill:#CA9161,color:#fff
+    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:
@@ -245,12 +245,12 @@ graph LR
     C --> F["Partial Mock<br/>Real + Mock"]
     E --> F
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#029E73,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#DE8F05,color:#fff
-    style E fill:#DE8F05,color:#fff
-    style F fill:#CC78BC,color:#000
+    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style B fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style F fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
 ```
 
 **Code**:
@@ -462,12 +462,12 @@ graph TD
     C -->|ok: false| E["Error Path"]
     C -->|reject| F["Network Error"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#000
-    style D fill:#029E73,color:#fff
-    style E fill:#CA9161,color:#fff
-    style F fill:#CA9161,color:#fff
+    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style C fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    style F fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:
@@ -620,11 +620,11 @@ graph TD
     B --> D["Test Event<br/>Handlers"]
     B --> E["Test Browser<br/>APIs"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#000
-    style E fill:#CA9161,color:#fff
+    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:
@@ -1131,11 +1131,11 @@ graph TD
     C --> E["Reports:<br/>text, lcov, html"]
     D --> E
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#000
-    style E fill:#CA9161,color:#fff
+    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:
@@ -1225,10 +1225,10 @@ graph TD
     B -->|Vitest| C["Tests Execute"]
     B -->|Production Build| D["Tree-Shaken<br/>#40;Tests Removed#41;"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#000
+    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
 ```
 
 **Code**:
@@ -1449,10 +1449,10 @@ graph LR
     A --> C["Test 2<br/>#40;parallel#41;"]
     A --> D["Test 3<br/>#40;parallel#41;"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#000
+    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
 ```
 
 **Code**:
@@ -1523,12 +1523,12 @@ graph LR
     B --> E["toEqualTypeOf#60;T#62;#40;#41;"]
     B --> F["toHaveProperty#40;#41;"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#CC78BC,color:#000
-    style F fill:#CC78BC,color:#000
+    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style E fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    style F fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
 ```
 
 **Code**:

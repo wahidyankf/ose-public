@@ -30,9 +30,9 @@ graph TD
     A["Beginner<br/>Examples 1-30<br/>Core Fundamentals"] --> B["Intermediate<br/>Examples 31-58<br/>Production Patterns"]
     B --> C["Advanced<br/>Examples 59-85<br/>Expert Mastery"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
+    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 Progress from fundamentals through production patterns to expert mastery. Each level builds on the previous, increasing in sophistication and introducing more Vitest-specific features.

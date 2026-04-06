@@ -102,7 +102,7 @@ paths: {}
 
 **Key Takeaway**: The `info` object is your API's metadata hub. Use `description` with Markdown for rich documentation, and always include `contact` and `license` for professional APIs.
 
-**Why It Matters**: Generated documentation tools (Swagger UI, Redoc) render every `info` field prominently. APIs without proper metadata appear unprofessional and make onboarding difficult for consumers. The `description` field supports Markdown, giving you a landing page for your API documentation without any additional tooling.
+**Why It Matters**: Generated documentation tools (Swagger UI, Redoc) render every `info` field prominently on the documentation landing page. APIs without proper metadata appear unprofessional and make onboarding difficult for consumers who need to understand scope, contact, and licensing before building integrations. The `description` field supports Markdown, giving you a rich landing page for your API documentation without any additional tooling. Well-documented info objects also improve discoverability in API registries and developer portals used by enterprise teams.
 
 ---
 
@@ -158,7 +158,7 @@ paths: {}
 
 **Key Takeaway**: Define multiple `servers` entries for each environment where your API is available. Tools use the first server as the default.
 
-**Why It Matters**: Server definitions make API documentation immediately actionable. Documentation consumers can switch between environments in Swagger UI's server dropdown and execute requests against staging or production directly. Without server definitions, consumers must guess the base URL or read external documentation to make their first API call.
+**Why It Matters**: Server definitions make API documentation immediately actionable. Documentation consumers can switch between environments in Swagger UI's server dropdown and execute requests against staging or production directly. Without server definitions, consumers must guess the base URL or consult external documentation before making their first API call. In enterprise API gateways and developer portals, server URLs with variable substitution enable the same spec to document APIs across multiple regions, tenants, or deployment targets without maintaining separate specification files.
 
 ---
 
@@ -624,7 +624,7 @@ paths:
 
 **Key Takeaway**: DELETE operations use path parameters to identify the target resource. Use 204 (No Content) when no response body is needed, or 200 with the deleted resource for confirmation.
 
-**Why It Matters**: Defining DELETE responses precisely communicates lifecycle semantics. The 409 (Conflict) response documents business rules that prevent deletion, saving consumers from guessing why their request failed. Generated client SDKs can provide typed error handling for each status code, turning HTTP status codes into language-specific exception types.
+**Why It Matters**: Defining DELETE responses precisely communicates lifecycle semantics and business rules to API consumers. The 409 (Conflict) response documents constraints that prevent deletion — such as referential integrity violations — saving consumers from guessing why their request was rejected. Generated client SDKs transform each documented status code into language-specific exception types, enabling callers to write explicit error handling rather than inspecting raw HTTP status codes. Undocumented error responses force consumers to discover behavior through trial and error in production.
 
 ---
 
@@ -814,7 +814,7 @@ paths:
 
 **Key Takeaway**: Path parameters must match `{paramName}` placeholders exactly and are always `required: true`. Use descriptive schema types and formats for each parameter.
 
-**Why It Matters**: Path parameters define your API's resource hierarchy. Using `format: uuid` versus `type: integer` communicates the identifier strategy to consumers and enables code generators to use appropriate types (UUID class vs. int). Nested paths like `/authors/{authorId}/books/{bookId}` express resource ownership, letting consumers understand relationships without reading documentation.
+**Why It Matters**: Path parameters define your API's resource hierarchy and shape how client code is generated. Using `format: uuid` versus `type: integer` communicates the identifier strategy and enables code generators to produce appropriate types — a UUID class versus a plain integer — preventing type mismatch errors at the integration layer. Nested paths like `/authors/{authorId}/books/{bookId}` express resource ownership explicitly, letting consumers understand domain relationships from the URL structure alone without reading additional documentation pages.
 
 ---
 

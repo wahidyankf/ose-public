@@ -23,11 +23,11 @@ graph TD
     Trigger -.->|"Portal renders outside"| Body["document.body"]
     Body --> Content["Dialog.Content<br/>not clipped by parent"]
 
-    style App fill:#0173B2,color:#fff
-    style Parent fill:#DE8F05,color:#fff
-    style Trigger fill:#029E73,color:#fff
-    style Body fill:#CC78BC,color:#000
-    style Content fill:#CA9161,color:#fff
+    style App fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style Parent fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style Trigger fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style Body fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    style Content fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:
@@ -1260,15 +1260,15 @@ graph TD
     Item2 --> Trigger2["NavigationMenu.Trigger"]
     Item2 --> Content2["NavigationMenu.Content<br/>Doc sections"]
 
-    style Root fill:#0173B2,color:#fff
-    style List fill:#DE8F05,color:#fff
-    style Item1 fill:#029E73,color:#fff
-    style Item2 fill:#029E73,color:#fff
-    style Item3 fill:#CC78BC,color:#000
-    style Trigger1 fill:#CA9161,color:#fff
-    style Content1 fill:#0173B2,color:#fff
-    style Trigger2 fill:#CA9161,color:#fff
-    style Content2 fill:#0173B2,color:#fff
+    style Root fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style List fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style Item1 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style Item2 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style Item3 fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    style Trigger1 fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    style Content1 fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style Trigger2 fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    style Content2 fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:
@@ -1880,10 +1880,10 @@ graph LR
     Step2 --> Step3["Step 3<br/>Confirmation"]
     Step3 --> Done["Done<br/>Dialog closes"]
 
-    style Step1 fill:#0173B2,color:#fff
-    style Step2 fill:#DE8F05,color:#fff
-    style Step3 fill:#029E73,color:#fff
-    style Done fill:#CC78BC,color:#000
+    style Step1 fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style Step2 fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style Step3 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style Done fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
 ```
 
 **Code**:

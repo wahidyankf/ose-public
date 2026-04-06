@@ -79,7 +79,7 @@ spec: # => Pod specification (desired state)
 
 **Key Takeaway**: Pods are ephemeral and should not be created directly in production; use higher-level controllers like Deployments for automatic recovery and scaling.
 
-**Why It Matters**: Kubernetes self-healing capabilities enable automatic recovery from container failures without human intervention. Manual container orchestration with Docker Swarm or systemd requires custom scripting and 24/7 on-call teams to achieve similar reliability—Kubernetes makes this automatic, freeing engineering teams to focus on application development rather than infrastructure maintenance.
+**Why It Matters**: Kubernetes self-healing capabilities enable automatic recovery from container failures without human intervention, fundamentally changing how teams approach reliability. Manual container orchestration with Docker Swarm or systemd requires custom scripting and 24/7 on-call teams to achieve similar uptime — Kubernetes makes this automatic. When a node crashes at 3 AM, affected pods reschedule to healthy nodes without paging anyone. This shifts engineering focus from infrastructure maintenance to application development, accelerating feature delivery.
 
 ---
 

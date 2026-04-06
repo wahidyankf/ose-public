@@ -23,11 +23,11 @@ graph TD
     C --> D["Statistical Analysis<br/>ops/sec, margin, p75/p99"]
     D --> E["Benchmark Report"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#000
-    style E fill:#CA9161,color:#fff
+    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:
@@ -241,11 +241,11 @@ graph TD
     C --> E["Tests Run in<br/>Real Browser"]
     D --> E
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#000
-    style E fill:#CA9161,color:#fff
+    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:
@@ -407,13 +407,13 @@ graph TD
     C --> F["CI Runner 2"]
     D --> G["CI Runner 3"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#000
-    style E fill:#CA9161,color:#fff
-    style F fill:#CA9161,color:#fff
-    style G fill:#CA9161,color:#fff
+    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    style F fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    style G fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:
@@ -491,13 +491,13 @@ graph TD
     C --> F["Full Isolation<br/>Slower, Safer"]
     D --> G["Module Isolation<br/>Moderate Speed"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#000
-    style E fill:#DE8F05,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#CC78BC,color:#000
+    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style G fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
 ```
 
 **Code**:
@@ -1099,13 +1099,13 @@ graph TD
     E --> F
     F --> G["PR Check Results"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#DE8F05,color:#fff
-    style E fill:#DE8F05,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#CC78BC,color:#000
+    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style C fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style G fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
 ```
 
 **Code**:
@@ -1189,11 +1189,11 @@ graph TD
     C -->|Yes| D["Exit Code 0<br/>CI Passes"]
     C -->|No| E["Exit Code 1<br/>CI Fails"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#000
-    style D fill:#029E73,color:#fff
-    style E fill:#CA9161,color:#fff
+    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style C fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:
@@ -1494,11 +1494,11 @@ graph TD
     C --> D["vi.unstubAllEnvs#40;#41;"]
     D --> E["Original env Restored"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#000
-    style E fill:#CA9161,color:#fff
+    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:
@@ -1663,11 +1663,11 @@ graph LR
     C --> D["Return Mock<br/>Response"]
     D --> E["Code receives<br/>Response"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#000
-    style E fill:#CA9161,color:#fff
+    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:
@@ -2063,11 +2063,11 @@ graph TD
     A --> D["Timer Reset<br/>vi.useRealTimers#40;#41;"]
     A --> E["Env Reset<br/>vi.unstubAllEnvs#40;#41;"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#000
-    style E fill:#CA9161,color:#fff
+    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:

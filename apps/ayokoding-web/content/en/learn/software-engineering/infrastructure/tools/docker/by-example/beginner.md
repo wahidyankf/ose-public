@@ -29,7 +29,7 @@ docker ps -a
 
 **Key Takeaway**: The `docker run` command combines image pulling, container creation, and execution into one operation. Containers automatically exit when their main process completes.
 
-**Why It Matters**: Docker's pull-create-run workflow eliminates the "works on my machine" problem that plagues traditional deployments. Container isolation ensures your application dependencies don't conflict with the host system or other containers.
+**Why It Matters**: Docker's pull-create-run workflow eliminates the "works on my machine" problem that plagues traditional deployments. Container isolation ensures your application dependencies don't conflict with the host system or other containers. Teams can onboard new developers in minutes rather than hours by replacing complex environment setup documentation with a single `docker run` command. The same image runs identically on a developer laptop, CI server, and production host, eliminating environment-specific bugs.
 
 ---
 
@@ -57,7 +57,7 @@ exit
 
 **Key Takeaway**: Use `-it` flags for interactive containers requiring shell access. Exiting the shell stops the container because the main process (bash) terminates.
 
-**Why It Matters**: Interactive containers provide on-demand debugging environments identical to production without installing dependencies on your local machine.
+**Why It Matters**: Interactive containers provide on-demand debugging environments identical to production without installing dependencies on your local machine. When investigating a bug that only appears in a specific OS environment, you can spin up an interactive container in seconds rather than configuring a VM. Security teams use interactive containers for safe malware analysis. Database administrators use them to test queries against a production-equivalent database without risking live data.
 
 ---
 
@@ -134,7 +134,7 @@ curl http://localhost:3000
 
 **Key Takeaway**: Dockerfiles build images layer by layer. Use specific base images (like alpine variants) to minimize image size, and leverage EXPOSE for documentation while using `-p` flag for actual port publishing.
 
-**Why It Matters**: Layered images enable Docker's caching system to rebuild only changed layers, reducing build times when iterating on code. Alpine Linux base images shrink image sizes from gigabytes to megabytes, accelerating deployments and reducing storage costs.
+**Why It Matters**: Layered images enable Docker's caching system to rebuild only changed layers, reducing build times when iterating on code. Alpine Linux base images shrink image sizes from gigabytes to megabytes, accelerating deployments and reducing storage costs. Smaller images also reduce the attack surface — fewer packages mean fewer potential vulnerabilities. For microservices architectures with dozens of services, the cumulative storage and transfer cost difference between 1GB and 50MB images becomes substantial in production registries.
 
 ---
 
@@ -266,7 +266,7 @@ docker build -t my-express-app .
 
 **Key Takeaway**: Copy dependency manifests before source code to leverage Docker's layer caching. This dramatically speeds up builds when only source code changes, as dependencies aren't reinstalled.
 
-**Why It Matters**: Proper layer ordering transforms CI/CD pipeline performance by caching dependency installations that rarely change.
+**Why It Matters**: Proper layer ordering transforms CI/CD pipeline performance by caching dependency installations that rarely change. In a typical Node.js project, dependencies consume 200-400MB and take 30-90 seconds to install. Without layer caching, every code change triggers a full reinstall. With correct ordering, a code-only change rebuilds in seconds instead of minutes. Across dozens of daily CI runs, this compounds into hours of saved pipeline time and significantly reduced infrastructure costs.
 
 ---
 
@@ -841,7 +841,7 @@ docker exec web-server tail -5 /tmp/heartbeat.log
 
 **Key Takeaway**: Use `docker exec -it` for interactive debugging and `docker exec` for automation scripts. Changes made via exec are temporary and lost when container stops unless they modify mounted volumes.
 
-**Why It Matters**: Runtime exec commands provide emergency access to production containers without rebuilding images or redeploying services, critical for time-sensitive debugging during outages. Temporary changes ensure troubleshooting doesn't permanently modify production containers, maintaining infrastructure immutability. This capability is essential for investigating production issues without disrupting running services.
+**Why It Matters**: Runtime exec commands provide emergency access to production containers without rebuilding images or redeploying services, critical for time-sensitive debugging during outages. When an application behaves differently in production than in testing, exec lets you inspect the actual running environment — file permissions, environment variables, network connectivity — from inside the container. Temporary changes ensure troubleshooting doesn't permanently modify production containers, maintaining infrastructure immutability and preventing ad-hoc fixes from becoming permanent undocumented configuration drift.
 
 ---
 
@@ -1669,7 +1669,7 @@ docker inspect app --format='{{range .Config.Env}}{{println .}}{{end}}'
 
 **Key Takeaway**: Use `--env-file` for configuration management and keep actual `.env` files out of version control. Provide `.env.example` templates for documentation. Override variables with `-e` when needed, as it takes precedence over `--env-file`.
 
-**Why It Matters**: Environment files separate secrets from source code, preventing accidental credential commits that expose API keys and database passwords in version control history. This separation enables the same codebase to run across development, staging, and production with environment-specific configurations.
+**Why It Matters**: Environment files separate secrets from source code, preventing accidental credential commits that expose API keys and database passwords in version control history. Once credentials are committed to git, they must be considered compromised — rotation is required even after deletion because the history persists. This separation enables the same container image to run across development, staging, and production with environment-specific configurations, supporting the twelve-factor app methodology for portable, cloud-native services.
 
 ---
 

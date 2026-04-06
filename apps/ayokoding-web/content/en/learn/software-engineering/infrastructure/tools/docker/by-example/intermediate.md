@@ -4226,7 +4226,7 @@ chmod +x alert.sh
 
 **Key Takeaway**: Use `docker stats` for real-time resource monitoring. Monitor CPU, memory, network I/O, and block I/O. Export stats to CSV for trend analysis. Use cAdvisor for advanced metrics and historical data. Set up alerts for resource threshold violations. Identify resource-heavy containers early to prevent performance degradation.
 
-**Why It Matters**: Real-time resource monitoring enables proactive capacity planning - teams identify memory leaks and CPU spikes before they cause outages. ---
+**Why It Matters**: Real-time resource monitoring enables proactive capacity planning — teams identify memory leaks and CPU spikes before they cause outages, rather than reacting after service degradation affects users. In production, a container slowly consuming more memory over days can destabilize an entire host if left unmonitored. Automated alerts on threshold violations enable on-call engineers to intervene before resource exhaustion triggers cascading failures across co-located services sharing the same host machine.
 
 ### Example 50: Docker System Prune and Cleanup
 

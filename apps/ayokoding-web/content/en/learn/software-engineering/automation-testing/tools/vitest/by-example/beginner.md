@@ -23,11 +23,11 @@ graph TD
     C --> D["Execute Tests"]
     D --> E["Report Results"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#000
-    style E fill:#CA9161,color:#fff
+    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:
@@ -123,11 +123,11 @@ graph TD
     B --> D["Coverage Provider<br/>#40;v8/istanbul#41;"]
     B --> E["Include/Exclude<br/>Patterns"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#000
-    style E fill:#CA9161,color:#fff
+    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:
@@ -274,10 +274,10 @@ graph LR
     A["toBe#40;#41;"] --> B["Object.is#40;#41;<br/>Reference Equality"]
     C["toEqual#40;#41;"] --> D["Deep Comparison<br/>Structural Equality"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#0173B2,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#029E73,color:#fff
+    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:
@@ -630,15 +630,15 @@ graph TD
     F -->|No| H["Test Fails<br/>Show Diff"]
     H --> I["npx vitest run -u<br/>to Update"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#0173B2,color:#fff
-    style E fill:#DE8F05,color:#fff
-    style F fill:#CC78BC,color:#000
-    style G fill:#029E73,color:#fff
-    style H fill:#CA9161,color:#fff
-    style I fill:#0173B2,color:#fff
+    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style D fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style F fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style H fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    style I fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:
@@ -865,12 +865,12 @@ graph TD
     D --> E["Test 2"]
     E --> F["afterEach"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#0173B2,color:#fff
-    style E fill:#DE8F05,color:#fff
-    style F fill:#029E73,color:#fff
+    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style D fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:
@@ -1252,10 +1252,10 @@ graph LR
     A --> C["Test with Input 2"]
     A --> D["Test with Input N"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#000
+    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
 ```
 
 **Code**:
@@ -1525,12 +1525,12 @@ graph TD
     B --> E["Tracks Return Values"]
     B --> F["Custom Implementation"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#000
-    style E fill:#CA9161,color:#fff
-    style F fill:#0173B2,color:#fff
+    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    style F fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:
@@ -1751,11 +1751,11 @@ graph LR
     C --> E["Callbacks Execute<br/>Instantly"]
     D --> E
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#000
-    style E fill:#CA9161,color:#fff
+    style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:

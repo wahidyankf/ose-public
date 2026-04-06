@@ -27,15 +27,15 @@ graph TD
     Content --> Desc["Dialog.Description<br/>Summary"]
     Content --> Close["Dialog.Close<br/>Dismiss Button"]
 
-    style Package fill:#0173B2,color:#fff
-    style Root fill:#DE8F05,color:#fff
-    style Trigger fill:#029E73,color:#fff
-    style Portal fill:#CC78BC,color:#000
-    style Overlay fill:#CA9161,color:#fff
-    style Content fill:#0173B2,color:#fff
-    style Title fill:#029E73,color:#fff
-    style Desc fill:#029E73,color:#fff
-    style Close fill:#DE8F05,color:#fff
+    style Package fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style Root fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style Trigger fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style Portal fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    style Overlay fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    style Content fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style Title fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style Desc fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style Close fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:
@@ -105,10 +105,10 @@ graph TD
     Without["Without asChild"] --> Wrapper["Radix renders wrapper<br/>button > your-element"]
     With["With asChild"] --> Merged["Radix merges props<br/>onto your element directly"]
 
-    style Without fill:#DE8F05,color:#fff
-    style Wrapper fill:#CA9161,color:#fff
-    style With fill:#0173B2,color:#fff
-    style Merged fill:#029E73,color:#fff
+    style Without fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style Wrapper fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    style With fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style Merged fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:
@@ -421,10 +421,10 @@ graph TD
     Content --> Arrow["Popover.Arrow<br/>Visual pointer"]
     Content --> Close["Popover.Close<br/>Dismiss button"]
 
-    style Trigger fill:#0173B2,color:#fff
-    style Content fill:#DE8F05,color:#fff
-    style Arrow fill:#029E73,color:#fff
-    style Close fill:#CC78BC,color:#000
+    style Trigger fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style Content fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style Arrow fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style Close fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
 ```
 
 **Code**:
@@ -553,14 +553,14 @@ graph TD
     Sub --> SubTrigger["DropdownMenu.SubTrigger<br/>Opens submenu"]
     Sub --> SubContent["DropdownMenu.SubContent<br/>Nested menu"]
 
-    style Root fill:#0173B2,color:#fff
-    style Trigger fill:#DE8F05,color:#fff
-    style Content fill:#029E73,color:#fff
-    style Item1 fill:#CC78BC,color:#000
-    style Sep fill:#CA9161,color:#fff
-    style Sub fill:#0173B2,color:#fff
-    style SubTrigger fill:#DE8F05,color:#fff
-    style SubContent fill:#029E73,color:#fff
+    style Root fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style Trigger fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style Content fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style Item1 fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    style Sep fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    style Sub fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style SubTrigger fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style SubContent fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:
@@ -1520,13 +1520,13 @@ graph TD
     General --> Switch2["Switch<br/>Notifications"]
     Privacy --> Check1["Checkbox<br/>Analytics"]
 
-    style Dialog fill:#0173B2,color:#fff
-    style Tabs fill:#DE8F05,color:#fff
-    style General fill:#029E73,color:#fff
-    style Privacy fill:#029E73,color:#fff
-    style Switch1 fill:#CC78BC,color:#000
-    style Switch2 fill:#CC78BC,color:#000
-    style Check1 fill:#CA9161,color:#fff
+    style Dialog fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style Tabs fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style General fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style Privacy fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style Switch1 fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    style Switch2 fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    style Check1 fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:

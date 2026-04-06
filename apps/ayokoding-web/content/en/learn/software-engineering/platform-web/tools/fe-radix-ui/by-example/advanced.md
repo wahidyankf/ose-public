@@ -24,12 +24,12 @@ graph TD
     Modal --> Dialog["@radix-ui/react-dialog<br/>Behavior Layer"]
     Menu --> Dropdown["@radix-ui/react-dropdown-menu<br/>Behavior Layer"]
 
-    style DS fill:#0173B2,color:#fff
-    style Button fill:#DE8F05,color:#fff
-    style Modal fill:#DE8F05,color:#fff
-    style Menu fill:#DE8F05,color:#fff
-    style Dialog fill:#029E73,color:#fff
-    style Dropdown fill:#029E73,color:#fff
+    style DS fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style Button fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style Modal fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style Menu fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style Dialog fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style Dropdown fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:
@@ -2300,11 +2300,11 @@ graph TD
     Search --> Results["Result List<br/>Keyboard navigable"]
     Results --> Action["Selected Action<br/>Execute command"]
 
-    style Shortcut fill:#0173B2,color:#fff
-    style Dialog fill:#DE8F05,color:#fff
-    style Search fill:#029E73,color:#fff
-    style Results fill:#CC78BC,color:#000
-    style Action fill:#CA9161,color:#fff
+    style Shortcut fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    style Dialog fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
+    style Search fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+    style Results fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    style Action fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
 ```
 
 **Code**:

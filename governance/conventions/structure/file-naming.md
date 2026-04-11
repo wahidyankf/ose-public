@@ -74,6 +74,12 @@ Date-prefixed files use ISO 8601 (`YYYY-MM-DD`) and remain kebab-case overall:
 2025-12-14-phase-0-week-4-initial-commit.md
 ```
 
+## Principles Implemented/Respected
+
+- **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)** - Kebab-case is the simplest viable naming scheme; no prefixes, abbreviations, or hierarchical encoding
+- **[Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md)** - Filenames explicitly describe content; directory hierarchy explicitly encodes category
+- **[Documentation First](../../principles/content/documentation-first.md)** - Consistent, predictable naming supports discoverability across GitHub web and standard markdown tooling
+
 ## Related Documentation
 
 - [Linking Convention](../formatting/linking.md)

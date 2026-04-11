@@ -417,7 +417,7 @@ This feature implements the [Linking Convention](./linking.md) by using relative
 ```markdown
 ## Standards Compliance
 
-All documentation follows the [File Naming Convention](../structure/file-naming.md) and [Linking Convention](./linking.md). The `File Naming Convention` defines prefix patterns, while the `Linking Convention` specifies link syntax. Both `File Naming Convention` and `Linking Convention` are validated by docs-checker.
+All documentation follows the [File Naming Convention](../structure/file-naming.md) and [Linking Convention](./linking.md). The `File Naming Convention` defines kebab-case filename rules, while the `Linking Convention` specifies link syntax. Both `File Naming Convention` and `Linking Convention` are validated by docs-checker.
 ```
 
 **Analysis:**

@@ -35,7 +35,7 @@ This practice implements/respects the following conventions:
 
 - **[Linking Convention](../../conventions/formatting/linking.md)**: All offload summaries include relative links with .md extension to comprehensive convention documents, ensuring GitHub-compatible navigation.
 
-- **[File Naming Convention](../../conventions/structure/file-naming.md)**: New convention and development documents created during offload follow the ex-co**and ex-de** prefix patterns.
+- **[File Naming Convention](../../conventions/structure/file-naming.md)**: New convention and development documents created during offload use plain kebab-case filenames (e.g., `file-naming.md`, `content-preservation.md`), with directory hierarchy encoding the category.
 
 ## Purpose
 
@@ -79,7 +79,7 @@ Before (AGENTS.md - 500 lines on file naming):
 
 ## File Naming Convention
 
-Files must follow the pattern `[prefix]__[content-identifier].[extension]` where prefix encodes directory path...
+Files must use lowercase kebab-case basenames with a standard extension...
 
 [... 500 lines of detailed examples, rules, edge cases ...]
 
@@ -87,9 +87,9 @@ After (AGENTS.md - 3 lines):
 
 ## File Naming Convention
 
-Files follow the pattern `[prefix]__[content-identifier].md` where prefix encodes the directory path. See [File Naming Convention](../../conventions/structure/file-naming.md) for complete details.
+Files use lowercase kebab-case basenames (e.g., `file-naming.md`), with directory hierarchy encoding the category. See [File Naming Convention](../../conventions/structure/file-naming.md) for complete details.
 
-Result: Content preserved in ex-co\_\_file-naming-convention.md (comprehensive)
+Result: Content preserved in file-naming.md (comprehensive)
 ```
 
 **FAIL: Content Deletion (WRONG):**
@@ -258,25 +258,25 @@ Is this content unique and valuable?
 
 **Examples of development content:**
 
-- Code review checklists → ex-de\_\_code-review.md
-- Testing strategies → ex-de\_\_testing-strategy.md
-- Release process → ex-de\_\_release-process.md
-- CI/CD workflows → ex-de\_\_cicd-workflow.md
-- Git workflows → ex-de\_\_trunk-based-development.md
-- Commit conventions → ex-de\_\_commit-messages.md
-- Agent standards → ex-de\_\_ai-agents.md
+- Code review checklists → `quality/code-review.md`
+- Testing strategies → `quality/testing-strategy.md`
+- Release process → `workflow/release-process.md`
+- CI/CD workflows → `infra/cicd-workflow.md`
+- Git workflows → `workflow/trunk-based-development.md`
+- Commit conventions → `workflow/commit-messages.md`
+- Agent standards → `agents/ai-agents.md`
 
 **Existing development docs:**
 
-- ex-de\_\_ai-agents.md (AI agent standards)
-- ex-de\_\_commit-messages.md (commit conventions)
-- ex-de\_\_trunk-based-development.md (git workflow)
+- `agents/ai-agents.md` (AI agent standards)
+- `workflow/commit-messages.md` (commit conventions)
+- `workflow/trunk-based-development.md` (git workflow)
 
 **Process:**
 
 1. Determine if it's a development practice (git, commits, CI/CD, testing, code review, etc.)
 2. Create new doc OR expand existing in `governance/development/`
-3. Use ex-de\_\_ prefix for consistency
+3. Use lowercase kebab-case filenames; place in the appropriate subdirectory so the hierarchy encodes the category
 4. Move content to development convention (comprehensive detail)
 5. Replace original with 2-5 line summary + link
 6. Update development index (`governance/development/README.md`)
@@ -457,36 +457,33 @@ You MUST follow the [File Naming Convention](../../conventions/structure/file-na
 When creating documentation files:
 
 1. Read the target directory path
-2. Convert to prefix using 2-letter abbreviations
-3. Use pattern: [prefix]\_\_[content-identifier].md
+2. Choose a lowercase kebab-case basename describing the content
+3. Let the directory hierarchy encode the category
 ```
 
 **Why keep:** This is agent-specific application (how docs-maker uses the convention), not the convention itself.
 
-## Understanding the Docs Folder Structure
+## Understanding the Governance Folder Structure
 
-**docs/explanation/** contains two main subfolders for offloading content:
+**governance/** contains two main subfolders for offloading content:
 
-### 1. conventions/ (20+ docs)
+### 1. conventions/
 
 - **Focus:** Content creation and formatting standards
-- **Prefix:** ex-co\_\_
 - **Examples:**
-  - ex-co\_\_file-naming-convention.md (how to name files)
-  - ex-co\_\_diagrams.md (how to create diagrams)
-  - ex-co\_\_hugo-content-shared.md (how to write Hugo content)
-  - ex-co\_\_content-quality.md (how to ensure content quality)
+  - `structure/file-naming.md` (how to name files)
+  - `formatting/diagrams.md` (how to create diagrams)
+  - `writing/quality.md` (how to ensure content quality)
 - **When to use:** "How should we write/format this?"
 
-### 2. development/ (7+ docs currently, can grow)
+### 2. development/
 
 - **Focus:** Development processes and team workflows
-- **Prefix:** ex-de\_\_
 - **Examples:**
-  - ex-de\_\_ai-agents.md (how to create agents)
-  - ex-de\_\_commit-messages.md (how to write commits)
-  - ex-de\_\_trunk-based-development.md (how to manage git workflow)
-  - ex-de\_\_testing-strategy.md (how to test code - future)
+  - `agents/ai-agents.md` (how to create agents)
+  - `workflow/commit-messages.md` (how to write commits)
+  - `workflow/trunk-based-development.md` (how to manage git workflow)
+  - `quality/testing-strategy.md` (how to test code)
 - **When to use:** "How should we do/manage this?"
 
 **Both are valid offload destinations. Choose based on content nature:**
@@ -506,7 +503,7 @@ After: File naming knowledge lost
 Problem: Need to recreate later, knowledge erosion
 ```
 
-**PASS: Correct Approach:** Offload to ex-co\_\_file-naming-convention.md, link from AGENTS.md
+**PASS: Correct Approach:** Offload to `governance/conventions/structure/file-naming.md`, link from AGENTS.md
 
 ### FAIL: Anti-Pattern 2: Incomplete Offload
 
@@ -524,19 +521,19 @@ Problem: Lost unique details, incomplete documentation
 
 ```markdown
 Before: Testing strategy duplicated across agents
-Action: Create ex-co\_\_testing-strategy.md in conventions/
+Action: Create `conventions/writing/testing-strategy.md`
 After: Wrong location (testing is process, not content format)
 
 Problem: Violates convention/development separation
 ```
 
-**PASS: Correct Approach:** Create ex-de\_\_testing-strategy.md in development/
+**PASS: Correct Approach:** Create `governance/development/quality/testing-strategy.md`
 
 ### FAIL: Anti-Pattern 4: Offloading Agent-Specific Logic
 
 ```markdown
 Before: Agent has workflow for applying file naming convention
-Action: Move workflow to ex-co\_\_file-naming-convention.md
+Action: Move workflow to `conventions/structure/file-naming.md`
 After: Convention doc contains agent-specific logic
 
 Problem: Convention polluted with implementation details
@@ -577,7 +574,7 @@ When validating condensation, `repo-governance-checker` must verify:
 
 When creating new convention or development documents during offload, `docs-maker` must:
 
-- Use correct prefix (ex-co**or ex-de**)
+- Place files in the correct subdirectory (`conventions/` or `development/`) with lowercase kebab-case filenames
 - Include comprehensive content from source
 - Add frontmatter with appropriate subcategory
 - Update index files

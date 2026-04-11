@@ -2403,8 +2403,7 @@ This convention implements and respects:
 
 **Universal Application**: This convention applies to **all in-the-field tutorial content** across the repository:
 
-- **docs/tutorials/** - Production implementation guides in docs
-- **apps/ayokoding-web/content/** - Programming language in-the-field guides (Java, Golang, Python, etc.)
+- **apps/ayokoding-web/content/** - Canonical location for programming language in-the-field guides (Java, Golang, Python, etc.)
 - **apps/oseplatform-web/content/** - Platform in-the-field guides
 - **Any other location** - In-the-field tutorials regardless of directory
 

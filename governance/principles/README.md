@@ -83,7 +83,7 @@ graph TD
 - "Why we value simplicity in all solutions" → ✅ Principle (foundational value)
 - "Why accessibility must be built in from day one" → ✅ Principle (philosophical stance)
 - "Why we avoid time estimates in learning materials" → ✅ Principle (timeless belief)
-- "File naming must use prefix\_\_identifier format" → ❌ Convention (specific rule)
+- "File naming must use kebab-case identifiers" → ❌ Convention (specific rule)
 - "Use git hooks for automated validation" → ❌ Development (implementation practice)
 
 **Key Distinction**: Principles answer "why we care", conventions/development answer "what to do" or "how to do it".
@@ -181,7 +181,7 @@ Start simple and layer complexity gradually. Beginners see simple patterns, expe
 - Tutorial levels (Initial Setup → Quick Start → Beginner → Intermediate → Advanced)
 - Diátaxis framework (Tutorials vs Reference)
 - Documentation hierarchy (Overview → Details)
-- File naming (simple prefix system)
+- File naming (directory-encoded kebab-case)
 - Convention documents (basic principles → advanced patterns)
 
 ### Software Engineering Principles
@@ -207,7 +207,7 @@ Choose explicit composition and configuration over magic, convenience, and hidde
 **Key applications**:
 
 - Explicit tool permissions in AI agents (not "all tools")
-- Explicit file naming with prefixes (not "clever" abbreviations)
+- Explicit file naming with readable kebab-case basenames (not "clever" abbreviations)
 - Explicit frontmatter fields (not defaults)
 - Explicit color hex codes (not CSS color names)
 

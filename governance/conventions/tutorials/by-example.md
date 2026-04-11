@@ -1427,8 +1427,7 @@ This convention implements and respects:
 
 **Universal Application**: This convention applies to **all by-example tutorial content** across the repository:
 
-- **docs/tutorials/** - Programming language tutorials in docs
-- **apps/ayokoding-web/content/** - Programming language tutorials (Java, Golang, Python, etc.)
+- **apps/ayokoding-web/content/** - Canonical location for programming language tutorials (Java, Golang, Python, etc.)
 - **apps/oseplatform-web/content/** - Platform tutorials using by-example approach
 - **Any other location** - By-example tutorials regardless of directory
 

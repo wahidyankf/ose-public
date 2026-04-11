@@ -82,7 +82,7 @@ See [Repository Governance Architecture](../repository-governance-architecture.m
 - "Democratize Shariah-compliant enterprise for everyone" → ✅ Vision (foundational purpose)
 - "Traditional Islamic finance is locked in closed systems - we exist to open it" → ✅ Vision (problem and change)
 - "Why we value simplicity in all solutions" → ❌ Principle (operational value)
-- "File naming must use prefix\_\_identifier format" → ❌ Convention (specific rule)
+- "File naming must use kebab-case identifiers" → ❌ Convention (specific rule)
 
 ## Vision Documents
 

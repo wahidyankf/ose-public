@@ -32,7 +32,7 @@ This practice respects the following core principles:
 
 This practice implements/respects the following conventions:
 
-- **[File Naming Convention](../../conventions/structure/file-naming.md)**: Validation methods verify files follow the [prefix]\_\_[content-identifier].md pattern using bash pattern matching and path analysis.
+- **[File Naming Convention](../../conventions/structure/file-naming.md)**: Validation methods verify files use lowercase kebab-case basenames with standard extensions, matching the GitHub-compatible filename rule.
 
 - **[Linking Convention](../../conventions/formatting/linking.md)**: Link validation checks verify relative paths with .md extension exist and target files are accessible.
 
@@ -282,7 +282,7 @@ link_target=$(echo "$link" | sed 's/.*(\(.*\))/\1/')
 
 # Resolve path
 resolved_path=$(dirname "$file")/"$link_target"
-# Result: governance/conventions/./ex-co__file-naming.md
+# Result: governance/conventions/./indentation.md
 
 # Check existence
 if [ -f "$resolved_path" ]; then
@@ -294,40 +294,28 @@ fi
 
 ### 5. File Naming Convention Check
 
-**Purpose:** Verify files follow the hierarchical naming convention (`[prefix]__[content].md`).
+**Purpose:** Verify files use lowercase kebab-case basenames with a standard extension (see [File Naming Convention](../../conventions/structure/file-naming.md)).
 
 **Pattern:**
 
 ```bash
-# Get directory and expected prefix
-dir=$(dirname "$file")
-expected_prefix=$(get_prefix_for_dir "$dir")
-actual_prefix=$(basename "$file" | cut -d_ -f1-2)
+# Extract basename without extension
+basename=$(basename "$file" .md)
 
-# Compare
-if [ "$actual_prefix" = "$expected_prefix" ]; then
+# Check: lowercase letters, digits, hyphens only (no underscores, no uppercase, no spaces)
+if [[ "$basename" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]]; then
   echo "VALID"
 else
-  echo "INVALID - wrong prefix: got '$actual_prefix', expected '$expected_prefix'"
+  echo "INVALID - not kebab-case: $basename"
 fi
 ```
 
 **Key details:**
 
-- Compute expected prefix from directory path (see [File Naming Convention](../../conventions/structure/file-naming.md))
-- Extract actual prefix using `cut -d_ -f1-2` (two underscores in `prefix__`)
-- Handle special cases: `README.md`, `docs/metadata/`
-- Account for subdirectories (hyphenated names → concatenated prefixes)
-
-**Example prefix calculation:**
-
-```bash
-# governance/conventions/ → ex-co
-# docs/tutorials/ → tu
-# docs/how-to/ → hoto
-# docs/reference/ → re
-# governance/development/ → ex-de
-```
+- Allowed characters in basename: `a-z`, `0-9`, `-`
+- No underscores, no uppercase, no spaces, no leading/trailing hyphens
+- Handle special cases: `README.md`, `docs/metadata/`, date-prefixed files (`YYYY-MM-DD-*`)
+- Directory hierarchy encodes category — no prefix required on filenames
 
 ## Best Practices
 

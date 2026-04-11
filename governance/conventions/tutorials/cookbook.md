@@ -535,8 +535,7 @@ This convention implements and respects:
 
 **Universal Application**: This convention applies to **all cookbook tutorial content** across the repository:
 
-- **docs/tutorials/** - Programming language cookbooks in docs
-- **apps/ayokoding-web/content/** - Programming language cookbooks (Java, Golang, Python, etc.)
+- **apps/ayokoding-web/content/** - Canonical location for programming language cookbooks (Java, Golang, Python, etc.)
 - **apps/oseplatform-web/content/** - Platform cookbooks using recipe approach
 - **Any other location** - Cookbook tutorials regardless of directory
 

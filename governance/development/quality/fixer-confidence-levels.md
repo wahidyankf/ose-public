@@ -157,7 +157,7 @@ The three confidence levels (HIGH, MEDIUM, FALSE_POSITIVE) are universal. Each a
 - Missing `subcategory` field verified by re-reading frontmatter
 - Broken internal link verified by checking file doesn't exist at target path
 - Wrong field value verified by comparing actual vs expected value
-- File naming convention violation verified by prefix analysis
+- File naming convention violation verified by checking filename against the kebab-case pattern
 
 **apps-ayokoding-web-general-fixer:**
 

@@ -42,8 +42,7 @@ This convention ensures:
 **Applies to:**
 
 - **All programming language tutorial structures** across the repository:
-  - **ayokoding-web** (`apps/ayokoding-web/content/[lang]/learn/software-engineering/programming-language/[language]/tutorials/`)
-  - **docs/** (`docs/tutorials/software-engineering/programming-languages/[language]/`)
+  - **ayokoding-web** (`apps/ayokoding-web/content/[lang]/learn/software-engineering/programming-language/[language]/tutorials/`) - canonical location
   - **Any other location** where programming language tutorials are organized
 - Languages: Java, Elixir, Golang, Kotlin, Python, Rust (and future additions)
 

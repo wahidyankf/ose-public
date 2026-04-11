@@ -62,8 +62,7 @@ Tutorials are **learning-oriented** documentation that guide learners through ac
 
 **Scope**: Applies to **all tutorial content in the repository**, including:
 
-- **docs/tutorials/** - Business, AI Engineering, Software Engineering tutorials
-- **apps/ayokoding-web/content/** - Programming language tutorials (Java, Golang, Python, etc.)
+- **apps/ayokoding-web/content/** - Canonical location for programming language and educational tutorials (Java, Golang, Python, etc.)
 - **apps/oseplatform-web/content/** - Platform tutorials and guides
 - **Any other location** - Tutorial content regardless of directory
 
@@ -128,7 +127,7 @@ updated: 2026-01-01
 # [Subject] Quick Start
 ```
 
-**Requirements**: - Title clearly indicates it's a tutorial/quick start - Description states learning outcome (not just topic) - Tags include subject and domain - Follows [File Naming Convention](../structure/file-naming.md): kebab-case in `docs/tutorials/`
+**Requirements**: - Title clearly indicates it's a tutorial/quick start - Description states learning outcome (not just topic) - Tags include subject and domain - Follows [File Naming Convention](../structure/file-naming.md): kebab-case basenames
 
 #### 2. Introduction (The Hook)
 
@@ -1166,7 +1165,7 @@ $
 ```markdown
 For more details on the Diátaxis framework, see [Diátaxis Framework Convention](../structure/diataxis-framework.md).
 
-If you're new to finance, start with [Accounting](../business-and-finance/tu-bufi__accounting.md).
+If you're new to finance, start with [Accounting](../business-and-finance/accounting.md).
 ```
 
 **Internal Links**: - Link to glossary for terms - Link to conventions for standards - Link to references for formulas - Link to how-to guides for tasks
@@ -1231,7 +1230,7 @@ These criteria define what `docs-tutorial-checker` validates. Every tutorial mus
 
 **Code Quality**: - [ ] Code runs without errors - [ ] Output is correct - [ ] Comments explain logic - [ ] No security vulnerabilities - [ ] Follows language conventions
 
-**File Organization**: - [ ] Follows File Naming Convention (kebab-case in `docs/tutorials/`) - [ ] Located in correct directory - [ ] Frontmatter complete and accurate
+**File Organization**: - [ ] Follows File Naming Convention (kebab-case basenames) - [ ] Located in correct directory - [ ] Frontmatter complete and accurate
 
 **Cross-References**: - [ ] Links use correct format (relative paths, `.md` extension) - [ ] All internal links are valid - [ ] Prerequisites linked when available - [ ] Next steps include relevant links
 
@@ -1497,7 +1496,7 @@ One might consider using this approach. [impersonal]
 
 ### Exemplary Tutorial: Quick Start Structure
 
-See existing tutorials in `docs/tutorials/` as examples once created. Future tutorials should exemplify:
+See existing tutorials in `apps/ayokoding-web/content/` as examples. Future tutorials should exemplify:
 
 **These exemplify**: - Clear structure with all required sections - Progressive scaffolding from simple to complex - Visual completeness with diagrams and formulas - Hands-on practice exercises and challenges - Narrative flow with teacher voice - Real-world relevance throughout
 

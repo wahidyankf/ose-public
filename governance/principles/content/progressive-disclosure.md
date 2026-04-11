@@ -429,7 +429,7 @@ tools: Read, Write, Edit, Glob, Grep, Bash
 - PASS: Explicit at each level
 - PASS: Security through progressive access
 
-### File Naming Prefixes
+### File Naming
 
 **Location**: File naming convention
 
@@ -458,7 +458,7 @@ docs/explanation/infrastructure/security/security-basics.md
 
 - [Tutorial Naming Convention](../../conventions/tutorials/naming.md) - Six progressive tutorial levels
 - [Diátaxis Framework](../../conventions/structure/diataxis-framework.md) - Four documentation types
-- [File Naming Convention](../../conventions/structure/file-naming.md) - Progressive prefix complexity
+- [File Naming Convention](../../conventions/structure/file-naming.md) - Kebab-case naming rules for documentation files
 - [Tutorial Convention](../../conventions/tutorials/general.md) - Progressive tutorial structure
 
 ## References

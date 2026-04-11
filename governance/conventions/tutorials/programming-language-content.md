@@ -43,8 +43,7 @@ This convention ensures:
 This convention applies to:
 
 - **All programming language tutorial content** across the repository:
-  - **ayokoding-web** (`apps/ayokoding-web/content/[lang]/learn/swe/programming-languages/[language]/`)
-  - **docs/** (`docs/tutorials/software-engineering/programming-languages/[language]/`)
+  - **ayokoding-web** (`apps/ayokoding-web/content/[lang]/learn/swe/programming-languages/[language]/`) - canonical location
   - **Any other location** where programming language tutorials exist
 - Includes: tutorials (foundational, by-concept, by-example, cookbook), how-to guides, best practices, anti-patterns
 - Enforced by: `apps-ayokoding-web-general-checker`, `apps-ayokoding-web-by-example-checker`, `apps-ayokoding-web-general-maker`, `apps-ayokoding-web-by-example-maker`, `apps-ayokoding-web-facts-checker` agents

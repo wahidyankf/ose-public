@@ -213,7 +213,7 @@ All workflow files follow the plain-name pattern (no prefix), organized by subdi
 - `plan-quality-gate.md` (in `governance/workflows/plan/`)
 - `quality-gate.md` (in `governance/workflows/docs/`)
 
-**Note**: The `ex-wf__` prefix was used before the 3-phase reorganization (completed 2026-01-01). New workflow files use plain names in their respective subdirectories. See [File Naming Convention](../../conventions/structure/file-naming.md) Migration History for details.
+**Note**: Workflow files use plain kebab-case names in their respective subdirectories. See [File Naming Convention](../../conventions/structure/file-naming.md) for the current naming rules.
 
 ## Step Execution Patterns
 
@@ -226,7 +226,7 @@ Steps execute one after another. Later steps can reference outputs from earlier 
 ```markdown
 ### 1. Build Project (Sequential)
 
-**Agent**: `swe-hugo-developer`
+**Agent**: `swe-typescript-developer`
 
 - **Args**: `action: build, project: ayokoding-web`
 - **Output**: `{build-artifacts}`

@@ -439,7 +439,7 @@ ALL \*-checker agents must implement progressive writing:
 
 **Why this pattern**:
 
-- **Alignment**: Follows repository file naming convention (`[prefix]__[content-identifier].md`)
+- **Alignment**: Uses double-underscore separators to clearly delimit major filename segments (agent family, UUID chain, timestamp, suffix)
 - **Consistency**: Same separator style as documentation files (double underscore for major segments)
 - **Clarity**: Agent family, UUID chain, timestamp, and suffix all clearly separated
 - **Parallelization**: UUID prevents file collisions when multiple agents run simultaneously

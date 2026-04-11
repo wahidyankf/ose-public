@@ -94,17 +94,17 @@ tools: all
 
 **Why this fails**: "All tools" is implicit. What does "all" include? Write? Bash? Can this agent delete files? Run commands? Requires knowledge of what tools exist. Security risk.
 
-### File Naming Prefixes
+### File Naming
 
-**Context**: Files use prefixes to encode location.
+**Context**: Filenames should clearly describe their content so readers can identify a file without opening it.
 
 PASS: **Explicit (Correct)**:
 
 ```
-ex-pr__explicit-over-implicit.md
+explicit-over-implicit.md
 ```
 
-**Why this works**: The prefix `ex-pr` explicitly states "explanation/principles". Anyone can decode this by reading the convention.
+**Why this works**: The basename is a full, readable kebab-case description of the content. The directory hierarchy (`governance/principles/software-engineering/`) explicitly encodes the category.
 
 FAIL: **Implicit (Avoid)**:
 
@@ -428,7 +428,7 @@ npx lint-staged
 ## Related Conventions
 
 - [AI Agents Convention](../../development/agents/ai-agents.md) - Explicit tool permissions
-- [File Naming Convention](../../conventions/structure/file-naming.md) - Explicit prefixes
+- [File Naming Convention](../../conventions/structure/file-naming.md) - Kebab-case naming rules
 - [Color Accessibility Convention](../../conventions/formatting/color-accessibility.md) - Explicit hex codes
 - [Code Quality Convention](../../development/quality/code.md) - Explicit git hooks
 

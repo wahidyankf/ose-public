@@ -237,7 +237,7 @@ Reference agents or tools that enforce or assist with this convention:
 
 **Related Conventions:**
 
-- [Convention Name](./ex-co__convention-file.md) - How it relates
+- [Convention Name](./convention-file.md) - How it relates
 
 **External Resources:**
 
@@ -380,26 +380,18 @@ Convention documents vary in length based on complexity:
 
 Convention files follow the [File Naming Convention](../structure/file-naming.md):
 
-**Pattern:** `ex-co__[content-identifier].md`
-
-Where:
-
-- `ex` = explanation (top-level category)
-- `co` = conventions (subdirectory)
-- `[content-identifier]` = kebab-case description of convention topic
+**Pattern:** Lowercase kebab-case basename under the appropriate `governance/conventions/` subdirectory. The directory hierarchy encodes the category — no filename prefix is needed.
 
 **Examples:**
 
-- `ex-co__file-naming-convention.md`
-- `ex-co__color-accessibility.md`
-- `ex-co__hugo-content-shared.md` (shared Hugo conventions)
-- `ex-co__hugo-content-ayokoding.md` (ayokoding-web specific)
-- `ex-co__hugo-content-ose-platform.md` (oseplatform-web specific)
-- `ex-co__convention-writing.md` (this file)
+- `governance/conventions/structure/file-naming.md`
+- `governance/conventions/formatting/diagrams.md`
+- `governance/conventions/writing/quality.md`
+- `governance/conventions/writing/conventions.md` (this file)
 
 **Title vs Filename:**
 
-- Filename: `ex-co__convention-writing.md` (prefix + kebab-case)
+- Filename: `conventions.md` (plain kebab-case)
 - Frontmatter title: `"Convention Writing Convention"` (Title Case + "Convention")
 - H1 heading: `# Convention Writing Convention` (matches title)
 
@@ -468,7 +460,7 @@ Why this convention exists and what problems it solves.
 
 ### What This Convention Does NOT Cover
 
-- Out-of-scope topic (see [Other Convention](./ex-co__other.md))
+- Out-of-scope topic (see [Other Convention](./other.md))
 
 ## Standards
 
@@ -494,7 +486,7 @@ Showing what to avoid and why.
 
 **Related Conventions:**
 
-- [Related Convention](./ex-co__related.md)
+- [Related Convention](./related.md)
 
 **Agents:**
 

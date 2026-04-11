@@ -618,7 +618,7 @@ TBD works best when combined with:
 - **Small Commits**: [Conventional Commits](./commit-messages.md)
 - **Pair/Mob Programming**: Real-time collaboration and review
 - **PR Merge Protocol**: [PR Merge Protocol](./pr-merge-protocol.md) - Required approval workflow for worktree-mode PRs
-- **Worktree Setup**: [Worktree Setup](./worktree-setup.md) - npm install requirement after worktree creation
+- **Worktree Toolchain Initialization**: [Worktree Toolchain Initialization](./worktree-setup.md) - Mandatory two-step init (`npm install` + `npm run doctor -- --fix`) after creating or entering a worktree
 
 ## References and Further Reading
 

@@ -9,7 +9,7 @@ tags:
   - conventions
   - ai-agents
 created: 2025-11-23
-updated: 2026-03-28
+updated: 2026-04-11
 ---
 
 # Development
@@ -104,7 +104,7 @@ Development practices in this directory fall into several categories:
 - [Trunk Based Development Convention](./workflow/trunk-based-development.md) - Git workflow using Trunk Based Development for continuous integration
 - [Commit Message Convention](./workflow/commit-messages.md) - Understanding Conventional Commits, commit granularity, and why we use them
 - [Reproducible Environments Convention](./workflow/reproducible-environments.md) - Practices for creating consistent, reproducible development and build environments. Covers runtime version management (Volta), dependency locking, environment configuration, and containerization
-- [Worktree Setup](./workflow/worktree-setup.md) - Practice for running `npm install` in the root repository worktree after creating a new git worktree. Keeps `node_modules/` consistent with `package-lock.json` and ensures Nx task caching, builds, and linting function correctly across all worktrees
+- [Worktree Toolchain Initialization](./workflow/worktree-setup.md) - Mandatory two-step init (`npm install` then `npm run doctor -- --fix`) in the root repository worktree after creating or entering a git worktree. The first step keeps `node_modules/` consistent with `package-lock.json`; the second actively converges the 18+ polyglot toolchains (Go, Java, Rust, Elixir, Python, .NET, Dart, Clojure, Kotlin, C#, Node) managed by `rhino-cli doctor` — required because `package.json`'s `postinstall` hook swallows doctor failures with `|| true`
 - [Git Push Safety Convention](./workflow/git-push-safety.md) - Requires explicit per-instance user approval before any AI agent or automation executes `git push --force`, `--force-with-lease`, or `--no-verify`; prior approval does not carry forward
 - [Native-First Toolchain Management Convention](./workflow/native-first-toolchain.md) - Architectural decision to use native package managers and `rhino-cli doctor` instead of Terraform, Ansible, or Docker Dev Containers for development environment setup
 - [PR Merge Protocol Convention](./workflow/pr-merge-protocol.md) - Practice requiring explicit user approval before merging pull requests and mandating all quality gates pass before merge
@@ -181,4 +181,4 @@ These companion files exist in each subdirectory: `workflow/`, `quality/`, `patt
 
 ---
 
-**Last Updated**: 2026-04-04
+**Last Updated**: 2026-04-11

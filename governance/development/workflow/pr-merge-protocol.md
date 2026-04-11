@@ -224,5 +224,5 @@ This rule applies to:
 - [Git Push Safety Convention](./git-push-safety.md) -- Per-instance approval for destructive git operations
 - [Code Quality Convention](../quality/code.md) -- Quality gates enforced by git hooks
 - [Trunk Based Development Convention](./trunk-based-development.md) -- When PRs are used in TBD
-- [Worktree Setup](./worktree-setup.md) -- Worktree creation and setup
+- [Worktree Toolchain Initialization](./worktree-setup.md) -- Mandatory two-step init (`npm install` + `npm run doctor -- --fix`) after creating or entering a worktree
 - [Nx Target Standards](../infra/nx-targets.md) -- Canonical target names for quality gates

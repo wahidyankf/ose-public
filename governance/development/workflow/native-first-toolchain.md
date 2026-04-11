@@ -10,7 +10,7 @@ tags:
   - environment
   - architecture-decision
 created: 2026-04-04
-updated: 2026-04-04
+updated: 2026-04-11
 ---
 
 # Native-First Toolchain Management
@@ -139,6 +139,8 @@ All commands work correctly from git worktrees. `findGitRoot()` uses `os.Stat` t
 
 This is important because the repository uses git worktrees heavily for AI agent isolation (`.claude/worktrees/`).
 
+Per the [Worktree Toolchain Initialization](./worktree-setup.md) practice, `npm run doctor -- --fix` is required as the second step of a mandatory two-step init (after `npm install`) whenever a worktree is created or entered. Doctor's idempotency (documented in the Rationale section above) is what makes running it unconditionally at worktree entry cheap enough to codify as a rule — when the toolchain is healthy, `doctor --fix` is a no-op pass; when it has drifted, it actively converges.
+
 ## Implementation Notes
 
 ### Shell Restart Caveat
@@ -181,4 +183,4 @@ Revisit this architectural decision if any of the following conditions change:
 
 ---
 
-**Last Updated**: 2026-04-04
+**Last Updated**: 2026-04-11

@@ -271,8 +271,8 @@ When removing from `plans/in-progress/README.md`:
 
 Before implementing anything:
 
-1. **Run `npm install`** to ensure dependencies are current
-2. **Run `npm run doctor`** to verify tooling
+1. **Run `npm install`** in the root worktree to ensure Node/Nx dependencies are current
+2. **Run `npm run doctor -- --fix`** in the root worktree to actively converge the full polyglot toolchain (required — the `postinstall` hook uses `doctor || true` and silently tolerates drift; see [Worktree Toolchain Initialization](../../governance/development/workflow/worktree-setup.md))
 3. **Set up project-specific requirements** (env vars, DB, Docker, etc.)
 4. **Verify dev server starts** for affected projects
 5. **Run existing tests** to establish baseline — note any preexisting failures for later fixing

@@ -247,8 +247,8 @@ Every plan must start with environment setup steps:
 ```markdown
 ### Environment Setup
 
-- [ ] Install dependencies: `npm install`
-- [ ] Run doctor to verify tooling: `npm run doctor`
+- [ ] Install dependencies in the root worktree: `npm install`
+- [ ] Converge the full polyglot toolchain in the root worktree: `npm run doctor -- --fix` (required — the `postinstall` hook runs `doctor || true` and silently tolerates drift; see [Worktree Toolchain Initialization](../../../governance/development/workflow/worktree-setup.md))
 - [ ] [Add project-specific setup: env vars, DB, Docker, etc.]
 - [ ] Verify dev server starts: `nx dev [project-name]`
 - [ ] Verify existing tests pass before making changes

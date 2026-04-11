@@ -191,8 +191,8 @@ When writing the delivery checklist (Step 5), ALWAYS include ALL of the followin
 ```markdown
 ### Environment Setup
 
-- [ ] Install dependencies: `npm install`
-- [ ] Run doctor to verify tooling: `npm run doctor`
+- [ ] Install dependencies in the root worktree: `npm install`
+- [ ] Converge the full polyglot toolchain in the root worktree: `npm run doctor -- --fix` (required — the `postinstall` hook runs `doctor || true` and silently tolerates drift; see [Worktree Toolchain Initialization](../../governance/development/workflow/worktree-setup.md))
 - [ ] [Project-specific setup: env vars, DB, Docker, etc.]
 - [ ] Verify dev server starts: `nx dev [project-name]`
 - [ ] Run existing tests to establish baseline: `nx run [project-name]:test:quick`

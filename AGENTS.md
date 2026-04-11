@@ -26,6 +26,7 @@ Instructions for AI agents working with this repository via OpenCode.
 - **npm**: 11.10.1
 - **Monorepo**: Nx with `apps/` and `libs/` structure
 - **Git Workflow**: Trunk Based Development (default: commit and push directly to `main`). **Worktree exception**: any work performed inside a `git worktree add` path -- including agents using `isolation: "worktree"` and agents invoked inside an existing worktree session -- must push to a feature branch and open a **draft** PR targeting `main` (`gh pr create --draft`), not push to `main` directly. The draft is flipped to ready for review when the author decides the work is complete; that flip is the moment the [PR Merge Protocol](./governance/development/workflow/pr-merge-protocol.md) approval gate fires. See the [Trunk Based Development Convention](./governance/development/workflow/trunk-based-development.md#worktree-mode-branch--draft-pr) for details.
+- **Worktree toolchain init**: After creating or entering a worktree, agents must run BOTH `npm install` AND `npm run doctor -- --fix` in the root repository worktree, in that order. The `package.json` `postinstall` hook runs `npm run doctor || true` which silently tolerates toolchain drift, so the explicit `doctor --fix` invocation is required to converge the 18+ polyglot toolchains (Go, Java, Rust, Elixir, Python, .NET, Dart, Clojure, Kotlin, C#, Node). See [Worktree Toolchain Initialization](./governance/development/workflow/worktree-setup.md) for the full rationale and procedure.
 
 ## Dual-Mode Configuration
 
@@ -159,7 +160,7 @@ All agents follow foundational principles:
 
 ---
 
-**Last Updated**: 2026-04-02
+**Last Updated**: 2026-04-11
 
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->

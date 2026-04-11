@@ -160,6 +160,8 @@ npm run doctor -- --fix --dry-run # Preview what would be installed
 npm run doctor -- --scope minimal # Check only core tools (git, volta, node, npm, go, docker, jq)
 ```
 
+**Note on `npm install` + doctor**: The comment on `npm install` above says it "automatically runs doctor to verify tool versions". That is literally true — the `postinstall` hook invokes `npm run doctor || true` — but the trailing `|| true` silently swallows doctor failures, so `npm install` can complete while the polyglot toolchain is actually broken. For **worktree setup** (after `git worktree add`, `EnterWorktree`, or entering an existing worktree session), run BOTH `npm install` AND `npm run doctor -- --fix` explicitly in the root worktree, in that order. The explicit `doctor --fix` call is the only action that guarantees the 18+ polyglot toolchains (Go, Java, Rust, Elixir, Python, .NET, Dart, Clojure, Kotlin, C#, Node) converge. See [Worktree Toolchain Initialization](./governance/development/workflow/worktree-setup.md) for the full rationale and procedure.
+
 **See**: [governance/development/infra/nx-targets.md](./governance/development/infra/nx-targets.md) for canonical target names, mandatory targets per project type, and caching rules.
 
 **Coverage thresholds** (all enforced via `rhino-cli test-coverage validate` in `test:quick`):

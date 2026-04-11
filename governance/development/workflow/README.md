@@ -28,7 +28,7 @@ These standards define **HOW to execute development workflows**, covering the th
 - [Implementation Workflow Convention](./implementation.md) - Three-stage development workflow: make it work, make it right, make it fast. Includes surgical changes (touch only what you must) and goal-driven execution (define success criteria, loop until verified)
 - [Reproducible Environments Convention](./reproducible-environments.md) - Practices for creating consistent, reproducible development and build environments
 - [Trunk Based Development Convention](./trunk-based-development.md) - Git workflow using Trunk Based Development for continuous integration
-- [Worktree Setup](./worktree-setup.md) - Practice for running npm install in the root repository worktree after creating a new git worktree. Ensures Nx workspace and all tools remain functional across worktrees
+- [Worktree Toolchain Initialization](./worktree-setup.md) - Mandatory two-step init (`npm install` then `npm run doctor -- --fix`) in the root repository worktree after creating or entering a git worktree. The first step keeps `node_modules/` consistent with `package-lock.json`; the second actively converges the 18+ polyglot toolchains (Go, Java, Rust, Elixir, Python, .NET, Dart, Clojure, Kotlin, C#, Node) managed by `rhino-cli doctor` — required because `package.json`'s `postinstall` hook swallows doctor failures with `|| true`
 - [Git Push Safety Convention](./git-push-safety.md) - Requires explicit per-instance user approval before any AI agent or automation executes `git push --force`, `--force-with-lease`, or `--no-verify`; prior approval does not carry forward
 - [PR Merge Protocol](./pr-merge-protocol.md) - Requires explicit user approval before merging any pull request; all quality gates must pass before merge; no auto-merge by agents or automation
 - [Native-First Toolchain Management](./native-first-toolchain.md) - Architectural decision to use native package managers and `rhino-cli doctor` instead of Terraform, Ansible, or Docker Dev Containers for development environment setup
@@ -67,4 +67,4 @@ This set of development practices respects the following conventions:
 
 ---
 
-**Last Updated**: 2026-03-28
+**Last Updated**: 2026-04-11

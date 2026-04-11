@@ -1,3 +1,5 @@
+// Package docs provides markdown link scanning and validation for
+// documentation files in this repository.
 package docs
 
 import "time"

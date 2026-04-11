@@ -4,10 +4,10 @@ This document is the phase-by-phase execution plan. Each checkbox represents one
 
 ## Commit Guidelines
 
-- [ ] Commit each phase separately using the message specified at the end of that phase
-- [ ] Follow Conventional Commits: `<type>(<scope>): <description>`
-- [ ] If a single phase's work touches multiple unrelated domains (e.g., rhino-cli + `.claude/` + `governance/`), split into separate commits within that phase rather than producing one multi-domain commit
-- [ ] Review `git log --oneline` before Phase 8 to confirm clean segmentation
+- [x] Commit each phase separately using the message specified at the end of that phase
+- [x] Follow Conventional Commits: `<type>(<scope>): <description>`
+- [x] If a single phase's work touches multiple unrelated domains (e.g., rhino-cli + `.claude/` + `governance/`), split into separate commits within that phase rather than producing one multi-domain commit
+- [x] Review `git log --oneline` before Phase 8 to confirm clean segmentation
 
 ## Environment Setup (Before Phase 1)
 
@@ -355,49 +355,49 @@ The following `.claude/agents/*` files need both (a) Obsidian word scrub and (b)
 
 > **Important**: Fix ALL failures found during quality gates, not just those caused by your changes. This follows the root cause orientation principle — proactively fix preexisting errors encountered during work.
 
-- [ ] Run `npm run lint:md`
-- [ ] Run `npm run format:md:check`
-- [ ] Run `npx nx affected -t typecheck lint test:quick spec-coverage` to warm cache (per CLAUDE.md pre-push guidance)
-- [ ] Run `git log --oneline` since plan start; confirm commits are split by domain and follow Conventional Commits
-- [ ] Run the pre-commit hook manually (`.husky/pre-commit`) on a trivial edit to confirm `.claude/` validator passes
-- [ ] Review `git diff origin/main` and sanity-check that no unintended file changes slipped in
-- [ ] Re-run the final Obsidian scrub check from Phase 6
-- [ ] Re-run `find docs -type f -name '*__*.md'` — zero results
-- [ ] Re-run `find docs -name .obsidian` — zero results
+- [x] Run `npm run lint:md`
+- [x] Run `npm run format:md:check`
+- [x] Run `npx nx affected -t typecheck lint test:quick spec-coverage` to warm cache (per CLAUDE.md pre-push guidance)
+- [x] Run `git log --oneline` since plan start; confirm commits are split by domain and follow Conventional Commits
+- [x] Run the pre-commit hook manually (`.husky/pre-commit`) on a trivial edit to confirm `.claude/` validator passes
+- [x] Review `git diff origin/main` and sanity-check that no unintended file changes slipped in
+- [x] Re-run the final Obsidian scrub check from Phase 6
+- [x] Re-run `find docs -type f -name '*__*.md'` — zero results
+- [x] Re-run `find docs -name .obsidian` — zero results
 
 ### Post-Push Verification
 
-- [ ] Push commits to `main`: `git push origin main`
-- [ ] Navigate to the repository's GitHub Actions page
-- [ ] Monitor the triggered workflows for the push (markdown lint, pre-commit validation, and any project-level CI workflows)
-- [ ] Wait for all checks to complete; if any check fails, fix it immediately and push a follow-up commit before proceeding to Phase 9
-- [ ] Do NOT proceed to Phase 9 until all CI checks are green
+- [x] Push commits to `main`: `git push origin main`
+- [x] Navigate to the repository's GitHub Actions page
+- [x] Monitor the triggered workflows for the push (markdown lint, pre-commit validation, and any project-level CI workflows)
+- [x] Wait for all checks to complete; if any check fails, fix it immediately and push a follow-up commit before proceeding to Phase 9
+- [x] Do NOT proceed to Phase 9 until all CI checks are green
 
 ### Phase 8 gate
 
-- [ ] All lint checks pass
-- [ ] Affected Nx targets pass
-- [ ] Commit history is clean and well-segmented
-- [ ] All validation checks from `tech-docs.md` §8 pass
+- [x] All lint checks pass
+- [x] Affected Nx targets pass
+- [x] Commit history is clean and well-segmented
+- [x] All validation checks from `tech-docs.md` §8 pass
 
 ## Phase 9 — Archive the Plan
 
 **Goal**: Move the completed plan to `done/` and update indices.
 
-- [ ] Verify ALL delivery checklist items in Phases 1–8 are ticked before proceeding with archival
-- [ ] Move `plans/in-progress/2026-04-11__remove-obsidian-compat/` to `plans/done/2026-04-11__remove-obsidian-compat/` using `git mv`
-- [ ] Update `plans/in-progress/README.md` — remove this plan from the active list
-- [ ] Update `plans/done/README.md` — add this plan to the completed list with a one-line summary
-- [ ] Update the plan's `README.md` status line to `Done` and add a `Completed: YYYY-MM-DD` line
-- [ ] Clean up `local-temp/obsidian-*` scratch files (they are gitignored; just rm)
-- [ ] Commit: `docs(plans): archive remove-obsidian-compat plan`
+- [x] Verify ALL delivery checklist items in Phases 1–8 are ticked before proceeding with archival
+- [x] Move `plans/in-progress/2026-04-11__remove-obsidian-compat/` to `plans/done/2026-04-11__remove-obsidian-compat/` using `git mv`
+- [x] Update `plans/in-progress/README.md` — remove this plan from the active list
+- [x] Update `plans/done/README.md` — add this plan to the completed list with a one-line summary
+- [x] Update the plan's `README.md` status line to `Done` and add a `Completed: YYYY-MM-DD` line
+- [x] Clean up `local-temp/obsidian-*` scratch files (they are gitignored; just rm)
+- [x] Commit: `docs(plans): archive remove-obsidian-compat plan`
 
 ### Phase 9 gate
 
-- [ ] Plan folder exists at `plans/done/2026-04-11__remove-obsidian-compat/`
-- [ ] `plans/in-progress/README.md` no longer lists this plan
-- [ ] `plans/done/README.md` lists this plan
-- [ ] `git status` clean
+- [x] Plan folder exists at `plans/done/2026-04-11__remove-obsidian-compat/`
+- [x] `plans/in-progress/README.md` no longer lists this plan
+- [x] `plans/done/README.md` lists this plan
+- [x] `git status` clean
 
 ## Commit Sequence Summary
 

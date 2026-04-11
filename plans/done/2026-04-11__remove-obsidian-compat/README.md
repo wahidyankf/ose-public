@@ -1,7 +1,8 @@
 # Remove Obsidian Compatibility from Docs
 
-**Status**: In Progress
+**Status**: Done
 **Created**: 2026-04-11
+**Completed**: 2026-04-11
 **Priority**: Medium
 **Complexity**: Medium (file renames + convention rewrite + link updates across ~300 files)
 

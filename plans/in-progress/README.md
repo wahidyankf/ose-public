@@ -4,7 +4,7 @@ Active project plans currently being worked on.
 
 ## Active Plans
 
-- [2026-04-11 — Remove Obsidian Compatibility from Docs](./2026-04-11__remove-obsidian-compat/README.md) — delete the `docs/.obsidian/` vault, rename 300+ prefix-encoded docs files to standard-markdown + GitHub-compatible kebab-case, rewrite the File Naming and Linking conventions on a pure GitHub-compatibility basis, delete the `rhino-cli docs validate-naming` command, and scrub Obsidian references and prefix-scheme narrative across governance, `.claude/` agents and skills, root navigation files, and subproject READMEs
+_No active plans._
 
 ## Instructions
 

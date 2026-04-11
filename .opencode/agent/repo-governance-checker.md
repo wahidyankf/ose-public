@@ -346,7 +346,7 @@ Validate file naming, linking, emoji usage, convention compliance per existing l
 
    c. **Tool Usage Pattern Duplication**:
    - Pattern: Same tool usage instructions repeated across agents
-   - **Example**: Bash heredoc patterns for .claude/ folder, Edit tool patterns for docs/
+   - **Example**: Report-generation `Write` + `Bash` (UUID, timestamp) patterns, or identical MCP-tool invocation snippets
    - **Trigger**: 3+ agents with identical tool guidance (20+ lines)
    - **Action**: Extract to Skill or reference AI Agents Convention
 

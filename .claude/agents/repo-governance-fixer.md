@@ -1,6 +1,6 @@
 ---
 name: repo-governance-fixer
-description: Applies validated fixes from repository rules audit reports including agent-Skill duplication removal, Skills coverage gap remediation, and rules governance fixes (contradictions, inaccuracies, inconsistencies). Uses bash tools for .opencode folder modifications.
+description: Applies validated fixes from repository rules audit reports including agent-Skill duplication removal, Skills coverage gap remediation, and rules governance fixes (contradictions, inaccuracies, inconsistencies).
 tools: Read, Glob, Grep, Write, Edit, Bash
 model: sonnet
 color: yellow
@@ -59,19 +59,9 @@ Fix repository-wide consistency issues including:
 
 ## Critical Requirements
 
-### Bash Tools for .opencode Folder
+### File Operations in .claude/ and .opencode/
 
-**MANDATORY**: ALL modifications to `.opencode/` folder files MUST use bash tools (removed during migration):
-
-- Use heredoc for file writing
-- Use sed for file editing
-- Use awk for text processing
-- NEVER use Write tool for `.opencode/` (removed during migration) files
-- NEVER use Edit tool for `.opencode/` (removed during migration) files
-
-**Why**: Enables autonomous agent operation without user approval prompts.
-
-See [AI Agents Convention - Writing to .opencode Folders](../../governance/development/agents/ai-agents.md#writing-to-opencode-folders).
+Use the normal `Write` / `Edit` tools on files under `.claude/` and `.opencode/`. Both paths are pre-authorized in `.claude/settings.json`, so no approval prompts fire. `Bash` `sed` / `heredoc` remains useful for bulk mechanical substitutions across many files. After editing `.claude/` sources, run `npm run sync:claude-to-opencode` to regenerate the `.opencode/` mirrors.
 
 ### Post-Fix Verification (Mandatory)
 

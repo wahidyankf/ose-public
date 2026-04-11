@@ -493,10 +493,10 @@ Support `mode` parameter for quality-gate workflows:
 - NO confirmation prompts (user already reviewed checker report)
 - Skip MEDIUM_CONFIDENCE findings (flag for manual review)
 - Skip FALSE_POSITIVE findings (report to improve checker)
-- Use appropriate tools based on file location:
-  - `.claude/` folders: Use Bash tools (sed, awk, heredoc)
-  - `docs/` folders: Use Edit tool
-  - Other locations: Use appropriate tools per file type
+- Use the right tool for the edit shape:
+  - Single-file targeted edits: `Edit` tool (including under `.claude/`, `.opencode/`, `docs/`, `governance/`)
+  - Bulk mechanical substitutions across many files: `Bash` with `sed` / `awk`
+  - New file creation: `Write` tool
 
 **Fix Execution Pattern**:
 

@@ -652,48 +652,17 @@ color: green
 
 See [Temporary Files Convention](../infra/temporary-files.md) for complete details on report naming patterns, mandatory checker requirements, and timestamp generation.
 
-### Writing to .opencode/ Folders
+### Writing to .claude/ and .opencode/ Folders
 
-**CRITICAL RULE**: When creating or modifying files in `.claude/` folders (especially `.claude/agents/`) or `.opencode/` folders (especially `.opencode/agent/`), agents MUST use Bash tools (heredoc, sed, awk, etc.) and NOT Write/Edit tools.
-
-**Rationale**: Bash tools allow autonomous agent operation without requiring user approval for file operations. Write/Edit tools trigger user approval prompts, breaking autonomous workflows.
+Use the normal `Write` / `Edit` tools for files in `.claude/` and `.opencode/`. Both paths are pre-authorized in `.claude/settings.json` (`Write(.claude/**)`, `Edit(.claude/**)`, `Write(.opencode/**)`, `Edit(.opencode/**)`), so no approval prompts fire. `Bash` heredoc and `sed` remain appropriate for bulk mechanical substitutions across many files, but there is no restriction on direct edits.
 
 **Applies to**:
 
-- Creating new agent files in `.claude/agents/` or `.opencode/agent/`
-- Updating existing agent files in `.claude/agents/` or `.opencode/agent/`
-- Modifying `.claude/agents/README.md` or `.opencode/agent/README.md`
-- Any other `.opencode/` folder operations
+- Creating or updating agent files in `.claude/agents/` or `.opencode/agent/`
+- Creating or updating skill files in `.claude/skills/*/SKILL.md` or `.opencode/skill/*/SKILL.md`
+- Updating the corresponding `README.md` index files
 
-**Tool patterns**:
-
-```bash
-# Create new agent file (heredoc pattern)
-cat > .claude/agents/new-agent.md <<'END_HEREDOC'
----
-name: new-agent
-description: Agent description here
-tools: Read, Glob, Grep, Bash
-model:
-color: blue
----
-
-# Agent content here...
-END_HEREDOC
-
-# Update existing agent file (sed/awk pattern)
-sed -i '' 's/^model:$/model: sonnet/' .claude/agents/agent-name.md
-
-# Update README.md (targeted insertion)
-awk 'pattern { insert_text } { print }' .claude/agents/README.md > temp && mv temp .claude/agents/README.md
-```
-
-**Agents affected**:
-
-- `agent-maker` - Creates new agents, already complies
-- `repo-governance-maker` - Updates agents, already complies
-
-**Verification**: Check that agents writing to `.opencode/` use only Bash tool (not Write/Edit).
+**Sync requirement**: After editing `.claude/` sources, run `npm run sync:claude-to-opencode` to regenerate the `.opencode/` mirrors. The pre-commit hook validates both formats.
 
 ## Model Selection Guidelines
 

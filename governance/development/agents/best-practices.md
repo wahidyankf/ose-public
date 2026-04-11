@@ -156,36 +156,7 @@ description: Checks stuff
 - Easier troubleshooting
 - Clear security model
 
-### Practice 6: Use Bash Tools for .claude/ Operations
-
-**Principle**: When creating/modifying files in `.claude/` directory, use Bash tools (heredoc, sed) instead of Write/Edit to avoid approval prompts.
-
-**Good Example:**
-
-```bash
-cat > .claude/agents/new-agent.md <<'EOF'
----
-name: new-agent
----
-Content here
-EOF
-```
-
-**Bad Example:**
-
-```markdown
-Use Write tool to create .claude/agents/new-agent.md
-
-# This triggers user approval prompt!
-```
-
-**Rationale:**
-
-- Enables autonomous operation
-- Reduces friction
-- Follows established patterns
-
-### Practice 7: Test Agents with Edge Cases
+### Practice 6: Test Agents with Edge Cases
 
 **Principle**: Test agents with both valid and invalid inputs before deployment.
 
@@ -207,7 +178,7 @@ Use Write tool to create .claude/agents/new-agent.md
 - Graceful degradation
 - Production readiness
 
-### Practice 8: Provide Context in Agent Frontmatter
+### Practice 7: Provide Context in Agent Frontmatter
 
 **Principle**: Include enough context in frontmatter for the agent to work autonomously.
 
@@ -228,7 +199,7 @@ context: |
 - Reduced need for external documentation
 - Consistent behavior
 
-### Practice 9: Follow Naming Conventions
+### Practice 8: Follow Naming Conventions
 
 **Principle**: Use descriptive kebab-case names following agent naming patterns.
 
@@ -254,7 +225,7 @@ my_agent.md
 - Easy discovery
 - Consistent organization
 
-### Practice 10: Document Agent Dependencies
+### Practice 9: Document Agent Dependencies
 
 **Principle**: Clearly document what files, tools, or external services the agent depends on.
 
@@ -292,11 +263,10 @@ Following these best practices ensures:
 3. Appropriate model selection
 4. Clear, actionable descriptions
 5. Documented tool usage
-6. Bash tools for .claude/ operations
-7. Edge case testing
-8. Sufficient context in frontmatter
-9. Consistent naming conventions
-10. Documented dependencies
+6. Edge case testing
+7. Sufficient context in frontmatter
+8. Consistent naming conventions
+9. Documented dependencies
 
 Agents built following these practices are maintainable, secure, and effective at automating repository tasks.
 

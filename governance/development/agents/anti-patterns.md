@@ -132,39 +132,7 @@ description: >
 - Better discoverability
 - Users know when to invoke
 
-### Anti-Pattern 4: Using Write/Edit Tools in .claude/ Directory
-
-**Problem**: Using Write/Edit tools for .claude/ operations triggers approval prompts.
-
-**Bad Example:**
-
-```markdown
-## Implementation
-
-Use Write tool to create new agent file in .claude/agents/
-
-# This requires user approval for each file!
-```
-
-**Solution:**
-
-```bash
-# Use Bash heredoc for autonomous operation
-cat > .claude/agents/new-agent.md <<'EOF'
----
-name: new-agent
----
-Content here
-EOF
-```
-
-**Rationale:**
-
-- Autonomous operation
-- No approval prompts
-- Established pattern
-
-### Anti-Pattern 5: Hardcoded Paths and Values
+### Anti-Pattern 4: Hardcoded Paths and Values
 
 **Problem**: Agent has hardcoded paths or values that break when structure changes.
 
@@ -195,7 +163,7 @@ context: |
 - Works on different machines
 - Resilient to restructuring
 
-### Anti-Pattern 6: No Error Handling Guidance
+### Anti-Pattern 5: No Error Handling Guidance
 
 **Problem**: Agent does not document how to handle errors or edge cases.
 
@@ -225,7 +193,7 @@ description: >
 - Graceful degradation
 - Better user experience
 
-### Anti-Pattern 7: Missing Tool Usage Documentation
+### Anti-Pattern 6: Missing Tool Usage Documentation
 
 **Problem**: Agent frontmatter does not explain how tools are used.
 
@@ -256,7 +224,7 @@ tools: [Read, Write, Bash, WebFetch]
 - Security clarity
 - Easier troubleshooting
 
-### Anti-Pattern 8: Using Wrong Model for Task
+### Anti-Pattern 7: Using Wrong Model for Task
 
 **Problem**: Using expensive Sonnet model for simple tasks or Haiku for complex reasoning.
 
@@ -292,7 +260,7 @@ model: sonnet # Needed for deep reasoning
 - Performance optimization
 - Appropriate capability match
 
-### Anti-Pattern 9: No Testing Before Deployment
+### Anti-Pattern 8: No Testing Before Deployment
 
 **Problem**: Deploying agents without testing edge cases and error scenarios.
 
@@ -323,7 +291,7 @@ Created new agent, deploying immediately
 - Robust error handling
 - Confident deployments
 
-### Anti-Pattern 10: Generic Agent Names
+### Anti-Pattern 9: Generic Agent Names
 
 **Problem**: Using non-descriptive agent names that do not indicate purpose.
 
@@ -358,7 +326,6 @@ readme-maker.md
 | **God Agent**                  | Too many responsibilities        | Decompose into focused agents      |
 | **Excessive Tool Permissions** | Requesting unused tools          | Request only necessary tools       |
 | **Vague Descriptions**         | Unclear purpose                  | Clear, actionable descriptions     |
-| **Write/Edit in .claude/**     | Triggers approval prompts        | Use Bash heredocs                  |
 | **Hardcoded Paths**            | Breaks in different environments | Use relative paths                 |
 | **No Error Handling Guidance** | Unclear error behavior           | Document error handling            |
 | **Missing Tool Usage Docs**    | Unclear how tools are used       | Document tool usage                |

@@ -464,7 +464,7 @@ For files in §1.3.b that **describe** the prefix encoding (not just reference a
 
 ### 5d. Tooling constraint
 
-All `.claude/` edits MUST use Bash `sed` / heredoc per CLAUDE.md, not Edit/Write. Governance and docs edits use Edit. Source Go edits in `apps/rhino-cli/` use Edit.
+Tool choice is a craft decision, not a rule: use `Edit` / `Write` for targeted single-file edits (including under `.claude/` and `.opencode/` — both paths are pre-authorized in `.claude/settings.json`), and use `Bash` `sed` / `heredoc` for bulk mechanical substitutions across many files. Source Go edits in `apps/rhino-cli/` use `Edit`.
 
 After all edits, the final check is:
 

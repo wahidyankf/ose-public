@@ -206,7 +206,7 @@ Files from `tech-docs.md` §1.3.b that explain the prefix encoding in narrative 
 - [ ] `docs/tutorials/README.md`, `docs/how-to/README.md`, `docs/reference/README.md`, `docs/explanation/README.md` — regenerate the children-file lists with new names
 - [ ] Every other `docs/**/README.md` subdirectory index — regenerate children-file lists with new names
 
-### Agent edits (use Bash heredoc/sed per CLAUDE.md)
+### Agent edits (Edit tool for targeted edits, Bash sed for bulk substitutions)
 
 The following `.claude/agents/*` files need both (a) Obsidian word scrub and (b) narrative cleanup. The basename sed loop in Phase 5 already fixed their filename references; this step handles anything that survived:
 
@@ -229,7 +229,7 @@ The following `.claude/agents/*` files need both (a) Obsidian word scrub and (b)
 - [ ] Run `ripgrep -i obsidian .claude/agents/` — expect zero matches
 - [ ] Run `ripgrep '(hoto__|tu__|re__[a-z]|ex-go-|ex-soen-)' .claude/agents/` — expect zero matches
 
-### Skill edits (use Bash heredoc/sed per CLAUDE.md)
+### Skill edits (Edit tool for targeted edits, Bash sed for bulk substitutions)
 
 - [ ] `.claude/skills/docs-validating-links/SKILL.md` — remove "Error 3: Obsidian wiki links" block; update error numbering; remove any reference to the rhino-cli `validate-naming` command
 - [ ] `.claude/skills/docs-validating-factual-accuracy/SKILL.md` — remove prefix-scheme references

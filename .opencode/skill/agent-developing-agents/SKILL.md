@@ -1,6 +1,6 @@
 ---
 name: agent-developing-agents
-description: AI agent development standards including frontmatter structure, naming conventions, tool access patterns, model selection, reference documentation structure, and Bash-only file operations for .claude/ and .opencode/ folders
+description: AI agent development standards including frontmatter structure, naming conventions, tool access patterns, model selection, and reference documentation structure
 ---
 
 # Developing AI Agents
@@ -11,39 +11,11 @@ Comprehensive guidance for creating AI agents following repository conventions.
 
 - Frontmatter: name, description, tools, model, color, skills
 - Name must match filename exactly
-- Use Bash tools (heredoc, sed, awk) for ALL file operations in `.claude/` and `.opencode/` directories — NEVER use Write or Edit tools for these paths
 - Non-empty skills field required
 
 ## File Operations in .claude/ and .opencode/ Directories
 
-**CRITICAL**: All file creation and modification in `.claude/` and `.opencode/` directories MUST use Bash tools. NEVER use Write or Edit tools for these paths.
-
-**Why**: Write and Edit tools trigger permission approval prompts that block autonomous agent execution. Bash heredoc and sed commands are pre-authorized via project settings.
-
-**Correct — Bash heredoc for new files**:
-
-```bash
-cat > .claude/agents/new-agent.md << 'EOF'
----
-name: new-agent
-description: Agent description
----
-Content here
-EOF
-```
-
-**Correct — sed for modifications**:
-
-```bash
-sed -i '' 's/old-value/new-value/' .claude/agents/existing-agent.md
-```
-
-**WRONG — triggers permission prompt**:
-
-```
-Write(.claude/agents/new-agent.md)  # DO NOT USE
-Edit(.claude/agents/existing-agent.md)  # DO NOT USE
-```
+Use the normal `Write` / `Edit` tools to create and modify files under `.claude/` and `.opencode/`. Both paths are pre-authorized in `.claude/settings.json` (`Write(.claude/**)`, `Edit(.claude/**)`, `Write(.opencode/**)`, `Edit(.opencode/**)`), so no approval prompts fire. `Bash` heredoc and `sed` remain appropriate for bulk mechanical substitutions across many files, but there is no restriction on direct edits.
 
 This applies to:
 
@@ -52,6 +24,8 @@ This applies to:
 - `.claude/skills/*/reference/*.md` — skill reference modules
 - `.opencode/agent/*.md` — OpenCode agent mirrors
 - `.opencode/skill/*/SKILL.md` — OpenCode skill mirrors
+
+After editing `.claude/` sources, run `npm run sync:claude-to-opencode` so the `.opencode/` mirrors stay aligned. The pre-commit hook validates both formats.
 
 ## References
 
@@ -114,8 +88,8 @@ Add "Tools Usage" section (optional but recommended) listing each tool with its 
 ## Tools Usage
 
 - **Read**: Read audit reports and files to fix
-- **Edit**: Apply fixes to docs/ files
-- **Bash**: Apply fixes to .claude/ and .opencode/ files (sed, heredoc) — MUST use Bash instead of Write/Edit for these paths
+- **Edit**: Apply fixes to docs/, governance/, `.claude/`, and `.opencode/` files
+- **Bash**: Run shell commands, bulk sed substitutions across many files, timestamp/UUID generation
 - **Write**: Generate fix reports to generated-reports/
 ```
 
@@ -125,10 +99,10 @@ Add "Tools Usage" section (optional but recommended) listing each tool with its 
 ## Tools Usage
 
 - **Read**: Read existing files for context
-- **Write**: Create new documentation files
+- **Write**: Create new documentation, agent, and skill files (including under `.claude/` and `.opencode/`)
 - **Glob**: Find related files for cross-references
 - **Grep**: Extract patterns for consistency
-- **Bash**: Create files in .claude/ and .opencode/ directories (heredoc) — MUST use Bash instead of Write for these paths
+- **Bash**: Run shell commands, bulk text substitutions, directory creation
 ```
 
 ### Placement

@@ -331,7 +331,7 @@ This plan uses the multi-file layout:
 2. **Git history preservation** — every rename uses `git mv`.
 3. **No touching `plans/done/*`** — historical record is immutable for this refactor.
 4. **Pre-push hook must pass** — `typecheck`, `lint`, `test:quick`, `spec-coverage` for affected projects plus markdown linting.
-5. **`.claude/` edits in orchestrator only** — per CLAUDE.md, never delegate `.claude/` or `.opencode/` edits to subagents; use Bash heredoc/sed for modifications.
+5. **`.claude/` and `.opencode/` edits use `Write` / `Edit` directly** — both paths are pre-authorized in `.claude/settings.json`, so no approval prompts fire. After editing `.claude/` sources, run `npm run sync:claude-to-opencode` to regenerate the mirrors.
 
 ## Assumptions
 

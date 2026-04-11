@@ -451,9 +451,7 @@ Skills serve agents with knowledge and execution services but don't govern them 
 
 ### Working with .claude/ and .opencode/ Directories
 
-**CRITICAL**: ALL file operations in `.claude/` and `.opencode/` directories MUST use **Bash tools** (heredoc, sed, awk) — NEVER use Write or Edit tools for these paths. This applies to the orchestrating conversation AND all subagents/delegated tasks.
-
-**Why**: Write and Edit tools trigger permission approval prompts that block autonomous agent execution. Bash heredoc and sed commands are pre-authorized via project settings.
+Edit `.claude/` and `.opencode/` files with the normal `Write` / `Edit` tools. Both paths are pre-authorized in `.claude/settings.json` (`Write(.claude/**)`, `Edit(.claude/**)`, `Write(.opencode/**)`, `Edit(.opencode/**)`), so no approval prompt fires. `Bash` heredoc and `sed` remain fine for bulk mechanical substitutions, but there is no rule against direct edits.
 
 **Applies to all paths**:
 
@@ -462,24 +460,6 @@ Skills serve agents with knowledge and execution services but don't govern them 
 - `.claude/skills/*/reference/*.md` — skill reference modules
 - `.opencode/agent/*.md` — OpenCode agent mirrors
 - `.opencode/skill/*/SKILL.md` — OpenCode skill mirrors
-
-**Examples**:
-
-```bash
-# Create new file with heredoc
-cat > .claude/agents/new-agent.md <<'EOF'
----
-name: new-agent
-description: Agent description
----
-Content here
-EOF
-
-# Update existing file with sed
-sed -i '' 's/old-value/new-value/' .claude/agents/existing-agent.md
-```
-
-**When delegating to subagents**: NEVER delegate `.claude/` or `.opencode/` file creation to subagents via the Agent tool. Handle these files directly in the orchestrating conversation using Bash. Subagents should only be delegated work on files outside `.claude/` and `.opencode/` (e.g., `governance/`, `apps/`, `libs/`).
 
 **See**: [.claude/agents/README.md](./.claude/agents/README.md), [governance/development/pattern/maker-checker-fixer.md](./governance/development/pattern/maker-checker-fixer.md)
 

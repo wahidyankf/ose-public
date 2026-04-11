@@ -277,7 +277,7 @@ config :my_app, api_key: System.get_env("API_KEY")
 
 ## Phoenix LiveView Standards
 
-**Authoritative Source**: [docs/explanation/software-engineering/platform-web/tools/elixir-phoenix/ex-soen-plwe-to-elph\_\_liveview.md](../../../docs/explanation/software-engineering/platform-web/tools/elixir-phoenix/liveview.md)
+**Authoritative Source**: [docs/explanation/software-engineering/platform-web/tools/elixir-phoenix/liveview.md](../../../docs/explanation/software-engineering/platform-web/tools/elixir-phoenix/liveview.md)
 
 **Foundation**: Builds on Phoenix Framework standards above.
 

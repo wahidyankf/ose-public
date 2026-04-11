@@ -64,7 +64,7 @@ Use this Skill when:
 ✅ PASS: [AI Agents Convention](../../development/agents/ai-agents.md)
 
 ❌ FAIL: [File Naming Convention](../meta/file-naming) ← Missing .md extension
-❌ FAIL: [[file-naming]] ← Obsidian wiki link (not GitHub-compatible)
+❌ FAIL: [[file-naming]] ← Wiki-link syntax (GitHub does not render these)
 ❌ FAIL: [file-naming.md](../meta/file-naming.md) ← Using filename as link text
 
 **Note**: Both `apps/ayokoding-web/` and `apps/oseplatform-web/` have migrated to Next.js 16. Their content links are validated by their respective CLI tools (`ayokoding-cli links check`, `oseplatform-cli links check`), not by this Skill's Hugo link rules.
@@ -112,18 +112,18 @@ From: governance/conventions/formatting/linking.md (3 levels deep)
 **Criticality**: CRITICAL - Link points to wrong file or 404
 **Detection**: Resolve path and check file exists
 
-**Error 3: Obsidian wiki links**
+**Error 3: Wiki-link syntax**
 
 ❌ FAIL: [[file-naming-convention]]
 ❌ FAIL: [[file-naming-convention|File Naming]]
 ✅ PASS: [File Naming Convention](../meta/file-naming.md)
 
-**Criticality**: HIGH - Breaks GitHub web compatibility
+**Criticality**: HIGH - GitHub does not render wiki-style links
 **Detection**: Regex match for wiki-style links
 
 **Error 4: Filename as link text**
 
-❌ FAIL: [ex-co\_\_file-naming.md](../meta/file-naming.md)
+❌ FAIL: [file-naming.md](../meta/file-naming.md)
 ✅ PASS: [File Naming Convention](../meta/file-naming.md)
 
 **Criticality**: MEDIUM - Poor accessibility and readability
@@ -240,7 +240,7 @@ Step 5: Finalize Report (summary, grouped by criticality)
 **CRITICAL** (Must fix before publication):
 
 - Broken internal links (404, file not found)
-- Obsidian wiki links (breaks GitHub compatibility)
+- Wiki-link syntax (GitHub does not render `[[...]]` links)
 
 **HIGH** (Should fix before publication):
 

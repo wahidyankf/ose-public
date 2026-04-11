@@ -70,35 +70,22 @@ Before any operation, understand the [File Naming Convention](../../governance/c
 ### Pattern
 
 ```
-[hierarchical-prefix]-[content-identifier].[extension]
+[content-identifier].[extension]
 ```
 
-### Prefix Calculation
-
-The prefix encodes the directory path using abbreviations:
-
-- **Root prefixes**: `tu` (tutorials), `hoto` (how-to), `refe` (reference), `ex` (explanation)
-- **Subdirectory prefixes**: Add abbreviations separated by hyphens
+Use plain kebab-case filenames. Category is encoded by the directory the file lives in, not by a filename prefix.
 
 **Examples**:
 
-- `docs/tutorials/` → `tu-`
-- `docs/how-to/` → `hoto-`
-- `governance/conventions/` → `ex-ru-co-`
-- `docs/explanation/information-security/` → `ex-inse-`
-- `docs/tutorials/ai-engineering/` → `tu-aien-`
-- `docs/tutorials/business-and-finance/` → `tu-bufi-`
-- `docs/tutorials/software-engineering/system-design/` → `tu-soen-syde-`
-
-### Abbreviation Rules
-
-1. **Hyphenated directories**: Concatenate first 2 letters of each word WITHOUT inserting dash (`information-security` → `inse`, `ai-engineering` → `aien`, `business-and-finance` → `bufi`, `system-design` → `syde`, `how-to` → `hoto`)
-2. **Single word directories**: Use first 2-4 letters based on length (`conventions` → `co`, `development` → `de`, `toolings` → `to`)
-3. **Key rule**: The dash in a hyphenated directory name does NOT appear in the abbreviation - just concatenate the letters
+- `docs/tutorials/getting-started.md`
+- `docs/how-to/deploy-docker.md`
+- `governance/conventions/structure/file-naming.md`
+- `docs/explanation/information-security/threat-modeling.md`
+- `docs/tutorials/software-engineering/system-design/overview.md`
 
 ### Exceptions
 
-- **README.md files**: Exempt from prefix requirement (GitHub compatibility)
+- **README.md files**: Always named `README.md` for GitHub compatibility.
 
 ## Systematic File Management Process
 
@@ -310,7 +297,7 @@ All links must follow [Linking Convention](../../governance/conventions/formatti
 - Use relative paths (`./ or ../`)
 - Include `.md` extension
 - Use GitHub-compatible markdown `[Text](path.md)` format
-- No Obsidian wiki links `[[...]]`
+- No wiki-link syntax `[[...]]`
 
 ## Git Operations Best Practices
 
@@ -480,9 +467,9 @@ Before telling user "done":
 
 ### README.md Files
 
-README.md files are exempt from prefix requirement:
+README.md files follow a fixed name regardless of directory:
 
-- **Never rename** `README.md` to `ex-ru-co-README.md`
+- **Never rename** `README.md` — directory-index files must stay named `README.md`
 - **Keep as** `README.md` for GitHub compatibility
 - **Update content** but not filename
 

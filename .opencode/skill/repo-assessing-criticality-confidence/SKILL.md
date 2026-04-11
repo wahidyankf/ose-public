@@ -500,7 +500,7 @@ apply_fix(finding)
 ```markdown
 ### 1. [Error] - Command Syntax Incorrect
 
-**File**: `docs/tutorials/tu__quick-start.md:42`
+**File**: `docs/tutorials/quick-start.md:42`
 **Verification**: [Error] - Command syntax verified incorrect via WebSearch
 **Criticality**: CRITICAL - Breaks user quick start experience
 **Category**: Factual Error - Command Syntax

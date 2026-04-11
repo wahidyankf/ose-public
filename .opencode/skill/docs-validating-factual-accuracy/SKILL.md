@@ -123,7 +123,7 @@ Confidence: HIGH (official docs contradict claim)
 **6. Document Finding**
 
 ```markdown
-**File**: `docs/tutorials/tu__quick-start.md:42`
+**File**: `docs/tutorials/quick-start.md:42`
 **Verification**: [Error] - Command syntax incorrect
 **Criticality**: CRITICAL - Breaks user quick start experience
 **Category**: Factual Error - Command Syntax
@@ -346,7 +346,7 @@ Result: [Verified]
 
 ```yaml
 factual-validations:
-  - file: "docs/tutorials/tu__quick-start.md"
+  - file: "docs/tutorials/quick-start.md"
     claim: "npm install --save-dev prettier"
     verification-status: "[Verified]"
     last-checked: "2025-12-27T10:00:00+07:00"
@@ -363,7 +363,7 @@ Factual validation findings require BOTH verification label AND criticality leve
 ```markdown
 ### 1. [Error] - Command Syntax Incorrect in Installation Guide
 
-**File**: `docs/tutorials/tu__quick-start.md:42`
+**File**: `docs/tutorials/quick-start.md:42`
 **Verification**: [Error] - Command syntax verified incorrect via WebSearch
 **Criticality**: CRITICAL - Breaks user quick start experience
 **Category**: Factual Error - Command Syntax

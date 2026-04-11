@@ -95,9 +95,9 @@ All Python code MUST follow the platform coding standards:
 **Coding Standards** (Authoritative):
 
 - [docs/explanation/software-engineering/programming-languages/python/README.md](../../docs/explanation/software-engineering/programming-languages/python/README.md)
-- [docs/explanation/software-engineering/programming-languages/python/ex-soen-prla-py\_\_idioms.md](../../docs/explanation/software-engineering/programming-languages/python/idioms.md)
-- [docs/explanation/software-engineering/programming-languages/python/ex-soen-prla-py\_\_best-practices.md](../../docs/explanation/software-engineering/programming-languages/python/best-practices.md)
-- [docs/explanation/software-engineering/programming-languages/python/ex-soen-prla-py\_\_anti-patterns.md](../../docs/explanation/software-engineering/programming-languages/python/anti-patterns.md)
+- [docs/explanation/software-engineering/programming-languages/python/idioms.md](../../docs/explanation/software-engineering/programming-languages/python/idioms.md)
+- [docs/explanation/software-engineering/programming-languages/python/best-practices.md](../../docs/explanation/software-engineering/programming-languages/python/best-practices.md)
+- [docs/explanation/software-engineering/programming-languages/python/anti-patterns.md](../../docs/explanation/software-engineering/programming-languages/python/anti-patterns.md)
 
 **Development Practices**:
 

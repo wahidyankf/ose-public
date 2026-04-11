@@ -95,9 +95,9 @@ All TypeScript code MUST follow the platform coding standards:
 **Coding Standards** (Authoritative):
 
 - [docs/explanation/software-engineering/programming-languages/typescript/README.md](../../docs/explanation/software-engineering/programming-languages/typescript/README.md)
-- [docs/explanation/software-engineering/programming-languages/typescript/ex-soen-prla-ty\_\_idioms.md](../../docs/explanation/software-engineering/programming-languages/typescript/idioms.md)
-- [docs/explanation/software-engineering/programming-languages/typescript/ex-soen-prla-ty\_\_best-practices.md](../../docs/explanation/software-engineering/programming-languages/typescript/best-practices.md)
-- [docs/explanation/software-engineering/programming-languages/typescript/ex-soen-prla-ty\_\_anti-patterns.md](../../docs/explanation/software-engineering/programming-languages/typescript/anti-patterns.md)
+- [docs/explanation/software-engineering/programming-languages/typescript/idioms.md](../../docs/explanation/software-engineering/programming-languages/typescript/idioms.md)
+- [docs/explanation/software-engineering/programming-languages/typescript/best-practices.md](../../docs/explanation/software-engineering/programming-languages/typescript/best-practices.md)
+- [docs/explanation/software-engineering/programming-languages/typescript/anti-patterns.md](../../docs/explanation/software-engineering/programming-languages/typescript/anti-patterns.md)
 
 **Development Practices**:
 

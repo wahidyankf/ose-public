@@ -336,18 +336,18 @@ The following `.claude/agents/*` files need both (a) Obsidian word scrub and (b)
 
 **Goal**: Regenerate OpenCode mirrors so both stacks see the same agent and skill definitions.
 
-- [ ] Run `npm run sync:claude-to-opencode`
-- [ ] Run `git diff --stat .opencode/` and confirm every agent and skill that was edited in Phase 6 has a corresponding mirror change (should see ~30 mirrored files)
-- [ ] Spot-check 3 mirrors: `git diff .opencode/agent/docs-maker.md`, `git diff .opencode/skill/swe-programming-typescript/SKILL.md`, `git diff .opencode/skill/docs-validating-links/SKILL.md`
-- [ ] Verify `ripgrep -i obsidian .opencode/` returns zero matches
-- [ ] Verify `ripgrep '(hoto__|tu__|re__[a-z]|ex-go-|ex-soen-)' .opencode/` returns zero matches
-- [ ] Commit: `chore(opencode): sync agent and skill mirrors after Obsidian and prefix scrub`
+- [x] Run `npm run sync:claude-to-opencode`
+- [x] Run `git diff --stat .opencode/` and confirm every agent and skill that was edited in Phase 6 has a corresponding mirror change (should see ~30 mirrored files)
+- [x] Spot-check 3 mirrors: `git diff .opencode/agent/docs-maker.md`, `git diff .opencode/skill/swe-programming-typescript/SKILL.md`, `git diff .opencode/skill/docs-validating-links/SKILL.md`
+- [x] Verify `ripgrep -i obsidian .opencode/` returns zero matches
+- [x] Verify `ripgrep '(hoto__|tu__|re__[a-z]|ex-go-|ex-soen-)' .opencode/` returns zero matches
+- [x] Commit: `chore(opencode): sync agent and skill mirrors after Obsidian and prefix scrub`
 
 ### Phase 7 gate
 
-- [ ] Sync script exits clean
-- [ ] Mirror diffs match expected edits across all updated agents and skills
-- [ ] `git status` clean
+- [x] Sync script exits clean
+- [x] Mirror diffs match expected edits across all updated agents and skills
+- [x] `git status` clean
 
 ## Phase 8 — Final Validation and Pre-Push
 

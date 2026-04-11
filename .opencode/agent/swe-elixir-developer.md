@@ -95,9 +95,9 @@ All Elixir code MUST follow the platform coding standards:
 **Coding Standards** (Authoritative):
 
 - [docs/explanation/software-engineering/programming-languages/elixir/README.md](../../docs/explanation/software-engineering/programming-languages/elixir/README.md)
-- [docs/explanation/software-engineering/programming-languages/elixir/ex-soen-prla-el\_\_coding-standards.md](../../docs/explanation/software-engineering/programming-languages/elixir/coding-standards.md)
-- [docs/explanation/software-engineering/programming-languages/elixir/ex-soen-prla-el\_\_functional-programming-standards.md](../../docs/explanation/software-engineering/programming-languages/elixir/functional-programming-standards.md)
-- [docs/explanation/software-engineering/programming-languages/elixir/ex-soen-prla-el\_\_code-quality-standards.md](../../docs/explanation/software-engineering/programming-languages/elixir/code-quality-standards.md)
+- [docs/explanation/software-engineering/programming-languages/elixir/coding-standards.md](../../docs/explanation/software-engineering/programming-languages/elixir/coding-standards.md)
+- [docs/explanation/software-engineering/programming-languages/elixir/functional-programming-standards.md](../../docs/explanation/software-engineering/programming-languages/elixir/functional-programming-standards.md)
+- [docs/explanation/software-engineering/programming-languages/elixir/code-quality-standards.md](../../docs/explanation/software-engineering/programming-languages/elixir/code-quality-standards.md)
 
 **Development Practices**:
 

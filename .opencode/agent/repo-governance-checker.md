@@ -737,7 +737,7 @@ Validate file naming, linking, emoji usage, convention compliance per existing l
 ### Finding: Governance Principle Alignment
 
 **Category**: Principle Alignment
-**File**: docs/explanation/software-engineering/programming-languages/java/ex-soen-prla-ja\_\_security.md
+**File**: docs/explanation/software-engineering/programming-languages/java/security.md
 **Criticality**: HIGH
 
 **Issue**: Security documentation missing explicit-over-implicit principle reference
@@ -771,7 +771,7 @@ Expected: Should include explicit-over-implicit given document focuses on securi
 
 3. **Check Bidirectional References**:
    - When software doc references governance, check if governance should reference back
-   - Example: If `ex-soen-prla-ja__functional-programming.md` references `governance/development/pattern/functional-programming.md`, the governance doc should list Java in "Language Support" section
+   - Example: If `programming-languages/java/functional-programming.md` references `governance/development/pattern/functional-programming.md`, the governance doc should list Java in "Language Support" section
 
 4. **Criticality Levels**:
    - **CRITICAL**: Broken link (404, target doesn't exist)
@@ -785,7 +785,7 @@ Expected: Should include explicit-over-implicit given document focuses on securi
 ### Finding: Cross-Reference Completeness
 
 **Category**: Cross-Reference
-**Files**: docs/explanation/software-engineering/programming-languages/java/ex-soen-prla-ja\_\_functional-programming.md → governance/development/pattern/functional-programming.md
+**Files**: docs/explanation/software-engineering/programming-languages/java/functional-programming.md → governance/development/pattern/functional-programming.md
 **Criticality**: HIGH
 
 **Issue**: One-way cross-reference (should be bidirectional)
@@ -803,22 +803,18 @@ Expected: Should include explicit-over-implicit given document focuses on securi
 **Validate software documentation follows established naming patterns**:
 
 1. **Pattern Validation**:
-   - **Stack Language**: `ex-soen-prla-[abbrev]__[topic].md`
-     - Abbreviations: `ja` (Java), `ty` (TypeScript), `go` (Go), `py` (Python), `el` (Elixir)
-   - **Stack Libraries**: `ex-soen-plwe-[framework-abbrev]__[topic].md`
-     - Examples: `jvsp` (JVM Spring Boot), `expr` (Elixir Phoenix), `tsre` (TS React)
-   - **Architecture**: `ex-soen-arch-[pattern]__[topic].md`
-   - **Development**: `ex-soen-devp-[practice]__[topic].md`
+   - All software engineering docs use plain kebab-case filenames (e.g., `idioms.md`, `best-practices.md`, `spring-boot-rest-controller.md`)
+   - Directory hierarchy encodes the category (e.g., `programming-languages/java/`, `platform-web/tools/jvm-spring-boot/`, `architecture/c4-architecture-model/`)
    - **Exception**: `README.md` for index files
-   - **Exception**: `templates/` directory files: `ex-soen-prla-[lang]-te__[name].md`
+   - **Exception**: `templates/` subdirectory holds reusable templates under each language/tool
 
-2. **Abbreviation Consistency**:
-   - Check all files in same directory use same abbreviation
-   - Example: All Java files should use `ja`, not mix `java` and `ja`
+2. **Filename Consistency**:
+   - Check all files in a directory follow kebab-case with no obsolete prefixes
+   - Example: `security.md`, not `security-practices.md` and not any legacy prefixed form
 
 3. **Location Validation**:
-   - Verify files are in correct directory based on prefix
-   - Example: `ex-soen-prla-ja__*` should be in `programming-languages/java/`
+   - Verify files live in the correct directory for their topic
+   - Example: Java idioms belong in `programming-languages/java/idioms.md`
 
 4. **Criticality Levels**:
    - **CRITICAL**: File in wrong directory (organizational integrity)
@@ -838,10 +834,10 @@ Expected: Should include explicit-over-implicit given document focuses on securi
 **Issue**: Missing required prefix pattern
 
 **Evidence**:
-Current: `security-practices.md`
-Expected: `ex-soen-prla-ja__security-practices.md`
+Current: `sec-prac.md`
+Expected: `security.md`
 
-**Recommendation**: Rename file to follow convention (use `git mv` to preserve history)
+**Recommendation**: Rename file to plain kebab-case (use `git mv` to preserve history)
 ```
 
 #### 8.4 Document Structure Pattern Consistency
@@ -890,13 +886,13 @@ Expected: `ex-soen-prla-ja__security-practices.md`
 **Issue**: Missing required anti-patterns document
 
 **Evidence**:
-Found:
+Found in `programming-languages/elixir/`:
 
-- ex-soen-prla-ex\_\_idioms.md ✓
-- ex-soen-prla-ex\_\_best-practices.md ✓
-- ex-soen-prla-ex\_\_anti-patterns.md ✗ (missing)
+- idioms.md ✓
+- best-practices.md ✓
+- anti-patterns.md ✗ (missing)
 
-**Recommendation**: Create ex-soen-prla-ex\_\_anti-patterns.md from template
+**Recommendation**: Create `anti-patterns.md` under `programming-languages/elixir/` from template
 ```
 
 #### 8.5 Template Completeness
@@ -908,8 +904,8 @@ Found:
    - Example: `docs/explanation/software-engineering/programming-languages/java/templates/`
 
 2. **Template Naming Validation**:
-   - Pattern: `ex-soen-prla-[lang]-te__[pattern-name].md`
-   - Example: `ex-soen-prla-ja-te__spring-boot-rest-controller.md`
+   - Templates live under `<language>/templates/` with plain kebab-case filenames
+   - Example: `programming-languages/java/templates/spring-boot-rest-controller.md`
 
 3. **Cross-Reference with Documentation**:
    - When documentation describes a pattern, check if template exists
@@ -935,7 +931,7 @@ Found:
 **Evidence**:
 
 - Documentation references "Repository Pattern" in best-practices.md
-- Template `ex-soen-prla-ja-te__jpa-repository.md` not found
+- Template `programming-languages/java/templates/jpa-repository.md` not found
 
 **Recommendation**: Create template from similar pattern or copy from existing codebase examples
 ```
@@ -974,7 +970,7 @@ Found:
 ### Finding: Diagram Accessibility
 
 **Category**: Diagrams
-**File**: docs/explanation/software-engineering/architecture/c4-architecture-model/ex-soen-arch-c4\_\_system-context.md
+**File**: docs/explanation/software-engineering/architecture/c4-architecture-model/system-context.md
 **Criticality**: HIGH
 
 **Issue**: Mermaid diagram missing explicit color definitions
@@ -1029,8 +1025,8 @@ classDef orangeBox fill:#DE8F05,stroke:#DE8F05,color:#fff
 
 **Evidence**:
 Files in directory but not in README:
-- ex-soen-prla-ty__type-narrowing.md
-- ex-soen-prla-ty__advanced-types.md
+- type-narrowing.md
+- advanced-types.md
 
 **Recommendation**: Add missing files to README index with brief descriptions
 ````
@@ -1040,8 +1036,8 @@ Files in directory but not in README:
 **Validate version-specific documentation coverage**:
 
 1. **Version Pattern Check**:
-   - Pattern: `ex-soen-prla-[lang]__release-[version].md`
-   - Example: `ex-soen-prla-ja__release-21.md` (Java 21 LTS)
+   - Pattern: `release-<version>.md` inside the language's directory
+   - Example: `programming-languages/java/release-21.md` (Java 21 LTS)
 
 2. **README Mentions Validation**:
    - Check if README mentions version support
@@ -1074,9 +1070,9 @@ Files in directory but not in README:
 **Evidence**:
 
 - README mentions Java 17, 21, 25 support
-- Found: ex-soen-prla-ja\_\_release-21.md ✓
-- Missing: ex-soen-prla-ja\_\_release-17.md ✗
-- Missing: ex-soen-prla-ja\_\_release-25.md ✗
+- Found: programming-languages/java/release-21.md ✓
+- Missing: programming-languages/java/release-17.md ✗
+- Missing: programming-languages/java/release-25.md ✗
 
 **Recommendation**: Create version documentation for Java 17 and 25 LTS releases
 ```

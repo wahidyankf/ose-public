@@ -296,7 +296,7 @@ principles:
 **Example Fix**:
 
 ```markdown
-**File**: docs/explanation/software-engineering/programming-languages/java/ex-soen-prla-ja\_\_security.md
+**File**: docs/explanation/software-engineering/programming-languages/java/security.md
 **Confidence**: HIGH
 **Applied**: Added security-by-design principle to frontmatter
 ```
@@ -356,12 +356,12 @@ Add "See Also" or "Related Documentation" section if missing, then add reference
 **Fix Application** (HIGH confidence only):
 
 ```bash
-# Rename file preserving git history
-git mv docs/explanation/software-engineering/programming-languages/java/security-practices.md \
-      docs/explanation/software-engineering/programming-languages/java/ex-soen-prla-ja__security-practices.md
+# Rename file to plain kebab-case, preserving git history
+git mv docs/explanation/software-engineering/programming-languages/java/sec-prac.md \
+      docs/explanation/software-engineering/programming-languages/java/security.md
 
 # Update all references (find and replace)
-find . -name "*.md" -exec sed -i 's|security-practices\.md|ex-soen-prla-ja__security-practices.md|g' {} +
+find . -name "*.md" -exec sed -i 's|sec-prac\.md|security.md|g' {} +
 ```
 
 **Tools**: Bash (git mv), Edit (update references)
@@ -369,9 +369,9 @@ find . -name "*.md" -exec sed -i 's|security-practices\.md|ex-soen-prla-ja__secu
 **Example Fix**:
 
 ```markdown
-**File**: docs/explanation/software-engineering/programming-languages/java/security-practices.md
+**File**: docs/explanation/software-engineering/programming-languages/java/sec-prac.md
 **Confidence**: HIGH
-**Applied**: Renamed to ex-soen-prla-ja\_\_security-practices.md, updated 3 references
+**Applied**: Renamed to security.md, updated 3 references
 ```
 
 #### 8.4 Structure Pattern Fixes
@@ -394,8 +394,8 @@ find . -name "*.md" -exec sed -i 's|security-practices\.md|ex-soen-prla-ja__secu
 
 ```bash
 # Copy template
-cp docs/explanation/software-engineering/programming-languages/java/templates/ex-soen-prla-ja-te__anti-patterns.md \
-   docs/explanation/software-engineering/programming-languages/elixir/ex-soen-prla-ex__anti-patterns.md
+cp docs/explanation/software-engineering/programming-languages/java/templates/anti-patterns.md \
+   docs/explanation/software-engineering/programming-languages/elixir/anti-patterns.md
 
 # Flag for manual content addition
 echo "TODO: Customize Elixir-specific anti-patterns content" >> manual-review-needed.txt
@@ -406,7 +406,7 @@ echo "TODO: Customize Elixir-specific anti-patterns content" >> manual-review-ne
 **Example Fix**:
 
 ```markdown
-**File**: docs/explanation/software-engineering/programming-languages/elixir/ex-soen-prla-ex\_\_anti-patterns.md
+**File**: docs/explanation/software-engineering/programming-languages/elixir/anti-patterns.md
 **Confidence**: MEDIUM
 **Applied**: Created stub from template, flagged for manual content review
 ```
@@ -431,8 +431,8 @@ echo "TODO: Customize Elixir-specific anti-patterns content" >> manual-review-ne
 
 ```bash
 # Copy similar template
-cp docs/explanation/software-engineering/programming-languages/python/templates/ex-soen-prla-py-te__repository-pattern.md \
-   docs/explanation/software-engineering/programming-languages/go/templates/ex-soen-prla-go-te__repository-pattern.md
+cp docs/explanation/software-engineering/programming-languages/python/templates/repository-pattern.md \
+   docs/explanation/software-engineering/programming-languages/golang/templates/repository-pattern.md
 
 # Adapt syntax (manual step - flag for review)
 echo "TODO: Adapt Python syntax to Go syntax in template" >> manual-review-needed.txt
@@ -443,7 +443,7 @@ echo "TODO: Adapt Python syntax to Go syntax in template" >> manual-review-neede
 **Example Fix**:
 
 ```markdown
-**File**: docs/explanation/software-engineering/programming-languages/go/templates/ex-soen-prla-go-te\_\_repository-pattern.md
+**File**: docs/explanation/software-engineering/programming-languages/golang/templates/repository-pattern.md
 **Confidence**: MEDIUM
 **Applied**: Created from Python template, flagged for Go syntax adaptation
 ```
@@ -496,7 +496,7 @@ flowchart TD
 **Example Fix**:
 
 ```markdown
-**File**: docs/explanation/software-engineering/architecture/c4-architecture-model/ex-soen-arch-c4__system-context.md
+**File**: docs/explanation/software-engineering/architecture/c4-architecture-model/system-context.md
 **Confidence**: HIGH
 **Applied**: Added WCAG AA color palette definitions to Mermaid diagram
 ````
@@ -589,7 +589,7 @@ See [Java Official Documentation](https://docs.oracle.com/en/java/javase/17/) fo
 **Example Fix**:
 
 ```markdown
-**File**: docs/explanation/software-engineering/programming-languages/java/ex-soen-prla-ja\_\_release-17.md
+**File**: docs/explanation/software-engineering/programming-languages/java/release-17.md
 **Confidence**: LOW
 **Applied**: Created stub with TODO markers, flagged for manual feature documentation
 ```

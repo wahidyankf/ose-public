@@ -3,7 +3,6 @@ name: Test - Demo FE (Dart/Flutter Web)
 on:
   schedule:
     - cron: "0 23 * * *" # 6 AM WIB (UTC+7)
-    - cron: "0 11 * * *" # 6 PM WIB (UTC+7)
   workflow_dispatch:
 
 permissions:

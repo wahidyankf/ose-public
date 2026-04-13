@@ -13,7 +13,7 @@ This tutorial provides 27 foundational examples covering the OpenClaw AI agent p
 
 ### Example 1: Installing OpenClaw
 
-OpenClaw is distributed as an npm package requiring Node.js 22.14+ or 24+. The CLI installs globally and provides the `openclaw` command for managing your local AI agent gateway.
+OpenClaw is distributed as an npm package requiring Node.js 22.16+ or 24+ (recommended). The CLI installs globally and provides the `openclaw` command for managing your local AI agent gateway.
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
@@ -38,7 +38,7 @@ graph LR
 ```bash
 npm install -g openclaw@latest          # => Installs openclaw CLI globally
                                         # => Adds `openclaw` to system PATH
-                                        # => Requires Node.js 22.14+ or 24+
+                                        # => Requires Node.js 22.16+ or 24+
 
 openclaw --version                      # => Output: openclaw 2.4.1 (or current version)
                                         # => Confirms successful installation

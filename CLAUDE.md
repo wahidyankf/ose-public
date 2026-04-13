@@ -1,13 +1,13 @@
 # CLAUDE.md
 
-Guidance for Claude Code (claude.ai/code) working with code in this repository.
+Guidance for Claude Code (claude.ai/code) working with code in this repo.
 
 ## Project Overview
 
 **open-sharia-enterprise** - Enterprise platform for Sharia-compliant business systems, Nx monorepo.
 
 **Status**: Phase 1 (OrganicLever - Productivity Tracker)
-**License**: FSL-1.1-MIT for product apps and behavioral specs (WHAT); MIT for libs and demo implementation code (HOW)
+**License**: FSL-1.1-MIT for product apps + behavioral specs (WHAT); MIT for libs + demo code (HOW)
 **Main Branch**: `main` (Trunk Based Development)
 
 ### Tech Stack
@@ -22,30 +22,30 @@ Guidance for Claude Code (claude.ai/code) working with code in this repository.
   - `ayokoding-web` - Next.js 16 fullstack content platform (TypeScript, tRPC)
   - `ayokoding-web-be-e2e` - Playwright BE E2E tests for ayokoding-web tRPC API
   - `ayokoding-web-fe-e2e` - Playwright FE E2E tests for ayokoding-web UI
-  - `ayokoding-cli` - Go CLI tool for content link validation
-  - `rhino-cli` - Go CLI tool for repository management (Repository Hygiene & INtegration Orchestrator; includes `java validate-annotations`)
-  - `oseplatform-cli` - Go CLI tool for OSE Platform site maintenance (link validation)
-  - `organiclever-fe` - Next.js 16 landing and promotional website (www.organiclever.com)
+  - `ayokoding-cli` - Go CLI for content link validation
+  - `rhino-cli` - Go CLI for repo management (Repository Hygiene & INtegration Orchestrator; includes `java validate-annotations`)
+  - `oseplatform-cli` - Go CLI for OSE Platform site maintenance (link validation)
+  - `organiclever-fe` - Next.js 16 landing/promo website (www.organiclever.com)
   - `organiclever-be` - F#/Giraffe REST API backend for OrganicLever
   - `organiclever-fe-e2e` - Playwright FE E2E tests for organiclever-fe
   - `organiclever-be-e2e` - Playwright BE E2E tests for organiclever-be
   - `organiclever-contracts` - OpenAPI 3.1 API contract spec (in `specs/apps/organiclever/contracts/`); generates types + encoders/decoders for organiclever apps via `codegen` Nx target
   - `a-demo-be-golang-gin` - Go/Gin REST API backend (default backend)
-  - `a-demo-be-java-springboot` - Spring Boot REST API backend (Java Spring Boot, alternative to a-demo-be-golang-gin)
-  - `a-demo-be-elixir-phoenix` - Elixir/Phoenix REST API backend (alternative to a-demo-be-golang-gin)
-  - `a-demo-be-fsharp-giraffe` - F#/Giraffe REST API backend (alternative to a-demo-be-golang-gin)
-  - `a-demo-be-python-fastapi` - Python/FastAPI REST API backend (alternative to a-demo-be-golang-gin)
-  - `a-demo-be-rust-axum` - Rust/Axum REST API backend (alternative to a-demo-be-golang-gin)
-  - `a-demo-be-kotlin-ktor` - Kotlin/Ktor REST API backend (alternative to a-demo-be-golang-gin)
-  - `a-demo-be-java-vertx` - Java/Vert.x REST API backend (alternative to a-demo-be-golang-gin)
-  - `a-demo-be-ts-effect` - TypeScript/Effect REST API backend (alternative to a-demo-be-golang-gin)
-  - `a-demo-be-csharp-aspnetcore` - C#/ASP.NET Core REST API backend (alternative to a-demo-be-golang-gin)
-  - `a-demo-be-clojure-pedestal` - Clojure/Pedestal REST API backend (alternative to a-demo-be-golang-gin)
+  - `a-demo-be-java-springboot` - Spring Boot REST API backend (Java Spring Boot, alt to a-demo-be-golang-gin)
+  - `a-demo-be-elixir-phoenix` - Elixir/Phoenix REST API backend (alt to a-demo-be-golang-gin)
+  - `a-demo-be-fsharp-giraffe` - F#/Giraffe REST API backend (alt to a-demo-be-golang-gin)
+  - `a-demo-be-python-fastapi` - Python/FastAPI REST API backend (alt to a-demo-be-golang-gin)
+  - `a-demo-be-rust-axum` - Rust/Axum REST API backend (alt to a-demo-be-golang-gin)
+  - `a-demo-be-kotlin-ktor` - Kotlin/Ktor REST API backend (alt to a-demo-be-golang-gin)
+  - `a-demo-be-java-vertx` - Java/Vert.x REST API backend (alt to a-demo-be-golang-gin)
+  - `a-demo-be-ts-effect` - TypeScript/Effect REST API backend (alt to a-demo-be-golang-gin)
+  - `a-demo-be-csharp-aspnetcore` - C#/ASP.NET Core REST API backend (alt to a-demo-be-golang-gin)
+  - `a-demo-be-clojure-pedestal` - Clojure/Pedestal REST API backend (alt to a-demo-be-golang-gin)
   - `a-demo-contracts` - OpenAPI 3.1 API contract spec (in `specs/apps/a-demo/contracts/`); generates types + encoders/decoders for all demo apps via `codegen` Nx target
   - `a-demo-be-e2e` - Playwright E2E tests for demo-be REST API backends
   - `a-demo-fe-ts-nextjs` - Next.js 16 frontend (TypeScript, App Router)
-  - `a-demo-fe-ts-tanstack-start` - TanStack Start frontend (TypeScript, alternative to a-demo-fe-ts-nextjs)
-  - `a-demo-fe-dart-flutterweb` - Flutter Web frontend (Dart, alternative to a-demo-fe-ts-nextjs)
+  - `a-demo-fe-ts-tanstack-start` - TanStack Start frontend (TypeScript, alt to a-demo-fe-ts-nextjs)
+  - `a-demo-fe-dart-flutterweb` - Flutter Web frontend (Dart, alt to a-demo-fe-ts-nextjs)
   - `a-demo-fe-e2e` - Playwright E2E tests for demo-fe frontends
   - `a-demo-fs-ts-nextjs` - Next.js 16 fullstack app (TypeScript, App Router + Route Handlers)
 
@@ -160,7 +160,7 @@ npm run doctor -- --scope minimal # Check only core tools (git, volta, node, npm
 
 **Note on `npm install` + doctor**: `postinstall` hook runs `npm run doctor || true` — trailing `|| true` swallows doctor failures silently. `npm install` can complete while polyglot toolchain broken. For **worktree setup** (after `git worktree add`, `EnterWorktree`, or entering existing worktree session), run BOTH `npm install` AND `npm run doctor -- --fix` explicitly in root worktree, that order. Explicit `doctor --fix` only action guaranteeing 18+ polyglot toolchains (Go, Java, Rust, Elixir, Python, .NET, Dart, Clojure, Kotlin, C#, Node) converge. See [Worktree Toolchain Initialization](./governance/development/workflow/worktree-setup.md) for full rationale and procedure.
 
-**See**: [governance/development/infra/nx-targets.md](./governance/development/infra/nx-targets.md) for canonical target names, mandatory targets per project type, and caching rules.
+**See**: [governance/development/infra/nx-targets.md](./governance/development/infra/nx-targets.md) for canonical target names, mandatory targets per project type, caching rules.
 
 **Coverage thresholds** (all enforced via `rhino-cli test-coverage validate` in `test:quick`):
 
@@ -188,7 +188,7 @@ npm run doctor -- --scope minimal # Check only core tools (git, volta, node, npm
 2. **Integration (`test:integration`)**: Real PostgreSQL via docker-compose; **no HTTP calls** (no MockMvc, TestClient, httptest, ConnTest, WebApplicationFactory, fetch, clj-http, Router.oneshot); must consume Gherkin specs; call service functions directly with real DB
 3. **E2E (`test:e2e`)**: Full stack via Playwright; real HTTP + real DB; must consume Gherkin specs
 
-All three levels consume same Gherkin specs — only step implementations change. `test:quick` includes only `test:unit` + coverage validation. Does NOT include `lint`, `typecheck`, `test:integration`, or `test:e2e`. `spec-coverage` (`rhino-cli spec-coverage validate`) runs as separate Nx target enforced by pre-push hook; active for demo-be backends and most other projects.
+All three levels consume same Gherkin specs — only step implementations change. `test:quick` = `test:unit` + coverage validation. Does NOT include `lint`, `typecheck`, `test:integration`, or `test:e2e`. `spec-coverage` (`rhino-cli spec-coverage validate`) runs as separate Nx target enforced by pre-push hook; active for demo-be backends and most other projects.
 
 **Three-level testing standard** (Go CLI apps):
 
@@ -196,11 +196,11 @@ All three levels consume same Gherkin specs — only step implementations change
 2. **Integration (`test:integration`)**: Real filesystem via `/tmp` fixtures; consumes same Gherkin specs via godog (`//go:build integration`); drives commands in-process via `cmd.RunE()`; cacheable
 3. **E2E**: Not applicable for CLI apps
 
-Both unit and integration levels consume same Gherkin specs — step implementations differ (mocked I/O vs real filesystem). `test:quick` includes `test:unit` (with godog BDD scenarios) + coverage validation.
+Both levels consume same Gherkin specs — step implementations differ (mocked I/O vs real filesystem). `test:quick` = `test:unit` (with godog BDD scenarios) + coverage validation.
 
 **Mandatory Nx targets for demo apps**: All `a-demo-be-*` and `a-demo-fe-*` apps must have 7 targets: `codegen`, `typecheck`, `lint`, `build`, `test:unit`, `test:quick`, `test:integration`. Coverage thresholds: backends ≥90%, frontends ≥70%.
 
-**Contract enforcement**: All demo apps have `codegen` Nx target generating types + encoders/decoders from OpenAPI spec at `specs/apps/a-demo/contracts/`. Generated code lives in `generated-contracts/` (gitignored). `codegen` target is dependency of `typecheck` and `build` — contract violations caught by `nx affected -t typecheck` and `test:quick` in pre-push hook and PR quality gate. (Exception: Rust and Flutter also declare `codegen` as dependency of `test:unit` due to generated code required at compile time.)
+**Contract enforcement**: All demo apps have `codegen` Nx target generating types + encoders/decoders from OpenAPI spec at `specs/apps/a-demo/contracts/`. Generated code lives in `generated-contracts/` (gitignored). `codegen` target = dependency of `typecheck` and `build` — contract violations caught by `nx affected -t typecheck` and `test:quick` in pre-push hook and PR quality gate. (Exception: Rust and Flutter also declare `codegen` as dependency of `test:unit` due to generated code required at compile time.)
 
 **OrganicLever contract enforcement**: `organiclever-be` and `organiclever-fe` share OpenAPI 3.1 contract spec at `specs/apps/organiclever/contracts/`. `organiclever-contracts` project lints and bundles spec. Both apps have `codegen` Nx target generating types into `generated-contracts/` (gitignored), same pattern as demo apps.
 
@@ -227,7 +227,7 @@ npm run lint:md:fix
 Uses **Nx** to manage apps and libs:
 
 - **`apps/`** - Deployable apps (naming: `[domain]-[type]`)
-  - Apps import libs but never export
+  - Apps import libs, never export
   - Each app independently deployable
   - Apps never import other apps
 - **`libs/`** - Reusable libraries (naming: `ts-[name]`, future: `java-*`, `py-*`)
@@ -250,7 +250,7 @@ nx graph                     # Visualize dependencies
 
 ## Git Workflow
 
-**Trunk Based Development** - All development on `main`:
+**Trunk Based Development** - All dev on `main`:
 
 - **Default branch**: `main`
 - **Environment branches** (Vercel deployment only — never commit directly):
@@ -275,12 +275,12 @@ Husky + lint-staged enforce quality:
     - Validates `.claude/` source format (YAML, tools, model, skills)
     - Auto-syncs `.claude/` → `.opencode/`
     - Validates `.opencode/` output (semantic equivalence)
-  - Formats staged files with Prettier (JS/TS/JSON/YAML/CSS/MD), gofmt (Go), and mix format (Elixir)
+  - Formats staged files with Prettier (JS/TS/JSON/YAML/CSS/MD), gofmt (Go), mix format (Elixir)
   - Validates markdown links in staged files
   - Validates all markdown files (markdownlint)
   - Auto-stages changes
 - **Commit-msg**: Validates Conventional Commits format (Commitlint)
-- **Pre-push**: Runs `typecheck`, `lint`, `test:quick`, and `spec-coverage` for affected projects (parallelism: cores-1)
+- **Pre-push**: Runs `typecheck`, `lint`, `test:quick`, `spec-coverage` for affected projects (parallelism: cores-1)
   - Runs markdown linting
   - All four Nx targets cacheable — if pre-push times out, run `npx nx affected -t typecheck lint test:quick spec-coverage` first to warm cache, then push again
 
@@ -330,7 +330,7 @@ All work follows foundational principles from `governance/principles/` (key ones
 
 ### File Naming
 
-Lowercase kebab-case (`[a-z0-9-]+`) with standard extension; rule anchored on standard markdown and GitHub compatibility
+Lowercase kebab-case (`[a-z0-9-]+`) with standard extension; anchored on standard markdown + GitHub compatibility
 Exception: `README.md` for index files, `docs/metadata/` files
 
 **See**: [governance/conventions/structure/file-naming.md](./governance/conventions/structure/file-naming.md)
@@ -371,7 +371,7 @@ Active voice, single H1, proper heading nesting, alt text for images, WCAG AA co
 
 ### Dynamic Collection References
 
-Never hardcode counts of dynamic collections (agents, skills, conventions, practices, principles, workflows) in docs. Reference collection by name and link.
+Never hardcode counts of dynamic collections (agents, skills, conventions, practices, principles, workflows) in docs. Reference collection by name + link.
 
 **See**: [governance/conventions/writing/dynamic-collection-references.md](./governance/conventions/writing/dynamic-collection-references.md)
 
@@ -429,11 +429,11 @@ Plan mode for non-trivial tasks (3+ steps or architecture decisions), subagents 
 - **Inline skills** (default) - Inject knowledge into current conversation
 - **Fork skills** (`context: fork`) - Trigger subagent spawning, delegate tasks to isolated agent contexts, return summarized results
 
-Skills serve agents with knowledge and execution services but don't govern them (service relationship, not governance).
+Skills serve agents with knowledge + execution services but don't govern them (service relationship, not governance).
 
 ### Working with .claude/ and .opencode/ Directories
 
-Edit `.claude/` and `.opencode/` files with normal `Write` / `Edit` tools. Both paths pre-authorized in `.claude/settings.json` (`Write(.claude/**)`, `Edit(.claude/**)`, `Write(.opencode/**)`, `Edit(.opencode/**)`), no approval prompt fires. `Bash` heredoc and `sed` remain fine for bulk mechanical substitutions, but no rule against direct edits.
+Edit `.claude/` and `.opencode/` files with normal `Write` / `Edit` tools. Both paths pre-authorized in `.claude/settings.json` (`Write(.claude/**)`, `Edit(.claude/**)`, `Write(.opencode/**)`, `Edit(.opencode/**)`), no approval prompt fires. `Bash` heredoc and `sed` still fine for bulk mechanical substitutions, but no rule against direct edits.
 
 **Applies to all paths**:
 
@@ -542,7 +542,7 @@ nx run ayokoding-web-fe-e2e:test:e2e           # Frontend E2E tests
 - **Production branch**: `prod-organiclever-fe` → www.organiclever.com
 - **Framework**: Next.js 16 (App Router)
 - **Deployment**: Vercel
-- **Content**: Landing and promotional website for OrganicLever
+- **Content**: Landing/promo website for OrganicLever
 - **E2E tests**: `organiclever-fe-e2e`
 - **Dev port**: 3200
 
@@ -603,15 +603,15 @@ Project planning in `plans/` folder:
 ## Important Notes
 
 - **Do NOT stage or commit** unless explicitly instructed. Per-request commits one-time only.
-- **License**: FSL-1.1-MIT for product apps and behavioral specs (WHAT); MIT for libs and demo code (HOW). See [LICENSING-NOTICE.md](./LICENSING-NOTICE.md)
+- **License**: FSL-1.1-MIT for product apps + behavioral specs (WHAT); MIT for libs + demo code (HOW). See [LICENSING-NOTICE.md](./LICENSING-NOTICE.md)
 - **AI agent invocation**: Use natural language to invoke agents/workflows
 - **Token budget**: Don't worry about token limits - reliable compaction available
 - **No time estimates**: Never give time estimates. Focus on what needs doing, not how long.
 
 ## Related Documentation
 
-- **Conventions Index**: [governance/conventions/README.md](./governance/conventions/README.md) - Documentation writing and org standards
-- **Development Index**: [governance/development/README.md](./governance/development/README.md) - Software dev practices and workflows
+- **Conventions Index**: [governance/conventions/README.md](./governance/conventions/README.md) - Documentation writing + org standards
+- **Development Index**: [governance/development/README.md](./governance/development/README.md) - Software dev practices + workflows
 - **Principles Index**: [governance/principles/README.md](./governance/principles/README.md) - Foundational values governing all layers
 - **Agents Index**: [.claude/agents/README.md](./.claude/agents/README.md) - Specialized agents organized by role
 - **Workflows Index**: [governance/workflows/README.md](./governance/workflows/README.md) - Orchestrated processes
@@ -622,11 +622,11 @@ Project planning in `plans/` folder:
 
 ## General Guidelines for working with Nx
 
-- For navigating/exploring workspace, invoke `nx-workspace` skill first - has patterns for querying projects, targets, and deps
-- When running tasks (build, lint, test, e2e, etc.), prefer running through `nx` (`nx run`, `nx run-many`, `nx affected`) instead of underlying tooling directly
+- For navigating/exploring workspace, invoke `nx-workspace` skill first - has patterns for querying projects, targets, deps
+- When running tasks (build, lint, test, e2e, etc.), prefer `nx` (`nx run`, `nx run-many`, `nx affected`) over underlying tooling directly
 - Prefix nx commands with workspace package manager (e.g., `pnpm nx build`, `npm exec nx test`) - avoids using globally installed CLI
-- You have access to Nx MCP server and its tools, use them
-- For Nx plugin best practices, check `node_modules/@nx/<plugin>/PLUGIN.md`. Not all plugins have this file - proceed without it if unavailable.
+- You have access to Nx MCP server + its tools, use them
+- For Nx plugin best practices, check `node_modules/@nx/<plugin>/PLUGIN.md`. Not all plugins have this file - proceed without if unavailable.
 - NEVER guess CLI flags - check nx_docs or `--help` first when unsure
 
 ## Scaffolding & Generators

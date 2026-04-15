@@ -30,7 +30,7 @@ This Skill provides guidance for developing and managing the **organiclever-fe**
 - **Data**: JSON data files in `src/data/`
 - **URL**: https://www.organiclever.com/
 - **Role**: Landing and promotional page
-- **Deployment**: Vercel (`prod-organiclever-fe` branch)
+- **Deployment**: Vercel (`prod-organiclever-web` branch)
 
 ### Tech Stack Details
 
@@ -190,7 +190,7 @@ export default function LoginForm() {
 
 ### Production Branch
 
-**Branch**: `prod-organiclever-fe` → [https://www.organiclever.com/](https://www.organiclever.com/)  
+**Branch**: `prod-organiclever-web` → [https://www.organiclever.com/](https://www.organiclever.com/)  
 **Purpose**: Deployment-only branch that Vercel monitors  
 **Build System**: Vercel (Next.js auto-detected, no `builds` array needed)  
 **Security Headers**: Configured in `vercel.json`
@@ -240,14 +240,14 @@ fi
 
 ```bash
 # Deploy to production
-git push origin main:prod-organiclever-fe --force
+git push origin main:prod-organiclever-web --force
 ```
 
 **Step 3: Vercel Auto-Build**
 
 Vercel automatically:
 
-- Detects push to prod-organiclever-fe branch
+- Detects push to prod-organiclever-web branch
 - Pulls latest code
 - Builds Next.js 16 application
 - Deploys to https://www.organiclever.com/
@@ -256,7 +256,7 @@ Vercel automatically:
 
 **Safe for deployment branches**:
 
-- prod-organiclever-fe is deployment-only (no direct commits)
+- prod-organiclever-web is deployment-only (no direct commits)
 - Always want exact copy of main branch
 - Trunk-based development: main is source of truth
 
@@ -270,7 +270,7 @@ Vercel automatically:
 | **Auth**            | Cookie-based sessions    | None                           | None                    |
 | **Data**            | JSON files + API routes  | tRPC + database                | tRPC + database         |
 | **Build**           | Next.js (Vercel)         | Next.js (Vercel)               | Next.js (Vercel)        |
-| **Prod Branch**     | prod-organiclever-fe     | prod-ayokoding-web             | prod-oseplatform-web    |
+| **Prod Branch**     | prod-organiclever-web    | prod-ayokoding-web             | prod-oseplatform-web    |
 | **Languages**       | English                  | Bilingual (Indonesian/English) | English only            |
 | **Content Types**   | Landing + promo pages    | Tutorials, essays, videos      | Updates, about page     |
 | **Complexity**      | Static + light auth      | Fullstack bilingual platform   | Simple landing page     |
@@ -402,9 +402,9 @@ export default function Counter() {
 
 **Right**: Fetch data in async server component directly
 
-### ❌ Mistake 4: Direct commits to prod-organiclever-fe
+### ❌ Mistake 4: Direct commits to prod-organiclever-web
 
-**Wrong**: `git checkout prod-organiclever-fe && git commit`
+**Wrong**: `git checkout prod-organiclever-web && git commit`
 
 **Right**: Commit to `main`, use deployer agent to force-push
 

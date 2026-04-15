@@ -266,11 +266,11 @@ nx run a-demo-be-e2e:test:e2e
 
 Vercel-deployed apps use dedicated production branches (deployment-only — never commit directly):
 
-| Branch                 | Production URL                                        | App             |
-| ---------------------- | ----------------------------------------------------- | --------------- |
-| `prod-ayokoding-web`   | [ayokoding.com](https://ayokoding.com)                | ayokoding-web   |
-| `prod-oseplatform-web` | [oseplatform.com](https://oseplatform.com)            | oseplatform-web |
-| `prod-organiclever-fe` | [www.organiclever.com](https://www.organiclever.com/) | organiclever-fe |
+| Branch                  | Production URL                                        | App             |
+| ----------------------- | ----------------------------------------------------- | --------------- |
+| `prod-ayokoding-web`    | [ayokoding.com](https://ayokoding.com)                | ayokoding-web   |
+| `prod-oseplatform-web`  | [oseplatform.com](https://oseplatform.com)            | oseplatform-web |
+| `prod-organiclever-web` | [www.organiclever.com](https://www.organiclever.com/) | organiclever-fe |
 
 **ayokoding-web**: Deploy by force-pushing `main` to the production branch:
 
@@ -286,7 +286,7 @@ Trigger on-demand from the GitHub Actions UI (set `force_deploy=true` to skip ch
 **organiclever-fe**: Deploy by force-pushing `main` to the production branch:
 
 ```bash
-git push origin main:prod-organiclever-fe --force
+git push origin main:prod-organiclever-web --force
 ```
 
 Use the corresponding deployer agent (e.g. `apps-organiclever-fe-deployer`) for guided deployment.

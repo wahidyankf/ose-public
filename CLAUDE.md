@@ -256,7 +256,7 @@ nx graph                     # Visualize dependencies
 - **Environment branches** (Vercel deployment only — never commit directly):
   - `prod-ayokoding-web` → [ayokoding.com](https://ayokoding.com)
   - `prod-oseplatform-web` → [oseplatform.com](https://oseplatform.com)
-  - `prod-organiclever-fe` → [www.organiclever.com](https://www.organiclever.com/)
+  - `prod-organiclever-web` → [www.organiclever.com](https://www.organiclever.com/)
 - **Commit format**: Conventional Commits `<type>(<scope>): <description>`
   - Types: feat, fix, docs, style, refactor, perf, test, chore, ci, revert
   - Scope optional but recommended
@@ -539,7 +539,7 @@ nx run ayokoding-web-fe-e2e:test:e2e           # Frontend E2E tests
 ### organiclever-fe
 
 - **URL**: <https://www.organiclever.com/>
-- **Production branch**: `prod-organiclever-fe` → www.organiclever.com
+- **Production branch**: `prod-organiclever-web` → www.organiclever.com
 - **Framework**: Next.js 16 (App Router)
 - **Deployment**: Vercel
 - **Content**: Landing and promotional website for OrganicLever

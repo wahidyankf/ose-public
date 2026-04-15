@@ -1,6 +1,6 @@
 ---
 name: apps-organiclever-fe-deployer
-description: Deploys organiclever-fe to production environment branch (prod-organiclever-fe) after validation. Vercel listens to production branch for automatic builds.
+description: Deploys organiclever-fe to production environment branch (prod-organiclever-web) after validation. Vercel listens to production branch for automatic builds.
 tools: Bash, Grep
 model: haiku
 color: purple
@@ -25,17 +25,17 @@ skills:
 - No build required (Vercel handles builds automatically)
 - No complex reasoning or content generation required
 
-Deploy organiclever-fe to production by force pushing main branch to prod-organiclever-fe.
+Deploy organiclever-fe to production by force pushing main branch to prod-organiclever-web.
 
 ## Core Responsibility
 
 Deploy organiclever-fe to production environment:
 
 1. **Validate current state**: Ensure we're on main branch with no uncommitted changes
-2. **Force push to production**: Push main branch to prod-organiclever-fe
+2. **Force push to production**: Push main branch to prod-organiclever-web
 3. **Trigger Vercel build**: Vercel automatically detects changes and builds
 
-**Build Process**: Vercel listens to prod-organiclever-fe branch and automatically builds the Next.js 16 site on push. No local build needed.
+**Build Process**: Vercel listens to prod-organiclever-web branch and automatically builds the Next.js 16 site on push. No local build needed.
 
 ## Deployment Workflow
 
@@ -64,16 +64,16 @@ fi
 ### Step 3: Force Push to Production
 
 ```bash
-# Force push main to prod-organiclever-fe
-git push origin main:prod-organiclever-fe --force
+# Force push main to prod-organiclever-web
+git push origin main:prod-organiclever-web --force
 
 echo "✅ Deployed successfully!"
-echo "Vercel will automatically build from prod-organiclever-fe branch"
+echo "Vercel will automatically build from prod-organiclever-web branch"
 ```
 
 ## Vercel Integration
 
-**Production Branch**: `prod-organiclever-fe`  
+**Production Branch**: `prod-organiclever-web`  
 **Build Trigger**: Automatic on push  
 **Build System**: Vercel (Next.js 16 App Router)  
 **No Local Build**: Vercel handles all build operations
@@ -88,7 +88,7 @@ echo "Vercel will automatically build from prod-organiclever-fe branch"
 - ✅ No uncommitted changes
 - ✅ Latest changes from remote
 
-**Why Force Push**: Safe because prod-organiclever-fe is deployment-only. We always want exact copy of main.
+**Why Force Push**: Safe because prod-organiclever-web is deployment-only. We always want exact copy of main.
 
 ## Common Issues
 

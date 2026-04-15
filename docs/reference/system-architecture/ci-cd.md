@@ -201,10 +201,10 @@ graph TB
 
 **Steps:**
 
-1. Detect changes in `apps/organiclever-fe/` vs `prod-organiclever-fe` branch
+1. Detect changes in `apps/organiclever-fe/` vs `prod-organiclever-web` branch
 2. If changes exist (or `force_deploy=true`): setup Volta, install dependencies
 3. Run `nx build organiclever-fe`
-4. Force-push `main` to `prod-organiclever-fe`; Vercel auto-builds
+4. Force-push `main` to `prod-organiclever-web`; Vercel auto-builds
 
 **Purpose**: Automated scheduled deployments for www.organiclever.com with change detection to avoid unnecessary builds
 

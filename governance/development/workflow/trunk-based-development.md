@@ -386,7 +386,7 @@ The execution mode determines the git workflow:
 
 AI agents must check which mode they are operating in and follow the corresponding workflow. Mixing modes -- creating a branch while on main, or pushing directly to main from a worktree -- is incorrect. This rule applies equally to humans and AI agents: any commit authored from inside a `.claude/worktrees/` path (or any other `git worktree add` target) must land in a draft PR, never directly on `main`.
 
-Note: this rule does **not** affect environment branches (`prod-ayokoding-web`, `prod-oseplatform-web`, `prod-organiclever-fe`). Those remain CI-managed and follow their own documented deployment workflows.
+Note: this rule does **not** affect environment branches (`prod-ayokoding-web`, `prod-oseplatform-web`, `prod-organiclever-web`). Those remain CI-managed and follow their own documented deployment workflows.
 
 ## When Branches Are Appropriate
 

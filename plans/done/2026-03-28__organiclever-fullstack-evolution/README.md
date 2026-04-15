@@ -47,7 +47,7 @@ Existing `specs/apps/organiclever-be/` and `specs/apps/organiclever-fe/` are mer
 | **CI/CD**      | `.github/workflows/test-organiclever-fe.yml` (single workflow)      |
 | **Agents**     | `apps-organiclever-fe-deployer`                                     |
 | **Skills**     | `apps-organiclever-fe-developing-content`                           |
-| **Deployment** | Vercel via `prod-organiclever-fe` branch                            |
+| **Deployment** | Vercel via `prod-organiclever-web` branch                           |
 
 ## Target State
 

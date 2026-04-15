@@ -82,7 +82,7 @@ The platform consists of 9 applications across 4 technology stacks:
 - **Purpose**: Landing and promotional website for OrganicLever
 - **URL**: <https://www.organiclever.com>
 - **Technology**: Next.js 16 (App Router) + React 19 + TailwindCSS
-- **Deployment**: Vercel (via `prod-organiclever-fe` branch)
+- **Deployment**: Vercel (via `prod-organiclever-web` branch)
 - **Build Command**: `nx build organiclever-fe`
 - **Dev Command**: `nx dev organiclever-fe`
 - **Location**: `apps/organiclever-fe/`

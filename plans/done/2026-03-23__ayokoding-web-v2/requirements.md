@@ -233,7 +233,7 @@ Scenario: Mobile hamburger opens sidebar overlay
 - **CI**: 2x daily cron (WIB 06, 18) + manual dispatch (same schedule as other apps)
 - **Docker**: Multi-stage build for local dev + CI E2E, no database required
 - **Deployment**: Vercel (production branch `prod-ayokoding-web-v2`), same as
-  `ayokoding-web` (`prod-ayokoding-web`) and `organiclever-fe` (`prod-organiclever-fe`)
+  `ayokoding-web` (`prod-ayokoding-web`) and `organiclever-fe` (`prod-organiclever-web`)
 - **Linting**: oxlint (same as a-demo-fe-ts-nextjs and a-demo-fs-ts-nextjs)
 - **Performance**: All content pages should return Time to First Byte (TTFB) under
   2s on cached requests in Vercel production (aspirational; monitor post-launch).

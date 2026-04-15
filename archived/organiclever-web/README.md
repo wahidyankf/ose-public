@@ -130,13 +130,13 @@ Components are split across two levels with a strict boundary:
 
 ## Deployment
 
-**Branch**: `prod-organiclever-fe` → [https://www.organiclever.com/](https://www.organiclever.com/)
+**Branch**: `prod-organiclever-web` → [https://www.organiclever.com/](https://www.organiclever.com/)
 
-Vercel monitors `prod-organiclever-fe` and auto-builds on every push. Never commit directly to this branch — it is deployment-only. To deploy:
+Vercel monitors `prod-organiclever-web` and auto-builds on every push. Never commit directly to this branch — it is deployment-only. To deploy:
 
 ```bash
 # From main branch with clean working tree
-git push origin main:prod-organiclever-fe --force
+git push origin main:prod-organiclever-web --force
 ```
 
 Use the `apps-organiclever-fe-deployer` agent for guided deployment.
@@ -165,7 +165,7 @@ docker run --rm -p 3200:3200 organiclever-fe:latest
 ## Testing
 
 `organiclever-fe` uses a three-tier testing strategy. Integration and E2E share the same Gherkin
-specs from [`specs/apps/organiclever-fe/`](../../specs/apps/organiclever-fe/).
+specs from [`specs/apps/organiclever/`](../../specs/apps/organiclever/).
 
 | Tier        | Tool                     | Location                                      | Command                                   | Requires service? | Cached? |
 | ----------- | ------------------------ | --------------------------------------------- | ----------------------------------------- | ----------------- | ------- |
@@ -186,7 +186,7 @@ scenario.
 
 ## E2E Tests
 
-E2E tests live in [`apps/organiclever-fe-e2e/`](../organiclever-fe-e2e/). See that directory's README for details.
+E2E tests live in [`apps/organiclever-fe-e2e/`](../../apps/organiclever-fe-e2e/). See that directory's README for details.
 
 ## Shared UI Components
 

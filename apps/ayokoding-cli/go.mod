@@ -1,11 +1,11 @@
-module github.com/wahidyankf/open-sharia-enterprise/apps/ayokoding-cli
+module github.com/wahidyankf/ose-public/apps/ayokoding-cli
 
 go 1.26
 
 require (
 	github.com/cucumber/godog v0.15.1
 	github.com/spf13/cobra v1.10.2
-	github.com/wahidyankf/open-sharia-enterprise/libs/hugo-commons v0.0.0-00010101000000-000000000000
+	github.com/wahidyankf/ose-public/libs/hugo-commons v0.0.0-00010101000000-000000000000
 )
 
 require (
@@ -29,7 +29,7 @@ require (
 	github.com/rs/zerolog v1.34.0 // indirect
 	github.com/spf13/pflag v1.0.9 // indirect
 	github.com/vladopajic/go-test-coverage/v2 v2.18.3 // indirect
-	github.com/wahidyankf/open-sharia-enterprise/libs/golang-commons v0.0.0-00010101000000-000000000000 // indirect
+	github.com/wahidyankf/ose-public/libs/golang-commons v0.0.0-00010101000000-000000000000 // indirect
 	golang.org/x/image v0.18.0 // indirect
 	golang.org/x/sys v0.41.0 // indirect
 	golang.org/x/text v0.34.0 // indirect
@@ -37,8 +37,8 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace github.com/wahidyankf/open-sharia-enterprise/libs/golang-commons v0.0.0-00010101000000-000000000000 => ../../libs/golang-commons
+replace github.com/wahidyankf/ose-public/libs/golang-commons v0.0.0-00010101000000-000000000000 => ../../libs/golang-commons
 
-replace github.com/wahidyankf/open-sharia-enterprise/libs/hugo-commons v0.0.0-00010101000000-000000000000 => ../../libs/hugo-commons
+replace github.com/wahidyankf/ose-public/libs/hugo-commons v0.0.0-00010101000000-000000000000 => ../../libs/hugo-commons
 
 tool github.com/vladopajic/go-test-coverage/v2

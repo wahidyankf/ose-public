@@ -8,7 +8,7 @@ RUN go build -o server ./cmd/server/
 
 FROM alpine:3.22
 
-LABEL org.opencontainers.image.source="https://github.com/wahidyankf/open-sharia-enterprise"
+LABEL org.opencontainers.image.source="https://github.com/wahidyankf/ose-public"
 LABEL org.opencontainers.image.description="Demo backend REST API built with Go and Gin"
 
 RUN apk add --no-cache ca-certificates

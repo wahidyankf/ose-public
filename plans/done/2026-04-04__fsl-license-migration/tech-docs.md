@@ -200,7 +200,7 @@ not generic license lists:
 
 ```bash
 # Update repository description
-gh repo edit wahidyankf/open-sharia-enterprise \
+gh repo edit wahidyankf/ose-public \
   --description "Source-available Sharia-compliant enterprise platform. Phase 1: Building OrganicLever productivity tracker. Learning in public. No timelines—building it right."
 ```
 

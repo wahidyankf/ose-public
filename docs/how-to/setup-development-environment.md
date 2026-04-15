@@ -63,7 +63,7 @@ source ~/.zshrc
 brew install go
 
 # 5. Clone and bootstrap
-git clone https://github.com/wahidyankf/open-sharia-enterprise.git
+git clone https://github.com/wahidyankf/ose-public.git
 cd open-sharia-enterprise
 npm install          # Installs deps + git hooks
 npx playwright install  # Installs test browsers
@@ -317,7 +317,7 @@ hugo version
 ### Step 13: Clone and Bootstrap
 
 ```bash
-git clone https://github.com/wahidyankf/open-sharia-enterprise.git
+git clone https://github.com/wahidyankf/ose-public.git
 cd open-sharia-enterprise
 npm install
 ```

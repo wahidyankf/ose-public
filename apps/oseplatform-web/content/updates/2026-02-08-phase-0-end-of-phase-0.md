@@ -442,7 +442,7 @@ Phase 0 complete. Foundation established, documentation in place, standards defi
 
 Phase 1 begins next week, Insha Allah. Real product, real users, real revenue. Applying what we built while funding future phases.
 
-Every decision, every line of code, every commit visible on [GitHub](https://github.com/wahidyankf/open-sharia-enterprise). Regular updates published here on oseplatform.com every second Sunday. Educational content shared on [ayokoding.com](https://ayokoding.com). Building in public, learning shared.
+Every decision, every line of code, every commit visible on [GitHub](https://github.com/wahidyankf/ose-public). Regular updates published here on oseplatform.com every second Sunday. Educational content shared on [ayokoding.com](https://ayokoding.com). Building in public, learning shared.
 
 We publish platform updates every second Sunday of each month. Subscribe to our RSS feed or check back regularly to follow along as we begin Phase 1, Insha Allah.
 

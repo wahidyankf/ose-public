@@ -11,7 +11,7 @@ import (
 	"testing"
 
 	"github.com/cucumber/godog"
-	"github.com/wahidyankf/open-sharia-enterprise/apps/rhino-cli/internal/testcoverage"
+	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/testcoverage"
 )
 
 var specsDirUnitDiffTestCoverage = func() string {

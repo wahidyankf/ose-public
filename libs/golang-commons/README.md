@@ -12,7 +12,7 @@ Provides common packages used across multiple Go CLI applications (`ayokoding-cl
 
 Timestamp utilities shared across Go CLI tools and libraries.
 
-**Import path**: `github.com/wahidyankf/open-sharia-enterprise/libs/golang-commons/timeutil`
+**Import path**: `github.com/wahidyankf/ose-public/libs/golang-commons/timeutil`
 
 **Exports**:
 
@@ -23,7 +23,7 @@ Timestamp utilities shared across Go CLI tools and libraries.
 
 Testing utilities for Go CLI tools.
 
-**Import path**: `github.com/wahidyankf/open-sharia-enterprise/libs/golang-commons/testutil`
+**Import path**: `github.com/wahidyankf/ose-public/libs/golang-commons/testutil`
 
 **Exports**:
 
@@ -33,7 +33,7 @@ Testing utilities for Go CLI tools.
 
 Link-checking utilities for Hugo site CLIs.
 
-**Import path**: `github.com/wahidyankf/open-sharia-enterprise/libs/golang-commons/links`
+**Import path**: `github.com/wahidyankf/ose-public/libs/golang-commons/links`
 
 **Exports**:
 
@@ -47,7 +47,7 @@ Link-checking utilities for Hugo site CLIs.
 ## Usage
 
 ```go
-import "github.com/wahidyankf/open-sharia-enterprise/libs/golang-commons/links"
+import "github.com/wahidyankf/ose-public/libs/golang-commons/links"
 
 result, err := links.CheckLinks("apps/ayokoding-web/content")
 if err != nil {

@@ -1,4 +1,4 @@
-module github.com/wahidyankf/open-sharia-enterprise/libs/hugo-commons
+module github.com/wahidyankf/ose-public/libs/hugo-commons
 
 go 1.26
 
@@ -6,7 +6,7 @@ tool github.com/vladopajic/go-test-coverage/v2
 
 require (
 	github.com/cucumber/godog v0.15.1
-	github.com/wahidyankf/open-sharia-enterprise/libs/golang-commons v0.0.0-00010101000000-000000000000
+	github.com/wahidyankf/ose-public/libs/golang-commons v0.0.0-00010101000000-000000000000
 )
 
 require (
@@ -38,4 +38,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace github.com/wahidyankf/open-sharia-enterprise/libs/golang-commons v0.0.0-00010101000000-000000000000 => ../../libs/golang-commons
+replace github.com/wahidyankf/ose-public/libs/golang-commons v0.0.0-00010101000000-000000000000 => ../../libs/golang-commons

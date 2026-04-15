@@ -10,7 +10,7 @@ import (
 	"github.com/cucumber/godog"
 	"github.com/gin-gonic/gin"
 
-	"github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin/internal/domain"
+	"github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin/internal/domain"
 )
 
 func registerTokenLifecycleSteps(sc *godog.ScenarioContext, ctx *scenarioCtx) {

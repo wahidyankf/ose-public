@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/wahidyankf/open-sharia-enterprise/apps/ayokoding-cli/cmd"
+	"github.com/wahidyankf/ose-public/apps/ayokoding-cli/cmd"
 )
 
 func main() {

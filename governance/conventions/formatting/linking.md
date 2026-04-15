@@ -203,7 +203,7 @@ For links to external resources:
 <!-- Standard markdown links -->
 
 [Diátaxis Framework](https://diataxis.fr/)
-[GitHub](https://github.com/wahidyankf/open-sharia-enterprise)
+[GitHub](https://github.com/wahidyankf/ose-public)
 ```
 
 ## Nested Directory Linking

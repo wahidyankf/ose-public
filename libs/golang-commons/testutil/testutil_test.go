@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/wahidyankf/open-sharia-enterprise/libs/golang-commons/testutil"
+	"github.com/wahidyankf/ose-public/libs/golang-commons/testutil"
 )
 
 func TestCaptureStdout(t *testing.T) {

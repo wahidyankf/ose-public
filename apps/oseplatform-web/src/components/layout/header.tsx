@@ -13,12 +13,12 @@ const NAV_LINKS = [
   { label: "About", href: "/about/" },
   {
     label: "Documentation",
-    href: "https://github.com/wahidyankf/open-sharia-enterprise/tree/main/docs",
+    href: "https://github.com/wahidyankf/ose-public/tree/main/docs",
     external: true,
   },
   {
     label: "GitHub",
-    href: "https://github.com/wahidyankf/open-sharia-enterprise",
+    href: "https://github.com/wahidyankf/ose-public",
     external: true,
   },
 ];

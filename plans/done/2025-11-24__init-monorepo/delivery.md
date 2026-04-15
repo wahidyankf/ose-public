@@ -74,7 +74,7 @@
   - **Date**: 2025-11-29
   - **Result**: Pass
 - [x] `npm ls nx` shows only `nx` package (no plugins)
-  - **Validation Notes**: Verified - shows "open-sharia-enterprise@1.0.0 /Users/alami/wkf-repos/wahidyankf/open-sharia-enterprise └── nx@22.1.3"
+  - **Validation Notes**: Verified - shows "open-sharia-enterprise@1.0.0 /Users/alami/wkf-repos/wahidyankf/ose-public └── nx@22.1.3"
   - **Date**: 2025-11-29
   - **Result**: Pass
 - [x] `npm ls | grep @nx` shows no Nx plugins installed

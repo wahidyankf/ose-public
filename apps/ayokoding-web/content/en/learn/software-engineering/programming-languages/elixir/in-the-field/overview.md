@@ -214,4 +214,4 @@ These guides assume familiarity with Elixir fundamentals. If you're new to Elixi
 
 ## Convention Reference
 
-These guides follow the [In-the-Field Convention](https://github.com/wahidyankf/open-sharia-enterprise/blob/main/governance/conventions/tutorials/in-the-field.md), which defines production implementation guide standards.
+These guides follow the [In-the-Field Convention](https://github.com/wahidyankf/ose-public/blob/main/governance/conventions/tutorials/in-the-field.md), which defines production implementation guide standards.

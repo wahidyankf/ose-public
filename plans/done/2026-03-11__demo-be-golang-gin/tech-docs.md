@@ -731,7 +731,7 @@ Add coverage upload step (Go SDK already present in CI — used by other Go proj
 Module path follows the workspace convention:
 
 ```
-module github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin
+module github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin
 ```
 
 ### Direct Dependencies

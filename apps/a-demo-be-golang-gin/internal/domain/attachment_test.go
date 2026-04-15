@@ -3,7 +3,7 @@ package domain_test
 import (
 	"testing"
 
-	"github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin/internal/domain"
+	"github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin/internal/domain"
 )
 
 func TestUnitValidateMIMEType(t *testing.T) {

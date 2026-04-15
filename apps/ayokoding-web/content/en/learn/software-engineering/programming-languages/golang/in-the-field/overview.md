@@ -192,4 +192,4 @@ These guides assume familiarity with Go fundamentals. If you're new to Go, start
 
 ## Convention Reference
 
-These guides follow the [In-the-Field Convention](https://github.com/wahidyankf/open-sharia-enterprise/blob/main/governance/conventions/tutorials/in-the-field.md), which defines production implementation guide standards.
+These guides follow the [In-the-Field Convention](https://github.com/wahidyankf/ose-public/blob/main/governance/conventions/tutorials/in-the-field.md), which defines production implementation guide standards.

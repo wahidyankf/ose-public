@@ -7,7 +7,7 @@ export function Footer() {
         <p>
           &copy; {year} Open Sharia Enterprise Platform &middot;{" "}
           <a
-            href="https://github.com/wahidyankf/open-sharia-enterprise/blob/main/LICENSE"
+            href="https://github.com/wahidyankf/ose-public/blob/main/LICENSE"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-foreground"

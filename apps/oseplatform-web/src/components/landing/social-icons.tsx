@@ -10,7 +10,7 @@ export function SocialIcons() {
         <TooltipTrigger asChild>
           <Button variant="ghost" size="icon" asChild>
             <a
-              href="https://github.com/wahidyankf/open-sharia-enterprise"
+              href="https://github.com/wahidyankf/ose-public"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="GitHub repository"

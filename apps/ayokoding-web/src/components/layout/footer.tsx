@@ -14,7 +14,7 @@ export function Footer({ locale }: FooterProps) {
         <p>
           &copy; {year} AyoKoding &middot;{" "}
           <a
-            href="https://github.com/wahidyankf/open-sharia-enterprise/blob/main/LICENSE"
+            href="https://github.com/wahidyankf/ose-public/blob/main/LICENSE"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-foreground"
@@ -23,7 +23,7 @@ export function Footer({ locale }: FooterProps) {
           </a>
         </p>
         <a
-          href="https://github.com/wahidyankf/open-sharia-enterprise"
+          href="https://github.com/wahidyankf/ose-public"
           target="_blank"
           rel="noopener noreferrer"
           className="hover:text-foreground"

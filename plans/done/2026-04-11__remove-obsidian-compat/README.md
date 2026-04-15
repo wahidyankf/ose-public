@@ -161,7 +161,7 @@ After editing `.claude/` agents and skills, run `npm run sync:claude-to-opencode
 
 - **`plans/done/*`** — historical planning records. Obsidian references in past plans are accurate at the time of writing and should remain as-is.
 - **`apps/oseplatform-web/content/updates/2025-12-14-phase-0-week-4-initial-commit.md`** — historical update post; leave intact.
-- **`ose-infra/` sibling repo** — governance mirroring is one-way from `ose-apps`; changes propagate via the existing `governance-sync-*` workflow after this plan lands on `main`. The sibling sync is not part of this plan's delivery checklist.
+- **`ose-infra/` sibling repo** — governance mirroring historically one-way from `ose-public`; this plan's sibling sync is not part of the delivery checklist.
 - **Apps content** (`apps/ayokoding-web/`, `apps/oseplatform-web/content/`) — these have their own content conventions and do not use the prefix scheme.
 
 ## Goals
@@ -328,7 +328,7 @@ This plan uses the multi-file layout:
 
 ### Internal
 
-- None (this plan is self-contained within `ose-apps`).
+- None (this plan is self-contained within `ose-public`).
 - `ose-infra` will reconcile via the existing cross-repo sync workflow after merge; no coordination required for this plan.
 
 ## Constraints

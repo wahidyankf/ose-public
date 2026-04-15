@@ -79,7 +79,7 @@ Note: `ExpenseSummary` exists in the Go generated types. Verify whether any Go e
 directly or only as a nested field in `ExpenseListResponse`/`PLReport`. Add to the table above if
 returned directly.
 
-**Import path**: `"github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin/generated-contracts"`
+**Import path**: `"github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin/generated-contracts"`
 aliased as `contracts`.
 
 **Caveat**: Generated Go types may use `openapi_types.Date` instead of `string` for date fields,
@@ -538,7 +538,7 @@ The test is `test:unit`:
 
 ### Go: oapi-codegen package path
 
-Import path: `"github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin/generated-contracts"`
+Import path: `"github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin/generated-contracts"`
 (aliased as `contracts`). Generated types may use `openapi_types.Date` for dates.
 
 ### Java: Maven source directory

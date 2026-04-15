@@ -930,7 +930,7 @@ This section tracks the actual implementation progress. Each item will be checke
   - **Implementation Notes**: Created comprehensive recipe template reference at `local-temp/java-recipe-template.md`. Template specifies: Problem statement (1 sentence), Solution with 2+ code examples (15-30 lines each with inline comments and outputs), explanation (2-3 sentences), "When to use" guidance (1-2 sentences). Includes example of good recipe, common mistakes to avoid, and standardization checklist.
   - **Date**: 2025-12-18
   - **Status**: Completed
-  - **File Created**: /Users/alami/wkf-repos/wahidyankf/open-sharia-enterprise/local-temp/java-recipe-template.md
+  - **File Created**: /Users/alami/wkf-repos/wahidyankf/ose-public/local-temp/java-recipe-template.md
 - [x] Standardize all existing Java recipes to follow template (Problem → Solution → When to use)
   - **Implementation Notes**: COMPLETED - All 37 original recipes fully standardized with consistent pattern: Recipe numbering (1-37), Problem/Solution structure, Basic and Advanced code examples (15-30 lines each), explanatory text, output comments, "When to use" guidance. All sections standardized: Working with Collections (1-4), String Operations (5-9), File and I/O Operations (10-13), Dates and Times (14-16), Exception Handling (17-18), Testing (19-20), Concurrency (21-22), Advanced Concurrency Patterns (23-26), Functional Programming (27-29), Modern Java Features (30-31), Working with JSON (32-33), REST API Usage (34-35), Frequently Used Patterns (36-37).
   - **Date**: 2025-12-18

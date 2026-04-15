@@ -2,7 +2,7 @@
 package main
 
 import (
-	"github.com/wahidyankf/open-sharia-enterprise/apps/rhino-cli/cmd"
+	"github.com/wahidyankf/ose-public/apps/rhino-cli/cmd"
 )
 
 func main() { cmd.Execute() }

@@ -70,7 +70,7 @@ project's license in examples or declarations.
 **Goal**: Update external platform metadata to reflect the new license.
 
 - [x] Update GitHub repository description: change "Open-source" to "Source-available"
-      via `gh repo edit wahidyankf/open-sharia-enterprise --description "Source-available Sharia-compliant enterprise platform. Phase 1: Building OrganicLever productivity tracker. Learning in public. No timelines—building it right."`
+      via `gh repo edit wahidyankf/ose-public --description "Source-available Sharia-compliant enterprise platform. Phase 1: Building OrganicLever productivity tracker. Learning in public. No timelines—building it right."`
 - [x] Verify GitHub license badge: after LICENSE file replacement (Phase 1), GitHub will show
       "Other" since FSL-1.1-MIT is not in GitHub's recognized license list — this is expected
 - [x] Commit: N/A (GitHub API change, no file change needed)

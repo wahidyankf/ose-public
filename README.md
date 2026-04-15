@@ -116,24 +116,24 @@ See [Code Quality](./governance/development/quality/code.md) and [Commit Message
 
 ## 📊 CI & Test Coverage
 
-All projects enforce ≥90% test coverage as part of `test:quick`. Coverage is uploaded to [Codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise) on every push to `main`.
+All projects enforce ≥90% test coverage as part of `test:quick`. Coverage is uploaded to [Codecov](https://codecov.io/gh/wahidyankf/ose-public) on every push to `main`.
 
 **Quality gates**: pre-commit hooks (formatting, linting), pre-push hooks (`typecheck`, `lint`, `test:quick` for affected projects), [PR Quality Gate](./.github/workflows/pr-quality-gate.yml), and [Codecov Upload](./.github/workflows/codecov-upload.yml) on push to `main`.
 
 - OSE Platform
-  - [![Deploy](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/test-and-deploy-oseplatform-web.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/test-and-deploy-oseplatform-web.yml)
-  - [`oseplatform-web`](./apps/oseplatform-web/) [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=oseplatform-web)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise)
-  - [`oseplatform-cli`](./apps/oseplatform-cli/) [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=oseplatform-cli)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise)
+  - [![Deploy](https://github.com/wahidyankf/ose-public/actions/workflows/test-and-deploy-oseplatform-web.yml/badge.svg)](https://github.com/wahidyankf/ose-public/actions/workflows/test-and-deploy-oseplatform-web.yml)
+  - [`oseplatform-web`](./apps/oseplatform-web/) [![codecov](https://codecov.io/gh/wahidyankf/ose-public/graph/badge.svg?flag=oseplatform-web)](https://codecov.io/gh/wahidyankf/ose-public)
+  - [`oseplatform-cli`](./apps/oseplatform-cli/) [![codecov](https://codecov.io/gh/wahidyankf/ose-public/graph/badge.svg?flag=oseplatform-cli)](https://codecov.io/gh/wahidyankf/ose-public)
 - AyoKoding
-  - [![Deploy](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/test-and-deploy-ayokoding-web.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/test-and-deploy-ayokoding-web.yml)
-  - [`ayokoding-web`](./apps/ayokoding-web/) [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=ayokoding-web)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise)
-  - [`ayokoding-cli`](./apps/ayokoding-cli/) [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=ayokoding-cli)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise)
+  - [![Deploy](https://github.com/wahidyankf/ose-public/actions/workflows/test-and-deploy-ayokoding-web.yml/badge.svg)](https://github.com/wahidyankf/ose-public/actions/workflows/test-and-deploy-ayokoding-web.yml)
+  - [`ayokoding-web`](./apps/ayokoding-web/) [![codecov](https://codecov.io/gh/wahidyankf/ose-public/graph/badge.svg?flag=ayokoding-web)](https://codecov.io/gh/wahidyankf/ose-public)
+  - [`ayokoding-cli`](./apps/ayokoding-cli/) [![codecov](https://codecov.io/gh/wahidyankf/ose-public/graph/badge.svg?flag=ayokoding-cli)](https://codecov.io/gh/wahidyankf/ose-public)
 - OrganicLever
-  - [![CI](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/test-organiclever.yml/badge.svg)](https://github.com/wahidyankf/open-sharia-enterprise/actions/workflows/test-organiclever.yml)
-  - [`organiclever-fe`](./apps/organiclever-fe/) [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=organiclever-fe)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise)
-  - [`organiclever-be`](./apps/organiclever-be/) [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=organiclever-be)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise)
+  - [![CI](https://github.com/wahidyankf/ose-public/actions/workflows/test-organiclever.yml/badge.svg)](https://github.com/wahidyankf/ose-public/actions/workflows/test-organiclever.yml)
+  - [`organiclever-fe`](./apps/organiclever-fe/) [![codecov](https://codecov.io/gh/wahidyankf/ose-public/graph/badge.svg?flag=organiclever-fe)](https://codecov.io/gh/wahidyankf/ose-public)
+  - [`organiclever-be`](./apps/organiclever-be/) [![codecov](https://codecov.io/gh/wahidyankf/ose-public/graph/badge.svg?flag=organiclever-be)](https://codecov.io/gh/wahidyankf/ose-public)
 - [`rhino-cli`](./apps/rhino-cli/)
-  - [![codecov](https://codecov.io/gh/wahidyankf/open-sharia-enterprise/graph/badge.svg?flag=rhino-cli)](https://codecov.io/gh/wahidyankf/open-sharia-enterprise)
+  - [![codecov](https://codecov.io/gh/wahidyankf/ose-public/graph/badge.svg?flag=rhino-cli)](https://codecov.io/gh/wahidyankf/ose-public)
 
 For demo app CI badges, see [Demo Apps CI & Coverage](./docs/reference/demo-apps-ci-coverage.md).
 

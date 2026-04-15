@@ -10,9 +10,9 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
-	"github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin/internal/auth"
-	"github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin/internal/handler"
-	"github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin/internal/store"
+	"github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin/internal/auth"
+	"github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin/internal/handler"
+	"github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin/internal/store"
 )
 
 const testJWTSecret = "test-jwt-secret-at-least-32-chars-long"

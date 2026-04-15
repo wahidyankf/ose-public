@@ -10,7 +10,7 @@ import (
 	"testing"
 
 	"github.com/cucumber/godog"
-	"github.com/wahidyankf/open-sharia-enterprise/apps/rhino-cli/internal/contracts"
+	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/contracts"
 )
 
 var specsDirUnitContractsDartScaffold = func() string {

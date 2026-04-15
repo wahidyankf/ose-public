@@ -164,6 +164,6 @@ Continuous deployment comes after these problems are solved. No point automating
 
 Four weeks of Phase 1 complete. OrganicLever exists—frontend deployed, backend in development, testing infrastructure in place. The testing setup would be excessive for a productivity tracker, but that's the point. We're building the infrastructure, not just the app.
 
-Every commit visible on [GitHub](https://github.com/wahidyankf/open-sharia-enterprise). Platform updates published here on oseplatform.com every second Sunday. Educational content shared on [ayokoding.com](https://ayokoding.com).
+Every commit visible on [GitHub](https://github.com/wahidyankf/ose-public). Platform updates published here on oseplatform.com every second Sunday. Educational content shared on [ayokoding.com](https://ayokoding.com).
 
 We publish platform updates every second Sunday of each month. Subscribe to our RSS feed or check back regularly to follow along as Phase 1 continues, Insha Allah.

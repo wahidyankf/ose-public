@@ -10,8 +10,8 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 
-	"github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin/internal/domain"
-	"github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin/internal/store"
+	"github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin/internal/domain"
+	"github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin/internal/store"
 )
 
 func newSQLiteStore(t *testing.T) *store.GORMStore {

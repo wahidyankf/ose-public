@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin/internal/config"
+	"github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin/internal/config"
 )
 
 func mustUnsetenv(t *testing.T, key string) {

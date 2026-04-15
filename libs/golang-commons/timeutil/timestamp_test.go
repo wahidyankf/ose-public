@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/wahidyankf/open-sharia-enterprise/libs/golang-commons/timeutil"
+	"github.com/wahidyankf/ose-public/libs/golang-commons/timeutil"
 )
 
 func TestTimestamp(t *testing.T) {

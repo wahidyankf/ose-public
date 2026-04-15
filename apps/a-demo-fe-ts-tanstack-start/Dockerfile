@@ -7,7 +7,7 @@ RUN npx vite build
 
 FROM node:24-alpine
 
-LABEL org.opencontainers.image.source="https://github.com/wahidyankf/open-sharia-enterprise"
+LABEL org.opencontainers.image.source="https://github.com/wahidyankf/ose-public"
 LABEL org.opencontainers.image.description="Demo frontend built with TypeScript and TanStack Start"
 
 RUN addgroup -S app && adduser -S app -G app

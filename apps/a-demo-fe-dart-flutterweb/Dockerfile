@@ -6,7 +6,7 @@ RUN flutter build web --release
 
 FROM nginx:alpine
 
-LABEL org.opencontainers.image.source="https://github.com/wahidyankf/open-sharia-enterprise"
+LABEL org.opencontainers.image.source="https://github.com/wahidyankf/ose-public"
 LABEL org.opencontainers.image.description="Demo frontend built with Dart and Flutter Web"
 
 RUN rm /etc/nginx/conf.d/default.conf

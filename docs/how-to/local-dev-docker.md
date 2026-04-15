@@ -68,7 +68,7 @@ infra/
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/wahidyankf/open-sharia-enterprise.git
+git clone https://github.com/wahidyankf/ose-public.git
 cd open-sharia-enterprise
 ```
 

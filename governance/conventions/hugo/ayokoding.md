@@ -1987,7 +1987,7 @@ params:
   # Social media profiles
   social:
     threads: "https://www.threads.net/@wahidyankf"
-    github: "https://github.com/wahidyankf/open-sharia-enterprise"
+    github: "https://github.com/wahidyankf/ose-public"
     youtube: "https://www.youtube.com/@AyoKoding"
 ```
 

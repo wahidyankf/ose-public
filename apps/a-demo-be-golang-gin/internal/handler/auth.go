@@ -11,9 +11,9 @@ import (
 	openapi_types "github.com/oapi-codegen/runtime/types"
 	"golang.org/x/crypto/bcrypt"
 
-	contracts "github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin/generated-contracts"
-	"github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin/internal/auth"
-	"github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin/internal/domain"
+	contracts "github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin/generated-contracts"
+	"github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin/internal/auth"
+	"github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin/internal/domain"
 )
 
 const maxFailedAttempts = 5

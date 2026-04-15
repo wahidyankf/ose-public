@@ -3,15 +3,15 @@ package cmd
 import (
 	"os"
 
-	"github.com/wahidyankf/open-sharia-enterprise/apps/rhino-cli/internal/agents"
-	"github.com/wahidyankf/open-sharia-enterprise/apps/rhino-cli/internal/contracts"
-	"github.com/wahidyankf/open-sharia-enterprise/apps/rhino-cli/internal/docs"
-	"github.com/wahidyankf/open-sharia-enterprise/apps/rhino-cli/internal/doctor"
-	"github.com/wahidyankf/open-sharia-enterprise/apps/rhino-cli/internal/envbackup"
-	"github.com/wahidyankf/open-sharia-enterprise/apps/rhino-cli/internal/git"
-	"github.com/wahidyankf/open-sharia-enterprise/apps/rhino-cli/internal/java"
-	"github.com/wahidyankf/open-sharia-enterprise/apps/rhino-cli/internal/speccoverage"
-	"github.com/wahidyankf/open-sharia-enterprise/apps/rhino-cli/internal/testcoverage"
+	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/agents"
+	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/contracts"
+	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/docs"
+	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/doctor"
+	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/envbackup"
+	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/git"
+	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/java"
+	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/speccoverage"
+	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/testcoverage"
 )
 
 // OS operation function variables for dependency injection in tests.

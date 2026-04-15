@@ -1,11 +1,11 @@
-module github.com/wahidyankf/open-sharia-enterprise/apps/rhino-cli
+module github.com/wahidyankf/ose-public/apps/rhino-cli
 
 go 1.26
 
 require (
 	github.com/cucumber/godog v0.15.1
 	github.com/spf13/cobra v1.10.2
-	github.com/wahidyankf/open-sharia-enterprise/libs/golang-commons v0.0.0-00010101000000-000000000000
+	github.com/wahidyankf/ose-public/libs/golang-commons v0.0.0-00010101000000-000000000000
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -38,4 +38,4 @@ require (
 
 tool github.com/vladopajic/go-test-coverage/v2
 
-replace github.com/wahidyankf/open-sharia-enterprise/libs/golang-commons v0.0.0-00010101000000-000000000000 => ../../libs/golang-commons
+replace github.com/wahidyankf/ose-public/libs/golang-commons v0.0.0-00010101000000-000000000000 => ../../libs/golang-commons

@@ -10,7 +10,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 
-	"github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin/internal/domain"
+	"github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin/internal/domain"
 )
 
 const (

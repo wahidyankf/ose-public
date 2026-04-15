@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/wahidyankf/open-sharia-enterprise/apps/rhino-cli/internal/agents"
-	"github.com/wahidyankf/open-sharia-enterprise/apps/rhino-cli/internal/docs"
+	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/agents"
+	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/docs"
 )
 
 // --------------------------------------------------------------------------

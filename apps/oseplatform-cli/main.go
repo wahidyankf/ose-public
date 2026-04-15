@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/wahidyankf/open-sharia-enterprise/apps/oseplatform-cli/cmd"
+	"github.com/wahidyankf/ose-public/apps/oseplatform-cli/cmd"
 )
 
 func main() { cmd.Execute() }

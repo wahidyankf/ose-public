@@ -508,7 +508,7 @@ theme: PaperMod
 
 ```go
 // apps/ayokoding-cli/go.mod
-module github.com/wahidyankf/open-sharia-enterprise/apps/ayokoding-cli
+module github.com/wahidyankf/ose-public/apps/ayokoding-cli
 
 go 1.26
 ```

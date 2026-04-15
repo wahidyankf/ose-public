@@ -23,7 +23,7 @@ Execute phases in order. Each phase produces a working, committable state.
 
 - [x] Create `apps/a-demo-be-golang-gin/` directory structure per tech-docs.md
 - [x] Create `go.mod` with module path
-      `github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin` and Go 1.24
+      `github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin` and Go 1.24
 - [x] Run `go get` to add all direct dependencies from tech-docs.md Dependencies Summary
 - [x] Create minimal `cmd/server/main.go` calling `server.Run()`
 - [x] Create `internal/server/server.go` with `Run()` function reading `PORT` env var

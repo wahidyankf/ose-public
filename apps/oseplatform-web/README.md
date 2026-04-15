@@ -68,5 +68,5 @@ git push origin main:prod-oseplatform-web
 
 ## Related
 
-- [Main Repository](https://github.com/wahidyankf/open-sharia-enterprise)
+- [Main Repository](https://github.com/wahidyankf/ose-public)
 - [apps-oseplatform-web-deployer](../../.claude/agents/) - AI agent for deployments

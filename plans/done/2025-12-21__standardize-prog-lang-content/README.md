@@ -7,7 +7,7 @@
 
 ## Overview
 
-Bring all 5 programming languages in ayokoding-web (Golang, Java, Kotlin, Python, Rust) to the highest standard defined in the [Programming Language Content Standard](/Users/alami/wkf-repos/wahidyankf/open-sharia-enterprise/governance/conventions/tutorials/programming-language-content.md).
+Bring all 5 programming languages in ayokoding-web (Golang, Java, Kotlin, Python, Rust) to the highest standard defined in the [Programming Language Content Standard](/Users/alami/wkf-repos/wahidyankf/ose-public/governance/conventions/tutorials/programming-language-content.md).
 
 **Current State**: Significant quality gaps exist across languages.
 

@@ -36,7 +36,7 @@ RUN npx next build
 
 FROM node:24-alpine
 
-LABEL org.opencontainers.image.source="https://github.com/wahidyankf/open-sharia-enterprise"
+LABEL org.opencontainers.image.source="https://github.com/wahidyankf/ose-public"
 LABEL org.opencontainers.image.description="OrganicLever landing and promotional website built with Next.js"
 
 RUN addgroup -S app && adduser -S app -G app

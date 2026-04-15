@@ -15,7 +15,7 @@ Explore a range of topics on AyoKoding, from the life of a programmer and softwa
 
 ## The Connection to Open Sharia Enterprise
 
-AyoKoding has a unique relationship with a project I'm actively building: [**Open Sharia Enterprise**](https://github.com/wahidyankf/open-sharia-enterprise) - a Sharia-compliant enterprise platform that I'm developing as a source-available project with full transparency.
+AyoKoding has a unique relationship with a project I'm actively building: [**Open Sharia Enterprise**](https://github.com/wahidyankf/ose-public) - a Sharia-compliant enterprise platform that I'm developing as a source-available project with full transparency.
 
 Why does this matter to you as a reader?
 
@@ -35,7 +35,7 @@ So when you read articles on AyoKoding about system design, architectural patter
 
 ## License
 
-AyoKoding is part of the [Open Sharia Enterprise](https://github.com/wahidyankf/open-sharia-enterprise) project, which uses **per-directory licensing**. The AyoKoding website code is licensed under **FSL-1.1-MIT** (Functional Source License), which converts to MIT on a rolling basis — each commit becomes MIT-licensed 2 years after its first public distribution. Shared libraries and demo code are MIT-licensed. See [LICENSING-NOTICE.md](https://github.com/wahidyankf/open-sharia-enterprise/blob/main/LICENSING-NOTICE.md) for full details.
+AyoKoding is part of the [Open Sharia Enterprise](https://github.com/wahidyankf/ose-public) project, which uses **per-directory licensing**. The AyoKoding website code is licensed under **FSL-1.1-MIT** (Functional Source License), which converts to MIT on a rolling basis — each commit becomes MIT-licensed 2 years after its first public distribution. Shared libraries and demo code are MIT-licensed. See [LICENSING-NOTICE.md](https://github.com/wahidyankf/ose-public/blob/main/LICENSING-NOTICE.md) for full details.
 
 ## Stay Connected
 

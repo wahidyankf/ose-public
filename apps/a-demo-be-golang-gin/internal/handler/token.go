@@ -5,8 +5,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	contracts "github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin/generated-contracts"
-	"github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin/internal/auth"
+	contracts "github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin/generated-contracts"
+	"github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin/internal/auth"
 )
 
 // TokenClaims handles GET /api/v1/tokens/claims.

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/wahidyankf/open-sharia-enterprise/libs/golang-commons/timeutil"
+	"github.com/wahidyankf/ose-public/libs/golang-commons/timeutil"
 )
 
 // jsonMarshalIndent is a package-level variable for dependency injection in tests.

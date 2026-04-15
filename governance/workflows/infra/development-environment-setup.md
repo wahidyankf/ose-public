@@ -75,7 +75,7 @@ All tools checked by `rhino-cli doctor`:
 If you already have Homebrew (macOS) or apt (Linux) and Node.js/npm installed:
 
 ```bash
-git clone https://github.com/wahidyankf/open-sharia-enterprise.git
+git clone https://github.com/wahidyankf/ose-public.git
 cd open-sharia-enterprise
 npm install
 npm run doctor -- --fix          # Auto-install all missing tools
@@ -469,7 +469,7 @@ flutter doctor
 #### 11.1 Clone the repository
 
 ```bash
-git clone https://github.com/wahidyankf/open-sharia-enterprise.git
+git clone https://github.com/wahidyankf/ose-public.git
 cd open-sharia-enterprise
 ```
 

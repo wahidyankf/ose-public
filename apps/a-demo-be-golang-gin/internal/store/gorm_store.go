@@ -13,8 +13,8 @@ import (
 	"github.com/pressly/goose/v3"
 	"gorm.io/gorm"
 
-	dbmigrations "github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin/db"
-	"github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin/internal/domain"
+	dbmigrations "github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin/db"
+	"github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin/internal/domain"
 )
 
 // GORMStore is the GORM-backed implementation of Store.

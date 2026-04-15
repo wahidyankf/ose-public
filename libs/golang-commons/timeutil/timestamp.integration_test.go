@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/cucumber/godog"
-	"github.com/wahidyankf/open-sharia-enterprise/libs/golang-commons/timeutil"
+	"github.com/wahidyankf/ose-public/libs/golang-commons/timeutil"
 )
 
 var specsTimeutilDir = func() string {

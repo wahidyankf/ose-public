@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/wahidyankf/open-sharia-enterprise/apps/rhino-cli/internal/fileutil"
+	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/fileutil"
 )
 
 var (

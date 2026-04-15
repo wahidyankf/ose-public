@@ -23,7 +23,7 @@ RUN npx next build
 
 FROM node:24-alpine AS runner
 
-LABEL org.opencontainers.image.source="https://github.com/wahidyankf/open-sharia-enterprise"
+LABEL org.opencontainers.image.source="https://github.com/wahidyankf/ose-public"
 LABEL org.opencontainers.image.description="Demo fullstack application built with TypeScript and Next.js"
 
 WORKDIR /app

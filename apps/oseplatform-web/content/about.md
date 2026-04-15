@@ -191,7 +191,7 @@ This project uses **per-directory licensing**:
 
 **What is FSL-1.1-MIT?** The [Functional Source License](https://fsl.software/) is a source-available license created to balance openness with sustainable development. You can view, fork, modify, and self-host the code freely. The only restriction: you cannot use it to offer a competing commercial product in the same domain. After 2 years, each commit automatically converts to the MIT license — becoming fully open-source with no restrictions at all.
 
-Each product app has its own LICENSE file scoping the competing-use restriction to its specific domain. See [LICENSING-NOTICE.md](https://github.com/wahidyankf/open-sharia-enterprise/blob/main/LICENSING-NOTICE.md) for full details.
+Each product app has its own LICENSE file scoping the competing-use restriction to its specific domain. See [LICENSING-NOTICE.md](https://github.com/wahidyankf/ose-public/blob/main/LICENSING-NOTICE.md) for full details.
 
 ## Get Involved
 
@@ -199,10 +199,10 @@ While we're not yet accepting public contributions, you can stay connected and s
 
 ### Follow the Project
 
-- **GitHub Repository**: [open-sharia-enterprise](https://github.com/wahidyankf/open-sharia-enterprise)
+- **GitHub Repository**: [open-sharia-enterprise](https://github.com/wahidyankf/ose-public)
   - ⭐ Star the repository to show your support
   - 👀 Watch for updates and release announcements
-  - 📋 Read the [detailed roadmap](https://github.com/wahidyankf/open-sharia-enterprise/blob/main/ROADMAP.md) and planning documents
+  - 📋 Read the [detailed roadmap](https://github.com/wahidyankf/ose-public/blob/main/ROADMAP.md) and planning documents
 
 ### Learn and Explore
 
@@ -219,7 +219,7 @@ While we're not yet accepting public contributions, you can stay connected and s
 
 ## Key Resources
 
-- **Main Repository**: [github.com/wahidyankf/open-sharia-enterprise](https://github.com/wahidyankf/open-sharia-enterprise)
+- **Main Repository**: [github.com/wahidyankf/ose-public](https://github.com/wahidyankf/ose-public)
 - **Project Updates**: [oseplatform.com/updates](/updates/) - monthly, every 2nd Sunday
 - **Educational Platform**: [ayokoding.com](https://ayokoding.com)
 - **License**: FSL-1.1-MIT - source-available with 2-year rolling conversion to MIT

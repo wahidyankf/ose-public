@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin/internal/domain"
-	"github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin/internal/store"
+	"github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin/internal/domain"
+	"github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin/internal/store"
 )
 
 func makeUser(id, username string) *domain.User {

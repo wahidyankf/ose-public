@@ -52,7 +52,7 @@ Guidance for Claude Code (claude.ai/code) working with code in this repository.
 ## Project Structure
 
 ```
-open-sharia-enterprise/
+ose-public/
 ├── apps/                     # Deployable applications (Nx)
 │   ├── oseplatform-web/    # OSE Platform website
 │   ├── oseplatform-web-be-e2e/ # Playwright BE E2E tests for oseplatform-web

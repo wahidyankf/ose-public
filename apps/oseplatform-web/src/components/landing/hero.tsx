@@ -18,7 +18,7 @@ export function Hero() {
             <Link href="/about/">Learn More &rarr;</Link>
           </Button>
           <Button variant="outline" asChild>
-            <a href="https://github.com/wahidyankf/open-sharia-enterprise" target="_blank" rel="noopener noreferrer">
+            <a href="https://github.com/wahidyankf/ose-public" target="_blank" rel="noopener noreferrer">
               GitHub &rarr;
             </a>
           </Button>

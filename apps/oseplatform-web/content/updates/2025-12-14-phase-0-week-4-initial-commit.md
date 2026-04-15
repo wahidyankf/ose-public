@@ -78,7 +78,7 @@ We launched two websites to serve different but complementary purposes. oseplatf
 
 The relationship between these sites is intentional. OSE Platform is what we're building. Ayokoding is how we're sharing what we learn in the process. One is the product, the other is the knowledge transfer. Both use automated deployment pipelines to Vercel, triggered by commits to dedicated environment branches (prod-ose-platform-web and prod-ayokoding-web).
 
-Launching these websites during Phase 0 isn't premature—it's strategic. Open source creates trust, and trust requires transparency. By making our [GitHub repository](https://github.com/wahidyankf/open-sharia-enterprise) prominent on both sites and publishing progress updates like this one, we're demonstrating our commitment to building in the open. There's no smoke and mirrors, no proprietary secrets. What you see is what we're building.
+Launching these websites during Phase 0 isn't premature—it's strategic. Open source creates trust, and trust requires transparency. By making our [GitHub repository](https://github.com/wahidyankf/ose-public) prominent on both sites and publishing progress updates like this one, we're demonstrating our commitment to building in the open. There's no smoke and mirrors, no proprietary secrets. What you see is what we're building.
 
 ## Security Planning from Day One
 
@@ -112,7 +112,7 @@ Let's be clear about where we actually are. This is early Phase 0, pre-alpha, fo
 
 What we have is foundation work in progress: a monorepo architecture established, documentation infrastructure beginning to take shape, automated quality checks being configured, specialized AI agents being developed, two live websites launched, development practices being established, and security planning integrated from the start. These aren't sexy features you can demo, but they're the foundations being built that will make everything else possible.
 
-We're building this entirely in the open. Every decision, every convention, every line of code is visible on [GitHub](https://github.com/wahidyankf/open-sharia-enterprise). You can watch our progress through regular updates on oseplatform.com, follow the repository, subscribe to our RSS feed, or read the detailed research and guides we publish on [ayokoding.com](https://ayokoding.com).
+We're building this entirely in the open. Every decision, every convention, every line of code is visible on [GitHub](https://github.com/wahidyankf/ose-public). You can watch our progress through regular updates on oseplatform.com, follow the repository, subscribe to our RSS feed, or read the detailed research and guides we publish on [ayokoding.com](https://ayokoding.com).
 
 This transparency is intentional. Open source creates trust. Building in public enables collaboration. Sharing our research helps others avoid the mistakes we've already made. We believe this approach produces better software and builds stronger communities.
 

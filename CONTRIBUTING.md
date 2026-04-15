@@ -61,8 +61,8 @@ After installation, restart your terminal and Volta will automatically manage No
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/wahidyankf/open-sharia-enterprise.git
-   cd open-sharia-enterprise
+   git clone https://github.com/wahidyankf/ose-public.git
+   cd ose-public
    ```
 
 2. **Install dependencies**:
@@ -97,7 +97,7 @@ After installation, restart your terminal and Volta will automatically manage No
 This is an **Nx monorepo** with the following structure:
 
 ```
-open-sharia-enterprise/
+ose-public/
 ├── apps/           # Deployable applications
 │   └── [app-name]/ # Individual apps
 ├── libs/           # Reusable libraries

@@ -24,7 +24,7 @@ RUN cd apps/ayokoding-web && npm run build
 
 FROM node:24-alpine AS runner
 
-LABEL org.opencontainers.image.source="https://github.com/wahidyankf/open-sharia-enterprise"
+LABEL org.opencontainers.image.source="https://github.com/wahidyankf/ose-public"
 LABEL org.opencontainers.image.description="AyoKoding educational content platform built with Next.js"
 
 WORKDIR /app

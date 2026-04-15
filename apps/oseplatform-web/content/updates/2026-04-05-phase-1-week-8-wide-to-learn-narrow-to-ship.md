@@ -589,6 +589,6 @@ The polyglot foundation is laid. The platforms are migrated. The licensing is se
 
 Eight weeks of Phase 1 complete. Eleven backends across ten languages, three frontends, two platform migrations, one license change. The tech stack is chosen. The infrastructure designed in Phase 0 and stress-tested in early Phase 1 carried the load. Now the focus shifts from proving the platform to building on it.
 
-Every commit visible on [GitHub](https://github.com/wahidyankf/open-sharia-enterprise). Platform updates published here on oseplatform.com. Educational content shared on [ayokoding.com](https://ayokoding.com).
+Every commit visible on [GitHub](https://github.com/wahidyankf/ose-public). Platform updates published here on oseplatform.com. Educational content shared on [ayokoding.com](https://ayokoding.com).
 
 We publish platform updates every first weekend of each month. Subscribe to our RSS feed or check back regularly to follow along as Phase 1 continues, Insha Allah.

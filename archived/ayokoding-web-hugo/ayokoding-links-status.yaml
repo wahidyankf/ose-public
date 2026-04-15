@@ -452,10 +452,10 @@ links:
       - content/en/learn/software-engineering/programming-languages/rust/tutorials/beginner.md
       - content/en/learn/software-engineering/programming-languages/rust/tutorials/quick-start.md
 
-  - url: https://github.com/wahidyankf/open-sharia-enterprise
+  - url: https://github.com/wahidyankf/ose-public
     lastChecked: "2025-12-27T10:13:32+07:00"
     statusCode: 200
-    finalUrl: https://github.com/wahidyankf/open-sharia-enterprise
+    finalUrl: https://github.com/wahidyankf/ose-public
     redirectChain: null
     usedIn:
       - content/en/about-ayokoding.md

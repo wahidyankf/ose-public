@@ -5,10 +5,10 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 
-	"github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin/internal/auth"
-	"github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin/internal/config"
-	"github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin/internal/handler"
-	"github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin/internal/store"
+	"github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin/internal/auth"
+	"github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin/internal/config"
+	"github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin/internal/handler"
+	"github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin/internal/store"
 )
 
 // NewRouter builds and returns the Gin engine with all routes registered.

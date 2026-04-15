@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/wahidyankf/open-sharia-enterprise/apps/rhino-cli/internal/agents"
+	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/agents"
 )
 
 var (

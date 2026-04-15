@@ -78,12 +78,12 @@ params:
       - **Community-Driven** - Built with input from developers, Islamic finance experts, and enterprise users
 
 
-      Currently in pre-alpha development. [View on GitHub](https://github.com/wahidyankf/open-sharia-enterprise) · [Learn More](/about/)
+      Currently in pre-alpha development. [View on GitHub](https://github.com/wahidyankf/ose-public) · [Learn More](/about/)
 
   # Social icons
   socialIcons:
     - name: github
-      url: "https://github.com/wahidyankf/open-sharia-enterprise"
+      url: "https://github.com/wahidyankf/ose-public"
     - name: rss
       url: "/index.xml"
 
@@ -100,7 +100,7 @@ params:
 
   # Edit post button
   # editPost:
-  #   URL: "https://github.com/wahidyankf/open-sharia-enterprise/tree/main/apps/oseplatform-web/content"
+  #   URL: "https://github.com/wahidyankf/ose-public/tree/main/apps/oseplatform-web/content"
   #   Text: "Suggest Changes"
   #   appendFilePath: true
 
@@ -112,7 +112,7 @@ params:
 
   # Footer
   footer:
-    text: "Open Sharia Enterprise Platform · [MIT License](https://github.com/wahidyankf/open-sharia-enterprise/blob/main/LICENSE) · [AyoKoding](https://ayokoding.com)"
+    text: "Open Sharia Enterprise Platform · [MIT License](https://github.com/wahidyankf/ose-public/blob/main/LICENSE) · [AyoKoding](https://ayokoding.com)"
 
 # Menu
 menu:
@@ -127,11 +127,11 @@ menu:
       weight: 20
     - identifier: docs
       name: Documentation
-      url: https://github.com/wahidyankf/open-sharia-enterprise/tree/main/docs
+      url: https://github.com/wahidyankf/ose-public/tree/main/docs
       weight: 30
     - identifier: github
       name: GitHub
-      url: https://github.com/wahidyankf/open-sharia-enterprise
+      url: https://github.com/wahidyankf/ose-public
       weight: 40
 
 # Markup settings

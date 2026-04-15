@@ -1008,7 +1008,7 @@ test("test in file 1", async ({ page }) => {
 
 ---
 
-**File**: `/home/wkf/wkf-repos/wahidyankf/open-sharia-enterprise/apps/ayokoding-web/content/en/learn/software-engineering/automation-testing/tools/playwright/in-the-field/test-isolation.md`
+**File**: `/home/wkf/wkf-repos/wahidyankf/ose-public/apps/ayokoding-web/content/en/learn/software-engineering/automation-testing/tools/playwright/in-the-field/test-isolation.md`
 
 **Key implementation details**:
 

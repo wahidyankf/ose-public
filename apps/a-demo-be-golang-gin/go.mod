@@ -1,4 +1,4 @@
-module github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin
+module github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin
 
 go 1.25.0
 

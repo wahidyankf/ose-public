@@ -10,7 +10,7 @@ RUN mvn clean package -DskipTests -Dmaven.antrun.skip=true -B
 # Stage 2: Runtime
 FROM eclipse-temurin:25-jre-alpine
 
-LABEL org.opencontainers.image.source="https://github.com/wahidyankf/open-sharia-enterprise"
+LABEL org.opencontainers.image.source="https://github.com/wahidyankf/ose-public"
 LABEL org.opencontainers.image.description="Demo backend REST API built with Java and Spring Boot"
 
 RUN addgroup -S app && adduser -S app -G app

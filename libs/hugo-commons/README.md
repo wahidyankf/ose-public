@@ -32,7 +32,7 @@ Hugo-specific behavior:
 Import via the Go workspace replace directive:
 
 ```go
-import "github.com/wahidyankf/open-sharia-enterprise/libs/hugo-commons/links"
+import "github.com/wahidyankf/ose-public/libs/hugo-commons/links"
 ```
 
 ## Development

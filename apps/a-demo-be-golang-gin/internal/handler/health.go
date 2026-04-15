@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	contracts "github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin/generated-contracts"
+	contracts "github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin/generated-contracts"
 )
 
 // Health handles GET /health.

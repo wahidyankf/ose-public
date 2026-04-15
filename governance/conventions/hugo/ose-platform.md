@@ -353,7 +353,7 @@ params:
 
   socialIcons:
     - name: github
-      url: "https://github.com/wahidyankf/open-sharia-enterprise"
+      url: "https://github.com/wahidyankf/ose-public"
     - name: twitter
       url: "https://twitter.com/oseplatform"
 ```

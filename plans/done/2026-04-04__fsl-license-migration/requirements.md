@@ -162,7 +162,7 @@ Feature: Repository is licensed under FSL-1.1-MIT
     Then project-specific license fields show FSL-1.1-MIT
 
   Scenario: GitHub repository description says source-available
-    Given the GitHub repository wahidyankf/open-sharia-enterprise
+    Given the GitHub repository wahidyankf/ose-public
     When I check the repository description
     Then it contains "Source-available" (not "Open-source")
 

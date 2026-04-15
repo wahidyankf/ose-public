@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/wahidyankf/open-sharia-enterprise/libs/golang-commons/testutil"
+	"github.com/wahidyankf/ose-public/libs/golang-commons/testutil"
 )
 
 func TestOutputLinksText_Quiet(t *testing.T) {

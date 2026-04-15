@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/wahidyankf/open-sharia-enterprise/apps/a-demo-be-golang-gin/internal/domain"
+	"github.com/wahidyankf/ose-public/apps/a-demo-be-golang-gin/internal/domain"
 )
 
 // ListUsersQuery defines filtering and pagination options for listing users.

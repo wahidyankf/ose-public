@@ -12,7 +12,7 @@ import (
 	"testing"
 
 	"github.com/cucumber/godog"
-	"github.com/wahidyankf/open-sharia-enterprise/libs/hugo-commons/links"
+	"github.com/wahidyankf/ose-public/libs/hugo-commons/links"
 )
 
 var specsDirUnitLinksCheck = func() string {

@@ -1,5 +1,5 @@
 ---
-name: swe-golang-developer
+name: swe-golang-dev
 description: Develops Go applications following simplicity principles, concurrency patterns, and platform coding standards. Use when implementing Go code for OSE Platform.
 tools: Read, Write, Edit, Glob, Grep, Bash
 model:

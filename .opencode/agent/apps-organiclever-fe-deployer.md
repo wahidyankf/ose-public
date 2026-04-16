@@ -141,7 +141,7 @@ git pull origin main
 
 **Related Agents**:
 
-- `swe-typescript-developer` - Develops organiclever-fe Next.js code
+- `swe-typescript-dev` - Develops organiclever-fe Next.js code
 
 **Related Conventions**:
 

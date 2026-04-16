@@ -1,13 +1,9 @@
 ---
+name: swe-e2e-test-dev
 description: Develops end-to-end tests using Playwright following OSE Platform testing patterns and standards. Use when implementing E2E tests for OSE Platform applications.
-model: zai-coding-plan/glm-5.1
-tools:
-  bash: true
-  edit: true
-  glob: true
-  grep: true
-  read: true
-  write: true
+tools: Read, Write, Edit, Glob, Grep, Bash
+model: sonnet
+color: purple
 skills:
   - swe-developing-e2e-test-with-playwright
   - swe-developing-applications-common
@@ -211,7 +207,7 @@ test("murabaha contract creation workflow", async ({ page }) => {
 
 **Related Agents**:
 
-- `swe-typescript-developer` - Develops TypeScript application code
+- `swe-typescript-dev` - Develops TypeScript application code
 - `plan-executor` - Executes project plans systematically
 - `docs-maker` - Creates documentation for test coverage
 

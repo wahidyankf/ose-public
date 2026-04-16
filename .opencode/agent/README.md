@@ -138,22 +138,22 @@
 
 **Language Developers**:
 
-- **swe-clojure-developer** - Clojure application development
-- **swe-csharp-developer** - C# application development
-- **swe-dart-developer** - Dart application development
-- **swe-elixir-developer** - Elixir application development
-- **swe-fsharp-developer** - F# application development
-- **swe-golang-developer** - Go application development
-- **swe-hugo-developer** - Hugo site development (theme customization, templates)
-- **swe-java-developer** - Java application development
-- **swe-kotlin-developer** - Kotlin application development
-- **swe-python-developer** - Python application development
-- **swe-rust-developer** - Rust application development
-- **swe-typescript-developer** - TypeScript application development
+- **swe-clojure-dev** - Clojure application development
+- **swe-csharp-dev** - C# application development
+- **swe-dart-dev** - Dart application development
+- **swe-elixir-dev** - Elixir application development
+- **swe-fsharp-dev** - F# application development
+- **swe-golang-dev** - Go application development
+- **swe-hugo-dev** - Hugo site development (theme customization, templates)
+- **swe-java-dev** - Java application development
+- **swe-kotlin-dev** - Kotlin application development
+- **swe-python-dev** - Python application development
+- **swe-rust-dev** - Rust application development
+- **swe-typescript-dev** - TypeScript application development
 
 **Specialized**:
 
-- **swe-e2e-test-developer** - E2E testing with Playwright
+- **swe-e2e-test-dev** - E2E testing with Playwright
 - **swe-code-checker** - Validates projects against platform coding standards
 
 ## Agent Usage

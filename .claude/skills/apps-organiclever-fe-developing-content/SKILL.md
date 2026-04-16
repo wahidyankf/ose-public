@@ -430,8 +430,8 @@ export default function Counter() {
 **Related Agents**:
 
 - `apps-organiclever-fe-deployer` - Deploys organiclever-fe to production
-- `swe-typescript-developer` - TypeScript/Next.js development
-- `swe-e2e-test-developer` - E2E testing with Playwright
+- `swe-typescript-dev` - TypeScript/Next.js development
+- `swe-e2e-test-dev` - E2E testing with Playwright
 
 ---
 

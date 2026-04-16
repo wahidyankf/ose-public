@@ -56,7 +56,7 @@ Specialized agents organized into families:
 3. **Project Planning**: `plan-maker`, `plan-checker`, `plan-executor`, `plan-execution-checker`, `plan-fixer`
 4. **AyoKoding Web Content**: Bilingual content creators, validators, deployers (includes in-the-field agents: `apps-ayokoding-web-in-the-field-maker`, `apps-ayokoding-web-in-the-field-checker`, `apps-ayokoding-web-in-the-field-fixer`)
 5. **Web Content - oseplatform-web**: Landing page content creators, validators, deployers (migrated from Hugo to Next.js 16)
-6. **Software Engineering & Specialized**: `agent-maker`, `swe-code-checker`, `swe-ui-maker`, `swe-ui-checker`, `swe-ui-fixer`, `swe-clojure-developer`, `swe-csharp-developer`, `swe-dart-developer`, `swe-e2e-test-developer`, `swe-elixir-developer`, `swe-fsharp-developer`, `swe-golang-developer`, `swe-hugo-developer` (DEPRECATED), `swe-java-developer`, `swe-kotlin-developer`, `swe-python-developer`, `swe-rust-developer`, `swe-typescript-developer`, `social-linkedin-post-maker`, `apps-organiclever-fe-deployer`
+6. **Software Engineering & Specialized**: `agent-maker`, `swe-code-checker`, `swe-ui-maker`, `swe-ui-checker`, `swe-ui-fixer`, `swe-clojure-dev`, `swe-csharp-dev`, `swe-dart-dev`, `swe-e2e-test-dev`, `swe-elixir-dev`, `swe-fsharp-dev`, `swe-golang-dev`, `swe-hugo-dev` (DEPRECATED), `swe-java-dev`, `swe-kotlin-dev`, `swe-python-dev`, `swe-rust-dev`, `swe-typescript-dev`, `social-linkedin-post-maker`, `apps-organiclever-fe-deployer`
 7. **Repository Governance**: `repo-governance-maker`, `repo-governance-checker`, `repo-governance-fixer`, `repo-workflow-maker`, `repo-workflow-checker`, `repo-workflow-fixer`
 8. **Specs Validation**: `specs-maker`, `specs-checker`, `specs-fixer`
 9. **CI/CD**: `ci-checker`, `ci-fixer`

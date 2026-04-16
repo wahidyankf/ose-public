@@ -84,7 +84,7 @@ Model selection directly affects agent quality, latency, and resource efficiency
 
 ```yaml
 ---
-name: swe-typescript-developer
+name: swe-typescript-dev
 description: Expert TypeScript/Node.js developer...
 tools: [Read, Write, Edit, Glob, Grep, Bash]
 color: purple
@@ -114,7 +114,7 @@ Note: `model` field is omitted — inherits opus tier (creative reasoning, code 
 - **social-linkedin-post-maker** -- generates social media posts following a defined template and tone guidelines
 - **Structured makers** -- makers with tight, well-defined skills that pin down most decisions, making them rule-following rather than open-ended creation (docs-maker, readme-maker, agent-maker, specs-maker, repo-workflow-maker, apps-oseplatform-web-content-maker)
 - **plan-executor** -- executes pre-authored delivery checklists step-by-step with per-step validation; the creative planning decisions were already made by opus-tier plan-maker
-- **swe-e2e-test-developer** -- writes Playwright E2E tests following a dedicated skill with defined patterns (locators, fixtures, waits); lower stakes than production code written by language developer agents
+- **swe-e2e-test-dev** -- writes Playwright E2E tests following a dedicated skill with defined patterns (locators, fixtures, waits); lower stakes than production code written by language developer agents
 
 **Frontmatter**: Specify `model: sonnet` explicitly.
 
@@ -273,7 +273,7 @@ The plan-executor uses sonnet despite being a "purple" implementor. It follows p
 
 ### E2E Test Developer as Sonnet
 
-The swe-e2e-test-developer uses sonnet despite the other 12 language developer agents being opus. Playwright E2E tests are pattern-driven (locators, fixtures, waits) with a dedicated skill, and test code regressions surface fast in CI. Production application code written by the language developers has higher stakes and unforgiving idioms, justifying their continued opus tier.
+The swe-e2e-test-dev uses sonnet despite the other 12 language developer agents being opus. Playwright E2E tests are pattern-driven (locators, fixtures, waits) with a dedicated skill, and test code regressions surface fast in CI. Production application code written by the language developers has higher stakes and unforgiving idioms, justifying their continued opus tier.
 
 ### File Manager as Haiku
 

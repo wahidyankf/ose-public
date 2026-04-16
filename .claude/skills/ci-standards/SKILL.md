@@ -6,7 +6,7 @@ context: inline
 
 # CI Standards
 
-Inline skill providing CI/CD standards knowledge from the governance documentation. Used by `swe-*-developer` agents to set up new projects correctly and by `ci-checker`/`ci-fixer` agents to validate compliance.
+Inline skill providing CI/CD standards knowledge from the governance documentation. Used by `swe-*-dev` agents to set up new projects correctly and by `ci-checker`/`ci-fixer` agents to validate compliance.
 
 ## Reference Documents
 

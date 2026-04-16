@@ -1,5 +1,5 @@
 ---
-name: swe-kotlin-developer
+name: swe-kotlin-dev
 description: Develops Kotlin applications following null safety principles, coroutine patterns, and platform coding standards. Use when implementing Kotlin code for OSE Platform.
 tools: Read, Write, Edit, Glob, Grep, Bash
 model:

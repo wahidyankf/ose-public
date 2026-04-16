@@ -307,9 +307,9 @@ Each finding follows the standard format:
 
 **Related Agents**:
 
-- `swe-golang-developer` - Go development (implements standards this agent checks)
-- `swe-typescript-developer` - TypeScript development
-- `swe-java-developer` - Java development
+- `swe-golang-dev` - Go development (implements standards this agent checks)
+- `swe-typescript-dev` - TypeScript development
+- `swe-java-dev` - Java development
 - `repo-governance-checker` - Repository-wide governance validation
 
 **Skills**:

@@ -1,10 +1,10 @@
 ---
-description: DEPRECATED - No active Hugo sites remain. Formerly developed Hugo sites (oseplatform-web). oseplatform-web migrated to Next.js 16.
-model: zai-coding-plan/glm-5.1
-tools:
-  glob: true
-  grep: true
-  read: true
+name: swe-hugo-dev
+description: "DEPRECATED - No active Hugo sites remain. Formerly developed Hugo sites (oseplatform-web). oseplatform-web migrated to Next.js 16."
+tools: Read, Glob, Grep
+model:
+color: purple
+skills: []
 ---
 
 # Hugo Developer Agent - DEPRECATED
@@ -38,4 +38,4 @@ Theme customization, template development, build optimization, deployment config
 **Related Agents**:
 
 - `apps-oseplatform-web-content-maker` - Creates oseplatform-web content (now Next.js)
-- `swe-typescript-developer` - Develops Next.js applications (current framework for former Hugo sites)
+- `swe-typescript-dev` - Develops Next.js applications (current framework for former Hugo sites)

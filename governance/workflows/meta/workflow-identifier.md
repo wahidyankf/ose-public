@@ -226,7 +226,7 @@ Steps execute one after another. Later steps can reference outputs from earlier 
 ```markdown
 ### 1. Build Project (Sequential)
 
-**Agent**: `swe-typescript-developer`
+**Agent**: `swe-typescript-dev`
 
 - **Args**: `action: build, project: ayokoding-web`
 - **Output**: `{build-artifacts}`

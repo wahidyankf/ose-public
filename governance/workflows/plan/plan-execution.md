@@ -97,17 +97,17 @@ The executor selects the best agent for each delivery checklist item using these
 in priority order:
 
 1. **Match by project/app name**: If the checklist item names a specific app (e.g.,
-   `a-demo-be-java-vertx`), use the agent for that app's language (e.g., `swe-java-developer`).
+   `a-demo-be-java-vertx`), use the agent for that app's language (e.g., `swe-java-dev`).
    Refer to [CLAUDE.md](../../../CLAUDE.md) for the full app list and their tech stacks.
 
 2. **Match by file extension**: If the item references files with a recognizable extension (`.ts`,
    `.java`, `.py`, `.go`, `.kt`, `.fs`, `.cs`, `.clj`, `.ex`, `.rs`, `.dart`), use the
-   corresponding `swe-{language}-developer` agent.
+   corresponding `swe-{language}-dev` agent.
 
 3. **Match by content type**: If the item involves documentation (`docs/`, `README.md`),
    governance (`governance/`), specs (`specs/`), or E2E tests (`*-e2e`, Playwright), use the
    appropriate content agent (`docs-maker`, `repo-governance-maker`, `readme-maker`,
-   `specs-maker`, `swe-e2e-test-developer`).
+   `specs-maker`, `swe-e2e-test-dev`).
 
 4. **Match by framework/tool keywords**: If the item mentions a framework (Spring Boot, Ktor,
    FastAPI, Gin, Phoenix, Giraffe, Axum, Pedestal, Hugo, Next.js, Flutter), use the agent for
@@ -527,7 +527,7 @@ User: "Execute plan plans/in-progress/2025-01-15__new-feature/plan.md"
 The AI will invoke specialized agents via the Agent tool (default max 10 iterations):
 
 - Read delivery checklist and create tasks (`plan-executor` as orchestrator)
-- Delegate each item to the appropriate specialized agent (e.g., `swe-typescript-developer`)
+- Delegate each item to the appropriate specialized agent (e.g., `swe-typescript-dev`)
 - Tick checkboxes progressively as each item completes
 - Validate implementation (`plan-execution-checker` subagent)
 - Iterate until zero findings and all deliverables complete
@@ -577,22 +577,22 @@ Step 1: Load checklist — 12 items across 3 phases, 12 tasks created
 
 Step 2: Execute all items sequentially
   Phase 1 (Infrastructure):
-    Item 1 → swe-typescript-developer → checkbox ticked
-    Item 2 → swe-typescript-developer → checkbox ticked
+    Item 1 → swe-typescript-dev → checkbox ticked
+    Item 2 → swe-typescript-dev → checkbox ticked
     Item 3 → docs-maker              → checkbox ticked
   Phase 2 (Implementation):
-    Item 4 → swe-typescript-developer → checkbox ticked
-    Item 5 → swe-e2e-test-developer   → checkbox ticked
-    Item 6 → swe-golang-developer     → checkbox ticked
+    Item 4 → swe-typescript-dev → checkbox ticked
+    Item 5 → swe-e2e-test-dev   → checkbox ticked
+    Item 6 → swe-golang-dev     → checkbox ticked
     ...and so on without stopping between phases
 
 Step 3: Validate → 4 findings (quality issues, missing tests)
 
 Step 5: Address findings
-  Finding 1 → swe-typescript-developer → resolved
-  Finding 2 → swe-e2e-test-developer   → resolved
+  Finding 1 → swe-typescript-dev → resolved
+  Finding 2 → swe-e2e-test-dev   → resolved
   Finding 3 → docs-maker               → resolved
-  Finding 4 → swe-typescript-developer → resolved
+  Finding 4 → swe-typescript-dev → resolved
 
 Step 6: Re-validate → 0 findings
 

@@ -76,19 +76,19 @@ This directory contains specialized AI agents for the open-sharia-enterprise pro
 
 ### 💻 Development
 
-- **swe-clojure-developer** - Clojure application development
-- **swe-csharp-developer** - C# application development
-- **swe-dart-developer** - Dart application development
-- **swe-e2e-test-developer** - E2E testing with Playwright
-- **swe-elixir-developer** - Elixir application development
-- **swe-fsharp-developer** - F# application development
-- **swe-golang-developer** - Go application development
-- **swe-hugo-developer** - **DEPRECATED** -- No active Hugo sites remain (formerly oseplatform-web)
-- **swe-java-developer** - Java application development
-- **swe-kotlin-developer** - Kotlin application development
-- **swe-python-developer** - Python application development
-- **swe-rust-developer** - Rust application development
-- **swe-typescript-developer** - TypeScript application development
+- **swe-clojure-dev** - Clojure application development
+- **swe-csharp-dev** - C# application development
+- **swe-dart-dev** - Dart application development
+- **swe-e2e-test-dev** - E2E testing with Playwright
+- **swe-elixir-dev** - Elixir application development
+- **swe-fsharp-dev** - F# application development
+- **swe-golang-dev** - Go application development
+- **swe-hugo-dev** - **DEPRECATED** -- No active Hugo sites remain (formerly oseplatform-web)
+- **swe-java-dev** - Java application development
+- **swe-kotlin-dev** - Kotlin application development
+- **swe-python-dev** - Python application development
+- **swe-rust-dev** - Rust application development
+- **swe-typescript-dev** - TypeScript application development
 
 ## Agent Format (Claude Code)
 

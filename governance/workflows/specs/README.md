@@ -24,7 +24,7 @@ These workflows define **WHEN and HOW to validate specifications**, orchestratin
 
 ## Workflows
 
-- [Specs Validation](./specs-validation.md) - Validate explicitly listed specs/ folders for structural completeness, content accuracy, cross-spec consistency, and C4 diagram correctness. Supports four strictness modes (lax, normal, strict, ocd)
+- [Specs Validation](./specs-quality-gate.md) - Validate explicitly listed specs/ folders for structural completeness, content accuracy, cross-spec consistency, and C4 diagram correctness. Supports four strictness modes (lax, normal, strict, ocd)
 
 ## Related Documentation
 

@@ -120,6 +120,16 @@ npx nx affected -t typecheck lint test:quick spec-coverage
 
 Then push again — the cached results make the second run fast.
 
+After the baseline gate, the hook conditionally runs the naming validators when the push range
+touches the relevant trees:
+
+- `nx run rhino-cli:validate:naming-agents` — fires when `.claude/agents/**` or `.opencode/agent/**` changed
+- `nx run rhino-cli:validate:naming-workflows` — fires when `governance/workflows/**` changed
+
+Both are cacheable, so no-op pushes pay near-zero cost. The CI quality-gate workflow also runs
+both targets unconditionally on every PR against `main` to catch drift from hand-edited files
+that bypassed the local hook.
+
 ## Nx Target Naming and Caching Rules
 
 This document uses the canonical target names defined in [Nx Target Standards](./nx-targets.md).

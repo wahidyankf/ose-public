@@ -7,3 +7,16 @@ set -e
 PARALLEL=$(( $(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4) - 1 ))
 npx nx affected -t typecheck lint test:quick spec-coverage --parallel="$PARALLEL"
 npm run lint:md
+
+# Naming validators — scoped to pushes that touch the relevant trees.
+# Upstream may be missing on first push of a branch; default to empty range in that case.
+RANGE=$(git rev-parse --abbrev-ref --symbolic-full-name @{u} >/dev/null 2>&1 && echo "@{u}..HEAD" || echo "")
+if [ -n "$RANGE" ]; then
+  CHANGED=$(git diff --name-only "$RANGE" 2>/dev/null || echo "")
+  if echo "$CHANGED" | grep -qE '^(\.claude/agents/|\.opencode/agent/)'; then
+    npx nx run rhino-cli:validate:naming-agents
+  fi
+  if echo "$CHANGED" | grep -qE '^governance/workflows/'; then
+    npx nx run rhino-cli:validate:naming-workflows
+  fi
+fi

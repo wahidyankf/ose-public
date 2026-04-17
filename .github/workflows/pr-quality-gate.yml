@@ -229,9 +229,19 @@ jobs:
       - uses: ./.github/actions/setup-node
       - run: npm run lint:md
 
+  naming:
+    name: Naming validators (agents + workflows)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-golang
+      - run: npx nx run rhino-cli:validate:naming-agents
+      - run: npx nx run rhino-cli:validate:naming-workflows
+
   quality-gate:
     name: Quality gate
-    needs: [detect, format, typescript, golang, jvm, dotnet, python, rust, elixir, clojure, dart, markdown]
+    needs: [detect, format, typescript, golang, jvm, dotnet, python, rust, elixir, clojure, dart, markdown, naming]
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -239,7 +249,7 @@ jobs:
         run: |
           echo "Checking quality gate results..."
           FAILED=false
-          for job in typescript golang jvm dotnet python rust elixir clojure dart markdown; do
+          for job in typescript golang jvm dotnet python rust elixir clojure dart markdown naming; do
             RESULT="${{ toJSON(needs) }}"
             # A skipped job is OK (language not affected). Only failure blocks.
           done

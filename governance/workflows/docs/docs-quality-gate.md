@@ -590,7 +590,7 @@ Result: SUCCESS (3 iterations)
 
 This workflow can be composed with:
 
-- **Repository Rules Validation** (`repository-rules-validation`) - Validate after docs changes affect repository consistency
+- **Repository Rules Validation** (`repo-rules-quality-gate`) - Validate after docs changes affect repository consistency
 - Deployment workflows - Validate before deploying documentation sites
 - Content creation workflows - Validate after bulk documentation creation
 - Migration workflows - Ensure quality during documentation restructuring

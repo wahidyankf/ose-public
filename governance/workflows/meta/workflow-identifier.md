@@ -209,7 +209,7 @@ All workflow files follow the plain-name pattern (no prefix), organized by subdi
 
 **Examples**:
 
-- `repository-rules-validation.md` (in `governance/workflows/repository/`)
+- `repo-rules-quality-gate.md` (in `governance/workflows/repo/`)
 - `plan-quality-gate.md` (in `governance/workflows/plan/`)
 - `quality-gate.md` (in `governance/workflows/docs/`)
 
@@ -454,7 +454,7 @@ A specialized workflow pattern that achieves **perfect quality state** by fixing
 
 **When to use**:
 
-- Repository-wide validation (repository-rules-validation)
+- Repository-wide validation (repo-rules-quality-gate)
 - Content quality assurance (plan-quality-gate, ayokoding-web-content-quality-gate)
 - Pre-release quality gates
 - Periodic health checks
@@ -705,7 +705,7 @@ Applies mode-based fixing with iteration limits.
 
 ### Example Implementation
 
-See [Repository Rules Validation Workflow](../repository/repository-rules-validation.md) for canonical implementation.
+See [Repository Rules Validation Workflow](../repo/repo-rules-quality-gate.md) for canonical implementation.
 
 ### Key Differences from Basic Validation Workflow
 

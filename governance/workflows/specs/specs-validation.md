@@ -379,9 +379,9 @@ Result: SUCCESS (3 iterations, 3 below-threshold findings reported)
 
 ## Related Workflows
 
-- [Repository Rules Validation](../repository/repository-rules-validation.md) — Validates
+- [Repository Rules Validation](../repo/repo-rules-quality-gate.md) — Validates
   governance layer consistency (principles, conventions, development practices)
-- [Docs Quality Gate](../docs/quality-gate.md) — Validates documentation quality
+- [Docs Quality Gate](../docs/docs-quality-gate.md) — Validates documentation quality
 - [Plan Quality Gate](../plan/plan-quality-gate.md) — Validates plan completeness
 
 ## Notes

@@ -24,7 +24,7 @@ These workflows define **WHEN and HOW to validate documentation**, orchestrating
 
 ## Workflows
 
-- [Documentation Quality Gate](./quality-gate.md) - Validate all docs/ content quality (factual accuracy, pedagogical structure, link validity), apply fixes iteratively until ZERO findings
+- [Documentation Quality Gate](./docs-quality-gate.md) - Validate all docs/ content quality (factual accuracy, pedagogical structure, link validity), apply fixes iteratively until ZERO findings
 - [Documentation Software Engineering Separation Quality Gate](./docs-software-engineering-separation-quality-gate.md) - Validate software engineering documentation separation, apply fixes iteratively until ZERO findings
 
 ## Related Documentation

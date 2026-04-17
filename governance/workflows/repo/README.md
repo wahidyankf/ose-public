@@ -23,7 +23,7 @@ These workflows define **WHEN and HOW to validate repository rules**, orchestrat
 
 ## Workflows
 
-- [Repository Rules Validation](./repository-rules-validation.md) - Validate repository consistency across all layers (principles, conventions, development, agents) and apply fixes iteratively until ZERO findings. Supports four strictness modes (lax, normal, strict, ocd)
+- [Repository Rules Validation](./repo-rules-quality-gate.md) - Validate repository consistency across all layers (principles, conventions, development, agents) and apply fixes iteratively until ZERO findings. Supports four strictness modes (lax, normal, strict, ocd)
 
 ## Related Documentation
 

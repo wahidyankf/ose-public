@@ -652,14 +652,14 @@ This workflow can be composed with:
 - **plan-quality-gate**: Validate plan quality before executing (recommended pre-step)
 - Content creation workflows: Execute content-focused plans
 - Release workflows: Execute release plans with deployment
-- **repository-rules-validation**: Validate repository consistency after plan execution
+- **repo-rules-quality-gate**: Validate repository consistency after plan execution
 
 **Recommended Workflow Sequence**:
 
 ```
 1. plan-quality-gate → Validate plan completeness and accuracy
 2. plan-execution    → Execute validated plan
-3. repository-rules-validation → Ensure repository consistency
+3. repo-rules-quality-gate → Ensure repository consistency
 ```
 
 ## Success Metrics

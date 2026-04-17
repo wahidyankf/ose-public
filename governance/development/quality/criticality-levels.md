@@ -31,7 +31,7 @@ This convention establishes a universal **four-level criticality system** (CRITI
 
 **Problem**: Seven different severity classification systems existed across checker agents, causing confusion and inconsistency:
 
-- `repo-governance-checker`: Critical/Important/Minor
+- `repo-rules-checker`: Critical/Important/Minor
 - `apps-ayokoding-web-general-checker`: Must Fix/Warnings/Suggestions
 - `readme-checker`: High/Medium/Low Priority
 - `docs-checker`: [Verified]/[Error]/[Outdated] (verification-based, NOT severity)
@@ -628,7 +628,7 @@ Update link to current documentation URL or find alternative resource
 
 ## Domain-Specific Examples
 
-### Repository Governance (repo-governance-checker)
+### Repository Governance (repo-rules-checker)
 
 **CRITICAL**:
 
@@ -1086,7 +1086,7 @@ def determine_priority(criticality, confidence):
 
 **Source Audit**: repo-rules**a1b2c3**2025-12-27--10-30\_\_audit.md
 **Fix Date**: 2025-12-27T11:15:00+07:00
-**Fixer Version**: repo-governance-fixer v2.0
+**Fixer Version**: repo-rules-fixer v2.0
 
 ---
 
@@ -1366,9 +1366,9 @@ Existing agents using different terminology should migrate to this convention.
 
 ### Phase 2: Pilot Agent (Week 2)
 
-1. Update `repo-governance-checker` to use CRITICAL/HIGH/MEDIUM/LOW sections
+1. Update `repo-rules-checker` to use CRITICAL/HIGH/MEDIUM/LOW sections
 2. Test report generation with standardized format
-3. Validate that `repo-governance-fixer` correctly interprets new format
+3. Validate that `repo-rules-fixer` correctly interprets new format
 4. Identify any issues before broader rollout
 
 ### Phase 3: Checker Agent Families (Week 2-3)
@@ -1389,7 +1389,7 @@ Existing agents using different terminology should migrate to this convention.
 - apps-ayokoding-web-facts-checker
 - apps-ayokoding-web-link-checker
 - docs-link-checker ([OK]/[BROKEN]/[REDIRECT] + CRITICAL/HIGH/MEDIUM/LOW)
-- repo-governance-checker
+- repo-rules-checker
 
 **Plan/Priority Family**:
 
@@ -1401,7 +1401,7 @@ Existing agents using different terminology should migrate to this convention.
 
 Update all fixer agents to use priority-based execution:
 
-- repo-governance-fixer (pilot)
+- repo-rules-fixer (pilot)
 - apps-ayokoding-web-general-fixer
 - apps-ayokoding-web-by-example-fixer
 - apps-ayokoding-web-facts-fixer

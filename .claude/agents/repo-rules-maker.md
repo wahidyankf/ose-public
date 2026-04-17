@@ -1,12 +1,9 @@
 ---
+name: repo-rules-maker
 description: Creates repository rules and conventions in governance/ directories. Documents standards, patterns, and quality requirements.
-model: zai-coding-plan/glm-5.1
-tools:
-  edit: true
-  glob: true
-  grep: true
-  read: true
-  write: true
+tools: Read, Write, Edit, Glob, Grep
+model:
+color: blue
 skills:
   - docs-applying-content-quality
   - repo-understanding-repository-architecture
@@ -48,8 +45,8 @@ Document standards following convention structure (Purpose, Standards, Examples,
 
 **Related Agents**:
 
-- `repo-governance-checker` - Validates rules created by this maker
-- `repo-governance-fixer` - Fixes rule violations
+- `repo-rules-checker` - Validates rules created by this maker
+- `repo-rules-fixer` - Fixes rule violations
 
 **Related Conventions**:
 

@@ -119,9 +119,9 @@
 
 **Rules Management** (Maker-Checker-Fixer):
 
-- **repo-governance-maker** - Creates repository rules and conventions
-- **repo-governance-checker** - Validates repository-wide consistency (agent-Skill duplication detection)
-- **repo-governance-fixer** - Applies validated fixes including agent-Skill duplication removal
+- **repo-rules-maker** - Creates repository rules and conventions
+- **repo-rules-checker** - Validates repository-wide consistency (agent-Skill duplication detection)
+- **repo-rules-fixer** - Applies validated fixes including agent-Skill duplication removal
 
 **Workflow Management** (Maker-Checker-Fixer):
 

@@ -51,7 +51,7 @@ This convention applies to:
 
 - All agent files in `.claude/agents/` (primary) and `.opencode/agent/` (secondary)
 - References to agents in `AGENTS.md`
-- Agent validation rules in `repo-governance-checker`
+- Agent validation rules in `repo-rules-checker`
 
 ### Dual-Mode Operation (Claude Code + OpenCode)
 
@@ -88,7 +88,7 @@ This practice respects the following core principles:
   - Apply the senior engineer test (question complexity proactively)
   - Prefer boring solutions (battle-tested patterns over clever code)
 
-- **[Automation Over Manual](../../principles/software-engineering/automation-over-manual.md)**: Agents transform manual processes into automated workflows. Instead of manually validating 200+ markdown files, `repo-governance-checker` automates validation. Agents transform manual processes into repeatable, consistent automated workflows.
+- **[Automation Over Manual](../../principles/software-engineering/automation-over-manual.md)**: Agents transform manual processes into automated workflows. Instead of manually validating 200+ markdown files, `repo-rules-checker` automates validation. Agents transform manual processes into repeatable, consistent automated workflows.
 
 ## Token Budget Philosophy
 
@@ -166,7 +166,7 @@ skills: []
    - MUST exactly match the filename (without `.md` extension)
    - Use kebab-case format
    - Should be descriptive and action-oriented
-   - Examples: `docs-maker`, `repo-governance-checker`, `api-validator`
+   - Examples: `docs-maker`, `repo-rules-checker`, `api-validator`
 
 2. **`description`** (required)
    - One-line summary of when to use this agent
@@ -477,7 +477,7 @@ Where:
 ```
 PASS: Good - General agents (no scope prefix):
 - docs-maker.md
-- repo-governance-checker.md
+- repo-rules-checker.md
 - plan-executor.md
 - readme-maker.md
 
@@ -523,9 +523,9 @@ FAIL: Bad:
 
 **When NOT to use scope prefixes:**
 
-- **General-purpose agents**: Work across entire repository (docs-maker, repo-governance-checker, plan-executor)
+- **General-purpose agents**: Work across entire repository (docs-maker, repo-rules-checker, plan-executor)
 - **Cross-cutting agents**: Apply to multiple apps/libs (readme-maker, agent-maker, repo-workflow-maker)
-- **Meta-agents**: Manage repository structure (docs-file-manager, repo-governance-maker)
+- **Meta-agents**: Manage repository structure (docs-file-manager, repo-rules-maker)
 
 **Scope naming rules:**
 
@@ -566,12 +566,12 @@ description: Expert at creating general Next.js content for ayokoding-web. Use w
 
 Tool permissions follow the **principle of least privilege**: agents should only have access to tools they actually need.
 
-| Pattern           | Tools                               | Use For                                       | Example                 | Rationale                                                          |
-| ----------------- | ----------------------------------- | --------------------------------------------- | ----------------------- | ------------------------------------------------------------------ |
-| **Read-Only**     | Read, Glob, Grep                    | Analysis without reports                      | (none currently)        | Pure read operations without file output                           |
-| **Checker**       | Read, Glob, Grep, Write, Bash       | Validation with audit report generation       | repo-governance-checker | Needs Write for reports in generated-reports/, Bash for timestamps |
-| **Documentation** | Read, Write, Edit, Glob, Grep       | Creating/editing docs, managing doc structure | docs-maker              | Needs file creation/editing but no shell access                    |
-| **Development**   | Read, Write, Edit, Glob, Grep, Bash | Code generation, tests, builds, deployment    | swe-golang-dev          | Requires command execution (powerful, only when necessary)         |
+| Pattern           | Tools                               | Use For                                       | Example            | Rationale                                                          |
+| ----------------- | ----------------------------------- | --------------------------------------------- | ------------------ | ------------------------------------------------------------------ |
+| **Read-Only**     | Read, Glob, Grep                    | Analysis without reports                      | (none currently)   | Pure read operations without file output                           |
+| **Checker**       | Read, Glob, Grep, Write, Bash       | Validation with audit report generation       | repo-rules-checker | Needs Write for reports in generated-reports/, Bash for timestamps |
+| **Documentation** | Read, Write, Edit, Glob, Grep       | Creating/editing docs, managing doc structure | docs-maker         | Needs file creation/editing but no shell access                    |
+| **Development**   | Read, Write, Edit, Glob, Grep, Bash | Code generation, tests, builds, deployment    | swe-golang-dev     | Requires command execution (powerful, only when necessary)         |
 
 ### Report-Generating Agents: Mandatory Tool Requirements
 
@@ -589,15 +589,15 @@ Tool permissions follow the **principle of least privilege**: agents should only
 
 **Applies to these agent types**:
 
-- All `*-checker` agents (repo-governance-checker, docs-checker, plan-checker, plan-execution-checker, etc.)
-- `repo-governance-fixer` (generates fix reports)
+- All `*-checker` agents (repo-rules-checker, docs-checker, plan-checker, plan-execution-checker, etc.)
+- `repo-rules-fixer` (generates fix reports)
 - Any agent creating validation, audit, or verification reports
 
 **MANDATORY REQUIREMENT FOR ALL \*-CHECKER AGENTS**:
 
 ALL checker agents MUST write their validation/audit reports to `generated-reports/` directory. This is a hard requirement with NO EXCEPTIONS. The following checker agents are subject to this rule:
 
-1. repo-governance-checker
+1. repo-rules-checker
 2. repo-workflow-checker
 3. apps-ayokoding-web-general-checker
 4. apps-ayokoding-web-by-example-checker
@@ -640,7 +640,7 @@ See [Temporary Files Convention - Progressive Writing Requirement](../infra/temp
 
 ```yaml
 ---
-name: repo-governance-checker
+name: repo-rules-checker
 description: Validates consistency between agents, AGENTS.md, conventions, and documentation.
 tools: Read, Glob, Grep, Write, Bash
 model: sonnet
@@ -731,16 +731,16 @@ color: blue
 
 Agents are categorized by their **primary role** which aligns with naming suffixes and tool permissions:
 
-| Color         | Role             | Purpose                               | Tool Pattern                            | Agents                                                                                                                  |
-| ------------- | ---------------- | ------------------------------------- | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| 🟦 **Blue**   | **Makers**       | Create new content from scratch       | Has `Write` tool                        | docs-maker<br>plan-maker<br>docs-tutorial-maker<br>repo-governance-maker                                                |
-| 🟩 **Green**  | **Checkers**     | Validate and generate reports         | Has `Write`, `Bash` (no `Edit`)\*\*     | repo-governance-checker<br>plan-checker<br>docs-checker<br>docs-link-checker\*\*<br>apps-ayokoding-web-link-checker\*\* |
-| 🟨 **Yellow** | **Fixers**       | Modify and propagate existing content | Has `Edit` (usually not `Write`)        | docs-file-manager<br>readme-fixer<br>repo-governance-fixer                                                              |
-| 🟪 **Purple** | **Implementors** | Execute plans with full tool access   | Has `Write`, `Edit`, `Bash` (or Bash)\* | plan-executor<br>deployers\*<br>swe-\*-dev agents                                                                       |
+| Color         | Role             | Purpose                               | Tool Pattern                            | Agents                                                                                                             |
+| ------------- | ---------------- | ------------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| 🟦 **Blue**   | **Makers**       | Create new content from scratch       | Has `Write` tool                        | docs-maker<br>plan-maker<br>docs-tutorial-maker<br>repo-rules-maker                                                |
+| 🟩 **Green**  | **Checkers**     | Validate and generate reports         | Has `Write`, `Bash` (no `Edit`)\*\*     | repo-rules-checker<br>plan-checker<br>docs-checker<br>docs-link-checker\*\*<br>apps-ayokoding-web-link-checker\*\* |
+| 🟨 **Yellow** | **Fixers**       | Modify and propagate existing content | Has `Edit` (usually not `Write`)        | docs-file-manager<br>readme-fixer<br>repo-rules-fixer                                                              |
+| 🟪 **Purple** | **Implementors** | Execute plans with full tool access   | Has `Write`, `Edit`, `Bash` (or Bash)\* | plan-executor<br>deployers\*<br>swe-\*-dev agents                                                                  |
 
 **Edge Case Notes:**
 
-- **\*Yellow with Write**: Some Yellow fixer agents (e.g., readme-fixer, repo-governance-fixer) may have Write tool for audit report generation. Documented exception.
+- **\*Yellow with Write**: Some Yellow fixer agents (e.g., readme-fixer, repo-rules-fixer) may have Write tool for audit report generation. Documented exception.
 - **\*Purple Bash-only**: Deployers (apps-ayokoding-web-deployer, apps-oseplatform-web-deployer, apps-organiclever-fe-deployer) only need Bash for git/deployment orchestration. Purple without Write/Edit is valid for Bash-only orchestrators.
 - **\*\*Green with Write + Edit**: Link checker agents (docs-link-checker, apps-ayokoding-web-link-checker) also have Edit and Write tools for cache file management, but their primary role is validation (checker). Color is green to reflect primary role. See "Link Checker Agents Note" below.
 
@@ -807,13 +807,13 @@ Start: What is the agent's primary capability?
     │       - Has `Write`, `Bash` (no Edit)
     │       - Write needed for audit reports in generated-reports/
     │       - Bash needed for UTC+7 timestamps
-    │       - Examples: repo-governance-checker, plan-checker, docs-checker
+    │       - Examples: repo-rules-checker, plan-checker, docs-checker
     │       - EXCEPTION: Link checkers also have Edit tool for cache management (see "Link Checker Agents Note" below)
     │
     ├─ Modifies/updates existing content only
     │   └─> color: yellow (Fixer)
     │       - Has `Edit` but NOT `Write`
-    │       - Examples: docs-file-manager, readme-fixer, repo-governance-fixer
+    │       - Examples: docs-file-manager, readme-fixer, repo-rules-fixer
     │
     └─ Executes plans/orchestrates tasks
         └─> color: purple (Implementor)
@@ -840,7 +840,7 @@ Start: What is the agent's primary capability?
   - Yellow (Fixers) should have Edit but NOT Write
   - If Write is needed for creating new convention files → keep yellow, document exception
   - If Write can be removed → remove Write to match yellow categorization
-  - Example: readme-fixer, repo-governance-fixer (fixer agents that generate audit reports, keep Write for report writing)
+  - Example: readme-fixer, repo-rules-fixer (fixer agents that generate audit reports, keep Write for report writing)
 - **Agent doesn't fit any category**: Consider if it should be split or if a new category is needed
 - **Unsure**: Default to the most restrictive category based on tools, or omit the color field
 
@@ -963,7 +963,7 @@ color: blue
 
 ```yaml
 ---
-name: repo-governance-checker
+name: repo-rules-checker
 description: Validates consistency between agents, AGENTS.md, conventions, and documentation. Use when checking for inconsistencies, contradictions, duplicate content, or verifying repository rule compliance.
 tools: Read, Glob, Grep, Write, Bash
 model: sonnet
@@ -1042,7 +1042,7 @@ Before creating a new agent, check if existing agents already cover the domain:
 **PASS: Good - Specialized Agents:**
 
 - `docs-maker` - Documentation only
-- `repo-governance-checker` - Consistency validation only
+- `repo-rules-checker` - Consistency validation only
 - `swe-golang-dev` - Go development only
 
 **FAIL: Bad - Over-Generalized:**
@@ -1308,8 +1308,8 @@ Agent files are organized into **three complexity tiers** with corresponding siz
 - plan-maker (comprehensive project planning)
 - plan-executor (multi-phase implementation)
 - plan-checker (pre-implementation validation)
-- repo-governance-maker (cascading updates across files)
-- repo-governance-checker (comprehensive consistency validation)
+- repo-rules-maker (cascading updates across files)
+- repo-rules-checker (comprehensive consistency validation)
 - docs-link-checker (external/internal link validation with caching)
 
 **When to use this tier**:
@@ -1328,7 +1328,7 @@ Quick categorization for existing agents:
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Tier 1: Simple**   | apps-ayokoding-web-deployer, apps-oseplatform-web-deployer, apps-organiclever-fe-deployer, social-linkedin-post-maker, apps-ayokoding-web-facts-fixer, apps-ayokoding-web-link-fixer, apps-oseplatform-web-content-fixer, repo-workflow-maker, repo-workflow-checker, repo-workflow-fixer                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | **Tier 2: Standard** | docs-maker, docs-tutorial-maker, docs-checker, docs-tutorial-checker, docs-file-manager, docs-fixer, docs-tutorial-fixer, docs-software-engineering-separation-fixer, readme-maker, readme-checker, readme-fixer, agent-maker, plan-fixer, apps-ayokoding-web-general-maker, apps-ayokoding-web-general-checker, apps-ayokoding-web-general-fixer, apps-ayokoding-web-by-example-maker, apps-ayokoding-web-by-example-checker, apps-ayokoding-web-by-example-fixer, apps-ayokoding-web-in-the-field-maker, apps-ayokoding-web-in-the-field-checker, apps-ayokoding-web-in-the-field-fixer, apps-ayokoding-web-link-checker, apps-ayokoding-web-facts-checker, apps-oseplatform-web-content-maker, apps-oseplatform-web-content-checker, swe-python-dev, swe-typescript-dev, swe-elixir-dev, swe-java-dev, swe-golang-dev, swe-e2e-dev, swe-hugo-dev (DEPRECATED), swe-dart-dev, swe-kotlin-dev, swe-csharp-dev, swe-fsharp-dev, swe-clojure-dev, swe-rust-dev, swe-code-checker, specs-maker, specs-checker, specs-fixer |
-| **Tier 3: Complex**  | plan-maker, plan-executor, plan-checker, plan-execution-checker, repo-governance-maker, repo-governance-checker, repo-governance-fixer, docs-link-checker, docs-software-engineering-separation-checker                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| **Tier 3: Complex**  | plan-maker, plan-executor, plan-checker, plan-execution-checker, repo-rules-maker, repo-rules-checker, repo-rules-fixer, docs-link-checker, docs-software-engineering-separation-checker                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 
 ### When to Condense or Split Agents
 
@@ -1376,7 +1376,7 @@ Quick categorization for existing agents:
 3. Warn if approaching warning threshold
 4. Suggest condensation if near limit
 
-**For repo-governance-maker**:
+**For repo-rules-maker**:
 
 1. When updating agents, check file size before/after
 2. If agent crosses warning threshold, notify user
@@ -1794,7 +1794,7 @@ If information cannot be verified: (1) State the limitation explicitly, (2) Prov
 ### Agent-Specific Requirements
 
 - **Documentation agents (docs-maker)**: Verify code examples, file paths, project structure claims, convention references, external library docs
-- **Validation agents (repo-governance-checker)**: Read all files before validating, provide specific line numbers, verify links and frontmatter
+- **Validation agents (repo-rules-checker)**: Read all files before validating, provide specific line numbers, verify links and frontmatter
 - **Development agents**: Read test files, verify command outputs, check error messages, confirm tool availability
 
 ### Git Worktree Awareness
@@ -2015,7 +2015,7 @@ Your primary job is to [clear, specific purpose statement].
 
 **Agent Responsibilities:**
 
-1. **repo-governance-maker:**
+1. **repo-rules-maker:**
    - MUST check AGENTS.md size when adding rules
    - Warn user if file exceeds 35,000 characters
    - Suggest condensation strategies (move details to convention docs)
@@ -2116,7 +2116,7 @@ If an agent is no longer needed:
 
 ### Repo-Rule-Checker Integration
 
-The `repo-governance-checker` agent validates all agents against this convention.
+The `repo-rules-checker` agent validates all agents against this convention.
 
 **Checks performed:**
 
@@ -2138,7 +2138,7 @@ Before committing a new agent:
 2. **Use the agent creation checklist** - Verify all items
 3. **Test the agent** - Invoke it and verify behavior
 4. **Review existing agents** - Ensure consistency
-5. **Run repo-governance-checker** - Validate compliance
+5. **Run repo-rules-checker** - Validate compliance
 
 ## Agent-Skill Separation
 
@@ -2420,7 +2420,7 @@ When simplifying an agent:
 
 1. **New agent creation**: Reference Skills instead of duplicating
 2. **Agent updates**: Extract new duplication to Skills
-3. **Periodic audits**: Run repo-governance-checker for duplication detection
+3. **Periodic audits**: Run repo-rules-checker for duplication detection
 4. **Code reviews**: Check for embedded Skill knowledge
 5. **Documentation**: Keep AI Agents Convention updated with examples
 

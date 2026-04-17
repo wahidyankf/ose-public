@@ -257,8 +257,8 @@ When you encounter a hardcoded count in an existing document, update it to remov
 
 The following agents check and enforce this convention:
 
-- **repo-governance-checker** - Validates repository-wide consistency including hardcoded counts
-- **repo-governance-fixer** - Applies fixes for governance violations including count removal
+- **repo-rules-checker** - Validates repository-wide consistency including hardcoded counts
+- **repo-rules-fixer** - Applies fixes for governance violations including count removal
 
 ## References
 
@@ -273,9 +273,9 @@ The following agents check and enforce this convention:
 
 **Agents:**
 
-- `repo-governance-maker` - Creates governance documents following this convention
-- `repo-governance-checker` - Validates convention compliance across the repository
-- `repo-governance-fixer` - Fixes convention violations
+- `repo-rules-maker` - Creates governance documents following this convention
+- `repo-rules-checker` - Validates convention compliance across the repository
+- `repo-rules-fixer` - Fixes convention violations
 
 ---
 

@@ -14,7 +14,7 @@ This directory contains specialized AI agents for the open-sharia-enterprise pro
 - **apps-ayokoding-web-in-the-field-maker** - In-the-field tutorials for AyoKoding
 - **apps-oseplatform-web-content-maker** - OSE Platform content
 - **plan-maker** - Project plan creation
-- **repo-governance-maker** - Governance document creation
+- **repo-rules-maker** - Governance document creation
 - **repo-workflow-maker** - Workflow documentation
 - **specs-maker** - Spec area scaffolding and feature file creation
 - **social-linkedin-post-maker** - LinkedIn content creation
@@ -36,7 +36,7 @@ This directory contains specialized AI agents for the open-sharia-enterprise pro
 - **apps-oseplatform-web-content-checker** - OSE content validation
 - **plan-checker** - Project plan validation
 - **plan-execution-checker** - Plan execution validation
-- **repo-governance-checker** - Governance compliance validation
+- **repo-rules-checker** - Governance compliance validation
 - **repo-workflow-checker** - Workflow documentation validation
 - **specs-checker** - Gherkin/BDD specs directory structural and content validation
 - **swe-code-checker** - Validates projects against platform coding standards (validates application code rather than documentation)
@@ -57,7 +57,7 @@ This directory contains specialized AI agents for the open-sharia-enterprise pro
 - **apps-ayokoding-web-link-fixer** - Fix broken links
 - **apps-oseplatform-web-content-fixer** - Fix OSE content issues
 - **plan-fixer** - Apply plan fixes
-- **repo-governance-fixer** - Fix governance compliance issues
+- **repo-rules-fixer** - Fix governance compliance issues
 - **repo-workflow-fixer** - Fix workflow documentation
 - **specs-fixer** - Fix specs structural and accuracy issues
 - **swe-ui-fixer** - Apply validated UI component fixes

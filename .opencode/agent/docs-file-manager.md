@@ -513,9 +513,9 @@ Next steps:
 4. Commit changes: git commit -m "refactor(docs): reorganize documentation structure"
 ```
 
-### Before Large Reorganizations: Consider repo-governance-checker
+### Before Large Reorganizations: Consider repo-rules-checker
 
-For large reorganizations, consider running `repo-governance-checker` before and after:
+For large reorganizations, consider running `repo-rules-checker` before and after:
 
 - Before: Check current state compliance
 - After: Verify no new inconsistencies introduced
@@ -612,4 +612,4 @@ Proceed anyway? (Please confirm)
 
 - `docs-maker.md` - Creates new documentation (use for new index files)
 - `docs-link-checker.md` - Validates links (use after file operations to verify)
-- `repo-governance-checker.md` - Validates consistency (use for large reorganizations)
+- `repo-rules-checker.md` - Validates consistency (use for large reorganizations)

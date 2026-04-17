@@ -55,7 +55,7 @@ This set of development practices respects the following conventions:
 
 - **[Content Quality Principles](../../conventions/writing/quality.md)**: Agent frontmatter and documentation follow active voice, proper heading hierarchy, and accessibility standards.
 
-- **[File Naming Convention](../../conventions/structure/file-naming.md)**: Agent files use lowercase kebab-case basenames (e.g., `docs-maker.md`, `repo-governance-checker.md`) following the repository naming convention.
+- **[File Naming Convention](../../conventions/structure/file-naming.md)**: Agent files use lowercase kebab-case basenames (e.g., `docs-maker.md`, `repo-rules-checker.md`) following the repository naming convention.
 
 ---
 

@@ -16,7 +16,7 @@ updated: 2025-12-14
 
 # Repository Validation Methodology Convention
 
-This document defines the standard validation methods and patterns used by repository validation agents (repo-governance-checker, repo-governance-fixer, and related tools) to ensure consistency across the codebase. Following these patterns prevents false positives, improves accuracy, and maintains reliable automated checks.
+This document defines the standard validation methods and patterns used by repository validation agents (repo-rules-checker, repo-rules-fixer, and related tools) to ensure consistency across the codebase. Following these patterns prevents false positives, improves accuracy, and maintains reliable automated checks.
 
 ## Principles Implemented/Respected
 
@@ -62,8 +62,8 @@ Standardized methods ensure:
 
 This convention applies to:
 
-- **Validation agents** - repo-governance-checker, docs-checker, docs-link-checker, etc.
-- **Fix agents** - repo-governance-fixer and similar automated fix tools
+- **Validation agents** - repo-rules-checker, docs-checker, docs-link-checker, etc.
+- **Fix agents** - repo-rules-fixer and similar automated fix tools
 - **Content agents** - Any agent that validates file structure or conventions
 - **Custom scripts** - Bash scripts performing repository consistency checks
 

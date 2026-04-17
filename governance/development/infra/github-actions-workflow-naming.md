@@ -190,7 +190,7 @@ When creating a new workflow:
 
 ## Tools and Automation
 
-Currently no automated validator enforces this rule. The `repo-governance-checker` agent validates adherence during governance audits.
+Currently no automated validator enforces this rule. The `repo-rules-checker` agent validates adherence during governance audits.
 
 ## References
 
@@ -201,5 +201,5 @@ Currently no automated validator enforces this rule. The `repo-governance-checke
 
 **Agents:**
 
-- `repo-governance-checker` - Validates that workflow filenames match their `name:` fields
-- `repo-governance-fixer` - Corrects misaligned workflow filenames or name fields
+- `repo-rules-checker` - Validates that workflow filenames match their `name:` fields
+- `repo-rules-fixer` - Corrects misaligned workflow filenames or name fields

@@ -269,7 +269,7 @@ Use the standard audit report format:
 - Does NOT modify any files (read-only + report generation)
 - Does NOT validate folders not in the explicit list
 - Does NOT validate test code or step definitions (that's `rhino-cli spec-coverage validate`)
-- Does NOT validate governance docs (that's `repo-governance-checker`)
+- Does NOT validate governance docs (that's `repo-rules-checker`)
 - Does NOT run tests (that's CI)
 
 ## Principles Implemented/Respected

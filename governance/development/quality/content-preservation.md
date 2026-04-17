@@ -550,9 +550,9 @@ Problem: Convention polluted with implementation details
 
 ## Agent Usage
 
-### repo-governance-maker
+### repo-rules-maker
 
-When condensing files or extracting duplications, `repo-governance-maker` must:
+When condensing files or extracting duplications, `repo-rules-maker` must:
 
 1. Follow the offload decision tree
 2. Choose appropriate option (A/B/C/D)
@@ -560,9 +560,9 @@ When condensing files or extracting duplications, `repo-governance-maker` must:
 4. Complete all verification checklist items
 5. Confirm zero content loss
 
-### repo-governance-checker
+### repo-rules-checker
 
-When validating condensation, `repo-governance-checker` must verify:
+When validating condensation, `repo-rules-checker` must verify:
 
 - Content was MOVED (not deleted)
 - Target convention/development doc exists and is indexed

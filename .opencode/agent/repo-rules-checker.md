@@ -1170,8 +1170,8 @@ Update report status to "Complete", add summary statistics by category:
 
 **Related Agents**:
 
-- `repo-governance-fixer` - Fixes issues found by this checker
-- `repo-governance-maker` - Creates repository rules and conventions
+- `repo-rules-fixer` - Fixes issues found by this checker
+- `repo-rules-maker` - Creates repository rules and conventions
 
 **Related Conventions**:
 

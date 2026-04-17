@@ -106,7 +106,7 @@ in priority order:
 
 3. **Match by content type**: If the item involves documentation (`docs/`, `README.md`),
    governance (`governance/`), specs (`specs/`), or E2E tests (`*-e2e`, Playwright), use the
-   appropriate content agent (`docs-maker`, `repo-governance-maker`, `readme-maker`,
+   appropriate content agent (`docs-maker`, `repo-rules-maker`, `readme-maker`,
    `specs-maker`, `swe-e2e-dev`).
 
 4. **Match by framework/tool keywords**: If the item mentions a framework (Spring Boot, Ktor,

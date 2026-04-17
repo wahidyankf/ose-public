@@ -57,7 +57,7 @@ This convention establishes designated directories for temporary files created b
 
 All checker agents in the following families MUST write audit reports to `generated-reports/`:
 
-1. **repo-governance-checker** - Repository consistency validation
+1. **repo-rules-checker** - Repository consistency validation
 2. **apps-ayokoding-web-general-checker** - General content validation (ayokoding-web)
 3. **apps-ayokoding-web-by-example-checker** - By-example tutorial validation (ayokoding-web)
 4. **apps-ayokoding-web-facts-checker** - Educational content factual accuracy validation
@@ -160,7 +160,7 @@ To enable accurate parent-child hierarchy tracking across concurrent workflow ru
 
 | Workflow/Agent            | Scope           | Tracking File                    |
 | ------------------------- | --------------- | -------------------------------- |
-| repo-governance-checker   | `repo-rules`    | `.execution-chain-repo-rules`    |
+| repo-rules-checker        | `repo-rules`    | `.execution-chain-repo-rules`    |
 | docs-checker              | `docs`          | `.execution-chain-docs`          |
 | docs-tutorial-checker     | `docs-tutorial` | `.execution-chain-docs-tutorial` |
 | readme-checker            | `readme`        | `.execution-chain-readme`        |
@@ -298,7 +298,7 @@ fi
 **Examples**:
 
 - Validation reports (docs-checker, plan-checker, etc.)
-- Audit reports (repo-governance-checker)
+- Audit reports (repo-rules-checker)
 - Execution verification reports (plan-execution-checker)
 - Todo lists and progress tracking
 
@@ -396,7 +396,7 @@ This progressive approach ensures findings persist even if context is compacted 
 
 ALL \*-checker agents must implement progressive writing:
 
-1. repo-governance-checker
+1. repo-rules-checker
 2. apps-ayokoding-web-general-checker
 3. apps-ayokoding-web-by-example-checker
 4. apps-ayokoding-web-facts-checker
@@ -414,7 +414,7 @@ ALL \*-checker agents must implement progressive writing:
 16. specs-checker
 17. swe-code-checker
 
-**Validation**: See repo-governance-checker agent for validation rules that verify progressive writing compliance across all checker agents.
+**Validation**: See repo-rules-checker agent for validation rules that verify progressive writing compliance across all checker agents.
 
 ### Report File Naming Standard
 
@@ -493,7 +493,7 @@ filename="repo-rules__${uuid}__${timestamp}__audit.md"
 
 #### Repository Audit Reports
 
-**Agent**: repo-governance-checker
+**Agent**: repo-rules-checker
 **Pattern**: `repo-rules__{uuid-chain}__{YYYY-MM-DD--HH-MM}__audit.md`
 **Example**: `repo-rules__a1b2c3__2025-12-14--20-45__audit.md`
 
@@ -524,7 +524,7 @@ filename="repo-rules__${uuid}__${timestamp}__audit.md"
 
 #### Fixer Reports (Universal Pattern)
 
-**Agents**: All fixer agents (repo-governance-fixer, apps-ayokoding-web-general-fixer, apps-ayokoding-web-by-example-fixer, apps-ayokoding-web-facts-fixer, apps-ayokoding-web-in-the-field-fixer, apps-ayokoding-web-link-fixer, docs-tutorial-fixer, docs-software-engineering-separation-fixer, apps-oseplatform-web-content-fixer, readme-fixer, docs-fixer, plan-fixer, repo-workflow-fixer, specs-fixer)
+**Agents**: All fixer agents (repo-rules-fixer, apps-ayokoding-web-general-fixer, apps-ayokoding-web-by-example-fixer, apps-ayokoding-web-facts-fixer, apps-ayokoding-web-in-the-field-fixer, apps-ayokoding-web-link-fixer, docs-tutorial-fixer, docs-software-engineering-separation-fixer, apps-oseplatform-web-content-fixer, readme-fixer, docs-fixer, plan-fixer, repo-workflow-fixer, specs-fixer)
 
 **Pattern**: `{agent-family}__{uuid-chain}__{YYYY-MM-DD--HH-MM}__fix.md`
 
@@ -692,7 +692,7 @@ Do NOT use these directories for:
 
 ### For Report-Generating Agents
 
-Agents that create validation/audit reports (docs-checker, plan-checker, repo-governance-checker, etc.) should:
+Agents that create validation/audit reports (docs-checker, plan-checker, repo-rules-checker, etc.) should:
 
 1. Use `generated-reports/` directory
 2. Follow naming pattern: `{agent-family}__{uuid-chain}__{YYYY-MM-DD--HH-MM}__{type}.md`
@@ -711,7 +711,7 @@ Any agent writing to `generated-reports/` MUST have:
 
 ```yaml
 ---
-name: repo-governance-checker
+name: repo-rules-checker
 description: Validates consistency between agents, AGENTS.md, conventions, and documentation.
 tools: Read, Glob, Grep, Write, Bash
 model: sonnet

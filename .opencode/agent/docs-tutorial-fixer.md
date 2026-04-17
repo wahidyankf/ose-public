@@ -428,7 +428,7 @@ After every edit (Edit tool or Bash sed/awk):
 
 - [docs-tutorial-checker.md](./docs-tutorial-checker.md) - Generates audit reports that this agent processes
 - [docs-tutorial-maker.md](./docs-tutorial-maker.md) - Creates tutorials (different purpose)
-- [repo-governance-fixer.md](./repo-governance-fixer.md) - Similar fixer pattern for repository rules
+- [repo-rules-fixer.md](./repo-rules-fixer.md) - Similar fixer pattern for repository rules
 
 **Related Conventions:**
 

@@ -345,7 +345,7 @@ Development: AI Agents Convention — agent colors use accessible palette
 - `docs-checker` - Validates factual accuracy using web verification
 - `docs-fixer` - Applies validated factual corrections
 - `readme-maker` - Creates/updates README files
-- `repo-governance-checker` - Validates repository-wide consistency
+- `repo-rules-checker` - Validates repository-wide consistency
 
 **Requirements**:
 

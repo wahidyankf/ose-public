@@ -45,7 +45,7 @@ Invoke specialized agents via the Agent tool with `subagent_type` when the workf
 
 #### When to Use Agent Delegation
 
-- PASS: Workflow step references a named agent (e.g., `plan-checker`, `repo-governance-fixer`)
+- PASS: Workflow step references a named agent (e.g., `plan-checker`, `repo-rules-fixer`)
 - PASS: That agent exists as a defined subagent_type in `.claude/agents/`
 - PASS: The step requires persistent file changes (audit reports, fixes)
 - PASS: You want the agent's full specialized validation/fixing logic applied

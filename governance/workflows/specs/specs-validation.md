@@ -63,7 +63,7 @@ This workflow validates **specification files only** in listed folders. It does 
 
 - Implementation code in `apps/` (that's per-language developer agents and CI)
 - Test code or step definitions (that's `rhino-cli spec-coverage validate`)
-- Governance docs (that's `repo-governance-checker`)
+- Governance docs (that's `repo-rules-checker`)
 - Spec folders NOT in the explicit list
 
 **When to use**:

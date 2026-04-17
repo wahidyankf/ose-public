@@ -398,7 +398,7 @@ for finding in low_priority:
 
 ## Domain-Specific Examples
 
-### Repository Governance (repo-governance-checker)
+### Repository Governance (repo-rules-checker)
 
 **CRITICAL**:
 - Missing `subcategory` field in convention (breaks organization)

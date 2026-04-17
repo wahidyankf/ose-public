@@ -64,8 +64,8 @@ This workflow validates **source definitions only** in `governance/`. It does NO
 
 ## Execution Mode
 
-**Preferred Mode**: Agent Delegation — invoke `repo-governance-checker` and
-`repo-governance-fixer` via the Agent tool with `subagent_type`
+**Preferred Mode**: Agent Delegation — invoke `repo-rules-checker` and
+`repo-rules-fixer` via the Agent tool with `subagent_type`
 (see [Workflow Execution Modes Convention](../meta/execution-modes.md)).
 
 **Fallback Mode**: Manual Orchestration — execute workflow logic directly using
@@ -82,8 +82,8 @@ User: "Run repository rules quality gate workflow in normal mode"
 
 The AI will:
 
-1. Invoke `repo-governance-checker` via the Agent tool (reads governance files, writes audit)
-2. Invoke `repo-governance-fixer` via the Agent tool (reads audit, applies fixes, writes fix report)
+1. Invoke `repo-rules-checker` via the Agent tool (reads governance files, writes audit)
+2. Invoke `repo-rules-fixer` via the Agent tool (reads audit, applies fixes, writes fix report)
 3. Iterate until zero findings achieved
 4. Show git status with modified files
 5. Wait for user commit approval
@@ -103,7 +103,7 @@ context — use this when agent delegation is unavailable.
 
 Run repository-wide consistency check to identify all issues.
 
-**Agent**: `repo-governance-checker`
+**Agent**: `repo-rules-checker`
 
 - **Args**: `scope: all, EXECUTION_SCOPE: repo-rules`
 - **Output**: `{audit-report-1}` - Initial audit report in `generated-reports/` (4-part format: `repo-rules__{uuid-chain}__{timestamp}__audit.md`)
@@ -150,7 +150,7 @@ Analyze audit report to determine if fixes are needed.
 
 Apply validated fixes from the audit report based on mode level.
 
-**Agent**: `repo-governance-fixer`
+**Agent**: `repo-rules-fixer`
 
 - **Args**: `report: {step1.outputs.audit-report-1}, approved: all, mode: {input.mode}, EXECUTION_SCOPE: repo-rules`
 - **Output**: `{fixes-applied}` - Fix report with same UUID chain as source audit
@@ -175,7 +175,7 @@ Apply validated fixes from the audit report based on mode level.
 
 Run checker again to verify fixes resolved issues and no new issues introduced.
 
-**Agent**: `repo-governance-checker`
+**Agent**: `repo-rules-checker`
 
 - **Args**: `scope: all`
 - **Output**: `{audit-report-N}` - Verification audit report
@@ -258,8 +258,8 @@ User: "Run repository rules quality gate workflow in normal mode"
 
 The AI will invoke specialized agents via the Agent tool:
 
-- Validate repository consistency (`repo-governance-checker` subagent)
-- Apply fixes for CRITICAL/HIGH findings (`repo-governance-fixer` subagent)
+- Validate repository consistency (`repo-rules-checker` subagent)
+- Apply fixes for CRITICAL/HIGH findings (`repo-rules-fixer` subagent)
 - Iterate until zero CRITICAL/HIGH findings achieved
 - Report MEDIUM/LOW findings without fixing them
 

@@ -852,8 +852,8 @@ stateDiagram-v2
 ```mermaid
 graph TD
     A[OpenCode- Main Agent] --> B[docs-maker.md]
-    A --> C[repo-governance-checker.md]
-    A --> D[repo-governance-maker.md]
+    A --> C[repo-rules-checker.md]
+    A --> D[repo-rules-maker.md]
     A --> E[plan-maker.md]
 
     B --> F[Documentation]
@@ -870,8 +870,8 @@ graph TD
 
 OpenCode(Main Agent)
 ├── docs-maker.md (Documentation)
-├── repo-governance-checker.md (Validation)
-├── repo-governance-maker.md (Propagation)
+├── repo-rules-checker.md (Validation)
+├── repo-rules-maker.md (Propagation)
 └── plan-maker.md (Planning)
 ```
 

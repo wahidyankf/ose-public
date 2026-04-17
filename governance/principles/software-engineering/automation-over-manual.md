@@ -23,7 +23,7 @@ This principle serves the [Open Sharia Enterprise Vision](../../vision/open-shar
 
 **How this principle serves the vision:**
 
-- **Scales Knowledge Sharing**: Automated validation (docs-checker, repo-governance-checker) means quality knowledge spreads without requiring manual expert review. One expert creates a checker, thousands benefit
+- **Scales Knowledge Sharing**: Automated validation (docs-checker, repo-rules-checker) means quality knowledge spreads without requiring manual expert review. One expert creates a checker, thousands benefit
 - **Lowers Contribution Barriers**: Automated formatting and linting mean contributors don't need to memorize style guides. Focus on Islamic finance logic, not formatting rules
 - **Maintains Consistency**: As the community grows globally, automation ensures consistent quality across timezones and contributors. No gatekeepers needed
 - **Frees Human Creativity**: Developers spend time understanding Shariah principles and building innovative solutions, not manual testing and formatting. Automation handles the tedious, humans handle the meaningful
@@ -410,7 +410,7 @@ The project enforces code quality through automated git hooks:
 
 - `docs-checker.md` - Validate documentation
 - `docs-link-checker.md` - Verify links with cache
-- `repo-governance-checker.md` - Check repository consistency
+- `repo-rules-checker.md` - Check repository consistency
 - `plan-checker.md` - Validate project plans
 
 **Automation benefits**:

@@ -47,7 +47,7 @@ See `repo-assessing-criticality-confidence` Skill for complete priority matrix a
 - Complex decision-making for fix priority and confidence
 - Deep understanding of repository architecture
 
-Apply validated fixes from repo-governance-checker audit reports.
+Apply validated fixes from repo-rules-checker audit reports.
 
 ## Core Responsibilities
 
@@ -764,7 +764,7 @@ See repo-generating-validation-reports Skill for report structure.
 
 ## Process Summary
 
-1. Read audit report from repo-governance-checker
+1. Read audit report from repo-rules-checker
 2. For each finding:
    - Re-validate issue exists
    - Assess confidence
@@ -772,7 +772,7 @@ See repo-generating-validation-reports Skill for report structure.
    - Use bash tools for .opencode files
    - Write results progressively
 3. Generate fix report
-4. Recommend re-running repo-governance-checker to verify
+4. Recommend re-running repo-rules-checker to verify
 
 **Focus on safety**: Better to skip uncertain fixes than break working agents.
 
@@ -785,8 +785,8 @@ See repo-generating-validation-reports Skill for report structure.
 
 **Related Agents**:
 
-- `repo-governance-checker` - Generates audit reports this fixer processes
-- `repo-governance-maker` - Creates repository rules
+- `repo-rules-checker` - Generates audit reports this fixer processes
+- `repo-rules-maker` - Creates repository rules
 
 **Related Conventions**:
 

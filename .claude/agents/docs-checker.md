@@ -207,7 +207,7 @@ Per [Documentation First](../../governance/principles/content/documentation-firs
 - Focus: Link validity (URLs work, internal refs exist)
 - Does NOT check: Content accuracy or factual correctness
 
-**repo-governance-checker:**
+**repo-rules-checker:**
 
 - Focus: Convention compliance (naming, structure, frontmatter)
 - Does NOT check: Technical accuracy of content claims
@@ -542,7 +542,7 @@ Some sites block automation:
 ### Out of Scope
 
 - Link validity (use docs-link-checker)
-- Convention compliance (use repo-governance-checker)
+- Convention compliance (use repo-rules-checker)
 - Writing style or tone
 - Grammar/spelling (unless affects meaning)
 - Documentation completeness (missing topics)
@@ -571,7 +571,7 @@ Some sites block automation:
 **Don't use for:**
 
 - Link checking (use docs-link-checker)
-- File naming/structure (use repo-governance-checker)
+- File naming/structure (use repo-rules-checker)
 - Writing new docs (use docs-maker)
 - Editing existing docs (use docs-maker)
 
@@ -599,7 +599,7 @@ Some sites block automation:
 **Related Agents:**
 
 - `docs-link-checker.md` - Link accessibility validation
-- `repo-governance-checker.md` - Convention compliance validation
+- `repo-rules-checker.md` - Convention compliance validation
 - `docs-maker.md` - Documentation creation/editing
 - `docs-fixer.md` - Apply validated fixes
 

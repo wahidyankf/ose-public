@@ -191,15 +191,15 @@ Final Step: Finalize Report
 
 Common scopes for execution tracking:
 
-| Agent Family            | Scope              | Tracking File                       |
-| ----------------------- | ------------------ | ----------------------------------- |
-| repo-governance-checker | `repo-rules`       | `.execution-chain-repo-rules`       |
-| docs-checker            | `docs`             | `.execution-chain-docs`             |
-| docs-tutorial-checker   | `docs-tutorial`    | `.execution-chain-docs-tutorial`    |
-| readme-checker          | `readme`           | `.execution-chain-readme`           |
-| plan-checker            | `plan`             | `.execution-chain-plan`             |
-| ayokoding-web-\*        | `ayokoding-[lang]` | `.execution-chain-ayokoding-[lang]` |
-| oseplatform-web-\*      | `ose-platform`     | `.execution-chain-ose-platform`     |
+| Agent Family          | Scope              | Tracking File                       |
+| --------------------- | ------------------ | ----------------------------------- |
+| repo-rules-checker    | `repo-rules`       | `.execution-chain-repo-rules`       |
+| docs-checker          | `docs`             | `.execution-chain-docs`             |
+| docs-tutorial-checker | `docs-tutorial`    | `.execution-chain-docs-tutorial`    |
+| readme-checker        | `readme`           | `.execution-chain-readme`           |
+| plan-checker          | `plan`             | `.execution-chain-plan`             |
+| ayokoding-web-\*      | `ayokoding-[lang]` | `.execution-chain-ayokoding-[lang]` |
+| oseplatform-web-\*    | `ose-platform`     | `.execution-chain-ose-platform`     |
 
 ### Tool Requirements
 

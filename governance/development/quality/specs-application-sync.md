@@ -255,7 +255,7 @@ It does not apply to:
 - **`rhino-cli spec-coverage validate`**: Enforces spec-to-test mapping for CLI apps. Integrated into `test:quick`. Violations cause CI to fail.
 - **Nx cache inputs**: `test:unit` and `test:quick` targets for demo-be backends declare `specs/apps/a-demo/be/gherkin/**/*.feature` as inputs, so Nx invalidates cached results when Gherkin specs change.
 - **`a-demo-contracts` codegen target**: Generates types from the OpenAPI spec. Declared as a dependency of `typecheck` and `build`, so stale contracts are caught in CI before merge.
-- **`repo-governance-checker`**: Validates that specs folders exist for apps that require them. Flags missing or misnamed spec folders.
+- **`repo-rules-checker`**: Validates that specs folders exist for apps that require them. Flags missing or misnamed spec folders.
 
 ## Related Documentation
 

@@ -15,7 +15,7 @@ updated: 2025-12-15
 
 # Fixer Confidence Levels Convention
 
-This document defines the universal confidence level system used by all fixer agents (repo-governance-fixer, apps-ayokoding-web-general-fixer, apps-ayokoding-web-by-example-fixer, apps-ayokoding-web-facts-fixer, docs-tutorial-fixer, apps-oseplatform-web-content-fixer, readme-fixer, docs-fixer, plan-fixer) to assess findings from checker agents and determine which fixes can be applied automatically versus which require manual review.
+This document defines the universal confidence level system used by all fixer agents (repo-rules-fixer, apps-ayokoding-web-general-fixer, apps-ayokoding-web-by-example-fixer, apps-ayokoding-web-facts-fixer, docs-tutorial-fixer, apps-oseplatform-web-content-fixer, readme-fixer, docs-fixer, plan-fixer) to assess findings from checker agents and determine which fixes can be applied automatically versus which require manual review.
 
 ## Principles Implemented/Respected
 
@@ -110,7 +110,7 @@ Confidence levels serve multiple critical purposes:
 
 All fixer agents implement this confidence level system:
 
-- **repo-governance-fixer** - Repository-wide structural consistency fixes
+- **repo-rules-fixer** - Repository-wide structural consistency fixes
 - **apps-ayokoding-web-general-fixer** - ayokoding-web general content fixes
 - **apps-ayokoding-web-by-example-fixer** - ayokoding-web by-example tutorial fixes
 - **apps-ayokoding-web-facts-fixer** - ayokoding-web factual accuracy fixes
@@ -152,7 +152,7 @@ The three confidence levels (HIGH, MEDIUM, FALSE_POSITIVE) are universal. Each a
 
 **Examples Across Domains:**
 
-**repo-governance-fixer:**
+**repo-rules-fixer:**
 
 - Missing `subcategory` field verified by re-reading frontmatter
 - Broken internal link verified by checking file doesn't exist at target path
@@ -220,7 +220,7 @@ The three confidence levels (HIGH, MEDIUM, FALSE_POSITIVE) are universal. Each a
 
 **Examples Across Domains:**
 
-**repo-governance-fixer:**
+**repo-rules-fixer:**
 
 - Content duplication between AGENTS.md and convention file (context differs, may be intentional)
 - Link target unclear (file missing, but can't determine correct target automatically)
@@ -288,7 +288,7 @@ The three confidence levels (HIGH, MEDIUM, FALSE_POSITIVE) are universal. Each a
 
 **Examples Across Domains:**
 
-**repo-governance-fixer:**
+**repo-rules-fixer:**
 
 - Checker flagged markdown headings as YAML comments (searched entire file instead of just frontmatter)
 - Checker reported missing field that actually exists (case sensitivity issue)
@@ -470,7 +470,7 @@ These criteria apply across ALL fixer agents:
 
 Each fixer agent has domain-specific validation checks:
 
-**repo-governance-fixer:**
+**repo-rules-fixer:**
 
 - Frontmatter field validation for agent files
 - File naming convention compliance
@@ -832,14 +832,14 @@ User or maintainer reviews false positive reports and:
 **Initial State:**
 
 ```
-repo-governance-checker flags:
+repo-rules-checker flags:
   - VIOLATION: 15 agent files have YAML comments in frontmatter
 ```
 
 **Fixer Re-validation:**
 
 ```
-repo-governance-fixer re-validates:
+repo-rules-fixer re-validates:
   - Extracts frontmatter from each file
   - Searches isolated frontmatter for # symbols
   - Result: 0 actual violations found (all # symbols in markdown body)
@@ -869,7 +869,7 @@ FAIL: All agent files - Frontmatter comment detection
 
 **Checker Update:**
 
-- Maintainer updates repo-governance-checker with corrected AWK pattern
+- Maintainer updates repo-rules-checker with corrected AWK pattern
 - Re-runs checker: 0 violations found
 - False positives eliminated
 
@@ -884,7 +884,7 @@ FAIL: All agent files - Frontmatter comment detection
 
 ### Fixer Agents Using This Convention
 
-- [repo-governance-fixer.md](../../../.claude/agents/repo-governance-fixer.md) - Repository structural consistency fixer
+- [repo-rules-fixer.md](../../../.claude/agents/repo-rules-fixer.md) - Repository structural consistency fixer
 - [apps-ayokoding-web-general-fixer.md](../../../.claude/agents/apps-ayokoding-web-general-fixer.md) - ayokoding-web general Next.js content fixer
 - [apps-ayokoding-web-by-example-fixer.md](../../../.claude/agents/apps-ayokoding-web-by-example-fixer.md) - ayokoding-web by-example tutorial fixer
 - [apps-ayokoding-web-facts-fixer.md](../../../.claude/agents/apps-ayokoding-web-facts-fixer.md) - ayokoding-web factual accuracy fixer

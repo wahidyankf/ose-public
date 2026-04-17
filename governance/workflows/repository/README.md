@@ -4,7 +4,7 @@ Orchestrated workflows for validating repository-level operations across princip
 
 ## Purpose
 
-These workflows define **WHEN and HOW to validate repository rules**, orchestrating repo-governance-checker and repo-governance-fixer agents to ensure consistency across all governance layers (principles, conventions, development practices, agents).
+These workflows define **WHEN and HOW to validate repository rules**, orchestrating repo-rules-checker and repo-rules-fixer agents to ensure consistency across all governance layers (principles, conventions, development practices, agents).
 
 ## Scope
 

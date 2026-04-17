@@ -19,7 +19,7 @@ Agents in this repository follow a **single filename rule with no exceptions**. 
 
 A uniform, exception-free naming rule gives the repository three concrete guarantees that loose naming cannot:
 
-- **Enforceable by checker**: A single regex suffix check (`-(maker|checker|fixer|dev|deployer|executor|manager)$`) decides conformance. No per-agent judgement, no grandfathered legacy names, no "this one is special" carve-outs. `repo-governance-checker` can audit the entire population in one pass and produce a deterministic result.
+- **Enforceable by checker**: A single regex suffix check (`-(maker|checker|fixer|dev|deployer|executor|manager)$`) decides conformance. No per-agent judgement, no grandfathered legacy names, no "this one is special" carve-outs. `repo-rules-checker` can audit the entire population in one pass and produce a deterministic result.
 - **Zero-exception discipline**: Exceptions erode conventions. Once one agent is allowed a bespoke suffix, reviewers lose the ability to reject the next one on principle alone. Holding every agent to the same structure keeps the rule teachable in one sentence and cheap to enforce forever.
 - **Harness parity**: Claude Code reads `.claude/agents/*.md` and OpenCode reads `.opencode/agent/*.md`. The sync pipeline assumes a filename-for-filename mirror between the two directories. Drift in either direction — a rename in one tree but not the other, a `.claude/` agent with no `.opencode/` twin — breaks cross-harness invocation silently. A shared naming rule makes the mirror check a trivial set-difference.
 
@@ -86,7 +86,7 @@ Filenames MUST be identical pair-for-pair between the two directories. Every `.c
 
 ## Enforcement
 
-`repo-governance-checker` MUST run the following audit command as part of every governance pass:
+`repo-rules-checker` MUST run the following audit command as part of every governance pass:
 
 ```bash
 ls .claude/agents/*.md \
@@ -119,7 +119,7 @@ Current agents, grouped by role, all conforming to the rule:
 
 - **[Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md)** — The scope and role of every agent are explicit in its filename; no convention-by-tribal-knowledge.
 - **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)** — One rule, one suffix list, one regex. No exceptions to memorize.
-- **[Automation Over Manual](../../principles/software-engineering/automation-over-manual.md)** — A single-line `grep` decides conformance, enabling mechanical enforcement by `repo-governance-checker`.
+- **[Automation Over Manual](../../principles/software-engineering/automation-over-manual.md)** — A single-line `grep` decides conformance, enabling mechanical enforcement by `repo-rules-checker`.
 
 ---
 

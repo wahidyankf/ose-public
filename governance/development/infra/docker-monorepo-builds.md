@@ -210,8 +210,8 @@ both working.
 
 **Agents:**
 
-- `repo-governance-checker` - Can validate docker-compose context settings
-- `repo-governance-fixer` - Corrects docker-compose context misconfigurations
+- `repo-rules-checker` - Can validate docker-compose context settings
+- `repo-rules-fixer` - Corrects docker-compose context misconfigurations
 
 ## Principles Implemented/Respected
 

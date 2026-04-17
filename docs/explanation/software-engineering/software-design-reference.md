@@ -187,7 +187,7 @@ Skills available for quick reference:
 
 ## Validation
 
-The `repo-governance-checker` agent validates:
+The `repo-rules-checker` agent validates:
 
 - Cross-references between governance and software docs
 - Principle alignment in software documentation

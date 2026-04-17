@@ -350,7 +350,7 @@ After every edit (Edit tool or Bash sed/awk):
 
 - [readme-checker.md](./readme-checker.md) - Generates audit reports that this agent processes
 - [readme-maker.md](./readme-maker.md) - Creates README content
-- [repo-governance-fixer.md](./repo-governance-fixer.md) - Similar fixer pattern for repository rules
+- [repo-rules-fixer.md](./repo-rules-fixer.md) - Similar fixer pattern for repository rules
 
 **Related Conventions:**
 

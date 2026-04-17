@@ -209,7 +209,7 @@ produce an app without the generated sitemaps.
 
 ## Validation
 
-The `repo-governance-checker` agent validates that:
+The `repo-rules-checker` agent validates that:
 
 - Any `build` target with a non-empty `dependsOn` list in `project.json` has a `buildCommand` in
   `vercel.json` that includes equivalent steps
@@ -226,5 +226,5 @@ The `repo-governance-checker` agent validates that:
 
 **Agents:**
 
-- `repo-governance-checker` - Validates `vercel.json` build command alignment
-- `repo-governance-fixer` - Corrects misaligned `buildCommand` entries
+- `repo-rules-checker` - Validates `vercel.json` build command alignment
+- `repo-rules-fixer` - Corrects misaligned `buildCommand` entries

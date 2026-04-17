@@ -129,7 +129,7 @@ Generate Mermaid-based C4 diagrams following the accessible color palette:
 - Does NOT fix existing specs (that's `specs-fixer`)
 - Does NOT create content outside the explicitly specified target path
 - Does NOT create implementation code (that's per-language developer agents)
-- Does NOT modify governance docs (that's `repo-governance-maker`)
+- Does NOT modify governance docs (that's `repo-rules-maker`)
 
 ## Principles Implemented/Respected
 

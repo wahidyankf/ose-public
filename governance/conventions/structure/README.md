@@ -21,7 +21,7 @@ This directory contains standards for how documentation is organized, named, and
 
 ## Documents
 
-- [Agent Naming Convention](./agent-naming.md) - Single exception-free filename rule for agent files in `.claude/agents/` and `.opencode/agent/`. Defines scope vocabulary, role vocabulary (maker, checker, fixer, dev, deployer, executor, manager), and the audit command enforced by `repo-governance-checker`
+- [Agent Naming Convention](./agent-naming.md) - Single exception-free filename rule for agent files in `.claude/agents/` and `.opencode/agent/`. Defines scope vocabulary, role vocabulary (maker, checker, fixer, dev, deployer, executor, manager), and the audit command enforced by `repo-rules-checker`
 - [Diataxis Framework](./diataxis-framework.md) - Understanding the four-category documentation organization framework we use (Tutorials, How-To, Reference, Explanation). Foundational framework for all documentation structure
 - [File Naming Convention](./file-naming.md) - Kebab-case filename rules for docs/, governance/, and plans/ directories
 - [Per-Directory Licensing](./licensing.md) - Standards for the per-directory licensing strategy using FSL-1.1-MIT for product apps and behavioral specifications, and MIT for shared libraries and reference implementations

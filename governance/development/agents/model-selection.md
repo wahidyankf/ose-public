@@ -78,7 +78,7 @@ Model selection directly affects agent quality, latency, and resource efficiency
 - **apps-ayokoding-web-in-the-field-maker** -- produces production implementation guides requiring framework integration and quality bar judgment
 - **apps-ayokoding-web-general-maker** -- creates bilingual educational content requiring audience awareness and language nuance
 - **swe-ui-maker** -- creates UI components requiring CVA variants, Radix composition, accessibility, tests, and stories in one pass
-- **repo-governance-maker** -- creates governance documents requiring architectural reasoning about layer relationships and traceability
+- **repo-rules-maker** -- creates governance documents requiring architectural reasoning about layer relationships and traceability
 
 **Frontmatter**: Omit the `model` field (inherits the default, which is opus-tier).
 
@@ -109,8 +109,8 @@ Note: `model` field is omitted — inherits opus tier (creative reasoning, code 
 
 **Agent examples**:
 
-- **All checkers** -- validate content against conventions using defined rulesets and produce structured audit reports (docs-checker, docs-tutorial-checker, docs-software-engineering-separation-checker, readme-checker, specs-checker, repo-governance-checker, repo-workflow-checker, plan-checker, plan-execution-checker, swe-code-checker, swe-ui-checker, ci-checker, apps-\*-checker)
-- **Most fixers** -- apply corrections from checker audit reports following documented fix procedures (docs-fixer, docs-tutorial-fixer, docs-software-engineering-separation-fixer, readme-fixer, specs-fixer, repo-governance-fixer, repo-workflow-fixer, plan-fixer, swe-ui-fixer, ci-fixer, apps-\*-fixer)
+- **All checkers** -- validate content against conventions using defined rulesets and produce structured audit reports (docs-checker, docs-tutorial-checker, docs-software-engineering-separation-checker, readme-checker, specs-checker, repo-rules-checker, repo-workflow-checker, plan-checker, plan-execution-checker, swe-code-checker, swe-ui-checker, ci-checker, apps-\*-checker)
+- **Most fixers** -- apply corrections from checker audit reports following documented fix procedures (docs-fixer, docs-tutorial-fixer, docs-software-engineering-separation-fixer, readme-fixer, specs-fixer, repo-rules-fixer, repo-workflow-fixer, plan-fixer, swe-ui-fixer, ci-fixer, apps-\*-fixer)
 - **social-linkedin-post-maker** -- generates social media posts following a defined template and tone guidelines
 - **Structured makers** -- makers with tight, well-defined skills that pin down most decisions, making them rule-following rather than open-ended creation (docs-maker, readme-maker, agent-maker, specs-maker, repo-workflow-maker, apps-oseplatform-web-content-maker)
 - **plan-executor** -- executes pre-authored delivery checklists step-by-step with per-step validation; the creative planning decisions were already made by opus-tier plan-maker
@@ -284,8 +284,8 @@ The docs-file-manager uses haiku despite being categorized as a fixer (yellow). 
 The following agents enforce or assist with model selection:
 
 - **agent-maker** -- applies these guidelines when creating new agents
-- **repo-governance-checker** -- validates that all agents have model justification blocks and appropriate tier assignments
-- **repo-governance-fixer** -- corrects model selection issues identified by the checker
+- **repo-rules-checker** -- validates that all agents have model justification blocks and appropriate tier assignments
+- **repo-rules-fixer** -- corrects model selection issues identified by the checker
 
 ## References
 
@@ -308,8 +308,8 @@ The following agents enforce or assist with model selection:
 **Agents:**
 
 - `agent-maker` -- Creates agents following these model selection standards
-- `repo-governance-checker` -- Validates model selection compliance
-- `repo-governance-fixer` -- Fixes model selection issues
+- `repo-rules-checker` -- Validates model selection compliance
+- `repo-rules-fixer` -- Fixes model selection issues
 
 ---
 

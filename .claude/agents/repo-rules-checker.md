@@ -1,5 +1,5 @@
 ---
-name: repo-governance-checker
+name: repo-rules-checker
 description: Validates repository-wide consistency including file naming, linking, emoji usage, convention compliance, agent-to-agent duplication, agent-Skill duplication, Skill-to-Skill consolidation opportunities, and rules governance (contradictions, inaccuracies, inconsistencies). Outputs to generated-reports/ with progressive streaming.
 tools: Read, Glob, Grep, Write, Bash
 model: sonnet
@@ -1167,8 +1167,8 @@ Update report status to "Complete", add summary statistics by category:
 
 **Related Agents**:
 
-- `repo-governance-fixer` - Fixes issues found by this checker
-- `repo-governance-maker` - Creates repository rules and conventions
+- `repo-rules-fixer` - Fixes issues found by this checker
+- `repo-rules-maker` - Creates repository rules and conventions
 
 **Related Conventions**:
 

@@ -102,20 +102,20 @@ This pattern is used across multiple agent families. See [AI Agents Index](../..
 
 **Tool Pattern**: `Write`, `Edit` (content modification tools)
 
-**Color**: 🟦 Blue (Writer agents) or 🟨 Yellow (repo-governance-maker uses bash)
+**Color**: 🟦 Blue (Writer agents) or 🟨 Yellow (repo-rules-maker uses bash)
 
 **Examples**:
 
 | Agent                               | Creates/Updates                                    | Also Manages                                      | Tools Used            |
 | ----------------------------------- | -------------------------------------------------- | ------------------------------------------------- | --------------------- |
-| repo-governance-maker               | Convention docs, AGENTS.md sections, agent prompts | Cross-references, indices, related documentation  | Bash (not Edit/Write) |
+| repo-rules-maker                    | Convention docs, AGENTS.md sections, agent prompts | Cross-references, indices, related documentation  | Bash (not Edit/Write) |
 | apps-ayokoding-web-general-maker    | General Next.js learning content, blog posts       | Navigation files, overview pages, indices         | Write, Edit           |
 | apps-ayokoding-web-by-example-maker | By-example tutorials with annotated code           | 75-90 examples, diagrams, educational annotations | Write, Edit           |
 | docs-tutorial-maker                 | Tutorial content with narrative flow               | Learning objectives, diagrams, code examples      | Write, Edit           |
 | apps-oseplatform-web-content-maker  | Platform update posts, about pages                 | Navigation, asset references                      | Write, Edit           |
 | readme-maker                        | README sections with engaging content              | Links to detailed docs, cross-references          | Write, Edit           |
 
-**Note**: `repo-governance-maker` is a special case that uses bash commands (cat, sed, awk) instead of Edit/Write tools for file operations.
+**Note**: `repo-rules-maker` is a special case that uses bash commands (cat, sed, awk) instead of Edit/Write tools for file operations.
 
 **Key Responsibilities**:
 
@@ -167,7 +167,7 @@ Maker Agent (apps-ayokoding-web-general-maker):
 
 | Agent                                 | Validates                                       | Generates Report                                                |
 | ------------------------------------- | ----------------------------------------------- | --------------------------------------------------------------- |
-| repo-governance-checker               | AGENTS.md, agents, conventions, documentation   | `repo-rules__{uuid-chain}__{timestamp}__audit.md`               |
+| repo-rules-checker                    | AGENTS.md, agents, conventions, documentation   | `repo-rules__{uuid-chain}__{timestamp}__audit.md`               |
 | apps-ayokoding-web-general-checker    | General Next.js content (frontmatter, links)    | `ayokoding-web__{uuid-chain}__{timestamp}__audit.md`            |
 | apps-ayokoding-web-by-example-checker | By-example tutorials (coverage, annotations)    | `ayokoding-web-by-example__{uuid-chain}__{timestamp}__audit.md` |
 | docs-tutorial-checker                 | Tutorial pedagogy, narrative flow, visual aids  | `docs-tutorial__{uuid-chain}__{timestamp}__audit.md`            |
@@ -238,12 +238,12 @@ Checker Agent (apps-ayokoding-web-general-checker):
 
 | Agent                               | Fixes                                               | Generates Report                                              | Tools Used            |
 | ----------------------------------- | --------------------------------------------------- | ------------------------------------------------------------- | --------------------- |
-| repo-governance-fixer               | Convention violations from repo-governance-checker  | `repo-rules__{uuid-chain}__{timestamp}__fix.md`               | Bash (not Edit/Write) |
+| repo-rules-fixer                    | Convention violations from repo-rules-checker       | `repo-rules__{uuid-chain}__{timestamp}__fix.md`               | Bash (not Edit/Write) |
 | apps-ayokoding-web-general-fixer    | General Next.js content issues from general-checker | `ayokoding-web__{uuid-chain}__{timestamp}__fix.md`            | Edit, Write, Bash     |
 | apps-ayokoding-web-by-example-fixer | By-example tutorial issues from by-example-checker  | `ayokoding-web-by-example__{uuid-chain}__{timestamp}__fix.md` | Edit, Write, Bash     |
 | readme-fixer                        | README quality issues from readme-checker           | `readme__{uuid-chain}__{timestamp}__fix.md`                   | Edit, Write, Bash     |
 
-**Note**: `repo-governance-fixer` is a special case that uses bash commands (sed, awk, cat) instead of Edit/Write tools for file modifications. It still needs bash for report generation and timestamps.
+**Note**: `repo-rules-fixer` is a special case that uses bash commands (sed, awk, cat) instead of Edit/Write tools for file modifications. It still needs bash for report generation and timestamps.
 
 **Key Responsibilities**:
 
@@ -371,7 +371,7 @@ The maker-checker-fixer pattern aligns with the agent color categorization syste
 | ------------- | -------- | ------- | -------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | 🟦 **Blue**   | Writers  | Maker   | Has `Write` (creates new files)              | apps-ayokoding-web-general-maker, apps-ayokoding-web-by-example-maker, readme-maker       |
 | 🟩 **Green**  | Checkers | Checker | Has `Write`, `Bash` (no `Edit`)              | apps-ayokoding-web-general-checker, apps-ayokoding-web-by-example-checker, readme-checker |
-| 🟨 **Yellow** | Fixers   | Fixer   | Has `Edit` + `Write` (for report generation) | repo-governance-fixer                                                                     |
+| 🟨 **Yellow** | Fixers   | Fixer   | Has `Edit` + `Write` (for report generation) | repo-rules-fixer                                                                          |
 
 **Note**: Purple (🟪 Implementors) agents execute plans and use all tools, falling outside the maker-checker-fixer pattern.
 
@@ -387,18 +387,18 @@ See [AI Agents Convention - Agent Color Categorization](../agents/ai-agents.md#a
 
 **Agents**:
 
-- **repo-governance-maker** (🟦 Maker) - Propagates rule changes across multiple files
-- **repo-governance-checker** (🟩 Checker) - Validates consistency, generates audit reports
-- **repo-governance-fixer** (🟨 Fixer) - Applies validated fixes from audit reports
+- **repo-rules-maker** (🟦 Maker) - Propagates rule changes across multiple files
+- **repo-rules-checker** (🟩 Checker) - Validates consistency, generates audit reports
+- **repo-rules-fixer** (🟨 Fixer) - Applies validated fixes from audit reports
 
 **Use Case**: Maintaining consistency when adding/modifying conventions or standards
 
 **Example**:
 
 ```
-1. repo-governance-maker: Add new emoji usage rule to convention doc + update AGENTS.md + update agents
-2. repo-governance-checker: Validate all files comply with new rule
-3. repo-governance-fixer: Fix non-compliant files found in audit
+1. repo-rules-maker: Add new emoji usage rule to convention doc + update AGENTS.md + update agents
+2. repo-rules-checker: Validate all files comply with new rule
+3. repo-rules-fixer: Fix non-compliant files found in audit
 ```
 
 ### 2. apps-ayokoding-web-\* (Next.js 16 Content for ayokoding-web)
@@ -815,9 +815,9 @@ If verification fails, log the fix as FAILED (not applied). Do NOT log as "fixed
 
 **Agent Examples**:
 
-- `.claude/agents/repo-governance-maker.md` - Example maker agent
-- `.claude/agents/repo-governance-checker.md` - Example checker agent
-- `.claude/agents/repo-governance-fixer.md` - Example fixer agent
+- `.claude/agents/repo-rules-maker.md` - Example maker agent
+- `.claude/agents/repo-rules-checker.md` - Example checker agent
+- `.claude/agents/repo-rules-fixer.md` - Example fixer agent
 - `.claude/agents/apps-ayokoding-web-general-maker.md` - General Next.js content maker
 - `.claude/agents/apps-ayokoding-web-by-example-maker.md` - By-example tutorial maker
 - `.claude/agents/apps-ayokoding-web-general-checker.md` - General Next.js content checker

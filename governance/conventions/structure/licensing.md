@@ -276,8 +276,8 @@ To verify licensing compliance across the repository:
 
 **Agents:**
 
-- `repo-governance-checker` -- Validates licensing compliance
-- `repo-governance-fixer` -- Fixes licensing violations
+- `repo-rules-checker` -- Validates licensing compliance
+- `repo-rules-fixer` -- Fixes licensing violations
 
 ---
 

@@ -31,7 +31,7 @@ skills:
 Validate that all `apps/` and `libs/` projects conform to platform coding standards defined in `docs/explanation/software-engineering/` and enforced through Nx targets, linters, and coverage tools.
 
 **Scope**: Project infrastructure + language-specific code standards.
-**Not in scope**: Documentation content quality (use `docs-checker`), repository governance (use `repo-governance-checker`).
+**Not in scope**: Documentation content quality (use `docs-checker`), repository governance (use `repo-rules-checker`).
 
 ## Temporary Reports
 
@@ -310,7 +310,7 @@ Each finding follows the standard format:
 - `swe-golang-dev` - Go development (implements standards this agent checks)
 - `swe-typescript-dev` - TypeScript development
 - `swe-java-dev` - Java development
-- `repo-governance-checker` - Repository-wide governance validation
+- `repo-rules-checker` - Repository-wide governance validation
 
 **Skills**:
 

@@ -90,6 +90,32 @@ This directory contains specialized AI agents for the open-sharia-enterprise pro
 - **swe-rust-dev** - Rust application development
 - **swe-typescript-dev** - TypeScript application development
 
+## Naming Rule
+
+Every agent filename follows: `<scope>(-<qualifier>)*-<role>`
+
+- `scope` — top-level domain (`apps`, `docs`, `plan`, `repo`, `swe`, `ci`, `readme`, `specs`, `social`, `web`, `agent`).
+- `qualifier` — zero or more refinement tokens (e.g., `ayokoding-web`, `link`, `ui`, `execution`).
+- `role` — exactly one trailing token from the Role Vocabulary below.
+
+No other structure is permitted. No exceptions.
+
+Normative source: [Agent Naming Convention](../../governance/conventions/structure/agent-naming.md).
+
+## Role Vocabulary
+
+| Role       | Semantics                                                 | Example agents                                               |
+| ---------- | --------------------------------------------------------- | ------------------------------------------------------------ |
+| `maker`    | Produces a content/research artifact                      | `docs-maker`, `web-research-maker`                           |
+| `checker`  | Validates an artifact against standards                   | `plan-checker`, `plan-execution-checker`, `swe-code-checker` |
+| `fixer`    | Applies validated checker findings                        | `plan-fixer`, `swe-ui-fixer`                                 |
+| `dev`      | Writes code in a language or test framework               | `swe-rust-dev`, `swe-e2e-dev`                                |
+| `deployer` | Deploys an application to an environment                  | `apps-ayokoding-web-deployer`                                |
+| `executor` | Executes a defined procedure or checklist                 | `plan-executor`                                              |
+| `manager`  | Performs file or resource operations (rename/move/delete) | `docs-file-manager`                                          |
+
+Enforcement: `rhino-cli agents validate-naming` (wired into pre-push and CI).
+
 ## Agent Format (Claude Code)
 
 Agents use YAML frontmatter with the following structure:

@@ -33,54 +33,54 @@
 
 ## Phase 2: Rename `swe-e2e-test-dev` → `swe-e2e-dev`
 
-- [ ] `git mv .claude/agents/swe-e2e-test-dev.md .claude/agents/swe-e2e-dev.md`
-- [ ] `git mv .opencode/agent/swe-e2e-test-dev.md .opencode/agent/swe-e2e-dev.md`
-- [ ] Update `name:` frontmatter in `.claude/agents/swe-e2e-dev.md`
-- [ ] Update `name:` frontmatter in `.opencode/agent/swe-e2e-dev.md`
-- [ ] Grep sweep live refs (same path list as Phase 1)
-- [ ] Replace `swe-e2e-test-dev` → `swe-e2e-dev` in each live hit
-- [ ] `npm run sync:claude-to-opencode` — confirm no drift
-- [ ] Verify zero live refs remain: `Grep "swe-e2e-test-dev"` excluding `plans/done`, `generated-reports`,
+- [x] `git mv .claude/agents/swe-e2e-test-dev.md .claude/agents/swe-e2e-dev.md`
+- [x] `git mv .opencode/agent/swe-e2e-test-dev.md .opencode/agent/swe-e2e-dev.md`
+- [x] Update `name:` frontmatter in `.claude/agents/swe-e2e-dev.md`
+- [x] Update `name:` frontmatter in `.opencode/agent/swe-e2e-dev.md`
+- [x] Grep sweep live refs (same path list as Phase 1)
+- [x] Replace `swe-e2e-test-dev` → `swe-e2e-dev` in each live hit
+- [x] `npm run sync:claude-to-opencode` — confirm no drift
+- [x] Verify zero live refs remain: `Grep "swe-e2e-test-dev"` excluding `plans/done`, `generated-reports`,
       `plans/in-progress/2026-04-17__agent-and-workflow-naming-consistency/`, `.git`, `node_modules`
-- [ ] `npm run lint:md` passes
-- [ ] Commit: `refactor(agents): rename swe-e2e-test-dev to swe-e2e-dev`
+- [x] `npm run lint:md` passes
+- [x] Commit: `refactor(agents): rename swe-e2e-test-dev to swe-e2e-dev`
 
 ## Phase 3: Rename `web-researcher` → `web-research-maker`
 
-- [ ] `git mv .claude/agents/web-researcher.md .claude/agents/web-research-maker.md`
-- [ ] `git mv .opencode/agent/web-researcher.md .opencode/agent/web-research-maker.md`
-- [ ] Update `name:` frontmatter in `.claude/agents/web-research-maker.md`
-- [ ] Update `name:` frontmatter in `.opencode/agent/web-research-maker.md`
-- [ ] Grep sweep live refs (same path list as Phase 1)
-- [ ] Replace `web-researcher` → `web-research-maker` in each live hit
-- [ ] `npm run sync:claude-to-opencode` — confirm no drift
-- [ ] Verify zero live refs remain: `Grep "web-researcher"` excluding `plans/done`, `generated-reports`,
+- [x] `git mv .claude/agents/web-researcher.md .claude/agents/web-research-maker.md`
+- [x] `git mv .opencode/agent/web-researcher.md .opencode/agent/web-research-maker.md`
+- [x] Update `name:` frontmatter in `.claude/agents/web-research-maker.md`
+- [x] Update `name:` frontmatter in `.opencode/agent/web-research-maker.md`
+- [x] Grep sweep live refs (same path list as Phase 1)
+- [x] Replace `web-researcher` → `web-research-maker` in each live hit
+- [x] `npm run sync:claude-to-opencode` — confirm no drift
+- [x] Verify zero live refs remain: `Grep "web-researcher"` excluding `plans/done`, `generated-reports`,
       `plans/in-progress/2026-04-17__agent-and-workflow-naming-consistency/`, `.git`, `node_modules`
-- [ ] `npm run lint:md` passes
-- [ ] Commit: `refactor(agents): rename web-researcher to web-research-maker`
+- [x] `npm run lint:md` passes
+- [x] Commit: `refactor(agents): rename web-researcher to web-research-maker`
 
 ## Phase 4: Rename `repo-governance-*` triad → `repo-rules-*` (atomic)
 
-- [ ] `git mv .claude/agents/repo-governance-maker.md .claude/agents/repo-rules-maker.md`
-- [ ] `git mv .claude/agents/repo-governance-checker.md .claude/agents/repo-rules-checker.md`
-- [ ] `git mv .claude/agents/repo-governance-fixer.md .claude/agents/repo-rules-fixer.md`
-- [ ] `git mv .opencode/agent/repo-governance-maker.md .opencode/agent/repo-rules-maker.md`
-- [ ] `git mv .opencode/agent/repo-governance-checker.md .opencode/agent/repo-rules-checker.md`
-- [ ] `git mv .opencode/agent/repo-governance-fixer.md .opencode/agent/repo-rules-fixer.md`
-- [ ] Update `name:` frontmatter in each of the six renamed files
-- [ ] Update cross-references **inside** the triad's own bodies (checker mentions fixer, fixer mentions checker, maker mentions both)
-- [ ] Grep sweep live refs (same path list as Phase 1) for all of:
+- [x] `git mv .claude/agents/repo-governance-maker.md .claude/agents/repo-rules-maker.md`
+- [x] `git mv .claude/agents/repo-governance-checker.md .claude/agents/repo-rules-checker.md`
+- [x] `git mv .claude/agents/repo-governance-fixer.md .claude/agents/repo-rules-fixer.md`
+- [x] `git mv .opencode/agent/repo-governance-maker.md .opencode/agent/repo-rules-maker.md`
+- [x] `git mv .opencode/agent/repo-governance-checker.md .opencode/agent/repo-rules-checker.md`
+- [x] `git mv .opencode/agent/repo-governance-fixer.md .opencode/agent/repo-rules-fixer.md`
+- [x] Update `name:` frontmatter in each of the six renamed files
+- [x] Update cross-references **inside** the triad's own bodies (checker mentions fixer, fixer mentions checker, maker mentions both)
+- [x] Grep sweep live refs (same path list as Phase 1) for all of:
   - `repo-governance-maker`
   - `repo-governance-checker`
   - `repo-governance-fixer`
-- [ ] Replace with `repo-rules-maker`, `repo-rules-checker`, `repo-rules-fixer` respectively
-- [ ] **Special attention**: `governance/conventions/structure/agent-naming.md` (created earlier by the previous repo-governance-maker run) already mentions the old names; update those hits here, not later
-- [ ] `npm run sync:claude-to-opencode` — confirm no drift
-- [ ] Verify zero live refs remain: `Grep "repo-governance-(maker|checker|fixer)"` excluding `plans/done`,
+- [x] Replace with `repo-rules-maker`, `repo-rules-checker`, `repo-rules-fixer` respectively
+- [x] **Special attention**: `governance/conventions/structure/agent-naming.md` (created earlier by the previous repo-governance-maker run) already mentions the old names; update those hits here, not later
+- [x] `npm run sync:claude-to-opencode` — confirm no drift
+- [x] Verify zero live refs remain: `Grep "repo-governance-(maker|checker|fixer)"` excluding `plans/done`,
       `generated-reports`, `plans/in-progress/2026-04-17__agent-and-workflow-naming-consistency/`,
       `.git`, `node_modules`
-- [ ] `npm run lint:md` passes
-- [ ] Commit: `refactor(agents): rename repo-governance triad to repo-rules`
+- [x] `npm run lint:md` passes
+- [x] Commit: `refactor(agents): rename repo-governance triad to repo-rules`
 
 ## Phase 5: Publish Naming Rule + Role Vocabulary
 

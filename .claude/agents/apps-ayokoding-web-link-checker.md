@@ -51,9 +51,9 @@ This agent has `WebFetch` and `WebSearch` tools but invokes **Exception 3 (link-
 checkers)** of the [Web Research Delegation Convention](../../governance/conventions/writing/web-research-delegation.md).
 Its domain is URL reachability — HTTP status codes, redirect chains — not content research. It
 invokes `WebFetch` directly against the URL under test; delegating a reachability probe to
-[`web-researcher`](./web-researcher.md) would add latency without improving the signal. If
+[`web-research-maker`](./web-research-maker.md) would add latency without improving the signal. If
 content-level research is required (for example, to rewrite a broken reference), that work is
-escalated to the ayokoding-web maker or checker family, which delegates to `web-researcher`
+escalated to the ayokoding-web maker or checker family, which delegates to `web-research-maker`
 per the default rule.
 
 ## Temporary Report Files

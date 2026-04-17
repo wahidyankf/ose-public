@@ -408,25 +408,25 @@ Three agents implement this methodology end-to-end (check → finding → fix):
 
 All use the same validation workflow and confidence classification.
 
-### Delegate Research to `web-researcher` for Context Isolation
+### Delegate Research to `web-research-maker` for Context Isolation
 
 The authoritative rule for when to delegate public-web research lives in the
 [Web Research Delegation Convention](../../../governance/conventions/writing/web-research-delegation.md).
 This skill follows that convention and does not re-state the threshold here. In summary: delegate to
-`web-researcher` whenever verifying a single claim requires 2+ `WebSearch` calls or 3+ `WebFetch` calls;
+`web-research-maker` whenever verifying a single claim requires 2+ `WebSearch` calls or 3+ `WebFetch` calls;
 in-context work remains correct for single-shot verification against a known authoritative URL and for
 fixer agents re-validating a single audit finding.
 
 **Delegation pattern:**
 
 ```
-Agent tool call → subagent_type: web-researcher
+Agent tool call → subagent_type: web-research-maker
 Prompt: "Verify whether <specific claim>. Return cited findings with confidence tags."
 ```
 
-`web-researcher` returns a synthesised, cited summary using the same `[Verified]/[Outdated]/[Unverified]/[Needs Verification]` confidence tags defined in this skill. You then translate those tags into dual-labelled findings (`[Verified]/[Error]/[Outdated]/[Unverified]` + `CRITICAL/HIGH/MEDIUM/LOW`) for your audit report.
+`web-research-maker` returns a synthesised, cited summary using the same `[Verified]/[Outdated]/[Unverified]/[Needs Verification]` confidence tags defined in this skill. You then translate those tags into dual-labelled findings (`[Verified]/[Error]/[Outdated]/[Unverified]` + `CRITICAL/HIGH/MEDIUM/LOW`) for your audit report.
 
-See [`web-researcher`](../../agents/web-researcher.md) for the agent contract and the
+See [`web-research-maker`](../../agents/web-research-maker.md) for the agent contract and the
 [Web Research Delegation Convention](../../../governance/conventions/writing/web-research-delegation.md)
 for the normative rule and its enumerated exceptions.
 

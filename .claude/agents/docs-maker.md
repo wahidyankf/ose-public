@@ -64,7 +64,7 @@ This means:
 
 - **Code & Implementation**: Read actual source code, verify function signatures, test examples
 - **File System**: Verify paths exist using Glob, validate link targets, confirm directory structures
-- **External Information**: Per the [Web Research Delegation Convention](../../governance/conventions/writing/web-research-delegation.md), delegate multi-page research (threshold: 2+ `WebSearch` calls or 3+ `WebFetch` calls for a single claim) to the [`web-researcher`](./web-researcher.md) subagent and use its cited findings. Use in-context `WebSearch`/`WebFetch` only for single-shot verification against a known authoritative URL. Cite sources with URLs and dates.
+- **External Information**: Per the [Web Research Delegation Convention](../../governance/conventions/writing/web-research-delegation.md), delegate multi-page research (threshold: 2+ `WebSearch` calls or 3+ `WebFetch` calls for a single claim) to the [`web-research-maker`](./web-research-maker.md) subagent and use its cited findings. Use in-context `WebSearch`/`WebFetch` only for single-shot verification against a known authoritative URL. Cite sources with URLs and dates.
 - **Commands & Examples**: Test all command sequences, run code examples, verify expected outputs
 - **Links & References**: Check internal links point to existing files with `.md` extension and correct relative paths
 - **Versions & Dependencies**: State version requirements explicitly, document environmental dependencies

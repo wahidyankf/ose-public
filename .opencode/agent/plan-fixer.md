@@ -69,7 +69,7 @@ Your primary job is to:
 This agent has `WebSearch` and `WebFetch` tools but invokes **Exception 2 (fixer re-validation)**
 of the [Web Research Delegation Convention](../../governance/conventions/writing/web-research-delegation.md).
 Fixer agents re-validate single audit findings in the same context as the fix they apply, so
-delegating to [`web-researcher`](./web-researcher.md) would break the re-validation-plus-fix
+delegating to [`web-research-maker`](./web-research-maker.md) would break the re-validation-plus-fix
 coupling. The agent therefore uses in-context `WebSearch`/`WebFetch` for single-finding
 re-validation only; if research expands beyond the audit frame, the agent classifies the
 finding as MEDIUM (manual review) or FALSE_POSITIVE rather than spawning a subagent itself.

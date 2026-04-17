@@ -1,12 +1,9 @@
 ---
+name: web-research-maker
 description: Researches current, verifiable information from the web in an isolated context. Use when you need facts beyond training data cutoff, latest API or library docs, current best practices, or verification of uncertain claims. Returns cited, structured findings without bloating main conversation context.
-model: zai-coding-plan/glm-5.1
-tools:
-  glob: true
-  grep: true
-  read: true
-  webfetch: true
-  websearch: true
+tools: Read, Glob, Grep, WebFetch, WebSearch
+model: sonnet
+color: green
 skills:
   - docs-validating-factual-accuracy
   - docs-applying-content-quality
@@ -32,11 +29,11 @@ The main agent's training data has a cutoff and can hallucinate modern library a
 
 This agent is pure research — it discovers and cites information. Other agents consume its output:
 
-- `docs-checker`, `apps-ayokoding-web-facts-checker` — validate existing repo content against facts; may invoke `web-researcher` when they need current data before producing findings
-- `plan-checker` — verifies commands, versions, and tool names in plans; delegates out to `web-researcher` for anything unfamiliar
+- `docs-checker`, `apps-ayokoding-web-facts-checker` — validate existing repo content against facts; may invoke `web-research-maker` when they need current data before producing findings
+- `plan-checker` — verifies commands, versions, and tool names in plans; delegates out to `web-research-maker` for anything unfamiliar
 - `docs-maker`, `docs-tutorial-maker`, `apps-*-maker` — commission research before writing content so the draft starts accurate
 
-`web-researcher` does NOT produce audit reports, apply fixes, or edit files. It returns findings only.
+`web-research-maker` does NOT produce audit reports, apply fixes, or edit files. It returns findings only.
 
 ## Core Responsibilities
 
@@ -173,7 +170,7 @@ Apply the tagging system from `docs-validating-factual-accuracy` Skill:
 ```
 User: "What is the correct signature of AbortSignal.timeout in Node.js 22?"
 
-Orchestrator delegates to web-researcher, which returns a cited summary including
+Orchestrator delegates to web-research-maker, which returns a cited summary including
 the MDN link, Node.js docs link, and confirmation of the `(ms: number) => AbortSignal`
 signature with a [Verified] tag.
 ```
@@ -182,7 +179,7 @@ signature with a [Verified] tag.
 
 ```
 plan-checker encounters the claim "Vercel Functions support AbortSignal.timeout for
-3-second SSR guard." It delegates a query to web-researcher for verification before
+3-second SSR guard." It delegates a query to web-research-maker for verification before
 filing the finding.
 ```
 
@@ -191,7 +188,7 @@ filing the finding.
 ```
 User: "What are the 2026 best practices for Next.js 16 cache components?"
 
-web-researcher returns a synthesised answer from the official Next.js docs,
+web-research-maker returns a synthesised answer from the official Next.js docs,
 the cache-components migration guide, and a Vercel engineering blog post,
 each with a confidence tag.
 ```

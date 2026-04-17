@@ -53,10 +53,10 @@ re-validation) and Exception 3 (link-reachability checkers)** of the
 [Web Research Delegation Convention](../../governance/conventions/writing/web-research-delegation.md).
 Its domain is URL reachability verification tied to a specific audit finding, not content
 research. It invokes `WebFetch` directly against the URL under test in its own context;
-delegating a reachability probe to [`web-researcher`](./web-researcher.md) would both break the
+delegating a reachability probe to [`web-research-maker`](./web-research-maker.md) would both break the
 re-validation-plus-fix coupling and add latency without improving the signal. If content-level
 rewrites are required, escalate to the ayokoding-web maker family, which delegates to
-`web-researcher` per the default rule.
+`web-research-maker` per the default rule.
 
 ## Mode Parameter Handling
 

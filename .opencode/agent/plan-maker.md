@@ -184,9 +184,9 @@ When creating plans that reference specific technologies, versions, APIs, or too
 
 Use the `docs-validating-factual-accuracy` Skill for systematic verification methodology.
 
-**Delegate research to `web-researcher` for unfamiliar or fast-moving topics**: Per the
+**Delegate research to `web-research-maker` for unfamiliar or fast-moving topics**: Per the
 [Web Research Delegation Convention](../../governance/conventions/writing/web-research-delegation.md),
-invoke the [`web-researcher`](./web-researcher.md) subagent for multi-page research
+invoke the [`web-research-maker`](./web-research-maker.md) subagent for multi-page research
 (threshold: 2+ `WebSearch` calls or 3+ `WebFetch` calls for a single claim) before writing
 claims about library versions, API signatures, or current best practices that are not already
 documented in the repo (`docs/`, `governance/`, `apps/*/README.md`). Incorporate only facts

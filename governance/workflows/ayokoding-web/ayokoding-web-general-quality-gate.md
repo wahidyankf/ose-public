@@ -96,7 +96,7 @@ tools in the main context — use this when agent delegation is unavailable.
 ## Research Delegation
 
 The `apps-ayokoding-web-facts-checker` agent invoked by this workflow delegates multi-page web
-research to the [`web-researcher`](../../../.claude/agents/web-researcher.md) subagent when
+research to the [`web-research-maker`](../../../.claude/agents/web-research-maker.md) subagent when
 verifying a single claim requires more than one or two searches, or more than two fetches.
 Checkers retain in-context `WebSearch`/`WebFetch` only for single-shot verification against known
 authoritative URLs. This keeps each audit context lean. The delegation is encoded in the checker

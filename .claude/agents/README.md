@@ -65,7 +65,7 @@ This directory contains specialized AI agents for the open-sharia-enterprise pro
 
 ### 🔍 Research (Green)
 
-- **web-researcher** - Read-only web research specialist; returns cited, structured findings with confidence tags in an isolated context (no file writes, no shell). Invoke for current API/library docs, fact verification, best-practice surveys.
+- **web-research-maker** - Read-only web research specialist; returns cited, structured findings with confidence tags in an isolated context (no file writes, no shell). Invoke for current API/library docs, fact verification, best-practice surveys.
 
 ### 🟪 Operations
 

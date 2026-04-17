@@ -139,7 +139,7 @@ graph TB
 ## Research Delegation
 
 The `docs-checker` and `docs-tutorial-checker` agents invoked by this workflow delegate
-multi-page web research to the [`web-researcher`](../../../.claude/agents/web-researcher.md)
+multi-page web research to the [`web-research-maker`](../../../.claude/agents/web-research-maker.md)
 subagent when verifying a single claim requires more than one or two searches, or more than two
 fetches. Checkers retain in-context `WebSearch`/`WebFetch` only for single-shot verification
 against known authoritative URLs. This keeps each audit context lean. The delegation is encoded

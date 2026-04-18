@@ -1,9 +1,0 @@
-HealthResponse:
-  type: object
-  description: Health check response
-  required:
-    - status
-  properties:
-    status:
-      type: string
-      example: ok

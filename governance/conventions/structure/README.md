@@ -8,7 +8,7 @@ tags:
   - structure
   - organization
 created: 2026-01-30
-updated: 2026-04-02
+updated: 2026-04-18
 ---
 
 # Structure Conventions
@@ -24,6 +24,7 @@ This directory contains standards for how documentation is organized, named, and
 - [Agent Naming Convention](./agent-naming.md) - Single exception-free filename rule for agent files in `.claude/agents/` and `.opencode/agent/`. Defines scope vocabulary, role vocabulary (maker, checker, fixer, dev, deployer, executor, manager), and the audit command enforced by `repo-rules-checker`
 - [Diataxis Framework](./diataxis-framework.md) - Understanding the four-category documentation organization framework we use (Tutorials, How-To, Reference, Explanation). Foundational framework for all documentation structure
 - [File Naming Convention](./file-naming.md) - Kebab-case filename rules for docs/, governance/, and plans/ directories
+- [ose-primer Sync Convention](./ose-primer-sync.md) - Directional classification, transforms, and safety invariants governing content flow between `ose-public` (upstream) and `ose-primer` (downstream MIT-only template). Consumed by the two sync-maker agents and audited by `repo-rules-checker`
 - [Per-Directory Licensing](./licensing.md) - Standards for the per-directory licensing strategy using FSL-1.1-MIT for product apps and behavioral specifications, and MIT for shared libraries and reference implementations
 - [Plans Organization](./plans.md) - Standards for organizing project planning documents in plans/ folder including structure (ideas.md, backlog/, in-progress/, done/), naming patterns (YYYY-MM-DD\_\_identifier/), lifecycle stages, and project identifiers
 - [Programming Language Documentation Separation](./programming-language-docs-separation.md) - Establishes clear separation between repository-specific programming language style guides (docs/explanation/) and educational content (ayokoding-web). Defines scope boundaries, prerequisite requirements, cross-referencing patterns, and DRY principle application

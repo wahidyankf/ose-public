@@ -153,6 +153,15 @@ All agents follow foundational principles:
 
 **See**: [governance/principles/README.md](./governance/principles/README.md)
 
+## Related Repositories
+
+`ose-public` is the **upstream source of truth**. A downstream template repository, [`ose-primer`](https://github.com/wahidyankf/ose-primer), is a public MIT-licensed template that packages the scaffolding layer (governance, AI agents, skills, conventions, CI harness, polyglot demo apps) for teams building their own Sharia-compliant enterprise products. `ose-public` uses per-directory licensing (FSL-1.1-MIT for product apps, MIT for scaffolding); `ose-primer` is MIT throughout.
+
+- **Propagation** (`ose-public` → `ose-primer`): handled by `repo-ose-primer-propagation-maker`. Always via pull request against the primer's `main` branch.
+- **Adoption** (`ose-primer` → `ose-public`): handled by `repo-ose-primer-adoption-maker`. Applied as direct commits to `ose-public`'s `main` per Trunk-Based Development.
+
+Product-specific paths are classified `neither` and never sync. Reference: [Related Repositories](./docs/reference/related-repositories.md), [ose-primer sync convention](./governance/conventions/structure/ose-primer-sync.md).
+
 ## Related Documentation
 
 - **CLAUDE.md** (PRIMARY) - Claude Code configuration and guidance
@@ -162,7 +171,7 @@ All agents follow foundational principles:
 
 ---
 
-**Last Updated**: 2026-04-11
+**Last Updated**: 2026-04-18
 
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->

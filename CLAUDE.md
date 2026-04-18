@@ -619,6 +619,19 @@ Project planning in `plans/` folder:
 - **Workflows Index**: [governance/workflows/README.md](./governance/workflows/README.md) - Orchestrated processes
 - **Repository Architecture**: [governance/repository-governance-architecture.md](./governance/repository-governance-architecture.md) - Six-layer governance hierarchy
 
+## Related Repositories
+
+`ose-public` is the **upstream source of truth**. A downstream template repository, [`ose-primer`](https://github.com/wahidyankf/ose-primer), is a public MIT-licensed template packaging the scaffolding layer (governance, AI agents, skills, conventions, CI harness, polyglot demo apps) for teams building their own Sharia-compliant enterprise products. `ose-public` uses per-directory licensing (FSL-1.1-MIT for product apps, MIT for scaffolding); `ose-primer` is MIT throughout and intentionally excludes the FSL product layer.
+
+Content flows in both directions under classifier-driven rules:
+
+- **Propagation** (`ose-public` → `ose-primer`): scaffolding improvements authored upstream flow to the template via `repo-ose-primer-propagation-maker`. Always via pull request against the primer's `main` branch; never direct commits.
+- **Adoption** (`ose-primer` → `ose-public`): generic improvements contributed downstream can flow back via `repo-ose-primer-adoption-maker`. Applied to `ose-public` as direct commits to `main` per Trunk-Based Development.
+
+Product-specific paths (`apps/organiclever-*`, `apps/ayokoding-*`, `apps/oseplatform-*`, product specs, product roadmap, product plans) are classified `neither` and never sync.
+
+See: [Related Repositories reference](./docs/reference/related-repositories.md), [ose-primer sync convention](./governance/conventions/structure/ose-primer-sync.md).
+
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->
 

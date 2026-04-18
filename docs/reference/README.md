@@ -7,7 +7,7 @@ tags:
   - reference
   - technical
 created: 2025-11-22
-updated: 2026-03-06
+updated: 2026-04-18
 ---
 
 # Reference
@@ -27,6 +27,10 @@ Technical reference documentation for the open-sharia-enterprise project. These 
 
 - [Code Coverage](./code-coverage.md) - How coverage is measured locally (rhino-cli) and on Codecov, per-project details, exclusion patterns, and troubleshooting
 
+### Ecosystem
+
+- [Related Repositories](./related-repositories.md) - Sibling repositories derived from or related to `ose-public` (notably `ose-primer`), upstream/downstream relationships, and license differences
+
 ---
 
-**Last Updated**: 2026-03-22
+**Last Updated**: 2026-04-18

@@ -87,7 +87,7 @@ open-sharia-enterprise/
 
 - **Sites**: [`oseplatform-web`](./apps/oseplatform-web/), [`ayokoding-web`](./apps/ayokoding-web/), [`organiclever-fe`](./apps/organiclever-fe/), [`organiclever-be`](./apps/organiclever-be/), [`organiclever-fe-e2e`](./apps/organiclever-fe-e2e/), [`organiclever-be-e2e`](./apps/organiclever-be-e2e/)
 - **CLI tools**: [`ayokoding-cli`](./apps/ayokoding-cli/), [`rhino-cli`](./apps/rhino-cli/), [`oseplatform-cli`](./apps/oseplatform-cli/)
-- **Demo apps**: 11 backend implementations (Go, Java, Elixir, F#, Python, Rust, Kotlin, TypeScript, C#, Clojure) + 3 frontends (Next.js, TanStack Start, Flutter Web) — see [Demo Apps CI & Coverage](./docs/reference/demo-apps-ci-coverage.md)
+- **Polyglot demo apps**: extracted 2026-04-18 to the downstream [`ose-primer`](https://github.com/wahidyankf/ose-primer) template repository, which is now authoritative for the polyglot showcase (Go, Java, Elixir, F#, Python, Rust, Kotlin, TypeScript, C#, Clojure backends + Next.js, TanStack Start, Flutter Web frontends).
 
 **Libraries** (`libs/`): Reusable shared code
 
@@ -135,7 +135,7 @@ All projects enforce ≥90% test coverage as part of `test:quick`. Coverage is u
 - [`rhino-cli`](./apps/rhino-cli/)
   - [![codecov](https://codecov.io/gh/wahidyankf/ose-public/graph/badge.svg?flag=rhino-cli)](https://codecov.io/gh/wahidyankf/ose-public)
 
-For demo app CI badges, see [Demo Apps CI & Coverage](./docs/reference/demo-apps-ci-coverage.md).
+For polyglot demo app CI badges, see the [`ose-primer`](https://github.com/wahidyankf/ose-primer) repository.
 
 ## 📚 Documentation
 
@@ -187,10 +187,12 @@ This repository uses **per-directory licensing** guided by: implementation code 
 behavioral specifications (WHAT) must be FSL to prevent clean-room engineering of competing products.
 
 - **Product apps and behavioral specs** ([FSL-1.1-MIT](./LICENSE)): Product apps, product specs,
-  and all E2E test suites (including `a-demo-*-e2e`) are FSL-licensed. Each product app scopes
-  the competing-use restriction to its domain
-- **Shared libraries and demo code/specs** ([MIT](./libs/golang-commons/LICENSE)): All `libs/`,
-  `apps/a-demo-*` implementation directories (excluding `*-e2e`), and `specs/apps/a-demo/`
+  and all E2E test suites are FSL-licensed. Each product app scopes the competing-use restriction
+  to its domain
+- **Shared libraries** ([MIT](./libs/golang-commons/LICENSE)): All `libs/` are MIT-licensed.
+  (The polyglot demo apps previously stored under `apps/a-demo-*` and `specs/apps/a-demo/` were
+  extracted 2026-04-18 to the downstream [`ose-primer`](https://github.com/wahidyankf/ose-primer)
+  template, which is MIT throughout.)
 
 The FSL-1.1-MIT license converts to MIT on a **rolling per-version basis**: each commit becomes
 MIT-licensed 2 years after its first public distribution.

@@ -32,7 +32,7 @@ This practice respects the following core principles:
 
 This practice implements/respects the following conventions:
 
-- **[Plans Organization Convention](../../conventions/structure/plans.md)**: Acceptance criteria are written in requirements.md files within plan folders following the Gherkin format defined by this convention.
+- **[Plans Organization Convention](../../conventions/structure/plans.md)**: Acceptance criteria are written in `prd.md` within plan folders (or the condensed PRD section of a single-file plan's `README.md`) following the Gherkin format defined by this convention.
 
 - **[Content Quality Principles](../../conventions/writing/quality.md)**: Gherkin scenarios use active voice, clear structure, and concrete examples - aligning with content quality standards for clarity and testability.
 
@@ -341,7 +341,7 @@ Then something happens
 
 ### PASS: Project Plans
 
-- **Requirements files** (`plans/*/requirements.md`): Define acceptance criteria for each user story
+- **Product requirements files** (`plans/*/prd.md`): Define Gherkin acceptance criteria for each user story (legacy plans may still use `requirements.md`)
 - **Delivery checklists**: Validate implementation against Gherkin scenarios
 - See [Plans Organization Convention](../../conventions/structure/plans.md)
 

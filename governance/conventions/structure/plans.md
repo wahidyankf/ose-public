@@ -180,21 +180,21 @@ Plans can use either **single-file** or **multi-file** structure depending on si
 
 ### Structure Decision
 
-**Single-File Structure** (≤ 1000 lines total):
+**Multi-File Structure** (default — five documents):
 
-- Use when combined content of requirements + tech-docs + delivery ≤ 1000 lines
+- Use for any plan with substantive business intent, product scope, and technical design to record
+- Five separate files: `README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md`
+- Each file owns one concern (see Content-Placement Rules below), so diffs stay narrow per PR and cross-reviewers can find the section relevant to their concern without skimming an omnibus file
+- Use for complex, large-scale plans, and any plan where the business rationale deserves its own file
+
+**Single-File Structure** (exception for trivially small plans, ≤ 1000 lines total):
+
+- Use only when combined business rationale + product scope + tech-docs + delivery ≤ 1000 lines AND the plan is simple enough that collapsing all five concerns into one README does not hide them
 - All content in a single `README.md` file
-- Simpler, easier to read and navigate for small plans
-- Recommended for most plans
+- Simpler for one-shot edits, quick config changes, and similarly scoped work
+- If the plan grows past 1000 lines or the author can foresee the plan growing mid-execution, promote to the multi-file layout before execution begins
 
-**Multi-File Structure** (> 1000 lines total):
-
-- Use when combined content exceeds 1000 lines
-- Separate files: `README.md`, `requirements.md`, `tech-docs.md`, `delivery.md`
-- Better organization for complex, large-scale plans
-- Each file focuses on a specific aspect of the plan
-
-**Decision Rule**: If you estimate the plan will be ≤ 1000 lines total, use single-file. Otherwise use multi-file.
+**Decision Rule**: Default to the five-document multi-file layout. Collapse to single-file only when the plan is trivially small AND a condensed BRD + condensed PRD can both fit comfortably in the README without crowding out the technical sections.
 
 ### Single-File Structure
 
@@ -203,29 +203,67 @@ Plans can use either **single-file** or **multi-file** structure depending on si
 └── README.md                # All-in-one plan document
 ```
 
-**README.md sections**:
+**README.md sections** (mandatory, in order):
 
-1. **Overview** - Project description, goals, and context
-2. **Requirements** - Detailed requirements and objectives
-3. **Technical Documentation** - Architecture, design, implementation approach
-4. **Delivery** - Milestones, deliverables, success criteria
+1. **Context** — project description, background, non-technical framing
+2. **Scope** — in-scope + out-of-scope; affected subrepos / apps named explicitly
+3. **Business rationale (condensed BRD)** — why this matters, business goals, affected roles, success metrics (gut-based reasoning OK; judgment calls labeled; fabricated KPIs forbidden; internet citations inline with excerpt + URL + access date)
+4. **Product requirements (condensed PRD)** — user stories (`As a … I want … So that …`), Gherkin acceptance criteria, product scope
+5. **Technical approach** — architecture, design decisions, implementation approach
+6. **Delivery checklist** — phased `- [ ]` items with one concrete action per checkbox
+7. **Quality gates** — local gates + CI gates that must pass
+8. **Verification** — how to confirm the plan is done
+
+If the author cannot comfortably fit both the condensed BRD and condensed PRD sections into the README without crowding out the technical sections, promote the plan to the five-document multi-file layout before execution begins.
 
 ### Multi-File Structure
 
 ```
 2025-12-01__feature-name/
 ├── README.md                # Plan overview and navigation
-├── requirements.md          # Detailed requirements and objectives
-├── tech-docs.md            # Technical documentation and architecture
-└── delivery.md             # Timeline and milestones
+├── brd.md                   # Business Requirements Document
+├── prd.md                   # Product Requirements Document
+├── tech-docs.md             # Technical documentation and architecture
+└── delivery.md              # Step-by-step delivery checklist
 ```
 
 **File purposes**:
 
-- **README.md**: High-level overview, links to other files, quick reference
-- **requirements.md**: User stories, acceptance criteria (Gherkin format), business requirements
-- **tech-docs.md**: Architecture diagrams, API design, data models, technical decisions
-- **delivery.md**: Milestones, deliverables, success metrics, validation checklist
+- **README.md**: High-level overview and navigation — Context, Scope (with affected subrepos / apps named explicitly), Approach Summary, and links to the other four files. First file a reader opens; first file checkers parse for scope.
+- **brd.md** — **Business Requirements Document**: business goal and rationale ("why are we doing this"), business impact, affected roles, business-level success metrics, business-scope Non-Goals, business risks and mitigations. Content-placement container, not a sign-off artifact — code review is the only approval gate in this repo.
+- **prd.md** — **Product Requirements Document**: product overview, personas, user stories (`As a … I want … So that …`), acceptance criteria in Gherkin, product scope (in-scope + out-of-scope features), product-level risks.
+- **tech-docs.md**: architecture, design decisions with rationale, file-impact analysis, mechanics, dependencies, risks, rollback. No step-by-step checklist.
+- **delivery.md**: sequential, ticked checklist of executable steps (`- [ ]`), organized by phase if needed. Plan-execution workflow reads this file to drive execution; `plan-execution-checker` reads it to verify completion.
+
+### Content-Placement Rules (brd.md vs prd.md)
+
+Authoritative split between `brd.md` and `prd.md`. These rules are normative for `plan-maker` / `plan-checker` / `plan-fixer` — the agents share one definition to avoid drift.
+
+> **Solo-maintainer framing**: BRD and PRD are **content-placement containers**, not sign-off artifacts. This repo has one maintainer collaborating with AI agents; code review (the PR) is the only approval gate. The convention MUST NOT introduce sponsor sign-off, stakeholder approval ceremonies, or role-based gates.
+
+**Goes in `brd.md` (business perspective)**:
+
+- Business goal and rationale ("why are we doing this")
+- Business impact (pain points, expected benefits)
+- Affected roles (which hats the maintainer wears; which agents consume the file) — **not** sign-off mapping
+- Business-level success metrics. BRD does not require every claim to be data-driven — gut-based reasoning is acceptable **when the logic supports the claim**. What is NOT acceptable: fabricated numeric targets (percentages, durations, counts) presented as already-measured facts when no baseline exists. Options when writing a success metric:
+  1. **Observable fact** (preferred): cite a grep/git/agent-round-trip check that verifies on demand (e.g., "zero plans using the deprecated layout after migration").
+  2. **Cited measurement**: reference an existing dashboard, prior measurement, or external data source. When you cite data pulled from the internet, include the data itself in the plan (specific number, quote, excerpt) alongside the URL and the access date. URL-only citations are not enough — links rot.
+  3. **Qualitative reasoning**: state the structural claim plainly without a number.
+  4. **Judgment call / gut target**: allowed, but MUST be explicitly labeled (e.g., "_Judgment call:_ we expect review time to drop; no baseline measured").
+- Business-scope Non-Goals
+- Business risks and mitigations
+
+**Goes in `prd.md` (product perspective)**:
+
+- Product overview (what is being built)
+- Personas (hats the maintainer wears; agents that consume the file) — **not** external stakeholder roles
+- User stories (`As a … I want … So that …`)
+- Acceptance criteria in Gherkin
+- Product scope (in-scope features, out-of-scope features)
+- Product-level risks (UX, feature interaction)
+
+**Ambiguous cases**: When a concern is genuinely cross-cutting (e.g., a success criterion is both a business-level fact and a product acceptance criterion), place the **factual claim or judgment** in `brd.md` and the **testable scenario** in `prd.md`, cross-linking between them. Do not duplicate the full content. If the BRD side is a judgment call rather than a measured fact, label it as such — do not fabricate a number and pretend it was measured.
 
 ### Granular Checklist Items in delivery.md
 
@@ -250,11 +288,11 @@ Every checkbox in `delivery.md` must represent exactly one concrete, independent
 
 **Test for granularity**: Each checkbox must pass this test — can you verify it is done without completing anything else on the list? If the answer is no, the item is too coarse.
 
-**Acceptance Criteria**: All user stories in requirements.md must include testable acceptance criteria using Gherkin format. See [Acceptance Criteria Convention](../../development/infra/acceptance-criteria.md) for complete details.
+**Acceptance Criteria**: All user stories in `prd.md` (or the condensed PRD section of a single-file plan's `README.md`) must include testable acceptance criteria using Gherkin format. See [Acceptance Criteria Convention](../../development/infra/acceptance-criteria.md) for complete details.
 
 ### Important Note on File Naming
 
-Files inside plan folders use descriptive kebab-case names (e.g., `requirements.md`, `tech-docs.md`, `delivery.md`). The folder structure provides sufficient context, so the filename only needs to describe its purpose.
+Files inside plan folders use descriptive kebab-case names or short industry-standard acronyms (e.g., `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md`). The folder structure provides sufficient context, so the filename only needs to describe its purpose.
 
 ## Key Differences from Documentation
 
@@ -427,21 +465,37 @@ Use the verification tip from the [Linking Convention](../formatting/linking.md#
 ```markdown
 # Add User Search Feature
 
-## Overview
+## Context
 
-Brief description and goals...
+Brief description and background...
 
-## Requirements
+## Scope
 
-User stories and acceptance criteria...
+In-scope features, out-of-scope items, affected apps...
 
-## Technical Documentation
+## Business Rationale (condensed BRD)
 
-API design, database changes...
+Why this matters, affected roles, success metrics (observable facts preferred; judgment calls labeled)...
 
-## Delivery
+## Product Requirements (condensed PRD)
 
-Milestones and deliverables...
+User stories (As a … I want … So that …), Gherkin acceptance criteria, product scope...
+
+## Technical Approach
+
+API design, database changes, implementation notes...
+
+## Delivery Checklist
+
+Phased `- [ ]` items, one action per checkbox...
+
+## Quality Gates
+
+`nx affected -t typecheck lint test:quick spec-coverage`, markdown lint, manual verification...
+
+## Verification
+
+How to confirm done...
 ```
 
 ### Example: Large Plan (Multi-File)
@@ -449,9 +503,10 @@ Milestones and deliverables...
 ```
 2025-12-05__migrate-to-microservices/
 ├── README.md                # ~100 lines (overview + navigation)
-├── requirements.md          # ~300 lines (detailed requirements)
-├── tech-docs.md            # ~800 lines (architecture + API specs)
-└── delivery.md             # ~200 lines (phased rollout plan)
+├── brd.md                   # ~150 lines (business goal, impact, affected roles, success metrics)
+├── prd.md                   # ~250 lines (personas, user stories, Gherkin acceptance criteria, product scope)
+├── tech-docs.md             # ~800 lines (architecture + API specs + file impact analysis)
+└── delivery.md              # ~200 lines (phased rollout plan)
 ```
 
 ### Example: Ideas File
@@ -482,4 +537,4 @@ Quick ideas and todos that haven't been formalized into plans yet.
 
 ---
 
-**Last Updated**: 2026-03-27
+**Last Updated**: 2026-04-18

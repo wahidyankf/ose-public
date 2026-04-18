@@ -332,9 +332,10 @@ The `plans/` folder at the repository root contains temporary project planning d
 ```
 plans/
 ├── in-progress/                              # Active project plans
-│   └── YYYY-MM-DD-[project-id]/            # Plan folder naming pattern
+│   └── YYYY-MM-DD-[project-id]/              # Plan folder naming pattern
 │       ├── README.md                         # NO PREFIX - folder provides context
-│       ├── requirements.md                   # NO PREFIX
+│       ├── brd.md                            # NO PREFIX - Business Requirements Document
+│       ├── prd.md                            # NO PREFIX - Product Requirements Document
 │       ├── tech-docs.md                      # NO PREFIX
 │       └── delivery.md                       # NO PREFIX
 ├── backlog/                                  # Planned projects for future
@@ -343,7 +344,7 @@ plans/
     └── YYYY-MM-DD-[project-id]/
 ```
 
-**Important:** Files inside plan folders use plain kebab-case names (e.g., `requirements.md`). The folder structure provides context.
+**Important:** Files inside plan folders use plain kebab-case names or short industry-standard acronyms (e.g., `brd.md`, `prd.md`, `tech-docs.md`). The folder structure provides context.
 
 ## Writing Guidelines
 

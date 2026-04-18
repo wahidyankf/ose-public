@@ -90,12 +90,15 @@ flowchart TD
 - `in-progress/` - Active projects being worked on
 - `done/` - Completed and archived projects
 
-**Standard Plan Files (inside plan folders):**
+**Standard Plan Files (inside plan folders)** — five-document multi-file layout:
 
-- `README.md` - Plan overview
-- `requirements.md` - Requirements and objectives
-- `tech-docs.md` - Technical documentation
-- `delivery.md` - Timeline and milestones
+- `README.md` - Plan overview and navigation
+- `brd.md` - Business Requirements Document (business goal, impact, affected roles, success metrics)
+- `prd.md` - Product Requirements Document (personas, user stories, Gherkin acceptance criteria, scope)
+- `tech-docs.md` - Technical documentation (architecture, decisions, file impact)
+- `delivery.md` - Delivery checklist (phased `- [ ]` items, one action per checkbox)
+
+Single-file layout (`README.md` only) is an exception for trivially-small plans.
 
 See [CLAUDE.md Plans Organization](../../CLAUDE.md#plans-organization) for full details.
 
@@ -155,13 +158,14 @@ See [CLAUDE.md Plans Organization](../../CLAUDE.md#plans-organization) for full 
    ```
    plans/backlog/2025-11-25__notification-system/
    ├── README.md
-   ├── requirements.md
+   ├── brd.md
+   ├── prd.md
    ├── tech-docs.md
    └── delivery.md
    ```
 
-   - Create full plan structure
-   - Define requirements and deliverables
+   - Create full five-document plan structure
+   - Define business intent (brd), product requirements (prd), technical approach (tech-docs), and delivery checklist (delivery)
    - Remove or check off the idea from ideas.md
 
 3. **Move to in-progress/** (Execution Phase)
@@ -187,9 +191,10 @@ See [CLAUDE.md Plans Organization](../../CLAUDE.md#plans-organization) for full 
    ```
    plans/backlog/2025-11-24__brand-strategy/
    ├── README.md           # Overview of brand strategy
-   ├── requirements.md     # Brand goals, target audience
+   ├── brd.md              # Brand goals, business impact, affected roles
+   ├── prd.md              # Target audience personas, brand user stories, Gherkin acceptance criteria
    ├── tech-docs.md        # Brand guidelines, design systems
-   └── delivery.md         # Timeline for brand development
+   └── delivery.md         # Delivery checklist for brand development
    ```
 
    - Define requirements and deliverables
@@ -296,7 +301,7 @@ See [CLAUDE.md Plans Organization](../../CLAUDE.md#plans-organization) for full 
 **How:**
 
 1. Create new plan folder: `plans/backlog/YYYY-MM-DD__[project-name]/`
-2. Structure ideas into `requirements.md`, `tech-docs.md`, `delivery.md`
+2. Structure ideas into `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md` (multi-file default) or a single `README.md` (trivially small)
 3. Remove or check off the idea from `plans/ideas.md`
 
 ### From plans/ to docs/

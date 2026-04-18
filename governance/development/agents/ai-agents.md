@@ -2345,7 +2345,7 @@ Decision: Extract to `docs-creating-accessible-diagrams` Skill
 **Scenario 2**: Adding custom validation logic for plan structure
 
 ```
-Knowledge: Plan must have README.md, requirements.md, delivery.md
+Knowledge: Plan must have README.md, brd.md, prd.md, tech-docs.md, delivery.md
 
 Q: Used by 3+ agents?
 A: NO (only plan-checker validates plan structure)

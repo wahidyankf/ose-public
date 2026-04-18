@@ -415,18 +415,59 @@ Goal: execute the one-time removal of demo apps, specs, workflows, and associate
   - [ ] Flip `apps/a-demo-*` row: Direction `propagate` → `neither (post-extraction)`; Transform `identity` → `—`; Rationale → `extracted 2026-04-XX (actual date); ose-primer is authoritative; path no longer exists in ose-public`.
   - [ ] Add or update `apps/a-demo-*-e2e` row similarly.
   - [ ] Flip `specs/apps/a-demo/**` row: Direction `propagate` → `neither (post-extraction)`; same Rationale pattern.
-  - [ ] In the audit-rule section, confirm the whitelist entries allowing these three rows to match zero paths post-extraction.
+  - [ ] Flip `libs/clojure-openapi-codegen`, `libs/elixir-cabbage`, `libs/elixir-gherkin`, `libs/elixir-openapi-codegen` rows: Direction `propagate` → `neither (post-extraction)`; Rationale → `only consumer was extracted demo; removed from ose-public in Phase 8 Commit I`.
+  - [ ] In the audit-rule section, confirm the whitelist entries allowing these rows to match zero paths post-extraction.
   - [ ] Bump the convention's `updated:` frontmatter to today.
-- [ ] Commit with message: `docs(governance): flip a-demo classifier rows to neither (Phase 8 Commit H, extraction complete)`.
+- [ ] Commit with message: `docs(governance): flip a-demo and orphan-lib classifier rows to neither (Phase 8 Commit H)`.
 - [ ] **[C]** Verify scope is only the convention file.
 
-### 8.Z — Checkpoint after all 8 commits
+### 8.I — Commit I: Remove orphaned libraries
 
-- [ ] **[P]** Run `git log -8 --oneline` and confirm the sequence A → B → C → D → E → F → G → H with the expected commit subjects.
-- [ ] **[P]** Run `ls apps/ | grep '^a-demo-' || echo NONE` — must print NONE.
+Pre-flight checks first; deletion only after both return clean.
+
+- [ ] Run `nx graph --file=/tmp/graph-preI.json` and confirm zero edges from any retained project to the four target libs: `jq '.graph.dependencies | to_entries[] | select(.value[].target == "clojure-openapi-codegen" or .value[].target == "elixir-cabbage" or .value[].target == "elixir-gherkin" or .value[].target == "elixir-openapi-codegen")' /tmp/graph-preI.json` returns empty.
+- [ ] Run text-grep backup check: `grep -rnl -E 'libs/(clojure-openapi-codegen|elixir-(cabbage|gherkin|openapi-codegen))' apps/ | grep -v '^apps/a-demo-' || echo NO_RETAINED_CONSUMERS` — must print `NO_RETAINED_CONSUMERS`.
+- [ ] If either pre-flight check returns a non-empty match, **HALT Commit I**; investigate the unexpected consumer; resolve before retrying.
+- [ ] `git rm -r libs/clojure-openapi-codegen`.
+- [ ] `git rm -r libs/elixir-cabbage`.
+- [ ] `git rm -r libs/elixir-gherkin`.
+- [ ] `git rm -r libs/elixir-openapi-codegen`.
+- [ ] Edit `libs/README.md`: remove index entries for the four deleted libs.
+- [ ] Run `ls libs/ | grep -E '^(clojure-openapi-codegen|elixir-(cabbage|gherkin|openapi-codegen))$' || echo NONE` — must print `NONE`.
+- [ ] Run `nx graph` regeneration and confirm no orphan project nodes for the four libs.
+- [ ] Commit with message: `chore(libs): remove orphaned elixir/clojure libs (Phase 8 Commit I, demo extraction)`.
+- [ ] **[C]** Verify commit scope is only `libs/` deletions + `libs/README.md` edit.
+
+### 8.J — Commit J: Trim rhino-cli demo-only commands
+
+- [ ] `git rm apps/rhino-cli/cmd/java_validate_annotations.go` (+ its `_test.go` and `.integration_test.go` siblings if present).
+- [ ] `git rm apps/rhino-cli/cmd/contracts_java_clean_imports.go` (+ `_test.go` + `.integration_test.go`).
+- [ ] `git rm apps/rhino-cli/cmd/contracts_dart_scaffold.go` (+ `_test.go` + `.integration_test.go`).
+- [ ] `git rm apps/rhino-cli/cmd/java.go`.
+- [ ] `git rm apps/rhino-cli/cmd/contracts.go`.
+- [ ] `git rm -r apps/rhino-cli/internal/java`.
+- [ ] Inspect `apps/rhino-cli/cmd/root.go` (or equivalent command registration) and remove any remaining references to the deleted commands; confirm the CLI still builds.
+- [ ] Edit `apps/rhino-cli/README.md`: remove docstring sections for the three removed commands; confirm the surviving command list reads cleanly.
+- [ ] Edit `CLAUDE.md`: remove the `(includes java validate-annotations)` parenthetical (or similar) next to `rhino-cli` in the Common Development Commands / apps listing.
+- [ ] Greps for lingering references: `grep -rnI -E '(validate-annotations|java-clean-imports|dart-scaffold)' apps/rhino-cli/ CLAUDE.md AGENTS.md docs/ governance/ 2>/dev/null` — must return zero matches.
+- [ ] Under `specs/apps/rhino/`, check for Gherkin features naming the removed commands; if any, delete those feature files or prune the affected scenarios; commit-message note references the specs change.
+- [ ] Rebuild: `nx run rhino-cli:build` — must succeed.
+- [ ] Run unit tests: `nx run rhino-cli:test:unit` — must pass with coverage ≥ 90%.
+- [ ] Run integration tests: `nx run rhino-cli:test:integration` — must pass.
+- [ ] Run `rhino-cli --help` (via the built binary) and confirm no subcommand named `java`, `contracts java-clean-imports`, `contracts dart-scaffold`, or `contracts` appears.
+- [ ] Commit with message: `chore(rhino-cli): trim demo-only commands (Phase 8 Commit J, demo extraction)`.
+- [ ] **[C]** Verify commit scope is only `apps/rhino-cli/` + `CLAUDE.md` (+ optional `specs/apps/rhino/` edits).
+
+### 8.Z — Checkpoint after all 10 commits
+
+- [ ] **[P]** Run `git log -10 --oneline` and confirm the sequence A → B → C → D → E → F → G → H → I → J with the expected commit subjects.
+- [ ] **[P]** Run `ls apps/ | grep '^a-demo-' || echo NONE` — must print `NONE`.
 - [ ] **[P]** Run `ls .github/workflows/test-a-demo-*.yml 2>/dev/null` — empty.
 - [ ] **[P]** Run `ls specs/apps/a-demo 2>/dev/null` — no such directory.
 - [ ] **[P]** Run `ls docs/reference/demo-apps-ci-coverage.md 2>/dev/null` — no such file.
+- [ ] **[P]** Run `ls libs/ | grep -E '^(clojure-openapi-codegen|elixir-(cabbage|gherkin|openapi-codegen))$' || echo NONE` — must print `NONE`.
+- [ ] **[P]** Run `ls apps/rhino-cli/cmd/ | grep -E '^(java|contracts)' || echo NONE` — must print `NONE` (no java or contracts command files).
+- [ ] **[P]** Run `ls apps/rhino-cli/internal/java 2>/dev/null` — no such directory.
 
 ## Phase 9 — Post-extraction cleanup & verification
 
@@ -442,7 +483,7 @@ Goal: verify `ose-public` is healthy after extraction; catch any dangling refere
 
 - [ ] Run `npm install` (in case package-lock shifted from removed apps).
 - [ ] Run `nx affected -t typecheck lint test:quick spec-coverage` from `main` (or a just-created branch). Must pass.
-- [ ] Run `nx run-many -t typecheck lint test:quick spec-coverage --projects='ayokoding-web,oseplatform-web,organiclever-fe,organiclever-be,rhino-cli,oseplatform-cli,ayokoding-cli,golang-commons'` — must pass (explicit product + retained infrastructure).
+- [ ] Run `nx run-many -t typecheck lint test:quick spec-coverage --projects='ayokoding-web,oseplatform-web,organiclever-fe,organiclever-be,rhino-cli,oseplatform-cli,ayokoding-cli,golang-commons'` — must pass (explicit product + retained infrastructure; `rhino-cli` run is the definitive Commit-J verification).
 
 ### 9.3 — Product E2E green run
 
@@ -573,21 +614,23 @@ Goal: close out and archive.
 
 ## Summary Gate Checklist
 
-| Gate                                                         | Evidence                                                                                                                                                                |
-| ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **G1** — Classifier covers every `ose-public` top-level path | Phase 2 complete; `repo-rules-checker` reports zero orphan paths.                                                                                                       |
-| **G1.5** — Both workflows present and naming-compliant       | Phase 3.5 complete; `repo-ose-primer-sync-execution.md` and `repo-ose-primer-extraction-execution.md` under `governance/workflows/repo/`; workflow-naming regex passes. |
-| **G2** — Both agents present and naming-compliant            | Phase 4 & 5 complete; regex audit passes for both; frontmatter declares `model: opus`.                                                                                  |
-| **G3** — Skill present in both harnesses                     | Phase 3 complete; `.claude/skills/` and `.opencode/skill/` mirror.                                                                                                      |
-| **G4** — Smoke-test reports readable                         | Phase 6 complete; two reports committed.                                                                                                                                |
-| **G5** — Primer parity verified — **hard gate for Phase 8**  | Phase 7 complete; parity report verdict is `parity verified`.                                                                                                           |
-| **G6** — Demo paths absent from `ose-public`                 | Phase 8 Z-checkpoint all green.                                                                                                                                         |
-| **G7** — Product apps still pass                             | Phase 9 `nx affected` and E2E green.                                                                                                                                    |
-| **G8** — Grep sweep clean                                    | Phase 9.4 returns zero dangling references.                                                                                                                             |
-| **G9** — Links clean                                         | Phase 9.5 returns zero broken links.                                                                                                                                    |
-| **G10** — First propagation PR exists or merged              | Phase 10 complete; PR URL recorded.                                                                                                                                     |
-| **G11** — Adoption evaluated                                 | Phase 11 complete; either applied changes or filed "no actionable findings" report.                                                                                     |
-| **G12** — Plan archived                                      | Phase 12 complete; folder moved to `plans/done/`; indices updated.                                                                                                      |
+| Gate                                                         | Evidence                                                                                                                                                                                                       |
+| ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **G1** — Classifier covers every `ose-public` top-level path | Phase 2 complete; `repo-rules-checker` reports zero orphan paths.                                                                                                                                              |
+| **G1.5** — Both workflows present and naming-compliant       | Phase 3.5 complete; `repo-ose-primer-sync-execution.md` and `repo-ose-primer-extraction-execution.md` under `governance/workflows/repo/`; workflow-naming regex passes.                                        |
+| **G2** — Both agents present and naming-compliant            | Phase 4 & 5 complete; regex audit passes for both; frontmatter declares `model: opus`.                                                                                                                         |
+| **G3** — Skill present in both harnesses                     | Phase 3 complete; `.claude/skills/` and `.opencode/skill/` mirror.                                                                                                                                             |
+| **G4** — Smoke-test reports readable                         | Phase 6 complete; two reports committed.                                                                                                                                                                       |
+| **G5** — Primer parity verified — **hard gate for Phase 8**  | Phase 7 complete; parity report verdict is `parity verified`.                                                                                                                                                  |
+| **G6** — Demo paths absent from `ose-public`                 | Phase 8 Z-checkpoint all green (Commits A–H applied).                                                                                                                                                          |
+| **G6.1** — Orphaned libs removed                             | Phase 8 Commit I landed; `ls libs/` contains none of `clojure-openapi-codegen`, `elixir-cabbage`, `elixir-gherkin`, `elixir-openapi-codegen`; `nx graph` has no orphan nodes for those libs.                   |
+| **G6.2** — `rhino-cli` trimmed                               | Phase 8 Commit J landed; `rhino-cli --help` does not list `java validate-annotations`, `contracts java-clean-imports`, or `contracts dart-scaffold`; `nx run rhino-cli:test:quick` passes with ≥ 90% coverage. |
+| **G7** — Product apps still pass                             | Phase 9 `nx affected` and E2E green.                                                                                                                                                                           |
+| **G8** — Grep sweep clean                                    | Phase 9.4 returns zero dangling references.                                                                                                                                                                    |
+| **G9** — Links clean                                         | Phase 9.5 returns zero broken links.                                                                                                                                                                           |
+| **G10** — First propagation PR exists or merged              | Phase 10 complete; PR URL recorded.                                                                                                                                                                            |
+| **G11** — Adoption evaluated                                 | Phase 11 complete; either applied changes or filed "no actionable findings" report.                                                                                                                            |
+| **G12** — Plan archived                                      | Phase 12 complete; folder moved to `plans/done/`; indices updated.                                                                                                                                             |
 
 ## Related Documents
 

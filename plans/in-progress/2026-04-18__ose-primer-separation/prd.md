@@ -10,7 +10,7 @@ This plan delivers five product outcomes inside `ose-public`:
 4. **Two maker agents**:
    - `repo-ose-primer-adoption-maker` — reads the local primer clone; proposes changes to pull into `ose-public`.
    - `repo-ose-primer-propagation-maker` — reads `ose-public`; proposes changes to push to the primer clone and optionally opens a draft PR against `wahidyankf/ose-primer:main`. Also operates in **parity-check mode** to verify primer-side demo state before extraction.
-5. **One-time extraction** — removal of the `a-demo-*` polyglot showcase from `ose-public`: 17 app directories under `apps/`, the `specs/apps/a-demo/` spec area, 14 `test-a-demo-*.yml` workflows, the `docs/reference/demo-apps-ci-coverage.md` reference page, all inbound references in `README.md` / `CLAUDE.md` / `AGENTS.md` / `ROADMAP.md` / governance docs, and the demo entries in `codecov.yml`, `go.work`, `open-sharia-enterprise.sln`. Product apps (OrganicLever, AyoKoding, OSE Platform), `rhino-cli`, and generic libraries remain.
+5. **One-time extraction** — removal of the `a-demo-*` polyglot showcase from `ose-public`: 17 app directories under `apps/`, the `specs/apps/a-demo/` spec area, 14 `test-a-demo-*.yml` workflows, the `docs/reference/demo-apps-ci-coverage.md` reference page, all inbound references in `README.md` / `CLAUDE.md` / `AGENTS.md` / `ROADMAP.md` / governance docs, and the demo entries in `codecov.yml`, `go.work`, `open-sharia-enterprise.sln`. Also: four orphaned `libs/` entries (`clojure-openapi-codegen`, `elixir-cabbage`, `elixir-gherkin`, `elixir-openapi-codegen`) whose only consumers were the extracted demos. Also: three `rhino-cli` commands whose only targets were demo apps (`java validate-annotations`, `contracts java-clean-imports`, `contracts dart-scaffold`) plus their supporting code under `apps/rhino-cli/cmd/` and `apps/rhino-cli/internal/java/`. Product apps (OrganicLever, AyoKoding, OSE Platform), `rhino-cli` (trimmed), and the remaining generic libraries remain.
 6. **Two workflow orchestrations** under `governance/workflows/repo/`:
    - `repo-ose-primer-sync-execution.md` — ongoing sync cycle; parameterised by `direction` (adopt|propagate) and `mode` (dry-run|apply); invokes the relevant agent; optional PR creation in apply+propagate mode.
    - `repo-ose-primer-extraction-execution.md` — one-time extraction orchestrator; gates on parity-check; runs catch-up loop on failure; executes the eight extraction commits; runs post-extraction verification.
@@ -191,6 +191,24 @@ A visitor (who may have seen `ose-public` pre-extraction with the demos present)
 **As the** maintainer in adoption mode (P2),
 **I want** the adoption-maker to honour the post-extraction classifier — `apps/a-demo-*` and `specs/apps/a-demo/` are `neither`, so the adoption-maker does NOT surface demo changes from the primer as adoption candidates for `ose-public`,
 **So that** the extraction is truly one-way: no demo ever drifts back into `ose-public` by way of an adoption run.
+
+### US-17 — Orphaned library removal
+
+**As the** maintainer in extraction mode (P7),
+**I want** `libs/clojure-openapi-codegen/`, `libs/elixir-cabbage/`, `libs/elixir-gherkin/`, `libs/elixir-openapi-codegen/` deleted from `ose-public` in a dedicated Commit I (after the apps are gone),
+**So that** `ose-public/libs/` only contains libraries with at least one live consumer, `nx graph` has no zero-consumer projects, and `npm run doctor` no longer needs the Elixir/Clojure toolchains solely for lib-level lint/test targets.
+
+### US-18 — `rhino-cli` command trim
+
+**As the** maintainer in extraction mode (P7),
+**I want** `rhino-cli` trimmed in Commit J to remove the three demo-only commands (`java validate-annotations`, `contracts java-clean-imports`, `contracts dart-scaffold`) and the now-empty parent groupings (`java`, `contracts`),
+**So that** `rhino-cli --help` surfaces only the commands with retained targets, `apps/rhino-cli/cmd/` has no dead code, and future maintainers reading the CLI's surface do not need to ask "is this still used?".
+
+### US-19 — `rhino-cli` format-parser preservation
+
+**As the** maintainer in extraction mode (P7),
+**I want** the test-coverage format parsers under `apps/rhino-cli/internal/testcoverage/` left intact (for C#, Clojure, Dart, Elixir, Java, Kotlin, Rust formats that become unused post-extraction),
+**So that** Commit J is a low-risk surface trim rather than a deep refactor — dead parser code is tolerable; broken test infrastructure is not.
 
 ## Acceptance Criteria (Gherkin)
 
@@ -492,6 +510,66 @@ Feature: One-way extraction (adoption-maker post-extraction)
     Then no finding for any "apps/a-demo-*" path appears in the adoption report's main findings list
     And the classifier-coverage appendix may list the path as "skipped: neither (authoritative in ose-primer)"
 
+Feature: Orphaned library removal (Commit I)
+
+  Scenario: Four Elixir/Clojure libs deleted
+    Given Phase 8 Commits A–H have landed and the demo apps are gone
+    When Commit I is applied
+    Then "libs/clojure-openapi-codegen/" does not exist
+    And "libs/elixir-cabbage/" does not exist
+    And "libs/elixir-gherkin/" does not exist
+    And "libs/elixir-openapi-codegen/" does not exist
+    And "libs/README.md" contains no entries for the four deleted libs
+    And "nx graph" has no node matching "clojure-openapi-codegen", "elixir-cabbage", "elixir-gherkin", or "elixir-openapi-codegen"
+
+  Scenario: Commit I aborts if a retained app still imports a deleted lib
+    Given Phase 8 Commit I is about to be applied
+    When the pre-flight grep runs "grep -rnl 'libs/(clojure-openapi-codegen|elixir-(cabbage|gherkin|openapi-codegen))' apps/ | grep -v apps/a-demo-"
+    Then the command returns empty (no retained app depends on the four libs)
+    And Commit I is safe to apply
+    If the grep returns any non-a-demo match
+    Then Commit I MUST be blocked until the dependency is resolved
+
+  Scenario: Libraries explicitly kept
+    Given Phase 8 Commit I has been applied
+    When a reader lists "libs/"
+    Then "libs/golang-commons/", "libs/hugo-commons/", "libs/ts-ui/", "libs/ts-ui-tokens/" still exist
+    And "libs/README.md" still documents them
+
+Feature: rhino-cli command trim (Commit J)
+
+  Scenario: Demo-only commands removed
+    Given Phase 8 Commit J is applied
+    When a reader runs "rhino-cli --help" after rebuilding
+    Then no subcommand named "java validate-annotations" is listed
+    And no subcommand named "contracts java-clean-imports" is listed
+    And no subcommand named "contracts dart-scaffold" is listed
+
+  Scenario: Parent grouping commands removed when empty
+    Given Commit J has removed every subcommand under the "java" and "contracts" groups
+    When a reader lists "apps/rhino-cli/cmd/"
+    Then "java.go" and "contracts.go" are absent
+    And "apps/rhino-cli/internal/java/" is absent
+
+  Scenario: Surviving commands unchanged
+    Given Commit J is applied
+    When a reader lists "apps/rhino-cli/cmd/"
+    Then "doctor.go", "env_*.go", "git_pre_commit.go", "agents_*.go", "workflows_*.go", "docs_validate_links.go", "spec_coverage_*.go", "test_coverage_*.go" all still exist
+    And "apps/rhino-cli/internal/testcoverage/" still contains every format parser (no parser-level trim in this plan)
+
+  Scenario: rhino-cli tests pass after trim
+    Given Commit J has landed
+    When the maintainer runs "nx run rhino-cli:test:quick"
+    Then it passes
+    And coverage remains at or above 90%
+
+  Scenario: rhino-cli docs and CLAUDE.md updated
+    Given Commit J has landed
+    When a reader opens "apps/rhino-cli/README.md"
+    Then documentation for the three removed commands is absent
+    When a reader greps CLAUDE.md for "validate-annotations"
+    Then the match count is zero
+
 Feature: Agent model configuration (Opus)
 
   Scenario: Adoption-maker frontmatter declares Opus
@@ -614,7 +692,7 @@ Feature: Extraction workflow (repo-ose-primer-extraction-execution)
 
 - Primer-parity report committed to `generated-reports/` (Phase 7).
 
-**Phase 8: Demo extraction (subtractive)**
+**Phase 8: Demo extraction (subtractive; 10 granular commits A → J)**
 
 - Deletion of 17 app directories: `apps/a-demo-be-clojure-pedestal/`, `apps/a-demo-be-csharp-aspnetcore/`, `apps/a-demo-be-e2e/`, `apps/a-demo-be-elixir-phoenix/`, `apps/a-demo-be-fsharp-giraffe/`, `apps/a-demo-be-golang-gin/`, `apps/a-demo-be-java-springboot/`, `apps/a-demo-be-java-vertx/`, `apps/a-demo-be-kotlin-ktor/`, `apps/a-demo-be-python-fastapi/`, `apps/a-demo-be-rust-axum/`, `apps/a-demo-be-ts-effect/`, `apps/a-demo-fe-dart-flutterweb/`, `apps/a-demo-fe-e2e/`, `apps/a-demo-fe-ts-nextjs/`, `apps/a-demo-fe-ts-tanstack-start/`, `apps/a-demo-fs-ts-nextjs/`.
 - Deletion of `specs/apps/a-demo/` (entire spec area).
@@ -624,6 +702,8 @@ Feature: Extraction workflow (repo-ose-primer-extraction-execution)
 - Edits to remove demo projects from: `codecov.yml` (demo flags), `go.work` (demo `use` directives), `open-sharia-enterprise.sln` (demo project entries).
 - Edits to `_reusable-backend-*.yml` files ONLY if they list demo projects explicitly; otherwise untouched.
 - Edits to governance docs that cite demo paths as examples: `governance/development/quality/three-level-testing-standard.md`, `governance/development/infra/nx-targets.md`, `docs/reference/monorepo-structure.md`, `docs/reference/nx-configuration.md`, `docs/reference/project-dependency-graph.md`, `docs/how-to/add-new-app.md`, `docs/how-to/add-new-lib.md`. Mechanical edits only — update or remove path references; DO NOT rewrite the principle content.
+- **Commit I: orphaned library removal** — delete `libs/clojure-openapi-codegen/`, `libs/elixir-cabbage/`, `libs/elixir-gherkin/`, `libs/elixir-openapi-codegen/`; update `libs/README.md` index. Pre-flight grep confirms no retained app depends on any of the four.
+- **Commit J: `rhino-cli` trim** — delete `apps/rhino-cli/cmd/java_validate_annotations*.go`, `apps/rhino-cli/cmd/contracts_java_clean_imports*.go`, `apps/rhino-cli/cmd/contracts_dart_scaffold*.go`, `apps/rhino-cli/cmd/java.go`, `apps/rhino-cli/cmd/contracts.go`, `apps/rhino-cli/internal/java/`; update `apps/rhino-cli/README.md` and prune the `validate-annotations` mention in `CLAUDE.md`; prune any Gherkin feature under `specs/apps/rhino/` naming the removed commands. Format parsers under `apps/rhino-cli/internal/testcoverage/` are NOT touched.
 
 **Phase 9: Post-extraction cleanup (close-out)**
 
@@ -703,6 +783,18 @@ Feature: Extraction workflow (repo-ose-primer-extraction-execution)
 **Risk**: External references to `github.com/wahidyankf/ose-public/tree/main/apps/a-demo-*` break after extraction.
 
 **Mitigation**: This plan does not control external content, but the new reference doc and README Related Repositories section surface the move, and `ROADMAP.md` / README records an extraction changelog entry so future readers can trace the move.
+
+### PR-9.5 — Orphaned-lib deletion breaks a hidden transitive consumer
+
+**Risk**: A retained app (e.g., a non-demo CLI) imports one of the four Elixir/Clojure libs transitively through a shared helper that grep-based auditing missed.
+
+**Mitigation**: Commit I pre-flight runs both a project-dependency check (`nx graph` shows no edge from retained apps to the four target libs) AND a text grep across the retained `apps/` tree; Commit I is blocked until both return empty matches. `nx affected -t typecheck lint test:quick` post-Commit-I catches any breakage before Phase 9 closes.
+
+### PR-9.75 — `rhino-cli` trim breaks a retained coverage flow
+
+**Risk**: Commit J inadvertently removes code paths a retained product-app consumes — e.g., a Java product-app helper (there isn't one today, but a future refactor might add one) that shares types with `internal/java/`.
+
+**Mitigation**: Commit J's scope is explicitly enumerated (three commands + two parent groupings + one internal subpackage); `apps/rhino-cli/internal/testcoverage/` format parsers are explicitly preserved; `nx run rhino-cli:test:quick` is a hard gate in Phase 9. If the test suite fails, Commit J is reverted and the scope re-examined before retrying.
 
 ### PR-9 — Reusable workflow accidentally pruned
 

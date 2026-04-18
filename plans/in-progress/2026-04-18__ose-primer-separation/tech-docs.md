@@ -212,6 +212,10 @@ The table below is a **blueprint**; the final authoritative version lives in `go
 | `apps/ayokoding-cli`                                       | `neither`                   | —                      | Product-specific content validation CLI.                                                                                                                                                                                                          |
 | `apps-labs/`                                               | `neither`                   | —                      | Experimental; not stable enough for template.                                                                                                                                                                                                     |
 | `libs/golang-commons`                                      | `propagate`                 | identity               | Generic Go utilities.                                                                                                                                                                                                                             |
+| `libs/clojure-openapi-codegen`                             | `neither` (post-extraction) | —                      | Only consumer was `a-demo-be-clojure-pedestal`; removed in Phase 8 Commit I; `ose-primer` is authoritative if the template needs it.                                                                                                              |
+| `libs/elixir-cabbage`                                      | `neither` (post-extraction) | —                      | Only consumer was `a-demo-be-elixir-phoenix`; removed in Phase 8 Commit I.                                                                                                                                                                        |
+| `libs/elixir-gherkin`                                      | `neither` (post-extraction) | —                      | Only consumer was `a-demo-be-elixir-phoenix`; removed in Phase 8 Commit I.                                                                                                                                                                        |
+| `libs/elixir-openapi-codegen`                              | `neither` (post-extraction) | —                      | Only consumer was `a-demo-be-elixir-phoenix`; removed in Phase 8 Commit I.                                                                                                                                                                        |
 | `libs/*` (other)                                           | `propagate`                 | identity               | Default assumption for generic libs; overridden per-lib if product-specific.                                                                                                                                                                      |
 | `specs/apps/organiclever/**`                               | `neither`                   | —                      | Product specs.                                                                                                                                                                                                                                    |
 | `governance/principles/**`                                 | `bidirectional`             | identity               | Universal values; improvements from either side should surface.                                                                                                                                                                                   |
@@ -354,6 +358,55 @@ This section documents the one-time extraction of the `a-demo-*` polyglot showca
 
 - `scripts/**` — any script enumerating demo project names for bulk operations gets its list pruned; `scripts/doctor/` is NOT trimmed (out of scope per `brd.md` Non-Goals).
 
+**Library deletions (4 entries under `libs/`)** — libraries whose only consumers were demo apps:
+
+- `libs/clojure-openapi-codegen/` — only consumer `a-demo-be-clojure-pedestal` (deleted in Commit B); remove in Commit I.
+- `libs/elixir-cabbage/` — only consumer `a-demo-be-elixir-phoenix`; remove in Commit I.
+- `libs/elixir-gherkin/` — only consumer `a-demo-be-elixir-phoenix`; remove in Commit I.
+- `libs/elixir-openapi-codegen/` — only consumer `a-demo-be-elixir-phoenix`; remove in Commit I.
+- Update `libs/README.md` index accordingly.
+
+**Libraries explicitly kept** (not removed, even though tangentially demo-related):
+
+- `libs/golang-commons/` — consumed by `rhino-cli`, `ayokoding-cli`, `oseplatform-cli`.
+- `libs/hugo-commons/` — consumed by `ayokoding-cli`, `oseplatform-cli` for legacy link-checking features; Hugo sites migrated to Next.js but the commons package is still imported. Flag for a separate future cleanup plan; **NOT** removed here.
+- `libs/ts-ui/` and `libs/ts-ui-tokens/` — consumed by `organiclever-fe` (direct or transitive). Keep.
+
+**`rhino-cli` trim (Commit J)** — `apps/rhino-cli` loses commands whose only targets were demo apps. The CLI itself remains as the authoritative repo-hygiene tool.
+
+Commands to remove:
+
+- `java validate-annotations` — targeted Java backends (`a-demo-be-java-springboot`, `a-demo-be-java-vertx`); no remaining Java backend after extraction.
+- `contracts java-clean-imports` — targeted Java backends' generated OpenAPI code; no remaining consumer.
+- `contracts dart-scaffold` — targeted `a-demo-fe-dart-flutterweb`; no remaining Dart app.
+- Parent grouping commands (`java`, `contracts`) if every subcommand under them was removed.
+
+Files to delete under `apps/rhino-cli/`:
+
+- `cmd/java_validate_annotations.go` + `*_test.go` + `*.integration_test.go`.
+- `cmd/contracts_java_clean_imports.go` + `*_test.go` + `*.integration_test.go`.
+- `cmd/contracts_dart_scaffold.go` + `*_test.go` + `*.integration_test.go`.
+- `cmd/java.go` (parent command, now empty).
+- `cmd/contracts.go` (parent command, now empty).
+- `internal/java/` (entire subpackage if only the `java` command tree used it).
+- Any entries in `apps/rhino-cli/README.md` documenting the removed commands.
+- Any Gherkin feature files under `specs/apps/rhino/` that name the removed commands.
+
+Commands NOT removed (even though some formats become unused):
+
+- `test-coverage validate` — format parsers for C#, Clojure, Dart, Elixir, Java, Kotlin, Rust remain as inert code paths. Trimming them is a separate docs-quality follow-up; this plan does not touch `internal/testcoverage/`. Removing parsers touches package-internal tests and risks unrelated breakage.
+- `spec-coverage validate` — unchanged; used by every retained product backend.
+- `doctor` — polyglot toolchain checks remain (doctor trim is explicitly out of scope per `brd.md` Non-Goals).
+- `agents-*`, `workflows-*`, `docs validate-links`, `env-*`, `git pre-commit`, `git pre-push` — all generic repo-hygiene, unchanged.
+
+**Post-trim verification for `rhino-cli`**:
+
+- `nx run rhino-cli:test:unit` must pass (≥90% coverage threshold maintained).
+- `nx run rhino-cli:test:integration` must pass.
+- `apps/rhino-cli/README.md` must list only surviving commands.
+- CLAUDE.md mentions of removed commands ("java validate-annotations") pruned.
+- Any `specs/apps/rhino/` Gherkin feature naming a removed command either deleted or updated.
+
 ### Extraction sequencing (hard ordering)
 
 The extraction MUST happen in this order; see `delivery.md` for the granular checklist.
@@ -386,18 +439,28 @@ flowchart TD
     s8["`Commit H: update classifier
     (a-demo rows: propagate → neither
     with extraction date)`"]:::step
+    s9["`Commit I: remove unused libs
+    (clojure-openapi-codegen,
+    elixir-cabbage/gherkin/openapi-codegen)`"]:::step
+    s10["`Commit J: trim rhino-cli
+    (remove java validate-annotations,
+    contracts dart-scaffold,
+    contracts java-clean-imports)`"]:::step
 
     p8["`**Phase 9**: post-extraction health
     nx affected green, link check green,
-    grep sweep clean, product E2E green`"]:::post
+    grep sweep clean, product E2E green,
+    rhino-cli tests green`"]:::post
 
-    p7 --> s1 --> s2 --> s3 --> s4 --> s5 --> s6 --> s7 --> s8 --> p8
+    p7 --> s1 --> s2 --> s3 --> s4 --> s5 --> s6 --> s7 --> s8 --> s9 --> s10 --> p8
 ```
 
 **Why this order**:
 
 - **Workflows first** (Commit A): removes the CI callers before deleting the app directories, so no push runs a workflow that tries to operate on a directory being deleted in-flight.
 - **Apps next** (Commit B): the largest visible change; lands after CI is already blind to those projects.
+- **Libs after classifier** (Commit I): the 4 Elixir/Clojure libs became unreferenced once the demo apps (Commit B) were removed; delete in a dedicated commit so the review is scoped to lib-layer changes only.
+- **rhino-cli trim after libs** (Commit J): removing demo-only commands is a CLI-surface reduction independent from the library deletions; keeping it as its own commit preserves rhino-cli's test coverage as a reviewable delta.
 - **Specs after apps** (Commit C): the specs are only referenced by the deleted apps' codegen, so removal is safe after Commit B.
 - **Reference doc** (Commit D): deletes the demo-specific `docs/reference/demo-apps-ci-coverage.md` as its own small commit; inbound links are fixed in later commits.
 - **Configs** (Commit E): `codecov.yml` flags now point at deleted projects; `go.work` and `.sln` now point at deleted directories. Pruning fixes the config drift in one commit.
@@ -860,57 +923,71 @@ outputs:
 
 ## File Impact Analysis
 
-| Path                                                                          | Change             | Purpose                                                                                                                    |
-| ----------------------------------------------------------------------------- | ------------------ | -------------------------------------------------------------------------------------------------------------------------- |
-| `README.md`                                                                   | Edit               | Add "Related Repositories" section.                                                                                        |
-| `CLAUDE.md`                                                                   | Edit               | Add subsection linking to primer, reference doc, convention.                                                               |
-| `AGENTS.md`                                                                   | Edit               | Mirror of CLAUDE.md addition.                                                                                              |
-| `docs/reference/related-repositories.md`                                      | **New**            | Reference doc.                                                                                                             |
-| `docs/reference/README.md`                                                    | Edit               | Index link to the new reference doc.                                                                                       |
-| `governance/conventions/structure/ose-primer-sync.md`                         | **New**            | Authoritative classifier and sync convention.                                                                              |
-| `governance/conventions/structure/README.md`                                  | Edit               | Index link to the new convention.                                                                                          |
-| `governance/workflows/repo/repo-ose-primer-sync-execution.md`                 | **New**            | Ongoing sync workflow (direction + mode parameterised; invokes adopter or propagator).                                     |
-| `governance/workflows/repo/repo-ose-primer-extraction-execution.md`           | **New**            | One-time extraction workflow (parity-check → catch-up → A-H commits → post-verification).                                  |
-| `governance/workflows/repo/README.md`                                         | Edit               | Index link(s) to the new workflows.                                                                                        |
-| `.claude/skills/repo-syncing-with-ose-primer/SKILL.md`                        | **New**            | Shared skill entry point.                                                                                                  |
-| `.claude/skills/repo-syncing-with-ose-primer/reference/classifier-parsing.md` | **New**            | Skill reference module.                                                                                                    |
-| `.claude/skills/repo-syncing-with-ose-primer/reference/clone-management.md`   | **New**            | Skill reference module.                                                                                                    |
-| `.claude/skills/repo-syncing-with-ose-primer/reference/report-schema.md`      | **New**            | Skill reference module.                                                                                                    |
-| `.claude/skills/repo-syncing-with-ose-primer/reference/transforms.md`         | **New**            | Skill reference module.                                                                                                    |
-| `.claude/skills/repo-syncing-with-ose-primer/reference/extraction-scope.md`   | **New**            | Skill reference module — path list for Phase 7 parity-check mode.                                                          |
-| `.claude/agents/repo-ose-primer-adoption-maker.md`                            | **New**            | Adoption agent definition.                                                                                                 |
-| `.claude/agents/repo-ose-primer-propagation-maker.md`                         | **New**            | Propagation agent definition.                                                                                              |
-| `.claude/agents/README.md`                                                    | Edit               | Catalogue both new agents.                                                                                                 |
-| `.opencode/skill/repo-syncing-with-ose-primer/**`                             | Generated          | Mirror via sync pipeline.                                                                                                  |
-| `.opencode/agent/repo-ose-primer-adoption-maker.md`                           | Generated          | Mirror via sync pipeline.                                                                                                  |
-| `.opencode/agent/repo-ose-primer-propagation-maker.md`                        | Generated          | Mirror via sync pipeline.                                                                                                  |
-| `.opencode/agent/README.md`                                                   | Edit               | Mirror of catalogue update.                                                                                                |
-| `plans/in-progress/README.md`                                                 | Edit               | Add this plan to active-plans list.                                                                                        |
-| `generated-reports/repo-ose-primer-adoption-maker__*__report.md`              | Generated          | Phase 6 dry-run output.                                                                                                    |
-| `generated-reports/repo-ose-primer-propagation-maker__*__report.md`           | Generated          | Phase 6 dry-run output.                                                                                                    |
-| `generated-reports/parity__*__report.md`                                      | Generated          | Phase 7 primer-parity verification report (gate for Phase 8).                                                              |
-| `.github/workflows/test-a-demo-*.yml` (14 files)                              | **Delete**         | Phase 8, Commit A: demo-specific CI workflows removed.                                                                     |
-| `apps/a-demo-be-*` and `apps/a-demo-fe-*` and `apps/a-demo-fs-*` (17 dirs)    | **Delete**         | Phase 8, Commit B: demo app directories removed.                                                                           |
-| `specs/apps/a-demo/`                                                          | **Delete**         | Phase 8, Commit C: demo spec area removed.                                                                                 |
-| `docs/reference/demo-apps-ci-coverage.md`                                     | **Delete**         | Phase 8, Commit D: demo-specific reference doc removed.                                                                    |
-| `codecov.yml`                                                                 | Edit               | Phase 8, Commit E: prune demo project flags.                                                                               |
-| `go.work`                                                                     | Edit               | Phase 8, Commit E: prune demo Go `use` directives.                                                                         |
-| `open-sharia-enterprise.sln`                                                  | Edit               | Phase 8, Commit E: prune demo C# project references.                                                                       |
-| `.github/workflows/_reusable-*.yml` (conditional edits)                       | Edit (conditional) | Phase 8, Commit E: if a reusable enumerates demo matrix inputs, prune those; do NOT delete reusables used by product apps. |
-| `README.md`                                                                   | Edit               | Phase 8, Commit F: remove demo apps bullet, demo coverage badges; add extraction changelog note.                           |
-| `CLAUDE.md`                                                                   | Edit               | Phase 8, Commit F: remove demo apps inventory + coverage table rows + demo-path examples.                                  |
-| `AGENTS.md`                                                                   | Edit               | Phase 8, Commit F: mirror CLAUDE.md demo-reference removals.                                                               |
-| `ROADMAP.md`                                                                  | Edit               | Phase 8, Commit F: prune demo mentions; add extraction changelog entry.                                                    |
-| `governance/development/quality/three-level-testing-standard.md`              | Edit               | Phase 8, Commit G: prune demo-be path examples (replace with product-be or remove).                                        |
-| `governance/development/infra/nx-targets.md`                                  | Edit               | Phase 8, Commit G: prune demo-path examples.                                                                               |
-| `docs/reference/monorepo-structure.md`                                        | Edit               | Phase 8, Commit G: remove demo rows from app inventory; update polyglot-showcase framing.                                  |
-| `docs/reference/nx-configuration.md`                                          | Edit               | Phase 8, Commit G: prune demo-specific configuration examples.                                                             |
-| `docs/reference/project-dependency-graph.md`                                  | Edit               | Phase 8, Commit G: regenerate or prune demo graph nodes.                                                                   |
-| `docs/reference/README.md`                                                    | Edit               | Phase 8, Commit G: remove link to deleted `demo-apps-ci-coverage.md`.                                                      |
-| `docs/how-to/add-new-app.md`                                                  | Edit               | Phase 8, Commit G: replace demo-path examples with product-app paths.                                                      |
-| `docs/how-to/add-new-lib.md`                                                  | Edit               | Phase 8, Commit G: same.                                                                                                   |
-| `governance/conventions/structure/ose-primer-sync.md`                         | Edit               | Phase 8, Commit H: classifier rows for `apps/a-demo-*`, `specs/apps/a-demo/**` flip to `neither` with dated rationale.     |
-| `scripts/**` (conditional)                                                    | Edit (conditional) | Phase 8 (scope within Commit E or a new Commit I): any script enumerating demo project names has its list pruned.          |
+| Path                                                                                       | Change             | Purpose                                                                                                                                               |
+| ------------------------------------------------------------------------------------------ | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `README.md`                                                                                | Edit               | Add "Related Repositories" section.                                                                                                                   |
+| `CLAUDE.md`                                                                                | Edit               | Add subsection linking to primer, reference doc, convention.                                                                                          |
+| `AGENTS.md`                                                                                | Edit               | Mirror of CLAUDE.md addition.                                                                                                                         |
+| `docs/reference/related-repositories.md`                                                   | **New**            | Reference doc.                                                                                                                                        |
+| `docs/reference/README.md`                                                                 | Edit               | Index link to the new reference doc.                                                                                                                  |
+| `governance/conventions/structure/ose-primer-sync.md`                                      | **New**            | Authoritative classifier and sync convention.                                                                                                         |
+| `governance/conventions/structure/README.md`                                               | Edit               | Index link to the new convention.                                                                                                                     |
+| `governance/workflows/repo/repo-ose-primer-sync-execution.md`                              | **New**            | Ongoing sync workflow (direction + mode parameterised; invokes adopter or propagator).                                                                |
+| `governance/workflows/repo/repo-ose-primer-extraction-execution.md`                        | **New**            | One-time extraction workflow (parity-check → catch-up → A-H commits → post-verification).                                                             |
+| `governance/workflows/repo/README.md`                                                      | Edit               | Index link(s) to the new workflows.                                                                                                                   |
+| `.claude/skills/repo-syncing-with-ose-primer/SKILL.md`                                     | **New**            | Shared skill entry point.                                                                                                                             |
+| `.claude/skills/repo-syncing-with-ose-primer/reference/classifier-parsing.md`              | **New**            | Skill reference module.                                                                                                                               |
+| `.claude/skills/repo-syncing-with-ose-primer/reference/clone-management.md`                | **New**            | Skill reference module.                                                                                                                               |
+| `.claude/skills/repo-syncing-with-ose-primer/reference/report-schema.md`                   | **New**            | Skill reference module.                                                                                                                               |
+| `.claude/skills/repo-syncing-with-ose-primer/reference/transforms.md`                      | **New**            | Skill reference module.                                                                                                                               |
+| `.claude/skills/repo-syncing-with-ose-primer/reference/extraction-scope.md`                | **New**            | Skill reference module — path list for Phase 7 parity-check mode.                                                                                     |
+| `.claude/agents/repo-ose-primer-adoption-maker.md`                                         | **New**            | Adoption agent definition.                                                                                                                            |
+| `.claude/agents/repo-ose-primer-propagation-maker.md`                                      | **New**            | Propagation agent definition.                                                                                                                         |
+| `.claude/agents/README.md`                                                                 | Edit               | Catalogue both new agents.                                                                                                                            |
+| `.opencode/skill/repo-syncing-with-ose-primer/**`                                          | Generated          | Mirror via sync pipeline.                                                                                                                             |
+| `.opencode/agent/repo-ose-primer-adoption-maker.md`                                        | Generated          | Mirror via sync pipeline.                                                                                                                             |
+| `.opencode/agent/repo-ose-primer-propagation-maker.md`                                     | Generated          | Mirror via sync pipeline.                                                                                                                             |
+| `.opencode/agent/README.md`                                                                | Edit               | Mirror of catalogue update.                                                                                                                           |
+| `plans/in-progress/README.md`                                                              | Edit               | Add this plan to active-plans list.                                                                                                                   |
+| `generated-reports/repo-ose-primer-adoption-maker__*__report.md`                           | Generated          | Phase 6 dry-run output.                                                                                                                               |
+| `generated-reports/repo-ose-primer-propagation-maker__*__report.md`                        | Generated          | Phase 6 dry-run output.                                                                                                                               |
+| `generated-reports/parity__*__report.md`                                                   | Generated          | Phase 7 primer-parity verification report (gate for Phase 8).                                                                                         |
+| `.github/workflows/test-a-demo-*.yml` (14 files)                                           | **Delete**         | Phase 8, Commit A: demo-specific CI workflows removed.                                                                                                |
+| `apps/a-demo-be-*` and `apps/a-demo-fe-*` and `apps/a-demo-fs-*` (17 dirs)                 | **Delete**         | Phase 8, Commit B: demo app directories removed.                                                                                                      |
+| `specs/apps/a-demo/`                                                                       | **Delete**         | Phase 8, Commit C: demo spec area removed.                                                                                                            |
+| `docs/reference/demo-apps-ci-coverage.md`                                                  | **Delete**         | Phase 8, Commit D: demo-specific reference doc removed.                                                                                               |
+| `codecov.yml`                                                                              | Edit               | Phase 8, Commit E: prune demo project flags.                                                                                                          |
+| `go.work`                                                                                  | Edit               | Phase 8, Commit E: prune demo Go `use` directives.                                                                                                    |
+| `open-sharia-enterprise.sln`                                                               | Edit               | Phase 8, Commit E: prune demo C# project references.                                                                                                  |
+| `.github/workflows/_reusable-*.yml` (conditional edits)                                    | Edit (conditional) | Phase 8, Commit E: if a reusable enumerates demo matrix inputs, prune those; do NOT delete reusables used by product apps.                            |
+| `README.md`                                                                                | Edit               | Phase 8, Commit F: remove demo apps bullet, demo coverage badges; add extraction changelog note.                                                      |
+| `CLAUDE.md`                                                                                | Edit               | Phase 8, Commit F: remove demo apps inventory + coverage table rows + demo-path examples.                                                             |
+| `AGENTS.md`                                                                                | Edit               | Phase 8, Commit F: mirror CLAUDE.md demo-reference removals.                                                                                          |
+| `ROADMAP.md`                                                                               | Edit               | Phase 8, Commit F: prune demo mentions; add extraction changelog entry.                                                                               |
+| `governance/development/quality/three-level-testing-standard.md`                           | Edit               | Phase 8, Commit G: prune demo-be path examples (replace with product-be or remove).                                                                   |
+| `governance/development/infra/nx-targets.md`                                               | Edit               | Phase 8, Commit G: prune demo-path examples.                                                                                                          |
+| `docs/reference/monorepo-structure.md`                                                     | Edit               | Phase 8, Commit G: remove demo rows from app inventory; update polyglot-showcase framing.                                                             |
+| `docs/reference/nx-configuration.md`                                                       | Edit               | Phase 8, Commit G: prune demo-specific configuration examples.                                                                                        |
+| `docs/reference/project-dependency-graph.md`                                               | Edit               | Phase 8, Commit G: regenerate or prune demo graph nodes.                                                                                              |
+| `docs/reference/README.md`                                                                 | Edit               | Phase 8, Commit G: remove link to deleted `demo-apps-ci-coverage.md`.                                                                                 |
+| `docs/how-to/add-new-app.md`                                                               | Edit               | Phase 8, Commit G: replace demo-path examples with product-app paths.                                                                                 |
+| `docs/how-to/add-new-lib.md`                                                               | Edit               | Phase 8, Commit G: same.                                                                                                                              |
+| `governance/conventions/structure/ose-primer-sync.md`                                      | Edit               | Phase 8, Commit H: classifier rows for `apps/a-demo-*`, `specs/apps/a-demo/**`, and the 4 Elixir/Clojure libs flip to `neither` with dated rationale. |
+| `scripts/**` (conditional)                                                                 | Edit (conditional) | Phase 8 (scope within Commit E): any script enumerating demo project names has its list pruned.                                                       |
+| `libs/clojure-openapi-codegen/`                                                            | **Delete**         | Phase 8, Commit I: unused-after-extraction library removal.                                                                                           |
+| `libs/elixir-cabbage/`                                                                     | **Delete**         | Phase 8, Commit I: unused-after-extraction library removal.                                                                                           |
+| `libs/elixir-gherkin/`                                                                     | **Delete**         | Phase 8, Commit I: unused-after-extraction library removal.                                                                                           |
+| `libs/elixir-openapi-codegen/`                                                             | **Delete**         | Phase 8, Commit I: unused-after-extraction library removal.                                                                                           |
+| `libs/README.md`                                                                           | Edit               | Phase 8, Commit I: remove index entries for the four deleted libs.                                                                                    |
+| `apps/rhino-cli/cmd/java_validate_annotations.go` (+ `*_test.go`, `*.integration_test.go`) | **Delete**         | Phase 8, Commit J: remove demo-only Java-annotations validator.                                                                                       |
+| `apps/rhino-cli/cmd/contracts_java_clean_imports.go` (+ tests)                             | **Delete**         | Phase 8, Commit J: remove demo-only Java-imports cleaner.                                                                                             |
+| `apps/rhino-cli/cmd/contracts_dart_scaffold.go` (+ tests)                                  | **Delete**         | Phase 8, Commit J: remove demo-only Dart scaffold.                                                                                                    |
+| `apps/rhino-cli/cmd/java.go`                                                               | **Delete**         | Phase 8, Commit J: empty parent command after its only subcommand is removed.                                                                         |
+| `apps/rhino-cli/cmd/contracts.go`                                                          | **Delete**         | Phase 8, Commit J: empty parent command after its subcommands are removed.                                                                            |
+| `apps/rhino-cli/internal/java/`                                                            | **Delete**         | Phase 8, Commit J: internal package used only by the deleted `java` command tree.                                                                     |
+| `apps/rhino-cli/README.md`                                                                 | Edit               | Phase 8, Commit J: remove docs for deleted commands.                                                                                                  |
+| `CLAUDE.md`                                                                                | Edit               | Phase 8, Commit J: drop the "(includes `java validate-annotations`)" parenthetical next to `rhino-cli`.                                               |
+| `specs/apps/rhino/**` (conditional)                                                        | Edit (conditional) | Phase 8, Commit J: prune or delete any Gherkin features that name the removed commands.                                                               |
 
 ## Risks and Rollback
 

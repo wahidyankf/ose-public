@@ -16,8 +16,7 @@ Use `specs/apps/` when the application is production-bound or has a stable spec.
 ## Graduation
 
 Experimental specs may graduate to `specs/apps/` once the implementation is promoted from
-`apps-labs/` to `apps/`. Example: the Demo IAM spec originated here and graduated to
-[specs/apps/a-demo/](../apps/a-demo/README.md).
+`apps-labs/` to `apps/`.
 
 ## Current Contents
 

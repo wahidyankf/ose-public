@@ -29,8 +29,6 @@ Acceptance specs belong at the monorepo root rather than inside app directories 
 - **[organiclever/](./apps/organiclever/README.md)** — OrganicLever specifications (backend REST API +
   frontend landing page)
 
-- **[a-demo/](./apps/a-demo/README.md)** — Demo application specifications
-  (platform-agnostic Gherkin — see [be/gherkin](./apps/a-demo/be/gherkin/README.md) and [fe/gherkin](./apps/a-demo/fe/gherkin/README.md) for details)
 - **[rhino/](./apps/rhino/README.md)** — Repository management CLI specifications (Go, godog)
 - **[ayokoding/](./apps/ayokoding/README.md)** — Content automation CLI specifications (Go, godog)
 - **[oseplatform/](./apps/oseplatform/README.md)** — OSE Platform site CLI specifications (Go, godog)

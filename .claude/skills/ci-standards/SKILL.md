@@ -29,12 +29,11 @@ Inline skill providing CI/CD standards knowledge from the governance documentati
 
 ## Coverage Thresholds
 
-| Threshold | Projects                                                    |
-| --------- | ----------------------------------------------------------- |
-| 90%       | Demo-be backends, CLI apps, Go libs, TS backend (ts-effect) |
-| 80%       | Content platforms (ayokoding-web, oseplatform-web)          |
-| 75%       | Fullstack (a-demo-fs-ts-nextjs)                             |
-| 70%       | FE apps, organiclever-fe, Dart FE                           |
+| Threshold | Projects                                           |
+| --------- | -------------------------------------------------- |
+| 90%       | organiclever-be, CLI apps, Go libs                 |
+| 80%       | Content platforms (ayokoding-web, oseplatform-web) |
+| 70%       | organiclever-fe                                    |
 
 ## Docker Setup Requirements
 
@@ -47,11 +46,11 @@ Every app with a `dev` or `test:integration` target must have:
 
 ## E2E Pairing Rules
 
-| Variant Type             | Pairs With                             |
-| ------------------------ | -------------------------------------- |
-| Backend (a-demo-be-\*)   | Default frontend (a-demo-fe-ts-nextjs) |
-| Frontend (a-demo-fe-\*)  | Default backend (a-demo-be-golang-gin) |
-| Fullstack (a-demo-fs-\*) | Self-contained                         |
+| Variant Type | Pairs With                      |
+| ------------ | ------------------------------- |
+| Backend      | Corresponding frontend via E2E  |
+| Frontend     | Corresponding backend via E2E   |
+| Fullstack    | Self-contained (own API routes) |
 
 ## Gherkin Consumption Mandate
 

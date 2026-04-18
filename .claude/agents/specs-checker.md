@@ -36,21 +36,21 @@ folders and their subfolders — nothing else.
 
 ```
 # Single folder — validate demo-be and all its subfolders
-folders: [specs/apps/a-demo/be]
+folders: [specs/apps/organiclever/be]
 
 # Multiple folders — validate each AND check cross-folder consistency
-folders: [specs/apps/a-demo/be, specs/apps/a-demo/fe]
+folders: [specs/apps/organiclever/be, specs/apps/organiclever/fe]
 
 # Mixed tiers
-folders: [specs/apps/a-demo/be, specs/libs/golang-commons]
+folders: [specs/apps/organiclever/be, specs/libs/golang-commons]
 ```
 
 **Rules:**
 
 - Each folder in the list is validated independently (Categories 1-3, 5-8)
 - Cross-folder consistency (Category 4) runs **only** across the listed folders
-- Subfolders are always included automatically — listing `specs/apps/a-demo/be` includes
-  `specs/apps/a-demo/be/gherkin/`, `specs/apps/a-demo/c4/`, and all children
+- Subfolders are always included automatically — listing `specs/apps/organiclever/be` includes
+  `specs/apps/organiclever/be/gherkin/`, `specs/apps/organiclever/c4/`, and all children
 - Folders NOT in the list are completely ignored, even if referenced by listed folders
 
 ## Validation Categories
@@ -220,8 +220,8 @@ Use the standard audit report format:
 
 **Folders validated**:
 
-- `specs/apps/a-demo/be`
-- `specs/apps/a-demo/fe`
+- `specs/apps/organiclever/be`
+- `specs/apps/organiclever/fe`
 
 **Timestamp**: YYYY-MM-DD--HH-MM UTC+7
 **UUID Chain**: {uuid}
@@ -237,7 +237,7 @@ Use the standard audit report format:
 
 ## Findings by Folder
 
-### specs/apps/a-demo/be
+### specs/apps/organiclever/be
 
 #### [CRITICAL] {Category} — {Brief description}
 
@@ -247,7 +247,7 @@ Use the standard audit report format:
 **Expected**: What should be there
 **Confidence**: HIGH | MEDIUM
 
-### specs/apps/a-demo/fe
+### specs/apps/organiclever/fe
 
 [... findings for this folder ...]
 
@@ -255,7 +255,7 @@ Use the standard audit report format:
 
 #### [HIGH] Cross-Folder Consistency — {Brief description}
 
-**Folders**: `specs/apps/a-demo/be`, `specs/apps/a-demo/fe`
+**Folders**: `specs/apps/organiclever/be`, `specs/apps/organiclever/fe`
 **Evidence**: What contradicts or doesn't blend
 **Expected**: What consistency looks like
 **Confidence**: HIGH | MEDIUM

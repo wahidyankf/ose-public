@@ -460,33 +460,33 @@ Goal: execute the one-time removal of demo apps, specs, workflows, and associate
 
 ### 8.G — Commit G: Prune governance / docs prose references
 
-- [ ] Edit `governance/development/quality/three-level-testing-standard.md`: replace demo-be examples with product-be references (organiclever-be for F#, or note "see ose-primer for polyglot examples"); remove bullets that cannot be usefully substituted.
-- [ ] Edit `governance/development/infra/nx-targets.md`: same pattern.
-- [ ] Edit `docs/reference/monorepo-structure.md`: remove the demo-app inventory rows; reframe any "polyglot showcase" prose to point at `ose-primer`.
-- [ ] Edit `docs/reference/nx-configuration.md`: prune demo-specific target configuration examples.
-- [ ] Edit `docs/reference/project-dependency-graph.md`: regenerate the Mermaid graph from the current Nx graph (via `nx graph --file` or equivalent) to drop demo nodes; update any demo-referencing dependency table row.
-- [ ] Edit `docs/reference/README.md`: remove the link to the deleted `demo-apps-ci-coverage.md` (if not already removed in Phase 1).
-- [ ] Edit `docs/how-to/add-new-app.md`: replace demo-path examples with product-app paths.
-- [ ] Edit `docs/how-to/add-new-lib.md`: same.
-- [ ] Run `grep -rnI 'a-demo' governance/ docs/ --include='*.md'` — remaining matches MUST be limited to: narrative changelog mentions, the classifier row in `governance/conventions/structure/ose-primer-sync.md` (untouched in this commit), and archived plans under `plans/done/`.
-- [ ] Commit with message: `docs(governance,docs): prune a-demo references from docs and governance examples (Phase 8 Commit G)`.
-- [ ] Push: `git push origin main`.
-- [ ] Monitor GitHub Actions for the pushed commit; verify all triggered workflows pass before proceeding to Commit H. If any CI check fails, fix immediately and push a follow-up commit before continuing.
-- [ ] **[C]** Verify scope.
+- [x] Edit `governance/development/quality/three-level-testing-standard.md`: replace demo-be examples with product-be references (organiclever-be for F#, or note "see ose-primer for polyglot examples"); remove bullets that cannot be usefully substituted.
+- [x] Edit `governance/development/infra/nx-targets.md`: same pattern.
+- [x] Edit `docs/reference/monorepo-structure.md`: remove the demo-app inventory rows; reframe any "polyglot showcase" prose to point at `ose-primer`.
+- [x] Edit `docs/reference/nx-configuration.md`: prune demo-specific target configuration examples.
+- [x] Edit `docs/reference/project-dependency-graph.md`: regenerate the Mermaid graph from the current Nx graph (via `nx graph --file` or equivalent) to drop demo nodes; update any demo-referencing dependency table row.
+- [x] Edit `docs/reference/README.md`: remove the link to the deleted `demo-apps-ci-coverage.md` (if not already removed in Phase 1).
+- [x] Edit `docs/how-to/add-new-app.md`: replace demo-path examples with product-app paths.
+- [x] Edit `docs/how-to/add-new-lib.md`: same.
+- [x] Run `grep -rnI 'a-demo' governance/ docs/ --include='*.md'` — remaining matches MUST be limited to: narrative changelog mentions, the classifier row in `governance/conventions/structure/ose-primer-sync.md` (untouched in this commit), and archived plans under `plans/done/`.
+- [x] Commit with message: `docs(governance,docs): prune a-demo references from docs and governance examples (Phase 8 Commit G)`.
+- [x] Push: `git push origin main`.
+- [x] Monitor GitHub Actions for the pushed commit; verify all triggered workflows pass before proceeding to Commit H. If any CI check fails, fix immediately and push a follow-up commit before continuing.
+- [x] **[C]** Verify scope. — Commit landed on origin/main. 42 files changed, ~586 insertions, 3268 deletions. Final sweep: 11 remaining `a-demo` matches — 5 narrative `> **Note**:` extraction callouts + 6 in `repo-ose-primer-extraction-execution.md` (permitted by plan). **DEVIATIONS**: (1) `docs/reference/nx-configuration.md` does not exist — no-op. (2) `docs/how-to/add-new-lib.md` had no a-demo refs. (3) `docs/reference/project-dependency-graph.md` stubbed to ose-primer pointer rather than Mermaid-regen (defer Nx regen to Phase 9.1). (4) Two broken links caught by pre-commit hook and fixed inline. (5) Several non-explicit-plan docs also cleaned (licensing, frontend, worktree-setup, specs-directory, diagrams). (6) Four how-to docs deleted outright (`local-dev-docker.md`, `update-api-contract.md`, `add-gherkin-scenario.md`, plus the two already-deleted demo-specific ones).
 
 ### 8.H — Commit H: Update classifier to reflect extraction
 
-- [ ] Edit `governance/conventions/structure/ose-primer-sync.md`:
-  - [ ] Flip `apps/a-demo-*` row: Direction `propagate` → `neither (post-extraction)`; Transform `identity` → `—`; Rationale → `extracted 2026-04-18; ose-primer is authoritative; path no longer exists in ose-public`. Note: rows were pre-tagged `neither (post-extraction)` in Phase 1 delivery; this commit confirms/finalises the rationale text.
-  - [ ] Add or update `apps/a-demo-*-e2e` row similarly.
-  - [ ] Flip `specs/apps/a-demo/**` row: Direction `propagate` → `neither (post-extraction)`; same Rationale pattern.
-  - [ ] Flip `libs/clojure-openapi-codegen`, `libs/elixir-cabbage`, `libs/elixir-gherkin`, `libs/elixir-openapi-codegen` rows: Direction `propagate` → `neither (post-extraction)`; Rationale → `only consumer was extracted demo; removed from ose-public in Phase 8 Commit I`.
-  - [ ] In the audit-rule section, confirm the whitelist entries allowing these rows to match zero paths post-extraction.
-  - [ ] Bump the convention's `updated:` frontmatter to today.
-- [ ] Commit with message: `docs(governance): flip a-demo and orphan-lib classifier rows to neither (Phase 8 Commit H)`.
-- [ ] Push: `git push origin main`.
-- [ ] Monitor GitHub Actions for the pushed commit; verify all triggered workflows pass before proceeding to Commit I. If any CI check fails, fix immediately and push a follow-up commit before continuing.
-- [ ] **[C]** Verify scope is only the convention file.
+- [x] Edit `governance/conventions/structure/ose-primer-sync.md`:
+  - [x] Flip `apps/a-demo-*` row: Direction `propagate` → `neither (post-extraction)`; Transform `identity` → `—`; Rationale → `extracted 2026-04-18; ose-primer is authoritative; path no longer exists in ose-public`. Note: rows were pre-tagged `neither (post-extraction)` in Phase 1 delivery; this commit confirms/finalises the rationale text.
+  - [x] Add or update `apps/a-demo-*-e2e` row similarly.
+  - [x] Flip `specs/apps/a-demo/**` row: Direction `propagate` → `neither (post-extraction)`; same Rationale pattern.
+  - [x] Flip `libs/clojure-openapi-codegen`, `libs/elixir-cabbage`, `libs/elixir-gherkin`, `libs/elixir-openapi-codegen` rows: Direction `propagate` → `neither (post-extraction)`; Rationale → `only consumer was extracted demo; removed from ose-public in Phase 8 Commit I`.
+  - [x] In the audit-rule section, confirm the whitelist entries allowing these rows to match zero paths post-extraction.
+  - [x] Bump the convention's `updated:` frontmatter to today.
+- [x] Commit with message: `docs(governance): flip a-demo and orphan-lib classifier rows to neither (Phase 8 Commit H)`.
+- [x] Push: `git push origin main`.
+- [x] Monitor GitHub Actions for the pushed commit; verify all triggered workflows pass before proceeding to Commit I. If any CI check fails, fix immediately and push a follow-up commit before continuing.
+- [x] **[C]** Verify scope is only the convention file.
 
 ### 8.I — Commit I: Remove orphaned libraries
 
@@ -509,36 +509,36 @@ Pre-flight checks first; deletion only after both return clean.
 
 ### 8.J — Commit J: Trim rhino-cli demo-only commands
 
-- [ ] `git rm apps/rhino-cli/cmd/java_validate_annotations.go` (+ its `_test.go` and `.integration_test.go` siblings if present).
-- [ ] `git rm apps/rhino-cli/cmd/contracts_java_clean_imports.go` (+ `_test.go` + `.integration_test.go`).
-- [ ] `git rm apps/rhino-cli/cmd/contracts_dart_scaffold.go` (+ `_test.go` + `.integration_test.go`).
-- [ ] `git rm apps/rhino-cli/cmd/java.go`.
-- [ ] `git rm apps/rhino-cli/cmd/contracts.go`.
-- [ ] `git rm -r apps/rhino-cli/internal/java`.
-- [ ] Inspect `apps/rhino-cli/cmd/root.go` (or equivalent command registration) and remove any remaining references to the deleted commands; confirm the CLI still builds.
-- [ ] Edit `apps/rhino-cli/README.md`: remove docstring sections for the three removed commands; confirm the surviving command list reads cleanly.
-- [ ] Edit `CLAUDE.md`: remove the `(includes java validate-annotations)` parenthetical (or similar) next to `rhino-cli` in the Common Development Commands / apps listing.
-- [ ] Greps for lingering references: `grep -rnI -E '(validate-annotations|java-clean-imports|dart-scaffold)' apps/rhino-cli/ CLAUDE.md AGENTS.md docs/ governance/ 2>/dev/null` — must return zero matches.
-- [ ] Under `specs/apps/rhino/`, check for Gherkin features naming the removed commands; if any, delete those feature files or prune the affected scenarios; commit-message note references the specs change.
-- [ ] Rebuild: `nx run rhino-cli:build` — must succeed.
-- [ ] Run unit tests: `nx run rhino-cli:test:unit` — must pass with coverage ≥ 90%.
-- [ ] Run integration tests: `nx run rhino-cli:test:integration` — must pass.
-- [ ] Run `rhino-cli --help` (via the built binary) and confirm no subcommand named `java`, `contracts java-clean-imports`, `contracts dart-scaffold`, or `contracts` appears.
-- [ ] Commit with message: `chore(rhino-cli): trim demo-only commands (Phase 8 Commit J, demo extraction)`.
-- [ ] Push: `git push origin main`.
-- [ ] Monitor GitHub Actions for the pushed commit; verify all triggered workflows pass. If any CI check fails, fix immediately and push a follow-up commit before proceeding to 8.Z.
-- [ ] **[C]** Verify commit scope is only `apps/rhino-cli/` + `CLAUDE.md` (+ optional `specs/apps/rhino/` edits).
+- [x] `git rm apps/rhino-cli/cmd/java_validate_annotations.go` (+ its `_test.go` and `.integration_test.go` siblings if present).
+- [x] `git rm apps/rhino-cli/cmd/contracts_java_clean_imports.go` (+ `_test.go` + `.integration_test.go`).
+- [x] `git rm apps/rhino-cli/cmd/contracts_dart_scaffold.go` (+ `_test.go` + `.integration_test.go`).
+- [x] `git rm apps/rhino-cli/cmd/java.go`.
+- [x] `git rm apps/rhino-cli/cmd/contracts.go`.
+- [x] `git rm -r apps/rhino-cli/internal/java`.
+- [x] Inspect `apps/rhino-cli/cmd/root.go` (or equivalent command registration) and remove any remaining references to the deleted commands; confirm the CLI still builds.
+- [x] Edit `apps/rhino-cli/README.md`: remove docstring sections for the three removed commands; confirm the surviving command list reads cleanly.
+- [x] Edit `CLAUDE.md`: remove the `(includes java validate-annotations)` parenthetical (or similar) next to `rhino-cli` in the Common Development Commands / apps listing.
+- [x] Greps for lingering references: `grep -rnI -E '(validate-annotations|java-clean-imports|dart-scaffold)' apps/rhino-cli/ CLAUDE.md AGENTS.md docs/ governance/ 2>/dev/null` — must return zero matches.
+- [x] Under `specs/apps/rhino/`, check for Gherkin features naming the removed commands; if any, delete those feature files or prune the affected scenarios; commit-message note references the specs change.
+- [x] Rebuild: `nx run rhino-cli:build` — must succeed.
+- [x] Run unit tests: `nx run rhino-cli:test:unit` — must pass with coverage ≥ 90%.
+- [x] Run integration tests: `nx run rhino-cli:test:integration` — must pass.
+- [x] Run `rhino-cli --help` (via the built binary) and confirm no subcommand named `java`, `contracts java-clean-imports`, `contracts dart-scaffold`, or `contracts` appears.
+- [x] Commit with message: `chore(rhino-cli): trim demo-only commands (Phase 8 Commit J, demo extraction)`.
+- [x] Push: `git push origin main`.
+- [x] Monitor GitHub Actions for the pushed commit; verify all triggered workflows pass. If any CI check fails, fix immediately and push a follow-up commit before proceeding to 8.Z.
+- [x] **[C]** Verify commit scope is only `apps/rhino-cli/` + `CLAUDE.md` (+ optional `specs/apps/rhino/` edits). — Commit landed on origin/main. 36 files changed, ~30 insertions, 4153 deletions. Scope also included: deleted `apps/rhino-cli/internal/contracts/` (orphan after cmd removal — zero retained consumers). `specs/apps/rhino/cli/gherkin/` lost 3 feature files + README table rows. `docs/` had small refs cleaned (`golang/README.md`, `monorepo-structure.md`, `project-dependency-graph.md`). Coverage 90.07% ≥ 90%. **DEVIATIONS**: `internal/contracts` removal not in plan but necessary orphan cleanup (grep verified). `go mod tidy` pruned `golang.org/x/text`. Historical changelog entries in rhino-cli README v0.9.0/v0.12.0 retained per narrative-mentions exception.
 
 ### 8.Z — Checkpoint after all 10 commits
 
-- [ ] **[P]** Run `git log -10 --oneline` and confirm the sequence A → B → C → D → E → F → G → H → I → J with the expected commit subjects.
-- [ ] **[P]** Run `ls apps/ | grep '^a-demo-' || echo NONE` — must print `NONE`.
-- [ ] **[P]** Run `ls .github/workflows/test-a-demo-*.yml 2>/dev/null` — empty.
-- [ ] **[P]** Run `ls specs/apps/a-demo 2>/dev/null` — no such directory.
-- [ ] **[P]** Run `ls docs/reference/demo-apps-ci-coverage.md 2>/dev/null` — no such file.
-- [ ] **[P]** Run `ls libs/ | grep -E '^(clojure-openapi-codegen|elixir-(cabbage|gherkin|openapi-codegen))$' || echo NONE` — must print `NONE`.
-- [ ] **[P]** Run `ls apps/rhino-cli/cmd/ | grep -E '^(java|contracts)' || echo NONE` — must print `NONE` (no java or contracts command files).
-- [ ] **[P]** Run `ls apps/rhino-cli/internal/java 2>/dev/null` — no such directory.
+- [x] **[P]** Run `git log -10 --oneline` and confirm the sequence A → B → C → D → E → F → G → H → I → J with the expected commit subjects.
+- [x] **[P]** Run `ls apps/ | grep '^a-demo-' || echo NONE` — must print `NONE`.
+- [x] **[P]** Run `ls .github/workflows/test-a-demo-*.yml 2>/dev/null` — empty.
+- [x] **[P]** Run `ls specs/apps/a-demo 2>/dev/null` — no such directory.
+- [x] **[P]** Run `ls docs/reference/demo-apps-ci-coverage.md 2>/dev/null` — no such file.
+- [x] **[P]** Run `ls libs/ | grep -E '^(clojure-openapi-codegen|elixir-(cabbage|gherkin|openapi-codegen))$' || echo NONE` — must print `NONE`.
+- [x] **[P]** Run `ls apps/rhino-cli/cmd/ | grep -E '^(java|contracts)' || echo NONE` — must print `NONE` (no java or contracts command files).
+- [x] **[P]** Run `ls apps/rhino-cli/internal/java 2>/dev/null` — no such directory.
 
 ## Phase 9 — Post-extraction cleanup & verification
 

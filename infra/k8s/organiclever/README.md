@@ -27,10 +27,6 @@ Both images run as non-root `app` user and use multi-stage builds for minimal si
 
 ## Development
 
-For local development, use Docker Compose with `dev` profile:
+For local development, use Docker Compose.
 
-```bash
-npm run demo-be:dev
-```
-
-See [infra/dev/a-demo-be-java-springboot/README.md](../../dev/a-demo-be-java-springboot/README.md) and [infra/dev/organiclever/README.md](../../dev/organiclever/README.md)
+See [infra/dev/organiclever/README.md](../../dev/organiclever/README.md).

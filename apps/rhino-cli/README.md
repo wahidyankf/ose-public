@@ -35,15 +35,6 @@ rhino-cli docs validate-links --staged-only
 # Validate BDD spec coverage (all specs have matching test files)
 rhino-cli spec-coverage validate specs/apps/organiclever-fe apps/organiclever-fe
 
-# Validate Java packages have @NullMarked in package-info.java
-rhino-cli java validate-annotations apps/a-demo-be-java-springboot/src/main/java
-
-# Clean unused/same-package imports from generated Java contracts
-rhino-cli contracts java-clean-imports apps/a-demo-be-java-springboot/generated-contracts
-
-# Create Dart package scaffolding for generated contracts
-rhino-cli contracts dart-scaffold apps/a-demo-fe-dart-flutterweb/generated-contracts
-
 # Echo a message
 rhino-cli --say "hello world"
 
@@ -539,7 +530,7 @@ rhino-cli spec-coverage validate specs/apps/organiclever-fe apps/organiclever-fe
 rhino-cli spec-coverage validate specs/apps/organiclever-fe apps/organiclever-fe -q
 
 # Shared steps mode (for E2E projects with shared step files)
-rhino-cli spec-coverage validate specs/apps/a-demo/be/gherkin apps/a-demo-be-e2e --shared-steps
+rhino-cli spec-coverage validate specs/apps/organiclever/be/gherkin apps/organiclever-be-e2e --shared-steps
 ```
 
 **What it does:**
@@ -631,145 +622,6 @@ Missing steps (2):
 }
 ```
 
-### java validate-annotations
-
-Validate that all Java packages in a source tree have the required null-safety annotation in
-`package-info.java`. Used by `a-demo-be-java-springboot`'s `typecheck` target.
-
-```bash
-# Validate with default annotation (@NullMarked)
-rhino-cli java validate-annotations apps/a-demo-be-java-springboot/src/main/java
-
-# Use a custom annotation
-rhino-cli java validate-annotations apps/a-demo-be-java-springboot/src/main/java --annotation NonNull
-
-# Output as JSON
-rhino-cli java validate-annotations apps/a-demo-be-java-springboot/src/main/java -o json
-
-# Output as markdown report
-rhino-cli java validate-annotations apps/a-demo-be-java-springboot/src/main/java -o markdown
-
-# Quiet mode (suppress "0 violations found" on success)
-rhino-cli java validate-annotations apps/a-demo-be-java-springboot/src/main/java -q
-```
-
-**What it does:**
-
-- Walks the source tree and finds every directory containing at least one `.java` file
-- For each package directory checks: (1) `package-info.java` exists, (2) it contains `@<annotation>`
-- Reports each violation with the failure reason
-- Supports multiple output formats (text, json, markdown)
-
-**Arguments:**
-
-- `<source-root>` - Path to the Java source root (e.g. `apps/a-demo-be-java-springboot/src/main/java`)
-
-**Flags:**
-
-- `--annotation` - Annotation name to require (default: `NullMarked`)
-- `-o, --output` - Output format: text, json, markdown (default: text)
-- `-v, --verbose` - Verbose output
-- `-q, --quiet` - Quiet mode (suppress "0 violations found" on success)
-
-**Exit codes:**
-
-- `0` - All packages valid
-- `1` - One or more violations found
-
-**Example output (text):**
-
-```
-✓ com/example package-info.java present, @NullMarked found
-✗ com/example/service package-info.java missing
-
-1 violation(s) found.
-```
-
-**Example output (JSON):**
-
-```json
-{
-  "status": "failure",
-  "timestamp": "2026-03-05T10:00:00+07:00",
-  "total_packages": 2,
-  "valid_packages": 1,
-  "annotation": "NullMarked",
-  "violations": [
-    {
-      "package_dir": "com/example/service",
-      "violation_type": "missing_package_info"
-    }
-  ]
-}
-```
-
-### contracts java-clean-imports
-
-Remove unused and same-package imports from generated Java files. Used as a post-processing step
-after OpenAPI code generation for Java backends.
-
-```bash
-# Clean imports in generated contracts
-rhino-cli contracts java-clean-imports apps/a-demo-be-java-springboot/generated-contracts
-
-# Output as JSON
-rhino-cli contracts java-clean-imports apps/a-demo-be-java-vertx/generated-contracts -o json
-```
-
-**What it does:**
-
-- Walks all `.java` files in the specified directory
-- Removes imports from the same package as the file
-- Removes imports whose class name is not referenced in the file body
-- Deduplicates identical import lines
-- Only rewrites files when changes are detected (atomic write via temp file + rename)
-
-**Arguments:**
-
-- `<generated-contracts-dir>` - Path to the generated contracts directory
-
-**Exit codes:**
-
-- `0` - Always succeeds (import cleaning is best-effort)
-
-**Replaces:**
-
-This command replaces `scripts/clean-generated-java-imports.sh`, an AWK-based shell script.
-
-### contracts dart-scaffold
-
-Create Dart package scaffolding for generated contracts. Used as a post-processing step after
-OpenAPI code generation for the Flutter Web frontend.
-
-```bash
-# Create scaffold
-rhino-cli contracts dart-scaffold apps/a-demo-fe-dart-flutterweb/generated-contracts
-
-# Output as JSON
-rhino-cli contracts dart-scaffold apps/a-demo-fe-dart-flutterweb/generated-contracts -o json
-```
-
-**What it does:**
-
-- Writes `pubspec.yaml` with package metadata and dependencies
-- Creates `lib/` directory
-- Generates barrel library (`lib/a_demo_contracts.dart`) with:
-  - Part directives for all model files in `lib/model/` (sorted alphabetically)
-  - Utility functions required by generated model code
-
-**Arguments:**
-
-- `<generated-contracts-dir>` - Path to the generated contracts directory
-
-**Exit codes:**
-
-- `0` - Scaffold created successfully
-- `1` - Error writing files
-
-**Replaces:**
-
-This command replaces `apps/a-demo-fe-dart-flutterweb/scripts/post-codegen.sh`.
-
 ### doctor
 
 Check that all required development tools are installed with the correct versions.
@@ -808,15 +660,14 @@ rhino-cli doctor --quiet
 
 **Tools checked:**
 
-| Tool   | Binary  | Required Version Source                                     | Comparison |
-| ------ | ------- | ----------------------------------------------------------- | ---------- |
-| git    | `git`   | (no config file — any version OK)                           | any        |
-| volta  | `volta` | (no config file — any version OK)                           | any        |
-| node   | `node`  | `package.json` → `volta.node`                               | exact      |
-| npm    | `npm`   | `package.json` → `volta.npm`                                | exact      |
-| java   | `java`  | `apps/a-demo-be-java-springboot/pom.xml` → `<java.version>` | major only |
-| maven  | `mvn`   | (no config file — any version OK)                           | any        |
-| golang | `go`    | `apps/rhino-cli/go.mod` → `go` directive                    | ≥ (GTE)    |
+| Tool   | Binary  | Required Version Source                  | Comparison |
+| ------ | ------- | ---------------------------------------- | ---------- |
+| git    | `git`   | (no config file — any version OK)        | any        |
+| volta  | `volta` | (no config file — any version OK)        | any        |
+| node   | `node`  | `package.json` → `volta.node`            | exact      |
+| npm    | `npm`   | `package.json` → `volta.npm`             | exact      |
+| maven  | `mvn`   | (no config file — any version OK)        | any        |
+| golang | `go`    | `apps/rhino-cli/go.mod` → `go` directive | ≥ (GTE)    |
 
 **Flags:**
 
@@ -1108,8 +959,6 @@ go test ./...
 - `internal/docs`: 90%+ coverage (links: links_scanner, links_validator, links_categorizer, links_reporter)
 - `internal/agents`: 95%+ coverage (converter, copier, sync_validator, reporter, claude_validator, agent_validator, skill_validator)
 - `internal/speccoverage`: ≥95% coverage (parser, checker with temp dir fixtures, reporter for all formats)
-- `internal/contracts`: ≥90% coverage (java_clean_imports, dart_scaffold, reporter — all pure functions with temp dir fixtures)
-- `internal/java`: ≥95% coverage (scanner, validator, reporter — all pure functions tested with temp dir fixtures)
 - `internal/testcoverage`: ≥95% coverage (detect, go_coverage, lcov_coverage, reporter — all pure functions with temp dir fixtures)
 
 ### Lint

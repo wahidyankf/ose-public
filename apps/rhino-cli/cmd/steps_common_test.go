@@ -146,47 +146,6 @@ const (
 	stepOutputIdentifiesFileContainingBrokenLink = `^the output identifies the file containing the broken link$`
 )
 
-// Contracts java-clean-imports step patterns.
-const (
-	stepGeneratedContractsDirWithUnusedImports       = `^a generated-contracts directory with Java files containing unused imports$`
-	stepGeneratedContractsDirWithSamePackageImports  = `^a generated-contracts directory with Java files containing same-package imports$`
-	stepGeneratedContractsDirWithDuplicateImports    = `^a generated-contracts directory with Java files containing duplicate imports$`
-	stepGeneratedContractsDirWithOnlyRequiredImports = `^a generated-contracts directory with Java files having only required imports$`
-	stepEmptyGeneratedContractsDir                   = `^an empty generated-contracts directory$`
-	stepDeveloperRunsContractsJavaCleanImports       = `^the developer runs contracts java-clean-imports on the directory$`
-	stepUnusedImportsRemovedFromJavaFiles            = `^unused imports are removed from the Java files$`
-	stepSamePackageImportsRemovedFromJavaFiles       = `^same-package imports are removed from the Java files$`
-	stepOnlyOneCopyOfEachImportRemains               = `^only one copy of each import remains$`
-	stepJavaFilesAreUnchanged                        = `^the Java files are unchanged$`
-	stepCommandReportsNoFilesModified                = `^the command reports no files modified$`
-)
-
-// Contracts dart-scaffold step patterns.
-const (
-	stepGeneratedContractsDirWithModelDartFiles      = `^a generated-contracts directory with model Dart files$`
-	stepGeneratedContractsDirWithNoModelFiles        = `^a generated-contracts directory with no model files$`
-	stepExistingGeneratedContractsDirWithOldScaffold = `^an existing generated-contracts directory with old scaffold files$`
-	stepDeveloperRunsContractsDartScaffold           = `^the developer runs contracts dart-scaffold on the directory$`
-	stepPubspecYamlCreatedWithCorrectContent         = `^pubspec\.yaml is created with correct content$`
-	stepBarrelLibraryCreatedWithPartDirectives       = `^the barrel library is created with part directives for each model$`
-	stepPubspecYamlCreated                           = `^pubspec\.yaml is created$`
-	stepBarrelLibraryCreatedWithoutPartDirectives    = `^the barrel library is created without part directives$`
-	stepExistingFilesOverwrittenWithFreshScaffold    = `^the existing files are overwritten with fresh scaffold$`
-)
-
-// Java validate-annotations step patterns.
-const (
-	stepJavaSourceTreeAllPackagesNullMarked          = `^a Java source tree where every package has a @NullMarked-annotated package-info\.java$`
-	stepJavaSourceTreeOnePackageNoPackageInfo        = `^a Java source tree where one package has no package-info\.java file$`
-	stepJavaSourceTreeOnePackageWithoutNullMarked    = `^a Java source tree where one package has a package-info\.java without @NullMarked$`
-	stepJavaSourceTreeAllPackagesNonNull             = `^a Java source tree where every package has a @NonNull-annotated package-info\.java$`
-	stepDeveloperRunsJavaValidateAnnotationsOnRoot   = `^the developer runs java validate-annotations on the source root$`
-	stepDeveloperRunsJavaValidateAnnotationsNonNull  = `^the developer runs java validate-annotations with --annotation NonNull$`
-	stepOutputReportsZeroJavaViolations              = `^the output reports zero violations$`
-	stepOutputIdentifiesPackageMissingPackageInfo    = `^the output identifies the package missing package-info\.java$`
-	stepOutputIdentifiesPackageWithMissingAnnotation = `^the output identifies the package with the missing annotation$`
-)
-
 // Spec-coverage validate step patterns.
 const (
 	stepSpecsDirEveryFeatureFileHasTest              = `^a specs directory where every feature file has a corresponding test file$`

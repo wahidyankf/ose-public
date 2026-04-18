@@ -128,8 +128,7 @@ graph RL
 **Location**: `apps/rhino-cli/`
 
 Repository management CLI used by most projects for coverage validation
-(`test-coverage validate`), spec coverage (`spec-coverage validate`),
-contract post-processing, and annotation validation (`java validate-annotations`).
+(`test-coverage validate`) and spec coverage (`spec-coverage validate`).
 
 - **Dependents**: CLI tools, libs, content platforms, organiclever-fe
 - **Mechanism**: `implicitDependencies`

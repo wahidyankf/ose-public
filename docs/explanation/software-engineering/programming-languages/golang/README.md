@@ -246,7 +246,7 @@ graph TD
 **CLI Tools**:
 
 - ayokoding-cli MUST use Go for content automation (Hugo navigation generation, title updates)
-- rhino-cli MUST use Go for repository management (RHINO = Repository Hygiene & INtegration Orchestrator; includes `java validate-annotations` for Java null-safety annotation validation)
+- rhino-cli MUST use Go for repository management (RHINO = Repository Hygiene & INtegration Orchestrator)
 - oseplatform-cli MUST use Go for OSE Platform site validation (link checking)
 - Administrative tools SHOULD use Go for fast startup and easy distribution (single binary)
 - Code generation and scaffolding MAY use Go with `text/template` or `html/template`

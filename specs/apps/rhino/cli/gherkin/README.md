@@ -5,25 +5,22 @@ Hygiene & INtegration Orchestrator CLI.
 
 ## Feature Files
 
-| File                                   | Command(s)                     | Scenarios |
-| -------------------------------------- | ------------------------------ | --------- |
-| `agents-sync.feature`                  | `agents sync`                  | 7         |
-| `agents-validate-claude.feature`       | `agents validate-claude`       | 5         |
-| `agents-validate-naming.feature`       | `agents validate-naming`       | 4         |
-| `contracts-dart-scaffold.feature`      | `contracts dart-scaffold`      | 3         |
-| `contracts-java-clean-imports.feature` | `contracts java-clean-imports` | 5         |
-| `docs-validate-links.feature`          | `docs validate-links`          | 4         |
-| `doctor.feature`                       | `doctor`                       | 9         |
-| `env-backup.feature`                   | `env backup`                   | 18        |
-| `env-init.feature`                     | `env init`                     | 4         |
-| `env-restore.feature`                  | `env restore`                  | 13        |
-| `git-pre-commit.feature`               | `git pre-commit`               | 1         |
-| `java-validate-annotations.feature`    | `java validate-annotations`    | 4         |
-| `spec-coverage-validate.feature`       | `spec-coverage validate`       | 6         |
-| `test-coverage-diff.feature`           | `test-coverage diff`           | 4         |
-| `test-coverage-merge.feature`          | `test-coverage merge`          | 3         |
-| `test-coverage-validate.feature`       | `test-coverage validate`       | 10        |
-| `workflows-validate-naming.feature`    | `workflows validate-naming`    | 4         |
+| File                                | Command(s)                  | Scenarios |
+| ----------------------------------- | --------------------------- | --------- |
+| `agents-sync.feature`               | `agents sync`               | 7         |
+| `agents-validate-claude.feature`    | `agents validate-claude`    | 5         |
+| `agents-validate-naming.feature`    | `agents validate-naming`    | 4         |
+| `docs-validate-links.feature`       | `docs validate-links`       | 4         |
+| `doctor.feature`                    | `doctor`                    | 9         |
+| `env-backup.feature`                | `env backup`                | 18        |
+| `env-init.feature`                  | `env init`                  | 4         |
+| `env-restore.feature`               | `env restore`               | 13        |
+| `git-pre-commit.feature`            | `git pre-commit`            | 1         |
+| `spec-coverage-validate.feature`    | `spec-coverage validate`    | 6         |
+| `test-coverage-diff.feature`        | `test-coverage diff`        | 4         |
+| `test-coverage-merge.feature`       | `test-coverage merge`       | 3         |
+| `test-coverage-validate.feature`    | `test-coverage validate`    | 10        |
+| `workflows-validate-naming.feature` | `workflows validate-naming` | 4         |
 
 ## Conventions
 

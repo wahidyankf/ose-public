@@ -4,12 +4,10 @@ import (
 	"os"
 
 	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/agents"
-	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/contracts"
 	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/docs"
 	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/doctor"
 	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/envbackup"
 	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/git"
-	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/java"
 	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/speccoverage"
 	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/testcoverage"
 )
@@ -37,15 +35,6 @@ var agentsValidateSyncFn = agents.ValidateSync
 
 // docs validate-links command delegation.
 var docsValidateAllLinksFn = docs.ValidateAllLinks
-
-// contracts dart-scaffold command delegation.
-var contractsScaffoldDartFn = contracts.ScaffoldDart
-
-// contracts java-clean-imports command delegation.
-var contractsCleanJavaImportsFn = contracts.CleanJavaImports
-
-// java validate-annotations command delegation.
-var javaValidateAllFn = java.ValidateAll
 
 // spec-coverage validate command delegation.
 var specCoverageCheckAllFn = speccoverage.CheckAll

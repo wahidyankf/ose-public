@@ -23,7 +23,7 @@ Guidance for Claude Code (claude.ai/code) working with code in this repository.
   - `ayokoding-web-be-e2e` - Playwright BE E2E tests for ayokoding-web tRPC API
   - `ayokoding-web-fe-e2e` - Playwright FE E2E tests for ayokoding-web UI
   - `ayokoding-cli` - Go CLI tool for content link validation
-  - `rhino-cli` - Go CLI tool for repository management (Repository Hygiene & INtegration Orchestrator; includes `java validate-annotations`)
+  - `rhino-cli` - Go CLI tool for repository management (Repository Hygiene & INtegration Orchestrator)
   - `oseplatform-cli` - Go CLI tool for OSE Platform site maintenance (link validation)
   - `organiclever-fe` - Next.js 16 landing and promotional website (www.organiclever.com)
   - `organiclever-be` - F#/Giraffe REST API backend for OrganicLever
@@ -45,7 +45,7 @@ ose-public/
 │   ├── ayokoding-web-be-e2e/ # Playwright BE E2E tests for ayokoding-web
 │   ├── ayokoding-web-fe-e2e/ # Playwright FE E2E tests for ayokoding-web
 │   ├── ayokoding-cli/       # Content link validation CLI
-│   ├── rhino-cli/          # Repository management CLI (java validate-annotations)
+│   ├── rhino-cli/          # Repository management CLI
 │   ├── oseplatform-cli/     # OSE Platform site CLI
 │   ├── organiclever-fe/      # OrganicLever landing website (Next.js)
 │   ├── organiclever-be/      # OrganicLever F#/Giraffe REST API backend

@@ -1,1 +1,0 @@
-"""BDD integration tests."""

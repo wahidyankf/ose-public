@@ -1,7 +1,0 @@
-node_modules
-.output
-.vinxi
-coverage
-dist
-*.local
-.env

@@ -2,31 +2,69 @@
 
 ## Architecture
 
+The system has three narrow concerns that each warrant their own diagram
+— runtime request flow, local developer workflow, and CI + deploy — so
+readers can focus on one concern at a time without a busy omnibus chart.
+
+### Runtime Request Flow
+
+What a visitor's browser actually talks to in production.
+
 ```mermaid
 flowchart TD
-    Browser["Browser"] -->|HTTP| Vercel["Vercel edge (prod-wahidyankf-web)"]
-    Vercel -->|static + RSC| NextApp["apps/wahidyankf-web (Next.js 16 App Router)"]
+    Browser["Browser"] -->|HTTP| Vercel["Vercel edge<br/>(prod-wahidyankf-web)"]
+    Vercel -->|static + RSC| NextApp["apps/wahidyankf-web<br/>Next.js 16 App Router"]
     NextApp -->|"@next/third-parties"| GA["Google Analytics"]
     NextApp -->|"@next/third-parties"| GTM["Google Tag Manager"]
 
-    subgraph DevBox["Developer box"]
-        Nx["Nx workspace"]
-        Nx -->|"nx dev wahidyankf-web"| DevServer["next dev --port 3201"]
-        Nx -->|"nx run wahidyankf-web:test:quick"| Vitest["Vitest 4 + coverage"]
-        Nx -->|"nx run wahidyankf-web-e2e:test:e2e"| Playwright["Playwright 1.52+ + BDD"]
-    end
-
-    subgraph CI["GitHub Actions"]
-        Workflow["test-and-deploy-wahidyankf-web.yml"] -->|cron 2x/day| Reusable["_reusable-test-and-deploy.yml"]
-    end
-
-    Deployer["apps-wahidyankf-web-deployer agent"] -->|"git push origin main:prod-wahidyankf-web --force"| Vercel
-
-    style NextApp fill:#0173B2,color:#fff
+    style Browser fill:#0173B2,color:#fff
     style Vercel fill:#DE8F05,color:#fff
+    style NextApp fill:#0173B2,color:#fff
+    style GA fill:#CA9161,color:#fff
+    style GTM fill:#CA9161,color:#fff
+```
+
+### Local Developer Workflow
+
+What the maintainer runs on their own machine through Nx targets.
+
+```mermaid
+flowchart TD
+    Nx["Nx workspace<br/>(ose-public root)"] -->|"nx dev wahidyankf-web"| DevServer["next dev<br/>--port 3201"]
+    Nx -->|"nx run wahidyankf-web:test:quick"| Vitest["Vitest 4 + coverage<br/>threshold 80%"]
+    Nx -->|"nx run wahidyankf-web-e2e:test:e2e"| Playwright["Playwright 1.52+<br/>+ BDD + axe-core"]
+    Nx -->|"nx affected -t typecheck lint test:quick spec-coverage"| PrePush["Pre-push gate"]
+
+    style Nx fill:#0173B2,color:#fff
+    style DevServer fill:#029E73,color:#fff
     style Vitest fill:#029E73,color:#fff
     style Playwright fill:#029E73,color:#fff
+    style PrePush fill:#DE8F05,color:#fff
+```
+
+### CI and Deploy Flow
+
+How scheduled CI drives the same Nx targets, and how the production
+branch receives force-pushes from `main`.
+
+```mermaid
+flowchart TD
+    Cron["GitHub Actions cron<br/>06:00 / 18:00 WIB"] --> Workflow["test-and-deploy-wahidyankf-web.yml"]
+    Workflow --> Reusable["_reusable-test-and-deploy.yml"]
+    Reusable --> NxCi["nx run wahidyankf-web:test:quick<br/>+ test:integration + test:e2e"]
+
+    Main["origin/main<br/>(latest green commit)"] --> Deployer["apps-wahidyankf-web-deployer<br/>agent"]
+    Deployer -->|"git push --force"| ProdBranch["origin/prod-wahidyankf-web"]
+    ProdBranch -->|Vercel watches| Vercel["Vercel production build"]
+
+    style Cron fill:#0173B2,color:#fff
+    style Workflow fill:#DE8F05,color:#fff
+    style Reusable fill:#DE8F05,color:#fff
+    style NxCi fill:#029E73,color:#fff
+    style Main fill:#0173B2,color:#fff
     style Deployer fill:#CC78BC,color:#fff
+    style ProdBranch fill:#DE8F05,color:#fff
+    style Vercel fill:#DE8F05,color:#fff
 ```
 
 All runtime code is ported from the upstream `wahidyankf/oss /

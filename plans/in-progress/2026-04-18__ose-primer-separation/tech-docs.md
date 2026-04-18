@@ -125,7 +125,7 @@ After the invocation:
 - **Parallel safety**: Multiple propagation applies can run without blocking the main clone's checkout state. A second agent invocation, a manual `git` command, or a concurrent parity-check all work because the main clone never leaves `main`.
 - **Clean main state**: The next pre-flight (for any mode) finds the main clone exactly where it expects — on `main`, clean tree — because apply never changed it.
 - **Cleaner recovery on failure**: Failed applies leave a well-named worktree directory the maintainer can inspect and `git worktree remove` when done. No stale branches clutter the main clone's branch list.
-- **Alignment with repo convention**: The existing [Subrepo Worktree Workflow Convention](../../../../governance/conventions/structure/subrepo-worktrees.md) at the parent level already treats `.claude/worktrees/` as a gitignored worktree sink for subrepos. `ose-primer` (derived from `ose-public`) inherits that `.gitignore` entry, so worktrees placed under `$OSE_PRIMER_CLONE/.claude/worktrees/` are automatically ignored — no primer-side config change required.
+- **Alignment with repo convention**: The existing [Subrepo Worktree Workflow Convention](https://github.com/wahidyankf/ose-projects/blob/main/governance/conventions/structure/subrepo-worktrees.md) at the parent level already treats `.claude/worktrees/` as a gitignored worktree sink for subrepos. `ose-primer` (derived from `ose-public`) inherits that `.gitignore` entry, so worktrees placed under `$OSE_PRIMER_CLONE/.claude/worktrees/` are automatically ignored — no primer-side config change required.
 
 **Apply-mode procedure**:
 
@@ -916,7 +916,7 @@ inputs:
   - name: clone-path
     type: string
     required: false
-    default: $OSE_PRIMER_CLONE
+    default: "${OSE_PRIMER_CLONE}"
   - name: max-catch-up-iterations
     type: number
     required: false

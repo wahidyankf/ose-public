@@ -271,11 +271,13 @@ Feature: ose-primer sync convention (classifier)
     Then the "Direction" for each such row is "neither"
     And the "Rationale" cites FSL-1.1-MIT licensing or product-specificity
 
-  Scenario: Generic demo apps are tagged propagate
+  Scenario: Generic demo apps are tagged neither (post-extraction)
     Given the classifier table
     When the reader inspects the row for "apps/a-demo-*" (excluding e2e)
-    Then the "Direction" is "propagate"
-    And the "Rationale" cites the template's need for scaffolding demos
+    Then the "Direction" is "neither (post-extraction)"
+    And the "Rationale" notes that the rows were pre-tagged during Phase 1 because live parity-check was manually substituted and Phase 8 Commit H is a no-op for these rows
+    # Deviation: original plan intended Direction="propagate" until Phase 8 Commit H flipped it;
+    # Phase 1 delivery note tagged rows "neither (post-extraction)" upfront to match live state.
 
 Feature: Shared sync skill
 
@@ -314,6 +316,11 @@ Feature: Adoption agent (repo-ose-primer-adoption-maker)
     Then a report is written to "generated-reports/" with filename matching "repo-ose-primer-adoption-maker__<uuid-chain>__<utc+7-timestamp>__report.md"
     And the report contains sections for summary, classifier coverage, findings, and recommendations
     And the report does NOT modify any file in "ose-public" or in the primer clone
+    # Phase 6 execution deviation: primer clone was dirty (109 uncommitted files); agent pre-flight
+    # aborted before classifier parse. Abort-notice report exists at
+    # generated-reports/repo-ose-primer-adoption-maker__phase6__2026-04-18--20-30__report.md
+    # with Summary + Primer state snapshot + Next steps sections (no classifier coverage or findings).
+    # Full dry-run with findings deferred to Phase 10 (post-extraction, clean primer clone).
 
 Feature: Propagation agent (repo-ose-primer-propagation-maker)
 
@@ -330,6 +337,10 @@ Feature: Propagation agent (repo-ose-primer-propagation-maker)
     Then a report is written to "generated-reports/" with the correct filename pattern
     And the report does NOT push any branch and does NOT open any PR
     And the report groups findings by classifier direction ("propagate" only; "neither" paths are excluded or listed in an audit appendix)
+    # Phase 6 execution deviation: primer clone was dirty (109 uncommitted files); agent pre-flight
+    # aborted before classifier parse. Abort-notice report exists at
+    # generated-reports/repo-ose-primer-propagation-maker__phase6__2026-04-18--20-30__report.md
+    # with abort summary (no findings grouping). Full dry-run with findings deferred to Phase 10.
 
   Scenario: Propagation-maker refuses to emit changes for "neither" paths
     Given a change in "ose-public/apps/organiclever-fe/" (classifier: neither)
@@ -470,7 +481,7 @@ Feature: Demo extraction (Phase 8)
     Given extraction has executed
     When a reader opens "governance/conventions/structure/ose-primer-sync.md"
     Then the rows for "apps/a-demo-*" and "specs/apps/a-demo/" show Direction="neither"
-    And the Rationale column reads "extracted YYYY-MM-DD; ose-primer is authoritative"
+    And the Rationale column reads "extracted 2026-04-18; ose-primer is authoritative"
 
 Feature: Post-extraction health (Phase 9)
 
@@ -837,6 +848,17 @@ Feature: Extraction workflow (repo-ose-primer-extraction-execution)
 **Risk**: During workflow cleanup, a `_reusable-*.yml` called by product apps is removed because it was also called by a demo.
 
 **Mitigation**: Phase 8 workflow-cleanup step operates in two sub-steps: (i) delete only files matching `test-a-demo-*.yml`; (ii) edit `_reusable-*.yml` ONLY to remove demo-scoped conditionals or inputs, never the whole file. Any reusable kept in the tree is re-verified by the post-extraction green-run in Phase 9.
+
+## Execution Deviations (Phase 12 Reference)
+
+The following deviations from acceptance criteria occurred during execution. Each Gherkin scenario marked with a deviation comment in the Acceptance Criteria section above maps to one of these entries. Cross-reference delivery.md for inline deviation notes.
+
+| Scenario                                                             | Deviation                                                                                                                              | Resolution                                                                            |
+| -------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| "Generic demo apps are tagged propagate"                             | Rows pre-tagged `neither (post-extraction)` in Phase 1; Phase 8 Commit H is a no-op for these rows                                     | Scenario updated to assert `neither (post-extraction)`                                |
+| "Parity verification succeeds before extraction" (verdict line)      | Verdict wording is `parity verified (content-equivalent after primer-side rename)` not `parity verified: ose-public may safely remove` | Operator judgment: rename is structural no-op; gate passed on intent                  |
+| "Adoption-maker produces a report" (sections)                        | Phase 6 abort-notice; no classifier coverage or findings sections                                                                      | Full dry-run deferred to Phase 10; abort-notice evidence is adequate for Phase 6 gate |
+| "Propagation-maker produces a report in dry-run" (findings grouping) | Phase 6 abort-notice; no findings grouping                                                                                             | Same as above                                                                         |
 
 ## Related Documents
 

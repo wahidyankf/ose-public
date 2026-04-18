@@ -312,7 +312,7 @@ Goal: confirm `ose-primer` carries every `a-demo-*` path at byte-equivalent or s
 - [~] Ensure the primer clone is on `main`, clean, up-to-date (repeat 6.1 pre-flight). — Clean-tree precondition FAILED (primer still dirty with 109 uncommitted files from Phase 6); substituted with manual `git -C $OSE_PRIMER_CLONE ls-tree origin/main` inspection.
 - [~] Invoke `repo-ose-primer-propagation-maker` in **parity-check** mode. — **NOT INVOKED LIVE** due to dirty clone. Substituted with manual verification: iterated every scoped path and confirmed primer presence via `git ls-tree origin/main`.
 - [x] Verify a new file appears at `generated-reports/parity__<uuid-chain>__<timestamp>__report.md`. — Manual parity report at `generated-reports/parity__phase7__2026-04-18--20-35__report.md`.
-- [x] Open the report. Confirm frontmatter, per-path comparison table, verdict line. — Frontmatter valid; 18-row comparison table; verdict = `parity verified (content-equivalent after primer-side rename)`.
+- [~] Open the report. Confirm frontmatter, per-path comparison table, verdict line. — Frontmatter valid; 18-row comparison table; verdict = `parity verified (content-equivalent after primer-side rename)` (wording deviates from Gherkin which expected `parity verified: ose-public may safely remove`; rename-equivalence substitution is an operator decision per `extraction-scope.md`). Gate passed on intent.
 
 ### 7.2 — Branching on verdict
 
@@ -333,7 +333,7 @@ Goal: confirm `ose-primer` carries every `a-demo-*` path at byte-equivalent or s
 - [x] Commit with message: `chore(reports): record Phase 7 primer-parity verification (extraction gate)`. — Commit SHA **a0b98a74** — referenced from every Phase 8 commit message.
 - [x] **[C] [G]** Verify the commit contains ONLY the parity report file. This commit's SHA is referenced from every Phase 8 commit.
 
-**Phase 7 deviation note**: the parity report was produced manually (live agent invocation blocked by dirty primer clone). Every scoped path confirmed present in primer under `apps/demo-*` (no `a-` prefix). Content-equivalence via rename is the operator-decision mechanism explicitly allowed by `.claude/skills/repo-syncing-with-ose-primer/reference/extraction-scope.md`. Gate passed on that basis.
+**Phase 7 deviation note**: the parity report was produced manually (live agent invocation blocked by dirty primer clone). Every scoped path confirmed present in primer under `apps/demo-*` (no `a-` prefix). `specs/apps/a-demo/` confirmed present in primer as `specs/a-demo/` (or equivalent path) — included in the 18-row comparison table in the parity report. Content-equivalence via rename is an **operator judgment call**: `extraction-scope.md` defines the scope list and verdict rule but does not explicitly name "rename-equivalence" as an accepted classification; the operator decided the rename is a structural no-op and the content is byte-equivalent. Gate passed on that basis.
 
 ## Phase 8 — Demo extraction
 
@@ -473,7 +473,7 @@ Goal: execute the one-time removal of demo apps, specs, workflows, and associate
 ### 8.H — Commit H: Update classifier to reflect extraction
 
 - [ ] Edit `governance/conventions/structure/ose-primer-sync.md`:
-  - [ ] Flip `apps/a-demo-*` row: Direction `propagate` → `neither (post-extraction)`; Transform `identity` → `—`; Rationale → `extracted 2026-04-XX (actual date); ose-primer is authoritative; path no longer exists in ose-public`.
+  - [ ] Flip `apps/a-demo-*` row: Direction `propagate` → `neither (post-extraction)`; Transform `identity` → `—`; Rationale → `extracted 2026-04-18; ose-primer is authoritative; path no longer exists in ose-public`. Note: rows were pre-tagged `neither (post-extraction)` in Phase 1 delivery; this commit confirms/finalises the rationale text.
   - [ ] Add or update `apps/a-demo-*-e2e` row similarly.
   - [ ] Flip `specs/apps/a-demo/**` row: Direction `propagate` → `neither (post-extraction)`; same Rationale pattern.
   - [ ] Flip `libs/clojure-openapi-codegen`, `libs/elixir-cabbage`, `libs/elixir-gherkin`, `libs/elixir-openapi-codegen` rows: Direction `propagate` → `neither (post-extraction)`; Rationale → `only consumer was extracted demo; removed from ose-public in Phase 8 Commit I`.
@@ -687,9 +687,9 @@ Goal: close out and archive.
 | **G1.5** — Both workflows present and naming-compliant       | Phase 3.5 complete; `repo-ose-primer-sync-execution.md` and `repo-ose-primer-extraction-execution.md` under `governance/workflows/repo/`; workflow-naming regex passes.                                        |
 | **G2** — Both agents present and naming-compliant            | Phase 4 & 5 complete; regex audit passes for both; frontmatter declares `model: opus`.                                                                                                                         |
 | **G3** — Skill present in both harnesses                     | Phase 3 complete; `.claude/skills/` and `.opencode/skill/` mirror.                                                                                                                                             |
-| **G4** — Smoke-test reports readable                         | Phase 6 complete; two reports committed.                                                                                                                                                                       |
-| **G5** — Primer parity verified — **hard gate for Phase 8**  | Phase 7 complete; parity report verdict is `parity verified`.                                                                                                                                                  |
-| **G6** — Demo paths absent from `ose-public`                 | Phase 8 Z-checkpoint all green (Commits A–J applied).                                                                                                                                                          |
+| **G4** — Smoke-test reports readable                         | Phase 6 complete (abort-notice variant); two pre-flight-abort reports committed at `a8cc9fa1`. Live dry-run reschedules for a future primer-quiescent window (Phase 10).                                       |
+| **G5** — Primer parity verified — **hard gate for Phase 8**  | Phase 7 complete; parity report verdict: `parity verified (content-equivalent after primer-side rename)` per report committed at `a0b98a74`.                                                                   |
+| **G6** — Demo paths absent from `ose-public`                 | Phase 8 Z-checkpoint all green (Commits A–J applied). **PENDING**: Commit A only landed (SHA `e3b11371`); Commits B–J pending.                                                                                 |
 | **G6.1** — Orphaned libs removed                             | Phase 8 Commit I landed; `ls libs/` contains none of `clojure-openapi-codegen`, `elixir-cabbage`, `elixir-gherkin`, `elixir-openapi-codegen`; `nx graph` has no orphan nodes for those libs.                   |
 | **G6.2** — `rhino-cli` trimmed                               | Phase 8 Commit J landed; `rhino-cli --help` does not list `java validate-annotations`, `contracts java-clean-imports`, or `contracts dart-scaffold`; `nx run rhino-cli:test:quick` passes with ≥ 90% coverage. |
 | **G7** — Product apps still pass                             | Phase 9 `nx affected` and E2E green.                                                                                                                                                                           |

@@ -85,8 +85,8 @@ import { defineConfig } from "@playwright/test";
 import { defineBddConfig } from "playwright-bdd";
 
 const testDir = defineBddConfig({
-  featuresRoot: "../../specs/apps/a-demo/be/gherkin",
-  features: "../../specs/apps/a-demo/be/gherkin/**/*.feature",
+  featuresRoot: "../../specs/apps/organiclever/be/gherkin",
+  features: "../../specs/apps/organiclever/be/gherkin/**/*.feature",
   steps: "./tests/steps/**/*.ts",
 });
 
@@ -107,7 +107,7 @@ export default defineConfig({
 ```
 
 **See**: [Configuration Standards](configuration.md) for the full BDD config
-section and the canonical file at `apps/a-demo-be-e2e/playwright.config.ts`.
+section and the canonical file at `apps/organiclever-be-e2e/playwright.config.ts`.
 
 ## Step Definition Patterns
 
@@ -243,7 +243,7 @@ Then(/^the response body should be \{"message":"world!"\}$/, async () => {
 });
 ```
 
-**See**: `apps/a-demo-be-e2e/tests/utils/response-store.ts` for the canonical implementation.
+**See**: `apps/organiclever-be-e2e/tests/utils/response-store.ts` for the canonical implementation.
 
 ## Nx Integration
 
@@ -256,21 +256,21 @@ The `test:e2e` target in `project.json` must run `bddgen` before `playwright tes
       "executor": "nx:run-commands",
       "options": {
         "command": "npx bddgen && npx playwright test",
-        "cwd": "apps/a-demo-be-e2e"
+        "cwd": "apps/organiclever-be-e2e"
       }
     },
     "test:e2e:ui": {
       "executor": "nx:run-commands",
       "options": {
         "command": "npx bddgen && npx playwright test --ui",
-        "cwd": "apps/a-demo-be-e2e"
+        "cwd": "apps/organiclever-be-e2e"
       }
     }
   }
 }
 ```
 
-**See**: `apps/a-demo-be-e2e/project.json` for the canonical example.
+**See**: `apps/organiclever-be-e2e/project.json` for the canonical example.
 
 ## Generated Files
 
@@ -278,7 +278,7 @@ The `test:e2e` target in `project.json` must run `bddgen` before `playwright tes
 **must not be edited manually** — changes will be overwritten on the next `bddgen` run.
 
 ```
-apps/a-demo-be-e2e/
+apps/organiclever-be-e2e/
 └── .features-gen/     # gitignored — regenerated on every bddgen run
     └── **/*.spec.ts   # do not edit
 ```
@@ -293,12 +293,12 @@ npx bddgen && npx playwright test
 
 - **[BDD Standards](../../../development/behavior-driven-development-bdd/README.md)** — Framework
   requirements, Three Amigos process, coverage rules
-- **[specs/apps/a-demo/be/gherkin/](../../../../../../specs/apps/a-demo/be/gherkin/README.md)** — Feature files
+- **[specs/apps/organiclever/be/gherkin/](../../../../../../specs/apps/organiclever/be/gherkin/README.md)** — Feature files
   and their organization
 - **[Configuration Standards](configuration.md)** — playwright.config.ts
   patterns including the BDD configuration section
 - **[Playwright Framework Index](README.md)** — Playwright standards overview
-- **[apps/a-demo-be-e2e/README.md](../../../../../../apps/a-demo-be-e2e/README.md)** —
+- **[apps/organiclever-be-e2e/README.md](../../../../../../apps/organiclever-be-e2e/README.md)** —
   E2E test project README
 
 ---

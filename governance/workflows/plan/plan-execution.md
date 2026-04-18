@@ -79,7 +79,7 @@ The orchestrator never implements code or documentation in bulk by itself — it
 
 The orchestrator selects the best agent for each delivery checklist item using these rules, applied in priority order:
 
-1. **Match by project/app name**: If the checklist item names a specific app (e.g., `a-demo-be-java-vertx`), use the agent for that app's language (e.g., `swe-java-dev`). Refer to [CLAUDE.md](../../../CLAUDE.md) for the full app list and their tech stacks.
+1. **Match by project/app name**: If the checklist item names a specific app (e.g., `organiclever-be`), use the agent for that app's language (e.g., `swe-fsharp-dev`). Refer to [CLAUDE.md](../../../CLAUDE.md) for the full app list and their tech stacks.
 
 2. **Match by file extension**: If the item references files with a recognizable extension (`.ts`, `.java`, `.py`, `.go`, `.kt`, `.fs`, `.cs`, `.clj`, `.ex`, `.rs`, `.dart`), use the corresponding `swe-{language}-dev` agent.
 

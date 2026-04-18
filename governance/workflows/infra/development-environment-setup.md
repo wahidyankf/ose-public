@@ -31,6 +31,11 @@ outputs:
 configuring every tool required to work on any project in this monorepo — from git hooks to
 integration tests to E2E tests.
 
+> **Note**: The polyglot demo apps (`a-demo-be-*`, `a-demo-fe-*`) were extracted to
+> [ose-primer](https://github.com/wahidyankf/ose-primer) on 2026-04-18. If you need to set
+> up Elixir, Clojure, Python, Rust, Dart/Flutter toolchains for those apps, see the
+> ose-primer setup guide.
+
 **When to use**:
 
 - New developer onboarding to the repository
@@ -48,27 +53,17 @@ confirmation and shell access.
 
 All tools checked by `rhino-cli doctor`:
 
-| #   | Tool           | Required Version      | Version Source                                | Manager        |
-| --- | -------------- | --------------------- | --------------------------------------------- | -------------- |
-| 1   | git            | Any                   | (no config file)                              | System/Brew    |
-| 2   | volta          | Any                   | (no config file)                              | curl script    |
-| 3   | node           | 24.13.1               | package.json > volta.node                     | Volta          |
-| 4   | npm            | 11.10.1               | package.json > volta.npm                      | Volta          |
-| 5   | java           | 25+ (major)           | apps/organiclever-be-jasb/pom.xml             | SDKMAN         |
-| 6   | maven          | Any                   | (no config file)                              | SDKMAN         |
-| 7   | golang         | >= go.mod directive   | apps/rhino-cli/go.mod                         | Brew/asdf      |
-| 8   | python         | >= .python-version    | apps/a-demo-be-python-fastapi/.python-version | pyenv/System   |
-| 9   | rust (rustc)   | >= 1.80 (MSRV)        | apps/a-demo-be-rust-axum/Cargo.toml           | rustup         |
-| 10  | cargo-llvm-cov | Any                   | (no config file)                              | cargo          |
-| 11  | elixir         | >= 1.19.5             | .tool-versions                                | asdf           |
-| 12  | erlang         | >= 27 (major)         | .tool-versions                                | asdf           |
-| 13  | dotnet         | >= global.json major  | apps/a-demo-be-fsharp-giraffe/global.json     | Brew/Script    |
-| 14  | clojure (clj)  | Any                   | (no config file)                              | Brew           |
-| 15  | dart           | >= pubspec.yaml SDK   | apps/a-demo-fe-dart-flutterweb/pubspec.yaml   | Flutter        |
-| 16  | flutter        | >= 3.41.0             | apps/a-demo-fe-dart-flutterweb/pubspec.yaml   | Manual/Brew    |
-| 17  | docker         | Any                   | (no config file)                              | Docker Desktop |
-| 18  | jq             | Any                   | (no config file)                              | Brew           |
-| 19  | playwright     | (matches npm version) | node_modules                                  | npx            |
+| #   | Tool       | Required Version      | Version Source                   | Manager        |
+| --- | ---------- | --------------------- | -------------------------------- | -------------- |
+| 1   | git        | Any                   | (no config file)                 | System/Brew    |
+| 2   | volta      | Any                   | (no config file)                 | curl script    |
+| 3   | node       | 24.13.1               | package.json > volta.node        | Volta          |
+| 4   | npm        | 11.10.1               | package.json > volta.npm         | Volta          |
+| 5   | golang     | >= go.mod directive   | apps/rhino-cli/go.mod            | Brew/asdf      |
+| 6   | dotnet     | >= global.json major  | apps/organiclever-be/global.json | Brew/Script    |
+| 7   | docker     | Any                   | (no config file)                 | Docker Desktop |
+| 8   | jq         | Any                   | (no config file)                 | Brew           |
+| 9   | playwright | (matches npm version) | node_modules                     | npx            |
 
 ## Quick Start: `doctor --fix`
 
@@ -223,66 +218,9 @@ volta install npm@11.10.1
 
 ---
 
-### Phase 4: JVM Ecosystem (Sequential)
+### Phase 4: Go Ecosystem (Sequential)
 
-**Condition**: `{input.scope} == full`
-
-Required for: `a-demo-be-java-springboot`, `a-demo-be-java-vertx`, `a-demo-be-kotlin-ktor`,
-`a-demo-be-clojure-pedestal`
-
-#### 4.1 Install SDKMAN
-
-```bash
-curl -s "https://get.sdkman.io" | bash
-source "$HOME/.sdkman/bin/sdkman-init.sh"
-```
-
-**Success criteria**: `sdk version` returns a version string.
-
-#### 4.2 Install Java 25+
-
-```bash
-sdk install java 25-tem
-java -version
-```
-
-**Success criteria**: `java -version` shows major version 25 or higher. The required version
-is in `apps/a-demo-be-java-springboot/pom.xml` under `<java.version>`.
-
-#### 4.3 Install Maven
-
-```bash
-sdk install maven
-mvn --version
-```
-
-**Success criteria**: `mvn --version` returns Apache Maven version.
-
-#### 4.4 Install Kotlin (for Ktor project)
-
-Kotlin compilation is handled by Gradle (bundled wrapper in the project), so no separate
-Kotlin install is needed. The JDK from step 4.2 is sufficient.
-
-**Success criteria**: `./gradlew --version` works in `apps/a-demo-be-kotlin-ktor/`.
-
-#### 4.5 Install Clojure CLI
-
-```bash
-# macOS
-brew install clojure/tools/clojure
-
-# Linux
-# https://clojure.org/guides/install_clojure
-```
-
-**Success criteria**: `clj --version` returns a version string.
-
----
-
-### Phase 5: Go Ecosystem (Sequential)
-
-Required for: `rhino-cli`, `ayokoding-cli`, `oseplatform-cli`, `a-demo-be-golang-gin`,
-`libs/golang-commons`
+Required for: `rhino-cli`, `ayokoding-cli`, `oseplatform-cli`, `libs/golang-commons`
 
 #### 5.1 Install Go
 
@@ -304,7 +242,7 @@ Go >= 1.26.
 
 **Condition**: `{input.scope} == full`
 
-Required for: `a-demo-be-python-fastapi`
+Required for: polyglot demo apps in ose-primer (extracted 2026-04-18)
 
 #### 6.1 Install Python 3.13+
 
@@ -321,7 +259,7 @@ brew install python@3.13
 sudo apt-get install -y python3 python3-pip python3-venv
 ```
 
-The required minimum version is in `apps/a-demo-be-python-fastapi/.python-version`.
+The required minimum version is in the `ose-primer` repository's `.python-version` file.
 
 **Success criteria**: `python3 --version` shows a version >= the `.python-version` file.
 
@@ -331,7 +269,7 @@ The required minimum version is in `apps/a-demo-be-python-fastapi/.python-versio
 
 **Condition**: `{input.scope} == full`
 
-Required for: `a-demo-be-rust-axum`
+Required for: polyglot demo apps in ose-primer (extracted 2026-04-18)
 
 #### 7.1 Install Rust via rustup
 
@@ -356,7 +294,7 @@ cargo install cargo-llvm-cov
 
 **Condition**: `{input.scope} == full`
 
-Required for: `a-demo-be-elixir-phoenix`
+Required for: polyglot demo apps in ose-primer (extracted 2026-04-18)
 
 #### 8.1 Install asdf version manager
 
@@ -411,7 +349,7 @@ The required version is pinned in `.tool-versions` (currently `elixir 1.19.5-otp
 
 **Condition**: `{input.scope} == full`
 
-Required for: `a-demo-be-fsharp-giraffe`, `a-demo-be-csharp-aspnetcore`, `organiclever-be`
+Required for: `organiclever-be`; also polyglot demo apps in ose-primer (extracted 2026-04-18)
 
 #### 9.1 Install .NET SDK
 
@@ -422,8 +360,7 @@ brew install dotnet
 # Linux — https://learn.microsoft.com/en-us/dotnet/core/install/linux
 ```
 
-The required major version is in `apps/a-demo-be-fsharp-giraffe/global.json` under
-`sdk.version`.
+The required major version is in `apps/organiclever-be/global.json` under `sdk.version`.
 
 **Success criteria**: `dotnet --version` shows a version with the same or higher major version
 as `global.json`.
@@ -434,7 +371,7 @@ as `global.json`.
 
 **Condition**: `{input.scope} == full`
 
-Required for: `a-demo-fe-dart-flutterweb`
+Required for: polyglot demo apps in ose-primer (extracted 2026-04-18)
 
 #### 10.1 Install Flutter (includes Dart)
 
@@ -445,8 +382,7 @@ brew install --cask flutter
 # Or manual install: https://docs.flutter.dev/get-started/install
 ```
 
-Flutter bundles the Dart SDK. The minimum Dart SDK version is in
-`apps/a-demo-fe-dart-flutterweb/pubspec.yaml` under `environment.sdk`.
+Flutter bundles the Dart SDK. The minimum Dart SDK version is in the `ose-primer` repository's `pubspec.yaml` under `environment.sdk`.
 
 **Success criteria**: `flutter --version` and `dart --version` both return version strings.
 Dart version >= the pubspec constraint.
@@ -586,7 +522,7 @@ pushes are fast.
 
 ```bash
 # Pick any backend to validate Docker + PostgreSQL integration
-nx run a-demo-be-golang-gin:test:integration
+nx run organiclever-be:test:integration
 ```
 
 **Success criteria**: Integration tests pass. Docker starts PostgreSQL, runs migrations, and
@@ -598,11 +534,11 @@ executes Gherkin scenarios against a real database.
 
 ```bash
 # Start a backend
-nx run a-demo-be-golang-gin:dev &
+nx run organiclever-be:dev &
 
 # Wait for it to be ready, then run E2E
 sleep 5
-nx run a-demo-be-e2e:test:e2e
+nx run organiclever-be-e2e:test:e2e
 
 # Stop the backend
 kill %1
@@ -680,6 +616,4 @@ This covers: pre-commit hooks, pre-push hooks, TypeScript/Go unit tests, and bas
   Developer-facing companion guide
 - [Reproducible Environments](../../development/workflow/reproducible-environments.md) — Volta,
   npm, Docker reproducibility practices
-- [Local Development with Docker](../../../docs/how-to/local-dev-docker.md) — Docker
-  Compose setup for running services
 - [Code Quality Convention](../../development/quality/code.md) — Git hooks and formatting

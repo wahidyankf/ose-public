@@ -81,29 +81,15 @@ The result must exactly match the filename (without path).
 
 Every workflow currently in the repository follows this rule:
 
-| `name:` field                                | Filename                               |
-| -------------------------------------------- | -------------------------------------- |
-| `Main CI`                                    | `main-ci.yml`                          |
-| `PR - Quality Gate`                          | `pr-quality-gate.yml`                  |
-| `PR - Format`                                | `pr-format.yml`                        |
-| `PR - Validate Links`                        | `pr-validate-links.yml`                |
-| `Test and Deploy - AyoKoding Web`            | `test-and-deploy-ayokoding-web.yml`    |
-| `Test and Deploy - OSE Platform Web`         | `test-and-deploy-oseplatform-web.yml`  |
-| `Test and Deploy - OrganicLever`             | `test-and-deploy-organiclever.yml`     |
-| `Test - Demo BE (Java/Spring Boot)`          | `test-a-demo-be-java-springboot.yml`   |
-| `Test - Demo BE (Java/Vert.x)`               | `test-a-demo-be-java-vertx.yml`        |
-| `Test - Demo BE (Elixir/Phoenix)`            | `test-a-demo-be-elixir-phoenix.yml`    |
-| `Test - Demo BE (F#/Giraffe)`                | `test-a-demo-be-fsharp-giraffe.yml`    |
-| `Test - Demo BE (Go/Gin)`                    | `test-a-demo-be-golang-gin.yml`        |
-| `Test - Demo BE (Python/FastAPI)`            | `test-a-demo-be-python-fastapi.yml`    |
-| `Test - Demo BE (Rust/Axum)`                 | `test-a-demo-be-rust-axum.yml`         |
-| `Test - Demo BE (Kotlin/Ktor)`               | `test-a-demo-be-kotlin-ktor.yml`       |
-| `Test - Demo BE (TypeScript/Effect)`         | `test-a-demo-be-ts-effect.yml`         |
-| `Test - Demo BE (C#/ASP.NET Core)`           | `test-a-demo-be-csharp-aspnetcore.yml` |
-| `Test - Demo BE (Clojure/Pedestal)`          | `test-a-demo-be-clojure-pedestal.yml`  |
-| `Test - Demo FE (TypeScript/Next.js)`        | `test-a-demo-fe-ts-nextjs.yml`         |
-| `Test - Demo FE (TypeScript/TanStack Start)` | `test-a-demo-fe-ts-tanstack-start.yml` |
-| `Test - Demo FE (Dart/Flutter Web)`          | `test-a-demo-fe-dart-flutterweb.yml`   |
+| `name:` field                        | Filename                              |
+| ------------------------------------ | ------------------------------------- |
+| `Main CI`                            | `main-ci.yml`                         |
+| `PR - Quality Gate`                  | `pr-quality-gate.yml`                 |
+| `PR - Format`                        | `pr-format.yml`                       |
+| `PR - Validate Links`                | `pr-validate-links.yml`               |
+| `Test and Deploy - AyoKoding Web`    | `test-and-deploy-ayokoding-web.yml`   |
+| `Test and Deploy - OSE Platform Web` | `test-and-deploy-oseplatform-web.yml` |
+| `Test and Deploy - OrganicLever`     | `test-and-deploy-organiclever.yml`    |
 
 ## Examples
 
@@ -119,13 +105,11 @@ Derivation: `PR - Quality Gate` → lowercase → `pr - quality gate` → spaces
 ---
 
 ```yaml
-# File: .github/workflows/test-a-demo-be-java-springboot.yml
-name: Test - Demo BE (Java/Spring Boot)
+# File: .github/workflows/test-and-deploy-organiclever.yml
+name: Test and Deploy - OrganicLever
 ```
 
-Derivation: `Test - Demo BE (Java/Spring Boot)` → lowercase → `test - demo be (java/spring boot)` → remove `(`, `)`, `/` → `test - demo be javaspring boot` → spaces to hyphens → `test---a-demo-be-javaspring-boot` → collapse hyphens → `test-a-demo-be-javaspring-boot` → append `.yml` → `test-a-demo-be-java-springboot.yml`.
-
-The actual filename is `test-a-demo-be-java-springboot.yml`. `Java/Spring Boot` maps to `java-springboot` (slash removed, space removed). See the Special Considerations section below.
+Derivation: `Test and Deploy - OrganicLever` → lowercase → `test and deploy - organiclever` → spaces to hyphens → `test-and-deploy---organiclever` → collapse hyphens → `test-and-deploy-organiclever` → append `.yml` → `test-and-deploy-organiclever.yml`. Matches filename.
 
 ### FAIL: Misaligned name and filename
 
@@ -142,42 +126,32 @@ A developer seeing "PR - Quality Gate" fail in the UI would look for `pr-quality
 
 When the fully derived filename would be excessively long (over 60 characters before `.yml`), abbreviations are permitted provided they are applied consistently and the mapping remains obvious. Established abbreviations in this codebase:
 
-| Full word/phrase | Abbreviation                       |
-| ---------------- | ---------------------------------- |
-| `Backend`        | `be`                               |
-| `Spring Boot`    | `springboot` (no space, no hyphen) |
-| `ASP.NET Core`   | `aspnetcore`                       |
+| Full word/phrase | Abbreviation |
+| ---------------- | ------------ |
+| `Backend`        | `be`         |
 
 When using an abbreviation, update this table so the mapping remains documented and reviewable.
 
 ### Language/framework identifiers in parentheses
 
-The pattern `(Language/Framework)` in a name maps to `language-framework` in the filename: parentheses are removed, the `/` is removed, a hyphen separates language from framework, and the whole segment is lowercased. For example, `(Java/Spring Boot)` → `java-springboot`.
+The pattern `(Language/Framework)` in a name maps to `language-framework` in the filename: parentheses are removed, the `/` is removed, a hyphen separates language from framework, and the whole segment is lowercased. For example, `(F#/Giraffe)` → `fsharp-giraffe`.
 
 ### Version Alignment Policy
 
-`main-ci.yml` is the **source of truth** for language version choices. All `test-a-demo-*`
-workflows must use the same language versions as `main-ci.yml`.
+`main-ci.yml` is the **source of truth** for language version choices. All scheduled test and
+deploy workflows must use the same language versions as `main-ci.yml`.
 
-**Rule**: When upgrading a language version in `main-ci.yml`, update all demo and deploy workflows
+**Rule**: When upgrading a language version in `main-ci.yml`, update all deploy workflows
 that use that language in the same commit. Version drift between `main-ci.yml` and these workflows
-creates inconsistencies where CI passes on main but manually dispatched integration tests fail
-(or vice versa).
+creates inconsistencies where CI passes on main but manually dispatched tests fail (or vice versa).
 
 **Workflows that must stay aligned**:
 
-| Language | `main-ci.yml` step | Scheduled workflows to update                                                       |
-| -------- | ------------------ | ----------------------------------------------------------------------------------- |
-| Go       | `go-version`       | `test-a-demo-be-golang-gin.yml`, all frontend workflows that install Go for codegen |
-| Elixir   | `elixir-version`   | `test-a-demo-be-elixir-phoenix.yml`                                                 |
-| Python   | `python-version`   | `test-a-demo-be-python-fastapi.yml`                                                 |
-| Node.js  | `node-version`     | All workflows installing Node.js                                                    |
-
-**Frontend workflows install Go for codegen**: The three demo frontend workflows
-(`test-a-demo-fe-ts-nextjs.yml`, `test-a-demo-fe-ts-tanstack-start.yml`,
-`test-a-demo-fe-dart-flutterweb.yml`) install Go and run `rhino-cli` for contract codegen before
-running tests. The Go version in these workflows must match the version used in `main-ci.yml` and
-`test-a-demo-be-golang-gin.yml`.
+| Language | `main-ci.yml` step | Scheduled workflows to update      |
+| -------- | ------------------ | ---------------------------------- |
+| Go       | `go-version`       | `test-and-deploy-organiclever.yml` |
+| Node.js  | `node-version`     | All workflows installing Node.js   |
+| .NET     | `dotnet-version`   | `test-and-deploy-organiclever.yml` |
 
 ### Adding new workflows
 

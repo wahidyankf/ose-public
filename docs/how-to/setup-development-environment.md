@@ -9,11 +9,8 @@ tags:
   - development
   - docker
   - volta
-  - sdkman
-  - asdf
-  - rustup
 created: 2026-04-04
-updated: 2026-04-04
+updated: 2026-04-18
 ---
 
 # How to Set Up Your Development Environment
@@ -22,18 +19,22 @@ This guide walks you through installing every tool required to work on any proje
 monorepo. After completing it, your pre-commit hooks, pre-push hooks, unit tests, integration
 tests, and E2E tests will all work locally.
 
+> **Note**: The polyglot demo apps (`a-demo-be-*`, `a-demo-fe-*`) were extracted to
+> [ose-primer](https://github.com/wahidyankf/ose-primer) on 2026-04-18. If you need to set
+> up Elixir, Clojure, Java, Kotlin, Python, Rust, or Dart toolchains for those apps, see
+> the setup guide in the `ose-primer` repository.
+
 ## Overview
 
-The monorepo contains projects in 11 languages (TypeScript, Go, Java, Kotlin, Python, Rust,
-Elixir, F#, C#, Clojure, Dart). Each language has its own runtime, but they all share the
-same Nx build system and git hooks.
+The monorepo contains projects in TypeScript, Go, and F#. Each language has its own runtime,
+but they all share the same Nx build system and git hooks.
 
 **Two setup paths**:
 
-- **Minimal** (~15 minutes) — Node.js + Go + Docker + jq. Covers git hooks, TypeScript/Go
-  projects, and basic E2E tests.
-- **Full** — All tools checked by doctor. Required if you work on Java, Kotlin, Python, Rust,
-  Elixir, F#, C#, Clojure, or Dart projects.
+- **Minimal** — Node.js + Go + Docker + jq. Covers git hooks, TypeScript/Go projects, and
+  basic E2E tests.
+- **Full** — All tools checked by doctor. Required if you also work on `organiclever-be`
+  (F#/Giraffe) which needs the .NET SDK.
 - **Automated** — Run `npm run doctor -- --fix` to auto-install missing tools. Use
   `npm run doctor -- --fix --dry-run` to preview what would be installed.
 
@@ -41,7 +42,7 @@ same Nx build system and git hooks.
 
 - **macOS** (primary) or **Linux** (Debian/Ubuntu). Windows is not supported.
 - **Admin access** to install system packages.
-- **~10 GB disk space** for all runtimes, Docker images, and Playwright browsers.
+- **~5 GB disk space** for all runtimes, Docker images, and Playwright browsers.
 
 ## Quick Start (Minimal Setup)
 
@@ -150,7 +151,7 @@ volta install npm@11.10.1
 
 ### Step 4: Go
 
-Required for `rhino-cli`, `ayokoding-cli`, `oseplatform-cli`, `a-demo-be-golang-gin`,
+Required for `rhino-cli`, `ayokoding-cli`, `oseplatform-cli`,
 and `libs/golang-commons`.
 
 ```bash
@@ -166,114 +167,11 @@ Verify the installed version meets or exceeds the `go` directive in `apps/rhino-
 go version
 ```
 
-### Step 5: Java + Maven (via SDKMAN)
+### Step 5: .NET SDK
 
-Required for `a-demo-be-java-springboot`, `a-demo-be-java-vertx`, `a-demo-be-kotlin-ktor`.
+Required for `organiclever-be` (F#/Giraffe).
 
-[SDKMAN](https://sdkman.io/) manages JDK and Maven versions:
-
-```bash
-curl -s "https://get.sdkman.io" | bash
-source "$HOME/.sdkman/bin/sdkman-init.sh"
-
-sdk install java 25-tem
-sdk install maven
-
-java -version    # Expected: 25+
-mvn --version
-```
-
-**Kotlin note**: The Kotlin/Ktor project uses a Gradle wrapper (`./gradlew`), so no separate
-Kotlin installation is needed — just the JDK.
-
-### Step 6: Clojure
-
-Required for `a-demo-be-clojure-pedestal`.
-
-```bash
-# macOS
-brew install clojure/tools/clojure
-
-# Linux — https://clojure.org/guides/install_clojure
-
-clj --version
-```
-
-### Step 7: Python
-
-Required for `a-demo-be-python-fastapi`.
-
-The minimum version is in `apps/a-demo-be-python-fastapi/.python-version`.
-
-```bash
-# Option A: pyenv (recommended — manages multiple Python versions)
-brew install pyenv
-pyenv install 3.13.5
-pyenv global 3.13.5
-
-# Option B: Homebrew
-brew install python@3.13
-
-# Linux
-sudo apt-get install -y python3 python3-pip python3-venv
-
-python3 --version
-```
-
-### Step 8: Rust
-
-Required for `a-demo-be-rust-axum`.
-
-```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-source "$HOME/.cargo/env"
-
-rustc --version
-
-# Install coverage tool
-cargo install cargo-llvm-cov
-cargo llvm-cov --version
-```
-
-### Step 9: Erlang + Elixir (via asdf)
-
-Required for `a-demo-be-elixir-phoenix`.
-
-[asdf](https://asdf-vm.com/) manages Erlang and Elixir versions. The pinned versions are in
-`.tool-versions` at the repo root.
-
-```bash
-# Install asdf
-brew install asdf   # macOS
-# Linux: git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.15.0
-
-# Install Erlang build dependencies (macOS)
-brew install autoconf openssl wxwidgets
-
-# Install Erlang
-asdf plugin add erlang
-asdf install erlang 27.3
-asdf global erlang 27.3
-
-# Install Elixir
-asdf plugin add elixir
-asdf install elixir 1.19.5-otp-27
-asdf global elixir 1.19.5-otp-27
-
-elixir --version
-```
-
-**Linux build dependencies** for Erlang:
-
-```bash
-sudo apt-get install -y build-essential autoconf libncurses-dev libssl-dev
-```
-
-### Step 10: .NET SDK
-
-Required for `a-demo-be-fsharp-giraffe`, `a-demo-be-csharp-aspnetcore`, `organiclever-be`.
-
-The required major version is in `apps/a-demo-be-fsharp-giraffe/global.json`.
+The required major version is in `apps/organiclever-be/global.json`.
 
 ```bash
 # macOS
@@ -284,37 +182,7 @@ brew install dotnet
 dotnet --version
 ```
 
-### Step 11: Flutter and Dart
-
-Required for `a-demo-fe-dart-flutterweb`.
-
-Flutter bundles the Dart SDK. The minimum Dart version is in
-`apps/a-demo-fe-dart-flutterweb/pubspec.yaml` under `environment.sdk`.
-
-```bash
-# macOS
-brew install flutter
-
-# Or manual: https://docs.flutter.dev/get-started/install
-
-flutter config --enable-web
-flutter doctor
-dart --version
-```
-
-### Step 12: Hugo
-
-Hugo is a legacy doctor entry (oseplatform-web migrated to Next.js). No active projects
-use Hugo, but installing it prevents a doctor warning.
-
-```bash
-# macOS
-brew install hugo
-
-hugo version
-```
-
-### Step 13: Clone and Bootstrap
+### Step 6: Clone and Bootstrap
 
 ```bash
 git clone https://github.com/wahidyankf/ose-public.git
@@ -328,7 +196,7 @@ npm install
 2. Runs `npm run doctor` automatically (postinstall script) to verify your toolchain
 3. Sets up Husky git hooks (pre-commit, commit-msg, pre-push)
 
-### Step 14: Restore Environment Files
+### Step 7: Restore Environment Files
 
 `.env` files are gitignored but required by many apps. If you have a previous backup,
 restore them:
@@ -350,7 +218,7 @@ To create a backup for future use:
 CGO_ENABLED=0 go run -C apps/rhino-cli main.go env backup --include-config
 ```
 
-### Step 15: Install Playwright Browsers
+### Step 8: Install Playwright Browsers
 
 ```bash
 npx playwright install
@@ -399,21 +267,11 @@ This also warms the Nx cache, making subsequent pushes fast.
 ### Test integration tests
 
 ```bash
-# Run one backend's integration suite (uses Docker + PostgreSQL)
-nx run a-demo-be-golang-gin:test:integration
+# Run the OrganicLever backend's integration suite (uses Docker + PostgreSQL)
+nx run organiclever-be:test:integration
 ```
 
 If this passes, Docker and database integration work correctly.
-
-### Test E2E
-
-```bash
-# Start a backend, then run E2E tests
-nx run a-demo-be-golang-gin:dev &
-sleep 5
-nx run a-demo-be-e2e:test:e2e
-kill %1
-```
 
 ## Troubleshooting
 
@@ -459,16 +317,6 @@ sudo usermod -aG docker $USER
 # Log out and back in for changes to take effect
 ```
 
-### Erlang build fails on macOS
-
-Erlang compilation needs OpenSSL headers. If `asdf install erlang` fails:
-
-```bash
-brew install openssl
-export KERL_CONFIGURE_OPTIONS="--with-ssl=$(brew --prefix openssl)"
-asdf install erlang 27.3
-```
-
 ### Integration test fails with "port already in use"
 
 Another Docker stack or service is using port 5432. Stop it:
@@ -497,20 +345,14 @@ npx playwright install-deps
 
 All version requirements are auto-detected by `npm run doctor` from these config files:
 
-| Tool          | Version Source                                            |
-| ------------- | --------------------------------------------------------- |
-| Node.js       | `package.json` → `volta.node`                             |
-| npm           | `package.json` → `volta.npm`                              |
-| Java          | `apps/a-demo-be-java-springboot/pom.xml` → `java.version` |
-| Go            | `apps/rhino-cli/go.mod` → `go` directive                  |
-| Python        | `apps/a-demo-be-python-fastapi/.python-version`           |
-| Hugo          | (legacy — no active config file)                          |
-| Erlang        | `.tool-versions` → `erlang`                               |
-| Elixir        | `.tool-versions` → `elixir`                               |
-| .NET          | `apps/a-demo-be-fsharp-giraffe/global.json` → `sdk`       |
-| Dart          | `apps/a-demo-fe-dart-flutterweb/pubspec.yaml` → `sdk`     |
-| Rust, Clojure | Any (no pinned version)                                   |
-| Docker, jq    | Any (no pinned version)                                   |
+| Tool       | Version Source                             |
+| ---------- | ------------------------------------------ |
+| Node.js    | `package.json` → `volta.node`              |
+| npm        | `package.json` → `volta.npm`               |
+| Go         | `apps/rhino-cli/go.mod` → `go` directive   |
+| .NET       | `apps/organiclever-be/global.json` → `sdk` |
+| Hugo       | (legacy — no active config file)           |
+| Docker, jq | Any (no pinned version)                    |
 
 Never hardcode version numbers in scripts — always read from these source-of-truth files.
 
@@ -518,10 +360,7 @@ Never hardcode version numbers in scripts — always read from these source-of-t
 
 - [Development Environment Setup Workflow](../../governance/workflows/infra/development-environment-setup.md) —
   Granular workflow with phases and success criteria
-- [Local Development with Docker](./local-dev-docker.md) — Running services via
-  Docker Compose
 - [Reproducible Environments](../../governance/development/workflow/reproducible-environments.md) —
   Volta, npm, Docker reproducibility practices
-- [Running Demo Tests](./run-a-demo-tests.md) — Integration and E2E test execution
 - [Code Quality Convention](../../governance/development/quality/code.md) — Git hooks and
   automated formatting

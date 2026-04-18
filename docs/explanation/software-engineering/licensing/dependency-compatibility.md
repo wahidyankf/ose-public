@@ -21,8 +21,8 @@ project's FSL-1.1-MIT license.
 
 - **Date**: 2026-04-04
 - **Scope**: All production apps (~10 projects across npm, Go, .NET, and Elixir ecosystems)
-- **Exclusion**: Demo apps (`a-demo-*`) are reference implementations only and do not ship as
-  products — their dependency licenses are excluded from this audit
+- **Exclusion**: Experimental apps in `apps-labs/` are reference implementations only and do
+  not ship as products — their dependency licenses are excluded from this audit
 - **Tools**: `npm ls`, `go list -m all`, `dotnet list package`, `mix deps`
 
 ## Production Dependency License Summary
@@ -108,15 +108,19 @@ serve godog's internal data structures.
 
 **Resolution**: No action required. Documented here for transparency.
 
-## Demo App Exclusion Rationale
+## Experimental App Exclusion Rationale
 
-Demo apps (`a-demo-*`) are excluded from this audit because:
+Experimental apps in `apps-labs/` are excluded from this audit because:
 
-1. They are reference implementations demonstrating different technology stacks
+1. They are reference implementations or POCs demonstrating different technology stacks
 2. They do not ship as products or services
 3. Their dependencies are used only for educational and demonstration purposes
 4. The FSL-1.1-MIT non-compete clause applies to commercial competing products/services, not
    internal demonstrations
+
+> **Note**: The polyglot demo apps (`a-demo-be-*`, `a-demo-fe-*`) were extracted to
+> [ose-primer](https://github.com/wahidyankf/ose-primer) on 2026-04-18 and are no longer
+> part of this repository.
 
 ## Related Documentation
 

@@ -156,13 +156,13 @@ fix(project-name): add missing Gherkin step definitions for existing commands
 
 ```
 Developer: I'm implementing a new feature in organiclever-fe.
-           Running test:quick, I see that a-demo-be-golang-gin has
+           Running test:quick, I see that organiclever-be has
            a failing typecheck due to a stale codegen output.
 
 Action:
-1. Run nx run a-demo-be-golang-gin:codegen to regenerate types
-2. Run nx run a-demo-be-golang-gin:typecheck to confirm it passes
-3. Commit: "fix(a-demo-be-golang-gin): regenerate types from updated contract"
+1. Run nx run organiclever-be:codegen to regenerate types
+2. Run nx run organiclever-be:typecheck to confirm it passes
+3. Commit: "fix(organiclever-be): regenerate types from updated contract"
 4. Continue with organiclever-fe feature work
 ```
 
@@ -170,7 +170,7 @@ Action:
 
 ```
 Developer: I'm implementing a new feature in organiclever-fe.
-           Running test:quick, I see that a-demo-be-golang-gin has
+           Running test:quick, I see that organiclever-be has
            a failing typecheck. That's not my project.
 
 Action: git push --no-verify

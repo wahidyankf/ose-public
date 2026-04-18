@@ -85,10 +85,9 @@ Anything that describes **what the product does** (behavioral specifications) MU
 
 This includes:
 
-- **`specs/`** -- MUST have its own FSL-1.1-MIT LICENSE file at the root. Contains Gherkin features, OpenAPI contracts, and C4 architecture models that define product behavior. Product specs are FSL by default. **Exception**: demo app specs (`specs/apps/a-demo/`) MUST have their own MIT LICENSE file — they are part of the educational package, consistent with demo implementation code being MIT.
+- **`specs/`** -- MUST have its own FSL-1.1-MIT LICENSE file at the root. Contains Gherkin features, OpenAPI contracts, and C4 architecture models that define product behavior. Product specs are FSL by default.
 - **E2E test suites** -- E2E tests are executable behavioral specifications. They describe expected HTTP responses, UI states, user flows, and error handling. All E2E test apps MUST be FSL-licensed:
   - Product E2E tests (`*-e2e` apps for product families) inherit root FSL
-  - Demo E2E tests (`apps/a-demo-be-e2e/`, `apps/a-demo-fe-e2e/`) MUST have their own FSL-1.1-MIT LICENSE file (even though the demo implementation code they test is MIT)
 
 #### Shared Libraries (MIT, unless overridden)
 
@@ -103,7 +102,7 @@ A new library defaults to MIT. To override, place a different LICENSE file (e.g.
 
 #### Demo and Reference Implementation Code (MIT)
 
-All demo application **implementation** directories (`apps/a-demo-be-*`, `apps/a-demo-fe-*`, `apps/a-demo-fs-*`, excluding `*-e2e`) MUST use the MIT license. These are reference implementations meant for learning and have no competing-use restrictions. Their specs (`specs/apps/a-demo/`) are also MIT. Note: their E2E tests are FSL (see Behavioral Specifications above).
+Polyglot demo application directories were extracted to [ose-primer](https://github.com/wahidyankf/ose-primer) on 2026-04-18. In that repository they remain MIT-licensed. Any future demo apps added to this repository MUST use the MIT license and follow the same per-directory LICENSE placement pattern.
 
 ### Root LICENSE Fallback
 
@@ -172,7 +171,7 @@ When adding a new library to `libs/`:
 
 ### New Demo or Reference Applications
 
-When adding a new demo or reference application matching `apps/a-demo-*`:
+When adding a new demo or reference application (see ose-primer for the extracted polyglot showcase):
 
 1. Create a `LICENSE` file in the application directory
 2. Use the standard MIT license text
@@ -205,7 +204,7 @@ apps/
     LICENSE          <-- FSL-1.1-MIT (product-supporting CLI tool)
     cmd/
     ...
-  a-demo-be-golang-gin/
+  <demo-app>/
     LICENSE          <-- MIT (reference implementation)
     cmd/
     ...
@@ -248,10 +247,10 @@ To verify licensing compliance across the repository:
 
 1. Every directory listed as a product application has a FSL-1.1-MIT LICENSE file
 2. Every `libs/*` directory has an MIT LICENSE file
-3. Every `apps/a-demo-*` **implementation** directory (excluding `*-e2e`) has an MIT LICENSE file
-4. Every `apps/a-demo-*-e2e` directory has a FSL-1.1-MIT LICENSE file (E2E tests are behavioral specifications)
+3. Every new demo implementation directory has an MIT LICENSE file (polyglot demo apps extracted to ose-primer 2026-04-18)
+4. Every `*-e2e` directory for new demo apps has a FSL-1.1-MIT LICENSE file (E2E tests are behavioral specifications)
 5. The `specs/` root directory has a FSL-1.1-MIT LICENSE file
-6. The `specs/apps/a-demo/` directory has an MIT LICENSE file (demo specs are educational)
+6. Any new demo specs directory has an MIT LICENSE file (demo specs are educational)
 7. The root LICENSE file is FSL-1.1-MIT
 8. FSL-1.1-MIT files use the unmodified template text
 9. All LICENSE files use the correct copyright notice format

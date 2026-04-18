@@ -153,43 +153,28 @@ Every project declares tags along four dimensions. Each dimension uses a fixed p
 
 ### Current Project Tags
 
-| Project                     | Tags                                                                     |
-| --------------------------- | ------------------------------------------------------------------------ |
-| `ayokoding-web`             | `["type:app", "platform:nextjs", "lang:ts", "domain:ayokoding"]`         |
-| `ayokoding-cli`             | `["type:app", "platform:cli", "lang:golang", "domain:ayokoding"]`        |
-| `rhino-cli`                 | `["type:app", "platform:cli", "lang:golang", "domain:tooling"]`          |
-| `a-demo-be-java-springboot` | `["type:app", "platform:spring-boot", "lang:java", "domain:a-demo-be"]`  |
-| `a-demo-be-elixir-phoenix`  | `["type:app", "platform:phoenix", "lang:elixir", "domain:a-demo-be"]`    |
-| `a-demo-be-fsharp-giraffe`  | `["type:app", "platform:giraffe", "lang:fsharp", "domain:a-demo-be"]`    |
-| `a-demo-be-golang-gin`      | `["type:app", "platform:gin", "lang:golang", "domain:a-demo-be"]`        |
-| `a-demo-be-python-fastapi`  | `["type:app", "platform:fastapi", "lang:python", "domain:a-demo-be"]`    |
-| `a-demo-be-rust-axum`       | `["type:app", "platform:axum", "lang:rust", "domain:a-demo-be"]`         |
-| `a-demo-be-kotlin-ktor`     | `["type:app", "platform:ktor", "lang:kotlin", "domain:a-demo-be"]`       |
-| `a-demo-be-java-vertx`      | `["type:app", "platform:vertx", "lang:java", "domain:a-demo-be"]`        |
-| `a-demo-be-e2e`             | `["type:e2e", "platform:playwright", "lang:ts", "domain:a-demo-be"]`     |
-| `organiclever-fe`           | `["type:app", "platform:nextjs", "lang:ts", "domain:organiclever"]`      |
-| `organiclever-be`           | `["type:app", "platform:giraffe", "lang:fsharp", "domain:organiclever"]` |
-| `organiclever-fe-e2e`       | `["type:e2e", "platform:playwright", "lang:ts", "domain:organiclever"]`  |
-| `organiclever-be-e2e`       | `["type:e2e", "platform:playwright", "lang:ts", "domain:organiclever"]`  |
-| `a-demo-fe-ts-nextjs`       | `["type:app", "platform:nextjs", "lang:ts", "domain:a-demo-fe"]`         |
-| `a-demo-fe-e2e`             | `["type:e2e", "platform:playwright", "lang:ts", "domain:a-demo-fe"]`     |
-| `oseplatform-cli`           | `["type:app", "platform:cli", "lang:golang", "domain:oseplatform"]`      |
-| `oseplatform-web`           | `["type:app", "platform:nextjs", "lang:ts", "domain:oseplatform"]`       |
-| `hugo-commons`              | `["type:lib", "lang:golang"]`                                            |
-| `golang-commons`            | `["type:lib", "lang:golang"]`                                            |
-| `clojure-openapi-codegen`   | `["type:lib", "lang:clojure", "domain:tooling"]`                         |
-| `elixir-cabbage`            | `["type:lib", "lang:elixir", "domain:tooling"]`                          |
-| `elixir-gherkin`            | `["type:lib", "lang:elixir", "domain:tooling"]`                          |
-| `elixir-openapi-codegen`    | `["type:lib", "lang:elixir", "domain:tooling"]`                          |
+| Project               | Tags                                                                     |
+| --------------------- | ------------------------------------------------------------------------ |
+| `ayokoding-web`       | `["type:app", "platform:nextjs", "lang:ts", "domain:ayokoding"]`         |
+| `ayokoding-cli`       | `["type:app", "platform:cli", "lang:golang", "domain:ayokoding"]`        |
+| `rhino-cli`           | `["type:app", "platform:cli", "lang:golang", "domain:tooling"]`          |
+| `organiclever-fe`     | `["type:app", "platform:nextjs", "lang:ts", "domain:organiclever"]`      |
+| `organiclever-be`     | `["type:app", "platform:giraffe", "lang:fsharp", "domain:organiclever"]` |
+| `organiclever-fe-e2e` | `["type:e2e", "platform:playwright", "lang:ts", "domain:organiclever"]`  |
+| `organiclever-be-e2e` | `["type:e2e", "platform:playwright", "lang:ts", "domain:organiclever"]`  |
+| `oseplatform-cli`     | `["type:app", "platform:cli", "lang:golang", "domain:oseplatform"]`      |
+| `oseplatform-web`     | `["type:app", "platform:nextjs", "lang:ts", "domain:oseplatform"]`       |
+| `hugo-commons`        | `["type:lib", "lang:golang"]`                                            |
+| `golang-commons`      | `["type:lib", "lang:golang"]`                                            |
 
 ### Example: Complete Tag Declaration
 
-A Spring Boot app for the demo-be domain declares all four dimensions:
+An F#/Giraffe backend app declares all four dimensions:
 
 ```json
 {
-  "name": "a-demo-be-java-springboot",
-  "tags": ["type:app", "platform:spring-boot", "lang:java", "domain:a-demo-be"]
+  "name": "organiclever-be",
+  "tags": ["type:app", "platform:giraffe", "lang:fsharp", "domain:organiclever"]
 }
 ```
 
@@ -227,21 +212,13 @@ Derived from three rules: (1) All apps+libs → unit tests, (2) All apps → int
 | Hugo Site (historical) | —           | —                  | —          | Yes          | —               | —      | Yes     | —            |
 | E2E Runner             | —           | —                  | Yes        | Yes          | Yes             | Yes    | —       | If typed     |
 
-**Demo-be backend `typecheck` commands** (all 11 backends have `typecheck` with `dependsOn: ["codegen"]`):
+**Product backend `typecheck` examples** (all statically typed backends use `typecheck` with `dependsOn: ["codegen"]` where codegen applies):
 
-| Backend                       | `typecheck` command                                               |
-| ----------------------------- | ----------------------------------------------------------------- |
-| `a-demo-be-golang-gin`        | `CGO_ENABLED=0 go vet ./...`                                      |
-| `a-demo-be-java-springboot`   | `rhino-cli java validate-annotations` + `mvn compile -Pnullcheck` |
-| `a-demo-be-java-vertx`        | `rhino-cli java validate-annotations` + `mvn compile -Pnullcheck` |
-| `a-demo-be-elixir-phoenix`    | `mix compile --warnings-as-errors`                                |
-| `a-demo-be-python-fastapi`    | `uv run pyright`                                                  |
-| `a-demo-be-fsharp-giraffe`    | `dotnet build .fsproj /p:TreatWarningsAsErrors=true --no-restore` |
-| `a-demo-be-ts-effect`         | `npx tsc --noEmit`                                                |
-| `a-demo-be-kotlin-ktor`       | `./gradlew compileKotlin`                                         |
-| `a-demo-be-csharp-aspnetcore` | `dotnet build .csproj /p:TreatWarningsAsErrors=true --no-restore` |
-| `a-demo-be-clojure-pedestal`  | `clj-kondo --lint src`                                            |
-| `a-demo-be-rust-axum`         | `cargo check`                                                     |
+| Backend           | `typecheck` command                                               |
+| ----------------- | ----------------------------------------------------------------- |
+| `organiclever-be` | `dotnet build .fsproj /p:TreatWarningsAsErrors=true --no-restore` |
+
+> For polyglot backend `typecheck` patterns (Go, Java, Kotlin, Python, Rust, Elixir, TypeScript, C#, Clojure, F#), see the [ose-primer](https://github.com/wahidyankf/ose-primer) repository.
 
 \* E2E tests live in dedicated `*-e2e` runner projects, not in the backend/frontend project itself.
 
@@ -252,11 +229,11 @@ Derived from three rules: (1) All apps+libs → unit tests, (2) All apps → int
 Every project in `apps/` and `libs/` must expose:
 
 | Target          | Requirement                                                                                                                                                                                           |
-| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- |
 | `test:quick`    | Complete in a few minutes (not tens of minutes); enforced by the pre-push hook and as a required GitHub Actions status check before PR merge                                                          |
 | `spec-coverage` | Compulsory for all apps and E2E runners; validates every Gherkin step has a matching step definition via `rhino-cli spec-coverage validate`; enforced by the pre-push hook and scheduled CI workflows |
 | `lint`          | Exit non-zero on violations; enforced by the pre-push hook, the PR quality gate, and scheduled Test CI workflows. UI projects must include static a11y checks (see "Accessibility Testing" below)     |
-| `typecheck`     | Required for statically typed projects and all demo-be backends; enforced by the pre-push hook; skipped by Nx for projects that do not declare this target                                            |
+| `typecheck`     | Required for statically typed projects; enforced by the pre-push hook; skipped by Nx for projects that do not declare this target                                                                     |     |
 
 **`test:quick` composition** — each project decides which fast checks form its gate. The target runs its checks directly (calling the underlying tools, not other Nx targets) to avoid double execution when `lint` or `typecheck` are also run standalone by the pre-push hook. Common compositions:
 
@@ -264,43 +241,29 @@ Every project in `apps/` and `libs/` must expose:
 | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | TypeScript app         | unit tests via vitest (typecheck and lint run separately in pre-push); coverage from unit tests only via `rhino-cli test-coverage validate` ≥90%                                                                                   |
 | Go app                 | `go test -coverprofile=cover.out ./... && rhino-cli test-coverage validate <project>/cover.out 90` — compiles and runs unit tests (excluding `//go:build integration` files), then enforces ≥90% line coverage (Codecov algorithm) |
-| Java/Spring Boot       | unit tests only (`mvn test`, includes `**/unit/**/*Test.java`); JaCoCo XML coverage validated by `rhino-cli test-coverage validate` ≥90%. Integration tests run separately via `test:integration`                                  |
-| Java/Vert.x            | unit tests with Cucumber JVM (mocked dependencies); JaCoCo XML coverage validated by `rhino-cli test-coverage validate` ≥90%                                                                                                       |
-| Kotlin/Ktor            | unit tests with Cucumber JVM (mocked dependencies); Kover JaCoCo XML coverage validated by `rhino-cli test-coverage validate` ≥90%                                                                                                 |
-| Python/FastAPI         | unit tests with `pytest` (mocked dependencies) → LCOV → `rhino-cli test-coverage validate` ≥90%                                                                                                                                    |
-| Rust/Axum              | unit tests with `cargo test --lib` + `cargo llvm-cov --lcov` → `rhino-cli test-coverage validate` ≥90%                                                                                                                             |
+| F#/Giraffe             | unit tests via xUnit + AltCover LCOV → `rhino-cli test-coverage validate` ≥90%                                                                                                                                                     |
 | Hugo site (historical) | link check via the site's CLI tool (build runs separately via `nx build`)                                                                                                                                                          |
-| Demo-fe TS app         | unit tests via vitest (typecheck and lint run separately in pre-push); coverage from unit tests only via `rhino-cli test-coverage validate` ≥70%                                                                                   |
-| Demo-fe Dart/Flutter   | `flutter test test/unit --coverage`; LCOV coverage validated via `rhino-cli test-coverage validate` ≥70%                                                                                                                           |
-| Demo-be Elixir/Phoenix | unit tests (`mix coveralls.lcov --only unit`); LCOV coverage validated via `rhino-cli test-coverage validate` ≥90%                                                                                                                 |
 | Playwright `*-e2e`     | run the linter directly (no unit tests to add beyond linting)                                                                                                                                                                      |
+
+> For polyglot `test:quick` composition patterns (Java, Kotlin, Python, Rust, Elixir, TypeScript backend, C#, Clojure, Dart/Flutter), see the [ose-primer](https://github.com/wahidyankf/ose-primer) repository.
 
 The rule: include only checks that complete fast. If `test:unit` is slow for a project, exclude it from `test:quick` and run it separately. **The target must always exist** — even if it only runs the type checker — so the pre-push hook covers every project.
 
 ### Statically Typed Projects
 
-TypeScript, Python (with pyright), and all demo-be backends:
+TypeScript, F#, and other statically typed projects:
 
 | Target      | Requirement                                                                |
 | ----------- | -------------------------------------------------------------------------- |
 | `typecheck` | Run the type checker without emitting artifacts (`tsc --noEmit`, `mypy .`) |
 
-**All 11 demo-be backends declare `typecheck`** with `dependsOn: ["codegen"]`. See the "Demo-be
-backend `typecheck` commands" table in the Summary Matrix section for per-language commands.
+**Statically typed backends declare `typecheck`** with `dependsOn: ["codegen"]` where contract codegen applies. The `organiclever-be` example: `dotnet build .fsproj /p:TreatWarningsAsErrors=true --no-restore`.
 
 **Not required for dynamically typed languages** (plain JavaScript, Ruby) or languages where
 compilation already enforces types and `build` covers it — except when an additional static
-analysis pass is warranted. **Exceptions that do declare `typecheck`**:
+analysis pass is warranted.
 
-- **Go demo-be backends**: `go vet ./...` catches type errors not caught by `go build` alone, and
-  ensures generated contract types compile correctly.
-- **Java projects (JSpecify + NullAway)**: NullAway runs as a separate Error Prone plugin pass via
-  a dedicated Maven profile not included in `build`. The `typecheck` target also runs
-  `rhino-cli java validate-annotations` to enforce that every package has a `package-info.java`
-  annotated with `@NullMarked`.
-- **Rust**: `cargo check` type-checks without linking — faster than `cargo build` for pure type
-  verification against generated contract types.
-- **Clojure**: `clj-kondo --lint src` catches type and arity errors the REPL-based build misses.
+> For polyglot `typecheck` patterns in Go, Java, Kotlin, Python, Rust, Elixir, TypeScript, C#, and Clojure backends, see the [ose-primer](https://github.com/wahidyankf/ose-primer) repository.
 
 ### Compiled and Bundled Projects
 
@@ -342,10 +305,12 @@ Two integration test patterns exist depending on project type:
 
 | Pattern             | Projects                                                  | Requirement                                                                                                                                                | Cacheable |
 | ------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| Docker + PostgreSQL | All 11 demo-be backends                                   | Real PostgreSQL via `docker-compose.integration.yml`; calls application code directly (no HTTP layer); runs all shared Gherkin scenarios; fresh DB per run | No        |
+| Docker + PostgreSQL | API backends (`organiclever-be`)                          | Real PostgreSQL via `docker-compose.integration.yml`; calls application code directly (no HTTP layer); runs all shared Gherkin scenarios; fresh DB per run | No        |
 | In-process mocking  | `organiclever-fe` (MSW), Go CLIs (Godog), Go libs (Godog) | In-process mocking only (MSW / godog `RunE` / mock fixtures); no real database or external services; fully deterministic                                   | Yes       |
 
-**Demo-be backends** expose `test:integration` which runs `docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build`. This starts a fresh PostgreSQL container, runs migrations, and executes all shared Gherkin scenarios by calling application service/repository functions directly — no HTTP layer. Each backend has a `docker-compose.integration.yml` (postgres + test runner services) and a `Dockerfile.integration` (language runtime + test execution). Coverage is NOT measured at the integration level — coverage comes from `test:unit` only.
+**API backends** expose `test:integration` which runs `docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build`. This starts a fresh PostgreSQL container, runs migrations, and executes all shared Gherkin scenarios by calling application service/repository functions directly — no HTTP layer. Each backend has a `docker-compose.integration.yml` (postgres + test runner services) and a `Dockerfile.integration` (language runtime + test execution). Coverage is NOT measured at the integration level — coverage comes from `test:unit` only.
+
+> For polyglot `test:integration` Docker infrastructure patterns across 11 backend languages, see the [ose-primer](https://github.com/wahidyankf/ose-primer) repository.
 
 **Go CLIs** consume Gherkin specs at both test levels. Each command has two test files:
 
@@ -389,13 +354,13 @@ Playwright suites (`*-e2e`):
 **BDD suites**: When the E2E project uses playwright-bdd, `test:e2e` runs
 `npx bddgen && npx playwright test`. The `bddgen` step regenerates `.features-gen/`
 spec files from the Gherkin feature files before Playwright executes them.
-See `apps/a-demo-be-e2e/project.json` for the canonical example.
+See `apps/organiclever-be-e2e/project.json` for a canonical product-app example.
 
-**Demo-be `test:integration` with docker-compose**: All 11 demo-be backends expose `test:integration`
+**API backend `test:integration` with docker-compose**: API backends expose `test:integration`
 which runs `docker compose -f docker-compose.integration.yml down -v && docker compose -f docker-compose.integration.yml up --abort-on-container-exit --build`.
 Each backend's `docker-compose.integration.yml` defines a `postgres` service (postgres:17-alpine with healthcheck)
 and a `test-runner` service that depends on PostgreSQL being healthy. The test runner runs migrations,
-optionally loads seed data, then executes all shared Gherkin scenarios from `specs/apps/a-demo/be/gherkin/`
+optionally loads seed data, then executes all shared Gherkin scenarios
 by calling application service/repository functions directly — no HTTP layer. The specs volume is
 mounted read-only at `../../specs:/specs:ro`. After tests complete, `docker-compose` tears down all
 containers and volumes.
@@ -419,13 +384,10 @@ the project's feature files has a matching step definition in the implementation
 | Project group                                                 | Status   | Notes                                                                                       |
 | ------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------- |
 | Go CLI apps (`rhino-cli`, `ayokoding-cli`, `oseplatform-cli`) | Enforced | `--shared-steps` only; no `--exclude-dir` needed (no test-support specs)                    |
-| Demo-be backends (all 11)                                     | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
-| Demo-fe frontends                                             | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
-| Fullstack (`a-demo-fs-ts-nextjs`)                             | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
-| E2E runners (`a-demo-be-e2e`, `a-demo-fe-e2e`)                | Enforced | `--shared-steps` only; test-support steps are implemented here                              |
+| API backends (`organiclever-be`)                              | Enforced | `--shared-steps --exclude-dir test-support`                                                 |
+| E2E runners (`organiclever-be-e2e`, `organiclever-fe-e2e`)    | Enforced | `--shared-steps` only; test-support steps are implemented here                              |
 | Content platforms (`ayokoding-web`, `oseplatform-web`)        | Enforced | `--shared-steps`                                                                            |
 | Web UI apps (`organiclever-fe`)                               | Enforced | `--shared-steps`                                                                            |
-| OrganicLever backend (`organiclever-be`)                      | Enforced | `--shared-steps`                                                                            |
 | Libraries (`golang-commons`, `hugo-commons`)                  | Enforced | `--shared-steps`                                                                            |
 | Projects with genuine step gaps                               | Deferred | `spec-coverage` target exists but validation deferred until step implementation is complete |
 
@@ -440,11 +402,11 @@ files as inputs so the cache invalidates when specs or step definitions change:
   "executor": "nx:run-commands",
   "cache": true,
   "inputs": [
-    "{workspaceRoot}/specs/apps/a-demo/be/gherkin/**/*.feature",
-    "{projectRoot}/src/**/*.go"
+    "{workspaceRoot}/specs/apps/organiclever-be/**/*.feature",
+    "{projectRoot}/src/**/*.fs"
   ],
   "options": {
-    "command": "rhino-cli spec-coverage validate specs/apps/a-demo/be/gherkin --shared-steps --exclude-dir test-support apps/a-demo-be-golang-gin/internal apps/a-demo-be-golang-gin/cmd"
+    "command": "rhino-cli spec-coverage validate specs/apps/organiclever-be --shared-steps --exclude-dir test-support apps/organiclever-be/src"
   }
 }
 ```
@@ -459,11 +421,9 @@ Accessibility testing is compulsory for all UI-related projects. It operates at 
 **Static a11y linting** (enforced via the `lint` target at all three gates: pre-push hook, PR
 quality gate, and scheduled Test CI workflows):
 
-| Project                                                                     | Static a11y tool           |
-| --------------------------------------------------------------------------- | -------------------------- |
-| `a-demo-fe-ts-nextjs`, `a-demo-fe-ts-tanstack-start`, `a-demo-fs-ts-nextjs` | `oxlint --jsx-a11y-plugin` |
-| `organiclever-fe`, `ayokoding-web`, `oseplatform-web`, `libs/ts-ui`         | `oxlint --jsx-a11y-plugin` |
-| `a-demo-fe-dart-flutterweb`                                                 | `dart analyze`             |
+| Project                                                             | Static a11y tool           |
+| ------------------------------------------------------------------- | -------------------------- |
+| `organiclever-fe`, `ayokoding-web`, `oseplatform-web`, `libs/ts-ui` | `oxlint --jsx-a11y-plugin` |
 
 Static a11y linting catches common accessibility violations at compile time: missing alt text,
 missing ARIA labels, invalid ARIA attributes, missing form labels, and incorrect role usage.
@@ -581,28 +541,16 @@ cross-project dependencies like shared Gherkin specs or generated contracts.
 
 ### Canonical Inputs per Language
 
-All demo-be backends must include Gherkin specs and generated contracts in `test:unit` and
-`test:quick` inputs. The Gherkin specs path is always
-`{workspaceRoot}/specs/apps/a-demo/be/gherkin/**/*.feature`. The generated-contracts path varies by
+API backends with contract codegen must include Gherkin specs and generated contracts in `test:unit`
+and `test:quick` inputs. The Gherkin specs path always points to
+`{workspaceRoot}/specs/apps/<app-name>/**/*.feature`. The generated-contracts path varies by
 language:
 
-| Language        | Source files                                                                                                       | Generated contracts                                   | Gherkin specs                                               |
-| --------------- | ------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------- | ----------------------------------------------------------- |
-| Go              | `{projectRoot}/internal/**/*.go`, `{projectRoot}/cmd/**/*.go`, `{projectRoot}/go.mod`, `{projectRoot}/go.sum`      | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/a-demo/be/gherkin/**/*.feature` |
-| Java (Maven)    | `{projectRoot}/src/**`, `{projectRoot}/pom.xml`                                                                    | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/a-demo/be/gherkin/**/*.feature` |
-| Kotlin (Gradle) | `{projectRoot}/src/**`, `{projectRoot}/build.gradle.kts`                                                           | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/a-demo/be/gherkin/**/*.feature` |
-| Rust            | `{projectRoot}/src/**/*.rs`, `{projectRoot}/tests/**/*.rs`, `{projectRoot}/Cargo.toml`, `{projectRoot}/Cargo.lock` | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/a-demo/be/gherkin/**/*.feature` |
-| TypeScript      | `{projectRoot}/src/**/*.ts`, `{projectRoot}/tests/**/*.ts`, `{projectRoot}/vitest.config.ts`                       | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/a-demo/be/gherkin/**/*.feature` |
-| Python          | `{projectRoot}/src/**/*.py`, `{projectRoot}/tests/**/*.py`                                                         | `{projectRoot}/generated_contracts/**/*` (underscore) | `{workspaceRoot}/specs/apps/a-demo/be/gherkin/**/*.feature` |
-| Elixir          | `{projectRoot}/lib/**/*.ex`, `{projectRoot}/test/**/*.exs`                                                         | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/a-demo/be/gherkin/**/*.feature` |
-| F#              | `{projectRoot}/src/**/*.fs`, `{projectRoot}/tests/**/*.fs`                                                         | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/a-demo/be/gherkin/**/*.feature` |
-| C#              | `{projectRoot}/src/**/*.cs`, `{projectRoot}/tests/**/*.cs`                                                         | `{projectRoot}/generated-contracts/**/*`              | `{workspaceRoot}/specs/apps/a-demo/be/gherkin/**/*.feature` |
-| Clojure         | `{projectRoot}/src/**/*`, `{projectRoot}/test/**/*`, `{projectRoot}/tests.edn`                                     | `{projectRoot}/generated_contracts/**/*` (underscore) | `{workspaceRoot}/specs/apps/a-demo/be/gherkin/**/*.feature` |
-| Frontend TS     | `{projectRoot}/src/**/*.ts`, `{projectRoot}/src/**/*.tsx`, `{projectRoot}/vitest.config.ts`                        | `{projectRoot}/src/generated-contracts/**/*`          | N/A                                                         |
-| Frontend Dart   | `{projectRoot}/lib/**/*.dart`, `{projectRoot}/test/**/*.dart`                                                      | `{projectRoot}/generated-contracts/**/*`              | N/A                                                         |
+| Language | Source files                                               | Generated contracts                      | Gherkin specs                                        |
+| -------- | ---------------------------------------------------------- | ---------------------------------------- | ---------------------------------------------------- |
+| F#       | `{projectRoot}/src/**/*.fs`, `{projectRoot}/tests/**/*.fs` | `{projectRoot}/generated-contracts/**/*` | `{workspaceRoot}/specs/apps/<app-name>/**/*.feature` |
 
-**Note**: Python and Clojure use underscore in `generated_contracts/` (matching their language
-conventions). All other languages use hyphen in `generated-contracts/`.
+> For canonical inputs patterns across Go, Java, Kotlin, Rust, TypeScript, Python, Elixir, C#, Clojure, and Dart, see the [ose-primer](https://github.com/wahidyankf/ose-primer) repository.
 
 **Go CLI apps** (`rhino-cli`, `ayokoding-cli`, `oseplatform-cli`) also consume Gherkin specs in `test:unit` (godog unit step definitions run without a build tag). Their `test:unit` and `test:quick` inputs must include the CLI's own spec files:
 
@@ -636,8 +584,9 @@ complete. See the "Spec-Coverage Projects" section for flags and project-by-proj
 
 ## Codegen Dependency Chain
 
-All demo apps share a `codegen` target that generates types and encoders/decoders from the OpenAPI
-contract spec at `specs/apps/a-demo/contracts/` into `generated-contracts/`.
+Apps with OpenAPI contract specs share a `codegen` target that generates types and
+encoders/decoders from the spec (e.g., `specs/apps/organiclever/contracts/`) into
+`generated-contracts/`.
 
 The dependency chain is:
 
@@ -650,10 +599,9 @@ Both `typecheck` and `build` declare `dependsOn: ["codegen"]` in their `project.
 ensures generated contract types are always present before type-checking or building begins.
 
 **`test:unit` and `test:quick` do NOT directly depend on `codegen`** — they depend on source
-files being correct, which is already enforced by `typecheck` and `build`. The exceptions are
-`a-demo-be-rust-axum` and `a-demo-fe-dart-flutterweb`, which keep `dependsOn: ["codegen"]` in
-`test:unit` / `test:quick` because their build systems require generated code to be present before
-test compilation.
+files being correct, which is already enforced by `typecheck` and `build`. Some build systems
+(Rust, Dart/Flutter) require generated code at compile time and therefore keep
+`dependsOn: ["codegen"]` in `test:unit` / `test:quick`.
 
 **Rationale**: Making `codegen` a dependency of `typecheck` and `build` (rather than of test
 targets) keeps the dependency graph minimal and avoids running codegen redundantly during test
@@ -666,9 +614,9 @@ runs when artifacts already exist from a prior `build` or `typecheck` execution.
 - **Missing `lint`**: Projects without `lint` cannot participate in workspace-wide lint runs or the pre-push hook lint gate
 - **Heavy `test:quick`**: Including slow integration tests or E2E in `test:quick` defeats its purpose — keep the total to a few minutes, not tens of minutes
 - **Mixing concerns in `test:unit`**: `test:unit` must not spin up databases, external APIs, or network services — those belong in `test:integration`
-- **Using a real database in unit tests**: Unit tests must use mocked repositories or in-memory implementations — never a real database (no Testcontainers, no H2, no Ecto SQL Sandbox). Real databases belong in integration tests (demo-be backends via docker-compose) or E2E tests
-- **Using HTTP dispatch in integration tests**: Integration tests for demo-be backends must call service/repository functions directly — not through MockMvc, TestClient, httptest, ConnTest, WebApplicationFactory, or any equivalent HTTP dispatch. HTTP contract verification belongs in E2E tests. See [Three-Level Testing Standard](../quality/three-level-testing-standard.md) for the full level boundaries
-- **Enabling cache on demo-be `test:integration`**: Demo-be integration tests use real PostgreSQL via docker-compose — setting `cache: true` would serve stale results when database state matters. Only in-process-mocking integration tests (MSW, Godog) may enable caching
+- **Using a real database in unit tests**: Unit tests must use mocked repositories or in-memory implementations — never a real database. Real databases belong in integration tests (API backends via docker-compose) or E2E tests
+- **Using HTTP dispatch in integration tests**: Integration tests for API backends must call service/repository functions directly — not through HTTP dispatch mechanisms. HTTP contract verification belongs in E2E tests. See [Three-Level Testing Standard](../quality/three-level-testing-standard.md) for the full level boundaries
+- **Enabling cache on `test:integration` with Docker**: Integration tests that use real PostgreSQL via docker-compose must have `cache: false` — stale results when database state matters. Only in-process-mocking integration tests (MSW, Godog) may enable caching
 - **`build` on interpreted-language projects**: Adding a no-op `build` to Python or Ruby just to appear consistent — if there is no compile step, there is no `build` target
 - **`typecheck` on compile-enforced languages without additional analysis**: Go and plain Java enforce types through `build`; a separate `typecheck` that only re-runs the compiler is redundant. **Exception**: Java with JSpecify + NullAway warrants `typecheck` because NullAway is a distinct null-safety pass not included in `build`
 - **Undeclared outputs**: Omitting `outputs` on `build` disables caching and forces full rebuilds on every run

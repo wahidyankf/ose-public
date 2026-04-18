@@ -374,7 +374,7 @@ Plan files sit three directory levels deep from the repository root: `plans/` â†
 | ------------------------------------------- | -------------- |
 | `governance/conventions/structure/plans.md` | `../../../`    |
 | `docs/how-to/organize-work.md`              | `../../../`    |
-| `apps/a-demo-be-golang-gin/README.md`       | `../../../`    |
+| `apps/organiclever-be/README.md`            | `../../../`    |
 | Sibling file in the same plan folder        | `./`           |
 
 ### Example

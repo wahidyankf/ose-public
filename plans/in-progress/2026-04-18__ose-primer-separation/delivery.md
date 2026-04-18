@@ -377,86 +377,86 @@ Goal: execute the one-time removal of demo apps, specs, workflows, and associate
 
 ### 8.B — Commit B: Delete demo app directories
 
-- [ ] `git rm -r apps/a-demo-be-clojure-pedestal`
-- [ ] `git rm -r apps/a-demo-be-csharp-aspnetcore`
-- [ ] `git rm -r apps/a-demo-be-e2e`
-- [ ] `git rm -r apps/a-demo-be-elixir-phoenix`
-- [ ] `git rm -r apps/a-demo-be-fsharp-giraffe`
-- [ ] `git rm -r apps/a-demo-be-golang-gin`
-- [ ] `git rm -r apps/a-demo-be-java-springboot`
-- [ ] `git rm -r apps/a-demo-be-java-vertx`
-- [ ] `git rm -r apps/a-demo-be-kotlin-ktor`
-- [ ] `git rm -r apps/a-demo-be-python-fastapi`
-- [ ] `git rm -r apps/a-demo-be-rust-axum`
-- [ ] `git rm -r apps/a-demo-be-ts-effect`
-- [ ] `git rm -r apps/a-demo-fe-dart-flutterweb`
-- [ ] `git rm -r apps/a-demo-fe-e2e`
-- [ ] `git rm -r apps/a-demo-fe-ts-nextjs`
-- [ ] `git rm -r apps/a-demo-fe-ts-tanstack-start`
-- [ ] `git rm -r apps/a-demo-fs-ts-nextjs`
-- [ ] Run `ls apps/ | grep '^a-demo-' || echo NONE` — must print `NONE`.
-- [ ] Commit with message: `chore(apps): delete a-demo app directories (Phase 8 Commit B, parity verified per a0b98a74)`.
-- [ ] Push: `git push origin main`.
-- [ ] Monitor GitHub Actions for the pushed commit; verify all triggered workflows pass before proceeding to Commit C. If any CI check fails, fix immediately and push a follow-up commit before continuing.
-- [ ] **[C]** Verify commit scope is only `apps/a-demo-*`.
+- [x] `git rm -r apps/a-demo-be-clojure-pedestal`
+- [x] `git rm -r apps/a-demo-be-csharp-aspnetcore`
+- [x] `git rm -r apps/a-demo-be-e2e`
+- [x] `git rm -r apps/a-demo-be-elixir-phoenix`
+- [x] `git rm -r apps/a-demo-be-fsharp-giraffe`
+- [x] `git rm -r apps/a-demo-be-golang-gin`
+- [x] `git rm -r apps/a-demo-be-java-springboot`
+- [x] `git rm -r apps/a-demo-be-java-vertx`
+- [x] `git rm -r apps/a-demo-be-kotlin-ktor`
+- [x] `git rm -r apps/a-demo-be-python-fastapi`
+- [x] `git rm -r apps/a-demo-be-rust-axum`
+- [x] `git rm -r apps/a-demo-be-ts-effect`
+- [x] `git rm -r apps/a-demo-fe-dart-flutterweb`
+- [x] `git rm -r apps/a-demo-fe-e2e`
+- [x] `git rm -r apps/a-demo-fe-ts-nextjs`
+- [x] `git rm -r apps/a-demo-fe-ts-tanstack-start`
+- [x] `git rm -r apps/a-demo-fs-ts-nextjs`
+- [x] Run `ls apps/ | grep '^a-demo-' || echo NONE` — must print `NONE`.
+- [x] Commit with message: `chore(apps): delete a-demo app directories (Phase 8 Commit B, parity verified per a0b98a74)`.
+- [x] Push: `git push origin main`.
+- [x] Monitor GitHub Actions for the pushed commit; verify all triggered workflows pass before proceeding to Commit C. If any CI check fails, fix immediately and push a follow-up commit before continuing.
+- [x] **[C]** Verify commit scope is only `apps/a-demo-*`. — **DEVIATION**: scope also includes `go.work` (removed `./apps/a-demo-be-golang-gin` use directive). Pre-commit hook invokes `go run -C apps/rhino-cli main.go git pre-commit` which requires a resolvable `go.work`; leaving the dead reference breaks the hook. Normally listed in 8.E; pulled forward to B for hook-passage. 8.E will omit this go.work edit. Commit SHA `d58cee10`.
 
 ### 8.C — Commit C: Delete demo spec area
 
-- [ ] `git rm -r specs/apps/a-demo`
-- [ ] Run `ls specs/apps/ | grep '^a-demo' || echo NONE` — must print `NONE`.
-- [ ] Commit with message: `chore(specs): delete a-demo spec area (Phase 8 Commit C, parity verified per a0b98a74)`.
-- [ ] Push: `git push origin main`.
-- [ ] Monitor GitHub Actions for the pushed commit; verify all triggered workflows pass before proceeding to Commit D. If any CI check fails, fix immediately and push a follow-up commit before continuing.
-- [ ] **[C]** Verify commit scope is only `specs/apps/a-demo/`.
+- [x] `git rm -r specs/apps/a-demo`
+- [x] Run `ls specs/apps/ | grep '^a-demo' || echo NONE` — must print `NONE`.
+- [x] Commit with message: `chore(specs): delete a-demo spec area (Phase 8 Commit C, parity verified per a0b98a74)`.
+- [x] Push: `git push origin main`.
+- [x] Monitor GitHub Actions for the pushed commit; verify all triggered workflows pass before proceeding to Commit D. If any CI check fails, fix immediately and push a follow-up commit before continuing.
+- [x] **[C]** Verify commit scope is only `specs/apps/a-demo/`. — Commit SHA `c038407e`. **DEVIATION**: Commit C triggered pre-push failure (Nx project graph error: orphan libs `clojure-openapi-codegen` and `elixir-openapi-codegen` had dangling `implicitDependencies: ["a-demo-contracts"]` because `a-demo-contracts` lived inside deleted `specs/apps/a-demo/contracts/`). Pulled Phase 8.I forward as Commit `46bd6880` to delete the four orphan libs immediately after C, severing the dangling ref. Zero retained consumers confirmed. 8.I delivery section will note the pull-forward.
 
 ### 8.D — Commit D: Delete demo-specific reference doc
 
-- [ ] `git rm docs/reference/demo-apps-ci-coverage.md`
-- [ ] Commit with message: `docs(reference): delete demo-apps-ci-coverage.md (Phase 8 Commit D)`.
-- [ ] Push: `git push origin main`.
-- [ ] Monitor GitHub Actions for the pushed commit; verify all triggered workflows pass before proceeding to Commit E. If any CI check fails, fix immediately and push a follow-up commit before continuing.
-- [ ] **[C]** Verify commit scope is only the single file.
+- [x] `git rm docs/reference/demo-apps-ci-coverage.md`
+- [x] Commit with message: `docs(reference): delete demo-apps-ci-coverage.md (Phase 8 Commit D)`.
+- [x] Push: `git push origin main`.
+- [x] Monitor GitHub Actions for the pushed commit; verify all triggered workflows pass before proceeding to Commit E. If any CI check fails, fix immediately and push a follow-up commit before continuing.
+- [x] **[C]** Verify commit scope is only the single file.
 
 ### 8.E — Commit E: Prune root configs + `.github/` non-deletion edits
 
-- [ ] Edit `codecov.yml`:
-  - [ ] Remove every `flags:` entry keyed on a demo project name. Confirm remaining flags: `oseplatform-web`, `ayokoding-web`, `rhino-cli`, `ayokoding-cli`, `oseplatform-cli`, `organiclever-fe`, `organiclever-be`, `golang-commons`.
-  - [ ] Remove every `ignore:` pattern scoped to a demo path. Today: `apps/a-demo-be-golang-gin/internal/store/gorm_store.go`, `apps/a-demo-be-golang-gin/internal/server/server.go`, `apps/a-demo-be-golang-gin/cmd/server/**`. Retain generic patterns (`**/types.go`, `**/generated-contracts/**`).
-  - [ ] Confirm `grep 'a-demo' codecov.yml || echo CLEAN` prints `CLEAN`.
-- [ ] Edit `go.work`: remove every `use` directive under `apps/a-demo-be-*` (Go backends: `golang-gin`, and any others). Run `go work sync` and confirm no error.
-- [ ] Edit `open-sharia-enterprise.sln`: remove project reference blocks for `apps/a-demo-be-csharp-aspnetcore`. Run `dotnet sln list` and confirm the remaining project list is product-only.
-- [ ] For each of the seven `.github/workflows/_reusable-*.yml` files, grep for `a-demo` references and prune; DO NOT delete the file. Files to audit: `_reusable-backend-coverage.yml`, `_reusable-backend-e2e.yml`, `_reusable-backend-integration.yml`, `_reusable-backend-lint.yml`, `_reusable-backend-spec-coverage.yml`, `_reusable-backend-typecheck.yml`, `_reusable-frontend-e2e.yml`.
-- [ ] Edit `.github/workflows/codecov-upload.yml`: prune demo project entries from the upload matrix (if any) and any per-project job steps referencing demos; retain product entries.
-- [ ] Edit `.github/actions/install-language-deps/action.yml`: prune demo-project names from dispatch tables / matrix definitions (today: 9 a-demo references).
-- [ ] Check `.github/actions/setup-docker-cache/action.yml` for demo references: if present, prune inline; if action is entirely unused post-extraction, flag for a follow-up plan (do not delete in this commit).
-- [ ] For each file in `scripts/`, grep for `a-demo` references; prune demo names from any project-enumerating list; leave script structure intact.
-- [ ] Inspect `nx.json` for any demo-project-specific `targetDefaults`, `namedInputs` overrides, or cache rules keyed on `a-demo-*` project names: `grep -n 'a-demo' nx.json || echo NONE`. If any exist, prune them in this commit. If none exist, confirm with `echo NONE`.
-- [ ] Run consolidated grep sweep: `grep -rnI 'a-demo' codecov.yml go.work open-sharia-enterprise.sln .github/ scripts/ nx.json 2>/dev/null | grep -v '^.github/actions/setup-docker-cache/' || echo CLEAN` — must print `CLEAN` (any remaining match is a gap to resolve before commit).
-- [ ] Commit with message: `chore(config): prune a-demo references from codecov/go.work/sln/reusables/actions/scripts (Phase 8 Commit E)`.
-- [ ] Push: `git push origin main`.
-- [ ] Monitor GitHub Actions for the pushed commit; verify all triggered workflows pass before proceeding to Commit F. If any CI check fails, fix immediately and push a follow-up commit before continuing.
-- [ ] **[C]** Verify commit scope.
+- [x] Edit `codecov.yml`:
+  - [x] Remove every `flags:` entry keyed on a demo project name. Confirm remaining flags: `oseplatform-web`, `ayokoding-web`, `rhino-cli`, `ayokoding-cli`, `oseplatform-cli`, `organiclever-fe`, `organiclever-be`, `golang-commons`.
+  - [x] Remove every `ignore:` pattern scoped to a demo path. Today: `apps/a-demo-be-golang-gin/internal/store/gorm_store.go`, `apps/a-demo-be-golang-gin/internal/server/server.go`, `apps/a-demo-be-golang-gin/cmd/server/**`. Retain generic patterns (`**/types.go`, `**/generated-contracts/**`).
+  - [x] Confirm `grep 'a-demo' codecov.yml || echo CLEAN` prints `CLEAN`.
+- [x] Edit `go.work`: remove every `use` directive under `apps/a-demo-be-*` (Go backends: `golang-gin`, and any others). Run `go work sync` and confirm no error.
+- [x] Edit `open-sharia-enterprise.sln`: remove project reference blocks for `apps/a-demo-be-csharp-aspnetcore`. Run `dotnet sln list` and confirm the remaining project list is product-only.
+- [x] For each of the seven `.github/workflows/_reusable-*.yml` files, grep for `a-demo` references and prune; DO NOT delete the file. Files to audit: `_reusable-backend-coverage.yml`, `_reusable-backend-e2e.yml`, `_reusable-backend-integration.yml`, `_reusable-backend-lint.yml`, `_reusable-backend-spec-coverage.yml`, `_reusable-backend-typecheck.yml`, `_reusable-frontend-e2e.yml`.
+- [x] Edit `.github/workflows/codecov-upload.yml`: prune demo project entries from the upload matrix (if any) and any per-project job steps referencing demos; retain product entries.
+- [x] Edit `.github/actions/install-language-deps/action.yml`: prune demo-project names from dispatch tables / matrix definitions (today: 9 a-demo references).
+- [x] Check `.github/actions/setup-docker-cache/action.yml` for demo references: if present, prune inline; if action is entirely unused post-extraction, flag for a follow-up plan (do not delete in this commit).
+- [x] For each file in `scripts/`, grep for `a-demo` references; prune demo names from any project-enumerating list; leave script structure intact.
+- [x] Inspect `nx.json` for any demo-project-specific `targetDefaults`, `namedInputs` overrides, or cache rules keyed on `a-demo-*` project names: `grep -n 'a-demo' nx.json || echo NONE`. If any exist, prune them in this commit. If none exist, confirm with `echo NONE`.
+- [x] Run consolidated grep sweep: `grep -rnI 'a-demo' codecov.yml go.work open-sharia-enterprise.sln .github/ scripts/ nx.json 2>/dev/null | grep -v '^.github/actions/setup-docker-cache/' || echo CLEAN` — must print `CLEAN` (any remaining match is a gap to resolve before commit).
+- [x] Commit with message: `chore(config): prune a-demo references from codecov/go.work/sln/reusables/actions/scripts (Phase 8 Commit E)`.
+- [x] Push: `git push origin main`.
+- [x] Monitor GitHub Actions for the pushed commit; verify all triggered workflows pass before proceeding to Commit F. If any CI check fails, fix immediately and push a follow-up commit before continuing.
+- [x] **[C]** Verify commit scope. — Commit landed on origin/main. **DEVIATIONS**: (1) `go.work` edit moved to Commit B (hook-passage dependency). (2) `_reusable-frontend-e2e.yml` and `_reusable-backend-e2e.yml` rewritten to parameterize former a-demo hardcodes — total coupling meant in-place prune left broken stubs; parameterization turns them into genuinely reusable templates. (3) `libs/hugo-commons/go.mod` transitive-dep prune included (go work sync side-effect of Commit B). (4) `_reusable-backend-e2e.yml` gained `be-e2e-name` / `fe-e2e-name` / `fe-codegen-targets` / `playwright-working-directory` inputs.
 
 ### 8.F — Commit F: Prune root prose references
 
-- [ ] Edit `README.md`:
-  - [ ] Remove the "Demo apps: 11 backend implementations …" bullet under Applications.
-  - [ ] Remove any coverage-badge row whose flag names a demo project.
-  - [ ] Remove any link to the deleted `demo-apps-ci-coverage.md`.
-  - [ ] Add (or expand) a "Related Repositories" mention of `ose-primer` as now-authoritative for demo apps if not already present from Phase 1.
-  - [ ] Optionally add a changelog-style note: "2026-04-18 — polyglot demo apps extracted to `ose-primer`".
-- [ ] Edit `CLAUDE.md`:
-  - [ ] Remove every bullet under "Current Apps" whose name starts with `a-demo-`.
-  - [ ] Remove the coverage-threshold table rows naming demo projects; keep rows for product apps, libs, `rhino-cli`.
-  - [ ] Remove or replace demo-path examples in the three-level-testing-standard prose; where a product-app equivalent exists, substitute; otherwise delete the example.
-  - [ ] Remove the "Mandatory Nx targets for demo apps" bullet and the "Contract enforcement" bullet that names demo apps; retain the OrganicLever contract-enforcement bullet.
-- [ ] Edit `AGENTS.md`: mirror every CLAUDE.md edit above.
-- [ ] Edit `ROADMAP.md`: prune phase narratives that reference demos; add a dated note recording the extraction.
-- [ ] Run `grep -rnI 'a-demo' README.md CLAUDE.md AGENTS.md ROADMAP.md` — must return zero matches (or only narrative changelog mentions of the extraction event).
-- [ ] Commit with message: `docs(root): prune a-demo references from README/CLAUDE/AGENTS/ROADMAP (Phase 8 Commit F)`.
-- [ ] Push: `git push origin main`.
-- [ ] Monitor GitHub Actions for the pushed commit; verify all triggered workflows pass before proceeding to Commit G. If any CI check fails, fix immediately and push a follow-up commit before continuing.
-- [ ] **[C]** Verify scope.
+- [x] Edit `README.md`:
+  - [x] Remove the "Demo apps: 11 backend implementations …" bullet under Applications.
+  - [x] Remove any coverage-badge row whose flag names a demo project.
+  - [x] Remove any link to the deleted `demo-apps-ci-coverage.md`.
+  - [x] Add (or expand) a "Related Repositories" mention of `ose-primer` as now-authoritative for demo apps if not already present from Phase 1.
+  - [x] Optionally add a changelog-style note: "2026-04-18 — polyglot demo apps extracted to `ose-primer`".
+- [x] Edit `CLAUDE.md`:
+  - [x] Remove every bullet under "Current Apps" whose name starts with `a-demo-`.
+  - [x] Remove the coverage-threshold table rows naming demo projects; keep rows for product apps, libs, `rhino-cli`.
+  - [x] Remove or replace demo-path examples in the three-level-testing-standard prose; where a product-app equivalent exists, substitute; otherwise delete the example.
+  - [x] Remove the "Mandatory Nx targets for demo apps" bullet and the "Contract enforcement" bullet that names demo apps; retain the OrganicLever contract-enforcement bullet.
+- [x] Edit `AGENTS.md`: mirror every CLAUDE.md edit above.
+- [x] Edit `ROADMAP.md`: prune phase narratives that reference demos; add a dated note recording the extraction.
+- [x] Run `grep -rnI 'a-demo' README.md CLAUDE.md AGENTS.md ROADMAP.md` — must return zero matches (or only narrative changelog mentions of the extraction event).
+- [x] Commit with message: `docs(root): prune a-demo references from README/CLAUDE/AGENTS/ROADMAP (Phase 8 Commit F)`.
+- [x] Push: `git push origin main`.
+- [x] Monitor GitHub Actions for the pushed commit; verify all triggered workflows pass before proceeding to Commit G. If any CI check fails, fix immediately and push a follow-up commit before continuing.
+- [x] **[C]** Verify scope. — Commit landed on origin/main. `AGENTS.md` and `ROADMAP.md` had no a-demo references (sweep passed). README.md + CLAUDE.md edited. Remaining `a-demo` in README.md is the narrative changelog mention explicitly permitted by the plan.
 
 ### 8.G — Commit G: Prune governance / docs prose references
 
@@ -492,20 +492,20 @@ Goal: execute the one-time removal of demo apps, specs, workflows, and associate
 
 Pre-flight checks first; deletion only after both return clean.
 
-- [ ] Run `nx graph --file=/tmp/graph-preI.json` and confirm zero edges from any retained project to the four target libs: `jq '.graph.dependencies | to_entries[] | select(.value[].target == "clojure-openapi-codegen" or .value[].target == "elixir-cabbage" or .value[].target == "elixir-gherkin" or .value[].target == "elixir-openapi-codegen")' /tmp/graph-preI.json` returns empty.
-- [ ] Run text-grep backup check: `grep -rnl -E 'libs/(clojure-openapi-codegen|elixir-(cabbage|gherkin|openapi-codegen))' apps/ | grep -v '^apps/a-demo-' || echo NO_RETAINED_CONSUMERS` — must print `NO_RETAINED_CONSUMERS`.
-- [ ] If either pre-flight check returns a non-empty match, **HALT Commit I**; investigate the unexpected consumer; resolve before retrying.
-- [ ] `git rm -r libs/clojure-openapi-codegen`.
-- [ ] `git rm -r libs/elixir-cabbage`.
-- [ ] `git rm -r libs/elixir-gherkin`.
-- [ ] `git rm -r libs/elixir-openapi-codegen`.
-- [ ] Edit `libs/README.md`: remove index entries for the four deleted libs.
-- [ ] Run `ls libs/ | grep -E '^(clojure-openapi-codegen|elixir-(cabbage|gherkin|openapi-codegen))$' || echo NONE` — must print `NONE`.
-- [ ] Run `nx graph` regeneration and confirm no orphan project nodes for the four libs.
-- [ ] Commit with message: `chore(libs): remove orphaned elixir/clojure libs (Phase 8 Commit I, demo extraction)`.
-- [ ] Push: `git push origin main`.
-- [ ] Monitor GitHub Actions for the pushed commit; verify all triggered workflows pass before proceeding to Commit J. If any CI check fails, fix immediately and push a follow-up commit before continuing.
-- [ ] **[C]** Verify commit scope is only `libs/` deletions + `libs/README.md` edit.
+- [x] Run `nx graph --file=/tmp/graph-preI.json` and confirm zero edges from any retained project to the four target libs: `jq '.graph.dependencies | to_entries[] | select(.value[].target == "clojure-openapi-codegen" or .value[].target == "elixir-cabbage" or .value[].target == "elixir-gherkin" or .value[].target == "elixir-openapi-codegen")' /tmp/graph-preI.json` returns empty.
+- [x] Run text-grep backup check: `grep -rnl -E 'libs/(clojure-openapi-codegen|elixir-(cabbage|gherkin|openapi-codegen))' apps/ | grep -v '^apps/a-demo-' || echo NO_RETAINED_CONSUMERS` — must print `NO_RETAINED_CONSUMERS`.
+- [x] If either pre-flight check returns a non-empty match, **HALT Commit I**; investigate the unexpected consumer; resolve before retrying.
+- [x] `git rm -r libs/clojure-openapi-codegen`.
+- [x] `git rm -r libs/elixir-cabbage`.
+- [x] `git rm -r libs/elixir-gherkin`.
+- [x] `git rm -r libs/elixir-openapi-codegen`.
+- [x] Edit `libs/README.md`: remove index entries for the four deleted libs.
+- [x] Run `ls libs/ | grep -E '^(clojure-openapi-codegen|elixir-(cabbage|gherkin|openapi-codegen))$' || echo NONE` — must print `NONE`.
+- [x] Run `nx graph` regeneration and confirm no orphan project nodes for the four libs.
+- [x] Commit with message: `chore(libs): remove orphaned elixir/clojure libs (Phase 8 Commit I, demo extraction)`.
+- [x] Push: `git push origin main`.
+- [x] Monitor GitHub Actions for the pushed commit; verify all triggered workflows pass before proceeding to Commit J. If any CI check fails, fix immediately and push a follow-up commit before continuing.
+- [x] **[C]** Verify commit scope is only `libs/` deletions + `libs/README.md` edit. — Commit SHA `46bd6880`. **PULLED FORWARD**: Commit I landed immediately after Commit C to resolve the Nx project-graph error from C's deletion of `specs/apps/a-demo/contracts/` (which contained the `a-demo-contracts` Nx project the orphan libs depended on). Pre-flight text-grep confirmed `NO_RETAINED_CONSUMERS` in `apps/`. `nx graph` regeneration verified post-Commit-I in Phase 9.
 
 ### 8.J — Commit J: Trim rhino-cli demo-only commands
 

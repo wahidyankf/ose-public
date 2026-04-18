@@ -171,16 +171,15 @@ per-backend implementation patterns, see the
 Each app type implements the three levels according to its domain. The table below shows how each
 app type realises each level.
 
-| App Type                                                  | Unit (`test:unit`)                                              | Integration (`test:integration`)                                                                   | E2E (`test:e2e`)                                     |
-| --------------------------------------------------------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| **BE API** (`a-demo-be-*`)                                | Godog/BDD, mocked repos, calls service fns directly             | Godog/BDD, real PostgreSQL via docker-compose, calls service fns directly (no HTTP)                | Playwright, real HTTP + real PostgreSQL              |
-| **FE** (`a-demo-fe-*`, `organiclever-fe`)                 | Vitest/Flutter test, all API calls mocked (MSW / mock services) | MSW with real DOM; in-process mocking only                                                         | Playwright against running FE + default BE           |
-| **Fullstack** (`a-demo-fs-*`)                             | Vitest, all DB calls mocked                                     | MSW / in-process mocking                                                                           | Playwright, self-contained (own API routes)          |
-| **CLI** (`*-cli`)                                         | Godog, all I/O mocked via function variables                    | Godog (`//go:build integration`), real filesystem via `/tmp` fixtures, in-process via `cmd.RunE()` | Not applicable                                       |
-| **Content platform** (`ayokoding-web`, `oseplatform-web`) | Vitest, components and tRPC routes mocked                       | MSW, in-process mocking                                                                            | Playwright BE E2E (`*-be-e2e`) + FE E2E (`*-fe-e2e`) |
-| **Library** (`golang-commons`)                            | Unit tests + Godog, mock closures                               | Godog, tmpdir mocks, cacheable                                                                     | Not applicable                                       |
-| **Hugo site** (historical -- no active Hugo sites remain) | Not applicable                                                  | Not applicable                                                                                     | Not applicable                                       |
-| **E2E runner** (`*-e2e`)                                  | Not applicable                                                  | Not applicable                                                                                     | Playwright — this project IS the E2E suite           |
+| App Type                                                  | Unit (`test:unit`)                                 | Integration (`test:integration`)                                                                   | E2E (`test:e2e`)                                     |
+| --------------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| **BE API** (`organiclever-be`)                            | BDD, mocked repos, calls service fns directly      | Real PostgreSQL via docker-compose, calls service fns directly (no HTTP)                           | Playwright, real HTTP + real PostgreSQL              |
+| **FE** (`organiclever-fe`)                                | Vitest, all API calls mocked (MSW / mock services) | MSW with real DOM; in-process mocking only                                                         | Playwright against running FE + BE                   |
+| **CLI** (`*-cli`)                                         | Godog, all I/O mocked via function variables       | Godog (`//go:build integration`), real filesystem via `/tmp` fixtures, in-process via `cmd.RunE()` | Not applicable                                       |
+| **Content platform** (`ayokoding-web`, `oseplatform-web`) | Vitest, components and tRPC routes mocked          | MSW, in-process mocking                                                                            | Playwright BE E2E (`*-be-e2e`) + FE E2E (`*-fe-e2e`) |
+| **Library** (`golang-commons`)                            | Unit tests + Godog, mock closures                  | Godog, tmpdir mocks, cacheable                                                                     | Not applicable                                       |
+| **Hugo site** (historical -- no active Hugo sites remain) | Not applicable                                     | Not applicable                                                                                     | Not applicable                                       |
+| **E2E runner** (`*-e2e`)                                  | Not applicable                                     | Not applicable                                                                                     | Playwright — this project IS the E2E suite           |
 
 ## Gherkin Consumption Matrix
 
@@ -188,16 +187,15 @@ All testable projects must consume Gherkin specifications at every applicable te
 (historical -- no active Hugo sites remain) were exempt because they had no application logic. E2E
 runner projects ARE the Gherkin consumers at the E2E level.
 
-| App Type                  | Unit consumes Gherkin                                 | Integration consumes Gherkin | E2E consumes Gherkin              |
-| ------------------------- | ----------------------------------------------------- | ---------------------------- | --------------------------------- |
-| BE API (`a-demo-be-*`)    | Yes — `specs/apps/a-demo/be/gherkin/`                 | Yes — same specs             | Yes — same specs                  |
-| FE (`a-demo-fe-*`)        | Yes — `specs/apps/a-demo/fe/gherkin/`                 | Yes — same specs             | Yes — via `a-demo-fe-e2e`         |
-| Fullstack (`a-demo-fs-*`) | Yes — `specs/apps/a-demo/be/gherkin/` + `fe/gherkin/` | Yes — same specs             | Yes — self-contained              |
-| CLI (`*-cli`)             | Yes — `specs/apps/{domain}/cli/gherkin/`              | Yes — same specs             | Not applicable                    |
-| Content platform          | Yes — project-local specs                             | Yes — same specs             | Yes — via `*-be-e2e` / `*-fe-e2e` |
-| Library                   | Yes — library-specific specs                          | Yes — same specs             | Not applicable                    |
-| Hugo site (historical)    | Exempt                                                | Exempt                       | Exempt                            |
-| E2E runner                | Not applicable                                        | Not applicable               | Yes — consumes shared specs       |
+| App Type                   | Unit consumes Gherkin                       | Integration consumes Gherkin | E2E consumes Gherkin              |
+| -------------------------- | ------------------------------------------- | ---------------------------- | --------------------------------- |
+| BE API (`organiclever-be`) | Yes — `specs/apps/organiclever-be/gherkin/` | Yes — same specs             | Yes — same specs                  |
+| FE (`organiclever-fe`)     | Yes — `specs/apps/organiclever-fe/gherkin/` | Yes — same specs             | Yes — via `organiclever-fe-e2e`   |
+| CLI (`*-cli`)              | Yes — `specs/apps/{domain}/cli/gherkin/`    | Yes — same specs             | Not applicable                    |
+| Content platform           | Yes — project-local specs                   | Yes — same specs             | Yes — via `*-be-e2e` / `*-fe-e2e` |
+| Library                    | Yes — library-specific specs                | Yes — same specs             | Not applicable                    |
+| Hugo site (historical)     | Exempt                                      | Exempt                       | Exempt                            |
+| E2E runner                 | Not applicable                              | Not applicable               | Yes — consumes shared specs       |
 
 ## Coverage Threshold Rationale
 
@@ -205,12 +203,11 @@ Coverage thresholds are enforced by `rhino-cli test-coverage validate` as part o
 Thresholds differ by project type to reflect the realistic upper bound achievable through mocked
 unit tests.
 
-| Threshold | App Types                                                                       | Rationale                                                                                                                                                                       |
-| --------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **90%**   | BE API backends, CLI apps, Go libs, TypeScript backends (`a-demo-be-ts-effect`) | Core business logic with high mock isolation. Service functions operate on pure data structures; 90% is achievable without heroic effort.                                       |
-| **80%**   | Content platforms (`ayokoding-web`, `oseplatform-web`)                          | Significant UI rendering code and Next.js route handlers that are harder to unit-test. Some RSC rendering paths are excluded by design.                                         |
-| **75%**   | Fullstack apps (`a-demo-fs-ts-nextjs`)                                          | Mixed server and client code in the same project. API routes and React components pull the achievable threshold below 80%.                                                      |
-| **70%**   | FE apps (`a-demo-fe-*`, `organiclever-fe`), Dart FE                             | API, auth, and query layers are mocked by design; the mock boundaries limit what can be covered by unit tests. Lower threshold reflects this intentional architecture decision. |
+| Threshold | App Types                                              | Rationale                                                                                                                                                                       |
+| --------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **90%**   | BE API backends (`organiclever-be`), CLI apps, Go libs | Core business logic with high mock isolation. Service functions operate on pure data structures; 90% is achievable without heroic effort.                                       |
+| **80%**   | Content platforms (`ayokoding-web`, `oseplatform-web`) | Significant UI rendering code and Next.js route handlers that are harder to unit-test. Some RSC rendering paths are excluded by design.                                         |
+| **70%**   | FE apps (`organiclever-fe`)                            | API, auth, and query layers are mocked by design; the mock boundaries limit what can be covered by unit tests. Lower threshold reflects this intentional architecture decision. |
 
 Coverage is measured via the appropriate reporter for each language and converted to LCOV or
 JaCoCo XML before being passed to `rhino-cli test-coverage validate`. See `CLAUDE.md` for the
@@ -363,9 +360,6 @@ oseplatform-web, and organiclever) run twice daily aligned to WIB (UTC+7) busine
 | 06:00    | 23:00 (previous day) | Morning run — catches overnight regressions |
 | 18:00    | 11:00                | Afternoon run — validates pre-EOD state     |
 
-Demo workflows (`test-a-demo-*.yml`) run only on manual `workflow_dispatch` — cron schedules
-were removed to conserve CI resources. Trigger from the GitHub Actions UI when needed.
-
 ### 5-Track Parallel CRON
 
 Each scheduled test run executes five parallel tracks:
@@ -385,12 +379,11 @@ services themselves run in parallel across matrix entries.
 
 | Entity              | Pattern                                                                                   | Example                                   |
 | ------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------------- |
-| Backend app         | `a-demo-be-{lang}-{framework}`                                                            | `a-demo-be-golang-gin`                    |
-| Frontend app        | `a-demo-fe-{lang}-{framework}`                                                            | `a-demo-fe-ts-nextjs`                     |
-| Fullstack app       | `a-demo-fs-{lang}-{framework}`                                                            | `a-demo-fs-ts-nextjs`                     |
-| Infra dev directory | `infra/dev/{app-name}/`                                                                   | `infra/dev/a-demo-be-golang-gin/`         |
-| Specs directory     | See [Specs Directory Structure](../../conventions/structure/specs-directory-structure.md) | `specs/apps/a-demo/be/gherkin/`           |
-| Test workflow       | `test-{app-name}.yml`                                                                     | `test-a-demo-be-golang-gin.yml`           |
+| Backend app         | `{domain}-be` or `{domain}-be-{lang}-{framework}`                                         | `organiclever-be`                         |
+| Frontend app        | `{domain}-fe` or `{domain}-fe-{lang}-{framework}`                                         | `organiclever-fe`                         |
+| Infra dev directory | `infra/dev/{app-name}/`                                                                   | `infra/dev/organiclever-be/`              |
+| Specs directory     | See [Specs Directory Structure](../../conventions/structure/specs-directory-structure.md) | `specs/apps/organiclever/be/gherkin/`     |
+| Test workflow       | `test-{app-name}.yml`                                                                     | `test-and-deploy-organiclever.yml`        |
 | Reusable workflow   | `_reusable-{purpose}.yml`                                                                 | `_reusable-backend-e2e.yml`               |
 | Composite action    | `.github/actions/{name}/action.yml`                                                       | `.github/actions/setup-golang/action.yml` |
 | Deploy workflow     | `test-and-deploy-{app}.yml`                                                               | `test-and-deploy-organiclever.yml`        |
@@ -428,17 +421,16 @@ Follow this checklist in order when adding a new app variant to the monorepo.
 
 ## E2E Test Pairing Rule
 
-Demo apps pair with a default counterpart for E2E testing. The pairing rule ensures every variant
-is exercised against a stable, known-good partner.
+Each app pairs with dedicated E2E runner projects for end-to-end testing.
 
-| Variant Type              | E2E Pairs With                           | Example                                        |
-| ------------------------- | ---------------------------------------- | ---------------------------------------------- |
-| Backend (`a-demo-be-*`)   | Default frontend — `a-demo-fe-ts-nextjs` | `a-demo-be-golang-gin` + `a-demo-fe-ts-nextjs` |
-| Frontend (`a-demo-fe-*`)  | Default backend — `a-demo-be-golang-gin` | `a-demo-fe-ts-nextjs` + `a-demo-be-golang-gin` |
-| Fullstack (`a-demo-fs-*`) | Self-contained — own API routes          | `a-demo-fs-ts-nextjs` (no external backend)    |
+| App Type                                           | E2E Pairing                                    |
+| -------------------------------------------------- | ---------------------------------------------- |
+| Backend (`organiclever-be`, `ayokoding-web`, etc.) | Dedicated `*-be-e2e` Playwright runner project |
+| Frontend (`organiclever-fe`, etc.)                 | Dedicated `*-fe-e2e` Playwright runner project |
+| Content platforms                                  | Both `*-be-e2e` and `*-fe-e2e` runners         |
 
-Non-demo apps (`organiclever-*`, `ayokoding-web`, `oseplatform-web`) pair their own dedicated E2E
-runner projects (`*-be-e2e`, `*-fe-e2e`) rather than using the default demo pairing.
+Each product app has its own dedicated E2E runner (`*-be-e2e`, `*-fe-e2e`) scoped to that product's
+scenarios.
 
 ## Environment Variable Standard
 

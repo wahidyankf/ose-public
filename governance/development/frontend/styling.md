@@ -15,7 +15,7 @@ updated: 2026-03-28
 
 # Styling Convention
 
-CSS and Tailwind v4 conventions for all frontend applications in the open-sharia-enterprise monorepo. These rules govern how styles are written, organized, and maintained across `organiclever-fe`, `ayokoding-web`, `a-demo-fe-ts-nextjs`, and `a-demo-fs-ts-nextjs`.
+CSS and Tailwind v4 conventions for all frontend applications in the open-sharia-enterprise monorepo. These rules govern how styles are written, organized, and maintained across `organiclever-fe` and `ayokoding-web`.
 
 ## Tailwind v4 Directives
 
@@ -130,7 +130,7 @@ Use Tailwind utilities instead of inline styles. Inline styles bypass the design
 <div className="bg-card p-4">
 ```
 
-**Exception**: `a-demo-fe-ts-nextjs` may use inline styles during Phase 2 migration from a non-Tailwind baseline. Remove them before the migration is complete.
+**Exception**: Apps migrating from a non-Tailwind baseline may use inline styles temporarily. Remove them before the migration is complete.
 
 ## Class Ordering
 

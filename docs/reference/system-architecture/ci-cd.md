@@ -227,50 +227,6 @@ graph TB
 
 **Purpose**: Runs affected tests and quality checks for pull requests
 
-### Demo Backend Workflows
-
-**Files**: `.github/workflows/test-a-demo-be-*.yml` (one per backend)
-
-**Backends**: golang-gin, java-springboot, java-vertx, elixir-phoenix, fsharp-giraffe, python-fastapi, rust-axum, kotlin-ktor, ts-effect, csharp-aspnetcore, clojure-pedestal
-
-**Trigger**: Manual `workflow_dispatch` only. Cron schedules removed to conserve CI resources; trigger from the GitHub Actions UI when needed.
-
-**Language version alignment**: All demo workflows use the same language versions as `main-ci.yml`:
-
-- **Go**: 1.26.0 (used in golang-gin backend and all frontend workflows for codegen)
-- **Elixir**: 1.19 (OTP 27)
-- **Python**: 3.13
-- **Node.js**: 24 (all TypeScript/JavaScript backends and frontends)
-- **Rust**: `dtolnay/rust-toolchain@stable` (compilation inside Docker containers)
-- **Flutter**: `subosito/flutter-action@v2` with `channel: stable`
-
-**Health check standardization**: All dev docker-compose files use `curl -f http://localhost:8201/health` for backend health checks. The Docker images for golang-gin, java-springboot, kotlin-ktor have `apk add --no-cache curl` in their Dockerfiles. Integration compose files only have PostgreSQL health checks (`pg_isready`) — no backend health checks needed there.
-
-**Job structure** (per workflow):
-
-Each backend workflow runs its own backend stack — never a different backend.
-
-1. **`integration-tests`** (golang-gin only) or **`integration-e2e-be`** (all others):
-   - Runs backend integration tests via `docker-compose.integration.yml`
-   - Starts backend + runs `a-demo-be-e2e:test:e2e` against it
-   - Uses the backend's own infra compose files
-
-2. **`e2e-fe`** (all backends):
-   - Starts the full stack: DB + this backend (with `ENABLE_TEST_API=true`) + `a-demo-fe-ts-nextjs`
-   - Waits for the frontend on port 3301
-   - Runs `a-demo-fe-e2e:test:e2e` against the full stack
-   - Uploads artifact: `playwright-report-fe-e2e-<backend-slug>`
-
-**Why per-backend FE E2E**: Every backend implements the test-only API (`POST /api/v1/test/reset-db`, `POST /api/v1/test/promote-admin`) enabled via `ENABLE_TEST_API=true`. This allows `a-demo-fe-e2e` to reset database state between scenarios against any backend. Running FE E2E against each backend independently ensures the frontend works correctly with all supported API implementations, not just the reference Go/Gin backend.
-
-### Demo Frontend Workflow
-
-**File**: `.github/workflows/test-a-demo-fe-ts-nextjs.yml`
-
-**Trigger**: Manual `workflow_dispatch` only. Cron schedules removed to conserve CI resources; trigger from the GitHub Actions UI when needed.
-
-**Purpose**: Dedicated FE E2E workflow using the Go/Gin reference backend stack via `infra/dev/a-demo-fe-ts-nextjs/docker-compose.yml`
-
 ## Nx Build System
 
 **Caching Strategy:**

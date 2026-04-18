@@ -8,13 +8,18 @@ tags:
   - architecture
   - monorepo
 created: 2026-03-22
-updated: 2026-03-22
+updated: 2026-04-18
 ---
 
 # Project Dependency Graph
 
 Complete reference for how projects depend on each other in the Nx monorepo.
 Run `nx graph` to visualize this interactively.
+
+> **Note**: The polyglot demo apps (`a-demo-be-*`, `a-demo-fe-*`, `a-demo-fs-ts-nextjs`) and
+> their contract/spec infrastructure were extracted to
+> [ose-primer](https://github.com/wahidyankf/ose-primer) on 2026-04-18. That repository is the
+> authoritative reference for polyglot showcase dependency patterns.
 
 ## Dependency Mechanisms
 
@@ -26,20 +31,13 @@ Declared in `project.json`. When the dependency project changes, `nx affected`
 flags the dependent project for re-testing.
 
 ```json
-"implicitDependencies": ["a-demo-contracts", "rhino-cli"]
+"implicitDependencies": ["rhino-cli"]
 ```
 
 ### 2. `dependsOn` (Task-Level)
 
 Declared per target in `project.json`. Controls execution order — the dependency
-task runs before the dependent task. Cross-project `dependsOn` (e.g.,
-`a-demo-contracts:bundle`) also creates an implicit project edge.
-
-```json
-"codegen": {
-  "dependsOn": ["a-demo-contracts:bundle"]
-}
-```
+task runs before the dependent task.
 
 ### 3. `inputs` with `{workspaceRoot}` (File-Level)
 
@@ -49,7 +47,7 @@ invalidated and `nx affected` flags the project.
 ```json
 "inputs": [
   "default",
-  "{workspaceRoot}/specs/apps/a-demo/be/gherkin/**/*.feature"
+  "{workspaceRoot}/specs/apps/organiclever-fe/**/*.feature"
 ]
 ```
 
@@ -57,55 +55,25 @@ invalidated and `nx affected` flags the project.
 
 ```mermaid
 graph RL
-  %% Specs (leaf)
-  DC[a-demo-contracts]
-
   %% Go libs (leaf / near-leaf)
   GC[golang-commons]
   HC[hugo-commons]
-
-  %% Elixir libs
-  EG[elixir-gherkin]
-  EC[elixir-cabbage]
-  EOC[elixir-openapi-codegen]
-
-  %% Clojure lib
-  COC[clojure-openapi-codegen]
 
   %% CLI tools
   RC[rhino-cli]
   AKC[ayokoding-cli]
   OPC[oseplatform-cli]
 
-  %% Hugo sites
+  %% Content sites
   AKW[ayokoding-web]
   OPW[oseplatform-web]
 
   %% OrganicLever
-  OLW[organiclever-fe]
-  OLE[organiclever-fe-e2e]
-
-  %% Demo backends (grouped)
-  GOLANG[a-demo-be-golang-gin]
-  SPRING[a-demo-be-java-springboot]
-  VERTX[a-demo-be-java-vertx]
-  KOTLIN[a-demo-be-kotlin-ktor]
-  PYTHON[a-demo-be-python-fastapi]
-  RUST[a-demo-be-rust-axum]
-  EFFECT[a-demo-be-ts-effect]
-  FSHARP[a-demo-be-fsharp-giraffe]
-  CSHARP[a-demo-be-csharp-aspnetcore]
-  CLOJURE[a-demo-be-clojure-pedestal]
-  ELIXIR[a-demo-be-elixir-phoenix]
-
-  %% Demo frontends
-  NEXTJS[a-demo-fe-ts-nextjs]
-  TANSTACK[a-demo-fe-ts-tanstack-start]
-  FLUTTER[a-demo-fe-dart-flutterweb]
-
-  %% E2E
-  BEE2E[a-demo-be-e2e]
-  FEE2E[a-demo-fe-e2e]
+  OLF[organiclever-fe]
+  OLB[organiclever-be]
+  OLC[organiclever-contracts]
+  OLFE2E[organiclever-fe-e2e]
+  OLBE2E[organiclever-be-e2e]
 
   %% --- Dependency edges ---
 
@@ -120,117 +88,40 @@ graph RL
   OPC --> HC
   OPC --> RC
 
-  %% Hugo sites
+  %% Content sites
   AKW --> AKC
   OPW --> OPC
 
-  %% Elixir lib chain
-  EC --> EG
-  EC --> RC
-  EG --> RC
-  EOC --> DC
-  EOC --> RC
-  COC --> DC
-  COC --> RC
-
   %% OrganicLever
-  OLW --> RC
-  OLE --> OLW
-
-  %% Demo backends -> shared deps
-  GOLANG --> DC
-  GOLANG --> RC
-  SPRING --> DC
-  SPRING --> RC
-  VERTX --> DC
-  VERTX --> RC
-  KOTLIN --> DC
-  KOTLIN --> RC
-  PYTHON --> DC
-  PYTHON --> RC
-  RUST --> DC
-  RUST --> RC
-  EFFECT --> DC
-  EFFECT --> RC
-  FSHARP --> DC
-  FSHARP --> RC
-  CSHARP --> DC
-  CSHARP --> RC
-  CLOJURE --> COC
-  CLOJURE --> DC
-  CLOJURE --> RC
-  ELIXIR --> DC
-  ELIXIR --> RC
-  ELIXIR --> EG
-  ELIXIR --> EC
-  ELIXIR --> EOC
-
-  %% Demo frontends -> shared deps
-  NEXTJS --> DC
-  NEXTJS --> RC
-  TANSTACK --> DC
-  TANSTACK --> RC
-  FLUTTER --> DC
-  FLUTTER --> RC
-
-  %% E2E -> apps
-  BEE2E --> GOLANG
-  BEE2E --> SPRING
-  BEE2E --> VERTX
-  BEE2E --> KOTLIN
-  BEE2E --> PYTHON
-  BEE2E --> RUST
-  BEE2E --> EFFECT
-  BEE2E --> FSHARP
-  BEE2E --> CSHARP
-  BEE2E --> CLOJURE
-  BEE2E --> ELIXIR
-  BEE2E --> DC
-  FEE2E --> NEXTJS
-  FEE2E --> TANSTACK
-  FEE2E --> FLUTTER
-  FEE2E --> DC
+  OLF --> RC
+  OLF --> OLC
+  OLB --> OLC
+  OLFE2E --> OLF
+  OLBE2E --> OLB
 
   %% Styles
-  classDef spec fill:#0173B2,stroke:#01537F,color:#FFFFFF
   classDef lib fill:#029E73,stroke:#016B4E,color:#FFFFFF
   classDef cli fill:#DE8F05,stroke:#A56A04,color:#FFFFFF
   classDef site fill:#CC78BC,stroke:#9A5A8E,color:#FFFFFF
-  classDef backend fill:#CA9161,stroke:#977048,color:#FFFFFF
-  classDef frontend fill:#808080,stroke:#606060,color:#FFFFFF
+  classDef product fill:#CA9161,stroke:#977048,color:#FFFFFF
   classDef e2e fill:#0173B2,stroke:#01537F,color:#FFFFFF
 
-  class DC spec
-  class GC,HC,EG,EC,EOC,COC lib
+  class GC,HC lib
   class RC,AKC,OPC cli
-  class AKW,OPW,OLW site
-  class GOLANG,SPRING,VERTX,KOTLIN,PYTHON,RUST,EFFECT,FSHARP,CSHARP,CLOJURE,ELIXIR backend
-  class NEXTJS,TANSTACK,FLUTTER frontend
-  class BEE2E,FEE2E,OLE e2e
+  class AKW,OPW site
+  class OLF,OLB,OLC product
+  class OLFE2E,OLBE2E e2e
 ```
 
 **Legend**:
 
-- Blue: Specs / E2E tests
 - Green: Libraries
 - Orange: CLI tools
 - Purple: Web sites
-- Brown: Demo backends
-- Gray: Demo frontends
+- Brown: OrganicLever product apps
+- Blue: E2E tests
 
 ## Shared Infrastructure Projects
-
-These projects are dependencies of many other projects.
-
-### a-demo-contracts
-
-**Location**: `specs/apps/a-demo/contracts/`
-
-The OpenAPI 3.1 specification consumed by all demo apps for type generation.
-
-- **Dependents**: All 11 `a-demo-be-*` backends + all 3 `a-demo-fe-*` frontends + 2 E2E suites + 2 codegen libs (18 total)
-- **Mechanism**: `implicitDependencies` + `codegen.dependsOn: ["a-demo-contracts:bundle"]`
-- **Spec input**: `{workspaceRoot}/specs/apps/a-demo/contracts/generated/openapi-bundled.yaml`
 
 ### rhino-cli
 
@@ -238,10 +129,9 @@ The OpenAPI 3.1 specification consumed by all demo apps for type generation.
 
 Repository management CLI used by most projects for coverage validation
 (`test-coverage validate`), spec coverage (`spec-coverage validate`),
-contract post-processing (`contracts java-clean-imports`, `contracts dart-scaffold`),
-and annotation validation (`java validate-annotations`).
+contract post-processing, and annotation validation (`java validate-annotations`).
 
-- **Dependents**: 22 projects (all demo apps, CLI tools, libs, organiclever-fe)
+- **Dependents**: CLI tools, libs, content platforms, organiclever-fe
 - **Mechanism**: `implicitDependencies`
 - **Own dependency**: `golang-commons`
 - **Note**: `golang-commons` does NOT depend on `rhino-cli` to avoid a circular
@@ -259,70 +149,22 @@ Shared Go utilities (time formatting, test helpers, output capture).
 
 ## Project Dependency Table
 
-### Demo Backends
-
-All demo backends share the same dependency pattern.
-
-| Project                     | Dependencies                                                                        | Spec Inputs                 |
-| --------------------------- | ----------------------------------------------------------------------------------- | --------------------------- |
-| a-demo-be-clojure-pedestal  | clojure-openapi-codegen, a-demo-contracts, rhino-cli                                | contracts/\*, be/gherkin/\* |
-| a-demo-be-csharp-aspnetcore | a-demo-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
-| a-demo-be-elixir-phoenix    | a-demo-contracts, elixir-cabbage, elixir-gherkin, elixir-openapi-codegen, rhino-cli | contracts/\*, be/gherkin/\* |
-| a-demo-be-fsharp-giraffe    | a-demo-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
-| a-demo-be-golang-gin        | a-demo-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
-| a-demo-be-java-springboot   | a-demo-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
-| a-demo-be-java-vertx        | a-demo-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
-| a-demo-be-kotlin-ktor       | a-demo-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
-| a-demo-be-python-fastapi    | a-demo-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
-| a-demo-be-rust-axum         | a-demo-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
-| a-demo-be-ts-effect         | a-demo-contracts, rhino-cli                                                         | contracts/\*, be/gherkin/\* |
-
-**Spec input paths**:
-
-- `contracts/*` = `{workspaceRoot}/specs/apps/a-demo/contracts/generated/openapi-bundled.yaml` (codegen)
-- `be/gherkin/*` = `{workspaceRoot}/specs/apps/a-demo/be/gherkin/**/*.feature` (test:unit, test:quick)
-
-### Demo Frontends
-
-| Project                     | Dependencies                | Spec Inputs                 |
-| --------------------------- | --------------------------- | --------------------------- |
-| a-demo-fe-dart-flutterweb   | a-demo-contracts, rhino-cli | contracts/\*, fe/gherkin/\* |
-| a-demo-fe-ts-nextjs         | a-demo-contracts, rhino-cli | contracts/\*, fe/gherkin/\* |
-| a-demo-fe-ts-tanstack-start | a-demo-contracts, rhino-cli | contracts/\*, fe/gherkin/\* |
-
-**Spec input paths**:
-
-- `contracts/*` = `{workspaceRoot}/specs/apps/a-demo/contracts/generated/openapi-bundled.yaml` (codegen)
-- `fe/gherkin/*` = `{workspaceRoot}/specs/apps/a-demo/fe/gherkin/**/*.feature` (test:unit, test:quick)
-
-### E2E Test Projects
-
-| Project             | Dependencies                                   | Spec Inputs                                |
-| ------------------- | ---------------------------------------------- | ------------------------------------------ |
-| a-demo-be-e2e       | all 11 a-demo-be-\* backends, a-demo-contracts | be/gherkin/\* (typecheck, test:quick)      |
-| a-demo-fe-e2e       | all 3 a-demo-fe-\* frontends, a-demo-contracts | fe/gherkin/\* (typecheck, test:quick)      |
-| organiclever-fe-e2e | organiclever-fe                                | organiclever-fe/\* (typecheck, test:quick) |
-
-E2E projects use `bddgen` to generate TypeScript from `.feature` files in
-`test:quick` and `typecheck`. Gherkin spec inputs ensure cache invalidation
-when feature files change.
-
-### Hugo Sites
+### Content Platforms
 
 | Project         | Dependencies    | Spec Inputs |
 | --------------- | --------------- | ----------- |
+| ayokoding-web   | ayokoding-cli   | (none)      |
 | oseplatform-web | oseplatform-cli | (none)      |
 
-Hugo sites depend on their CLI tools for content automation (link checking).
-The CLI tools are built via `dependsOn` in `links:check` and `test:quick` targets.
+### OrganicLever
 
-### Next.js Content Platforms
-
-| Project       | Dependencies  | Spec Inputs |
-| ------------- | ------------- | ----------- |
-| ayokoding-web | ayokoding-cli | (none)      |
-
-ayokoding-web depends on ayokoding-cli for link validation.
+| Project                | Dependencies                      | Spec Inputs                                |
+| ---------------------- | --------------------------------- | ------------------------------------------ |
+| organiclever-contracts | (none)                            | (self — project root is spec dir)          |
+| organiclever-fe        | rhino-cli, organiclever-contracts | organiclever-fe/\* (test:integration)      |
+| organiclever-be        | organiclever-contracts            | organiclever-be/\* (test:integration)      |
+| organiclever-fe-e2e    | organiclever-fe                   | organiclever-fe/\* (typecheck, test:quick) |
+| organiclever-be-e2e    | organiclever-be                   | organiclever-be/\* (typecheck, test:quick) |
 
 ### CLI Tools
 
@@ -332,45 +174,27 @@ ayokoding-web depends on ayokoding-cli for link validation.
 | oseplatform-cli | golang-commons, hugo-commons, rhino-cli | oseplatform-cli/\* (test:integration) |
 | rhino-cli       | golang-commons                          | rhino-cli/\* (test:integration)       |
 
-### OrganicLever
-
-| Project         | Dependencies | Spec Inputs                           |
-| --------------- | ------------ | ------------------------------------- |
-| organiclever-fe | rhino-cli    | organiclever-fe/\* (test:integration) |
-
 ### Libraries
 
-| Project                 | Dependencies                | Spec Inputs                          |
-| ----------------------- | --------------------------- | ------------------------------------ |
-| golang-commons          | (none)                      | golang-commons/\* (test:integration) |
-| hugo-commons            | golang-commons, rhino-cli   | hugo-commons/\* (test:integration)   |
-| elixir-gherkin          | rhino-cli                   | (none)                               |
-| elixir-cabbage          | elixir-gherkin, rhino-cli   | (none)                               |
-| elixir-openapi-codegen  | a-demo-contracts, rhino-cli | (none)                               |
-| clojure-openapi-codegen | a-demo-contracts, rhino-cli | (none)                               |
-
-### Specs
-
-| Project          | Dependencies | Spec Inputs                                 |
-| ---------------- | ------------ | ------------------------------------------- |
-| a-demo-contracts | (none)       | (self — project root is the spec directory) |
+| Project        | Dependencies              | Spec Inputs                          |
+| -------------- | ------------------------- | ------------------------------------ |
+| golang-commons | (none)                    | golang-commons/\* (test:integration) |
+| hugo-commons   | golang-commons, rhino-cli | hugo-commons/\* (test:integration)   |
 
 ## Spec Directory Mapping
 
 All Gherkin specs and API contracts live under `specs/` and are consumed via
 `{workspaceRoot}` inputs.
 
-| Spec Directory                  | Consumed By                          | Targets                                 |
-| ------------------------------- | ------------------------------------ | --------------------------------------- |
-| `specs/apps/a-demo/contracts/`  | all 14 demo apps                     | codegen                                 |
-| `specs/apps/a-demo/be/gherkin/` | 11 demo backends + a-demo-be-e2e     | test:unit, test:quick, typecheck        |
-| `specs/apps/a-demo/fe/gherkin/` | 3 demo frontends + a-demo-fe-e2e     | test:unit, test:quick, typecheck        |
-| `specs/apps/organiclever-fe/`   | organiclever-fe, organiclever-fe-e2e | test:integration, typecheck, test:quick |
-| `specs/apps/rhino/`             | rhino-cli                            | test:integration                        |
-| `specs/apps/ayokoding/`         | ayokoding-cli, ayokoding-web         | test:integration                        |
-| `specs/apps/oseplatform/`       | oseplatform-cli, oseplatform-web     | test:integration                        |
-| `specs/libs/golang-commons/`    | golang-commons                       | test:integration                        |
-| `specs/libs/hugo-commons/`      | hugo-commons                         | test:integration                        |
+| Spec Directory                       | Consumed By                          | Targets                                 |
+| ------------------------------------ | ------------------------------------ | --------------------------------------- |
+| `specs/apps/organiclever/contracts/` | organiclever-fe, organiclever-be     | codegen                                 |
+| `specs/apps/organiclever-fe/`        | organiclever-fe, organiclever-fe-e2e | test:integration, typecheck, test:quick |
+| `specs/apps/rhino/`                  | rhino-cli                            | test:integration                        |
+| `specs/apps/ayokoding/`              | ayokoding-cli, ayokoding-web         | test:integration                        |
+| `specs/apps/oseplatform/`            | oseplatform-cli, oseplatform-web     | test:integration                        |
+| `specs/libs/golang-commons/`         | golang-commons                       | test:integration                        |
+| `specs/libs/hugo-commons/`           | hugo-commons                         | test:integration                        |
 
 ## Design Decisions
 
@@ -381,21 +205,6 @@ validation, but declaring this dependency would create a circular dependency:
 `golang-commons -> rhino-cli -> golang-commons`. The risk is minimal because
 `rhino-cli` coverage algorithm changes are rare and are caught by the main CI
 workflow which runs `--all` projects.
-
-### Why contracts use `implicitDependencies` instead of just `dependsOn`
-
-Task-level `dependsOn: ["a-demo-contracts:bundle"]` controls execution order
-(codegen runs after bundle), but does NOT make the project appear in
-`nx affected` when the OpenAPI spec changes. Adding `a-demo-contracts` to
-`implicitDependencies` ensures that spec changes trigger re-testing of all
-consuming apps.
-
-### Why E2E projects need spec inputs
-
-E2E projects (`a-demo-be-e2e`, `a-demo-fe-e2e`, `organiclever-fe-e2e`) use
-`bddgen` to generate TypeScript from `.feature` files in their `test:quick`
-and `typecheck` targets. Without spec inputs, feature file changes would not
-invalidate the cache, causing stale generated code.
 
 ## Related Documentation
 

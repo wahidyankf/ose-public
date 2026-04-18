@@ -35,13 +35,13 @@ Technology stack summary, quality tools, and future architecture considerations 
 
 ### Backend
 
-**REST API** (Spring Boot):
+**REST API** (F#/Giraffe):
 
-- **Framework**: Spring Boot
-- **Language**: Java
-- **Build**: Maven
-- **Testing**: JaCoCo (>=90% coverage), MockMvc integration tests
-- **Applications**: a-demo-be-java-springboot
+- **Framework**: Giraffe
+- **Language**: F#
+- **Build**: .NET
+- **Testing**: AltCover (>=90% coverage)
+- **Applications**: organiclever-be
 
 ### CLI Tools
 

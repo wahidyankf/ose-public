@@ -150,16 +150,16 @@ Use this table when uncertain whether a change requires a spec update:
 
 ## Existing Patterns to Follow
 
-### demo/ specs
+### organiclever specs
 
-`specs/apps/a-demo/` serves all 11 backend implementations and 3 frontend implementations from a single set of shared specs. This demonstrates the pattern at scale:
+`specs/apps/organiclever/` serves both the backend (`organiclever-be`) and frontend (`organiclever-fe`) from a shared set of specs:
 
-- `specs/apps/a-demo/c4/` — C4 diagrams for the demo application architecture
-- `specs/apps/a-demo/be/gherkin/` — Shared Gherkin scenarios consumed by all backends at unit, integration, and E2E levels
-- `specs/apps/a-demo/fe/gherkin/` — Shared Gherkin scenarios consumed by frontend implementations
-- `specs/apps/a-demo/contracts/` — OpenAPI 3.1 contract spec that all backends and frontends implement
+- `specs/apps/organiclever/c4/` — C4 diagrams for the OrganicLever application architecture
+- `specs/apps/organiclever-be/gherkin/` — Shared Gherkin scenarios consumed by the backend at unit, integration, and E2E levels
+- `specs/apps/organiclever-fe/gherkin/` — Shared Gherkin scenarios consumed by the frontend
+- `specs/apps/organiclever/contracts/` — OpenAPI 3.1 contract spec that both backend and frontend implement
 
-When a new endpoint is added to the OpenAPI spec in `a-demo-contracts`, both the corresponding Gherkin scenarios and the C4 component diagram must be updated to reflect the new behavior and component.
+When a new endpoint is added to the OpenAPI spec in `organiclever-contracts`, both the corresponding Gherkin scenarios and the C4 component diagram must be updated to reflect the new behavior and component.
 
 ### ayokoding-web specs
 
@@ -184,21 +184,21 @@ See [BDD Spec-to-Test Mapping](../infra/bdd-spec-test-mapping.md) for the full C
 
 ### PASS: Adding an endpoint with synchronized specs
 
-A developer adds a `GET /api/products/:id` endpoint to `a-demo-be-golang-gin`.
+A developer adds a `GET /api/products/:id` endpoint to `organiclever-be`.
 
 They:
 
-1. Update `specs/apps/a-demo/contracts/` (OpenAPI spec) with the new endpoint definition
-2. Run `nx run a-demo-contracts:codegen` and related codegen targets
-3. Add a Gherkin scenario to `specs/apps/a-demo/be/gherkin/products/get-product.feature`
-4. Update the C4 component diagram in `specs/apps/a-demo/c4/` if the endpoint belongs to a new component
-5. Implement the endpoint in `apps/a-demo-be-golang-gin/`
+1. Update `specs/apps/organiclever/contracts/` (OpenAPI spec) with the new endpoint definition
+2. Run `nx run organiclever-contracts:codegen` and related codegen targets
+3. Add a Gherkin scenario to `specs/apps/organiclever-be/gherkin/products/get-product.feature`
+4. Update the C4 component diagram in `specs/apps/organiclever/c4/` if the endpoint belongs to a new component
+5. Implement the endpoint in `apps/organiclever-be/`
 
 All changes are in a single commit or PR.
 
 ### FAIL: Adding an endpoint without updating specs
 
-A developer adds `GET /api/products/:id` to `apps/a-demo-be-golang-gin/` but does not update the OpenAPI contract, Gherkin feature files, or C4 diagrams.
+A developer adds `GET /api/products/:id` to `apps/organiclever-be/` but does not update the OpenAPI contract, Gherkin feature files, or C4 diagrams.
 
 The `codegen` target dependency fails at `typecheck` because the generated types are stale. Even if `codegen` is run, the missing Gherkin scenario means the behavior is unspecified, and the C4 diagram no longer reflects what the system does.
 
@@ -206,15 +206,15 @@ This is a violation of the sync convention.
 
 ### PASS: Removing an app with synchronized cleanup
 
-The `apps/a-demo-be-clojure-pedestal/` app is removed from the monorepo.
+An app is removed from the monorepo.
 
 The developer also:
 
-1. Removes any Clojure-specific references from `specs/apps/a-demo/be/README.md`
-2. Updates the root `specs/README.md` if it listed the backend explicitly
-3. Verifies no Gherkin scenarios reference Clojure-specific step definitions (shared scenarios remain intact)
+1. Removes any app-specific references from the relevant `specs/apps/<app-name>/README.md`
+2. Updates the root `specs/README.md` if it listed the app explicitly
+3. Verifies no Gherkin scenarios reference app-specific step definitions
 
-The C4 diagram in `specs/apps/a-demo/c4/` is updated to remove the Clojure container if it was represented separately.
+The C4 diagram is updated to remove the container if it was represented separately.
 
 ### FAIL: Renaming an app without updating specs
 
@@ -253,8 +253,8 @@ It does not apply to:
 ## Tools and Automation
 
 - **`rhino-cli spec-coverage validate`**: Enforces spec-to-test mapping for CLI apps. Integrated into `test:quick`. Violations cause CI to fail.
-- **Nx cache inputs**: `test:unit` and `test:quick` targets for demo-be backends declare `specs/apps/a-demo/be/gherkin/**/*.feature` as inputs, so Nx invalidates cached results when Gherkin specs change.
-- **`a-demo-contracts` codegen target**: Generates types from the OpenAPI spec. Declared as a dependency of `typecheck` and `build`, so stale contracts are caught in CI before merge.
+- **Nx cache inputs**: `test:unit` and `test:quick` targets for API backends declare the project's Gherkin specs as inputs, so Nx invalidates cached results when Gherkin specs change.
+- **Contract codegen target**: Generates types from the OpenAPI spec. Declared as a dependency of `typecheck` and `build`, so stale contracts are caught in CI before merge.
 - **`repo-rules-checker`**: Validates that specs folders exist for apps that require them. Flags missing or misnamed spec folders.
 
 ## Related Documentation
@@ -263,4 +263,4 @@ It does not apply to:
 - [BDD Spec-to-Test Mapping](../infra/bdd-spec-test-mapping.md) - Mandatory 1:1 mapping for CLI apps; three-level consumption for demo-be backends
 - [Nx Target Standards](../infra/nx-targets.md) - Cache input declarations that include Gherkin specs
 - [specs/README.md](../../../specs/README.md) - Spec directory organization and per-app spec structure
-- [specs/apps/a-demo/be/README.md](../../../specs/apps/a-demo/be/README.md) - Demo-be shared spec structure and three-level consumption
+- [specs/README.md](../../../specs/README.md) - Spec directory organization and per-app spec structure

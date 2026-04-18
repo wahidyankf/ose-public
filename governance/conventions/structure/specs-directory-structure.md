@@ -23,7 +23,7 @@ The `specs/` directory contains all behavioral specifications (Gherkin feature f
 
 This convention implements the following core principles:
 
-- **[Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md)**: The directory structure communicates spec scope through path segments. Reading a path like `specs/apps/a-demo/be/gherkin/expenses/expense-management.feature` immediately reveals the project, layer, domain, and feature without any external metadata or configuration.
+- **[Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md)**: The directory structure communicates spec scope through path segments. Reading a path like `specs/apps/organiclever/be/gherkin/expenses/expense-management.feature` immediately reveals the project, layer, domain, and feature without any external metadata or configuration.
 
 - **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)**: CLI specs use a flat structure under `gherkin/` because CLI commands are independent operations that do not group into business domains. Adding domain subdirectories with one or two files each would create indirection without value.
 
@@ -73,7 +73,7 @@ specs/{scope}/{name}/{layer}/gherkin/{domain}/{feature}.feature
 Where:
 
 - **`{scope}`** = `apps` or `libs`
-- **`{name}`** = project name (e.g., `a-demo`, `ayokoding`, `oseplatform`, `rhino`, `organiclever`, `golang-commons`, `ts-ui`)
+- **`{name}`** = project name (e.g., `ayokoding`, `oseplatform`, `rhino`, `organiclever`, `golang-commons`, `ts-ui`)
 - **`{layer}`** = `be`, `fe`, `cli`, or `build-tools` (apps only; omitted for libs)
 - **`{domain}`** = business domain grouping folder (e.g., `expenses/`, `authentication/`, `health/`)
 - **`{feature}`** = feature file name describing the behavior
@@ -85,9 +85,9 @@ The rules for domain subdirectories vary by layer type:
 **BE and FE specs** ALWAYS use domain subdirectories under `gherkin/`. Each domain folder groups related feature files:
 
 ```
-specs/apps/a-demo/be/gherkin/expenses/expense-management.feature
-specs/apps/a-demo/be/gherkin/expenses/attachments.feature
-specs/apps/a-demo/be/gherkin/authentication/password-login.feature
+specs/apps/organiclever/be/gherkin/expenses/expense-management.feature
+specs/apps/organiclever/be/gherkin/expenses/attachments.feature
+specs/apps/organiclever/be/gherkin/authentication/password-login.feature
 specs/apps/ayokoding/fe/gherkin/accessibility/accessibility.feature
 specs/apps/organiclever/fe/gherkin/authentication/google-login.feature
 ```
@@ -179,8 +179,8 @@ specs/
 
 Not every project has all directories. The presence of `c4/`, `contracts/`, or specific layer directories depends on the project:
 
-- **`c4/`**: Present for multi-layer app groups (e.g., `a-demo`, `ayokoding`, `oseplatform`, `organiclever`)
-- **`contracts/`**: Present only for apps with OpenAPI contract specs (e.g., `a-demo`, `organiclever`)
+- **`c4/`**: Present for multi-layer app groups (e.g., `ayokoding`, `oseplatform`, `organiclever`)
+- **`contracts/`**: Present only for apps with OpenAPI contract specs (e.g., `organiclever`)
 - **Layer directories** (`be/`, `fe/`, `cli/`, `build-tools/`): Present only for layers that exist in the app group
 
 ## README Index Files

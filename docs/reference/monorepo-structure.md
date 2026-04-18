@@ -41,7 +41,7 @@ open-sharia-enterprise/
 │   └── k8s/                  # Kubernetes deployments
 ├── specs/                     # Gherkin acceptance specs and OpenAPI contracts
 │   ├── apps/                  # Per-app specs
-│   │   └── [domain]/         # e.g. a-demo/, organiclever/
+│   │   └── [domain]/         # e.g. organiclever/, rhino/
 │   │       ├── contracts/    # OpenAPI 3.1 contract spec
 │   │       ├── be/gherkin/   # Backend acceptance specs
 │   │       ├── fe/gherkin/   # Frontend acceptance specs
@@ -139,15 +139,15 @@ apps/organiclever-fe/
 └── README.md                  # App documentation
 ```
 
-### App Structure (Spring Boot Application)
+### App Structure (F#/Giraffe Application)
 
 ```
-apps/a-demo-be-java-springboot/
-├── src/                       # Source code (main + test)
-├── target/                    # Build output (gitignored)
+apps/organiclever-be/
+├── src/                       # Source code
+├── tests/                     # Test projects
 ├── Dockerfile                 # Production multi-stage build
 ├── .dockerignore              # Docker build context exclusions
-├── pom.xml                    # Maven configuration
+├── organiclever-be.fsproj     # F# project file
 ├── project.json               # Nx project configuration
 └── README.md                  # App documentation
 ```

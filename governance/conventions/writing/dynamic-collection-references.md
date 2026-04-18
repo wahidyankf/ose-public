@@ -156,16 +156,16 @@ If a count is needed anywhere, the index document for that collection is the sin
 
 **The authoritative sources for collection sizes**:
 
-| Collection       | Authoritative Index                      |
-| ---------------- | ---------------------------------------- |
-| AI Agents        | `.claude/agents/README.md`               |
-| Skills           | `.claude/skills/README.md`               |
-| Conventions      | `governance/conventions/README.md`       |
-| Principles       | `governance/principles/README.md`        |
-| Dev Practices    | `governance/development/README.md`       |
-| Workflows        | `governance/workflows/README.md`         |
-| BE Gherkin Specs | `specs/apps/a-demo/be/gherkin/README.md` |
-| FE Gherkin Specs | `specs/apps/a-demo/fe/gherkin/README.md` |
+| Collection       | Authoritative Index                            |
+| ---------------- | ---------------------------------------------- |
+| AI Agents        | `.claude/agents/README.md`                     |
+| Skills           | `.claude/skills/README.md`                     |
+| Conventions      | `governance/conventions/README.md`             |
+| Principles       | `governance/principles/README.md`              |
+| Dev Practices    | `governance/development/README.md`             |
+| Workflows        | `governance/workflows/README.md`               |
+| BE Gherkin Specs | `specs/apps/organiclever/be/gherkin/README.md` |
+| FE Gherkin Specs | `specs/apps/organiclever/fe/gherkin/README.md` |
 
 ## Examples
 

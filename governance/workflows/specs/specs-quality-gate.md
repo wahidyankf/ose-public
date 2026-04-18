@@ -5,7 +5,7 @@ termination: "Zero findings at the configured mode threshold on two consecutive 
 inputs:
   - name: folders
     type: file-list
-    description: "Explicit list of spec folders to validate (e.g., [specs/apps/a-demo/be, specs/apps/a-demo/fe]). Each folder and its subfolders are validated. Cross-folder consistency is checked between listed folders."
+    description: "Explicit list of spec folders to validate (e.g., [specs/apps/organiclever-be, specs/apps/organiclever-fe]). Each folder and its subfolders are validated. Cross-folder consistency is checked between listed folders."
     required: true
   - name: mode
     type: enum
@@ -53,7 +53,7 @@ fixes iteratively until all issues are resolved.
 
 **Key Design Principle**: This workflow only validates folders you explicitly list. It does not
 discover or scan the entire specs/ tree. Subfolders are included automatically — listing
-`specs/apps/a-demo/be` includes `specs/apps/a-demo/be/gherkin/`, `specs/apps/a-demo/c4/`, etc.
+`specs/apps/organiclever-be` includes `specs/apps/organiclever-be/gherkin/`, etc.
 When multiple folders are listed, cross-folder consistency is checked between them (contradictions,
 coverage gaps, terminology drift).
 
@@ -89,9 +89,9 @@ the preferred approach when these agents exist as defined subagent types.
 **How to Execute**:
 
 ```
-User: "Run specs validation for specs/apps/a-demo/be"
-User: "Run specs validation for specs/apps/a-demo/be and specs/apps/a-demo/fe in strict mode"
-User: "Run specs validation for specs/apps/a-demo/be, specs/apps/a-demo/fe, specs/apps/organiclever-be with max-iterations=5"
+User: "Run specs validation for specs/apps/organiclever-be"
+User: "Run specs validation for specs/apps/organiclever-be and specs/apps/organiclever-fe in strict mode"
+User: "Run specs validation for specs/apps/organiclever-be, specs/apps/organiclever-fe, specs/apps/ayokoding with max-iterations=5"
 ```
 
 The AI will:
@@ -106,7 +106,7 @@ The AI will:
 **Fallback (Manual Mode)**:
 
 ```
-User: "Run specs validation for specs/apps/a-demo/be in manual mode"
+User: "Run specs validation for specs/apps/organiclever-be in manual mode"
 ```
 
 The AI executes checker and fixer logic directly using Read/Write/Edit tools in the main
@@ -276,12 +276,12 @@ Report final status and summary.
 ### Single Folder (Normal Strictness)
 
 ```
-User: "Run specs validation for specs/apps/a-demo/be"
+User: "Run specs validation for specs/apps/organiclever-be"
 ```
 
 The AI will:
 
-- Validate `specs/apps/a-demo/be/` and all its subfolders
+- Validate `specs/apps/organiclever-be/` and all its subfolders
 - Fix CRITICAL and HIGH findings (missing READMEs, wrong counts, broken links)
 - Report MEDIUM/LOW findings without fixing them
 - Skip cross-folder consistency (only one folder listed)
@@ -289,13 +289,13 @@ The AI will:
 ### Multiple Folders — Cross-Folder Consistency
 
 ```
-User: "Run specs validation for specs/apps/a-demo/be and specs/apps/a-demo/fe"
+User: "Run specs validation for specs/apps/organiclever-be and specs/apps/organiclever-fe"
 ```
 
 The AI will:
 
 - Validate each folder independently (Categories 1-3, 5-7)
-- Check cross-folder consistency between demo-be and demo-fe (Category 4):
+- Check cross-folder consistency between backend and frontend specs (Category 4):
   contradictions, coverage gaps, terminology drift, C4 coherence
 - Fix CRITICAL and HIGH findings
 - Iterate until zero CRITICAL/HIGH findings
@@ -303,7 +303,7 @@ The AI will:
 ### Strict Mode After Refactor
 
 ```
-User: "Run specs validation for specs/apps/a-demo/be, specs/apps/a-demo/fe in strict mode"
+User: "Run specs validation for specs/apps/organiclever-be, specs/apps/organiclever-fe in strict mode"
 ```
 
 The AI will:
@@ -315,7 +315,7 @@ The AI will:
 ### Comprehensive Audit (OCD Mode with Bounds)
 
 ```
-User: "Run specs validation for specs/apps/a-demo/be, specs/apps/a-demo/fe, specs/apps/organiclever-be in ocd mode with max-iterations=10"
+User: "Run specs validation for specs/apps/organiclever-be, specs/apps/organiclever-fe, specs/apps/ayokoding in ocd mode with max-iterations=10"
 ```
 
 The AI will:
@@ -327,12 +327,12 @@ The AI will:
 
 ## Iteration Example
 
-Typical execution flow (folders: `[specs/apps/a-demo/be, specs/apps/a-demo/fe]`):
+Typical execution flow (folders: `[specs/apps/organiclever-be, specs/apps/organiclever-fe]`):
 
 ```
 Iteration 1:
-  Check demo-be → 4 findings (1 CRITICAL, 2 HIGH, 1 MEDIUM)
-  Check demo-fe → 3 findings (0 CRITICAL, 2 HIGH, 1 LOW)
+  Check organiclever-be → 4 findings (1 CRITICAL, 2 HIGH, 1 MEDIUM)
+  Check organiclever-fe → 3 findings (0 CRITICAL, 2 HIGH, 1 LOW)
   Cross-folder check → 5 findings (0 CRITICAL, 3 HIGH, 1 MEDIUM, 1 LOW)
   Total: 12 findings (1 CRITICAL, 7 HIGH, 2 MEDIUM, 2 LOW)
   [normal mode] Fix 8 (1 CRITICAL + 7 HIGH)

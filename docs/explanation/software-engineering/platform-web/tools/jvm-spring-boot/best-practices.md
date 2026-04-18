@@ -1032,7 +1032,7 @@ public class UserService {
 
 ```bash
 # Via Nx (preferred — wired into pre-push hook)
-nx typecheck a-demo-be-java-springboot
+nx typecheck [app-name]
 
 # Via Maven directly
 mvn compile -Pnullcheck

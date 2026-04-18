@@ -20,7 +20,7 @@ As of 2026-04-18, one related repository is actively tracked: [`ose-primer`](htt
 
 ## `ose-primer`
 
-`ose-primer` ([github.com/wahidyankf/ose-primer](https://github.com/wahidyankf/ose-primer)) is a public, MIT-licensed template repository derived from `ose-public`. It packages the repository scaffolding (governance layer, AI agents, skills, conventions, CI harness, `a-demo-*` polyglot showcase) into a reusable starting point for teams building their own Sharia-compliant enterprise product on top of the same platform conventions.
+`ose-primer` ([github.com/wahidyankf/ose-primer](https://github.com/wahidyankf/ose-primer)) is a public, MIT-licensed template repository derived from `ose-public`. It packages the repository scaffolding (governance layer, AI agents, skills, conventions, CI harness, polyglot showcase) into a reusable starting point for teams building their own Sharia-compliant enterprise product on top of the same platform conventions.
 
 ### Upstream / downstream relationship
 

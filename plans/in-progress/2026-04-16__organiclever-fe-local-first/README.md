@@ -66,11 +66,12 @@ Motivation:
 
 ## Plan Documents
 
-| Document                               | Purpose                                                                                                            |
-| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| [`requirements.md`](./requirements.md) | Functional requirements and Gherkin acceptance criteria covering landing page, BE status, and disabled routes.     |
-| [`tech-docs.md`](./tech-docs.md)       | Route tree, `/system/status/be` implementation sketch, test strategy, CI/Vercel impact, risks.                     |
-| [`delivery.md`](./delivery.md)         | Phase-by-phase checklist including local quality gates, Playwright MCP verification, CI monitoring, and close-out. |
+| Document                         | Purpose                                                                                                                              |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| [`brd.md`](./brd.md)             | Business Requirements Document — business goal, impact, affected roles, success metrics, business-scope non-goals and risks.         |
+| [`prd.md`](./prd.md)             | Product Requirements Document — personas, user stories, functional requirements (R1-R7), Gherkin acceptance criteria, product scope. |
+| [`tech-docs.md`](./tech-docs.md) | Route tree, `/system/status/be` implementation sketch, test strategy, CI/Vercel impact, risks.                                       |
+| [`delivery.md`](./delivery.md)   | Phase-by-phase checklist including local quality gates, Playwright MCP verification, CI monitoring, and close-out.                   |
 
 ## References
 

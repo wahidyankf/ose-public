@@ -1,7 +1,6 @@
 # Technical Documentation — OrganicLever FE Local-First Mode
 
-See [`README.md`](./README.md) for overview and scope. Requirements and acceptance criteria live in
-[`requirements.md`](./requirements.md). Execution checklist lives in [`delivery.md`](./delivery.md).
+See [`README.md`](./README.md) for overview and scope. Business requirements live in [`brd.md`](./brd.md); product requirements and Gherkin acceptance criteria live in [`prd.md`](./prd.md). Execution checklist lives in [`delivery.md`](./delivery.md).
 
 ## Route Tree After This Plan
 

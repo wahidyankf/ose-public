@@ -1,8 +1,6 @@
 # Delivery — OrganicLever FE Local-First Mode
 
-See [`README.md`](./README.md) for overview, [`requirements.md`](./requirements.md) for R1–R7 and
-acceptance criteria, and [`tech-docs.md`](./tech-docs.md) for architecture and implementation
-details.
+See [`README.md`](./README.md) for overview, [`brd.md`](./brd.md) for business intent, [`prd.md`](./prd.md) for R1–R7 and Gherkin acceptance criteria, and [`tech-docs.md`](./tech-docs.md) for architecture and implementation details.
 
 ## Phase 0 — Environment Setup
 

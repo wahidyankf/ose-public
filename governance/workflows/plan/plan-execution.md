@@ -45,15 +45,11 @@ outputs:
 
 ## Execution Mode
 
-**Preferred Mode**: Agent Delegation — invoke `plan-executor` and `plan-execution-checker`
-via the Agent tool with `subagent_type`
-(see [Workflow Execution Modes Convention](../meta/execution-modes.md)).
+**Direct Orchestration** — the calling context (the top-level assistant session that received the "Execute plan …" request) is the orchestrator. It reads this workflow, parses the plan's delivery checklist, manages the live Task list via `TaskCreate` / `TaskUpdate`, performs the Atomic Sync Ritual against `delivery.md`, and delegates each checklist item to the appropriate specialized agent via the Agent tool (see Agent Selection below).
 
-**Fallback Mode**: Manual Orchestration — execute workflow logic directly using
-Read/Write/Edit tools when Agent Delegation is unavailable.
+The calling context invokes `plan-execution-checker` as an Agent-delegated subagent for independent validation (Step 3 and Step 6 below). Validation must run in an isolated context so the checker's judgment is not biased by the orchestrator's execution memory.
 
-The Agent tool runs subagents that persist file changes to the actual filesystem, making it
-the preferred approach when these agents exist as defined subagent types.
+There is no dedicated `plan-executor` subagent. Executor logic lives in this workflow document; the calling context follows it directly. This keeps the live Task list visible to the user in real time (a subagent's tasks are isolated to its own context) and eliminates a redundant router hop.
 
 **How to Execute**:
 
@@ -61,65 +57,39 @@ the preferred approach when these agents exist as defined subagent types.
 User: "Execute plan plans/in-progress/2025-01-15__new-feature/plan.md"
 ```
 
-The AI will:
+The calling context will:
 
 1. Read the delivery checklist from the plan's `delivery.md` to understand all items
-2. Create granular tasks using `TaskCreate` for each delivery checklist item
-3. Analyze each item and delegate to the appropriate specialized agent
-4. Tick completed checklist items (`- [ ]` → `- [x]`) in `delivery.md` progressively
+2. Create granular tasks using `TaskCreate` — one per remaining checkbox (including nested sub-bullets)
+3. For each item: mark `in_progress`, analyze it, delegate to the appropriate specialized agent (or execute directly for trivial edits), verify the result
+4. Perform the Atomic Sync Ritual after each item — tick `- [ ]` → `- [x]` in `delivery.md`, add implementation notes, `TaskUpdate completed`
 5. Invoke `plan-execution-checker` via the Agent tool to validate the implementation
 6. Iterate execution and validation until zero findings achieved
 7. Move plan folder to plans/done/ using git mv
 8. Show git status with modified files
 9. Wait for user commit approval
 
-**Fallback (Manual Mode)**:
-
-```
-User: "Execute plan plans/in-progress/2025-01-15__new-feature/plan.md in manual mode"
-```
-
-The AI executes plan-executor and plan-execution-checker logic directly using Read/Write/Edit
-tools in the main context — use this when agent delegation is unavailable.
-
 ## Orchestration Model
 
-`plan-executor` acts as an **orchestrator**, not an implementer. It reads the delivery
-checklist, determines which specialized agent is best suited for each item, delegates
-implementation to that agent, verifies completion, and ticks the checkbox.
+The **calling context** (top-level assistant session) acts as the orchestrator, following this workflow as its procedure. It reads the delivery checklist, determines which specialized agent is best suited for each item, delegates implementation to that agent via the Agent tool, verifies completion, and performs the Atomic Sync Ritual.
 
-The executor never implements code or documentation directly. It routes each item to the
-domain expert agent and collects results.
+The orchestrator never implements code or documentation in bulk by itself — it routes each non-trivial item to the domain expert agent and collects results. Trivial text edits (e.g., a single-line update to a governance doc) MAY be executed directly via `Edit` without delegating, when delegation would add overhead without adding value.
 
 ### Agent Selection
 
-The executor selects the best agent for each delivery checklist item using these rules, applied
-in priority order:
+The orchestrator selects the best agent for each delivery checklist item using these rules, applied in priority order:
 
-1. **Match by project/app name**: If the checklist item names a specific app (e.g.,
-   `a-demo-be-java-vertx`), use the agent for that app's language (e.g., `swe-java-dev`).
-   Refer to [CLAUDE.md](../../../CLAUDE.md) for the full app list and their tech stacks.
+1. **Match by project/app name**: If the checklist item names a specific app (e.g., `a-demo-be-java-vertx`), use the agent for that app's language (e.g., `swe-java-dev`). Refer to [CLAUDE.md](../../../CLAUDE.md) for the full app list and their tech stacks.
 
-2. **Match by file extension**: If the item references files with a recognizable extension (`.ts`,
-   `.java`, `.py`, `.go`, `.kt`, `.fs`, `.cs`, `.clj`, `.ex`, `.rs`, `.dart`), use the
-   corresponding `swe-{language}-dev` agent.
+2. **Match by file extension**: If the item references files with a recognizable extension (`.ts`, `.java`, `.py`, `.go`, `.kt`, `.fs`, `.cs`, `.clj`, `.ex`, `.rs`, `.dart`), use the corresponding `swe-{language}-dev` agent.
 
-3. **Match by content type**: If the item involves documentation (`docs/`, `README.md`),
-   governance (`governance/`), specs (`specs/`), or E2E tests (`*-e2e`, Playwright), use the
-   appropriate content agent (`docs-maker`, `repo-rules-maker`, `readme-maker`,
-   `specs-maker`, `swe-e2e-dev`).
+3. **Match by content type**: If the item involves documentation (`docs/`, `README.md`), governance (`governance/`), specs (`specs/`), or E2E tests (`*-e2e`, Playwright), use the appropriate content agent (`docs-maker`, `repo-rules-maker`, `readme-maker`, `specs-maker`, `swe-e2e-dev`).
 
-4. **Match by framework/tool keywords**: If the item mentions a framework (Spring Boot, Ktor,
-   FastAPI, Gin, Phoenix, Giraffe, Axum, Pedestal, Hugo, Next.js, Flutter), use the agent for
-   that framework's language.
+4. **Match by framework/tool keywords**: If the item mentions a framework (Spring Boot, Ktor, FastAPI, Gin, Phoenix, Giraffe, Axum, Pedestal, Hugo, Next.js, Flutter), use the agent for that framework's language.
 
-5. **Fallback**: If none of the above match, use `plan-executor` (general-purpose) for the item.
+5. **Fallback (direct execution)**: If no specialized agent cleanly matches — e.g., a one-line edit to a governance doc, a grep or file-move operation, an `npm` command — the orchestrator executes the item directly via `Edit` / `Bash` without delegating. Direct execution is only for trivial, context-bounded work; substantive changes always route through an agent.
 
-**The above are heuristics, not a closed list.** As new agents or apps are added to the
-repository, the executor adapts automatically by reading the available agent list from
-`.claude/agents/` and matching based on the agent's description and the checklist item's content.
-The executor should always check what agents are currently available rather than relying on a
-static table.
+**The above are heuristics, not a closed list.** As new agents or apps are added to the repository, the orchestrator adapts automatically by reading the available agent list from `.claude/agents/` and matching based on the agent's description and the checklist item's content. The orchestrator should always check what agents are currently available rather than relying on a static table.
 
 **Multi-concern items**: When a delivery checklist item spans multiple task types (e.g., a
 TypeScript backend change that also requires a README update), delegate each concern separately
@@ -127,7 +97,7 @@ to its appropriate agent. Execute the implementation agent first, then the docum
 
 ## Task-Checklist Synchronization
 
-The live Task list (`TaskCreate` / `TaskUpdate`) and the on-disk delivery checklist (`delivery.md`) are two views of the same state. They MUST agree at every moment of execution. Disagreement is a bug the executor MUST detect and fix immediately.
+The live Task list (`TaskCreate` / `TaskUpdate`) and the on-disk delivery checklist (`delivery.md`) are two views of the same state. They MUST agree at every moment of execution. Disagreement is a bug the orchestrator MUST detect and fix immediately.
 
 - **Task list** — ephemeral, in-conversation. Its role is **real-time progress visibility for the user**. A reader watching the Task list is watching execution happen.
 - **Delivery checklist** — persistent, on-disk. Its role is **survival across conversations**. It is the source of truth for plan completion state.
@@ -225,7 +195,7 @@ Before implementing anything, ensure the development environment is ready.
 
 Execute all delivery checklist items sequentially, delegating each to the appropriate specialized agent.
 
-**Agent**: `plan-executor` (as orchestrator)
+**Orchestrator**: calling context (top-level assistant session)
 
 **Execution loop** — single-item, strictly sequential. Rule 1 (granularity) and Rule 4 (atomic sync ritual) are enforced in this loop:
 
@@ -390,9 +360,9 @@ Analyze validation report to determine if further execution is needed.
 
 Address findings and continue implementation by delegating to appropriate specialized agents.
 
-**Agent**: `plan-executor` (as orchestrator)
+**Orchestrator**: calling context (top-level assistant session)
 
-- **Args**: `plan: {input.plan-path}, focus: {findings-from-latest-report}`
+- **Inputs**: `{plan: {input.plan-path}, focus: {findings-from-latest-report}}`
 - **Output**: `{additional-work-completed}` — More checklist items completed, findings addressed
 - **Condition**: Findings exist from step 4 or step 7
 - **Depends on**: Step 4 completion (first iteration) or Step 7 completion (subsequent iterations)
@@ -501,7 +471,7 @@ Report final status, archive plan if successful, and update all related READMEs.
 
 ## Task Management Rules
 
-The executor MUST follow these task management rules throughout execution:
+The orchestrator MUST follow these task management rules throughout execution:
 
 ### Create Tasks Before Starting
 
@@ -523,7 +493,7 @@ reflect actual completion state at all times.
 
 ### Never Skip Items
 
-Every delivery checklist item must be executed in order. The executor may not skip an item
+Every delivery checklist item must be executed in order. The orchestrator may not skip an item
 because it seems redundant or out of scope. If an item is genuinely irrelevant, mark it
 with a note explaining why it was skipped rather than silently omitting it.
 
@@ -531,7 +501,7 @@ with a note explaining why it was skipped rather than silently omitting it.
 
 - PASS: **Success** (`pass`): Zero findings of ANY confidence level (HIGH, MEDIUM, MINOR) in final validation, all deliverables complete, plan archived to `plans/done/`
 - **Partial** (`partial`): Findings remain after max-iterations cycles, plan requires manual intervention
-- FAIL: **Failure** (`fail`): Executor or checker encountered technical errors preventing completion
+- FAIL: **Failure** (`fail`): Orchestrator or checker encountered technical errors preventing completion
 
 ## Example Usage
 
@@ -541,12 +511,12 @@ with a note explaining why it was skipped rather than silently omitting it.
 User: "Execute plan plans/in-progress/2025-01-15__new-feature/plan.md"
 ```
 
-The AI will invoke specialized agents via the Agent tool (default max 10 iterations):
+The calling context orchestrates directly and invokes specialized agents via the Agent tool (default max 10 iterations):
 
-- Read delivery checklist and create tasks (`plan-executor` as orchestrator)
+- Read delivery checklist and materialize 1:1 Task list in the calling context
 - Delegate each item to the appropriate specialized agent (e.g., `swe-typescript-dev`)
-- Tick checkboxes progressively as each item completes
-- Validate implementation (`plan-execution-checker` subagent)
+- Tick checkboxes progressively as each item completes (Atomic Sync Ritual)
+- Validate implementation by invoking `plan-execution-checker` subagent
 - Iterate until zero findings and all deliverables complete
 - Move plan folder to plans/done/ on success
 
@@ -692,8 +662,8 @@ Track across executions:
 
 ## Notes
 
-- **Orchestrator model**: plan-executor coordinates specialized agents, never implements directly
-- **Semi-automated**: plan-executor may request user input for critical decisions, but execution continues autonomously otherwise
+- **Orchestrator model**: calling context (top-level assistant session) coordinates specialized agents per the rules in this workflow, never implementing substantive changes directly
+- **Semi-automated**: calling context may request user input for critical decisions, but execution continues autonomously otherwise
 - **Idempotent**: Safe to re-run on partially completed plans, won't duplicate work
 - **Progressive**: Each iteration builds on previous work, continuously updating checklists and task status
 - **Observable**: Generates validation reports for every validation cycle; task status visible in real time
@@ -703,7 +673,7 @@ Track across executions:
 
 **Key Differences from plan-quality-gate**:
 
-1. **Execution-focused**: Uses plan-executor (orchestrates specialized agents) instead of plan-fixer (fixes plan documents)
+1. **Execution-focused**: Orchestrated directly by the calling context (which delegates per-item work to specialized agents) instead of by `plan-fixer` (which edits plan documents)
 2. **End-to-end**: Covers full plan lifecycle from execution through validation to archival
 3. **Progressive delivery**: Continuously ticks delivery checklist items and updates task status throughout execution
 4. **Archival automation**: Moves completed plans to plans/done/ automatically

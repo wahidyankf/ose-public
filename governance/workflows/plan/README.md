@@ -4,7 +4,7 @@ Orchestrated workflows for project planning quality validation and systematic ex
 
 ## Purpose
 
-These workflows define **WHEN and HOW to validate and execute plans**, orchestrating plan-checker, plan-fixer, plan-executor, and plan-execution-checker agents in sequence to ensure plan quality and systematic implementation.
+These workflows define **WHEN and HOW to validate and execute plans**. The plan-quality-gate workflow orchestrates `plan-checker` and `plan-fixer` for authoring-time validation. The plan-execution workflow is orchestrated directly by the calling context (which delegates per-item work to specialized agents) and invokes `plan-execution-checker` for independent validation at the end.
 
 ## Scope
 
@@ -24,7 +24,7 @@ These workflows define **WHEN and HOW to validate and execute plans**, orchestra
 
 ## Workflows
 
-- [Plan Execution](./plan-execution.md) - Execute plan tasks systematically with validation and completion tracking using plan-executor and plan-execution-checker
+- [Plan Execution](./plan-execution.md) - Execute plan tasks systematically with validation and completion tracking; orchestrated directly by the calling context, validated by `plan-execution-checker`
 - [Plan Quality Gate](./plan-quality-gate.md) - Validate plan completeness and accuracy, apply fixes iteratively until ZERO findings using plan-checker and plan-fixer
 
 ## Related Documentation

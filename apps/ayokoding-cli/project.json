@@ -8,7 +8,7 @@
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "CGO_ENABLED=0 go build -o dist/ayokoding-cli",
+        "command": "CGO_ENABLED=0 go build -buildvcs=false -o dist/ayokoding-cli",
         "cwd": "apps/ayokoding-cli"
       },
       "outputs": ["{projectRoot}/dist"]

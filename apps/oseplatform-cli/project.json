@@ -7,7 +7,7 @@
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "CGO_ENABLED=0 go build -o dist/oseplatform-cli",
+        "command": "CGO_ENABLED=0 go build -buildvcs=false -o dist/oseplatform-cli",
         "cwd": "apps/oseplatform-cli"
       },
       "outputs": ["{projectRoot}/dist"]

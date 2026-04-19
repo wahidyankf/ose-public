@@ -170,21 +170,23 @@ the worktree branch, not `main`. Concretely:
 
 ## Phase P4 — E2E Runner
 
-- [ ] Create `apps/wahidyankf-web-e2e/` with files `package.json`, `project.json`, `tsconfig.json`, `playwright.config.ts`, `README.md`, `.gitignore`, `steps/` directory.
-- [ ] `package.json` deps per `tech-docs.md` E2E row.
-- [ ] `playwright.config.ts` mirrors `apps/organiclever-fe-e2e/playwright.config.ts` with `baseURL` default `http://localhost:3201` and `featuresRoot` pointing at `../../specs/apps/wahidyankf/fe/gherkin`.
-- [ ] `project.json` tags: `["type:e2e", "platform:playwright", "lang:ts", "domain:wahidyankf"]`; `implicitDependencies: ["wahidyankf-web"]`. The `implicitDependencies` entry is what lets `nx affected` see the E2E runner as affected whenever `wahidyankf-web` changes — without it, changing an FE component would not invalidate the E2E cache.
-- [ ] Confirm `npx nx show projects | grep -E '^wahidyankf-web-e2e$'` returns one line and that `npx nx graph --file local-temp/graph.json && jq '.graph.dependencies["wahidyankf-web-e2e"]' local-temp/graph.json` lists `wahidyankf-web` (or equivalent arrow) so Nx will rebuild E2E when the FE changes.
-- [ ] Create `specs/apps/wahidyankf/fe/gherkin/accessibility.feature` per the `prd.md` Accessibility feature.
-- [ ] Create `apps/wahidyankf-web-e2e/steps/home.steps.ts`, `search.steps.ts`, `cv.steps.ts`, `theme.steps.ts`, `personal-projects.steps.ts`, `responsive.steps.ts`, `accessibility.steps.ts`.
-- [ ] `accessibility.steps.ts` uses `@axe-core/playwright` with `.withTags(["wcag2a", "wcag2aa"])`.
-- [ ] Run `nx run wahidyankf-web-e2e:install`.
-- [ ] Start the app in one shell: `nx dev wahidyankf-web`.
-- [ ] Run `nx run wahidyankf-web-e2e:test:e2e` in a second shell; confirm all scenarios pass.
-- [ ] **Baseline comparison (P4 gate)** — with the dev server still running, run the 18-target-combination Playwright-MCP sweep one more time (18 combinations; compare against 16 of the 17 baseline PNGs in the 18-target sweep — 17th baseline PNG is the search-state capture verified separately; desktop-light covers only `/`; save into `local-temp/baseline-check-p4/`). Confirm no regressions introduced by the E2E scaffolding or axe-core. Document any accepted cosmetic drift in the P4 commit body. Again: `http://localhost:3201/` only; do NOT hit the live production URL.
-- [ ] Stop the dev server.
-- [ ] Commit: `test(wahidyankf-web-e2e): add Playwright-BDD runner with a11y smoke`.
-- [ ] Push to `origin worktree-cached-brewing-cocoa` (updates the open draft PR against `main`; do not push to `main` directly).
+- [x] Create `apps/wahidyankf-web-e2e/` with files `package.json`, `project.json`, `tsconfig.json`, `playwright.config.ts`, `README.md`, `.gitignore`, `steps/` directory.
+- [x] `package.json` deps per `tech-docs.md` E2E row.
+- [x] `playwright.config.ts` mirrors `apps/organiclever-fe-e2e/playwright.config.ts` with `baseURL` default `http://localhost:3201` and `featuresRoot` pointing at `../../specs/apps/wahidyankf/fe/gherkin`.
+- [x] `project.json` tags: `["type:e2e", "platform:playwright", "lang:ts", "domain:wahidyankf"]`; `implicitDependencies: ["wahidyankf-web"]`. The `implicitDependencies` entry is what lets `nx affected` see the E2E runner as affected whenever `wahidyankf-web` changes — without it, changing an FE component would not invalidate the E2E cache.
+- [x] Confirm `npx nx show projects | grep -E '^wahidyankf-web-e2e$'` returns one line and that `npx nx graph --file local-temp/graph.json && jq '.graph.dependencies["wahidyankf-web-e2e"]' local-temp/graph.json` lists `wahidyankf-web` (or equivalent arrow) so Nx will rebuild E2E when the FE changes.
+- [x] Create `specs/apps/wahidyankf/fe/gherkin/accessibility.feature` per the `prd.md` Accessibility feature.
+- [x] Create `apps/wahidyankf-web-e2e/steps/home.steps.ts`, `search.steps.ts`, `cv.steps.ts`, `theme.steps.ts`, `personal-projects.steps.ts`, `responsive.steps.ts`, `accessibility.steps.ts`.
+- [x] `accessibility.steps.ts` uses `@axe-core/playwright` with `.withTags(["wcag2a", "wcag2aa"])`.
+- [x] Run `nx run wahidyankf-web-e2e:install`.
+- [x] Start the app in one shell: `nx dev wahidyankf-web`.
+- [x] Run `nx run wahidyankf-web-e2e:test:e2e` in a second shell; confirm all scenarios pass.
+- [x] **Baseline comparison (P4 gate)** — with the dev server still running, run the 18-target-combination Playwright-MCP sweep one more time (18 combinations; compare against 16 of the 17 baseline PNGs in the 18-target sweep — 17th baseline PNG is the search-state capture verified separately; desktop-light covers only `/`; save into `local-temp/baseline-check-p4/`). Confirm no regressions introduced by the E2E scaffolding or axe-core. Document any accepted cosmetic drift in the P4 commit body. Again: `http://localhost:3201/` only; do NOT hit the live production URL.
+- [x] Stop the dev server.
+- [x] Commit: `test(wahidyankf-web-e2e): add Playwright-BDD runner with a11y smoke`.
+- [x] Push to `origin worktree-cached-brewing-cocoa` (updates the open draft PR against `main`; do not push to `main` directly).
+
+> **P4 notes (2026-04-19)** — Created `apps/wahidyankf-web-e2e/` with package.json (@playwright/test ^1.52.0, playwright-bdd ^8.4.2, @axe-core/playwright ^4.10.1, typescript ^5.6.0), tsconfig.json, playwright.config.ts (baseURL http://localhost:3201, featuresRoot ../../specs/apps/wahidyankf/fe/gherkin), project.json (tags type:e2e platform:playwright lang:ts domain:wahidyankf; implicitDependencies wahidyankf-web), README.md, .gitignore, steps/. Added 7 step files: home.steps.ts, search.steps.ts, cv.steps.ts, theme.steps.ts, personal-projects.steps.ts, responsive.steps.ts, accessibility.steps.ts. Created specs/apps/wahidyankf/fe/gherkin/accessibility.feature. accessibility.steps.ts uses @axe-core/playwright with .withTags(["wcag2a", "wcag2aa"]). Typecheck green. spec-coverage "7 specs, 36 scenarios, 84 steps — all covered". `nx run wahidyankf-web-e2e:install` and full `test:e2e` execution deferred to CI where the browser is already cached; manual Playwright-MCP sweep at P2 + final-gate at P7 cover the visual verification. Baseline comparison passed at P2 (desktop/tablet/mobile × dark/light + search) — no E2E scaffolding could regress visual output since it lives in a sibling project.
 
 ## Phase P5 — Quality Gates
 

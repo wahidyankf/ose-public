@@ -1,0 +1,67 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "wahidyankf-web-e2e",
+  "sourceRoot": "apps/wahidyankf-web-e2e/steps",
+  "projectType": "application",
+  "targets": {
+    "install": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx playwright install --with-deps chromium",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit",
+        "cwd": "{projectRoot}"
+      },
+      "inputs": ["default", "{workspaceRoot}/specs/apps/wahidyankf/fe/gherkin/**/*.feature"]
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx oxlint@latest .",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "test:quick": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["tsc --noEmit", "npx oxlint@latest ."],
+        "parallel": true,
+        "cwd": "{projectRoot}"
+      },
+      "inputs": ["default", "{workspaceRoot}/specs/apps/wahidyankf/fe/gherkin/**/*.feature"]
+    },
+    "test:e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx bddgen && npx playwright test",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "test:e2e:ui": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx bddgen && npx playwright test --ui",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "test:e2e:report": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx playwright show-report",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "spec-coverage": {
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate --shared-steps specs/apps/wahidyankf/fe/gherkin apps/wahidyankf-web-e2e",
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/wahidyankf/fe/gherkin/**/*.feature", "{projectRoot}/**/*.ts"]
+    }
+  },
+  "tags": ["type:e2e", "platform:playwright", "lang:ts", "domain:wahidyankf"],
+  "implicitDependencies": ["wahidyankf-web"]
+}

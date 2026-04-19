@@ -67,7 +67,8 @@ document links to primary sources. Structure and content are fully specified in
       _(2026-04-19 · Status: Done · "Model Capability Summary (Coding-Agents Lens)" table present)_
 - [x] **4.5** Run `npm run lint:md` — confirm zero errors on new file
       _(2026-04-19 · Status: Done · 0 errors)_
-- [ ] **4.6** Commit: `docs(reference): add ai-model-benchmarks reference with cited scores`
+- [x] **4.6** Commit: `docs(reference): add ai-model-benchmarks reference with cited scores`
+      _(2026-04-19 · Status: Done)_
 
 ---
 
@@ -93,14 +94,17 @@ all 70 agent descriptions.
 
 **Result**: opus-inherit 21→14 (−7), sonnet 42→48 (+6), haiku 7→8 (+1), total 70 unchanged.
 
-- [ ] **5.1** For each of the 8 agents in the change table above:
+- [x] **5.1** For each of the 8 agents in the change table above:
   - Update `model:` frontmatter field to the new value
   - Update Model Selection Justification block text to match new tier and cite the
     benchmark comparison from `docs/reference/ai-model-benchmarks.md` where relevant
   - Do NOT change color, tools, or any other frontmatter field
-- [ ] **5.2** Verify all 62 unchanged agents — spot-check 5 random ones to confirm their
+    _(2026-04-19 · Status: Done · 7 OMIT→SONNET + 1 SONNET→HAIKU with updated justifications)_
+- [x] **5.2** Verify all 62 unchanged agents — spot-check 5 random ones to confirm their
       Model Selection Justification blocks are present and consistent with their tier
-- [ ] **5.3** Run `npm run validate:claude` — expect zero errors
+      _(2026-04-19 · Status: Done · plan-maker/omit, swe-typescript-dev/omit, docs-checker/sonnet, ci-fixer/sonnet, apps-oseplatform-web-deployer/haiku — all consistent)_
+- [x] **5.3** Run `npm run validate:claude` — expect zero errors
+      _(2026-04-19 · Status: Done · 1029/1029 checks passed)_
 - [ ] **5.4** Commit: `fix(agents): right-size model tiers — 7 OMIT→SONNET, 1 SONNET→HAIKU`
 
 ---

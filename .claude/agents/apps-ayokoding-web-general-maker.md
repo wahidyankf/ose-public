@@ -2,7 +2,7 @@
 name: apps-ayokoding-web-general-maker
 description: Creates general ayokoding-web content (by-concept tutorials, guides, references). Ensures bilingual completeness and content quality compliance.
 tools: Read, Write, Edit, Glob, Grep, Bash
-model:
+model: sonnet
 color: blue
 skills:
   - docs-applying-content-quality
@@ -18,12 +18,13 @@ skills:
 - **Created**: 2025-12-20
 - **Last Updated**: 2026-04-04
 
-**Model Selection Justification**: This agent uses inherited `model: opus` (omit model field) because it requires:
+**Model Selection Justification**: This agent uses `model: sonnet` (Sonnet 4.6, 79.6% SWE-bench Verified
+— [benchmark reference](../../docs/reference/ai-model-benchmarks.md#claude-sonnet-46)) because its work
+follows defined template patterns, not open creative design:
 
-- Advanced reasoning to create quality general content (by-concept tutorials)
-- Sophisticated content generation for bilingual content
-- Deep understanding of educational content structure
-- Multi-dimensional content organization skills
+- Bilingual content follows a fixed template-pattern driven by skills
+- Diátaxis categories (tutorial/how-to/reference/explanation) are pre-defined
+- Sonnet 4.6 is fully sufficient for template-driven structured generation
 
 Create by-concept tutorials and general content for ayokoding-web.
 

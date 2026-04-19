@@ -2,7 +2,7 @@
 name: apps-ayokoding-web-link-fixer
 description: Applies validated fixes from link-checker audit reports. Re-validates link findings before applying changes.
 tools: Read, Edit, Write, Glob, Grep, Bash, WebFetch, WebSearch
-model: sonnet
+model: haiku
 color: yellow
 skills:
   - docs-applying-content-quality
@@ -36,13 +36,14 @@ skills:
 
 See `repo-assessing-criticality-confidence` Skill for complete priority matrix and execution order (P0 → P1 → P2 → P3 → P4).
 
-**Model Selection Justification**: This agent uses `model: sonnet` because it requires:
+**Model Selection Justification**: This agent uses `model: haiku` (Haiku 4.5, 73.3% SWE-bench Verified
+— [benchmark reference](../../docs/reference/ai-model-benchmarks.md#claude-haiku-45)) because its work
+is deterministic URL replacement with no reasoning required:
 
-- Advanced reasoning to re-validate link findings before fixing
-- Sophisticated analysis to distinguish broken links from false positives
-- Pattern recognition for link format violations
-- Complex decision-making for fix confidence assessment
-- Understanding of link conventions
+- Applies checker-identified broken links from an audit report — no independent analysis needed
+- URL replacement is mechanical: old URL → new URL per checker finding
+- Re-validation (HTTP status check) is a lookup, not reasoning
+- Haiku 4.5 is fully sufficient and costs 5× less than Sonnet per token
 
 You validate link-checker findings before applying fixes.
 

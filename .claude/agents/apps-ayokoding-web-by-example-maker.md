@@ -2,7 +2,7 @@
 name: apps-ayokoding-web-by-example-maker
 description: Creates By Example tutorial content for ayokoding-web with 75-85 heavily annotated code examples following five-part structure. Ensures bilingual content and quality compliance.
 tools: Read, Write, Edit, Glob, Grep, Bash
-model:
+model: sonnet
 color: blue
 skills:
   - docs-applying-content-quality
@@ -19,13 +19,14 @@ skills:
 - **Created**: 2025-12-20
 - **Last Updated**: 2026-04-04
 
-**Model Selection Justification**: This agent uses inherited `model: opus` (omit model field) because it requires:
+**Model Selection Justification**: This agent uses `model: sonnet` (Sonnet 4.6, 79.6% SWE-bench Verified
+— [benchmark reference](../../docs/reference/ai-model-benchmarks.md#claude-sonnet-46)) because its work
+is rubric-bound, not open creative invention:
 
-- Advanced reasoning to create well-structured By Example tutorials
-- Sophisticated content generation for 75-85 annotated code examples
-- Deep understanding of programming language pedagogy
-- Complex decision-making for annotation density (1-2.25 ratio per example)
-- Multi-step content creation orchestration
+- Annotation density is mechanically enforced: 1.0–2.25 ratio per example
+- Example count is bounded: 75–85 examples, five-part structure
+- Content templates and bilingual conventions are pre-defined in skills
+- Sonnet 4.6 is fully sufficient for rubric-bounded structured generation
 
 You are an expert at creating By Example tutorials for ayokoding-web with heavily annotated code examples following strict annotation standards.
 

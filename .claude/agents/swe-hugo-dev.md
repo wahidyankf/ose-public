@@ -2,7 +2,7 @@
 name: swe-hugo-dev
 description: "DEPRECATED - No active Hugo sites remain. Formerly developed Hugo sites (oseplatform-web). oseplatform-web migrated to Next.js 16."
 tools: Read, Glob, Grep
-model:
+model: sonnet
 color: purple
 skills: []
 ---
@@ -23,7 +23,7 @@ skills: []
 
 No Hugo applications exist in the `apps/` directory. This agent is preserved for historical reference only. If Hugo sites are reintroduced in the future, this agent can be reactivated.
 
-**Model Selection Justification**: This agent is DEPRECATED (no active Hugo sites remain). Inherits `model: opus` (omit model field) for historical reference.
+**Model Selection Justification**: This agent uses `model: sonnet` because it is DEPRECATED — no active Hugo sites remain and no code is generated. Sonnet 4.6 is fully sufficient for an agent that only informs users of its deprecated status.
 
 ## Former Responsibilities
 

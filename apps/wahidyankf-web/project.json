@@ -1,0 +1,81 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "wahidyankf-web",
+  "sourceRoot": "apps/wahidyankf-web/src",
+  "projectType": "application",
+  "targets": {
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "next dev --port 3201",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "next build",
+        "cwd": "{projectRoot}"
+      },
+      "outputs": ["{projectRoot}/.next"]
+    },
+    "start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "next start --port 3201",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx oxlint@latest --jsx-a11y-plugin .",
+        "cwd": "{projectRoot}"
+      },
+      "inputs": ["{projectRoot}/src/**/*", "{projectRoot}/oxlint.json", "{projectRoot}/tsconfig.json"]
+    },
+    "test:unit": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["default", "{workspaceRoot}/specs/apps/wahidyankf/fe/gherkin/**/*.feature"],
+      "options": {
+        "command": "npx vitest run --project unit-fe",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "test:quick": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["rhino-cli:build"],
+      "cache": true,
+      "inputs": ["default", "{workspaceRoot}/specs/apps/wahidyankf/fe/gherkin/**/*.feature"],
+      "outputs": ["{projectRoot}/coverage"],
+      "options": {
+        "command": "npx vitest run --project unit-fe --coverage && (cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/wahidyankf-web/coverage/lcov.info 80)",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["default", "{workspaceRoot}/specs/apps/wahidyankf/fe/gherkin/**/*.feature"],
+      "options": {
+        "command": "npx vitest run --project integration",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "spec-coverage": {
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go spec-coverage validate --shared-steps specs/apps/wahidyankf/fe/gherkin apps/wahidyankf-web",
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/wahidyankf/fe/gherkin/**/*.feature", "{projectRoot}/**/*.{ts,tsx}"]
+    }
+  },
+  "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:wahidyankf"],
+  "implicitDependencies": ["rhino-cli"]
+}

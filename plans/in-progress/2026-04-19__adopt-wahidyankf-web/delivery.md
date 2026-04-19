@@ -42,7 +42,7 @@ the worktree branch, not `main`. Concretely:
 - [x] Confirm the current session is inside `ose-public/.claude/worktrees/cached-brewing-cocoa/`.
 - [x] Confirm the worktree branch is `worktree-cached-brewing-cocoa` (matches the `worktree-<name>` convention; Subrepo Worktree Workflow Standard 14).
 - [x] Confirm the worktree branch is not `main` directly (Standard 14 prohibits direct commits to `main` from a worktree; only the P6 production-branch push touches `main`'s SHA, and only via `main:prod-wahidyankf-web`).
-- [ ] Confirm exactly one draft PR exists against `origin/main` for this worktree branch. If absent, open it now with `gh pr create --draft --base main --head worktree-cached-brewing-cocoa --title "feat(wahidyankf-web): adopt portfolio app" --body-file plans/in-progress/2026-04-19__adopt-wahidyankf-web/README.md` (or equivalent) before the first phase push. Every phase push in P0-P7 updates this same PR — do NOT open a second PR per phase.
+- [x] Confirm exactly one draft PR exists against `origin/main` for this worktree branch. If absent, open it now with `gh pr create --draft --base main --head worktree-cached-brewing-cocoa --title "feat(wahidyankf-web): adopt portfolio app" --body-file plans/in-progress/2026-04-19__adopt-wahidyankf-web/README.md` (or equivalent) before the first phase push. Every phase push in P0-P7 updates this same PR — do NOT open a second PR per phase.
 - [x] Confirm `origin` points at `wahidyankf/ose-public`.
 - [x] Confirm `git status` is clean.
 - [x] Run `npm install` from workspace root to install dependencies.
@@ -67,56 +67,58 @@ the worktree branch, not `main`. Concretely:
 
 ## Phase P1 — Scaffold & Port Source
 
-- [ ] Create directory `apps/wahidyankf-web/` with subdirectories `src/app/`, `src/components/`, `src/utils/`, `src/test/`, `test/unit/`, `public/`.
-- [ ] Create `apps/wahidyankf-web/package.json` with initial deps at `apps/ayokoding-web/package.json` test-stack pins (the closest sibling content platform) — use that file as the source of truth for `vitest`, `jsdom`, `@vitejs/plugin-react`, `vite-tsconfig-paths`, `@amiceli/vitest-cucumber`, `tailwindcss`, `@tailwindcss/postcss`, `@testing-library/*`, `@vitest/coverage-v8`, `@types/node`, `@types/react*`, `typescript`. We bump as needed in P2; this commit's lock must be internally consistent.
-- [ ] Create `apps/wahidyankf-web/tsconfig.json` extending `../../tsconfig.base.json`.
-- [ ] Create `apps/wahidyankf-web/next.config.ts` with `output: "standalone"` and `images.unoptimized: true`.
-- [ ] Create `apps/wahidyankf-web/oxlint.json` (copy from `apps/organiclever-fe/oxlint.json`).
-- [ ] Create `apps/wahidyankf-web/postcss.config.mjs` (Tailwind 4 style).
-- [ ] Create `apps/wahidyankf-web/vitest.config.ts` by copying `apps/ayokoding-web/vitest.config.ts` as the template — thresholds 80/80/80/80 (lines/functions/branches/statements); projects `unit-fe` (jsdom) + `integration` (node); `setupFiles: ["./src/test/setup.ts"]` on the jsdom project. Omit the `unit` (node) project until node-only code exists in the app.
-- [ ] Create `apps/wahidyankf-web/project.json` with the Nx target shape from `tech-docs.md` (tags include `domain:wahidyankf`; real validity of that tag is fixed in P6 — until then, `repo-rules-checker` is expected to flag it). The file's `"name": "wahidyankf-web"` and `"sourceRoot": "apps/wahidyankf-web/src"` fields are what make the project visible to Nx auto-discovery — no edit to `nx.json` or root `tsconfig.base.json` needed.
-- [ ] Configure `apps/wahidyankf-web/tsconfig.json` `paths` block with `"@/*": ["./src/*"]` so the ported source's `@/` imports resolve (this is an app-local alias; the workspace `tsconfig.base.json` does NOT carry it — each Next.js app in the repo configures `@/` locally).
-- [ ] Copy upstream `src/app/page.tsx` → `apps/wahidyankf-web/src/app/page.tsx`; update imports to `@/` alias.
-- [ ] Copy upstream `src/app/layout.tsx` → `apps/wahidyankf-web/src/app/layout.tsx`.
-- [ ] Copy upstream `src/app/head.tsx` → `apps/wahidyankf-web/src/app/head.tsx`.
-- [ ] Copy upstream `src/app/globals.css` → `apps/wahidyankf-web/src/app/globals.css` (Tailwind-3 syntax at this phase; P2 rewrites for Tailwind 4).
-- [ ] Copy upstream `src/app/favicon.ico`.
-- [ ] Copy upstream `src/app/fonts/` directory.
-- [ ] Copy upstream `src/app/data.ts`.
-- [ ] Copy upstream `src/app/cv/page.tsx`.
-- [ ] Copy upstream `src/app/personal-projects/page.tsx`.
-- [ ] Copy upstream `src/components/HighlightText.tsx`.
-- [ ] Copy upstream `src/components/HighlightText.test.tsx` (the rename to `.unit.test.tsx` happens in P3; copy the file verbatim here).
-- [ ] Copy upstream `src/components/Navigation.tsx`.
-- [ ] Copy upstream `src/components/Navigation.test.tsx`.
-- [ ] Copy upstream `src/components/ScrollToTop.tsx`.
-- [ ] Copy upstream `src/components/ScrollToTop.test.tsx`.
-- [ ] Copy upstream `src/components/SearchComponent.tsx`.
-- [ ] Copy upstream `src/components/SearchComponent.test.tsx`.
-- [ ] Copy upstream `src/components/ThemeToggle.tsx` (upstream has no test file for this component; the ThemeToggle unit test is authored fresh in P3).
-- [ ] Copy upstream `src/app/page.test.tsx` (verbatim; rename in P3).
-- [ ] Copy upstream `src/app/layout.test.tsx` (verbatim; rename in P3).
-- [ ] Copy upstream `src/app/data.test.ts` (verbatim; rename in P3).
-- [ ] Copy upstream `src/app/cv/page.test.tsx` (verbatim; rename in P3).
-- [ ] Copy upstream `src/app/personal-projects/page.test.tsx` (verbatim; rename in P3).
-- [ ] Copy upstream `src/utils/search.ts`.
-- [ ] Copy upstream `src/utils/search.test.ts` (verbatim; rename in P3).
-- [ ] Copy upstream `src/utils/markdown.tsx` (note: upstream extension is `.tsx`, not `.ts`).
-- [ ] Copy upstream `src/utils/markdown.test.tsx` (verbatim; rename to `markdown.unit.test.tsx` in P3).
-- [ ] Copy upstream `src/utils/style.ts`.
-- [ ] Copy upstream `src/utils/style.test.ts` → `apps/wahidyankf-web/src/utils/style.unit.test.ts` (rename per `.unit.test.*` convention).
-- [ ] Copy upstream `public/` contents.
-- [ ] Create `apps/wahidyankf-web/LICENSE` from upstream (MIT-compatible).
-- [ ] Create `apps/wahidyankf-web/README.md` modelled on `apps/organiclever-fe/README.md` with the app's overview, dev commands, test commands, tech stack.
-- [ ] Create `apps/wahidyankf-web/.gitignore` mirroring `apps/organiclever-fe/.gitignore`.
-- [ ] Run `npm install` from workspace root. This re-hydrates the workspace lockfile and picks up `apps/wahidyankf-web/` via the existing root `package.json` `"workspaces": ["apps/*", "libs/*"]` glob — no edit to the root `package.json` needed.
-- [ ] Run `npm run doctor -- --fix` to ensure Go and other polyglot toolchains are available (required for `test:quick` which calls `rhino-cli`).
-- [ ] Confirm Nx sees the new project: `npx nx show projects | grep -E '^wahidyankf-web$'` must return one line. If missing, the `project.json` `"name"` field is wrong or the file is malformed — fix before proceeding.
-- [ ] Confirm `nx affected` picks up the new project against `origin/main`: `npx nx show projects --affected --base=origin/main --head=HEAD | grep wahidyankf-web` must list `wahidyankf-web`. This proves the pre-push `nx affected -t typecheck lint test:quick spec-coverage` hook will exercise the new project once it has those targets.
-- [ ] Run `nx build wahidyankf-web` and confirm success.
-- [ ] Run `nx run wahidyankf-web:typecheck` and confirm success.
-- [ ] Commit: `feat(wahidyankf-web): scaffold Nx app and port source`.
-- [ ] Push to `origin worktree-cached-brewing-cocoa` (updates the open draft PR against `main`; do not push to `main` directly).
+- [x] Create directory `apps/wahidyankf-web/` with subdirectories `src/app/`, `src/components/`, `src/utils/`, `src/test/`, `test/unit/`, `public/`.
+- [x] Create `apps/wahidyankf-web/package.json` with initial deps at `apps/ayokoding-web/package.json` test-stack pins (the closest sibling content platform) — use that file as the source of truth for `vitest`, `jsdom`, `@vitejs/plugin-react`, `vite-tsconfig-paths`, `@amiceli/vitest-cucumber`, `tailwindcss`, `@tailwindcss/postcss`, `@testing-library/*`, `@vitest/coverage-v8`, `@types/node`, `@types/react*`, `typescript`. We bump as needed in P2; this commit's lock must be internally consistent.
+- [x] Create `apps/wahidyankf-web/tsconfig.json` extending `../../tsconfig.base.json`.
+- [x] Create `apps/wahidyankf-web/next.config.ts` with `output: "standalone"` and `images.unoptimized: true`.
+- [x] Create `apps/wahidyankf-web/oxlint.json` (copy from `apps/organiclever-fe/oxlint.json`).
+- [x] Create `apps/wahidyankf-web/postcss.config.mjs` (Tailwind 4 style).
+- [x] Create `apps/wahidyankf-web/vitest.config.ts` by copying `apps/ayokoding-web/vitest.config.ts` as the template — thresholds 80/80/80/80 (lines/functions/branches/statements); projects `unit-fe` (jsdom) + `integration` (node); `setupFiles: ["./src/test/setup.ts"]` on the jsdom project. Omit the `unit` (node) project until node-only code exists in the app.
+- [x] Create `apps/wahidyankf-web/project.json` with the Nx target shape from `tech-docs.md` (tags include `domain:wahidyankf`; real validity of that tag is fixed in P6 — until then, `repo-rules-checker` is expected to flag it). The file's `"name": "wahidyankf-web"` and `"sourceRoot": "apps/wahidyankf-web/src"` fields are what make the project visible to Nx auto-discovery — no edit to `nx.json` or root `tsconfig.base.json` needed.
+- [x] Configure `apps/wahidyankf-web/tsconfig.json` `paths` block with `"@/*": ["./src/*"]` so the ported source's `@/` imports resolve (this is an app-local alias; the workspace `tsconfig.base.json` does NOT carry it — each Next.js app in the repo configures `@/` locally).
+- [x] Copy upstream `src/app/page.tsx` → `apps/wahidyankf-web/src/app/page.tsx`; update imports to `@/` alias.
+- [x] Copy upstream `src/app/layout.tsx` → `apps/wahidyankf-web/src/app/layout.tsx`.
+- [x] Copy upstream `src/app/head.tsx` → `apps/wahidyankf-web/src/app/head.tsx`.
+- [x] Copy upstream `src/app/globals.css` → `apps/wahidyankf-web/src/app/globals.css` (Tailwind-3 syntax at this phase; P2 rewrites for Tailwind 4).
+- [x] Copy upstream `src/app/favicon.ico`.
+- [x] Copy upstream `src/app/fonts/` directory.
+- [x] Copy upstream `src/app/data.ts`.
+- [x] Copy upstream `src/app/cv/page.tsx`.
+- [x] Copy upstream `src/app/personal-projects/page.tsx`.
+- [x] Copy upstream `src/components/HighlightText.tsx`.
+- [x] Copy upstream `src/components/HighlightText.test.tsx` (the rename to `.unit.test.tsx` happens in P3; copy the file verbatim here).
+- [x] Copy upstream `src/components/Navigation.tsx`.
+- [x] Copy upstream `src/components/Navigation.test.tsx`.
+- [x] Copy upstream `src/components/ScrollToTop.tsx`.
+- [x] Copy upstream `src/components/ScrollToTop.test.tsx`.
+- [x] Copy upstream `src/components/SearchComponent.tsx`.
+- [x] Copy upstream `src/components/SearchComponent.test.tsx`.
+- [x] Copy upstream `src/components/ThemeToggle.tsx` (upstream has no test file for this component; the ThemeToggle unit test is authored fresh in P3).
+- [x] Copy upstream `src/app/page.test.tsx` (verbatim; rename in P3).
+- [x] Copy upstream `src/app/layout.test.tsx` (verbatim; rename in P3).
+- [x] Copy upstream `src/app/data.test.ts` (verbatim; rename in P3).
+- [x] Copy upstream `src/app/cv/page.test.tsx` (verbatim; rename in P3).
+- [x] Copy upstream `src/app/personal-projects/page.test.tsx` (verbatim; rename in P3).
+- [x] Copy upstream `src/utils/search.ts`.
+- [x] Copy upstream `src/utils/search.test.ts` (verbatim; rename in P3).
+- [x] Copy upstream `src/utils/markdown.tsx` (note: upstream extension is `.tsx`, not `.ts`).
+- [x] Copy upstream `src/utils/markdown.test.tsx` (verbatim; rename to `markdown.unit.test.tsx` in P3).
+- [x] Copy upstream `src/utils/style.ts`.
+- [x] Copy upstream `src/utils/style.test.ts` → `apps/wahidyankf-web/src/utils/style.unit.test.ts` (rename per `.unit.test.*` convention).
+- [x] Copy upstream `public/` contents.
+- [x] Create `apps/wahidyankf-web/LICENSE` from upstream (MIT-compatible).
+- [x] Create `apps/wahidyankf-web/README.md` modelled on `apps/organiclever-fe/README.md` with the app's overview, dev commands, test commands, tech stack.
+- [x] Create `apps/wahidyankf-web/.gitignore` mirroring `apps/organiclever-fe/.gitignore`.
+- [x] Run `npm install` from workspace root. This re-hydrates the workspace lockfile and picks up `apps/wahidyankf-web/` via the existing root `package.json` `"workspaces": ["apps/*", "libs/*"]` glob — no edit to the root `package.json` needed.
+- [x] Run `npm run doctor -- --fix` to ensure Go and other polyglot toolchains are available (required for `test:quick` which calls `rhino-cli`).
+- [x] Confirm Nx sees the new project: `npx nx show projects | grep -E '^wahidyankf-web$'` must return one line. If missing, the `project.json` `"name"` field is wrong or the file is malformed — fix before proceeding.
+- [x] Confirm `nx affected` picks up the new project against `origin/main`: `npx nx show projects --affected --base=origin/main --head=HEAD | grep wahidyankf-web` must list `wahidyankf-web`. This proves the pre-push `nx affected -t typecheck lint test:quick spec-coverage` hook will exercise the new project once it has those targets.
+- [x] Run `nx build wahidyankf-web` and confirm success.
+- [x] Run `nx run wahidyankf-web:typecheck` and confirm success.
+- [x] Commit: `feat(wahidyankf-web): scaffold Nx app and port source`.
+- [x] Push to `origin worktree-cached-brewing-cocoa` (updates the open draft PR against `main`; do not push to `main` directly).
+
+> **P1 notes (2026-04-19)** — Full port landed. 21 upstream source files copied verbatim (components, utils, test files, app pages, data.ts, globals.css, favicon, fonts). Config files authored fresh: `package.json` (sibling-aligned test stack), `tsconfig.json`, `next.config.ts`, `oxlint.json`, `postcss.config.mjs`, `vitest.config.ts`, `project.json`, `README.md`, `.gitignore`. No upstream `public/` dir existed; created empty. No upstream LICENSE; adopted app inherits repo-root licensing. **Deviations from plan text required to land a green build + typecheck**: (1) `globals.css` was rewritten to Tailwind 4 `@theme` syntax (P2-scheduled work pulled forward to unblock build — the P2 Tailwind-3 globals would have required carrying the upstream `tailwind.config.ts`, which the File-by-File Port Map lists as `_(removed)_`; so we skipped the dead step); (2) `tsconfig.json` disables `noUncheckedIndexedAccess`, `noUnusedLocals`, `noUnusedParameters` that the repo base enables because the upstream code was not authored against them and 18+ call-sites would need rewrites — these are re-enabled and errors fixed in P3 as part of the unit-test modernisation; tracked as P3 tech debt. (3) One upstream source edit: `cv/page.tsx` groupedEntries reduce — use `??=` to satisfy remaining strict-mode; HighlightText.test.tsx typed a `React.ReactElement` with its children shape. Nx auto-discovery confirmed: `wahidyankf-web` in `nx show projects` and `nx show projects --affected --base=origin/main`. Build succeeds (all 4 static routes prerender). Typecheck succeeds.
 
 ## Phase P2 — Upgrade Dependencies
 

@@ -1,0 +1,132 @@
+@import "tailwindcss";
+
+@theme {
+  --color-light-background: #ffffff;
+  --color-light-foreground: #1e1e1e;
+  --color-light-primary: #0000ff;
+  --color-light-secondary: #267f99;
+  --color-light-accent: #af00db;
+  --color-light-muted: #717171;
+  --color-light-soft: #f3f3f3;
+  --color-light-hard: #e4e4e4;
+  --color-light-green: #008000;
+  --color-light-yellow: #795e26;
+  --color-light-orange: #cd3131;
+  --color-light-comment: #008000;
+  --color-light-string: #a31515;
+  --color-light-keyword: #0000ff;
+}
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
+}
+
+.light-theme {
+  --background-end-rgb: 255, 255, 255;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-start-rgb));
+}
+
+.light-theme body {
+  @apply text-light-foreground bg-light-background;
+}
+
+.light-theme .text-green-400 {
+  @apply text-light-green;
+}
+
+.light-theme .text-yellow-400 {
+  @apply text-light-yellow;
+}
+
+.light-theme .border-green-400 {
+  @apply border-light-primary;
+}
+
+.light-theme .bg-gray-900 {
+  @apply bg-light-background;
+}
+
+.light-theme .bg-gray-800 {
+  @apply bg-light-soft;
+}
+
+.light-theme a:hover,
+.light-theme button:hover {
+  @apply text-light-accent;
+}
+
+.light-theme input,
+.light-theme textarea,
+.light-theme select {
+  @apply border-light-muted text-light-foreground bg-white;
+}
+
+.light-theme p,
+.light-theme span,
+.light-theme div,
+.light-theme h1,
+.light-theme h2,
+.light-theme h3,
+.light-theme h4,
+.light-theme h5,
+.light-theme h6,
+.light-theme ul,
+.light-theme ol,
+.light-theme li,
+.light-theme .duration,
+.light-theme [class*="duration"],
+.light-theme time {
+  @apply text-light-foreground;
+}
+
+.light-theme a {
+  @apply text-light-primary hover:text-light-accent hover:decoration-light-accent font-semibold underline decoration-2 underline-offset-2;
+}
+
+.light-theme code {
+  @apply bg-light-soft text-light-keyword rounded px-1;
+}
+
+.light-theme pre {
+  @apply bg-light-soft rounded p-4;
+}
+
+.light-theme blockquote {
+  @apply border-light-muted border-l-4 pl-4 italic;
+}
+
+.light-theme .comment {
+  @apply text-light-comment;
+}
+
+.light-theme .string {
+  @apply text-light-string;
+}
+
+.light-theme .keyword {
+  @apply text-light-keyword;
+}
+
+.light-theme .content-link {
+  @apply text-light-primary hover:text-light-accent hover:decoration-light-accent font-semibold underline decoration-2 underline-offset-2;
+}
+
+a {
+  @apply text-yellow-400 transition-colors duration-200 hover:text-green-400;
+}
+
+.content-link {
+  @apply font-semibold text-yellow-400 underline decoration-2 underline-offset-2 transition-colors duration-200 hover:text-green-400 hover:decoration-green-400;
+}
+
+@media (min-width: 1024px) {
+  body {
+    font-size: 18px;
+  }
+}

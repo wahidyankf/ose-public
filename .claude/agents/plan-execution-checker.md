@@ -60,7 +60,7 @@ The `repo-generating-validation-reports` Skill provides UUID generation, timesta
 
 Validate that completed plan implementation:
 
-1. Meets the business intent captured in `brd.md` and the product requirements captured in `prd.md` (legacy plans may still use `requirements.md` — treat it as the combined BRD+PRD source)
+1. Meets the business intent captured in `brd.md` and the product requirements captured in `prd.md`
 2. Follows technical approach from `tech-docs.md`
 3. Completes all delivery checklist items with implementation notes
 4. Satisfies all Gherkin acceptance criteria authored in `prd.md`
@@ -70,7 +70,7 @@ Validate that completed plan implementation:
 
 ### 1. Requirements Coverage (BRD + PRD)
 
-- All user stories from `prd.md` implemented (legacy fallback: `requirements.md`)
+- All user stories from `prd.md` implemented
 - All Gherkin acceptance criteria from `prd.md` verifiable against the delivered work; quote the specific scenario when reporting coverage gaps
 - Business goals and success metrics from `brd.md` addressed by the delivered work (or explicitly deferred with rationale in the delivery notes)
 - Business-scope Non-Goals respected (no scope creep into deferred items)

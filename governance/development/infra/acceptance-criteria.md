@@ -341,7 +341,7 @@ Then something happens
 
 ### PASS: Project Plans
 
-- **Product requirements files** (`plans/*/prd.md`): Define Gherkin acceptance criteria for each user story (legacy plans may still use `requirements.md`)
+- **Product requirements files** (`plans/*/prd.md`): Define Gherkin acceptance criteria for each user story
 - **Delivery checklists**: Validate implementation against Gherkin scenarios
 - See [Plans Organization Convention](../../conventions/structure/plans.md)
 

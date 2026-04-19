@@ -2,9 +2,9 @@
 
 ## Prerequisites
 
-- [ ] Run `npm install` to install workspace dependencies
-- [ ] Run `npm run doctor -- --fix` to converge the Go and Node toolchains (required before
-      any `validate:*` or `sync:*` script can invoke the rhino-cli binary)
+- [x] Run `npm install` to install workspace dependencies _(done 2026-04-19)_
+- [x] Run `npm run doctor -- --fix` to converge the Go and Node toolchains (required before
+      any `validate:*` or `sync:*` script can invoke the rhino-cli binary) _(done 2026-04-19, 19/19 tools OK)_
 - [x] Running directly on `main` branch (no worktree — governance-only changes, no code)
 - [x] Confirm `npm run validate:claude` passes on clean branch (baseline) _(verified 2026-04-19)_
 - [x] Confirm `npm run validate:sync` passes on clean branch (baseline) _(verified 2026-04-19)_
@@ -54,14 +54,19 @@ reference. All subsequent files that cite benchmark numbers link to this documen
 document links to primary sources. Structure and content are fully specified in
 `tech-docs.md` under "Benchmark Reference Document Specification".
 
-- [ ] **4.1** Create `docs/reference/ai-model-benchmarks.md` following the spec in
+- [x] **4.1** Create `docs/reference/ai-model-benchmarks.md` following the spec in
       `tech-docs.md § Benchmark Reference Document Specification`
-- [ ] **4.2** Verify every benchmark number has: source URL, publication date, confidence
+      _(2026-04-19 · Status: Done · Files: docs/reference/ai-model-benchmarks.md created)_
+- [x] **4.2** Verify every benchmark number has: source URL, publication date, confidence
       level (`[Verified]` / `[Self-reported]` / `[Needs Verification]`)
-- [ ] **4.3** Verify the GLM-5-turbo section prominently flags that no standard benchmarks
+      _(2026-04-19 · Status: Done · all rows have source/date/confidence)_
+- [x] **4.3** Verify the GLM-5-turbo section prominently flags that no standard benchmarks
       are published for this model
-- [ ] **4.4** Verify the model capability summary table is present
-- [ ] **4.5** Run `npm run lint:md` — confirm zero errors on new file
+      _(2026-04-19 · Status: Done · "Critical flag" block + table row with N/A present)_
+- [x] **4.4** Verify the model capability summary table is present
+      _(2026-04-19 · Status: Done · "Model Capability Summary (Coding-Agents Lens)" table present)_
+- [x] **4.5** Run `npm run lint:md` — confirm zero errors on new file
+      _(2026-04-19 · Status: Done · 0 errors)_
 - [ ] **4.6** Commit: `docs(reference): add ai-model-benchmarks reference with cited scores`
 
 ---

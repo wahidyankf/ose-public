@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "wahidyankf-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 3201",
+    "build": "next build",
+    "start": "next start --port 3201"
+  },
+  "dependencies": {
+    "@next/third-parties": "^16.0.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.447.0",
+    "next": "16.1.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-icons": "^5.3.0",
+    "tailwind-merge": "^2.5.3"
+  },
+  "devDependencies": {
+    "@amiceli/vitest-cucumber": "^6.3.0",
+    "@tailwindcss/postcss": "^4.0.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^16.0.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.0.0",
+    "@vitest/coverage-v8": "^4.0.0",
+    "jsdom": "^26.0.0",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.6.0",
+    "vite-tsconfig-paths": "^5.0.0",
+    "vitest": "^4.0.0"
+  }
+}

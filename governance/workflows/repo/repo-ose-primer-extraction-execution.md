@@ -182,7 +182,7 @@ Scenario: Post-extraction verification fails
 - [Extraction scope](../../../.claude/skills/repo-syncing-with-ose-primer/reference/extraction-scope.md) — authoritative frozen path list.
 - Propagation agent `repo-ose-primer-propagation-maker` (at `.claude/agents/repo-ose-primer-propagation-maker.md`) — invoked in `parity-check` and `apply` modes.
 - [Sync workflow](./repo-ose-primer-sync-execution.md) — re-entered during Phase 3 catch-up.
-- [Plan: 2026-04-18 ose-primer-separation](../../../plans/in-progress/2026-04-18__ose-primer-separation/README.md) — the plan orchestrating this workflow.
+- [Plan: 2026-04-18 ose-primer-separation](../../../plans/done/2026-04-18__ose-primer-separation/README.md) — the plan orchestrating this workflow.
 - [Sync convention](../../conventions/structure/ose-primer-sync.md) — classifier + safety invariants.
 
 ## Principles Implemented/Respected

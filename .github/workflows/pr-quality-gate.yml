@@ -105,7 +105,7 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-golang
-      - run: npx nx affected -t typecheck lint test:quick spec-coverage --projects='tag:lang:golang'
+      - run: npx nx run-many -t typecheck lint test:quick spec-coverage --projects='tag:lang:golang'
 
   jvm:
     name: JVM quality gate
@@ -121,7 +121,7 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-jvm
-      - run: npx nx affected -t typecheck lint test:quick spec-coverage --projects='tag:lang:java,tag:lang:kotlin'
+      - run: npx nx run-many -t typecheck lint test:quick spec-coverage --projects='tag:lang:java,tag:lang:kotlin'
 
   dotnet:
     name: .NET quality gate
@@ -137,7 +137,7 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-dotnet
-      - run: npx nx affected -t typecheck lint test:quick spec-coverage --projects='tag:lang:fsharp,tag:lang:csharp'
+      - run: npx nx run-many -t typecheck lint test:quick spec-coverage --projects='tag:lang:fsharp,tag:lang:csharp'
 
   python:
     name: Python quality gate
@@ -153,7 +153,7 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-python
-      - run: npx nx affected -t typecheck lint test:quick spec-coverage --projects='tag:lang:python'
+      - run: npx nx run-many -t typecheck lint test:quick spec-coverage --projects='tag:lang:python'
 
   rust:
     name: Rust quality gate
@@ -169,7 +169,7 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-rust
-      - run: npx nx affected -t typecheck lint test:quick spec-coverage --projects='tag:lang:rust'
+      - run: npx nx run-many -t typecheck lint test:quick spec-coverage --projects='tag:lang:rust'
 
   elixir:
     name: Elixir quality gate
@@ -185,7 +185,7 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-elixir
-      - run: npx nx affected -t typecheck lint test:quick spec-coverage --projects='tag:lang:elixir'
+      - run: npx nx run-many -t typecheck lint test:quick spec-coverage --projects='tag:lang:elixir'
 
   clojure:
     name: Clojure quality gate
@@ -201,7 +201,7 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-clojure
-      - run: npx nx affected -t typecheck lint test:quick spec-coverage --projects='tag:lang:clojure'
+      - run: npx nx run-many -t typecheck lint test:quick spec-coverage --projects='tag:lang:clojure'
 
   dart:
     name: Dart quality gate
@@ -217,7 +217,7 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-flutter
-      - run: npx nx affected -t typecheck lint test:quick spec-coverage --projects='tag:lang:dart'
+      - run: npx nx run-many -t typecheck lint test:quick spec-coverage --projects='tag:lang:dart'
 
   markdown:
     name: Markdown quality gate

@@ -5,7 +5,6 @@ Active project plans currently being worked on.
 ## Active Plans
 
 - [2026-04-16\_\_organiclever-fe-local-first](./2026-04-16__organiclever-fe-local-first/README.md) — Pivot `organiclever-fe` to local-first deploy on Vercel; BE kept dormant; add `/system/status/be` diagnostic page with graceful degradation.
-- [2026-04-19\_\_adopt-wahidyankf-web](./2026-04-19__adopt-wahidyankf-web/README.md) — Adopt `wahidyankf/oss / apps-standalone/wahidyankf-web` into `apps/wahidyankf-web/` with upgraded deps (Next 16 / React 19 / Tailwind 4 / Vitest 4 / Playwright ^1.52.0), unit + E2E tests, and `prod-wahidyankf-web` Vercel pipeline. Delivery split into 8 phases, each ending in its own commit + push.
 
 ## Instructions
 

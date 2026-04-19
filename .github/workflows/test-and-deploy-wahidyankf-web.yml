@@ -1,0 +1,21 @@
+name: Test and Deploy - Wahidyankf Web
+
+on:
+  schedule:
+    - cron: "0 23 * * *" # 6 AM WIB (UTC+7)
+    - cron: "0 11 * * *" # 6 PM WIB (UTC+7)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  test-and-deploy:
+    uses: ./.github/workflows/_reusable-test-and-deploy.yml
+    with:
+      app-name: wahidyankf-web
+      prod-branch: prod-wahidyankf-web
+      health-url: http://localhost:3201
+      health-timeout: 150
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

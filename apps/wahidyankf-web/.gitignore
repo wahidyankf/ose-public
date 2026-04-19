@@ -1,0 +1,25 @@
+# Next.js
+.next/
+out/
+
+# Node
+node_modules/
+
+# Coverage
+coverage/
+
+# Generated contracts
+generated-contracts/
+src/generated-contracts/
+
+# Environment files
+.env*.local
+
+# Build output
+dist/
+
+# Storybook
+storybook-static/
+
+# Vercel
+.vercel

@@ -1,0 +1,16 @@
+services:
+  wahidyankf-web:
+    build:
+      context: ../../../
+      dockerfile: apps/wahidyankf-web/Dockerfile
+    ports:
+      - "3201:3201"
+    environment:
+      - PORT=3201
+      - HOSTNAME=0.0.0.0
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3201/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s

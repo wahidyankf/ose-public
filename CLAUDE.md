@@ -30,6 +30,8 @@ Guidance for Claude Code (claude.ai/code) working with code in this repository.
   - `organiclever-fe-e2e` - Playwright FE E2E tests for organiclever-fe
   - `organiclever-be-e2e` - Playwright BE E2E tests for organiclever-be
   - `organiclever-contracts` - OpenAPI 3.1 API contract spec (in `specs/apps/organiclever/contracts/`); generates types + encoders/decoders for organiclever apps via `codegen` Nx target
+  - `wahidyankf-web` - Next.js 16 personal portfolio site (www.wahidyankf.com)
+  - `wahidyankf-web-fe-e2e` - Playwright-BDD E2E tests for wahidyankf-web UI
 
 Polyglot demo apps (11 backend implementations + 3 frontends + 1 fullstack) were extracted 2026-04-18 to the downstream [`ose-primer`](https://github.com/wahidyankf/ose-primer) template, which is now authoritative for the polyglot showcase.
 
@@ -51,6 +53,8 @@ ose-public/
 │   ├── organiclever-be/      # OrganicLever F#/Giraffe REST API backend
 │   ├── organiclever-fe-e2e/  # Playwright FE E2E tests for organiclever-fe
 │   ├── organiclever-be-e2e/  # Playwright BE E2E tests for organiclever-be
+│   ├── wahidyankf-web/       # Wahidyan Kresna Fridayoka portfolio (Next.js 16)
+│   ├── wahidyankf-web-fe-e2e/   # Playwright-BDD E2E tests for wahidyankf-web
 ├── archived/                 # Archived applications (no longer active)
 ├── apps-labs/                # Experimental apps (NOT in Nx)
 ├── libs/                     # Reusable libraries (Nx, flat structure)
@@ -135,7 +139,7 @@ npm run doctor -- --scope minimal # Check only core tools (git, volta, node, npm
 | ------------------------------------------------------------------------------------------------------------- | --------- | ----------------------------- | ------------------------------------------------------ |
 | Go CLI projects (`ayokoding-cli`, `oseplatform-cli`, `rhino-cli`, `libs/golang-commons`, `libs/hugo-commons`) | ≥90%      | `cover.out` (go test)         |                                                        |
 | `organiclever-be`                                                                                             | ≥90%      | AltCover LCOV (`altcov.info`) | Uses `--linecover` to avoid F# `task{}` BRDA inflation |
-| `ayokoding-web`, `oseplatform-web`                                                                            | ≥80%      | LCOV (Vitest)                 |                                                        |
+| `ayokoding-web`, `oseplatform-web`, `wahidyankf-web`                                                          | ≥80%      | LCOV (Vitest)                 |                                                        |
 | `organiclever-fe`                                                                                             | ≥70%      | LCOV                          | fe threshold: API/auth layers fully mocked by design   |
 
 **`test:integration` caching**: Default `cache: false` in `nx.json`. Projects using in-process mocking only (MSW, Godog) override to `cache: true` in their `project.json`: `organiclever-fe` (MSW), Go CLI apps (Godog at both unit and integration levels), `hugo-commons` (Godog + tmpdir mocks), `golang-commons` (Godog + mock closures).
@@ -205,6 +209,7 @@ nx graph                     # Visualize dependencies
   - `prod-ayokoding-web` → [ayokoding.com](https://ayokoding.com)
   - `prod-oseplatform-web` → [oseplatform.com](https://oseplatform.com)
   - `prod-organiclever-web` → [www.organiclever.com](https://www.organiclever.com/)
+  - `prod-wahidyankf-web` → [www.wahidyankf.com](https://www.wahidyankf.com/)
 - **Commit format**: Conventional Commits `<type>(<scope>): <description>`
   - Types: feat, fix, docs, style, refactor, perf, test, chore, ci, revert
   - Scope optional but recommended
@@ -506,6 +511,28 @@ nx run organiclever-fe-e2e:test:e2e:ui    # Run FE E2E tests with Playwright UI
 ```
 
 **See**: [apps/organiclever-fe/README.md](./apps/organiclever-fe/README.md), [.claude/skills/apps-organiclever-fe-developing-content/SKILL.md](./.claude/skills/apps-organiclever-fe-developing-content/SKILL.md)
+
+### wahidyankf-web
+
+- **URL**: <https://www.wahidyankf.com/>
+- **Production branch**: `prod-wahidyankf-web` → www.wahidyankf.com
+- **Framework**: Next.js 16 (App Router)
+- **Deployment**: Vercel
+- **Content**: Personal portfolio (Home, CV, Personal Projects)
+- **E2E tests**: `wahidyankf-web-fe-e2e`
+- **Dev port**: 3201
+
+**Commands**:
+
+```bash
+nx dev wahidyankf-web                      # Development server (localhost:3201)
+nx build wahidyankf-web                    # Production build
+nx run wahidyankf-web:test:quick           # Unit tests + coverage + spec-coverage
+nx run wahidyankf-web-fe-e2e:test:e2e         # Run FE E2E tests headlessly
+nx run wahidyankf-web-fe-e2e:test:e2e:ui      # Run FE E2E tests with Playwright UI
+```
+
+**See**: [apps/wahidyankf-web/README.md](./apps/wahidyankf-web/README.md)
 
 ### organiclever-be
 

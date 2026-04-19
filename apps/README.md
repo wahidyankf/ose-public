@@ -41,6 +41,8 @@ Where `{part}` describes the role and technology stack:
 - `organiclever-be` - OrganicLever backend API (F#/Giraffe) - F# application (port 8202)
 - `organiclever-fe-e2e` - FE E2E tests for organiclever-fe - Playwright (browser testing)
 - `organiclever-be-e2e` - BE E2E tests for organiclever-be - Playwright (API testing)
+- `wahidyankf-web` - Wahidyankf personal portfolio ([www.wahidyankf.com](https://www.wahidyankf.com)) - Next.js 16 app (port 3201)
+- `wahidyankf-web-fe-e2e` - FE E2E tests for wahidyankf-web - Playwright-BDD with axe-core
 
 ## Application Characteristics
 

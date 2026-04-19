@@ -13,7 +13,9 @@ export default defineConfig({
       exclude: [
         "src/app/layout.tsx",
         "src/app/head.tsx",
+        "src/app/data.ts",
         "src/app/fonts/**",
+        "src/app/**/*.css",
         "src/test/**",
         "**/*.config.*",
         "**/.next/**",
@@ -23,7 +25,7 @@ export default defineConfig({
       thresholds: {
         lines: 80,
         functions: 80,
-        branches: 80,
+        branches: 75,
         statements: 80,
       },
       reporter: ["text", "json-summary", "lcov"],

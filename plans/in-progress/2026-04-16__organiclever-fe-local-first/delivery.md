@@ -170,29 +170,48 @@ See [`README.md`](./README.md) for overview, [`brd.md`](./brd.md) for business i
 
 ## Commit Guidelines
 
-- [ ] Commit changes thematically — group related changes into logically cohesive commits
-- [ ] Follow Conventional Commits format: `<type>(<scope>): <description>`
-- [ ] Split different domains/concerns into separate commits (e.g., routes in one commit, tests in another, docs in another)
-- [ ] Do NOT bundle unrelated fixes into a single commit
+- [x] Commit changes thematically — group related changes into logically cohesive commits
+  > Date: 2026-04-20 | Status: done | Notes: 4 commits: feat (routes+pages), test (specs+steps), docs (README+CLAUDE.md+applications.md), chore (delivery progress)
+- [x] Follow Conventional Commits format: `<type>(<scope>): <description>`
+  > Date: 2026-04-20 | Status: done
+- [x] Split different domains/concerns into separate commits (e.g., routes in one commit, tests in another, docs in another)
+  > Date: 2026-04-20 | Status: done
+- [x] Do NOT bundle unrelated fixes into a single commit
+  > Date: 2026-04-20 | Status: done
 
 ## Manual UI Verification (Playwright MCP — Local)
 
-- [ ] Start dev server: `nx dev organiclever-fe`
-- [ ] Navigate to landing page via `browser_navigate http://localhost:3200/`
-- [ ] Inspect landing page via `browser_snapshot` — verify heading renders, no redirect occurs
-- [ ] Check for JS errors via `browser_console_messages` — must be zero errors
-- [ ] Verify no unexpected network requests from landing page via `browser_network_requests` — `/` must make zero outbound fetch calls to organiclever-be
-- [ ] Navigate to status page: `browser_navigate http://localhost:3200/system/status/be`
-- [ ] Verify "Not configured" renders via `browser_snapshot`
-- [ ] Check for JS errors via `browser_console_messages` — must be zero errors
-- [ ] Verify no unexpected network requests via `browser_network_requests` — when `ORGANICLEVER_BE_URL` is unset, `/system/status/be` must make zero outbound fetch calls
-- [ ] Take screenshots via `browser_take_screenshot` for visual record
-- [ ] Verify `/login` returns 404: `browser_navigate http://localhost:3200/login`
-- [ ] Verify `/profile` returns 404: `browser_navigate http://localhost:3200/profile`
-- [ ] Verify disabled API routes return 404 (curl):
-  - [ ] `curl -so /dev/null -w "%{http_code}" http://localhost:3200/api/auth/google` → 404
-  - [ ] `curl -so /dev/null -w "%{http_code}" http://localhost:3200/api/auth/refresh` → 404
-  - [ ] `curl -so /dev/null -w "%{http_code}" http://localhost:3200/api/auth/me` → 404
+- [x] Start dev server: `nx dev organiclever-fe`
+  > Date: 2026-04-20 | Status: done | Notes: ready at localhost:3200
+- [x] Navigate to landing page via `browser_navigate http://localhost:3200/`
+  > Date: 2026-04-20 | Status: done | Notes: URL stays at / (no redirect), title "OrganicLever"
+- [x] Inspect landing page via `browser_snapshot` — verify heading renders, no redirect occurs
+  > Date: 2026-04-20 | Status: done | Notes: h1 "OrganicLever", tagline, "System status" link all present
+- [x] Check for JS errors via `browser_console_messages` — must be zero errors
+  > Date: 2026-04-20 | Status: done | Notes: only favicon.ico 404 (preexisting, unrelated)
+- [x] Verify no unexpected network requests from landing page via `browser_network_requests` — `/` must make zero outbound fetch calls to organiclever-be
+  > Date: 2026-04-20 | Status: done | Notes: zero non-static network requests
+- [x] Navigate to status page: `browser_navigate http://localhost:3200/system/status/be`
+  > Date: 2026-04-20 | Status: done
+- [x] Verify "Not configured" renders via `browser_snapshot`
+  > Date: 2026-04-20 | Status: done | Notes: "Not configured — set ORGANICLEVER_BE_URL to probe." confirmed
+- [x] Check for JS errors via `browser_console_messages` — must be zero errors
+  > Date: 2026-04-20 | Status: done | Notes: 0 errors, 0 warnings
+- [x] Verify no unexpected network requests via `browser_network_requests` — when `ORGANICLEVER_BE_URL` is unset, `/system/status/be` must make zero outbound fetch calls
+  > Date: 2026-04-20 | Status: done | Notes: zero non-static network requests
+- [x] Take screenshots via `browser_take_screenshot` for visual record
+  > Date: 2026-04-20 | Status: done | Files Changed: local-temp/organiclever-fe-landing.png
+- [x] Verify `/login` returns 404: `browser_navigate http://localhost:3200/login`
+  > Date: 2026-04-20 | Status: done | Notes: "404 This page could not be found." confirmed
+- [x] Verify `/profile` returns 404: `browser_navigate http://localhost:3200/profile`
+  > Date: 2026-04-20 | Status: done | Notes: "404 This page could not be found." confirmed
+- [x] Verify disabled API routes return 404 (curl):
+  - [x] `curl -so /dev/null -w "%{http_code}" http://localhost:3200/api/auth/google` → 404
+    > Date: 2026-04-20 | Status: done | Notes: 404 confirmed
+  - [x] `curl -so /dev/null -w "%{http_code}" http://localhost:3200/api/auth/refresh` → 404
+    > Date: 2026-04-20 | Status: done | Notes: 404 confirmed
+  - [x] `curl -so /dev/null -w "%{http_code}" http://localhost:3200/api/auth/me` → 404
+    > Date: 2026-04-20 | Status: done | Notes: 404 confirmed
 
 ## Post-Push CI Verification
 

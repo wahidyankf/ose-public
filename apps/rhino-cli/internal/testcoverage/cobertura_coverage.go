@@ -71,7 +71,7 @@ func parseBranchCoverage(condCov string) (covered, total int) {
 	return c, t
 }
 
-// ComputeCoberturaResult computes line coverage from a Cobertura XML report using Codecov's algorithm.
+// ComputeCoberturaResult computes line coverage from a Cobertura XML report using a standard line-based algorithm.
 //
 // For each <line> element:
 //   - hits > 0 AND (not a branch OR all branches covered) → Covered

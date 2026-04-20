@@ -75,7 +75,7 @@ func parseLCOV(filename string) ([]lcovFile, error) {
 	return files, scanner.Err()
 }
 
-// ComputeLCOVResult computes line coverage from an LCOV file using Codecov's algorithm.
+// ComputeLCOVResult computes line coverage from an LCOV file using a standard line-based algorithm.
 func ComputeLCOVResult(filename string, threshold float64) (Result, error) {
 	files, err := parseLCOV(filename)
 	if err != nil {

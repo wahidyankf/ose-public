@@ -281,7 +281,11 @@ See [`README.md`](./README.md) for overview, [`brd.md`](./brd.md) for business i
 
 ## Phase 7 — Close Out
 
-- [ ] Move plan folder: `git mv plans/in-progress/2026-04-16__organiclever-fe-local-first plans/done/`
-- [ ] Update `plans/in-progress/README.md` — remove plan entry
-- [ ] Update `plans/done/README.md` — add plan entry with completion date
-- [ ] Commit: `chore(plans): move organiclever-fe-local-first to done`
+- [x] Move plan folder: `git mv plans/in-progress/2026-04-16__organiclever-fe-local-first plans/done/`
+  > Date: 2026-04-21 | Status: done | Notes: moved via `git mv`
+- [x] Update `plans/in-progress/README.md` — remove plan entry
+  > Date: 2026-04-21 | Status: done | Notes: replaced plan entry with `_(none)_`
+- [x] Update `plans/done/README.md` — add plan entry with completion date
+  > Date: 2026-04-21 | Status: done | Notes: added entry with completion date 2026-04-21
+- [x] Commit: `chore(plans): move organiclever-fe-local-first to done`
+  > Date: 2026-04-21 | Status: done | Notes: committed and pushed to main

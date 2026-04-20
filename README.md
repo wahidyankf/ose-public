@@ -116,27 +116,19 @@ See [Code Quality](./governance/development/quality/code.md) and [Commit Message
 
 ## 📊 CI & Test Coverage
 
-All projects enforce ≥90% test coverage as part of `test:quick`. Coverage is uploaded to [Codecov](https://codecov.io/gh/wahidyankf/ose-public) on every push to `main`.
+All projects enforce ≥90% test coverage as part of `test:quick`.
 
-**Quality gates**: pre-commit hooks (formatting, linting), pre-push hooks (`typecheck`, `lint`, `test:quick` for affected projects), [PR Quality Gate](./.github/workflows/pr-quality-gate.yml), and [Codecov Upload](./.github/workflows/codecov-upload.yml) on push to `main`.
+**Quality gates**: pre-commit hooks (formatting, linting), pre-push hooks (`typecheck`, `lint`, `test:quick` for affected projects), and [PR Quality Gate](./.github/workflows/pr-quality-gate.yml).
 
 - OSE Platform
   - [![Deploy](https://github.com/wahidyankf/ose-public/actions/workflows/test-and-deploy-oseplatform-web.yml/badge.svg)](https://github.com/wahidyankf/ose-public/actions/workflows/test-and-deploy-oseplatform-web.yml)
-  - [`oseplatform-web`](./apps/oseplatform-web/) [![codecov](https://codecov.io/gh/wahidyankf/ose-public/graph/badge.svg?flag=oseplatform-web)](https://codecov.io/gh/wahidyankf/ose-public)
-  - [`oseplatform-cli`](./apps/oseplatform-cli/) [![codecov](https://codecov.io/gh/wahidyankf/ose-public/graph/badge.svg?flag=oseplatform-cli)](https://codecov.io/gh/wahidyankf/ose-public)
 - AyoKoding
   - [![Deploy](https://github.com/wahidyankf/ose-public/actions/workflows/test-and-deploy-ayokoding-web.yml/badge.svg)](https://github.com/wahidyankf/ose-public/actions/workflows/test-and-deploy-ayokoding-web.yml)
-  - [`ayokoding-web`](./apps/ayokoding-web/) [![codecov](https://codecov.io/gh/wahidyankf/ose-public/graph/badge.svg?flag=ayokoding-web)](https://codecov.io/gh/wahidyankf/ose-public)
-  - [`ayokoding-cli`](./apps/ayokoding-cli/) [![codecov](https://codecov.io/gh/wahidyankf/ose-public/graph/badge.svg?flag=ayokoding-cli)](https://codecov.io/gh/wahidyankf/ose-public)
 - OrganicLever
   - [![Deploy](https://github.com/wahidyankf/ose-public/actions/workflows/test-and-deploy-organiclever.yml/badge.svg)](https://github.com/wahidyankf/ose-public/actions/workflows/test-and-deploy-organiclever.yml)
-  - [`organiclever-fe`](./apps/organiclever-fe/) [![codecov](https://codecov.io/gh/wahidyankf/ose-public/graph/badge.svg?flag=organiclever-fe)](https://codecov.io/gh/wahidyankf/ose-public)
-  - [`organiclever-be`](./apps/organiclever-be/) [![codecov](https://codecov.io/gh/wahidyankf/ose-public/graph/badge.svg?flag=organiclever-be)](https://codecov.io/gh/wahidyankf/ose-public)
 - Wahidyankf
   - [![Deploy](https://github.com/wahidyankf/ose-public/actions/workflows/test-and-deploy-wahidyankf-web.yml/badge.svg)](https://github.com/wahidyankf/ose-public/actions/workflows/test-and-deploy-wahidyankf-web.yml)
-  - [`wahidyankf-web`](./apps/wahidyankf-web/) [![codecov](https://codecov.io/gh/wahidyankf/ose-public/graph/badge.svg?flag=wahidyankf-web)](https://codecov.io/gh/wahidyankf/ose-public)
 - [`rhino-cli`](./apps/rhino-cli/)
-  - [![codecov](https://codecov.io/gh/wahidyankf/ose-public/graph/badge.svg?flag=rhino-cli)](https://codecov.io/gh/wahidyankf/ose-public)
 
 For polyglot demo app CI badges, see the [`ose-primer`](https://github.com/wahidyankf/ose-primer) repository.
 

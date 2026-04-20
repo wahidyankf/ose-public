@@ -25,7 +25,7 @@ graph TD
     end
 
     subgraph CICD["CI Pipelines"]
-        MAIN_CI["Main CI<br/>──────────────────<br/>typecheck, lint, test:quick<br/>Codecov upload<br/>On schedule"]:::ci
+        MAIN_CI["Main CI<br/>──────────────────<br/>typecheck, lint, test:quick<br/>On schedule"]:::ci
 
         BE_E2E["BE E2E CI<br/>──────────────────<br/>Playwright<br/>tRPC API tests<br/>Scheduled"]:::ci
 

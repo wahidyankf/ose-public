@@ -179,7 +179,7 @@ A program that directly executes source code or an intermediate representation, 
 
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
-flowchart LR
+flowchart TB
     CS["Source code"] --> CC["Compiler\n(offline)"] --> CA["Binary /\nmachine code"] --> CR["Runs\nindependently"]
 
     classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
@@ -190,7 +190,7 @@ flowchart LR
 
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
-flowchart LR
+flowchart TB
     IS["Source code"] --> II["Interpreter\n(reads + executes)"] --> IR["Result"]
 
     classDef teal fill:#029E73,color:#fff,stroke:#029E73
@@ -239,7 +239,7 @@ In Lisp: both code and data are S-expressions (lists). A macro receives its argu
 
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
-flowchart LR
+flowchart TB
     OC["Source code\n(text)"] -. "separate\nrepresentations" .-> OD["Runtime data\n(objects)"]
 
     classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
@@ -250,7 +250,7 @@ flowchart LR
 
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
-flowchart LR
+flowchart TB
     LC["Code:\n(+ 1 2)"] <-->|"same structure"| LD["Data:\nList of Symbol and Numbers"]
 
     classDef teal fill:#029E73,color:#fff,stroke:#029E73
@@ -299,7 +299,7 @@ _Source: R5RS §7.3; Wikipedia: Syntactic sugar_
 
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
-flowchart LR
+flowchart TB
     R["READ\nparse one\nS-expression"] --> E["EVAL\nevaluate in\ncurrent env"] --> P["PRINT\ndisplay\nresult"] --> L["LOOP\nback to READ"] --> R
 
     classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
@@ -331,7 +331,7 @@ A single table of bindings for one scope — the local variables of one function
 
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
-flowchart LR
+flowchart TB
     GF["Global Frame\n+ → builtin\ndefine → special\nfact → Lambda"]
     LF["Call Frame\nn → 5"]
     IF["Inner Frame\nacc → 120"]
@@ -377,7 +377,7 @@ A scoping rule where a variable's binding is determined by the **runtime call st
 
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
-flowchart LR
+flowchart TB
     LS1["n=1, define f,\nredefine n=100"] --> LS2["f sees n=1\n(definition env)"]
 
     classDef teal fill:#029E73,color:#fff,stroke:#029E73
@@ -388,7 +388,7 @@ flowchart LR
 
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
-flowchart LR
+flowchart TB
     DS1["n=1, define f,\nredefine n=100, call f"] --> DS2["f sees n=100\n(caller's env)"]
 
     classDef brown fill:#CA9161,color:#fff,stroke:#CA9161
@@ -424,7 +424,7 @@ A function call in **tail position** — the final operation performed before a 
 
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
-flowchart LR
+flowchart TB
     NT1["return foo() + 1"] --> NT2["foo() returns\nthen + 1 must still happen\ncaller frame stays alive"]
 
     classDef brown fill:#CA9161,color:#fff,stroke:#CA9161
@@ -435,7 +435,7 @@ flowchart LR
 
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
-flowchart LR
+flowchart TB
     T1["return foo()"] --> T2["foo() result IS\nthe caller's result\ncaller frame immediately useless"]
 
     classDef teal fill:#029E73,color:#fff,stroke:#029E73
@@ -454,7 +454,7 @@ flowchart LR
 
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
-flowchart LR
+flowchart TB
     W1["call f(n)"] --> W2["call f(n-1)"] --> W3["call f(n-2)"] --> Wd["... n frames ..."] --> We["stack overflow"]
 
     classDef brown fill:#CA9161,color:#fff,stroke:#CA9161

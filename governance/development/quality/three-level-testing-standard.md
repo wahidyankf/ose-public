@@ -170,7 +170,6 @@ Coverage is enforced at three gates:
 
 - **Pre-push hook** — `test:quick` runs `test:unit` + `rhino-cli test-coverage validate` before every push
 - **PR quality gate** — same `test:quick` pipeline runs on every pull request in CI
-- **Scheduled CRON** — `codecov-upload.yml` uploads coverage reports from `test:quick` on every push to `main`
 
 `test:quick` is defined as `test:unit` followed immediately by `rhino-cli test-coverage validate <coverage-file> <threshold>`. The threshold is project-specific (see "Coverage Threshold Rationale" below).
 
@@ -257,12 +256,11 @@ The `typecheck` and `build` Nx targets depend on `codegen`. This means contract 
 
 The following table maps GitHub Actions workflows to the test levels they execute:
 
-| Workflow                | lint | test:unit        | spec-coverage | test:integration | test:e2e | When           |
-| ----------------------- | ---- | ---------------- | ------------- | ---------------- | -------- | -------------- |
-| Pre-push hook           | Yes  | Via `test:quick` | Yes           | No               | No       | Every push     |
-| PR quality gate         | Yes  | Via `test:quick` | No            | No               | No       | Every PR       |
-| `test-and-deploy-*.yml` | Yes  | Via `test:quick` | Yes           | Yes              | Yes      | CRON 2x daily  |
-| `codecov-upload.yml`    | No   | Via `test:quick` | No            | No               | No       | Push to `main` |
+| Workflow                | lint | test:unit        | spec-coverage | test:integration | test:e2e | When          |
+| ----------------------- | ---- | ---------------- | ------------- | ---------------- | -------- | ------------- |
+| Pre-push hook           | Yes  | Via `test:quick` | Yes           | No               | No       | Every push    |
+| PR quality gate         | Yes  | Via `test:quick` | No            | No               | No       | Every PR      |
+| `test-and-deploy-*.yml` | Yes  | Via `test:quick` | Yes           | Yes              | Yes      | CRON 2x daily |
 
 `lint` (including static a11y checks via oxlint jsx-a11y plugin for TypeScript UI projects) runs in all three enforcement gates: the pre-push hook, the PR quality gate, and Test CI workflows. `spec-coverage` runs in the pre-push hook and all Test CI workflows, ensuring every Gherkin step has a matching step definition. The pre-push hook intentionally omits integration and E2E tests. These tests require Docker infrastructure (PostgreSQL, running servers) and are too slow and environment-dependent to run on every push. The PR quality gate omits `spec-coverage` because it targets only the fast `test:quick` path used for merge checks. The scheduled `test-and-deploy-*.yml` workflows cover integration, E2E, and spec-coverage on a regular cadence for production apps.
 
@@ -443,4 +441,4 @@ See [Nx Target Standards](../infra/nx-targets.md) for CI schedule details.
 
 ## See Also
 
-- [Code Coverage Reference](../../../docs/reference/code-coverage.md) - How coverage is measured (rhino-cli algorithm, per-project tools, exclusion patterns, local vs Codecov differences)
+- [Code Coverage Reference](../../../docs/reference/code-coverage.md) - How coverage is measured (rhino-cli algorithm, per-project tools, exclusion patterns)

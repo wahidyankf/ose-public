@@ -85,7 +85,6 @@ Every workflow currently in the repository follows this rule:
 | ------------------------------------ | ------------------------------------- |
 | `PR - Quality Gate`                  | `pr-quality-gate.yml`                 |
 | `PR - Validate Links`                | `pr-validate-links.yml`               |
-| `Codecov Upload`                     | `codecov-upload.yml`                  |
 | `Test and Deploy - AyoKoding Web`    | `test-and-deploy-ayokoding-web.yml`   |
 | `Test and Deploy - OSE Platform Web` | `test-and-deploy-oseplatform-web.yml` |
 | `Test and Deploy - OrganicLever`     | `test-and-deploy-organiclever.yml`    |

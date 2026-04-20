@@ -415,9 +415,7 @@ Follow this checklist in order when adding a new app variant to the monorepo.
    `.github/actions/setup-{lang}/action.yml` before wiring it into any workflow.
 9. Add language detection to the PR quality gate workflow so `nx affected` picks up the new
    project type.
-10. Add a coverage upload step to `codecov-upload.yml` pointing to the correct LCOV/JaCoCo report
-    path for the new app.
-11. Update the coverage section of `CLAUDE.md` with the new app's threshold and validate command.
+10. Update the coverage section of `CLAUDE.md` with the new app's threshold and validate command.
 
 ## E2E Test Pairing Rule
 

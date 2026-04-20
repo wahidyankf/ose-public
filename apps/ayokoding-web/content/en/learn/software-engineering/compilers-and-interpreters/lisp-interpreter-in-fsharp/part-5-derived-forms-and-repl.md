@@ -237,7 +237,7 @@ define "newline" (Builtin (fun _ -> printfn ""; Nil))
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart LR
     Start["repl()\nCreate global env"]
-    Prompt["Print prompt '> '"]
+    Prompt["Print prompt"]
     Read["read input\nfrom stdin"]
     EOF{"EOF or\nnull?"}
     Parse["read input\ntext → LispVal"]

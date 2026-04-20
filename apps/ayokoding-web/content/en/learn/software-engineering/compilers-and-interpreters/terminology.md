@@ -15,20 +15,20 @@ Before diving into individual definitions, here is how all the terms relate to e
 
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
-flowchart LR
+flowchart TB
     subgraph Input["Source text"]
         SRC["characters\ne.g. ( + 1 2 )"]
     end
 
     subgraph Lexing["Lexical analysis"]
-        LEX["Lexer / Tokenizer / Scanner"]
-        TOK["Tokens\ne.g. LPAREN, PLUS, INT 1, INT 2, RPAREN"]
+        LEX["Lexer"]
+        TOK["Tokens\nLPAREN · PLUS · INT · RPAREN"]
         SRC --> LEX --> TOK
     end
 
     subgraph Parsing["Syntax analysis"]
-        PAR["Parser\nrecursive descent"]
-        AST["AST / LispVal tree\nList: Symbol + · Number 1 · Number 2"]
+        PAR["Parser"]
+        AST["AST\nList: Symbol · Number · Number"]
         TOK --> PAR --> AST
     end
 
@@ -121,40 +121,31 @@ A tree representing the _meaningful_ syntactic structure of source code, where c
 
 The word "abstract" means the tree omits nodes present in the CST that are syntactically necessary but semantically redundant.
 
+For the expression `(+ 1 2)`:
+
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
+%% CST keeps every syntax token; AST keeps only meaningful structure
 flowchart LR
-    subgraph CST["Concrete Syntax Tree (CST)\nfor: (if (> x 0) x 0)"]
-        C1["if-expr"]
+    subgraph CST["CST — every token preserved"]
+        C1["expr"]
         C2["LPAREN"]
-        C3["symbol: if"]
-        C4["test-expr"]
-        C5["LPAREN"]
-        C6["symbol: >"]
-        C7["symbol: x"]
-        C8["number: 0"]
-        C9["RPAREN"]
-        C10["conseq: symbol x"]
-        C11["alt: number 0"]
-        C12["RPAREN"]
+        C3["SYMBOL: plus"]
+        C4["NUMBER: 1"]
+        C5["NUMBER: 2"]
+        C6["RPAREN"]
         C1 --> C2
         C1 --> C3
         C1 --> C4
-        C1 --> C10
-        C1 --> C11
-        C1 --> C12
-        C4 --> C5
-        C4 --> C6
-        C4 --> C7
-        C4 --> C8
-        C4 --> C9
+        C1 --> C5
+        C1 --> C6
     end
 
-    subgraph AST["Abstract Syntax Tree (AST)\nsame expression"]
-        A1["if"]
-        A2["test: gt x 0"]
-        A3["consequent: x"]
-        A4["alternate: 0"]
+    subgraph AST["AST — meaningful nodes only"]
+        A1["apply"]
+        A2["op: plus"]
+        A3["arg: 1"]
+        A4["arg: 2"]
         A1 --> A2
         A1 --> A3
         A1 --> A4
@@ -163,7 +154,7 @@ flowchart LR
     classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
     classDef teal fill:#029E73,color:#fff,stroke:#029E73
 
-    class C1,C2,C3,C4,C5,C6,C7,C8,C9,C10,C11,C12 blue
+    class C1,C2,C3,C4,C5,C6 blue
     class A1,A2,A3,A4 teal
 ```
 
@@ -195,12 +186,20 @@ A program that directly executes source code or an intermediate representation, 
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart LR
     subgraph Compiler["Compiler"]
-        CS["Source code"] --> CC["Compiler"] --> CA["Machine code / binary"]
-        CA --> CR["Runs without compiler"]
+        direction TB
+        CS["Source code"]
+        CC["Compiler\n(offline)"]
+        CA["Binary / machine code"]
+        CR["Runs independently"]
+        CS --> CC --> CA --> CR
     end
 
     subgraph Interpreter["Interpreter"]
-        IS["Source code"] --> II["Interpreter\n(reads + executes together)"] --> IR["Result"]
+        direction TB
+        IS["Source code"]
+        II["Interpreter\n(reads + executes)"]
+        IR["Result"]
+        IS --> II --> IR
     end
 
     classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
@@ -389,15 +388,15 @@ A scoping rule where a variable's binding is determined by the **runtime call st
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart LR
-    subgraph Lexical["Lexical scope — name resolves at definition site"]
-        LS1["define n = 1\ndefine f = lambda using n\ndefine n = 100"]
-        LS2["f sees n = 1\n(its definition environment)"]
+    subgraph Lexical["Lexical scope"]
+        LS1["n=1, define f,\nredefine n=100"]
+        LS2["f sees n=1\n(definition env)"]
         LS1 --> LS2
     end
 
-    subgraph Dynamic["Dynamic scope — name resolves at call site"]
-        DS1["define n = 1\ndefine f = lambda using n\ndefine n = 100\ncall f"]
-        DS2["f sees n = 100\n(caller's current binding)"]
+    subgraph Dynamic["Dynamic scope"]
+        DS1["n=1, define f,\nredefine n=100, call f"]
+        DS2["f sees n=100\n(caller's env)"]
         DS1 --> DS2
     end
 
@@ -466,12 +465,23 @@ flowchart LR
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart LR
-    subgraph Without["Without TCO - O(n) stack"]
-        W1["call f(n)"] --> W2["call f(n-1)"] --> W3["call f(n-2)"] --> Wd["... n frames ..."] --> We["stack overflow"]
+    subgraph Without["Without TCO — O(n) stack"]
+        direction TB
+        W1["call f(n)"]
+        W2["call f(n-1)"]
+        W3["call f(n-2)"]
+        Wd["... n frames ..."]
+        We["stack overflow"]
+        W1 --> W2 --> W3 --> Wd --> We
     end
 
-    subgraph With["With TCO - O(1) stack"]
-        T1["call f(n)\nreuse same frame"] --> T2["update args\nsame frame"] --> T3["update args\nsame frame"] --> T4["done"]
+    subgraph With["With TCO — O(1) stack"]
+        direction TB
+        T1["call f(n)\nreuse frame"]
+        T2["update args"]
+        T3["update args"]
+        T4["done"]
+        T1 --> T2 --> T3 --> T4
     end
 
     classDef brown fill:#CA9161,color:#fff,stroke:#CA9161

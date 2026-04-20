@@ -412,7 +412,7 @@ Our interpreter does not implement `call/cc`, but the trampoline pattern gives a
 flowchart LR
     subgraph P2["Part 2: Front End"]
         direction LR
-        src["\"(fact 5)\""] --> tok["tokenize"] --> par["parse"] --> ast["LispVal tree"]
+        src["(fact 5)"] --> tok["tokenize"] --> par["parse"] --> ast["LispVal tree"]
     end
 
     subgraph P3["Part 3: Eval/Apply Core"]

@@ -2520,7 +2520,7 @@ func processValueUncovered(x int) int {
 
 **Key Takeaway**: Run `go test -cover` to see coverage percentage. Use `go test -coverprofile=coverage.out` to generate detailed reports. High coverage is good but doesn't replace thoughtful tests.
 
-**Why It Matters**: Test coverage reports reveal which code paths lack testing, guiding where to write new tests rather than duplicating coverage of already-tested paths. In CI pipelines, coverage gates (enforce minimum 80% coverage) prevent merging features without tests. `go test -coverprofile` integrates with tools like Codecov to track coverage trends over time, catching coverage regressions before they accumulate into poorly-tested systems that are expensive to refactor safely.
+**Why It Matters**: Test coverage reports reveal which code paths lack testing, guiding where to write new tests rather than duplicating coverage of already-tested paths. In CI pipelines, coverage gates (enforce minimum 80% coverage) prevent merging features without tests. `go test -coverprofile` integrates with CI coverage tools to track coverage trends over time, catching coverage regressions before they accumulate into poorly-tested systems that are expensive to refactor safely.
 
 ## Example 51: HTTP Middleware Chain (Production Pattern)
 

@@ -795,11 +795,6 @@ jobs:
 
       - name: Run Dialyzer
         run: mix dialyzer --halt-exit-status
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          files: ./cover/excoveralls.json
 ```
 
 ## Related Documentation

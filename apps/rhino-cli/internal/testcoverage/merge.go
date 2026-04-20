@@ -126,7 +126,7 @@ func FormatLCOVString(cm CoverageMap) string {
 	return sb.String()
 }
 
-// ResultFromCoverageMap computes a Result from a CoverageMap using Codecov's algorithm.
+// ResultFromCoverageMap computes a Result from a CoverageMap using a standard line-based algorithm.
 func ResultFromCoverageMap(cm CoverageMap, threshold float64) Result {
 	covered, partial, missed := 0, 0, 0
 	var perFile []FileResult

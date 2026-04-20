@@ -9,7 +9,7 @@ description: "A six-part series building a Scheme interpreter from scratch in Go
 tags: ["compilers", "interpreters", "lisp", "scheme", "golang", "programming-languages", "computer-science"]
 ---
 
-- [Overview](/en/learn/software-engineering/compilers-and-interpreters/lisp-interpreter-in-golang/overview)
+- [Overview: Building a Lisp Interpreter in Go](/en/learn/software-engineering/compilers-and-interpreters/lisp-interpreter-in-golang/overview)
 - [Part 1: The Shape of Lisp](/en/learn/software-engineering/compilers-and-interpreters/lisp-interpreter-in-golang/part-1-the-shape-of-lisp)
 - [Part 2: Tokenizing and Reading](/en/learn/software-engineering/compilers-and-interpreters/lisp-interpreter-in-golang/part-2-tokenizing-and-reading)
 - [Part 3: Environments and Evaluation](/en/learn/software-engineering/compilers-and-interpreters/lisp-interpreter-in-golang/part-3-environments-and-evaluation)

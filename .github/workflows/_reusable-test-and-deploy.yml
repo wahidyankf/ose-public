@@ -17,10 +17,6 @@ on:
         required: false
         type: number
         default: 120
-    secrets:
-      CODECOV_TOKEN:
-        required: false
-
 permissions:
   contents: write
 

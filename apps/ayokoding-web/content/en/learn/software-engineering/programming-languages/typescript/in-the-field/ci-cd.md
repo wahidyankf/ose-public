@@ -229,19 +229,6 @@ jobs:
         # => Run tests with coverage reporting
         # => --coverage: Generate coverage report
         # => Fails workflow if tests fail
-
-      - name: Upload coverage
-        uses: codecov/codecov-action@v4
-        # => Upload coverage to Codecov
-        # => Tracks coverage over time
-        # => Optional: requires Codecov account
-        if: matrix.node-version == '24.x'
-        # => Only upload from one Node.js version
-        # => Avoid duplicate coverage reports
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          # => Codecov upload token
-          # => Stored in repository secrets
 ```
 
 **Density**: 39 code lines, 44 annotation lines = 1.13 density (within 1.0-2.25 target)

@@ -50,12 +50,12 @@ func getSourceLinesFrom(baseDir, relPath string) map[int]string {
 }
 
 // isGoCodeLine returns true if the line contains executable Go code.
-// Matches Codecov's file fixes for Go:
+// Standard Go executable-line filtering:
 //   - Blank lines → excluded
 //   - Comment-only lines (//) → excluded
 //   - Brace-only lines ({ or }) → excluded
 //
-// Note: ( and ) are NOT excluded (Codecov only filters { and }).
+// Note: ( and ) are NOT excluded (only { and } are filtered).
 func isGoCodeLine(content string) bool {
 	s := strings.TrimSpace(content)
 	if s == "" {
@@ -110,7 +110,7 @@ func parseCoverOut(filename string) ([]coverBlock, error) {
 	return blocks, scanner.Err()
 }
 
-// ComputeGoResult computes line coverage from a Go cover.out file using Codecov's algorithm.
+// ComputeGoResult computes line coverage from a Go cover.out file using a standard line-based algorithm.
 // Source files are resolved relative to the cover.out's directory (matching the Python script
 // behaviour where the script ran from the project's own working directory).
 func ComputeGoResult(filename string, threshold float64) (Result, error) {

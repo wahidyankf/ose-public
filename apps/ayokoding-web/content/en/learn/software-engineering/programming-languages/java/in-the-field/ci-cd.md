@@ -446,14 +446,6 @@ jobs:
         # => Generates code coverage report
         # => Output: target/site/jacoco/index.html
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          files: target/site/jacoco/jacoco.xml # => JaCoCo XML report
-          fail_ci_if_error: true # => Fail workflow if upload fails
-          flags: unittests # => Label for this coverage report
-          name: codecov-umbrella # => Display name in Codecov UI
-
       - name: Publish test results
         uses: dorny/test-reporter@v1
         if: always() # => Run even if tests fail
@@ -1580,21 +1572,6 @@ if (featureFlags.isEnabled("new-checkout-flow")) {
 ### JaCoCo Coverage Reports
 
 Measure and enforce code coverage standards.
-
-**GitHub Actions with Codecov**:
-
-```yaml
-- name: Generate coverage
-  run: mvn clean test jacoco:report
-
-- name: Upload to Codecov
-  uses: codecov/codecov-action@v3
-  with:
-    files: target/site/jacoco/jacoco.xml
-    fail_ci_if_error: true
-    flags: unittests
-    # Fails build if coverage decreases
-```
 
 **Coverage enforcement**:
 

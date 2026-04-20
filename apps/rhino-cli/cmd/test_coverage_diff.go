@@ -21,7 +21,7 @@ var diffTestCoverageCmd = &cobra.Command{
 	Short: "Show coverage for changed lines only (diff coverage)",
 	Long: `Calculate coverage for only the lines changed in the current branch compared to a base ref.
 
-Uses Codecov's 3-state algorithm: covered / (covered + partial + missed).
+Uses a standard 3-state algorithm: covered / (covered + partial + missed).
 Partial lines count as NOT covered.`,
 	Example: `  # Diff coverage against main
   rhino-cli test-coverage diff apps/myapp/coverage/lcov.info

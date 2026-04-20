@@ -12,7 +12,7 @@ graph TD
 
     SYSTEM["OrganicLever<br/>──────────────────────<br/>Frontend SPA + Backend API<br/><br/>Google OAuth login<br/>Protected user profile<br/>Service health status"]:::system
 
-    CI("CI Pipeline<br/>──────────────────<br/>Main CI: test:quick<br/>E2E: Playwright<br/>PR Quality Gate<br/>Codecov coverage"):::ci
+    CI("CI Pipeline<br/>──────────────────<br/>Main CI: test:quick<br/>E2E: Playwright<br/>PR Quality Gate"):::ci
 
     SPEC("Specifications<br/>──────────────────<br/>3 BE Gherkin features<br/>4 FE Gherkin features"):::spec
 

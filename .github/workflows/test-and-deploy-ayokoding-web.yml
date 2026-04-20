@@ -17,5 +17,3 @@ jobs:
       prod-branch: prod-ayokoding-web
       health-url: http://localhost:3101/api/trpc/meta.health
       health-timeout: 150
-    secrets:
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

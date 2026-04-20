@@ -16,6 +16,7 @@ weight: 10
   - [Networking](/en/learn/software-engineering/networking)
   - [Algorithm and Data Structures](/en/learn/software-engineering/algorithm-and-data-structures)
   - [System Design](/en/learn/software-engineering/system-design)
+  - [Compilers and Interpreters](/en/learn/software-engineering/compilers-and-interpreters)
   - [Platform Linux](/en/learn/software-engineering/platform-linux)
   - [Platform Web](/en/learn/software-engineering/platform-web)
   - [Architecture](/en/learn/software-engineering/architecture)

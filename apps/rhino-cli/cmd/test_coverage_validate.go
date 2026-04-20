@@ -17,8 +17,8 @@ var (
 
 var validateTestCoverageCmd = &cobra.Command{
 	Use:   "validate <coverage-file> <threshold>",
-	Short: "Check test coverage against a threshold (Codecov-compatible algorithm)",
-	Long: `Compute line coverage using Codecov's algorithm and compare against a threshold.
+	Short: "Check test coverage against a threshold (standard line-based algorithm)",
+	Long: `Compute line coverage using a standard line-based algorithm and compare against a threshold.
 
 Auto-detects format from the coverage file:
   - LCOV format: filenames ending in ".info" or containing "lcov"
@@ -31,7 +31,7 @@ Coverage algorithm:
   - A line is PARTIAL if hit count > 0 but some branches not taken
   - A line is MISSED if hit count = 0
   - Coverage % = covered / (covered + partial + missed)
-  - Partial lines count as NOT covered (matching Codecov's badge calculation)
+  - Partial lines count as NOT covered
 
 The coverage file path is relative to the git repository root.`,
 	Example: `  # Check Go coverage

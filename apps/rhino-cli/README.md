@@ -11,7 +11,7 @@ A Go-based CLI tool that provides utilities for repository management and automa
 ## Quick Start
 
 ```bash
-# Check test coverage against a threshold (Codecov-compatible algorithm)
+# Check test coverage against a threshold (standard line-based algorithm)
 rhino-cli test-coverage validate apps/rhino-cli/cover.out 85
 
 # Check all required development tools are installed
@@ -95,7 +95,7 @@ rhino-cli --say "hello" -o json
 
 ### test-coverage validate
 
-Check test coverage against a minimum threshold using Codecov's exact line coverage algorithm.
+Check test coverage against a minimum threshold using a standard line-based algorithm.
 Supports Go `cover.out`, LCOV, JaCoCo XML, and Cobertura XML formats; auto-detects from filename and content.
 
 ```bash
@@ -118,13 +118,13 @@ rhino-cli test-coverage validate apps/rhino-cli/cover.out 85 -q
 **What it does:**
 
 - Auto-detects format: `.info` or filename containing `lcov` → LCOV; otherwise → Go cover.out
-- Implements Codecov's line coverage algorithm exactly:
+- Implements a standard line-based algorithm:
   - **Covered**: hit count > 0 AND all branches taken (or no branches)
   - **Partial**: hit count > 0 but some branches not taken
   - **Missed**: hit count = 0
   - Coverage % = covered / (covered + partial + missed)
-  - Partial lines count as NOT covered (matching Codecov's badge calculation)
-- Go-specific filtering (matching Codecov's file fixes): excludes blank lines, comment-only
+  - Partial lines count as NOT covered
+- Go-specific filtering (standard executable-line filtering): excludes blank lines, comment-only
   lines (`//`), and brace-only lines (`{` or `}`)
 - Supports multiple output formats (text, JSON, markdown)
 
@@ -894,9 +894,9 @@ apps/rhino-cli/
 │   ├── testcoverage/             # Test coverage measurement (Go cover.out + LCOV)
 │   │   ├── types.go          # Format, Result types
 │   │   ├── detect.go         # Auto-detect format from filename/content
-│   │   ├── go_coverage.go    # Go cover.out parser + Codecov algorithm
+│   │   ├── go_coverage.go    # Go cover.out parser + standard line-based algorithm
 │   │   ├── go_coverage_test.go
-│   │   ├── lcov_coverage.go  # LCOV parser + Codecov algorithm
+│   │   ├── lcov_coverage.go  # LCOV parser + standard line-based algorithm
 │   │   ├── lcov_coverage_test.go
 │   │   ├── reporter.go       # Output formatting (text, JSON, markdown)
 │   │   └── reporter_test.go
@@ -1154,9 +1154,9 @@ rhino-cli say
 
 ### v0.10.0 (2026-03-05)
 
-- Added `test-coverage validate` command for Codecov-compatible line coverage enforcement
+- Added `test-coverage validate` command for standard line-based coverage enforcement
 - Supports Go `cover.out` and LCOV formats with auto-detection from filename
-- Implements exact Codecov line coverage algorithm (covered/partial/missed classification)
+- Implements standard line-based coverage algorithm (covered/partial/missed classification)
 - Go-specific line filtering: excludes blank, comment-only, and brace-only lines
 - Three output formats: text, JSON, markdown
 - Replaces `scripts/validate-test-coverage.py`, eliminating the Python dependency

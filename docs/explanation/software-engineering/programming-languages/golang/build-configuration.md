@@ -726,11 +726,6 @@ jobs:
           go test -v -race -coverprofile=coverage.out ./...
           go tool cover -func=coverage.out
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          files: ./coverage.out
-
   # Job 4: Build
   build:
     runs-on: ubuntu-latest

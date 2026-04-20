@@ -15,7 +15,7 @@ graph TD
 
     CLI("ayokoding-cli<br/>──────────────────<br/>Content link validation<br/>Internal link checks<br/>Part of test:quick"):::ci
 
-    CI("CI Pipeline<br/>──────────────────<br/>Main CI: test:quick<br/>BE E2E: Playwright<br/>FE E2E: Playwright<br/>Codecov coverage"):::ci
+    CI("CI Pipeline<br/>──────────────────<br/>Main CI: test:quick<br/>BE E2E: Playwright<br/>FE E2E: Playwright"):::ci
 
     VERCEL("Vercel Platform<br/>──────────────────<br/>CDN + Edge Network<br/>ISR revalidation<br/>Standalone deployment"):::infra
 

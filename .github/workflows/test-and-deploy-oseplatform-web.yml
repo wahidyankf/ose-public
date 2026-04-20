@@ -17,5 +17,3 @@ jobs:
       prod-branch: prod-oseplatform-web
       health-url: http://localhost:3100/api/trpc/meta.health
       health-timeout: 150
-    secrets:
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

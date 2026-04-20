@@ -5,17 +5,15 @@ category: reference
 tags:
   - coverage
   - testing
-  - codecov
   - rhino-cli
   - quality
 created: 2026-03-22
-updated: 2026-04-19
+updated: 2026-04-20
 ---
 
 # Code Coverage Reference
 
-How code coverage is measured locally via `rhino-cli`, uploaded to Codecov,
-and why the two can differ.
+How code coverage is measured and validated across all projects in the monorepo.
 
 > **Note**: The polyglot demo apps (`a-demo-be-*`, `a-demo-fe-*`) and their
 > per-language coverage tooling were extracted to
@@ -26,15 +24,15 @@ and why the two can differ.
 
 ## Coverage Algorithm
 
-All projects use `rhino-cli test-coverage validate` which implements
-Codecov's line-based algorithm:
+All projects use `rhino-cli test-coverage validate` which applies a standard
+line-based algorithm:
 
 - **COVERED**: hit count > 0 AND all branches taken (or no branches)
 - **PARTIAL**: hit count > 0 but some branches not taken
 - **MISSED**: hit count = 0
 - **Coverage %** = `covered / (covered + partial + missed)`
 
-Partial lines count as NOT covered, matching Codecov's badge calculation.
+Partial lines count as NOT covered.
 
 ## Supported Formats
 
@@ -94,92 +92,23 @@ Partial lines count as NOT covered, matching Codecov's badge calculation.
 | --------------- | --------- | ---------------------------------------------------------------------------------------------------- |
 | organiclever-be | 90%       | Uses AltCover instead of XPlat Code Coverage to avoid F# `task{}` async state machine BRDA inflation |
 
-## Local vs Codecov Differences
-
-Local validation (`rhino-cli`) and Codecov can report different numbers
-for the same project. Understanding why prevents false alarms.
-
-### Why They Can Differ
-
-**rhino-cli** reads only what is in the coverage file. If a file is excluded
-via `grep -v` or the coverage tool's own exclusion config, rhino-cli never
-sees it.
-
-**Codecov** receives the coverage file AND scans the source tree via the
-`paths` directive in `codecov.yml`. If Codecov finds a source file in the
-repository that is NOT in the coverage file, it counts every line in that
-file as uncovered.
-
-### When They Match
-
-For most languages (TypeScript, F#), the coverage tool itself handles exclusions.
-The output file already omits excluded code, so Codecov and rhino-cli see the
-same data.
-
-### When They Diverge: Go Projects
-
-Go's `go test -coverprofile` has no exclusion mechanism. It instruments
-every package in the module. Without matching ignore rules in `codecov.yml`,
-Codecov may count excluded files as having 0% coverage.
-
-**Fix**: Declare excluded file patterns in `codecov.yml` under `ignore:`.
-Codecov applies the ignore rules server-side, matching rhino-cli's local result.
-
-### Codecov Ignore Rules
-
-The `codecov.yml` file contains global ignore patterns:
-
-```yaml
-ignore:
-  - "**/types.go"
-  - "**/generated-contracts/**"
-```
-
-The `**/types.go` rule prevents Go type-definition files (no executable
-statements) from dragging down coverage across all Go projects.
-
 ## CI Integration
 
-Coverage is measured during `test:quick` (part of the pre-push hook and
-main CI) and uploaded to Codecov on push to `main`.
+Coverage is measured during `test:quick` (part of the pre-push hook and main CI).
 
 ### Pipeline Flow
 
 1. `test:unit` runs tests and generates the coverage file
 2. `rhino-cli test-coverage validate <file> <threshold>` checks locally
 3. Both steps are combined in `test:quick`
-4. On push to `main`, codecov-upload uploads coverage files to Codecov
-5. Codecov applies `codecov.yml` ignore rules and computes percentages
-6. Each project has a Codecov flag with `carryforward: true` so
-   non-affected projects retain their previous coverage
-
-### Codecov Flags
-
-Every project with coverage has a flag in `codecov.yml` with a `paths`
-filter pointing to its source directory. This scopes Codecov's per-project
-reporting:
-
-```yaml
-flags:
-  rhino-cli:
-    paths:
-      - apps/rhino-cli/
-    carryforward: true
-```
 
 ## Troubleshooting
 
-### Codecov shows lower coverage than local
-
-1. Check if the coverage file excludes files that exist in the source tree
-2. Add matching patterns to `codecov.yml` `ignore:` section
-3. Verify the correct coverage file is uploaded in `codecov-upload.yml`
-
 ### Coverage drops after adding a new file
 
-New source files with no test coverage appear as 0% in both rhino-cli and
-Codecov. Either write tests or add the file to the appropriate exclusion
-config (language tool config or `codecov.yml` ignore).
+New source files with no test coverage appear as 0% in rhino-cli. Either
+write tests or add the file to the appropriate exclusion config (language
+tool config).
 
 ### `rhino-cli --exclude` flag
 

@@ -213,4 +213,4 @@ workflow which runs `--all` projects.
 - [Nx Configuration Reference](./nx-configuration.md) - Workspace configuration options
 - [Nx Target Standards](../../governance/development/infra/nx-targets.md) - Canonical target names and caching rules
 - [Three-Level Testing Standard](../../governance/development/quality/three-level-testing-standard.md) - Unit, integration, and E2E testing requirements
-- [Code Coverage Reference](./code-coverage.md) - Coverage measurement, tools, and Codecov integration
+- [Code Coverage Reference](./code-coverage.md) - Coverage measurement and tools

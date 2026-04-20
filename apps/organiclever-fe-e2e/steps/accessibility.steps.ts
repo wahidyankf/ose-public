@@ -11,15 +11,19 @@ import { createBdd } from "playwright-bdd";
 import { expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
-const { When, Then } = createBdd();
+const { Given, When, Then } = createBdd();
+
+Given("the app is running", async () => {
+  // No-op: server is assumed running for all e2e scenarios
+});
 
 When("I navigate to any page", async ({ page }) => {
-  await page.goto("/login");
+  await page.goto("/");
   await page.waitForLoadState("load");
 });
 
-When("I navigate to \\/login using only the keyboard", async ({ page }) => {
-  await page.goto("/login");
+When("I navigate to the landing page", async ({ page }) => {
+  await page.goto("/");
   await page.waitForLoadState("load");
   // Focus the page body to establish a keyboard starting point.
   await page.locator("body").press("Tab");

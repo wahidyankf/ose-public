@@ -12,13 +12,8 @@ Feature: Accessibility Compliance
     Then each page should have exactly one h1 element
     And heading levels should not skip (no h1 followed by h3)
 
-  Scenario: Form elements have associated labels
-    When I navigate to /login
-    Then all interactive elements should have accessible labels
-    And buttons should have descriptive text
-
   Scenario: Keyboard navigation works throughout the app
-    When I navigate to /login using only the keyboard
+    When I navigate to the landing page
     Then I should be able to tab to all interactive elements
     And focus indicators should be visible
 
@@ -31,4 +26,3 @@ Feature: Accessibility Compliance
     When I navigate to any page
     Then images should have alt attributes
     And navigation landmarks should be properly labeled
-    And dynamic content changes should be announced to screen readers

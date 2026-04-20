@@ -134,7 +134,7 @@ sequenceDiagram
 
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
-flowchart LR
+flowchart TB
     G["Global Frame\nmake-adder → Lambda\nadd5 → Closure"]
     C["Closure Frame\nn → 5\n(created when make-adder was called)"]
     I["Call Frame\nx → 3\n(created when add5 is called)"]

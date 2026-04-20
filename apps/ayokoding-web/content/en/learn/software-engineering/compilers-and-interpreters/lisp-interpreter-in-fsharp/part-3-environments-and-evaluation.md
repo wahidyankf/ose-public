@@ -231,7 +231,7 @@ Notice that `apply` for a `Lambda` extends `closureEnv` — the environment capt
 
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
-flowchart LR
+flowchart TB
     LD["define f\nas lambda using n"] --> LE["Closure captures env\nwhere lambda was defined\nwhere n is bound"]
 
     classDef teal fill:#029E73,color:#fff,stroke:#029E73
@@ -242,7 +242,7 @@ flowchart LR
 
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
-flowchart LR
+flowchart TB
     DD["define f\nas lambda using n"] --> DE["Would look up n\nin caller's environment\npredictable!"]
 
     classDef brown fill:#CA9161,color:#fff,stroke:#CA9161

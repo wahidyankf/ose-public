@@ -190,7 +190,7 @@ Once parsed into nested lists, evaluation follows the structure directly:
 
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
-flowchart LR
+flowchart TB
     expr["(+ 1 2)\nList [Symbol '+'; Number 1; Number 2]"]
     e1["eval Symbol '+'\n→ builtin addition fn"]
     e2["eval Number 1\n→ 1"]

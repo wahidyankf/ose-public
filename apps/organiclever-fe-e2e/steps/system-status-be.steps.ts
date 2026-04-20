@@ -17,7 +17,7 @@ Given("ORGANICLEVER_BE_URL is unset", async () => {
   // No-op: the test server is assumed to start without ORGANICLEVER_BE_URL.
 });
 
-Given("ORGANICLEVER_BE_URL is {string}", async (_fixtures, _url: string) => {
+Given("ORGANICLEVER_BE_URL is {string}", async ({}, _url: string) => {
   // ORGANICLEVER_BE_URL is a server-side env var set at process start.
   // This step documents the precondition for CI environments where the
   // server is started with the appropriate env var.

@@ -222,7 +222,8 @@ See [`README.md`](./README.md) for overview, [`brd.md`](./brd.md) for business i
 
 - [x] Push changes to `main`
   > Date: 2026-04-20 | Status: done | Notes: pushed branch worktree-reflective-stargazing-gray; draft PR #22 opened at https://github.com/wahidyankf/ose-public/pull/22 — merge to main required before CI workflow_dispatch
-- [ ] Trigger `test-and-deploy-organiclever.yml` manually via GitHub Actions `workflow_dispatch`
+- [x] Trigger `test-and-deploy-organiclever.yml` manually via GitHub Actions `workflow_dispatch`
+  > Date: 2026-04-21 | Status: done | Notes: triggered run https://github.com/wahidyankf/ose-public/actions/runs/24691870114 via `gh workflow run 261533820 --ref main`
 - [ ] Monitor the triggered run in GitHub Actions
 - [ ] Verify all CI jobs pass in this dependency order: `spec-coverage`, `fe-lint`, `be-integration`, `fe-integration` → `e2e` → `detect-changes` → `deploy`
 

@@ -88,7 +88,7 @@ The platform consists of the following applications across its technology stacks
 
 #### organiclever-fe
 
-- **Purpose**: Landing and promotional website for OrganicLever
+- **Purpose**: Landing site for OrganicLever — local-first mode; BE integration deferred
 - **URL**: <https://www.organiclever.com>
 - **Technology**: Next.js 16 (App Router) + React 19 + TailwindCSS
 - **Deployment**: Vercel (via `prod-organiclever-web` branch)
@@ -96,9 +96,10 @@ The platform consists of the following applications across its technology stacks
 - **Dev Command**: `nx dev organiclever-fe`
 - **Location**: `apps/organiclever-fe/`
 - **Features**:
+  - Static landing page at `/` (no network dependency)
+  - `/system/status/be` diagnostic page (probes `ORGANICLEVER_BE_URL` at request time)
+  - Dormant Effect TS service layer preserved for future BE rewire
   - Radix UI / shadcn-ui component library
-  - Cookie-based authentication
-  - JSON data files for content
   - Production Dockerfile with standalone output
 
 ### Backend Services

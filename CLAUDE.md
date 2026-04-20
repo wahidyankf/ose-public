@@ -135,14 +135,14 @@ npm run doctor -- --scope minimal # Check only core tools (git, volta, node, npm
 
 **Coverage thresholds** (all enforced via `rhino-cli test-coverage validate` in `test:quick`):
 
-| Project(s)                                                                                                    | Threshold | Report format                 | Notes                                                  |
-| ------------------------------------------------------------------------------------------------------------- | --------- | ----------------------------- | ------------------------------------------------------ |
-| Go CLI projects (`ayokoding-cli`, `oseplatform-cli`, `rhino-cli`, `libs/golang-commons`, `libs/hugo-commons`) | ≥90%      | `cover.out` (go test)         |                                                        |
-| `organiclever-be`                                                                                             | ≥90%      | AltCover LCOV (`altcov.info`) | Uses `--linecover` to avoid F# `task{}` BRDA inflation |
-| `ayokoding-web`, `oseplatform-web`, `wahidyankf-web`                                                          | ≥80%      | LCOV (Vitest)                 |                                                        |
-| `organiclever-fe`                                                                                             | ≥70%      | LCOV                          | fe threshold: API/auth layers fully mocked by design   |
+| Project(s)                                                                                                    | Threshold | Report format                 | Notes                                                                               |
+| ------------------------------------------------------------------------------------------------------------- | --------- | ----------------------------- | ----------------------------------------------------------------------------------- |
+| Go CLI projects (`ayokoding-cli`, `oseplatform-cli`, `rhino-cli`, `libs/golang-commons`, `libs/hugo-commons`) | ≥90%      | `cover.out` (go test)         |                                                                                     |
+| `organiclever-be`                                                                                             | ≥90%      | AltCover LCOV (`altcov.info`) | Uses `--linecover` to avoid F# `task{}` BRDA inflation                              |
+| `ayokoding-web`, `oseplatform-web`, `wahidyankf-web`                                                          | ≥80%      | LCOV (Vitest)                 |                                                                                     |
+| `organiclever-fe`                                                                                             | ≥70%      | LCOV                          | dormant BE integration code (services/, layers/) excluded from coverage measurement |
 
-**`test:integration` caching**: Default `cache: false` in `nx.json`. Projects using in-process mocking only (MSW, Godog) override to `cache: true` in their `project.json`: `organiclever-fe` (MSW), Go CLI apps (Godog at both unit and integration levels), `hugo-commons` (Godog + tmpdir mocks), `golang-commons` (Godog + mock closures).
+**`test:integration` caching**: Default `cache: false` in `nx.json`. Projects using in-process mocking only (MSW, Godog) override to `cache: true` in their `project.json`: `organiclever-fe` (no integration tests; cache: true with passWithNoTests prevents unnecessary re-runs), Go CLI apps (Godog at both unit and integration levels), `hugo-commons` (Godog + tmpdir mocks), `golang-commons` (Godog + mock closures).
 
 **Three-level testing standard** (Go CLI apps):
 

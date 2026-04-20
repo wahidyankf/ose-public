@@ -123,38 +123,31 @@ The word "abstract" means the tree omits nodes present in the CST that are synta
 
 For the expression `(+ 1 2)`:
 
+**CST** — every syntax token preserved, including punctuation:
+
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
-%% CST keeps every syntax token; AST keeps only meaningful structure
 flowchart LR
-    subgraph CST["CST — every token preserved"]
-        C1["expr"]
-        C2["LPAREN"]
-        C3["SYMBOL: plus"]
-        C4["NUMBER: 1"]
-        C5["NUMBER: 2"]
-        C6["RPAREN"]
-        C1 --> C2
-        C1 --> C3
-        C1 --> C4
-        C1 --> C5
-        C1 --> C6
-    end
-
-    subgraph AST["AST — meaningful nodes only"]
-        A1["apply"]
-        A2["op: plus"]
-        A3["arg: 1"]
-        A4["arg: 2"]
-        A1 --> A2
-        A1 --> A3
-        A1 --> A4
-    end
+    C1["expr"] --> C2["LPAREN"]
+    C1 --> C3["SYMBOL: plus"]
+    C1 --> C4["NUMBER: 1"]
+    C1 --> C5["NUMBER: 2"]
+    C1 --> C6["RPAREN"]
 
     classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
-
     class C1,C2,C3,C4,C5,C6 blue
+```
+
+**AST** — only meaningful structure, punctuation dropped:
+
+```mermaid
+%% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
+flowchart LR
+    A1["apply"] --> A2["op: plus"]
+    A1 --> A3["arg: 1"]
+    A1 --> A4["arg: 2"]
+
+    classDef teal fill:#029E73,color:#fff,stroke:#029E73
     class A1,A2,A3,A4 teal
 ```
 

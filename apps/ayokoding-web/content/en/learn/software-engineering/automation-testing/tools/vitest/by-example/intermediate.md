@@ -1210,7 +1210,7 @@ test("covers default tier", () => {
 
 **Key Takeaway**: Configure coverage in `vitest.config.ts` with provider, reporters, included files, and thresholds. Run `npx vitest run --coverage` to generate reports.
 
-**Why It Matters**: Coverage thresholds prevent test quality regression. Without thresholds, teams gradually stop writing tests as deadlines approach. With 80% enforcement, CI blocks merges when coverage drops, maintaining quality automatically. The v8 provider adds minimal overhead (1-2% slower), while istanbul provides source-mapped coverage that's easier to debug. LCOV output integrates with CI tools (Codecov, SonarQube) for trend tracking across releases.
+**Why It Matters**: Coverage thresholds prevent test quality regression. Without thresholds, teams gradually stop writing tests as deadlines approach. With 80% enforcement, CI blocks merges when coverage drops, maintaining quality automatically. The v8 provider adds minimal overhead (1-2% slower), while istanbul provides source-mapped coverage that's easier to debug. LCOV output integrates with CI tools (e.g., SonarQube) for trend tracking across releases.
 
 ---
 

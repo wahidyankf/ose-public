@@ -146,13 +146,6 @@ jobs:
         # => -race: race detector (catches concurrency bugs)
         # => -coverprofile: generates coverage report
 
-      - name: Upload coverage
-        uses: codecov/codecov-action@v4
-        with:
-          file: ./coverage.out
-        # => Uploads coverage to codecov.io
-        # => Optional: requires Codecov account
-
   build:
     # => Job 3: Build verification
     runs-on: ubuntu-latest
@@ -700,11 +693,6 @@ jobs:
 
       - name: Test
         run: go test -v -race -coverprofile=coverage.out ./...
-
-      - name: Upload coverage
-        uses: codecov/codecov-action@v4
-        with:
-          file: ./coverage.out
 
   build:
     needs: [quality, test]

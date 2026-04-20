@@ -1271,11 +1271,6 @@ jobs:
 
       - name: Build with Maven
         run: mvn clean verify
-
-      - name: Upload coverage
-        uses: codecov/codecov-action@v3
-        with:
-          files: target/site/jacoco/jacoco.xml
 ```
 
 ### Gradle in CI

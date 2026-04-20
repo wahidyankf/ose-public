@@ -17,7 +17,7 @@ There are two mental models for how a programming language evaluates expressions
 
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
-flowchart LR
+flowchart TB
     S1["(define x 5)\n(+ x 3)"] --> S2["Substitute x → 5\n(+ 5 3)"] --> S3["Result: 8"]
 
     classDef blue fill:#0173B2,color:#fff,stroke:#0173B2

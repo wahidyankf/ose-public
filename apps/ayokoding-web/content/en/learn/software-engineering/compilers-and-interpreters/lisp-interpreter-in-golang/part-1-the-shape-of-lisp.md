@@ -54,7 +54,7 @@ A naive left-to-right reading gives `(3 + 4) * 2 = 14`. The correct answer is `3
 
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
-flowchart LR
+flowchart TB
     I1["3 + 4 * 2"] --> I2["Precedence table\n15+ levels in Java"] --> I3["Associativity\nrules"] --> I4["Special form\ngrammar"] --> I5["AST"]
 
     classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
@@ -65,7 +65,7 @@ flowchart LR
 
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
-flowchart LR
+flowchart TB
     L1["(+ 3 (* 4 2))"] --> L2["One rule:\nLPAREN = read list\nelse = read atom"] --> L5["AST"]
 
     classDef teal fill:#029E73,color:#fff,stroke:#029E73
@@ -99,7 +99,7 @@ The grammar expressed as a diagram:
 
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
-flowchart LR
+flowchart TB
     SE["S-expression"]
     A["Atom"]
     L["List\n'(' S-expr* ')'"]
@@ -227,7 +227,7 @@ Lisp programs are written in the same structure that Lisp uses for lists at runt
 
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
-flowchart LR
+flowchart TB
     src["Source code\n(text)"] -. "completely separate" .-> rt["Runtime data\n(objects, arrays)"]
 
     classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
@@ -238,7 +238,7 @@ flowchart LR
 
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
-flowchart LR
+flowchart TB
     lsrc["(+ 1 2)\nSource code"] <-->|"same structure"| lrt["List{Symbol+ Number Number}\nRuntime data"]
 
     classDef teal fill:#029E73,color:#fff,stroke:#029E73

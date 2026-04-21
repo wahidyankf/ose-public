@@ -29,11 +29,15 @@ a separate follow-on plan.
    `next/font/google`; `organiclever-fe/globals.css` imports the OL token file and
    maps font variables into Tailwind's `@theme`.
 
+5. **Documentation** — design system reference in organiclever-fe README, ts-ui component
+   catalog, ts-ui-tokens per-app brand files, governance OKLCH section, SKILL design
+   system guide.
+
 ## Source design
 
 - **Bundle**: `https://api.anthropic.com/v1/design/h/u9IUx9JniNI8qMaQJF36iw`
   (Bundle contains: `colors_and_type.css`, `Components.jsx`, `Icon.jsx` — accessed
-  2026-04-21)
+  2026-04-21) _(private Anthropic Design URL — requires authenticated session to access)_
 - **Design system files**: `colors_and_type.css`, `Components.jsx`, `Icon.jsx`
 
 > **Note on folder name**: This plan folder is named `organiclever-workout-tracker` for
@@ -46,6 +50,9 @@ a separate follow-on plan.
 **Subrepo**: `ose-public` — worktree `organiclever-adopt-design-system`.
 **Modified libs**: `libs/ts-ui-tokens`, `libs/ts-ui`
 **Modified app**: `apps/organiclever-fe` (layout + globals only — no new routes or screens)
+
+All commits go directly to `main` (trunk-based development) — no feature branches, no draft
+PRs.
 
 ## Navigation
 

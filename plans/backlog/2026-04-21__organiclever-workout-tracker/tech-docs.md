@@ -59,6 +59,13 @@ apps/organiclever-fe/src/app/
 
 libs/ts-ui/.storybook/
     └── preview.ts                ← CHANGE: also import organiclever.css
+
+Documentation files (pre-written, verify accuracy during Phase 16.5):
+    apps/organiclever-fe/README.md                           ← CHANGE: add Design System section
+    libs/ts-ui/README.md                                     ← CHANGE: add OL component catalog
+    libs/ts-ui-tokens/README.md                              ← CHANGE: add per-app brand files section
+    governance/development/frontend/design-tokens.md         ← CHANGE: add OKLCH section, update dark variant
+    .claude/skills/apps-organiclever-fe-developing-content/SKILL.md  ← CHANGE: add Design System section
 ```
 
 > **Note on test artifacts per component**: Every ts-ui component needs four files:
@@ -752,6 +759,68 @@ in `vitest run` and contribute to coverage.
 | `Navigation/SideNav`      | SideNav                     |
 
 ---
+
+## Documentation Updates
+
+The following documentation files are pre-written (target state) as part of this plan.
+During Phase 16.5 execution, verify each section against the actual implementation and
+correct any divergence before committing.
+
+### `apps/organiclever-fe/README.md` — Design System section
+
+Target content:
+
+- Palette table: 6 hues × role (terracotta/honey/sage/teal/sky/plum)
+- Warm neutral scale description (`--warm-0` through `--warm-900`)
+- Typography table: Nunito (body) and JetBrains Mono (numeric)
+- Dark mode: both `data-theme="dark"` attribute AND `.dark` class
+- Token import CSS snippet showing 4-line `globals.css` import chain
+- Opt-in note: other apps do NOT import `organiclever.css`
+- Component catalog table: 13 OL additions (3 updated + 10 new)
+
+### `libs/ts-ui/README.md` — Component catalog
+
+Target content:
+
+- Updated `Base components` table showing OL additions to Button/Alert/Input
+- New `OrganicLever components` table listing all 10 new components with props
+- Note that `organiclever.css` must be imported to activate warm tokens
+
+### `libs/ts-ui-tokens/README.md` — Per-App Brand Token Files
+
+Target content:
+
+- `## Per-App Brand Token Files` section before `## Customization Layers`
+- `organiclever.css` entry: 6 hues × 3 tints, warm neutral scale, semantic overrides,
+  radius scale, shadows, dark mode block
+- Correct 2-line import snippet (tokens.css then organiclever.css)
+- Explicit opt-in statement: sibling apps not affected
+- Updated Customization Layers (5 layers, now including brand token file as layer 2)
+
+### `governance/development/frontend/design-tokens.md` — OKLCH section
+
+Target content:
+
+- `## OKLCH Brand Tokens (OrganicLever)` section with:
+  - Why OKLCH (perceptual uniformity, wide-gamut, handoff fidelity)
+  - OL token structure (hue × tint pattern, warm neutral scale, semantic overrides)
+  - Dark mode block pattern (explicit `--color-card`/`--color-popover` overrides)
+  - OKLCH naming convention (base/ink/wash semantics)
+  - Dynamic hue background rule (inline style, not Tailwind template literal)
+- Updated `@custom-variant dark` example using compound selector
+  `(&:is([data-theme="dark"] *), &:is(.dark *))` with explanation of both activation methods
+
+### `.claude/skills/apps-organiclever-fe-developing-content/SKILL.md` — Design System section
+
+Target content:
+
+- `## Design System` section before `## Component Architecture`
+- Token import chain (4-line globals.css snippet)
+- Font loading explanation (next/font/google → CSS variable → @theme)
+- Dark mode activation (JavaScript attribute + Tailwind class, both supported)
+- Key token reference (hue vars, warm scale, semantic aliases)
+- ts-ui component usage examples (brand variants, OL-specific components)
+- Dynamic hue inline style rule
 
 ## Testing Strategy
 

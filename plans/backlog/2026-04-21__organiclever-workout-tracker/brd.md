@@ -83,4 +83,4 @@ screens can be built purely from `ts-ui` imports without reinventing visual prim
   the OL design uses `[data-theme="dark"]`. Mitigation: update `@custom-variant dark` in
   `ts-ui-tokens` to match both selectors — backward-compatible for all apps.
 - **ts-ui coverage regression** — 10 new components must have tests or the 70% threshold
-  fails. Mitigation: every new component ships with a unit test in the same PR.
+  fails. Mitigation: every new component ships with a unit test in the same commit.

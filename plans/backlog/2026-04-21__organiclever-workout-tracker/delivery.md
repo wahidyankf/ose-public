@@ -2,7 +2,10 @@
 
 ## Prerequisites
 
-- [ ] Confirm worktree `organiclever-adopt-design-system` is active and on a clean branch
+- [ ] Confirm worktree `organiclever-adopt-design-system` is on **`main` branch** —
+      run `git branch` to verify; the worktree must track `main`, not a feature branch
+- [ ] Sync with remote: `git fetch origin && git reset --hard origin/main` (ensures
+      worktree is at HEAD of `origin/main` before any work begins)
 - [ ] `npm install` from repo root
 - [ ] `npm run doctor -- --fix` from repo root (polyglot toolchain convergence — the
       `postinstall` hook runs `doctor || true` and silently tolerates drift; explicit
@@ -10,11 +13,22 @@
 - [ ] Baseline passes: `npm exec nx run ts-ui:test:quick` — note current coverage %
 - [ ] Baseline passes: `npm exec nx build organiclever-fe`
 
-### Commit conventions
+### Commit and push conventions
+
+> **Intentional deviation from worktree default**: The default ose-public worktree
+> convention routes commits through a draft PR. This plan explicitly overrides that
+> convention — all commits push directly to `origin/main` (Trunk Based Development).
+> This is a deliberate product decision, not a governance violation.
 
 - Conventional Commits, imperative mood, no period
-- Scope: `ts-ui-tokens` for token lib, `ts-ui` for component lib, `organiclever-fe` for app
-- One commit per phase group below
+- Scope: `ts-ui-tokens` for token lib, `ts-ui` for component lib, `organiclever-fe` for app,
+  `docs` for documentation-only changes
+- One commit per phase group below; do NOT bundle unrelated changes from different phases
+  or domains into a single commit
+- **After every commit, push immediately: `git push origin main`** — no feature branches,
+  no draft PRs
+- Every commit step below is immediately followed by pushing to `origin/main`. The
+  instruction is implied by this convention — no explicit push step is repeated per phase.
 
 ---
 
@@ -248,22 +262,22 @@
 
 ---
 
-## Phase 11: New component — `StatCard`
+## Phase 11: New component — `HuePicker`
 
-- [ ] **11.1** Create `libs/ts-ui/src/components/stat-card/stat-card.tsx`:
-  - No `"use client"` (InfoTip has its own client state)
-  - Import `HueName` from `../hue-picker/hue-picker` — do NOT redefine it
-  - Icon box background via **inline style** (dynamic hue — NOT a constructed Tailwind
-    class); see `tech-docs.md § 4F` for the exact inline style expression
-  - Full spec in `tech-docs.md § 4F`
-- [ ] **11.2** Create `specs/libs/ts-ui/gherkin/stat-card/stat-card.feature`:
-  - Scenario: renders label/value/unit / all hues render / InfoTip when info set
-- [ ] **11.3** Create `libs/ts-ui/src/components/stat-card/stat-card.steps.tsx`
-- [ ] **11.4** Create `libs/ts-ui/src/components/stat-card/stat-card.test.tsx`
-- [ ] **11.5** Create `libs/ts-ui/src/components/stat-card/stat-card.stories.tsx`:
-  - AllHues grid / WithInfo / WithoutInfo
+- [ ] **11.1** Create `libs/ts-ui/src/components/hue-picker/hue-picker.tsx`:
+  - `"use client"` — onChange event handler
+  - Define `HUES`, `HueName` here — this is the **single source of truth** for both
+  - Swatch background via **inline style** (dynamic hue — NOT a constructed Tailwind class); see `tech-docs.md § 4H` for the exact inline style expression
+  - `aria-pressed={value===hue}` on each swatch button
+  - Full spec in `tech-docs.md § 4H`
+- [ ] **11.2** Create `specs/libs/ts-ui/gherkin/hue-picker/hue-picker.feature`:
+  - Scenario: renders 6 swatches / click calls onChange / aria-pressed reflects selection
+- [ ] **11.3** Create `libs/ts-ui/src/components/hue-picker/hue-picker.steps.tsx`
+- [ ] **11.4** Create `libs/ts-ui/src/components/hue-picker/hue-picker.test.tsx`
+- [ ] **11.5** Create `libs/ts-ui/src/components/hue-picker/hue-picker.stories.tsx`:
+  - Default (teal selected) / ChangeSelection
 - [ ] **11.6** Run `npm exec nx run ts-ui:test:quick` — passes
-- [ ] **11.7** Commit: `feat(ts-ui): add StatCard dashboard tile component`
+- [ ] **11.7** Commit: `feat(ts-ui): add HuePicker color swatch selector`
 
 ---
 
@@ -286,22 +300,23 @@
 
 ---
 
-## Phase 13: New component — `HuePicker`
+## Phase 13: New component — `StatCard`
 
-- [ ] **13.1** Create `libs/ts-ui/src/components/hue-picker/hue-picker.tsx`:
-  - `"use client"` — onChange event handler
-  - Define `HUES`, `HueName` here — this is the **single source of truth** for both
-  - Swatch background via **inline style** (dynamic hue — NOT a constructed Tailwind class); see `tech-docs.md § 4H` for the exact inline style expression
-  - `aria-pressed={value===hue}` on each swatch button
-  - Full spec in `tech-docs.md § 4H`
-- [ ] **13.2** Create `specs/libs/ts-ui/gherkin/hue-picker/hue-picker.feature`:
-  - Scenario: renders 6 swatches / click calls onChange / aria-pressed reflects selection
-- [ ] **13.3** Create `libs/ts-ui/src/components/hue-picker/hue-picker.steps.tsx`
-- [ ] **13.4** Create `libs/ts-ui/src/components/hue-picker/hue-picker.test.tsx`
-- [ ] **13.5** Create `libs/ts-ui/src/components/hue-picker/hue-picker.stories.tsx`:
-  - Default (teal selected) / ChangeSelection
+- [ ] **13.1** Create `libs/ts-ui/src/components/stat-card/stat-card.tsx`:
+  - No `"use client"` (InfoTip has its own client state)
+  - Import `HueName` from `../hue-picker/hue-picker` — do NOT redefine it (HuePicker
+    created in Phase 11; InfoTip created in Phase 12 — both available at this point)
+  - Icon box background via **inline style** (dynamic hue — NOT a constructed Tailwind
+    class); see `tech-docs.md § 4F` for the exact inline style expression
+  - Full spec in `tech-docs.md § 4F`
+- [ ] **13.2** Create `specs/libs/ts-ui/gherkin/stat-card/stat-card.feature`:
+  - Scenario: renders label/value/unit / all hues render / InfoTip when info set
+- [ ] **13.3** Create `libs/ts-ui/src/components/stat-card/stat-card.steps.tsx`
+- [ ] **13.4** Create `libs/ts-ui/src/components/stat-card/stat-card.test.tsx`
+- [ ] **13.5** Create `libs/ts-ui/src/components/stat-card/stat-card.stories.tsx`:
+  - AllHues grid / WithInfo / WithoutInfo
 - [ ] **13.6** Run `npm exec nx run ts-ui:test:quick` — passes
-- [ ] **13.7** Commit: `feat(ts-ui): add HuePicker color swatch selector`
+- [ ] **13.7** Commit: `feat(ts-ui): add StatCard dashboard tile component`
 
 ---
 
@@ -376,10 +391,34 @@
 - [ ] **16.12** Check console: `browser_console_messages` — must be zero JavaScript errors
       or React hydration warnings
 - [ ] **16.13** Screenshot: `browser_take_screenshot` for final visual documentation
-- [ ] **16.13b** Interactive assertion: `browser_click` on a Toggle component, then
+- [ ] **16.14** Interactive assertion: `browser_click` on a Toggle component, then
       `browser_snapshot` to verify the teal active state is visible — confirms event handlers
       work in the final integrated build
-- [ ] **16.14** Commit: `feat(ts-ui): wire all new OL component exports`
+- [ ] **16.15** Commit: `feat(ts-ui): wire all new OL component exports`
+
+---
+
+## Phase 16.5: Documentation Updates
+
+Update all related `.md` files so developers can understand the design system without
+reading source code. These files were pre-written to describe the target state; verify
+each section is accurate against the actual implementation before committing.
+
+- [ ] **16.5.1** Verify `apps/organiclever-fe/README.md` — confirm the `## Design System`
+      section accurately reflects the implemented palette table, font table, dark mode
+      instructions, token import snippet, and component catalog
+- [ ] **16.5.2** Verify `libs/ts-ui/README.md` — confirm the OrganicLever components table
+      lists all 10 newly created components with correct prop signatures
+- [ ] **16.5.3** Verify `libs/ts-ui-tokens/README.md` — confirm the `## Per-App Brand Token
+    Files` section and `organiclever.css` entry are accurate
+- [ ] **16.5.4** Verify `governance/development/frontend/design-tokens.md` — confirm the
+      `## OKLCH Brand Tokens (OrganicLever)` section and updated `@custom-variant dark`
+      example are accurate
+- [ ] **16.5.5** Verify `.claude/skills/apps-organiclever-fe-developing-content/SKILL.md` —
+      confirm the `## Design System` section accurately reflects imports, font usage, dark
+      mode activation, and component usage examples
+- [ ] **16.5.6** Run `npm run lint:md` — zero markdown violations across all updated files
+- [ ] **16.5.7** Commit: `docs: update design system documentation across organiclever-fe and ts-ui`
 
 ---
 
@@ -396,16 +435,19 @@
 - [ ] **17.5** Fix ALL failures found — including preexisting issues not caused by your
       changes
 - [ ] **17.6** Verify all checks pass before pushing
-- [ ] **17.7** If any files were changed while fixing preexisting failures, review `git status`, then stage and commit: `git add -A && git commit -m "fix: resolve preexisting failures found during blast-radius quality gate"`
+- [ ] **17.7** If any files were changed while fixing preexisting failures, review `git status`, stage the specific changed files (prefer explicit paths over `git add -A`), then commit: `git commit -m "fix: resolve preexisting failures found during blast-radius quality gate"`
+- [ ] **17.8** If step 17.7 created a commit, push it: `git push origin main`
 
 ---
 
 ## Phase 18: Post-Push Verification
 
-- [ ] **18.1** Push changes to `main` (or submit draft PR from worktree branch)
-- [ ] **18.2** Monitor GitHub Actions workflows for the push (CI runs on `ubuntu-latest`)
+- [ ] **18.1** Confirm all commits are pushed: `git log origin/main..HEAD` must show nothing
+      (all local commits already pushed via `git push origin main` after each phase, and via
+      step 17.8 if step 17.7 fired)
+- [ ] **18.2** Monitor GitHub Actions workflows for the final push (CI runs on `ubuntu-latest`)
 - [ ] **18.3** Verify all CI checks pass (typecheck, lint, test:quick, spec-coverage)
-- [ ] **18.4** If any CI check fails, fix immediately and push a follow-up commit
+- [ ] **18.4** If any CI check fails, fix immediately, push a follow-up commit to `origin/main`
 - [ ] **18.5** Do NOT proceed to plan archival until CI is green
 
 ---
@@ -418,6 +460,7 @@
 - [ ] **A.4** Update `plans/backlog/README.md` — remove this plan entry
 - [ ] **A.5** Update `plans/done/README.md` — add this plan entry with completion date
 - [ ] **A.6** Commit: `chore(plans): move organiclever-adopt-design-system to done`
+- [ ] **A.7** Push archival commit: `git push origin main`
 
 ---
 

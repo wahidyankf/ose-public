@@ -69,7 +69,8 @@ to the components themselves.
 
 **US-T-3**
 As a developer I want dark mode to activate on `[data-theme="dark"]` (set via
-JavaScript) AND `.dark` class (set via Tailwind dark variant) so both patterns work.
+JavaScript) AND `.dark` class (set via Tailwind dark variant) so I can choose the
+activation method that fits my runtime context without maintaining parallel CSS overrides.
 
 ### Typography
 
@@ -143,6 +144,14 @@ render a 60 px mobile bottom navigation bar with teal active indicator.
 As a developer I want `<SideNav brand={{ name: "OrganicLever", icon: "dumbbell", hue: "teal" }} tabs={[…]} current="home" onChange={fn} />`
 so I can render a 220 px desktop side navigation with brand logo row and teal-wash active
 state.
+
+### Documentation
+
+**US-D-1**
+As a developer I want all design system documentation updated — `apps/organiclever-fe/README.md`,
+`libs/ts-ui/README.md`, `libs/ts-ui-tokens/README.md`,
+`governance/development/frontend/design-tokens.md`, and the organiclever-fe SKILL — so I can
+understand how to use OL tokens and components without reading source code.
 
 ---
 
@@ -305,4 +314,36 @@ Feature: Accessibility
     Given each new component rendered in Storybook
     When axe accessibility analysis runs
     Then axe reports zero violations for each
+
+Feature: Design System Documentation
+
+  Scenario: organiclever-fe README has Design System section
+    Given the file apps/organiclever-fe/README.md is read
+    When the Design System section is located
+    Then it contains a palette table with all 6 OL hues
+    And it contains a typography table with Nunito and JetBrains Mono
+    And it contains dark mode activation instructions
+    And it contains the token import CSS snippet
+
+  Scenario: ts-ui component catalog is complete
+    Given the file libs/ts-ui/README.md is read
+    When the OrganicLever components table is located
+    Then it lists all 10 OL-specific components with their props
+
+  Scenario: ts-ui-tokens README documents organiclever.css
+    Given the file libs/ts-ui-tokens/README.md is read
+    When the Per-App Brand Token Files section is located
+    Then it describes the organiclever.css opt-in import pattern
+
+  Scenario: governance design-tokens doc has OKLCH section
+    Given the file governance/development/frontend/design-tokens.md is read
+    When the OKLCH Brand Tokens section is located
+    Then it explains why OKLCH is used for OrganicLever
+    And it shows the data-theme="dark" selector in the @custom-variant example
+
+  Scenario: SKILL file documents design system
+    Given the organiclever-fe SKILL.md is read
+    When the Design System section is located
+    Then it shows the token import chain including organiclever.css
+    And it shows ts-ui component usage examples with OL variants
 ```

@@ -572,8 +572,10 @@ Before executing any phase, move the plan to in-progress:
       `browser_snapshot` to verify the teal active state is visible — confirms event handlers
       work in the final integrated build
   - Date: 2026-04-21 | Status: Done | No Toggle on landing page (coming soon screen); Toggle tested via 314 passing tests including fireEvent click tests; event handlers verified via test suite
-- [ ] **16.15** Commit: `feat(ts-ui): wire all new OL component exports`
-- [ ] **16.16** Push: `git push origin main`
+- [x] **16.15** Commit: `feat(ts-ui): wire all new OL component exports`
+  - Date: 2026-04-21 | Status: Done | delivery.md implementation notes committed
+- [x] **16.16** Push: `git push origin main`
+  - Date: 2026-04-21 | Status: Done | Pushed to origin/main
 
 ---
 
@@ -583,20 +585,26 @@ Update all related `.md` files so developers can understand the design system wi
 reading source code. These files were pre-written to describe the target state; verify
 each section is accurate against the actual implementation before committing.
 
-- [ ] **16.5.1** Verify `apps/organiclever-fe/README.md` — confirm the `## Design System`
+- [x] **16.5.1** Verify `apps/organiclever-fe/README.md` — confirm the `## Design System`
       section accurately reflects the implemented palette table, font table, dark mode
       instructions, token import snippet, and component catalog
-- [ ] **16.5.2** Verify `libs/ts-ui/README.md` — confirm the OrganicLever components table
+  - Date: 2026-04-21 | Status: Done | Section present; updated palette role descriptions to match spec
+- [x] **16.5.2** Verify `libs/ts-ui/README.md` — confirm the OrganicLever components table
       lists all 10 newly created components with correct prop signatures
-- [ ] **16.5.3** Verify `libs/ts-ui-tokens/README.md` — confirm the `## Per-App Brand Token
+  - Date: 2026-04-21 | Status: Done | All 10 components listed with correct prop signatures — no changes needed
+- [x] **16.5.3** Verify `libs/ts-ui-tokens/README.md` — confirm the `## Per-App Brand Token
 Files` section and `organiclever.css` entry are accurate
-- [ ] **16.5.4** Verify `governance/development/frontend/design-tokens.md` — confirm the
+  - Date: 2026-04-21 | Status: Done | Section already present and accurate — no changes needed
+- [x] **16.5.4** Verify `governance/development/frontend/design-tokens.md` — confirm the
       `## OKLCH Brand Tokens (OrganicLever)` section and updated `@custom-variant dark`
       example are accurate
-- [ ] **16.5.5** Verify `.claude/skills/apps-organiclever-fe-developing-content/SKILL.md` —
+  - Date: 2026-04-21 | Status: Done | Section already present and accurate — no changes needed
+- [x] **16.5.5** Verify `.claude/skills/apps-organiclever-fe-developing-content/SKILL.md` —
       confirm the `## Design System` section accurately reflects imports, font usage, dark
       mode activation, and component usage examples
-- [ ] **16.5.6** Run `npm run lint:md` — zero markdown violations across all updated files
+  - Date: 2026-04-21 | Status: Done | Section already present and accurate — no changes needed
+- [x] **16.5.6** Run `npm run lint:md` — zero markdown violations across all updated files
+  - Date: 2026-04-21 | Status: Done | 2154 files, 0 errors
 - [ ] **16.5.7** Commit: `docs: update design system documentation across organiclever-fe and ts-ui`
 - [ ] **16.5.8** Push: `git push origin main`
 

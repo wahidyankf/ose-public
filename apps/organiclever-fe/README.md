@@ -85,14 +85,14 @@ Coverage threshold: 70% lines (enforced by `rhino-cli test-coverage validate`).
 
 Six semantic hues with three tints each (base / ink / wash):
 
-| Hue        | Base token         | Role                              |
-| ---------- | ------------------ | --------------------------------- |
-| Terracotta | `--hue-terracotta` | Energy, workout CTAs              |
-| Honey      | `--hue-honey`      | Warning, highlights               |
-| Sage       | `--hue-sage`       | Primary brand, success            |
-| Teal       | `--hue-teal`       | Interactive elements, focus rings |
-| Sky        | `--hue-sky`        | Info, links                       |
-| Plum       | `--hue-plum`       | Accent, premium elements          |
+| Hue        | Base token         | Role                   |
+| ---------- | ------------------ | ---------------------- |
+| Terracotta | `--hue-terracotta` | Energy, warmth         |
+| Honey      | `--hue-honey`      | Accent, highlight      |
+| Sage       | `--hue-sage`       | Primary brand, success |
+| Teal       | `--hue-teal`       | Active, focus ring     |
+| Sky        | `--hue-sky`        | Info                   |
+| Plum       | `--hue-plum`       | Achievement            |
 
 Warm neutral scale: `--warm-0` (near-white `oklch(99% 0.005 80)`) through `--warm-900`
 (near-black). Semantic aliases: `--color-background`, `--color-foreground`,

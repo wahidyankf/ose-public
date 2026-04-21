@@ -12,6 +12,11 @@ const alertVariants = cva(
         default: "bg-card text-card-foreground",
         destructive:
           "bg-card text-destructive *:data-[slot=alert-description]:text-destructive/90 [&>svg]:text-current",
+        success:
+          "bg-[var(--hue-sage-wash)] text-[var(--hue-sage-ink)] border-[var(--hue-sage)] *:data-[slot=alert-description]:text-[var(--hue-sage-ink)]/80",
+        warning:
+          "bg-[var(--hue-honey-wash)] text-[var(--hue-honey-ink)] border-[var(--hue-honey)] *:data-[slot=alert-description]:text-[var(--hue-honey-ink)]/80",
+        info: "bg-[var(--hue-sky-wash)] text-[var(--hue-sky-ink)] border-[var(--hue-sky)] *:data-[slot=alert-description]:text-[var(--hue-sky-ink)]/80",
       },
     },
     defaultVariants: {
@@ -25,7 +30,15 @@ const alertVariants = cva(
  * <Alert variant="destructive"><AlertTitle>Error</AlertTitle><AlertDescription>Something went wrong.</AlertDescription></Alert>
  */
 function Alert({ className, variant, ...props }: React.ComponentProps<"div"> & VariantProps<typeof alertVariants>) {
-  return <div data-slot="alert" role="alert" className={cn(alertVariants({ variant }), className)} {...props} />;
+  return (
+    <div
+      data-slot="alert"
+      data-variant={variant ?? "default"}
+      role="alert"
+      className={cn(alertVariants({ variant }), className)}
+      {...props}
+    />
+  );
 }
 
 /** Heading line inside an Alert. Renders as a styled div placed in the alert grid layout. */

@@ -10,7 +10,7 @@ const meta: Meta<typeof Alert> = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["default", "destructive"],
+      options: ["default", "destructive", "success", "warning", "info"],
     },
   },
   args: {
@@ -96,6 +96,38 @@ export const DescriptionOnly: Story = {
   render: () => (
     <Alert>
       <AlertDescription>A brief message without a title.</AlertDescription>
+    </Alert>
+  ),
+};
+
+export const VariantSuccess: Story = {
+  name: "Variant / Success",
+  render: () => (
+    <Alert variant="success">
+      <CheckCircle />
+      <AlertTitle>Success</AlertTitle>
+      <AlertDescription>Operation completed successfully.</AlertDescription>
+    </Alert>
+  ),
+};
+
+export const VariantWarning: Story = {
+  name: "Variant / Warning",
+  render: () => (
+    <Alert variant="warning">
+      <AlertCircle />
+      <AlertTitle>Warning</AlertTitle>
+      <AlertDescription>Proceed with caution — this action may have consequences.</AlertDescription>
+    </Alert>
+  ),
+};
+
+export const VariantInfo: Story = {
+  name: "Variant / Info",
+  render: () => (
+    <Alert variant="info">
+      <AlertTitle>Info</AlertTitle>
+      <AlertDescription>Here is some useful information for you.</AlertDescription>
     </Alert>
   ),
 };

@@ -17,3 +17,15 @@ Feature: Alert component
   Scenario: Has no accessibility violations
     Given the Alert is rendered with title "Warning" and description "Something happened"
     Then the alert should have no accessibility violations
+
+  Scenario: Renders variant success
+    Given I render an Alert with variant "success"
+    Then the alert should have data-variant "success"
+
+  Scenario: Renders variant warning
+    Given I render an Alert with variant "warning"
+    Then the alert should have data-variant "warning"
+
+  Scenario: Renders variant info
+    Given I render an Alert with variant "info"
+    Then the alert should have data-variant "info"

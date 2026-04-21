@@ -79,4 +79,40 @@ describeFeature(feature, ({ Scenario }) => {
       expect(results).toHaveNoViolations();
     });
   });
+
+  Scenario("Renders variant success", ({ Given, Then }) => {
+    Given('I render an Alert with variant "success"', () => {
+      // precondition noted
+    });
+
+    Then('the alert should have data-variant "success"', () => {
+      cleanup();
+      render(<Alert variant="success">Success content</Alert>);
+      expect(screen.getByRole("alert").getAttribute("data-variant")).toBe("success");
+    });
+  });
+
+  Scenario("Renders variant warning", ({ Given, Then }) => {
+    Given('I render an Alert with variant "warning"', () => {
+      // precondition noted
+    });
+
+    Then('the alert should have data-variant "warning"', () => {
+      cleanup();
+      render(<Alert variant="warning">Warning content</Alert>);
+      expect(screen.getByRole("alert").getAttribute("data-variant")).toBe("warning");
+    });
+  });
+
+  Scenario("Renders variant info", ({ Given, Then }) => {
+    Given('I render an Alert with variant "info"', () => {
+      // precondition noted
+    });
+
+    Then('the alert should have data-variant "info"', () => {
+      cleanup();
+      render(<Alert variant="info">Info content</Alert>);
+      expect(screen.getByRole("alert").getAttribute("data-variant")).toBe("info");
+    });
+  });
 });

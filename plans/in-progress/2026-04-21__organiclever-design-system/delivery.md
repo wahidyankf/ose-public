@@ -605,8 +605,10 @@ Files` section and `organiclever.css` entry are accurate
   - Date: 2026-04-21 | Status: Done | Section already present and accurate — no changes needed
 - [x] **16.5.6** Run `npm run lint:md` — zero markdown violations across all updated files
   - Date: 2026-04-21 | Status: Done | 2154 files, 0 errors
-- [ ] **16.5.7** Commit: `docs: update design system documentation across organiclever-fe and ts-ui`
-- [ ] **16.5.8** Push: `git push origin main`
+- [x] **16.5.7** Commit: `docs: update design system documentation across organiclever-fe and ts-ui`
+  - Date: 2026-04-21 | Status: Done | 2 files changed
+- [x] **16.5.8** Push: `git push origin main`
+  - Date: 2026-04-21 | Status: Done | Pushed to origin/main
 
 ---
 
@@ -616,15 +618,23 @@ Files` section and `organiclever.css` entry are accurate
 > by your changes. Root cause orientation: proactively fix preexisting errors encountered
 > during work. Do not defer or mention-and-skip existing failures.
 
-- [ ] **17.1** Run affected typecheck: `npm exec nx affected -t typecheck`
-- [ ] **17.2** Run affected linting: `npm exec nx affected -t lint`
-- [ ] **17.3** Run affected quick tests: `npm exec nx affected -t test:quick`
-- [ ] **17.4** Run affected spec coverage: `npm exec nx affected -t spec-coverage`
-- [ ] **17.5** Fix ALL failures found — including preexisting issues not caused by your
+- [x] **17.1** Run affected typecheck: `npm exec nx affected -t typecheck`
+  - Date: 2026-04-21 | Status: Done | Passed
+- [x] **17.2** Run affected linting: `npm exec nx affected -t lint`
+  - Date: 2026-04-21 | Status: Done | Passed
+- [x] **17.3** Run affected quick tests: `npm exec nx affected -t test:quick`
+  - Date: 2026-04-21 | Status: Done | ts-ui 97.02%, organiclever-fe 80.00% — both PASS
+- [x] **17.4** Run affected spec coverage: `npm exec nx affected -t spec-coverage`
+  - Date: 2026-04-21 | Status: Done | Passed
+- [x] **17.5** Fix ALL failures found — including preexisting issues not caused by your
       changes
-- [ ] **17.6** Verify all checks pass before pushing
-- [ ] **17.7** If any files were changed while fixing preexisting failures, review `git status`, stage the specific changed files (prefer explicit paths over `git add -A`), then commit: `git commit -m "fix: resolve preexisting failures found during blast-radius quality gate"`
-- [ ] **17.8** If step 17.7 created a commit, push it: `git push origin main`
+  - Date: 2026-04-21 | Status: Done | No failures found — all gates green
+- [x] **17.6** Verify all checks pass before pushing
+  - Date: 2026-04-21 | Status: Done | All 4 targets passed
+- [x] **17.7** If any files were changed while fixing preexisting failures, review `git status`, stage the specific changed files (prefer explicit paths over `git add -A`), then commit: `git commit -m "fix: resolve preexisting failures found during blast-radius quality gate"`
+  - Date: 2026-04-21 | Status: Done | No failures found — step N/A, no commit needed
+- [x] **17.8** If step 17.7 created a commit, push it: `git push origin main`
+  - Date: 2026-04-21 | Status: Done | N/A (step 17.7 did not fire)
 
 ---
 

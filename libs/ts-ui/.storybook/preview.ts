@@ -2,6 +2,7 @@ import type { Preview } from "@storybook/nextjs-vite";
 import { withThemeByClassName } from "@storybook/addon-themes";
 
 import "@open-sharia-enterprise/ts-ui-tokens/src/tokens.css";
+import "@open-sharia-enterprise/ts-ui-tokens/src/organiclever.css";
 import "./storybook.css";
 
 const preview: Preview = {

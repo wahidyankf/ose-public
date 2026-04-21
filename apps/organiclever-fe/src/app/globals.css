@@ -1,12 +1,18 @@
 @import "tailwindcss";
 @source "../../../../libs/ts-ui/src/**/*.{ts,tsx}";
 @import "@open-sharia-enterprise/ts-ui-tokens/src/tokens.css";
+@import "@open-sharia-enterprise/ts-ui-tokens/src/organiclever.css";
+
+@theme {
+  --font-sans: var(--font-nunito), ui-rounded, system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
+}
 
 @layer base {
   * {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background font-sans text-foreground;
   }
 }

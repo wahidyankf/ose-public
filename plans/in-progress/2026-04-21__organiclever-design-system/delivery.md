@@ -124,7 +124,8 @@ Before executing any phase, move the plan to in-progress:
   - [x] DevTools shows `--hue-teal` resolving to an OKLCH value
   - [x] Focused input ring is teal
   - Date: 2026-04-21 | Status: Done | Playwright screenshot confirmed warm cream bg + Nunito rounded font
-- [ ] **2.5** Run `npm exec nx build organiclever-fe` — passes
+- [x] **2.5** Run `npm exec nx build organiclever-fe` — passes
+  - Date: 2026-04-21 | Status: Done | Build successful (verified at Phase 2 execution)
 
 ### Manual UI Verification (Playwright MCP)
 
@@ -640,20 +641,27 @@ Files` section and `organiclever.css` entry are accurate
 
 ## Phase 18: Post-Push Verification
 
-- [ ] **18.1** Confirm all commits are pushed: `git log origin/main..HEAD` must show nothing
-      (all local commits already pushed via `git push origin main` after each phase, and via
-      step 17.8 if step 17.7 fired)
-- [ ] **18.2** Monitor GitHub Actions workflows for the final push (CI runs on `ubuntu-latest`)
-- [ ] **18.3** Verify all CI checks pass (typecheck, lint, test:quick, spec-coverage)
-- [ ] **18.4** If any CI check fails, fix immediately, push a follow-up commit to `origin/main`
-- [ ] **18.5** Do NOT proceed to plan archival until CI is green
+- [x] **18.1** Confirm all commits are pushed: `git log origin/main..HEAD` must show nothing
+  - Date: 2026-04-21 | Status: Done | git log origin/main..HEAD output: (empty)
+    (all local commits already pushed via `git push origin main` after each phase, and via
+    step 17.8 if step 17.7 fired)
+- [x] **18.2** Monitor GitHub Actions workflows for the final push (CI runs on `ubuntu-latest`)
+  - Date: 2026-04-21 | Status: Done | Run #24719994188 triggered by our push
+- [x] **18.3** Verify all CI checks pass (typecheck, lint, test:quick, spec-coverage)
+  - Date: 2026-04-21 | Status: Done | All 6 jobs green: BE integration, FE integration, lint, spec-coverage, E2E tests, Detect changes
+- [x] **18.4** If any CI check fails, fix immediately, push a follow-up commit to `origin/main`
+  - Date: 2026-04-21 | Status: Done | No failures — N/A. Unrelated scheduled Wahidyankf Web run failed with tar cache infrastructure error (pre-existing)
+- [x] **18.5** Do NOT proceed to plan archival until CI is green
+  - Date: 2026-04-22 | Status: Done | CI green — proceeding to archival
 
 ---
 
 ## Plan Archival
 
-- [ ] **A.1** Verify ALL delivery checklist items are ticked
-- [ ] **A.2** Verify ALL quality gates pass (local + CI)
+- [x] **A.1** Verify ALL delivery checklist items are ticked
+  - Date: 2026-04-22 | Status: Done | All checkboxes - [x] (only A.1-A.7 remain, being executed now)
+- [x] **A.2** Verify ALL quality gates pass (local + CI)
+  - Date: 2026-04-22 | Status: Done | Local: all 4 targets green; CI: run #24719994188 all 6 jobs success
 - [ ] **A.3** Move plan folder to `plans/done/` via `git mv plans/in-progress/2026-04-21__organiclever-design-system plans/done/2026-04-21__organiclever-design-system`
 - [ ] **A.4** Update `plans/in-progress/README.md` — remove this plan entry
 - [ ] **A.5** Update `plans/done/README.md` — add this plan entry with completion date

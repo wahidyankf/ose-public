@@ -35,15 +35,15 @@ approaches:
 | 7–9                                | 121   |
 | 10+                                | 89    |
 
-| Area                            | Files with violations |
-| ------------------------------- | --------------------- |
-| `apps/ayokoding-web/content/`   | 244                   |
-| `docs/explanation/`             | 96                    |
-| `plans/done/`                   | 13                    |
-| `specs/apps/`                   | 9                     |
-| `apps/oseplatform-web/content/` | 6                     |
-| `docs/reference/`               | 5                     |
-| `docs/how-to/`                  | 1                     |
+| Area                            | Files with violations | Action            |
+| ------------------------------- | --------------------- | ----------------- |
+| `apps/ayokoding-web/content/`   | 244                   | Fix / suppress    |
+| `docs/explanation/`             | 96                    | Fix / suppress    |
+| `plans/done/`                   | 13                    | Add to `skipDirs` |
+| `specs/apps/`                   | 9                     | Suppress (C4)     |
+| `apps/oseplatform-web/content/` | 6                     | Fix / suppress    |
+| `docs/reference/`               | 5                     | Fix               |
+| `docs/how-to/`                  | 1                     | Fix               |
 
 ## Scope
 

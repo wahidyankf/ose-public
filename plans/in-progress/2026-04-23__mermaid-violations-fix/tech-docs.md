@@ -35,12 +35,16 @@ line while walking the file. When the state machine opens a new mermaid fence,
 it checks whether `prevLine == "<!-- mermaid-skip -->"`. If so, it sets
 `MermaidBlock.Skip = true` on the extracted block.
 
+The `Skip` field is added to `MermaidBlock` in `internal/mermaid/types.go`
+(where the struct is declared), not in `extractor.go`:
+
 ```go
 type MermaidBlock struct {
-    Content    string
-    StartLine  int
+    FilePath   string
     BlockIndex int
-    Skip       bool   // true when preceded by <!-- mermaid-skip -->
+    Source     string  // raw content of the fenced block
+    StartLine  int
+    Skip       bool    // true when preceded by <!-- mermaid-skip -->
 }
 ````
 
@@ -59,11 +63,18 @@ if block.Skip {
 
 ### 1.4 Implementation — reporter
 
-Summary line updated:
+Summary line updated to preserve the existing warnings count alongside the new
+skipped count:
 
 ```
-Scanned 42 block(s) in 3 file(s): 0 violation(s), 2 skipped.
+Found 0 violation(s) and 2 warning(s) in 3 file(s) (42 block(s) scanned, 2 skipped).
 ```
+
+The warnings count is retained because `complex_diagram` warnings are the only
+signal for diagrams that are too large but not flagged as errors; dropping them
+from the summary would silently regress the tool's informativeness. The
+`skipped` count is appended as a parenthetical to the existing format rather
+than replacing it.
 
 JSON output gains `"skipped": N` field.
 
@@ -100,8 +111,19 @@ C4 context and component diagrams are intentionally wide. Suppress all.
 
 #### `plans/done/` (13 files)
 
-Historical delivery diagrams. Suppress all — these are frozen records and their
-layout is irrelevant to present-day readability enforcement.
+Frozen historical records — never touched. Add `"done": true` to the `skipDirs`
+map in `walkMDFiles` (same mechanism as `.next` and `node_modules`). The
+validator will silently skip the entire directory on all future scans, including
+the widened Nx target and `--changed-only` pre-push runs.
+
+**Key choice rationale**: `walkMDFiles` uses `d.Name()`, which returns only the
+base directory name. A two-component path like `"plans/done"` can never match a
+`d.Name()` result — it would silently fail. The correct key is the bare basename
+`"done"`. As of 2026-04-23, `plans/done/` is the only directory named `done`
+in the `ose-public` repository (verified via `find . -type d -name done`), so
+using the bare basename carries no false-exclusion risk. If a second `done/`
+directory is added under a different parent in future, the skip logic should be
+upgraded to full relative-path matching rather than basename matching.
 
 #### `apps/oseplatform-web/content/updates/` (6 files)
 
@@ -143,7 +165,52 @@ all changed `.md` files regardless of Nx target scope.
 
 ---
 
-## 4. Worktree
+## 4. Rollback
+
+If the implementation needs to be reverted after merging, apply these steps in
+reverse commit order:
+
+### 4.1 Revert the skipDirs addition
+
+In `apps/rhino-cli/cmd/docs_validate_mermaid.go`, remove the `"done": true`
+entry from the `skipDirs` map. The directory was previously excluded by being
+outside the default scan scope (`docs/`, `governance/`, `.claude/`); reverting
+returns to that implicit exclusion.
+
+### 4.2 Revert the suppression mechanism
+
+Reverting the `Skip bool` field addition to `MermaidBlock` in
+`internal/mermaid/types.go` will cause a compile error in `extractor.go`
+(which sets the field) and `validator.go` (which reads it). Revert all four
+files together in a single `git revert` commit:
+
+- `internal/mermaid/types.go` — remove `Skip bool` field
+- `internal/mermaid/extractor.go` — remove `prevLine` tracking and `block.Skip` assignment
+- `internal/mermaid/validator.go` — remove `block.Skip` branch and `result.Skipped` increment
+- `internal/mermaid/reporter.go` — revert summary format to drop skipped count
+
+Also revert `ValidationResult.Skipped int` in `types.go` and the
+`"skipped": N` field from JSON output in `reporter.go`.
+
+### 4.3 Revert the Nx target scope change
+
+In `apps/rhino-cli/project.json`, change the `validate:mermaid` target back
+to scanning only `governance/` and `.claude/` instead of `.`. Update `inputs`
+accordingly.
+
+### 4.4 Revert markdown and spec changes
+
+The `<!-- mermaid-skip -->` annotations added to 300+ markdown files and the
+new Gherkin scenarios in `specs/apps/rhino/cli/gherkin/docs-validate-mermaid.feature`
+are safe to leave in place if only a partial revert is needed. They have no
+effect once the suppression mechanism in the Go code is removed (the
+`<!-- mermaid-skip -->` HTML comment is ignored by the validator without the
+`Skip` field support). A full revert should include reverting those files too
+to keep the repository clean.
+
+---
+
+## 5. Worktree
 
 All changes are in `ose-public`. Use Scope A:
 

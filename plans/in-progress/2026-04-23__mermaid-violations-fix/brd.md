@@ -34,6 +34,47 @@ are semantically correct but mechanically non-compliant.
 - Fixing straightforward violations (span-4 diagrams, slightly-over-limit labels)
   improves actual diagram readability, which is the original goal.
 
+## Affected roles
+
+**Documentation authors** — directly unblocked. Any author who currently
+pushes a commit that touches a file with a pre-existing violation will have
+their push blocked. After this plan, the pre-push hook only blocks genuinely
+new violations.
+
+**CI systems** — the `validate:mermaid` Nx target widens from scanning
+`governance/ .claude/` only to scanning the full repository. CI will enforce
+the zero-violation baseline on every future PR.
+
+**rhino-cli maintainer** — takes on responsibility for the suppression
+mechanism and the `done/` skip logic as part of the tool's ongoing behaviour.
+
+## Non-goals
+
+- This plan does not change the 30-character label length threshold or the
+  3-node parallel width threshold. Threshold tuning is a separate decision.
+- This plan does not fix violations in other repositories (`ose-infra`,
+  `ose-primer`). Each repository is independently governed.
+- This plan does not add a suppression audit command (e.g., list all
+  suppressed blocks). Audit tooling is a future enhancement.
+- This plan does not migrate the skip-directory logic from basename matching
+  to full relative-path matching. That upgrade is a future hardening task if a
+  second `done/` directory is added.
+
+## Business risks
+
+**Suppression overuse degrades enforcement signal**: Once `<!-- mermaid-skip -->`
+is available, contributors may use it indiscriminately rather than fixing
+structurally fixable diagrams. This would silently erode the value of the
+validator. Mitigation: the decision matrix in tech-docs.md documents when
+suppression is appropriate; a periodic suppression audit (grep for
+`mermaid-skip` and review count) is recommended on a quarterly cadence.
+
+**False exclusions via `done/` basename skip**: The `"done"` skip key will
+exclude any future directory named `done` from validation scans, regardless of
+its parent path. Mitigation: this constraint is documented in tech-docs.md;
+the maintainer should upgrade to path-based matching before adding any second
+`done/` directory to the repository.
+
 ## Success
 
 - `rhino-cli docs validate-mermaid .` exits 0 with 0 violations.

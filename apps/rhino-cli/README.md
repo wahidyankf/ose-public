@@ -278,6 +278,68 @@ rhino-cli docs validate-links -q
 
 This command replaces the Python script at `scripts/validate-docs-links.py` with a faster, more maintainable Go implementation.
 
+### docs validate-mermaid
+
+Validate Mermaid flowchart diagrams in markdown files for structural issues. Read-only
+checker — never modifies any file. Only `flowchart` and `graph` keyword blocks are
+validated; all other Mermaid diagram types (`sequenceDiagram`, `classDiagram`, `gantt`,
+etc.) are silently skipped.
+
+```bash
+# Validate governance/ and .claude/ (default Nx target scope)
+rhino-cli docs validate-mermaid governance/ .claude/
+
+# Validate specific files or directories
+rhino-cli docs validate-mermaid docs/ governance/
+
+# Only validate files staged in git (pre-commit use)
+rhino-cli docs validate-mermaid --staged-only
+
+# Only validate files changed since upstream (pre-push use)
+rhino-cli docs validate-mermaid --changed-only
+
+# Set custom thresholds
+rhino-cli docs validate-mermaid --max-label-len 20 --max-width 4
+
+# Output as JSON
+rhino-cli docs validate-mermaid -o json
+
+# Output as markdown report
+rhino-cli docs validate-mermaid -o markdown
+```
+
+**Three enforced rules (flowchart/graph blocks only):**
+
+1. **Label length** (`--max-label-len N`, default 30) — each visual line of a node label
+   must be ≤ N characters. Labels using `<br/>` or `\n` are split; the longest line is
+   checked. Use `--max-label-len 20` to enforce the stricter Hugo/Hextra limit.
+2. **Parallel rank width** (`--max-width N`, default 3) — max nodes at the same rank.
+   Exception: when BOTH span > max-width AND depth > max-depth, a non-blocking **warning**
+   is emitted instead of a hard error (both-exceeded path, see `--max-depth`).
+3. **Single diagram per block** — each fenced mermaid block must contain exactly one
+   `flowchart`/`graph` header.
+
+**Flags:**
+
+| Flag                | Default | Description                                                                                           |
+| ------------------- | ------- | ----------------------------------------------------------------------------------------------------- |
+| `--staged-only`     | false   | Only validate staged files (pre-commit use)                                                           |
+| `--changed-only`    | false   | Only validate files changed since upstream (pre-push use)                                             |
+| `--max-label-len N` | 30      | Max chars per visual line in a node label                                                             |
+| `--max-width N`     | 3       | Max nodes at same rank before violation                                                               |
+| `--max-depth N`     | 5       | Depth threshold for both-exceeded warning: span>max-width AND depth>max-depth emits warning not error |
+| `-o, --output`      | text    | Output format: text, json, markdown                                                                   |
+| `-v, --verbose`     | false   | Include per-file detail in text output                                                                |
+| `-q, --quiet`       | false   | Suppress non-error output                                                                             |
+
+**Exit codes:**
+
+- `0` — No violations (warnings alone do not cause failure)
+- `1` — One or more violations found
+- `2` — Command invocation error
+
+---
+
 ### agents sync
 
 Sync Claude Code agents and skills to OpenCode format. Converts `.claude/` configuration to `.opencode/` format with proper YAML frontmatter transformation.

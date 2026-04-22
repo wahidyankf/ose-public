@@ -11,6 +11,7 @@ Hygiene & INtegration Orchestrator CLI.
 | `agents-validate-claude.feature`    | `agents validate-claude`    | 5         |
 | `agents-validate-naming.feature`    | `agents validate-naming`    | 4         |
 | `docs-validate-links.feature`       | `docs validate-links`       | 4         |
+| `docs-validate-mermaid.feature`     | `docs validate-mermaid`     | 22        |
 | `doctor.feature`                    | `doctor`                    | 9         |
 | `env-backup.feature`                | `env backup`                | 18        |
 | `env-init.feature`                  | `env init`                  | 4         |

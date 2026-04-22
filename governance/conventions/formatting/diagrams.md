@@ -799,8 +799,7 @@ graph TD
     C -->|Valid| D[Business Logic]
     C -->|Invalid| E[Return 401]
     D --> F[Database]
-    F --> D
-    D --> G[Response]
+    F --> G[Response]
 ```
 ````
 
@@ -854,12 +853,12 @@ stateDiagram-v2
 graph TD
     A[OpenCode- Main Agent] --> B[docs-maker.md]
     A --> C[repo-rules-checker.md]
-    A --> D[repo-rules-maker.md]
-    A --> E[plan-maker.md]
+    B --> D[repo-rules-maker.md]
+    D --> E[plan-maker.md]
 
     B --> F[Documentation]
-    C --> G[Validation]
-    D --> H[Propagation]
+    D --> G[Validation]
+    E --> H[Propagation]
     E --> I[Planning]
 ```
 ````
@@ -1047,11 +1046,11 @@ This section documents critical Mermaid syntax rules discovered through debuggin
 
 ```mermaid
 graph TD
-    A[O(1) lookup]                  %% ERROR: Parentheses cause syntax error
-    B[function(args)]               %% ERROR: Parentheses cause syntax error
-    C[Array: [0, 1, 2]]             %% ERROR: Square brackets cause syntax error
-    D[Dict: {key: value}]           %% ERROR: Curly braces cause syntax error
-    E -->|iter()| F[Iterator]       %% ERROR: Parentheses in edge label cause syntax error
+    A[O 1 lookup]                   %% ERROR: Parentheses cause syntax error
+    A --> B[function args]          %% ERROR: Parentheses cause syntax error
+    B --> C[Array: 0 1 2]           %% ERROR: Square brackets cause syntax error
+    C --> D[Dict: key value]        %% ERROR: Curly braces cause syntax error
+    E -->|iter call| F[Iterator]    %% ERROR: Parentheses in edge label cause syntax error
 ```
 
 **Solution (PASS: WORKING):**
@@ -1070,10 +1069,10 @@ Escape special characters using HTML entity codes:
 ```mermaid
 graph TD
     A[O#40;1#41; lookup]                     %% CORRECT: Escaped parentheses
-    B[function#40;args#41;]                  %% CORRECT: Escaped parentheses
-    C[Array: #91;0, 1, 2#93;]                %% CORRECT: Escaped square brackets
-    D[Dict: #123;key: value#125;]            %% CORRECT: Escaped curly braces
-    E[Generic#60;T#62;]                      %% CORRECT: Escaped angle brackets
+    A --> B[function#40;args#41;]            %% CORRECT: Escaped parentheses
+    B --> C[Array: #91;0, 1, 2#93;]          %% CORRECT: Escaped square brackets
+    C --> D[Dict: #123;key: value#125;]      %% CORRECT: Escaped curly braces
+    D --> E[Generic#60;T#62;]                %% CORRECT: Escaped angle brackets
 ```
 
 **In edge labels:**
@@ -1134,7 +1133,7 @@ graph TD
 
 ```mermaid
 graph TD
-    A["JSON #123;\"name\":\"Alice\"#125;"]    %% ERROR: Nested escaping fails
+    A["JSON #123;name:Alice#125;"]    %% ERROR: Nested escaping fails
 ```
 
 **Why it fails**: The combination of `#123;#125;` (entity codes for curly braces) with `\"` (escaped quotes) creates nested escaping that the Mermaid parser cannot handle.
@@ -1562,7 +1561,7 @@ graph TD
 
 ```mermaid
 graph TD
-    A["Single deployable backend process"]:::blue
+    A["Single deployable<br/>backend process"]:::blue
     %% BROKEN: "Single deployable backend process" is 34 chars — clipped
     B[Client]-->|"HTTPS: fetch JWKS public key"| A
     %% BROKEN: "HTTPS: fetch JWKS public key" is 28 chars — clipped
@@ -1632,6 +1631,11 @@ graph TD
 | -------------------------------------- | ------------------ | ---------- | ----------------------------- |
 | Node label line (between `<br/>` tags) | Yes                | 20 chars   | Yes (node labels render HTML) |
 | Edge label `\|"text"\|`                | No                 | 20 chars   | No (`.` breaks parser)        |
+
+**Automated enforcement**: Run `rhino-cli docs validate-mermaid` to check these rules
+mechanically instead of counting characters manually. Use `--max-label-len 20` to enforce
+the 20-character Hugo/Hextra limit (the default is 30, matching Mermaid's `wrappingWidth`
+baseline). The tool also checks parallel rank width (Rule 2 above) and single-diagram-per-block.
 
 **Real-World Context**: All five rules were verified when fixing C4 architecture diagrams in the monorepo. Failures observed:
 
@@ -1803,11 +1807,11 @@ Combined BlockingQueue + ConcurrentHashMap:
 ```mermaid
 graph TD
     BQ[BlockingQueue] --> Put[put#40;#41;]
-    BQ --> Take[take#40;#41;]
+    Put --> Take[take#40;#41;]
 
     CHM[ConcurrentHashMap] --> PutIfAbsent
-    CHM --> Compute
-    CHM --> Merge
+    PutIfAbsent --> Compute
+    Compute --> Merge
 ```
 
 **Example 2: Concurrent Collections (After)**

@@ -12,6 +12,9 @@ Mermaid flowchart diagrams in repository markdown files degrade silently:
    200 px; at the default 16 px font that accommodates ~28–30 characters before wrapping
    or overflow begins. Setting the default warning at **30 characters** is grounded in
    this official Mermaid configuration value (not an arbitrary pick).
+   (Source: Mermaid config schema — `wrappingWidth` default 200:
+   https://mermaid.js.org/config/schema-docs/config-defs-flowchart-diagram-config-properties-wrappingwidth.html
+   — accessed 2026-04-22.)
 
 2. **Diagram too wide (parallel axis)**: Flowcharts with many parallel nodes at the same
    rank (e.g., 6 nodes at rank 2 in a TB diagram) compress each node so small that the

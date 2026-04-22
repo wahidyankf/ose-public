@@ -27,7 +27,13 @@ file has a label that is too long, a rank that is too wide, or contains two diag
 one block,
 so that I can fix the issue before it renders badly on GitHub or the production website.
 
-**Story 2 — CI / Pre-push Hook Consumer**
+**Story 2 — rhino-cli Consumer**
+
+As a rhino-cli consumer,
+I want to run `docs validate-mermaid` on specific files or directories,
+so that I can validate diagrams in targeted files without triggering a full repository scan.
+
+**Story 3 — CI / Pre-push Hook Consumer**
 
 As the pre-push hook,
 I want to validate only the markdown files changed in the current push range using the
@@ -54,6 +60,8 @@ so that the gate is fast and only relevant files are checked without slowing dow
 - Validating Mermaid syntax correctness beyond the three structural rules
 - Edge-weight labels or link text length validation
 - Automatic pre-commit hook wiring (flag available for manual/future use)
+- Independent depth-only enforcement: `depth > --max-depth` without simultaneous width
+  violation (`span > --max-width`) produces no warning or error
 
 ## Product Risks
 
@@ -230,7 +238,7 @@ Feature: Mermaid Flowchart Structural Validation
   Scenario: Markdown output produces a formatted table
     Given a markdown file containing a flowchart with a label length violation
     When the developer runs docs validate-mermaid with -o markdown
-    Then the output contains a table with File, Block, Line, Kind, and Detail columns
+    Then the output contains a table with File, Block, Line, Severity, Kind, and Detail columns
 
   Scenario: Verbose flag includes per-file detail in text output
     Given a markdown file containing a flowchart with no violations

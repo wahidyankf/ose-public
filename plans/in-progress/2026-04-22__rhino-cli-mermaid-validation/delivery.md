@@ -36,7 +36,7 @@ All work in `ose-public` subrepo. Run commands from the repo root unless noted.
   - [ ] Scenario: `--staged-only` skips unstaged files with violations
   - [ ] Scenario: `--changed-only` skips files not in push range
   - [ ] Scenario: JSON output contains structured violation fields
-  - [ ] Scenario: markdown output produces table with File, Block, Line, Kind, Detail columns
+  - [ ] Scenario: markdown output produces table with File, Block, Line, Severity, Kind, Detail columns
   - [ ] Scenario: `--verbose` includes per-file detail lines in text output
   - [ ] Scenario: `--quiet` suppresses all output when no violations
   - [ ] Scenario: flowchart exceeding both width AND depth thresholds passes with a warning
@@ -194,7 +194,9 @@ All work in `ose-public` subrepo. Run commands from the repo root unless noted.
 
 - [ ] Add `docsValidateMermaidFn` to `cmd/testable.go`
       (alongside `docsValidateAllLinksFn` — this is where internal-package delegation
-      function variables are declared, consistent with existing pattern)
+      function variables are declared, consistent with existing pattern):
+  - [ ] Add import: `github.com/wahidyankf/ose-public/apps/rhino-cli/internal/mermaid`
+  - [ ] Add variable: `var docsValidateMermaidFn = mermaid.ValidateBlocks`
 
 - [ ] Create `cmd/docs_validate_mermaid.go`
   - [ ] Declare `validateMermaidStagedOnly`, `validateMermaidChangedOnly`,
@@ -259,6 +261,12 @@ All work in `ose-public` subrepo. Run commands from the repo root unless noted.
 
 ## Phase 5 — Pre-push Hook
 
+> **Pre-condition**: Complete Phase 7's `nx run rhino-cli:validate:mermaid` scan of the
+> current repo (or run it now) and confirm it passes before wiring the hook. If the
+> validator has not yet been built (`validate:mermaid` target not yet in `project.json`),
+> complete Phase 4 first. Activating the hook before verifying the current repo is clean
+> will cause unexpected push rejections for `.md` files until Phase 7 is done.
+
 - [ ] Edit `.husky/pre-push` — add the new block **inside** the existing
       `if [ -n "$RANGE" ]; then` guard (after the naming-workflow conditional):
 
@@ -273,14 +281,16 @@ All work in `ose-public` subrepo. Run commands from the repo root unless noted.
     fi
     # ADD THIS BLOCK:
     if echo "$CHANGED" | grep -qE '\.md$'; then
-      npx nx run rhino-cli:validate:mermaid -- --changed-only
+      npx nx run rhino-cli:validate:mermaid --args="--changed-only"
     fi
   fi
   ```
 
   **Important**: The block must be inside the `if [ -n "$RANGE" ]` guard because
   `$CHANGED` is only set inside that block. Placing it outside would leave `$CHANGED`
-  empty and the condition would never trigger.
+  empty and the condition would never trigger. Use `--args="--changed-only"` (not
+  `-- --changed-only`) — the `--args=` form is the confirmed Nx syntax for passing
+  flags to `command`-type targets.
 
 - [ ] Manual smoke test: create a branch, add a `.md` file with a label-too-long
       violation, attempt push → confirm pre-push rejects with clear error message
@@ -356,7 +366,8 @@ Direct CLI invocation to verify the command works end-to-end:
       (no pre-existing violations, or document and fix any found)
 - [ ] `npm run lint:md` passes (plan modifies markdown files; verify no lint regressions)
 - [ ] Alternatively, use `nx affected -t typecheck lint test:quick spec-coverage` to run
-      all affected targets (should resolve to rhino-cli only for this change)
+      all affected targets (should resolve to rhino-cli only for this change — blast
+      radius limited to rhino-cli and its dependencies, not the full monorepo)
 
 > **Important**: Fix ALL failures found during quality gates, not just those caused by
 > your changes. This follows the root cause orientation principle — proactively fix

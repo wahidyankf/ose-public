@@ -117,6 +117,15 @@ type ValidationResult struct {
 
 ## Markdown Extractor (`internal/mermaid/extractor.go`)
 
+**Exported function signature**:
+
+```go
+func ExtractBlocks(filePath string, content string) []MermaidBlock
+```
+
+`filePath` is stored in each returned `MermaidBlock.FilePath`; `content` is the
+pre-read file contents scanned line-by-line. The caller reads the file and passes both.
+
 Scan file line-by-line. Detect fenced code blocks opened with ` ```mermaid `.
 Collect all lines until the closing ` ``` `. Return one `MermaidBlock` per fence.
 
@@ -251,6 +260,8 @@ Output: maxWidth int  (MaxWidth)
 Two exported functions share the same rank-assignment core:
   MaxWidth(nodes []Node, edges []Edge) int — returns max(len(rank-group))
   Depth(nodes []Node, edges []Edge) int    — returns len(distinct-rank-values)
+    // Special case: empty graph (no nodes) returns 0 — deliberate, not derived from formula.
+    // Non-empty graph: equals longest-path-length + 1 (rank 0 is always present for sources).
 Both call an unexported rankAssign helper to avoid duplicate logic.
 
 Algorithm (longest-path rank assignment on DAG):
@@ -468,19 +479,40 @@ if [ -n "$RANGE" ]; then
   fi
   # ADD THIS BLOCK:
   if echo "$CHANGED" | grep -qE '\.md$'; then
-    npx nx run rhino-cli:validate:mermaid -- --changed-only
+    npx nx run rhino-cli:validate:mermaid --args="--changed-only"
   fi
 fi
 ```
 
-The `-- --changed-only` passes the flag through `npx nx run` to the underlying
-`rhino-cli docs validate-mermaid --changed-only` invocation.
+The `--args="--changed-only"` passes the flag through `npx nx run` to the underlying
+`rhino-cli docs validate-mermaid --changed-only` invocation. (The `-- <flag>` passthrough
+form is not reliably supported for `command`-type Nx targets; `--args=` is the confirmed
+syntax per Nx docs.)
 
 **Note on `--staged-only`**: The `--staged-only` flag is built and tested but is **not**
 wired into any hook in this plan iteration. It is available for manual invocation
 (`rhino-cli docs validate-mermaid --staged-only`) or future pre-commit integration.
 The README.md Key Decisions section mentions pre-commit as the intended use context;
 wiring it is left to a follow-up.
+
+---
+
+## File Impact
+
+**New files** (all created under `apps/rhino-cli/`): see [Architecture](#architecture) section
+above for the complete list (`internal/mermaid/types.go`, `extractor.go`, `parser.go`, `graph.go`,
+`validator.go`, `reporter.go`; command file `cmd/docs_validate_mermaid.go`; test files for each).
+
+**Existing files modified**:
+
+| File                                            | Change                                          |
+| ----------------------------------------------- | ----------------------------------------------- |
+| `apps/rhino-cli/project.json`                   | Add `validate:mermaid` Nx target                |
+| `apps/rhino-cli/cmd/testable.go`                | Add `docsValidateMermaidFn` delegation variable |
+| `.husky/pre-push`                               | Add conditional mermaid validation block        |
+| `apps/rhino-cli/README.md`                      | Document new `validate-mermaid` subcommand      |
+| `specs/apps/rhino/cli/gherkin/README.md`        | Add row to feature-file table                   |
+| `governance/conventions/formatting/diagrams.md` | Add reference to new CLI validator              |
 
 ---
 

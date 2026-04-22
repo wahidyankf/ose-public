@@ -18,6 +18,8 @@ Single subrepo: `ose-public`. Files changed:
 - `specs/apps/rhino/cli/gherkin/` — new feature file + README update
 - `.husky/pre-push` — conditional mermaid validation block
 - `apps/rhino-cli/README.md` — document new command
+- `apps/rhino-cli/project.json` — add `validate:mermaid` Nx target
+- `apps/rhino-cli/cmd/testable.go` — add `docsValidateMermaidFn` delegation
 - `governance/conventions/formatting/diagrams.md` — reference new validator
 
 ## The Three Rules

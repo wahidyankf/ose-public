@@ -226,7 +226,7 @@ grep -q "new-heading-text" .claude/agents/agent-name.md || echo "WARNING: Python
 **Fix Categories**:
 
 1. **Missing LICENSE files**: Copy appropriate LICENSE template to directory
-2. **Wrong license type**: Replace LICENSE with correct type (FSL or MIT)
+2. **Wrong license type**: Replace LICENSE with correct type (MIT)
 3. **Cross-document inconsistency**: Update stale licensing language in docs
 
 **Fix Patterns**:
@@ -235,7 +235,7 @@ grep -q "new-heading-text" .claude/agents/agent-name.md || echo "WARNING: Python
 
 1. Re-validate LICENSE file is truly missing
 2. Determine correct license type per [Licensing Convention](../../governance/conventions/structure/licensing.md)
-3. Copy from reference: `cp LICENSE apps/[dir]/LICENSE` (FSL) or `cp libs/golang-commons/LICENSE apps/[dir]/LICENSE` (MIT)
+3. Copy from reference: `cp libs/ts-ui/LICENSE apps/[dir]/LICENSE` (MIT)
 4. Confidence: HIGH (mechanical check, no ambiguity)
 
 **Wrong License Type (HIGH)**:

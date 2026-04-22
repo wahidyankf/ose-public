@@ -246,7 +246,7 @@ Tests use Node.js built-in test runner with tsx for TypeScript support.
 
 ## License
 
-FSL-1.1-MIT
+MIT
 ```
 
 ### Step 8: Install Dependencies

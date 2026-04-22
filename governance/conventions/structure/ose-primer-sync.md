@@ -15,13 +15,13 @@ updated: 2026-04-19
 
 # ose-primer Sync Convention
 
-Authoritative directional classification governing the flow of content between `ose-public` (upstream, FSL-1.1-MIT product + MIT scaffolding) and [`ose-primer`](https://github.com/wahidyankf/ose-primer) (downstream, MIT-only template). Owned by `repo-rules-checker`, consumed by `repo-ose-primer-adoption-maker` and `repo-ose-primer-propagation-maker` via the shared `repo-syncing-with-ose-primer` skill.
+Authoritative directional classification governing the flow of content between `ose-public` (upstream, MIT throughout) and [`ose-primer`](https://github.com/wahidyankf/ose-primer) (downstream, MIT template). Owned by `repo-rules-checker`, consumed by `repo-ose-primer-adoption-maker` and `repo-ose-primer-propagation-maker` via the shared `repo-syncing-with-ose-primer` skill.
 
 ## Purpose
 
 Every path in `ose-public` MUST resolve to exactly one sync direction. Without an exhaustive classifier, two failure modes emerge:
 
-- **Leaks**: product content (FSL-licensed apps, product roadmaps, product plans) accidentally propagates to the MIT template.
+- **Leaks**: product content (product apps, product roadmaps, product plans) accidentally propagates to the primer template.
 - **Drift**: scaffolding improvements land in one repo and never reach the other.
 
 This convention defines the directional vocabulary, the available content transforms, the authoritative classifier table, the orphan-path default, and the audit rule that `repo-rules-checker` runs to guarantee coverage.
@@ -44,10 +44,10 @@ This convention does NOT:
 
 ## The two repositories
 
-| Repository   | GitHub URL                                                                   | License                                                 | Role                         |
-| ------------ | ---------------------------------------------------------------------------- | ------------------------------------------------------- | ---------------------------- |
-| `ose-public` | [github.com/wahidyankf/ose-public](https://github.com/wahidyankf/ose-public) | Per-directory: FSL-1.1-MIT (product), MIT (scaffolding) | Upstream source of truth     |
-| `ose-primer` | [github.com/wahidyankf/ose-primer](https://github.com/wahidyankf/ose-primer) | MIT (entire repo)                                       | Downstream template (public) |
+| Repository   | GitHub URL                                                                   | License           | Role                         |
+| ------------ | ---------------------------------------------------------------------------- | ----------------- | ---------------------------- |
+| `ose-public` | [github.com/wahidyankf/ose-public](https://github.com/wahidyankf/ose-public) | MIT (entire repo) | Upstream source of truth     |
+| `ose-primer` | [github.com/wahidyankf/ose-primer](https://github.com/wahidyankf/ose-primer) | MIT (entire repo) | Downstream template (public) |
 
 ## Sync directions
 
@@ -58,7 +58,7 @@ Every classified path carries exactly one of four directions:
 | `propagate`     | Content authored in `ose-public`; flows outward to `ose-primer`. Adoption-maker does NOT surface changes to these paths from the primer.                 |
 | `adopt`         | Content authored or owned in `ose-primer`; flows inward to `ose-public`. Propagation-maker does NOT surface changes to these paths from `ose-public`.    |
 | `bidirectional` | Content maintained in both repos; changes in either direction are candidates. A transform may apply when the content mixes generic and product concerns. |
-| `neither`       | Product-specific, FSL-licensed, ephemeral, or otherwise excluded. Neither agent emits findings for these paths, even when they change.                   |
+| `neither`       | Product-specific, ephemeral, or otherwise excluded. Neither agent emits findings for these paths, even when they change.                                 |
 
 ### Orphan-path rule
 
@@ -82,11 +82,11 @@ The table below is the authoritative classifier. When plan documents or other re
 | `apps/a-demo-*` (excluding `*-e2e`)                                                                               | `neither` (post-extraction) | —                        | Pre-extraction tag was `propagate`; extracted 2026-04-18; `ose-primer` is authoritative. Retained as zero-match row to tag any accidental re-introduction. |
 | `apps/a-demo-*-e2e`                                                                                               | `neither` (post-extraction) | —                        | Same rationale.                                                                                                                                            |
 | `specs/apps/a-demo/**`                                                                                            | `neither` (post-extraction) | —                        | Demo contract specs extracted alongside the demo apps.                                                                                                     |
-| `apps/organiclever-fe`                                                                                            | `neither`                   | —                        | FSL-1.1-MIT product app.                                                                                                                                   |
-| `apps/organiclever-be`                                                                                            | `neither`                   | —                        | FSL-1.1-MIT product app.                                                                                                                                   |
-| `apps/organiclever-*-e2e`                                                                                         | `neither`                   | —                        | FSL-1.1-MIT E2E suite.                                                                                                                                     |
-| `apps/ayokoding-*`                                                                                                | `neither`                   | —                        | FSL-1.1-MIT product app (including E2E and CLI).                                                                                                           |
-| `apps/oseplatform-*`                                                                                              | `neither`                   | —                        | FSL-1.1-MIT product app.                                                                                                                                   |
+| `apps/organiclever-fe`                                                                                            | `neither`                   | —                        | Product-specific app; not in primer scope.                                                                                                                 |
+| `apps/organiclever-be`                                                                                            | `neither`                   | —                        | Product-specific app; not in primer scope.                                                                                                                 |
+| `apps/organiclever-*-e2e`                                                                                         | `neither`                   | —                        | Product-specific E2E suite; not in primer scope.                                                                                                           |
+| `apps/ayokoding-*`                                                                                                | `neither`                   | —                        | Product-specific app (including E2E and CLI); not in primer scope.                                                                                         |
+| `apps/oseplatform-*`                                                                                              | `neither`                   | —                        | Product-specific app; not in primer scope.                                                                                                                 |
 | `apps/rhino-cli`                                                                                                  | `propagate`                 | `identity`               | Generic repository-management CLI; MIT-licensable and useful in template.                                                                                  |
 | `apps/oseplatform-cli`                                                                                            | `neither`                   | —                        | Product-specific site maintenance CLI.                                                                                                                     |
 | `apps/ayokoding-cli`                                                                                              | `neither`                   | —                        | Product-specific content validation CLI.                                                                                                                   |
@@ -96,7 +96,7 @@ The table below is the authoritative classifier. When plan documents or other re
 | `libs/elixir-cabbage`                                                                                             | `neither` (post-extraction) | —                        | Only consumer was `a-demo-be-elixir-phoenix`; removed Phase 8 Commit I.                                                                                    |
 | `libs/elixir-gherkin`                                                                                             | `neither` (post-extraction) | —                        | Only consumer was `a-demo-be-elixir-phoenix`; removed Phase 8 Commit I.                                                                                    |
 | `libs/elixir-openapi-codegen`                                                                                     | `neither` (post-extraction) | —                        | Only consumer was `a-demo-be-elixir-phoenix`; removed Phase 8 Commit I.                                                                                    |
-| `libs/ts-ui`                                                                                                      | `neither`                   | —                        | Consumed only by `organiclever-fe` (FSL-1.1-MIT product app); propagating UI tokens would leak product theming.                                            |
+| `libs/ts-ui`                                                                                                      | `neither`                   | —                        | Consumed only by `organiclever-fe` (product-specific app); propagating UI tokens would leak product theming.                                               |
 | `libs/ts-ui-tokens`                                                                                               | `neither`                   | —                        | Same rationale as `libs/ts-ui`.                                                                                                                            |
 | `libs/hugo-commons`                                                                                               | `neither`                   | —                        | Consumed by product sites only.                                                                                                                            |
 | `libs/*` (other)                                                                                                  | `propagate`                 | `identity`               | Default for generic libs; overridden per-lib if product-specific.                                                                                          |
@@ -107,7 +107,7 @@ The table below is the authoritative classifier. When plan documents or other re
 | `governance/principles/**`                                                                                        | `bidirectional`             | `identity`               | Universal values; improvements from either side surface.                                                                                                   |
 | `governance/vision/**`                                                                                            | `neither`                   | —                        | Product vision is `ose-public`-specific.                                                                                                                   |
 | `governance/conventions/**`                                                                                       | `bidirectional`             | `identity`               | Conventions are generic by design; mixed cases flagged per-file below.                                                                                     |
-| `governance/conventions/structure/licensing.md`                                                                   | `neither`                   | —                        | Licensing is fundamentally different (FSL vs MIT).                                                                                                         |
+| `governance/conventions/structure/licensing.md`                                                                   | `neither`                   | —                        | Licensing convention is `ose-public`-specific; covers the per-directory MIT approach for this repo only.                                                   |
 | `governance/conventions/structure/ose-primer-sync.md`                                                             | `neither`                   | —                        | This very convention is `ose-public`-specific; the primer does not need a sync-with-itself convention.                                                     |
 | `governance/development/**`                                                                                       | `bidirectional`             | `identity`               | Development practices are generic.                                                                                                                         |
 | `governance/workflows/**`                                                                                         | `bidirectional`             | `identity`               | Workflows are generic unless they name a product app.                                                                                                      |
@@ -217,7 +217,7 @@ These rules are absolute; no agent or operator may bypass them:
 
 ## Relationship to other conventions
 
-- [Per-Directory Licensing](./licensing.md) — Explains why `ose-public` uses FSL-1.1-MIT + MIT and the primer uses MIT-only.
+- [Per-Directory Licensing](./licensing.md) — Documents the per-directory MIT licensing approach for `ose-public`.
 - [File Naming Convention](./file-naming.md) — Applies uniformly to both repositories; no sync transform is required for filenames.
 - [Agent Naming Convention](./agent-naming.md) — Sync agents conform (`repo-ose-primer-adoption-maker`, `repo-ose-primer-propagation-maker`).
 - [Workflow Naming Convention](./workflow-naming.md) — Sync orchestration workflows conform (`repo-ose-primer-sync-execution`, `repo-ose-primer-extraction-execution`).

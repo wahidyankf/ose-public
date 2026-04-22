@@ -178,19 +178,9 @@ For complete principles, see [governance/principles/](./governance/principles/RE
 
 ## 📜 License
 
-This repository uses **per-directory licensing** guided by: implementation code (HOW) can be MIT;
-behavioral specifications (WHAT) must be FSL to prevent clean-room engineering of competing products.
-
-- **Product apps and behavioral specs** ([FSL-1.1-MIT](./LICENSE)): Product apps, product specs,
-  and all E2E test suites are FSL-licensed. Each product app scopes the competing-use restriction
-  to its domain
-- **Shared libraries** ([MIT](./libs/golang-commons/LICENSE)): All `libs/` are MIT-licensed.
-  (The polyglot demo apps previously stored under `apps/a-demo-*` and `specs/apps/a-demo/` were
-  extracted 2026-04-18 to the downstream [`ose-primer`](https://github.com/wahidyankf/ose-primer)
-  template, which is MIT throughout.)
-
-The FSL-1.1-MIT license converts to MIT on a **rolling per-version basis**: each commit becomes
-MIT-licensed 2 years after its first public distribution.
+This repository is licensed under the **[MIT License](./LICENSE)**. All code, documentation,
+governance materials, specifications, and AI agent configuration are MIT-licensed — free to use,
+fork, modify, and distribute for any purpose.
 
 See [LICENSING-NOTICE.md](./LICENSING-NOTICE.md) for full details |
 [LICENSE](./LICENSE) for the root license text |

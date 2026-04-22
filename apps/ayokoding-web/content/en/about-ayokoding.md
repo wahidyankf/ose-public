@@ -35,7 +35,7 @@ So when you read articles on AyoKoding about system design, architectural patter
 
 ## License
 
-AyoKoding is part of the [Open Sharia Enterprise](https://github.com/wahidyankf/ose-public) project, which uses **per-directory licensing**. The AyoKoding website code is licensed under **FSL-1.1-MIT** (Functional Source License), which converts to MIT on a rolling basis — each commit becomes MIT-licensed 2 years after its first public distribution. Shared libraries and demo code are MIT-licensed. See [LICENSING-NOTICE.md](https://github.com/wahidyankf/ose-public/blob/main/LICENSING-NOTICE.md) for full details.
+AyoKoding is part of the [Open Sharia Enterprise](https://github.com/wahidyankf/ose-public) project. The AyoKoding website code is licensed under the **[MIT License](https://github.com/wahidyankf/ose-public/blob/main/LICENSE)** — free to use, fork, modify, and distribute for any purpose. See [LICENSING-NOTICE.md](https://github.com/wahidyankf/ose-public/blob/main/LICENSING-NOTICE.md) for full details.
 
 ## Stay Connected
 

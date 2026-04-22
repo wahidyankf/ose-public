@@ -138,7 +138,7 @@ All READMEs must include:
 Brief description of what the project does.
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)]()
-[![License](https://img.shields.io/badge/license-FSL--1.1--MIT-blue)]()
+[![License](https://img.shields.io/badge/license-MIT-blue)]()
 
 ## Why This Project?
 
@@ -184,7 +184,7 @@ We welcome contributions! Please read our [Contributing Guide](../../../CONTRIBU
 
 ## License
 
-This project uses per-directory licensing: FSL-1.1-MIT for product apps and behavioral specifications (WHAT), MIT for shared libraries and reference implementations (HOW). See [LICENSING-NOTICE.md](./LICENSING-NOTICE.md) for details.
+This project is licensed under the [MIT License](./LICENSE). See [LICENSING-NOTICE.md](./LICENSING-NOTICE.md) for details.
 ````
 
 ### References
@@ -721,7 +721,7 @@ Instances of abusive, harassing, or otherwise unacceptable behavior may be repor
 - Include copyright holder name and year
 - Do not modify standard license text (except placeholders)
 
-**Current Project:** Per-directory licensing strategy with FSL-1.1-MIT (product apps, behavioral specifications) and MIT (shared libraries, reference implementations). See [Per-Directory Licensing Convention](../structure/licensing.md) for full details.
+**Current Project:** MIT license throughout. See [Licensing Convention](../structure/licensing.md) for full details.
 
 ### CHANGELOG.md
 

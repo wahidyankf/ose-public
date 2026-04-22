@@ -32,9 +32,9 @@ The two flows are directional — propagation (upstream → downstream) and adop
 
 ### Licensing difference
 
-`ose-public` uses a **per-directory license strategy**: `FSL-1.1-MIT` for product apps and behavioral specs (the WHAT); `MIT` for shared libraries and reference implementations (the HOW). See [LICENSING-NOTICE.md](../../LICENSING-NOTICE.md) for details.
+`ose-public` is **MIT throughout**. See [LICENSING-NOTICE.md](../../LICENSING-NOTICE.md) for details.
 
-`ose-primer` is **MIT throughout**. Only scaffolding, governance, agents, skills, and polyglot demo apps live in `ose-primer`; the FSL-licensed product tier is intentionally excluded. Consumers who fork `ose-primer` can build proprietary or open products on top without inheriting the FSL layer.
+`ose-primer` is also **MIT throughout**. Only scaffolding, governance, agents, skills, and polyglot demo apps live in `ose-primer`; product-specific apps are excluded. Consumers who fork `ose-primer` can build proprietary or open products on top without any restrictions.
 
 ### Non-Goals for this document
 

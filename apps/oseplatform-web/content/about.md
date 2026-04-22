@@ -38,7 +38,7 @@ We're building a source-available platform with Sharia-compliance at its core—
 - **Read and learn** - Full source code is publicly available on GitHub
 - **Self-host freely** - Deploy for your own organization's use
 - **No vendor lock-in** - Own your data, control your infrastructure
-- **Becomes fully open-source** - Each release converts to MIT license after 2 years
+- **Fully open-source** - MIT license throughout, no restrictions
 
 ### Open Standards
 
@@ -184,14 +184,11 @@ Our tech stack reflects the progressive complexity approach — chosen for prove
 
 ## License
 
-This project uses **per-directory licensing**:
+This project is licensed under the **[MIT License](https://github.com/wahidyankf/ose-public/blob/main/LICENSE)** — free to use, fork, modify, and distribute for any purpose, including commercial use.
 
-- **Product applications** use **FSL-1.1-MIT** (Functional Source License) — a source-available license that lets you read, learn from, and self-host the code, but restricts competing commercial use within each product's domain
-- **Shared libraries and demo apps** use **MIT** — fully open-source with no restrictions
+All code in the repository (product applications, shared libraries, specifications, and AI agent configuration) is MIT-licensed with no competing-use restrictions.
 
-**What is FSL-1.1-MIT?** The [Functional Source License](https://fsl.software/) is a source-available license created to balance openness with sustainable development. You can view, fork, modify, and self-host the code freely. The only restriction: you cannot use it to offer a competing commercial product in the same domain. After 2 years, each commit automatically converts to the MIT license — becoming fully open-source with no restrictions at all.
-
-Each product app has its own LICENSE file scoping the competing-use restriction to its specific domain. See [LICENSING-NOTICE.md](https://github.com/wahidyankf/ose-public/blob/main/LICENSING-NOTICE.md) for full details.
+See [LICENSING-NOTICE.md](https://github.com/wahidyankf/ose-public/blob/main/LICENSING-NOTICE.md) for full details.
 
 ## Get Involved
 
@@ -222,4 +219,4 @@ While we're not yet accepting public contributions, you can stay connected and s
 - **Main Repository**: [github.com/wahidyankf/ose-public](https://github.com/wahidyankf/ose-public)
 - **Project Updates**: [oseplatform.com/updates](/updates/) - monthly, every 2nd Sunday
 - **Educational Platform**: [ayokoding.com](https://ayokoding.com)
-- **License**: FSL-1.1-MIT - source-available with 2-year rolling conversion to MIT
+- **License**: MIT — fully open-source, no restrictions

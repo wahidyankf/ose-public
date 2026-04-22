@@ -4,6 +4,7 @@ Archived plans and completed project planning documents.
 
 ## Completed Projects
 
+- [2026-04-22: MIT License Reversion](./2026-04-22__mit-license-reversion/README.md) — Revert all FSL-1.1-MIT LICENSE files to uniform MIT across ose-public: 9 LICENSE files, package.json, package-lock.json, LICENSING-NOTICE.md, CLAUDE.md, README.md, and all governance/docs/content files. Create mit-license-rationale.md explaining the strategic rationale. All CI green. (Completed: 2026-04-22)
 - [2026-04-21: OrganicLever Design System Adoption](./2026-04-21__organiclever-design-system/README.md) —
   Adopted the `organic-lever` Claude Design handoff into `ts-ui-tokens` + `ts-ui`:
   OL warm OKLCH tokens (6 hues × 3 tints, warm neutral scale, data-theme dark variant), 3 updated

@@ -244,21 +244,16 @@ nx graph                # Visualize dependencies
 **Friendly, Not Corporate**: Write like a welcoming teammate, not a marketing brochure.
 
 **FAIL: Bad** (corporate, distant):
+
 ```markdown
-This project is licensed under the FSL-1.1-MIT License. Users are granted broad rights while maintaining proper attribution requirements as specified in the license agreement.
-````
+This project is licensed under the MIT License. Users are granted broad rights while maintaining proper attribution requirements as specified in the license agreement.
+```
 
 **PASS: Good** (friendly, clear):
 
 ```markdown
-This project uses a per-directory licensing strategy:
-
-- **Implementation code** (HOW) -- MIT license (shared libraries, demo/reference apps)
-- **Behavioral specifications** (WHAT) -- FSL-1.1-MIT (specs, E2E tests, product apps)
-
-FSL-licensed code **converts to MIT after 2 years** on a rolling per-commit basis.
-
-See LICENSING-NOTICE.md and the Per-Directory Licensing Convention for details.
+This project is licensed under the [MIT License](./LICENSE) — free to use, fork, modify, and
+distribute for any purpose. See LICENSING-NOTICE.md for details.
 ```
 
 **Encourage, Don't Command**: Invite participation rather than demand it.
@@ -588,3 +583,4 @@ This project uses Nx to manage applications and libraries:
 - [Make a README](https://www.makeareadme.com/) - README best practices
 - [Awesome README](https://github.com/matiassingers/awesome-readme) - Examples of great READMEs
 - [Plain Language Guidelines](https://www.plainlanguage.gov/guidelines/) - US Government plain language guide
+````

@@ -127,8 +127,7 @@ Documentation standards enable our mission (via Principles that govern Conventio
 
 Development practices embody our values (via Principles that govern Development):
 
-- **Source-available (FSL-1.1-MIT)** → Freedom to use, study, modify, distribute;
-  non-compete for 2 years, then converts to MIT
+- **Open source (MIT)** → Freedom to use, study, modify, distribute for any purpose
 - **Trunk-based development** → Continuous integration, transparent collaboration
 - **Automated quality** → Reliability without expensive manual processes
 - **AI-assisted workflows** → Automation serves the community

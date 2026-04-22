@@ -16,7 +16,7 @@ tags:
     "nextjs",
   ]
 categories: ["updates"]
-summary: "11 REST API backends across 10+ languages sharing one OpenAPI contract, Hugo-to-Next.js platform migrations, OrganicLever fullstack evolution with F#/Giraffe, three demo frontends, FSL-1.1-MIT licensing, and 29 CI/CD workflows."
+summary: "11 REST API backends across 10+ languages sharing one OpenAPI contract, Hugo-to-Next.js platform migrations, OrganicLever fullstack evolution with F#/Giraffe, three demo frontends, FSL-1.1-MIT licensing (since reverted to MIT 2026-04-22), and 29 CI/CD workflows."
 showtoc: true
 ---
 
@@ -510,7 +510,13 @@ The **`demo-ci-test-standardization`** and **`ci-standardization`** plans tracke
 
 Four of the six new libraries were created to fill gaps in the Clojure and Elixir ecosystems where existing OpenAPI codegen or BDD tooling did not meet our needs. Building custom libraries was not the plan—it was the pragmatic response to real gaps discovered during the polyglot experiment. It also illustrates the entropy cost: each custom library is code we now own and maintain. The Clojure and Elixir libraries serve the demo backends—they are not on the critical path for the production app. The two TypeScript libraries (**`ts-ui`**, **`ts-ui-tokens`**) are, and those have the ecosystem support to justify their maintenance cost.
 
-## FSL-1.1-MIT: Protecting the Mission
+## FSL-1.1-MIT: Protecting the Mission (Historical Record)
+
+> **Update (2026-04-22):** The project reverted from FSL-1.1-MIT back to MIT on 2026-04-22,
+> after reassessing the strategic tradeoff. The section below is preserved as a historical record
+> of the reasoning at the time of the FSL migration. See the
+> [MIT license rationale](https://github.com/wahidyankf/ose-public/blob/main/docs/explanation/software-engineering/licensing/mit-license-rationale.md)
+> for the reasoning behind the reversion.
 
 On April 4—one day before this update—the project completed its migration from MIT to FSL-1.1-MIT (Functional Source License).
 

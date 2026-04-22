@@ -20,7 +20,3 @@ When an idea is ready for implementation, create a proper plan folder in `backlo
 - .env backup scripts for rhino-cli
 - simplify ayokoding-cli and oseplatform-cli
 - libraries update
-
-### Generic
-
-- FSL standards

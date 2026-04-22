@@ -22,8 +22,9 @@ Open-source licenses impose conditions on how software may be used, modified, an
 
 ## Documents
 
+- [Why MIT? — Strategic Rationale](mit-license-rationale.md) - Why this repository uses the MIT License: business risks accepted, benefits of full openness, and the market context (building-block economy vs. feature-monopoly model).
 - [Licensing Decisions](licensing-decisions.md) - Analysis and decisions for notable dependencies: Liquibase FSL-1.1-ALv2, Hibernate LGPL-2.1, sharp-libvips LGPL-3.0, and Logback EPL-1.0/LGPL-2.1. Includes the quarterly audit schedule.
-- [Production Dependency Compatibility](dependency-compatibility.md) - Audit of all production dependency licenses for FSL-1.1-MIT compatibility, including LGPL elimination and MPL-2.0 analysis (2026-04-04).
+- [Production Dependency Compatibility](dependency-compatibility.md) - Historical audit (2026-04-04) of production dependency licenses, including LGPL elimination and MPL-2.0 analysis.
 
 ## Related Documentation
 

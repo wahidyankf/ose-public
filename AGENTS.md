@@ -155,7 +155,7 @@ All agents follow foundational principles:
 
 ## Related Repositories
 
-`ose-public` is the **upstream source of truth**. A downstream template repository, [`ose-primer`](https://github.com/wahidyankf/ose-primer), is a public MIT-licensed template that packages the scaffolding layer (governance, AI agents, skills, conventions, CI harness, polyglot demo apps) for teams building their own Sharia-compliant enterprise products. `ose-public` uses per-directory licensing (FSL-1.1-MIT for product apps, MIT for scaffolding); `ose-primer` is MIT throughout.
+`ose-public` is the **upstream source of truth**. A downstream template repository, [`ose-primer`](https://github.com/wahidyankf/ose-primer), is a public MIT-licensed template that packages the scaffolding layer (governance, AI agents, skills, conventions, CI harness, polyglot demo apps) for teams building their own Sharia-compliant enterprise products. `ose-public` is MIT throughout; `ose-primer` is also MIT throughout.
 
 - **Propagation** (`ose-public` → `ose-primer`): handled by `repo-ose-primer-propagation-maker`. Always via pull request against the primer's `main` branch.
 - **Adoption** (`ose-primer` → `ose-public`): handled by `repo-ose-primer-adoption-maker`. Applied as direct commits to `ose-public`'s `main` per Trunk-Based Development.

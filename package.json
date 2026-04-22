@@ -42,7 +42,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "FSL-1.1-MIT",
+  "license": "MIT",
   "type": "commonjs",
   "volta": {
     "node": "24.13.1",

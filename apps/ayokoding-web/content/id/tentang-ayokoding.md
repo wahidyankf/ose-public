@@ -35,7 +35,7 @@ Jadi ketika kalian baca artikel di AyoKoding tentang system design, architectura
 
 ## Lisensi
 
-AyoKoding adalah bagian dari proyek [Open Sharia Enterprise](https://github.com/wahidyankf/ose-public), yang menggunakan **lisensi per-direktori**. Kode website AyoKoding dilisensikan di bawah **FSL-1.1-MIT** (Functional Source License), yang berkonversi menjadi MIT secara bergulir — setiap commit menjadi berlisensi MIT 2 tahun setelah distribusi publik pertamanya. Library bersama dan kode demo menggunakan lisensi MIT. Lihat [LICENSING-NOTICE.md](https://github.com/wahidyankf/ose-public/blob/main/LICENSING-NOTICE.md) untuk detail lengkap.
+AyoKoding adalah bagian dari proyek [Open Sharia Enterprise](https://github.com/wahidyankf/ose-public). Kode website AyoKoding dilisensikan di bawah **[MIT License](https://github.com/wahidyankf/ose-public/blob/main/LICENSE)** — bebas digunakan, di-fork, dimodifikasi, dan didistribusikan untuk tujuan apapun. Lihat [LICENSING-NOTICE.md](https://github.com/wahidyankf/ose-public/blob/main/LICENSING-NOTICE.md) untuk detail lengkap.
 
 ## Tetap Terhubung
 

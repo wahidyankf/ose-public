@@ -1,21 +1,26 @@
 ---
-title: Production Dependency Compatibility with FSL-1.1-MIT
-description: Audit of all production dependency licenses for compatibility with FSL-1.1-MIT, including LGPL elimination and MPL-2.0 analysis
+title: Production Dependency Compatibility Audit (Historical — 2026-04-04)
+description: Historical audit (2026-04-04) of all production dependency licenses. Originally scoped to FSL-1.1-MIT compatibility; the project has since reverted to MIT, so FSL-specific concerns no longer apply. Kept as a reference for the LGPL elimination and MPL-2.0 analysis.
 category: explanation
 subcategory: licensing
 tags:
   - licensing
   - compliance
-  - fsl
   - dependency-audit
 created: 2026-04-04
-updated: 2026-04-19
+updated: 2026-04-22
 ---
 
-# Production Dependency Compatibility with FSL-1.1-MIT
+# Production Dependency Compatibility Audit (Historical — 2026-04-04)
 
-Audit of all production (non-demo) application dependencies for license compatibility with the
-project's FSL-1.1-MIT license.
+> **Note (2026-04-22):** This audit was performed when the project used FSL-1.1-MIT licensing.
+> The project has since reverted to MIT (see
+> [Why MIT?](./mit-license-rationale.md)). MIT is more permissive than FSL-1.1-MIT, so
+> all dependencies that were compatible with FSL are automatically compatible with MIT.
+> The FSL-specific compatibility analysis below is preserved as a historical record.
+
+Audit of all production (non-demo) application dependencies for license compatibility. Originally
+scoped to FSL-1.1-MIT; now MIT throughout.
 
 ## Audit Methodology
 

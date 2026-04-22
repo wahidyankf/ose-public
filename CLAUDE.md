@@ -7,7 +7,7 @@ Guidance for Claude Code (claude.ai/code) working with code in this repository.
 **open-sharia-enterprise** - Enterprise platform for Sharia-compliant business systems, Nx monorepo.
 
 **Status**: Phase 1 (OrganicLever - Productivity Tracker)
-**License**: FSL-1.1-MIT for product apps and behavioral specs (WHAT); MIT for libs and demo implementation code (HOW)
+**License**: MIT
 **Main Branch**: `main` (Trunk Based Development)
 
 ### Tech Stack
@@ -580,7 +580,7 @@ Project planning in `plans/` folder:
 ## Important Notes
 
 - **Do NOT stage or commit** unless explicitly instructed. Per-request commits one-time only.
-- **License**: FSL-1.1-MIT for product apps and behavioral specs (WHAT); MIT for libs and demo code (HOW). See [LICENSING-NOTICE.md](./LICENSING-NOTICE.md)
+- **License**: MIT. See [LICENSING-NOTICE.md](./LICENSING-NOTICE.md)
 - **AI agent invocation**: Use natural language to invoke agents/workflows
 - **Token budget**: Don't worry about token limits - reliable compaction available
 - **No time estimates**: Never give time estimates. Focus on what needs doing, not how long.
@@ -596,7 +596,7 @@ Project planning in `plans/` folder:
 
 ## Related Repositories
 
-`ose-public` is the **upstream source of truth**. A downstream template repository, [`ose-primer`](https://github.com/wahidyankf/ose-primer), is a public MIT-licensed template packaging the scaffolding layer (governance, AI agents, skills, conventions, CI harness, polyglot demo apps) for teams building their own Sharia-compliant enterprise products. `ose-public` uses per-directory licensing (FSL-1.1-MIT for product apps, MIT for scaffolding); `ose-primer` is MIT throughout and intentionally excludes the FSL product layer.
+`ose-public` is the **upstream source of truth**. A downstream template repository, [`ose-primer`](https://github.com/wahidyankf/ose-primer), is a public MIT-licensed template packaging the scaffolding layer (governance, AI agents, skills, conventions, CI harness, polyglot demo apps) for teams building their own Sharia-compliant enterprise products. `ose-public` is MIT throughout; `ose-primer` is also MIT throughout.
 
 Content flows in both directions under classifier-driven rules:
 

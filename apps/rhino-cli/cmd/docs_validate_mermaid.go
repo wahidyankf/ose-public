@@ -217,13 +217,23 @@ func collectMDDefaultDirs(repoRoot string) ([]string, error) {
 	return files, nil
 }
 
-// walkMDFiles returns all *.md files under dir recursively.
+// skipDirs are directory names that are never scanned for Mermaid diagrams.
+var skipDirs = map[string]bool{
+	".next":        true, // Next.js build artifacts
+	"node_modules": true, // npm dependencies
+	".git":         true, // git internals
+}
+
+// walkMDFiles returns all *.md files under dir recursively, skipping build artifact dirs.
 func walkMDFiles(dir string) ([]string, error) {
 	var files []string
 	err := filepath.WalkDir(dir, func(path string, d fs.DirEntry, walkErr error) error {
 		if walkErr != nil {
 			// Skip unreadable entries rather than aborting the entire walk.
 			return nil //nolint:nilerr
+		}
+		if d.IsDir() && skipDirs[d.Name()] {
+			return filepath.SkipDir
 		}
 		if !d.IsDir() && strings.HasSuffix(path, ".md") {
 			files = append(files, path)

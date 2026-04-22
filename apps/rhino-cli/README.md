@@ -283,7 +283,8 @@ This command replaces the Python script at `scripts/validate-docs-links.py` with
 Validate Mermaid flowchart diagrams in markdown files for structural issues. Read-only
 checker — never modifies any file. Only `flowchart` and `graph` keyword blocks are
 validated; all other Mermaid diagram types (`sequenceDiagram`, `classDiagram`, `gantt`,
-etc.) are silently skipped.
+etc.) are silently skipped. The following directories are always excluded from recursive
+walks: `.next` (Next.js build artifacts), `node_modules`, `.git`.
 
 ```bash
 # Validate governance/ and .claude/ (default Nx target scope)

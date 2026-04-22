@@ -64,6 +64,38 @@ func TestWalkMDFiles_NonexistentDir(t *testing.T) {
 	}
 }
 
+func TestWalkMDFiles_SkipsBuildArtifactDirs(t *testing.T) {
+	dir := t.TempDir()
+	// md file at root — should be found
+	if err := os.WriteFile(filepath.Join(dir, "root.md"), []byte("# root"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	// .next dir — should be skipped entirely
+	nextDir := filepath.Join(dir, ".next")
+	if err := os.MkdirAll(nextDir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(nextDir, "build.md"), []byte("# build"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	// node_modules dir — should be skipped entirely
+	nmDir := filepath.Join(dir, "node_modules")
+	if err := os.MkdirAll(nmDir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(nmDir, "pkg.md"), []byte("# pkg"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	files, err := walkMDFiles(dir)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(files) != 1 {
+		t.Errorf("expected only root.md (skip dirs excluded), got %d: %v", len(files), files)
+	}
+}
+
 func TestCollectMDFiles_WithAbsPath(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, "x.md"), []byte("# x"), 0o600); err != nil {

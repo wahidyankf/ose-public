@@ -4,7 +4,8 @@ Active project plans currently being worked on.
 
 ## Active Plans
 
-_(none)_
+- [2026-04-22: MIT License Reversion](./2026-04-22__mit-license-reversion/README.md) — Revert all
+  FSL-1.1-MIT licenses to MIT across ose-public
 
 ## Instructions
 

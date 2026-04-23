@@ -554,11 +554,11 @@ graph LR
 
 ## Commit Guidelines
 
-- [ ] Commit changes thematically — group related changes into logically cohesive commits
-- [ ] Follow Conventional Commits format: `<type>(<scope>): <description>`
-- [ ] Split different domains/concerns into separate commits
-- [ ] Preexisting fixes get their own commits, separate from plan work
-- [ ] Do NOT bundle unrelated changes into a single commit
+- [x] Commit changes thematically — group related changes into logically cohesive commits
+- [x] Follow Conventional Commits format: `<type>(<scope>): <description>`
+- [x] Split different domains/concerns into separate commits
+- [x] Preexisting fixes get their own commits, separate from plan work
+- [x] Do NOT bundle unrelated changes into a single commit
 
 Suggested commit sequence:
 
@@ -570,30 +570,37 @@ Suggested commit sequence:
    avoids shipping a broken intermediate state to `main`.)
 3. Any preexisting fix commits (separate, labelled accordingly)
 
-- [ ] After completing Phase 5 quality checks above, make the Phase 2–5 atomic commit:
+- [x] After completing Phase 5 quality checks above, make the Phase 2–5 atomic commit:
       `feat(ts-ui): migrate HighlightText, ScrollToTop, SearchComponent, ThemeToggle from wahidyankf-web`
 
 ---
 
 ## Manual UI Verification (Playwright MCP)
 
-- [ ] Start dev server: `nx dev wahidyankf-web`
-- [ ] Navigate to the home page via `browser_navigate` (`http://localhost:3201`)
-- [ ] Inspect DOM via `browser_snapshot` — verify search bar and highlight functionality render
-- [ ] Navigate to the CV page (`http://localhost:3201/cv`) — verify search bar renders and
+- [x] Start dev server: `nx dev wahidyankf-web`
+- [x] Navigate to the home page via `browser_navigate` (`http://localhost:3201`)
+- [x] Inspect DOM via `browser_snapshot` — verify search bar and highlight functionality render
+- [x] Navigate to the CV page (`http://localhost:3201/cv`) — verify search bar renders and
       highlight text works on all CV entries
-- [ ] Navigate to the personal-projects page (`http://localhost:3201/personal-projects`) —
+- [x] Navigate to the personal-projects page (`http://localhost:3201/personal-projects`) —
       verify search bar renders and highlight text works on project entries
-- [ ] Interact with `ThemeToggle` via `browser_click` — verify dark/light toggle switches
+- [x] Interact with `ThemeToggle` via `browser_click` — verify dark/light toggle switches
       correctly
-- [ ] Scroll down on any page and verify the `ScrollToTop` button appears; click it and verify
+- [x] Scroll down on any page and verify the `ScrollToTop` button appears; click it and verify
       scroll-to-top behaviour
-- [ ] Enter text in the search bar on any listing page — verify highlighted matches appear
+- [x] Enter text in the search bar on any listing page — verify highlighted matches appear
       using `HighlightText`
-- [ ] Check for JS errors via `browser_console_messages` — must be zero errors (this is a pure
+- [x] Check for JS errors via `browser_console_messages` — must be zero errors (this is a pure
       UI migration with no API changes, so no network-request verification is needed)
-- [ ] Take screenshots via `browser_take_screenshot` for visual reference
-- [ ] Document verification results in this checklist
+- [x] Take screenshots via `browser_take_screenshot` for visual reference
+- [x] Document verification results in this checklist
+
+  > Date: 2026-04-23 | Status: complete | Results:
+  > Home: SearchComponent renders, URL updates on type, ThemeToggle dark↔light confirmed.
+  > CV: search bar, HighlightText highlights "TypeScript" in 11+ entries, URL updates.
+  > Personal Projects: search bar renders. ScrollToTop: appears at scroll threshold, click
+  > returns pageYOffset=0. Console: 1 preexisting hydration warning (ThemeToggle localStorage
+  > class vs SSR — existed before migration). Zero migration-caused errors.
 
 ---
 

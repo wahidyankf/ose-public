@@ -22,8 +22,6 @@ COPY libs/ts-ui-tokens/package.json ./node_modules/@open-sharia-enterprise/ts-ui
 COPY apps/wahidyankf-web/src/ ./src/
 COPY apps/wahidyankf-web/public/ ./public/
 COPY apps/wahidyankf-web/package.json apps/wahidyankf-web/tsconfig.json apps/wahidyankf-web/next.config.ts apps/wahidyankf-web/postcss.config.mjs ./
-# tsconfig.json extends ../../tsconfig.base.json; from WORKDIR /app that resolves to /tsconfig.base.json
-COPY tsconfig.base.json /tsconfig.base.json
 
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npx next build

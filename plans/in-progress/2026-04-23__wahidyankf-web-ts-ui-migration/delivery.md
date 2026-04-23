@@ -52,44 +52,51 @@ graph LR
 
 ## Environment Setup
 
-- [ ] Confirm working directory is `ose-public` subrepo root
-- [ ] Run `npm install` in `ose-public/` to install dependencies
-- [ ] Run `npm run doctor -- --fix` to converge the full polyglot toolchain (required — the
+- [x] Confirm working directory is `ose-public` subrepo root
+- [x] Run `npm install` in `ose-public/` to install dependencies
+- [x] Run `npm run doctor -- --fix` to converge the full polyglot toolchain (required — the
       `postinstall` hook runs `doctor || true` and silently tolerates drift; see
       [Worktree Toolchain Initialization](../../../governance/development/workflow/worktree-setup.md))
-- [ ] Verify dev server starts: `nx dev wahidyankf-web`
-- [ ] Run existing tests to establish baseline:
-  - [ ] `npx nx run wahidyankf-web:test:quick`
-  - [ ] `npx nx run ts-ui:test:quick`
-- [ ] Note any preexisting failures before touching any files
+- [x] Verify dev server starts: `nx dev wahidyankf-web`
+- [x] Run existing tests to establish baseline:
+  - [x] `npx nx run wahidyankf-web:test:quick`
+  - [x] `npx nx run ts-ui:test:quick`
+- [x] Note any preexisting failures before touching any files
+
+  > Date: 2026-04-23 | Status: complete | Files Changed: none
+  > Baseline: wahidyankf-web test:quick PASS (81.85% coverage), ts-ui test:quick PASS (97.02%).
+  > doctor minimal: 7/7 OK. No preexisting failures.
 
 ---
 
 ## Phase 1 — Add ts-ui Workspace Dependency to wahidyankf-web
 
-- [ ] Open `apps/wahidyankf-web/package.json`
-- [ ] Add `"@open-sharia-enterprise/ts-ui": "*"` to the `dependencies` block, inserted
+- [x] Open `apps/wahidyankf-web/package.json`
+- [x] Add `"@open-sharia-enterprise/ts-ui": "*"` to the `dependencies` block, inserted
       alphabetically between `@next/third-parties` and `class-variance-authority`:
 
   ```json
   "@open-sharia-enterprise/ts-ui": "*",
   ```
 
-- [ ] Verify no duplicate entries exist in `dependencies` after the edit
-- [ ] Commit: `chore(wahidyankf-web): add @open-sharia-enterprise/ts-ui workspace dependency`
+- [x] Verify no duplicate entries exist in `dependencies` after the edit
+- [x] Commit: `chore(wahidyankf-web): add @open-sharia-enterprise/ts-ui workspace dependency`
+
+  > Date: 2026-04-23 | Status: complete | Files Changed: apps/wahidyankf-web/package.json
+  > Added "@open-sharia-enterprise/ts-ui": "\*" alphabetically. No duplicates. Committed.
 
 ---
 
 ## Phase 2 — Migrate HighlightText
 
-- [ ] Create directory `libs/ts-ui/src/components/highlight-text/`
-- [ ] Copy `apps/wahidyankf-web/src/components/HighlightText.tsx` to
+- [x] Create directory `libs/ts-ui/src/components/highlight-text/`
+- [x] Copy `apps/wahidyankf-web/src/components/HighlightText.tsx` to
       `libs/ts-ui/src/components/highlight-text/highlight-text.tsx` and refactor to accept
       flexible props (e.g. `highlightClassName` for the mark element styles) with current
       hardcoded values as defaults
-- [ ] Copy `apps/wahidyankf-web/src/components/HighlightText.unit.test.tsx` to
+- [x] Copy `apps/wahidyankf-web/src/components/HighlightText.unit.test.tsx` to
       `libs/ts-ui/src/components/highlight-text/highlight-text.unit.test.tsx`
-- [ ] In `libs/ts-ui/src/components/highlight-text/highlight-text.unit.test.tsx`, update line 4:
+- [x] In `libs/ts-ui/src/components/highlight-text/highlight-text.unit.test.tsx`, update line 4:
 
   Before:
 
@@ -103,13 +110,13 @@ graph LR
   import { HighlightText, highlightText } from "./highlight-text";
   ```
 
-- [ ] Append to `libs/ts-ui/src/index.ts`:
+- [x] Append to `libs/ts-ui/src/index.ts`:
 
   ```ts
   export { HighlightText, highlightText } from "./components/highlight-text/highlight-text";
   ```
 
-- [ ] Update `apps/wahidyankf-web/src/app/page.tsx` — add a new import for `HighlightText`
+- [x] Update `apps/wahidyankf-web/src/app/page.tsx` — add a new import for `HighlightText`
       from ts-ui and retain the existing `SearchComponent` local import (the `SearchComponent`
       import line stays unchanged in this phase and will be consolidated in Phase 4). Replace
       lines 16–17:
@@ -138,7 +145,7 @@ graph LR
   > import { SearchComponent, HighlightText } from "@open-sharia-enterprise/ts-ui";
   > ```
 
-- [ ] Update `apps/wahidyankf-web/src/app/cv/page.tsx` — replace lines 35–36:
+- [x] Update `apps/wahidyankf-web/src/app/cv/page.tsx` — replace lines 35–36:
 
   Before:
 
@@ -164,7 +171,7 @@ graph LR
   > import { SearchComponent, HighlightText } from "@open-sharia-enterprise/ts-ui";
   > ```
 
-- [ ] Update `apps/wahidyankf-web/src/app/personal-projects/page.tsx` — replace lines 8–9:
+- [x] Update `apps/wahidyankf-web/src/app/personal-projects/page.tsx` — replace lines 8–9:
 
   Before:
 
@@ -190,7 +197,7 @@ graph LR
   > import { SearchComponent, HighlightText } from "@open-sharia-enterprise/ts-ui";
   > ```
 
-- [ ] Update `apps/wahidyankf-web/src/utils/markdown.tsx` — replace line 2:
+- [x] Update `apps/wahidyankf-web/src/utils/markdown.tsx` — replace line 2:
 
   Before:
 
@@ -204,7 +211,7 @@ graph LR
   import { HighlightText } from "@open-sharia-enterprise/ts-ui";
   ```
 
-- [ ] Verify the new ts-ui file compiles before deleting the source:
+- [x] Verify the new ts-ui file compiles before deleting the source:
 
   ```bash
   npx nx run ts-ui:typecheck
@@ -212,10 +219,10 @@ graph LR
 
   Confirm zero type errors before proceeding to the delete steps.
 
-- [ ] Delete `apps/wahidyankf-web/src/components/HighlightText.tsx`
-- [ ] Delete `apps/wahidyankf-web/src/components/HighlightText.unit.test.tsx`
+- [x] Delete `apps/wahidyankf-web/src/components/HighlightText.tsx`
+- [x] Delete `apps/wahidyankf-web/src/components/HighlightText.unit.test.tsx`
 
-- [ ] Run affected typecheck to catch any type errors introduced in this phase before
+- [x] Run affected typecheck to catch any type errors introduced in this phase before
       proceeding:
 
   ```bash
@@ -224,19 +231,26 @@ graph LR
 
   Fix ALL failures before moving on to Phase 3.
 
+  > Date: 2026-04-23 | Status: complete | Files Changed: libs/ts-ui/src/components/highlight-text/highlight-text.tsx,
+  > libs/ts-ui/src/components/highlight-text/highlight-text.unit.test.tsx, libs/ts-ui/src/index.ts,
+  > libs/ts-ui/package.json (added jest-dom), libs/ts-ui/vitest.setup.ts (added jest-dom import),
+  > libs/ts-ui/tsconfig.json (added jest-dom types), apps/wahidyankf-web/src/app/page.tsx,
+  > apps/wahidyankf-web/src/app/cv/page.tsx, apps/wahidyankf-web/src/app/personal-projects/page.tsx,
+  > apps/wahidyankf-web/src/utils/markdown.tsx. Both wahidyankf-web and ts-ui typecheck pass.
+
 ---
 
 ## Phase 3 — Migrate ScrollToTop
 
-- [ ] Create directory `libs/ts-ui/src/components/scroll-to-top/`
-- [ ] Copy `apps/wahidyankf-web/src/components/ScrollToTop.tsx` to
+- [x] Create directory `libs/ts-ui/src/components/scroll-to-top/`
+- [x] Copy `apps/wahidyankf-web/src/components/ScrollToTop.tsx` to
       `libs/ts-ui/src/components/scroll-to-top/scroll-to-top.tsx` and refactor to accept
       flexible props (e.g. `threshold`, `className`, `buttonClassName`) with current hardcoded
       values as defaults
       (the `"use client";` directive at line 1 remains in place)
-- [ ] Copy `apps/wahidyankf-web/src/components/ScrollToTop.unit.test.tsx` to
+- [x] Copy `apps/wahidyankf-web/src/components/ScrollToTop.unit.test.tsx` to
       `libs/ts-ui/src/components/scroll-to-top/scroll-to-top.unit.test.tsx`
-- [ ] In `libs/ts-ui/src/components/scroll-to-top/scroll-to-top.unit.test.tsx`, update line 4:
+- [x] In `libs/ts-ui/src/components/scroll-to-top/scroll-to-top.unit.test.tsx`, update line 4:
 
   Before:
 
@@ -250,13 +264,13 @@ graph LR
   import ScrollToTop from "./scroll-to-top";
   ```
 
-- [ ] Append to `libs/ts-ui/src/index.ts`:
+- [x] Append to `libs/ts-ui/src/index.ts`:
 
   ```ts
   export { default as ScrollToTop } from "./components/scroll-to-top/scroll-to-top";
   ```
 
-- [ ] Update `apps/wahidyankf-web/src/app/layout.tsx` — replace lines 4–5:
+- [x] Update `apps/wahidyankf-web/src/app/layout.tsx` — replace lines 4–5:
 
   Before:
 
@@ -279,7 +293,7 @@ graph LR
   > import { ScrollToTop, ThemeToggle } from "@open-sharia-enterprise/ts-ui";
   > ```
 
-- [ ] Verify the new ts-ui file compiles before deleting the source:
+- [x] Verify the new ts-ui file compiles before deleting the source:
 
   ```bash
   npx nx run ts-ui:typecheck
@@ -287,10 +301,10 @@ graph LR
 
   Confirm zero type errors before proceeding to the delete steps.
 
-- [ ] Delete `apps/wahidyankf-web/src/components/ScrollToTop.tsx`
-- [ ] Delete `apps/wahidyankf-web/src/components/ScrollToTop.unit.test.tsx`
+- [x] Delete `apps/wahidyankf-web/src/components/ScrollToTop.tsx`
+- [x] Delete `apps/wahidyankf-web/src/components/ScrollToTop.unit.test.tsx`
 
-- [ ] Run affected typecheck to catch any type errors introduced in this phase before
+- [x] Run affected typecheck to catch any type errors introduced in this phase before
       proceeding:
 
   ```bash
@@ -299,18 +313,22 @@ graph LR
 
   Fix ALL failures before moving on to Phase 4.
 
+  > Date: 2026-04-23 | Status: complete | Files Changed: libs/ts-ui/src/components/scroll-to-top/scroll-to-top.tsx,
+  > libs/ts-ui/src/components/scroll-to-top/scroll-to-top.unit.test.tsx, libs/ts-ui/src/index.ts,
+  > apps/wahidyankf-web/src/app/layout.tsx. Both typecheck pass.
+
 ---
 
 ## Phase 4 — Migrate SearchComponent
 
-- [ ] Create directory `libs/ts-ui/src/components/search-component/`
-- [ ] Copy `apps/wahidyankf-web/src/components/SearchComponent.tsx` to
+- [x] Create directory `libs/ts-ui/src/components/search-component/`
+- [x] Copy `apps/wahidyankf-web/src/components/SearchComponent.tsx` to
       `libs/ts-ui/src/components/search-component/search-component.tsx` and refactor to accept
       flexible props (e.g. `className`, `inputClassName`, `clearButtonClassName`) with current
       hardcoded values as defaults
-- [ ] Copy `apps/wahidyankf-web/src/components/SearchComponent.unit.test.tsx` to
+- [x] Copy `apps/wahidyankf-web/src/components/SearchComponent.unit.test.tsx` to
       `libs/ts-ui/src/components/search-component/search-component.unit.test.tsx`
-- [ ] In `libs/ts-ui/src/components/search-component/search-component.unit.test.tsx`, update
+- [x] In `libs/ts-ui/src/components/search-component/search-component.unit.test.tsx`, update
       line 4:
 
   Before:
@@ -325,13 +343,13 @@ graph LR
   import { SearchComponent } from "./search-component";
   ```
 
-- [ ] Append to `libs/ts-ui/src/index.ts`:
+- [x] Append to `libs/ts-ui/src/index.ts`:
 
   ```ts
   export { SearchComponent } from "./components/search-component/search-component";
   ```
 
-- [ ] Update `apps/wahidyankf-web/src/app/page.tsx` — consolidate to single ts-ui import:
+- [x] Update `apps/wahidyankf-web/src/app/page.tsx` — consolidate to single ts-ui import:
 
   Final state of the two import lines:
 
@@ -342,19 +360,19 @@ graph LR
   (Remove the temporary split from Phase 2 if done in two passes, or apply directly if doing
   both components in one edit.)
 
-- [ ] Update `apps/wahidyankf-web/src/app/cv/page.tsx` — same consolidation:
+- [x] Update `apps/wahidyankf-web/src/app/cv/page.tsx` — same consolidation:
 
   ```ts
   import { SearchComponent, HighlightText } from "@open-sharia-enterprise/ts-ui";
   ```
 
-- [ ] Update `apps/wahidyankf-web/src/app/personal-projects/page.tsx` — same consolidation:
+- [x] Update `apps/wahidyankf-web/src/app/personal-projects/page.tsx` — same consolidation:
 
   ```ts
   import { SearchComponent, HighlightText } from "@open-sharia-enterprise/ts-ui";
   ```
 
-- [ ] Verify the new ts-ui file compiles before deleting the source:
+- [x] Verify the new ts-ui file compiles before deleting the source:
 
   ```bash
   npx nx run ts-ui:typecheck
@@ -362,10 +380,10 @@ graph LR
 
   Confirm zero type errors before proceeding to the delete steps.
 
-- [ ] Delete `apps/wahidyankf-web/src/components/SearchComponent.tsx`
-- [ ] Delete `apps/wahidyankf-web/src/components/SearchComponent.unit.test.tsx`
+- [x] Delete `apps/wahidyankf-web/src/components/SearchComponent.tsx`
+- [x] Delete `apps/wahidyankf-web/src/components/SearchComponent.unit.test.tsx`
 
-- [ ] Run affected typecheck to catch any type errors introduced in this phase before
+- [x] Run affected typecheck to catch any type errors introduced in this phase before
       proceeding:
 
   ```bash
@@ -374,18 +392,23 @@ graph LR
 
   Fix ALL failures before moving on to Phase 5.
 
+  > Date: 2026-04-23 | Status: complete | Files Changed: libs/ts-ui/src/components/search-component/search-component.tsx,
+  > libs/ts-ui/src/components/search-component/search-component.unit.test.tsx, libs/ts-ui/src/index.ts,
+  > apps/wahidyankf-web/src/app/page.tsx, apps/wahidyankf-web/src/app/cv/page.tsx,
+  > apps/wahidyankf-web/src/app/personal-projects/page.tsx. Both typecheck pass.
+
 ---
 
 ## Phase 5 — Migrate ThemeToggle
 
-- [ ] Create directory `libs/ts-ui/src/components/theme-toggle/`
-- [ ] Copy `apps/wahidyankf-web/src/components/ThemeToggle.tsx` to
+- [x] Create directory `libs/ts-ui/src/components/theme-toggle/`
+- [x] Copy `apps/wahidyankf-web/src/components/ThemeToggle.tsx` to
       `libs/ts-ui/src/components/theme-toggle/theme-toggle.tsx` and refactor to accept
       flexible props (e.g. `className`) with current hardcoded values as defaults
       (the `"use client";` directive at line 1 remains in place)
-- [ ] Copy `apps/wahidyankf-web/src/components/ThemeToggle.unit.test.tsx` to
+- [x] Copy `apps/wahidyankf-web/src/components/ThemeToggle.unit.test.tsx` to
       `libs/ts-ui/src/components/theme-toggle/theme-toggle.unit.test.tsx`
-- [ ] In `libs/ts-ui/src/components/theme-toggle/theme-toggle.unit.test.tsx`, update line 3:
+- [x] In `libs/ts-ui/src/components/theme-toggle/theme-toggle.unit.test.tsx`, update line 3:
 
   Before:
 
@@ -399,13 +422,13 @@ graph LR
   import ThemeToggle from "./theme-toggle";
   ```
 
-- [ ] Append to `libs/ts-ui/src/index.ts`:
+- [x] Append to `libs/ts-ui/src/index.ts`:
 
   ```ts
   export { default as ThemeToggle } from "./components/theme-toggle/theme-toggle";
   ```
 
-- [ ] Update `apps/wahidyankf-web/src/app/layout.tsx` — consolidate to single ts-ui import:
+- [x] Update `apps/wahidyankf-web/src/app/layout.tsx` — consolidate to single ts-ui import:
 
   Final state:
 
@@ -413,7 +436,7 @@ graph LR
   import { ScrollToTop, ThemeToggle } from "@open-sharia-enterprise/ts-ui";
   ```
 
-- [ ] Verify the new ts-ui file compiles before deleting the source:
+- [x] Verify the new ts-ui file compiles before deleting the source:
 
   ```bash
   npx nx run ts-ui:typecheck
@@ -421,10 +444,10 @@ graph LR
 
   Confirm zero type errors before proceeding to the delete steps.
 
-- [ ] Delete `apps/wahidyankf-web/src/components/ThemeToggle.tsx`
-- [ ] Delete `apps/wahidyankf-web/src/components/ThemeToggle.unit.test.tsx`
+- [x] Delete `apps/wahidyankf-web/src/components/ThemeToggle.tsx`
+- [x] Delete `apps/wahidyankf-web/src/components/ThemeToggle.unit.test.tsx`
 
-- [ ] Run affected typecheck to catch any type errors introduced in this phase before
+- [x] Run affected typecheck to catch any type errors introduced in this phase before
       committing:
 
   ```bash
@@ -433,11 +456,15 @@ graph LR
 
   Fix ALL failures before committing.
 
+  > Date: 2026-04-23 | Status: complete | Files Changed: libs/ts-ui/src/components/theme-toggle/theme-toggle.tsx,
+  > libs/ts-ui/src/components/theme-toggle/theme-toggle.unit.test.tsx, libs/ts-ui/src/index.ts,
+  > apps/wahidyankf-web/src/app/layout.tsx. Both typecheck pass.
+
 ---
 
 ## Phase 6 — Verify Remaining components/
 
-- [ ] Confirm `lucide-react` is present in `libs/ts-ui/package.json` dependencies (required by
+- [x] Confirm `lucide-react` is present in `libs/ts-ui/package.json` dependencies (required by
       `SearchComponent` and `ScrollToTop` — pre-verified during plan authoring, but a
       defensive check prevents silent breakage):
 
@@ -447,18 +474,18 @@ graph LR
 
   Expected: one line showing `"lucide-react": "^0.447.0"` (or similar semver).
 
-- [ ] Confirm `apps/wahidyankf-web/src/components/` contains exactly two files:
+- [x] Confirm `apps/wahidyankf-web/src/components/` contains exactly two files:
   - `Navigation.tsx`
   - `Navigation.unit.test.tsx`
-- [ ] Confirm no stale imports to deleted files remain:
+- [x] Confirm no stale imports to deleted files remain:
 
   ```bash
   grep -r "@/components/HighlightText\|@/components/ScrollToTop\|@/components/SearchComponent\|@/components/ThemeToggle" apps/wahidyankf-web/src/
   ```
 
-  Expected output: zero matches.
+  Expected output: zero matches. (Also updated vi.mock paths in 5 unit test files.)
 
-- [ ] Confirm ts-ui index.ts now contains all four new export lines:
+- [x] Confirm ts-ui index.ts now contains all four new export lines:
 
   ```bash
   grep -E "highlight-text|scroll-to-top|search-component|theme-toggle" libs/ts-ui/src/index.ts
@@ -466,7 +493,7 @@ graph LR
 
   Expected: four lines, one per component.
 
-- [ ] Confirm ts-ui index.ts exports all four components by name:
+- [x] Confirm ts-ui index.ts exports all four components by name:
 
   ```bash
   grep -E "HighlightText|ScrollToTop|SearchComponent|ThemeToggle" libs/ts-ui/src/index.ts
@@ -474,37 +501,49 @@ graph LR
 
   Expected: four lines, one per export name.
 
+  > Date: 2026-04-23 | Status: complete | Files Changed: apps/wahidyankf-web/src/app/page.unit.test.tsx,
+  > apps/wahidyankf-web/src/app/cv/page.unit.test.tsx, apps/wahidyankf-web/src/app/personal-projects/page.unit.test.tsx,
+  > apps/wahidyankf-web/src/app/layout.unit.test.tsx, apps/wahidyankf-web/src/utils/markdown.unit.test.tsx
+  > (vi.mock paths updated from @/components/\* to @open-sharia-enterprise/ts-ui).
+
 ---
 
 ## Local Quality Gates (Before Push)
 
-- [ ] Run typecheck for affected projects:
+- [x] Run typecheck for affected projects:
 
   ```bash
   npx nx affected -t typecheck
   ```
 
-- [ ] Run linting for affected projects:
+- [x] Run linting for affected projects:
 
   ```bash
   npx nx affected -t lint
   ```
 
-- [ ] Run quick tests for affected projects:
+- [x] Run quick tests for affected projects:
 
   ```bash
   npx nx affected -t test:quick
   ```
 
-- [ ] Run spec-coverage for affected projects:
+- [x] Run spec-coverage for affected projects:
 
   ```bash
   npx nx affected -t spec-coverage
   ```
 
-- [ ] Fix ALL failures — including preexisting issues not caused by your changes
-- [ ] Re-run failing checks to confirm resolution
-- [ ] Verify zero failures before pushing
+- [x] Fix ALL failures — including preexisting issues not caused by your changes
+- [x] Re-run failing checks to confirm resolution
+- [x] Verify zero failures before pushing
+
+  > Date: 2026-04-23 | Status: complete | Notes: typecheck PASS (both), lint PASS (0 errors), test:quick PASS
+  > (wahidyankf-web 80.47%, ts-ui 96.85%), spec-coverage PASS (wahidyankf-web 7 specs, ts-ui N/A).
+  > Preexisting fixes: added test coverage for updateURL, language button click, framework button click
+  > in page.unit.test.tsx; rewrote 4 ts-ui component tests to use native vitest assertions (no jest-dom)
+  > for consistency with existing ts-ui test style; updated 5 wahidyankf-web unit test files to mock
+  > @open-sharia-enterprise/ts-ui instead of deleted @/components/\* paths.
 
 > **Important**: Fix ALL failures found during quality gates, not just those caused by your
 > changes. This follows the root cause orientation principle — proactively fix preexisting errors

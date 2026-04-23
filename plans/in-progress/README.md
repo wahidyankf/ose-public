@@ -4,10 +4,7 @@ Active project plans currently being worked on.
 
 ## Active Plans
 
-- [2026-04-23: wahidyankf-web Component Migration to ts-ui](./2026-04-23__wahidyankf-web-ts-ui-migration/README.md) —
-  Migrate four pure-React components (HighlightText, ScrollToTop, SearchComponent, ThemeToggle)
-  from `apps/wahidyankf-web/src/components/` to `libs/ts-ui`. Keep Navigation local (Next.js
-  deps). Update all import sites in wahidyankf-web. Navigation component stays untouched.
+_(no active plans)_
 
 ## Instructions
 

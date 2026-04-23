@@ -616,7 +616,7 @@ immediately after the final migration commit lands on `main`.
 > be skipped (`has-changes: false`). Trigger the workflow immediately — before pushing any
 > unrelated commits.
 
-- [ ] Confirm migration commits are at `HEAD` on `main`:
+- [x] Confirm migration commits are at `HEAD` on `main`:
 
   ```bash
   rtk git log --oneline -3
@@ -624,19 +624,19 @@ immediately after the final migration commit lands on `main`.
 
   The most recent commit must be one of the migration commits (Phase 1 or Phase 2–5).
 
-- [ ] Push the migration commits to `origin/main` if not already done:
+- [x] Push the migration commits to `origin/main` if not already done:
 
   ```bash
   rtk git push origin main
   ```
 
-- [ ] Trigger the workflow via GitHub CLI:
+- [x] Trigger the workflow via GitHub CLI:
 
   ```bash
   gh workflow run test-and-deploy-wahidyankf-web.yml
   ```
 
-- [ ] Monitor the run (poll until all jobs complete):
+- [x] Monitor the run (poll until all jobs complete):
 
   ```bash
   gh run list --workflow=test-and-deploy-wahidyankf-web.yml --limit 3
@@ -648,26 +648,32 @@ immediately after the final migration commit lands on `main`.
   gh run watch
   ```
 
-- [ ] Verify each CI job passes green:
-  - [ ] **Lint** — `npx nx run wahidyankf-web:lint` — zero violations
-  - [ ] **Unit tests** — `npx nx run wahidyankf-web:test:quick` — zero failures
-  - [ ] **Spec coverage** — `npx nx run wahidyankf-web:spec-coverage` — threshold met (runs
+- [x] Verify each CI job passes green:
+  - [x] **Lint** — `npx nx run wahidyankf-web:lint` — zero violations
+  - [x] **Unit tests** — `npx nx run wahidyankf-web:test:quick` — zero failures
+  - [x] **Spec coverage** — `npx nx run wahidyankf-web:spec-coverage` — threshold met (runs
         in parallel; not a `deploy` dependency but must be green for full CI pass)
-  - [ ] **Integration tests** — `npx nx run wahidyankf-web:test:integration` — zero failures
-  - [ ] **E2E tests** — Playwright FE E2E against Docker-built app; zero failures
+  - [x] **Integration tests** — `npx nx run wahidyankf-web:test:integration` — zero failures
+  - [x] **E2E tests** — Playwright FE E2E against Docker-built app; zero failures
         (`be-e2e` runs with `|| true`, so FE E2E is the gate)
-  - [ ] **Detect changes** — output `has-changes: true` (migration touches `apps/wahidyankf-web/`)
-  - [ ] **Deploy to production** — force-pushes `main` HEAD to `prod-wahidyankf-web`; job
+  - [x] **Detect changes** — output `has-changes: true` (migration touches `apps/wahidyankf-web/`)
+  - [x] **Deploy to production** — force-pushes `main` HEAD to `prod-wahidyankf-web`; job
         must complete with exit 0
 
-- [ ] If any CI job fails, diagnose root cause, push a follow-up fix commit, re-trigger:
+- [x] If any CI job fails, diagnose root cause, push a follow-up fix commit, re-trigger:
 
   ```bash
   gh workflow run test-and-deploy-wahidyankf-web.yml
   ```
 
-- [ ] Repeat until ALL GitHub Actions jobs are green (including `spec-coverage`)
-- [ ] Do NOT proceed to production verification or plan archival until all jobs pass
+- [x] Repeat until ALL GitHub Actions jobs are green (including `spec-coverage`)
+- [x] Do NOT proceed to production verification or plan archival until all jobs pass
+
+  > Date: 2026-04-23 | Status: complete | CI run 24815244444: all 7 jobs green.
+  > Also fixed preexisting issues: integration vitest project (.unit.test.tsx exclusion),
+  > Docker setup (public/ dir, Dockerfile ts-ui pattern, tsconfig self-contained,
+  > next.config.ts removed outputFileTracingRoot), bddgen step discovery (steps glob,
+  > Cucumber expression escaping), E2E test steps (responsive, scrollTop, CV a11y).
 
 ---
 
@@ -676,7 +682,7 @@ immediately after the final migration commit lands on `main`.
 The `deploy` job force-pushes `main` to `prod-wahidyankf-web`; Vercel listens to
 `prod-wahidyankf-web` and auto-builds the new version.
 
-- [ ] Confirm `prod-wahidyankf-web` tip matches `main` HEAD:
+- [x] Confirm `prod-wahidyankf-web` tip matches `main` HEAD:
 
   ```bash
   rtk git fetch origin
@@ -686,30 +692,35 @@ The `deploy` job force-pushes `main` to `prod-wahidyankf-web`; Vercel listens to
 
   Both lines must show the same commit SHA.
 
-- [ ] Monitor the Vercel deployment for `www.wahidyankf.com` until it reports success
-- [ ] Once Vercel deployment is complete, run production smoke test via browser:
-  - [ ] Navigate to `https://www.wahidyankf.com` — home page loads without errors
-  - [ ] Type a query in the search bar — verify highlighted matches appear
-  - [ ] Navigate to `https://www.wahidyankf.com/cv` — search bar renders; highlight works on
+- [x] Monitor the Vercel deployment for `www.wahidyankf.com` until it reports success
+- [x] Once Vercel deployment is complete, run production smoke test via browser:
+  - [x] Navigate to `https://www.wahidyankf.com` — home page loads without errors
+  - [x] Type a query in the search bar — verify highlighted matches appear
+  - [x] Navigate to `https://www.wahidyankf.com/cv` — search bar renders; highlight works on
         CV entries
-  - [ ] Navigate to `https://www.wahidyankf.com/personal-projects` — search bar renders;
+  - [x] Navigate to `https://www.wahidyankf.com/personal-projects` — search bar renders;
         highlight works on project entries
-  - [ ] Click ThemeToggle — dark/light mode switches correctly
-  - [ ] Scroll down — ScrollToTop button appears; click — page scrolls to top
-  - [ ] Check browser console for JS errors — must be zero errors
+  - [x] Click ThemeToggle — dark/light mode switches correctly
+  - [x] Scroll down — ScrollToTop button appears; click — page scrolls to top
+  - [x] Check browser console for JS errors — must be zero errors
 
-- [ ] Document any production issues found; fix and re-trigger workflow if needed
-- [ ] Do NOT proceed to plan archival until production smoke test passes
+- [x] Document any production issues found; fix and re-trigger workflow if needed
+- [x] Do NOT proceed to plan archival until production smoke test passes
+
+  > Date: 2026-04-23 | Status: complete | prod SHA 785bcd386 = main HEAD SHA. Vercel deploy
+  > confirmed. Production smoke test via Playwright: home/cv/personal-projects load. Search,
+  > ThemeToggle, ScrollToTop all work. Zero JS errors on production (only preexisting
+  > light-theme hydration warning from prior toggle action, not from migration).
 
 ---
 
 ## Plan Archival
 
-- [ ] Verify ALL delivery checklist items are ticked
-- [ ] Verify ALL quality gates pass (local + CI)
-- [ ] Verify ALL manual assertions pass (Playwright MCP)
-- [ ] Move plan folder from `plans/in-progress/` to `plans/done/` via `git mv`
-- [ ] Update `plans/in-progress/README.md` — remove this plan entry
-- [ ] Update `plans/done/README.md` — add this plan entry with completion date
-- [ ] Update any other READMEs that reference this plan
-- [ ] Commit the archival: `chore(plans): move wahidyankf-web-ts-ui-migration to done`
+- [x] Verify ALL delivery checklist items are ticked
+- [x] Verify ALL quality gates pass (local + CI)
+- [x] Verify ALL manual assertions pass (Playwright MCP)
+- [x] Move plan folder from `plans/in-progress/` to `plans/done/` via `git mv`
+- [x] Update `plans/in-progress/README.md` — remove this plan entry
+- [x] Update `plans/done/README.md` — add this plan entry with completion date
+- [x] Update any other READMEs that reference this plan
+- [x] Commit the archival: `chore(plans): move wahidyankf-web-ts-ui-migration to done`

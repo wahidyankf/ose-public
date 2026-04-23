@@ -3,9 +3,14 @@
 ## Product Overview
 
 This migration moves four pure-React components from `apps/wahidyankf-web/src/components/` into
-`libs/ts-ui`, exports them from the library's public index, adds the workspace dependency to
-`wahidyankf-web`, and updates every import site in the app. The end state is a leaner app
-`components/` directory (Navigation only) and a more complete shared library.
+`libs/ts-ui` and refactors each one into a general-purpose, prop-configurable UI primitive.
+Currently the four components hardcode styling and behaviour values specific to `wahidyankf-web`.
+After migration each accepts those values as optional props with the current values as defaults,
+making them reusable across all OSE web apps without forking or copy-pasting.
+
+The migration also exports the components from the library's public index, adds the workspace
+dependency to `wahidyankf-web`, and updates every import site. End state: a leaner app
+`components/` directory (Navigation only) and a more capable shared library.
 
 ## Personas
 
@@ -16,9 +21,10 @@ This migration moves four pure-React components from `apps/wahidyankf-web/src/co
 
 ## User Story
 
-As the wahidyankf-web maintainer, I want the four generic UI components to live in `ts-ui` so
-that I import them from the shared library and any future OSE app can reuse them without
-copy-pasting.
+As the wahidyankf-web maintainer, I want the four generic UI components refactored into
+general-purpose, prop-configurable primitives and published to `ts-ui` so that I import them
+from the shared library and any future OSE app can consume them with different styles or
+behaviour without forking or copy-pasting.
 
 ## Acceptance Criteria
 
@@ -56,6 +62,16 @@ Scenario: Visual appearance is unchanged
   And ThemeToggle switches between dark and light mode correctly
   And ScrollToTop button appears on scroll and returns to top on click
   And HighlightText correctly highlights matched search terms
+
+Scenario: Migrated components are general-purpose and prop-configurable
+  Given the migration delivery checklist is complete
+  When I inspect each migrated component in libs/ts-ui/src/components/
+  Then HighlightText accepts a prop to override the highlight mark className
+  And ScrollToTop accepts props to override the scroll threshold and button className
+  And SearchComponent accepts props to override input and clear-button className
+  And ThemeToggle accepts a prop to override the button className
+  And each prop has the original wahidyankf-web hardcoded value as its default
+  And wahidyankf-web call-sites compile and render correctly without passing those props
 ```
 
 ## Product Scope

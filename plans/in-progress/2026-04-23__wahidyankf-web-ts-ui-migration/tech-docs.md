@@ -2,9 +2,14 @@
 
 ## Architecture Overview
 
-The migration redistributes four files from an app's local `components/` directory into the
-shared UI library. No new abstractions are introduced. The change is purely structural: file
-moves, export additions, one `package.json` dependency entry, and import-path rewrites.
+The migration moves four components from `apps/wahidyankf-web/src/components/` into `libs/ts-ui`
+and refactors each one to be a general-purpose, prop-configurable UI primitive. Currently all
+four hardcode styling and behaviour values that belong to `wahidyankf-web`'s design language.
+After migration each component exposes those values as optional props with the current
+`wahidyankf-web` values as defaults, making them reusable by any OSE app without forking.
+
+The structural work — file moves, export additions, one `package.json` dependency entry, and
+import-path rewrites — runs alongside the generalisation refactoring inside each component phase.
 
 ```
 Before:

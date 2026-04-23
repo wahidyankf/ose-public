@@ -45,7 +45,7 @@ dependencies. Keeping them local to one app creates two problems:
   deleted.
 
 Judgment call: these three observable conditions fully capture the business goal. No KPI
-targets are appropriate for a purely structural migration.
+targets are appropriate for a structural migration with bounded, prop-surface refactoring.
 
 ## Business-Scope Non-Goals
 
@@ -53,13 +53,16 @@ targets are appropriate for a purely structural migration.
   ineligible for the framework-agnostic library.
 - No changes to any app other than `wahidyankf-web` (no `ayokoding-web`, `oseplatform-web`,
   `organiclever-web`, etc.).
-- No design changes, behaviour changes, or feature additions to the migrated components.
+- No visual changes to `wahidyankf-web`'s rendered output — `wahidyankf-web` call-sites pass
+  props that reproduce the current appearance exactly.
+- Refactoring scope is limited to the prop surface of each component — no new business logic,
+  no new external dependencies, no behavioural changes beyond what the added props control.
 - No new Gherkin spec files for ts-ui component coverage — that is a separate future concern.
 
 ## Business Risks and Mitigations
 
-| Risk                                                                          | Mitigation                                                                                                                                                     |
-| ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Visual regression — component behaviour changes during the move               | Verbatim file copy with zero code edits. Playwright MCP visual verification against the running dev server before and after migration confirms no regressions. |
-| Import site missed — a consuming file still references the deleted local path | Post-migration grep confirms zero matches for the deleted local import paths before pushing.                                                                   |
-| Quality gate regression — existing tests break due to path or export mismatch | All quality gates run locally before push; CI must be green before plan archival.                                                                              |
+| Risk                                                                          | Mitigation                                                                                                                                                                                                                                     |
+| ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Visual regression — refactoring introduces unintended behaviour change        | Refactoring scope limited to prop surface; hardcoded values become defaults so zero-prop usage is identical to original. Playwright MCP visual verification against the running dev server before and after migration confirms no regressions. |
+| Import site missed — a consuming file still references the deleted local path | Post-migration grep confirms zero matches for the deleted local import paths before pushing.                                                                                                                                                   |
+| Quality gate regression — existing tests break due to path or export mismatch | All quality gates run locally before push; CI must be green before plan archival.                                                                                                                                                              |

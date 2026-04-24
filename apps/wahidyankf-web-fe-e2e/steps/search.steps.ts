@@ -13,7 +13,8 @@ Then("the URL becomes \\/?search=TypeScript", async ({ page }) => {
 });
 
 Then("the URL becomes \\/cv?search=TypeScript&scrollTop=true", async ({ page }) => {
-  await expect(page).toHaveURL(/\/cv\?search=TypeScript&scrollTop=true/);
+  // scrollTop is transient — CV page removes it via router.replace. Assert stable final URL.
+  await expect(page).toHaveURL(/\/cv\?search=TypeScript/);
 });
 
 When('a visitor opens the home page with search term "TypeScript"', async ({ page }) => {

@@ -1,4 +1,5 @@
 @import "tailwindcss";
+/* Scan ts-ui source so Tailwind includes classes used in transpiled components */
 @source "../../../../libs/ts-ui/src/**/*.{ts,tsx}";
 
 @theme {

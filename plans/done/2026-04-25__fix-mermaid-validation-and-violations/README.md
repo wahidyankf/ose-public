@@ -52,5 +52,25 @@ Audit run 2026-04-25 (direction-blind validator, MaxWidth=3, MaxDepth=5):
 | `label_too_long` violations | 56    |
 | `complex_diagram` warnings  | 14    |
 
-Actual counts will shift after Phase 0 fixes the validator logic. Phase 1 batch lists
-must be re-discovered post-Phase-0.
+## Post-Phase-0 Audit
+
+Audit run 2026-04-25 (direction-aware validator, MaxWidth=4, MaxDepth=unlimited):
+
+| Metric                  | Count | Notes                                       |
+| ----------------------- | ----- | ------------------------------------------- |
+| Files with violations   | 101   | 1 fewer than baseline (LR reclassification) |
+| Total violations        | 218   | 18 fewer than baseline                      |
+| `complex_diagram` warns | 0     | MaxDepth=unlimited eliminates all warnings  |
+
+Batch breakdown for Phase 1:
+
+| Batch | Area                   | Files |
+| ----- | ---------------------- | ----- |
+| 1     | TypeScript             | 17    |
+| 2     | Python                 | 13    |
+| 3     | Go                     | 12    |
+| 4     | Elixir                 | 17    |
+| 5     | JVM / Spring Boot      | 10    |
+| 6     | Platform-web / Next.js | 13    |
+| 7     | Architecture           | 10    |
+| 8     | Remaining (misc)       | 9     |

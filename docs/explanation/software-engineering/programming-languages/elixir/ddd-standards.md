@@ -19,7 +19,6 @@ related:
 principles:
   - explicit-over-implicit
   - simplicity-over-complexity
-updated: 2026-02-05
 ---
 
 # Domain-Driven Design Standards
@@ -1707,6 +1706,5 @@ end
 
 ---
 
-**Last Updated**: 2026-02-05
 **Elixir Version**: 1.12+ (baseline), 1.17+ (recommended), 1.19.0 (latest)
 **Maintainers**: Platform Documentation Team

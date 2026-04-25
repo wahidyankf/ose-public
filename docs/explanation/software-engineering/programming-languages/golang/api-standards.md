@@ -23,7 +23,6 @@ related:
 principles:
   - explicit-over-implicit
   - simplicity-over-complexity
-updated: 2026-03-06
 ---
 
 # Web Services in Go
@@ -2364,7 +2363,6 @@ app.Use(func(c *fiber.Ctx) error {
 
 ---
 
-**Last Updated**: 2026-01-23
 **Go Version**: 1.21+ (baseline), 1.22+ (recommended), 1.23 (latest)
 **Maintainers**: Platform Documentation Team
 

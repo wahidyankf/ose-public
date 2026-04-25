@@ -17,7 +17,6 @@ principles:
   - explicit-over-implicit
   - immutability
   - pure-functions
-updated: 2026-01-26
 ---
 
 # Next.js Idioms
@@ -820,5 +819,4 @@ NEXT_PUBLIC_API_URL="https://api.example.com"
 
 ---
 
-**Last Updated**: 2026-01-26
 **Next.js Version**: 14+ (App Router)

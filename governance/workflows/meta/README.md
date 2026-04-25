@@ -33,7 +33,3 @@ This documentation defines **HOW workflows should be designed and documented**, 
 - [Maker-Checker-Fixer Pattern](../../development/pattern/maker-checker-fixer.md) - Core quality workflow pattern
 - [AI Agents Convention](../../development/agents/ai-agents.md) - Agent standards workflows orchestrate
 - [Repository Architecture](../../repository-governance-architecture.md) - Six-layer governance model (Layer 5: Workflows)
-
----
-
-**Last Updated**: 2026-01-01

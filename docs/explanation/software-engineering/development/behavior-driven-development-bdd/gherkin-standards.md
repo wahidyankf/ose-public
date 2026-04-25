@@ -11,7 +11,6 @@ principles:
   - explicit-over-implicit
   - documentation-first
 created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # Gherkin Syntax Standards
@@ -131,7 +130,3 @@ Feature: Murabaha Contract Lifecycle
     Then the contract status should be "PENDING_REVIEW"
     And a "ContractSubmitted" event should be published
 ```
-
----
-
-**Last Updated**: 2026-02-09

@@ -22,7 +22,6 @@ related:
 principles:
   - reproducibility
   - explicit-over-implicit
-updated: 2026-03-06
 ---
 
 # Modules and Dependencies in Go
@@ -1014,6 +1013,5 @@ GONOPROXY=github.com/mycompany go get package
 
 ---
 
-**Last Updated**: 2026-01-23
 **Go Version**: 1.21+ (baseline), 1.22+ (recommended), 1.23 (latest)
 **Maintainers**: Platform Documentation Team

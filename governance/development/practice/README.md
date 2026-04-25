@@ -46,7 +46,3 @@ This set of development practices implements/respects the following core princip
 This set of development practices respects the following conventions:
 
 - **[Content Quality Principles](../../conventions/writing/quality.md)**: Practice documentation follows active voice, clear structure, and proper formatting standards.
-
----
-
-**Last Updated**: 2026-04-02

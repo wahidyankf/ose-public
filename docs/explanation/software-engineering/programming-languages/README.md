@@ -10,7 +10,6 @@ tags:
   - antipatterns
   - index
 created: 2026-01-20
-updated: 2026-04-19
 ---
 
 # Programming Languages
@@ -428,7 +427,3 @@ To document a new language:
 - **[Explanation Documentation Index](../../README.md)** - All conceptual documentation
 - **[Monorepo Structure](../../../reference/monorepo-structure.md)** - Project organization
 - **[Code Quality Standards](../../../../governance/development/quality/code.md)** - Quality requirements
-
----
-
-**Last Updated**: 2026-03-09

@@ -732,6 +732,34 @@ git rebase --abort
 git pull origin main  # Use merge instead
 ```
 
+### Practice 12: Use Direct Push by Default; Create PRs Only When Explicitly Requested
+
+**Principle**: PRs are opt-in, not the default. Push directly to `main` unless the user prompt or plan document explicitly requests a PR.
+
+**Good Example:**
+
+```bash
+# Complete a feature with direct push (no PR needed)
+git commit -m "feat(auth): add email validation"
+git push origin main
+```
+
+**Bad Example:**
+
+```bash
+# Opening a PR for every commit "for safety" (DO NOT DO THIS)
+gh pr create --title "feat: add email validation" --body "..."
+# Unnecessary friction; blocks trunk-based integration
+```
+
+**Rationale:**
+
+- Direct push is the TBD default — PRs add friction without safety benefit for routine commits
+- PRs are appropriate only for worktree-based flows, external contributions, or when explicitly requested
+- Plan delivery checklists must not include unsolicited PR steps
+
+See [Git Push Default Convention](./git-push-default.md) for complete rules.
+
 ## Related Documentation
 
 - [Trunk Based Development Convention](./trunk-based-development.md) - Complete TBD workflow
@@ -739,6 +767,7 @@ git pull origin main  # Use merge instead
 - [Implementation Workflow Convention](./implementation.md) - Three-stage methodology
 - [Reproducible Environments Convention](./reproducible-environments.md) - Environment practices
 - [Anti-Patterns](./anti-patterns.md) - Common mistakes to avoid
+- [Git Push Default Convention](./git-push-default.md) - PR opt-in rules for AI agents and plans
 
 ## Summary
 
@@ -755,6 +784,7 @@ Following these best practices ensures:
 9. Split commits by domain
 10. Test before committing
 11. Pull with rebase before pushing (linear history for TBD)
+12. Use direct push by default; create PRs only when explicitly requested
 
 Workflows built following these practices are efficient, predictable, and high-quality.
 

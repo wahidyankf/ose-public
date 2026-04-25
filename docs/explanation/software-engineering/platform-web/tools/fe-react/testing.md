@@ -13,7 +13,6 @@ related:
   - ./best-practices.md
 principles:
   - automation-over-manual
-updated: 2026-01-25
 ---
 
 # React Testing
@@ -1201,7 +1200,3 @@ test('dashboard shows user info', () => {
 - **[Hooks](hooks.md)** - Hook patterns
 - **[Component Architecture](component-architecture.md)** - Component patterns
 - **[Accessibility](accessibility.md)** - Accessibility testing
-
----
-
-**Last Updated**: 2026-01-25

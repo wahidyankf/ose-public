@@ -10,7 +10,6 @@ tags:
   - docker
   - volta
 created: 2026-04-04
-updated: 2026-04-18
 ---
 
 # How to Set Up Your Development Environment

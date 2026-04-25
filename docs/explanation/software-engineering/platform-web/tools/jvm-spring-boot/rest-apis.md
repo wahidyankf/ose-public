@@ -17,7 +17,6 @@ principles:
   - simplicity-over-complexity
   - consistency
 created: 2026-01-26
-updated: 2026-01-26
 related:
   - ./best-practices.md
   - ./security.md
@@ -1637,7 +1636,3 @@ Production guidelines for REST API design.
 - [Java API Design](../../../programming-languages/java/api-standards.md) - Java API baseline
 - [Spring Boot Idioms](./idioms.md) - REST patterns
 - [Spring Boot Security](./security.md) - API security
-
----
-
-**Last Updated**: 2026-01-26

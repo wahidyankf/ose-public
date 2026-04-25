@@ -16,8 +16,6 @@ skills:
 ## Agent Metadata
 
 - **Role**: Maker (blue)
-- **Created**: 2025-12-28
-- **Last Updated**: 2026-04-12
 
 **Model Selection Justification**: This agent uses `model: sonnet` because workflow authoring is template filling against the `repo-defining-workflows` convention:
 

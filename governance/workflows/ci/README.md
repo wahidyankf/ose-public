@@ -30,7 +30,3 @@ These workflows define **WHEN and HOW to validate CI/CD standards**, orchestrati
 - [CI/CD Conventions](../../development/infra/ci-conventions.md) - The standards these workflows validate
 - [Maker-Checker-Fixer Pattern](../../development/pattern/maker-checker-fixer.md) - Core workflow pattern
 - [Repository Architecture](../../repository-governance-architecture.md) - Six-layer governance model
-
----
-
-**Last Updated**: 2026-04-02

@@ -9,7 +9,6 @@ tags:
   - transparency
   - clarity
 created: 2025-12-15
-updated: 2025-12-24
 ---
 
 # Explicit Over Implicit
@@ -150,7 +149,6 @@ tags:
   - principles
   - explicit-configuration
 created: 2025-12-15
-updated: 2025-12-15
 ---
 ```
 
@@ -444,7 +442,3 @@ npx lint-staged
 
 - [OWASP Secure Coding Practices](https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/) - Explicit access control
 - [Principle of Least Privilege](https://en.wikipedia.org/wiki/Principle_of_least_privilege)
-
----
-
-**Last Updated**: 2025-12-24

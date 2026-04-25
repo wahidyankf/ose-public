@@ -16,7 +16,6 @@ principles:
   - explicit-over-implicit
   - reproducibility
 created: 2026-02-08
-updated: 2026-02-08
 ---
 
 # Playwright Assertion Standards
@@ -490,5 +489,5 @@ await expect(page.getByTestId("zakat-amount")).toHaveText("$250.00");
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-02-08
+
 **Playwright Version**: Playwright 1.40+ (TypeScript, Node.js 18+)

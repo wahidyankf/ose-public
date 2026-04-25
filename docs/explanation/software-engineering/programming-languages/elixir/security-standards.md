@@ -21,7 +21,6 @@ related:
   - ./coding-standards.md
 principles:
   - explicit-over-implicit
-updated: 2026-02-05
 ---
 
 # Elixir Security Standards
@@ -1034,7 +1033,6 @@ Before deploying financial services, verify:
 
 ---
 
-**Last Updated**: 2026-02-05
 **Elixir Version**: 1.12+ (baseline), 1.17+ (recommended), 1.19.0 (latest)
 **Phoenix Version**: 1.7+
 **Status**: Active (mandatory for all Phoenix financial applications)

@@ -17,7 +17,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # Kotlin Error Handling Standards
@@ -401,5 +400,5 @@ try {
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **Kotlin Version**: 2.1 | Error Handling: Result<T>, sealed classes, CoroutineExceptionHandler

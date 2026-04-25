@@ -2,7 +2,6 @@
 name: docs-validating-links
 description: Comprehensive link validation methodology for markdown links including format requirements, path validation, broken link detection, external link verification, and checker implementation patterns
 created: 2025-01-22
-updated: 2026-01-25
 ---
 
 # Validating Markdown Links

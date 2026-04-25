@@ -11,7 +11,6 @@ tags:
   - software-quality
   - index
 created: 2026-01-20
-updated: 2026-01-20
 ---
 
 # Software Development Practices
@@ -241,7 +240,3 @@ The open-sharia-enterprise project applies both TDD and BDD:
 - **[Functional Programming Principles](../../../../governance/development/pattern/functional-programming.md)** - FP practices in this repository
 - **[Implementation Workflow](../../../../governance/development/workflow/implementation.md)** - TDD in development process
 - **[Code Quality Standards](../../../../governance/development/quality/code.md)** - Testing requirements
-
----
-
-**Last Updated**: 2026-01-20

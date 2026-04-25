@@ -16,7 +16,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # Clojure Functional Programming Standards
@@ -343,5 +342,5 @@ Pure functional pipelines are deterministic — same input always produces same 
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **Clojure Version**: 1.10+ (baseline), 1.12 (recommended)

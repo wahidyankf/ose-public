@@ -50,7 +50,3 @@ This set of conventions implements/respects the following core principles:
 - **[Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md)**: Indentation and Linking Conventions define explicit formatting standards, making file structure and navigation transparent through consistent rules.
 
 - **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)**: Formatting conventions use simple, consistent patterns (2-space indentation, relative paths, standard timestamps) rather than complex custom solutions.
-
----
-
-**Last Updated**: 2026-01-30

@@ -18,7 +18,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-01-25
-updated: 2026-02-03
 ---
 
 # Java
@@ -283,7 +282,7 @@ graph TD
 ---
 
 **Status**: Authoritative Standard (Mandatory Compliance)
-**Last Updated**: 2026-02-03
+
 **Java Version**: 17+ (baseline), 21+ (recommended), 25 LTS (recommended for new projects)
 **Framework Stack**: Spring Boot 4, Jakarta EE 11, JUnit 6, Mockito, TestContainers
 **Maintainers**: Platform Architecture Team

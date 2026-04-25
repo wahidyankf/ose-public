@@ -17,8 +17,6 @@ skills:
 ## Agent Metadata
 
 - **Role**: Maker (blue)
-- **Created**: 2025-12-20
-- **Last Updated**: 2026-04-12
 
 **Model Selection Justification**: This agent uses `model: sonnet` because oseplatform-web is a flat, English-only content platform with a simpler authoring profile than the bilingual AyoKoding makers:
 

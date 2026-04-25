@@ -11,7 +11,6 @@ tags:
   - liquibase
   - migrations
 created: 2026-03-09
-updated: 2026-03-26
 ---
 
 # Database Audit Trail Pattern
@@ -435,7 +434,3 @@ with volume mount) may behave differently:
 - **Python Alembic**: The `Dockerfile.integration` needs explicit `COPY alembic/ alembic/` and
   `COPY alembic.ini alembic.ini` — the standard `COPY . .` may not include them if `.dockerignore`
   is aggressive.
-
----
-
-**Last Updated**: 2026-03-27

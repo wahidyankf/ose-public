@@ -16,7 +16,6 @@ related:
 principles:
   - efficiency
   - resource-management
-updated: 2025-01-23
 ---
 
 # Python Memory Management
@@ -36,7 +35,6 @@ Python tracks object references and deallocates when count reaches zero.
 ```python
 import sys
 from decimal import Decimal
-
 
 # Check reference count
 wealth = Decimal("100000")
@@ -97,7 +95,6 @@ GC handles circular references that reference counting can't.
 import gc
 from typing import List
 
-
 class DonationCampaign:
     """Campaign that may create circular references."""
 
@@ -109,7 +106,6 @@ class DonationCampaign:
         """Create circular reference."""
         self.related_campaigns.append(campaign)
         campaign.related_campaigns.append(self)  # Circular!
-
 
 # Create circular reference
 campaign1 = DonationCampaign("Campaign 1")
@@ -177,7 +173,6 @@ import weakref
 from typing import Dict
 from decimal import Decimal
 
-
 class ZakatCalculationCache:
     """Cache using weak references (memory-efficient)."""
 
@@ -195,7 +190,6 @@ class ZakatCalculationCache:
         zakat = wealth * Decimal("0.025")
         self._cache[payer_id] = zakat  # Weak reference
         return zakat
-
 
 # Usage: Cache doesn't prevent garbage collection
 cache = ZakatCalculationCache()
@@ -219,7 +213,6 @@ from memory_profiler import profile
 from decimal import Decimal
 from typing import List
 
-
 @profile
 def process_zakat_batch(count: int) -> List[Decimal]:
     """Process batch and profile memory."""
@@ -232,7 +225,6 @@ def process_zakat_batch(count: int) -> List[Decimal]:
 
     return results
 
-
 # Run with: python -m memory_profiler script.py
 # Shows line-by-line memory usage
 ```
@@ -242,7 +234,6 @@ def process_zakat_batch(count: int) -> List[Decimal]:
 ```python
 import tracemalloc
 from decimal import Decimal
-
 
 def analyze_memory():
     """Analyze memory usage with tracemalloc."""
@@ -279,7 +270,6 @@ class BadCampaign:
         self.donations = []
         self.donations.append(self)  # Circular!
 
-
 # FIXED: Avoid circular references
 class GoodCampaign:
     """No circular references."""
@@ -288,10 +278,8 @@ class GoodCampaign:
         self.donations = []
         # Don't reference self in collections
 
-
 # ALTERNATIVE: Use weak references
 import weakref
-
 
 class Campaign:
     """Uses weak reference for parent."""
@@ -306,17 +294,14 @@ class Campaign:
 # LEAK: Unbounded global cache
 _global_cache = {}  # BAD: Grows indefinitely
 
-
 def get_zakat_cached(payer_id: str) -> Decimal:
     """Unbounded cache (memory leak)."""
     if payer_id not in _global_cache:
         _global_cache[payer_id] = calculate_zakat(payer_id)  # Never evicted!
     return _global_cache[payer_id]
 
-
 # FIXED: Bounded cache with LRU
 from functools import lru_cache
-
 
 @lru_cache(maxsize=1000)  # Limited size
 def get_zakat_cached(payer_id: str) -> Decimal:
@@ -369,7 +354,6 @@ Reduce memory overhead for instances.
 ```python
 from decimal import Decimal
 
-
 # WITHOUT __slots__: ~56 bytes per instance
 class DonationWithoutSlots:
     """Standard class with __dict__."""
@@ -377,7 +361,6 @@ class DonationWithoutSlots:
     def __init__(self, donor_id: str, amount: Decimal):
         self.donor_id = donor_id
         self.amount = amount
-
 
 # WITH __slots__: ~40 bytes per instance
 class DonationWithSlots:
@@ -388,7 +371,6 @@ class DonationWithSlots:
     def __init__(self, donor_id: str, amount: Decimal):
         self.donor_id = donor_id
         self.amount = amount
-
 
 # Memory savings significant for many instances
 donations = [
@@ -410,7 +392,6 @@ Generators compute values lazily.
 from decimal import Decimal
 from typing import Iterator, List
 
-
 # LIST: Stores all values in memory
 def calculate_zakat_list(count: int) -> List[Decimal]:
     """Returns list (high memory)."""
@@ -420,14 +401,12 @@ def calculate_zakat_list(count: int) -> List[Decimal]:
         results.append(wealth * Decimal("0.025"))
     return results
 
-
 # GENERATOR: Computes values on demand
 def calculate_zakat_generator(count: int) -> Iterator[Decimal]:
     """Returns generator (low memory)."""
     for i in range(count):
         wealth = Decimal(str(i * 1000))
         yield wealth * Decimal("0.025")
-
 
 # Memory comparison
 list_result = calculate_zakat_list(1000000)  # ~80MB
@@ -456,7 +435,6 @@ for zakat in gen_result:
 
 ---
 
-**Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
 **Maintainers**: OSE Platform Documentation Team
 

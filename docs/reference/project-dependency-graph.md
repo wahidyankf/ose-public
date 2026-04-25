@@ -8,7 +8,6 @@ tags:
   - architecture
   - monorepo
 created: 2026-03-22
-updated: 2026-04-19
 ---
 
 # Project Dependency Graph

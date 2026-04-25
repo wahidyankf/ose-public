@@ -19,7 +19,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-01-25
-updated: 2026-01-25
 ---
 
 # Spring Boot Framework
@@ -1605,6 +1604,5 @@ CMD ["./gradlew", "bootRun", "--no-daemon"]
 
 ---
 
-**Last Updated**: 2026-01-25
 **Spring Boot Version**: 3.3+ (Java 17+, targeting Java 21)
 **Maintainers**: Platform Documentation Team

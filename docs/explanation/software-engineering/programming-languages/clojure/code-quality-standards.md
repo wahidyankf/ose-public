@@ -16,7 +16,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # Clojure Code Quality Standards
@@ -355,5 +354,5 @@ clojure -M:coverage --fail-threshold 95  ;; Coverage gate
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **Clojure Version**: 1.10+ (baseline), 1.12 (recommended)

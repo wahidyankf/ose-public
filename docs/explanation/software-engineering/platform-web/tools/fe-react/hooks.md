@@ -16,7 +16,6 @@ related:
 principles:
   - explicit-over-implicit
   - pure-functions
-updated: 2026-01-25
 ---
 
 # React Hooks
@@ -1218,7 +1217,3 @@ function ItemComponent({ item }) {
 - **[Performance](performance.md)** - Hook optimization
 - **[Component Architecture](component-architecture.md)** - Component patterns
 - **[Best Practices](best-practices.md)** - Production standards
-
----
-
-**Last Updated**: 2026-01-25

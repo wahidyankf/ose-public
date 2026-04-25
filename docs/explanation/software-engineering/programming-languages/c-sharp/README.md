@@ -22,7 +22,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # C
@@ -333,7 +332,7 @@ graph TD
 ---
 
 **Status**: Authoritative Standard (Mandatory Compliance)
-**Last Updated**: 2026-03-09
+
 **.NET Version**: .NET 6 (minimum), .NET 8 LTS (recommended), .NET 9 (current STS)
 **C# Version**: C# 10 (minimum), C# 12 (recommended with .NET 8), C# 13 (.NET 9)
 **Framework Stack**: ASP.NET Core 8, EF Core 8, xUnit, FluentAssertions, Moq, TestContainers.Net

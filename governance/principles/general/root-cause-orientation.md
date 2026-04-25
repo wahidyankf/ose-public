@@ -10,7 +10,6 @@ tags:
   - senior-engineer
   - minimal-impact
 created: 2026-03-09
-updated: 2026-03-28
 ---
 
 # Root Cause Orientation
@@ -212,7 +211,3 @@ See [Agent Workflow Orchestration](../../development/agents/agent-workflow-orche
 - [Implementation Workflow](../../development/workflow/implementation.md) - Three-stage workflow with surgical changes practice
 - [Agent Workflow Orchestration](../../development/agents/agent-workflow-orchestration.md) - How this principle applies to AI agent task execution
 - [Proactive Preexisting Error Resolution](../../development/practice/proactive-preexisting-error-resolution.md) - Practice extending this principle: fix preexisting errors on encounter rather than noting and deferring
-
----
-
-**Last Updated**: 2026-03-28

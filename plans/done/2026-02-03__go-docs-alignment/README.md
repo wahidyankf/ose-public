@@ -1936,6 +1936,5 @@ apps/ayokoding-web/content/en/learn/software-engineering/programming-languages/j
 
 ---
 
-**Last Updated**: 2026-02-03
 **Status**: In Progress
 **Next Review**: 2026-02-10

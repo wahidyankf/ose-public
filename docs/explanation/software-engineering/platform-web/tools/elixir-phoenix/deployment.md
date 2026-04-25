@@ -1170,7 +1170,3 @@ echo "Deployment complete!"
 - **[Performance](performance.md)** - Scaling and optimization
 - **[Observability](observability.md)** - Monitoring and logging
 - **[Security](security.md)** - Production security
-
----
-
-**Last Updated**: 2026-01-25

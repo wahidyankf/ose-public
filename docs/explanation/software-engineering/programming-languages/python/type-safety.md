@@ -20,7 +20,6 @@ principles:
   - explicit-over-implicit
   - documentation-first
   - simplicity-over-complexity
-updated: 2025-01-23
 ---
 
 # Python Type Safety
@@ -82,7 +81,6 @@ Type hints (PEP 484) annotate variables, parameters, and return values.
 from decimal import Decimal
 from typing import Optional
 
-
 def calculate_zakat_obligation(
     wealth_amount: Decimal,
     nisab_threshold: Decimal,
@@ -102,7 +100,6 @@ def calculate_zakat_obligation(
         return wealth_amount * zakat_rate
     return Decimal("0")
 
-
 # BAD: No type hints
 def calculate_zakat_obligation(wealth_amount, nisab_threshold, zakat_rate=0.025):
     """BAD: No static analysis, unclear types."""
@@ -120,7 +117,6 @@ def calculate_zakat_obligation(wealth_amount, nisab_threshold, zakat_rate=0.025)
 from typing import List, Dict
 from decimal import Decimal
 
-
 wealth_items: List[Decimal] = [
     Decimal("50000.00"),
     Decimal("75000.00"),
@@ -133,7 +129,6 @@ donor_totals: Dict[str, Decimal] = {
 }
 
 current_zakat: Decimal = Decimal("0.00")
-
 
 # BAD: No type annotations
 wealth_items = [50000.00, 75000.00, 100000.00]  # BAD: floats, not Decimal
@@ -151,7 +146,6 @@ from dataclasses import dataclass
 from decimal import Decimal
 from datetime import date
 
-
 @dataclass
 class ZakatCalculation:
     """Zakat calculation with typed attributes."""
@@ -167,7 +161,6 @@ class ZakatCalculation:
         if self.wealth_amount >= self.nisab_threshold:
             return self.wealth_amount * self.zakat_rate
         return Decimal("0")
-
 
 # BAD: Untyped class
 class ZakatCalculation:
@@ -238,11 +231,9 @@ mypy --html-report mypy-report src/
 # mypy will catch this error
 from decimal import Decimal
 
-
 def calculate_zakat(wealth: Decimal) -> Decimal:
     """Calculate Zakat (2.5% of wealth)."""
     return wealth * Decimal("0.025")
-
 
 # mypy error: Argument 1 has incompatible type "int"; expected "Decimal"
 zakat = calculate_zakat(100000)  # BAD: int instead of Decimal
@@ -295,7 +286,6 @@ from pydantic import BaseModel, Field, field_validator
 from decimal import Decimal
 from datetime import date
 
-
 class ZakatCalculationRequest(BaseModel):
     """Validated Zakat calculation request."""
 
@@ -319,7 +309,6 @@ class ZakatCalculationRequest(BaseModel):
         if v.as_tuple().exponent < -2:
             raise ValueError("Monetary values must have max 2 decimal places")
         return v
-
 
 # Usage: Pydantic validates automatically
 request = ZakatCalculationRequest(
@@ -346,14 +335,12 @@ from pydantic import BaseModel, Field
 from typing import List
 from decimal import Decimal
 
-
 class DonationItem(BaseModel):
     """Individual donation item."""
 
     donor_id: str = Field(min_length=1)
     amount: Decimal = Field(gt=0)
     category: str = Field(min_length=1)
-
 
 class DonationCampaign(BaseModel):
     """Donation campaign with nested items."""
@@ -374,7 +361,6 @@ class DonationCampaign(BaseModel):
         if self.target_amount == Decimal("0"):
             return Decimal("0")
         return (self.total_donated / self.target_amount) * Decimal("100")
-
 
 # Usage: Pydantic validates nested structure
 campaign = DonationCampaign(
@@ -399,7 +385,6 @@ print(campaign.progress_percentage)  # Decimal('2.50')
 from pydantic_settings import BaseSettings
 from typing import Optional
 
-
 class ZakatServiceSettings(BaseSettings):
     """Zakat service configuration loaded from environment."""
 
@@ -414,7 +399,6 @@ class ZakatServiceSettings(BaseSettings):
         env_file = ".env"
         env_file_encoding = "utf-8"
         env_prefix = "ZAKAT_"  # All env vars start with ZAKAT_
-
 
 # Usage: Loads from environment variables
 # ZAKAT_DATABASE_URL=postgresql://...
@@ -437,9 +421,7 @@ Generics enable type-safe reusable code.
 # GOOD: Generic function with TypeVar
 from typing import TypeVar, List, Optional
 
-
 T = TypeVar("T")
-
 
 def find_by_id(
     items: List[T],
@@ -461,16 +443,13 @@ def find_by_id(
             return item
     return None
 
-
 # Usage with type preservation
 from dataclasses import dataclass
-
 
 @dataclass
 class DonationCampaign:
     campaign_id: str
     name: str
-
 
 campaigns: List[DonationCampaign] = get_all_campaigns()
 # mypy knows result is Optional[DonationCampaign]
@@ -489,9 +468,7 @@ if campaign is not None:
 from typing import TypeVar, Generic, List, Optional
 from decimal import Decimal
 
-
 T = TypeVar("T")
-
 
 class Repository(Generic[T]):
     """Generic repository pattern for domain entities."""
@@ -513,16 +490,13 @@ class Repository(Generic[T]):
         """Get all items."""
         return self._items.copy()
 
-
 # Usage: Type-safe repository instances
 from dataclasses import dataclass
-
 
 @dataclass
 class ZakatRecord:
     payer_id: str
     amount: Decimal
-
 
 zakat_repo: Repository[ZakatRecord] = Repository()
 zakat_repo.add(ZakatRecord("PAYER-001", Decimal("2500.00")))
@@ -547,7 +521,6 @@ Protocols (PEP 544) enable structural subtyping (duck typing with type checking)
 from typing import Protocol
 from decimal import Decimal
 
-
 class FinancialCalculator(Protocol):
     """Protocol for financial calculation services."""
 
@@ -555,14 +528,12 @@ class FinancialCalculator(Protocol):
         """Calculate financial obligation from base amount."""
         ...
 
-
 class ZakatCalculator:
     """Zakat calculator (2.5% rate)."""
 
     def calculate(self, wealth_amount: Decimal) -> Decimal:
         """Calculate Zakat obligation."""
         return wealth_amount * Decimal("0.025")
-
 
 class TaxCalculator:
     """Tax calculator (variable rate)."""
@@ -574,14 +545,12 @@ class TaxCalculator:
         """Calculate tax obligation."""
         return income_amount * self.tax_rate
 
-
 def apply_calculation(
     calculator: FinancialCalculator,
     amount: Decimal,
 ) -> Decimal:
     """Apply calculator to amount (accepts any compatible type)."""
     return calculator.calculate(amount)
-
 
 # Usage: Both calculators satisfy Protocol without inheritance
 zakat_calc = ZakatCalculator()
@@ -590,12 +559,10 @@ tax_calc = TaxCalculator(Decimal("0.20"))
 zakat = apply_calculation(zakat_calc, Decimal("100000.00"))  # OK
 tax = apply_calculation(tax_calc, Decimal("50000.00"))  # OK
 
-
 # mypy error: Missing calculate method
 class InvalidCalculator:
     def compute(self, amount: Decimal) -> Decimal:  # BAD: Wrong method name
         return amount * Decimal("0.10")
-
 
 invalid = InvalidCalculator()
 apply_calculation(invalid, Decimal("1000.00"))  # Type error: No calculate method
@@ -641,7 +608,6 @@ TypedDict defines dictionary shapes with type checking.
 from typing import TypedDict
 from decimal import Decimal
 
-
 class ZakatRecordDict(TypedDict):
     """Type-safe dictionary for Zakat records."""
 
@@ -649,7 +615,6 @@ class ZakatRecordDict(TypedDict):
     wealth_amount: Decimal
     nisab_threshold: Decimal
     zakat_owed: Decimal
-
 
 def process_zakat_record(record: ZakatRecordDict) -> None:
     """Process Zakat record with type-safe dictionary access."""
@@ -659,7 +624,6 @@ def process_zakat_record(record: ZakatRecordDict) -> None:
     # mypy error: Key 'invalid_key' not in ZakatRecordDict
     # print(record['invalid_key'])  # Type error
 
-
 # Usage
 record: ZakatRecordDict = {
     "payer_id": "PAYER-001",
@@ -668,7 +632,6 @@ record: ZakatRecordDict = {
     "zakat_owed": Decimal("2500.00"),
 }
 process_zakat_record(record)
-
 
 # mypy error: Missing required key 'zakat_owed'
 invalid_record: ZakatRecordDict = {
@@ -687,7 +650,6 @@ invalid_record: ZakatRecordDict = {
 from typing import TypedDict, NotRequired
 from decimal import Decimal
 
-
 class DonationRecordDict(TypedDict):
     """Donation record with optional memo field."""
 
@@ -695,7 +657,6 @@ class DonationRecordDict(TypedDict):
     amount: Decimal
     campaign_id: str
     memo: NotRequired[str]  # Optional field
-
 
 # Usage: memo is optional
 donation1: DonationRecordDict = {
@@ -729,14 +690,12 @@ PayerId = NewType("PayerId", str)
 CampaignId = NewType("CampaignId", str)
 DonorId = NewType("DonorId", str)
 
-
 def record_zakat_payment(
     payer_id: PayerId,
     amount: Decimal,
 ) -> None:
     """Record Zakat payment (requires PayerId)."""
     print(f"Recording payment for {payer_id}: ${amount}")
-
 
 def record_donation(
     donor_id: DonorId,
@@ -745,7 +704,6 @@ def record_donation(
 ) -> None:
     """Record donation (requires DonorId and CampaignId)."""
     print(f"Recording donation {donor_id} -> {campaign_id}: ${amount}")
-
 
 # Usage: Prevents mixing incompatible IDs
 payer_id = PayerId("PAYER-001")
@@ -775,7 +733,6 @@ Union represents values of multiple types. Optional represents nullable values.
 from typing import Union
 from decimal import Decimal
 
-
 def parse_monetary_value(value: Union[str, int, Decimal]) -> Decimal:
     """Parse monetary value from multiple input types."""
     if isinstance(value, Decimal):
@@ -787,12 +744,10 @@ def parse_monetary_value(value: Union[str, int, Decimal]) -> Decimal:
     else:
         raise TypeError(f"Cannot parse {type(value)} as Decimal")
 
-
 # Usage: Accepts multiple types
 amount1 = parse_monetary_value("100000.00")  # OK: str
 amount2 = parse_monetary_value(100000)  # OK: int
 amount3 = parse_monetary_value(Decimal("100000.00"))  # OK: Decimal
-
 
 # mypy error: Argument must be str, int, or Decimal
 amount4 = parse_monetary_value([100000])  # Type error: list not allowed
@@ -807,7 +762,6 @@ amount4 = parse_monetary_value([100000])  # Type error: list not allowed
 from typing import Optional
 from decimal import Decimal
 
-
 def calculate_zakat_with_override(
     wealth_amount: Decimal,
     nisab_threshold: Decimal,
@@ -819,7 +773,6 @@ def calculate_zakat_with_override(
     if wealth_amount >= nisab_threshold:
         return wealth_amount * zakat_rate
     return Decimal("0")
-
 
 # Usage
 zakat1 = calculate_zakat_with_override(
@@ -877,9 +830,7 @@ Literal types restrict values to specific constants.
 from typing import Literal
 from decimal import Decimal
 
-
 ZakatCategory = Literal["wealth", "gold", "silver", "business", "livestock"]
-
 
 def calculate_category_zakat(
     category: ZakatCategory,
@@ -899,7 +850,6 @@ def calculate_category_zakat(
         return base_amount * Decimal("0.025")
     else:
         raise ValueError(f"Unknown category: {category}")
-
 
 # Usage: Only literal values accepted
 zakat1 = calculate_category_zakat("wealth", Decimal("100000.00"))  # OK
@@ -937,7 +887,6 @@ zakat3 = calculate_category_zakat("invalid", Decimal("1000.00"))  # Type error
 
 ---
 
-**Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
 **Maintainers**: OSE Platform Documentation Team
 

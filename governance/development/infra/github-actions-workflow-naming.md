@@ -9,7 +9,6 @@ tags:
   - naming
   - workflow
 created: 2026-03-13
-updated: 2026-04-19
 ---
 
 # GitHub Actions Workflow Naming Convention

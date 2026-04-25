@@ -10,7 +10,6 @@ tags:
   - user-experience
   - complexity-management
 created: 2025-12-15
-updated: 2025-12-24
 ---
 
 # Progressive Disclosure
@@ -478,7 +477,3 @@ docs/explanation/infrastructure/security/security-basics.md
 
 - [Diátaxis Framework](https://diataxis.fr/) - Documentation structure
 - [Write the Docs](https://www.writethedocs.org/) - Documentation best practices
-
----
-
-**Last Updated**: 2025-12-24

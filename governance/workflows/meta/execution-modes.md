@@ -9,7 +9,6 @@ tags:
   - orchestration
   - conventions
 created: 2026-01-05
-updated: 2026-03-24
 ---
 
 # Workflow Execution Mode Convention
@@ -351,7 +350,3 @@ Agent tool invokes plan-fixer subagent → fixes persist
 - [Plan Quality Gate Workflow](../plan/plan-quality-gate.md) - Example workflow using agent delegation
 - [AI Agents Convention](../../development/agents/ai-agents.md) - Agent invocation patterns
 - [Maker-Checker-Fixer Pattern](../../development/pattern/maker-checker-fixer.md) - Validation workflow pattern
-
----
-
-**Last Updated**: 2026-03-24

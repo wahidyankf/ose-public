@@ -139,7 +139,3 @@ All skills follow governance principles:
 - **Explicit Over Implicit** - Clear when/how to use each skill
 
 **See**: [governance/principles/README.md](../../governance/principles/README.md)
-
----
-
-**Last Updated**: 2026-04-19

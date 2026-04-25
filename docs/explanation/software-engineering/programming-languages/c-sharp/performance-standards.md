@@ -17,7 +17,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # C# Performance Standards
@@ -366,5 +365,5 @@ public static class ZakatRates
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **.NET Version**: .NET 8 LTS (C# 12)

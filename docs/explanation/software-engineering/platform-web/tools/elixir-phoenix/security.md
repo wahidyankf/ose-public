@@ -1328,7 +1328,3 @@ end
 - **[LiveView](liveview.md)** - LiveView security considerations
 - **[Best Practices](best-practices.md)** - Security best practices
 - **[Configuration](configuration.md)** - Secure configuration management
-
----
-
-**Last Updated**: 2026-01-25

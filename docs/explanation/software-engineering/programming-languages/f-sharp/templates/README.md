@@ -8,7 +8,6 @@ tags:
   - templates
   - programming-languages
 created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # F# Documentation Templates
@@ -48,7 +47,3 @@ Templates in this directory can be used as:
 
 - [F# Programming Language Overview](../README.md) - Language documentation index
 - [File Naming Convention](../../../../../../governance/conventions/structure/file-naming.md) - Naming patterns
-
----
-
-**Last Updated**: 2026-03-09

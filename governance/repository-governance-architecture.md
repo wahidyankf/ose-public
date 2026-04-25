@@ -9,7 +9,6 @@ tags:
   - six-layer
   - structure
 created: 2026-02-09
-updated: 2026-04-02
 ---
 
 # Repository Governance Architecture
@@ -17,7 +16,6 @@ updated: 2026-04-02
 **Document Type**: Explanation
 **Purpose**: Comprehensive architectural overview of the six-layer governance hierarchy governing the open-sharia-enterprise repository
 **Audience**: All contributors, AI agents, governance designers
-**Last Updated**: 2026-04-02
 
 ---
 
@@ -823,6 +821,5 @@ As the repository grows, additional layers might be considered:
 
 ---
 
-**Last Updated**: 2026-04-02
 **Maintained By**: Repository governance team
 **Review Cycle**: Quarterly (ensure layer descriptions remain accurate)

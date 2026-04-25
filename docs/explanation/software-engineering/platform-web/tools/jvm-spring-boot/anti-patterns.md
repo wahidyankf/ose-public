@@ -12,7 +12,6 @@ tags:
 related:
   - ./idioms.md
   - ./best-practices.md
-updated: 2026-01-25
 ---
 
 # Spring Boot Anti-Patterns
@@ -1126,5 +1125,4 @@ class ZakatCalculationIntegrationTest {
 
 ---
 
-**Last Updated**: 2026-01-25
 **Spring Boot Version**: 3.3+

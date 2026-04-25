@@ -16,7 +16,6 @@ related:
 principles:
   - automation-over-manual
   - explicit-over-implicit
-updated: 2026-01-25
 ---
 
 # Spring Boot Idioms
@@ -1647,5 +1646,4 @@ public class ThirdRunner implements ApplicationRunner {
 
 ---
 
-**Last Updated**: 2026-01-25
 **Spring Boot Version**: 3.3+

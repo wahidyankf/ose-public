@@ -9,7 +9,6 @@ tags:
   - project-planning
   - organization
 created: 2025-12-05
-updated: 2026-04-19
 ---
 
 # Plans Organization Convention
@@ -583,7 +582,3 @@ Quick ideas and todos that haven't been formalized into plans yet.
 - Implement keyboard shortcuts
 - Add progressive web app support
 ```
-
----
-
-**Last Updated**: 2026-04-18

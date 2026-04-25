@@ -19,7 +19,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-01-26
-updated: 2026-01-26
 ---
 
 # Next.js Framework
@@ -1573,6 +1572,5 @@ CMD ["node", "server.js"]
 
 ---
 
-**Last Updated**: 2026-02-25
 **Next.js Version**: 16 (React 19+, TypeScript 5+)
 **Maintainers**: Platform Documentation Team

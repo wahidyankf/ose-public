@@ -23,7 +23,6 @@ principles:
   - immutability
   - pure-functions
   - reproducibility
-updated: 2026-01-24
 ---
 
 # Python Best Practices
@@ -103,7 +102,6 @@ from decimal import Decimal
 
 import pytest
 from ose_platform.domain.zakat import ZakatCalculator
-
 
 class TestZakatCalculator:
     """Automated tests for Zakat calculation logic."""
@@ -188,7 +186,6 @@ from decimal import Decimal
 
 from pydantic import BaseModel, Field
 
-
 class MurabahaConfig(BaseModel):
     """Explicit Murabaha configuration with no hidden defaults."""
 
@@ -196,7 +193,6 @@ class MurabahaConfig(BaseModel):
     max_profit_margin_rate: Decimal = Field(ge=0, le=1, description="Maximum profit rate")
     min_installments: int = Field(ge=1, description="Minimum installment count")
     max_installments: int = Field(le=360, description="Maximum installment count")
-
 
 @dataclass(frozen=True)
 class MurabahaContract:
@@ -208,7 +204,6 @@ class MurabahaContract:
     profit_margin: Decimal
     total_price: Decimal
     installment_count: int
-
 
 def create_murabaha_contract(
     customer_id: str,
@@ -295,7 +290,6 @@ from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal
 
-
 @dataclass(frozen=True)
 class ZakatTransaction:
     """
@@ -310,7 +304,6 @@ class ZakatTransaction:
     zakat_amount: Decimal
     paid_at: datetime
     audit_hash: str
-
 
 def create_zakat_transaction(
     payer_id: str, wealth_amount: Decimal, zakat_amount: Decimal
@@ -329,7 +322,6 @@ def create_zakat_transaction(
     )
 
     return transaction
-
 
 def correct_zakat_transaction(original: ZakatTransaction, corrected_amount: Decimal) -> ZakatTransaction:
     """
@@ -387,7 +379,6 @@ class ZakatTransaction:
 ```python
 from decimal import Decimal
 
-
 def calculate_zakat(wealth: Decimal, nisab: Decimal) -> Decimal:
     """
     Calculate Zakat obligation (pure function).
@@ -411,17 +402,14 @@ def calculate_zakat(wealth: Decimal, nisab: Decimal) -> Decimal:
     zakat_rate = Decimal("0.025")  # 2.5%
     return wealth * zakat_rate
 
-
 def is_zakat_eligible(wealth: Decimal, nisab: Decimal) -> bool:
     """Check if wealth qualifies for Zakat (pure predicate)."""
     return wealth >= nisab
-
 
 def calculate_nisab_from_gold_price(gold_price_per_gram: Decimal) -> Decimal:
     """Calculate nisab threshold from current gold price (pure)."""
     nisab_gold_grams = Decimal("85")
     return gold_price_per_gram * nisab_gold_grams
-
 
 # Testing pure functions is trivial - no setup required
 def test_calculate_zakat():
@@ -441,7 +429,6 @@ import logging
 from decimal import Decimal
 
 import requests
-
 
 class ZakatCalculator:
     """BAD: Impure calculator with side effects."""
@@ -588,7 +575,6 @@ pytest  # Latest version changes over time
 from decimal import Decimal
 from datetime import date
 
-
 class ZakatCalculator:
     """PEP 8: Classes use CapWords (PascalCase)."""
 
@@ -601,7 +587,6 @@ class ZakatCalculator:
     def calculate_obligation(self, wealth_amount: Decimal) -> Decimal:
         """PEP 8: Methods use snake_case with descriptive names."""
         return wealth_amount * self._zakat_rate
-
 
 # BAD: Violates PEP 8 naming conventions
 class zakatCalculator:  # BAD: Class name should be CapWords
@@ -619,7 +604,6 @@ class zakatCalculator:  # BAD: Class name should be CapWords
 # GOOD: PEP 8 indentation (4 spaces)
 from pydantic import BaseModel, Field
 from typing import Optional
-
 
 class DonationCampaign(BaseModel):
     """PEP 8: Use 4 spaces for indentation."""
@@ -639,7 +623,6 @@ class DonationCampaign(BaseModel):
         """Check if campaign reached target."""
         return self.current_amount >= self.target_amount
 
-
 # BAD: Inconsistent indentation and whitespace
 class DonationCampaign:
    def add_donation(self,amount):  # BAD: 3-space indent, missing spaces after comma
@@ -655,7 +638,6 @@ class DonationCampaign:
 ```python
 # GOOD: PEP 8 line length (≤88 characters for Black compatibility)
 from typing import Protocol
-
 
 class PaymentProcessor(Protocol):
     """Process various payment types for Islamic finance transactions."""
@@ -677,7 +659,6 @@ class PaymentProcessor(Protocol):
             Transaction ID for the processed payment
         """
         ...
-
 
 # GOOD: Break long expressions naturally
 total_zakat = (
@@ -710,7 +691,6 @@ import httpx
 from ose_platform.domain.zakat import ZakatCalculator
 from ose_platform.domain.donation import DonationCampaign
 
-
 # BAD: Disorganized imports
 from ose_platform.domain.zakat import ZakatCalculator  # BAD: Mix of orders
 from decimal import Decimal
@@ -733,7 +713,6 @@ from pydantic import BaseModel
 from decimal import Decimal
 from typing import Optional
 
-
 def calculate_murabaha_profit(
     asset_cost: Decimal,
     profit_margin_rate: Decimal,
@@ -749,7 +728,6 @@ def calculate_murabaha_profit(
     """
     return asset_cost * profit_margin_rate
 
-
 # BAD: Implicit types and unclear intent
 def calc_profit(cost, rate):  # BAD: No type hints, unclear what rate represents
     return cost * rate  # BAD: Is this profit, markup, or something else?
@@ -764,7 +742,6 @@ def calc_profit(cost, rate):  # BAD: No type hints, unclear what rate represents
 from dataclasses import dataclass
 from decimal import Decimal
 
-
 @dataclass
 class QardHasanLoan:
     """Simple interest-free loan model."""
@@ -777,7 +754,6 @@ class QardHasanLoan:
     def remaining(self) -> Decimal:
         """Calculate remaining balance."""
         return self.principal - self.repaid
-
 
 # BAD: Unnecessary complexity
 class QardHasanLoanComplex:
@@ -799,14 +775,12 @@ class QardHasanLoanComplex:
 # GOOD: Readable comprehension with clear filtering
 from typing import List
 
-
 def calculate_total_zakat(wealth_items: List[Decimal], nisab: Decimal) -> Decimal:
     """Calculate total Zakat for wealth items exceeding nisab."""
     qualifying_wealth = [
         amount for amount in wealth_items if amount >= nisab
     ]
     return sum(qualifying_wealth) * Decimal("0.025")
-
 
 # BAD: Unreadable one-liner
 def calculate_total_zakat(w: List[Decimal], n: Decimal) -> Decimal:
@@ -825,7 +799,6 @@ Type hints (PEP 484) provide static analysis and documentation. The platform req
 # GOOD: Complete type hints with Pydantic validation
 from decimal import Decimal
 from pydantic import BaseModel, Field, field_validator
-
 
 class WaqfEndowment(BaseModel):
     """Waqf (Islamic endowment) with validation."""
@@ -846,7 +819,6 @@ class WaqfEndowment(BaseModel):
         """Calculate expected annual return from endowment."""
         return self.principal_amount * self.annual_return_rate
 
-
 # BAD: Missing type hints
 def calculate_annual_return(endowment):  # BAD: No type hints
     return endowment["principal"] * endowment["rate"]  # BAD: Dictionary-based, no validation
@@ -861,9 +833,7 @@ def calculate_annual_return(endowment):  # BAD: No type hints
 from typing import List, Dict, Optional, TypeVar
 from decimal import Decimal
 
-
 T = TypeVar("T")
-
 
 def find_by_id(items: List[T], item_id: str, get_id: callable) -> Optional[T]:
     """Find item by ID in a list.
@@ -881,7 +851,6 @@ def find_by_id(items: List[T], item_id: str, get_id: callable) -> Optional[T]:
             return item
     return None
 
-
 # Example usage with donation campaigns
 campaigns: List[DonationCampaign] = get_all_campaigns()
 target_campaign = find_by_id(
@@ -889,7 +858,6 @@ target_campaign = find_by_id(
     "CAMP-2025-001",
     lambda c: c.campaign_id
 )
-
 
 # BAD: No generics, any type accepted
 def find_by_id(items, item_id):  # BAD: No type information
@@ -908,7 +876,6 @@ def find_by_id(items, item_id):  # BAD: No type information
 from typing import Protocol
 from decimal import Decimal
 
-
 class FinancialCalculator(Protocol):
     """Protocol for financial calculation services."""
 
@@ -916,14 +883,12 @@ class FinancialCalculator(Protocol):
         """Calculate financial obligation from base amount."""
         ...
 
-
 class ZakatCalculator:
     """Calculate Zakat obligation (2.5% of qualifying wealth)."""
 
     def calculate_obligation(self, wealth_amount: Decimal) -> Decimal:
         """Calculate Zakat owed."""
         return wealth_amount * Decimal("0.025")
-
 
 class TaxCalculator:
     """Calculate tax obligation (variable rate)."""
@@ -935,14 +900,12 @@ class TaxCalculator:
         """Calculate tax owed."""
         return income_amount * self.tax_rate
 
-
 def process_obligations(
     calculator: FinancialCalculator,
     amounts: List[Decimal]
 ) -> Decimal:
     """Process obligations using any compatible calculator."""
     return sum(calculator.calculate_obligation(amount) for amount in amounts)
-
 
 # Usage: Both calculators satisfy Protocol without explicit inheritance
 zakat_calc = ZakatCalculator()
@@ -951,16 +914,13 @@ tax_calc = TaxCalculator(Decimal("0.20"))
 zakat_total = process_obligations(zakat_calc, wealth_amounts)
 tax_total = process_obligations(tax_calc, income_amounts)
 
-
 # BAD: Abstract base class with explicit inheritance requirement
 from abc import ABC, abstractmethod
-
 
 class FinancialCalculatorABC(ABC):  # BAD: Requires explicit inheritance
     @abstractmethod
     def calculate_obligation(self, amount: Decimal) -> Decimal:
         pass
-
 
 class ZakatCalculator(FinancialCalculatorABC):  # BAD: Forced to inherit
     def calculate_obligation(self, wealth_amount: Decimal) -> Decimal:
@@ -989,7 +949,6 @@ ZAKAT_RATE = Decimal("0.025")  # 2.5%
 GOLD_NISAB_GRAMS = 85
 SILVER_NISAB_GRAMS = 595
 
-
 class ZakatCalculationStrategy(Protocol):
     """Protocol for different Zakat calculation strategies."""
 
@@ -997,14 +956,12 @@ class ZakatCalculationStrategy(Protocol):
         """Calculate Zakat for given amount."""
         ...
 
-
 class StandardZakatCalculator:
     """Standard 2.5% Zakat calculation."""
 
     def calculate(self, wealth_amount: Decimal) -> Decimal:
         """Calculate standard Zakat obligation."""
         return wealth_amount * ZAKAT_RATE
-
 
 class GoldZakatCalculator:
     """Zakat calculation for gold holdings."""
@@ -1081,7 +1038,6 @@ graph TD
 from dataclasses import dataclass
 from decimal import Decimal
 
-
 @dataclass(frozen=True)
 class ZakatObligation:
     """Domain model with no infrastructure dependencies."""
@@ -1090,11 +1046,9 @@ class ZakatObligation:
     wealth_amount: Decimal
     zakat_amount: Decimal
 
-
 # application/services/zakat_service.py (depends on domain)
 from domain.zakat.models import ZakatObligation
 from domain.zakat.calculator import StandardZakatCalculator
-
 
 class ZakatService:
     """Application service orchestrating Zakat calculation."""
@@ -1107,13 +1061,11 @@ class ZakatService:
         zakat_amount = self._calculator.calculate(wealth)
         return ZakatObligation(payer_id, wealth, zakat_amount)
 
-
 # infrastructure/api/zakat_controller.py (depends on application)
 from fastapi import APIRouter
 from application.services.zakat_service import ZakatService
 
 router = APIRouter()
-
 
 @router.post("/zakat/calculate")
 async def calculate_zakat(payer_id: str, wealth: Decimal):
@@ -1124,7 +1076,6 @@ async def calculate_zakat(payer_id: str, wealth: Decimal):
 
 # domain/zakat/models.py
 from infrastructure.database import db  # BAD: Domain depends on infrastructure
-
 
 class ZakatObligation:
     def save(self):  # BAD: Persistence logic in domain
@@ -1139,12 +1090,10 @@ class ZakatObligation:
 # GOOD: Explicit exception handling with context
 from decimal import Decimal, InvalidOperation
 
-
 class InvalidZakatAmount(ValueError):
     """Raised when Zakat amount calculation is invalid."""
 
     pass
-
 
 def calculate_zakat_obligation(wealth_amount: Decimal, nisab: Decimal) -> Decimal:
     """Calculate Zakat obligation with explicit error handling.
@@ -1169,7 +1118,6 @@ def calculate_zakat_obligation(wealth_amount: Decimal, nisab: Decimal) -> Decima
 
     except InvalidOperation as e:
         raise InvalidZakatAmount(f"Invalid decimal operation: {e}") from e
-
 
 # BAD: Silent failure
 def calculate_zakat_obligation(wealth_amount, nisab):
@@ -1224,7 +1172,6 @@ graph TD
 from pydantic import BaseModel, Field, field_validator
 from decimal import Decimal
 
-
 class ZakatCalculationRequest(BaseModel):
     """Validate Zakat calculation requests at API boundary."""
 
@@ -1240,12 +1187,10 @@ class ZakatCalculationRequest(BaseModel):
             raise ValueError("Payer ID must start with PAYER-")
         return v
 
-
 # Usage in API endpoint
 from fastapi import APIRouter
 
 router = APIRouter()
-
 
 @router.post("/zakat/calculate")
 async def calculate_zakat(request: ZakatCalculationRequest):
@@ -1253,7 +1198,6 @@ async def calculate_zakat(request: ZakatCalculationRequest):
     # Internal code trusts validated data
     zakat_amount = request.wealth_amount * Decimal("0.025")
     return {"payer_id": request.payer_id, "zakat_amount": str(zakat_amount)}
-
 
 # BAD: No validation or validation scattered throughout
 @router.post("/zakat/calculate")
@@ -1314,7 +1258,6 @@ import pytest
 from decimal import Decimal
 from ose_platform.domain.zakat.calculator import StandardZakatCalculator
 
-
 class TestStandardZakatCalculator:
     """Test suite for standard Zakat calculation."""
 
@@ -1358,12 +1301,10 @@ class TestStandardZakatCalculator:
         """Verify Zakat calculation across various wealth amounts."""
         assert calculator.calculate(wealth) == expected_zakat
 
-
 # BAD: Disorganized tests
 def test1():  # BAD: Unclear test name
     c = StandardZakatCalculator()
     assert c.calculate(Decimal("100000")) == Decimal("2500")  # BAD: Magic numbers
-
 
 def test2():  # BAD: Non-descriptive
     assert StandardZakatCalculator().calculate(Decimal("0")) == 0  # BAD: Mixed types
@@ -1377,7 +1318,6 @@ def test2():  # BAD: Non-descriptive
 # GOOD: Complete docstrings with Google style
 from decimal import Decimal
 from typing import Optional
-
 
 def calculate_murabaha_total(
     asset_cost: Decimal,
@@ -1426,7 +1366,6 @@ def calculate_murabaha_total(
 
     return total_selling_price
 
-
 # BAD: Minimal or missing docstring
 def calc_murabaha(c, r, d=None):  # BAD: No docstring, unclear parameters
     return c + (c * r) - (d or 0)
@@ -1441,7 +1380,6 @@ def calc_murabaha(c, r, d=None):  # BAD: No docstring, unclear parameters
 from pydantic import BaseModel, Field, field_validator
 from decimal import Decimal
 import re
-
 
 class DonationPayment(BaseModel):
     """Donation payment with strict validation."""
@@ -1468,7 +1406,6 @@ class DonationPayment(BaseModel):
             raise ValueError("Payment reference invalid after sanitization")
         return sanitized
 
-
 # BAD: No validation, SQL injection risk
 def record_donation(donor_id: str, amount: float):
     query = f"INSERT INTO donations VALUES ('{donor_id}', {amount})"  # BAD: SQL injection
@@ -1484,7 +1421,6 @@ def record_donation(donor_id: str, amount: float):
 import os
 from pydantic_settings import BaseSettings
 
-
 class Settings(BaseSettings):
     """Application settings loaded from environment."""
 
@@ -1495,7 +1431,6 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
-
 
 # Usage
 settings = Settings()
@@ -1513,7 +1448,6 @@ API_KEY = "sk-1234567890abcdef"  # BAD: Exposed secret
 # GOOD: Use None as default, create mutable in function
 from typing import List, Optional
 
-
 def process_donations(
     donations: Optional[List[Decimal]] = None,
 ) -> Decimal:
@@ -1522,7 +1456,6 @@ def process_donations(
         donations = []  # Create new list each call
 
     return sum(donations)
-
 
 # BAD: Mutable default argument
 def process_donations(donations: List[Decimal] = []) -> Decimal:  # BAD: Mutable default
@@ -1541,14 +1474,12 @@ def process_donations(donations: List[Decimal] = []) -> Decimal:  # BAD: Mutable
 # GOOD: Catch specific exceptions
 from decimal import Decimal, InvalidOperation
 
-
 def parse_zakat_amount(amount_str: str) -> Decimal:
     """Parse Zakat amount from string with specific exception handling."""
     try:
         return Decimal(amount_str)
     except InvalidOperation as e:
         raise ValueError(f"Invalid Zakat amount format: {amount_str}") from e
-
 
 # BAD: Bare except catches everything
 def parse_zakat_amount(amount_str: str) -> Decimal:
@@ -1587,14 +1518,12 @@ Python's async/await syntax (PEP 492) enables concurrent I/O-bound operations wi
 import aiohttp
 from decimal import Decimal
 
-
 async def fetch_gold_price(api_url: str) -> Decimal:
     """Fetch current gold price using async HTTP."""
     async with aiohttp.ClientSession() as session:
         async with session.get(api_url) as response:
             data = await response.json()
             return Decimal(str(data["price_per_gram"]))
-
 
 # GOOD: Multiple concurrent requests
 async def fetch_all_commodity_prices(urls: dict[str, str]) -> dict[str, Decimal]:
@@ -1608,13 +1537,11 @@ async def fetch_all_commodity_prices(urls: dict[str, str]) -> dict[str, Decimal]
         results = await asyncio.gather(*tasks)
         return dict(zip(urls.keys(), results))
 
-
 async def _fetch_price(session: aiohttp.ClientSession, url: str) -> Decimal:
     """Helper to fetch single price."""
     async with session.get(url) as response:
         data = await response.json()
         return Decimal(str(data["price"]))
-
 
 # FAIL: Blocking in async context
 async def bad_async_fetch() -> Decimal:
@@ -1636,14 +1563,12 @@ async def calculate_zakat_portfolio_bad(accounts: list[Account]) -> Decimal:
     # BAD: Returns list of coroutines, not results!
     return sum(tasks, Decimal(0))  # TypeError!
 
-
 # GOOD: Properly await with asyncio.gather
 async def calculate_zakat_portfolio(accounts: list[Account]) -> Decimal:
     """Calculate Zakat for multiple accounts concurrently."""
     tasks = [calculate_zakat_async(acc) for acc in accounts]
     results = await asyncio.gather(*tasks)  # Actually await results
     return sum(results, Decimal(0))
-
 
 # FAIL: Blocking CPU work in async
 async def bad_heavy_computation() -> Decimal:
@@ -1654,11 +1579,9 @@ async def bad_heavy_computation() -> Decimal:
         total += Decimal(i) * Decimal("0.025")
     return total
 
-
 # GOOD: Offload CPU work to thread pool
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
-
 
 async def good_heavy_computation() -> Decimal:
     """Offload CPU-bound work to thread pool."""
@@ -1666,7 +1589,6 @@ async def good_heavy_computation() -> Decimal:
     with ThreadPoolExecutor() as executor:
         result = await loop.run_in_executor(executor, _heavy_calculation)
     return result
-
 
 def _heavy_calculation() -> Decimal:
     """Synchronous CPU-intensive calculation."""
@@ -1683,7 +1605,6 @@ def _heavy_calculation() -> Decimal:
 from contextlib import asynccontextmanager
 import asyncpg
 
-
 @asynccontextmanager
 async def get_database_connection():
     """Async context manager for database connections."""
@@ -1692,7 +1613,6 @@ async def get_database_connection():
         yield conn
     finally:
         await conn.close()  # Ensure cleanup even on error
-
 
 async def record_zakat_payment(payer_id: str, amount: Decimal) -> str:
     """Record Zakat payment with proper resource management."""
@@ -1704,7 +1624,6 @@ async def record_zakat_payment(payer_id: str, amount: Decimal) -> str:
         """
         payment_id = await conn.fetchval(query, payer_id, amount)
         return payment_id
-
 
 # FAIL: Resource leak
 async def record_zakat_payment_bad(payer_id: str, amount: Decimal) -> str:
@@ -1726,7 +1645,6 @@ from decimal import Decimal
 import asyncpg
 import aiohttp
 
-
 @dataclass
 class ZakatPortfolio:
     """Zakat portfolio with multiple accounts."""
@@ -1735,7 +1653,6 @@ class ZakatPortfolio:
     cash_balance: Decimal
     gold_grams: Decimal
     silver_grams: Decimal
-
 
 async def calculate_total_zakat(
     portfolios: list[ZakatPortfolio], nisab_usd: Decimal
@@ -1762,7 +1679,6 @@ async def calculate_total_zakat(
     # Return mapping of account_id to Zakat amount
     return {p.account_id: zakat for p, zakat in zip(portfolios, results)}
 
-
 async def _fetch_commodity_price(
     session: aiohttp.ClientSession, commodity: str
 ) -> Decimal:
@@ -1771,7 +1687,6 @@ async def _fetch_commodity_price(
     async with session.get(url) as response:
         data = await response.json()
         return Decimal(str(data["usd_per_gram"]))
-
 
 async def _calculate_portfolio_zakat(
     portfolio: ZakatPortfolio,
@@ -1804,9 +1719,7 @@ Beyond basic type hints, Python provides advanced patterns for complex type rela
 from typing import TypeVar, Generic, Protocol
 from decimal import Decimal
 
-
 T = TypeVar("T")
-
 
 class Repository(Generic[T]):
     """Generic repository pattern for any entity type."""
@@ -1823,13 +1736,11 @@ class Repository(Generic[T]):
         """Find entity by ID."""
         return self._storage.get(entity_id)
 
-
 # Usage: Type safety preserved
 @dataclass
 class ZakatPayment:
     payment_id: str
     amount: Decimal
-
 
 payment_repo = RepositoryZakatPayment
 payment = ZakatPayment("PAY-001", Decimal("2500"))
@@ -1844,7 +1755,6 @@ found = payment_repo.find_by_id("PAY-001")  # Type: ZakatPayment | None
 from typing import Protocol
 from decimal import Decimal
 
-
 class Calculable(Protocol):
     """Protocol for anything that can be calculated."""
 
@@ -1852,13 +1762,11 @@ class Calculable(Protocol):
         """Calculate and return result."""
         ...
 
-
 class ZakatCalculator:
     """Satisfies Calculable without explicit inheritance."""
 
     def calculate(self) -> Decimal:
         return Decimal("2500")
-
 
 class TaxCalculator:
     """Also satisfies Calculable without inheritance."""
@@ -1866,20 +1774,16 @@ class TaxCalculator:
     def calculate(self) -> Decimal:
         return Decimal("5000")
 
-
 def process_calculation(calc: Calculable) -> Decimal:
     """Process any object with calculate() method."""
     return calc.calculate()
-
 
 # Both work without explicit inheritance!
 zakat_total = process_calculation(ZakatCalculator())
 tax_total = process_calculation(TaxCalculator())
 
-
 # FAIL: Runtime overhead with ABC
 from abc import ABC, abstractmethod
-
 
 class CalculableABC(ABC):
     """BAD: Requires explicit inheritance."""
@@ -1887,7 +1791,6 @@ class CalculableABC(ABC):
     @abstractmethod
     def calculate(self) -> Decimal:
         pass
-
 
 class ZakatCalculator(CalculableABC):  # FAIL: Forced to inherit
     def calculate(self) -> Decimal:
@@ -1907,7 +1810,6 @@ NisabAmount = NewType("NisabAmount", Decimal)
 ZakatRate = NewType("ZakatRate", Decimal)
 WealthAmount = NewType("WealthAmount", Decimal)
 
-
 def calculate_zakat(
     wealth: WealthAmount, nisab: NisabAmount, rate: ZakatRate
 ) -> Decimal:
@@ -1915,7 +1817,6 @@ def calculate_zakat(
     if wealth >= nisab:
         return wealth * rate
     return Decimal("0")
-
 
 # Usage: Type checker enforces correct types
 wealth = WealthAmount(Decimal("100000"))
@@ -1928,7 +1829,6 @@ zakat = calculate_zakat(wealth, nisab, rate)  # OK
 def calculate_zakat_bad(wealth: Decimal, nisab: Decimal, rate: Decimal) -> Decimal:
     """BAD: No protection against argument confusion."""
     return wealth * rate if wealth >= nisab else Decimal("0")
-
 
 # Easy to make mistakes with plain Decimal
 zakat = calculate_zakat_bad(nisab, wealth, rate)  # Oops! Wrong order, no error
@@ -1943,16 +1843,13 @@ zakat = calculate_zakat_bad(nisab, wealth, rate)  # Oops! Wrong order, no error
 from typing import TypeGuard
 from decimal import Decimal
 
-
 def is_valid_nisab(value: Decimal) -> TypeGuard[NisabAmount]:
     """Type guard to validate nisab amount."""
     return value > 0
 
-
 def is_valid_zakat_rate(value: Decimal) -> TypeGuard[ZakatRate]:
     """Type guard to validate Zakat rate."""
     return Decimal("0") <= value <= Decimal("1")
-
 
 def process_zakat_input(wealth: Decimal, nisab: Decimal, rate: Decimal) -> Decimal:
     """Process Zakat calculation with type guards."""
@@ -1982,7 +1879,6 @@ import cProfile
 import pstats
 from decimal import Decimal
 
-
 def calculate_zakat_for_users(user_count: int) -> list[Decimal]:
     """Calculate Zakat for many users (to be profiled)."""
     results = []
@@ -1992,7 +1888,6 @@ def calculate_zakat_for_users(user_count: int) -> list[Decimal]:
         zakat = calculate_zakat(wealth, nisab)
         results.append(zakat)
     return results
-
 
 # Profile the code
 if __name__ == "__main__":
@@ -2006,10 +1901,8 @@ if __name__ == "__main__":
     stats.sort_stats("cumulative")
     stats.print_stats(10)  # Show top 10 slowest functions
 
-
 # Memory profiling with memory_profiler
 from memory_profiler import profile
-
 
 @profile
 def process_large_dataset():
@@ -2032,7 +1925,6 @@ zakat_amounts = [
     wealth * Decimal("0.025") for wealth in wealth_list if wealth > nisab
 ]
 
-
 # FAIL: Explicit loop (slower and more verbose)
 zakat_amounts = []
 for wealth in wealth_list:
@@ -2047,7 +1939,6 @@ for wealth in wealth_list:
 ```python
 # GOOD: Generator (memory efficient for large datasets)
 from decimal import Decimal
-
 
 def calculate_total_zakat_stream(wealth_stream: list[Decimal]) -> Decimal:
     """Calculate total Zakat using generator (O(1) memory)."""
@@ -2078,7 +1969,6 @@ def calculate_total_zakat_list(wealth_stream: list[Decimal]) -> Decimal:
 from functools import lru_cache
 from decimal import Decimal
 
-
 @lru_cache(maxsize=128)
 def get_nisab_threshold(year: int, region: str) -> Decimal:
     """
@@ -2092,7 +1982,6 @@ def get_nisab_threshold(year: int, region: str) -> Decimal:
     # Simulate expensive API call
     gold_price = _fetch_historical_gold_price(year, region)
     return gold_price * 85  # 85 grams of gold
-
 
 # First call: Cache miss, computes result
 nisab_2024_mecca = get_nisab_threshold(2024, "mecca")  # ~500ms
@@ -2114,7 +2003,6 @@ def get_nisab_threshold_no_cache(year: int, region: str) -> Decimal:
 from functools import lru_cache
 from decimal import Decimal
 
-
 @lru_cache(maxsize=256)
 def calculate_murabaha_markup(
     principal: Decimal, annual_rate: Decimal, months: int
@@ -2129,7 +2017,6 @@ def calculate_murabaha_markup(
     - Combinatorial explosion: 3 × 3 × 4 = 36 common cases
     """
     return principal * annual_rate * Decimal(months) / Decimal(12)
-
 
 # Usage in Murabaha contract processing
 def create_murabaha_contracts(requests: list[MurabahaRequest]) -> list[Contract]:
@@ -2157,7 +2044,6 @@ Domain-Driven Design (DDD) structures code around business domains. Critical for
 # GOOD: Immutable value object with validation
 from dataclasses import dataclass
 from decimal import Decimal
-
 
 @dataclass(frozen=True)
 class Money:
@@ -2187,7 +2073,6 @@ class Money:
         """Multiply money by scalar factor."""
         return Money(self.amount * factor, self.currency)
 
-
 # Usage: Type-safe monetary operations
 donation_usd = Money(Decimal("100.00"), "USD")
 zakat_usd = Money(Decimal("2500.00"), "USD")
@@ -2201,7 +2086,6 @@ def add_money_bad(amt1: Decimal, amt2: Decimal) -> Decimal:
     """BAD: No currency tracking, easy to mix currencies."""
     return amt1 + amt2  # Could be adding USD + SAR!
 
-
 # Easy to make mistakes
 total = add_money_bad(Decimal("100.00"), Decimal("375.00"))  # Is this USD? SAR? Mixed?
 ```
@@ -2214,7 +2098,6 @@ from dataclasses import dataclass, field
 from uuid import UUID, uuid4
 from datetime import datetime
 from decimal import Decimal
-
 
 @dataclass
 class Donation:
@@ -2243,7 +2126,6 @@ class Donation:
         """Hash based on identity."""
         return hash(self.id)
 
-
 # Usage: Identity-based equality
 donation1 = Donation(
     amount=Money(Decimal("100"), "USD"),
@@ -2269,7 +2151,6 @@ assert donation1 == donation2  # True - same entity identity
 from dataclasses import dataclass, field
 from uuid import UUID, uuid4
 
-
 @dataclass
 class DonationCampaignCreated:
     """Domain event: Campaign created."""
@@ -2278,7 +2159,6 @@ class DonationCampaignCreated:
     goal: Money
     created_at: datetime
 
-
 @dataclass
 class GoalReachedEvent:
     """Domain event: Campaign goal reached."""
@@ -2286,7 +2166,6 @@ class GoalReachedEvent:
     campaign_id: UUID
     total_raised: Money
     reached_at: datetime
-
 
 class DonationCampaign:
     """Aggregate root for donation campaigns."""
@@ -2342,7 +2221,6 @@ class DonationCampaign:
         self._events.clear()
         return events
 
-
 # Usage: Aggregate root enforces invariants
 campaign = DonationCampaign(
     campaign_id=uuid4(), goal=Money(Decimal("10000"), "USD")
@@ -2370,7 +2248,6 @@ donation2 = Donation(
 from abc import ABC, abstractmethod
 from typing import Protocol
 
-
 class DonationRepository(ABC):
     """Repository interface for Donation aggregate."""
 
@@ -2388,7 +2265,6 @@ class DonationRepository(ABC):
     async def find_by_campaign(self, campaign_id: UUID) -> list[Donation]:
         """Find all donations for campaign."""
         ...
-
 
 class PostgresDonationRepository(DonationRepository):
     """PostgreSQL implementation of DonationRepository."""
@@ -2442,7 +2318,6 @@ class PostgresDonationRepository(DonationRepository):
             campaign_id=row["campaign_id"],
             created_at=row["created_at"],
         )
-
 
 # Usage: Application code depends on interface, not implementation
 async def process_donation_payment(
@@ -2602,7 +2477,6 @@ Use this checklist to ensure your Python code follows best practices:
 
 ---
 
-**Last Updated**: 2026-01-24
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
 **Maintainers**: OSE Platform Documentation Team
 

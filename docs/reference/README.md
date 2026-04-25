@@ -7,7 +7,6 @@ tags:
   - reference
   - technical
 created: 2025-11-22
-updated: 2026-04-19
 ---
 
 # Reference
@@ -34,7 +33,3 @@ Technical reference documentation for the open-sharia-enterprise project. These 
 ### Ecosystem
 
 - [Related Repositories](./related-repositories.md) - Sibling repositories derived from or related to `ose-public` (notably `ose-primer`), upstream/downstream relationships, and license differences
-
----
-
-**Last Updated**: 2026-04-19

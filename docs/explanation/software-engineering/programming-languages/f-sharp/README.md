@@ -21,7 +21,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # F
@@ -321,7 +320,7 @@ graph TD
 ---
 
 **Status**: Authoritative Standard (Mandatory Compliance)
-**Last Updated**: 2026-03-09
+
 **F# Version**: F# 6 (minimum), F# 8 / .NET 8 LTS (recommended), F# 9 / .NET 9 (latest)
 **Framework Stack**: Giraffe, Saturn, Expecto, FsCheck, Fantomas, dotnet CLI
 **Maintainers**: Platform Architecture Team

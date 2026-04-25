@@ -14,7 +14,6 @@ principles:
   - explicit-over-implicit
   - automation-over-manual
 created: 2026-01-29
-updated: 2026-01-29
 ---
 
 # Spring Framework AOP
@@ -459,6 +458,5 @@ Spring AOP only supports method execution join points. Cannot intercept field ac
 
 ---
 
-**Last Updated**: 2026-01-29
 **Spring Framework Version**: 6.1+ (Java 17+, Kotlin 1.9+)
 **Maintainers**: Platform Documentation Team

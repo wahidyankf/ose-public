@@ -17,7 +17,6 @@ principles:
   - explicit-over-implicit
   - separation-of-concerns
 created: 2026-01-26
-updated: 2026-01-26
 ---
 
 # Next.js Domain-Driven Design

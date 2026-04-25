@@ -8,7 +8,6 @@ tags:
   - best-practices
   - folders
 created: 2025-11-24
-updated: 2025-11-26
 ---
 
 # How to Organize Your Work

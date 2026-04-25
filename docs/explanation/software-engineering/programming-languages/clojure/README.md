@@ -18,7 +18,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # Clojure
@@ -321,7 +320,7 @@ graph TD
 ---
 
 **Status**: Authoritative Standard (Mandatory Compliance)
-**Last Updated**: 2026-03-09
+
 **Clojure Version**: 1.10 (minimum), 1.11 (recommended), 1.12 (latest, recommended for new projects)
 **Framework Stack**: Ring, Reitit, next.jdbc, Integrant, clj-kondo, cljfmt, deps.edn
 **Maintainers**: Platform Architecture Team

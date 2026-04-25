@@ -23,7 +23,3 @@ Standards for linking between AyoKoding educational content and OSE Platform doc
 - [File Naming Convention](../structure/file-naming.md) - Correct file names enable accurate linking
 - [Diátaxis Framework](../structure/diataxis-framework.md) - Documentation organization affects link paths
 - [Hugo Linking Conventions](../hugo/README.md) - Hugo-specific linking patterns
-
----
-
-**Last Updated**: 2026-02-07

@@ -9,7 +9,6 @@ tags:
   - timezone
   - formatting
 created: 2025-11-30
-updated: 2025-12-15
 ---
 
 # Timestamp Format Convention
@@ -72,7 +71,7 @@ All timestamps in this repository use **UTC+7 (WIB - Western Indonesian Time)** 
 - Cache files (e.g., `docs/metadata/external-links-status.yaml`)
 - Metadata files (any operational data files)
 - Log files (application logs, build logs)
-- Documentation timestamps (frontmatter `created`/`updated` fields)
+- Documentation timestamps (frontmatter `created` field)
 - Manual timestamps in code comments (when needed)
 - Configuration files requiring timestamps
 
@@ -100,11 +99,10 @@ lastChecked: 2025-11-30T07:00:00+07:00
 ```yaml
 ---
 created: 2025-11-30
-updated: 2025-11-30
 ---
 ```
 
-**Note**: Documentation frontmatter uses date-only format (YYYY-MM-DD) for simplicity. Full timestamps with time component should use the standard format above.
+**Note**: Documentation frontmatter uses date-only format (YYYY-MM-DD) for simplicity. Full timestamps with time component should use the standard format above. Per the [No Manual Date Metadata Convention](../structure/no-date-metadata.md), non-website markdown files must not include an `updated:` field — use `git log --follow -- <file>` to find the authoritative last-changed date.
 
 ### Code Comments (when needed)
 
@@ -153,7 +151,7 @@ TZ='Asia/Jakarta' date +"%Y-%m-%d"
 
 **Use for:**
 
-- Documentation frontmatter (`created`, `updated` fields)
+- Documentation frontmatter (`created` field)
 - Date-only requirements
 
 ### Filename Format (with double dash)

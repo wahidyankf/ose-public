@@ -33,7 +33,3 @@ These workflows define **WHEN and HOW to validate and execute plans**. The plan-
 - [Plans Organization Convention](../../conventions/structure/plans.md) - Plan structure standards
 - [Maker-Checker-Fixer Pattern](../../development/pattern/maker-checker-fixer.md) - Core workflow pattern
 - [Repository Architecture](../../repository-governance-architecture.md) - Six-layer governance model
-
----
-
-**Last Updated**: 2026-01-01

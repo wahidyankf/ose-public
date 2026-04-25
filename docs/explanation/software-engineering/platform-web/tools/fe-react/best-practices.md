@@ -18,7 +18,6 @@ principles:
   - immutability
   - pure-functions
   - automation-over-manual
-updated: 2026-01-25
 ---
 
 # React Best Practices
@@ -1059,6 +1058,5 @@ apiClient.interceptors.response.use(
 
 ---
 
-**Last Updated**: 2026-01-25
 **React Version**: 18.2+
 **TypeScript Version**: 5+

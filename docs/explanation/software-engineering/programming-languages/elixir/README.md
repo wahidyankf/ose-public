@@ -21,7 +21,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-01-23
-updated: 2026-02-05
 ---
 
 # Elixir
@@ -319,7 +318,7 @@ graph TD
 ---
 
 **Status**: Authoritative Standard (Mandatory Compliance)
-**Last Updated**: 2026-02-05
+
 **Elixir Version**: 1.12+ (baseline), 1.17+ (recommended), 1.19 (recommended for new projects)
 **Framework Stack**: Phoenix 1.7+, Ecto 3.12+, OTP (GenServer, Supervisor, Application), ExUnit
 **Maintainers**: Platform Architecture Team

@@ -18,7 +18,6 @@ principles:
   - explicit-over-implicit
   - immutability
   - pure-functions
-updated: 2026-01-25
 ---
 
 # React Idioms
@@ -1652,6 +1651,5 @@ export const EmailInput: React.FC = () => {
 
 ---
 
-**Last Updated**: 2026-01-25
 **React Version**: 18.2+
 **TypeScript Version**: 5+

@@ -14,7 +14,6 @@ related:
   - ./best-practices.md
 principles:
   - explicit-over-implicit
-updated: 2026-01-25
 ---
 
 # React TypeScript Integration
@@ -967,7 +966,3 @@ if (response.success) {
 - **[Component Architecture](component-architecture.md)** - Component patterns
 - **[Hooks](hooks.md)** - Hook patterns
 - **[TypeScript Language Guide](../../../programming-languages/typescript/README.md)** - TypeScript fundamentals
-
----
-
-**Last Updated**: 2026-01-25

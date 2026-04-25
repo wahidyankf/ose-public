@@ -10,7 +10,6 @@ tags:
   - automation
 category: explanation
 subcategory: development
-updated: 2026-04-02
 ---
 
 # Code Quality Convention

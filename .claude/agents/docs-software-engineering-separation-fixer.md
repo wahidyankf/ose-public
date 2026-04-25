@@ -18,8 +18,6 @@ skills:
 ## Agent Metadata
 
 - **Role**: Fixer (yellow)
-- **Created**: 2026-02-07
-- **Last Updated**: 2026-04-04
 
 ## Confidence Assessment and Priority Execution
 

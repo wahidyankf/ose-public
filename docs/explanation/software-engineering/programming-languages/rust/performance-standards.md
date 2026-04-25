@@ -16,7 +16,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # Rust Performance Standards
@@ -338,5 +337,5 @@ RUSTFLAGS="-Cprofile-use=/tmp/pgo-data/merged.profdata" cargo build --release
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **Rust Version**: 1.82+ (stable), Edition 2021

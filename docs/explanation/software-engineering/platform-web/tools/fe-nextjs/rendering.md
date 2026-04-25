@@ -20,7 +20,6 @@ principles:
   - explicit-over-implicit
   - pure-functions
 created: 2026-01-26
-updated: 2026-01-26
 ---
 
 # Next.js Rendering
@@ -880,5 +879,4 @@ export async function GET(request: Request) {
 
 ---
 
-**Last Updated**: 2026-01-26
 **Next.js Version**: 14+ (PPR experimental in 14, stable in 15)

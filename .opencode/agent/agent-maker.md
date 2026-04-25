@@ -17,8 +17,6 @@ skills:
 ## Agent Metadata
 
 - **Role**: Maker (blue)
-- **Created**: 2025-12-01
-- **Last Updated**: 2026-04-12
 
 **Model Selection Justification**: This agent uses `model: sonnet` because agent authoring is template-driven scaffolding governed by the `agent-developing-agents` skill:
 

@@ -26,7 +26,6 @@ principles:
   - automation-over-manual
   - pure-functions
 created: 2026-02-05
-updated: 2026-02-05
 ---
 
 # Framework Integration Standards
@@ -1688,7 +1687,7 @@ end
 ---
 
 **Status**: Authoritative Standard (Mandatory Compliance)
-**Last Updated**: 2026-02-05
+
 **Phoenix Version**: 1.7+
 **Ecto Version**: 3.12+
 **Broadway Version**: 1.0+

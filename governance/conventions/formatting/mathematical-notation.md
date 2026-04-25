@@ -10,7 +10,6 @@ tags:
   - notation
   - conventions
 created: 2025-12-02
-updated: 2025-12-09
 ---
 
 # Mathematical Notation Convention
@@ -980,7 +979,3 @@ LaTeX math has good accessibility:
 - [Detexify](https://detexify.kirelabs.org/classify.html) - Draw a symbol to find its LaTeX command
 - [MathJax Documentation](https://www.mathjax.org/) - Rendering engine used by many platforms
 - [GitHub Math Support Announcement](https://github.blog/2022-05-19-math-support-in-markdown/) - Official GitHub blog post (May 2022)
-
----
-
-**Last Updated**: 2025-12-09

@@ -8,7 +8,6 @@ tags:
   - tutorials
   - education
 created: 2026-01-30
-updated: 2026-02-22
 ---
 
 # Tutorial Conventions
@@ -66,7 +65,3 @@ This set of conventions implements/respects the following core principles:
 - **[Accessibility First](../../principles/content/accessibility-first.md)**: By Example tutorials require self-contained, runnable examples that work without additional setup, lowering barriers to entry. Hands-on learning elements (required in all tutorial types) ensure content is accessible to different learning styles, not only theoretical readers.
 
 - **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)**: By Example track is prioritized (Component 3 - PRIORITY) because code-first, annotated examples deliver maximum learning value with minimum cognitive overhead. The five-component package structure provides a complete, non-overlapping taxonomy of tutorial types.
-
----
-
-**Last Updated**: 2026-02-22

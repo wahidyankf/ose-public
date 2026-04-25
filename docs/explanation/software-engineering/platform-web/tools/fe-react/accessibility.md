@@ -13,7 +13,6 @@ related:
   - ./best-practices.md
 principles:
   - explicit-over-implicit
-updated: 2026-01-25
 ---
 
 # React Accessibility
@@ -322,7 +321,3 @@ export const DonationProgress: React.FC<{ raised: number; goal: number }> = ({
 - **[Best Practices](best-practices.md)** - Accessibility standards
 - **[Styling](styling.md)** - Accessible styling
 - **[Forms](forms.md)** - Accessible forms
-
----
-
-**Last Updated**: 2026-01-25

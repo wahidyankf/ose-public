@@ -53,7 +53,3 @@ This set of development practices respects the following conventions:
 - **[Hugo Content Conventions](../../conventions/hugo/README.md)**: Development aligns with content requirements, supporting theme-specific frontmatter and multilingual infrastructure.
 
 - **[Color Accessibility Convention](../../conventions/formatting/color-accessibility.md)**: Hugo themes and layouts use verified accessible color palette for all UI elements and interactive components.
-
----
-
-**Last Updated**: 2026-04-02

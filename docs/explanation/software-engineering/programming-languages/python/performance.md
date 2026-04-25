@@ -16,7 +16,6 @@ related:
   - ./memory-management.md
 principles:
   - simplicity-over-complexity
-updated: 2025-01-23
 ---
 
 # Python Performance
@@ -52,7 +51,6 @@ import pstats
 from decimal import Decimal
 from typing import List
 
-
 def calculate_all_zakat(wealth_items: List[Decimal]) -> Decimal:
     """Calculate total Zakat for all items."""
     total = Decimal("0")
@@ -60,7 +58,6 @@ def calculate_all_zakat(wealth_items: List[Decimal]) -> Decimal:
         if wealth >= Decimal("85000"):
             total += wealth * Decimal("0.025")
     return total
-
 
 # Profile execution
 wealth_data = [Decimal("100000")] * 10000
@@ -135,7 +132,6 @@ Measure performance with timeit.
 import timeit
 from decimal import Decimal
 
-
 def calculate_zakat_loop(wealth: Decimal) -> Decimal:
     """Calculate using loop."""
     result = Decimal("0")
@@ -143,11 +139,9 @@ def calculate_zakat_loop(wealth: Decimal) -> Decimal:
         result = wealth * Decimal("0.025")
     return result
 
-
 def calculate_zakat_direct(wealth: Decimal) -> Decimal:
     """Calculate directly."""
     return wealth * Decimal("0.025")
-
 
 # Benchmark both approaches
 wealth = Decimal("100000")
@@ -179,7 +173,6 @@ Better algorithms beat micro-optimizations.
 from decimal import Decimal
 from typing import List
 
-
 # SLOW: O(n²) - checking each item against all others
 def find_duplicates_slow(wealth_items: List[Decimal]) -> List[Decimal]:
     """O(n²) duplicate detection."""
@@ -189,7 +182,6 @@ def find_duplicates_slow(wealth_items: List[Decimal]) -> List[Decimal]:
             if i != j and item == other and item not in duplicates:
                 duplicates.append(item)
     return duplicates
-
 
 # FAST: O(n) - using set for constant-time lookup
 def find_duplicates_fast(wealth_items: List[Decimal]) -> List[Decimal]:
@@ -201,7 +193,6 @@ def find_duplicates_fast(wealth_items: List[Decimal]) -> List[Decimal]:
             duplicates.add(item)
         seen.add(item)
     return list(duplicates)
-
 
 # Benchmark: Fast version 100x+ faster for large lists
 ```
@@ -253,7 +244,6 @@ from decimal import Decimal
 from typing import List, Set, Dict
 import timeit
 
-
 # Membership testing
 wealth_list: List[Decimal] = [Decimal(str(i)) for i in range(10000)]
 wealth_set: Set[Decimal] = set(wealth_list)
@@ -273,7 +263,6 @@ set_time = timeit.timeit(
 print(f"List lookup: {list_time:.4f}s")
 print(f"Set lookup: {set_time:.4f}s")
 print(f"Speedup: {list_time / set_time:.0f}x")
-
 
 # Key-value storage
 payer_zakat: Dict[str, Decimal] = {
@@ -300,7 +289,6 @@ Cython compiles Python to C for speed.
 # zakat_calculator.pyx (Cython file)
 from decimal import Decimal as PyDecimal
 
-
 cpdef calculate_zakat_cython(object wealth, object nisab):
     """Cython-optimized Zakat calculation."""
     cdef object zakat_rate = PyDecimal("0.025")
@@ -308,7 +296,6 @@ cpdef calculate_zakat_cython(object wealth, object nisab):
     if wealth >= nisab:
         return wealth * zakat_rate
     return PyDecimal("0")
-
 
 # Compile with setup.py
 # from setuptools import setup
@@ -374,7 +361,6 @@ sequenceDiagram
 from decimal import Decimal
 from typing import List
 
-
 def calculate_zakat_individual(wealth_items: List[Decimal]) -> List[Decimal]:
     """Process items individually (slow)."""
     results = []
@@ -386,7 +372,6 @@ def calculate_zakat_individual(wealth_items: List[Decimal]) -> List[Decimal]:
             results.append(Decimal("0"))
     return results
 
-
 # FAST: Vectorized calculation
 def calculate_zakat_batch(wealth_items: List[Decimal]) -> List[Decimal]:
     """Process items in batch (fast)."""
@@ -397,7 +382,6 @@ def calculate_zakat_batch(wealth_items: List[Decimal]) -> List[Decimal]:
         wealth * rate if wealth >= nisab else Decimal("0")
         for wealth in wealth_items
     ]
-
 
 # Even faster with generator (lazy evaluation)
 def calculate_zakat_generator(wealth_items: List[Decimal]):
@@ -428,7 +412,6 @@ def calculate_zakat_generator(wealth_items: List[Decimal]):
 
 ---
 
-**Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
 **Maintainers**: OSE Platform Documentation Team
 

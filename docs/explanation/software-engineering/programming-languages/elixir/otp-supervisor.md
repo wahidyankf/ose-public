@@ -20,7 +20,6 @@ related:
 principles:
   - automation-over-manual
   - simplicity-over-complexity
-updated: 2026-01-23
 ---
 
 # OTP Supervisor Patterns
@@ -1343,6 +1342,5 @@ end
 
 ---
 
-**Last Updated**: 2026-01-23
 **Elixir Version**: 1.12+ (baseline), 1.17+ (recommended), 1.19.0 (latest)
 **Maintainers**: Platform Documentation Team

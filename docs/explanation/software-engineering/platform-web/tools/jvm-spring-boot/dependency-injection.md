@@ -21,7 +21,6 @@ related:
   - ./best-practices.md
   - ./testing.md
 created: 2026-01-25
-updated: 2026-01-26
 ---
 
 # Spring Boot Dependency Injection
@@ -1306,5 +1305,3 @@ public class OseApplicationConfig {
 - [Spring Boot Configuration](./configuration.md) - Bean configuration
 
 **Hands-on Learning (AyoKoding)**:
-
-**Last Updated**: 2026-01-26

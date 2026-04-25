@@ -21,7 +21,6 @@ principles:
   - explicit-over-implicit
   - immutability
   - pure-functions
-updated: 2026-01-25
 ---
 
 # Phoenix Channels Guide

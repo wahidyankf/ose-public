@@ -13,7 +13,6 @@ related:
   - ./best-practices.md
 principles:
   - explicit-over-implicit
-updated: 2026-01-25
 ---
 
 # React Routing
@@ -372,7 +371,3 @@ export const RoleGuard: React.FC<RoleGuardProps> = ({ allowedRoles, children }) 
 
 - **[Best Practices](best-practices.md)** - Routing standards
 - **[Component Architecture](component-architecture.md)** - Component patterns
-
----
-
-**Last Updated**: 2026-01-25

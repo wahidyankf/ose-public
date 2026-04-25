@@ -21,7 +21,6 @@ related:
 principles:
   - immutability
   - pure-functions
-updated: 2026-02-05
 ---
 
 # Elixir Functional Programming Standards
@@ -916,7 +915,6 @@ result = donations  # List
 
 ---
 
-**Last Updated**: 2026-02-05
 **Elixir Version**: 1.12+ (baseline), 1.17+ (recommended), 1.19.0 (latest)
 **Compliance**: Mandatory for all domain logic
 **Verification**: Credo + Code Review

@@ -24,7 +24,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-01-29
-updated: 2026-03-09
 ---
 
 # Dart Programming Language Documentation
@@ -724,6 +723,5 @@ dev_dependencies:
 
 ---
 
-**Last Updated**: 2026-03-09
 **Dart Version**: 3.5+ (Dart 3.0+ recommended for null safety and modern features)
 **Maintainers**: Platform Documentation Team

@@ -54,7 +54,3 @@ This set of development practices respects the following conventions:
 - **[Content Quality Principles](../../conventions/writing/quality.md)**: Pattern documentation follows active voice, clear structure, and proper formatting standards.
 
 - **[Criticality Levels Convention](../quality/criticality-levels.md)**: Maker-Checker-Fixer pattern integrates with criticality assessment to prioritize and validate fixes systematically.
-
----
-
-**Last Updated**: 2026-01-01

@@ -15,7 +15,6 @@ principles:
   - accessibility-first
   - simplicity-over-complexity
 created: 2026-01-26
-updated: 2026-01-26
 ---
 
 # Next.js Accessibility

@@ -8,7 +8,6 @@ tags:
   - commands
   - workflows
 created: 2025-11-29
-updated: 2025-11-30
 ---
 
 # How to Run Nx Commands

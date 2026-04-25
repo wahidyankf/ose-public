@@ -21,7 +21,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # Kotlin
@@ -337,7 +336,7 @@ graph TD
 ---
 
 **Status**: Authoritative Standard (Mandatory Compliance)
-**Last Updated**: 2026-03-09
+
 **Kotlin Version**: 1.9 LTS (baseline), 2.0 (recommended), 2.1 (recommended for new projects)
 **JVM Version**: JDK 17 (minimum), JDK 21 (recommended)
 **Framework Stack**: Ktor 3.x, Spring Boot 3.x, JUnit 5, Kotest, MockK, Gradle KTS

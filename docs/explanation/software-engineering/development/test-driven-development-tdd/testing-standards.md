@@ -12,7 +12,6 @@ principles:
   - explicit-over-implicit
   - reproducibility
 created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # TDD Testing Standards
@@ -148,7 +147,3 @@ src/
 - Unit: `ZakatCalculatorTest.java`, `ZakatCalculator.unit.test.ts`
 - Integration: `MemberListIntegrationTest.java`, `member-list.integration.test.tsx`
 - E2E: `*.feature` + step definitions (Gherkin-driven via Playwright / Cucumber)
-
----
-
-**Last Updated**: 2026-02-09

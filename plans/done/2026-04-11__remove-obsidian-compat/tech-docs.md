@@ -237,7 +237,7 @@ Each command must show commits from before the rename.
 
 After the rename, two classes of references become stale:
 
-1. **Markdown links**: `[Text](./path/ex-go-co-st__file-naming.md)` → `[Text](./path/file-naming.md)`
+1. **Markdown links**: links using old filenames → links using new filenames
 2. **Bare filename mentions**: `See \`hoto\_\_organize-work.md\``→ `` See`organize-work.md` ``
 
 ### 3.2 Driver: the same mapping file
@@ -301,7 +301,6 @@ tags:
   - conventions
   - github
 created: 2025-11-19
-updated: 2026-04-11
 ---
 
 # File Naming Convention
@@ -373,8 +372,6 @@ Date-prefixed files use ISO 8601 (`YYYY-MM-DD`) and remain kebab-case overall:
 - [Conventions Index](../README.md)
 
 ---
-
-**Last Updated**: 2026-04-11
 ````
 
 **Target size**: ≤120 lines including frontmatter and code fences. The old file is ~540 lines.

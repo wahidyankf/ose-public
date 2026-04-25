@@ -9,7 +9,6 @@ tags:
   - philosophy
   - index
 created: 2025-12-15
-updated: 2026-03-28
 ---
 
 # Core Principles
@@ -406,7 +405,3 @@ Check that changes:
 - [Conventions Index](../conventions/README.md) - Layer 2: Documentation conventions embodying these principles
 - [Development Index](../development/README.md) - Layer 3: Development practices embodying these principles
 - [Explanation Index](../../docs/explanation/README.md) - All conceptual documentation
-
----
-
-**Last Updated**: 2026-03-28

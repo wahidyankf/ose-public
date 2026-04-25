@@ -9,7 +9,6 @@ tags:
   - conventions
   - github
 created: 2025-11-19
-updated: 2026-04-11
 ---
 
 # File Naming Convention
@@ -89,7 +88,3 @@ Date-prefixed files use ISO 8601 (`YYYY-MM-DD`) and remain kebab-case overall:
 - [Linking Convention](../formatting/linking.md)
 - [Diátaxis Framework](./diataxis-framework.md)
 - [Conventions Index](../README.md)
-
----
-
-**Last Updated**: 2026-04-11

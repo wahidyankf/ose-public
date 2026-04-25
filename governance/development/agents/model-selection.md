@@ -9,7 +9,6 @@ tags:
   - standards
   - development
 created: 2026-04-03
-updated: 2026-04-19
 ---
 
 # AI Agent Model Selection Convention
@@ -366,7 +365,3 @@ The following agents enforce or assist with model selection:
 - `agent-maker` -- Creates agents following these model selection standards
 - `repo-rules-checker` -- Validates model selection compliance
 - `repo-rules-fixer` -- Fixes model selection issues
-
----
-
-**Last Updated**: 2026-04-19

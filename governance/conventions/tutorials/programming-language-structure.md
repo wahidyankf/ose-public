@@ -10,7 +10,6 @@ tags:
   - education
   - structure
 created: 2025-12-27
-updated: 2025-12-30
 ---
 
 # Programming Language Tutorial Structure Convention

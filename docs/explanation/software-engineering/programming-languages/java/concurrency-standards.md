@@ -14,7 +14,6 @@ principles:
   - immutability
   - explicit-over-implicit
 created: 2026-02-03
-updated: 2026-02-03
 ---
 
 ## Prerequisite Knowledge
@@ -523,7 +522,5 @@ Before deploying concurrent financial services, verify:
 **Security**:
 
 - [Security Standards](./security-standards.md) - Thread-safe security context and concurrent authentication
-
-**Last Updated**: 2026-02-04
 
 **Status**: Active (mandatory for all OSE Platform Java services)

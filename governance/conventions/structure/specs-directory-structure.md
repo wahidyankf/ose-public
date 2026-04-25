@@ -12,7 +12,6 @@ tags:
   - c4-diagrams
   - openapi
 created: 2026-04-02
-updated: 2026-04-02
 ---
 
 # Specs Directory Structure Convention
@@ -243,7 +242,3 @@ When reviewing changes to the `specs/` directory, verify:
 - [Acceptance Criteria Convention](../../development/infra/acceptance-criteria.md) - Gherkin writing standards for feature files
 - [File Naming Convention](./file-naming.md) - General file naming patterns (README.md exception applies here)
 - [Plans Organization Convention](./plans.md) - Similar convention for plans/ directory structure
-
----
-
-**Last Updated**: 2026-04-02

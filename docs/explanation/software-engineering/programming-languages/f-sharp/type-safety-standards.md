@@ -19,7 +19,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # F# Type Safety Standards
@@ -340,5 +339,5 @@ type DomainValue =
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **F# Version**: F# 8 / .NET 8 LTS

@@ -12,7 +12,6 @@ principles:
   - explicit-over-implicit
   - simplicity-over-complexity
 created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # TDD Test Doubles Standards
@@ -187,7 +186,3 @@ describe("CampaignService", () => {
   });
 });
 ```
-
----
-
-**Last Updated**: 2026-02-09

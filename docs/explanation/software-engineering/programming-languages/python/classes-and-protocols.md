@@ -19,7 +19,6 @@ principles:
   - explicit-over-implicit
   - simplicity-over-complexity
   - composition-over-inheritance
-updated: 2025-01-23
 ---
 
 # Python Classes and Protocols
@@ -53,7 +52,6 @@ Basic Python classes with `__init__` and methods.
 from decimal import Decimal
 from datetime import date
 
-
 class ZakatCalculation:
     """Calculate Zakat obligations with proper typing."""
 
@@ -82,7 +80,6 @@ class ZakatCalculation:
             f"payer_id={self.payer_id!r}, "
             f"wealth_amount={self.wealth_amount!r})"
         )
-
 
 # Usage
 calc = ZakatCalculation(
@@ -136,7 +133,6 @@ from dataclasses import dataclass
 from decimal import Decimal
 from datetime import date
 
-
 @dataclass
 class DonationCampaign:
     """Donation campaign with automatic __init__ and __repr__."""
@@ -164,7 +160,6 @@ class DonationCampaign:
             return Decimal("0")
         return (self.current_amount / self.target_amount) * Decimal("100")
 
-
 # Usage: Automatic __init__ from field annotations
 campaign = DonationCampaign(
     campaign_id="CAMP-001",
@@ -183,7 +178,6 @@ print(f"Progress: {campaign.progress_percentage}%")
 # GOOD: Immutable dataclass for value objects
 from dataclasses import dataclass
 from decimal import Decimal
-
 
 @dataclass(frozen=True)
 class QardHasanLoan:
@@ -216,7 +210,6 @@ class QardHasanLoan:
             principal_amount=self.principal_amount,
             repaid_amount=self.repaid_amount + payment,
         )
-
 
 # Usage: Immutable by design
 loan = QardHasanLoan("QL-001", "BORROWER-123", Decimal("50000.00"))
@@ -269,7 +262,6 @@ from pydantic import BaseModel, Field, field_validator
 from decimal import Decimal
 from datetime import date
 
-
 class MurabahaContract(BaseModel):
     """Murabaha contract with runtime validation."""
 
@@ -304,7 +296,6 @@ class MurabahaContract(BaseModel):
         """Calculate amount to be financed after down payment."""
         return self.total_selling_price - self.down_payment
 
-
 # Usage: Automatic validation on construction
 contract = MurabahaContract(
     contract_id="MB-2025-001",
@@ -331,14 +322,12 @@ from pydantic import BaseModel, Field
 from typing import List
 from decimal import Decimal
 
-
 class Donation(BaseModel):
     """Individual donation."""
 
     donor_id: str = Field(min_length=1)
     amount: Decimal = Field(gt=0)
     category: str = Field(min_length=1)
-
 
 class DonationReport(BaseModel):
     """Donation report with nested donations."""
@@ -356,7 +345,6 @@ class DonationReport(BaseModel):
     def donor_count(self) -> int:
         """Count unique donors."""
         return len(set(d.donor_id for d in self.donations))
-
 
 # Usage: Nested validation cascades
 report = DonationReport(
@@ -383,14 +371,12 @@ Protocols (PEP 544) enable structural subtyping (duck typing with type checking)
 from typing import Protocol
 from decimal import Decimal
 
-
 class FinancialCalculator(Protocol):
     """Protocol for financial calculation services."""
 
     def calculate(self, base_amount: Decimal) -> Decimal:
         """Calculate financial obligation."""
         ...
-
 
 class ZakatCalculator:
     """Zakat calculator (2.5%)."""
@@ -399,7 +385,6 @@ class ZakatCalculator:
         """Calculate Zakat."""
         return wealth_amount * Decimal("0.025")
 
-
 class SadaqahCalculator:
     """Recommended Sadaqah (1%)."""
 
@@ -407,14 +392,12 @@ class SadaqahCalculator:
         """Calculate recommended Sadaqah."""
         return income_amount * Decimal("0.01")
 
-
 def apply_calculator(
     calculator: FinancialCalculator,
     amounts: List[Decimal],
 ) -> List[Decimal]:
     """Apply calculator to amounts (duck typed)."""
     return [calculator.calculate(amount) for amount in amounts]
-
 
 # Usage: Both satisfy Protocol without inheritance
 zakat_calc = ZakatCalculator()
@@ -481,7 +464,6 @@ ABCs define interfaces requiring explicit implementation.
 from abc import ABC, abstractmethod
 from decimal import Decimal
 
-
 class PaymentProcessor(ABC):
     """Abstract payment processor interface."""
 
@@ -503,7 +485,6 @@ class PaymentProcessor(ABC):
     ) -> bool:
         """Refund payment, return success status."""
         pass
-
 
 class StripePaymentProcessor(PaymentProcessor):
     """Stripe payment processor implementation."""
@@ -527,7 +508,6 @@ class StripePaymentProcessor(PaymentProcessor):
         # Stripe refund logic
         return True
 
-
 # Cannot instantiate ABC directly
 # processor = PaymentProcessor()  # Error: Can't instantiate abstract class
 
@@ -548,7 +528,6 @@ Properties provide computed attributes with attribute syntax.
 from dataclasses import dataclass
 from decimal import Decimal
 
-
 @dataclass
 class WaqfEndowment:
     """Waqf (Islamic endowment) with computed properties."""
@@ -566,7 +545,6 @@ class WaqfEndowment:
     def monthly_distribution(self) -> Decimal:
         """Monthly distribution amount."""
         return self.annual_return / Decimal("12")
-
 
 # Usage: Properties accessed like attributes
 endowment = WaqfEndowment(
@@ -591,7 +569,6 @@ Favor composition for flexibility and maintainability.
 from dataclasses import dataclass
 from decimal import Decimal
 
-
 @dataclass
 class ZakatCalculationStrategy:
     """Strategy for Zakat calculation."""
@@ -602,7 +579,6 @@ class ZakatCalculationStrategy:
         """Calculate Zakat at specified rate."""
         return wealth_amount * self.rate
 
-
 @dataclass
 class NisabValidator:
     """Validate wealth against nisab threshold."""
@@ -612,7 +588,6 @@ class NisabValidator:
     def is_qualifying(self, wealth_amount: Decimal) -> bool:
         """Check if wealth exceeds nisab."""
         return wealth_amount >= self.nisab_threshold
-
 
 @dataclass
 class ZakatService:
@@ -627,7 +602,6 @@ class ZakatService:
             return self.calculator.calculate(wealth_amount)
         return Decimal("0")
 
-
 # Usage: Compose service from components
 service = ZakatService(
     calculator=ZakatCalculationStrategy(rate=Decimal("0.025")),
@@ -635,15 +609,12 @@ service = ZakatService(
 )
 zakat = service.calculate_obligation(Decimal("100000.00"))
 
-
 # BAD: Deep inheritance hierarchy
 class FinancialCalculator:
     pass
 
-
 class IslamicFinanceCalculator(FinancialCalculator):  # BAD: Inheritance
     pass
-
 
 class ZakatCalculator(IslamicFinanceCalculator):  # BAD: Deep hierarchy
     pass
@@ -702,7 +673,6 @@ graph TD
 
 ---
 
-**Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
 **Maintainers**: OSE Platform Documentation Team
 

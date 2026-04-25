@@ -10,7 +10,6 @@ tags:
 principles:
   - explicit-over-implicit
 created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # C4 Nx Workspace Visualization
@@ -181,7 +180,3 @@ Before committing an Nx workspace visualization, verify:
 ## Principles Implemented
 
 - **[Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)**: By explicitly mapping Nx apps to C4 containers and showing project dependencies, the monorepo structure becomes visible in architecture documentation rather than hidden in `nx.json`.
-
----
-
-**Last Updated**: 2026-02-09

@@ -32,7 +32,3 @@ These workflows define **WHEN and HOW to validate specifications**, orchestratin
 - [Maker-Checker-Fixer Pattern](../../development/pattern/maker-checker-fixer.md) - Core workflow pattern
 - [Three-Level Testing Standard](../../development/quality/three-level-testing-standard.md) - Testing standard that specs support
 - [BDD Spec-Test Mapping](../../development/infra/bdd-spec-test-mapping.md) - How specs map to test implementations
-
----
-
-**Last Updated**: 2026-03-13

@@ -9,7 +9,6 @@ tags:
   - naming
   - learning-paths
 created: 2025-12-03
-updated: 2026-01-01
 ---
 
 # Tutorial Naming Convention
@@ -521,7 +520,3 @@ graph TB
 - [Diátaxis Framework](../structure/diataxis-framework.md) - Understanding the tutorial category in documentation
 - [Tutorials Index](./README.md) - All available tutorials organized by type
 - [File Naming Convention](../structure/file-naming.md) - How to name tutorial files
-
----
-
-**Last Updated**: 2026-01-01

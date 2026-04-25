@@ -20,7 +20,6 @@ principles:
   - explicit-over-implicit
   - documentation-first
 created: 2026-01-23
-updated: 2026-02-05
 ---
 
 # Elixir Type Safety Standards
@@ -966,5 +965,5 @@ echo "All checks passed!"
 
 **Version**: 1.0.0
 **Elixir Version**: 1.19.0 (minimum 1.12+)
-**Last Updated**: 2026-02-05
+
 **Maintainers**: OSE Platform Engineering Team

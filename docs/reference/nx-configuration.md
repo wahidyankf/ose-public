@@ -7,7 +7,6 @@ tags:
   - configuration
   - build-system
 created: 2025-11-29
-updated: 2026-03-06
 ---
 
 # Nx Configuration Reference

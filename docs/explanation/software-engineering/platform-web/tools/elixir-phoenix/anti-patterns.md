@@ -19,7 +19,6 @@ principles:
   - explicit-over-implicit
   - immutability
   - pure-functions
-updated: 2026-01-25
 ---
 
 # Phoenix Anti-Patterns
@@ -2166,6 +2165,5 @@ end
 
 ---
 
-**Last Updated**: 2026-01-25
 **Phoenix Version**: 1.7+
 **Elixir Version**: 1.14+

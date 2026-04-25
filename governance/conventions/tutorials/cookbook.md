@@ -11,7 +11,6 @@ tags:
   - problem-solving
   - recipes
 created: 2026-01-30
-updated: 2026-01-30
 ---
 
 # Cookbook Tutorial Convention
@@ -568,7 +567,3 @@ This convention implements and respects:
 - **[Programming Language Content](./programming-language-content.md)**: Cookbook as mandatory component for complete language content
 - **[By-Example Tutorial](./by-example.md)**: Comparison with code-first learning path
 - **[By-Concept Tutorial](./by-concept.md)**: Comparison with narrative-driven learning path
-
----
-
-**Last Updated**: 2026-01-30

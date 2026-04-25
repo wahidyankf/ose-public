@@ -18,8 +18,6 @@ skills:
 ## Agent Metadata
 
 - **Role**: Maker (blue)
-- **Created**: 2026-03-13
-- **Last Updated**: 2026-04-12
 
 **Model Selection Justification**: This agent uses `model: sonnet` because spec scaffolding at explicitly specified paths is structural work, not open-ended creation:
 

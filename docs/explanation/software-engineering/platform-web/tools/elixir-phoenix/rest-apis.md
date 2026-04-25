@@ -1369,7 +1369,3 @@ end
 - **[Testing](testing.md)** - API testing strategies
 - **[Best Practices](best-practices.md)** - General Phoenix best practices
 - **[Performance](performance.md)** - API performance optimization
-
----
-
-**Last Updated**: 2026-01-25

@@ -10,7 +10,6 @@ tags:
   - education
   - code-first
 created: 2025-12-25
-updated: 2026-01-03
 ---
 
 # By-Example Tutorial Convention

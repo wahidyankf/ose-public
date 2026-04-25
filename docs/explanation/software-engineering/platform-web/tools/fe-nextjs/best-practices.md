@@ -18,7 +18,6 @@ principles:
   - immutability
   - pure-functions
   - automation-over-manual
-updated: 2026-01-26
 ---
 
 # Next.js Best Practices
@@ -585,5 +584,4 @@ export function Modal({ onClose }: { onClose: () => void }) {
 
 ---
 
-**Last Updated**: 2026-01-26
 **Next.js Version**: 14+ (App Router)

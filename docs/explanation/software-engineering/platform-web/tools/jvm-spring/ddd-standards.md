@@ -17,7 +17,6 @@ principles:
   - immutability
   - simplicity-over-complexity
 created: 2026-02-06
-updated: 2026-02-06
 ---
 
 ## Prerequisite Knowledge
@@ -829,7 +828,5 @@ Before deploying Spring DDD applications, verify:
 - [Spring Boot Domain-Driven Design](../jvm-spring-boot/domain-driven-design.md) - Boot DDD patterns
 
 ---
-
-**Last Updated**: 2026-02-06
 
 **Status**: Mandatory (required for all OSE Platform Spring services)

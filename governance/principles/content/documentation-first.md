@@ -10,7 +10,6 @@ tags:
   - institutional-memory
   - maintainability
 created: 2025-12-28
-updated: 2025-12-28
 ---
 
 # Documentation First
@@ -693,7 +692,3 @@ function validateMurabahahContract(contract: MurabahahContract): ValidationResul
 
 - [The Knowledge Creating Company](https://hbr.org/2007/07/the-knowledge-creating-company) - Nonaka and Takeuchi
 - [Working in Public: The Making and Maintenance of Open Source Software](https://press.stripe.com/working-in-public) - Nadia Eghbal
-
----
-
-**Last Updated**: 2025-12-28

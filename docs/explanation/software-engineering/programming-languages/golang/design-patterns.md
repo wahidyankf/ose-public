@@ -27,7 +27,6 @@ related:
   - ./type-safety-standards.md
   - ./concurrency-standards.md
   - ../../../../../governance/development/pattern/functional-programming.md
-updated: 2026-03-06
 ---
 
 # Go Design Patterns
@@ -3993,7 +3992,6 @@ type ReadCloser interface {
 
 ---
 
-**Last Updated**: 2026-02-04
 **Go Version**: 1.21+ (baseline), 1.22+ (recommended), 1.23+ (latest)
 **Maintainers**: Platform Documentation Team
 **Status**: Normative (MUST follow for OSE Platform Go code)

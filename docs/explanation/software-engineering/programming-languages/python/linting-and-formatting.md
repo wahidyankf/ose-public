@@ -17,7 +17,6 @@ related:
   - ./type-safety.md
 principles:
   - automation-over-manual
-updated: 2025-01-23
 ---
 
 # Python Linting and Formatting
@@ -276,7 +275,6 @@ def calculate_zakat(wealth:Decimal,nisab:Decimal)->Decimal:
 # After Black
 from decimal import Decimal
 
-
 def calculate_zakat(wealth: Decimal, nisab: Decimal) -> Decimal:
     if wealth >= nisab:
         return wealth * Decimal("0.025")
@@ -343,13 +341,11 @@ mypy --strict src/
 # mypy catches type errors
 from decimal import Decimal
 
-
 def calculate_zakat(wealth: Decimal, nisab: Decimal) -> Decimal:
     """Calculate Zakat with type safety."""
     if wealth >= nisab:
         return wealth * Decimal("0.025")
     return Decimal("0")
-
 
 # mypy error: Argument 1 to "calculate_zakat" has incompatible type "int"
 result = calculate_zakat(100000, Decimal("85000"))
@@ -582,7 +578,6 @@ jobs:
 
 ---
 
-**Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
 **Maintainers**: OSE Platform Documentation Team
 

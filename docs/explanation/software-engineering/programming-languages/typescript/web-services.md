@@ -21,7 +21,6 @@ related:
 principles:
   - explicit-over-implicit
   - automation-over-manual
-updated: 2025-01-23
 ---
 
 # TypeScript Web Services
@@ -1290,7 +1289,6 @@ export class DonationModule {}
 
 ---
 
-**Last Updated**: 2025-01-23
 **TypeScript Version**: 5.0+ (baseline), 5.4+ (milestone), 5.6+ (stable), 5.9.3+ (latest stable)
 **Framework Versions**: Express 5.2.1/4.x, Fastify 5.x, NestJS 11.x, tRPC 11.x, Hono 4.x
 **Maintainers**: OSE Documentation Team

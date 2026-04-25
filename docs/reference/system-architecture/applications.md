@@ -7,7 +7,6 @@ tags:
   - applications
   - c4-model
 created: 2025-11-29
-updated: 2026-04-19
 ---
 
 # Applications & Containers

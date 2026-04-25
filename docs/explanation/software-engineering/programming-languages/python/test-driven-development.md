@@ -18,7 +18,6 @@ related:
 principles:
   - automation-over-manual
   - documentation-first
-updated: 2025-01-23
 ---
 
 # Test-Driven Development in Python
@@ -169,14 +168,12 @@ def test_calculate_zakat_for_qualifying_wealth():
 
     assert result == Decimal("2500.00")  # FAILS: Function doesn't exist yet
 
-
 # 2. GREEN: Write minimal implementation
 def calculate_zakat(wealth: Decimal, nisab: Decimal) -> Decimal:
     """Calculate Zakat (2.5% if wealth >= nisab)."""
     if wealth >= nisab:
         return wealth * Decimal("0.025")
     return Decimal("0")
-
 
 # 3. REFACTOR: Improve while keeping tests green
 def calculate_zakat(wealth: Decimal, nisab: Decimal) -> Decimal:
@@ -203,7 +200,6 @@ import pytest
 from decimal import Decimal
 from zakat_calculator import ZakatCalculator
 
-
 def test_zakat_calculation_for_qualifying_wealth():
     """Test standard Zakat calculation."""
     calculator = ZakatCalculator()
@@ -212,7 +208,6 @@ def test_zakat_calculation_for_qualifying_wealth():
 
     assert result == Decimal("2500.00")
 
-
 def test_zakat_calculation_below_nisab():
     """Test Zakat is zero when wealth below nisab."""
     calculator = ZakatCalculator()
@@ -220,7 +215,6 @@ def test_zakat_calculation_below_nisab():
     result = calculator.calculate(Decimal("50000.00"), Decimal("85000.00"))
 
     assert result == Decimal("0")
-
 
 def test_zakat_calculation_with_negative_wealth_raises_error():
     """Test validation for negative wealth."""
@@ -267,7 +261,6 @@ from decimal import Decimal
 from datetime import date
 from donation_campaign import DonationCampaign, Money
 
-
 @pytest.fixture
 def sample_campaign():
     """Fixture providing test campaign."""
@@ -279,11 +272,9 @@ def sample_campaign():
         start_date=date(2025, 1, 1),
     )
 
-
 def test_campaign_starts_with_zero_donations(sample_campaign):
     """Test campaign initialization."""
     assert sample_campaign.current_amount.amount == Decimal("0")
-
 
 def test_add_donation_increases_total(sample_campaign):
     """Test donation recording."""
@@ -294,7 +285,6 @@ def test_add_donation_increases_total(sample_campaign):
 
     assert sample_campaign.current_amount.amount == Decimal("5000")
 
-
 @pytest.fixture
 def campaign_with_donations(sample_campaign):
     """Fixture with pre-loaded donations."""
@@ -303,7 +293,6 @@ def campaign_with_donations(sample_campaign):
         Money(amount=Decimal("50000"), currency="USD")
     )
     return sample_campaign
-
 
 def test_campaign_target_met(campaign_with_donations):
     """Test target detection."""
@@ -329,7 +318,6 @@ import pytest
 from decimal import Decimal
 from zakat_calculator import calculate_zakat
 
-
 @pytest.mark.parametrize(
     "wealth,nisab,expected_zakat",
     [
@@ -344,7 +332,6 @@ def test_zakat_calculation_multiple_scenarios(wealth, nisab, expected_zakat):
     """Test Zakat calculation across scenarios."""
     result = calculate_zakat(wealth, nisab)
     assert result == expected_zakat
-
 
 @pytest.mark.parametrize(
     "invalid_amount",
@@ -373,7 +360,6 @@ from hypothesis import given, strategies as st
 from decimal import Decimal
 from zakat_calculator import calculate_zakat
 
-
 @given(
     wealth=st.decimals(min_value=Decimal("0"), max_value=Decimal("1000000"), places=2),
     nisab=st.decimals(min_value=Decimal("1"), max_value=Decimal("100000"), places=2),
@@ -382,7 +368,6 @@ def test_zakat_always_less_than_wealth(wealth, nisab):
     """Property: Zakat amount always less than or equal to wealth."""
     zakat = calculate_zakat(wealth, nisab)
     assert zakat <= wealth
-
 
 @given(
     wealth=st.decimals(min_value=Decimal("85000"), max_value=Decimal("1000000"), places=2),
@@ -394,7 +379,6 @@ def test_zakat_is_exactly_2_5_percent_when_qualifying(wealth):
 
     expected = wealth * Decimal("0.025")
     assert zakat == expected
-
 
 @given(
     wealth1=st.decimals(min_value=Decimal("85000"), max_value=Decimal("500000"), places=2),
@@ -425,7 +409,6 @@ import pytest
 from decimal import Decimal
 from zakat_service import ZakatService
 
-
 def test_zakat_service_fetches_nisab_from_api():
     """Test service fetches nisab from external API."""
     # Mock the API client
@@ -438,7 +421,6 @@ def test_zakat_service_fetches_nisab_from_api():
     # Verify API was called
     mock_api_client.fetch_nisab.assert_called_once()
     assert result == Decimal("2500")
-
 
 @patch('zakat_service.requests.get')
 def test_zakat_service_handles_api_failure(mock_get):
@@ -486,12 +468,10 @@ import pytest
 from decimal import Decimal
 from datetime import date
 
-
 @pytest.fixture
 def standard_nisab():
     """Standard nisab threshold for tests."""
     return Decimal("85000.00")
-
 
 @pytest.fixture
 def sample_wealth_amounts():
@@ -501,7 +481,6 @@ def sample_wealth_amounts():
         Decimal("100000.00"),
         Decimal("150000.00"),
     ]
-
 
 @pytest.fixture(scope="session")
 def test_database():
@@ -522,7 +501,6 @@ def test_database():
 import pytest
 from decimal import Decimal
 from murabaha import MurabahaContract, Money
-
 
 class TestMurabahaContract:
     """Test suite for Murabaha contract calculations."""
@@ -646,6 +624,5 @@ class TestMurabahaContract:
 
 ---
 
-**Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
 **Maintainers**: OSE Platform Documentation Team

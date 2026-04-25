@@ -11,7 +11,6 @@ principles:
   - explicit-over-implicit
   - simplicity-over-complexity
 created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # Three Amigos Collaboration Standards
@@ -144,7 +143,3 @@ Scenario: Contract approved with valid profit margin
 - Sadaqah donation categories
 - Waqf endowment management
 - Takaful insurance models
-
----
-
-**Last Updated**: 2026-02-09

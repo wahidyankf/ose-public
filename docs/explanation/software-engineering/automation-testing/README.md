@@ -13,7 +13,6 @@ principles:
   - explicit-over-implicit
   - reproducibility
 created: 2026-02-08
-updated: 2026-02-08
 ---
 
 # Automation Testing
@@ -38,5 +37,4 @@ This directory contains OSE Platform-specific standards for automation testing t
 
 ---
 
-**Last Updated**: 2026-02-08
 **Maintainers**: Platform Documentation Team

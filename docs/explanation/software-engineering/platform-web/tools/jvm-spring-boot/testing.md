@@ -23,7 +23,6 @@ related:
   - ./data-access.md
   - ./rest-apis.md
 created: 2026-01-25
-updated: 2026-01-26
 ---
 
 # Spring Boot Testing
@@ -1664,5 +1663,3 @@ class CompleteWaqfTest {
 - [Spring Boot Best Practices](./best-practices.md) - Test standards
 
 **Hands-on Learning (AyoKoding)**:
-
-**Last Updated**: 2026-01-26

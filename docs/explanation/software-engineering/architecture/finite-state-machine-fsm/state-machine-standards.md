@@ -10,7 +10,6 @@ tags:
 principles:
   - explicit-over-implicit
 created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # FSM State Machine Standards
@@ -64,7 +63,3 @@ Business Rules:
 - Shariah review is MANDATORY
 - Cannot skip approval stages
 - MUST log reviewer and timestamp
-
----
-
-**Last Updated**: 2026-02-09

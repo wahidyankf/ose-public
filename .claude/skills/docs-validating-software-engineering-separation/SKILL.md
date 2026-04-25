@@ -2,7 +2,6 @@
 name: docs-validating-software-engineering-separation
 description: Validates software engineering documentation separation between OSE Platform style guides (docs/explanation/) and AyoKoding educational content (apps/ayokoding-web/). Ensures no duplication, proper prerequisite statements, and style guide focus on repository-specific conventions only.
 created: 2026-02-07
-updated: 2026-02-07
 ---
 
 # Validating Software Engineering Documentation Separation

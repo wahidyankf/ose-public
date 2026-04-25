@@ -46,7 +46,3 @@ This set of conventions implements/respects the following core principles:
 - [Hugo Development Convention](../../development/hugo/development.md) - Hugo theme/layout development standards
 - [Tutorial Conventions](../tutorials/README.md) - Tutorial structure and naming
 - [Repository Architecture](../../repository-governance-architecture.md) - Six-layer governance model
-
----
-
-**Last Updated**: 2026-04-02

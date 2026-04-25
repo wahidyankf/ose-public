@@ -25,8 +25,6 @@ skills:
 ## Agent Metadata
 
 - **Role**: Fixer (yellow)
-- **Created**: 2025-12-28
-- **Last Updated**: 2026-04-04
 
 ## Confidence Assessment (Re-validation Required)
 
@@ -104,6 +102,15 @@ When the audit reports misplaced content per the [Content-Placement Rules](../..
 - **URL-only citation** (internet data cited without inline excerpt) → **fetch and quote** the specific figure/table/excerpt, then include it in the plan alongside the URL and the access date. If unable to fetch, classify the finding MEDIUM and flag for manual authoring rather than applying a half-fix.
 
 After moving content, update any cross-references that pointed at the old location and verify both files still satisfy the per-file required-sections list.
+
+#### Unsolicited PR Step Removal (per [Git Push Default Convention](../../governance/development/workflow/git-push-default.md))
+
+When plan-checker flags a HIGH finding for an unsolicited PR step in a delivery checklist, remove such steps (HIGH confidence — mechanical, unambiguous):
+
+- **`- [ ] Create PR`**, **`- [ ] Open PR`**, **`- [ ] Submit PR`**, or equivalent PR creation steps in `delivery.md` → **remove the line** unless EITHER:
+  1. The plan's `README.md` or `prd.md` explicitly states that a PR is required (e.g., worktree-based flow, external contribution)
+  2. The plan's Git Workflow section explicitly documents a worktree/branch-based flow
+- After removal, verify the delivery checklist remains logically sequential without the removed step.
 
 ### 4. Fix Report Generation
 

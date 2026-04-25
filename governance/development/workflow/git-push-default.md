@@ -1,6 +1,6 @@
 ---
 title: "Git Push Default Convention"
-description: Default git push behavior — direct push to origin main with no PR unless explicitly instructed by user prompt or plan document. Covers linear history requirement and proactive preexisting compliance. Governs plan-maker, plan-checker, plan-fixer, and plan-executor behavior.
+description: Default git push behavior — direct push to origin main with no PR unless explicitly instructed by user prompt or plan document. Covers linear history requirement and proactive preexisting compliance. Governs plan-maker, plan-checker, plan-fixer, and the plan-execution workflow behavior.
 category: explanation
 subcategory: development
 tags:
@@ -10,7 +10,6 @@ tags:
   - trunk-based-development
   - ai-agents
 created: 2026-04-25
-updated: 2026-04-25
 ---
 
 # Git Push Default Convention
@@ -45,7 +44,7 @@ This practice implements/respects the following conventions:
 
 - Default push behavior for all commits in this repository.
 - Linear history maintenance before every push.
-- Agent behavior in all plan contexts: `plan-maker`, `plan-checker`, `plan-fixer`, `plan-executor`.
+- Agent behavior in all plan contexts: `plan-maker`, `plan-checker`, `plan-fixer`, and the plan-execution workflow.
 - Delivery checklist authoring — plan documents must not include unsolicited PR steps.
 - Retroactive compliance — preexisting violations fixed when encountered.
 
@@ -100,7 +99,7 @@ When `plan-maker` authors a delivery checklist, it must not include a `- [ ] Cre
 
 `plan-checker` must flag any delivery checklist that contains a PR step without satisfying condition 1 or 2. `plan-fixer` must remove such steps.
 
-`plan-executor` must not spontaneously open a PR during delivery unless the active checklist contains an explicit PR step that satisfies the above conditions.
+The plan-execution workflow must not spontaneously open a PR during delivery unless the active checklist contains an explicit PR step that satisfies the above conditions.
 
 ### Standard 4: Maintain Linear History Before Pushing
 
@@ -204,7 +203,7 @@ Use `--rebase` instead.
 
 ### PASS: Proactive fix of preexisting violation
 
-While executing Plan A, plan-executor reads `plans/in-progress/2026-03-01__feature-x/delivery.md` and finds:
+While executing Plan A, the plan-execution workflow reads `plans/in-progress/2026-03-01__feature-x/delivery.md` and finds:
 
 ```markdown
 - [x] Implement feature
@@ -215,12 +214,12 @@ Correct behavior: remove `- [ ] Create PR` inline, include in the same commit as
 
 ## Agent Responsibilities
 
-| Agent           | Responsibility                                                                                                         |
-| --------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `plan-maker`    | Must not insert PR steps in delivery checklists unless explicitly instructed.                                          |
-| `plan-checker`  | Must flag unsolicited PR steps in delivery checklists as a HIGH finding.                                               |
-| `plan-fixer`    | Must remove unsolicited PR steps from delivery checklists.                                                             |
-| `plan-executor` | Must push directly to `main`; must rebase to maintain linear history; must fix preexisting unsolicited PR steps found. |
+| Agent                   | Responsibility                                                                                                         |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `plan-maker`            | Must not insert PR steps in delivery checklists unless explicitly instructed.                                          |
+| `plan-checker`          | Must flag unsolicited PR steps in delivery checklists as a HIGH finding.                                               |
+| `plan-fixer`            | Must remove unsolicited PR steps from delivery checklists.                                                             |
+| plan-execution workflow | Must push directly to `main`; must rebase to maintain linear history; must fix preexisting unsolicited PR steps found. |
 
 ## Related Documentation
 
@@ -229,7 +228,3 @@ Correct behavior: remove `- [ ] Create PR` inline, include in the same commit as
 - [PR Merge Protocol Convention](./pr-merge-protocol.md) — Approval rules when a PR is opened (applies in the opt-in PR case).
 - [Proactive Preexisting Error Resolution](../practice/proactive-preexisting-error-resolution.md) — Practice governing proactive fixes of discovered violations.
 - [Plans Organization Convention](../../conventions/structure/plans.md) — Delivery checklist authoring standards.
-
----
-
-**Last Updated**: 2026-04-25

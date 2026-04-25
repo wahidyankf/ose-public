@@ -12,7 +12,6 @@ related:
   - ./README.md
 principles:
   - automation-over-manual
-updated: 2026-01-25
 ---
 
 # React Version Migration
@@ -1108,7 +1107,3 @@ const ZakatCalculator: React.FC = () => {
 - **[Best Practices](best-practices.md)** - Current standards
 - **[Performance](performance.md)** - Optimization techniques
 - **[Testing](testing.md)** - Testing strategies
-
----
-
-**Last Updated**: 2026-01-26

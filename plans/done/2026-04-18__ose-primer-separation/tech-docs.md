@@ -716,7 +716,6 @@ tags:
   - sync
   - cross-repo
 created: 2026-04-18
-updated: 2026-04-18
 ---
 ```
 

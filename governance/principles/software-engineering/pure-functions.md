@@ -10,7 +10,6 @@ tags:
   - testability
   - determinism
 created: 2025-12-28
-updated: 2025-12-28
 ---
 
 # Pure Functions Over Side Effects
@@ -653,7 +652,3 @@ async function saveMudharabahDistribution(profit: number, investorRatio: number)
 
 - [AAOIFI Shariah Standards](https://www.aaoifi.com/) - Transparency requirements
 - [Islamic Finance Principles](https://www.ifsb.org/) - Risk-sharing and fairness (enabled by pure functions)
-
----
-
-**Last Updated**: 2025-12-28

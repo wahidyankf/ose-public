@@ -11,7 +11,6 @@ tags:
 principles:
   - explicit-over-implicit
 created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # DDD Bounded Context Standards
@@ -123,7 +122,3 @@ zakat-context/
 | Shared Kernel        | Multiple contexts share Money           | Shared library (libs/ts-\*/) |
 | Conformist           | Reporting → Zakat (conforms to API)     | Client-side adapter          |
 | Anticorruption Layer | Internal → Legacy External (translates) | Adapter layer                |
-
----
-
-**Last Updated**: 2026-02-09

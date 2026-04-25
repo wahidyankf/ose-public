@@ -10,7 +10,6 @@ tags:
   - syntax
   - documentation
 created: 2025-12-23
-updated: 2025-12-23
 ---
 
 # Nested Code Fence Convention
@@ -506,7 +505,3 @@ calculate(value: number): number
 
 - [Content Quality Principles](../writing/quality.md) - Universal content standards
 - [Conventions Index](../README.md) - All documentation conventions
-
----
-
-**Last Updated**: 2025-12-23

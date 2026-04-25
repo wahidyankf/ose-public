@@ -18,7 +18,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # F# API Standards
@@ -349,5 +348,5 @@ let handleDomainResult (result: Result<'T, ZakatError>) : HttpHandler =
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **F# Version**: F# 8 / .NET 8 LTS, Giraffe 7.x, Saturn 0.16+

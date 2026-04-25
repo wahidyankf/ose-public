@@ -20,8 +20,6 @@ skills:
 ## Agent Metadata
 
 - **Role**: Maker (blue)
-- **Created**: 2025-12-20
-- **Last Updated**: 2026-04-04
 
 **Model Selection Justification**: This agent uses inherited `model: opus` (omit model field) because it requires:
 
@@ -111,11 +109,10 @@ category: Category name
 tags: [tag1, tag2, tag3]
 prerequisites: [prerequisite1, prerequisite2]
 created: YYYY-MM-DD
-updated: YYYY-MM-DD
 ```
 
 **Required fields**: title, description, type, coverage, category, created
-**Optional fields**: tags, prerequisites, updated
+**Optional fields**: tags, prerequisites
 
 ### 2. Introduction Section
 

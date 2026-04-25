@@ -10,7 +10,6 @@ tags:
   - fixer-agents
   - quality-assurance
 created: 2025-12-27
-updated: 2025-12-27
 ---
 
 # Criticality Levels Convention
@@ -1479,5 +1478,5 @@ This convention establishes **universal criticality levels** (CRITICAL/HIGH/MEDI
 ---
 
 **Convention Status**: Active
-**Last Updated**: 2025-12-27
+
 **Version**: 1.0

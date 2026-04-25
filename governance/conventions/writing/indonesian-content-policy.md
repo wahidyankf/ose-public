@@ -10,7 +10,6 @@ tags:
   - content-policy
   - translation
 created: 2026-02-07
-updated: 2026-04-04
 ---
 
 # Indonesian Content Policy - ayokoding-web
@@ -430,7 +429,3 @@ Before creating Indonesian content, verify:
 - `apps-ayokoding-web-by-example-maker` - Creates by-example tutorials (English-first)
 - `apps-ayokoding-web-in-the-field-maker` - Creates in-the-field production guides (English-first)
 - `apps-ayokoding-web-general-checker` - Validates compliance with this policy
-
----
-
-**Last Updated**: 2026-02-07

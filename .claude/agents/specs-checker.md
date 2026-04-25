@@ -16,8 +16,6 @@ skills:
 ## Agent Metadata
 
 - **Role**: Checker (green)
-- **Created**: 2026-03-13
-- **Last Updated**: 2026-04-04
 
 **Model Selection Justification**: This agent uses `model: sonnet` for multi-dimensional validation requiring cross-file reasoning, counting accuracy, and structural pattern recognition across feature files, READMEs, and C4 diagrams.
 

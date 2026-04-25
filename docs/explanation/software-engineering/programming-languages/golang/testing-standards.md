@@ -26,7 +26,6 @@ related:
 principles:
   - automation-over-manual
   - explicit-over-implicit
-updated: 2026-03-06
 ---
 
 # Go Testing Standards
@@ -3501,6 +3500,5 @@ Behaviour-Driven Development in Go emphasizes:
 
 ---
 
-**Last Updated**: 2026-02-04
 **Go Version**: 1.21+ (baseline), 1.22+ (recommended), 1.23-1.25 (latest)
 **Maintainers**: Platform Documentation Team

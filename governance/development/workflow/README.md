@@ -29,6 +29,7 @@ These standards define **HOW to execute development workflows**, covering the th
 - [Reproducible Environments Convention](./reproducible-environments.md) - Practices for creating consistent, reproducible development and build environments
 - [Trunk Based Development Convention](./trunk-based-development.md) - Git workflow using Trunk Based Development for continuous integration
 - [Worktree Toolchain Initialization](./worktree-setup.md) - Mandatory two-step init (`npm install` then `npm run doctor -- --fix`) in the root repository worktree after creating or entering a git worktree. The first step keeps `node_modules/` consistent with `package-lock.json`; the second actively converges the 18+ polyglot toolchains (Go, Java, Rust, Elixir, Python, .NET, Dart, Clojure, Kotlin, C#, Node) managed by `rhino-cli doctor` — required because `package.json`'s `postinstall` hook swallows doctor failures with `|| true`
+- [Git Push Default Convention](./git-push-default.md) - Default push behavior: direct push to `origin main` with no PR unless explicitly instructed by user prompt or plan document. Covers linear history requirement (rebase before push), proactive retroactive compliance, and agent responsibilities — `plan-maker`, `plan-checker`, `plan-fixer`, and the plan-execution workflow must not insert or tolerate unsolicited PR steps in delivery checklists
 - [Git Push Safety Convention](./git-push-safety.md) - Requires explicit per-instance user approval before any AI agent or automation executes `git push --force`, `--force-with-lease`, or `--no-verify`; prior approval does not carry forward
 - [PR Merge Protocol](./pr-merge-protocol.md) - Requires explicit user approval before merging any pull request; all quality gates must pass before merge; no auto-merge by agents or automation
 - [Native-First Toolchain Management](./native-first-toolchain.md) - Architectural decision to use native package managers and `rhino-cli doctor` instead of Terraform, Ansible, or Docker Dev Containers for development environment setup
@@ -64,7 +65,3 @@ This set of development practices respects the following conventions:
 - **[Commit Message Convention](./commit-messages.md)**: Conventional Commits format provides explicit commit metadata for automated changelog generation and version control.
 
 - **[Nested Code Fences Convention](../../conventions/formatting/nested-code-fences.md)**: Workflow documentation uses proper code fence nesting when documenting markdown structure and patterns.
-
----
-
-**Last Updated**: 2026-04-11

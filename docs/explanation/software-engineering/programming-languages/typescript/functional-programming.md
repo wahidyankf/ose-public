@@ -16,7 +16,6 @@ related:
 principles:
   - immutability
   - pure-functions
-updated: 2026-01-24
 ---
 
 # TypeScript Functional Programming
@@ -234,6 +233,5 @@ function mapEither<L, R, S>(either: Either<L, R>, fn: (value: R) => S): Either<L
 
 ---
 
-**Last Updated**: 2026-01-24
 **TypeScript Version**: 5.0+ (baseline), 5.4+ (milestone), 5.6+ (stable), 5.9.3+ (latest stable)
 **Maintainers**: OSE Documentation Team

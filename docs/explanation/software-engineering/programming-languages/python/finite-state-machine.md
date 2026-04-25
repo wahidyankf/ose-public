@@ -18,7 +18,6 @@ related:
 principles:
   - explicit-over-implicit
   - simplicity-over-complexity
-updated: 2025-01-23
 ---
 
 # Finite State Machines in Python
@@ -117,7 +116,6 @@ from decimal import Decimal
 from dataclasses import dataclass
 from typing import Optional
 
-
 class LoanStatus(str, Enum):
     """Loan status enumeration."""
 
@@ -128,7 +126,6 @@ class LoanStatus(str, Enum):
     FULLY_REPAID = "fully_repaid"
     DEFAULTED = "defaulted"
     CANCELLED = "cancelled"
-
 
 @dataclass
 class QardHasanLoan:
@@ -165,7 +162,6 @@ class QardHasanLoan:
         """Cancel loan."""
         self.state.cancel(self)
 
-
 class LoanState(ABC):
     """Abstract loan state."""
 
@@ -199,7 +195,6 @@ class LoanState(ABC):
         """Cancel loan."""
         raise NotImplementedError
 
-
 class DraftState(LoanState):
     """Draft state - loan not yet submitted."""
 
@@ -228,7 +223,6 @@ class DraftState(LoanState):
         """Cancel draft loan."""
         loan.status = LoanStatus.CANCELLED
         loan.state = CancelledState()
-
 
 class SubmittedState(LoanState):
     """Submitted state - awaiting approval."""
@@ -259,7 +253,6 @@ class SubmittedState(LoanState):
         loan.status = LoanStatus.CANCELLED
         loan.state = CancelledState()
 
-
 class ApprovedState(LoanState):
     """Approved state - ready for disbursement."""
 
@@ -288,7 +281,6 @@ class ApprovedState(LoanState):
         """Cancel approved loan."""
         loan.status = LoanStatus.CANCELLED
         loan.state = CancelledState()
-
 
 class ActiveState(LoanState):
     """Active state - loan disbursed, accepting repayments."""
@@ -329,7 +321,6 @@ class ActiveState(LoanState):
         """Cannot cancel active loan."""
         raise ValueError("Cannot cancel active loan")
 
-
 class FullyRepaidState(LoanState):
     """Fully repaid state - terminal state."""
 
@@ -357,7 +348,6 @@ class FullyRepaidState(LoanState):
         """Cannot cancel fully repaid loan."""
         raise ValueError("Loan already fully repaid")
 
-
 class DefaultedState(LoanState):
     """Defaulted state - terminal state."""
 
@@ -384,7 +374,6 @@ class DefaultedState(LoanState):
     def cancel(self, loan: QardHasanLoan) -> None:
         """Cannot cancel defaulted loan."""
         raise ValueError("Loan already defaulted")
-
 
 class CancelledState(LoanState):
     """Cancelled state - terminal state."""
@@ -422,7 +411,6 @@ class CancelledState(LoanState):
 # GOOD: Using state pattern
 from decimal import Decimal
 
-
 # Create loan in draft state
 loan = QardHasanLoan(
     id="QL-2025-001",
@@ -451,7 +439,6 @@ assert loan.repaid == Decimal("20000")
 
 loan.record_payment(Decimal("30000"))
 assert loan.status == LoanStatus.FULLY_REPAID
-
 
 # Invalid transitions raise errors
 try:
@@ -503,7 +490,6 @@ from decimal import Decimal
 from dataclasses import dataclass, field
 from typing import List
 
-
 class CampaignStatus(str, Enum):
     """Campaign status enumeration."""
 
@@ -512,7 +498,6 @@ class CampaignStatus(str, Enum):
     PAUSED = "paused"
     COMPLETED = "completed"
     CANCELLED = "cancelled"
-
 
 @dataclass
 class DonationCampaign:
@@ -525,7 +510,6 @@ class DonationCampaign:
     donor_count: int = 0
     status: str = CampaignStatus.DRAFT.value
     state_history: List[str] = field(default_factory=list)
-
 
 # Define state machine
 states = [
@@ -641,7 +625,6 @@ from datetime import datetime
 from dataclasses import dataclass, field
 from typing import List, Dict
 
-
 @dataclass
 class StateChange:
     """State change event."""
@@ -650,7 +633,6 @@ class StateChange:
     to_state: str
     trigger: str
     timestamp: datetime
-
 
 @dataclass
 class AuditedCampaign:
@@ -699,7 +681,6 @@ class AuditedCampaign:
     def _generate_completion_report(self) -> None:
         """Generate completion report (stub)."""
         pass
-
 
 # Create FSM with callbacks
 states = ["draft", "active", "paused", "completed", "cancelled"]
@@ -788,7 +769,6 @@ from decimal import Decimal
 from datetime import datetime, date
 from dataclasses import dataclass
 
-
 @dataclass
 class GuardedCampaign:
     """Campaign with guarded transitions."""
@@ -826,7 +806,6 @@ class GuardedCampaign:
         """Guard: Check if campaign can be paused."""
         # Can only pause if not already completed
         return self.status == "active"
-
 
 # Create FSM with guards
 states = ["draft", "active", "paused", "completed", "cancelled"]
@@ -954,7 +933,6 @@ from transitions import Machine
 from decimal import Decimal
 from typing import Optional
 
-
 class NotificationService:
     """Notification service (stub)."""
 
@@ -967,7 +945,6 @@ class NotificationService:
     def send_completion_email(campaign_name: str, total: Decimal) -> None:
         """Send campaign completion email."""
         print(f"Sending completion email: {campaign_name} raised ${total}")
-
 
 class CampaignWithCallbacks:
     """Campaign with comprehensive callbacks."""
@@ -1010,7 +987,6 @@ class CampaignWithCallbacks:
     def _generate_final_report(self) -> None:
         """Generate final report (stub)."""
         pass
-
 
 # Create FSM with detailed callbacks
 states = ["draft", "active", "completed"]
@@ -1069,7 +1045,6 @@ from transitions.extensions import HierarchicalMachine
 from decimal import Decimal
 from dataclasses import dataclass
 
-
 @dataclass
 class PaymentWorkflow:
     """Payment workflow with nested states."""
@@ -1077,7 +1052,6 @@ class PaymentWorkflow:
     payment_id: str
     amount: Decimal
     status: str = "pending"
-
 
 # Define hierarchical states
 states = [
@@ -1240,7 +1214,6 @@ from datetime import datetime
 from dataclasses import dataclass, field
 from typing import Optional
 
-
 @dataclass
 class ZakatPayment:
     """Zakat payment with workflow."""
@@ -1280,7 +1253,6 @@ class ZakatPayment:
     def can_process(self) -> bool:
         """Guard: Check if payment can be processed."""
         return self.zakat_amount > 0
-
 
 # FSM configuration
 states = [
@@ -1363,7 +1335,6 @@ from datetime import date
 from dataclasses import dataclass
 from typing import Optional
 
-
 @dataclass
 class MurabahaContract:
     """Murabaha (cost-plus financing) contract."""
@@ -1404,7 +1375,6 @@ class MurabahaContract:
         """Record disbursement."""
         self.disbursement_date = date.today()
         print(f"Contract {self.contract_id} active. Disbursement: ${self.asset_cost}")
-
 
 # FSM configuration
 states = ["draft", "submitted", "approved", "active", "completed", "terminated"]
@@ -1457,7 +1427,6 @@ contract.activate()
 print(f"Total selling price: ${contract.total_selling_price}")  # $230,000
 print(f"Monthly installment: ${contract.monthly_installment}")  # $9,583.33
 
-
 # Test guard failure
 excessive_contract = MurabahaContract(
     contract_id="MUR-2025-002",
@@ -1491,14 +1460,12 @@ assert excessive_contract.status == "submitted"  # Transition blocked
 # GOOD: Type-safe state enumeration
 from enum import Enum
 
-
 class CampaignState(str, Enum):
     """Type-safe campaign states."""
 
     DRAFT = "draft"
     ACTIVE = "active"
     COMPLETED = "completed"
-
 
 # Use with transitions
 states = [state.value for state in CampaignState]
@@ -1519,7 +1486,6 @@ def can_complete_campaign(campaign) -> bool:
         return False
 
     return True
-
 
 transitions_config = [
     {
@@ -1542,7 +1508,6 @@ class ActiveState:
         campaign.donor_count += 1
         # Send email, update analytics, etc.
 
-
 # GOOD: Separate concerns
 class ActiveState:
     def record_donation(self, campaign, amount):
@@ -1564,7 +1529,6 @@ def log_state_change(event_data) -> None:
             "timestamp": datetime.utcnow().isoformat(),
         },
     )
-
 
 machine = Machine(
     model=campaign,
@@ -1595,6 +1559,5 @@ machine = Machine(
 
 ---
 
-**Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
 **Maintainers**: OSE Platform Documentation Team

@@ -2,7 +2,6 @@
 name: swe-developing-applications-common
 description: Common software development workflow patterns shared across all language developer agents
 created: 2026-01-25
-updated: 2026-01-25
 ---
 
 # Common Software Development Workflow

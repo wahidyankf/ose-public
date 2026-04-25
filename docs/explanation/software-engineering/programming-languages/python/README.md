@@ -23,7 +23,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-01-24
-updated: 2026-01-25
 ---
 
 # Python Programming Language Documentation
@@ -872,7 +871,6 @@ from decimal import Decimal
 from datetime import date
 from pydantic import BaseModel, Field, field_validator
 
-
 class ZakatCalculation(BaseModel):
     """Calculate Zakat obligation for qualifying wealth."""
 
@@ -894,7 +892,6 @@ class ZakatCalculation(BaseModel):
             return self.wealth_amount * self.zakat_rate
         return Decimal("0")
 
-
 # Usage
 calculation = ZakatCalculation(
     wealth_amount=Decimal("100000.00"),
@@ -915,7 +912,6 @@ from dataclasses import dataclass
 from datetime import date
 from decimal import Decimal
 from typing import Optional
-
 
 @dataclass(frozen=True)
 class QardHasanLoan:
@@ -946,7 +942,6 @@ class QardHasanLoan:
         """Check if loan is completely repaid."""
         return self.remaining_balance == Decimal("0")
 
-
 # Usage
 loan = QardHasanLoan(
     loan_id="QL-2025-001",
@@ -967,7 +962,6 @@ Murabaha is Islamic cost-plus financing where profit margin is disclosed upfront
 ```python
 from decimal import Decimal
 from pydantic import BaseModel, Field, computed_field
-
 
 class MurabahaContract(BaseModel):
     """Murabaha cost-plus financing contract."""
@@ -996,7 +990,6 @@ class MurabahaContract(BaseModel):
     def financing_amount(self) -> Decimal:
         """Calculate amount to be financed after down payment."""
         return self.total_selling_price - self.down_payment
-
 
 # Usage
 contract = MurabahaContract(
@@ -1367,7 +1360,6 @@ strict = true
 
 ---
 
-**Last Updated**: 2026-01-24
 **Python Versions**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.2 (latest stable)
 **Documentation**: Core files and version-specific files organized by category
 **Maintainers**: OSE Platform Documentation Team

@@ -10,7 +10,6 @@ tags:
   - build
   - monorepo
 created: 2026-03-26
-updated: 2026-04-19
 ---
 
 # Vercel Deployment Convention

@@ -9,7 +9,6 @@ tags:
   - open-source
   - strategy
 created: 2026-04-22
-updated: 2026-04-22
 ---
 
 # Why MIT? The Strategic Rationale for Open-Source Licensing

@@ -33,7 +33,3 @@ These workflows define **WHEN and HOW to validate ayokoding-web content**, orche
 - [AyoKoding Web Conventions](../../conventions/hugo/ayokoding.md) - Content conventions these workflows enforce
 - [By Example Tutorial Convention](../../conventions/tutorials/by-example.md) - By-example standards
 - [Maker-Checker-Fixer Pattern](../../development/pattern/maker-checker-fixer.md) - Core workflow pattern
-
----
-
-**Last Updated**: 2026-01-01

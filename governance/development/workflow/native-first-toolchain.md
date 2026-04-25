@@ -10,7 +10,6 @@ tags:
   - environment
   - architecture-decision
 created: 2026-04-04
-updated: 2026-04-11
 ---
 
 # Native-First Toolchain Management
@@ -180,7 +179,3 @@ Revisit this architectural decision if any of the following conditions change:
 - [Reproducible Environments](./reproducible-environments.md) - Broader reproducibility practices (Volta, lockfiles, Docker for services)
 - [Development Environment Setup](../../workflows/infra/development-environment-setup.md) - Workflow for setting up a development environment
 - [Native Dev Setup Improvements Plan](../../../plans/done/2026-04-04__native-dev-setup-improvements/README.md) - Completed plan that implemented `doctor --fix` and related improvements
-
----
-
-**Last Updated**: 2026-04-11

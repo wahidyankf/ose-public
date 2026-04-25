@@ -20,7 +20,6 @@ principles:
   - explicit-over-implicit
   - simplicity-over-complexity
   - domain-first
-updated: 2025-01-23
 ---
 
 # Domain-Driven Design in Python
@@ -54,7 +53,6 @@ Value objects are immutable, equality-based on attributes, no identity.
 from pydantic import BaseModel, Field
 from decimal import Decimal
 
-
 class Money(BaseModel):
     """Immutable money value object."""
 
@@ -73,7 +71,6 @@ class Money(BaseModel):
     def multiply(self, factor: Decimal) -> "Money":
         """Multiply money by factor."""
         return Money(amount=self.amount * factor, currency=self.currency)
-
 
 # Usage
 zakat_amount = Money(amount=Decimal("2500.00"), currency="USD")
@@ -102,7 +99,6 @@ from datetime import date
 from typing import Optional
 import uuid
 
-
 class DonationCampaign(BaseModel):
     """Donation campaign entity with persistent identity."""
 
@@ -130,7 +126,6 @@ class DonationCampaign(BaseModel):
     def is_target_met(self) -> bool:
         """Check if campaign reached target."""
         return self.current_amount.amount >= self.target_amount.amount
-
 
 # Usage: Identity-based equality
 campaign1 = DonationCampaign(
@@ -162,14 +157,12 @@ from typing import List
 from decimal import Decimal
 from datetime import date
 
-
 class Donation(BaseModel):
     """Donation within campaign aggregate."""
 
     donor_id: str
     amount: Money
     donation_date: date
-
 
 class DonationCampaignAggregate(BaseModel):
     """Campaign aggregate root enforcing invariants."""
@@ -225,7 +218,6 @@ class DonationCampaignAggregate(BaseModel):
         """Close campaign (business rule)."""
         self.is_active = False
         self.end_date = date.today()
-
 
 # Usage: Aggregate enforces consistency
 campaign = DonationCampaignAggregate(
@@ -292,13 +284,11 @@ from datetime import datetime
 from typing import List
 import uuid
 
-
 class DomainEvent(BaseModel):
     """Base domain event."""
 
     event_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     occurred_at: datetime = Field(default_factory=datetime.utcnow)
-
 
 class ZakatObligationCalculated(DomainEvent):
     """Event: Zakat obligation calculated."""
@@ -307,7 +297,6 @@ class ZakatObligationCalculated(DomainEvent):
     wealth_amount: Money
     zakat_amount: Money
 
-
 class DonationReceived(DomainEvent):
     """Event: Donation received for campaign."""
 
@@ -315,14 +304,12 @@ class DonationReceived(DomainEvent):
     donor_id: str
     donation_amount: Money
 
-
 class CampaignTargetMet(DomainEvent):
     """Event: Campaign reached target."""
 
     campaign_id: str
     target_amount: Money
     total_donated: Money
-
 
 # Aggregate emits events
 class DonationCampaignWithEvents(DonationCampaignAggregate):
@@ -405,7 +392,6 @@ Repositories abstract persistence for aggregates.
 # GOOD: Repository for aggregate persistence
 from typing import Protocol, Optional, List
 
-
 class DonationCampaignRepository(Protocol):
     """Repository protocol for campaign persistence."""
 
@@ -420,7 +406,6 @@ class DonationCampaignRepository(Protocol):
     def find_active_campaigns(self) -> List[DonationCampaignAggregate]:
         """Find all active campaigns."""
         ...
-
 
 class InMemoryCampaignRepository:
     """In-memory repository implementation."""
@@ -439,7 +424,6 @@ class InMemoryCampaignRepository:
     def find_active_campaigns(self) -> List[DonationCampaignAggregate]:
         """Find active campaigns."""
         return [c for c in self._campaigns.values() if c.is_active]
-
 
 # Usage: Repository abstracts persistence
 repo = InMemoryCampaignRepository()
@@ -523,7 +507,6 @@ graph LR
 # GOOD: Application service coordinating use cases
 from dataclasses import dataclass
 
-
 @dataclass
 class DonationService:
     """Application service for donation use cases."""
@@ -552,7 +535,6 @@ class DonationService:
         if isinstance(campaign, DonationCampaignWithEvents):
             return campaign.collect_events()
         return []
-
 
 # Usage: Service coordinates workflow
 repo = InMemoryCampaignRepository()
@@ -663,7 +645,6 @@ graph TD
 
 ---
 
-**Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
 **Maintainers**: OSE Platform Documentation Team
 

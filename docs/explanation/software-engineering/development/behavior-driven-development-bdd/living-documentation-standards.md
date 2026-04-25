@@ -11,7 +11,6 @@ principles:
   - automation-over-manual
   - documentation-first
 created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # Living Documentation Standards
@@ -158,7 +157,3 @@ Shariah-Critical Scenarios: 100% Passing (12/12)
 Last validated: 2026-02-09
 Shariah officer: Dr. Ahmad bin Abdullah
 ```
-
----
-
-**Last Updated**: 2026-02-09

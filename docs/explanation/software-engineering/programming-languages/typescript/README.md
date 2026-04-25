@@ -12,7 +12,6 @@ principles:
   - documentation-first
   - explicit-over-implicit
 created: 2026-01-24
-updated: 2026-01-25
 ---
 
 # TypeScript Documentation
@@ -1506,7 +1505,6 @@ async function processDonation(data: DonationInput): Promise<Result<Donation, Er
 
 ---
 
-**Last Updated**: 2026-01-24
 **TypeScript Version**: 5.0+ (baseline), 5.4+ (milestone), 5.6+ (stable), 5.9.3+ (latest stable)
 **Documentation**: Core files and version-specific files organized by category
 **Maintainers**: OSE Documentation Team

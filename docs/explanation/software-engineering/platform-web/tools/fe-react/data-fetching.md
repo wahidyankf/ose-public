@@ -15,7 +15,6 @@ related:
   - ./hooks.md
 principles:
   - explicit-over-implicit
-updated: 2026-01-25
 ---
 
 # React Data Fetching
@@ -1192,7 +1191,3 @@ export const WaqfProjectsGrid: React.FC = () => {
 - **[State Management](state-management.md)** - Server state management
 - **[Performance](performance.md)** - Performance optimization
 - **[Security](security.md)** - API security
-
----
-
-**Last Updated**: 2026-01-26

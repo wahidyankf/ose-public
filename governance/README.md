@@ -12,7 +12,6 @@ tags:
   - development
   - workflows
 created: 2026-01-04
-updated: 2026-03-28
 ---
 
 # Rules - Repository Governance
@@ -206,7 +205,3 @@ Is it about WHY the project exists?
 ### Changes Propagate Down
 
 When changing a layer, all lower layers may need updates. Use `repo-rules-maker` to propagate changes systematically.
-
----
-
-**Last Updated**: 2026-04-04

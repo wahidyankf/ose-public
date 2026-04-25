@@ -190,7 +190,3 @@ All agents follow governance principles:
 - **Accessibility First** - WCAG AA compliance in all outputs
 
 **See**: [governance/principles/README.md](../../governance/principles/README.md)
-
----
-
-**Last Updated**: 2026-04-19

@@ -18,7 +18,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # Kotlin DDD Standards
@@ -460,5 +459,5 @@ class ApproveZakatApplicationUseCase(
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **Kotlin Version**: 2.1 | DDD: Tactical patterns with Kotlin data classes and sealed hierarchies

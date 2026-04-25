@@ -171,8 +171,6 @@ Product-specific paths are classified `neither` and never sync. Reference: [Rela
 
 ---
 
-**Last Updated**: 2026-04-19
-
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->
 

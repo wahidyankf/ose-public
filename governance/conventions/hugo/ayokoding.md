@@ -11,7 +11,6 @@ tags:
   - bilingual
   - educational
 created: 2025-12-13
-updated: 2026-01-02
 ---
 
 # Hugo Content Convention - ayokoding-web

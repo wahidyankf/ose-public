@@ -10,7 +10,6 @@ tags:
   - determinism
   - version-pinning
 created: 2025-12-28
-updated: 2025-12-28
 ---
 
 # Reproducibility First
@@ -610,7 +609,3 @@ npm install
 
 - [Nx Build Caching](https://nx.dev/concepts/how-caching-works) - Deterministic builds
 - [Reproducible Builds](https://reproducible-builds.org/docs/) - Best practices
-
----
-
-**Last Updated**: 2025-12-28

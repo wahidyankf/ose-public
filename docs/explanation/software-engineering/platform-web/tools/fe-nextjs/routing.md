@@ -17,7 +17,6 @@ principles:
   - explicit-over-implicit
   - automation-over-manual
 created: 2026-01-26
-updated: 2026-01-26
 ---
 
 # Next.js Routing
@@ -1005,5 +1004,4 @@ export const config = {
 
 ---
 
-**Last Updated**: 2026-01-26
 **Next.js Version**: 14+ (App Router stable)

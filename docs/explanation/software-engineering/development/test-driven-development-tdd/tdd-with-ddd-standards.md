@@ -11,7 +11,6 @@ principles:
   - explicit-over-implicit
   - pure-functions
 created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # TDD with DDD Standards
@@ -224,7 +223,3 @@ describe("FiscalDate Value Object", () => {
   });
 });
 ```
-
----
-
-**Last Updated**: 2026-02-09

@@ -19,7 +19,6 @@ principles:
   - automation-over-manual
   - immutability
 created: 2026-01-26
-updated: 2026-01-26
 ---
 
 # Next.js App Router
@@ -1073,5 +1072,4 @@ export default function DashboardPage() {
 
 ---
 
-**Last Updated**: 2026-01-26
 **Next.js Version**: 14+ (App Router stable)

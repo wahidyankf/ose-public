@@ -10,7 +10,6 @@ tags:
   - cva
   - shadcn
 created: 2026-03-28
-updated: 2026-03-28
 ---
 
 # Component Patterns Convention
@@ -296,7 +295,3 @@ Note: `organiclever-web` currently uses `React.forwardRef` and `@radix-ui/react-
 - [Styling Convention](./styling.md) — All variant class strings use Tailwind utilities and follow the utility-first approach. No `@apply` or inline `style={}` props appear in component implementations.
 - [Design Tokens Convention](./design-tokens.md) — Variant classes reference semantic tokens (`bg-primary`, `text-destructive`, `ring-ring`) rather than raw color values, ensuring design token governance is respected throughout.
 - [Indentation Convention](../../conventions/formatting/indentation.md) — All TypeScript and TSX examples in this document use 2-space indentation per the project standard.
-
----
-
-**Last Updated**: 2026-03-28

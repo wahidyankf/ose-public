@@ -10,7 +10,6 @@ tags:
   - jakarta-ee
 related:
   - ./README.md
-updated: 2026-01-25
 ---
 
 # Spring Boot Version Migration
@@ -144,7 +143,3 @@ public class SecurityConfig {
 - [Java Version Migration](../../../programming-languages/java/framework-integration.md) - Java version updates
 - [Spring Boot Idioms](./idioms.md) - Modern patterns
 - [Spring Boot Best Practices](./best-practices.md) - Migration standards
-
----
-
-**Last Updated**: 2026-01-25

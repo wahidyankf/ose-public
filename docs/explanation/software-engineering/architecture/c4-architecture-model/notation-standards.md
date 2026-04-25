@@ -13,7 +13,6 @@ principles:
   - explicit-over-implicit
   - reproducibility
 created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # C4 Notation Standards
@@ -318,7 +317,3 @@ Before committing a C4 diagram, verify:
 - **[Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)**: All relationships must have explicit labels with protocols. Technology choices must be explicitly shown in container labels. No implicit relationships without labels.
 
 - **[Reproducibility First](../../../../../governance/principles/software-engineering/reproducibility.md)**: Standardized WCAG color palette and Mermaid syntax ensures diagrams can be consistently reproduced across teams and time periods.
-
----
-
-**Last Updated**: 2026-02-09

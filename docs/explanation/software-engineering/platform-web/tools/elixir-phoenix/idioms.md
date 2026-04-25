@@ -18,7 +18,6 @@ principles:
   - explicit-over-implicit
   - immutability
   - pure-functions
-updated: 2026-01-25
 ---
 
 # Phoenix Idioms
@@ -1124,5 +1123,4 @@ end
 
 ---
 
-**Last Updated**: 2026-01-25
 **Phoenix Version**: 1.7+

@@ -8,7 +8,6 @@ tags:
   - compliance
   - dependency-audit
 created: 2026-04-04
-updated: 2026-04-22
 ---
 
 # Production Dependency Compatibility Audit (Historical — 2026-04-04)

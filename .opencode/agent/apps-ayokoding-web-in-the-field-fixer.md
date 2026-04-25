@@ -22,8 +22,6 @@ skills:
 ## Agent Metadata
 
 - **Role**: Fixer (yellow)
-- **Created**: 2026-02-06
-- **Last Updated**: 2026-04-04
 
 ## Confidence Assessment (Re-validation Required)
 

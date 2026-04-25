@@ -33,7 +33,3 @@ These principles define **WHY we value fundamental approaches** that transcend s
 - [Software Engineering Principles](../software-engineering/README.md) - Domain-specific SE principles
 - [Content Principles](../content/README.md) - Domain-specific content principles
 - [Repository Architecture](../../repository-governance-architecture.md) - Six-layer governance model
-
----
-
-**Last Updated**: 2026-03-09

@@ -14,8 +14,6 @@ skills:
 ## Agent Metadata
 
 - **Role**: Implementor (purple)
-- **Created**: 2025-12-20
-- **Last Updated**: 2026-04-04
 
 **Model Selection Justification**: This agent uses `model: haiku` (Haiku 4.5, 73.3% SWE-bench Verified
 — [benchmark reference](../../docs/reference/ai-model-benchmarks.md#claude-haiku-45)) because it

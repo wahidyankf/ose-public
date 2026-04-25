@@ -17,7 +17,6 @@ principles:
   - simplicity-over-complexity
   - immutability
 created: 2026-01-26
-updated: 2026-01-26
 related:
   - ./best-practices.md
   - ./rest-apis.md
@@ -2572,7 +2571,3 @@ Production deployment security checklist for Spring Boot applications.
 **Hands-on Learning (AyoKoding)**:
 
 - [Spring Boot In-the-Field - Authentication](../../../../../../apps/ayokoding-web/content/en/learn/software-engineering/platform-web/tools/jvm-spring-boot/in-the-field/security.md) - Production security
-
----
-
-**Last Updated**: 2026-01-26

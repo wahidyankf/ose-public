@@ -33,7 +33,3 @@ These workflows define **WHEN and HOW to validate documentation**, orchestrating
 - [Content Quality Principles](../../conventions/writing/quality.md) - Quality standards these workflows enforce
 - [Tutorial Convention](../../conventions/tutorials/general.md) - Tutorial standards
 - [Maker-Checker-Fixer Pattern](../../development/pattern/maker-checker-fixer.md) - Core workflow pattern
-
----
-
-**Last Updated**: 2026-01-01

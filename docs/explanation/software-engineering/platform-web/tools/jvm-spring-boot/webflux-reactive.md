@@ -18,7 +18,6 @@ principles:
   - simplicity-over-complexity
   - performance
 created: 2026-02-06
-updated: 2026-02-06
 related:
   - ./rest-apis.md
   - ./performance.md
@@ -895,4 +894,3 @@ These reactive programming standards enforce the the software engineering princi
 
 **Status**: Optional (use when justified) for OSE Platform Spring Boot applications
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-02-06

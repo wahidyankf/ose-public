@@ -13,7 +13,6 @@ principles:
   - explicit-over-implicit
   - reproducibility
 created: 2026-02-08
-updated: 2026-02-08
 ---
 
 # Automation Testing Tools
@@ -34,5 +33,4 @@ updated: 2026-02-08
 
 ---
 
-**Last Updated**: 2026-02-08
 **Maintainers**: Platform Documentation Team

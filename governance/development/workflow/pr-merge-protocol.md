@@ -10,7 +10,6 @@ tags:
   - workflow
   - human-approval
 created: 2026-04-04
-updated: 2026-04-11
 ---
 
 # PR Merge Protocol
@@ -226,3 +225,4 @@ This rule applies to:
 - [Trunk Based Development Convention](./trunk-based-development.md) -- When PRs are used in TBD
 - [Worktree Toolchain Initialization](./worktree-setup.md) -- Mandatory two-step init (`npm install` + `npm run doctor -- --fix`) after creating or entering a worktree
 - [Nx Target Standards](../infra/nx-targets.md) -- Canonical target names for quality gates
+- [Git Push Default Convention](./git-push-default.md) -- Governs whether a PR should be created at all (opt-in); this convention governs what happens once a PR exists

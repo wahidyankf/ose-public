@@ -10,7 +10,6 @@ tags:
   - portability
   - ayokoding-web
 created: 2026-02-07
-updated: 2026-02-07
 ---
 
 # Internal AyoKoding Reference Links Convention
@@ -376,7 +375,3 @@ If AyoKoding content structure changes (directory reorganization):
 
 - `docs-checker` - Validates docs/ links follow this convention
 - `docs-fixer` - Applies corrections to convert public URLs to relative paths
-
----
-
-**Last Updated**: 2026-02-07

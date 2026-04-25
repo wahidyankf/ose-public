@@ -11,7 +11,6 @@ principles:
   - explicit-over-implicit
   - reproducibility
 created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # BDD Scenario Standards
@@ -142,7 +141,3 @@ Feature: Campaign Progress Tracking
     Then the campaign total should be $30,000
     And the progress percentage should be 30%
 ```
-
----
-
-**Last Updated**: 2026-02-09

@@ -16,7 +16,6 @@ principles:
   - immutability
   - pure-functions
 created: 2026-02-08
-updated: 2026-02-08
 ---
 
 # Playwright Page Object Standards
@@ -129,4 +128,3 @@ export class LoginPage {
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-02-08

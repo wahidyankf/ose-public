@@ -545,7 +545,6 @@ description: Creates new AI agents following conventions
 tools: [Read, Glob, Grep, Bash]
 model: sonnet
 color: blue
-updated: 2025-12-15
 skills:
   - agent__developing-agents
 ---

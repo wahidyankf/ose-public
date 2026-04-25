@@ -16,7 +16,6 @@ principles:
   - explicit-over-implicit
   - reproducibility
 created: 2026-02-08
-updated: 2026-02-08
 ---
 
 # Playwright Debugging Standards
@@ -142,4 +141,3 @@ test("debug API calls", async ({ page }) => {
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-02-08

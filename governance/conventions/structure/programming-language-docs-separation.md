@@ -10,7 +10,6 @@ tags:
   - content-separation
   - dry-principle
 created: 2026-02-04
-updated: 2026-02-04
 ---
 
 # Programming Language Documentation Separation Convention
@@ -842,7 +841,6 @@ Before publishing programming language documentation:
 
 ---
 
-**Last Updated**: 2026-02-04
 **Scope**: All programming languages in repository (Java, Python, Golang, TypeScript, Elixir, Kotlin, Dart, Rust, Clojure, F#, C#)
 **Maintainers**: Repository Governance Team
 ```

@@ -11,7 +11,6 @@ tags:
   - bug-fixing
   - ai-agents
 created: 2026-03-28
-updated: 2026-03-28
 ---
 
 # Proactive Preexisting Error Resolution
@@ -198,7 +197,4 @@ The distinction is task origin. The behavior is identical.
 - [Implementation Workflow](../workflow/implementation.md) - Development workflow that includes surgical changes and goal-driven execution
 - [Agent Workflow Orchestration](../agents/agent-workflow-orchestration.md) - How agents plan, execute, verify, and fix bugs autonomously
 - [Deliberate Problem-Solving](../../principles/general/deliberate-problem-solving.md) - Think before acting; surface assumptions; do not proceed on broken foundations
-
----
-
-**Last Updated**: 2026-03-28
+- [Git Push Default Convention](../workflow/git-push-default.md) — Domain-specific application of Standard 4 (fix preexisting unsolicited PR steps when encountered in delivery checklists)

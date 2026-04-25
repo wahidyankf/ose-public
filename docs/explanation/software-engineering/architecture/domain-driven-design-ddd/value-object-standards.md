@@ -11,7 +11,6 @@ principles:
   - immutability
   - explicit-over-implicit
 created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # DDD Value Object Standards
@@ -88,7 +87,3 @@ public record NisabThreshold(Money goldEquivalent) {
 **REQUIRED**: All value objects MUST validate invariants in constructor.
 
 **PROHIBITED**: Setters (value objects are immutable).
-
----
-
-**Last Updated**: 2026-02-09

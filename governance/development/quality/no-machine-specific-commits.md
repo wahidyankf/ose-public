@@ -11,7 +11,6 @@ tags:
   - environment
   - quality
 created: 2026-03-24
-updated: 2026-03-24
 ---
 
 # No Machine-Specific Information in Commits

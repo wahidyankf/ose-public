@@ -24,7 +24,6 @@ principles:
   - explicit-over-implicit
   - immutability
 created: 2026-01-24
-updated: 2026-02-05
 ---
 
 ## Prerequisite Knowledge
@@ -769,6 +768,5 @@ end
 
 ---
 
-**Last Updated**: 2026-02-05
 **Elixir Version**: 1.12+ (baseline), 1.17+ (recommended), 1.19.5 (latest)
 **Maintainers**: Platform Documentation Team

@@ -8,7 +8,6 @@ tags:
   - naming
   - conventions
 created: 2026-04-17
-updated: 2026-04-17
 ---
 
 # Agent Naming Convention
@@ -118,7 +117,3 @@ Current agents, grouped by role, all conforming to the rule:
 - **[Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md)** — The scope and role of every agent are explicit in its filename; no convention-by-tribal-knowledge.
 - **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)** — One rule, one suffix list, one regex. No exceptions to memorize.
 - **[Automation Over Manual](../../principles/software-engineering/automation-over-manual.md)** — A single-line `grep` decides conformance, enabling mechanical enforcement by `repo-rules-checker`.
-
----
-
-**Last Updated**: 2026-04-17

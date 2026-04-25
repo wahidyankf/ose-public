@@ -7,7 +7,6 @@ tags:
   - explanation
   - concepts
 created: 2025-11-22
-updated: 2026-03-09
 ---
 
 # Explanation
@@ -70,7 +69,3 @@ _Documentation for Shariah-compliant enterprise principles and Islamic business 
 ### Technical Background
 
 _Documentation for key technologies, patterns, and frameworks to be added as the project evolves._
-
----
-
-**Last Updated**: 2026-03-26

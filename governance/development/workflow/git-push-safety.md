@@ -10,7 +10,6 @@ tags:
   - automation
   - human-approval
 created: 2026-03-30
-updated: 2026-03-30
 ---
 
 # Git Push Safety Convention
@@ -184,3 +183,4 @@ It does not apply to:
 - [Trunk Based Development Convention](./trunk-based-development.md) — Git workflow and the specific environment branches (`prod-ayokoding-web`, etc.) where CI-managed force-push is explicitly documented.
 - [Commit Message Convention](./commit-messages.md) — Conventional Commits format enforced by the commit-msg hook.
 - [Reproducible Environments Convention](./reproducible-environments.md) — Why deterministic, consistent operations matter across the team.
+- [Git Push Default Convention](./git-push-default.md) — The default push behavior (direct to main, PR opt-in) that this convention complements for destructive operations.

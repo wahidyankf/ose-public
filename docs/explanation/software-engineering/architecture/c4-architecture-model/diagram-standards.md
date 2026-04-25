@@ -12,7 +12,6 @@ principles:
   - explicit-over-implicit
   - reproducibility
 created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # C4 Diagram Standards
@@ -295,7 +294,3 @@ This consistency ensures readers can instantly recognize element types by color 
 ## Principles Implemented
 
 - **[Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)**: All relationships must have explicit labels with protocols, technology choices must be visible on containers, and system boundaries must be clearly defined.
-
----
-
-**Last Updated**: 2026-02-09

@@ -15,7 +15,6 @@ principles:
   - immutability
   - explicit-over-implicit
 created: 2026-02-06
-updated: 2026-02-06
 ---
 
 ## Prerequisite Knowledge
@@ -673,7 +672,5 @@ Before deploying Spring-based concurrent financial services, verify:
 - [Spring Boot WebFlux Reactive](../jvm-spring-boot/webflux-reactive.md) - Reactive programming
 
 ---
-
-**Last Updated**: 2026-02-06
 
 **Status**: Mandatory (required for all OSE Platform Spring services)

@@ -13,7 +13,6 @@ tags:
   - goal-driven
   - test-driven
 created: 2025-12-15
-updated: 2026-03-28
 ---
 
 # Implementation Workflow
@@ -938,7 +937,3 @@ function processVideoFrame(frame: Frame): ProcessedFrame {
 - [Trunk Based Development](./trunk-based-development.md) - Git workflow
 - [Acceptance Criteria Convention](../infra/acceptance-criteria.md) - Defining "works" in Stage 1
 - [Agent Workflow Orchestration](../agents/agent-workflow-orchestration.md) - How agents apply this workflow in multi-step task execution
-
----
-
-**Last Updated**: 2026-03-28

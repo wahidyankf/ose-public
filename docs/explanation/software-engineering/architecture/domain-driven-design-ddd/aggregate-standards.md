@@ -11,7 +11,6 @@ principles:
   - explicit-over-implicit
   - immutability
 created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # DDD Aggregate Standards
@@ -70,7 +69,3 @@ public record ZakatAssessment(
 **SHOULD**: Keep aggregates small (1-5 entities maximum).
 
 **WHY**: Large aggregates cause performance issues and concurrency conflicts.
-
----
-
-**Last Updated**: 2026-02-09

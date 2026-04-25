@@ -7,7 +7,6 @@ tags:
   - how-to
   - guides
 created: 2025-11-22
-updated: 2026-04-19
 ---
 
 # How-To Guides
@@ -23,7 +22,3 @@ Problem-solving guides for common tasks in the open-sharia-enterprise project. T
 - [How to Set Up Your Development Environment](./setup-development-environment.md) - Install and configure all tools needed to develop, test, and contribute to the monorepo (19 tools across 11 languages)
 - [How to Organize Your Work](./organize-work.md) - Choose the right folder (plans, docs) for different types of work
 - [How to Run Nx Commands](./run-nx-commands.md) - Common Nx workflows and commands for working with the monorepo
-
----
-
-**Last Updated**: 2026-04-04

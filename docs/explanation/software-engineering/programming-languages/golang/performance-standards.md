@@ -26,7 +26,6 @@ related:
 principles:
   - explicit-over-implicit
   - simplicity-over-complexity
-updated: 2026-03-06
 ---
 
 # Go Performance Standards
@@ -3819,6 +3818,5 @@ Key principles:
 
 ---
 
-**Last Updated**: 2026-02-04
 **Go Version**: 1.21+ (baseline), 1.22+ (recommended), 1.23+ (latest stable), 1.25 (experimental Green Tea GC)
 **Maintainers**: Platform Documentation Team

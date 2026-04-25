@@ -12,7 +12,6 @@ principles:
   - explicit-over-implicit
   - reproducibility
 created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # Test-Driven Development (TDD)
@@ -272,7 +271,3 @@ Before merging code, verify:
 - **[Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)**: By writing tests first, requirements become explicit specifications. AAA pattern and descriptive test names make expected behavior clear.
 
 - **[Reproducibility First](../../../../../governance/principles/software-engineering/reproducibility.md)**: By enforcing FIRST principles (Independent, Repeatable), tests produce consistent results across environments and time, enabling reliable CI/CD pipelines.
-
----
-
-**Last Updated**: 2026-02-09

@@ -10,7 +10,6 @@ tags:
   - constraints
   - subagents
 created: 2026-01-22
-updated: 2026-02-22
 ---
 
 # Skill Context Architecture
@@ -311,5 +310,4 @@ This architectural decision ensures skills work predictably everywhere, enabling
 
 ---
 
-**Last Updated**: 2026-02-22
 **Status**: Active Standard

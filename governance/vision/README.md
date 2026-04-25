@@ -8,7 +8,6 @@ tags:
   - purpose
   - index
 created: 2025-12-24
-updated: 2026-03-23
 ---
 
 # Vision
@@ -179,7 +178,3 @@ Automation serves the mission:
 
 - [Explanation Index](../../docs/explanation/README.md) - All conceptual documentation
 - [AGENTS.md](../../AGENTS.md) - Project guidance for all agents
-
----
-
-**Last Updated**: 2026-03-23

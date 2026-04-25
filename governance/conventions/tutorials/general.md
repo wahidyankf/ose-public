@@ -11,7 +11,6 @@ tags:
   - documentation
   - teaching
 created: 2025-12-03
-updated: 2026-01-01
 ---
 
 # Tutorial Convention
@@ -121,7 +120,6 @@ tags:
   - [domain]
   - quick-start (if applicable)
 created: YYYY-MM-DD
-updated: 2026-01-01
 ---
 
 # [Subject] Quick Start
@@ -1512,7 +1510,6 @@ tags:
   - [domain]
   - quick-start
 created: YYYY-MM-DD
-updated: 2026-01-01
 ---
 
 # [Subject] Quick Start
@@ -1720,7 +1717,3 @@ This tutorial convention builds upon and references:
 
 - [How Learning Works](https://www.wiley.com/en-us/How+Learning+Works%3A+Seven+Research+Based+Principles+for+Smart+Teaching-p-9780470484104) - Evidence-based teaching principles
 - [Make It Stick](https://www.retrievalpractice.org/make-it-stick) - Science of successful learning
-
----
-
-**Last Updated**: 2026-01-01

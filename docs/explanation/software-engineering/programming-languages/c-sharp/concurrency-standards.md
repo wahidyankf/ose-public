@@ -17,7 +17,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # C# Concurrency Standards
@@ -408,5 +407,5 @@ public void Shutdown() => _isShuttingDown = true;
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **.NET Version**: .NET 8 LTS (C# 12)

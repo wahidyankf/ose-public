@@ -9,7 +9,6 @@ tags:
   - mit
   - per-directory
 created: 2026-04-04
-updated: 2026-04-22
 ---
 
 # Per-Directory Licensing Convention
@@ -83,6 +82,7 @@ all use the same MIT text.
 | `apps/wahidyankf-web/`   | MIT     |
 | `specs/`                 | MIT     |
 | `libs/golang-commons/`   | MIT     |
+| `libs/hugo-commons/`     | MIT     |
 | `libs/ts-ui/`            | MIT     |
 | `libs/ts-ui-tokens/`     | MIT     |
 
@@ -207,7 +207,3 @@ grep -r "Functional Source License" --include="LICENSE" .
 
 - `repo-rules-checker` — Validates licensing compliance
 - `repo-rules-fixer` — Fixes licensing violations
-
----
-
-**Last Updated**: 2026-04-22

@@ -18,7 +18,6 @@ related:
 principles:
   - immutability
   - pure-functions
-updated: 2026-01-24
 ---
 
 # Python Functional Programming
@@ -51,20 +50,16 @@ Pure functions have no side effects and return values depend only on inputs.
 # GOOD: Pure function for Zakat calculation
 from decimal import Decimal
 
-
 def calculate_zakat(wealth_amount: Decimal, zakat_rate: Decimal) -> Decimal:
     """Pure function: same inputs always produce same output."""
     return wealth_amount * zakat_rate
-
 
 # Usage: Predictable, testable, no side effects
 zakat1 = calculate_zakat(Decimal("100000"), Decimal("0.025"))  # 2500
 zakat2 = calculate_zakat(Decimal("100000"), Decimal("0.025"))  # 2500 (same)
 
-
 # BAD: Impure function with global state mutation
 total_zakat = Decimal("0")  # Global state
-
 
 def calculate_zakat_impure(wealth_amount: Decimal) -> Decimal:
     global total_zakat
@@ -86,7 +81,6 @@ def calculate_murabaha_profit(
     """Calculate Murabaha profit (pure function)."""
     return asset_cost * profit_margin_rate
 
-
 def calculate_total_price(
     asset_cost: Decimal,
     profit_margin_rate: Decimal,
@@ -94,7 +88,6 @@ def calculate_total_price(
     """Calculate total Murabaha price (pure function)."""
     profit = calculate_murabaha_profit(asset_cost, profit_margin_rate)
     return asset_cost + profit
-
 
 # Pure functions compose naturally
 total = calculate_total_price(Decimal("200000"), Decimal("0.15"))
@@ -113,7 +106,6 @@ Immutable data prevents accidental state changes.
 from dataclasses import dataclass
 from decimal import Decimal
 from datetime import date
-
 
 @dataclass(frozen=True)
 class QardHasanLoan:
@@ -138,14 +130,12 @@ class QardHasanLoan:
         """Computed remaining balance."""
         return self.principal - self.repaid
 
-
 # Usage: Original instance unchanged
 loan1 = QardHasanLoan("QL-001", Decimal("50000"), date(2025, 1, 1))
 loan2 = loan1.record_payment(Decimal("20000"))  # New instance
 
 print(loan1.remaining)  # 50000 (unchanged)
 print(loan2.remaining)  # 30000 (new instance)
-
 
 # BAD: Mutable class
 class QardHasanLoanMutable:
@@ -167,7 +157,6 @@ class QardHasanLoanMutable:
 from typing import Tuple
 from decimal import Decimal
 
-
 def calculate_zakat_breakdown(
     wealth_amount: Decimal,
 ) -> Tuple[Decimal, Decimal, Decimal]:
@@ -176,10 +165,8 @@ def calculate_zakat_breakdown(
     wealth_after = wealth_amount - zakat_amount
     return (wealth_amount, zakat_amount, wealth_after)
 
-
 # Usage: Tuple unpacking with guaranteed immutability
 original, zakat, remaining = calculate_zakat_breakdown(Decimal("100000"))
-
 
 # GOOD: frozenset for immutable sets
 ZAKAT_EXEMPT_CATEGORIES = frozenset([
@@ -202,7 +189,6 @@ ZAKAT_EXEMPT_CATEGORIES = frozenset([
 from itertools import count
 from decimal import Decimal
 
-
 def generate_monthly_zakat_schedule(
     annual_wealth: Decimal,
     start_month: int = 1,
@@ -212,7 +198,6 @@ def generate_monthly_zakat_schedule(
 
     for month in count(start=start_month):
         yield (month, monthly_zakat)
-
 
 # Usage: Take first 12 months
 schedule = generate_monthly_zakat_schedule(Decimal("120000"))
@@ -229,7 +214,6 @@ for month, amount in zip(range(1, 13), schedule):
 from itertools import combinations
 from decimal import Decimal
 
-
 def find_donation_combinations(
     donations: list[Decimal],
     target_amount: Decimal,
@@ -243,7 +227,6 @@ def find_donation_combinations(
                 results.append(combo)
 
     return results
-
 
 # Usage
 donations = [Decimal("100"), Decimal("200"), Decimal("300"), Decimal("400")]
@@ -263,7 +246,6 @@ combos = find_donation_combinations(donations, Decimal("500"))
 from functools import partial
 from decimal import Decimal
 
-
 def calculate_financial_obligation(
     base_amount: Decimal,
     rate: Decimal,
@@ -273,7 +255,6 @@ def calculate_financial_obligation(
     if base_amount >= minimum_threshold:
         return base_amount * rate
     return Decimal("0")
-
 
 # Create specialized calculators via partial application
 calculate_zakat = partial(
@@ -302,13 +283,11 @@ tax = calculate_tax(Decimal("50000"))
 from functools import lru_cache
 from decimal import Decimal
 
-
 @lru_cache(maxsize=128)
 def calculate_nisab_value(gold_price_per_gram: Decimal) -> Decimal:
     """Calculate nisab threshold (cached)."""
     GOLD_NISAB_GRAMS = 85
     return gold_price_per_gram * GOLD_NISAB_GRAMS
-
 
 # Usage: First call calculates, subsequent calls return cached value
 nisab1 = calculate_nisab_value(Decimal("60.00"))  # Calculates
@@ -327,14 +306,12 @@ Functional-style data transformations.
 # GOOD: Use map for transformations
 from decimal import Decimal
 
-
 def calculate_all_zakat(wealth_amounts: list[Decimal]) -> list[Decimal]:
     """Calculate Zakat for all wealth amounts."""
     return list(map(
         lambda amount: amount * Decimal("0.025"),
         wealth_amounts
     ))
-
 
 # BETTER: Use comprehension (more Pythonic)
 def calculate_all_zakat(wealth_amounts: list[Decimal]) -> list[Decimal]:
@@ -350,7 +327,6 @@ def calculate_all_zakat(wealth_amounts: list[Decimal]) -> list[Decimal]:
 # GOOD: Use filter for selection
 from decimal import Decimal
 
-
 def filter_qualifying_wealth(
     wealth_items: list[Decimal],
     nisab: Decimal,
@@ -360,7 +336,6 @@ def filter_qualifying_wealth(
         lambda amount: amount >= nisab,
         wealth_items
     ))
-
 
 # BETTER: Use comprehension
 def filter_qualifying_wealth(
@@ -405,7 +380,6 @@ graph LR
 from functools import reduce
 from decimal import Decimal
 
-
 def sum_donations(donations: list[Decimal]) -> Decimal:
     """Sum all donations using reduce."""
     return reduce(
@@ -413,7 +387,6 @@ def sum_donations(donations: list[Decimal]) -> Decimal:
         donations,
         Decimal("0"),  # Initial value
     )
-
 
 # BETTER: Use sum (built-in)
 def sum_donations(donations: list[Decimal]) -> Decimal:
@@ -434,7 +407,6 @@ Functions that take functions as arguments or return functions.
 from typing import Callable
 from decimal import Decimal
 
-
 def apply_to_wealth_items(
     wealth_items: list[Decimal],
     calculator: Callable[[Decimal], Decimal],
@@ -442,16 +414,13 @@ def apply_to_wealth_items(
     """Apply calculator function to all wealth items."""
     return [calculator(amount) for amount in wealth_items]
 
-
 def calculate_zakat(amount: Decimal) -> Decimal:
     """Calculate Zakat (2.5%)."""
     return amount * Decimal("0.025")
 
-
 def calculate_sadaqah(amount: Decimal) -> Decimal:
     """Calculate recommended Sadaqah (1%)."""
     return amount * Decimal("0.01")
-
 
 # Usage: Same higher-order function, different behaviors
 zakat_amounts = apply_to_wealth_items(wealth_items, calculate_zakat)
@@ -467,7 +436,6 @@ sadaqah_amounts = apply_to_wealth_items(wealth_items, calculate_sadaqah)
 from decimal import Decimal
 from typing import Callable
 
-
 def make_rate_calculator(rate: Decimal) -> Callable[[Decimal], Decimal]:
     """Create calculator for specific rate."""
 
@@ -476,7 +444,6 @@ def make_rate_calculator(rate: Decimal) -> Callable[[Decimal], Decimal]:
         return base_amount * rate
 
     return calculator
-
 
 # Usage: Create specialized calculators
 zakat_calculator = make_rate_calculator(Decimal("0.025"))
@@ -499,7 +466,6 @@ Partially apply arguments to create specialized functions.
 from functools import partial
 from decimal import Decimal
 
-
 def calculate_obligation_with_threshold(
     base_amount: Decimal,
     rate: Decimal,
@@ -519,7 +485,6 @@ def calculate_obligation_with_threshold(
         "base_amount": base_amount,
         "obligation": Decimal("0"),
     }
-
 
 # Create specialized calculators
 calculate_zakat_wealth = partial(
@@ -578,21 +543,17 @@ Combine small functions into complex workflows.
 # GOOD: Function composition for data pipeline
 from decimal import Decimal
 
-
 def apply_zakat_rate(amount: Decimal) -> Decimal:
     """Apply 2.5% Zakat rate."""
     return amount * Decimal("0.025")
-
 
 def round_to_currency(amount: Decimal) -> Decimal:
     """Round to 2 decimal places."""
     return amount.quantize(Decimal("0.01"))
 
-
 def format_currency(amount: Decimal) -> str:
     """Format as currency string."""
     return f"${amount:,.2f}"
-
 
 def calculate_and_format_zakat(wealth_amount: Decimal) -> str:
     """Compose functions to calculate and format Zakat."""
@@ -600,7 +561,6 @@ def calculate_and_format_zakat(wealth_amount: Decimal) -> str:
     rounded_amount = round_to_currency(zakat_amount)
     formatted = format_currency(rounded_amount)
     return formatted
-
 
 # Usage
 result = calculate_and_format_zakat(Decimal("100000.00"))
@@ -616,7 +576,6 @@ print(result)  # $2,500.00
 from typing import Iterator, Callable
 from decimal import Decimal
 
-
 def filter_qualifying(
     wealth_items: Iterator[Decimal],
     nisab: Decimal,
@@ -624,18 +583,15 @@ def filter_qualifying(
     """Filter wealth items exceeding nisab."""
     return (amount for amount in wealth_items if amount >= nisab)
 
-
 def apply_zakat_calculation(
     wealth_items: Iterator[Decimal],
 ) -> Iterator[Decimal]:
     """Apply Zakat calculation to each item."""
     return (amount * Decimal("0.025") for amount in wealth_items)
 
-
 def sum_results(zakat_items: Iterator[Decimal]) -> Decimal:
     """Sum all Zakat amounts."""
     return sum(zakat_items)
-
 
 # Usage: Compose into pipeline
 wealth_data = [
@@ -705,7 +661,6 @@ graph LR
 
 ---
 
-**Last Updated**: 2026-01-24
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
 **Maintainers**: OSE Platform Documentation Team
 

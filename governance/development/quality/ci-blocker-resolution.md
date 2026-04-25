@@ -11,7 +11,6 @@ tags:
   - anti-pattern
   - preexisting-issues
 created: 2026-04-04
-updated: 2026-04-04
 ---
 
 # CI Blocker Resolution Convention

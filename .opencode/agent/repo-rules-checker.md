@@ -20,8 +20,6 @@ skills:
 ## Agent Metadata
 
 - **Role**: Checker (green)
-- **Created**: 2025-12-01
-- **Last Updated**: 2026-04-04
 
 **Model Selection Justification**: This agent uses `model: sonnet` because it requires:
 
@@ -92,6 +90,7 @@ Skill: `repo-generating-validation-reports` (progressive streaming)
 - Verify agent names match actual agent files
 - Validate skill names match actual skill files
 - Check frontmatter field requirements match actual agent frontmatter
+- **No-Date-Metadata violation**: Flag any of the following in non-website files (per [No Manual Date Metadata Convention](../../governance/conventions/structure/no-date-metadata.md)): (a) `updated:` frontmatter field, (b) `**Last Updated**` footer block, (c) standalone inline body date annotation lines such as `- **Created**: YYYY-MM-DD` or `- **Last Updated**: YYYY-MM-DD` in document body sections (not frontmatter). Website content under `apps/ayokoding-web/`, `apps/oseplatform-web/`, `apps/organiclever-web/`, `apps/wahidyankf-web/` is exempt. Dates inside actual document content (changelog entries, examples, plan steps, commit references) are also exempt. Criticality: HIGH
 
 **Inconsistencies**:
 
@@ -308,7 +307,7 @@ When a UUID chain exists from a previous iteration (re-validation mode, identifi
 
 This prevents scanning all ~265 software documentation files when only 3-4 agent files were changed by the fixer.
 
-Validate file naming, linking, emoji usage, convention compliance per existing logic.
+Validate file naming, linking, emoji usage, convention compliance per existing logic. Includes No-Last-Updated Convention: flag `updated:` frontmatter and `**Last Updated**` footer blocks in non-website files (HIGH criticality). Date fields in non-website files are not validated for correctness — they must not exist at all per [No Last Updated Convention](../../governance/conventions/structure/no-last-updated.md).
 
 ### Step 2: Agent-to-Agent Duplication Detection
 
@@ -810,7 +809,7 @@ Expected: Should include explicit-over-implicit given document focuses on securi
 
 3. **Location Validation**:
    - Verify files live in the correct directory for their topic
-   - Example: Java idioms belong in `programming-languages/java/idioms.md`
+   - Example: Java coding standards belong in `programming-languages/java/coding-standards.md`
 
 4. **Criticality Levels**:
    - **CRITICAL**: File in wrong directory (organizational integrity)
@@ -841,11 +840,11 @@ Expected: `security.md`
 **Validate that language/framework documentation follows standard structure**:
 
 1. **Core Documents Check**:
-   - For each language (Java, TypeScript, Go, Python, Elixir):
-     - **Required**: `idioms.md` - Language-specific patterns
-     - **Required**: `best-practices.md` - Clean code standards
-     - **Required**: `anti-patterns.md` - Common mistakes
-     - **Required**: `README.md` - Overview and index
+   - For each language, validate against that language's own `README.md` index (not a fixed list). Document names differ by language family:
+     - **TypeScript, Python**: typically `idioms.md`, `best-practices.md`, `anti-patterns.md`, `README.md`
+     - **Java, Go, Elixir**: typically `coding-standards.md` and other `*-standards.md` files (e.g., `api-standards.md`, `testing-standards.md`, `concurrency-standards.md`) plus `README.md`
+     - **Required for all**: `README.md` — Overview and index
+   - Validate that files listed in each language's `README.md` actually exist on disk
    - For each framework (Spring Boot, Phoenix, React):
      - **Required**: README.md with architecture integration section
 
@@ -865,7 +864,7 @@ Expected: `security.md`
    - Verify headings are descriptive and follow active voice
 
 4. **Criticality Levels**:
-   - **CRITICAL**: Missing core document (idioms/best-practices/anti-patterns)
+   - **CRITICAL**: Missing core document (per language's own README.md index: `idioms.md`/`best-practices.md`/`anti-patterns.md` for TypeScript/Python; `coding-standards.md` and other `*-standards.md` for Java/Go/Elixir)
    - **HIGH**: Invalid/missing required frontmatter field
    - **MEDIUM**: Heading hierarchy violation
    - **LOW**: Missing optional frontmatter field
@@ -876,19 +875,19 @@ Expected: `security.md`
 ### Finding: Document Structure Pattern
 
 **Category**: Structure Pattern
-**Language**: Elixir
+**Language**: TypeScript
 **Criticality**: CRITICAL
 
 **Issue**: Missing required anti-patterns document
 
 **Evidence**:
-Found in `programming-languages/elixir/`:
+Found in `programming-languages/typescript/`:
 
 - idioms.md ✓
 - best-practices.md ✓
 - anti-patterns.md ✗ (missing)
 
-**Recommendation**: Create `anti-patterns.md` under `programming-languages/elixir/` from template
+**Recommendation**: Create `anti-patterns.md` under `programming-languages/typescript/` from template
 ```
 
 #### 8.5 Template Completeness

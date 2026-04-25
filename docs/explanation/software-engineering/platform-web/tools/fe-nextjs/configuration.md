@@ -19,7 +19,6 @@ principles:
   - reproducibility
   - automation-over-manual
 created: 2026-01-26
-updated: 2026-01-26
 ---
 
 # Next.js Configuration
@@ -934,5 +933,4 @@ Before production:
 
 ---
 
-**Last Updated**: 2026-01-26
 **Next.js Version**: 14+ (TypeScript config, Turbopack, experimental features)

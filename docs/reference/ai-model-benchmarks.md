@@ -7,7 +7,6 @@ tags:
   - benchmarks
   - model-selection
 created: 2026-04-19
-updated: 2026-04-19
 ---
 
 # AI Model Benchmarks Reference

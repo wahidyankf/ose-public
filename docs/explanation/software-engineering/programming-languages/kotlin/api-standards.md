@@ -18,7 +18,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # Kotlin API Standards
@@ -427,5 +426,5 @@ fun errorOf(message: String, code: String = "GENERAL_ERROR") =
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **Kotlin Version**: 2.1 | Framework: Ktor 3.x | Serialization: kotlinx.serialization 1.8.0

@@ -15,8 +15,6 @@ skills:
 ## Agent Metadata
 
 - **Role**: Maker (blue)
-- **Created**: 2025-11-29
-- **Last Updated**: 2026-04-12
 
 **Model Selection Justification**: This agent uses `model: sonnet` because Diátaxis-aligned documentation writing is structured content generation with a clear quality rubric:
 
@@ -252,7 +250,6 @@ tags:
   - primary-topic # IMPORTANT: 2 spaces before dash, NOT tab
   - secondary-topic # IMPORTANT: 2 spaces before dash, NOT tab
 created: YYYY-MM-DD
-updated: 2026-01-03
 ```
 
 **CRITICAL**: Frontmatter MUST use 2 spaces for indentation (NOT tabs). This is the ONLY exception to TAB indentation within `docs/` directory. All nested frontmatter fields (tags, lists, objects) must use spaces.

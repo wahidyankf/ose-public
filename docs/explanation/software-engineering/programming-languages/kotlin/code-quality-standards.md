@@ -17,7 +17,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # Kotlin Code Quality Standards
@@ -459,5 +458,5 @@ git add -A
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **Kotlin Version**: 2.1 | Quality Tools: ktlint 1.5.0, Detekt 1.23.7, Kover 0.9.1

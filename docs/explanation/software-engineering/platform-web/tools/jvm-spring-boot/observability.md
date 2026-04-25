@@ -21,7 +21,6 @@ related:
   - ./performance.md
   - ./configuration.md
 created: 2026-01-25
-updated: 2026-01-26
 ---
 
 # Spring Boot Observability
@@ -1120,5 +1119,3 @@ public class ZakatCalculationService {
 - [Spring Boot Performance](./performance.md) - Performance metrics
 
 **Hands-on Learning (AyoKoding)**:
-
-**Last Updated**: 2026-01-26

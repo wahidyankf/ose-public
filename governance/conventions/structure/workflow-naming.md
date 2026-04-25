@@ -8,7 +8,6 @@ tags:
   - naming
   - conventions
 created: 2026-04-17
-updated: 2026-04-17
 ---
 
 # Workflow Naming Convention
@@ -115,7 +114,3 @@ Current workflows, grouped by type, all conforming to the rule:
 - **[Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md)** — The scope and type of every workflow are explicit in its filename; no convention-by-tribal-knowledge.
 - **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)** — One rule, one type list, one regex. One documented exception (meta).
 - **[Automation Over Manual](../../principles/software-engineering/automation-over-manual.md)** — A single-line `find | grep` decides conformance, enabling mechanical enforcement by `repo-rules-checker` and `rhino-cli workflows validate-naming`.
-
----
-
-**Last Updated**: 2026-04-17

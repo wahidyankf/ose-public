@@ -9,7 +9,6 @@ tags:
   - standards
   - documentation
 created: 2025-12-07
-updated: 2025-12-24
 ---
 
 # Convention Writing Convention
@@ -91,7 +90,6 @@ tags:
   - relevant
   - tags
 created: YYYY-MM-DD
-updated: YYYY-MM-DD
 ---
 ```
 
@@ -102,7 +100,8 @@ updated: YYYY-MM-DD
 - Category is always `explanation`
 - Subcategory is always `conventions`
 - Tags help with discoverability (3-5 tags)
-- Dates use `YYYY-MM-DD` format (date-only, not full timestamp)
+- `created` uses `YYYY-MM-DD` format (date-only, not full timestamp)
+- `updated:` field MUST NOT be included — per [No Manual Date Metadata Convention](../structure/no-date-metadata.md), git history is the authoritative change record
 
 #### 2. Introduction (H1 + opening paragraph)
 
@@ -237,7 +236,7 @@ Reference agents or tools that enforce or assist with this convention:
 
 **Related Conventions:**
 
-- [Convention Name](./convention-file.md) - How it relates
+- Convention Name — How it relates
 
 **External Resources:**
 
@@ -405,7 +404,7 @@ Convention files follow the [File Naming Convention](../structure/file-naming.md
 
 ### Version Control
 
-- Update `updated` field in frontmatter when making changes
+- Git history is the authoritative record of changes (no `updated:` field needed)
 - Significant changes should update AGENTS.md if they affect agent behavior
 - Use `repo-rules-maker` to propagate changes across related files
 
@@ -440,7 +439,6 @@ tags:
   - example
   - standard
 created: 2025-01-15
-updated: 2025-01-15
 ---
 
 # Example Convention
@@ -460,7 +458,7 @@ Why this convention exists and what problems it solves.
 
 ### What This Convention Does NOT Cover
 
-- Out-of-scope topic (see [Other Convention](./other.md))
+- Out-of-scope topic (see Other Convention)
 
 ## Standards
 
@@ -486,7 +484,7 @@ Showing what to avoid and why.
 
 **Related Conventions:**
 
-- [Related Convention](./related.md)
+- Related Convention
 
 **Agents:**
 
@@ -581,7 +579,3 @@ When creating a convention:
 - `docs-maker` - Creates convention documents following this structure
 - `repo-rules-maker` - Propagates convention changes
 - `repo-rules-checker` - Validates convention compliance
-
----
-
-**Last Updated**: 2025-12-24

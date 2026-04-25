@@ -9,7 +9,6 @@ tags:
   - development
   - code-quality
 created: 2025-11-24
-updated: 2025-11-29
 ---
 
 # Commit Message Convention
@@ -831,7 +830,3 @@ Closes #123
 - [Angular Commit Guidelines](https://github.com/angular/angular/blob/main/CONTRIBUTING.md#type) (verified 2026-02-08) - Inspiration for commit types
 - [Commitlint Documentation](https://commitlint.js.org/) - Tool documentation
 - [Semantic Versioning](https://semver.org/) - Version numbering standard
-
----
-
-**Last Updated**: 2025-11-29

@@ -10,7 +10,6 @@ tags:
   - education
   - narrative-driven
 created: 2026-01-30
-updated: 2026-01-30
 ---
 
 # By-Concept Tutorial Convention

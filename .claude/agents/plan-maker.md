@@ -16,8 +16,6 @@ skills:
 ## Agent Metadata
 
 - **Role**: Maker (blue)
-- **Created**: 2025-12-28
-- **Last Updated**: 2026-04-04
 
 **Model Selection Justification**: This agent uses inherited `model: opus` (omit model field) because it requires:
 
@@ -161,6 +159,15 @@ See [Trunk Based Development Convention](../../governance/development/workflow/t
 - Steps are granular (not too broad)
 - Validation criteria are specific
 - Acceptance criteria are testable
+
+#### PR Step Authoring Rule (per [Git Push Default Convention](../../governance/development/workflow/git-push-default.md))
+
+Do NOT include `- [ ] Create PR`, `- [ ] Open PR`, `- [ ] Submit PR`, or equivalent PR creation steps in delivery.md unless EITHER:
+
+1. The user's prompt explicitly requests a PR.
+2. The plan's Git Workflow section explicitly documents a worktree/branch-based flow.
+
+Unsolicited PR steps conflict with Trunk Based Development. `plan-checker` will flag them as HIGH findings.
 
 ## Reference Documentation
 

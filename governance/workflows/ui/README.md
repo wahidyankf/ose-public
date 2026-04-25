@@ -9,7 +9,6 @@ tags:
   - ui
   - components
 created: 2026-03-28
-updated: 2026-03-28
 ---
 
 # UI Workflows
@@ -27,7 +26,3 @@ Orchestrated multi-step processes for UI component quality automation.
 - [Frontend Development Conventions](../../development/frontend/README.md) — Standards these workflows enforce
 - [Maker-Checker-Fixer Pattern](../../development/pattern/maker-checker-fixer.md) — Core workflow pattern
 - [Workflows Index](../README.md) — All available workflows
-
----
-
-**Last Updated**: 2026-03-28

@@ -9,7 +9,6 @@ tags:
   - file-organization
   - best-practices
 created: 2025-12-01
-updated: 2025-12-26
 ---
 
 # Temporary Files Convention

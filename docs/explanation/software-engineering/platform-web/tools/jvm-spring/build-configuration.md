@@ -14,7 +14,6 @@ principles:
   - explicit-over-implicit
   - automation-over-manual
 created: 2026-02-06
-updated: 2026-02-06
 ---
 
 # Spring Framework Build Configuration
@@ -649,5 +648,5 @@ api → application → domain ← infrastructure
 ---
 
 **Status**: Mandatory
-**Last Updated**: 2026-02-06
+
 **Maintainers**: Platform Team

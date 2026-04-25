@@ -11,7 +11,6 @@ tags:
   - documentation
   - quality
 created: 2026-04-04
-updated: 2026-04-04
 ---
 
 # Feature Change Completeness Convention

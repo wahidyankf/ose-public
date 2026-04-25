@@ -19,7 +19,6 @@ related:
 principles:
   - simplicity-over-complexity
   - explicit-over-implicit
-updated: 2025-01-23
 ---
 
 # Python Concurrency and Parallelism
@@ -79,19 +78,16 @@ import asyncio
 from decimal import Decimal
 from typing import List
 
-
 async def fetch_gold_price_async() -> Decimal:
     """Fetch gold price asynchronously."""
     await asyncio.sleep(0.1)  # Simulate API call
     return Decimal("60.00")
-
 
 async def calculate_nisab_async() -> Decimal:
     """Calculate nisab threshold async."""
     gold_price = await fetch_gold_price_async()
     GOLD_NISAB_GRAMS = 85
     return gold_price * GOLD_NISAB_GRAMS
-
 
 # Usage: Run async function
 nisab = asyncio.run(calculate_nisab_async())
@@ -107,24 +103,20 @@ print(f"Nisab: ${nisab}")
 import asyncio
 from decimal import Decimal
 
-
 async def fetch_gold_price() -> Decimal:
     """Fetch gold price (simulated)."""
     await asyncio.sleep(0.2)
     return Decimal("60.00")
-
 
 async def fetch_silver_price() -> Decimal:
     """Fetch silver price (simulated)."""
     await asyncio.sleep(0.2)
     return Decimal("0.75")
 
-
 async def fetch_exchange_rate(currency: str) -> Decimal:
     """Fetch exchange rate (simulated)."""
     await asyncio.sleep(0.1)
     return Decimal("1.0") if currency == "USD" else Decimal("0.85")
-
 
 async def calculate_all_nisab_values() -> dict:
     """Calculate all nisab values concurrently."""
@@ -140,7 +132,6 @@ async def calculate_all_nisab_values() -> dict:
         "silver_nisab": silver_price * 595,
         "exchange_rate": exchange_rate,
     }
-
 
 # Usage
 result = asyncio.run(calculate_all_nisab_values())
@@ -265,7 +256,6 @@ from decimal import Decimal
 from typing import List
 import time
 
-
 def calculate_zakat_batch(
     wealth_items: List[Decimal],
     results: List[Decimal],
@@ -275,7 +265,6 @@ def calculate_zakat_batch(
     time.sleep(0.1)  # Simulate I/O
     zakat_total = sum(item * Decimal("0.025") for item in wealth_items)
     results[index] = zakat_total
-
 
 # Usage: Process batches in parallel threads
 wealth_data = [
@@ -372,7 +361,6 @@ from multiprocessing import Pool
 from decimal import Decimal
 from typing import List
 
-
 def calculate_complex_zakat(wealth_amount: Decimal) -> Decimal:
     """CPU-intensive Zakat calculation."""
     # Simulate complex calculation
@@ -380,7 +368,6 @@ def calculate_complex_zakat(wealth_amount: Decimal) -> Decimal:
     for _ in range(1000000):
         result = result * Decimal("1.0000001")
     return result * Decimal("0.025")
-
 
 # Usage: Process in parallel (CPU cores)
 wealth_amounts = [Decimal("100000")] * 8
@@ -404,7 +391,6 @@ The GIL prevents multiple threads from executing Python bytecode simultaneously.
 import threading
 from decimal import Decimal
 
-
 def cpu_intensive_zakat(wealth: Decimal) -> Decimal:
     """CPU-intensive calculation (GIL-limited)."""
     result = wealth
@@ -412,20 +398,16 @@ def cpu_intensive_zakat(wealth: Decimal) -> Decimal:
         result = result * Decimal("1.0000001")
     return result * Decimal("0.025")
 
-
 # Threading provides no speedup for CPU-bound
 # (GIL prevents parallel CPU execution)
 
-
 # GIL-bypassed: I/O-bound threading (fast)
 import time
-
 
 def io_intensive_zakat(wealth: Decimal) -> Decimal:
     """I/O-intensive calculation (GIL-released during I/O)."""
     time.sleep(1)  # GIL released during sleep
     return wealth * Decimal("0.025")
-
 
 # Threading speeds up I/O-bound tasks
 # (threads wait concurrently, not sequentially)
@@ -541,7 +523,6 @@ from concurrent.futures import ThreadPoolExecutor
 from decimal import Decimal
 import time
 
-
 def fetch_campaign_data(campaign_id: str) -> dict:
     """Fetch campaign data (I/O-bound)."""
     time.sleep(0.1)  # Simulate network I/O
@@ -549,7 +530,6 @@ def fetch_campaign_data(campaign_id: str) -> dict:
         "id": campaign_id,
         "total": Decimal("50000"),
     }
-
 
 # Usage: Concurrent I/O with thread pool
 campaign_ids = [f"CAMP-{i:03d}" for i in range(10)]
@@ -569,14 +549,12 @@ print(f"Fetched {len(results)} campaigns")
 from concurrent.futures import ProcessPoolExecutor
 from decimal import Decimal
 
-
 def complex_calculation(wealth: Decimal) -> Decimal:
     """CPU-intensive calculation."""
     result = wealth
     for _ in range(5000000):
         result = result * Decimal("1.0000001")
     return result
-
 
 # Usage: Parallel CPU processing
 wealth_data = [Decimal("100000")] * 8
@@ -681,7 +659,6 @@ async with zakat_calculation_session() as session:
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
 
-
 class AsyncDatabase:
     """Async database connection."""
 
@@ -700,7 +677,6 @@ class AsyncDatabase:
         await asyncio.sleep(0.05)
         return [{"result": "data"}]
 
-
 @asynccontextmanager
 async def get_db_connection() -> AsyncIterator[AsyncDatabase]:
     """Async context manager for database."""
@@ -711,14 +687,12 @@ async def get_db_connection() -> AsyncIterator[AsyncDatabase]:
     finally:
         await db.disconnect()
 
-
 # Usage
 async def fetch_zakat_records():
     """Fetch records with async context manager."""
     async with get_db_connection() as db:
         records = await db.execute("SELECT * FROM zakat_records")
         return records
-
 
 records = asyncio.run(fetch_zakat_records())
 ```
@@ -817,14 +791,12 @@ for i, result in enumerate(results):
 import asyncio
 from decimal import Decimal
 
-
 async def risky_calculation(wealth: Decimal) -> Decimal:
     """Calculation that might fail."""
     await asyncio.sleep(0.1)
     if wealth < 0:
         raise ValueError("Wealth cannot be negative")
     return wealth * Decimal("0.025")
-
 
 async def process_with_error_handling():
     """Process multiple calculations with error handling."""
@@ -838,7 +810,6 @@ async def process_with_error_handling():
             print(f"Error calculating wealth[{i}]: {result}")
         else:
             print(f"Zakat for wealth[{i}]: ${result}")
-
 
 asyncio.run(process_with_error_handling())
 ```
@@ -862,25 +833,21 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-
 async def fetch_gold_price() -> Decimal:
     """Fetch gold price (simulated external API)."""
     await asyncio.sleep(0.1)  # Simulate network I/O
     return Decimal("60.50")
-
 
 async def fetch_silver_price() -> Decimal:
     """Fetch silver price (simulated external API)."""
     await asyncio.sleep(0.15)  # Simulate network I/O
     return Decimal("0.76")
 
-
 async def fetch_currency_rate(currency: str) -> Decimal:
     """Fetch currency exchange rate."""
     await asyncio.sleep(0.05)
     rates = {"USD": Decimal("1.0"), "EUR": Decimal("0.92"), "GBP": Decimal("0.79")}
     return rates.get(currency, Decimal("1.0"))
-
 
 class ZakatPriceService:
     """Service to fetch and cache Zakat-related prices."""
@@ -943,7 +910,6 @@ class ZakatPriceService:
             price = self._price_cache.get("silver", Decimal("0.75"))
             return price * Decimal("595")  # 595 grams of silver
 
-
 # Usage: Service lifecycle management
 async def main():
     service = ZakatPriceService()
@@ -964,7 +930,6 @@ async def main():
     finally:
         await service.stop()
 
-
 # Run with proper event loop handling
 if __name__ == "__main__":
     asyncio.run(main())
@@ -981,7 +946,6 @@ Python 3.11+ provides `TaskGroup` for structured concurrency.
 import asyncio
 from decimal import Decimal
 from typing import List, Dict
-
 
 async def calculate_zakat_for_user(user_id: str, wealth: Decimal) -> Dict:
     """Calculate Zakat for single user."""
@@ -1004,7 +968,6 @@ async def calculate_zakat_for_user(user_id: str, wealth: Decimal) -> Dict:
             "obligated": False
         }
 
-
 async def process_zakat_batch(users: List[tuple]) -> List[Dict]:
     """Process Zakat calculations for batch of users using TaskGroup."""
     results = []
@@ -1022,7 +985,6 @@ async def process_zakat_batch(users: List[tuple]) -> List[Dict]:
 
     return results
 
-
 async def main():
     users = [
         ("USER-001", Decimal("100000")),
@@ -1039,7 +1001,6 @@ async def main():
         status = "OBLIGATED" if result["obligated"] else "NOT OBLIGATED"
         print(f"{result['user_id']}: ${result['wealth']} → ${result['zakat_amount']} ({status})")
 
-
 asyncio.run(main())
 ```
 
@@ -1055,18 +1016,15 @@ import asyncio
 from decimal import Decimal
 from typing import Optional
 
-
 class TimeoutError(Exception):
     """Custom timeout exception."""
     pass
-
 
 async def fetch_price_from_api(api_url: str) -> Decimal:
     """Fetch price from external API (may be slow)."""
     # Simulate slow API
     await asyncio.sleep(2.5)
     return Decimal("60.00")
-
 
 async def fetch_price_with_timeout(
     api_url: str,
@@ -1089,7 +1047,6 @@ async def fetch_price_with_timeout(
         print(f"API request failed: {e}")
         return None
 
-
 async def fetch_price_with_fallback(primary_api: str, fallback_api: str) -> Decimal:
     """Fetch price with fallback to secondary API."""
     # Try primary API first
@@ -1109,7 +1066,6 @@ async def fetch_price_with_fallback(primary_api: str, fallback_api: str) -> Deci
     print("Both APIs failed, using default price")
     return Decimal("60.00")
 
-
 async def main():
     price = await fetch_price_with_fallback(
         primary_api="https://api.metals.live/v1/gold",
@@ -1117,7 +1073,6 @@ async def main():
     )
 
     print(f"Final price: ${price}")
-
 
 asyncio.run(main())
 ```
@@ -1134,7 +1089,6 @@ import asyncio
 from decimal import Decimal
 from typing import Dict, List
 import random
-
 
 class DonationProcessor:
     """Process donations asynchronously using queue."""
@@ -1204,7 +1158,6 @@ class DonationProcessor:
 
         print(f"Processed {self.processed_count} donations")
 
-
 async def main():
     # Create test donations
     donations = [
@@ -1215,7 +1168,6 @@ async def main():
     # Process donations
     processor = DonationProcessor(num_workers=5)
     await processor.process_all(donations)
-
 
 asyncio.run(main())
 ```
@@ -1232,7 +1184,6 @@ import asyncio
 from decimal import Decimal
 from typing import List
 import time
-
 
 class APIClient:
     """API client with rate limiting."""
@@ -1269,7 +1220,6 @@ class APIClient:
                 "donors": 125,
             }
 
-
 async def fetch_all_campaigns(campaign_ids: List[str]) -> List[Dict]:
     """Fetch all campaign data respecting rate limits."""
     client = APIClient(max_concurrent=5, requests_per_second=10)
@@ -1286,7 +1236,6 @@ async def fetch_all_campaigns(campaign_ids: List[str]) -> List[Dict]:
     print(f"Made {client.request_count} API requests")
     return results
 
-
 async def main():
     campaign_ids = [f"CAMP-{i:03d}" for i in range(50)]
 
@@ -1296,7 +1245,6 @@ async def main():
 
     print(f"Fetched {len(results)} campaigns in {elapsed:.2f}s")
     print(f"Rate: {len(results)/elapsed:.2f} campaigns/second")
-
 
 asyncio.run(main())
 ```
@@ -1316,14 +1264,12 @@ import time
 from decimal import Decimal
 from typing import List
 
-
 def cpu_intensive_zakat(wealth: Decimal, iterations: int = 1000000) -> Decimal:
     """CPU-intensive Zakat calculation to demonstrate GIL impact."""
     result = wealth
     for _ in range(iterations):
         result = result * Decimal("1.0000001")
     return result * Decimal("0.025")
-
 
 def benchmark_sequential(wealth_amounts: List[Decimal]) -> float:
     """Benchmark sequential processing."""
@@ -1336,7 +1282,6 @@ def benchmark_sequential(wealth_amounts: List[Decimal]) -> float:
 
     elapsed = time.perf_counter() - start
     return elapsed
-
 
 def benchmark_threading(wealth_amounts: List[Decimal]) -> float:
     """Benchmark multi-threaded processing (GIL-limited)."""
@@ -1359,7 +1304,6 @@ def benchmark_threading(wealth_amounts: List[Decimal]) -> float:
     elapsed = time.perf_counter() - start
     return elapsed
 
-
 def benchmark_multiprocessing(wealth_amounts: List[Decimal]) -> float:
     """Benchmark multi-process processing (no GIL)."""
     from multiprocessing import Pool
@@ -1371,7 +1315,6 @@ def benchmark_multiprocessing(wealth_amounts: List[Decimal]) -> float:
 
     elapsed = time.perf_counter() - start
     return elapsed
-
 
 # Run benchmarks
 wealth_amounts = [Decimal("100000")] * 8
@@ -1409,14 +1352,12 @@ import time
 from decimal import Decimal
 from typing import List
 
-
 def cpu_intensive_calculation(wealth: Decimal) -> Decimal:
     """CPU-intensive calculation."""
     result = wealth
     for _ in range(5000000):
         result = result * Decimal("1.0000001")
     return result * Decimal("0.025")
-
 
 def benchmark_free_threaded(wealth_amounts: List[Decimal]) -> float:
     """Benchmark with GIL disabled (Python 3.13+)."""
@@ -1447,7 +1388,6 @@ def benchmark_free_threaded(wealth_amounts: List[Decimal]) -> float:
     elapsed = time.perf_counter() - start
     return elapsed
 
-
 # Usage (Python 3.13+)
 wealth_amounts = [Decimal("100000")] * 4
 elapsed = benchmark_free_threaded(wealth_amounts)
@@ -1474,6 +1414,5 @@ print(f"Free-threaded execution: {elapsed:.4f}s")
 
 ---
 
-**Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable with free-threaded mode)
 **Maintainers**: OSE Platform Documentation Team

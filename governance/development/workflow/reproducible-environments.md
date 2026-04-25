@@ -11,7 +11,6 @@ tags:
   - environment
   - dependencies
 created: 2025-12-28
-updated: 2025-12-28
 ---
 
 # Reproducible Environments
@@ -840,7 +839,3 @@ verify();
 
 - [Nx Caching](https://nx.dev/concepts/how-caching-works) - Deterministic build caching
 - [Reproducible Builds](https://reproducible-builds.org/) - Best practices
-
----
-
-**Last Updated**: 2025-12-28

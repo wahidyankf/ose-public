@@ -15,7 +15,6 @@ related:
   - ./best-practices.md
 principles:
   - explicit-over-implicit
-updated: 2025-01-23
 ---
 
 # Python Security
@@ -35,7 +34,6 @@ Use parameterized queries, never string concatenation.
 ```python
 # BAD: SQL injection vulnerability
 import sqlite3
-
 
 def get_zakat_records_unsafe(payer_id: str):
     """VULNERABLE: SQL injection risk."""
@@ -57,7 +55,6 @@ def get_zakat_records_unsafe(payer_id: str):
 import sqlite3
 from typing import List, Dict
 
-
 def get_zakat_records_safe(payer_id: str) -> List[Dict]:
     """SAFE: Parameterized query."""
     conn = sqlite3.connect("zakat.db")
@@ -69,11 +66,9 @@ def get_zakat_records_safe(payer_id: str) -> List[Dict]:
 
     return cursor.fetchall()
 
-
 # Using ORM (even safer)
 from sqlalchemy import select
 from models import ZakatRecord
-
 
 def get_zakat_records_orm(payer_id: str) -> List[ZakatRecord]:
     """SAFE: ORM prevents injection."""
@@ -128,16 +123,13 @@ Escape user input in web responses.
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-
 class DonationResponse(BaseModel):
     """Pydantic model auto-escapes."""
 
     donor_name: str
     amount: str
 
-
 app = FastAPI()
-
 
 @app.get("/donation/{donor_id}")
 async def get_donation(donor_id: str) -> DonationResponse:
@@ -165,13 +157,11 @@ from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from pydantic import BaseModel
 
-
 SECRET_KEY = "your-secret-key-from-env"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 security = HTTPBearer()
-
 
 class TokenData(BaseModel):
     """JWT token payload."""
@@ -179,13 +169,11 @@ class TokenData(BaseModel):
     user_id: str
     exp: datetime
 
-
 def create_access_token(user_id: str) -> str:
     """Create JWT access token."""
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode = {"user_id": user_id, "exp": expire}
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-
 
 def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)) -> str:
     """Verify JWT token and extract user_id."""
@@ -197,7 +185,6 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)) 
         return user_id
     except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
-
 
 # Protected endpoint
 @app.get("/zakat/records")
@@ -259,7 +246,6 @@ Never hardcode secrets.
 from pydantic_settings import BaseSettings
 from typing import Optional
 
-
 class Settings(BaseSettings):
     """Application settings from environment."""
 
@@ -272,7 +258,6 @@ class Settings(BaseSettings):
         env_file = ".env"
         env_file_encoding = "utf-8"
 
-
 # Usage
 settings = Settings()
 
@@ -281,7 +266,6 @@ settings = Settings()
 # SECRET_KEY=...
 # API_KEY=...
 # JWT_SECRET=...
-
 
 # BAD: Hardcoded secrets
 DATABASE_URL = "postgresql://user:password@localhost/db"  # NEVER DO THIS
@@ -336,7 +320,6 @@ Validate all inputs with Pydantic.
 from pydantic import BaseModel, Field, field_validator
 from decimal import Decimal
 import re
-
 
 class ZakatPaymentRequest(BaseModel):
     """Validated Zakat payment request."""
@@ -417,7 +400,6 @@ Use cryptography library for encryption.
 from cryptography.fernet import Fernet
 from pydantic_settings import BaseSettings
 
-
 class CryptoSettings(BaseSettings):
     """Encryption settings."""
 
@@ -426,23 +408,19 @@ class CryptoSettings(BaseSettings):
     class Config:
         env_file = ".env"
 
-
 # Generate key (once, store securely)
 # key = Fernet.generate_key()
 
 settings = CryptoSettings()
 cipher = Fernet(settings.encryption_key)
 
-
 def encrypt_pii(data: str) -> bytes:
     """Encrypt personally identifiable information."""
     return cipher.encrypt(data.encode())
 
-
 def decrypt_pii(encrypted_data: bytes) -> str:
     """Decrypt PII."""
     return cipher.decrypt(encrypted_data).decode()
-
 
 # Usage
 donor_name = "Ahmad ibn Ali"
@@ -463,7 +441,6 @@ from decimal import Decimal
 from datetime import datetime
 import hashlib
 import json
-
 
 @dataclass(frozen=True)
 class ZakatCalculationResult:
@@ -575,7 +552,6 @@ graph LR
 
 ---
 
-**Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
 **Maintainers**: OSE Platform Documentation Team
 

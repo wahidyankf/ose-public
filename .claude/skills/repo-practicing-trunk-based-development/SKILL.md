@@ -527,12 +527,37 @@ Before pushing to `main`:
 
 **Default to `main` unless you have a compelling reason to branch.**
 
+## PR Opt-In Rule
+
+**PRs are opt-in, not the default.** Push directly to `main` unless explicitly instructed otherwise.
+
+### When a PR is Appropriate
+
+Create a PR only when ONE of the following conditions is satisfied:
+
+1. **User explicitly requests a PR** in their prompt (e.g., "open a PR", "create a PR for this")
+2. **Plan document explicitly documents a worktree/branch-based flow** — the plan's `README.md`, `prd.md`, or Git Workflow section specifies a branch + PR workflow
+
+### What This Means for Plans
+
+**Plan delivery checklists must NOT include unsolicited PR steps.** A delivery checklist step like `- [ ] Create PR` or `- [ ] Open PR` is a violation unless one of the two conditions above is met.
+
+- `plan-checker` flags such steps as HIGH findings
+- `plan-fixer` removes such steps automatically
+
+### What This Means for AI Agents
+
+**Always default to direct `git push origin main`** unless the user prompt or active plan document explicitly requests a PR. Opening PRs "for safety" on routine commits is an anti-pattern that conflicts with Trunk Based Development.
+
+See [Git Push Default Convention](../../../governance/development/workflow/git-push-default.md) for complete rules and edge cases.
+
 ## References
 
 **Primary Convention**: [Trunk Based Development Convention](../../../governance/development/workflow/trunk-based-development.md)
 
 **Related Conventions**:
 
+- [Git Push Default Convention](../../../governance/development/workflow/git-push-default.md) - PR opt-in rules for AI agents and plans
 - [Commit Message Convention](../../../governance/development/workflow/commit-messages.md) - Conventional Commits format
 - [Implementation Workflow](../../../governance/development/workflow/implementation.md) - Development workflow stages
 - [Plans Organization](../../../governance/conventions/structure/plans.md) - Git workflow in plans

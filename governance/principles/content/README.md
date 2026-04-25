@@ -33,7 +33,3 @@ These principles define **WHY we value specific approaches to content creation**
 - [Core Principles Index](../README.md) - All foundational principles
 - [Conventions Index](../../conventions/README.md) - Documentation conventions implementing these principles
 - [Repository Architecture](../../repository-governance-architecture.md) - Six-layer governance model
-
----
-
-**Last Updated**: 2026-01-01

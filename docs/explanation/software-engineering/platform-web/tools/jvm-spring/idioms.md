@@ -17,7 +17,6 @@ principles:
   - immutability
   - pure-functions
 created: 2026-01-29
-updated: 2026-02-06
 ---
 
 # Spring Framework Idioms
@@ -1851,6 +1850,5 @@ Production patterns using Spring Framework idioms:
 
 ---
 
-**Last Updated**: 2026-02-06
 **Spring Framework Version**: 6.1+ (Java 17+, Kotlin 1.9+)
 **Maintainers**: Platform Documentation Team

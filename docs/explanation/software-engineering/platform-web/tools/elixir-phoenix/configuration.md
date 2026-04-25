@@ -19,7 +19,6 @@ principles:
   - immutability
   - pure-functions
   - reproducibility
-updated: 2026-01-25
 ---
 
 # Phoenix Configuration Guide
@@ -910,6 +909,5 @@ config :ose_platform, OsePlatform.Repo,
 
 ---
 
-**Last Updated**: 2026-01-25
 **Phoenix Version**: 1.7+
 **Elixir Version**: 1.14+

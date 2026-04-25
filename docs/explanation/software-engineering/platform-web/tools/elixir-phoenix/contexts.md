@@ -18,7 +18,6 @@ related:
 principles:
   - explicit-over-implicit
   - simplicity-over-complexity
-updated: 2026-01-25
 ---
 
 # Phoenix Contexts
@@ -1700,6 +1699,5 @@ end
 
 ---
 
-**Last Updated**: 2026-01-25
 **Phoenix Version**: 1.7+
 **Elixir Version**: 1.14+

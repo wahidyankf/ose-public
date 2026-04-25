@@ -410,8 +410,6 @@ All agents SHOULD include a "Reference Documentation" section near the end (befo
 ## Agent Metadata
 
 - **Role**: [Maker (blue) / Checker (green) / Fixer (yellow) / Implementor (purple)]
-- **Created**: YYYY-MM-DD
-- **Last Updated**: YYYY-MM-DD
 
 [Agent description]
 
@@ -814,8 +812,6 @@ model: sonnet
 ## Agent Metadata
 
 - **Role**: [Role description]
-- **Created**: YYYY-MM-DD
-- **Last Updated**: YYYY-MM-DD
 
 **Model Selection Justification**: [justification here]
 

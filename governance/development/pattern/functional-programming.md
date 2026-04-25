@@ -10,7 +10,6 @@ tags:
   - pure-functions
   - typescript
 created: 2025-12-28
-updated: 2025-12-28
 ---
 
 # Functional Programming Practices
@@ -723,7 +722,3 @@ describe("calculateZakat", () => {
 
 - [fp-ts Documentation](https://gcanti.github.io/fp-ts/)
 - [TypeScript Handbook - Advanced Types](https://www.typescriptlang.org/docs/handbook/2/types-from-types.html)
-
----
-
-**Last Updated**: 2025-12-28

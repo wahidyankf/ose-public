@@ -17,7 +17,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # Rust API Standards
@@ -405,6 +404,6 @@ mod tests {
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **Rust Version**: 1.82+ (stable), Edition 2021
 **Framework**: Axum 0.8, Tokio 1.x, Tower

@@ -17,7 +17,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # Clojure API Standards
@@ -381,5 +380,5 @@ Ring request and response maps are immutable. Middleware wraps handlers by retur
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **Clojure Version**: 1.10+ (baseline), 1.12 (recommended)

@@ -8,7 +8,6 @@ tags:
   - architecture
   - structure
 created: 2025-11-29
-updated: 2026-04-19
 ---
 
 # Monorepo Structure Reference

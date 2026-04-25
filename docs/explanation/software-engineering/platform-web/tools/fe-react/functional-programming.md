@@ -15,7 +15,6 @@ related:
 principles:
   - immutability
   - pure-functions
-updated: 2026-01-25
 ---
 
 # React Functional Programming
@@ -1151,7 +1150,3 @@ export const MurabahaApplicationForm: React.FC = () => {
 - **[Component Architecture](component-architecture.md)** - Component patterns
 - **[State Management](state-management.md)** - Immutable state
 - **[Best Practices](best-practices.md)** - Production standards
-
----
-
-**Last Updated**: 2026-01-26

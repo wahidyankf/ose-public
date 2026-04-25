@@ -10,7 +10,6 @@ tags:
   - papermod
   - landing-page
 created: 2025-12-13
-updated: 2025-12-13
 ---
 
 # Hugo Content Convention - oseplatform-web

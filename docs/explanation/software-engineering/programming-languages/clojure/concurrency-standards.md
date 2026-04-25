@@ -17,7 +17,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # Clojure Concurrency Standards
@@ -347,5 +346,5 @@ Deterministic tests for concurrent code use controlled state and property-based 
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **Clojure Version**: 1.10+ (baseline), 1.12 (recommended)

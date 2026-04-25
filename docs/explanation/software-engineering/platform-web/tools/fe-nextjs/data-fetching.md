@@ -19,7 +19,6 @@ principles:
   - explicit-over-implicit
   - automation-over-manual
 created: 2026-01-26
-updated: 2026-01-26
 ---
 
 # Next.js Data Fetching
@@ -1243,5 +1242,4 @@ export async function updateProduct(productId: string, data: ProductData) {
 
 ---
 
-**Last Updated**: 2026-01-26
 **Next.js Version**: 14+ (Server Components, Server Actions stable)

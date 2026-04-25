@@ -12,7 +12,6 @@ tags:
   - framework
   - index
 created: 2026-01-25
-updated: 2026-01-25
 ---
 
 # Phoenix Framework
@@ -469,7 +468,3 @@ end
 - **[Software Design](../../README.md)** - Architecture and development practices
 - **[Functional Programming](../../../../../../governance/development/pattern/functional-programming.md)** - FP principles
 - **[Domain-Driven Design](../../../architecture/domain-driven-design-ddd/README.md)** - DDD patterns
-
----
-
-**Last Updated**: 2026-01-25

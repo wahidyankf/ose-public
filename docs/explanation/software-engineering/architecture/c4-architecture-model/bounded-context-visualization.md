@@ -11,7 +11,6 @@ tags:
 principles:
   - explicit-over-implicit
 created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # C4 Bounded Context Visualization
@@ -238,7 +237,3 @@ Before committing a bounded context visualization, verify:
 ## Principles Implemented
 
 - **[Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)**: By explicitly labeling context mapping patterns on relationships and showing clear bounded context boundaries, architectural decisions become visible rather than hidden in code.
-
----
-
-**Last Updated**: 2026-02-09

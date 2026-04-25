@@ -21,7 +21,6 @@ related:
   - ./type-safety.md
 principles:
   - explicit-over-implicit
-updated: 2026-01-24
 ---
 
 # Security
@@ -1966,7 +1965,6 @@ describe("DonationController (security)", () => {
 
 ---
 
-**Last Updated**: 2026-01-24
 **TypeScript Version**: 5.0+ (baseline), 5.7+ (stable maintenance), 5.9.x (latest stable)
 **Node.js Version**: 18+ (baseline), 20+ (LTS recommended)
 **Maintainers**: OSE Platform Documentation Team

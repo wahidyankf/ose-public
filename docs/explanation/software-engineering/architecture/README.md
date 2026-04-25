@@ -10,7 +10,6 @@ tags:
   - software-design
   - index
 created: 2026-01-20
-updated: 2026-04-19
 ---
 
 # Architecture
@@ -134,7 +133,3 @@ See DDD and C4 Integration for comprehensive examples and guidance.
 - **[Functional Programming Principles](../../../../governance/development/pattern/functional-programming.md)** - FP practices in this repository
 - **[Diagram Standards](../../../../governance/conventions/formatting/diagrams.md)** - Mermaid and accessibility requirements
 - **[Content Quality Standards](../../../../governance/conventions/writing/quality.md)** - Documentation writing guidelines
-
----
-
-**Last Updated**: 2026-01-20

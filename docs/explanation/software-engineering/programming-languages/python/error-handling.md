@@ -19,7 +19,6 @@ principles:
   - explicit-over-implicit
   - simplicity-over-complexity
   - documentation-first
-updated: 2025-01-23
 ---
 
 # Python Error Handling
@@ -99,7 +98,6 @@ graph TD
 # GOOD: Catch specific exceptions
 from decimal import Decimal, InvalidOperation
 
-
 def parse_zakat_amount(amount_str: str) -> Decimal:
     """Parse Zakat amount from string with specific exception handling."""
     try:
@@ -109,7 +107,6 @@ def parse_zakat_amount(amount_str: str) -> Decimal:
         return amount
     except InvalidOperation as e:
         raise ValueError(f"Invalid Zakat amount format: {amount_str}") from e
-
 
 # BAD: Bare except catches everything
 def parse_zakat_amount(amount_str: str) -> Decimal:
@@ -163,7 +160,6 @@ Python's exception handling provides four clauses for different scenarios.
 # GOOD: Basic exception handling
 from decimal import Decimal, InvalidOperation
 
-
 def calculate_murabaha_profit(
     asset_cost_str: str,
     profit_margin_str: str,
@@ -183,7 +179,6 @@ def calculate_murabaha_profit(
     except InvalidOperation as e:
         raise ValueError(f"Invalid decimal format: {e}") from e
 
-
 # Usage
 try:
     profit = calculate_murabaha_profit("200000.00", "0.15")
@@ -200,7 +195,6 @@ except ValueError as e:
 # GOOD: Use else for success-only code
 from typing import Dict
 from decimal import Decimal
-
 
 def record_donation_payment(
     donor_id: str,
@@ -219,7 +213,6 @@ def record_donation_payment(
         new_total = current_total + amount
         campaign["total"] = new_total
         print(f"Donation recorded: ${amount} (new total: ${new_total})")
-
 
 # BAD: Success code mixed with try block
 def record_donation_payment(donor_id, amount, campaigns):
@@ -270,7 +263,6 @@ graph LR
 import json
 from pathlib import Path
 
-
 def save_zakat_records(records: list, filepath: Path) -> None:
     """Save Zakat records with guaranteed cleanup."""
     file_handle = None
@@ -286,7 +278,6 @@ def save_zakat_records(records: list, filepath: Path) -> None:
         if file_handle is not None:
             file_handle.close()
             print("File closed")
-
 
 # BETTER: Use context manager instead
 def save_zakat_records(records: list, filepath: Path) -> None:
@@ -313,7 +304,6 @@ Context managers ensure resource cleanup even when exceptions occur.
 from pathlib import Path
 import json
 
-
 def load_zakat_configuration(filepath: Path) -> dict:
     """Load Zakat configuration with automatic cleanup."""
     try:
@@ -327,7 +317,6 @@ def load_zakat_configuration(filepath: Path) -> dict:
         print(f"Invalid JSON in configuration: {e}")
         return {}
     # File automatically closed even if exception occurs
-
 
 # BAD: Manual file handling
 def load_zakat_configuration(filepath: Path) -> dict:
@@ -352,7 +341,6 @@ def load_zakat_configuration(filepath: Path) -> dict:
 from contextlib import contextmanager
 from typing import Iterator
 from decimal import Decimal
-
 
 class DatabaseConnection:
     """Database connection with transaction support."""
@@ -384,10 +372,8 @@ class DatabaseConnection:
         """Rollback transaction (placeholder)."""
         print("ROLLBACK executed")
 
-
 # Usage: Automatic commit/rollback
 db = DatabaseConnection("postgresql://localhost/ose")
-
 
 def transfer_zakat_funds(
     from_account: str,
@@ -444,7 +430,6 @@ from time import perf_counter
 from typing import Iterator
 import logging
 
-
 @contextmanager
 def timing_context(operation_name: str) -> Iterator[None]:
     """Context manager for timing expensive operations."""
@@ -460,7 +445,6 @@ def timing_context(operation_name: str) -> Iterator[None]:
     finally:
         elapsed = perf_counter() - start_time
         logger.info(f"{operation_name} completed in {elapsed:.3f}s")
-
 
 # Usage
 with timing_context("Zakat calculation batch"):
@@ -480,12 +464,10 @@ Custom exceptions provide domain-specific error types and context.
 # GOOD: Domain-specific custom exceptions
 from decimal import Decimal
 
-
 class ZakatCalculationError(Exception):
     """Base exception for Zakat calculation errors."""
 
     pass
-
 
 class InvalidWealthAmount(ZakatCalculationError):
     """Raised when wealth amount is invalid."""
@@ -495,7 +477,6 @@ class InvalidWealthAmount(ZakatCalculationError):
         self.reason = reason
         super().__init__(f"Invalid wealth amount {wealth_amount}: {reason}")
 
-
 class NisabThresholdError(ZakatCalculationError):
     """Raised when nisab threshold is invalid."""
 
@@ -503,7 +484,6 @@ class NisabThresholdError(ZakatCalculationError):
         self.nisab = nisab
         self.reason = reason
         super().__init__(f"Invalid nisab threshold {nisab}: {reason}")
-
 
 class InsufficientWealthError(ZakatCalculationError):
     """Raised when wealth is below nisab threshold (informational)."""
@@ -515,7 +495,6 @@ class InsufficientWealthError(ZakatCalculationError):
         super().__init__(
             f"Wealth ${wealth_amount} below nisab ${nisab} (deficit: ${deficit})"
         )
-
 
 # Usage
 def calculate_zakat_obligation(
@@ -533,7 +512,6 @@ def calculate_zakat_obligation(
         raise InsufficientWealthError(wealth_amount, nisab_threshold)
 
     return wealth_amount * Decimal("0.025")
-
 
 # Client code can handle specifically
 try:
@@ -558,9 +536,7 @@ from typing import Optional, TypeVar
 from dataclasses import dataclass
 from decimal import Decimal
 
-
 T = TypeVar("T")
-
 
 @dataclass(frozen=True)
 class Some:
@@ -568,16 +544,13 @@ class Some:
 
     value: T
 
-
 @dataclass(frozen=True)
 class Nothing:
     """No value present."""
 
     pass
 
-
 Option = Some[T] | Nothing
-
 
 def find_campaign_by_id(
     campaigns: list[dict],
@@ -588,7 +561,6 @@ def find_campaign_by_id(
         if campaign.get("id") == campaign_id:
             return Some(campaign)
     return Nothing()
-
 
 # Usage: Explicit None handling
 result = find_campaign_by_id(campaigns, "CAMP-001")
@@ -610,10 +582,8 @@ from typing import Generic, TypeVar
 from dataclasses import dataclass
 from decimal import Decimal
 
-
 T = TypeVar("T")
 E = TypeVar("E")
-
 
 @dataclass(frozen=True)
 class Ok(Generic[T]):
@@ -621,16 +591,13 @@ class Ok(Generic[T]):
 
     value: T
 
-
 @dataclass(frozen=True)
 class Err(Generic[E]):
     """Failed result with error."""
 
     error: E
 
-
 Result = Ok[T] | Err[E]
-
 
 def parse_monetary_amount(amount_str: str) -> Result[Decimal, str]:
     """Parse monetary amount, returning Result."""
@@ -641,7 +608,6 @@ def parse_monetary_amount(amount_str: str) -> Result[Decimal, str]:
         return Ok(amount)
     except Exception as e:
         return Err(f"Invalid decimal format: {e}")
-
 
 # Usage: Explicit error handling
 result = parse_monetary_amount("100000.00")
@@ -666,12 +632,10 @@ Error wrapping provides context while preserving original exception.
 # GOOD: Exception chaining with 'from'
 from decimal import Decimal, InvalidOperation
 
-
 class ZakatServiceError(Exception):
     """Base exception for Zakat service errors."""
 
     pass
-
 
 def calculate_zakat_from_input(
     wealth_input: str,
@@ -696,7 +660,6 @@ def calculate_zakat_from_input(
         return wealth_amount * Decimal("0.025")
     return Decimal("0")
 
-
 # Usage: Preserves original exception in traceback
 try:
     zakat = calculate_zakat_from_input("100000.00", "invalid")
@@ -719,7 +682,6 @@ import logging
 from decimal import Decimal
 from typing import Dict, Any
 
-
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -727,7 +689,6 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger(__name__)
-
 
 def calculate_zakat_with_logging(
     payer_id: str,
@@ -763,7 +724,6 @@ def calculate_zakat_with_logging(
         logger.exception(f"Zakat calculation failed: {context}")
         raise
 
-
 # BAD: Minimal logging
 def calculate_zakat_with_logging(payer_id, wealth_amount, nisab_threshold):
     try:
@@ -784,7 +744,6 @@ def calculate_zakat_with_logging(payer_id, wealth_amount, nisab_threshold):
 import logging
 
 logger = logging.getLogger(__name__)
-
 
 def process_donation_batch(donations: list[dict]) -> None:
     """Process donation batch with appropriate logging levels."""
@@ -840,15 +799,12 @@ def process_donation_batch(donations: list[dict]) -> None:
 from decimal import Decimal, InvalidOperation
 import logging
 
-
 class ZakatCalculationError(Exception):
     """Base for Zakat calculation errors."""
 
     pass
 
-
 logger = logging.getLogger(__name__)
-
 
 def calculate_zakat_safe(
     payer_id: str,
@@ -922,7 +878,6 @@ def calculate_zakat_safe(
 
 ---
 
-**Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
 **Maintainers**: OSE Platform Documentation Team
 

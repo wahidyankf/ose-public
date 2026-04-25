@@ -13,7 +13,6 @@ principles:
   - explicit-over-implicit
   - automation-over-manual
 created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # Behavior-Driven Development (BDD)
@@ -255,7 +254,3 @@ Before merging feature files, verify:
 - **[Explicit Over Implicit](../../../../../governance/principles/software-engineering/explicit-over-implicit.md)**: By using Given-When-Then structure and ubiquitous language, scenarios make preconditions, actions, and outcomes explicit rather than assuming context.
 
 - **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)**: By executing scenarios automatically in CI/CD, BDD eliminates manual acceptance testing and ensures living documentation stays current.
-
----
-
-**Last Updated**: 2026-02-09

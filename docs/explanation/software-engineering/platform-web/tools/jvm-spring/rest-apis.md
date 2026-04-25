@@ -13,7 +13,6 @@ tags:
 principles:
   - explicit-over-implicit
 created: 2026-01-29
-updated: 2026-01-29
 ---
 
 # Spring Framework REST APIs
@@ -574,6 +573,5 @@ public class ZakatCalculatorController {
 
 ---
 
-**Last Updated**: 2026-01-29
 **Spring Framework Version**: 6.1+ (Java 17+, Kotlin 1.9+)
 **Maintainers**: Platform Documentation Team

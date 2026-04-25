@@ -17,7 +17,6 @@ principles:
   - explicit-over-implicit
   - reproducibility
 created: 2026-02-05
-updated: 2026-02-05
 ---
 
 # Elixir Code Quality Standards
@@ -836,5 +835,5 @@ These standards enforce the the software engineering principles:
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-02-05
+
 **Elixir Version**: 1.12+ (baseline), 1.17+ (recommended), 1.19.0 (latest)

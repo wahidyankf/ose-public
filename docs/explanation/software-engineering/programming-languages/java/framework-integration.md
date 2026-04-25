@@ -14,7 +14,6 @@ principles:
   - automation-over-manual
   - reproducibility
 created: 2026-02-03
-updated: 2026-02-03
 ---
 
 # Java Framework Integration
@@ -382,4 +381,3 @@ These standards enforce the the software engineering principles:
 - [Testing Standards](./testing-standards.md) - Spring Test and TestContainers for integration testing
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-02-04

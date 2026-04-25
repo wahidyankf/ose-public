@@ -8,7 +8,6 @@ tags:
   - structure
   - organization
 created: 2026-01-30
-updated: 2026-04-19
 ---
 
 # Structure Conventions
@@ -68,7 +67,3 @@ This set of conventions implements/respects the following core principles:
 - **[Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md)**: Plans naming patterns (`YYYY-MM-DD__identifier/`) make lifecycle stage and date explicit in folder names. File Naming Convention uses descriptive kebab-case names so a filename clearly communicates the content without abbreviation lookups.
 
 - **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)**: The four Diataxis categories provide a complete, minimal taxonomy that covers all documentation types without overlap or excessive granularity. File naming uses a single simple kebab-case rule with no prefix encoding to memorize.
-
----
-
-**Last Updated**: 2026-04-02

@@ -18,7 +18,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # Rust
@@ -332,7 +331,7 @@ graph TD
 ---
 
 **Status**: Authoritative Standard (Mandatory Compliance)
-**Last Updated**: 2026-03-09
+
 **Rust Version**: 1.82+ (stable), Edition 2021 (recommended)
 **Framework Stack**: Axum 0.8, Tokio 1.x, SQLx, Serde, thiserror, anyhow, Clippy, rustfmt
 **Maintainers**: Platform Architecture Team

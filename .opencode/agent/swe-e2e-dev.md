@@ -19,8 +19,6 @@ skills:
 ## Agent Metadata
 
 - **Role**: Implementor (purple)
-- **Created**: 2026-02-08
-- **Last Updated**: 2026-04-12
 
 **Model Selection Justification**: This agent uses `model: sonnet` because Playwright E2E test authoring is pattern-driven with a dedicated skill and lower cost-of-regression than production application code:
 

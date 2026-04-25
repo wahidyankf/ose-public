@@ -18,7 +18,6 @@ principles:
   - immutability
   - pure-functions
   - reproducibility
-updated: 2026-01-25
 ---
 
 # Spring Boot Best Practices
@@ -1382,5 +1381,4 @@ public class NisabRateService {
 
 ---
 
-**Last Updated**: 2026-01-25
 **Spring Boot Version**: 3.3+

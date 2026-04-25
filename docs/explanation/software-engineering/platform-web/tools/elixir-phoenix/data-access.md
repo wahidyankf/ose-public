@@ -22,7 +22,6 @@ principles:
   - immutability
   - pure-functions
   - reproducibility
-updated: 2026-01-25
 ---
 
 # Phoenix Data Access Guide

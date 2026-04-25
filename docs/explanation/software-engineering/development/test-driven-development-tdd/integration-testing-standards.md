@@ -13,7 +13,6 @@ principles:
   - automation-over-manual
   - reproducibility
 created: 2026-02-09
-updated: 2026-03-04
 ---
 
 # Integration Testing Standards
@@ -422,7 +421,3 @@ class MemberRepositoryIntegrationTest {
 - [Test Doubles Standards](./test-doubles-standards.md) — in-memory implementations vs. mocks
 - [Java Testing Standards](../../programming-languages/java/testing-standards.md) — Java-specific integration patterns
 - [TypeScript Testing](../../programming-languages/typescript/testing.md) — TypeScript-specific integration patterns
-
----
-
-**Last Updated**: 2026-03-04

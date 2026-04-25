@@ -17,7 +17,6 @@ related:
 principles:
   - explicit-over-implicit
   - automation-over-manual
-updated: 2025-01-23
 ---
 
 # TypeScript Behaviour-Driven Development
@@ -495,7 +494,6 @@ test("donation form on mobile", async ({ page }) => {
 
 ---
 
-**Last Updated**: 2025-01-23
 **TypeScript Version**: 5.0+ (baseline), 5.4+ (milestone), 5.6+ (stable), 5.9.3+ (latest stable)
 **Testing Frameworks**: Cucumber 10.x, Playwright 1.57.0
 **Maintainers**: OSE Documentation Team

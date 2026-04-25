@@ -19,7 +19,6 @@ related:
   - ./type-safety.md
 principles:
   - explicit-over-implicit
-updated: 2025-01-23
 ---
 
 # Python Web Services
@@ -99,14 +98,12 @@ app = FastAPI(
     version="1.0.0",
 )
 
-
 class ZakatCalculationRequest(BaseModel):
     """Request model for Zakat calculation."""
 
     payer_id: str = Field(min_length=5, max_length=50)
     wealth_amount: Decimal = Field(gt=0, description="Total wealth in USD")
     nisab_threshold: Decimal = Field(gt=0, description="Nisab threshold in USD")
-
 
 class ZakatCalculationResponse(BaseModel):
     """Response model for Zakat calculation."""
@@ -117,7 +114,6 @@ class ZakatCalculationResponse(BaseModel):
     zakat_amount: Decimal
     is_obligated: bool
     calculation_date: datetime
-
 
 @app.post(
     "/api/v1/zakat/calculate",
@@ -155,7 +151,6 @@ from typing import Annotated
 from sqlalchemy.orm import Session
 from database import SessionLocal
 
-
 def get_db() -> Session:
     """Database session dependency."""
     db = SessionLocal()
@@ -164,9 +159,7 @@ def get_db() -> Session:
     finally:
         db.close()
 
-
 DbSession = Annotated[Session, Depends(get_db)]
-
 
 @app.get("/api/v1/donations/{campaign_id}")
 async def get_campaign_donations(
@@ -189,7 +182,6 @@ async def get_campaign_donations(
 # GOOD: Background tasks for async operations
 from fastapi import BackgroundTasks
 
-
 async def send_zakat_receipt(payer_id: str, zakat_amount: Decimal) -> None:
     """Send Zakat receipt email (background task)."""
     # Simulate email sending
@@ -198,7 +190,6 @@ async def send_zakat_receipt(payer_id: str, zakat_amount: Decimal) -> None:
         subject="Zakat Payment Receipt",
         body=f"Your Zakat payment of ${zakat_amount} has been recorded.",
     )
-
 
 @app.post("/api/v1/zakat/payment")
 async def record_zakat_payment(
@@ -228,7 +219,6 @@ async def record_zakat_payment(
 from fastapi import Request
 from fastapi.responses import JSONResponse
 
-
 class InsufficientFundsError(Exception):
     """Raised when account has insufficient funds."""
 
@@ -236,7 +226,6 @@ class InsufficientFundsError(Exception):
         self.available = available
         self.required = required
         super().__init__(f"Insufficient funds: {available} < {required}")
-
 
 @app.exception_handler(InsufficientFundsError)
 async def insufficient_funds_handler(
@@ -253,7 +242,6 @@ async def insufficient_funds_handler(
             "required_amount": str(exc.required),
         },
     )
-
 
 @app.post("/api/v1/donations/process")
 async def process_donation(donation: DonationRequest) -> DonationResponse:
@@ -299,7 +287,6 @@ zakat_platform/
 from django.db import models
 from decimal import Decimal
 
-
 class ZakatRecord(models.Model):
     """Zakat calculation and payment record."""
 
@@ -344,7 +331,6 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from decimal import Decimal
 
-
 class ZakatRecordSerializer(serializers.ModelSerializer):
     """Serializer for Zakat records."""
 
@@ -384,7 +370,6 @@ class ZakatRecordSerializer(serializers.ModelSerializer):
 
         return super().create(validated_data)
 
-
 class ZakatRecordViewSet(viewsets.ModelViewSet):
     """ViewSet for Zakat records."""
 
@@ -419,7 +404,6 @@ class ZakatRecordViewSet(viewsets.ModelViewSet):
 # GOOD: Custom admin interface
 from django.contrib import admin
 from .models import ZakatRecord
-
 
 @admin.register(ZakatRecord)
 class ZakatRecordAdmin(admin.ModelAdmin):
@@ -481,14 +465,12 @@ app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///zakat.db"
 db = SQLAlchemy(app)
 
-
 class ZakatCalculationRequest(BaseModel):
     """Request validation with Pydantic."""
 
     payer_id: str = Field(min_length=5, max_length=50)
     wealth_amount: Decimal = Field(gt=0)
     nisab_threshold: Decimal = Field(gt=0)
-
 
 @app.route("/api/v1/zakat/calculate", methods=["POST"])
 def calculate_zakat():
@@ -513,7 +495,6 @@ def calculate_zakat():
         "is_obligated": data.wealth_amount >= data.nisab_threshold,
     })
 
-
 if __name__ == "__main__":
     app.run(debug=True)
 ```
@@ -528,20 +509,17 @@ from flask import Blueprint
 
 zakat_bp = Blueprint("zakat", __name__, url_prefix="/api/v1/zakat")
 
-
 @zakat_bp.route("/calculate", methods=["POST"])
 def calculate():
     """Calculate Zakat."""
     # Implementation here
     pass
 
-
 @zakat_bp.route("/records", methods=["GET"])
 def get_records():
     """Get Zakat records."""
     # Implementation here
     pass
-
 
 # Register blueprint in main app
 app.register_blueprint(zakat_bp)
@@ -561,14 +539,12 @@ import httpx
 from decimal import Decimal
 from pydantic import BaseModel
 
-
 class ExchangeRateResponse(BaseModel):
     """Exchange rate API response."""
 
     base: str
     date: str
     rates: dict[str, Decimal]
-
 
 async def get_gold_price_usd() -> Decimal:
     """Fetch current gold price in USD per gram."""
@@ -581,7 +557,6 @@ async def get_gold_price_usd() -> Decimal:
 
         data = response.json()
         return Decimal(str(data["price"])) / Decimal("31.1035")  # Troy oz to gram
-
 
 async def calculate_nisab_threshold() -> Decimal:
     """Calculate nisab threshold based on current gold price."""
@@ -597,7 +572,6 @@ async def calculate_nisab_threshold() -> Decimal:
 ```python
 # GOOD: Robust error handling with httpx
 from httpx import HTTPStatusError, RequestError, TimeoutException
-
 
 async def fetch_with_retry(url: str, max_retries: int = 3) -> dict:
     """Fetch URL with retry logic."""
@@ -654,7 +628,6 @@ POST   /api/v1/campaigns/{id}/donations  # Create donation
 POST   /api/v1/zakat/calculate         # RPC-style action (OK for calculations)
 """
 
-
 # BAD: Non-RESTful naming
 """
 Incorrect endpoints:
@@ -680,7 +653,6 @@ async def create_donation(donation: DonationRequest) -> DonationResponse:
     """Create donation."""
     pass
 
-
 @app.get(
     "/api/v1/donations/{donation_id}",
     status_code=status.HTTP_200_OK,  # Success
@@ -692,7 +664,6 @@ async def get_donation(donation_id: str) -> DonationResponse:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return donation
 
-
 @app.put(
     "/api/v1/donations/{donation_id}",
     status_code=status.HTTP_200_OK,  # Success
@@ -703,7 +674,6 @@ async def update_donation(
 ) -> DonationResponse:
     """Update donation."""
     pass
-
 
 @app.delete(
     "/api/v1/donations/{donation_id}",
@@ -723,14 +693,12 @@ async def delete_donation(donation_id: str) -> None:
 from fastapi import Query
 from typing import Optional
 
-
 class PaginatedResponse(BaseModel):
     """Paginated response model."""
 
     items: list[DonationResponse]
     next_cursor: Optional[str] = None
     has_more: bool
-
 
 @app.get("/api/v1/donations")
 async def list_donations(
@@ -778,23 +746,19 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 security = HTTPBearer()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-
 def create_access_token(user_id: str) -> str:
     """Create JWT access token."""
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode = {"sub": user_id, "exp": expire}
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verify password against hash."""
     return pwd_context.verify(plain_password, hashed_password)
 
-
 def hash_password(password: str) -> str:
     """Hash password with bcrypt."""
     return pwd_context.hash(password)
-
 
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
@@ -822,7 +786,6 @@ from typing import Annotated
 
 CurrentUser = Annotated[str, Depends(get_current_user)]
 
-
 @app.post("/api/v1/auth/login")
 async def login(credentials: LoginRequest) -> TokenResponse:
     """Login and get access token."""
@@ -836,13 +799,11 @@ async def login(credentials: LoginRequest) -> TokenResponse:
     access_token = create_access_token(user.id)
     return TokenResponse(access_token=access_token, token_type="bearer")
 
-
 @app.get("/api/v1/zakat/my-records")
 async def get_my_zakat_records(user_id: CurrentUser) -> list[ZakatRecordResponse]:
     """Get authenticated user's Zakat records."""
     records = await fetch_user_zakat_records(user_id)
     return records
-
 
 @app.post("/api/v1/donations")
 async def create_donation(
@@ -868,24 +829,20 @@ from fastapi import APIRouter
 # Version 1 API
 v1_router = APIRouter(prefix="/api/v1")
 
-
 @v1_router.post("/zakat/calculate")
 async def calculate_zakat_v1(request: ZakatRequestV1) -> ZakatResponseV1:
     """V1: Basic Zakat calculation."""
     # Simplified calculation
     pass
 
-
 # Version 2 API (with breaking changes)
 v2_router = APIRouter(prefix="/api/v2")
-
 
 @v2_router.post("/zakat/calculate")
 async def calculate_zakat_v2(request: ZakatRequestV2) -> ZakatResponseV2:
     """V2: Enhanced Zakat calculation with nisab auto-detection."""
     # Enhanced calculation with gold price lookup
     pass
-
 
 # Register both versions
 app.include_router(v1_router)
@@ -917,7 +874,6 @@ FastAPI auto-generates OpenAPI (Swagger) documentation.
 # GOOD: Custom OpenAPI metadata
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
-
 
 def custom_openapi():
     """Customize OpenAPI schema."""
@@ -953,7 +909,6 @@ def custom_openapi():
 
     app.openapi_schema = openapi_schema
     return app.openapi_schema
-
 
 app = FastAPI()
 app.openapi = custom_openapi
@@ -1018,7 +973,6 @@ async def calculate_zakat(request: ZakatRequest) -> ZakatResponse:
 from enum import Enum
 from datetime import date
 
-
 class CampaignStatus(str, Enum):
     """Campaign status enumeration."""
 
@@ -1026,7 +980,6 @@ class CampaignStatus(str, Enum):
     ACTIVE = "active"
     COMPLETED = "completed"
     CANCELLED = "cancelled"
-
 
 class CampaignCreateRequest(BaseModel):
     """Request to create campaign."""
@@ -1036,7 +989,6 @@ class CampaignCreateRequest(BaseModel):
     target_amount: Decimal = Field(gt=0)
     start_date: date
     end_date: date
-
 
 class CampaignResponse(BaseModel):
     """Campaign response model."""
@@ -1052,7 +1004,6 @@ class CampaignResponse(BaseModel):
     end_date: date
     progress_percentage: Decimal
 
-
 class DonationCreateRequest(BaseModel):
     """Request to create donation."""
 
@@ -1060,7 +1011,6 @@ class DonationCreateRequest(BaseModel):
     donor_id: str
     amount: Decimal = Field(gt=0)
     message: Optional[str] = None
-
 
 # Campaign endpoints
 @app.post("/api/v1/campaigns", status_code=status.HTTP_201_CREATED)
@@ -1079,7 +1029,6 @@ async def create_campaign(
     campaign_record = await save_campaign(campaign, created_by=user_id)
     return campaign_record
 
-
 @app.get("/api/v1/campaigns/{campaign_id}")
 async def get_campaign(campaign_id: str) -> CampaignResponse:
     """Get campaign details."""
@@ -1088,7 +1037,6 @@ async def get_campaign(campaign_id: str) -> CampaignResponse:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return campaign
 
-
 @app.get("/api/v1/campaigns")
 async def list_campaigns(
     status: Optional[CampaignStatus] = None,
@@ -1096,7 +1044,6 @@ async def list_campaigns(
 ) -> list[CampaignResponse]:
     """List donation campaigns."""
     return await fetch_campaigns(status=status, limit=limit)
-
 
 # Donation endpoints
 @app.post("/api/v1/donations", status_code=status.HTTP_201_CREATED)
@@ -1121,7 +1068,6 @@ async def create_donation(
     # Process donation
     donation_record = await process_donation(donation, user_id=user_id)
     return donation_record
-
 
 @app.get("/api/v1/campaigns/{campaign_id}/donations")
 async def get_campaign_donations(
@@ -1174,7 +1120,6 @@ class LoanStatus(str, Enum):
     FULLY_REPAID = "fully_repaid"
     DEFAULTED = "defaulted"
 
-
 class QardHasanLoanRequest(BaseModel):
     """Request for QardHasan loan."""
 
@@ -1183,13 +1128,11 @@ class QardHasanLoanRequest(BaseModel):
     purpose: str
     repayment_months: int = Field(gt=0, le=60)
 
-
 class LoanRepaymentRequest(BaseModel):
     """Loan repayment request."""
 
     loan_id: str
     payment_amount: Decimal = Field(gt=0)
-
 
 class QardHasanLoanResponse(BaseModel):
     """QardHasan loan response."""
@@ -1203,7 +1146,6 @@ class QardHasanLoanResponse(BaseModel):
     disbursement_date: Optional[date] = None
     repayment_months: int
 
-
 @app.post("/api/v1/qard-hasan/loans", status_code=status.HTTP_201_CREATED)
 async def create_loan_request(
     loan: QardHasanLoanRequest,
@@ -1213,7 +1155,6 @@ async def create_loan_request(
     # Validate: No interest allowed in QardHasan
     loan_record = await save_loan_request(loan, requester_id=user_id)
     return loan_record
-
 
 @app.post("/api/v1/qard-hasan/loans/{loan_id}/repayment")
 async def record_repayment(
@@ -1240,7 +1181,6 @@ async def record_repayment(
         updated_loan = await update_loan_status(loan_id, LoanStatus.FULLY_REPAID)
 
     return updated_loan
-
 
 @app.get("/api/v1/qard-hasan/loans/{loan_id}")
 async def get_loan(loan_id: str, user_id: CurrentUser) -> QardHasanLoanResponse:
@@ -1279,7 +1219,6 @@ DATABASE_URL = "postgresql+asyncpg://user:pass@localhost/db"
 engine = create_async_engine(DATABASE_URL, echo=True)
 AsyncSessionLocal = async_sessionmaker(engine, expire_on_commit=False)
 
-
 # Dependency: Database session
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     """Provide database session with automatic cleanup."""
@@ -1293,9 +1232,7 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
         finally:
             await session.close()
 
-
 DbSession = Annotated[AsyncSession, Depends(get_db)]
-
 
 # Dependency: Current authenticated user
 async def get_current_user(
@@ -1330,9 +1267,7 @@ async def get_current_user(
 
     return user
 
-
 CurrentUser = Annotated[User, Depends(get_current_user)]
-
 
 # Dependency: Admin user verification
 async def get_current_admin(current_user: CurrentUser) -> User:
@@ -1344,9 +1279,7 @@ async def get_current_admin(current_user: CurrentUser) -> User:
         )
     return current_user
 
-
 AdminUser = Annotated[User, Depends(get_current_admin)]
-
 
 # Dependency: Pagination parameters
 class PaginationParams:
@@ -1360,9 +1293,7 @@ class PaginationParams:
         self.skip = skip
         self.limit = limit
 
-
 Pagination = Annotated[PaginationParams, Depends()]
-
 
 # Service layer with dependency injection
 class ZakatService:
@@ -1397,15 +1328,12 @@ class ZakatService:
 
         return record
 
-
 # Dependency: Service factory
 async def get_zakat_service(db: DbSession) -> ZakatService:
     """Create ZakatService with database session."""
     return ZakatService(db)
 
-
 ZakatServiceDep = Annotated[ZakatService, Depends(get_zakat_service)]
-
 
 # Using layered dependencies in endpoint
 @app.post("/api/v1/zakat/calculate")
@@ -1457,7 +1385,6 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
-
 # Request ID middleware
 class RequestIDMiddleware(BaseHTTPMiddleware):
     """Add unique request ID to all requests."""
@@ -1470,7 +1397,6 @@ class RequestIDMiddleware(BaseHTTPMiddleware):
         response.headers["X-Request-ID"] = request_id
 
         return response
-
 
 # Logging middleware
 class LoggingMiddleware(BaseHTTPMiddleware):
@@ -1507,7 +1433,6 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         )
 
         return response
-
 
 # Error tracking middleware
 class ErrorTrackingMiddleware(BaseHTTPMiddleware):
@@ -1547,7 +1472,6 @@ class ErrorTrackingMiddleware(BaseHTTPMiddleware):
             # Re-raise to let FastAPI handle it
             raise
 
-
 # Performance monitoring middleware
 class PerformanceMiddleware(BaseHTTPMiddleware):
     """Monitor endpoint performance."""
@@ -1576,7 +1500,6 @@ class PerformanceMiddleware(BaseHTTPMiddleware):
             )
 
         return response
-
 
 # Add middleware to app (order matters - last added runs first)
 app.add_middleware(GZipMiddleware, minimum_size=1000)
@@ -1614,7 +1537,6 @@ SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-
 @pytest.fixture
 def client():
     """Create test client with test database."""
@@ -1633,7 +1555,6 @@ def client():
 
     # Clear overrides after test
     app.dependency_overrides.clear()
-
 
 @pytest.fixture
 def auth_headers(client):
@@ -1661,7 +1582,6 @@ def auth_headers(client):
 
     token = response.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}
-
 
 class TestZakatAPI:
     """Test Zakat calculation API."""
@@ -1733,7 +1653,6 @@ class TestZakatAPI:
 
         assert response.status_code == 401
 
-
 class TestDonationCampaignAPI:
     """Test donation campaign API."""
 
@@ -1804,13 +1723,11 @@ class TestDonationCampaignAPI:
         assert data["campaign_id"] == campaign_id
         assert Decimal(data["amount"]) == Decimal("1000.00")
 
-
 @pytest.mark.asyncio
 async def test_async_endpoint(client):
     """Test async endpoint behavior."""
     response = client.get("/api/v1/health")
     assert response.status_code == 200
-
 
 @pytest.mark.parametrize("wealth,nisab,expected_zakat", [
     ("10000", "5000", "250.00"),
@@ -1854,7 +1771,6 @@ from typing import List, Dict
 import json
 import asyncio
 
-
 class ConnectionManager:
     """Manage WebSocket connections for donation campaigns."""
 
@@ -1889,9 +1805,7 @@ class ConnectionManager:
             for connection in self.active_connections[campaign_id]:
                 await connection.send_json(message)
 
-
 manager = ConnectionManager()
-
 
 @app.websocket("/ws/campaigns/{campaign_id}")
 async def websocket_campaign_updates(
@@ -1932,7 +1846,6 @@ async def websocket_campaign_updates(
             campaign_id
         )
 
-
 # Background task to broadcast donation updates
 async def broadcast_donation_update(campaign_id: str, donation: Dict):
     """Broadcast new donation to all campaign subscribers."""
@@ -1949,7 +1862,6 @@ async def broadcast_donation_update(campaign_id: str, donation: Dict):
         },
         campaign_id
     )
-
 
 # Modified donation creation endpoint to broadcast updates
 @app.post("/api/v1/donations", status_code=status.HTTP_201_CREATED)
@@ -1993,7 +1905,6 @@ async def create_donation_with_broadcast(
 
 ---
 
-**Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
 **Maintainers**: OSE Platform Documentation Team
 

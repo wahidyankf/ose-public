@@ -15,7 +15,6 @@ principles:
   - explicit-over-implicit
   - reproducibility
 created: 2026-03-04
-updated: 2026-03-04
 ---
 
 # Three-Tier Testing Model
@@ -234,7 +233,3 @@ test("user can log in", async ({ page }) => {
 - [Test Doubles Standards](./test-doubles-standards.md) — mocks, stubs, in-memory implementations
 - [Java Testing Standards](../../programming-languages/java/testing-standards.md) — Java-specific tools and patterns
 - [TypeScript Testing](../../programming-languages/typescript/testing.md) — TypeScript-specific tools and patterns
-
----
-
-**Last Updated**: 2026-03-04

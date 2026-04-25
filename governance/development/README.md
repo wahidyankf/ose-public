@@ -9,7 +9,6 @@ tags:
   - conventions
   - ai-agents
 created: 2025-11-23
-updated: 2026-04-19
 ---
 
 # Development
@@ -105,7 +104,7 @@ Development practices in this directory fall into several categories:
 - [Commit Message Convention](./workflow/commit-messages.md) - Understanding Conventional Commits, commit granularity, and why we use them
 - [Reproducible Environments Convention](./workflow/reproducible-environments.md) - Practices for creating consistent, reproducible development and build environments. Covers runtime version management (Volta), dependency locking, environment configuration, and containerization
 - [Worktree Toolchain Initialization](./workflow/worktree-setup.md) - Mandatory two-step init (`npm install` then `npm run doctor -- --fix`) in the root repository worktree after creating or entering a git worktree. The first step keeps `node_modules/` consistent with `package-lock.json`; the second actively converges the 18+ polyglot toolchains (Go, Java, Rust, Elixir, Python, .NET, Dart, Clojure, Kotlin, C#, Node) managed by `rhino-cli doctor` — required because `package.json`'s `postinstall` hook swallows doctor failures with `|| true`
-- [Git Push Default Convention](./workflow/git-push-default.md) - Default push behavior: direct push to `origin main` with no PR unless explicitly instructed by user prompt or plan document. Covers linear history requirement (rebase before push), proactive retroactive compliance, and agent responsibilities — `plan-maker`/`plan-checker`/`plan-fixer`/`plan-executor` must not insert or tolerate unsolicited PR steps in delivery checklists
+- [Git Push Default Convention](./workflow/git-push-default.md) - Default push behavior: direct push to `origin main` with no PR unless explicitly instructed by user prompt or plan document. Covers linear history requirement (rebase before push), proactive retroactive compliance, and agent responsibilities — `plan-maker`/`plan-checker`/`plan-fixer` and the plan-execution workflow must not insert or tolerate unsolicited PR steps in delivery checklists
 - [Git Push Safety Convention](./workflow/git-push-safety.md) - Requires explicit per-instance user approval before any AI agent or automation executes `git push --force`, `--force-with-lease`, or `--no-verify`; prior approval does not carry forward
 - [Native-First Toolchain Management Convention](./workflow/native-first-toolchain.md) - Architectural decision to use native package managers and `rhino-cli doctor` instead of Terraform, Ansible, or Docker Dev Containers for development environment setup
 - [PR Merge Protocol Convention](./workflow/pr-merge-protocol.md) - Practice requiring explicit user approval before merging pull requests and mandating all quality gates pass before merge
@@ -179,7 +178,3 @@ These companion files exist in each subdirectory: `workflow/`, `quality/`, `patt
 - [Core Principles](../principles/README.md) - Layer 1: Foundational values that govern development practices
 - [Conventions](../conventions/README.md) - Layer 2: Documentation conventions (parallel governance with development)
 - [Workflows](../workflows/README.md) - Layer 5: Multi-step processes orchestrating agents
-
----
-
-**Last Updated**: 2026-04-11

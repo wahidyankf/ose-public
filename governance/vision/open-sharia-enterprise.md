@@ -9,7 +9,6 @@ tags:
   - islamic-enterprise
   - open-source
 created: 2025-12-24
-updated: 2025-12-24
 ---
 
 # Open Sharia Enterprise Vision
@@ -387,7 +386,3 @@ We know we're succeeding when:
 - [Development](../development/README.md) - Development practices aligned with the vision
 - [AI Agents](../../.claude/agents/README.md) - How automation serves our mission
 - [Workflows](../workflows/README.md) - Processes supporting our goals
-
----
-
-**Last Updated**: 2025-12-24

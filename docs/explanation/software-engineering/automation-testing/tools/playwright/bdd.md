@@ -15,7 +15,6 @@ principles:
   - explicit-over-implicit
   - automation-over-manual
 created: 2026-03-04
-updated: 2026-04-19
 ---
 
 # Playwright BDD Integration (playwright-bdd)
@@ -300,7 +299,3 @@ npx bddgen && npx playwright test
 - **[Playwright Framework Index](README.md)** — Playwright standards overview
 - **[apps/organiclever-be-e2e/README.md](../../../../../../apps/organiclever-be-e2e/README.md)** —
   E2E test project README
-
----
-
-**Last Updated**: 2026-03-04

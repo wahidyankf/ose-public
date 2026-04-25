@@ -20,7 +20,6 @@ principles:
   - automation-over-manual
   - reproducibility
 created: 2026-01-26
-updated: 2026-01-26
 ---
 
 # Next.js Testing
@@ -926,5 +925,4 @@ export default defineConfig({
 
 ---
 
-**Last Updated**: 2026-01-26
 **Next.js Version**: 14+ (Vitest, Playwright, React Testing Library)

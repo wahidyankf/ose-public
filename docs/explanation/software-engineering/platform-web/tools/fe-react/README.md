@@ -19,7 +19,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-01-25
-updated: 2026-01-25
 ---
 
 # React Framework
@@ -1750,7 +1749,6 @@ CMD ["npm", "run", "dev"]
 
 ---
 
-**Last Updated**: 2026-01-25
 **React Version**: 18.2+ (TypeScript 5+, targeting React 19)
 **Maintainers**: Platform Documentation Team
 
@@ -1973,7 +1971,3 @@ useEffect(() => {
 - **[Software Design](../../README.md)** - Architecture and development practices
 - **[Functional Programming](../../../../../../governance/development/pattern/functional-programming.md)** - FP principles
 - **[Accessibility Standards](../../../../../../governance/conventions/writing/quality.md)** - WCAG guidelines
-
----
-
-**Last Updated**: 2026-01-25

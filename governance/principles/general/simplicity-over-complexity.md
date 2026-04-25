@@ -10,7 +10,6 @@ tags:
   - yagni
   - over-engineering
 created: 2025-12-15
-updated: 2026-03-09
 ---
 
 # Simplicity Over Complexity
@@ -145,7 +144,6 @@ tags:
   - tag1
   - tag2
 created: 2025-12-15
-updated: 2025-12-15
 ---
 ```
 
@@ -174,7 +172,6 @@ priority: high
 visibility: public
 license: MIT
 created: 2025-12-15
-updated: 2025-12-15
 reviewed: 2025-12-15
 approved: 2025-12-15
 next_review: 2026-01-15
@@ -695,7 +692,3 @@ The right amount of complexity is the **minimum needed** for the current task.
 - [Goodbye, Clean Code](https://overreacted.io/goodbye-clean-code/) - Dan Abramov
 - [The Wrong Abstraction](https://sandimetz.com/blog/2016/1/20/the-wrong-abstraction) - Sandi Metz
 - [Composition Over Inheritance](https://en.wikipedia.org/wiki/Composition_over_inheritance)
-
----
-
-**Last Updated**: 2026-03-09

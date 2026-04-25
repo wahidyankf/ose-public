@@ -10,7 +10,6 @@ tags:
   - aria
   - focus
 created: 2026-03-28
-updated: 2026-03-28
 ---
 
 # Accessibility Convention
@@ -271,7 +270,3 @@ Dialogs require a **focus trap**: Tab and Shift+Tab must cycle only within the d
 - [Color Accessibility Convention](../../conventions/formatting/color-accessibility.md) — Master reference for color palette and contrast (docs scope)
 - [WCAG 2.2 Level AA](https://www.w3.org/WAI/WCAG22/quickref/) — International accessibility standard
 - [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/) — Verify contrast ratios
-
----
-
-**Last Updated**: 2026-03-28

@@ -9,7 +9,6 @@ tags:
   - maintenance
   - collections
 created: 2026-02-22
-updated: 2026-04-19
 ---
 
 # Dynamic Collection References Convention
@@ -276,7 +275,3 @@ The following agents check and enforce this convention:
 - `repo-rules-maker` - Creates governance documents following this convention
 - `repo-rules-checker` - Validates convention compliance across the repository
 - `repo-rules-fixer` - Fixes convention violations
-
----
-
-**Last Updated**: 2026-02-22

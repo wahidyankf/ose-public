@@ -9,7 +9,6 @@ tags:
   - open-source
   - repository-standards
 created: 2026-04-04
-updated: 2026-04-04
 ---
 
 # OSS Documentation Convention
@@ -917,7 +916,3 @@ When setting up a new repository:
 
 - [FINOS - Financial Services Open Source Foundation](https://www.finos.org/) (financial services as one enterprise domain)
 - [State of Open Source in Financial Services](https://www.linuxfoundation.org/research/the-2023-state-of-open-source-in-financial-services)
-
----
-
-**Last Updated**: 2026-04-04

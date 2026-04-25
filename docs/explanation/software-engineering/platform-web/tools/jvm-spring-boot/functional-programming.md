@@ -18,7 +18,6 @@ principles:
   - simplicity-over-complexity
   - separation-of-concerns
 created: 2026-01-25
-updated: 2026-01-26
 related:
   - ./idioms.md
   - ./best-practices.md

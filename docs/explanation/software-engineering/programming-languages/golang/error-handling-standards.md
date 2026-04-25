@@ -20,7 +20,6 @@ tags:
   - go-1.24
   - go-1.25
   - go-1.26
-updated: 2026-03-06
 principles:
   - explicit-over-implicit
 ---
@@ -2254,7 +2253,6 @@ principles:
 
 ---
 
-**Last Updated**: 2026-01-23
 **Go Version**: 1.21+ (baseline), 1.22+ (recommended), 1.23 (latest)
 **Maintainers**: Platform Documentation Team
 

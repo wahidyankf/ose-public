@@ -11,7 +11,6 @@ tags:
   - bdd
   - gherkin
 created: 2026-03-13
-updated: 2026-04-02
 ---
 
 # Three-Level Testing Standard

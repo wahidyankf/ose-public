@@ -27,7 +27,6 @@ related:
 principles:
   - simplicity-over-complexity
   - explicit-over-implicit
-updated: 2025-01-24
 ---
 
 # Python Idioms
@@ -195,7 +194,6 @@ graph TD
 from decimal import Decimal
 from typing import List
 
-
 def calculate_qualifying_zakat(
     wealth_items: List[Decimal],
     nisab_threshold: Decimal,
@@ -207,7 +205,6 @@ def calculate_qualifying_zakat(
         if amount >= nisab_threshold
     ]
     return zakat_obligations
-
 
 # BAD: Verbose loop-based approach
 def calculate_qualifying_zakat(wealth_items, nisab_threshold):
@@ -226,7 +223,6 @@ def calculate_qualifying_zakat(wealth_items, nisab_threshold):
 # GOOD: Dictionary comprehension for mapping
 from typing import Dict
 
-
 def create_donor_totals(donations: List[tuple[str, Decimal]]) -> Dict[str, Decimal]:
     """Aggregate donations by donor ID.
 
@@ -243,7 +239,6 @@ def create_donor_totals(donations: List[tuple[str, Decimal]]) -> Dict[str, Decim
 
     return donor_totals
 
-
 def format_donor_summary(donor_totals: Dict[str, Decimal]) -> Dict[str, str]:
     """Format donation totals for display."""
     return {
@@ -251,7 +246,6 @@ def format_donor_summary(donor_totals: Dict[str, Decimal]) -> Dict[str, str]:
         for donor_id, total in donor_totals.items()
         if total > Decimal("0")
     }
-
 
 # BAD: Manual dictionary construction
 def format_donor_summary(donor_totals):
@@ -271,7 +265,6 @@ def format_donor_summary(donor_totals):
 # GOOD: Set comprehension for unique values
 from typing import Set
 
-
 def extract_unique_payer_ids(zakat_records: List[dict]) -> Set[str]:
     """Extract unique payer IDs from Zakat records."""
     return {
@@ -279,7 +272,6 @@ def extract_unique_payer_ids(zakat_records: List[dict]) -> Set[str]:
         for record in zakat_records
         if record.get("status") == "paid"
     }
-
 
 # BAD: Manual set construction
 def extract_unique_payer_ids(zakat_records):
@@ -298,7 +290,6 @@ def extract_unique_payer_ids(zakat_records):
 # GOOD: Generator expression for memory efficiency
 from typing import Iterator
 
-
 def calculate_monthly_zakat_stream(
     annual_wealth: Decimal,
 ) -> Iterator[Decimal]:
@@ -313,11 +304,9 @@ def calculate_monthly_zakat_stream(
         for _ in range(12)
     )
 
-
 # Usage: Process without storing all values in memory
 for month_zakat in calculate_monthly_zakat_stream(Decimal("120000.00")):
     process_monthly_obligation(month_zakat)
-
 
 # BAD: List comprehension loads all values into memory
 def calculate_monthly_zakat_stream(annual_wealth):
@@ -337,14 +326,12 @@ EAFP (Easier to Ask for Forgiveness than Permission) and LBYL (Look Before You L
 # GOOD: EAFP - Try the operation, handle exceptions
 from decimal import Decimal, InvalidOperation
 
-
 def parse_donation_amount(amount_str: str) -> Decimal:
     """Parse donation amount using EAFP approach."""
     try:
         return Decimal(amount_str)
     except InvalidOperation:
         raise ValueError(f"Invalid donation amount: {amount_str}")
-
 
 def get_campaign_target(campaigns: dict, campaign_id: str) -> Decimal:
     """Retrieve campaign target using EAFP."""
@@ -353,7 +340,6 @@ def get_campaign_target(campaigns: dict, campaign_id: str) -> Decimal:
     except KeyError:
         raise ValueError(f"Campaign not found: {campaign_id}")
 
-
 # BAD: LBYL - Check before operating
 def parse_donation_amount(amount_str: str) -> Decimal:
     if not amount_str:  # BAD: Defensive checks
@@ -361,7 +347,6 @@ def parse_donation_amount(amount_str: str) -> Decimal:
     if not amount_str.replace(".", "").isdigit():  # BAD: Complex validation
         raise ValueError("Invalid amount")
     return Decimal(amount_str)
-
 
 def get_campaign_target(campaigns: dict, campaign_id: str) -> Decimal:
     if campaign_id not in campaigns:  # BAD: Check-then-use race condition
@@ -378,7 +363,6 @@ def get_campaign_target(campaigns: dict, campaign_id: str) -> Decimal:
 ```python
 # GOOD: LBYL appropriate for permission checks
 import os
-
 
 def read_zakat_records_file(filepath: str) -> List[dict]:
     """Read Zakat records with permission check."""
@@ -405,13 +389,11 @@ Context managers (the `with` statement) ensure resource cleanup even when except
 import json
 from pathlib import Path
 
-
 def save_zakat_calculation(calculation: dict, filepath: Path) -> None:
     """Save Zakat calculation to file with automatic cleanup."""
     with filepath.open("w") as f:
         json.dump(calculation, f, indent=2)
     # File automatically closed even if exception occurs
-
 
 # BAD: Manual file handling
 def save_zakat_calculation(calculation: dict, filepath: Path) -> None:
@@ -460,7 +442,6 @@ graph TD
 from contextlib import contextmanager
 from typing import Iterator
 
-
 class DatabaseConnection:
     """Database connection with transaction support."""
 
@@ -474,10 +455,8 @@ class DatabaseConnection:
             self.rollback()  # Rollback on exception
             raise
 
-
 # Usage
 db = DatabaseConnection()
-
 
 def record_zakat_payment(payer_id: str, amount: Decimal) -> None:
     """Record Zakat payment atomically."""
@@ -485,7 +464,6 @@ def record_zakat_payment(payer_id: str, amount: Decimal) -> None:
         db.insert_payment(payer_id, amount)
         db.update_payer_balance(payer_id, amount)
     # Automatically commits or rolls back
-
 
 # BAD: Manual transaction handling
 def record_zakat_payment(payer_id: str, amount: Decimal) -> None:
@@ -508,7 +486,6 @@ from contextlib import contextmanager
 from time import perf_counter
 from typing import Iterator
 
-
 @contextmanager
 def timing_context(operation_name: str) -> Iterator[None]:
     """Context manager for timing expensive operations."""
@@ -518,7 +495,6 @@ def timing_context(operation_name: str) -> Iterator[None]:
     finally:
         elapsed = perf_counter() - start_time
         print(f"{operation_name} completed in {elapsed:.3f} seconds")
-
 
 # Usage
 with timing_context("Zakat calculation"):
@@ -575,7 +551,6 @@ graph LR
 from functools import lru_cache
 from decimal import Decimal
 
-
 @lru_cache(maxsize=128)
 def calculate_nisab_value(
     gold_price_per_gram: Decimal,
@@ -583,7 +558,6 @@ def calculate_nisab_value(
 ) -> Decimal:
     """Calculate nisab threshold value (cached for performance)."""
     return gold_price_per_gram * gold_nisab_grams
-
 
 # Usage: Repeated calls return cached result
 nisab_1 = calculate_nisab_value(Decimal("60.00"))  # Calculates
@@ -599,9 +573,7 @@ nisab_2 = calculate_nisab_value(Decimal("60.00"))  # Returns cached value
 from functools import wraps
 from typing import Callable, TypeVar
 
-
 T = TypeVar("T")
-
 
 def validate_positive_amount(func: Callable[..., T]) -> Callable[..., T]:
     """Decorator ensuring Decimal amount parameter is positive."""
@@ -614,7 +586,6 @@ def validate_positive_amount(func: Callable[..., T]) -> Callable[..., T]:
 
     return wrapper
 
-
 @validate_positive_amount
 def calculate_murabaha_profit(
     asset_cost: Decimal,
@@ -622,7 +593,6 @@ def calculate_murabaha_profit(
 ) -> Decimal:
     """Calculate Murabaha profit (validated for positive asset cost)."""
     return asset_cost * profit_margin_rate
-
 
 # Usage
 profit = calculate_murabaha_profit(Decimal("200000"), Decimal("0.15"))  # OK
@@ -637,7 +607,6 @@ profit = calculate_murabaha_profit(Decimal("-1000"), Decimal("0.15"))  # Raises 
 # GOOD: Property decorator for computed attributes
 from dataclasses import dataclass
 from decimal import Decimal
-
 
 @dataclass
 class MurabahaContract:
@@ -661,7 +630,6 @@ class MurabahaContract:
     def financing_amount(self) -> Decimal:
         """Computed financing amount after down payment."""
         return self.total_selling_price - self.down_payment
-
 
 # Usage: Properties accessed like attributes
 contract = MurabahaContract(
@@ -726,7 +694,6 @@ graph TD
 from typing import Iterator
 import csv
 
-
 def read_zakat_records_stream(filepath: str) -> Iterator[dict]:
     """Stream Zakat records without loading entire file into memory."""
     with open(filepath, "r") as f:
@@ -738,13 +705,11 @@ def read_zakat_records_stream(filepath: str) -> Iterator[dict]:
                 "zakat_amount": Decimal(row["zakat_amount"]),
             }
 
-
 # Usage: Process records one at a time
 total_zakat = Decimal("0")
 for record in read_zakat_records_stream("zakat_records.csv"):
     total_zakat += record["zakat_amount"]
 # Memory usage constant regardless of file size
-
 
 # BAD: Load entire file into memory
 def read_zakat_records_list(filepath: str) -> List[dict]:
@@ -768,14 +733,12 @@ def read_zakat_records_list(filepath: str) -> List[dict]:
 # GOOD: Composable generator pipeline
 from typing import Iterator
 
-
 def read_donations(filepath: str) -> Iterator[dict]:
     """Read donation records from file."""
     with open(filepath, "r") as f:
         reader = csv.DictReader(f)
         for row in reader:
             yield row
-
 
 def filter_valid_donations(donations: Iterator[dict]) -> Iterator[dict]:
     """Filter donations with valid amounts."""
@@ -787,7 +750,6 @@ def filter_valid_donations(donations: Iterator[dict]) -> Iterator[dict]:
         except (KeyError, ValueError):
             continue  # Skip invalid donations
 
-
 def aggregate_by_campaign(donations: Iterator[dict]) -> dict[str, Decimal]:
     """Aggregate donation amounts by campaign."""
     campaign_totals = {}
@@ -798,7 +760,6 @@ def aggregate_by_campaign(donations: Iterator[dict]) -> dict[str, Decimal]:
             campaign_totals.get(campaign_id, Decimal("0")) + amount
         )
     return campaign_totals
-
 
 # Usage: Composable pipeline with constant memory
 donations = read_donations("donations.csv")
@@ -818,7 +779,6 @@ Comprehensions can handle complex transformations beyond basic filtering.
 # GOOD: Nested comprehension for hierarchical data
 from typing import List, Dict
 
-
 def extract_all_beneficiary_amounts(
     waqf_distributions: List[Dict[str, List[Dict[str, Decimal]]]],
 ) -> List[Decimal]:
@@ -836,7 +796,6 @@ def extract_all_beneficiary_amounts(
         for beneficiary in waqf["beneficiaries"]
         if beneficiary["amount"] > Decimal("0")
     ]
-
 
 # Usage
 waqf_data = [
@@ -858,7 +817,6 @@ waqf_data = [
 
 all_amounts = extract_all_beneficiary_amounts(waqf_data)
 # Result: [Decimal('5000'), Decimal('3000'), Decimal('8000'), Decimal('2000')]
-
 
 # BAD: Manual nested loops
 def extract_all_beneficiary_amounts(waqf_distributions):
@@ -904,7 +862,6 @@ def categorize_zakat_assets(
         ],
     }
 
-
 # BETTER: Single-pass categorization with conditional expression
 def categorize_zakat_assets_efficient(
     assets: List[Dict[str, Decimal]],
@@ -917,7 +874,6 @@ def categorize_zakat_assets_efficient(
         categories[category].append(asset["id"])
     return categories
 
-
 # ADVANCED: Using comprehension with ternary for transformation
 def classify_murabaha_contracts(
     contracts: List[Dict[str, Decimal]],
@@ -928,7 +884,6 @@ def classify_murabaha_contracts(
         f"{contract['id']}:HIGH" if contract["amount"] >= threshold else f"{contract['id']}:STD"
         for contract in contracts
     ]
-
 
 # Usage
 contracts = [
@@ -959,7 +914,6 @@ from dataclasses import dataclass, field
 from decimal import Decimal
 from typing import ClassVar
 
-
 @dataclass(frozen=True)
 class Money:
     """Immutable monetary value with currency."""
@@ -989,13 +943,11 @@ class Money:
         """Multiply money by decimal factor."""
         return Money(self.amount * factor, self.currency)
 
-
 # Usage: Immutable value object
 zakat_base = Money(Decimal("100000"), "SAR")
 zakat_amount = zakat_base * Decimal("0.025")  # Money(Decimal('2500'), 'SAR')
 
 # zakat_base.amount = Decimal("200000")  # Error: frozen dataclass
-
 
 # BAD: Mutable class with manual __init__
 class Money:
@@ -1019,7 +971,6 @@ from datetime import datetime
 from typing import List
 from uuid import uuid4
 
-
 @dataclass
 class ZakatTransaction:
     """Zakat transaction record with auto-generated ID and timestamp."""
@@ -1036,7 +987,6 @@ class ZakatTransaction:
     # Exclude timestamp from comparison
     timestamp: datetime = field(default_factory=datetime.now, compare=False)
 
-
 # Usage: Each instance gets unique ID and timestamp
 txn1 = ZakatTransaction("P001", Decimal("100000"), Decimal("2500"))
 txn2 = ZakatTransaction("P002", Decimal("150000"), Decimal("3750"))
@@ -1044,13 +994,11 @@ txn2 = ZakatTransaction("P002", Decimal("150000"), Decimal("3750"))
 print(txn1.transaction_id)  # "ZT-a3f8b2c1"
 print(txn2.transaction_id)  # "ZT-9d4e7a2b" (different)
 
-
 # BAD: Mutable default (shared across instances!)
 @dataclass
 class ZakatTransaction:
     payer_id: str
     metadata: dict = {}  # BAD: Shared mutable default!
-
 
 # Dangerous: Both instances share same dict
 txn1 = ZakatTransaction("P001")
@@ -1069,7 +1017,6 @@ from dataclasses import dataclass, field
 from datetime import date
 from decimal import Decimal
 
-
 @dataclass(order=True)
 class WaqfDistribution:
     """Waqf distribution record with automatic sorting by amount."""
@@ -1087,7 +1034,6 @@ class WaqfDistribution:
         # Store negative for descending order
         object.__setattr__(self, "amount", -abs(self.amount))
 
-
 # Usage: Automatic sorting by amount (descending)
 distributions = [
     WaqfDistribution(Decimal("5000"), "B001", date(2025, 1, 15), "W001"),
@@ -1098,7 +1044,6 @@ distributions = [
 sorted_distributions = sorted(distributions)
 # Sorted by amount descending: 8000, 5000, 3000
 
-
 # ALTERNATIVE: Custom sort key without modifying data
 @dataclass
 class WaqfDistribution:
@@ -1106,7 +1051,6 @@ class WaqfDistribution:
     beneficiary_id: str
     distribution_date: date
     waqf_id: str
-
 
 # Sort without modifying class
 sorted_distributions = sorted(distributions, key=lambda d: d.amount, reverse=True)
@@ -1123,7 +1067,6 @@ sorted_distributions = sorted(distributions, key=lambda d: d.amount, reverse=Tru
 from dataclasses import dataclass, field
 from decimal import Decimal
 from typing import Optional
-
 
 @dataclass
 class MurabahaContract:
@@ -1156,7 +1099,6 @@ class MurabahaContract:
         self.total_price = self.asset_cost + self.profit_amount
         self.financed_amount = self.total_price - self.down_payment
 
-
 # Usage: Derived fields computed automatically
 contract = MurabahaContract(
     contract_id="MC-001",
@@ -1168,7 +1110,6 @@ contract = MurabahaContract(
 print(contract.profit_amount)  # Decimal('75000')
 print(contract.total_price)  # Decimal('575000')
 print(contract.financed_amount)  # Decimal('475000')
-
 
 # BAD: Manual computation in properties (computed on every access)
 class MurabahaContract:
@@ -1192,7 +1133,6 @@ The `itertools` module provides powerful iteration utilities.
 from itertools import chain
 from typing import List, Iterator
 
-
 def aggregate_all_zakat_records(
     individual_records: List[dict],
     corporate_records: List[dict],
@@ -1201,11 +1141,9 @@ def aggregate_all_zakat_records(
     """Combine multiple Zakat record sources into single stream."""
     return chain(individual_records, corporate_records, waqf_records)
 
-
 # Usage: Process all records uniformly
 for record in aggregate_all_zakat_records(individuals, corporates, waqfs):
     process_zakat_record(record)
-
 
 # ADVANCED: chain.from_iterable for nested sequences
 def flatten_beneficiary_lists(
@@ -1213,7 +1151,6 @@ def flatten_beneficiary_lists(
 ) -> Iterator[dict]:
     """Flatten nested beneficiary lists from multiple Waqf distributions."""
     return chain.from_iterable(waqf_distributions)
-
 
 # Usage
 waqf_beneficiaries = [
@@ -1223,7 +1160,6 @@ waqf_beneficiaries = [
 
 for beneficiary in flatten_beneficiary_lists(waqf_beneficiaries):
     process_beneficiary(beneficiary)
-
 
 # BAD: Manual concatenation
 def aggregate_all_zakat_records(individual_records, corporate_records, waqf_records):
@@ -1244,7 +1180,6 @@ from itertools import groupby
 from typing import Dict, List
 from operator import itemgetter
 
-
 def group_donations_by_campaign(
     donations: List[Dict[str, str | Decimal]],
 ) -> Dict[str, List[Dict[str, str | Decimal]]]:
@@ -1258,7 +1193,6 @@ def group_donations_by_campaign(
 
     return grouped
 
-
 # Usage
 donations = [
     {"campaign_id": "C001", "amount": Decimal("500"), "donor": "D1"},
@@ -1271,7 +1205,6 @@ grouped_donations = group_donations_by_campaign(donations)
 #   'C001': [{'campaign_id': 'C001', ...}, {'campaign_id': 'C001', ...}],
 #   'C002': [{'campaign_id': 'C002', ...}]
 # }
-
 
 # IMPORTANT: groupby requires sorted input
 # BAD: Ungrouped input leads to incorrect results
@@ -1302,7 +1235,6 @@ for campaign_id, group in groupby(unsorted_donations, key=itemgetter("campaign_i
 from itertools import islice
 from typing import Iterator, List
 
-
 def paginate_zakat_records(
     all_records: Iterator[dict],
     page_number: int,
@@ -1321,10 +1253,8 @@ def paginate_zakat_records(
     start_index = (page_number - 1) * page_size
     return list(islice(all_records, start_index, start_index + page_size))
 
-
 # Usage: Fetch page 3 (records 200-299)
 page_3_records = paginate_zakat_records(record_stream, page_number=3, page_size=100)
-
 
 # ADVANCED: Windowing with islice
 def create_sliding_window(
@@ -1342,7 +1272,6 @@ def create_sliding_window(
         window = window[1:] + [amount]  # Slide window
         yield tuple(window)
 
-
 # Usage: 7-day moving window of Zakat collections
 for window in create_sliding_window(daily_collections, window_size=7):
     moving_avg = sum(window) / len(window)
@@ -1358,7 +1287,6 @@ for window in create_sliding_window(daily_collections, window_size=7):
 from itertools import combinations
 from typing import List, Iterator
 
-
 def analyze_waqf_beneficiary_pairs(
     beneficiaries: List[str],
 ) -> Iterator[tuple[str, str]]:
@@ -1372,14 +1300,12 @@ def analyze_waqf_beneficiary_pairs(
     """
     return combinations(beneficiaries, 2)
 
-
 # Usage: Check all pairs for conflicts
 beneficiaries = ["B001", "B002", "B003", "B004"]
 
 for beneficiary_a, beneficiary_b in analyze_waqf_beneficiary_pairs(beneficiaries):
     if has_conflict_of_interest(beneficiary_a, beneficiary_b):
         log_conflict(beneficiary_a, beneficiary_b)
-
 
 # ADVANCED: Multi-asset portfolio combinations
 def generate_zakat_portfolio_scenarios(
@@ -1388,7 +1314,6 @@ def generate_zakat_portfolio_scenarios(
 ) -> Iterator[tuple[str, ...]]:
     """Generate all possible asset portfolios of specified size."""
     return combinations(assets, portfolio_size)
-
 
 # Usage: Analyze all 3-asset portfolios
 assets = ["Gold", "Silver", "Cash", "Property", "Stocks"]
@@ -1453,7 +1378,6 @@ Python uses duck typing: "If it walks like a duck and quacks like a duck, it's a
 from typing import Protocol
 from decimal import Decimal
 
-
 class FinancialCalculator(Protocol):
     """Protocol for financial calculation services."""
 
@@ -1461,13 +1385,11 @@ class FinancialCalculator(Protocol):
         """Calculate financial obligation from base amount."""
         ...
 
-
 class ZakatCalculator:
     """Calculate Zakat (2.5% of wealth)."""
 
     def calculate(self, wealth_amount: Decimal) -> Decimal:
         return wealth_amount * Decimal("0.025")
-
 
 class DonationCalculator:
     """Calculate recommended donation (1% of income)."""
@@ -1475,14 +1397,12 @@ class DonationCalculator:
     def calculate(self, income_amount: Decimal) -> Decimal:
         return income_amount * Decimal("0.01")
 
-
 def apply_calculator(
     calculator: FinancialCalculator,
     amounts: List[Decimal],
 ) -> List[Decimal]:
     """Apply calculator to all amounts (duck typed)."""
     return [calculator.calculate(amount) for amount in amounts]
-
 
 # Usage: Both calculators work without shared base class
 zakat_calc = ZakatCalculator()
@@ -1505,7 +1425,6 @@ Properties provide computed attributes with attribute syntax.
 from dataclasses import dataclass
 from datetime import date
 from decimal import Decimal
-
 
 @dataclass(frozen=True)
 class QardHasanLoan:
@@ -1533,7 +1452,6 @@ class QardHasanLoan:
             return Decimal("0")
         return (self.repaid_amount / self.principal_amount) * Decimal("100")
 
-
 # Usage: Properties accessed like attributes
 loan = QardHasanLoan(
     loan_id="QL-001",
@@ -1552,7 +1470,6 @@ print(loan.repayment_percentage)  # Decimal('40')
 ```python
 # GOOD: Property with setter for validation
 from decimal import Decimal
-
 
 class DonationCampaign:
     """Donation campaign with validated target."""
@@ -1574,7 +1491,6 @@ class DonationCampaign:
             raise ValueError("Target amount must be positive")
         self._target_amount = value
 
-
 # Usage
 campaign = DonationCampaign("CAMP-001", Decimal("100000"))
 campaign.target_amount = Decimal("150000")  # OK
@@ -1593,7 +1509,6 @@ Special methods (dunder methods: `__method__`) customize object behavior.
 # GOOD: __str__ and __repr__ for meaningful representations
 from dataclasses import dataclass
 from decimal import Decimal
-
 
 @dataclass
 class ZakatObligation:
@@ -1619,7 +1534,6 @@ class ZakatObligation:
             f"zakat_amount={self.zakat_amount!r})"
         )
 
-
 # Usage
 obligation = ZakatObligation("PAYER-001", Decimal("100000"), Decimal("2500"))
 print(str(obligation))  # Zakat Obligation: PAYER-001 owes $2,500.00 on $100,000.00
@@ -1635,7 +1549,6 @@ print(repr(obligation))  # ZakatObligation(payer_id='PAYER-001', ...)
 from functools import total_ordering
 from dataclasses import dataclass
 from decimal import Decimal
-
 
 @total_ordering
 @dataclass(frozen=True)
@@ -1657,7 +1570,6 @@ class Donation:
         if not isinstance(other, Donation):
             return NotImplemented
         return self.amount < other.amount
-
 
 # Usage: @total_ordering generates other comparison operators
 donations = [
@@ -1712,7 +1624,6 @@ The `functools` module provides higher-order functions and decorators.
 from functools import lru_cache
 from decimal import Decimal
 
-
 @lru_cache(maxsize=256)
 def calculate_nisab_threshold(
     gold_price_per_gram: Decimal,
@@ -1735,7 +1646,6 @@ def calculate_nisab_threshold(
     silver_nisab = silver_price_per_gram * Decimal("595")
     return min(gold_nisab, silver_nisab)
 
-
 # Usage: Repeated calls with same arguments return cached result
 gold_price = Decimal("60.00")
 silver_price = Decimal("0.70")
@@ -1751,10 +1661,8 @@ print(calculate_nisab_threshold.cache_info())
 # Clear cache when prices update
 calculate_nisab_threshold.cache_clear()
 
-
 # ADVANCED: Cache with custom key function
 from functools import lru_cache, wraps
-
 
 def cache_by_date(func):
     """Cache function results by date only (ignore time)."""
@@ -1771,13 +1679,11 @@ def cache_by_date(func):
 
     return wrapper
 
-
 @cache_by_date
 def fetch_daily_exchange_rate(timestamp: datetime, currency: str) -> Decimal:
     """Fetch exchange rate (cached by date, ignoring time)."""
     # Expensive API call
     return api.get_exchange_rate(timestamp.date(), currency)
-
 
 # Usage: Multiple calls on same date return cached result
 rate_1 = fetch_daily_exchange_rate(datetime(2025, 1, 24, 9, 0), "USD")
@@ -1797,7 +1703,6 @@ rate_2 = fetch_daily_exchange_rate(datetime(2025, 1, 24, 15, 30), "USD")  # Cach
 from functools import partial
 from decimal import Decimal
 
-
 def calculate_zakat_general(
     wealth_amount: Decimal,
     nisab_threshold: Decimal,
@@ -1807,7 +1712,6 @@ def calculate_zakat_general(
     if wealth_amount < nisab_threshold:
         return Decimal("0")
     return wealth_amount * zakat_rate
-
 
 # Create specialized functions with partial application
 calculate_standard_zakat = partial(
@@ -1822,12 +1726,10 @@ calculate_agricultural_zakat = partial(
     zakat_rate=Decimal("0.10"),  # 10% for irrigated crops
 )
 
-
 # Usage: Simplified function calls
 wealth = Decimal("100000")
 standard_zakat = calculate_standard_zakat(wealth)  # Only wealth argument needed
 agricultural_zakat = calculate_agricultural_zakat(Decimal("50000"))
-
 
 # ADVANCED: Partial with keyword arguments
 def create_murabaha_calculator(
@@ -1859,7 +1761,6 @@ def create_murabaha_calculator(
 
     return calculate_murabaha
 
-
 # Create specialized calculators
 home_murabaha_calc = create_murabaha_calculator(
     profit_margin_rate=Decimal("0.12"),
@@ -1889,7 +1790,6 @@ from functools import reduce
 from decimal import Decimal
 from typing import List, Dict
 
-
 def aggregate_zakat_by_category(
     transactions: List[Dict[str, str | Decimal]],
 ) -> Dict[str, Decimal]:
@@ -1907,7 +1807,6 @@ def aggregate_zakat_by_category(
 
     return reduce(accumulate_categories, transactions, {})
 
-
 # Usage
 transactions = [
     {"category": "Gold", "zakat_amount": Decimal("2500")},
@@ -1918,7 +1817,6 @@ transactions = [
 
 category_totals = aggregate_zakat_by_category(transactions)
 # {'Gold': Decimal('5500'), 'Cash': Decimal('1500'), 'Stocks': Decimal('5000')}
-
 
 # ADVANCED: Reduce for nested aggregation
 def calculate_total_waqf_impact(
@@ -1936,7 +1834,6 @@ def calculate_total_waqf_impact(
         return total + beneficiary_sum
 
     return reduce(sum_beneficiaries, waqf_distributions, Decimal("0"))
-
 
 # Usage
 waqf_data = [
@@ -1956,7 +1853,6 @@ waqf_data = [
 ]
 
 total_impact = calculate_total_waqf_impact(waqf_data)  # Decimal('16000')
-
 
 # NOTE: For simple summation, prefer sum() builtin
 # BETTER for simple cases:
@@ -1982,9 +1878,7 @@ from functools import wraps
 from typing import Callable, TypeVar
 from time import perf_counter
 
-
 T = TypeVar("T")
-
 
 def timing_decorator(func: Callable[..., T]) -> Callable[..., T]:
     """Decorator that times function execution."""
@@ -1999,7 +1893,6 @@ def timing_decorator(func: Callable[..., T]) -> Callable[..., T]:
 
     return wrapper
 
-
 @timing_decorator
 def calculate_complex_zakat(wealth_records: List[dict]) -> Decimal:
     """Calculate Zakat across multiple asset types.
@@ -2009,11 +1902,9 @@ def calculate_complex_zakat(wealth_records: List[dict]) -> Decimal:
     # Implementation
     ...
 
-
 # With @wraps: Function metadata preserved
 print(calculate_complex_zakat.__name__)  # 'calculate_complex_zakat'
 print(calculate_complex_zakat.__doc__)  # Original docstring preserved
-
 
 # BAD: Without @wraps
 def timing_decorator_bad(func):
@@ -2023,12 +1914,10 @@ def timing_decorator_bad(func):
 
     return wrapper  # Missing @wraps!
 
-
 @timing_decorator_bad
 def calculate_complex_zakat(wealth_records):
     """Calculate Zakat across multiple asset types."""
     ...
-
 
 # Without @wraps: Metadata lost
 print(calculate_complex_zakat.__name__)  # 'wrapper' - Wrong!
@@ -2050,7 +1939,6 @@ Modern Python uses `pathlib.Path` instead of `os.path` for file operations.
 from pathlib import Path
 from decimal import Decimal
 import json
-
 
 def save_zakat_report(
     report_data: dict,
@@ -2081,7 +1969,6 @@ def save_zakat_report(
 
     return report_file
 
-
 # Usage: Clean path operations
 output_path = Path("/var/ose/output")
 report_path = save_zakat_report(
@@ -2092,10 +1979,8 @@ report_path = save_zakat_report(
 
 print(report_path)  # PosixPath('/var/ose/output/zakat_reports/2025/P001_zakat_report.json')
 
-
 # BAD: os.path string manipulation
 import os
-
 
 def save_zakat_report_old(report_data, output_dir, payer_id):
     reports_dir = os.path.join(output_dir, "zakat_reports", "2025")  # Verbose
@@ -2120,7 +2005,6 @@ def save_zakat_report_old(report_data, output_dir, payer_id):
 from pathlib import Path
 from typing import Iterator
 
-
 def find_murabaha_contracts(
     contracts_dir: Path,
     year: int,
@@ -2141,17 +2025,14 @@ def find_murabaha_contracts(
         if contract_file.is_file():
             yield contract_file
 
-
 # Usage: Iterate over matching files
 contracts_root = Path("/var/ose/contracts")
 
 for contract_path in find_murabaha_contracts(contracts_root, year=2025):
     process_contract(contract_path)
 
-
 # ADVANCED: Filter files by size and date
 from datetime import datetime, timedelta
-
 
 def find_large_recent_reports(
     reports_dir: Path,
@@ -2172,7 +2053,6 @@ def find_large_recent_reports(
         if stat.st_size >= min_size_bytes and stat.st_mtime >= cutoff_time:
             yield report_file
 
-
 # Usage
 reports_root = Path("/var/ose/reports")
 
@@ -2189,7 +2069,6 @@ for report_path in find_large_recent_reports(reports_root, min_size_mb=2.0, days
 from pathlib import Path
 import json
 from decimal import Decimal
-
 
 def load_zakat_calculation(filepath: Path) -> dict:
     """Load Zakat calculation from JSON file safely.
@@ -2217,7 +2096,6 @@ def load_zakat_calculation(filepath: Path) -> dict:
 
     return data
 
-
 # Usage: Safe file loading
 calculation_path = Path("/var/ose/calculations/P001_zakat.json")
 
@@ -2243,7 +2121,6 @@ Enumerations provide type-safe constants with semantic meaning.
 from enum import Enum, auto
 from decimal import Decimal
 
-
 class ZakatAssetCategory(Enum):
     """Categories of Zakat-eligible assets."""
 
@@ -2255,7 +2132,6 @@ class ZakatAssetCategory(Enum):
     AGRICULTURAL = auto()
     LIVESTOCK = auto()
 
-
 class TransactionStatus(Enum):
     """Zakat transaction status."""
 
@@ -2263,7 +2139,6 @@ class TransactionStatus(Enum):
     CONFIRMED = "confirmed"
     PAID = "paid"
     CANCELLED = "cancelled"
-
 
 # Usage: Type-safe enum members
 def calculate_zakat_by_category(
@@ -2277,7 +2152,6 @@ def calculate_zakat_by_category(
         return asset_value * Decimal("0.10")  # 10% for irrigated
     # ... other categories
 
-
 # Type safety: Only valid enum members accepted
 zakat = calculate_zakat_by_category(
     ZakatAssetCategory.GOLD,
@@ -2285,7 +2159,6 @@ zakat = calculate_zakat_by_category(
 )
 
 # zakat = calculate_zakat_by_category("gold", Decimal("100000"))  # Type error!
-
 
 # Iteration over enum members
 for category in ZakatAssetCategory:
@@ -2303,7 +2176,6 @@ for category in ZakatAssetCategory:
 # GOOD: IntEnum for ordered numeric constants
 from enum import IntEnum
 
-
 class WaqfPriority(IntEnum):
     """Waqf beneficiary priority levels (higher = more urgent)."""
 
@@ -2312,7 +2184,6 @@ class WaqfPriority(IntEnum):
     HIGH = 3
     CRITICAL = 4
 
-
 # Usage: Natural comparison and sorting
 def should_prioritize_beneficiary(
     beneficiary_priority: WaqfPriority,
@@ -2320,7 +2191,6 @@ def should_prioritize_beneficiary(
 ) -> bool:
     """Check if beneficiary should be prioritized."""
     return beneficiary_priority >= threshold
-
 
 # Comparison works naturally
 if WaqfPriority.CRITICAL > WaqfPriority.MEDIUM:
@@ -2339,7 +2209,6 @@ sorted_priorities = sorted(priorities)  # [LOW, MEDIUM, CRITICAL]
 # GOOD: Flag enum for bitmask combinations
 from enum import Flag, auto
 
-
 class MurabahaFeatures(Flag):
     """Murabaha contract features (can be combined)."""
 
@@ -2347,7 +2216,6 @@ class MurabahaFeatures(Flag):
     DEFERRED_PAYMENT = auto()  # Deferred payment schedule
     GRACE_PERIOD = auto()  # Grace period for payments
     COLLATERAL = auto()  # Requires collateral
-
 
 # Usage: Combine multiple features with | operator
 contract_features = (
@@ -2383,13 +2251,11 @@ Structural pattern matching provides expressive conditional logic.
 from decimal import Decimal
 from enum import Enum
 
-
 class AssetType(Enum):
     GOLD = "gold"
     SILVER = "silver"
     CASH = "cash"
     STOCKS = "stocks"
-
 
 def calculate_zakat_by_type(asset_type: AssetType, value: Decimal) -> Decimal:
     """Calculate Zakat using pattern matching."""
@@ -2410,7 +2276,6 @@ def calculate_zakat_by_type(asset_type: AssetType, value: Decimal) -> Decimal:
             # Unknown asset type
             raise ValueError(f"Unsupported asset type: {asset_type}")
 
-
 # ADVANCED: Pattern matching with guards
 def categorize_murabaha_risk(
     contract_amount: Decimal,
@@ -2430,7 +2295,6 @@ def categorize_murabaha_risk(
 
         case _:
             return "STANDARD_RISK"
-
 
 # Usage
 risk = categorize_murabaha_risk(
@@ -2453,7 +2317,6 @@ risk = categorize_murabaha_risk(
 # GOOD: Match with structural unpacking
 from typing import Dict, Any
 
-
 def process_zakat_transaction(transaction: Dict[str, Any]) -> str:
     """Process Zakat transaction based on structure."""
     match transaction:
@@ -2474,7 +2337,6 @@ def process_zakat_transaction(transaction: Dict[str, Any]) -> str:
 
         case _:
             raise ValueError(f"Unknown transaction type: {transaction}")
-
 
 # Usage
 payment_txn = {
@@ -2505,13 +2367,11 @@ ZakatRecord: TypeAlias = Dict[str, str | Decimal]
 BeneficiaryList: TypeAlias = List[Dict[str, str | Decimal]]
 PortfolioWeights: TypeAlias = Dict[str, Decimal]
 
-
 def aggregate_zakat_records(
     records: List[ZakatRecord],
 ) -> Dict[str, Decimal]:
     """Aggregate Zakat records by payer (with readable type alias)."""
     ...
-
 
 def allocate_waqf_distribution(
     total_amount: Decimal,
@@ -2521,14 +2381,12 @@ def allocate_waqf_distribution(
     """Allocate Waqf funds using portfolio weights."""
     ...
 
-
 # ADVANCED: Generic type aliases
 from typing import TypeVar, Callable
 
 T = TypeVar("T")
 ProcessorFunc: TypeAlias = Callable[[T], T]
 ValidatorFunc: TypeAlias = Callable[[T], bool]
-
 
 def apply_with_validation(
     value: T,
@@ -2550,14 +2408,12 @@ def apply_with_validation(
 from typing import Protocol
 from decimal import Decimal
 
-
 class ZakatCalculatable(Protocol):
     """Protocol for objects that can calculate Zakat."""
 
     def calculate_zakat(self) -> Decimal:
         """Calculate Zakat amount for this object."""
         ...
-
 
 class GoldHolding:
     """Gold holding with Zakat calculation."""
@@ -2571,7 +2427,6 @@ class GoldHolding:
         value = self.grams * self.price_per_gram
         return value * Decimal("0.025")
 
-
 class CashAccount:
     """Cash account with Zakat calculation."""
 
@@ -2582,11 +2437,9 @@ class CashAccount:
         """Calculate 2.5% Zakat on cash balance."""
         return self.balance * Decimal("0.025")
 
-
 def calculate_total_zakat(assets: List[ZakatCalculatable]) -> Decimal:
     """Calculate total Zakat across all assets (duck typed via Protocol)."""
     return sum(asset.calculate_zakat() for asset in assets)
-
 
 # Usage: Both types work without shared base class
 assets = [
@@ -2625,7 +2478,6 @@ total_zakat = calculate_total_zakat(assets)  # Type-safe duck typing
 
 ---
 
-**Last Updated**: 2025-01-24
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
 **Maintainers**: OSE Platform Documentation Team
 

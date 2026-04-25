@@ -17,7 +17,6 @@ principles:
   - simplicity-over-complexity
   - performance
 created: 2026-01-26
-updated: 2026-01-26
 related:
   - ./best-practices.md
   - ./security.md
@@ -1936,7 +1935,3 @@ Production guidelines for Spring Data JPA.
 - [Java Database Access](../../../programming-languages/java/ddd-standards.md) - Java JDBC baseline
 - [Spring Boot Idioms](./idioms.md) - Repository patterns
 - [Spring Boot Performance](./performance.md) - Query optimization
-
----
-
-**Last Updated**: 2026-01-26

@@ -17,7 +17,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # Kotlin Framework Integration Standards
@@ -472,5 +471,5 @@ class ZakatNotificationListener {
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **Kotlin Version**: 2.1 | Frameworks: Ktor 3.1.0, Spring Boot 3.4.1

@@ -9,7 +9,6 @@ tags:
   - ecosystem
   - cross-repo
 created: 2026-04-18
-updated: 2026-04-18
 ---
 
 # Related Repositories
@@ -46,7 +45,3 @@ The two flows are directional — propagation (upstream → downstream) and adop
 
 - [ose-primer sync convention](../../governance/conventions/structure/ose-primer-sync.md) — directional classification, transforms, safety invariants, and audit rules.
 - [ose-primer on GitHub](https://github.com/wahidyankf/ose-primer) — downstream template repository.
-
----
-
-**Last Updated**: 2026-04-18

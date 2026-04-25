@@ -18,7 +18,6 @@ principles:
   - documentation-first
   - explicit-over-implicit
   - ubiquitous-language
-updated: 2025-01-23
 ---
 
 # Behaviour-Driven Development in Python
@@ -260,30 +259,25 @@ from behave import given, when, then
 from decimal import Decimal
 from zakat_calculator import ZakatCalculator
 
-
 @given('the standard Zakat rate is {rate}%')
 def step_set_zakat_rate(context, rate):
     """Set Zakat rate in context."""
     context.zakat_rate = Decimal(rate) / Decimal("100")
-
 
 @given('the gold nisab threshold is {grams:d} grams')
 def step_set_nisab_grams(context, grams):
     """Set nisab threshold in grams."""
     context.nisab_grams = grams
 
-
 @given('I have wealth of ${amount}')
 def step_set_wealth(context, amount):
     """Set wealth amount."""
     context.wealth = Decimal(amount.replace(",", ""))
 
-
 @given('the nisab threshold is ${threshold}')
 def step_set_nisab_threshold(context, threshold):
     """Set nisab threshold."""
     context.nisab = Decimal(threshold.replace(",", ""))
-
 
 @when('I calculate Zakat')
 def step_calculate_zakat(context):
@@ -293,7 +287,6 @@ def step_calculate_zakat(context):
         context.wealth,
         context.nisab
     )
-
 
 @then('the Zakat amount should be ${expected_amount}')
 def step_verify_zakat_amount(context, expected_amount):
@@ -359,12 +352,10 @@ from donation_campaign import DonationCampaign, Money
 # Load all scenarios from feature file
 scenarios('../features/donation_campaign.feature')
 
-
 @given('I create a campaign "Ramadan Relief"')
 def create_campaign(context):
     """Create campaign in context."""
     context['campaign_name'] = "Ramadan Relief"
-
 
 @given(parsers.parse('the target amount is ${amount:d}'))
 def set_target_amount(context, amount):
@@ -373,7 +364,6 @@ def set_target_amount(context, amount):
         amount=Decimal(str(amount)),
         currency="USD"
     )
-
 
 @when('I save the campaign')
 def save_campaign(context):
@@ -386,12 +376,10 @@ def save_campaign(context):
         start_date=date.today(),
     )
 
-
 @then(parsers.parse('the campaign should be in "{status}" status'))
 def verify_campaign_status(context, status):
     """Verify campaign status."""
     assert context['campaign'].is_active == (status == "active")
-
 
 @then(parsers.parse('the current amount should be ${amount:d}'))
 def verify_current_amount(context, amount):
@@ -592,6 +580,5 @@ Feature: Zakat Distribution
 
 ---
 
-**Last Updated**: 2025-01-23
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
 **Maintainers**: OSE Platform Documentation Team

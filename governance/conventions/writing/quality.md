@@ -10,7 +10,6 @@ tags:
   - accessibility
   - documentation
 created: 2025-12-07
-updated: 2025-12-22
 ---
 
 # Content Quality Principles

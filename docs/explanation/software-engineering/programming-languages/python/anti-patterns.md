@@ -21,7 +21,6 @@ related:
 principles:
   - simplicity-over-complexity
   - explicit-over-implicit
-updated: 2026-01-24
 ---
 
 # Python Anti-Patterns
@@ -101,7 +100,6 @@ from decimal import Decimal
 from typing import List, Dict
 from datetime import datetime
 
-
 def record_waqf_donations(
     waqf_id: str,
     donations: List[Decimal] = [],  # ❌ SHARED across all calls
@@ -127,7 +125,6 @@ def record_waqf_donations(
         "metadata": metadata,    # ❌ Contains metadata from OTHER institutions!
         "total": sum(donations),
     }
-
 
 # Demonstrates the problem
 waqf_a = record_waqf_donations("WAQF001")
@@ -180,7 +177,6 @@ from decimal import Decimal
 from typing import List, Dict, Optional
 from datetime import datetime
 
-
 def record_waqf_donations(
     waqf_id: str,
     donations: Optional[List[Decimal]] = None,  # ✅ None as default
@@ -213,7 +209,6 @@ def record_waqf_donations(
         "metadata": metadata,
         "total": sum(donations),
     }
-
 
 # Correct behavior
 waqf_a = record_waqf_donations("WAQF001")
@@ -252,7 +247,6 @@ from typing import Callable, List
 from decimal import Decimal
 from dataclasses import dataclass, field
 
-
 @dataclass
 class MurabahaContract:
     """
@@ -273,7 +267,6 @@ class MurabahaContract:
     def total_paid(self) -> Decimal:
         """Calculate total paid for this contract."""
         return sum(self.payments)
-
 
 # Usage: Each instance gets isolated payments list
 contract1 = MurabahaContract(
@@ -379,7 +372,6 @@ from decimal import Decimal
 
 Base = declarative_base()
 
-
 class ZakatPayment(Base):
     """Zakat payment record."""
     __tablename__ = 'zakat_payments'
@@ -388,10 +380,8 @@ class ZakatPayment(Base):
     payer_id = Column(String(50))
     amount = Column(Numeric(15, 2))
 
-
 engine = create_engine('postgresql://localhost/sharia_finance')
 Session = sessionmaker(bind=engine)
-
 
 def record_zakat_payment_bad(payer_id: str, amount: Decimal) -> int:
     """
@@ -415,7 +405,6 @@ def record_zakat_payment_bad(payer_id: str, amount: Decimal) -> int:
 
     return payment.id  # ❌ Session never closed, connection leaked!
 
-
 # After 10 calls (default pool size):
 for i in range(15):
     try:
@@ -431,7 +420,6 @@ for i in range(15):
 from sqlalchemy.orm import Session as SessionType
 from contextlib import contextmanager
 from typing import Generator
-
 
 @contextmanager
 def get_session() -> Generator[SessionType, None, None]:
@@ -453,7 +441,6 @@ def get_session() -> Generator[SessionType, None, None]:
     finally:
         session.close()  # ✅ ALWAYS close session
 
-
 def record_zakat_payment_good(payer_id: str, amount: Decimal) -> int:
     """
     GOOD: Context manager guarantees session closure.
@@ -474,7 +461,6 @@ def record_zakat_payment_good(payer_id: str, amount: Decimal) -> int:
         # Context manager commits on successful exit
         return payment.id  # ✅ Session closed automatically
 
-
 # Can handle unlimited calls without connection exhaustion
 for i in range(1000):
     record_zakat_payment_good(f"P{i:04d}", Decimal("2500.00"))
@@ -488,7 +474,6 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from typing import List
 
-
 class WaqfInstitution(Base):
     """Waqf institution."""
     __tablename__ = 'waqf_institutions'
@@ -496,7 +481,6 @@ class WaqfInstitution(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(200))
     donations = relationship("WaqfDonation", back_populates="institution")
-
 
 class WaqfDonation(Base):
     """Donation to Waqf institution."""
@@ -506,7 +490,6 @@ class WaqfDonation(Base):
     institution_id = Column(Integer, ForeignKey('waqf_institutions.id'))
     amount = Column(Numeric(15, 2))
     institution = relationship("WaqfInstitution", back_populates="donations")
-
 
 def calculate_total_donations_bad() -> List[dict]:
     """
@@ -532,7 +515,6 @@ def calculate_total_donations_bad() -> List[dict]:
 
         return results
 
-
 # Executing above with 100 institutions:
 # Query 1: SELECT * FROM waqf_institutions;
 # Query 2: SELECT * FROM waqf_donations WHERE institution_id = 1;
@@ -547,7 +529,6 @@ def calculate_total_donations_bad() -> List[dict]:
 ```python
 # GOOD: Eager loading with joinedload
 from sqlalchemy.orm import joinedload
-
 
 def calculate_total_donations_good() -> List[dict]:
     """
@@ -575,7 +556,6 @@ def calculate_total_donations_good() -> List[dict]:
 
         return results
 
-
 # Executing above with 100 institutions:
 # Query 1: SELECT waqf_institutions.*, waqf_donations.*
 #          FROM waqf_institutions
@@ -589,7 +569,6 @@ def calculate_total_donations_good() -> List[dict]:
 ```python
 # BAD: No transaction boundaries
 from decimal import Decimal
-
 
 def transfer_waqf_funds_bad(
     from_institution_id: int,
@@ -625,7 +604,6 @@ def transfer_waqf_funds_bad(
 ```python
 # GOOD: Explicit transaction boundaries with rollback on failure
 from sqlalchemy.exc import SQLAlchemyError
-
 
 def transfer_waqf_funds_good(
     from_institution_id: int,
@@ -667,7 +645,6 @@ def transfer_waqf_funds_good(
 # BAD: Creating new engine for each operation
 from sqlalchemy import create_engine
 
-
 def get_zakat_total_bad(year: int) -> Decimal:
     """
     BAD: Creates new engine and connection pool every call.
@@ -692,7 +669,6 @@ def get_zakat_total_bad(year: int) -> Decimal:
     return result or Decimal("0")
     # ❌ Engine never disposed, connections leak
 
-
 # Each call creates new pool of 10 connections:
 for year in range(2020, 2026):
     total = get_zakat_total_bad(year)  # 6 calls = 60 leaked connections!
@@ -716,7 +692,6 @@ engine = create_engine(
 
 Session = sessionmaker(bind=engine)
 
-
 def get_zakat_total_good(year: int) -> Decimal:
     """
     GOOD: Reuses shared connection pool.
@@ -736,7 +711,6 @@ def get_zakat_total_good(year: int) -> Decimal:
 
     return result or Decimal("0")
     # ✅ Connection returned to pool for reuse
-
 
 # Reuses same 10-connection pool for all calls:
 for year in range(2020, 2026):
@@ -860,7 +834,6 @@ import time
 from decimal import Decimal
 from typing import List
 
-
 async def calculate_zakat_portfolio_bad(wealth_items: List[Decimal]) -> Decimal:
     """
     BAD: Blocks event loop with synchronous operations.
@@ -880,7 +853,6 @@ async def calculate_zakat_portfolio_bad(wealth_items: List[Decimal]) -> Decimal:
 
     zakat = total_wealth * Decimal("0.025")
     return zakat
-
 
 async def process_multiple_portfolios_bad():
     """
@@ -907,7 +879,6 @@ async def process_multiple_portfolios_bad():
     print(f"Elapsed: {elapsed:.2f}s")  # ~10 seconds ❌
     return results
 
-
 # Running this blocks the event loop
 asyncio.run(process_multiple_portfolios_bad())
 ```
@@ -917,7 +888,6 @@ asyncio.run(process_multiple_portfolios_bad())
 ```python
 # GOOD: Use asyncio.sleep() for non-blocking delay
 import asyncio
-
 
 async def calculate_zakat_portfolio_good(wealth_items: List[Decimal]) -> Decimal:
     """
@@ -938,7 +908,6 @@ async def calculate_zakat_portfolio_good(wealth_items: List[Decimal]) -> Decimal
 
     zakat = total_wealth * Decimal("0.025")
     return zakat
-
 
 async def process_multiple_portfolios_good():
     """
@@ -965,7 +934,6 @@ async def process_multiple_portfolios_good():
     print(f"Elapsed: {elapsed:.2f}s")  # ~2 seconds ✅
     return results
 
-
 asyncio.run(process_multiple_portfolios_good())
 ```
 
@@ -975,13 +943,11 @@ asyncio.run(process_multiple_portfolios_good())
 # BAD: Forgetting to await coroutine
 from decimal import Decimal
 
-
 async def validate_murabaha_contract(contract_id: str) -> bool:
     """Async validation of Murabaha contract."""
     await asyncio.sleep(0.5)  # Simulates database query
     # Validation logic...
     return True
-
 
 async def approve_murabaha_bad(contract_id: str) -> dict:
     """
@@ -1001,7 +967,6 @@ async def approve_murabaha_bad(contract_id: str) -> dict:
         return {"contract_id": contract_id, "status": "approved"}
     else:
         return {"contract_id": contract_id, "status": "rejected"}
-
 
 # Running this approves without validation!
 result = asyncio.run(approve_murabaha_bad("MUR001"))
@@ -1033,7 +998,6 @@ async def approve_murabaha_good(contract_id: str) -> dict:
     else:
         return {"contract_id": contract_id, "status": "rejected"}
 
-
 result = asyncio.run(approve_murabaha_good("MUR001"))
 print(result)  # Correct approval based on actual validation ✅
 ```
@@ -1044,12 +1008,10 @@ print(result)  # Correct approval based on actual validation ✅
 # BAD: Calling async function from sync context
 import requests  # Synchronous HTTP library
 
-
 def get_exchange_rate_sync(currency: str) -> Decimal:
     """Synchronous API call to get exchange rate."""
     response = requests.get(f"https://api.example.com/rates/{currency}")
     return Decimal(str(response.json()["rate"]))
-
 
 async def calculate_zakat_multicurrency_bad(
     wealth_usd: Decimal,
@@ -1079,14 +1041,12 @@ async def calculate_zakat_multicurrency_bad(
 import httpx  # Async HTTP library
 from decimal import Decimal
 
-
 async def get_exchange_rate_async(currency: str) -> Decimal:
     """Async API call to get exchange rate."""
     async with httpx.AsyncClient() as client:
         response = await client.get(f"https://api.example.com/rates/{currency}")
         data = response.json()
         return Decimal(str(data["rate"]))
-
 
 async def calculate_zakat_multicurrency_good(
     wealth_usd: Decimal,
@@ -1121,7 +1081,6 @@ async def log_waqf_donation_async(donation_id: str, amount: Decimal) -> None:
     await asyncio.sleep(0.5)  # Simulates API call
     print(f"Logged donation {donation_id}: {amount}")
 
-
 async def process_waqf_donation_bad(donation_id: str, amount: Decimal) -> dict:
     """
     BAD: Fire-and-forget task without tracking.
@@ -1139,7 +1098,6 @@ async def process_waqf_donation_bad(donation_id: str, amount: Decimal) -> dict:
     # Function returns immediately, logging may not finish
     return {"donation_id": donation_id, "status": "accepted"}
 
-
 async def process_many_donations_bad():
     """Demonstrates fire-and-forget problem."""
     donations = [
@@ -1155,7 +1113,6 @@ async def process_many_donations_bad():
 
     # Function may exit before all logging tasks complete!
     return results
-
 
 asyncio.run(process_many_donations_bad())
 # Some log messages may be missing ❌
@@ -1189,7 +1146,6 @@ async def process_waqf_donation_good(
 
     return {"donation_id": donation_id, "status": "accepted"}
 
-
 async def process_many_donations_good():
     """Demonstrates proper task tracking."""
     donations = [
@@ -1214,7 +1170,6 @@ async def process_many_donations_good():
 
     return results
 
-
 asyncio.run(process_many_donations_good())
 # All log messages guaranteed to complete ✅
 ```
@@ -1229,7 +1184,6 @@ async def validate_murabaha_contract_may_fail(contract_id: str) -> bool:
     if contract_id.startswith("INVALID"):
         raise ValueError(f"Invalid contract: {contract_id}")
     return True
-
 
 async def validate_multiple_contracts_bad(contract_ids: List[str]) -> List[bool]:
     """
@@ -1253,7 +1207,6 @@ async def validate_multiple_contracts_bad(contract_ids: List[str]) -> List[bool]
     except ValueError as e:
         print(f"Validation failed: {e}")
         return []  # ❌ No partial results
-
 
 # Test with mix of valid and invalid contracts
 contract_ids = ["MUR001", "MUR002", "INVALID003", "MUR004"]
@@ -1300,7 +1253,6 @@ async def validate_multiple_contracts_good(contract_ids: List[str]) -> List[dict
             })
 
     return processed
-
 
 contract_ids = ["MUR001", "MUR002", "INVALID003", "MUR004"]
 results = asyncio.run(validate_multiple_contracts_good(contract_ids))
@@ -1380,14 +1332,12 @@ from decimal import Decimal
 
 total_zakat = Decimal("0")  # BAD: Global state
 
-
 def calculate_and_accumulate_zakat(wealth: Decimal) -> Decimal:
     """BAD: Modifies global state."""
     global total_zakat
     zakat = wealth * Decimal("0.025")
     total_zakat += zakat  # BAD: Side effect
     return zakat
-
 
 # Problems: Not thread-safe, hard to test, hidden dependency
 zakat1 = calculate_and_accumulate_zakat(Decimal("100000"))
@@ -1403,7 +1353,6 @@ from dataclasses import dataclass
 from decimal import Decimal
 from typing import List
 
-
 @dataclass
 class ZakatAccumulator:
     """Explicit state container."""
@@ -1415,7 +1364,6 @@ class ZakatAccumulator:
         zakat = wealth * Decimal("0.025")
         self.total += zakat
         return zakat
-
 
 # Usage: Explicit, testable, thread-safe per instance
 accumulator = ZakatAccumulator()
@@ -1465,14 +1413,12 @@ Silent failures hide bugs.
 # BAD: Bare except and silent failure
 from decimal import Decimal, InvalidOperation
 
-
 def parse_zakat_amount(amount_str: str) -> Decimal:
     """BAD: Swallows exceptions silently."""
     try:
         return Decimal(amount_str)
     except:  # BAD: Catches everything
         return Decimal("0")  # BAD: Silent failure, no logging
-
 
 # Usage: Errors hidden, debugging impossible
 result = parse_zakat_amount("invalid")  # Returns 0 - BUG HIDDEN!
@@ -1487,7 +1433,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-
 def parse_zakat_amount(amount_str: str) -> Decimal:
     """GOOD: Explicit error handling."""
     try:
@@ -1495,7 +1440,6 @@ def parse_zakat_amount(amount_str: str) -> Decimal:
     except InvalidOperation as e:
         logger.error(f"Invalid Zakat amount: {amount_str}, error: {e}")
         raise ValueError(f"Cannot parse Zakat amount: {amount_str}") from e
-
 
 # Usage: Errors visible and logged
 try:
@@ -1569,16 +1513,13 @@ Circular dependencies cause import errors.
 # File: models.py
 from calculators import StandardZakatCalculator  # Imports calculators
 
-
 class ZakatRecord:
     def calculate(self):
         calc = StandardZakatCalculator()
         # ...
 
-
 # File: calculators.py
 from models import ZakatRecord  # Imports models - CIRCULAR!
-
 
 class StandardZakatCalculator:
     def process_record(self, record: ZakatRecord):
@@ -1592,22 +1533,18 @@ class StandardZakatCalculator:
 # File: models.py
 from typing import Protocol
 
-
 class Calculator(Protocol):
     """Protocol breaks circular dependency."""
 
     def calculate(self, amount: Decimal) -> Decimal:
         ...
 
-
 class ZakatRecord:
     def calculate(self, calculator: Calculator):  # Protocol type
         # ...
 
-
 # File: calculators.py
 # No import of models needed!
-
 
 class StandardZakatCalculator:
     """Satisfies Calculator protocol."""
@@ -1734,7 +1671,6 @@ graph TD
 from typing import Any, List
 from decimal import Decimal
 
-
 def calculate_zakat_bad(wealth: Any) -> Any:
     """
     BAD: Any types disable all type checking.
@@ -1749,7 +1685,6 @@ def calculate_zakat_bad(wealth: Any) -> Any:
     # ❌ No type safety, could be float!
     zakat = wealth * 0.025  # Could cause precision errors
     return zakat  # Return type unknown
-
 
 def process_portfolio_bad(items: List[Any]) -> Any:
     """
@@ -1766,7 +1701,6 @@ def process_portfolio_bad(items: List[Any]) -> Any:
         total += item  # ❌ No validation, could be anything
     return calculate_zakat_bad(total)
 
-
 # These all type-check but fail at runtime:
 calculate_zakat_bad(100.50)  # ❌ Float instead of Decimal
 calculate_zakat_bad("invalid")  # ❌ String instead of Decimal
@@ -1779,7 +1713,6 @@ process_portfolio_bad([1, "two", 3.0])  # ❌ Mixed types
 # GOOD: Specific, precise type hints
 from typing import List, Union
 from decimal import Decimal
-
 
 def calculate_zakat_good(wealth: Decimal) -> Decimal:
     """
@@ -1796,7 +1729,6 @@ def calculate_zakat_good(wealth: Decimal) -> Decimal:
     zakat = wealth * zakat_rate  # ✅ Type-safe Decimal arithmetic
     return zakat
 
-
 def process_portfolio_good(items: List[Decimal]) -> Decimal:
     """
     GOOD: List[Decimal] enforces homogeneity.
@@ -1811,7 +1743,6 @@ def process_portfolio_good(items: List[Decimal]) -> Decimal:
     for item in items:
         total += item  # ✅ Type-checked Decimal addition
     return calculate_zakat_good(total)
-
 
 # Type checker catches errors before runtime:
 # calculate_zakat_good(100.50)  # ❌ mypy error: Expected Decimal, got float
@@ -1829,7 +1760,6 @@ total_zakat = process_portfolio_good(wealth_items)  # ✅ Type-safe
 # BAD: No return type annotation
 from decimal import Decimal
 
-
 def calculate_murabaha_profit(principal: Decimal, rate: Decimal, months: int):
     """
     BAD: Missing return type annotation.
@@ -1844,7 +1774,6 @@ def calculate_murabaha_profit(principal: Decimal, rate: Decimal, months: int):
     # ❌ Return type unclear
     return principal * rate * Decimal(months) / Decimal("12")
 
-
 def get_payment_schedule(contract_id: str):
     """
     BAD: Function might return None but not annotated.
@@ -1858,7 +1787,6 @@ def get_payment_schedule(contract_id: str):
     if contract_id.startswith("INVALID"):
         return None  # ❌ Unannotated None return
     return {"contract_id": contract_id, "payments": []}
-
 
 # Dangerous usage (no type hints prevent this):
 profit = calculate_murabaha_profit(
@@ -1878,7 +1806,6 @@ payment_count = len(schedule["payments"])
 from typing import Optional, Dict, List, Any
 from decimal import Decimal
 
-
 def calculate_murabaha_profit(
     principal: Decimal,
     rate: Decimal,
@@ -1895,7 +1822,6 @@ def calculate_murabaha_profit(
     """
     # ✅ Return type enforced by type checker
     return principal * rate * Decimal(months) / Decimal("12")
-
 
 def get_payment_schedule(
     contract_id: str
@@ -1914,7 +1840,6 @@ def get_payment_schedule(
         return None  # ✅ Annotated as Optional
 
     return {"contract_id": contract_id, "payments": []}
-
 
 # Safe usage with type narrowing:
 profit: Decimal = calculate_murabaha_profit(
@@ -1938,11 +1863,9 @@ else:
 from typing import TypeVar, Generic, Dict, List, Tuple, Union, Optional
 from decimal import Decimal
 
-
 T = TypeVar('T')
 U = TypeVar('U')
 V = TypeVar('V')
-
 
 class ComplexCalculator(Generic[T, U, V]):
     """
@@ -1962,7 +1885,6 @@ class ComplexCalculator(Generic[T, U, V]):
         """❌ Impossible to understand what this actually does."""
         pass
 
-
 # Usage is incomprehensible:
 calc: ComplexCalculator[str, Decimal, int] = ComplexCalculator()
 result = calc.calculate(
@@ -1979,9 +1901,7 @@ result = calc.calculate(
 from typing import TypeVar, Generic, List
 from decimal import Decimal
 
-
 T = TypeVar('T', bound=Decimal)  # ✅ Constrained to Decimal subtypes
-
 
 class FinancialCalculator(Generic[T]):
     """
@@ -2001,7 +1921,6 @@ class FinancialCalculator(Generic[T]):
         # Type checker ensures T supports addition
         return sum(self.items, start=self.items[0].__class__())  # type: ignore
 
-
 # Clear usage:
 zakat_calc = FinancialCalculator([Decimal("100"), Decimal("200")])
 total: Decimal = zakat_calc.calculate_total()  # ✅ Clear type
@@ -2013,7 +1932,6 @@ total: Decimal = zakat_calc.calculate_total()  # ✅ Clear type
 # BAD: Incorrect protocol definition
 from typing import Protocol
 from decimal import Decimal
-
 
 class CalculatorProtocol(Protocol):
     """
@@ -2030,7 +1948,6 @@ class CalculatorProtocol(Protocol):
         """❌ Has implementation, not just signature."""
         return amount * self.rate  # ❌ Protocols shouldn't have logic
 
-
 class ZakatCalculator:
     """Intended to satisfy protocol, but doesn't."""
     def __init__(self):
@@ -2038,7 +1955,6 @@ class ZakatCalculator:
 
     def calculate(self, amount: Decimal) -> Decimal:
         return amount * self.rate
-
 
 def process_calculation_bad(calc: CalculatorProtocol, amount: Decimal) -> Decimal:
     """Type checker confused by protocol misuse."""
@@ -2051,7 +1967,6 @@ def process_calculation_bad(calc: CalculatorProtocol, amount: Decimal) -> Decima
 # GOOD: Protocol as pure interface
 from typing import Protocol, runtime_checkable
 from decimal import Decimal
-
 
 @runtime_checkable
 class FinancialCalculator(Protocol):
@@ -2068,7 +1983,6 @@ class FinancialCalculator(Protocol):
         """Calculate financial value. Implementation in concrete classes."""
         ...  # ✅ No implementation, just signature
 
-
 class ZakatCalculator:
     """Satisfies FinancialCalculator protocol through structure."""
     def __init__(self, rate: Decimal = Decimal("0.025")):
@@ -2078,7 +1992,6 @@ class ZakatCalculator:
         """Implements protocol method."""
         return amount * self._rate
 
-
 class MurabahaCalculator:
     """Also satisfies protocol through structure."""
     def __init__(self, profit_rate: Decimal):
@@ -2087,7 +2000,6 @@ class MurabahaCalculator:
     def calculate(self, amount: Decimal) -> Decimal:
         """Different implementation, same interface."""
         return amount * (Decimal("1") + self._profit_rate)
-
 
 def process_calculation_good(
     calc: FinancialCalculator,
@@ -2099,7 +2011,6 @@ def process_calculation_good(
     ✅ Type-safe structural typing
     """
     return calc.calculate(amount)
-
 
 # Both work without explicit inheritance:
 zakat_calc = ZakatCalculator()
@@ -2116,10 +2027,8 @@ murabaha_result = process_calculation_good(murabaha_calc, Decimal("100000"))
 from typing import TypeVar
 from decimal import Decimal
 
-
 # ❌ TypeVar without bound or constraints
 AnyNumber = TypeVar('AnyNumber')
-
 
 def calculate_percentage_bad(value: AnyNumber, rate: Decimal) -> AnyNumber:
     """
@@ -2133,7 +2042,6 @@ def calculate_percentage_bad(value: AnyNumber, rate: Decimal) -> AnyNumber:
     """
     return value * rate  # ❌ Type checker can't verify this works
 
-
 # These type-check but fail at runtime:
 result1 = calculate_percentage_bad("100", Decimal("0.025"))  # ❌ Runtime TypeError
 result2 = calculate_percentage_bad([1, 2, 3], Decimal("0.025"))  # ❌ Runtime TypeError
@@ -2146,10 +2054,8 @@ result2 = calculate_percentage_bad([1, 2, 3], Decimal("0.025"))  # ❌ Runtime T
 from typing import TypeVar
 from decimal import Decimal
 
-
 # ✅ Constrained to specific numeric types
 NumericType = TypeVar('NumericType', Decimal, int)
-
 
 def calculate_percentage_good(
     value: NumericType,
@@ -2167,7 +2073,6 @@ def calculate_percentage_good(
     if isinstance(value, int):
         value = Decimal(str(value))  # Convert int to Decimal
     return value * rate
-
 
 # Type-safe usage:
 result1 = calculate_percentage_good(Decimal("100000"), Decimal("0.025"))  # ✅
@@ -2273,13 +2178,11 @@ Optimizing before profiling wastes effort.
 from decimal import Decimal
 from typing import List
 
-
 def calculate_all_zakat_optimized(wealth_items: List[Decimal]) -> Decimal:
     """BAD: Complex optimization without profiling."""
     # Assumption: list comprehension faster (unverified)
     # Assumption: single multiplication faster than loop (unverified)
     return sum([w * Decimal("0.025") for w in wealth_items])
-
 
 # Versus simple version (probably same speed for small lists)
 def calculate_all_zakat_simple(wealth_items: List[Decimal]) -> Decimal:
@@ -2298,11 +2201,9 @@ import cProfile
 from decimal import Decimal
 from typing import List
 
-
 def calculate_all_zakat(wealth_items: List[Decimal]) -> Decimal:
     """Start with simple, readable code."""
     return sum(wealth * Decimal("0.025") for wealth in wealth_items)
-
 
 # Profile before optimizing
 def profile_calculation():
@@ -2316,7 +2217,6 @@ def profile_calculation():
 
     profiler.disable()
     profiler.print_stats()
-
 
 # Optimize only proven bottlenecks
 ```
@@ -2388,7 +2288,6 @@ graph TD
 # BAD: Float for financial calculations
 from typing import List
 
-
 def calculate_zakat_float_bad(wealth: float) -> float:
     """
     CATASTROPHICALLY BAD: Using float for Zakat.
@@ -2405,7 +2304,6 @@ def calculate_zakat_float_bad(wealth: float) -> float:
     zakat = wealth * zakat_rate  # ❌ Precision error
     return zakat
 
-
 # Demonstrates precision errors:
 wealth = 100000.33  # 100,000.33 SAR
 zakat = calculate_zakat_float_bad(wealth)
@@ -2414,7 +2312,6 @@ print(f"{zakat:.2f}")  # 2500.01 ❌ WRONG!
 # Rounded: 2500.01 SAR
 # But float computation might give slightly different result
 
-
 # Cumulative errors with portfolio:
 def calculate_total_zakat_bad(wealth_items: List[float]) -> float:
     """BAD: Cumulative float errors."""
@@ -2422,7 +2319,6 @@ def calculate_total_zakat_bad(wealth_items: List[float]) -> float:
     for wealth in wealth_items:
         total_zakat += wealth * 0.025  # ❌ Each operation introduces error
     return total_zakat
-
 
 # Example with 1000 items:
 wealth_portfolio = [100000.33] * 1000
@@ -2450,7 +2346,6 @@ print(f"Total: {waqf_total:.2f}")  # 1.50 (hides error but doesn't fix it)
 from decimal import Decimal, ROUND_HALF_UP
 from typing import List
 
-
 def calculate_zakat_decimal_good(wealth: Decimal) -> Decimal:
     """
     GOOD: Exact decimal arithmetic for Zakat.
@@ -2467,7 +2362,6 @@ def calculate_zakat_decimal_good(wealth: Decimal) -> Decimal:
     # Round to halalah (0.01 SAR)
     return zakat.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
-
 # Exact calculations:
 wealth = Decimal("100000.33")
 zakat = calculate_zakat_decimal_good(wealth)
@@ -2478,7 +2372,6 @@ expected = Decimal("100000.33") * Decimal("0.025")
 print(expected)  # Decimal('2500.00825')
 rounded = expected.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 print(rounded)  # Decimal('2500.01') ✅ Correct!
-
 
 def calculate_total_zakat_good(wealth_items: List[Decimal]) -> Decimal:
     """GOOD: No cumulative errors with Decimal."""
@@ -2493,14 +2386,12 @@ def calculate_total_zakat_good(wealth_items: List[Decimal]) -> Decimal:
 
     return total_zakat
 
-
 # Exact results with 1000 items:
 wealth_portfolio = [Decimal("100000.33")] * 1000
 total = calculate_total_zakat_good(wealth_portfolio)
 print(total)  # Decimal('2500010.00') ✅ EXACT!
 
 # Verification: 2500.01 * 1000 = 2,500,010.00 ✅
-
 
 # Demonstrates exact decimal arithmetic:
 amount1 = Decimal("0.1")
@@ -2522,7 +2413,6 @@ print(waqf_total)  # Decimal('1.50') ✅ EXACT!
 # BAD: Inconsistent or missing rounding
 from decimal import Decimal
 
-
 def calculate_murabaha_profit_bad(
     principal: Decimal,
     rate: Decimal,
@@ -2541,7 +2431,6 @@ def calculate_murabaha_profit_bad(
     profit = principal * rate * Decimal(months) / Decimal("12")
     return profit  # ❌ May have fractional halalas (0.001 SAR)
 
-
 # Demonstrates problem:
 principal = Decimal("100000.00")
 rate = Decimal("0.05")  # 5% annual
@@ -2550,7 +2439,6 @@ months = 7
 profit = calculate_murabaha_profit_bad(principal, rate, months)
 print(profit)  # Decimal('2916.666666666666666666666667') ❌
 # How to round? When? Inconsistent!
-
 
 # Python's round() is WRONG for Decimal:
 profit_rounded = round(profit, 2)  # ❌ Converts to float then rounds!
@@ -2563,7 +2451,6 @@ print(type(profit_rounded))  # <class 'float'> ❌ Lost Decimal precision!
 ```python
 # GOOD: Explicit quantize with rounding mode
 from decimal import Decimal, ROUND_HALF_UP, ROUND_DOWN
-
 
 def calculate_murabaha_profit_good(
     principal: Decimal,
@@ -2588,7 +2475,6 @@ def calculate_murabaha_profit_good(
 
     return profit_rounded
 
-
 profit = calculate_murabaha_profit_good(
     Decimal("100000.00"),
     Decimal("0.05"),
@@ -2596,7 +2482,6 @@ profit = calculate_murabaha_profit_good(
 )
 print(profit)  # Decimal('2916.67') ✅ EXACT!
 print(type(profit))  # <class 'decimal.Decimal'> ✅
-
 
 # Different rounding modes for specific use cases:
 def calculate_zakat_conservative(wealth: Decimal) -> Decimal:
@@ -2610,7 +2495,6 @@ def calculate_zakat_conservative(wealth: Decimal) -> Decimal:
     # ✅ ROUND_DOWN: Always rounds toward zero
     return zakat.quantize(Decimal("0.01"), rounding=ROUND_DOWN)
 
-
 def calculate_zakat_generous(wealth: Decimal) -> Decimal:
     """
     Generous Zakat: ROUND_UP for extra charity.
@@ -2621,7 +2505,6 @@ def calculate_zakat_generous(wealth: Decimal) -> Decimal:
     zakat = wealth * Decimal("0.025")
     # ✅ ROUND_UP: Always rounds away from zero
     return zakat.quantize(Decimal("0.01"), rounding=ROUND_UP)
-
 
 wealth = Decimal("100000.33")
 
@@ -2650,7 +2533,6 @@ def convert_to_sar_bad(amount_usd: float, exchange_rate: float) -> float:
     amount_sar = amount_usd * exchange_rate  # ❌ Precision error
     return amount_sar
 
-
 # Demonstrates problem:
 zakat_usd = 666.67  # $666.67
 usd_to_sar = 3.75  # Exchange rate
@@ -2677,7 +2559,6 @@ print(f"Total: {total:.2f}")  # ❌ Unpredictable error accumulation
 # GOOD: Decimal conversion with explicit rounding
 from decimal import Decimal, ROUND_HALF_UP
 
-
 def convert_to_sar_good(amount_usd: Decimal, exchange_rate: Decimal) -> Decimal:
     """
     GOOD: Exact decimal conversion.
@@ -2694,7 +2575,6 @@ def convert_to_sar_good(amount_usd: Decimal, exchange_rate: Decimal) -> Decimal:
     # ✅ Round to SAR precision (0.01 = 1 halalah)
     return amount_sar.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
-
 zakat_usd = Decimal("666.67")
 usd_to_sar = Decimal("3.75")
 zakat_sar = convert_to_sar_good(zakat_usd, usd_to_sar)
@@ -2705,7 +2585,6 @@ expected = Decimal("666.67") * Decimal("3.75")
 print(expected)  # Decimal('2500.0125')
 rounded = expected.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 print(rounded)  # Decimal('2500.01') ✅
-
 
 # Multi-currency portfolio conversion:
 def convert_portfolio_to_sar(
@@ -2734,7 +2613,6 @@ def convert_portfolio_to_sar(
 
     return total_sar
 
-
 # Example portfolio:
 portfolio = [
     (Decimal("1000.00"), "USD", Decimal("3.75")),    # $1,000 USD
@@ -2757,7 +2635,6 @@ print(total_sar)  # Decimal('24950.00') ✅
 # BAD: Ignoring decimal context settings
 from decimal import Decimal, getcontext
 
-
 def calculate_complex_zakat_bad(wealth: Decimal, deductions: Decimal) -> Decimal:
     """
     BAD: Relies on default decimal context.
@@ -2772,7 +2649,6 @@ def calculate_complex_zakat_bad(wealth: Decimal, deductions: Decimal) -> Decimal
     net_wealth = wealth - deductions
     zakat = net_wealth * Decimal("0.025")
     return zakat
-
 
 # Demonstrates problem:
 # Some code elsewhere changes global context:
@@ -2789,7 +2665,6 @@ print(zakat)  # ❌ May be truncated due to reduced precision!
 ```python
 # GOOD: Explicit local decimal context
 from decimal import Decimal, localcontext, ROUND_HALF_UP
-
 
 def calculate_complex_zakat_good(wealth: Decimal, deductions: Decimal) -> Decimal:
     """
@@ -2812,7 +2687,6 @@ def calculate_complex_zakat_good(wealth: Decimal, deductions: Decimal) -> Decima
 
         # ✅ Final rounding to currency precision
         return zakat.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
-
 
 # Even if global context is modified:
 getcontext().prec = 6  # Global change doesn't affect function
@@ -2913,7 +2787,6 @@ for _ in range(1_000_000):
 print(f"Float total: {total_float:.2f}")
 # Might be 2,500,008,250.00 ❌ Error of several thousand SAR!
 
-
 # GOOD: Decimal calculation
 from decimal import Decimal, ROUND_HALF_UP
 
@@ -2941,10 +2814,8 @@ class QardHasanLoan:
         self.principal = principal  # BAD: No validation
         self.repaid = repaid  # BAD: Could exceed principal
 
-
 # GOOD: Validate invariants
 from pydantic import BaseModel, Field, field_validator
-
 
 class QardHasanLoan(BaseModel):
     principal: Decimal = Field(gt=0)
@@ -2986,7 +2857,6 @@ from typing import List, Dict, Optional
 from datetime import datetime
 import httpx
 import smtplib
-
 
 class ZakatService:
     """
@@ -3060,7 +2930,6 @@ class ZakatService:
 
     # ... 10 more responsibilities ...
 
-
 # ❌ Impossible to test in isolation:
 # - Can't test calculation without database
 # - Can't test validation without email config
@@ -3076,7 +2945,6 @@ from decimal import Decimal, ROUND_HALF_UP
 from typing import Protocol
 from datetime import datetime
 
-
 # Responsibility 1: Calculation (domain logic)
 class ZakatCalculator:
     """Pure calculation logic, no dependencies."""
@@ -3089,7 +2957,6 @@ class ZakatCalculator:
         zakat = wealth * self.rate
         return zakat.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
-
 # Responsibility 2: Validation (domain rules)
 class WealthValidator:
     """Validates wealth meets Zakat requirements."""
@@ -3100,7 +2967,6 @@ class WealthValidator:
     def is_zakatable(self, wealth: Decimal) -> bool:
         """Check if wealth meets nisab threshold."""
         return wealth >= self.nisab
-
 
 # Responsibility 3: Storage (infrastructure)
 class ZakatRepository:
@@ -3119,7 +2985,6 @@ class ZakatRepository:
         self.db.commit()
         return cursor.lastrowid
 
-
 # Responsibility 4: Notifications (infrastructure)
 class EmailNotifier:
     """Handles email sending."""
@@ -3131,7 +2996,6 @@ class EmailNotifier:
         """Send Zakat calculation email."""
         # Email sending logic...
         pass
-
 
 # Orchestration layer (application service)
 class ZakatApplicationService:
@@ -3176,7 +3040,6 @@ class ZakatApplicationService:
 
         return zakat
 
-
 # ✅ Easy to test each component in isolation:
 def test_calculator():
     calc = ZakatCalculator()
@@ -3210,7 +3073,6 @@ from dataclasses import dataclass
 from decimal import Decimal
 from typing import List
 
-
 @dataclass
 class MurabahaContract:
     """
@@ -3228,7 +3090,6 @@ class MurabahaContract:
     profit_rate: Decimal
     months: int
     payments: List[Decimal]
-
 
 # ❌ Business logic lives in separate service class
 class MurabahaService:
@@ -3258,7 +3119,6 @@ class MurabahaService:
         paid = self.total_paid(contract)
         return total - paid
 
-
 # Usage forces caller to know internal structure:
 contract = MurabahaContract(
     contract_id="MUR001",
@@ -3284,7 +3144,6 @@ remaining = service.remaining_balance(contract)
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 from typing import List
-
 
 @dataclass
 class MurabahaContract:
@@ -3361,7 +3220,6 @@ class MurabahaContract:
         """Get number of payments made."""
         return len(self._payments)
 
-
 # Usage is clean and encapsulated:
 contract = MurabahaContract(
     contract_id="MUR001",
@@ -3390,7 +3248,6 @@ print(contract.is_fully_paid)  # ✅ Encapsulated business rule
 from decimal import Decimal
 from typing import List
 
-
 class WaqfInstitution:
     """
     BAD: Class attribute shared across ALL instances.
@@ -3415,7 +3272,6 @@ class WaqfInstitution:
     def total_donations(self) -> Decimal:
         """Total donations for this institution."""
         return sum(self.donations, start=Decimal("0"))
-
 
 # Demonstrates catastrophic data corruption:
 waqf_a = WaqfInstitution("Waqf Al-Haramain")
@@ -3443,7 +3299,6 @@ from dataclasses import dataclass, field
 from decimal import Decimal
 from typing import List
 
-
 @dataclass
 class WaqfInstitution:
     """
@@ -3468,7 +3323,6 @@ class WaqfInstitution:
     def total_donations(self) -> Decimal:
         """Total donations for this institution."""
         return sum(self.donations, start=Decimal("0"))
-
 
 # Correct behavior with isolated state:
 waqf_a = WaqfInstitution("Waqf Al-Haramain")
@@ -3562,7 +3416,6 @@ Python performance anti-patterns include premature optimization, inefficient dat
 # BAD: String concatenation in loop
 from decimal import Decimal
 
-
 def generate_zakat_report_bad(calculations: list[tuple[str, Decimal]]) -> str:
     """
     BAD: String concatenation creates new string object each iteration.
@@ -3586,7 +3439,6 @@ def generate_zakat_report_bad(calculations: list[tuple[str, Decimal]]) -> str:
 
     return report
 
-
 # Performance test:
 import time
 
@@ -3605,7 +3457,6 @@ print(f"Time: {elapsed:.2f}s")  # ~5 seconds ❌
 # GOOD: Use list + join or StringIO
 from decimal import Decimal
 from io import StringIO
-
 
 def generate_zakat_report_good(calculations: list[tuple[str, Decimal]]) -> str:
     """
@@ -3632,7 +3483,6 @@ def generate_zakat_report_good(calculations: list[tuple[str, Decimal]]) -> str:
     # ✅ Single join operation
     return "\n".join(lines)
 
-
 # Alternative: StringIO for very large reports
 def generate_zakat_report_stringio(calculations: list[tuple[str, Decimal]]) -> str:
     """Alternative using StringIO for memory efficiency."""
@@ -3648,7 +3498,6 @@ def generate_zakat_report_stringio(calculations: list[tuple[str, Decimal]]) -> s
     buffer.write(f"Total users: {len(calculations)}\n")
 
     return buffer.getvalue()
-
 
 # Performance test:
 calculations = [(f"U{i:06d}", Decimal("2500.00")) for i in range(10_000)]
@@ -3666,7 +3515,6 @@ print(f"Time: {elapsed:.2f}s")  # ~0.05 seconds ✅ 100x faster!
 # BAD: Loading entire dataset into memory
 from decimal import Decimal
 from typing import List
-
 
 def load_all_zakat_calculations_bad(year: int) -> List[Decimal]:
     """
@@ -3686,7 +3534,6 @@ def load_all_zakat_calculations_bad(year: int) -> List[Decimal]:
 
     return calculations  # ❌ 1 million Decimal objects in memory
 
-
 def calculate_total_bad(year: int) -> Decimal:
     """Process all calculations."""
     # ❌ Loads everything before processing
@@ -3698,7 +3545,6 @@ def calculate_total_bad(year: int) -> Decimal:
 
     return total
 
-
 # Memory usage: ~200 MB for 1 million Decimals ❌
 ```
 
@@ -3708,7 +3554,6 @@ def calculate_total_bad(year: int) -> Decimal:
 # GOOD: Generator yields one item at a time
 from decimal import Decimal
 from typing import Generator
-
 
 def load_zakat_calculations_good(year: int) -> Generator[Decimal, None, None]:
     """
@@ -3724,7 +3569,6 @@ def load_zakat_calculations_good(year: int) -> Generator[Decimal, None, None]:
     for i in range(1_000_000):
         yield Decimal("2500.00")
 
-
 def calculate_total_good(year: int) -> Decimal:
     """Process calculations with generator."""
     # ✅ Processes one at a time, no memory spike
@@ -3735,9 +3579,7 @@ def calculate_total_good(year: int) -> Decimal:
 
     return total
 
-
 # Memory usage: ~constant (single Decimal at a time) ✅
-
 
 # Generator pipeline example:
 def filter_large_zakat(
@@ -3748,7 +3590,6 @@ def filter_large_zakat(
     for zakat in calculations:
         if zakat >= threshold:
             yield zakat
-
 
 # Composable generators:
 all_calculations = load_zakat_calculations_good(2025)
@@ -3824,7 +3665,6 @@ py-spy top --pid <PID>
 
 ---
 
-**Last Updated**: 2026-01-24
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
 **Maintainers**: OSE Platform Documentation Team
 **Document Size**: 3,700+ lines (comprehensive anti-patterns guide)

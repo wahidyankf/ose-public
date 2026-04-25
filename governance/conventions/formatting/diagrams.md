@@ -12,7 +12,6 @@ tags:
   - accessibility
   - color-blindness
 created: 2025-11-24
-updated: 2026-03-10
 ---
 
 # Diagram and Schema Convention
@@ -1372,10 +1371,6 @@ Renders as: "HashMap<K, V> / O(1) lookup / Values: [1, 2, 3] / Dict: {a: 1}"
 - [Mermaid Live Editor](https://mermaid.live/)
 - [ASCII Art Generator](https://www.asciiart.eu/)
 - [Box Drawing Unicode Characters](https://en.wikipedia.org/wiki/Box-drawing_characters)
-
----
-
-**Last Updated**: 2026-02-22
 
 ### Error 7: Sequence Diagram Participant Syntax with "as" Keyword
 

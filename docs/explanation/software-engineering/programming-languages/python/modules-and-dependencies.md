@@ -18,7 +18,6 @@ principles:
   - explicit-over-implicit
   - automation-over-manual
   - reproducibility
-updated: 2026-01-24
 ---
 
 # Python Modules and Dependencies
@@ -466,7 +465,6 @@ from ose_zakat.domain.models import ZakatCalculation
 from ose_zakat.domain.calculators import StandardZakatCalculator
 from decimal import Decimal
 
-
 def calculate_zakat() -> Decimal:
     """Use absolute imports."""
     calc = StandardZakatCalculator()
@@ -482,7 +480,6 @@ def calculate_zakat() -> Decimal:
 from ..domain.models import ZakatCalculation  # Up one level
 from ..domain.calculators import StandardZakatCalculator
 from .utils import format_currency  # Same level
-
 
 class ZakatService:
     """Service using relative imports."""
@@ -545,7 +542,6 @@ graph TD
 
 ---
 
-**Last Updated**: 2026-01-24
 **Python Version**: 3.11+ (baseline), 3.12+ (stable maintenance), 3.14.x (latest stable)
 **Maintainers**: OSE Platform Documentation Team
 

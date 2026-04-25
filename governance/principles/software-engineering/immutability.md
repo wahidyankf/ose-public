@@ -10,7 +10,6 @@ tags:
   - data-structures
   - concurrency
 created: 2025-12-28
-updated: 2025-12-28
 ---
 
 # Immutability Over Mutability
@@ -574,7 +573,3 @@ console.log("With payment:", withPayment); // Full history
 
 - [Shariah Audit Requirements](https://www.ifsb.org/) - Islamic Financial Services Board standards
 - [Transparency in Islamic Finance](https://www.aaoifi.com/) - AAOIFI governance standards
-
----
-
-**Last Updated**: 2025-12-28

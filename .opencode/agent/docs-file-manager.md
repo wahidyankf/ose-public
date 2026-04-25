@@ -19,8 +19,6 @@ skills:
 ## Agent Metadata
 
 - **Role**: Fixer (yellow)
-- **Created**: 2025-11-30
-- **Last Updated**: 2026-04-12
 - **Size Tier**: Tier 2 (standard agent — deterministic file operations with scripted link updates)
 
 **Model Selection Justification**: This agent uses `model: haiku` (Haiku 4.5, 73.3% SWE-bench Verified

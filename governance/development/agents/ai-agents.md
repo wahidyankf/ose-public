@@ -10,7 +10,6 @@ tags:
   - development
   - standards
 created: 2025-11-23
-updated: 2026-04-19
 ---
 
 # AI Agents Convention
@@ -210,20 +209,14 @@ In addition to the six required fields, agents may include optional metadata fie
    - Example: `created: 2025-11-23`
    - Helps track agent age and history
 
-2. **`updated`** (optional)
-   - Date when the agent was last modified
-   - Format: `YYYY-MM-DD` (ISO 8601 date only)
-   - Example: `updated: 2025-12-03`
-   - Automatically updated when significant changes are made
-   - Helps identify stale or recently maintained agents
+**Note**: The `updated:` field is NOT used in agent frontmatter. Per the [No Manual Date Metadata Convention](../../conventions/structure/no-date-metadata.md), non-website markdown files must not carry `updated:` fields — git history is the authoritative change record.
 
 **Best Practices:**
 
-- Use both `created` and `updated` fields together for complete tracking
-- Update the `updated` field whenever making substantial changes to the agent
+- Use `created` to record when the agent was first added
+- Do NOT add `updated:` — use `git log --follow -- <file>` to find when an agent was last changed
 - Use consistent date format (YYYY-MM-DD) matching the project's [Timestamp Format Convention](../../conventions/formatting/timestamp.md) (date-only format)
 - Place these fields after the six required fields in frontmatter
-- These fields align with documentation frontmatter best practices from Hugo, Jekyll, and Front Matter CMS
 
 **Example with optional fields:**
 
@@ -236,7 +229,6 @@ model:
 color: blue
 skills: []
 created: 2025-11-23
-updated: 2025-12-03
 ---
 ```
 
@@ -430,8 +422,6 @@ After frontmatter, agents should follow this structure:
 ## Agent Metadata
 
 - **Role**: [Maker (blue) / Checker (green) / Fixer (yellow) / Implementor (purple)]
-- **Created**: YYYY-MM-DD
-- **Last Updated**: YYYY-MM-DD
 
 [One-paragraph introduction describing the agent's role]
 
@@ -1644,7 +1634,6 @@ model:
 color: blue
 skills: [docs-applying-content-quality, docs-creating-accessible-diagrams]
 created: YYYY-MM-DD
-updated: YYYY-MM-DD
 ---
 ```
 
@@ -1951,8 +1940,6 @@ skills: []
 ## Agent Metadata
 
 - **Role**: [Maker (blue) / Checker (green) / Fixer (yellow) / Implementor (purple)]
-- **Created**: YYYY-MM-DD
-- **Last Updated**: YYYY-MM-DD
 
 You are an expert [role/domain] specializing in [specific expertise].
 
@@ -2471,10 +2458,6 @@ See [Skills README](../../../.claude/skills/README.md) for complete catalog.
 - [Linking Convention](../../conventions/formatting/linking.md) - How to link between files
 - [Diátaxis Framework](../../conventions/structure/diataxis-framework.md) - Documentation organization
 - [Implementation Workflow Convention](../workflow/implementation.md) - Surgical changes (touch only what you must) and goal-driven execution (define success criteria, loop until verified) practices for agents
-
----
-
-**Last Updated**: 2026-03-27
 
 ---
 

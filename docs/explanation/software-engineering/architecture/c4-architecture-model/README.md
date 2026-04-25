@@ -14,7 +14,6 @@ principles:
   - reproducibility
   - automation-over-manual
 created: 2026-01-18
-updated: 2026-02-09
 ---
 
 # C4 Architecture Model
@@ -266,7 +265,3 @@ This documentation implements/respects the following core principles:
 - **[Reproducibility First](../../../../../governance/principles/software-engineering/reproducibility.md)**: By mandating diagram-as-code with Mermaid and standardized WCAG color palette, C4 diagrams can be consistently reproduced across teams and time periods.
 
 - **[Automation Over Manual](../../../../../governance/principles/software-engineering/automation-over-manual.md)**: By using Mermaid syntax and automated validation tools, C4 diagram quality is enforced through CI/CD rather than manual review processes.
-
----
-
-**Last Updated**: 2026-02-09

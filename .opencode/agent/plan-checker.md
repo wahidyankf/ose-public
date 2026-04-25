@@ -24,8 +24,6 @@ skills:
 ## Agent Metadata
 
 - **Role**: Checker (green)
-- **Created**: 2025-12-28
-- **Last Updated**: 2026-04-04
 
 **Model Selection Justification**: This agent uses `model: sonnet` because it requires:
 
@@ -107,6 +105,15 @@ Per the [Content-Placement Rules](../../governance/conventions/structure/plans.m
 - Validation criteria are specific
 - Acceptance criteria are testable
 - Git workflow is specified
+
+#### PR Step Authorization Check (per [Git Push Default Convention](../../governance/development/workflow/git-push-default.md))
+
+Flag as **HIGH** any delivery checklist containing a `- [ ] Create PR`, `- [ ] Open PR`, or equivalent PR creation step unless EITHER:
+
+1. The plan's `README.md` or `prd.md` explicitly states that a PR is required (e.g., worktree-based flow, external contribution)
+2. The plan's Git Workflow section explicitly documents a worktree/branch-based flow
+
+Unsolicited PR steps conflict with Trunk Based Development and must be removed.
 
 ### 5. Consistency Validation
 

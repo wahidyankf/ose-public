@@ -14,7 +14,6 @@ principles:
   - reproducibility
   - explicit-over-implicit
 created: 2026-01-29
-updated: 2026-01-29
 ---
 
 # Spring Framework Deployment
@@ -484,6 +483,5 @@ record DonationMetrics(double totalDonations, double avgProcessingTime, double m
 
 ---
 
-**Last Updated**: 2026-01-29
 **Spring Framework Version**: 6.1+ (Java 17+, Kotlin 1.9+)
 **Maintainers**: Platform Documentation Team

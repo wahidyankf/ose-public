@@ -15,7 +15,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-03-09
-updated: 2026-03-09
 ---
 
 # Clojure Java Interop Standards
@@ -329,5 +328,5 @@ String/1   ;; Refers to String[] (single-element array class)
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-03-09
+
 **Clojure Version**: 1.10+ (baseline), 1.12 (recommended — functional interface improvements)

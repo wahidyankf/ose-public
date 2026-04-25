@@ -14,7 +14,6 @@ related:
   - ./component-architecture.md
 principles:
   - explicit-over-implicit
-updated: 2026-01-25
 ---
 
 # React Domain-Driven Design
@@ -1494,7 +1493,3 @@ export const ZakatRecordManager: React.FC<{ userId: string; islamicYear: number 
 - **[Component Architecture](component-architecture.md)** - Component patterns
 - **[TypeScript](typescript.md)** - Domain modeling
 - **[Best Practices](best-practices.md)** - Architecture standards
-
----
-
-**Last Updated**: 2026-01-25

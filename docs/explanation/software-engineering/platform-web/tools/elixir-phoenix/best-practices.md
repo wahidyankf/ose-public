@@ -18,7 +18,6 @@ principles:
   - immutability
   - pure-functions
   - reproducibility
-updated: 2026-01-25
 ---
 
 # Phoenix Best Practices
@@ -1006,5 +1005,4 @@ end
 
 ---
 
-**Last Updated**: 2026-01-25
 **Phoenix Version**: 1.7+

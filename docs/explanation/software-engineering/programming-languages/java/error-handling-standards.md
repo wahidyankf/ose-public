@@ -13,7 +13,6 @@ principles:
   - explicit-over-implicit
   - reproducibility
 created: 2026-02-03
-updated: 2026-02-03
 ---
 
 ## Prerequisite Knowledge
@@ -465,7 +464,5 @@ Before deploying financial services, verify:
 **Testing**:
 
 - [Testing Standards](./testing-standards.md) - Exception testing patterns with AssertJ and JUnit 6
-
-**Last Updated**: 2026-02-04
 
 **Status**: Active (mandatory for all OSE Platform Java services)

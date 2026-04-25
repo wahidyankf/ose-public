@@ -10,7 +10,6 @@ tags:
   - sync
   - cross-repo
 created: 2026-04-18
-updated: 2026-04-19
 ---
 
 # ose-primer Sync Convention
@@ -222,7 +221,3 @@ These rules are absolute; no agent or operator may bypass them:
 - [Agent Naming Convention](./agent-naming.md) — Sync agents conform (`repo-ose-primer-adoption-maker`, `repo-ose-primer-propagation-maker`).
 - [Workflow Naming Convention](./workflow-naming.md) — Sync orchestration workflows conform (`repo-ose-primer-sync-execution`, `repo-ose-primer-extraction-execution`).
 - [Plans Organization](./plans.md) — Plan lifecycle paths (`plans/**`) are `neither` because product plans are product-specific.
-
----
-
-**Last Updated**: 2026-04-18

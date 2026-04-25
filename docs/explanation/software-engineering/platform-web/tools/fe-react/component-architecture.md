@@ -15,7 +15,6 @@ related:
 principles:
   - explicit-over-implicit
   - immutability
-updated: 2026-01-25
 ---
 
 # React Component Architecture
@@ -1070,7 +1069,3 @@ export const DashboardPage: React.FC = () => (
 - **[Hooks](hooks.md)** - React Hooks guide
 - **[Performance](performance.md)** - Optimization techniques
 - **[Testing](testing.md)** - Component testing strategies
-
----
-
-**Last Updated**: 2026-01-25

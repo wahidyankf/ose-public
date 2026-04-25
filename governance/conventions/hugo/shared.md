@@ -11,7 +11,6 @@ tags:
   - frontmatter
   - shared
 created: 2025-12-13
-updated: 2025-12-22
 ---
 
 # Hugo Content Convention - Shared

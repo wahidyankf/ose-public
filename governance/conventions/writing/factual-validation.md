@@ -10,7 +10,6 @@ tags:
   - accuracy
   - quality-assurance
 created: 2025-12-16
-updated: 2026-02-02
 ---
 
 # Factual Validation Convention

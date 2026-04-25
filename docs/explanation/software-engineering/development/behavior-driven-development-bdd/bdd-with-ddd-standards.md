@@ -11,7 +11,6 @@ tags:
 principles:
   - explicit-over-implicit
 created: 2026-02-09
-updated: 2026-02-09
 ---
 
 # BDD with DDD Standards
@@ -179,7 +178,3 @@ Feature: Campaign Goal Tracking
     And the progress percentage should be 70%
     And a "DonationReceived" event should be published
 ```
-
----
-
-**Last Updated**: 2026-02-09

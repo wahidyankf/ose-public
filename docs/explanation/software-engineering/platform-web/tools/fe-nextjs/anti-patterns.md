@@ -14,7 +14,6 @@ related:
 principles:
   - explicit-over-implicit
   - immutability
-updated: 2026-01-26
 ---
 
 # Next.js Anti-Patterns
@@ -343,5 +342,4 @@ export default async function ZakatPage() {
 
 ---
 
-**Last Updated**: 2026-01-26
 **Next.js Version**: 14+ (App Router)

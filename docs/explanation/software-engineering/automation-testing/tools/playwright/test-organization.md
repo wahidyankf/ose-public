@@ -15,7 +15,6 @@ principles:
   - explicit-over-implicit
   - reproducibility
 created: 2026-02-08
-updated: 2026-02-08
 ---
 
 # Playwright Test Organization Standards
@@ -835,5 +834,5 @@ test("calculates zakat for gold above nisab", async ({ page }) => {
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-02-08
+
 **Playwright Version**: Playwright 1.40+ (TypeScript, Node.js 18+)

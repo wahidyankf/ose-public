@@ -29,7 +29,3 @@ Templates in this directory can be used as:
 
 - [Java Programming Language Overview](../README.md) - Language documentation index
 - [File Naming Convention](../../../../../../governance/conventions/structure/file-naming.md) - Naming patterns
-
----
-
-**Last Updated**: 2026-02-22

@@ -22,7 +22,6 @@ principles:
   - pure-functions
   - reproducibility
 created: 2026-01-25
-updated: 2026-04-19
 ---
 
 # Golang
@@ -349,7 +348,7 @@ graph TD
 ---
 
 **Status**: Authoritative Standard (Mandatory Compliance)
-**Last Updated**: 2026-03-06
+
 **Go Version**: 1.21+ (baseline), 1.23+ (recommended), 1.25 (previous), 1.26 (recommended for new projects)
 **Framework Stack**: Standard library (primary), Gin v1.11.0, Echo v5.0.0, GORM v1.25.0, testify v1.9.0
 **Maintainers**: Platform Architecture Team

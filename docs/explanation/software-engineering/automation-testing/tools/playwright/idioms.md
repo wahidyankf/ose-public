@@ -15,7 +15,6 @@ principles:
   - explicit-over-implicit
   - reproducibility
 created: 2026-02-08
-updated: 2026-02-08
 ---
 
 # Playwright Idioms
@@ -108,4 +107,3 @@ export class DashboardPage {
 ---
 
 **Maintainers**: Platform Documentation Team
-**Last Updated**: 2026-02-08

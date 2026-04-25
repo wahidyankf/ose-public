@@ -10,7 +10,6 @@ tags:
   - development
   - continuous-integration
 created: 2025-11-26
-updated: 2026-04-11
 ---
 
 # Trunk Based Development Convention
@@ -618,6 +617,7 @@ TBD works best when combined with:
 - **Small Commits**: [Conventional Commits](./commit-messages.md)
 - **Pair/Mob Programming**: Real-time collaboration and review
 - **PR Merge Protocol**: [PR Merge Protocol](./pr-merge-protocol.md) - Required approval workflow for worktree-mode PRs
+- **Git Push Default Convention**: [Git Push Default Convention](./git-push-default.md) — Makes PR-opt-in explicit for AI agents; governs plan-maker, plan-checker, plan-fixer, and the plan-execution workflow behavior
 - **Worktree Toolchain Initialization**: [Worktree Toolchain Initialization](./worktree-setup.md) - Mandatory two-step init (`npm install` + `npm run doctor -- --fix`) after creating or entering a worktree
 
 ## References and Further Reading
@@ -625,7 +625,3 @@ TBD works best when combined with:
 - **[TrunkBasedDevelopment.com](https://trunkbaseddevelopment.com/)** - Official TBD resource with detailed guides
 - **Conventional Commits**: [Commit Message Convention](./commit-messages.md)
 - **Development Practices**: [Development Index](../README.md)
-
----
-
-**Last Updated**: 2026-04-11

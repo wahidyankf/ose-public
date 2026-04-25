@@ -8,7 +8,6 @@ tags:
   - conventions
   - standards
 created: 2025-11-22
-updated: 2026-04-19
 ---
 
 # Conventions
@@ -119,6 +118,7 @@ Documentation organization frameworks, file naming, and project planning structu
 - [ose-primer Sync Convention](./structure/ose-primer-sync.md) - Directional classification, transforms, and safety invariants governing content flow between `ose-public` (upstream) and `ose-primer` (downstream MIT-only template). Consumed by the two sync-maker agents and audited by `repo-rules-checker`
 - [Diataxis Framework](./structure/diataxis-framework.md) - Understanding the four-category documentation organization framework we use (Tutorials, How-To, Reference, Explanation)
 - [File Naming Convention](./structure/file-naming.md) - Lowercase kebab-case file names anchored on standard markdown and GitHub compatibility
+- [No Manual Date Metadata Convention](./structure/no-date-metadata.md) - Non-website markdown files must not contain manual date metadata: no `updated:` frontmatter fields, no `**Last Updated**` footer blocks, and no inline body date annotations. Git history is the authoritative change record. **Agents**: repo-rules-checker, repo-rules-fixer
 - [Per-Directory Licensing](./structure/licensing.md) - Standards for the per-directory licensing strategy using MIT for all code in this repository. Defines LICENSE file placement rules, copyright notice format, and rules for new directories
 - [Plans Organization](./structure/plans.md) - Standards for organizing project planning documents in plans/ folder including structure (ideas.md, backlog/, in-progress/, done/), naming patterns (YYYY-MM-DD\_\_identifier/), lifecycle stages, and project identifiers. Defines how plans move from ideas - backlog - in-progress - done
 - [Programming Language Documentation Separation](./structure/programming-language-docs-separation.md) - Establishes clear separation between repository-specific programming language style guides (docs/explanation/) and educational programming language content (ayokoding-web). Defines scope boundaries, prerequisite knowledge requirements, cross-referencing patterns, and DRY principle application. Applies to all programming languages (Java, Python, Golang, TypeScript, Elixir, Kotlin, Dart, Rust, Clojure, F#, C#)
@@ -152,7 +152,3 @@ Hugo site-specific content conventions. **All Hugo sites have migrated to Next.j
 - [Core Principles](../principles/README.md) - Layer 1: Foundational values that govern conventions
 - [Development](../development/README.md) - Layer 3: Software practices (parallel governance with conventions)
 - [Software Design Reference](../../docs/explanation/software-engineering/software-design-reference.md) - Cross-reference to authoritative software design and coding standards
-
----
-
-**Last Updated**: 2026-04-19

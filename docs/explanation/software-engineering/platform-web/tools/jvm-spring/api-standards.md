@@ -15,7 +15,6 @@ principles:
   - explicit-over-implicit
   - simplicity-over-complexity
 created: 2026-02-06
-updated: 2026-02-06
 ---
 
 ## Prerequisite Knowledge
@@ -757,7 +756,5 @@ Before deploying Spring REST APIs, verify:
 - [Spring Boot REST APIs](../jvm-spring-boot/rest-apis.md) - Boot API patterns
 
 ---
-
-**Last Updated**: 2026-02-06
 
 **Status**: Mandatory (required for all OSE Platform Spring REST APIs)

@@ -18,8 +18,6 @@ skills:
 ## Agent Metadata
 
 - **Role**: Maker (blue)
-- **Created**: 2026-04-18
-- **Last Updated**: 2026-04-18
 
 **Model Selection Justification**: This agent uses `model: sonnet` (Sonnet 4.6, 79.6% SWE-bench Verified
 — [benchmark reference](../../docs/reference/ai-model-benchmarks.md#claude-sonnet-46)) because all

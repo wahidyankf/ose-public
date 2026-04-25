@@ -148,13 +148,13 @@ Comprehensions provide concise syntax for creating collections from iterables.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["Transform<br/>Collection?"]:::blue --> B{"Output<br/>Type?"}:::orange
 
-    B -->|"List"| C["✅ List Comprehension<br/>[x*2 for x in items]"]:::teal
-    B -->|"Dict"| D["✅ Dict Comprehension<br/>{k: v for k, v in pairs}"]:::teal
-    B -->|"Set"| E["✅ Set Comprehension<br/>{x for x in items}"]:::teal
-    B -->|"Generator"| F["✅ Generator Expression<br/>(x*2 for x in items)"]:::teal
+    B -->|"List"| C["✅ List<br/>[x*2 for x in items]"]:::teal
+    B -->|"Dict"| D["✅ Dict<br/>{k: v for k, v}"]:::teal
+    B -->|"Set"| E["✅ Set<br/>{x for x in items}"]:::teal
+    B -->|"Generator"| F["✅ Generator<br/>(x*2 for x in items)"]:::teal
 
     C --> G{"Need<br/>Filtering?"}:::orange
     D --> G
@@ -162,23 +162,18 @@ graph TD
     F --> G
 
     G -->|"Yes"| H["Add if clause<br/>if condition"]:::purple
-    G -->|"No"| I["Simple transformation"]:::purple
+    G -->|"No"| I["Simple transform"]:::purple
 
-    H --> J["Comprehension Benefits"]:::teal
+    H --> J["Benefits:<br/>• Faster than loops<br/>• More readable<br/>• Single expression<br/>• Optimized in C"]:::teal
     I --> J
-
-    J --> J1["• Faster than loops"]
-    J --> J2["• More readable"]
-    J --> J3["• Single expression"]
-    J --> J4["• Optimized in C"]
-
-    Note["Use generator<br/>for large datasets<br/>(lazy evaluation)"]
 
     classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000
     classDef teal fill:#029E73,stroke:#000,color:#fff
     classDef purple fill:#CC78BC,stroke:#000,color:#000
 ```
+
+> Use generator for large datasets (lazy evaluation).
 
 **Key Principles**:
 
@@ -514,7 +509,7 @@ Decorators modify or enhance functions and methods without changing their implem
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph LR
+graph TD
     A["Original Function<br/>def calculate()"]:::blue --> B["Apply Decorator<br/>@cache"]:::orange
 
     B --> C["Wrapped Function<br/>(enhanced)"]:::purple
@@ -529,13 +524,13 @@ graph LR
     G --> H["Cache<br/>Result"]:::purple
     H --> I["✅ Return<br/>Result"]:::teal
 
-    Note["Common Decorators:<br/>• @lru_cache (memoization)<br/>• @property (getter)<br/>• @staticmethod<br/>• @classmethod"]
-
     classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000
     classDef teal fill:#029E73,stroke:#000,color:#fff
     classDef purple fill:#CC78BC,stroke:#000,color:#000
 ```
+
+Common decorators: `@lru_cache` (memoization), `@property` (getter), `@staticmethod`, `@classmethod`.
 
 **Key Principles**:
 
@@ -652,33 +647,26 @@ Generators provide memory-efficient iteration over sequences.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["Process<br/>Collection?"]:::blue --> B{"Dataset<br/>Size?"}:::orange
 
-    B -->|"Large (>10K items)"| C["✅ Use Generator<br/>(yield values)"]:::teal
-    B -->|"Small (<10K items)"| D{"Multiple<br/>Passes Needed?"}:::orange
+    B -->|"Large >10K"| C["✅ Use Generator<br/>(yield values)"]:::teal
+    B -->|"Small <10K"| D{"Multiple<br/>Passes?"}:::orange
 
     D -->|"Yes"| E["Use List<br/>(materialize)"]:::purple
     D -->|"No"| C
 
-    C --> F["Generator Benefits"]:::teal
-    F --> F1["• Constant memory"]
-    F --> F2["• Lazy evaluation"]
-    F --> F3["• Stream processing"]
-    F --> F4["• Composable pipelines"]
+    C --> F["Generator Benefits:<br/>• Constant memory<br/>• Lazy evaluation<br/>• Stream processing<br/>• Composable pipelines"]:::teal
 
-    E --> G["List Benefits"]:::purple
-    G --> G1["• Random access"]
-    G --> G2["• Multiple iterations"]
-    G --> G3["• Known length"]
-
-    Note["Use generator for:<br/>• File processing<br/>• Database cursors<br/>• Infinite sequences<br/>• Memory-constrained"]
+    E --> G["List Benefits:<br/>• Random access<br/>• Multiple iterations<br/>• Known length"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000
     classDef teal fill:#029E73,stroke:#000,color:#fff
     classDef purple fill:#CC78BC,stroke:#000,color:#000
 ```
+
+Use generator for: file processing, database cursors, infinite sequences, memory-constrained environments.
 
 **Key Principles**:
 

@@ -996,7 +996,7 @@ class Z:  # BAD: Non-descriptive class name
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#0173B2', 'primaryTextColor': '#000', 'primaryBorderColor': '#0173B2', 'lineColor': '#DE8F05', 'secondaryColor': '#029E73', 'tertiaryColor': '#CC78BC', 'background': '#fff', 'mainBkg': '#fff'}}}%%
-graph TD
+graph LR
     A[ose_platform/] --> B[domain/]
     A --> C[application/]
     A --> D[infrastructure/]
@@ -1005,10 +1005,7 @@ graph TD
     B --> B2[donation/]
     B --> B3[qard_hasan/]
 
-    B1 --> B1A[__init__.py]
-    B1 --> B1B[models.py]
-    B1 --> B1C[calculator.py]
-    B1 --> B1D[repository.py]
+    B1 --> B1A["__init__.py<br/>models.py<br/>calculator.py<br/>repository.py"]
 
     C --> C1[services/]
     C --> C2[commands/]
@@ -1137,8 +1134,8 @@ def calculate_zakat_obligation(wealth_amount, nisab):
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
-    A["Function Call<br/>with try/except"]:::blue --> B{" Raises<br/>Exception?"}:::orange
+graph LR
+    A["Function Call<br/>with try/except"]:::blue --> B{"Raises<br/>Exception?"}:::orange
 
     B -->|"No"| C["✅ Return<br/>Success Value"]:::teal
     B -->|"Yes"| D{"Specific<br/>Exception?"}:::orange
@@ -1148,7 +1145,7 @@ graph TD
 
     E --> G{"Need More<br/>Context?"}:::orange
 
-    G -->|"Yes"| H["Chain Exception<br/>raise NewError from e"]:::purple
+    G -->|"Yes"| H["Chain Exception<br/>raise from e"]:::purple
     G -->|"No"| I["Handle<br/>Gracefully"]:::teal
 
     H --> J["Log Error<br/>with Context"]:::teal
@@ -2484,7 +2481,7 @@ Use this checklist to ensure your Python code follows best practices:
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart TD
+flowchart LR
     A[Python Project] --> B[src/<br/>Source Code]
     A --> C[tests/<br/>Test Files]
     A --> D[docs/<br/>Documentation]
@@ -2520,26 +2517,25 @@ flowchart TD
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#000','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart LR
-    A[Code] --> B[black<br/>Formatting]
-    B --> C[isort<br/>Import Sort]
-    C --> D[mypy<br/>Type Check]
-    D --> E[pylint<br/>Linting]
-    E --> F[pytest<br/>Testing]
-    F --> G{Pass?}
+graph TD
+    A[Code] --> B["black → isort<br/>Format + Sort"]
+    B --> C["mypy → pylint<br/>Type + Lint"]
+    C --> D[pytest<br/>Testing]
+    D --> G{Pass?}
 
     G -->|Yes| H[Coverage Check]
     G -->|No| I[Fix Issues]
 
-    H --> J{>85%?}
+    H --> J{">85%?"}
     J -->|Yes| K[Build]
     J -->|No| I
 
     K --> L[Deploy]
 
     style A fill:#0173B2,color:#fff
-    style D fill:#DE8F05,color:#fff
-    style F fill:#029E73,color:#fff
+    style B fill:#DE8F05,color:#fff
+    style C fill:#DE8F05,color:#fff
+    style D fill:#029E73,color:#fff
     style H fill:#CC78BC,color:#fff
     style L fill:#0173B2,color:#fff
 ```

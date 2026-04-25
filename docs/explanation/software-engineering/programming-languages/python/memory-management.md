@@ -315,7 +315,7 @@ def get_zakat_cached(payer_id: str) -> Decimal:
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
-graph LR
+graph TD
   A[Run Application] --> B[tracemalloc.start#40;#41;]
   B --> C[Execute Operations]
   C --> D[Take Snapshot]
@@ -323,11 +323,11 @@ graph LR
   D --> E[Compare Snapshots<br/>Before vs After]
   E --> F{Memory Growth?}
 
-  F -->|Yes| G[Analyze Top Allocations<br/>statistics#40;'lineno'#41;]
-  F -->|No| H[No Leak Detected]
+  F --> G[Yes: Analyze Allocations<br/>statistics#40;'lineno'#41;]
+  F --> H[No: No Leak Detected]
 
-  G --> I[Identify Leak Source<br/>File & Line Number]
-  I --> J[Fix Leak<br/>Bounded cache/Weak refs]
+  G --> I[Identify Leak Source<br/>File and Line Number]
+  I --> J[Fix Leak:<br/>Bounded cache/Weak refs]
 
   style A fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
   style B fill:#DE8F05,stroke:#000,color:#fff,stroke-width:2px

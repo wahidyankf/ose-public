@@ -52,14 +52,14 @@ asyncio provides asynchronous I/O using async/await syntax.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
-  A[Python Thread Executes] -->|GIL Acquired| B{Task Type?}
-  B -->|I/O-Bound| C[Release GIL During I/O]
-  B -->|CPU-Bound| D[Hold GIL, Block Other Threads]
+  A[Python Thread Executes] --> B{Task Type?}
+  B --> C[I/O-Bound:<br/>Release GIL During I/O]
+  B --> D[CPU-Bound:<br/>Hold GIL, Block Threads]
 
-  C -->|I/O Complete| E[Re-acquire GIL]
+  C --> E[Re-acquire GIL]
   E --> F[Continue Execution]
 
-  D --> G[Only One Thread Executes Python Bytecode]
+  D --> G[GIL Held:<br/>One Thread at a Time]
 
   style A fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
   style B fill:#DE8F05,stroke:#000,color:#fff,stroke-width:2px
@@ -306,36 +306,19 @@ Multiprocessing bypasses GIL with separate processes.
 graph TD
     Main["Main Process"]:::blue --> Pool["Process Pool"]:::orange
 
-    Pool --> P1["Process 1<br/>(Separate GIL)"]:::teal
-    Pool --> P2["Process 2<br/>(Separate GIL)"]:::teal
-    Pool --> P3["Process 3<br/>(Separate GIL)"]:::teal
-    Pool --> P4["Process 4<br/>(Separate GIL)"]:::teal
+    Pool --> Procs["4 Processes<br/>each: Separate GIL"]:::teal
 
-    P1 --> CPU1["CPU Core 1"]:::purple
-    P2 --> CPU2["CPU Core 2"]:::purple
-    P3 --> CPU3["CPU Core 3"]:::purple
-    P4 --> CPU4["CPU Core 4"]:::purple
+    Procs --> Calcs["4 CPU Cores<br/>Zakat Calcs 1-4"]:::purple
 
-    CPU1 --> Calc1["Zakat Calc 1"]:::blue
-    CPU2 --> Calc2["Zakat Calc 2"]:::blue
-    CPU3 --> Calc3["Zakat Calc 3"]:::blue
-    CPU4 --> Calc4["Zakat Calc 4"]:::blue
-
-    Calc1 --> Results["Combined Results"]:::teal
-    Calc2 --> Results
-    Calc3 --> Results
-    Calc4 --> Results
-
-    Results --> Main
-
-    Note1["No GIL Contention:<br/>Each process has<br/>independent GIL<br/>and memory space"]
-    Note2["True Parallelism:<br/>4 CPU cores execute<br/>Python bytecode<br/>simultaneously"]
+    Calcs --> Results["Combined Results<br/>returned to Main"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000
     classDef teal fill:#029E73,stroke:#000,color:#fff
     classDef purple fill:#CC78BC,stroke:#000,color:#000
 ```
+
+No GIL contention: each process has independent GIL and memory space. True Parallelism: 4 CPU cores execute Python bytecode simultaneously.
 
 **Key Principles**:
 
@@ -421,18 +404,14 @@ def io_intensive_zakat(wealth: Decimal) -> Decimal:
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
   A[Task to Execute] --> B{Task Type?}
-  B -->|I/O-Bound<br/>#40;API calls, DB queries#41;| C{Single Thread Sufficient?}
-  B -->|CPU-Bound<br/>#40;Complex calculations#41;| D{Need True Parallelism?}
+  B --> C["I/O-Bound<br/>Single Thread OK?"]
+  B --> D["CPU-Bound<br/>Need True Parallelism?"]
 
-  C -->|Yes, modern async| E[asyncio<br/>async/await]
-  C -->|No, need threads| F[threading<br/>ThreadPoolExecutor]
+  C --> E["Yes: asyncio<br/>async/await"]
+  C --> F["No: threading<br/>ThreadPoolExecutor"]
 
-  D -->|Yes, bypass GIL| G[multiprocessing<br/>ProcessPoolExecutor]
-  D -->|No, I/O dominates| H[asyncio with<br/>CPU-bound tasks]
-
-  E --> I[Zakat API calls<br/>concurrent async]
-  F --> J[Donation processing<br/>with shared memory]
-  G --> K[Complex Murabaha<br/>profit calculations]
+  D --> G["Yes: multiprocessing<br/>ProcessPoolExecutor"]
+  D --> H["No: asyncio<br/>CPU-bound tasks"]
 
   style A fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
   style B fill:#DE8F05,stroke:#000,color:#fff,stroke-width:2px
@@ -462,22 +441,11 @@ High-level interface for threading and multiprocessing.
 graph TD
     A["Need Concurrent<br/>Execution?"]:::blue --> B{"Workload<br/>Type?"}:::orange
 
-    B -->|"I/O-Bound"| C["✅ ThreadPoolExecutor<br/>(API calls, DB queries)"]:::teal
-    B -->|"CPU-Bound"| D["✅ ProcessPoolExecutor<br/>(Calculations, parsing)"]:::teal
+    B --> C["I/O-Bound:<br/>✅ ThreadPoolExecutor<br/>(API calls, DB)"]:::teal
+    B --> D["CPU-Bound:<br/>✅ ProcessPoolExecutor<br/>(Calculations)"]:::teal
 
-    C --> E["Thread Pool Features"]:::purple
-    D --> F["Process Pool Features"]:::purple
-
-    E --> E1["Shared memory"]
-    E --> E2["Lightweight"]
-    E --> E3["GIL-limited"]
-
-    F --> F1["Separate memory"]
-    F --> F2["True parallelism"]
-    F --> F3["No GIL"]
-
-    C --> Ex1["Example:<br/>Fetch 100 donation<br/>receipts from API"]:::blue
-    D --> Ex2["Example:<br/>Calculate Zakat for<br/>10,000 accounts"]:::blue
+    C --> E["Thread Pool Features:<br/>• Shared memory<br/>• Lightweight<br/>• GIL-limited<br/>Example: fetch receipts"]:::purple
+    D --> F["Process Pool Features:<br/>• Separate memory<br/>• True parallelism<br/>• No GIL<br/>Example: Zakat for 10K"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000
@@ -710,33 +678,12 @@ Handle exceptions in async code properly.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    A["asyncio.gather(*tasks)"]:::blue --> B{"return_exceptions<br/>Parameter?"}:::orange
+    A["asyncio.gather#40;*tasks#41;"]:::blue --> B["return_exceptions=False<br/>Fail-fast: error stops all"]:::orange
+    A --> C["return_exceptions=True<br/>Resilient: all tasks complete"]:::teal
 
-    B -->|"False (default)"| C["Task Execution"]:::teal
-    B -->|"True"| D["Task Execution"]:::teal
+    B --> B1["Error propagates<br/>Cancel remaining tasks"]:::purple
 
-    C --> C1["Task 1: Success"]:::teal
-    C --> C2["Task 2: Exception!"]:::purple
-    C --> C3["Task 3: Not Started"]:::orange
-
-    C2 --> Fail["First Exception<br/>Propagates Immediately"]:::purple
-    Fail --> Cancel["Remaining Tasks<br/>Cancelled"]:::purple
-    Cancel --> Raise["Exception Raised<br/>to Caller"]:::purple
-
-    D --> D1["Task 1: Success"]:::teal
-    D --> D2["Task 2: Exception!"]:::purple
-    D --> D3["Task 3: Continues"]:::teal
-
-    D1 --> Results["All Results<br/>Collected"]:::teal
-    D2 --> Results
-    D3 --> Results
-
-    Results --> Check{"Check Each<br/>Result Type"}:::orange
-    Check -->|"Success"| Process["Process Value"]:::teal
-    Check -->|"Exception"| Handle["Handle Error"]:::purple
-
-    Note1["Without return_exceptions:<br/>Fail-fast behavior<br/>One error stops all"]
-    Note2["With return_exceptions:<br/>Resilient behavior<br/>All tasks complete"]
+    C --> R["All Results Collected<br/>Check each: value or exception"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000

@@ -242,8 +242,8 @@ campaign.close_campaign()
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
   A[Presentation Layer<br/>FastAPI/Django] --> B[Application Layer<br/>Use Case Services]
-  B --> C[Domain Layer<br/>Aggregates, Entities, Value Objects]
-  C --> D[Infrastructure Layer<br/>Repositories, DB, External APIs]
+  B --> C[Domain Layer<br/>Aggregates, Entities,<br/>Value Objects]
+  C --> D[Infrastructure Layer<br/>Repositories, DB,<br/>External APIs]
 
   E[HTTP Request] --> A
   A --> F[Pydantic Model<br/>Request Validation]
@@ -652,19 +652,10 @@ graph TD
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart TD
-    A[DDD in Python] --> B[Domain Layer<br/>Business Logic]
-    A --> C[Application Layer<br/>Use Cases]
-    A --> D[Infrastructure Layer<br/>External Services]
-
-    B --> E[Entities<br/>Aggregates]
-    B --> F[Value Objects<br/>Immutable]
-
-    C --> G[Commands<br/>Queries]
-    C --> H[Event Handlers<br/>Domain Events]
-
-    D --> I[Repositories<br/>Database]
-    D --> J[External APIs<br/>Third-party]
+flowchart LR
+    A[DDD in Python] --> B["Domain Layer<br/>Entities, Aggregates,<br/>Value Objects"]
+    A --> C["Application Layer<br/>Commands, Queries,<br/>Event Handlers"]
+    A --> D["Infrastructure Layer<br/>Repositories, DB,<br/>External APIs"]
 
     style A fill:#0173B2,color:#fff
     style B fill:#DE8F05,color:#fff

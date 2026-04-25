@@ -94,12 +94,12 @@ python -m pstats profile.stats
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
-graph LR
+graph TD
   A[Python Code] --> B[Run with cProfile]
   B --> C[Profile Data<br/>.stats file]
   C --> D[Analyze with pstats]
 
-  D --> E[Identify Bottlenecks<br/>Top functions by cumtime]
+  D --> E[Identify Bottlenecks<br/>Top by cumtime]
   E --> F{Optimization<br/>Needed?}
 
   F -->|Yes| G[Optimize Hot Path]

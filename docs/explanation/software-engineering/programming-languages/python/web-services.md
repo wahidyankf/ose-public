@@ -30,29 +30,19 @@ principles:
 Python offers three major web frameworks, each with distinct philosophies. For OSE Platform financial services, framework choice depends on project requirements: FastAPI for modern async APIs, Django for full-featured web apps, Flask for microservices.
 
 ```mermaid
-graph TB
-    subgraph "Framework Selection"
-        A[Project Requirements] --> B{Primary Need?}
-        B -->|High Performance API| C[FastAPI]
-        B -->|Full Web App| D[Django]
-        B -->|Microservice| E[Flask]
+graph LR
+    A[Project Requirements] --> B{Primary Need?}
+    B -->|High Performance API| C[FastAPI]
+    B -->|Full Web App| D[Django]
+    B -->|Microservice| E[Flask]
 
-        C --> F[Async/Await]
-        C --> G[Type Safety]
-        C --> H[Auto Docs]
+    C --> F["FastAPI Features:<br/>Async/Await<br/>Type Safety<br/>Auto Docs"]
+    D --> G["Django Features:<br/>Admin Panel<br/>ORM<br/>Auth System"]
+    E --> H["Flask Features:<br/>Minimal Core<br/>Extensions<br/>Flexibility"]
 
-        D --> I[Admin Panel]
-        D --> J[ORM]
-        D --> K[Auth System]
-
-        E --> L[Minimal Core]
-        E --> M[Extensions]
-        E --> N[Flexibility]
-    end
-
-    style C fill:#0173B2
-    style D fill:#DE8F05
-    style E fill:#029E73
+    style C fill:#0173B2,color:#fff
+    style D fill:#DE8F05,color:#fff
+    style E fill:#029E73,color:#fff
 ```
 
 ### Framework Comparison
@@ -1913,25 +1903,16 @@ async def create_donation_with_broadcast(
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 flowchart TD
-    A[FastAPI App] --> B[Dependency Injection<br/>DI Container]
-    A --> C[Routers<br/>APIRouter]
+    A[FastAPI App] --> B[Dependency Injection<br/>DB Session / Auth / Config]
+    A --> C["Routers<br/>/api/zakat, /donations, /auth"]
     A --> D[Middleware<br/>CORS/Auth]
 
-    B --> B1[Database Session<br/>SQLAlchemy]
-    B --> B2[Auth Service<br/>JWT]
-    B --> B3[Config<br/>Settings]
+    B --> E[Endpoint Functions]
+    C --> E
 
-    C --> C1[/api/zakat<br/>Zakat Router]
-    C --> C2[/api/donations<br/>Donation Router]
-    C --> C3[/api/auth<br/>Auth Router]
-
-    C1 --> E[Endpoint Functions]
-    C2 --> E
-    C3 --> E
-
-    E --> F[Pydantic Models<br/>Validation]
+    E --> F[Pydantic<br/>Validation]
     F --> G[Business Logic<br/>Services]
-    G --> H[Repository Layer<br/>Database]
+    G --> H[Repository<br/>Database]
 
     style A fill:#0173B2,color:#fff
     style B fill:#DE8F05,color:#fff

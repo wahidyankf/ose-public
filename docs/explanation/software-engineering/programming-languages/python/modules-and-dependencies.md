@@ -76,7 +76,7 @@ This diagram shows how pip resolves and installs dependencies from requirements.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A[pip install -r requirements.txt]:::blue
+  A["pip install<br/>-r requirements.txt"]:::blue
   B{Parse requirements.txt}:::orange
   C[Resolve dependencies]:::blue
   D{Check compatibility?}:::orange
@@ -497,32 +497,23 @@ This diagram shows Python's sys.path lookup order for module imports:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A[import package]:::blue
-  B{Check sys.path}:::orange
-  C[1. Current directory]:::blue
-  D[2. PYTHONPATH directories]:::blue
-  E[3. Standard library]:::blue
-  F[4. site-packages]:::blue
-  G{Module found?}:::orange
-  H[Import successful]:::teal
-  I[ModuleNotFoundError]:::purple
+  A[import package] --> B{Check sys.path}
+  B --> C[1. Current directory]
+  C --> G{Module found?}
+  G --> D[Not found: PYTHONPATH dirs]
+  D --> G2{Module found?}
+  G2 --> E[Not found: Standard library]
+  E --> G3{Module found?}
+  G3 --> F[Not found: site-packages]
+  F --> G4{Module found?}
+  G4 --> H[Found: Import successful]
+  G4 --> I[Not found: ModuleNotFoundError]
 
-  A --> B
-  B --> C
-  C --> G
-  G -->|Not found| D
-  D --> G
-  G -->|Not found| E
-  E --> G
-  G -->|Not found| F
-  F --> G
-  G -->|Found| H
-  G -->|Not found in any| I
-
-  classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  style C fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  style H fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  style I fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
 
 ## References

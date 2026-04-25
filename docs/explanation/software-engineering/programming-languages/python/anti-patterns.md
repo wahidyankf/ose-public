@@ -778,7 +778,7 @@ This diagram illustrates how mutable default arguments create shared state bugs:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
-  A[Function defined with mutable default]:::blue
+  A[Function: mutable default arg]:::blue
   B[First call]:::blue
   C{Default used?}:::orange
   D[Create new mutable object]:::purple
@@ -786,7 +786,7 @@ graph TD
   F[Append to list]:::blue
   G[Return list]:::teal
   H[Second call]:::blue
-  I[List already contains first call data!]:::purple
+  I[List has prior call data! Bug!]:::purple
   J[BUG: Shared state across calls]:::purple
 
   A --> B
@@ -1563,45 +1563,26 @@ This diagram shows strategies to break circular import dependencies:
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
   A[Circular Import Problem]:::purple
-  B[Strategy 1: Use Protocols]:::teal
-  C[Strategy 2: Defer Import]:::teal
-  D[Strategy 3: Restructure]:::teal
-  E[models.py imports calculators.py]:::orange
-  F[calculators.py imports models.py]:::orange
   G[ImportError!]:::purple
 
-  H[Define Protocol in models.py]:::blue
-  I[calculators.py imports Protocol]:::blue
-  J[No circular dependency]:::teal
+  A --> EF["models.py ↔ calculators.py<br/>mutual imports"]:::orange
+  EF --> G
 
-  K[Import inside function]:::blue
-  L[Import delayed until called]:::blue
-  M[Breaks circular chain]:::teal
+  A --> B[Strategy 1: Use Protocols]:::teal
+  A --> C[Strategy 2: Defer Import]:::teal
+  A --> D[Strategy 3: Restructure]:::teal
 
-  N[Extract shared code to new module]:::blue
-  O[Both import from shared]:::blue
-  P[Linear dependency]:::teal
+  B --> H[Define Protocol in models.py]:::blue
+  H --> I[calculators.py uses Protocol]:::blue
+  I --> J[No circular dependency]:::teal
 
-  A --> E
-  A --> F
-  E --> G
-  F --> G
+  C --> K[Import inside function]:::blue
+  K --> L[Delayed until called]:::blue
+  L --> M[Breaks circular chain]:::teal
 
-  A --> B
-  A --> C
-  A --> D
-
-  B --> H
-  H --> I
-  I --> J
-
-  C --> K
-  K --> L
-  L --> M
-
-  D --> N
-  N --> O
-  O --> P
+  D --> N[Extract to shared module]:::blue
+  N --> O[Both import from shared]:::blue
+  O --> P[Linear dependency]:::teal
 
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
   classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -1632,22 +1613,20 @@ Type hints should clarify intent and catch errors early. Poor type hint practice
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["Need Type Hint?"]:::blue --> B{"Type<br/>Known?"}:::orange
 
     B -->|"Yes"| C["Use Specific Type<br/>(Decimal, str, int)"]:::teal
-    B -->|"No"| D{"Multiple<br/>Possible Types?"}:::orange
+    B -->|"No"| D{"Multiple<br/>Types?"}:::orange
 
     D -->|"Yes"| E["Use Union<br/>(str | int | None)"]:::purple
     D -->|"No"| F{"Generic<br/>Container?"}:::orange
 
-    F -->|"Yes"| G["Use Generic<br/>(List[str], Dict[str, int])"]:::teal
-    F -->|"No"| H{"Protocol-based?"}:::orange
+    F -->|"Yes"| G["Use Generic<br/>(List[str], Dict)"]:::teal
+    F -->|"No"| H{"Protocol<br/>based?"}:::orange
 
     H -->|"Yes"| I["Use Protocol<br/>(Hashable, Sized)"]:::purple
     H -->|"No"| J["❌ Last Resort:<br/>Use Any<br/>(document why!)"]:::brown
-
-    Note["Prefer:<br/>Specific > Union > Generic > Protocol > Any"]
 
     classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000
@@ -1655,6 +1634,8 @@ graph TD
     classDef purple fill:#CC78BC,stroke:#000,color:#000
     classDef brown fill:#CA9161,stroke:#000,color:#000
 ```
+
+Prefer: Specific > Union > Generic > Protocol > Any.
 
 **Hierarchy of Type Hints** (from best to worst):
 
@@ -2246,25 +2227,19 @@ Python's `float` type uses binary floating-point arithmetic (IEEE 754), which ca
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["Need to Store<br/>Money/Currency?"]:::blue --> B{"Financial<br/>Calculations?"}:::orange
 
     B -->|"Yes"| C["✅ Use Decimal<br/>(required for finance)"]:::teal
     B -->|"No"| D{"Display<br/>Only?"}:::orange
 
     D -->|"Yes"| E["✅ Store as Decimal<br/>Format for display"]:::teal
-    D -->|"No"| F{"Scientific/Engineering<br/>Calculations?"}:::orange
+    D -->|"No"| F{"Scientific<br/>Calculations?"}:::orange
 
     F -->|"Yes"| G["✅ Use float<br/>(physics, stats)"]:::purple
     F -->|"No"| C
 
-    C --> H["Decimal Best Practices"]:::teal
-    H --> H1["• Set context precision"]
-    H --> H2["• Define rounding mode"]
-    H --> H3["• Validate inputs"]
-    H --> H4["• Never mix with float"]
-
-    Note["❌ NEVER:<br/>float for money<br/>int for cents (loses precision)<br/>string arithmetic"]:::brown
+    C --> H["Decimal Best Practices:<br/>• Set context precision<br/>• Define rounding mode<br/>• Validate inputs<br/>• Never mix with float"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000
@@ -2272,6 +2247,8 @@ graph TD
     classDef purple fill:#CC78BC,stroke:#000,color:#000
     classDef brown fill:#CA9161,stroke:#000,color:#000
 ```
+
+Never use: float for money, int for cents (loses precision), or string arithmetic.
 
 **Golden Rule**: If it represents money, use `Decimal`. No exceptions.
 

@@ -48,12 +48,12 @@ Type safety in Python combines static type checking (mypy) with runtime validati
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#0173B2', 'primaryTextColor': '#000', 'primaryBorderColor': '#0173B2', 'lineColor': '#DE8F05', 'secondaryColor': '#029E73', 'tertiaryColor': '#CC78BC', 'background': '#fff', 'mainBkg': '#fff'}}}%%
-graph LR
+graph TD
     A[Development] --> B[Type Hints]
     B --> C[mypy Static Check]
     A --> D[Pydantic Models]
     D --> E[Runtime Validation]
-    C --> F[Compile-Time Safety]
+    C --> F[Type Safety]
     E --> F
     F --> G[Production Deployment]
 
@@ -793,21 +793,15 @@ zakat2 = calculate_zakat_with_override(
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
-graph LR
-  A[Existing Untyped<br/>Python Code] --> B[Add Type Hints<br/>to Public APIs]
-  B --> C[mypy Basic<br/>Configuration]
-
-  C --> D[Add Type Hints<br/>to Internal Functions]
-  D --> E[mypy Strict<br/>Configuration]
-
-  E --> F[Pydantic Models<br/>Runtime Validation]
-  F --> G[Fully Type-Safe<br/>Codebase]
+graph TD
+  A[Untyped Python Code] --> B[Phase 1: Public APIs<br/>Add type hints + mypy basic]
+  B --> C[Phase 2: Internal Fns<br/>Expand hints + mypy strict]
+  C --> D[Phase 3: Runtime<br/>Pydantic + Full Safety]
 
   style A fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
   style B fill:#DE8F05,stroke:#000,color:#fff,stroke-width:2px
-  style D fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
-  style F fill:#CC78BC,stroke:#000,color:#fff,stroke-width:2px
-  style G fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
+  style C fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
+  style D fill:#CC78BC,stroke:#000,color:#fff,stroke-width:2px
 ```
 
 **Gradual adoption strategy**:

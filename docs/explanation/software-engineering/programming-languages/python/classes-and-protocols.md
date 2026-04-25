@@ -415,31 +415,19 @@ This diagram compares Protocol (structural typing) vs ABC (nominal typing):
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph LR
+graph TD
   subgraph Protocol["Protocol #40;Structural Typing#41;"]
-    A1[Define Protocol]:::teal
-    A2[No inheritance needed]:::teal
-    A3[Duck typing + type safety]:::teal
-    A4[ZakatCalculator]:::teal
-    A5[SadaqahCalculator]:::teal
-
-    A1 --> A2
-    A2 --> A3
-    A3 --> A4
-    A3 --> A5
+    A1[Define Protocol]:::teal --> A2[No inheritance needed]:::teal
+    A2 --> A3[Duck typing + type safety]:::teal
+    A3 --> A4[ZakatCalculator]:::teal
+    A3 --> A5[SadaqahCalculator]:::teal
   end
 
   subgraph ABC["Abstract Base Class #40;Nominal Typing#41;"]
-    B1[Define ABC]:::blue
-    B2[Explicit inheritance required]:::blue
-    B3[Contract enforcement]:::blue
-    B4[StripePaymentProcessor]:::blue
-    B5[extends PaymentProcessor]:::blue
-
-    B1 --> B2
-    B2 --> B3
-    B3 --> B4
-    B4 --> B5
+    B1[Define ABC]:::blue --> B2[Explicit inheritance required]:::blue
+    B2 --> B3[Contract enforcement]:::blue
+    B3 --> B4[StripePaymentProcessor]:::blue
+    B4 --> B5[extends PaymentProcessor]:::blue
   end
 
   C[Use Protocol for flexibility]:::orange
@@ -641,7 +629,7 @@ graph TD
   C --> D
   D --> E
 
-  F[MRO for D: D → B → C → A → object]:::purple
+  F[MRO: D → B → C → A → object]:::purple
 
   A -.-> F
 

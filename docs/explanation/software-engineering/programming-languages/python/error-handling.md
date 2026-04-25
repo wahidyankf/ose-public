@@ -66,11 +66,7 @@ graph TD
     A --> C[SystemExit]
     A --> D[KeyboardInterrupt]
 
-    B --> E[ValueError]
-    B --> F[TypeError]
-    B --> G[KeyError]
-    B --> H[AttributeError]
-    B --> I[RuntimeError]
+    B --> E["ValueError<br/>TypeError<br/>KeyError<br/>AttributeError<br/>RuntimeError"]
     B --> J[ArithmeticError]
 
     J --> K[ZeroDivisionError]
@@ -79,8 +75,7 @@ graph TD
     style A fill:#0173B2,stroke:#000,color:#fff
     style B fill:#DE8F05,stroke:#000,color:#000
     style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
+    style J fill:#CC78BC,stroke:#000,color:#fff
 ```
 
 **Key exceptions**:

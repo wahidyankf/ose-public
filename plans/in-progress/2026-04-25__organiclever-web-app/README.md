@@ -24,6 +24,13 @@ and `Badge` from ts-ui are consumed throughout this plan.
 | [tech-docs.md](./tech-docs.md) | Architecture, data model, routing, file map         |
 | [delivery.md](./delivery.md)   | Step-by-step checklist                              |
 
+## Git Workflow
+
+This plan executes inside a worktree named `organiclever-v0` branching off `main`. All
+work commits to branch `worktree-organiclever-v0`. After Phase 9 quality gates pass, the
+branch is rebased onto `origin/main` and a draft PR is opened targeting `main`. Direct
+commits to `main` from the worktree are prohibited — the PR gate is the merge point.
+
 ## Phases at a Glance
 
 | Phase | Scope                                                                 | Status |

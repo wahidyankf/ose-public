@@ -154,7 +154,7 @@ semantic hue via a `hue` prop, plus neutral `secondary` and `destructive`.
 
 - Section eyebrow + H2 "Out of the box, / or roll your own."
 - 5-column event-type card grid (collapses to 1 column on mobile):
-  - Workout, Reading, Learning, Meals, Focus — each card hue-colored to its event type.
+  - Workouts, Reading, Learning, Meals, Focus — each card hue-colored to its event type.
   - Each card shows: icon, title, description, and a monospace example entry.
 - Custom-type card: indicates the user can define their own event types.
 
@@ -251,6 +251,12 @@ Feature: Responsive behavior
     When I navigate to "/"
     Then I see text "Your life,"
     And I see a button "Open the app"
+
+  Scenario: Responsive layout at desktop width
+    Given the viewport width is 1280px
+    When I navigate to "/"
+    Then I see text "Your life,"
+    And I see a 5-column features grid
 ```
 
 ### Feature: ts-ui Textarea
@@ -303,6 +309,6 @@ Feature: Badge component
 
   Scenario: Renders md size
     Given I render a Badge with size "md"
-    Then the badge has text size 13px
-    And the badge height is 24px
+    Then the badge has class containing "text-[13px]"
+    And the badge has class containing "px-2.5"
 ```

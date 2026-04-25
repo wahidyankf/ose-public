@@ -89,12 +89,12 @@ apps/organiclever-web/src/
 │   ├── i18n/
 │   │   ├── translations.ts            ← Phase 0
 │   │   └── use-t.ts                   ← Phase 0
-│   └── utils/
-│       ├── fmt.ts                     ← Phase 0
-│       └── fmt.test.ts                ← Phase 0
+│   ├── utils/
+│   │   ├── fmt.ts                     ← Phase 0
+│   │   └── fmt.test.ts                ← Phase 0
+│   └── auth/                          ← dormant, untouched (full path: src/lib/auth/)
 ├── services/                          ← dormant, untouched
-├── layers/                            ← dormant, untouched
-└── lib/auth/                          ← dormant, untouched
+└── layers/                            ← dormant, untouched
 ```
 
 ## Data Model
@@ -266,8 +266,7 @@ class OLDb {
 }
 ```
 
-Seed applied on first load (key absent). Seed = "Yoka" profile + Kettlebell day + Calisthenics
-routines + 6 recent events across all types (one per type, including one custom event).
+Seed applied on first load (key absent). Seed = "Yoka" profile + Kettlebell day + Calisthenics + Super Exercise (plum) routines + 6 recent events across all types (one per type, including one custom event).
 
 Custom type derivation: no dedicated method; consumer calls `getEvents()` and filters for
 `type === 'custom'` to build the list of user-created type names and their payload metadata.
@@ -410,6 +409,8 @@ upgrade paths for each schema change. At v0 scope, schema stability is not yet e
 Using a versioned string key (`ol_db_v12`) means: when the schema changes incompatibly,
 bump the key suffix and accept that existing data is abandoned (users get fresh seed data).
 This is acceptable for a v0 app with no user base and simplifies the codebase significantly.
+When schema changes are needed in a future plan, bump the key suffix (e.g., `ol_db_v13`)
+and update the seed application check in `OLDb` constructor accordingly.
 
 ## Rollback
 

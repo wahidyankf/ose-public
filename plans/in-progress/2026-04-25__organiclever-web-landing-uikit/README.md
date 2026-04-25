@@ -1,6 +1,6 @@
 # OrganicLever — Landing Page + UI Kit
 
-## Overview
+## Context
 
 Two parallel goals in one plan:
 
@@ -16,10 +16,17 @@ Two parallel goals in one plan:
 **Prerequisite for**: `2026-04-25__organiclever-web-app` — that plan depends on the ts-ui
 additions delivered here.
 
-**Scope**:
+## Scope
 
 - `libs/ts-ui/` — `Textarea` + `Badge` components
 - `apps/organiclever-web/src/app/page.tsx` + `src/components/landing/`
+
+## Approach Summary
+
+Port the `organic-lever` handoff bundle into Next.js using Tailwind v4 utility classes,
+promoting two generic primitives (`Textarea`, `Badge`) to `ts-ui` first, then implementing
+the landing page in parallel. All changes are additive; validated via Vitest Gherkin specs,
+E2E, and manual Playwright MCP verification at both 375 px and 1280 px viewports.
 
 **Git Workflow**: Executed in worktree `organiclever-v0` on branch `worktree-organiclever-v0`
 inside `ose-public`. All commits go to this branch; merged to `main` via draft PR per the

@@ -50,18 +50,18 @@ this exists in the current codebase beyond a placeholder.
 
 ## Success Criteria
 
-| Criterion                       | Measure                                                                              |
-| ------------------------------- | ------------------------------------------------------------------------------------ |
-| App loads                       | `/#/app` renders the Home screen with seed data                                      |
-| All 4 navigation tabs reachable | Home, History, Progress, Settings tabs navigate correctly on mobile + desktop        |
-| Workout flow end-to-end         | Create routine → start session → log sets → rest timer → finish → visible in history |
-| All 5 event types loggable      | Reading, Learning, Meal, Focus, Custom loggers save and appear in Home + History     |
-| Routine CRUD                    | Create, edit, reorder exercises, delete routine works                                |
-| Local persistence               | Hard reload preserves all data and dark mode state                                   |
-| Analytics populated             | After logging events, Progress screen shows per-module charts                        |
-| i18n complete                   | Switching to Bahasa Indonesia shows all UI strings in Indonesian                     |
-| Coverage gate                   | `nx run organiclever-web:test:quick` ≥ 70 %                                          |
-| E2E passes                      | `nx run organiclever-web-e2e:test:e2e` passes                                        |
+| Criterion                              | Measure                                                                                                      |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| App loads                              | `/#/app` renders the Home screen with seed data                                                              |
+| All 4 navigation tabs reachable        | Home, History, Progress, Settings tabs navigate correctly on mobile + desktop                                |
+| Workout flow end-to-end                | Create routine → start session → log sets → rest timer → finish → visible in history                         |
+| All 5 event types loggable             | Reading, Learning, Meal, Focus, Custom loggers save and appear in Home + History                             |
+| Routine CRUD                           | Create, edit, reorder exercises, delete routine works                                                        |
+| Local persistence                      | Hard reload preserves all data and dark mode state                                                           |
+| Analytics populated                    | After logging events, Progress screen shows per-module charts                                                |
+| i18n complete                          | Switching to Bahasa Indonesia shows all UI strings in Indonesian                                             |
+| Coverage gate                          | `nx run organiclever-web:test:quick` ≥ 70 %                                                                  |
+| All primary user flows work end-to-end | Full golden path (log workout → view history → view progress → reload → persist) completes without data loss |
 
 ## Non-Goals
 

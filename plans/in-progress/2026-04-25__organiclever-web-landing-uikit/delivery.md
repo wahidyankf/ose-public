@@ -19,6 +19,10 @@
   - [ ] `nx run ts-ui:test:quick` passes
   - [ ] `nx run organiclever-web:test:quick` passes
 
+> **Important**: If any baseline check fails, fix ALL failures before proceeding to
+> Phase A — even if the failures predate this plan. Do not defer or mention-and-skip
+> existing issues.
+
 ---
 
 ## Phase A — ts-ui: Textarea + Badge
@@ -28,16 +32,18 @@
 - [ ] Create `libs/ts-ui/src/components/textarea/textarea.tsx` — styled `<textarea>`;
       matches `Input` Tailwind classes; forwarded ref; `resize-none` default; all native
       `<textarea>` props forwarded
-- [ ] Create `libs/ts-ui/src/components/textarea/textarea.test.tsx` — Gherkin step
-      implementations for all Textarea scenarios in prd.md
-- [ ] Create `libs/ts-ui/src/components/textarea/textarea.steps.tsx`
+- [ ] Create `specs/libs/ts-ui/gherkin/textarea/textarea.feature` with all Textarea
+      scenarios from prd.md
+- [ ] Create `libs/ts-ui/src/components/textarea/textarea.test.tsx` — standard vitest
+      tests (rendering, accessibility, basic prop behavior)
+- [ ] Create `libs/ts-ui/src/components/textarea/textarea.steps.tsx` — Gherkin step
+      implementations for all Textarea scenarios in prd.md; loadFeature from
+      `specs/libs/ts-ui/gherkin/textarea/textarea.feature`
 - [ ] Create `libs/ts-ui/src/components/textarea/textarea.stories.tsx` — at least:
       Default, Placeholder, Disabled, WithRows
       (Note: `WithRows` is documentation-only — the `rows` prop is a native HTML attribute,
       not custom logic, so no Gherkin acceptance criterion is required for it)
 - [ ] Export `Textarea` from `libs/ts-ui/src/index.ts`
-- [ ] Add Textarea Gherkin spec to `specs/apps/organiclever/fe/gherkin/` or verify it
-      is covered by ts-ui's own test suite
 
 ### A.2 Badge
 
@@ -45,7 +51,13 @@
       `outline`, `secondary`, `destructive`); sizes (`sm`, `md`); `hue?: HueName` prop
       sets CSS variable bridge (`--hue-color`, `--hue-border`, `--hue-wash`, `--hue-ink`)
       via `style`; re-uses `HueName` from hue-picker export
-- [ ] Create `libs/ts-ui/src/components/badge/badge.test.tsx` + `.steps.tsx`
+- [ ] Create `specs/libs/ts-ui/gherkin/badge/badge.feature` with all Badge scenarios
+      from prd.md
+- [ ] Create `libs/ts-ui/src/components/badge/badge.test.tsx` — standard vitest tests
+      (rendering, accessibility, basic prop behavior)
+- [ ] Create `libs/ts-ui/src/components/badge/badge.steps.tsx` — Gherkin step
+      implementations for all Badge scenarios from prd.md; loadFeature from
+      `specs/libs/ts-ui/gherkin/badge/badge.feature`
 - [ ] Create `libs/ts-ui/src/components/badge/badge.stories.tsx` — at least:
       AllVariants, AllHues, HoneyOutline (Pre-Alpha style), TealDefault (workout tag)
 - [ ] Export `Badge`, `badgeVariants` from `libs/ts-ui/src/index.ts`
@@ -206,7 +218,9 @@
 
 ### C.2 E2E
 
-- [ ] Add landing page E2E scenario in `apps/organiclever-web-e2e`:
+- [ ] Update or replace `apps/organiclever-web-e2e/steps/landing.steps.ts` to match
+      the new landing feature (the existing step file covers the old stub-page scenarios;
+      it must be rewritten to match the new feature file created in C.1):
   - [ ] Hero heading visible
   - [ ] "Open the app" CTA navigates to `/#/app`
 - [ ] `nx run organiclever-web-e2e:test:e2e` passes

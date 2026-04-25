@@ -348,8 +348,8 @@ No database migrations, no environment variable changes, no infrastructure chang
 - **Coverage threshold**: ≥ 70 % (enforced by `nx run ts-ui:test:quick`)
 - **Step file location**: `libs/ts-ui/src/components/<name>/<name>.steps.tsx`
 - **Test file location**: `libs/ts-ui/src/components/<name>/<name>.test.tsx`
-- **Gherkin spec location**: `specs/apps/organiclever/fe/gherkin/<name>/` (or ts-ui's own
-  spec dir if one exists)
+- **Gherkin spec location**: `specs/libs/ts-ui/gherkin/<name>/<name>.feature` (consistent
+  with all existing ts-ui component specs)
 - **Rendering**: `@testing-library/react` render; assertions via `screen` queries
 
 ### Landing page (organiclever-web)

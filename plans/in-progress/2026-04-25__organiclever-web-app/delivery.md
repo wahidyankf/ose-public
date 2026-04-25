@@ -19,7 +19,11 @@ and `Badge` must be exported from ts-ui before Phase 3+.
 - [ ] Follow Conventional Commits format: `<type>(<scope>): <description>`
       Examples: `feat(db): add OLDb class and seed data`,
       `feat(shell): add AppRoot with TabBar and SideNav`,
-      `feat(loggers): add reading and focus loggers`
+      `feat(loggers): add reading and focus loggers`,
+      `feat(workout): add WorkoutScreen and rest timer`,
+      `feat(history): add HistoryScreen and SessionCard`,
+      `feat(progress): add ProgressScreen and exercise charts`,
+      `feat(settings): add SettingsScreen with lang and dark mode`
 - [ ] Split different domains/concerns into separate commits — do NOT bundle unrelated
       changes (e.g., keep `feat(db):` separate from `feat(ui):`)
 
@@ -38,8 +42,12 @@ and `Badge` must be exported from ts-ui before Phase 3+.
 
 - [ ] Create `src/lib/db/seed.ts`:
   - [ ] Settings: `{ name: 'Yoka', restSeconds: 60, darkMode: false, lang: 'en' }`
+        (Note: `raw/README.md` omits `lang` from seed to exercise the fallback path;
+        this plan sets it explicitly for clarity — `useT()` defaults to `'en'` when
+        `lang` is absent, so both approaches are functionally equivalent)
   - [ ] Routine "Kettlebell day" (teal) — 1 group, 6 exercises matching prototype
   - [ ] Routine "Calisthenics" (honey) — 1 group "Future", 5 bodyweight exercises
+  - [ ] Routine "Super Exercise" (plum) — featured routine per raw/README.md seed spec
   - [ ] At least 6 seeded events: 1 workout, 1 reading, 1 learning, 1 meal, 1 focus,
         1 custom (type: `'custom'`, payload: `{ name: 'Meditation', hue: 'plum', icon: 'moon', durationMins: 20, notes: null }`)
         (all `startedAt` within last 7 days; custom event ensures AddEventSheet custom
@@ -148,7 +156,7 @@ and `Badge` must be exported from ts-ui before Phase 3+.
 ### 1.6 Gherkin specs
 
 - [ ] Create `specs/apps/organiclever/fe/gherkin/app-shell/navigation.feature`
-- [ ] Step implementations `test/unit/steps/app-shell.steps.ts`
+- [ ] Step implementations `test/unit/steps/app-shell/app-shell.steps.tsx`
 - [ ] `nx affected -t typecheck lint test:quick spec-coverage` passes
 - [ ] Fix ALL failures found — including any preexisting failures not caused by your changes
 
@@ -207,7 +215,7 @@ and `Badge` must be exported from ts-ui before Phase 3+.
 ### 2.7 Gherkin specs
 
 - [ ] Create `specs/apps/organiclever/fe/gherkin/home/home-screen.feature`
-- [ ] Step implementations
+- [ ] Step implementations `test/unit/steps/home/home-screen.steps.tsx`
 - [ ] `nx affected -t typecheck lint test:quick spec-coverage` passes
 - [ ] Fix ALL failures found — including any preexisting failures not caused by your changes
 
@@ -254,7 +262,7 @@ and `Badge` must be exported from ts-ui before Phase 3+.
 ### 3.5 Gherkin specs
 
 - [ ] Create `specs/apps/organiclever/fe/gherkin/loggers/event-loggers.feature`
-- [ ] Step implementations
+- [ ] Step implementations `test/unit/steps/loggers/event-loggers.steps.tsx`
 - [ ] `nx affected -t typecheck lint test:quick spec-coverage` passes
 - [ ] Fix ALL failures found — including any preexisting failures not caused by your changes
 
@@ -321,7 +329,7 @@ and `Badge` must be exported from ts-ui before Phase 3+.
 ### 4.7 Gherkin specs
 
 - [ ] Create `specs/apps/organiclever/fe/gherkin/workout/workout-session.feature`
-- [ ] Step implementations
+- [ ] Step implementations `test/unit/steps/workout/workout-session.steps.tsx`
 - [ ] `nx affected -t typecheck lint test:quick spec-coverage` passes
 - [ ] Fix ALL failures found — including any preexisting failures not caused by your changes
 
@@ -353,7 +361,7 @@ and `Badge` must be exported from ts-ui before Phase 3+.
 ### 5.3 Gherkin specs
 
 - [ ] Create `specs/apps/organiclever/fe/gherkin/routine/routine-management.feature`
-- [ ] Step implementations
+- [ ] Step implementations `test/unit/steps/routine/routine-management.steps.tsx`
 - [ ] `nx affected -t typecheck lint test:quick spec-coverage` passes
 - [ ] Fix ALL failures found — including any preexisting failures not caused by your changes
 
@@ -384,7 +392,7 @@ and `Badge` must be exported from ts-ui before Phase 3+.
 ### 6.4 Gherkin specs
 
 - [ ] Create `specs/apps/organiclever/fe/gherkin/history/history-screen.feature`
-- [ ] Step implementations
+- [ ] Step implementations `test/unit/steps/history/history-screen.steps.tsx`
 - [ ] `nx affected -t typecheck lint test:quick spec-coverage` passes
 - [ ] Fix ALL failures found — including any preexisting failures not caused by your changes
 
@@ -410,7 +418,7 @@ and `Badge` must be exported from ts-ui before Phase 3+.
 ### 7.3 Gherkin specs
 
 - [ ] Create `specs/apps/organiclever/fe/gherkin/progress/progress-screen.feature`
-- [ ] Step implementations
+- [ ] Step implementations `test/unit/steps/progress/progress-screen.steps.tsx`
 - [ ] `nx affected -t typecheck lint test:quick spec-coverage` passes
 - [ ] Fix ALL failures found — including any preexisting failures not caused by your changes
 
@@ -432,10 +440,11 @@ and `Badge` must be exported from ts-ui before Phase 3+.
 ### 8.2 Gherkin specs
 
 - [ ] Create `specs/apps/organiclever/fe/gherkin/settings/settings-screen.feature`
-- [ ] Step implementations
+- [ ] Step implementations `test/unit/steps/settings/settings-screen.steps.tsx`
 - [ ] Create `specs/apps/organiclever/fe/gherkin/settings/dark-mode.feature`
 - [ ] Create `specs/apps/organiclever/fe/gherkin/settings/language.feature`
-- [ ] Step implementations for dark-mode and language features
+- [ ] Step implementations for dark-mode: `test/unit/steps/settings/dark-mode.steps.tsx`
+- [ ] Step implementations for language: `test/unit/steps/settings/language.steps.tsx`
 - [ ] `nx affected -t typecheck lint test:quick spec-coverage` passes
 - [ ] Fix ALL failures found — including any preexisting failures not caused by your changes
 

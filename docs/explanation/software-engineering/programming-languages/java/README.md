@@ -157,7 +157,7 @@ OSE Platform follows a three-tier Java versioning strategy:
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["Java Standards Index<br/>(OSE Platform)"]:::blue
     B["Core Standards"]:::orange
     C["Specialized Standards"]:::teal
@@ -180,7 +180,7 @@ graph TD
     C --> N["Error Handling"]:::teal
 
     D --> O["By Example<br/>(157+ examples)"]:::purple
-    D --> P["In Practice<br/>(Best practices, TDD, BDD)"]:::purple
+    D --> P["In Practice<br/>(Best practices,<br/>TDD, BDD)"]:::purple
     D --> Q["Release Highlights<br/>(Java 17, 21, 25)"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px

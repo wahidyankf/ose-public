@@ -184,7 +184,7 @@ OSE Platform follows a three-tier Clojure versioning strategy:
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["Clojure Standards Index<br/>(OSE Platform)"]:::blue
     B["Core Standards"]:::orange
     C["Specialized Standards"]:::teal

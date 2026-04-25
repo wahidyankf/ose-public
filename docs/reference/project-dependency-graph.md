@@ -52,63 +52,78 @@ invalidated and `nx affected` flags the project.
 
 ## Visual Dependency Graph
 
+**Go ecosystem and content sites:**
+
 ```mermaid
-graph RL
-  %% Go libs (leaf / near-leaf)
-  GC[golang-commons]
-  HC[hugo-commons]
-
-  %% CLI tools
-  RC[rhino-cli]
-  AKC[ayokoding-cli]
-  OPC[oseplatform-cli]
-
-  %% Content sites
+graph TD
+  %% Content sites (top level)
   AKW[ayokoding-web]
   OPW[oseplatform-web]
   WKF[wahidyankf-web]
 
-  %% OrganicLever
-  OLF[organiclever-web]
-  OLB[organiclever-be]
-  OLC[organiclever-contracts]
-  OLFE2E[organiclever-web-e2e]
-  OLBE2E[organiclever-be-e2e]
+  %% CLI tools
+  AKC[ayokoding-cli]
+  OPC[oseplatform-cli]
+  RC[rhino-cli]
 
-  %% --- Dependency edges ---
+  %% Go libs (leaf / near-leaf)
+  HC[hugo-commons]
+  GC[golang-commons]
 
-  %% Go lib chain
-  RC --> GC
-  HC --> GC
-  HC --> RC
-  AKC --> GC
-  AKC --> HC
-  AKC --> RC
-  OPC --> GC
-  OPC --> HC
-  OPC --> RC
-
-  %% Content sites
+  %% Content site → CLI
   AKW --> AKC
   OPW --> OPC
 
-  %% OrganicLever
-  OLF --> RC
-  OLF --> OLC
-  OLB --> OLC
-  OLFE2E --> OLF
-  OLBE2E --> OLB
+  %% CLI → shared libs
+  AKC --> HC
+  AKC --> RC
+  AKC --> GC
+  OPC --> HC
+  OPC --> RC
+  OPC --> GC
 
-  %% Styles
+  %% Lib chain
+  HC --> RC
+  HC --> GC
+  RC --> GC
+
   classDef lib fill:#029E73,stroke:#016B4E,color:#FFFFFF
   classDef cli fill:#DE8F05,stroke:#A56A04,color:#FFFFFF
   classDef site fill:#CC78BC,stroke:#9A5A8E,color:#FFFFFF
-  classDef product fill:#CA9161,stroke:#977048,color:#FFFFFF
-  classDef e2e fill:#0173B2,stroke:#01537F,color:#FFFFFF
 
   class GC,HC lib
   class RC,AKC,OPC cli
-  class AKW,OPW site
+  class AKW,OPW,WKF site
+```
+
+**OrganicLever product stack:**
+
+```mermaid
+graph TD
+  %% E2E tests (top level)
+  OLFE2E[organiclever-web-e2e]
+  OLBE2E[organiclever-be-e2e]
+
+  %% Apps
+  OLF[organiclever-web]
+  OLB[organiclever-be]
+
+  %% Shared
+  OLC[organiclever-contracts]
+  RC[rhino-cli]
+
+  %% Edges
+  OLFE2E --> OLF
+  OLBE2E --> OLB
+  OLF --> OLC
+  OLF --> RC
+  OLB --> OLC
+
+  classDef cli fill:#DE8F05,stroke:#A56A04,color:#FFFFFF
+  classDef product fill:#CA9161,stroke:#977048,color:#FFFFFF
+  classDef e2e fill:#0173B2,stroke:#01537F,color:#FFFFFF
+
+  class RC cli
   class OLF,OLB,OLC product
   class OLFE2E,OLBE2E e2e
 ```

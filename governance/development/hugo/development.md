@@ -319,7 +319,7 @@ Hugo Pipes processes assets at build time. Use for CSS, JavaScript, images.
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#0173B2', 'secondaryColor': '#DE8F05', 'tertiaryColor': '#029E73'}}}%%
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
-graph LR
+graph TD
  A[Source Assets] --> B[Hugo Pipes]
  B --> C[Processing]
  C --> D[Output]

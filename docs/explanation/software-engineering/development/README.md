@@ -142,7 +142,7 @@ TDD and BDD complement each other throughout the development process:
 ```mermaid
 graph TD
     A[Discovery: Three Amigos] --> B[Formulation: Write Gherkin]
-    B --> C[Automation: Step Definitions RED]
+    B --> C[Automation: Step Defs RED]
     C --> D{For Each Step}
 
     D --> E[TDD: Write Unit Test RED]

@@ -215,30 +215,19 @@ graph TD
     A --> C
     A --> D
 
-    B --> E["Coding Standards"]:::orange
-    B --> F["Testing Standards"]:::orange
-    B --> G["Code Quality"]:::orange
-    B --> H["Build Configuration"]:::orange
-
-    C --> I["Security Standards"]:::teal
-    C --> J["Concurrency Standards"]:::teal
-    C --> K["DDD Standards"]:::teal
-    C --> L["API Standards"]:::teal
-    C --> M["Performance Standards"]:::teal
-    C --> N["Error Handling"]:::teal
-    C --> O["Type Safety"]:::teal
-    C --> P["Dependencies"]:::teal
-    C --> Q["Design Patterns"]:::teal
-
-    D --> R["By Example<br/>(75-85 examples)"]:::purple
-    D --> S["In the Field<br/>(Production patterns)"]:::purple
-    D --> T["Release Highlights<br/>(Go 1.18-1.26)"]:::purple
-
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
+
+**Core Standards** (B): Coding Standards, Testing Standards, Code Quality, Build Configuration
+
+**Specialized Standards** (C): Security, Concurrency, DDD, API, Performance, Error Handling, Type Safety,
+Dependencies, Design Patterns
+
+**Learning Resources** (D — AyoKoding): By Example (75–85 examples), In the Field (production patterns),
+Release Highlights (Go 1.18–1.26)
 
 ## Primary Use Cases in OSE Platform
 

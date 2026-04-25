@@ -2437,14 +2437,14 @@ func rangeMapGood(m map[string]int) {
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["Variable Allocation<br/>#40;Zakat Record#41;"]:::blue --> B{Escapes<br/>Function?}:::purple
     B -->|No| C["Stack Allocation<br/>#40;Fast, No GC#41;"]:::teal
     B -->|Yes| D{Size > 32KB?}:::purple
     D -->|No| E["Small Heap<br/>#40;mcache#41;"]:::orange
     D -->|Yes| F["Large Heap<br/>#40;mheap#41;"]:::orange
 
-    C --> G["Automatic Cleanup<br/>#40;Function Return#41;"]:::teal
+    C --> G["Auto Cleanup<br/>#40;Function Return#41;"]:::teal
     E --> H["GC Managed"]:::orange
     F --> H
 
@@ -2654,7 +2654,7 @@ ptr = new(int)
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["Variable Created"]:::blue --> B{Returned as<br/>Pointer?}:::purple
     B -->|Yes| C["Heap"]:::orange
     B -->|No| D{Stored in<br/>Global?}:::purple

@@ -53,18 +53,18 @@ DDD building blocks in Go:
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% DDD layers for zakat donation system
 
-graph TD
+graph LR
     A["Presentation Layer<br/>HTTP Handlers"]:::blue
     B["Application Layer<br/>Use Cases & Services"]:::teal
     C["Domain Layer<br/>Entities & Value Objects"]:::orange
     D["Infrastructure Layer<br/>Repositories & Database"]:::purple
     E["External Services<br/>Payment Gateway"]:::purple
 
-    A -->|"Commands"| B
-    B -->|"Domain Logic"| C
-    C -->|"Persist"| D
-    B -->|"Integrate"| E
-    D -.->|"Read Models"| C
+    A --> B
+    B --> C
+    C --> D
+    B --> E
+    D -.-> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -383,7 +383,7 @@ Maintaining consistency boundary:
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% Aggregate pattern for donation order
 
-graph TD
+graph LR
     A["Order Aggregate Root"]:::blue
     B["OrderItem 1<br/>Product, Quantity"]:::teal
     C["OrderItem 2<br/>Product, Quantity"]:::teal
@@ -391,11 +391,11 @@ graph TD
     E["Money Value Object<br/>Total Amount"]:::purple
     F["Status Value Object<br/>Pending/Confirmed"]:::purple
 
-    A -->|"owns"| B
-    A -->|"owns"| C
-    A -->|"owns"| D
-    A -->|"manages"| E
-    A -->|"manages"| F
+    A --> B
+    A --> C
+    A --> D
+    A --> E
+    A --> F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -563,33 +563,33 @@ func (o *Order) Items() []OrderItem {
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     subgraph Domain["Domain Layer (domain/)"]
         Agg["Aggregate Root<br/>(User, Order)"]:::blue
         RepIntf["Repository Interface<br/>(UserRepository)"]:::blue
     end
 
-    subgraph Application["Application Layer (application/)"]
+    subgraph Application["Application Layer"]
         Svc["Application<br/>Service"]:::orange
     end
 
-    subgraph Infrastructure["Infrastructure Layer (infrastructure/)"]
-        RepImpl["Repository Implementation<br/>(PostgresUserRepository)"]:::teal
+    subgraph Infrastructure["Infrastructure Layer"]
+        RepImpl["Repository Impl<br/>(PostgresUserRepo)"]:::teal
         DB[("PostgreSQL<br/>Database")]:::purple
     end
 
-    Svc -->|"Depends On"| RepIntf
-    Svc -->|"Works With"| Agg
-    RepIntf -.->|"Implemented By"| RepImpl
-    RepImpl -->|"Queries/Saves"| DB
-
-    Note["Dependency Inversion:<br/>Domain defines interface,<br/>Infrastructure implements"]
+    Svc --> RepIntf
+    Svc --> Agg
+    RepIntf -.-> RepImpl
+    RepImpl --> DB
 
     classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000
     classDef teal fill:#029E73,stroke:#000,color:#fff
     classDef purple fill:#CC78BC,stroke:#000,color:#000
 ```
+
+Dependency inversion: Domain defines the interface; Infrastructure implements it.
 
 **Key Points**:
 

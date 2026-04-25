@@ -48,33 +48,24 @@ Go is a statically typed language with a strong emphasis on type safety. The typ
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["Go Type System"]:::blue --> B["Basic Types"]:::orange
     A --> C["Composite Types"]:::orange
     A --> D["Interface Types"]:::orange
     A --> E["Custom Types"]:::orange
-
-    B --> B1["Numeric<br/>#40;int, float64#41;"]:::teal
-    B --> B2["String"]:::teal
-    B --> B3["Boolean"]:::teal
-
-    C --> C1["Array<br/>#40;Fixed Size#41;"]:::teal
-    C --> C2["Slice<br/>#40;Dynamic#41;"]:::teal
-    C --> C3["Map"]:::teal
-    C --> C4["Struct"]:::teal
-    C --> C5["Pointer"]:::teal
-
-    D --> D1["Empty Interface<br/>#40;any#41;"]:::purple
-    D --> D2["Custom Interface"]:::purple
-
-    E --> E1["Type Alias"]:::purple
-    E --> E2["Named Type"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
+
+| Category        | Types                                                     |
+| --------------- | --------------------------------------------------------- |
+| Basic Types     | Numeric (int, float64), String, Boolean                   |
+| Composite Types | Array (fixed size), Slice (dynamic), Map, Struct, Pointer |
+| Interface Types | Empty Interface (any), Custom Interface                   |
+| Custom Types    | Type Alias, Named Type                                    |
 
 ### Static Typing
 
@@ -957,19 +948,13 @@ func main() {
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["Interface Value"]:::blue --> B["switch v := i.#40;type#41;"]:::purple
-    B --> C["case int"]:::orange
-    B --> D["case string"]:::orange
-    B --> E["case float64"]:::orange
-    B --> F["case PaymentProcessor"]:::teal
-    B --> G["default"]:::orange
-
-    C --> H["Handle int<br/>v is int"]:::teal
-    D --> I["Handle string<br/>v is string"]:::teal
-    E --> J["Handle float64<br/>v is float64"]:::teal
-    F --> K["Call ProcessPayment#40;#41;<br/>#40;Interface method#41;"]:::teal
-    G --> L["Unknown type<br/>v is interface&#123;&#125;"]:::teal
+    B --> C["case int<br/>Handle int"]:::teal
+    B --> D["case string<br/>Handle string"]:::teal
+    B --> E["case float64<br/>Handle float64"]:::teal
+    B --> F["case PaymentProcessor<br/>Call ProcessPayment#40;#41;"]:::teal
+    B --> G["default<br/>Unknown type"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
@@ -2835,41 +2820,25 @@ Type safety makes code more maintainable, refactorable, and less prone to bugs. 
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart TD
+flowchart LR
     A[Go Type System] --> B[Basic Types]
     A --> C[Composite Types]
     A --> D[Interface Types]
     A --> E[Generic Types]
-
-    B --> B1[Numeric<br/>int float]
-    B --> B2[String<br/>UTF-8]
-    B --> B3[Boolean<br/>bool]
-
-    C --> C1[Array Slice<br/>Sequential]
-    C --> C2[Map<br/>Key-Value]
-    C --> C3[Struct<br/>Composite]
-
-    D --> D1[Methods<br/>Contracts]
-    D --> D2[Empty Interface<br/>any]
-    D --> D3[Type Assertion<br/>Runtime Check]
-
-    E --> E1[Type Parameters<br/>[T any]]
-    E --> E2[Constraints<br/>Interface Bounds]
-    E --> E3[Type Inference<br/>Auto Detection]
-
-    B1 --> F[Zakat Amount<br/>Decimal Types]
-    C3 --> G[Donation Struct<br/>Composite Data]
-    E1 --> H[Generic Collections<br/>Type Safe]
 
     style A fill:#0173B2,color:#fff
     style B fill:#DE8F05,color:#fff
     style C fill:#029E73,color:#fff
     style D fill:#CC78BC,color:#fff
     style E fill:#0173B2,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#029E73,color:#fff
-    style H fill:#0173B2,color:#fff
 ```
+
+| Category        | Subtypes                                                                  | OSE Platform Example             |
+| --------------- | ------------------------------------------------------------------------- | -------------------------------- |
+| Basic Types     | Numeric (int, float), String (UTF-8), Boolean                             | Zakat Amount — Decimal Types     |
+| Composite Types | Array/Slice (sequential), Map (key-value), Struct (composite)             | Donation Struct — Composite Data |
+| Interface Types | Methods (contracts), Empty Interface (any), Type Assertion (runtime)      | —                                |
+| Generic Types   | Type Parameters ([T any]), Constraints (interface bounds), Type Inference | Generic Collections — Type Safe  |
 
 ## Compile-Time Type Checking
 

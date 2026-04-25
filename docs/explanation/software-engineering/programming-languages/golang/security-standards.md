@@ -991,33 +991,45 @@ func setSameSiteModes(w http.ResponseWriter) {
 
 ## Authentication
 
+**Step 1 — Login and token issuance:**
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
-%% JWT authentication flow for zakat platform
+%% JWT authentication flow — login phase
 
-graph TD
+graph LR
     A["User Login<br/>POST /login"]:::blue
-    B["Validate Credentials<br/>Check Password Hash"]:::orange
-    C{"Valid?"}:::orange
-    D["Generate JWT<br/>Sign with Secret"]:::teal
-    E["Return JWT<br/>200 OK"]:::teal
-    F["Return Error<br/>401 Unauthorized"]:::orange
-    G["Subsequent Request<br/>Header: Authorization"]:::blue
-    H["Verify JWT<br/>Check Signature"]:::purple
-    I{"Valid JWT?"}:::orange
-    J["Process Request"]:::teal
-    K["Return 401"]:::orange
+    B{"Credentials<br/>Valid?"}:::orange
+    C["Generate JWT<br/>Sign with Secret"]:::teal
+    D["Return Error<br/>401 Unauthorized"]:::orange
 
     A --> B
     B --> C
-    C -->|"Yes"| D
-    C -->|"No"| F
-    D --> E
-    E --> G
-    G --> H
-    H --> I
-    I -->|"Yes"| J
-    I -->|"No"| K
+    B --> D
+
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+```
+
+**Step 2 — Subsequent request verification:**
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% JWT authentication flow — request verification
+
+graph LR
+    A["Request + JWT<br/>Authorization Header"]:::blue
+    B["Verify JWT<br/>Check Signature"]:::purple
+    C{"Valid JWT?"}:::orange
+    D["Process Request"]:::teal
+    E["Return 401"]:::orange
+
+    A --> B
+    B --> C
+    C --> D
+    C --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -1232,24 +1244,18 @@ RBAC implementation:
 %% Role-based access control for zakat management
 
 graph TD
-    A["User Request<br/>Manage Donation"]:::blue
-    B["Extract User<br/>From JWT"]:::teal
-    C["Check Role<br/>Admin/Editor/Viewer"]:::orange
-    D{"Has Role?"}:::orange
-    E["Check Permission<br/>read/write/delete"]:::purple
-    F{"Has Permission?"}:::orange
-    G["Allow Access<br/>Process Request"]:::teal
-    H["Deny Access<br/>403 Forbidden"]:::orange
-    I["Deny Access<br/>401 Unauthorized"]:::orange
+    A["User Request<br/>Extract JWT Role"]:::blue
+    B{"Has Role?"}:::orange
+    C{"Has Permission?"}:::orange
+    D["Allow Access"]:::teal
+    E["Deny 403<br/>Forbidden"]:::orange
+    F["Deny 401<br/>Unauthorized"]:::orange
 
     A --> B
     B --> C
+    B --> F
     C --> D
-    D -->|"Yes"| E
-    D -->|"No"| I
-    E --> F
-    F -->|"Yes"| G
-    F -->|"No"| H
+    C --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -2806,27 +2812,11 @@ Security in Go requires:
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart TD
+flowchart LR
     A[Zakat Platform Security] --> B[Input Validation]
     A --> C[Authentication]
     A --> D[Encryption]
     A --> E[Audit Logging]
-
-    B --> B1[Struct Validation<br/>validator package]
-    B --> B2[Sanitization<br/>bluemonday]
-    B --> B3[Type Safety<br/>Compile-Time]
-
-    C --> C1[JWT Tokens<br/>dgrijalva/jwt-go]
-    C --> C2[OAuth 2.0<br/>golang.org/x/oauth2]
-    C --> C3[Password Hashing<br/>bcrypt]
-
-    D --> D1[TLS 1.3<br/>crypto/tls]
-    D --> D2[AES-GCM<br/>crypto/cipher]
-    D --> D3[Key Management<br/>Vault Integration]
-
-    E --> E1[Structured Logs<br/>zerolog/zap]
-    E --> E2[Audit Trail<br/>Immutable]
-    E --> E3[Compliance<br/>GDPR Ready]
 
     style A fill:#0173B2,color:#fff
     style B fill:#DE8F05,color:#fff
@@ -2834,6 +2824,13 @@ flowchart TD
     style D fill:#CC78BC,color:#fff
     style E fill:#0173B2,color:#fff
 ```
+
+| Layer            | Tools / Techniques                                                                        |
+| ---------------- | ----------------------------------------------------------------------------------------- |
+| Input Validation | Struct validation (validator pkg), Sanitization (bluemonday), Type Safety (compile-time)  |
+| Authentication   | JWT Tokens (dgrijalva/jwt-go), OAuth 2.0 (golang.org/x/oauth2), Password Hashing (bcrypt) |
+| Encryption       | TLS 1.3 (crypto/tls), AES-GCM (crypto/cipher), Key Management (Vault)                     |
+| Audit Logging    | Structured Logs (zerolog/zap), Audit Trail (immutable), Compliance (GDPR ready)           |
 
 ## Secure Request Flow
 

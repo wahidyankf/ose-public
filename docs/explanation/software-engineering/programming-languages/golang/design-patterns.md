@@ -445,7 +445,7 @@ Function composition combines simple functions to build more complex ones.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% Function composition pipeline for zakat calculation
 
-graph LR
+graph TD
   A["Input<br/>Donation Amount"]:::blue
   B["Filter<br/>Remove Invalid"]:::orange
   C["Map<br/>Apply Nisab"]:::teal
@@ -525,7 +525,7 @@ func Example() {
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% Middleware composition chain
 
-graph LR
+graph TD
   A["Handler"]:::blue
   B["LoggingMiddleware"]:::teal
   C["AuthMiddleware"]:::orange
@@ -3184,7 +3184,7 @@ type ReadWriteCloser interface {
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
   A["Embedded Type<br/>#40;Engine#41;"]:::blue --> B["Fields<br/>#40;Power#41;"]:::orange
   A --> C["Methods<br/>#40;Start#40;#41;#41;"]:::orange
 
@@ -3192,14 +3192,16 @@ graph TD
   D --> F["Promoted Fields<br/>#40;car.Power#41;"]:::purple
   D --> G["Promoted Methods<br/>#40;car.Start#40;#41;#41;"]:::purple
 
-  B -.promotes to.-> F
-  C -.promotes to.-> G
+  B -.-> F
+  C -.-> G
 
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
   classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
   classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
   classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
+
+The dotted arrows show promotion: fields/methods from Engine promote to Car's promoted fields/methods.
 
 Embedding promotes methods from embedded type to outer type:
 

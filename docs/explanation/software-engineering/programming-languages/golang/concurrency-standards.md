@@ -352,21 +352,21 @@ fmt.Printf("Length: %d, Capacity: %d\n", len(ch), cap(ch))
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
-    subgraph Unbuffered["Unbuffered Channel #40;Synchronous#41;"]
+graph LR
+    subgraph Unbuffered["Unbuffered #40;Synchronous#41;"]
         U1["Sender<br/>#40;Murabaha Request#41;"]:::blue
         U2["Channel<br/>#40;cap=0#41;"]:::purple
         U3["Receiver<br/>#40;Processor#41;"]:::teal
-        U1 -->|"Blocks until<br/>receiver ready"| U2
-        U2 -->|"Handshake"| U3
+        U1 --> U2
+        U2 --> U3
     end
 
-    subgraph Buffered["Buffered Channel #40;Asynchronous#41;"]
+    subgraph Buffered["Buffered #40;Asynchronous#41;"]
         B1["Sender<br/>#40;Zakat Batch#41;"]:::blue
         B2["Buffer<br/>#40;cap=5#41;"]:::orange
         B3["Receiver<br/>#40;Calculator#41;"]:::teal
-        B1 -->|"Non-blocking<br/>until full"| B2
-        B2 -->|"Queued"| B3
+        B1 --> B2
+        B2 --> B3
     end
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -576,25 +576,15 @@ case <-ch: // Never executes if ch is nil
 
 graph TD
     A["Enter Select"]:::blue --> B["Evaluate All Cases"]:::orange
+    B --> C{"Any Case Ready?"}:::orange
+    C --> D["Execute That Case<br/>#40;One Ready#41;"]:::teal
+    C --> E{"Has Default<br/>Case?"}:::orange
+    E --> F["Execute Default"]:::brown
+    E --> G["Block Until Ready"]:::purple
+    G --> D
 
-    B --> C{"Any Case<br/>Ready?"}:::orange
-
-    C -->|"Multiple Ready"| D["🎲 Random<br/>Selection"]:::purple
-    C -->|"One Ready"| E["Execute<br/>That Case"]:::teal
-    C -->|"None Ready"| F{"Has Default<br/>Case?"}:::orange
-
-    D --> E
-
-    F -->|"Yes"| G["Execute<br/>Default"]:::brown
-    F -->|"No"| H["⏳ Block Until<br/>Case Ready"]:::purple
-
-    H --> I{"Case Becomes<br/>Ready"}:::orange
-    I -->|"Yes"| E
-    I -->|"Timeout/Cancel"| J["Context Done"]:::brown
-
-    E --> K["✅ Select<br/>Completes"]:::teal
-    G --> K
-    J --> K
+    D --> H["Select Completes"]:::teal
+    F --> H
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
@@ -776,30 +766,27 @@ The `sync` package provides synchronization primitives for coordinating goroutin
 graph TD
     A["Need Goroutine<br/>Coordination?"]:::blue --> B{"What Type of<br/>Synchronization?"}:::orange
 
-    B -->|"Shared State"| C{"Read/Write<br/>Pattern?"}:::orange
-    B -->|"Wait for Completion"| D["✅ sync.WaitGroup"]:::teal
-    B -->|"One-time Initialization"| E["✅ sync.Once"]:::teal
-    B -->|"Resource Pool"| F["✅ sync.Pool"]:::purple
+    B --> C{"Shared State:<br/>Read/Write Pattern?"}:::orange
+    B --> D["sync.WaitGroup<br/>Wait for Completion"]:::teal
+    B --> E["sync.Once<br/>One-time Init"]:::teal
+    B --> F["sync.Pool<br/>Resource Pool"]:::purple
 
-    C -->|"Exclusive Access"| G["✅ sync.Mutex<br/>(mutual exclusion)"]:::teal
-    C -->|"Many Reads,<br/>Few Writes"| H["✅ sync.RWMutex<br/>(read-write lock)"]:::teal
-
-    G --> G1["One goroutine<br/>at a time"]
-    H --> H1["Multiple readers<br/>OR single writer"]
-    D --> D1["Wait for N<br/>goroutines to finish"]
-    E --> E1["Execute code<br/>exactly once"]
-    F --> F1["Reuse temporary<br/>objects"]
-
-    Ex1["Example:<br/>Protect donation<br/>counter"]:::blue --> G
-    Ex2["Example:<br/>Cache with frequent<br/>reads"]:::blue --> H
-    Ex3["Example:<br/>Wait for batch<br/>processing"]:::blue --> D
-    Ex4["Example:<br/>Initialize DB<br/>connection once"]:::blue --> E
+    C --> G["sync.Mutex<br/>Exclusive Access"]:::teal
+    C --> H["sync.RWMutex<br/>Many Reads Few Writes"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000
     classDef teal fill:#029E73,stroke:#000,color:#fff
     classDef purple fill:#CC78BC,stroke:#000,color:#000
 ```
+
+| Primitive      | Use Case                                  | Example                       |
+| -------------- | ----------------------------------------- | ----------------------------- |
+| sync.Mutex     | Exclusive access, one goroutine at a time | Protect donation counter      |
+| sync.RWMutex   | Many reads, few writes                    | Cache with frequent reads     |
+| sync.WaitGroup | Wait for N goroutines to finish           | Wait for batch processing     |
+| sync.Once      | Execute code exactly once                 | Initialize DB connection once |
+| sync.Pool      | Reuse temporary objects                   | Reduce GC pressure            |
 
 **Key Principles**:
 
@@ -1546,14 +1533,12 @@ func loggingMiddleware(next http.Handler) http.Handler {
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph LR
-    A["Job Producer<br/>#40;Zakat Calculations#41;"]:::blue --> B["Jobs Channel<br/>#40;buffered#41;"]:::purple
+graph TD
+    A["Job Producer<br/>#40;Zakat Calc#41;"]:::blue --> B["Jobs Channel"]:::purple
     B --> C["Worker 1"]:::orange
-    B --> D["Worker 2"]:::orange
-    B --> E["Worker N"]:::orange
-    C --> F["Results Channel<br/>#40;buffered#41;"]:::purple
+    B --> D["Worker 2..N"]:::orange
+    C --> F["Results Channel"]:::purple
     D --> F
-    E --> F
     F --> G["Consumer<br/>#40;Aggregator#41;"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -2368,37 +2353,31 @@ principles:
 
 ## Concurrency Patterns
 
+**Patterns overview:**
+
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart TD
+flowchart LR
     A[Go Concurrency Patterns] --> B[Worker Pool<br/>Limited Goroutines]
     A --> C[Pipeline<br/>Stage Processing]
     A --> D[Fan-Out Fan-In<br/>Parallel + Merge]
     A --> E[Semaphore<br/>Resource Limit]
-
-    B --> B1[Task Queue<br/>Channel Buffer]
-    B --> B2[Worker Goroutines<br/>Fixed Count]
-
-    C --> C1[Stage Functions<br/>Transform Data]
-    C --> C2[Channel Chain<br/>Data Flow]
-
-    D --> D1[Multiple Workers<br/>Parallel Process]
-    D --> D2[Result Merge<br/>Single Channel]
-
-    E --> E1[Buffered Channel<br/>Capacity Limit]
-    E --> E2[Acquire Release<br/>Controlled Access]
-
-    B1 --> F[Zakat Batch<br/>Worker Pool]
-    D1 --> G[Parallel Calculation<br/>Fan-Out]
 
     style A fill:#0173B2,color:#fff
     style B fill:#DE8F05,color:#fff
     style C fill:#029E73,color:#fff
     style D fill:#CC78BC,color:#fff
     style E fill:#0173B2,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#CC78BC,color:#fff
 ```
+
+**Pattern details:**
+
+| Pattern        | Details                                                                |
+| -------------- | ---------------------------------------------------------------------- |
+| Worker Pool    | Task Queue (channel buffer), Worker Goroutines (fixed count)           |
+| Pipeline       | Stage Functions (transform data), Channel Chain (data flow)            |
+| Fan-Out Fan-In | Multiple Workers (parallel process), Result Merge (single channel)     |
+| Semaphore      | Buffered Channel (capacity limit), Acquire/Release (controlled access) |
 
 ## Error Handling in Goroutines
 

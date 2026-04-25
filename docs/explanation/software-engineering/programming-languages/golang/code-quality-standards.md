@@ -324,24 +324,22 @@ golangci-lint run --fix
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% Code quality pipeline with linting
 
-graph LR
+graph TD
     A["Write Code"]:::blue
-    B["gofmt<br/>Format"]:::teal
-    C["goimports<br/>Organize Imports"]:::teal
-    D["golangci-lint<br/>Static Analysis"]:::orange
-    E{"Linting<br/>Passes?"}:::orange
-    F["Run Tests"]:::purple
-    G["Commit"]:::blue
-    H["Fix Issues"]:::orange
+    B["gofmt / goimports<br/>Format & Imports"]:::teal
+    C["golangci-lint<br/>Static Analysis"]:::orange
+    D{"Linting<br/>Passes?"}:::orange
+    E["Run Tests"]:::purple
+    F["Commit"]:::blue
+    G["Fix Issues"]:::orange
 
     A --> B
     B --> C
     C --> D
-    D --> E
-    E -->|"Yes"| F
-    E -->|"No"| H
-    H --> A
-    F --> G
+    D -->|"Yes"| E
+    D -->|"No"| G
+    G --> A
+    E --> F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -581,8 +579,8 @@ graph TD
     A --> B
     A --> C
     A --> D
-    A --> E
-    A --> F
+    C --> E
+    C --> F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -1386,23 +1384,11 @@ func handleNegative(x int) int {
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart TD
+flowchart LR
     A[Go Code Quality] --> B[Format<br/>gofmt/goimports]
     A --> C[Lint<br/>golangci-lint]
     A --> D[Vet<br/>go vet]
     A --> E[Static Analysis<br/>staticcheck]
-
-    B --> B1[Standard Format<br/>Consistent Style]
-    B --> B2[Import Ordering<br/>Auto Organize]
-
-    C --> C1[Multiple Linters<br/>golint/errcheck]
-    C --> C2[Custom Rules<br/>Team Standards]
-
-    D --> D1[Suspicious Code<br/>Compiler Warnings]
-    D --> D2[Common Mistakes<br/>Printf Errors]
-
-    E --> E1[Dead Code<br/>Unused Variables]
-    E --> E2[Performance<br/>Inefficient Patterns]
 
     style A fill:#0173B2,color:#fff
     style B fill:#DE8F05,color:#fff
@@ -1411,27 +1397,40 @@ flowchart TD
     style E fill:#0173B2,color:#fff
 ```
 
+| Tool            | Purpose                          | Examples                         |
+| --------------- | -------------------------------- | -------------------------------- |
+| gofmt/goimports | Standard format, import ordering | Consistent style, auto organize  |
+| golangci-lint   | Multiple linters aggregated      | golint/errcheck, custom rules    |
+| go vet          | Suspicious code detection        | Printf errors, compiler warnings |
+| staticcheck     | Advanced static analysis         | Dead code, inefficient patterns  |
+
 ## CI/CD Quality Pipeline
+
+**Phase 1 — Static Analysis:**
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#000','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
+flowchart TD
+    A[Code Push] --> B[gofmt / goimports]
+    B --> C[go vet]
+    C --> D[golangci-lint]
+
+    style A fill:#0173B2,color:#fff
+    style D fill:#DE8F05,color:#fff
+```
+
+**Phase 2 — Testing and Delivery:**
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#000','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 flowchart LR
-    A[Code Push] --> B[gofmt Check]
-    B --> C[goimports Check]
-    C --> D[go vet]
-    D --> E[golangci-lint]
-    E --> F[Unit Tests]
-    F --> G[Integration Tests]
+    F[Unit Tests] --> G[Integration Tests]
     G --> H{All Pass?}
-
     H -->|Yes| I[Build]
     H -->|No| J[Fail CI]
-
     I --> K[Docker Image]
     K --> L[Deploy]
 
-    style A fill:#0173B2,color:#fff
-    style E fill:#DE8F05,color:#fff
     style F fill:#029E73,color:#fff
     style H fill:#CC78BC,color:#fff
     style L fill:#0173B2,color:#fff

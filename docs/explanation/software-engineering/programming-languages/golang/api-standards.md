@@ -248,7 +248,7 @@ Middleware wraps handlers to add functionality:
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% HTTP middleware chain for zakat API
 
-graph LR
+graph TD
     A["HTTP Request"]:::blue
     B["Logging Middleware<br/>Log request"]:::teal
     C["Auth Middleware<br/>Verify JWT"]:::orange
@@ -358,22 +358,15 @@ REST (Representational State DonationTransfer) uses HTTP methods semantically:
 
 graph TD
     A["HTTP Client<br/>Mobile App"]:::blue
-    B["Router<br/>Match Route"]:::orange
-    C["Middleware<br/>Auth & Logging"]:::teal
-    D["Handler<br/>ProcessZakat"]:::purple
-    E["Service Layer<br/>Business Logic"]:::teal
-    F["Repository<br/>Database"]:::purple
-    G["JSON Response"]:::orange
+    B["Router + Middleware<br/>Match & Auth"]:::orange
+    C["Handler<br/>ProcessZakat"]:::purple
+    D["Service Layer<br/>Business Logic"]:::teal
+    E["Repository<br/>Database"]:::purple
 
-    A -->|"POST /zakat"| B
+    A --> B
     B --> C
     C --> D
     D --> E
-    E --> F
-    F -->|"Success"| E
-    E --> D
-    D --> G
-    G -->|"201 Created"| A
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -1015,18 +1008,13 @@ func main() {
 
 graph LR
     A["gRPC Client<br/>Donation App"]:::blue
-    B["Protobuf<br/>Serialize"]:::purple
-    C["HTTP/2<br/>Transport"]:::orange
-    D["gRPC Server<br/>Zakat Service"]:::teal
-    E["Response<br/>DonationReceipt"]:::teal
-    F["Protobuf<br/>Deserialize"]:::purple
+    B["Protobuf Serialize<br/>+ HTTP/2"]:::purple
+    C["gRPC Server<br/>Zakat Service"]:::teal
+    D["Protobuf<br/>Deserialize"]:::purple
 
-    A -->|"Request"| B
+    A --> B
     B --> C
     C --> D
-    D --> E
-    E --> F
-    F -->|"Response"| A
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -2368,6 +2356,8 @@ app.Use(func(c *fiber.Ctx) error {
 
 ## HTTP Service Architecture
 
+**Request flow:**
+
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 flowchart TD
@@ -2375,26 +2365,21 @@ flowchart TD
     B --> C[Middleware Chain]
     C --> D{Route Matching}
 
-    D -->|/api/zakat| E[Zakat Handler]
-    D -->|/api/donations| F[Donation Handler]
-    D -->|/health| G[Health Check]
+    D --> E[Zakat Handler]
+    D --> F[Donation Handler]
+    D --> G[Health Check]
 
     E --> H[Service Layer]
     F --> H
-
-    H --> I[Repository Layer]
-    I --> J[Database<br/>PostgreSQL]
-
-    C --> K[Logging]
-    C --> L[Auth]
-    C --> M[Rate Limit]
-    C --> N[CORS]
+    H --> I[Repository / DB]
 
     style A fill:#0173B2,color:#fff
     style B fill:#DE8F05,color:#fff
     style H fill:#029E73,color:#fff
     style I fill:#CC78BC,color:#fff
 ```
+
+**Middleware layers** (applied at C above): Logging, Auth, Rate Limit, CORS.
 
 ## Request Lifecycle
 

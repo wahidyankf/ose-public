@@ -363,30 +363,43 @@ Build error context across call stack:
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
-%% Error wrapping propagation chain
+%% Error wrapping propagation chain — call stack going down
 
 graph TD
     A["Handler Layer<br/>HTTP Request"]:::blue
     B["Service Layer<br/>GetUser#40;id#41;"]:::teal
     C["Repository Layer<br/>QueryUser#40;id#41;"]:::purple
     D{"Database<br/>Query"}:::orange
-    E["Error: Not Found"]:::orange
-    F["Wrapped: get user from database"]:::teal
-    G["Wrapped: failed to get user"]:::blue
 
     A --> B
     B --> C
     C --> D
-    D --> E
-    E --> F
-    F --> G
-    G --> A
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% Error wrapping propagation chain — errors bubbling up
+
+graph TD
+    E["Error: Not Found"]:::orange
+    F["Wrapped:<br/>get user from DB"]:::teal
+    G["Wrapped:<br/>failed to get user"]:::blue
+
+    E --> F
+    F --> G
+
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+```
+
+The database error (E) is wrapped at each layer as it propagates back up to the Handler, which logs and returns an HTTP error response.
 
 ```go
 // Low-level database function
@@ -2133,22 +2146,17 @@ func TestGetUser_DBError(t *testing.T) {
 graph TD
     A["Function Called<br/>ProcessDonation"]:::blue
     B{"Error<br/>Occurred?"}:::orange
-    C["Check Error Type<br/>errors.Is / errors.As"]:::teal
-    D["Wrap Error<br/>fmt.Errorf with %w"]:::purple
-    E["Return Error Chain"]:::orange
+    C{"Recoverable?"}:::orange
+    D["Log and Continue"]:::teal
+    E["Wrap Error<br/>fmt.Errorf %w"]:::purple
     F["Continue Processing"]:::teal
-    G{"Recoverable?"}:::orange
-    H["Log and Continue"]:::teal
-    I["Return Error"]:::orange
 
     A --> B
-    B -->|"Yes"| C
-    B -->|"No"| F
-    C --> G
-    G -->|"Yes"| H
-    G -->|"No"| D
-    D --> E
-    H --> F
+    B --> C
+    B --> F
+    C --> D
+    C --> E
+    D --> F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -2260,23 +2268,11 @@ principles:
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart TD
+flowchart LR
     A[Error Types in Go] --> B[Sentinel Errors<br/>var ErrNotFound]
     A --> C[Custom Errors<br/>struct types]
     A --> D[Wrapped Errors<br/>fmt.Errorf %w]
     A --> E[Error Values<br/>errors.New]
-
-    B --> B1[Comparison<br/>errors.Is]
-    B --> B2[Pre-defined<br/>Package Level]
-
-    C --> C1[Type Assertion<br/>errors.As]
-    C --> C2[Additional Context<br/>Fields]
-
-    D --> D1[Error Chain<br/>Unwrap]
-    D --> D2[Context Preservation<br/>Stack Trace]
-
-    E --> E1[Simple Messages<br/>String Only]
-    E --> E2[Dynamic Creation<br/>Runtime]
 
     style A fill:#0173B2,color:#fff
     style B fill:#DE8F05,color:#fff
@@ -2284,3 +2280,10 @@ flowchart TD
     style D fill:#CC78BC,color:#fff
     style E fill:#0173B2,color:#fff
 ```
+
+| Error Type                          | Usage                           | Tools                            |
+| ----------------------------------- | ------------------------------- | -------------------------------- |
+| Sentinel Errors (`var ErrNotFound`) | Predefined package-level errors | `errors.Is` for comparison       |
+| Custom Errors (struct types)        | Additional context fields       | `errors.As` for type assertion   |
+| Wrapped Errors (`fmt.Errorf %w`)    | Error chain with context        | Unwrap, stack trace preservation |
+| Error Values (`errors.New`)         | Simple string messages          | Dynamic creation at runtime      |

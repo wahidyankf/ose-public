@@ -47,6 +47,40 @@ C --> D
 D --> E
 E --> F`
 
+// lrWideInDepthSource: graph LR, span=2, depth=6 → in LR, horizontal=depth=6 > MaxWidth=4 → violation.
+const lrWideInDepthSource = `graph LR
+A --> B
+A --> C
+B --> D
+D --> E
+E --> F
+F --> G`
+
+// lrTallInSpanSource: graph LR, span=5, depth=2 → in LR, horizontal=depth=2 ≤ MaxWidth=4 → no violation.
+const lrTallInSpanSource = `graph LR
+A --> B
+A --> C
+A --> D
+A --> E
+A --> F`
+
+// tdWideInSpanSource: graph TD, span=5, depth=2 → in TD, horizontal=span=5 > MaxWidth=4 → violation.
+const tdWideInSpanSource = `graph TD
+A --> B
+A --> C
+A --> D
+A --> E
+A --> F`
+
+// tdDeepInDepthSource: graph TD, span=2, depth=6 → in TD, horizontal=span=2 ≤ MaxWidth=4 → no violation.
+const tdDeepInDepthSource = `graph TD
+A --> B
+A --> C
+B --> D
+D --> E
+E --> F
+F --> G`
+
 func TestValidateBlocks(t *testing.T) {
 	defaultOpts := DefaultValidateOptions()
 
@@ -103,7 +137,7 @@ func TestValidateBlocks(t *testing.T) {
 			blocks: []MermaidBlock{
 				makeFlowchartBlock("flowchart TD\nA --> B\nA --> C\nA --> D\nA --> E"),
 			},
-			opts:           defaultOpts,
+			opts:           ValidateOptions{MaxLabelLen: 30, MaxWidth: 3, MaxDepth: 5},
 			wantViolations: 1,
 			wantWarnings:   0,
 			violationKind:  ViolationWidthExceeded,
@@ -141,7 +175,7 @@ func TestValidateBlocks(t *testing.T) {
 			blocks: []MermaidBlock{
 				makeFlowchartBlock(span4depth6Source),
 			},
-			opts:           defaultOpts,
+			opts:           ValidateOptions{MaxLabelLen: 30, MaxWidth: 3, MaxDepth: 5},
 			wantViolations: 0,
 			wantWarnings:   1,
 			warningKind:    WarningComplexDiagram,
@@ -151,7 +185,7 @@ func TestValidateBlocks(t *testing.T) {
 			blocks: []MermaidBlock{
 				makeFlowchartBlock(span4depth4Source),
 			},
-			opts:           defaultOpts,
+			opts:           ValidateOptions{MaxLabelLen: 30, MaxWidth: 3, MaxDepth: 5},
 			wantViolations: 1,
 			wantWarnings:   0,
 			violationKind:  ViolationWidthExceeded,
@@ -160,6 +194,44 @@ func TestValidateBlocks(t *testing.T) {
 			name: "depth only exceeded no output",
 			blocks: []MermaidBlock{
 				makeFlowchartBlock(span2depth6Source),
+			},
+			opts:           defaultOpts,
+			wantViolations: 0,
+			wantWarnings:   0,
+		},
+		{
+			name: "LR_wide_in_depth violation",
+			blocks: []MermaidBlock{
+				makeFlowchartBlock(lrWideInDepthSource),
+			},
+			opts:           defaultOpts,
+			wantViolations: 1,
+			wantWarnings:   0,
+			violationKind:  ViolationWidthExceeded,
+		},
+		{
+			name: "LR_tall_in_span no violation",
+			blocks: []MermaidBlock{
+				makeFlowchartBlock(lrTallInSpanSource),
+			},
+			opts:           defaultOpts,
+			wantViolations: 0,
+			wantWarnings:   0,
+		},
+		{
+			name: "TD_wide_in_span violation",
+			blocks: []MermaidBlock{
+				makeFlowchartBlock(tdWideInSpanSource),
+			},
+			opts:           defaultOpts,
+			wantViolations: 1,
+			wantWarnings:   0,
+			violationKind:  ViolationWidthExceeded,
+		},
+		{
+			name: "TD_deep_in_depth no violation",
+			blocks: []MermaidBlock{
+				makeFlowchartBlock(tdDeepInDepthSource),
 			},
 			opts:           defaultOpts,
 			wantViolations: 0,

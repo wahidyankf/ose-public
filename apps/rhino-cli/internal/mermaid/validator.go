@@ -1,5 +1,7 @@
 package mermaid
 
+import "math"
+
 // ValidateOptions configures the thresholds used during validation.
 type ValidateOptions struct {
 	MaxLabelLen int
@@ -9,7 +11,7 @@ type ValidateOptions struct {
 
 // DefaultValidateOptions returns the standard validation thresholds.
 func DefaultValidateOptions() ValidateOptions {
-	return ValidateOptions{MaxLabelLen: 30, MaxWidth: 3, MaxDepth: 5}
+	return ValidateOptions{MaxLabelLen: 30, MaxWidth: 4, MaxDepth: math.MaxInt}
 }
 
 // ValidateBlocks validates a slice of MermaidBlocks against the given options.
@@ -63,30 +65,38 @@ func ValidateBlocks(blocks []MermaidBlock, opts ValidateOptions) ValidationResul
 			}
 		}
 
-		// Rule 2: width/depth.
+		// Rule 2: width/depth — direction-aware.
 		span := MaxWidth(diagram.Nodes, diagram.Edges)
 		depth := Depth(diagram.Nodes, diagram.Edges)
 
-		if span > opts.MaxWidth && depth > opts.MaxDepth {
+		var horizontal, vertical int
+		switch diagram.Direction {
+		case DirectionLR, DirectionRL: // named constants from types.go
+			horizontal, vertical = depth, span
+		default: // TD, TB, BT, and unspecified
+			horizontal, vertical = span, depth
+		}
+
+		if horizontal > opts.MaxWidth && vertical > opts.MaxDepth {
 			// Both exceeded → warning only.
 			warnings = append(warnings, Warning{
 				Kind:        WarningComplexDiagram,
 				FilePath:    block.FilePath,
 				BlockIndex:  block.BlockIndex,
 				StartLine:   block.StartLine,
-				ActualWidth: span,
-				ActualDepth: depth,
+				ActualWidth: horizontal,
+				ActualDepth: vertical,
 				MaxWidth:    opts.MaxWidth,
 				MaxDepth:    opts.MaxDepth,
 			})
-		} else if span > opts.MaxWidth {
+		} else if horizontal > opts.MaxWidth {
 			// Width exceeded alone → violation.
 			violations = append(violations, Violation{
 				Kind:        ViolationWidthExceeded,
 				FilePath:    block.FilePath,
 				BlockIndex:  block.BlockIndex,
 				StartLine:   block.StartLine,
-				ActualWidth: span,
+				ActualWidth: horizontal,
 				MaxWidth:    opts.MaxWidth,
 			})
 		}

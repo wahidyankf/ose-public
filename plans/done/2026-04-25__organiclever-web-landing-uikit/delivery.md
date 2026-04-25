@@ -2,11 +2,12 @@
 
 ## Commit Guidelines
 
-- [ ] Commit ts-ui additions (Textarea, Badge) separately from landing page changes
-- [ ] Follow Conventional Commits format: `feat(ts-ui): add Textarea component`,
+- [x] Commit ts-ui additions (Textarea, Badge) separately from landing page changes
+- [x] Follow Conventional Commits format: `feat(ts-ui): add Textarea component`,
       `feat(ts-ui): add Badge component`, `feat(organiclever-web): add landing page`
-- [ ] Do NOT bundle test fixes with new feature code in the same commit
-- [ ] Split different domains/concerns into separate commits
+- [x] Do NOT bundle test fixes with new feature code in the same commit
+- [x] Split different domains/concerns into separate commits
+<!-- Date: 2026-04-25 | Status: done | Notes: 3 thematic commits: ts-ui, landing page, delivery checklist -->
 
 ---
 

@@ -2,7 +2,6 @@ import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { render, screen, cleanup, fireEvent } from "@testing-library/react";
 import { expect } from "vitest";
-import userEvent from "@testing-library/user-event";
 
 import { Textarea } from "./textarea";
 
@@ -31,11 +30,10 @@ describeFeature(feature, ({ Scenario }) => {
     Given("I render a controlled Textarea", () => {});
     When('I type "hello"', () => {});
 
-    Then('the textarea value is "hello"', async () => {
+    Then('the textarea value is "hello"', () => {
       cleanup();
       render(<Textarea aria-label="notes" defaultValue="" />);
-      const user = userEvent.setup();
-      await user.type(screen.getByRole("textbox"), "hello");
+      fireEvent.change(screen.getByRole("textbox"), { target: { value: "hello" } });
       expect((screen.getByRole("textbox") as HTMLTextAreaElement).value).toBe("hello");
     });
   });

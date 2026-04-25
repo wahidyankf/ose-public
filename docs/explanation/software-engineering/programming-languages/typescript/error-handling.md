@@ -45,7 +45,7 @@ The Result pattern makes errors explicit in the type system.
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph TD
+graph LR
     Presentation["Presentation Layer<br/>#40;API Endpoint#41;"]:::blue
     Application["Application Layer<br/>#40;Use Case#41;"]:::orange
     Domain["Domain Layer<br/>#40;Business Logic#41;"]:::teal
@@ -686,7 +686,7 @@ async function calculateZakatWithContext(wealth: number, nisab: number): Promise
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart TD
+flowchart LR
     A[Error Handling] --> B[Try-Catch<br/>Exceptions]
     A --> C[Result Type<br/>Success/Failure]
     A --> D[Error Union<br/>Type | Error]

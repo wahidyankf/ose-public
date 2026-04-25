@@ -31,7 +31,7 @@ TypeScript provides two primary ways to define object shapes: interfaces and typ
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Primitives["Primitives<br/>#40;string, number, boolean#41;"]:::blue
+    Primitives["Primitives<br/>(string, number, boolean)"]:::blue
     Literals["Literal Types<br/>#40;'USD', 42, true#41;"]:::orange
     Objects["Object Types<br/>#40;interfaces, types#41;"]:::teal
     Functions["Function Types<br/>#40;arrow, declarations#41;"]:::purple
@@ -153,7 +153,7 @@ type DonationMap = Record<string, Donation>;
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph TD
+graph LR
     Generic["Generic Type T"]:::blue
     Constraint["Constraint<br/>T extends HasId"]:::orange
     Satisfied{"Constraint<br/>Satisfied?"}:::purple

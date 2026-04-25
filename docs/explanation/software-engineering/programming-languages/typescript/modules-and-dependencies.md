@@ -118,7 +118,7 @@ graph LR
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph TD
+graph LR
     Barrel["index.ts<br/>#40;Barrel#41;"]:::blue
     Module1["money.ts"]:::orange
     Module2["zakat-calculator.ts"]:::orange
@@ -131,7 +131,7 @@ graph TD
     Barrel --> Consumer
 
     Note1["Barrel pattern:<br/>Single import point<br/>for related modules"]
-    Note2["import { Money, ZakatCalculator }<br/>from './domain'"]
+    Note2["import { Money,<br/>ZakatCalculator }<br/>from './domain'"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -164,7 +164,7 @@ graph TD
     Note2["Side effects prevent<br/>elimination"]
 
     subgraph Example["Example: Lodash"]
-        Import["import { map } from 'lodash-es'"]
+        Import["import {map} from 'lodash-es'"]
         Used["map function"]
         Unused["filter, reduce, etc."]
         Result["Bundle includes<br/>only map"]
@@ -265,7 +265,7 @@ graph TD
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph TD
+graph LR
     Import["import { X } from 'module'"]:::blue
     Relative{"Relative path<br/>#40;./ or ../#41;?"}:::orange
     Builtin{"Built-in<br/>module?"}:::orange
@@ -353,7 +353,7 @@ packages:
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart TD
+flowchart LR
     A[TS Module System] --> B[ES Modules<br/>import/export]
     A --> C[CommonJS<br/>require/module.exports]
     A --> D[AMD/UMD<br/>Legacy]

@@ -77,7 +77,7 @@ const agricultureZakat = createZakatCalculator(0.1);
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph LR
+graph TD
     Input["Input Data<br/>Donations Array"]:::blue
     Map["map#40;#41;<br/>Transform each"]:::orange
     Filter["filter#40;#41;<br/>Select subset"]:::orange
@@ -124,23 +124,28 @@ const processDonation = pipe(validateAmount, applyFee, calculateNet);
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph TD
-    Shell1["Imperative Shell<br/>#40;HTTP Handler#41;"]:::orange
-    Core["Functional Core<br/>#40;Pure Business Logic#41;"]:::teal
-    Shell2["Imperative Shell<br/>#40;Database Access#41;"]:::orange
+graph LR
+    subgraph ImperativeShell["Imperative Shell (I/O, Side Effects)"]
+        Shell1["HTTP Handler"]:::orange
+        Validation["Validate &<br/>Parse"]:::blue
+        Transform["Transform<br/>for output"]:::blue
+        Shell2["Database Access"]:::orange
+    end
+    subgraph FunctionalCore["Functional Core (Pure Logic)"]
+        Core["Pure Business Logic"]:::teal
+    end
 
-    Shell1 -->|Raw input| Validation["Validate &<br/>Parse"]:::blue
+    Shell1 -->|Raw input| Validation
     Validation -->|Clean data| Core
-    Core -->|Business result| Transform["Transform<br/>for output"]:::blue
+    Core -->|Business result| Transform
     Transform -->|Persist| Shell2
-
-    Note1["Functional Core:<br/>- Pure functions<br/>- No side effects<br/>- Easy to test"]
-    Note2["Imperative Shell:<br/>- I/O operations<br/>- Side effects<br/>- Thin layer"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
+
+**Functional Core**: pure functions, no side effects, easy to test. **Imperative Shell**: I/O operations, side effects, thin layer around the core.
 
 ### Compose and Pipe Functions
 

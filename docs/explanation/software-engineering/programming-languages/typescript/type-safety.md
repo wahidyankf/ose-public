@@ -42,7 +42,7 @@ Type safety is TypeScript's core strength. A properly type-safe codebase prevent
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph TD
+graph LR
     Unknown["unknown value"]:::blue
     TypeOf{"typeof"}:::orange
     InstanceOf{"instanceof"}:::orange
@@ -85,7 +85,7 @@ graph TD
     Brand["Brand Helper<br/>type Brand#60;T, B#62;"]:::orange
     Branded["Branded Type<br/>#40;DonationId#41;"]:::teal
     Constructor["Smart Constructor<br/>createDonationId#40;#41;"]:::purple
-    Function["Type-Safe Function<br/>getDonation#40;id: DonationId#41;"]:::brown
+    Function["Type-Safe Function<br/>getDonation(id: DonationId)"]:::brown
 
     Primitive --> Brand
     Brand --> Branded
@@ -850,7 +850,7 @@ const handleUSD: USDHandler = handleMoney; // ✓ OK
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart TD
+flowchart LR
     A[Type Safety in TS] --> B[Static Analysis<br/>Compile-Time]
     A --> C[Runtime Guards<br/>Type Predicates]
     A --> D[Branded Types<br/>Nominal Typing]

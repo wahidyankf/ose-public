@@ -199,7 +199,7 @@ app.use(errorHandler);
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph TD
+graph LR
     Request["Incoming Request"]:::blue
     Logger["Logger Middleware<br/>Log request details"]:::orange
     Auth["Auth Middleware<br/>Verify JWT token"]:::orange
@@ -1302,25 +1302,15 @@ flowchart TD
     A --> C[Router Layer]
     A --> D[Error Handler]
 
-    B --> B1[Body Parser<br/>JSON]
-    B --> B2[CORS<br/>Cross-Origin]
-    B --> B3[Helmet<br/>Security Headers]
-    B --> B4[Morgan<br/>Logging]
+    B --> B1[Body Parser / CORS<br/>Helmet / Morgan]
 
-    C --> C1[/api/zakat<br/>Zakat Routes]
-    C --> C2[/api/donations<br/>Donation Routes]
-    C --> C3[/api/auth<br/>Auth Routes]
-
-    C1 --> E[Controller Layer]
-    C2 --> E
-    C3 --> E
+    C --> E[Controller Layer]
 
     E --> F[Service Layer]
     F --> G[Repository Layer]
     G --> H[Database<br/>TypeORM/Prisma]
 
-    D --> I[Global Error Handler]
-    I --> J[Error Response]
+    D --> I[Error Response]
 
     style A fill:#0173B2,color:#fff
     style B fill:#DE8F05,color:#fff
@@ -1333,7 +1323,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#000','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart TD
+flowchart LR
     A[App Module] --> B[Zakat Module]
     A --> C[Donation Module]
     A --> D[Auth Module]

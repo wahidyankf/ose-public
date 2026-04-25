@@ -140,65 +140,27 @@ async function handleDonationCreate(req: Request, res: Response) {
 The following diagram illustrates the defense-in-depth approach to input validation in TypeScript financial applications:
 
 ```mermaid
-graph TD
-    %% Input Source
-    CLIENT[Client Request<br/>amount: -100<br/>currency: XYZ]
+graph LR
+    CLIENT[Client Request]:::blue
+    L1["Layer 1: Controller<br/>Structure check + Sanitize"]:::teal
+    L2["Layer 2: Schema Validation<br/>Zod + Business Rules"]:::purple
+    L3["Layer 3: Database<br/>Check Constraints"]:::brown
+    SUCCESS["✅ Success<br/>Donation created"]:::teal
+    REJECT["❌ Reject<br/>400 / Constraint violation"]:::orange
 
-    %% Layer 1: Controller
-    CONTROLLER[Controller Layer<br/>Parameter Extraction]
-    WHITELIST{Valid<br/>structure?}
-    SANITIZE[String Sanitization<br/>trim, length limit]
+    CLIENT --> L1
+    L1 -->|Invalid| REJECT
+    L1 -->|Valid| L2
+    L2 -->|Invalid| REJECT
+    L2 -->|Valid| L3
+    L3 -->|Violation| REJECT
+    L3 -->|Pass| SUCCESS
 
-    %% Layer 2: Schema Validation
-    ZOD[Zod Schema<br/>Runtime Validation]
-    TYPE_CHECK[Type Coercion<br/>string to number]
-    VALIDATE_REQ[Required Fields<br/>amount, currency, email]
-    VALIDATE_BIZ[Business Rules<br/>amount > 0<br/>valid currency<br/>email format]
-
-    %% Layer 3: Database
-    DATABASE[(Database<br/>Constraints)]
-    DB_CONSTRAINTS[Check Constraints<br/>amount > 0<br/>NOT NULL<br/>UNIQUE email]
-
-    %% Success/Error Paths
-    REJECT_PARAM[❌ Reject<br/>400 Bad Request<br/>Invalid parameters]
-    REJECT_BIZ[❌ Reject<br/>400 Bad Request<br/>Validation errors]
-    REJECT_DB[❌ Reject<br/>Database constraint<br/>violation]
-    SUCCESS[✅ Success<br/>Donation created<br/>Audit logged]
-
-    %% Flow
-    CLIENT --> CONTROLLER
-    CONTROLLER --> WHITELIST
-
-    WHITELIST -->|No| REJECT_PARAM
-    WHITELIST -->|Yes| SANITIZE
-
-    SANITIZE --> ZOD
-    ZOD --> TYPE_CHECK
-    TYPE_CHECK --> VALIDATE_REQ
-    VALIDATE_REQ --> VALIDATE_BIZ
-
-    VALIDATE_BIZ -->|Invalid| REJECT_BIZ
-    VALIDATE_BIZ -->|Valid| DATABASE
-
-    DATABASE --> DB_CONSTRAINTS
-    DB_CONSTRAINTS -->|Violation| REJECT_DB
-    DB_CONSTRAINTS -->|Pass| SUCCESS
-
-    %% Styling (WCAG AA compliant)
-    style CLIENT fill:#0173B2,stroke:#023B5A,color:#FFF
-    style CONTROLLER fill:#029E73,stroke:#01593F,color:#FFF
-    style WHITELIST fill:#DE8F05,stroke:#8A5903,color:#FFF
-    style SANITIZE fill:#029E73,stroke:#01593F,color:#FFF
-    style ZOD fill:#CC78BC,stroke:#7A4871,color:#FFF
-    style TYPE_CHECK fill:#CC78BC,stroke:#7A4871,color:#FFF
-    style VALIDATE_REQ fill:#CC78BC,stroke:#7A4871,color:#FFF
-    style VALIDATE_BIZ fill:#CC78BC,stroke:#7A4871,color:#FFF
-    style DATABASE fill:#CA9161,stroke:#7A5739,color:#FFF
-    style DB_CONSTRAINTS fill:#CA9161,stroke:#7A5739,color:#FFF
-    style REJECT_PARAM fill:#DE8F05,stroke:#8A5903,color:#FFF
-    style REJECT_BIZ fill:#DE8F05,stroke:#8A5903,color:#FFF
-    style REJECT_DB fill:#DE8F05,stroke:#8A5903,color:#FFF
-    style SUCCESS fill:#029E73,stroke:#01593F,color:#FFF
+    classDef blue fill:#0173B2,stroke:#023B5A,color:#FFF
+    classDef teal fill:#029E73,stroke:#01593F,color:#FFF
+    classDef purple fill:#CC78BC,stroke:#7A4871,color:#FFF
+    classDef brown fill:#CA9161,stroke:#7A5739,color:#FFF
+    classDef orange fill:#DE8F05,stroke:#8A5903,color:#FFF
 ```
 
 **Defense-in-Depth Layers**:
@@ -1971,7 +1933,7 @@ describe("DonationController (security)", () => {
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart TD
+flowchart LR
     A[TypeScript Security] --> B[Type Safety<br/>Compile-Time]
     A --> C[Input Validation<br/>Runtime]
     A --> D[Authentication<br/>JWT]

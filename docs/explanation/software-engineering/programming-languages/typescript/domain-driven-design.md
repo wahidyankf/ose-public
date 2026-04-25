@@ -49,7 +49,7 @@ graph TD
     Presentation["Presentation Layer<br/>#40;Controllers, UI#41;"]:::blue
     Application["Application Layer<br/>#40;Use Cases, Services#41;"]:::orange
     Domain["Domain Layer<br/>#40;Entities, Value Objects,<br/>Aggregates#41;"]:::teal
-    Infrastructure["Infrastructure Layer<br/>#40;Database, External APIs#41;"]:::purple
+    Infrastructure["Infrastructure Layer<br/>(Database, External APIs)"]:::purple
 
     Presentation --> Application
     Application --> Domain
@@ -916,7 +916,7 @@ Repositories abstract persistence for aggregates.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     subgraph Domain["Domain Layer"]
         Agg["Aggregate Root<br/>(DonationCampaign)"]:::blue
         RepIntf["Repository Interface<br/>(CampaignRepository)"]:::blue

@@ -139,7 +139,7 @@ Idiomatic TypeScript code:
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph TD
+graph LR
     Patterns["TypeScript Idioms"]:::blue
     Type["Type Patterns"]:::orange
     Narrowing["Narrowing Patterns"]:::teal
@@ -193,7 +193,7 @@ Type guards allow TypeScript to narrow types at runtime, providing type safety f
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["Need Runtime<br/>Type Check?"]:::blue --> B{"Type of<br/>Value?"}:::orange
 
     B -->|"Primitive"| C["✅ Use typeof<br/>(string, number, boolean)"]:::teal
@@ -399,7 +399,7 @@ TypeScript provides built-in utility types for common transformations.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["Transform<br/>Type?"]:::blue --> B{"What<br/>Change?"}:::orange
 
     B -->|"Make optional"| C["✅ Partial<T><br/>(all props optional)"]:::teal
@@ -707,7 +707,7 @@ type PaymentMethodArrays = ToArray<PaymentMethod>;
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph LR
+graph TD
     Start["new Builder#40;#41;"]:::blue
     Step1["setDonorId#40;id#41;"]:::orange
     Step2["setAmount#40;money#41;"]:::orange
@@ -834,7 +834,7 @@ Mapped types transform all properties of an object type.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["Need to Transform<br/>Object Type?"]:::blue --> B{"What<br/>Transformation?"}:::orange
 
     B -->|"Property Modifiers"| C{"Add or Remove<br/>Modifiers?"}:::orange

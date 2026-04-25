@@ -28,20 +28,14 @@ TypeScript/JavaScript uses a single-threaded event loop with asynchronous operat
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph TD
-    Start["Start Event Loop"]:::blue --> Timers["Timers<br/>#40;setTimeout, setInterval#41;"]:::orange
-    Timers --> Pending["Pending Callbacks<br/>#40;I/O callbacks#41;"]:::orange
-    Pending --> Idle["Idle, Prepare<br/>#40;internal use#41;"]:::brown
-    Idle --> Poll["Poll<br/>#40;retrieve I/O events#41;"]:::teal
-    Poll --> Check["Check<br/>#40;setImmediate#41;"]:::orange
-    Check --> Close["Close Callbacks<br/>#40;socket.on#40;'close'#41;#41;"]:::orange
-    Close --> NextTick["process.nextTick#40;#41;"]:::purple
-    NextTick --> Microtasks["Microtasks<br/>#40;Promises#41;"]:::teal
-    Microtasks --> Timers
+graph LR
+    Start["Start"]:::blue
+    Timers["Timers<br/>#40;setTimeout/setInterval#41;"]:::orange
+    Poll["Poll<br/>#40;I/O events#41;"]:::teal
+    Check["Check<br/>#40;setImmediate#41;"]:::orange
+    Microtasks["Microtasks<br/>#40;Promises#41;"]:::teal
 
-    Note1["Timers: Execute callbacks<br/>scheduled by setTimeout<br/>and setInterval"]
-    Note2["Poll: Wait for I/O events,<br/>execute I/O callbacks"]
-    Note3["Microtasks: Execute before<br/>next phase #40;Promise.then#41;"]
+    Start --> Timers --> Poll --> Check --> Microtasks
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -49,6 +43,8 @@ graph TD
     classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
+
+**Event loop phases** (repeating cycle): (1) **Timers** — execute `setTimeout`/`setInterval` callbacks; (2) **Pending Callbacks** — deferred I/O errors from prior cycle; (3) **Idle/Prepare** — internal use; (4) **Poll** — wait for I/O events, execute I/O callbacks; (5) **Check** — `setImmediate` callbacks; (6) **Close Callbacks** — `socket.on('close')` etc. After Microtasks completes, the loop repeats from Timers. Between phases, `process.nextTick()` and microtasks (`Promise.then`) run before moving to the next phase.
 
 ## Async/Await Patterns
 
@@ -197,7 +193,7 @@ async function processParallel(ids: string[]): Promise<Donation[]> {
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["Multiple Promises<br/>to Coordinate?"]:::blue --> B{"What<br/>Behavior?"}:::orange
 
     B -->|"All must succeed"| C["✅ Promise.all()<br/>(Fail-fast)"]:::teal
@@ -475,7 +471,7 @@ setTimeout(() => controller.abort(), 5000);
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["Promise Created"]:::blue --> B{"Promise<br/>Resolution"}:::orange
 
     B -->|"Success"| C[".then() handler"]:::teal
@@ -496,7 +492,7 @@ graph TD
     Reject --> Next1[".catch() or<br/>unhandled rejection"]:::purple
     Propagate --> Next1
 
-    Note1["Unhandled rejection:<br/>- Browser: unhandledrejection event<br/>- Node.js: process warning"]
+    Note1["Unhandled rejection:<br/>Browser: unhandledrejection<br/>Node.js: process warning"]
 
     classDef blue fill:#0173B2,stroke:#000,color:#fff
     classDef orange fill:#DE8F05,stroke:#000,color:#000
@@ -556,7 +552,7 @@ async function fetchDonationUnsafe(id: string): Promise<Donation> {
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["Queue of Tasks<br/>(1000 items)"]:::blue --> B["Rate Limiter"]:::orange
 
     B --> C["Concurrent Batch<br/>(max 10 at once)"]:::teal

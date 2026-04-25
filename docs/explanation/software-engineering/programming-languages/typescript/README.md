@@ -1513,7 +1513,7 @@ async function processDonation(data: DonationInput): Promise<Result<Donation, Er
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart TD
+flowchart LR
     A[TypeScript Types] --> B[Primitive Types]
     A --> C[Object Types]
     A --> D[Advanced Types]

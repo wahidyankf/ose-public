@@ -38,7 +38,7 @@ Performance is critical for financial applications processing donations, calcula
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph LR
+graph TD
     Measure["Measure<br/>#40;Profile, Benchmark#41;"]:::blue
     Identify["Identify Bottlenecks<br/>#40;Hot paths#41;"]:::orange
     Optimize["Optimize<br/>#40;Improve code#41;"]:::teal
@@ -970,7 +970,7 @@ setInterval(() => {
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart TD
+flowchart LR
     A[TS Performance] --> B[Compilation Speed]
     A --> C[Runtime Performance]
     A --> D[Bundle Size]

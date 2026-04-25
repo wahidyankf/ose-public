@@ -65,7 +65,7 @@ When should you use type assertions vs validation? This decision tree helps you 
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph TD
+graph LR
     Start["Data Source"]:::blue
     Internal{"Internal<br/>source?"}:::orange
     TrustSource{"Can trust<br/>structure?"}:::orange
@@ -102,14 +102,14 @@ Using `any` creates a ripple effect of type safety erosion throughout your codeb
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     Input["User Input<br/>#40;any#41;"]:::blue
-    ProcessA["processDonation#40;data: any#41;"]:::orange
-    ProcessB["calculateFee#40;amount: any#41;"]:::orange
-    ProcessC["formatCurrency#40;value: any#41;"]:::orange
+    ProcessA["processDonation(data: any)"]:::orange
+    ProcessB["calculateFee(amount: any)"]:::orange
+    ProcessC["formatCurrency(value: any)"]:::orange
     Error["Runtime Error<br/>Uncaught TypeError"]:::purple
     SafeInput["Validated Input<br/>#40;Donation#41;"]:::teal
-    SafeA["processDonation#40;data: Donation#41;"]:::teal
-    SafeB["calculateFee#40;amount: number#41;"]:::teal
-    SafeC["formatCurrency#40;value: number#41;"]:::teal
+    SafeA["processDonation<br/>(data: Donation)"]:::teal
+    SafeB["calculateFee(amount: number)"]:::teal
+    SafeC["formatCurrency(value: number)"]:::teal
     CompileError["Compile-time Error<br/>Type mismatch caught"]:::brown
 
     subgraph Unsafe["Type Safety Erosion with any"]
@@ -966,7 +966,7 @@ interface DonationFilters {
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["Error Occurs"]:::blue --> B{"Can You<br/>Recover?"}:::orange
 
     B -->|"Yes"| C["Handle Gracefully<br/>(retry, default value)"]:::teal
@@ -1917,7 +1917,7 @@ Abstraction is powerful but can be harmful when overdone. This flowchart helps d
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph TD
+graph LR
     Start["Adding Abstraction"]:::blue
     Q1{"More than<br/>2 use cases?"}:::orange
     Q2{"Reduces<br/>duplication?"}:::orange
@@ -1939,7 +1939,7 @@ graph TD
     Q4 -->|No| Refactor
     Q4 -->|Yes| GoodAbstraction
 
-    Warning["Warning Signs:<br/>- Generic names #40;Manager, Handler#41;<br/>- Many type parameters;<br/>- Callback inception;<br/>- Harder to read than duplicate code"]
+    Warning["Warning Signs:<br/>- Generic names (Manager)<br/>- Many type parameters;<br/>- Callback inception;<br/>- Harder than duplicating code"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px

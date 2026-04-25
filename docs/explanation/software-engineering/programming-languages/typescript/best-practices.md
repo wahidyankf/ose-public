@@ -2353,7 +2353,7 @@ class DonationDistributionService {
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart TD
+flowchart LR
     A[TS Project Structure] --> B[src/<br/>Source Code]
     A --> C[tests/<br/>Test Files]
     A --> D[types/<br/>Type Definitions]
@@ -2390,7 +2390,7 @@ flowchart TD
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#000','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
-flowchart TD
+flowchart LR
     A[Type Safety] --> B[Strict Mode<br/>Enable All Checks]
     A --> C[Type Guards<br/>Runtime Checks]
     A --> D[Generics<br/>Type Parameters]

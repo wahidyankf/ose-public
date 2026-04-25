@@ -117,7 +117,7 @@ graph TD
     Start["GC Triggered<br/>#40;Memory pressure#41;"]:::blue
 
     Mark["Mark Phase<br/>Traverse object graph"]:::orange
-    MarkRoots["Identify GC Roots<br/>#40;Global, Stack, Closures#41;"]:::orange
+    MarkRoots["Identify GC Roots<br/>(Global, Stack, Closures)"]:::orange
     MarkReachable["Mark all reachable<br/>objects as alive"]:::orange
 
     Sweep["Sweep Phase<br/>Reclaim memory"]:::teal

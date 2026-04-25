@@ -35,7 +35,7 @@ Finite State Machines (FSMs) model systems with distinct states and transitions.
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph TD
+graph LR
     Start["Current State"]:::blue
     Event["Event Received"]:::orange
     Valid{"Valid<br/>Transition?"}:::purple

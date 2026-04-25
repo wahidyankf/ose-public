@@ -37,38 +37,34 @@ Automated linting and formatting ensure code quality and consistency. ESLint cat
 
 Understanding the tool integration workflow helps optimize your development setup.
 
+**Pre-commit hook runs all three tools in sequence:**
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Code["Source Code<br/>#40;TypeScript#41;"]:::blue
-    ESLint["ESLint<br/>Code Quality Rules"]:::orange
-    ESLintErrors{"Lint errors<br/>found?"}:::orange
-    AutoFix["Auto-fix Issues<br/>--fix flag"]:::teal
-    ManualFix["Manual Fixes Required"]:::purple
-
-    Prettier["Prettier<br/>Code Formatting"]:::brown
-    PrettierFormat["Format Code<br/>Consistent Style"]:::teal
-
-    TSC["TypeScript Compiler<br/>tsc --noEmit"]:::blue
-    TypeErrors{"Type errors<br/>found?"}:::orange
-    Success["Code Ready to Commit"]:::teal
-    Fail["Commit Blocked"]:::purple
-
-    Code --> ESLint
-    ESLint --> ESLintErrors
-    ESLintErrors -->|Yes #40;Auto-fixable#41;| AutoFix
-    ESLintErrors -->|Yes #40;Manual#41;| ManualFix
-    ESLintErrors -->|No| Prettier
+    Code["Source Code<br/>#40;TypeScript#41;"]:::blue --> ESLint["ESLint<br/>Code Quality Rules"]:::orange
+    ESLint --> ESLintErrors{"Lint errors<br/>found?"}:::orange
+    ESLintErrors -->|"Auto-fixable"| AutoFix["Auto-fix Issues<br/>--fix flag"]:::teal
+    ESLintErrors -->|"Manual"| ManualFix["Manual Fixes Required"]:::purple
+    ESLintErrors -->|No| Prettier["Prettier<br/>Code Formatting"]:::brown
     AutoFix --> Prettier
     ManualFix --> Code
 
-    Prettier --> PrettierFormat
-    PrettierFormat --> TSC
-    TSC --> TypeErrors
-    TypeErrors -->|Yes| Fail
-    TypeErrors -->|No| Success
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+```
 
-    Note1["Pre-commit hook<br/>runs all three tools"]
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+    Prettier["Prettier<br/>Code Formatting"]:::brown --> PrettierFormat["Format Code<br/>Consistent Style"]:::teal
+    PrettierFormat --> TSC["TypeScript Compiler<br/>tsc --noEmit"]:::blue
+    TSC --> TypeErrors{"Type errors<br/>found?"}:::orange
+    TypeErrors -->|Yes| Fail["Commit Blocked"]:::purple
+    TypeErrors -->|No| Success["Code Ready to Commit"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -93,7 +89,7 @@ graph TD
     UserConfig["Check ~/.eslintrc"]:::brown
     DefaultConfig["Use ESLint defaults"]:::purple
 
-    Merge["Merge Configurations<br/>#40;closer = higher priority#41;"]:::teal
+    Merge["Merge Configurations<br/>(closer = higher priority)"]:::teal
     ApplyRules["Apply Rules to File"]:::blue
     Result["Lint Results"]:::teal
 
@@ -198,7 +194,7 @@ When should you use `eslint --fix` vs manual fixes? This decision tree helps opt
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
-graph TD
+graph LR
     Start["ESLint Error Found"]:::blue
     SafeRule{"Safe to<br/>auto-fix?"}:::orange
     StyleOnly{"Style-only<br/>change?"}:::orange
@@ -232,7 +228,7 @@ Different strategies for organizing imports affect readability and maintainabili
 graph LR
     Imports["Import Statements"]:::blue
 
-    ByType["By Type<br/>#40;Built-in, External, Internal#41;"]:::orange
+    ByType["By Type<br/>(Built-in, External, Internal)"]:::orange
     ByAlpha["Alphabetical<br/>#40;A-Z#41;"]:::teal
     ByUsage["By Usage Frequency<br/>#40;Most used first#41;"]:::purple
     ByLayer["By Architecture Layer<br/>#40;Domain, App, Infra#41;"]:::brown
@@ -246,7 +242,7 @@ graph LR
     AlphaExample["import { a } from 'a'<br/>import { b } from 'b'<br/>import { z } from 'z'"]
     LayerExample["1. Domain entities<br/>2. Application services<br/>3. Infrastructure"]
 
-    Note1["ESLint plugin:<br/>eslint-plugin-import<br/>or<br/>@trivago/prettier-plugin-sort-imports"]
+    Note1["ESLint plugin:<br/>eslint-plugin-import or<br/>prettier-plugin-sort-imports"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px

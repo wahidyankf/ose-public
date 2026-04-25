@@ -348,7 +348,7 @@ gitGraph
 
 **Default directive**: Use `flowchart LR` or `graph LR` as the opening line of every flowchart or graph diagram unless a semantic exception applies (see below).
 
-**When changing existing diagrams**: Replace `flowchart TD`, `graph TD`, `graph BT`, and `flowchart BT` with their `LR` equivalents unless the diagram is semantically justified to remain top-down (see exception below).
+**When changing existing diagrams**: Replace `flowchart TD`, `graph TD`, `graph BT`, and `flowchart BT` with their `LR` equivalents unless: (a) the diagram is semantically justified to remain top-down (see exception below), or (b) switching to LR would cause the depth to exceed MaxWidth=4 (in which case TD keeps depth as the unchecked vertical axis — see Flowchart Width Constraints).
 
 **Exception — semantically required TD**: A diagram MAY use `TD` when top-down direction is intrinsic to the meaning of the diagram (for example, a class hierarchy diagram where parent classes appear above child classes to show inheritance direction). Add a `%%` comment on the line immediately before the diagram type directive explaining why TD is required:
 
@@ -368,6 +368,76 @@ graph LR
     A[Start] --> B[Process]
     B --> C[End]
 ```
+
+### Flowchart Width Constraints
+
+The `rhino-cli docs validate-mermaid` command enforces a maximum horizontal width of **4 nodes** on any single rank level. "Horizontal" is direction-aware:
+
+- **`graph LR` / `graph RL`**: horizontal = **depth** (number of rank columns, i.e., the longest chain)
+- **`graph TD` / `graph TB` / `graph BT`**: horizontal = **span** (maximum nodes at any single rank level)
+
+**Label length**: the validator enforces **≤ 30 raw characters per line** (each `<br/>`-separated segment measured individually). Note: most renderers visually clip at approximately 20 characters — keep displayed text shorter when possible.
+
+**Automated enforcement**:
+
+```bash
+go run ./apps/rhino-cli/main.go docs validate-mermaid
+```
+
+Run without flags to validate all `docs/`, `governance/`, and `.claude/` markdown files using defaults (MaxWidth=4, unlimited depth).
+
+### Width Violation Fix Strategy Guide
+
+When `rhino-cli docs validate-mermaid` reports a `width_exceeded` violation, select the simplest fix strategy that works:
+
+**Selection decision tree**:
+
+```
+Is min(span, depth) ≤ 4?
+├── Yes → Strategy 0 (Direction Flip) — one-word fix
+└── No  → Does the diagram have a clear sequential order?
+          ├── Yes → Strategy 3 (Sequential Chaining)
+          └── No  → Is there a natural semantic hub?
+                    ├── Yes → Strategy 1 (Intermediate Grouping)
+                    └── No  → Strategy 2 (Diagram Splitting)
+
+Label too long only? → Strategy 4 (Label Shortening)
+```
+
+**Strategy 0 — Direction Flip** (preferred when the other axis is ≤ 4):
+
+Change `graph TD` → `graph LR` (or vice versa). The horizontal dimension switches axis.
+
+```
+# Before — TD, span=5 (5 children share rank 1) → violation (5 > MaxWidth=4)
+graph TD
+    A --> B
+    A --> C
+    A --> D
+    A --> E
+    A --> F
+
+# After — LR, horizontal=depth=2 ≤ MaxWidth=4, vertical=span=5 → no violation
+graph LR
+    A --> B
+    A --> C
+    A --> D
+    A --> E
+    A --> F
+```
+
+**Strategy 1 — Intermediate Grouping**: Insert a semantic hub node that branches connect through, reducing fan-out at any single rank.
+
+**Strategy 2 — Diagram Splitting**: Break one wide diagram into two or more focused diagrams with prose bridges between them.
+
+**Strategy 3 — Sequential Chaining**: Linearize parallel branches when logical order can be established: `A --> B --> C` instead of `A --> B` / `A --> C` / `A --> D`.
+
+**Strategy 4 — Label Shortening** (for `label_too_long` violations):
+
+- Replace HTML entities with abbreviated text: `#40;` → `(`, `#41;` → `)`
+- Abbreviate: `Configuration` → `Config`, `Implementation` → `Impl`
+- Split on `<br/>` and shorten each line to ≤ 30 chars
+- Move dropped detail into prose before/after the diagram
 
 ### Mermaid Best Practices
 
@@ -1022,7 +1092,7 @@ Before committing documentation with diagrams:
 - [ ] **No style commands in sequence diagrams** (use `box` syntax or switch to flowchart)
 - [ ] **No `\n` in any label** (`\n` renders as literal characters in node labels and edge labels — use `<br/>` for multi-line labels or shorten to single-line)
 - [ ] **No `<br/>` in edge labels** (edge labels do not support HTML — use plain text only)
-- [ ] **Node label lines ≤20 characters** (each line between `<br/>` tags must not exceed 20 characters)
+- [ ] **Node label lines**: validator enforces ≤ 30 raw chars per line (run `rhino-cli docs validate-mermaid`); renderers visually clip at ~20 chars — keep displayed text ≤ 20 when possible
 - [ ] **Edge label strings ≤20 characters** (text inside `|"..."|` must not exceed 20 characters)
 - [ ] **No URL paths or dot-prefixed tokens in edge labels** (leading `.` is parsed as a CSS class selector — describe the action in plain words instead)
 - [ ] Mermaid diagrams tested in GitHub preview or a markdown viewer
@@ -1357,87 +1427,7 @@ graph TD
 
 Renders as: "HashMap<K, V> / O(1) lookup / Values: [1, 2, 3] / Dict: {a: 1}"
 
-## Related Documentation
-
-- [Color Accessibility Convention](./color-accessibility.md) - Master reference for accessible color palette, WCAG standards, and testing tools (comprehensive guide for all color usage)
-- [File Naming Convention](../structure/file-naming.md) - How to name documentation files
-- [Linking Convention](./linking.md) - How to link between files
-- [Diátaxis Framework](../structure/diataxis-framework.md) - Documentation organization principles
-- [Conventions Index](../README.md) - Overview of all conventions
-
-## External Resources
-
-- [Mermaid Official Documentation](https://mermaid.js.org/)
-- [Mermaid Live Editor](https://mermaid.live/)
-- [ASCII Art Generator](https://www.asciiart.eu/)
-- [Box Drawing Unicode Characters](https://en.wikipedia.org/wiki/Box-drawing_characters)
-
-### Error 7: Sequence Diagram Participant Syntax with "as" Keyword
-
-**CRITICAL**: Using `participant X as "Display Name"` syntax with quotes in sequence diagrams causes rendering failures in Hugo/Hextra environments.
-
-**Problem Example (FAIL: BROKEN)**:
-
-```mermaid
-sequenceDiagram
-    participant Main as "main()"
-    participant Loop as "Event Loop"
-    participant F1 as "fetch_data(api1)"
-
-    Main->>Loop: Start execution
-    Loop->>F1: Call async function
-    F1-->>Loop: Return result
-```
-
-**Why it fails**: The Hextra theme's Mermaid renderer struggles with complex display names containing spaces, parentheses, or special characters when combined with the `as` keyword and quotes. This syntax pattern causes parsing errors in Hugo/Hextra contexts.
-
-**Solution (PASS: WORKING)**:
-
-Use simple participant identifiers without the `as` keyword:
-
-```mermaid
-sequenceDiagram
-    participant Main
-    participant EventLoop
-    participant API1
-
-    Main->>EventLoop: Start execution
-    EventLoop->>API1: Call async function
-    API1-->>EventLoop: Return result
-```
-
-**Alternative - Descriptive names without quotes**:
-
-If you need descriptive names, use CamelCase or underscores without the `as` keyword:
-
-```mermaid
-sequenceDiagram
-    participant MainFunction
-    participant EventLoop
-    participant FetchData
-
-    MainFunction->>EventLoop: Initialize
-    EventLoop->>FetchData: Retrieve data
-    FetchData-->>EventLoop: Data received
-```
-
-**Rule**: In sequence diagrams, use simple participant identifiers. Avoid the `as` keyword with quoted display names. Use CamelCase or simple names instead of quoted strings with spaces or special characters.
-
-**Rationale**:
-
-- The Hextra theme documentation shows working examples using simple participant syntax
-- Complex display names with `as` keyword and quotes cause parsing errors
-- Simple identifiers are more reliable across different Mermaid versions and rendering contexts
-- Hugo/Hextra environments have different parser constraints than standalone Mermaid
-
-**Affected diagram types**: `sequenceDiagram` only (not `graph`/`flowchart`)
-
-**Real-World Examples Fixed:**
-
-- Python intermediate Example 33 (async/await): Changed `participant Main as "main()"` to `participant Main`
-- Elixir advanced Example 62 (GenServer): Changed `participant Client as "Client Process"` to `participant Client`
-
-### Error 8: `\n` Escape Sequences Do Not Create Line Breaks in Hugo Mermaid Rendering
+### Error 7: `\n` Escape Sequences Do Not Create Line Breaks in Hugo Mermaid Rendering
 
 **CRITICAL**: The `\n` escape sequence does not create line breaks in Mermaid diagrams rendered via Hugo's code block render hook. It renders as the literal characters `\n` in both node labels and edge labels.
 
@@ -1472,7 +1462,7 @@ graph LR
 
 **Real-World Context**: Discovered when building a roadmap diagram on `apps/oseplatform-web/content/about.md`. Both node labels (`"Phase 3\nEnterprise Application\nLarge Organizations"`) and edge labels (`"Revenue\n& Learnings"`) rendered with literal `\n` characters visible.
 
-### Error 9: Label Constraints — Character Width Limit, No HTML in Edge Labels, No URL Paths
+### Error 8: Label Constraints — Character Width Limit, No HTML in Edge Labels, No URL Paths
 
 **CRITICAL**: Mermaid renderers silently clip label text beyond approximately 20–22 characters with no warning. Edge labels do not support HTML tags. URL paths and dot-prefixed tokens in edge labels break the parser.
 
@@ -1480,7 +1470,7 @@ These three constraints apply everywhere labels appear and are documented togeth
 
 #### Rule 1: Node label line breaks — `<br/>` only
 
-Use `<br/>` to create line breaks inside node labels. The `\n` escape sequence renders as the literal characters `\n` (see Error 8). `<br/>` is the only supported mechanism.
+Use `<br/>` to create line breaks inside node labels. The `\n` escape sequence renders as the literal characters `\n` (see Error 7). `<br/>` is the only supported mechanism.
 
 **DO:**
 
@@ -1525,6 +1515,8 @@ Keep edge labels single-line plain text. If you need multi-line detail, move it 
 Both node label lines (each segment between `<br/>` tags) and edge label strings must not exceed **20 characters**. Most Mermaid renderers clip text beyond approximately 20–22 characters with no error or warning.
 
 Count every character including spaces, colons, slashes, and Unicode.
+
+**Note**: `rhino-cli docs validate-mermaid` enforces ≤ **30** raw characters per `<br/>`-split line (Mermaid's `wrappingWidth` baseline). The stricter 20-character limit documented here is specific to Hugo/Hextra rendering clipping. Use `--max-label-len 20` when validating content for Hugo-based sites.
 
 **Safe examples (≤20 chars):**
 
@@ -1841,3 +1833,18 @@ graph TD
 5. **Mobile-first** - Ensure readability on narrow screens
 
 This prevents "too small" diagram issues and improves mobile user experience.
+
+## Related Documentation
+
+- [Color Accessibility Convention](./color-accessibility.md) - Master reference for accessible color palette, WCAG standards, and testing tools (comprehensive guide for all color usage)
+- [File Naming Convention](../structure/file-naming.md) - How to name documentation files
+- [Linking Convention](./linking.md) - How to link between files
+- [Diátaxis Framework](../structure/diataxis-framework.md) - Documentation organization principles
+- [Conventions Index](../README.md) - Overview of all conventions
+
+## External Resources
+
+- [Mermaid Official Documentation](https://mermaid.js.org/)
+- [Mermaid Live Editor](https://mermaid.live/)
+- [ASCII Art Generator](https://www.asciiart.eu/)
+- [Box Drawing Unicode Characters](https://en.wikipedia.org/wiki/Box-drawing_characters)

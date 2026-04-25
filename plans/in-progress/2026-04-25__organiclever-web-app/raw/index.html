@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>OrganicLever — Personal Activity & Productivity Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#f7f5f0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="workout-app/colors_and_type.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100vh; overscroll-behavior: none; }
+    #root { min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* App chrome */
+    button:focus-visible, input:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px oklch(68% 0.10 195 / 0.35) !important;
+    }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--warm-200); border-radius: 2px; }
+    @keyframes fadeIn   { from { opacity: 0 } to { opacity: 1 } }
+    @keyframes slideUp  { from { transform: translateY(12px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type=number] { -moz-appearance: textfield; }
+
+    /* Landing */
+    :root {
+      --l-ink:       oklch(18% 0.018 60);
+      --l-ink-dim:   oklch(42% 0.015 70);
+      --l-ink-faint: oklch(62% 0.012 70);
+      --l-bg:        oklch(99% 0.005 80);
+      --l-bg-2:      oklch(97% 0.008 80);
+      --l-teal:      oklch(52% 0.12 195);
+      --l-sage:      oklch(52% 0.10 145);
+      --l-honey:     oklch(52% 0.13 80);
+    }
+    .landing-page { font-family: 'Nunito', sans-serif; background: var(--l-bg); color: var(--l-ink); min-height: 100vh; overflow-x: hidden; position: relative; }
+    .landing-page::before {
+      content: ''; position: fixed; inset: 0; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; opacity: 0.5;
+    }
+    .l-orb { position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0; animation: l-drift 18s ease-in-out infinite alternate; }
+    .l-orb-1 { width:600px;height:600px;top:-200px;left:-150px;background:oklch(68% 0.10 195 / 0.08); }
+    .l-orb-2 { width:400px;height:400px;bottom:-100px;right:-100px;background:oklch(72% 0.10 145 / 0.07);animation-delay:-6s; }
+    .l-orb-3 { width:300px;height:300px;top:40%;left:60%;background:oklch(78% 0.13 80 / 0.06);animation-delay:-12s; }
+    @keyframes l-drift { from{transform:translate(0,0) scale(1)} to{transform:translate(30px,-40px) scale(1.05)} }
+    .l-content { position: relative; z-index: 1; }
+    .l-nav { display:flex;align-items:center;justify-content:space-between;padding:24px 40px;border-bottom:1px solid oklch(18% 0.018 60 / 0.08); }
+    .l-logo { display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--l-ink);cursor:pointer;background:none;border:none;font-family:inherit; }
+    .l-logo-mark { width:36px;height:36px;border-radius:10px;background:var(--l-teal);display:flex;align-items:center;justify-content:center; }
+    .l-logo-name { font-size:17px;font-weight:800;letter-spacing:-0.02em; }
+    .l-badge { font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border-radius:20px;border:1px solid oklch(52% 0.13 80 / 0.4);color:var(--l-honey);background:oklch(78% 0.13 80 / 0.10);animation:l-pulse 3s ease-in-out infinite; }
+    @keyframes l-pulse { 0%,100%{opacity:1}50%{opacity:0.6} }
+    .l-hero { padding:80px 40px 100px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;max-width:1200px;margin:0 auto; }
+    .l-eyebrow { font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--l-teal);display:flex;align-items:center;gap:10px; }
+    .l-eyebrow::before { content:'';display:block;width:28px;height:2px;background:var(--l-teal);border-radius:1px; }
+    .l-h1 { font-size:clamp(3rem,6vw,5.5rem);font-weight:900;line-height:1.02;letter-spacing:-0.035em;text-wrap:balance; }
+    .l-h1 .ac { color:var(--l-teal); } .l-h1 .ac2 { color:var(--l-sage); }
+    .l-desc { font-family:'Nunito Sans',sans-serif;font-size:18px;line-height:1.65;color:var(--l-ink-dim);max-width:440px; }
+    .l-cta-btn { display:inline-flex;align-items:center;gap:10px;padding:16px 32px;border-radius:14px;background:var(--l-teal);color:white;font-family:'Nunito',sans-serif;font-size:17px;font-weight:800;text-decoration:none;border:none;cursor:pointer;transition:all 200ms;letter-spacing:-0.01em;animation:l-glow 3s ease-in-out infinite; }
+    @keyframes l-glow { 0%,100%{box-shadow:0 0 0 0 oklch(52% 0.12 195 / 0.35)}50%{box-shadow:0 0 0 12px oklch(52% 0.12 195 / 0)} }
+    .l-cta-btn:hover { background:oklch(46% 0.13 195);transform:translateY(-2px); }
+    .l-note { font-size:13px;color:var(--l-ink-faint);font-weight:500;display:flex;align-items:center;gap:8px; }
+    .l-note::before { content:'⚡';font-size:14px; }
+    .l-pill { display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:10px;border:1px solid oklch(18% 0.018 60 / 0.12);background:var(--l-bg-2);font-size:12px;font-weight:700;color:var(--l-ink-dim);text-decoration:none;transition:all 150ms;cursor:pointer; }
+    .l-pill:hover { border-color:var(--l-teal);color:var(--l-teal); }
+    .l-phone { width:260px;background:oklch(94% 0.010 80);border-radius:36px;padding:16px;border:1px solid oklch(18% 0.018 60 / 0.12);box-shadow:0 0 0 1px oklch(18% 0.018 60 / 0.06),0 40px 80px oklch(18% 0.018 60 / 0.15),inset 0 1px 0 oklch(100% 0 0 / 0.8);animation:l-float 6s ease-in-out infinite; }
+    @keyframes l-float { 0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-12px) rotate(-0.5deg)} }
+    .l-screen { background:oklch(99% 0.005 80);border-radius:24px;overflow:hidden;height:460px;position:relative; }
+    .l-ftag { position:absolute;background:white;border:1px solid oklch(18% 0.018 60 / 0.10);border-radius:12px;padding:8px 14px;box-shadow:0 8px 24px oklch(18% 0.018 60 / 0.12);font-size:12px;font-weight:700;color:var(--l-ink);display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'Nunito',sans-serif; }
+    .l-ftag-1 { top:40px;right:-30px;animation:l-float2 5s ease-in-out infinite; }
+    .l-ftag-2 { bottom:80px;left:-40px;animation:l-float2 5s ease-in-out infinite 2s; }
+    @keyframes l-float2 { 0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)} }
+    .l-dot { width:8px;height:8px;border-radius:50%;flex-shrink:0; }
+    .l-features { max-width:1200px;margin:0 auto;padding:60px 40px 100px;border-top:1px solid oklch(18% 0.018 60 / 0.08); }
+    .l-fgrid { display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:48px;border:1px solid oklch(18% 0.018 60 / 0.10);border-radius:20px;overflow:hidden; }
+    .l-fcard { padding:32px 28px;background:var(--l-bg-2);border-right:1px solid oklch(18% 0.018 60 / 0.08);transition:background 200ms; }
+    .l-fcard:last-child { border-right:none; } .l-fcard:hover { background:oklch(95% 0.010 80); }
+    .l-ficon { width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:18px; }
+    .l-ftitle { font-size:17px;font-weight:800;letter-spacing:-0.01em;margin-bottom:10px; }
+    .l-fdesc { font-family:'Nunito Sans',sans-serif;font-size:14px;line-height:1.6;color:var(--l-ink-dim); }
+    .l-sec-eye { font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--l-teal);margin-bottom:14px;display:flex;align-items:center;gap:10px; }
+    .l-sec-eye::before { content:'';display:block;width:20px;height:2px;background:var(--l-teal);border-radius:1px; }
+    .l-h2 { font-size:clamp(2rem,4vw,3rem);font-weight:900;letter-spacing:-0.03em;line-height:1.05; }
+    .l-alpha { max-width:1200px;margin:0 auto 60px;padding:0 40px; }
+    .l-alpha-inner { background:oklch(78% 0.13 80 / 0.08);border:1px solid oklch(52% 0.13 80 / 0.25);border-radius:16px;padding:24px 28px;display:flex;gap:18px;align-items:flex-start; }
+    .l-alpha-title { font-size:16px;font-weight:800;color:var(--l-honey);margin-bottom:6px; }
+    .l-alpha-desc { font-family:'Nunito Sans',sans-serif;font-size:14px;line-height:1.6;color:oklch(42% 0.10 80); }
+    .l-alpha-desc strong { color:var(--l-honey);font-weight:700; }
+    .l-footer { border-top:1px solid oklch(18% 0.018 60 / 0.08);padding:28px 40px;display:flex;align-items:center;justify-content:space-between;max-width:1200px;margin:0 auto; }
+    .l-copy { font-size:13px;color:var(--l-ink-faint); }
+    .l-flink { color:var(--l-teal);text-decoration:none;font-weight:600;background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px; }
+    .l-flink:hover { text-decoration:underline; }
+    [data-reveal] { opacity:0;transform:translateY(24px);transition:opacity 600ms,transform 600ms; }
+    [data-reveal].visible { opacity:1;transform:none; }
+    @media (max-width:900px) {
+      .l-nav { padding:20px 24px; }
+      .l-hero { grid-template-columns:1fr;gap:48px;padding:48px 24px 80px; }
+      .l-hero-preview { display:none; }
+      .l-features { padding:48px 24px 80px; }
+      .l-fgrid { grid-template-columns:1fr; }
+      .l-fcard { border-right:none;border-bottom:1px solid oklch(18% 0.018 60 / 0.06); }
+      .l-fcard:last-child { border-bottom:none; }
+      .l-alpha { padding:0 24px; }
+      .l-footer { padding:24px;flex-direction:column;gap:12px;text-align:center; }
+    }
+    @media (min-width:768px) {
+      body.app-mode { background:radial-gradient(ellipse at top,var(--warm-100),var(--color-background) 60%); }
+    }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+
+<!-- React + Babel -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<!-- Data layer -->
+<script src="workout-app/db.js"></script>
+<script src="workout-app/i18n.js"></script>
+
+<!-- App UI components -->
+<script type="text/babel" src="workout-app/Icon.jsx"></script>
+<script type="text/babel" src="workout-app/Components.jsx"></script>
+<script type="text/babel" src="workout-app/HomeScreen.jsx"></script>
+<script type="text/babel" src="workout-app/WorkoutScreen.jsx"></script>
+<script type="text/babel" src="workout-app/FinishScreen.jsx"></script>
+<script type="text/babel" src="workout-app/EditRoutineScreen.jsx"></script>
+<script type="text/babel" src="workout-app/HistoryScreen.jsx"></script>
+<script type="text/babel" src="workout-app/ProgressScreen.jsx"></script>
+<script type="text/babel" src="workout-app/SettingsScreen.jsx"></script>
+  <script type="text/babel" src="workout-app/EventLoggers.jsx"></script>
+  <script type="text/babel" src="workout-app/CustomEvents.jsx"></script>
+<script type="text/babel" src="workout-app/App.jsx"></script>
+
+<!-- Router root -->
+<script type="text/babel">
+// Simple hash router — no library needed
+const useHash = () => {
+  const [hash, setHash] = React.useState(window.location.hash || '#/');
+  React.useEffect(() => {
+    const handler = () => setHash(window.location.hash || '#/');
+    window.addEventListener('hashchange', handler);
+    return () => window.removeEventListener('hashchange', handler);
+  }, []);
+  return hash;
+};
+const goTo = (path) => { window.location.hash = path; };
+
+// ── Landing page ──────────────────────────────────────────────────────────────
+const LandingPage = () => {
+  const goApp = () => goTo('#/app');
+
+  React.useEffect(() => {
+    document.body.classList.remove('app-mode');
+    const els = document.querySelectorAll('[data-reveal]');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    els.forEach(el => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
+  // ── Sample data for week-rhythm visualization ───────────────────────────────
+  const HUE = {
+    workout:  'oklch(56% 0.13 195)',
+    reading:  'oklch(56% 0.13 310)',
+    learning: 'oklch(64% 0.15 80)',
+    meal:     'oklch(60% 0.16 35)',
+    focus:    'oklch(58% 0.13 235)',
+  };
+  const WEEK = [
+    { day:'Mon', segs:[['workout',45],['reading',20],['meal',12]] },
+    { day:'Tue', segs:[['reading',30],['learning',45],['focus',90],['meal',10]] },
+    { day:'Wed', segs:[['workout',50],['focus',60],['meal',14]] },
+    { day:'Thu', segs:[['reading',25],['learning',30],['meal',12]] },
+    { day:'Fri', segs:[['workout',40],['focus',120],['reading',15]], today:true },
+    { day:'Sat', segs:[['reading',45],['meal',18],['meal',22],['learning',25]] },
+    { day:'Sun', segs:[['learning',60],['reading',30],['focus',45]] },
+  ];
+  const totalMins = WEEK.reduce((n,d)=>n+d.segs.reduce((m,s)=>m+s[1],0),0);
+  const totalEvents = WEEK.reduce((n,d)=>n+d.segs.length,0);
+  const maxDay = Math.max(...WEEK.map(d=>d.segs.reduce((m,s)=>m+s[1],0)));
+
+  const MODULES = [
+    { hue:HUE.workout,  bg:'oklch(56% 0.13 195 / 0.10)', name:'Workouts',  ic:'🏋️', desc:'Sets, reps, PRs, rest timer.', ex:'Kettlebell · 12 sets · 42 min' },
+    { hue:HUE.reading,  bg:'oklch(56% 0.13 310 / 0.10)', name:'Reading',   ic:'📚', desc:'Books, pages, time read.',     ex:'Atomic Habits · 28 pages' },
+    { hue:HUE.learning, bg:'oklch(64% 0.15 80 / 0.10)',  name:'Learning',  ic:'🧠', desc:'Courses, languages, notes.',   ex:'React patterns · 35 min' },
+    { hue:HUE.meal,     bg:'oklch(60% 0.16 35 / 0.10)',  name:'Meals',     ic:'🍽️', desc:'What you ate, when.',          ex:'Nasi goreng · breakfast' },
+    { hue:HUE.focus,    bg:'oklch(58% 0.13 235 / 0.10)', name:'Focus',     ic:'⏱️', desc:'Deep work, pomodoros.',         ex:'Deep work · 90 min' },
+  ];
+
+  const PRINCIPLES = [
+    ['Local-first', 'Your data lives on your device. No accounts required, no cloud lock-in. Sync is opt-in, later.'],
+    ['Yours to take', 'Data export and import are on the roadmap — your history belongs to you, in a format you can read.'],
+    ['Flexible', 'Five built-in event types, plus custom types you define. Track meditation, sleep, journaling — whatever matters.'],
+    ['Quiet', 'Patterns surface in the background. The app gets out of the way until you need it.'],
+    ['Open', 'Source on GitHub. Fork it, run it, make it yours. We build in the open.'],
+    ['Multilingual', 'Full UI in English and Bahasa Indonesia. Toggle in Settings.'],
+  ];
+
+  const LeverIcon = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="6" cy="6" r="2.2"/>
+      <circle cx="18" cy="18" r="2.2"/>
+      <path d="M7.5 7.5 16.5 16.5"/>
+      <path d="M4 14h4M16 6h4M14 20h4M6 4h4"/>
+    </svg>
+  );
+  const PlayIcon = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="6 4 20 12 6 20 6 4"/>
+    </svg>
+  );
+  const AppleIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.37c1.29.07 2.18.74 2.93.8 1.12-.21 2.19-.91 3.39-.84 1.44.12 2.53.66 3.22 1.67-2.99 1.77-2.45 5.77.34 6.95-.63 1.52-1.42 3.01-1.88 4.33M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+    </svg>
+  );
+  const AndroidIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+      <path d="m3.18 23.76 9.13-9.13-9.05-9.05a2.5 2.5 0 0 0-.08 18.18zM21.28 10.5l-2.41-1.38-2.57 2.57 2.66 2.66 2.32-1.34a1.75 1.75 0 0 0 0-3.51zM2.1 1.5a2.5 2.5 0 0 0-.43 1.39v18.23a2.5 2.5 0 0 0 .43 1.39l.11.1L13 12.72v-.24L2.21 1.4zM13.31 13l2.91-2.91 3.67 2.1-3.67 2.1z"/>
+    </svg>
+  );
+  const GithubIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/>
+    </svg>
+  );
+
+  return (
+    <div className="landing-page">
+      <div className="l-orb l-orb-1" />
+      <div className="l-orb l-orb-2" />
+      <div className="l-orb l-orb-3" />
+      <div className="l-content">
+        {/* Nav */}
+        <nav className="l-nav">
+          <button className="l-logo" onClick={goApp}>
+            <div className="l-logo-mark"><LeverIcon /></div>
+            <span className="l-logo-name">OrganicLever</span>
+          </button>
+          <span className="l-badge">⚗ Pre-Alpha</span>
+        </nav>
+
+        {/* Hero — kept type-only per your spec */}
+        <section className="l-hero" style={{ gridTemplateColumns:'1fr', maxWidth:900, textAlign:'left' }}>
+          <div style={{ display:'flex', flexDirection:'column', gap:28 }} data-reveal>
+            <div className="l-eyebrow">Personal life-event tracker</div>
+            <h1 className="l-h1">Your life,<br/><span className="ac">tracked.</span><br/><span className="ac2">Analyzed.</span></h1>
+            <p className="l-desc" style={{ maxWidth:620, fontSize:19 }}>
+              Life is a collection of events that shape who you become. OrganicLever is a personal journal for everything you do — workouts, reading, learning, meals, focus blocks — plus anything else you'd like to track. Logged on your device, quietly analyzed.
+            </p>
+            <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
+              <button className="l-cta-btn" onClick={goApp} style={{ alignSelf:'flex-start' }}>
+                <PlayIcon /> Open the app
+              </button>
+              <div className="l-note">Free · works offline · no sign-up</div>
+              <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
+                <div className="l-pill"><AppleIcon /> iOS — coming soon</div>
+                <div className="l-pill"><AndroidIcon /> Android — coming soon</div>
+                <a href="https://github.com/wahidyankf/ose-public" target="_blank" rel="noopener" className="l-pill">
+                  <GithubIcon /> Open source
+                </a>
+                <a href="https://github.com/wahidyankf/ose-public/fork" target="_blank" rel="noopener" className="l-pill">
+                  <GithubIcon /> Fork &amp; make it yours
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Alpha warning */}
+        <div className="l-alpha" data-reveal>
+          <div className="l-alpha-inner">
+            <div style={{ fontSize:24, flexShrink:0, marginTop:2 }}>⚗️</div>
+            <div>
+              <div className="l-alpha-title">Pre-Alpha — expect breaking changes</div>
+              <div className="l-alpha-desc">
+                OrganicLever is in active early development. It currently tracks <strong>five event types</strong> — workouts, reading, learning, meals, and focus sessions — plus your own custom types. Data is stored locally —
+                <strong> clearing browser storage will erase your history.</strong> The data model may change between versions without migration. We're building in the open.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* § 01 — Module showcase */}
+        <section className="l-features" data-reveal>
+          <div>
+            <div className="l-sec-eye">Five event types · plus your own</div>
+            <h2 className="l-h2">Out of the box,<br/>or roll your own.</h2>
+            <p className="l-desc" style={{ marginTop:18, maxWidth:560 }}>
+              Each built-in type has its own structure, color, and analytics. Reading tracks pages and books. Workouts track sets and PRs. Meals track what you ate. They all stack into one weekly rhythm.
+            </p>
+          </div>
+          <div className="l-fgrid" style={{ gridTemplateColumns:'repeat(5, 1fr)' }}>
+            {MODULES.map(m => (
+              <div key={m.name} className="l-fcard" style={{ padding:'28px 22px' }}>
+                <div className="l-ficon" style={{ background:m.bg, fontSize:22 }}>{m.ic}</div>
+                <div className="l-ftitle" style={{ color:m.hue }}>{m.name}</div>
+                <div className="l-fdesc">{m.desc}</div>
+                <div style={{ marginTop:14, paddingTop:14, borderTop:'1px solid oklch(18% 0.018 60 / 0.08)',
+                  fontFamily:"'Nunito Sans', sans-serif", fontSize:12, fontWeight:600, color:'var(--l-ink-faint)',
+                  letterSpacing:'.02em', display:'flex', alignItems:'center', gap:6 }}>
+                  <span style={{ width:6, height:6, borderRadius:'50%', background:m.hue, flexShrink:0 }} />
+                  {m.ex}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop:24, padding:'22px 28px', border:'1px dashed oklch(18% 0.018 60 / 0.18)',
+            borderRadius:16, display:'flex', alignItems:'center', gap:18, background:'var(--l-bg-2)' }}>
+            <div style={{ width:36, height:36, borderRadius:10, border:'1.5px solid var(--l-ink)',
+              display:'flex', alignItems:'center', justifyContent:'center', fontSize:18, fontWeight:900,
+              color:'var(--l-ink)', flexShrink:0 }}>+</div>
+            <div style={{ fontFamily:"'Nunito Sans', sans-serif", fontSize:15, color:'var(--l-ink-dim)', lineHeight:1.5 }}>
+              <strong style={{ color:'var(--l-ink)', fontWeight:700 }}>Plus your own.</strong> Spin up a custom event type for anything else — meditation, sleep, journaling, screen time, water — with your own fields and color.
+            </div>
+          </div>
+        </section>
+
+        {/* § 02 — Week rhythm */}
+        <section className="l-features" data-reveal style={{ paddingTop:0 }}>
+          <div>
+            <div className="l-sec-eye">A week, in colors</div>
+            <h2 className="l-h2">See the week,<br/>not just the workout.</h2>
+            <p className="l-desc" style={{ marginTop:18, maxWidth:560 }}>
+              Every event becomes a stroke in your weekly rhythm. Colors map to type, height maps to time. Skim it in two seconds — or drill into any day for the long version.
+            </p>
+          </div>
+          <div style={{ marginTop:48, background:'var(--l-bg-2)', border:'1px solid oklch(18% 0.018 60 / 0.08)',
+            borderRadius:20, padding:32 }}>
+            <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between',
+              marginBottom:24, paddingBottom:14, borderBottom:'1px solid oklch(18% 0.018 60 / 0.08)' }}>
+              <div style={{ fontSize:16, fontWeight:800, letterSpacing:'-0.01em', color:'var(--l-ink)' }}>Last 7 days</div>
+              <div style={{ fontSize:11, fontWeight:700, letterSpacing:'.1em', textTransform:'uppercase',
+                color:'var(--l-ink-faint)' }}>Sample · April 14–20</div>
+            </div>
+
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(7, 1fr)', gap:12,
+              alignItems:'end', height:200 }}>
+              {WEEK.map(d => {
+                const dayTotal = d.segs.reduce((n,s)=>n+s[1],0);
+                const h = (dayTotal / maxDay) * 100;
+                return (
+                  <div key={d.day} style={{ height:'100%', display:'flex', flexDirection:'column', justifyContent:'flex-end' }}>
+                    <div style={{ height:`${h}%`, display:'flex', flexDirection:'column-reverse',
+                      gap:2, borderRadius:6, overflow:'hidden' }}>
+                      {d.segs.map(([t,m],i) => (
+                        <div key={i} title={`${t} · ${m}m`} style={{ flex:m, background:HUE[t] }} />
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(7, 1fr)', gap:12, marginTop:10 }}>
+              {WEEK.map(d => (
+                <div key={d.day} style={{ textAlign:'center', fontSize:11, fontWeight:700,
+                  letterSpacing:'.06em', textTransform:'uppercase',
+                  color: d.today ? 'var(--l-teal)' : 'var(--l-ink-faint)',
+                  paddingTop:10, borderTop:'1px solid oklch(18% 0.018 60 / 0.08)' }}>
+                  {d.day}{d.today && <div style={{ fontSize:9, fontWeight:600, marginTop:2, color:'var(--l-teal)', letterSpacing:0, textTransform:'none' }}>today</div>}
+                </div>
+              ))}
+            </div>
+
+            <div style={{ display:'flex', flexWrap:'wrap', gap:18, marginTop:22, paddingTop:18,
+              borderTop:'1px solid oklch(18% 0.018 60 / 0.08)' }}>
+              {[['workout','Workout'],['reading','Reading'],['learning','Learning'],['meal','Meal'],['focus','Focus']].map(([k,l]) => (
+                <div key={k} style={{ display:'flex', alignItems:'center', gap:8, fontSize:12,
+                  fontWeight:700, color:'var(--l-ink-dim)' }}>
+                  <span style={{ width:14, height:14, borderRadius:4, background:HUE[k] }} />
+                  {l}
+                </div>
+              ))}
+            </div>
+
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:12, marginTop:24 }}>
+              {[
+                [String(totalEvents), 'Events logged'],
+                [`${Math.round(totalMins/60)}h`, 'Time tracked'],
+                ['5/5', 'Modules touched'],
+                ['7d', 'Active streak'],
+              ].map(([v,l]) => (
+                <div key={l} style={{ padding:'18px 18px', background:'white', borderRadius:14,
+                  border:'1px solid oklch(18% 0.018 60 / 0.08)' }}>
+                  <div style={{ fontSize:28, fontWeight:900, letterSpacing:'-0.02em', color:'var(--l-ink)' }}>{v}</div>
+                  <div style={{ fontSize:11, fontWeight:700, letterSpacing:'.08em', textTransform:'uppercase',
+                    color:'var(--l-ink-faint)', marginTop:6 }}>{l}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* § 03 — Principles */}
+        <section className="l-features" data-reveal style={{ paddingTop:0 }}>
+          <div>
+            <div className="l-sec-eye">Principles</div>
+            <h2 className="l-h2">Built for people who<br/>want to pay attention.</h2>
+          </div>
+          <div style={{ marginTop:48, border:'1px solid oklch(18% 0.018 60 / 0.10)', borderRadius:20, overflow:'hidden' }}>
+            {PRINCIPLES.map(([title, desc], i) => (
+              <div key={title} style={{
+                display:'grid', gridTemplateColumns:'72px 1fr 1.5fr', gap:20,
+                padding:'24px 28px', background:'var(--l-bg-2)',
+                borderBottom: i < PRINCIPLES.length - 1 ? '1px solid oklch(18% 0.018 60 / 0.08)' : 'none',
+                alignItems:'baseline',
+              }}>
+                <div style={{ fontSize:14, fontWeight:800, color:'var(--l-teal)',
+                  letterSpacing:'.04em' }}>№ {String(i+1).padStart(2,'0')}</div>
+                <div style={{ fontSize:17, fontWeight:800, color:'var(--l-ink)', letterSpacing:'-0.01em' }}>{title}</div>
+                <div style={{ fontFamily:"'Nunito Sans', sans-serif", fontSize:14, lineHeight:1.6, color:'var(--l-ink-dim)' }}>{desc}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <footer className="l-footer">
+          <span className="l-copy">© 2026 OrganicLever · Pre-Alpha</span>
+          <button className="l-flink" onClick={goApp}>Open app →</button>
+        </footer>
+      </div>
+    </div>
+  );
+};
+
+// ── Router root ───────────────────────────────────────────────────────────────
+const RouterRoot = () => {
+  const hash = useHash();
+  const isApp = hash.startsWith('#/app');
+  React.useEffect(() => {
+    document.body.classList.toggle('app-mode', isApp);
+  }, [isApp]);
+  return isApp ? <WorkoutApp /> : <LandingPage />;
+};
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<RouterRoot />);
+</script>
+</body>
+</html>

@@ -1,5 +1,26 @@
 # Technical Documentation
 
+## Raw Design Files
+
+Prototype source files are in `raw/`. See `raw/README.md` for the full file list and
+confirmed design decisions. Primary references by phase:
+
+- `raw/colors_and_type.css` — design token system (hues, warm scale, dark mode, type)
+- `raw/db.js` — `OLDb` class + seed data (Phase 0 reference)
+- `raw/i18n.js` — all translation keys (Phase 0 reference)
+- `raw/App.jsx` — shell layout, state model, screen stack (Phase 1 reference)
+- `raw/Components.jsx` — `TabBar`, `SideNav`, `AddEventSheet`, etc. (Phase 1 reference)
+- `raw/HomeScreen.jsx` — `WeekRhythmStrip`, module chips, event timeline (Phase 2 reference)
+- `raw/WorkoutScreen.jsx` — set rows, rest timer, sheets (Phase 4 reference)
+- `raw/EditRoutineScreen.jsx` — exercise CRUD (Phase 5 reference)
+- `raw/HistoryScreen.jsx` — bar chart, session cards (Phase 6 reference)
+- `raw/ProgressScreen.jsx` — analytics, SVG charts, 1RM (Phase 7 reference)
+- `raw/SettingsScreen.jsx` — all 6 rest options, lang toggle, dark mode (Phase 8 reference)
+- `raw/EventLoggers.jsx` — Reading/Learning/Meal/Focus sheets (Phase 3 reference)
+- `raw/CustomEvents.jsx` — custom event logger (Phase 3 reference)
+
+When any implementation detail is unclear, read the raw source before guessing.
+
 ## Route Architecture
 
 ```text

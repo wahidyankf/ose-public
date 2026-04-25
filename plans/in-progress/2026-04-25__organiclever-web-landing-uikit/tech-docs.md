@@ -1,5 +1,17 @@
 # Technical Documentation
 
+## Raw Design Files
+
+Prototype source files are in `raw/`. See `raw/README.md` for the full file list and
+confirmed design decisions. The two key files:
+
+- `raw/index.html` — `LandingPage` React component (line ~159); authoritative for layout,
+  class names, and all hardcoded content.
+- `raw/colors_and_type.css` — complete design token system; authoritative for all
+  `--hue-*`, `--warm-*`, `--color-*`, font, radius, and shadow values.
+
+When any implementation detail is unclear, read the raw source before guessing.
+
 ## Propagation Decision Log
 
 The following table documents every prototype component considered for ts-ui promotion

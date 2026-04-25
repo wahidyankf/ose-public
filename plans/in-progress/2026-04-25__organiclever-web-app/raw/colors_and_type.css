@@ -1,0 +1,267 @@
+/* =============================================================================
+ * OrganicLever Design System — Colors + Type (v2: warm, colorful, CB-safe)
+ *
+ * Palette: OKLCH-defined, 6-hue "muted rainbow" on a warm paper background.
+ * Tuned for colour-blindness: each hue has a distinct lightness step, so order
+ * and state read without hue alone. Pair hue + icon/shape whenever status matters.
+ * ============================================================================= */
+
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap");
+
+:root {
+  /* ================================================================
+   * REFERENCE PALETTE — the six category hues
+   * All at chroma ~0.11, lightness staircase 62 → 72 for CB separation.
+   * Order matches a perceptual rainbow: red → yellow → green → teal → blue → violet.
+   * ================================================================ */
+  --hue-terracotta: oklch(68% 0.13 35);    /* warm red-orange   — alerts, family */
+  --hue-honey:      oklch(78% 0.13 80);    /* amber-gold        — schedule, focus */
+  --hue-sage:       oklch(72% 0.10 145);   /* soft green        — success, habits */
+  --hue-teal:       oklch(68% 0.10 195);   /* ocean teal        — WORKOUTS (brand) */
+  --hue-sky:        oklch(70% 0.10 235);   /* gentle blue       — information     */
+  --hue-plum:       oklch(62% 0.11 310);   /* mulberry          — family, social  */
+
+  /* Deeper "ink" versions — for text on tinted backgrounds + CB-contrast */
+  --hue-terracotta-ink: oklch(42% 0.11 35);
+  --hue-honey-ink:      oklch(45% 0.10 75);
+  --hue-sage-ink:       oklch(38% 0.09 145);
+  --hue-teal-ink:       oklch(38% 0.09 195);
+  --hue-sky-ink:        oklch(40% 0.10 235);
+  --hue-plum-ink:       oklch(38% 0.10 310);
+
+  /* Soft "wash" versions — backgrounds, chips, tags */
+  --hue-terracotta-wash: oklch(95% 0.03 35);
+  --hue-honey-wash:      oklch(96% 0.04 80);
+  --hue-sage-wash:       oklch(95% 0.03 145);
+  --hue-teal-wash:       oklch(95% 0.03 195);
+  --hue-sky-wash:        oklch(95% 0.03 235);
+  --hue-plum-wash:       oklch(95% 0.03 310);
+
+  /* ================================================================
+   * NEUTRAL WARM INK SCALE — paper + ink, not white + black
+   * ================================================================ */
+  --warm-0:   oklch(99%  0.005 80);  /* page bg  — cream paper */
+  --warm-50:  oklch(97%  0.008 80);  /* subtle fill */
+  --warm-100: oklch(94%  0.010 80);  /* wash */
+  --warm-200: oklch(88%  0.012 80);  /* border */
+  --warm-300: oklch(78%  0.014 80);  /* disabled */
+  --warm-400: oklch(62%  0.015 80);  /* muted text */
+  --warm-500: oklch(48%  0.017 80);  /* secondary text */
+  --warm-700: oklch(32%  0.018 70);  /* body text */
+  --warm-800: oklch(24%  0.018 60);  /* headings */
+  --warm-900: oklch(18%  0.018 60);  /* primary ink */
+
+  /* ================================================================
+   * SEMANTIC TOKENS (light)
+   * ================================================================ */
+  --color-background: var(--warm-0);
+  --color-foreground: var(--warm-900);
+
+  --color-card: #ffffff;
+  --color-card-foreground: var(--warm-900);
+
+  --color-popover: #ffffff;
+  --color-popover-foreground: var(--warm-900);
+
+  /* Brand = Sage (organic growth). Use data-brand="sky" for "sky is the limit" direction. */
+  --color-primary: var(--hue-sage);
+  --color-primary-ink: var(--hue-sage-ink);
+  --color-primary-wash: var(--hue-sage-wash);
+  --color-primary-foreground: #ffffff;
+
+  --color-secondary: var(--warm-100);
+  --color-secondary-foreground: var(--warm-900);
+
+  --color-muted: var(--warm-100);
+  --color-muted-foreground: var(--warm-500);
+
+  --color-accent: var(--hue-honey-wash);
+  --color-accent-foreground: var(--hue-honey-ink);
+
+  /* Semantic — CB-safe: success=sage, warning=honey, danger=terracotta, info=sky */
+  --color-success: var(--hue-sage);
+  --color-success-ink: var(--hue-sage-ink);
+  --color-success-wash: var(--hue-sage-wash);
+
+  --color-warning: var(--hue-honey);
+  --color-warning-ink: var(--hue-honey-ink);
+  --color-warning-wash: var(--hue-honey-wash);
+
+  --color-destructive: var(--hue-terracotta);
+  --color-destructive-ink: var(--hue-terracotta-ink);
+  --color-destructive-wash: var(--hue-terracotta-wash);
+  --color-destructive-foreground: #ffffff;
+
+  --color-info: var(--hue-sky);
+  --color-info-ink: var(--hue-sky-ink);
+  --color-info-wash: var(--hue-sky-wash);
+
+  --color-border: var(--warm-200);
+  --color-input: var(--warm-200);
+  --color-ring: var(--hue-teal);
+
+  /* ================================================================
+   * RADIUS — friendlier, kid-ok curves
+   * ================================================================ */
+  --radius-sm: 8px;    /* kbd, small chip */
+  --radius-md: 12px;   /* button, input, badge */
+  --radius-lg: 16px;   /* alert, dialog */
+  --radius-xl: 20px;   /* card */
+  --radius-2xl: 28px;  /* hero / big panels */
+  --radius-full: 9999px;
+
+  /* ================================================================
+   * SPACING (4-pt) — unchanged
+   * ================================================================ */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* Touch targets */
+  --touch-min: 48px;
+
+  /* ================================================================
+   * SHADOWS — warm, soft (tint matches ink, not pure black)
+   * ================================================================ */
+  --shadow-xs: 0 1px 2px 0 oklch(20% 0.02 60 / 0.06);
+  --shadow-sm: 0 1px 3px 0 oklch(20% 0.02 60 / 0.08), 0 1px 2px -1px oklch(20% 0.02 60 / 0.06);
+  --shadow-md: 0 4px 8px -2px oklch(20% 0.02 60 / 0.08), 0 2px 4px -2px oklch(20% 0.02 60 / 0.06);
+  --shadow-lg: 0 12px 24px -6px oklch(20% 0.02 60 / 0.12), 0 4px 8px -4px oklch(20% 0.02 60 / 0.08);
+
+  /* ================================================================
+   * TYPOGRAPHY — Nunito (rounded, warm, legible for kids + adults)
+   * ================================================================ */
+  --font-sans: "Nunito", ui-rounded, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --fs-xs:   0.8125rem; --lh-xs:   1.125rem;  /* 13/18 — bumped from 12, easier for kids */
+  --fs-sm:   0.9375rem; --lh-sm:   1.375rem;  /* 15/22 */
+  --fs-base: 1.0625rem; --lh-base: 1.625rem;  /* 17/26 */
+  --fs-lg:   1.25rem;   --lh-lg:   1.75rem;   /* 20/28 */
+  --fs-xl:   1.5rem;    --lh-xl:   2rem;      /* 24/32 */
+  --fs-2xl:  1.875rem;  --lh-2xl:  2.375rem;  /* 30/38 */
+  --fs-3xl:  2.375rem;  --lh-3xl:  2.75rem;   /* 38/44 */
+  --fs-4xl:  3rem;      --lh-4xl:  3.375rem;  /* 48/54 */
+
+  --fw-regular: 400;
+  --fw-medium:  500;
+  --fw-semibold: 600;
+  --fw-bold:    700;
+  --fw-extrabold: 800;
+
+  --tracking-tight: -0.015em;
+  --tracking-normal: 0;
+  --tracking-wide:  0.02em;
+}
+
+/* ================================================================
+ * DARK MODE — dim, warm, not pure black
+ * ================================================================ */
+.dark, [data-theme="dark"] {
+  --warm-0:   oklch(20% 0.012 60);
+  --warm-50:  oklch(23% 0.014 60);
+  --warm-100: oklch(27% 0.016 60);
+  --warm-200: oklch(33% 0.018 60);
+  --warm-300: oklch(42% 0.018 60);
+  --warm-400: oklch(58% 0.016 60);
+  --warm-500: oklch(70% 0.014 70);
+  --warm-700: oklch(82% 0.014 80);
+  --warm-800: oklch(90% 0.012 80);
+  --warm-900: oklch(96% 0.010 80);
+
+  --color-background: var(--warm-0);
+  --color-foreground: var(--warm-900);
+
+  --color-card: var(--warm-50);
+  --color-card-foreground: var(--warm-900);
+
+  --color-popover: var(--warm-50);
+  --color-popover-foreground: var(--warm-900);
+
+  /* Hues in dark mode — lifted wash for visible card backgrounds */
+  --hue-terracotta-wash: oklch(36% 0.07 35);
+  --hue-honey-wash:      oklch(36% 0.07 80);
+  --hue-sage-wash:       oklch(34% 0.06 145);
+  --hue-teal-wash:       oklch(34% 0.06 195);
+  --hue-sky-wash:        oklch(34% 0.06 235);
+  --hue-plum-wash:       oklch(36% 0.07 310);
+
+  /* Hue colors — slightly brighter in dark mode */
+  --hue-terracotta: oklch(72% 0.15 35);
+  --hue-honey:      oklch(82% 0.15 80);
+  --hue-sage:       oklch(75% 0.12 145);
+  --hue-teal:       oklch(72% 0.12 195);
+  --hue-sky:        oklch(74% 0.12 235);
+  --hue-plum:       oklch(68% 0.13 310);
+
+  /* Ink colors — bright and legible on dark wash backgrounds */
+  --hue-terracotta-ink: oklch(88% 0.13 35);
+  --hue-honey-ink:      oklch(90% 0.13 80);
+  --hue-sage-ink:       oklch(86% 0.11 145);
+  --hue-teal-ink:       oklch(86% 0.11 195);
+  --hue-sky-ink:        oklch(86% 0.11 235);
+  --hue-plum-ink:       oklch(84% 0.12 310);
+
+  --color-primary: var(--hue-sage);
+  --color-primary-wash: var(--hue-sage-wash);
+  --color-primary-foreground: var(--warm-0);
+
+  --color-secondary: var(--warm-100);
+  --color-secondary-foreground: var(--warm-900);
+
+  --color-muted: var(--warm-100);
+  --color-muted-foreground: var(--warm-500);
+
+  --color-accent: var(--hue-honey-wash);
+  --color-accent-foreground: oklch(80% 0.12 80);
+
+  --color-border: var(--warm-200);
+  --color-input: var(--warm-200);
+  --color-ring: var(--hue-sage);
+}
+
+/* ================================================================
+ * BRAND TWEAK — toggle between sage (organic) and sky (progress)
+ * Add `data-brand="sky"` to <html> or <body> to switch.
+ * ================================================================ */
+[data-brand="sky"] {
+  --color-primary: var(--hue-sky);
+  --color-primary-ink: var(--hue-sky-ink);
+  --color-primary-wash: var(--hue-sky-wash);
+  --color-ring: var(--hue-sky);
+}
+[data-brand="sage"] {
+  --color-primary: var(--hue-sage);
+  --color-primary-ink: var(--hue-sage-ink);
+  --color-primary-wash: var(--hue-sage-wash);
+  --color-ring: var(--hue-sage);
+}
+
+/* ================================================================
+ * Base
+ * ================================================================ */
+html, body {
+  font-family: var(--font-sans);
+  color: var(--color-foreground);
+  background: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.display   { font-size: var(--fs-4xl);  line-height: var(--lh-4xl); font-weight: var(--fw-extrabold); letter-spacing: var(--tracking-tight); }
+.h1        { font-size: var(--fs-3xl);  line-height: var(--lh-3xl); font-weight: var(--fw-bold); letter-spacing: var(--tracking-tight); }
+.h2        { font-size: var(--fs-2xl);  line-height: var(--lh-2xl); font-weight: var(--fw-bold); letter-spacing: var(--tracking-tight); }
+.h3        { font-size: var(--fs-xl);   line-height: var(--lh-xl);  font-weight: var(--fw-semibold); }
+.h4        { font-size: var(--fs-lg);   line-height: var(--lh-lg);  font-weight: var(--fw-semibold); }
+.body      { font-size: var(--fs-base); line-height: var(--lh-base); font-weight: var(--fw-regular); }
+.body-sm   { font-size: var(--fs-sm);   line-height: var(--lh-sm);  font-weight: var(--fw-regular); }
+.caption   { font-size: var(--fs-xs);   line-height: var(--lh-xs);  font-weight: var(--fw-medium); color: var(--color-muted-foreground); }
+.label     { font-size: var(--fs-sm);   line-height: 1;             font-weight: var(--fw-semibold); }
+.mono, code, pre, kbd { font-family: var(--font-mono); font-size: 0.92em; }

@@ -1,11 +1,5 @@
+import { LandingPage } from "@/components/landing/landing-page";
+
 export default function RootPage() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-8">
-      <h1 className="mb-4 text-4xl font-bold">OrganicLever</h1>
-      <p className="mb-8 text-lg text-gray-600">Sharia-compliant productivity tools — coming soon.</p>
-      <a href="/system/status/be" className="text-sm text-gray-500 hover:text-gray-700">
-        System status
-      </a>
-    </main>
-  );
+  return <LandingPage />;
 }

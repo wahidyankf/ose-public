@@ -16,3 +16,77 @@
     @apply bg-background font-sans text-foreground;
   }
 }
+
+@keyframes ol-drift {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(30px, -40px) scale(1.05);
+  }
+}
+@keyframes ol-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 oklch(52% 0.12 195 / 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 12px oklch(52% 0.12 195 / 0);
+  }
+}
+@keyframes ol-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+@keyframes ol-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+@keyframes ol-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@theme {
+  --animate-ol-drift: ol-drift 18s ease-in-out infinite alternate;
+  --animate-ol-glow: ol-glow 3s infinite;
+  --animate-ol-pulse: ol-pulse 3s infinite;
+  --animate-ol-float: ol-float 4s ease-in-out infinite;
+}
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 600ms,
+    transform 600ms;
+}
+[data-reveal].visible {
+  opacity: 1;
+  transform: none;
+}
+
+@layer components {
+  .ac {
+    color: var(--hue-teal-ink);
+  }
+  .ac2 {
+    color: var(--hue-sage-ink);
+  }
+}

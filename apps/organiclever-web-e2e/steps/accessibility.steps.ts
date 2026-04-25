@@ -100,10 +100,14 @@ Then("focus indicators should be visible", async ({ page }) => {
     .count()
     .catch(() => 0);
   if (hasFocused > 0) {
-    const outline = await page.locator(":focus").evaluate((el) => {
-      const style = window.getComputedStyle(el);
-      return style.outline !== "none" || style.outlineWidth !== "0px";
-    });
+    // Use .first() to handle Next.js Shadow DOM exposing multiple :focus matches
+    const outline = await page
+      .locator(":focus")
+      .first()
+      .evaluate((el) => {
+        const style = window.getComputedStyle(el);
+        return style.outline !== "none" || style.outlineWidth !== "0px";
+      });
     expect(outline).toBe(true);
   }
   // When no focusable elements exist (GSI not loaded), this step passes

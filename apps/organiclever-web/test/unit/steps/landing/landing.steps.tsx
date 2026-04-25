@@ -1,57 +1,152 @@
-/**
- * Step definitions for the Landing Page feature.
- *
- * Covers: specs/apps/organiclever/fe/gherkin/landing/landing.feature
- *
- * Tests RootPage directly. Verifies heading renders, no fetch calls are made,
- * and no redirects occur.
- */
 import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
-import { render, screen, cleanup } from "@testing-library/react";
-import { vi, expect } from "vitest";
-import RootPage from "@/app/page";
+import { render, screen, cleanup, fireEvent } from "@testing-library/react";
+import { expect } from "vitest";
+
+import { LandingPage } from "@/components/landing/landing-page";
 
 const feature = await loadFeature(
   path.resolve(__dirname, "../../../../../../specs/apps/organiclever/fe/gherkin/landing/landing.feature"),
 );
 
-const mockFetch = vi.fn();
-
-describeFeature(feature, ({ Scenario, AfterEachScenario }) => {
+describeFeature(feature, ({ Scenario, Background, AfterEachScenario }) => {
   AfterEachScenario(() => {
     cleanup();
-    vi.unstubAllEnvs();
-    vi.unstubAllGlobals();
   });
 
-  Scenario("Root renders landing without BE", ({ Given, When, Then, And }) => {
-    Given("ORGANICLEVER_BE_URL is unset", () => {
-      vi.stubEnv("ORGANICLEVER_BE_URL", "");
-      vi.stubGlobal("fetch", mockFetch);
-      mockFetch.mockReset();
+  Background(({ Given }) => {
+    Given('I navigate to "/"', () => {});
+  });
+
+  Scenario("Hero heading visible", ({ Then, And }) => {
+    Then('I see text "Your life,"', () => {
+      cleanup();
+      render(<LandingPage />);
+      expect(screen.getByText(/Your life,/i)).toBeDefined();
     });
 
-    When("a visitor requests GET /", () => {
-      render(<RootPage />);
+    And('I see text "tracked."', () => {
+      expect(screen.getByText(/tracked\./i)).toBeDefined();
     });
 
-    Then("the response status is 200", () => {
-      // Component rendered without throwing — request was successful
-      expect(document.body).toBeTruthy();
+    And('I see text "Analyzed."', () => {
+      expect(screen.getByText(/Analyzed\./)).toBeDefined();
+    });
+  });
+
+  Scenario("CTA button present and functional", ({ Given, When, Then }) => {
+    Given('I see a button "Open the app"', () => {
+      cleanup();
+      render(<LandingPage />);
+      expect(screen.getByRole("button", { name: /Open the app/i })).toBeDefined();
     });
 
-    And("the body contains the landing page heading", () => {
-      expect(screen.getByRole("heading", { level: 1, name: /OrganicLever/i })).toBeInTheDocument();
+    When('I click "Open the app"', () => {
+      fireEvent.click(screen.getByRole("button", { name: /Open the app/i }));
     });
 
-    And("no request is made to organiclever-be", () => {
-      expect(mockFetch).not.toHaveBeenCalled();
+    Then('the URL hash contains "/app"', () => {
+      expect(window.location.hash).toContain("/app");
+    });
+  });
+
+  Scenario("Footer link navigates to app", ({ Given, When, Then }) => {
+    Given('I see text "Open app →"', () => {
+      cleanup();
+      render(<LandingPage />);
+      expect(screen.getByText(/Open app →/)).toBeDefined();
     });
 
-    And("the page loads at / without intermediate redirect", () => {
-      // RootPage renders h1 directly — no redirect component in the tree
-      expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
+    When('I click "Open app →"', () => {
+      fireEvent.click(screen.getByText(/Open app →/));
+    });
+
+    Then('the URL hash contains "/app"', () => {
+      expect(window.location.hash).toContain("/app");
+    });
+  });
+
+  Scenario("Pre-Alpha badge visible in nav", ({ Then }) => {
+    Then('I see text "Pre-Alpha"', () => {
+      cleanup();
+      render(<LandingPage />);
+      expect(screen.getAllByText(/Pre-Alpha/i).length).toBeGreaterThan(0);
+    });
+  });
+
+  Scenario("Alpha warning banner visible", ({ Then }) => {
+    Then('I see text "Pre-Alpha — expect breaking changes"', () => {
+      cleanup();
+      render(<LandingPage />);
+      expect(screen.getByText(/Pre-Alpha — expect breaking changes/i)).toBeDefined();
+    });
+  });
+
+  Scenario("All five event type cards visible", ({ Then, And }) => {
+    Then('I see text "Workouts"', () => {
+      cleanup();
+      render(<LandingPage />);
+      expect(screen.getByText("Workouts")).toBeDefined();
+    });
+
+    And('I see text "Reading"', () => {
+      expect(screen.getAllByText("Reading").length).toBeGreaterThan(0);
+    });
+
+    And('I see text "Learning"', () => {
+      expect(screen.getAllByText("Learning").length).toBeGreaterThan(0);
+    });
+
+    And('I see text "Meals"', () => {
+      expect(screen.getByText("Meals")).toBeDefined();
+    });
+
+    And('I see text "Focus"', () => {
+      expect(screen.getAllByText("Focus").length).toBeGreaterThan(0);
+    });
+  });
+
+  Scenario("Custom event card visible", ({ Then }) => {
+    Then('I see text "Plus your own."', () => {
+      cleanup();
+      render(<LandingPage />);
+      expect(screen.getByText(/Plus your own\./i)).toBeDefined();
+    });
+  });
+
+  Scenario("Weekly rhythm demo visible", ({ Then }) => {
+    Then('I see text "Last 7 days"', () => {
+      cleanup();
+      render(<LandingPage />);
+      expect(screen.getByText("Last 7 days")).toBeDefined();
+    });
+  });
+
+  Scenario("All six principles visible", ({ Then, And }) => {
+    Then('I see text "Local-first"', () => {
+      cleanup();
+      render(<LandingPage />);
+      expect(screen.getByText("Local-first")).toBeDefined();
+    });
+
+    And('I see text "Yours to take"', () => {
+      expect(screen.getByText("Yours to take")).toBeDefined();
+    });
+
+    And('I see text "Flexible"', () => {
+      expect(screen.getByText("Flexible")).toBeDefined();
+    });
+
+    And('I see text "Quiet"', () => {
+      expect(screen.getByText("Quiet")).toBeDefined();
+    });
+
+    And('I see text "Open"', () => {
+      expect(screen.getByText("Open")).toBeDefined();
+    });
+
+    And('I see text "Multilingual"', () => {
+      expect(screen.getByText("Multilingual")).toBeDefined();
     });
   });
 });

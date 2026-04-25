@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"io/fs"
+	"math"
 	"os/exec"
 	"path/filepath"
 	"strings"
@@ -64,9 +65,9 @@ func init() {
 		"only validate files changed since upstream (pre-push use)")
 	validateMermaidCmd.Flags().IntVar(&validateMermaidMaxLabelLen, "max-label-len", 30,
 		"max characters in a node label (default 30 ~ Mermaid wrappingWidth:200px at 16px font)")
-	validateMermaidCmd.Flags().IntVar(&validateMermaidMaxWidth, "max-width", 3,
+	validateMermaidCmd.Flags().IntVar(&validateMermaidMaxWidth, "max-width", 4,
 		"max nodes at the same rank")
-	validateMermaidCmd.Flags().IntVar(&validateMermaidMaxDepth, "max-depth", 5,
+	validateMermaidCmd.Flags().IntVar(&validateMermaidMaxDepth, "max-depth", 0,
 		"depth threshold for the both-exceeded warning: when span>max-width AND depth>max-depth, emit warning not error")
 }
 
@@ -116,6 +117,9 @@ func runValidateMermaid(cmd *cobra.Command, args []string) error {
 		}
 	}
 
+	if validateMermaidMaxDepth == 0 {
+		validateMermaidMaxDepth = math.MaxInt
+	}
 	opts := mermaid.ValidateOptions{
 		MaxLabelLen: validateMermaidMaxLabelLen,
 		MaxWidth:    validateMermaidMaxWidth,

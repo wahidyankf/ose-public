@@ -43,18 +43,23 @@ depth := Depth(diagram.Nodes, diagram.Edges)
 
 var horizontal, vertical int
 switch diagram.Direction {
-case "LR", "RL":
+case string(DirectionLR), string(DirectionRL): // use named constants from types.go
     horizontal, vertical = depth, span
 default: // TD, TB, BT, and unspecified
     horizontal, vertical = span, depth
 }
 
 if horizontal > opts.MaxWidth && vertical > opts.MaxDepth {
-    // warning (complex_diagram)
+    // warning (complex_diagram) — struct literal must use ActualWidth: horizontal
 } else if horizontal > opts.MaxWidth {
-    // violation (width_exceeded)
+    // violation (width_exceeded) — struct literal must use ActualWidth: horizontal
 }
 ```
+
+**Important**: Both struct literals that create `Violation` and `Warning` values
+must be updated from `ActualWidth: span` to `ActualWidth: horizontal` so the
+reported dimension matches the direction-aware measurement. This update is required
+in both the violation branch and the warning branch.
 
 ### CLI Flag Defaults: `docs_validate_mermaid.go`
 
@@ -72,7 +77,16 @@ validateMermaidCmd.Flags().IntVar(&validateMermaidMaxDepth, "max-depth", 0, ...)
 ```
 
 The `RunE` function must map `--max-depth 0` → `math.MaxInt` before passing to
-`ValidateBlocks`. Check the existing sentinel pattern already used in the codebase.
+`ValidateBlocks`. There is no existing sentinel pattern in the codebase — implement
+the mapping from scratch in `runValidateMermaid`'s `RunE` body:
+
+```go
+if validateMermaidMaxDepth == 0 {
+    validateMermaidMaxDepth = math.MaxInt
+}
+```
+
+Add this guard immediately before constructing `mermaid.ValidateOptions{...}`.
 
 ### Test Updates: `validator_test.go`
 

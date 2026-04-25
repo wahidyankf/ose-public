@@ -24,9 +24,14 @@ A large number of real violations exist across `docs/`. A 2026-04-25 pre-Phase-0
 (direction-blind validator, MaxWidth=3) found 102 files failing. The authoritative count
 is always discovered by running `go run ./apps/rhino-cli/main.go docs validate-mermaid` —
 the direction-aware Phase 0 fix will reclassify some diagrams, so the Phase 1 file list
-must be re-discovered after Phase 0. The pre-push hook targets only `governance/` and
-`.claude/`, so violations in `docs/` do not block pushes today. However, wide diagrams
-render poorly on GitHub and in VS Code preview, undermining documentation quality.
+must be re-discovered after Phase 0. The pre-push hook runs
+`rhino-cli validate:mermaid --changed-only`, validating every changed `.md` file in each
+push — not scoped to `governance/` or `.claude/` only. Violations in `docs/` files that
+are not being pushed do not block pushes today; however, any `docs/` file included in a
+push is validated. After Phase 0 updates the CLI flag defaults (MaxWidth=4,
+MaxDepth=unlimited), the hook will automatically apply the same thresholds as the plan
+targets — no hook change required. Wide diagrams in untouched files still render poorly
+on GitHub and in VS Code preview, undermining documentation quality.
 
 **Problem 3 — Fix strategies undocumented in governance**
 
@@ -76,8 +81,9 @@ have no canonical reference to consult.
 - Not fixing `complex_diagram` warnings as a separate concern — they disappear
   automatically after MaxDepth is set to math.MaxInt. Warnings do not affect exit code.
 - Not adding new threshold parameter types beyond `MaxWidth`, `MaxDepth`, and `MaxLabelLen`.
-- Not extending the pre-push hook's `validate:mermaid` target to scan `docs/` — separate
-  infrastructure change with its own risk profile.
+- Not changing the pre-push hook to scan all `docs/` files unconditionally — the existing
+  `--changed-only` behavior already validates any `docs/` file included in a push, which
+  is sufficient coverage for this plan's batch delivery model.
 - Not improving diagram visual quality beyond passing the validator rules.
 
 ## Success Criteria

@@ -4,7 +4,7 @@ Active project plans currently being worked on.
 
 ## Active Plans
 
-_(no active plans)_
+- [Fix Mermaid Validation and Violations](./2026-04-25__fix-mermaid-validation-and-violations/README.md) — Direction-aware validator fix and docs cleanup
 
 ## Instructions
 

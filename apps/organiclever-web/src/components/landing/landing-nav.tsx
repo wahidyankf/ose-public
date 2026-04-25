@@ -74,7 +74,6 @@ export function LandingNav({ onGoApp }: LandingNavProps) {
       </button>
 
       <span
-        className="animate-ol-pulse"
         style={{
           fontSize: 11,
           fontWeight: 800,

@@ -1014,52 +1014,45 @@ Spring's `@Transactional` annotation provides declarative transaction management
 
 ### Transaction Management Flow
 
+Transaction start: selecting the propagation path to execution:
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
-    A[Method Call with @Transactional] --> B[Transaction Interceptor]
+graph LR
+    A[@Transactional Method] --> B[Transaction Interceptor]
     B --> C{Transaction Exists?}
     C -->|No| D[Begin Transaction]
-    C -->|Yes - REQUIRED| E[Join Existing]
-    C -->|Yes - REQUIRES_NEW| F[Suspend & Create New]
-
-    D --> G[Get DB Connection]
-    G --> H[Disable Auto-Commit]
-    H --> I[Execute Method]
-
+    C -->|REQUIRED| E[Join Existing]
+    C -->|REQUIRES_NEW| F[Suspend & Create New]
+    D --> I[Execute Method]
     E --> I
-    F --> J[Get New Connection]
-    J --> K[Disable Auto-Commit]
-    K --> I
+    F --> I
 
-    I --> L{Exception?}
+    style A fill:#0173B2,color:#fff
+    style I fill:#CC78BC,color:#fff
+```
+
+Exception handling and commit/rollback outcome:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+graph LR
+    I[Execute Method] --> L{Exception?}
     L -->|RuntimeException| M[Mark Rollback]
     L -->|Checked Exception| N{rollbackFor?}
     L -->|No Exception| O[Mark Commit]
-
     N -->|Yes| M
     N -->|No| O
-
-    M --> P{Propagation?}
-    P -->|REQUIRED| Q[Rollback]
-    P -->|REQUIRES_NEW| R[Rollback New Tx]
-
-    O --> S{Propagation?}
-    S -->|REQUIRED| T[Commit]
-    S -->|REQUIRES_NEW| U[Commit New Tx]
-
+    M --> Q[Rollback]
+    O --> T[Commit]
     Q --> V[Close Connection]
-    R --> W[Resume Suspended]
     T --> V
-    U --> W
-
-    W --> V
     V --> X[Return Result/Throw]
 
-    style A fill:#0173B2,color:#fff
-    style D fill:#029E73,color:#fff
     style I fill:#CC78BC,color:#fff
     style M fill:#DE8F05,color:#fff
     style Q fill:#DE8F05,color:#fff

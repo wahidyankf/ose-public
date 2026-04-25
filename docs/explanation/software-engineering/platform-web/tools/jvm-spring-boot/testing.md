@@ -54,7 +54,7 @@ Spring Boot supports a layered testing approach:
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    A[E2E Tests - 10%<br/>Full Application + Real Database]:::e2e
+    A[E2E Tests - 10%<br/>Full App + Real Database]:::e2e
     B[Integration Tests - 20%<br/>Spring Context + Test Slices]:::integration
     C[Unit Tests - 70%<br/>Fast + Isolated + No Context]:::unit
 

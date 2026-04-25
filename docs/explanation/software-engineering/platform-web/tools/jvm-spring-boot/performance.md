@@ -61,7 +61,7 @@ Performance optimization is critical for production Spring Boot applications. Th
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
-graph TD
+graph LR
     A[Performance Issue Detected] --> B{Identify Bottleneck}
     B -->|High CPU| C{CPU Type?}
     B -->|High Memory| D{Memory Type?}
@@ -69,7 +69,7 @@ graph TD
     B -->|Low Throughput| F{Throughput Limit?}
 
     C -->|GC Pauses| G[Tune GC<br/>Adjust Heap<br/>Choose Collector]
-    C -->|Application Logic| H[Profile Code<br/>Optimize Algorithms<br/>Use Async]
+    C -->|App Logic| H[Profile Code<br/>Optimize Algorithms<br/>Use Async]
 
     D -->|Heap Usage| I[Increase Heap<br/>Fix Memory Leaks<br/>Optimize Objects]
     D -->|Metaspace| J[Increase Metaspace<br/>Reduce Classes<br/>Check ClassLoaders]

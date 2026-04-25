@@ -46,66 +46,58 @@ Building production-ready RESTful APIs requires proper controller design, reques
 
 ### Request Pipeline Architecture
 
+Request entry through filters and security to controller:
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A[HTTP Request] --> B[DispatcherServlet]
     B --> C[Filter Chain]
     C --> D{CORS?}
     D -->|Preflight| E[CORS Filter]
     D -->|No| F[Security Filter]
     E --> F
-
     F --> G{Authenticated?}
     G -->|No| H[401 Unauthorized]
     G -->|Yes| I[Handler Mapping]
-
     I --> J{Route Found?}
     J -->|No| K[404 Not Found]
     J -->|Yes| L[Controller Method]
 
-    L --> M{@Valid Present?}
+    style A fill:#0173B2,color:#fff
+    style L fill:#029E73,color:#fff
+```
+
+Controller validation, execution, and response:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+graph LR
+    L[Controller Method] --> M{@Valid Present?}
     M -->|Yes| N[Validate DTO]
     M -->|No| O[Execute Method]
-
     N --> P{Valid?}
-    P -->|No| Q[MethodArgumentNotValidException]
+    P -->|No| Q[Invalid Exception]
     P -->|Yes| O
-
     O --> R[Service Layer]
     R --> S[(Database)]
     S --> T{Result?}
-    T -->|Success| U[Map to Response DTO]
-    T -->|Error| V[Business Exception]
-
-    U --> W[HTTP 200/201]
-    V --> X[ExceptionHandler]
-
+    T -->|Success| W[HTTP 200/201]
+    T -->|Error| X[ExceptionHandler]
+    Q --> X
     X --> Y{Exception Type?}
     Y -->|Validation| Z[422 Unprocessable]
     Y -->|Not Found| AA[404 Not Found]
     Y -->|Other| AB[500 Server Error]
 
-    Q --> X
-
-    Z --> AC[Error Response JSON]
-    AA --> AC
-    AB --> AC
-    W --> AD[Success Response JSON]
-
-    AC --> AE[HTTP Response]
-    AD --> AE
-    H --> AE
-    K --> AE
-
-    style A fill:#0173B2,color:#fff
     style L fill:#029E73,color:#fff
     style R fill:#CC78BC,color:#fff
     style S fill:#DE8F05,color:#fff
     style X fill:#029E73,color:#fff
-    style AE fill:#0173B2,color:#fff
 ```
 
 **Pipeline Stages**:

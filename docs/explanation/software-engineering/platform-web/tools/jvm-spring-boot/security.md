@@ -1123,7 +1123,7 @@ Role-Based Access Control (RBAC) and method-level security with Spring Security.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A[Method Call] --> B[@PreAuthorize<br/>Interceptor]
     B --> C{Authenticated?}
     C -->|No| D[AccessDeniedException<br/>401 Unauthorized]

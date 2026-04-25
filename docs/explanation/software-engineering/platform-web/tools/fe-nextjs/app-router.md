@@ -464,8 +464,8 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 graph TD
     A["Root Layout<br/>#40;app/layout.tsx#41;"]:::blue
-    B["Marketing Layout<br/>#40;app/#40;marketing#41;/layout.tsx#41;"]:::teal
-    C["Platform Layout<br/>#40;app/#40;platform#41;/layout.tsx#41;"]:::teal
+    B["Marketing Layout<br/>#40;marketing/layout.tsx#41;"]:::teal
+    C["Platform Layout<br/>#40;platform/layout.tsx#41;"]:::teal
     D["Home Page<br/>#40;/#41;"]:::purple
     E["About Page<br/>#40;/about#41;"]:::purple
     F["Dashboard Page<br/>#40;/dashboard#41;"]:::purple

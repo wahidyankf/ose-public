@@ -241,23 +241,19 @@ Common mistakes and problematic patterns to avoid.
 
 ### Documentation Organization
 
+Core and application layer documentation sections:
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-flowchart TD
-    A["Spring Boot Documentation"]:::blue
+flowchart LR
+    A["Spring Boot Docs"]:::blue
     B["Core Patterns"]:::teal
     C["Application Layers"]:::teal
-    D["Advanced Topics"]:::purple
-    E["Integration"]:::orange
-    F["Templates"]:::purple
 
     A --> B
     A --> C
-    A --> D
-    A --> E
-    A --> F
 
     B --> B1["Idioms"]
     B --> B2["Best Practices"]
@@ -267,6 +263,24 @@ flowchart TD
     C --> C2["Dependency Injection"]
     C --> C3["REST APIs"]
     C --> C4["Data Access"]
+
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+```
+
+Advanced topics and integration documentation sections:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+flowchart LR
+    A["Spring Boot Docs"]:::blue
+    D["Advanced Topics"]:::purple
+    E["Integration"]:::orange
+
+    A --> D
+    A --> E
 
     D --> D1["Security"]
     D --> D2["Testing"]
@@ -279,7 +293,6 @@ flowchart TD
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 

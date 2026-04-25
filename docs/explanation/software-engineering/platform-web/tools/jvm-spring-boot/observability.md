@@ -74,58 +74,68 @@ Observability is the ability to understand system internal state from external o
 
 ### Observability Architecture
 
+Application instrumentation feeding metrics and logging pipelines:
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
-graph TD
-    subgraph "Spring Boot Application"
-        APP[Application Code<br/>Controllers, Services]
-        ACT[Spring Boot Actuator<br/>Endpoints]
-        MIC[Micrometer<br/>Metrics Facade]
+graph LR
+    subgraph "Spring Boot App"
+        APP[Application Code]
+        ACT[Actuator Endpoints]
+        MIC[Micrometer Facade]
     end
 
     subgraph "Metrics Pipeline"
-        PROM[Prometheus<br/>Time-Series DB]
-        GRAF[Grafana<br/>Visualization]
-        ALERT[AlertManager<br/>Notifications]
+        PROM[Prometheus]
+        GRAF[Grafana]
     end
 
     subgraph "Logging Pipeline"
-        LOG[Logback/Log4j2<br/>Structured Logging]
-        AGG[Log Aggregator<br/>ELK/Loki]
-        DASH[Log Dashboard<br/>Kibana]
+        LOG[Logback/Log4j2]
+        AGG[Log Aggregator]
+        DASH[Log Dashboard]
     end
 
-    subgraph "Tracing Pipeline"
-        OTEL[OpenTelemetry<br/>Instrumentation]
-        JAEGER[Jaeger/Zipkin<br/>Trace Storage]
-        TRACE[Trace Viewer<br/>Distributed Tracing]
-    end
-
-    APP -->|Emits Metrics| MIC
-    APP -->|Writes Logs| LOG
-    APP -->|Spans| OTEL
-    ACT -->|Exposes| MIC
-
-    MIC -->|Scrapes /actuator/prometheus| PROM
-    PROM -->|Queries| GRAF
-    PROM -->|Triggers| ALERT
-
-    LOG -->|Ships| AGG
-    AGG -->|Visualizes| DASH
-
-    OTEL -->|Exports| JAEGER
-    JAEGER -->|Displays| TRACE
+    APP --> MIC
+    APP --> LOG
+    ACT --> MIC
+    MIC --> PROM
+    PROM --> GRAF
+    LOG --> AGG
+    AGG --> DASH
 
     style APP fill:#0173B2,stroke:#000,color:#fff
     style ACT fill:#0173B2,stroke:#000,color:#fff
     style MIC fill:#0173B2,stroke:#000,color:#fff
     style PROM fill:#DE8F05,stroke:#000,color:#000
     style GRAF fill:#DE8F05,stroke:#000,color:#000
-    style ALERT fill:#DE8F05,stroke:#000,color:#000
     style LOG fill:#029E73,stroke:#000,color:#fff
     style AGG fill:#029E73,stroke:#000,color:#fff
     style DASH fill:#029E73,stroke:#000,color:#fff
+```
+
+Application instrumentation feeding tracing pipeline:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+graph LR
+    subgraph "Spring Boot App"
+        APP[Application Code]
+        OTEL[OpenTelemetry]
+    end
+
+    subgraph "Tracing Pipeline"
+        JAEGER[Jaeger/Zipkin]
+        TRACE[Trace Viewer]
+    end
+
+    APP --> OTEL
+    OTEL --> JAEGER
+    JAEGER --> TRACE
+
+    style APP fill:#0173B2,stroke:#000,color:#fff
     style OTEL fill:#CC78BC,stroke:#000,color:#fff
     style JAEGER fill:#CC78BC,stroke:#000,color:#fff
     style TRACE fill:#CC78BC,stroke:#000,color:#fff

@@ -45,7 +45,7 @@ Spring Web MVC provides Model-View-Controller architecture for building web appl
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["HTTP Request"]:::blue
     B["DispatcherServlet"]:::blue
     C["HandlerMapping"]:::orange
@@ -55,12 +55,12 @@ graph TD
     G["HTTP Response"]:::blue
 
     A --> B
-    B -->|Find Handler| C
-    C -->|Route to| D
-    D -->|Return ModelAndView| B
-    B -->|Resolve View| E
-    E -->|Return View| F
-    F -->|Render| G
+    B --> C
+    C --> D
+    D --> B
+    B --> E
+    E --> F
+    F --> G
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px

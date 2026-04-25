@@ -230,7 +230,7 @@ export const RealtimeDonations: React.FC = () => {
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A[Component Mounts] --> B[Run Effect]
     B --> C{Has Dependencies?}
     C -->|Yes| D[Watch Dependencies]

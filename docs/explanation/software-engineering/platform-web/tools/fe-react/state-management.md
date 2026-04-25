@@ -1153,7 +1153,7 @@ export const InfiniteDonationsList: React.FC = () => {
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A[Need to manage state?] --> B{Single component?}
     B -->|Yes| C[useState/useReducer]
     B -->|No| D{Related components?}

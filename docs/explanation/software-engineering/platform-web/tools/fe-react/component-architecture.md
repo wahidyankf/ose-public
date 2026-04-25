@@ -42,14 +42,15 @@ Component architecture is the foundation of scalable React applications. This gu
 
 React components follow a clear hierarchy based on their responsibilities:
 
+Presentational and container component types:
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A[React Components] --> B[Presentational]
     A --> C[Container]
-    A --> D[Custom Hooks]
 
     B --> E[Pure UI]
     B --> F[No Business Logic]
@@ -59,20 +60,32 @@ graph TD
     C --> I[Business Logic]
     C --> J[API Calls]
 
-    D --> K[Reusable Logic]
-    D --> L[State + Effects]
-    D --> M[No UI]
-
     style A fill:#0173B2
     style B fill:#029E73
     style C fill:#DE8F05
-    style D fill:#CC78BC
     style E fill:#029E73
     style F fill:#029E73
     style G fill:#029E73
     style H fill:#DE8F05
     style I fill:#DE8F05
     style J fill:#DE8F05
+```
+
+Custom hooks component type:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+graph LR
+    A[React Components] --> D[Custom Hooks]
+
+    D --> K[Reusable Logic]
+    D --> L[State + Effects]
+    D --> M[No UI]
+
+    style A fill:#0173B2
+    style D fill:#CC78BC
     style K fill:#CC78BC
     style L fill:#CC78BC
     style M fill:#CC78BC

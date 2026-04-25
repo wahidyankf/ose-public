@@ -43,7 +43,7 @@ Cross-Site Scripting (XSS) prevention follows multiple defensive layers:
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A[User Input] --> B{Input Type?}
 
     B -->|Plain Text| C[React Auto-Escape]

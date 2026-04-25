@@ -66,54 +66,60 @@ Spring Boot provides flexible configuration management through properties files,
 
 ### Configuration Loading Hierarchy
 
+Configuration sources are loaded in priority order (highest to lowest):
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
-graph TD
-    A[Application Startup] --> B{Configuration Sources}
-
-    B --> C1[1. Command Line<br/>--server.port=9000]
-    B --> C2[2. System Properties<br/>-Dserver.port=9000]
-    B --> C3[3. Environment Variables<br/>SERVER_PORT=9000]
-    B --> C4[4. Profile Files<br/>application-prod.yml]
-    B --> C5[5. Base Config<br/>application.yml]
-    B --> C6[6. @PropertySource<br/>custom.properties]
-    B --> C7[7. Defaults<br/>@ConfigurationProperties]
-
-    C1 --> D[PropertySources]
-    C2 --> D
-    C3 --> D
-    C4 --> D
-    C5 --> D
-    C6 --> D
-    C7 --> D
-
-    D --> E{Property Resolution}
-    E -->|Merge with Precedence| F[Final Configuration]
-
-    F --> G[@Value Injection]
-    F --> H[@ConfigurationProperties Binding]
-    F --> I[Environment Bean]
-
-    G --> J[Application Context]
-    H --> J
-    I --> J
+graph LR
+    A[Application Startup] --> B{Config Sources}
+    B --> C1[1. Command Line]
+    B --> C2[2. System Properties]
+    B --> C3[3. Env Variables]
+    B --> C4[4. Profile Files]
 
     style A fill:#0173B2,stroke:#000,color:#fff
     style B fill:#0173B2,stroke:#000,color:#fff
     style C1 fill:#DE8F05,stroke:#000,color:#000
     style C2 fill:#DE8F05,stroke:#000,color:#000
-    style C3 fill:#DE8F05,stroke:#000,color:#000
+    style C3 fill:#029E73,stroke:#000,color:#fff
     style C4 fill:#029E73,stroke:#000,color:#fff
+```
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+graph LR
+    B{Config Sources} --> C5[5. Base Config]
+    B --> C6[6. @PropertySource]
+    B --> C7[7. Defaults]
+    C5 --> D[PropertySources]
+    C6 --> D
+    C7 --> D
+
+    style B fill:#0173B2,stroke:#000,color:#fff
     style C5 fill:#029E73,stroke:#000,color:#fff
     style C6 fill:#029E73,stroke:#000,color:#fff
     style C7 fill:#029E73,stroke:#000,color:#fff
+    style D fill:#CC78BC,stroke:#000,color:#fff
+```
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+graph TD
+    D[PropertySources] --> E{Resolution}
+    E --> F[Final Config]
+    F --> G[@Value Injection]
+    F --> H[@ConfigProps Binding]
+    G --> J[App Context]
+    H --> J
+
     style D fill:#CC78BC,stroke:#000,color:#fff
     style E fill:#CC78BC,stroke:#000,color:#fff
     style F fill:#CC78BC,stroke:#000,color:#fff
     style G fill:#0173B2,stroke:#000,color:#fff
     style H fill:#0173B2,stroke:#000,color:#fff
-    style I fill:#0173B2,stroke:#000,color:#fff
     style J fill:#0173B2,stroke:#000,color:#fff
 ```
 

@@ -60,7 +60,7 @@ This guide covers Next.js 16+ rendering strategies for enterprise applications.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A["Need to render page?"]:::blue
     B{"Content changes<br/>per request?"}:::orange
     C{"Content changes<br/>frequently?"}:::orange

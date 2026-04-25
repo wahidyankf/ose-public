@@ -234,21 +234,19 @@ Common mistakes and problematic patterns to avoid.
 
 ### Documentation Organization
 
+Core and advanced documentation sections:
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-flowchart TD
-    A["Spring Framework Documentation"]:::blue
+flowchart LR
+    A["Spring Framework Docs"]:::blue
     B["Core Patterns"]:::teal
     C["Application Layers"]:::teal
-    D["Advanced Topics"]:::purple
-    E["Integration"]:::orange
 
     A --> B
     A --> C
-    A --> D
-    A --> E
 
     B --> B1["Idioms"]
     B --> B2["Best Practices"]
@@ -258,7 +256,24 @@ flowchart TD
     C --> C2["Dependency Injection"]
     C --> C3["AOP"]
     C --> C4["Data Access"]
-    C --> C5["Web MVC"]
+
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+```
+
+Advanced topics and integration sections:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+flowchart LR
+    A["Spring Framework Docs"]:::blue
+    D["Advanced Topics"]:::purple
+    E["Integration"]:::orange
+
+    A --> D
+    A --> E
 
     D --> D1["Security"]
     D --> D2["Testing"]
@@ -270,7 +285,6 @@ flowchart TD
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 

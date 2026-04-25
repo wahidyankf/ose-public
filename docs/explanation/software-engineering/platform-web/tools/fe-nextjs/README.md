@@ -228,23 +228,19 @@ Common mistakes and problematic patterns to avoid.
 
 ### Documentation Organization
 
+Core documentation sections:
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-flowchart TD
+flowchart LR
     A["Next.js Documentation"]:::blue
     B["Core Patterns"]:::teal
     C["Architecture"]:::teal
-    D["Advanced Topics"]:::purple
-    E["Integration"]:::orange
-    F["Templates"]:::purple
 
     A --> B
     A --> C
-    A --> D
-    A --> E
-    A --> F
 
     B --> B1["Idioms"]
     B --> B2["Best Practices"]
@@ -254,6 +250,26 @@ flowchart TD
     C --> C2["Server Components"]
     C --> C3["Routing"]
     C --> C4["Data Fetching"]
+
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+```
+
+Advanced, integration, and template documentation sections:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+flowchart LR
+    A["Next.js Documentation"]:::blue
+    D["Advanced Topics"]:::purple
+    E["Integration"]:::orange
+    F["Templates"]:::purple
+
+    A --> D
+    A --> E
+    A --> F
 
     D --> D1["Rendering"]
     D --> D2["API Routes"]
@@ -272,7 +288,6 @@ flowchart TD
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 

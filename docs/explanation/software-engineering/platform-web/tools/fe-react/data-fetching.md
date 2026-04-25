@@ -43,7 +43,7 @@ Data fetching is essential for React applications. This guide covers fetch API, 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
-graph TD
+graph LR
     A[Need Data Fetching?] --> B{Complexity?}
 
     B -->|Simple| C{Caching Needed?}

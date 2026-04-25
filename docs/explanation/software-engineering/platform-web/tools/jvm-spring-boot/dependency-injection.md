@@ -69,7 +69,7 @@ Constructor injection is the preferred method in Spring Boot. Dependencies are p
 
 graph TD
     A[Application Start] --> B[Component Scan]
-    B --> C[Find @Component/@Service/@Repository]
+    B --> C[Find @Component<br/>@Service/@Repository]
     C --> D[Build Dependency Graph]
 
     D --> E{Dependencies Ready?}
@@ -472,42 +472,51 @@ Spring manages bean lifecycle from creation to destruction.
 
 ### Spring Bean Lifecycle Flow
 
+Bean creation phase:
+
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    A[Container Startup] --> B[Load Bean Definitions]
+    A[Container Startup] --> B[Load Definitions]
     B --> C[Bean Instantiation]
     C --> D[Constructor Called]
-    D --> E[Populate Properties<br/>Setter Injection]
-    E --> F{BeanNameAware?}
-    F -->|Yes| G[setBeanName#40;#41;]
-    F -->|No| H[Skip]
-    G --> I{BeanFactoryAware?}
-    H --> I
-    I -->|Yes| J[setBeanFactory#40;#41;]
-    I -->|No| K[Skip]
-    J --> L{ApplicationContextAware?}
-    K --> L
-    L -->|Yes| M[setApplicationContext#40;#41;]
-    L -->|No| N[@PostConstruct Methods]
-    M --> N
-    N --> O[afterPropertiesSet#40;#41;<br/>InitializingBean]
-    O --> P[Custom init-method]
-    P --> Q[Bean Ready for Use]
-
-    Q --> R{Application Shutdown?}
-    R -->|No| Q
-    R -->|Yes| S[@PreDestroy Methods]
-    S --> T[destroy#40;#41;<br/>DisposableBean]
-    T --> U[Custom destroy-method]
-    U --> V[Bean Destroyed]
 
     style A fill:#0173B2,color:#fff
     style D fill:#029E73,color:#fff
+```
+
+Bean initialization phase:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+graph TD
+    D[Constructor Called] --> E[Populate Properties]
+    E --> F[Aware Callbacks]
+    F --> N[@PostConstruct]
+    N --> Q[Bean Ready for Use]
+
+    style D fill:#029E73,color:#fff
     style N fill:#DE8F05,color:#fff
-    style P fill:#DE8F05,color:#fff
+    style Q fill:#CC78BC,color:#fff
+```
+
+Bean destruction phase:
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+graph TD
+    Q[Bean Ready for Use] --> R{Shutdown?}
+    R -->|No| Q
+    R -->|Yes| S[@PreDestroy]
+    S --> T[destroy#40;#41;]
+    T --> V[Bean Destroyed]
+
     style Q fill:#CC78BC,color:#fff
     style S fill:#DE8F05,color:#fff
     style V fill:#0173B2,color:#fff

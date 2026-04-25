@@ -3,7 +3,7 @@ FROM node:24-alpine AS build
 WORKDIR /app
 
 # Copy app package.json and strip workspace dependency before install
-COPY apps/organiclever-fe/package.json ./
+COPY apps/organiclever-web/package.json ./
 RUN node -e " \
   const pkg = JSON.parse(require('fs').readFileSync('package.json','utf8')); \
   delete pkg.dependencies['@open-sharia-enterprise/ts-ui']; \
@@ -20,8 +20,8 @@ COPY libs/ts-ui-tokens/src/ ./node_modules/@open-sharia-enterprise/ts-ui-tokens/
 COPY libs/ts-ui-tokens/package.json ./node_modules/@open-sharia-enterprise/ts-ui-tokens/
 
 # Copy app source
-COPY apps/organiclever-fe/src/ ./src/
-COPY apps/organiclever-fe/package.json apps/organiclever-fe/tsconfig.json apps/organiclever-fe/next.config.ts apps/organiclever-fe/postcss.config.mjs ./
+COPY apps/organiclever-web/src/ ./src/
+COPY apps/organiclever-web/package.json apps/organiclever-web/tsconfig.json apps/organiclever-web/next.config.ts apps/organiclever-web/postcss.config.mjs ./
 
 # Generate contract types
 COPY specs/apps/organiclever/contracts/generated/ ./specs/apps/organiclever/contracts/generated/

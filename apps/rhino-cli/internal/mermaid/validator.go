@@ -4,14 +4,20 @@ import "math"
 
 // ValidateOptions configures the thresholds used during validation.
 type ValidateOptions struct {
-	MaxLabelLen int
-	MaxWidth    int
-	MaxDepth    int
+	MaxLabelLen      int
+	MaxWidth         int
+	MaxDepth         int
+	MaxSubgraphNodes int
 }
 
 // DefaultValidateOptions returns the standard validation thresholds.
 func DefaultValidateOptions() ValidateOptions {
-	return ValidateOptions{MaxLabelLen: 30, MaxWidth: 4, MaxDepth: math.MaxInt}
+	return ValidateOptions{
+		MaxLabelLen:      30,
+		MaxWidth:         4,
+		MaxDepth:         math.MaxInt,
+		MaxSubgraphNodes: 6,
+	}
 }
 
 // ValidateBlocks validates a slice of MermaidBlocks against the given options.
@@ -101,6 +107,23 @@ func ValidateBlocks(blocks []MermaidBlock, opts ValidateOptions) ValidationResul
 			})
 		}
 		// Depth exceeded alone → no output.
+
+		// Rule 4: subgraph density (warning only).
+		if opts.MaxSubgraphNodes > 0 {
+			for _, sg := range diagram.Subgraphs {
+				if len(sg.NodeIDs) > opts.MaxSubgraphNodes {
+					warnings = append(warnings, Warning{
+						Kind:              WarningSubgraphDense,
+						FilePath:          block.FilePath,
+						BlockIndex:        block.BlockIndex,
+						StartLine:         block.StartLine + sg.StartLine,
+						SubgraphLabel:     sg.Label,
+						SubgraphNodeCount: len(sg.NodeIDs),
+						MaxSubgraphNodes:  opts.MaxSubgraphNodes,
+					})
+				}
+			}
+		}
 	}
 
 	return ValidationResult{

@@ -157,52 +157,67 @@ Status: done. test:quick passing 90.10% (mermaid pkg 96.8%). Phase 2 commit belo
 
 ### 3.1 Capture subgraph membership in parser
 
-- [ ] In `apps/rhino-cli/internal/mermaid/types.go`:
-  - [ ] Add `Subgraph` struct with fields `ID`, `Label`, `NodeIDs`, `StartLine`
-  - [ ] Add `Subgraphs []Subgraph` field to `ParsedDiagram`
-- [ ] In `apps/rhino-cli/internal/mermaid/parser.go`:
-  - [ ] Replace the simple `subgraph`/`end` skip logic (lines 76–79) with a
+- [x] In `apps/rhino-cli/internal/mermaid/types.go`:
+  - [x] Add `Subgraph` struct with fields `ID`, `Label`, `NodeIDs`, `StartLine`
+  - [x] Add `Subgraphs []Subgraph` field to `ParsedDiagram`
+- [x] In `apps/rhino-cli/internal/mermaid/parser.go`:
+  - [x] Replace the simple `subgraph`/`end` skip logic (lines 76–79) with a
         stateful walk maintaining a stack `[]*Subgraph`
-  - [ ] On `subgraph <id>["label"]` — push new subgraph (parse `id` and `label`
+  - [x] On `subgraph <id>["label"]` — push new subgraph (parse `id` and `label`
         from line)
-  - [ ] On `end` — pop top of stack
-  - [ ] When a node is added to `nodeMap` while stack is non-empty, append the
+  - [x] On `end` — pop top of stack
+  - [x] When a node is added to `nodeMap` while stack is non-empty, append the
         ID to the top-of-stack `NodeIDs`
-  - [ ] Populate `ParsedDiagram.Subgraphs` from popped subgraphs
+  - [x] Populate `ParsedDiagram.Subgraphs` from popped subgraphs
+
+**Implementation Notes** (2026-04-26)
+Status: done. Files: `apps/rhino-cli/internal/mermaid/types.go`, `parser.go`. Added `Subgraph` struct + `Subgraphs []Subgraph` to ParsedDiagram. Parser maintains `stack []*Subgraph`; new `parseSubgraphHeader` regex extracts ID + bracketed label; uses `snapshotKeys`/`newKeys` diff to attribute newly-declared IDs to top-of-stack subgraph (direct children only — pre-declared IDs don't get re-attributed). Unclosed subgraphs still surface in the result.
 
 ### 3.2 Add validator rule
 
-- [ ] In `apps/rhino-cli/internal/mermaid/validator.go`:
-  - [ ] Add `MaxSubgraphNodes int` to `ValidateOptions`
-  - [ ] In `DefaultValidateOptions`, set `MaxSubgraphNodes: 6`
-  - [ ] In `ValidateBlocks`, after Rule 2, iterate `diagram.Subgraphs` and emit
+- [x] In `apps/rhino-cli/internal/mermaid/validator.go`:
+  - [x] Add `MaxSubgraphNodes int` to `ValidateOptions`
+  - [x] In `DefaultValidateOptions`, set `MaxSubgraphNodes: 6`
+  - [x] In `ValidateBlocks`, after Rule 2, iterate `diagram.Subgraphs` and emit
         `WarningSubgraphDense` when `len(NodeIDs) > opts.MaxSubgraphNodes`
+
+**Implementation Notes** (2026-04-26)
+Status: done. Files: `apps/rhino-cli/internal/mermaid/validator.go`. Added `MaxSubgraphNodes` (default 6); Rule 4 emits `WarningSubgraphDense` with subgraph label, count, threshold, and StartLine relative to file (block.StartLine + sg.StartLine).
 
 ### 3.3 Add warning kind
 
-- [ ] In `apps/rhino-cli/internal/mermaid/types.go`:
-  - [ ] Add `WarningSubgraphDense WarningKind = "subgraph_density"`
-  - [ ] Add fields `SubgraphLabel`, `SubgraphNodeCount`, `MaxSubgraphNodes` to `Warning`
+- [x] In `apps/rhino-cli/internal/mermaid/types.go`:
+  - [x] Add `WarningSubgraphDense WarningKind = "subgraph_density"`
+  - [x] Add fields `SubgraphLabel`, `SubgraphNodeCount`, `MaxSubgraphNodes` to `Warning`
+
+**Implementation Notes** (2026-04-26)
+Status: done. Files: `types.go`. Constant + new Warning fields added.
 
 ### 3.4 Wire CLI flag
 
-- [ ] In `apps/rhino-cli/cmd/docs_validate_mermaid.go`:
-  - [ ] Add `validateMermaidMaxSubgraphNodes int` package var
-  - [ ] Add `Flags().IntVar(&validateMermaidMaxSubgraphNodes, "max-subgraph-nodes", 6, "...")`
-  - [ ] Pass `MaxSubgraphNodes: validateMermaidMaxSubgraphNodes` into `ValidateOptions`
+- [x] In `apps/rhino-cli/cmd/docs_validate_mermaid.go`:
+  - [x] Add `validateMermaidMaxSubgraphNodes int` package var
+  - [x] Add `Flags().IntVar(&validateMermaidMaxSubgraphNodes, "max-subgraph-nodes", 6, "...")`
+  - [x] Pass `MaxSubgraphNodes: validateMermaidMaxSubgraphNodes` into `ValidateOptions`
+
+**Implementation Notes** (2026-04-26)
+Status: done. Files: `cmd/docs_validate_mermaid.go`. Flag wired with default 6.
 
 ### 3.5 Update reporter
 
-- [ ] In `apps/rhino-cli/internal/mermaid/reporter.go`:
-  - [ ] Add formatting branch for `WarningSubgraphDense`
-  - [ ] Sample format:
-        `WARN <file> block <N> (line <L>): subgraph "<label>" has <count> children; recommend ≤ <max>.`
-- [ ] In `apps/rhino-cli/internal/mermaid/reporter_test.go`:
-  - [ ] Test the format string for `WarningSubgraphDense`
+- [x] In `apps/rhino-cli/internal/mermaid/reporter.go`:
+  - [x] Add formatting branch for `WarningSubgraphDense`
+  - [x] Sample format:
+        `[subgraph_density] subgraph "<label>" has <count> children; recommend ≤ <max> for mobile rendering`
+- [x] In `apps/rhino-cli/internal/mermaid/reporter_test.go`:
+  - [x] Test the format string for `WarningSubgraphDense`
+
+**Implementation Notes** (2026-04-26)
+Status: done. Files: `reporter.go`, `reporter_test.go`. Switch in `warningDetail` for `WarningSubgraphDense`; jsonWarning extended with subgraph fields. Two new tests cover labelled and unnamed subgraph cases.
 
 ### 3.6 Add Gherkin scenarios
 
-- [ ] Add four scenarios to `docs-validate-mermaid.feature`:
+- [x] Add four scenarios to `docs-validate-mermaid.feature`:
   - "A subgraph with 7 child nodes emits subgraph density warning"
   - "A subgraph with 6 children passes default threshold"
   - "Subgraph density threshold is configurable"
@@ -210,28 +225,40 @@ Status: done. test:quick passing 90.10% (mermaid pkg 96.8%). Phase 2 commit belo
     (full text in [prd.md](./prd.md) — validates backwards-compatibility for
     single-target edges and small subgraphs after both fixes)
 
+**Implementation Notes** (2026-04-26)
+Status: done. Files: `specs/apps/rhino/cli/gherkin/docs-validate-mermaid.feature`. All 4 subgraph scenarios added.
+
 ### 3.7 Add parser tests for subgraph capture
 
-- [ ] In `parser_test.go`:
-  - [ ] Test: simple subgraph with 3 nodes → `Subgraphs[0].NodeIDs` has 3 entries
-  - [ ] Test: nested subgraph — outer holds direct children only, inner is
+- [x] In `parser_test.go`:
+  - [x] Test: simple subgraph with 3 nodes → `Subgraphs[0].NodeIDs` has 3 entries
+  - [x] Test: nested subgraph — outer holds direct children only, inner is
         separate
-  - [ ] Test: subgraph with label `subgraph WF1["Workflow 1"]` → `Label` is
+  - [x] Test: subgraph with label `subgraph WF1["Workflow 1"]` → `Label` is
         `"Workflow 1"`, `ID` is `"WF1"`
+
+**Implementation Notes** (2026-04-26)
+Status: done. Files: `parser_test.go`. Added `TestParseDiagram_SubgraphCapture` (3 cases) + `TestParseDiagram_NestedOuterDirectChildrenOnly` (verifies outer.NodeIDs={X,W}, inner.NodeIDs={Y,Z} for nested subgraphs).
 
 ### 3.8 Add validator tests for subgraph rule
 
-- [ ] In `validator_test.go`:
-  - [ ] Test: subgraph with exactly 6 nodes → no warning
-  - [ ] Test: subgraph with 7 nodes → exactly one `WarningSubgraphDense` warning
-  - [ ] Test: `MaxSubgraphNodes=4` and subgraph with 5 nodes → warning
-  - [ ] Test: empty subgraph → no warning
+- [x] In `validator_test.go`:
+  - [x] Test: subgraph with exactly 6 nodes → no warning
+  - [x] Test: subgraph with 7 nodes → exactly one `WarningSubgraphDense` warning
+  - [x] Test: `MaxSubgraphNodes=4` and subgraph with 5 nodes → warning
+  - [x] Test: empty subgraph → no warning
+
+**Implementation Notes** (2026-04-26)
+Status: done. Files: `validator_test.go`. Added `TestValidateBlocks_SubgraphDensity` table-driven with 4 cases. All pass.
 
 ### 3.9 Test + commit
 
-- [ ] `nx run rhino-cli:test:unit` — all green
-- [ ] `nx run rhino-cli:test:quick` — coverage ≥ 90%
-- [ ] Commit: `feat(rhino-cli): add subgraph density warning to mermaid validator`
+- [x] `nx run rhino-cli:test:unit` — all green
+- [x] `nx run rhino-cli:test:quick` — coverage ≥ 90% (90.15%)
+- [x] Commit: `feat(rhino-cli): add subgraph density warning to mermaid validator`
+
+**Implementation Notes** (2026-04-26)
+Status: done. test:quick 90.15% (mermaid pkg 96.0%). Commit below.
 
 ---
 

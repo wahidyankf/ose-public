@@ -13,11 +13,12 @@ import (
 )
 
 var (
-	validateMermaidStagedOnly  bool
-	validateMermaidChangedOnly bool
-	validateMermaidMaxLabelLen int
-	validateMermaidMaxWidth    int
-	validateMermaidMaxDepth    int
+	validateMermaidStagedOnly       bool
+	validateMermaidChangedOnly      bool
+	validateMermaidMaxLabelLen      int
+	validateMermaidMaxWidth         int
+	validateMermaidMaxDepth         int
+	validateMermaidMaxSubgraphNodes int
 )
 
 // docsValidateMermaidFn and readFileFn are declared in testable.go for dependency injection.
@@ -69,6 +70,8 @@ func init() {
 		"max nodes at the same rank")
 	validateMermaidCmd.Flags().IntVar(&validateMermaidMaxDepth, "max-depth", 0,
 		"depth threshold for the both-exceeded warning: when span>max-width AND depth>max-depth, emit warning not error")
+	validateMermaidCmd.Flags().IntVar(&validateMermaidMaxSubgraphNodes, "max-subgraph-nodes", 6,
+		"max direct child nodes per subgraph; emits a subgraph_density warning when exceeded")
 }
 
 func runValidateMermaid(cmd *cobra.Command, args []string) error {
@@ -121,9 +124,10 @@ func runValidateMermaid(cmd *cobra.Command, args []string) error {
 		validateMermaidMaxDepth = math.MaxInt
 	}
 	opts := mermaid.ValidateOptions{
-		MaxLabelLen: validateMermaidMaxLabelLen,
-		MaxWidth:    validateMermaidMaxWidth,
-		MaxDepth:    validateMermaidMaxDepth,
+		MaxLabelLen:      validateMermaidMaxLabelLen,
+		MaxWidth:         validateMermaidMaxWidth,
+		MaxDepth:         validateMermaidMaxDepth,
+		MaxSubgraphNodes: validateMermaidMaxSubgraphNodes,
 	}
 	result := docsValidateMermaidFn(allBlocks, opts)
 	result.FilesScanned = len(fileSet)

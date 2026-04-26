@@ -254,6 +254,144 @@ func TestExtractEdgeLine_PreservesLabelsInAmpExpansion(t *testing.T) {
 	}
 }
 
+func TestParseDiagram_SubgraphCapture(t *testing.T) {
+	tests := []struct {
+		name           string
+		source         string
+		wantSubgraphs  int
+		wantFirstID    string
+		wantFirstLabel string
+		wantFirstNodes []string
+	}{
+		{
+			name: "simple subgraph 3 nodes",
+			source: `flowchart TD
+subgraph WF1
+  A
+  B
+  C
+end`,
+			wantSubgraphs:  1,
+			wantFirstID:    "WF1",
+			wantFirstNodes: []string{"A", "B", "C"},
+		},
+		{
+			name: "labeled subgraph quoted",
+			source: `flowchart TD
+subgraph WF1["Workflow 1"]
+  A
+  B
+end`,
+			wantSubgraphs:  1,
+			wantFirstID:    "WF1",
+			wantFirstLabel: "Workflow 1",
+			wantFirstNodes: []string{"A", "B"},
+		},
+		{
+			name: "nested subgraphs only direct children counted",
+			source: `flowchart TD
+subgraph Outer
+  X
+  subgraph Inner
+    Y
+    Z
+  end
+end`,
+			wantSubgraphs: 2,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			block := makeBlock(tt.source)
+			diagram, count, err := ParseDiagram(block)
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			if count == 0 {
+				t.Fatal("expected flowchart count >= 1")
+			}
+			if len(diagram.Subgraphs) != tt.wantSubgraphs {
+				t.Fatalf("subgraphs = %d, want %d; got: %+v",
+					len(diagram.Subgraphs), tt.wantSubgraphs, diagram.Subgraphs)
+			}
+			if tt.wantFirstID != "" {
+				// Inner subgraphs end first; find by ID.
+				var sg *Subgraph
+				for i := range diagram.Subgraphs {
+					if diagram.Subgraphs[i].ID == tt.wantFirstID {
+						sg = &diagram.Subgraphs[i]
+						break
+					}
+				}
+				if sg == nil {
+					t.Fatalf("subgraph %q not found; got: %+v", tt.wantFirstID, diagram.Subgraphs)
+				}
+				if tt.wantFirstLabel != "" && sg.Label != tt.wantFirstLabel {
+					t.Errorf("Label = %q, want %q", sg.Label, tt.wantFirstLabel)
+				}
+				if len(tt.wantFirstNodes) > 0 {
+					if len(sg.NodeIDs) != len(tt.wantFirstNodes) {
+						t.Errorf("NodeIDs = %v, want %v", sg.NodeIDs, tt.wantFirstNodes)
+					}
+					for _, want := range tt.wantFirstNodes {
+						if !slices.Contains(sg.NodeIDs, want) {
+							t.Errorf("missing node %q in NodeIDs %v", want, sg.NodeIDs)
+						}
+					}
+				}
+			}
+		})
+	}
+}
+
+func TestParseDiagram_NestedOuterDirectChildrenOnly(t *testing.T) {
+	source := `flowchart TD
+subgraph Outer
+  X
+  subgraph Inner
+    Y
+    Z
+  end
+  W
+end`
+	block := makeBlock(source)
+	diagram, _, err := ParseDiagram(block)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	var outer, inner *Subgraph
+	for i := range diagram.Subgraphs {
+		switch diagram.Subgraphs[i].ID {
+		case "Outer":
+			outer = &diagram.Subgraphs[i]
+		case "Inner":
+			inner = &diagram.Subgraphs[i]
+		}
+	}
+	if outer == nil || inner == nil {
+		t.Fatalf("missing subgraphs; got: %+v", diagram.Subgraphs)
+	}
+	wantOuter := []string{"X", "W"}
+	wantInner := []string{"Y", "Z"}
+	if len(outer.NodeIDs) != len(wantOuter) {
+		t.Errorf("outer NodeIDs = %v, want %v", outer.NodeIDs, wantOuter)
+	}
+	if len(inner.NodeIDs) != len(wantInner) {
+		t.Errorf("inner NodeIDs = %v, want %v", inner.NodeIDs, wantInner)
+	}
+	for _, w := range wantOuter {
+		if !slices.Contains(outer.NodeIDs, w) {
+			t.Errorf("missing %q in outer", w)
+		}
+	}
+	for _, w := range wantInner {
+		if !slices.Contains(inner.NodeIDs, w) {
+			t.Errorf("missing %q in inner", w)
+		}
+	}
+}
+
 func TestParseDiagram_SubgraphHeaderNotANode(t *testing.T) {
 	source := `flowchart TD
 subgraph sg

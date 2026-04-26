@@ -262,6 +262,91 @@ func TestValidateBlocks(t *testing.T) {
 	}
 }
 
+func TestValidateBlocks_SubgraphDensity(t *testing.T) {
+	subgraph6 := `flowchart TD
+subgraph WF1
+  A
+  B
+  C
+  D
+  E
+  F
+end`
+	subgraph7 := `flowchart TD
+subgraph WF1
+  A
+  B
+  C
+  D
+  E
+  F
+  G
+end`
+	subgraph5 := `flowchart TD
+subgraph WF1
+  A
+  B
+  C
+  D
+  E
+end`
+	subgraphEmpty := `flowchart TD
+subgraph WF1
+end`
+
+	tests := []struct {
+		name        string
+		source      string
+		opts        ValidateOptions
+		wantWarning bool
+	}{
+		{
+			name:        "exactly 6 children no warning",
+			source:      subgraph6,
+			opts:        DefaultValidateOptions(),
+			wantWarning: false,
+		},
+		{
+			name:        "7 children one warning",
+			source:      subgraph7,
+			opts:        DefaultValidateOptions(),
+			wantWarning: true,
+		},
+		{
+			name:        "5 children with threshold 4 warning",
+			source:      subgraph5,
+			opts:        ValidateOptions{MaxLabelLen: 30, MaxWidth: 4, MaxDepth: 9999, MaxSubgraphNodes: 4},
+			wantWarning: true,
+		},
+		{
+			name:        "empty subgraph no warning",
+			source:      subgraphEmpty,
+			opts:        DefaultValidateOptions(),
+			wantWarning: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := ValidateBlocks([]MermaidBlock{makeFlowchartBlock(tt.source)}, tt.opts)
+			subgraphWarnings := 0
+			for _, w := range result.Warnings {
+				if w.Kind == WarningSubgraphDense {
+					subgraphWarnings++
+				}
+			}
+			if tt.wantWarning && subgraphWarnings != 1 {
+				t.Errorf("subgraph_density warnings = %d, want 1; warnings: %+v",
+					subgraphWarnings, result.Warnings)
+			}
+			if !tt.wantWarning && subgraphWarnings != 0 {
+				t.Errorf("subgraph_density warnings = %d, want 0; warnings: %+v",
+					subgraphWarnings, result.Warnings)
+			}
+		})
+	}
+}
+
 func TestValidateBlocks_AmpFanoutTriggersWidthViolation(t *testing.T) {
 	// 5-target fan-out via & operator must produce 5 parallel edges from T,
 	// triggering the default MaxWidth=4 violation.

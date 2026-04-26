@@ -1,20 +1,4 @@
 services:
-  organiclever-db:
-    image: postgres:17-alpine
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER:-organiclever}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-organiclever}
-      POSTGRES_DB: ${POSTGRES_DB:-organiclever}
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-organiclever} -d ${POSTGRES_DB:-organiclever}"]
-      interval: 2s
-      timeout: 5s
-      retries: 10
-    volumes:
-      - organiclever-db-data:/var/lib/postgresql/data
-
   organiclever-be:
     build:
       context: .
@@ -22,14 +6,7 @@ services:
     ports:
       - "8202:8202"
     environment:
-      DATABASE_URL: "Host=organiclever-db;Port=5432;Database=${POSTGRES_DB:-organiclever};Username=${POSTGRES_USER:-organiclever};Password=${POSTGRES_PASSWORD:-organiclever}"
-      APP_JWT_SECRET: ${APP_JWT_SECRET:-dev-jwt-secret-at-least-32-characters-long}
-      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
-      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       ASPNETCORE_URLS: "http://+:8202"
-    depends_on:
-      organiclever-db:
-        condition: service_healthy
     volumes:
       - ../../../apps/organiclever-be:/workspace:rw
       - ../../../specs/apps/organiclever/be/gherkin:/specs/apps/organiclever/be/gherkin:ro
@@ -46,15 +23,10 @@ services:
       dockerfile: apps/organiclever-web/Dockerfile
       args:
         ORGANICLEVER_BE_URL: http://organiclever-be:8202
-        NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
     ports:
       - "3200:3200"
     environment:
       ORGANICLEVER_BE_URL: "http://organiclever-be:8202"
-      NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
     depends_on:
       organiclever-be:
         condition: service_healthy
-
-volumes:
-  organiclever-db-data:

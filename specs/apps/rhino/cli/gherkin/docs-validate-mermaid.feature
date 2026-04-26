@@ -154,3 +154,27 @@ Feature: Mermaid Flowchart Structural Validation
     When the developer runs docs validate-mermaid
     Then the command exits with a failure code
     And the output identifies the rank with 5 parallel nodes
+
+  Scenario: A subgraph with 7 child nodes emits subgraph density warning
+    Given a markdown file containing a flowchart with a subgraph that holds 7 child nodes
+    When the developer runs docs validate-mermaid
+    Then the command exits successfully
+    And the output contains a warning about subgraph density
+
+  Scenario: A subgraph with 6 children passes default threshold
+    Given a markdown file containing a flowchart with a subgraph that holds exactly 6 child nodes
+    When the developer runs docs validate-mermaid
+    Then the command exits successfully
+    And the output contains no subgraph density warning
+
+  Scenario: Subgraph density threshold is configurable
+    Given a markdown file containing a flowchart with a subgraph that holds 5 child nodes
+    When the developer runs docs validate-mermaid with --max-subgraph-nodes 4
+    Then the command exits successfully
+    And the output contains a warning about subgraph density
+
+  Scenario: Existing diagrams without & or large subgraphs are unaffected
+    Given a markdown file with a flowchart using only single-target edges and small subgraphs
+    When the developer runs docs validate-mermaid
+    Then the command exits successfully
+    And the output reports no new violations or warnings introduced by these fixes

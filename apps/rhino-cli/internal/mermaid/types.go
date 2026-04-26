@@ -28,6 +28,7 @@ type WarningKind string
 
 const (
 	WarningComplexDiagram WarningKind = "complex_diagram"
+	WarningSubgraphDense  WarningKind = "subgraph_density"
 )
 
 // MermaidBlock holds the raw source of a single ```mermaid fenced code block.
@@ -50,24 +51,42 @@ type Edge struct {
 	To   string
 }
 
+// Subgraph is a Mermaid `subgraph ... end` block. NodeIDs holds direct children
+// only (not transitive). StartLine is 1-indexed within the parent block.
+type Subgraph struct {
+	ID        string
+	Label     string
+	NodeIDs   []string
+	StartLine int
+}
+
 // ParsedDiagram is the result of parsing a single MermaidBlock.
 type ParsedDiagram struct {
 	Block     MermaidBlock
 	Direction Direction
 	Nodes     []Node
 	Edges     []Edge
+	Subgraphs []Subgraph
 }
 
-// Warning is non-blocking (exit 0). Emitted when BOTH span > MaxWidth AND depth > MaxDepth.
+// Warning is non-blocking (exit 0). Emitted by complex-diagram and
+// subgraph-density rules.
 type Warning struct {
-	Kind        WarningKind
-	FilePath    string
-	BlockIndex  int
-	StartLine   int
+	Kind       WarningKind
+	FilePath   string
+	BlockIndex int
+	StartLine  int
+
+	// complex_diagram fields
 	ActualWidth int
 	ActualDepth int
 	MaxWidth    int
 	MaxDepth    int
+
+	// subgraph_density fields
+	SubgraphLabel     string
+	SubgraphNodeCount int
+	MaxSubgraphNodes  int
 }
 
 // Violation is a rule violation that causes a non-zero exit.

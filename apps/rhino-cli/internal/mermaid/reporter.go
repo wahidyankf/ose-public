@@ -85,8 +85,20 @@ func violationDetail(v Violation) string {
 }
 
 func warningDetail(w Warning) string {
-	return fmt.Sprintf("[%s] span %d (max %d) and depth %d (max %d) both exceeded",
-		w.Kind, w.ActualWidth, w.MaxWidth, w.ActualDepth, w.MaxDepth)
+	switch w.Kind {
+	case WarningSubgraphDense:
+		label := w.SubgraphLabel
+		if label == "" {
+			label = "(unnamed)"
+		}
+		return fmt.Sprintf(
+			"[%s] subgraph %q has %d children; recommend ≤ %d for mobile rendering",
+			w.Kind, label, w.SubgraphNodeCount, w.MaxSubgraphNodes,
+		)
+	default:
+		return fmt.Sprintf("[%s] span %d (max %d) and depth %d (max %d) both exceeded",
+			w.Kind, w.ActualWidth, w.MaxWidth, w.ActualDepth, w.MaxDepth)
+	}
 }
 
 // jsonViolation mirrors Violation with camelCase JSON field names.
@@ -105,14 +117,17 @@ type jsonViolation struct {
 
 // jsonWarning mirrors Warning with camelCase JSON field names.
 type jsonWarning struct {
-	Kind        string `json:"kind"`
-	FilePath    string `json:"filePath"`
-	BlockIndex  int    `json:"blockIndex"`
-	StartLine   int    `json:"startLine"`
-	ActualWidth int    `json:"actualWidth"`
-	ActualDepth int    `json:"actualDepth"`
-	MaxWidth    int    `json:"maxWidth"`
-	MaxDepth    int    `json:"maxDepth"`
+	Kind              string `json:"kind"`
+	FilePath          string `json:"filePath"`
+	BlockIndex        int    `json:"blockIndex"`
+	StartLine         int    `json:"startLine"`
+	ActualWidth       int    `json:"actualWidth,omitempty"`
+	ActualDepth       int    `json:"actualDepth,omitempty"`
+	MaxWidth          int    `json:"maxWidth,omitempty"`
+	MaxDepth          int    `json:"maxDepth,omitempty"`
+	SubgraphLabel     string `json:"subgraphLabel,omitempty"`
+	SubgraphNodeCount int    `json:"subgraphNodeCount,omitempty"`
+	MaxSubgraphNodes  int    `json:"maxSubgraphNodes,omitempty"`
 }
 
 type jsonResult struct {
@@ -142,14 +157,17 @@ func FormatJSON(result ValidationResult) (string, error) {
 	ws := make([]jsonWarning, len(result.Warnings))
 	for i, w := range result.Warnings {
 		ws[i] = jsonWarning{
-			Kind:        string(w.Kind),
-			FilePath:    w.FilePath,
-			BlockIndex:  w.BlockIndex,
-			StartLine:   w.StartLine,
-			ActualWidth: w.ActualWidth,
-			ActualDepth: w.ActualDepth,
-			MaxWidth:    w.MaxWidth,
-			MaxDepth:    w.MaxDepth,
+			Kind:              string(w.Kind),
+			FilePath:          w.FilePath,
+			BlockIndex:        w.BlockIndex,
+			StartLine:         w.StartLine,
+			ActualWidth:       w.ActualWidth,
+			ActualDepth:       w.ActualDepth,
+			MaxWidth:          w.MaxWidth,
+			MaxDepth:          w.MaxDepth,
+			SubgraphLabel:     w.SubgraphLabel,
+			SubgraphNodeCount: w.SubgraphNodeCount,
+			MaxSubgraphNodes:  w.MaxSubgraphNodes,
 		}
 	}
 

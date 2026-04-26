@@ -136,6 +136,58 @@ func TestFormatText_Warning(t *testing.T) {
 	}
 }
 
+func TestFormatText_SubgraphDenseWarning(t *testing.T) {
+	result := ValidationResult{
+		FilesScanned:  1,
+		BlocksScanned: 1,
+		Warnings: []Warning{
+			{
+				Kind:              WarningSubgraphDense,
+				FilePath:          "test.md",
+				BlockIndex:        0,
+				StartLine:         12,
+				SubgraphLabel:     "WF1 — Development",
+				SubgraphNodeCount: 7,
+				MaxSubgraphNodes:  6,
+			},
+		},
+	}
+	text := FormatText(result, false, false)
+	if !strings.Contains(text, "subgraph_density") {
+		t.Errorf("expected 'subgraph_density' in output, got: %q", text)
+	}
+	if !strings.Contains(text, "WF1 — Development") {
+		t.Errorf("expected subgraph label in output, got: %q", text)
+	}
+	if !strings.Contains(text, "7") {
+		t.Errorf("expected child count '7' in output, got: %q", text)
+	}
+	if !strings.Contains(text, "6") {
+		t.Errorf("expected threshold '6' in output, got: %q", text)
+	}
+}
+
+func TestFormatText_SubgraphDenseUnnamedLabel(t *testing.T) {
+	result := ValidationResult{
+		FilesScanned:  1,
+		BlocksScanned: 1,
+		Warnings: []Warning{
+			{
+				Kind:              WarningSubgraphDense,
+				FilePath:          "test.md",
+				BlockIndex:        0,
+				StartLine:         3,
+				SubgraphNodeCount: 8,
+				MaxSubgraphNodes:  6,
+			},
+		},
+	}
+	text := FormatText(result, false, false)
+	if !strings.Contains(text, "(unnamed)") {
+		t.Errorf("expected unnamed placeholder in output, got: %q", text)
+	}
+}
+
 func TestFormatJSON_ValidJSON(t *testing.T) {
 	result := ValidationResult{
 		FilesScanned:  2,

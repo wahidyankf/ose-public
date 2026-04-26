@@ -4,12 +4,12 @@ C4 architecture diagrams for the OrganicLever fullstack application (frontend + 
 
 ## Diagrams
 
-| Level     | File              | What It Shows                                                                     |
-| --------- | ----------------- | --------------------------------------------------------------------------------- |
-| Context   | `context.md`      | The system and its two external actors                                            |
-| Container | `container.md`    | Runtime containers: Next.js frontend, F#/Giraffe backend, PostgreSQL database     |
-| Component | `component-be.md` | F#/Giraffe REST API internals: handlers, middleware, services, repositories       |
-| Component | `component-fe.md` | Next.js frontend internals: pages, API route handlers, Effect TS services, layers |
+| Level     | File              | What It Shows                                             |
+| --------- | ----------------- | --------------------------------------------------------- |
+| Context   | `context.md`      | The system and its two external actors                    |
+| Container | `container.md`    | Runtime containers: Next.js frontend, F#/Giraffe backend  |
+| Component | `component-be.md` | F#/Giraffe REST API internals: health handler             |
+| Component | `component-fe.md` | Next.js frontend internals: landing + system-status pages |
 
 ## C4 Level Summary
 
@@ -27,22 +27,20 @@ have separate spec trees with different domain coverage.
 
 **Location**: [`specs/apps/organiclever/be/gherkin/`](../be/gherkin/README.md)
 
-| Domain         | Feature                               | Scenarios |
-| -------------- | ------------------------------------- | --------- |
-| health         | `health/health-check.feature`         | 2         |
-| authentication | `authentication/google-login.feature` | 6         |
-| authentication | `authentication/me.feature`           | 3         |
+| Domain | Feature                       | Scenarios |
+| ------ | ----------------------------- | --------- |
+| health | `health/health-check.feature` | 2         |
 
 ### Frontend Gherkin
 
 **Location**: [`specs/apps/organiclever/fe/gherkin/`](../fe/gherkin/README.md)
 
-| Domain         | Feature                                   | Scenarios |
-| -------------- | ----------------------------------------- | --------- |
-| authentication | `authentication/google-login.feature`     | 2         |
-| authentication | `authentication/profile.feature`          | 2         |
-| authentication | `authentication/route-protection.feature` | 4         |
-| layout         | `layout/accessibility.feature`            | 5         |
+| Domain  | Feature                           | Scenarios |
+| ------- | --------------------------------- | --------- |
+| landing | `landing/landing.feature`         | varies    |
+| system  | `system/system-status-be.feature` | varies    |
+| layout  | `layout/accessibility.feature`    | varies    |
+| routing | `routing/disabled-routes.feature` | varies    |
 
 ## Related
 

@@ -8,8 +8,8 @@ open Xunit
 open OrganicLeverBe.Tests.HttpTestFixture
 open OrganicLeverBe.Tests.State
 
-/// xUnit collection that forces all integration test classes to run sequentially.
-/// Required because integration tests share a single PostgreSQL database.
+/// xUnit collection that forces all integration test classes to run sequentially
+/// when integration-level tests are added back later. Currently health-only.
 [<CollectionDefinition("IntegrationDb", DisableParallelization = true)>]
 type IntegrationDbCollection() = class end
 
@@ -31,7 +31,7 @@ type private ScenarioServiceProvider(factory: TestWebAppFactory) =
     interface IServiceProvider with
         member _.GetService(serviceType: Type) =
             if serviceType = typeof<StepState> then
-                let httpClient = factory.CreateClientWithDb()
+                let httpClient = factory.CreateClient()
                 empty httpClient :> obj
             else
                 null
@@ -70,23 +70,3 @@ type HealthFeatureTests() =
     [<Theory>]
     [<MemberData("Scenarios")>]
     member this.``Health Check``(scenario: Scenario) = scenario.Action.Invoke()
-
-[<Collection("IntegrationDb")>]
-[<Trait("Category", "Integration")>]
-type GoogleLoginFeatureTests() =
-    static member Scenarios() : seq<obj[]> =
-        buildScenarioData "google-login" |> Seq.toList :> seq<_>
-
-    [<Theory>]
-    [<MemberData("Scenarios")>]
-    member this.``Google Login``(scenario: Scenario) = scenario.Action.Invoke()
-
-[<Collection("IntegrationDb")>]
-[<Trait("Category", "Integration")>]
-type MeFeatureTests() =
-    static member Scenarios() : seq<obj[]> =
-        buildScenarioData "me" |> Seq.toList :> seq<_>
-
-    [<Theory>]
-    [<MemberData("Scenarios")>]
-    member this.``User Profile``(scenario: Scenario) = scenario.Action.Invoke()

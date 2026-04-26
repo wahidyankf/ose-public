@@ -11,8 +11,6 @@ Tests use Playwright's `APIRequestContext` to validate HTTP endpoints — no bro
 Feature files in `specs/apps/organiclever/be/gherkin/` are the source of truth:
 
 - `health/health-check.feature` — `GET /health` reports service status
-- `authentication/google-login.feature` — Google OAuth login, refresh token rotation
-- `authentication/me.feature` — `GET /api/v1/auth/me` profile retrieval
 
 ## Architecture
 
@@ -28,18 +26,11 @@ playwright.config.ts
         ▼  (playwright test runs)
 steps/**/*.ts                                     ← step implementations
 utils/response-store.ts                           ← shared APIResponse state between steps
-utils/token-store.ts                              ← stored JWT tokens per user email
 ```
 
 ## Prerequisites
 
-The backend must be running on `http://localhost:8202` before executing tests. Auth tests also
-require a live PostgreSQL database (the `Before` hook clears token/response state before each
-scenario).
-
-The backend must be started with `APP_ENV=test` to enable the test token bypass for Google OAuth.
-In this mode, the backend accepts `idToken` values in the format `test:<email>:<name>:<googleId>`
-instead of validating real Google ID tokens.
+The backend must be running on `http://localhost:8202` before executing tests.
 
 **Start the backend with Docker Compose**:
 
@@ -112,12 +103,9 @@ apps/organiclever-be-e2e/
 ├── .gitignore                   # Ignores .features-gen/, test-results/, playwright-report/
 ├── steps/
 │   ├── common.steps.ts          # Given API running, Before hook, Then status code, shared body assertions
-│   ├── health.steps.ts          # When/Then for GET /health
-│   ├── google-login.steps.ts    # Given/When/Then for Google OAuth login and refresh token rotation
-│   └── me.steps.ts              # Given/When/Then for GET /api/v1/auth/me
+│   └── health.steps.ts          # When/Then for GET /health
 └── utils/
-    ├── response-store.ts        # Shared APIResponse state between steps
-    └── token-store.ts           # Stored JWT tokens per user email
+    └── response-store.ts        # Shared APIResponse state between steps
 ```
 
 ## Step Implementation Notes
@@ -128,27 +116,10 @@ apps/organiclever-be-e2e/
 scenario. Module-level state is safe because scenarios run sequentially within a worker, and
 `workers: 1` is configured.
 
-### Test token format
-
-When `APP_ENV=test`, the backend skips Google token verification and accepts tokens in the format:
-
-```
-test:<email>:<name>:<googleId>
-```
-
-For example: `test:alice@example.com:Alice:google-alice`
-
-Steps construct these tokens from the user data specified in Gherkin steps.
-
 ### Before hook
 
-The `Before` hook in `steps/common.steps.ts` runs before each scenario and clears:
-
-- The stored `APIResponse` in `response-store.ts`
-- All stored access and refresh tokens in `token-store.ts`
-
-This ensures test isolation without requiring database cleanup (the test token mechanism creates
-idempotent users on login).
+The `Before` hook in `steps/common.steps.ts` runs before each scenario and clears the stored
+`APIResponse` in `response-store.ts` to ensure test isolation.
 
 ## Related Documentation
 

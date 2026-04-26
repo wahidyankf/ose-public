@@ -92,11 +92,8 @@ jobs:
           npx nx run organiclever-be:codegen
           npx nx run organiclever-web:codegen
 
-      - name: Start full stack (DB + backend + frontend)
+      - name: Start full stack (backend + frontend)
         run: docker compose -f infra/dev/organiclever/docker-compose.yml -f infra/dev/organiclever/docker-compose.ci.yml up --build -d
-        env:
-          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
 
       - name: Wait for backend to be healthy
         run: |

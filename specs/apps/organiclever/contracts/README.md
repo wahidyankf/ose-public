@@ -30,15 +30,11 @@ contracts/
 ├── .spectral.yaml        # Linting rules (camelCase enforcement)
 ├── project.json          # Nx project targets
 ├── paths/                # Endpoint definitions by domain
-│   ├── health.yaml       # GET /api/v1/health
-│   └── auth.yaml         # POST /auth/google, POST /auth/refresh, GET /auth/me
+│   └── health.yaml       # GET /api/v1/health
 ├── schemas/              # Data type definitions
 │   ├── health.yaml       # HealthResponse
-│   ├── auth.yaml         # AuthGoogleRequest, AuthTokenResponse, RefreshRequest
-│   ├── user.yaml         # UserProfile
 │   └── error.yaml        # ErrorResponse
-├── examples/             # Example request/response pairs
-│   └── auth-login.yaml
+├── examples/             # Example request/response pairs (none currently)
 └── generated/            # Output (gitignored)
     ├── openapi-bundled.yaml
     ├── openapi-bundled.json

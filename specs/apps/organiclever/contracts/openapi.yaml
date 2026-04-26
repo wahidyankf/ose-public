@@ -14,29 +14,9 @@ servers:
 tags:
   - name: Health
     description: Service health checks
-  - name: Authentication
-    description: Google OAuth authentication and token management
 
 components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-
   schemas:
-    # Auth
-    AuthGoogleRequest:
-      $ref: "./schemas/auth.yaml#/AuthGoogleRequest"
-    AuthTokenResponse:
-      $ref: "./schemas/auth.yaml#/AuthTokenResponse"
-    RefreshRequest:
-      $ref: "./schemas/auth.yaml#/RefreshRequest"
-
-    # User
-    UserProfile:
-      $ref: "./schemas/user.yaml#/UserProfile"
-
     # Common
     ErrorResponse:
       $ref: "./schemas/error.yaml#/ErrorResponse"
@@ -47,11 +27,3 @@ paths:
   # Health
   /api/v1/health:
     $ref: "./paths/health.yaml#/~1api~1v1~1health"
-
-  # Authentication
-  /api/v1/auth/google:
-    $ref: "./paths/auth.yaml#/~1api~1v1~1auth~1google"
-  /api/v1/auth/refresh:
-    $ref: "./paths/auth.yaml#/~1api~1v1~1auth~1refresh"
-  /api/v1/auth/me:
-    $ref: "./paths/auth.yaml#/~1api~1v1~1auth~1me"

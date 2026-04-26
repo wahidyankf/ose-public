@@ -1,15 +1,13 @@
 # OrganicLever Backend Gherkin Specs
 
-Gherkin feature files for the OrganicLever backend service. 3 files, 11 scenarios across 2
-domains.
+Gherkin feature files for the OrganicLever backend service. 1 file, 2 scenarios across 1
+domain.
 
 ## Feature Files
 
-| Domain         | File                                  | Scenarios |
-| -------------- | ------------------------------------- | --------- |
-| health         | `health/health-check.feature`         | 2         |
-| authentication | `authentication/google-login.feature` | 6         |
-| authentication | `authentication/me.feature`           | 3         |
+| Domain | File                          | Scenarios |
+| ------ | ----------------------------- | --------- |
+| health | `health/health-check.feature` | 2         |
 
 ## Conventions
 

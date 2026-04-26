@@ -1,16 +1,17 @@
 # OrganicLever Frontend Gherkin Specs
 
-Gherkin feature files for the OrganicLever frontend application. 4 files, 13 scenarios across 2
-domains.
+Gherkin feature files for the OrganicLever frontend application. v0 covers the marketing
+landing page, the system-status diagnostic page (polls BE health endpoint), accessibility
+compliance, and `/login` + `/profile` 404 guards.
 
 ## Feature Files
 
-| Domain         | File                                      | Scenarios |
-| -------------- | ----------------------------------------- | --------- |
-| authentication | `authentication/google-login.feature`     | 2         |
-| authentication | `authentication/profile.feature`          | 2         |
-| authentication | `authentication/route-protection.feature` | 4         |
-| layout         | `layout/accessibility.feature`            | 5         |
+| Domain  | File                              |
+| ------- | --------------------------------- |
+| landing | `landing/landing.feature`         |
+| system  | `system/system-status-be.feature` |
+| layout  | `layout/accessibility.feature`    |
+| routing | `routing/disabled-routes.feature` |
 
 ## Conventions
 
@@ -22,15 +23,14 @@ domains.
 ## Relationship to organiclever-be
 
 These specs are the **frontend counterpart** to
-[be/gherkin/](../../be/gherkin/README.md). Both cover the same shared domains (FE adds `layout/`),
-but:
+[be/gherkin/](../../be/gherkin/README.md). The two trees cover different domains in v0:
 
 - **be**: HTTP-semantic (GET, POST, status codes, response bodies)
 - **fe**: UI-semantic (clicks, types, sees, navigates, form submissions)
 
 `apps/organiclever-web` consumes these specs, just as `apps/organiclever-be` consumes
-`specs/apps/organiclever/be/gherkin/`. Step definitions translate UI actions into component
-renders and API call verifications.
+`specs/apps/organiclever/be/gherkin/`. The system-status page is the only FE feature that
+talks to the backend (it polls `/api/v1/health`).
 
 ## Related
 

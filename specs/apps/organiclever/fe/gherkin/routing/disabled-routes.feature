@@ -1,3 +1,5 @@
+# /login and /profile rows remain as guards against accidental re-introduction of
+# Google auth UI. They MUST stay 404 in local-first mode.
 Feature: Disabled Routes
 
   Scenario Outline: Disabled routes return 404
@@ -6,9 +8,6 @@ Feature: Disabled Routes
     Then the response status is 404
 
     Examples:
-      | method | path              |
-      | GET    | /login            |
-      | GET    | /profile          |
-      | POST   | /api/auth/google  |
-      | GET    | /api/auth/refresh |
-      | GET    | /api/auth/me      |
+      | method | path     |
+      | GET    | /login   |
+      | GET    | /profile |

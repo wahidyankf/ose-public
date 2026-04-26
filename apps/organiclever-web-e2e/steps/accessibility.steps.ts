@@ -76,15 +76,11 @@ Then("buttons should have descriptive text", async ({ page }) => {
 });
 
 Then("I should be able to tab to all interactive elements", async ({ page }) => {
-  // Press Tab multiple times and verify focus management works.
-  // In test mode the GSI SDK may not render a focusable button, so verify
-  // that the page's focus management is functional (no focus traps, body is
-  // reachable, tabindex is not broken).
+  // Press Tab multiple times and verify focus management works (no focus
+  // traps, body is reachable, tabindex is not broken).
   for (let i = 0; i < 5; i++) {
     await page.keyboard.press("Tab");
   }
-  // Verify the page didn't trap focus or throw errors — the document is
-  // still interactive and accessible.
   const isDocumentAccessible = await page.evaluate(() => {
     return document.activeElement !== null && document.readyState === "complete";
   });
@@ -92,15 +88,12 @@ Then("I should be able to tab to all interactive elements", async ({ page }) => 
 });
 
 Then("focus indicators should be visible", async ({ page }) => {
-  // Verify that focused elements have visible focus indicators.
-  // In test mode the GSI SDK may not render focusable content, so first
-  // check if any element is focused after tabbing.
   const hasFocused = await page
     .locator(":focus")
     .count()
     .catch(() => 0);
   if (hasFocused > 0) {
-    // Use .first() to handle Next.js Shadow DOM exposing multiple :focus matches
+    // Use .first() to handle Next.js Shadow DOM exposing multiple :focus matches.
     const outline = await page
       .locator(":focus")
       .first()
@@ -110,8 +103,7 @@ Then("focus indicators should be visible", async ({ page }) => {
       });
     expect(outline).toBe(true);
   }
-  // When no focusable elements exist (GSI not loaded), this step passes
-  // vacuously — there are no focus indicators to verify.
+  // Vacuous pass when no focusable elements exist.
 });
 
 Then(/^all text should meet WCAG AA contrast ratio \(4\.5:1 for normal text\)$/, async ({ page }) => {
@@ -125,14 +117,8 @@ Then("all interactive elements should have sufficient contrast", async ({ page }
 });
 
 Then("images should have alt attributes", async ({ page }) => {
-  // Check all images rendered by our app have alt attributes.
-  // Exclude images injected by third-party SDKs (e.g. Google Sign-In)
-  // which are inside iframes or the #google-signin-button container.
-  const images = await page.locator("img:not(#google-signin-button img)").all();
+  const images = await page.locator("img").all();
   for (const img of images) {
-    // Skip images inside the GSI container (rendered by Google's SDK)
-    const isInsideGsi = await img.evaluate((el) => !!el.closest("#google-signin-button"));
-    if (isInsideGsi) continue;
     const alt = await img.getAttribute("alt");
     // alt="" is valid for decorative images; only null is invalid.
     expect(alt, "Image must have an alt attribute").not.toBeNull();

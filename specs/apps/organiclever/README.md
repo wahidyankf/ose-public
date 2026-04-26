@@ -1,8 +1,9 @@
 # OrganicLever Application Specs
 
-Platform-agnostic specifications for the OrganicLever fullstack application covering service
-health, Google OAuth authentication, and a protected user profile. The application consists of an
-F#/Giraffe backend REST API and a Next.js 16 frontend with Effect TS.
+Platform-agnostic specifications for the OrganicLever fullstack application. v0 ships a
+marketing landing site, a system-status diagnostic page, and a `/api/v1/health` backend
+endpoint — no authenticated screens, no remote sync. The application consists of an
+F#/Giraffe backend REST API and a Next.js 16 frontend.
 
 ## Structure
 
@@ -12,7 +13,7 @@ specs/apps/organiclever/
 ├── c4/                    # Unified C4 architecture diagrams
 │   ├── README.md          # Diagram index
 │   ├── context.md         # L1 — system context (2 actors)
-│   ├── container.md       # L2 — containers (FE, BE, DB)
+│   ├── container.md       # L2 — containers (FE, BE)
 │   ├── component-be.md    # L3 — F#/Giraffe REST API internals
 │   └── component-fe.md    # L3 — Next.js frontend internals
 ├── be/                    # Backend specs (HTTP-semantic)
@@ -25,24 +26,26 @@ specs/apps/organiclever/
 
 ## Backend vs Frontend
 
-| Aspect      | Backend (be/)                                 | Frontend (fe/)                                  |
-| ----------- | --------------------------------------------- | ----------------------------------------------- |
-| Perspective | HTTP-semantic (GET, POST, status codes)       | UI-semantic (clicks, types, sees)               |
-| Background  | `Given the API is running`                    | `Given the app is running`                      |
-| Scenarios   | See [be/gherkin/](./be/gherkin/README.md)     | See [fe/gherkin/](./fe/gherkin/README.md)       |
-| Domains     | 2 domains                                     | 3 domains (2 shared + layout)                   |
-| Consumed by | `apps/organiclever-be` (F#/Giraffe, TickSpec) | `apps/organiclever-web` (Next.js 16, Effect TS) |
+| Aspect      | Backend (be/)                                 | Frontend (fe/)                            |
+| ----------- | --------------------------------------------- | ----------------------------------------- |
+| Perspective | HTTP-semantic (GET, POST, status codes)       | UI-semantic (clicks, types, sees)         |
+| Background  | `Given the API is running`                    | `Given the app is running`                |
+| Scenarios   | See [be/gherkin/](./be/gherkin/README.md)     | See [fe/gherkin/](./fe/gherkin/README.md) |
+| Domains     | health                                        | landing, system, layout, routing          |
+| Consumed by | `apps/organiclever-be` (F#/Giraffe, TickSpec) | `apps/organiclever-web` (Next.js 16)      |
 
-Both spec sets cover the same functional surface from different perspectives. The frontend app
-consumes the backend API.
+The frontend's system-status page consumes the backend's health endpoint. Otherwise the v0
+frontend is local-first.
 
-## Shared Domains
+## Domains
 
-| Domain         | BE Features | FE Features | Description                                               |
-| -------------- | ----------- | ----------- | --------------------------------------------------------- |
-| health         | 1           | --          | Service health status                                     |
-| authentication | 2           | 3           | Google OAuth login, profile (protected), route protection |
-| layout         | --          | 1           | Accessibility (WCAG AA compliance)                        |
+| Domain  | BE Features | FE Features | Description                                                  |
+| ------- | ----------- | ----------- | ------------------------------------------------------------ |
+| health  | 1           | --          | Service health status                                        |
+| landing | --          | 1           | Marketing landing page                                       |
+| system  | --          | 1           | System-status diagnostic page polling the BE health endpoint |
+| layout  | --          | 1           | Accessibility (WCAG AA compliance)                           |
+| routing | --          | 1           | Disabled-route 404 guards (`/login`, `/profile`)             |
 
 ## Spec Artifacts
 

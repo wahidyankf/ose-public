@@ -11,9 +11,9 @@ Tests use Playwright to drive a real browser against a running frontend and back
 Feature files in [`specs/apps/organiclever/fe/gherkin/`](../../specs/apps/organiclever/fe/gherkin/)
 are the source of truth:
 
-- `authentication/google-login` — Login page renders Google sign-in button, no email/password form
-- `authentication/profile` — Profile page displays Google account name, email, and avatar
-- `authentication/route-protection` — Unauthenticated redirects to /login; authenticated access to /profile
+- `landing/landing` — Landing page renders hero, principles, weekly-rhythm demo, CTAs
+- `system/system-status-be` — System-status page polls the BE health endpoint and renders the result
+- `routing/disabled-routes` — `/login` and `/profile` return 404 (no v0 auth surface)
 - `layout/accessibility` — WCAG AA heading hierarchy, keyboard navigation, color contrast, ARIA landmarks
 
 ## Architecture
@@ -97,17 +97,6 @@ Override the base URL to test a different deployment:
 BASE_URL=http://localhost:3200 nx run organiclever-web-e2e:test:e2e
 ```
 
-## Google OAuth Testing Strategy
-
-The Google OAuth flow cannot be driven end-to-end in a headless browser without real Google
-credentials. The step implementations use a simulation strategy:
-
-- Login page steps validate the presence of the "Sign in with Google" button and the absence of
-  email/password fields.
-- Post-OAuth steps navigate directly to the post-authentication destination, simulating what a
-  successful OAuth callback produces.
-- Full OAuth token exchange is validated in the backend E2E suite.
-
 ## Project Structure
 
 ```
@@ -116,9 +105,9 @@ apps/organiclever-web-e2e/
 ├── package.json                   # Dependencies (playwright, playwright-bdd, axe-core)
 ├── tsconfig.json                  # TypeScript config
 ├── steps/                         # BDD step definitions
-│   ├── google-login.steps.ts      # Google login page steps
-│   ├── profile.steps.ts           # Profile page steps
-│   ├── route-protection.steps.ts  # Route protection steps
+│   ├── landing.steps.ts           # Landing-page steps
+│   ├── system-status-be.steps.ts  # System-status page steps
+│   ├── disabled-routes.steps.ts   # /login + /profile 404 guards
 │   └── accessibility.steps.ts     # Accessibility compliance steps
 └── .features-gen/                 # Auto-generated spec files (gitignored)
 ```

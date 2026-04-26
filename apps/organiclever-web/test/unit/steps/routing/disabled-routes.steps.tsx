@@ -21,7 +21,7 @@ const appRoot = path.resolve(__dirname, "../../../../../src/app");
 /**
  * Resolves the file-system path candidates for a Next.js App Router route.
  * GET /login -> src/app/login/page.tsx
- * POST /api/auth/google -> src/app/api/auth/google/route.ts
+ * GET /profile -> src/app/profile/page.tsx
  */
 function routeFilePaths(method: string, routePath: string): string[] {
   const segments = routePath.replace(/^\//, "").split("/");

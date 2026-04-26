@@ -43,7 +43,7 @@
         "commands": [
           "dotnet tool restore",
           "dotnet build tests/OrganicLeverBe.Tests/OrganicLeverBe.Tests.fsproj",
-          "dotnet altcover --inputDirectory tests/OrganicLeverBe.Tests/bin/Debug/net10.0 --outputDirectory tests/OrganicLeverBe.Tests/bin/Debug/net10.0/__Instrumented --assemblyExcludeFilter=OrganicLeverBe.Tests '--assemblyFilter=xunit|TickSpec|Microsoft|FSharp|testhost|AltCover|coverlet|dbup|Npgsql|EFCore|Google' '--fileFilter=TestHandler|GoogleAuthService' --linecover --reportFormat=lcov --report=coverage/altcov.info --save",
+          "dotnet altcover --inputDirectory tests/OrganicLeverBe.Tests/bin/Debug/net10.0 --outputDirectory tests/OrganicLeverBe.Tests/bin/Debug/net10.0/__Instrumented --assemblyExcludeFilter=OrganicLeverBe.Tests '--assemblyFilter=xunit|TickSpec|Microsoft|FSharp|testhost|AltCover|coverlet' --linecover --reportFormat=lcov --report=coverage/altcov.info --save",
           "dotnet altcover Runner --recorderDirectory tests/OrganicLeverBe.Tests/bin/Debug/net10.0/__Instrumented --lcovReport coverage/altcov.info --executable dotnet -- test tests/OrganicLeverBe.Tests/bin/Debug/net10.0/__Instrumented/OrganicLeverBe.Tests.dll --filter Category=Unit",
           "(cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/organiclever-be/coverage/altcov.info 90)"
         ],

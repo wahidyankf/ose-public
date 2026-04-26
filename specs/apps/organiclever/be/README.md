@@ -1,14 +1,14 @@
 # OrganicLever Backend API Specs
 
-Platform-agnostic Gherkin acceptance specifications for the OrganicLever backend service covering
-service health and Google OAuth authentication with JWT token management.
+Platform-agnostic Gherkin acceptance specifications for the OrganicLever backend service. v0
+covers the service health endpoint only; productivity-tracking endpoints will be added in
+future iterations.
 
 ## What This Covers
 
-| Domain         | Description                                                   |
-| -------------- | ------------------------------------------------------------- |
-| health         | Service liveness check                                        |
-| authentication | Google OAuth login, refresh token rotation, protected profile |
+| Domain | Description            |
+| ------ | ---------------------- |
+| health | Service liveness check |
 
 ## Three-Level Spec Consumption
 
@@ -61,11 +61,8 @@ specs/apps/organiclever/be/
 ├── README.md
 └── gherkin/
     ├── README.md
-    ├── health/
-    │   └── health-check.feature          (2 scenarios)
-    └── authentication/
-        ├── google-login.feature          (6 scenarios)
-        └── me.feature                    (3 scenarios)
+    └── health/
+        └── health-check.feature          (2 scenarios)
 ```
 
 **File naming**: `[domain-capability].feature` (kebab-case)

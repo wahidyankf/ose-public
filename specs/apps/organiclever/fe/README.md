@@ -1,15 +1,18 @@
 # OrganicLever Frontend App Specs
 
-Platform-agnostic Gherkin acceptance specifications for the OrganicLever frontend application
-that consumes the [organiclever-be API](../be/README.md). The spec covers 3 domains: Google OAuth
-login, protected user profile, route protection, and accessibility.
+Platform-agnostic Gherkin acceptance specifications for the OrganicLever frontend application.
+v0 covers the marketing landing page, the system-status diagnostic page (which polls the
+backend health endpoint), accessibility compliance, and 404 guards on `/login` and `/profile`
+(no authenticated screens in v0).
 
 ## What This Covers
 
-| Domain         | Description                                                                 |
-| -------------- | --------------------------------------------------------------------------- |
-| authentication | Google sign-in page, protected profile page, route protection and redirects |
-| layout         | WCAG AA accessibility compliance                                            |
+| Domain  | Description                                                  |
+| ------- | ------------------------------------------------------------ |
+| landing | Marketing landing page (hero, features, principles, CTAs)    |
+| system  | System-status diagnostic page polling the BE health endpoint |
+| layout  | WCAG AA accessibility compliance                             |
+| routing | Disabled-route 404 guards (`/login`, `/profile`)             |
 
 ## Relationship to organiclever-be
 
@@ -19,10 +22,11 @@ login, protected user profile, route protection, and accessibility.
 | Steps       | `sends GET/POST`, `status code`, `response body` | `clicks`, `types`, `sees`, `navigates`  |
 | Background  | `Given the API is running`                       | `Given the app is running`              |
 | Scenarios   | See [be/gherkin/](../be/gherkin/README.md)       | See [fe/gherkin/](gherkin/README.md)    |
-| Domains     | 2 domains                                        | 3 domains (2 shared + layout)           |
+| Domains     | health                                           | landing, system, layout, routing        |
 
-Both spec sets cover the same functional surface. The frontend app consumes the backend API —
-step definitions translate UI actions into API calls and verify the rendered output.
+The frontend's system-status page consumes the backend's health endpoint. Otherwise the v0
+frontend is local-first — every productivity-tracking feature lives in the user's browser via
+`localStorage`.
 
 ## Implementations
 
@@ -59,19 +63,21 @@ specs/apps/organiclever/fe/
 ├── README.md
 └── gherkin/
     ├── README.md
-    ├── authentication/
-    │   ├── google-login.feature         (2 scenarios)
-    │   ├── profile.feature              (2 scenarios)
-    │   └── route-protection.feature     (4 scenarios)
-    └── layout/
-        └── accessibility.feature        (5 scenarios)
+    ├── landing/
+    │   └── landing.feature
+    ├── system/
+    │   └── system-status-be.feature
+    ├── layout/
+    │   └── accessibility.feature
+    └── routing/
+        └── disabled-routes.feature
 ```
 
 **File naming**: `[domain-capability].feature` (kebab-case)
 
 ## Adding a Feature File
 
-1. Identify the domain (e.g., `authentication`, `layout`)
+1. Identify the domain (e.g., `landing`, `layout`, `routing`)
 2. Create the folder if it does not exist: `specs/apps/organiclever/fe/gherkin/[domain]/`
 3. Create the `.feature` file: `[domain-capability].feature`
 4. Open with `Feature:` then a user story block (`As a … / I want … / So that …`)

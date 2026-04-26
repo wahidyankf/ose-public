@@ -1,17 +1,11 @@
 import { expect } from "@playwright/test";
 import { createBdd } from "playwright-bdd";
 import { getResponse, clearResponse } from "../utils/response-store";
-import { clearAll } from "../utils/token-store";
 
 const { Given, Before, Then } = createBdd();
 
-Before(async ({ request }) => {
-  clearAll();
+Before(() => {
   clearResponse();
-  // Reset database state between scenarios
-  await request.post("/api/v1/test/reset-db", {
-    headers: { "Content-Type": "application/json" },
-  });
 });
 
 Given("the API is running", async () => {

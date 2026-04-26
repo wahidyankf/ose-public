@@ -29,9 +29,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN npx @hey-api/openapi-ts -i specs/apps/organiclever/contracts/generated/openapi-bundled.yaml -o src/generated-contracts -s
 
 ARG ORGANICLEVER_BE_URL=http://organiclever-be:8202
-ARG NEXT_PUBLIC_GOOGLE_CLIENT_ID=""
 ENV ORGANICLEVER_BE_URL=${ORGANICLEVER_BE_URL}
-ENV NEXT_PUBLIC_GOOGLE_CLIENT_ID=${NEXT_PUBLIC_GOOGLE_CLIENT_ID}
 RUN npx next build
 
 FROM node:24-alpine

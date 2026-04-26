@@ -22,6 +22,7 @@ jobs:
         run: npx nx run organiclever-web-e2e:test:e2e
         env:
           WEB_BASE_URL: ${{ vars.WEB_BASE_URL }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
 
       - name: Upload FE E2E report
         if: always()

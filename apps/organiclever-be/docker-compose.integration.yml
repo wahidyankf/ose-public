@@ -26,7 +26,5 @@ services:
       DATABASE_URL: "Host=postgres;Port=5432;Database=organiclever_be_test;Username=organiclever_be;Password=organiclever_be"
       APP_JWT_SECRET: "integration-test-secret-key-at-least-32-characters"
       APP_ENV: "test"
-      GOOGLE_CLIENT_ID: "test"
-      ENABLE_TEST_API: "true"
     volumes:
       - ../../specs:/specs:ro

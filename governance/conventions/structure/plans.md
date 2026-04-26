@@ -179,21 +179,25 @@ Plans can use either **single-file** or **multi-file** structure depending on si
 
 ### Structure Decision
 
-**Multi-File Structure** (default — five documents):
+**Multi-File Structure** (DEFAULT — five documents):
 
-- Use for any plan with substantive business intent, product scope, and technical design to record
+Every new plan MUST use the five-document multi-file layout unless ALL of the exception criteria listed under Single-File Structure are met. When in doubt, use five documents.
+
 - Five separate files: `README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md`
 - Each file owns one concern (see Content-Placement Rules below), so diffs stay narrow per PR and cross-reviewers can find the section relevant to their concern without skimming an omnibus file
-- Use for complex, large-scale plans, and any plan where the business rationale deserves its own file
 
-**Single-File Structure** (exception for trivially small plans, ≤ 1000 lines total):
+**Single-File Structure** (exception — only when ALL criteria below are met):
 
-- Use only when combined business rationale + product scope + tech-docs + delivery ≤ 1000 lines AND the plan is simple enough that collapsing all five concerns into one README does not hide them
-- All content in a single `README.md` file
-- Simpler for one-shot edits, quick config changes, and similarly scoped work
-- If the plan grows past 1000 lines or the author can foresee the plan growing mid-execution, promote to the multi-file layout before execution begins
+A plan MAY collapse to a single `README.md` only when **all** of the following hold simultaneously:
 
-**Decision Rule**: Default to the five-document multi-file layout. Collapse to single-file only when the plan is trivially small AND a condensed BRD + condensed PRD can both fit comfortably in the README without crowding out the technical sections.
+1. Combined business rationale + product scope + tech-docs + delivery fits within 1000 lines total
+2. The condensed BRD and condensed PRD sections both fit comfortably in the README without crowding out the technical sections
+3. The plan touches at most one subrepo or one narrow concern (single-phase, no new agents/workflows/conventions introduced)
+4. The author does not foresee the plan growing mid-execution
+
+If any criterion is unmet, use the five-document layout. If the plan grows past 1000 lines or any criterion is violated mid-execution, promote to the multi-file layout before continuing execution.
+
+**Decision Rule**: The five-document multi-file layout is the required default. Single-file is a bounded exception that requires all four criteria above to be satisfied, not merely a choice based on line-count alone.
 
 ### Single-File Structure
 
@@ -314,7 +318,7 @@ Plans differ from `docs/` in several important ways:
 1. **Start with an idea**: Capture quick idea in `ideas.md` (1-3 lines)
 2. **Formalize when ready**: Create plan folder in `backlog/` when idea is mature
 3. **Follow naming convention**: Use `YYYY-MM-DD__[project-identifier]/` format
-4. **Choose structure**: Single-file (≤1000 lines) or multi-file (>1000 lines)
+4. **Choose structure**: Default to the five-document multi-file layout (`README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md`). Collapse to single-file only when all four exception criteria in the Structure Decision section are met simultaneously.
 5. **Create content**: Write overview, requirements, tech docs, and delivery sections
 6. **Update index**: Add plan to `backlog/README.md`
 
@@ -345,13 +349,13 @@ Each subfolder (`backlog/`, `in-progress/`, `done/`) has a `README.md` that:
 
 ## Diagrams in Plans
 
-Files in `plans/` folder should use **Mermaid diagrams** as the primary format (same as all markdown files in the repository).
+Files in `plans/` folder MUST use **Mermaid diagrams** as the primary format (same as all markdown files in the repository).
 
 **Diagram Standards**:
 
 - **Primary Format**: Mermaid diagrams for all flowcharts, architecture diagrams, sequences
 - **ASCII Art**: Optional, only for simple directory trees or rare edge cases
-- **Orientation**: Prefer vertical (top-down or bottom-top) for mobile-friendly viewing
+- **Orientation**: Default to left-to-right (`flowchart LR` / `graph LR`) per the [Diagram and Schema Convention](../formatting/diagrams.md); use top-down only when semantically required
 - **Colors**: Use color-blind friendly palette from [Color Accessibility Convention](../formatting/color-accessibility.md)
 
 **Why Mermaid**:
@@ -361,31 +365,38 @@ Files in `plans/` folder should use **Mermaid diagrams** as the primary format (
 - Easy to update and maintain
 - Supports multiple diagram types (flowchart, sequence, class, ER, etc.)
 
-### When a Plan SHOULD Include a Diagram
+### When a Plan MUST Include a Diagram
 
-Add a Mermaid diagram whenever the plan covers one of these concerns and a reader would otherwise have to reconstruct the picture mentally from prose:
+A plan MUST include at least one Mermaid diagram when the plan covers any of the following concerns and a reader would otherwise have to reconstruct the picture mentally from prose:
 
 - **Component interactions** — which services, agents, apps, or libraries call which, and through what contract (flowchart or C4-style diagram)
 - **Sequence or flow between agents or systems** — order-of-operations across processes, including async hand-offs and timeouts (sequenceDiagram)
 - **State transitions** — lifecycle of an entity (plan folder, request, deployment, entitlement) with named states and triggered transitions (stateDiagram-v2)
 - **Decision branches** — non-trivial conditional logic with more than two outcomes or nested decisions (flowchart with labelled edges)
 
+If unsure whether a diagram is warranted, add it. A redundant diagram costs less than a missed architectural ambiguity.
+
 ### When a Plan MAY Skip Diagrams
 
-Text-only is fine when the plan is genuinely linear and small:
+Text-only is acceptable only when the plan is genuinely linear and trivially small:
 
 - Single-file README-only plans touching one file or one config value
 - Renames, copy edits, documentation fixes
 - Dependency bumps with no behavioural change
 
-If unsure, add the diagram. A redundant diagram costs less than a missed architectural ambiguity.
-
 ### Accessibility and Palette Requirements
 
-All plan diagrams MUST follow repository diagram standards — color-blind friendly palette, mobile-friendly orientation, correct Mermaid comment syntax. This convention does **not** redefine those rules.
+All plan diagrams MUST follow repository diagram standards: use the color-blind friendly palette, mobile-friendly orientation, and correct Mermaid comment syntax. Key invariants:
 
-- **Primary reference** — [Diagram and Schema Convention](../formatting/diagrams.md) for full syntax, ASCII fallback rules, and orientation guidance
-- **Palette and accessibility Skill** — [`docs-creating-accessible-diagrams`](../../../.claude/skills/docs-creating-accessible-diagrams/SKILL.md) for the verified WCAG-compliant hex codes, dos and don'ts, and color-blindness coverage
+- Never use red, green, or yellow fills in diagram nodes — these are invisible or ambiguous for the most common color-blindness types.
+- Always use black borders (`stroke:#000000`) and white text (`color:#FFFFFF`) on dark fills.
+- Use only the eight verified accessible hex codes: `#0173B2` (blue), `#DE8F05` (orange), `#029E73` (teal), `#CC78BC` (purple), `#CA9161` (brown), `#808080` (gray), `#000000` (black), `#FFFFFF` (white).
+
+This convention does **not** redefine those rules in full — consult the authoritative sources:
+
+- **Palette and WCAG AA rules** — [Color Accessibility Convention](../formatting/color-accessibility.md) — authoritative source for the verified palette, hex codes, contrast ratios, and color-blindness coverage
+- **Diagram syntax and orientation** — [Diagram and Schema Convention](../formatting/diagrams.md) for full Mermaid syntax, ASCII fallback rules, LR orientation default, and width constraints
+- **Palette and accessibility Skill** — [`docs-creating-accessible-diagrams`](../../../.claude/skills/docs-creating-accessible-diagrams/SKILL.md) for the verified WCAG-compliant hex codes, dos and don'ts, and agent-usable reference
 
 ### Example: Plan-Appropriate Flowchart
 
@@ -459,6 +470,7 @@ Use the verification tip from the [Linking Convention](../formatting/linking.md#
 - [Diátaxis Framework](./diataxis-framework.md) - Organization of `docs/` directory
 - [File Naming Convention](./file-naming.md) - Naming files within `docs/` (not applicable to plans/)
 - [Diagram and Schema Convention](../formatting/diagrams.md) - Standards for Mermaid diagrams
+- [Color Accessibility Convention](../formatting/color-accessibility.md) - Verified accessible palette, WCAG AA requirements, and color-blindness coverage for all diagram fills
 
 **Development Guides**:
 

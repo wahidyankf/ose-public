@@ -61,9 +61,9 @@ None. All work is local code changes + tests; no external configuration.
 
 | Phase | Work                                                           | Status |
 | ----- | -------------------------------------------------------------- | ------ |
-| 1     | Add `plans/` to default scan dirs + spec scenario + unit test  | todo   |
-| 2     | Expand `&` multi-target operator in `extractEdgeLine` + tests  | todo   |
-| 3     | New `MaxSubgraphNodes` warning rule + spec scenario + tests    | todo   |
-| 4     | Run validator against existing plan diagrams; surface findings | todo   |
-| 5     | Local quality gates (Nx test, coverage ≥ 90%, lint)            | todo   |
-| 6     | Push + CI verification                                         | todo   |
+| 1     | Add `plans/` to default scan dirs + spec scenario + unit test  | done   |
+| 2     | Expand `&` multi-target operator in `extractEdgeLine` + tests  | done   |
+| 3     | New `MaxSubgraphNodes` warning rule + spec scenario + tests    | done   |
+| 4     | Run validator against existing plan diagrams; surface findings | done   |
+| 5     | Local quality gates (Nx test, coverage ≥ 90%, lint)            | done   |
+| 6     | Push + CI verification                                         | done   |

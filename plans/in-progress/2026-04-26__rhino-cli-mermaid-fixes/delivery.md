@@ -317,23 +317,35 @@ Status: done. Committing below.
 
 ### 5.1 Run affected quality gates
 
-- [ ] `nx affected -t typecheck lint test:quick spec-coverage`
-- [ ] If any failure: investigate root cause, fix, re-run
+- [x] `nx affected -t typecheck lint test:quick spec-coverage`
+- [x] If any failure: investigate root cause, fix, re-run
+
+**Implementation Notes** (2026-04-26)
+Status: done. Initial run flagged `exhaustive` lint on `reporter.go warningDetail` switch; added explicit `WarningComplexDiagram` case (Iron Rule 3 — pre-existing latent issue surfaced by introducing new WarningKind). All targets pass second run. Coverage 90.12%.
 
 ### 5.2 Markdown lint
 
-- [ ] `npm run lint:md`
-- [ ] If violations: `npm run lint:md:fix`, re-run until clean
+- [x] `npm run lint:md`
+- [x] If violations: `npm run lint:md:fix`, re-run until clean
+
+**Implementation Notes** (2026-04-26)
+Status: done. 0 errors across 2201 files.
 
 ### 5.3 Coverage gate
 
-- [ ] `nx run rhino-cli:test:quick` — confirm coverage ≥ 90%
+- [x] `nx run rhino-cli:test:quick` — confirm coverage ≥ 90% (90.12%)
+
+**Implementation Notes** (2026-04-26)
+Status: done. mermaid pkg 95.7%, overall 90.12%.
 
 ### 5.4 Smoke check the CLI
 
-- [ ] `nx run rhino-cli:build`
-- [ ] Run `./apps/rhino-cli/dist/rhino-cli docs validate-mermaid --help` and
+- [x] `nx run rhino-cli:build`
+- [x] Run `./apps/rhino-cli/dist/rhino-cli docs validate-mermaid --help` and
       confirm `--max-subgraph-nodes` flag is documented
+
+**Implementation Notes** (2026-04-26)
+Status: done. Binary --help shows: `--max-subgraph-nodes int   max direct child nodes per subgraph; emits a subgraph_density warning when exceeded (default 6)`.
 
 ---
 

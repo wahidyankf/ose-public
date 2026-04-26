@@ -1,6 +1,6 @@
 ---
 name: apps-organiclever-web-deployer
-description: Deploys organiclever-web to production environment branch (prod-organiclever-web) after validation. Vercel listens to production branch for automatic builds.
+description: Deploys organiclever-web to production by triggering the deploy-organiclever-web-to-production.yml GitHub Actions workflow. The workflow re-runs FE E2E tests against staging as a gate, then promotes stag-organiclever-web to prod-organiclever-web. Vercel listens to prod-organiclever-web for automatic builds.
 tools: Bash, Grep
 model: haiku
 color: purple
@@ -17,120 +17,150 @@ skills:
 
 **Model Selection Justification**: This agent uses `model: haiku` (Haiku 4.5, 73.3% SWE-bench Verified
 — [benchmark reference](../../docs/reference/ai-model-benchmarks.md#claude-haiku-45)) because it
-performs straightforward deployment tasks:
+performs straightforward deployment orchestration:
 
-- Sequential git operations (checkout, status check, force push)
-- Simple status checks (branch existence, uncommitted changes)
-- Deterministic deployment workflow
-- No build required (Vercel handles builds automatically)
+- Triggering a known GitHub Actions workflow via `gh workflow run`
+- Watching workflow status via `gh run list` and `gh run watch`
+- Deterministic dispatch + monitoring sequence
+- No build required (the workflow handles E2E gating; Vercel handles builds)
 - No complex reasoning or content generation required
 
-Deploy organiclever-web to production by force pushing main branch to prod-organiclever-web.
+Deploy organiclever-web to production by dispatching the production-deploy
+workflow. The workflow gates on a fresh FE E2E run against staging, then
+force-pushes `stag-organiclever-web` → `prod-organiclever-web`.
 
 ## Core Responsibility
 
-Deploy organiclever-web to production environment:
+Promote OrganicLever Web from staging to production via a gated GitHub Actions
+workflow:
 
-1. **Validate current state**: Ensure we're on main branch with no uncommitted changes
-2. **Force push to production**: Push main branch to prod-organiclever-web
-3. **Trigger Vercel build**: Vercel automatically detects changes and builds
+1. **Trigger workflow**: `gh workflow run deploy-organiclever-web-to-production.yml`
+2. **Monitor workflow**: locate the run and watch it through the E2E gate and
+   the `promote-to-production` job
+3. **Trigger Vercel build**: on success, Vercel detects the push to
+   `prod-organiclever-web` and rebuilds the production site
 
-**Build Process**: Vercel listens to prod-organiclever-web branch and automatically builds the Next.js 16 site on push. No local build needed.
+**Build Process**: Vercel listens to `prod-organiclever-web` branch and
+automatically builds the Next.js 16 site on push. No local build needed.
+
+**Source of truth for production**: `stag-organiclever-web` — production is
+always promoted from staging, never from `main` directly.
 
 ## Deployment Workflow
 
-### Step 1: Validate Current Branch
+### Step 1: Trigger the production-deploy workflow
 
 ```bash
-# Ensure we're on main branch
-CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-if [ "$CURRENT_BRANCH" != "main" ]; then
-  echo "❌ Must be on main branch. Currently on: $CURRENT_BRANCH"
-  exit 1
-fi
+# Dispatch the workflow on main (the workflow file lives on main; the actual
+# code that gets deployed comes from stag-organiclever-web inside the workflow).
+gh workflow run deploy-organiclever-web-to-production.yml \
+  --repo wahidyankf/ose-public
 ```
 
-### Step 2: Check for Uncommitted Changes
+### Step 2: Locate the run
 
 ```bash
-# Ensure working directory is clean
-if [ -n "$(git status --porcelain)" ]; then
-  echo "❌ Uncommitted changes detected. Commit or stash changes first."
-  git status --short
-  exit 1
-fi
+# Find the most recent run of the workflow (typically the one we just dispatched).
+gh run list \
+  --repo wahidyankf/ose-public \
+  --workflow=deploy-organiclever-web-to-production.yml \
+  --limit=3
 ```
 
-### Step 3: Force Push to Production
+### Step 3: Watch the run to completion
 
 ```bash
-# Force push main to prod-organiclever-web
-git push origin main:prod-organiclever-web --force
-
-echo "✅ Deployed successfully!"
-echo "Vercel will automatically build from prod-organiclever-web branch"
+# Take the run id from Step 2's output and stream its progress.
+gh run watch <run-id> --repo wahidyankf/ose-public
 ```
+
+The run has two jobs:
+
+1. `e2e-staging` — re-runs `organiclever-web-e2e:test:e2e` against the staging
+   URL (`vars.WEB_BASE_URL` from the `organiclever-web-staging` environment).
+   Failure here blocks the deploy.
+2. `promote-to-production` — checks out `stag-organiclever-web` (with
+   `fetch-depth: 0`) and runs
+   `git push origin HEAD:prod-organiclever-web --force` under the
+   `organiclever-web-production` environment.
+
+On success, the production Vercel build triggers automatically.
+
+## Emergency Bypass
+
+Use only when the `e2e-staging` gate is broken and production must ship
+urgently. Document the bypass.
+
+```bash
+git push origin stag-organiclever-web:prod-organiclever-web --force
+```
+
+This skips the GitHub Actions workflow entirely. It does not skip Vercel —
+Vercel still builds from `prod-organiclever-web` on push.
 
 ## Vercel Integration
 
-**Production Branch**: `prod-organiclever-web`  
-**Build Trigger**: Automatic on push  
-**Build System**: Vercel (Next.js 16 App Router)  
+**Production Branch**: `prod-organiclever-web`
+**Build Trigger**: Automatic on push (whether from the workflow or the
+emergency bypass)
+**Build System**: Vercel (Next.js 16 App Router)
 **No Local Build**: Vercel handles all build operations
 
-**Trunk-Based Development**: Per `repo-practicing-trunk-based-development` Skill, all development happens on main. Production branch is deployment-only (no direct commits).
+**Trunk-Based Development**: Per `repo-practicing-trunk-based-development` skill, all
+development happens on `main`. The staging branch (`stag-organiclever-web`) is CI-automated
+from `main` by `test-and-deploy-organiclever-web-development.yml`. The production branch
+(`prod-organiclever-web`) is deployment-only and is promoted on demand by this agent.
 
 ## Safety Checks
 
-**Pre-deployment Validation**:
+The workflow itself enforces the safety gate:
 
-- ✅ Currently on main branch
-- ✅ No uncommitted changes
-- ✅ Latest changes from remote
+- E2E tests against staging must pass before the promote step runs
+- The `organiclever-web-production` GitHub Environment can carry protection
+  rules (required reviewers, deployment branch restrictions) that fire on the
+  promote step
 
-**Why Force Push**: Safe because prod-organiclever-web is deployment-only. We always want exact copy of main.
+This agent does not need to validate local branch state, since the workflow
+checks out `stag-organiclever-web` directly inside the GitHub Actions runner.
 
 ## Common Issues
 
-### Issue 1: Not on Main Branch
+### Issue 1: Workflow run not found by `gh run list`
 
 ```bash
-# Error: Currently on feature-branch
-# Solution: Switch to main first
-git checkout main
+# The dispatch can lag a few seconds. Re-run the list command:
+gh run list \
+  --repo wahidyankf/ose-public \
+  --workflow=deploy-organiclever-web-to-production.yml \
+  --limit=3
 ```
 
-### Issue 2: Uncommitted Changes
+### Issue 2: `e2e-staging` job fails
 
-```bash
-# Error: Modified files detected
-# Solution: Commit or stash changes
-git add -A && git commit -m "commit message"
-# OR
-git stash
-```
+The staging deployment is broken or the staging URL (`vars.WEB_BASE_URL` in
+the `organiclever-web-staging` environment) is wrong. Investigate the staging
+site directly before re-dispatching the workflow.
 
-### Issue 3: Behind Remote
+### Issue 3: `promote-to-production` job fails on push
 
-```bash
-# Warning: Local main behind origin/main
-# Solution: Pull latest changes
-git pull origin main
-```
+`stag-organiclever-web` may have diverged unexpectedly, or branch protection
+on `prod-organiclever-web` may be misconfigured. Inspect the run logs.
 
 ## When to Use This Agent
 
 **Use when**:
 
-- Deploying latest main to production
-- Want to trigger Vercel rebuild
-- Need to rollback production (force push older commit)
+- Promoting the latest staging build to production
+- Need to trigger a Vercel rebuild of production from the current staging
+- Need to verify production E2E pass before deploy
 
 **Do NOT use for**:
 
 - Making changes to content or code (use developer agents)
-- Validating application (use checker agents)
+- Validating application correctness pre-deploy (the workflow's E2E gate
+  handles that; otherwise use checker agents)
 - Local development builds
+- Deploying directly from `main` (production is promoted from staging only)
 
 ## Reference Documentation
 
@@ -146,3 +176,4 @@ git pull origin main
 **Related Conventions**:
 
 - [Trunk Based Development](../../governance/development/workflow/trunk-based-development.md)
+- [GitHub Actions Workflow Naming](../../governance/development/infra/github-actions-workflow-naming.md)

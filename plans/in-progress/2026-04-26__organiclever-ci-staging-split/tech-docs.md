@@ -26,10 +26,10 @@ flowchart TD
     DEPLOY -->|"git push --force"| PROD["prod-organiclever-web branch"]:::branch
     PROD --> VERCEL_PROD["Vercel → www.organiclever.com"]:::external
 
-    classDef trigger fill:#DE8F05,stroke:#000000,color:#000000
-    classDef job fill:#0173B2,stroke:#000000,color:#FFFFFF
-    classDef branch fill:#CA9161,stroke:#000000,color:#000000
-    classDef external fill:#808080,stroke:#000000,color:#FFFFFF
+    classDef trigger fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef job fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef branch fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef external fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
 
 ## Architecture: Target State
@@ -79,10 +79,10 @@ flowchart TD
     PP -->|"git push --force\nfrom stag-organiclever-web"| PROD["prod-organiclever-web branch"]:::branch
     PROD --> VERCEL_PROD["Vercel → www.organiclever.com"]:::external
 
-    classDef trigger fill:#DE8F05,stroke:#000000,color:#000000
-    classDef job fill:#0173B2,stroke:#000000,color:#FFFFFF
-    classDef branch fill:#CA9161,stroke:#000000,color:#000000
-    classDef external fill:#808080,stroke:#000000,color:#FFFFFF
+    classDef trigger fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef job fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef branch fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef external fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
 
 ### Schedule timeline (daily)

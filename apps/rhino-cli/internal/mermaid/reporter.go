@@ -95,9 +95,11 @@ func warningDetail(w Warning) string {
 			"[%s] subgraph %q has %d children; recommend ≤ %d for mobile rendering",
 			w.Kind, label, w.SubgraphNodeCount, w.MaxSubgraphNodes,
 		)
-	default:
+	case WarningComplexDiagram:
 		return fmt.Sprintf("[%s] span %d (max %d) and depth %d (max %d) both exceeded",
 			w.Kind, w.ActualWidth, w.MaxWidth, w.ActualDepth, w.MaxDepth)
+	default:
+		return fmt.Sprintf("[%s]", w.Kind)
 	}
 }
 

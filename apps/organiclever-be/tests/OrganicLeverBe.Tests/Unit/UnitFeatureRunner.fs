@@ -14,10 +14,11 @@ open OrganicLeverBe.Tests.HttpTestFixture
 /// marks every scenario with [Trait("Category", "Unit")] so they are picked up by
 /// `dotnet test --filter Category=Unit`.
 ///
-/// Uses a TestWebAppFactory with SQLite in-memory to route all requests through
-/// the real Giraffe handler pipeline, providing AltCover coverage of actual handler code.
-/// Step definitions are shared with the integration runner: all TickSpec [Given]/[When]/[Then]
-/// functions in the Integration.Steps.* modules are discovered from the executing assembly.
+/// Uses a TestWebAppFactory to route all requests through the real Giraffe handler
+/// pipeline, providing AltCover coverage of actual handler code.
+/// Step definitions are shared with the integration runner: all TickSpec
+/// [Given]/[When]/[Then] functions in the Integration.Steps.* modules are discovered
+/// from the executing assembly.
 
 let private assembly = Assembly.GetExecutingAssembly()
 
@@ -36,7 +37,7 @@ type private UnitScenarioServiceProvider(factory: TestWebAppFactory) =
     interface IServiceProvider with
         member _.GetService(serviceType: Type) =
             if serviceType = typeof<StepState> then
-                let httpClient = factory.CreateClientWithDb()
+                let httpClient = factory.CreateClient()
                 empty httpClient :> obj
             else
                 null
@@ -74,21 +75,3 @@ type UnitHealthFeatureTests() =
     [<Theory>]
     [<MemberData("Scenarios")>]
     member _.``Health Check (unit)``(scenario: Scenario) = scenario.Action.Invoke()
-
-[<Trait("Category", "Unit")>]
-type UnitGoogleLoginFeatureTests() =
-    static member Scenarios() : seq<obj[]> =
-        buildScenarioData "google-login" |> Seq.toList :> seq<_>
-
-    [<Theory>]
-    [<MemberData("Scenarios")>]
-    member _.``Google Login (unit)``(scenario: Scenario) = scenario.Action.Invoke()
-
-[<Trait("Category", "Unit")>]
-type UnitMeFeatureTests() =
-    static member Scenarios() : seq<obj[]> =
-        buildScenarioData "me" |> Seq.toList :> seq<_>
-
-    [<Theory>]
-    [<MemberData("Scenarios")>]
-    member _.``User Profile (unit)``(scenario: Scenario) = scenario.Action.Invoke()

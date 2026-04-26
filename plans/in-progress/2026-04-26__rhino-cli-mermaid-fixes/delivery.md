@@ -266,7 +266,7 @@ Status: done. test:quick 90.15% (mermaid pkg 96.0%). Commit below.
 
 ### 4.1 Run new validator over plans and docs
 
-- [ ] Run:
+- [x] Run:
 
   ```bash
   nx run rhino-cli:run -- docs validate-mermaid \
@@ -277,22 +277,36 @@ Status: done. test:quick 90.15% (mermaid pkg 96.0%). Commit below.
   Note: `docs/reference/system-architecture/` exists and contains Mermaid diagrams.
   Use `nx run rhino-cli:run --` (not the dist binary) per CLAUDE.md Nx conventions.
 
-- [ ] Capture the full output. Expected findings (per [tech-docs.md](./tech-docs.md)):
+- [x] Capture the full output. Expected findings (per [tech-docs.md](./tech-docs.md)):
   - `width_exceeded` in staging-split target-state diagram
   - `subgraph_density` warnings on WF1, possibly WF2, WF3 subgraphs
 
+**Implementation Notes** (2026-04-26)
+Status: done. Output: 7 violations, 2 warnings in 6 files, 12 blocks. Findings:
+
+- staging-split `tech-docs.md` block 0 (line 7): 2× label_too_long (BEI, E2E ~33ch); width_exceeded span=6
+- staging-split `tech-docs.md` block 1 (line 40): 3× label_too_long (BEI, E2E, PP); width_exceeded span=9
+- staging-split warnings: subgraph_density on `test-and-deploy-organiclever.yml` (7 children) and `test-and-deploy-organiclever-web-development.yml` (7 children)
+- `docs/reference/system-architecture/` clean.
+
 ### 4.2 Surface findings
 
-- [ ] If findings exist, decide:
+- [x] If findings exist, decide:
   - **Option A** — fix them in this plan (split subgraphs in
     staging-split's tech-docs.md). Keep within scope only if quick.
   - **Option B** — log as a new entry in `plans/ideas.md` referencing this plan.
-- [ ] Document the chosen option in the commit message.
+- [x] Document the chosen option in the commit message.
+
+**Implementation Notes** (2026-04-26)
+Status: done. Chose Option B — staging-split's diagrams belong to its plan; reshaping them mid-execution of the validator plan would expand scope. Logged to `plans/ideas.md` under Development Experience.
 
 ### 4.3 Commit
 
 - [ ] If fixes applied: `docs(plans): split organiclever-ci-staging-split mermaid diagrams to satisfy new validator rules`
-- [ ] If logged to ideas: `docs(plans): log mermaid diagram split as follow-up to rhino-cli-mermaid-fixes`
+- [x] If logged to ideas: `docs(plans): log mermaid diagram split as follow-up to rhino-cli-mermaid-fixes`
+
+**Implementation Notes** (2026-04-26)
+Status: done. Committing below.
 
 ---
 

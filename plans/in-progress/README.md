@@ -7,6 +7,10 @@ Active project plans currently being worked on.
 - [`2026-04-25__organiclever-web-app`](./2026-04-25__organiclever-web-app/README.md) —
   OrganicLever web app v0: local-first life-event tracker (workouts, quick logs, analytics,
   bilingual UI) behind the landing page CTA
+- [`2026-04-26__organiclever-remove-google-auth`](./2026-04-26__organiclever-remove-google-auth/README.md) —
+  Strip every Google OAuth touchpoint (BE F# code, FE service, OpenAPI contract, Gherkin
+  specs, e2e suites, C4 diagrams, env wiring, CI secrets) from the OrganicLever stack until
+  the surface is clean; auth re-introduced in a future plan when needed.
 
 ## Instructions
 

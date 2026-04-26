@@ -307,12 +307,12 @@ apps/organiclever-be`).
       `chore(organiclever): remove google auth surface`.
 - [x] In the PR description, list the GitHub repository secrets that the human operator
       may now safely delete: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`.
-- [ ] Wait for CI to go green; promote the PR from draft to ready for review; merge.
-- [ ] After merge, in `ose-public` main, confirm the surface scan still returns no
+- [x] Wait for CI to go green; promote the PR from draft to ready for review; merge.
+- [x] After merge, in `ose-public` main, confirm the surface scan still returns no
       unwanted matches.
-- [ ] Move this plan folder from `plans/in-progress/` to `plans/done/`.
-- [ ] Update `plans/in-progress/README.md` (drop the row).
-- [ ] Update `plans/done/README.md` (add the row).
+- [x] Move this plan folder from `plans/in-progress/` to `plans/done/`.
+- [x] Update `plans/in-progress/README.md` (drop the row).
+- [x] Update `plans/done/README.md` (add the row).
 
 > **Phase 9 notes** — 2026-04-26. Surface scan: only matches are `next/font/google` (Google Fonts, explicitly preserved) + 3 intentional comments mentioning "Google auth UI" as guard intent in `apps/organiclever-web-e2e/steps/disabled-routes.steps.ts`, `specs/apps/organiclever/fe/gherkin/routing/disabled-routes.feature`, and `specs/apps/organiclever/c4/component-fe.md`. RTK CLI was filtering `nx affected -t` flags so the workflow shelled out via `rtk proxy npx nx affected -t <target>` (one target per call). All four affected gates GREEN: typecheck (4 projects + 3 deps), lint (5 projects), test:quick (4 projects), spec-coverage (4 projects). `nx run organiclever-contracts:lint` GREEN. `npm run lint:md` GREEN (0 errors across 2206 markdown files). Branch pushed to `origin worktree-organiclever-remove-google-auth`; draft PR opened (URL recorded below). PR description lists `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` for human-operator deletion post-merge. Three remaining items (CI go-green confirmation, post-merge surface re-scan, plan archival) execute after the human merges the PR.
 

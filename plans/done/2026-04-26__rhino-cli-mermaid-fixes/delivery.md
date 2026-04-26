@@ -351,12 +351,29 @@ Status: done. Binary --help shows: `--max-subgraph-nodes int   max direct child 
 
 ## Phase 6 — Push and CI Verification
 
-- [ ] If remote has moved forward: `git pull --rebase origin main`
-- [ ] `git push origin main`
-- [ ] Open GitHub Actions and monitor all triggered workflows
-- [ ] If any check fails: fix root cause, push follow-up commit
-- [ ] Repeat until all GitHub Actions checks pass green
-- [ ] Do NOT proceed to archival until CI is fully green
+- [x] If remote has moved forward: `git pull --rebase origin main`
+- [x] `git push origin main`
+- [x] Open GitHub Actions and monitor all triggered workflows
+- [x] If any check fails: fix root cause, push follow-up commit
+- [x] Repeat until all GitHub Actions checks pass green
+- [x] Do NOT proceed to archival until CI is fully green
+
+**Implementation Notes** (2026-04-26)
+Status: done. Per Subrepo Worktree Workflow, this work runs on branch
+`worktree-gleaming-sparking-sonnet` and surfaces as draft PR
+[wahidyankf/ose-public#25](https://github.com/wahidyankf/ose-public/pull/25)
+rather than committing directly to `main`. CI checks all green:
+
+- Detect affected languages — SUCCESS
+- Validate markdown links — SUCCESS
+- Format check (Prettier) — SUCCESS
+- Naming validators (agents + workflows) — SUCCESS
+- TypeScript quality gate — SUCCESS
+- Go quality gate — SUCCESS
+- JVM / Python / Rust / Elixir / Clojure / Dart — SKIPPED (not affected)
+- .NET quality gate — SUCCESS
+- Markdown quality gate — SUCCESS
+- Quality gate (umbrella) — SUCCESS
 
 ---
 
@@ -364,26 +381,30 @@ Status: done. Binary --help shows: `--max-subgraph-nodes int   max direct child 
 
 Before archiving, all of the following must hold:
 
-- [ ] `collectMDDefaultDirs` includes `plans/`
-- [ ] `extractEdgeLine` handles `&` with backwards-compatible single-target case
-- [ ] `Subgraph` type defined; `ParsedDiagram.Subgraphs` populated by parser
-- [ ] `WarningSubgraphDense` constant defined
-- [ ] `--max-subgraph-nodes` flag wired through CLI to `ValidateOptions`
-- [ ] Reporter formats `WarningSubgraphDense` clearly
-- [ ] All new Gherkin scenarios present in `docs-validate-mermaid.feature` and pass
-- [ ] All new unit tests in parser_test.go, validator_test.go, reporter_test.go,
+- [x] `collectMDDefaultDirs` includes `plans/`
+- [x] `extractEdgeLine` handles `&` with backwards-compatible single-target case
+- [x] `Subgraph` type defined; `ParsedDiagram.Subgraphs` populated by parser
+- [x] `WarningSubgraphDense` constant defined
+- [x] `--max-subgraph-nodes` flag wired through CLI to `ValidateOptions`
+- [x] Reporter formats `WarningSubgraphDense` clearly
+- [x] All new Gherkin scenarios present in `docs-validate-mermaid.feature` and pass
+- [x] All new unit tests in parser_test.go, validator_test.go, reporter_test.go,
       docs_validate_mermaid_test.go pass
-- [ ] `nx run rhino-cli:test:quick` — coverage ≥ 90%
-- [ ] `nx affected -t typecheck lint test:quick spec-coverage` — zero failures
-- [ ] `npm run lint:md` — zero errors
-- [ ] All GitHub Actions triggered by the push to `main` are green
+- [x] `nx run rhino-cli:test:quick` — coverage ≥ 90% (90.12%)
+- [x] `nx affected -t typecheck lint test:quick spec-coverage` — zero failures
+- [x] `npm run lint:md` — zero errors
+- [x] All GitHub Actions triggered by the push to `main` are green
+      (PR #25 — branch surfaces via PR per Subrepo Worktree Workflow)
 
 ---
 
 ## Plan Archival
 
-- [ ] Verify ALL verification gates above are satisfied
-- [ ] `git mv plans/in-progress/2026-04-26__rhino-cli-mermaid-fixes plans/done/2026-04-26__rhino-cli-mermaid-fixes`
-- [ ] Remove entry from `plans/in-progress/README.md`
-- [ ] Add entry to `plans/done/README.md` with completion date
-- [ ] `chore(plans): archive rhino-cli-mermaid-fixes to done`
+- [x] Verify ALL verification gates above are satisfied
+- [x] `git mv plans/in-progress/2026-04-26__rhino-cli-mermaid-fixes plans/done/2026-04-26__rhino-cli-mermaid-fixes`
+- [x] Remove entry from `plans/in-progress/README.md`
+- [x] Add entry to `plans/done/README.md` with completion date
+- [x] `chore(plans): archive rhino-cli-mermaid-fixes to done`
+
+**Implementation Notes** (2026-04-26)
+Status: done. Plan archived; READMEs updated; commit below.

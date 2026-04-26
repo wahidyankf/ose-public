@@ -50,11 +50,19 @@ No new Nx projects, no new agents, no conventions, no specs added.
 | Set `WEB_BASE_URL` in `organiclever-web-staging`                                  | done   | Vercel staging URL already set                                                            |
 | Set `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET` in `organiclever-web-development` | todo   | Move from old `"Development - Organic Lever"` env if not already done                     |
 
+## Status
+
+**Done** — completed 2026-04-26. End-to-end verified: WF1
+[24955970289](https://github.com/wahidyankf/ose-public/actions/runs/24955970289)
+full-pass with deploy step force-pushing to `stag-organiclever-web`; WF2
+[24956137638](https://github.com/wahidyankf/ose-public/actions/runs/24956137638)
+staging E2E green against the live Vercel staging URL.
+
 ## Phases at a Glance
 
 | Phase | Work                                                              | Status |
 | ----- | ----------------------------------------------------------------- | ------ |
-| 1     | playwright.config.ts rename + delete old + create 3 new workflows | todo   |
-| 2     | Update eight `.md` files (6 filename refs + 2 model changes)      | todo   |
-| 3     | Local quality gates (markdown lint, YAML validation)              | todo   |
-| 4     | Push to `main` + CI verification                                  | todo   |
+| 1     | playwright.config.ts rename + delete old + create 3 new workflows | done   |
+| 2     | Update eight `.md` files (6 filename refs + 2 model changes)      | done   |
+| 3     | Local quality gates (markdown lint, YAML validation)              | done   |
+| 4     | Push to `main` + CI verification (incl. Vercel bypass + tag fix)  | done   |

@@ -7,10 +7,6 @@ Active project plans currently being worked on.
 - [`2026-04-25__organiclever-web-app`](./2026-04-25__organiclever-web-app/README.md) —
   OrganicLever web app v0: local-first life-event tracker (workouts, quick logs, analytics,
   bilingual UI) behind the landing page CTA
-- [`2026-04-26__organiclever-ci-staging-split`](./2026-04-26__organiclever-ci-staging-split/README.md) —
-  Replace the single OrganicLever CI workflow with three focused workflows: development
-  deploy (3 AM/3 PM WIB → stag branch), staging E2E tests (5 AM/5 PM WIB), and gated
-  production deploy (dispatch-only, E2E gate, promotes from staging branch)
 - [`2026-04-26__rhino-cli-mermaid-fixes`](./2026-04-26__rhino-cli-mermaid-fixes/README.md) —
   Fix three gaps in `rhino-cli docs validate-mermaid`: add `plans/` to default scan dirs,
   expand `&` multi-target operator in parser, add subgraph density warning rule

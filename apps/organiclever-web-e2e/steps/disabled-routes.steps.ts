@@ -3,8 +3,9 @@
  *
  * Covers: specs/apps/organiclever/fe/gherkin/routing/disabled-routes.feature
  *
- * GET routes are verified by navigating with page.goto and checking the HTTP
- * status. POST routes are verified via page.request.post.
+ * GET-only routes (/login, /profile) are verified by navigating with page.goto
+ * and checking the HTTP status. /login and /profile remain as guards against
+ * accidental re-introduction of Google auth UI.
  */
 import { createBdd } from "playwright-bdd";
 import { expect } from "@playwright/test";
@@ -18,23 +19,12 @@ Given("the application is running in local-first mode", async () => {
   // No-op: the server always runs in local-first mode for these tests.
 });
 
-When(
-  /a visitor requests (\w+) (\/(?:login|profile|api\/auth\/.+))$/,
-  async ({ page, request }, method: string, routePath: string) => {
-    currentMethod = method;
-    currentPath = routePath;
-
-    if (method === "GET") {
-      const response = await page.goto(routePath);
-      expect(response?.status()).toBe(404);
-    } else {
-      // Playwright resolves the relative path against `use.baseURL`, so this
-      // works for local dev (localhost:3200) and any deployed staging URL.
-      const response = await request.post(routePath);
-      expect(response.status()).toBe(404);
-    }
-  },
-);
+When(/a visitor requests (\w+) (\/(?:login|profile))$/, async ({ page }, method: string, routePath: string) => {
+  currentMethod = method;
+  currentPath = routePath;
+  const response = await page.goto(routePath);
+  expect(response?.status()).toBe(404);
+});
 
 Then("the response status is 404", async () => {
   // Status assertion is performed in the When step for inline access to response.

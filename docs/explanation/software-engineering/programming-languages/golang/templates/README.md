@@ -1,3 +1,15 @@
+---
+title: Go Documentation Templates
+description: Reusable templates for Go development patterns in OSE Platform
+category: explanation
+subcategory: prog-lang
+tags:
+  - golang
+  - templates
+  - programming-languages
+created: 2026-04-26
+---
+
 # Go Documentation Templates
 
 This directory contains reusable code templates and patterns for Go development.

@@ -1,3 +1,15 @@
+---
+title: Rust Documentation Templates
+description: Reusable templates for Rust development patterns in OSE Platform
+category: explanation
+subcategory: prog-lang
+tags:
+  - rust
+  - templates
+  - programming-languages
+created: 2026-04-26
+---
+
 # Rust Documentation Templates
 
 This directory contains reusable code templates and patterns for Rust development.

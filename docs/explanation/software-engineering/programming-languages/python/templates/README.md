@@ -1,3 +1,15 @@
+---
+title: Python Documentation Templates
+description: Reusable templates for Python development patterns in OSE Platform
+category: explanation
+subcategory: prog-lang
+tags:
+  - python
+  - templates
+  - programming-languages
+created: 2026-04-26
+---
+
 # Python Documentation Templates
 
 This directory contains reusable code templates and patterns for Python development.

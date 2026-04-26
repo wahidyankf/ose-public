@@ -1,3 +1,15 @@
+---
+title: Java Documentation Templates
+description: Reusable templates for Java development patterns in OSE Platform
+category: explanation
+subcategory: prog-lang
+tags:
+  - java
+  - templates
+  - programming-languages
+created: 2026-04-26
+---
+
 # Java Documentation Templates
 
 This directory contains reusable code templates and patterns for Java development.

@@ -1,3 +1,15 @@
+---
+title: C# Documentation Templates
+description: Reusable templates for C# development patterns in OSE Platform
+category: explanation
+subcategory: prog-lang
+tags:
+  - csharp
+  - templates
+  - programming-languages
+created: 2026-04-26
+---
+
 # C# Documentation Templates
 
 This directory contains reusable code templates and patterns for C# development.

@@ -1,3 +1,15 @@
+---
+title: Dart Documentation Templates
+description: Reusable templates for Dart development patterns in OSE Platform
+category: explanation
+subcategory: prog-lang
+tags:
+  - dart
+  - templates
+  - programming-languages
+created: 2026-04-26
+---
+
 # Dart Documentation Templates
 
 This directory contains reusable code templates and patterns for Dart development.

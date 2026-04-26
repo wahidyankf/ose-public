@@ -1,3 +1,15 @@
+---
+title: Elixir Documentation Templates
+description: Reusable templates for Elixir development patterns in OSE Platform
+category: explanation
+subcategory: prog-lang
+tags:
+  - elixir
+  - templates
+  - programming-languages
+created: 2026-04-26
+---
+
 # Elixir Documentation Templates
 
 This directory contains reusable code templates and patterns for Elixir development.

@@ -262,6 +262,23 @@ func TestValidateBlocks(t *testing.T) {
 	}
 }
 
+func TestValidateBlocks_AmpFanoutTriggersWidthViolation(t *testing.T) {
+	// 5-target fan-out via & operator must produce 5 parallel edges from T,
+	// triggering the default MaxWidth=4 violation.
+	src := "flowchart TD\nT --> A & B & C & D & E"
+	result := ValidateBlocks([]MermaidBlock{makeFlowchartBlock(src)}, DefaultValidateOptions())
+
+	if len(result.Violations) != 1 {
+		t.Fatalf("violations = %d, want 1; got: %+v", len(result.Violations), result.Violations)
+	}
+	if result.Violations[0].Kind != ViolationWidthExceeded {
+		t.Errorf("kind = %q, want %q", result.Violations[0].Kind, ViolationWidthExceeded)
+	}
+	if result.Violations[0].ActualWidth < 5 {
+		t.Errorf("ActualWidth = %d, want >= 5", result.Violations[0].ActualWidth)
+	}
+}
+
 func TestValidateBlocks_FilesAndBlocksScanned(t *testing.T) {
 	blocks := []MermaidBlock{
 		{FilePath: "a.md", BlockIndex: 0, Source: "flowchart TD\nA --> B", StartLine: 1},

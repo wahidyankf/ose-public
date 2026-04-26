@@ -1,6 +1,7 @@
 package mermaid
 
 import (
+	"slices"
 	"testing"
 )
 
@@ -159,6 +160,97 @@ B --> A`,
 				}
 			}
 		})
+	}
+}
+
+func TestExtractEdgeLine_AmpExpansion(t *testing.T) {
+	tests := []struct {
+		name      string
+		line      string
+		wantEdges []Edge
+	}{
+		{
+			name: "single multi-target",
+			line: "A --> B & C & D",
+			wantEdges: []Edge{
+				{From: "A", To: "B"},
+				{From: "A", To: "C"},
+				{From: "A", To: "D"},
+			},
+		},
+		{
+			name: "multi-source single target",
+			line: "A & B --> C",
+			wantEdges: []Edge{
+				{From: "A", To: "C"},
+				{From: "B", To: "C"},
+			},
+		},
+		{
+			name: "multi-source multi-target Cartesian",
+			line: "A & B --> C & D",
+			wantEdges: []Edge{
+				{From: "A", To: "C"},
+				{From: "A", To: "D"},
+				{From: "B", To: "C"},
+				{From: "B", To: "D"},
+			},
+		},
+		{
+			name: "regression chained single",
+			line: "A --> B --> C",
+			wantEdges: []Edge{
+				{From: "A", To: "B"},
+				{From: "B", To: "C"},
+			},
+		},
+		{
+			name:      "regression simple single",
+			line:      "A --> B",
+			wantEdges: []Edge{{From: "A", To: "B"}},
+		},
+		{
+			name:      "regression edge with link text",
+			line:      "A -- text --> B",
+			wantEdges: []Edge{{From: "A", To: "B"}},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			nodeMap := map[string]string{}
+			var edges []Edge
+			extractEdgeLine(tt.line, nodeMap, &edges)
+			if len(edges) != len(tt.wantEdges) {
+				t.Fatalf("edge count = %d, want %d; got: %+v", len(edges), len(tt.wantEdges), edges)
+			}
+			for _, want := range tt.wantEdges {
+				if !slices.Contains(edges, want) {
+					t.Errorf("missing edge %v; got: %+v", want, edges)
+				}
+			}
+		})
+	}
+}
+
+func TestExtractEdgeLine_PreservesLabelsInAmpExpansion(t *testing.T) {
+	nodeMap := map[string]string{}
+	var edges []Edge
+	extractEdgeLine("A[Alpha] & B[Beta] --> C[Gamma]", nodeMap, &edges)
+
+	wantLabels := map[string]string{"A": "Alpha", "B": "Beta", "C": "Gamma"}
+	for id, want := range wantLabels {
+		got, ok := nodeMap[id]
+		if !ok {
+			t.Errorf("node %q missing from nodeMap", id)
+			continue
+		}
+		if got != want {
+			t.Errorf("node %q label = %q, want %q", id, got, want)
+		}
+	}
+	if len(edges) != 2 {
+		t.Errorf("edge count = %d, want 2; got: %+v", len(edges), edges)
 	}
 }
 

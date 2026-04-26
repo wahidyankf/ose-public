@@ -137,3 +137,20 @@ Feature: Mermaid Flowchart Structural Validation
     When the developer runs docs validate-mermaid without path arguments
     Then the command exits with a failure code
     And the output identifies the file under plans/
+
+  Scenario: A multi-target edge with the & operator expands into separate edges
+    Given a markdown file with a flowchart line "A --> B & C & D"
+    When the parser processes the file
+    Then three edges are produced: A->B, A->C, A->D
+    And nodes B, C, D each have an in-edge from A
+
+  Scenario: Multi-source and multi-target on both sides expand into a Cartesian product
+    Given a markdown file with a flowchart line "A & B --> C & D"
+    When the parser processes the file
+    Then four edges are produced: A->C, A->D, B->C, B->D
+
+  Scenario: A 5-target fan-out triggers width violation under default threshold
+    Given a markdown file with a flowchart "T --> A & B & C & D & E"
+    When the developer runs docs validate-mermaid
+    Then the command exits with a failure code
+    And the output identifies the rank with 5 parallel nodes

@@ -94,16 +94,19 @@ Status: done. test:quick passing 90.10% coverage. Phase 1 commit pending below.
 
 ### 2.1 Refactor `extractEdgeLine`
 
-- [ ] Read `apps/rhino-cli/internal/mermaid/parser.go` lines 200–246 in full
-- [ ] Replace the body of `extractEdgeLine` with the group-based Cartesian-product
+- [x] Read `apps/rhino-cli/internal/mermaid/parser.go` lines 200–246 in full
+- [x] Replace the body of `extractEdgeLine` with the group-based Cartesian-product
       logic from [tech-docs.md — Phase 2](./tech-docs.md):
-  - [ ] Split each part on `&`
-  - [ ] Build `groups [][]string`
-  - [ ] Cartesian product across consecutive groups
-- [ ] Extract helper `extractNodeGroup(part, nodeMap) []string`
-- [ ] Extract helper `extractNodeIDAndLabel(seg, nodeMap) string` (move existing
+  - [x] Split each part on `&`
+  - [x] Build `groups [][]string`
+  - [x] Cartesian product across consecutive groups
+- [x] Extract helper `extractNodeGroup(part, nodeMap) []string`
+- [x] Extract helper `extractNodeIDAndLabel(seg, nodeMap) string` (move existing
       shape-pattern + bare-word logic into this helper)
-- [ ] Verify `nodeMap` is still updated for labels (regression check)
+- [x] Verify `nodeMap` is still updated for labels (regression check)
+
+**Implementation Notes** (2026-04-26)
+Status: done. Files: `apps/rhino-cli/internal/mermaid/parser.go`. Replaced sequential-pairing body of `extractEdgeLine` with groups-based Cartesian-product, extracted `extractNodeGroup` + `extractNodeIDAndLabel`, also updated `extractAllNodeIDs` (via new `extractNodeIDsFromSegment`) so node ordering picks up all `&`-joined IDs. All 64 existing mermaid tests still pass.
 
 ### 2.2 Add Gherkin scenarios
 
@@ -115,28 +118,38 @@ Status: done. test:quick passing 90.10% coverage. Phase 1 commit pending below.
 
 ### 2.3 Add parser unit tests
 
-- [ ] In `apps/rhino-cli/internal/mermaid/parser_test.go`:
-  - [ ] Test: `A --> B & C & D` → 3 edges (A→B, A→C, A→D)
-  - [ ] Test: `A & B --> C` → 2 edges (A→C, B→C)
-  - [ ] Test: `A & B --> C & D` → 4 edges (A→C, A→D, B→C, B→D)
-  - [ ] Test: `A --> B --> C` → 2 edges (regression — unchanged behaviour)
-  - [ ] Test: `A --> B` → 1 edge (regression — unchanged behaviour)
-  - [ ] Test: edge with label `A -- text --> B` → 1 edge (regression)
-  - [ ] Test: shape labels preserved in nodeMap when using `&` expansion
+- [x] In `apps/rhino-cli/internal/mermaid/parser_test.go`:
+  - [x] Test: `A --> B & C & D` → 3 edges (A→B, A→C, A→D)
+  - [x] Test: `A & B --> C` → 2 edges (A→C, B→C)
+  - [x] Test: `A & B --> C & D` → 4 edges (A→C, A→D, B→C, B→D)
+  - [x] Test: `A --> B --> C` → 2 edges (regression — pre-existing parser bug
+        also fixed: link-text regex was greedy and collapsed chains)
+  - [x] Test: `A --> B` → 1 edge (regression — unchanged behaviour)
+  - [x] Test: edge with label `A -- text --> B` → 1 edge (regression)
+  - [x] Test: shape labels preserved in nodeMap when using `&` expansion
+
+**Implementation Notes** (2026-04-26)
+Status: done. Files: `apps/rhino-cli/internal/mermaid/parser_test.go`, `parser.go`. Added `TestExtractEdgeLine_AmpExpansion` (6 cases) + `TestExtractEdgeLine_PreservesLabelsInAmpExpansion`. Also fixed pre-existing greedy-regex bug in link-text normaliser (`--[^-\n]*?-->` → `--[^->\n]+?-->`) so chains "A --> B --> C" stay intact (Iron Rule 3 — root cause). All 72 mermaid tests pass.
 
 ### 2.4 Add validator integration test
 
-- [ ] In `apps/rhino-cli/internal/mermaid/validator_test.go` (or wherever
+- [x] In `apps/rhino-cli/internal/mermaid/validator_test.go` (or wherever
       end-to-end validation tests live):
-  - [ ] Diagram `T --> A & B & C & D & E` (5-way fan-out)
-  - [ ] Run validation with default options
-  - [ ] Assert `ViolationWidthExceeded` is emitted
+  - [x] Diagram `T --> A & B & C & D & E` (5-way fan-out)
+  - [x] Run validation with default options
+  - [x] Assert `ViolationWidthExceeded` is emitted
+
+**Implementation Notes** (2026-04-26)
+Status: done. Files: `apps/rhino-cli/internal/mermaid/validator_test.go`. Added `TestValidateBlocks_AmpFanoutTriggersWidthViolation` exercising end-to-end parser→validator with the 5-fanout diagram. ActualWidth ≥ 5 asserted.
 
 ### 2.5 Test + commit
 
-- [ ] `nx run rhino-cli:test:unit` — all green (including all existing tests)
-- [ ] `nx run rhino-cli:test:quick` — coverage ≥ 90%
-- [ ] Commit: `fix(rhino-cli): expand mermaid & multi-target operator in parser`
+- [x] `nx run rhino-cli:test:unit` — all green (including all existing tests)
+- [x] `nx run rhino-cli:test:quick` — coverage ≥ 90% (90.10%, mermaid 96.8%)
+- [x] Commit: `fix(rhino-cli): expand mermaid & multi-target operator in parser`
+
+**Implementation Notes** (2026-04-26)
+Status: done. test:quick passing 90.10% (mermaid pkg 96.8%). Phase 2 commit below.
 
 ---
 

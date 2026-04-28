@@ -302,8 +302,10 @@ event-store,use-events,run-migrations,format-relative-time}.ts`. This phase
 
 - [ ] Create `src/components/app/add-event-sheet.tsx`:
   - [ ] Rows for Workout, Reading, Learning, Meal, Focus (hued icons + labels)
-  - [ ] Rows for each saved custom type (derive by calling `new OLDb().getEvents()` and
-        filtering for `type === 'custom'`, then extracting unique custom type names)
+  - [ ] Rows for each saved custom type (derive via `runtime.runPromise(listEvents())`
+        — gear-up's Effect-returning store — then decode each row through the typed
+        `Schema.Union` and filter for `kind === 'custom'`, extracting unique
+        custom-type names from the typed `CustomPayload`)
   - [ ] "New custom type" row (dashed icon)
   - [ ] Close on backdrop tap
 
@@ -422,7 +424,8 @@ event-store,use-events,run-migrations,format-relative-time}.ts`. This phase
   - [ ] "Add exercise to [group]" button per group
   - [ ] "Add group" button
   - [ ] "Delete routine" destructive button (confirm `Dialog`; edit mode only)
-  - [ ] "Save" teal full-width; calls `new OLDb().saveRoutine(r)` then `onSave()`
+  - [ ] "Save" teal full-width; calls `runtime.runPromise(saveRoutine(r))` (the
+        Effect-returning function from `lib/events/routine-store.ts`), then `onSave()`
 
 ### 5.3 Gherkin specs
 
@@ -500,7 +503,9 @@ event-store,use-events,run-migrations,format-relative-time}.ts`. This phase
   - [ ] Workout defaults: rest chip row + `InfoTip`
   - [ ] Language: EN/ID buttons (reload on switch)
   - [ ] Appearance: dark mode `Toggle`
-  - [ ] Data: `Alert` variant="info" about localStorage
+  - [ ] Data: `Alert` variant="info" explaining that all data lives in the
+        local PGlite database (IndexedDB-backed; never leaves the device); no
+        server, no sync
   - [ ] "Saved" toast (1.5 s fade-out) — `useState` + `setTimeout`
 
 ### 8.2 Gherkin specs

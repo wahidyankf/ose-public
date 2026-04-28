@@ -3,13 +3,16 @@
 ## Product Overview
 
 `organiclever-web` is a local-first life-event tracker that runs entirely in the browser
-using localStorage. Users log workouts (with routines, rest timers, and personal records),
-quick events (reading, learning, meal, focus sessions), and custom event types — all without
-accounts or a server. The app is accessible at `/#/app` as a hash-routed single-page
-application embedded within the OrganicLever Next.js site. It ships with seed data so the
-first launch shows a populated, usable state. The v0 scope covers seven distinct screens
-(Home, History, Progress, Settings, Workout, Finish, EditRoutine) plus five event loggers
-and a bilingual (EN/ID) UI.
+on PGlite (Postgres-WASM over IndexedDB) wrapped in Effect.ts — both shipped by the
+gear-up plan. Users log workouts (with routines, rest timers, and personal records),
+quick events (reading, learning, meal, focus sessions), and custom event types — all
+without accounts or a server. The app is accessible at `/#/app` as a hash-routed
+single-page application embedded within the OrganicLever Next.js site (the `/app`
+route already exists from the gear-up — this plan replaces its provisional body with
+the full app shell). It ships with seed data so the first launch shows a populated,
+usable state. The v0 scope covers seven distinct screens (Home, History, Progress,
+Settings, Workout, Finish, EditRoutine) plus five event loggers and a bilingual
+(EN/ID) UI.
 
 ## Personas
 
@@ -54,19 +57,25 @@ and a bilingual (EN/ID) UI.
 - EditRoutine screen with group/exercise CRUD
 - Five quick-log event types: Reading, Learning, Meal, Focus, Custom
 - Bilingual support: English and Bahasa Indonesia
-- localStorage persistence (key `ol_db_v12`) with seed data on first load
+- PGlite persistence (gear-up's `dataDir` `ol_events_v1`, IndexedDB key
+  `/pglite/ol_events_v1`) extended via this plan's v2 migration; seed data
+  applied on first launch when both `events` and `routines` tables are empty
 - PWA manifest for home-screen installation
 
 ### Out of Scope
 
-- Cloud sync or backend integration (Effect TS layer stays dormant)
+- Cloud / PWA sync (gear-up's Forward-Compatibility section reserves the
+  necessary columns; this plan does not enable the sync layer)
+- Re-implementing the storage layer (`lib/events/event-store.ts`,
+  `runtime.ts`, `errors.ts`, `schema.ts`) — these belong to the gear-up; this
+  plan extends, never replaces
 - Authentication, accounts, or user profiles beyond the local name field
 - Push notifications or local notifications
 - Native iOS or Android packaging
 - Custom event-type definition UI (logging custom types works; defining new type names
   from a UI is a future plan)
 - Data export or import
-- ts-ui component additions (handled in `2026-04-25__organiclever-web-landing-uikit`)
+- ts-ui component additions (already shipped by `plans/done/2026-04-25__organiclever-web-landing-uikit/`)
 
 ## Product Risks
 

@@ -135,8 +135,28 @@ apps/organiclever-web/src/
 
 ## Data Model
 
+> These are the data-model contracts the bigger plan adds. Physically the
+> declarations are split across multiple Effect `Schema` modules under
+> `apps/organiclever-web/src/lib/events/`:
+>
+> - `typed-payloads.ts` — `EventType`, `WorkoutPayload`, `ReadingPayload`,
+>   `LearningPayload`, `MealPayload`, `FocusPayload`, `CustomPayload`,
+>   `EventPayload`, `LoggedEvent` — all as `Schema.Struct` / `Schema.Union`
+>   with TS types via `Schema.Type<...>`
+> - `routine-store.ts` (types section) — `Hue`, `ExerciseType`, `TimerMode`,
+>   `ExerciseTemplate`, `ExerciseGroup`, `Routine`, `CompletedSet`,
+>   `ActiveExercise`
+> - `settings-store.ts` — `RestSeconds`, `Lang`, `AppSettings`
+> - `stats.ts` — `WeeklyStats`, `DayEntry`, `ExerciseProgressPoint`,
+>   `ExerciseProgress` (computed; not persisted)
+>
+> The block below shows the TS shapes for review purposes; the actual
+> implementation files use `Schema.Struct({...})` and derive the TS type via
+> `Schema.Type`. Plain `export interface` is acceptable only for the computed
+> stats types that are never decoded from the wire.
+
 ```typescript
-// lib/db/types.ts (complete)
+// Conceptual data-model snapshot — implementation is Schema-first per files above
 
 export type Hue = "terracotta" | "honey" | "sage" | "teal" | "sky" | "plum";
 export type ExerciseType = "reps" | "duration" | "oneoff";

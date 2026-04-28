@@ -1,7 +1,16 @@
 # Delivery Checklist
 
-**Prerequisite**: `2026-04-25__organiclever-web-landing-uikit` plan complete — `Textarea`
-and `Badge` must be exported from ts-ui before Phase 3+.
+**Prerequisite plans (must be in `plans/done/`)**:
+
+- `plans/done/2026-04-25__organiclever-web-landing-uikit/` — `Textarea` +
+  `Badge` exported from ts-ui; `apps/organiclever-web/src/app/page.tsx`
+  renders the landing page.
+- `plans/in-progress/2026-04-28__organiclever-web-event-mechanism/` — must
+  archive to `plans/done/` before THIS plan starts execution. Provides
+  `lib/events/{schema,errors,runtime,event-store,use-events,run-migrations,format-relative-time}.ts`,
+  PGlite `dataDir` `ol_events_v1`, migration registry v1, and a provisional
+  `/app/page.tsx`. **Do not re-implement the storage layer; do not invent
+  a new database key. Extend the gear-up's primitives.**
 
 ---
 
@@ -10,104 +19,161 @@ and `Badge` must be exported from ts-ui before Phase 3+.
 - [ ] Install dependencies in the root worktree: `npm install`
 - [ ] Converge the full polyglot toolchain: `npm run doctor -- --fix`
 - [ ] Verify dev server starts: `nx dev organiclever-web` (expect `localhost:3200`)
-- [ ] Confirm existing tests pass before making changes:
-      `nx run organiclever-web:test:quick`
+- [ ] Confirm existing tests pass before making changes — gear-up's
+      `lib/events/` and provisional `/app/page.tsx` should be green: - `nx run organiclever-web:typecheck` - `nx run organiclever-web:lint` - `nx run organiclever-web:test:quick` - `nx run organiclever-web:test:integration` - `nx run organiclever-web-e2e:test:e2e`
+- [ ] Confirm gear-up artifacts present: - `apps/organiclever-web/src/lib/events/event-store.ts` exists and exports
+      Effect-returning `appendEvents`, `updateEvent`, `deleteEvent`, `bumpEvent`,
+      `listEvents`, `clearEvents` - `apps/organiclever-web/src/lib/events/runtime.ts` exposes `PgliteService`
+      and `makeEventsRuntime` - `apps/organiclever-web/src/lib/events/migrations/2026_04_28T14_05_30__create_events_table.ts` exists - `package.json` already lists `effect`, `@effect/platform`,
+      `@electric-sql/pglite`, `@effect/vitest`
 
 ### Commit Guidelines
 
 - [ ] Commit changes thematically — group related changes into logically cohesive commits
 - [ ] Follow Conventional Commits format: `<type>(<scope>): <description>`
-      Examples: `feat(db): add OLDb class and seed data`,
-      `feat(shell): add AppRoot with TabBar and SideNav`,
-      `feat(loggers): add reading and focus loggers`,
+      Examples:
+      `feat(events-v2): add typed-payload Schema union narrowing kind`,
+      `feat(events-v2): add v2 migration adding started_at/finished_at/labels columns`,
+      `feat(events-v2): add Effect-returning routine-store + settings-store + seed`,
+      `feat(shell): replace provisional /app/page.tsx body with AppRoot (TabBar + SideNav)`,
+      `feat(loggers): add reading and focus typed loggers wrapping appendEvents`,
       `feat(workout): add WorkoutScreen and rest timer`,
       `feat(history): add HistoryScreen and SessionCard`,
       `feat(progress): add ProgressScreen and exercise charts`,
       `feat(settings): add SettingsScreen with lang and dark mode`
-- [ ] Split different domains/concerns into separate commits — do NOT bundle unrelated
-      changes (e.g., keep `feat(db):` separate from `feat(ui):`)
+- [ ] Split different domains/concerns into separate commits — keep
+      `feat(events-v2):` (storage extensions) separate from `feat(loggers):`
+      (UI), `feat(shell):` (route wiring), and `test(*):` (tests)
 
 ---
 
-## Phase 0 — Foundation
+## Phase 0 — Foundation (extension on gear-up)
 
-### 0.1 TypeScript types
+> **Reminder**: gear-up already shipped `lib/events/{schema,errors,runtime,
+event-store,use-events,run-migrations,format-relative-time}.ts`. This phase
+> ADDS new files; it does NOT re-create those.
 
-- [ ] Create `src/lib/db/types.ts` with all types in tech-docs.md data model section
-      (Hue, ExerciseType, TimerMode, RestSeconds, Lang, ExerciseTemplate, ExerciseGroup,
-      Routine, CompletedSet, ActiveExercise, all payload types, LoggedEvent, AppSettings,
-      WeeklyStats, DayEntry, ExerciseProgressPoint, ExerciseProgress)
+### 0.1 v2 migration (typed-payload columns + routines + settings tables)
 
-### 0.2 Seed data
+- [ ] Substitute the actual UTC second-precision timestamp at file-creation
+      time. Create `apps/organiclever-web/src/lib/events/migrations/<TS>__add_typed_payload_columns.ts`
+      following the gear-up filename regex
+      `^\d{4}_\d{2}_\d{2}T\d{2}_\d{2}_\d{2}__[a-z0-9_]{1,60}\.ts$`
+- [ ] Body per `tech-docs.md` "v2 migration" sketch:
+  - [ ] `export const id = "<filename without .ts>"`
+  - [ ] `export async function up(db: Queryable)` running:
+        `ALTER TABLE events ADD COLUMN started_at TIMESTAMPTZ, ADD COLUMN finished_at TIMESTAMPTZ, ADD COLUMN labels TEXT[] NOT NULL DEFAULT '{}';`
+        then backfill `UPDATE events SET started_at = created_at, finished_at = updated_at WHERE started_at IS NULL;`
+        then `ALTER TABLE events ALTER COLUMN started_at SET NOT NULL, ALTER COLUMN finished_at SET NOT NULL;`
+        then `ALTER TABLE events ADD CONSTRAINT events_kind_v0 CHECK (kind IN ('workout','reading','learning','meal','focus','custom'));`
+        then `CREATE TABLE IF NOT EXISTS routines (...);`
+        then `CREATE TABLE IF NOT EXISTS settings (...);`
+  - [ ] `export async function down(db: Queryable)` reversing in the inverse order
+- [ ] Run `npm run gen:migrations` (already wired by gear-up) and verify the
+      regenerated `index.generated.ts` includes the v2 entry
+- [ ] Add `apps/organiclever-web/src/lib/events/migrations/<TS>__add_typed_payload_columns.unit.test.ts`:
+  - [ ] In-memory PGlite — apply v1 + v2 in sequence; assert the new columns + tables exist
+  - [ ] Insert gear-up shape rows BEFORE applying v2; apply v2; assert
+        `started_at = created_at` and `finished_at = updated_at` for those
+        rows (backfill semantics)
+  - [ ] Force a constraint violation by attempting `INSERT ... kind = 'unknown'`
+        after v2; assert the `events_kind_v0` CHECK rejects it
 
-- [ ] Create `src/lib/db/seed.ts`:
+### 0.2 Per-kind typed Schema union (`typed-payloads.ts`)
+
+- [ ] Create `apps/organiclever-web/src/lib/events/typed-payloads.ts` per
+      `tech-docs.md` sketch:
+  - [ ] `WorkoutPayload`, `ReadingPayload`, `LearningPayload`, `MealPayload`,
+        `FocusPayload`, `CustomPayload` — six `Schema.Struct` types matching
+        the prototype's fields
+  - [ ] `TypedEvent = Schema.Union(...)` discriminating on `kind` literal
+  - [ ] Export `TypedEvent` type via `Schema.Type<typeof TypedEvent>`
+- [ ] Create `apps/organiclever-web/src/lib/events/typed-payloads.unit.test.ts`:
+  - [ ] Each kind round-trips through `Schema.encodeSync` →
+        `Schema.decodeUnknownSync` cleanly
+  - [ ] Wrong kind/payload combo (e.g., `kind: 'workout'` with reading
+        payload) is rejected by the union decoder
+  - [ ] Decode failure surfaces field-level errors via `ArrayFormatter`
+
+### 0.3 Effect-returning routine store
+
+- [ ] Create `apps/organiclever-web/src/lib/events/routine-store.ts` per
+      `tech-docs.md`:
+  - [ ] `listRoutines: Effect<ReadonlyArray<Routine>, StorageUnavailable, PgliteService>`
+  - [ ] `saveRoutine: (r: Routine) => Effect<Routine, StorageUnavailable, PgliteService>`
+  - [ ] `deleteRoutine: (id: RoutineId) => Effect<boolean, StorageUnavailable, PgliteService>`
+  - [ ] `reorderRoutineExercises: (...) => Effect<Routine, NotFound | StorageUnavailable, PgliteService>`
+  - [ ] Every `Effect.tryPromise` MUST supply a typed `catch` mapper (no
+        `UnknownException` leaks)
+- [ ] Create `apps/organiclever-web/src/lib/events/routine-store.unit.test.ts`
+      using `@effect/vitest` Layer-swap (in-memory PGlite + v1 + v2 migrations)
+
+### 0.4 Effect-returning settings store
+
+- [ ] Create `apps/organiclever-web/src/lib/events/settings-store.ts`:
+  - [ ] `getSettings: Effect<AppSettings, StorageUnavailable, PgliteService>`
+        (lazily creates the singleton row from defaults if missing)
+  - [ ] `saveSettings: (patch: Partial<AppSettings>) => Effect<AppSettings, StorageUnavailable, PgliteService>`
+- [ ] Create `apps/organiclever-web/src/lib/events/settings-store.unit.test.ts`
+
+### 0.5 Seed
+
+- [ ] Create `apps/organiclever-web/src/lib/events/seed.ts`:
+  - [ ] `seedIfEmpty: Effect<void, StorageUnavailable, PgliteService>` runs
+        once when both `events` and `routines` are empty
   - [ ] Settings: `{ name: 'Yoka', restSeconds: 60, darkMode: false, lang: 'en' }`
-        (Note: `raw/README.md` omits `lang` from seed to exercise the fallback path;
-        this plan sets it explicitly for clarity — `useT()` defaults to `'en'` when
-        `lang` is absent, so both approaches are functionally equivalent)
-  - [ ] Routine "Kettlebell day" (teal) — 1 group, 6 exercises matching prototype
+  - [ ] Routine "Kettlebell day" (teal) — 1 group, 6 exercises
   - [ ] Routine "Calisthenics" (honey) — 1 group "Future", 5 bodyweight exercises
-  - [ ] Routine "Super Exercise" (plum) — featured routine per raw/README.md seed spec
-  - [ ] At least 6 seeded events: 1 workout, 1 reading, 1 learning, 1 meal, 1 focus,
-        1 custom (type: `'custom'`, payload: `{ name: 'Meditation', hue: 'plum', icon: 'moon', durationMins: 20, notes: null }`)
-        (all `startedAt` within last 7 days; custom event ensures AddEventSheet custom
-        rows are populated on first launch)
+  - [ ] Routine "Super Exercise" (plum) — featured per raw/README.md
+  - [ ] 6 seed events (1 per kind, all `started_at` within last 7 days,
+        custom kind = "Meditation" plum/moon/20-min)
+  - [ ] All writes go through `appendEvents` / `saveRoutine` / `saveSettings`
+        — never raw SQL — so the typed `Schema.Union` validates the seed
+- [ ] Wire the seed into `<AppRoot />`'s mount effect (Phase 1.3) so it runs
+      after `runtime.runPromise(...)` resolves the gear-up's migration runner
 
-### 0.3 DB class
+### 0.6 i18n
 
-- [ ] Create `src/lib/db/db.ts` — `OLDb` class:
-  - [ ] Constructor: load from `ol_db_v12`; apply seed when key absent
-  - [ ] `getSettings()` / `saveSettings(patch)`
-  - [ ] `getRoutines()` / `saveRoutine(r)` / `deleteRoutine(id)` /
-        `reorderRoutineExercises(routineId, groupId, from, to)`
-  - [ ] `saveEvent(e)` / `getEvents()` (newest-first) / `getSessions()` (alias)
-  - [ ] `getLast7Days()` — 7 `DayEntry` entries, Sun–today, today last
-  - [ ] `getWeeklyStats()` — workoutsThisWeek (rolling 7 d), streak (consecutive weeks
-        with ≥ 2 workouts), totalMins (last 7 d workout duration), totalSets (last 7 d)
-  - [ ] `getVolume(days)` — sum of weight × reps across all workout sets in last N days
-  - [ ] `getExerciseProgress(days)` — per-exercise `ExerciseProgress` with sorted points;
-        `isPR` true when the computed `estimated1RM` for this point exceeds all prior
-        `estimated1RM` values for the same exercise (Brzycki formula); 1RM via Brzycki
-- [ ] Create `src/lib/db/db.test.ts`:
-  - [ ] `getSettings` returns defaults when fresh
-  - [ ] `saveSettings` patch merges
-  - [ ] `saveRoutine` + `getRoutines` round-trip
-  - [ ] `deleteRoutine` removes by id
-  - [ ] `reorderRoutineExercises` swaps correctly
-  - [ ] `saveEvent` + `getEvents` newest-first
-  - [ ] `getLast7Days` returns 7 entries, last entry is today
-  - [ ] `getWeeklyStats` returns correct counts
-  - [ ] `getVolume` sums correctly over range
-  - [ ] `getExerciseProgress` detects PRs correctly
-
-### 0.4 i18n
-
-- [ ] Create `src/lib/i18n/translations.ts` — `TRANSLATIONS` object; all keys from
-      prototype `i18n.js` (both `en` + `id` locales complete)
-- [ ] Create `src/lib/i18n/use-t.ts` — `useT()` hook reading `lang` from DB
+- [ ] Create `apps/organiclever-web/src/lib/i18n/translations.ts` —
+      `TRANSLATIONS` object; all keys from prototype `i18n.js` (both `en` +
+      `id` locales complete)
+- [ ] Create `apps/organiclever-web/src/lib/i18n/use-t.ts` — `useT()` hook
+      reading `lang` from `useSettings()` (the new Effect-runtime hook from
+      Phase 0.4); fallback to `'en'` when settings are still loading
 - [ ] Unit test: all keys present in both locales (diff check)
 
-### 0.5 Utilities
+### 0.7 Utilities
 
-- [ ] Create `src/lib/utils/fmt.ts`: `fmtTime`, `fmtKg`, `fmtSpec`
-- [ ] Create `src/lib/utils/fmt.test.ts`:
+- [ ] Create `apps/organiclever-web/src/lib/utils/fmt.ts`: `fmtTime`,
+      `fmtKg`, `fmtSpec`
+- [ ] Create `apps/organiclever-web/src/lib/utils/fmt.unit.test.ts`:
   - [ ] `fmtTime(90)` → `"1:30"`, `fmtTime(45)` → `"45s"`, `fmtTime(0)` → `"0s"`
   - [ ] `fmtKg(1500)` → `"1.5k"`, `fmtKg(850)` → `"850"`
   - [ ] `fmtSpec` reps mode, duration mode, one-off mode, bilateral flag
 
-### 0.6 Validation
+### 0.8 Validation
 
-- [ ] `nx affected -t typecheck lint test:quick spec-coverage` passes (≥ 70 % coverage)
-- [ ] Fix ALL failures found — including any preexisting failures not caused by your changes
+- [ ] `nx affected -t typecheck lint test:quick spec-coverage` passes (≥ 70 % LCOV)
+- [ ] `nx run organiclever-web:test:integration` passes — including the v2
+      migration backfill test
+- [ ] Fix ALL failures found — including any preexisting failures not caused
+      by your changes
 
 ---
 
 ## Phase 1 — App Shell
 
-### 1.1 App route
+### 1.1 App route (replace gear-up's provisional body)
 
-- [ ] Create `src/app/app/page.tsx` — `'use client'`; `export const dynamic = 'force-dynamic'`;
-      renders `<AppRoot />`; sets `document.body.classList.add('app-mode')` on mount
+- [ ] `src/app/app/page.tsx` already exists from gear-up; KEEP `'use client'`
+      and `export const dynamic = 'force-dynamic'`. Replace the body so it
+      renders `<AppRoot />` instead of `<EventsPage />`. Add
+      `document.body.classList.add('app-mode')` inside a `useEffect` (with
+      cleanup that removes the class on unmount)
+- [ ] The gear-up's `<EventsPage />` is no longer mounted on `/app`. The
+      provisional UI components in `components/app/{add-event-button,event-form-sheet,event-list,event-card,events-page}.tsx`
+      can be deleted in this phase OR kept as a debug-only "raw event" panel
+      mountable behind a dev flag — record the decision in the commit message
 
 ### 1.2 useHash hook
 

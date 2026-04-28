@@ -6,12 +6,31 @@ Port the full `organic-lever` handoff bundle app into `apps/organiclever-web/` �
 complete local-first life-event tracker with 7 screens, 5 event types, workout tracking,
 analytics, and bilingual UI.
 
-**Depends on**: `2026-04-25__organiclever-web-landing-uikit` must be complete. `Textarea`
-and `Badge` from ts-ui are consumed throughout this plan.
+**Assumes done** (prerequisite plans):
+
+- [`plans/done/2026-04-25__organiclever-web-landing-uikit/`](../../done/2026-04-25__organiclever-web-landing-uikit/README.md) —
+  ts-ui `Textarea` + `Badge` shipped; `apps/organiclever-web/src/app/page.tsx`
+  serves the landing page; `apps/organiclever-web/src/app/system/status/be/page.tsx`
+  is the BE diagnostic page. Both routes are live.
+- [`plans/in-progress/2026-04-28__organiclever-web-event-mechanism/`](../2026-04-28__organiclever-web-event-mechanism/README.md) —
+  gear-up landed `apps/organiclever-web/src/lib/events/{schema,errors,runtime,event-store,use-events,run-migrations,format-relative-time}.ts`,
+  PGlite (Postgres-WASM over IndexedDB) at `idb://ol_events_v1`, migration
+  registry v1 (`events` table + `storage_seq` BIGSERIAL + composite index),
+  Effect.ts FP runtime (`Schema` + `Data.TaggedError` + `ManagedRuntime` +
+  `PgliteService` Layer), and a provisional `/app/page.tsx`. **This bigger plan
+  must NOT re-implement the storage layer or invent a new database — it
+  extends the existing PGlite store via a v2 migration adding typed-payload
+  columns.**
+
+**Existing deps (no install needed):** `effect ^3.16.0`, `@effect/platform ^0.84.0`,
+ts-ui `Textarea` + `Badge`, `@electric-sql/pglite` (added by gear-up),
+`@effect/vitest` (added by gear-up).
 
 **Scope**:
 
-- `apps/organiclever-web/src/` — all app screens and data layer
+- `apps/organiclever-web/src/` — all app screens; v2 migration on top of
+  gear-up's `events` table; per-kind typed `Schema` definitions narrowing
+  the open `kind` discriminator
 - `specs/apps/organiclever/fe/gherkin/` — Gherkin specs per feature
 - No new Nx projects; no backend changes; no ts-ui changes
 
@@ -30,15 +49,15 @@ Commits go directly to `main` per Trunk Based Development.
 
 ## Phases at a Glance
 
-| Phase | Scope                                                                 | Status |
-| ----- | --------------------------------------------------------------------- | ------ |
-| 0     | Foundation — DB types, localStorage layer, i18n, utilities            | todo   |
-| 1     | App shell — `/app` route, hash routing, TabBar, SideNav, dark mode    | todo   |
-| 2     | Home screen — dashboard, WeekRhythmStrip, event timeline              | todo   |
-| 3     | Event loggers — Reading, Learning, Meal, Focus, Custom, AddEventSheet | todo   |
-| 4     | Workout active session — WorkoutScreen, rest timer, FinishScreen      | todo   |
-| 5     | Routine management — EditRoutineScreen, exercise CRUD                 | todo   |
-| 6     | History screen — SessionCard, WeeklyBarChart                          | todo   |
-| 7     | Progress / analytics — per-module tabs, SVG charts, 1RM               | todo   |
-| 8     | Settings screen — profile, rest defaults, language, dark mode         | todo   |
-| 9     | PWA, polish, a11y audit, full coverage gate                           | todo   |
+| Phase | Scope                                                                                                                                                                          | Status |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------ |
+| 0     | Foundation — v2 migration on top of gear-up's `events` table (typed-payload columns), per-kind Effect `Schema`, i18n, fmt utilities (storage layer already shipped by gear-up) | todo   |
+| 1     | App shell — replace gear-up's provisional `/app/page.tsx` body with `<AppRoot />` (TabBar, SideNav, hash routing, dark mode); the route already exists                         | todo   |
+| 2     | Home screen — dashboard, WeekRhythmStrip, event timeline                                                                                                                       | todo   |
+| 3     | Event loggers — Reading, Learning, Meal, Focus, Custom, AddEventSheet                                                                                                          | todo   |
+| 4     | Workout active session — WorkoutScreen, rest timer, FinishScreen                                                                                                               | todo   |
+| 5     | Routine management — EditRoutineScreen, exercise CRUD                                                                                                                          | todo   |
+| 6     | History screen — SessionCard, WeeklyBarChart                                                                                                                                   | todo   |
+| 7     | Progress / analytics — per-module tabs, SVG charts, 1RM                                                                                                                        | todo   |
+| 8     | Settings screen — profile, rest defaults, language, dark mode                                                                                                                  | todo   |
+| 9     | PWA, polish, a11y audit, full coverage gate                                                                                                                                    | todo   |

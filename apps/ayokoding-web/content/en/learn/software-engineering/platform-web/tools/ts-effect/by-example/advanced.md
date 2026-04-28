@@ -26,6 +26,20 @@ tags:
 
 The full fiber lifecycle includes forking, supervising (watching for completion), awaiting (getting the Exit value), and interrupting. Understanding this lifecycle enables building robust concurrent systems with precise control over error propagation.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+stateDiagram-v2
+  [*] --> Running: fork / start
+  Running --> Suspended: yield / await IO
+  Suspended --> Running: IO completes
+  Running --> Done: return value
+  Running --> Failed: throw / Effect.fail
+  Running --> Interrupted: Fiber.interrupt
+  Done --> [*]
+  Failed --> [*]
+  Interrupted --> [*]
+```
+
 ```typescript
 import { Effect, Fiber, Exit, Duration } from "effect";
 
@@ -90,6 +104,23 @@ Effect.runPromise(program);
 ### Example 57: FiberRef — Fiber-Local State
 
 `FiberRef<A>` is a reference whose value can differ between fibers. It behaves like a thread-local variable. Child fibers inherit a copy of the parent's value at fork time; changes in the child do not affect the parent.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["FiberRef<A>\n(fiber-local slot)"] --> B["Fiber 1\nown copy"]
+  A --> C["Fiber 2\nown copy"]
+  A --> D["Fiber 3\nown copy"]
+  B -->|"modify"| B2["Fiber 1\nupdated value"]
+  C -->|"unchanged"| C2["Fiber 2\noriginal value"]
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#DE8F05,stroke:#000,color:#fff
+  style C fill:#DE8F05,stroke:#000,color:#fff
+  style D fill:#DE8F05,stroke:#000,color:#fff
+  style B2 fill:#029E73,stroke:#000,color:#fff
+  style C2 fill:#CA9161,stroke:#000,color:#fff
+```
 
 ```typescript
 import { Effect, FiberRef, Fiber } from "effect";
@@ -218,6 +249,21 @@ Effect.runPromise(allResults).then((results) => {
 ### Example 59: Semaphore — Limiting Concurrent Access
 
 `Semaphore` is a concurrency limiter that allows at most N fibers to execute concurrently. Use it to implement rate limiting, connection pool throttling, and resource-constrained operations.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+  A["Semaphore\npermits: 3"] -->|"withPermit"| B["Fiber A\n(permit taken)"]
+  A -->|"withPermit"| C["Fiber B\n(permit taken)"]
+  A -->|"withPermit"| D["Fiber C\n(permit taken)"]
+  E["Fiber D"] -->|"blocks until\npermit free"| A
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#029E73,stroke:#000,color:#fff
+  style C fill:#029E73,stroke:#000,color:#fff
+  style D fill:#029E73,stroke:#000,color:#fff
+  style E fill:#CC78BC,stroke:#000,color:#fff
+```
 
 ```typescript
 import { Effect, Semaphore, Fiber, Duration } from "effect";
@@ -360,6 +406,23 @@ Effect.runPromise(Stream.runCollect(allItems)).then((chunk) => {
 
 A `Sink<In, Out, E, R>` is a consumer that processes a stream and produces a result. Effect provides built-in sinks for common patterns: collecting to arrays, summing, counting, and folding.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+  A["Stream<A>"] -->|"elements"| B["Sink<In, Out>"]
+  B -->|"accumulates"| C["final\nresult Out"]
+  D["Sink.collectAll"] -->|"example"| E["Chunk<A>"]
+  F["Sink.sum"] -->|"example"| G["number"]
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#DE8F05,stroke:#000,color:#fff
+  style C fill:#029E73,stroke:#000,color:#fff
+  style D fill:#CA9161,stroke:#000,color:#fff
+  style E fill:#CA9161,stroke:#000,color:#fff
+  style F fill:#CA9161,stroke:#000,color:#fff
+  style G fill:#CA9161,stroke:#000,color:#fff
+```
+
 ```typescript
 import { Stream, Sink, Effect, Chunk } from "effect";
 
@@ -429,6 +492,21 @@ Effect.runPromise(evens).then((chunk) => {
 ### Example 62: Stream.groupBy and Stream.chunks
 
 `Stream.groupBy` partitions a stream into sub-streams by a key function. `Stream.chunks` exposes the underlying `Chunk` batching of a stream for efficient bulk processing.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["Stream<A>"] -->|"groupBy(key)"| B["grouped streams"]
+  B -->|"key='alpha'"| C["Stream<A>\n(alpha items)"]
+  B -->|"key='beta'"| D["Stream<A>\n(beta items)"]
+  B -->|"key='gamma'"| E["Stream<A>\n(gamma items)"]
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#DE8F05,stroke:#000,color:#fff
+  style C fill:#029E73,stroke:#000,color:#fff
+  style D fill:#CC78BC,stroke:#000,color:#fff
+  style E fill:#CA9161,stroke:#000,color:#fff
+```
 
 ```typescript
 import { Stream, Effect, GroupBy } from "effect";
@@ -565,6 +643,23 @@ Effect.runPromise(parseUserId("usr-42")).then((id) => {
 
 `Effect.request` and `RequestResolver` implement automatic batching of similar requests. When multiple fibers need the same data, Effect groups their requests into a single batch, calls the resolver once, and distributes results — eliminating the N+1 query problem.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["Effect.request(req1)"] --> D["RequestResolver\nbatches within\nsame fiber step"]
+  B["Effect.request(req2)"] --> D
+  C["Effect.request(req3)"] --> D
+  D -->|"single batch call"| E["DataSource\n(DB / API)"]
+  E -->|"[result1,\nresult2,\nresult3]"| F["results\ndistributed"]
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#0173B2,stroke:#000,color:#fff
+  style C fill:#0173B2,stroke:#000,color:#fff
+  style D fill:#DE8F05,stroke:#000,color:#fff
+  style E fill:#CA9161,stroke:#000,color:#fff
+  style F fill:#029E73,stroke:#000,color:#fff
+```
+
 ```typescript
 import { Effect, RequestResolver, Request } from "effect";
 
@@ -638,6 +733,23 @@ Effect.runPromise(program);
 ### Example 65: Metric — Counters, Histograms, and Gauges
 
 Effect's `Metric` module provides counters, histograms, gauges, and frequencies for production observability. Metrics are emitted through the Effect runtime and can be exported to Prometheus, StatsD, or any other monitoring system.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+  A["Effect\npipeline"] -->|"Metric.counter"| B["Counter\n(increment)"]
+  A -->|"Metric.histogram"| C["Histogram\n(distribution)"]
+  A -->|"Metric.gauge"| D["Gauge\n(current value)"]
+  B --> E["MetricRegistry\n(in-process)"]
+  C --> E
+  D --> E
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#DE8F05,stroke:#000,color:#fff
+  style C fill:#CC78BC,stroke:#000,color:#fff
+  style D fill:#CA9161,stroke:#000,color:#fff
+  style E fill:#029E73,stroke:#000,color:#fff
+```
 
 ```typescript
 import { Effect, Metric, Duration } from "effect";
@@ -714,6 +826,19 @@ Effect.runPromise(monitoringProgram);
 ### Example 66: Effect.withSpan — Distributed Tracing
 
 `Effect.withSpan` wraps an Effect in a tracing span. Spans are nested and propagated automatically through the fiber tree — child spans reference their parent. This creates a trace tree showing exactly where time is spent in complex operations.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["root span:\nhandleRequest"] --> B["child span:\nfetchUser"]
+  A --> C["child span:\nfetchOrders"]
+  B --> D["child span:\nqueryDB"]
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#DE8F05,stroke:#000,color:#fff
+  style C fill:#DE8F05,stroke:#000,color:#fff
+  style D fill:#CC78BC,stroke:#000,color:#fff
+```
 
 ```typescript
 import { Effect, Duration } from "effect";
@@ -800,6 +925,21 @@ Effect.runPromise(
 ### Example 67: ManagedRuntime — Production Runtime Configuration
 
 `ManagedRuntime` bundles a Layer into a runtime that can be reused across many Effect executions. In production, you create a ManagedRuntime once at startup and use it to run all requests. This avoids rebuilding the service graph on each request.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["ManagedRuntime.make(layer)"] --> B["Runtime\n(initialized services)"]
+  B -->|"runtime.runPromise"| C["Effect<A>\n-> Promise<A>"]
+  B -->|"runtime.runSync"| D["Effect<A>\n-> A"]
+  B -->|"runtime.dispose"| E["cleanup all\nscoped resources"]
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#DE8F05,stroke:#000,color:#fff
+  style C fill:#029E73,stroke:#000,color:#fff
+  style D fill:#029E73,stroke:#000,color:#fff
+  style E fill:#CC78BC,stroke:#000,color:#fff
+```
 
 ```typescript
 import { Effect, ManagedRuntime, Context, Layer, Logger, LogLevel } from "effect";
@@ -1085,6 +1225,21 @@ Effect.runPromise(program);
 
 Production services must handle shutdown signals (SIGTERM, SIGINT) gracefully: stop accepting new work, complete in-flight requests, release resources, and exit cleanly. Effect's fiber and scope system makes this pattern straightforward.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+sequenceDiagram
+  participant OS as OS / Process
+  participant R as Effect Runtime
+  participant F as Active Fibers
+  participant Res as Resources
+  OS->>R: SIGTERM signal
+  R->>F: interrupt all fibers
+  F-->>R: fibers finished
+  R->>Res: run finalizers
+  Res-->>R: resources released
+  R-->>OS: process exits cleanly
+```
+
 ```typescript
 import { Effect, Scope, Fiber, Duration, Layer, ManagedRuntime } from "effect";
 
@@ -1153,6 +1308,17 @@ Effect.runPromise(
 ### Example 72: Circuit Breaker Pattern with Ref and Schedule
 
 A circuit breaker stops calling a failing service when it is clearly unhealthy, giving it time to recover. After a cooldown period, it allows a probe request to test recovery before reopening fully.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+stateDiagram-v2
+  [*] --> Closed: initial state
+  Closed --> Open: failures >= threshold
+  Open --> HalfOpen: timeout elapsed
+  HalfOpen --> Closed: probe succeeds
+  HalfOpen --> Open: probe fails
+  Closed --> Closed: success / failure below threshold
+```
 
 ```typescript
 import { Effect, Ref, Schedule, Duration, Data } from "effect";
@@ -1303,6 +1469,21 @@ Effect.runPromise(
 
 Tracing spans nest hierarchically. When a span-wrapped Effect forks child fibers or calls other span-wrapped functions, the spans automatically form a tree in the trace. This example shows how nested spans build a complete trace.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["withSpan: 'HTTP POST /users'"] --> B["withSpan: 'validateInput'"]
+  A --> C["withSpan: 'createUser'"]
+  C --> D["withSpan: 'insertDB'"]
+  C --> E["withSpan: 'sendEmail'"]
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#DE8F05,stroke:#000,color:#fff
+  style C fill:#DE8F05,stroke:#000,color:#fff
+  style D fill:#CC78BC,stroke:#000,color:#fff
+  style E fill:#CC78BC,stroke:#000,color:#fff
+```
+
 ```typescript
 import { Effect, Duration } from "effect";
 
@@ -1384,6 +1565,21 @@ Effect.runPromise(checkout("item-1", 2, 49.99)).then((result) => console.log("ch
 ### Example 75: Stream with External Resources — Reading Files
 
 Combining Stream with resource management enables processing large files without loading them entirely into memory. Each chunk is processed and discarded before the next is read.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+  A["Stream.acquireRelease\n(open file)"] -->|"yields"| B["Stream<Uint8Array>\n(file chunks)"]
+  B -->|"Stream.map"| C["decoded\nlines"]
+  C -->|"Stream.runCollect"| D["Chunk<string>"]
+  A -->|"stream ends\nor error"| E["close file\n(guaranteed)"]
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#DE8F05,stroke:#000,color:#fff
+  style C fill:#DE8F05,stroke:#000,color:#fff
+  style D fill:#029E73,stroke:#000,color:#fff
+  style E fill:#CC78BC,stroke:#000,color:#fff
+```
 
 ```typescript
 import { Stream, Effect, Scope } from "effect";
@@ -1656,6 +1852,20 @@ Effect.runPromise(
 
 `Effect.cached` memoizes an Effect's result for a specified duration. Unlike `Effect.memoize` (caches forever), `cached` refreshes automatically after the TTL expires. Use it for configuration, feature flags, and other data that changes infrequently.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+  A["Effect.cached\n(timeToLive: 30s)"] -->|"first call"| B["execute\neffect"]
+  B -->|"cache result"| C["cached value"]
+  C -->|"within 30s"| D["return cached\n(no re-execution)"]
+  C -->|"after 30s\nexpires"| B
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#DE8F05,stroke:#000,color:#fff
+  style C fill:#CA9161,stroke:#000,color:#fff
+  style D fill:#029E73,stroke:#000,color:#fff
+```
+
 ```typescript
 import { Effect, Duration } from "effect";
 
@@ -1720,6 +1930,27 @@ Effect.runPromise(program);
 ### Example 80: Putting It All Together — A Mini Production Service
 
 This final example combines multiple Effect concepts into a realistic production service pattern: typed errors, services, Layers, retries, logging, and metrics in a single cohesive program.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["HTTP Request"] -->|"Schema.decode"| B["validated\ninput"]
+  B -->|"Effect.gen"| C["UserService\n(Context.Tag)"]
+  C -->|"Layer provides"| D["DatabaseLayer\n+ CacheLayer"]
+  C -->|"Metric.counter"| E["MetricRegistry"]
+  C -->|"withSpan"| F["TraceExporter"]
+  C -->|"success"| G["HTTP Response"]
+  C -->|"typed error"| H["error response\n(no 500s)"]
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#DE8F05,stroke:#000,color:#fff
+  style C fill:#DE8F05,stroke:#000,color:#fff
+  style D fill:#CA9161,stroke:#000,color:#fff
+  style E fill:#CA9161,stroke:#000,color:#fff
+  style F fill:#CA9161,stroke:#000,color:#fff
+  style G fill:#029E73,stroke:#000,color:#fff
+  style H fill:#CC78BC,stroke:#000,color:#fff
+```
 
 ```typescript
 import { Effect, Context, Layer, Metric, Schedule, Duration, Data } from "effect";

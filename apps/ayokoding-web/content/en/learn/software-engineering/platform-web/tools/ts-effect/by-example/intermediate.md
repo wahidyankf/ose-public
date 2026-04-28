@@ -25,6 +25,19 @@ tags:
 
 A scoped Layer acquires a resource when the layer is built and releases it when the application shuts down. This is the Effect way to manage database connections, file handles, and other resources that need explicit cleanup.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+  A["Layer.scoped\n(acquire)"] -->|"resource open"| B["Resource\nin use"]
+  B -->|"Scope closes"| C["release\n(always runs)"]
+  D["Error or\ninterrupt"] -->|"Scope closes"| C
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#DE8F05,stroke:#000,color:#fff
+  style C fill:#029E73,stroke:#000,color:#fff
+  style D fill:#CC78BC,stroke:#000,color:#fff
+```
+
 ```typescript
 import { Effect, Context, Layer, Scope } from "effect";
 
@@ -84,6 +97,19 @@ Effect.runPromise(program.pipe(Effect.provide(DatabasePoolLayer)));
 ### Example 29: Layer.provideMerge and Layer.mergeAll
 
 `Layer.provideMerge` creates a new layer that provides both the original and the provided services. `Layer.mergeAll` combines multiple independent layers. These are the primary tools for assembling the application service graph.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["LayerA\nService A"] --> C["Layer.provideMerge\nor Layer.merge"]
+  B["LayerB\nService B"] --> C
+  C --> D["Combined Layer\nService A + Service B"]
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#CA9161,stroke:#000,color:#fff
+  style C fill:#DE8F05,stroke:#000,color:#fff
+  style D fill:#029E73,stroke:#000,color:#fff
+```
 
 ```typescript
 import { Effect, Context, Layer } from "effect";
@@ -174,6 +200,19 @@ Effect.runSync(program.pipe(Effect.provide(FullLayer)));
 
 `Effect.all` supports several concurrency modes: sequential (default), unbounded parallel, and bounded parallel. Choosing the right mode balances throughput against resource pressure.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["Effect.all(effects)"] -->|"concurrency: 1\n(default)"| B["sequential\ne1 → e2 → e3"]
+  A -->|"concurrency: 'unbounded'"| C["parallel\ne1 ∥ e2 ∥ e3"]
+  A -->|"concurrency: N"| D["bounded parallel\nN at a time"]
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#CA9161,stroke:#000,color:#fff
+  style C fill:#029E73,stroke:#000,color:#fff
+  style D fill:#DE8F05,stroke:#000,color:#fff
+```
+
 ```typescript
 import { Effect, Duration } from "effect";
 
@@ -227,6 +266,20 @@ Effect.runPromise(parallel).then((results) => {
 ### Example 31: Fiber — Forking and Joining
 
 `Fiber` is Effect's lightweight concurrent process. Unlike threads, thousands of fibers run on a small thread pool. You `fork` a fiber to run an effect concurrently, then `join` it later to get the result.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+  A["parent fiber"] -->|"Fiber.fork"| B["child fiber\n(runs concurrently)"]
+  A -->|"continues"| C["parent work"]
+  B -->|"Fiber.join"| D["child result\n(await at join point)"]
+  C --> D
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#DE8F05,stroke:#000,color:#fff
+  style C fill:#CA9161,stroke:#000,color:#fff
+  style D fill:#029E73,stroke:#000,color:#fff
+```
 
 ```typescript
 import { Effect, Fiber, Duration } from "effect";
@@ -290,6 +343,21 @@ Effect.runPromise(program).then((results) => console.log("Final:", results));
 ### Example 32: Fiber.interrupt and Structured Concurrency
 
 Interrupting a fiber stops it and runs any finalizers it registered. Structured concurrency in Effect means that when a parent fiber stops, its forked children stop too — preventing orphaned computations.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["parent scope"] -->|"forks"| B["child fiber\nrunning"]
+  B -->|"Fiber.interrupt"| C["interrupted\nExit.interrupt"]
+  A -->|"scope closes"| D["all children\ninterrupted"]
+  B -->|"completes first"| E["Exit.succeed"]
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#DE8F05,stroke:#000,color:#fff
+  style C fill:#CC78BC,stroke:#000,color:#fff
+  style D fill:#CC78BC,stroke:#000,color:#fff
+  style E fill:#029E73,stroke:#000,color:#fff
+```
 
 ```typescript
 import { Effect, Fiber, Duration } from "effect";
@@ -355,6 +423,23 @@ const structuredProgram = Effect.scoped(
 ### Example 33: Schedule Basics — recurs, spaced, exponential
 
 `Schedule` defines when to retry or repeat an Effect. Schedules are values that you compose with `pipe`. The most common schedules are `recurs` (fixed count), `spaced` (fixed delay), and `exponential` (doubling delay).
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+  A["effect\nfails"] -->|"Schedule.recurs(3)"| B["retry 1"]
+  B -->|"still fails"| C["retry 2"]
+  C -->|"still fails"| D["retry 3"]
+  D -->|"still fails"| E["propagate\nfailure"]
+  C -->|"succeeds"| F["success"]
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#DE8F05,stroke:#000,color:#fff
+  style C fill:#DE8F05,stroke:#000,color:#fff
+  style D fill:#DE8F05,stroke:#000,color:#fff
+  style E fill:#CC78BC,stroke:#000,color:#fff
+  style F fill:#029E73,stroke:#000,color:#fff
+```
 
 ```typescript
 import { Schedule, Duration, Effect } from "effect";
@@ -540,6 +625,19 @@ Effect.runSync(program);
 
 `Queue<A>` is a concurrent, bounded or unbounded queue. Producers offer items; consumers take items. When the queue is full (bounded), `offer` suspends. When empty, `take` suspends. Use Queue to decouple producers from consumers.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+  A["Producer\nfiber"] -->|"Queue.offer"| B["Queue\n(bounded/unbounded)"]
+  B -->|"Queue.take\n(blocks if empty)"| C["Consumer\nfiber"]
+  A2["Producer 2"] -->|"Queue.offer"| B
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style A2 fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#DE8F05,stroke:#000,color:#fff
+  style C fill:#029E73,stroke:#000,color:#fff
+```
+
 ```typescript
 import { Effect, Queue, Fiber, Duration } from "effect";
 
@@ -606,6 +704,21 @@ const slidingQueue = Queue.sliding<number>(100);
 ### Example 37: PubSub — Broadcast Messaging
 
 `PubSub<A>` broadcasts each message to all current subscribers. Unlike `Queue` (one consumer per message), `PubSub` delivers each message to every subscriber. Use it for event notifications, real-time updates, and observability hooks.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+  A["Publisher\nfiber"] -->|"PubSub.publish"| B["PubSub\n(topic)"]
+  B -->|"broadcast"| C["Subscriber 1\nQueue"]
+  B -->|"broadcast"| D["Subscriber 2\nQueue"]
+  B -->|"broadcast"| E["Subscriber 3\nQueue"]
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#DE8F05,stroke:#000,color:#fff
+  style C fill:#029E73,stroke:#000,color:#fff
+  style D fill:#029E73,stroke:#000,color:#fff
+  style E fill:#029E73,stroke:#000,color:#fff
+```
 
 ```typescript
 import { Effect, PubSub, Fiber, Duration } from "effect";
@@ -1164,6 +1277,21 @@ console.log(Chunk.toArray(doubled));
 
 `Stream<A, E, R>` is a lazy, effectful sequence of values. Like Effect, a Stream is a description — it does nothing until you run it. Use Stream for processing sequences of data: reading files, database result sets, API pagination, event feeds.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+  A["Stream.make\nor Stream.fromIterable"] -->|"lazy pull"| B["element 1"]
+  B --> C["element 2"]
+  C --> D["element N"]
+  D -->|"Stream.runCollect\nor runFold"| E["final\nresult"]
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#DE8F05,stroke:#000,color:#fff
+  style C fill:#DE8F05,stroke:#000,color:#fff
+  style D fill:#DE8F05,stroke:#000,color:#fff
+  style E fill:#029E73,stroke:#000,color:#fff
+```
+
 ```typescript
 import { Stream, Effect } from "effect";
 
@@ -1226,6 +1354,19 @@ console.log(Effect.runSync(sum));
 ### Example 46: Stream Transformations — map, filter, flatMap
 
 Stream transformations build data pipelines over sequences. Like Effect's `map` and `flatMap`, stream transformations are lazy — they describe processing steps that execute when the stream is run.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+  A["Stream&lt;A&gt;"] -->|"Stream.map(f)"| B["Stream&lt;B&gt;"]
+  B -->|"Stream.filter(p)"| C["Stream&lt;B&gt;\n(subset)"]
+  C -->|"Stream.flatMap(g)"| D["Stream&lt;C&gt;\n(flattened)"]
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#DE8F05,stroke:#000,color:#fff
+  style C fill:#CC78BC,stroke:#000,color:#fff
+  style D fill:#029E73,stroke:#000,color:#fff
+```
 
 ```typescript
 import { Stream, Effect } from "effect";
@@ -1735,6 +1876,21 @@ Effect.runSync(program);
 
 `Effect.race` runs two effects concurrently and returns the result of whichever finishes first. The loser is interrupted. Use it for implementing timeouts, hedged requests, and competitive execution patterns.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["Effect.race(e1, e2)"] -->|"starts both"| B["e1 running"]
+  A -->|"starts both"| C["e2 running"]
+  B -->|"wins (faster)"| D["result from e1\ne2 interrupted"]
+  C -->|"wins (faster)"| E["result from e2\ne1 interrupted"]
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#DE8F05,stroke:#000,color:#fff
+  style C fill:#DE8F05,stroke:#000,color:#fff
+  style D fill:#029E73,stroke:#000,color:#fff
+  style E fill:#029E73,stroke:#000,color:#fff
+```
+
 ```typescript
 import { Effect, Duration } from "effect";
 
@@ -1804,6 +1960,20 @@ const withTimeout = Effect.race(
 ### Example 55: Effect.acquireUseRelease — Safe Resource Patterns
 
 `Effect.acquireUseRelease` models the "acquire, use, release" pattern for resources. It guarantees that the release action runs even if the use action fails or is interrupted.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+  A["acquire\n(open resource)"] -->|"success"| B["use(resource)\n(your logic)"]
+  B -->|"always"| C["release(resource)\n(guaranteed cleanup)"]
+  A -->|"acquire fails"| D["release\nnot called"]
+  B -->|"use fails or\ninterrupt"| C
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#DE8F05,stroke:#000,color:#fff
+  style C fill:#029E73,stroke:#000,color:#fff
+  style D fill:#CC78BC,stroke:#000,color:#fff
+```
 
 ```typescript
 import { Effect, Duration } from "effect";

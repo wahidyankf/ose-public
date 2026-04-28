@@ -164,6 +164,17 @@ const readFile = (path: string) =>
 
 Effects are lazy descriptions — they do nothing until you "run" them. Effect provides several runners for different execution contexts. `runSync` executes an effect synchronously and throws if it fails. `runPromise` executes asynchronously and returns a Promise.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["Effect\n(description only)"] -->|"Effect.runSync"| B["A\n(sync result)"]
+  A -->|"Effect.runPromise"| C["Promise<A>\n(async result)"]
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#029E73,stroke:#000,color:#fff
+  style C fill:#029E73,stroke:#000,color:#fff
+```
+
 ```typescript
 import { Effect } from "effect";
 
@@ -276,6 +287,19 @@ Exit.match(asyncExit, {
 
 `pipe` is a utility that threads a value through a sequence of functions left to right. In Effect, nearly everything is built with `pipe` — it is the primary way to compose operations without nesting.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+  A["value\n(input)"] -->|"f1"| B["intermediate\nvalue"]
+  B -->|"f2"| C["another\nvalue"]
+  C -->|"f3"| D["final\nresult"]
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#DE8F05,stroke:#000,color:#fff
+  style C fill:#DE8F05,stroke:#000,color:#fff
+  style D fill:#029E73,stroke:#000,color:#fff
+```
+
 ```typescript
 import { Effect, pipe } from "effect";
 
@@ -385,6 +409,20 @@ console.log(Effect.runSync(parsedName));
 ### Example 8: Effect.flatMap — Chaining Effects
 
 `Effect.flatMap` (also called `andThen` when passing an Effect directly) chains effects together. Use it when each step in your pipeline itself returns an Effect. This is the fundamental building block for sequential effectful computations.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+  A["Effect<A, E, R>"] -->|"flatMap(f)"| B["f(A)"]
+  B -->|"returns"| C["Effect<B, E2, R2>"]
+  A2["Effect<never, E, R>\n(failed)"] -->|"flatMap(f)"| D["short-circuit\nf not called"]
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#DE8F05,stroke:#000,color:#fff
+  style C fill:#029E73,stroke:#000,color:#fff
+  style A2 fill:#CA9161,stroke:#000,color:#fff
+  style D fill:#CC78BC,stroke:#000,color:#fff
+```
 
 ```typescript
 import { Effect } from "effect";
@@ -519,6 +557,19 @@ Effect.runSync(withErrorLogging);
 
 Effect shines when errors are explicit types rather than generic `Error` objects. `Data.TaggedError` creates tagged error classes with a `_tag` field that Effect uses for pattern matching. This makes error handling exhaustive and discoverable.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["AppError\n(union type)"] --> B["NotFoundError\n_tag: 'NotFoundError'"]
+  A --> C["ValidationError\n_tag: 'ValidationError'"]
+  A --> D["DatabaseError\n_tag: 'DatabaseError'"]
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#DE8F05,stroke:#000,color:#fff
+  style C fill:#CC78BC,stroke:#000,color:#fff
+  style D fill:#CA9161,stroke:#000,color:#fff
+```
+
 ```typescript
 import { Effect, Data } from "effect";
 
@@ -638,6 +689,18 @@ const withTranslation = fetchData("slow-api.com").pipe(
 
 `catchTag` handles a single tagged error type, leaving other error types unchanged in the Effect's type signature. This is the recommended approach for domain error handling — handle each error type at the appropriate level.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["Effect<A,\nE1 | E2 | E3, R>"] -->|"catchTag('E1', f)"| B["handler f\nfor E1"]
+  A -->|"E2 or E3\npasses through"| C["Effect<A,\nE2 | E3, R>"]
+  B -->|"recovered"| C
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#DE8F05,stroke:#000,color:#fff
+  style C fill:#029E73,stroke:#000,color:#fff
+```
+
 ```typescript
 import { Effect, Data } from "effect";
 
@@ -756,6 +819,19 @@ Effect.runPromise(withRetry).then((result) => {
 ### Example 14: Effect.gen — Generator-Based Pipelines
 
 `Effect.gen` provides an async/await-like syntax for Effect using JavaScript generators. Instead of chaining `flatMap` calls, you use `yield*` to unwrap effects and write sequential logic that looks like imperative code.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+sequenceDiagram
+  participant G as Generator
+  participant R as Effect Runtime
+  G->>R: yield* effect1
+  R-->>G: value1 (A)
+  G->>R: yield* effect2(value1)
+  R-->>G: value2 (B)
+  G->>R: return finalValue
+  R-->>G: Effect<Final, E, Deps>
+```
 
 ```typescript
 import { Effect, Data } from "effect";
@@ -1153,6 +1229,19 @@ Effect.runSync(program.pipe(Effect.provide(AppLayer)));
 
 Layers compose in two ways: sequentially (one layer provides what another needs) and in parallel (independent layers merged together). Understanding layer composition is key to structuring larger applications.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["DatabaseLayer\n(no deps)"] --> C["UserServiceLayer\n(needs Database)"]
+  B["ConfigLayer\n(no deps)"] --> C
+  C --> D["AppLayer\n(provides all services)"]
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#CA9161,stroke:#000,color:#fff
+  style C fill:#DE8F05,stroke:#000,color:#fff
+  style D fill:#029E73,stroke:#000,color:#fff
+```
+
 ```typescript
 import { Effect, Context, Layer } from "effect";
 
@@ -1424,6 +1513,23 @@ const thrownError = Cause.squash(Cause.fail("an error"));
 ### Example 24: Effect.all — Sequential and Concurrent Execution
 
 `Effect.all` runs a collection of effects and returns their results. By default, effects run sequentially. With `{ concurrency: "unbounded" }`, effects run concurrently.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+  A["Effect.all\n(concurrency: unbounded)"] --> B["e1 ▶"]
+  A --> C["e2 ▶"]
+  A --> D["e3 ▶"]
+  B --> E["[r1, r2, r3]\nwhen all done"]
+  C --> E
+  D --> E
+
+  style A fill:#0173B2,stroke:#000,color:#fff
+  style B fill:#DE8F05,stroke:#000,color:#fff
+  style C fill:#DE8F05,stroke:#000,color:#fff
+  style D fill:#DE8F05,stroke:#000,color:#fff
+  style E fill:#029E73,stroke:#000,color:#fff
+```
 
 ```typescript
 import { Effect } from "effect";

@@ -16,16 +16,28 @@
 
 ## Environment Setup
 
+- [ ] **BLOCKING**: Verify gear-up plan archived before proceeding:
+      `ls plans/done/ | grep organiclever-web-event-mechanism`
+      — execution MUST NOT start until this passes
 - [ ] Install dependencies in the root worktree: `npm install`
 - [ ] Converge the full polyglot toolchain: `npm run doctor -- --fix`
 - [ ] Verify dev server starts: `nx dev organiclever-web` (expect `localhost:3200`)
 - [ ] Confirm existing tests pass before making changes — gear-up's
-      `lib/events/` and provisional `/app/page.tsx` should be green: - `nx run organiclever-web:typecheck` - `nx run organiclever-web:lint` - `nx run organiclever-web:test:quick` - `nx run organiclever-web:test:integration` - `nx run organiclever-web-e2e:test:e2e`
-- [ ] Confirm gear-up artifacts present: - `apps/organiclever-web/src/lib/events/event-store.ts` exists and exports
-      Effect-returning `appendEvents`, `updateEvent`, `deleteEvent`, `bumpEvent`,
-      `listEvents`, `clearEvents` - `apps/organiclever-web/src/lib/events/runtime.ts` exposes `PgliteService`
-      and `makeEventsRuntime` - `apps/organiclever-web/src/lib/events/migrations/2026_04_28T14_05_30__create_events_table.ts` exists - `package.json` already lists `effect`, `@effect/platform`,
-      `@electric-sql/pglite`, `@effect/vitest`
+      `lib/events/` and provisional `/app/page.tsx` should be green:
+  - [ ] `nx run organiclever-web:typecheck`
+  - [ ] `nx run organiclever-web:lint`
+  - [ ] `nx run organiclever-web:test:quick`
+  - [ ] `nx run organiclever-web:test:integration`
+  - [ ] `nx run organiclever-web-e2e:test:e2e`
+- [ ] Confirm gear-up artifacts present:
+  - [ ] `apps/organiclever-web/src/lib/events/event-store.ts` exists and exports
+        Effect-returning `appendEvents`, `updateEvent`, `deleteEvent`, `bumpEvent`,
+        `listEvents`, `clearEvents`
+  - [ ] `apps/organiclever-web/src/lib/events/runtime.ts` exposes `PgliteService`
+        and `makeEventsRuntime`
+  - [ ] `apps/organiclever-web/src/lib/events/migrations/2026_04_28T14_05_30__create_events_table.ts` exists
+  - [ ] `package.json` already lists `effect`, `@effect/platform`,
+        `@electric-sql/pglite`, `@effect/vitest`
 
 ### Commit Guidelines
 
@@ -233,6 +245,9 @@ event-store,use-events,run-migrations,format-relative-time}.ts`. This phase
   - [ ] Mobile layout: full-width pane + `TabBar` when `screen === 'main'`
   - [ ] Routes to correct screen component based on `screen` + `tab`
   - [ ] `AddEventSheet`, quick logger sheets, `CustomEventLogger` overlays
+  - [ ] Wire `seedIfEmpty` on mount: after the migration runner resolves,
+        call `runtime.runPromise(seedIfEmpty())` so first-launch data is
+        populated before any screen renders (per Phase 0.5 note)
 
 ### 1.4 TabBar
 
@@ -414,7 +429,8 @@ event-store,use-events,run-migrations,format-relative-time}.ts`. This phase
 ### 4.5 WorkoutScreen
 
 - [ ] Create `src/components/app/workout/workout-screen.tsx`:
-  - [ ] `AppHeader`: back (→ end confirm sheet), title, elapsed timer (`useInterval`)
+  - [ ] `AppHeader`: back (→ end confirm sheet), title, elapsed timer (in-component
+        `setInterval` + `useRef` — same pattern as RestTimer; no separate `useInterval` hook file)
   - [ ] Groups with collapsible headers; exercises via `ActiveExerciseRow`
   - [ ] `RestTimer` auto-starts after each set (using `resolvedRest(exercise, settings)`)
         (see resolvedRest logic in tech-docs.md §Rest Timer Logic section)
@@ -607,6 +623,8 @@ event-store,use-events,run-migrations,format-relative-time}.ts`. This phase
 - [ ] `nx affected -t typecheck` passes
 - [ ] `nx affected -t lint` passes
 - [ ] `nx affected -t test:quick` passes (≥ 70 %, clean non-cached run)
+- [ ] `nx run organiclever-web:test:integration` passes (validates v2 migration
+      backfill and gear-up row survival)
 - [ ] `nx affected -t spec-coverage` passes
 - [ ] `nx run organiclever-web-e2e:test:e2e` passes
 - [ ] Fix ALL failures found — including any preexisting failures not caused by your changes

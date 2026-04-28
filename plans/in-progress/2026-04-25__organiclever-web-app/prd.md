@@ -530,3 +530,23 @@ Feature: Settings screen
     When I tap rest time "30s"
     Then the rest timer defaults to 30 seconds in next workout
 ```
+
+### Data persistence
+
+```gherkin
+Feature: Data persistence across browser sessions
+
+  Background:
+    Given I navigate to "/#/app"
+
+  Scenario: Events survive a hard page reload
+    Given I log a reading event titled "Atomic Habits"
+    When I reload the page
+    Then I navigate to "/#/app"
+    And I see text "Atomic Habits" in the recent events list
+
+  Scenario: Dark mode preference survives a hard page reload
+    Given dark mode is active
+    When I reload the page
+    Then html still has attribute data-theme "dark"
+```

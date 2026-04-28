@@ -15,6 +15,7 @@ confirmed design decisions. Primary references by phase:
 - `raw/Components.jsx` — `TabBar`, `SideNav`, `AddEventSheet`, etc. (Phase 1 reference)
 - `raw/HomeScreen.jsx` — `WeekRhythmStrip`, module chips, event timeline (Phase 2 reference)
 - `raw/WorkoutScreen.jsx` — set rows, rest timer, sheets (Phase 4 reference)
+- `raw/FinishScreen.jsx` — post-workout summary: duration, volume, exercise breakdown (Phase 4 reference)
 - `raw/EditRoutineScreen.jsx` — exercise CRUD (Phase 5 reference)
 - `raw/HistoryScreen.jsx` — bar chart, session cards (Phase 6 reference)
 - `raw/ProgressScreen.jsx` — analytics, SVG charts, 1RM (Phase 7 reference)
@@ -110,7 +111,8 @@ apps/organiclever-web/src/
 │   │   ├── format-relative-time.ts    ← gear-up
 │   │   ├── migrations/
 │   │   │   ├── 2026_04_28T14_05_30__create_events_table.ts   ← gear-up
-│   │   │   ├── 2026_05_03T09_22_15__add_typed_payload_columns.ts ← THIS PLAN, Phase 0 (v2)
+│   │   │   ├── <TIMESTAMP>__add_typed_payload_columns.ts ← THIS PLAN, Phase 0 (v2; use actual UTC timestamp at file creation)
+│   │   │   ├── <TIMESTAMP>__add_typed_payload_columns.unit.test.ts ← THIS PLAN, Phase 0
 │   │   │   └── index.generated.ts    ← gitignored, codegen
 │   │   ├── typed-payloads.ts          ← THIS PLAN, Phase 0 (per-kind Schema union)
 │   │   ├── typed-payloads.unit.test.ts ← THIS PLAN, Phase 0
@@ -326,12 +328,14 @@ it adds:
 ### v2 migration (typed-payload columns)
 
 ```typescript
-// lib/events/migrations/2026_05_03T09_22_15__add_typed_payload_columns.ts
+// lib/events/migrations/<TIMESTAMP>__add_typed_payload_columns.ts
+// Replace <TIMESTAMP> with actual UTC second-precision value at file creation time
+// (e.g. 2026_05_03T09_22_15). See delivery.md Phase 0.1 for naming regex.
 
 import type { PGlite, Transaction } from "@electric-sql/pglite";
 type Queryable = PGlite | Transaction;
 
-export const id = "2026_05_03T09_22_15__add_typed_payload_columns";
+export const id = "<TIMESTAMP>__add_typed_payload_columns";
 
 export async function up(db: Queryable): Promise<void> {
   await db.exec(`

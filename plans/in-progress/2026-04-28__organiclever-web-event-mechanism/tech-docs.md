@@ -29,9 +29,13 @@ apps/organiclever-web/src/
 │       ├── events-page.tsx                   ← Phase 2 (composes the trio)
 │       ├── events-page.unit.test.tsx         ← Phase 3
 │       ├── add-event-button.tsx              ← Phase 2
+│       ├── add-event-button.unit.test.tsx    ← Phase 2
 │       ├── event-form-sheet.tsx              ← Phase 2
+│       ├── event-form-sheet.unit.test.tsx    ← Phase 2
 │       ├── event-list.tsx                    ← Phase 2
-│       └── event-card.tsx                    ← Phase 2
+│       ├── event-list.unit.test.tsx          ← Phase 2
+│       ├── event-card.tsx                    ← Phase 2
+│       └── event-card.unit.test.tsx          ← Phase 2
 └── lib/
     └── events/
         ├── types.ts                          ← Phase 0 (re-exports Schema-derived types)
@@ -58,7 +62,7 @@ apps/organiclever-web/scripts/
 
 apps/organiclever-web-e2e/
 └── steps/
-    └── events-mechanism.steps.ts             ← Phase 3
+    └── events-mechanism.steps.ts             ← Phase 4
 
 specs/apps/organiclever/fe/gherkin/events/
 └── events-mechanism.feature                  ← Phase 4

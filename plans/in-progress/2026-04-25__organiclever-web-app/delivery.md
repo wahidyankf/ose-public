@@ -95,7 +95,7 @@ event-store,use-events,run-migrations,format-relative-time}.ts`. This phase
         payload) is rejected by the union decoder
   - [ ] Decode failure surfaces field-level errors via `ArrayFormatter`
 
-### 0.3 Effect-returning routine store
+### 0.3 Effect-returning routine store + React hook
 
 - [ ] Create `apps/organiclever-web/src/lib/events/routine-store.ts` per
       `tech-docs.md`:
@@ -107,14 +107,27 @@ event-store,use-events,run-migrations,format-relative-time}.ts`. This phase
         `UnknownException` leaks)
 - [ ] Create `apps/organiclever-web/src/lib/events/routine-store.unit.test.ts`
       using `@effect/vitest` Layer-swap (in-memory PGlite + v1 + v2 migrations)
+- [ ] Create `apps/organiclever-web/src/lib/events/use-routines.ts` — React
+      hook bridging `routine-store` via `ManagedRuntime`. Mirrors gear-up's
+      `useEvents` shape: discriminated `RoutinesState` (`idle | loading | ready
+| error`); `runtime.runPromise(listRoutines())` on mount; `save` /
+      `remove` / `reorder` handlers re-running `listRoutines` after each
+      mutation. Single `runPromise` boundary per the run-at-the-edge invariant
+- [ ] Create `apps/organiclever-web/src/lib/events/use-routines.unit.test.tsx`
+      (RTL + `@effect/vitest`)
 
-### 0.4 Effect-returning settings store
+### 0.4 Effect-returning settings store + React hook
 
 - [ ] Create `apps/organiclever-web/src/lib/events/settings-store.ts`:
   - [ ] `getSettings: Effect<AppSettings, StorageUnavailable, PgliteService>`
         (lazily creates the singleton row from defaults if missing)
   - [ ] `saveSettings: (patch: Partial<AppSettings>) => Effect<AppSettings, StorageUnavailable, PgliteService>`
 - [ ] Create `apps/organiclever-web/src/lib/events/settings-store.unit.test.ts`
+- [ ] Create `apps/organiclever-web/src/lib/events/use-settings.ts` — React
+      hook bridging `settings-store` via `ManagedRuntime`. Same pattern as
+      `use-routines.ts`. The `useT()` i18n hook in Phase 0.6 reads `lang` via
+      `useSettings().settings?.lang ?? 'en'`
+- [ ] Create `apps/organiclever-web/src/lib/events/use-settings.unit.test.tsx`
 
 ### 0.5 Seed
 
@@ -151,7 +164,30 @@ event-store,use-events,run-migrations,format-relative-time}.ts`. This phase
   - [ ] `fmtKg(1500)` → `"1.5k"`, `fmtKg(850)` → `"850"`
   - [ ] `fmtSpec` reps mode, duration mode, one-off mode, bilateral flag
 
-### 0.8 Validation
+### 0.8 Stats aggregations
+
+- [ ] Create `apps/organiclever-web/src/lib/events/stats.ts` — Effect-returning
+      aggregations consumed by Home (`<WeekRhythmStrip>` Phase 2) and Progress
+      (`<ProgressScreen>` Phase 7):
+  - [ ] `getLast7Days: Effect<ReadonlyArray<DayEntry>, StorageUnavailable, PgliteService>`
+        (7 entries Sun..today, today last)
+  - [ ] `getWeeklyStats: Effect<WeeklyStats, StorageUnavailable, PgliteService>`
+        (`workoutsThisWeek` rolling 7d; `streak` consecutive weeks ≥ 2 workouts;
+        `totalMins` last 7d workout duration; `totalSets` last 7d set count)
+  - [ ] `getVolume: (days: number) => Effect<number, StorageUnavailable, PgliteService>`
+        (sum `weight × reps` across workout sets in last N days)
+  - [ ] `getExerciseProgress: (days: number) => Effect<Record<string, ExerciseProgress>, StorageUnavailable, PgliteService>`
+        (per-exercise `ExerciseProgress` with sorted points; `isPR` true when the
+        computed Brzycki `estimated1RM` exceeds all prior values for the same
+        exercise)
+  - [ ] All four functions are pure Postgres SQL (`date_trunc`, `generate_series`,
+        window functions, JSONB operators) executed against `PgliteService.db`;
+        no client-side row scans
+- [ ] Create `apps/organiclever-web/src/lib/events/stats.unit.test.ts` using
+      `@effect/vitest` Layer-swap; seed a 14-day fixture and assert each
+      aggregation matches expected values
+
+### 0.9 Validation
 
 - [ ] `nx affected -t typecheck lint test:quick spec-coverage` passes (≥ 70 % LCOV)
 - [ ] `nx run organiclever-web:test:integration` passes — including the v2

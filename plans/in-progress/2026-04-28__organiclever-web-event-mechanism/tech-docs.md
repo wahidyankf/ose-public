@@ -64,12 +64,14 @@ specs/apps/organiclever/fe/gherkin/events/
 └── events-mechanism.feature                  ← Phase 4
 ```
 
-The bigger plan's `lib/db/`, `components/app/app-root.tsx`, `components/app/tab-bar.tsx`,
-etc. are NOT created here. The bigger plan's Phase 1 will replace
-`src/app/app/page.tsx` and `src/components/app/events-page.tsx`. The bigger plan
-may keep `lib/events/*` as the underlying store, wrap it inside `OLDb`, or
-migrate data from `ol_events_v1` to `ol_db_v12` — the call is deferred to that
-plan.
+The bigger plan's `components/app/app-root.tsx`, `components/app/tab-bar.tsx`,
+etc. are NOT created here. The bigger plan's Phase 1 replaces the body of
+`src/app/app/page.tsx` (mounting `<AppRoot />` instead of `<EventsPage />`)
+and extends the gear-up's `lib/events/*` via a v2 migration adding typed-
+payload columns plus per-kind `Schema.Union`. The PGlite database identity
+(`dataDir = ol_events_v1`, IDB key `/pglite/ol_events_v1`) is preserved
+across both plans — there is no rename and no data migration between
+databases.
 
 ## Data Model (Effect Schema + branded primitives)
 

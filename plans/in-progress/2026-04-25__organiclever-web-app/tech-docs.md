@@ -116,10 +116,15 @@ apps/organiclever-web/src/
 │   │   ├── typed-payloads.unit.test.ts ← THIS PLAN, Phase 0
 │   │   ├── routine-store.ts           ← THIS PLAN, Phase 0 (Effect-returning routines CRUD)
 │   │   ├── routine-store.unit.test.ts ← THIS PLAN, Phase 0
+│   │   ├── use-routines.ts            ← THIS PLAN, Phase 0 (React hook bridging routine-store via ManagedRuntime)
+│   │   ├── use-routines.unit.test.tsx ← THIS PLAN, Phase 0
 │   │   ├── settings-store.ts          ← THIS PLAN, Phase 0 (Effect-returning settings CRUD)
 │   │   ├── settings-store.unit.test.ts ← THIS PLAN, Phase 0
+│   │   ├── use-settings.ts            ← THIS PLAN, Phase 0 (React hook bridging settings-store via ManagedRuntime)
+│   │   ├── use-settings.unit.test.tsx ← THIS PLAN, Phase 0
 │   │   ├── seed.ts                    ← THIS PLAN, Phase 0 (typed seed for first-load)
-│   │   └── stats.ts                   ← THIS PLAN, Phase 7 (Progress / Home aggregations)
+│   │   ├── stats.ts                   ← THIS PLAN, Phase 0.8 (Effect-returning stats aggregations consumed by Home + Progress)
+│   │   └── stats.unit.test.ts         ← THIS PLAN, Phase 0
 │   ├── hooks/
 │   │   └── use-hash.ts                ← Phase 1
 │   ├── i18n/

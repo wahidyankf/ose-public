@@ -78,22 +78,78 @@ starts after this gear-up archives.
   - [ ] `NewEventInput = Pick<EventEntry, "kind" | "payload">`
   - [ ] `UpdateEventInput = Partial<Pick<EventEntry, "kind" | "payload">>`
 
-### 0.3 Migration registry v1
+### 0.3 Migration framework — multi-developer safe
 
-- [ ] Create `apps/organiclever-web/src/lib/events/migrations.ts`:
-  - [ ] `Migration` interface (`version`, `name`, `up`)
-  - [ ] `MIGRATIONS: Migration[]` array with the v1 entry from `tech-docs.md`
-        (creates `events` table + `events_created_at_desc` composite index)
-  - [ ] `runMigrations(db: PGlite): Promise<void>`:
-    - [ ] `CREATE TABLE IF NOT EXISTS _migrations(...)` first
-    - [ ] `SELECT max(version) FROM _migrations` (treat null/absent as `0`)
-    - [ ] Loop through `MIGRATIONS` where `m.version > current`, running each
-          inside `db.transaction(async tx => { await tx.exec(m.up); await tx.exec("INSERT INTO _migrations(version,name) VALUES($1,$2)", [m.version, m.name]); })`
-- [ ] Create `apps/organiclever-web/src/lib/events/migrations.test.ts` (unit):
-  - [ ] Mock or in-memory PGlite — fresh DB applies v1 (one row in `_migrations`)
-  - [ ] Re-running on the same DB is a no-op (still one row)
-  - [ ] If `m.up` throws mid-transaction, `_migrations` is unchanged and the
-        partial schema is rolled back
+#### 0.3.a Codegen script
+
+- [ ] Create `apps/organiclever-web/scripts/gen-migrations.mjs` per the
+      tech-docs sketch (~30 lines):
+  - [ ] Reads every `*.ts` file in
+        `apps/organiclever-web/src/lib/events/migrations/` (excluding `index.ts`
+        and `index.generated.ts`)
+  - [ ] Validates each filename matches the regex
+        `^\d{4}_\d{2}_\d{2}T\d{2}_\d{2}_\d{2}__[a-z0-9_]{1,60}\.ts$`; throws
+        with a clear error on first violation
+  - [ ] Sorts lexicographically (timestamp prefix → chronological)
+  - [ ] Emits `index.generated.ts` with one `import * as mN from "./<file>";`
+        per migration and `export const MIGRATIONS: Migration[] = [m0, m1, ...]`
+- [ ] Add gitignore: append
+      `src/lib/events/migrations/index.generated.ts` to
+      `apps/organiclever-web/.gitignore`
+- [ ] Wire npm scripts in `apps/organiclever-web/package.json`:
+  - [ ] `"gen:migrations": "node scripts/gen-migrations.mjs"`
+  - [ ] `"predev": "npm run gen:migrations"`
+  - [ ] `"prebuild": "npm run gen:migrations"`
+  - [ ] `"pretest": "npm run gen:migrations"`
+  - [ ] `"pretest:integration": "npm run gen:migrations"`
+- [ ] Verify the script is callable: `cd apps/organiclever-web && npm run gen:migrations`
+      after step 0.3.b creates the first migration file
+
+#### 0.3.b First migration file (v1: create events table)
+
+- [ ] Create directory `apps/organiclever-web/src/lib/events/migrations/`
+- [ ] Create `apps/organiclever-web/src/lib/events/migrations/2026_04_28T14_05_30__create_events_table.ts`
+      (substitute the actual UTC timestamp at file-creation time so the
+      filename is honest):
+  - [ ] `export const id = "<filename without .ts>"`
+  - [ ] `export async function up(db: PGlite): Promise<void>` running the
+        v1 SQL from `tech-docs.md` (`CREATE TABLE IF NOT EXISTS events (...)` + `CREATE INDEX IF NOT EXISTS events_created_at_desc (...)`)
+  - [ ] `export async function down(db: PGlite): Promise<void>` reversing it
+        (`DROP INDEX IF EXISTS ...; DROP TABLE IF EXISTS events;`)
+
+#### 0.3.c Runner
+
+- [ ] Create `apps/organiclever-web/src/lib/events/run-migrations.ts`:
+  - [ ] `import { MIGRATIONS } from "./migrations/index.generated"`
+  - [ ] `export async function runMigrations(db: PGlite): Promise<void>`: - [ ] `await db.exec("CREATE TABLE IF NOT EXISTS _migrations (id TEXT PRIMARY KEY, applied_at TIMESTAMPTZ NOT NULL DEFAULT now())")` - [ ] `const applied = new Set((await db.query<{ id: string }>("SELECT id FROM _migrations")).rows.map(r => r.id))` - [ ] For each `m` in `MIGRATIONS` not in `applied`:
+        `typescript
+await db.transaction(async tx => {
+  await m.up(tx);
+  await tx.query("INSERT INTO _migrations(id) VALUES($1)", [m.id]);
+});
+`
+
+#### 0.3.d Runner unit tests
+
+- [ ] Create `apps/organiclever-web/src/lib/events/run-migrations.test.ts`:
+  - [ ] In-memory PGlite — fresh DB, run `runMigrations(db)` once: one row
+        in `_migrations` with id `"2026_04_28T14_05_30__create_events_table"`
+  - [ ] Re-running on the same DB is a no-op (still one row, unchanged
+        `applied_at`)
+  - [ ] Inject a failing migration (e.g., wrap `up` in a throw); assert
+        `_migrations` is unchanged AND the partial schema is rolled back
+        (e.g., `events` table does not exist)
+  - [ ] Two migrations in sequence apply in lexicographic order; if the second
+        fails, the first stays applied (per-migration transaction scoping
+        — distinct from libraries that share one transaction across all
+        pending migrations)
+
+#### 0.3.e Filename lint
+
+- [ ] The codegen script throws on filename violations; assert this is the
+      enforcement point (no separate lint rule needed). Add a unit test:
+      `gen-migrations.test.mjs` (or inline) feeds the script a mock directory
+      with one bad name and asserts it throws
 
 ### 0.4 Async event store
 
@@ -389,5 +445,6 @@ event as T0` that captures the timestamp via `page.evaluate` for the
 - [ ] Open the bigger plan
       [`2026-04-25__organiclever-web-app/`](../2026-04-25__organiclever-web-app/README.md):
       its Phase 0 / Phase 1 may now reference `lib/events/event-store.ts`,
-      `lib/events/migrations.ts`, and the existing v1 schema as the underlying
+      `lib/events/run-migrations.ts`, and the individual migration files under
+      `lib/events/migrations/`, plus the existing v1 schema as the underlying
       primitive; the bigger plan adds v2 migration with typed columns

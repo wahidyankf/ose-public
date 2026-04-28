@@ -35,8 +35,11 @@ apps/organiclever-web/src/
 └── lib/
     └── events/
         ├── types.ts                          ← Phase 0
-        ├── migrations.ts                     ← Phase 0
-        ├── migrations.test.ts                ← Phase 0
+        ├── run-migrations.ts                 ← Phase 0
+        ├── run-migrations.test.ts            ← Phase 0
+        ├── migrations/                       ← Phase 0 (one .ts per migration)
+        │   ├── 2026_04_28T14_05_30__create_events_table.ts   ← Phase 0
+        │   └── index.generated.ts            ← gitignored, emitted by gen:migrations
         ├── event-store.ts                    ← Phase 0
         ├── event-store.test.ts               ← Phase 0
         ├── event-store.int.test.ts           ← Phase 1
@@ -44,6 +47,9 @@ apps/organiclever-web/src/
         ├── use-events.test.ts                ← Phase 0
         ├── format-relative-time.ts           ← Phase 0
         └── format-relative-time.test.ts      ← Phase 0
+
+apps/organiclever-web/scripts/
+└── gen-migrations.mjs                        ← Phase 0 (codegen)
 
 apps/organiclever-web-e2e/
 └── steps/
@@ -129,73 +135,202 @@ free / open source) — a Postgres build compiled to WebAssembly with an
 
 ### Database migration framework
 
-Schema changes are applied via a **hand-rolled, idempotent migration registry**
-in `src/lib/events/migrations.ts`. No external migration package is introduced
-in the gear-up; the registry is ~30 lines of TypeScript and gives the bigger
-plan / PWA sync plan a single point to add new versions later.
+Schema changes are applied via a **hand-rolled, idempotent migration runner**
+designed for **multi-developer concurrent authorship**. No external migration
+package is introduced in the gear-up; the runner is ~50 lines of TypeScript
+plus a ~30-line codegen script and gives the bigger plan / PWA sync plan a
+single point to add new migration files without merge conflicts.
 
-```typescript
-// src/lib/events/migrations.ts (signature)
+#### Filename convention (multi-dev safe)
 
-export interface Migration {
-  /** Monotonic positive integer; gaps not allowed. */
-  version: number;
-  /** Short human-readable name; logged on apply. */
-  name: string;
-  /** SQL run inside a single PGlite transaction. */
-  up: string;
-}
+Every migration lives in its own file under
+`src/lib/events/migrations/` with the filename pattern:
 
-export const MIGRATIONS: Migration[] = [
-  {
-    version: 1,
-    name: "create_events_table",
-    up: `
-      CREATE TABLE IF NOT EXISTS events (
-        id          TEXT PRIMARY KEY,
-        kind        TEXT NOT NULL CHECK (length(kind) > 0),
-        payload     JSONB NOT NULL DEFAULT '{}'::jsonb,
-        created_at  TIMESTAMPTZ NOT NULL,
-        updated_at  TIMESTAMPTZ NOT NULL,
-        storage_seq BIGSERIAL
-      );
-      CREATE INDEX IF NOT EXISTS events_created_at_desc
-        ON events (created_at DESC, storage_seq ASC);
-    `,
-  },
-];
-
-/**
- * Apply every migration whose version is greater than the current schema
- * version. Runs at most once per PGlite handle (after `getDb` opens the
- * database). Idempotent: safe to call repeatedly; no-op when fully migrated.
- */
-export async function runMigrations(db: PGlite): Promise<void>;
+```
+YYYY_MM_DDTHH_MM_SS__snake_case_title.ts
 ```
 
-The runner creates a `_migrations` tracking table on first call, then loops
-through `MIGRATIONS` in `version` order applying any not yet recorded:
+Strict regex: `^\d{4}_\d{2}_\d{2}T\d{2}_\d{2}_\d{2}__[a-z0-9_]{1,60}\.ts$`
 
-```sql
-CREATE TABLE IF NOT EXISTS _migrations (
-  version    INT PRIMARY KEY,
-  name       TEXT NOT NULL,
-  applied_at TIMESTAMPTZ NOT NULL DEFAULT now()
+- ISO-8601 second-precision timestamp prefix (UTC); underscores instead of
+  `:` / `-` for filesystem safety
+- `__` (double underscore) separator — matches the `plans/YYYY-MM-DD__identifier/`
+  convention elsewhere in this repo, recognisable cue
+- `snake_case` mandatory title (1..60 chars, `[a-z0-9_]+`); empty title is a
+  lint error (and unhelpful in PR review)
+- `.ts` extension; each migration file exports `up` and (optional) `down`
+
+Examples:
+
+- `2026_04_28T14_05_30__create_events_table.ts` (gear-up v1)
+- `2026_05_03T09_22_15__add_typed_payload_columns.ts` (bigger plan v2)
+- `2026_06_15T11_45_00__add_sync_state_columns.ts` (PWA-sync plan v3)
+
+**Multi-dev safety**: timestamp + title produces unique filenames per branch.
+Two PRs adding migrations on the same day collide only if both authors pick
+the same second AND the same title — vanishingly improbable; if it happens,
+git rejects the second `git add` and the second author bumps the timestamp by
+one second.
+
+#### Migration file shape
+
+```typescript
+// src/lib/events/migrations/2026_04_28T14_05_30__create_events_table.ts
+
+import type { PGlite } from "@electric-sql/pglite";
+
+export const id = "2026_04_28T14_05_30__create_events_table";
+
+export async function up(db: PGlite): Promise<void> {
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS events (
+      id          TEXT PRIMARY KEY,
+      kind        TEXT NOT NULL CHECK (length(kind) > 0),
+      payload     JSONB NOT NULL DEFAULT '{}'::jsonb,
+      created_at  TIMESTAMPTZ NOT NULL,
+      updated_at  TIMESTAMPTZ NOT NULL,
+      storage_seq BIGSERIAL
+    );
+    CREATE INDEX IF NOT EXISTS events_created_at_desc
+      ON events (created_at DESC, storage_seq ASC);
+  `);
+}
+
+export async function down(db: PGlite): Promise<void> {
+  await db.exec(`
+    DROP INDEX IF EXISTS events_created_at_desc;
+    DROP TABLE IF EXISTS events;
+  `);
+}
+```
+
+`down` is recommended but not required by the runner; the gear-up does not
+expose a CLI for rollback (rollback is a developer-tooling concern, not a
+runtime concern).
+
+#### Codegen script + generated index
+
+Browser-bundled JS cannot `readdir()` the migrations directory at runtime, so
+a small codegen script emits a static `index.generated.ts` that imports every
+migration file and exports a sorted array. The generated file is **gitignored**
+to keep merge conflicts impossible.
+
+```javascript
+// scripts/gen-migrations.mjs (~30 lines)
+
+import { readdirSync, writeFileSync } from "fs";
+import { join } from "path";
+
+// CWD is `apps/organiclever-web/` because npm scripts run from package root.
+const MIGRATION_DIR = "src/lib/events/migrations";
+const OUTPUT = `${MIGRATION_DIR}/index.generated.ts`;
+const FILENAME_RX = /^(\d{4}_\d{2}_\d{2}T\d{2}_\d{2}_\d{2}__[a-z0-9_]{1,60})\.ts$/;
+
+const files = readdirSync(MIGRATION_DIR)
+  .filter((f) => f !== "index.generated.ts" && f !== "index.ts")
+  .filter((f) => f.endsWith(".ts"));
+
+for (const f of files) {
+  if (!FILENAME_RX.test(f)) {
+    throw new Error(`Migration filename violates convention: ${f}`);
+  }
+}
+
+const sorted = files.sort(); // lexicographic order = chronological order
+
+const imports = sorted.map((f, i) => `import * as m${i} from "./${f.replace(/\.ts$/, "")}";`).join("\n");
+
+const arr = sorted.map((_, i) => `m${i}`).join(", ");
+
+writeFileSync(
+  OUTPUT,
+  `// AUTO-GENERATED — do not edit. Run \`npm run gen:migrations\`.
+
+${imports}
+
+import type { PGlite } from "@electric-sql/pglite";
+export interface Migration { id: string; up: (db: PGlite) => Promise<void>; down?: (db: PGlite) => Promise<void>; }
+
+export const MIGRATIONS: Migration[] = [${arr}];
+`,
 );
 ```
 
-Each migration runs inside `db.transaction(...)` so a partial failure does not
-leave the database in a half-applied state. After running the migration body,
-the runner inserts into `_migrations`; the row write is part of the same
-transaction so either both succeed or both roll back.
+`apps/organiclever-web/.gitignore` adds:
+
+```
+src/lib/events/migrations/index.generated.ts
+```
+
+`apps/organiclever-web/package.json` scripts:
+
+```json
+{
+  "scripts": {
+    "gen:migrations": "node scripts/gen-migrations.mjs",
+    "predev": "npm run gen:migrations",
+    "prebuild": "npm run gen:migrations",
+    "pretest": "npm run gen:migrations",
+    "pretest:integration": "npm run gen:migrations"
+  }
+}
+```
+
+The script is idempotent and fast (< 50 ms even with hundreds of migrations).
+Running `nx dev`, `nx build`, `nx test:quick`, or `nx test:integration`
+regenerates the index automatically; developers do not invoke it manually.
+
+#### Runner
+
+```typescript
+// src/lib/events/run-migrations.ts (signature)
+
+import { MIGRATIONS } from "./migrations/index.generated";
+import type { PGlite } from "@electric-sql/pglite";
+
+export async function runMigrations(db: PGlite): Promise<void>;
+```
+
+Implementation outline:
+
+1. `CREATE TABLE IF NOT EXISTS _migrations (id TEXT PRIMARY KEY, applied_at TIMESTAMPTZ NOT NULL DEFAULT now())`
+2. `SELECT id FROM _migrations` → set of applied ids
+3. For each `m` in `MIGRATIONS` (already lexicographically sorted by codegen),
+   if `m.id` not in applied set:
+
+   ```typescript
+   await db.transaction(async (tx) => {
+     await m.up(tx);
+     await tx.query("INSERT INTO _migrations(id) VALUES($1)", [m.id]);
+   });
+   ```
+
+4. Done.
+
+Each migration runs inside its **own** transaction so a partial failure rolls
+back only the failing migration; previously-applied migrations stay applied.
+This is a deliberate departure from libraries like Kysely's `Migrator` (which
+shares one transaction across all pending migrations per `migrateToLatest()`
+call) — per-migration scoping is friendlier when one migration in a longer
+sequence fails on a developer machine.
+
+Tracking table:
+
+```sql
+CREATE TABLE IF NOT EXISTS _migrations (
+  id          TEXT PRIMARY KEY,
+  applied_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+```
 
 Forward path:
 
-- Bigger app plan adds a v2 migration introducing `started_at`, `finished_at`,
-  and a typed `kind` check constraint (without dropping the gear-up's columns).
-- PWA sync plan adds a v3 migration introducing `original_created_at`,
-  `deleted_at`, `synced_at`, `dirty`, `client_id` (all defaulting to safe
-  values for existing rows).
+- Bigger app plan adds e.g. `2026_05_03T09_22_15__add_typed_payload_columns.ts`
+  introducing `started_at`, `finished_at`, and a typed `kind` check
+  constraint (without dropping the gear-up's columns).
+- PWA sync plan adds e.g. `2026_06_15T11_45_00__add_sync_state_columns.ts`
+  introducing `original_created_at`, `deleted_at`, `synced_at`, `dirty`,
+  `client_id` (all defaulting to safe values for existing rows).
 
 `storage_seq` (a `BIGSERIAL`) gives the deterministic insertion-order tiebreaker
 needed for batch submits where every row in the batch shares `created_at`.
@@ -321,10 +456,10 @@ and every other store function short-circuits accordingly (`listEvents` →
 `dynamic(() => import('@electric-sql/pglite').then(m => m.PGlite), { ssr: false })`
 in the React layer, so the WASM never reaches the server.
 
-**Schema migration**: the `CREATE TABLE IF NOT EXISTS` + `CREATE INDEX IF NOT EXISTS`
-pair runs unconditionally on first `getDb()` call. The gear-up does not need a
-migration framework yet; the bigger plan can introduce `pglite-migrate` or a
-similar tool when the schema grows.
+**Schema migration**: `getDb` calls `runMigrations(db)` after the PGlite handle
+opens, applying any pending migrations from the timestamp-named files in
+`src/lib/events/migrations/` (see "Database migration framework" above for
+the multi-developer-safe authoring model).
 
 **Corruption tolerance**: PGlite stores the database in a single IndexedDB blob
 managed by Postgres internals. If IndexedDB throws (quota exceeded, corrupted
@@ -545,7 +680,7 @@ export function formatRelativeTime(iso: string, now?: Date): string;
 
 - Pure logic only. The store module is **not** unit-tested directly; instead,
   unit tests target the formatter (`format-relative-time.test.ts`), the
-  migration runner's "decide what to apply" logic (`migrations.test.ts` with
+  migration runner's "decide what to apply" logic (`run-migrations.test.ts` with
   a mocked PGlite handle), and individual UI components (RTL with the
   `useEvents` hook stubbed via a test harness wrapper).
 - Vitest + jsdom, no PGlite, no IndexedDB.

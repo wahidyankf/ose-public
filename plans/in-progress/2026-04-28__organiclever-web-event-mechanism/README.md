@@ -43,8 +43,14 @@ That plan adds typed payloads (`workout`, `reading`, `learning`, `meal`, `focus`
 **Scope (additive, ose-public single-repo)**:
 
 - `apps/organiclever-web/src/app/app/page.tsx` — new `/app` route (provisional)
-- `apps/organiclever-web/src/lib/events/` — types, store, migration registry,
-  hook, unit + integration tests
+- `apps/organiclever-web/src/lib/events/` — types, store, hook, run-migrations
+  runner, unit + integration tests
+- `apps/organiclever-web/src/lib/events/migrations/` — one timestamp-named
+  `.ts` file per migration (regex `^\d{4}_\d{2}_\d{2}T\d{2}_\d{2}_\d{2}__[a-z0-9_]{1,60}\.ts$`)
+  plus a gitignored `index.generated.ts` emitted by the codegen script
+- `apps/organiclever-web/scripts/gen-migrations.mjs` — codegen script that
+  validates filenames and emits the migrations index (multi-dev safe; no
+  manual registry edits)
 - `apps/organiclever-web/src/components/app/` — plus button, event-form sheet,
   event list, event card (with edit / delete-confirm / bump affordances)
 - `apps/organiclever-web/package.json` — add `@electric-sql/pglite` (and

@@ -6,6 +6,8 @@ draft: false
 ---
 
 - [Overview](/en/learn/software-engineering/data/overview)
+- [Analytics](/en/learn/software-engineering/data/analytics)
+  - [By Example](/en/learn/software-engineering/data/analytics/by-example)
 - [Databases](/en/learn/software-engineering/data/databases)
   - [Overview](/en/learn/software-engineering/data/databases/overview)
   - [Datomic](/en/learn/software-engineering/data/databases/datomic)

@@ -28,3 +28,7 @@ layout: list
   - [Initial Setup](/en/learn/software-engineering/infrastructure/tools/kubernetes/initial-setup)
   - [Quick Start](/en/learn/software-engineering/infrastructure/tools/kubernetes/quick-start)
   - [By Example](/en/learn/software-engineering/infrastructure/tools/kubernetes/by-example)
+- [Proxmox VE](/en/learn/software-engineering/infrastructure/tools/proxmox)
+  - [By Example](/en/learn/software-engineering/infrastructure/tools/proxmox/by-example)
+- [K3s](/en/learn/software-engineering/infrastructure/tools/k3s)
+  - [By Example](/en/learn/software-engineering/infrastructure/tools/k3s/by-example)

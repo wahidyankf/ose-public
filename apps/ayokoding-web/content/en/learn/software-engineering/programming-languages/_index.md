@@ -69,3 +69,5 @@ draft: false
   - [Initial Setup](/en/learn/software-engineering/programming-languages/f-sharp/initial-setup)
   - [Quick Start](/en/learn/software-engineering/programming-languages/f-sharp/quick-start)
   - [By Example](/en/learn/software-engineering/programming-languages/f-sharp/by-example)
+- [WebAssembly](/en/learn/software-engineering/programming-languages/webassembly)
+  - [By Example](/en/learn/software-engineering/programming-languages/webassembly/by-example)

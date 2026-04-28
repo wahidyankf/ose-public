@@ -46,3 +46,7 @@ draft: false
   - [Initial Setup](/en/learn/software-engineering/platform-web/tools/elixir-phoenix-liveview/initial-setup)
   - [Overview](/en/learn/software-engineering/platform-web/tools/elixir-phoenix-liveview/overview)
   - [Quick Start](/en/learn/software-engineering/platform-web/tools/elixir-phoenix-liveview/quick-start)
+- [AI-Powered Apps](/en/learn/software-engineering/platform-web/tools/ai-powered-apps)
+  - [By Example](/en/learn/software-engineering/platform-web/tools/ai-powered-apps/by-example)
+- [Progressive Web Apps](/en/learn/software-engineering/platform-web/tools/progressive-web-apps)
+  - [By Example](/en/learn/software-engineering/platform-web/tools/progressive-web-apps/by-example)

@@ -12,6 +12,7 @@ compliance, and `/login` + `/profile` 404 guards.
 | system  | `system/system-status-be.feature` |
 | layout  | `layout/accessibility.feature`    |
 | routing | `routing/disabled-routes.feature` |
+| events  | `events/events-mechanism.feature` |
 
 ## Conventions
 

@@ -45,6 +45,7 @@ frontend is local-first.
 | landing | --          | 1           | Marketing landing page                                       |
 | system  | --          | 1           | System-status diagnostic page polling the BE health endpoint |
 | layout  | --          | 1           | Accessibility (WCAG AA compliance)                           |
+| events  | --          | 1           | Generic event mechanism on `/app` (PGlite + Effect.ts CRUD)  |
 | routing | --          | 1           | Disabled-route 404 guards (`/login`, `/profile`)             |
 
 ## Spec Artifacts

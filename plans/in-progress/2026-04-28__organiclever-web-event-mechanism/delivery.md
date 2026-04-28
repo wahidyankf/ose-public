@@ -31,36 +31,75 @@ starts after this gear-up archives.
 - [ ] Commit thematically — group related changes into logically cohesive commits
 - [ ] Conventional Commits format: `<type>(<scope>): <description>`
       Suggested commits in approximate order:
-      `chore(organiclever-web): add @electric-sql/pglite dependency`,
-      `feat(events): add EventEntry/UpdateEventInput types and migration registry v1`,
-      `feat(events): add async event-store with append-batch / update / delete / bump / list / clear`,
-      `feat(events): add useEvents hook with idle/loading/ready/error status`,
+      `chore(organiclever-web): widen vitest projects + drop src/lib coverage exclude`,
+      `chore(organiclever-web): add @electric-sql/pglite + effect + @effect/vitest deps`,
+      `feat(events): add Schema (branded EventId/IsoTimestamp/EventKind) and re-export types`,
+      `feat(events): add Data.TaggedError union (NotFound/StorageUnavailable/InvalidPayload/EmptyBatch)`,
+      `feat(events): add migration registry v1 (events table + storage_seq + composite index)`,
+      `feat(events): add PgliteLive Layer + ManagedRuntime factory`,
+      `feat(events): add Effect-returning event-store (append-batch / update / delete / bump / list / clear)`,
+      `feat(events): add useEvents hook bridging ManagedRuntime to discriminated EventsState`,
       `feat(events): add formatRelativeTime utility`,
-      `test(events-int): add real-PGlite integration tests for migrations and CRUD`,
+      `test(events-int): add @effect/vitest Layer-swap integration tests for migrations and CRUD`,
       `feat(events-ui): add AddEventButton, EventFormSheet, EventList, EventCard`,
       `feat(app): mount EventsPage at /app with dynamic PGlite import`,
       `test(events-e2e): add events-mechanism.feature and step bindings`
 - [ ] Split different domains/concerns into separate commits — keep
-      `feat(events):` (storage layer) separate from `feat(events-ui):`
-      (components) and from `feat(app):` (route wiring) and `test(*):`
-      (test files)
+      `feat(events):` (schema/errors/runtime/store/hook) separate from
+      `feat(events-ui):` (components) and from `feat(app):` (route wiring)
+      and `test(*):` (test files); keep schema, errors, runtime, and store
+      in their own commits where the diff size justifies splitting
 - [ ] Do NOT amend; create a NEW commit if pre-commit / pre-push hooks fail
 
 ---
 
 ## Phase 0 — Foundation (`lib/events/`)
 
-### 0.1 Install PGlite
+### 0.0 Amend `vitest.config.ts` so colocated tests run + new code is covered
 
-- [ ] From `ose-public` root: `cd apps/organiclever-web && npm install @electric-sql/pglite --save`
-      (let npm resolve the latest 0.x; verify the resolved version is FOSS Apache 2.0
-      via `npm view @electric-sql/pglite license`)
-- [ ] Confirm Apache 2.0 license: `npm view @electric-sql/pglite license` returns `Apache-2.0`
-- [ ] Verify the package is installed: `npm ls @electric-sql/pglite` from inside
-      `apps/organiclever-web/`
+> **Why this step is mandatory**: the existing `apps/organiclever-web/vitest.config.ts`
+> excludes `src/lib/**` from coverage AND its unit / integration `projects`
+> only match `**/*.unit.{test,spec}.{ts,tsx}` / `test/integration/**/*.{test,spec}.{ts,tsx}`.
+> Without this amendment, every `*.test.ts` file colocated under
+> `src/lib/events/` is silently skipped and the new code contributes zero
+> LCOV — the "≥ 70 % LCOV" gate becomes a no-op.
+
+- [ ] Open `apps/organiclever-web/vitest.config.ts`
+- [ ] Under `test.coverage.exclude`, **remove** the `"src/lib/**"` entry. Keep
+      every other entry (`src/services/**`, `src/layers/**`, `src/app/api/**`,
+      `src/proxy.ts`, `src/test/**`, `src/app/layout.tsx`,
+      `src/generated-contracts/**`, `**/*.{test,spec}.{ts,tsx}`,
+      `**/*.stories.{ts,tsx}`)
+- [ ] In `test.projects[0]` (the `unit` project), widen `include` to add
+      `"src/**/*.{test,spec}.{ts,tsx}"` alongside the existing
+      `"test/unit/**/*.steps.{ts,tsx}"` and `"**/*.unit.{test,spec}.{ts,tsx}"`.
+      Add an `exclude` rule for `"**/*.int.{test,spec}.{ts,tsx}"` so
+      integration files do NOT run under the unit project
+- [ ] In `test.projects[1]` (the `integration` project), widen `include` to add
+      `"src/**/*.int.{test,spec}.{ts,tsx}"` alongside the existing
+      `"test/integration/**/*.{test,spec}.{ts,tsx}"`
+- [ ] Run `nx run organiclever-web:typecheck` and
+      `nx run organiclever-web:test:quick` against the empty events folder
+      (no tests yet) — both must stay green; coverage report shows no
+      regression on the existing landing-page coverage
+- [ ] Commit the config change separately:
+      `chore(organiclever-web): widen vitest projects + drop src/lib coverage exclude`
+
+### 0.1 Install PGlite + Effect
+
+- [ ] From `ose-public` root: `cd apps/organiclever-web && npm install @electric-sql/pglite effect --save`
+      (let npm resolve the latest 0.x for PGlite and the latest 3.x for `effect` —
+      pin to 3.x with a caret range; v4 is still beta as of April 2026)
+- [ ] `cd apps/organiclever-web && npm install -D @effect/vitest`
+      (Layer-swap test helper; devDep only)
+- [ ] Confirm licenses: `npm view @electric-sql/pglite license` returns `Apache-2.0`,
+      `npm view effect license` returns `MIT`, `npm view @effect/vitest license` returns `MIT`
+- [ ] Verify packages installed: `npm ls @electric-sql/pglite effect @effect/vitest`
+      from inside `apps/organiclever-web/`
 - [ ] Inspect bundle impact: `nx build organiclever-web --analyze` (or temporarily
       add `withBundleAnalyzer` to `next.config.ts`); confirm the `/app` page chunk
-      contains `@electric-sql/pglite` and the landing-page chunk does not
+      contains `@electric-sql/pglite` and `effect` and the landing-page chunk
+      contains neither
 - [ ] **No-ORM guardrail**: do NOT install Prisma, Drizzle ORM mode, TypeORM,
       MikroORM, Sequelize, Objection.js, or any other full-fat ORM at any phase
       of this plan. ORMs are forbidden in the persistence layer per the
@@ -68,19 +107,44 @@ starts after this gear-up archives.
       query patterns). If a future phase finds raw SQL noisy, a query
       builder (Kysely, Drizzle query-builder-only) is permitted — but it must
       expose the generated SQL string for plan-inspection
+- [ ] **Effect adoption guardrail**: every `Effect.tryPromise(...)` call MUST
+      supply a typed `catch` mapper producing a `Data.TaggedError` member of
+      `StoreError` — never leave the `E` channel as `UnknownException`. Add a
+      grep gate in Phase 5: `git grep -nE "Effect\.tryPromise\([^{]" apps/organiclever-web/src`
+      must return zero matches. Same rule for `runPromise` audit:
+      `git grep -n "runPromise" apps/organiclever-web/src` must return only
+      `use-events.ts` and test files
 
-### 0.2 TypeScript types
+### 0.2 Schema, branded ids, and types
 
-- [ ] Create `apps/organiclever-web/src/lib/events/types.ts` per `tech-docs.md`:
-  - [ ] `EventKind = string`
-  - [ ] `EventPayload = Record<string, unknown>`
-  - [ ] `EventEntry { id, kind, payload, createdAt, updatedAt }`
-  - [ ] `NewEventInput = Pick<EventEntry, "kind" | "payload">`
-  - [ ] `UpdateEventInput = Partial<Pick<EventEntry, "kind" | "payload">>`
+- [ ] Create `apps/organiclever-web/src/lib/events/schema.ts` per `tech-docs.md`:
+  - [ ] `EventId` (`Schema.String.pipe(Schema.brand("EventId"))`)
+  - [ ] `IsoTimestamp` (`Schema.String.pipe(Schema.pattern(...), Schema.brand("IsoTimestamp"))`)
+  - [ ] `EventKind` (lowercase / kebab-case + length-bounded; branded)
+  - [ ] `EventPayload` (`Schema.Record({ key: Schema.String, value: Schema.Unknown })`)
+  - [ ] `EventEntry` (`Schema.Struct({...})`)
+  - [ ] `NewEventInput`, `UpdateEventInput`
+  - [ ] `PayloadFromJsonString = Schema.parseJson(EventPayload)` for the form textarea
+- [ ] Create `apps/organiclever-web/src/lib/events/types.ts` as a thin re-export
+      module that exports `Schema.Type`-derived types from `schema.ts`. UI files
+      import from `types`; runtime / store files import from `schema` directly
+- [ ] Add `apps/organiclever-web/src/lib/events/schema.unit.test.ts` (per the
+      `*.unit.test.ts` convention pinned in Phase 0.0): branded-id rejection of plain strings;
+      `EventEntry` decode round-trip; `PayloadFromJsonString` rejects `"not json"`;
+      `ArrayFormatter.formatErrorSync` produces field-level paths
 
-### 0.3 Migration framework — multi-developer safe
+### 0.3 Typed errors
 
-#### 0.3.a Codegen script
+- [ ] Create `apps/organiclever-web/src/lib/events/errors.ts` per `tech-docs.md`:
+  - [ ] `class NotFound extends Data.TaggedError("NotFound")<{ id: string }> {}`
+  - [ ] `class StorageUnavailable extends Data.TaggedError("StorageUnavailable")<{ cause: unknown }> {}`
+  - [ ] `class InvalidPayload extends Data.TaggedError("InvalidPayload")<{ issues: ReadonlyArray<{ path: string; message: string }> }> {}`
+  - [ ] `class EmptyBatch extends Data.TaggedError("EmptyBatch")<{}> {}`
+  - [ ] `export type StoreError = NotFound | StorageUnavailable | InvalidPayload | EmptyBatch`
+
+### 0.4 Migration framework — multi-developer safe
+
+#### 0.4.a Codegen script
 
 - [ ] Create `apps/organiclever-web/scripts/gen-migrations.mjs` per the
       tech-docs sketch (~30 lines):
@@ -103,21 +167,26 @@ starts after this gear-up archives.
   - [ ] `"pretest": "npm run gen:migrations"`
   - [ ] `"pretest:integration": "npm run gen:migrations"`
 - [ ] Verify the script is callable: `cd apps/organiclever-web && npm run gen:migrations`
-      after step 0.3.b creates the first migration file
+      after step 0.4.b creates the first migration file
 
-#### 0.3.b First migration file (v1: create events table)
+#### 0.4.b First migration file (v1: create events table)
 
 - [ ] Create directory `apps/organiclever-web/src/lib/events/migrations/`
 - [ ] Create `apps/organiclever-web/src/lib/events/migrations/2026_04_28T14_05_30__create_events_table.ts`
       (substitute the actual UTC timestamp at file-creation time so the
       filename is honest):
   - [ ] `export const id = "<filename without .ts>"`
-  - [ ] `export async function up(db: PGlite): Promise<void>` running the
+  - [ ] `export async function up(db: Queryable): Promise<void>` running the
         v1 SQL from `tech-docs.md` (`CREATE TABLE IF NOT EXISTS events (...)` + `CREATE INDEX IF NOT EXISTS events_created_at_desc (...)`)
-  - [ ] `export async function down(db: PGlite): Promise<void>` reversing it
+        — `Queryable = PGlite | Transaction` (imported from
+        `@electric-sql/pglite`); the runner calls each `up` from inside
+        `db.transaction(async tx => …)`, so `tx` (a `Transaction`) is what
+        the migration receives, not the bare `PGlite`. Typing the parameter
+        as `PGlite` would fail `tsc --noEmit`
+  - [ ] `export async function down(db: Queryable): Promise<void>` reversing it
         (`DROP INDEX IF EXISTS ...; DROP TABLE IF EXISTS events;`)
 
-#### 0.3.c Runner
+#### 0.4.c Runner
 
 - [ ] Create `apps/organiclever-web/src/lib/events/run-migrations.ts`:
   - [ ] `import { MIGRATIONS } from "./migrations/index.generated"`
@@ -129,9 +198,9 @@ await db.transaction(async tx => {
 });
 `
 
-#### 0.3.d Runner unit tests
+#### 0.4.d Runner unit tests
 
-- [ ] Create `apps/organiclever-web/src/lib/events/run-migrations.test.ts`:
+- [ ] Create `apps/organiclever-web/src/lib/events/run-migrations.unit.test.ts`:
   - [ ] In-memory PGlite — fresh DB, run `runMigrations(db)` once: one row
         in `_migrations` with id `"2026_04_28T14_05_30__create_events_table"`
   - [ ] Re-running on the same DB is a no-op (still one row, unchanged
@@ -144,59 +213,84 @@ await db.transaction(async tx => {
         — distinct from libraries that share one transaction across all
         pending migrations)
 
-#### 0.3.e Filename lint
+#### 0.4.e Filename lint
 
 - [ ] The codegen script throws on filename violations; assert this is the
       enforcement point (no separate lint rule needed). Add a unit test:
       `gen-migrations.test.mjs` (or inline) feeds the script a mock directory
       with one bad name and asserts it throws
 
-### 0.4 Async event store
+### 0.5 Effect runtime + Layer
+
+- [ ] Create `apps/organiclever-web/src/lib/events/runtime.ts` per `tech-docs.md`:
+  - [ ] `EVENT_STORE_DATA_DIR = "ol_events_v1"`
+  - [ ] `class PgliteService extends Context.Tag("PgliteService")<PgliteService, { readonly db: PGlite }>() {}`
+  - [ ] `PgliteLive: Layer.Layer<PgliteService, StorageUnavailable>` via
+        `Layer.scoped(PgliteService, Effect.acquireRelease(open, ({ db }) => Effect.promise(() => db.close())))`
+  - [ ] Inside `acquire`: `Effect.tryPromise({ try: async () => { ssr-throw; lazy-import PGlite; new PGlite(\`idb://${EVENT_STORE_DATA_DIR}\`); await runMigrations(db); dev-handle assign; return { db } }, catch: (cause): StorageUnavailable => new StorageUnavailable({ cause }) })`
+  - [ ] `makeEventsRuntime = (layer = PgliteLive) => ManagedRuntime.make(layer)`
+  - [ ] `export type EventsRuntime = ReturnType<typeof makeEventsRuntime>`
+- [ ] Create `apps/organiclever-web/src/lib/events/runtime.unit.test.ts`
+      (in-memory test layer): acquire-release closes PGlite handle on dispose;
+      SSR pretend (`globalThis.window` undefined) yields `StorageUnavailable`
+
+### 0.6 Effect-returning event store
 
 - [ ] Create `apps/organiclever-web/src/lib/events/event-store.ts`:
-  - [ ] `EVENT_STORE_DB_NAME = "ol_events_v1"`
-  - [ ] `getDb(): Promise<PGlite | null>`:
-    - [ ] If `typeof window === "undefined"`, return `null`
-    - [ ] Lazy-import via `const { PGlite } = await import("@electric-sql/pglite")`
-    - [ ] Cache the handle in a module-level `let dbPromise: Promise<PGlite> | null = null`
-    - [ ] On first call: `new PGlite("idb://ol_events_v1")` → `await runMigrations(db)`
-    - [ ] In dev-only mode (`process.env.NODE_ENV !== "production"`), assign
-          `(globalThis as any).__ol_db = db` so Playwright + DevTools can inspect
-  - [ ] `appendEvents(input: NewEventInput[]): Promise<EventEntry[]>`:
-    - [ ] Throw on `input.length === 0`
-    - [ ] Build a single multi-VALUES `INSERT ... RETURNING ...` with one shared
-          `now()` timestamp; execute inside one statement
-    - [ ] Map `RETURNING` rows to `EventEntry`
-  - [ ] `updateEvent(id, patch): Promise<EventEntry | null>`:
-    - [ ] `UPDATE events SET kind = COALESCE($2, kind), payload = COALESCE($3::jsonb, payload), updated_at = now() WHERE id = $1 RETURNING ...`
-    - [ ] Return mapped row or `null` when `rowCount === 0`
-  - [ ] `deleteEvent(id): Promise<boolean>` — `DELETE` + `rowCount > 0`
-  - [ ] `bumpEvent(id): Promise<EventEntry | null>` — `UPDATE ... SET created_at = now(), updated_at = now() WHERE id = $1 RETURNING ...`
-  - [ ] `listEvents(): Promise<EventEntry[]>` — `SELECT ... ORDER BY created_at DESC, storage_seq ASC`
-  - [ ] `clearEvents(): Promise<void>` — `TRUNCATE events RESTART IDENTITY`
-  - [ ] Add `rowToEntry` mapper that converts `Date` → ISO string for `createdAt`/`updatedAt`
+  - [ ] `appendEvents`: `Effect.gen(function* () { ... })` that fails with
+        `EmptyBatch` on empty input; pulls `db` via `yield* PgliteService`;
+        executes one multi-VALUES `INSERT ... RETURNING ...` with one shared
+        `now()` timestamp; decodes rows via `Schema.decodeUnknownSync(EventEntry)`
+  - [ ] `updateEvent`: `UPDATE ... COALESCE ... RETURNING`; fails with
+        `NotFound({ id })` when `rowCount === 0`
+  - [ ] `deleteEvent`: `DELETE` then return `Effect.succeed(rowCount > 0)`
+        (boolean; non-exceptional miss). Only IO failures are mapped to
+        `StorageUnavailable` — never `NotFound` for delete
+  - [ ] `bumpEvent`: `UPDATE ... SET created_at = now(), updated_at = now() ... RETURNING`; fails with `NotFound({ id })` on miss
+  - [ ] `listEvents`: `SELECT ... ORDER BY created_at DESC, storage_seq ASC`
+  - [ ] `clearEvents`: `TRUNCATE events RESTART IDENTITY`
+  - [ ] Every `Effect.tryPromise` MUST supply a `catch` mapper producing
+        `StorageUnavailable({ cause })` — never leave `UnknownException` in `E`
+  - [ ] All return types in `event-store.ts` are `Effect<..., StoreError, PgliteService>`;
+        no `Promise<...>` exports
+- [ ] Add `apps/organiclever-web/src/lib/events/event-store.unit.test.ts`
+      using `@effect/vitest`'s `it.effect("...", ..., { layer: TestPgliteLayer })`
+      where `TestPgliteLayer = Layer.scoped(PgliteService, Effect.acquireRelease(in-memory PGlite + migrations, db.close))`
 
-### 0.5 useEvents hook
+### 0.7 useEvents hook (`ManagedRuntime` bridge)
 
 - [ ] Create `apps/organiclever-web/src/lib/events/use-events.ts` per `tech-docs.md`:
-  - [ ] State: `events`, `status` (`"idle" | "loading" | "ready" | "error"`), `error`
-  - [ ] `useEffect` on mount: set `status="loading"` → `await getDb()` → `await listEvents()` → `status="ready"` (or `"error"`)
-  - [ ] `addBatch(drafts)`, `edit(id, patch)`, `remove(id)`, `bump(id)`, `clear()` all
-        delegate to the store, then re-call `listEvents()` and update `events`
-  - [ ] Return memoised result
+  - [ ] `EventsState` discriminated union (`idle | loading | ready | error` with
+        `cause: StoreError` on error)
+  - [ ] `const runtime = useMemo(() => makeEventsRuntime(), [])` (one runtime per mount)
+  - [ ] `useEffect(() => () => runtime.dispose(), [runtime])` (Layer finalisers
+        close PGlite on unmount)
+  - [ ] On mount: set `state = { status: "loading" }` → `runtime.runPromise(listEvents())`
+        → `{ status: "ready", events }` on resolve, `{ status: "error", cause }` on reject
+        (use `Effect.either` if you want narrowed handling without `try/catch`)
+  - [ ] `addBatch(drafts)`, `edit(id, patch)`, `remove(id)`, `bump(id)`, `clear()`:
+        each runs the corresponding store effect via `runtime.runPromise`, then
+        re-runs `listEvents` to refresh `state.events`. Mutation errors throw
+        from `runPromise` so the form sheet can `.catch(cause => …)` and surface
+        per-call inline errors without poisoning global state
+  - [ ] Return `{ state, addBatch, edit, remove, bump, clear }` (memoised)
+- [ ] Add `apps/organiclever-web/src/lib/events/use-events.unit.test.tsx`
+      (RTL + `@effect/vitest`): renders harness with test Layer; asserts
+      `state.status` transitions; asserts `state.cause._tag` narrowing on
+      forced `StorageUnavailable`
 
-### 0.6 Time formatter
+### 0.8 Time formatter
 
 - [ ] Create `apps/organiclever-web/src/lib/events/format-relative-time.ts`
       with the signature in `tech-docs.md`
-- [ ] Create `apps/organiclever-web/src/lib/events/format-relative-time.test.ts`:
+- [ ] Create `apps/organiclever-web/src/lib/events/format-relative-time.unit.test.ts`:
   - [ ] `< 60s` → `"just now"`
   - [ ] `< 60m` → `"{n}m ago"` (boundary 1m, 59m)
   - [ ] `< 24h` → `"{n}h ago"` (boundary 1h, 23h)
   - [ ] `< 7d` → `"{n}d ago"` (boundary 1d, 6d)
   - [ ] `>= 7d` → ISO `YYYY-MM-DD`
 
-### 0.7 Phase 0 validation
+### 0.9 Phase 0 validation
 
 - [ ] `nx run organiclever-web:typecheck` passes
 - [ ] `nx run organiclever-web:lint` passes
@@ -208,11 +302,16 @@ await db.transaction(async tx => {
 
 ### 1.1 Wire up `test:integration`
 
-- [ ] Confirm `apps/organiclever-web/project.json` has `test:integration` target
-      (it currently exists with `passWithNoTests: true`); update to remove
-      `passWithNoTests` once tests are present so the gate is meaningful
-- [ ] Add a Vitest config or test-pattern that picks up `*.int.test.ts` files
-      under `src/lib/events/` (or use a separate `vitest.integration.config.ts`)
+- [ ] Confirm `apps/organiclever-web/project.json` has the `test:integration`
+      Nx target (it does — runs `npx vitest run --project integration`)
+- [ ] Note: the `passWithNoTests: true` flag lives in
+      `apps/organiclever-web/vitest.config.ts` at the top-level `test:` block
+      (NOT in `project.json`); it stays as-is — once Phase 1 adds real
+      integration tests it becomes inert (the suite has work to do)
+- [ ] Phase 0.0 already widened the integration project's `include`
+      to pick up `src/**/*.int.{test,spec}.{ts,tsx}`, so colocated
+      `event-store.int.test.ts` files run under `--project integration`
+      automatically — no separate `vitest.integration.config.ts` needed
 
 ### 1.2 Integration test files
 
@@ -227,8 +326,14 @@ await db.transaction(async tx => {
   - [ ] **`updateEvent` preserves `createdAt`**: new `updatedAt > createdAt`
   - [ ] **`updateEvent` partial patch**: omitting `kind` leaves it unchanged
         (COALESCE behaviour)
-  - [ ] **`updateEvent` of missing id**: returns `null`
-  - [ ] **`deleteEvent` rowcount semantics**: hit returns `true`, miss returns `false`
+  - [ ] **`updateEvent` of missing id**: `Effect.runPromiseExit` returns
+        `Exit.Failure` carrying `Cause.fail(new NotFound({ id }))` (typed-error
+        miss; `Effect.catchTag("NotFound", ...)` narrows in user code)
+  - [ ] **`deleteEvent` rowcount semantics**: hit resolves to `true`, miss
+        resolves to `false` (non-exceptional; deleting a vanished row is the
+        desired end state)
+  - [ ] **`bumpEvent` of missing id**: `Effect.runPromiseExit` returns
+        `Exit.Failure` carrying `Cause.fail(new NotFound({ id }))`
   - [ ] **`bumpEvent` mutates both timestamps**: bumped event becomes newest;
         original `createdAt` is overwritten
   - [ ] **`clearEvents`**: `listEvents` returns `[]`; `storage_seq` resets
@@ -279,16 +384,16 @@ await db.transaction(async tx => {
 
 ### 2.4 Component unit tests
 
-- [ ] `add-event-button.test.tsx`: click invokes `onClick`; aria-label present
-- [ ] `event-form-sheet.test.tsx`:
+- [ ] `add-event-button.unit.test.tsx`: click invokes `onClick`; aria-label present
+- [ ] `event-form-sheet.unit.test.tsx`:
   - [ ] Create mode: empty kind blocks submit; invalid JSON blocks; non-object JSON blocks
   - [ ] Create mode: "+ Add another" / "Remove draft" mutate draft list
   - [ ] Create mode: valid submit calls `onSubmit` with array of `{kind, payload}`
   - [ ] Edit mode: seeded with `initial`; submit calls `onSubmit` with patch
   - [ ] Cancel calls `onCancel`, no `onSubmit`
   - [ ] Preset chip click sets that draft's kind
-- [ ] `event-list.test.tsx`: empty-state copy / N cards
-- [ ] `event-card.test.tsx`:
+- [ ] `event-list.unit.test.tsx`: empty-state copy / N cards
+- [ ] `event-card.unit.test.tsx`:
   - [ ] Renders kind, time, payload preview
   - [ ] Shows "edited Xm ago" only when `updatedAt > createdAt`
   - [ ] Edit button calls `onEdit(id)`; Bring-to-top calls `onBump(id)`
@@ -321,9 +426,9 @@ await db.transaction(async tx => {
   - [ ] `export const dynamic = "force-dynamic";`
   - [ ] Default export: `<EventsPage />`
 
-### 3.3 EventsPage integration test
+### 3.3 EventsPage unit test (Layer-swapped in-memory PGlite)
 
-- [ ] `events-page.test.tsx` (Vitest + RTL + in-memory PGlite):
+- [ ] `events-page.unit.test.tsx` (Vitest + RTL + in-memory PGlite via Layer-swap):
   - [ ] Loading skeleton on first render
   - [ ] Empty state after store resolves
   - [ ] Click "Add event" → form sheet opens
@@ -357,7 +462,9 @@ await db.transaction(async tx => {
       with kind "workout" appears
 - [ ] Repeat the click → fill → save sequence for `reading` and `meditation`
 - [ ] `mcp__plugin_playwright_playwright__browser_evaluate({ function: "() => indexedDB.databases().then(dbs => dbs.map(d => d.name))" })`
-      — assert the returned array contains `"ol_events_v1"` (the PGlite IndexedDB name)
+      — assert the returned array contains `"/pglite/ol_events_v1"` (PGlite
+      mounts IDBFS at `/pglite/<dataDir>`, so the bare `ol_events_v1` is the
+      `dataDir`, not the IDB database name)
 - [ ] `mcp__plugin_playwright_playwright__browser_evaluate({ function: "async () => (await globalThis.__ol_db.exec('SELECT count(*) FROM events'))[0].rows[0]" })`
       — assert count is 3
 - [ ] `mcp__plugin_playwright_playwright__browser_navigate({ url: "http://localhost:3200/app" })` (hard reload)
@@ -379,7 +486,7 @@ await db.transaction(async tx => {
 
 ### 4.1 Gherkin feature file
 
-- [ ] Create `specs/apps/organiclever/fe/gherkin/events-mechanism.feature` with
+- [ ] Create `specs/apps/organiclever/fe/gherkin/events/events-mechanism.feature` with
       every `Scenario` from `prd.md` reproduced verbatim, plus a single
       `Background` that:
   - Navigates to `/app`
@@ -438,10 +545,13 @@ event as T0` that captures the timestamp via `page.evaluate` for the
 
 ## Plan Archival
 
-- [ ] Move plan folder `plans/in-progress/2026-04-28__organiclever-web-event-mechanism/`
-      → `plans/done/<completion-date>__organiclever-web-event-mechanism/`
-      (rename the date prefix to the actual completion date)
+- [ ] Use `git mv` to move the plan folder so git history follows the rename:
+      `git mv plans/in-progress/2026-04-28__organiclever-web-event-mechanism plans/done/<completion-date>__organiclever-web-event-mechanism`
+      (substitute the actual completion date, e.g., `2026-05-02`)
 - [ ] Update `plans/in-progress/README.md` and `plans/done/README.md` indexes
+- [ ] Commit the archival move:
+      `git commit -m "chore(plans): archive organiclever-web-event-mechanism to done"`
+      and push to `origin main`
 - [ ] Open the bigger plan
       [`2026-04-25__organiclever-web-app/`](../2026-04-25__organiclever-web-app/README.md):
       its Phase 0 / Phase 1 may now reference `lib/events/event-store.ts`,

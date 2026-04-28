@@ -7,26 +7,29 @@ backend health endpoint), accessibility compliance, and 404 guards on `/login` a
 
 ## What This Covers
 
-| Domain  | Description                                                  |
-| ------- | ------------------------------------------------------------ |
-| landing | Marketing landing page (hero, features, principles, CTAs)    |
-| system  | System-status diagnostic page polling the BE health endpoint |
-| layout  | WCAG AA accessibility compliance                             |
-| routing | Disabled-route 404 guards (`/login`, `/profile`)             |
+| Domain  | Description                                                                                                 |
+| ------- | ----------------------------------------------------------------------------------------------------------- |
+| landing | Marketing landing page (hero, features, principles, CTAs)                                                   |
+| system  | System-status diagnostic page polling the BE health endpoint                                                |
+| layout  | WCAG AA accessibility compliance                                                                            |
+| routing | Disabled-route 404 guards (`/login`, `/profile`)                                                            |
+| events  | Generic event mechanism on `/app` (PGlite-backed CRUD + bump; landed by gear-up plan, extended by app plan) |
 
 ## Relationship to organiclever-be
 
-| Aspect      | organiclever-be                                  | organiclever-web                        |
-| ----------- | ------------------------------------------------ | --------------------------------------- |
-| Perspective | Backend API — HTTP-semantic                      | Frontend UI — user interaction-semantic |
-| Steps       | `sends GET/POST`, `status code`, `response body` | `clicks`, `types`, `sees`, `navigates`  |
-| Background  | `Given the API is running`                       | `Given the app is running`              |
-| Scenarios   | See [be/gherkin/](../be/gherkin/README.md)       | See [fe/gherkin/](gherkin/README.md)    |
-| Domains     | health                                           | landing, system, layout, routing        |
+| Aspect      | organiclever-be                                  | organiclever-web                         |
+| ----------- | ------------------------------------------------ | ---------------------------------------- |
+| Perspective | Backend API — HTTP-semantic                      | Frontend UI — user interaction-semantic  |
+| Steps       | `sends GET/POST`, `status code`, `response body` | `clicks`, `types`, `sees`, `navigates`   |
+| Background  | `Given the API is running`                       | `Given the app is running`               |
+| Scenarios   | See [be/gherkin/](../be/gherkin/README.md)       | See [fe/gherkin/](gherkin/README.md)     |
+| Domains     | health                                           | landing, system, layout, routing, events |
 
 The frontend's system-status page consumes the backend's health endpoint. Otherwise the v0
-frontend is local-first — every productivity-tracking feature lives in the user's browser via
-`localStorage`.
+frontend is local-first — productivity-tracking features live in the user's browser. The
+generic event mechanism (`events` domain) is backed by **PGlite (Postgres-WASM over
+IndexedDB)** wrapped in **Effect.ts** (`Schema` + `Layer` + `ManagedRuntime`); future
+typed-payload features (workout, reading, etc.) layer on top via additional migrations.
 
 ## Implementations
 
@@ -69,8 +72,10 @@ specs/apps/organiclever/fe/
     │   └── system-status-be.feature
     ├── layout/
     │   └── accessibility.feature
-    └── routing/
-        └── disabled-routes.feature
+    ├── routing/
+    │   └── disabled-routes.feature
+    └── events/
+        └── events-mechanism.feature
 ```
 
 **File naming**: `[domain-capability].feature` (kebab-case)

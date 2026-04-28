@@ -26,8 +26,8 @@ later builds typed payloads, screens, and analytics.
 
 - **Solo maintainer (product owner hat)**: confirms the gear-up scope and the
   cut-line between this plan and the bigger app plan.
-- **Solo maintainer (developer hat)**: implements the four phases via the
-  delivery checklist.
+- **Solo maintainer (developer hat)**: implements all six phases (Phase 0
+  through Phase 5) via the delivery checklist.
 - **`plan-executor` agent**: runs delivery items step-by-step.
 - **`plan-execution-checker` agent**: validates acceptance criteria after
   execution.
@@ -101,7 +101,11 @@ later builds typed payloads, screens, and analytics.
 
 ### Out of Scope
 
-- Typed payload validation, discriminated union, schema library
+- **Per-kind** typed payload validation (no `WorkoutPayload` / `ReadingPayload`
+  discriminated union; bigger plan owns those). The gear-up DOES use Effect's
+  `Schema` to decode the **shape** (`{ kind: non-empty string, payload: JSON object }`)
+  and to surface field-level errors in the form sheet — `Schema` is adopted; the
+  per-kind union is deferred
 - Drag-to-arbitrary-position reorder; only "Bring to top" is supported
 - Undo for delete (single confirmation; bigger plan can layer undo)
 - Undo for bump (the previous `createdAt` is overwritten and not recoverable)
@@ -114,22 +118,22 @@ later builds typed payloads, screens, and analytics.
 
 ## Product Risks
 
-| Risk                                                   | Mitigation                                                                                                                                  |
-| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| Free-form JSON payload entry is user-hostile           | Acceptable for v0 — proof-of-mechanism only; bigger plan replaces with typed loggers                                                        |
-| Invalid JSON crashes form                              | `JSON.parse` wrapped in try/catch per draft; inline per-draft error; submit blocked until every draft is valid                              |
-| Mixed-validity batch (one bad draft) loses good ones   | All-or-nothing batch: if any draft fails validation, no events are persisted; the failing draft is highlighted, others remain editable      |
-| Editing wrong row                                      | Operations key by `id` (not array index); the edit sheet shows the event's `id` (or first 8 chars) and current `kind`                       |
-| Accidental delete                                      | Inline "Are you sure?" confirm; user must click Yes to commit                                                                               |
-| Sort flicker on edit                                   | Sort key is `createdAt`; **edit** refreshes only `updatedAt`, so order is stable. **Bump** is the explicit opt-in that mutates `createdAt`. |
-| User accidentally bumps and loses original `createdAt` | Bump is a separately-labelled affordance (distinct from edit/delete); previous timestamp is overwritten and not recoverable (out-of-scope)  |
-| Storage name collides with bigger plan                 | Distinct PGlite database `ol_events_v1` (IndexedDB); bigger plan's localStorage blob is `ol_db_v12`                                         |
-| `'use client'` + Next.js hydration glitch              | `force-dynamic` plus PGlite loaded via `dynamic(() => import('@electric-sql/pglite'), { ssr: false })` — WASM never reaches the server      |
-| `lib/events/*` API churns when bigger plan starts      | API limited to six async functions; signature designed to wrap a typed layer above (see `tech-docs.md`)                                     |
-| Migration registry leaves DB half-migrated             | Each migration runs inside `db.transaction(...)`; `_migrations` row write is part of the same transaction so partial apply rolls back       |
-| IndexedDB unavailable (private browsing, quota)        | Hook `status` transitions to `"error"`; UI surfaces "Storage unavailable — data was not saved" instead of silent failure                    |
-| PGlite WASM bundle (~3 MB) bloats `/app` cold start    | Loaded only on `/app` via `dynamic`; landing page (`/`) unaffected; Vercel CDN caches the WASM after first hit                              |
-| Dev-only `globalThis.__ol_db` leaks to production      | Handle assigned only when `process.env.NODE_ENV !== "production"`; lint / grep gate in `test:quick` blocks production references            |
+| Risk                                                   | Mitigation                                                                                                                                                                                                                                                  |
+| ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Free-form JSON payload entry is user-hostile           | Acceptable for v0 — proof-of-mechanism only; bigger plan replaces with typed loggers                                                                                                                                                                        |
+| Invalid JSON crashes form                              | Per draft: `Schema.decodeUnknownEither(DraftSchema, { errors: "all" })`; `Left` (`ParseError`) is formatted via `ArrayFormatter.formatErrorSync` into per-field messages; submit is blocked until every draft is `Right`. No raw `try { JSON.parse } catch` |
+| Mixed-validity batch (one bad draft) loses good ones   | All-or-nothing batch: if any draft fails validation, no events are persisted; the failing draft is highlighted, others remain editable                                                                                                                      |
+| Editing wrong row                                      | Operations key by `id` (not array index); the edit sheet shows the event's `id` (or first 8 chars) and current `kind`                                                                                                                                       |
+| Accidental delete                                      | Inline "Are you sure?" confirm; user must click Yes to commit                                                                                                                                                                                               |
+| Sort flicker on edit                                   | Sort key is `createdAt`; **edit** refreshes only `updatedAt`, so order is stable. **Bump** is the explicit opt-in that mutates `createdAt`.                                                                                                                 |
+| User accidentally bumps and loses original `createdAt` | Bump is a separately-labelled affordance (distinct from edit/delete); previous timestamp is overwritten and not recoverable (out-of-scope)                                                                                                                  |
+| Storage name collides with bigger plan                 | Distinct PGlite database `ol_events_v1` (IndexedDB); bigger plan's localStorage blob is `ol_db_v12`                                                                                                                                                         |
+| `'use client'` + Next.js hydration glitch              | `force-dynamic` plus PGlite loaded via `dynamic(() => import('@electric-sql/pglite'), { ssr: false })` — WASM never reaches the server                                                                                                                      |
+| `lib/events/*` API churns when bigger plan starts      | API limited to six async functions; signature designed to wrap a typed layer above (see `tech-docs.md`)                                                                                                                                                     |
+| Migration registry leaves DB half-migrated             | Each migration runs inside `db.transaction(...)`; `_migrations` row write is part of the same transaction so partial apply rolls back                                                                                                                       |
+| IndexedDB unavailable (private browsing, quota)        | Hook `status` transitions to `"error"`; UI surfaces "Storage unavailable — data was not saved" instead of silent failure                                                                                                                                    |
+| PGlite WASM bundle (~3 MB) bloats `/app` cold start    | Loaded only on `/app` via `dynamic`; landing page (`/`) unaffected; Vercel CDN caches the WASM after first hit                                                                                                                                              |
+| Dev-only `globalThis.__ol_db` leaks to production      | Handle assigned only when `process.env.NODE_ENV !== "production"`; lint / grep gate in `test:quick` blocks production references                                                                                                                            |
 
 ## Acceptance Criteria
 
@@ -142,7 +146,8 @@ Feature: Generic event mechanism on /app
   So that I have a working event-capture loop before the typed app ships
 
   Background:
-    Given I have opened "/app" in a fresh browser session
+    Given the app is running
+    And I have opened "/app" in a fresh browser session
     And PGlite database "ol_events_v1" (IndexedDB) is empty
 
   Scenario: Empty state on first visit
@@ -229,6 +234,13 @@ Feature: Generic event mechanism on /app
     And I press the "Save" button
     Then I see an inline error on draft 1: "Payload must be valid JSON"
     And the form sheet remains open
+
+  Scenario: Storage unavailable surfaces a typed error banner
+    Given the IndexedDB API is unavailable in this browser session
+    When I open "/app"
+    Then I see an inline error banner reading "Storage unavailable — data was not saved"
+    And the banner is rendered because the React layer narrowed `state.status === "error"` and `state.cause._tag === "StorageUnavailable"`
+    And no "Add event" button is rendered while `state.status !== "ready"`
 
   Scenario: Preset kind chips fill the kind input of the focused draft
     When I press the "Add event" button

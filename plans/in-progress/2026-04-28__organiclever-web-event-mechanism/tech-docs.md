@@ -27,26 +27,31 @@ apps/organiclever-web/src/
 ├── components/
 │   └── app/
 │       ├── events-page.tsx                   ← Phase 2 (composes the trio)
-│       ├── events-page.test.tsx              ← Phase 3
+│       ├── events-page.unit.test.tsx         ← Phase 3
 │       ├── add-event-button.tsx              ← Phase 2
 │       ├── event-form-sheet.tsx              ← Phase 2
 │       ├── event-list.tsx                    ← Phase 2
 │       └── event-card.tsx                    ← Phase 2
 └── lib/
     └── events/
-        ├── types.ts                          ← Phase 0
+        ├── types.ts                          ← Phase 0 (re-exports Schema-derived types)
+        ├── schema.ts                         ← Phase 0 (Effect Schema + branded ids)
+        ├── errors.ts                         ← Phase 0 (Data.TaggedError union)
+        ├── runtime.ts                        ← Phase 0 (PgliteService + Layer + ManagedRuntime)
         ├── run-migrations.ts                 ← Phase 0
-        ├── run-migrations.test.ts            ← Phase 0
+        ├── run-migrations.unit.test.ts       ← Phase 0
         ├── migrations/                       ← Phase 0 (one .ts per migration)
         │   ├── 2026_04_28T14_05_30__create_events_table.ts   ← Phase 0
         │   └── index.generated.ts            ← gitignored, emitted by gen:migrations
-        ├── event-store.ts                    ← Phase 0
-        ├── event-store.test.ts               ← Phase 0
+        ├── schema.unit.test.ts               ← Phase 0
+        ├── runtime.unit.test.ts              ← Phase 0
+        ├── event-store.ts                    ← Phase 0 (Effect-returning)
+        ├── event-store.unit.test.ts          ← Phase 0
         ├── event-store.int.test.ts           ← Phase 1
-        ├── use-events.ts                     ← Phase 0
-        ├── use-events.test.ts                ← Phase 0
+        ├── use-events.ts                     ← Phase 0 (ManagedRuntime bridge)
+        ├── use-events.unit.test.tsx          ← Phase 0
         ├── format-relative-time.ts           ← Phase 0
-        └── format-relative-time.test.ts      ← Phase 0
+        └── format-relative-time.unit.test.ts ← Phase 0
 
 apps/organiclever-web/scripts/
 └── gen-migrations.mjs                        ← Phase 0 (codegen)
@@ -55,8 +60,8 @@ apps/organiclever-web-e2e/
 └── steps/
     └── events-mechanism.steps.ts             ← Phase 3
 
-specs/apps/organiclever/fe/gherkin/
-└── events-mechanism.feature                  ← Phase 3
+specs/apps/organiclever/fe/gherkin/events/
+└── events-mechanism.feature                  ← Phase 4
 ```
 
 The bigger plan's `lib/db/`, `components/app/app-root.tsx`, `components/app/tab-bar.tsx`,
@@ -66,55 +71,140 @@ may keep `lib/events/*` as the underlying store, wrap it inside `OLDb`, or
 migrate data from `ol_events_v1` to `ol_db_v12` — the call is deferred to that
 plan.
 
-## Data Model
+## Data Model (Effect Schema + branded primitives)
 
 ```typescript
-// src/lib/events/types.ts (complete)
+// src/lib/events/schema.ts (complete)
+
+import { Schema } from "effect";
 
 /**
- * EventKind is an open string. The gear-up plan does NOT constrain it.
- * The bigger app plan layers a discriminated union (`workout` | `reading` |
- * `learning` | `meal` | `focus` | `custom`) on top of this primitive.
+ * Branded primitive types — `EventId` and `IsoTimestamp` are nominally distinct
+ * from raw `string` even though their wire representation is plain `string`.
+ * Two functions accepting `EventId` will reject a function arg typed only as
+ * `string`, catching id/timestamp confusion at compile time. Brands are
+ * compile-time markers only — no runtime cost.
  */
-export type EventKind = string;
+export const EventId = Schema.String.pipe(Schema.brand("EventId"));
+export type EventId = typeof EventId.Type; // string & Brand<"EventId">
+
+export const IsoTimestamp = Schema.String.pipe(
+  Schema.pattern(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/),
+  Schema.brand("IsoTimestamp"),
+);
+export type IsoTimestamp = typeof IsoTimestamp.Type;
 
 /**
- * EventPayload is an arbitrary JSON object. The gear-up plan does NOT constrain
- * its shape. The bigger app plan introduces typed payload interfaces and narrows
- * the type via the `kind` discriminator.
+ * `EventKind` is an open string. Constrained at the schema layer to be
+ * non-empty + ≤ 64 chars + lowercase / kebab-cased — enough to keep typos
+ * from sneaking in without freezing a discriminated union (the bigger plan's
+ * job).
  */
-export type EventPayload = Record<string, unknown>;
+export const EventKind = Schema.String.pipe(
+  Schema.minLength(1),
+  Schema.maxLength(64),
+  Schema.pattern(/^[a-z][a-z0-9-]*$/),
+  Schema.brand("EventKind"),
+);
+export type EventKind = typeof EventKind.Type;
 
-export interface EventEntry {
-  /** UUID v4 generated at append-time. */
-  id: string;
-  /** Open string. Convention: lowercase, kebab-case. */
-  kind: EventKind;
-  /** Arbitrary JSON-serialisable payload. */
-  payload: EventPayload;
-  /** ISO-8601 timestamp set at append-time; mutated only by `bumpEvent`. */
-  createdAt: string;
-  /**
-   * ISO-8601 timestamp set equal to `createdAt` on creation; refreshed on every
-   * `updateEvent` and on `bumpEvent`. The render layer shows "edited Xm ago"
-   * only when `updatedAt > createdAt`.
-   */
-  updatedAt: string;
-}
+/**
+ * `EventPayload` is an arbitrary JSON object — `Schema.Record({key: String,
+ * value: Unknown})`. The gear-up does NOT constrain its shape; bigger plan
+ * layers per-kind unions on top.
+ */
+export const EventPayload = Schema.Record({
+  key: Schema.String,
+  value: Schema.Unknown,
+});
+export type EventPayload = typeof EventPayload.Type;
 
-/** Input shape for `appendEvents` — `id`, `createdAt`, `updatedAt` assigned by the store. */
-export type NewEventInput = Pick<EventEntry, "kind" | "payload">;
+/** Persisted event row. */
+export const EventEntry = Schema.Struct({
+  id: EventId,
+  kind: EventKind,
+  payload: EventPayload,
+  createdAt: IsoTimestamp,
+  updatedAt: IsoTimestamp,
+});
+export type EventEntry = typeof EventEntry.Type;
 
-/** Input shape for `updateEvent` — `kind` and/or `payload` are patched. */
-export type UpdateEventInput = Partial<Pick<EventEntry, "kind" | "payload">>;
+/** Form-sheet draft input — `id`, `createdAt`, `updatedAt` assigned by the store. */
+export const NewEventInput = Schema.Struct({
+  kind: EventKind,
+  payload: EventPayload,
+});
+export type NewEventInput = typeof NewEventInput.Type;
+
+/** Edit-mode patch — both fields optional. */
+export const UpdateEventInput = Schema.Struct({
+  kind: Schema.optional(EventKind),
+  payload: Schema.optional(EventPayload),
+});
+export type UpdateEventInput = typeof UpdateEventInput.Type;
+
+/** Decoder for the form's "string of valid JSON object" textarea. */
+export const PayloadFromJsonString = Schema.parseJson(EventPayload);
 ```
+
+`src/lib/events/types.ts` is a thin re-export module:
+
+```typescript
+export type {
+  EventEntry,
+  EventId,
+  EventKind,
+  EventPayload,
+  IsoTimestamp,
+  NewEventInput,
+  UpdateEventInput,
+} from "./schema";
+```
+
+## Typed Errors (`Data.TaggedError`)
+
+```typescript
+// src/lib/events/errors.ts (complete)
+
+import { Data } from "effect";
+
+/** Asked for an event id that no row matches. */
+export class NotFound extends Data.TaggedError("NotFound")<{
+  readonly id: string;
+}> {}
+
+/** IndexedDB / PGlite refused the write (quota, locked, corrupt). */
+export class StorageUnavailable extends Data.TaggedError("StorageUnavailable")<{
+  readonly cause: unknown;
+}> {}
+
+/** Schema decode rejected the input (form draft did not match shape). */
+export class InvalidPayload extends Data.TaggedError("InvalidPayload")<{
+  readonly issues: ReadonlyArray<{ readonly path: string; readonly message: string }>;
+}> {}
+
+/** Caller passed an empty batch to `appendEvents`. */
+export class EmptyBatch extends Data.TaggedError("EmptyBatch")<{}> {}
+
+/** Discriminated union surfacing in every store function's `E` channel. */
+export type StoreError = NotFound | StorageUnavailable | InvalidPayload | EmptyBatch;
+```
+
+The `_tag` discriminator is preserved across `Effect.flatMap` / `Effect.gen`
+chains, so call-sites can narrow with `Effect.catchTag("NotFound", e => …)`,
+`Effect.catchTags({ NotFound: …, StorageUnavailable: … })`, or — at the React
+boundary — `if (state.cause._tag === "StorageUnavailable") { … }`.
 
 ## Storage Layer — PGlite (Postgres-WASM)
 
 Persistence uses [PGlite](https://github.com/electric-sql/pglite) (Apache 2.0,
 free / open source) — a Postgres build compiled to WebAssembly with an
-**IndexedDB**-backed virtual filesystem. Single database name: `ol_events_v1`
-(IndexedDB key `idb://ol_events_v1`).
+**IndexedDB**-backed virtual filesystem. PGlite `dataDir` is `ol_events_v1`,
+opened via the connection-string prefix `idb://` (`new PGlite("idb://ol_events_v1")`).
+PGlite mounts the Emscripten IDBFS at `/pglite/<dataDir>`, so the **actual
+IndexedDB database name** the browser stores is `/pglite/ol_events_v1` — that
+is the key the E2E tests use with `indexedDB.deleteDatabase(...)` and
+`indexedDB.databases()`.
 
 **Why PGlite (not localStorage, not SQLite-WASM)**:
 
@@ -177,11 +267,19 @@ one second.
 ```typescript
 // src/lib/events/migrations/2026_04_28T14_05_30__create_events_table.ts
 
-import type { PGlite } from "@electric-sql/pglite";
+import type { PGlite, Transaction } from "@electric-sql/pglite";
+
+/**
+ * `Queryable` covers both the top-level PGlite handle and a Transaction handle.
+ * The runner calls `m.up(tx)` from inside `db.transaction(async tx => …)`, so
+ * `tx` (a `Transaction`) is what each migration receives — not the bare
+ * `PGlite`. The union keeps the migration type honest under `tsc --noEmit`.
+ */
+export type Queryable = PGlite | Transaction;
 
 export const id = "2026_04_28T14_05_30__create_events_table";
 
-export async function up(db: PGlite): Promise<void> {
+export async function up(db: Queryable): Promise<void> {
   await db.exec(`
     CREATE TABLE IF NOT EXISTS events (
       id          TEXT PRIMARY KEY,
@@ -196,7 +294,7 @@ export async function up(db: PGlite): Promise<void> {
   `);
 }
 
-export async function down(db: PGlite): Promise<void> {
+export async function down(db: Queryable): Promise<void> {
   await db.exec(`
     DROP INDEX IF EXISTS events_created_at_desc;
     DROP TABLE IF EXISTS events;
@@ -248,8 +346,9 @@ writeFileSync(
 
 ${imports}
 
-import type { PGlite } from "@electric-sql/pglite";
-export interface Migration { id: string; up: (db: PGlite) => Promise<void>; down?: (db: PGlite) => Promise<void>; }
+import type { PGlite, Transaction } from "@electric-sql/pglite";
+type Queryable = PGlite | Transaction;
+export interface Migration { id: string; up: (db: Queryable) => Promise<void>; down?: (db: Queryable) => Promise<void>; }
 
 export const MIGRATIONS: Migration[] = [${arr}];
 `,
@@ -346,63 +445,150 @@ needed for batch submits where every row in the batch shares `created_at`.
 
 Adding these later is **additive** — every gear-up call-site keeps working.
 
+## Effect Runtime + `PgliteService` Layer
+
+```typescript
+// src/lib/events/runtime.ts (complete)
+
+import { Context, Effect, Layer, ManagedRuntime } from "effect";
+import type { PGlite } from "@electric-sql/pglite";
+import { runMigrations } from "./run-migrations";
+import { StorageUnavailable } from "./errors";
+
+export const EVENT_STORE_DATA_DIR = "ol_events_v1"; // PGlite dataDir; IDB DB name is /pglite/ol_events_v1
+
+/**
+ * `PgliteService` is the only service the gear-up's `Layer` provides. The
+ * class-based `Context.Tag` pattern gives nominal typing — two structurally
+ * identical tags do NOT unify, preventing accidental substitution. The shape
+ * exposes the raw PGlite handle; raw SQL lives in `event-store.ts`.
+ */
+export class PgliteService extends Context.Tag("PgliteService")<PgliteService, { readonly db: PGlite }>() {}
+
+/**
+ * `PgliteLive` opens a PGlite handle backed by IndexedDB, runs the migration
+ * registry, and exposes the handle as `PgliteService`. `Layer.scoped` wraps
+ * `Effect.acquireRelease` so the handle is closed on runtime dispose
+ * (e.g., when the React component unmounts). On the server (`typeof window
+ * === "undefined"`) the layer fails fast with `StorageUnavailable` — the
+ * React layer guards by initialising the runtime inside `useEffect`, so the
+ * server path is not normally reached.
+ */
+export const PgliteLive: Layer.Layer<PgliteService, StorageUnavailable> = Layer.scoped(
+  PgliteService,
+  Effect.acquireRelease(
+    Effect.tryPromise({
+      try: async () => {
+        if (typeof window === "undefined") {
+          throw new Error("PGlite cannot open during SSR");
+        }
+        const { PGlite } = await import("@electric-sql/pglite");
+        const db = new PGlite(`idb://${EVENT_STORE_DATA_DIR}`);
+        await runMigrations(db);
+        if (process.env.NODE_ENV !== "production") {
+          (globalThis as { __ol_db?: PGlite }).__ol_db = db;
+        }
+        return { db };
+      },
+      catch: (cause): StorageUnavailable => new StorageUnavailable({ cause }),
+    }),
+    ({ db }) => Effect.promise(() => db.close()),
+  ),
+);
+
+/**
+ * `makeEventsRuntime` builds a fresh `ManagedRuntime` for the provided layer.
+ * The React layer calls this inside `useMemo(() => makeEventsRuntime(), [])`
+ * and disposes via `useEffect(() => () => runtime.dispose(), [runtime])`.
+ * Tests substitute `PgliteLive` with a `Layer.scoped(PgliteService,
+ * Effect.acquireRelease(... new PGlite() ..., db.close))` providing in-memory
+ * PGlite — the rest of the runtime stays identical.
+ */
+export const makeEventsRuntime = (layer: Layer.Layer<PgliteService, StorageUnavailable> = PgliteLive) =>
+  ManagedRuntime.make(layer);
+
+export type EventsRuntime = ReturnType<typeof makeEventsRuntime>;
+```
+
+## Event Store (Effect-returning)
+
 ```typescript
 // src/lib/events/event-store.ts (signatures)
 
-export const EVENT_STORE_DB_NAME = "ol_events_v1"; // PGlite IndexedDB key
+import { Effect } from "effect";
+import { PgliteService } from "./runtime";
+import type { EventEntry, EventId, NewEventInput, UpdateEventInput } from "./schema";
+import type { EmptyBatch, NotFound, StorageUnavailable, StoreError } from "./errors";
 
 /**
- * Lazy-initialised PGlite handle. First call opens / creates the IndexedDB-backed
- * Postgres database, runs the schema migration, and caches the handle. Subsequent
- * calls return the cached handle. SSR-safe: returns `null` on the server.
- */
-export async function getDb(): Promise<PGlite | null>;
-
-/**
- * Append a batch of new events atomically inside a single transaction. Every
+ * Append a batch of new events atomically inside a single statement. Every
  * event in the batch shares the same `createdAt` (one `now()` call) and starts
- * with `updatedAt === createdAt`. The batch is FLATTENED — N drafts become N
- * rows. Returns the persisted entries in input order.
+ * with `updatedAt === createdAt`. Returns persisted entries in input order.
  *
- * Throws if `input.length === 0` (callers should guard against empty submits).
+ * Fails with `EmptyBatch` when `input.length === 0`; with `StorageUnavailable`
+ * on quota / corruption.
  */
-export async function appendEvents(input: NewEventInput[]): Promise<EventEntry[]>;
+export const appendEvents: (
+  input: ReadonlyArray<NewEventInput>,
+) => Effect.Effect<ReadonlyArray<EventEntry>, EmptyBatch | StorageUnavailable, PgliteService>;
 
 /**
- * Patch an event by id inside a single statement. Refreshes `updatedAt = now()`;
- * preserves `created_at`, `storage_seq`, and `id`. Returns the patched entry, or
- * `null` when no event matches `id`.
+ * Patch an event by id. Refreshes `updatedAt = now()`; preserves `createdAt`,
+ * `storage_seq`, and `id`. Fails with `NotFound` on missing id; with
+ * `StorageUnavailable` on IO failure.
  */
-export async function updateEvent(id: string, patch: UpdateEventInput): Promise<EventEntry | null>;
+export const updateEvent: (
+  id: EventId,
+  patch: UpdateEventInput,
+) => Effect.Effect<EventEntry, NotFound | StorageUnavailable, PgliteService>;
 
-/** Remove an event by id. Returns `true` if removed, `false` if no match. */
-export async function deleteEvent(id: string): Promise<boolean>;
+/**
+ * Remove an event by id. Returns `true` when a row was removed, `false` when
+ * the id did not match (non-exceptional — the React layer treats both
+ * outcomes as a successful delete-confirm resolution). Fails only with
+ * `StorageUnavailable` on IO failure.
+ *
+ * Asymmetry with `updateEvent` / `bumpEvent` (which fail with `NotFound`)
+ * is intentional: deleting a row that already vanished IS the desired end
+ * state, while editing or bumping a missing row is a logical error.
+ */
+export const deleteEvent: (id: EventId) => Effect.Effect<boolean, StorageUnavailable, PgliteService>;
 
 /**
  * "Bring to top" — the only rearrangement primitive. Sets
- * `created_at = updated_at = now()` for the matched event; preserves `id`,
- * `kind`, `payload`, and `storage_seq`. Returns the bumped entry, or `null` when
- * no match. Because `listEvents` sorts by `created_at` DESC, the bumped event
- * becomes newest.
+ * `createdAt = updatedAt = now()` for the matched event; preserves `id`,
+ * `kind`, `payload`, and `storage_seq`. Because `listEvents` sorts by
+ * `createdAt DESC`, the bumped event becomes newest. Fails with `NotFound` on
+ * missing id.
  *
- * Destructive of the previous `created_at`; the gear-up does not retain prior
- * values. The Forward Compatibility section below documents how `original_created_at`
- * can be added later without breaking call-sites.
+ * Destructive of the previous `createdAt`; the gear-up does not retain prior
+ * values (see Forward Compatibility for `original_created_at`).
  */
-export async function bumpEvent(id: string): Promise<EventEntry | null>;
+export const bumpEvent: (id: EventId) => Effect.Effect<EventEntry, NotFound | StorageUnavailable, PgliteService>;
 
 /**
- * Return all events sorted newest-first by `created_at` with `storage_seq` ASC
- * as deterministic tiebreaker. Returns `[]` on empty database / SSR.
+ * Return all events sorted newest-first by `createdAt` with `storage_seq` ASC
+ * as deterministic tiebreaker. Returns `[]` on empty database.
  */
-export async function listEvents(): Promise<EventEntry[]>;
+export const listEvents: () => Effect.Effect<ReadonlyArray<EventEntry>, StorageUnavailable, PgliteService>;
 
 /** Remove every stored event (`TRUNCATE events`). Test / dev convenience only. */
-export async function clearEvents(): Promise<void>;
+export const clearEvents: () => Effect.Effect<void, StorageUnavailable, PgliteService>;
 ```
 
-**SQL implementation sketches** (every statement runs inside the singleton PGlite
-instance opened by `getDb`):
+Implementations use `Effect.gen(function* () { … })` (no adapter — the `$` /
+`_` adapter is deprecated as of TypeScript 5.5+); raw IO is wrapped via
+`Effect.tryPromise({ try, catch })` with explicit catch mappers so the error
+channel never widens to `UnknownException`. Schema-typed inputs are encoded
+to plain JSON via `Schema.encodeSync(NewEventInput)` before being passed to
+PGlite's parameterised SQL; query rows are decoded via
+`Schema.decodeUnknownSync(EventEntry)` — both calls are total inside the
+Effect (decode failure raises `InvalidPayload` if a future column drift
+slips past migrations).
+
+**SQL implementation sketches** (every statement runs against the `db` handle
+pulled from `PgliteService` via `const { db } = yield* PgliteService` inside
+each store function's `Effect.gen` body):
 
 ```sql
 -- appendEvents (called once per batch with N values)
@@ -450,85 +636,103 @@ multi-row INSERT in a single statement (Postgres treats it as atomic). For the
 rare callers that mutate multiple rows in one logical operation, use
 `db.transaction(tx => { ... })` from PGlite.
 
-**SSR safety**: `getDb` returns `null` on the server (`typeof window === "undefined"`)
-and every other store function short-circuits accordingly (`listEvents` →
-`[]`, mutators → `null`/`false`/`[]`). The PGlite WASM module is loaded via
-`dynamic(() => import('@electric-sql/pglite').then(m => m.PGlite), { ssr: false })`
-in the React layer, so the WASM never reaches the server.
+**SSR safety**: `PgliteLive`'s acquire-effect throws `StorageUnavailable` when
+`typeof window === "undefined"`, and the React layer constructs the
+`ManagedRuntime` inside `useEffect` (never during render), so the server path
+is not reached during normal Next.js rendering. The PGlite WASM module is
+loaded via `dynamic(() => import('@electric-sql/pglite').then(m => m.PGlite),
+{ ssr: false })` inside the layer's `acquireRelease` body so the WASM never
+reaches the server.
 
-**Schema migration**: `getDb` calls `runMigrations(db)` after the PGlite handle
-opens, applying any pending migrations from the timestamp-named files in
-`src/lib/events/migrations/` (see "Database migration framework" above for
-the multi-developer-safe authoring model).
+**Schema migration**: `PgliteLive`'s acquire-effect calls `runMigrations(db)`
+after the PGlite handle opens, applying any pending migrations from the
+timestamp-named files in `src/lib/events/migrations/` (see "Database migration
+framework" above for the multi-developer-safe authoring model). Migration
+failure short-circuits the layer's acquire path with `StorageUnavailable`,
+which propagates to the React layer's error banner.
 
 **Corruption tolerance**: PGlite stores the database in a single IndexedDB blob
 managed by Postgres internals. If IndexedDB throws (quota exceeded, corrupted
-write), `getDb` rejects with the underlying error and the React layer surfaces
-"Storage unavailable — data was not saved." The user keeps in-memory drafts
-until they retry. The gear-up does not silently swallow storage errors.
+write), the acquire-effect's `tryPromise` `catch` mapper produces
+`StorageUnavailable({ cause })` instead of leaking `UnknownException`. The
+React layer narrows on `state.status === "error"` and renders "Storage
+unavailable — data was not saved." The user keeps in-memory drafts until
+retry; the gear-up does not silently swallow storage errors.
 
 **ID generation**: `crypto.randomUUID()` — available in all evergreen browsers
 and in Node 20+. UUIDs collide with negligible probability across devices, which
 is the property the future PWA sync relies on.
 
 **Type marshalling**: PGlite returns Postgres `TIMESTAMPTZ` as JS `Date` and
-`JSONB` as a JS object by default. The store maps each row to:
+`JSONB` as a JS object by default. The store decodes each raw row through
+`Schema.decodeUnknownEither(EventEntry)` (after coercing `Date` →
+`toISOString()` and casting `JSONB` to `unknown`). Decode failure raises
+`InvalidPayload` rather than silently widening to `unknown` — keeping the
+return type honestly `EventEntry`, not `EventEntry & { payload: unknown }`.
 
-```typescript
-function rowToEntry(row: PGliteRow): EventEntry {
-  return {
-    id: row.id,
-    kind: row.kind,
-    payload: row.payload as EventPayload,
-    createdAt: row.created_at.toISOString(),
-    updatedAt: row.updated_at.toISOString(),
-  };
-}
-```
-
-so the public `EventEntry` type stays string-typed and JSON-serialisable.
-
-## React Hook
+## React Hook (`ManagedRuntime` bridge)
 
 ```typescript
 // src/lib/events/use-events.ts (signature)
 
-export type DbStatus = "idle" | "loading" | "ready" | "error";
+import type { EventEntry, EventId, NewEventInput, UpdateEventInput } from "./schema";
+import type { StoreError } from "./errors";
+
+/**
+ * Discriminated UI state — each branch lists exactly the fields the JSX needs;
+ * `Either<StoreError, EventEntry[]>` is rejected because it cannot model the
+ * `idle` and `loading` phases. The narrowing in the JSX is total: a
+ * `state.status === "error"` branch is required to read `state.cause`.
+ */
+export type EventsState =
+  | { readonly status: "idle" }
+  | { readonly status: "loading" }
+  | { readonly status: "ready"; readonly events: ReadonlyArray<EventEntry> }
+  | { readonly status: "error"; readonly cause: StoreError };
 
 export interface UseEventsResult {
-  /** Current sorted event list. Empty during `idle` / `loading`. */
-  events: EventEntry[];
-  /** PGlite initialisation status. UI shows a skeleton while `loading`. */
-  status: DbStatus;
-  /** Last error, if any (e.g., quota exceeded, IndexedDB unavailable). */
-  error: Error | null;
-  /** Append a batch of events. */
-  addBatch: (drafts: NewEventInput[]) => Promise<void>;
+  /** Discriminated UI state — narrow before rendering. */
+  readonly state: EventsState;
+  /** Append a batch of drafts. Resolves with `Either<StoreError, void>`. */
+  readonly addBatch: (drafts: ReadonlyArray<NewEventInput>) => Promise<void>;
   /** Patch one event by id. */
-  edit: (id: string, patch: UpdateEventInput) => Promise<void>;
+  readonly edit: (id: EventId, patch: UpdateEventInput) => Promise<void>;
   /** Remove one event by id. */
-  remove: (id: string) => Promise<void>;
+  readonly remove: (id: EventId) => Promise<void>;
   /** Bump (bring to top) one event by id. */
-  bump: (id: string) => Promise<void>;
+  readonly bump: (id: EventId) => Promise<void>;
   /** Truncate the events table. Test / dev helper. */
-  clear: () => Promise<void>;
+  readonly clear: () => Promise<void>;
 }
 
 /**
- * Hook that drives the PGlite-backed event list into React state.
- * - First render returns `{ events: [], status: 'idle', error: null }` (SSR-safe).
- * - Inside `useEffect`, lazy-imports PGlite, calls `getDb()`, runs `listEvents()`,
- *   sets `status = 'ready'` (or `'error'`).
- * - Every mutating method awaits the corresponding store function, then re-runs
- *   `listEvents()` and updates `events`. This keeps the rendered list consistent
- *   with the database without a separate notification primitive.
- * - The hook does NOT subscribe to PGlite's live-query plugin in this gear-up
- *   (kept out of scope; the bigger plan or sync plan can opt in via
- *   `db.live.query(...)` from `@electric-sql/pglite/live` if reactive updates
- *   from background sync become necessary).
+ * Bridges Effect-returning store functions into React.
+ *
+ * - `useMemo(() => makeEventsRuntime(), [])` constructs the `ManagedRuntime`
+ *   once per mount. `useEffect(() => () => runtime.dispose(), [runtime])`
+ *   tears it down — `Layer.scoped` finalisers (close PGlite handle) run
+ *   inside `dispose`.
+ * - First render: `{ status: "idle" }`. After `useEffect` fires, transitions
+ *   to `loading`, awaits `runtime.runPromise(listEvents())`, then `ready`
+ *   on success or `error` (typed `StoreError`) on failure.
+ * - Every mutating method runs the store Effect, then re-runs `listEvents`
+ *   to refresh state — same "mutate then re-list" pattern as before, now
+ *   typed end-to-end. Mutation errors fall into a per-call rejection (the
+ *   form sheet decides how to surface), without poisoning the global state.
+ * - `runtime.runPromise` enforces `R extends PgliteService` at compile time
+ *   — the layer must provide the service, otherwise the call site won't
+ *   compile.
+ * - The hook does NOT subscribe to PGlite's live-query plugin
+ *   (`@electric-sql/pglite/live`); deferred to bigger plan / PWA sync plan.
  */
 export function useEvents(): UseEventsResult;
 ```
+
+The hook is the **single Effect→Promise boundary** in the gear-up. UI
+components never import from `effect/Effect` directly — they consume
+`UseEventsResult` only. This keeps the run-at-the-edge invariant trivially
+auditable: `git grep -n "runPromise" apps/organiclever-web/src` should match
+exactly two places (this hook and tests).
 
 ## UI Components
 
@@ -614,19 +818,22 @@ export function useEvents(): UseEventsResult;
 - Combines hook + components:
 
   ```typescript
-  const { events, status, addBatch, edit, remove, bump } = useEvents();
+  const { state, addBatch, edit, remove, bump } = useEvents();
   const [sheetState, setSheetState] = useState<
-    { open: false } | { open: true; mode: "create" } | { open: true; mode: "edit"; eventId: string }
+    { open: false } | { open: true; mode: "create" } | { open: true; mode: "edit"; eventId: EventId }
   >({ open: false });
   ```
 
-  - `status === "loading"` renders a skeleton row.
-  - `status === "error"` renders an inline error banner.
-  - `status === "ready"` renders `<h1>Events</h1>`,
+  - `state.status === "loading"` renders a skeleton row.
+  - `state.status === "error"` renders an inline error banner. The banner narrows
+    further on `state.cause._tag` (e.g., a "Storage unavailable — data was not
+    saved" message for `StorageUnavailable`).
+  - `state.status === "ready"` renders `<h1>Events</h1>`,
     `<AddEventButton onClick={() => setSheetState({ open: true, mode: "create" })} />`,
-    `<EventList events={events} onEdit={...} onDelete={remove} onBump={bump} />`,
+    `<EventList events={state.events} onEdit={...} onDelete={remove} onBump={bump} />`,
     and a single `<EventFormSheet>` whose props depend on `sheetState`.
-  - `onEdit(id)` resolves the event and sets `sheetState = { open: true, mode: "edit", eventId: id }`.
+  - `onEdit(id)` resolves the event (only reachable in `ready`, where
+    `state.events` is in scope) and sets `sheetState = { open: true, mode: "edit", eventId: id }`.
 
 - No router, no tabs, no nav.
 
@@ -666,30 +873,39 @@ export function formatRelativeTime(iso: string, now?: Date): string;
 
 ## Test Strategy
 
-| Level                     | Tool                            | Files                                                                                                                                                                        |
-| ------------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Unit — store              | Vitest + PGlite in-memory mode  | `event-store.test.ts` covers `appendEvents` (batch), `listEvents` (sort + tiebreaker), `updateEvent` (refreshes only `updatedAt`), `deleteEvent`, `bumpEvent`, `clearEvents` |
-| Unit — hook               | Vitest + RTL                    | `use-events.test.ts` covers `idle → loading → ready` transitions, `addBatch`, `edit`, `remove`, `bump`, `clear`, error propagation                                           |
-| Unit — formatter          | Vitest                          | `format-relative-time.test.ts` covers each branch + ISO fallback                                                                                                             |
-| Integration — page render | Vitest + RTL + PGlite in-memory | `events-page.test.tsx` covers empty state, batch submit, validation errors, edit flow, delete-confirm flow, bump reorder                                                     |
-| FE E2E — round-trip       | Playwright-BDD                  | `apps/organiclever-web-e2e/steps/events-mechanism.steps.ts` consumes `events-mechanism.feature` (all batch / edit / delete / bump scenarios)                                 |
+| Level               | Tool                                                      | Files                                                                                                                                                                             |
+| ------------------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Unit — schema       | Vitest                                                    | `schema.unit.test.ts` covers `EventEntry` decode round-trip, branded-id rejection of plain strings, `PayloadFromJsonString` field-error formatting via `ArrayFormatter`           |
+| Unit — store        | `@effect/vitest` + Layer-swapped in-memory PGlite         | `event-store.unit.test.ts` covers `appendEvents` (batch), `listEvents` (sort + tiebreaker), `updateEvent` (refreshes only `updatedAt`), `deleteEvent`, `bumpEvent`, `clearEvents` |
+| Unit — hook         | Vitest + RTL                                              | `use-events.unit.test.tsx` covers `idle → loading → ready` transitions, `addBatch`, `edit`, `remove`, `bump`, `clear`, typed-error propagation into `state.cause`                 |
+| Unit — formatter    | Vitest                                                    | `format-relative-time.unit.test.ts` covers each branch + ISO fallback                                                                                                             |
+| Unit — runtime      | `@effect/vitest`                                          | `runtime.unit.test.ts` covers `PgliteLive` acquire-release lifecycle (in-memory layer), `StorageUnavailable` mapping on SSR pretend                                               |
+| Unit — page render  | `@effect/vitest` + RTL + PGlite in-memory (Layer-swapped) | `events-page.unit.test.tsx` covers empty state, batch submit, validation errors, edit flow, delete-confirm flow, bump reorder, error-banner narrowing                             |
+| FE E2E — round-trip | Playwright-BDD                                            | `apps/organiclever-web-e2e/steps/events-mechanism.steps.ts` consumes `events-mechanism.feature` (all batch / edit / delete / bump scenarios)                                      |
 
 **Three test levels per the [three-level testing standard](../../../governance/development/quality/three-level-testing-standard.md)**:
 
 #### `test:unit` — fast, isolated
 
-- Pure logic only. The store module is **not** unit-tested directly; instead,
-  unit tests target the formatter (`format-relative-time.test.ts`), the
-  migration runner's "decide what to apply" logic (`run-migrations.test.ts` with
-  a mocked PGlite handle), and individual UI components (RTL with the
-  `useEvents` hook stubbed via a test harness wrapper).
-- Vitest + jsdom, no PGlite, no IndexedDB.
+- Pure logic plus colocated `*.unit.test.ts(x)` files. Unit tests target the
+  formatter (`format-relative-time.unit.test.ts`), the schema decoders
+  (`schema.unit.test.ts`), the migration runner (`run-migrations.unit.test.ts`
+  — uses a real in-memory PGlite (`new PGlite()`) since PGlite spins up
+  cheaply; mocking is more brittle than running the actual code), individual
+  UI components (RTL with the `useEvents` hook stubbed via a test harness
+  wrapper), and store / runtime via Layer-swap (`event-store.unit.test.ts`,
+  `runtime.unit.test.ts`) using `@effect/vitest`'s `it.effect`.
+- Vitest + jsdom; no real IndexedDB (the in-memory PGlite mode bypasses IDBFS).
 
 #### `test:integration` — real PGlite in-process
 
 - Real PGlite instantiated in **in-memory mode** (`new PGlite()` with no
-  `dataDir`) — each test gets a fresh empty database; no IndexedDB stubbing
-  needed. The same SQL that runs in production runs in the test.
+  `dataDir`) inside a **test Layer** (`Layer.scoped(PgliteService,
+Effect.acquireRelease(... new PGlite() ..., db.close))`) provided to
+  `@effect/vitest`'s `it.effect("…", … , { layer: TestPgliteLayer })` — each
+  test gets a fresh empty database; no IndexedDB stubbing, no module mocking.
+  The exact same `Effect`-returning store functions that run in production
+  run in tests; the only difference is the substituted Layer.
 - Coverage:
   - Migration runner: applies v1 cleanly on a fresh database; second run is a
     no-op; partial-failure rolls back.
@@ -722,7 +938,9 @@ export function formatRelativeTime(iso: string, now?: Date): string;
   - **Persistence**: hard-reload survives all of the above
   - **IndexedDB inspection**: a step reads
     `await page.evaluate(() => indexedDB.databases())` and asserts the
-    `ol_events_v1` entry exists, plus runs PGlite SQL via
+    `/pglite/ol_events_v1` entry exists (PGlite mounts IDBFS at
+    `/pglite/<dataDir>`, so that — not the bare `ol_events_v1` — is the IDB
+    database name), plus runs PGlite SQL via
     `await page.evaluate(() => globalThis.__ol_db.exec("SELECT count(*) FROM events"))`
     (the dev page exposes `__ol_db` for E2E inspection only — guarded behind
     `process.env.NODE_ENV !== "production"` so it never ships)
@@ -730,12 +948,32 @@ export function formatRelativeTime(iso: string, now?: Date): string;
     initial PGlite import (no COOP/COEP failures, no CSP rejections)
 
 Coverage threshold: **≥ 70 %** LCOV (existing project threshold for
-`organiclever-web`). The dormant `src/services/` and `src/layers/` directories
-are not imported by any test or by `src/app/**` code, so Vitest's coverage
-reporter naturally skips them — there is no explicit `exclude` entry for those
-paths in `vitest.config.ts` (which currently only excludes `src/app/layout.tsx`).
-If future code begins importing from those paths, the threshold guard in
-`rhino-cli test-coverage validate` will catch the regression.
+`organiclever-web`).
+
+`apps/organiclever-web/vitest.config.ts` ships with two pre-existing constraints
+that this plan must amend in Phase 0 before any test file is added:
+
+1. **Coverage `exclude` list** includes `src/lib/**`, `src/services/**`,
+   `src/layers/**`, `src/app/api/**`, `src/proxy.ts`, `src/test/**`,
+   `src/app/layout.tsx`, `src/generated-contracts/**`, and the standard
+   `*.{test,spec,stories}.{ts,tsx}` patterns. Because every gear-up file lands
+   under `src/lib/events/`, the `src/lib/**` exclude must be **removed** (or
+   narrowed to specific subpaths) so the new code contributes to the LCOV
+   numerator. The other entries stay.
+2. **Vitest projects' `include` globs** match unit tests at
+   `test/unit/**/*.steps.{ts,tsx}` + `**/*.unit.{test,spec}.{ts,tsx}` and
+   integration tests at `test/integration/**/*.{test,spec}.{ts,tsx}` only.
+   Files named `event-store.unit.test.ts` colocated under `src/lib/events/` would
+   not match either project. Phase 0 amends the unit project to also include
+   `src/**/*.{test,spec}.{ts,tsx}` and the integration project to also include
+   `src/**/*.int.{test,spec}.{ts,tsx}` so colocated tests run.
+
+After those amendments, the dormant `src/services/` and `src/layers/`
+directories stay covered-out by their explicit excludes; the new
+`src/lib/events/**` code is included; and colocated `*.test.ts` /
+`*.int.test.ts` files run under the unit / integration projects respectively.
+The threshold guard in `rhino-cli test-coverage validate` then enforces
+≥ 70 % LCOV against the actual gear-up code.
 
 ## Design Decisions
 
@@ -759,8 +997,8 @@ store can be wrapped with type-narrowed read helpers (`getReadingEvents`, etc.).
 The bigger plan's `OLDb` class was designed against localStorage with a
 17-method imperative API. This plan introduces a SQL-queryable Postgres-WASM
 database; sharing a name with the localStorage blob would mislead readers.
-A distinct database name (`ol_events_v1` as the IndexedDB key for the PGlite
-instance) keeps both stores independent during the gear-up. Migration path
+A distinct PGlite `dataDir` (`ol_events_v1`, mounted as IDB database
+`/pglite/ol_events_v1`) keeps both stores independent during the gear-up. Migration path
 (deferred to the bigger plan): either (a) keep PGlite as the canonical store
 and have the bigger plan's typed loggers call into `appendEvents` /
 `updateEvent` / `bumpEvent`, OR (b) extend the schema with the bigger plan's
@@ -845,6 +1083,49 @@ deliberately destructive of the previous `created_at` per product intent —
 "bring this to the front again" is the user's explicit signal that the event
 is current.
 
+### Effect.ts as the FP runtime (no XState yet)
+
+Adopted: `effect` v3 (`Effect`, `Layer`, `Context`, `Schema`, `Data`, `ManagedRuntime`).
+Reasons specific to this app:
+
+- **Typed error channel** — the React layer narrows on `state.cause._tag`
+  (`StorageUnavailable` vs `NotFound` vs `InvalidPayload`) without re-wrapping
+  unknown exceptions. Plain `Promise<EventEntry[]>` flattens errors to
+  `unknown` at the catch site, defeating discrimination.
+- **Schema-driven decoding** — the form sheet's `payload` textarea is decoded
+  via `Schema.decodeUnknownEither(PayloadFromJsonString, { errors: "all" })`,
+  yielding field-level error arrays via `ArrayFormatter.formatErrorSync`. The
+  alternative — `try { JSON.parse } catch` plus per-field shape checks — would
+  duplicate the decode logic and lose typed reporting.
+- **Layer-based dependency injection** — `PgliteLive` opens / closes the
+  IndexedDB-backed handle as a single `Effect.acquireRelease` inside
+  `Layer.scoped`. Tests substitute an in-memory `Layer.scoped(PgliteService,
+Effect.acquireRelease(... new PGlite() ..., db.close))` via `@effect/vitest`'s
+  `it.effect("…", … , { layer: TestPgliteLayer })` — no module mocking, no
+  `vi.mock("@electric-sql/pglite")`.
+- **Run-at-the-edge** — the `useEvents` hook is the **only** site calling
+  `runtime.runPromise(...)`. UI components never import `effect/Effect`. This
+  keeps the boundary auditable (`git grep "runPromise"` is the audit) and
+  matches the official Effect docs' [Effect vs Promise](https://effect.website/docs/additional-resources/effect-vs-promise/)
+  guidance.
+
+XState is **not** adopted in the gear-up. The form-sheet machine is small
+enough (`useReducer` over a `drafts` array + `mode: "create" | "edit"`
+discriminator) that a state machine would add cost without value. The bigger
+plan can promote to XState if the typed-loggers + workout-session machine
+makes the surface complex; per the cross-library research (Effect ↔ XState
+coexist via `runtime.runPromise` inside `fromPromise` actors), promotion is
+mechanical.
+
+Anti-patterns explicitly avoided:
+
+- `Effect.tryPromise` without a `catch` mapper — every wrap supplies a typed
+  catch (`(cause): StorageUnavailable => new StorageUnavailable({ cause })`).
+- New `ManagedRuntime` per render — `useMemo(() => makeEventsRuntime(), [])`
+  - `useEffect` cleanup is the only construction site.
+- Adapter-style `Effect.gen(function* ($) { yield* $(eff) })` — the adapter
+  is deprecated as of TS 5.5+; gear-up uses bare `yield* eff`.
+
 ### No `'storage'` event subscription / no PGlite live queries (yet)
 
 Cross-tab sync and reactive change feeds are out of scope for the gear-up.
@@ -861,6 +1142,15 @@ is loaded via `dynamic(() => import('@electric-sql/pglite'), { ssr: false })`
 inside the store so the WASM never reaches the server. These three guards
 overlap intentionally — defence in depth keeps the layer reusable if any one
 guard is removed in the future.
+
+**Next.js 16 `cacheComponents` incompatibility (note, not a current issue)**:
+the new opt-in `cacheComponents: true` flag in `next.config.ts` is incompatible
+with `export const dynamic = 'force-dynamic'` and triggers a build error if
+both are set. `organiclever-web` does NOT enable `cacheComponents` today, so
+the gear-up is unaffected; if a future plan opts in, it must replace
+`force-dynamic` on `/app/page.tsx` with the equivalent Cache-Components-era
+escape hatch (e.g., `'use cache'` opt-out via `noStore()` or per-fetch
+`cache: 'no-store'`).
 
 ## Forward Compatibility for PWA Sync (Future Plan)
 

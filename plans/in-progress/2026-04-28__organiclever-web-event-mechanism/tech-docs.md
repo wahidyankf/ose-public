@@ -8,7 +8,7 @@
 /app                    → NEW — apps/organiclever-web/src/app/app/page.tsx
                           'use client'
                           export const dynamic = 'force-dynamic'
-                          mounts <EventsPage />
+                          mounts <JournalPage />
 ```
 
 `/app/page.tsx` is **provisional** for this gear-up. The bigger plan
@@ -23,21 +23,21 @@ mount with one screen.
 apps/organiclever-web/src/
 ├── app/
 │   └── app/
-│       └── page.tsx                          ← Phase 2 (provisional)
+│       └── page.tsx                          ← Phase 3 (provisional)
 ├── components/
 │   └── app/
-│       ├── events-page.tsx                   ← Phase 2 (composes the trio)
-│       ├── events-page.unit.test.tsx         ← Phase 3
-│       ├── add-event-button.tsx              ← Phase 2
-│       ├── add-event-button.unit.test.tsx    ← Phase 2
-│       ├── event-form-sheet.tsx              ← Phase 2
-│       ├── event-form-sheet.unit.test.tsx    ← Phase 2
-│       ├── event-list.tsx                    ← Phase 2
-│       ├── event-list.unit.test.tsx          ← Phase 2
-│       ├── event-card.tsx                    ← Phase 2
-│       └── event-card.unit.test.tsx          ← Phase 2
+│       ├── journal-page.tsx                   ← Phase 3 (composes the trio)
+│       ├── journal-page.unit.test.tsx         ← Phase 3
+│       ├── add-entry-button.tsx              ← Phase 2
+│       ├── add-entry-button.unit.test.tsx    ← Phase 2
+│       ├── entry-form-sheet.tsx              ← Phase 2
+│       ├── entry-form-sheet.unit.test.tsx    ← Phase 2
+│       ├── journal-list.tsx                    ← Phase 2
+│       ├── journal-list.unit.test.tsx          ← Phase 2
+│       ├── entry-card.tsx                    ← Phase 2
+│       └── entry-card.unit.test.tsx          ← Phase 2
 └── lib/
-    └── events/
+    └── journal/
         ├── types.ts                          ← Phase 0 (re-exports Schema-derived types)
         ├── schema.ts                         ← Phase 0 (Effect Schema + branded ids)
         ├── errors.ts                         ← Phase 0 (Data.TaggedError union)
@@ -45,15 +45,15 @@ apps/organiclever-web/src/
         ├── run-migrations.ts                 ← Phase 0
         ├── run-migrations.unit.test.ts       ← Phase 0
         ├── migrations/                       ← Phase 0 (one .ts per migration)
-        │   ├── 2026_04_28T14_05_30__create_events_table.ts   ← Phase 0
+        │   ├── 2026_04_28T14_05_30__create_journal_entries_table.ts   ← Phase 0
         │   └── index.generated.ts            ← gitignored, emitted by gen:migrations
         ├── schema.unit.test.ts               ← Phase 0
         ├── runtime.unit.test.ts              ← Phase 0
-        ├── event-store.ts                    ← Phase 0 (Effect-returning)
-        ├── event-store.unit.test.ts          ← Phase 0
-        ├── event-store.int.test.ts           ← Phase 1
-        ├── use-events.ts                     ← Phase 0 (ManagedRuntime bridge)
-        ├── use-events.unit.test.tsx          ← Phase 0
+        ├── journal-store.ts                    ← Phase 0 (Effect-returning)
+        ├── journal-store.unit.test.ts          ← Phase 0
+        ├── journal-store.int.test.ts           ← Phase 1
+        ├── use-journal.ts                     ← Phase 0 (ManagedRuntime bridge)
+        ├── use-journal.unit.test.tsx          ← Phase 0
         ├── format-relative-time.ts           ← Phase 0
         └── format-relative-time.unit.test.ts ← Phase 0
 
@@ -62,37 +62,37 @@ apps/organiclever-web/scripts/
 
 apps/organiclever-web-e2e/
 └── steps/
-    └── events-mechanism.steps.ts             ← Phase 4
+    └── journal-mechanism.steps.ts             ← Phase 4
 
-specs/apps/organiclever/fe/gherkin/events/
-└── events-mechanism.feature                  ← Phase 4
+specs/apps/organiclever/fe/gherkin/journal/
+└── journal-mechanism.feature                  ← Phase 4
 ```
 
 The bigger plan's `components/app/app-root.tsx`, `components/app/tab-bar.tsx`,
 etc. are NOT created here. The bigger plan's Phase 1 replaces the body of
-`src/app/app/page.tsx` (mounting `<AppRoot />` instead of `<EventsPage />`)
-and extends the gear-up's `lib/events/*` via a v2 migration adding typed-
-payload columns plus per-kind `Schema.Union`. The PGlite database identity
-(`dataDir = ol_events_v1`, IDB key `/pglite/ol_events_v1`) is preserved
+`src/app/app/page.tsx` (mounting `<AppRoot />` instead of `<JournalPage />`)
+and extends the gear-up's `lib/journal/*` via a v2 migration adding typed-
+payload columns plus per-name `Schema.Union`. The PGlite database identity
+(`dataDir = ol_journal_v1`, IDB key `/pglite/ol_journal_v1`) is preserved
 across both plans — there is no rename and no data migration between
 databases.
 
 ## Data Model (Effect Schema + branded primitives)
 
 ```typescript
-// src/lib/events/schema.ts (complete)
+// src/lib/journal/schema.ts (complete)
 
 import { Schema } from "effect";
 
 /**
- * Branded primitive types — `EventId` and `IsoTimestamp` are nominally distinct
+ * Branded primitive types — `EntryId` and `IsoTimestamp` are nominally distinct
  * from raw `string` even though their wire representation is plain `string`.
- * Two functions accepting `EventId` will reject a function arg typed only as
+ * Two functions accepting `EntryId` will reject a function arg typed only as
  * `string`, catching id/timestamp confusion at compile time. Brands are
  * compile-time markers only — no runtime cost.
  */
-export const EventId = Schema.String.pipe(Schema.brand("EventId"));
-export type EventId = typeof EventId.Type; // string & Brand<"EventId">
+export const EntryId = Schema.String.pipe(Schema.brand("EntryId"));
+export type EntryId = typeof EntryId.Type; // string & Brand<"EntryId">
 
 export const IsoTimestamp = Schema.String.pipe(
   Schema.pattern(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/),
@@ -101,80 +101,80 @@ export const IsoTimestamp = Schema.String.pipe(
 export type IsoTimestamp = typeof IsoTimestamp.Type;
 
 /**
- * `EventKind` is an open string. Constrained at the schema layer to be
+ * `EntryName` is an open string. Constrained at the schema layer to be
  * non-empty + ≤ 64 chars + lowercase / kebab-cased — enough to keep typos
  * from sneaking in without freezing a discriminated union (the bigger plan's
  * job).
  */
-export const EventKind = Schema.String.pipe(
+export const EntryName = Schema.String.pipe(
   Schema.minLength(1),
   Schema.maxLength(64),
   Schema.pattern(/^[a-z][a-z0-9-]*$/),
-  Schema.brand("EventKind"),
+  Schema.brand("EntryName"),
 );
-export type EventKind = typeof EventKind.Type;
+export type EntryName = typeof EntryName.Type;
 
 /**
- * `EventPayload` is an arbitrary JSON object — `Schema.Record({key: String,
+ * `EntryPayload` is an arbitrary JSON object — `Schema.Record({key: String,
  * value: Unknown})`. The gear-up does NOT constrain its shape; bigger plan
- * layers per-kind unions on top.
+ * layers per-name unions on top.
  */
-export const EventPayload = Schema.Record({
+export const EntryPayload = Schema.Record({
   key: Schema.String,
   value: Schema.Unknown,
 });
-export type EventPayload = typeof EventPayload.Type;
+export type EntryPayload = typeof EntryPayload.Type;
 
-/** Persisted event row. */
-export const EventEntry = Schema.Struct({
-  id: EventId,
-  kind: EventKind,
-  payload: EventPayload,
+/** Persisted entry row. */
+export const JournalEntry = Schema.Struct({
+  id: EntryId,
+  name: EntryName,
+  payload: EntryPayload,
   createdAt: IsoTimestamp,
   updatedAt: IsoTimestamp,
 });
-export type EventEntry = typeof EventEntry.Type;
+export type JournalEntry = typeof JournalEntry.Type;
 
 /** Form-sheet draft input — `id`, `createdAt`, `updatedAt` assigned by the store. */
-export const NewEventInput = Schema.Struct({
-  kind: EventKind,
-  payload: EventPayload,
+export const NewEntryInput = Schema.Struct({
+  name: EntryName,
+  payload: EntryPayload,
 });
-export type NewEventInput = typeof NewEventInput.Type;
+export type NewEntryInput = typeof NewEntryInput.Type;
 
 /** Edit-mode patch — both fields optional. */
-export const UpdateEventInput = Schema.Struct({
-  kind: Schema.optional(EventKind),
-  payload: Schema.optional(EventPayload),
+export const UpdateEntryInput = Schema.Struct({
+  name: Schema.optional(EntryName),
+  payload: Schema.optional(EntryPayload),
 });
-export type UpdateEventInput = typeof UpdateEventInput.Type;
+export type UpdateEntryInput = typeof UpdateEntryInput.Type;
 
 /** Decoder for the form's "string of valid JSON object" textarea. */
-export const PayloadFromJsonString = Schema.parseJson(EventPayload);
+export const PayloadFromJsonString = Schema.parseJson(EntryPayload);
 ```
 
-`src/lib/events/types.ts` is a thin re-export module:
+`src/lib/journal/types.ts` is a thin re-export module:
 
 ```typescript
 export type {
-  EventEntry,
-  EventId,
-  EventKind,
-  EventPayload,
+  JournalEntry,
+  EntryId,
+  EntryName,
+  EntryPayload,
   IsoTimestamp,
-  NewEventInput,
-  UpdateEventInput,
+  NewEntryInput,
+  UpdateEntryInput,
 } from "./schema";
 ```
 
 ## Typed Errors (`Data.TaggedError`)
 
 ```typescript
-// src/lib/events/errors.ts (complete)
+// src/lib/journal/errors.ts (complete)
 
 import { Data } from "effect";
 
-/** Asked for an event id that no row matches. */
+/** Asked for an entry id that no row matches. */
 export class NotFound extends Data.TaggedError("NotFound")<{
   readonly id: string;
 }> {}
@@ -189,7 +189,7 @@ export class InvalidPayload extends Data.TaggedError("InvalidPayload")<{
   readonly issues: ReadonlyArray<{ readonly path: string; readonly message: string }>;
 }> {}
 
-/** Caller passed an empty batch to `appendEvents`. */
+/** Caller passed an empty batch to `appendEntries`. */
 export class EmptyBatch extends Data.TaggedError("EmptyBatch")<{}> {}
 
 /** Discriminated union surfacing in every store function's `E` channel. */
@@ -205,10 +205,10 @@ boundary — `if (state.cause._tag === "StorageUnavailable") { … }`.
 
 Persistence uses [PGlite](https://github.com/electric-sql/pglite) (Apache 2.0,
 free / open source) — a Postgres build compiled to WebAssembly with an
-**IndexedDB**-backed virtual filesystem. PGlite `dataDir` is `ol_events_v1`,
-opened via the connection-string prefix `idb://` (`new PGlite("idb://ol_events_v1")`).
+**IndexedDB**-backed virtual filesystem. PGlite `dataDir` is `ol_journal_v1`,
+opened via the connection-string prefix `idb://` (`new PGlite("idb://ol_journal_v1")`).
 PGlite mounts the Emscripten IDBFS at `/pglite/<dataDir>`, so the **actual
-IndexedDB database name** the browser stores is `/pglite/ol_events_v1` — that
+IndexedDB database name** the browser stores is `/pglite/ol_journal_v1` — that
 is the key the E2E tests use with `indexedDB.deleteDatabase(...)` and
 `indexedDB.databases()`.
 
@@ -240,7 +240,7 @@ single point to add new migration files without merge conflicts.
 #### Filename convention (multi-dev safe)
 
 Every migration lives in its own file under
-`src/lib/events/migrations/` with the filename pattern:
+`src/lib/journal/migrations/` with the filename pattern:
 
 ```
 YYYY_MM_DDTHH_MM_SS__snake_case_title.ts
@@ -258,7 +258,7 @@ Strict regex: `^\d{4}_\d{2}_\d{2}T\d{2}_\d{2}_\d{2}__[a-z0-9_]{1,60}\.ts$`
 
 Examples:
 
-- `2026_04_28T14_05_30__create_events_table.ts` (gear-up v1)
+- `2026_04_28T14_05_30__create_journal_entries_table.ts` (gear-up v1)
 - `2026_05_03T09_22_15__add_typed_payload_columns.ts` (bigger plan v2)
 - `2026_06_15T11_45_00__add_sync_state_columns.ts` (PWA-sync plan v3)
 
@@ -271,7 +271,7 @@ one second.
 #### Migration file shape
 
 ```typescript
-// src/lib/events/migrations/2026_04_28T14_05_30__create_events_table.ts
+// src/lib/journal/migrations/2026_04_28T14_05_30__create_journal_entries_table.ts
 
 import type { PGlite, Transaction } from "@electric-sql/pglite";
 
@@ -283,27 +283,27 @@ import type { PGlite, Transaction } from "@electric-sql/pglite";
  */
 export type Queryable = PGlite | Transaction;
 
-export const id = "2026_04_28T14_05_30__create_events_table";
+export const id = "2026_04_28T14_05_30__create_journal_entries_table";
 
 export async function up(db: Queryable): Promise<void> {
   await db.exec(`
-    CREATE TABLE IF NOT EXISTS events (
+    CREATE TABLE IF NOT EXISTS journal_entries (
       id          TEXT PRIMARY KEY,
-      kind        TEXT NOT NULL CHECK (length(kind) > 0),
+      name        TEXT NOT NULL CHECK (length(name) > 0),
       payload     JSONB NOT NULL DEFAULT '{}'::jsonb,
       created_at  TIMESTAMPTZ NOT NULL,
       updated_at  TIMESTAMPTZ NOT NULL,
       storage_seq BIGSERIAL
     );
-    CREATE INDEX IF NOT EXISTS events_created_at_desc
-      ON events (created_at DESC, storage_seq ASC);
+    CREATE INDEX IF NOT EXISTS journal_entries_created_at_desc
+      ON journal_entries (created_at DESC, storage_seq ASC);
   `);
 }
 
 export async function down(db: Queryable): Promise<void> {
   await db.exec(`
-    DROP INDEX IF EXISTS events_created_at_desc;
-    DROP TABLE IF EXISTS events;
+    DROP INDEX IF EXISTS journal_entries_created_at_desc;
+    DROP TABLE IF EXISTS journal_entries;
   `);
 }
 ```
@@ -326,7 +326,7 @@ import { readdirSync, writeFileSync } from "fs";
 import { join } from "path";
 
 // CWD is `apps/organiclever-web/` because npm scripts run from package root.
-const MIGRATION_DIR = "src/lib/events/migrations";
+const MIGRATION_DIR = "src/lib/journal/migrations";
 const OUTPUT = `${MIGRATION_DIR}/index.generated.ts`;
 const FILENAME_RX = /^(\d{4}_\d{2}_\d{2}T\d{2}_\d{2}_\d{2}__[a-z0-9_]{1,60})\.ts$/;
 
@@ -364,7 +364,7 @@ export const MIGRATIONS: Migration[] = [${arr}];
 `apps/organiclever-web/.gitignore` adds:
 
 ```
-src/lib/events/migrations/index.generated.ts
+src/lib/journal/migrations/index.generated.ts
 ```
 
 `apps/organiclever-web/package.json` scripts:
@@ -388,7 +388,7 @@ regenerates the index automatically; developers do not invoke it manually.
 #### Runner
 
 ```typescript
-// src/lib/events/run-migrations.ts (signature)
+// src/lib/journal/run-migrations.ts (signature)
 
 import { MIGRATIONS } from "./migrations/index.generated";
 import type { PGlite } from "@electric-sql/pglite";
@@ -431,7 +431,7 @@ CREATE TABLE IF NOT EXISTS _migrations (
 Forward path:
 
 - Bigger app plan adds e.g. `2026_05_03T09_22_15__add_typed_payload_columns.ts`
-  introducing `started_at`, `finished_at`, and a typed `kind` check
+  introducing `started_at`, `finished_at`, and a typed `name` check
   constraint (without dropping the gear-up's columns).
 - PWA sync plan adds e.g. `2026_06_15T11_45_00__add_sync_state_columns.ts`
   introducing `original_created_at`, `deleted_at`, `synced_at`, `dirty`,
@@ -445,7 +445,7 @@ needed for batch submits where every row in the batch shares `created_at`.
 - `original_created_at TIMESTAMPTZ` — immutable creation time, unaffected by
   bump; lets stats compute true age. Bigger plan / sync plan adds this.
 - `deleted_at TIMESTAMPTZ` — soft-delete tombstone for sync. Gear-up uses
-  hard deletes; sync plan replaces `deleteEvent` with a tombstone setter.
+  hard deletes; sync plan replaces `deleteEntry` with a tombstone setter.
 - `synced_at TIMESTAMPTZ` / `dirty BOOLEAN` — sync state per row. Sync plan
   adds whichever flavour fits the PWA sync engine chosen.
 
@@ -454,20 +454,20 @@ Adding these later is **additive** — every gear-up call-site keeps working.
 ## Effect Runtime + `PgliteService` Layer
 
 ```typescript
-// src/lib/events/runtime.ts (complete)
+// src/lib/journal/runtime.ts (complete)
 
 import { Context, Effect, Layer, ManagedRuntime } from "effect";
 import type { PGlite } from "@electric-sql/pglite";
 import { runMigrations } from "./run-migrations";
 import { StorageUnavailable } from "./errors";
 
-export const EVENT_STORE_DATA_DIR = "ol_events_v1"; // PGlite dataDir; IDB DB name is /pglite/ol_events_v1
+export const JOURNAL_STORE_DATA_DIR = "ol_journal_v1"; // PGlite dataDir; IDB DB name is /pglite/ol_journal_v1
 
 /**
  * `PgliteService` is the only service the gear-up's `Layer` provides. The
  * class-based `Context.Tag` pattern gives nominal typing — two structurally
  * identical tags do NOT unify, preventing accidental substitution. The shape
- * exposes the raw PGlite handle; raw SQL lives in `event-store.ts`.
+ * exposes the raw PGlite handle; raw SQL lives in `journal-store.ts`.
  */
 export class PgliteService extends Context.Tag("PgliteService")<PgliteService, { readonly db: PGlite }>() {}
 
@@ -489,7 +489,7 @@ export const PgliteLive: Layer.Layer<PgliteService, StorageUnavailable> = Layer.
           throw new Error("PGlite cannot open during SSR");
         }
         const { PGlite } = await import("@electric-sql/pglite");
-        const db = new PGlite(`idb://${EVENT_STORE_DATA_DIR}`);
+        const db = new PGlite(`idb://${JOURNAL_STORE_DATA_DIR}`);
         await runMigrations(db);
         if (process.env.NODE_ENV !== "production") {
           (globalThis as { __ol_db?: PGlite }).__ol_db = db;
@@ -503,92 +503,92 @@ export const PgliteLive: Layer.Layer<PgliteService, StorageUnavailable> = Layer.
 );
 
 /**
- * `makeEventsRuntime` builds a fresh `ManagedRuntime` for the provided layer.
- * The React layer calls this inside `useMemo(() => makeEventsRuntime(), [])`
+ * `makeJournalRuntime` builds a fresh `ManagedRuntime` for the provided layer.
+ * The React layer calls this inside `useMemo(() => makeJournalRuntime(), [])`
  * and disposes via `useEffect(() => () => runtime.dispose(), [runtime])`.
  * Tests substitute `PgliteLive` with a `Layer.scoped(PgliteService,
  * Effect.acquireRelease(... new PGlite() ..., db.close))` providing in-memory
  * PGlite — the rest of the runtime stays identical.
  */
-export const makeEventsRuntime = (layer: Layer.Layer<PgliteService, StorageUnavailable> = PgliteLive) =>
+export const makeJournalRuntime = (layer: Layer.Layer<PgliteService, StorageUnavailable> = PgliteLive) =>
   ManagedRuntime.make(layer);
 
-export type EventsRuntime = ReturnType<typeof makeEventsRuntime>;
+export type JournalRuntime = ReturnType<typeof makeJournalRuntime>;
 ```
 
-## Event Store (Effect-returning)
+## Journal Store (Effect-returning)
 
 ```typescript
-// src/lib/events/event-store.ts (signatures)
+// src/lib/journal/journal-store.ts (signatures)
 
 import { Effect } from "effect";
 import { PgliteService } from "./runtime";
-import type { EventEntry, EventId, NewEventInput, UpdateEventInput } from "./schema";
+import type { JournalEntry, EntryId, NewEntryInput, UpdateEntryInput } from "./schema";
 import type { EmptyBatch, NotFound, StorageUnavailable, StoreError } from "./errors";
 
 /**
- * Append a batch of new events atomically inside a single statement. Every
- * event in the batch shares the same `createdAt` (one `now()` call) and starts
+ * Append a batch of new entries atomically inside a single statement. Every
+ * entry in the batch shares the same `createdAt` (one `now()` call) and starts
  * with `updatedAt === createdAt`. Returns persisted entries in input order.
  *
  * Fails with `EmptyBatch` when `input.length === 0`; with `StorageUnavailable`
  * on quota / corruption.
  */
-export const appendEvents: (
-  input: ReadonlyArray<NewEventInput>,
-) => Effect.Effect<ReadonlyArray<EventEntry>, EmptyBatch | StorageUnavailable, PgliteService>;
+export const appendEntries: (
+  input: ReadonlyArray<NewEntryInput>,
+) => Effect.Effect<ReadonlyArray<JournalEntry>, EmptyBatch | StorageUnavailable, PgliteService>;
 
 /**
- * Patch an event by id. Refreshes `updatedAt = now()`; preserves `createdAt`,
+ * Patch an entry by id. Refreshes `updatedAt = now()`; preserves `createdAt`,
  * `storage_seq`, and `id`. Fails with `NotFound` on missing id; with
  * `StorageUnavailable` on IO failure.
  */
-export const updateEvent: (
-  id: EventId,
-  patch: UpdateEventInput,
-) => Effect.Effect<EventEntry, NotFound | StorageUnavailable, PgliteService>;
+export const updateEntry: (
+  id: EntryId,
+  patch: UpdateEntryInput,
+) => Effect.Effect<JournalEntry, NotFound | StorageUnavailable, PgliteService>;
 
 /**
- * Remove an event by id. Returns `true` when a row was removed, `false` when
+ * Remove an entry by id. Returns `true` when a row was removed, `false` when
  * the id did not match (non-exceptional — the React layer treats both
  * outcomes as a successful delete-confirm resolution). Fails only with
  * `StorageUnavailable` on IO failure.
  *
- * Asymmetry with `updateEvent` / `bumpEvent` (which fail with `NotFound`)
+ * Asymmetry with `updateEntry` / `bumpEntry` (which fail with `NotFound`)
  * is intentional: deleting a row that already vanished IS the desired end
  * state, while editing or bumping a missing row is a logical error.
  */
-export const deleteEvent: (id: EventId) => Effect.Effect<boolean, StorageUnavailable, PgliteService>;
+export const deleteEntry: (id: EntryId) => Effect.Effect<boolean, StorageUnavailable, PgliteService>;
 
 /**
  * "Bring to top" — the only rearrangement primitive. Sets
- * `createdAt = updatedAt = now()` for the matched event; preserves `id`,
- * `kind`, `payload`, and `storage_seq`. Because `listEvents` sorts by
- * `createdAt DESC`, the bumped event becomes newest. Fails with `NotFound` on
+ * `createdAt = updatedAt = now()` for the matched entry; preserves `id`,
+ * `name`, `payload`, and `storage_seq`. Because `listEntries` sorts by
+ * `createdAt DESC`, the bumped entry becomes newest. Fails with `NotFound` on
  * missing id.
  *
  * Destructive of the previous `createdAt`; the gear-up does not retain prior
  * values (see Forward Compatibility for `original_created_at`).
  */
-export const bumpEvent: (id: EventId) => Effect.Effect<EventEntry, NotFound | StorageUnavailable, PgliteService>;
+export const bumpEntry: (id: EntryId) => Effect.Effect<JournalEntry, NotFound | StorageUnavailable, PgliteService>;
 
 /**
- * Return all events sorted newest-first by `createdAt` with `storage_seq` ASC
+ * Return all entries sorted newest-first by `createdAt` with `storage_seq` ASC
  * as deterministic tiebreaker. Returns `[]` on empty database.
  */
-export const listEvents: () => Effect.Effect<ReadonlyArray<EventEntry>, StorageUnavailable, PgliteService>;
+export const listEntries: () => Effect.Effect<ReadonlyArray<JournalEntry>, StorageUnavailable, PgliteService>;
 
-/** Remove every stored event (`TRUNCATE events`). Test / dev convenience only. */
-export const clearEvents: () => Effect.Effect<void, StorageUnavailable, PgliteService>;
+/** Remove every stored entry (`TRUNCATE journal_entries`). Test / dev convenience only. */
+export const clearEntries: () => Effect.Effect<void, StorageUnavailable, PgliteService>;
 ```
 
 Implementations use `Effect.gen(function* () { … })` (no adapter — the `$` /
 `_` adapter is deprecated as of TypeScript 5.5+); raw IO is wrapped via
 `Effect.tryPromise({ try, catch })` with explicit catch mappers so the error
 channel never widens to `UnknownException`. Schema-typed inputs are encoded
-to plain JSON via `Schema.encodeSync(NewEventInput)` before being passed to
+to plain JSON via `Schema.encodeSync(NewEntryInput)` before being passed to
 PGlite's parameterised SQL; query rows are decoded via
-`Schema.decodeUnknownSync(EventEntry)` — both calls are total inside the
+`Schema.decodeUnknownSync(JournalEntry)` — both calls are total inside the
 Effect (decode failure raises `InvalidPayload` if a future column drift
 slips past migrations).
 
@@ -597,47 +597,47 @@ pulled from `PgliteService` via `const { db } = yield* PgliteService` inside
 each store function's `Effect.gen` body):
 
 ```sql
--- appendEvents (called once per batch with N values)
-INSERT INTO events (id, kind, payload, created_at, updated_at)
+-- appendEntries (called once per batch with N values)
+INSERT INTO journal_entries (id, name, payload, created_at, updated_at)
 VALUES
   ($1, $2, $3::jsonb, $4, $4),  -- $4 reused for both timestamps
   ($5, $6, $7::jsonb, $4, $4),
   ...
-RETURNING id, kind, payload, created_at, updated_at, storage_seq;
+RETURNING id, name, payload, created_at, updated_at, storage_seq;
 
--- updateEvent
-UPDATE events
-SET kind = COALESCE($2, kind),
+-- updateEntry
+UPDATE journal_entries
+SET name = COALESCE($2, name),
     payload = COALESCE($3::jsonb, payload),
     updated_at = now()
 WHERE id = $1
-RETURNING id, kind, payload, created_at, updated_at, storage_seq;
+RETURNING id, name, payload, created_at, updated_at, storage_seq;
 
--- deleteEvent
-DELETE FROM events WHERE id = $1;
+-- deleteEntry
+DELETE FROM journal_entries WHERE id = $1;
 -- store inspects rowCount
 
--- bumpEvent
-UPDATE events
+-- bumpEntry
+UPDATE journal_entries
 SET created_at = now(),
     updated_at = now()
 WHERE id = $1
-RETURNING id, kind, payload, created_at, updated_at, storage_seq;
+RETURNING id, name, payload, created_at, updated_at, storage_seq;
 
--- listEvents
-SELECT id, kind, payload, created_at, updated_at, storage_seq
-FROM events
+-- listEntries
+SELECT id, name, payload, created_at, updated_at, storage_seq
+FROM journal_entries
 ORDER BY created_at DESC, storage_seq ASC;
 
--- clearEvents
-TRUNCATE events RESTART IDENTITY;
+-- clearEntries
+TRUNCATE journal_entries RESTART IDENTITY;
 ```
 
 **Sort tiebreaker**: handled by the composite index
-`events_created_at_desc (created_at DESC, storage_seq ASC)`. No application-level
+`journal_entries_created_at_desc (created_at DESC, storage_seq ASC)`. No application-level
 sort is needed; PostgreSQL guarantees deterministic ordering against the index.
 
-**Atomicity**: PGlite supports proper transactions. `appendEvents` wraps the
+**Atomicity**: PGlite supports proper transactions. `appendEntries` wraps the
 multi-row INSERT in a single statement (Postgres treats it as atomic). For the
 rare callers that mutate multiple rows in one logical operation, use
 `db.transaction(tx => { ... })` from PGlite.
@@ -652,7 +652,7 @@ reaches the server.
 
 **Schema migration**: `PgliteLive`'s acquire-effect calls `runMigrations(db)`
 after the PGlite handle opens, applying any pending migrations from the
-timestamp-named files in `src/lib/events/migrations/` (see "Database migration
+timestamp-named files in `src/lib/journal/migrations/` (see "Database migration
 framework" above for the multi-developer-safe authoring model). Migration
 failure short-circuits the layer's acquire path with `StorageUnavailable`,
 which propagates to the React layer's error banner.
@@ -671,57 +671,57 @@ is the property the future PWA sync relies on.
 
 **Type marshalling**: PGlite returns Postgres `TIMESTAMPTZ` as JS `Date` and
 `JSONB` as a JS object by default. The store decodes each raw row through
-`Schema.decodeUnknownEither(EventEntry)` (after coercing `Date` →
+`Schema.decodeUnknownEither(JournalEntry)` (after coercing `Date` →
 `toISOString()` and casting `JSONB` to `unknown`). Decode failure raises
 `InvalidPayload` rather than silently widening to `unknown` — keeping the
-return type honestly `EventEntry`, not `EventEntry & { payload: unknown }`.
+return type honestly `JournalEntry`, not `JournalEntry & { payload: unknown }`.
 
 ## React Hook (`ManagedRuntime` bridge)
 
 ```typescript
-// src/lib/events/use-events.ts (signature)
+// src/lib/journal/use-journal.ts (signature)
 
-import type { EventEntry, EventId, NewEventInput, UpdateEventInput } from "./schema";
+import type { JournalEntry, EntryId, NewEntryInput, UpdateEntryInput } from "./schema";
 import type { StoreError } from "./errors";
 
 /**
  * Discriminated UI state — each branch lists exactly the fields the JSX needs;
- * `Either<StoreError, EventEntry[]>` is rejected because it cannot model the
+ * `Either<StoreError, JournalEntry[]>` is rejected because it cannot model the
  * `idle` and `loading` phases. The narrowing in the JSX is total: a
  * `state.status === "error"` branch is required to read `state.cause`.
  */
-export type EventsState =
+export type JournalState =
   | { readonly status: "idle" }
   | { readonly status: "loading" }
-  | { readonly status: "ready"; readonly events: ReadonlyArray<EventEntry> }
+  | { readonly status: "ready"; readonly entries: ReadonlyArray<JournalEntry> }
   | { readonly status: "error"; readonly cause: StoreError };
 
-export interface UseEventsResult {
+export interface UseJournalResult {
   /** Discriminated UI state — narrow before rendering. */
-  readonly state: EventsState;
+  readonly state: JournalState;
   /** Append a batch of drafts. Resolves with `Either<StoreError, void>`. */
-  readonly addBatch: (drafts: ReadonlyArray<NewEventInput>) => Promise<void>;
-  /** Patch one event by id. */
-  readonly edit: (id: EventId, patch: UpdateEventInput) => Promise<void>;
-  /** Remove one event by id. */
-  readonly remove: (id: EventId) => Promise<void>;
-  /** Bump (bring to top) one event by id. */
-  readonly bump: (id: EventId) => Promise<void>;
-  /** Truncate the events table. Test / dev helper. */
+  readonly addBatch: (drafts: ReadonlyArray<NewEntryInput>) => Promise<void>;
+  /** Patch one entry by id. */
+  readonly edit: (id: EntryId, patch: UpdateEntryInput) => Promise<void>;
+  /** Remove one entry by id. */
+  readonly remove: (id: EntryId) => Promise<void>;
+  /** Bump (bring to top) one entry by id. */
+  readonly bump: (id: EntryId) => Promise<void>;
+  /** Truncate the journal_entries table. Test / dev helper. */
   readonly clear: () => Promise<void>;
 }
 
 /**
  * Bridges Effect-returning store functions into React.
  *
- * - `useMemo(() => makeEventsRuntime(), [])` constructs the `ManagedRuntime`
+ * - `useMemo(() => makeJournalRuntime(), [])` constructs the `ManagedRuntime`
  *   once per mount. `useEffect(() => () => runtime.dispose(), [runtime])`
  *   tears it down — `Layer.scoped` finalisers (close PGlite handle) run
  *   inside `dispose`.
  * - First render: `{ status: "idle" }`. After `useEffect` fires, transitions
- *   to `loading`, awaits `runtime.runPromise(listEvents())`, then `ready`
+ *   to `loading`, awaits `runtime.runPromise(listEntries())`, then `ready`
  *   on success or `error` (typed `StoreError`) on failure.
- * - Every mutating method runs the store Effect, then re-runs `listEvents`
+ * - Every mutating method runs the store Effect, then re-runs `listEntries`
  *   to refresh state — same "mutate then re-list" pattern as before, now
  *   typed end-to-end. Mutation errors fall into a per-call rejection (the
  *   form sheet decides how to surface), without poisoning the global state.
@@ -731,102 +731,113 @@ export interface UseEventsResult {
  * - The hook does NOT subscribe to PGlite's live-query plugin
  *   (`@electric-sql/pglite/live`); deferred to bigger plan / PWA sync plan.
  */
-export function useEvents(): UseEventsResult;
+export function useJournal(): UseJournalResult;
 ```
 
 The hook is the **single Effect→Promise boundary** in the gear-up. UI
 components never import from `effect/Effect` directly — they consume
-`UseEventsResult` only. This keeps the run-at-the-edge invariant trivially
+`UseJournalResult` only. This keeps the run-at-the-edge invariant trivially
 auditable: `git grep -n "runPromise" apps/organiclever-web/src` should match
 exactly two places (this hook and tests).
 
 ## UI Components
 
-### `<AddEventButton>` (Phase 2)
+### `<AddEntryButton>` (Phase 2)
 
 - Props: `{ onClick: () => void }`
-- Renders a button labelled "Add event" with `aria-label="Add event"`.
+- Renders a button labelled "Add entry" with `aria-label="Add entry"`.
 - Visual: top-right of the page header (mobile) and floating bottom-right FAB on
   wider viewports. Either rendering may be used; the requirement is that the
   button is keyboard-reachable.
 - Source-of-truth class names live in this component; no ts-ui changes.
 
-### `<EventFormSheet>` (Phase 2)
+### `<EntryFormSheet>` (Phase 2)
 
 - Props (batch / create mode):
 
   ```typescript
-  type EventFormSheetProps =
-    | { open: true; mode: "create"; onSubmit: (drafts: NewEventInput[]) => void; onCancel: () => void }
+  type EntryFormSheetProps =
+    | { open: true; mode: "create"; onSubmit: (drafts: NewEntryInput[]) => void; onCancel: () => void }
     | {
         open: true;
         mode: "edit";
-        initial: EventEntry;
-        onSubmit: (patch: UpdateEventInput) => void;
+        initial: JournalEntry;
+        onSubmit: (patch: UpdateEntryInput) => void;
         onCancel: () => void;
       }
     | { open: false };
   ```
 
 - **Create mode** state:
-  - `drafts: Array<{ kind: string; payloadText: string; error: string | null }>`
+  - `drafts: Array<{ name: string; payloadText: string; error: string | null }>`
   - Starts with one empty draft on open
   - "+ Add another" pushes a new empty draft
   - "Remove draft" splice-removes a draft (disabled when only one remains)
-- **Edit mode** state: a single draft seeded from `initial.kind` and
+- **Edit mode** state: a single draft seeded from `initial.name` and
   `JSON.stringify(initial.payload, null, 2)`.
-- Preset kind chips (clickable buttons) for `workout`, `reading`, `meditation`
-  available on every draft; clicking a chip overwrites that draft's `kind`.
+- Preset name chips (clickable buttons) for `workout`, `reading`, `meditation`
+  available on every draft; clicking a chip overwrites that draft's `name`.
 - Validation on submit (per draft):
-  1. If `kind.trim() === ""` → set draft's error to `"Kind is required"`, abort save.
+  1. If `name.trim() === ""` → set draft's error to `"Name is required"`, abort save.
   2. Try `JSON.parse(payloadText)` → on throw, set error to `"Payload must be valid JSON"`, abort.
   3. If parsed payload is not a plain object (array, scalar, null) → set error to `"Payload must be a JSON object"`, abort.
 - Save is **all-or-nothing**: if ANY draft fails validation, no `onSubmit` call;
   invalid drafts are highlighted, others remain editable.
 - On valid submit:
-  - **Create mode**: call `onSubmit(drafts.map(d => ({ kind: d.kind.trim(), payload: JSON.parse(d.payloadText) })))`
-  - **Edit mode**: call `onSubmit({ kind: drafts[0].kind.trim(), payload: JSON.parse(drafts[0].payloadText) })`
+  - **Create mode**: call `onSubmit(drafts.map(d => ({ name: d.name.trim(), payload: JSON.parse(d.payloadText) })))`
+  - **Edit mode**: call `onSubmit({ name: drafts[0].name.trim(), payload: JSON.parse(drafts[0].payloadText) })`
 - Cancel calls `onCancel` and discards every local draft.
 
-### `<EventList>` (Phase 2)
-
-- Props: `{ events: EventEntry[] }`
-- Renders empty-state copy `"No events yet — press + to add one"` when
-  `events.length === 0`.
-- Otherwise renders a `<ul>` of `<EventCard>` items.
-
-### `<EventCard>` (Phase 2)
+### `<JournalList>` (Phase 2)
 
 - Props:
 
   ```typescript
-  interface EventCardProps {
-    event: EventEntry;
-    onEdit: (id: string) => void;
-    onDelete: (id: string) => void;
-    onBump: (id: string) => void;
+  interface JournalListProps {
+    entries: ReadonlyArray<JournalEntry>;
+    onEdit: (id: EntryId) => void;
+    onDelete: (id: EntryId) => void;
+    onBump: (id: EntryId) => void;
+  }
+  ```
+
+- Renders empty-state copy `"No entries yet — press + to add one"` when
+  `entries.length === 0`.
+- Otherwise renders a `<ul>` of `<EntryCard>` items, forwarding
+  `onEdit`, `onDelete`, and `onBump` to each card.
+
+### `<EntryCard>` (Phase 2)
+
+- Props:
+
+  ```typescript
+  interface EntryCardProps {
+    entry: JournalEntry;
+    onEdit: (id: EntryId) => void;
+    onDelete: (id: EntryId) => void;
+    onBump: (id: EntryId) => void;
   }
   ```
 
 - Renders:
-  - `<header>` with `kind`, relative `createdAt`
-    (`formatRelativeTime(event.createdAt)`), and an "edited Xm ago" line
-    rendered only when `event.updatedAt > event.createdAt`
+  - `<header>` with `name`, relative `createdAt`
+    (`formatRelativeTime(entry.createdAt)`), and an "edited Xm ago" line
+    rendered only when `entry.updatedAt > entry.createdAt`
   - Action row: three buttons — **Edit**, **Bring to top**, **Delete**
   - `<details>` with summary `"View payload"` and a `<pre>` showing
-    `JSON.stringify(event.payload, null, 2)`
+    `JSON.stringify(entry.payload, null, 2)`
   - **Delete** uses an inline two-step confirm: first click swaps the Delete
     button for "Are you sure? Yes / Cancel"; clicking "Yes" invokes `onDelete`;
     clicking "Cancel" reverts to the default action row.
 
-### `<EventsPage>` (Phase 2)
+### `<JournalPage>` (Phase 3)
 
 - Combines hook + components:
 
   ```typescript
-  const { state, addBatch, edit, remove, bump } = useEvents();
+  const { state, addBatch, edit, remove, bump } = useJournal();
   const [sheetState, setSheetState] = useState<
-    { open: false } | { open: true; mode: "create" } | { open: true; mode: "edit"; eventId: EventId }
+    { open: false } | { open: true; mode: "create" } | { open: true; mode: "edit"; entryId: EntryId }
   >({ open: false });
   ```
 
@@ -834,35 +845,35 @@ exactly two places (this hook and tests).
   - `state.status === "error"` renders an inline error banner. The banner narrows
     further on `state.cause._tag` (e.g., a "Storage unavailable — data was not
     saved" message for `StorageUnavailable`).
-  - `state.status === "ready"` renders `<h1>Events</h1>`,
-    `<AddEventButton onClick={() => setSheetState({ open: true, mode: "create" })} />`,
-    `<EventList events={state.events} onEdit={...} onDelete={remove} onBump={bump} />`,
-    and a single `<EventFormSheet>` whose props depend on `sheetState`.
-  - `onEdit(id)` resolves the event (only reachable in `ready`, where
-    `state.events` is in scope) and sets `sheetState = { open: true, mode: "edit", eventId: id }`.
+  - `state.status === "ready"` renders `<h1>Journal</h1>`,
+    `<AddEntryButton onClick={() => setSheetState({ open: true, mode: "create" })} />`,
+    `<JournalList entries={state.entries} onEdit={...} onDelete={remove} onBump={bump} />`,
+    and a single `<EntryFormSheet>` whose props depend on `sheetState`.
+  - `onEdit(id)` resolves the entry (only reachable in `ready`, where
+    `state.entries` is in scope) and sets `sheetState = { open: true, mode: "edit", entryId: id }`.
 
 - No router, no tabs, no nav.
 
-### `/app/page.tsx` (Phase 2)
+### `/app/page.tsx` (Phase 3)
 
 ```typescript
 // apps/organiclever-web/src/app/app/page.tsx
 
 "use client";
 
-import { EventsPage } from "@/components/app/events-page";
+import { JournalPage } from "@/components/app/journal-page";
 
 export const dynamic = "force-dynamic";
 
 export default function AppPage() {
-  return <EventsPage />;
+  return <JournalPage />;
 }
 ```
 
 ## Time Formatting
 
 ```typescript
-// src/lib/events/format-relative-time.ts
+// src/lib/journal/format-relative-time.ts
 
 /**
  * Returns a human-readable relative time string.
@@ -879,15 +890,15 @@ export function formatRelativeTime(iso: string, now?: Date): string;
 
 ## Test Strategy
 
-| Level               | Tool                                                      | Files                                                                                                                                                                             |
-| ------------------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Unit — schema       | Vitest                                                    | `schema.unit.test.ts` covers `EventEntry` decode round-trip, branded-id rejection of plain strings, `PayloadFromJsonString` field-error formatting via `ArrayFormatter`           |
-| Unit — store        | `@effect/vitest` + Layer-swapped in-memory PGlite         | `event-store.unit.test.ts` covers `appendEvents` (batch), `listEvents` (sort + tiebreaker), `updateEvent` (refreshes only `updatedAt`), `deleteEvent`, `bumpEvent`, `clearEvents` |
-| Unit — hook         | Vitest + RTL                                              | `use-events.unit.test.tsx` covers `idle → loading → ready` transitions, `addBatch`, `edit`, `remove`, `bump`, `clear`, typed-error propagation into `state.cause`                 |
-| Unit — formatter    | Vitest                                                    | `format-relative-time.unit.test.ts` covers each branch + ISO fallback                                                                                                             |
-| Unit — runtime      | `@effect/vitest`                                          | `runtime.unit.test.ts` covers `PgliteLive` acquire-release lifecycle (in-memory layer), `StorageUnavailable` mapping on SSR pretend                                               |
-| Unit — page render  | `@effect/vitest` + RTL + PGlite in-memory (Layer-swapped) | `events-page.unit.test.tsx` covers empty state, batch submit, validation errors, edit flow, delete-confirm flow, bump reorder, error-banner narrowing                             |
-| FE E2E — round-trip | Playwright-BDD                                            | `apps/organiclever-web-e2e/steps/events-mechanism.steps.ts` consumes `events-mechanism.feature` (all batch / edit / delete / bump scenarios)                                      |
+| Level               | Tool                                                      | Files                                                                                                                                                                                  |
+| ------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Unit — schema       | Vitest                                                    | `schema.unit.test.ts` covers `JournalEntry` decode round-trip, branded-id rejection of plain strings, `PayloadFromJsonString` field-error formatting via `ArrayFormatter`              |
+| Unit — store        | `@effect/vitest` + Layer-swapped in-memory PGlite         | `journal-store.unit.test.ts` covers `appendEntries` (batch), `listEntries` (sort + tiebreaker), `updateEntry` (refreshes only `updatedAt`), `deleteEntry`, `bumpEntry`, `clearEntries` |
+| Unit — hook         | Vitest + RTL                                              | `use-journal.unit.test.tsx` covers `idle → loading → ready` transitions, `addBatch`, `edit`, `remove`, `bump`, `clear`, typed-error propagation into `state.cause`                     |
+| Unit — formatter    | Vitest                                                    | `format-relative-time.unit.test.ts` covers each branch + ISO fallback                                                                                                                  |
+| Unit — runtime      | `@effect/vitest`                                          | `runtime.unit.test.ts` covers `PgliteLive` acquire-release lifecycle (in-memory layer), `StorageUnavailable` mapping on SSR pretend                                                    |
+| Unit — page render  | `@effect/vitest` + RTL + PGlite in-memory (Layer-swapped) | `journal-page.unit.test.tsx` covers empty state, batch submit, validation errors, edit flow, delete-confirm flow, bump reorder, error-banner narrowing                                 |
+| FE E2E — round-trip | Playwright-BDD                                            | `apps/organiclever-web-e2e/steps/journal-mechanism.steps.ts` consumes `journal-mechanism.feature` (all batch / edit / delete / bump scenarios)                                         |
 
 **Three test levels per the [three-level testing standard](../../../governance/development/quality/three-level-testing-standard.md)**:
 
@@ -898,8 +909,8 @@ export function formatRelativeTime(iso: string, now?: Date): string;
   (`schema.unit.test.ts`), the migration runner (`run-migrations.unit.test.ts`
   — uses a real in-memory PGlite (`new PGlite()`) since PGlite spins up
   cheaply; mocking is more brittle than running the actual code), individual
-  UI components (RTL with the `useEvents` hook stubbed via a test harness
-  wrapper), and store / runtime via Layer-swap (`event-store.unit.test.ts`,
+  UI components (RTL with the `useJournal` hook stubbed via a test harness
+  wrapper), and store / runtime via Layer-swap (`journal-store.unit.test.ts`,
   `runtime.unit.test.ts`) using `@effect/vitest`'s `it.effect`.
 - Vitest + jsdom; no real IndexedDB (the in-memory PGlite mode bypasses IDBFS).
 
@@ -915,27 +926,27 @@ Effect.acquireRelease(... new PGlite() ..., db.close))`) provided to
 - Coverage:
   - Migration runner: applies v1 cleanly on a fresh database; second run is a
     no-op; partial-failure rolls back.
-  - `appendEvents` batch atomicity: 3-element batch results in 3 rows with
+  - `appendEntries` batch atomicity: 3-element batch results in 3 rows with
     identical `created_at`; failed batch (e.g., constraint violation midway)
     leaves zero rows.
-  - `listEvents` ordering: events with same `created_at` come back in
-    `storage_seq` ascending; events from later batches sort first.
-  - `updateEvent` preserves `created_at` and `storage_seq`; refreshes
+  - `listEntries` ordering: entries with same `created_at` come back in
+    `storage_seq` ascending; entries from later batches sort first.
+  - `updateEntry` preserves `created_at` and `storage_seq`; refreshes
     `updatedAt` strictly later than `createdAt`.
-  - `bumpEvent` mutates both timestamps; subsequent `listEvents` puts the
-    bumped event first.
-  - `deleteEvent` rowcount return value semantics (`true` on hit, `false` on miss).
-  - `clearEvents` empties the table; subsequent `listEvents` returns `[]`.
+  - `bumpEntry` mutates both timestamps; subsequent `listEntries` puts the
+    bumped entry first.
+  - `deleteEntry` rowcount return value semantics (`true` on hit, `false` on miss).
+  - `clearEntries` empties the table; subsequent `listEntries` returns `[]`.
   - SQL queries from the "Future Consumer: Stats" section all execute against
     a seeded fixture and produce the expected aggregations (date-trunc per
-    kind, total minutes, streak).
+    name, total minutes, streak).
 - Per the existing `nx.json` pattern for in-process integration tests
   (`organiclever-web` already has `cache: true`), this stays cacheable.
 
 #### `test:e2e` — real browser, real IndexedDB
 
 - Playwright-BDD against the dev server. The `organiclever-web-e2e` project
-  already exists; we add `events-mechanism.steps.ts` consuming the new
+  already exists; we add `journal-mechanism.steps.ts` consuming the new
   Gherkin feature. Coverage:
   - Empty-state on first visit
   - Single-draft submit, three-draft batch submit, draft removal in sheet
@@ -944,10 +955,10 @@ Effect.acquireRelease(... new PGlite() ..., db.close))`) provided to
   - **Persistence**: hard-reload survives all of the above
   - **IndexedDB inspection**: a step reads
     `await page.evaluate(() => indexedDB.databases())` and asserts the
-    `/pglite/ol_events_v1` entry exists (PGlite mounts IDBFS at
-    `/pglite/<dataDir>`, so that — not the bare `ol_events_v1` — is the IDB
+    `/pglite/ol_journal_v1` entry exists (PGlite mounts IDBFS at
+    `/pglite/<dataDir>`, so that — not the bare `ol_journal_v1` — is the IDB
     database name), plus runs PGlite SQL via
-    `await page.evaluate(() => globalThis.__ol_db.exec("SELECT count(*) FROM events"))`
+    `await page.evaluate(() => globalThis.__ol_db.exec("SELECT count(*) FROM journal_entries"))`
     (the dev page exposes `__ol_db` for E2E inspection only — guarded behind
     `process.env.NODE_ENV !== "production"` so it never ships)
   - WASM load in real Chrome: an early step asserts no console errors during
@@ -963,33 +974,33 @@ that this plan must amend in Phase 0 before any test file is added:
    `src/layers/**`, `src/app/api/**`, `src/proxy.ts`, `src/test/**`,
    `src/app/layout.tsx`, `src/generated-contracts/**`, and the standard
    `*.{test,spec,stories}.{ts,tsx}` patterns. Because every gear-up file lands
-   under `src/lib/events/`, the `src/lib/**` exclude must be **removed** (or
+   under `src/lib/journal/`, the `src/lib/**` exclude must be **removed** (or
    narrowed to specific subpaths) so the new code contributes to the LCOV
    numerator. The other entries stay.
 2. **Vitest projects' `include` globs** match unit tests at
    `test/unit/**/*.steps.{ts,tsx}` + `**/*.unit.{test,spec}.{ts,tsx}` and
    integration tests at `test/integration/**/*.{test,spec}.{ts,tsx}` only.
-   Files named `event-store.unit.test.ts` colocated under `src/lib/events/` would
+   Files named `journal-store.unit.test.ts` colocated under `src/lib/journal/` would
    not match either project. Phase 0 amends the unit project to also include
    `src/**/*.{test,spec}.{ts,tsx}` and the integration project to also include
    `src/**/*.int.{test,spec}.{ts,tsx}` so colocated tests run.
 
 After those amendments, the dormant `src/services/` and `src/layers/`
 directories stay covered-out by their explicit excludes; the new
-`src/lib/events/**` code is included; and colocated `*.test.ts` /
+`src/lib/journal/**` code is included; and colocated `*.test.ts` /
 `*.int.test.ts` files run under the unit / integration projects respectively.
 The threshold guard in `rhino-cli test-coverage validate` then enforces
 ≥ 70 % LCOV against the actual gear-up code.
 
 ## Design Decisions
 
-### Open `kind: string` vs. discriminated union
+### Open `name: string` vs. discriminated union
 
-The bigger app plan's `EventType` union freezes six kinds. This plan deliberately
-keeps `kind: string` open. Reason: the round-trip mechanism does not need to
-know the kind set to function. Constraining the type here would force the
+The bigger app plan's entry-name union freezes six names. This plan deliberately
+keeps `name: string` open. Reason: the round-trip mechanism does not need to
+know the name set to function. Constraining the type here would force the
 bigger plan to either (a) widen back to `string` to migrate, or (b) ship a
-breaking schema change at every new kind. Bigger plan adds the discriminated
+breaking schema change at every new name. Bigger plan adds the discriminated
 union one layer above the store, narrowing on read; the store stays generic.
 
 ### `Record<string, unknown>` payload vs. typed payload union
@@ -998,16 +1009,16 @@ Same reasoning: the gear-up only needs JSON-serialisable payload. Typed payloads
 belong in the bigger plan, where each logger UI knows its own shape and the
 store can be wrapped with type-narrowed read helpers (`getReadingEvents`, etc.).
 
-### PGlite database `ol_events_v1` vs. reusing the bigger plan's `ol_db_v12`
+### PGlite database `ol_journal_v1` vs. reusing the bigger plan's `ol_db_v12`
 
 The bigger plan's `OLDb` class was designed against localStorage with a
 17-method imperative API. This plan introduces a SQL-queryable Postgres-WASM
 database; sharing a name with the localStorage blob would mislead readers.
-A distinct PGlite `dataDir` (`ol_events_v1`, mounted as IDB database
-`/pglite/ol_events_v1`) keeps both stores independent during the gear-up. Migration path
+A distinct PGlite `dataDir` (`ol_journal_v1`, mounted as IDB database
+`/pglite/ol_journal_v1`) keeps both stores independent during the gear-up. Migration path
 (deferred to the bigger plan): either (a) keep PGlite as the canonical store
-and have the bigger plan's typed loggers call into `appendEvents` /
-`updateEvent` / `bumpEvent`, OR (b) extend the schema with the bigger plan's
+and have the bigger plan's typed loggers call into `appendEntries` /
+`updateEntry` / `bumpEntry`, OR (b) extend the schema with the bigger plan's
 `routines`, `settings`, `app_state` tables and rename the database to a
 shared identifier.
 
@@ -1034,7 +1045,7 @@ is portable when the PWA sync plan ships.
 
 `wa-sqlite` (MIT, ~800 KB) was the lightweight runner-up; if bundle size
 becomes a hard blocker, switching to it is mechanical because the public
-`event-store.ts` API is dialect-neutral (only the SQL strings change).
+`journal-store.ts` API is dialect-neutral (only the SQL strings change).
 
 ### No ORM — raw SQL by default; query builder permitted
 
@@ -1072,10 +1083,10 @@ and audit.
 
 ### Free-form JSON textarea vs. structured form
 
-Structured forms per kind require a kind-aware schema, which is what the bigger
+Structured forms per name require a name-aware schema, which is what the bigger
 plan ships. The gear-up uses a single textarea so that one piece of UI exercises
 arbitrarily-shaped payloads — proving the round-trip works for any shape, not
-just the six kinds the bigger plan will support.
+just the six names the bigger plan will support.
 
 ### Append-batch + update + delete + bump in v0
 
@@ -1096,7 +1107,7 @@ Reasons specific to this app:
 
 - **Typed error channel** — the React layer narrows on `state.cause._tag`
   (`StorageUnavailable` vs `NotFound` vs `InvalidPayload`) without re-wrapping
-  unknown exceptions. Plain `Promise<EventEntry[]>` flattens errors to
+  unknown exceptions. Plain `Promise<JournalEntry[]>` flattens errors to
   `unknown` at the catch site, defeating discrimination.
 - **Schema-driven decoding** — the form sheet's `payload` textarea is decoded
   via `Schema.decodeUnknownEither(PayloadFromJsonString, { errors: "all" })`,
@@ -1109,7 +1120,7 @@ Reasons specific to this app:
 Effect.acquireRelease(... new PGlite() ..., db.close))` via `@effect/vitest`'s
   `it.effect("…", … , { layer: TestPgliteLayer })` — no module mocking, no
   `vi.mock("@electric-sql/pglite")`.
-- **Run-at-the-edge** — the `useEvents` hook is the **only** site calling
+- **Run-at-the-edge** — the `useJournal` hook is the **only** site calling
   `runtime.runPromise(...)`. UI components never import `effect/Effect`. This
   keeps the boundary auditable (`git grep "runPromise"` is the audit) and
   matches the official Effect docs' [Effect vs Promise](https://effect.website/docs/additional-resources/effect-vs-promise/)
@@ -1127,7 +1138,7 @@ Anti-patterns explicitly avoided:
 
 - `Effect.tryPromise` without a `catch` mapper — every wrap supplies a typed
   catch (`(cause): StorageUnavailable => new StorageUnavailable({ cause })`).
-- New `ManagedRuntime` per render — `useMemo(() => makeEventsRuntime(), [])`
+- New `ManagedRuntime` per render — `useMemo(() => makeJournalRuntime(), [])`
   - `useEffect` cleanup is the only construction site.
 - Adapter-style `Effect.gen(function* ($) { yield* $(eff) })` — the adapter
   is deprecated as of TS 5.5+; gear-up uses bare `yield* eff`.
@@ -1143,7 +1154,7 @@ re-list" pattern; bigger plan can opt into live queries later.
 ### `'use client'` + `force-dynamic` + dynamic PGlite import
 
 `'use client'` ensures React hooks run. `force-dynamic` opts the page out of
-static generation so the events list is never serialised stale. PGlite itself
+static generation so the entries list is never serialised stale. PGlite itself
 is loaded via `dynamic(() => import('@electric-sql/pglite'), { ssr: false })`
 inside the store so the WASM never reaches the server. These three guards
 overlap intentionally — defence in depth keeps the layer reusable if any one
@@ -1160,7 +1171,7 @@ escape hatch (e.g., `'use cache'` opt-out via `noStore()` or per-fetch
 
 ## Forward Compatibility for PWA Sync (Future Plan)
 
-The PWA sync plan (separate, future) will sync the events table bidirectionally
+The PWA sync plan (separate, future) will sync the journal_entries table bidirectionally
 with `organiclever-be` via a service worker pull-push loop. The gear-up's
 schema is **forward-compatible** — every new column the sync plan needs is
 additive, so existing call-sites keep working. Specifically, the sync plan is
@@ -1176,51 +1187,51 @@ expected to add:
 
 Backend conflict resolution: the sync plan is expected to use **last-write-wins
 on `updated_at`**, with `client_id` as deterministic tiebreaker. Because
-`updated_at` is already refreshed by every `updateEvent` and `bumpEvent` call
+`updated_at` is already refreshed by every `updateEntry` and `bumpEntry` call
 in the gear-up, and because UUIDs guarantee cross-device collision-free `id`s,
 no gear-up code changes are required for this strategy.
 
-Soft-delete migration: when the sync plan lands, `deleteEvent` becomes:
+Soft-delete migration: when the sync plan lands, `deleteEntry` becomes:
 
 ```sql
-UPDATE events SET deleted_at = now(), updated_at = now(), dirty = true WHERE id = $1;
+UPDATE journal_entries SET deleted_at = now(), updated_at = now(), dirty = true WHERE id = $1;
 ```
 
-…and `listEvents` adds `WHERE deleted_at IS NULL`. The Boolean return value of
-`deleteEvent` continues to mean "did anything change?" so call-sites in the
+…and `listEntries` adds `WHERE deleted_at IS NULL`. The Boolean return value of
+`deleteEntry` continues to mean "did anything change?" so call-sites in the
 React layer keep working without code changes.
 
-Cross-tab consistency: the sync plan can add a `BroadcastChannel('ol_events_v1')`
-listener so a mutation in tab A causes tab B to re-run `listEvents`. Not in
+Cross-tab consistency: the sync plan can add a `BroadcastChannel('ol_journal_v1')`
+listener so a mutation in tab A causes tab B to re-run `listEntries`. Not in
 the gear-up.
 
 ## Future Consumer: Stats (Bigger App Plan)
 
 The bigger plan's Home / Progress screens will read aggregated stats over
-`events`. The schema and SQL dialect are chosen so those queries stay
+`journal_entries`. The schema and SQL dialect are chosen so those queries stay
 declarative inside the database rather than client-side scans:
 
 ```sql
--- Last 7 days, count per kind per day:
+-- Last 7 days, count per name per day:
 SELECT date_trunc('day', created_at) AS day,
-       kind,
+       name,
        count(*) AS n
-FROM events
+FROM journal_entries
 WHERE created_at >= now() - interval '7 days'
-GROUP BY day, kind
-ORDER BY day DESC, kind;
+GROUP BY day, name
+ORDER BY day DESC, name;
 
--- Total minutes per kind for the last 30 days, payload introspection:
-SELECT kind,
+-- Total minutes per name for the last 30 days, payload introspection:
+SELECT name,
        sum((payload->>'durationMins')::int) AS total_mins
-FROM events
+FROM journal_entries
 WHERE created_at >= now() - interval '30 days'
   AND payload ? 'durationMins'
-GROUP BY kind;
+GROUP BY name;
 
--- Streak: consecutive days with >= 1 event:
+-- Streak: consecutive days with >= 1 entry:
 WITH days AS (
-  SELECT DISTINCT date_trunc('day', created_at)::date AS d FROM events
+  SELECT DISTINCT date_trunc('day', created_at)::date AS d FROM journal_entries
 )
 SELECT count(*) AS streak FROM (
   SELECT d, d - row_number() OVER (ORDER BY d)::int AS grp FROM days
@@ -1241,29 +1252,45 @@ and last bump?") can use it without changing the gear-up schema.
 When `2026-04-25__organiclever-web-app/` Phase 1 starts:
 
 1. Replace `src/app/app/page.tsx` body with `<AppRoot />` instead of
-   `<EventsPage />`. The bigger plan's Phase 1 already lists this file as new.
-2. Keep `lib/events/event-store.ts` and have the bigger plan's typed loggers
-   delegate to it (`appendEvents`, `updateEvent`, `bumpEvent`, etc.). The
+   `<JournalPage />`. The bigger plan's Phase 1 already lists this file as new.
+2. Keep `lib/journal/journal-store.ts` and have the bigger plan's typed loggers
+   delegate to it (`appendEntries`, `updateEntry`, `bumpEntry`, etc.). The
    bigger plan's data model already has `LoggedEvent` whose shape (`{ id,
 type, payload, startedAt, finishedAt }`) is one schema migration away from
-   the gear-up's `EventEntry` — the bigger plan adds `started_at` and
-   `finished_at` columns and the typed `EventType` discriminator without
+   the gear-up's `JournalEntry` — the bigger plan adds `started_at` and
+   `finished_at` columns and the typed entry-name discriminator without
    removing the gear-up's `created_at` / `updated_at` semantics.
-3. The provisional UI (`AddEventButton`, `EventFormSheet`, `EventList`,
-   `EventCard`) is no longer mounted on `/app` directly; the bigger plan's
-   `AddEventSheet` (per its Phase 3) owns event entry from then on. The
+3. The provisional UI (`AddEntryButton`, `EntryFormSheet`, `JournalList`,
+   `EntryCard`) is no longer mounted on `/app` directly; the bigger plan's
+   bigger plan's typed entry form (Phase 3) owns entry creation from then on. The
    provisional components can be deleted once the bigger plan's typed loggers
-   land, or they can be repurposed as a "raw event" debug utility if useful.
+   land, or they can be repurposed as a raw-entry debug utility if useful.
 4. The gear-up's seed data is empty; the bigger plan's Phase 0 seed runs
-   `INSERT` statements against the same `events` table during first-load.
+   `INSERT` statements against the same `journal_entries` table during first-load.
+
+## Rollback
+
+If the plan needs to be reverted after merging to `main`:
+
+1. **Remove `/app` route**: delete `apps/organiclever-web/src/app/app/page.tsx`.
+2. **Remove lib directory**: delete `apps/organiclever-web/src/lib/journal/` in full.
+3. **Remove components**: delete `apps/organiclever-web/src/components/app/` files
+   added by this plan (`add-entry-button.tsx`, `entry-form-sheet.tsx`,
+   `journal-list.tsx`, `entry-card.tsx`, `journal-page.tsx` and their tests).
+4. **Remove codegen script**: delete `apps/organiclever-web/scripts/gen-migrations.mjs`.
+5. **Revert `vitest.config.ts`** and `package.json` changes (remove PGlite / effect /
+   @effect/vitest deps; revert npm scripts).
+6. **Clear IndexedDB** (browser only — no server artifact): open DevTools →
+   Application → IndexedDB → delete `/pglite/ol_journal_v1`.
 
 ## Quality Gates
 
-| Gate                                                 | Command                                                  |
-| ---------------------------------------------------- | -------------------------------------------------------- |
-| Typecheck (incl. contract codegen via `codegen` dep) | `nx run organiclever-web:typecheck`                      |
-| Lint                                                 | `nx run organiclever-web:lint`                           |
-| Unit + coverage validation                           | `nx run organiclever-web:test:quick`                     |
-| FE E2E (BDD)                                         | `nx run organiclever-web-e2e:test:e2e`                   |
-| Spec coverage                                        | `nx run organiclever-web:spec-coverage`                  |
-| Affected gate (matches pre-push hook)                | `nx affected -t typecheck lint test:quick spec-coverage` |
+| Gate                                                 | Command                                                                                          |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Typecheck (incl. contract codegen via `codegen` dep) | `nx run organiclever-web:typecheck`                                                              |
+| Lint                                                 | `nx run organiclever-web:lint`                                                                   |
+| Unit + coverage validation                           | `nx run organiclever-web:test:quick`                                                             |
+| Integration tests (PGlite in-memory)                 | `nx run organiclever-web:test:integration` (not in pre-push hook; run separately per convention) |
+| FE E2E (BDD)                                         | `nx run organiclever-web-e2e:test:e2e`                                                           |
+| Spec coverage                                        | `nx run organiclever-web:spec-coverage`                                                          |
+| Affected gate (matches pre-push hook)                | `nx affected -t typecheck lint test:quick spec-coverage`                                         |

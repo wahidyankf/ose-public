@@ -189,19 +189,6 @@ actor.stop();
 
 Transitions define the edges of the state graph: when an event arrives in a given state, a transition fires and moves the machine to a new state. The same event type can trigger different transitions — or be ignored — depending on the current state.
 
-```mermaid
-stateDiagram-v2
-  direction LR
-  [*] --> off
-  off --> on : POWER
-  on --> off : POWER
-
-  classDef blue fill:#0173B2,stroke:#000,color:#fff
-  classDef teal fill:#029E73,stroke:#000,color:#fff
-  class off blue
-  class on teal
-```
-
 ```typescript
 import { createMachine, createActor } from "xstate";
 
@@ -931,6 +918,7 @@ const form = createMachine({
           target: "validating",
           // => on: event routing table
           actions: [() => console.log("[t] submitted")],
+          // => single action logs the submission before the transition completes
         },
       },
       // => transition action fires before entering validating
@@ -944,6 +932,7 @@ const form = createMachine({
         // raise queues PASSED for delivery after all entry actions complete
         raise({ type: "PASSED" }),
         // => PASSED is never seen by external callers — it is machine-internal
+        // => raise is synchronous: PASSED is queued before entry array finishes
       ],
       // => end of array
       on: {
@@ -951,7 +940,7 @@ const form = createMachine({
         PASSED: { target: "submitting" },
         // => PASSED state definition
         FAILED: "editing",
-        // => part of machine configuration
+        // => FAILED: validation failed; return to editing for correction
       },
       // => end of this block
     },
@@ -960,6 +949,7 @@ const form = createMachine({
       // => submitting: sending data
       entry: [() => console.log("[entry] submitting")],
       // => reached automatically — no external event needed
+      // => entry fires because PASSED transition delivered by raise
       on: { DONE: "complete" },
       // => on: event routing table
     },
@@ -1347,10 +1337,12 @@ import { createMachine, createActor, assign, fromPromise } from "xstate";
 // Simulated paginated API; returns 3 items per page
 const fetchPage = async ({ page }: { page: number }) => {
   // => fetchPage: factory function used by fromPromise
+  // => accepts { page } destructured from the input object
   await new Promise((r) => setTimeout(r, 50));
   // => simulates network latency; replace with real fetch() in production
   return Array.from({ length: 3 }, (_, i) => `Item ${(page - 1) * 3 + i + 1}`);
   // => returns synthetic items for page N: Items 1-3, 4-6, 7-9...
+  // => Array.from with length 3 produces exactly 3 items per page call
 };
 // => part of machine configuration
 
@@ -1358,7 +1350,7 @@ const paginated = createMachine({
   // => paginated: defined for use in this example
   id: "paginated",
   initial: "loading",
-  // => id for DevTools; initial: starting state
+  // => id for DevTools; initial: starting state; machine starts fetching page 1 immediately
   context: { page: 1, items: [] as string[] },
   // => context: inline initial extended state
   states: {
@@ -1381,7 +1373,7 @@ const paginated = createMachine({
           target: "loaded",
           // => target: destination state
           actions: assign({ items: ({ event }) => event.output }),
-          // => event.output is string[] returned by fetchPage
+          // => event.output is string[] returned by fetchPage; replaces previous items
         },
         // => end of this block
         onError: { target: "error" },
@@ -1447,6 +1439,7 @@ import { createMachine, createActor, assign, fromPromise } from "xstate";
 // Succeeds for positive input; rejects for negative with a RangeError
 const compute = async (n: number) => {
   // => compute: factory function used by fromPromise
+  // => n: number input whose square is computed on the happy path
   await new Promise((r) => setTimeout(r, 30));
   // => wait for async operation to complete
   if (n < 0) throw new RangeError(`Negative: ${n}`);
@@ -1462,7 +1455,7 @@ const op = createMachine({
   initial: "idle",
   // => id for DevTools; initial: starting state
   context: { input: 5, result: null as number | null, err: null as string | null },
-  // => context: inline initial extended state
+  // => context: three fields — input carries the value to compute; result and err start null
   states: {
     // => states: all valid configurations
     idle: { on: { RUN: "running" } },
@@ -1566,16 +1559,18 @@ stateDiagram-v2
 
 ```typescript
 import { createMachine, createActor, assign } from "xstate";
+// => imports: createMachine to define, createActor to run, assign to update context
 
 // Child machine: self-contained two-question wizard
 // Defines its own states, context, and final state with output
+// => wizard: runs independently; parent invokes it and receives its output
 const wizard = createMachine({
   // => wizard: defined for use in this example
   id: "wizard",
   initial: "q1",
   // => id for DevTools; initial: starting state
   context: { answers: {} as Record<string, string> },
-  // => context: inline initial extended state
+  // => context: answers starts as empty object; accumulates one key per question
   states: {
     // => states: all valid configurations
     q1: {
@@ -1584,10 +1579,12 @@ const wizard = createMachine({
         ANSWER: {
           target: "q2",
           // => on: event routing table
+          // => ANSWER carries a value field; e.g., { type: "ANSWER", value: "Blue" }
           actions: assign({
             answers: ({ context, event }) =>
               // => actions: effects on transition
               ({ ...context.answers, q1: (event as any).value }),
+            // => spread preserves existing answers; adds q1 key with the payload
           }),
         },
       },
@@ -1600,10 +1597,12 @@ const wizard = createMachine({
         ANSWER: {
           target: "done",
           // => on: event routing table
+          // => same ANSWER event type as q1; different target and different key stored
           actions: assign({
             answers: ({ context, event }) =>
               // => actions: effects on transition
               ({ ...context.answers, q2: (event as any).value }),
+            // => spread preserves q1 entry; adds q2 key with the payload
           }),
         },
       },
@@ -1611,25 +1610,30 @@ const wizard = createMachine({
     },
     // => end of this block
     done: {
-      // => done: terminal state
+      // => done: terminal state — wizard has no more questions
       type: "final" as const,
+      // => type: "final" signals machine completion to parent's onDone handler
       // output: value delivered as event.output to the parent's onDone handler
+      // => output function runs once when the final state is entered
       output: ({ context }: { context: Record<string, any> }) => context.answers,
       // => parent receives the complete answers map when the wizard finishes
+      // => context.answers is { q1: "...", q2: "..." } at this point
     },
     // => end of this block
   },
   // => end of this block
 });
+// => wizard: child machine definition complete; inert until invoked by parent
 
 // Parent machine: invokes the wizard and collects its result
+// => parent events (ANSWER) are forwarded to the child wizard actor automatically
 const parent = createMachine({
   // => parent: defined for use in this example
   id: "parent",
   initial: "idle",
   // => id for DevTools; initial: starting state
   context: { result: null as Record<string, string> | null },
-  // => context: inline initial extended state
+  // => context: result starts null; populated when wizard finishes
   states: {
     // => states: all valid configurations
     idle: { on: { START: "running" } },
@@ -1639,13 +1643,15 @@ const parent = createMachine({
       invoke: {
         // => invoke: async op tied to state lifetime
         src: wizard,
-        // => src: actor source factory
+        // => src: the wizard machine; parent creates a child actor from it on entry
+        // => child actor receives events sent to the parent while in running state
         onDone: {
           // => onDone: transition on resolution
           target: "done",
           // => target: destination state
           actions: assign({ result: ({ event }) => event.output }),
           // => event.output is the wizard's output function return value
+          // => type of event.output is Record<string, string> — the answers map
         },
         // => end of this block
       },
@@ -1653,7 +1659,7 @@ const parent = createMachine({
     },
     // => end of this block
     done: {},
-    // => done: terminal state
+    // => done: terminal state; result context field now holds the answers map
   },
   // => end of this block
 });
@@ -1664,7 +1670,7 @@ const actor = createActor(parent);
 actor.start();
 // => start(): actor goes live
 actor.send({ type: "START" });
-// => send event to drive state change
+// => send event to drive state change; parent enters running; wizard child starts
 actor.send({ type: "ANSWER", value: "Blue" } as any);
 // => child: q1 → q2; answers.q1 = 'Blue'
 actor.send({ type: "ANSWER", value: "Large" } as any);
@@ -2073,6 +2079,7 @@ stateDiagram-v2
 
 ```typescript
 import { createMachine, createActor, assign } from "xstate";
+// => imports: assign needed to update isDirty and savedAt context fields
 
 // after: fires automatic transitions when a timer expires
 // XState owns the timer — it starts on state entry, cancels on state exit
@@ -2086,17 +2093,20 @@ const autoSave = createMachine({
   states: {
     // => states: all valid configurations
     idle: {
+      // => idle: clean state; no pending unsaved changes
       on: {
         EDIT: {
           target: "editing",
           // => idle: resting state; waiting for the first event
           actions: assign({ isDirty: true }),
+          // => isDirty: true signals that edits exist and need saving
         },
       },
     },
     // => actions: effects on transition
     editing: {
       // Manual SAVE bypasses the timer and transitions immediately
+      // => SAVE provides an eager path; after 2000 is the lazy auto-save path
       on: { SAVE: "saving" },
       // after: each key is a delay in ms; value is a transition config
       after: {
@@ -2125,7 +2135,7 @@ const autoSave = createMachine({
       ],
       // Short after timer simulates the save round-trip before returning to idle
       after: { 100: "idle" },
-      // => after: timer auto-transitions
+      // => after 100ms the saving state auto-transitions back to idle
     },
     // => end of this block
   },
@@ -2136,7 +2146,7 @@ const autoSave = createMachine({
 const actor = createActor(autoSave);
 // => createActor: live execution context
 actor.start();
-// => start(): actor goes live
+// => start(): actor goes live; machine is in idle with isDirty: false
 actor.send({ type: "EDIT" });
 // => isDirty = true; 2s timer started on editing entry
 
@@ -2163,20 +2173,23 @@ actor.stop();
 
 ```typescript
 import { createMachine, createActor, assign } from "xstate";
+// => createMachine: builds the blueprint; createActor: creates runtime; assign: updates context
 
 // "evaluating" is an ephemeral routing state — machine never stays here long
 // always transitions fire immediately on entry and redirect to the right state
+// => evaluating is entered on start AND on every RESET; always re-routes instantly
 const scoreboard = createMachine({
   // => scoreboard: defined for use in this example
   id: "scoreboard",
   initial: "evaluating",
   // => id for DevTools; initial: starting state
   context: { score: 0 },
-  // => context: inline initial extended state
+  // => context: inline initial extended state; override at createActor time for tests
   states: {
     // => states: all valid configurations
     evaluating: {
       // always: evaluated top-to-bottom immediately on entering this state
+      // => no event required; XState checks guards the moment state is entered
       always: [
         // => always: immediate eventless transitions
         { guard: ({ context }) => context.score >= 90, target: "excellent" },
@@ -2194,7 +2207,7 @@ const scoreboard = createMachine({
       entry: [() => console.log("Excellent!")],
       // => entry: fires on any entry
       on: { RESET: { target: "evaluating", actions: assign({ score: 0 }) } },
-      // => on: event routing table
+      // => RESET re-enters evaluating; always transitions re-route based on new score
     },
     // => end of this block
     passing: {
@@ -2202,7 +2215,7 @@ const scoreboard = createMachine({
       entry: [() => console.log("Passing!")],
       // => entry: fires on any entry
       on: { RESET: { target: "evaluating", actions: assign({ score: 0 }) } },
-      // => on: event routing table
+      // => RESET re-enters evaluating; always transitions re-route based on new score
     },
     // => end of this block
     failing: {
@@ -2222,6 +2235,7 @@ const a1 = createActor(
   createMachine(
     // => createActor: live execution context
     { ...scoreboard.config, context: { score: 45 } },
+    // => spread base config then override context.score to 45 for this test
   ),
 );
 // => spread base config; override context for this test
@@ -2235,6 +2249,7 @@ const a2 = createActor(
   createMachine(
     // => createActor: live execution context
     { ...scoreboard.config, context: { score: 95 } },
+    // => spread base config then override context.score to 95 for this test
   ),
 );
 // => spread base config; override context for this test

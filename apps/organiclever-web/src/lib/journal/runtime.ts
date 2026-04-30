@@ -18,9 +18,10 @@ export const PgliteLive: Layer.Layer<PgliteService, StorageUnavailable> = Layer.
         const { PGlite } = await import("@electric-sql/pglite");
         const db = new PGlite(`idb://${JOURNAL_STORE_DATA_DIR}`);
         await runMigrations(db);
-        if (process.env.NODE_ENV !== "production") {
-          (globalThis as { __ol_db?: PGlite }).__ol_db = db;
-        }
+        // Expose handle on globalThis for E2E test assertions — safe because
+        // PGlite is client-side only (IndexedDB) and users already have full
+        // browser access to the underlying data regardless of this handle.
+        (globalThis as { __ol_db?: PGlite }).__ol_db = db;
         return { db };
       },
       catch: (cause): StorageUnavailable => new StorageUnavailable({ cause }),

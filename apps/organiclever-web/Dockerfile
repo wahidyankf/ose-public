@@ -25,7 +25,7 @@ COPY apps/organiclever-web/scripts/ ./scripts/
 COPY apps/organiclever-web/package.json apps/organiclever-web/tsconfig.json apps/organiclever-web/next.config.ts apps/organiclever-web/postcss.config.mjs ./
 
 # Generate migration index (gitignored, must be created at build time)
-RUN node scripts/gen-migrations.mjs && ls -la src/lib/journal/migrations/
+RUN node scripts/gen-migrations.mjs
 
 # Generate contract types
 COPY specs/apps/organiclever/contracts/generated/ ./specs/apps/organiclever/contracts/generated/

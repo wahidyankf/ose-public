@@ -364,8 +364,13 @@ starts after this gear-up archives.
 
 ### 1.2 Integration test files
 
-- [ ] Create `apps/organiclever-web/src/lib/journal/journal-store.int.test.ts`:
-  - [ ] `beforeEach`: `db = new PGlite()` (in-memory, no `dataDir`); `await runMigrations(db)`
+- [ ] Create `apps/organiclever-web/src/lib/journal/journal-store.int.test.ts`
+      using `@effect/vitest`'s `it.effect("...", ..., { layer: TestPgliteLayer })`
+      where `TestPgliteLayer = Layer.scoped(PgliteService, Effect.acquireRelease(
+    Effect.promise(async () => { const db = new PGlite(); await runMigrations(db); return { db }; }),
+    ({ db }) => Effect.promise(() => db.close())
+  ))` — each `it.effect` test receives a fresh isolated Effect runtime with an
+      empty in-memory database; no shared state between tests:
   - [ ] **Migration idempotency**: second `runMigrations(db)` is a no-op
   - [ ] **Batch atomicity**: `appendEntries([a, b, c])` returns 3 entries with
         identical `createdAt`; storage rowcount is 3

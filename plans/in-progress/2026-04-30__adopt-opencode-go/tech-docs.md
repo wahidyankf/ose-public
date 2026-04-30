@@ -58,6 +58,7 @@ For the small model, `glm-5` (Zhipu AI) is selected because:
 **Function**: `ConvertModel()` (lines 111–125).
 
 Current:
+
 ```go
 func ConvertModel(claudeModel string) string {
     model := strings.TrimSpace(claudeModel)
@@ -73,6 +74,7 @@ func ConvertModel(claudeModel string) string {
 ```
 
 Target:
+
 ```go
 func ConvertModel(claudeModel string) string {
     model := strings.TrimSpace(claudeModel)
@@ -93,11 +95,13 @@ all map to the large model. The `haiku` case is the only distinct branch.
 **Struct comment**: `OpenCodeAgent.Model` field (line 23).
 
 Current:
+
 ```go
 Model string `yaml:"model"` // "zai-coding-plan/glm-5.1" | "zai-coding-plan/glm-5-turbo"
 ```
 
 Target:
+
 ```go
 Model string `yaml:"model"` // "opencode-go/minimax-m2.7" | "opencode-go/glm-5"
 ```
@@ -118,6 +122,7 @@ OpenCode Go IDs.
 **`TestConvertModel`** table test cases (lines ~173–178):
 
 Current:
+
 ```go
 {"sonnet",    "sonnet",         "zai-coding-plan/glm-5.1"},
 {"opus",      "opus",           "zai-coding-plan/glm-5.1"},
@@ -128,6 +133,7 @@ Current:
 ```
 
 Target:
+
 ```go
 {"sonnet",    "sonnet",         "opencode-go/minimax-m2.7"},
 {"opus",      "opus",           "opencode-go/minimax-m2.7"},
@@ -169,11 +175,13 @@ plan/glm-5.1"`) must be updated to reference `"opencode-go/minimax-m2.7"`.
 **Constant rename + regex update** (line 85):
 
 Current:
+
 ```go
 stepCorrespondingOpenCodeAgentUsesZaiGlmModel = `^the corresponding \.opencode/ agent uses the "zai-coding-plan/glm-5\.1" model identifier$`
 ```
 
 Target:
+
 ```go
 stepCorrespondingOpenCodeAgentUsesOpenCodeGoModel = `^the corresponding \.opencode/ agent uses the "opencode-go/minimax-m2\.7" model identifier$`
 ```
@@ -263,11 +271,11 @@ Added: `provider.opencode-go` block with env-var API key.
 
 **MCP capability coverage after removal**:
 
-| Capability | Before (Z.ai) | After |
-| ---------- | ------------- | ----- |
-| Web search | `web-search-prime` | `perplexity` (already wired) |
-| Web reading | `web-reader`, `zread` | `playwright` (already wired) |
-| Nx workspace | `nx-mcp` | `nx-mcp` (unchanged) |
+| Capability   | Before (Z.ai)         | After                        |
+| ------------ | --------------------- | ---------------------------- |
+| Web search   | `web-search-prime`    | `perplexity` (already wired) |
+| Web reading  | `web-reader`, `zread` | `playwright` (already wired) |
+| Nx workspace | `nx-mcp`              | `nx-mcp` (unchanged)         |
 
 ### 13. `governance/development/agents/model-selection.md`
 
@@ -285,11 +293,11 @@ OpenCode Go model IDs.
 
 ### Model ID Mapping
 
-| Claude Code              | OpenCode Go                     | Capability notes                                          |
-| ------------------------ | ------------------------------- | --------------------------------------------------------- |
-| omit (opus-tier inherit) | `opencode-go/minimax-m2.7`      | MiniMax MoE; SWE-Bench 80.2%; highest in OpenCode Go      |
-| `model: sonnet`          | `opencode-go/minimax-m2.7`      | Same model as opus-tier (no separate sonnet tier)         |
-| `model: haiku`           | `opencode-go/glm-5`             | Zhipu GLM lighter variant; fast/cheap for mechanical work |
+| Claude Code              | OpenCode Go                | Capability notes                                          |
+| ------------------------ | -------------------------- | --------------------------------------------------------- |
+| omit (opus-tier inherit) | `opencode-go/minimax-m2.7` | MiniMax MoE; SWE-Bench 80.2%; highest in OpenCode Go      |
+| `model: sonnet`          | `opencode-go/minimax-m2.7` | Same model as opus-tier (no separate sonnet tier)         |
+| `model: haiku`           | `opencode-go/glm-5`        | Zhipu GLM lighter variant; fast/cheap for mechanical work |
 
 ### 3-to-2 Tier Collapse
 
@@ -334,11 +342,14 @@ To use OpenCode Go locally:
 1. Subscribe at [opencode.ai/go](https://opencode.ai/go)
 2. Copy the API key from the OpenCode console
 3. Set the environment variable:
+
    ```bash
    export OPENCODE_GO_API_KEY="<your-key>"
    ```
+
    Add to `~/.zshrc` or `~/.bashrc` for persistence. Do NOT add to `.env` in
    the repository — API keys are never committed.
+
 4. Open OpenCode: run `/connect` in the TUI, select "OpenCode Go", paste the key
    (this populates the key in the OpenCode session; alternatively the env var
    is sufficient if `opencode.json` uses `{env:OPENCODE_GO_API_KEY}`)
@@ -347,10 +358,10 @@ To use OpenCode Go locally:
 
 ## Risk Assessment
 
-| Risk | Likelihood | Mitigation |
-| ---- | ---------- | ---------- |
-| Model slug differs from expected | Medium | Verify via `/models` before code changes |
-| OpenCode Go beta service outage | Low | OpenCode Go has US/EU/SG PoPs; fallback to Claude Code |
-| MiniMax M2.7 slower than GLM-5.1 | Low | Perplexity + Playwright are local/independent of model |
-| Perplexity MCP doesn't start | Low | Already configured; test before committing |
-| Test count changes with rename | Medium | Search all usages of old step constant before rename |
+| Risk                             | Likelihood | Mitigation                                             |
+| -------------------------------- | ---------- | ------------------------------------------------------ |
+| Model slug differs from expected | Medium     | Verify via `/models` before code changes               |
+| OpenCode Go beta service outage  | Low        | OpenCode Go has US/EU/SG PoPs; fallback to Claude Code |
+| MiniMax M2.7 slower than GLM-5.1 | Low        | Perplexity + Playwright are local/independent of model |
+| Perplexity MCP doesn't start     | Low        | Already configured; test before committing             |
+| Test count changes with rename   | Medium     | Search all usages of old step constant before rename   |

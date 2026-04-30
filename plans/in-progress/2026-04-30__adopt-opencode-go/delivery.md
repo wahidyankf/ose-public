@@ -21,9 +21,11 @@ complete first.
 ## Phase 0 — Prerequisites and Slug Verification (Manual, No Code)
 
 - [ ] Confirm `OPENCODE_GO_API_KEY` is set in the local shell:
+
   ```bash
   echo $OPENCODE_GO_API_KEY   # must print a non-empty string
   ```
+
 - [ ] Open the OpenCode TUI and run `/models` to see the full OpenCode Go model list
 - [ ] Confirm the large model slug: verify `minimax-m2.7` appears exactly as listed
   - If the slug is different (e.g., `minimax-m2.7-pro`, `minimax-v2.7`), record
@@ -52,14 +54,14 @@ complete first.
 
 - [ ] Open `apps/rhino-cli/internal/agents/types.go`
 - [ ] Line 23: change the inline comment from
-  `// "zai-coding-plan/glm-5.1" | "zai-coding-plan/glm-5-turbo"` to
-  `// "opencode-go/minimax-m2.7" | "opencode-go/glm-5"`
+      `// "zai-coding-plan/glm-5.1" | "zai-coding-plan/glm-5-turbo"` to
+      `// "opencode-go/minimax-m2.7" | "opencode-go/glm-5"`
 
 ### 1.3 Update comment in agents_sync.go
 
 - [ ] Open `apps/rhino-cli/cmd/agents_sync.go`
 - [ ] Line 25: update the model-mapping comment to reference OpenCode Go IDs
-  instead of `zai-coding-plan/*`
+      instead of `zai-coding-plan/*`
 
 ### 1.4 Update comment in agents_validate_sync.go
 
@@ -69,6 +71,7 @@ complete first.
 ### 1.5 Commit source changes
 
 - [ ] Stage and commit:
+
   ```
   feat(rhino-cli): switch ConvertModel to opencode-go provider IDs
   ```
@@ -115,7 +118,7 @@ complete first.
   - Old: `stepCorrespondingOpenCodeAgentUsesZaiGlmModel`
   - New: `stepCorrespondingOpenCodeAgentUsesOpenCodeGoModel`
 - [ ] Update the regex value from
-  `"zai-coding-plan/glm-5\.1"` to `"opencode-go/minimax-m2\.7"`
+      `"zai-coding-plan/glm-5\.1"` to `"opencode-go/minimax-m2\.7"`
 
 ### 2.5 Update agents_sync.integration_test.go
 
@@ -140,28 +143,39 @@ complete first.
 ### 2.8 Verify rhino-cli tests pass
 
 - [ ] Build rhino-cli:
+
   ```bash
   nx run rhino-cli:build
   ```
+
 - [ ] Run unit tests:
+
   ```bash
   nx run rhino-cli:test:unit
   ```
+
   Expect: all pass, ≥90% coverage
+
 - [ ] Run integration tests:
+
   ```bash
   nx run rhino-cli:test:integration
   ```
+
   Expect: all pass
+
 - [ ] Run full quick gate:
+
   ```bash
   nx run rhino-cli:test:quick
   ```
+
   Expect: green
 
 ### 2.9 Commit test changes
 
 - [ ] Stage and commit:
+
   ```
   test(rhino-cli): update model ID expectations to opencode-go
   ```
@@ -178,6 +192,7 @@ complete first.
 - [ ] Change `"small_model"` from `"zai-coding-plan/glm-5-turbo"` to
       `"opencode-go/glm-5"` (or verified slug)
 - [ ] Add a `"provider"` block after `"small_model"`:
+
   ```json
   "provider": {
     "opencode-go": {
@@ -187,45 +202,57 @@ complete first.
     }
   }
   ```
+
 - [ ] In the `"mcp"` block, **remove** these four entries:
   - `"zai-mcp-server"`
   - `"web-search-prime"`
   - `"web-reader"`
   - `"zread"`
 - [ ] Verify the remaining `"mcp"` block contains exactly:
-  `"perplexity"`, `"nx-mcp"`, `"playwright"`
+      `"perplexity"`, `"nx-mcp"`, `"playwright"`
 - [ ] Validate JSON syntax: `cat .opencode/opencode.json | python3 -m json.tool`
 
 ### 3.2 Regenerate .opencode/agent/ files
 
 - [ ] Run the sync command:
+
   ```bash
   npm run sync:claude-to-opencode
   ```
+
   Expect: success with count of agents converted, 0 failures
+
 - [ ] Spot-check a few generated agent files to confirm no `zai-coding-plan` IDs:
+
   ```bash
   grep -r "zai-coding" .opencode/agent/ | head -5
   ```
+
   Expect: no output (zero matches)
+
 - [ ] Spot-check haiku-tier agents contain the small model:
+
   ```bash
   grep "model:" .opencode/agent/apps-ayokoding-web-deployer.md
   ```
+
   Expect: `model: opencode-go/glm-5`
 
 ### 3.3 Validate config end-to-end
 
 - [ ] Run the full config validation:
+
   ```bash
   npm run validate:config
   ```
+
   Expect: exits 0 (`validate:claude` ✓, `sync:claude-to-opencode` ✓,
   `validate:opencode` ✓)
 
 ### 3.4 Commit config and regenerated agent files
 
 - [ ] Stage and commit:
+
   ```
   chore(opencode): switch to opencode-go provider; remove Z.ai MCPs
   ```
@@ -241,6 +268,7 @@ complete first.
 - [ ] Ensure the table contains three rows: omit → `opencode-go/minimax-m2.7`,
       sonnet → `opencode-go/minimax-m2.7`, haiku → `opencode-go/glm-5`
 - [ ] Run markdown linting:
+
   ```bash
   npm run lint:md
   ```
@@ -248,6 +276,7 @@ complete first.
 ### 3.6 Commit documentation
 
 - [ ] Stage and commit:
+
   ```
   docs(model-selection): update OpenCode Go equivalents table
   ```
@@ -259,17 +288,21 @@ complete first.
 ### 4.1 Pre-push quality gate
 
 - [ ] Run the affected targets to warm the cache:
+
   ```bash
   nx affected -t typecheck lint test:quick
   ```
+
   Expect: all green (rhino-cli, and any other affected projects)
 
 ### 4.2 Push to origin main
 
 - [ ] Push the commits:
+
   ```bash
   rtk git push origin main
   ```
+
   - Pre-push hook runs `nx affected -t typecheck lint test:quick spec-coverage`
     automatically
   - If the hook times out, re-run the affected targets manually first, then push
@@ -294,14 +327,18 @@ complete first.
 
 - [ ] After CI passes and optional smoke-test is complete, move the plan folder
       to `plans/done/`:
+
   ```bash
   rtk git mv plans/in-progress/2026-04-30__adopt-opencode-go \
              plans/done/2026-04-30__adopt-opencode-go
   ```
+
 - [ ] Commit the move:
+
   ```
   chore(plans): archive adopt-opencode-go plan
   ```
+
 - [ ] Push the archival commit
 
 ---

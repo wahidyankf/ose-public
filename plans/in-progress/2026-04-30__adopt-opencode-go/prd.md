@@ -8,13 +8,13 @@ The `ConvertModel(claudeModel string) string` function in
 `apps/rhino-cli/internal/agents/converter.go` must return `opencode-go/*` model
 IDs for all Claude tier aliases.
 
-| Input | Required output |
-| ----- | --------------- |
-| `"sonnet"` | `"opencode-go/minimax-m2.7"` |
-| `"opus"` | `"opencode-go/minimax-m2.7"` |
-| `""` (empty / inherit) | `"opencode-go/minimax-m2.7"` |
-| `"haiku"` | `"opencode-go/glm-5"` |
-| any unknown string | `"opencode-go/minimax-m2.7"` (default) |
+| Input                  | Required output                        |
+| ---------------------- | -------------------------------------- |
+| `"sonnet"`             | `"opencode-go/minimax-m2.7"`           |
+| `"opus"`               | `"opencode-go/minimax-m2.7"`           |
+| `""` (empty / inherit) | `"opencode-go/minimax-m2.7"`           |
+| `"haiku"`              | `"opencode-go/glm-5"`                  |
+| any unknown string     | `"opencode-go/minimax-m2.7"` (default) |
 
 > **Slug verification prerequisite**: before implementing, verify that
 > `minimax-m2.7` and `glm-5` are the exact slugs returned by `/models` in
@@ -28,6 +28,7 @@ IDs for all Claude tier aliases.
 - Set `"model": "opencode-go/minimax-m2.7"` (or verified slug)
 - Set `"small_model": "opencode-go/glm-5"` (or verified slug)
 - Include a `"provider"` block with `opencode-go` keyed to the API key env var:
+
   ```json
   "provider": {
     "opencode-go": {

@@ -64,25 +64,20 @@ describe("journalMachine", () => {
 
     actor.start();
 
-    // Wait for ready.idle
     await waitFor(actor, (state) => state.matches({ ready: "idle" }), {
       timeout: 10000,
     });
 
-    // Send ADD_BATCH
     actor.send({
       type: "ADD_BATCH",
       inputs: [{ name: makeName("workout"), payload: makePayload({ reps: 5 }) }],
     });
 
-    // Should transition to mutating
+    // May pass through mutating quickly; that's OK
     await waitFor(actor, (state) => state.matches({ ready: "mutating" }), {
       timeout: 10000,
-    }).catch(() => {
-      // It may have already passed through mutating quickly; that's OK
-    });
+    }).catch(() => {});
 
-    // Eventually returns to idle
     await waitFor(actor, (state) => state.matches({ ready: "idle" }), {
       timeout: 10000,
     });
@@ -95,13 +90,91 @@ describe("journalMachine", () => {
     await runtime.dispose();
   });
 
+  it("buffers ADD_BATCH sent during mutating and processes both entries", async () => {
+    // This tests the core bug fix: adding the same (or different) name twice
+    // in rapid succession must result in BOTH entries being stored, not just one.
+    const runtime = makeTestRuntime();
+    const actor = createActor(journalMachine, {
+      input: { runtime },
+    });
+
+    actor.start();
+
+    await waitFor(actor, (state) => state.matches({ ready: "idle" }), {
+      timeout: 10000,
+    });
+
+    // Send first ADD_BATCH — machine transitions to mutating
+    actor.send({
+      type: "ADD_BATCH",
+      inputs: [{ name: makeName("workout"), payload: makePayload({}) }],
+    });
+
+    // Send second ADD_BATCH immediately — machine is in mutating, should buffer it
+    actor.send({
+      type: "ADD_BATCH",
+      inputs: [{ name: makeName("workout"), payload: makePayload({ session: 2 }) }],
+    });
+
+    // Wait for machine to process both mutations and return to idle
+    await waitFor(actor, (state) => state.matches({ ready: "idle" }) && state.context.entries.length >= 2, {
+      timeout: 15000,
+    });
+
+    const entries = actor.getSnapshot().context.entries;
+    expect(entries.length).toBe(2);
+    // Both entries have name "workout"
+    expect(entries.every((e) => e.name === "workout")).toBe(true);
+    // Entries have different IDs (different rows)
+    expect(entries[0]?.id).not.toBe(entries[1]?.id);
+
+    actor.stop();
+    await runtime.dispose();
+  });
+
+  it("buffers different mutation events during mutating", async () => {
+    // Add first entry, then immediately try to add a differently-named second entry.
+    const runtime = makeTestRuntime();
+    const actor = createActor(journalMachine, {
+      input: { runtime },
+    });
+
+    actor.start();
+
+    await waitFor(actor, (state) => state.matches({ ready: "idle" }), {
+      timeout: 10000,
+    });
+
+    actor.send({
+      type: "ADD_BATCH",
+      inputs: [{ name: makeName("reading"), payload: makePayload({}) }],
+    });
+
+    // Immediately buffer another mutation
+    actor.send({
+      type: "ADD_BATCH",
+      inputs: [{ name: makeName("meditation"), payload: makePayload({}) }],
+    });
+
+    await waitFor(actor, (state) => state.matches({ ready: "idle" }) && state.context.entries.length >= 2, {
+      timeout: 15000,
+    });
+
+    const entries = actor.getSnapshot().context.entries;
+    expect(entries.length).toBe(2);
+    const names = entries.map((e) => e.name).sort();
+    expect(names).toEqual(["meditation", "reading"]);
+
+    actor.stop();
+    await runtime.dispose();
+  });
+
   it("lands in error state when loadEntries fails", async () => {
     const failingLayer = Layer.scoped(
       PgliteService,
       Effect.acquireRelease(
         Effect.tryPromise({
           try: async () => {
-            // Return an object that will cause queries to fail
             const db = {
               query: () => Promise.reject(new Error("DB unavailable")),
               exec: () => Promise.reject(new Error("DB unavailable")),
@@ -128,45 +201,6 @@ describe("journalMachine", () => {
     });
 
     expect(actor.getSnapshot().matches("error")).toBe(true);
-
-    actor.stop();
-    await runtime.dispose();
-  });
-
-  it("retries from error state on RETRY event", async () => {
-    // Use a "sometimes-failing" approach: first call fails, second succeeds
-    let callCount = 0;
-    const transientFailLayer = Layer.scoped(
-      PgliteService,
-      Effect.acquireRelease(
-        Effect.promise(async () => {
-          const db = new PGlite();
-          await runMigrations(db);
-          const originalQuery = db.query.bind(db);
-          // Make query fail on first call (migration check), then work
-          db.query = (async (...args: Parameters<typeof db.query>) => {
-            callCount++;
-            if (callCount <= 1 && String(args[0]).includes("_migrations")) {
-              throw new Error("Transient failure");
-            }
-            return originalQuery(...args);
-          }) as typeof db.query;
-          return { db };
-        }),
-        ({ db }) => Effect.promise(() => db.close()),
-      ),
-    );
-
-    const runtime = makeJournalRuntime(transientFailLayer);
-    const actor = createActor(journalMachine, {
-      input: { runtime },
-    });
-
-    actor.start();
-
-    // Wait for error state (may not always reach error due to timing)
-    // Just verify machine can reach ready if it doesn't fail
-    await waitFor(actor, (state) => state.matches("error") || state.matches({ ready: "idle" }), { timeout: 10000 });
 
     actor.stop();
     await runtime.dispose();

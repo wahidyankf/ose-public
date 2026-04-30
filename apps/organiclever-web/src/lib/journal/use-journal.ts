@@ -34,11 +34,11 @@ export function useJournal(runtime: JournalRuntime): UseJournalReturn {
     ? "loading"
     : state.matches("error")
       ? "error"
-      : state.matches({ ready: "mutating" }) || state.matches({ ready: "reloading" })
+      : state.matches({ ready: "mutating" })
         ? "mutating"
         : "ready";
 
-  const isMutating = state.matches({ ready: "mutating" }) || state.matches({ ready: "reloading" });
+  const isMutating = state.matches({ ready: "mutating" });
 
   return {
     entries: state.context.entries,

@@ -85,21 +85,26 @@ starts after this gear-up archives.
 - [ ] Commit the config change separately:
       `chore(organiclever-web): widen vitest projects + drop src/lib coverage exclude`
 
-### 0.1 Install PGlite + Effect
+### 0.1 Install PGlite + Effect + XState
 
-- [ ] From `ose-public` root: `cd apps/organiclever-web && npm install @electric-sql/pglite effect --save`
-      (let npm resolve the latest 0.x for PGlite and the latest 3.x for `effect` —
-      pin to 3.x with a caret range; v4 is still beta as of April 2026)
+- [ ] From `ose-public` root: `cd apps/organiclever-web && npm install @electric-sql/pglite effect xstate @xstate/react --save`
+      (let npm resolve: latest 0.x for PGlite; latest 3.x for `effect` — pin to 3.x
+      with a caret range, v4 is still beta as of April 2026; latest 5.x for `xstate`
+      and `@xstate/react` — both must be v5.x to ensure API compatibility)
 - [ ] `cd apps/organiclever-web && npm install -D @effect/vitest`
       (Layer-swap test helper; devDep only)
-- [ ] Confirm licenses: `npm view @electric-sql/pglite license` returns `Apache-2.0`,
-      `npm view effect license` returns `MIT`, `npm view @effect/vitest license` returns `MIT`
-- [ ] Verify packages installed: `npm ls @electric-sql/pglite effect @effect/vitest`
+- [ ] Confirm licenses:
+  - [ ] `npm view @electric-sql/pglite license` returns `Apache-2.0`
+  - [ ] `npm view effect license` returns `MIT`
+  - [ ] `npm view xstate license` returns `MIT`
+  - [ ] `npm view @xstate/react license` returns `MIT`
+  - [ ] `npm view @effect/vitest license` returns `MIT`
+- [ ] Verify packages installed: `npm ls @electric-sql/pglite effect xstate @xstate/react @effect/vitest`
       from inside `apps/organiclever-web/`
 - [ ] Inspect bundle impact: `nx build organiclever-web --analyze` (or temporarily
       add `withBundleAnalyzer` to `next.config.ts`); confirm the `/app` page chunk
-      contains `@electric-sql/pglite` and `effect` and the landing-page chunk
-      contains neither
+      contains `@electric-sql/pglite`, `effect`, and `xstate` and the landing-page
+      chunk contains none of them
 - [ ] **No-ORM guardrail**: do NOT install Prisma, Drizzle ORM mode, TypeORM,
       MikroORM, Sequelize, Objection.js, or any other full-fat ORM at any phase
       of this plan. ORMs are forbidden in the persistence layer per the
@@ -113,7 +118,8 @@ starts after this gear-up archives.
       grep gate in Phase 5: `git grep -nE "Effect\.tryPromise\([^{]" apps/organiclever-web/src`
       must return zero matches. Same rule for `runPromise` audit:
       `git grep -n "runPromise" apps/organiclever-web/src` must return only
-      `use-journal.ts` and test files
+      the two actor files (`journal-machine.ts`) and test files — never UI
+      components or page files
 
 ### 0.2 Schema, branded ids, and types
 
@@ -257,27 +263,70 @@ await db.transaction(async tx => {
       using `@effect/vitest`'s `it.effect("...", ..., { layer: TestPgliteLayer })`
       where `TestPgliteLayer = Layer.scoped(PgliteService, Effect.acquireRelease(in-memory PGlite + migrations, db.close))`
 
-### 0.7 useJournal hook (`ManagedRuntime` bridge)
+### 0.7a XState machine (`journal-machine.ts`)
+
+- [ ] Create `apps/organiclever-web/src/lib/journal/journal-machine.ts` per `tech-docs.md`:
+  - [ ] `JournalContext` interface: `{ runtime, entries, initError, mutationError }`
+  - [ ] `JournalEvent` union: `ADD_BATCH | EDIT | DELETE | BUMP | CLEAR`
+  - [ ] `JournalInput` interface: `{ runtime: JournalRuntime }`
+  - [ ] `loadEntries` actor: `fromPromise(({ input }) => input.runtime.runPromise(listEntries()))`
+  - [ ] `runMutation` actor: `fromPromise` that dispatches on `event.type` to the
+        correct store Effect, then re-runs `listEntries` — returns updated list on
+        success, rejects with typed `StoreError` on failure
+  - [ ] Machine states:
+    - [ ] `initializing` — invokes `loadEntries`; on done → `ready` (assign entries);
+          on error → `error` (assign `initError`)
+    - [ ] `ready` — compound state, initial substate `idle`
+      - [ ] `idle` — accepts all five mutation events, transitions to `mutating`
+      - [ ] `mutating` — `entry` action clears `mutationError` (prevents stale error
+            contaminating next Promise resolution); invokes `runMutation` with
+            `{ runtime, event }` as input; on done → `idle` (assign entries,
+            clear `mutationError`); on error → `idle` (assign `mutationError`,
+            entries unchanged — non-fatal)
+    - [ ] `error` — terminal; user must hard-reload
+  - [ ] `context` initialiser: `({ input }) => ({ runtime: input.runtime, entries: [], initError: null, mutationError: null })`
+- [ ] Add `apps/organiclever-web/src/lib/journal/journal-machine.unit.test.ts`:
+  - [ ] Create actor with in-memory test runtime (Layer-swapped `PgliteService`);
+        assert machine starts in `initializing`
+  - [ ] `waitFor(actor, s => s.matches("ready"))` — assert `entries` populated and
+        `initError` null after `loadEntries` resolves
+  - [ ] Send `ADD_BATCH` event — assert machine transitions to `ready.mutating`,
+        then back to `ready.idle` with updated entries
+  - [ ] Force `runMutation` to reject (e.g., inject broken runtime) — assert machine
+        returns to `ready.idle` with `mutationError` set and entries unchanged
+  - [ ] Assert `entry` action clears stale `mutationError`: after one failed
+        mutation, send another event and verify `mutationError` is null while in
+        `mutating` (before actor settles)
+  - [ ] Force `loadEntries` to reject — assert machine lands in `error` with
+        `initError` set
+
+### 0.7b `use-journal.ts` wrapper (`useActorRef` + `useSelector`)
 
 - [ ] Create `apps/organiclever-web/src/lib/journal/use-journal.ts` per `tech-docs.md`:
-  - [ ] `JournalState` discriminated union (`idle | loading | ready | error` with
-        `cause: StoreError` on error)
+  - [ ] `JournalState` derived union:
+        `{ status: "loading" } | { status: "ready"; entries; isMutating; mutationError } | { status: "error"; cause }`
   - [ ] `const runtime = useMemo(() => makeJournalRuntime(), [])` (one runtime per mount)
   - [ ] `useEffect(() => () => runtime.dispose(), [runtime])` (Layer finalisers
-        close PGlite on unmount)
-  - [ ] On mount: set `state = { status: "loading" }` → `runtime.runPromise(listEntries())`
-        → `{ status: "ready", entries }` on resolve, `{ status: "error", cause }` on reject
-        (use `Effect.either` if you want narrowed handling without `try/catch`)
-  - [ ] `addBatch(drafts)`, `edit(id, patch)`, `remove(id)`, `bump(id)`, `clear()`:
-        each runs the corresponding store effect via `runtime.runPromise`, then
-        re-runs `listEntries` to refresh `state.entries`. Mutation errors throw
-        from `runPromise` so the form sheet can `.catch(cause => …)` and surface
-        per-call inline errors without poisoning global state
-  - [ ] Return `{ state, addBatch, edit, remove, bump, clear }` (memoised)
+        close PGlite on unmount — runs AFTER React stops the actor)
+  - [ ] `useActorRef(journalMachine, { input: { runtime } })` to start the machine
+  - [ ] `useSelector(actorRef, snapshot => ...)` to derive `JournalState`:
+        `initializing` → `loading`; `error` → `error` (cause = `initError`);
+        `ready` → `ready` (entries, `isMutating = matches({ ready: "mutating" })`,
+        `mutationError`)
+  - [ ] `sendMutation(event)` helper: subscribes to actor, sends event, resolves
+        when `ready.idle` reached after `seenMutating = true`, rejects when
+        `context.mutationError` is non-null at that point
+  - [ ] Return `{ state, addBatch, edit, remove, bump, clear }` — each mutation
+        method calls `sendMutation` with the appropriate typed event
 - [ ] Add `apps/organiclever-web/src/lib/journal/use-journal.unit.test.tsx`
-      (RTL + `@effect/vitest`): renders harness with test Layer; asserts
-      `state.status` transitions; asserts `state.cause._tag` narrowing on
-      forced `StorageUnavailable`
+      (RTL + in-memory test runtime):
+  - [ ] Renders with test layer; asserts `state.status === "loading"` then
+        transitions to `"ready"` after actor settles
+  - [ ] `addBatch(drafts)` Promise resolves; `state.entries` updated
+  - [ ] `addBatch` Promise rejects with typed `StoreError` when mutation actor fails;
+        `state.status` stays `"ready"` (non-fatal)
+  - [ ] `state.isMutating` is `true` while actor in flight, `false` after
+  - [ ] Force init failure → `state.status === "error"`, `state.cause._tag === "StorageUnavailable"`
 
 ### 0.8 Time formatter
 

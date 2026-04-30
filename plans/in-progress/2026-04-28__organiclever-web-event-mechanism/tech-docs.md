@@ -2,13 +2,13 @@
 
 ## Route Architecture
 
-```text
-/                       → existing landing page (untouched)
-/system/status/be       → existing backend status (untouched)
-/app                    → NEW — apps/organiclever-web/src/app/app/page.tsx
-                          'use client'
-                          export const dynamic = 'force-dynamic'
-                          mounts <JournalPage />
+```mermaid
+flowchart LR
+    Browser([Browser])
+
+    Browser -->|GET /| Landing["/ — landing page\n(existing, untouched)"]
+    Browser -->|GET /system/status/be| Status["/system/status/be\n(existing, untouched)"]
+    Browser -->|GET /app 🆕| AppPage["/app\napp/page.tsx\n'use client' + force-dynamic\nmounts &lt;JournalPage /&gt;"]
 ```
 
 `/app/page.tsx` is **provisional** for this gear-up. The bigger plan
@@ -52,7 +52,9 @@ apps/organiclever-web/src/
         ├── journal-store.ts                    ← Phase 0 (Effect-returning)
         ├── journal-store.unit.test.ts          ← Phase 0
         ├── journal-store.int.test.ts           ← Phase 1
-        ├── use-journal.ts                     ← Phase 0 (ManagedRuntime bridge)
+        ├── journal-machine.ts                 ← Phase 0 (XState v5 machine)
+        ├── journal-machine.unit.test.ts       ← Phase 0
+        ├── use-journal.ts                     ← Phase 0 (thin XState wrapper)
         ├── use-journal.unit.test.tsx          ← Phase 0
         ├── format-relative-time.ts           ← Phase 0
         └── format-relative-time.unit.test.ts ← Phase 0
@@ -676,69 +678,309 @@ is the property the future PWA sync relies on.
 `InvalidPayload` rather than silently widening to `unknown` — keeping the
 return type honestly `JournalEntry`, not `JournalEntry & { payload: unknown }`.
 
-## React Hook (`ManagedRuntime` bridge)
+## XState Machine (`journal-machine` + `use-journal` wrapper)
+
+The gear-up uses **XState v5** to own all application-level state transitions
+and **Effect.ts** to own all typed IO at the store layer. The two libraries
+integrate at a single boundary: XState `fromPromise` actors call
+`runtime.runPromise(storeEffect)`.
+
+### Machine state graph
+
+```mermaid
+stateDiagram-v2
+    [*] --> initializing
+
+    initializing --> ready : load success\n(assign entries)
+    initializing --> error : load error\n(assign initError)
+
+    state ready {
+        [*] --> idle
+        idle --> mutating : ADD_BATCH / EDIT / DELETE / BUMP / CLEAR
+        mutating --> idle : onDone — assign entries\nonError — assign mutationError
+    }
+```
+
+- **`initializing`**: `loadEntries` actor opens PGlite (via `PgliteLive`
+  layer), runs migrations, and fetches the full entry list. Loading spinner
+  is shown. On failure → `error` (fatal; user must reload).
+- **`ready.idle`**: entries rendered, all action buttons enabled.
+- **`ready.mutating`**: one mutation actor in flight; UI shows a spinner on
+  action buttons. Both `onDone` and `onError` transition back to `idle` —
+  mutation errors are non-fatal and stored in `context.mutationError`.
+- **`error`**: fatal init failure (e.g., IndexedDB quota exceeded, WASM load
+  blocked). Error banner rendered; no `"Add entry"` button.
+
+### Types
 
 ```typescript
-// src/lib/journal/use-journal.ts (signature)
+// src/lib/journal/journal-machine.ts (types)
 
+import type { JournalEntry, EntryId, NewEntryInput, UpdateEntryInput } from "./schema";
+import type { StoreError } from "./errors";
+import type { JournalRuntime } from "./runtime";
+
+/**
+ * Machine context. `runtime` is stored here so `invoke.input` callbacks can
+ * access it without closure capture. Created once in `useJournal`'s `useMemo`
+ * and passed as `input` to the actor.
+ */
+export interface JournalContext {
+  readonly runtime: JournalRuntime;
+  readonly entries: ReadonlyArray<JournalEntry>;
+  /** Set when `initializing` fails. Remains set for the life of the actor. */
+  readonly initError: StoreError | null;
+  /**
+   * Set when a mutation actor rejects. Cleared on entry to `ready.mutating`
+   * so the previous error never contaminates the next Promise resolution.
+   * Non-fatal: machine stays in `ready` after a mutation error.
+   */
+  readonly mutationError: StoreError | null;
+}
+
+/** Events the machine accepts — sent by `useJournal`'s mutation helpers. */
+export type JournalEvent =
+  | { type: "ADD_BATCH"; drafts: ReadonlyArray<NewEntryInput> }
+  | { type: "EDIT"; id: EntryId; patch: UpdateEntryInput }
+  | { type: "DELETE"; id: EntryId }
+  | { type: "BUMP"; id: EntryId }
+  | { type: "CLEAR" };
+
+/** Input passed to `createActor(journalMachine, { input })`. */
+export interface JournalInput {
+  readonly runtime: JournalRuntime;
+}
+```
+
+### Machine implementation
+
+```typescript
+// src/lib/journal/journal-machine.ts (complete)
+
+import { createMachine, assign, fromPromise } from "xstate";
+import { appendEntries, updateEntry, deleteEntry, bumpEntry, listEntries, clearEntries } from "./journal-store";
+
+// ── Actors ────────────────────────────────────────────────────────────────────
+
+const loadEntries = fromPromise<ReadonlyArray<JournalEntry>, { runtime: JournalRuntime }>(({ input }) =>
+  input.runtime.runPromise(listEntries()),
+);
+
+/**
+ * Dispatches to the correct store Effect for the given event, then re-fetches
+ * the full sorted list. Returns the updated list on success; rejects with a
+ * typed `StoreError` on failure. The machine maps both outcomes back to
+ * `ready.idle` so the UI stays usable after a mutation error.
+ */
+const runMutation = fromPromise<ReadonlyArray<JournalEntry>, { runtime: JournalRuntime; event: JournalEvent }>(
+  async ({ input }) => {
+    const { runtime, event } = input;
+    switch (event.type) {
+      case "ADD_BATCH":
+        await runtime.runPromise(appendEntries(event.drafts));
+        break;
+      case "EDIT":
+        await runtime.runPromise(updateEntry(event.id, event.patch));
+        break;
+      case "DELETE":
+        await runtime.runPromise(deleteEntry(event.id));
+        break;
+      case "BUMP":
+        await runtime.runPromise(bumpEntry(event.id));
+        break;
+      case "CLEAR":
+        await runtime.runPromise(clearEntries());
+        break;
+    }
+    return runtime.runPromise(listEntries());
+  },
+);
+
+// ── Machine ───────────────────────────────────────────────────────────────────
+
+export const journalMachine = createMachine({
+  id: "journal",
+  types: {} as {
+    context: JournalContext;
+    events: JournalEvent;
+    input: JournalInput;
+  },
+  context: ({ input }) => ({
+    runtime: input.runtime,
+    entries: [],
+    initError: null,
+    mutationError: null,
+  }),
+  initial: "initializing",
+  states: {
+    initializing: {
+      invoke: {
+        src: loadEntries,
+        input: ({ context }) => ({ runtime: context.runtime }),
+        onDone: {
+          target: "ready",
+          actions: assign({
+            entries: ({ event }) => event.output,
+            initError: () => null,
+          }),
+        },
+        onError: {
+          target: "error",
+          actions: assign({
+            initError: ({ event }) => event.error as StoreError,
+          }),
+        },
+      },
+    },
+    ready: {
+      initial: "idle",
+      states: {
+        idle: {
+          on: {
+            ADD_BATCH: "mutating",
+            EDIT: "mutating",
+            DELETE: "mutating",
+            BUMP: "mutating",
+            CLEAR: "mutating",
+          },
+        },
+        mutating: {
+          entry: assign({ mutationError: () => null }), // clear stale error before actor starts
+          invoke: {
+            src: runMutation,
+            input: ({ context, event }) => ({
+              runtime: context.runtime,
+              event: event as JournalEvent,
+            }),
+            onDone: {
+              target: "idle",
+              actions: assign({
+                entries: ({ event }) => event.output,
+                mutationError: () => null,
+              }),
+            },
+            onError: {
+              target: "idle",
+              actions: assign({
+                mutationError: ({ event }) => event.error as StoreError,
+              }),
+            },
+          },
+        },
+      },
+    },
+    error: {
+      // Terminal for this PGlite session. User must hard-reload to retry.
+    },
+  },
+});
+```
+
+### Wrapper (`use-journal.ts`)
+
+```typescript
+// src/lib/journal/use-journal.ts (complete)
+
+import { useCallback, useEffect, useMemo } from "react";
+import { useActorRef, useSelector } from "@xstate/react";
+import { journalMachine, type JournalEvent } from "./journal-machine";
+import { makeJournalRuntime } from "./runtime";
 import type { JournalEntry, EntryId, NewEntryInput, UpdateEntryInput } from "./schema";
 import type { StoreError } from "./errors";
 
 /**
- * Discriminated UI state — each branch lists exactly the fields the JSX needs;
- * `Either<StoreError, JournalEntry[]>` is rejected because it cannot model the
- * `idle` and `loading` phases. The narrowing in the JSX is total: a
- * `state.status === "error"` branch is required to read `state.cause`.
+ * Derived UI state. Narrow on `status` before reading `entries` or `cause`.
+ * `isMutating` is `true` while a mutation actor is in flight — components use
+ * it to show a spinner on action buttons (loading-spinner strategy; not optimistic).
+ * `mutationError` is the last mutation error; `null` if none or cleared.
  */
 export type JournalState =
-  | { readonly status: "idle" }
   | { readonly status: "loading" }
-  | { readonly status: "ready"; readonly entries: ReadonlyArray<JournalEntry> }
+  | {
+      readonly status: "ready";
+      readonly entries: ReadonlyArray<JournalEntry>;
+      readonly isMutating: boolean;
+      readonly mutationError: StoreError | null;
+    }
   | { readonly status: "error"; readonly cause: StoreError };
 
 export interface UseJournalResult {
-  /** Discriminated UI state — narrow before rendering. */
   readonly state: JournalState;
-  /** Append a batch of drafts. Resolves with `Either<StoreError, void>`. */
   readonly addBatch: (drafts: ReadonlyArray<NewEntryInput>) => Promise<void>;
-  /** Patch one entry by id. */
   readonly edit: (id: EntryId, patch: UpdateEntryInput) => Promise<void>;
-  /** Remove one entry by id. */
   readonly remove: (id: EntryId) => Promise<void>;
-  /** Bump (bring to top) one entry by id. */
   readonly bump: (id: EntryId) => Promise<void>;
-  /** Truncate the journal_entries table. Test / dev helper. */
   readonly clear: () => Promise<void>;
 }
 
-/**
- * Bridges Effect-returning store functions into React.
- *
- * - `useMemo(() => makeJournalRuntime(), [])` constructs the `ManagedRuntime`
- *   once per mount. `useEffect(() => () => runtime.dispose(), [runtime])`
- *   tears it down — `Layer.scoped` finalisers (close PGlite handle) run
- *   inside `dispose`.
- * - First render: `{ status: "idle" }`. After `useEffect` fires, transitions
- *   to `loading`, awaits `runtime.runPromise(listEntries())`, then `ready`
- *   on success or `error` (typed `StoreError`) on failure.
- * - Every mutating method runs the store Effect, then re-runs `listEntries`
- *   to refresh state — same "mutate then re-list" pattern as before, now
- *   typed end-to-end. Mutation errors fall into a per-call rejection (the
- *   form sheet decides how to surface), without poisoning the global state.
- * - `runtime.runPromise` enforces `R extends PgliteService` at compile time
- *   — the layer must provide the service, otherwise the call site won't
- *   compile.
- * - The hook does NOT subscribe to PGlite's live-query plugin
- *   (`@electric-sql/pglite/live`); deferred to bigger plan / PWA sync plan.
- */
-export function useJournal(): UseJournalResult;
+export function useJournal(): UseJournalResult {
+  const runtime = useMemo(() => makeJournalRuntime(), []);
+  useEffect(() => () => runtime.dispose(), [runtime]);
+
+  const actorRef = useActorRef(journalMachine, { input: { runtime } });
+
+  const state = useSelector(actorRef, (snapshot): JournalState => {
+    if (snapshot.matches("initializing")) return { status: "loading" };
+    if (snapshot.matches("error")) {
+      return { status: "error", cause: snapshot.context.initError! };
+    }
+    return {
+      status: "ready",
+      entries: snapshot.context.entries,
+      isMutating: snapshot.matches({ ready: "mutating" }),
+      mutationError: snapshot.context.mutationError,
+    };
+  });
+
+  /**
+   * Sends a mutation event to the actor and returns a Promise that resolves
+   * when the machine returns to `ready.idle` (success) or rejects when
+   * `context.mutationError` is set after returning to `idle` (failure).
+   *
+   * The `seenMutating` guard ensures an already-idle machine (e.g., if the
+   * event is ignored) does not resolve the Promise against stale context.
+   *
+   * Form sheets use this to close on success and surface typed inline errors
+   * on failure via `.catch(cause => ...)` — without poisoning global state.
+   */
+  const sendMutation = useCallback(
+    (event: JournalEvent): Promise<void> =>
+      new Promise<void>((resolve, reject) => {
+        let seenMutating = false;
+        const sub = actorRef.subscribe((snapshot) => {
+          if (snapshot.matches({ ready: "mutating" })) {
+            seenMutating = true;
+          }
+          if (seenMutating && snapshot.matches({ ready: "idle" })) {
+            sub.unsubscribe();
+            if (snapshot.context.mutationError) {
+              reject(snapshot.context.mutationError);
+            } else {
+              resolve();
+            }
+          }
+        });
+        actorRef.send(event);
+      }),
+    [actorRef],
+  );
+
+  return {
+    state,
+    addBatch: (drafts) => sendMutation({ type: "ADD_BATCH", drafts }),
+    edit: (id, patch) => sendMutation({ type: "EDIT", id, patch }),
+    remove: (id) => sendMutation({ type: "DELETE", id }),
+    bump: (id) => sendMutation({ type: "BUMP", id }),
+    clear: () => sendMutation({ type: "CLEAR" }),
+  };
+}
 ```
 
-The hook is the **single Effect→Promise boundary** in the gear-up. UI
-components never import from `effect/Effect` directly — they consume
-`UseJournalResult` only. This keeps the run-at-the-edge invariant trivially
-auditable: `git grep -n "runPromise" apps/organiclever-web/src` should match
-exactly two places (this hook and tests).
+**Run-at-the-edge invariant**: only `runMutation` and `loadEntries` actors call
+`runtime.runPromise`. UI components import `UseJournalResult` only — never
+`effect/Effect` or XState directly. The boundary is auditable:
+`git grep -n "runPromise" apps/organiclever-web/src` must match exactly the
+two actor files and test files.
 
 ## UI Components
 
@@ -832,7 +1074,7 @@ exactly two places (this hook and tests).
 
 ### `<JournalPage>` (Phase 3)
 
-- Combines hook + components:
+- Combines machine wrapper + components:
 
   ```typescript
   const { state, addBatch, edit, remove, bump } = useJournal();
@@ -841,14 +1083,20 @@ exactly two places (this hook and tests).
   >({ open: false });
   ```
 
-  - `state.status === "loading"` renders a skeleton row.
-  - `state.status === "error"` renders an inline error banner. The banner narrows
-    further on `state.cause._tag` (e.g., a "Storage unavailable — data was not
-    saved" message for `StorageUnavailable`).
+  - `state.status === "loading"` (machine in `initializing`) renders a skeleton row.
+  - `state.status === "error"` (machine in `error`) renders an inline error banner.
+    The banner narrows further on `state.cause._tag` (e.g., a "Storage unavailable
+    — data was not saved" message for `StorageUnavailable`). No `"Add entry"` button
+    is rendered while status is not `"ready"`.
   - `state.status === "ready"` renders `<h1>Journal</h1>`,
     `<AddEntryButton onClick={() => setSheetState({ open: true, mode: "create" })} />`,
     `<JournalList entries={state.entries} onEdit={...} onDelete={remove} onBump={bump} />`,
     and a single `<EntryFormSheet>` whose props depend on `sheetState`.
+  - `state.isMutating === true` (machine in `ready.mutating`) — action buttons
+    show a loading spinner and are disabled until the mutation actor settles.
+    This is the **loading-spinner strategy** (not optimistic): PGlite is
+    in-process WASM so mutations are sub-millisecond; the spinner is honest
+    and avoids rollback complexity.
   - `onEdit(id)` resolves the entry (only reachable in `ready`, where
     `state.entries` is in scope) and sets `sheetState = { open: true, mode: "edit", entryId: id }`.
 
@@ -890,15 +1138,16 @@ export function formatRelativeTime(iso: string, now?: Date): string;
 
 ## Test Strategy
 
-| Level               | Tool                                                      | Files                                                                                                                                                                                  |
-| ------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Unit — schema       | Vitest                                                    | `schema.unit.test.ts` covers `JournalEntry` decode round-trip, branded-id rejection of plain strings, `PayloadFromJsonString` field-error formatting via `ArrayFormatter`              |
-| Unit — store        | `@effect/vitest` + Layer-swapped in-memory PGlite         | `journal-store.unit.test.ts` covers `appendEntries` (batch), `listEntries` (sort + tiebreaker), `updateEntry` (refreshes only `updatedAt`), `deleteEntry`, `bumpEntry`, `clearEntries` |
-| Unit — hook         | Vitest + RTL                                              | `use-journal.unit.test.tsx` covers `idle → loading → ready` transitions, `addBatch`, `edit`, `remove`, `bump`, `clear`, typed-error propagation into `state.cause`                     |
-| Unit — formatter    | Vitest                                                    | `format-relative-time.unit.test.ts` covers each branch + ISO fallback                                                                                                                  |
-| Unit — runtime      | `@effect/vitest`                                          | `runtime.unit.test.ts` covers `PgliteLive` acquire-release lifecycle (in-memory layer), `StorageUnavailable` mapping on SSR pretend                                                    |
-| Unit — page render  | `@effect/vitest` + RTL + PGlite in-memory (Layer-swapped) | `journal-page.unit.test.tsx` covers empty state, batch submit, validation errors, edit flow, delete-confirm flow, bump reorder, error-banner narrowing                                 |
-| FE E2E — round-trip | Playwright-BDD                                            | `apps/organiclever-web-e2e/steps/journal-mechanism.steps.ts` consumes `journal-mechanism.feature` (all batch / edit / delete / bump scenarios)                                         |
+| Level               | Tool                                                      | Files                                                                                                                                                                                                                                                                                |
+| ------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Unit — schema       | Vitest                                                    | `schema.unit.test.ts` covers `JournalEntry` decode round-trip, branded-id rejection of plain strings, `PayloadFromJsonString` field-error formatting via `ArrayFormatter`                                                                                                            |
+| Unit — store        | `@effect/vitest` + Layer-swapped in-memory PGlite         | `journal-store.unit.test.ts` covers `appendEntries` (batch), `listEntries` (sort + tiebreaker), `updateEntry` (refreshes only `updatedAt`), `deleteEntry`, `bumpEntry`, `clearEntries`                                                                                               |
+| Unit — machine      | Vitest + XState `createActor` + `waitFor`                 | `journal-machine.unit.test.ts` covers `initializing → ready` transition, `ready.idle → ready.mutating → ready.idle` round-trip, `mutationError` set on actor rejection, `initError` set on `loadEntries` rejection, `entry` action clears stale `mutationError` before next mutation |
+| Unit — hook         | Vitest + RTL + XState test actor                          | `use-journal.unit.test.tsx` covers `loading → ready` state derivation, `sendMutation` Promise resolves on success / rejects with typed `StoreError` on failure, `isMutating` true during in-flight actor, `state.cause._tag` narrowing on `StorageUnavailable` init failure          |
+| Unit — formatter    | Vitest                                                    | `format-relative-time.unit.test.ts` covers each branch + ISO fallback                                                                                                                                                                                                                |
+| Unit — runtime      | `@effect/vitest`                                          | `runtime.unit.test.ts` covers `PgliteLive` acquire-release lifecycle (in-memory layer), `StorageUnavailable` mapping on SSR pretend                                                                                                                                                  |
+| Unit — page render  | `@effect/vitest` + RTL + PGlite in-memory (Layer-swapped) | `journal-page.unit.test.tsx` covers empty state, batch submit, validation errors, edit flow, delete-confirm flow, bump reorder, error-banner narrowing                                                                                                                               |
+| FE E2E — round-trip | Playwright-BDD                                            | `apps/organiclever-web-e2e/steps/journal-mechanism.steps.ts` consumes `journal-mechanism.feature` (all batch / edit / delete / bump scenarios)                                                                                                                                       |
 
 **Three test levels per the [three-level testing standard](../../../governance/development/quality/three-level-testing-standard.md)**:
 
@@ -1100,10 +1349,18 @@ deliberately destructive of the previous `created_at` per product intent —
 "bring this to the front again" is the user's explicit signal that the event
 is current.
 
-### Effect.ts as the FP runtime (no XState yet)
+### Effect.ts + XState v5 as the application stack
 
-Adopted: `effect` v3 (`Effect`, `Layer`, `Context`, `Schema`, `Data`, `ManagedRuntime`).
-Reasons specific to this app:
+The gear-up adopts both libraries with a clean division of responsibility:
+
+| Concern                         | Owner           | Why                                                                                                                  |
+| ------------------------------- | --------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Typed IO, error channel, Schema | Effect.ts       | `Data.TaggedError` preserves discriminant across `flatMap` chains; `Schema` gives field-level decode errors for free |
+| Application state transitions   | XState v5       | Explicit state graph prevents impossible states; sync extension is additive substates, not a rewrite                 |
+| React integration               | `@xstate/react` | `useActorRef` + `useSelector` keep re-renders minimal; `useMachine` is the test-friendly alternative                 |
+
+**Effect.ts** — adopted: `effect` v3 (`Effect`, `Layer`, `Context`, `Schema`, `Data`,
+`ManagedRuntime`). Reasons specific to this app:
 
 - **Typed error channel** — the React layer narrows on `state.cause._tag`
   (`StorageUnavailable` vs `NotFound` vs `InvalidPayload`) without re-wrapping
@@ -1120,28 +1377,45 @@ Reasons specific to this app:
 Effect.acquireRelease(... new PGlite() ..., db.close))` via `@effect/vitest`'s
   `it.effect("…", … , { layer: TestPgliteLayer })` — no module mocking, no
   `vi.mock("@electric-sql/pglite")`.
-- **Run-at-the-edge** — the `useJournal` hook is the **only** site calling
-  `runtime.runPromise(...)`. UI components never import `effect/Effect`. This
-  keeps the boundary auditable (`git grep "runPromise"` is the audit) and
-  matches the official Effect docs' [Effect vs Promise](https://effect.website/docs/additional-resources/effect-vs-promise/)
-  guidance.
 
-XState is **not** adopted in the gear-up. The form-sheet machine is small
-enough (`useReducer` over a `drafts` array + `mode: "create" | "edit"`
-discriminator) that a state machine would add cost without value. The bigger
-plan can promote to XState if the typed-loggers + workout-session machine
-makes the surface complex; per the cross-library research (Effect ↔ XState
-coexist via `runtime.runPromise` inside `fromPromise` actors), promotion is
-mechanical.
+**XState v5** — adopted: `xstate` v5 + `@xstate/react` v5. Reasons:
+
+- **Explicit init + mutation state graph** — the `useJournal` hook previously
+  modelled `{ status: "idle" | "loading" | "ready" | "error" }` as a manual
+  discriminated union, which is an informal state machine. XState formalises it,
+  making impossible transitions (e.g., `error → ready` without reload) statically
+  unreachable rather than defensively guarded.
+- **Sync-ready architecture** — the future BE API sync plan adds
+  `ready.syncing` and `ready.syncError` substates inside the existing `ready`
+  compound state. No structural rewrite needed; only new substates and
+  transitions are added.
+- **`fromPromise` actors call `runtime.runPromise`** — the integration boundary
+  is a single call site per actor (`loadEntries`, `runMutation`). Effect owns
+  typed IO; XState owns when and how transitions happen. Neither library leaks
+  into the other's domain.
+- **Loading-spinner strategy** (not optimistic) — mutations are modelled as
+  `ready.idle → ready.mutating → ready.idle`. PGlite is in-process WASM;
+  mutations are sub-millisecond. The spinner is honest and avoids rollback
+  complexity. Optimistic updates are deferred to the bigger plan if user
+  research demands them.
+
+**Run-at-the-edge invariant**: only `loadEntries` and `runMutation` actors call
+`runtime.runPromise(...)`. UI components never import `effect/Effect` or
+`xstate` directly — they consume `UseJournalResult` only. Auditable via
+`git grep "runPromise" apps/organiclever-web/src` (must match only actor files
+and tests).
 
 Anti-patterns explicitly avoided:
 
 - `Effect.tryPromise` without a `catch` mapper — every wrap supplies a typed
   catch (`(cause): StorageUnavailable => new StorageUnavailable({ cause })`).
 - New `ManagedRuntime` per render — `useMemo(() => makeJournalRuntime(), [])`
-  - `useEffect` cleanup is the only construction site.
+  with `useEffect` cleanup is the only construction site.
 - Adapter-style `Effect.gen(function* ($) { yield* $(eff) })` — the adapter
   is deprecated as of TS 5.5+; gear-up uses bare `yield* eff`.
+- Callbacks-in-events XState anti-pattern — mutation Promises are resolved via
+  snapshot subscription (`seenMutating` guard), not by passing `resolve`/`reject`
+  inside the event object.
 
 ### No `'storage'` event subscription / no PGlite live queries (yet)
 

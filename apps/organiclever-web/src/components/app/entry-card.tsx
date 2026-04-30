@@ -31,6 +31,7 @@ export function EntryCard({ entry, onEdit, onDelete, onBump }: EntryCardProps) {
 
   return (
     <li
+      data-testid="journal-entry"
       style={{
         listStyle: "none",
         padding: "16px 20px",
@@ -53,11 +54,14 @@ export function EntryCard({ entry, onEdit, onDelete, onBump }: EntryCardProps) {
             {entry.name}
           </span>
           <div style={{ display: "flex", gap: 8, marginTop: 4, flexWrap: "wrap" }}>
-            <span style={{ fontSize: 12, color: "oklch(50% 0.01 60)", fontWeight: 500 }}>
+            <span data-testid="entry-timestamp" style={{ fontSize: 12, color: "oklch(50% 0.01 60)", fontWeight: 500 }}>
               {formatRelativeTime(entry.createdAt)}
             </span>
             {wasEdited && (
-              <span style={{ fontSize: 12, color: "oklch(50% 0.01 60)", fontWeight: 500 }}>
+              <span
+                data-testid="entry-edited-label"
+                style={{ fontSize: 12, color: "oklch(50% 0.01 60)", fontWeight: 500 }}
+              >
                 edited {formatRelativeTime(entry.updatedAt)}
               </span>
             )}
@@ -67,6 +71,7 @@ export function EntryCard({ entry, onEdit, onDelete, onBump }: EntryCardProps) {
 
       <details style={{ marginBottom: 12 }}>
         <summary
+          role="button"
           style={{
             fontSize: 12,
             fontWeight: 700,
@@ -78,6 +83,7 @@ export function EntryCard({ entry, onEdit, onDelete, onBump }: EntryCardProps) {
           View payload
         </summary>
         <pre
+          data-testid="entry-payload-expanded"
           style={{
             marginTop: 8,
             padding: "10px 12px",
@@ -149,7 +155,7 @@ export function EntryCard({ entry, onEdit, onDelete, onBump }: EntryCardProps) {
             Delete
           </button>
         ) : (
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+          <span data-testid="delete-confirm" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
             <span style={{ fontSize: 12, fontWeight: 600, color: "#c0392b" }}>Are you sure?</span>
             <button
               type="button"

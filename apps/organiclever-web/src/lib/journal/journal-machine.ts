@@ -1,9 +1,26 @@
 import { assign, createMachine, fromPromise } from "xstate";
+import { Cause, Option, Runtime } from "effect";
 import type { JournalRuntime } from "./runtime";
 import { appendEntries, listEntries, updateEntry, deleteEntry, bumpEntry, clearEntries } from "./journal-store";
 import type { JournalEntry, NewEntryInput, UpdateEntryInput } from "./schema";
 import type { EntryId } from "./schema";
 import type { StoreError } from "./errors";
+
+/**
+ * Extracts the typed StoreError from a FiberFailure thrown by Effect's runPromise.
+ * Effect's runPromise rejects with a FiberFailure wrapping the Cause; we need to
+ * unwrap to get the typed error for display in the UI.
+ */
+function extractStoreError(raw: unknown): StoreError {
+  if (Runtime.isFiberFailure(raw)) {
+    const cause = raw[Runtime.FiberFailureCauseId] as Cause.Cause<StoreError>;
+    const option = Cause.failureOption(cause);
+    if (Option.isSome(option)) {
+      return option.value;
+    }
+  }
+  return raw as StoreError;
+}
 
 export type JournalContext = {
   entries: ReadonlyArray<JournalEntry>;
@@ -53,7 +70,7 @@ export const journalMachine = createMachine(
           onError: {
             target: "error",
             actions: assign(({ event }) => ({
-              error: (event as { error: unknown }).error as StoreError,
+              error: extractStoreError((event as { error: unknown }).error),
             })),
           },
         },
@@ -83,7 +100,7 @@ export const journalMachine = createMachine(
               onError: {
                 target: "idle",
                 actions: assign(({ event }) => ({
-                  error: (event as { error: unknown }).error as StoreError,
+                  error: extractStoreError((event as { error: unknown }).error),
                 })),
               },
             },
@@ -104,7 +121,7 @@ export const journalMachine = createMachine(
               onError: {
                 target: "idle",
                 actions: assign(({ event }) => ({
-                  error: (event as { error: unknown }).error as StoreError,
+                  error: extractStoreError((event as { error: unknown }).error),
                 })),
               },
             },

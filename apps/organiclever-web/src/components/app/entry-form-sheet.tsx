@@ -123,6 +123,7 @@ export function EntryFormSheet(props: EntryFormSheetProps) {
 
     return (
       <div
+        data-testid="entry-form-sheet"
         role="dialog"
         aria-modal="true"
         aria-label="Add entries"
@@ -163,6 +164,7 @@ export function EntryFormSheet(props: EntryFormSheetProps) {
           {createDrafts.map((draft, index) => (
             <div
               key={index}
+              data-testid="draft-item"
               style={{
                 marginBottom: 20,
                 padding: "16px 20px",
@@ -281,6 +283,7 @@ export function EntryFormSheet(props: EntryFormSheetProps) {
 
               {draft.error !== null && (
                 <div
+                  data-testid="field-error"
                   role="alert"
                   style={{
                     fontSize: 13,
@@ -380,6 +383,7 @@ export function EntryFormSheet(props: EntryFormSheetProps) {
 
   return (
     <div
+      data-testid="entry-form-sheet"
       role="dialog"
       aria-modal="true"
       aria-label="Edit entry"
@@ -415,70 +419,74 @@ export function EntryFormSheet(props: EntryFormSheetProps) {
           Edit entry
         </h2>
 
-        <div style={{ marginBottom: 14 }}>
-          <label
-            htmlFor="edit-name"
-            style={{ display: "block", fontSize: 13, fontWeight: 700, marginBottom: 6, color: "oklch(30% 0.018 60)" }}
-          >
-            Name
-          </label>
-          <input
-            id="edit-name"
-            type="text"
-            value={editDraft.name}
-            onChange={(e) => handleEditChange("name", e.target.value)}
-            style={{
-              width: "100%",
-              padding: "8px 12px",
-              borderRadius: 8,
-              border: "1px solid oklch(18% 0.018 60 / 0.22)",
-              fontSize: 14,
-              fontFamily: "inherit",
-              background: "#fff",
-              boxSizing: "border-box",
-            }}
-          />
-        </div>
-
-        <div style={{ marginBottom: 16 }}>
-          <label
-            htmlFor="edit-payload"
-            style={{ display: "block", fontSize: 13, fontWeight: 700, marginBottom: 6, color: "oklch(30% 0.018 60)" }}
-          >
-            Payload (JSON object)
-          </label>
-          <textarea
-            id="edit-payload"
-            value={editDraft.payloadText}
-            onChange={(e) => handleEditChange("payloadText", e.target.value)}
-            rows={6}
-            style={{
-              width: "100%",
-              padding: "8px 12px",
-              borderRadius: 8,
-              border: "1px solid oklch(18% 0.018 60 / 0.22)",
-              fontSize: 13,
-              fontFamily: "monospace",
-              background: "#fff",
-              resize: "vertical",
-              boxSizing: "border-box",
-            }}
-          />
-        </div>
-
-        {editDraft.error !== null && (
-          <div
-            role="alert"
-            style={{
-              fontSize: 13,
-              color: "#c0392b",
-              fontWeight: 600,
-              marginBottom: 12,
-            }}
-          >
-            {editDraft.error}
+        <div data-testid="draft-item">
+          <div style={{ marginBottom: 14 }}>
+            <label
+              htmlFor="edit-name"
+              style={{ display: "block", fontSize: 13, fontWeight: 700, marginBottom: 6, color: "oklch(30% 0.018 60)" }}
+            >
+              Name
+            </label>
+            <input
+              id="edit-name"
+              type="text"
+              value={editDraft.name}
+              onChange={(e) => handleEditChange("name", e.target.value)}
+              placeholder="e.g. workout"
+              style={{
+                width: "100%",
+                padding: "8px 12px",
+                borderRadius: 8,
+                border: "1px solid oklch(18% 0.018 60 / 0.22)",
+                fontSize: 14,
+                fontFamily: "inherit",
+                background: "#fff",
+                boxSizing: "border-box",
+              }}
+            />
           </div>
-        )}
+
+          <div style={{ marginBottom: 16 }}>
+            <label
+              htmlFor="edit-payload"
+              style={{ display: "block", fontSize: 13, fontWeight: 700, marginBottom: 6, color: "oklch(30% 0.018 60)" }}
+            >
+              Payload (JSON object)
+            </label>
+            <textarea
+              id="edit-payload"
+              value={editDraft.payloadText}
+              onChange={(e) => handleEditChange("payloadText", e.target.value)}
+              rows={6}
+              style={{
+                width: "100%",
+                padding: "8px 12px",
+                borderRadius: 8,
+                border: "1px solid oklch(18% 0.018 60 / 0.22)",
+                fontSize: 13,
+                fontFamily: "monospace",
+                background: "#fff",
+                resize: "vertical",
+                boxSizing: "border-box",
+              }}
+            />
+          </div>
+
+          {editDraft.error !== null && (
+            <div
+              data-testid="field-error"
+              role="alert"
+              style={{
+                fontSize: 13,
+                color: "#c0392b",
+                fontWeight: 600,
+                marginBottom: 12,
+              }}
+            >
+              {editDraft.error}
+            </div>
+          )}
+        </div>
 
         <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
           <button

@@ -23,7 +23,7 @@ export function JournalPage() {
   if (status === "error") {
     const tag = error?._tag;
     return (
-      <div role="alert">
+      <div data-testid="storage-error-banner" role="alert">
         {tag === "StorageUnavailable"
           ? "Storage unavailable — data was not saved."
           : "An error occurred. Please reload."}

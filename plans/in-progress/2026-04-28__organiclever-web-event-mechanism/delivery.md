@@ -589,32 +589,36 @@ starts after this gear-up archives.
 
 ### 4.1 Gherkin feature file
 
-- [ ] Create `specs/apps/organiclever/fe/gherkin/journal/journal-mechanism.feature` with
+- [x] Create `specs/apps/organiclever/fe/gherkin/journal/journal-mechanism.feature` with
       every `Scenario` from `prd.md` reproduced verbatim, using the 2-step
       `Background` from `prd.md` (`Given the app is running` /
       `And I have opened "/app" in a fresh browser session`). The "is empty"
       assertion is scenario-specific (see the "Empty state on first visit"
       scenario); the IDB reset is a step-binding implementation detail of
       the "fresh browser session" step.
+  - Date: 2026-04-30 | Status: Done | Files changed: specs/apps/organiclever/fe/gherkin/journal/journal-mechanism.feature (15 scenarios)
 
 ### 4.2 Step bindings
 
-- [ ] Create `apps/organiclever-web-e2e/steps/journal-mechanism.steps.ts`:
-  - [ ] All Given / When / Then steps from the feature file (see `prd.md` for
+- [x] Create `apps/organiclever-web-e2e/steps/journal-mechanism.steps.ts`:
+  - [x] All Given / When / Then steps from the feature file (see `prd.md` for
         the canonical list)
-  - [ ] Use `page.evaluate` to read PGlite state for the `PGlite database
+  - [x] Use `page.evaluate` to read PGlite state for the `PGlite database
 "ol_journal_v1" (IndexedDB) contains exactly N entry/entries ...` assertions — translate
         to a `SELECT count(*) FROM journal_entries WHERE name = $1` call against
         `globalThis.__ol_db`
-  - [ ] Add a step `Given I record the original "createdAt" of the "(.*)"
+  - [x] Add a step `Given I record the original "createdAt" of the "(.*)"
 entry as T0` that captures the timestamp via `page.evaluate` for the
         bump scenario
+  - Date: 2026-04-30 | Status: Done | Files changed: apps/organiclever-web-e2e/steps/journal-mechanism.steps.ts + apps/organiclever-web/test/unit/steps/journal/journal-mechanism.steps.tsx
 
 ### 4.3 Phase 4 validation
 
-- [ ] `nx run organiclever-web-e2e:test:e2e` passes including the new feature
-- [ ] `nx run organiclever-web:spec-coverage` passes (every feature step has a
+- [x] `nx run organiclever-web-e2e:test:e2e` passes including the new feature
+  - Date: 2026-04-30 | Status: Done | 32 tests pass (15 new journal scenarios + 17 existing); 3 pre-existing @local-fullstack failures require organiclever-be backend (by design)
+- [x] `nx run organiclever-web:spec-coverage` passes (every feature step has a
       binding; every binding is referenced by a feature)
+  - Date: 2026-04-30 | Status: Done | 5 specs, 36 scenarios, 176 steps all covered
 
 ---
 

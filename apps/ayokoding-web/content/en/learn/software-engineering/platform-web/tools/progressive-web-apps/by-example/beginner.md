@@ -24,6 +24,23 @@ Before starting, ensure you understand:
 
 A web app manifest is a JSON file that tells the browser your app's name, icons, and display preferences. Chrome and Edge require `name`, `short_name`, `start_url`, `display`, and at least a 192px icon before they show the install prompt.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+  A["Browser visits URL"] --> B{"manifest.json<br/>linked in head?"}
+  B -->|"No"| C["Regular website<br/>No install prompt"]
+  B -->|"Yes"| D{"Required fields<br/>present?"}
+  D -->|"Missing fields"| E["Partial PWA<br/>No install prompt"]
+  D -->|"name, short_name<br/>start_url, display<br/>192px icon"| F["Installable PWA<br/>Install prompt shown"]
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style D fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+```
+
 **Code**:
 
 ```json
@@ -147,6 +164,25 @@ graph TD
 ## Example 4: Linking the Manifest in HTML
 
 The browser discovers the manifest through a `<link>` tag in the HTML `<head>`. Without this link, no manifest fields take effect regardless of where the JSON file lives.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["HTML page loads"] --> B["Browser reads &lt;head&gt;"]
+  B --> C["Finds &lt;link rel='manifest'&gt;"]
+  C --> D["Fetches manifest.json"]
+  D --> E["Reads name, icons<br/>start_url, display"]
+  E --> F["Evaluates installability"]
+  F --> G["Fires beforeinstallprompt<br/>if criteria met"]
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style F fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+```
 
 **Code**:
 
@@ -429,6 +465,27 @@ self.addEventListener("activate", (event) => {
 
 The fetch event fires for every network request from a controlled page. The service worker can respond with cached data, modify requests, or let them pass through to the network.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["Page makes network request"] --> B["SW fetch event fires"]
+  B --> C{"event.respondWith<br/>called?"}
+  C -->|"No"| D["Request passes through<br/>to network unchanged"]
+  C -->|"Yes"| E["SW controls the response"]
+  E --> F{"Cache hit?"}
+  F -->|"Yes"| G["Return cached Response<br/>instantly, no network"]
+  F -->|"No"| H["Fetch from network<br/>return Response"]
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style E fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style F fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+```
+
 **Code**:
 
 ```javascript
@@ -482,6 +539,23 @@ self.addEventListener("fetch", (event) => {
 
 Cache First serves assets from cache immediately, only reaching the network if the asset is not cached. It is ideal for static assets like images, fonts, and CSS that rarely change.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["Fetch request arrives"] --> B{"Check cache"}
+  B -->|"Cache HIT"| C["Return cached response<br/>Zero network latency"]
+  B -->|"Cache MISS"| D["Fetch from network"]
+  D --> E["Store response in cache"]
+  E --> F["Return network response"]
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style E fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+```
+
 **Code**:
 
 ```javascript
@@ -534,6 +608,25 @@ self.addEventListener("fetch", (event) => {
 ## Example 12: Network First Strategy — Try Network, Fall Back to Cache
 
 Network First always attempts the network and only falls back to cache on network failure. It is ideal for HTML pages and API responses where freshness matters more than speed.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["Fetch request arrives"] --> B["Try network first"]
+  B -->|"Network succeeds"| C["Store in cache"]
+  C --> D["Return fresh response"]
+  B -->|"Network fails<br/>(offline/timeout)"| E{"Check cache"}
+  E -->|"Cache HIT"| F["Return stale cached response"]
+  E -->|"Cache MISS"| G["Return /offline.html<br/>fallback page"]
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style F fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style G fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+```
 
 **Code**:
 
@@ -591,6 +684,25 @@ self.addEventListener("fetch", (event) => {
 ## Example 13: Stale While Revalidate — Serve Cache Immediately, Update in Background
 
 Stale While Revalidate (SWR) serves the cached version immediately for speed, then fetches the network version in the background and updates the cache. Perfect for API responses where moderate staleness is acceptable.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+  A["Fetch request arrives"] --> B{"Cache exists?"}
+  B -->|"Yes"| C["Return stale cache<br/>immediately to user"]
+  B -->|"No"| D["Wait for network"]
+  A --> E["Fetch from network<br/>in background"]
+  E --> F["Update cache<br/>with fresh response"]
+  D --> G["Return network response<br/>on first visit"]
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style E fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style F fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+```
 
 **Code**:
 
@@ -742,6 +854,23 @@ self.addEventListener("fetch", (event) => {
 ## Example 16: Offline Fallback Page
 
 An offline fallback page is served when the user is offline and no cached version of the requested page exists. It provides a graceful degradation instead of a browser error screen.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["Navigation request<br/>while offline"] --> B{"Page in cache?"}
+  B -->|"Yes"| C["Serve cached page<br/>stale but functional"]
+  B -->|"No"| D{"/offline.html<br/>pre-cached?"}
+  D -->|"Yes"| E["Serve offline fallback<br/>branded error page"]
+  D -->|"No"| F["Browser error screen<br/>'No internet connection'"]
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style D fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style F fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+```
 
 **Code**:
 
@@ -1016,6 +1145,31 @@ console.log("iOS standalone:", isIOSStandalone);
 
 Chrome and Edge fire `beforeinstallprompt` before showing the default install UI. Calling `preventDefault()` suppresses the browser prompt, letting you show a custom "Install App" button at the right moment.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["Browser detects PWA<br/>criteria met"] --> B["beforeinstallprompt fires"]
+  B --> C["Call preventDefault()"]
+  C --> D["Save event as deferredPrompt"]
+  D --> E["Show custom Install button"]
+  E --> F["User clicks Install button"]
+  F --> G["Call deferredPrompt.prompt()"]
+  G --> H{"User choice"}
+  H -->|"Accepted"| I["appinstalled fires<br/>Hide install button"]
+  H -->|"Dismissed"| J["Log analytics<br/>Hide install button"]
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style F fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style G fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style H fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style I fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style J fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+```
+
 **Code**:
 
 ```javascript
@@ -1238,6 +1392,27 @@ shareButton.addEventListener("click", async () => {
 ## Example 25: Storage Estimation — Checking Quota and Usage
 
 `navigator.storage.estimate()` reports how much storage the PWA is using and how much is available. Use it to make informed decisions about caching and to warn users before their quota is exhausted.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["navigator.storage.estimate()"] --> B["Returns usage + quota<br/>in bytes"]
+  B --> C["Calculate usagePercent<br/>usage / quota * 100"]
+  C --> D{"Usage > 80%?"}
+  D -->|"Yes"| E["Warn user<br/>Clear old API caches"]
+  D -->|"No"| F["Storage healthy<br/>Continue caching"]
+  B --> G["Optional: persist()"]
+  G --> H["Request protection<br/>from browser eviction"]
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style D fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style G fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+```
 
 **Code**:
 

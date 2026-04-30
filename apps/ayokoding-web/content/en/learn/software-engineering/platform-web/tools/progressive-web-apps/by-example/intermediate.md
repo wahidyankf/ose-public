@@ -25,6 +25,26 @@ Before starting, ensure you have completed or understand:
 
 Workbox is Google's production-grade library for service workers. Version 7.4.0 is the current stable release. It provides tested, configurable implementations of caching strategies, precaching, and routing.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["Build Tool<br/>(webpack/Vite/Rollup)"] --> B["Workbox Plugin"]
+  B --> C["GenerateSW mode<br/>Full SW generated"]
+  B --> D["InjectManifest mode<br/>Custom SW template"]
+  C --> E["Output: sw.js<br/>Precache + strategies"]
+  D --> F["Output: sw.js<br/>__WB_MANIFEST injected"]
+  E --> G["Serve to browser"]
+  F --> G
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style E fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style G fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+```
+
 **Code**:
 
 ```bash
@@ -126,6 +146,31 @@ self.addEventListener("install", (event) => {
 ## Example 31: Workbox Route Registration — registerRoute with URL Patterns
 
 `registerRoute` registers a caching handler for requests matching a URL pattern or custom matcher function. Multiple routes can be registered with different strategies.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["Incoming fetch request"] --> B["Workbox Router"]
+  B --> C{"Match route 1?<br/>destination === image"}
+  C -->|"Yes"| D["CacheFirst<br/>images-cache"]
+  C -->|"No"| E{"Match route 2?<br/>pathname /api/*"}
+  E -->|"Yes"| F["NetworkFirst<br/>api-cache"]
+  E -->|"No"| G{"Match route 3?<br/>origin fonts.googleapis.com"}
+  G -->|"Yes"| H["StaleWhileRevalidate<br/>google-fonts"]
+  G -->|"No"| I["mode === navigate"]
+  I --> J["NetworkFirst<br/>pages-cache"]
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style G fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style I fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style J fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+```
 
 **Code**:
 
@@ -374,6 +419,31 @@ registerRoute(
 
 `BroadcastUpdatePlugin` fires a `BroadcastChannel` message to all open tabs when a `StaleWhileRevalidate` route updates its cache. Use it to notify the UI that fresher data is available.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+  A["Request /api/articles"] --> B["StaleWhileRevalidate<br/>returns cached response"]
+  B --> C["User sees stale data<br/>instantly"]
+  A --> D["Network fetch<br/>in background"]
+  D --> E{"Response headers<br/>changed?"}
+  E -->|"ETag/Last-Modified<br/>different"| F["Update cache"]
+  F --> G["BroadcastChannel<br/>'workbox-updates'"]
+  G --> H["All open tabs<br/>receive message"]
+  H --> I["Show 'New content<br/>available' toast"]
+  E -->|"Same headers"| J["No broadcast<br/>Cache unchanged"]
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style D fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style F fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style G fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style I fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style J fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+```
+
 **Code**:
 
 ```javascript
@@ -450,6 +520,25 @@ function showUpdateNotification(message) {
 ## Example 36: @serwist/next Setup — Modern Next.js PWA Integration
 
 `@serwist/next` is the current standard for adding PWA support to Next.js applications. It replaces the deprecated `next-pwa` and `@ducanh2912/next-pwa` packages. Always use `@serwist/next` for new Next.js projects.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["next.config.mjs<br/>withSerwist(config)"] --> B["Next.js build"]
+  B --> C["@serwist/next compiles<br/>src/sw.ts → public/sw.js"]
+  C --> D["sw.js served at<br/>https://domain/sw.js"]
+  D --> E["Browser registers SW<br/>on page load"]
+  E --> F["Serwist precaches<br/>__SW_MANIFEST assets"]
+  F --> G["defaultCache routes<br/>handle runtime requests"]
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+```
 
 **Code**:
 
@@ -574,6 +663,32 @@ serwist.addEventListeners();
 ## Example 38: Workbox BackgroundSyncPlugin for Failed POST Requests
 
 `BackgroundSyncPlugin` queues failed POST requests and retries them when connectivity is restored using the Background Sync API. **Important: Background Sync is Chromium-only (Chrome 61+, Edge). It is NOT supported in Firefox or Safari.**
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["POST /api/submit-form"] --> B["NetworkOnly + BackgroundSyncPlugin"]
+  B --> C{"Network available?"}
+  C -->|"Yes"| D["Request sent to server<br/>Response returned"]
+  C -->|"No (offline)"| E["Request queued in<br/>IndexedDB (workbox-background-sync)"]
+  E --> F["Background Sync registered<br/>Chrome/Edge only"]
+  F --> G["OS wakes SW<br/>when connectivity restored"]
+  G --> H["SW retries queued requests"]
+  H --> I{"maxRetentionTime<br/>expired?"}
+  I -->|"No"| D
+  I -->|"Yes (>24h)"| J["Request discarded"]
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style F fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style G fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style H fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style I fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style J fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+```
 
 **Code**:
 
@@ -720,6 +835,31 @@ self.addEventListener("sync", (event) => {
 ## Example 40: Push Notifications — VAPID Key Generation and pushManager.subscribe
 
 Web Push uses VAPID (Voluntary Application Server Identification) keys to authenticate the push server. The browser subscribes using these keys and returns a subscription object that the server uses to send push messages.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["Server generates<br/>VAPID key pair"] --> B["Public key → browser<br/>Private key → server only"]
+  B --> C["Browser calls<br/>pushManager.subscribe()"]
+  C --> D["Push service creates<br/>subscription endpoint"]
+  D --> E["Browser returns<br/>PushSubscription to app"]
+  E --> F["App POSTs subscription<br/>to server /api/push/subscribe"]
+  F --> G["Server stores subscription<br/>in database"]
+  G --> H["Server sends push via<br/>web-push + VAPID private key"]
+  H --> I["Push service routes<br/>encrypted message"]
+  I --> J["SW receives push event<br/>shows notification"]
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style D fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style F fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style G fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style H fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style I fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style J fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+```
 
 **Code**:
 
@@ -906,6 +1046,34 @@ self.addEventListener("push", (event) => {
 
 The `notificationclick` event fires in the service worker when the user taps a notification or an action button. The handler focuses an existing window or opens a new one.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["User taps notification"] --> B["SW notificationclick fires"]
+  B --> C["Close notification"]
+  C --> D{"event.action?"}
+  D -->|"'dismiss'"| E["Return — no navigation"]
+  D -->|"'view-order'"| F["targetUrl = /orders/id"]
+  D -->|"body tap (empty)"| G["targetUrl = /"]
+  F --> H["clients.matchAll()"]
+  G --> H
+  H --> I{"Existing tab<br/>on same origin?"}
+  I -->|"Yes"| J["focus() + navigate()<br/>existing tab"]
+  I -->|"No"| K["clients.openWindow()<br/>new tab"]
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style D fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style F fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style G fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style H fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style I fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style J fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style K fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+```
+
 **Code**:
 
 ```javascript
@@ -1080,6 +1248,31 @@ app.post("/api/orders/:id/notify", async (req, res) => {
 
 The `idb` library provides a promise-based wrapper around the raw IndexedDB API. It eliminates callback-heavy boilerplate and works naturally with async/await.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["openDB('my-app-db', 1)"] --> B{"Database exists<br/>at version 1?"}
+  B -->|"No / version mismatch"| C["upgrade() callback<br/>creates object stores"]
+  C --> D["createObjectStore('tasks'<br/>keyPath: 'id', autoIncrement)"]
+  C --> E["createObjectStore('sync-queue'<br/>keyPath: 'id', autoIncrement)"]
+  D --> F["createIndex('by-status', 'status')"]
+  B -->|"Yes, same version"| G["Return existing DB<br/>no upgrade"]
+  F --> H["IDBDatabase ready"]
+  E --> H
+  G --> H
+  H --> I["db.add / db.get<br/>db.put / db.getAllFromIndex"]
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style D fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style E fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style F fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style I fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+```
+
 **Code**:
 
 ```javascript
@@ -1237,6 +1430,33 @@ self.addEventListener("sync", (event) => {
 ## Example 47: Screen Wake Lock API — Prevent Screen Sleep During Active Tasks
 
 The Screen Wake Lock API prevents the device screen from dimming or locking during user-critical activities like navigation, video playback, or form filling. It is Baseline 2025 — supported in all major browsers (Chrome, Firefox, Safari, Edge).
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["User starts active task"] --> B["navigator.wakeLock.request('screen')"]
+  B --> C{"Permission granted?"}
+  C -->|"Yes"| D["WakeLockSentinel acquired<br/>Screen stays on"]
+  C -->|"No (page hidden)"| E["DOMException thrown<br/>Handle gracefully"]
+  D --> F{"Page visibility<br/>changes?"}
+  F -->|"page hidden"| G["Browser auto-releases<br/>wake lock"]
+  G --> H["release event fires<br/>wakeLock = null"]
+  H --> I{"Task still active?"}
+  I -->|"Yes + page visible"| B
+  I -->|"No"| J["Task ended"]
+  F -->|"page still visible"| D
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style F fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style G fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style H fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style I fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style J fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+```
 
 **Code**:
 
@@ -1534,6 +1754,29 @@ async function saveFileAs(content) {
 
 App shortcuts create contextual quick-action entries in the app's right-click menu on desktop and long-press menu on Android. They provide instant access to common app destinations.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+  A["manifest.json<br/>shortcuts array"] --> B["OS reads on install"]
+  B --> C["Android: long-press icon"]
+  B --> D["Windows: right-click taskbar"]
+  B --> E["macOS: right-click dock"]
+  C --> F["Shortcut menu appears<br/>New Task / Schedule / Settings"]
+  D --> F
+  E --> F
+  F --> G["User taps shortcut"]
+  G --> H["PWA opens at shortcut URL<br/>e.g. /tasks/new"]
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style F fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style G fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+```
+
 **Code**:
 
 ```json
@@ -1724,6 +1967,27 @@ if ("launchQueue" in window) {
 
 The Share Target API lets a PWA appear in the OS share sheet as a destination. When a user shares from another app, the browser opens the PWA with the shared data.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["User shares from<br/>another app"] --> B["OS share sheet opens"]
+  B --> C["PWA appears as<br/>share destination"]
+  C --> D["User selects PWA"]
+  D --> E["Browser POSTs to<br/>share_target.action URL"]
+  E --> F["Server reads<br/>formData: title, text, url, files"]
+  F --> G["Process shared data<br/>save note, create draft, etc."]
+  G --> H["Redirect to relevant<br/>page in app (303)"]
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style F fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style G fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+```
+
 **Code**:
 
 ```json
@@ -1861,6 +2125,28 @@ self.addEventListener("push", (event) => {
 ## Example 56: Periodic Background Sync — Registering Scheduled Background Updates
 
 Periodic Background Sync lets the browser wake the service worker on a schedule (e.g., every few hours) to refresh content. **Browser support: Chromium-only (Chrome, Edge). Not supported in Firefox or Safari.**
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["App registers periodic sync<br/>minInterval: 1 hour"] --> B{"Browser checks<br/>conditions"}
+  B --> C["Battery OK?<br/>Wi-Fi connected?<br/>High engagement?"]
+  C -->|"Conditions met<br/>at or after minInterval"| D["Browser wakes SW<br/>periodicsync event fires"]
+  D --> E["SW fetches fresh data<br/>from /api/news-feed"]
+  E --> F["Store in IndexedDB<br/>for offline reading"]
+  F --> G["User opens app:<br/>content already fresh"]
+  C -->|"Conditions not met"| H["Browser waits<br/>for better conditions"]
+  H --> B
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style F fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style H fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+```
 
 **Code**:
 

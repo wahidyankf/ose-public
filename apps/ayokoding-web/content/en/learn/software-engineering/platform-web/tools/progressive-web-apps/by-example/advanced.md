@@ -26,6 +26,25 @@ This advanced tutorial covers expert PWA patterns through 28 heavily annotated e
 
 Window Controls Overlay (WCO) removes the default browser title bar in desktop PWAs and lets your app draw into that space. Only supported in Chrome and Edge on desktop.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["manifest.json<br/>display_override: window-controls-overlay"] --> B["Desktop PWA installed<br/>Chrome/Edge only"]
+  B --> C["OS renders window controls<br/>close/minimize/maximize"]
+  C --> D["Title bar area available<br/>CSS env vars exposed"]
+  D --> E["env(titlebar-area-x/y/width/height)<br/>position custom title bar"]
+  E --> F["App draws into title bar<br/>-webkit-app-region: drag"]
+  F --> G["Interactive elements:<br/>app-region: no-drag"]
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+```
+
 **Code**:
 
 ```json
@@ -292,6 +311,31 @@ async function getAllTasks() {
 
 When multiple clients modify the same data offline, conflicts arise during sync. Common resolution strategies are last-write-wins and CRDT (Conflict-free Replicated Data Types).
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["Device A edits task<br/>offline for 2 hours"] --> D["Both sync when online"]
+  B["Device B edits same task<br/>offline for 30 min"] --> D
+  D --> E{"Conflict resolution<br/>strategy?"}
+  E -->|"Last-Write-Wins"| F["Compare updatedAt<br/>timestamps"]
+  F --> G["Newer timestamp wins<br/>other changes lost"]
+  E -->|"Field-Level Merge"| H["Compare each field<br/>independently"]
+  H --> I["Preserve non-conflicting<br/>changes from both"]
+  E -->|"CRDT (Yjs)"| J["Mathematically<br/>conflict-free merge"]
+  J --> K["All concurrent edits<br/>preserved automatically"]
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style D fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style E fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style F fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style G fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style H fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style I fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style J fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style K fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+```
+
 **Code**:
 
 ```javascript
@@ -384,6 +428,22 @@ async function mergeTask(localTask, serverTask) {
 
 Service workers can send and receive messages to/from their controlled clients. This enables bidirectional communication for cache status updates, version notifications, and data transfer.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+  A["Main thread (app.js)"] -->|"registration.active.postMessage()"| B["Service Worker (sw.js)"]
+  B -->|"event.source.postMessage()"| A
+  B -->|"client.postMessage() per client"| C["Tab 1"]
+  B -->|"client.postMessage() per client"| D["Tab 2"]
+  B -->|"client.postMessage() per client"| E["Tab 3"]
+
+  style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style D fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style E fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+```
+
 **Code**:
 
 ```javascript
@@ -469,6 +529,26 @@ async function requestCacheStatus() {
 
 `BroadcastChannel` enables one-to-many messaging across all open tabs with the same channel name, without needing to enumerate clients. It works in both the main thread and service workers.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["Tab 1 (user logs out)"] -->|"channel.postMessage(USER_LOGGED_OUT)"| B["BroadcastChannel<br/>'app-channel'"]
+  B --> C["Tab 2<br/>receives USER_LOGGED_OUT"]
+  B --> D["Tab 3<br/>receives USER_LOGGED_OUT"]
+  B --> E["Service Worker<br/>receives USER_LOGGED_OUT"]
+  C --> F["Clear session<br/>redirect to /login"]
+  D --> F
+  E --> G["Delete user-data<br/>caches"]
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+```
+
 **Code**:
 
 ```javascript
@@ -551,6 +631,26 @@ channel.addEventListener("message", (event) => {
 ## Example 64: Cache Versioning Strategy — Manifest Hash in Cache Name
 
 Embedding the build manifest hash in the cache name creates globally unique cache identifiers per deployment. This guarantees clean isolation between deployments without manual version bumping.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["Deployment A<br/>build hash: 9f2e1a0c"] --> B["Caches:<br/>app-shell-9f2e1a0c<br/>api-9f2e1a0c"]
+  C["Deployment B<br/>build hash: a3b7c9d1"] --> D["Caches:<br/>app-shell-a3b7c9d1<br/>api-a3b7c9d1"]
+  D --> E["New SW activates<br/>activate event"]
+  E --> F["caches.keys() returns<br/>all 4 cache names"]
+  F --> G["Filter: keep only<br/>a3b7c9d1 caches"]
+  G --> H["Delete 9f2e1a0c caches<br/>Free storage"]
+
+  style A fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style D fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style F fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style G fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+```
 
 **Code**:
 
@@ -761,6 +861,26 @@ self.addEventListener("fetch", (event) => {
 
 Navigation preload starts the network request for HTML documents in parallel with the service worker boot process, eliminating the "SW startup tax" on navigation requests.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph LR
+  A["User clicks link"] --> B["Browser starts<br/>SW boot (50-200ms)"]
+  A --> C["Navigation preload<br/>starts HTML fetch<br/>simultaneously"]
+  B --> D["SW fetch handler<br/>runs"]
+  C --> E["Network response<br/>arrives"]
+  D --> F["event.preloadResponse<br/>already resolved!"]
+  F --> G["Serve preloaded HTML<br/>Zero extra latency"]
+  E --> F
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style D fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style E fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style F fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+```
+
 **Code**:
 
 ```javascript
@@ -829,6 +949,37 @@ self.addEventListener("fetch", (event) => {
 ## Example 68: Service Worker Update Flow — Detecting a New Version
 
 When a new service worker is deployed, the browser downloads the new `sw.js` and enters the waiting state. Detecting this transition lets you notify users that an update is available.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["New sw.js deployed"] --> B["Browser downloads<br/>new sw.js"]
+  B --> C["updatefound event fires"]
+  C --> D["New SW: installing"]
+  D --> E["statechange → installed"]
+  E --> F{"Existing controller?<br/>Old SW running?"}
+  F -->|"Yes"| G["New SW enters<br/>waiting state"]
+  G --> H["notifyUpdate()<br/>Show update banner"]
+  H --> I["User clicks 'Update Now'"]
+  I --> J["postMessage SKIP_WAITING<br/>to waiting SW"]
+  J --> K["SW skips waiting<br/>→ activating → active"]
+  K --> L["controllerchange fires<br/>Page reloads"]
+  F -->|"No (first install)"| M["SW activates directly<br/>No update needed"]
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style F fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style G fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style H fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style I fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style J fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style K fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style L fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style M fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+```
 
 **Code**:
 
@@ -1371,6 +1522,29 @@ app.post("/api/push/update-subscription", async (req, res) => {
 
 Playwright's network interception can simulate offline conditions and verify that the service worker serves cached responses correctly.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["Playwright test starts"] --> B["page.goto() online<br/>Populate SW cache"]
+  B --> C["waitForFunction:<br/>SW controller !== null"]
+  C --> D["context.setOffline(true)<br/>Simulate offline"]
+  D --> E["page.goto() offline<br/>SW intercepts"]
+  E --> F{"SW serves<br/>cached response?"}
+  F -->|"Yes — cache hit"| G["expect(heading).toBeVisible()<br/>Test PASSES"]
+  F -->|"No — browser error"| H["Test FAILS<br/>SW caching broken"]
+  G --> I["context.setOffline(false)<br/>Restore network"]
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style F fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style G fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style H fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style I fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+```
+
 **Code**:
 
 ```javascript
@@ -1720,6 +1894,27 @@ if ("launchQueue" in window) {
 
 Large PWAs can partition their service worker scope to isolate caching and update behavior per section, allowing sections to update independently without affecting the whole app.
 
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["Browser request"] --> B{"URL scope match"}
+  B -->|"/dashboard/*"| C["Dashboard SW<br/>scope: /dashboard/"]
+  B -->|"/editor/*"| D["Editor SW<br/>scope: /editor/"]
+  B -->|"/* (everything else)"| E["Main SW<br/>scope: /"]
+  C --> F["Dashboard-specific<br/>cache + strategies<br/>Independent updates"]
+  D --> G["Editor-specific<br/>offline support<br/>File system integration"]
+  E --> H["App shell<br/>Common routes<br/>Navigation"]
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style E fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style F fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style G fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+```
+
 **Code**:
 
 ```javascript
@@ -2049,6 +2244,33 @@ echo '[{ "relation": ["delegate_permission/common.handle_all_urls"],
 ## Example 85: PWA Production Checklist — Manifest, Icons, HTTPS, Service Worker, Offline, Performance
 
 A comprehensive production checklist verifying all mandatory PWA requirements before deployment.
+
+```mermaid
+%% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
+graph TD
+  A["PWA Production<br/>Verification"] --> B["Manifest checks<br/>name, short_name, start_url<br/>display, 192px icon, 512px icon<br/>maskable icon"]
+  A --> C["Service Worker checks<br/>active controller<br/>caches populated"]
+  A --> D["Security checks<br/>HTTPS or localhost"]
+  A --> E["Offline checks<br/>/offline.html cached"]
+  A --> F["Performance checks<br/>viewport meta<br/>theme-color meta"]
+  B --> G{"All PASS?"}
+  C --> G
+  D --> G
+  E --> G
+  F --> G
+  G -->|"Yes"| H["Deploy to production"]
+  G -->|"No"| I["Fix failing checks<br/>Re-verify"]
+
+  style A fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
+  style B fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style C fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+  style D fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style E fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#000
+  style F fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style G fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+  style H fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  style I fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+```
 
 **Code**:
 

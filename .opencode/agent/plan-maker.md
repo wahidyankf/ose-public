@@ -158,6 +158,14 @@ See [Trunk Based Development Convention](../../governance/development/workflow/t
 - Dependencies are listed
 - Testing strategy is defined
 
+### Diagram Format Standard
+
+When plan content (any of `README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md`) requires a visualisation, ALWAYS prefer Mermaid over ASCII art:
+
+- **Use Mermaid** (`flowchart LR`, `sequenceDiagram`, `stateDiagram-v2`, `erDiagram`, `classDiagram`, etc.) for all non-trivial visualisations — component interactions, data flows, sequences, state machines, decision branches.
+- **Use ASCII art only** for simple directory trees or rare edge cases where Mermaid is genuinely not the right fit (e.g., table-like comparisons that render poorly in Mermaid).
+- Follow full Mermaid syntax rules in [governance/conventions/formatting/diagrams.md](../../governance/conventions/formatting/diagrams.md): `LR` orientation default, colour-blind-friendly palette, `%%` comment syntax.
+
 ### Delivery Checklist Quality
 
 - Steps are executable (clear actions)

@@ -8,7 +8,7 @@ RUN node -e " \
   const pkg = JSON.parse(require('fs').readFileSync('package.json','utf8')); \
   delete pkg.dependencies['@open-sharia-enterprise/ts-ui']; \
   require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2)); \
-" && npm install --ignore-scripts
+" && npm install --ignore-scripts --legacy-peer-deps
 
 # Install ts-ui transitive dependencies
 RUN npm install --save class-variance-authority@^0.7.0 clsx@^2.1.1 lucide-react@^0.447.0 radix-ui@^1.0.0 tailwind-merge@^2.5.3 --ignore-scripts

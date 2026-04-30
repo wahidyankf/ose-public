@@ -236,7 +236,7 @@ Then("the rendered list shows them with the same {string} timestamp", async ({ p
       globalThis as unknown as { __ol_db: { exec: (sql: string) => Promise<{ rows: Record<string, unknown>[] }[]> } }
     ).__ol_db.exec("SELECT created_at FROM journal_entries ORDER BY storage_seq ASC");
     // Convert to ISO string for Set comparison — PGlite may return Date objects.
-    return result[0].rows.map((r) => {
+    return (result[0]?.rows ?? []).map((r) => {
       const val = r["created_at"];
       return val instanceof Date ? val.toISOString() : String(val);
     });
@@ -254,9 +254,11 @@ Then("every entry has {string} equal to its {string}", async ({ page }, fieldA: 
       ).__ol_db.exec(`SELECT ${a}, ${b} FROM journal_entries`);
       // PGlite returns timestamptz as Date objects; convert to ISO strings.
       const normalize = (v: unknown) => (v instanceof Date ? v.toISOString() : v);
-      return res[0].rows.map((r) => ({
-        [a as string]: normalize(r[a as string]),
-        [b as string]: normalize(r[b as string]),
+      const ak = a as string;
+      const bk = b as string;
+      return (res[0]?.rows ?? []).map((r) => ({
+        [ak]: normalize(r[ak]),
+        [bk]: normalize(r[bk]),
       }));
     },
     [colA, colB],
@@ -534,15 +536,16 @@ Given(
   async ({ page }, field: string, entryName: string) => {
     const col = field === "createdAt" ? "created_at" : "updated_at";
     storedT0 = await page.evaluate(
-      async ([name, column]) => {
+      async ([name, column]: string[]) => {
+        const colName = column!;
         const res = await (
           globalThis as unknown as {
             __ol_db: {
               query: (sql: string, params: unknown[]) => Promise<{ rows: Record<string, unknown>[] }>;
             };
           }
-        ).__ol_db.query(`SELECT ${column} FROM journal_entries WHERE name = $1`, [name]);
-        const val = res.rows[0]?.[column];
+        ).__ol_db.query(`SELECT ${colName} FROM journal_entries WHERE name = $1`, [name!]);
+        const val = res.rows[0]?.[colName];
         // PGlite returns timestamptz as Date objects; convert to ISO string.
         return (val instanceof Date ? val.toISOString() : val) as string;
       },
@@ -555,15 +558,16 @@ Given(
 Then("the {string} entry's {string} is later than T0", async ({ page }, name: string, field: string) => {
   const col = field === "createdAt" ? "created_at" : "updated_at";
   const newVal = await page.evaluate(
-    async ([entryName, column]) => {
+    async ([entryName, column]: string[]) => {
+      const colName = column!;
       const res = await (
         globalThis as unknown as {
           __ol_db: {
             query: (sql: string, params: unknown[]) => Promise<{ rows: Record<string, unknown>[] }>;
           };
         }
-      ).__ol_db.query(`SELECT ${column} FROM journal_entries WHERE name = $1`, [entryName]);
-      const val = res.rows[0]?.[column];
+      ).__ol_db.query(`SELECT ${colName} FROM journal_entries WHERE name = $1`, [entryName!]);
+      const val = res.rows[0]?.[colName];
       // PGlite returns timestamptz as Date objects; convert to ISO string.
       return (val instanceof Date ? val.toISOString() : val) as string;
     },
@@ -651,7 +655,7 @@ Then(
           };
         }
       ).__ol_db.exec("SELECT count(*) as count FROM journal_entries");
-      return Number(res[0].rows[0]?.["count"]);
+      return Number(res[0]?.rows[0]?.["count"] ?? 0);
     });
     expect(count).toBe(3);
   },
@@ -666,7 +670,7 @@ Then("PGlite database {string} \\(IndexedDB) remains empty", async ({ page }, _d
         };
       }
     ).__ol_db.exec("SELECT count(*) as count FROM journal_entries");
-    return Number(res[0].rows[0]?.["count"]);
+    return Number(res[0]?.rows[0]?.["count"] ?? 0);
   });
   expect(count).toBe(0);
 });

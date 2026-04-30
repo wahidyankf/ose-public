@@ -19,3 +19,5 @@ layout: list
   - [Terraform](/en/learn/software-engineering/infrastructure/tools/terraform)
   - [Docker](/en/learn/software-engineering/infrastructure/tools/docker)
   - [Kubernetes](/en/learn/software-engineering/infrastructure/tools/kubernetes)
+  - [K3s](/en/learn/software-engineering/infrastructure/tools/k3s)
+  - [Proxmox VE](/en/learn/software-engineering/infrastructure/tools/proxmox)

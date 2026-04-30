@@ -18,5 +18,7 @@ layout: list
   - [Ts Trpc](/en/learn/software-engineering/platform-web/tools/ts-trpc)
   - [Ts Zod](/en/learn/software-engineering/platform-web/tools/ts-zod)
   - [Fe Tailwindcss](/en/learn/software-engineering/platform-web/tools/fe-tailwindcss)
+  - [AI-Powered Apps](/en/learn/software-engineering/platform-web/tools/ai-powered-apps)
+  - [Progressive Web Apps](/en/learn/software-engineering/platform-web/tools/progressive-web-apps)
   - [Elixir Phoenix Liveview](/en/learn/software-engineering/platform-web/tools/elixir-phoenix-liveview)
 - [Overview](/en/learn/software-engineering/platform-web/overview)

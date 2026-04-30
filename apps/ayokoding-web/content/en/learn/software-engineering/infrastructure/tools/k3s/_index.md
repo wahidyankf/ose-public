@@ -8,3 +8,7 @@ tags: ["k3s", "kubernetes", "infrastructure", "containers"]
 ---
 
 - [By Example](/en/learn/software-engineering/infrastructure/tools/k3s/by-example)
+  - [Overview](/en/learn/software-engineering/infrastructure/tools/k3s/by-example/overview)
+  - [Beginner](/en/learn/software-engineering/infrastructure/tools/k3s/by-example/beginner)
+  - [Intermediate](/en/learn/software-engineering/infrastructure/tools/k3s/by-example/intermediate)
+  - [Advanced](/en/learn/software-engineering/infrastructure/tools/k3s/by-example/advanced)

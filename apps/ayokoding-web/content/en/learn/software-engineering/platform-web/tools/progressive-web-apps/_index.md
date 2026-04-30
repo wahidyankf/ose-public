@@ -8,3 +8,7 @@ tags: ["pwa", "progressive-web-apps", "service-worker", "workbox", "offline"]
 ---
 
 - [By Example](/en/learn/software-engineering/platform-web/tools/progressive-web-apps/by-example)
+  - [Overview](/en/learn/software-engineering/platform-web/tools/progressive-web-apps/by-example/overview)
+  - [Beginner](/en/learn/software-engineering/platform-web/tools/progressive-web-apps/by-example/beginner)
+  - [Intermediate](/en/learn/software-engineering/platform-web/tools/progressive-web-apps/by-example/intermediate)
+  - [Advanced](/en/learn/software-engineering/platform-web/tools/progressive-web-apps/by-example/advanced)

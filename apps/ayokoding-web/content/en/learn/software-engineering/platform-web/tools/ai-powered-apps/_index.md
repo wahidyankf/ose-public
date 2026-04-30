@@ -8,3 +8,7 @@ tags: ["ai", "llm", "vercel-ai-sdk", "rag", "agents", "typescript"]
 ---
 
 - [By Example](/en/learn/software-engineering/platform-web/tools/ai-powered-apps/by-example)
+  - [Overview](/en/learn/software-engineering/platform-web/tools/ai-powered-apps/by-example/overview)
+  - [Beginner](/en/learn/software-engineering/platform-web/tools/ai-powered-apps/by-example/beginner)
+  - [Intermediate](/en/learn/software-engineering/platform-web/tools/ai-powered-apps/by-example/intermediate)
+  - [Advanced](/en/learn/software-engineering/platform-web/tools/ai-powered-apps/by-example/advanced)

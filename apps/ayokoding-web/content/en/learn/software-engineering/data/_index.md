@@ -6,8 +6,6 @@ draft: false
 ---
 
 - [Overview](/en/learn/software-engineering/data/overview)
-- [Analytics](/en/learn/software-engineering/data/analytics)
-  - [By Example](/en/learn/software-engineering/data/analytics/by-example)
 - [Databases](/en/learn/software-engineering/data/databases)
   - [Overview](/en/learn/software-engineering/data/databases/overview)
   - [Datomic](/en/learn/software-engineering/data/databases/datomic)
@@ -26,3 +24,5 @@ draft: false
   - [TypeScript Effect SQL](/en/learn/software-engineering/data/tools/typescript-effect-sql)
   - [C# EF Core](/en/learn/software-engineering/data/tools/csharp-ef-core)
   - [Clojure Migratus](/en/learn/software-engineering/data/tools/clojure-migratus)
+- [Analytics](/en/learn/software-engineering/data/analytics)
+  - [By Example](/en/learn/software-engineering/data/analytics/by-example)

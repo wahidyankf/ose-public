@@ -8,3 +8,7 @@ tags: ["webassembly", "wasm", "rust", "emscripten", "wasi"]
 ---
 
 - [By Example](/en/learn/software-engineering/programming-languages/webassembly/by-example)
+  - [Overview](/en/learn/software-engineering/programming-languages/webassembly/by-example/overview)
+  - [Beginner](/en/learn/software-engineering/programming-languages/webassembly/by-example/beginner)
+  - [Intermediate](/en/learn/software-engineering/programming-languages/webassembly/by-example/intermediate)
+  - [Advanced](/en/learn/software-engineering/programming-languages/webassembly/by-example/advanced)

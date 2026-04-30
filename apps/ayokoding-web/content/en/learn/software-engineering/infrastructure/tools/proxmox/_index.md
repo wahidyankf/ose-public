@@ -8,3 +8,7 @@ tags: ["proxmox", "virtualization", "infrastructure", "kvm", "lxc"]
 ---
 
 - [By Example](/en/learn/software-engineering/infrastructure/tools/proxmox/by-example)
+  - [Overview](/en/learn/software-engineering/infrastructure/tools/proxmox/by-example/overview)
+  - [Beginner](/en/learn/software-engineering/infrastructure/tools/proxmox/by-example/beginner)
+  - [Intermediate](/en/learn/software-engineering/infrastructure/tools/proxmox/by-example/intermediate)
+  - [Advanced](/en/learn/software-engineering/infrastructure/tools/proxmox/by-example/advanced)

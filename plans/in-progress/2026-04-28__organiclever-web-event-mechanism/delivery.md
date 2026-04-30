@@ -87,10 +87,10 @@ starts after this gear-up archives.
 
 ### 0.1 Install PGlite + Effect + XState
 
-- [ ] From `ose-public` root: `cd apps/organiclever-web && npm install @electric-sql/pglite effect xstate @xstate/react --save`
-      (let npm resolve: latest 0.x for PGlite; latest 3.x for `effect` — pin to 3.x
-      with a caret range, v4 is still beta as of April 2026; latest 5.x for `xstate`
-      and `@xstate/react` — both must be v5.x to ensure API compatibility)
+- [ ] From `ose-public` root: `cd apps/organiclever-web && npm install @electric-sql/pglite effect@^3 xstate@^5 @xstate/react@^5 --save`
+      (version pins enforce: latest 0.x for PGlite; `effect@^3` locks to v3.x caret range —
+      v4 is still beta as of April 2026 and has breaking changes; `xstate@^5` and
+      `@xstate/react@^5` — both must be v5.x to ensure API compatibility)
 - [ ] `cd apps/organiclever-web && npm install -D @effect/vitest`
       (Layer-swap test helper; devDep only)
 - [ ] Confirm licenses:
@@ -194,15 +194,15 @@ starts after this gear-up archives.
 
 #### 0.4.c Runner
 
-- [ ] Create `apps/organiclever-web/src/lib/journal/run-migrations.ts`:
+- [ ] Create `apps/organiclever-web/src/lib/journal/run-migrations.ts` implementing `runMigrations(db: PGlite): Promise<void>`:
   - [ ] `import { MIGRATIONS } from "./migrations/index.generated"`
-  - [ ] `export async function runMigrations(db: PGlite): Promise<void>`: - [ ] `await db.exec("CREATE TABLE IF NOT EXISTS _migrations (id TEXT PRIMARY KEY, applied_at TIMESTAMPTZ NOT NULL DEFAULT now())")` - [ ] `const applied = new Set((await db.query<{ id: string }>("SELECT id FROM _migrations")).rows.map(r => r.id))` - [ ] For each `m` in `MIGRATIONS` not in `applied`:
-        `typescript
-await db.transaction(async tx => {
-  await m.up(tx);
-  await tx.query("INSERT INTO _migrations(id) VALUES($1)", [m.id]);
-});
-`
+  - [ ] Create `_migrations` tracking table:
+        `await db.exec("CREATE TABLE IF NOT EXISTS _migrations (id TEXT PRIMARY KEY, applied_at TIMESTAMPTZ NOT NULL DEFAULT now())")`
+  - [ ] Load applied set:
+        `const applied = new Set((await db.query<{ id: string }>("SELECT id FROM _migrations")).rows.map(r => r.id))`
+  - [ ] For each pending migration `m` in `MIGRATIONS` not in `applied`, run in a
+        per-migration transaction: call `m.up(tx)` then
+        `await tx.query("INSERT INTO _migrations(id) VALUES($1)", [m.id])`
 
 #### 0.4.d Runner unit tests
 

@@ -9,11 +9,11 @@ over IndexedDB), plus a list view (sorted newest-first by `createdAt`) with per-
 **edit**, **delete**, and **bring-to-top** (rearrange). No entry-type-specific schemas,
 no analytics, no routines — just the round-trip skeleton that proves the data path works.
 
-The full path is wired through **Effect.ts** as the FP runtime (typed error channel,
-Schema-based decoding, `ManagedRuntime` for React integration). The store API returns
-`Effect<A, StoreError, PgliteService>`; the React layer is the only boundary that calls
-`runtime.runPromise(...)` (run-at-the-edge pattern). XState is **not** adopted in the
-gear-up — Effect alone covers form-input decoding, store IO, and typed-error surfacing.
+The full path is wired through **Effect.ts** as the FP runtime for typed IO (typed error
+channel, Schema-based decoding, `ManagedRuntime` for React integration) and **XState v5**
+for application-level state transitions (`initializing` → `ready.idle` ⇄ `ready.mutating`
+| `error`). Effect owns the store layer; XState owns when transitions happen. The
+integration boundary is `fromPromise` actors calling `runtime.runPromise`.
 
 **Submission**: an array `[{name, payload}, ...]`. The batch is **flattened** into the
 existing list (appended in storage; sorted on render). All entries in one batch share

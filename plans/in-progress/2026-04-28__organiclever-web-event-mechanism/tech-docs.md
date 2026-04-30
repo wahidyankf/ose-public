@@ -1292,7 +1292,7 @@ on `/app` only — landing page (`/`) is unaffected. Postgres dialect also
 mirrors the eventual `organiclever-be` Postgres database, so SQL written here
 is portable when the PWA sync plan ships.
 
-`wa-sqlite` (MIT, ~800 KB) was the lightweight runner-up; if bundle size
+`wa-sqlite` (MIT, ~800 KB _judgment call_) was the lightweight runner-up; if bundle size
 becomes a hard blocker, switching to it is mechanical because the public
 `journal-store.ts` API is dialect-neutral (only the SQL strings change).
 

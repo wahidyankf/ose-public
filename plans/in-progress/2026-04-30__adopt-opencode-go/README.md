@@ -4,8 +4,9 @@
 
 Migrate the OpenCode configuration in `ose-public` from Z.ai (`zai-coding-plan/*`)
 to [OpenCode Go](https://opencode.ai/go) (`opencode-go/*`). This replaces the model
-routing layer while preserving or improving web-search MCP capabilities via already-
-configured alternatives (Perplexity, Playwright).
+routing layer and upgrades web search from Z.ai-bundled MCPs to OpenCode's native
+Exa integration (via `OPENCODE_ENABLE_EXA=true` env var), with Perplexity MCP
+retained in `opencode.json` as a confirmed fallback.
 
 OpenCode Go is a subscription service ($5 first month, $10/month thereafter) offering
 14 curated open-source coding models across 6 labs — Zhipu, Moonshot, DeepSeek,
@@ -76,12 +77,25 @@ and [`2026-04-28__organiclever-web-event-mechanism/`](../2026-04-28__organicleve
 It modifies only tooling configuration and `rhino-cli` internals; it does not touch
 app source code. No blocking dependency in either direction.
 
+## Web Search Strategy
+
+| Mechanism | Type | Status | Notes |
+| --------- | ---- | ------ | ----- |
+| `OPENCODE_ENABLE_EXA=true` | Env var — built-in Exa tool | **Primary** | No API key needed; unconfirmed with OpenCode Go models specifically |
+| Perplexity MCP (`perplexity` in `opencode.json`) | MCP server | **Configured fallback** | Requires `PERPLEXITY_API_KEY`; provider-agnostic |
+| Brave Search MCP | MCP server | Alternative (not configured) | Best free-tier option if no Perplexity key |
+
+Exa is the lightest path — one env var, no extra key — but its reliability with
+OpenCode Go models is not officially confirmed. Perplexity MCP in `opencode.json`
+provides a confirmed, provider-agnostic safety net if Exa fails.
+
 ## Success Criteria (Summary)
 
 1. `ConvertModel("sonnet")` and `ConvertModel("")` return `opencode-go/minimax-m2.7`
 2. `ConvertModel("haiku")` returns `opencode-go/glm-5`
 3. `.opencode/opencode.json` contains `opencode-go/*` model IDs and no Z.ai MCP entries
-4. `npm run validate:config` passes (sync + validation green)
-5. `nx run rhino-cli:test:unit` passes (≥90% coverage)
-6. `nx run rhino-cli:test:integration` passes
-7. `model-selection.md` table shows OpenCode Go equivalents
+4. `OPENCODE_ENABLE_EXA=true` is set in shell and documented for all developers
+5. `npm run validate:config` passes (sync + validation green)
+6. `nx run rhino-cli:test:unit` passes (≥90% coverage)
+7. `nx run rhino-cli:test:integration` passes
+8. `model-selection.md` table shows OpenCode Go equivalents

@@ -46,9 +46,9 @@ IDs for all Claude tier aliases.
 - `"web-reader"`
 - `"zread"`
 
-The remaining MCP servers (`perplexity`, `playwright`, `nx-mcp`) must be
-preserved unchanged. Perplexity covers web-search capability; Playwright covers
-page reading.
+The remaining MCP servers (`perplexity`, `playwright`, `nx-mcp`) must be preserved
+unchanged. Perplexity is the configured fallback for web search (see FR-8); Playwright
+covers page reading/browsing.
 
 ### FR-4: All OpenCode agent files reflect new model IDs
 
@@ -70,7 +70,33 @@ All `rhino-cli` unit and integration tests must pass with the new model IDs:
 `npm run validate:config` (which runs `validate:claude` → `sync:claude-to-opencode`
 → `validate:opencode`) must exit 0 after all changes.
 
-### FR-7: model-selection.md updated
+### FR-8: Exa web search enabled as primary mechanism
+
+The `OPENCODE_ENABLE_EXA=true` environment variable must be set in the developer's
+shell and documented in the team's onboarding notes so every developer benefits from
+the built-in Exa `websearch` tool in OpenCode sessions.
+
+**Primary**: `OPENCODE_ENABLE_EXA=true` — activates OpenCode's native Exa-powered
+`websearch` and `codesearch` tools. No separate API key required. Exa is the lightest
+path: one env var, no MCP server process.
+
+**Configured fallback**: Perplexity MCP — already wired in `.opencode/opencode.json`.
+Requires `PERPLEXITY_API_KEY`. Activates automatically when the `perplexity` MCP
+server is running; provides cited, research-quality answers. Used when Exa is
+unavailable or returns insufficient results.
+
+**Alternative (not configured)**: Brave Search MCP — best free-tier option if no
+Perplexity subscription. Provides 10–20× better free quota than Google's MCP. Can
+be added to `opencode.json` by any developer who prefers it.
+
+> **Caveat**: Exa's reliability with OpenCode Go models specifically is not
+> officially confirmed — the OpenCode docs say the tool activates for "the OpenCode
+> provider or when `OPENCODE_ENABLE_EXA` is set," leaving ambiguity about whether
+> OpenCode Go counts as "the OpenCode provider." Perplexity MCP is the safe,
+> confirmed fallback for web search if Exa proves non-functional with
+> `opencode-go/*` models.
+
+### FR-9: model-selection.md updated
 
 The "OpenCode / GLM Equivalents" section of
 `governance/development/agents/model-selection.md` must reflect the new OpenCode
@@ -79,6 +105,8 @@ Go provider, including:
 - Updated model ID mapping table
 - Updated "3-to-2 Tier Collapse" explanation (OpenCode Go has 14 models, not 2)
 - Updated benchmark notes for `minimax-m2.7`
+- New "Web Search in OpenCode Sessions" subsection documenting Exa (primary),
+  Perplexity MCP (fallback), and Brave Search MCP (alternative)
 
 ## Non-Functional Requirements
 
@@ -91,6 +119,9 @@ Go provider, including:
   The key must never appear in any committed file.
 - **Single commit per concern**: rhino-cli code changes, config changes, and doc
   changes are separate commits.
+- **Exa env var not committed**: `OPENCODE_ENABLE_EXA=true` is a shell environment
+  variable set in `~/.zshrc` or `~/.bashrc`. It must never appear in any committed
+  file in the repository.
 
 ## Acceptance Criteria (Gherkin)
 
@@ -154,4 +185,17 @@ Feature: OpenCode Go Model Provider Adoption
     When "nx run rhino-cli:test:quick" is executed
     Then the command exits with code 0
     And line coverage remains at or above 90%
+
+  Scenario: Exa web search is the primary search mechanism
+    Given OPENCODE_ENABLE_EXA is set to "true" in the shell environment
+    When an OpenCode session is opened with the opencode-go provider active
+    Then the model has access to the built-in "websearch" Exa tool
+    And the model has access to the built-in "codesearch" Exa tool
+
+  Scenario: Perplexity MCP is available as fallback web search
+    Given the .opencode/opencode.json "perplexity" mcp entry is present
+    And PERPLEXITY_API_KEY is set in the shell environment
+    When an OpenCode session is opened
+    Then the model can invoke the Perplexity MCP server for web research
+    And the Perplexity MCP operates independently of the OpenCode Go model provider
 ```

@@ -269,13 +269,53 @@ Full target content:
 Removed entries: `zai-mcp-server`, `web-search-prime`, `web-reader`, `zread`.
 Added: `provider.opencode-go` block with env-var API key.
 
-**MCP capability coverage after removal**:
+**MCP/tool capability coverage after removal**:
 
-| Capability   | Before (Z.ai)         | After                        |
-| ------------ | --------------------- | ---------------------------- |
-| Web search   | `web-search-prime`    | `perplexity` (already wired) |
-| Web reading  | `web-reader`, `zread` | `playwright` (already wired) |
-| Nx workspace | `nx-mcp`              | `nx-mcp` (unchanged)         |
+| Capability | Before (Z.ai) | After | Mechanism |
+| ---------- | ------------- | ----- | --------- |
+| Web search | `web-search-prime` | Exa built-in tool | `OPENCODE_ENABLE_EXA=true` env var (primary) |
+| Web search fallback | — | `perplexity` MCP | `PERPLEXITY_API_KEY` + existing MCP entry |
+| Web reading | `web-reader`, `zread` | `playwright` MCP | already wired |
+| Nx workspace | `nx-mcp` | `nx-mcp` | unchanged |
+
+**Web Search Strategy** (detail):
+
+OpenCode's built-in `websearch` tool is powered by Exa AI and is normally
+gated behind an OpenCode Zen subscription. Setting `OPENCODE_ENABLE_EXA=true`
+in the shell bypasses this gate for any subscription tier. Two equivalent
+alternatives exist:
+
+```bash
+# Any of these three activate Exa search tools:
+export OPENCODE_ENABLE_EXA=true          # recommended — scoped to Exa only
+export OPENCODE_EXPERIMENTAL_EXA=true   # same effect
+export OPENCODE_EXPERIMENTAL=true       # Exa + all other experimental features
+```
+
+No Exa API key is required — Exa's hosted endpoint is free on the Exa side.
+Token cost of search results flowing into context counts against OpenCode Go
+usage limits.
+
+> **Caveat**: Exa + OpenCode Go is not officially confirmed to work. The docs
+> say the tool activates for "the OpenCode provider or when `OPENCODE_ENABLE_EXA`
+> is set," leaving it ambiguous whether `opencode-go` counts as "the OpenCode
+> provider." Perplexity MCP (already wired in `opencode.json`) is the safe,
+> provider-agnostic fallback.
+
+**Alternative — Brave Search MCP** (not configured by default):
+
+For developers without a Perplexity subscription, Brave Search MCP is the best
+free-tier alternative. It provides 10–20× better free quota than Google's MCP
+and covers web, local, image, video, news, and AI summary search modes. To
+add it, append to the `mcp` block in `.opencode/opencode.json`:
+
+```json
+"brave-search": {
+  "type": "local",
+  "command": ["npx", "-y", "@modelcontextprotocol/server-brave-search"],
+  "env": { "BRAVE_API_KEY": "{env:BRAVE_API_KEY}" }
+}
+```
 
 ### 13. `governance/development/agents/model-selection.md`
 
@@ -320,6 +360,23 @@ Go subscription without per-token overage.
 If a stronger model joins the OpenCode Go roster, update only `ConvertModel()`
 in `apps/rhino-cli/internal/agents/converter.go` and re-run
 `npm run sync:claude-to-opencode`. No agent files need manual editing.
+
+### Web Search in OpenCode Sessions
+
+OpenCode's built-in `websearch` and `codesearch` tools (powered by Exa AI) are
+the primary search mechanism. Enable them by setting `OPENCODE_ENABLE_EXA=true`
+in the shell environment — no separate API key or MCP server required.
+
+The Perplexity MCP in `.opencode/opencode.json` acts as the configured fallback
+for research-quality, cited web answers when Exa is unavailable or insufficient.
+Brave Search MCP is an alternative for developers without a Perplexity key.
+
+To add web search, each developer sets in `~/.zshrc` or `~/.bashrc`:
+
+```bash
+export OPENCODE_ENABLE_EXA=true
+export PERPLEXITY_API_KEY="<your-key>"   # optional, for Perplexity fallback
+```
 ```
 
 ## Regeneration Step
@@ -341,27 +398,36 @@ To use OpenCode Go locally:
 
 1. Subscribe at [opencode.ai/go](https://opencode.ai/go)
 2. Copy the API key from the OpenCode console
-3. Set the environment variable:
-
+3. Set the model provider env var:
    ```bash
    export OPENCODE_GO_API_KEY="<your-key>"
    ```
-
    Add to `~/.zshrc` or `~/.bashrc` for persistence. Do NOT add to `.env` in
    the repository — API keys are never committed.
-
-4. Open OpenCode: run `/connect` in the TUI, select "OpenCode Go", paste the key
+4. Enable Exa web search (primary):
+   ```bash
+   export OPENCODE_ENABLE_EXA=true
+   ```
+   Add to `~/.zshrc` or `~/.bashrc` alongside the API key. No Exa API key needed.
+5. Optionally enable Perplexity fallback search:
+   ```bash
+   export PERPLEXITY_API_KEY="<your-key>"
+   ```
+   The Perplexity MCP entry is already in `opencode.json`; it activates when
+   this env var is set.
+6. Open OpenCode: run `/connect` in the TUI, select "OpenCode Go", paste the key
    (this populates the key in the OpenCode session; alternatively the env var
    is sufficient if `opencode.json` uses `{env:OPENCODE_GO_API_KEY}`)
-5. Run `/models` to verify available model slugs match the values in
+7. Run `/models` to verify available model slugs match the values in
    `opencode.json`
 
 ## Risk Assessment
 
-| Risk                             | Likelihood | Mitigation                                             |
-| -------------------------------- | ---------- | ------------------------------------------------------ |
-| Model slug differs from expected | Medium     | Verify via `/models` before code changes               |
-| OpenCode Go beta service outage  | Low        | OpenCode Go has US/EU/SG PoPs; fallback to Claude Code |
-| MiniMax M2.7 slower than GLM-5.1 | Low        | Perplexity + Playwright are local/independent of model |
-| Perplexity MCP doesn't start     | Low        | Already configured; test before committing             |
-| Test count changes with rename   | Medium     | Search all usages of old step constant before rename   |
+| Risk | Likelihood | Mitigation |
+| ---- | ---------- | ---------- |
+| Model slug differs from expected | Medium | Verify via `/models` before code changes |
+| OpenCode Go beta service outage | Low | OpenCode Go has US/EU/SG PoPs; fallback to Claude Code |
+| MiniMax M2.7 slower than GLM-5.1 | Low | Perplexity + Playwright are local/independent of model |
+| Exa doesn't work with `opencode-go` models | Medium | Perplexity MCP is configured fallback; test Exa in Phase 0 before relying on it |
+| Perplexity MCP doesn't start | Low | Already configured; test with `PERPLEXITY_API_KEY` set before committing |
+| Test count changes with rename | Medium | Search all usages of old step constant before rename |

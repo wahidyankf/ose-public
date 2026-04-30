@@ -13,12 +13,14 @@ complete first.
   - `feat(rhino-cli): switch ConvertModel to opencode-go provider IDs`
   - `test(rhino-cli): update model ID expectations to opencode-go`
   - `chore(opencode): switch to opencode-go provider; remove Z.ai MCPs`
-  - `docs(model-selection): update OpenCode Go equivalents table`
+  - `docs(model-selection): update OpenCode Go equivalents and web search docs`
 - Do NOT amend; create a NEW commit if pre-commit / pre-push hooks fail.
 
 ---
 
-## Phase 0 — Prerequisites and Slug Verification (Manual, No Code)
+## Phase 0 — Prerequisites, Slug Verification, and Exa Smoke-Test (Manual, No Code)
+
+### Model slug verification
 
 - [ ] Confirm `OPENCODE_GO_API_KEY` is set in the local shell:
 
@@ -33,6 +35,27 @@ complete first.
 - [ ] Confirm the small model slug: verify `glm-5` appears exactly as listed
   - If the slug is different, record the correct slug and use it throughout
 - [ ] Note the verified slugs: large = `_______________`, small = `_______________`
+
+### Exa web search smoke-test
+
+- [ ] Set `OPENCODE_ENABLE_EXA=true` in the current shell:
+  ```bash
+  export OPENCODE_ENABLE_EXA=true
+  ```
+- [ ] Open an OpenCode session and ask the model to search the web for something
+      simple (e.g., "search for the latest OpenCode release notes")
+  - If the model invokes the `websearch` tool → Exa works with OpenCode Go ✓
+  - If the model says web search is unavailable or returns an error → Exa is
+    not confirmed with `opencode-go` models; Perplexity MCP is the fallback
+- [ ] Record Exa status: works ☐ / not available ☐
+- [ ] If Exa works: add to `~/.zshrc` or `~/.bashrc` for persistence:
+  ```bash
+  export OPENCODE_ENABLE_EXA=true
+  ```
+- [ ] Test Perplexity MCP fallback (optional but recommended):
+  - Confirm `PERPLEXITY_API_KEY` is set: `echo $PERPLEXITY_API_KEY`
+  - In the OpenCode session, ask the model to use Perplexity for a web search
+  - Expect: the `perplexity` MCP server starts and returns results
 
 ---
 
@@ -209,7 +232,11 @@ complete first.
   - `"web-reader"`
   - `"zread"`
 - [ ] Verify the remaining `"mcp"` block contains exactly:
-      `"perplexity"`, `"nx-mcp"`, `"playwright"`
+  `"perplexity"`, `"nx-mcp"`, `"playwright"`
+  - `perplexity` — retained as the configured web search fallback (used when
+    `PERPLEXITY_API_KEY` is set and Exa is unavailable or insufficient)
+  - `playwright` — retained for page reading/browser interaction
+  - `nx-mcp` — unchanged; Nx workspace tooling
 - [ ] Validate JSON syntax: `cat .opencode/opencode.json | python3 -m json.tool`
 
 ### 3.2 Regenerate .opencode/agent/ files
@@ -267,6 +294,11 @@ complete first.
 - [ ] Verify the section heading is now `## OpenCode / OpenCode Go Equivalents`
 - [ ] Ensure the table contains three rows: omit → `opencode-go/minimax-m2.7`,
       sonnet → `opencode-go/minimax-m2.7`, haiku → `opencode-go/glm-5`
+- [ ] Confirm the "Web Search in OpenCode Sessions" subsection is present,
+      documenting:
+  - `OPENCODE_ENABLE_EXA=true` as the primary mechanism (no API key needed)
+  - Perplexity MCP (in `opencode.json`) as the configured fallback
+  - Brave Search MCP as the alternative for developers without a Perplexity key
 - [ ] Run markdown linting:
 
   ```bash

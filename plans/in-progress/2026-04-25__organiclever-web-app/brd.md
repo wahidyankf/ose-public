@@ -25,9 +25,9 @@ this exists in the current codebase beyond a placeholder.
 
 **Pain points addressed**:
 
-- The landing page is live but `/app` only carries the gear-up's provisional event-mechanism
-  page — visitors who click "Get started" see a generic kind/payload form, not the typed
-  loggers the design prototype promised. This plan delivers the full UX.
+- The landing page is live but `/app` only carries the gear-up's provisional journal page
+  (`<JournalPage />`) — visitors who click "Get started" see a generic name/payload form,
+  not the typed loggers the design prototype promised. This plan delivers the full UX.
 - The gear-up landed the storage primitive but not the typed `Schema` per kind, the screen
   shell, the analytics, or i18n. This plan builds those on top of the existing PGlite
   store rather than re-inventing it.
@@ -70,7 +70,7 @@ this exists in the current codebase beyond a placeholder.
 
 - PWA / cloud sync — the gear-up's Forward Compatibility section reserves the
   necessary columns; this plan does not enable the sync layer
-- Re-implementing the storage layer — gear-up's `lib/events/event-store.ts`,
+- Re-implementing the storage layer — gear-up's `lib/journal/journal-store.ts`,
   `runtime.ts`, `errors.ts`, and `schema.ts` are the canonical primitives; this
   plan extends them via a v2 migration + per-kind Schema, never replaces them
 - Re-installing Effect or PGlite — both already in `package.json` after the
@@ -86,7 +86,7 @@ this exists in the current codebase beyond a placeholder.
 
 | Risk                                      | Likelihood | Impact   | Mitigation                                                                                                                                                                                 |
 | ----------------------------------------- | ---------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Gear-up plan not yet shipped              | Medium     | Blocking | This plan assumes `2026-04-28__organiclever-web-event-mechanism` is in `plans/done/`; if still in-progress, that plan must merge first                                                     |
+| Gear-up plan not yet shipped              | Low        | Blocking | **Resolved** — `2026-04-30__organiclever-web-event-mechanism` is in `plans/done/`; gear-up artifacts are live in `apps/organiclever-web/src/lib/journal/`                                  |
 | Scope creep into Phase 10+                | Medium     | High     | Non-Goals list is firm; new ideas go to `ideas.md`, not into this plan                                                                                                                     |
 | IndexedDB quota (PGlite-managed)          | Low        | Low      | PGlite stores the entire DB in one IDB blob managed by Postgres internals; small JSON payloads keep usage under any browser quota; gear-up's typed-error path handles `StorageUnavailable` |
 | `/app` route regression                   | Low        | High     | Route already exists (provisional gear-up); this plan replaces the page body, not the route registration; `/` and `/system/status/be` untouched                                            |

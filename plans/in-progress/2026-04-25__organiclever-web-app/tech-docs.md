@@ -9,7 +9,7 @@ confirmed design decisions. Primary references by phase:
 - `raw/db.js` — Original prototype `OLDb` class + seed data. **Reference only**;
   this plan does NOT port the class. Storage is PGlite (gear-up); this plan
   reuses the seed _content_ (Yoka profile, Kettlebell day, Calisthenics + Super
-  Exercise routines, six recent events) for `lib/events/seed.ts`
+  Exercise routines, six recent entries) for `lib/journal/seed.ts`
 - `raw/i18n.js` — all translation keys (Phase 0 reference)
 - `raw/App.jsx` — shell layout, state model, screen stack (Phase 1 reference)
 - `raw/Components.jsx` — `TabBar`, `SideNav`, `AddEventSheet`, etc. (Phase 1 reference)
@@ -31,7 +31,7 @@ When any implementation detail is unclear, read the raw source before guessing.
 /                    → landing page (shipped by landing-uikit done plan)
 /app                 → app/app/page.tsx  ('use client', force-dynamic) — already
                        exists from the gear-up plan; this plan replaces its body
-                       with <AppRoot /> instead of the gear-up's <EventsPage />
+                       with <AppRoot /> instead of the gear-up's <JournalPage />
 /system/status/be    → existing, untouched
 ```
 
@@ -41,18 +41,19 @@ When any implementation detail is unclear, read the raw source before guessing.
 ## Assumed-Done Foundation (from the gear-up plan)
 
 This plan **does not re-create** any of the following. Treat them as fixed
-points landed by [`2026-04-28__organiclever-web-event-mechanism/`](../2026-04-28__organiclever-web-event-mechanism/README.md):
+points landed by [`2026-04-30__organiclever-web-event-mechanism/`](../../done/2026-04-30__organiclever-web-event-mechanism/README.md) (archived):
 
-| Artifact                                                               | Owner         | This plan's relationship                                                                            |
-| ---------------------------------------------------------------------- | ------------- | --------------------------------------------------------------------------------------------------- |
-| `apps/organiclever-web/src/lib/events/schema.ts`                       | gear-up       | Extended via per-kind `Schema.Union` narrowing the open `kind` discriminator                        |
-| `lib/events/errors.ts`                                                 | gear-up       | Reused; this plan adds no new tagged-error variants in v0                                           |
-| `lib/events/runtime.ts` (`PgliteService` Layer)                        | gear-up       | Reused; one `ManagedRuntime` lives at `<AppRoot />` and is provided down the tree via React Context |
-| `lib/events/event-store.ts` (Effect-returning)                         | gear-up       | Reused; typed loggers wrap `appendEvents` with kind-narrowed input, but never bypass the store      |
-| `lib/events/run-migrations.ts` + migration runner                      | gear-up       | Reused; this plan adds **one** new file under `lib/events/migrations/` (v2: typed-payload columns)  |
-| `lib/events/use-events.ts` hook                                        | gear-up       | Reused; new hooks (`useRoutines`, `useSettings`) follow the same `ManagedRuntime` bridge pattern    |
-| `effect`, `@effect/platform`, `@electric-sql/pglite`, `@effect/vitest` | gear-up       | Already in `package.json`; no install step                                                          |
-| ts-ui `Textarea` + `Badge`                                             | landing-uikit | Already in `libs/ts-ui`; consumed directly                                                          |
+| Artifact                                                                                                                   | Owner         | This plan's relationship                                                                                                                         |
+| -------------------------------------------------------------------------------------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `apps/organiclever-web/src/lib/journal/schema.ts`                                                                          | gear-up       | **Extended in Phase 0.1a**: adds `startedAt`, `finishedAt`, `labels` to `JournalEntry` + `NewEntryInput`; `name` field is the kind discriminator |
+| `lib/journal/errors.ts`                                                                                                    | gear-up       | Reused; this plan adds no new tagged-error variants in v0                                                                                        |
+| `lib/journal/runtime.ts` (`PgliteService` Layer, `makeJournalRuntime`)                                                     | gear-up       | Reused; one `ManagedRuntime` created in `<AppRoot />` via `useMemo`, prop-drilled to children                                                    |
+| `lib/journal/journal-store.ts` (`appendEntries`, `listEntries`, `updateEntry`, `deleteEntry`, `bumpEntry`, `clearEntries`) | gear-up       | **Extended in Phase 0.1a**: `appendEntries` updated to supply `started_at`, `finished_at`, `labels` matching v2 schema                           |
+| `lib/journal/run-migrations.ts` + migration runner                                                                         | gear-up       | Reused; this plan adds **one** new file under `lib/journal/migrations/` (v2: typed-payload columns)                                              |
+| `lib/journal/journal-machine.ts` (XState v5 `journalMachine`)                                                              | gear-up       | Reused; orchestrates `initializing → ready{idle↔mutating} → error` with buffered mutation events                                                 |
+| `lib/journal/use-journal.ts` (`useJournal` hook, `useActor` from `@xstate/react`)                                          | gear-up       | Reused; new hooks (`useRoutines`, `useSettings`) follow the same `ManagedRuntime` bridge pattern                                                 |
+| `effect`, `@effect/platform`, `@electric-sql/pglite`, `@effect/vitest`, `xstate`, `@xstate/react`                          | gear-up       | Already in `package.json`; no install step                                                                                                       |
+| ts-ui `Textarea` + `Badge`                                                                                                 | landing-uikit | Already in `libs/ts-ui`; consumed directly                                                                                                       |
 
 ## File Map
 
@@ -60,91 +61,101 @@ points landed by [`2026-04-28__organiclever-web-event-mechanism/`](../2026-04-28
 apps/organiclever-web/src/
 ├── app/
 │   └── app/
-│       └── page.tsx                   ← Phase 1 (app entry)
+│       └── page.tsx                    ← Phase 1 (replaces <JournalPage /> with <AppRoot />)
 ├── components/
 │   └── app/
-│       ├── app-root.tsx               ← Phase 1
-│       ├── tab-bar.tsx                ← Phase 1
-│       ├── side-nav.tsx               ← Phase 1
-│       ├── add-event-sheet.tsx        ← Phase 3
+│       ├── add-entry-button.tsx        ← gear-up provisional (delete or keep as dev panel)
+│       ├── entry-card.tsx              ← gear-up provisional (delete or keep as dev panel)
+│       ├── entry-form-sheet.tsx        ← gear-up provisional (delete or keep as dev panel)
+│       ├── journal-list.tsx            ← gear-up provisional (delete or keep as dev panel)
+│       ├── journal-page.tsx            ← gear-up provisional (replaced by AppRoot in Phase 1)
+│       ├── app-root.tsx                ← Phase 1 (new)
+│       ├── tab-bar.tsx                 ← Phase 1 (new; custom 64 px — NOT the ts-ui TabBar)
+│       ├── side-nav.tsx                ← Phase 1 (new)
+│       ├── add-event-sheet.tsx         ← Phase 3 (new)
 │       ├── home/
-│       │   ├── home-screen.tsx        ← Phase 2
-│       │   ├── week-rhythm-strip.tsx  ← Phase 2
-│       │   ├── event-entry.tsx        ← Phase 2
-│       │   ├── event-detail-sheet.tsx ← Phase 2
-│       │   ├── workout-module-view.tsx← Phase 2
-│       │   └── routine-card.tsx       ← Phase 2
+│       │   ├── home-screen.tsx         ← Phase 2
+│       │   ├── week-rhythm-strip.tsx   ← Phase 2
+│       │   ├── event-entry.tsx         ← Phase 2
+│       │   ├── event-detail-sheet.tsx  ← Phase 2
+│       │   ├── workout-module-view.tsx ← Phase 2
+│       │   └── routine-card.tsx        ← Phase 2
 │       ├── loggers/
-│       │   ├── logger-shell.tsx       ← Phase 3
-│       │   ├── reading-logger.tsx     ← Phase 3
-│       │   ├── learning-logger.tsx    ← Phase 3
-│       │   ├── meal-logger.tsx        ← Phase 3
-│       │   ├── focus-logger.tsx       ← Phase 3
-│       │   └── custom-event-logger.tsx← Phase 3
+│       │   ├── logger-shell.tsx        ← Phase 3
+│       │   ├── reading-logger.tsx      ← Phase 3
+│       │   ├── learning-logger.tsx     ← Phase 3
+│       │   ├── meal-logger.tsx         ← Phase 3
+│       │   ├── focus-logger.tsx        ← Phase 3
+│       │   └── custom-event-logger.tsx ← Phase 3
 │       ├── workout/
-│       │   ├── workout-screen.tsx     ← Phase 4
-│       │   ├── active-exercise-row.tsx← Phase 4
-│       │   ├── set-edit-sheet.tsx     ← Phase 4
-│       │   ├── rest-timer.tsx         ← Phase 4
-│       │   ├── set-timer-sheet.tsx    ← Phase 4
-│       │   └── finish-screen.tsx      ← Phase 4
+│       │   ├── workout-screen.tsx      ← Phase 4 (driven by workoutSessionMachine)
+│       │   ├── active-exercise-row.tsx ← Phase 4
+│       │   ├── set-edit-sheet.tsx      ← Phase 4
+│       │   ├── rest-timer.tsx          ← Phase 4
+│       │   ├── set-timer-sheet.tsx     ← Phase 4
+│       │   └── finish-screen.tsx       ← Phase 4
 │       ├── routine/
-│       │   ├── edit-routine-screen.tsx← Phase 5
-│       │   └── exercise-editor-row.tsx← Phase 5
+│       │   ├── edit-routine-screen.tsx ← Phase 5
+│       │   └── exercise-editor-row.tsx ← Phase 5
 │       ├── history/
-│       │   ├── history-screen.tsx     ← Phase 6
-│       │   ├── session-card.tsx       ← Phase 6
-│       │   └── weekly-bar-chart.tsx   ← Phase 6
+│       │   ├── history-screen.tsx      ← Phase 6
+│       │   ├── session-card.tsx        ← Phase 6
+│       │   └── weekly-bar-chart.tsx    ← Phase 6
 │       ├── progress/
-│       │   ├── progress-screen.tsx    ← Phase 7
+│       │   ├── progress-screen.tsx     ← Phase 7
 │       │   └── exercise-progress-card.tsx ← Phase 7
 │       └── settings/
-│           └── settings-screen.tsx    ← Phase 8
+│           └── settings-screen.tsx     ← Phase 8
 ├── lib/
-│   ├── events/                        ← gear-up plan (DO NOT RE-CREATE)
-│   │   ├── schema.ts                  ← gear-up; this plan extends via typed-payload union (see below)
-│   │   ├── errors.ts                  ← gear-up
-│   │   ├── runtime.ts                 ← gear-up
-│   │   ├── event-store.ts             ← gear-up
-│   │   ├── use-events.ts              ← gear-up
-│   │   ├── run-migrations.ts          ← gear-up
-│   │   ├── format-relative-time.ts    ← gear-up
+│   ├── journal/                        ← gear-up plan (DO NOT RE-CREATE existing files)
+│   │   ├── schema.ts                   ← gear-up; `name` field is the kind slug discriminator
+│   │   ├── errors.ts                   ← gear-up
+│   │   ├── runtime.ts                  ← gear-up (PgliteService Layer, makeJournalRuntime, idb://ol_journal_v1)
+│   │   ├── journal-store.ts            ← gear-up (appendEntries, listEntries, updateEntry, deleteEntry, bumpEntry, clearEntries)
+│   │   ├── journal-machine.ts          ← gear-up (XState v5 journalMachine)
+│   │   ├── use-journal.ts              ← gear-up (useJournal hook via useActor)
+│   │   ├── run-migrations.ts           ← gear-up
+│   │   ├── format-relative-time.ts     ← gear-up
+│   │   ├── types.ts                    ← gear-up (re-exports from schema.ts)
 │   │   ├── migrations/
-│   │   │   ├── 2026_04_28T14_05_30__create_events_table.ts   ← gear-up
-│   │   │   ├── <TIMESTAMP>__add_typed_payload_columns.ts ← THIS PLAN, Phase 0 (v2; use actual UTC timestamp at file creation)
-│   │   │   ├── <TIMESTAMP>__add_typed_payload_columns.unit.test.ts ← THIS PLAN, Phase 0
-│   │   │   └── index.generated.ts    ← gitignored, codegen
-│   │   ├── typed-payloads.ts          ← THIS PLAN, Phase 0 (per-kind Schema union)
-│   │   ├── typed-payloads.unit.test.ts ← THIS PLAN, Phase 0
-│   │   ├── routine-store.ts           ← THIS PLAN, Phase 0 (Effect-returning routines CRUD)
-│   │   ├── routine-store.unit.test.ts ← THIS PLAN, Phase 0
-│   │   ├── use-routines.ts            ← THIS PLAN, Phase 0 (React hook bridging routine-store via ManagedRuntime)
-│   │   ├── use-routines.unit.test.tsx ← THIS PLAN, Phase 0
-│   │   ├── settings-store.ts          ← THIS PLAN, Phase 0 (Effect-returning settings CRUD)
-│   │   ├── settings-store.unit.test.ts ← THIS PLAN, Phase 0
-│   │   ├── use-settings.ts            ← THIS PLAN, Phase 0 (React hook bridging settings-store via ManagedRuntime)
-│   │   ├── use-settings.unit.test.tsx ← THIS PLAN, Phase 0
-│   │   ├── seed.ts                    ← THIS PLAN, Phase 0 (typed seed for first-load)
-│   │   ├── stats.ts                   ← THIS PLAN, Phase 0.8 (Effect-returning stats aggregations consumed by Home + Progress)
-│   │   └── stats.unit.test.ts         ← THIS PLAN, Phase 0
+│   │   │   ├── 2026_04_28T14_05_30__create_journal_entries_table.ts ← gear-up
+│   │   │   ├── <TIMESTAMP>__add_typed_payload_columns.ts            ← THIS PLAN Phase 0 (v2)
+│   │   │   ├── <TIMESTAMP>__add_typed_payload_columns.unit.test.ts  ← THIS PLAN Phase 0
+│   │   │   └── index.generated.ts                                   ← gitignored, codegen
+│   │   ├── typed-payloads.ts           ← THIS PLAN Phase 0 (Schema.Union on name)
+│   │   ├── typed-payloads.unit.test.ts ← THIS PLAN Phase 0
+│   │   ├── routine-store.ts            ← THIS PLAN Phase 0 (Effect-returning routines CRUD)
+│   │   ├── routine-store.unit.test.ts  ← THIS PLAN Phase 0
+│   │   ├── use-routines.ts             ← THIS PLAN Phase 0 (React hook via ManagedRuntime)
+│   │   ├── use-routines.unit.test.tsx  ← THIS PLAN Phase 0
+│   │   ├── settings-store.ts           ← THIS PLAN Phase 0 (Effect-returning settings CRUD)
+│   │   ├── settings-store.unit.test.ts ← THIS PLAN Phase 0
+│   │   ├── use-settings.ts             ← THIS PLAN Phase 0 (React hook via ManagedRuntime)
+│   │   ├── use-settings.unit.test.tsx  ← THIS PLAN Phase 0
+│   │   ├── seed.ts                     ← THIS PLAN Phase 0 (typed seed for first-load)
+│   │   ├── stats.ts                    ← THIS PLAN Phase 0.8 (Effect-returning aggregations)
+│   │   └── stats.unit.test.ts          ← THIS PLAN Phase 0
+│   ├── workout/
+│   │   ├── workout-machine.ts          ← THIS PLAN Phase 4 (XState v5 workoutSessionMachine)
+│   │   └── workout-machine.unit.test.ts ← THIS PLAN Phase 4
 │   ├── hooks/
-│   │   └── use-hash.ts                ← Phase 1
+│   │   └── use-hash.ts                 ← Phase 1
 │   ├── i18n/
-│   │   ├── translations.ts            ← Phase 0
-│   │   └── use-t.ts                   ← Phase 0
+│   │   ├── translations.ts             ← Phase 0
+│   │   └── use-t.ts                    ← Phase 0
 │   ├── utils/
-│   │   ├── fmt.ts                     ← Phase 0
-│   │   └── fmt.unit.test.ts           ← Phase 0
-│   └── auth/                          ← dormant, untouched (full path: src/lib/auth/)
-├── services/                          ← dormant, untouched (excluded from coverage)
-└── layers/                            ← dormant, untouched (excluded from coverage)
+│   │   ├── fmt.ts                      ← Phase 0
+│   │   └── fmt.unit.test.ts            ← Phase 0
+│   └── auth/                           ← dormant, untouched
+├── services/                           ← dormant, untouched (excluded from coverage)
+└── layers/                             ← dormant, untouched (excluded from coverage)
 ```
 
 ## Data Model
 
 > These are the data-model contracts the bigger plan adds. Physically the
 > declarations are split across multiple Effect `Schema` modules under
-> `apps/organiclever-web/src/lib/events/`:
+> `apps/organiclever-web/src/lib/journal/`:
 >
 > - `typed-payloads.ts` — `EventType`, `WorkoutPayload`, `ReadingPayload`,
 >   `LearningPayload`, `MealPayload`, `FocusPayload`, `CustomPayload`,
@@ -303,32 +314,33 @@ export interface ExerciseProgress {
 ## Persistence: PGlite + Effect (extension on top of gear-up)
 
 Storage continues to be **PGlite (Postgres-WASM over IndexedDB)** as landed by
-the gear-up plan — `dataDir` `ol_events_v1`, IndexedDB key `/pglite/ol_events_v1`,
-opened via `PgliteService` Layer. This plan introduces no new database; instead
-it adds:
+the gear-up plan — `dataDir` `ol_journal_v1`, IndexedDB key `/pglite/ol_journal_v1`,
+opened via `PgliteService` Layer (`makeJournalRuntime`). This plan introduces no
+new database; instead it adds:
 
-1. A **v2 migration** under `lib/events/migrations/` adding typed-payload
-   columns (`started_at TIMESTAMPTZ`, `finished_at TIMESTAMPTZ`, plus a CHECK
-   constraint narrowing `kind` to the six v0 values). All `ALTER TABLE` is
-   additive — gear-up rows survive with `started_at = created_at` and
-   `finished_at = updated_at` defaults filled by the migration's UPDATE pass.
-2. **Per-kind `Schema.Union`** in `lib/events/typed-payloads.ts` narrowing the
-   open `kind: string` to `'workout' | 'reading' | 'learning' | 'meal' |
-'focus' | 'custom'` and pairing each `kind` with its typed `payload`
-   `Schema.Struct`. Typed loggers decode-on-write through this union; the
-   gear-up's open-`kind` `appendEvents` is the underlying call.
+1. A **v2 migration** under `lib/journal/migrations/` adding typed-payload
+   columns (`started_at TIMESTAMPTZ`, `finished_at TIMESTAMPTZ`, `labels TEXT[]`)
+   to `journal_entries`, plus a CHECK constraint narrowing `name` to the six v0
+   kinds. All `ALTER TABLE` is additive — gear-up rows survive with
+   `started_at = created_at` and `finished_at = updated_at` filled by the
+   migration's backfill UPDATE.
+2. **Per-kind `Schema.Union`** in `lib/journal/typed-payloads.ts` narrowing the
+   open `name: EntryName` to `'workout' | 'reading' | 'learning' | 'meal' |
+'focus' | custom-*` and pairing each `name` literal with its typed `payload`
+   `Schema.Struct`. Typed loggers call `appendEntries` with `name` set to the
+   kind slug; the read path decodes rows through `TypedEntry` union.
 3. **`routine-store.ts` + `settings-store.ts`** — two new modules adding
-   `routines` and `settings` tables (via the same migration), exposing
+   `routines` and `settings` tables (via the same v2 migration), exposing
    `Effect`-returning CRUD that re-uses the gear-up's `PgliteService`.
-4. **`seed.ts`** — runs once on first load when `(SELECT count(*) FROM events) = 0`
-   AND `(SELECT count(*) FROM routines) = 0`. Seed = "Yoka" profile + Kettlebell
-   day + Calisthenics + Super Exercise (plum) routines + 6 recent events
-   across all types (one per type, including one custom event).
+4. **`seed.ts`** — runs once on first load when
+   `(SELECT count(*) FROM journal_entries) = 0 AND (SELECT count(*) FROM routines) = 0`.
+   Seed = "Yoka" profile + Kettlebell day + Calisthenics + Super Exercise (plum)
+   routines + 6 recent entries across all kinds (one per kind, one custom).
 
 ### v2 migration (typed-payload columns)
 
 ```typescript
-// lib/events/migrations/<TIMESTAMP>__add_typed_payload_columns.ts
+// lib/journal/migrations/<TIMESTAMP>__add_typed_payload_columns.ts
 // Replace <TIMESTAMP> with actual UTC second-precision value at file creation time
 // (e.g. 2026_05_03T09_22_15). See delivery.md Phase 0.1 for naming regex.
 
@@ -339,23 +351,23 @@ export const id = "<TIMESTAMP>__add_typed_payload_columns";
 
 export async function up(db: Queryable): Promise<void> {
   await db.exec(`
-    ALTER TABLE events
+    ALTER TABLE journal_entries
       ADD COLUMN started_at  TIMESTAMPTZ,
       ADD COLUMN finished_at TIMESTAMPTZ,
       ADD COLUMN labels      TEXT[] NOT NULL DEFAULT '{}';
 
-    UPDATE events
+    UPDATE journal_entries
       SET started_at  = created_at,
           finished_at = updated_at
       WHERE started_at IS NULL;
 
-    ALTER TABLE events
+    ALTER TABLE journal_entries
       ALTER COLUMN started_at  SET NOT NULL,
       ALTER COLUMN finished_at SET NOT NULL;
 
-    ALTER TABLE events
-      ADD CONSTRAINT events_kind_v0
-      CHECK (kind IN ('workout','reading','learning','meal','focus','custom'));
+    ALTER TABLE journal_entries
+      ADD CONSTRAINT journal_entries_kind_v0
+      CHECK (name IN ('workout','reading','learning','meal','focus') OR name LIKE 'custom-%');
 
     CREATE TABLE IF NOT EXISTS routines (
       id          TEXT PRIMARY KEY,
@@ -381,21 +393,25 @@ export async function down(db: Queryable): Promise<void> {
   await db.exec(`
     DROP TABLE IF EXISTS settings;
     DROP TABLE IF EXISTS routines;
-    ALTER TABLE events DROP CONSTRAINT IF EXISTS events_kind_v0;
-    ALTER TABLE events DROP COLUMN IF EXISTS labels;
-    ALTER TABLE events DROP COLUMN IF EXISTS finished_at;
-    ALTER TABLE events DROP COLUMN IF EXISTS started_at;
+    ALTER TABLE journal_entries DROP CONSTRAINT IF EXISTS journal_entries_kind_v0;
+    ALTER TABLE journal_entries DROP COLUMN IF EXISTS labels;
+    ALTER TABLE journal_entries DROP COLUMN IF EXISTS finished_at;
+    ALTER TABLE journal_entries DROP COLUMN IF EXISTS started_at;
   `);
 }
 ```
 
-### Typed-payload `Schema.Union` (narrowing the open `kind`)
+### Typed-payload `Schema.Union` (narrowing the open `name`)
+
+The gear-up's `name` field (type `EntryName`, slug pattern `^[a-z][a-z0-9-]*$`) doubles
+as the kind discriminator. Standard kinds use bare slugs (`'workout'`, `'reading'`, etc.);
+custom kinds use a `custom-` prefix (e.g. `'custom-meditation'`).
 
 ```typescript
-// lib/events/typed-payloads.ts (sketch)
+// lib/journal/typed-payloads.ts (sketch)
 
 import { Schema } from "effect";
-import { EventPayload, IsoTimestamp } from "./schema";
+import { EntryId, IsoTimestamp, EntryPayload } from "./schema";
 
 const WorkoutPayload = Schema.Struct({
   /* ... */
@@ -403,26 +419,35 @@ const WorkoutPayload = Schema.Struct({
 const ReadingPayload = Schema.Struct({
   /* ... */
 });
-// ... LearningPayload, MealPayload, FocusPayload, CustomPayload ...
+// ... LearningPayload, MealPayload, FocusPayload ...
+const CustomPayload = Schema.Struct({
+  /* name, hue, icon, durationMins, notes */
+});
 
-export const TypedEvent = Schema.Union(
-  Schema.Struct({ kind: Schema.Literal("workout"), payload: WorkoutPayload /* timestamps */ }),
-  Schema.Struct({ kind: Schema.Literal("reading"), payload: ReadingPayload /* timestamps */ }),
-  // ...
+// Discriminate on the `name` field (kind slug), not a separate `kind` column
+export const TypedEntry = Schema.Union(
+  Schema.Struct({ name: Schema.Literal("workout"), payload: WorkoutPayload /* startedAt, finishedAt, labels */ }),
+  Schema.Struct({ name: Schema.Literal("reading"), payload: ReadingPayload /* ... */ }),
+  Schema.Struct({ name: Schema.Literal("learning"), payload: LearningPayload /* ... */ }),
+  Schema.Struct({ name: Schema.Literal("meal"), payload: MealPayload /* ... */ }),
+  Schema.Struct({ name: Schema.Literal("focus"), payload: FocusPayload /* ... */ }),
+  // Custom: name starts with "custom-"; use Schema.filter for prefix check
+  Schema.Struct({
+    name: Schema.String.pipe(Schema.filter((s) => s.startsWith("custom-"))),
+    payload: CustomPayload /* ... */,
+  }),
 );
-export type TypedEvent = typeof TypedEvent.Type;
+export type TypedEntry = typeof TypedEntry.Type;
 ```
 
-Typed loggers (`<ReadingLogger>`, `<WorkoutScreen>`, etc.) build a typed
-`TypedEvent`, encode it via `Schema.encodeSync(TypedEvent)`, and pass the
-result to `appendEvents`. The store still sees `{ kind: string, payload:
-unknown }` and writes faithfully; the read path uses `Schema.decodeUnknownSync(TypedEvent)`
-to narrow JSONB rows back into the typed union for screens that need it.
+Typed loggers call `appendEntries` with `name` set to the kind slug and `payload` set to
+the typed struct. The store writes faithfully; the read path uses
+`Schema.decodeUnknownSync(TypedEntry)` to narrow `journal_entries` rows.
 
 ### Effect-returning store extensions
 
 ```typescript
-// lib/events/routine-store.ts (signatures)
+// lib/journal/routine-store.ts (signatures)
 
 export const listRoutines: () => Effect.Effect<ReadonlyArray<Routine>, StorageUnavailable, PgliteService>;
 export const saveRoutine: (r: Routine) => Effect.Effect<Routine, StorageUnavailable, PgliteService>;
@@ -436,7 +461,7 @@ export const reorderRoutineExercises: (
 ```
 
 ```typescript
-// lib/events/settings-store.ts (signatures)
+// lib/journal/settings-store.ts (signatures)
 
 export const getSettings: () => Effect.Effect<AppSettings, StorageUnavailable, PgliteService>;
 export const saveSettings: (
@@ -450,8 +475,8 @@ design decision forbade. Every new store function is a free `Effect`
 returning function pulling `PgliteService` from context.
 
 Custom-type derivation: no dedicated method; consumer runs the gear-up's
-`listEvents` Effect, decodes the rows through the typed `Schema.Union`,
-and filters for `kind === 'custom'` to build the user-created type list.
+`listEntries` Effect, decodes the rows through `TypedEntry` union,
+and filters for `name.startsWith('custom-')` to build the user-created type list.
 
 ## useHash Hook — SSR Guard
 
@@ -461,21 +486,88 @@ level or during render. Initial state is `''` (empty string). This pattern preve
 context (even though the current `/app/page.tsx` uses `'use client'` + `force-dynamic`,
 defensive coding here keeps the hook reusable outside that guarded context).
 
-## State Management (AppRoot)
+## State Management
 
-No external state library. All state in `AppRoot`:
+### XState machines
 
-| State          | Type                                                   | Description                                                                  |
-| -------------- | ------------------------------------------------------ | ---------------------------------------------------------------------------- |
-| `tab`          | `'home'\|'history'\|'progress'\|'settings'`            | Active bottom tab; persisted in localStorage (`ol_tab`)                      |
-| `screen`       | `'main'\|'workout'\|'finish'\|'editRoutine'`           | Overlay screen stack                                                         |
-| `screenData`   | `{ routine? } \| { session? } \| null`                 | Data for current overlay screen                                              |
-| `isDesktop`    | `boolean`                                              | `window.innerWidth >= 768`; updates on resize                                |
-| `darkMode`     | `boolean`                                              | Read from DB; updates `data-theme` on `<html>`                               |
-| `refreshKey`   | `number`                                               | Increment triggers DB re-query in all children                               |
-| `addEvent`     | `boolean`                                              | AddEventSheet open                                                           |
-| `activeLogger` | `'reading' \| 'learning' \| 'meal' \| 'focus' \| null` | Which quick-log sheet is open; custom types use `customLogger` state instead |
-| `customLogger` | string or null                                         | Custom event type or `'new'`                                                 |
+Two XState v5 machines handle the complex state in this app:
+
+**`journalMachine`** (shipped by gear-up, in `lib/journal/journal-machine.ts`):
+
+- States: `initializing → ready{idle ↔ mutating} → error`
+- Buffers in-flight mutations via `pendingMutationEvent` context field
+- Actors: `loadEntries` (fromPromise), `performMutation` (fromPromise)
+- Both actors call `runtime.runPromise(...)` — single Effect boundary per mutation
+- Consumed via `useJournal(runtime)` hook (`useActor` from `@xstate/react`)
+
+**`workoutSessionMachine`** (THIS PLAN, `lib/workout/workout-machine.ts`):
+
+- Manages the full workout session lifecycle; all timer state lives in the machine
+- Context:
+
+| Field           | Type                 | Description                                  |
+| --------------- | -------------------- | -------------------------------------------- |
+| `routine`       | `Routine \| null`    | Selected routine; null = blank workout       |
+| `exercises`     | `ActiveExercise[]`   | Mutable session state per exercise           |
+| `currentExIdx`  | `number`             | Index into `exercises`                       |
+| `currentSetIdx` | `number`             | Which set of the current exercise            |
+| `elapsedSecs`   | `number`             | Session wall-clock (incremented by TICK)     |
+| `restSecsLeft`  | `number`             | Rest countdown (decremented by TICK in rest) |
+| `settings`      | `AppSettings`        | For `resolvedRest()` calculation             |
+| `runtime`       | `JournalRuntime`     | For final save in `finishing` invoke         |
+| `error`         | `StoreError \| null` | Save failure surfaced to UI                  |
+
+- States:
+
+```
+idle
+  → active (on START)
+      active.exercising  (doing a set)
+        → active.exercising (TICK self-transition: elapsedSecs++)
+        → active.resting (on LOG_SET, when resolvedRest > 0)
+        → active.exercising (on LOG_SET, when resolvedRest = 0)
+        → active.confirming (on END_WORKOUT — shows EndWorkoutSheet)
+      active.resting
+        → active.resting (TICK self-transition: elapsedSecs++, restSecsLeft--)
+        → active.exercising (auto-transition when restSecsLeft <= 0 via TICK)
+        → active.exercising (on SKIP_REST)
+      active.confirming  (EndWorkoutSheet open: Save & finish / Keep going / Discard)
+        → finishing (on CONFIRM_FINISH)
+        → active.exercising (on KEEP_GOING — returns to last exercise)
+        → idle (on DISCARD)
+  → finishing (invokes fromPromise appendEntries)
+  → done (on finishing success — FinishScreen)
+  → error (on finishing failure — shows error + retry)
+```
+
+- Events: `START`, `TICK`, `LOG_SET`, `SKIP_REST`, `ADD_EXERCISE`, `END_WORKOUT`,
+  `KEEP_GOING`, `CONFIRM_FINISH`, `DISCARD`
+- `TICK` self-transitions in both `active.exercising` (increments `elapsedSecs`)
+  and `active.resting` (increments `elapsedSecs`, decrements `restSecsLeft`)
+- `TICK` is sent by a `setInterval` in `WorkoutScreen` via `useRef`; the machine
+  is pure — no timer side-effects inside the machine itself
+- `CONFIRM_FINISH` triggers a `fromPromise` actor calling
+  `runtime.runPromise(appendEntries([buildWorkoutEntry(ctx)]))` — Effect-TS is the
+  single write boundary
+- Consumed via `useActor(workoutSessionMachine, { input: { routine, settings, runtime } })`
+
+### AppRoot React state
+
+Simple `useState` in `AppRoot` for shallow shell state (no XState needed here):
+
+| State          | Type                                                   | Description                                    |
+| -------------- | ------------------------------------------------------ | ---------------------------------------------- |
+| `tab`          | `'home'\|'history'\|'progress'\|'settings'`            | Active tab; persisted in localStorage `ol_tab` |
+| `screen`       | `'main'\|'workout'\|'finish'\|'editRoutine'`           | Overlay screen stack                           |
+| `screenData`   | `{ routine? } \| { session? } \| null`                 | Data for current overlay screen                |
+| `isDesktop`    | `boolean`                                              | `window.innerWidth >= 768`; resize listener    |
+| `darkMode`     | `boolean`                                              | Synced from `settings.darkMode` via Effect     |
+| `addEvent`     | `boolean`                                              | AddEventSheet open                             |
+| `activeLogger` | `'reading' \| 'learning' \| 'meal' \| 'focus' \| null` | Quick-log sheet open                           |
+| `customLogger` | `string \| null`                                       | Custom event type name or `'new'`              |
+
+`refreshKey` is removed — Effect hooks re-fetch after each mutation via their own
+state, no prop-drilling key needed.
 
 ## i18n
 
@@ -485,7 +577,7 @@ No external state library. All state in `AppRoot`:
 // greeting, last7days, sessions, streak, days, timeMoved, setsDone, ...
 
 // lib/i18n/use-t.ts
-import { useSettings } from "@/lib/events/use-settings"; // sibling Effect-runtime hook
+import { useSettings } from "@/lib/journal/use-settings"; // sibling Effect-runtime hook
 export function useT() {
   const { settings } = useSettings(); // returns AppSettings via runtime.runPromise(getSettings())
   const lang = settings?.lang ?? "en";
@@ -496,12 +588,14 @@ export function useT() {
 Language switch:
 
 ```typescript
-const { runtime } = useEventsRuntime(); // shared ManagedRuntime via React Context
+// runtime is prop-drilled from AppRoot (created once via useMemo(() => makeJournalRuntime(), []))
 await runtime.runPromise(saveSettings({ lang: code }));
 window.location.reload();
 ```
 
-(`saveSettings` is the Effect-returning function from `lib/events/settings-store.ts`.)
+(`saveSettings` is the Effect-returning function from `lib/journal/settings-store.ts`.
+`runtime` is the `JournalRuntime` instance created in `AppRoot` and passed as a prop
+to child components that need PGlite access — no separate `useJournalRuntime` hook.)
 
 ## Utilities
 
@@ -575,14 +669,22 @@ server-side route changes. Hash routing (`window.location.hash` + a `hashchange`
 in `use-hash.ts`) keeps all navigation in the browser, avoids server round-trips, and
 integrates cleanly with the existing landing-page routes at `/`.
 
-### No external state library (Redux, Zustand, Jotai, etc.)
+### XState for complex state; plain React for simple state
 
-The app state is a shallow object (`tab`, `screen`, `screenData`, `darkMode`, `refreshKey`,
-`addEvent`, `activeLogger`, `customLogger`) that lives entirely in `AppRoot`. All state
-transitions are simple value assignments. Adding a state library would introduce a dependency
-and boilerplate with no benefit at this scale. State is co-located in the component that
-owns it; the `refreshKey` increment pattern forces DB re-reads in children without prop
-drilling.
+XState v5 is already a dependency (gear-up shipped `journalMachine`). The principle:
+use XState when a component has multiple orthogonal states, guards, or buffered
+events; use `useState` when state is a simple scalar with no invalid transition risk.
+
+- `journalMachine` — orthogonal `idle`/`mutating` with event buffering: XState ✓
+- `workoutSessionMachine` — timer counting, exercise tracking, rest countdown, finish
+  confirm: clearly complex enough for XState ✓
+- AppRoot shell (`tab`, `screen`, `addEvent`, etc.) — simple scalars with no invalid
+  transitions: plain `useState` ✓ (no XState needed)
+- Quick-log sheets open/closed — local `boolean` state: plain `useState` ✓
+
+Effect-TS is the boundary for all async work touching PGlite. XState actors call
+`runtime.runPromise(effect)` at the `fromPromise` boundary — never raw `fetch` or
+`throw`. This keeps error types explicit and the store layer pure.
 
 ### Pure inline SVG for charts instead of a charting library
 
@@ -597,13 +699,13 @@ component that renders it.
 Earlier drafts of this plan used a versioned `localStorage` key (`ol_db_v12`)
 that abandoned data on schema change. The gear-up plan replaced that with a
 proper migration runner over PGlite — every schema change is one new file under
-`lib/events/migrations/` with strict timestamp + snake_case naming and a
+`lib/journal/migrations/` with strict timestamp + snake_case naming and a
 per-migration transaction. This plan adds **one** new migration file
 (v2: typed-payload columns) and one entry to the codegen index. Existing
-gear-up rows survive the v2 migration (additive `ALTER TABLE ... ADD COLUMN`
-with backfill UPDATE; never `DROP COLUMN`). Future PWA-sync columns
-(`original_created_at`, `deleted_at`, `synced_at`, `dirty`, `client_id`)
-slot in as v3 the same way.
+gear-up rows in `journal_entries` survive the v2 migration (additive
+`ALTER TABLE ... ADD COLUMN` with backfill UPDATE; never `DROP COLUMN`).
+Future PWA-sync columns (`original_created_at`, `deleted_at`, `synced_at`,
+`dirty`, `client_id`) slot in as v3 the same way.
 
 ## Rollback
 
@@ -612,36 +714,36 @@ slot in as v3 the same way.
    mid-apply, the per-migration transaction rolls back the partial
    `ALTER TABLE`; the `_migrations` row is never written; subsequent app
    loads re-apply the migration cleanly. Reverting this plan's commits
-   removes the v2 migration file from `lib/events/migrations/`; the codegen
+   removes the v2 migration file from `lib/journal/migrations/`; the codegen
    regenerates `index.generated.ts` without it; PGlite databases that
    already applied v2 keep the extra columns (additive — no data loss),
-   though the application code reverts to gear-up open-`kind` behaviour.
+   though the application code reverts to gear-up open-`name` behaviour.
 2. **`/app` route is additive in route registration**: the route already
    exists from the gear-up plan. This plan only changes the page body
-   (`<EventsPage />` → `<AppRoot />`). Reverting restores the gear-up's
-   provisional event-mechanism page; `/` and `/system/status/be` are
-   untouched.
+   (`<JournalPage />` → `<AppRoot />`). Reverting restores the gear-up's
+   provisional journal page; `/` and `/system/status/be` are untouched.
 3. **No data migration is required to roll back**: gear-up data and v2-era
-   data both round-trip cleanly through gear-up's open-`kind` store; the
-   typed-payload `Schema.Union` is read-side only.
+   data both round-trip cleanly through gear-up's open-`name` store; the
+   typed-payload `TypedEntry` union is read-side only.
 
 ## Dependencies
 
-| Dependency                   | Version            | Status   | Notes                                                                                        |
-| ---------------------------- | ------------------ | -------- | -------------------------------------------------------------------------------------------- |
-| Next.js                      | 16 (existing)      | Existing | No change                                                                                    |
-| TypeScript                   | Existing           | Existing | All new files are `.tsx` / `.ts`; strict mode + `noUncheckedIndexedAccess`                   |
-| Vitest                       | Existing           | Existing | Unit + integration tests use existing runner; vitest.config.ts already amended by gear-up    |
-| Playwright                   | Existing           | Existing | E2E via `organiclever-web-e2e`                                                               |
-| `effect`                     | ^3.16 (in pkg)     | Existing | Already installed; no install step                                                           |
-| `@effect/platform`           | ^0.84 (in pkg)     | Existing | Already installed                                                                            |
-| `@effect/vitest`             | from gear-up       | Existing | Already installed by gear-up; this plan reuses Layer-swap pattern                            |
-| `@electric-sql/pglite`       | from gear-up       | Existing | Already installed by gear-up; this plan reuses `PgliteService` Layer + raw parameterised SQL |
-| `lib/events/*` (gear-up)     | from gear-up       | Existing | Schema, errors, runtime, store, hook, migration runner — all reused                          |
-| ts-ui `Textarea` / `Badge`   | from landing-uikit | Existing | Already in `libs/ts-ui`                                                                      |
-| ts-ui (all other components) | Existing exports   | Existing | Button, Icon, StatCard, AppHeader, TabBar, SideNav, etc.                                     |
-| rhino-cli test-coverage      | Existing           | Existing | Validates ≥ 70 % coverage threshold in `test:quick`                                          |
-| rhino-cli spec-coverage      | Existing           | Existing | Validates Gherkin step coverage                                                              |
+| Dependency                   | Version            | Status   | Notes                                                                                             |
+| ---------------------------- | ------------------ | -------- | ------------------------------------------------------------------------------------------------- |
+| Next.js                      | 16 (existing)      | Existing | No change                                                                                         |
+| TypeScript                   | Existing           | Existing | All new files are `.tsx` / `.ts`; strict mode + `noUncheckedIndexedAccess`                        |
+| Vitest                       | Existing           | Existing | Unit + integration tests use existing runner; vitest.config.ts already amended by gear-up         |
+| Playwright                   | Existing           | Existing | E2E via `organiclever-web-e2e`                                                                    |
+| `effect`                     | ^3.16 (in pkg)     | Existing | Already installed; no install step                                                                |
+| `@effect/platform`           | ^0.84 (in pkg)     | Existing | Already installed                                                                                 |
+| `@effect/vitest`             | from gear-up       | Existing | Already installed by gear-up; this plan reuses Layer-swap pattern                                 |
+| `@electric-sql/pglite`       | from gear-up       | Existing | Already installed by gear-up; this plan reuses `PgliteService` Layer + raw parameterised SQL      |
+| `lib/journal/*` (gear-up)    | from gear-up       | Existing | schema, errors, runtime, journal-store, journal-machine, use-journal, run-migrations — all reused |
+| `xstate` + `@xstate/react`   | ^5.31 / ^5.0.5     | Existing | Already installed by gear-up; this plan adds `workoutSessionMachine`                              |
+| ts-ui `Textarea` / `Badge`   | from landing-uikit | Existing | Already in `libs/ts-ui`                                                                           |
+| ts-ui (all other components) | Existing exports   | Existing | Button, Icon, StatCard, AppHeader, TabBar, SideNav, etc.                                          |
+| rhino-cli test-coverage      | Existing           | Existing | Validates ≥ 70 % coverage threshold in `test:quick`                                               |
+| rhino-cli spec-coverage      | Existing           | Existing | Validates Gherkin step coverage                                                                   |
 
 **No new npm packages are introduced by this plan.** Effect, PGlite,
 `@effect/vitest`, and ts-ui were all installed by the gear-up + landing-uikit

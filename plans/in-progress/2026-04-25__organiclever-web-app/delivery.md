@@ -5,111 +5,144 @@
 - `plans/done/2026-04-25__organiclever-web-landing-uikit/` — `Textarea` +
   `Badge` exported from ts-ui; `apps/organiclever-web/src/app/page.tsx`
   renders the landing page.
-- `plans/in-progress/2026-04-28__organiclever-web-event-mechanism/` — must
-  archive to `plans/done/` before THIS plan starts execution. Provides
-  `lib/events/{schema,errors,runtime,event-store,use-events,run-migrations,format-relative-time}.ts`,
-  PGlite `dataDir` `ol_events_v1`, migration registry v1, and a provisional
-  `/app/page.tsx`. **Do not re-implement the storage layer; do not invent
-  a new database key. Extend the gear-up's primitives.**
+- `plans/done/2026-04-30__organiclever-web-event-mechanism/` — **already archived**.
+  Provides
+  `lib/journal/{schema,errors,runtime,journal-store,journal-machine,use-journal,run-migrations,format-relative-time,types}.ts`,
+  PGlite `dataDir` `ol_journal_v1` (`idb://ol_journal_v1`), XState v5 `journalMachine`
+  (`initializing → ready{idle↔mutating} → error`), `useJournal` hook, migration
+  registry v1 (`journal_entries` table), and a provisional `/app/page.tsx` rendering
+  `<JournalPage />`. **Do not re-implement the storage layer; do not invent a new
+  database key. Extend the gear-up's primitives.**
 
 ---
 
 ## Environment Setup
 
-- [ ] **BLOCKING**: Verify gear-up plan archived before proceeding:
+- [ ] Confirm gear-up plan is archived (already done — verify with):
       `ls plans/done/ | grep organiclever-web-event-mechanism`
-      — execution MUST NOT start until this passes
+      — should print `2026-04-30__organiclever-web-event-mechanism/`
 - [ ] Install dependencies in the root worktree: `npm install`
 - [ ] Converge the full polyglot toolchain: `npm run doctor -- --fix`
 - [ ] Verify dev server starts: `nx dev organiclever-web` (expect `localhost:3200`)
 - [ ] Confirm existing tests pass before making changes — gear-up's
-      `lib/events/` and provisional `/app/page.tsx` should be green:
+      `lib/journal/` and provisional `/app/page.tsx` should be green:
   - [ ] `nx run organiclever-web:typecheck`
   - [ ] `nx run organiclever-web:lint`
   - [ ] `nx run organiclever-web:test:quick`
   - [ ] `nx run organiclever-web:test:integration`
   - [ ] `nx run organiclever-web-e2e:test:e2e`
 - [ ] Confirm gear-up artifacts present:
-  - [ ] `apps/organiclever-web/src/lib/events/event-store.ts` exists and exports
-        Effect-returning `appendEvents`, `updateEvent`, `deleteEvent`, `bumpEvent`,
-        `listEvents`, `clearEvents`
-  - [ ] `apps/organiclever-web/src/lib/events/runtime.ts` exposes `PgliteService`
-        and `makeEventsRuntime`
-  - [ ] `apps/organiclever-web/src/lib/events/migrations/2026_04_28T14_05_30__create_events_table.ts` exists
-  - [ ] `package.json` already lists `effect`, `@effect/platform`,
-        `@electric-sql/pglite`, `@effect/vitest`
+  - [ ] `apps/organiclever-web/src/lib/journal/journal-store.ts` exists and exports
+        Effect-returning `appendEntries`, `updateEntry`, `deleteEntry`, `bumpEntry`,
+        `listEntries`, `clearEntries`
+  - [ ] `apps/organiclever-web/src/lib/journal/runtime.ts` exposes `PgliteService`
+        and `makeJournalRuntime`
+  - [ ] `apps/organiclever-web/src/lib/journal/journal-machine.ts` exports `journalMachine`
+  - [ ] `apps/organiclever-web/src/lib/journal/use-journal.ts` exports `useJournal`
+  - [ ] `apps/organiclever-web/src/lib/journal/migrations/2026_04_28T14_05_30__create_journal_entries_table.ts` exists
+  - [ ] `package.json` lists `effect`, `@effect/platform`, `@electric-sql/pglite`,
+        `@effect/vitest`, `xstate`, `@xstate/react`
 
 ### Commit Guidelines
 
 - [ ] Commit changes thematically — group related changes into logically cohesive commits
 - [ ] Follow Conventional Commits format: `<type>(<scope>): <description>`
       Examples:
-      `feat(events-v2): add typed-payload Schema union narrowing kind`,
-      `feat(events-v2): add v2 migration adding started_at/finished_at/labels columns`,
-      `feat(events-v2): add Effect-returning routine-store + settings-store + seed`,
-      `feat(shell): replace provisional /app/page.tsx body with AppRoot (TabBar + SideNav)`,
-      `feat(loggers): add reading and focus typed loggers wrapping appendEvents`,
-      `feat(workout): add WorkoutScreen and rest timer`,
+      `feat(journal-v2): add typed-payload Schema union narrowing name-as-kind`,
+      `feat(journal-v2): add v2 migration adding started_at/finished_at/labels to journal_entries`,
+      `feat(journal-v2): add Effect-returning routine-store + settings-store + seed`,
+      `feat(shell): replace provisional JournalPage body with AppRoot (TabBar + SideNav)`,
+      `feat(loggers): add reading and focus typed loggers wrapping appendEntries`,
+      `feat(workout): add XState workoutSessionMachine + WorkoutScreen`,
       `feat(history): add HistoryScreen and SessionCard`,
       `feat(progress): add ProgressScreen and exercise charts`,
       `feat(settings): add SettingsScreen with lang and dark mode`
 - [ ] Split different domains/concerns into separate commits — keep
-      `feat(events-v2):` (storage extensions) separate from `feat(loggers):`
+      `feat(journal-v2):` (storage extensions) separate from `feat(loggers):`
       (UI), `feat(shell):` (route wiring), and `test(*):` (tests)
 
 ---
 
 ## Phase 0 — Foundation (extension on gear-up)
 
-> **Reminder**: gear-up already shipped `lib/events/{schema,errors,runtime,
-event-store,use-events,run-migrations,format-relative-time}.ts`. This phase
-> ADDS new files; it does NOT re-create those.
+> **Reminder**: gear-up already shipped `lib/journal/{schema,errors,runtime,
+journal-store,journal-machine,use-journal,run-migrations,format-relative-time,types}.ts`.
+> This phase ADDS new files; it does NOT re-create those.
 
 ### 0.1 v2 migration (typed-payload columns + routines + settings tables)
 
 - [ ] Substitute the actual UTC second-precision timestamp at file-creation
-      time. Create `apps/organiclever-web/src/lib/events/migrations/<TS>__add_typed_payload_columns.ts`
+      time. Create `apps/organiclever-web/src/lib/journal/migrations/<TS>__add_typed_payload_columns.ts`
       following the gear-up filename regex
       `^\d{4}_\d{2}_\d{2}T\d{2}_\d{2}_\d{2}__[a-z0-9_]{1,60}\.ts$`
 - [ ] Body per `tech-docs.md` "v2 migration" sketch:
   - [ ] `export const id = "<filename without .ts>"`
   - [ ] `export async function up(db: Queryable)` running:
-        `ALTER TABLE events ADD COLUMN started_at TIMESTAMPTZ, ADD COLUMN finished_at TIMESTAMPTZ, ADD COLUMN labels TEXT[] NOT NULL DEFAULT '{}';`
-        then backfill `UPDATE events SET started_at = created_at, finished_at = updated_at WHERE started_at IS NULL;`
-        then `ALTER TABLE events ALTER COLUMN started_at SET NOT NULL, ALTER COLUMN finished_at SET NOT NULL;`
-        then `ALTER TABLE events ADD CONSTRAINT events_kind_v0 CHECK (kind IN ('workout','reading','learning','meal','focus','custom'));`
+        `ALTER TABLE journal_entries ADD COLUMN started_at TIMESTAMPTZ, ADD COLUMN finished_at TIMESTAMPTZ, ADD COLUMN labels TEXT[] NOT NULL DEFAULT '{}';`
+        then backfill `UPDATE journal_entries SET started_at = created_at, finished_at = updated_at WHERE started_at IS NULL;`
+        then `ALTER TABLE journal_entries ALTER COLUMN started_at SET NOT NULL, ALTER COLUMN finished_at SET NOT NULL;`
+        then `ALTER TABLE journal_entries ADD CONSTRAINT journal_entries_kind_v0 CHECK (name IN ('workout','reading','learning','meal','focus') OR name LIKE 'custom-%');`
         then `CREATE TABLE IF NOT EXISTS routines (...);`
         then `CREATE TABLE IF NOT EXISTS settings (...);`
   - [ ] `export async function down(db: Queryable)` reversing in the inverse order
-- [ ] Run `npm run gen:migrations` (already wired by gear-up) and verify the
-      regenerated `index.generated.ts` includes the v2 entry
-- [ ] Add `apps/organiclever-web/src/lib/events/migrations/<TS>__add_typed_payload_columns.unit.test.ts`:
+- [ ] Run `cd apps/organiclever-web && npm run gen:migrations` (already wired by gear-up)
+      and verify the regenerated `index.generated.ts` includes the v2 entry
+- [ ] Add `apps/organiclever-web/src/lib/journal/migrations/<TS>__add_typed_payload_columns.unit.test.ts`:
   - [ ] In-memory PGlite — apply v1 + v2 in sequence; assert the new columns + tables exist
   - [ ] Insert gear-up shape rows BEFORE applying v2; apply v2; assert
         `started_at = created_at` and `finished_at = updated_at` for those
         rows (backfill semantics)
-  - [ ] Force a constraint violation by attempting `INSERT ... kind = 'unknown'`
-        after v2; assert the `events_kind_v0` CHECK rejects it
+  - [ ] Force a constraint violation by attempting `INSERT ... name = 'unknown'`
+        after v2; assert the `journal_entries_kind_v0` CHECK rejects it
+
+### 0.1a Update `journal-store.ts` and `NewEntryInput` for v2 columns (CRITICAL)
+
+The v2 migration adds `started_at TIMESTAMPTZ NOT NULL` and `finished_at TIMESTAMPTZ NOT NULL`
+to `journal_entries`. The gear-up's `appendEntries` only inserts `(id, name, payload,
+created_at, updated_at)` — it will throw a Postgres NOT NULL constraint error after v2 applies.
+This step makes `appendEntries` v2-aware **before** any other code calls it.
+
+- [ ] Update `NewEntryInput` Schema in `lib/journal/schema.ts`:
+  - [ ] Add `startedAt: IsoTimestamp` (required)
+  - [ ] Add `finishedAt: IsoTimestamp` (required)
+  - [ ] Add `labels: Schema.Array(Schema.String)` with default `[]`
+- [ ] Update `RawRow` type in `journal-store.ts` to include `started_at: Date`,
+      `finished_at: Date`, `labels: string[]`
+- [ ] Update `decodeRow` in `journal-store.ts` to map `started_at` → `startedAt`,
+      `finished_at` → `finishedAt`, `labels` → `labels`
+- [ ] Update `appendEntries` in `journal-store.ts`:
+  - [ ] Accept `startedAt`, `finishedAt`, `labels` from `NewEntryInput`
+  - [ ] Include them in the `VALUES` placeholders and params array
+  - [ ] Update `RETURNING` clause to include `started_at`, `finished_at`, `labels`
+- [ ] Update `JournalEntry` Schema in `schema.ts` to add `startedAt`, `finishedAt`,
+      `labels` fields (must match the DB row shape)
+- [ ] Update `journal-store.unit.test.ts` to supply `startedAt`, `finishedAt`, `labels`
+      in all `appendEntries` calls
+- [ ] Update `journal-store.int.test.ts` similarly
+- [ ] Run `nx run organiclever-web:test:quick` and `nx run organiclever-web:test:integration`
+      — both must pass before proceeding
 
 ### 0.2 Per-kind typed Schema union (`typed-payloads.ts`)
 
-- [ ] Create `apps/organiclever-web/src/lib/events/typed-payloads.ts` per
+- [ ] Create `apps/organiclever-web/src/lib/journal/typed-payloads.ts` per
       `tech-docs.md` sketch:
   - [ ] `WorkoutPayload`, `ReadingPayload`, `LearningPayload`, `MealPayload`,
         `FocusPayload`, `CustomPayload` — six `Schema.Struct` types matching
         the prototype's fields
-  - [ ] `TypedEvent = Schema.Union(...)` discriminating on `kind` literal
-  - [ ] Export `TypedEvent` type via `Schema.Type<typeof TypedEvent>`
-- [ ] Create `apps/organiclever-web/src/lib/events/typed-payloads.unit.test.ts`:
+  - [ ] `TypedEntry = Schema.Union(...)` discriminating on `name` literal
+        (e.g. `Schema.Literal("workout")`, `Schema.Literal("reading")`, etc.);
+        custom kind uses `Schema.filter(s => s.startsWith("custom-"))` on `name`
+  - [ ] Export `TypedEntry` type via `Schema.Type<typeof TypedEntry>`
+- [ ] Create `apps/organiclever-web/src/lib/journal/typed-payloads.unit.test.ts`:
   - [ ] Each kind round-trips through `Schema.encodeSync` →
         `Schema.decodeUnknownSync` cleanly
-  - [ ] Wrong kind/payload combo (e.g., `kind: 'workout'` with reading
+  - [ ] Wrong name/payload combo (e.g., `name: 'workout'` with reading
         payload) is rejected by the union decoder
   - [ ] Decode failure surfaces field-level errors via `ArrayFormatter`
 
 ### 0.3 Effect-returning routine store + React hook
 
-- [ ] Create `apps/organiclever-web/src/lib/events/routine-store.ts` per
+- [ ] Create `apps/organiclever-web/src/lib/journal/routine-store.ts` per
       `tech-docs.md`:
   - [ ] `listRoutines: Effect<ReadonlyArray<Routine>, StorageUnavailable, PgliteService>`
   - [ ] `saveRoutine: (r: Routine) => Effect<Routine, StorageUnavailable, PgliteService>`
@@ -117,43 +150,43 @@ event-store,use-events,run-migrations,format-relative-time}.ts`. This phase
   - [ ] `reorderRoutineExercises: (...) => Effect<Routine, NotFound | StorageUnavailable, PgliteService>`
   - [ ] Every `Effect.tryPromise` MUST supply a typed `catch` mapper (no
         `UnknownException` leaks)
-- [ ] Create `apps/organiclever-web/src/lib/events/routine-store.unit.test.ts`
+- [ ] Create `apps/organiclever-web/src/lib/journal/routine-store.unit.test.ts`
       using `@effect/vitest` Layer-swap (in-memory PGlite + v1 + v2 migrations)
-- [ ] Create `apps/organiclever-web/src/lib/events/use-routines.ts` — React
+- [ ] Create `apps/organiclever-web/src/lib/journal/use-routines.ts` — React
       hook bridging `routine-store` via `ManagedRuntime`. Mirrors gear-up's
-      `useEvents` shape: discriminated `RoutinesState` (`idle | loading | ready
+      `useJournal` shape: discriminated `RoutinesState` (`idle | loading | ready
 | error`); `runtime.runPromise(listRoutines())` on mount; `save` /
       `remove` / `reorder` handlers re-running `listRoutines` after each
       mutation. Single `runPromise` boundary per the run-at-the-edge invariant
-- [ ] Create `apps/organiclever-web/src/lib/events/use-routines.unit.test.tsx`
+- [ ] Create `apps/organiclever-web/src/lib/journal/use-routines.unit.test.tsx`
       (RTL + `@effect/vitest`)
 
 ### 0.4 Effect-returning settings store + React hook
 
-- [ ] Create `apps/organiclever-web/src/lib/events/settings-store.ts`:
+- [ ] Create `apps/organiclever-web/src/lib/journal/settings-store.ts`:
   - [ ] `getSettings: Effect<AppSettings, StorageUnavailable, PgliteService>`
         (lazily creates the singleton row from defaults if missing)
   - [ ] `saveSettings: (patch: Partial<AppSettings>) => Effect<AppSettings, StorageUnavailable, PgliteService>`
-- [ ] Create `apps/organiclever-web/src/lib/events/settings-store.unit.test.ts`
-- [ ] Create `apps/organiclever-web/src/lib/events/use-settings.ts` — React
+- [ ] Create `apps/organiclever-web/src/lib/journal/settings-store.unit.test.ts`
+- [ ] Create `apps/organiclever-web/src/lib/journal/use-settings.ts` — React
       hook bridging `settings-store` via `ManagedRuntime`. Same pattern as
       `use-routines.ts`. The `useT()` i18n hook in Phase 0.6 reads `lang` via
       `useSettings().settings?.lang ?? 'en'`
-- [ ] Create `apps/organiclever-web/src/lib/events/use-settings.unit.test.tsx`
+- [ ] Create `apps/organiclever-web/src/lib/journal/use-settings.unit.test.tsx`
 
 ### 0.5 Seed
 
-- [ ] Create `apps/organiclever-web/src/lib/events/seed.ts`:
+- [ ] Create `apps/organiclever-web/src/lib/journal/seed.ts`:
   - [ ] `seedIfEmpty: Effect<void, StorageUnavailable, PgliteService>` runs
-        once when both `events` and `routines` are empty
+        once when both `journal_entries` and `routines` are empty
   - [ ] Settings: `{ name: 'Yoka', restSeconds: 60, darkMode: false, lang: 'en' }`
   - [ ] Routine "Kettlebell day" (teal) — 1 group, 6 exercises
   - [ ] Routine "Calisthenics" (honey) — 1 group "Future", 5 bodyweight exercises
   - [ ] Routine "Super Exercise" (plum) — featured per raw/README.md
   - [ ] 6 seed events (1 per kind, all `started_at` within last 7 days,
         custom kind = "Meditation" plum/moon/20-min)
-  - [ ] All writes go through `appendEvents` / `saveRoutine` / `saveSettings`
-        — never raw SQL — so the typed `Schema.Union` validates the seed
+  - [ ] All writes go through `appendEntries` / `saveRoutine` / `saveSettings`
+        — never raw SQL — so the typed `TypedEntry` union validates the seed
 - [ ] Wire the seed into `<AppRoot />`'s mount effect (Phase 1.3) so it runs
       after `runtime.runPromise(...)` resolves the gear-up's migration runner
 
@@ -178,7 +211,7 @@ event-store,use-events,run-migrations,format-relative-time}.ts`. This phase
 
 ### 0.8 Stats aggregations
 
-- [ ] Create `apps/organiclever-web/src/lib/events/stats.ts` — Effect-returning
+- [ ] Create `apps/organiclever-web/src/lib/journal/stats.ts` — Effect-returning
       aggregations consumed by Home (`<WeekRhythmStrip>` Phase 2) and Progress
       (`<ProgressScreen>` Phase 7):
   - [ ] `getLast7Days: Effect<ReadonlyArray<DayEntry>, StorageUnavailable, PgliteService>`
@@ -195,7 +228,7 @@ event-store,use-events,run-migrations,format-relative-time}.ts`. This phase
   - [ ] All four functions are pure Postgres SQL (`date_trunc`, `generate_series`,
         window functions, JSONB operators) executed against `PgliteService.db`;
         no client-side row scans
-- [ ] Create `apps/organiclever-web/src/lib/events/stats.unit.test.ts` using
+- [ ] Create `apps/organiclever-web/src/lib/journal/stats.unit.test.ts` using
       `@effect/vitest` Layer-swap; seed a 14-day fixture and assert each
       aggregation matches expected values
 
@@ -215,12 +248,12 @@ event-store,use-events,run-migrations,format-relative-time}.ts`. This phase
 
 - [ ] `src/app/app/page.tsx` already exists from gear-up; KEEP `'use client'`
       and `export const dynamic = 'force-dynamic'`. Replace the body so it
-      renders `<AppRoot />` instead of `<EventsPage />`. Add
+      renders `<AppRoot />` instead of `<JournalPage />`. Add
       `document.body.classList.add('app-mode')` inside a `useEffect` (with
       cleanup that removes the class on unmount)
-- [ ] The gear-up's `<EventsPage />` is no longer mounted on `/app`. The
-      provisional UI components in `components/app/{add-event-button,event-form-sheet,event-list,event-card,events-page}.tsx`
-      can be deleted in this phase OR kept as a debug-only "raw event" panel
+- [ ] The gear-up's `<JournalPage />` is no longer mounted on `/app`. The
+      provisional UI components in `components/app/{add-entry-button,entry-form-sheet,journal-list,entry-card,journal-page}.tsx`
+      can be deleted in this phase OR kept as a debug-only "raw journal" panel
       mountable behind a dev flag — record the decision in the commit message
 
 ### 1.2 useHash hook
@@ -234,12 +267,15 @@ event-store,use-events,run-migrations,format-relative-time}.ts`. This phase
 
 ### 1.3 AppRoot component
 
-- [ ] Create `src/components/app/app-root.tsx` with all state fields from tech-docs.md:
+- [ ] Create `src/components/app/app-root.tsx` with state fields from tech-docs.md:
   - [ ] `tab` (localStorage `ol_tab`), `screen`, `screenData`, `isDesktop`, `darkMode`,
-        `refreshKey`, `addEvent`, `activeLogger`, `customLogger`
+        `addEvent`, `activeLogger`, `customLogger` — plain `useState` (no `refreshKey`
+        needed; Effect hooks re-fetch internally after each mutation)
+  - [ ] `runtime` created once via `useMemo(() => makeJournalRuntime(), [])` and
+        passed to all child hooks/machines that need PGlite access
   - [ ] `darkMode` effect: sets `data-theme` on `<html>`
   - [ ] `isDesktop` effect: `window.innerWidth >= 768` + resize listener
-  - [ ] `navigate()`, `refresh()`, `startRoutine()`, `startBlank()`, `finishWorkout()`,
+  - [ ] `navigate()`, `startRoutine()`, `startBlank()`, `finishWorkout()`,
         `newRoutine()`, `editRoutine()`, `backToMain()` callbacks
   - [ ] Desktop layout: `SideNav` + sticky 480 px content pane + card shadow
   - [ ] Mobile layout: full-width pane + `TabBar` when `screen === 'main'`
@@ -353,10 +389,10 @@ event-store,use-events,run-migrations,format-relative-time}.ts`. This phase
 
 - [ ] Create `src/components/app/add-event-sheet.tsx`:
   - [ ] Rows for Workout, Reading, Learning, Meal, Focus (hued icons + labels)
-  - [ ] Rows for each saved custom type (derive via `runtime.runPromise(listEvents())`
+  - [ ] Rows for each saved custom type (derive via `runtime.runPromise(listEntries())`
         — gear-up's Effect-returning store — then decode each row through the typed
-        `Schema.Union` and filter for `kind === 'custom'`, extracting unique
-        custom-type names from the typed `CustomPayload`)
+        `TypedEntry` union and filter for `name.startsWith('custom-')`, extracting
+        unique custom-type names from the typed `CustomPayload`)
   - [ ] "New custom type" row (dashed icon)
   - [ ] Close on backdrop tap
 
@@ -388,6 +424,47 @@ event-store,use-events,run-migrations,format-relative-time}.ts`. This phase
 ---
 
 ## Phase 4 — Workout Active Session
+
+### 4.0 XState `workoutSessionMachine`
+
+- [ ] Create `src/lib/workout/workout-machine.ts`:
+  - [ ] Context type:
+        `routine: Routine | null`, `exercises: ActiveExercise[]`, `currentExIdx: number`,
+        `currentSetIdx: number`, `elapsedSecs: number`, `restSecsLeft: number`,
+        `settings: AppSettings`, `runtime: JournalRuntime`, `error: StoreError | null`
+  - [ ] Input type: `{ routine: Routine | null; settings: AppSettings; runtime: JournalRuntime }`
+  - [ ] Events:
+        `START`, `TICK`, `LOG_SET(exerciseIdx, setData)`, `SKIP_REST`,
+        `ADD_EXERCISE(exercise)`, `END_WORKOUT`, `KEEP_GOING`, `CONFIRM_FINISH`, `DISCARD`
+  - [ ] States:
+    - `idle` → on `START`: transitions to `active.exercising`
+    - `active.exercising` — on `TICK`: self-transition, `assign({ elapsedSecs: c + 1 })`;
+      on `LOG_SET`: if `resolvedRest > 0` → `active.resting`, else self;
+      on `END_WORKOUT` → `active.confirming`
+    - `active.resting` — on `TICK`: self-transition, `assign({ elapsedSecs: c + 1, restSecsLeft: r - 1 })`;
+      auto-transition to `active.exercising` when `restSecsLeft <= 0`;
+      on `SKIP_REST` → `active.exercising` immediately
+    - `active.confirming` — `EndWorkoutSheet` visible (Phase 4.7);
+      `CONFIRM_FINISH` → `finishing`; `KEEP_GOING` → `active.exercising`; `DISCARD` → `idle`
+    - `finishing` — invokes `fromPromise` actor calling
+      `runtime.runPromise(appendEntries([buildWorkoutEntry(context)]))`;
+      on success → `done`; on error → `error`
+    - `done` — workout saved; `FinishScreen` renders `context` summary
+    - `error` — save failed; surface `context.error` with retry option
+  - [ ] `TICK` increments `elapsedSecs` in BOTH `active.exercising` and `active.resting`;
+        decrements `restSecsLeft` only in `active.resting`
+  - [ ] `TICK` is sent by a `setInterval` in `WorkoutScreen` via `useRef` — machine
+        is pure; no timer side-effects inside the machine itself
+  - [ ] Every transition uses `assign` actions for context mutation — no imperative side-effects
+- [ ] Create `src/lib/workout/workout-machine.unit.test.ts`:
+  - [ ] `START` transitions `idle` → `active.exercising`
+  - [ ] `TICK` in `active.exercising` increments `elapsedSecs` (self-transition)
+  - [ ] `LOG_SET` with rest > 0 transitions to `active.resting`; `SKIP_REST` returns to
+        `active.exercising`
+  - [ ] `TICK` in `active.resting` decrements `restSecsLeft`; at 0 auto-transitions
+  - [ ] `END_WORKOUT` → `active.confirming`; `KEEP_GOING` → back to `active.exercising`
+  - [ ] `CONFIRM_FINISH` → `finishing`; mock `appendEntries` success → `done`
+  - [ ] `DISCARD` from `active.confirming` returns to `idle`
 
 ### 4.1 RestTimer
 
@@ -429,14 +506,22 @@ event-store,use-events,run-migrations,format-relative-time}.ts`. This phase
 ### 4.5 WorkoutScreen
 
 - [ ] Create `src/components/app/workout/workout-screen.tsx`:
-  - [ ] `AppHeader`: back (→ end confirm sheet), title, elapsed timer (in-component
-        `setInterval` + `useRef` — same pattern as RestTimer; no separate `useInterval` hook file)
-  - [ ] Groups with collapsible headers; exercises via `ActiveExerciseRow`
-  - [ ] `RestTimer` auto-starts after each set (using `resolvedRest(exercise, settings)`)
-        (see resolvedRest logic in tech-docs.md §Rest Timer Logic section)
-  - [ ] "Add exercise" button (blank workout)
-  - [ ] `EndWorkoutSheet`: Save & finish / Keep going / Discard
-  - [ ] `SetEditSheet` overlay; `SetTimerSheet` overlay
+  - [ ] Instantiate `workoutSessionMachine` via
+        `useActor(workoutSessionMachine, { input: { routine, settings, runtime } })`
+  - [ ] Drive a `setInterval` in `useRef` that sends `TICK` to the machine every
+        second when state is `active` — clear interval on unmount
+  - [ ] `AppHeader`: back (→ send `END_WORKOUT` to machine), title, elapsed timer
+        reads `state.context.elapsedSecs` from machine
+  - [ ] Groups with collapsible headers; exercises via `ActiveExerciseRow`;
+        each set button sends `LOG_SET(exerciseIdx, setData)` to machine
+  - [ ] `RestTimer` reads `state.context.restSecsLeft`; "Skip" sends `SKIP_REST`
+  - [ ] `EndWorkoutSheet` (Phase 4.7) visible when `state.matches('active.confirming')`:
+        "Save & finish" sends `CONFIRM_FINISH`; "Keep going" sends `KEEP_GOING`;
+        "Discard" sends `DISCARD`
+  - [ ] `SetEditSheet` overlay; `SetTimerSheet` overlay (local sheet state only)
+  - [ ] When `state.matches('finishing')` render loading indicator
+  - [ ] When `state.matches('done')` navigate to `FinishScreen` passing
+        `state.context` for summary display
 
 ### 4.6 FinishScreen
 
@@ -446,9 +531,20 @@ event-store,use-events,run-migrations,format-relative-time}.ts`. This phase
   - [ ] Exercise breakdown list
   - [ ] "Back to home" teal xl full-width button
 
-### 4.7 Gherkin specs
+### 4.7 EndWorkoutSheet
+
+- [ ] Create `src/components/app/workout/end-workout-sheet.tsx`:
+  - [ ] Bottom sheet; visible when `state.matches('active.confirming')`
+  - [ ] "Save & finish" teal button — sends `CONFIRM_FINISH` to machine
+  - [ ] "Keep going" outline button — sends `KEEP_GOING` to machine
+  - [ ] "Discard workout" ghost/destructive button — sends `DISCARD` to machine
+  - [ ] Header: "End workout?" + elapsed time summary
+
+### 4.8 Gherkin specs
 
 - [ ] Create `specs/apps/organiclever/fe/gherkin/workout/workout-session.feature`
+      (covers: start blank workout, start from routine, log set → rest timer starts,
+      skip rest, finish workout saves entry, discard returns home)
 - [ ] Step implementations `test/unit/steps/workout/workout-session.steps.tsx`
 - [ ] `nx affected -t typecheck lint test:quick spec-coverage` passes
 - [ ] Fix ALL failures found — including any preexisting failures not caused by your changes
@@ -477,7 +573,7 @@ event-store,use-events,run-migrations,format-relative-time}.ts`. This phase
   - [ ] "Add group" button
   - [ ] "Delete routine" destructive button (confirm `Dialog`; edit mode only)
   - [ ] "Save" teal full-width; calls `runtime.runPromise(saveRoutine(r))` (the
-        Effect-returning function from `lib/events/routine-store.ts`), then `onSave()`
+        Effect-returning function from `lib/journal/routine-store.ts`), then `onSave()`
 
 ### 5.3 Gherkin specs
 
@@ -684,10 +780,23 @@ event-store,use-events,run-migrations,format-relative-time}.ts`. This phase
 ### 9.9 Post-Push CI/CD Verification
 
 - [ ] Push directly to `main`: `git push origin main`
-- [ ] Monitor GitHub Actions workflows for the push
-- [ ] Verify all CI checks pass (typecheck, lint, test:quick, spec-coverage, e2e)
-- [ ] If any CI check fails, fix immediately and push a follow-up commit to `main`
-- [ ] Do NOT proceed to archival until CI is green
+- [ ] Trigger the OrganicLever dev workflow manually if not auto-triggered:
+      `gh workflow run test-and-deploy-organiclever-web-development.yml`
+- [ ] Monitor the workflow run:
+      `gh run list --workflow=test-and-deploy-organiclever-web-development.yml --limit=3`
+      `gh run watch` on the latest run ID
+- [ ] Verify ALL jobs pass in `.github/workflows/test-and-deploy-organiclever-web-development.yml`:
+  - [ ] `spec-coverage` — spec coverage for organiclever-be, organiclever-web, both e2e projects
+  - [ ] `fe-lint` — `nx run organiclever-web:lint`
+  - [ ] `be-integration` — Docker-compose integration tests + contract codegen
+  - [ ] `fe-integration` — `nx run organiclever-web:test:integration`
+  - [ ] `e2e` — full BE+FE E2E suite (organiclever-be-e2e + organiclever-web-e2e)
+  - [ ] `detect-changes` — detects `apps/organiclever-web/` changes
+  - [ ] `deploy` — pushes to `stag-organiclever-web` (Vercel staging)
+- [ ] Verify Vercel staging deployment succeeds at `stag-organiclever-web` branch:
+      `gh run list --workflow=test-and-deploy-organiclever-web-development.yml` confirms deploy job green
+- [ ] If any CI job fails, fix immediately and push a follow-up commit to `main`
+- [ ] Do NOT proceed to archival until the full workflow is green
 
 ### Plan Archival
 

@@ -57,16 +57,16 @@ Settings, Workout, Finish, EditRoutine) plus five event loggers and a bilingual
 - EditRoutine screen with group/exercise CRUD
 - Five quick-log event types: Reading, Learning, Meal, Focus, Custom
 - Bilingual support: English and Bahasa Indonesia
-- PGlite persistence (gear-up's `dataDir` `ol_events_v1`, IndexedDB key
-  `/pglite/ol_events_v1`) extended via this plan's v2 migration; seed data
-  applied on first launch when both `events` and `routines` tables are empty
+- PGlite persistence (gear-up's `dataDir` `ol_journal_v1`, IndexedDB key
+  `/pglite/ol_journal_v1`) extended via this plan's v2 migration; seed data
+  applied on first launch when both `journal_entries` and `routines` tables are empty
 - PWA manifest for home-screen installation
 
 ### Out of Scope
 
 - Cloud / PWA sync (gear-up's Forward-Compatibility section reserves the
   necessary columns; this plan does not enable the sync layer)
-- Re-implementing the storage layer (`lib/events/event-store.ts`,
+- Re-implementing the storage layer (`lib/journal/journal-store.ts`,
   `runtime.ts`, `errors.ts`, `schema.ts`) — these belong to the gear-up; this
   plan extends, never replaces
 - Authentication, accounts, or user profiles beyond the local name field

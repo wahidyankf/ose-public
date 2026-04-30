@@ -10,14 +10,18 @@
   },
   "dependencies": {
     "@effect/platform": "^0.84.0",
+    "@electric-sql/pglite": "^0.4.5",
     "@open-sharia-enterprise/ts-ui": "*",
-    "effect": "^3.16.0",
+    "@xstate/react": "^5.0.5",
+    "effect": "^3.21.2",
     "next": "16.1.6",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "xstate": "^5.31.0"
   },
   "devDependencies": {
     "@amiceli/vitest-cucumber": "^6.2.0",
+    "@effect/vitest": "^0.29.0",
     "@storybook/addon-a11y": "^10.3.3",
     "@storybook/addon-docs": "^10.3.3",
     "@storybook/addon-themes": "^10.3.3",

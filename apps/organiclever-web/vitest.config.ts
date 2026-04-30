@@ -15,7 +15,6 @@ export default defineConfig({
         "src/app/layout.tsx",
         "src/app/api/**",
         "src/proxy.ts",
-        "src/lib/**",
         "src/test/**",
         "src/services/**",
         "src/layers/**",
@@ -36,8 +35,8 @@ export default defineConfig({
         plugins: sharedPlugins,
         test: {
           name: "unit",
-          include: ["test/unit/**/*.steps.{ts,tsx}", "**/*.unit.{test,spec}.{ts,tsx}"],
-          exclude: ["node_modules"],
+          include: ["test/unit/**/*.steps.{ts,tsx}", "**/*.unit.{test,spec}.{ts,tsx}", "src/**/*.{test,spec}.{ts,tsx}"],
+          exclude: ["node_modules", "**/*.int.{test,spec}.{ts,tsx}"],
           environment: "jsdom",
           setupFiles: ["./src/test/setup.ts"],
           testTimeout: 15000,
@@ -47,7 +46,7 @@ export default defineConfig({
         plugins: sharedPlugins,
         test: {
           name: "integration",
-          include: ["test/integration/**/*.{test,spec}.{ts,tsx}"],
+          include: ["test/integration/**/*.{test,spec}.{ts,tsx}", "src/**/*.int.{test,spec}.{ts,tsx}"],
           exclude: ["node_modules"],
           environment: "jsdom",
           setupFiles: ["./src/test/setup.ts"],

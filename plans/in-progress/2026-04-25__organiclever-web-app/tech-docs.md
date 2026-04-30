@@ -519,25 +519,47 @@ Two XState v5 machines handle the complex state in this app:
 
 - States:
 
-```
-idle
-  → active (on START)
-      active.exercising  (doing a set)
-        → active.exercising (TICK self-transition: elapsedSecs++)
-        → active.resting (on LOG_SET, when resolvedRest > 0)
-        → active.exercising (on LOG_SET, when resolvedRest = 0)
-        → active.confirming (on END_WORKOUT — shows EndWorkoutSheet)
-      active.resting
-        → active.resting (TICK self-transition: elapsedSecs++, restSecsLeft--)
-        → active.exercising (auto-transition when restSecsLeft <= 0 via TICK)
-        → active.exercising (on SKIP_REST)
-      active.confirming  (EndWorkoutSheet open: Save & finish / Keep going / Discard)
-        → finishing (on CONFIRM_FINISH)
-        → active.exercising (on KEEP_GOING — returns to last exercise)
-        → idle (on DISCARD)
-  → finishing (invokes fromPromise appendEntries)
-  → done (on finishing success — FinishScreen)
-  → error (on finishing failure — shows error + retry)
+```mermaid
+%% workoutSessionMachine state diagram
+%% Color palette: Blue #0173B2, Teal #029E73, Orange #DE8F05, Purple #CC78BC, Gray #808080
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+stateDiagram-v2
+    [*] --> idle
+
+    idle --> active : START
+
+    state active {
+        [*] --> exercising
+
+        exercising --> exercising : TICK #40;elapsedSecs++#41;
+        exercising --> resting : LOG_SET #91;resolvedRest > 0#93;
+        exercising --> exercising : LOG_SET #91;resolvedRest = 0#93;
+        exercising --> confirming : END_WORKOUT
+
+        resting --> resting : TICK #40;elapsedSecs++, restSecsLeft--#41;
+        resting --> exercising : TICK #91;restSecsLeft <= 0#93;
+        resting --> exercising : SKIP_REST
+
+        confirming --> exercising : KEEP_GOING
+        confirming --> idle : DISCARD
+    }
+
+    active --> finishing : CONFIRM_FINISH
+    finishing --> done : success
+    finishing --> error : failure
+    error --> finishing : retry
+
+    classDef blueState fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef tealState fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orangeState fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purpleState fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef grayState fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+
+    class idle grayState
+    class active blueState
+    class finishing orangeState
+    class done tealState
+    class error purpleState
 ```
 
 - Events: `START`, `TICK`, `LOG_SET`, `SKIP_REST`, `ADD_EXERCISE`, `END_WORKOUT`,
@@ -734,7 +756,7 @@ Future PWA-sync columns (`original_created_at`, `deleted_at`, `synced_at`,
 | TypeScript                   | Existing           | Existing | All new files are `.tsx` / `.ts`; strict mode + `noUncheckedIndexedAccess`                        |
 | Vitest                       | Existing           | Existing | Unit + integration tests use existing runner; vitest.config.ts already amended by gear-up         |
 | Playwright                   | Existing           | Existing | E2E via `organiclever-web-e2e`                                                                    |
-| `effect`                     | ^3.16 (in pkg)     | Existing | Already installed; no install step                                                                |
+| `effect`                     | ^3.21.2 (in pkg)   | Existing | Already installed; no install step                                                                |
 | `@effect/platform`           | ^0.84 (in pkg)     | Existing | Already installed                                                                                 |
 | `@effect/vitest`             | from gear-up       | Existing | Already installed by gear-up; this plan reuses Layer-swap pattern                                 |
 | `@electric-sql/pglite`       | from gear-up       | Existing | Already installed by gear-up; this plan reuses `PgliteService` Layer + raw parameterised SQL      |

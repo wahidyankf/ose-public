@@ -234,7 +234,8 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
 
 ### 0.9 Validation
 
-- [ ] `nx affected -t typecheck lint test:quick spec-coverage` passes (≥ 70 % LCOV)
+- [ ] `nx affected -t typecheck lint test:quick spec-coverage` passes
+      (`test:quick` enforces ≥ 70 % LCOV; `spec-coverage` validates Gherkin step coverage)
 - [ ] `nx run organiclever-web:test:integration` passes — including the v2
       migration backfill test
 - [ ] Fix ALL failures found — including any preexisting failures not caused
@@ -718,10 +719,10 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
 
 - [ ] `nx affected -t typecheck` passes
 - [ ] `nx affected -t lint` passes
-- [ ] `nx affected -t test:quick` passes (≥ 70 %, clean non-cached run)
+- [ ] `nx affected -t test:quick` passes (≥ 70 % LCOV, clean non-cached run)
 - [ ] `nx run organiclever-web:test:integration` passes (validates v2 migration
       backfill and gear-up row survival)
-- [ ] `nx affected -t spec-coverage` passes
+- [ ] `nx affected -t spec-coverage` passes (Gherkin step coverage)
 - [ ] `nx run organiclever-web-e2e:test:e2e` passes
 - [ ] Fix ALL failures found — including any preexisting failures not caused by your changes
 

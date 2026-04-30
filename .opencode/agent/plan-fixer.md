@@ -362,3 +362,40 @@ Add to the delivery checklist:
 - **HIGH Confidence**: Section completely missing — add the template
 - **MEDIUM Confidence**: Section exists but is vague — flag for manual review
 - **HIGH Confidence**: Section references wrong project/port — fix with correct values from plan context
+
+## Diagram Format Fixes
+
+When plan-checker reports a MEDIUM finding for ASCII art in plan files where Mermaid would be more appropriate, apply these fixes:
+
+### Confidence Assessment
+
+- **HIGH Confidence**: ASCII art clearly depicts a flow, sequence, state machine, or component interaction — the Mermaid equivalent is unambiguous. Auto-convert.
+- **MEDIUM Confidence**: ASCII art is ambiguous (e.g., a hybrid table/diagram). Flag for manual review.
+- **FALSE_POSITIVE**: ASCII art is a simple directory tree or file listing. These are explicitly exempted — do not convert.
+
+### How to Convert ASCII Art to Mermaid
+
+Follow [governance/conventions/formatting/diagrams.md](../../governance/conventions/formatting/diagrams.md) for full syntax rules. Key standards:
+
+1. **Choose the right diagram type**:
+   - Component interactions, decision branches → `flowchart LR`
+   - Order-of-operations across systems → `sequenceDiagram`
+   - Entity lifecycle states → `stateDiagram-v2`
+   - Database schema → `erDiagram`
+
+2. **Orientation**: Default to `flowchart LR` unless top-down is semantically required; add a `%%` comment explaining why.
+
+3. **Colors**: Use only the verified accessible palette — `#0173B2` (blue), `#DE8F05` (orange), `#029E73` (teal), `#CC78BC` (purple), `#CA9161` (brown), `#808080` (gray). Always include `stroke:#000000` and `color:#FFFFFF` on dark fills. Never use red, green, or yellow fills.
+
+4. **Comment syntax**: Use `%%` for comments — NOT `%%{ }%%`.
+
+5. **Verify syntax before committing**:
+   - Escape parentheses in node text: `(` → `#40;`, `)` → `#41;`
+   - No literal quotes inside node text
+   - No `\n` in labels — use `<br/>` for multi-line node labels; keep edge labels single-line plain text ≤ 20 characters
+   - State diagram edge labels must not contain colons
+
+### Exception: Do Not Convert
+
+- Simple directory trees (`├── src/`, file listings) — acceptable ASCII, leave unchanged.
+- Tables or matrices where Mermaid would reduce readability — classify as FALSE_POSITIVE.

@@ -92,6 +92,14 @@ Per the [Content-Placement Rules](../../governance/conventions/structure/plans.m
 - Dependencies are listed
 - Testing strategy is defined
 
+#### Diagram Format Check
+
+Audit all plan files (`README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery.md`) for diagram format compliance:
+
+- **Flag MEDIUM** when a plan contains ASCII art that depicts component interactions, data flows, sequences, state machines, or decision branches — a Mermaid diagram would be more appropriate.
+- **Acceptable ASCII** exception: simple directory-tree listings (e.g., `apps/foo/bar.ts`) are not diagrams and do not require flagging.
+- **Reference**: [governance/conventions/structure/plans.md §Diagrams in Plans](../../governance/conventions/structure/plans.md) and [governance/conventions/formatting/diagrams.md](../../governance/conventions/formatting/diagrams.md).
+
 ### 4. Delivery Checklist Validation
 
 - Steps are executable (clear actions)

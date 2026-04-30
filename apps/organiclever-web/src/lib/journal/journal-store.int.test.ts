@@ -65,9 +65,9 @@ layer(TestPgliteLayer)("journal-store integration tests", (it) => {
       const all = yield* listEntries();
       // Same-timestamp entries must appear in insertion order (storage_seq ASC)
       const names = all.map((e) => e.name);
-      const alphaIdx = names.indexOf("alpha");
-      const betaIdx = names.indexOf("beta");
-      const gammaIdx = names.indexOf("gamma");
+      const alphaIdx = names.indexOf(makeName("alpha"));
+      const betaIdx = names.indexOf(makeName("beta"));
+      const gammaIdx = names.indexOf(makeName("gamma"));
       expect(alphaIdx).toBeGreaterThanOrEqual(0);
       expect(betaIdx).toBeGreaterThanOrEqual(0);
       expect(gammaIdx).toBeGreaterThanOrEqual(0);
@@ -94,8 +94,8 @@ layer(TestPgliteLayer)("journal-store integration tests", (it) => {
 
         const all = yield* listEntries();
         const names = all.map((e) => e.name);
-        const xIdx = names.indexOf("x-entry");
-        const yIdx = names.indexOf("y-entry");
+        const xIdx = names.indexOf(makeName("x-entry"));
+        const yIdx = names.indexOf(makeName("y-entry"));
         expect(xIdx).toBeGreaterThanOrEqual(0);
         expect(yIdx).toBeGreaterThanOrEqual(0);
         // y-entry (later batch) should sort before x-entry (earlier batch)

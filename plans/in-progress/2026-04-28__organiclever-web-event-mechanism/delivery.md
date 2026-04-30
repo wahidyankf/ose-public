@@ -450,56 +450,65 @@ starts after this gear-up archives.
 
 ### 2.1 AddEntryButton
 
-- [ ] Create `apps/organiclever-web/src/components/app/add-entry-button.tsx`:
-  - [ ] Props: `{ onClick: () => void }`
-  - [ ] `<button aria-label="Add entry">Add entry</button>` (or "+ Add entry")
-  - [ ] Tailwind styling consistent with existing landing components
-  - [ ] Keyboard reachable
+- [x] Create `apps/organiclever-web/src/components/app/add-entry-button.tsx`:
+  - [x] Props: `{ onClick: () => void }`
+  - [x] `<button aria-label="Add entry">Add entry</button>` (or "+ Add entry")
+  - [x] Tailwind styling consistent with existing landing components
+  - [x] Keyboard reachable
+  - Date: 2026-04-30 | Status: Done | Files changed: src/components/app/add-entry-button.tsx
 
 ### 2.2 EntryFormSheet (batch + edit modes)
 
-- [ ] Create `apps/organiclever-web/src/components/app/entry-form-sheet.tsx`
+- [x] Create `apps/organiclever-web/src/components/app/entry-form-sheet.tsx`
       with the discriminated `EntryFormSheetProps` from `tech-docs.md`:
-  - [ ] **Create mode**: `drafts` array, "+ Add another" appends, "Remove draft"
+  - [x] **Create mode**: `drafts` array, "+ Add another" appends, "Remove draft"
         splice-removes (disabled when only one)
-  - [ ] **Edit mode**: single draft seeded from `initial`
-  - [ ] Preset chips (`workout`, `reading`, `meditation`) per draft
-  - [ ] Per-draft validation: empty name, invalid JSON, non-object JSON
-  - [ ] All-or-nothing save in create mode
-  - [ ] Cancel discards local state
+  - [x] **Edit mode**: single draft seeded from `initial`
+  - [x] Preset chips (`workout`, `reading`, `meditation`) per draft
+  - [x] Per-draft validation: empty name, invalid JSON, non-object JSON
+  - [x] All-or-nothing save in create mode
+  - [x] Cancel discards local state
+  - Date: 2026-04-30 | Status: Done | Files changed: src/components/app/entry-form-sheet.tsx
 
 ### 2.3 JournalList + EntryCard
 
-- [ ] Create `apps/organiclever-web/src/components/app/journal-list.tsx`:
-  - [ ] Empty-state copy "No entries yet — press + to add one" when empty
-  - [ ] Renders `<ul>` of `<EntryCard>` props per item
-- [ ] Create `apps/organiclever-web/src/components/app/entry-card.tsx`:
-  - [ ] Header: name, relative `createdAt`, "edited Xm ago" when `updatedAt > createdAt`
-  - [ ] Action row: Edit / Bring to top / Delete
-  - [ ] Delete uses inline two-step confirm
-  - [ ] `<details>` payload disclosure with pretty-printed JSON
+- [x] Create `apps/organiclever-web/src/components/app/journal-list.tsx`:
+  - [x] Empty-state copy "No entries yet — press + to add one" when empty
+  - [x] Renders `<ul>` of `<EntryCard>` props per item
+  - Date: 2026-04-30 | Status: Done | Files changed: src/components/app/journal-list.tsx
+- [x] Create `apps/organiclever-web/src/components/app/entry-card.tsx`:
+  - [x] Header: name, relative `createdAt`, "edited Xm ago" when `updatedAt > createdAt`
+  - [x] Action row: Edit / Bring to top / Delete
+  - [x] Delete uses inline two-step confirm
+  - [x] `<details>` payload disclosure with pretty-printed JSON
+  - Date: 2026-04-30 | Status: Done | Files changed: src/components/app/entry-card.tsx
 
 ### 2.4 Component unit tests
 
-- [ ] `add-entry-button.unit.test.tsx`: click invokes `onClick`; aria-label present
-- [ ] `entry-form-sheet.unit.test.tsx`:
-  - [ ] Create mode: empty name blocks submit; invalid JSON blocks; non-object JSON blocks
-  - [ ] Create mode: "+ Add another" / "Remove draft" mutate draft list
-  - [ ] Create mode: valid submit calls `onSubmit` with array of `{name, payload}`
-  - [ ] Edit mode: seeded with `initial`; submit calls `onSubmit` with patch
-  - [ ] Cancel calls `onCancel`, no `onSubmit`
-  - [ ] Preset chip click sets that draft's name
-- [ ] `journal-list.unit.test.tsx`: empty-state copy / N cards
-- [ ] `entry-card.unit.test.tsx`:
-  - [ ] Renders name, time, payload preview
-  - [ ] Shows "edited Xm ago" only when `updatedAt > createdAt`
-  - [ ] Edit button calls `onEdit(id)`; Bring-to-top calls `onBump(id)`
-  - [ ] Delete shows confirm; Cancel reverts; Yes calls `onDelete(id)`
+- [x] `add-entry-button.unit.test.tsx`: click invokes `onClick`; aria-label present
+  - Date: 2026-04-30 | Status: Done
+- [x] `entry-form-sheet.unit.test.tsx`:
+  - [x] Create mode: empty name blocks submit; invalid JSON blocks; non-object JSON blocks
+  - [x] Create mode: "+ Add another" / "Remove draft" mutate draft list
+  - [x] Create mode: valid submit calls `onSubmit` with array of `{name, payload}`
+  - [x] Edit mode: seeded with `initial`; submit calls `onSubmit` with patch
+  - [x] Cancel calls `onCancel`, no `onSubmit`
+  - [x] Preset chip click sets that draft's name
+  - Date: 2026-04-30 | Status: Done
+- [x] `journal-list.unit.test.tsx`: empty-state copy / N cards
+  - Date: 2026-04-30 | Status: Done
+- [x] `entry-card.unit.test.tsx`:
+  - [x] Renders name, time, payload preview
+  - [x] Shows "edited Xm ago" only when `updatedAt > createdAt`
+  - [x] Edit button calls `onEdit(id)`; Bring-to-top calls `onBump(id)`
+  - [x] Delete shows confirm; Cancel reverts; Yes calls `onDelete(id)`
+  - Date: 2026-04-30 | Status: Done | 33 component unit tests passing
 
 ### 2.5 Phase 2 validation
 
-- [ ] `nx run organiclever-web:typecheck` passes
-- [ ] `nx run organiclever-web:test:quick` passes (≥ 70 % LCOV)
+- [x] `nx run organiclever-web:typecheck` passes
+- [x] `nx run organiclever-web:test:quick` passes (≥ 70 % LCOV)
+  - Date: 2026-04-30 | Status: Done | typecheck ✓, test:quick ✓ 83.16% LCOV, 184 tests
 
 ---
 

@@ -29,9 +29,9 @@ When("I click {string}", async ({ page }, text: string) => {
   await page.waitForLoadState("networkidle");
 });
 
-Then("the URL hash contains {string}", async ({ page }, hash: string) => {
+Then("the URL navigates to {string}", async ({ page }, path: string) => {
   const url = page.url();
-  expect(url).toContain(hash);
+  expect(url).toContain(path);
 });
 
 Then("I see a 5-column features grid", async ({ page }) => {

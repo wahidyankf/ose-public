@@ -11,12 +11,12 @@ Feature: OrganicLever landing page
   Scenario: CTA button present and functional
     Given I see a button "Open the app"
     When I click "Open the app"
-    Then the URL hash contains "/app"
+    Then the URL navigates to "/app"
 
   Scenario: Footer link navigates to app
     Given I see text "Open app →"
     When I click "Open app →"
-    Then the URL hash contains "/app"
+    Then the URL navigates to "/app"
 
   Scenario: Pre-Alpha badge visible in nav
     Then I see text "Pre-Alpha"

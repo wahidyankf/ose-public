@@ -66,7 +66,7 @@ function AlphaBanner() {
 
 export function LandingPage() {
   const goApp = () => {
-    window.location.hash = "#/app";
+    window.location.href = "/app";
   };
 
   useEffect(() => {

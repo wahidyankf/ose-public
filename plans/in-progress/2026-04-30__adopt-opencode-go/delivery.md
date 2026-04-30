@@ -39,9 +39,11 @@ complete first.
 ### Exa web search smoke-test
 
 - [ ] Set `OPENCODE_ENABLE_EXA=true` in the current shell:
+
   ```bash
   export OPENCODE_ENABLE_EXA=true
   ```
+
 - [ ] Open an OpenCode session and ask the model to search the web for something
       simple (e.g., "search for the latest OpenCode release notes")
   - If the model invokes the `websearch` tool → Exa works with OpenCode Go ✓
@@ -49,9 +51,11 @@ complete first.
     not confirmed with `opencode-go` models; Perplexity MCP is the fallback
 - [ ] Record Exa status: works ☐ / not available ☐
 - [ ] If Exa works: add to `~/.zshrc` or `~/.bashrc` for persistence:
+
   ```bash
   export OPENCODE_ENABLE_EXA=true
   ```
+
 - [ ] Test Perplexity MCP fallback (optional but recommended):
   - Confirm `PERPLEXITY_API_KEY` is set: `echo $PERPLEXITY_API_KEY`
   - In the OpenCode session, ask the model to use Perplexity for a web search
@@ -232,7 +236,7 @@ complete first.
   - `"web-reader"`
   - `"zread"`
 - [ ] Verify the remaining `"mcp"` block contains exactly:
-  `"perplexity"`, `"nx-mcp"`, `"playwright"`
+      `"perplexity"`, `"nx-mcp"`, `"playwright"`
   - `perplexity` — retained as the configured web search fallback (used when
     `PERPLEXITY_API_KEY` is set and Exa is unavailable or insufficient)
   - `playwright` — retained for page reading/browser interaction

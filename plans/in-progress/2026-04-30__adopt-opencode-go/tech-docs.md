@@ -37,15 +37,15 @@ generation on real GitHub issues.
 > different evaluation suites with different difficulty distributions. Scores
 > across suites are directionally comparable but not directly equivalent.
 
-| Model | Tier | Provider | Score | Suite | Role |
-| ----- | ---- | -------- | ----- | ----- | ---- |
-| `minimax-m2.7` | Large (new) | OpenCode Go | ≥80.2%¹ | SWE-Bench | opus + sonnet |
-| `glm-5` | Small (new) | OpenCode Go | — | — | haiku |
-| `glm-5.1` | Large (current) | Z.ai | 58.4% | SWE-Bench Pro | opus + sonnet |
-| `glm-5-turbo` | Small (current) | Z.ai | — | — | haiku |
-| Claude Opus 4.7 | — | Claude Code | 87.6% | SWE-Bench Verified | primary runtime |
-| Claude Sonnet 4.6 | — | Claude Code | 79.6% | SWE-Bench Verified | daily driver |
-| Claude Haiku 4.5 | — | Claude Code | 73.3% | SWE-Bench Verified | mechanical work |
+| Model             | Tier            | Provider    | Score   | Suite              | Role            |
+| ----------------- | --------------- | ----------- | ------- | ------------------ | --------------- |
+| `minimax-m2.7`    | Large (new)     | OpenCode Go | ≥80.2%¹ | SWE-Bench          | opus + sonnet   |
+| `glm-5`           | Small (new)     | OpenCode Go | —       | —                  | haiku           |
+| `glm-5.1`         | Large (current) | Z.ai        | 58.4%   | SWE-Bench Pro      | opus + sonnet   |
+| `glm-5-turbo`     | Small (current) | Z.ai        | —       | —                  | haiku           |
+| Claude Opus 4.7   | —               | Claude Code | 87.6%   | SWE-Bench Verified | primary runtime |
+| Claude Sonnet 4.6 | —               | Claude Code | 79.6%   | SWE-Bench Verified | daily driver    |
+| Claude Haiku 4.5  | —               | Claude Code | 73.3%   | SWE-Bench Verified | mechanical work |
 
 ¹ MiniMax M2.5 confirmed at 80.2% SWE-Bench. M2.7 is the successor; score expected
 ≥ M2.5 but not independently verified at time of writing.
@@ -317,10 +317,10 @@ first-party provider; the documented setup path is `/connect` in the TUI which
 writes credentials to `~/.local/share/opencode/auth.json` — no provider block
 needed in the committed file.
 
-| Auth path | How | Committed to repo | Recommended |
-| --------- | --- | ---------------- | ----------- |
-| `/connect` → `auth.json` | Run `/connect` once per machine | No — credentials stored locally | **Yes** (official docs) |
-| Provider block + env var | `{env:OPENCODE_GO_API_KEY}` in `opencode.json` | Yes (placeholder only) | Acceptable workaround |
+| Auth path                | How                                            | Committed to repo               | Recommended             |
+| ------------------------ | ---------------------------------------------- | ------------------------------- | ----------------------- |
+| `/connect` → `auth.json` | Run `/connect` once per machine                | No — credentials stored locally | **Yes** (official docs) |
+| Provider block + env var | `{env:OPENCODE_GO_API_KEY}` in `opencode.json` | Yes (placeholder only)          | Acceptable workaround   |
 
 The plan commits the provider block as an explicit fallback for developers who
 prefer env-var-driven setup. If `/connect` is used instead, the provider block
@@ -336,12 +336,12 @@ any name as long as shell and config agree.
 
 **MCP/tool capability coverage after removal**:
 
-| Capability | Before (Z.ai) | After | Mechanism |
-| ---------- | ------------- | ----- | --------- |
-| Web search | `web-search-prime` | Exa built-in tool | `OPENCODE_ENABLE_EXA=true` env var (primary) |
-| Web search fallback | — | `perplexity` MCP | `PERPLEXITY_API_KEY` + existing MCP entry |
-| Web reading | `web-reader`, `zread` | `playwright` MCP | already wired |
-| Nx workspace | `nx-mcp` | `nx-mcp` | unchanged |
+| Capability          | Before (Z.ai)         | After             | Mechanism                                    |
+| ------------------- | --------------------- | ----------------- | -------------------------------------------- |
+| Web search          | `web-search-prime`    | Exa built-in tool | `OPENCODE_ENABLE_EXA=true` env var (primary) |
+| Web search fallback | —                     | `perplexity` MCP  | `PERPLEXITY_API_KEY` + existing MCP entry    |
+| Web reading         | `web-reader`, `zread` | `playwright` MCP  | already wired                                |
+| Nx workspace        | `nx-mcp`              | `nx-mcp`          | unchanged                                    |
 
 **Web Search Strategy** (detail):
 
@@ -404,7 +404,7 @@ add it, append to the `mcp` block in `.opencode/opencode.json`:
 Replace the entire section (from `## OpenCode / GLM Equivalents` to the end of
 the "Why No Separate GLM Opus Tier" subsection) with:
 
-```markdown
+````markdown
 ## OpenCode / OpenCode Go Equivalents
 
 Agents in `.claude/agents/` are auto-synced to `.opencode/agent/` by rhino-cli
@@ -432,14 +432,14 @@ uses the highest-benchmark available model for all non-haiku work.
 
 ### Model Benchmark Table
 
-| Model | SWE-Bench Score | Suite | Notes |
-| ----- | --------------- | ----- | ----- |
-| `opencode-go/minimax-m2.7` (new large) | ≥80.2%¹ | SWE-Bench | Best in OpenCode Go roster |
-| `opencode-go/glm-5` (new haiku) | — | — | No published score; fast/cheap |
-| `zai-coding-plan/glm-5.1` (current large) | 58.4% | SWE-Bench Pro | +22 pp below minimax-m2.7 |
-| `zai-coding-plan/glm-5-turbo` (current haiku) | — | — | No published score |
-| Claude Sonnet 4.6 (Claude Code reference) | 79.6% | SWE-Bench Verified | minimax-m2.7 ≈ Sonnet quality |
-| Claude Opus 4.7 (Claude Code reference) | 87.6% | SWE-Bench Verified | Ceiling for Claude sessions |
+| Model                                         | SWE-Bench Score | Suite              | Notes                          |
+| --------------------------------------------- | --------------- | ------------------ | ------------------------------ |
+| `opencode-go/minimax-m2.7` (new large)        | ≥80.2%¹         | SWE-Bench          | Best in OpenCode Go roster     |
+| `opencode-go/glm-5` (new haiku)               | —               | —                  | No published score; fast/cheap |
+| `zai-coding-plan/glm-5.1` (current large)     | 58.4%           | SWE-Bench Pro      | +22 pp below minimax-m2.7      |
+| `zai-coding-plan/glm-5-turbo` (current haiku) | —               | —                  | No published score             |
+| Claude Sonnet 4.6 (Claude Code reference)     | 79.6%           | SWE-Bench Verified | minimax-m2.7 ≈ Sonnet quality  |
+| Claude Opus 4.7 (Claude Code reference)       | 87.6%           | SWE-Bench Verified | Ceiling for Claude sessions    |
 
 ¹ MiniMax M2.5 confirmed at 80.2%. M2.7 expected ≥ but not independently verified.
 SWE-Bench variants (Pro, Verified) use different difficulty distributions; scores
@@ -473,7 +473,9 @@ To add web search, each developer sets in `~/.zshrc` or `~/.bashrc`:
 export OPENCODE_ENABLE_EXA=true
 export PERPLEXITY_API_KEY="<your-key>"   # optional, for Perplexity fallback
 ```
-```
+````
+
+````
 
 ## Regeneration Step
 
@@ -481,7 +483,7 @@ After all Go code changes are made and `rhino-cli` is rebuilt, run:
 
 ```bash
 npm run sync:claude-to-opencode
-```
+````
 
 This rebuilds `rhino-cli`, then calls `rhino-cli agents sync` which reads every
 `.claude/agents/*.md`, calls `ConvertModel()` for each agent's `model` field,
@@ -495,22 +497,31 @@ To use OpenCode Go locally:
 1. Subscribe at [opencode.ai/go](https://opencode.ai/go)
 2. Copy the API key from the OpenCode console
 3. Set the model provider env var:
+
    ```bash
    export OPENCODE_GO_API_KEY="<your-key>"
    ```
+
    Add to `~/.zshrc` or `~/.bashrc` for persistence. Do NOT add to `.env` in
    the repository — API keys are never committed.
+
 4. Enable Exa web search (primary):
+
    ```bash
    export OPENCODE_ENABLE_EXA=true
    ```
+
    Add to `~/.zshrc` or `~/.bashrc` alongside the API key. No Exa API key needed.
+
 5. Optionally enable Perplexity fallback search:
+
    ```bash
    export PERPLEXITY_API_KEY="<your-key>"
    ```
+
    The Perplexity MCP entry is already in `opencode.json`; it activates when
    this env var is set.
+
 6. Open OpenCode: run `/connect` in the TUI, select "OpenCode Go", paste the key
    (this populates the key in the OpenCode session; alternatively the env var
    is sufficient if `opencode.json` uses `{env:OPENCODE_GO_API_KEY}`)
@@ -519,11 +530,11 @@ To use OpenCode Go locally:
 
 ## Risk Assessment
 
-| Risk | Likelihood | Mitigation |
-| ---- | ---------- | ---------- |
-| Model slug differs from expected | Medium | Verify via `/models` before code changes |
-| OpenCode Go beta service outage | Low | OpenCode Go has US/EU/SG PoPs; fallback to Claude Code |
-| MiniMax M2.7 slower than GLM-5.1 | Low | Perplexity + Playwright are local/independent of model |
-| Exa doesn't work with `opencode-go` models | Medium | Perplexity MCP is configured fallback; test Exa in Phase 0 before relying on it |
-| Perplexity MCP doesn't start | Low | Already configured; test with `PERPLEXITY_API_KEY` set before committing |
-| Test count changes with rename | Medium | Search all usages of old step constant before rename |
+| Risk                                       | Likelihood | Mitigation                                                                      |
+| ------------------------------------------ | ---------- | ------------------------------------------------------------------------------- |
+| Model slug differs from expected           | Medium     | Verify via `/models` before code changes                                        |
+| OpenCode Go beta service outage            | Low        | OpenCode Go has US/EU/SG PoPs; fallback to Claude Code                          |
+| MiniMax M2.7 slower than GLM-5.1           | Low        | Perplexity + Playwright are local/independent of model                          |
+| Exa doesn't work with `opencode-go` models | Medium     | Perplexity MCP is configured fallback; test Exa in Phase 0 before relying on it |
+| Perplexity MCP doesn't start               | Low        | Already configured; test with `PERPLEXITY_API_KEY` set before committing        |
+| Test count changes with rename             | Medium     | Search all usages of old step constant before rename                            |

@@ -132,8 +132,6 @@ Unsolicited PR steps conflict with Trunk Based Development and must be removed.
 - Acceptance criteria match user stories
 - No contradictions between sections
 
-## Validation Process
-
 ## Workflow Overview
 
 **See `repo-applying-maker-checker-fixer` Skill**.

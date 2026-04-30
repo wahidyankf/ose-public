@@ -82,6 +82,7 @@ FAIL — forbidden:
 ---
 title: "Example Convention"
 created: 2025-11-22
+updated: 2026-04-19
 ---
 ```
 
@@ -104,6 +105,8 @@ FAIL — forbidden (at end of file):
 ...last paragraph of content...
 
 ---
+
+**Last Updated**: 2026-04-19
 ```
 
 PASS — correct (file ends after last content paragraph):

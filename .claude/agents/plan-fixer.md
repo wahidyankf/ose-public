@@ -6,6 +6,7 @@ model: sonnet
 color: yellow
 skills:
   - docs-applying-content-quality
+  - docs-creating-accessible-diagrams
   - plan-writing-gherkin-criteria
   - plan-creating-project-plans
   - docs-validating-factual-accuracy
@@ -379,15 +380,7 @@ Follow [governance/conventions/formatting/diagrams.md](../../governance/conventi
 
 2. **Orientation**: Default to `flowchart LR` unless top-down is semantically required; add a `%%` comment explaining why.
 
-3. **Colors**: Use only the verified accessible palette — `#0173B2` (blue), `#DE8F05` (orange), `#029E73` (teal), `#CC78BC` (purple), `#CA9161` (brown), `#808080` (gray). Always include `stroke:#000000` and `color:#FFFFFF` on dark fills. Never use red, green, or yellow fills.
-
-4. **Comment syntax**: Use `%%` for comments — NOT `%%{ }%%`.
-
-5. **Verify syntax before committing**:
-   - Escape parentheses in node text: `(` → `#40;`, `)` → `#41;`
-   - No literal quotes inside node text
-   - No `\n` in labels — use `<br/>` for multi-line node labels; keep edge labels single-line plain text ≤ 20 characters
-   - State diagram edge labels must not contain colons
+3–5. Follow the color-blind-friendly palette, `%%` comment syntax, and common syntax pitfalls documented in the `docs-creating-accessible-diagrams` Skill and [governance/conventions/formatting/diagrams.md](../../governance/conventions/formatting/diagrams.md).
 
 ### Exception: Do Not Convert
 

@@ -63,7 +63,7 @@
       ],
       "outputs": ["{projectRoot}/coverage"],
       "options": {
-        "command": "npx vitest run --coverage && (cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/organiclever-web/coverage/lcov.info 70)",
+        "command": "node scripts/gen-migrations.mjs && npx vitest run --coverage && (cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/organiclever-web/coverage/lcov.info 70)",
         "cwd": "{projectRoot}"
       }
     },
@@ -86,7 +86,7 @@
       "cache": true,
       "inputs": ["default", "{workspaceRoot}/specs/apps/organiclever/fe/gherkin/**/*.feature"],
       "options": {
-        "command": "npx vitest run --project integration",
+        "command": "node scripts/gen-migrations.mjs && npx vitest run --project integration",
         "cwd": "{projectRoot}"
       }
     },

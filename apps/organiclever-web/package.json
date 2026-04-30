@@ -17,6 +17,7 @@
     "@effect/platform": "^0.84.0",
     "@electric-sql/pglite": "^0.4.5",
     "@open-sharia-enterprise/ts-ui": "*",
+    "@testing-library/dom": "^10.4.1",
     "@xstate/react": "^5.0.5",
     "effect": "^3.21.2",
     "next": "16.1.6",

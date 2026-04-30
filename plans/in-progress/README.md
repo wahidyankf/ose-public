@@ -4,9 +4,6 @@ Active project plans currently being worked on.
 
 ## Active Plans
 
-- [`2026-04-28__organiclever-web-event-mechanism`](./2026-04-28__organiclever-web-event-mechanism/README.md) —
-  Gear-up: generic `{kind, payload}` event primitive on `/app` (plus button + list +
-  localStorage round-trip) before the bigger app plan starts
 - [`2026-04-25__organiclever-web-app`](./2026-04-25__organiclever-web-app/README.md) —
   OrganicLever web app v0: local-first life-event tracker (workouts, quick logs, analytics,
   bilingual UI) behind the landing page CTA

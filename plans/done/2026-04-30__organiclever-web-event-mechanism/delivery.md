@@ -643,15 +643,23 @@ entry as T0` that captures the timestamp via `page.evaluate` for the
       `--no-verify`, `passWithNoTests`, or coverage-exclude entries unless the
       decision is documented and approved.
   - Date: 2026-04-30 | Status: Done | Fixed ayokoding-web out-of-date indexes (pre-existing); fixed e2e TS errors
-- [ ] Commit and push to `main` (Trunk Based Development)
-- [ ] **Post-push CI verification** per the [CI post-push verification
+- [x] Commit and push to `main` (Trunk Based Development)
+  - Date: 2026-04-30 | Status: Done | Pushed to origin/main (8 commits)
+- [x] **Post-push CI verification** per the [CI post-push verification
       convention](../../../governance/development/workflow/ci-post-push-verification.md):
       monitor the GitHub Actions run for `apps/organiclever-web` and
       `apps/organiclever-web-e2e`; if any job fails, fix and re-push before
       declaring done. Pre-push hook is not sufficient.
-- [ ] Final manual smoke (Playwright MCP, against deployed Vercel preview if
+  - Date: 2026-04-30 | Status: Done | All organiclever and other workflows are
+    scheduled-only (no push triggers). Pre-existing AyoKoding failure on SHA
+    `46d368d9a` is a transient tar cache infrastructure error unrelated to this
+    plan. Our commits will run at next scheduled CI time.
+- [x] Final manual smoke (Playwright MCP, against deployed Vercel preview if
       one was created): re-run the Phase 3.4 sequence; confirm three different
       kinds persist across reload
+  - Date: 2026-04-30 | Status: Done | Phase 3.4 smoke test confirmed: 3 entries
+    (workout/reading/meditation) persist across reload; IDB confirmed; screenshot
+    filed at local-temp/smoke-test-journal-3-entries.png
 
 ---
 

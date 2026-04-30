@@ -9,10 +9,11 @@ Exa integration (via `OPENCODE_ENABLE_EXA=true` env var), with Perplexity MCP
 retained in `opencode.json` as a confirmed fallback.
 
 OpenCode Go is a subscription service ($5 first month, $10/month thereafter) offering
-14 curated open-source coding models across 6 labs — Zhipu, Moonshot, DeepSeek,
-Xiaomi, MiniMax, and Alibaba. The top model (`minimax-m2.7`) benchmarks at 80.2%
-SWE-Bench, outperforming the current GLM-5.1 (58.4%). The provider is currently in
-beta with servers in US, EU, and Singapore.
+a curated set of open-source coding models across multiple labs — including Zhipu,
+Moonshot, DeepSeek, Xiaomi, MiniMax, and Alibaba (as of April 2026). The top model
+(`minimax-m2.7`) has a published SWE-Pro score of 56.22%; its predecessor M2.5 scored
+80.2% on SWE-Bench Verified. The provider is currently in beta with servers in US,
+EU, and Singapore.
 
 The main impact is in `rhino-cli`'s `ConvertModel()` function, which hard-codes
 Z.ai model IDs. Updating it + regenerating `.opencode/agent/` files is the bulk
@@ -24,6 +25,11 @@ flowchart LR
     C[".opencode/opencode.json\nmodel · provider · mcp"] --> D["OpenCode Session"]
     B --> D
     D --> E["opencode.ai/go API\nMiniMax · GLM · Kimi"]
+    style A fill:#0077BB,stroke:#000000,color:#FFFFFF
+    style B fill:#009988,stroke:#000000,color:#FFFFFF
+    style C fill:#EE7733,stroke:#000000,color:#000000
+    style D fill:#0077BB,stroke:#000000,color:#FFFFFF
+    style E fill:#CC78BC,stroke:#000000,color:#000000
 ```
 
 ## Scope (ose-public single-repo)

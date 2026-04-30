@@ -1,5 +1,60 @@
 # Product Requirements Document
 
+## Product Overview
+
+This change migrates the OpenCode model provider from Z.ai (GLM family) to
+OpenCode Go (MiniMax and GLM family via a multi-lab subscription). From the
+product perspective, a developer opening an OpenCode session gains access to a
+higher-benchmark large model (MiniMax M2.7, successor to M2.5 which led the
+SWE-Bench Verified leaderboard) and native Exa web search — without per-token
+billing. The `rhino-cli` sync mechanism is updated so that agent configuration
+files are generated correctly from the new provider IDs automatically.
+
+## Personas
+
+| Persona | Description |
+| ------- | ----------- |
+| Developer (OpenCode sessions) | Uses OpenCode as a secondary coding assistant alongside Claude Code. Benefits from improved model quality and integrated Exa web search without changing the workflow. |
+| CI / rhino-cli maintainer | Owns the Go code in `apps/rhino-cli/`. Applies model mapping changes and updates test expectations. Runs `npm run validate:config` and `npm run sync:claude-to-opencode` after changes. |
+| Repository governance reviewer | Reviews `model-selection.md` to verify model equivalents table is accurate and that the documented mapping matches the code. |
+
+## Product Scope
+
+### In Scope
+
+- Update `ConvertModel()` in `rhino-cli` to output `opencode-go/*` model IDs
+- Update all `rhino-cli` unit and integration tests for new model IDs
+- Update `.opencode/opencode.json` model fields, provider block, and MCP entries
+- Regenerate all `.opencode/agent/*.md` files via the existing sync mechanism
+- Update `model-selection.md` with the new OpenCode Go equivalents table and web search documentation
+- Document Exa web search as the primary search mechanism (`OPENCODE_ENABLE_EXA=true`)
+
+### Out of Scope
+
+- `.claude/agents/*.md` files — Claude Code aliases are not changing
+- Any Z.ai subscription or credential cleanup — personal billing concern
+- `ose-infra`, `ose-primer`, parent `ose-projects` — not affected
+- Adding OpenCode Go to CI — CI does not execute OpenCode sessions
+- Evaluating all OpenCode Go models — only the best-benchmark model is selected
+
+## Product Risks
+
+| Risk | User Impact | Mitigation |
+| ---- | ----------- | ---------- |
+| Exa web search does not work with `opencode-go/*` models | Developer loses web search capability temporarily | Perplexity MCP is configured as a provider-agnostic fallback |
+| Model slug (`minimax-m2.7`) differs from actual OpenCode Go roster | Empty or error sessions; no model connects | Phase 0 slug verification step catches this before any code changes |
+| OpenCode Go beta outage | Developer cannot use OpenCode sessions | Claude Code remains the primary tool; OpenCode is secondary |
+| M2.7 quality below expectations | Developer perception of degraded session quality | Rollback plan exists: revert commits, re-run sync; isolated to `rhino-cli` + config |
+
+## User Stories
+
+1. As a developer using OpenCode, I want model calls routed through OpenCode Go
+   so that I benefit from a higher-benchmark model (MiniMax M2.7) at a flat
+   monthly rate, with Exa web search available out of the box.
+2. As a rhino-cli maintainer, I want `ConvertModel()` to output `opencode-go/*`
+   model IDs so that agent sync files reflect the correct provider automatically
+   without manual editing of any `.opencode/agent/*.md` file.
+
 ## Functional Requirements
 
 ### FR-1: ConvertModel produces OpenCode Go IDs
@@ -47,7 +102,7 @@ IDs for all Claude tier aliases.
 - `"zread"`
 
 The remaining MCP servers (`perplexity`, `playwright`, `nx-mcp`) must be preserved
-unchanged. Perplexity is the configured fallback for web search (see FR-8); Playwright
+unchanged. Perplexity is the configured fallback for web search (see FR-7); Playwright
 covers page reading/browsing.
 
 ### FR-4: All OpenCode agent files reflect new model IDs
@@ -70,7 +125,7 @@ All `rhino-cli` unit and integration tests must pass with the new model IDs:
 `npm run validate:config` (which runs `validate:claude` → `sync:claude-to-opencode`
 → `validate:opencode`) must exit 0 after all changes.
 
-### FR-8: Exa web search enabled as primary mechanism
+### FR-7: Exa web search enabled as primary mechanism
 
 The `OPENCODE_ENABLE_EXA=true` environment variable must be set in the developer's
 shell and documented in the team's onboarding notes so every developer benefits from
@@ -96,14 +151,15 @@ be added to `opencode.json` by any developer who prefers it.
 > confirmed fallback for web search if Exa proves non-functional with
 > `opencode-go/*` models.
 
-### FR-9: model-selection.md updated
+### FR-8: model-selection.md updated
 
 The "OpenCode / GLM Equivalents" section of
 `governance/development/agents/model-selection.md` must reflect the new OpenCode
 Go provider, including:
 
 - Updated model ID mapping table
-- Updated "3-to-2 Tier Collapse" explanation (OpenCode Go has 14 models, not 2)
+- Updated "3-to-2 Tier Collapse" explanation (the converter maintains the same
+  3-to-2 collapse across the OpenCode Go model roster)
 - Updated benchmark notes for `minimax-m2.7`
 - New "Web Search in OpenCode Sessions" subsection documenting Exa (primary),
   Perplexity MCP (fallback), and Brave Search MCP (alternative)

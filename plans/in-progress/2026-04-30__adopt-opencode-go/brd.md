@@ -22,8 +22,9 @@ The OpenCode configuration in `ose-public` routes all model calls through Z.ai
 
 ## Business Goals
 
-1. **Higher benchmark ceiling**: move to a provider whose top model clears 80%
-   SWE-Bench, making agentic code generation measurably more capable.
+1. **Higher benchmark ceiling**: move to a provider from a lab whose prior model
+   (M2.5) cleared 80% SWE-Bench Verified — the open-source coding leaderboard
+   leader. M2.7 is the latest successor; exact score varies by benchmark suite.
 2. **Multi-lab model access**: gain access to models from Moonshot, DeepSeek,
    MiniMax, Alibaba, and Xiaomi — not just Zhipu — without changing the per-
    session workflow.
@@ -41,19 +42,35 @@ The OpenCode configuration in `ose-public` routes all model calls through Z.ai
 The model selection is grounded in SWE-Bench scores — the standard benchmark for
 agentic code generation on real GitHub issues.
 
-| Model | Role | Score | Suite |
-| ----- | ---- | ----- | ----- |
-| `opencode-go/minimax-m2.7` | New large (opus + sonnet) | ≥80.2%¹ | SWE-Bench |
-| `zai-coding-plan/glm-5.1` | Current large | 58.4% | SWE-Bench Pro |
-| Claude Sonnet 4.6 | Claude Code reference | 79.6% | SWE-Bench Verified |
-| Claude Opus 4.7 | Claude Code reference | 87.6% | SWE-Bench Verified |
+> **Methodology note**: SWE-Bench, SWE-Bench Pro, and SWE-Bench Verified are
+> different evaluation suites with different difficulty distributions. Scores
+> across suites are directionally comparable but not directly equivalent.
 
-¹ MiniMax M2.5 confirmed; M2.7 successor expected ≥. SWE-Bench variants are not
-directly equivalent — scores are directionally comparable.
+| Model | Role | Score | Suite | Source |
+| ----- | ---- | ----- | ----- | ------ |
+| `opencode-go/minimax-m2.7` | New large (opus + sonnet) | 56.22%¹ | SWE-Pro | minimax.io/news/minimax-m27-en, accessed 2026-04-30 |
+| `zai-coding-plan/glm-5.1` | Current large | 58.4%² | SWE-Bench Pro | _Judgment call_: widely cited in community benchmarks; no single canonical URL available |
+| Claude Sonnet 4.6 | Claude Code reference | 79.6%³ | SWE-Bench Verified | anthropic.com Claude Sonnet 4 release notes, accessed 2026-04-30 |
+| Claude Opus 4.7 | Claude Code reference | 87.6%³ | SWE-Bench Verified | anthropic.com Claude Opus 4 release notes, accessed 2026-04-30 |
 
-**Key takeaway**: `minimax-m2.7` at ≥80.2% is a +22 percentage-point improvement
-over `glm-5.1` at 58.4%, and closely matches Claude Sonnet 4.6 (79.6%). OpenCode
-sessions gain near-Claude-Code quality for coding work at $10/month flat rate.
+¹ "MiniMax M2.7 achieved a 56.22% accuracy rate on SWE-Pro" —
+  MiniMax M2.7 launch announcement: https://www.minimax.io/news/minimax-m27-en, accessed 2026-04-30.
+  Predecessor M2.5 scored 80.2% on SWE-Bench Verified (different suite):
+  https://www.minimax.io/news/minimax-m25, accessed 2026-04-30.
+
+² GLM-5.1 SWE-Bench Pro score is widely referenced in community benchmarks but has
+  no single canonical citation available at time of writing. _Judgment call_: the
+  58.4% figure is used as the directional baseline for comparison.
+
+³ Claude model scores from Anthropic's published model card / release notes pages.
+
+**Key takeaway**: M2.7's published SWE-Pro score (56.22%) is on a different and
+harder suite than M2.5's SWE-Bench Verified score (80.2%). Direct like-for-like
+comparison between M2.7 (SWE-Pro) and GLM-5.1 (SWE-Bench Pro) is inconclusive
+across different suites. _Judgment call_: M2.7 is the latest MiniMax model and its
+predecessor M2.5 led the open-source SWE-Bench Verified leaderboard at 80.2%.
+M2.7 is adopted as the large-model default based on recency and lab trajectory,
+not on a like-for-like score comparison.
 
 ## Business Impact
 
@@ -61,9 +78,11 @@ sessions gain near-Claude-Code quality for coding work at $10/month flat rate.
 
 - Agentic sessions that chain 10+ tool calls currently bottleneck on Z.ai latency.
   A faster, geo-distributed provider reduces wall-clock time for plan execution.
-- GLM-5.1's 58.4% SWE-Bench ceiling means some agentic code tasks require human
-  correction. MiniMax M2.7 at ≥80.2% SWE-Bench — a +22 pp improvement —
-  materially reduces that correction rate.
+- GLM-5.1's 58.4% SWE-Bench Pro ceiling means some agentic code tasks require human
+  correction. MiniMax M2.7 is the latest model from a lab whose prior release (M2.5)
+  scored 80.2% on SWE-Bench Verified — the open-source leaderboard leader. The exact
+  M2.7 vs GLM-5.1 gain is inconclusive across different benchmark suites; adoption
+  is grounded in lab trajectory and model recency.
 - The Z.ai MCP coupling means any future provider migration has to also solve
   web-search MCP simultaneously. Decoupling now makes future migrations simpler.
 
@@ -75,6 +94,23 @@ sessions gain near-Claude-Code quality for coding work at $10/month flat rate.
   independently of the model provider — no capability regression on search tasks.
 - Future model upgrades (e.g., switching to `deepseek-v4-pro` or `kimi-k2.6`)
   require only a one-line change to `opencode.json`, not an MCP migration.
+
+## Success Metrics
+
+The following observable facts determine that the plan is complete at the business level:
+
+1. `ConvertModel("sonnet")` and `ConvertModel("")` return `opencode-go/minimax-m2.7` — verified by unit tests passing
+2. `ConvertModel("haiku")` returns `opencode-go/glm-5` — verified by unit tests passing
+3. `.opencode/opencode.json` contains `opencode-go/*` model IDs and no Z.ai MCP entries — verified by `validate:config` exit 0
+4. `OPENCODE_ENABLE_EXA=true` is documented for all developers in `model-selection.md`
+5. `npm run validate:config` passes (sync + validation green) — verified by CI
+6. `nx run rhino-cli:test:unit` passes with ≥90% line coverage — verified by CI
+7. `nx run rhino-cli:test:integration` passes — verified by CI
+8. `model-selection.md` table shows OpenCode Go equivalents — verified by doc review
+
+_Judgment call_: no pre-migration baseline measurement exists for OpenCode session
+quality. Success is structural (correct model IDs, tests green, docs updated) rather
+than empirical (measured improvement in task completion rate).
 
 ## Affected Roles
 

@@ -6,9 +6,47 @@ complete first.
 
 ---
 
+## Execution Context (Worktree)
+
+This plan executes inside the `ose-public` subrepo worktree:
+
+- Worktree path: `ose-public/.claude/worktrees/moonlit-twirling-kazoo/`
+- To enter the worktree from the parent session: `cd ose-public && claude --worktree moonlit-twirling-kazoo`
+- All commands below run from the worktree root unless otherwise noted.
+
+---
+
+## Environment Setup (Run First in Worktree Root)
+
+- [ ] Install dependencies:
+
+  ```bash
+  npm install
+  ```
+
+- [ ] Converge the full polyglot toolchain (required — `postinstall` runs `doctor || true` and
+  silently tolerates drift; see [Worktree Toolchain Initialization](../../../governance/development/workflow/worktree-setup.md)):
+
+  ```bash
+  npm run doctor -- --fix
+  ```
+
+- [ ] Verify the baseline rhino-cli test suite passes before making any changes:
+
+  ```bash
+  nx run rhino-cli:test:unit
+  ```
+
+  Expect: all green. If tests fail before changes, fix preexisting issues first.
+
+---
+
 ## Commit Guidelines
 
 - Conventional Commits format: `<type>(<scope>): <description>`
+- Commit changes thematically — group related changes into logically cohesive commits
+- Split different domains/concerns into separate commits (already reflected in the suggested commit sequence below)
+- Do NOT bundle unrelated fixes into a single commit
 - Suggested commits in order:
   - `feat(rhino-cli): switch ConvertModel to opencode-go provider IDs`
   - `test(rhino-cli): update model ID expectations to opencode-go`
@@ -175,6 +213,22 @@ complete first.
   nx run rhino-cli:build
   ```
 
+- [ ] Run type check:
+
+  ```bash
+  nx run rhino-cli:typecheck
+  ```
+
+  Expect: no type errors
+
+- [ ] Run lint:
+
+  ```bash
+  nx run rhino-cli:lint
+  ```
+
+  Expect: no lint violations
+
 - [ ] Run unit tests:
 
   ```bash
@@ -326,10 +380,14 @@ complete first.
 - [ ] Run the affected targets to warm the cache:
 
   ```bash
-  nx affected -t typecheck lint test:quick
+  nx affected -t typecheck lint test:quick spec-coverage
   ```
 
   Expect: all green (rhino-cli, and any other affected projects)
+
+  > **Important**: Fix ALL failures found, not just those caused by your changes.
+  > This follows the root-cause orientation principle — proactively fix preexisting
+  > errors encountered during work. Do not defer or mention-and-skip existing issues.
 
 ### 4.2 Push to origin main
 
@@ -369,7 +427,9 @@ complete first.
              plans/done/2026-04-30__adopt-opencode-go
   ```
 
-- [ ] Commit the move:
+- [ ] Update `plans/in-progress/README.md` — remove this plan's entry
+- [ ] Update `plans/done/README.md` — add this plan entry with completion date
+- [ ] Commit the move and index updates together:
 
   ```
   chore(plans): archive adopt-opencode-go plan

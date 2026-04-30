@@ -23,13 +23,19 @@ flowchart TD
     B --> D
     D -->|"OPENCODE_API_KEY\n(auth.json or provider block)"| E["opencode.ai/go API"]
     E --> F["Lab Model\nMiniMax · GLM · Kimi · DeepSeek"]
+    style A fill:#0077BB,stroke:#000000,color:#FFFFFF
+    style B fill:#009988,stroke:#000000,color:#FFFFFF
+    style C fill:#EE7733,stroke:#000000,color:#000000
+    style D fill:#0077BB,stroke:#000000,color:#FFFFFF
+    style E fill:#CC78BC,stroke:#000000,color:#000000
+    style F fill:#009988,stroke:#000000,color:#FFFFFF
 ```
 
 ## Model Selection Rationale
 
-OpenCode Go offers 14 models from 6 labs as of April 2026. Model selection is
-driven by SWE-Bench score — the industry-standard benchmark for agentic code
-generation on real GitHub issues.
+OpenCode Go offers a curated set of models from multiple labs (as of April 2026).
+Model selection is driven by SWE-Bench score — the industry-standard benchmark for
+agentic code generation on real GitHub issues.
 
 ### Benchmark Comparison
 
@@ -37,23 +43,32 @@ generation on real GitHub issues.
 > different evaluation suites with different difficulty distributions. Scores
 > across suites are directionally comparable but not directly equivalent.
 
-| Model             | Tier            | Provider    | Score   | Suite              | Role            |
-| ----------------- | --------------- | ----------- | ------- | ------------------ | --------------- |
-| `minimax-m2.7`    | Large (new)     | OpenCode Go | ≥80.2%¹ | SWE-Bench          | opus + sonnet   |
-| `glm-5`           | Small (new)     | OpenCode Go | —       | —                  | haiku           |
-| `glm-5.1`         | Large (current) | Z.ai        | 58.4%   | SWE-Bench Pro      | opus + sonnet   |
-| `glm-5-turbo`     | Small (current) | Z.ai        | —       | —                  | haiku           |
-| Claude Opus 4.7   | —               | Claude Code | 87.6%   | SWE-Bench Verified | primary runtime |
-| Claude Sonnet 4.6 | —               | Claude Code | 79.6%   | SWE-Bench Verified | daily driver    |
-| Claude Haiku 4.5  | —               | Claude Code | 73.3%   | SWE-Bench Verified | mechanical work |
+| Model | Tier | Provider | Score | Suite | Source |
+| ----- | ---- | -------- | ----- | ----- | ------ |
+| `minimax-m2.7` | Large (new) | OpenCode Go | 56.22%¹ | SWE-Pro | minimax.io/news/minimax-m27-en, 2026-04-30 |
+| `glm-5` | Small (new) | OpenCode Go | — | — | No published score |
+| `glm-5.1` | Large (current) | Z.ai | 58.4%² | SWE-Bench Pro | _Judgment call_ — widely cited, no canonical URL |
+| `glm-5-turbo` | Small (current) | Z.ai | — | — | No published score |
+| Claude Opus 4.7 | — | Claude Code | 87.6%³ | SWE-Bench Verified | Anthropic release notes, accessed 2026-04-30 |
+| Claude Sonnet 4.6 | — | Claude Code | 79.6%³ | SWE-Bench Verified | Anthropic release notes, accessed 2026-04-30 |
+| Claude Haiku 4.5 | — | Claude Code | 73.3%³ | SWE-Bench Verified | Anthropic release notes, accessed 2026-04-30 |
 
-¹ MiniMax M2.5 confirmed at 80.2% SWE-Bench. M2.7 is the successor; score expected
-≥ M2.5 but not independently verified at time of writing.
+¹ "MiniMax M2.7 achieved a 56.22% accuracy rate on SWE-Pro" —
+  https://www.minimax.io/news/minimax-m27-en, accessed 2026-04-30.
+  Predecessor M2.5 scored 80.2% on SWE-Bench Verified (a different, lower-difficulty
+  suite): https://www.minimax.io/news/minimax-m25, accessed 2026-04-30.
 
-**Net improvement**: `minimax-m2.7` at ≥80.2% vs `glm-5.1` at 58.4% is a **+22
-percentage-point ceiling increase** for agentic code tasks in OpenCode sessions.
-`minimax-m2.7` also closely matches Claude Sonnet 4.6 (79.6% Verified), meaning
-OpenCode sessions approach Claude Code quality for coding work.
+² GLM-5.1 score is widely referenced in community benchmarks but no single
+  canonical citation is available. _Judgment call_: used as directional baseline.
+
+³ Claude model scores from Anthropic's published model card / release notes.
+
+**Selection rationale**: M2.7 (SWE-Pro: 56.22%) vs GLM-5.1 (SWE-Bench Pro: 58.4%)
+is inconclusive across different suites — direct comparison is not valid.
+_Judgment call_: M2.7 is adopted as the large-model default based on lab trajectory
+(MiniMax M2.5 led SWE-Bench Verified at 80.2%) and the recency of the model,
+not on a like-for-like score improvement claim. M2.7 approaches Claude Sonnet 4.6
+quality for coding work according to the MiniMax launch post.
 
 `glm-5` has no published SWE-Bench score. It is selected for the haiku tier
 because: (a) same GLM family as the current `glm-5-turbo`, so behavior is
@@ -70,12 +85,17 @@ flowchart LR
         H["model: haiku"]
     end
     subgraph og["OpenCode Go — 2 tiers"]
-        M["opencode-go/minimax-m2.7\nSWE-Bench ≥80.2%"]
+        M["opencode-go/minimax-m2.7\nSWE-Pro 56.22%"]
         G["opencode-go/glm-5\nfast · no benchmark"]
     end
     O -->|ConvertModel| M
     S -->|ConvertModel| M
     H -->|ConvertModel| G
+    style O fill:#0077BB,stroke:#000000,color:#FFFFFF
+    style S fill:#0077BB,stroke:#000000,color:#FFFFFF
+    style H fill:#EE7733,stroke:#000000,color:#000000
+    style M fill:#009988,stroke:#000000,color:#FFFFFF
+    style G fill:#EE7733,stroke:#000000,color:#000000
 ```
 
 The 3-to-2 collapse is intentional: OpenCode Go has no mid-tier equivalent
@@ -380,6 +400,15 @@ flowchart TD
     E -->|No| G{"BRAVE_API_KEY\nset?"}
     G -->|"Yes ✓"| H["Brave Search MCP\nadd to opencode.json"]
     G -->|No| I["No web search\navailable"]
+    style A fill:#0077BB,stroke:#000000,color:#FFFFFF
+    style B fill:#EE7733,stroke:#000000,color:#000000
+    style C fill:#EE7733,stroke:#000000,color:#000000
+    style D fill:#009988,stroke:#000000,color:#FFFFFF
+    style E fill:#EE7733,stroke:#000000,color:#000000
+    style F fill:#009988,stroke:#000000,color:#FFFFFF
+    style G fill:#EE7733,stroke:#000000,color:#000000
+    style H fill:#CC78BC,stroke:#000000,color:#000000
+    style I fill:#808080,stroke:#000000,color:#FFFFFF
 ```
 
 **Alternative — Brave Search MCP** (not configured by default):
@@ -415,16 +444,16 @@ OpenCode Go model IDs.
 
 | Claude Code              | OpenCode Go                | Capability notes                                          |
 | ------------------------ | -------------------------- | --------------------------------------------------------- |
-| omit (opus-tier inherit) | `opencode-go/minimax-m2.7` | MiniMax MoE; SWE-Bench 80.2%; highest in OpenCode Go      |
+| omit (opus-tier inherit) | `opencode-go/minimax-m2.7` | MiniMax MoE; SWE-Pro 56.22% (M2.5 predecessor: 80.2% SWE-Bench Verified); highest in OpenCode Go |
 | `model: sonnet`          | `opencode-go/minimax-m2.7` | Same model as opus-tier (no separate sonnet tier)         |
 | `model: haiku`           | `opencode-go/glm-5`        | Zhipu GLM lighter variant; fast/cheap for mechanical work |
 
 ### 3-to-2 Tier Collapse
 
 Claude Code has three tiers (Opus 4.7 > Sonnet 4.6 > Haiku 4.5). OpenCode Go
-offers 14 models across 6 labs, but the converter maintains the same 3-to-2
-collapse: a single large model (`minimax-m2.7`) covers opus and sonnet tiers;
-a fast model (`glm-5`) covers the haiku tier.
+offers a curated set of models across multiple labs, but the converter maintains
+the same 3-to-2 collapse: a single large model (`minimax-m2.7`) covers opus and
+sonnet tiers; a fast model (`glm-5`) covers the haiku tier.
 
 This collapse is an acceptable platform-level constraint. Claude Code tier
 assignments govern behavior in Claude sessions (the primary runtime). OpenCode
@@ -432,25 +461,34 @@ uses the highest-benchmark available model for all non-haiku work.
 
 ### Model Benchmark Table
 
-| Model                                         | SWE-Bench Score | Suite              | Notes                          |
-| --------------------------------------------- | --------------- | ------------------ | ------------------------------ |
-| `opencode-go/minimax-m2.7` (new large)        | ≥80.2%¹         | SWE-Bench          | Best in OpenCode Go roster     |
-| `opencode-go/glm-5` (new haiku)               | —               | —                  | No published score; fast/cheap |
-| `zai-coding-plan/glm-5.1` (current large)     | 58.4%           | SWE-Bench Pro      | +22 pp below minimax-m2.7      |
-| `zai-coding-plan/glm-5-turbo` (current haiku) | —               | —                  | No published score             |
-| Claude Sonnet 4.6 (Claude Code reference)     | 79.6%           | SWE-Bench Verified | minimax-m2.7 ≈ Sonnet quality  |
-| Claude Opus 4.7 (Claude Code reference)       | 87.6%           | SWE-Bench Verified | Ceiling for Claude sessions    |
+| Model | SWE-Bench Score | Suite | Source |
+| ----- | --------------- | ----- | ------ |
+| `opencode-go/minimax-m2.7` (new large) | 56.22%¹ | SWE-Pro | minimax.io/news/minimax-m27-en, 2026-04-30 |
+| `opencode-go/glm-5` (new haiku) | — | — | No published score; fast/cheap |
+| `zai-coding-plan/glm-5.1` (current large) | 58.4%² | SWE-Bench Pro | _Judgment call_ — widely cited |
+| `zai-coding-plan/glm-5-turbo` (current haiku) | — | — | No published score |
+| Claude Sonnet 4.6 (Claude Code reference) | 79.6%³ | SWE-Bench Verified | Anthropic release notes, 2026-04-30 |
+| Claude Opus 4.7 (Claude Code reference) | 87.6%³ | SWE-Bench Verified | Anthropic release notes, 2026-04-30 |
 
-¹ MiniMax M2.5 confirmed at 80.2%. M2.7 expected ≥ but not independently verified.
-SWE-Bench variants (Pro, Verified) use different difficulty distributions; scores
-are directionally comparable, not directly equivalent.
+¹ "MiniMax M2.7 achieved a 56.22% accuracy rate on SWE-Pro" —
+  https://www.minimax.io/news/minimax-m27-en, accessed 2026-04-30.
+  Predecessor M2.5 scored 80.2% on SWE-Bench Verified (different suite):
+  https://www.minimax.io/news/minimax-m25, accessed 2026-04-30.
+
+² _Judgment call_: no canonical citation; widely referenced figure.
+
+³ Anthropic model card / release notes pages for Claude Sonnet 4.6 and Opus 4.7.
+
+SWE-Bench variants (Pro, Verified) use different difficulty distributions; direct
+score comparison across suites is not valid.
 
 ### Why MiniMax M2.7 as the Default
 
-MiniMax M2.7 achieves the highest published SWE-Bench score in the OpenCode Go
-roster (≥80.2%), a +22 percentage-point improvement over the current GLM-5.1
-(58.4% SWE-Bench Pro). It closely matches Claude Sonnet 4.6 (79.6% SWE-Bench
-Verified), meaning OpenCode sessions approach Claude Code quality for coding work.
+MiniMax M2.7 is the latest model from MiniMax, whose predecessor M2.5 led the
+SWE-Bench Verified leaderboard at 80.2% — the highest open-source coding benchmark
+score at that time. M2.7's own SWE-Pro score (56.22%) is on a harder suite and not
+directly comparable to GLM-5.1 (58.4% SWE-Bench Pro). _Judgment call_: M2.7 is
+adopted based on lab trajectory and model recency, not a like-for-like score gain.
 Accessible via the flat-rate OpenCode Go subscription; no per-token billing.
 
 If a stronger model joins the OpenCode Go roster, update only `ConvertModel()`

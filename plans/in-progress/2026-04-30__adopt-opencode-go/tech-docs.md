@@ -23,12 +23,12 @@ flowchart TD
     B --> D
     D -->|"OPENCODE_API_KEY\n(auth.json or provider block)"| E["opencode.ai/go API"]
     E --> F["Lab Model\nMiniMax · GLM · Kimi · DeepSeek"]
-    style A fill:#0077BB,stroke:#000000,color:#FFFFFF
-    style B fill:#009988,stroke:#000000,color:#FFFFFF
-    style C fill:#EE7733,stroke:#000000,color:#000000
-    style D fill:#0077BB,stroke:#000000,color:#FFFFFF
+    style A fill:#0173B2,stroke:#000000,color:#FFFFFF
+    style B fill:#029E73,stroke:#000000,color:#FFFFFF
+    style C fill:#DE8F05,stroke:#000000,color:#000000
+    style D fill:#0173B2,stroke:#000000,color:#FFFFFF
     style E fill:#CC78BC,stroke:#000000,color:#000000
-    style F fill:#009988,stroke:#000000,color:#FFFFFF
+    style F fill:#029E73,stroke:#000000,color:#FFFFFF
 ```
 
 ## Model Selection Rationale
@@ -49,9 +49,9 @@ agentic code generation on real GitHub issues.
 | `glm-5` | Small (new) | OpenCode Go | — | — | No published score |
 | `glm-5.1` | Large (current) | Z.ai | 58.4%² | SWE-Bench Pro | _Judgment call_ — widely cited, no canonical URL |
 | `glm-5-turbo` | Small (current) | Z.ai | — | — | No published score |
-| Claude Opus 4.7 | — | Claude Code | 87.6%³ | SWE-Bench Verified | Anthropic release notes, accessed 2026-04-30 |
-| Claude Sonnet 4.6 | — | Claude Code | 79.6%³ | SWE-Bench Verified | Anthropic release notes, accessed 2026-04-30 |
-| Claude Haiku 4.5 | — | Claude Code | 73.3%³ | SWE-Bench Verified | Anthropic release notes, accessed 2026-04-30 |
+| Claude Opus 4.7 | — | Claude Code | 87.6%³ | SWE-Bench Verified | https://www.anthropic.com/news/claude-opus-4, accessed 2026-04-30 |
+| Claude Sonnet 4.6 | — | Claude Code | 79.6%³ | SWE-Bench Verified | https://www.anthropic.com/news/claude-sonnet-4-6, accessed 2026-04-30 |
+| Claude Haiku 4.5 | — | Claude Code | 73.3%³ | SWE-Bench Verified | https://www.anthropic.com/news/claude-haiku-4-5, accessed 2026-04-30 |
 
 ¹ "MiniMax M2.7 achieved a 56.22% accuracy rate on SWE-Pro" —
   https://www.minimax.io/news/minimax-m27-en, accessed 2026-04-30.
@@ -61,7 +61,7 @@ agentic code generation on real GitHub issues.
 ² GLM-5.1 score is widely referenced in community benchmarks but no single
   canonical citation is available. _Judgment call_: used as directional baseline.
 
-³ Claude model scores from Anthropic's published model card / release notes.
+³ Claude model scores from Anthropic's published release notes: https://www.anthropic.com/news/claude-sonnet-4-6 (Sonnet 4.6), https://www.anthropic.com/news/claude-opus-4 (Opus 4.7), https://www.anthropic.com/news/claude-haiku-4-5 (Haiku 4.5) — all accessed 2026-04-30.
 
 **Selection rationale**: M2.7 (SWE-Pro: 56.22%) vs GLM-5.1 (SWE-Bench Pro: 58.4%)
 is inconclusive across different suites — direct comparison is not valid.
@@ -91,11 +91,11 @@ flowchart LR
     O -->|ConvertModel| M
     S -->|ConvertModel| M
     H -->|ConvertModel| G
-    style O fill:#0077BB,stroke:#000000,color:#FFFFFF
-    style S fill:#0077BB,stroke:#000000,color:#FFFFFF
-    style H fill:#EE7733,stroke:#000000,color:#000000
-    style M fill:#009988,stroke:#000000,color:#FFFFFF
-    style G fill:#EE7733,stroke:#000000,color:#000000
+    style O fill:#0173B2,stroke:#000000,color:#FFFFFF
+    style S fill:#0173B2,stroke:#000000,color:#FFFFFF
+    style H fill:#DE8F05,stroke:#000000,color:#000000
+    style M fill:#029E73,stroke:#000000,color:#FFFFFF
+    style G fill:#DE8F05,stroke:#000000,color:#000000
 ```
 
 The 3-to-2 collapse is intentional: OpenCode Go has no mid-tier equivalent
@@ -400,13 +400,13 @@ flowchart TD
     E -->|No| G{"BRAVE_API_KEY\nset?"}
     G -->|"Yes ✓"| H["Brave Search MCP\nadd to opencode.json"]
     G -->|No| I["No web search\navailable"]
-    style A fill:#0077BB,stroke:#000000,color:#FFFFFF
-    style B fill:#EE7733,stroke:#000000,color:#000000
-    style C fill:#EE7733,stroke:#000000,color:#000000
-    style D fill:#009988,stroke:#000000,color:#FFFFFF
-    style E fill:#EE7733,stroke:#000000,color:#000000
-    style F fill:#009988,stroke:#000000,color:#FFFFFF
-    style G fill:#EE7733,stroke:#000000,color:#000000
+    style A fill:#0173B2,stroke:#000000,color:#FFFFFF
+    style B fill:#DE8F05,stroke:#000000,color:#000000
+    style C fill:#DE8F05,stroke:#000000,color:#000000
+    style D fill:#029E73,stroke:#000000,color:#FFFFFF
+    style E fill:#DE8F05,stroke:#000000,color:#000000
+    style F fill:#029E73,stroke:#000000,color:#FFFFFF
+    style G fill:#DE8F05,stroke:#000000,color:#000000
     style H fill:#CC78BC,stroke:#000000,color:#000000
     style I fill:#808080,stroke:#000000,color:#FFFFFF
 ```
@@ -467,8 +467,8 @@ uses the highest-benchmark available model for all non-haiku work.
 | `opencode-go/glm-5` (new haiku) | — | — | No published score; fast/cheap |
 | `zai-coding-plan/glm-5.1` (current large) | 58.4%² | SWE-Bench Pro | _Judgment call_ — widely cited |
 | `zai-coding-plan/glm-5-turbo` (current haiku) | — | — | No published score |
-| Claude Sonnet 4.6 (Claude Code reference) | 79.6%³ | SWE-Bench Verified | Anthropic release notes, 2026-04-30 |
-| Claude Opus 4.7 (Claude Code reference) | 87.6%³ | SWE-Bench Verified | Anthropic release notes, 2026-04-30 |
+| Claude Sonnet 4.6 (Claude Code reference) | 79.6%³ | SWE-Bench Verified | https://www.anthropic.com/news/claude-sonnet-4-6, 2026-04-30 |
+| Claude Opus 4.7 (Claude Code reference) | 87.6%³ | SWE-Bench Verified | https://www.anthropic.com/news/claude-opus-4, 2026-04-30 |
 
 ¹ "MiniMax M2.7 achieved a 56.22% accuracy rate on SWE-Pro" —
   https://www.minimax.io/news/minimax-m27-en, accessed 2026-04-30.
@@ -477,7 +477,7 @@ uses the highest-benchmark available model for all non-haiku work.
 
 ² _Judgment call_: no canonical citation; widely referenced figure.
 
-³ Anthropic model card / release notes pages for Claude Sonnet 4.6 and Opus 4.7.
+³ Claude model scores from Anthropic's published release notes: https://www.anthropic.com/news/claude-sonnet-4-6 (Sonnet 4.6), https://www.anthropic.com/news/claude-opus-4 (Opus 4.7), https://www.anthropic.com/news/claude-haiku-4-5 (Haiku 4.5) — all accessed 2026-04-30.
 
 SWE-Bench variants (Pro, Verified) use different difficulty distributions; direct
 score comparison across suites is not valid.

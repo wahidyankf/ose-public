@@ -25,10 +25,10 @@ flowchart LR
     C[".opencode/opencode.json\nmodel · provider · mcp"] --> D["OpenCode Session"]
     B --> D
     D --> E["opencode.ai/go API\nMiniMax · GLM · Kimi"]
-    style A fill:#0077BB,stroke:#000000,color:#FFFFFF
-    style B fill:#009988,stroke:#000000,color:#FFFFFF
-    style C fill:#EE7733,stroke:#000000,color:#000000
-    style D fill:#0077BB,stroke:#000000,color:#FFFFFF
+    style A fill:#0173B2,stroke:#000000,color:#FFFFFF
+    style B fill:#029E73,stroke:#000000,color:#FFFFFF
+    style C fill:#DE8F05,stroke:#000000,color:#000000
+    style D fill:#0173B2,stroke:#000000,color:#FFFFFF
     style E fill:#CC78BC,stroke:#000000,color:#000000
 ```
 

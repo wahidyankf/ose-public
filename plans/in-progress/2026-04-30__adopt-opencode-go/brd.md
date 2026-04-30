@@ -50,8 +50,8 @@ agentic code generation on real GitHub issues.
 | ----- | ---- | ----- | ----- | ------ |
 | `opencode-go/minimax-m2.7` | New large (opus + sonnet) | 56.22%¹ | SWE-Pro | minimax.io/news/minimax-m27-en, accessed 2026-04-30 |
 | `zai-coding-plan/glm-5.1` | Current large | 58.4%² | SWE-Bench Pro | _Judgment call_: widely cited in community benchmarks; no single canonical URL available |
-| Claude Sonnet 4.6 | Claude Code reference | 79.6%³ | SWE-Bench Verified | anthropic.com Claude Sonnet 4 release notes, accessed 2026-04-30 |
-| Claude Opus 4.7 | Claude Code reference | 87.6%³ | SWE-Bench Verified | anthropic.com Claude Opus 4 release notes, accessed 2026-04-30 |
+| Claude Sonnet 4.6 | Claude Code reference | 79.6%³ | SWE-Bench Verified | https://www.anthropic.com/news/claude-sonnet-4-6, accessed 2026-04-30 |
+| Claude Opus 4.7 | Claude Code reference | 87.6%³ | SWE-Bench Verified | https://www.anthropic.com/news/claude-opus-4, accessed 2026-04-30 |
 
 ¹ "MiniMax M2.7 achieved a 56.22% accuracy rate on SWE-Pro" —
   MiniMax M2.7 launch announcement: https://www.minimax.io/news/minimax-m27-en, accessed 2026-04-30.
@@ -62,7 +62,7 @@ agentic code generation on real GitHub issues.
   no single canonical citation available at time of writing. _Judgment call_: the
   58.4% figure is used as the directional baseline for comparison.
 
-³ Claude model scores from Anthropic's published model card / release notes pages.
+³ Claude model scores from Anthropic's published release notes: https://www.anthropic.com/news/claude-sonnet-4-6 (Sonnet 4.6), https://www.anthropic.com/news/claude-opus-4 (Opus 4.7), https://www.anthropic.com/news/claude-haiku-4-5 (Haiku 4.5) — all accessed 2026-04-30.
 
 **Key takeaway**: M2.7's published SWE-Pro score (56.22%) is on a different and
 harder suite than M2.5's SWE-Bench Verified score (80.2%). Direct like-for-like
@@ -125,9 +125,17 @@ than empirical (measured improvement in task completion rate).
 
 - **Removing Claude Code as the primary tool**: Claude Code remains the primary
   development harness. OpenCode is the secondary, alternative interface.
-- **Evaluating all 14 OpenCode Go models**: the plan picks the best-benchmark
+- **Evaluating all available OpenCode Go models**: the plan picks the best-benchmark
   model as the large-model default. Per-session model overrides remain available.
 - **Migrating Z.ai billing or credentials**: closing a Z.ai subscription is a
   personal billing decision, outside the repository change scope.
 - **Adding OpenCode Go to CI**: CI runs `rhino-cli` unit and integration tests;
   it does not execute OpenCode sessions. No CI changes.
+
+## Business Risks
+
+| Risk | Likelihood | Business Impact | Mitigation |
+| ---- | ---------- | --------------- | ---------- |
+| OpenCode Go beta instability causes session disruptions | Medium | Developer productivity loss during active agentic work | Claude Code remains primary; OpenCode is secondary interface. Rollback: revert 3 commits + regenerate sync |
+| MiniMax M2.7 underperforms expectations (56.22% SWE-Pro may not reflect real-world quality) | Medium | Marginal quality improvement over Z.ai, not meeting BG-1 | Per-session model override available; swap to `kimi-k2.6` or `deepseek-v4-pro` via one-line change |
+| Exa web search incompatible with OpenCode Go models | Low | No native web search in OpenCode sessions; Perplexity MCP fallback activates | Perplexity MCP pre-configured; Brave Search MCP documented as alternative |

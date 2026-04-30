@@ -24,7 +24,7 @@
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "next build",
+        "command": "node scripts/gen-migrations.mjs && next build",
         "cwd": "{projectRoot}"
       },
       "outputs": ["{projectRoot}/.next"],

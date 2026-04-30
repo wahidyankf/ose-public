@@ -1,0 +1,87 @@
+# Adopt OpenCode Go as the OpenCode Model Provider
+
+## Overview
+
+Migrate the OpenCode configuration in `ose-public` from Z.ai (`zai-coding-plan/*`)
+to [OpenCode Go](https://opencode.ai/go) (`opencode-go/*`). This replaces the model
+routing layer while preserving or improving web-search MCP capabilities via already-
+configured alternatives (Perplexity, Playwright).
+
+OpenCode Go is a subscription service ($5 first month, $10/month thereafter) offering
+14 curated open-source coding models across 6 labs — Zhipu, Moonshot, DeepSeek,
+Xiaomi, MiniMax, and Alibaba. The top model (`minimax-m2.7`) benchmarks at 80.2%
+SWE-Bench, outperforming the current GLM-5.1 (58.4%). The provider is currently in
+beta with servers in US, EU, and Singapore.
+
+The main impact is in `rhino-cli`'s `ConvertModel()` function, which hard-codes
+Z.ai model IDs. Updating it + regenerating `.opencode/agent/` files is the bulk
+of the mechanical work.
+
+## Scope (ose-public single-repo)
+
+| Area | Change |
+| ---- | ------ |
+| `apps/rhino-cli/internal/agents/converter.go` | `ConvertModel()` outputs `opencode-go/*` IDs |
+| `apps/rhino-cli/internal/agents/types.go` | Update `OpenCodeAgent` comment |
+| `apps/rhino-cli/cmd/agents_sync.go` | Update model-mapping comment |
+| `apps/rhino-cli/cmd/agents_validate_sync.go` | Update model-mapping comment |
+| `apps/rhino-cli/internal/agents/converter_test.go` | Update `TestConvertModel` expectations |
+| `apps/rhino-cli/internal/agents/types_test.go` | Update `TestOpenCodeAgent` expectation |
+| `apps/rhino-cli/internal/agents/sync_validator_test.go` | Update model-string assertions |
+| `apps/rhino-cli/cmd/steps_common_test.go` | Rename step constant + regex |
+| `apps/rhino-cli/cmd/agents_sync.integration_test.go` | Update model assertions |
+| `apps/rhino-cli/cmd/agents_validate_sync.integration_test.go` | Update model assertions |
+| `apps/rhino-cli/cmd/agents_validate_naming.integration_test.go` | Update model in fixture |
+| `.opencode/opencode.json` | Switch `model`/`small_model` + add provider block; remove Z.ai MCPs |
+| `governance/development/agents/model-selection.md` | Update OpenCode/GLM Equivalents table |
+| `.opencode/agent/*.md` (all) | Regenerated automatically via `npm run sync:claude-to-opencode` |
+
+**Out of scope**:
+
+- `.claude/agents/*.md` — Claude Code aliases (`sonnet`, `haiku`, omit) are not changing
+- `opencode.json` at repo root (only has `nx-mcp`; no model fields)
+- Any Z.ai subscription or credential cleanup — that is a personal/billing concern
+- `ose-infra`, `ose-primer`, parent `ose-projects` — not affected
+
+## Intended Model Mapping
+
+| Claude Code tier | Current (Z.ai) | Target (OpenCode Go) |
+| ---------------- | -------------- | -------------------- |
+| opus (omit) | `zai-coding-plan/glm-5.1` | `opencode-go/minimax-m2.7` |
+| sonnet | `zai-coding-plan/glm-5.1` | `opencode-go/minimax-m2.7` |
+| haiku | `zai-coding-plan/glm-5-turbo` | `opencode-go/glm-5` |
+
+The 3-to-2 tier collapse is preserved: opus-tier and sonnet-tier both use the single
+best available OpenCode Go model; haiku-tier uses the fast/light model.
+
+> **Note**: Exact model slugs (`minimax-m2.7`, `glm-5`) must be verified via
+> `/models` in the OpenCode TUI after connecting. The delivery checklist includes
+> this verification step before any code changes.
+
+## Document Navigation
+
+| Document | Purpose |
+| -------- | ------- |
+| [README.md](./README.md) | This file — overview, scope, navigation |
+| [brd.md](./brd.md) | Business rationale — why switch |
+| [prd.md](./prd.md) | Product requirements + Gherkin acceptance criteria |
+| [tech-docs.md](./tech-docs.md) | Technical design — exact code changes |
+| [delivery.md](./delivery.md) | Step-by-step delivery checklist |
+
+## Relationship to Other Plans
+
+This plan is independent of the two in-progress plans
+([`2026-04-25__organiclever-web-app/`](../2026-04-25__organiclever-web-app/README.md)
+and [`2026-04-28__organiclever-web-event-mechanism/`](../2026-04-28__organiclever-web-event-mechanism/README.md)).
+It modifies only tooling configuration and `rhino-cli` internals; it does not touch
+app source code. No blocking dependency in either direction.
+
+## Success Criteria (Summary)
+
+1. `ConvertModel("sonnet")` and `ConvertModel("")` return `opencode-go/minimax-m2.7`
+2. `ConvertModel("haiku")` returns `opencode-go/glm-5`
+3. `.opencode/opencode.json` contains `opencode-go/*` model IDs and no Z.ai MCP entries
+4. `npm run validate:config` passes (sync + validation green)
+5. `nx run rhino-cli:test:unit` passes (≥90% coverage)
+6. `nx run rhino-cli:test:integration` passes
+7. `model-selection.md` table shows OpenCode Go equivalents

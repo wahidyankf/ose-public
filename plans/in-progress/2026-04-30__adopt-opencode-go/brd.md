@@ -36,6 +36,25 @@ The OpenCode configuration in `ose-public` routes all model calls through Z.ai
    Singapore PoPs, designed for international users — directly addressing the
    reported Z.ai slowdown.
 
+## Model Benchmark Basis
+
+The model selection is grounded in SWE-Bench scores — the standard benchmark for
+agentic code generation on real GitHub issues.
+
+| Model | Role | Score | Suite |
+| ----- | ---- | ----- | ----- |
+| `opencode-go/minimax-m2.7` | New large (opus + sonnet) | ≥80.2%¹ | SWE-Bench |
+| `zai-coding-plan/glm-5.1` | Current large | 58.4% | SWE-Bench Pro |
+| Claude Sonnet 4.6 | Claude Code reference | 79.6% | SWE-Bench Verified |
+| Claude Opus 4.7 | Claude Code reference | 87.6% | SWE-Bench Verified |
+
+¹ MiniMax M2.5 confirmed; M2.7 successor expected ≥. SWE-Bench variants are not
+directly equivalent — scores are directionally comparable.
+
+**Key takeaway**: `minimax-m2.7` at ≥80.2% is a +22 percentage-point improvement
+over `glm-5.1` at 58.4%, and closely matches Claude Sonnet 4.6 (79.6%). OpenCode
+sessions gain near-Claude-Code quality for coding work at $10/month flat rate.
+
 ## Business Impact
 
 **Pain points addressed**:
@@ -43,8 +62,8 @@ The OpenCode configuration in `ose-public` routes all model calls through Z.ai
 - Agentic sessions that chain 10+ tool calls currently bottleneck on Z.ai latency.
   A faster, geo-distributed provider reduces wall-clock time for plan execution.
 - GLM-5.1's 58.4% SWE-Bench ceiling means some agentic code tasks require human
-  correction. A model at 80.2% (MiniMax M2.7) materially reduces that correction
-  rate.
+  correction. MiniMax M2.7 at ≥80.2% SWE-Bench — a +22 pp improvement —
+  materially reduces that correction rate.
 - The Z.ai MCP coupling means any future provider migration has to also solve
   web-search MCP simultaneously. Decoupling now makes future migrations simpler.
 

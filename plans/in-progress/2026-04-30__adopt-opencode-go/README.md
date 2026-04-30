@@ -18,6 +18,14 @@ The main impact is in `rhino-cli`'s `ConvertModel()` function, which hard-codes
 Z.ai model IDs. Updating it + regenerating `.opencode/agent/` files is the bulk
 of the mechanical work.
 
+```mermaid
+flowchart LR
+    A[".claude/agents/*.md\nsonnet · haiku · omit"] -->|"ConvertModel()"| B[".opencode/agent/*.md\nopencode-go/minimax-m2.7\nopencode-go/glm-5"]
+    C[".opencode/opencode.json\nmodel · provider · mcp"] --> D["OpenCode Session"]
+    B --> D
+    D --> E["opencode.ai/go API\nMiniMax · GLM · Kimi"]
+```
+
 ## Scope (ose-public single-repo)
 
 | Area | Change |

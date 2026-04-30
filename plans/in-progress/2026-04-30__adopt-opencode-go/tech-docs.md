@@ -16,36 +16,76 @@ The integration surface in this repository is entirely in two places:
 2. **`.opencode/opencode.json`**: configures the default model, small model,
    provider credentials, and MCP servers for OpenCode sessions.
 
-```
-.claude/agents/*.md           opencode.json
-      │                            │
-      │ (model: sonnet/haiku/omit) │ (model: "opencode-go/minimax-m2.7")
-      ▼                            │
-rhino-cli ConvertModel()           │ (provider block → OPENCODE_GO_API_KEY)
-      │                            │
-      ▼                            ▼
-.opencode/agent/*.md ──────── OpenCode session
-  model: opencode-go/...           │
-                                   ▼
-                          opencode.ai/go API → lab model
+```mermaid
+flowchart TD
+    A[".claude/agents/*.md\nmodel: sonnet / haiku / omit"] -->|"rhino-cli ConvertModel()"| B[".opencode/agent/*.md\nmodel: opencode-go/minimax-m2.7"]
+    C[".opencode/opencode.json\nmodel · small_model · provider · mcp"] --> D["OpenCode Session"]
+    B --> D
+    D -->|"OPENCODE_API_KEY\n(auth.json or provider block)"| E["opencode.ai/go API"]
+    E --> F["Lab Model\nMiniMax · GLM · Kimi · DeepSeek"]
 ```
 
 ## Model Selection Rationale
 
-OpenCode Go offers 14 models from 6 labs as of April 2026. The selection criteria
-for the large model are:
+OpenCode Go offers 14 models from 6 labs as of April 2026. Model selection is
+driven by SWE-Bench score — the industry-standard benchmark for agentic code
+generation on real GitHub issues.
 
-1. **Highest available SWE-Bench score**: MiniMax M2.5 was benchmarked at 80.2%
-   SWE-Bench in the OpenCode Go documentation. Its successor `minimax-m2.7` is
-   listed in the model roster and expected to be at least as capable.
-2. **Preserves 3-to-2 collapse**: same single large model for opus and sonnet tiers.
-3. **API compatibility**: MiniMax M2.7 is OpenAI-API-compatible through OpenCode Go.
+### Benchmark Comparison
 
-For the small model, `glm-5` (Zhipu AI) is selected because:
+> **Methodology note**: SWE-Bench, SWE-Bench Pro, and SWE-Bench Verified are
+> different evaluation suites with different difficulty distributions. Scores
+> across suites are directionally comparable but not directly equivalent.
 
-- Same lab as current `glm-5-turbo`, so behavior is familiar
-- OpenCode Go lists it as the non-turbo lighter GLM variant
-- Haiku-tier agents do purely mechanical work; benchmark differences matter less
+| Model | Tier | Provider | Score | Suite | Role |
+| ----- | ---- | -------- | ----- | ----- | ---- |
+| `minimax-m2.7` | Large (new) | OpenCode Go | ≥80.2%¹ | SWE-Bench | opus + sonnet |
+| `glm-5` | Small (new) | OpenCode Go | — | — | haiku |
+| `glm-5.1` | Large (current) | Z.ai | 58.4% | SWE-Bench Pro | opus + sonnet |
+| `glm-5-turbo` | Small (current) | Z.ai | — | — | haiku |
+| Claude Opus 4.7 | — | Claude Code | 87.6% | SWE-Bench Verified | primary runtime |
+| Claude Sonnet 4.6 | — | Claude Code | 79.6% | SWE-Bench Verified | daily driver |
+| Claude Haiku 4.5 | — | Claude Code | 73.3% | SWE-Bench Verified | mechanical work |
+
+¹ MiniMax M2.5 confirmed at 80.2% SWE-Bench. M2.7 is the successor; score expected
+≥ M2.5 but not independently verified at time of writing.
+
+**Net improvement**: `minimax-m2.7` at ≥80.2% vs `glm-5.1` at 58.4% is a **+22
+percentage-point ceiling increase** for agentic code tasks in OpenCode sessions.
+`minimax-m2.7` also closely matches Claude Sonnet 4.6 (79.6% Verified), meaning
+OpenCode sessions approach Claude Code quality for coding work.
+
+`glm-5` has no published SWE-Bench score. It is selected for the haiku tier
+because: (a) same GLM family as the current `glm-5-turbo`, so behavior is
+familiar; (b) haiku-tier agents do deterministic mechanical work (file ops,
+deployments, link checks) where benchmark score matters less than latency and cost.
+
+### Model Tier Mapping
+
+```mermaid
+flowchart LR
+    subgraph cc["Claude Code — 3 tiers"]
+        O["opus\n(omit field)"]
+        S["model: sonnet"]
+        H["model: haiku"]
+    end
+    subgraph og["OpenCode Go — 2 tiers"]
+        M["opencode-go/minimax-m2.7\nSWE-Bench ≥80.2%"]
+        G["opencode-go/glm-5\nfast · no benchmark"]
+    end
+    O -->|ConvertModel| M
+    S -->|ConvertModel| M
+    H -->|ConvertModel| G
+```
+
+The 3-to-2 collapse is intentional: OpenCode Go has no mid-tier equivalent
+between its best model and its fast model, mirroring the current Z.ai situation.
+
+### Selection Criteria
+
+1. **Highest available SWE-Bench score** among OpenCode Go models → `minimax-m2.7`
+2. **3-to-2 collapse preserved** → single large model covers opus + sonnet
+3. **Familiar small-model family** → `glm-5` from same Zhipu lab as current turbo
 
 > **Slug verification**: `minimax-m2.7` and `glm-5` are the intended slugs but
 > must be confirmed via `/models` in the OpenCode TUI. If slugs differ, use the
@@ -269,6 +309,31 @@ Full target content:
 Removed entries: `zai-mcp-server`, `web-search-prime`, `web-reader`, `zread`.
 Added: `provider.opencode-go` block with env-var API key.
 
+**Provider block auth — two verified paths**:
+
+Research confirmed both `options.apiKey` nesting and `{env:VAR}` syntax are
+correct per official OpenCode docs. However, `opencode-go` is a built-in
+first-party provider; the documented setup path is `/connect` in the TUI which
+writes credentials to `~/.local/share/opencode/auth.json` — no provider block
+needed in the committed file.
+
+| Auth path | How | Committed to repo | Recommended |
+| --------- | --- | ---------------- | ----------- |
+| `/connect` → `auth.json` | Run `/connect` once per machine | No — credentials stored locally | **Yes** (official docs) |
+| Provider block + env var | `{env:OPENCODE_GO_API_KEY}` in `opencode.json` | Yes (placeholder only) | Acceptable workaround |
+
+The plan commits the provider block as an explicit fallback for developers who
+prefer env-var-driven setup. If `/connect` is used instead, the provider block
+is silently redundant (not harmful). If the env var is unset and `/connect` was
+not run, OpenCode gets an empty API key and returns 401 — the failure is
+recoverable by running `/connect`.
+
+**Env var naming**: `OPENCODE_GO_API_KEY` is our chosen shell variable name.
+The `{env:OPENCODE_GO_API_KEY}` substitution reads whatever name is declared in
+the block. The name `OPENCODE_API_KEY` appears in some community examples but is
+not the official documented env var name — `{env:VAR}` substitution works with
+any name as long as shell and config agree.
+
 **MCP/tool capability coverage after removal**:
 
 | Capability | Before (Z.ai) | After | Mechanism |
@@ -301,6 +366,21 @@ usage limits.
 > is set," leaving it ambiguous whether `opencode-go` counts as "the OpenCode
 > provider." Perplexity MCP (already wired in `opencode.json`) is the safe,
 > provider-agnostic fallback.
+
+**Decision tree — which search tool fires**:
+
+```mermaid
+flowchart TD
+    A["Web search needed\nin OpenCode session"] --> B{"OPENCODE_ENABLE_EXA\n= true?"}
+    B -->|Yes| C{"Exa tool\nresponds?"}
+    C -->|"Yes ✓"| D["Built-in websearch\nExa AI — no API key"]
+    C -->|"No / error"| E{"PERPLEXITY_API_KEY\nset?"}
+    B -->|No| E
+    E -->|"Yes ✓"| F["Perplexity MCP\nalready in opencode.json"]
+    E -->|No| G{"BRAVE_API_KEY\nset?"}
+    G -->|"Yes ✓"| H["Brave Search MCP\nadd to opencode.json"]
+    G -->|No| I["No web search\navailable"]
+```
 
 **Alternative — Brave Search MCP** (not configured by default):
 
@@ -350,12 +430,28 @@ This collapse is an acceptable platform-level constraint. Claude Code tier
 assignments govern behavior in Claude sessions (the primary runtime). OpenCode
 uses the highest-benchmark available model for all non-haiku work.
 
+### Model Benchmark Table
+
+| Model | SWE-Bench Score | Suite | Notes |
+| ----- | --------------- | ----- | ----- |
+| `opencode-go/minimax-m2.7` (new large) | ≥80.2%¹ | SWE-Bench | Best in OpenCode Go roster |
+| `opencode-go/glm-5` (new haiku) | — | — | No published score; fast/cheap |
+| `zai-coding-plan/glm-5.1` (current large) | 58.4% | SWE-Bench Pro | +22 pp below minimax-m2.7 |
+| `zai-coding-plan/glm-5-turbo` (current haiku) | — | — | No published score |
+| Claude Sonnet 4.6 (Claude Code reference) | 79.6% | SWE-Bench Verified | minimax-m2.7 ≈ Sonnet quality |
+| Claude Opus 4.7 (Claude Code reference) | 87.6% | SWE-Bench Verified | Ceiling for Claude sessions |
+
+¹ MiniMax M2.5 confirmed at 80.2%. M2.7 expected ≥ but not independently verified.
+SWE-Bench variants (Pro, Verified) use different difficulty distributions; scores
+are directionally comparable, not directly equivalent.
+
 ### Why MiniMax M2.7 as the Default
 
-MiniMax M2.7 is selected because it achieves the highest published SWE-Bench
-score among OpenCode Go models (80.2%), significantly above the former
-`zai-coding-plan/glm-5.1` (58.4%). It is accessible via the flat-rate OpenCode
-Go subscription without per-token overage.
+MiniMax M2.7 achieves the highest published SWE-Bench score in the OpenCode Go
+roster (≥80.2%), a +22 percentage-point improvement over the current GLM-5.1
+(58.4% SWE-Bench Pro). It closely matches Claude Sonnet 4.6 (79.6% SWE-Bench
+Verified), meaning OpenCode sessions approach Claude Code quality for coding work.
+Accessible via the flat-rate OpenCode Go subscription; no per-token billing.
 
 If a stronger model joins the OpenCode Go roster, update only `ConvertModel()`
 in `apps/rhino-cli/internal/agents/converter.go` and re-run

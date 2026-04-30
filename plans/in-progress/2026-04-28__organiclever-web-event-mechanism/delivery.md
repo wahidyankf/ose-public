@@ -141,227 +141,251 @@ starts after this gear-up archives.
 
 ### 0.2 Schema, branded ids, and types
 
-- [ ] Create `apps/organiclever-web/src/lib/journal/schema.ts` per `tech-docs.md`:
-  - [ ] `EntryId` (`Schema.String.pipe(Schema.brand("EntryId"))`)
-  - [ ] `IsoTimestamp` (`Schema.String.pipe(Schema.pattern(...), Schema.brand("IsoTimestamp"))`)
-  - [ ] `EntryName` (lowercase / kebab-case + length-bounded; branded)
-  - [ ] `EntryPayload` (`Schema.Record({ key: Schema.String, value: Schema.Unknown })`)
-  - [ ] `JournalEntry` (`Schema.Struct({...})`)
-  - [ ] `NewEntryInput`, `UpdateEntryInput`
-  - [ ] `PayloadFromJsonString = Schema.parseJson(EntryPayload)` for the form textarea
-- [ ] Create `apps/organiclever-web/src/lib/journal/types.ts` as a thin re-export
+- [x] Create `apps/organiclever-web/src/lib/journal/schema.ts` per `tech-docs.md`:
+  - [x] `EntryId` (`Schema.String.pipe(Schema.brand("EntryId"))`)
+  - [x] `IsoTimestamp` (`Schema.String.pipe(Schema.pattern(...), Schema.brand("IsoTimestamp"))`)
+  - [x] `EntryName` (lowercase / kebab-case + length-bounded; branded)
+  - [x] `EntryPayload` (`Schema.Record({ key: Schema.String, value: Schema.Unknown })`)
+  - [x] `JournalEntry` (`Schema.Struct({...})`)
+  - [x] `NewEntryInput`, `UpdateEntryInput`
+  - [x] `PayloadFromJsonString = Schema.parseJson(EntryPayload)` for the form textarea
+  - Date: 2026-04-30 | Status: Done | Files changed: src/lib/journal/schema.ts
+- [x] Create `apps/organiclever-web/src/lib/journal/types.ts` as a thin re-export
       module that exports `Schema.Type`-derived types from `schema.ts`. UI files
       import from `types`; runtime / store files import from `schema` directly
-- [ ] Add `apps/organiclever-web/src/lib/journal/schema.unit.test.ts` (per the
+  - Date: 2026-04-30 | Status: Done | Files changed: src/lib/journal/types.ts
+- [x] Add `apps/organiclever-web/src/lib/journal/schema.unit.test.ts` (per the
       `*.unit.test.ts` convention pinned in Phase 0.0): branded-id rejection of plain strings;
       `JournalEntry` decode round-trip; `PayloadFromJsonString` rejects `"not json"`;
       `ArrayFormatter.formatErrorSync` produces field-level paths
+  - Date: 2026-04-30 | Status: Done | Files changed: src/lib/journal/schema.unit.test.ts
 
 ### 0.3 Typed errors
 
-- [ ] Create `apps/organiclever-web/src/lib/journal/errors.ts` per `tech-docs.md`:
-  - [ ] `class NotFound extends Data.TaggedError("NotFound")<{ id: string }> {}`
-  - [ ] `class StorageUnavailable extends Data.TaggedError("StorageUnavailable")<{ cause: unknown }> {}`
-  - [ ] `class InvalidPayload extends Data.TaggedError("InvalidPayload")<{ issues: ReadonlyArray<{ path: string; message: string }> }> {}`
-  - [ ] `class EmptyBatch extends Data.TaggedError("EmptyBatch")<{}> {}`
-  - [ ] `export type StoreError = NotFound | StorageUnavailable | InvalidPayload | EmptyBatch`
+- [x] Create `apps/organiclever-web/src/lib/journal/errors.ts` per `tech-docs.md`:
+  - [x] `class NotFound extends Data.TaggedError("NotFound")<{ id: string }> {}`
+  - [x] `class StorageUnavailable extends Data.TaggedError("StorageUnavailable")<{ cause: unknown }> {}`
+  - [x] `class InvalidPayload extends Data.TaggedError("InvalidPayload")<{ issues: ReadonlyArray<{ path: string; message: string }> }> {}`
+  - [x] `class EmptyBatch extends Data.TaggedError("EmptyBatch")<{}> {}`
+  - [x] `export type StoreError = NotFound | StorageUnavailable | InvalidPayload | EmptyBatch`
+  - Date: 2026-04-30 | Status: Done | Files changed: src/lib/journal/errors.ts
 
 ### 0.4 Migration framework — multi-developer safe
 
 #### 0.4.a Codegen script
 
-- [ ] Create `apps/organiclever-web/scripts/gen-migrations.mjs` per the
+- [x] Create `apps/organiclever-web/scripts/gen-migrations.mjs` per the
       tech-docs sketch (~30 lines):
-  - [ ] Reads every `*.ts` file in
+  - [x] Reads every `*.ts` file in
         `apps/organiclever-web/src/lib/journal/migrations/` (excluding `index.ts`
         and `index.generated.ts`)
-  - [ ] Validates each filename matches the regex
+  - [x] Validates each filename matches the regex
         `^\d{4}_\d{2}_\d{2}T\d{2}_\d{2}_\d{2}__[a-z0-9_]{1,60}\.ts$`; throws
         with a clear error on first violation
-  - [ ] Sorts lexicographically (timestamp prefix → chronological)
-  - [ ] Emits `index.generated.ts` with one `import * as mN from "./<file>";`
+  - [x] Sorts lexicographically (timestamp prefix → chronological)
+  - [x] Emits `index.generated.ts` with one `import * as mN from "./<file>";`
         per migration and `export const MIGRATIONS: Migration[] = [m0, m1, ...]`
-- [ ] Add gitignore: append
+  - Date: 2026-04-30 | Status: Done | Files changed: scripts/gen-migrations.mjs
+- [x] Add gitignore: append
       `src/lib/journal/migrations/index.generated.ts` to
       `apps/organiclever-web/.gitignore`
-- [ ] Wire npm scripts in `apps/organiclever-web/package.json`:
-  - [ ] `"gen:migrations": "node scripts/gen-migrations.mjs"`
-  - [ ] `"predev": "npm run gen:migrations"`
-  - [ ] `"prebuild": "npm run gen:migrations"`
-  - [ ] `"pretest": "npm run gen:migrations"`
-  - [ ] `"pretest:integration": "npm run gen:migrations"`
-- [ ] Verify the script is callable: `cd apps/organiclever-web && npm run gen:migrations`
+  - Date: 2026-04-30 | Status: Done | Files changed: .gitignore
+- [x] Wire npm scripts in `apps/organiclever-web/package.json`:
+  - [x] `"gen:migrations": "node scripts/gen-migrations.mjs"`
+  - [x] `"predev": "npm run gen:migrations"`
+  - [x] `"prebuild": "npm run gen:migrations"`
+  - [x] `"pretest": "npm run gen:migrations"`
+  - [x] `"pretest:integration": "npm run gen:migrations"`
+  - Date: 2026-04-30 | Status: Done | Files changed: package.json
+- [x] Verify the script is callable: `cd apps/organiclever-web && npm run gen:migrations`
       after step 0.4.b creates the first migration file
+  - Date: 2026-04-30 | Status: Done | Script runs and emits index.generated.ts
 
 #### 0.4.b First migration file (v1: create journal_entries table)
 
-- [ ] Create directory `apps/organiclever-web/src/lib/journal/migrations/`
-- [ ] Create `apps/organiclever-web/src/lib/journal/migrations/2026_04_28T14_05_30__create_journal_entries_table.ts`
+- [x] Create directory `apps/organiclever-web/src/lib/journal/migrations/`
+  - Date: 2026-04-30 | Status: Done
+- [x] Create `apps/organiclever-web/src/lib/journal/migrations/2026_04_28T14_05_30__create_journal_entries_table.ts`
       (substitute the actual UTC timestamp at file-creation time so the
       filename is honest):
-  - [ ] `export const id = "<filename without .ts>"`
-  - [ ] `export async function up(db: Queryable): Promise<void>` running the
+  - [x] `export const id = "<filename without .ts>"`
+  - [x] `export async function up(db: Queryable): Promise<void>` running the
         v1 SQL from `tech-docs.md` (`CREATE TABLE IF NOT EXISTS journal_entries (...)` + `CREATE INDEX IF NOT EXISTS journal_entries_created_at_desc (...)`)
         — `Queryable = PGlite | Transaction` (imported from
         `@electric-sql/pglite`); the runner calls each `up` from inside
         `db.transaction(async tx => …)`, so `tx` (a `Transaction`) is what
         the migration receives, not the bare `PGlite`. Typing the parameter
         as `PGlite` would fail `tsc --noEmit`
-  - [ ] `export async function down(db: Queryable): Promise<void>` reversing it
+  - [x] `export async function down(db: Queryable): Promise<void>` reversing it
         (`DROP INDEX IF EXISTS ...; DROP TABLE IF EXISTS journal_entries;`)
+  - Date: 2026-04-30 | Status: Done | Files changed: src/lib/journal/migrations/2026_04_28T14_05_30\_\_create_journal_entries_table.ts
 
 #### 0.4.c Runner
 
-- [ ] Create `apps/organiclever-web/src/lib/journal/run-migrations.ts` implementing `runMigrations(db: PGlite): Promise<void>`:
-  - [ ] `import { MIGRATIONS } from "./migrations/index.generated"`
-  - [ ] Create `_migrations` tracking table:
+- [x] Create `apps/organiclever-web/src/lib/journal/run-migrations.ts` implementing `runMigrations(db: PGlite): Promise<void>`:
+  - [x] `import { MIGRATIONS } from "./migrations/index.generated"`
+  - [x] Create `_migrations` tracking table:
         `await db.exec("CREATE TABLE IF NOT EXISTS _migrations (id TEXT PRIMARY KEY, applied_at TIMESTAMPTZ NOT NULL DEFAULT now())")`
-  - [ ] Load applied set:
+  - [x] Load applied set:
         `const applied = new Set((await db.query<{ id: string }>("SELECT id FROM _migrations")).rows.map(r => r.id))`
-  - [ ] For each pending migration `m` in `MIGRATIONS` not in `applied`, run in a
+  - [x] For each pending migration `m` in `MIGRATIONS` not in `applied`, run in a
         per-migration transaction: call `m.up(tx)` then
         `await tx.query("INSERT INTO _migrations(id) VALUES($1)", [m.id])`
+  - Date: 2026-04-30 | Status: Done | Files changed: src/lib/journal/run-migrations.ts
 
 #### 0.4.d Runner unit tests
 
-- [ ] Create `apps/organiclever-web/src/lib/journal/run-migrations.unit.test.ts`:
-  - [ ] In-memory PGlite — fresh DB, run `runMigrations(db)` once: one row
+- [x] Create `apps/organiclever-web/src/lib/journal/run-migrations.unit.test.ts`:
+  - [x] In-memory PGlite — fresh DB, run `runMigrations(db)` once: one row
         in `_migrations` with id `"2026_04_28T14_05_30__create_journal_entries_table"`
-  - [ ] Re-running on the same DB is a no-op (still one row, unchanged
+  - [x] Re-running on the same DB is a no-op (still one row, unchanged
         `applied_at`)
-  - [ ] Inject a failing migration (e.g., wrap `up` in a throw); assert
+  - [x] Inject a failing migration (e.g., wrap `up` in a throw); assert
         `_migrations` is unchanged AND the partial schema is rolled back
         (e.g., `journal_entries` table does not exist)
-  - [ ] Two migrations in sequence apply in lexicographic order; if the second
+  - [x] Two migrations in sequence apply in lexicographic order; if the second
         fails, the first stays applied (per-migration transaction scoping
         — distinct from libraries that share one transaction across all
         pending migrations)
+  - Date: 2026-04-30 | Status: Done | Files changed: src/lib/journal/run-migrations.unit.test.ts
 
 #### 0.4.e Filename lint
 
-- [ ] The codegen script throws on filename violations; assert this is the
+- [x] The codegen script throws on filename violations; assert this is the
       enforcement point (no separate lint rule needed). Add a unit test:
       `gen-migrations.test.mjs` (or inline) feeds the script a mock directory
       with one bad name and asserts it throws
+  - Date: 2026-04-30 | Status: Done | Files changed: src/lib/journal/gen-migrations-filename.unit.test.ts
 
 ### 0.5 Effect runtime + Layer
 
-- [ ] Create `apps/organiclever-web/src/lib/journal/runtime.ts` per `tech-docs.md`:
-  - [ ] `JOURNAL_STORE_DATA_DIR = "ol_journal_v1"`
-  - [ ] `class PgliteService extends Context.Tag("PgliteService")<PgliteService, { readonly db: PGlite }>() {}`
-  - [ ] `PgliteLive: Layer.Layer<PgliteService, StorageUnavailable>` via
+- [x] Create `apps/organiclever-web/src/lib/journal/runtime.ts` per `tech-docs.md`:
+  - [x] `JOURNAL_STORE_DATA_DIR = "ol_journal_v1"`
+  - [x] `class PgliteService extends Context.Tag("PgliteService")<PgliteService, { readonly db: PGlite }>() {}`
+  - [x] `PgliteLive: Layer.Layer<PgliteService, StorageUnavailable>` via
         `Layer.scoped(PgliteService, Effect.acquireRelease(open, ({ db }) => Effect.promise(() => db.close())))`
-  - [ ] Inside `acquire`: `Effect.tryPromise({ try: async () => { ssr-throw; lazy-import PGlite; new PGlite(\`idb://${JOURNAL_STORE_DATA_DIR}\`); await runMigrations(db); dev-handle assign; return { db } }, catch: (cause): StorageUnavailable => new StorageUnavailable({ cause }) })`
-  - [ ] `makeJournalRuntime = (layer = PgliteLive) => ManagedRuntime.make(layer)`
-  - [ ] `export type JournalRuntime = ReturnType<typeof makeJournalRuntime>`
-- [ ] Create `apps/organiclever-web/src/lib/journal/runtime.unit.test.ts`
+  - [x] Inside `acquire`: `Effect.tryPromise({ try: async () => { ssr-throw; lazy-import PGlite; new PGlite(\`idb://${JOURNAL_STORE_DATA_DIR}\`); await runMigrations(db); dev-handle assign; return { db } }, catch: (cause): StorageUnavailable => new StorageUnavailable({ cause }) })`
+  - [x] `makeJournalRuntime = (layer = PgliteLive) => ManagedRuntime.make(layer)`
+  - [x] `export type JournalRuntime = ReturnType<typeof makeJournalRuntime>`
+  - Date: 2026-04-30 | Status: Done | Files changed: src/lib/journal/runtime.ts
+- [x] Create `apps/organiclever-web/src/lib/journal/runtime.unit.test.ts`
       (in-memory test layer): acquire-release closes PGlite handle on dispose;
       SSR pretend (`globalThis.window` undefined) yields `StorageUnavailable`
+  - Date: 2026-04-30 | Status: Done | Files changed: src/lib/journal/runtime.unit.test.ts
 
 ### 0.6 Effect-returning journal store
 
-- [ ] Create `apps/organiclever-web/src/lib/journal/journal-store.ts`:
-  - [ ] `appendEntries`: `Effect.gen(function* () { ... })` that fails with
+- [x] Create `apps/organiclever-web/src/lib/journal/journal-store.ts`:
+  - [x] `appendEntries`: `Effect.gen(function* () { ... })` that fails with
         `EmptyBatch` on empty input; pulls `db` via `yield* PgliteService`;
         executes one multi-VALUES `INSERT ... RETURNING ...` with one shared
         `now()` timestamp; decodes rows via `Schema.decodeUnknownSync(JournalEntry)`
-  - [ ] `updateEntry`: `UPDATE ... COALESCE ... RETURNING`; fails with
+  - [x] `updateEntry`: `UPDATE ... COALESCE ... RETURNING`; fails with
         `NotFound({ id })` when `rowCount === 0`
-  - [ ] `deleteEntry`: `DELETE` then return `Effect.succeed(rowCount > 0)`
+  - [x] `deleteEntry`: `DELETE` then return `Effect.succeed(rowCount > 0)`
         (boolean; non-exceptional miss). Only IO failures are mapped to
         `StorageUnavailable` — never `NotFound` for delete
-  - [ ] `bumpEntry`: `UPDATE ... SET created_at = now(), updated_at = now() ... RETURNING`; fails with `NotFound({ id })` on miss
-  - [ ] `listEntries`: `SELECT ... ORDER BY created_at DESC, storage_seq ASC`
-  - [ ] `clearEntries`: `TRUNCATE journal_entries RESTART IDENTITY`
-  - [ ] Every `Effect.tryPromise` MUST supply a `catch` mapper producing
+  - [x] `bumpEntry`: `UPDATE ... SET created_at = now(), updated_at = now() ... RETURNING`; fails with `NotFound({ id })` on miss
+  - [x] `listEntries`: `SELECT ... ORDER BY created_at DESC, storage_seq ASC`
+  - [x] `clearEntries`: `TRUNCATE journal_entries RESTART IDENTITY`
+  - [x] Every `Effect.tryPromise` MUST supply a `catch` mapper producing
         `StorageUnavailable({ cause })` — never leave `UnknownException` in `E`
-  - [ ] All return types in `journal-store.ts` are `Effect<..., StoreError, PgliteService>`;
+  - [x] All return types in `journal-store.ts` are `Effect<..., StoreError, PgliteService>`;
         no `Promise<...>` exports
-- [ ] Add `apps/organiclever-web/src/lib/journal/journal-store.unit.test.ts`
+  - Date: 2026-04-30 | Status: Done | Files changed: src/lib/journal/journal-store.ts
+- [x] Add `apps/organiclever-web/src/lib/journal/journal-store.unit.test.ts`
       using `@effect/vitest`'s `it.effect("...", ..., { layer: TestPgliteLayer })`
       where `TestPgliteLayer = Layer.scoped(PgliteService, Effect.acquireRelease(in-memory PGlite + migrations, db.close))`
+  - Date: 2026-04-30 | Status: Done | Files changed: src/lib/journal/journal-store.unit.test.ts
 
 ### 0.7a XState machine (`journal-machine.ts`)
 
-- [ ] Create `apps/organiclever-web/src/lib/journal/journal-machine.ts` per `tech-docs.md`:
-  - [ ] `JournalContext` interface: `{ runtime, entries, initError, mutationError }`
-  - [ ] `JournalEvent` union: `ADD_BATCH | EDIT | DELETE | BUMP | CLEAR`
-  - [ ] `JournalInput` interface: `{ runtime: JournalRuntime }`
-  - [ ] `loadEntries` actor: `fromPromise(({ input }) => input.runtime.runPromise(listEntries()))`
-  - [ ] `runMutation` actor: `fromPromise` that dispatches on `event.type` to the
+- [x] Create `apps/organiclever-web/src/lib/journal/journal-machine.ts` per `tech-docs.md`:
+  - [x] `JournalContext` interface: `{ runtime, entries, initError, mutationError }`
+  - [x] `JournalEvent` union: `ADD_BATCH | EDIT | DELETE | BUMP | CLEAR`
+  - [x] `JournalInput` interface: `{ runtime: JournalRuntime }`
+  - [x] `loadEntries` actor: `fromPromise(({ input }) => input.runtime.runPromise(listEntries()))`
+  - [x] `runMutation` actor: `fromPromise` that dispatches on `event.type` to the
         correct store Effect, then re-runs `listEntries` — returns updated list on
         success, rejects with typed `StoreError` on failure
-  - [ ] Machine states:
-    - [ ] `initializing` — invokes `loadEntries`; on done → `ready` (assign entries);
+  - [x] Machine states:
+    - [x] `initializing` — invokes `loadEntries`; on done → `ready` (assign entries);
           on error → `error` (assign `initError`)
-    - [ ] `ready` — compound state, initial substate `idle`
-      - [ ] `idle` — accepts all five mutation events, transitions to `mutating`
-      - [ ] `mutating` — `entry` action clears `mutationError` (prevents stale error
+    - [x] `ready` — compound state, initial substate `idle`
+      - [x] `idle` — accepts all five mutation events, transitions to `mutating`
+      - [x] `mutating` — `entry` action clears `mutationError` (prevents stale error
             contaminating next Promise resolution); invokes `runMutation` with
             `{ runtime, event }` as input; on done → `idle` (assign entries,
             clear `mutationError`); on error → `idle` (assign `mutationError`,
             entries unchanged — non-fatal)
-    - [ ] `error` — terminal; user must hard-reload
-  - [ ] `context` initialiser: `({ input }) => ({ runtime: input.runtime, entries: [], initError: null, mutationError: null })`
-- [ ] Add `apps/organiclever-web/src/lib/journal/journal-machine.unit.test.ts`:
-  - [ ] Create actor with in-memory test runtime (Layer-swapped `PgliteService`);
+    - [x] `error` — terminal; user must hard-reload
+  - [x] `context` initialiser: `({ input }) => ({ runtime: input.runtime, entries: [], initError: null, mutationError: null })`
+  - Date: 2026-04-30 | Status: Done | Files changed: src/lib/journal/journal-machine.ts
+- [x] Add `apps/organiclever-web/src/lib/journal/journal-machine.unit.test.ts`:
+  - [x] Create actor with in-memory test runtime (Layer-swapped `PgliteService`);
         assert machine starts in `initializing`
-  - [ ] `waitFor(actor, s => s.matches("ready"))` — assert `entries` populated and
+  - [x] `waitFor(actor, s => s.matches("ready"))` — assert `entries` populated and
         `initError` null after `loadEntries` resolves
-  - [ ] Send `ADD_BATCH` event — assert machine transitions to `ready.mutating`,
+  - [x] Send `ADD_BATCH` event — assert machine transitions to `ready.mutating`,
         then back to `ready.idle` with updated entries
-  - [ ] Force `runMutation` to reject (e.g., inject broken runtime) — assert machine
+  - [x] Force `runMutation` to reject (e.g., inject broken runtime) — assert machine
         returns to `ready.idle` with `mutationError` set and entries unchanged
-  - [ ] Assert `entry` action clears stale `mutationError`: after one failed
+  - [x] Assert `entry` action clears stale `mutationError`: after one failed
         mutation, send another event and verify `mutationError` is null while in
         `mutating` (before actor settles)
-  - [ ] Force `loadEntries` to reject — assert machine lands in `error` with
+  - [x] Force `loadEntries` to reject — assert machine lands in `error` with
         `initError` set
+  - Date: 2026-04-30 | Status: Done | Files changed: src/lib/journal/journal-machine.unit.test.ts
 
 ### 0.7b `use-journal.ts` wrapper (`useActorRef` + `useSelector`)
 
-- [ ] Create `apps/organiclever-web/src/lib/journal/use-journal.ts` per `tech-docs.md`:
-  - [ ] `JournalState` derived union:
+- [x] Create `apps/organiclever-web/src/lib/journal/use-journal.ts` per `tech-docs.md`:
+  - [x] `JournalState` derived union:
         `{ status: "loading" } | { status: "ready"; entries; isMutating; mutationError } | { status: "error"; cause }`
-  - [ ] `const runtime = useMemo(() => makeJournalRuntime(), [])` (one runtime per mount)
-  - [ ] `useEffect(() => () => runtime.dispose(), [runtime])` (Layer finalisers
+  - [x] `const runtime = useMemo(() => makeJournalRuntime(), [])` (one runtime per mount)
+  - [x] `useEffect(() => () => runtime.dispose(), [runtime])` (Layer finalisers
         close PGlite on unmount — runs AFTER React stops the actor)
-  - [ ] `useActorRef(journalMachine, { input: { runtime } })` to start the machine
-  - [ ] `useSelector(actorRef, snapshot => ...)` to derive `JournalState`:
+  - [x] `useActorRef(journalMachine, { input: { runtime } })` to start the machine
+  - [x] `useSelector(actorRef, snapshot => ...)` to derive `JournalState`:
         `initializing` → `loading`; `error` → `error` (cause = `initError`);
         `ready` → `ready` (entries, `isMutating = matches({ ready: "mutating" })`,
         `mutationError`)
-  - [ ] `sendMutation(event)` helper: subscribes to actor, sends event, resolves
+  - [x] `sendMutation(event)` helper: subscribes to actor, sends event, resolves
         when `ready.idle` reached after `seenMutating = true`, rejects when
         `context.mutationError` is non-null at that point
-  - [ ] Return `{ state, addBatch, edit, remove, bump, clear }` — each mutation
+  - [x] Return `{ state, addBatch, edit, remove, bump, clear }` — each mutation
         method calls `sendMutation` with the appropriate typed event
-- [ ] Add `apps/organiclever-web/src/lib/journal/use-journal.unit.test.tsx`
+  - Date: 2026-04-30 | Status: Done | Files changed: src/lib/journal/use-journal.ts
+- [x] Add `apps/organiclever-web/src/lib/journal/use-journal.unit.test.tsx`
       (RTL + in-memory test runtime):
-  - [ ] Renders with test layer; asserts `state.status === "loading"` then
+  - [x] Renders with test layer; asserts `state.status === "loading"` then
         transitions to `"ready"` after actor settles
-  - [ ] `addBatch(drafts)` Promise resolves; `state.entries` updated
-  - [ ] `addBatch` Promise rejects with typed `StoreError` when mutation actor fails;
+  - [x] `addBatch(drafts)` Promise resolves; `state.entries` updated
+  - [x] `addBatch` Promise rejects with typed `StoreError` when mutation actor fails;
         `state.status` stays `"ready"` (non-fatal)
-  - [ ] `state.isMutating` is `true` while actor in flight, `false` after
-  - [ ] Force init failure → `state.status === "error"`, `state.cause._tag === "StorageUnavailable"`
+  - [x] `state.isMutating` is `true` while actor in flight, `false` after
+  - [x] Force init failure → `state.status === "error"`, `state.cause._tag === "StorageUnavailable"`
+  - Date: 2026-04-30 | Status: Done | Files changed: src/lib/journal/use-journal.unit.test.tsx
 
 ### 0.8 Time formatter
 
-- [ ] Create `apps/organiclever-web/src/lib/journal/format-relative-time.ts`
+- [x] Create `apps/organiclever-web/src/lib/journal/format-relative-time.ts`
       with the signature in `tech-docs.md`
-- [ ] Create `apps/organiclever-web/src/lib/journal/format-relative-time.unit.test.ts`:
-  - [ ] `< 60s` → `"just now"`
-  - [ ] `< 60m` → `"{n}m ago"` (boundary 1m, 59m)
-  - [ ] `< 24h` → `"{n}h ago"` (boundary 1h, 23h)
-  - [ ] `< 7d` → `"{n}d ago"` (boundary 1d, 6d)
-  - [ ] `>= 7d` → ISO `YYYY-MM-DD`
+  - Date: 2026-04-30 | Status: Done | Files changed: src/lib/journal/format-relative-time.ts
+- [x] Create `apps/organiclever-web/src/lib/journal/format-relative-time.unit.test.ts`:
+  - [x] `< 60s` → `"just now"`
+  - [x] `< 60m` → `"{n}m ago"` (boundary 1m, 59m)
+  - [x] `< 24h` → `"{n}h ago"` (boundary 1h, 23h)
+  - [x] `< 7d` → `"{n}d ago"` (boundary 1d, 6d)
+  - [x] `>= 7d` → ISO `YYYY-MM-DD`
+  - Date: 2026-04-30 | Status: Done | Files changed: src/lib/journal/format-relative-time.unit.test.ts
 
 ### 0.9 Phase 0 validation
 
-- [ ] `nx run organiclever-web:typecheck` passes
-- [ ] `nx run organiclever-web:lint` passes
-- [ ] `nx run organiclever-web:test:quick` passes (≥ 70 % LCOV)
+- [x] `nx run organiclever-web:typecheck` passes
+- [x] `nx run organiclever-web:lint` passes
+- [x] `nx run organiclever-web:test:quick` passes (≥ 70 % LCOV)
+  - Date: 2026-04-30 | Status: Done | typecheck ✓, lint ✓ (0 errors), test:quick ✓ 77.39% LCOV
 
 ---
 

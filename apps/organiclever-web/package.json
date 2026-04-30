@@ -4,6 +4,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "gen:migrations": "node scripts/gen-migrations.mjs",
+    "predev": "npm run gen:migrations",
+    "prebuild": "npm run gen:migrations",
+    "pretest": "npm run gen:migrations",
+    "pretest:integration": "npm run gen:migrations",
     "dev": "next dev --port 3200",
     "build": "next build",
     "start": "next start --port 3200"

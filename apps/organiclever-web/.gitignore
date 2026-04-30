@@ -24,3 +24,6 @@ storybook-static/
 
 # Vercel
 .vercel
+
+# Generated migration index
+src/lib/journal/migrations/index.generated.ts

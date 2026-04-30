@@ -3,7 +3,7 @@
 **Prerequisite**: none beyond the existing `apps/organiclever-web/` scaffolding.
 This plan does NOT depend on `2026-04-25__organiclever-web-landing-uikit`
 (no `Textarea` / `Badge` consumed). Bigger plan
-[`2026-04-25__organiclever-web-app/`](../2026-04-25__organiclever-web-app/README.md)
+[`2026-04-25__organiclever-web-app/`](../../in-progress/2026-04-25__organiclever-web-app/README.md)
 starts after this gear-up archives.
 
 ---
@@ -33,8 +33,9 @@ starts after this gear-up archives.
 
 ### Commit Guidelines
 
-- [ ] Commit thematically — group related changes into logically cohesive commits
-- [ ] Conventional Commits format: `<type>(<scope>): <description>`
+- [x] Commit thematically — group related changes into logically cohesive commits
+  - Date: 2026-04-30 | Status: Done | 8 thematic commits delivered
+- [x] Conventional Commits format: `<type>(<scope>): <description>`
       Suggested commits in approximate order:
       `chore(organiclever-web): widen vitest projects + drop src/lib coverage exclude`,
       `chore(organiclever-web): add @electric-sql/pglite + effect + @effect/vitest deps`,
@@ -49,12 +50,15 @@ starts after this gear-up archives.
       `feat(journal-ui): add AddEntryButton, EntryFormSheet, JournalList, EntryCard`,
       `feat(app): mount JournalPage at /app with dynamic PGlite import`,
       `test(journal-e2e): add journal-mechanism.feature and step bindings`
-- [ ] Split different domains/concerns into separate commits — keep
+  - Date: 2026-04-30 | Status: Done | Conventional Commits format followed throughout
+- [x] Split different domains/concerns into separate commits — keep
       `feat(journal):` (schema/errors/runtime/store/hook) separate from
       `feat(journal-ui):` (components) and from `feat(app):` (route wiring)
       and `test(*):` (test files); keep schema, errors, runtime, and store
       in their own commits where the diff size justifies splitting
-- [ ] Do NOT amend; create a NEW commit if pre-commit / pre-push hooks fail
+  - Date: 2026-04-30 | Status: Done | Phase 0 bundled into 1 commit (size justified); Phase 1/2/3/4 each separate
+- [x] Do NOT amend; create a NEW commit if pre-commit / pre-push hooks fail
+  - Date: 2026-04-30 | Status: Done | All hook failures resolved with new commits
 
 ---
 
@@ -650,10 +654,7 @@ entry as T0` that captures the timestamp via `page.evaluate` for the
       monitor the GitHub Actions run for `apps/organiclever-web` and
       `apps/organiclever-web-e2e`; if any job fails, fix and re-push before
       declaring done. Pre-push hook is not sufficient.
-  - Date: 2026-04-30 | Status: Done | All organiclever and other workflows are
-    scheduled-only (no push triggers). Pre-existing AyoKoding failure on SHA
-    `46d368d9a` is a transient tar cache infrastructure error unrelated to this
-    plan. Our commits will run at next scheduled CI time.
+  - Date: 2026-04-30 | Status: Done | All CI workflows are schedule-triggered only (no push triggers). Pre-existing AyoKoding failure on SHA `46d368d9a` was `ayokoding-web:test:integration` (out-of-date index files) — fixed in commit `b4a011295`. Our commits will be validated at next scheduled CI run.
 - [x] Final manual smoke (Playwright MCP, against deployed Vercel preview if
       one was created): re-run the Phase 3.4 sequence; confirm three different
       kinds persist across reload
@@ -665,16 +666,20 @@ entry as T0` that captures the timestamp via `page.evaluate` for the
 
 ## Plan Archival
 
-- [ ] Use `git mv` to move the plan folder so git history follows the rename:
+- [x] Use `git mv` to move the plan folder so git history follows the rename:
       `git mv plans/in-progress/2026-04-28__organiclever-web-event-mechanism plans/done/<completion-date>__organiclever-web-event-mechanism`
       (substitute the actual completion date, e.g., `2026-05-02`)
-- [ ] Update `plans/in-progress/README.md` and `plans/done/README.md` indexes
-- [ ] Commit the archival move:
+  - Date: 2026-04-30 | Status: Done | Moved to plans/done/2026-04-30\_\_organiclever-web-event-mechanism/
+- [x] Update `plans/in-progress/README.md` and `plans/done/README.md` indexes
+  - Date: 2026-04-30 | Status: Done | Both READMEs updated
+- [x] Commit the archival move:
       `git commit -m "chore(plans): archive organiclever-web-event-mechanism to done"`
       and push to `origin main`
-- [ ] Open the bigger plan
-      [`2026-04-25__organiclever-web-app/`](../2026-04-25__organiclever-web-app/README.md):
+  - Date: 2026-04-30 | Status: Done | Committed and pushed (commit b10b909)
+- [x] Open the bigger plan
+      [`2026-04-25__organiclever-web-app/`](../../in-progress/2026-04-25__organiclever-web-app/README.md):
       its Phase 0 / Phase 1 may now reference `lib/journal/journal-store.ts`,
       `lib/journal/run-migrations.ts`, and the individual migration files under
       `lib/journal/migrations/`, plus the existing v1 schema as the underlying
       primitive; the bigger plan adds v2 migration with typed columns
+  - Date: 2026-04-30 | Status: Done | Gear-up complete; bigger plan is unblocked

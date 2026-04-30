@@ -11,7 +11,7 @@ RUN node -e " \
 " && npm install --ignore-scripts --legacy-peer-deps
 
 # Install ts-ui transitive dependencies
-RUN npm install --save class-variance-authority@^0.7.0 clsx@^2.1.1 lucide-react@^0.447.0 radix-ui@^1.0.0 tailwind-merge@^2.5.3 --ignore-scripts
+RUN npm install --save class-variance-authority@^0.7.0 clsx@^2.1.1 lucide-react@^0.447.0 radix-ui@^1.0.0 tailwind-merge@^2.5.3 --ignore-scripts --legacy-peer-deps
 
 # Copy workspace libs as resolvable node_modules packages
 COPY libs/ts-ui/src/ ./node_modules/@open-sharia-enterprise/ts-ui/src/

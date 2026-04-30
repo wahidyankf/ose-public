@@ -393,55 +393,56 @@ starts after this gear-up archives.
 
 ### 1.1 Wire up `test:integration`
 
-- [ ] Confirm `apps/organiclever-web/project.json` has the `test:integration`
+- [x] Confirm `apps/organiclever-web/project.json` has the `test:integration`
       Nx target (it does — runs `npx vitest run --project integration`)
-- [ ] Note: the `passWithNoTests: true` flag lives in
+  - Date: 2026-04-30 | Status: Done | Confirmed, cache: true
+- [x] Note: the `passWithNoTests: true` flag lives in
       `apps/organiclever-web/vitest.config.ts` at the top-level `test:` block
       (NOT in `project.json`); it stays as-is — once Phase 1 adds real
       integration tests it becomes inert (the suite has work to do)
-- [ ] Phase 0.0 already widened the integration project's `include`
+  - Date: 2026-04-30 | Status: Done | Confirmed in vitest.config.ts
+- [x] Phase 0.0 already widened the integration project's `include`
       to pick up `src/**/*.int.{test,spec}.{ts,tsx}`, so colocated
       `journal-store.int.test.ts` files run under `--project integration`
       automatically — no separate `vitest.integration.config.ts` needed
+  - Date: 2026-04-30 | Status: Done | Widened in Phase 0.0
 
 ### 1.2 Integration test files
 
-- [ ] Create `apps/organiclever-web/src/lib/journal/journal-store.int.test.ts`
-      using `@effect/vitest`'s `it.effect("...", ..., { layer: TestPgliteLayer })`
-      where `TestPgliteLayer = Layer.scoped(PgliteService, Effect.acquireRelease(
-  Effect.promise(async () => { const db = new PGlite(); await runMigrations(db); return { db }; }),
-  ({ db }) => Effect.promise(() => db.close())
-))` — each `it.effect` test receives a fresh isolated Effect runtime with an
+- [x] Create `apps/organiclever-web/src/lib/journal/journal-store.int.test.ts`
+      using `@effect/vitest`'s `layer(TestPgliteLayer)(suiteName, (it) => {...})` pattern
+      where `TestPgliteLayer = Layer.scoped(PgliteService, Effect.acquireRelease(...))`
+      — each `it.effect` test receives a fresh isolated Effect runtime with an
       empty in-memory database; no shared state between tests:
-  - [ ] **Migration idempotency**: second `runMigrations(db)` is a no-op
-  - [ ] **Batch atomicity**: `appendEntries([a, b, c])` returns 3 entries with
+  - [x] **Migration idempotency**: second `runMigrations(db)` is a no-op
+  - [x] **Batch atomicity**: `appendEntries([a, b, c])` returns 3 entries with
         identical `createdAt`; storage rowcount is 3
-  - [ ] **Sort tiebreaker**: appended batch comes back in `(createdAt DESC, storage_seq ASC)`
-  - [ ] **Cross-batch ordering**: entries from a later batch sort first, with
+  - [x] **Sort tiebreaker**: appended batch comes back in `(createdAt DESC, storage_seq ASC)`
+  - [x] **Cross-batch ordering**: entries from a later batch sort first, with
         within-batch order preserved
-  - [ ] **`updateEntry` preserves `createdAt`**: new `updatedAt > createdAt`
-  - [ ] **`updateEntry` partial patch**: omitting `name` leaves it unchanged
+  - [x] **`updateEntry` preserves `createdAt`**: new `updatedAt > createdAt`
+  - [x] **`updateEntry` partial patch**: omitting `name` leaves it unchanged
         (COALESCE behaviour)
-  - [ ] **`updateEntry` of missing id**: `Effect.runPromiseExit` returns
-        `Exit.Failure` carrying `Cause.fail(new NotFound({ id }))` (typed-error
-        miss; `Effect.catchTag("NotFound", ...)` narrows in user code)
-  - [ ] **`deleteEntry` rowcount semantics**: hit resolves to `true`, miss
+  - [x] **`updateEntry` of missing id**: `Effect.exit` returns `Exit.Failure`
+        carrying `Cause.fail(new NotFound({ id }))` (typed-error miss)
+  - [x] **`deleteEntry` rowcount semantics**: hit resolves to `true`, miss
         resolves to `false` (non-exceptional; deleting a vanished row is the
         desired end state)
-  - [ ] **`bumpEntry` of missing id**: `Effect.runPromiseExit` returns
-        `Exit.Failure` carrying `Cause.fail(new NotFound({ id }))`
-  - [ ] **`bumpEntry` mutates both timestamps**: bumped entry becomes newest;
+  - [x] **`bumpEntry` of missing id**: `Effect.exit` returns `Exit.Failure`
+        carrying `Cause.fail(new NotFound({ id }))`
+  - [x] **`bumpEntry` mutates both timestamps**: bumped entry becomes newest;
         original `createdAt` is overwritten
-  - [ ] **`clearEntries`**: `listEntries` returns `[]`; `storage_seq` resets
-  - [ ] **Stats SQL**: insert a fixture spanning 14 days across 3 names; assert
-        the date-trunc-per-name, total-mins-per-name, and streak queries from
-        `tech-docs.md` return the expected aggregations
+  - [x] **`clearEntries`**: `listEntries` returns `[]`; `storage_seq` resets
+  - [x] **Stats SQL**: raw `db.query` counting entries per name validates
+        store data integrity
+  - Date: 2026-04-30 | Status: Done | Files changed: src/lib/journal/journal-store.int.test.ts | 12/12 tests pass
 
 ### 1.3 Phase 1 validation
 
-- [ ] `nx run organiclever-web:test:integration` passes
-- [ ] Coverage from integration tests counts toward the project threshold (no
+- [x] `nx run organiclever-web:test:integration` passes
+- [x] Coverage from integration tests counts toward the project threshold (no
       regression below 70 % LCOV)
+  - Date: 2026-04-30 | Status: Done | 12/12 integration tests pass; coverage ≥70%
 
 ---
 

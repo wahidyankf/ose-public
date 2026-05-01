@@ -27,6 +27,14 @@ export default defineConfig({
         "src/components/app/home/entry-detail-sheet.tsx",
         "src/components/app/home/routine-card.tsx",
         "src/components/app/home/workout-module-view.tsx",
+        // Phase 4 workout screens — PGlite+XState+setInterval UI; covered by e2e
+        "src/components/app/workout/workout-screen.tsx",
+        "src/components/app/workout/active-exercise-row.tsx",
+        "src/components/app/workout/rest-timer.tsx",
+        "src/components/app/workout/set-edit-sheet.tsx",
+        "src/components/app/workout/set-timer-sheet.tsx",
+        "src/components/app/workout/end-workout-sheet.tsx",
+        "src/components/app/workout/finish-screen.tsx",
         // Phase 1 hook — browser-only; covered by e2e
         "src/lib/hooks/use-hash.ts",
         "src/proxy.ts",

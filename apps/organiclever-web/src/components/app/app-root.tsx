@@ -16,6 +16,10 @@ import { LearningLogger } from "./loggers/learning-logger";
 import { MealLogger } from "./loggers/meal-logger";
 import { FocusLogger } from "./loggers/focus-logger";
 import { CustomEntryLogger } from "./loggers/custom-entry-logger";
+import { WorkoutScreen } from "./workout/workout-screen";
+import { FinishScreen } from "./workout/finish-screen";
+import { useSettings } from "@/lib/journal/use-settings";
+import type { AppSettings } from "@/lib/journal/settings-store";
 
 // ---------------------------------------------------------------------------
 // Placeholder screens — real implementations are deferred to later phases
@@ -82,6 +86,10 @@ export function AppRoot() {
   });
 
   const runtime = useMemo(() => makeJournalRuntime(), []);
+
+  // Load app settings (needed for WorkoutScreen's resolvedRest calculation)
+  const { state: settingsState } = useSettings(runtime);
+  const settings: AppSettings | null = settingsState.status === "ready" ? settingsState.settings : null;
 
   // Bump this key to trigger HomeScreen data reload after a logger saves
   const [homeRefreshKey, setHomeRefreshKey] = useState(0);
@@ -152,11 +160,33 @@ export function AppRoot() {
     refreshHome();
   }
 
+  // Default settings fallback (used until PGlite loads)
+  const defaultSettings: AppSettings = {
+    name: "User",
+    restSeconds: 60,
+    darkMode: state.context.darkMode,
+    lang: "en",
+  };
+  const effectiveSettings = settings ?? defaultSettings;
+
   // Content area routing
   const content = isWorkout ? (
-    <PlaceholderScreen name="WorkoutScreen" />
+    <WorkoutScreen
+      routine={state.context.routine}
+      settings={effectiveSettings}
+      runtime={runtime}
+      onFinishWorkout={(session) => {
+        send({ type: "FINISH_WORKOUT", session });
+        refreshHome();
+      }}
+      onBack={() => send({ type: "BACK_TO_MAIN" })}
+    />
   ) : isFinish ? (
-    <PlaceholderScreen name="FinishScreen" />
+    state.context.completedSession ? (
+      <FinishScreen completedSession={state.context.completedSession} onBack={() => send({ type: "BACK_TO_MAIN" })} />
+    ) : (
+      <PlaceholderScreen name="FinishScreen" />
+    )
   ) : isEditRoutine ? (
     <PlaceholderScreen name="EditRoutineScreen" />
   ) : tab === "history" ? (

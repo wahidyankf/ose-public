@@ -35,6 +35,8 @@ This practice respects the following conventions:
 
 - **[Content Quality Principles](../../conventions/writing/quality.md)**: Plan documents and lessons files follow active voice, clear structure, and actionable content - not vague notes.
 
+- **[CI Monitoring Convention](../workflow/ci-monitoring.md)**: Agents performing post-push CI verification MUST use `gh run watch <run-id>` as the required monitoring tool. Manual tight-loop polling of `gh run view` is forbidden. When rate-limited (HTTP 403), the correct response is `ScheduleWakeup delaySeconds=2100` — not a retry loop.
+
 ## When to Plan
 
 Enter plan mode for any non-trivial task. A task is non-trivial if it meets any of these criteria:
@@ -331,6 +333,8 @@ After any correction, update `local-temp/lessons.md`. This is the direct applica
 - [Maker-Checker-Fixer Pattern](../pattern/maker-checker-fixer.md) - Multi-agent orchestration for content quality workflows
 - [AI Agents Convention](./ai-agents.md) - Agent structure, frontmatter, and tool access standards
 - [Skill Context Architecture](./skill-context-architecture.md) - Inline vs fork skills for subagent delegation
+- [CI Post-Push Verification Convention](../workflow/ci-post-push-verification.md) - Trigger and monitor CI after every push; required final step in plan execution
+- [CI Monitoring Convention](../workflow/ci-monitoring.md) - Use `gh run watch` to follow runs; tight-loop polling is forbidden; rate-limit recovery uses `ScheduleWakeup delaySeconds=2100`
 
 **Related Agents / Workflows:**
 

@@ -359,6 +359,7 @@ Plan mode for non-trivial tasks (3+ steps or architecture decisions), subagents 
 - **Verify behavior**: Playwright MCP for UI, curl for API ([manual-behavioral-verification.md](./governance/development/quality/manual-behavioral-verification.md))
 - **CI blockers**: Investigate root cause, fix properly, never bypass ([ci-blocker-resolution.md](./governance/development/quality/ci-blocker-resolution.md))
 - **CI post-push verification**: After pushing app or lib code to `origin main`, trigger relevant GitHub CI workflows and verify they pass before declaring work done — pre-push hook alone is not sufficient ([ci-post-push-verification.md](./governance/development/workflow/ci-post-push-verification.md))
+- **CI monitoring**: Use `gh run watch <run-id>` to follow runs — tight-loop polling of `gh run view` exhausts the GitHub API rate limit (5,000 req/hour); recovery requires `ScheduleWakeup delaySeconds=2100` ([ci-monitoring.md](./governance/development/workflow/ci-monitoring.md))
 
 ## AI Agents
 

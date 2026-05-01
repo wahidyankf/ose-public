@@ -1,7 +1,7 @@
 "use client";
 
 import { useActor } from "@xstate/react";
-import { useMemo, useEffect, useState } from "react";
+import { useMemo, useEffect, useState, useCallback } from "react";
 import { appMachine } from "@/lib/app/app-machine";
 import type { Tab } from "@/lib/app/app-machine";
 import { makeJournalRuntime } from "@/lib/journal/runtime";
@@ -10,6 +10,12 @@ import { saveSettings } from "@/lib/journal/settings-store";
 import { TabBar } from "./tab-bar";
 import { SideNav } from "./side-nav";
 import { HomeScreen } from "./home/home-screen";
+import { AddEntrySheet } from "./add-entry-sheet";
+import { ReadingLogger } from "./loggers/reading-logger";
+import { LearningLogger } from "./loggers/learning-logger";
+import { MealLogger } from "./loggers/meal-logger";
+import { FocusLogger } from "./loggers/focus-logger";
+import { CustomEntryLogger } from "./loggers/custom-entry-logger";
 
 // ---------------------------------------------------------------------------
 // Placeholder screens — real implementations are deferred to later phases
@@ -77,6 +83,10 @@ export function AppRoot() {
 
   const runtime = useMemo(() => makeJournalRuntime(), []);
 
+  // Bump this key to trigger HomeScreen data reload after a logger saves
+  const [homeRefreshKey, setHomeRefreshKey] = useState(0);
+  const refreshHome = useCallback(() => setHomeRefreshKey((k) => k + 1), []);
+
   // Sync dark mode → DOM data-theme + localStorage + PGlite
   useEffect(() => {
     const { darkMode } = state.context;
@@ -106,11 +116,41 @@ export function AppRoot() {
   // Avoid hydration mismatch — render nothing until mounted
   if (!mounted) return null;
 
-  const { tab, isDesktop } = state.context;
+  const { tab, isDesktop, loggerKind, customLoggerName } = state.context;
   const isWorkout = state.matches({ navigation: "workout" });
   const isFinish = state.matches({ navigation: "finish" });
   const isEditRoutine = state.matches({ navigation: "editRoutine" });
   const isMain = state.matches({ navigation: "main" });
+  const isAddEntryOpen = state.matches({ overlay: "addEntry" });
+  const isLoggerOpen = state.matches({ overlay: "loggerOpen" });
+  const isCustomLoggerOpen = state.matches({ overlay: "customLoggerOpen" });
+
+  /**
+   * Handle selection from AddEntrySheet.
+   * - "workout" → start workout flow
+   * - known logger kinds → open logger overlay
+   * - "custom" → open custom logger
+   */
+  function handleSelectEntry(kind: string) {
+    send({ type: "CLOSE_ADD_ENTRY" });
+    if (kind === "workout") {
+      send({ type: "START_WORKOUT" });
+    } else if (kind === "reading" || kind === "learning" || kind === "meal" || kind === "focus") {
+      send({ type: "OPEN_LOGGER", kind });
+    } else {
+      send({ type: "OPEN_CUSTOM_LOGGER", name: kind });
+    }
+  }
+
+  function handleLoggerSaved() {
+    send({ type: "CLOSE_LOGGER" });
+    refreshHome();
+  }
+
+  function handleCustomLoggerSaved() {
+    send({ type: "CLOSE_CUSTOM_LOGGER" });
+    refreshHome();
+  }
 
   // Content area routing
   const content = isWorkout ? (
@@ -127,10 +167,53 @@ export function AppRoot() {
     <PlaceholderScreen name="SettingsScreen" />
   ) : (
     <HomeScreen
+      key={homeRefreshKey}
       runtime={runtime}
       onStartWorkout={(routine) => send({ type: "START_WORKOUT", routine })}
       onEditRoutine={(routine) => send({ type: "EDIT_ROUTINE", routine })}
     />
+  );
+
+  // Overlay components rendered above the layout tree
+  const overlays = (
+    <>
+      <AddEntrySheet
+        isOpen={isAddEntryOpen}
+        onClose={() => send({ type: "CLOSE_ADD_ENTRY" })}
+        onSelectEntry={handleSelectEntry}
+      />
+      <ReadingLogger
+        isOpen={isLoggerOpen && loggerKind === "reading"}
+        onClose={() => send({ type: "CLOSE_LOGGER" })}
+        onSaved={handleLoggerSaved}
+        runtime={runtime}
+      />
+      <LearningLogger
+        isOpen={isLoggerOpen && loggerKind === "learning"}
+        onClose={() => send({ type: "CLOSE_LOGGER" })}
+        onSaved={handleLoggerSaved}
+        runtime={runtime}
+      />
+      <MealLogger
+        isOpen={isLoggerOpen && loggerKind === "meal"}
+        onClose={() => send({ type: "CLOSE_LOGGER" })}
+        onSaved={handleLoggerSaved}
+        runtime={runtime}
+      />
+      <FocusLogger
+        isOpen={isLoggerOpen && loggerKind === "focus"}
+        onClose={() => send({ type: "CLOSE_LOGGER" })}
+        onSaved={handleLoggerSaved}
+        runtime={runtime}
+      />
+      <CustomEntryLogger
+        isOpen={isCustomLoggerOpen}
+        onClose={() => send({ type: "CLOSE_CUSTOM_LOGGER" })}
+        onSaved={handleCustomLoggerSaved}
+        runtime={runtime}
+        initialName={customLoggerName ?? undefined}
+      />
+    </>
   );
 
   // Desktop layout: SideNav + 480px content column
@@ -153,6 +236,7 @@ export function AppRoot() {
         >
           {content}
         </div>
+        {overlays}
       </div>
     );
   }
@@ -168,6 +252,7 @@ export function AppRoot() {
           onFabPress={() => send({ type: "OPEN_ADD_ENTRY" })}
         />
       )}
+      {overlays}
     </div>
   );
 }

@@ -24,6 +24,9 @@ function makeEntry(
     payload: overrides.payload ?? {},
     createdAt: overrides.createdAt ?? "2024-01-15T10:00:00.000Z",
     updatedAt: overrides.updatedAt ?? "2024-01-15T10:00:00.000Z",
+    startedAt: "2024-01-15T10:00:00.000Z",
+    finishedAt: "2024-01-15T10:30:00.000Z",
+    labels: [],
   });
 }
 

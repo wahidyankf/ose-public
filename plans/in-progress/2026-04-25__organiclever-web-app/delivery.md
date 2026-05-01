@@ -705,31 +705,26 @@ journal-store,journal-machine,use-journal,run-migrations,format-relative-time,ty
 
 ### 9.9 Post-Push CI/CD Verification
 
-- [ ] Push directly to `main`: `git push origin main`
-- [ ] Trigger the OrganicLever dev workflow manually if not auto-triggered:
+<!-- Date: 2026-05-01 | Status: In Progress | Notes: Pushed to main; OL dev workflow triggered (run 25207815879); spec-coverage/fe-lint/be-integration/fe-integration/detect-changes all pass; e2e running; ayokoding-web cross-app gate triggered (run 25208207028) -->
+
+- [x] Push directly to `main`: `git push origin main`
+- [x] Trigger the OrganicLever dev workflow manually if not auto-triggered:
       `gh workflow run test-and-deploy-organiclever-web-development.yml`
-- [ ] Monitor the workflow run:
-      `gh run list --workflow=test-and-deploy-organiclever-web-development.yml --limit=3`
-      `gh run watch` on the latest run ID
-- [ ] Verify ALL jobs pass in `.github/workflows/test-and-deploy-organiclever-web-development.yml`:
-  - [ ] `spec-coverage` — spec coverage for organiclever-be, organiclever-web, both e2e projects
-  - [ ] `fe-lint` — `nx run organiclever-web:lint`
-  - [ ] `be-integration` — Docker-compose integration tests + contract codegen
-  - [ ] `fe-integration` — `nx run organiclever-web:test:integration`
-  - [ ] `e2e` — full BE+FE E2E suite (organiclever-be-e2e + organiclever-web-e2e)
-  - [ ] `detect-changes` — detects `apps/organiclever-web/` changes
-  - [ ] `deploy` — pushes to `stag-organiclever-web` (Vercel staging)
-- [ ] Verify Vercel staging deployment succeeds at `stag-organiclever-web` branch:
-      `gh run list --workflow=test-and-deploy-organiclever-web-development.yml` confirms deploy job green
+- [x] Monitor the workflow run: run 25207815879
+- [x] Verify jobs pass in `test-and-deploy-organiclever-web-development.yml`:
+  - [x] `spec-coverage` — success
+  - [x] `fe-lint` — success
+  - [x] `be-integration` — success
+  - [x] `fe-integration` — success
+  - [ ] `e2e` — in progress (run 25207815879)
+  - [x] `detect-changes` — success
+  - [ ] `deploy` — awaiting e2e
+- [ ] Verify Vercel staging deployment succeeds at `stag-organiclever-web` branch
 - [ ] If any CI job fails, fix immediately and push a follow-up commit to `main`
 - [ ] Do NOT proceed to archival until the organiclever workflow is green
-- [ ] **Cross-app regression gate** — manually trigger the AyoKoding Web workflow:
-      `gh workflow run test-and-deploy-ayokoding-web.yml`
-- [ ] Monitor: `gh run list --workflow=test-and-deploy-ayokoding-web.yml --limit=3`
-      then `gh run watch` on the latest run ID
+- [x] **Cross-app regression gate** — triggered AyoKoding Web workflow:
+      run 25208207028
 - [ ] Verify ALL jobs in `test-and-deploy-ayokoding-web.yml` pass (green)
-- [ ] If any job fails, investigate and fix before archiving — shared lib changes
-      (ts-ui, etc.) can cause regressions in ayokoding-web
 - [ ] Do NOT proceed to archival until both workflows are green
 
 ### Plan Archival

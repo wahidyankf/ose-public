@@ -4,6 +4,8 @@ Active project plans currently being worked on.
 
 ## Active Plans
 
+- [2026-05-01 — OrganicLever Web Routes Under `/apps`](./2026-05-01__organiclever-web-routes-under-apps/README.md) — refactor `apps/organiclever-web` so every screen has a real URL under `/apps/`; trim `appMachine`; update e2e + specs
+
 ## Instructions
 
 **Quick Idea Capture**: For 1-3 liner ideas not ready for formal planning, use `../ideas.md`.

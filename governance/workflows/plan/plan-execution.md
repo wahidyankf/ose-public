@@ -265,18 +265,22 @@ After completing all items in a delivery phase, run quality gates before proceed
 
 After every push to `main`, verify GitHub Actions.
 
+**Monitoring tool**: Use `gh run watch <run-id>` to follow a run to completion. Manual tight-loop polling of `gh run view` without a sleep interval is **forbidden** — it exhausts the GitHub API rate limit (5,000 req/hour) within minutes. See [CI Monitoring Convention](../../development/workflow/ci-monitoring.md) for required tooling, minimum poll intervals, trigger discipline, and rate-limit recovery procedures.
+
 **Orchestrator action**:
 
 1. Identify which GitHub Actions workflows were triggered by the push
-2. Monitor their status until ALL complete
-3. If ANY workflow fails:
-   - Pull failure logs and diagnose the root cause
+2. Find the run ID: `gh run list --workflow=<workflow-file> --limit=3`
+3. Watch to completion: `gh run watch <run-id>` — blocks until the run finishes; do NOT use a manual poll loop
+4. If ANY workflow fails:
+   - Pull failure logs and diagnose the root cause: `gh run view <run-id> --log-failed`
    - Fix locally (including preexisting CI failures — Iron Rule 3)
    - Run local quality gates again (Step 2b)
    - Push fix commit
-   - Monitor CI again
-4. Repeat until ALL GitHub Actions workflows pass with zero failures
-5. Do NOT proceed to the next delivery phase until CI is fully green
+   - Monitor CI again with `gh run watch`
+5. Repeat until ALL GitHub Actions workflows pass with zero failures
+6. Do NOT proceed to the next delivery phase until CI is fully green
+7. If rate-limited (HTTP 403 from `gh`): stop all `gh` calls, use `ScheduleWakeup delaySeconds=2100` (35 min), resume CI verification on wakeup — do NOT spin in a retry loop
 
 **Output**: All CI workflows passing
 

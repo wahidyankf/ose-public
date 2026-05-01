@@ -56,6 +56,18 @@ After pushing app or library code to `origin main`, you MUST:
 
 When a change touches shared code (a lib, a shared type, a contract), trigger every workflow for every app that imports that code — not just the app most obviously related to the change.
 
+## Monitoring Without Rate-Limiting
+
+The required tool for watching a run to completion is `gh run watch <run-id>`. It uses GitHub's streaming API and issues far fewer requests than a manual poll loop. Tight-loop polling of `gh run view` without a sleep interval is **forbidden** — it exhausts the GitHub API rate limit (5,000 req/hour) within minutes and blocks all `gh` commands for up to an hour.
+
+See [CI Monitoring Convention](./ci-monitoring.md) for:
+
+- Full rate limit budget facts and window behavior
+- Required tool selection (`gh run watch` as default)
+- Minimum poll intervals when manual polling is unavoidable (30 seconds)
+- Trigger discipline (never trigger the same workflow more than once every 10 minutes)
+- Recovery procedure when rate-limited (HTTP 403): scheduled wait, not retry loop
+
 ## Commands
 
 ```bash
@@ -68,8 +80,11 @@ gh workflow run test-and-deploy-ayokoding-web.yml
 # List recent runs for a workflow to find the run ID
 gh run list --workflow=test-and-deploy-ayokoding-web.yml --limit=5
 
-# Watch a specific run until it completes
+# Watch a specific run until it completes (required tool — do not use a poll loop)
 gh run watch <run-id>
+
+# View logs for a failed run
+gh run view <run-id> --log-failed
 
 # Quick overall status check
 gh run list --limit=10
@@ -194,6 +209,7 @@ Result: All steps passed. Work is complete.
 
 ## Related Documentation
 
+- [CI Monitoring Convention](./ci-monitoring.md) — Safe monitoring mechanics: required tooling (`gh run watch`), minimum poll intervals, trigger discipline, and rate-limit recovery procedures.
 - [CI Blocker Resolution Convention](../quality/ci-blocker-resolution.md) — How to investigate and fix CI failures found during verification.
 - [Trunk Based Development Convention](./trunk-based-development.md) — Why `main` must remain releasable at all times.
 - [Git Push Default Convention](./git-push-default.md) — Default push behavior (direct to `origin main`, no PR buffer).

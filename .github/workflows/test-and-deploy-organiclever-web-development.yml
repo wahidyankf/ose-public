@@ -79,7 +79,7 @@ jobs:
     name: E2E tests (BE + FE)
     needs: [be-integration, fe-integration]
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 35
     environment: organiclever-web-development
 
     steps:

@@ -157,13 +157,14 @@ Then("the confirmation sheet is shown", async ({ page }) => {
 });
 
 When("the user discards the workout", async ({ page }) => {
-  // EndWorkoutSheet discard button text is "Discard session"
+  // EndWorkoutSheet is position:fixed — element may be visible but outside
+  // the Playwright actionability viewport rect. Use force:true to bypass.
   const discardBtn = page
     .getByRole("button", { name: /discard/i })
     .or(page.getByText("Discard session"))
     .first();
   if (await discardBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
-    await discardBtn.click();
+    await discardBtn.click({ force: true });
   }
 });
 
@@ -175,8 +176,9 @@ Then("the workout is in idle state", async ({ page }) => {
 });
 
 When("the user keeps going", async ({ page }) => {
+  // EndWorkoutSheet is position:fixed — use force:true to bypass viewport check
   const keepGoingBtn = page.getByRole("button", { name: /keep going/i });
   if (await keepGoingBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
-    await keepGoingBtn.click();
+    await keepGoingBtn.click({ force: true });
   }
 });

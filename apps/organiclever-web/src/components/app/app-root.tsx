@@ -287,10 +287,12 @@ export function AppRoot() {
     );
   }
 
-  // Mobile layout: content + TabBar (only shown on main navigation)
+  // Mobile layout: content + fixed TabBar (only shown on main navigation)
   return (
     <div className="flex min-h-screen flex-col" style={{ background: "var(--color-background)" }}>
-      <div className="flex-1">{content}</div>
+      <div className="flex-1" style={{ paddingBottom: isMain ? 64 : 0 }}>
+        {content}
+      </div>
       {isMain && (
         <TabBar
           activeTab={tab}

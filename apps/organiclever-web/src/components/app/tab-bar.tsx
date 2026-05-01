@@ -59,12 +59,17 @@ export function TabBar({ activeTab, onNavigate, onFabPress }: TabBarProps) {
 
   return (
     <div
-      className="flex flex-shrink-0 items-stretch border-t"
+      className="flex items-stretch border-t"
       style={{
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        right: 0,
         height: 64,
         background: "var(--color-card)",
         borderColor: "var(--color-border)",
         paddingBottom: "env(safe-area-inset-bottom, 0)",
+        zIndex: 40,
       }}
     >
       {/* Left tabs: Home + Progress */}

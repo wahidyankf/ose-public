@@ -180,7 +180,7 @@ export function WorkoutModuleView({ stats, routines, onStartWorkout, onEditRouti
       >
         <div style={{ fontSize: 13, fontWeight: 800 }}>Workout templates</div>
         <button
-          onClick={() => onStartWorkout(undefined)}
+          onClick={() => onEditRoutine(undefined)}
           style={{
             display: "flex",
             alignItems: "center",

@@ -6,7 +6,7 @@
 on PGlite (Postgres-WASM over IndexedDB) wrapped in Effect.ts — both shipped by the
 gear-up plan. Users log workouts (with routines, rest timers, and personal records),
 quick events (reading, learning, meal, focus sessions), and custom event types — all
-without accounts or a server. The app is accessible at `/#/app` as a hash-routed
+without accounts or a server. The app is accessible at `/app` as a hash-routed
 single-page application embedded within the OrganicLever Next.js site (the `/app`
 route already exists from the gear-up — this plan replaces its provisional body with
 the full app shell). It ships with seed data so the first launch shows a populated,
@@ -48,7 +48,7 @@ Settings, Workout, Finish, EditRoutine) plus five event loggers and a bilingual
 
 ### In Scope
 
-- `/#/app` hash-routed SPA within the existing Next.js site
+- `/app` hash-routed SPA within the existing Next.js site
 - Home screen with week rhythm strip, module filter chips, and recent event timeline
 - Workout screen with active exercise rows, set logging, rest timer, and finish flow
 - History screen with weekly bar chart and expandable session cards
@@ -102,7 +102,7 @@ Settings, Workout, Finish, EditRoutine) plus five event loggers and a bilingual
 
 Four navigation tabs + 1 center FAB: Home · Progress · **+ FAB** (center, 52×52 teal
 rounded-[16px]) · History · Settings. Active tab: `--hue-teal`. Height 64 px +
-`env(safe-area-inset-bottom)`. FAB opens `AddEventSheet`.
+`env(safe-area-inset-bottom)`. FAB opens `AddEntrySheet`.
 
 #### Tab Icon Mapping
 
@@ -134,7 +134,7 @@ teal-wash background + teal-ink text.
     list)
   - Other chip active → `GenericModuleView` (filtered event list or empty state)
   - All → recent events timeline
-- Recent events: date-group headings + `EventEntry` rows; `EventDetailSheet` on tap;
+- Recent events: date-group headings + `EntryItem` rows; `EntryDetailSheet` on tap;
   infinite scroll (+10 per `IntersectionObserver` trigger); clipboard empty state
 
 ### WorkoutModuleView
@@ -143,7 +143,7 @@ Four `StatCard`s (2-col grid): Sessions/7d (teal dumbbell), Streak/wks (terracot
 Time moved/min (honey clock), Sets done/sets (sage zap). Volume card: plum trend icon + mono
 kg value + 5 range buttons (7d/30d/3m/6m/1y). Full template list.
 
-### AddEventSheet
+### AddEntrySheet
 
 Bottom sheet. Rows: Workout (teal, starts blank), Reading (plum), Learning (honey), Meal
 (terracotta), Focus (sky), any saved custom types (sage), "New custom type" (dashed). Close
@@ -162,7 +162,7 @@ footer (Cancel + Save). Save disabled until required fields filled.
 | Focus    | Task OR Duration  | Duration preset chips (15/25/45/60/90/120 min) + custom input, Quality 1–5 emoji, Notes |
 | Custom   | Name + hue + icon | Duration (min), Notes                                                                   |
 
-### EventDetailSheet
+### EntryDetailSheet
 
 Full-detail bottom sheet (up to 80 vh, scrollable). 44×44 icon + name + date/time + close ×.
 2-col stat grid. Reading: progress bar. Workout: exercise breakdown list. Notes block. Label
@@ -277,7 +277,7 @@ Duration, Volume (kg), Exercises. Exercise breakdown list (done/target sets per 
 Feature: App tab navigation
 
   Background:
-    Given I navigate to "/#/app"
+    Given I navigate to "/app"
 
   Scenario: Home tab active by default
     Then the "Home" tab is active
@@ -295,7 +295,7 @@ Feature: App tab navigation
     When I tap the "Settings" tab
     Then I see heading "Settings"
 
-  Scenario: FAB opens AddEventSheet
+  Scenario: FAB opens AddEntrySheet
     When I tap the FAB
     Then I see the add-event sheet
     And I see row "Workout"
@@ -308,7 +308,7 @@ Feature: App tab navigation
 Feature: Home screen
 
   Background:
-    Given I navigate to "/#/app"
+    Given I navigate to "/app"
 
   Scenario: Week rhythm strip visible
     Then I see a section "Last 7 days"
@@ -334,7 +334,7 @@ Feature: Home screen
 Feature: Workout logging
 
   Background:
-    Given I navigate to "/#/app"
+    Given I navigate to "/app"
     And I tap the FAB
     And I tap "Workout"
 
@@ -370,7 +370,7 @@ Feature: Workout logging
 Feature: Event loggers
 
   Background:
-    Given I navigate to "/#/app"
+    Given I navigate to "/app"
 
   Scenario: Log reading session
     Given I tap the FAB and tap "Reading"
@@ -397,7 +397,7 @@ Feature: Event loggers
 Feature: History screen
 
   Background:
-    Given I navigate to "/#/app"
+    Given I navigate to "/app"
     And I tap the "History" tab
 
   Scenario: History heading visible
@@ -426,7 +426,7 @@ Feature: History screen
 Feature: Progress screen
 
   Background:
-    Given I navigate to "/#/app"
+    Given I navigate to "/app"
     And I tap the "Progress" tab
 
   Scenario: Analytics heading visible
@@ -457,7 +457,7 @@ Feature: Progress screen
 Feature: Routine management
 
   Background:
-    Given I navigate to "/#/app"
+    Given I navigate to "/app"
 
   Scenario: Create a new routine
     Given I tap the FAB and tap "Workout"
@@ -485,7 +485,7 @@ Feature: Routine management
 Feature: Dark mode
 
   Scenario: Toggle from home header
-    Given I navigate to "/#/app"
+    Given I navigate to "/app"
     When I tap the moon icon
     Then html has attribute data-theme "dark"
 
@@ -518,7 +518,7 @@ Feature: Language toggle
 Feature: Settings screen
 
   Background:
-    Given I navigate to "/#/app"
+    Given I navigate to "/app"
     And I tap the "Settings" tab
 
   Scenario: Name change persists
@@ -537,12 +537,12 @@ Feature: Settings screen
 Feature: Data persistence across browser sessions
 
   Background:
-    Given I navigate to "/#/app"
+    Given I navigate to "/app"
 
   Scenario: Events survive a hard page reload
     Given I log a reading event titled "Atomic Habits"
     When I reload the page
-    Then I navigate to "/#/app"
+    Then I navigate to "/app"
     And I see text "Atomic Habits" in the recent events list
 
   Scenario: Dark mode preference survives a hard page reload

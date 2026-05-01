@@ -89,8 +89,9 @@ journal-store,journal-machine,use-journal,run-migrations,format-relative-time,ty
         then `CREATE TABLE IF NOT EXISTS routines (...);`
         then `CREATE TABLE IF NOT EXISTS settings (...);`
   - [ ] `export async function down(db: Queryable)` reversing in the inverse order
-- [ ] Run `cd apps/organiclever-web && npm run gen:migrations` (already wired by gear-up)
-      and verify the regenerated `index.generated.ts` includes the v2 entry
+- [ ] Run `cd apps/organiclever-web && npm run gen:migrations` (already wired by gear-up;
+      also auto-runs via predev/pretest/prebuild hooks — explicit run here verifies codegen
+      works before other steps) and verify the regenerated `index.generated.ts` includes the v2 entry
 - [ ] Add `apps/organiclever-web/src/lib/journal/migrations/<TS>__add_typed_payload_columns.unit.test.ts`:
   - [ ] In-memory PGlite — apply v1 + v2 in sequence; assert the new columns + tables exist
   - [ ] Insert gear-up shape rows BEFORE applying v2; apply v2; assert

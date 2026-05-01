@@ -708,8 +708,10 @@ fmtSpec(ex: ExerciseTemplate): string  // "3 × 20 LR @ 8 kg"
 
 `Textarea` — all entry logger notes fields.
 `Badge` — entry-kind tags, day-streak badge, module chips hint text.
-All other existing ts-ui: `Button`, `Icon`, `StatCard`, `AppHeader`, `TabBar`, `SideNav`,
-`HuePicker`, `Toggle`, `ProgressRing`, `Sheet`, `InfoTip`, `Input`, `Label`, `Card`.
+All other existing ts-ui: `Button`, `Icon`, `StatCard`, `AppHeader`, `HuePicker`, `Toggle`,
+`ProgressRing`, `Sheet`, `InfoTip`, `Input`, `Label`, `Card`.
+
+`TabBar` and `SideNav` are custom implementations (Phase 1.4–1.5), not ts-ui components.
 
 ### Entry-Kind Icon Assignments
 
@@ -793,7 +795,7 @@ integrates cleanly with the existing landing-page routes at `/`.
 
 // GOOD — XState parallel states; overlay is one state at a time; navigation is one state at a time
 state.matches({ navigation: 'workout' }) // true xor false — not 'workout' AND 'editRoutine'
-state.matches({ overlay: 'logger' })     // true xor false — not 'addEntry' AND 'logger'
+state.matches({ overlay: 'loggerOpen' }) // true xor false — not 'addEntry' AND 'loggerOpen'
 // context.routine is only meaningful while navigation === 'workout' | 'editRoutine'
 // context.completedSession is only meaningful while navigation === 'finish'
 ```
@@ -843,8 +845,9 @@ Future PWA-sync columns (`original_created_at`, `deleted_at`, `synced_at`,
 PGlite reads are async — if `darkMode` were initialised only from `getSettings`, the app
 would flash light mode on every reload while PGlite boots. Three-layer fix:
 
-1. **`useState` lazy initialiser** — `useState(() => localStorage.getItem('ol_dark_mode') === 'true')`.
-   Synchronous; no flash; safe because `AppRoot` only renders inside `'use client'`.
+1. **`appMachine` input** — `darkMode` initial value is `input.initialDarkMode`, which `AppRoot`
+   reads from `localStorage.getItem('ol_dark_mode') === 'true'` before calling
+   `useActor(appMachine, { input: ... })`. Synchronous; no flash; no separate `useState` needed.
 2. **Change `useEffect`** — every `darkMode` toggle writes
    `localStorage.setItem('ol_dark_mode', String(darkMode))` AND calls
    `runtime.runPromise(saveSettings({ darkMode }))` to keep PGlite in sync.
@@ -876,22 +879,22 @@ this one key only.
 
 ## Dependencies
 
-| Dependency                   | Version            | Status   | Notes                                                                                             |
-| ---------------------------- | ------------------ | -------- | ------------------------------------------------------------------------------------------------- |
-| Next.js                      | 16 (existing)      | Existing | No change                                                                                         |
-| TypeScript                   | Existing           | Existing | All new files are `.tsx` / `.ts`; strict mode + `noUncheckedIndexedAccess`                        |
-| Vitest                       | Existing           | Existing | Unit + integration tests use existing runner; vitest.config.ts already amended by gear-up         |
-| Playwright                   | Existing           | Existing | E2E via `organiclever-web-e2e`                                                                    |
-| `effect`                     | ^3.21.2 (in pkg)   | Existing | Already installed; no install step                                                                |
-| `@effect/platform`           | ^0.84 (in pkg)     | Existing | Already installed                                                                                 |
-| `@effect/vitest`             | from gear-up       | Existing | Already installed by gear-up; this plan reuses Layer-swap pattern                                 |
-| `@electric-sql/pglite`       | from gear-up       | Existing | Already installed by gear-up; this plan reuses `PgliteService` Layer + raw parameterised SQL      |
-| `lib/journal/*` (gear-up)    | from gear-up       | Existing | schema, errors, runtime, journal-store, journal-machine, use-journal, run-migrations — all reused |
-| `xstate` + `@xstate/react`   | ^5.31 / ^5.0.5     | Existing | Already installed by gear-up; this plan adds `workoutSessionMachine`                              |
-| ts-ui `Textarea` / `Badge`   | from landing-uikit | Existing | Already in `libs/ts-ui`                                                                           |
-| ts-ui (all other components) | Existing exports   | Existing | Button, Icon, StatCard, AppHeader, TabBar, SideNav, etc.                                          |
-| rhino-cli test-coverage      | Existing           | Existing | Validates ≥ 70 % coverage threshold in `test:quick`                                               |
-| rhino-cli spec-coverage      | Existing           | Existing | Validates Gherkin step coverage                                                                   |
+| Dependency                   | Version            | Status   | Notes                                                                                                  |
+| ---------------------------- | ------------------ | -------- | ------------------------------------------------------------------------------------------------------ |
+| Next.js                      | 16 (existing)      | Existing | No change                                                                                              |
+| TypeScript                   | Existing           | Existing | All new files are `.tsx` / `.ts`; strict mode + `noUncheckedIndexedAccess`                             |
+| Vitest                       | Existing           | Existing | Unit + integration tests use existing runner; vitest.config.ts already amended by gear-up              |
+| Playwright                   | Existing           | Existing | E2E via `organiclever-web-e2e`                                                                         |
+| `effect`                     | ^3.21.2 (in pkg)   | Existing | Already installed; no install step                                                                     |
+| `@effect/platform`           | ^0.84 (in pkg)     | Existing | Already installed                                                                                      |
+| `@effect/vitest`             | from gear-up       | Existing | Already installed by gear-up; this plan reuses Layer-swap pattern                                      |
+| `@electric-sql/pglite`       | from gear-up       | Existing | Already installed by gear-up; this plan reuses `PgliteService` Layer + raw parameterised SQL           |
+| `lib/journal/*` (gear-up)    | from gear-up       | Existing | schema, errors, runtime, journal-store, journal-machine, use-journal, run-migrations — all reused      |
+| `xstate` + `@xstate/react`   | ^5.31 / ^5.0.5     | Existing | Already installed by gear-up; this plan adds `workoutSessionMachine`                                   |
+| ts-ui `Textarea` / `Badge`   | from landing-uikit | Existing | Already in `libs/ts-ui`                                                                                |
+| ts-ui (all other components) | Existing exports   | Existing | Button, Icon, StatCard, AppHeader, HuePicker, Toggle, ProgressRing, Sheet, InfoTip, Input, Label, Card |
+| rhino-cli test-coverage      | Existing           | Existing | Validates ≥ 70 % coverage threshold in `test:quick`                                                    |
+| rhino-cli spec-coverage      | Existing           | Existing | Validates Gherkin step coverage                                                                        |
 
 **No new npm packages are introduced by this plan.** Effect, PGlite,
 `@effect/vitest`, and ts-ui were all installed by the gear-up + landing-uikit

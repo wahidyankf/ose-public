@@ -28,10 +28,6 @@ Then("the Home tab is active", async ({ page }) => {
   ).toBeVisible();
 });
 
-Then("the app shell is visible", async ({ page }) => {
-  await expect(page.locator("nav").or(page.locator("[data-testid='app-shell']")).first()).toBeVisible();
-});
-
 When("the user taps the History tab", async ({ page }) => {
   await page.getByRole("link", { name: "History" }).or(page.locator("[data-testid='tab-history']")).first().click();
 });

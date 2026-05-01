@@ -12,7 +12,7 @@
 import { createBdd } from "playwright-bdd";
 import { expect } from "@playwright/test";
 
-const { When, Then, Given } = createBdd();
+const { When, Then } = createBdd();
 
 When("the user taps the FAB", async ({ page }) => {
   await page
@@ -43,11 +43,6 @@ Then("the reading logger is open", async ({ page }) => {
       .or(page.getByText(/reading/i))
       .first(),
   ).toBeVisible();
-});
-
-Given("the reading logger is open", async ({ page }) => {
-  await page.goto("http://localhost:3200");
-  await page.waitForLoadState("load");
 });
 
 When("the user enters title {string}", async ({ page }, title: string) => {
@@ -90,11 +85,6 @@ Then("the learning logger is open", async ({ page }) => {
   ).toBeVisible();
 });
 
-Given("the learning logger is open", async ({ page }) => {
-  await page.goto("http://localhost:3200");
-  await page.waitForLoadState("load");
-});
-
 When("the user enters subject {string}", async ({ page }, subject: string) => {
   await page
     .locator("[data-testid='learning-subject-input']")
@@ -111,11 +101,6 @@ Then("the meal logger is open", async ({ page }) => {
   await expect(page.locator("[data-testid='meal-logger']").or(page.getByText(/meal/i)).first()).toBeVisible();
 });
 
-Given("the meal logger is open", async ({ page }) => {
-  await page.goto("http://localhost:3200");
-  await page.waitForLoadState("load");
-});
-
 When("the user enters meal name {string}", async ({ page }, mealName: string) => {
   await page.locator("[data-testid='meal-name-input']").or(page.getByPlaceholder(/meal/i)).first().fill(mealName);
 });
@@ -130,11 +115,6 @@ When("the user selects the Focus entry kind", async ({ page }) => {
 
 Then("the focus logger is open", async ({ page }) => {
   await expect(page.locator("[data-testid='focus-logger']").or(page.getByText(/focus/i)).first()).toBeVisible();
-});
-
-Given("the focus logger is open", async ({ page }) => {
-  await page.goto("http://localhost:3200");
-  await page.waitForLoadState("load");
 });
 
 When("the user selects the 25min preset", async ({ page }) => {
@@ -163,11 +143,6 @@ Then("the custom entry logger is open", async ({ page }) => {
       .or(page.getByText(/custom/i))
       .first(),
   ).toBeVisible();
-});
-
-Given("the custom entry logger is open", async ({ page }) => {
-  await page.goto("http://localhost:3200");
-  await page.waitForLoadState("load");
 });
 
 When("the user enters custom entry name {string}", async ({ page }, name: string) => {

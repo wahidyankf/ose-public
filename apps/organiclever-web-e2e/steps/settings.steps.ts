@@ -70,11 +70,6 @@ Then("dark mode is enabled", async ({ page }) => {
   ).toBeVisible();
 });
 
-Given("dark mode is enabled", async ({ page }) => {
-  await page.goto("http://localhost:3200/settings");
-  await page.waitForLoadState("load");
-});
-
 Then("dark mode is disabled", async ({ page }) => {
   await expect(
     page.locator("[data-testid='dark-mode-toggle']").or(page.locator("[data-testid='settings-screen']")).first(),

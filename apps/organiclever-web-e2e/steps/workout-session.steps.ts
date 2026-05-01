@@ -70,11 +70,6 @@ Then("the confirmation sheet is shown", async ({ page }) => {
   ).toBeVisible();
 });
 
-Given("the confirmation sheet is shown", async ({ page }) => {
-  await page.goto("http://localhost:3200/workout");
-  await page.waitForLoadState("load");
-});
-
 When("the user discards the workout", async ({ page }) => {
   await page
     .getByRole("button", { name: /discard/i })

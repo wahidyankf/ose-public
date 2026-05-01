@@ -20,6 +20,13 @@ export default defineConfig({
         "src/components/app/app-root.tsx",
         "src/components/app/tab-bar.tsx",
         "src/components/app/side-nav.tsx",
+        // Phase 2 home screen — runtime+browser-dependent UI; covered by e2e
+        "src/components/app/home/home-screen.tsx",
+        "src/components/app/home/week-rhythm-strip.tsx",
+        "src/components/app/home/entry-item.tsx",
+        "src/components/app/home/entry-detail-sheet.tsx",
+        "src/components/app/home/routine-card.tsx",
+        "src/components/app/home/workout-module-view.tsx",
         // Phase 1 hook — browser-only; covered by e2e
         "src/lib/hooks/use-hash.ts",
         "src/proxy.ts",

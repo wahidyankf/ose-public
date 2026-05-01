@@ -9,6 +9,7 @@ import { seedIfEmpty } from "@/lib/journal/seed";
 import { saveSettings } from "@/lib/journal/settings-store";
 import { TabBar } from "./tab-bar";
 import { SideNav } from "./side-nav";
+import { HomeScreen } from "./home/home-screen";
 
 // ---------------------------------------------------------------------------
 // Placeholder screens — real implementations are deferred to later phases
@@ -125,7 +126,11 @@ export function AppRoot() {
   ) : tab === "settings" ? (
     <PlaceholderScreen name="SettingsScreen" />
   ) : (
-    <PlaceholderScreen name="HomeScreen" />
+    <HomeScreen
+      runtime={runtime}
+      onStartWorkout={(routine) => send({ type: "START_WORKOUT", routine })}
+      onEditRoutine={(routine) => send({ type: "EDIT_ROUTINE", routine })}
+    />
   );
 
   // Desktop layout: SideNav + 480px content column

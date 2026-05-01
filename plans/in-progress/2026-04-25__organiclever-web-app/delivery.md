@@ -21,6 +21,8 @@
 - [ ] Confirm gear-up plan is archived (already done — verify with):
       `ls plans/done/ | grep organiclever-web-event-mechanism`
       — should print `2026-04-30__organiclever-web-event-mechanism/`
+- [ ] Create screenshots directory for visual documentation:
+      `mkdir -p apps/organiclever-web/docs/screenshots`
 - [ ] Install dependencies in the root worktree: `npm install`
 - [ ] Converge the full polyglot toolchain: `npm run doctor -- --fix`
 - [ ] Verify dev server starts: `nx dev organiclever-web` (expect `localhost:3200`)
@@ -45,6 +47,8 @@
 
 ### Commit Guidelines
 
+- [ ] **Push directly to `origin main`** — no feature branches, no pull requests.
+      All commits land on `main` per Trunk Based Development.
 - [ ] Commit changes thematically — group related changes into logically cohesive commits
 - [ ] Follow Conventional Commits format: `<type>(<scope>): <description>`
       Examples:
@@ -265,26 +269,91 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
       as the initial state to avoid ReferenceError if hook runs outside browser context.
       SSR guard: hook reads `window.location.hash` only inside `useEffect`, never at
       module level or during render — prevents ReferenceError on Node.js / server-side.
+- [ ] Hash format convention: tab navigation appends `#history`, `#progress`,
+      `#settings` to `/app`. Home tab uses empty hash (no `#home` written to URL).
+      `AppRoot` maps `'' | '#home'` → home; `'#history'` → history; etc.
+
+### 1.2a `appMachine` — XState v5 app shell machine
+
+- [ ] Create `src/lib/app/app-machine.ts` using **XState v5 parallel states** —
+      no boolean blindness; no illegal states representable:
+  - [ ] **Two parallel regions**: `navigation` + `overlay` (see tech-docs.md
+        "AppRoot state" section for full state diagram)
+  - [ ] **`navigation` region states**: `main` (initial) → `workout` → `finish`;
+        `main` → `editRoutine` → `main`; any → `main` via `BACK_TO_MAIN`
+  - [ ] **`overlay` region states**: `none` (initial) → `addEvent` → `none`;
+        `none|addEvent` → `loggerOpen` → `none`;
+        `none|addEvent` → `customLoggerOpen` → `none`
+  - [ ] **Context** (no redundant booleans — no `screen`, `screenData`, `addEvent`,
+        `activeLogger`, `customLogger` fields):
+        `tab`, `isDesktop`, `darkMode`, `routine: Routine|null`,
+        `completedSession: CompletedSession|null`,
+        `loggerKind: ActiveLoggerKind|null`, `customLoggerName: string|null`
+  - [ ] **Input**: `{ initialDarkMode: boolean; initialTab: Tab }`
+  - [ ] **Events**: `NAVIGATE_TAB(tab)`, `START_WORKOUT(routine?)`,
+        `EDIT_ROUTINE(routine?)`, `FINISH_WORKOUT(session)`, `BACK_TO_MAIN`,
+        `OPEN_ADD_EVENT`, `CLOSE_ADD_EVENT`, `OPEN_LOGGER(kind)`, `CLOSE_LOGGER`,
+        `OPEN_CUSTOM_LOGGER(name)`, `CLOSE_CUSTOM_LOGGER`,
+        `TOGGLE_DARK_MODE`, `SET_DESKTOP(isDesktop)`
+  - [ ] `BACK_TO_MAIN` resets `overlay` → `none` AND clears `routine`,
+        `completedSession` from context
+  - [ ] Machine is pure — no side effects inside; all persist/DOM effects in `AppRoot`
+- [ ] Create `src/lib/app/app-machine.unit.test.ts`:
+  - [ ] `NAVIGATE_TAB('history')` → `context.tab === 'history'`
+  - [ ] `START_WORKOUT(routine)` → `state.matches({ navigation: 'workout' })` ✓;
+        `state.matches({ navigation: 'editRoutine' })` ✗ (illegal state impossible)
+  - [ ] `OPEN_ADD_EVENT` → `state.matches({ overlay: 'addEvent' })` ✓
+  - [ ] `OPEN_LOGGER('reading')` from `addEvent` → `state.matches({ overlay: 'loggerOpen' })` ✓;
+        `state.matches({ overlay: 'addEvent' })` ✗ (addEvent closed)
+  - [ ] `TOGGLE_DARK_MODE` flips `context.darkMode`
+  - [ ] `BACK_TO_MAIN` from `workout` → `navigation: 'main'` AND `overlay: 'none'`
 
 ### 1.3 AppRoot component
 
-- [ ] Create `src/components/app/app-root.tsx` with state fields from tech-docs.md:
-  - [ ] `tab` (localStorage `ol_tab`), `screen`, `screenData`, `isDesktop`, `darkMode`,
-        `addEvent`, `activeLogger`, `customLogger` — plain `useState` (no `refreshKey`
-        needed; Effect hooks re-fetch internally after each mutation)
+- [ ] Create `src/components/app/app-root.tsx` consuming `appMachine` per tech-docs.md:
+  - [ ] `const [state, send] = useActor(appMachine, { input: { initialDarkMode: localStorage.getItem('ol_dark_mode') === 'true', initialTab: (localStorage.getItem('ol_tab') ?? 'home') as Tab } })`
   - [ ] `runtime` created once via `useMemo(() => makeJournalRuntime(), [])` and
         passed to all child hooks/machines that need PGlite access
-  - [ ] `darkMode` effect: sets `data-theme` on `<html>`
-  - [ ] `isDesktop` effect: `window.innerWidth >= 768` + resize listener
-  - [ ] `navigate()`, `startRoutine()`, `startBlank()`, `finishWorkout()`,
-        `newRoutine()`, `editRoutine()`, `backToMain()` callbacks
+  - [ ] `darkMode` `useEffect([state.context.darkMode])`: sets `data-theme` on
+        `<html>`; writes `localStorage.setItem('ol_dark_mode', …)`;
+        calls `runtime.runPromise(saveSettings({ darkMode: state.context.darkMode }))`
+  - [ ] `tab` `useEffect([state.context.tab])`: writes `localStorage.setItem('ol_tab', …)`
+  - [ ] `isDesktop` `useEffect`: `window.innerWidth >= 768` on mount + resize listener →
+        `send({ type: 'SET_DESKTOP', isDesktop })`
+  - [ ] Navigation callbacks → typed event sends:
+        `send({ type: 'START_WORKOUT', routine })`,
+        `send({ type: 'EDIT_ROUTINE', routine })`,
+        `send({ type: 'BACK_TO_MAIN' })`,
+        `send({ type: 'NAVIGATE_TAB', tab })`
   - [ ] Desktop layout: `SideNav` + sticky 480 px content pane + card shadow
-  - [ ] Mobile layout: full-width pane + `TabBar` when `screen === 'main'`
-  - [ ] Routes to correct screen component based on `screen` + `tab`
-  - [ ] `AddEventSheet`, quick logger sheets, `CustomEventLogger` overlays
+  - [ ] Mobile layout: full-width pane + `TabBar` when `state.matches({ navigation: 'main' })`
+  - [ ] Routes: `state.matches({ navigation: 'workout' })` → `<WorkoutScreen>`;
+        `state.matches({ navigation: 'finish' })` → `<FinishScreen>`;
+        `state.matches({ navigation: 'editRoutine' })` → `<EditRoutineScreen>`;
+        else → tab content via `state.context.tab`
+  - [ ] Overlays: `state.matches({ overlay: 'addEvent' })` → `<AddEventSheet>`;
+        `state.matches({ overlay: 'loggerOpen' })` → active logger sheet via `state.context.loggerKind`;
+        `state.matches({ overlay: 'customLoggerOpen' })` → `<CustomEventLogger name={state.context.customLoggerName}>`
   - [ ] Wire `seedIfEmpty` on mount: after the migration runner resolves,
         call `runtime.runPromise(seedIfEmpty())` so first-launch data is
         populated before any screen renders (per Phase 0.5 note)
+
+### 1.3a Dark mode flash prevention (`layout.tsx`)
+
+- [ ] Add inline `<script>` as the **first child of `<body>`** in `src/app/layout.tsx`
+      so `data-theme` is set before any component renders:
+
+  ```tsx
+  <script
+    dangerouslySetInnerHTML={{
+      __html: `try{var d=localStorage.getItem('ol_dark_mode')==='true';document.documentElement.setAttribute('data-theme',d?'dark':'light');}catch(e){}`,
+    }}
+  />
+  ```
+
+  This eliminates the light→dark flash for users with dark mode enabled — even
+  before React hydration. The `try/catch` guards against private-browsing environments
+  where `localStorage` throws.
 
 ### 1.4 TabBar
 
@@ -313,6 +382,14 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
 - [ ] Step implementations `test/unit/steps/app-shell/app-shell.steps.tsx`
 - [ ] `nx affected -t typecheck lint test:quick spec-coverage` passes
 - [ ] Fix ALL failures found — including any preexisting failures not caused by your changes
+- [ ] **Phase 1 screenshot** (dev server must be running — `nx dev organiclever-web`):
+  - [ ] `browser_navigate` to `http://localhost:3200/app`
+  - [ ] `browser_snapshot` — confirm TabBar visible, Home tab active, seed data present
+  - [ ] `browser_take_screenshot` — save to
+        `apps/organiclever-web/docs/screenshots/phase-1-app-shell-mobile.png`
+  - [ ] `browser_resize` to `{ width: 1280, height: 800 }` →
+        `browser_take_screenshot` — save to
+        `apps/organiclever-web/docs/screenshots/phase-1-app-shell-desktop.png`
 
 ---
 
@@ -372,6 +449,11 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
 - [ ] Step implementations `test/unit/steps/home/home-screen.steps.tsx`
 - [ ] `nx affected -t typecheck lint test:quick spec-coverage` passes
 - [ ] Fix ALL failures found — including any preexisting failures not caused by your changes
+- [ ] **Phase 2 screenshot**:
+  - [ ] `browser_navigate` to `http://localhost:3200/app`
+  - [ ] `browser_snapshot` — confirm WeekRhythmStrip, seed event cards, module stats visible
+  - [ ] `browser_take_screenshot` — save to
+        `apps/organiclever-web/docs/screenshots/phase-2-home-screen.png`
 
 ---
 
@@ -421,6 +503,13 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
 - [ ] Step implementations `test/unit/steps/loggers/event-loggers.steps.tsx`
 - [ ] `nx affected -t typecheck lint test:quick spec-coverage` passes
 - [ ] Fix ALL failures found — including any preexisting failures not caused by your changes
+- [ ] **Phase 3 screenshot**:
+  - [ ] `browser_navigate` to `http://localhost:3200/app` → `browser_click` FAB
+  - [ ] `browser_take_screenshot` — save to
+        `apps/organiclever-web/docs/screenshots/phase-3-add-event-sheet.png`
+  - [ ] `browser_click` "Reading" →
+        `browser_take_screenshot` — save to
+        `apps/organiclever-web/docs/screenshots/phase-3-reading-logger.png`
 
 ---
 
@@ -519,10 +608,13 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
   - [ ] `EndWorkoutSheet` (Phase 4.7) visible when `state.matches('active.confirming')`:
         "Save & finish" sends `CONFIRM_FINISH`; "Keep going" sends `KEEP_GOING`;
         "Discard" sends `DISCARD`
-  - [ ] `SetEditSheet` overlay; `SetTimerSheet` overlay (local sheet state only)
+  - [ ] `SetEditSheet` overlay; `SetTimerSheet` overlay (local sheet state only —
+        single boolean; acceptable `useState` per XState-first exception rule)
   - [ ] When `state.matches('finishing')` render loading indicator
-  - [ ] When `state.matches('done')` navigate to `FinishScreen` passing
-        `state.context` for summary display
+  - [ ] When `state.matches('done')`: call `onFinishWorkout(buildCompletedSession(state.context))`
+        prop (provided by `AppRoot`) which sends `FINISH_WORKOUT(session)` to `appMachine`
+        → transitions `navigation` → `finish` → `AppRoot` renders `<FinishScreen>`
+        with `state.context.completedSession`; WorkoutScreen never renders FinishScreen directly
 
 ### 4.6 FinishScreen
 
@@ -549,6 +641,14 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
 - [ ] Step implementations `test/unit/steps/workout/workout-session.steps.tsx`
 - [ ] `nx affected -t typecheck lint test:quick spec-coverage` passes
 - [ ] Fix ALL failures found — including any preexisting failures not caused by your changes
+- [ ] **Phase 4 screenshots**:
+  - [ ] `browser_navigate` to `http://localhost:3200/app` → FAB → Workout → start blank session
+  - [ ] `browser_take_screenshot` — save to
+        `apps/organiclever-web/docs/screenshots/phase-4-workout-screen.png`
+  - [ ] Log first set → `browser_take_screenshot` — save to
+        `apps/organiclever-web/docs/screenshots/phase-4-rest-timer.png`
+  - [ ] Finish workout → `browser_take_screenshot` — save to
+        `apps/organiclever-web/docs/screenshots/phase-4-finish-screen.png`
 
 ---
 
@@ -582,6 +682,9 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
 - [ ] Step implementations `test/unit/steps/routine/routine-management.steps.tsx`
 - [ ] `nx affected -t typecheck lint test:quick spec-coverage` passes
 - [ ] Fix ALL failures found — including any preexisting failures not caused by your changes
+- [ ] **Phase 5 screenshot**:
+  - [ ] Open edit routine → `browser_take_screenshot` — save to
+        `apps/organiclever-web/docs/screenshots/phase-5-edit-routine.png`
 
 ---
 
@@ -613,6 +716,10 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
 - [ ] Step implementations `test/unit/steps/history/history-screen.steps.tsx`
 - [ ] `nx affected -t typecheck lint test:quick spec-coverage` passes
 - [ ] Fix ALL failures found — including any preexisting failures not caused by your changes
+- [ ] **Phase 6 screenshot**:
+  - [ ] `browser_navigate` to `http://localhost:3200/app#history`
+  - [ ] `browser_take_screenshot` — save to
+        `apps/organiclever-web/docs/screenshots/phase-6-history-screen.png`
 
 ---
 
@@ -639,6 +746,10 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
 - [ ] Step implementations `test/unit/steps/progress/progress-screen.steps.tsx`
 - [ ] `nx affected -t typecheck lint test:quick spec-coverage` passes
 - [ ] Fix ALL failures found — including any preexisting failures not caused by your changes
+- [ ] **Phase 7 screenshot**:
+  - [ ] `browser_navigate` to `http://localhost:3200/app#progress`
+  - [ ] `browser_take_screenshot` — save to
+        `apps/organiclever-web/docs/screenshots/phase-7-progress-screen.png`
 
 ---
 
@@ -667,6 +778,12 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
 - [ ] Step implementations for language: `test/unit/steps/settings/language.steps.tsx`
 - [ ] `nx affected -t typecheck lint test:quick spec-coverage` passes
 - [ ] Fix ALL failures found — including any preexisting failures not caused by your changes
+- [ ] **Phase 8 screenshot**:
+  - [ ] `browser_navigate` to `http://localhost:3200/app#settings`
+  - [ ] `browser_take_screenshot` — save to
+        `apps/organiclever-web/docs/screenshots/phase-8-settings-screen.png`
+  - [ ] Toggle dark mode → `browser_take_screenshot` — save to
+        `apps/organiclever-web/docs/screenshots/phase-8-settings-dark-mode.png`
 
 ---
 
@@ -692,6 +809,9 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
   - [ ] Workout screen + set timer
   - [ ] All logger sheets
   - [ ] Edit routine screen
+- [ ] **Reload persistence**: enable dark mode via Settings toggle → hard reload
+      (`browser_navigate` to `http://localhost:3200/app`) → confirm `data-theme="dark"`
+      still set on `<html>` without flash (localStorage sync working)
 
 ### 9.3 Accessibility
 
@@ -729,7 +849,7 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
 ### 9.8 Manual UI Verification (Playwright MCP)
 
 - [ ] Start dev server: `nx dev organiclever-web`
-- [ ] Navigate to app home: `browser_navigate` to `http://localhost:3200/#/app`
+- [ ] Navigate to app home: `browser_navigate` to `http://localhost:3200/app`
 - [ ] Verify home screen: `browser_snapshot` — confirm "Last 7 days" strip visible,
       seed data shows, tab bar visible at bottom
 - [ ] Verify no JS errors: `browser_console_messages` — must be zero errors
@@ -745,14 +865,24 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
 - [ ] Navigate to Settings: `browser_click` "Settings" tab → `browser_snapshot` confirms
       "Settings" heading, name input, dark mode toggle
 - [ ] Toggle dark mode: `browser_click` dark mode toggle → `browser_snapshot` confirms
-      `data-theme="dark"` on html; toggle back to light
-- [ ] Reload and verify persistence: `browser_navigate` to `http://localhost:3200/#/app`
+      `data-theme="dark"` on html
+- [ ] **Dark mode persistence**: `browser_navigate` to `http://localhost:3200/app` (hard
+      reload) → `browser_snapshot` confirms `data-theme="dark"` still set — no flash
+- [ ] Toggle back to light mode
+- [ ] Reload and verify data persistence: `browser_navigate` to `http://localhost:3200/app`
       → `browser_snapshot` confirms all previously logged data still present
 - [ ] Verify mobile width: `browser_resize({ width: 375, height: 812 })` — verify
-      TabBar visible, no SideNav; `browser_snapshot` to confirm
+      TabBar visible, no SideNav →
+      `browser_take_screenshot` — save to
+      `apps/organiclever-web/docs/screenshots/phase-9-mobile-375.png`
 - [ ] Verify desktop width: `browser_resize({ width: 1280, height: 800 })` — verify
-      SideNav visible, content pane centered; `browser_snapshot` to confirm
-- [ ] Take final screenshot: `browser_take_screenshot` for visual record
+      SideNav visible, content pane centered →
+      `browser_take_screenshot` — save to
+      `apps/organiclever-web/docs/screenshots/phase-9-desktop-1280.png`
+- [ ] `browser_resize` back to `{ width: 375, height: 812 }`
+- [ ] Take final golden path screenshot:
+      `browser_take_screenshot` — save to
+      `apps/organiclever-web/docs/screenshots/phase-9-golden-path.png`
 - [ ] WorkoutScreen verification:
   - [ ] Tap FAB: `browser_click` FAB → `browser_click` "Workout" on AddEventSheet
   - [ ] `browser_snapshot` — confirm WorkoutScreen: exercise rows, elapsed timer,
@@ -774,7 +904,7 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
         RoutineCard
   - [ ] `browser_snapshot` — confirm EditRoutineScreen: name Input, HuePicker,
         exercise editor rows with type chip rows, "Save" button visible
-- [ ] Golden path complete: navigate to `/#/app` → log a workout session → tap
+- [ ] Golden path complete: navigate to `/app` → log a workout session → tap
       "Finish workout" → confirm save → view History → session card visible → view
       Progress → reload → data persists, dark mode state persists
 
@@ -797,7 +927,15 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
 - [ ] Verify Vercel staging deployment succeeds at `stag-organiclever-web` branch:
       `gh run list --workflow=test-and-deploy-organiclever-web-development.yml` confirms deploy job green
 - [ ] If any CI job fails, fix immediately and push a follow-up commit to `main`
-- [ ] Do NOT proceed to archival until the full workflow is green
+- [ ] Do NOT proceed to archival until the organiclever workflow is green
+- [ ] **Cross-app regression gate** — manually trigger the AyoKoding Web workflow:
+      `gh workflow run test-and-deploy-ayokoding-web.yml`
+- [ ] Monitor: `gh run list --workflow=test-and-deploy-ayokoding-web.yml --limit=3`
+      then `gh run watch` on the latest run ID
+- [ ] Verify ALL jobs in `test-and-deploy-ayokoding-web.yml` pass (green)
+- [ ] If any job fails, investigate and fix before archiving — shared lib changes
+      (ts-ui, etc.) can cause regressions in ayokoding-web
+- [ ] Do NOT proceed to archival until both workflows are green
 
 ### Plan Archival
 

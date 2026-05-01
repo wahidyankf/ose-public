@@ -27,15 +27,25 @@ When any implementation detail is unclear, read the raw source before guessing.
 
 ## Route Architecture
 
-```text
-/                    → landing page (shipped by landing-uikit done plan)
-/app                 → app/app/page.tsx  ('use client', force-dynamic) — already
-                       exists from the gear-up plan; this plan replaces its body
-                       with <AppRoot /> instead of the gear-up's <JournalPage />
-/system/status/be    → existing, untouched
+```mermaid
+flowchart LR
+    A["/"] --> B["Landing page\nlanding-uikit plan"]
+    C["/app"] --> D["app/app/page.tsx\n'use client' + force-dynamic\n→ mounts AppRoot"]
+    E["/system/status/be"] --> F["BE diagnostic\nuntouched"]
 ```
 
-`/app/page.tsx` mounts `<AppRoot />`. Hash routing lives entirely in the browser.
+`/app/page.tsx` mounts `<AppRoot />`. **`/app` is the canonical app home URL** —
+navigating to `/app` with no hash shows the Home tab by default. In-app tab
+navigation appends hash fragments to `/app`:
+
+| Tab            | Canonical URL   | Hash returned by `useHash` |
+| -------------- | --------------- | -------------------------- |
+| Home (default) | `/app`          | `''` (empty string)        |
+| History        | `/app#history`  | `#history`                 |
+| Progress       | `/app#progress` | `#progress`                |
+| Settings       | `/app#settings` | `#settings`                |
+
+`AppRoot` maps `'' | '#home'` → home tab; `'#history'` → history; etc.
 `next/navigation` is not used inside app screens.
 
 ## Assumed-Done Foundation (from the gear-up plan)
@@ -135,6 +145,9 @@ apps/organiclever-web/src/
 │   │   ├── seed.ts                     ← THIS PLAN Phase 0 (typed seed for first-load)
 │   │   ├── stats.ts                    ← THIS PLAN Phase 0.8 (Effect-returning aggregations)
 │   │   └── stats.unit.test.ts          ← THIS PLAN Phase 0
+│   ├── app/
+│   │   ├── app-machine.ts              ← THIS PLAN Phase 1 (XState v5 appMachine — shell state)
+│   │   └── app-machine.unit.test.ts    ← THIS PLAN Phase 1
 │   ├── workout/
 │   │   ├── workout-machine.ts          ← THIS PLAN Phase 4 (XState v5 workoutSessionMachine)
 │   │   └── workout-machine.unit.test.ts ← THIS PLAN Phase 4
@@ -573,23 +586,81 @@ stateDiagram-v2
   single write boundary
 - Consumed via `useActor(workoutSessionMachine, { input: { routine, settings, runtime } })`
 
-### AppRoot React state
+### AppRoot state — `appMachine` (XState v5, parallel states)
 
-Simple `useState` in `AppRoot` for shallow shell state (no XState needed here):
+**No boolean blindness. No illegal states representable.** `appMachine` uses XState v5
+**parallel states** — `navigation` and `overlay` run as fully independent regions. It is
+structurally impossible for two navigation screens or two overlays to be active at once.
+The old `screen: string` + `screenData: { routine? }|{ session? }|null` and
+`addEvent: boolean` + `activeLogger: …|null` + `customLogger: …|null` context fields are
+eliminated — they admitted illegal combinations that would require defensive runtime guards
+to detect. XState states carry that invariant at the type level instead.
 
-| State          | Type                                                   | Description                                    |
-| -------------- | ------------------------------------------------------ | ---------------------------------------------- |
-| `tab`          | `'home'\|'history'\|'progress'\|'settings'`            | Active tab; persisted in localStorage `ol_tab` |
-| `screen`       | `'main'\|'workout'\|'finish'\|'editRoutine'`           | Overlay screen stack                           |
-| `screenData`   | `{ routine? } \| { session? } \| null`                 | Data for current overlay screen                |
-| `isDesktop`    | `boolean`                                              | `window.innerWidth >= 768`; resize listener    |
-| `darkMode`     | `boolean`                                              | Synced from `settings.darkMode` via Effect     |
-| `addEvent`     | `boolean`                                              | AddEventSheet open                             |
-| `activeLogger` | `'reading' \| 'learning' \| 'meal' \| 'focus' \| null` | Quick-log sheet open                           |
-| `customLogger` | `string \| null`                                       | Custom event type name or `'new'`              |
+`AppRoot` consumes `appMachine` via `useActor(appMachine, { input })`. Side effects
+(localStorage, PGlite sync, DOM `data-theme`) live in `AppRoot` `useEffect` watchers —
+never inside the machine.
 
-`refreshKey` is removed — Effect hooks re-fetch after each mutation via their own
-state, no prop-drilling key needed.
+```mermaid
+stateDiagram-v2
+    state appMachine {
+        [*] --> navigation
+        [*] --> overlay
+
+        state navigation {
+            [*] --> main
+            main --> workout : START_WORKOUT
+            main --> editRoutine : EDIT_ROUTINE
+            workout --> finish : FINISH_WORKOUT
+            workout --> main : BACK_TO_MAIN
+            finish --> main : BACK_TO_MAIN
+            editRoutine --> main : BACK_TO_MAIN
+        }
+
+        state overlay {
+            [*] --> none
+            none --> addEvent : OPEN_ADD_EVENT
+            addEvent --> none : CLOSE_ADD_EVENT
+            addEvent --> loggerOpen : OPEN_LOGGER
+            none --> loggerOpen : OPEN_LOGGER
+            loggerOpen --> none : CLOSE_LOGGER
+            addEvent --> customLoggerOpen : OPEN_CUSTOM_LOGGER
+            none --> customLoggerOpen : OPEN_CUSTOM_LOGGER
+            customLoggerOpen --> none : CLOSE_CUSTOM_LOGGER
+        }
+    }
+
+    classDef navState fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef overlayState fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+```
+
+Any event that moves `navigation` → `main` also resets `overlay` → `none` via a parallel
+region entry action (XState v5 `entry` + `assign`).
+
+**Context** (only data relevant across regions; no redundant boolean flags):
+
+| Field              | Type                                           | Description                                                        |
+| ------------------ | ---------------------------------------------- | ------------------------------------------------------------------ |
+| `tab`              | `'home'\|'history'\|'progress'\|'settings'`    | Active tab; `localStorage.ol_tab`                                  |
+| `isDesktop`        | `boolean`                                      | Updated by `SET_DESKTOP` event from resize listener                |
+| `darkMode`         | `boolean`                                      | From `input.initialDarkMode`; flipped by `TOGGLE_DARK_MODE`        |
+| `routine`          | `Routine \| null`                              | Set by `START_WORKOUT` / `EDIT_ROUTINE`; cleared on `BACK_TO_MAIN` |
+| `completedSession` | `CompletedSession \| null`                     | Set by `FINISH_WORKOUT`; cleared on `BACK_TO_MAIN`                 |
+| `loggerKind`       | `'reading'\|'learning'\|'meal'\|'focus'\|null` | Set by `OPEN_LOGGER`; cleared by `CLOSE_LOGGER`                    |
+| `customLoggerName` | `string \| null`                               | Set by `OPEN_CUSTOM_LOGGER`; cleared by `CLOSE_CUSTOM_LOGGER`      |
+
+**Illegal states prevented by machine structure** (not by runtime checks):
+
+| Scenario                                        | How prevented                                                   |
+| ----------------------------------------------- | --------------------------------------------------------------- |
+| `addEvent` sheet + logger both open             | `overlay` region: one state at a time                           |
+| `workout` + `editRoutine` active simultaneously | `navigation` region: one state at a time                        |
+| Finish screen receiving wrong session type      | `completedSession` only set on `FINISH_WORKOUT`                 |
+| `screenData` type mismatch with current screen  | Eliminated — context fields are per-concept, not per-screen bag |
+
+**Events**: `NAVIGATE_TAB(tab)`, `START_WORKOUT(routine?)`, `EDIT_ROUTINE(routine?)`,
+`FINISH_WORKOUT(session)`, `BACK_TO_MAIN`, `OPEN_ADD_EVENT`, `CLOSE_ADD_EVENT`,
+`OPEN_LOGGER(kind)`, `CLOSE_LOGGER`, `OPEN_CUSTOM_LOGGER(name)`, `CLOSE_CUSTOM_LOGGER`,
+`TOGGLE_DARK_MODE`, `SET_DESKTOP(isDesktop)`
 
 ## i18n
 
@@ -686,23 +757,55 @@ Day streak: increments when next session within 72 h of last; resets to 1 on mis
 ### Hash routing instead of Next.js App Router for in-app navigation
 
 `next/navigation` (router, link) is tied to the Next.js page hierarchy. The OrganicLever
-app is a single-page experience that must handle deep links like `/#/app/history` without
+app is a single-page experience that must handle deep links like `/app#history` without
 server-side route changes. Hash routing (`window.location.hash` + a `hashchange` listener
 in `use-hash.ts`) keeps all navigation in the browser, avoids server round-trips, and
 integrates cleanly with the existing landing-page routes at `/`.
 
-### XState for complex state; plain React for simple state
+### XState-first + make illegal states unrepresentable (project rule for `apps/organiclever-web/`)
 
-XState v5 is already a dependency (gear-up shipped `journalMachine`). The principle:
-use XState when a component has multiple orthogonal states, guards, or buffered
-events; use `useState` when state is a simple scalar with no invalid transition risk.
+**Two hard rules for all state in `apps/organiclever-web/`:**
 
-- `journalMachine` — orthogonal `idle`/`mutating` with event buffering: XState ✓
-- `workoutSessionMachine` — timer counting, exercise tracking, rest countdown, finish
-  confirm: clearly complex enough for XState ✓
-- AppRoot shell (`tab`, `screen`, `addEvent`, etc.) — simple scalars with no invalid
-  transitions: plain `useState` ✓ (no XState needed)
-- Quick-log sheets open/closed — local `boolean` state: plain `useState` ✓
+1. **XState is highly preferable for all state.** `useState` is only acceptable for
+   a single primitive value with no transitions, no side-effect triggers, and no
+   persistence (e.g., a controlled `<input>` string). Everything else — multi-field
+   state, state with history, state with persistence, state with async effects —
+   must be an XState machine. When in doubt, use XState.
+
+2. **Make illegal states unrepresentable.** Never model state as multiple independent
+   booleans or nullable fields that can be simultaneously true in ways the UI cannot
+   render. Use XState parallel states, discriminated union context fields, and typed
+   events so that the compiler and machine topology enforce valid combinations —
+   not runtime guards.
+
+**Boolean blindness examples to avoid:**
+
+```typescript
+// BAD — illegal: addEvent + activeLogger both truthy simultaneously
+{ addEvent: boolean; activeLogger: Kind | null; customLogger: string | null }
+// ALSO BAD — screenData type doesn't constrain to current screen
+{ screen: 'main'|'workout'|'finish'; screenData: { routine? }|{ session? }|null }
+
+// GOOD — XState parallel states; overlay is one state at a time; navigation is one state at a time
+state.matches({ navigation: 'workout' }) // true xor false — not 'workout' AND 'editRoutine'
+state.matches({ overlay: 'logger' })     // true xor false — not 'addEvent' AND 'logger'
+// context.routine is only meaningful while navigation === 'workout' | 'editRoutine'
+// context.completedSession is only meaningful while navigation === 'finish'
+```
+
+The three machines in this plan:
+
+- **`journalMachine`** (gear-up) — `initializing → ready{idle ↔ mutating} → error`;
+  buffered mutations, Effect-TS actor calls: XState ✓
+- **`workoutSessionMachine`** (Phase 4) — timer, exercise tracking, rest countdown,
+  finish confirmation, Effect save: XState ✓
+- **`appMachine`** (Phase 1) — AppRoot shell navigation + overlay via **parallel
+  states** (see AppRoot state section below). Previously planned as `useState` with
+  boolean fields — **redesigned to eliminate boolean blindness**. Illegal combinations
+  (two overlays, two screens) are structurally impossible.
+
+`useState` remains acceptable for: a single controlled `<input>` text value with no
+persistence requirement and no transitions beyond "user typed".
 
 Effect-TS is the boundary for all async work touching PGlite. XState actors call
 `runtime.runPromise(effect)` at the `fromPromise` boundary — never raw `fetch` or
@@ -728,6 +831,24 @@ gear-up rows in `journal_entries` survive the v2 migration (additive
 `ALTER TABLE ... ADD COLUMN` with backfill UPDATE; never `DROP COLUMN`).
 Future PWA-sync columns (`original_created_at`, `deleted_at`, `synced_at`,
 `dirty`, `client_id`) slot in as v3 the same way.
+
+### Dark mode: `localStorage` synchronous cache prevents reload flash
+
+`AppSettings.darkMode` is persisted in the PGlite `settings` table via `saveSettings`.
+PGlite reads are async — if `darkMode` were initialised only from `getSettings`, the app
+would flash light mode on every reload while PGlite boots. Three-layer fix:
+
+1. **`useState` lazy initialiser** — `useState(() => localStorage.getItem('ol_dark_mode') === 'true')`.
+   Synchronous; no flash; safe because `AppRoot` only renders inside `'use client'`.
+2. **Change `useEffect`** — every `darkMode` toggle writes
+   `localStorage.setItem('ol_dark_mode', String(darkMode))` AND calls
+   `runtime.runPromise(saveSettings({ darkMode }))` to keep PGlite in sync.
+3. **`layout.tsx` inline `<script>`** — runs before React hydration, reads
+   `localStorage.ol_dark_mode`, and sets `data-theme` on `<html>` immediately —
+   eliminates even the pre-hydration flash for SSR-prerendered shells.
+
+PGlite is source of truth for all settings. `localStorage` is a fast-boot cache for
+this one key only.
 
 ## Rollback
 

@@ -65,49 +65,48 @@ The target audience is any agent or developer performing the post-push CI verifi
 
 Understanding the budget prevents accidental exhaustion.
 
-| Parameter            | Value                                             |
-| -------------------- | ------------------------------------------------- |
-| Quota                | 5,000 requests/hour per authenticated user        |
-| Reset window         | Rolling 1 hour from the first request             |
-| When exhausted       | HTTP 403 on all subsequent `gh` commands          |
-| Reset timing         | Top of the next hour from first call              |
-| Single `gh run view` | 1 request per invocation                          |
-| `gh run watch`       | Streaming; far fewer requests than manual polling |
+| Parameter            | Value                                                 |
+| -------------------- | ----------------------------------------------------- |
+| Quota                | 5,000 requests/hour per authenticated user            |
+| Reset window         | Rolling 1 hour from the first request                 |
+| When exhausted       | HTTP 403 on all subsequent `gh` commands              |
+| Reset timing         | Top of the next hour from first call                  |
+| Single `gh run view` | 1 request per invocation                              |
+| `gh run watch`       | Polls internally every ~3s; safe only for runs <5 min |
 
-A tight loop with no sleep issues hundreds of requests per minute. At 200 calls/minute, the 5,000-request quota exhausts in 25 minutes. Any `gh` command — list, trigger, view — then returns HTTP 403 until the window resets.
+A tight loop with no sleep issues hundreds of requests per minute. At 200 calls/minute, the 5,000-request quota exhausts in 25 minutes. **`gh run watch` on a 30-minute CI run also exhausts the quota** — it polls ~3 times/minute for 30 minutes = ~90 calls just for watching. Combined with triggers and other list calls this crosses 5,000 quickly. Any `gh` command — list, trigger, view — then returns HTTP 403 until the window resets.
 
 ### Preferred Monitoring Approaches (Priority Order)
 
 Use the first approach that fits the situation. Only fall back to lower-priority approaches when the higher-priority one is not applicable.
 
-#### 1. `gh run watch <run-id>` (Required Default)
+#### 1. `ScheduleWakeup` + Single `gh run view` Check (Required Default)
 
-`gh run watch` streams the run status using GitHub's streaming API, issuing far fewer requests than an equivalent manual poll loop. It blocks until the run completes (success, failure, or cancellation) and exits with the run's final status code.
+Trigger the run, record the run ID, then schedule a wakeup for after the expected completion time. On wakeup, issue **one** `gh run view` call to read the result.
 
 ```bash
-# Find the run ID
-gh run list --workflow=test-and-deploy-organiclever-web-development.yml --limit=3
+# Step 1: trigger and capture run ID
+gh workflow run test-and-deploy-organiclever-web-development.yml
+# URL output contains run ID, e.g. https://github.com/.../runs/12345678
 
-# Watch until completion — blocks, streams status, exits with run's exit code
-gh run watch <run-id>
+# Step 2: ScheduleWakeup for expected duration + buffer
+# [ScheduleWakeup delaySeconds=2400]  ← 40 min for a 35-min CI job
+
+# Step 3: On wakeup — ONE check, not a loop
+gh run view <run-id> --json conclusion,status,jobs
 ```
 
-This is the required tool for watching a single run to completion in any automated context, including plan execution Step 2c. Manual tight-loop polling is **forbidden** when `gh run watch` is available.
+Total API calls: 2 (trigger + one view). Zero burst. Zero rate-limit risk.
 
-#### 2. Background Process + `ScheduleWakeup` (Long-running Jobs)
+#### 2. `gh run watch <run-id>` (Short Jobs Only, <5 min)
 
-When the run is expected to take longer than the current session can block — or when the plan execution workflow needs to hand off monitoring to a resumed session — use the Bash tool's `run_in_background: true` parameter paired with `ScheduleWakeup`.
+`gh run watch` polls internally every ~3 seconds. For short jobs it's fine. For jobs longer than 5 minutes it will exhaust the rate limit.
 
-Rules for this approach:
-
-- `ScheduleWakeup` delay MUST be at least 270 seconds (4.5 minutes). This matches the Nx Cloud task cache TTL and avoids waking up before the run has any chance of completing.
-- Do not schedule wakeup for less than 270 seconds under any circumstances for CI monitoring.
-- On wakeup, use `gh run list` to check current status before issuing further `gh run view` calls.
+**Only use for jobs expected to complete in under 5 minutes.** For any CI job that takes 10+ minutes, use approach 1 instead.
 
 ```bash
-# Trigger run in background and schedule check
-gh workflow run test-and-deploy-organiclever-web-development.yml
-# [ScheduleWakeup delaySeconds=300 — check CI status]
+# ONLY for short jobs (<5 min)
+gh run watch <run-id>
 ```
 
 #### 3. Manual Polling With Minimum 30-Second Interval (Unavoidable Loop Cases)

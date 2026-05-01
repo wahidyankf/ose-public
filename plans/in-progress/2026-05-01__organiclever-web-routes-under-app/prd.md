@@ -1,8 +1,8 @@
-# PRD — OrganicLever Web Routes Under `/apps`
+# PRD — OrganicLever Web Routes Under `/app`
 
 ## Product Overview
 
-Reshape the OrganicLever web client so every visible screen has a stable URL under the `/apps/` prefix. Tabs, the workout flow, the finish summary, and the routine editor all become real Next.js App Router routes. The shell (TabBar / SideNav, Add Entry FAB, runtime, dark-mode sync, modals) lives in a shared `apps/` segment layout and persists across route changes.
+Reshape the OrganicLever web client so every visible screen has a stable URL under the `/app/` prefix. Tabs, the workout flow, the finish summary, and the routine editor all become real Next.js App Router routes. The shell (TabBar / SideNav, Add Entry FAB, runtime, dark-mode sync, modals) lives in a shared `app/` segment layout and persists across route changes.
 
 The marketing landing page (`/`), the backend status probe (`/system/status/be`), and the in-app modals (Add Entry sheet, four Logger sheets, Custom Entry Logger) keep their current shape. The `appMachine` shrinks to its overlay region only.
 
@@ -33,11 +33,11 @@ Solo-maintainer repo — personas describe which hats the maintainer wears and w
 
 ### US-4 — Deep links work
 
-> As an **end user**, I want **to open a URL like `/apps/progress` directly**, so that **a notification, email link, or pasted URL takes me straight to the screen**.
+> As an **end user**, I want **to open a URL like `/app/progress` directly**, so that **a notification, email link, or pasted URL takes me straight to the screen**.
 
 ### US-5 — Old `/app` bookmarks still work
 
-> As an **end user**, I want **my old `/app` bookmark to keep working**, so that **the rename does not break what I had saved before**.
+> As an **end user**, I want **my old `/app` bookmark to land on Home automatically**, so that **the URL change does not strand me on a 404 or empty page**.
 
 ### US-6 — Easier debugging via URL = state
 
@@ -47,10 +47,6 @@ Solo-maintainer repo — personas describe which hats the maintainer wears and w
 
 > As a **maintainer**, I want **`appMachine` to drop the navigation region**, so that **the unit-test combinatorial space halves and overlays remain the only machine-tracked state**.
 
-### US-8 — Sibling product surfaces unblocked
-
-> As a **maintainer**, I want **routes nested under `/apps/`**, so that **future surfaces such as `/apps/admin` or `/apps/coach` can land without renaming the URL prefix**.
-
 ## Acceptance Criteria (Gherkin)
 
 ### AC-1 — Default route shows Home
@@ -58,15 +54,15 @@ Solo-maintainer repo — personas describe which hats the maintainer wears and w
 ```gherkin
 Feature: Default app route shows Home
 
-  Scenario: Visiting /apps redirects to /apps/home
+  Scenario: Visiting /app redirects to /app/home
     Given the app is freshly loaded
-    When the user navigates to "/apps"
-    Then the URL becomes "/apps/home"
+    When the user navigates to "/app"
+    Then the URL becomes "/app/home"
     And the Home screen is visible
 
-  Scenario: Visiting /apps/home renders the Home screen
+  Scenario: Visiting /app/home renders the Home screen
     Given the app is freshly loaded
-    When the user navigates to "/apps/home"
+    When the user navigates to "/app/home"
     Then the Home screen is visible
     And the Home tab is marked active in the navigation
 ```
@@ -84,10 +80,10 @@ Feature: Tab routes
 
     Examples:
       | path             | screen   | tab      |
-      | /apps/home       | Home     | Home     |
-      | /apps/history    | History  | History  |
-      | /apps/progress   | Progress | Progress |
-      | /apps/settings   | Settings | Settings |
+      | /app/home       | Home     | Home     |
+      | /app/history    | History  | History  |
+      | /app/progress   | Progress | Progress |
+      | /app/settings   | Settings | Settings |
 ```
 
 ### AC-3 — Tab clicks update the URL
@@ -96,9 +92,9 @@ Feature: Tab routes
 Feature: Clicking a tab navigates the URL
 
   Scenario: Click History tab from Home
-    Given the user is on "/apps/home"
+    Given the user is on "/app/home"
     When the user taps the History tab
-    Then the URL becomes "/apps/history"
+    Then the URL becomes "/app/history"
     And the History screen is visible
 ```
 
@@ -115,9 +111,9 @@ Feature: Refresh preserves the current tab
 
     Examples:
       | path           | screen   |
-      | /apps/history  | History  |
-      | /apps/progress | Progress |
-      | /apps/settings | Settings |
+      | /app/history  | History  |
+      | /app/progress | Progress |
+      | /app/settings | Settings |
 ```
 
 ### AC-5 — Browser back returns to previous screen
@@ -126,9 +122,9 @@ Feature: Refresh preserves the current tab
 Feature: Browser back inside the app
 
   Scenario: Back from Progress returns to Home
-    Given the user navigated from "/apps/home" to "/apps/progress"
+    Given the user navigated from "/app/home" to "/app/progress"
     When the user presses the browser back button
-    Then the URL becomes "/apps/home"
+    Then the URL becomes "/app/home"
     And the Home screen is visible
 ```
 
@@ -137,17 +133,17 @@ Feature: Browser back inside the app
 ```gherkin
 Feature: Workout flow has dedicated routes
 
-  Scenario: Starting a workout navigates to /apps/workout
-    Given the user is on "/apps/home"
+  Scenario: Starting a workout navigates to /app/workout
+    Given the user is on "/app/home"
     When the user starts a workout from a routine card
-    Then the URL becomes "/apps/workout"
+    Then the URL becomes "/app/workout"
     And the Workout screen is visible
     And the TabBar is hidden
 
-  Scenario: Finishing a workout navigates to /apps/workout/finish
-    Given the user is on "/apps/workout"
+  Scenario: Finishing a workout navigates to /app/workout/finish
+    Given the user is on "/app/workout"
     When the user finishes the workout
-    Then the URL becomes "/apps/workout/finish"
+    Then the URL becomes "/app/workout/finish"
     And the Finish screen is visible
 ```
 
@@ -157,9 +153,9 @@ Feature: Workout flow has dedicated routes
 Feature: Routine editor has a dedicated route
 
   Scenario: Editing a routine from Home
-    Given the user is on "/apps/home"
+    Given the user is on "/app/home"
     When the user opens a routine for editing
-    Then the URL becomes "/apps/routines/edit"
+    Then the URL becomes "/app/routines/edit"
     And the Edit Routine screen is visible
     And the TabBar is hidden
 ```
@@ -172,7 +168,7 @@ Feature: /app permanent redirect
   Scenario: Visiting the old /app URL
     Given the application is running
     When a visitor requests GET "/app"
-    Then the response is a 308 redirect to "/apps/home"
+    Then the response is a 308 redirect to "/app/home"
 ```
 
 ### AC-9 — Disabled-route guards remain 404
@@ -197,7 +193,7 @@ Feature: Disabled routes still return 404
 Feature: Shell chrome persists
 
   Scenario: Switching tabs does not remount the shell
-    Given the user is on "/apps/home" with the SideNav visible at desktop width
+    Given the user is on "/app/home" with the SideNav visible at desktop width
     When the user clicks the History tab
     Then the SideNav remains visible
     And the Home content is replaced by History content
@@ -219,10 +215,10 @@ Feature: Add Entry overlay is route-orthogonal
 
     Examples:
       | path           |
-      | /apps/home     |
-      | /apps/history  |
-      | /apps/progress |
-      | /apps/settings |
+      | /app/home     |
+      | /app/history  |
+      | /app/progress |
+      | /app/settings |
 ```
 
 ### AC-12 — Unknown sub-paths return 404
@@ -230,9 +226,9 @@ Feature: Add Entry overlay is route-orthogonal
 ```gherkin
 Feature: Unknown app routes return 404
 
-  Scenario: Unknown segment under /apps
+  Scenario: Unknown segment under /app
     Given the application is running
-    When a visitor requests GET "/apps/does-not-exist"
+    When a visitor requests GET "/app/does-not-exist"
     Then the response status is 404
 ```
 
@@ -252,10 +248,10 @@ Feature: appMachine post-refactor shape
 
 ### In scope (product surface)
 
-- New `/apps/...` route tree.
+- New `/app/...` route tree.
 - TabBar / SideNav switch to `next/link`; active state derived from `usePathname()`.
 - Workout, Finish, Edit Routine flows hide the TabBar via route group or conditional render in the layout.
-- `/app` redirect to `/apps/home`.
+- `/app` redirect to `/app/home`.
 - `appMachine` keeps overlay region only.
 - All existing in-app behaviour (dark mode, language, seeding, persistence of dark-mode and settings) preserved.
 
@@ -271,7 +267,7 @@ Feature: appMachine post-refactor shape
 
 | Risk                                                                            | Likelihood | Impact | Mitigation                                                                                                                                                                    |
 | ------------------------------------------------------------------------------- | ---------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Shell chrome remounts on tab change, causing flicker or losing local state      | Medium     | Medium | Place runtime + breakpoint detection + overlay machine in the `apps/` segment layout, not in each `page.tsx`. Verify with manual smoke that the SideNav is not remounted.     |
+| Shell chrome remounts on tab change, causing flicker or losing local state      | Medium     | Medium | Place runtime + breakpoint detection + overlay machine in the `app/` segment layout, not in each `page.tsx`. Verify with manual smoke that the SideNav is not remounted.      |
 | Workout in-progress state is lost when user manually edits the URL bar          | Low        | Medium | Document that direct URL edits during a workout reset the workout. The workout flow stores progress in PGlite; reload restores it. Captured as known limitation in tech-docs. |
 | Overlay sheets behave oddly when the underlying route changes                   | Low        | Low    | Overlays remain in `appMachine`. Their state is independent of route. Existing unit tests for overlay transitions continue to apply.                                          |
 | Users on slow connections see a brief flash of nothing during route transitions | Low        | Low    | Each `page.tsx` is `'use client'` + `force-dynamic`; data fetching is in-browser PGlite. No server round-trip, so the transition is effectively instant.                      |

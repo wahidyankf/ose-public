@@ -58,6 +58,7 @@ Skill: `repo-generating-validation-reports` (progressive streaming)
 - `governance/principles/` - Layer 1: WHY values
 - `governance/conventions/` - Layer 2: WHAT documentation rules
 - `governance/development/` - Layer 3: HOW software practices
+- `.claude/agents/` - Layer 4: WHO enforces rules
 - `governance/workflows/` - Layer 5: WHEN multi-step processes
 - `governance/repository-governance-architecture.md` - Architecture guide
 - `governance/README.md` - Rules index

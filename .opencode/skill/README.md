@@ -81,8 +81,4 @@ Skills are synced from `.claude/skills/` maintaining folder structure. For compl
 - **Programming Language Skills**: swe-programming-clojure, swe-programming-csharp, swe-programming-dart, swe-programming-elixir, swe-programming-fsharp, swe-programming-golang, swe-programming-java, swe-programming-kotlin, swe-programming-python, swe-programming-rust, swe-programming-typescript
 - **Application-Specific Skills**: apps-ayokoding-web-developing-content, apps-organiclever-web-developing-content, apps-oseplatform-web-developing-content
 
----
-
-**Total Skills**: 34
 **Format**: Folder structure with SKILL.md inside each folder
-**Last Updated**: 2026-03-09

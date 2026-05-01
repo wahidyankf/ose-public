@@ -9,7 +9,6 @@ tags:
   - rate-limiting
   - monitoring
   - workflow
-created: 2026-05-01
 ---
 
 # CI Monitoring Convention
@@ -20,9 +19,9 @@ Monitoring CI runs is a required step after every push to `origin main`. How you
 
 This convention implements the following core principles:
 
-- **[Automation Over Manual](../../principles/software-engineering/automation-over-manual.md)**: The correct tool for watching a CI run to completion is `gh run watch` — a streaming command that handles the polling loop internally at a safe cadence. Using the right automation replaces manual tight-loop polling with a single declarative command.
+- **[Automation Over Manual](../../principles/software-engineering/automation-over-manual.md)**: The required default approach for monitoring CI runs is `ScheduleWakeup` every 3-5 minutes with a single `gh run view` check — this replaces error-prone manual polling without exhausting the API rate limit. `gh run watch` is suitable only for short jobs expected to complete in under 5 minutes.
 
-- **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)**: One `gh run watch <id>` call is simpler than a while-loop, a sleep, a JSON parser, and retry logic. Reaching for the built-in streaming command removes code that must be written, debugged, and maintained.
+- **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)**: `ScheduleWakeup` + a single `gh run view` is simpler than a while-loop, a sleep, a JSON parser, and retry logic. A scheduled wakeup removes code that must be written, debugged, and maintained — and avoids the rate limit hazard that `gh run watch` introduces on jobs longer than 5 minutes.
 
 - **[Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md)**: Rate limit budget is a finite, shared resource. This convention makes its constraints explicit — quota size, window duration, recovery delay — so agents and developers can reason about impact before issuing commands rather than discovering exhaustion after the fact.
 
@@ -32,7 +31,7 @@ This convention implements the following core principles:
 
 This convention implements/respects the following development practices:
 
-- **[CI Post-Push Verification Convention](./ci-post-push-verification.md)**: That convention mandates triggering and monitoring CI after every push. This convention specifies HOW to perform that monitoring safely — `gh run watch` as the required tool, minimum intervals if manual polling is used, and recovery procedures when rate-limited.
+- **[CI Post-Push Verification Convention](./ci-post-push-verification.md)**: That convention mandates triggering and monitoring CI after every push. This convention specifies HOW to perform that monitoring safely — `ScheduleWakeup` every 3-5 min as the required default for standard CI jobs, `gh run watch` restricted to short jobs under 5 minutes, minimum intervals if manual polling is used, and recovery procedures when rate-limited.
 
 - **[CI Blocker Resolution Convention](../quality/ci-blocker-resolution.md)**: When a rate limit prevents CI verification, it is a blocker. This convention provides the correct recovery path (scheduled wakeup, not retry loop) rather than treating a 403 as a transient error and spinning.
 

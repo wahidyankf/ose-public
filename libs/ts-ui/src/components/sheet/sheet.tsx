@@ -23,11 +23,10 @@ export function Sheet({ title, onClose, children }: SheetProps) {
           onClick={onClose}
         />
         <DialogPrimitive.Content className="data-[state=open]:animate-in data-[state=open]:slide-in-from-bottom data-[state=closed]:animate-out data-[state=closed]:slide-out-to-bottom fixed bottom-0 left-1/2 w-full max-w-[480px] -translate-x-1/2 rounded-t-3xl bg-card shadow-lg outline-none">
-          <DialogPrimitive.Title className="sr-only">{title}</DialogPrimitive.Title>
           <div className="flex items-center justify-between border-b px-5 py-4">
-            <h2 className="text-lg font-semibold" aria-hidden="true">
-              {title}
-            </h2>
+            <DialogPrimitive.Title asChild>
+              <h2 className="text-lg font-semibold">{title}</h2>
+            </DialogPrimitive.Title>
             <button
               type="button"
               aria-label="Close"

@@ -18,6 +18,10 @@ import { FocusLogger } from "./loggers/focus-logger";
 import { CustomEntryLogger } from "./loggers/custom-entry-logger";
 import { WorkoutScreen } from "./workout/workout-screen";
 import { FinishScreen } from "./workout/finish-screen";
+import { EditRoutineScreen } from "./routine/edit-routine-screen";
+import { HistoryScreen } from "./history/history-screen";
+import { ProgressScreen } from "./progress/progress-screen";
+import { SettingsScreen } from "./settings/settings-screen";
 import { useSettings } from "@/lib/journal/use-settings";
 import type { AppSettings } from "@/lib/journal/settings-store";
 
@@ -188,13 +192,25 @@ export function AppRoot() {
       <PlaceholderScreen name="FinishScreen" />
     )
   ) : isEditRoutine ? (
-    <PlaceholderScreen name="EditRoutineScreen" />
+    <EditRoutineScreen
+      routine={state.context.routine}
+      runtime={runtime}
+      onSave={() => {
+        send({ type: "BACK_TO_MAIN" });
+        refreshHome();
+      }}
+      onBack={() => send({ type: "BACK_TO_MAIN" })}
+    />
   ) : tab === "history" ? (
-    <PlaceholderScreen name="HistoryScreen" />
+    <HistoryScreen runtime={runtime} refreshKey={homeRefreshKey} />
   ) : tab === "progress" ? (
-    <PlaceholderScreen name="ProgressScreen" />
+    <ProgressScreen runtime={runtime} refreshKey={homeRefreshKey} />
   ) : tab === "settings" ? (
-    <PlaceholderScreen name="SettingsScreen" />
+    <SettingsScreen
+      runtime={runtime}
+      darkMode={state.context.darkMode}
+      onToggleDarkMode={() => send({ type: "TOGGLE_DARK_MODE" })}
+    />
   ) : (
     <HomeScreen
       key={homeRefreshKey}

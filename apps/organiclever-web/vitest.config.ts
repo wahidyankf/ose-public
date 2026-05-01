@@ -27,6 +27,18 @@ export default defineConfig({
         "src/components/app/home/entry-detail-sheet.tsx",
         "src/components/app/home/routine-card.tsx",
         "src/components/app/home/workout-module-view.tsx",
+        // Phase 6 routine screens — PGlite+browser-dependent UI; covered by e2e
+        "src/components/app/routine/edit-routine-screen.tsx",
+        "src/components/app/routine/exercise-editor-row.tsx",
+        // Phase 7 progress screens — PGlite+browser-dependent UI; covered by e2e
+        "src/components/app/progress/progress-screen.tsx",
+        "src/components/app/progress/exercise-progress-card.tsx",
+        // Phase 7 history screens — PGlite+browser-dependent UI; covered by e2e
+        "src/components/app/history/history-screen.tsx",
+        "src/components/app/history/session-card.tsx",
+        "src/components/app/history/weekly-bar-chart.tsx",
+        // Phase 8 settings screen — PGlite+browser-dependent UI; covered by e2e
+        "src/components/app/settings/settings-screen.tsx",
         // Phase 4 workout screens — PGlite+XState+setInterval UI; covered by e2e
         "src/components/app/workout/workout-screen.tsx",
         "src/components/app/workout/active-exercise-row.tsx",
@@ -37,6 +49,10 @@ export default defineConfig({
         "src/components/app/workout/finish-screen.tsx",
         // Phase 1 hook — browser-only; covered by e2e
         "src/lib/hooks/use-hash.ts",
+        // Seed — PGlite side-effect-only; covered by integration tests
+        "src/lib/journal/seed.ts",
+        // i18n hook — browser-only; covered by e2e
+        "src/lib/i18n/use-t.ts",
         "src/proxy.ts",
         "src/test/**",
         "src/services/**",

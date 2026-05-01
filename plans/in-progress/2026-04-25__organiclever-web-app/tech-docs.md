@@ -172,8 +172,10 @@ apps/organiclever-web/src/
 >
 > - `typed-payloads.ts` — `EntryKind`, `WorkoutPayload`, `ReadingPayload`,
 >   `LearningPayload`, `MealPayload`, `FocusPayload`, `CustomPayload`,
->   `EntryPayload`, `JournalEntry` — all as `Schema.Struct` / `Schema.Union`
->   with TS types via `Schema.Type<...>`
+>   `EntryPayload` (typed union superseding gear-up's open version),
+>   `TypedEntry` (Schema.Union on `name`),
+>   `JournalEntry = Schema.Type<typeof TypedEntry>` (typed UI alias) —
+>   all as `Schema.Struct` / `Schema.Union` with TS types via `Schema.Type<...>`
 > - `routine-store.ts` (types section) — `Hue`, `ExerciseType`, `TimerMode`,
 >   `ExerciseTemplate`, `ExerciseGroup`, `Routine`, `CompletedSet`,
 >   `ActiveExercise`
@@ -283,9 +285,12 @@ export type EntryPayload =
   | FocusPayload
   | CustomPayload;
 
+// JournalEntry = Schema.Type<typeof TypedEntry> — exported from typed-payloads.ts
+// 'name' matches the gear-up's EntryName discriminator field; same field name used in
+// TypedEntry's Schema.Literal unions and in the journal_entries DB column.
 export interface JournalEntry {
   id: string;
-  type: EntryKind;
+  name: EntryKind; // kind slug — 'workout'|'reading'|'learning'|'meal'|'focus'|'custom-*'
   labels: string[];
   startedAt: string;
   finishedAt: string;
@@ -424,7 +429,7 @@ custom kinds use a `custom-` prefix (e.g. `'custom-meditation'`).
 // lib/journal/typed-payloads.ts (sketch)
 
 import { Schema } from "effect";
-import { EntryId, IsoTimestamp, EntryPayload } from "./schema";
+import { EntryId, IsoTimestamp } from "./schema"; // EntryPayload defined here (typed union) supersedes gear-up's open version
 
 const WorkoutPayload = Schema.Struct({
   /* ... */

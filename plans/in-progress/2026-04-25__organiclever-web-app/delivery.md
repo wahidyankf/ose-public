@@ -398,7 +398,7 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
 ### 2.1 WeekRhythmStrip
 
 - [ ] Create `src/components/app/home/week-rhythm-strip.tsx`:
-  - [ ] Props: `last7Days: DayEntry[]`, `recentEvents: JournalEntry[]`
+  - [ ] Props: `last7Days: DayEntry[]`, `recentEntries: JournalEntry[]`
   - [ ] Color map: workout=teal, reading=plum, learning=honey, meal=terracotta,
         focus=sky, custom=sage
   - [ ] 7 columns flex-aligned bottom; today 100 % opacity, others 70 %; min-height 6 px
@@ -409,7 +409,9 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
 - [ ] Create `src/components/app/home/entry-item.tsx`:
   - [ ] Props: `entry: JournalEntry`, `onClick?: () => void`
   - [ ] 34×34 hued `Icon` box; name (ellipsis); time + duration + sets sub-row
-  - [ ] `Badge` variant="default" size="sm" hue=entry.hue for kind tag
+  - [ ] `Badge` variant="default" size="sm" hue derived from `entry.name` via
+        `KIND_HUE` constant (workout→teal, reading→plum, learning→honey,
+        meal→terracotta, focus→sky, custom→sage)
 
 ### 2.3 EntryDetailSheet
 
@@ -418,7 +420,7 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
   - [ ] Bottom sheet (fixed inset-0, backdrop, slide-up inner panel max-w-480 max-h-[80vh])
   - [ ] 44×44 icon; name + date/time; close × button
   - [ ] 2-col stat grid; reading progress bar; workout exercise list; notes; label chips
-        as `Badge` variant="outline" hue=entry.hue
+        as `Badge` variant="outline" hue derived from `entry.name` via `KIND_HUE`
 
 ### 2.4 RoutineCard
 
@@ -700,9 +702,9 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
 
 - [ ] Create `src/components/app/history/session-card.tsx`:
   - [ ] Collapsed: hued icon + name + date/time + duration/sets + chevron
-  - [ ] Expanded per type (workout breakdown, reading progress, learning quality,
-        meal type, focus quality, notes)
-  - [ ] `Badge` variant="outline" hue for type chip
+  - [ ] Expanded per kind (workout breakdown, reading progress, learning quality,
+        meal kind, focus quality, notes)
+  - [ ] `Badge` variant="outline" hue derived from `entry.name` for kind chip
 
 ### 6.3 HistoryScreen
 

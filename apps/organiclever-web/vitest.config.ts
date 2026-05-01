@@ -12,8 +12,16 @@ export default defineConfig({
       provider: "v8",
       include: ["src/**/*.{ts,tsx}"],
       exclude: [
+        // Next.js route infrastructure — covered by e2e, not unit tests
         "src/app/layout.tsx",
+        "src/app/**/page.tsx",
         "src/app/api/**",
+        // Phase 1 app shell — UI-only components covered by e2e, not unit tests
+        "src/components/app/app-root.tsx",
+        "src/components/app/tab-bar.tsx",
+        "src/components/app/side-nav.tsx",
+        // Phase 1 hook — browser-only; covered by e2e
+        "src/lib/hooks/use-hash.ts",
         "src/proxy.ts",
         "src/test/**",
         "src/services/**",

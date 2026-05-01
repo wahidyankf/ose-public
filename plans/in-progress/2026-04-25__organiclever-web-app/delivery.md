@@ -187,7 +187,7 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
   - [ ] Routine "Kettlebell day" (teal) — 1 group, 6 exercises
   - [ ] Routine "Calisthenics" (honey) — 1 group "Future", 5 bodyweight exercises
   - [ ] Routine "Super Exercise" (plum) — featured per raw/README.md
-  - [ ] 6 seed events (1 per kind, all `started_at` within last 7 days,
+  - [ ] 6 seed entries (1 per kind, all `started_at` within last 7 days,
         custom kind = "Meditation" plum/moon/20-min)
   - [ ] All writes go through `appendEntries` / `saveRoutine` / `saveSettings`
         — never raw SQL — so the typed `TypedEntry` union validates the seed
@@ -281,10 +281,10 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
         "AppRoot state" section for full state diagram)
   - [ ] **`navigation` region states**: `main` (initial) → `workout` → `finish`;
         `main` → `editRoutine` → `main`; any → `main` via `BACK_TO_MAIN`
-  - [ ] **`overlay` region states**: `none` (initial) → `addEvent` → `none`;
-        `none|addEvent` → `loggerOpen` → `none`;
-        `none|addEvent` → `customLoggerOpen` → `none`
-  - [ ] **Context** (no redundant booleans — no `screen`, `screenData`, `addEvent`,
+  - [ ] **`overlay` region states**: `none` (initial) → `addEntry` → `none`;
+        `none|addEntry` → `loggerOpen` → `none`;
+        `none|addEntry` → `customLoggerOpen` → `none`
+  - [ ] **Context** (no redundant booleans — no `screen`, `screenData`, `addEntry`,
         `activeLogger`, `customLogger` fields):
         `tab`, `isDesktop`, `darkMode`, `routine: Routine|null`,
         `completedSession: CompletedSession|null`,
@@ -292,7 +292,7 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
   - [ ] **Input**: `{ initialDarkMode: boolean; initialTab: Tab }`
   - [ ] **Events**: `NAVIGATE_TAB(tab)`, `START_WORKOUT(routine?)`,
         `EDIT_ROUTINE(routine?)`, `FINISH_WORKOUT(session)`, `BACK_TO_MAIN`,
-        `OPEN_ADD_EVENT`, `CLOSE_ADD_EVENT`, `OPEN_LOGGER(kind)`, `CLOSE_LOGGER`,
+        `OPEN_ADD_ENTRY`, `CLOSE_ADD_ENTRY`, `OPEN_LOGGER(kind)`, `CLOSE_LOGGER`,
         `OPEN_CUSTOM_LOGGER(name)`, `CLOSE_CUSTOM_LOGGER`,
         `TOGGLE_DARK_MODE`, `SET_DESKTOP(isDesktop)`
   - [ ] `BACK_TO_MAIN` resets `overlay` → `none` AND clears `routine`,
@@ -302,9 +302,9 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
   - [ ] `NAVIGATE_TAB('history')` → `context.tab === 'history'`
   - [ ] `START_WORKOUT(routine)` → `state.matches({ navigation: 'workout' })` ✓;
         `state.matches({ navigation: 'editRoutine' })` ✗ (illegal state impossible)
-  - [ ] `OPEN_ADD_EVENT` → `state.matches({ overlay: 'addEvent' })` ✓
-  - [ ] `OPEN_LOGGER('reading')` from `addEvent` → `state.matches({ overlay: 'loggerOpen' })` ✓;
-        `state.matches({ overlay: 'addEvent' })` ✗ (addEvent closed)
+  - [ ] `OPEN_ADD_ENTRY` → `state.matches({ overlay: 'addEntry' })` ✓
+  - [ ] `OPEN_LOGGER('reading')` from `addEntry` → `state.matches({ overlay: 'loggerOpen' })` ✓;
+        `state.matches({ overlay: 'addEntry' })` ✗ (addEntry closed)
   - [ ] `TOGGLE_DARK_MODE` flips `context.darkMode`
   - [ ] `BACK_TO_MAIN` from `workout` → `navigation: 'main'` AND `overlay: 'none'`
 
@@ -331,9 +331,9 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
         `state.matches({ navigation: 'finish' })` → `<FinishScreen>`;
         `state.matches({ navigation: 'editRoutine' })` → `<EditRoutineScreen>`;
         else → tab content via `state.context.tab`
-  - [ ] Overlays: `state.matches({ overlay: 'addEvent' })` → `<AddEventSheet>`;
+  - [ ] Overlays: `state.matches({ overlay: 'addEntry' })` → `<AddEntrySheet>`;
         `state.matches({ overlay: 'loggerOpen' })` → active logger sheet via `state.context.loggerKind`;
-        `state.matches({ overlay: 'customLoggerOpen' })` → `<CustomEventLogger name={state.context.customLoggerName}>`
+        `state.matches({ overlay: 'customLoggerOpen' })` → `<CustomEntryLogger name={state.context.customLoggerName}>`
   - [ ] Wire `seedIfEmpty` on mount: after the migration runner resolves,
         call `runtime.runPromise(seedIfEmpty())` so first-launch data is
         populated before any screen renders (per Phase 0.5 note)
@@ -372,8 +372,8 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
 
 - [ ] Create `src/components/app/side-nav.tsx`:
   - [ ] 220 px, border-right, card background
-  - [ ] Logo section: 32×32 teal icon + "OrganicLever" 800 + "Life event tracker" sub
-  - [ ] "Log event" teal full-width button; margin-bottom 12 px
+  - [ ] Logo section: 32×32 teal icon + "OrganicLever" 800 + "Life journal" sub
+  - [ ] "Log entry" teal full-width button; margin-bottom 12 px
   - [ ] 4 nav items (Home/History/Progress/Settings): active = teal-wash bg + teal-ink
 
 ### 1.6 Gherkin specs
@@ -398,27 +398,27 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
 ### 2.1 WeekRhythmStrip
 
 - [ ] Create `src/components/app/home/week-rhythm-strip.tsx`:
-  - [ ] Props: `last7Days: DayEntry[]`, `recentEvents: LoggedEvent[]`
+  - [ ] Props: `last7Days: DayEntry[]`, `recentEvents: JournalEntry[]`
   - [ ] Color map: workout=teal, reading=plum, learning=honey, meal=terracotta,
         focus=sky, custom=sage
   - [ ] 7 columns flex-aligned bottom; today 100 % opacity, others 70 %; min-height 6 px
   - [ ] Day label below; today: teal-ink bold
 
-### 2.2 EventEntry
+### 2.2 EntryItem
 
-- [ ] Create `src/components/app/home/event-entry.tsx`:
-  - [ ] Props: `event: LoggedEvent`, `onClick?: () => void`
+- [ ] Create `src/components/app/home/entry-item.tsx`:
+  - [ ] Props: `entry: JournalEntry`, `onClick?: () => void`
   - [ ] 34×34 hued `Icon` box; name (ellipsis); time + duration + sets sub-row
-  - [ ] `Badge` variant="default" size="sm" hue=event.hue for type tag
+  - [ ] `Badge` variant="default" size="sm" hue=entry.hue for kind tag
 
-### 2.3 EventDetailSheet
+### 2.3 EntryDetailSheet
 
-- [ ] Create `src/components/app/home/event-detail-sheet.tsx`:
-  - [ ] Props: `event: LoggedEvent | null`, `onClose: () => void`
+- [ ] Create `src/components/app/home/entry-detail-sheet.tsx`:
+  - [ ] Props: `entry: JournalEntry | null`, `onClose: () => void`
   - [ ] Bottom sheet (fixed inset-0, backdrop, slide-up inner panel max-w-480 max-h-[80vh])
   - [ ] 44×44 icon; name + date/time; close × button
   - [ ] 2-col stat grid; reading progress bar; workout exercise list; notes; label chips
-        as `Badge` variant="outline" hue=event.hue
+        as `Badge` variant="outline" hue=entry.hue
 
 ### 2.4 RoutineCard
 
@@ -439,9 +439,9 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
 
 - [ ] Create `src/components/app/home/home-screen.tsx`:
   - [ ] Header row + week card + filter chips + conditional module views
-  - [ ] Infinite scroll: `IntersectionObserver` on loader sentinel; +10 events per trigger
-  - [ ] Date-grouped event list with `EventEntry` rows
-  - [ ] `EventDetailSheet` overlay; `selectedEvent` state
+  - [ ] Infinite scroll: `IntersectionObserver` on loader sentinel; +10 entries per trigger
+  - [ ] Date-grouped entry list with `EntryItem` rows
+  - [ ] `EntryDetailSheet` overlay; `selectedEntry` state
 
 ### 2.7 Gherkin specs
 
@@ -451,13 +451,13 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
 - [ ] Fix ALL failures found — including any preexisting failures not caused by your changes
 - [ ] **Phase 2 screenshot**:
   - [ ] `browser_navigate` to `http://localhost:3200/app`
-  - [ ] `browser_snapshot` — confirm WeekRhythmStrip, seed event cards, module stats visible
+  - [ ] `browser_snapshot` — confirm WeekRhythmStrip, seed entry cards, module stats visible
   - [ ] `browser_take_screenshot` — save to
         `apps/organiclever-web/docs/screenshots/phase-2-home-screen.png`
 
 ---
 
-## Phase 3 — Event Loggers
+## Phase 3 — Entry Loggers
 
 ### 3.1 LoggerShell
 
@@ -468,9 +468,9 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
   - [ ] Scrollable `<div>` content slot
   - [ ] Sticky footer: "Cancel" ghost + "Save" teal; Save `disabled={saveDisabled}`
 
-### 3.2 AddEventSheet
+### 3.2 AddEntrySheet
 
-- [ ] Create `src/components/app/add-event-sheet.tsx`:
+- [ ] Create `src/components/app/add-entry-sheet.tsx`:
   - [ ] Rows for Workout, Reading, Learning, Meal, Focus (hued icons + labels)
   - [ ] Rows for each saved custom type (derive via `runtime.runPromise(listEntries())`
         — gear-up's Effect-returning store — then decode each row through the typed
@@ -490,23 +490,23 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
 - [ ] Create `src/components/app/loggers/focus-logger.tsx` — sky; task or duration
       required; duration presets + custom `Input` + quality emoji row + `<Textarea>` notes
 
-### 3.4 CustomEventLogger
+### 3.4 CustomEntryLogger
 
-- [ ] Create `src/components/app/loggers/custom-event-logger.tsx`:
+- [ ] Create `src/components/app/loggers/custom-entry-logger.tsx`:
   - [ ] Name `Input` (required); `HuePicker`; icon picker (grid of 12 common icon names)
   - [ ] Duration `Input` + `<Textarea>` notes
-  - [ ] "new" mode: saves type definition to DB settings before logging event
+  - [ ] "new" mode: saves kind definition to DB settings before logging entry
 
 ### 3.5 Gherkin specs
 
-- [ ] Create `specs/apps/organiclever/fe/gherkin/loggers/event-loggers.feature`
-- [ ] Step implementations `test/unit/steps/loggers/event-loggers.steps.tsx`
+- [ ] Create `specs/apps/organiclever/fe/gherkin/loggers/entry-loggers.feature`
+- [ ] Step implementations `test/unit/steps/loggers/entry-loggers.steps.tsx`
 - [ ] `nx affected -t typecheck lint test:quick spec-coverage` passes
 - [ ] Fix ALL failures found — including any preexisting failures not caused by your changes
 - [ ] **Phase 3 screenshot**:
   - [ ] `browser_navigate` to `http://localhost:3200/app` → `browser_click` FAB
   - [ ] `browser_take_screenshot` — save to
-        `apps/organiclever-web/docs/screenshots/phase-3-add-event-sheet.png`
+        `apps/organiclever-web/docs/screenshots/phase-3-add-entry-sheet.png`
   - [ ] `browser_click` "Reading" →
         `browser_take_screenshot` — save to
         `apps/organiclever-web/docs/screenshots/phase-3-reading-logger.png`
@@ -854,12 +854,12 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
       seed data shows, tab bar visible at bottom
 - [ ] Verify no JS errors: `browser_console_messages` — must be zero errors
 - [ ] Tap FAB: `browser_click` on FAB center button → `browser_snapshot` confirms
-      AddEventSheet slides up with Workout, Reading, Learning, Meal, Focus rows
-- [ ] Log a reading event: `browser_click` "Reading" → `browser_fill_form` title
+      AddEntrySheet slides up with Workout, Reading, Learning, Meal, Focus rows
+- [ ] Log a reading entry: `browser_click` "Reading" → `browser_fill_form` title
       "Test Book" → `browser_click` "Save" → `browser_snapshot` confirms sheet closes
-      and event appears in Home timeline
+      and entry appears in Home timeline
 - [ ] Navigate to History: `browser_click` "History" tab → `browser_snapshot` confirms
-      "History" heading, weekly bar chart, session card for logged reading event
+      "History" heading, weekly bar chart, session card for logged reading entry
 - [ ] Navigate to Progress: `browser_click` "Progress" tab → `browser_snapshot` confirms
       "Analytics" heading, module tabs visible
 - [ ] Navigate to Settings: `browser_click` "Settings" tab → `browser_snapshot` confirms
@@ -884,7 +884,7 @@ This step makes `appendEntries` v2-aware **before** any other code calls it.
       `browser_take_screenshot` — save to
       `apps/organiclever-web/docs/screenshots/phase-9-golden-path.png`
 - [ ] WorkoutScreen verification:
-  - [ ] Tap FAB: `browser_click` FAB → `browser_click` "Workout" on AddEventSheet
+  - [ ] Tap FAB: `browser_click` FAB → `browser_click` "Workout" on AddEntrySheet
   - [ ] `browser_snapshot` — confirm WorkoutScreen: exercise rows, elapsed timer,
         group headers, "Finish workout" button visible
   - [ ] Tap a set button on the first exercise: `browser_click` on first set button

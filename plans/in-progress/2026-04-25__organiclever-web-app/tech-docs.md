@@ -12,8 +12,8 @@ confirmed design decisions. Primary references by phase:
   Exercise routines, six recent entries) for `lib/journal/seed.ts`
 - `raw/i18n.js` — all translation keys (Phase 0 reference)
 - `raw/App.jsx` — shell layout, state model, screen stack (Phase 1 reference)
-- `raw/Components.jsx` — `TabBar`, `SideNav`, `AddEventSheet`, etc. (Phase 1 reference)
-- `raw/HomeScreen.jsx` — `WeekRhythmStrip`, module chips, event timeline (Phase 2 reference)
+- `raw/Components.jsx` — `TabBar`, `SideNav`, `AddEntrySheet`, etc. (Phase 1 reference)
+- `raw/HomeScreen.jsx` — `WeekRhythmStrip`, module chips, entry timeline (Phase 2 reference)
 - `raw/WorkoutScreen.jsx` — set rows, rest timer, sheets (Phase 4 reference)
 - `raw/FinishScreen.jsx` — post-workout summary: duration, volume, exercise breakdown (Phase 4 reference)
 - `raw/EditRoutineScreen.jsx` — exercise CRUD (Phase 5 reference)
@@ -82,12 +82,12 @@ apps/organiclever-web/src/
 │       ├── app-root.tsx                ← Phase 1 (new)
 │       ├── tab-bar.tsx                 ← Phase 1 (new; custom 64 px — NOT the ts-ui TabBar)
 │       ├── side-nav.tsx                ← Phase 1 (new)
-│       ├── add-event-sheet.tsx         ← Phase 3 (new)
+│       ├── add-entry-sheet.tsx         ← Phase 3 (new)
 │       ├── home/
 │       │   ├── home-screen.tsx         ← Phase 2
 │       │   ├── week-rhythm-strip.tsx   ← Phase 2
-│       │   ├── event-entry.tsx         ← Phase 2
-│       │   ├── event-detail-sheet.tsx  ← Phase 2
+│       │   ├── entry-item.tsx         ← Phase 2
+│       │   ├── entry-detail-sheet.tsx  ← Phase 2
 │       │   ├── workout-module-view.tsx ← Phase 2
 │       │   └── routine-card.tsx        ← Phase 2
 │       ├── loggers/
@@ -96,7 +96,7 @@ apps/organiclever-web/src/
 │       │   ├── learning-logger.tsx     ← Phase 3
 │       │   ├── meal-logger.tsx         ← Phase 3
 │       │   ├── focus-logger.tsx        ← Phase 3
-│       │   └── custom-event-logger.tsx ← Phase 3
+│       │   └── custom-entry-logger.tsx ← Phase 3
 │       ├── workout/
 │       │   ├── workout-screen.tsx      ← Phase 4 (driven by workoutSessionMachine)
 │       │   ├── active-exercise-row.tsx ← Phase 4
@@ -170,9 +170,9 @@ apps/organiclever-web/src/
 > declarations are split across multiple Effect `Schema` modules under
 > `apps/organiclever-web/src/lib/journal/`:
 >
-> - `typed-payloads.ts` — `EventType`, `WorkoutPayload`, `ReadingPayload`,
+> - `typed-payloads.ts` — `EntryKind`, `WorkoutPayload`, `ReadingPayload`,
 >   `LearningPayload`, `MealPayload`, `FocusPayload`, `CustomPayload`,
->   `EventPayload`, `LoggedEvent` — all as `Schema.Struct` / `Schema.Union`
+>   `EntryPayload`, `JournalEntry` — all as `Schema.Struct` / `Schema.Union`
 >   with TS types via `Schema.Type<...>`
 > - `routine-store.ts` (types section) — `Hue`, `ExerciseType`, `TimerMode`,
 >   `ExerciseTemplate`, `ExerciseGroup`, `Routine`, `CompletedSet`,
@@ -232,10 +232,10 @@ export interface ActiveExercise extends ExerciseTemplate {
   sets: CompletedSet[];
 }
 
-// EventType has 6 members; "workout" is a session type initiated from AddEventSheet.
+// EntryKind has 6 members; "workout" is a session type initiated from AddEntrySheet.
 // The "5 event types" referenced in BRD/README refer to the quick-log types:
 // reading, learning, meal, focus, custom. Workout is always session-initiated, not quick-log.
-export type EventType = "workout" | "reading" | "learning" | "meal" | "focus" | "custom";
+export type EntryKind = "workout" | "reading" | "learning" | "meal" | "focus" | "custom";
 export interface WorkoutPayload {
   routineName: string | null;
   durationSecs: number;
@@ -275,7 +275,7 @@ export interface CustomPayload {
   durationMins: number | null;
   notes: string | null;
 }
-export type EventPayload =
+export type EntryPayload =
   | WorkoutPayload
   | ReadingPayload
   | LearningPayload
@@ -283,13 +283,13 @@ export type EventPayload =
   | FocusPayload
   | CustomPayload;
 
-export interface LoggedEvent {
+export interface JournalEntry {
   id: string;
-  type: EventType;
+  type: EntryKind;
   labels: string[];
   startedAt: string;
   finishedAt: string;
-  payload: EventPayload;
+  payload: EntryPayload;
 }
 export interface AppSettings {
   name: string;
@@ -592,7 +592,7 @@ stateDiagram-v2
 **parallel states** — `navigation` and `overlay` run as fully independent regions. It is
 structurally impossible for two navigation screens or two overlays to be active at once.
 The old `screen: string` + `screenData: { routine? }|{ session? }|null` and
-`addEvent: boolean` + `activeLogger: …|null` + `customLogger: …|null` context fields are
+`addEntry: boolean` + `activeLogger: …|null` + `customLogger: …|null` context fields are
 eliminated — they admitted illegal combinations that would require defensive runtime guards
 to detect. XState states carry that invariant at the type level instead.
 
@@ -618,12 +618,12 @@ stateDiagram-v2
 
         state overlay {
             [*] --> none
-            none --> addEvent : OPEN_ADD_EVENT
-            addEvent --> none : CLOSE_ADD_EVENT
-            addEvent --> loggerOpen : OPEN_LOGGER
+            none --> addEntry : OPEN_ADD_ENTRY
+            addEntry --> none : CLOSE_ADD_ENTRY
+            addEntry --> loggerOpen : OPEN_LOGGER
             none --> loggerOpen : OPEN_LOGGER
             loggerOpen --> none : CLOSE_LOGGER
-            addEvent --> customLoggerOpen : OPEN_CUSTOM_LOGGER
+            addEntry --> customLoggerOpen : OPEN_CUSTOM_LOGGER
             none --> customLoggerOpen : OPEN_CUSTOM_LOGGER
             customLoggerOpen --> none : CLOSE_CUSTOM_LOGGER
         }
@@ -652,13 +652,13 @@ region entry action (XState v5 `entry` + `assign`).
 
 | Scenario                                        | How prevented                                                   |
 | ----------------------------------------------- | --------------------------------------------------------------- |
-| `addEvent` sheet + logger both open             | `overlay` region: one state at a time                           |
+| `addEntry` sheet + logger both open             | `overlay` region: one state at a time                           |
 | `workout` + `editRoutine` active simultaneously | `navigation` region: one state at a time                        |
 | Finish screen receiving wrong session type      | `completedSession` only set on `FINISH_WORKOUT`                 |
 | `screenData` type mismatch with current screen  | Eliminated — context fields are per-concept, not per-screen bag |
 
 **Events**: `NAVIGATE_TAB(tab)`, `START_WORKOUT(routine?)`, `EDIT_ROUTINE(routine?)`,
-`FINISH_WORKOUT(session)`, `BACK_TO_MAIN`, `OPEN_ADD_EVENT`, `CLOSE_ADD_EVENT`,
+`FINISH_WORKOUT(session)`, `BACK_TO_MAIN`, `OPEN_ADD_ENTRY`, `CLOSE_ADD_ENTRY`,
 `OPEN_LOGGER(kind)`, `CLOSE_LOGGER`, `OPEN_CUSTOM_LOGGER(name)`, `CLOSE_CUSTOM_LOGGER`,
 `TOGGLE_DARK_MODE`, `SET_DESKTOP(isDesktop)`
 
@@ -701,17 +701,17 @@ fmtSpec(ex: ExerciseTemplate): string  // "3 × 20 LR @ 8 kg"
 
 ## ts-ui Components Used from Landing-UIKit Plan
 
-`Textarea` — all event logger notes fields.
-`Badge` — event-type tags, day-streak badge, module chips hint text.
+`Textarea` — all entry logger notes fields.
+`Badge` — entry-kind tags, day-streak badge, module chips hint text.
 All other existing ts-ui: `Button`, `Icon`, `StatCard`, `AppHeader`, `TabBar`, `SideNav`,
 `HuePicker`, `Toggle`, `ProgressRing`, `Sheet`, `InfoTip`, `Input`, `Label`, `Card`.
 
-### Event-Type Icon Assignments
+### Entry-Kind Icon Assignments
 
 The `Icon` component's `IconName` union does not include `"book"`. Use these icon names
-for event-type rows in `AddEventSheet` and `LoggerShell`:
+for entry-kind rows in `AddEntrySheet` and `LoggerShell`:
 
-| Event type | Icon name     | Notes                                     |
+| Entry kind | Icon name     | Notes                                     |
 | ---------- | ------------- | ----------------------------------------- |
 | Workout    | `dumbbell`    | Exists in ts-ui                           |
 | Reading    | `calendar`    | Closest available; "book" is not in ts-ui |
@@ -781,14 +781,14 @@ integrates cleanly with the existing landing-page routes at `/`.
 **Boolean blindness examples to avoid:**
 
 ```typescript
-// BAD — illegal: addEvent + activeLogger both truthy simultaneously
-{ addEvent: boolean; activeLogger: Kind | null; customLogger: string | null }
+// BAD — illegal: addEntry + activeLogger both truthy simultaneously
+{ addEntry: boolean; activeLogger: Kind | null; customLogger: string | null }
 // ALSO BAD — screenData type doesn't constrain to current screen
 { screen: 'main'|'workout'|'finish'; screenData: { routine? }|{ session? }|null }
 
 // GOOD — XState parallel states; overlay is one state at a time; navigation is one state at a time
 state.matches({ navigation: 'workout' }) // true xor false — not 'workout' AND 'editRoutine'
-state.matches({ overlay: 'logger' })     // true xor false — not 'addEvent' AND 'logger'
+state.matches({ overlay: 'logger' })     // true xor false — not 'addEntry' AND 'logger'
 // context.routine is only meaningful while navigation === 'workout' | 'editRoutine'
 // context.completedSession is only meaningful while navigation === 'finish'
 ```

@@ -157,28 +157,27 @@ Then("the confirmation sheet is shown", async ({ page }) => {
 });
 
 When("the user discards the workout", async ({ page }) => {
-  // EndWorkoutSheet is position:fixed — element may be visible but outside
-  // the Playwright actionability viewport rect. Use force:true to bypass.
+  // EndWorkoutSheet renders as position:fixed. In CI viewports the button bbox
+  // can sit outside the viewport rectangle — force:true doesn't help when the
+  // element coordinates are literally off-screen. Use dispatchEvent instead,
+  // which fires the click directly on the DOM element regardless of position.
   const discardBtn = page
     .getByRole("button", { name: /discard/i })
     .or(page.getByText("Discard session"))
     .first();
   if (await discardBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
-    await discardBtn.click({ force: true });
+    await discardBtn.dispatchEvent("click");
   }
 });
 
 Then("the workout is in idle state", async ({ page }) => {
-  // After DISCARD, workoutSessionMachine goes to idle state and the
-  // EndWorkoutSheet closes. The confirmation buttons disappear.
-  // Assert that "Keep going" / "Discard session" are no longer visible.
   await expect(page.getByRole("button", { name: /keep going/i })).not.toBeVisible({ timeout: 10000 });
 });
 
 When("the user keeps going", async ({ page }) => {
-  // EndWorkoutSheet is position:fixed — use force:true to bypass viewport check
+  // Same as above — dispatchEvent bypasses viewport position checks entirely
   const keepGoingBtn = page.getByRole("button", { name: /keep going/i });
   if (await keepGoingBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
-    await keepGoingBtn.click({ force: true });
+    await keepGoingBtn.dispatchEvent("click");
   }
 });

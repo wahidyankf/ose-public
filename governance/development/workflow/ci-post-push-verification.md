@@ -41,7 +41,7 @@ After pushing app or library code to `origin main`, you MUST:
 
 1. **Identify which apps and libs were changed.** Use `git diff HEAD~1 --name-only` or `nx affected --base=HEAD~1` to determine the blast radius.
 2. **Trigger the relevant CI workflows.** Use `gh workflow run` for each workflow that covers the changed apps or libs.
-3. **Monitor until completion.** Use `gh run list` to find the run ID, then `gh run watch <run-id>` to follow it to completion.
+3. **Monitor until completion.** Use `gh run list` to find the run ID, then use `ScheduleWakeup` + a single `gh run view <run-id>` call on wakeup for standard CI jobs (10–35 min). Reserve `gh run watch <run-id>` for jobs expected to complete in under 5 minutes only.
 4. **If any workflow fails**, investigate the root cause and fix it per the [CI Blocker Resolution Convention](../quality/ci-blocker-resolution.md). Do not declare the work done until all relevant workflows pass.
 
 ## Workflow Mapping
@@ -58,15 +58,16 @@ When a change touches shared code (a lib, a shared type, a contract), trigger ev
 
 ## Monitoring Without Rate-Limiting
 
-The required tool for watching a run to completion is `gh run watch <run-id>`. It uses GitHub's streaming API and issues far fewer requests than a manual poll loop. Tight-loop polling of `gh run view` without a sleep interval is **forbidden** — it exhausts the GitHub API rate limit (5,000 req/hour) within minutes and blocks all `gh` commands for up to an hour.
+Check every **3-5 minutes** using `ScheduleWakeup(delaySeconds=180)` + one `gh run view <run-id> --json conclusion,status,jobs` per wakeup. Repeat until complete. This uses 7-12 API calls for a 35-min job (0.4% of the 5,000/hour budget).
+
+**`gh run watch` is only safe for jobs <5 min** — it polls every ~3 seconds internally and exhausts the rate limit on any longer job. Tight-loop polling of `gh run view` with no sleep is **forbidden** for the same reason.
 
 See [CI Monitoring Convention](./ci-monitoring.md) for:
 
 - Full rate limit budget facts and window behavior
-- Required tool selection (`gh run watch` as default)
-- Minimum poll intervals when manual polling is unavoidable (30 seconds)
+- Required approach: `ScheduleWakeup` every 3-5 min (default) vs `gh run watch` for <5 min jobs
 - Trigger discipline (never trigger the same workflow more than once every 10 minutes)
-- Recovery procedure when rate-limited (HTTP 403): scheduled wait, not retry loop
+- Recovery procedure when rate-limited (HTTP 403): `ScheduleWakeup(delaySeconds=2100)`, not retry loop
 
 ## Commands
 
@@ -80,8 +81,8 @@ gh workflow run test-and-deploy-ayokoding-web.yml
 # List recent runs for a workflow to find the run ID
 gh run list --workflow=test-and-deploy-ayokoding-web.yml --limit=5
 
-# Watch a specific run until it completes (required tool — do not use a poll loop)
-gh run watch <run-id>
+# Check run status (call every 3-5 min via ScheduleWakeup — do NOT use gh run watch for long jobs)
+gh run view <run-id> --json conclusion,status,jobs
 
 # View logs for a failed run
 gh run view <run-id> --log-failed
@@ -209,7 +210,7 @@ Result: All steps passed. Work is complete.
 
 ## Related Documentation
 
-- [CI Monitoring Convention](./ci-monitoring.md) — Safe monitoring mechanics: required tooling (`gh run watch`), minimum poll intervals, trigger discipline, and rate-limit recovery procedures.
+- [CI Monitoring Convention](./ci-monitoring.md) — Safe monitoring mechanics: ScheduleWakeup every 3-5 min as default, `gh run watch` only for <5 min jobs, trigger discipline, rate-limit recovery.
 - [CI Blocker Resolution Convention](../quality/ci-blocker-resolution.md) — How to investigate and fix CI failures found during verification.
 - [Trunk Based Development Convention](./trunk-based-development.md) — Why `main` must remain releasable at all times.
 - [Git Push Default Convention](./git-push-default.md) — Default push behavior (direct to `origin main`, no PR buffer).

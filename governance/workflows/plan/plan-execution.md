@@ -265,22 +265,25 @@ After completing all items in a delivery phase, run quality gates before proceed
 
 After every push to `main`, verify GitHub Actions.
 
-**Monitoring tool**: Use `gh run watch <run-id>` to follow a run to completion. Manual tight-loop polling of `gh run view` without a sleep interval is **forbidden** — it exhausts the GitHub API rate limit (5,000 req/hour) within minutes. See [CI Monitoring Convention](../../development/workflow/ci-monitoring.md) for required tooling, minimum poll intervals, trigger discipline, and rate-limit recovery procedures.
+**Monitoring tool**: The required default for standard CI jobs (10–35 min) is `ScheduleWakeup` + a single `gh run view` call on wakeup (2 API calls total per run). Use `gh run watch <run-id>` only if the job is expected to complete in under 5 minutes — `gh run watch` polls every ~3 s and exhausts the GitHub API rate limit (5,000 req/hour) on any job longer than ~5 min. Manual tight-loop polling of `gh run view` without a sleep interval is also **forbidden**. See [CI Monitoring Convention](../../development/workflow/ci-monitoring.md) for required tooling, minimum poll intervals, trigger discipline, and rate-limit recovery procedures.
 
 **Orchestrator action**:
 
 1. Identify which GitHub Actions workflows were triggered by the push
 2. Find the run ID: `gh run list --workflow=<workflow-file> --limit=3`
-3. Watch to completion: `gh run watch <run-id>` — blocks until the run finishes; do NOT use a manual poll loop
+3. Monitor to completion using the correct approach for the job duration:
+   - **Standard jobs (10–35 min, required default)**: `ScheduleWakeup(delaySeconds=180)` (3 min), check with one `gh run view <run-id> --json conclusion,status,jobs`, repeat every 3-5 min until complete
+   - **Short jobs (<5 min only)**: `gh run watch <run-id>` — do NOT use for 20–35 min CI jobs
+   - Never use `gh run watch` on jobs expected to take 20–35 min — it polls every ~3s and exhausts API quota
 4. If ANY workflow fails:
    - Pull failure logs and diagnose the root cause: `gh run view <run-id> --log-failed`
    - Fix locally (including preexisting CI failures — Iron Rule 3)
    - Run local quality gates again (Step 2b)
    - Push fix commit
-   - Monitor CI again with `gh run watch`
+   - Monitor CI again with `ScheduleWakeup` + single `gh run view` (or `gh run watch` if <5 min)
 5. Repeat until ALL GitHub Actions workflows pass with zero failures
 6. Do NOT proceed to the next delivery phase until CI is fully green
-7. If rate-limited (HTTP 403 from `gh`): stop all `gh` calls, use `ScheduleWakeup delaySeconds=2100` (35 min), resume CI verification on wakeup — do NOT spin in a retry loop
+7. If rate-limited (HTTP 403 from `gh`): stop all `gh` calls immediately, use `ScheduleWakeup(delaySeconds=2100)` (35 min) to resume after the rolling window clears — do NOT spin in a retry loop
 
 **Output**: All CI workflows passing
 

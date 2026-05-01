@@ -80,23 +80,28 @@ A tight loop with no sleep issues hundreds of requests per minute. At 200 calls/
 
 Use the first approach that fits the situation. Only fall back to lower-priority approaches when the higher-priority one is not applicable.
 
-#### 1. `ScheduleWakeup` + Single `gh run view` Check (Required Default)
+#### 1. `ScheduleWakeup` Every 3-5 Minutes (Required Default)
 
-Trigger the run, record the run ID, then schedule a wakeup for after the expected completion time. On wakeup, issue **one** `gh run view` call to read the result.
+Trigger the run, record the run ID, schedule a wakeup for 3-5 minutes, check status, repeat until done. Each check is **one** `gh run view` call.
+
+**Why 3-5 min:** Fast enough for responsive feedback; safe forever at 12-20 req/hour (0.4% of the 5,000/hour budget).
 
 ```bash
 # Step 1: trigger and capture run ID
 gh workflow run test-and-deploy-organiclever-web-development.yml
 # URL output contains run ID, e.g. https://github.com/.../runs/12345678
 
-# Step 2: ScheduleWakeup for expected duration + buffer
-# [ScheduleWakeup delaySeconds=2400]  ← 40 min for a 35-min CI job
+# Step 2: ScheduleWakeup(delaySeconds=180)  ← check in 3 min
 
-# Step 3: On wakeup — ONE check, not a loop
+# Step 3: On wakeup — one check
 gh run view <run-id> --json conclusion,status,jobs
+# If still in_progress → ScheduleWakeup(delaySeconds=300) and check again
+# If completed → read conclusion and proceed
 ```
 
-Total API calls: 2 (trigger + one view). Zero burst. Zero rate-limit risk.
+At 3-5 min intervals a 35-min CI job needs 7-12 checks = **7-12 API calls total**. Zero burst.
+
+**Rate limit math:** 1 call every 3 min = 20 calls/hour. Budget: 5,000/hour. Usage: 0.4%. Safe forever.
 
 #### 2. `gh run watch <run-id>` (Short Jobs Only, <5 min)
 
@@ -109,18 +114,18 @@ Total API calls: 2 (trigger + one view). Zero burst. Zero rate-limit risk.
 gh run watch <run-id>
 ```
 
-#### 3. Manual Polling With Minimum 30-Second Interval (Unavoidable Loop Cases)
+#### 3. Manual Polling With Minimum 3-Minute Sleep (Unavoidable Loop Cases)
 
-If neither `gh run watch` nor `ScheduleWakeup` is applicable (rare), the minimum interval between successive `gh run view` calls is **30 seconds**.
+If `ScheduleWakeup` is not available, the minimum interval between successive `gh run view` calls is **3 minutes**.
 
 ```bash
-# PASS: Correct — 30-second minimum sleep between checks
+# PASS: Correct — 3-minute minimum sleep between checks
 while true; do
   status=$(gh run view "$run_id" --json status --jq '.status')
   if [ "$status" = "completed" ]; then
     break
   fi
-  sleep 30
+  sleep 180
 done
 ```
 
@@ -186,23 +191,31 @@ done
 
 The [plan-execution workflow](../../workflows/plan/plan-execution.md) Step 2c (Post-Push CI Verification) requires monitoring all GitHub Actions workflows after every push. This convention governs how that monitoring executes.
 
-**Required pattern for Step 2c:**
+**Required pattern for Step 2c (standard CI jobs, 10–35 min):**
 
 ```bash
 # 1. Identify the triggered run
 gh run list --workflow=<workflow-file> --limit=3
 
-# 2. Watch to completion — the ONLY acceptable tool for this step
-gh run watch <run-id>
+# 2. Schedule a wakeup for expected completion time + buffer
+# [ScheduleWakeup delaySeconds=2100]  ← 35 min for a typical 30-min job
 
-# 3. On non-zero exit (run failed): pull logs and diagnose
+# 3. On wakeup — ONE check, not a loop
+gh run view <run-id> --json conclusion,status,jobs
+
+# 4. On failure: pull logs and diagnose
 gh run view <run-id> --log-failed
 ```
 
+**When `gh run watch` is acceptable in Step 2c:**
+
+Only use `gh run watch <run-id>` if the job is expected to complete in under 5 minutes. For all standard CI jobs (10–35 min), use `ScheduleWakeup` + single `gh run view` instead.
+
 **Forbidden in Step 2c:**
 
+- Using `gh run watch` for CI jobs that take 10+ minutes (exhausts rate limit)
 - Tight-loop polling with `gh run view` and no sleep
-- Polling intervals shorter than 30 seconds if `gh run watch` is unavailable
+- Polling intervals shorter than 30 seconds if neither approach above is applicable
 - Triggering a new run while the previous one is still active
 - Treating an HTTP 403 as a transient error and retrying immediately
 

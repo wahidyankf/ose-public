@@ -23,6 +23,11 @@ export const metadata: Metadata = siteMetadata;
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={`${nunito.variable} ${jetbrainsMono.variable}`}>
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+      </head>
       <body>
         {/* Inline script runs before React hydration to avoid dark mode flash.
               Reads ol_dark_mode from localStorage and sets data-theme immediately. */}

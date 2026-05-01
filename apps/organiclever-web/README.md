@@ -1,17 +1,49 @@
 # organiclever-web
 
-Next.js 16 frontend for the OrganicLever productivity tracker — currently running in **local-first
-mode** as a standalone landing site while the backend is offline.
+Next.js 16 frontend for the OrganicLever life journal — local-first productivity tracker with
+PGlite (Postgres-WASM) for in-browser data storage.
 
 ## Overview
 
-`organiclever-web` serves a static landing page at `/` and a diagnostic page at
-`/system/status/be`. The existing Effect TS service layer (`src/services/`) and layer
-implementations (`src/layers/`) are preserved as dormant library code — re-enabling BFF routes is
-a future additive change, not a rebuild.
+`organiclever-web` serves a landing page at `/` and the full OrganicLever app at `/app`. All app
+data is stored locally in the browser via PGlite (IndexedDB-backed) — no backend required.
 
-Route Handlers (`/api/auth/*`), `/login`, and `/profile` are removed from the built surface.
-`ORGANICLEVER_BE_URL` is optional; when unset the diagnostic page renders "Not configured".
+The existing Effect TS service layer (`src/services/`) and layer implementations (`src/layers/`)
+are preserved as dormant library code for a future backend rewire.
+
+## Routes and Screens
+
+### Top-level routes
+
+| Route               | Description                                 |
+| ------------------- | ------------------------------------------- |
+| `/`                 | Landing and promotional page                |
+| `/app`              | OrganicLever life journal app (home screen) |
+| `/system/status/be` | Server-rendered backend diagnostic page     |
+
+### In-app screens (hash navigation within `/app`)
+
+| URL             | Screen   | Description                                   |
+| --------------- | -------- | --------------------------------------------- |
+| `/app`          | Home     | Dashboard — today's summary and quick-log FAB |
+| `/app#history`  | History  | Chronological entry log with filter/search    |
+| `/app#progress` | Progress | Charts and streaks across all entry types     |
+| `/app#settings` | Settings | Preferences, dark mode, data export/reset     |
+
+### Entry flows (launched from FAB on Home screen)
+
+| Entry type | Description                                       |
+| ---------- | ------------------------------------------------- |
+| Workout    | Log a workout session (type, duration, intensity) |
+| Reading    | Log a reading session (title, pages, notes)       |
+| Learning   | Log a learning session (topic, source, notes)     |
+| Meal       | Log a meal (name, type, adherence rating)         |
+| Focus      | Log a focus/deep-work session (task, duration)    |
+
+### Data storage
+
+All entries are stored in **PGlite** (Postgres-WASM, IndexedDB-backed). Data never leaves the
+device — no network requests, no backend required for core app functionality.
 
 ## Architecture
 
@@ -19,6 +51,11 @@ Route Handlers (`/api/auth/*`), `/login`, and `/profile` are removed from the bu
 Browser ──── Next.js (organiclever-web)
                     │
                     ├── /                   Static landing page (no network dependency)
+                    ├── /app                OrganicLever life journal (PGlite local DB)
+                    │       ├── /app        Home screen (dashboard + FAB)
+                    │       ├── /app#history   Entry history log
+                    │       ├── /app#progress  Progress charts and streaks
+                    │       └── /app#settings  Preferences and data management
                     └── /system/status/be   Server-rendered diagnostic page (force-dynamic)
 ```
 

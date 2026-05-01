@@ -26,6 +26,7 @@ function makeTestRuntime() {
 
 const makeName = (s: string) => Schema.decodeUnknownSync(EntryName)(s);
 const makePayload = (obj: Record<string, unknown>) => Schema.decodeUnknownSync(EntryPayload)(obj);
+const makeTs = () => new Date().toISOString() as unknown as import("./schema").IsoTimestamp;
 
 describe("journalMachine", () => {
   it("starts in initializing state", () => {
@@ -68,9 +69,18 @@ describe("journalMachine", () => {
       timeout: 10000,
     });
 
+    const ts = makeTs();
     actor.send({
       type: "ADD_BATCH",
-      inputs: [{ name: makeName("workout"), payload: makePayload({ reps: 5 }) }],
+      inputs: [
+        {
+          name: makeName("workout"),
+          payload: makePayload({ reps: 5 }),
+          startedAt: ts,
+          finishedAt: ts,
+          labels: [] as const,
+        },
+      ],
     });
 
     // May pass through mutating quickly; that's OK
@@ -105,15 +115,27 @@ describe("journalMachine", () => {
     });
 
     // Send first ADD_BATCH — machine transitions to mutating
+    const ts1 = makeTs();
     actor.send({
       type: "ADD_BATCH",
-      inputs: [{ name: makeName("workout"), payload: makePayload({}) }],
+      inputs: [
+        { name: makeName("workout"), payload: makePayload({}), startedAt: ts1, finishedAt: ts1, labels: [] as const },
+      ],
     });
 
     // Send second ADD_BATCH immediately — machine is in mutating, should buffer it
+    const ts2 = makeTs();
     actor.send({
       type: "ADD_BATCH",
-      inputs: [{ name: makeName("workout"), payload: makePayload({ session: 2 }) }],
+      inputs: [
+        {
+          name: makeName("workout"),
+          payload: makePayload({ session: 2 }),
+          startedAt: ts2,
+          finishedAt: ts2,
+          labels: [] as const,
+        },
+      ],
     });
 
     // Wait for machine to process both mutations and return to idle
@@ -145,15 +167,21 @@ describe("journalMachine", () => {
       timeout: 10000,
     });
 
+    const ts3 = makeTs();
     actor.send({
       type: "ADD_BATCH",
-      inputs: [{ name: makeName("reading"), payload: makePayload({}) }],
+      inputs: [
+        { name: makeName("reading"), payload: makePayload({}), startedAt: ts3, finishedAt: ts3, labels: [] as const },
+      ],
     });
 
     // Immediately buffer another mutation
+    const ts4 = makeTs();
     actor.send({
       type: "ADD_BATCH",
-      inputs: [{ name: makeName("meditation"), payload: makePayload({}) }],
+      inputs: [
+        { name: makeName("learning"), payload: makePayload({}), startedAt: ts4, finishedAt: ts4, labels: [] as const },
+      ],
     });
 
     await waitFor(actor, (state) => state.matches({ ready: "idle" }) && state.context.entries.length >= 2, {
@@ -163,7 +191,7 @@ describe("journalMachine", () => {
     const entries = actor.getSnapshot().context.entries;
     expect(entries.length).toBe(2);
     const names = entries.map((e) => e.name).sort();
-    expect(names).toEqual(["meditation", "reading"]);
+    expect(names).toEqual(["learning", "reading"]);
 
     actor.stop();
     await runtime.dispose();

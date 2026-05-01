@@ -22,6 +22,7 @@ const TestPgliteLayer = Layer.scoped(
 
 const makeName = (s: string) => Schema.decodeUnknownSync(EntryName)(s);
 const makePayload = (obj: Record<string, unknown>) => Schema.decodeUnknownSync(EntryPayload)(obj);
+const makeTs = () => new Date().toISOString() as unknown as import("./schema").IsoTimestamp;
 
 layer(TestPgliteLayer)("journal-store - appendEntries", (it) => {
   it.effect("returns EmptyBatch error on empty input", () =>
@@ -37,9 +38,22 @@ layer(TestPgliteLayer)("journal-store - appendEntries", (it) => {
   it.effect("appends entries and returns them", () =>
     Effect.gen(function* () {
       yield* clearEntries();
+      const ts = makeTs();
       const entries = yield* appendEntries([
-        { name: makeName("workout"), payload: makePayload({ reps: 5 }) },
-        { name: makeName("meal"), payload: makePayload({ calories: 500 }) },
+        {
+          name: makeName("workout"),
+          payload: makePayload({ reps: 5 }),
+          startedAt: ts,
+          finishedAt: ts,
+          labels: [] as const,
+        },
+        {
+          name: makeName("meal"),
+          payload: makePayload({ calories: 500 }),
+          startedAt: ts,
+          finishedAt: ts,
+          labels: [] as const,
+        },
       ]);
       expect(entries).toHaveLength(2);
       expect(entries[0]?.name).toBe("workout");
@@ -57,16 +71,28 @@ layer(TestPgliteLayer)("journal-store - listEntries", (it) => {
       Effect.gen(function* () {
         yield* clearEntries();
 
-        yield* appendEntries([{ name: makeName("first"), payload: makePayload({}) }]);
+        const ts1 = makeTs();
+        yield* appendEntries([
+          { name: makeName("reading"), payload: makePayload({}), startedAt: ts1, finishedAt: ts1, labels: [] as const },
+        ]);
 
         yield* Effect.promise(() => new Promise((r) => setTimeout(r, 10)));
 
-        yield* appendEntries([{ name: makeName("second"), payload: makePayload({}) }]);
+        const ts2 = makeTs();
+        yield* appendEntries([
+          {
+            name: makeName("learning"),
+            payload: makePayload({}),
+            startedAt: ts2,
+            finishedAt: ts2,
+            labels: [] as const,
+          },
+        ]);
 
         const entries = yield* listEntries();
         expect(entries.length).toBeGreaterThanOrEqual(2);
-        expect(entries[0]?.name).toBe("second");
-        expect(entries[1]?.name).toBe("first");
+        expect(entries[0]?.name).toBe("learning");
+        expect(entries[1]?.name).toBe("reading");
       }),
     { timeout: 10000 },
   );
@@ -76,14 +102,23 @@ layer(TestPgliteLayer)("journal-store - updateEntry", (it) => {
   it.effect("updates entry name", () =>
     Effect.gen(function* () {
       yield* clearEntries();
-      const appended = yield* appendEntries([{ name: makeName("original"), payload: makePayload({ x: 1 }) }]);
+      const ts = makeTs();
+      const appended = yield* appendEntries([
+        {
+          name: makeName("workout"),
+          payload: makePayload({ x: 1 }),
+          startedAt: ts,
+          finishedAt: ts,
+          labels: [] as const,
+        },
+      ]);
       const entry = appended[0];
       if (!entry) throw new Error("Expected entry");
       const id = Schema.decodeUnknownSync(EntryId)(entry.id);
       const updated = yield* updateEntry(id, {
-        name: makeName("updated"),
+        name: makeName("meal"),
       });
-      expect(updated.name).toBe("updated");
+      expect(updated.name).toBe("meal");
       expect(updated.payload).toEqual({ x: 1 });
     }),
   );
@@ -91,7 +126,7 @@ layer(TestPgliteLayer)("journal-store - updateEntry", (it) => {
   it.effect("returns NotFound for missing entry", () =>
     Effect.gen(function* () {
       const id = Schema.decodeUnknownSync(EntryId)("non-existent-id");
-      const result = yield* Effect.either(updateEntry(id, { name: makeName("test") }));
+      const result = yield* Effect.either(updateEntry(id, { name: makeName("workout") }));
       expect(result._tag).toBe("Left");
       if (result._tag === "Left") {
         expect(result.left).toBeInstanceOf(NotFound);
@@ -104,7 +139,10 @@ layer(TestPgliteLayer)("journal-store - deleteEntry", (it) => {
   it.effect("deletes existing entry and returns true", () =>
     Effect.gen(function* () {
       yield* clearEntries();
-      const appended = yield* appendEntries([{ name: makeName("to-delete"), payload: makePayload({}) }]);
+      const ts = makeTs();
+      const appended = yield* appendEntries([
+        { name: makeName("focus"), payload: makePayload({}), startedAt: ts, finishedAt: ts, labels: [] as const },
+      ]);
       const entry = appended[0];
       if (!entry) throw new Error("Expected entry");
       const id = Schema.decodeUnknownSync(EntryId)(entry.id);
@@ -129,19 +167,31 @@ layer(TestPgliteLayer)("journal-store - bumpEntry", (it) => {
       Effect.gen(function* () {
         yield* clearEntries();
 
-        const appendedOlder = yield* appendEntries([{ name: makeName("older"), payload: makePayload({}) }]);
+        const ts1 = makeTs();
+        const appendedOlder = yield* appendEntries([
+          { name: makeName("reading"), payload: makePayload({}), startedAt: ts1, finishedAt: ts1, labels: [] as const },
+        ]);
         const older = appendedOlder[0];
         if (!older) throw new Error("Expected entry");
 
         yield* Effect.promise(() => new Promise((r) => setTimeout(r, 10)));
 
-        yield* appendEntries([{ name: makeName("newer"), payload: makePayload({}) }]);
+        const ts2 = makeTs();
+        yield* appendEntries([
+          {
+            name: makeName("learning"),
+            payload: makePayload({}),
+            startedAt: ts2,
+            finishedAt: ts2,
+            labels: [] as const,
+          },
+        ]);
 
         const olderId = Schema.decodeUnknownSync(EntryId)(older.id);
         yield* bumpEntry(olderId);
 
         const entries = yield* listEntries();
-        expect(entries[0]?.name).toBe("older");
+        expect(entries[0]?.name).toBe("reading");
       }),
     { timeout: 10000 },
   );
@@ -161,9 +211,10 @@ layer(TestPgliteLayer)("journal-store - bumpEntry", (it) => {
 layer(TestPgliteLayer)("journal-store - clearEntries", (it) => {
   it.effect("removes all entries", () =>
     Effect.gen(function* () {
+      const ts = makeTs();
       yield* appendEntries([
-        { name: makeName("entry-a"), payload: makePayload({}) },
-        { name: makeName("entry-b"), payload: makePayload({}) },
+        { name: makeName("workout"), payload: makePayload({}), startedAt: ts, finishedAt: ts, labels: [] as const },
+        { name: makeName("meal"), payload: makePayload({}), startedAt: ts, finishedAt: ts, labels: [] as const },
       ]);
 
       yield* clearEntries();

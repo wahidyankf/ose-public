@@ -80,11 +80,17 @@ describe("schema - JournalEntry", () => {
       payload: { reps: 12 },
       createdAt: "2024-01-15T10:30:00.000Z",
       updatedAt: "2024-01-15T10:30:00.000Z",
+      startedAt: "2024-01-15T10:00:00.000Z",
+      finishedAt: "2024-01-15T10:30:00.000Z",
+      labels: ["strength"],
     };
     const result = Schema.decodeUnknownSync(JournalEntry)(raw);
     expect(result.id).toBe("entry-1");
     expect(result.name).toBe("workout");
     expect(result.payload).toEqual({ reps: 12 });
+    expect(result.startedAt).toBe("2024-01-15T10:00:00.000Z");
+    expect(result.finishedAt).toBe("2024-01-15T10:30:00.000Z");
+    expect(result.labels).toEqual(["strength"]);
   });
 
   it("rejects JournalEntry with invalid name", () => {
@@ -94,6 +100,9 @@ describe("schema - JournalEntry", () => {
       payload: {},
       createdAt: "2024-01-15T10:30:00.000Z",
       updatedAt: "2024-01-15T10:30:00.000Z",
+      startedAt: "2024-01-15T10:00:00.000Z",
+      finishedAt: "2024-01-15T10:30:00.000Z",
+      labels: [],
     };
     expect(() => Schema.decodeUnknownSync(JournalEntry)(raw)).toThrow();
   });
@@ -122,6 +131,9 @@ describe("schema - ArrayFormatter error paths", () => {
       payload: {},
       createdAt: "2024-01-15T10:30:00.000Z",
       updatedAt: "2024-01-15T10:30:00.000Z",
+      startedAt: "2024-01-15T10:00:00.000Z",
+      finishedAt: "2024-01-15T10:30:00.000Z",
+      labels: [],
     };
     const result = Schema.decodeUnknownEither(JournalEntry)(raw);
     if (result._tag === "Left") {

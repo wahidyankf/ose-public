@@ -10,6 +10,9 @@ type RawRow = {
   created_at: Date;
   updated_at: Date;
   storage_seq: bigint;
+  started_at: Date;
+  finished_at: Date;
+  labels: string[];
 };
 
 function decodeRow(rawRow: unknown): JournalEntry {
@@ -20,6 +23,9 @@ function decodeRow(rawRow: unknown): JournalEntry {
     payload: row.payload,
     createdAt: row.created_at instanceof Date ? row.created_at.toISOString() : row.created_at,
     updatedAt: row.updated_at instanceof Date ? row.updated_at.toISOString() : row.updated_at,
+    startedAt: row.started_at instanceof Date ? row.started_at.toISOString() : row.started_at,
+    finishedAt: row.finished_at instanceof Date ? row.finished_at.toISOString() : row.finished_at,
+    labels: Array.isArray(row.labels) ? row.labels : [],
   });
 }
 
@@ -40,13 +46,16 @@ export function appendEntries(
       payload: input.payload,
       createdAt: now,
       updatedAt: now,
+      startedAt: input.startedAt,
+      finishedAt: input.finishedAt,
+      labels: input.labels ?? [],
     }));
 
-    // Build parameterized multi-VALUES INSERT
+    // Build parameterized multi-VALUES INSERT (8 params per row)
     const placeholders = values
       .map(
         (_, i) =>
-          `($${i * 5 + 1}, $${i * 5 + 2}, $${i * 5 + 3}::jsonb, $${i * 5 + 4}::timestamptz, $${i * 5 + 5}::timestamptz)`,
+          `($${i * 8 + 1}, $${i * 8 + 2}, $${i * 8 + 3}::jsonb, $${i * 8 + 4}::timestamptz, $${i * 8 + 5}::timestamptz, $${i * 8 + 6}::timestamptz, $${i * 8 + 7}::timestamptz, $${i * 8 + 8}::text[])`,
       )
       .join(", ");
 
@@ -56,14 +65,17 @@ export function appendEntries(
       JSON.stringify(v.payload),
       v.createdAt,
       v.updatedAt,
+      v.startedAt,
+      v.finishedAt,
+      v.labels,
     ]);
 
     const result = yield* Effect.tryPromise({
       try: () =>
         db.query<RawRow>(
-          `INSERT INTO journal_entries (id, name, payload, created_at, updated_at)
+          `INSERT INTO journal_entries (id, name, payload, created_at, updated_at, started_at, finished_at, labels)
            VALUES ${placeholders}
-           RETURNING id, name, payload, created_at, updated_at, storage_seq`,
+           RETURNING id, name, payload, created_at, updated_at, started_at, finished_at, labels, storage_seq`,
           params,
         ),
       catch: (cause) => new StorageUnavailable({ cause }),
@@ -80,7 +92,7 @@ export function listEntries(): Effect.Effect<ReadonlyArray<JournalEntry>, StoreE
     const result = yield* Effect.tryPromise({
       try: () =>
         db.query<RawRow>(
-          `SELECT id, name, payload, created_at, updated_at, storage_seq
+          `SELECT id, name, payload, created_at, updated_at, started_at, finished_at, labels, storage_seq
            FROM journal_entries
            ORDER BY created_at DESC, storage_seq ASC`,
         ),
@@ -106,7 +118,7 @@ export function updateEntry(
                payload = COALESCE($3::jsonb, payload),
                updated_at = now()
            WHERE id = $1
-           RETURNING id, name, payload, created_at, updated_at, storage_seq`,
+           RETURNING id, name, payload, created_at, updated_at, started_at, finished_at, labels, storage_seq`,
           [id, input.name ?? null, input.payload != null ? JSON.stringify(input.payload) : null],
         ),
       catch: (cause) => new StorageUnavailable({ cause }),
@@ -143,7 +155,7 @@ export function bumpEntry(id: EntryId): Effect.Effect<JournalEntry, StoreError, 
           `UPDATE journal_entries
            SET created_at = now(), updated_at = now()
            WHERE id = $1
-           RETURNING id, name, payload, created_at, updated_at, storage_seq`,
+           RETURNING id, name, payload, created_at, updated_at, started_at, finished_at, labels, storage_seq`,
           [id],
         ),
       catch: (cause) => new StorageUnavailable({ cause }),

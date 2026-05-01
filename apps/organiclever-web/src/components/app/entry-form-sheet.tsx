@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Schema } from "effect";
-import { EntryName } from "@/lib/journal/schema";
+import { EntryName, IsoTimestamp } from "@/lib/journal/schema";
 import type { JournalEntry, NewEntryInput, UpdateEntryInput } from "@/lib/journal/types";
 
 const PRESET_NAMES = ["workout", "reading", "meditation"] as const;
@@ -109,11 +109,15 @@ export function EntryFormSheet(props: EntryFormSheetProps) {
         return;
       }
 
+      const now = Schema.decodeUnknownSync(IsoTimestamp)(new Date().toISOString());
       const validInputs: NewEntryInput[] = results.map((r) => {
         if (!r.valid) throw new Error("Unexpected invalid result");
         return {
           name: Schema.decodeUnknownSync(EntryName)(r.name),
           payload: r.payload,
+          startedAt: now,
+          finishedAt: now,
+          labels: [] as const,
         };
       });
 

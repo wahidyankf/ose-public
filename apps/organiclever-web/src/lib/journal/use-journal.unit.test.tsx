@@ -26,6 +26,7 @@ function makeTestRuntime() {
 
 const makeName = (s: string) => Schema.decodeUnknownSync(EntryName)(s);
 const makePayload = (obj: Record<string, unknown>) => Schema.decodeUnknownSync(EntryPayload)(obj);
+const makeTs = () => new Date().toISOString() as unknown as import("./schema").IsoTimestamp;
 
 describe("useJournal", () => {
   it("initial status is loading then transitions to ready", async () => {
@@ -62,8 +63,17 @@ describe("useJournal", () => {
     );
 
     // Add batch
+    const ts1 = makeTs();
     act(() => {
-      result.current.addBatch([{ name: makeName("workout"), payload: makePayload({ reps: 5 }) }]);
+      result.current.addBatch([
+        {
+          name: makeName("workout"),
+          payload: makePayload({ reps: 5 }),
+          startedAt: ts1,
+          finishedAt: ts1,
+          labels: [] as const,
+        },
+      ]);
     });
 
     // Wait for entries to appear
@@ -94,8 +104,17 @@ describe("useJournal", () => {
     );
 
     // Trigger mutation
+    const ts2 = makeTs();
     act(() => {
-      result.current.addBatch([{ name: makeName("meal"), payload: makePayload({ calories: 500 }) }]);
+      result.current.addBatch([
+        {
+          name: makeName("meal"),
+          payload: makePayload({ calories: 500 }),
+          startedAt: ts2,
+          finishedAt: ts2,
+          labels: [] as const,
+        },
+      ]);
     });
 
     // Check that isMutating becomes true at some point

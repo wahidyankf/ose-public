@@ -6,7 +6,8 @@ const FILENAME_RX = /^(\d{4}_\d{2}_\d{2}T\d{2}_\d{2}_\d{2}__[a-z0-9_]{1,60})\.ts
 
 const files = readdirSync(MIGRATION_DIR)
   .filter((f) => f !== "index.generated.ts" && f !== "index.ts")
-  .filter((f) => f.endsWith(".ts"));
+  .filter((f) => f.endsWith(".ts"))
+  .filter((f) => !f.includes(".test."));
 
 for (const f of files) {
   if (!FILENAME_RX.test(f)) {

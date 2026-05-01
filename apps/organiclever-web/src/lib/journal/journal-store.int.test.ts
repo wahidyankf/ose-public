@@ -22,27 +22,48 @@ const TestPgliteLayer = Layer.scoped(
 
 const makeName = (s: string) => Schema.decodeUnknownSync(EntryName)(s);
 const makePayload = (obj: Record<string, unknown>) => obj as unknown as typeof EntryPayload.Type;
+const makeTs = () => new Date().toISOString() as unknown as import("./schema").IsoTimestamp;
 const missingId = "00000000-0000-0000-0000-000000000000" as unknown as EntryId;
 
 layer(TestPgliteLayer)("journal-store integration tests", (it) => {
   // Test 1: Migration idempotency
-  it.effect("migration idempotency — running twice keeps _migrations row count at 1", () =>
+  it.effect("migration idempotency — running twice keeps _migrations row count at 2", () =>
     Effect.gen(function* () {
       const { db } = yield* PgliteService;
       yield* Effect.promise(() => runMigrations(db));
       const result = yield* Effect.promise(() => db.query<{ id: string }>("SELECT id FROM _migrations"));
-      expect(result.rows).toHaveLength(1);
+      expect(result.rows).toHaveLength(2);
     }),
   );
 
   // Test 2: Batch atomicity
   it.effect("appendEntries batch atomicity — 3 entries share identical createdAt and listEntries returns 3 rows", () =>
     Effect.gen(function* () {
+      const ts = makeTs();
       const entries = yield* appendEntries([
-        { name: makeName("workout"), payload: makePayload({ reps: 12 }) },
-        { name: makeName("meal"), payload: makePayload({ calories: 500 }) },
-        { name: makeName("reading"), payload: makePayload({ pages: 20 }) },
+        {
+          name: makeName("workout"),
+          payload: makePayload({ reps: 12 }),
+          startedAt: ts,
+          finishedAt: ts,
+          labels: [] as const,
+        },
+        {
+          name: makeName("meal"),
+          payload: makePayload({ calories: 500 }),
+          startedAt: ts,
+          finishedAt: ts,
+          labels: [] as const,
+        },
+        {
+          name: makeName("reading"),
+          payload: makePayload({ pages: 20 }),
+          startedAt: ts,
+          finishedAt: ts,
+          labels: [] as const,
+        },
       ]);
+
       expect(entries).toHaveLength(3);
       expect(entries[0]?.createdAt).toBe(entries[1]?.createdAt);
       expect(entries[1]?.createdAt).toBe(entries[2]?.createdAt);
@@ -55,24 +76,25 @@ layer(TestPgliteLayer)("journal-store integration tests", (it) => {
   // Test 3: Sort tiebreaker within same batch
   it.effect("sort tiebreaker — same-timestamp batch comes back in input order (storage_seq ASC)", () =>
     Effect.gen(function* () {
+      const ts = makeTs();
       const entries = yield* appendEntries([
-        { name: makeName("alpha"), payload: makePayload({}) },
-        { name: makeName("beta"), payload: makePayload({}) },
-        { name: makeName("gamma"), payload: makePayload({}) },
+        { name: makeName("workout"), payload: makePayload({}), startedAt: ts, finishedAt: ts, labels: [] as const },
+        { name: makeName("reading"), payload: makePayload({}), startedAt: ts, finishedAt: ts, labels: [] as const },
+        { name: makeName("learning"), payload: makePayload({}), startedAt: ts, finishedAt: ts, labels: [] as const },
       ]);
       expect(entries).toHaveLength(3);
 
       const all = yield* listEntries();
       // Same-timestamp entries must appear in insertion order (storage_seq ASC)
       const names = all.map((e) => e.name);
-      const alphaIdx = names.indexOf(makeName("alpha"));
-      const betaIdx = names.indexOf(makeName("beta"));
-      const gammaIdx = names.indexOf(makeName("gamma"));
-      expect(alphaIdx).toBeGreaterThanOrEqual(0);
-      expect(betaIdx).toBeGreaterThanOrEqual(0);
-      expect(gammaIdx).toBeGreaterThanOrEqual(0);
-      expect(alphaIdx).toBeLessThan(betaIdx);
-      expect(betaIdx).toBeLessThan(gammaIdx);
+      const workoutIdx = names.indexOf(makeName("workout"));
+      const readingIdx = names.indexOf(makeName("reading"));
+      const learningIdx = names.indexOf(makeName("learning"));
+      expect(workoutIdx).toBeGreaterThanOrEqual(0);
+      expect(readingIdx).toBeGreaterThanOrEqual(0);
+      expect(learningIdx).toBeGreaterThanOrEqual(0);
+      expect(workoutIdx).toBeLessThan(readingIdx);
+      expect(readingIdx).toBeLessThan(learningIdx);
     }),
   );
 
@@ -81,24 +103,36 @@ layer(TestPgliteLayer)("journal-store integration tests", (it) => {
     "cross-batch ordering — entries from later batch appear before earlier batch in listEntries",
     () =>
       Effect.gen(function* () {
-        const batch1 = yield* appendEntries([{ name: makeName("x-entry"), payload: makePayload({}) }]);
+        const ts1 = makeTs();
+        const batch1 = yield* appendEntries([
+          { name: makeName("reading"), payload: makePayload({}), startedAt: ts1, finishedAt: ts1, labels: [] as const },
+        ]);
         const xEntry = batch1[0];
         if (!xEntry) throw new Error("Expected batch1 entry");
 
         // Small delay to ensure a different timestamp
         yield* Effect.promise(() => new Promise((r) => setTimeout(r, 10)));
 
-        const batch2 = yield* appendEntries([{ name: makeName("y-entry"), payload: makePayload({}) }]);
+        const ts2 = makeTs();
+        const batch2 = yield* appendEntries([
+          {
+            name: makeName("learning"),
+            payload: makePayload({}),
+            startedAt: ts2,
+            finishedAt: ts2,
+            labels: [] as const,
+          },
+        ]);
         const yEntry = batch2[0];
         if (!yEntry) throw new Error("Expected batch2 entry");
 
         const all = yield* listEntries();
         const names = all.map((e) => e.name);
-        const xIdx = names.indexOf(makeName("x-entry"));
-        const yIdx = names.indexOf(makeName("y-entry"));
+        const xIdx = names.indexOf(makeName("reading"));
+        const yIdx = names.indexOf(makeName("learning"));
         expect(xIdx).toBeGreaterThanOrEqual(0);
         expect(yIdx).toBeGreaterThanOrEqual(0);
-        // y-entry (later batch) should sort before x-entry (earlier batch)
+        // learning (later batch) should sort before reading (earlier batch)
         expect(yIdx).toBeLessThan(xIdx);
       }),
     { timeout: 15000 },
@@ -107,12 +141,21 @@ layer(TestPgliteLayer)("journal-store integration tests", (it) => {
   // Test 5: updateEntry preserves createdAt and advances updatedAt
   it.effect("updateEntry preserves createdAt and advances updatedAt", () =>
     Effect.gen(function* () {
-      const appended = yield* appendEntries([{ name: makeName("original-name"), payload: makePayload({ x: 1 }) }]);
+      const ts = makeTs();
+      const appended = yield* appendEntries([
+        {
+          name: makeName("workout"),
+          payload: makePayload({ x: 1 }),
+          startedAt: ts,
+          finishedAt: ts,
+          labels: [] as const,
+        },
+      ]);
       const entry = appended[0];
       if (!entry) throw new Error("Expected entry");
 
       const id = Schema.decodeUnknownSync(EntryId)(entry.id);
-      const updated = yield* updateEntry(id, { name: makeName("new-name") });
+      const updated = yield* updateEntry(id, { name: makeName("meal") });
 
       expect(updated.createdAt).toBe(entry.createdAt);
       expect(updated.updatedAt >= entry.updatedAt).toBe(true);
@@ -122,19 +165,23 @@ layer(TestPgliteLayer)("journal-store integration tests", (it) => {
   // Test 6: updateEntry partial patch (COALESCE — name only, payload unchanged)
   it.effect("updateEntry partial patch — updating only name leaves payload unchanged (COALESCE)", () =>
     Effect.gen(function* () {
+      const ts = makeTs();
       const appended = yield* appendEntries([
         {
-          name: makeName("patch-test"),
+          name: makeName("reading"),
           payload: makePayload({ key: "original-value" }),
+          startedAt: ts,
+          finishedAt: ts,
+          labels: [] as const,
         },
       ]);
       const entry = appended[0];
       if (!entry) throw new Error("Expected entry");
 
       const id = Schema.decodeUnknownSync(EntryId)(entry.id);
-      const updated = yield* updateEntry(id, { name: makeName("patched-name") });
+      const updated = yield* updateEntry(id, { name: makeName("learning") });
 
-      expect(updated.name).toBe("patched-name");
+      expect(updated.name).toBe("learning");
       expect(updated.payload).toEqual({ key: "original-value" });
     }),
   );
@@ -158,7 +205,10 @@ layer(TestPgliteLayer)("journal-store integration tests", (it) => {
   // Test 8: deleteEntry rowcount semantics
   it.effect("deleteEntry — returns true for existing entry, false for missing entry", () =>
     Effect.gen(function* () {
-      const appended = yield* appendEntries([{ name: makeName("to-delete"), payload: makePayload({}) }]);
+      const ts = makeTs();
+      const appended = yield* appendEntries([
+        { name: makeName("focus"), payload: makePayload({}), startedAt: ts, finishedAt: ts, labels: [] as const },
+      ]);
       const entry = appended[0];
       if (!entry) throw new Error("Expected entry");
 
@@ -191,14 +241,26 @@ layer(TestPgliteLayer)("journal-store integration tests", (it) => {
     "bumpEntry mutates both createdAt and updatedAt, moves entry to top of list",
     () =>
       Effect.gen(function* () {
-        const olderBatch = yield* appendEntries([{ name: makeName("bump-me"), payload: makePayload({}) }]);
+        const ts1 = makeTs();
+        const olderBatch = yield* appendEntries([
+          { name: makeName("reading"), payload: makePayload({}), startedAt: ts1, finishedAt: ts1, labels: [] as const },
+        ]);
         const older = olderBatch[0];
         if (!older) throw new Error("Expected older entry");
 
         // Small delay so newer entry gets a distinct later timestamp
         yield* Effect.promise(() => new Promise((r) => setTimeout(r, 10)));
 
-        yield* appendEntries([{ name: makeName("newer-entry"), payload: makePayload({}) }]);
+        const ts2 = makeTs();
+        yield* appendEntries([
+          {
+            name: makeName("learning"),
+            payload: makePayload({}),
+            startedAt: ts2,
+            finishedAt: ts2,
+            labels: [] as const,
+          },
+        ]);
 
         const olderId = Schema.decodeUnknownSync(EntryId)(older.id);
 
@@ -208,7 +270,7 @@ layer(TestPgliteLayer)("journal-store integration tests", (it) => {
         yield* bumpEntry(olderId);
 
         const all = yield* listEntries();
-        expect(all[0]?.name).toBe("bump-me");
+        expect(all[0]?.name).toBe("reading");
 
         const bumped = all[0];
         if (!bumped) throw new Error("Expected bumped entry");
@@ -221,9 +283,10 @@ layer(TestPgliteLayer)("journal-store integration tests", (it) => {
   // Test 11: clearEntries
   it.effect("clearEntries — listEntries returns empty array after clear", () =>
     Effect.gen(function* () {
+      const ts = makeTs();
       yield* appendEntries([
-        { name: makeName("entry-a"), payload: makePayload({}) },
-        { name: makeName("entry-b"), payload: makePayload({}) },
+        { name: makeName("workout"), payload: makePayload({}), startedAt: ts, finishedAt: ts, labels: [] as const },
+        { name: makeName("meal"), payload: makePayload({}), startedAt: ts, finishedAt: ts, labels: [] as const },
       ]);
 
       yield* clearEntries();
@@ -239,10 +302,29 @@ layer(TestPgliteLayer)("journal-store integration tests", (it) => {
       const { db } = yield* PgliteService;
 
       // Insert fixture: 2x "workout" and 1x "reading"
+      const ts = makeTs();
       yield* appendEntries([
-        { name: makeName("workout"), payload: makePayload({ reps: 10 }) },
-        { name: makeName("workout"), payload: makePayload({ reps: 15 }) },
-        { name: makeName("reading"), payload: makePayload({ pages: 30 }) },
+        {
+          name: makeName("workout"),
+          payload: makePayload({ reps: 10 }),
+          startedAt: ts,
+          finishedAt: ts,
+          labels: [] as const,
+        },
+        {
+          name: makeName("workout"),
+          payload: makePayload({ reps: 15 }),
+          startedAt: ts,
+          finishedAt: ts,
+          labels: [] as const,
+        },
+        {
+          name: makeName("reading"),
+          payload: makePayload({ pages: 30 }),
+          startedAt: ts,
+          finishedAt: ts,
+          labels: [] as const,
+        },
       ]);
 
       type StatRow = { name: string; entry_count: string };

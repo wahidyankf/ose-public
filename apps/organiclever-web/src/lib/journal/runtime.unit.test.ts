@@ -36,7 +36,7 @@ describe("runtime - makeJournalRuntime", () => {
       Effect.gen(function* () {
         const { db } = yield* PgliteService;
         const result = yield* Effect.promise(() => db.query<{ id: string }>("SELECT id FROM _migrations"));
-        expect(result.rows).toHaveLength(1);
+        expect(result.rows).toHaveLength(2);
       }),
     );
 

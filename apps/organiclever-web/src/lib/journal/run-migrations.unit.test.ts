@@ -12,9 +12,10 @@ describe("runMigrations", () => {
     const db = await createFreshDb();
     try {
       await runMigrations(db);
-      const result = await db.query<{ id: string }>("SELECT id FROM _migrations");
-      expect(result.rows).toHaveLength(1);
+      const result = await db.query<{ id: string }>("SELECT id FROM _migrations ORDER BY id");
+      expect(result.rows).toHaveLength(2);
       expect(result.rows[0]?.id).toBe("2026_04_28T14_05_30__create_journal_entries_table");
+      expect(result.rows[1]?.id).toBe("2026_05_01T03_33_00__add_typed_payload_columns");
     } finally {
       await db.close();
     }
@@ -27,16 +28,16 @@ describe("runMigrations", () => {
       const beforeResult = await db.query<{
         id: string;
         applied_at: Date;
-      }>("SELECT id, applied_at FROM _migrations");
+      }>("SELECT id, applied_at FROM _migrations ORDER BY id");
       const appliedAtBefore = beforeResult.rows[0]?.applied_at;
 
       await runMigrations(db);
       const afterResult = await db.query<{
         id: string;
         applied_at: Date;
-      }>("SELECT id, applied_at FROM _migrations");
+      }>("SELECT id, applied_at FROM _migrations ORDER BY id");
 
-      expect(afterResult.rows).toHaveLength(1);
+      expect(afterResult.rows).toHaveLength(2);
       expect(afterResult.rows[0]?.applied_at).toEqual(appliedAtBefore);
     } finally {
       await db.close();

@@ -29,12 +29,18 @@ export const JournalEntry = Schema.Struct({
   payload: EntryPayload,
   createdAt: IsoTimestamp,
   updatedAt: IsoTimestamp,
+  startedAt: IsoTimestamp,
+  finishedAt: IsoTimestamp,
+  labels: Schema.Array(Schema.String),
 });
 export type JournalEntry = typeof JournalEntry.Type;
 
 export const NewEntryInput = Schema.Struct({
   name: EntryName,
   payload: EntryPayload,
+  startedAt: IsoTimestamp,
+  finishedAt: IsoTimestamp,
+  labels: Schema.optionalWith(Schema.Array(Schema.String), { default: () => [] as string[] }),
 });
 export type NewEntryInput = typeof NewEntryInput.Type;
 

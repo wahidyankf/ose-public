@@ -1,6 +1,6 @@
 ---
 description: Applies validated fixes from content-checker audit reports. Re-validates before applying changes.
-model: zai-coding-plan/glm-5.1
+model: opencode-go/minimax-m2.7
 tools:
   bash: true
   edit: true

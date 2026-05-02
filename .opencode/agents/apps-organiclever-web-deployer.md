@@ -1,6 +1,6 @@
 ---
 description: Deploys organiclever-web to production by triggering the deploy-organiclever-web-to-production.yml GitHub Actions workflow. The workflow re-runs FE E2E tests against staging as a gate, then promotes stag-organiclever-web to prod-organiclever-web. Vercel listens to prod-organiclever-web for automatic builds.
-model: zai-coding-plan/glm-5-turbo
+model: opencode-go/glm-5
 tools:
   bash: true
   grep: true

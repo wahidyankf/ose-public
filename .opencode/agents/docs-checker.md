@@ -1,6 +1,6 @@
 ---
 description: Expert at validating factual correctness and content consistency of documentation using web verification. Checks technical accuracy, detects contradictions, validates examples and commands, and identifies outdated information. Use when verifying technical claims, checking command syntax, detecting contradictions, or auditing documentation accuracy.
-model: zai-coding-plan/glm-5.1
+model: opencode-go/minimax-m2.7
 tools:
   bash: true
   glob: true

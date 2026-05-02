@@ -1,6 +1,6 @@
 ---
 description: Validates links in ayokoding-web content. Checks internal and external links for correctness and accessibility.
-model: zai-coding-plan/glm-5-turbo
+model: opencode-go/glm-5
 tools:
   bash: true
   edit: true

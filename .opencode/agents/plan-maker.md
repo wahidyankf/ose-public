@@ -1,6 +1,6 @@
 ---
 description: Creates comprehensive project plans with requirements, technical documentation, and delivery checklists. Structures plans for systematic execution via the plan-execution workflow (orchestrated by the calling context).
-model: zai-coding-plan/glm-5.1
+model: opencode-go/minimax-m2.7
 tools:
   bash: true
   edit: true

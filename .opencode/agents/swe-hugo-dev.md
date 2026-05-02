@@ -1,6 +1,6 @@
 ---
 description: DEPRECATED - No active Hugo sites remain. Formerly developed Hugo sites (oseplatform-web). oseplatform-web migrated to Next.js 16.
-model: zai-coding-plan/glm-5.1
+model: opencode-go/minimax-m2.7
 tools:
   glob: true
   grep: true

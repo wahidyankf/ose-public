@@ -1,6 +1,6 @@
 ---
 description: Applies validated fixes from link-checker audit reports. Re-validates link findings before applying changes.
-model: zai-coding-plan/glm-5-turbo
+model: opencode-go/glm-5
 tools:
   bash: true
   edit: true

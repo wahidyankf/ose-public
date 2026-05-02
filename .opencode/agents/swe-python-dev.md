@@ -1,6 +1,6 @@
 ---
 description: Develops Python applications following Pythonic principles, data processing patterns, and platform coding standards. Use when implementing Python code for OSE Platform.
-model: zai-coding-plan/glm-5.1
+model: opencode-go/minimax-m2.7
 tools:
   bash: true
   edit: true

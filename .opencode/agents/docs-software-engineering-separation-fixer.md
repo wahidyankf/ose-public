@@ -1,6 +1,6 @@
 ---
 description: Applies validated fixes from docs-software-engineering-separation-checker audit reports. Fixes missing prerequisite statements, removes duplicated educational content from style guides, and ensures docs/explanation focuses on repository-specific conventions only. Re-validates findings before applying changes.
-model: zai-coding-plan/glm-5.1
+model: opencode-go/minimax-m2.7
 tools:
   bash: true
   edit: true

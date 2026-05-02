@@ -1,6 +1,6 @@
 ---
 description: Creates and updates tutorial documentation following Diátaxis framework and tutorial conventions
-model: zai-coding-plan/glm-5.1
+model: opencode-go/minimax-m2.7
 tools:
   bash: true
   edit: true

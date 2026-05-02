@@ -1,6 +1,6 @@
 ---
 description: Surfaces content to propagate FROM `ose-public` (upstream) TO the downstream `ose-primer` template in three modes. `dry-run` (default) writes a findings report only. `apply` creates a worktree inside the primer clone, commits transformed files on a dedicated branch, pushes, and opens a draft PR against `wahidyankf/ose-primer:main` — never committing to the primer's `main` directly. `parity-check` (Phase 7 gate of the 2026-04-18 ose-primer-separation plan) verifies that the primer carries byte-equivalent or newer state for every `a-demo-*` path in the frozen extraction scope before `ose-public` removes those paths.
-model: zai-coding-plan/glm-5.1
+model: opencode-go/minimax-m2.7
 tools:
   bash: true
   edit: true

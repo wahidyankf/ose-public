@@ -187,7 +187,7 @@ const (
 	stepMermaidFileTBNoRankMoreThan3                   = `^a markdown file containing a TB flowchart where no rank has more than 3 nodes$`
 	stepMermaidFileTBOneRank4Nodes                     = `^a markdown file containing a TB flowchart where one rank has 4 parallel nodes$`
 	stepMermaidFileLRNoRankMoreThan3                   = `^a markdown file containing an LR flowchart where no rank has more than 3 nodes$`
-	stepMermaidFileLR4NodesSameDepth                   = `^a markdown file containing an LR flowchart where one rank has 4 nodes at the same depth$`
+	stepMermaidFileLR4NodesSameDepth                   = `^a markdown file containing an LR flowchart with a chain that is 4 levels deep$`
 	stepMermaidFileFlowchart4NodesOneRank              = `^a markdown file containing a flowchart with 4 nodes at one rank$`
 	stepMermaidFile4NodesMoreThan5Ranks                = `^a markdown file containing a flowchart with 4 nodes at one rank and more than 5 ranks deep$`
 	stepMermaidFile4NodesExactly4RanksDeep             = `^a markdown file containing a flowchart with 4 nodes at one rank and exactly 4 ranks deep$`

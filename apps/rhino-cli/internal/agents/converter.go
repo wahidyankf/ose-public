@@ -194,15 +194,13 @@ func ConvertModel(claudeModel string) string {
 	model := strings.TrimSpace(claudeModel)
 
 	switch model {
-	case "sonnet", "opus":
-		return "zai-coding-plan/glm-5.1"
 	case "haiku":
-		return "zai-coding-plan/glm-5-turbo"
+		return "opencode-go/glm-5"
 	default:
 		// Default to the most capable model.
 		// "inherit" is not a valid OpenCode model value and causes
 		// ProviderModelNotFoundError, so we use an explicit model ID.
-		return "zai-coding-plan/glm-5.1"
+		return "opencode-go/minimax-m2.7"
 	}
 }
 

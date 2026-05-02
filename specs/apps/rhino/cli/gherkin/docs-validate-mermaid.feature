@@ -46,8 +46,8 @@ Feature: Mermaid Flowchart Structural Validation
     Then the command exits successfully
     And the output reports no violations
 
-  Scenario: A LR flowchart with 4 nodes at one rank is flagged
-    Given a markdown file containing an LR flowchart where one rank has 4 nodes at the same depth
+  Scenario: A LR flowchart with a chain 4 levels deep is flagged
+    Given a markdown file containing an LR flowchart with a chain that is 4 levels deep
     When the developer runs docs validate-mermaid
     Then the command exits with a failure code
     And the output identifies the file and block with the excessive width

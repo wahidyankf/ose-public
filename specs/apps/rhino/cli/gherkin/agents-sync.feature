@@ -30,7 +30,7 @@ Feature: Agent Configuration Synchronisation
       Given a .claude/ agent configured with the "sonnet" model
       When the developer runs agents sync
       Then the command exits successfully
-      And the corresponding .opencode/ agent uses the "zai-coding-plan/glm-5.1" model identifier
+      And the corresponding .opencode/ agent uses the "opencode-go/minimax-m2.7" model identifier
 
   @agents-validate-sync
   Rule: agents validate-sync confirms .claude/ and .opencode/ are semantically equivalent

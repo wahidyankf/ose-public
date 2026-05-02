@@ -26,7 +26,7 @@ type ClaudeAgent struct {
 // from Claude `color`) and Steps (translated from Claude `maxTurns`).
 type OpenCodeAgent struct {
 	Description string          `yaml:"description"`
-	Model       string          `yaml:"model"`           // "zai-coding-plan/glm-5.1" | "zai-coding-plan/glm-5-turbo"
+	Model       string          `yaml:"model"`           // "opencode-go/minimax-m2.7" | "opencode-go/glm-5"
 	Tools       map[string]bool `yaml:"tools"`           // read: true, write: true, etc.
 	Color       string          `yaml:"color,omitempty"` // pass-through from Claude `color`
 	Steps       int             `yaml:"steps,omitempty"` // translated from Claude `maxTurns`

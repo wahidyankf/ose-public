@@ -20,12 +20,11 @@ Use the normal `Write` / `Edit` tools to create and modify files under `.claude/
 This applies to:
 
 - `.claude/agents/*.md` — agent definitions
-- `.claude/skills/*/SKILL.md` — skill files
+- `.claude/skills/*/SKILL.md` — skill files (source of truth for both Claude Code AND OpenCode; OpenCode reads natively per [opencode.ai/docs/skills](https://opencode.ai/docs/skills/), no mirror)
 - `.claude/skills/*/reference/*.md` — skill reference modules
 - `.opencode/agents/*.md` — OpenCode agent mirrors
-- `.opencode/skill/*/SKILL.md` — OpenCode skill mirrors
 
-After editing `.claude/` sources, run `npm run sync:claude-to-opencode` so the `.opencode/` mirrors stay aligned. The pre-commit hook validates both formats.
+After editing `.claude/agents/` sources, run `npm run sync:claude-to-opencode` so the `.opencode/agents/` mirror stays aligned. The pre-commit hook validates both formats. Skills under `.claude/skills/` are not mirrored — restart any active OpenCode session to pick up edits.
 
 ## References
 

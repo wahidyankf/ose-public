@@ -72,22 +72,21 @@ func (s *validateSyncSteps) createSyncedAgentPair() error {
 	return nil
 }
 
-func (s *validateSyncSteps) createSyncedSkillPair() error {
+// createClaudeOnlySkill creates a Claude-side skill at
+// .claude/skills/test-skill/SKILL.md with NO .opencode mirror. Phase 4A
+// removed skill copying because OpenCode reads .claude/skills/ natively
+// (per opencode.ai/docs/skills/); the noSyncedSkillMirror check now
+// fails when a mirror DOES exist, so a fully-synced fixture must NOT
+// create one.
+func (s *validateSyncSteps) createClaudeOnlySkill() error {
 	claudeSkillDir := filepath.Join(s.tmpDir, ".claude", "skills", "test-skill")
-	opencodeSkillDir := filepath.Join(s.tmpDir, ".opencode", "skill", "test-skill")
 	if err := os.MkdirAll(claudeSkillDir, 0755); err != nil {
 		return fmt.Errorf("failed to create .claude/skills dir: %w", err)
-	}
-	if err := os.MkdirAll(opencodeSkillDir, 0755); err != nil {
-		return fmt.Errorf("failed to create .opencode/skill dir: %w", err)
 	}
 
 	skillContent := "---\nname: test-skill\ndescription: A test skill\n---\nSkill content.\n"
 	if err := os.WriteFile(filepath.Join(claudeSkillDir, "SKILL.md"), []byte(skillContent), 0644); err != nil {
 		return fmt.Errorf("failed to write .claude skill: %w", err)
-	}
-	if err := os.WriteFile(filepath.Join(opencodeSkillDir, "SKILL.md"), []byte(skillContent), 0644); err != nil {
-		return fmt.Errorf("failed to write .opencode skill: %w", err)
 	}
 
 	return nil
@@ -97,7 +96,7 @@ func (s *validateSyncSteps) claudeAndOpencodeConfigsThatAreFullySynchronised() e
 	if err := s.createSyncedAgentPair(); err != nil {
 		return err
 	}
-	return s.createSyncedSkillPair()
+	return s.createClaudeOnlySkill()
 }
 
 func (s *validateSyncSteps) anAgentInClaudeWhoseDescriptionDiffersFromItsOpenCodeCounterpart() error {

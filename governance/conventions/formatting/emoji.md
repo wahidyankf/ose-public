@@ -30,7 +30,7 @@ This convention implements the following core principles:
 
 ### What This Convention Covers
 
-- **Where emojis are allowed** - docs/, READMEs, plans/, governance/, AGENTS.md, CLAUDE.md, .claude/agents/, .opencode/agents/, .opencode/skill/
+- **Where emojis are allowed** - docs/, READMEs, plans/, governance/, AGENTS.md, CLAUDE.md, .claude/agents/, .opencode/agents/, .claude/skills/
 - **Where emojis are forbidden** - config files (_.json,_.yaml, \*.toml), source code
 - **Semantic emoji usage** - Using emojis for meaning, not decoration
 - **Emoji consistency** - Standard emojis for common concepts
@@ -477,9 +477,9 @@ category: explanation
      - Section headers (Purpose, Key Concepts, Reference)
      - Status indicators in examples (PASS: Correct, FAIL: Incorrect, Warning)
 
-6. **Root configuration and skill files** - CLAUDE.md, .opencode/skill/\*.md
+6. **Root configuration and skill files** - CLAUDE.md, .claude/skills/\*.md
    - CLAUDE.md - Project guidance document for Claude Code sessions, human-readable
-   - .opencode/skill/\*.md - Skill files for OpenCode compatibility (synced from .claude/skills/)
+   - .claude/skills/\*.md - Skill files for OpenCode compatibility (synced from .claude/skills/)
    - Emojis support scannability of guidance and knowledge content read by developers
 
 **FAIL: DO NOT use emojis in these files:**
@@ -514,7 +514,7 @@ category: explanation
 PASS: **Clear rule:**
 
 ```
-Emojis for humans: docs/, governance/, plans/, README.md files, CLAUDE.md, .opencode/skill/*.md
+Emojis for humans: docs/, governance/, plans/, README.md files, CLAUDE.md, .claude/skills/*.md
 Emojis for agents: AGENTS.md, .claude/agents/*.md, .opencode/agents/*.md
 No emojis for machines: config files (*.json, *.yaml, *.toml)
 ```
@@ -761,7 +761,7 @@ When adding emojis to existing documentation:
 - Update convention documents in `governance/conventions/`
 - Update README.md files (root and `.opencode/agents/README.md`)
 - Update AGENTS.md and agent files (`.claude/agents/*.md`, `.opencode/agents/*.md`) per Rule 7 item 5 (emojis enhance scannability for criticality definitions and section headers)
-- Update CLAUDE.md and `.opencode/skill/*.md` per Rule 7 item 6 (emojis support scannability of guidance and knowledge content)
+- Update CLAUDE.md and `.claude/skills/*.md` per Rule 7 item 6 (emojis support scannability of guidance and knowledge content)
 
 **Phase 2: Explanation Docs** (Next)
 
@@ -792,7 +792,7 @@ When reviewing emoji usage, verify:
 - [ ] No emojis in frontmatter or metadata
 - [ ] Emojis ARE used in AGENTS.md (human-readable navigation)
 - [ ] Emojis ARE used in agent files `.claude/agents/*.md` and `.opencode/agents/*.md` (including README.md)
-- [ ] Emojis ARE used in CLAUDE.md and `.opencode/skill/*.md` (root config and skill files)
+- [ ] Emojis ARE used in CLAUDE.md and `.claude/skills/*.md` (root config and skill files)
 - [ ] Emojis ARE used in README.md files (human-oriented indices)
 - [ ] Emojis ARE used in docs/, plans/, and governance/ (human documentation)
 - [ ] Headings still make sense without emoji (accessibility)

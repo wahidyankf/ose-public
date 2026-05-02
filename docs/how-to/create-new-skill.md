@@ -223,8 +223,8 @@ Verify navigation links work:
 
 - SKILL.md links to `./reference.md#section-name` for details
 - SKILL.md links to `./examples.md#example-name` for code samples
-- reference.md has navigation footer: `[← Back to SKILL.md](../../.opencode/skill/plan-writing-gherkin-criteria/SKILL.md) | [→ See Examples](./examples.md)`
-- examples.md has navigation footer: `[← Back to SKILL.md](../../.opencode/skill/plan-writing-gherkin-criteria/SKILL.md) | [← See Reference](./reference.md)`
+- reference.md has navigation footer: `[← Back to SKILL.md](../../.claude/skills/plan-writing-gherkin-criteria/SKILL.md) | [→ See Examples](./examples.md)`
+- examples.md has navigation footer: `[← Back to SKILL.md](../../.claude/skills/plan-writing-gherkin-criteria/SKILL.md) | [← See Reference](./reference.md)`
 
 ### Step 6: Update README.md (Optional)
 

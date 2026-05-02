@@ -100,14 +100,19 @@ See `repo-applying-maker-checker-fixer` skill for complete workflow patterns.
 
 ## Dual-Mode Operation
 
-**Source of Truth**: This directory (`.claude/skills/`) is the PRIMARY source.
-**Sync Target**: Changes are synced to `.opencode/skill/` (SECONDARY) via automation.
+**Source of Truth**: This directory (`.claude/skills/`) is the PRIMARY source for both Claude Code AND OpenCode.
+
+**No mirror copy**: Per [opencode.ai/docs/skills](https://opencode.ai/docs/skills/),
+OpenCode reads `.claude/skills/<name>/SKILL.md` natively. `rhino-cli agents sync`
+does NOT copy skills to `.opencode/skill/` or `.opencode/skills/`. Editing a
+skill here is immediately visible to both systems on the next session start.
 
 **Making Changes**:
 
-1. Edit skills in `.claude/skills/` directory
-2. Run: `npm run sync:claude-to-opencode` (calls `rhino-cli sync-skills` internally, ~15ms for all skills)
-3. Both systems stay synchronized
+1. Edit skills in `.claude/skills/` directory.
+2. Restart any active Claude Code or OpenCode session to pick up changes.
+3. The `validate:sync` command's `No Synced Skill Mirror` check fails if a
+   stale `.opencode/skill/` or `.opencode/skills/<claude-name>` mirror reappears.
 
 **See**: [CLAUDE.md](../../CLAUDE.md) for complete guidance, [apps/rhino-cli/README.md](../../apps/rhino-cli/README.md) for rhino-cli details
 

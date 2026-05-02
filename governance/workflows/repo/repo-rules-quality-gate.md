@@ -51,7 +51,7 @@ This workflow validates **source definitions only** in `governance/`. It does NO
 
 - PASS: **Validates**: `governance/` (principles, conventions, development practices)
 - FAIL: **Skips**: `.opencode/agents/` (auto-generated from `.claude/agents/` - validate via sync script)
-- FAIL: **Skips**: `.opencode/skill/` (auto-synced from `.claude/skills/` - validate via sync script)
+- FAIL: **Skips**: `.claude/skills/` (auto-synced from `.claude/skills/` - validate via sync script)
 
 **Generated Output Validation**: Use CLI validation commands for validating generated content. This workflow ensures SOURCE is correct, then sync commands validate output generation.
 

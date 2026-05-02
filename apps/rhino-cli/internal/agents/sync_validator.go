@@ -51,27 +51,18 @@ func ValidateSync(repoRoot string) (*ValidationResult, error) {
 		result.TotalChecks++
 	}
 
-	// 3. Validate skills count
-	skillCountCheck := validateSkillCount(repoRoot)
-	result.Checks = append(result.Checks, skillCountCheck)
-	if skillCountCheck.Status == "passed" {
+	// 3. Validate no synced skill mirror exists. OpenCode reads
+	// .claude/skills/ natively per opencode.ai/docs/skills/, so any
+	// rhino-cli-generated skill copy under .opencode/skill/ or
+	// .opencode/skills/ is non-canonical and should be removed.
+	noSkillCheck := validateNoSyncedSkills(repoRoot)
+	result.Checks = append(result.Checks, noSkillCheck)
+	if noSkillCheck.Status == "passed" {
 		result.PassedChecks++
 	} else {
 		result.FailedChecks++
 	}
 	result.TotalChecks++
-
-	// 4. Validate skill identity (byte-for-byte match)
-	skillChecks := validateSkillIdentity(repoRoot)
-	for _, check := range skillChecks {
-		result.Checks = append(result.Checks, check)
-		if check.Status == "passed" {
-			result.PassedChecks++
-		} else {
-			result.FailedChecks++
-		}
-		result.TotalChecks++
-	}
 
 	result.Duration = time.Since(startTime)
 
@@ -330,127 +321,66 @@ func validateAgentFile(name, claudePath, opencodePath string) ValidationCheck {
 	}
 }
 
-// validateSkillCount checks that skill counts match
-func validateSkillCount(repoRoot string) ValidationCheck {
+// validateNoSyncedSkills asserts that no rhino-cli-managed skill mirror
+// exists. OpenCode reads .claude/skills/<name>/SKILL.md natively per
+// opencode.ai/docs/skills/, so any copy under .opencode/skill/
+// (singular) or .opencode/skills/ (plural) that mirrors a
+// .claude/skills/ entry is non-canonical and should be removed.
+//
+// Note: third-party tooling (e.g. an Nx generator) MAY populate
+// .opencode/skills/<other-name>/SKILL.md with skills that have NO
+// .claude/skills/ counterpart. Those are tolerated. This check fails
+// only when a mirror directory contains an entry whose name appears
+// under .claude/skills/.
+func validateNoSyncedSkills(repoRoot string) ValidationCheck {
 	claudeDir := filepath.Join(repoRoot, ".claude", "skills")
-	opencodeDir := filepath.Join(repoRoot, ".opencode", "skill")
-
-	// Count skills in .claude/skills (directories with SKILL.md)
-	claudeCount := 0
+	claudeNames := map[string]bool{}
 	if entries, err := os.ReadDir(claudeDir); err == nil {
 		for _, entry := range entries {
 			if entry.IsDir() {
 				skillFile := filepath.Join(claudeDir, entry.Name(), "SKILL.md")
 				if _, err := os.Stat(skillFile); err == nil {
-					claudeCount++
+					claudeNames[entry.Name()] = true
 				}
 			}
 		}
 	}
 
-	// Count skills in .opencode/skill (directories with SKILL.md)
-	opencodeCount := 0
-	if entries, err := os.ReadDir(opencodeDir); err == nil {
+	mirrorDirs := []string{
+		filepath.Join(repoRoot, ".opencode", "skill"),
+		filepath.Join(repoRoot, ".opencode", "skills"),
+	}
+
+	var offenders []string
+	for _, dir := range mirrorDirs {
+		entries, err := os.ReadDir(dir)
+		if err != nil {
+			continue
+		}
 		for _, entry := range entries {
-			if entry.IsDir() {
-				skillFile := filepath.Join(opencodeDir, entry.Name(), "SKILL.md")
+			if entry.IsDir() && claudeNames[entry.Name()] {
+				skillFile := filepath.Join(dir, entry.Name(), "SKILL.md")
 				if _, err := os.Stat(skillFile); err == nil {
-					opencodeCount++
+					offenders = append(offenders, filepath.Join(dir, entry.Name()))
 				}
 			}
 		}
 	}
 
-	if claudeCount == opencodeCount {
+	if len(offenders) == 0 {
 		return ValidationCheck{
-			Name:     "Skill Count",
-			Status:   "passed",
-			Expected: fmt.Sprintf("%d skills", claudeCount),
-			Actual:   fmt.Sprintf("%d skills", opencodeCount),
-			Message:  "Skill counts match",
-		}
-	}
-
-	return ValidationCheck{
-		Name:     "Skill Count",
-		Status:   "failed",
-		Expected: fmt.Sprintf("%d skills", claudeCount),
-		Actual:   fmt.Sprintf("%d skills", opencodeCount),
-		Message:  "Skill counts do not match",
-	}
-}
-
-// validateSkillIdentity checks that skills are byte-for-byte identical
-func validateSkillIdentity(repoRoot string) []ValidationCheck {
-	var checks []ValidationCheck
-
-	claudeDir := filepath.Join(repoRoot, ".claude", "skills")
-	opencodeDir := filepath.Join(repoRoot, ".opencode", "skill")
-
-	entries, err := os.ReadDir(claudeDir)
-	if err != nil {
-		checks = append(checks, ValidationCheck{
-			Name:    "Skill Identity",
-			Status:  "failed",
-			Message: fmt.Sprintf("Failed to read Claude skills directory: %v", err),
-		})
-		return checks
-	}
-
-	for _, entry := range entries {
-		if !entry.IsDir() {
-			continue
-		}
-
-		skillFile := filepath.Join(claudeDir, entry.Name(), "SKILL.md")
-		if _, err := os.Stat(skillFile); os.IsNotExist(err) {
-			continue
-		}
-
-		// OpenCode skills are also in folders with SKILL.md
-		opencodeFile := filepath.Join(opencodeDir, entry.Name(), "SKILL.md")
-
-		check := validateSkillFile(entry.Name(), skillFile, opencodeFile)
-		checks = append(checks, check)
-	}
-
-	return checks
-}
-
-// validateSkillFile checks if a skill file is byte-for-byte identical
-func validateSkillFile(name, claudePath, opencodePath string) ValidationCheck {
-	claudeContent, err := os.ReadFile(claudePath)
-	if err != nil {
-		return ValidationCheck{
-			Name:    fmt.Sprintf("Skill: %s", name),
-			Status:  "failed",
-			Message: fmt.Sprintf("Failed to read Claude skill: %v", err),
-		}
-	}
-
-	opencodeContent, err := os.ReadFile(opencodePath)
-	if err != nil {
-		return ValidationCheck{
-			Name:    fmt.Sprintf("Skill: %s", name),
-			Status:  "failed",
-			Message: fmt.Sprintf("Failed to read OpenCode skill: %v", err),
-		}
-	}
-
-	if bytes.Equal(claudeContent, opencodeContent) {
-		return ValidationCheck{
-			Name:    fmt.Sprintf("Skill: %s", name),
+			Name:    "No Synced Skill Mirror",
 			Status:  "passed",
-			Message: "Skill content is identical",
+			Message: "No rhino-cli-managed skill copies under .opencode/skill or .opencode/skills",
 		}
 	}
 
 	return ValidationCheck{
-		Name:     fmt.Sprintf("Skill: %s", name),
+		Name:     "No Synced Skill Mirror",
 		Status:   "failed",
-		Expected: "Identical content",
-		Actual:   "Content differs",
-		Message:  "Skill content mismatch",
+		Expected: "No skill copy mirroring .claude/skills/<name>",
+		Actual:   fmt.Sprintf("Found %d mirrored skill dir(s): %v", len(offenders), offenders),
+		Message:  "OpenCode reads .claude/skills/ natively; remove the mirror copies",
 	}
 }
 

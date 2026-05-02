@@ -505,7 +505,7 @@ Plans use Gherkin for phase-level acceptance criteria:
 Scenario: Phase 1 foundation complete
   Given Skills infrastructure is required
   When Phase 1 implementation is complete
-  Then .opencode/skill/ directory should exist with README and TEMPLATE
+  Then .claude/skills/ directory should exist with README and TEMPLATE
   And 3 Skills should be created (maker-checker-fixer, color-accessibility, repository-architecture)
   And AI Agents Convention should document skills: frontmatter field
   And all 3 Skills should auto-load when relevant tasks described

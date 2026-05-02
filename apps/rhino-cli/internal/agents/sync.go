@@ -6,7 +6,11 @@ import (
 	"time"
 )
 
-// SyncAll performs the complete sync operation
+// SyncAll performs the complete sync operation. As of the
+// validate-claude-opencode-sync-correctness plan (Phase 4A, Option A),
+// skills are no longer copied: OpenCode reads .claude/skills/<name>/SKILL.md
+// natively per opencode.ai/docs/skills/. SkillsOnly is now a no-op flag
+// (kept for CLI back-compat; documented in agents_sync.go long-help).
 func SyncAll(opts SyncOptions) (*SyncResult, error) {
 	startTime := time.Now()
 	result := &SyncResult{
@@ -14,7 +18,7 @@ func SyncAll(opts SyncOptions) (*SyncResult, error) {
 		Warnings:    []ConversionWarning{},
 	}
 
-	// Sync agents (unless skills-only)
+	// Sync agents (unless skills-only — which now produces an empty result)
 	if !opts.SkillsOnly {
 		agentsConverted, agentsFailed, agentFailedFiles, agentWarnings, err := ConvertAllAgents(opts.RepoRoot, opts.DryRun)
 		if err != nil {
@@ -24,17 +28,6 @@ func SyncAll(opts SyncOptions) (*SyncResult, error) {
 		result.AgentsFailed = agentsFailed
 		result.FailedFiles = append(result.FailedFiles, agentFailedFiles...)
 		result.Warnings = append(result.Warnings, agentWarnings...)
-	}
-
-	// Sync skills (unless agents-only)
-	if !opts.AgentsOnly {
-		skillsCopied, skillsFailed, skillFailedFiles, err := CopyAllSkills(opts.RepoRoot, opts.DryRun)
-		if err != nil {
-			return nil, err
-		}
-		result.SkillsCopied = skillsCopied
-		result.SkillsFailed = skillsFailed
-		result.FailedFiles = append(result.FailedFiles, skillFailedFiles...)
 	}
 
 	result.Duration = time.Since(startTime)

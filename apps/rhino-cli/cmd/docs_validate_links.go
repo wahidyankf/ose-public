@@ -56,7 +56,7 @@ func runValidateDocsLinks(cmd *cobra.Command, args []string) error {
 	opts := docs.ScanOptions{
 		RepoRoot:   repoRoot,
 		StagedOnly: validateDocsLinksStagedOnly,
-		SkipPaths:  []string{".opencode/skill/"}, // Exclude auto-generated skill files
+		SkipPaths:  []string{}, // No skill mirror to exclude — OpenCode reads .claude/skills/ natively
 		Verbose:    verbose,
 		Quiet:      quiet,
 	}

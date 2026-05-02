@@ -375,10 +375,10 @@ rhino-cli agents sync -v
 - Preserves description, skills, and body content
 - Normalizes YAML formatting (adds spaces after colons)
 
-**Skills (`.claude/skills/` → `.opencode/skill/`):**
+**Skills:**
 
-- Direct byte-for-byte copy (formats are identical)
-- Converts `SKILL.md` → `{skill-name}.md`
+- No mirror copy — OpenCode reads `.claude/skills/<name>/SKILL.md` natively per [opencode.ai/docs/skills](https://opencode.ai/docs/skills/).
+- `validate:sync` `No Synced Skill Mirror` check fails if a stale `.opencode/skill/` or `.opencode/skills/<claude-name>` mirror reappears.
 
 **Performance:** ~25-60x faster than bash scripts (121ms vs 3-5 seconds)
 

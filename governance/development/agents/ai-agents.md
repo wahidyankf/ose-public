@@ -193,7 +193,7 @@ skills: []
    - See "Agent Color Categorization" below for assignment guidelines
 
 6. **`skills`** (required)
-   - List of Skill names the agent references (from `.claude/skills/` (primary) or `.opencode/skill/` (secondary))
+   - List of Skill names the agent references (from `.claude/skills/` (primary))
    - Can be empty array `[]` if agent doesn't use Skills - Skills auto-load when agent is invoked (if task matches Skill description)
    - Enables composability and explicit knowledge dependencies
    - Example: `skills: [docs-creating-accessible-diagrams, repo-applying-maker-checker-fixer]`
@@ -236,7 +236,7 @@ created: 2025-11-23
 
 **REQUIRED FIELD**: All agents MUST include a `skills:` frontmatter field for composability and consistency.
 
-**Purpose:** The `skills:` field declares which Skills (knowledge packages in `.claude/skills/` (primary) or `.opencode/skill/` (secondary)) the agent leverages. This enables:
+**Purpose:** The `skills:` field declares which Skills (knowledge packages in `.claude/skills/` (primary)) the agent leverages. This enables:
 
 - **Composability**: Explicit declarations of knowledge dependencies
 - **Consistency**: All agents follow same structure (no special cases)
@@ -251,7 +251,7 @@ The `skills` field (already defined as field 6 in Required Frontmatter above) ha
 - **Required**: Yes (can be empty `[]`)
 - **Values**: Skill names matching folder names in `.claude/skills/`
 - **Auto-loading**: Skills load when agent invoked AND task matches Skill description
-- **Validation**: Referenced Skills must exist in `.claude/skills/` (primary) or `.opencode/skill/` (secondary) directory
+- **Validation**: Referenced Skills must exist in `.claude/skills/` (primary) directory
 - **Example**: `skills: [docs-creating-accessible-diagrams, repo-applying-maker-checker-fixer]`
 
 #### When to Reference Skills vs. Inline Knowledge
@@ -652,7 +652,7 @@ Use the normal `Write` / `Edit` tools for files in `.claude/` and `.opencode/`. 
 **Applies to**:
 
 - Creating or updating agent files in `.claude/agents/` or `.opencode/agents/`
-- Creating or updating skill files in `.claude/skills/*/SKILL.md` or `.opencode/skill/*/SKILL.md`
+- Creating or updating skill files in `.claude/skills/*/SKILL.md` or `.claude/skills/*/SKILL.md`
 - Updating the corresponding `README.md` index files
 
 **Sync requirement**: After editing `.claude/` sources, run `npm run sync:claude-to-opencode` to regenerate the `.opencode/` mirrors. The pre-commit hook validates both formats.
@@ -1612,7 +1612,7 @@ When creating new agents:
 
 Before committing agent changes:
 
-- [ ] No content duplicates Skills (check `.claude/skills/` (primary) or `.opencode/skill/` (secondary) catalog)
+- [ ] No content duplicates Skills (check `.claude/skills/` (primary) catalog)
 - [ ] No content duplicates Conventions (check `governance/conventions/`)
 - [ ] All Skills referenced exist in `.claude/skills/` (primary source of truth)
 - [ ] All Convention links point to valid files
@@ -2554,7 +2554,7 @@ Content...
 **Required fields**: `name` (must match directory name), `description`
 **Optional fields**: `context` (inline or fork)
 
-Skills are **directly copied** from `.claude/skills/` to `.opencode/skill/` (no conversion needed).
+Skills are **directly copied** from `.claude/skills/` to `.claude/skills/` (no conversion needed).
 
 ### Sync Automation
 
@@ -2580,7 +2580,7 @@ Skills are **directly copied** from `.claude/skills/` to `.opencode/skill/` (no 
 - **[.claude/agents/README.md](../../../.claude/agents/README.md)** (PRIMARY) - Agent catalog
 - **[.opencode/agents/README.md](../../../.opencode/agents/README.md)** (SECONDARY) - OpenCode agent catalog with warning
 - **[.claude/skills/README.md](../../../.claude/skills/README.md)** (PRIMARY) - Skills catalog
-- **[.opencode/skill/README.md](../../../.opencode/skill/README.md)** (SECONDARY) - OpenCode skills catalog with warning
+- **[.claude/skills/README.md](../../../.claude/skills/README.md)** (SECONDARY) - OpenCode skills catalog with warning
 
 ### Migration History
 

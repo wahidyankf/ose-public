@@ -395,10 +395,9 @@ Edit `.claude/` and `.opencode/` files with normal `Write` / `Edit` tools. Both 
 **Applies to all paths**:
 
 - `.claude/agents/*.md` — agent definitions
-- `.claude/skills/*/SKILL.md` — skill files
+- `.claude/skills/*/SKILL.md` — skill files (source of truth for both Claude Code AND OpenCode; OpenCode reads natively per [opencode.ai/docs/skills](https://opencode.ai/docs/skills/), no mirror)
 - `.claude/skills/*/reference/*.md` — skill reference modules
 - `.opencode/agents/*.md` — OpenCode agent mirrors
-- `.opencode/skill/*/SKILL.md` — OpenCode skill mirrors
 
 **See**: [.claude/agents/README.md](./.claude/agents/README.md), [governance/development/pattern/maker-checker-fixer.md](./governance/development/pattern/maker-checker-fixer.md), [Agent Naming Convention](./governance/conventions/structure/agent-naming.md), [Workflow Naming Convention](./governance/conventions/structure/workflow-naming.md)
 
@@ -419,7 +418,7 @@ Repo maintains **dual compatibility** with Claude Code and OpenCode:
 
 - **Tools**: Claude Code uses arrays `[Read, Write]`, OpenCode uses boolean flags `{ read: true, write: true }`
 - **Models**: Claude Code uses `sonnet`/`opus`/`haiku` (or omits for budget-adaptive opus-inherit — intentional, not legacy); OpenCode uses `zai-coding-plan/glm-5.1` (opus/sonnet/omitted) and `zai-coding-plan/glm-5-turbo` (haiku). See [model-selection.md](./governance/development/agents/model-selection.md) for full tier mapping.
-- **Skills**: Folder structure maintained (`.claude/skills/{name}/SKILL.md` → `.opencode/skill/{name}/SKILL.md`)
+- **Skills**: NOT mirrored — OpenCode reads `.claude/skills/{name}/SKILL.md` natively per [opencode.ai/docs/skills](https://opencode.ai/docs/skills/). The validate:sync `No Synced Skill Mirror` check fails if a stale `.opencode/skill/` or `.opencode/skills/<claude-name>` mirror reappears.
 - **Permissions**: Claude Code uses `settings.json` permissions, OpenCode uses `opencode.json` permission block (both configured with equivalent access)
 - **MCP/Plugins**: Claude Code uses plugins (Context7, Playwright, Nx, LSPs), OpenCode uses MCP servers (Playwright, Nx, Z.ai, Perplexity)
 

@@ -330,7 +330,7 @@ func step7ValidateLinks(gitRoot string, deps Deps) error {
 	result, err := deps.ValidateLinks(docs.ScanOptions{
 		RepoRoot:   gitRoot,
 		StagedOnly: true,
-		SkipPaths:  []string{".opencode/skill/", ".claude/worktrees/"},
+		SkipPaths:  []string{".claude/worktrees/"},
 	})
 	if err != nil {
 		return err

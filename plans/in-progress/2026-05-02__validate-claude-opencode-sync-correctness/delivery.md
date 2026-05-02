@@ -249,21 +249,59 @@ duplication of skills.
 
 ### If Option A (preferred — no skill copy)
 
-- [ ] **P4A.1** Delete `apps/rhino-cli/internal/agents/copier.go`.
-- [ ] **P4A.2** Remove `CopyAllSkills` invocation from `sync.go`.
-- [ ] **P4A.3** Remove `validateSkillCount` and `validateSkillIdentity` from
+- [x] **P4A.1** Delete `apps/rhino-cli/internal/agents/copier.go`. - Date: 2026-05-02 - Status: done — both `copier.go` and `copier_test.go` removed. - Files: deleted apps/rhino-cli/internal/agents/copier.go,
+      apps/rhino-cli/internal/agents/copier_test.go
+- [x] **P4A.2** Remove `CopyAllSkills` invocation from `sync.go`. - Date: 2026-05-02 - Status: done — `SyncAll` no longer calls `CopyAllSkills`;
+      `SkillsOnly` flag is now a no-op (kept for CLI back-compat).
+      `SkillsCopied`/`SkillsFailed` always 0; reporter still emits
+      them for downstream consumer schema stability. - Files: sync.go
+- [x] **P4A.3** Remove `validateSkillCount` and `validateSkillIdentity` from
       `sync_validator.go`. Add `validateNoSyncedSkills` that fails if any
-      rhino-cli-managed skill files exist under `.opencode/skill*/`.
-- [ ] **P4A.4** `git rm -r .opencode/skill/` (singular).
-- [ ] **P4A.5** Inspect `.opencode/skills/` (plural). For each rhino-cli
+      rhino-cli-managed skill files exist under `.opencode/skill*/`. - Date: 2026-05-02 - Status: done — `validateSkillCount`, `validateSkillIdentity`,
+      `validateSkillFile` removed. New `validateNoSyncedSkills`
+      cross-references claude-side names with mirror dirs and fails
+      only when a mirror entry has a Claude counterpart (Nx-only
+      plural entries tolerated). 10 obsolete skill tests removed +
+      4 new validateNoSyncedSkills tests + 3 new
+      validateNoStaleAgentDir tests + 2 new ValidateSync end-to-end
+      tests added. - Files: sync_validator.go, sync_validator_test.go, sync_test.go,
+      agents_sync.integration_test.go,
+      agents_validate_sync.integration_test.go,
+      specs/apps/rhino/cli/gherkin/agents-sync.feature
+- [x] **P4A.4** `git rm -r .opencode/skill/` (singular). - Date: 2026-05-02 - Status: done — 37 entries removed. - Files: .opencode/skill/\* deleted
+- [x] **P4A.5** Inspect `.opencode/skills/` (plural). For each rhino-cli
       copy that duplicates `.claude/skills/`, `git rm`. Leave Nx-generated
-      entries that the Nx generator owns and the spec docs identify.
+      entries that the Nx generator owns and the spec docs identify. - Date: 2026-05-02 - Status: done — comm check showed zero overlap between
+      `.claude/skills/` and `.opencode/skills/` (Nx-managed entries
+      like nx-\*, link-workspace-packages, monitor-ci have NO Claude
+      counterpart). Plural dir left as-is. - Files: none
 - [ ] **P4A.6** Add OpenCode TUI verification step:
       "open OpenCode, run `/skills`, confirm every skill from `.claude/skills/`
       appears". Record outcome in delivery log.
-- [ ] **P4A.7** Update CLAUDE.md and `.claude/skills/README.md` to drop the
+- [x] **P4A.7** Update CLAUDE.md and `.claude/skills/README.md` to drop the
       "synced to `.opencode/skill/`" claim; replace with "OpenCode reads
-      `.claude/skills/` natively per opencode.ai docs".
+      `.claude/skills/` natively per opencode.ai docs". - Date: 2026-05-02 - Status: done — `.claude/skills/README.md` Dual-Mode section
+      rewritten around native read; CLAUDE.md two `.opencode/skill/`
+      path lines updated; AGENTS.md skills catalog repointed to
+      `.claude/skills/README.md`; per Iron Rule 3 also bulk-fixed
+      residual references in
+      `.claude/skills/agent-developing-agents/SKILL.md`,
+      `governance/development/agents/ai-agents.md`,
+      `governance/conventions/formatting/emoji.md`,
+      `governance/conventions/writing/web-research-delegation.md`,
+      `governance/workflows/repo/repo-rules-quality-gate.md`,
+      `docs/how-to/create-new-skill.md`,
+      `apps/rhino-cli/cmd/docs_validate_links.go` (skip-paths),
+      `apps/rhino-cli/internal/git/runner.go` (skip-paths),
+      `apps/rhino-cli/README.md`. Remaining
+      `.opencode/skill/` mentions in code comments + tests
+      intentionally describe the policy (correct). - Files: CLAUDE.md, AGENTS.md, .claude/skills/README.md,
+      .claude/skills/agent-developing-agents/SKILL.md,
+      .claude/skills/plan-writing-gherkin-criteria/SKILL.md,
+      governance/\* (4 files), docs/how-to/create-new-skill.md,
+      apps/rhino-cli/cmd/docs_validate_links.go,
+      apps/rhino-cli/internal/git/runner.go,
+      apps/rhino-cli/README.md
 - [ ] **P4A.8** Commit "refactor(rhino-cli): stop copying skills; opencode
       reads .claude/skills natively".
 

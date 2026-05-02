@@ -98,7 +98,7 @@ Three-stage quality workflow:
 **Criticality Levels**: CRITICAL, HIGH, MEDIUM, LOW
 **Confidence Levels**: HIGH, MEDIUM, FALSE_POSITIVE
 
-**See**: `.opencode/skill/repo-applying-maker-checker-fixer/SKILL.md`
+**See**: `.claude/skills/repo-applying-maker-checker-fixer/SKILL.md`
 
 **Web Research Default**: `web-research-maker` is the default primitive for public-web information gathering across all agents. See [Web Research Delegation Convention](./governance/conventions/writing/web-research-delegation.md) for the normative rule, delegation threshold (2+ `WebSearch` or 3+ `WebFetch` per claim), and enumerated exceptions (single-shot known URL; fixer re-validation; link-reachability checkers).
 
@@ -131,7 +131,7 @@ Three-stage quality workflow:
 
 **Service Relationship**: Skills serve agents with knowledge and execution but don't govern them (service infrastructure, not governance layer).
 
-**Full skills catalog**: See [`.opencode/skill/README.md`](./.opencode/skill/README.md)
+**Full skills catalog**: See [`.claude/skills/README.md`](./.claude/skills/README.md) (source of truth; OpenCode reads `.claude/skills/` natively per [opencode.ai/docs/skills](https://opencode.ai/docs/skills/))
 
 ## Security Policy
 

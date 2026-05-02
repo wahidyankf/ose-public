@@ -21,7 +21,7 @@ var specsSyncAgentsDir = func() string {
 	return filepath.Join(filepath.Dir(f), "../../../specs/apps/rhino/cli/gherkin")
 }()
 
-// Scenario: Syncing converts agents and skills to OpenCode format
+// Scenario: Syncing converts Claude agents to OpenCode format and leaves skills in place
 // Scenario: The --dry-run flag previews changes without modifying files
 // Scenario: The --agents-only flag syncs agents without touching skills
 // Scenario: Model names are correctly translated to OpenCode equivalents
@@ -151,9 +151,17 @@ func (s *syncAgentsSteps) theOpenCodeDirectoryContainsTheConvertedConfiguration(
 	if _, err := os.Stat(agentPath); os.IsNotExist(err) {
 		return fmt.Errorf("expected .opencode/agents/sync-agent.md to exist but it does not")
 	}
-	skillPath := filepath.Join(s.tmpDir, ".opencode", "skill", "test-skill", "SKILL.md")
-	if _, err := os.Stat(skillPath); os.IsNotExist(err) {
-		return fmt.Errorf("expected .opencode/skill/test-skill/SKILL.md to exist but it does not")
+	// Phase 4A removed skill copying: OpenCode reads .claude/skills/ natively
+	// (per opencode.ai/docs/skills/), so no .opencode/skill or .opencode/skills
+	// mirror is created by `agents sync`. Verify that absence here so the spec
+	// stays anchored to the no-skill-copy invariant.
+	for _, mirror := range []string{
+		filepath.Join(s.tmpDir, ".opencode", "skill", "test-skill", "SKILL.md"),
+		filepath.Join(s.tmpDir, ".opencode", "skills", "test-skill", "SKILL.md"),
+	} {
+		if _, err := os.Stat(mirror); !os.IsNotExist(err) {
+			return fmt.Errorf("expected no skill mirror at %s after Phase 4A, but it exists", mirror)
+		}
 	}
 	return nil
 }
@@ -178,9 +186,15 @@ func (s *syncAgentsSteps) onlyAgentFilesAreWrittenToTheOpenCodeDirectory() error
 	if _, err := os.Stat(agentPath); os.IsNotExist(err) {
 		return fmt.Errorf("expected .opencode/agents/sync-agent.md to exist")
 	}
-	skillPath := filepath.Join(s.tmpDir, ".opencode", "skill", "test-skill", "SKILL.md")
-	if _, err := os.Stat(skillPath); !os.IsNotExist(err) {
-		return fmt.Errorf("expected .opencode/skill/test-skill/SKILL.md to NOT exist in agents-only mode")
+	// In Phase 4A skills are never copied (skill copy was removed entirely),
+	// so neither the singular nor plural mirror should appear in agents-only mode.
+	for _, mirror := range []string{
+		filepath.Join(s.tmpDir, ".opencode", "skill", "test-skill", "SKILL.md"),
+		filepath.Join(s.tmpDir, ".opencode", "skills", "test-skill", "SKILL.md"),
+	} {
+		if _, err := os.Stat(mirror); !os.IsNotExist(err) {
+			return fmt.Errorf("expected %s to NOT exist in agents-only mode", mirror)
+		}
 	}
 	return nil
 }

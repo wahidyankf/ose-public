@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { formatRelativeTime } from "@/lib/journal/format-relative-time";
-import type { JournalEntry, EntryId } from "@/contexts/journal/domain/types";
+import type { JournalEntry, EntryId } from "../../domain/types";
 
 interface EntryCardProps {
   entry: JournalEntry;

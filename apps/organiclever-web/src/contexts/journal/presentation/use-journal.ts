@@ -1,10 +1,10 @@
 import { useMemo } from "react";
 import { useActor } from "@xstate/react";
-import { journalMachine } from "@/contexts/journal/application/journal-machine";
-import type { JournalRuntime } from "@/contexts/journal/infrastructure/runtime";
-import type { JournalEntry, NewEntryInput, UpdateEntryInput } from "@/contexts/journal/domain/schema";
-import type { EntryId } from "@/contexts/journal/domain/schema";
-import type { StoreError } from "@/contexts/journal/domain/errors";
+import { journalMachine } from "../application/journal-machine";
+import type { JournalRuntime } from "../infrastructure/runtime";
+import type { JournalEntry, NewEntryInput, UpdateEntryInput } from "../domain/schema";
+import type { EntryId } from "../domain/schema";
+import type { StoreError } from "../domain/errors";
 
 export type JournalStatus = "loading" | "ready" | "mutating" | "error";
 

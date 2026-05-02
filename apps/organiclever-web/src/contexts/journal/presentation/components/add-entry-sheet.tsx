@@ -2,7 +2,7 @@
 
 import { Icon } from "@open-sharia-enterprise/ts-ui";
 import type { ActiveLoggerKind } from "@/lib/app/app-machine";
-import { ENTRY_MODULES } from "./home/kind-hue";
+import { ENTRY_MODULES } from "@/components/app/home/kind-hue";
 
 export interface AddEntrySheetProps {
   isOpen: boolean;

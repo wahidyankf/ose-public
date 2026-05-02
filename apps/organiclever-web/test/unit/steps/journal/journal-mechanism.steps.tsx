@@ -23,7 +23,7 @@ import { vi, describe, it } from "vitest";
 // Mock PGlite-backed hooks so any future import of JournalPage is safe in jsdom
 // ---------------------------------------------------------------------------
 
-vi.mock("@/lib/journal/use-journal", () => ({
+vi.mock("@/contexts/journal/presentation/use-journal", () => ({
   useJournal: () => ({
     entries: [],
     status: "ready",

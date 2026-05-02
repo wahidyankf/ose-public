@@ -3,11 +3,11 @@ import { renderHook, act, waitFor } from "@testing-library/react";
 import { Effect, Layer } from "effect";
 import { PGlite } from "@electric-sql/pglite";
 import { Schema } from "effect";
-import { PgliteService, makeJournalRuntime } from "@/contexts/journal/infrastructure/runtime";
-import { runMigrations } from "@/contexts/journal/infrastructure/run-migrations";
+import { PgliteService, makeJournalRuntime } from "../infrastructure/runtime";
+import { runMigrations } from "../infrastructure/run-migrations";
 import { useJournal } from "./use-journal";
-import { EntryName, EntryPayload } from "@/contexts/journal/domain/schema";
-import { StorageUnavailable } from "@/contexts/journal/domain/errors";
+import { EntryName, EntryPayload } from "../domain/schema";
+import { StorageUnavailable } from "../domain/errors";
 
 function makeTestRuntime() {
   const testLayer = Layer.scoped(
@@ -26,7 +26,7 @@ function makeTestRuntime() {
 
 const makeName = (s: string) => Schema.decodeUnknownSync(EntryName)(s);
 const makePayload = (obj: Record<string, unknown>) => Schema.decodeUnknownSync(EntryPayload)(obj);
-const makeTs = () => new Date().toISOString() as unknown as import("@/contexts/journal/domain/schema").IsoTimestamp;
+const makeTs = () => new Date().toISOString() as unknown as import("../domain/schema").IsoTimestamp;
 
 describe("useJournal", () => {
   it("initial status is loading then transitions to ready", async () => {

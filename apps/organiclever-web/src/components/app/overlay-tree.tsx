@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { AddEntrySheet } from "./add-entry-sheet";
+import { AddEntrySheet } from "@/contexts/journal/presentation";
 import { ReadingLogger } from "./loggers/reading-logger";
 import { LearningLogger } from "./loggers/learning-logger";
 import { MealLogger } from "./loggers/meal-logger";

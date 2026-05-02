@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { Schema } from "effect";
-import { EntryName, IsoTimestamp } from "@/contexts/journal/domain/schema";
-import type { JournalEntry, NewEntryInput, UpdateEntryInput } from "@/contexts/journal/domain/types";
+import { EntryName, IsoTimestamp } from "../../domain/schema";
+import type { JournalEntry, NewEntryInput, UpdateEntryInput } from "../../domain/types";
 
 const PRESET_NAMES = ["workout", "reading", "meditation"] as const;
 

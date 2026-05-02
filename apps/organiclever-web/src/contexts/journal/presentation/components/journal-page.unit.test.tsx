@@ -1,8 +1,8 @@
 import { vi, describe, it, expect, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, act, cleanup } from "@testing-library/react";
 import { Schema } from "effect";
-import { JournalEntry, EntryId, EntryName, IsoTimestamp } from "@/contexts/journal/domain/schema";
-import type { UseJournalReturn } from "@/lib/journal/use-journal";
+import { JournalEntry, EntryId, EntryName, IsoTimestamp } from "../../domain/schema";
+import type { UseJournalReturn } from "../use-journal";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -55,12 +55,12 @@ let mockReturn: UseJournalReturn = {
   retry: mockRetry,
 };
 
-vi.mock("@/lib/journal/use-journal", () => ({
+vi.mock("../use-journal", () => ({
   useJournal: () => mockReturn,
 }));
 
 // makeJournalRuntime is called inside JournalPage via useMemo — mock it to a no-op
-vi.mock("@/contexts/journal/infrastructure/runtime", () => ({
+vi.mock("../../infrastructure/runtime", () => ({
   makeJournalRuntime: () => ({}),
   PgliteLive: {},
   JOURNAL_STORE_DATA_DIR: "test",

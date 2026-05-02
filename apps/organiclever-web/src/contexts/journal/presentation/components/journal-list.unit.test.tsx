@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
 import { Schema } from "effect";
-import { JournalEntry } from "@/contexts/journal/domain/schema";
+import { JournalEntry } from "../../domain/schema";
 import { JournalList } from "./journal-list";
 
 afterEach(() => {

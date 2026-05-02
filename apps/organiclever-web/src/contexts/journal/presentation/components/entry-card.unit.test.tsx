@@ -2,7 +2,7 @@ import { describe, it, expect, vi, afterEach } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Schema } from "effect";
-import { JournalEntry } from "@/contexts/journal/domain/schema";
+import { JournalEntry } from "../../domain/schema";
 import { EntryCard } from "./entry-card";
 
 afterEach(() => {

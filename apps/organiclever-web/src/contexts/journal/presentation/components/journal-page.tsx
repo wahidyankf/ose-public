@@ -1,12 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { makeJournalRuntime } from "@/contexts/journal/infrastructure/runtime";
-import { useJournal } from "@/lib/journal/use-journal";
+import { makeJournalRuntime } from "../../infrastructure/runtime";
+import { useJournal } from "../use-journal";
 import { AddEntryButton } from "./add-entry-button";
 import { EntryFormSheet } from "./entry-form-sheet";
 import { JournalList } from "./journal-list";
-import type { EntryId, NewEntryInput, UpdateEntryInput } from "@/contexts/journal/domain/types";
+import type { EntryId, NewEntryInput, UpdateEntryInput } from "../../domain/types";
 
 type SheetState = { open: false } | { open: true; mode: "create" } | { open: true; mode: "edit"; entryId: EntryId };
 

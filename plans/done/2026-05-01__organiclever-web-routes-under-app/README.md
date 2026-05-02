@@ -1,7 +1,6 @@
 # OrganicLever Web — Routes Under `/app`
 
 **Status**: In Progress
-**Created**: 2026-05-01
 **Affected subrepo**: `ose-public`
 **Affected app**: `apps/organiclever-web`
 **Sibling apps touched**: `apps/organiclever-web-e2e` (step files), `specs/apps/organiclever/fe/gherkin/` (feature files)

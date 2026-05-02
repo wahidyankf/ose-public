@@ -2610,7 +2610,7 @@ Agent Skills are **directly copied** from `.claude/skills/` to `.opencode/` (no 
 - **[CLAUDE.md](../../../CLAUDE.md)** (PRIMARY) - primary platform binding configuration
 - **[AGENTS.md](../../../AGENTS.md)** (SECONDARY) - secondary platform configuration with auto-generated warning
 - **[Primary binding agent catalog](../../../.claude/agents/README.md)** (PRIMARY) - Agent catalog
-- **[Secondary binding agent catalog](../../../.opencode/agents/README.md)** (SECONDARY) - secondary agent catalog with warning
+- **[Secondary binding agent catalog](../../../.claude/agents/README.md)** (SECONDARY) - `.opencode/agents/` contains auto-synced agent files; `.claude/agents/README.md` is the authoritative catalog for both bindings
 - **[Primary binding skills catalog](../../../.claude/skills/README.md)** (PRIMARY) - Agent Skills catalog
 - **[Secondary binding skills catalog](../../../.claude/skills/README.md)** (SECONDARY) - secondary skills catalog with warning
 

@@ -247,15 +247,7 @@ Husky + lint-staged enforce quality:
 - **Reference** (`docs/reference/`) — Technical specs
 - **Explanation** (`docs/explanation/`) — Conceptual understanding
 
-**File Naming**: Lowercase kebab-case (standard markdown + GitHub compatibility)
-
-**Examples**:
-
-- `file-naming.md` (governance/conventions/structure)
-- `getting-started.md` (tutorials)
-- `deploy-docker.md` (how-to)
-
-**Exception**: Index files use `README.md` for GitHub compatibility
+**File Naming**: Lowercase kebab-case. Exception: `README.md` for index files.
 
 **See**: [governance/conventions/structure/file-naming.md](./governance/conventions/structure/file-naming.md), [governance/conventions/structure/diataxis-framework.md](./governance/conventions/structure/diataxis-framework.md)
 
@@ -378,7 +370,7 @@ Plan mode for non-trivial tasks (3+ steps or architecture decisions), delegated 
 
 **Maker-Checker-Fixer Pattern**: Three-stage workflow with criticality levels (CRITICAL/HIGH/MEDIUM/LOW), confidence assessment (HIGH/MEDIUM/FALSE_POSITIVE).
 
-**Web Research Default**: `web-research-maker` is the default primitive for public-web information gathering across all agents. See [Web Research Delegation Convention](./governance/conventions/writing/web-research-delegation.md) for the normative rule, delegation threshold (2+ `WebSearch` or 3+ `WebFetch` per claim), and enumerated exceptions (single-shot known URL; fixer re-validation; link-reachability checkers).
+**Web Research Default**: `web-research-maker` is the default primitive for public-web information gathering. See [Web Research Delegation Convention](./governance/conventions/writing/web-research-delegation.md) for delegation threshold and exceptions.
 
 **Agent Skills Infrastructure**: Agents leverage Agent Skills providing two modes:
 
@@ -402,11 +394,7 @@ Six-layer governance hierarchy:
 - **Layer 4: AI Agents** — WHO enforces rules
 - **Layer 5: Workflows** — WHEN we run processes (orchestrated sequences)
 
-**Agent Skills**: Delivery infrastructure serving agents, two modes:
-
-- **Inline skills** — Knowledge injection into current conversation
-- **Fork skills** (`context: fork`) — Task delegation to agents in isolated contexts
-- Service relationship: skills serve agents but don't govern them
+**Agent Skills**: Delivery infrastructure (inline and fork modes) serving agents — not a governance layer. See AI Agents section above.
 
 **See**: [governance/repository-governance-architecture.md](./governance/repository-governance-architecture.md)
 

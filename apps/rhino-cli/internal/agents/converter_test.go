@@ -189,6 +189,40 @@ func TestConvertModel(t *testing.T) {
 	}
 }
 
+func TestConvertColor(t *testing.T) {
+	tests := []struct {
+		name string
+		in   string
+		want string
+	}{
+		{name: "empty string", in: "", want: ""},
+		{name: "claude blue", in: "blue", want: "primary"},
+		{name: "claude green", in: "green", want: "success"},
+		{name: "claude orange", in: "orange", want: "warning"},
+		{name: "hex passthrough", in: "#0173B2", want: "#0173B2"},
+		{name: "theme passthrough", in: "primary", want: "primary"},
+		{name: "unknown passthrough", in: "fuchsia", want: "fuchsia"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ConvertColor(tt.in); got != tt.want {
+				t.Errorf("ConvertColor(%q) = %q, want %q", tt.in, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestApplyTranslateColor_NonStringValueIgnored(t *testing.T) {
+	// applyTranslate's color branch must coerce-check before mapping. A
+	// non-string YAML value (e.g. a sequence or a number from a malformed
+	// agent file) MUST leave OpenCodeAgent.Color empty rather than panic.
+	out := OpenCodeAgent{}
+	applyTranslate(&out, "color", []interface{}{"blue"})
+	if out.Color != "" {
+		t.Errorf("Color = %q, want empty (non-string input must be ignored)", out.Color)
+	}
+}
+
 func TestConvertAgent(t *testing.T) {
 	// Create temp directory for test
 	tmpDir := t.TempDir()

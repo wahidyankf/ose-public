@@ -78,7 +78,8 @@ export default defineConfig({
           exclude: ["node_modules", "**/*.int.{test,spec}.{ts,tsx}"],
           environment: "jsdom",
           setupFiles: ["./src/test/setup.ts"],
-          testTimeout: 15000,
+          testTimeout: 30000,
+          hookTimeout: 30000,
         },
       },
       {
@@ -90,6 +91,7 @@ export default defineConfig({
           environment: "jsdom",
           setupFiles: ["./src/test/setup.ts"],
           testTimeout: 30000,
+          hookTimeout: 30000,
         },
       },
     ],

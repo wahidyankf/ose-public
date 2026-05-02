@@ -38,7 +38,7 @@ vi.mock("@/lib/journal/use-journal", () => ({
   }),
 }));
 
-vi.mock("@/lib/journal/runtime", () => ({
+vi.mock("@/contexts/journal/infrastructure/runtime", () => ({
   makeJournalRuntime: () => ({}),
   PgliteLive: {},
   JOURNAL_STORE_DATA_DIR: "test",

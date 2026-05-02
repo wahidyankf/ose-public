@@ -2,8 +2,8 @@ import { layer } from "@effect/vitest";
 import { Effect, Layer } from "effect";
 import { PGlite } from "@electric-sql/pglite";
 import { expect } from "vitest";
-import { PgliteService } from "@/lib/journal/runtime";
-import { runMigrations } from "@/lib/journal/run-migrations";
+import { PgliteService } from "@/contexts/journal/infrastructure/runtime";
+import { runMigrations } from "@/contexts/journal/infrastructure/run-migrations";
 import { getSettings, saveSettings } from "./settings-store";
 
 // ---------------------------------------------------------------------------

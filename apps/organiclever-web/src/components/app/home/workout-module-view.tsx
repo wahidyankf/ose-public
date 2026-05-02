@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { StatCard, Icon } from "@open-sharia-enterprise/ts-ui";
 import { getVolume } from "@/lib/journal/stats";
 import type { WeeklyStats } from "@/lib/journal/stats";
-import type { JournalRuntime } from "@/lib/journal/runtime";
+import type { JournalRuntime } from "@/contexts/journal/infrastructure/runtime";
 import type { Routine } from "@/lib/journal/routine-store";
 import { RoutineCard } from "./routine-card";
 

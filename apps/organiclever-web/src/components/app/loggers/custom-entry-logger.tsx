@@ -4,9 +4,9 @@ import { useState } from "react";
 import { Schema } from "effect";
 import { Input, Textarea, HuePicker, Icon } from "@open-sharia-enterprise/ts-ui";
 import type { HueName } from "@open-sharia-enterprise/ts-ui";
-import { appendEntries } from "@/lib/journal/journal-store";
+import { appendEntries } from "@/contexts/journal/infrastructure/journal-store";
 import { EntryName, IsoTimestamp } from "@/contexts/journal/domain/schema";
-import type { JournalRuntime } from "@/lib/journal/runtime";
+import type { JournalRuntime } from "@/contexts/journal/infrastructure/runtime";
 import { LoggerShell } from "./logger-shell";
 import type { IconName } from "@open-sharia-enterprise/ts-ui";
 

@@ -31,7 +31,7 @@ export {
   deleteEntry,
   bumpEntry,
   clearEntries,
-} from "@/lib/journal/journal-store";
+} from "../infrastructure/journal-store";
 
 export { journalMachine } from "./journal-machine";
 export type { JournalContext, JournalEvent } from "./journal-machine";

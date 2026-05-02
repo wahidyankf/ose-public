@@ -2,8 +2,8 @@ import { layer } from "@effect/vitest";
 import { Effect, Layer } from "effect";
 import { PGlite } from "@electric-sql/pglite";
 import { expect } from "vitest";
-import { PgliteService } from "./runtime";
-import { runMigrations } from "./run-migrations";
+import { PgliteService } from "@/contexts/journal/infrastructure/runtime";
+import { runMigrations } from "@/contexts/journal/infrastructure/run-migrations";
 import { getLast7Days, getWeeklyStats, getVolume, getExerciseProgress } from "./stats";
 
 // ---------------------------------------------------------------------------

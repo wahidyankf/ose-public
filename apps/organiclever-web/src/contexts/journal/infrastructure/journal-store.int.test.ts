@@ -5,8 +5,8 @@ import { expect } from "vitest";
 import { PgliteService } from "./runtime";
 import { runMigrations } from "./run-migrations";
 import { appendEntries, bumpEntry, clearEntries, deleteEntry, listEntries, updateEntry } from "./journal-store";
-import { NotFound } from "@/contexts/journal/domain/errors";
-import { EntryId, EntryName, EntryPayload } from "@/contexts/journal/domain/schema";
+import { NotFound } from "../domain/errors";
+import { EntryId, EntryName, EntryPayload } from "../domain/schema";
 
 const TestPgliteLayer = Layer.scoped(
   PgliteService,
@@ -22,7 +22,7 @@ const TestPgliteLayer = Layer.scoped(
 
 const makeName = (s: string) => Schema.decodeUnknownSync(EntryName)(s);
 const makePayload = (obj: Record<string, unknown>) => obj as unknown as typeof EntryPayload.Type;
-const makeTs = () => new Date().toISOString() as unknown as import("@/contexts/journal/domain/schema").IsoTimestamp;
+const makeTs = () => new Date().toISOString() as unknown as import("../domain/schema").IsoTimestamp;
 const missingId = "00000000-0000-0000-0000-000000000000" as unknown as EntryId;
 
 layer(TestPgliteLayer)("journal-store integration tests", (it) => {

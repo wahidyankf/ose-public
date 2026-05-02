@@ -1,6 +1,6 @@
 import { assign, createMachine, fromPromise } from "xstate";
 import { Cause, Option, Runtime } from "effect";
-import type { JournalRuntime } from "@/lib/journal/runtime";
+import type { JournalRuntime } from "../infrastructure/runtime";
 import {
   appendEntries,
   listEntries,
@@ -8,7 +8,7 @@ import {
   deleteEntry,
   bumpEntry,
   clearEntries,
-} from "@/lib/journal/journal-store";
+} from "../infrastructure/journal-store";
 import type { JournalEntry, NewEntryInput, UpdateEntryInput } from "../domain/schema";
 import type { EntryId } from "../domain/schema";
 import type { StoreError } from "../domain/errors";

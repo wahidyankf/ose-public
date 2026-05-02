@@ -1,5 +1,5 @@
 import { Effect } from "effect";
-import { PgliteService } from "./runtime";
+import { PgliteService } from "@/contexts/journal/infrastructure/runtime";
 import { NotFound, StorageUnavailable } from "@/contexts/journal/domain/errors";
 import type { ExerciseTemplate, Hue } from "@/contexts/journal/domain/typed-payloads";
 

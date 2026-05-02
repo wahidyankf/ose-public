@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import type { JournalRuntime } from "@/lib/journal/runtime";
+import type { JournalRuntime } from "@/contexts/journal/infrastructure/runtime";
 import { getSettings, saveSettings } from "../application";
 import type { AppSettings } from "../application";
 

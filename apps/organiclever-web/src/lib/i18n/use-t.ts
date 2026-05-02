@@ -1,5 +1,5 @@
 import { useSettings } from "@/contexts/settings/presentation";
-import type { JournalRuntime } from "@/lib/journal/runtime";
+import type { JournalRuntime } from "@/contexts/journal/infrastructure/runtime";
 import { TRANSLATIONS } from "./translations";
 import type { TranslationKey } from "./translations";
 

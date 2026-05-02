@@ -3,7 +3,7 @@ import { Cause, Effect, Layer } from "effect";
 import { PGlite } from "@electric-sql/pglite";
 import { PgliteService, makeJournalRuntime } from "./runtime";
 import { runMigrations } from "./run-migrations";
-import { StorageUnavailable } from "@/contexts/journal/domain/errors";
+import { StorageUnavailable } from "../domain/errors";
 
 describe("runtime - makeJournalRuntime", () => {
   it("acquires and releases the PGlite handle", async () => {

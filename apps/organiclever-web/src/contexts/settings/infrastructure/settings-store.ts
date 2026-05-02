@@ -16,7 +16,7 @@
 // Phase 6.
 
 import { Effect } from "effect";
-import { PgliteService } from "@/lib/journal/runtime";
+import { PgliteService } from "@/contexts/journal/infrastructure/runtime";
 import { StorageUnavailable } from "@/contexts/journal/domain/errors";
 import type { AppSettings, RestSeconds, Lang } from "../domain";
 

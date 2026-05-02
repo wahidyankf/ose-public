@@ -1,7 +1,7 @@
 import { Effect, Schema } from "effect";
 import { PgliteService } from "./runtime";
-import { JournalEntry, EntryId, NewEntryInput, UpdateEntryInput } from "@/contexts/journal/domain/schema";
-import { EmptyBatch, NotFound, StorageUnavailable, StoreError } from "@/contexts/journal/domain/errors";
+import { JournalEntry, EntryId, NewEntryInput, UpdateEntryInput } from "../domain/schema";
+import { EmptyBatch, NotFound, StorageUnavailable, StoreError } from "../domain/errors";
 
 type RawRow = {
   id: string;

@@ -60,7 +60,7 @@ vi.mock("@/lib/journal/use-journal", () => ({
 }));
 
 // makeJournalRuntime is called inside JournalPage via useMemo — mock it to a no-op
-vi.mock("@/lib/journal/runtime", () => ({
+vi.mock("@/contexts/journal/infrastructure/runtime", () => ({
   makeJournalRuntime: () => ({}),
   PgliteLive: {},
   JOURNAL_STORE_DATA_DIR: "test",

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { makeJournalRuntime } from "@/lib/journal/runtime";
+import { makeJournalRuntime } from "@/contexts/journal/infrastructure/runtime";
 import { useJournal } from "@/lib/journal/use-journal";
 import { AddEntryButton } from "./add-entry-button";
 import { EntryFormSheet } from "./entry-form-sheet";

@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { Input, Toggle, Alert, AlertDescription, InfoTip } from "@open-sharia-enterprise/ts-ui";
-import type { JournalRuntime } from "@/lib/journal/runtime";
+import type { JournalRuntime } from "@/contexts/journal/infrastructure/runtime";
 import { useSettings } from "../use-settings";
 import { saveSettings } from "../../application";
 import type { RestSeconds, Lang } from "../../application";

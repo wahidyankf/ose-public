@@ -2,8 +2,8 @@ import { describe, it, expect } from "vitest";
 import { createActor, waitFor } from "xstate";
 import { Effect, Layer } from "effect";
 import { PGlite } from "@electric-sql/pglite";
-import { PgliteService, makeJournalRuntime } from "@/lib/journal/runtime";
-import { runMigrations } from "@/lib/journal/run-migrations";
+import { PgliteService, makeJournalRuntime } from "../infrastructure/runtime";
+import { runMigrations } from "../infrastructure/run-migrations";
 import { journalMachine } from "./journal-machine";
 import { Schema } from "effect";
 import { EntryName, EntryPayload } from "../domain/schema";
@@ -26,7 +26,7 @@ function makeTestRuntime() {
 
 const makeName = (s: string) => Schema.decodeUnknownSync(EntryName)(s);
 const makePayload = (obj: Record<string, unknown>) => Schema.decodeUnknownSync(EntryPayload)(obj);
-const makeTs = () => new Date().toISOString() as unknown as import("@/contexts/journal/domain/schema").IsoTimestamp;
+const makeTs = () => new Date().toISOString() as unknown as import("../domain/schema").IsoTimestamp;
 
 describe("journalMachine", () => {
   it("starts in initializing state", () => {

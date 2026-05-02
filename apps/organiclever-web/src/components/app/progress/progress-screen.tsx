@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { JournalRuntime } from "@/lib/journal/runtime";
+import type { JournalRuntime } from "@/contexts/journal/infrastructure/runtime";
 import { getExerciseProgress, getLast7Days } from "@/lib/journal/stats";
 import type { ExerciseProgress, DayEntry } from "@/lib/journal/stats";
 import { InfoTip } from "@open-sharia-enterprise/ts-ui";

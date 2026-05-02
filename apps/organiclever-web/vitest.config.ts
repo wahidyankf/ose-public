@@ -50,8 +50,9 @@ export default defineConfig({
         "src/components/app/workout/finish-screen.tsx",
         // Phase 1 hook — browser-only; covered by e2e
         "src/lib/hooks/use-hash.ts",
-        // Seed — PGlite side-effect-only; covered by integration tests
-        "src/lib/journal/seed.ts",
+        // Seed — PGlite side-effect-only; covered by integration tests.
+        // Migrated to journal/infrastructure/ in DDD adoption Phase 6c.
+        "src/contexts/journal/infrastructure/seed.ts",
         // i18n hook — browser-only; covered by e2e
         "src/lib/i18n/use-t.ts",
         "src/proxy.ts",

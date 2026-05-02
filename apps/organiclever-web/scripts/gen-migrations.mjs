@@ -1,6 +1,6 @@
 import { readdirSync, writeFileSync } from "fs";
 
-const MIGRATION_DIR = "src/lib/journal/migrations";
+const MIGRATION_DIR = "src/contexts/journal/infrastructure/migrations";
 const OUTPUT = `${MIGRATION_DIR}/index.generated.ts`;
 const FILENAME_RX = /^(\d{4}_\d{2}_\d{2}T\d{2}_\d{2}_\d{2}__[a-z0-9_]{1,60})\.ts$/;
 

@@ -19,7 +19,7 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: mockRouterPush, back: vi.fn(), replace: vi.fn() }),
 }));
 
-vi.mock("@/lib/journal/runtime", () => ({
+vi.mock("@/contexts/journal/infrastructure/runtime", () => ({
   makeJournalRuntime: () => ({
     runPromise: () => Promise.resolve(),
   }),
@@ -27,7 +27,7 @@ vi.mock("@/lib/journal/runtime", () => ({
   JOURNAL_STORE_DATA_DIR: "test",
 }));
 
-vi.mock("@/lib/journal/seed", () => ({
+vi.mock("@/contexts/journal/infrastructure/seed", () => ({
   seedIfEmpty: () => ({}),
 }));
 

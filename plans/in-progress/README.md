@@ -4,7 +4,7 @@ Active project plans currently being worked on.
 
 ## Active Plans
 
-_None at present._
+- [2026-05-02 — OrganicLever DDD Adoption](./2026-05-02__organiclever-adopt-ddd/README.md) — restructure `apps/organiclever-web` and `specs/apps/organiclever` around explicit bounded contexts and ubiquitous language.
 
 ## Instructions
 

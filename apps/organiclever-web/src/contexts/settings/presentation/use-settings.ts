@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
-import type { JournalRuntime } from "./runtime";
-import { getSettings, saveSettings } from "./settings-store";
-import type { AppSettings } from "./settings-store";
+import type { JournalRuntime } from "@/lib/journal/runtime";
+import { getSettings, saveSettings } from "../application";
+import type { AppSettings } from "../application";
 
 // ---------------------------------------------------------------------------
 // State shape

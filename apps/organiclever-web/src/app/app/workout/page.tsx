@@ -5,8 +5,8 @@ export const dynamic = "force-dynamic";
 import { useRouter } from "next/navigation";
 import { WorkoutScreen } from "@/components/app/workout/workout-screen";
 import { useAppRuntime } from "@/components/app/app-runtime-context";
-import { useSettings } from "@/lib/journal/use-settings";
-import type { AppSettings } from "@/lib/journal/settings-store";
+import { useSettings } from "@/contexts/settings/presentation";
+import type { AppSettings } from "@/contexts/settings/application";
 
 const FALLBACK_SETTINGS: AppSettings = {
   name: "User",

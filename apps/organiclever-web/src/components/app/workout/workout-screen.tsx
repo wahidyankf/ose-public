@@ -5,7 +5,7 @@ import { useActor } from "@xstate/react";
 import { AppHeader, Button, Icon } from "@open-sharia-enterprise/ts-ui";
 import { workoutSessionMachine, resolvedRest } from "@/lib/workout/workout-machine";
 import type { Routine } from "@/lib/journal/routine-store";
-import type { AppSettings } from "@/lib/journal/settings-store";
+import type { AppSettings } from "@/contexts/settings/application";
 import type { JournalRuntime } from "@/lib/journal/runtime";
 import type { CompletedSession } from "@/lib/app/app-machine";
 import type { CompletedSet } from "@/lib/journal/typed-payloads";

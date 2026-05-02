@@ -10,7 +10,7 @@
 import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { expect } from "vitest";
-import type { AppSettings, Lang } from "@/lib/journal/settings-store";
+import type { AppSettings, Lang } from "@/contexts/settings/application";
 
 // ---------------------------------------------------------------------------
 // Pure logic helpers mirroring SettingsScreen language handling

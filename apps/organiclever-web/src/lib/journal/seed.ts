@@ -3,7 +3,7 @@ import { PgliteService } from "./runtime";
 import { StorageUnavailable } from "./errors";
 import { appendEntries } from "./journal-store";
 import { saveRoutine } from "./routine-store";
-import { saveSettings } from "./settings-store";
+import { saveSettings } from "@/contexts/settings/application";
 import { IsoTimestamp, EntryName, EntryPayload } from "./schema";
 import type { Routine } from "./routine-store";
 import type { ExerciseTemplate } from "./typed-payloads";

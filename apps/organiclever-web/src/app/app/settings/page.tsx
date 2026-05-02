@@ -2,7 +2,7 @@
 
 export const dynamic = "force-dynamic";
 
-import { SettingsScreen } from "@/components/app/settings/settings-screen";
+import { SettingsScreen } from "@/contexts/settings/presentation";
 import { useAppRuntime } from "@/components/app/app-runtime-context";
 
 export default function SettingsPage() {

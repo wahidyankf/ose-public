@@ -2,8 +2,8 @@ import { describe, it, expect } from "vitest";
 import { renderHook, act, waitFor } from "@testing-library/react";
 import { Effect, Layer } from "effect";
 import { PGlite } from "@electric-sql/pglite";
-import { PgliteService, makeJournalRuntime } from "./runtime";
-import { runMigrations } from "./run-migrations";
+import { PgliteService, makeJournalRuntime } from "@/lib/journal/runtime";
+import { runMigrations } from "@/lib/journal/run-migrations";
 import { useSettings } from "./use-settings";
 
 // ---------------------------------------------------------------------------

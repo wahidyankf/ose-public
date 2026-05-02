@@ -15,7 +15,7 @@
 import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { expect, vi } from "vitest";
-import type { RestSeconds, AppSettings } from "@/lib/journal/settings-store";
+import type { RestSeconds, AppSettings } from "@/contexts/settings/application";
 
 // ---------------------------------------------------------------------------
 // Pure logic helpers mirroring SettingsScreen behaviour

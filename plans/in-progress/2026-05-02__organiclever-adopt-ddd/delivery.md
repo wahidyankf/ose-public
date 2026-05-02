@@ -192,18 +192,32 @@ For each of `health`, `landing`, `routing`:
 
 **Goal**: Self-contained PGlite-backed context with one aggregate. Moderate complexity.
 
-- [ ] Inventory: `src/lib/journal/settings-store.ts` (currently misplaced under `journal/`), `src/lib/journal/use-settings.ts`, `src/app/app/settings/**`, `src/components/app/settings/**`. Note: `src/lib/journal/schema.ts` is journal-only — settings types (if any) extracted from `settings-store.ts` itself.
-- [ ] **Red**: Pre-move tests green at current location.
-- [ ] **Green**:
-  - [ ] Move pure types and invariants → `src/contexts/settings/domain/`.
-  - [ ] Move use-cases (read/write preferences) → `src/contexts/settings/application/`. Define ports for storage.
-  - [ ] Move PGlite store + Effect Layer → `src/contexts/settings/infrastructure/`.
-  - [ ] Move React hooks + components → `src/contexts/settings/presentation/`.
-  - [ ] Update `src/app/app/settings/**` to consume `src/contexts/settings/presentation/index.ts`.
-- [ ] **Refactor**: Publish `application/index.ts` and `presentation/index.ts`. Hide private files behind `eslint-plugin-boundaries` no-private rule (still warning level).
-- [ ] Commit: `refactor(organiclever-web): migrate settings context`.
+- [x] Inventory: `src/lib/journal/settings-store.ts` (currently misplaced under `journal/`), `src/lib/journal/use-settings.ts`, `src/app/app/settings/**`, `src/components/app/settings/**`. Note: `src/lib/journal/schema.ts` is journal-only — settings types (if any) extracted from `settings-store.ts` itself.
+  - Date: 2026-05-02. Status: done. Files Inventoried: `src/lib/journal/settings-store.ts` + `.unit.test.ts`, `src/lib/journal/use-settings.ts` + `.unit.test.tsx`, `src/components/app/settings/settings-screen.tsx` (no sibling test). Notes: confirmed schema.ts is journal-only (no settings tables there). Direct consumers found: `src/app/app/layout.tsx` + test, `src/app/app/workout/page.tsx` + test, `src/components/app/workout/workout-screen.tsx`, `src/lib/i18n/use-t.ts`, `src/lib/workout/workout-machine.ts` + test, `src/lib/journal/seed.ts`, `src/app/app/settings/page.tsx`, three test step files under `test/unit/steps/{settings,workout}/`. Twelve files total.
+- [x] **Red**: Pre-move tests green at current location.
+  - Date: 2026-05-02. Notes: covered by Phase 4 exit gate (595 tests pass, 75.81% coverage at commit `5df2912d3`).
+- [x] **Green**:
+  - [x] Move pure types and invariants → `src/contexts/settings/domain/`.
+    - Date: 2026-05-02. Notes: extracted `RestSeconds`, `Lang`, `AppSettings` into `domain/types.ts` (no `effect`, no IO imports). `domain/index.ts` re-exports them as types.
+  - [x] Move use-cases (read/write preferences) → `src/contexts/settings/application/`. Define ports for storage.
+    - Date: 2026-05-02. Notes: `application/index.ts` re-exports `getSettings`/`saveSettings` from `infrastructure/` and the three domain types. Explicit storage port deferred (per file header) — interim is acceptable thin pass-through; future plan introduces `application/ports.ts` + live binding wiring. Consumers outside the context import only from the application barrel, so the eventual port indirection lands as a one-file change.
+  - [x] Move PGlite store + Effect Layer → `src/contexts/settings/infrastructure/`.
+    - Date: 2026-05-02. Notes: `git mv` of `settings-store.ts` + `.unit.test.ts` from `src/lib/journal/` to `src/contexts/settings/infrastructure/`; blame preserved. `infrastructure/index.ts` re-exports the use-cases. Effect `Layer` composition (the `PgliteService` Tag itself) stays in journal infrastructure — that file moves in Phase 6; settings infrastructure imports it cross-context via `@/lib/journal/runtime` for the duration of Phase 5.
+  - [x] Move React hooks + components → `src/contexts/settings/presentation/`.
+    - Date: 2026-05-02. Notes: `git mv` of `use-settings.ts` + `.unit.test.tsx` to `presentation/`, and `settings-screen.tsx` to `presentation/components/`. `presentation/index.ts` exports `useSettings`, `SettingsScreen` and their type companions.
+  - [x] Update `src/app/app/settings/**` to consume `src/contexts/settings/presentation/index.ts`.
+    - Date: 2026-05-02. Notes: `src/app/app/settings/page.tsx` now imports `SettingsScreen` from `@/contexts/settings/presentation`. Wider consumer sweep also done in this phase: `src/app/app/layout.tsx` + test (saveSettings → application barrel), `src/app/app/workout/page.tsx` + test (useSettings → presentation, AppSettings → application), `src/components/app/workout/workout-screen.tsx` (AppSettings → application), `src/lib/i18n/use-t.ts` (useSettings → presentation), `src/lib/workout/workout-machine.ts` + test (AppSettings → application), `src/lib/journal/seed.ts` (saveSettings → application), three test step files (types → application). Twelve files updated.
+- [x] **Refactor**: Publish `application/index.ts` and `presentation/index.ts`. Hide private files behind `eslint-plugin-boundaries` no-private rule (still warning level).
+  - Date: 2026-05-02. Notes: four barrels created (`domain/`, `application/`, `infrastructure/`, `presentation/`). All external consumers go through `@/contexts/settings/application` (types + use-cases) and `@/contexts/settings/presentation` (hook + component). Internal `infrastructure/settings-store.ts` retained re-export of domain types as a transitional convenience for the unit test, which still imports it directly. ESLint `boundaries/element-types` reports zero violations on settings code post-migration; the only outstanding eslint warning is a pre-existing `no-unused-disable` in `workout-screen.tsx` unrelated to this phase. The expected cross-context infra import (`infrastructure/settings-store.ts` → `@/lib/journal/runtime` + errors) does not surface as a boundaries warning today because journal's runtime is still under `src/lib/journal/`, not yet under `src/contexts/journal/infrastructure/` — the boundaries plugin only classifies modules under `src/contexts/*/{layer}/**`. The warning will materialize in Phase 6 when journal moves and is acceptable until Phase 6 completes the runtime migration.
+- [x] Commit: `refactor(organiclever-web): migrate settings context`.
+  - Date: 2026-05-02. Commit: see Phase 5 summary line below.
 
 **Phase exit gates**: same as Phase 4.
+
+- [x] `nx affected -t typecheck lint test:quick spec-coverage` passes.
+  - Date: 2026-05-02. Notes: typecheck passes (cached); lint passes (0 errors, 1 unrelated warning); test:quick passes with all 595 unit tests green.
+- [x] Coverage ≥ baseline.
+  - Date: 2026-05-02. Notes: 75.81% post-migration = 75.81% baseline (vitest.config.ts coverage exclusion updated from `src/components/app/settings/settings-screen.tsx` to `src/contexts/settings/presentation/components/settings-screen.tsx`).
 
 ---
 

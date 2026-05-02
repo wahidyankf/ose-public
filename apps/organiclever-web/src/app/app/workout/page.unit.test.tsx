@@ -26,7 +26,7 @@ vi.mock("@/components/app/app-runtime-context", () => ({
   }),
 }));
 
-vi.mock("@/lib/journal/use-settings", () => ({
+vi.mock("@/contexts/settings/presentation", () => ({
   useSettings: () => ({ state: { status: "loading" } }),
 }));
 

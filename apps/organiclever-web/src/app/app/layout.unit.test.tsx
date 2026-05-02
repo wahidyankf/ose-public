@@ -31,7 +31,7 @@ vi.mock("@/lib/journal/seed", () => ({
   seedIfEmpty: () => ({}),
 }));
 
-vi.mock("@/lib/journal/settings-store", () => ({
+vi.mock("@/contexts/settings/application", () => ({
   saveSettings: () => ({}),
 }));
 

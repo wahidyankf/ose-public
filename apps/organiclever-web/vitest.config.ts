@@ -37,8 +37,9 @@ export default defineConfig({
         "src/components/app/history/history-screen.tsx",
         "src/components/app/history/session-card.tsx",
         "src/components/app/history/weekly-bar-chart.tsx",
-        // Phase 8 settings screen — PGlite+browser-dependent UI; covered by e2e
-        "src/components/app/settings/settings-screen.tsx",
+        // Phase 8 settings screen — PGlite+browser-dependent UI; covered by e2e.
+        // Migrated to settings/presentation/components/ in DDD adoption Phase 5.
+        "src/contexts/settings/presentation/components/settings-screen.tsx",
         // Phase 4 workout screens — PGlite+XState+setInterval UI; covered by e2e
         "src/components/app/workout/workout-screen.tsx",
         "src/components/app/workout/active-exercise-row.tsx",

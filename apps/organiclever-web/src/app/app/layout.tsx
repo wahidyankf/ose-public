@@ -10,7 +10,7 @@ import type { CompletedSession } from "@/lib/app/app-machine";
 import type { Routine } from "@/lib/journal/routine-store";
 import { makeJournalRuntime } from "@/lib/journal/runtime";
 import { seedIfEmpty } from "@/lib/journal/seed";
-import { saveSettings } from "@/lib/journal/settings-store";
+import { saveSettings } from "@/contexts/settings/application";
 import { TabBar } from "@/components/app/tab-bar";
 import { SideNav } from "@/components/app/side-nav";
 import { OverlayTree } from "@/components/app/overlay-tree";

@@ -1,20 +1,29 @@
+// settings context — infrastructure layer.
+//
+// PGlite-backed implementation of the settings storage use-cases. The
+// `getSettings` / `saveSettings` Effect-shaped functions are the published
+// API of this layer (re-exported via `infrastructure/index.ts` and bridged
+// through `application/index.ts` until an explicit storage port is
+// introduced in a future plan).
+//
+// Cross-context infrastructure coupling: this file imports `PgliteService`
+// from `@/lib/journal/runtime` and `StorageUnavailable` from
+// `@/lib/journal/errors`. That coupling is intentional for the duration of
+// Phase 5 — the journal infrastructure (runtime + errors) migrates to
+// `@/contexts/journal/infrastructure/...` in Phase 6, and this import path
+// updates then. ESLint `boundaries/element-types` warns about the
+// cross-context infra import; the warning is expected and resolves in
+// Phase 6.
+
 import { Effect } from "effect";
-import { PgliteService } from "./runtime";
-import { StorageUnavailable } from "./errors";
+import { PgliteService } from "@/lib/journal/runtime";
+import { StorageUnavailable } from "@/lib/journal/errors";
+import type { AppSettings, RestSeconds, Lang } from "../domain";
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
-export type RestSeconds = "reps" | "reps2" | 0 | 30 | 60 | 90;
-export type Lang = "en" | "id";
-
-export interface AppSettings {
-  name: string;
-  restSeconds: RestSeconds;
-  darkMode: boolean;
-  lang: Lang;
-}
+// Re-export domain types so that consumers importing from this module
+// continue to compile while we keep the migration step small. The
+// authoritative type owner is `domain/types.ts`.
+export type { AppSettings, RestSeconds, Lang };
 
 // ---------------------------------------------------------------------------
 // Defaults

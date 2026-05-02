@@ -5,8 +5,9 @@ PGlite (Postgres-WASM) for in-browser data storage.
 
 ## Overview
 
-`organiclever-web` serves a landing page at `/` and the full OrganicLever app at `/app`. All app
-data is stored locally in the browser via PGlite (IndexedDB-backed) — no backend required.
+`organiclever-web` serves a landing page at `/` and the full OrganicLever app under `/app/`. Each
+screen has a dedicated URL — refresh, browser back/forward, and deep links all work. All app data
+is stored locally in the browser via PGlite (IndexedDB-backed) — no backend required.
 
 The existing Effect TS service layer (`src/services/`) and layer implementations (`src/layers/`)
 are preserved as dormant library code for a future backend rewire.
@@ -15,22 +16,30 @@ are preserved as dormant library code for a future backend rewire.
 
 ### Top-level routes
 
-| Route               | Description                                 |
-| ------------------- | ------------------------------------------- |
-| `/`                 | Landing and promotional page                |
-| `/app`              | OrganicLever life journal app (home screen) |
-| `/system/status/be` | Server-rendered backend diagnostic page     |
+| Route               | Description                                      |
+| ------------------- | ------------------------------------------------ |
+| `/`                 | Landing and promotional page                     |
+| `/app`              | 308 permanent redirect to `/app/home`            |
+| `/app/...`          | OrganicLever life journal app (URL-routed shell) |
+| `/system/status/be` | Server-rendered backend diagnostic page          |
 
-### In-app screens (hash navigation within `/app`)
+### In-app screens (URL-routed under `/app/`)
 
-| URL             | Screen   | Description                                   |
-| --------------- | -------- | --------------------------------------------- |
-| `/app`          | Home     | Dashboard — today's summary and quick-log FAB |
-| `/app#history`  | History  | Chronological entry log with filter/search    |
-| `/app#progress` | Progress | Charts and streaks across all entry types     |
-| `/app#settings` | Settings | Preferences, dark mode, data export/reset     |
+| URL                   | Screen       | Description                                   | Chrome      |
+| --------------------- | ------------ | --------------------------------------------- | ----------- |
+| `/app/home`           | Home         | Dashboard — today's summary and quick-log FAB | TabBar/Side |
+| `/app/history`        | History      | Chronological entry log with filter/search    | TabBar/Side |
+| `/app/progress`       | Progress     | Charts and streaks across all entry types     | TabBar/Side |
+| `/app/settings`       | Settings     | Preferences, dark mode, data export/reset     | TabBar/Side |
+| `/app/workout`        | Workout      | Active workout session UI                     | hidden      |
+| `/app/workout/finish` | Finish       | Post-workout summary                          | hidden      |
+| `/app/routines/edit`  | Edit Routine | Routine editor                                | hidden      |
 
-### Entry flows (launched from FAB on Home screen)
+The `app/` route segment owns a single client layout that mounts the PGlite runtime, the trimmed
+`appMachine` (overlay region only), the dark-mode + breakpoint effects, and the Add Entry / Logger
+overlay tree. Per-tab `page.tsx` files are thin wrappers around the screen components.
+
+### Entry flows (launched from FAB on any tab)
 
 | Entry type | Description                                       |
 | ---------- | ------------------------------------------------- |
@@ -50,13 +59,16 @@ device — no network requests, no backend required for core app functionality.
 ```
 Browser ──── Next.js (organiclever-web)
                     │
-                    ├── /                   Static landing page (no network dependency)
-                    ├── /app                OrganicLever life journal (PGlite local DB)
-                    │       ├── /app        Home screen (dashboard + FAB)
-                    │       ├── /app#history   Entry history log
-                    │       ├── /app#progress  Progress charts and streaks
-                    │       └── /app#settings  Preferences and data management
-                    └── /system/status/be   Server-rendered diagnostic page (force-dynamic)
+                    ├── /                       Static landing page (no network dependency)
+                    ├── /app                    308 → /app/home (preserves old bookmarks)
+                    ├── /app/home               Home screen (dashboard + FAB)
+                    ├── /app/history            History tab
+                    ├── /app/progress           Progress tab
+                    ├── /app/settings           Settings tab
+                    ├── /app/workout            Active workout (TabBar hidden)
+                    ├── /app/workout/finish     Post-workout summary
+                    ├── /app/routines/edit      Routine editor
+                    └── /system/status/be       Server-rendered diagnostic page (force-dynamic)
 ```
 
 ### Diagnostic page (`/system/status/be`)

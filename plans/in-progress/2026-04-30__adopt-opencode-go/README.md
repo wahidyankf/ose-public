@@ -21,7 +21,7 @@ of the mechanical work.
 
 ```mermaid
 flowchart LR
-    A[".claude/agents/*.md\nsonnet · haiku · omit"] -->|"ConvertModel()"| B[".opencode/agent/*.md\nopencode-go/minimax-m2.7\nopencode-go/glm-5"]
+    A[".claude/agents/*.md\nsonnet · haiku · omit"] -->|"ConvertModel()"| B[".opencode/agents/*.md\nopencode-go/minimax-m2.7\nopencode-go/glm-5"]
     C[".opencode/opencode.json\nmodel · provider · mcp"] --> D["OpenCode Session"]
     B --> D
     D --> E["opencode.ai/go API\nMiniMax · GLM · Kimi"]
@@ -49,7 +49,7 @@ flowchart LR
 | `apps/rhino-cli/cmd/agents_validate_naming.integration_test.go` | Update model in fixture |
 | `.opencode/opencode.json` | Switch `model`/`small_model` + add provider block; remove Z.ai MCPs |
 | `governance/development/agents/model-selection.md` | Update OpenCode/GLM Equivalents table |
-| `.opencode/agent/*.md` (all) | Regenerated automatically via `npm run sync:claude-to-opencode` |
+| `.opencode/agents/*.md` (all) | Regenerated automatically via `npm run sync:claude-to-opencode`. Path is plural per [opencode.ai/docs/agents](https://opencode.ai/docs/agents/); the singular `.opencode/agent/` path is removed by the prerequisite [validate-claude-opencode-sync-correctness](../2026-05-02__validate-claude-opencode-sync-correctness/README.md) plan before this plan starts. |
 
 **Out of scope**:
 
@@ -85,11 +85,21 @@ best available OpenCode Go model; haiku-tier uses the fast/light model.
 
 ## Relationship to Other Plans
 
-This plan is independent of the two in-progress plans
+**Blocked by**: [`2026-05-02__validate-claude-opencode-sync-correctness/`](../2026-05-02__validate-claude-opencode-sync-correctness/README.md).
+That plan audits the rhino-cli sync against current Claude Code and OpenCode
+specs and discovered that today's sync writes agents to `.opencode/agent/`
+(singular) while the canonical OpenCode path is `.opencode/agents/` (plural).
+Shipping this opencode-go migration on top of the broken path would publish
+`opencode-go/minimax-m2.7` IDs to a directory OpenCode does not load — the
+migration would silently no-op in every developer's OpenCode session. The
+sync-correctness plan must complete (filesystem moved, validators relaxed,
+test matrix added) before Phase 1 of this plan begins.
+
+This plan remains independent of the two organiclever in-progress plans
 ([`2026-04-25__organiclever-web-app/`](../2026-04-25__organiclever-web-app/README.md)
 and [`2026-04-28__organiclever-web-event-mechanism/`](../2026-04-28__organiclever-web-event-mechanism/README.md)).
 It modifies only tooling configuration and `rhino-cli` internals; it does not touch
-app source code. No blocking dependency in either direction.
+app source code. No blocking dependency in either direction with those.
 
 ## Web Search Strategy
 

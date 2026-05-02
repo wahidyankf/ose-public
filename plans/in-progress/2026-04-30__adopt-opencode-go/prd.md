@@ -25,7 +25,7 @@ files are generated correctly from the new provider IDs automatically.
 - Update `ConvertModel()` in `rhino-cli` to output `opencode-go/*` model IDs
 - Update all `rhino-cli` unit and integration tests for new model IDs
 - Update `.opencode/opencode.json` model fields, provider block, and MCP entries
-- Regenerate all `.opencode/agent/*.md` files via the existing sync mechanism
+- Regenerate all `.opencode/agents/*.md` files via the existing sync mechanism (plural path; the prerequisite [validate-claude-opencode-sync-correctness](../2026-05-02__validate-claude-opencode-sync-correctness/README.md) plan ensures the sync targets `.opencode/agents/`)
 - Update `model-selection.md` with the new OpenCode Go equivalents table and web search documentation
 - Document Exa web search as the primary search mechanism (`OPENCODE_ENABLE_EXA=true`)
 
@@ -108,9 +108,13 @@ covers page reading/browsing.
 ### FR-4: All OpenCode agent files reflect new model IDs
 
 After running `npm run sync:claude-to-opencode`, every file under
-`.opencode/agent/*.md` must contain `opencode-go/minimax-m2.7` (for opus/sonnet-
-tier agents) or `opencode-go/glm-5` (for haiku-tier agents) — no file must
-contain `zai-coding-plan/*`.
+`.opencode/agents/*.md` (plural — canonical OpenCode path) must contain
+`opencode-go/minimax-m2.7` (for opus/sonnet-tier agents) or `opencode-go/glm-5`
+(for haiku-tier agents) — no file must contain `zai-coding-plan/*`. The
+singular `.opencode/agent/` directory must NOT exist after this plan completes;
+its removal is owned by the prerequisite
+[validate-claude-opencode-sync-correctness](../2026-05-02__validate-claude-opencode-sync-correctness/README.md)
+plan.
 
 ### FR-5: rhino-cli test suite passes
 
@@ -226,10 +230,13 @@ Feature: OpenCode Go Model Provider Adoption
 
   Scenario: Sync produces OpenCode Go model IDs in agent files
     Given all rhino-cli changes are built
+    And the validate-claude-opencode-sync-correctness plan has completed
+    And the canonical sync output dir is ".opencode/agents/" (plural)
     When "npm run sync:claude-to-opencode" is executed
-    Then no .opencode/agent/*.md file contains "zai-coding-plan"
+    Then no .opencode/agents/*.md file contains "zai-coding-plan"
     And haiku-tier agents contain "opencode-go/glm-5"
     And opus-tier and sonnet-tier agents contain "opencode-go/minimax-m2.7"
+    And the singular ".opencode/agent/" directory does not exist
 
   Scenario: validate:config passes after all changes
     Given all code, config, and doc changes are in place

@@ -1,8 +1,19 @@
 # Delivery Checklist
 
-**Prerequisite**: OpenCode Go subscription active; `OPENCODE_GO_API_KEY` available
-in the local environment. This plan does NOT require other in-progress plans to be
-complete first.
+**Prerequisites**:
+
+1. OpenCode Go subscription active; `OPENCODE_GO_API_KEY` available in the
+   local environment.
+2. **[validate-claude-opencode-sync-correctness](../2026-05-02__validate-claude-opencode-sync-correctness/README.md)
+   plan is complete and archived to `plans/done/`**. That plan switches the
+   canonical sync output from `.opencode/agent/` (singular) to
+   `.opencode/agents/` (plural), relaxes validators to accept current Claude
+   Code spec, and removes the singular path from git. Without it, this plan
+   would publish `opencode-go/*` IDs to a directory OpenCode does not load,
+   silently no-opping the migration in every developer's OpenCode session.
+
+This plan is independent of the two organiclever in-progress plans
+(`2026-04-25__organiclever-web-app/`, `2026-04-28__organiclever-web-event-mechanism/`).
 
 ---
 
@@ -57,6 +68,29 @@ This plan executes inside the `ose-public` subrepo worktree:
 ---
 
 ## Phase 0 — Prerequisites, Slug Verification, and Exa Smoke-Test (Manual, No Code)
+
+### Prerequisite plan gate
+
+- [ ] Confirm the validate-claude-opencode-sync-correctness plan is in
+      `plans/done/` (not `plans/in-progress/`):
+
+  ```bash
+  ls plans/done/ | grep validate-claude-opencode-sync-correctness
+  ```
+
+  Expect: one matching folder. If the plan is still in-progress, this plan
+  must wait — do not start Phase 1 below until it lands.
+
+- [ ] Confirm the canonical sync output directory is `.opencode/agents/`
+      (plural) and the singular path is absent:
+
+  ```bash
+  test -d .opencode/agents && echo "plural OK"
+  test ! -d .opencode/agent && echo "singular absent OK"
+  ```
+
+  Expect both messages. If either fails, the prerequisite plan did not
+  complete its filesystem move; reopen it before proceeding.
 
 ### Model slug verification
 
@@ -297,7 +331,7 @@ This plan executes inside the `ose-public` subrepo worktree:
   - `nx-mcp` — unchanged; Nx workspace tooling
 - [ ] Validate JSON syntax: `cat .opencode/opencode.json | python3 -m json.tool`
 
-### 3.2 Regenerate .opencode/agent/ files
+### 3.2 Regenerate .opencode/agents/ files
 
 - [ ] Run the sync command:
 
@@ -305,12 +339,14 @@ This plan executes inside the `ose-public` subrepo worktree:
   npm run sync:claude-to-opencode
   ```
 
-  Expect: success with count of agents converted, 0 failures
+  Expect: success with count of agents converted, 0 failures, output written
+  to `.opencode/agents/` (plural — canonical path established by the
+  prerequisite plan)
 
 - [ ] Spot-check a few generated agent files to confirm no `zai-coding-plan` IDs:
 
   ```bash
-  grep -r "zai-coding" .opencode/agent/ | head -5
+  grep -r "zai-coding" .opencode/agents/ | head -5
   ```
 
   Expect: no output (zero matches)
@@ -318,10 +354,16 @@ This plan executes inside the `ose-public` subrepo worktree:
 - [ ] Spot-check haiku-tier agents contain the small model:
 
   ```bash
-  grep "model:" .opencode/agent/apps-ayokoding-web-deployer.md
+  grep "model:" .opencode/agents/apps-ayokoding-web-deployer.md
   ```
 
   Expect: `model: opencode-go/glm-5`
+
+- [ ] Confirm the singular path remains absent (regression guard):
+
+  ```bash
+  test ! -d .opencode/agent && echo "singular still absent OK"
+  ```
 
 ### 3.3 Validate config end-to-end
 
@@ -446,8 +488,8 @@ schema, model slugs wrong):
 
 1. Revert the three source commits (`feat`, `test`, `chore`) via `git revert`
 2. Revert the doc commit
-3. Run `npm run sync:claude-to-opencode` to regenerate `.opencode/agent/` with
-   Z.ai IDs
+3. Run `npm run sync:claude-to-opencode` to regenerate `.opencode/agents/`
+   (plural) with Z.ai IDs
 4. Push the reverts
 
 All changes are isolated to `rhino-cli`, `opencode.json`, and one doc file —

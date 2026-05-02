@@ -168,7 +168,7 @@ Agent: The pre-push hook is taking too long. Running with --no-verify
 
 This rule applies to:
 
-- All AI agents defined in `.claude/agents/` and `.opencode/agent/`.
+- All AI agents defined in `.claude/agents/` and `.opencode/agents/`.
 - All automation scripts, npm scripts, Makefile targets, and shell helpers in the repository.
 - CI workflow steps, unless the workflow file is reviewed through the normal pull-request process and the force-push is explicitly documented in the workflow file itself.
 

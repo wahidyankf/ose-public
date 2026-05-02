@@ -512,8 +512,8 @@ When updating tutorials:
 
 **Related Agents**:
 
-- `.opencode/agent/docs-tutorial-checker.md` - Validates tutorial quality
-- `.opencode/agent/docs-tutorial-fixer.md` - Fixes tutorial issues
-- `.opencode/agent/docs-maker.md` - Creates non-tutorial documentation
+- `.opencode/agents/docs-tutorial-checker.md` - Validates tutorial quality
+- `.opencode/agents/docs-tutorial-fixer.md` - Fixes tutorial issues
+- `.opencode/agents/docs-maker.md` - Creates non-tutorial documentation
 
 **Remember**: Tutorials are learning-oriented. Focus on helping users achieve clear outcomes through step-by-step guidance. Explain WHY things work, not just HOW. Make learning accessible and progressive.

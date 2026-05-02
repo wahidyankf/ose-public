@@ -367,7 +367,7 @@ rhino-cli agents sync -v
 
 **What it does:**
 
-**Agents (`.claude/agents/` → `.opencode/agent/`):**
+**Agents (`.claude/agents/` → `.opencode/agents/`):**
 
 - Converts tools array to boolean map (`Read, Write` → `read: true, write: true`)
 - Maps models (`sonnet`/`opus` → `zai-coding-plan/glm-5.1`, `haiku` → `zai-coding-plan/glm-5-turbo`, empty → `zai-coding-plan/glm-5.1`)

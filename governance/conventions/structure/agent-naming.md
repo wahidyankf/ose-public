@@ -12,7 +12,7 @@ created: 2026-04-17
 
 # Agent Naming Convention
 
-Agents in this repository follow a **single filename rule with no exceptions**. The rule covers every agent file in `.claude/agents/` and its auto-generated mirror in `.opencode/agent/`.
+Agents in this repository follow a **single filename rule with no exceptions**. The rule covers every agent file in `.claude/agents/` and its auto-generated mirror in `.opencode/agents/`.
 
 ## Why This Rule Exists
 
@@ -20,7 +20,7 @@ A uniform, exception-free naming rule gives the repository three concrete guaran
 
 - **Enforceable by checker**: A single regex suffix check (`-(maker|checker|fixer|dev|deployer|manager)$`) decides conformance. No per-agent judgement, no grandfathered legacy names, no "this one is special" carve-outs. `repo-rules-checker` can audit the entire population in one pass and produce a deterministic result.
 - **Zero-exception discipline**: Exceptions erode conventions. Once one agent is allowed a bespoke suffix, reviewers lose the ability to reject the next one on principle alone. Holding every agent to the same structure keeps the rule teachable in one sentence and cheap to enforce forever.
-- **Harness parity**: Claude Code reads `.claude/agents/*.md` and OpenCode reads `.opencode/agent/*.md`. The sync pipeline assumes a filename-for-filename mirror between the two directories. Drift in either direction — a rename in one tree but not the other, a `.claude/` agent with no `.opencode/` twin — breaks cross-harness invocation silently. A shared naming rule makes the mirror check a trivial set-difference.
+- **Harness parity**: Claude Code reads `.claude/agents/*.md` and OpenCode reads `.opencode/agents/*.md`. The sync pipeline assumes a filename-for-filename mirror between the two directories. Drift in either direction — a rename in one tree but not the other, a `.claude/` agent with no `.opencode/` twin — breaks cross-harness invocation silently. A shared naming rule makes the mirror check a trivial set-difference.
 
 ## The Rule
 
@@ -78,9 +78,9 @@ No other role suffixes are permitted. Introducing a new role requires amending t
 This convention applies to both:
 
 - **`.claude/agents/*.md`** — Source of truth. All agent definitions authored here.
-- **`.opencode/agent/*.md`** — Generated mirror. Produced by the sync pipeline from `.claude/agents/`.
+- **`.opencode/agents/*.md`** — Generated mirror. Produced by the sync pipeline from `.claude/agents/`.
 
-Filenames MUST be identical pair-for-pair between the two directories. Every `.claude/agents/<name>.md` has exactly one corresponding `.opencode/agent/<name>.md`, and vice versa. Any asymmetry (orphan file in either tree, rename in one tree but not the other) is a governance violation.
+Filenames MUST be identical pair-for-pair between the two directories. Every `.claude/agents/<name>.md` has exactly one corresponding `.opencode/agents/<name>.md`, and vice versa. Any asymmetry (orphan file in either tree, rename in one tree but not the other) is a governance violation.
 
 ## Enforcement
 
@@ -93,7 +93,7 @@ ls .claude/agents/*.md \
   | grep -v '^README$'
 ```
 
-Any non-empty output is a governance violation. Every line printed is an agent filename whose suffix does not match the Role Vocabulary; each such file MUST be renamed to a compliant name before the checker can pass. The same command SHOULD be run against `.opencode/agent/*.md` to detect mirror drift.
+Any non-empty output is a governance violation. Every line printed is an agent filename whose suffix does not match the Role Vocabulary; each such file MUST be renamed to a compliant name before the checker can pass. The same command SHOULD be run against `.opencode/agents/*.md` to detect mirror drift.
 
 ## Examples
 
@@ -109,7 +109,7 @@ Current agents, grouped by role, all conforming to the rule:
 ## Related
 
 - [`.claude/agents/README.md`](../../../.claude/agents/README.md) — Operational catalog of agents (source of truth).
-- [`.opencode/agent/README.md`](../../../.opencode/agent/README.md) — Operational catalog of agents (generated mirror).
+- [`.opencode/agents/README.md`](../../../.opencode/agents/README.md) — Operational catalog of agents (generated mirror).
 - [File Naming Convention](./file-naming.md) — Sibling filename rule for non-agent files in `docs/`, `governance/`, and plans.
 
 ## Principles Implemented/Respected

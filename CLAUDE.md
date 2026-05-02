@@ -305,7 +305,7 @@ Code: language-specific
 
 ### Emoji Usage
 
-Allowed: `docs/`, README files, `plans/`, `governance/`, CLAUDE.md, `AGENTS.md`, `.claude/agents/`, `.opencode/agent/`, `.opencode/skill/`
+Allowed: `docs/`, README files, `plans/`, `governance/`, CLAUDE.md, `AGENTS.md`, `.claude/agents/`, `.opencode/agents/`, `.opencode/skill/`
 Forbidden: config files (`*.json`, `*.yaml`, `*.toml`), source code
 
 **See**: [governance/conventions/formatting/emoji.md](./governance/conventions/formatting/emoji.md)
@@ -397,7 +397,7 @@ Edit `.claude/` and `.opencode/` files with normal `Write` / `Edit` tools. Both 
 - `.claude/agents/*.md` — agent definitions
 - `.claude/skills/*/SKILL.md` — skill files
 - `.claude/skills/*/reference/*.md` — skill reference modules
-- `.opencode/agent/*.md` — OpenCode agent mirrors
+- `.opencode/agents/*.md` — OpenCode agent mirrors
 - `.opencode/skill/*/SKILL.md` — OpenCode skill mirrors
 
 **See**: [.claude/agents/README.md](./.claude/agents/README.md), [governance/development/pattern/maker-checker-fixer.md](./governance/development/pattern/maker-checker-fixer.md), [Agent Naming Convention](./governance/conventions/structure/agent-naming.md), [Workflow Naming Convention](./governance/conventions/structure/workflow-naming.md)

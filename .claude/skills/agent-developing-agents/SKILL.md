@@ -22,7 +22,7 @@ This applies to:
 - `.claude/agents/*.md` — agent definitions
 - `.claude/skills/*/SKILL.md` — skill files
 - `.claude/skills/*/reference/*.md` — skill reference modules
-- `.opencode/agent/*.md` — OpenCode agent mirrors
+- `.opencode/agents/*.md` — OpenCode agent mirrors
 - `.opencode/skill/*/SKILL.md` — OpenCode skill mirrors
 
 After editing `.claude/` sources, run `npm run sync:claude-to-opencode` so the `.opencode/` mirrors stay aligned. The pre-commit hook validates both formats.

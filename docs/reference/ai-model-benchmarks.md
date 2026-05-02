@@ -16,7 +16,7 @@ Canonical benchmark reference for all AI models used in this project. Last updat
 ## Purpose and Scope
 
 This document provides cited benchmark scores for every model used in `.claude/agents/` and
-`.opencode/agent/`. Its purpose is to make tier assignments in
+`.opencode/agents/`. Its purpose is to make tier assignments in
 [AI Agent Model Selection Convention](../../governance/development/agents/model-selection.md) **auditable and
 defensible** — anyone reading a tier decision can follow the citation chain from claim to
 primary source here.

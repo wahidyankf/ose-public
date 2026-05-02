@@ -138,7 +138,7 @@ Development practices in this directory fall into several categories:
 
 ### Agent Standards Documentation
 
-- [AI Agents Convention](./agents/ai-agents.md) - Standards for creating and managing AI agents in the `.claude/agents/` directory (primary source of truth), synced to `.opencode/agent/`. Covers agent naming, file structure, frontmatter requirements, tool access patterns, model selection, and size limits
+- [AI Agents Convention](./agents/ai-agents.md) - Standards for creating and managing AI agents in the `.claude/agents/` directory (primary source of truth), synced to `.opencode/agents/`. Covers agent naming, file structure, frontmatter requirements, tool access patterns, model selection, and size limits
 - [Skill Context Architecture](./agents/skill-context-architecture.md) - Architectural constraint requiring all repository skills to use inline context for universal subagent compatibility. Documents subagent spawning limitation and fork skill alternatives
 - [Agent Workflow Orchestration Convention](./agents/agent-workflow-orchestration.md) - Standards for how AI agents plan, execute, verify, and self-improve during multi-step tasks. Covers plan mode triggers, subagent strategy, verification before done, autonomous bug fixing, the self-improvement loop, and task management
 - [Model Selection Convention](./agents/model-selection.md) - Standards for selecting the appropriate model tier (opus, sonnet, haiku) for AI agents based on task complexity, with justification requirements, benchmark citations, budget-adaptive opus-inherit behavior, and OpenCode/GLM model equivalents

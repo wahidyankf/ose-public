@@ -78,7 +78,7 @@
       "inputs": [
         "{projectRoot}/**/*.go",
         "{workspaceRoot}/.claude/agents/**/*.md",
-        "{workspaceRoot}/.opencode/agent/**/*.md"
+        "{workspaceRoot}/.opencode/agents/**/*.md"
       ],
       "outputs": []
     },

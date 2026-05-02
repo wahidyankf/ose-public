@@ -105,7 +105,7 @@ const (
 	stepAgentsTreeAllConform                = `^a repository where every agent filename ends with an allowed role suffix and mirrors across harnesses$`
 	stepAgentsTreeUnknownSuffix             = `^a repository with one agent whose filename ends in an unknown suffix$`
 	stepAgentsTreeFrontmatterMismatch       = `^a repository with a \.claude/agents/ file whose frontmatter name differs from its filename$`
-	stepAgentsTreeMirrorDrift               = `^a repository where one \.claude/agents/ file has no corresponding \.opencode/agent/ file$`
+	stepAgentsTreeMirrorDrift               = `^a repository where one \.claude/agents/ file has no corresponding \.opencode/agents/ file$`
 	stepDeveloperRunsAgentsValidateNaming   = `^the developer runs agents validate-naming$`
 	stepOutputZeroNamingViolations          = `^the output reports zero naming violations$`
 	stepOutputIdentifiesAgentUnknownSuffix  = `^the output identifies the offending agent file and its unknown suffix$`

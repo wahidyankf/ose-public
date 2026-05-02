@@ -45,6 +45,43 @@ func TestValidateAgentCount(t *testing.T) {
 	}
 }
 
+func TestValidateAgentCount_OpenCodeExtrasAllowed(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	claudeDir := filepath.Join(tmpDir, ".claude", "agents")
+	opencodeDir := filepath.Join(tmpDir, OpenCodeAgentDir)
+
+	if err := os.MkdirAll(claudeDir, 0755); err != nil {
+		t.Fatalf("Failed to create claude dir: %v", err)
+	}
+	if err := os.MkdirAll(opencodeDir, 0755); err != nil {
+		t.Fatalf("Failed to create opencode dir: %v", err)
+	}
+
+	// Claude has 2 agents
+	for i := 1; i <= 2; i++ {
+		filename := filepath.Join(claudeDir, "agent-"+string(rune('0'+i))+".md")
+		if err := os.WriteFile(filename, []byte("test"), 0644); err != nil {
+			t.Fatalf("Failed to create claude agent: %v", err)
+		}
+	}
+
+	// OpenCode has 3 agents (1 OpenCode-only Nx-generated extra)
+	for i := 1; i <= 3; i++ {
+		filename := filepath.Join(opencodeDir, "agent-"+string(rune('0'+i))+".md")
+		if err := os.WriteFile(filename, []byte("test"), 0644); err != nil {
+			t.Fatalf("Failed to create opencode agent: %v", err)
+		}
+	}
+
+	check := validateAgentCount(tmpDir)
+
+	if check.Status != "passed" {
+		t.Errorf("Expected status 'passed' when OpenCode has more agents than Claude (Nx-generated extras allowed), got '%s': %s",
+			check.Status, check.Message)
+	}
+}
+
 func TestValidateAgentCountMismatch(t *testing.T) {
 	tmpDir := t.TempDir()
 

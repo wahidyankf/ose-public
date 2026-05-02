@@ -1,6 +1,6 @@
 # AI Agents Development
 
-Standards and conventions for creating and managing AI agents in the `.claude/agents/` directory (source of truth), synced to `.opencode/agent/`.
+Standards and conventions for creating and managing AI agents in the `.claude/agents/` directory (source of truth), synced to `.opencode/agents/`.
 
 ## Purpose
 

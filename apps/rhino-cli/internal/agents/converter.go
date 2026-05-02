@@ -17,7 +17,7 @@ import (
 // local-temp/opencode-docs-snapshot-2026-05-02.md). Phase 2 of the
 // validate-claude-opencode-sync-correctness plan introduces the constant
 // in code; the on-disk filesystem move from the legacy singular
-// `.opencode/agent/` directory happens in Phase 3 as a single atomic commit.
+// `.opencode/agents/` directory happens in Phase 3 as a single atomic commit.
 const OpenCodeAgentDir = ".opencode/agents"
 
 // ConversionWarning describes a Claude Code frontmatter field that was

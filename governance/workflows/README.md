@@ -263,7 +263,7 @@ See [Workflow Pattern Convention](./meta/workflow-identifier.md) for complete re
 All workflows should be validated for:
 
 - ✅ **Frontmatter completeness** - All required fields present
-- ✅ **Agent existence** - All referenced agents exist in `.claude/agents/` (primary) or `.opencode/agent/` (secondary)
+- ✅ **Agent existence** - All referenced agents exist in `.claude/agents/` (primary) or `.opencode/agents/` (secondary)
 - ✅ **Type correctness** - Inputs/outputs use valid types
 - ✅ **Dependency acyclicity** - No circular step dependencies
 - ✅ **Reference resolution** - All `{stepN.outputs}` references resolve

@@ -106,7 +106,7 @@ Current workflows, grouped by type, all conforming to the rule:
 ## Related
 
 - [`governance/workflows/README.md`](../../workflows/README.md) — Operational catalog of workflows.
-- [Agent Naming Convention](./agent-naming.md) — Sibling rule governing `.claude/agents/*.md` and `.opencode/agent/*.md` filenames. Uses aligned scope vocabulary (`repo`, not `repository`).
+- [Agent Naming Convention](./agent-naming.md) — Sibling rule governing `.claude/agents/*.md` and `.opencode/agents/*.md` filenames. Uses aligned scope vocabulary (`repo`, not `repository`).
 - [File Naming Convention](./file-naming.md) — Sibling filename rule for non-workflow files.
 
 ## Principles Implemented/Respected

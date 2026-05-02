@@ -148,7 +148,7 @@ func TestStep1Config_ClaudeStaged_AllPass(t *testing.T) {
 
 func TestStep1Config_OpencodeStaged_AllPass(t *testing.T) {
 	d := fakeDeps()
-	err := step1Config(t.TempDir(), []string{".opencode/agent/foo.md"}, d)
+	err := step1Config(t.TempDir(), []string{".opencode/agents/foo.md"}, d)
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
 	}

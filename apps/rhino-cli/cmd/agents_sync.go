@@ -16,19 +16,32 @@ var (
 var syncAgentsCmd = &cobra.Command{
 	Use:   "sync",
 	Short: "Sync Claude Code agents to OpenCode format",
-	Long: `Convert .claude/ configuration to .opencode/ format with proper
-YAML frontmatter transformation and skills synchronization.
+	Long: `Convert .claude/ configuration to .opencode/ format with explicit
+per-field policy.
 
-This command performs the following operations:
-- Converts agents from .claude/agents/ to .opencode/agent/ with:
-  * Tools array → boolean map (Read → read: true)
-  * Model mapping (sonnet/opus → zai-coding-plan/glm-5.1, haiku → zai-coding-plan/glm-5-turbo, empty → zai-coding-plan/glm-5.1)
-  * Removal of Claude-specific fields (name, color)
-  * Preservation of description, skills, and body content
+Agents are read from .claude/agents/ and written to .opencode/agents/
+(plural, per opencode.ai/docs/agents/). Each Claude Code agent
+frontmatter field has an explicit policy in claudeAgentFieldPolicy
+(see internal/agents/converter.go):
 
-- Copies skills from .claude/skills/ to .opencode/skill/ with:
-  * Direct byte-for-byte copy (skills format is identical)
-  * SKILL.md → {skill-name}.md conversion`,
+  * preserve   — description, color, skills (passed through unchanged)
+  * translate  — tools (array/string → lowercase boolean map),
+                 model (via ConvertModel — owned by adopt-opencode-go
+                 plan), maxTurns → steps
+  * drop       — name (filename carries it)
+  * drop-warn  — disallowedTools, permissionMode, effort, memory,
+                 isolation, background, initialPrompt, mcpServers,
+                 hooks (no OpenCode equivalent today; warning emitted)
+
+Unknown frontmatter keys (typos, forward-compat gaps) drop with a
+warning naming the field. Warnings surface in --verbose output and
+in the JSON/markdown reports; they do NOT alter the success exit
+code.
+
+Skills under .claude/skills/ are read natively by OpenCode per
+opencode.ai/docs/skills/, so no skill copy is performed by this
+command (Phase 4 of the validate-claude-opencode-sync-correctness
+plan removed the redundant skill mirror).`,
 	Example: `  # Sync all agents and skills
   rhino-cli agents sync
 

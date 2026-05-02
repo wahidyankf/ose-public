@@ -150,7 +150,7 @@ Development: AI Agents Convention — agent colors use accessible palette
 - Source code (JS, TS, future: Java, Kotlin, Python)
 - Next.js 16 web applications (ayokoding-web, oseplatform-web)
 - Build systems and tooling
-- AI agents (.claude/agents/ primary, .opencode/agent/ auto-generated secondary)
+- AI agents (.claude/agents/ primary, .opencode/agents/ auto-generated secondary)
 - Git workflows
 
 **Example Practices**:
@@ -171,7 +171,7 @@ Development: AI Agents Convention — agent colors use accessible palette
 
 **Purpose**: Automated implementers enforcing conventions and development practices.
 
-**Location**: `.claude/agents/` (primary; `.opencode/agent/` is auto-generated secondary)
+**Location**: `.claude/agents/` (primary; `.opencode/agents/` is auto-generated secondary)
 
 **Key Document**: [Agents Index](../../agents/README.md)
 

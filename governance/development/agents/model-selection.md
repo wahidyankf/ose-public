@@ -270,7 +270,7 @@ tier. The model IDs above are current as of April 2026.
 
 ## OpenCode / GLM Equivalents
 
-Agents in `.claude/agents/` are auto-synced to `.opencode/agent/` by rhino-cli
+Agents in `.claude/agents/` are auto-synced to `.opencode/agents/` by rhino-cli
 (`npm run sync:claude-to-opencode`). The sync translates Claude model aliases to
 Zhipu AI (Z.ai) GLM model IDs.
 

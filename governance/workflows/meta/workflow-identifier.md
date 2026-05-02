@@ -365,7 +365,7 @@ Common patterns:
 Workflows must be validated before execution:
 
 - PASS: **Frontmatter schema**: All required fields present
-- PASS: **Agent references**: All agents exist in `.claude/agents/` (primary) or `.opencode/agent/` (secondary)
+- PASS: **Agent references**: All agents exist in `.claude/agents/` (primary) or `.opencode/agents/` (secondary)
 - PASS: **Input/output types**: Valid type declarations
 - PASS: **Step dependencies**: No circular dependencies
 - PASS: **State references**: All references resolve

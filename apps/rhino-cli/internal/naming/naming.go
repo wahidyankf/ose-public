@@ -8,7 +8,7 @@
 //     {maker, checker, fixer, dev, deployer, manager}; the YAML
 //     frontmatter `name:` field (when present) must equal the filename
 //     without the `.md` suffix; and `.claude/agents/*.md` must mirror
-//     `.opencode/agent/*.md` set-wise.
+//     `.opencode/agents/*.md` set-wise.
 //
 //   - Workflows: filename must end with one of the type suffixes
 //     {quality-gate, execution, setup}; `name:` field equals filename.
@@ -141,7 +141,7 @@ func ValidateMirror(claudeFiles, opencodeFiles []string) []Violation {
 				Path: path,
 				Kind: "mirror-drift",
 				Message: fmt.Sprintf(
-					"%s exists in .claude/agents/ but not in .opencode/agent/",
+					"%s exists in .claude/agents/ but not in .opencode/agents/",
 					name+".md",
 				),
 			})
@@ -153,7 +153,7 @@ func ValidateMirror(claudeFiles, opencodeFiles []string) []Violation {
 				Path: path,
 				Kind: "mirror-drift",
 				Message: fmt.Sprintf(
-					"%s exists in .opencode/agent/ but not in .claude/agents/",
+					"%s exists in .opencode/agents/ but not in .claude/agents/",
 					name+".md",
 				),
 			})

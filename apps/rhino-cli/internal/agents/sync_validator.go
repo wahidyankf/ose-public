@@ -19,6 +19,16 @@ func ValidateSync(repoRoot string) (*ValidationResult, error) {
 		Checks: []ValidationCheck{},
 	}
 
+	// 0. Validate no stale singular agent directory exists
+	staleCheck := validateNoStaleAgentDir(repoRoot)
+	result.Checks = append(result.Checks, staleCheck)
+	if staleCheck.Status == "passed" {
+		result.PassedChecks++
+	} else {
+		result.FailedChecks++
+	}
+	result.TotalChecks++
+
 	// 1. Validate agent count
 	countCheck := validateAgentCount(repoRoot)
 	result.Checks = append(result.Checks, countCheck)
@@ -68,7 +78,52 @@ func ValidateSync(repoRoot string) (*ValidationResult, error) {
 	return result, nil
 }
 
-// validateAgentCount checks that agent counts match
+// validateNoStaleAgentDir asserts the legacy singular .opencode/agent/
+// directory does not exist. The Phase 3 atomic move from singular to
+// plural removed it; this guard catches accidental resurrection
+// (e.g. a stale Nx generator config or a hand-created file). Failure
+// names the path so the developer knows where to clean up.
+func validateNoStaleAgentDir(repoRoot string) ValidationCheck {
+	staleDir := filepath.Join(repoRoot, ".opencode", "agent")
+	info, err := os.Stat(staleDir)
+	if os.IsNotExist(err) {
+		return ValidationCheck{
+			Name:    "No Stale Agent Directory",
+			Status:  "passed",
+			Message: "Legacy singular .opencode/agent/ does not exist",
+		}
+	}
+	if err != nil {
+		return ValidationCheck{
+			Name:    "No Stale Agent Directory",
+			Status:  "failed",
+			Message: fmt.Sprintf("Failed to stat .opencode/agent/: %v", err),
+		}
+	}
+	if info.IsDir() {
+		return ValidationCheck{
+			Name:     "No Stale Agent Directory",
+			Status:   "failed",
+			Expected: ".opencode/agent/ does not exist",
+			Actual:   ".opencode/agent/ exists as a directory",
+			Message:  "Stale singular .opencode/agent/ reappeared; canonical OpenCode path is .opencode/agents/ (plural). Remove the stale directory.",
+		}
+	}
+	return ValidationCheck{
+		Name:     "No Stale Agent Directory",
+		Status:   "failed",
+		Expected: ".opencode/agent/ does not exist",
+		Actual:   ".opencode/agent/ exists",
+		Message:  "Stale .opencode/agent/ entry reappeared; canonical OpenCode path is .opencode/agents/ (plural). Remove the stale entry.",
+	}
+}
+
+// validateAgentCount checks that every Claude agent has a corresponding
+// OpenCode agent. The check is one-directional (claude ⊆ opencode):
+// OpenCode-only agents (e.g. Nx-generated subagents like
+// ci-monitor-subagent) have no Claude source and are tolerated as extras.
+// validateAgentEquivalence performs the per-agent semantic check on the
+// Claude-side set.
 func validateAgentCount(repoRoot string) ValidationCheck {
 	claudeDir := filepath.Join(repoRoot, ".claude", "agents")
 	opencodeDir := filepath.Join(repoRoot, OpenCodeAgentDir)
@@ -76,22 +131,22 @@ func validateAgentCount(repoRoot string) ValidationCheck {
 	claudeCount := countMarkdownFiles(claudeDir)
 	opencodeCount := countMarkdownFiles(opencodeDir)
 
-	if claudeCount == opencodeCount {
+	if opencodeCount >= claudeCount {
 		return ValidationCheck{
 			Name:     "Agent Count",
 			Status:   "passed",
-			Expected: fmt.Sprintf("%d agents", claudeCount),
+			Expected: fmt.Sprintf(">= %d agents", claudeCount),
 			Actual:   fmt.Sprintf("%d agents", opencodeCount),
-			Message:  "Agent counts match",
+			Message:  "OpenCode agents directory contains every Claude agent",
 		}
 	}
 
 	return ValidationCheck{
 		Name:     "Agent Count",
 		Status:   "failed",
-		Expected: fmt.Sprintf("%d agents", claudeCount),
+		Expected: fmt.Sprintf(">= %d agents", claudeCount),
 		Actual:   fmt.Sprintf("%d agents", opencodeCount),
-		Message:  "Agent counts do not match",
+		Message:  "OpenCode agents directory missing one or more Claude agents",
 	}
 }
 

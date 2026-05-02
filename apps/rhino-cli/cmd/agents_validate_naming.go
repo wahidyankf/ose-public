@@ -25,7 +25,7 @@ var agentsValidateNamingFn = agentsValidateNaming
 var agentsValidateNamingCmd = &cobra.Command{
 	Use:   "validate-naming",
 	Short: "Validate agent filename suffixes and frontmatter name consistency",
-	Long: `Validate that every agent file in .claude/agents/ and .opencode/agent/
+	Long: `Validate that every agent file in .claude/agents/ and .opencode/agents/
 follows the naming convention documented in
 governance/conventions/structure/agent-naming.md.
 
@@ -33,9 +33,9 @@ The command enforces three rules:
 - Filename (sans .md) ends with one of: maker, checker, fixer, dev,
   deployer, manager.
 - .claude/agents/*.md frontmatter 'name:' field equals the filename
-  (without .md). .opencode/agent/*.md files omit the 'name:' field by
+  (without .md). .opencode/agents/*.md files omit the 'name:' field by
   design and skip this check.
-- Every .claude/agents/X.md has a corresponding .opencode/agent/X.md and
+- Every .claude/agents/X.md has a corresponding .opencode/agents/X.md and
   vice versa (mirror-drift check).
 
 README.md is exempt in both directories.`,
@@ -111,7 +111,7 @@ func agentsValidateNaming(repoRoot string) ([]naming.Violation, error) {
 		}
 	}
 
-	// Suffix check for .opencode/agent/*.md (frontmatter omits `name:`).
+	// Suffix check for .opencode/agents/*.md (frontmatter omits `name:`).
 	for _, path := range opencodeFiles {
 		if v := naming.ValidateSuffix(path, agentRoles, "role-suffix"); v != nil {
 			violations = append(violations, *v)

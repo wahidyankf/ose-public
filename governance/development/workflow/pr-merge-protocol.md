@@ -214,7 +214,7 @@ Agent: Understood. Merging PR #42 with your explicit approval to
 
 This rule applies to:
 
-- All AI agents defined in `.claude/agents/` and `.opencode/agent/`.
+- All AI agents defined in `.claude/agents/` and `.opencode/agents/`.
 - All automation scripts, npm scripts, and CI workflows that could trigger a PR merge.
 - All pull requests targeting any branch in the repository.
 

@@ -10,22 +10,31 @@ import (
 var validateSyncCmd = &cobra.Command{
 	Use:   "validate-sync",
 	Short: "Validate that .claude/ and .opencode/ are in sync",
-	Long: `Validate that .claude/ and .opencode/ configurations are semantically equivalent.
+	Long: `Validate that .claude/ and .opencode/ configurations are
+semantically equivalent.
 
-This command performs the following validations:
+The validator targets .opencode/agents/ (plural, per
+opencode.ai/docs/agents/). The legacy singular path
+.opencode/agent/ MUST NOT exist; if it reappears the validator
+fails with a stale-directory check naming the path.
 
-Agents:
-- Count check: Ensures equal number of agents in both directories
-- Equivalence check: Validates each agent is semantically equivalent:
+Agents (one-directional, claude ⊆ opencode):
+- Count check: every Claude agent has a corresponding OpenCode
+  agent. OpenCode-only agents (e.g. Nx-generated subagents) are
+  tolerated as extras.
+- Equivalence check: per-agent semantic match:
   * Description matches exactly
-  * Model is correctly converted (sonnet/opus/empty → zai-coding-plan/glm-5.1, haiku → zai-coding-plan/glm-5-turbo)
-  * Tools are correctly mapped (array → boolean map, lowercase)
+  * Model is correctly converted (mapping owned by ConvertModel —
+    see adopt-opencode-go plan for current target IDs)
+  * Tools are correctly mapped (array/string → lowercase boolean
+    map)
   * Skills array matches exactly
   * Body content is identical
 
 Skills:
-- Count check: Ensures equal number of skills in both directories
-- Identity check: Validates skills are byte-for-byte identical`,
+- OpenCode reads .claude/skills/ natively per
+  opencode.ai/docs/skills/, so no skill mirror is validated.
+  validate-claude already enforces .claude/skills/ source format.`,
 	Example: `  # Validate sync
   rhino-cli agents validate-sync
 

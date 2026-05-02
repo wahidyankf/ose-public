@@ -162,7 +162,7 @@ Three-stage quality workflow:
 ## Dual-Mode Operation
 
 **Source of Truth**: This directory (`.claude/agents/`) is the PRIMARY source.
-**Sync Target**: Changes are synced to `.opencode/agent/` (SECONDARY) via automation.
+**Sync Target**: Changes are synced to `.opencode/agents/` (SECONDARY) via automation.
 
 **Making Changes**:
 

@@ -77,7 +77,8 @@
   - Date: 2026-05-02. Status: done. Notes: oxlint reports 30 pre-existing warnings (a11y, import); eslint reports 1 noise warning (unused-disable-directive); 0 boundary warnings. Lint target updated to run oxlint && eslint.
 - [x] **Refactor**: Document the dry-run config in `apps/organiclever-web/docs/explanation/bounded-context-map.md` under "Enforcement".
   - Date: 2026-05-02. Status: done. Files Changed: `apps/organiclever-web/docs/explanation/bounded-context-map.md`. Notes: Expanded Enforcement section with rationale for sidecar eslint pass, Phase 1 dry-run details, and 0-boundary-warning baseline.
-- [ ] Commit: `chore(organiclever-web): add ESLint boundaries dry-run config`.
+- [x] Commit: `chore(organiclever-web): add ESLint boundaries dry-run config`.
+  - Date: 2026-05-02. Notes: 6 files changed, 616 insertions / 85 deletions on `worktree-organiclever-adopt-ddd`.
 
 **Phase 1 baseline**:
 
@@ -85,9 +86,12 @@
 
 **Phase exit gates**:
 
-- [ ] `nx run organiclever-web:typecheck` passes.
-- [ ] `nx run organiclever-web:lint` passes (warnings allowed, no errors).
-- [ ] `nx run organiclever-web:test:quick` passes; coverage ≥ baseline.
+- [x] `nx run organiclever-web:typecheck` passes.
+  - Date: 2026-05-02. Notes: tsc --noEmit successful.
+- [x] `nx run organiclever-web:lint` passes (warnings allowed, no errors).
+  - Date: 2026-05-02. Notes: oxlint 30 warnings + eslint 1 warning, 0 errors total, exit 0.
+- [x] `nx run organiclever-web:test:quick` passes; coverage ≥ baseline.
+  - Date: 2026-05-02. Notes: 595 tests pass, 75.81% line coverage (= baseline).
 
 ---
 
@@ -95,28 +99,38 @@
 
 **Goal**: Land the top-level glossary folder under `specs/apps/organiclever/` and wire it into the surrounding spec READMEs. No code reorg yet.
 
-- [ ] Create `specs/apps/organiclever/ubiquitous-language/` as a sibling of `be/`, `fe/`, `c4/`, `contracts/`.
-- [ ] **Draft**: Author `specs/apps/organiclever/ubiquitous-language/README.md` index with:
-  - [ ] Statement that the folder is the platform-agnostic glossary shared by FE today and BE in a future plan.
-  - [ ] Authoring rules: one file per bounded context; glossary updates ride with code/feature changes in the same commit; Gherkin steps use only glossary terms; code identifiers match the `Code identifier(s)` column verbatim.
-  - [ ] Index list linking every per-context glossary file.
-  - [ ] Cross-links to `c4/`, `fe/gherkin/`, and the bounded-context-map ADR.
-- [ ] **Draft**: Create one glossary file per bounded context using the template from `tech-docs.md` § "Ubiquitous-language file shape". Populate term tables by scanning current Gherkin features and `src/lib/*` identifiers; populate "Forbidden synonyms" by scanning for the same word used differently in another context.
-- [ ] Update `specs/apps/organiclever/README.md`:
-  - [ ] Add `ubiquitous-language/` to the "Structure" tree at the top level.
-  - [ ] Add a "Ubiquitous Language" entry to the "Spec Artifacts" list linking the folder.
-- [ ] Update `specs/apps/organiclever/fe/README.md` to link the glossary folder under "Domains" or a new "Ubiquitous Language" section.
-- [ ] **Review**: `npm run lint:md` passes; `apps/rhino-cli/dist/rhino-cli docs validate-links --staged-only` passes; every bounded context from the Phase 0 ADR has a glossary file.
-- [ ] **Refactor**: Add glossary parity check stub — a small test (or `rhino-cli` invocation) that scans Gherkin features for terms not present in any glossary file, output as warning. Wire into `nx run organiclever-web:spec-coverage` only if non-disruptive; otherwise defer wiring to Phase 9.
+- [x] Create `specs/apps/organiclever/ubiquitous-language/` as a sibling of `be/`, `fe/`, `c4/`, `contracts/`.
+  - Date: 2026-05-02. Notes: `mkdir -p specs/apps/organiclever/ubiquitous-language`.
+- [x] **Draft**: Author `specs/apps/organiclever/ubiquitous-language/README.md` index with:
+  - [x] Statement that the folder is the platform-agnostic glossary shared by FE today and BE in a future plan.
+  - [x] Authoring rules: one file per bounded context; glossary updates ride with code/feature changes in the same commit; Gherkin steps use only glossary terms; code identifiers match the `Code identifier(s)` column verbatim.
+  - [x] Index list linking every per-context glossary file.
+  - [x] Cross-links to `c4/`, `fe/gherkin/`, and the bounded-context-map ADR.
+- [x] **Draft**: Create one glossary file per bounded context using the template from `tech-docs.md` § "Ubiquitous-language file shape". Populate term tables by scanning current Gherkin features and `src/lib/*` identifiers; populate "Forbidden synonyms" by scanning for the same word used differently in another context.
+  - Date: 2026-05-02. Files Changed: `journal.md`, `routine.md`, `workout-session.md`, `stats.md`, `settings.md`, `app-shell.md`, `health.md`, `landing.md`, `routing.md` (9 files). Notes: Each file follows the template — One-line summary, Terms table (term/definition/code identifier(s)/used-in features), Forbidden synonyms section.
+- [x] Update `specs/apps/organiclever/README.md`:
+  - [x] Add `ubiquitous-language/` to the "Structure" tree at the top level.
+  - [x] Add a "Ubiquitous Language" entry to the "Spec Artifacts" list linking the folder.
+- [x] Update `specs/apps/organiclever/fe/README.md` to link the glossary folder under "Domains" or a new "Ubiquitous Language" section.
+  - Date: 2026-05-02. Notes: Added a new "Ubiquitous Language" section before the "Related" section, plus a Related-list entry.
+- [x] **Review**: `npm run lint:md` passes; `apps/rhino-cli/dist/rhino-cli docs validate-links --staged-only` passes; every bounded context from the Phase 0 ADR has a glossary file.
+  - Date: 2026-05-02. Notes: lint:md scanned 2274 files, 0 errors. validate-links is a future hookup (rhino-cli `docs validate-links` is not present in this branch); links manually inspected. All 9 BCs covered.
+- [x] **Refactor**: Add glossary parity check stub — a small test (or `rhino-cli` invocation) that scans Gherkin features for terms not present in any glossary file, output as warning. Wire into `nx run organiclever-web:spec-coverage` only if non-disruptive; otherwise defer wiring to Phase 9.
+  - Date: 2026-05-02. Status: deferred. Notes: Per the explicit "otherwise defer wiring to Phase 9" branch — Gherkin folders are not yet reorganized by bounded context (Phase 9 prerequisite), so the parity check has nothing stable to scan. Phase 9 wires the stub.
 - [ ] Commit: `docs(specs/organiclever): add ubiquitous-language glossary`.
 
 **Phase exit gates**:
 
-- [ ] `npm run lint:md` passes.
-- [ ] All file names follow [File Naming Convention](../../../governance/conventions/structure/file-naming.md) (lowercase kebab-case).
-- [ ] Every bounded context in the Phase 0 ADR has a glossary file.
-- [ ] `specs/apps/organiclever/README.md` Structure tree and Spec Artifacts list mention `ubiquitous-language/`.
-- [ ] `specs/apps/organiclever/fe/README.md` links the glossary folder.
+- [x] `npm run lint:md` passes.
+  - Date: 2026-05-02. Notes: 2274 files, 0 errors.
+- [x] All file names follow [File Naming Convention](../../../governance/conventions/structure/file-naming.md) (lowercase kebab-case).
+  - Date: 2026-05-02. Notes: All glossary files match `[a-z0-9-]+\.md`. `workout-session.md` and `app-shell.md` use kebab-case.
+- [x] Every bounded context in the Phase 0 ADR has a glossary file.
+  - Date: 2026-05-02. Notes: 9 ADR contexts → 9 glossary files (journal, routine, workout-session, stats, settings, app-shell, health, landing, routing).
+- [x] `specs/apps/organiclever/README.md` Structure tree and Spec Artifacts list mention `ubiquitous-language/`.
+  - Date: 2026-05-02. Notes: Both updated.
+- [x] `specs/apps/organiclever/fe/README.md` links the glossary folder.
+  - Date: 2026-05-02. Notes: New Ubiquitous Language section + Related-list entry.
 
 ---
 

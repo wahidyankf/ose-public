@@ -77,7 +77,7 @@ Feature: Agent Configuration Synchronisation
 
   @agents-sync
   Rule: agents sync converts .claude/ configuration to .opencode/ format
-    Scenario: Syncing converts agents and skills to OpenCode format
+    Scenario: Syncing converts agents and skills to secondary platform binding format
     ...
 
   @agents-validate-sync

@@ -20,7 +20,7 @@ A uniform, exception-free naming rule gives the repository three concrete guaran
 
 - **Enforceable by checker**: A single regex suffix check (`-(maker|checker|fixer|dev|deployer|manager)$`) decides conformance. No per-agent judgement, no grandfathered legacy names, no "this one is special" carve-outs. `repo-rules-checker` can audit the entire population in one pass and produce a deterministic result.
 - **Zero-exception discipline**: Exceptions erode conventions. Once one agent is allowed a bespoke suffix, reviewers lose the ability to reject the next one on principle alone. Holding every agent to the same structure keeps the rule teachable in one sentence and cheap to enforce forever.
-- **Harness parity**: Claude Code reads `.claude/agents/*.md` and OpenCode reads `.opencode/agents/*.md`. The sync pipeline assumes a filename-for-filename mirror between the two directories. Drift in either direction — a rename in one tree but not the other, a `.claude/` agent with no `.opencode/` twin — breaks cross-harness invocation silently. A shared naming rule makes the mirror check a trivial set-difference.
+- **Harness parity**: The coding agent reads the primary binding directory (`.claude/agents/*.md`); secondary binding directories (e.g., `.opencode/agents/*.md`) mirror this structure. The sync pipeline assumes a filename-for-filename mirror between the two directories. Drift in either direction — a rename in one directory but not the other, a primary agent with no secondary twin — breaks cross-harness invocation silently. A shared naming rule makes the mirror check a trivial set-difference.
 
 ## The Rule
 

@@ -114,7 +114,7 @@ Nx task caching, project graph resolution, and executor plugins all depend on a 
 Run both steps in the root worktree after any of the following:
 
 1. Running `git worktree add` to create a new worktree.
-2. Using the `EnterWorktree` tool in Claude Code, which creates a worktree automatically.
+2. Using the `EnterWorktree` tool in the coding agent, which creates a worktree automatically.
 3. An AI agent with `isolation: "worktree"` spawning a new worktree for isolated work.
 4. A human `cd`-ing into an existing worktree to continue or resume work in a new session.
 5. Any other mechanism that creates or re-enters a worktree in this repository.

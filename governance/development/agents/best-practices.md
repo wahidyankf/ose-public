@@ -83,7 +83,7 @@ tools: [Read, Write, Edit, Bash, WebFetch, WebSearch] # Excessive
 
 ### Practice 3: Use Appropriate Model for Task Complexity
 
-**Principle**: Match model to task complexity - use Haiku for simple tasks, Sonnet for structured tasks, and omit `model` for opus-tier agents.
+**Principle**: Match model to task complexity - use fast model for simple tasks, execution-grade for structured tasks, and omit `model` for planning-grade agents.
 
 **Good Example:**
 
@@ -110,7 +110,7 @@ model:
 - Cost optimization
 - Performance optimization
 - Clear expectations
-- Opus-tier agents omit `model` by design (budget-adaptive — inherits session model). Do not add `model: opus`. See [model-selection.md](./model-selection.md) for the design rationale.
+- Planning-grade agents omit `model` by design (budget-adaptive — inherits session model). Do not add a concrete planning-tier model identifier. See [model-selection.md](./model-selection.md) for the design rationale.
 
 ### Practice 4: Provide Clear, Actionable Descriptions
 

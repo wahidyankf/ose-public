@@ -420,7 +420,7 @@ docs/          # Flat category directories
 
 ### Agent Responsibilities
 
-**Location**: `.claude/agents/`
+**Location**: the agent definition directory (e.g., `.claude/agents/`)
 
 Each agent has **one clear job**:
 

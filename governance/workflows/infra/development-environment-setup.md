@@ -175,7 +175,7 @@ brew install jq
 sudo apt-get install -y jq
 ```
 
-**Success criteria**: `jq --version` returns a version string. Required for Claude Code hooks.
+**Success criteria**: `jq --version` returns a version string. Required for coding agent hooks.
 
 ---
 

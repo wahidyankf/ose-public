@@ -48,7 +48,7 @@ Both tools work together to ensure markdown files are well-formatted and follow 
 **When it runs**:
 
 - Pre-commit hook (via lint-staged)
-- Claude Code hook (PostToolUse)
+- coding agent hook (PostToolUse)
 - Manual: `npm run format:md`
 
 ### markdownlint-cli2 (v0.20.0)
@@ -62,7 +62,7 @@ Both tools work together to ensure markdown files are well-formatted and follow 
 **When it runs**:
 
 - Pre-push hook (blocks push if violations detected)
-- Claude Code hook (PostToolUse)
+- coding agent hook (PostToolUse)
 - Manual: `npm run lint:md`
 
 ## Running Linting Locally
@@ -226,7 +226,7 @@ Runs markdownlint on all markdown files before pushing.
 npm run lint:md:fix
 ```
 
-## Claude Code Integration
+## Coding Agent Hook Integration
 
 ### PostToolUse Hook
 
@@ -291,7 +291,7 @@ npm run lint:md:fix
 # Then try pushing again
 ```
 
-### Claude Code hook not working
+### Coding agent hook not working
 
 1. Verify `jq` is installed: `which jq`
 2. Check hook script permissions: `ls -l .claude/hooks/format-lint-markdown.sh`
@@ -354,7 +354,7 @@ This practice implements and respects the following core principles:
 
 - Pre-commit hooks automatically format staged markdown files
 - Pre-push hooks prevent committing markdown violations
-- Claude Code PostToolUse hooks format/lint markdown after Edit/Write operations
+- coding agent PostToolUse hooks format/lint markdown after Edit/Write operations
 - Single command (`npm run lint:md:fix`) auto-fixes 99.5% of violations
 
 See [Automation Over Manual Principle](../../principles/software-engineering/automation-over-manual.md) for foundational rationale.

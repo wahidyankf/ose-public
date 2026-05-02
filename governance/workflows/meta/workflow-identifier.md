@@ -365,7 +365,7 @@ Common patterns:
 Workflows must be validated before execution:
 
 - PASS: **Frontmatter schema**: All required fields present
-- PASS: **Agent references**: All agents exist in `.claude/agents/` (primary) or `.opencode/agents/` (secondary)
+- PASS: **Agent references**: All agents exist in the primary binding directory (e.g., `.claude/agents/`) or secondary directories (e.g., `.opencode/agents/`)
 - PASS: **Input/output types**: Valid type declarations
 - PASS: **Step dependencies**: No circular dependencies
 - PASS: **State references**: All references resolve
@@ -757,7 +757,7 @@ outputs:
 
 **Preferred Mode**: Agent Delegation — invoke `{input.content-type}-checker` and
 `{input.content-type}-fixer` via the Agent tool with `subagent_type` when these
-agents exist as defined subagent types.
+agents exist as defined delegated agent types.
 
 **Fallback Mode**: Manual Orchestration — execute workflow logic directly using
 Read/Write/Edit tools when Agent Delegation is unavailable.
@@ -768,7 +768,7 @@ User: "Run content validation workflow for [scope] in [mode] mode"
 ```
 
 The AI invokes specialized agents via the Agent tool. If agents are unavailable as
-subagent types, it falls back to executing workflow logic directly.
+delegated agent types, it falls back to executing workflow logic directly.
 
 ## Steps
 

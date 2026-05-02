@@ -50,8 +50,8 @@ outputs:
 This workflow validates **source definitions only** in `governance/`. It does NOT validate generated directories:
 
 - PASS: **Validates**: `governance/` (principles, conventions, development practices)
-- FAIL: **Skips**: `.opencode/agents/` (auto-generated from `.claude/agents/` - validate via sync script)
-- FAIL: **Skips**: `.claude/skills/` (auto-synced from `.claude/skills/` - validate via sync script)
+- FAIL: **Skips**: secondary platform binding directories (e.g., `.opencode/agents/`) — auto-generated from primary, validate via sync script
+- FAIL: **Skips**: platform binding skill directories (e.g., `.claude/skills/`) — auto-synced to secondary directories, validate via sync script
 
 **Generated Output Validation**: Use CLI validation commands for validating generated content. This workflow ensures SOURCE is correct, then sync commands validate output generation.
 
@@ -71,8 +71,8 @@ This workflow validates **source definitions only** in `governance/`. It does NO
 **Fallback Mode**: Manual Orchestration — execute workflow logic directly using
 Read/Write/Edit tools when Agent Delegation is unavailable.
 
-The Agent tool runs subagents that persist file changes to the actual filesystem, making it
-the preferred approach when these agents exist as defined subagent types.
+The Agent tool runs delegated agents that persist file changes to the actual filesystem, making it
+the preferred approach when these agents exist as defined delegated agent types.
 
 **How to Execute**:
 
@@ -258,8 +258,8 @@ User: "Run repository rules quality gate workflow in normal mode"
 
 The AI will invoke specialized agents via the Agent tool:
 
-- Validate repository consistency (`repo-rules-checker` subagent)
-- Apply fixes for CRITICAL/HIGH findings (`repo-rules-fixer` subagent)
+- Validate repository consistency (`repo-rules-checker` delegated agent)
+- Apply fixes for CRITICAL/HIGH findings (`repo-rules-fixer` delegated agent)
 - Iterate until zero CRITICAL/HIGH findings achieved
 - Report MEDIUM/LOW findings without fixing them
 
@@ -375,7 +375,7 @@ Track across executions:
 
 **Concurrency**: Currently validates and fixes sequentially. The `max-concurrency` parameter is reserved for future enhancements where multiple validation dimensions (principles, conventions, development, agents source in governance/agents/) could run concurrently.
 
-**Note**: "agents" in this context refers to agent SOURCE definitions in `.claude/agents/` (primary) - note: `.opencode/agents/` is auto-generated.
+**Note**: "agents" in this context refers to agent SOURCE definitions in the primary binding directory (e.g., `.claude/agents/`) — secondary directories (e.g., `.opencode/agents/`) are auto-generated.
 
 This workflow ensures repository consistency through iterative validation and fixing, making it ideal for maintenance and quality assurance.
 

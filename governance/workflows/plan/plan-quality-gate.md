@@ -54,8 +54,8 @@ tool with `subagent_type` (see [Workflow Execution Modes Convention](../meta/exe
 **Fallback Mode**: Manual Orchestration — execute workflow logic directly using
 Read/Write/Edit tools when Agent Delegation is unavailable.
 
-The Agent tool runs subagents that persist file changes to the actual filesystem, making it
-the preferred approach when these agents exist as defined subagent types.
+The Agent tool runs delegated agents that persist file changes to the actual filesystem, making it
+the preferred approach when these agents exist as defined delegated agent types.
 
 **How to Execute**:
 
@@ -90,7 +90,7 @@ context — use this when agent delegation is unavailable.
 ## Research Delegation
 
 The `plan-checker` agent delegates multi-page web research to the
-[`web-research-maker`](../../../.claude/agents/web-research-maker.md) subagent when verifying a single
+[`web-research-maker`](../../../.claude/agents/web-research-maker.md) delegated agent when verifying a single
 technical claim requires more than one or two searches, or more than two fetches. This keeps the
 plan audit context lean — `plan-checker` receives a cited, synthesised summary and translates it
 into dual-labelled findings, rather than burning its own context on multi-page research. Checkers
@@ -224,8 +224,8 @@ User: "Run plan quality gate workflow for all plans"
 
 The AI will invoke `plan-checker` and `plan-fixer` via the Agent tool:
 
-- Validate all plan files (`plan-checker` subagent)
-- Apply all fixes (`plan-fixer` subagent)
+- Validate all plan files (`plan-checker` delegated agent)
+- Apply all fixes (`plan-fixer` delegated agent)
 - Iterate until zero findings achieved
 
 ### Validate Specific Plan Folder

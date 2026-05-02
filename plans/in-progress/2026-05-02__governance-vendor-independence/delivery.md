@@ -261,11 +261,27 @@ For each file: read whole file, classify each match, rewrite per recipe (tech-do
 ### Pre-Flight
 
 - [ ] Re-confirm `docs/reference/` exists at `ose-public/docs/reference/`.
+- [ ] Read `governance/development/agents/ai-agents.md#dual-mode-color-translation-claude-code-to-opencode`
+      — landed 2026-05-02 (commit `b84127177`) as the first concrete
+      "vendor-translation pattern" artifact in the repo. The Claude→OpenCode
+      color map (`apps/rhino-cli/internal/agents/types.go`
+      `ClaudeToOpenCodeColor`) is the canonical example of how a single source
+      of truth in `.claude/` is mechanically translated into a `.opencode/`
+      vendor binding by `rhino-cli agents sync`. Mirror this shape when
+      cataloguing other Claude↔OpenCode translations (model IDs, tool names,
+      permission blocks).
 
 ### Steps
 
 - [ ] Create `docs/reference/platform-bindings.md` populated from tech-docs.md §5 table.
 - [ ] Add row links to upstream tool docs (verify each URL resolves).
+- [ ] Add a "Translation artifacts" subsection that lists per-tool the
+      mechanical translations rhino-cli performs during `agents sync`
+      (model IDs, tools, color, etc.). The current Claude→OpenCode color
+      map is the first concrete entry; reference
+      `apps/rhino-cli/internal/agents/types.go` (`ClaudeToOpenCodeColor`)
+      and `governance/development/agents/ai-agents.md`
+      "Dual-Mode Color Translation (Claude Code to OpenCode)" subsection.
 - [ ] Backfill the AGENTS.md "Platform Bindings" section: replace the TODO marker with the link to `docs/reference/platform-bindings.md`.
 - [ ] Backfill the new convention's "Platform Binding Directory Pattern" section: cross-link to `docs/reference/platform-bindings.md`.
 - [ ] `npm run lint:md` green.

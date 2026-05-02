@@ -169,7 +169,18 @@ This shape preserves the canonical content in one file (AGENTS.md), keeps Claude
 
 ## 5. Platform-Bindings Catalog
 
-Lives at `docs/reference/platform-bindings.md`. Table-driven:
+Lives at `docs/reference/platform-bindings.md`. Table-driven.
+
+> **Translation artifacts.** A platform binding is more than a directory — it
+> includes the per-field translations rhino-cli applies when generating the
+> binding from upstream sources. The first concrete artifact is the
+> Claude→OpenCode color map landed 2026-05-02 (commit `7e003e106`):
+> `apps/rhino-cli/internal/agents/types.go` `ClaudeToOpenCodeColor` is the
+> single source of truth, with the policy authored at
+> `governance/development/agents/ai-agents.md` "Dual-Mode Color Translation
+> (Claude Code to OpenCode)" subsection. The catalog Phase 4 step adds a
+> "Translation artifacts" subsection listing all such mappings (model IDs,
+> tool names, color, etc.) per tool; future entries follow the same shape.
 
 | Tool             | Binding location                                | Root instruction file                               | Status                                            | Upstream docs                                |
 | ---------------- | ----------------------------------------------- | --------------------------------------------------- | ------------------------------------------------- | -------------------------------------------- |

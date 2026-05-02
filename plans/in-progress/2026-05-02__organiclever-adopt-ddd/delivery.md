@@ -11,6 +11,17 @@
 - [ ] Snapshot baseline coverage number for `organiclever-web` and record in this file under "Baseline metrics" below.
 
 > **Important**: Fix ALL failures found during any quality gate — including preexisting failures unrelated to your changes. This follows the root cause orientation principle — proactively fix preexisting errors encountered during work. Do not defer or mention-and-skip existing issues.
+>
+> **Cross-worktree note (2026-05-02 17:25, commit `28aa5b59a`).** `apps/organiclever-web/vitest.config.ts`
+> on `origin/main` now has `testTimeout: 30000` + `hookTimeout: 30000` on
+> both `unit` and `integration` projects (was 15s + default 10s). Landed
+> alongside the rhino-cli color-translation fix to stabilize PGlite
+> beforeEach hooks under coverage instrumentation (memory-confirmed flake
+> on origin/main). When this DDD worktree's branch is rebased on or
+> merged with `main`, no action is required — the file overlap is at the
+> two timeout literals only and the new values are strictly more
+> permissive than the old ones. If a manual conflict appears at those
+> lines, prefer the 30000/30000 values; do NOT lower them.
 
 ### Baseline metrics
 

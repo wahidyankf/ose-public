@@ -519,24 +519,39 @@ the followup so OpenCode loads cleanly across all 70 mirrored agent files.
 
 ### 5.4 Propagate the policy
 
-- [ ] Invoke `repo-rules-maker` to publish the role-color convention covering
+- [x] Invoke `repo-rules-maker` to publish the role-color convention covering
       both Claude (Maker=blue, Checker=green, Fixer=yellow, Implementor=purple)
       and OpenCode (Maker=primary, Checker=success, Fixer=warning,
       Implementor=secondary), pointing at `ClaudeToOpenCodeColor` as the single
-      source of truth.
+      source of truth. Landed in commit `b84127177` —
+      `governance/development/agents/ai-agents.md` (new "Dual-Mode Color
+      Translation" subsection + 8-color `Values` enumeration),
+      `governance/development/pattern/maker-checker-fixer.md` (cross-link),
+      and `CLAUDE.md` (Format Differences bullet).
 
 ### 5.5 Commit Phase 5
 
-- [ ] Stage the rhino-cli source + test edits and the regenerated
-      `.opencode/agents/*.md`. Commit message:
+- [x] Stage the rhino-cli source + test edits and the regenerated
+      `.opencode/agents/*.md`. Commit landed as `7e003e106`:
 
   ```
   fix(rhino-cli): translate Claude color names to OpenCode theme tokens
-
-  OpenCode 1.14.31 rejects Claude's named colors with a strict hex-or-theme
-  regex. Add ClaudeToOpenCodeColor map, switch the color policy from preserve
-  to translate, update tests, and resync .opencode/agents/.
   ```
+
+- [x] Follow-up commits pushed to `origin/main` in the same series:
+
+  ```
+  7e003e106 fix(rhino-cli): translate Claude color names to OpenCode theme tokens
+  b84127177 docs(governance): document dual-mode color translation policy
+  dc2a17526 docs(plans): add Phase 5 color translation followup to adopt-opencode-go
+  28aa5b59a test(rhino-cli,organiclever-web): cover ConvertColor branches; stabilize PGlite tests
+  ```
+
+  The fourth commit covers (a) `TestConvertColor` + `TestApplyTranslateColor_NonStringValueIgnored`
+  to lift coverage from 90.00% (failing the `>=90%` gate) to 90.04%, and
+  (b) `apps/organiclever-web/vitest.config.ts` `testTimeout: 15000 → 30000`
+  plus `hookTimeout: 30000` on both unit and integration projects to
+  stabilize PGlite hooks under coverage instrumentation.
 
 ---
 

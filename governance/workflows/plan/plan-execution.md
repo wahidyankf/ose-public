@@ -47,9 +47,9 @@ outputs:
 
 **Direct Orchestration** — the calling context (the top-level assistant session that received the "Execute plan …" request) is the orchestrator. It reads this workflow, parses the plan's delivery checklist, manages the live Task list via `TaskCreate` / `TaskUpdate`, performs the Atomic Sync Ritual against `delivery.md`, and delegates each checklist item to the appropriate specialized agent via the Agent tool (see Agent Selection below).
 
-The calling context invokes `plan-execution-checker` as an Agent-delegated subagent for independent validation (Step 3 and Step 6 below). Validation must run in an isolated context so the checker's judgment is not biased by the orchestrator's execution memory.
+The calling context invokes `plan-execution-checker` as a delegated agent for independent validation (Step 3 and Step 6 below). Validation must run in an isolated context so the checker's judgment is not biased by the orchestrator's execution memory.
 
-There is no dedicated `plan-executor` subagent. Executor logic lives in this workflow document; the calling context follows it directly. This keeps the live Task list visible to the user in real time (a subagent's tasks are isolated to its own context) and eliminates a redundant router hop.
+There is no dedicated `plan-executor` delegated agent. Executor logic lives in this workflow document; the calling context follows it directly. This keeps the live Task list visible to the user in real time (a delegated agent's tasks are isolated to its own context) and eliminates a redundant router hop.
 
 **How to Execute**:
 
@@ -89,7 +89,7 @@ The orchestrator selects the best agent for each delivery checklist item using t
 
 5. **Fallback (direct execution)**: If no specialized agent cleanly matches — e.g., a one-line edit to a governance doc, a grep or file-move operation, an `npm` command — the orchestrator executes the item directly via `Edit` / `Bash` without delegating. Direct execution is only for trivial, context-bounded work; substantive changes always route through an agent.
 
-**The above are heuristics, not a closed list.** As new agents or apps are added to the repository, the orchestrator adapts automatically by reading the available agent list from `.claude/agents/` and matching based on the agent's description and the checklist item's content. The orchestrator should always check what agents are currently available rather than relying on a static table.
+**The above are heuristics, not a closed list.** As new agents or apps are added to the repository, the orchestrator adapts automatically by reading the available agent list from the agent definition directory and matching based on the agent's description and the checklist item's content. The orchestrator should always check what agents are currently available rather than relying on a static table.
 
 **Multi-concern items**: When a delivery checklist item spans multiple task types (e.g., a
 TypeScript backend change that also requires a README update), delegate each concern separately
@@ -523,7 +523,7 @@ The calling context orchestrates directly and invokes specialized agents via the
 - Read delivery checklist and materialize 1:1 Task list in the calling context
 - Delegate each item to the appropriate specialized agent (e.g., `swe-typescript-dev`)
 - Tick checkboxes progressively as each item completes (Atomic Sync Ritual)
-- Validate implementation by invoking `plan-execution-checker` subagent
+- Validate implementation by invoking `plan-execution-checker` delegated agent
 - Iterate until zero findings and all deliverables complete
 - Move plan folder to plans/done/ on success
 

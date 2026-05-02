@@ -423,7 +423,7 @@ Maker-Checker-Fixer Workflow:
 
 **Location**: `.claude/skills/`
 
-**Documentation**: See [`.claude/skills/README.md`](../.claude/skills/README.md) for skills catalog, or [AGENTS.md](../AGENTS.md) for OpenCode configuration including skills integration overview
+**Documentation**: See [`.claude/skills/README.md`](../.claude/skills/README.md) for skills catalog, or [AGENTS.md](../AGENTS.md) for root instruction file including skills integration overview
 
 **Two Delivery Modes**:
 
@@ -462,7 +462,7 @@ Skills (context: fork) ──delegates to──> Isolated Agent Context
 
 **Characteristics**:
 
-- Spawn isolated subagent contexts for focused work
+- Spawn isolated delegated agent contexts for focused work
 - Delegate specialized tasks (research, analysis, exploration)
 - Act as lightweight orchestrators
 - Return results to main conversation
@@ -509,14 +509,14 @@ Skills (context: fork) ──delegates to──> Isolated Agent Context
 
 **Delivery Mechanisms Comparison**:
 
-| Mechanism               | When Loaded              | Purpose                        | Authority |
-| ----------------------- | ------------------------ | ------------------------------ | --------- |
-| **CLAUDE.md/AGENTS.md** | Conversation startup     | Initial context and quick refs | None      |
-| **Inline skills**       | On-demand (progressive)  | Deep knowledge injection       | None      |
-| **Fork skills**         | On-demand (delegation)   | Task delegation to subagents   | None      |
-| **Direct references**   | Explicit document reads  | Authoritative source           | Full      |
-| **Conventions (L2)**    | Via any above mechanisms | Governance rules               | Full      |
-| **Development (L3)**    | Via any above mechanisms | Governance practices           | Full      |
+| Mechanism             | When Loaded              | Purpose                             | Authority |
+| --------------------- | ------------------------ | ----------------------------------- | --------- |
+| **AGENTS.md**         | Conversation startup     | Initial context and quick refs      | None      |
+| **Inline skills**     | On-demand (progressive)  | Deep knowledge injection            | None      |
+| **Fork skills**       | On-demand (delegation)   | Task delegation to delegated agents | None      |
+| **Direct references** | Explicit document reads  | Authoritative source                | Full      |
+| **Conventions (L2)**  | Via any above mechanisms | Governance rules                    | Full      |
+| **Development (L3)**  | Via any above mechanisms | Governance practices                | Full      |
 
 ---
 
@@ -719,7 +719,7 @@ Skills ──does NOT govern──> Agents
 
 ❌ **Wrong**: Skills are not a layer between Development and Agents.
 
-✅ **Correct**: Skills are delivery infrastructure (like CLAUDE.md), not governance layer. They serve agents through inline knowledge delivery or fork-based task delegation.
+✅ **Correct**: Skills are delivery infrastructure (like AGENTS.md), not governance layer. They serve agents through inline knowledge delivery or fork-based task delegation.
 
 ### Misconception 2: "Agents can ignore conventions if skilled"
 

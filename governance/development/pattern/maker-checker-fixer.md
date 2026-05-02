@@ -374,7 +374,7 @@ The maker-checker-fixer pattern aligns with the agent color categorization syste
 
 **Note**: Purple (🟪 Implementors) agents execute plans and use all tools, falling outside the maker-checker-fixer pattern.
 
-See [AI Agents Convention - Agent Color Categorization](../agents/ai-agents.md#agent-color-categorization) for complete details, including the [Dual-Mode Color Translation (Claude Code to OpenCode)](../agents/ai-agents.md#dual-mode-color-translation-claude-code-to-opencode) subsection that documents how Claude named colors map to OpenCode theme tokens via `rhino-cli agents sync`.
+See [AI Agents Convention - Agent Color Categorization](../agents/ai-agents.md#agent-color-categorization) for complete details, including the [Platform Binding Color Translation](../agents/ai-agents.md#dual-mode-color-translation-claude-code-to-opencode) subsection that documents how named colors map to platform binding color tokens via `rhino-cli agents sync`.
 
 ## Agent Families
 

@@ -384,7 +384,7 @@ The `rhino-cli docs validate-mermaid` command enforces a maximum horizontal widt
 go run ./apps/rhino-cli/main.go docs validate-mermaid
 ```
 
-Run without flags to validate all `docs/`, `governance/`, and `.claude/` markdown files using defaults (MaxWidth=4, unlimited depth).
+Run without flags to validate all `docs/`, `governance/`, and platform binding directories (e.g., `.claude/`) markdown files using defaults (MaxWidth=4, unlimited depth).
 
 ### Width Violation Fix Strategy Guide
 

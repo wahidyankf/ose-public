@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useActor } from "@xstate/react";
 import { AppHeader, Button, Icon } from "@open-sharia-enterprise/ts-ui";
 import { workoutSessionMachine, resolvedRest } from "@/lib/workout/workout-machine";
-import type { Routine } from "@/lib/journal/routine-store";
+import type { Routine } from "@/contexts/routine/application";
 import type { AppSettings } from "@/contexts/settings/application";
 import type { JournalRuntime } from "@/contexts/journal/application";
 import type { CompletedSession } from "@/lib/app/app-machine";

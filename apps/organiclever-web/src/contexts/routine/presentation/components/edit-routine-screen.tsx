@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { AppHeader, Button, HuePicker, Icon, Input } from "@open-sharia-enterprise/ts-ui";
 import type { HueName } from "@open-sharia-enterprise/ts-ui";
-import type { Routine, ExerciseGroup } from "@/lib/journal/routine-store";
+import type { Routine, ExerciseGroup } from "../../domain";
 import type { JournalRuntime } from "@/contexts/journal/application";
 import type { ExerciseTemplate } from "@/contexts/journal/application";
-import { saveRoutine, deleteRoutine } from "@/lib/journal/routine-store";
+import { saveRoutine, deleteRoutine } from "../../application";
 import { ExerciseEditorRow } from "./exercise-editor-row";
 
 // ---------------------------------------------------------------------------

@@ -5,7 +5,7 @@
 
 import { describe, it, expect, vi, afterEach, beforeEach } from "vitest";
 import { render, screen, cleanup, act, fireEvent } from "@testing-library/react";
-import type { Routine } from "@/lib/journal/routine-store";
+import type { Routine } from "@/contexts/routine/application";
 
 const mockPush = vi.fn();
 vi.mock("next/navigation", () => ({
@@ -24,7 +24,7 @@ vi.mock("@/components/app/app-runtime-context", () => ({
   }),
 }));
 
-vi.mock("@/components/app/routine/edit-routine-screen", () => ({
+vi.mock("@/contexts/routine/presentation", () => ({
   EditRoutineScreen: ({
     routine,
     onBack,

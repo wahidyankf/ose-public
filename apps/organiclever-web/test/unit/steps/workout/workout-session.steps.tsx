@@ -12,7 +12,7 @@ import { expect, vi } from "vitest";
 import { createActor } from "xstate";
 import { workoutSessionMachine } from "@/lib/workout/workout-machine";
 import type { AppSettings } from "@/contexts/settings/application";
-import type { Routine } from "@/lib/journal/routine-store";
+import type { Routine } from "@/contexts/routine/application";
 import type { JournalRuntime } from "@/contexts/journal/application";
 import type { Actor } from "xstate";
 

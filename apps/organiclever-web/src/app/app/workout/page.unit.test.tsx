@@ -5,7 +5,7 @@
 
 import { describe, it, expect, vi, afterEach, beforeEach } from "vitest";
 import { render, screen, cleanup, act, fireEvent } from "@testing-library/react";
-import type { Routine } from "@/lib/journal/routine-store";
+import type { Routine } from "@/contexts/routine/application";
 import type { CompletedSession } from "@/lib/app/app-machine";
 
 const mockPush = vi.fn();

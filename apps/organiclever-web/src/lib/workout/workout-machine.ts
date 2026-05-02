@@ -1,6 +1,6 @@
 import { createMachine, assign, fromPromise } from "xstate";
 import { Schema } from "effect";
-import type { Routine } from "@/lib/journal/routine-store";
+import type { Routine } from "@/contexts/routine/application";
 import type { AppSettings } from "@/contexts/settings/application";
 import type { JournalRuntime } from "@/contexts/journal/application";
 import type { ActiveExercise, CompletedSet } from "@/contexts/journal/application";

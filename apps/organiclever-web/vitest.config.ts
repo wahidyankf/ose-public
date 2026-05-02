@@ -27,9 +27,10 @@ export default defineConfig({
         "src/components/app/home/entry-detail-sheet.tsx",
         "src/components/app/home/routine-card.tsx",
         "src/components/app/home/workout-module-view.tsx",
-        // Phase 6 routine screens — PGlite+browser-dependent UI; covered by e2e
-        "src/components/app/routine/edit-routine-screen.tsx",
-        "src/components/app/routine/exercise-editor-row.tsx",
+        // Phase 6 routine screens — PGlite+browser-dependent UI; covered by e2e.
+        // Migrated to routine/presentation/components/ in DDD adoption Phase 7a.
+        "src/contexts/routine/presentation/components/edit-routine-screen.tsx",
+        "src/contexts/routine/presentation/components/exercise-editor-row.tsx",
         // Phase 7 progress screens — PGlite+browser-dependent UI; covered by e2e
         "src/components/app/progress/progress-screen.tsx",
         "src/components/app/progress/exercise-progress-card.tsx",

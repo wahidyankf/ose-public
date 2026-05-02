@@ -16,9 +16,9 @@ import path from "path";
 import { existsSync } from "fs";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { expect, vi } from "vitest";
-import type { ExerciseGroup } from "@/lib/journal/routine-store";
+import type { ExerciseGroup } from "@/contexts/routine/application";
 import type { ExerciseTemplate } from "@/contexts/journal/application";
-import type { Routine } from "@/lib/journal/routine-store";
+import type { Routine } from "@/contexts/routine/application";
 
 // ---------------------------------------------------------------------------
 // Fixtures

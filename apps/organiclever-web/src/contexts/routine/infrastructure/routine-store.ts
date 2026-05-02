@@ -1,28 +1,34 @@
+// routine context — infrastructure layer.
+//
+// PGlite-backed implementation of the routine storage use-cases. The
+// `listRoutines` / `saveRoutine` / `deleteRoutine` /
+// `reorderRoutineExercises` Effect-shaped functions are the published API of
+// this layer (re-exported via `infrastructure/index.ts` and bridged through
+// `application/index.ts` until an explicit storage port is introduced in a
+// future plan).
+//
+// Cross-context infrastructure coupling: this file imports `PgliteService`
+// from `@/contexts/journal/infrastructure` and `StorageUnavailable` /
+// `NotFound` from `@/contexts/journal/domain`. The journal context is the
+// system of record for the underlying PGlite handle today; routine borrows
+// the same Layer rather than spinning a parallel one (mirrors the settings
+// context pattern from Phase 5). ESLint `boundaries/element-types` warns
+// about the cross-context infrastructure import (severity = warn) — that
+// warning is expected and resolves when an explicit storage port is
+// introduced in a future plan, at which point the journal infrastructure
+// import collapses to a domain-only one.
+
 import { Effect } from "effect";
-import { PgliteService } from "@/contexts/journal/application";
-import { NotFound, StorageUnavailable } from "@/contexts/journal/application";
-import type { ExerciseTemplate, Hue } from "@/contexts/journal/application";
+import { PgliteService } from "@/contexts/journal/infrastructure";
+import { NotFound, StorageUnavailable } from "@/contexts/journal/domain";
+import type { Hue } from "@/contexts/journal/application";
+import type { ExerciseGroup, Routine } from "../domain";
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
-export type RoutineId = string;
-
-export interface ExerciseGroup {
-  id: string;
-  name: string;
-  exercises: ExerciseTemplate[];
-}
-
-export interface Routine {
-  id: RoutineId;
-  name: string;
-  hue: Hue;
-  type: "workout";
-  createdAt: string; // ISO timestamp
-  groups: ExerciseGroup[];
-}
+// Re-export domain types so consumers importing from this module continue to
+// compile without an immediate sweep. The authoritative type owner is
+// `domain/types.ts`. New cross-context callers should consume the published
+// `application/index.ts` barrel instead.
+export type { Routine, ExerciseGroup };
 
 // ---------------------------------------------------------------------------
 // Internal row shape returned from PGlite queries

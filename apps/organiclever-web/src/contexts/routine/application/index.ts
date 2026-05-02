@@ -1,0 +1,14 @@
+// routine context — application layer published API.
+//
+// Use-cases for reading and writing routine templates. The current shape
+// re-exports the PGlite-backed implementations directly from
+// `infrastructure/`. A future plan introduces an explicit storage port
+// (interface in `application/ports.ts`, live binding in `infrastructure/`);
+// until then the application layer is a thin pass-through (mirrors the
+// settings context Phase 5 shape). Consumers outside this context MUST
+// import from this barrel — not from `infrastructure/` — so the eventual
+// port indirection lands as a one-file change rather than a wide
+// find-and-replace.
+
+export { listRoutines, saveRoutine, deleteRoutine, reorderRoutineExercises } from "../infrastructure";
+export type { Routine, RoutineId, ExerciseGroup } from "../domain";

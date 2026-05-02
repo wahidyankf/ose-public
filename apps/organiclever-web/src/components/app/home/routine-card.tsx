@@ -1,7 +1,7 @@
 "use client";
 
 import { Icon } from "@open-sharia-enterprise/ts-ui";
-import type { Routine } from "@/lib/journal/routine-store";
+import type { Routine } from "@/contexts/routine/application";
 
 interface RoutineCardProps {
   routine: Routine;

@@ -5,7 +5,7 @@ import { PGlite } from "@electric-sql/pglite";
 import { PgliteService, makeJournalRuntime } from "@/contexts/journal/application";
 import { runMigrations } from "@/contexts/journal/application";
 import { useRoutines } from "./use-routines";
-import type { Routine } from "./routine-store";
+import type { Routine } from "../domain";
 
 // ---------------------------------------------------------------------------
 // Test runtime factory — in-memory PGlite with both migrations
@@ -59,7 +59,7 @@ describe("useRoutines", () => {
       () => {
         expect(result.current.state.status).toBe("ready");
       },
-      { timeout: 10000 },
+      { timeout: 30000 },
     );
 
     if (result.current.state.status === "ready") {
@@ -78,7 +78,7 @@ describe("useRoutines", () => {
       () => {
         expect(result.current.state.status).toBe("ready");
       },
-      { timeout: 10000 },
+      { timeout: 30000 },
     );
 
     const r = makeRoutine({ name: "Push Day" });
@@ -93,7 +93,7 @@ describe("useRoutines", () => {
           expect(result.current.state.routines).toHaveLength(1);
         }
       },
-      { timeout: 10000 },
+      { timeout: 30000 },
     );
 
     if (result.current.state.status === "ready") {

@@ -5,7 +5,7 @@ import { StatCard, Icon } from "@open-sharia-enterprise/ts-ui";
 import { getVolume } from "@/lib/journal/stats";
 import type { WeeklyStats } from "@/lib/journal/stats";
 import type { JournalRuntime } from "@/contexts/journal/application";
-import type { Routine } from "@/lib/journal/routine-store";
+import type { Routine } from "@/contexts/routine/application";
 import { RoutineCard } from "./routine-card";
 
 interface WorkoutModuleViewProps {

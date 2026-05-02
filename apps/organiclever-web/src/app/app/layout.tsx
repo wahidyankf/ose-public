@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { useActor } from "@xstate/react";
 import { appMachine } from "@/lib/app/app-machine";
 import type { CompletedSession } from "@/lib/app/app-machine";
-import type { Routine } from "@/lib/journal/routine-store";
+import type { Routine } from "@/contexts/routine/application";
 import { makeJournalRuntime, seedIfEmpty } from "@/contexts/journal/application";
 import { saveSettings } from "@/contexts/settings/application";
 import { TabBar } from "@/components/app/tab-bar";

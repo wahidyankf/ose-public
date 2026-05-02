@@ -3,7 +3,7 @@
 export const dynamic = "force-dynamic";
 
 import { useRouter } from "next/navigation";
-import type { Routine } from "@/lib/journal/routine-store";
+import type { Routine } from "@/contexts/routine/application";
 import { HomeScreen } from "@/components/app/home/home-screen";
 import { useAppRuntime } from "@/components/app/app-runtime-context";
 

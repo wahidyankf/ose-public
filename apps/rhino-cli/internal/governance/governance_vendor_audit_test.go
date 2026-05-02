@@ -338,3 +338,83 @@ func TestStripNonProse_RemovesHTMLComment(t *testing.T) {
 		t.Errorf("expected non-comment text preserved, got: %q", got)
 	}
 }
+
+// --- fenceLineLen unit tests ---
+
+func TestFenceLineLen(t *testing.T) {
+	tests := []struct {
+		line string
+		want int
+	}{
+		{"```", 3},
+		{"```go", 3},
+		{"````markdown", 4},
+		{"  ```bash  ", 3},
+		{"``", 0},
+		{"plain text", 0},
+		{"", 0},
+	}
+	for _, tt := range tests {
+		t.Run(tt.line, func(t *testing.T) {
+			got := fenceLineLen(tt.line)
+			if got != tt.want {
+				t.Errorf("fenceLineLen(%q) = %d, want %d", tt.line, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestScanLines_ExemptsNestedCodeFenceContent(t *testing.T) {
+	// A 4-backtick outer fence containing an inner 3-backtick mermaid block.
+	// OpenCode inside the mermaid block must NOT be reported.
+	content := "# Doc\n\n````markdown\n```mermaid\ngraph TD\n    A[OpenCode- Main Agent]\n```\n````\n\nclean prose\n"
+	findings := scanLines("governance/foo.md", content)
+	if len(findings) != 0 {
+		t.Errorf("expected zero findings inside nested code fence, got: %+v", findings)
+	}
+}
+
+func TestScanLines_ExemptsMultiLineHTMLComment(t *testing.T) {
+	content := "# Doc\n\n<!--\nClaude Code is mentioned in this comment.\n.claude/ path here.\n-->\n\nclean prose\n"
+	findings := scanLines("governance/foo.md", content)
+	if len(findings) != 0 {
+		t.Errorf("expected zero findings inside multi-line HTML comment, got: %+v", findings)
+	}
+}
+
+func TestScanLines_ExemptsYAMLFrontmatter(t *testing.T) {
+	content := "---\ntitle: something\ndescription: agent structure for .claude/agents and .opencode/agents\npattern: .claude/skills/some-skill/SKILL.md\n---\n\n# Doc\n\nclean prose\n"
+	findings := scanLines("governance/foo.md", content)
+	if len(findings) != 0 {
+		t.Errorf("expected zero findings inside YAML frontmatter, got: %+v", findings)
+	}
+}
+
+func TestScanLines_ScansProseBelowFrontmatter(t *testing.T) {
+	content := "---\ntitle: something\n---\n\nClaude Code is mentioned here.\n"
+	findings := scanLines("governance/foo.md", content)
+	if len(findings) == 0 {
+		t.Error("expected findings below frontmatter, got none")
+	}
+}
+
+func TestScanLines_DetectsViolationBeforeMultiLineHTMLComment(t *testing.T) {
+	// Forbidden term appears before <!-- on same line that opens a multi-line comment.
+	content := "# Doc\n\nClaude Code mentioned here <!-- start of\nmulti-line comment\n-->\n\nclean prose\n"
+	findings := scanLines("governance/foo.md", content)
+	if len(findings) == 0 {
+		t.Error("expected finding for term before multi-line HTML comment, got none")
+	}
+	if findings[0].Line != 3 {
+		t.Errorf("expected violation on line 3, got line %d", findings[0].Line)
+	}
+}
+
+func TestScanLines_NoViolationBeforeEmptyMultiLineHTMLComment(t *testing.T) {
+	// Line that opens a multi-line comment has nothing before <!--.
+	content := "# Doc\n\n<!--\nClaude Code in comment\n-->\n\nclean prose\n"
+	findings := scanLines("governance/foo.md", content)
+	if len(findings) != 0 {
+		t.Errorf("expected zero findings, got: %+v", findings)
+	}
+}

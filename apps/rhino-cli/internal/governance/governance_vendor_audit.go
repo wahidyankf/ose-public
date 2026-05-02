@@ -3,9 +3,9 @@
 //
 // The vendor audit scanner detects forbidden vendor-specific terms in prose
 // and reports them with suggested replacements. Certain regions are exempt
-// from scanning: code fences, binding-example fences, inline code spans,
-// link URL portions, HTML comments, and sections under "Platform Binding
-// Examples" headings.
+// from scanning: code fences (all backtick-delimited blocks), binding-example
+// fences, YAML frontmatter, multi-line HTML comments, inline code spans,
+// link URL portions, and sections under "Platform Binding Examples" headings.
 package governance
 
 import (
@@ -93,30 +93,92 @@ func Walk(root string) ([]Finding, error) {
 }
 
 // scanLines performs the core line-by-line scanning of content, tracking
-// exemption state for code fences and Platform Binding Examples headings.
+// exemption state for code fences, YAML frontmatter, multi-line HTML comments,
+// and Platform Binding Examples headings.
 func scanLines(path, content string) []Finding {
 	lines := strings.Split(content, "\n")
 
 	var findings []Finding
-	inCodeFence := false
+
+	// inCodeFenceLen: 0 = not in fence; >0 = fence opened with this backtick count.
+	// Per CommonMark, a fence closes only when a line has >= the opener's backtick count.
+	inCodeFenceLen := 0
+
+	// inFrontmatter: true between the first and second "---" (YAML front matter).
+	inFrontmatter := false
+	frontmatterSeen := false // set once the first --- is consumed
+
+	// inHTMLComment: true inside a multi-line HTML comment.
+	inHTMLComment := false
+
 	inPlatformBindingSection := false
 	platformBindingHeadingLevel := 0
 
 	for i, line := range lines {
 		lineNum := i + 1
 
-		// Detect code fence toggles (``` with optional language tag).
-		if isFenceLine(line) {
-			inCodeFence = !inCodeFence
+		// ── YAML frontmatter ──────────────────────────────────────────────────
+		if lineNum == 1 && strings.TrimSpace(line) == "---" {
+			inFrontmatter = true
+			frontmatterSeen = true
 			continue
+		}
+		if inFrontmatter {
+			if strings.TrimSpace(line) == "---" {
+				inFrontmatter = false
+			}
+			continue
+		}
+		_ = frontmatterSeen
+
+		// ── Multi-line HTML comment ───────────────────────────────────────────
+		if inHTMLComment {
+			if strings.Contains(line, "-->") {
+				inHTMLComment = false
+			}
+			continue
+		}
+		if strings.Contains(line, "<!--") && !strings.Contains(line, "-->") {
+			// Opening a multi-line comment — still process the part before <!--
+			// by stripping the comment tail, but for simplicity we skip the whole line.
+			inHTMLComment = true
+			// Check the portion before <!-- for violations.
+			beforeComment := line[:strings.Index(line, "<!--")]
+			if stripped := stripNonProse(beforeComment); stripped != "" {
+				for _, ft := range forbiddenTerms {
+					if ft.re.MatchString(stripped) {
+						findings = append(findings, Finding{
+							Path:        path,
+							Line:        lineNum,
+							Match:       ft.displayTerm,
+							Replacement: ft.replacement,
+						})
+					}
+				}
+			}
+			continue
+		}
+
+		// ── Code fences (length-aware per CommonMark) ─────────────────────────
+		if fl := fenceLineLen(line); fl > 0 {
+			if inCodeFenceLen == 0 {
+				// Opening a new fence.
+				inCodeFenceLen = fl
+				continue
+			} else if fl >= inCodeFenceLen {
+				// Closing the current fence (closer must be >= opener length).
+				inCodeFenceLen = 0
+				continue
+			}
+			// Inner fence line (shorter than opener) — it is content; fall through.
 		}
 
 		// Lines inside a code fence are fully exempt.
-		if inCodeFence {
+		if inCodeFenceLen > 0 {
 			continue
 		}
 
-		// Detect headings to manage Platform Binding Examples section.
+		// ── Platform Binding Examples heading scope ───────────────────────────
 		if level, ok := parseHeading(line); ok {
 			if isPlatformBindingHeading(line) {
 				inPlatformBindingSection = true
@@ -135,10 +197,9 @@ func scanLines(path, content string) []Finding {
 			continue
 		}
 
-		// Strip non-prose regions from the line before scanning.
+		// ── Scan for forbidden terms ──────────────────────────────────────────
 		stripped := stripNonProse(line)
 
-		// Scan for each forbidden term.
 		for _, ft := range forbiddenTerms {
 			if ft.re.MatchString(stripped) {
 				findings = append(findings, Finding{
@@ -155,18 +216,29 @@ func scanLines(path, content string) []Finding {
 	return findings
 }
 
-// isFenceLine reports whether line is a code fence delimiter (``` with any
-// optional language tag, possibly preceded by whitespace).
-func isFenceLine(line string) bool {
+// fenceLineLen returns the number of leading backticks on a fence delimiter
+// line (>= 3 to be a valid fence). Returns 0 if the line is not a fence line.
+func fenceLineLen(line string) int {
 	trimmed := strings.TrimSpace(line)
-	return strings.HasPrefix(trimmed, "```")
+	n := 0
+	for _, ch := range trimmed {
+		if ch == '`' {
+			n++
+		} else {
+			break
+		}
+	}
+	if n >= 3 {
+		return n
+	}
+	return 0
 }
 
 // stripNonProse removes regions of a line that are exempt from vendor-term
 // scanning: inline code spans, link URL portions, and HTML comments.
 // The returned string is safe to scan for forbidden terms in prose.
 func stripNonProse(line string) string {
-	// Strip HTML comments <!-- ... -->
+	// Strip HTML comments <!-- ... --> (single-line only; multi-line handled by state)
 	line = htmlCommentRe.ReplaceAllString(line, "")
 	// Strip inline code spans `...`
 	line = inlineCodeRe.ReplaceAllString(line, "``")

@@ -136,6 +136,17 @@ For detailed guidance, refer to:
 - **[Best Practices](../../../docs/explanation/software-engineering/programming-languages/typescript/best-practices.md)** - Clean code standards
 - **[Anti-Patterns](../../../docs/explanation/software-engineering/programming-languages/typescript/anti-patterns.md)** - Common mistakes
 
+## Test-Driven Development
+
+TDD is required for all TypeScript code changes. Write the failing Vitest test first, confirm it
+fails for the right reason, implement the minimum code to pass, then refactor. For TypeScript the
+primary levels are unit (Vitest), integration (MSW for network boundaries), E2E (Playwright), and
+property/fuzz (fast-check for invariants over generated inputs). Pick the cheapest level that
+captures the behavior.
+
+**Canonical reference**:
+[Test-Driven Development Convention](../../../governance/development/workflow/test-driven-development.md)
+
 ## Related Skills
 
 - docs-applying-content-quality

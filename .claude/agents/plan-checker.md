@@ -108,6 +108,7 @@ Audit all plan files (`README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `delivery
 - Validation criteria are specific
 - Acceptance criteria are testable
 - Git workflow is specified
+- **TDD-shaped steps**: Any checklist item that ships code MUST have a corresponding test-first step (Red→Green→Refactor structure). Flag as **HIGH** any code delivery item that does not include a failing-test step before the implementation step. See [Test-Driven Development Convention](../../governance/development/workflow/test-driven-development.md) for required TDD step shapes.
 
 #### PR Step Authorization Check (per [Git Push Default Convention](../../governance/development/workflow/git-push-default.md))
 
@@ -226,6 +227,7 @@ Update status to "Complete", add summary statistics and prioritized recommendati
 - [CLAUDE.md](../../CLAUDE.md) - Primary guidance
 - [Plans Organization Convention](../../governance/conventions/structure/plans.md) - Plan standards
 - [Trunk Based Development Convention](../../governance/development/workflow/trunk-based-development.md) - Git workflow standards
+- [Test-Driven Development Convention](../../governance/development/workflow/test-driven-development.md) - TDD-shaped delivery checklist requirement (RED→GREEN→REFACTOR)
 
 **Related Agents / Workflows:**
 

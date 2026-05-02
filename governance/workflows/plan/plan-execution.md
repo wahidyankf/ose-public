@@ -689,6 +689,16 @@ Track across executions:
 
 This workflow ensures complete plan execution with validated quality, making it ideal for systematically implementing project plans from start to archive.
 
+## Test-Driven Development
+
+When implementing delivery checklist items that ship code, the orchestrator and all delegated
+`swe-*-dev` agents follow TDD: write a failing test first, confirm it fails for the right reason,
+write the minimum code to pass, then refactor. Mini-TDD passes are encouraged — split a feature
+into multiple small Red→Green→Refactor cycles rather than one large test up front. Gherkin
+acceptance criteria in `prd.md` are the natural source of the first failing tests.
+
+**See**: [Test-Driven Development Convention](../../development/workflow/test-driven-development.md)
+
 ## Principles Implemented/Respected
 
 - PASS: **Explicit Over Implicit**: All steps, conditions, termination criteria, and agent selection rules clearly defined

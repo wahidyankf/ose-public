@@ -121,7 +121,11 @@ Document how to build it:
 **Design Decisions**: Why specific approaches chosen
 **Implementation Approach**: Technologies, patterns, structure
 **Dependencies**: External libraries, services, tools
-**Testing Strategy**: Unit, integration, e2e testing
+**Testing Strategy**: Unit, integration, e2e testing — per
+[Test-Driven Development Convention](../../governance/development/workflow/test-driven-development.md),
+tests are written BEFORE implementation. Gherkin acceptance criteria in `prd.md` are the natural
+source of first failing tests. Document which test level (unit/integration/E2E) covers each
+acceptance criterion.
 
 ### Step 5: Create Delivery Checklist
 
@@ -174,6 +178,10 @@ When plan content (any of `README.md`, `brd.md`, `prd.md`, `tech-docs.md`, `deli
 - Steps are granular (not too broad)
 - Validation criteria are specific
 - Acceptance criteria are testable
+- **Code items are TDD-shaped**: items that ship code express Red→Green→Refactor steps, not
+  "implement X, then write tests." See
+  [Test-Driven Development Convention](../../governance/development/workflow/test-driven-development.md)
+  for required step shapes. `plan-checker` flags code items without TDD structure as HIGH findings.
 
 #### PR Step Authoring Rule (per [Git Push Default Convention](../../governance/development/workflow/git-push-default.md))
 

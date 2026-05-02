@@ -342,6 +342,12 @@ Make it work → Make it right → Make it fast
 
 **See**: [governance/development/workflow/implementation.md](./governance/development/workflow/implementation.md)
 
+### Test-Driven Development
+
+Write the failing test first, then make it pass, then refactor — Red → Green → Refactor. Required for all code changes. Mini-TDD passes encouraged: split a feature into several small Red→Green→Refactor cycles. Plan delivery checklists must express code items as TDD-shaped steps; Gherkin acceptance criteria in `prd.md` are the natural source of first failing tests.
+
+**See**: [governance/development/workflow/test-driven-development.md](./governance/development/workflow/test-driven-development.md)
+
 ### Reproducible Environments
 
 Volta for Node.js/npm pinning, package-lock.json, .env.example

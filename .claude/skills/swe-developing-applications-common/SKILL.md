@@ -370,6 +370,30 @@ docs/explanation/software-engineering/programming-languages/[language]/README.md
 4. Framework-specific guidance
 5. Testing strategies
 
+## Test-Driven Development
+
+TDD is **required** for all code changes across every language. Write the failing test first,
+confirm it fails for the right reason, implement the minimum code to pass, then refactor. This rule
+applies at every test level — unit, integration, E2E, contract, property/fuzz, snapshot/visual,
+manual verification, performance, and accessibility. Pick the cheapest level that meaningfully
+captures the behavior under change.
+
+**Manual verification is TDD-compatible** when it is a written, dated, repeatable script with
+discrete expected observations — not an informal "click around" check. Use Playwright MCP for UI
+and `curl` for API verification. Promote manual scripts to automated tests whenever feasible.
+
+**Mini-TDD passes are encouraged**: split a feature into multiple small Red→Green→Refactor cycles,
+one per behavior. Each cycle is independently committable.
+
+**Canonical reference**:
+[Test-Driven Development Convention](../../../governance/development/workflow/test-driven-development.md)
+— covers the full Red→Green→Refactor cycle, all test levels, the "Scope: Which Tests TDD Covers"
+table, manual verification guidance, and applying TDD to delivery checklists.
+
+See also:
+[Manual Behavioral Verification](../../../governance/development/quality/manual-behavioral-verification.md),
+[Three-Level Testing Standard](../../../governance/development/quality/three-level-testing-standard.md).
+
 ## Related Conventions
 
 **Workflow Conventions**:
@@ -378,6 +402,7 @@ docs/explanation/software-engineering/programming-languages/[language]/README.md
 - [PR Merge Protocol](../../../governance/development/workflow/pr-merge-protocol.md) - Explicit user approval required, all quality gates must pass
 - [Commit Messages Convention](../../../governance/development/workflow/commit-messages.md) - Conventional Commits specification
 - [Implementation Workflow](../../../governance/development/workflow/implementation.md) - Make it work → right → fast
+- [Test-Driven Development](../../../governance/development/workflow/test-driven-development.md) - Required for all code changes (Red→Green→Refactor, all levels)
 
 **Quality Conventions**:
 

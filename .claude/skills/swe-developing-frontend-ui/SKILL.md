@@ -52,6 +52,26 @@ Consult these reference docs for detailed guidance on specific topics:
 9. **No nested Card inside Card** — use spacing/dividers for visual hierarchy
 10. **No font via CSS `font-family`** — use `next/font` for optimization
 
+## Test-Driven Development for UI
+
+TDD applies to UI component and page work. Write the failing check before writing the component:
+
+- **Vitest unit test** (`component-name.test.tsx`): failing assertion on render, variant output,
+  or `toHaveNoViolations()` (vitest-axe) — write this first.
+- **Visual snapshot** (Playwright visual diff): failing screenshot comparison — write before
+  finalizing visual styles.
+- **Accessibility check** (axe): failing `toHaveNoViolations()` in unit test or Playwright — write
+  before adding interactive states or ARIA markup.
+- **E2E Playwright spec**: failing user-flow assertion — write before implementing flows that cross
+  component boundaries.
+
+Mini-TDD passes work well for UI: one Red→Green→Refactor cycle per variant, state, or interaction.
+
+**Canonical reference**:
+[Test-Driven Development Convention](../../../governance/development/workflow/test-driven-development.md)
+— covers all test levels (unit, snapshot/visual, a11y, E2E, manual verification) and the full
+Red→Green→Refactor cycle.
+
 ## Governance References
 
 - [Design Tokens Convention](../../../governance/development/frontend/design-tokens.md)

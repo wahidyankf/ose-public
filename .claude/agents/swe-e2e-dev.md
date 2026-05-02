@@ -202,6 +202,26 @@ test("murabaha contract creation workflow", async ({ page }) => {
 - [Implementation Workflow](../../governance/development/workflow/implementation.md) - Make it work → Make it right → Make it fast
 - [Trunk Based Development](../../governance/development/workflow/trunk-based-development.md) - Git workflow
 - [Code Quality Standards](../../governance/development/quality/code.md) - Quality gates
+- [Test-Driven Development](../../governance/development/workflow/test-driven-development.md) - Required for all E2E test authoring
+- [Manual Behavioral Verification](../../governance/development/quality/manual-behavioral-verification.md) - Playwright MCP for UI, curl for API
+
+### Test-Driven Development
+
+TDD applies to E2E test authoring: write the failing Playwright spec (or a failing manual
+Playwright-MCP verification script) **before** the feature implementation lands. Both
+Playwright-automated specs and Playwright-MCP-driven manual verification scripts follow the
+Red→Green→Refactor cycle:
+
+- **Red**: Author the `.spec.ts` (or dated manual script) and confirm it fails because the feature
+  does not yet exist — not due to a configuration problem.
+- **Green**: The feature implementation makes every assertion pass.
+- **Refactor**: Improve locators, fixtures, or page objects while keeping all assertions green.
+
+Manual verification scripts are TDD-compliant when they are written, dated, repeatable, and contain
+discrete expected observations — not informal "click around and see" checks. Promote manual scripts
+to automated Playwright specs whenever feasible. See
+[Test-Driven Development Convention](../../governance/development/workflow/test-driven-development.md)
+and [Manual Behavioral Verification](../../governance/development/quality/manual-behavioral-verification.md).
 
 **Related Agents**:
 

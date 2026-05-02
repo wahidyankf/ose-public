@@ -34,6 +34,8 @@ These standards define **HOW to execute development workflows**, covering the th
 - [Git Push Safety Convention](./git-push-safety.md) - Requires explicit per-instance user approval before any AI agent or automation executes `git push --force`, `--force-with-lease`, or `--no-verify`; prior approval does not carry forward
 - [PR Merge Protocol](./pr-merge-protocol.md) - Requires explicit user approval before merging any pull request; all quality gates must pass before merge; no auto-merge by agents or automation
 - [Native-First Toolchain Management](./native-first-toolchain.md) - Architectural decision to use native package managers and `rhino-cli doctor` instead of Terraform, Ansible, or Docker Dev Containers for development environment setup
+- [Test-Driven Development Convention](./test-driven-development.md) - Mandates TDD (Red→Green→Refactor) as the required practice for all code changes; defines TDD across all test levels (unit, integration, E2E), plan-checker enforcement of TDD-shaped delivery checklist items, and the chain from Gherkin acceptance criteria to first failing test
+- [CI Monitoring Convention](./ci-monitoring.md) - Standards for monitoring GitHub Actions CI runs without exhausting the GitHub API rate limit — required tooling, poll intervals, trigger discipline, and recovery procedures
 
 ## Companion Documents
 

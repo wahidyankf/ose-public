@@ -219,6 +219,18 @@ defer cancel()
 8. **[Dependency Standards](../../../docs/explanation/software-engineering/programming-languages/golang/dependency-standards.md)** - Go modules, version selection, replace directives
 9. **[Design Patterns](../../../docs/explanation/software-engineering/programming-languages/golang/design-patterns.md)** - Common Go patterns (functional options, interface design)
 
+## Test-Driven Development
+
+TDD is required for all Go code changes. Write the failing test first using Go `testing` (or a
+Godog step definition consuming a Gherkin scenario from `specs/apps/<app-name>/`), confirm it fails
+for the right reason, implement the minimum code to pass, then refactor. For Go CLI projects the
+primary levels are unit (Go `testing` + Godog, mocked I/O via package-level function vars) and
+integration (Godog `//go:build integration` + real `/tmp` filesystem). Property-based testing via
+gopter covers invariants over generated inputs.
+
+**Canonical reference**:
+[Test-Driven Development Convention](../../../governance/development/workflow/test-driven-development.md)
+
 ## Related Skills
 
 - docs-applying-content-quality

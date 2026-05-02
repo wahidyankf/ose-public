@@ -112,6 +112,16 @@ Follow the standard 6-step workflow (see `swe-developing-applications-common` Sk
 
 - [Functional Programming](../../governance/development/pattern/functional-programming.md)
 - [Implementation Workflow](../../governance/development/workflow/implementation.md)
+- [Test-Driven Development](../../governance/development/workflow/test-driven-development.md) - Required for all code changes
+
+### Test-Driven Development
+
+TDD is required for every code change: write the failing test first, confirm it fails for the right
+reason, implement the minimum code to pass, then refactor. For C# projects the right level is
+usually unit (xUnit + Moq + FluentAssertions), integration (no HTTP dispatch, in-memory or real
+DB), or E2E (Playwright). See
+[Test-Driven Development Convention](../../governance/development/workflow/test-driven-development.md)
+for the full Red→Green→Refactor rules, all test levels covered, and manual verification guidance.
 
 **Related Agents**:
 

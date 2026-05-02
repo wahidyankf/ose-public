@@ -244,6 +244,55 @@ For each Java project:
 - Flag duplicated utility code across projects
 - **Criticality**: MEDIUM (DRY principle)
 
+### Step 6.5: TDD Compliance
+
+**Reference**: `governance/development/workflow/test-driven-development.md`
+
+For each code change or project under review, validate TDD compliance:
+
+#### 6.5.1 Test-First Evidence
+
+- Does the project have tests accompanying every non-trivial code change?
+- For delivery checklist items in plans, are steps expressed as TDD-shaped (failing test → implement
+  → refactor) rather than "implement X then test"?
+- Are unit tests present for all business logic paths?
+
+**Criticality**: HIGH when tests are absent for new behavior; MEDIUM when tests exist but appear
+written after the fact (e.g., all tests trivially pass on first run with no obvious red phase).
+
+#### 6.5.2 Test Level Appropriateness
+
+- Is the behavior captured at the cheapest test level that meaningfully exercises it?
+- Are pure-function bugs covered by unit tests (not E2E only)?
+- Are database persistence bugs covered by integration tests (not unit mocks only)?
+- Are user-visible flow bugs covered by E2E tests plus manual verification notes?
+
+**Criticality**: MEDIUM when the wrong level is used (e.g., an E2E test for a pure function).
+
+#### 6.5.3 Manual Verification Shape
+
+- When manual verification is used in place of automated tests, is it represented as a written,
+  dated, repeatable script with discrete expected observations?
+- Unstructured "tested manually" notes without a repeatable script are a finding.
+
+**Criticality**: MEDIUM when manual verification is undocumented; HIGH when a recurring behavior
+has only informal manual notes and no automated coverage plan.
+
+**Findings format**:
+
+```markdown
+### Finding: TDD Compliance
+
+**Project**: [project-name]
+**File**: [file-path or delivery checklist path]
+**Criticality**: HIGH | MEDIUM
+**Confidence**: HIGH | MEDIUM | FALSE_POSITIVE
+
+**Issue**: [tests missing / wrong level / manual verification unstructured]
+**Standard**: [Test-Driven Development Convention](../../governance/development/workflow/test-driven-development.md)
+**Recommendation**: [write failing test first; move to cheaper level; structure manual script]
+```
+
 ### Step 7: Finalize Report
 
 Update report status to "Complete", add summary statistics:

@@ -104,6 +104,17 @@ All TypeScript code MUST follow the platform coding standards:
 - [Implementation Workflow](../../governance/development/workflow/implementation.md) - Make it work → Make it right → Make it fast
 - [Trunk Based Development](../../governance/development/workflow/trunk-based-development.md) - Git workflow
 - [Code Quality Standards](../../governance/development/quality/code.md) - Quality gates
+- [Test-Driven Development](../../governance/development/workflow/test-driven-development.md) - Required for all code changes
+
+### Test-Driven Development
+
+TDD is required for every code change: write the failing test first, confirm it fails for the right
+reason, implement the minimum code to pass, then refactor. The right test level is the cheapest
+one that captures the behavior — unit (Vitest), integration (MSW), E2E (Playwright), property
+(fast-check), or manual verification when TDD-shaped. Mini-TDD passes (one small Red→Green→Refactor
+cycle per behavior) are encouraged. See
+[Test-Driven Development Convention](../../governance/development/workflow/test-driven-development.md)
+for the full Red→Green→Refactor rules, all test levels covered, and manual verification guidance.
 
 **Related Agents**:
 

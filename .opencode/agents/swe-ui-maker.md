@@ -109,6 +109,23 @@ For every new component, create these files:
 - [Component Patterns Convention](../../governance/development/frontend/component-patterns.md)
 - [Accessibility Convention](../../governance/development/frontend/accessibility.md)
 - [Styling Convention](../../governance/development/frontend/styling.md)
+- [Test-Driven Development](../../governance/development/workflow/test-driven-development.md) - Required for all component authoring
+
+### Test-Driven Development
+
+TDD applies to UI component work: write the failing test before the component implementation.
+The right level depends on what you are verifying:
+
+- **Unit (Vitest + vitest-axe)**: failing `component-name.test.tsx` asserting `toHaveNoViolations()`
+  and variant renders — write this before writing the component.
+- **Visual snapshot**: failing Playwright visual diff — write before finalizing styles.
+- **Accessibility (axe)**: failing axe assertion in the unit test or Playwright E2E — write before
+  adding interactive states.
+- **E2E (Playwright)**: failing spec for user-visible flows that cross component boundaries.
+
+Mini-TDD passes work well: one Red→Green→Refactor cycle per variant or state. See
+[Test-Driven Development Convention](../../governance/development/workflow/test-driven-development.md)
+for the full rules and all test levels covered.
 
 **Skills**:
 

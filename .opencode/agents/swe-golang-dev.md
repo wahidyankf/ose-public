@@ -137,6 +137,17 @@ All Go code MUST follow the platform coding standards organized into two categor
 - [Trunk Based Development](../../governance/development/workflow/trunk-based-development.md) - Git workflow
 - [Code Quality Standards](../../governance/development/quality/code.md) - Quality gates
 - [BDD Spec-to-Test Mapping](../../governance/development/infra/bdd-spec-test-mapping.md) - CLI command naming convention, Gherkin specs, integration tests
+- [Test-Driven Development](../../governance/development/workflow/test-driven-development.md) - Required for all code changes
+
+### Test-Driven Development
+
+TDD is required for every code change: write the failing test first, confirm it fails for the right
+reason, implement the minimum code to pass, then refactor. For Go projects the right level is
+usually unit (Go `testing` + Godog), integration (Godog `//go:build integration` + real filesystem),
+property (gopter), or manual verification when TDD-shaped. Gherkin scenarios from `prd.md` are the
+natural source of first failing step implementations. See
+[Test-Driven Development Convention](../../governance/development/workflow/test-driven-development.md)
+for the full Red→Green→Refactor rules, all test levels covered, and manual verification guidance.
 
 **Related Agents**:
 

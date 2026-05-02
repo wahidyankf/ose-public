@@ -99,6 +99,16 @@ All Python code MUST follow the platform coding standards:
 - [Implementation Workflow](../../governance/development/workflow/implementation.md) - Make it work → Make it right → Make it fast
 - [Trunk Based Development](../../governance/development/workflow/trunk-based-development.md) - Git workflow
 - [Code Quality Standards](../../governance/development/quality/code.md) - Quality gates
+- [Test-Driven Development](../../governance/development/workflow/test-driven-development.md) - Required for all code changes
+
+### Test-Driven Development
+
+TDD is required for every code change: write the failing test first, confirm it fails for the right
+reason, implement the minimum code to pass, then refactor. For Python projects the right level is
+usually unit (pytest), integration (pytest with real DB or in-process mocks), or E2E (Playwright).
+Property-based testing via Hypothesis covers invariants over generated inputs. See
+[Test-Driven Development Convention](../../governance/development/workflow/test-driven-development.md)
+for the full Red→Green→Refactor rules, all test levels covered, and manual verification guidance.
 
 **Related Agents**:
 

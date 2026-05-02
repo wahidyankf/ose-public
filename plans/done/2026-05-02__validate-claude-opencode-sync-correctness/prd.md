@@ -114,24 +114,24 @@ FR-1, with these semantic checks per agent:
 Each Claude Code agent frontmatter field has an explicit policy in
 `converter.go`, documented in code as a single map or switch:
 
-| Field | Policy | Notes |
-| ----- | ------ | ----- |
-| `name` | drop | Filename carries name in OpenCode |
-| `description` | preserve | Required both sides |
-| `tools` (string/array) | translate | → lowercase boolean map per OpenCode (deprecated but supported) |
-| `model` | translate via `ConvertModel()` | Mapping owned by opencode-go plan |
-| `color` | preserve | OpenCode supports color; pass-through (named values map 1:1) |
-| `skills` | preserve | Array passes through |
-| `disallowedTools` | drop + warn | No OpenCode equivalent today |
-| `permissionMode` | drop + warn | OpenCode uses `permission:` object instead |
-| `maxTurns` | translate to `steps` | Field rename per OpenCode docs |
-| `effort` | drop + warn | No documented OpenCode equivalent |
-| `memory` | drop + warn | Claude-only |
-| `isolation` | drop + warn | Claude-only |
-| `background` | drop + warn | Claude-only |
-| `initialPrompt` | drop + warn | Claude-only |
-| `mcpServers` | drop + warn | OpenCode declares MCP at config level |
-| `hooks` | drop + warn | No documented OpenCode equivalent |
+| Field                  | Policy                         | Notes                                                           |
+| ---------------------- | ------------------------------ | --------------------------------------------------------------- |
+| `name`                 | drop                           | Filename carries name in OpenCode                               |
+| `description`          | preserve                       | Required both sides                                             |
+| `tools` (string/array) | translate                      | → lowercase boolean map per OpenCode (deprecated but supported) |
+| `model`                | translate via `ConvertModel()` | Mapping owned by opencode-go plan                               |
+| `color`                | preserve                       | OpenCode supports color; pass-through (named values map 1:1)    |
+| `skills`               | preserve                       | Array passes through                                            |
+| `disallowedTools`      | drop + warn                    | No OpenCode equivalent today                                    |
+| `permissionMode`       | drop + warn                    | OpenCode uses `permission:` object instead                      |
+| `maxTurns`             | translate to `steps`           | Field rename per OpenCode docs                                  |
+| `effort`               | drop + warn                    | No documented OpenCode equivalent                               |
+| `memory`               | drop + warn                    | Claude-only                                                     |
+| `isolation`            | drop + warn                    | Claude-only                                                     |
+| `background`           | drop + warn                    | Claude-only                                                     |
+| `initialPrompt`        | drop + warn                    | Claude-only                                                     |
+| `mcpServers`           | drop + warn                    | OpenCode declares MCP at config level                           |
+| `hooks`                | drop + warn                    | No documented OpenCode equivalent                               |
 
 Warnings surface in `--verbose` output and in JSON/markdown reports; they do
 not fail the sync.
@@ -164,7 +164,7 @@ sync behavior:
 - Each Claude Code agent frontmatter field, present and absent.
 - Each Claude Code skill frontmatter field, present and absent.
 - Round-trip equivalence: `parse(claude) → convert → emit → re-parse(opencode
-  output)` — re-parsed output is then field-by-field compared against the
+output)` — re-parsed output is then field-by-field compared against the
   source using the same equivalence logic as `validateAgentFile`. Fields with
   policy `drop-warn` are excluded from the comparison. No reverse-conversion
   function (`ConvertBack`) is defined or required; equivalence is checked

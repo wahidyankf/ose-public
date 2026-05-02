@@ -24,6 +24,34 @@ Relationships (DDD strategic patterns):
 - `app-shell` ↔ all: **Shared Kernel** for i18n keys and design tokens only — no domain types.
 - `health`, `landing`, `routing`: independent.
 
+```mermaid
+%% Color palette: Blue #0173B2 (contexts), Brown #CA9161 (shared kernel), Gray #808080 (independent)
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+flowchart LR
+    journal["journal\n(system of record)"]:::blue
+    routine["routine"]:::blue
+    workout["workout-session"]:::blue
+    stats["stats\n(read-model)"]:::blue
+    settings["settings"]:::blue
+    appshell["app-shell\n(shared kernel)"]:::brown
+    health["health"]:::gray
+    landing["landing"]:::gray
+    routing["routing"]:::gray
+
+    workout -->|"Customer/Supplier\n(publishes events)"| journal
+    stats -->|"Customer/Supplier\n(read-only)"| journal
+    workout -->|"Conformist\n(uses templates)"| routine
+    appshell -.-|"Shared Kernel\n(i18n, tokens only)"| journal
+    appshell -.-|"Shared Kernel"| routine
+    appshell -.-|"Shared Kernel"| workout
+    appshell -.-|"Shared Kernel"| stats
+    appshell -.-|"Shared Kernel"| settings
+
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+```
+
 ### Code layout — target
 
 ```
@@ -293,6 +321,46 @@ Per [Three-Level Testing Standard](../../../governance/development/quality/three
 | D5  | App Router (`src/app/**`) is presentation-entry only — never imports domain/infrastructure directly.                     | Keeps Next.js routing concerns separate from domain logic.                                                          |
 | D6  | Journal is the system of record for events; stats is read-only.                                                          | Already implicit; making it explicit prevents stats from acquiring a parallel write path.                           |
 | D7  | xstate machines placed by IO-trigger rule: pure → `domain/`, orchestrating → `application/`, UI shell → `presentation/`. | Aligns FSM placement with DDD layers; events become ubiquitous-language carriers; guards co-locate with invariants. |
+
+## Rollback
+
+Each phase commits independently, so rollback is surgical — revert only the phase that went wrong.
+
+### Per-phase rollback
+
+```bash
+# Identify the phase commit(s) to revert
+git log --oneline | head -20
+
+# Revert a single phase commit (creates a new revert commit — safe for shared history)
+git revert <phase-commit-sha>
+
+# For a sub-step commit cluster, revert each commit in reverse order
+git revert <sha-latest> && git revert <sha-earlier>
+```
+
+After reverting, all gates must be green before attempting the phase again.
+
+### ESLint boundary config rollback
+
+If the boundary plugin breaks the build in an unexpected way (Phase 1 or Phase 8):
+
+1. Remove (or comment out) the `boundaries` plugin block from `apps/organiclever-web/eslint.config.mjs`.
+2. Run `nx run organiclever-web:lint` to confirm zero errors.
+3. Commit: `revert(organiclever-web): remove ESLint boundary config — <reason>`.
+
+### Full plan abort
+
+If the migration must be abandoned entirely:
+
+1. Identify the Phase 0 commit (first commit of this plan).
+2. Revert all commits from the latest phase backward to Phase 0 in reverse chronological order.
+3. Restore `src/lib/*` original structure via the revert chain; do not manually reconstruct.
+4. Confirm baseline gates green before declaring abort complete.
+
+### Reference
+
+Iron Rule 8: "Roll back the phase, not the file" — if anything leaves the exit gates red and is not fixable in one pass, revert the entire phase commit rather than patching individual files.
 
 ## Open questions (Phase 0 must resolve)
 

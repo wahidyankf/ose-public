@@ -4,6 +4,13 @@
 
 Restructure `apps/organiclever-web` and `specs/apps/organiclever` around explicit bounded contexts and ubiquitous language. Behavior must remain unchanged. The migration must be reversible per phase and verifiable via existing tests.
 
+## Personas
+
+- **DDD architect (solo maintainer)** — Refactors `organiclever-web` source tree and specs into explicit bounded contexts. Reads `tech-docs.md` for layer rules, uses `delivery.md` as the step-by-step execution guide.
+- **plan-executor** — Consumes `delivery.md` phase-by-phase checklist and the Gherkin acceptance criteria in this file as the completion contract.
+- **plan-execution-checker** — Verifies each Gherkin scenario passes after execution and reports any gap between the delivered state and the acceptance criteria.
+- **Future contributor** — Reads the bounded-context map ADR and ubiquitous-language glossary to understand where new domain logic should live without needing to reverse-engineer the codebase.
+
 ## In scope
 
 - `apps/organiclever-web/src/**` — code reorganization into `src/contexts/<bc>/{domain,application,infrastructure,presentation}/`.
@@ -17,6 +24,14 @@ Restructure `apps/organiclever-web` and `specs/apps/organiclever` around explici
 
 - Behavior changes, new features, DB schema changes.
 - `organiclever-be`, other apps, governance-level DDD docs (already authoritative).
+
+## User stories
+
+- As the solo maintainer wearing the DDD architect hat, I want bounded contexts to be explicit folders in the source tree, so that future contributors can locate domain logic without re-deriving the context map from the codebase.
+- As the solo maintainer, I want a per-bounded-context ubiquitous-language glossary, so that Gherkin step text and code identifiers share a common vocabulary and drift is caught at lint time.
+- As the plan-executor, I want ESLint boundary rules to fail the build on architectural violations, so that the inward-dependency rule is automatically enforced without relying on code review alone.
+- As the plan-execution-checker, I want each Gherkin acceptance criterion to map to a verifiable, observable output (a file path, a lint result, a test outcome), so that I can confirm the plan is complete without manual interpretation.
+- As a future contributor, I want the bounded-context map ADR to document context relationships and link to each glossary file, so that I can understand the strategic design decisions without reading all the source code.
 
 ## Functional requirements
 
@@ -175,6 +190,15 @@ Feature: OrganicLever DDD adoption acceptance
     When I scan "specs/apps/organiclever/fe/gherkin/<context>/" for each context
     Then every term used in a Gherkin step is present in that context's glossary
 ```
+
+## Product risks
+
+| #    | Risk                                                                                                                                                                                                     | Likelihood | Impact | Mitigation                                                                                                                                                                                |
+| ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| PR-1 | Phased migration leaves the app temporarily non-navigable if a context is half-migrated across two commits (e.g. `presentation/` moved but `application/index.ts` not yet published).                    | Low        | High   | Each sub-step within a phase must end with all gates green before committing; never split a context across two separate work sessions.                                                    |
+| PR-2 | ESLint boundary rule activation in Phase 8 reveals unexpected import chains that require significant rework, discovered late in the plan.                                                                | Medium     | Medium | Phase 1 dry-run captures the full violation count as a baseline; Phase 8 should see zero new violations. Any surprise in Phase 8 is a signal that a prior phase migration was incomplete. |
+| PR-3 | Glossary term enforcement (Phase 2 stub) is not fully automated, so Gherkin steps may silently use terms outside the glossary until Phase 9 parity check.                                                | Medium     | Low    | Phase 9 explicitly runs the parity check and requires zero warnings before exit; any gap is caught then at the latest.                                                                    |
+| PR-4 | `src/lib/journal/` contains misplaced files from multiple contexts (`settings-store.ts`, `routine-store.ts`, `stats.ts`); incorrect assignment to the journal context would produce a wrong context map. | Low        | Medium | Phase 0 cross-check against `src/lib/*` clusters required before any code moves. Each file's context assignment locked in the ADR before Phase 3.                                         |
 
 ## Dependencies
 

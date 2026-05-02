@@ -10,6 +10,8 @@
 - [ ] Confirm baseline gates green: `npx nx affected -t typecheck lint test:quick spec-coverage` and `nx run organiclever-web-e2e:test:e2e`.
 - [ ] Snapshot baseline coverage number for `organiclever-web` and record in this file under "Baseline metrics" below.
 
+> **Important**: Fix ALL failures found during any quality gate — including preexisting failures unrelated to your changes. This follows the root cause orientation principle — proactively fix preexisting errors encountered during work. Do not defer or mention-and-skip existing issues.
+
 ### Baseline metrics
 
 - [ ] Baseline `organiclever-web` line coverage: \_\_% (filled in pre-flight).
@@ -149,7 +151,7 @@ For each of `health`, `landing`, `routing`:
 
 **Goal**: Largest context; system-of-record for events. Migrate in sub-steps to keep each commit small.
 
-- [ ] Inventory: `src/lib/journal/journal-store.ts`, `src/lib/journal/journal-machine.ts`, `src/lib/journal/typed-payloads.ts`, `src/lib/journal/use-journal.ts`, `src/lib/journal/run-migrations.ts`, `src/lib/journal/runtime.ts`, `src/lib/journal/seed.ts`, `src/lib/journal/schema.ts`, `src/lib/journal/migrations/`, `src/app/app/home/**` journal-touching parts.
+- [ ] Inventory: `src/lib/journal/journal-store.ts`, `src/lib/journal/journal-machine.ts`, `src/lib/journal/typed-payloads.ts`, `src/lib/journal/use-journal.ts`, `src/lib/journal/run-migrations.ts`, `src/lib/journal/runtime.ts`, `src/lib/journal/seed.ts`, `src/lib/journal/schema.ts`, `src/lib/journal/migrations/`, `src/app/app/home/**` journal-touching parts. Also: `src/lib/journal/types.ts` → `journal/domain/`; `src/lib/journal/errors.ts` → `journal/domain/` (or `journal/application/` if error types are use-case-specific — confirm at migration time); `src/lib/journal/format-relative-time.ts` → `src/shared/utils/` (it is a cross-cutting formatting utility, same treatment as `fmt.ts`).
 - [ ] Sub-step 6a — domain: move `JournalEvent` types, `typed-payloads`, invariants → `src/contexts/journal/domain/`. **Red**: tests pre-move green. **Green**: tests post-move green.
 - [ ] Sub-step 6b — application: extract use-cases (`appendEvent`, `bumpEvent`, `listEvents`) into `src/contexts/journal/application/`. Define ports. Move `journal-machine.ts` + its unit test into `src/contexts/journal/application/` per `tech-docs.md` § "xstate machine placement" (orchestrating machine: invokes `fromPromise` actors that hit infrastructure).
 - [ ] Sub-step 6c — infrastructure: move PGlite store, runtime, migrations into `src/contexts/journal/infrastructure/`. Update Effect `Layer` composition.
@@ -244,9 +246,10 @@ For each of `health`, `landing`, `routing`:
   - [ ] `nx run organiclever-web-e2e:test:e2e`
   - [ ] `npm run lint:md`
   - [ ] Coverage check: `organiclever-web` ≥ 70% line coverage and ≥ baseline.
+- [ ] Manual UI smoke check (Playwright MCP): Start dev server (`nx dev organiclever-web`). Use `browser_navigate` to visit `/app/home`. Run `browser_snapshot` and `browser_console_messages`. Confirm zero JS errors and correct page rendering. Document result inline.
 - [ ] Invoke `plan-execution-checker` against this plan and address every finding.
 - [ ] Fast-forward merge worktree branch `worktree-organiclever-adopt-ddd` into local `main`. Push `origin main`.
-- [ ] Wait for `origin/main` to reflect the SHA (CI green).
+- [ ] Wait for `origin/main` to reflect the SHA. Monitor the `CI` / push workflow on GitHub Actions for `ose-public` (`wahidyankf/ose-public`). Verify all checks pass before declaring Phase 11 complete.
 - [ ] If any parent-side gitlink bump is needed, perform it from the parent repo.
 - [ ] Move `plans/in-progress/2026-05-02__organiclever-adopt-ddd/` → `plans/done/2026-05-02__organiclever-adopt-ddd/`.
 - [ ] Update `plans/in-progress/README.md` and `plans/done/README.md` (if any index) to reflect the move.

@@ -2,11 +2,11 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Icon } from "@open-sharia-enterprise/ts-ui";
-import { getLast7Days, getWeeklyStats } from "@/lib/journal/stats";
+import { getLast7Days, getWeeklyStats } from "@/contexts/stats/application";
 import { listEntries } from "@/contexts/journal/application";
 import { listRoutines } from "@/contexts/routine/application";
 import type { JournalRuntime, JournalEntry } from "@/contexts/journal/application";
-import type { DayEntry, WeeklyStats } from "@/lib/journal/stats";
+import type { DayEntry, WeeklyStats } from "@/contexts/stats/application";
 import type { Routine } from "@/contexts/routine/application";
 import { ENTRY_MODULES } from "./kind-hue";
 import { WeekRhythmStrip } from "./week-rhythm-strip";

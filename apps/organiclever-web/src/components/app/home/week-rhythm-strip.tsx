@@ -1,6 +1,6 @@
 "use client";
 
-import type { DayEntry } from "@/lib/journal/stats";
+import type { DayEntry } from "@/contexts/stats/application";
 import type { JournalEntry } from "@/contexts/journal/application";
 import { kindToHue } from "./kind-hue";
 

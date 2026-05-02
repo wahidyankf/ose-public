@@ -31,13 +31,15 @@ export default defineConfig({
         // Migrated to routine/presentation/components/ in DDD adoption Phase 7a.
         "src/contexts/routine/presentation/components/edit-routine-screen.tsx",
         "src/contexts/routine/presentation/components/exercise-editor-row.tsx",
-        // Phase 7 progress screens — PGlite+browser-dependent UI; covered by e2e
-        "src/components/app/progress/progress-screen.tsx",
-        "src/components/app/progress/exercise-progress-card.tsx",
-        // Phase 7 history screens — PGlite+browser-dependent UI; covered by e2e
-        "src/components/app/history/history-screen.tsx",
-        "src/components/app/history/session-card.tsx",
-        "src/components/app/history/weekly-bar-chart.tsx",
+        // Phase 7 progress screens — PGlite+browser-dependent UI; covered by e2e.
+        // Migrated to stats/presentation/components/ in DDD adoption Phase 7c.
+        "src/contexts/stats/presentation/components/progress-screen.tsx",
+        "src/contexts/stats/presentation/components/exercise-progress-card.tsx",
+        // Phase 7 history screens — PGlite+browser-dependent UI; covered by e2e.
+        // Migrated to stats/presentation/components/ in DDD adoption Phase 7c.
+        "src/contexts/stats/presentation/components/history-screen.tsx",
+        "src/contexts/stats/presentation/components/session-card.tsx",
+        "src/contexts/stats/presentation/components/weekly-bar-chart.tsx",
         // Phase 8 settings screen — PGlite+browser-dependent UI; covered by e2e.
         // Migrated to settings/presentation/components/ in DDD adoption Phase 5.
         "src/contexts/settings/presentation/components/settings-screen.tsx",

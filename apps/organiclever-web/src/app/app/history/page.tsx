@@ -2,7 +2,7 @@
 
 export const dynamic = "force-dynamic";
 
-import { HistoryScreen } from "@/components/app/history/history-screen";
+import { HistoryScreen } from "@/contexts/stats/presentation";
 import { useAppRuntime } from "@/components/app/app-runtime-context";
 
 export default function HistoryPage() {

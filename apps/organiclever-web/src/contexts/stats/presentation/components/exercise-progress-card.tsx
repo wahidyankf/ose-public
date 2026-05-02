@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { ExerciseProgress, ExerciseProgressPoint } from "@/lib/journal/stats";
+import type { ExerciseProgress, ExerciseProgressPoint } from "../../application";
 import { Badge } from "@open-sharia-enterprise/ts-ui";
 
 export interface ExerciseProgressCardProps {

@@ -1,6 +1,6 @@
 "use client";
 
-import type { DayEntry } from "@/lib/journal/stats";
+import type { DayEntry } from "../../application";
 
 interface WeeklyBarChartProps {
   last7Days: ReadonlyArray<DayEntry>;

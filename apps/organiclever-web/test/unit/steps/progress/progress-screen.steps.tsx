@@ -16,7 +16,7 @@
 import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { expect } from "vitest";
-import type { ExerciseProgress } from "@/lib/journal/stats";
+import type { ExerciseProgress } from "@/contexts/stats/application";
 
 // ---------------------------------------------------------------------------
 // Helpers mirroring ProgressScreen logic without needing a runtime

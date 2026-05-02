@@ -1,37 +1,34 @@
+// stats context — application layer.
+//
+// Effect-typed read-only use-cases that aggregate journal events into
+// the statistics value types defined in `domain/types.ts`. All journal
+// access goes through the published `@/contexts/journal/application`
+// barrel (read-only); this file does NOT import from
+// `journal/infrastructure` or `journal/domain` directly.
+//
+// Pure projection helpers (`parseWeight`, `brzycki1RM`, `toNumber`,
+// `toDateStr`, `computeStreak`) and value types (`WeeklyStats`,
+// `DayEntry`, `ExerciseProgressPoint`, `ExerciseProgress`,
+// `WeekWorkoutRow`) live in `../domain` — this file consumes them.
+
 import { Effect } from "effect";
-import { PgliteService } from "@/contexts/journal/application";
-import { StorageUnavailable } from "@/contexts/journal/application";
+import { PgliteService, StorageUnavailable } from "@/contexts/journal/application";
+import {
+  brzycki1RM,
+  computeStreak,
+  parseWeight,
+  toDateStr,
+  toNumber,
+  type DayEntry,
+  type ExerciseProgress,
+  type WeekWorkoutRow,
+  type WeeklyStats,
+} from "../domain";
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
-export interface WeeklyStats {
-  workoutsThisWeek: number;
-  streak: number;
-  totalMins: number;
-  totalSets: number;
-}
-
-export interface DayEntry {
-  date: Date;
-  label: string;
-  durationMins: number;
-  sessions: number;
-}
-
-export interface ExerciseProgressPoint {
-  date: string;
-  weight: number;
-  reps: number;
-  estimated1RM: number | null;
-  isPR: boolean;
-}
-
-export interface ExerciseProgress {
-  routineName: string | null;
-  points: ExerciseProgressPoint[];
-}
+// Re-export domain types so tests and callers importing from this module
+// continue to resolve without an immediate sweep. The authoritative type
+// owner is `domain/types.ts`.
+export type { WeeklyStats, DayEntry, ExerciseProgress, ExerciseProgressPoint } from "../domain";
 
 // ---------------------------------------------------------------------------
 // Internal types for DB rows
@@ -46,11 +43,6 @@ type DayStatsRow = {
 type WorkoutCountRow = {
   workout_count: string | number;
   total_mins: string | number;
-};
-
-type WeekWorkoutRow = {
-  week_start: string | Date;
-  workout_count: string | number;
 };
 
 type WorkoutEntryRow = {
@@ -78,33 +70,6 @@ interface RawWorkoutPayload {
   routineName?: string | null;
   durationSecs?: number;
   exercises?: RawExercise[];
-}
-
-function parseWeight(raw: string | null | undefined): number {
-  if (raw == null || raw === "") return 0;
-  const match = raw.match(/^(\d+(?:\.\d+)?)/);
-  return match ? parseFloat(match[1] ?? "0") : 0;
-}
-
-function brzycki1RM(weight: number, reps: number): number | null {
-  if (reps < 1 || reps > 10) return null;
-  if (reps === 1) return weight;
-  const denominator = 37 - reps;
-  if (denominator <= 0) return null;
-  return weight * (36 / denominator);
-}
-
-function toNumber(val: string | number | bigint | null | undefined): number {
-  if (val == null) return 0;
-  if (typeof val === "bigint") return Number(val);
-  if (typeof val === "string") return parseFloat(val) || 0;
-  return val;
-}
-
-function toDateStr(val: string | Date | null | undefined): string {
-  if (val == null) return new Date().toISOString().slice(0, 10);
-  if (val instanceof Date) return val.toISOString().slice(0, 10);
-  return val.toString().slice(0, 10);
 }
 
 // ---------------------------------------------------------------------------
@@ -265,42 +230,6 @@ export function getWeeklyStats(): Effect.Effect<WeeklyStats, StorageUnavailable,
 
     return { workoutsThisWeek, streak, totalMins, totalSets };
   });
-}
-
-function computeStreak(rows: WeekWorkoutRow[]): number {
-  if (rows.length === 0) return 0;
-
-  // Build a set of week-start ISO strings with >= 2 workouts
-  const qualifyingWeeks = new Set<string>();
-  for (const row of rows) {
-    if (toNumber(row.workout_count) >= 2) {
-      qualifyingWeeks.add(toDateStr(row.week_start));
-    }
-  }
-
-  // Current week start (Monday-based, matching date_trunc('week'))
-  const now = new Date();
-  const dayOfWeek = now.getDay(); // 0=Sun
-  const daysSinceMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-  const currentWeekStart = new Date(now);
-  currentWeekStart.setDate(now.getDate() - daysSinceMonday);
-  currentWeekStart.setHours(0, 0, 0, 0);
-
-  let streak = 0;
-  let weekCursor = new Date(currentWeekStart);
-
-  // Walk backwards week by week
-  for (let i = 0; i < 52; i++) {
-    const weekStr = weekCursor.toISOString().slice(0, 10);
-    if (qualifyingWeeks.has(weekStr)) {
-      streak++;
-      weekCursor.setDate(weekCursor.getDate() - 7);
-    } else {
-      break;
-    }
-  }
-
-  return streak;
 }
 
 // ---------------------------------------------------------------------------
